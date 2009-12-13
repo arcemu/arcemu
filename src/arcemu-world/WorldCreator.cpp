@@ -94,7 +94,7 @@ void InstanceMgr::Load(TaskList * l)
 	l->wait();
 
 	// load reset times
-	result = CharacterDatabase.Query("SELECT `setting_id`, `setting_value` FROM `server_settings` WHERE `setting_id` LIKE 'next_instance_reset_%%'");
+	result = CharacterDatabase.Query("SELECT setting_id, setting_value FROM server_settings WHERE setting_id LIKE 'next_instance_reset_%%'");
 	if(result)
 	{
 		do
@@ -470,7 +470,8 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player * plr, uint32 instanceid)
 			if(m_nextInstanceReset[in->m_mapId] == 0)
 			{
 				m_nextInstanceReset[in->m_mapId] = UNIXTIME - (UNIXTIME % TIME_DAY) - ((sWorld.GMTTimeZone + 1) * TIME_HOUR) + (in->m_mapInfo->cooldown == 0 ? TIME_DAY : in->m_mapInfo->cooldown);
-				CharacterDatabase.Execute("REPLACE INTO `server_settings` (`setting_id`, `setting_value`) VALUES ('next_instance_reset_%u', '%u')", in->m_mapId, m_nextInstanceReset[in->m_mapId]);
+                CharacterDatabase.Execute("DELETE FROM server_settings WHERE setting_id LIKE 'next_instance_reset_%u';", in->m_mapId );
+				CharacterDatabase.Execute("INSERT INTO server_settings VALUES ('next_instance_reset_%u', '%u')", in->m_mapId, m_nextInstanceReset[in->m_mapId]);
 			}
 			if(m_nextInstanceReset[in->m_mapId] + (TIME_MINUTE * 15) < UNIXTIME)
 			{
@@ -480,7 +481,8 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player * plr, uint32 instanceid)
 					if(tmp + (TIME_MINUTE * 15) < UNIXTIME)
 						m_nextInstanceReset[in->m_mapId] = tmp + (in->m_mapInfo->cooldown == 0 ? TIME_DAY : in->m_mapInfo->cooldown);
 				} while(m_nextInstanceReset[in->m_mapId] + (TIME_MINUTE * 15) < UNIXTIME);
-				CharacterDatabase.Execute("REPLACE INTO `server_settings` (`setting_id`, `setting_value`) VALUES ('next_instance_reset_%u', '%u')", in->m_mapId, m_nextInstanceReset[in->m_mapId]);
+                CharacterDatabase.Execute("DELETE FROM server_settings WHERE setting_id LIKE 'next_instance_reset_%u';", in->m_mapId );
+				CharacterDatabase.Execute("INSERT INTO server_settings VALUES ('next_instance_reset_%u', '%u')", in->m_mapId, m_nextInstanceReset[in->m_mapId]);
 			}
 			in->m_expiration = m_nextInstanceReset[in->m_mapId];
 		}
@@ -778,11 +780,11 @@ void InstanceMgr::_LoadInstances()
 
 	// clear any instances that have expired.
 	Log.Notice("InstanceMgr", "Deleting Expired Instances...");
-	CharacterDatabase.WaitExecute("DELETE FROM `instances` WHERE `expiration` > 0 AND `expiration` <= %u", UNIXTIME);
-	CharacterDatabase.Execute("DELETE FROM `instanceids` WHERE `instanceid` NOT IN (SELECT `id` FROM `instances`)");
+	CharacterDatabase.WaitExecute("DELETE FROM instances WHERE expiration > 0 AND expiration <= %u", UNIXTIME);
+	CharacterDatabase.Execute("DELETE FROM instanceids WHERE instanceid NOT IN ( SELECT id FROM instances )");
 	
 	// load saved instances
-	result = CharacterDatabase.Query("SELECT `id`, `mapid`, `creation`, `expiration`, `killed_npc_guids`, `difficulty`, `creator_group`, `creator_guid`, `persistent` FROM instances");
+	result = CharacterDatabase.Query("SELECT id, mapid, creation, expiration, killed_npc_guids, difficulty, creator_group, creator_guid, persistent FROM instances");
 	Log.Notice("InstanceMgr", "Loading %u saved instances." , result ? result->GetRowCount() : 0);
 
 	if(result)
@@ -792,7 +794,7 @@ void InstanceMgr::_LoadInstances()
 			inf = WorldMapInfoStorage.LookupEntry(result->Fetch()[1].GetUInt32());
 			if(inf == NULL || result->Fetch()[1].GetUInt32() >= NUM_MAPS)
 			{
-				CharacterDatabase.Execute("DELETE FROM `instances` WHERE `mapid` = %u", result->Fetch()[1].GetUInt32());
+				CharacterDatabase.Execute("DELETE FROM instances WHERE mapid = %u", result->Fetch()[1].GetUInt32());
 				continue;
 			}
 
@@ -994,13 +996,13 @@ bool InstanceMgr::_DeleteInstance(Instance * in, bool ForcePlayersOut)
 void Instance::DeleteFromDB()
 {
 	// cleanup all the corpses on this instance
-	CharacterDatabase.Execute("DELETE FROM `corpses` WHERE `instanceid` = %u", m_instanceId);
+	CharacterDatabase.Execute("DELETE FROM corpses WHERE instanceid = %u", m_instanceId);
 
 	// delete from the database
-	CharacterDatabase.Execute("DELETE FROM `instances` WHERE `id` = %u", m_instanceId);
+	CharacterDatabase.Execute("DELETE FROM instances WHERE id = %u", m_instanceId);
 
 	// Delete all instance assignments
-	CharacterDatabase.Execute("DELETE FROM `instanceids` WHERE `mapId` = %u AND `instanceId` = %u AND `mode` = %u", m_mapId, m_instanceId, m_difficulty);
+	CharacterDatabase.Execute("DELETE FROM instanceids WHERE mapId = %u AND instanceId = %u AND mode = %u", m_mapId, m_instanceId, m_difficulty);
 }
 
 void InstanceMgr::CheckForExpiredInstances()
@@ -1132,9 +1134,16 @@ void Instance::SaveToDB()
 		return;
 
 	std::stringstream ss;
+
+    ss << "DELETE FROM instances WHERE instanceid = " << m_instanceId << ";";
+    
+    CharacterDatabase.Execute( ss.str().c_str() );
+
+    ss.rdbuf()->str("");
+
 	set<uint32>::iterator itr;
 
-	ss << "REPLACE INTO `instances` (`id`, `mapid`, `creation`, `expiration`, `killed_npc_guids`, `difficulty`, `creator_group`, `creator_guid`, `persistent`) VALUES("
+	ss << "INSERT INTO instances VALUES("
 		<< m_instanceId << ","
 		<< m_mapId << ","
 		<< (uint32)m_creation << ","
@@ -1149,7 +1158,7 @@ void Instance::SaveToDB()
 		<< m_creatorGuid << ","
 		<< m_persistent << ")";
 
-	CharacterDatabase.Execute(ss.str().c_str());
+	CharacterDatabase.Execute( ss.str().c_str() );
 }
 
 void InstanceMgr::PlayerLeftGroup(Group * pGroup, Player * pPlayer)

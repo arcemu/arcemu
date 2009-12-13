@@ -528,9 +528,6 @@ public:
 
 	// Serialization
 	void SaveToDB();
-	void SaveToFile(std::stringstream & name);
-	//bool LoadFromDB(uint32 guid);
-	//bool LoadFromDB(CreatureTemplate *t);
 	void LoadAIAgents(CreatureTemplate * t);
 	void LoadAIAgents();
 	void DeleteFromDB();
@@ -539,7 +536,6 @@ public:
 	void OnRemoveCorpse();
 	void OnRespawn(MapMgr * m);
 	void SafeDelete();
-	//void Despawn();
 	void SummonExpire(); // this is used for guardians. They are non respawnable creatures linked to a player
 
 

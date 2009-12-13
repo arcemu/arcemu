@@ -148,7 +148,7 @@ bool ChatHandler::HandleRecallAddCommand(const char* args, WorldSession *m_sessi
 	snprintf((char*)buf, 256, "Added location to DB with MapID: %d, X: %f, Y: %f, Z: %f, O: %f",
 		(unsigned int)plr->GetMapId(), plr->GetPositionX(), plr->GetPositionY(), plr->GetPositionZ(), plr->GetOrientation());
 	GreenSystemMessage(m_session, buf);
-	sGMLog.writefromsession(m_session, "used recall add, added \"%s\" location to database.", rc_locname.c_str());
+	sGMLog.writefromsession(m_session, "used recall add, added \'%s\' location to database.", rc_locname.c_str());
 
 	return true;
 }
@@ -174,7 +174,7 @@ bool ChatHandler::HandleRecallDelCommand(const char* args, WorldSession *m_sessi
 			ss << "DELETE FROM recall WHERE id = "<< (int)id <<";";
 			WorldDatabase.Execute( ss.str( ).c_str( ) );
 			GreenSystemMessage(m_session, "Recall location removed.");
-			sGMLog.writefromsession(m_session, "used recall delete, removed \"%s\" location from database.", args);
+			sGMLog.writefromsession(m_session, "used recall delete, removed \'%s\' location from database.", args);
 			delete result;
 			return true;
 		}

@@ -458,23 +458,44 @@ ALTER TABLE public.corpses OWNER TO arcemu;
 --
 
 CREATE TABLE gm_tickets (
-    guid integer NOT NULL,
-    playerguid integer NOT NULL,
-    name text NOT NULL,
-    level integer DEFAULT 0 NOT NULL,
+    ticketid integer NOT NULL,
+    playerguid integer DEFAULT 1 NOT NULL,
+    name character varying(200) DEFAULT ''::character varying NOT NULL,
+    level integer DEFAULT 1 NOT NULL,
     map integer DEFAULT 0 NOT NULL,
-    posx real DEFAULT 0 NOT NULL,
-    posy real DEFAULT 0 NOT NULL,
-    posz real DEFAULT 0 NOT NULL,
-    message text NOT NULL,
-    "timestamp" text,
-    deleted bytea NOT NULL,
-    assignedto integer DEFAULT 0 NOT NULL,
-    comment text NOT NULL
+    posx double precision DEFAULT 0.0 NOT NULL,
+    posy double precision DEFAULT 0.0 NOT NULL,
+    posz double precision DEFAULT 0.0 NOT NULL,
+    message text DEFAULT ''::text NOT NULL,
+    "timestamp" text DEFAULT ''::text NOT NULL,
+    deleted boolean DEFAULT false NOT NULL,
+    assignedto integer DEFAULT 1 NOT NULL,
+    comment text DEFAULT ''::text NOT NULL
 );
 
 
 ALTER TABLE public.gm_tickets OWNER TO arcemu;
+
+--
+-- Name: gm_tickets_ticketid_seq; Type: SEQUENCE; Schema: public; Owner: arcemu
+--
+
+CREATE SEQUENCE gm_tickets_ticketid_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.gm_tickets_ticketid_seq OWNER TO arcemu;
+
+--
+-- Name: gm_tickets_ticketid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: arcemu
+--
+
+ALTER SEQUENCE gm_tickets_ticketid_seq OWNED BY gm_tickets.ticketid;
+
 
 --
 -- Name: groups; Type: TABLE; Schema: public; Owner: arcemu; Tablespace: 
@@ -1027,6 +1048,13 @@ ALTER TABLE clientaddons ALTER COLUMN id SET DEFAULT nextval('clientaddons_id_se
 
 
 --
+-- Name: ticketid; Type: DEFAULT; Schema: public; Owner: arcemu
+--
+
+ALTER TABLE gm_tickets ALTER COLUMN ticketid SET DEFAULT nextval('gm_tickets_ticketid_seq'::regclass);
+
+
+--
 -- Name: guildid; Type: DEFAULT; Schema: public; Owner: arcemu
 --
 
@@ -1265,6 +1293,14 @@ ALTER TABLE ONLY tutorials
 
 
 --
+-- Name: ticketid; Type: CONSTRAINT; Schema: public; Owner: arcemu; Tablespace: 
+--
+
+ALTER TABLE ONLY gm_tickets
+    ADD CONSTRAINT ticketid PRIMARY KEY (ticketid);
+
+
+--
 -- Name: auctions_b; Type: INDEX; Schema: public; Owner: arcemu; Tablespace: 
 --
 
@@ -1346,20 +1382,6 @@ CREATE INDEX clientaddons_index ON clientaddons USING btree (name);
 --
 
 CREATE INDEX corpses_b ON corpses USING btree (instanceid);
-
-
---
--- Name: gm_tickets_guid; Type: INDEX; Schema: public; Owner: arcemu; Tablespace: 
---
-
-CREATE UNIQUE INDEX gm_tickets_guid ON gm_tickets USING btree (guid);
-
-
---
--- Name: gm_tickets_guid_2; Type: INDEX; Schema: public; Owner: arcemu; Tablespace: 
---
-
-CREATE UNIQUE INDEX gm_tickets_guid_2 ON gm_tickets USING btree (guid);
 
 
 --

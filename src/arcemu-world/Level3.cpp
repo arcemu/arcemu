@@ -585,7 +585,7 @@ bool ChatHandler::HandleBanAllCommand(const char* args, WorldSession *m_session)
 	pBanned = objmgr.GetPlayer(pCharacter,false);
 	if (!pBanned || !pBanned->IsInWorld())
 	{
-		RedSystemMessage(m_session,"Player \"%s\" is not online or does not exists!",pCharacter);
+		RedSystemMessage(m_session,"Player \'%s\' is not online or does not exists!",pCharacter);
 		return true;
 	}
 	if (pBanned == m_session->GetPlayer())
@@ -3373,7 +3373,7 @@ bool ChatHandler::HandleRenameGuildCommand(const char* args, WorldSession *m_ses
 	}
 
 	GreenSystemMessage(m_session, "Changed guild name of %s to %s. This will take effect next restart.", plr->GetGuild()->GetGuildName(), args);
-	CharacterDatabase.Execute("UPDATE guilds SET `guildName` = \"%s\" WHERE `guildId` = '%u'", CharacterDatabase.EscapeString(string(args)).c_str(), plr->GetGuild()->GetGuildId());
+	CharacterDatabase.Execute("UPDATE guilds SET `guildName` = \'%s\' WHERE `guildId` = '%u'", CharacterDatabase.EscapeString(string(args)).c_str(), plr->GetGuild()->GetGuildId());
 	sGMLog.writefromsession(m_session, "Changed guild name of '%s' to '%s'", plr->GetGuild()->GetGuildName(), args);
 	return true;
 }

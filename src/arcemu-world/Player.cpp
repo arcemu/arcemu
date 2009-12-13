@@ -1936,9 +1936,9 @@ void Player::_SavePet(QueryBuffer * buf)
 {
 	// Remove any existing info
 	if(buf == NULL)
-		CharacterDatabase.Execute("DELETE FROM playerpets WHERE ownerguid=%u", GetLowGUID() );
+		CharacterDatabase.Execute("DELETE FROM playerpets WHERE ownerguid = %u", GetLowGUID() );
 	else
-		buf->AddQuery("DELETE FROM playerpets WHERE ownerguid=%u", GetLowGUID() );
+		buf->AddQuery("DELETE FROM playerpets WHERE ownerguid = %u", GetLowGUID() );
 
 	if( m_Summon && m_Summon->IsInWorld() && m_Summon->GetPetOwner() == this )	// update PlayerPets array with current pet's info
 	{
@@ -1972,7 +1972,7 @@ void Player::_SavePet(QueryBuffer * buf)
 	for(std::map<uint32, PlayerPet*>::iterator itr = m_Pets.begin(); itr != m_Pets.end(); itr++)
 	{
 		ss.rdbuf()->str("");
-		ss << "REPLACE INTO playerpets VALUES('"
+		ss << "INSERT INTO playerpets VALUES('"
 			<< GetLowGUID() << "','"
 			<< itr->second->number << "','"
 			<< itr->second->name << "','"
@@ -1989,9 +1989,9 @@ void Player::_SavePet(QueryBuffer * buf)
 			<< itr->second->spellid << "','"
             << itr->second->petstate << "')";
 
-		if(buf == NULL)
+        if(buf == NULL)
 			CharacterDatabase.ExecuteNA(ss.str().c_str());
-		else
+        else
 			buf->AddQueryStr(ss.str());
 	}
 }
@@ -2415,7 +2415,18 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 		active_cheats |= 0x80;
 
 	std::stringstream ss;
-	ss << "REPLACE INTO characters VALUES ("
+
+    ss << "DELETE FROM characters WHERE guid = " << GetLowGUID() << ";";
+
+    if( bNewCharacter )
+        CharacterDatabase.WaitExecuteNA( ss.str().c_str() );
+    else
+        buf->AddQueryNA( ss.str().c_str() );
+
+
+    ss.rdbuf()->str("");
+
+	ss << "INSERT INTO characters VALUES ("
 
 	<< GetLowGUID() << ", "
 	<< GetSession()->GetAccountId() << ","
@@ -2683,7 +2694,7 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 	if(bNewCharacter)
 		CharacterDatabase.WaitExecuteNA(ss.str().c_str());
 	else
-		buf->AddQueryStr(ss.str());
+        buf->AddQueryNA( ss.str().c_str() );
 
 	//Save Other related player stuff
 
@@ -2796,13 +2807,13 @@ void Player::RemovePendingPlayer()
 bool Player::LoadFromDB(uint32 guid)
 {
 	AsyncQuery * q = new AsyncQuery( new SQLClassCallbackP0<Player>(this, &Player::LoadFromDBProc) );
-	q->AddQuery("SELECT * FROM characters WHERE guid=%u AND forced_rename_pending = 0",guid);
-	q->AddQuery("SELECT * FROM tutorials WHERE playerId=%u",guid);
-	q->AddQuery("SELECT cooldown_type, cooldown_misc, cooldown_expire_time, cooldown_spellid, cooldown_itemid FROM playercooldowns WHERE player_guid=%u", guid);
-	q->AddQuery("SELECT * FROM questlog WHERE player_guid=%u",guid);
-	q->AddQuery("SELECT * FROM playeritems WHERE ownerguid=%u ORDER BY containerslot ASC", guid);
-	q->AddQuery("SELECT * FROM playerpets WHERE ownerguid=%u ORDER BY petnumber", guid);
-	q->AddQuery("SELECT * FROM playersummonspells where ownerguid=%u ORDER BY entryid", guid);
+	q->AddQuery("SELECT * FROM characters WHERE guid = %u AND forced_rename_pending = 0",guid);
+	q->AddQuery("SELECT * FROM tutorials WHERE playerId = %u",guid);
+	q->AddQuery("SELECT cooldown_type, cooldown_misc, cooldown_expire_time, cooldown_spellid, cooldown_itemid FROM playercooldowns WHERE player_guid = %u", guid);
+	q->AddQuery("SELECT * FROM questlog WHERE player_guid = %u",guid);
+	q->AddQuery("SELECT * FROM playeritems WHERE ownerguid = %u ORDER BY containerslot ASC", guid);
+	q->AddQuery("SELECT * FROM playerpets WHERE ownerguid = %u ORDER BY petnumber", guid);
+	q->AddQuery("SELECT * FROM playersummonspells where ownerguid = %u ORDER BY entryid", guid);
 	q->AddQuery("SELECT * FROM mailbox WHERE player_guid = %u", guid);
 
 	// social
@@ -2815,7 +2826,6 @@ bool Player::LoadFromDB(uint32 guid)
 	CharacterDatabase.QueueAsyncQuery(q);
 	return true;
 
-   	//CharacterDatabase.Query("SELECT achievement, date FROM character_achievement WHERE guid = '%u'", GetUInt32Value(OBJECT_FIELD_GUID))
 }
 
 void Player::LoadFromDBProc(QueryResultVector & results)
@@ -3712,7 +3722,8 @@ void Player::SetPersistentInstanceId(uint32 mapId, uint32 difficulty, uint32 ins
 			(*itr).second = instanceId;
 	}
 	m_playerInfo->savedInstanceIdsLock.Release();
-	CharacterDatabase.Execute("REPLACE INTO `instanceids` (`playerguid`, `mapid`, `mode`, `instanceid`) VALUES ( %u, %u, %u, %u )", m_playerInfo->guid, mapId, difficulty, instanceId);
+    CharacterDatabase.Execute("DELETE FROM instanceids WHERE instanceid = %u;", instanceId );
+	CharacterDatabase.Execute("INSERT INTO instanceids (playerguid, mapid, mode, instanceid) VALUES ( %u, %u, %u, %u )", m_playerInfo->guid, mapId, difficulty, instanceId);
 }
 
 void Player::RolloverHonor()
@@ -5186,10 +5197,13 @@ void Player::_SaveTutorials(QueryBuffer * buf)
 {
 	if(tutorialsDirty)
 	{
-		if(buf == NULL)
-			CharacterDatabase.Execute("REPLACE INTO tutorials VALUES('%u','%u','%u','%u','%u','%u','%u','%u','%u')", GetLowGUID(), m_Tutorials[0], m_Tutorials[1], m_Tutorials[2], m_Tutorials[3], m_Tutorials[4], m_Tutorials[5], m_Tutorials[6], m_Tutorials[7]);
-		else
-			buf->AddQuery("REPLACE INTO tutorials VALUES('%u','%u','%u','%u','%u','%u','%u','%u','%u')", GetLowGUID(), m_Tutorials[0], m_Tutorials[1], m_Tutorials[2], m_Tutorials[3], m_Tutorials[4], m_Tutorials[5], m_Tutorials[6], m_Tutorials[7]);
+        if(buf == NULL){
+            CharacterDatabase.Execute("DELETE FROM tutorials WHERE playerid = %u;", GetLowGUID() );
+			CharacterDatabase.Execute("INSERT INTO tutorials VALUES('%u','%u','%u','%u','%u','%u','%u','%u','%u');", GetLowGUID(), m_Tutorials[0], m_Tutorials[1], m_Tutorials[2], m_Tutorials[3], m_Tutorials[4], m_Tutorials[5], m_Tutorials[6], m_Tutorials[7]);
+        }else{
+            buf->AddQuery("DELETE FROM tutorials WHERE playerid = %u;", GetLowGUID() );
+			buf->AddQuery("INSERT INTO tutorials VALUES('%u','%u','%u','%u','%u','%u','%u','%u','%u');", GetLowGUID(), m_Tutorials[0], m_Tutorials[1], m_Tutorials[2], m_Tutorials[3], m_Tutorials[4], m_Tutorials[5], m_Tutorials[6], m_Tutorials[7]);
+        }
 
 		tutorialsDirty = false;
 	}
@@ -11658,7 +11672,7 @@ void Player::Social_AddFriend(const char * name, const char * note)
 	m_session->SendPacket(&data);
 
 	// dump into the db
-	CharacterDatabase.Execute("INSERT INTO social_friends VALUES(%u, %u, \"%s\")",
+	CharacterDatabase.Execute("INSERT INTO social_friends VALUES(%u, %u, \'%s\')",
 		GetLowGUID(), info->guid, note ? CharacterDatabase.EscapeString(string(note)).c_str() : "");
 }
 
@@ -11727,7 +11741,7 @@ void Player::Social_SetNote(uint32 guid, const char * note)
 		itr->second = NULL;
 
 	m_socialLock.Release();
-	CharacterDatabase.Execute("UPDATE social_friends SET note = \"%s\" WHERE character_guid = %u AND friend_guid = %u",
+	CharacterDatabase.Execute("UPDATE social_friends SET note = \'%s\' WHERE character_guid = %u AND friend_guid = %u",
 		note ? CharacterDatabase.EscapeString(string(note)).c_str() : "", GetLowGUID(), guid);
 }
 

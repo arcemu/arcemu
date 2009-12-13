@@ -61,8 +61,9 @@ void DayWatcherThread::dupe_tm_pointer(tm * returnvalue, tm * mypointer)
 
 void DayWatcherThread::update_settings()
 {
-	CharacterDatabase.Execute("REPLACE INTO server_settings VALUES(\"last_arena_update_time\", %u)", last_arena_time);
-	CharacterDatabase.Execute("REPLACE INTO server_settings VALUES(\"last_daily_update_time\", %u)", last_daily_time);
+    CharacterDatabase.ExecuteNA("DELETE FROM server_settings WHERE setting_id LIKE 'last_%_update_time';");
+	CharacterDatabase.Execute("INSERT INTO server_settings VALUES(\'last_arena_update_time\', %u);", last_arena_time);
+	CharacterDatabase.Execute("INSERT INTO server_settings VALUES(\'last_daily_update_time\', %u);", last_daily_time);
 }
 
 void DayWatcherThread::load_settings()
@@ -70,7 +71,7 @@ void DayWatcherThread::load_settings()
 	string arena_timeout = Config.MainConfig.GetStringDefault("Periods", "ArenaUpdate", "weekly");
 	arena_period = get_timeout_from_string(arena_timeout.c_str(), WEEKLY);
 
-	QueryResult * result = CharacterDatabase.Query("SELECT setting_value FROM server_settings WHERE setting_id = \"last_arena_update_time\"");
+	QueryResult * result = CharacterDatabase.Query("SELECT setting_value FROM server_settings WHERE setting_id = \'last_arena_update_time\'");
 	if(result)
 	{
 		last_arena_time = result->Fetch()[0].GetUInt32();
@@ -85,7 +86,7 @@ void DayWatcherThread::load_settings()
 	string daily_timeout = Config.MainConfig.GetStringDefault("Periods", "DailyUpdate", "daily");
 	daily_period = get_timeout_from_string(daily_timeout.c_str(), DAILY);
 
-	QueryResult * result2 = CharacterDatabase.Query("SELECT setting_value FROM server_settings WHERE setting_id = \"last_daily_update_time\"");
+	QueryResult * result2 = CharacterDatabase.Query("SELECT setting_value FROM server_settings WHERE setting_id = \'last_daily_update_time\'");
 	if(result2)
 	{
 		last_daily_time = result2->Fetch()[0].GetUInt32();

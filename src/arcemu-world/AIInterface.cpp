@@ -2859,8 +2859,9 @@ bool AIInterface::saveWayPoints()
 		wp = (*itr);
 
 		//Save
-		ss.str("");
-		ss << "REPLACE INTO creature_waypoints ";
+        ss.rdbuf()->str("");
+
+		ss << "INSERT INTO creature_waypoints ";
 		ss << "(spawnid,waypointid,position_x,position_y,position_z,waittime,flags,forwardemoteoneshot,forwardemoteid,backwardemoteoneshot,backwardemoteid,forwardskinid,backwardskinid) VALUES (";
 		ss << ((Creature*)GetUnit())->GetSQL_id() << ", ";
 		ss << wp->id << ", ";

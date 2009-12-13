@@ -72,7 +72,7 @@ void Corpse::SaveToDB()
 	CharacterDatabase.Execute( ss.str( ).c_str( ) );
 
 	ss.rdbuf()->str("");
-	ss << "INSERT INTO corpses (guid, positionX, positionY, positionZ, orientation, zoneId, mapId, data, instanceId) VALUES ("
+	ss << "INSERT INTO corpses (guid, positionx, positiony, positionz, orientation, zoneId, mapId, data, instanceid) VALUES ("
 		<< GetLowGUID() << ", '" << GetPositionX() << "', '" << GetPositionY() << "', '" << GetPositionZ() << "', '" << GetOrientation() << "', '" << GetZoneId() << "', '" << GetMapId() << "', '";
 
 	for(uint16 i = 0; i < m_valuesCount; i++ )

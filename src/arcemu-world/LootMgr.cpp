@@ -335,7 +335,7 @@ void LootMgr::LoadLootTables(const char * szTableName,LootStore * LootTable)
 					{
 						if(proto->Class == ITEM_CLASS_QUEST)
 						{
-							//printf("Quest item \"%s\" allocated to quest ", proto->Name1.c_str());
+							//printf("Quest item \'%s\' allocated to quest ", proto->Name1.c_str());
 							sQuestMgr.SetGameObjectLootQuest(itr->first, itemid);
 							quest_loot_go[entry_id].insert(proto->ItemId);
 						}

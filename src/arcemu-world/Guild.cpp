@@ -243,7 +243,7 @@ GuildRank * Guild::CreateGuildRank(const char * szRankName, uint32 iPermissions,
 			m_lock.Release();
 
 			// save the rank into the database
-			CharacterDatabase.Execute("INSERT INTO guild_ranks VALUES(%u, %u, \"%s\", %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d)",
+			CharacterDatabase.Execute("INSERT INTO guild_ranks VALUES(%u, %u, \'%s\', %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d)",
 				m_guildId, i, CharacterDatabase.EscapeString(string(szRankName)).c_str(),
 				r->iRights, r->iGoldLimitPerDay,
 				r->iTabPermissions[0].iFlags, r->iTabPermissions[0].iStacksPerDay,
@@ -455,7 +455,7 @@ bool Guild::LoadFromDB(Field * f)
 		if(r->iId!=sid)
 		{
 			Log.Notice("Guild", "Renaming rank %u of guild %s to %u.", r->iId, m_guildName, sid);
-			CharacterDatabase.Execute("UPDATE guild_ranks SET rankId = %u WHERE guildId = %u AND rankName = \"%s\"", r->iId,
+			CharacterDatabase.Execute("UPDATE guild_ranks SET rankId = %u WHERE guildId = %u AND rankName = \'%s\'", r->iId,
 				m_guildId, CharacterDatabase.EscapeString(string(f2[2].GetString())).c_str());
 
 			r->iId=sid;
@@ -673,12 +673,12 @@ void Guild::SetMOTD(const char * szNewMotd, WorldSession * pClient)
 	if(strlen(szNewMotd))
 	{
 		m_motd = strdup(szNewMotd);
-		CharacterDatabase.Execute("UPDATE guilds SET motd = \"%s\" WHERE guildId = %u", CharacterDatabase.EscapeString(string(szNewMotd)).c_str(), m_guildId);
+		CharacterDatabase.Execute("UPDATE guilds SET motd = \'%s\' WHERE guildId = %u", CharacterDatabase.EscapeString(string(szNewMotd)).c_str(), m_guildId);
 	}
 	else
 	{
 		m_motd= NULL;
-		CharacterDatabase.Execute("UPDATE guilds SET motd = \"\" WHERE guildId = %u", m_guildId);
+		CharacterDatabase.Execute("UPDATE guilds SET motd = \'\' WHERE guildId = %u", m_guildId);
 	}
 
 	LogGuildEvent(GUILD_EVENT_MOTD, 1, szNewMotd);
@@ -701,12 +701,12 @@ void Guild::SetGuildInformation(const char * szGuildInformation, WorldSession * 
 	if(strlen(szGuildInformation))
 	{
 		m_guildInfo = strdup(szGuildInformation);
-		CharacterDatabase.Execute("UPDATE guilds SET guildInfo = \"%s\" WHERE guildId = %u", CharacterDatabase.EscapeString(string(szGuildInformation)).c_str(), m_guildId);
+		CharacterDatabase.Execute("UPDATE guilds SET guildInfo = \'%s\' WHERE guildId = %u", CharacterDatabase.EscapeString(string(szGuildInformation)).c_str(), m_guildId);
 	}
 	else
 	{
 		m_guildInfo= NULL;
-		CharacterDatabase.Execute("UPDATE guilds SET guildInfo = \"\" WHERE guildId = %u", m_guildId);
+		CharacterDatabase.Execute("UPDATE guilds SET guildInfo = \'\' WHERE guildId = %u", m_guildId);
 	}
 }
 
@@ -867,9 +867,9 @@ void Guild::SetPublicNote(PlayerInfo * pMember, const char * szNewNote, WorldSes
 
 			// Update the database
 		if (itr->second->szPublicNote == NULL)
-			CharacterDatabase.Execute("UPDATE guild_data SET publicNote=\"\" WHERE playerid=%u", pMember->guid);
+			CharacterDatabase.Execute("UPDATE guild_data SET publicNote=\'\' WHERE playerid=%u", pMember->guid);
 		else
-			CharacterDatabase.Execute("UPDATE guild_data SET publicNote=\"%s\" WHERE playerid=%u",
+			CharacterDatabase.Execute("UPDATE guild_data SET publicNote=\'%s\' WHERE playerid=%u",
 				CharacterDatabase.EscapeString(string(itr->second->szPublicNote)).c_str(),
 				pMember->guid
 			);
@@ -907,9 +907,9 @@ void Guild::SetOfficerNote(PlayerInfo * pMember, const char * szNewNote, WorldSe
 
 		// Update the database
 		if (itr->second->szOfficerNote == NULL)
-			CharacterDatabase.Execute("UPDATE guild_data SET officerNote=\"\" WHERE playerid=%u", pMember->guid);
+			CharacterDatabase.Execute("UPDATE guild_data SET officerNote=\'\' WHERE playerid=%u", pMember->guid);
 		else
-			CharacterDatabase.Execute("UPDATE guild_data SET officerNote=\"%s\" WHERE playerid=%u",
+			CharacterDatabase.Execute("UPDATE guild_data SET officerNote=\'%s\' WHERE playerid=%u",
 				CharacterDatabase.EscapeString(string(itr->second->szOfficerNote)).c_str(),
 				pMember->guid
 			);
@@ -1272,7 +1272,7 @@ void Guild::SendTurnInPetitionResult( WorldSession * pClient, uint32 result )
 
 void Guild::CreateInDB()
 {
-	CharacterDatabase.Execute("INSERT INTO guilds VALUES(%u, \"%s\", %u, %u, %u, %u, %u, %u, '', '', %u, 0)",
+	CharacterDatabase.Execute("INSERT INTO guilds VALUES(%u, \'%s\', %u, %u, %u, %u, %u, %u, '', '', %u, 0)",
 		m_guildId, CharacterDatabase.EscapeString(string(m_guildName)).c_str(), m_guildLeader, m_emblemStyle, m_emblemColor, m_borderColor, m_borderStyle,
 		m_backgroundColor, m_creationTimeStamp);
 }

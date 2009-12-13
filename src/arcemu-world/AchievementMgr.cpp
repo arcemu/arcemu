@@ -207,18 +207,28 @@ void AchievementMgr::SaveToDB()
 	if( !m_completedAchievements.empty() )
 	{
 		std::ostringstream ss;
-		ss << "REPLACE INTO character_achievement (guid, achievement, date) VALUES ";
+
+        ss << "DELETE FROM character_achievement WHERE guid = ";
+        ss << m_player->GetLowGUID();
+        ss << ";";
+
+        CharacterDatabase.ExecuteNA( ss.str().c_str() );
+
+        ss.rdbuf()->str("");
+
+		ss << "INSERT INTO character_achievement VALUES ";
 		bool first = true;
 		for(CompletedAchievementMap::iterator iter = m_completedAchievements.begin(); iter!=m_completedAchievements.end(); iter++)
 		{
 			if( ss.str().length() >= 16000 )
 			{
 				// SQL query length is limited to 16384 characters
-				CharacterDatabase.Execute( ss.str().c_str() );
+				CharacterDatabase.ExecuteNA( ss.str().c_str() );
 				ss.str("");
-				ss << "REPLACE INTO character_achievement (guid, achievement, date) VALUES ";
+				ss << "INSERT INTO character_achievement VALUES ";
 				first = true;
 			}
+
 			if( !first )
 			{
 				ss << ", ";
@@ -229,13 +239,22 @@ void AchievementMgr::SaveToDB()
 			}
             ss << "(" << m_player->GetLowGUID() << ", " << iter->first << ", " << iter->second << ")";
 		}
-		CharacterDatabase.Execute( ss.str().c_str() );
+		CharacterDatabase.ExecuteNA( ss.str().c_str() );
 	}
 
 	if( !m_criteriaProgress.empty() )
 	{
 		std::ostringstream ss;
-		ss << "REPLACE INTO character_achievement_progress (guid, criteria, counter, date) VALUES ";
+
+        ss << "DELETE FROM character_achievement_progress WHERE guid = ";
+        ss << m_player->GetLowGUID();
+        ss << ";";
+
+        CharacterDatabase.ExecuteNA( ss.str().c_str() );
+
+        ss.rdbuf()->str("");
+
+		ss << "INSERT INTO character_achievement_progress VALUES ";
 		bool first = true;
 		for(CriteriaProgressMap::iterator iter = m_criteriaProgress.begin(); iter!=m_criteriaProgress.end(); ++iter)
 		{
@@ -245,9 +264,9 @@ void AchievementMgr::SaveToDB()
 				if( ss.str().length() >= 16000 )
 				{
 					// SQL query length is limited to 16384 characters
-					CharacterDatabase.Execute( ss.str().c_str() );
+					CharacterDatabase.ExecuteNA( ss.str().c_str() );
 					ss.str("");
-					ss << "REPLACE INTO character_achievement_progress (guid, criteria, counter, date) VALUES ";
+					ss << "INSERT INTO character_achievement_progress VALUES ";
 					first = true;
 				}
 				if( !first )
@@ -264,7 +283,7 @@ void AchievementMgr::SaveToDB()
 		if( !first )
 		{
 			// don't execute query if there's no entries to save
-			CharacterDatabase.Execute( ss.str().c_str() );
+			CharacterDatabase.ExecuteNA( ss.str().c_str() );
 		}
 	}
 }

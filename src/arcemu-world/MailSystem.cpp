@@ -183,92 +183,30 @@ bool MailMessage::AddMessageDataToPacket(WorldPacket& data)
 	}
 
 	return true;
-/*
-	data << uint16(0);
-	data << message_id;
-	data << uint8(message_type);
-	if(message_type)
-		data << uint32(sender_guid);
-	else
-		data << sender_guid;
 
-	data << subject;
-	data << message_id;	  // itempageid
-	data << message_id;
-
-	data << stationery;
-
-	uint32 itementry = 0, itemcount = 0;
-	uint32 charges = 0, durability = 0, maxdurability = 0;
-
-	if(attached_item_guid)
-	{
-		QueryResult * result = CharacterDatabase.Query("SELECT `entry`, `count`, `charges`, `durability` FROM playeritems WHERE guid='%u'", GUID_LOPART(attached_item_guid));
-		if(result)
-		{
-			itementry = result->Fetch()[0].GetUInt32();
-			itemcount = result->Fetch()[1].GetUInt32();
-			charges = result->Fetch()[2].GetUInt32();
-			durability = result->Fetch()[3].GetUInt32();
-			ItemPrototype * it = ItemPrototypeStorage.LookupEntry(itementry);
-			maxdurability = it ? it->MaxDurability : durability;
-
-			delete result;
-		}
-	}
-
-	if(external_attached_item_guid)
-	{
-		QueryResult * result = CharacterDatabase.Query("SELECT `entry`, `count`, `charges`, `durability` FROM playeritems_external WHERE guid='%u'", GUID_LOPART(external_attached_item_guid));
-		if(result)
-		{
-			itementry = result->Fetch()[0].GetUInt32();
-			itemcount = result->Fetch()[1].GetUInt32();
-			charges = result->Fetch()[2].GetUInt32();
-			durability = result->Fetch()[3].GetUInt32();
-			ItemPrototype * it = ItemPrototypeStorage.LookupEntry(itementry);
-			maxdurability = it ? it->MaxDurability : durability;
-
-			delete result;
-		}
-	}
-
-	data << itementry;
-	data << uint32(0);  // unk
-	data << uint32(0);  // unk
-	data << uint32(0);  // unk
-	for(uint32 i = 0; i < 17; ++i)
-		data << uint32(0);
-
-	data << (itemcount ? uint8(itemcount) : uint8(1));
-	data << charges;
-	data << maxdurability;
-	data << durability;
-	data << money;
-	data << cod;
-	data << uint32(read_flag);
-
-	if(expire_time)
-		data << float(float(expire_time - (uint32)UNIXTIME) / 86400.0f);
-	else
-		data << float(0);
-
-	data << uint32(0);
-
-	return true;*/
 }
 
 void MailSystem::SaveMessageToSQL(MailMessage * message)
 {
 	stringstream ss;
+
+
+    ss << "DELETE FROM mailbox WHERE message_id = ";
+    ss << message->message_id;
+    ss << ";";
+
+    CharacterDatabase.ExecuteNA( ss.str().c_str() );
+
+    ss.rdbuf()->str("");
+
 	vector< uint64 >::iterator itr;
-	ss << "REPLACE INTO mailbox VALUES("
+	ss << "INSERT INTO mailbox VALUES("
 		<< message->message_id << ","
 		<< message->message_type << ","
 		<< message->player_guid << ","
-		<< message->sender_guid << ",\""
-		<< CharacterDatabase.EscapeString(message->subject) << "\",\""
-		<< CharacterDatabase.EscapeString(message->body) << "\","
+		<< message->sender_guid << ",\'"
+		<< CharacterDatabase.EscapeString(message->subject) << "\',\'"
+		<< CharacterDatabase.EscapeString(message->body) << "\',"
 		<< message->money << ",'";
 
 	for( itr = message->items.begin( ); itr != message->items.end( ); ++itr )
@@ -281,8 +219,9 @@ void MailSystem::SaveMessageToSQL(MailMessage * message)
 		<< message->delivery_time << ","
 		<< message->copy_made << ","
 		<< message->read_flag << ","
-		<< message->deleted_flag << ")";
-	CharacterDatabase.WaitExecute(ss.str().c_str());
+		<< message->deleted_flag << ");";
+	
+    CharacterDatabase.Execute(ss.str().c_str());
 }
 
 void WorldSession::HandleSendMail(WorldPacket & recv_data )
@@ -456,7 +395,7 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 	// Great, all our info is filled in. Now we can add it to the other players mailbox.
 	sMailSystem.DeliverMessage(player->guid, &msg);
 	// Save/Update character's gold if they've received gold that is. This prevents a rollback.
-	CharacterDatabase.Execute("UPDATE `characters` SET `gold`='%u' WHERE (`guid`='%u')", _player->GetGold(), _player->m_playerInfo->guid);
+	CharacterDatabase.Execute("UPDATE characters SET gold = %u WHERE guid = %u", _player->GetGold(), _player->m_playerInfo->guid);
 	// Success packet :)
 	SendMailError(MAIL_OK);
 }

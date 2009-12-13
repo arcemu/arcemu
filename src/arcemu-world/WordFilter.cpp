@@ -81,9 +81,9 @@ bool WordFilter::CompileExpression(const char * szExpression, void** pOutput, vo
 	if(re == NULL || error2 != NULL)
 	{
 		if(re == NULL)
-			Log.Error("WordFilter", "An error occurred while compiling the expression: \"%s\": %s", szExpression, error ? error : "unknown error");
+			Log.Error("WordFilter", "An error occurred while compiling the expression: \'%s\': %s", szExpression, error ? error : "unknown error");
 		else
-			Log.Error("WordFilter", "An error occurred while compiling extra data for the expression: \"%s\": %s", szExpression, error2);
+			Log.Error("WordFilter", "An error occurred while compiling extra data for the expression: \'%s\': %s", szExpression, error2);
 
 		if(re)
 			pcre_free(re);

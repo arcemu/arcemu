@@ -540,7 +540,7 @@ void Creature::SaveToDB()
 		spawnid = objmgr.GenerateCreatureSpawnID();
 
 	std::stringstream ss;
-	ss << "REPLACE INTO creature_spawns VALUES("
+	ss << "INSERT INTO creature_spawns VALUES("
 		<< spawnid << ","
 		<< GetEntry() << ","
 		<< GetMapId() << ","
@@ -556,8 +556,7 @@ void Creature::SaveToDB()
 		<< m_uint32Values[UNIT_FIELD_BYTES_1] << ","
 		<< m_uint32Values[UNIT_FIELD_BYTES_2] << ","
 		<< m_uint32Values[UNIT_NPC_EMOTESTATE] << ",0,";
-		/*<< ((this->m_spawn ? m_spawn->respawnNpcLink : uint32(0))) << ",";*/
-
+		
 	if ( m_spawn )
 		ss << m_spawn->channel_spell << "," << m_spawn->channel_target_go << "," << m_spawn->channel_target_creature << ",";
 	else
@@ -579,41 +578,6 @@ void Creature::SaveToDB()
 	WorldDatabase.Execute(ss.str().c_str());
 }
 
-void Creature::SaveToFile(std::stringstream & name)
-{
-/*	FILE * OutFile;
-
-	OutFile = fopen(name.str().c_str(), "wb");
-	if (!OutFile) return;
-
-	uint32 creatureEntry = GetUInt32Value(OBJECT_FIELD_ENTRY);
-	if (!m_sqlid)
-		m_sqlid = objmgr.GenerateLowGuid(HIGHGUID_UNIT);
-
-	std::stringstream ss;
-	ss << "DELETE FROM creatures WHERE id=" << m_sqlid;
-	fwrite(ss.str().c_str(),1,ss.str().size(),OutFile);
-
-	ss.rdbuf()->str("");
-	ss << "\nINSERT INTO creatures (id, mapId, zoneId, name_id, positionX, positionY, positionZ, orientation, moverandom, running, data) VALUES ( "
-		<< m_sqlid << ", "
-		<< GetMapId() << ", "
-		<< GetZoneId() << ", "
-		<< GetUInt32Value(OBJECT_FIELD_ENTRY) << ", "
-		<< m_position.x << ", "
-		<< m_position.y << ", "
-		<< m_position.z << ", "
-		<< m_position.o << ", "
-		<< GetAIInterface()->getMoveType() << ", "
-		<< GetAIInterface()->getMoveRunFlag() << ", '";
-	for( uint16 index = 0; index < m_valuesCount; index ++ )
-		ss << GetUInt32Value(index) << " ";
-
-	ss << "' )";
-	fwrite(ss.str().c_str(),1,ss.str().size(),OutFile);
-	fclose(OutFile);*/
-}
-
 
 void Creature::LoadScript()
 {
@@ -625,8 +589,8 @@ void Creature::DeleteFromDB()
 	if ( !GetSQL_id() )
 		return;
 
-	WorldDatabase.Execute("DELETE FROM creature_spawns WHERE id=%u", GetSQL_id() );
-	WorldDatabase.Execute("DELETE FROM creature_waypoints WHERE spawnid=%u",GetSQL_id() );
+	WorldDatabase.Execute("DELETE FROM creature_spawns WHERE id = %u", GetSQL_id() );
+	WorldDatabase.Execute("DELETE FROM creature_waypoints WHERE spawnid = %u",GetSQL_id() );
 }
 
 

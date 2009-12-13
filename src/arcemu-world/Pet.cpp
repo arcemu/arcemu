@@ -688,7 +688,7 @@ void Pet::InitializeMe( bool first )
 	else // Hunter pets - load from db
 	{
 		// Pull from database... :/
-		QueryResult * query = CharacterDatabase.Query("SELECT * FROM playerpetspells WHERE ownerguid=%u and petnumber=%u",
+		QueryResult * query = CharacterDatabase.Query("SELECT * FROM playerpetspells WHERE ownerguid = %u AND petnumber = %u",
 			m_Owner->GetLowGUID(), m_PetNumber );
 		if( query )
 		{

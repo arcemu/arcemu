@@ -215,7 +215,7 @@ bool ChatHandler::HandleGPSCommand(const char* args, WorldSession *m_session)
 		FILE* gpslog = fopen(FormatOutputString("logs","gps",false).c_str(), "at");
 		if(gpslog)
 		{
-			fprintf(gpslog, "%d, %u, %u, %f, %f, %f, %f, \"%s\"",
+			fprintf(gpslog, "%d, %u, %u, %f, %f, %f, %f, \'%s\'",
 				(unsigned int)obj->GetMapId(), at->ZoneId,at->AreaId, obj->GetPositionX(), obj->GetPositionY(), obj->GetPositionZ(), obj->GetOrientation(),at->name);
 // ".gps 1 comment" will save comment after the gps data
 			if(*(args+1) == ' ')
@@ -248,7 +248,7 @@ bool ChatHandler::HandleKickCommand(const char* args, WorldSession *m_session)
 		if(reason)
 			kickreason = reason;
 
-		BlueSystemMessage(m_session, "Attempting to kick %s from the server for \"%s\".", chr->GetName(), kickreason.c_str());
+		BlueSystemMessage(m_session, "Attempting to kick %s from the server for \'%s\'.", chr->GetName(), kickreason.c_str());
 		sGMLog.writefromsession(m_session, "Kicked player %s from the server for %s", chr->GetName(), kickreason.c_str());
 		if(!m_session->CanUseCommand('z') && chr->GetSession()->CanUseCommand('z'))
 		{

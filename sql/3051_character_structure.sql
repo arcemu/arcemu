@@ -1,6 +1,6 @@
 /*
-SQLyog Community Edition- MySQL GUI v8.01 
-MySQL - 5.1.31-community : Database - wcharacter
+SQLyog Community Edition- MySQL GUI v8.18 
+MySQL - 5.1.41-community : Database - acharacters
 *********************************************************************
 */
 
@@ -8,9 +8,9 @@ MySQL - 5.1.31-community : Database - wcharacter
 
 /*!40101 SET SQL_MODE=''*/;
 
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 /*Table structure for table `account_data` */
 
 DROP TABLE IF EXISTS `account_data`;
@@ -27,13 +27,7 @@ CREATE TABLE `account_data` (
   `uiconfig7` blob,
   `uiconfig8` blob,
   PRIMARY KEY (`acct`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-/*Data for the table `account_data` */
-
-LOCK TABLES `account_data` WRITE;
-
-UNLOCK TABLES;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Table structure for table `account_forced_permissions` */
 
@@ -43,13 +37,7 @@ CREATE TABLE `account_forced_permissions` (
   `login` varchar(50) NOT NULL,
   `permissions` varchar(100) NOT NULL,
   PRIMARY KEY (`login`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-/*Data for the table `account_forced_permissions` */
-
-LOCK TABLES `account_forced_permissions` WRITE;
-
-UNLOCK TABLES;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Table structure for table `arenateams` */
 
@@ -79,13 +67,7 @@ CREATE TABLE `arenateams` (
   `player_data9` varchar(60) NOT NULL,
   `player_data10` varchar(60) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-/*Data for the table `arenateams` */
-
-LOCK TABLES `arenateams` WRITE;
-
-UNLOCK TABLES;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Table structure for table `auctions` */
 
@@ -103,13 +85,7 @@ CREATE TABLE `auctions` (
   `deposit` int(32) DEFAULT NULL,
   PRIMARY KEY (`auctionId`),
   KEY `b` (`auctionhouse`)
-) ENGINE=MyISAM AUTO_INCREMENT=1027356 DEFAULT CHARSET=latin1;
-
-/*Data for the table `auctions` */
-
-LOCK TABLES `auctions` WRITE;
-
-UNLOCK TABLES;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Table structure for table `banned_names` */
 
@@ -117,13 +93,7 @@ DROP TABLE IF EXISTS `banned_names`;
 
 CREATE TABLE `banned_names` (
   `name` varchar(30) COLLATE utf8_unicode_ci NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-/*Data for the table `banned_names` */
-
-LOCK TABLES `banned_names` WRITE;
-
-UNLOCK TABLES;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `character_achievement` */
 
@@ -134,13 +104,7 @@ CREATE TABLE `character_achievement` (
   `achievement` int(10) unsigned NOT NULL DEFAULT '0',
   `date` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`guid`,`achievement`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-/*Data for the table `character_achievement` */
-
-LOCK TABLES `character_achievement` WRITE;
-
-UNLOCK TABLES;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Table structure for table `character_achievement_progress` */
 
@@ -152,13 +116,7 @@ CREATE TABLE `character_achievement_progress` (
   `counter` int(10) DEFAULT NULL,
   `date` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`guid`,`criteria`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-/*Data for the table `character_achievement_progress` */
-
-LOCK TABLES `character_achievement_progress` WRITE;
-
-UNLOCK TABLES;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Table structure for table `characters` */
 
@@ -257,19 +215,14 @@ CREATE TABLE `characters` (
   `talentpoint_override` longtext NOT NULL,
   `phase` int(10) unsigned NOT NULL DEFAULT '1',
   `CanGainXp` int(10) unsigned NOT NULL DEFAULT '1',
+  `data` longtext,
   PRIMARY KEY (`guid`),
   KEY `acct` (`acct`),
   KEY `name` (`name`),
   KEY `b` (`banned`),
   KEY `c` (`online`),
   KEY `d` (`forced_rename_pending`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-/*Data for the table `characters` */
-
-LOCK TABLES `characters` WRITE;
-
-UNLOCK TABLES;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Table structure for table `characters_insert_queue` */
 
@@ -362,13 +315,7 @@ CREATE TABLE `characters_insert_queue` (
   UNIQUE KEY `guid` (`insert_temp_guid`),
   KEY `acct` (`acct`),
   KEY `guildid` (`guildid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-/*Data for the table `characters_insert_queue` */
-
-LOCK TABLES `characters_insert_queue` WRITE;
-
-UNLOCK TABLES;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `charters` */
 
@@ -391,13 +338,7 @@ CREATE TABLE `charters` (
   `signer9` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`charterId`),
   UNIQUE KEY `leaderGuid` (`leaderGuid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 11264 kB; InnoDB free: 18432 kB';
-
-/*Data for the table `charters` */
-
-LOCK TABLES `charters` WRITE;
-
-UNLOCK TABLES;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 11264 kB; InnoDB free: 18432 kB';
 
 /*Table structure for table `clientaddons` */
 
@@ -411,13 +352,7 @@ CREATE TABLE `clientaddons` (
   `showinlist` int(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `index` (`name`)
-) ENGINE=MyISAM AUTO_INCREMENT=153 DEFAULT CHARSET=latin1;
-
-/*Data for the table `clientaddons` */
-
-LOCK TABLES `clientaddons` WRITE;
-
-UNLOCK TABLES;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Table structure for table `command_overrides` */
 
@@ -427,13 +362,7 @@ CREATE TABLE `command_overrides` (
   `command_name` varchar(100) NOT NULL,
   `access_level` varchar(10) NOT NULL,
   PRIMARY KEY (`command_name`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-/*Data for the table `command_overrides` */
-
-LOCK TABLES `command_overrides` WRITE;
-
-UNLOCK TABLES;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Table structure for table `corpses` */
 
@@ -451,20 +380,14 @@ CREATE TABLE `corpses` (
   `data` longtext NOT NULL,
   PRIMARY KEY (`guid`),
   KEY `b` (`instanceId`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-/*Data for the table `corpses` */
-
-LOCK TABLES `corpses` WRITE;
-
-UNLOCK TABLES;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Table structure for table `gm_tickets` */
 
 DROP TABLE IF EXISTS `gm_tickets`;
 
 CREATE TABLE `gm_tickets` (
-  `guid` int(11) NOT NULL,
+  `ticketid` int(11) NOT NULL,
   `playerGuid` int(11) NOT NULL,
   `name` varchar(200) NOT NULL DEFAULT '',
   `level` int(6) NOT NULL DEFAULT '0',
@@ -477,15 +400,9 @@ CREATE TABLE `gm_tickets` (
   `deleted` bit(1) NOT NULL DEFAULT b'0',
   `assignedto` int(11) NOT NULL DEFAULT '0',
   `comment` text NOT NULL,
-  UNIQUE KEY `guid` (`guid`),
-  UNIQUE KEY `guid_2` (`guid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-/*Data for the table `gm_tickets` */
-
-LOCK TABLES `gm_tickets` WRITE;
-
-UNLOCK TABLES;
+  UNIQUE KEY `guid` (`ticketid`),
+  UNIQUE KEY `guid_2` (`ticketid`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Table structure for table `groups` */
 
@@ -545,13 +462,7 @@ CREATE TABLE `groups` (
   `timestamp` int(30) NOT NULL,
   `instanceids` text NOT NULL,
   PRIMARY KEY (`group_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-/*Data for the table `groups` */
-
-LOCK TABLES `groups` WRITE;
-
-UNLOCK TABLES;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Table structure for table `guild_bankitems` */
 
@@ -566,13 +477,7 @@ CREATE TABLE `guild_bankitems` (
   KEY `a` (`guildId`),
   KEY `b` (`tabId`),
   KEY `c` (`slotId`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-/*Data for the table `guild_bankitems` */
-
-LOCK TABLES `guild_bankitems` WRITE;
-
-UNLOCK TABLES;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Table structure for table `guild_banklogs` */
 
@@ -590,13 +495,7 @@ CREATE TABLE `guild_banklogs` (
   PRIMARY KEY (`log_id`,`guildid`),
   KEY `a` (`guildid`),
   KEY `b` (`tabid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-/*Data for the table `guild_banklogs` */
-
-LOCK TABLES `guild_banklogs` WRITE;
-
-UNLOCK TABLES;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Table structure for table `guild_banktabs` */
 
@@ -611,13 +510,7 @@ CREATE TABLE `guild_banktabs` (
   PRIMARY KEY (`guildId`,`tabId`),
   KEY `a` (`guildId`),
   KEY `b` (`tabId`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-/*Data for the table `guild_banktabs` */
-
-LOCK TABLES `guild_banktabs` WRITE;
-
-UNLOCK TABLES;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Table structure for table `guild_data` */
 
@@ -645,13 +538,7 @@ CREATE TABLE `guild_data` (
   `itemWithdrawlsSinceLastReset5` int(30) NOT NULL,
   KEY `a` (`guildid`),
   KEY `b` (`playerid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-/*Data for the table `guild_data` */
-
-LOCK TABLES `guild_data` WRITE;
-
-UNLOCK TABLES;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Table structure for table `guild_logs` */
 
@@ -666,13 +553,7 @@ CREATE TABLE `guild_logs` (
   `misc2` int(30) NOT NULL,
   `misc3` int(30) NOT NULL,
   PRIMARY KEY (`log_id`,`guildid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-/*Data for the table `guild_logs` */
-
-LOCK TABLES `guild_logs` WRITE;
-
-UNLOCK TABLES;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Table structure for table `guild_ranks` */
 
@@ -697,13 +578,7 @@ CREATE TABLE `guild_ranks` (
   `bankTabFlags5` int(30) NOT NULL DEFAULT '0',
   `itemStacksPerDay5` int(30) NOT NULL DEFAULT '0',
   PRIMARY KEY (`guildId`,`rankId`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-/*Data for the table `guild_ranks` */
-
-LOCK TABLES `guild_ranks` WRITE;
-
-UNLOCK TABLES;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Table structure for table `guilds` */
 
@@ -724,13 +599,7 @@ CREATE TABLE `guilds` (
   `bankBalance` bigint(30) unsigned NOT NULL,
   PRIMARY KEY (`guildId`),
   UNIQUE KEY `guildId` (`guildId`)
-) ENGINE=MyISAM AUTO_INCREMENT=8189 DEFAULT CHARSET=latin1;
-
-/*Data for the table `guilds` */
-
-LOCK TABLES `guilds` WRITE;
-
-UNLOCK TABLES;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Table structure for table `instanceids` */
 
@@ -743,13 +612,7 @@ CREATE TABLE `instanceids` (
   `instanceid` int(11) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`playerguid`,`mapid`,`mode`),
   KEY `ix_instanceid` (`playerguid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Player / InstanceID - Reference Table';
-
-/*Data for the table `instanceids` */
-
-LOCK TABLES `instanceids` WRITE;
-
-UNLOCK TABLES;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Player / InstanceID - Reference Table';
 
 /*Table structure for table `instances` */
 
@@ -767,13 +630,7 @@ CREATE TABLE `instances` (
   `persistent` tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `a` (`mapid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-/*Data for the table `instances` */
-
-LOCK TABLES `instances` WRITE;
-
-UNLOCK TABLES;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Table structure for table `mailbox` */
 
@@ -797,13 +654,7 @@ CREATE TABLE `mailbox` (
   `deleted_flag` int(30) NOT NULL DEFAULT '0',
   PRIMARY KEY (`message_id`),
   KEY `b` (`player_guid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-/*Data for the table `mailbox` */
-
-LOCK TABLES `mailbox` WRITE;
-
-UNLOCK TABLES;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Table structure for table `mailbox_insert_queue` */
 
@@ -818,13 +669,7 @@ CREATE TABLE `mailbox_insert_queue` (
   `money` int(30) NOT NULL,
   `item_id` int(30) NOT NULL,
   `item_stack` int(30) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-/*Data for the table `mailbox_insert_queue` */
-
-LOCK TABLES `mailbox_insert_queue` WRITE;
-
-UNLOCK TABLES;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Table structure for table `playercooldowns` */
 
@@ -837,13 +682,7 @@ CREATE TABLE `playercooldowns` (
   `cooldown_expire_time` int(30) NOT NULL COMMENT 'expiring time in unix epoch format',
   `cooldown_spellid` int(30) NOT NULL COMMENT 'spell that cast it',
   `cooldown_itemid` int(30) NOT NULL COMMENT 'item that cast it'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-/*Data for the table `playercooldowns` */
-
-LOCK TABLES `playercooldowns` WRITE;
-
-UNLOCK TABLES;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Table structure for table `playeritems` */
 
@@ -872,13 +711,7 @@ CREATE TABLE `playeritems` (
   PRIMARY KEY (`guid`),
   KEY `ownerguid` (`ownerguid`),
   KEY `itemtext` (`itemtext`)
-) ENGINE=MyISAM AUTO_INCREMENT=87328711 DEFAULT CHARSET=latin1;
-
-/*Data for the table `playeritems` */
-
-LOCK TABLES `playeritems` WRITE;
-
-UNLOCK TABLES;
+) ENGINE=InnoDB AUTO_INCREMENT=135 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `playeritems_insert_queue` */
 
@@ -901,13 +734,7 @@ CREATE TABLE `playeritems_insert_queue` (
   `slot` tinyint(4) NOT NULL DEFAULT '0',
   `enchantments` longtext COLLATE utf8_unicode_ci NOT NULL,
   KEY `ownerguid` (`ownerguid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-/*Data for the table `playeritems_insert_queue` */
-
-LOCK TABLES `playeritems_insert_queue` WRITE;
-
-UNLOCK TABLES;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `playerpets` */
 
@@ -930,13 +757,7 @@ CREATE TABLE `playerpets` (
   `spellid` int(10) unsigned NOT NULL DEFAULT '0',
   `petstate` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`ownerguid`,`petnumber`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-/*Data for the table `playerpets` */
-
-LOCK TABLES `playerpets` WRITE;
-
-UNLOCK TABLES;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Table structure for table `playerpetspells` */
 
@@ -949,13 +770,7 @@ CREATE TABLE `playerpetspells` (
   `flags` int(4) NOT NULL DEFAULT '0',
   KEY `a` (`ownerguid`),
   KEY `b` (`petnumber`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-/*Data for the table `playerpetspells` */
-
-LOCK TABLES `playerpetspells` WRITE;
-
-UNLOCK TABLES;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Table structure for table `playersummons` */
 
@@ -966,13 +781,7 @@ CREATE TABLE `playersummons` (
   `entry` int(11) unsigned NOT NULL DEFAULT '0',
   `name` varchar(64) NOT NULL,
   KEY `a` (`ownerguid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-/*Data for the table `playersummons` */
-
-LOCK TABLES `playersummons` WRITE;
-
-UNLOCK TABLES;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Table structure for table `playersummonspells` */
 
@@ -983,13 +792,7 @@ CREATE TABLE `playersummonspells` (
   `entryid` int(4) NOT NULL DEFAULT '0',
   `spellid` int(4) NOT NULL DEFAULT '0',
   KEY `a` (`ownerguid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-/*Data for the table `playersummonspells` */
-
-LOCK TABLES `playersummonspells` WRITE;
-
-UNLOCK TABLES;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Table structure for table `questlog` */
 
@@ -1010,13 +813,7 @@ CREATE TABLE `questlog` (
   `mob_kill4` bigint(20) NOT NULL DEFAULT '0',
   `completed` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`player_guid`,`quest_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=33067588 DEFAULT CHARSET=latin1;
-
-/*Data for the table `questlog` */
-
-LOCK TABLES `questlog` WRITE;
-
-UNLOCK TABLES;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Table structure for table `server_settings` */
 
@@ -1026,13 +823,7 @@ CREATE TABLE `server_settings` (
   `setting_id` varchar(200) NOT NULL,
   `setting_value` int(50) NOT NULL,
   PRIMARY KEY (`setting_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-/*Data for the table `server_settings` */
-
-LOCK TABLES `server_settings` WRITE;
-
-UNLOCK TABLES;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Table structure for table `social_friends` */
 
@@ -1045,13 +836,7 @@ CREATE TABLE `social_friends` (
   PRIMARY KEY (`character_guid`,`friend_guid`),
   KEY `a` (`character_guid`),
   KEY `b` (`friend_guid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-/*Data for the table `social_friends` */
-
-LOCK TABLES `social_friends` WRITE;
-
-UNLOCK TABLES;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Table structure for table `social_ignores` */
 
@@ -1062,13 +847,7 @@ CREATE TABLE `social_ignores` (
   `ignore_guid` int(30) NOT NULL,
   PRIMARY KEY (`character_guid`,`ignore_guid`),
   KEY `a` (`character_guid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-/*Data for the table `social_ignores` */
-
-LOCK TABLES `social_ignores` WRITE;
-
-UNLOCK TABLES;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tutorials` */
 
@@ -1085,13 +864,8 @@ CREATE TABLE `tutorials` (
   `tut6` bigint(20) unsigned NOT NULL DEFAULT '0',
   `tut7` bigint(20) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`playerId`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-/*Data for the table `tutorials` */
-
-LOCK TABLES `tutorials` WRITE;
-
-UNLOCK TABLES;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;

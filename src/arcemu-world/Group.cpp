@@ -850,7 +850,16 @@ void Group::SaveToDB()
 	//uint32 i = 0;
 	uint32 fillers = 8 - m_SubGroupCount;
 
-	ss << "REPLACE INTO groups VALUES("
+
+    ss << "DELETE FROM groups WHERE group_id = ";
+    ss << m_Id;
+    ss << ";";
+
+    CharacterDatabase.Execute( ss.str().c_str() );
+
+    ss.rdbuf()->str("");
+
+	ss << "INSERT INTO groups VALUES("
 		<< m_Id << ","
 		<< uint32(m_GroupType) << ","
 		<< uint32(m_SubGroupCount) << ","

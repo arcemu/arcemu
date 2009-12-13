@@ -301,7 +301,16 @@ void GameObject::Despawn(uint32 delay, uint32 respawntime)
 void GameObject::SaveToDB()
 {
 	std::stringstream ss;
-	ss << "REPLACE INTO gameobject_spawns VALUES("
+
+    ss << "DELETE FROM gameobject_spawns WHERE id = ";
+    ss << m_spawn->id;
+    ss << ";";
+
+    WorldDatabase.ExecuteNA( ss.str().c_str() );
+
+    ss.rdbuf()->str("");
+
+	ss << "INSERT INTO gameobject_spawns VALUES("
 		<< ((m_spawn == NULL) ? 0 : m_spawn->id) << ","
 		<< GetEntry() << ","
 		<< GetMapId() << ","
@@ -322,31 +331,6 @@ void GameObject::SaveToDB()
 		<< m_phase << ","
 		<< m_overrides << ")";
 	WorldDatabase.Execute(ss.str().c_str());
-
-  /*  std::stringstream ss;
-	if (!m_sqlid)
-		m_sqlid = objmgr.GenerateLowGuid(HIGHGUID_GAMEOBJECT);
-
-	ss << "DELETE FROM gameobjects WHERE id=" << m_sqlid;
-	sDatabase.Execute(ss.str().c_str());
-
-	ss.rdbuf()->str("");
-	ss << "INSERT INTO gameobjects VALUES ( "
-		<< m_sqlid << ", "
-		<< m_position.x << ", "
-		<< m_position.y << ", "
-		<< m_position.z << ", "
-		<< m_position.o << ", "
-		<< GetZoneId() << ", "
-		<< GetMapId() << ", '";
-
-	for( uint32 index = 0; index < m_valuesCount; index ++ )
-		ss << GetUInt32Value(index) << " ";
-
-	ss << "', ";
-	ss << GetEntry() << ", 0, 0)"; 
-
-	sDatabase.Execute( ss.str( ).c_str( ) );*/
 }
 
 void GameObject::SaveToFile(std::stringstream & name)
@@ -354,7 +338,7 @@ void GameObject::SaveToFile(std::stringstream & name)
 
 	std::stringstream ss;
 
-	ss << "REPLACE INTO gameobject_spawns VALUES("
+	ss << "INSERT INTO gameobject_spawns VALUES("
 		<< ((m_spawn == NULL) ? 0 : m_spawn->id) << ","
 		<< GetEntry() << ","
 		<< GetMapId() << ","

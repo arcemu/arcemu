@@ -385,7 +385,7 @@ SpellEntry* ObjectMgr::GetNextSpellRank( SpellEntry * sp, uint32 level )
 void ObjectMgr::LoadPlayersInfo()
 {
 	PlayerInfo * pn;
-	QueryResult *result = CharacterDatabase.Query("SELECT guid,name,race,class,level,gender,zoneId,timestamp,acct FROM characters");
+	QueryResult *result = CharacterDatabase.Query("SELECT guid,name,race,class,level,gender,zoneid,timestamp,acct FROM characters");
 	uint32 period, c;
 	if(result)
 	{
@@ -415,7 +415,7 @@ void ObjectMgr::LoadPlayersInfo()
 #endif
 			// Raid & heroic Instance IDs
 			// Must be done before entering world...
-			QueryResult *result2 = CharacterDatabase.Query("SELECT `instanceid`, `mode`, `mapid` FROM `instanceids` WHERE `playerguid` = %u", pn->guid);
+			QueryResult *result2 = CharacterDatabase.Query("SELECT instanceid, mode, mapid FROM instanceids WHERE playerguid = %u", pn->guid);
 			if(result2)
 			{
 				PlayerInstanceMap::iterator itr;
@@ -438,7 +438,7 @@ void ObjectMgr::LoadPlayersInfo()
 					//if(!sInstanceMgr.InstanceExists(mapId, pn->m_savedInstanceIds[mapId][mode]))
 					//{
 					//	pn->m_savedInstanceIds[mapId][mode] = 0;
-					//	CharacterDatabase.Execute("DELETE FROM `instanceids` WHERE `mapId` = %u AND `instanceId` = %u AND `mode` = %u", mapId, instanceId, mode);
+					//	CharacterDatabase.Execute("DELETE FROM instanceids WHERE mapId = %u AND instanceId = %u AND mode = %u", mapId, instanceId, mode);
 					//}
 
 					pn->savedInstanceIdsLock.Release();
@@ -457,7 +457,7 @@ void ObjectMgr::LoadPlayersInfo()
 				char temp[300];
 				snprintf(temp, 300, "%s__%X__", pn->name, pn->guid);
 				Log.Notice("ObjectMgr", "Renaming duplicate player %s to %s. (%u)", pn->name,temp,pn->guid);
-				CharacterDatabase.WaitExecute("UPDATE characters SET name = \"%s\", forced_rename_pending = 1 WHERE guid = %u",
+				CharacterDatabase.WaitExecute("UPDATE characters SET name = '%s', forced_rename_pending = 1 WHERE guid = %u",
 					CharacterDatabase.EscapeString(string(temp)).c_str(), pn->guid);
 
 				free(pn->name);
@@ -739,7 +739,7 @@ void ObjectMgr::DelinkPlayerCorpses(Player *pOwner)
 
 void ObjectMgr::LoadGMTickets()
 {
-	QueryResult *result = CharacterDatabase.Query( "SELECT `guid`, `playerGuid`, `name`, `level`, `map`, `posX`, `posY`, `posZ`, `message`, `timestamp`, `deleted`, `assignedto`, `comment` FROM gm_tickets WHERE deleted= 0" );
+	QueryResult *result = CharacterDatabase.Query( "SELECT ticketid, playerguid, name, level, map, posx, posy, posz, message, timestamp, deleted, assignedto, comment FROM gm_tickets WHERE deleted = false" );
 
 	GM_Ticket *ticket;
 	if(result == 0)
@@ -776,7 +776,7 @@ void ObjectMgr::LoadInstanceBossInfos()
 {
 	char *p, *q, *trash;
 	MapInfo * mapInfo;
-	QueryResult * result = WorldDatabase.Query("SELECT `mapid`, `creatureid`, `trash`, `trash_respawn_override` FROM `instance_bosses`");
+	QueryResult * result = WorldDatabase.Query("SELECT mapid, creatureid, trash, trash_respawn_override FROM instance_bosses");
 
 	if(result == NULL)
 		return;
@@ -831,7 +831,16 @@ void ObjectMgr::LoadInstanceBossInfos()
 void ObjectMgr::SaveGMTicket(GM_Ticket* ticket, QueryBuffer * buf)
 {
 	std::stringstream ss;
-	ss << "REPLACE INTO gm_tickets (`guid`, `playerGuid`, `name`, `level`, `map`, `posX`, `posY`, `posZ`, `message`, `timestamp`, `deleted`, `assignedto`, `comment`) VALUES(";
+
+    ss << "DELETE FROM gm_tickets WHERE ticketid = ";
+    ss << ticket->guid;
+    ss << ";";
+
+    CharacterDatabase.ExecuteNA("");
+
+    ss.rdbuf()->str("");
+
+	ss << "INSERT INTO gm_tickets (ticketid, playerguid, name, level, map, posx, posy, posz, message, timestamp, deleted, assignedto, comment) VALUES(";
 	ss << ticket->guid << ", ";
 	ss << ticket->playerGuid << ", '";
 	ss << CharacterDatabase.EscapeString(ticket->name) << "', ";
@@ -898,21 +907,21 @@ void ObjectMgr::SetHighestGuids()
 		delete result;
 	}
 
-	result = CharacterDatabase.Query("SELECT MAX(charterId) FROM charters");
+	result = CharacterDatabase.Query("SELECT MAX(charterid) FROM charters");
 	if(result)
 	{
 		m_hiCharterId = result->Fetch()[0].GetUInt32();
 		delete result;
 	}
 
-	result = CharacterDatabase.Query("SELECT MAX(guildId) FROM guilds");
+	result = CharacterDatabase.Query("SELECT MAX(guildid) FROM guilds");
 	if(result)
 	{
 		m_hiGuildId = result->Fetch()[0].GetUInt32();
 		delete result;
 	}
 
-	result = CharacterDatabase.Query("SELECT MAX(guid) FROM gm_tickets");
+	result = CharacterDatabase.Query("SELECT MAX(ticketid) FROM gm_tickets");
 	if(result)
 	{
 		m_ticketid = result->Fetch()[0].GetUInt64() + 1;
@@ -1666,7 +1675,7 @@ void ObjectMgr::LoadCorpses(MapMgr * mgr)
 {
 	Corpse *pCorpse = NULL;
 
-	QueryResult *result = CharacterDatabase.Query("SELECT * FROM corpses WHERE instanceId = %u", mgr->GetInstanceID());
+	QueryResult *result = CharacterDatabase.Query("SELECT * FROM corpses WHERE instanceid = %u", mgr->GetInstanceID());
 
 	if(result)
 	{
@@ -2383,7 +2392,7 @@ void ObjectMgr::SetVendorList(uint32 Entry, std::vector<CreatureItem>* list_)
 
 void ObjectMgr::LoadCreatureTimedEmotes()
 {
-	QueryResult *result = WorldDatabase.Query("SELECT * FROM creature_timed_emotes order by `rowid` asc");
+	QueryResult *result = WorldDatabase.Query("SELECT * FROM creature_timed_emotes order by rowid asc");
 	if(!result)return;
 
 	do
@@ -2719,14 +2728,18 @@ void Charter::Destroy()
 
 void Charter::SaveToDB()
 {
-	/*CharacterDatabase.Execute(
-		"REPLACE INTO charters VALUES(%u,%u,'%s',"I64FMTD",%u,%u,%u,%u,%u,%u,%u,%u,%u)",
-		CharterId,LeaderGuid,GuildName.c_str(),ItemGuid,Signatures[0],Signatures[1],
-		Signatures[2],Signatures[3],Signatures[4],Signatures[5],
-		Signatures[6],Signatures[7],Signatures[8]);*/
 	std::stringstream ss;
 	uint32 i;
-	ss << "REPLACE INTO charters VALUES(" << CharterId << "," << CharterType << "," << LeaderGuid << ",'" << GuildName << "'," << ItemGuid;
+
+    ss << "DELETE FROM charters WHERE guid = ";
+    ss << CharterId;
+    ss << ";";
+
+    CharacterDatabase.Execute( ss.str().c_str() );
+
+    ss.rdbuf()->str("");
+
+	ss << "INSERT INTO charters VALUES(" << CharterId << "," << CharterType << "," << LeaderGuid << ",'" << GuildName << "'," << ItemGuid;
 
 	for(i = 0; i < Slots; ++i)
 		ss << "," << Signatures[i];

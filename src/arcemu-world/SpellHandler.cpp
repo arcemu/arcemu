@@ -334,13 +334,13 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 	if(!GetPlayer()->HasSpell(spellId))
 	{
 		sCheatLog.writefromsession(this,"Cast spell %lu but doesn't have that spell.", spellId);
-		sLog.outDetail("WORLD: Spell isn't cast because player \"%s\" is cheating", GetPlayer()->GetName());
+		sLog.outDetail("WORLD: Spell isn't cast because player \'%s\' is cheating", GetPlayer()->GetName());
 		return;
 	}
 	if(spellInfo->Attributes & ATTRIBUTES_PASSIVE)
 	{
 		sCheatLog.writefromsession(this,"Cast passive spell %lu.", spellId);
-		sLog.outDetail("WORLD: Spell isn't cast because player \"%s\" is cheating", GetPlayer()->GetName());
+		sLog.outDetail("WORLD: Spell isn't cast because player \'%s\' is cheating", GetPlayer()->GetName());
 		return;
 	}
 

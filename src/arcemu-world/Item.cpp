@@ -346,10 +346,22 @@ void Item::SaveToDB( int8 containerslot, int8 slot, bool firstsave, QueryBuffer*
     uint64 CreatorGUID = GetCreatorGUID();
 
 	std::stringstream ss;
+    
+    ss << "DELETE FROM playeritems WHERE guid = " << GetLowGUID() << ";";
 
-	ss << "REPLACE INTO playeritems VALUES(";
+    if( firstsave )
+		CharacterDatabase.WaitExecute( ss.str().c_str() );
+	else
+        buf->AddQueryNA( ss.str().c_str() );
 
-    ss << m_owner->GetLowGUID() << ",";
+
+    ss.rdbuf()->str("");
+
+    uint64 ownerGUID = GetOwnerGUID();
+
+	ss << "INSERT INTO playeritems VALUES(";
+
+    ss << ( GUID_LOPART( ownerGUID ) ) << ",";
 	ss << GetLowGUID() << ",";
 	ss << GetEntry() << ",";
 	ss << wrapped_item_id << ",";
@@ -379,14 +391,6 @@ void Item::SaveToDB( int8 containerslot, int8 slot, bool firstsave, QueryBuffer*
 			if( remaining_duration < 0 )
 				remaining_duration = 0;
 
-			/*
-			if( !itr->second.RemoveAtLogout && (remaining_duration > 5 && itr->second.Slot != 2) || itr->second.Slot == 2)  // no point saving stuff with < 5 seconds... unless is perm enchant
-			{
-				ss << itr->second.Enchantment->Id << ",";
-				ss << remaining_duration << ",";
-				ss << itr->second.Slot << ";";
-			}
-			*/
 
 			if( itr->second.Enchantment && ( remaining_duration && remaining_duration > 5 || itr->second.Duration == 0 ) )
 			{
@@ -428,7 +432,7 @@ void Item::SaveToDB( int8 containerslot, int8 slot, bool firstsave, QueryBuffer*
 		if( buf == NULL )
 			CharacterDatabase.Execute( ss.str().c_str() );
 		else
-			buf->AddQueryStr( ss.str() );
+            buf->AddQueryNA( ss.str().c_str() );
 	}
 
 	m_isDirty = false;

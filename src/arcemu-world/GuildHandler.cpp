@@ -359,8 +359,13 @@ void WorldSession::HandleGuildRank(WorldPacket & recv_data)
 		recv_data >> pRank->iTabPermissions[i].iStacksPerDay;
 	}
 
-	CharacterDatabase.Execute("REPLACE INTO guild_ranks VALUES(%u, %u, \"%s\", %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d)",
-		_player->m_playerInfo->guild->GetGuildId(), pRank->iId, CharacterDatabase.EscapeString(newName).c_str(),
+    uint32 guildID = _player->m_playerInfo->guild->GetGuildId();
+    uint32 rankID = pRank->iId;
+
+    CharacterDatabase.Execute("DELETE FROM guild_ranks WHERE guildid = %u AND rankid = %u;", guildID, rankID );
+
+	CharacterDatabase.Execute("INSERT INTO guild_ranks VALUES(%u, %u, \'%s\', %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d)",
+		guildID, rankID, CharacterDatabase.EscapeString(newName).c_str(),
 		pRank->iRights, pRank->iGoldLimitPerDay,
 		pRank->iTabPermissions[0].iFlags, pRank->iTabPermissions[0].iStacksPerDay,
 		pRank->iTabPermissions[1].iFlags, pRank->iTabPermissions[1].iStacksPerDay,
@@ -1131,7 +1136,7 @@ void WorldSession::HandleGuildBankModifyTab(WorldPacket & recv_data)
 			if(ptmp)
 				free(ptmp);
 
-			CharacterDatabase.Execute("UPDATE guild_banktabs SET tabName = \"%s\" WHERE guildId = %u AND tabId = %u",
+			CharacterDatabase.Execute("UPDATE guild_banktabs SET tabName = \'%s\' WHERE guildId = %u AND tabId = %u",
 				CharacterDatabase.EscapeString(tabname).c_str(), _player->m_playerInfo->guild->GetGuildId(), (uint32)slot);
 		}
 	}
@@ -1158,7 +1163,7 @@ void WorldSession::HandleGuildBankModifyTab(WorldPacket & recv_data)
 			if(ptmp)
 				free(ptmp);
 
-			CharacterDatabase.Execute("UPDATE guild_banktabs SET tabIcon = \"%s\" WHERE guildId = %u AND tabId = %u",
+			CharacterDatabase.Execute("UPDATE guild_banktabs SET tabIcon = \'%s\' WHERE guildId = %u AND tabId = %u",
 				CharacterDatabase.EscapeString(tabicon).c_str(), _player->m_playerInfo->guild->GetGuildId(), (uint32)slot);
 		}
 	}
@@ -1294,7 +1299,9 @@ void WorldSession::HandleGuildBankDepositItem(WorldPacket & recv_data)
 		else
 		{
 			/* insert the new item */
-			CharacterDatabase.Execute("REPLACE INTO guild_bankitems VALUES(%u, %u, %u, %u)",
+            CharacterDatabase.Execute("DELETE FROM guild_bankitems WHERE guildId = %u AND tabId = %u AND slotId = %u",
+				pGuild->GetGuildId(), pSourceTab->iTabId, source_bankslot );
+			CharacterDatabase.Execute("INSERT INTO guild_bankitems VALUES(%u, %u, %u, %u)",
 				pGuild->GetGuildId(), (uint32)pSourceTab->iTabId, (uint32)source_bankslot, pDestItem->GetLowGUID());
 		}
 
@@ -1307,7 +1314,9 @@ void WorldSession::HandleGuildBankDepositItem(WorldPacket & recv_data)
 		else
 		{
 			/* insert the new item */
-			CharacterDatabase.Execute("REPLACE INTO guild_bankitems VALUES(%u, %u, %u, %u)",
+            CharacterDatabase.Execute("DELETE FROM guild_bankitems WHERE guildId = %u AND tabId = %u AND slotId = %u",
+				pGuild->GetGuildId(), pDestTab->iTabId, dest_bankslot );
+			CharacterDatabase.Execute("INSERT INTO guild_bankitems VALUES(%u, %u, %u, %u)",
 				pGuild->GetGuildId(), (uint32)pDestTab->iTabId, (uint32)dest_bankslot, pSourceItem->GetLowGUID());
 		}
 	}
@@ -1497,7 +1506,10 @@ void WorldSession::HandleGuildBankDepositItem(WorldPacket & recv_data)
 		{
 			/* there is a new item in that slot. */
 			pTab->pSlots[dest_bankslot] = pSourceItem;
-			CharacterDatabase.Execute("REPLACE INTO guild_bankitems VALUES(%u, %u, %u, %u)",
+
+            CharacterDatabase.Execute("DELETE FROM guild_bankitems WHERE guildId = %u AND tabId = %u AND slotId = %u",
+					pGuild->GetGuildId(), pTab->iTabId, dest_bankslot);
+			CharacterDatabase.Execute("INSERT INTO guild_bankitems VALUES(%u, %u, %u, %u)",
 				pGuild->GetGuildId(), (uint32)pTab->iTabId, (uint32)dest_bankslot, pSourceItem->GetLowGUID());
 
 			/* remove the item's association with the player */
@@ -1791,7 +1803,7 @@ void WorldSession::HandleSetGuildBankText( WorldPacket & recv_data )
 		data << uint16( 0x30 + tabid );
 		SendPacket( &data );
 
-		CharacterDatabase.Execute("UPDATE guild_banktabs SET tabInfo = \"%s\" WHERE guildId = %u AND tabId = %u",
+		CharacterDatabase.Execute("UPDATE guild_banktabs SET tabInfo = \'%s\' WHERE guildId = %u AND tabId = %u",
 			CharacterDatabase.EscapeString(text).c_str(), _player->m_playerInfo->guild->GetGuildId(), (uint32)tabid );
 	}
 }
