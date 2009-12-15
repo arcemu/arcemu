@@ -1,0 +1,1 @@
+ALTER TABLE `auctionhouse`     CHANGE `group` `ahgroup` INT(32) DEFAULT '0' NOT NULL;

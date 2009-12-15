@@ -33,7 +33,7 @@ void AuctionMgr::LoadAuctionHouses()
 		delete res;
 	}
 
-	res = WorldDatabase.Query("SELECT DISTINCT `group` FROM auctionhouse");
+	res = WorldDatabase.Query("SELECT DISTINCT ahgroup FROM auctionhouse");
 	AuctionHouse * ah;
 	map<uint32, AuctionHouse*> tempmap;
 	if(res)
@@ -53,7 +53,7 @@ void AuctionMgr::LoadAuctionHouses()
 		delete res;
 	}
 
-	res = WorldDatabase.Query("SELECT creature_entry, `group` FROM auctionhouse");
+	res = WorldDatabase.Query("SELECT creature_entry, ahgroup FROM auctionhouse");
 	if(res)
 	{
 		do 
