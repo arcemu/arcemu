@@ -616,7 +616,7 @@ const char* SpellAuraNames[TOTAL_SPELL_AURAS] = {
 	"SPELL_AURA_MOD_BASE_HEALTH",						// 282
 	"",													// 283
 	"",													// 284
-	"SPELL_AURA_MOD_ATTACK_POWER_OF_ARMOR"				// 285
+	"SPELL_AURA_MOD_ATTACK_POWER_OF_ARMOR",				// 285
 	"SPELL_AURA_ALLOW_CRIT_PERIODIC_DAMAGE",			// 286
 	"SPELL_AURA_DEFLECT_SPELLS",						// 287
 	"",													// 288
@@ -626,6 +626,18 @@ const char* SpellAuraNames[TOTAL_SPELL_AURAS] = {
 	"",													// 292
 	"",													// 293
 	"",													// 294
+	"",													// 295
+	"",													// 296
+	"",													// 297
+	"",													// 298
+	"",													// 299
+	"",													// 300
+	"",													// 301
+	"",													// 302
+	"",													// 303
+	"",													// 304
+	"",													// 305
+	"",													// 306
 };
 
 

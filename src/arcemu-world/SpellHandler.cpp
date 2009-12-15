@@ -76,9 +76,13 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 	}
 
     // Let's check if the item even has that spell
-    for( int i = 0; i < 5; ++i ){
+    for( int i = 0; i < 5; ++i )
+	{
         if( itemProto->Spells[i].Trigger == USE && itemProto->Spells[i].Id == spellId )
+		{
             found = true;
+			break;//found 1 already
+		}
     }
 
     // We didn't find the spell, so the player is probably trying to cheat

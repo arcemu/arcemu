@@ -352,7 +352,12 @@ void Item::SaveToDB( int8 containerslot, int8 slot, bool firstsave, QueryBuffer*
     if( firstsave )
 		CharacterDatabase.WaitExecute( ss.str().c_str() );
 	else
-        buf->AddQueryNA( ss.str().c_str() );
+	{
+		if( buf == NULL )
+			CharacterDatabase.Execute( ss.str().c_str() );
+		else
+			buf->AddQueryNA( ss.str().c_str() );
+	}
 
 
     ss.rdbuf()->str("");
