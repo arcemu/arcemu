@@ -3581,7 +3581,7 @@ uint8 Spell::CanCast(bool tolerate)
 			if (i_caster->GetProto()->Spells[0].Charges != 0)
 			{
 				// check if the item has the required charges
-				if (i_caster->GetUInt32Value(ITEM_FIELD_SPELL_CHARGES) == 0)
+                if ( i_caster->GetCharges( 0 ) == 0)
 					return SPELL_FAILED_NO_CHARGES_REMAIN;
 			}
 		}
@@ -4743,7 +4743,7 @@ void Spell::RemoveItems()
 		{
 			for ( uint32 x = 0; x < 5; x++ )
 			{
-				int32 charges = (int32)i_caster->GetUInt32Value( ITEM_FIELD_SPELL_CHARGES + x );
+				int32 charges = static_cast< int32 >( i_caster->GetCharges( x ) );
 				if ( charges == -1 ) // if expendable item && item has no charges remaining -> delete item
 				{
 					//I bet this crashed happened due to some script. Items without owners ?
@@ -4754,7 +4754,11 @@ void Spell::RemoveItems()
 				}
 				else if ( charges > 0 || charges < -1 ) // remove 1 charge
 				{
-					i_caster->ModSignedInt32Value( ITEM_FIELD_SPELL_CHARGES + x, ( charges < 0 ) ? +1 : -1 ); // if charges < 0 then -1 else +1
+                    if( charges < 0 )
+                        i_caster->ModCharges( x, 1 );
+                    else
+                        i_caster->ModCharges( x, -1 );
+
 					i_caster->m_isDirty = true;
 					break;
 				}
@@ -4805,9 +4809,9 @@ int32 Spell::CalculateEffect(uint32 i,Unit *target)
 		basePoints = forced_basepoints[i];
 
 	/* Random suffix value calculation */
-	if(i_caster && (int32(i_caster->GetUInt32Value(ITEM_FIELD_RANDOM_PROPERTIES_ID)) < 0))
+    if(i_caster && (int32(i_caster->GetItemRandomPropertyId() ) < 0))
 	{
-        ItemRandomSuffixEntry * si = dbcItemRandomSuffix.LookupEntry(abs(int(i_caster->GetUInt32Value(ITEM_FIELD_RANDOM_PROPERTIES_ID))));
+        ItemRandomSuffixEntry * si = dbcItemRandomSuffix.LookupEntry( abs( int( i_caster->GetItemRandomPropertyId() ) ) );
 		EnchantEntry * ent;
 		uint32 j,k;
 

@@ -4089,7 +4089,7 @@ void Player::_ApplyItemMods(Item* item, int16 slot, bool apply, bool justdrokedo
 	ItemPrototype* proto = item->GetProto();
 
 	//fast check to skip mod applying if the item doesnt meat the requirements.
-	if( !item->IsContainer() && item->GetUInt32Value( ITEM_FIELD_DURABILITY ) == 0 && item->GetUInt32Value( ITEM_FIELD_MAXDURABILITY ) && justdrokedown == false )
+	if( !item->IsContainer() && item->GetDurability() == 0 && item->GetDurabilityMax() && justdrokedown == false )
 	{
 		return;
 	}
@@ -4990,8 +4990,8 @@ void Player::DeathDurabilityLoss(double percent)
 	{
 		if((pItem = GetItemInterface()->GetInventoryItem(i)) != 0)
 		{
-			pMaxDurability = pItem->GetUInt32Value(ITEM_FIELD_MAXDURABILITY);
-			pDurability =  pItem->GetUInt32Value(ITEM_FIELD_DURABILITY);
+			pMaxDurability = pItem->GetDurabilityMax();
+			pDurability =  pItem->GetDurability();
 			if(pDurability)
 			{
 				pNewDurability = (uint32)(pMaxDurability*percent);
@@ -5004,7 +5004,7 @@ void Player::DeathDurabilityLoss(double percent)
 					ApplyItemMods(pItem, i, false, true);
 				}
 
-				pItem->SetUInt32Value(ITEM_FIELD_DURABILITY,(uint32)pNewDurability);
+				pItem->SetDurability( static_cast< uint32 >( pNewDurability ) );
 				pItem->m_isDirty = true;
 			}
 		}
@@ -8031,33 +8031,33 @@ void Player::SendTradeUpdate()
 
 			data << uint8( Index );
 
-			data << pProto->ItemId;
-			data << pProto->DisplayInfoID;
-			data << pItem->GetStackCount();	// Amount		   OK
+			data << uint32( pProto->ItemId );
+			data << uint32( pProto->DisplayInfoID );
+			data << uint32( pItem->GetStackCount() );	// Amount		   OK
 
 			// Enchantment stuff
-			data << uint32(0);											// unknown
-            data << pItem->GetGiftCreatorGUID();	// gift creator	 OK
-			data << pItem->GetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1 );	// Item Enchantment OK
+			data << uint32( 0 );											// unknown
+            data << uint64( pItem->GetGiftCreatorGUID() );	// gift creator	 OK
+            data << uint32( pItem->GetEnchantmentId( 0 ) );	// Item Enchantment OK
 			for( uint8 i = 2; i < 5; i++ )								// Gem enchantments
 			{
 				if( pItem->GetEnchantment(i) != NULL && pItem->GetEnchantment(i)->Enchantment != NULL )
-					data << pItem->GetEnchantment(i)->Enchantment->Id;
+					data << uint32( pItem->GetEnchantment( i )->Enchantment->Id );
 				else
 					data << uint32( 0 );
 			}
-            data << pItem->GetCreatorGUID();		// item creator	 OK
-			data << pItem->GetUInt32Value( ITEM_FIELD_SPELL_CHARGES );	// Spell Charges	OK
+            data << uint64( pItem->GetCreatorGUID() );		// item creator	 OK
+            data << uint32( pItem->GetCharges( 0 ) );	// Spell Charges	OK
 
 			data << uint32( 0 );											// seems like time stamp or something like that
-			data << pItem->GetUInt32Value( ITEM_FIELD_RANDOM_PROPERTIES_ID );
-			data << pProto->LockId;										// lock ID		  OK
-			data << pItem->GetUInt32Value( ITEM_FIELD_MAXDURABILITY );
-			data << pItem->GetUInt32Value( ITEM_FIELD_DURABILITY );
+            data << uint32( pItem->GetItemRandomPropertyId() );
+			data << uint32( pProto->LockId );										// lock ID		  OK
+            data << uint32( pItem->GetDurabilityMax() );
+            data << uint32( pItem->GetDurability() );
 		}
 	}
 	data.resize( 21 + count * 73 );
-	pTarget->GetSession()->SendPacket(&data);
+	pTarget->SendPacket(&data);
 }
 
 void Player::RequestDuel(Player *pTarget)

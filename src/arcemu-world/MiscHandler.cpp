@@ -1897,7 +1897,7 @@ void WorldSession::HandleInspectOpcode( WorldPacket & recv_data )
 
 		for(uint32 Slot = 0; Slot < 12; ++Slot) // In UpdateFields.h we have ITEM_FIELD_ENCHANTMENT_1_1 to ITEM_FIELD_ENCHANTMENT_12_1, iterate on them...
 		{
-			uint32 enchantId = item->GetUInt32Value(Slot * 3 + ITEM_FIELD_ENCHANTMENT_1_1); // This calculation has to be in sync with Item.cpp line ~614, at the moment it is:    uint32 EnchantBase = Slot * 3 + ITEM_FIELD_ENCHANTMENT_1_1;
+            uint32 enchantId = item->GetEnchantmentId( Slot ); // This calculation has to be in sync with Item.cpp line ~614, at the moment it is:    uint32 EnchantBase = Slot * 3 + ITEM_FIELD_ENCHANTMENT_1_1;
 
 			if(!enchantId)
 				continue;
@@ -2321,14 +2321,14 @@ void WorldSession::HandleOpenItemOpcode(WorldPacket &recv_data)
 		pItem->SetProto(it);
 
 		if(it->Bonding==ITEM_BIND_ON_PICKUP)
-			pItem->SetUInt32Value(ITEM_FIELD_FLAGS,1);
+			pItem->SoulBind();
 		else
-			pItem->SetUInt32Value(ITEM_FIELD_FLAGS,0);
+            pItem->ClearFlags();
 
 		if(it->MaxDurability)
 		{
-			pItem->SetUInt32Value(ITEM_FIELD_DURABILITY,it->MaxDurability);
-			pItem->SetUInt32Value(ITEM_FIELD_MAXDURABILITY,it->MaxDurability);
+			pItem->SetDurability( it->MaxDurability );
+            pItem->SetDurabilityMax( it->MaxDurability );
 		}
 
 		pItem->m_isDirty=true;

@@ -7960,6 +7960,9 @@ void Unit::UpdatePowerAmm()
 
 void Unit::RemoveGuardianRef( Creature* g )
 {
+
+    assert( g != NULL );
+
 	// just remove from the set	
 	std::set< Creature* >::iterator itr = m_Guardians.find( g );
 	if( itr != m_Guardians.end() )

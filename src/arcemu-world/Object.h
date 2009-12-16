@@ -152,7 +152,7 @@ public:
 
 	const WoWGuid& GetNewGUID() const { return m_wowGuid; }
 	uint32 GetEntry(){ return m_uint32Values[ OBJECT_FIELD_ENTRY ]; }
-    void SetEntry( uint32 value ){ m_uint32Values[ OBJECT_FIELD_ENTRY ] = value; } 
+    void SetEntry( uint32 value ){ SetUInt32Value( OBJECT_FIELD_ENTRY, value ); } 
     
     float GetScale(){ return m_floatValues[ OBJECT_FIELD_SCALE_X ]; }
     void SetScale( float scale ){ SetFloatValue( OBJECT_FIELD_SCALE_X, scale ); };

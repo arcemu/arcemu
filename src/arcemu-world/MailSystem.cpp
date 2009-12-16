@@ -158,21 +158,27 @@ bool MailMessage::AddMessageDataToPacket(WorldPacket& data)
 
 			for( j = 0; j < 6; ++j )
 			{
+                /* Don't remove this please - dfighter
 				data << pItem->GetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1 + ( j * 3 ) );
 				data << pItem->GetUInt32Value( ITEM_FIELD_ENCHANTMENT_2_1 + ( j * 3 ) );
 				data << pItem->GetUInt32Value( ITEM_FIELD_ENCHANTMENT_3_1 + ( j * 3 ) );
+                */
+
+                data << uint32( pItem->GetEnchantmentId( j ) );
+                data << uint32( pItem->GetEnchantmentId( j + 1 * 3 ) );
+                data << uint32( pItem->GetEnchantmentId( j + 2 * 3 ) );
 			}
 
-			data << pItem->GetUInt32Value( ITEM_FIELD_RANDOM_PROPERTIES_ID );
-			if( ( (int32)pItem->GetUInt32Value( ITEM_FIELD_RANDOM_PROPERTIES_ID ) ) < 0 )
-                data << pItem->GetItemRandomSuffixFactor();
+            data << uint32( pItem->GetItemRandomPropertyId() );
+            if( ( (int32)pItem->GetItemRandomPropertyId() ) < 0 )
+                data << uint32( pItem->GetItemRandomSuffixFactor() );
 			else
 				data << uint32( 0 );
 
 			data << uint8( pItem->GetStackCount() );
 			data << uint32( pItem->GetChargesLeft() );
-			data << pItem->GetUInt32Value( ITEM_FIELD_MAXDURABILITY );
-			data << pItem->GetUInt32Value( ITEM_FIELD_DURABILITY );
+            data << uint32( pItem->GetDurabilityMax() );
+            data << uint32( pItem->GetDurability() );
 			data << uint32( 0 );
 			data << uint32( 0 );
 			data << uint32( 0 );
@@ -264,7 +270,7 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 		recv_data >> itemguid;
 
 		pItem = _player->GetItemInterface()->GetItemByGUID( itemguid );
-		if( pItem == NULL || pItem->IsSoulbound() || pItem->HasFlag( ITEM_FIELD_FLAGS, ITEM_FLAG_CONJURED ) )
+        if( pItem == NULL || pItem->IsSoulbound() || pItem->IsConjured() )
 		{
 			SendMailError( MAIL_ERR_INTERNAL_ERROR );
 			return;

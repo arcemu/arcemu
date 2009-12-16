@@ -126,13 +126,13 @@ void Item::Create( uint32 itemid, Player* owner )
 
 	ASSERT( m_itemProto );
 	 
-	SetUInt32Value( ITEM_FIELD_SPELL_CHARGES, m_itemProto->Spells[0].Charges );
-	SetUInt32Value( ITEM_FIELD_SPELL_CHARGES+1, m_itemProto->Spells[1].Charges );
-	SetUInt32Value( ITEM_FIELD_SPELL_CHARGES+2, m_itemProto->Spells[2].Charges );
-	SetUInt32Value( ITEM_FIELD_SPELL_CHARGES+3, m_itemProto->Spells[3].Charges );
-	SetUInt32Value( ITEM_FIELD_SPELL_CHARGES+4, m_itemProto->Spells[4].Charges );
-	SetUInt32Value( ITEM_FIELD_MAXDURABILITY, m_itemProto->MaxDurability );
-	SetUInt32Value( ITEM_FIELD_DURABILITY, m_itemProto->MaxDurability );
+	SetCharges( 0, m_itemProto->Spells[0].Charges );
+	SetCharges( 1, m_itemProto->Spells[1].Charges );
+	SetCharges( 2, m_itemProto->Spells[2].Charges );
+	SetCharges( 3, m_itemProto->Spells[3].Charges );
+	SetCharges( 4, m_itemProto->Spells[4].Charges );
+    SetDurability( m_itemProto->MaxDurability );
+	SetDurabilityMax( m_itemProto->MaxDurability );
 
 
 	m_owner = owner;
@@ -175,7 +175,7 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light )
 	{
 		if( m_itemProto->Spells[x].Id )
 		{
-			SetUInt32Value( ITEM_FIELD_SPELL_CHARGES + x , fields[7].GetUInt32() );
+            SetCharges( x, fields[ 7 ].GetUInt32() );
 			break;
 		}
 	}
@@ -191,8 +191,8 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light )
 
 	SetUInt32Value( ITEM_FIELD_ITEM_TEXT_ID, fields[11].GetUInt32() );
 
-	SetUInt32Value( ITEM_FIELD_MAXDURABILITY, m_itemProto->MaxDurability );
-	SetUInt32Value( ITEM_FIELD_DURABILITY, fields[12].GetUInt32() );
+	SetDurabilityMax( m_itemProto->MaxDurability );
+	SetDurability( fields[12].GetUInt32() );
 
 	if( light )
 		return;
@@ -252,38 +252,38 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light )
 	// Charter stuff
 	if( GetEntry() == ITEM_ENTRY_GUILD_CHARTER)
 	{
-		SetUInt32Value( ITEM_FIELD_FLAGS, 1 );
+        SoulBind();
 		SetStackCount(  1 );
-		SetUInt32Value( ITEM_FIELD_PROPERTY_SEED, 57813883 );
+		SetItemRandomSuffixFactor( 57813883 );
 		if( plr != NULL && plr->m_charters[CHARTER_TYPE_GUILD] )
-			SetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1, plr->m_charters[CHARTER_TYPE_GUILD]->GetID() );
+			SetEnchantmentId( 0, plr->m_charters[CHARTER_TYPE_GUILD]->GetID() );
 	}
 
 	if( GetEntry() == ARENA_TEAM_CHARTER_2v2 )
 	{
-		SetUInt32Value( ITEM_FIELD_FLAGS, 1 );
+        SoulBind();
 		SetStackCount(  1 );
-		SetUInt32Value( ITEM_FIELD_PROPERTY_SEED, 57813883 );
+		SetItemRandomSuffixFactor( 57813883 );
 		if( plr != NULL && plr->m_charters[CHARTER_TYPE_ARENA_2V2] )
-			SetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1, plr->m_charters[CHARTER_TYPE_ARENA_2V2]->GetID() );
+			SetEnchantmentId( 0, plr->m_charters[CHARTER_TYPE_ARENA_2V2]->GetID() );
 	}
 
 	if( GetEntry() == ARENA_TEAM_CHARTER_3v3 )
 	{
-		SetUInt32Value( ITEM_FIELD_FLAGS, 1 );
+        SoulBind();
 		SetStackCount(  1 );
-		SetUInt32Value( ITEM_FIELD_PROPERTY_SEED, 57813883 );
+		SetItemRandomSuffixFactor( 57813883 );
 		if( plr != NULL && plr->m_charters[CHARTER_TYPE_ARENA_3V3] )
-			SetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1, plr->m_charters[CHARTER_TYPE_ARENA_3V3]->GetID() );
+			SetEnchantmentId( 0,  plr->m_charters[CHARTER_TYPE_ARENA_3V3]->GetID() );
 	}
 
 	if( GetEntry() == ARENA_TEAM_CHARTER_5v5 )
 	{
-		SetUInt32Value( ITEM_FIELD_FLAGS, 1 );
+        SoulBind();
 		SetStackCount(  1 );
-		SetUInt32Value( ITEM_FIELD_PROPERTY_SEED, 57813883 );
+		SetItemRandomSuffixFactor(  57813883 );
 		if( plr != NULL && plr->m_charters[CHARTER_TYPE_ARENA_5V5] )
-			SetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1, plr->m_charters[CHARTER_TYPE_ARENA_5V5]->GetID() );
+			SetEnchantmentId( 0,  plr->m_charters[CHARTER_TYPE_ARENA_5V5]->GetID() );
 	}
 }
 
@@ -375,10 +375,10 @@ void Item::SaveToDB( int8 containerslot, int8 slot, bool firstsave, QueryBuffer*
 
 	ss << GetStackCount() << ",";
 	ss << GetChargesLeft() << ",";
-	ss << GetUInt32Value(ITEM_FIELD_FLAGS) << ",";
+	ss << uint32( m_uint32Values[ ITEM_FIELD_FLAGS ] ) << ",";
 	ss << random_prop << ", " << random_suffix << ", ";
 	ss << GetUInt32Value(ITEM_FIELD_ITEM_TEXT_ID) << ",";
-	ss << GetUInt32Value(ITEM_FIELD_DURABILITY) << ",";
+	ss << GetDurability() << ",";
 	ss << static_cast<int>(containerslot) << ",";
 	ss << static_cast<int>(slot) << ",'";
 
@@ -1304,7 +1304,7 @@ uint32 Item::CountGemsWithLimitId(uint32 LimitId)
 void Item::EventRemoveItem(){
     assert( this->GetOwner() != NULL );
 
-    this->GetOwner()->GetItemInterface()->SafeFullRemoveItemByGuid( this->GetGUID() );
+    m_owner->GetItemInterface()->SafeFullRemoveItemByGuid( this->GetGUID() );
 }
 
 void Item::SendDurationUpdate(){
@@ -1324,7 +1324,7 @@ void Item::SendDurationUpdate(){
     WorldPacket durationupdate( SMSG_ITEM_TIME_UPDATE, 12 );
     durationupdate << uint64( GetGUID() );
     durationupdate << uint32( GetItemExpireTime() - UNIXTIME );
-    this->GetOwner()->GetSession()->SendPacket( &durationupdate );
+    m_owner->SendPacket( &durationupdate );
 
 }
 

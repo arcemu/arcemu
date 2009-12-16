@@ -2304,9 +2304,9 @@ void WorldSession::HandleWrapItemOpcode( WorldPacket& recv_data )
 
 	// set the giftwrapper fields
     dst->SetGiftCreatorGUID( _player->GetGUID() );
-	dst->SetUInt32Value( ITEM_FIELD_DURABILITY, 0 );
-	dst->SetUInt32Value( ITEM_FIELD_MAXDURABILITY, 0 );
-	dst->SetUInt32Value( ITEM_FIELD_FLAGS, 0x8008 );
+	dst->SetDurability( 0 );
+	dst->SetDurabilityMax( 0 );
+    dst->Wrap();
 
 	// save it
 	dst->m_isDirty = true;

@@ -3576,7 +3576,7 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 					{
 						v = lock->minlockskill[i];
 						itemTarget->locked = false;
-						itemTarget->SetFlag(ITEM_FIELD_FLAGS,4); // unlock
+                        itemTarget->UnLock();
 						DetermineSkillUp(SKILL_LOCKPICKING,v/5);
 						break;
 					}
@@ -3762,9 +3762,7 @@ void Spell::SpellEffectTransformItem(uint32 i)
 
 	//Save durability of the old item
 	Player * owner=i_caster->GetOwner();
-	uint32 dur= i_caster->GetUInt32Value(ITEM_FIELD_DURABILITY);
-	//	int8 slot=owner->GetItemInterface()->GetInventorySlotByGuid(i_caster->GetGUID());
-	//	uint32 invt=i_caster->GetProto()->InventoryType;
+	uint32 dur= i_caster->GetDurability();
 
 	result  = owner->GetItemInterface()->SafeFullRemoveItemByGuid(i_caster->GetGUID());
 	if(!result)

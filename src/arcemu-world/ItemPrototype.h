@@ -485,7 +485,7 @@ enum ITEM_FLAG
 	ITEM_FLAG_SOULBOUND    = 0x1,      // not used in proto
 	ITEM_FLAG_CONJURED     = 0x2,
 	ITEM_FLAG_LOOTABLE     = 0x4,
-	ITEM_FLAG_UNKNOWN_04   = 0x8,      // not used in proto
+	ITEM_FLAG_WRAPPED      = 0x8,      // not used in proto
 	ITEM_FLAG_UNKNOWN_05   = 0x10,     // many equipable items and bags
 	ITEM_FLAG_UNKNOWN_06   = 0x20,     // totems
 	ITEM_FLAG_UNKNOWN_07   = 0x40,     // many consumables

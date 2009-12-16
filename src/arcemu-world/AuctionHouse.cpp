@@ -255,13 +255,13 @@ void Auction::AddToPacket(WorldPacket & data)
 
 	for (uint32 i = 0; i < 6; i++)
 	{
-		data << pItem->GetUInt32Value(ITEM_FIELD_ENCHANTMENT_1_1 + (3 * i));   // Enchantment ID
-		data << uint32(pItem->GetEnchantmentApplytime(i));						 // Unknown / maybe ApplyTime
-		data << pItem->GetUInt32Value(ITEM_FIELD_SPELL_CHARGES + i);	   // Charges
+        data << uint32( pItem->GetEnchantmentId( i ) );   // Enchantment ID
+		data << uint32( pItem->GetEnchantmentApplytime( i ) );						 // Unknown / maybe ApplyTime
+        data << uint32( pItem->GetCharges( i ) );  // charges
 	}
 
-	data << pItem->GetUInt32Value(ITEM_FIELD_RANDOM_PROPERTIES_ID);		 // -ItemRandomSuffix / random property	 : If the value is negative its ItemRandomSuffix if its possitive its RandomItemProperty
-	data << pItem->GetUInt32Value(ITEM_FIELD_PROPERTY_SEED);			  // when ItemRandomSuffix is used this is the modifier
+    data << pItem->GetItemRandomPropertyId();		 // -ItemRandomSuffix / random property	 : If the value is negative its ItemRandomSuffix if its possitive its RandomItemProperty
+    data << pItem->GetItemRandomSuffixFactor();			  // when ItemRandomSuffix is used this is the modifier
 
 	/******************** ItemRandomSuffix***************************
 	* For what I have seen ItemRandomSuffix is like RandomItemProperty
@@ -578,7 +578,7 @@ void WorldSession::HandleAuctionSellItem( WorldPacket & recv_data )
 
 	// Get item
 	Item * pItem = _player->GetItemInterface()->GetItemByGUID(item);
-	if( !pItem || pItem->IsSoulbound() || pItem->HasFlag(ITEM_FIELD_FLAGS, ITEM_FLAG_CONJURED ) )
+    if( !pItem || pItem->IsSoulbound() || pItem->IsConjured() )
 	{
 		WorldPacket data(SMSG_AUCTION_COMMAND_RESULT, 8);
 		data << uint32(0);

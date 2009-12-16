@@ -278,7 +278,6 @@ AddItemResult ItemInterface::m_AddItem(Item *item, int8 ContainerSlot, int16 slo
 
 				if( m_pOwner->IsInWorld() && !item->IsInWorld())
 				{
-					//item->AddToWorld();
 					item->PushToWorld(m_pOwner->GetMapMgr());
 					ByteBuffer buf(2500);
 					uint32 count = item->BuildCreateUpdateBlockForPlayer( &buf, m_pOwner );
@@ -325,14 +324,7 @@ AddItemResult ItemInterface::m_AddItem(Item *item, int8 ContainerSlot, int16 slo
 		else
 		{
 			m_pOwner->SetUInt32Value( VisibleBase, item->GetEntry()  );
-			m_pOwner->SetUInt32Value( VisibleBase + 1, item->GetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1 ) );
-/*			m_pOwner->SetUInt32Value( VisibleBase + 2, item->GetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1 + 3 ) );
-			m_pOwner->SetUInt32Value( VisibleBase + 3, item->GetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1 + 6 ) );
-			m_pOwner->SetUInt32Value( VisibleBase + 4, item->GetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1 + 9 ) );
-			m_pOwner->SetUInt32Value( VisibleBase + 5, item->GetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1 + 12 ) );
-			m_pOwner->SetUInt32Value( VisibleBase + 6, item->GetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1 + 15 ) );
-			m_pOwner->SetUInt32Value( VisibleBase + 7, item->GetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1 + 18 ) );
-			m_pOwner->SetUInt32Value( VisibleBase + 13, item->GetUInt32Value( ITEM_FIELD_RANDOM_PROPERTIES_ID ) );*/
+            m_pOwner->SetUInt32Value( VisibleBase + 1, item->GetEnchantmentId( 0 ) );
 		}
 	}
 
@@ -369,15 +361,17 @@ AddItemResult ItemInterface::m_AddItem(Item *item, int8 ContainerSlot, int16 slo
 
     if( item->GetProto()->ExistingDuration != 0 ){
         if( item->GetItemExpireTime() == 0 ){
-            sEventMgr.AddEvent( item, &Item::EventRemoveItem, EVENT_REMOVE_ITEM, item->GetProto()->ExistingDuration * 1000 , 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT | EVENT_FLAG_DELETES_OBJECT);
             item->SetItemExpireTime( UNIXTIME + item->GetProto()->ExistingDuration );
+            item->SetDuration( item->GetProto()->ExistingDuration );
+            sEventMgr.AddEvent( item, &Item::EventRemoveItem, EVENT_REMOVE_ITEM, item->GetProto()->ExistingDuration * 1000 , 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT | EVENT_FLAG_DELETES_OBJECT);
         }else{
+            item->SetDuration( static_cast< uint32 >( item->GetItemExpireTime() - UNIXTIME ) );
             sEventMgr.AddEvent( item, &Item::EventRemoveItem, EVENT_REMOVE_ITEM,  ( item->GetItemExpireTime() - UNIXTIME ) * 1000 , 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT | EVENT_FLAG_DELETES_OBJECT);
         }
         
         // if we are already in the world we will send the durationupdate now, so we can see the remaining duration in the client
         // otherwise we will send the updates in Player::Onpushtoworld anyways
-        if( this->m_pOwner->IsInWorld() )
+        if( m_pOwner->IsInWorld() )
             sEventMgr.AddEvent( item, &Item::SendDurationUpdate, EVENT_SEND_PACKET_TO_PLAYER_AFTER_LOGIN, 0, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
     }
 
@@ -3202,14 +3196,7 @@ void ItemInterface::SwapItemSlots(int8 srcslot, int8 dstslot)
 			{
 				int VisibleBase = PLAYER_VISIBLE_ITEM_1_ENTRYID + (srcslot * PLAYER_VISIBLE_ITEM_LENGTH);
 				m_pOwner->SetUInt32Value( VisibleBase, m_pItems[(int)srcslot]->GetEntry() );
-				m_pOwner->SetUInt32Value( VisibleBase + 1, m_pItems[(int)srcslot]->GetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1 ) );
-/*				m_pOwner->SetUInt32Value( VisibleBase + 2, m_pItems[(int)srcslot]->GetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1 + 3 ) );
-				m_pOwner->SetUInt32Value( VisibleBase + 3, m_pItems[(int)srcslot]->GetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1 + 6 ) );
-				m_pOwner->SetUInt32Value( VisibleBase + 4, m_pItems[(int)srcslot]->GetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1 + 9 ) );
-				m_pOwner->SetUInt32Value( VisibleBase + 5, m_pItems[(int)srcslot]->GetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1 + 12 ) );
-				m_pOwner->SetUInt32Value( VisibleBase + 6, m_pItems[(int)srcslot]->GetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1 + 15 ) );
-				m_pOwner->SetUInt32Value( VisibleBase + 7, m_pItems[(int)srcslot]->GetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1 + 18 ) );
-				m_pOwner->SetUInt32Value( VisibleBase + 8, m_pItems[(int)srcslot]->GetUInt32Value( ITEM_FIELD_RANDOM_PROPERTIES_ID ) );*/
+                m_pOwner->SetUInt32Value( VisibleBase + 1, m_pItems[(int)srcslot]->GetEnchantmentId( 0 ) );
 			}
 
 			// handle bind on equip
@@ -3244,14 +3231,7 @@ void ItemInterface::SwapItemSlots(int8 srcslot, int8 dstslot)
 			{
 				int VisibleBase = PLAYER_VISIBLE_ITEM_1_ENTRYID + (dstslot * PLAYER_VISIBLE_ITEM_LENGTH);
 				m_pOwner->SetUInt32Value( VisibleBase, m_pItems[(int)dstslot]->GetEntry() );
-				m_pOwner->SetUInt32Value( VisibleBase + 1, m_pItems[(int)dstslot]->GetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1 ) );
-/*				m_pOwner->SetUInt32Value( VisibleBase + 2, m_pItems[(int)dstslot]->GetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1 + 3 ) );
-				m_pOwner->SetUInt32Value( VisibleBase + 3, m_pItems[(int)dstslot]->GetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1 + 6 ) );
-				m_pOwner->SetUInt32Value( VisibleBase + 4, m_pItems[(int)dstslot]->GetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1 + 9 ) );
-				m_pOwner->SetUInt32Value( VisibleBase + 5, m_pItems[(int)dstslot]->GetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1 + 12 ) );
-				m_pOwner->SetUInt32Value( VisibleBase + 6, m_pItems[(int)dstslot]->GetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1 + 15 ) );
-				m_pOwner->SetUInt32Value( VisibleBase + 7, m_pItems[(int)dstslot]->GetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1 + 18 ) );
-				m_pOwner->SetUInt32Value( VisibleBase + 8, m_pItems[(int)dstslot]->GetUInt32Value( ITEM_FIELD_RANDOM_PROPERTIES_ID ) );*/
+                m_pOwner->SetUInt32Value( VisibleBase + 1, m_pItems[(int)dstslot]->GetEnchantmentId( 0 ) );
 			}
 
 			// handle bind on equip
@@ -3679,14 +3659,15 @@ void ItemInterface::ReduceItemDurability()
 		Item* pItem = GetInventoryItem( INVENTORY_SLOT_NOT_SET, static_cast<int16>( slot ) );
 		if( pItem != NULL )
 		{
-			if( pItem->GetUInt32Value( ITEM_FIELD_DURABILITY) && pItem->GetUInt32Value( ITEM_FIELD_MAXDURABILITY ) )
+            if( pItem->GetDurability() && pItem->GetDurabilityMax() )
 			{
-				pItem->SetUInt32Value( ITEM_FIELD_DURABILITY, ( pItem->GetUInt32Value( ITEM_FIELD_DURABILITY ) - 1 ) );
+                pItem->SetDurability( pItem->GetDurabilityMax() - 1  );
 				pItem->m_isDirty = true;
 				//check final durability
-				if( !pItem->GetUInt32Value( ITEM_FIELD_DURABILITY ) ) //no dur left
+                if( !pItem->GetDurability() ) //no dur left
 				{
-					this->GetOwner()->ApplyItemMods( pItem, static_cast<int16>( slot ), false, true );
+					m_pOwner->ApplyItemMods( pItem, static_cast<int16>( slot ), false, true );
+                    
 				}
 			}
 		}

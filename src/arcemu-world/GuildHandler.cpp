@@ -624,9 +624,9 @@ void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 			c->ItemGuid = i->GetGUID();
 
 			i->SetStackCount(  1);
-			i->SetUInt32Value(ITEM_FIELD_FLAGS, 1);
-			i->SetUInt32Value(ITEM_FIELD_ENCHANTMENT_1_1, c->GetID());
-			i->SetUInt32Value(ITEM_FIELD_PROPERTY_SEED, 57813883);
+            i->SoulBind();
+            i->SetEnchantmentId( 0,  c->GetID() );
+            i->SetItemRandomSuffixFactor( 57813883 );
 			if( !_player->GetItemInterface()->AddItemToFreeSlot(i) )
 			{
 				c->Destroy();
@@ -698,9 +698,9 @@ void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 
 
 			i->SetStackCount(  1);
-			i->SetUInt32Value(ITEM_FIELD_FLAGS, 1);
-			i->SetUInt32Value(ITEM_FIELD_ENCHANTMENT_1_1, c->GetID());
-			i->SetUInt32Value(ITEM_FIELD_PROPERTY_SEED, 57813883);
+            i->SoulBind();
+            i->SetEnchantmentId( 0, c->GetID() );
+            i->SetItemRandomSuffixFactor( 57813883 );
 			if( !_player->GetItemInterface()->AddItemToFreeSlot(i) )
 			{
 				c->Destroy();
