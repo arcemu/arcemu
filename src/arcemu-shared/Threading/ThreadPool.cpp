@@ -184,13 +184,6 @@ void CThreadPool::IntegrityCheck()
 		// perfect! we have the ideal number of free threads.
 		Log.Debug("ThreadPool", "IntegrityCheck: Perfect!");
 	}
-	/*if(m_freeThreads.size() < 5)
-	{
-		uint32 j = 5 - m_freeThreads.size();
-		Log.Debug("ThreadPool", "Spawning %u threads.", j);
-		for(uint32 i = 0; i < j; ++i)
-			StartThread(NULL);
-	}*/
 
 	_threadsExitedSinceLastCheck = 0;
 	_threadsRequestedSinceLastCheck = 0;
@@ -225,10 +218,15 @@ void CThreadPool::Shutdown()
 	KillFreeThreads((uint32)m_freeThreads.size());
 	_threadsToExit += (uint32)m_activeThreads.size();
 
-	for(ThreadSet::iterator itr = m_activeThreads.begin(); itr != m_activeThreads.end(); ++itr)
+    for( std::set< Thread* >::iterator itr = m_activeThreads.begin(); itr != m_activeThreads.end(); ++itr)
 	{
-		if((*itr)->ExecutionTarget)
-			(*itr)->ExecutionTarget->OnShutdown();
+
+        Thread *t = *itr;
+
+		if( t->ExecutionTarget )
+			t->ExecutionTarget->OnShutdown();
+        else         
+            t->ControlInterface.Resume();
 	}
 	_mutex.Release();
 
@@ -257,7 +255,7 @@ static unsigned long WINAPI thread_proc(void* param)
 	uint32 tid = t->ControlInterface.GetId();
 	bool ht = (t->ExecutionTarget != NULL);
 	t->SetupMutex.Release();
-	//Log.Debug("ThreadPool", "Thread %u started.", t->ControlInterface.GetId());
+	Log.Debug("ThreadPool", "Thread %u started.", t->ControlInterface.GetId());
 
 	for(;;)
 	{

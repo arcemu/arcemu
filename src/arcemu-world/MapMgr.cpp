@@ -598,23 +598,7 @@ void MapMgr::RemoveObject(Object *obj, bool free_guid)
 		static_cast< Player* >( obj )->ClearAllPendingUpdates();
 	}
 
-	// Remove object from all objects 'seeing' him
-	//there is a small chance for deadlock here. On the a situation i never understood how it can happen and corrupt the list too.
-	obj->AquireInrangeLock(); //make sure to release lock before exit function !
-	for (Object::InRangeSet::iterator iter = obj->GetInRangeSetBegin();
-		iter != obj->GetInRangeSetEnd(); ++iter)
-	{
-		if( (*iter) )
-		{
-			if( (*iter)->GetTypeId() == TYPEID_PLAYER )
-			{
-				if( static_cast< Player* >( *iter )->IsVisible( obj ) && static_cast< Player* >( *iter )->m_TransporterGUID != obj->GetGUID() )
-					static_cast< Player* >( *iter )->PushOutOfRange(obj->GetNewGUID());
-			}
-			(*iter)->RemoveInRangeObject(obj);
-		}
-	}
-	obj->ReleaseInrangeLock();
+    obj->RemoveSelfFromInrangeSets();
 
 	// Clear object's in-range set
 	obj->ClearInRangeSet();
@@ -669,9 +653,13 @@ void MapMgr::RemoveObject(Object *obj, bool free_guid)
 
 void MapMgr::ChangeObjectLocation( Object *obj )
 {
-	// Items and containers are of no interest for us
-	if ( !obj ) return; // crashfix
+	/*
+    if ( !obj ) return; // crashfix
+    */
 
+    assert( obj != NULL );
+
+    // Items and containers are of no interest for us
 	if( obj->GetTypeId() == TYPEID_ITEM || obj->GetTypeId() == TYPEID_CONTAINER || obj->GetMapMgr() != this )
 	{
 		return;
@@ -695,76 +683,6 @@ void MapMgr::ChangeObjectLocation( Object *obj )
 	///////////////////////////////////////
 	// Update in-range data for old objects
 	///////////////////////////////////////
-
-	/** let's duplicate some code here :P Less branching is always good.
-	 * - Burlex
-	 */
-/*#define IN_RANGE_LOOP \
-	for (Object::InRangeSet::iterator iter = obj->GetInRangeSetBegin(), iter2; \
-		iter != obj->GetInRangeSetEnd();) \
-	{ \
-		curObj = *iter; \
-		iter2 = iter; \
-		++iter; \
-		if(curObj->IsPlayer() && obj->IsPlayer() && plObj->m_TransporterGUID && plObj->m_TransporterGUID == static_cast< Player* >( curObj )->m_TransporterGUID ) \
-			fRange = 0.0f;		\
-		else if((curObj->GetGUIDHigh() == HIGHGUID_TRANSPORTER || obj->GetGUIDHigh() == HIGHGUID_TRANSPORTER)) \
-			fRange = 0.0f;		\
-		else if((curObj->GetGUIDHigh() == HIGHGUID_GAMEOBJECT && curObj->GetByte(GAMEOBJECT_BYTES_1, 1) == GAMEOBJECT_TYPE_TRANSPORT || obj->GetGUIDHigh() == HIGHGUID_GAMEOBJECT && obj->GetByte(GAMEOBJECT_BYTES_1, 1) == GAMEOBJECT_TYPE_TRANSPORT)) \
-			fRange = 0.0f;		\
-		else \
-			fRange = m_UpdateDistance;	\
-		if (curObj->GetDistance2dSq(obj) > fRange && fRange > 0) \
-
-#define END_IN_RANGE_LOOP } \
-
-	if(plObj)
-	{
-		IN_RANGE_LOOP
-		{
-			plObj->RemoveIfVisible(curObj);
-			plObj->RemoveInRangeObject(iter2);
-
-			if(curObj->NeedsInRangeSet())
-				curObj->RemoveInRangeObject(obj);
-
-			if(curObj->IsPlayer())
-				static_cast< Player* >( curObj )->RemoveIfVisible(obj);
-		}
-		END_IN_RANGE_LOOP
-	}
-	else if(obj->NeedsInRangeSet())
-	{
-		IN_RANGE_LOOP
-		{
-			if(curObj->NeedsInRangeSet())
-				curObj->RemoveInRangeObject(obj);
-
-			if(curObj->IsPlayer())
-				static_cast< Player* >( curObj )->RemoveIfVisible(obj);
-
-			obj->RemoveInRangeObject(iter2);
-		}
-		END_IN_RANGE_LOOP
-	}
-	else
-	{
-		IN_RANGE_LOOP
-		{
-			if(curObj->NeedsInRangeSet())
-				curObj->RemoveInRangeObject(obj);
-
-			if(curObj->IsPlayer())
-			{
-				static_cast< Player* >( curObj )->RemoveIfVisible(obj);
-				obj->RemoveInRangePlayer(curObj);
-			}
-		}
-		END_IN_RANGE_LOOP
-	}
-
-#undef IN_RANGE_LOOP
-#undef END_IN_RANGE_LOOP*/
 
 	if(obj->HasInRangeObjects())
 	{

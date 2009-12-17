@@ -375,18 +375,21 @@ public:
 	void AquireInrangeLock(){ m_inrangechangelock.Acquire(); }
 	void ReleaseInrangeLock(){ m_inrangechangelock.Release(); }
 
-	void RemoveInRangeObject( Object* pObj )
-	{
-		if( pObj == NULL )
-			return;
+	void RemoveInRangeObject( Object* pObj );
 
-		if( pObj == this )
-			printf("We are in range of self!!\n");
-		AquireInrangeLock();
-		OnRemoveInRangeObject( pObj );
-		m_objectsInRange.erase( pObj );
-		ReleaseInrangeLock();
-	}
+    //////////////////////////////////////////////////////////////////////
+    //void RemoveSelfFromInrangeSets()
+    // Removes the Object from the inrangesets of the Objects in range
+    //
+    // Parameters:
+    //  None
+    //
+    // Return Value:
+    //  None
+    //
+    //
+    ///////////////////////////////////////////////////////////////////////
+    void RemoveSelfFromInrangeSets();
 
 	bool HasInRangeObjects()
 	{
@@ -441,10 +444,7 @@ public:
 		m_inRangePlayers.insert( obj );
 	}
 
-	void RemoveInRangePlayer( Object * obj )
-	{
-		m_inRangePlayers.erase( obj );
-	}
+	void RemoveInRangePlayer( Object * obj );
 
 	bool IsInRangeSameFactSet(Object* pObj) { return (m_sameFactsInRange.count(pObj) > 0); }
 	void UpdateSameFactionSet();

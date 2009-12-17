@@ -5988,6 +5988,9 @@ void Player::OnRemoveInRangeObject(Object* pObj)
 	if (pObj == NULL)
 		return;
 
+    if( IsVisible( pObj ) )
+        PushOutOfRange( pObj->GetNewGUID() );
+
 	m_visibleObjects.erase(pObj);
 	Unit::OnRemoveInRangeObject(pObj);
 

@@ -3598,3 +3598,46 @@ void Object::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
         o->SendPacket( data );
     }
 }
+
+void Object::RemoveInRangeObject( Object *pObj ){
+    assert( pObj != NULL );    
+ 
+    m_inrangechangelock.Acquire();
+    
+    OnRemoveInRangeObject( pObj );
+    m_objectsInRange.erase( pObj );
+    
+    m_inrangechangelock.Release();
+}
+
+void Object::RemoveInRangePlayer( Object *obj ){
+    assert( obj != NULL );
+    
+    OnRemoveInRangeObject( obj );
+    m_inRangePlayers.erase( obj );
+}
+
+void Object::RemoveSelfFromInrangeSets(){
+    std::set< Object* >::iterator itr;
+
+    m_inrangechangelock.Acquire();
+
+    for( itr = m_objectsInRange.begin(); itr != m_objectsInRange.end(); ++itr ){
+        Object *o = *itr;
+
+        assert( o != NULL );
+        
+        o->RemoveInRangeObject( this );
+        
+    }
+
+    for( itr = m_inRangePlayers.begin(); itr != m_inRangePlayers.end(); ++itr ){
+        Object *o = *itr;
+
+        assert( o != NULL );
+        
+        o->RemoveInRangeObject( this );
+    }
+
+    m_inrangechangelock.Release();
+}

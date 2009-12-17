@@ -142,6 +142,8 @@ bool PostgresDatabase::_SendQuery(DatabaseConnection *con, const char* Sql, bool
 	if( res == NULL )
 	{
 		printf("Error: %s\n", PQerrorMessage( static_cast<PostgresDatabaseConnection*>(con)->PgSql ) );
+        Log.Error("PostgreDatabase",Sql);
+
 		return false;
 	}
 
@@ -151,7 +153,9 @@ bool PostgresDatabase::_SendQuery(DatabaseConnection *con, const char* Sql, bool
 		Log.Error("PostgreDatabase", "Query failed: %s", PQresultErrorMessage(res));
 		PQclear( res );
 		static_cast<PostgresDatabaseConnection*>(con)->Result = NULL;
-		return false;
+        Log.Error("PostgreDatabase",Sql);
+
+        return false;
 	}
 
 	static_cast<PostgresDatabaseConnection*>(con)->Result = res;
