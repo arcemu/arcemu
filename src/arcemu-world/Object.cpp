@@ -985,7 +985,7 @@ void Object::AddToWorld()
 	if(!mapMgr)
 		return;
 
-	if(this->IsPlayer())
+	if( IsPlayer() )
 	{
 		Player *plr = static_cast< Player* >( this );
 		if(mapMgr->pInstance != NULL && !plr->bGMTagOn)
@@ -1833,7 +1833,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 			}
 		}
 	}
-	if( this->IsUnit() && pVictim->IsUnit() && pVictim != this )
+	if( IsUnit() && pVictim->IsUnit() && pVictim != this )
 	{
 		// Set our attack target to the victim.
 		static_cast< Unit* >( this )->CombatStatus.OnDamageDealt( pVictim );

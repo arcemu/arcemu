@@ -163,11 +163,11 @@ public:
 
 	// type
 	const uint8& GetTypeId() const { return m_objectTypeId; }
-	virtual bool IsUnit()	{ return ( m_objectTypeId == TYPEID_UNIT || m_objectTypeId == TYPEID_PLAYER ); }
-	virtual bool IsPlayer() { return m_objectTypeId == TYPEID_PLAYER; }
+	bool IsUnit()	{ return ( m_objectTypeId == TYPEID_UNIT || m_objectTypeId == TYPEID_PLAYER ); }
+	bool IsPlayer() { return m_objectTypeId == TYPEID_PLAYER; }
 	virtual bool IsCreature() { return m_objectTypeId == TYPEID_UNIT; }
 	virtual bool IsPet();
-	virtual bool IsGameObject() { return m_objectTypeId == TYPEID_GAMEOBJECT; }
+	bool IsGameObject() { return m_objectTypeId == TYPEID_GAMEOBJECT; }
 
 	//! This includes any nested objects we have, inventory for example.
 	virtual uint32  BuildCreateUpdateBlockForPlayer( ByteBuffer *data, Player *target );
@@ -600,7 +600,7 @@ protected:
 	bool mSemaphoreTeleport;
 
 	//! Object properties.
-	union {
+	union{
 		uint32* m_uint32Values;
 		float* m_floatValues;
 	};

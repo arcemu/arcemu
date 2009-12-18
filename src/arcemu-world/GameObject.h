@@ -192,8 +192,8 @@ public:
 	GameObject(uint64 guid);
 	~GameObject( );
 
-	ARCEMU_INLINE GameObjectInfo* GetInfo() { return pInfo; }
-	ARCEMU_INLINE void SetInfo(GameObjectInfo * goi) { pInfo = goi; }
+	GameObjectInfo* GetInfo() { return pInfo; }
+	void SetInfo(GameObjectInfo * goi) { pInfo = goi; }
 
 	//void Create ( uint32 display_id, uint8 state, uint32 obj_field_entry, float scale, uint16 type, uint16 faction, uint32 mapid, float x, float y, float z, float ang );
    // void Create ( uint32 mapid, float x, float y, float z, float ang);
@@ -247,7 +247,7 @@ public:
 
 	void Deactivate();
 
-	ARCEMU_INLINE bool isQuestGiver()
+	bool isQuestGiver()
 	{
 		//from GameObject::CreateFromProto - SetByte( GAMEOBJECT_BYTES_1, 1, pInfo->Type );
 		if(GetByte(GAMEOBJECT_BYTES_1, 1) == 2) 
@@ -280,25 +280,25 @@ public:
 	void CallScriptUpdate();
    
 
-	ARCEMU_INLINE GameObjectAIScript* GetScript() { return myScript; }
+	GameObjectAIScript* GetScript() { return myScript; }
 
 	void TrapSearchTarget();	// Traps need to find targets faster :P
 
-	ARCEMU_INLINE bool HasAI() { return spell != 0; }
+	bool HasAI() { return spell != 0; }
 	GOSpawn * m_spawn;
 	void OnPushToWorld();
 	void OnRemoveInRangeObject(Object* pObj);
 	void RemoveFromWorld(bool free_guid);
 
-	ARCEMU_INLINE bool CanMine(){return (usage_remaining > 0);}
-	ARCEMU_INLINE void UseMine(){ if(usage_remaining) usage_remaining--;}
+	bool CanMine(){return (usage_remaining > 0);}
+	void UseMine(){ if(usage_remaining) usage_remaining--;}
 	void CalcMineRemaining(bool force)
 	{
 		if(force || !usage_remaining)
 			usage_remaining = GetInfo()->sound4 + RandomUInt(GetInfo()->sound5 - GetInfo()->sound4) - 1;
 	}
-	ARCEMU_INLINE bool CanFish() { return ( usage_remaining > 0 ); }
-	ARCEMU_INLINE void CatchFish() { if ( usage_remaining ) usage_remaining--; }
+	bool CanFish() { return ( usage_remaining > 0 ); }
+	void CatchFish() { if ( usage_remaining ) usage_remaining--; }
 	void CalcFishRemaining( bool force )
 	{
 		if ( force || !usage_remaining )
@@ -311,7 +311,7 @@ public:
 	void SetState(uint8 state);
 	uint8 GetState();
 
-	ARCEMU_INLINE uint32 GetOverrides() { return m_overrides; }
+	uint32 GetOverrides() { return m_overrides; }
 
 protected:
 

@@ -919,8 +919,6 @@ public:
 	Player ( uint32 guid );
 	~Player ( );
 
-	bool IsPlayer() { return true; }
-
 	void EventGroupFullUpdate();
 
 	/************************************************************************/

@@ -884,7 +884,6 @@ public:
 	virtual void OnPushToWorld();
 
 	// Have subclasses change these to true
-	virtual bool IsPlayer() { return false; }
 	virtual bool IsCreature() { return false; }
 
     virtual bool IsPvPFlagged() = 0;

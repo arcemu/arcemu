@@ -46,13 +46,12 @@ MapMgr::MapMgr(Map *map, uint32 mapId, uint32 instanceid) : CellHandler<MapCell>
 	m_CreatureArraySize = map->CreatureSpawnCount;
 	m_GOArraySize = map->GameObjectSpawnCount;
 
-	//m_CreatureStorage = new Creature*[m_CreatureArraySize];
-	m_CreatureStorage = (Creature**)malloc(sizeof(Creature*) * m_CreatureArraySize);
-	memset(m_CreatureStorage,0,sizeof(Creature*)*m_CreatureArraySize);
+	m_CreatureStorage = new Creature*[m_CreatureArraySize];
+    memset(m_CreatureStorage,0,sizeof(Creature*)*m_CreatureArraySize);
 
-	//m_GOStorage = new GameObject*[m_GOArraySize];
-	m_GOStorage = (GameObject**)malloc(sizeof(GameObject*) * m_GOArraySize);
+	m_GOStorage = new GameObject*[m_GOArraySize];
 	memset(m_GOStorage,0,sizeof(GameObject*)*m_GOArraySize);
+
 	m_GOHighGuid = m_CreatureHighGuid = 0;
 	m_DynamicObjectHighGuid= 0;
 	lastUnitUpdate = getMSTime();
@@ -130,11 +129,11 @@ MapMgr::~MapMgr()
 	_mapWideStaticObjects.clear();
 
 	if (m_GOStorage != NULL) {
-		free(m_GOStorage);
+		delete[] m_GOStorage;
 		m_GOStorage = NULL;
 	}
 	if (m_CreatureStorage != NULL) {
-		free(m_CreatureStorage);
+		delete[] m_CreatureStorage;
 		m_CreatureStorage = NULL;
 	}
 
@@ -183,23 +182,6 @@ MapMgr::~MapMgr()
 	Log.Notice("MapMgr", "Instance %u shut down. (%s)" , m_instanceID, GetBaseMap()->GetName());
 }
 
-/*WorldPacket* MapMgr::BuildInitialWorldState()
-{
-	WorldPacket * data = new WorldPacket(SMSG_INIT_WORLD_STATES, 99);
-	*data << GetMapId();
-	*data << (uint32)0; // zone id?
-	*data << (uint32)0; // area id?
-	*data << (uint16)_worldStateSet.size();
-	std::map<uint32,uint32>::iterator itr = _worldStateSet.begin();
-	for(; itr != _worldStateSet.end(); itr++)
-	{
-		*data << (uint32)itr->first;
-		*data << (uint32)itr->second;
-	}
-
-	return data;
-}*/
-
 void MapMgr::SetWorldState(uint32 zoneid, uint32 index, uint32 value)
 {
 	//do we have a worldstate already?
@@ -228,16 +210,22 @@ void MapMgr::SendInitialStates(Player * plr)
 {
 	std::map<uint32, WorldStateHandler*>::iterator itr=m_worldStates.find(plr->GetZoneId());
 
-	if (itr == m_worldStates.end())
+	if ( itr == m_worldStates.end() )
 		return;
 
 	WorldPacket data(SMSG_INIT_WORLD_STATES, 14 + (itr->second->m_states.size() * 8));
-	data << GetMapId() << uint32(0) << uint32(0) << uint16(itr->second->m_states.size());
 
-	for (WorldStateMap::iterator itr2=itr->second->m_states.begin(); itr2!=itr->second->m_states.end(); ++itr2)
-		data << itr2->first << itr2->second;
+	data << uint32( _mapId );
+    data << uint32( 0 );
+    data << uint32( 0 );
+    data << uint16( itr->second->m_states.size() );
 
-	plr->GetSession()->SendPacket(&data);
+    for ( WorldStateMap::iterator itr2 = itr->second->m_states.begin(); itr2 != itr->second->m_states.end(); ++itr2 ){
+		data << uint32( itr2->first );
+        data << uint32( itr2->second );
+    }
+
+	plr->SendPacket(&data);
 }
 
 uint32 MapMgr::GetTeamPlayersCount(uint32 teamId)
@@ -965,131 +953,6 @@ void MapMgr::UpdateInRangeSet( Object *obj, Player *plObj, MapCell* cell, ByteBu
 		}
 	}
 	cell->ReleaseLock();
-
-/*
-#define IN_RANGE_LOOP_P1 \
-	while(iter != cell->End()) \
-	{ \
-		curObj = *iter; \
-		++iter; \
-		if(curObj->IsPlayer() && obj->IsPlayer() && plObj && plObj->m_TransporterGUID && plObj->m_TransporterGUID == static_cast< Player* >( curObj )->m_TransporterGUID) \
-			fRange = 0.0f; \
-		else if((curObj->GetGUIDHigh() == HIGHGUID_TRANSPORTER ||obj->GetGUIDHigh() == HIGHGUID_TRANSPORTER)) \
-			fRange = 0.0f; \
-		else if((curObj->GetGUIDHigh() == HIGHGUID_GAMEOBJECT && curObj->GetByte(GAMEOBJECT_BYTES_1, 1) == GAMEOBJECT_TYPE_TRANSPORT || obj->GetGUIDHigh() == HIGHGUID_GAMEOBJECT && obj->GetByte(GAMEOBJECT_BYTES_1, 1) == GAMEOBJECT_TYPE_TRANSPORT)) \
-			fRange = 0.0f; \
-		else \
-			fRange = m_UpdateDistance; \
-		if ( curObj != obj && (fRange == 0.0f || curObj->GetDistance2dSq(obj) < fRange ) ) \
-		{ \
-			if(!obj->IsInRangeSet(curObj)) \
-			{ \
-				if(curObj->NeedsInRangeSet()) \
-				{ \
-					curObj->AddInRangeObject(obj); \
-				} else if(obj->IsPlayer()) \
-				{ \
-					curObj->AddInRangePlayer(obj); \
-				} \
-				if(curObj->IsPlayer()) \
-				{ \
-					plObj2 = static_cast< Player* >( curObj ); \
-					if (plObj2->CanSee(obj) && !plObj2->IsVisible(obj))  \
-					{ \
-						CHECK_BUF; \
-						count = obj->BuildCreateUpdateBlockForPlayer(*buf, plObj2); \
-						plObj2->PushCreationData(*buf, count); \
-						plObj2->AddVisibleObject(obj); \
-						(*buf)->clear(); \
-					} \
-				}
-
-#define IN_RANGE_LOOP_P2 \
-			} \
-			else \
-			{ \
-				if(curObj->IsPlayer()) \
-				{ \
-					plObj2 = static_cast< Player* >( curObj ); \
-					cansee = plObj2->CanSee(obj); \
-					isvisible = plObj2->GetVisibility(obj, &itr); \
-					if(!cansee && isvisible) \
-					{ \
-						plObj2->RemoveVisibleObject(itr); \
-						plObj2->PushOutOfRange(obj->GetNewGUID()); \
-					} \
-					else if(cansee && !isvisible) \
-					{ \
-						CHECK_BUF; \
-						count = obj->BuildCreateUpdateBlockForPlayer(*buf, plObj2); \
-						plObj2->PushCreationData(*buf, count); \
-						plObj2->AddVisibleObject(obj); \
-						(*buf)->clear(); \
-					} \
-				} \
-
-#define IN_RANGE_LOOP_P3 \
-			} \
-		} \
-	} \
-
-
-	if(plObj)
-	{
-		IN_RANGE_LOOP_P1
-
-			obj->AddInRangeObject(curObj);
-			if(plObj->CanSee(curObj) && !plObj->IsVisible(curObj))
-			{
-				CHECK_BUF;
-				count = curObj->BuildCreateUpdateBlockForPlayer(*buf, plObj);
-				plObj->PushCreationData(*buf, count);
-				plObj->AddVisibleObject(curObj);
-				(*buf)->clear();
-			}
-
-		IN_RANGE_LOOP_P2
-
-			if(plObj)
-			{
-				cansee = plObj->CanSee(curObj);
-				isvisible = plObj->GetVisibility(curObj, &itr);
-				if(!cansee && isvisible)
-				{
-					plObj->PushOutOfRange(curObj->GetNewGUID());
-					plObj->RemoveVisibleObject(itr);
-				}
-				else if(cansee && !isvisible)
-				{
-					CHECK_BUF;
-					count = curObj->BuildCreateUpdateBlockForPlayer(*buf, plObj);
-					plObj->PushCreationData(*buf, count);
-					plObj->AddVisibleObject(curObj);
-					(*buf)->clear();
-				}
-			}
-
-		IN_RANGE_LOOP_P3
-	} else if(obj->NeedsInRangeSet())
-	{
-		IN_RANGE_LOOP_P1
-			obj->AddInRangeObject(curObj);
-		IN_RANGE_LOOP_P2
-		IN_RANGE_LOOP_P3
-	}
-	else
-	{
-		IN_RANGE_LOOP_P1
-			if(curObj->IsPlayer())
-				obj->AddInRangePlayer(obj);
-
-		IN_RANGE_LOOP_P2
-		IN_RANGE_LOOP_P3
-	}
-
-#undef IN_RANGE_LOOP_P1
-#undef IN_RANGE_LOOP_P2
-#undef IN_RANGE_LOOP_P3*/
 }
 
 void MapMgr::_UpdateObjects()
@@ -1548,25 +1411,32 @@ bool MapMgr::Do()
 #endif
 	while((ThreadState != THREADSTATE_TERMINATE) && !_shutdown)
 	{
-		exec_start=getMSTime();
-		//first push to world new objects
-		m_objectinsertlock.Acquire();//<<<<<<<<<<<<<<<<
+		exec_start = getMSTime();
+
+///////////////////////////////////////////// first push to world new objects ////////////////////////////////////////////
+		
+        m_objectinsertlock.Acquire();
+
 		if(m_objectinsertpool.size())
 		{
-			for(i=m_objectinsertpool.begin();i!=m_objectinsertpool.end();i++)
+			for( i = m_objectinsertpool.begin(); i != m_objectinsertpool.end(); ++i )
 			{
-				//PushObject(*i);
-				(*i)->PushToWorld(this);
+				Object *o = *i;
+
+				o->PushToWorld( this );
 			}
+
 			m_objectinsertpool.clear();
 		}
-		m_objectinsertlock.Release();//>>>>>>>>>>>>>>>>
-		//-------------------------------------------------------
 
-		//Now update sessions of this map + objects
+		m_objectinsertlock.Release();
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        //Now update sessions of this map + objects
 		_PerformObjectDuties();
 
-		last_exec=getMSTime();
+		last_exec = getMSTime();
 		exec_time=last_exec-exec_start;
 		if(exec_time<MAP_MGR_UPDATE_PERIOD)
 		{

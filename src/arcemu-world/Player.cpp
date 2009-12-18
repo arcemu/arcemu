@@ -7178,8 +7178,10 @@ void Player::_Relocate(uint32 mapid, const LocationVector & v, bool sendpending,
 	if(sendpending && mapid != m_mapId && force_new_world)
 	{
 		data.SetOpcode(SMSG_TRANSFER_PENDING);
-		data << mapid;
-		GetSession()->SendPacket(&data);
+		
+        data << mapid;
+		
+        m_session->SendPacket(&data);
 	}
 
 	if(m_mapId != mapid || force_new_world)
@@ -7188,22 +7190,31 @@ void Player::_Relocate(uint32 mapid, const LocationVector & v, bool sendpending,
 		if(status != INSTANCE_OK)
 		{
 			data.Initialize(SMSG_TRANSFER_ABORTED);
-			data << mapid << status;
-			GetSession()->SendPacket(&data);
+			
+            data << uint32( mapid );
+            data << uint32( status );
+
+			m_session->SendPacket(&data);
+
 			return;
 		}
 
-		if(instance_id)
-			m_instanceId=instance_id;
+		if( instance_id )
+			m_instanceId = instance_id;
 
-		if(IsInWorld())
+		if( IsInWorld() )
 		{
 			RemoveFromWorld();
 		}
 
 		data.Initialize(SMSG_NEW_WORLD);
-		data << (uint32)mapid << v << v.o;
-		GetSession()->SendPacket( &data );
+		
+        data << uint32( mapid );
+        data << v;
+        data << float( v.o );
+
+		m_session->SendPacket( &data );
+
 		SetMapId(mapid);
 
 	}
