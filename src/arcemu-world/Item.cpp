@@ -112,10 +112,10 @@ void Item::Create( uint32 itemid, Player* owner )
 {
 	SetEntry(  itemid );
 
-    uint64 OwnerGUID = owner->GetGUID();
- 
 	if( owner != NULL )
 	{
+        uint64 OwnerGUID = owner->GetGUID();
+
         SetOWnerGUID( OwnerGUID );
 		SetContainerGUID( OwnerGUID );
 	}
