@@ -5416,7 +5416,7 @@ void Unit::OnRemoveInRangeObject(Object* pObj)
 			if(m_currentSpell)
 				m_currentSpell->cancel();
 
-        Object::OnRemoveInRangeObject(pObj);
+        // Object::OnRemoveInRangeObject(pObj);   // this is commented for a reason, don't remove it! -dfighter
         if(critterPet == pObj)
 		{
 			critterPet->SafeDelete();
@@ -5425,7 +5425,7 @@ void Unit::OnRemoveInRangeObject(Object* pObj)
 	}
     else
     {
-        Object::OnRemoveInRangeObject(pObj);
+        // Object::OnRemoveInRangeObject(pObj);   // this is commented for a reason, don't remove it! -dfighter
     }
 }
 

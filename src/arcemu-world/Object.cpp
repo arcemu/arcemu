@@ -3567,10 +3567,12 @@ void Object::AddInRangeObject(Object *pObj){
 	if( pObj == this )
         sLog.outError( "We are in range of ourselves!" );
 
-	m_objectsInRange.insert( pObj );
-
 	if( pObj->GetTypeId() == TYPEID_PLAYER )
         m_inRangePlayers.insert( pObj ); 
+    else
+        m_objectsInRange.insert( pObj );
+
+
 }
 
 void Object::OutPacketToSet(uint16 Opcode, uint16 Len, const void * Data, bool self)
@@ -3605,16 +3607,14 @@ void Object::RemoveInRangeObject( Object *pObj ){
     m_inrangechangelock.Acquire();
     
     OnRemoveInRangeObject( pObj );
-    m_objectsInRange.erase( pObj );
+    
+    if( pObj->GetTypeId() == TYPEID_PLAYER ){
+        ASSERT( m_inRangePlayers.erase( pObj ) == 1 );
+    }else{
+        ASSERT( m_objectsInRange.erase( pObj ) == 1 );
+    }
     
     m_inrangechangelock.Release();
-}
-
-void Object::RemoveInRangePlayer( Object *obj ){
-    assert( obj != NULL );
-    
-    OnRemoveInRangeObject( obj );
-    m_inRangePlayers.erase( obj );
 }
 
 void Object::RemoveSelfFromInrangeSets(){
@@ -3640,4 +3640,11 @@ void Object::RemoveSelfFromInrangeSets(){
     }
 
     m_inrangechangelock.Release();
+}
+
+
+void Object::OnRemoveInRangeObject( Object *pObj ){
+    /* This method will remain empty for now, don't remove it!
+    -dfighter
+    */
 }

@@ -396,11 +396,7 @@ public:
 		return ( m_objectsInRange.size() > 0 );
 	}
 
-	virtual void OnRemoveInRangeObject( Object * pObj )
-	{
-		if( pObj->GetTypeId() == TYPEID_PLAYER )
-			ASSERT( m_inRangePlayers.erase( pObj ) == 1 );
-	}
+	virtual void OnRemoveInRangeObject( Object * pObj );
 
 	virtual void ClearInRangeSet()
 	{
@@ -438,13 +434,6 @@ public:
 		ReleaseInrangeLock();
 		return true;
 	}
-
-	void AddInRangePlayer( Object * obj )
-	{
-		m_inRangePlayers.insert( obj );
-	}
-
-	void RemoveInRangePlayer( Object * obj );
 
 	bool IsInRangeSameFactSet(Object* pObj) { return (m_sameFactsInRange.count(pObj) > 0); }
 	void UpdateSameFactionSet();
