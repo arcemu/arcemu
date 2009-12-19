@@ -1135,7 +1135,7 @@ void Instance::SaveToDB()
 
 	std::stringstream ss;
 
-    ss << "DELETE FROM instances WHERE instanceid = " << m_instanceId << ";";
+    ss << "DELETE FROM instances WHERE id = " << m_instanceId << ";";
     
     CharacterDatabase.Execute( ss.str().c_str() );
 

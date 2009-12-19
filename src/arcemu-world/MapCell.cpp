@@ -47,9 +47,7 @@ void MapCell::AddObject(Object *obj)
 	if(obj->IsPlayer())
 		++_playerCount;
 
-	AquireLock();
 	_objects.insert(obj);
-	ReleaseLock();
 }
 
 void MapCell::RemoveObject(Object *obj)
@@ -57,14 +55,11 @@ void MapCell::RemoveObject(Object *obj)
 	if(obj->IsPlayer())
 		--_playerCount;
 
-	AquireLock();
 	_objects.erase(obj);
-	ReleaseLock();
 }
 
 void MapCell::SetActivity(bool state)
 {	
-	AquireLock();
 	if(!_active && state)
 	{
 		// Move all objects to active set.
@@ -96,7 +91,6 @@ void MapCell::SetActivity(bool state)
 			CollideInterface.DeactivateTile(_mapmgr->GetMapId(), _x/8, _y/8);
 		}
 	}
-	ReleaseLock();
 
 	_active = state; 
 
@@ -111,7 +105,6 @@ void MapCell::RemoveObjects()
 	if( _unloadpending == true )
 		return;
 
-	AquireLock();
 	/* delete objects in pending respawn state */
 	for( itr = _respawnObjects.begin(); itr != _respawnObjects.end(); ++itr )
 	{
@@ -170,8 +163,6 @@ void MapCell::RemoveObjects()
 		delete obj;
 	}
 	_objects.clear();
-	ReleaseLock();
-
 	_playerCount = 0;
 	_loaded = false;
 }

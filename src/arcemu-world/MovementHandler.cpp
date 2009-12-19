@@ -81,12 +81,23 @@ void WorldSession::HandleMoveWorldportAckOpcode( WorldPacket & recv_data )
 	{
 		/* wow, our pc must really suck. */
 		Transporter * pTrans = _player->m_CurrentTransporter;
+
 		float c_tposx = pTrans->GetPositionX() + _player->m_TransporterX;
 		float c_tposy = pTrans->GetPositionY() + _player->m_TransporterY;
 		float c_tposz = pTrans->GetPositionZ() + _player->m_TransporterZ;
+        
+
+        _player->SetMapId( pTrans->GetMapId() );
+        _player->SetPosition( c_tposx, c_tposy, c_tposz, _player->GetOrientation() );
 
 		WorldPacket dataw(SMSG_NEW_WORLD, 20);
-		dataw << pTrans->GetMapId() << c_tposx << c_tposy << c_tposz << _player->GetOrientation();
+		
+        dataw << pTrans->GetMapId();
+        dataw << c_tposx;
+        dataw << c_tposy;
+        dataw << c_tposz;
+        dataw << _player->GetOrientation();
+
 		SendPacket(&dataw);
 	}
 	else

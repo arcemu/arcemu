@@ -3535,7 +3535,6 @@ void Aura::SpellAuraModStealth(bool apply)
 		if( m_spellProto->NameHash == SPELL_HASH_VANISH && m_target->GetTypeId() == TYPEID_PLAYER )	 // Vanish
 		{
 
-			m_target->AquireInrangeLock();
 			for( Object::InRangeSet::iterator iter = m_target->GetInRangeSetBegin();iter != m_target->GetInRangeSetEnd(); ++iter )
 			{
 				if ((*iter) == NULL || !(*iter)->IsUnit())
@@ -3552,7 +3551,6 @@ void Aura::SpellAuraModStealth(bool apply)
 				if( _unit->GetAIInterface() != NULL )
 					_unit->GetAIInterface()->RemoveThreatByPtr( m_target );
 			}
-			m_target->ReleaseInrangeLock();
 
 			for( uint32 x = MAX_POSITIVE_AURAS_EXTEDED_START; x < MAX_POSITIVE_AURAS_EXTEDED_END; x++ )
 			{

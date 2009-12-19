@@ -341,7 +341,7 @@ void Spell::FillSpecifiedTargetsInArea(uint32 i,float srcx,float srcy,float srcz
 	//IsStealth()
 	float r = range * range;
 	uint8 did_hit_result;
-	m_caster->AquireInrangeLock(); //make sure to release lock before exit function !
+
 	for(std::set<Object*>::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); itr++ )
 	{
 		// don't add objects that are not units and that are dead
@@ -387,13 +387,11 @@ void Spell::FillSpecifiedTargetsInArea(uint32 i,float srcx,float srcy,float srcz
 			{
 				if( GetProto()->MaxTargets >= tmpMap->size())
 				{
-					m_caster->ReleaseInrangeLock();
 					return;
 				}
 			}
 		}
 	}
-	m_caster->ReleaseInrangeLock();
 }
 void Spell::FillAllTargetsInArea(LocationVector & location,uint32 ind)
 {
@@ -412,8 +410,8 @@ void Spell::FillAllTargetsInArea(uint32 i,float srcx,float srcy,float srcz, floa
 	float r = range*range;
 	uint8 did_hit_result;
 	std::set<Object*>::iterator itr,itr2;
-	m_caster->AquireInrangeLock(); //make sure to release lock before exit function !
-	for( itr2 = m_caster->GetInRangeSetBegin(); itr2 != m_caster->GetInRangeSetEnd();)
+
+    for( itr2 = m_caster->GetInRangeSetBegin(); itr2 != m_caster->GetInRangeSetEnd();)
 	{
 		itr = itr2;
 		//maybe scripts can change list. Should use lock instead of this to prevent multiple changes. This protects to 1 deletion only
@@ -467,12 +465,10 @@ void Spell::FillAllTargetsInArea(uint32 i,float srcx,float srcy,float srcz, floa
 			if( GetProto()->MaxTargets )
 				if( GetProto()->MaxTargets == tmpMap->size() )
 				{
-					m_caster->ReleaseInrangeLock();
 					return;
 				}
 		}
 	}
-	m_caster->ReleaseInrangeLock();
 }
 
 // We fill all the targets in the area, including the stealthed ones
@@ -482,8 +478,8 @@ void Spell::FillAllFriendlyInArea( uint32 i, float srcx, float srcy, float srcz,
 	float r = range * range;
 	uint8 did_hit_result;
 	std::set<Object*>::iterator itr,itr2;
-	m_caster->AquireInrangeLock(); //make sure to release lock before exit function !
-	for( itr2 = m_caster->GetInRangeSetBegin(); itr2 != m_caster->GetInRangeSetEnd();)
+
+    for( itr2 = m_caster->GetInRangeSetBegin(); itr2 != m_caster->GetInRangeSetEnd();)
 	{
 		itr = itr2;
 		itr2++; //maybe scripts can change list. Should use lock instead of this to prevent multiple changes. This protects to 1 deletion only
@@ -531,12 +527,10 @@ void Spell::FillAllFriendlyInArea( uint32 i, float srcx, float srcy, float srcz,
 			if( GetProto()->MaxTargets )
 				if( GetProto()->MaxTargets == tmpMap->size() )
 				{
-					m_caster->ReleaseInrangeLock();
 					return;
 				}
 		}
 	}
-	m_caster->ReleaseInrangeLock();
 }
 
 uint64 Spell::GetSinglePossibleEnemy(uint32 i,float prange)
@@ -554,8 +548,8 @@ uint64 Spell::GetSinglePossibleEnemy(uint32 i,float prange)
 		}
 	}
 	float srcx = m_caster->GetPositionX(), srcy = m_caster->GetPositionY(), srcz = m_caster->GetPositionZ();
-	m_caster->AquireInrangeLock(); //make sure to release lock before exit function !
-	for( std::set<Object*>::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); itr++ )
+
+    for( std::set<Object*>::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); itr++ )
 	{
 		if( !( (*itr)->IsUnit() ) || !static_cast< Unit* >( *itr )->isAlive() )
 			continue;
@@ -574,7 +568,6 @@ uint64 Spell::GetSinglePossibleEnemy(uint32 i,float prange)
 			{
 				if(isAttackable(u_caster, static_cast< Unit* >( *itr ),!(GetProto()->c_is_flags & SPELL_FLAG_IS_TARGETINGSTEALTHED)) && DidHit(i,((Unit*)*itr))==SPELL_DID_HIT_SUCCESS)
 				{
-					m_caster->ReleaseInrangeLock();
 					return (*itr)->GetGUID();
 				}
 			}
@@ -585,14 +578,12 @@ uint64 Spell::GetSinglePossibleEnemy(uint32 i,float prange)
 					//trap, check not to attack owner and friendly
 					if( isAttackable( g_caster->m_summoner, static_cast< Unit* >( *itr ),!(GetProto()->c_is_flags & SPELL_FLAG_IS_TARGETINGSTEALTHED)))
 					{
-						m_caster->ReleaseInrangeLock();
 						return (*itr)->GetGUID();
 					}
 				}
 			}
 		}
 	}
-	m_caster->ReleaseInrangeLock();
 	return 0;
 }
 
@@ -611,8 +602,8 @@ uint64 Spell::GetSinglePossibleFriend(uint32 i,float prange)
 		}
 	}
 	float srcx=m_caster->GetPositionX(),srcy=m_caster->GetPositionY(),srcz=m_caster->GetPositionZ();
-	m_caster->AquireInrangeLock(); //make sure to release lock before exit function !
-	for(std::set<Object*>::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); itr++ )
+
+    for(std::set<Object*>::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); itr++ )
 	{
 		if( !( (*itr)->IsUnit() ) || !static_cast< Unit* >( *itr )->isAlive() )
 			continue;
@@ -630,7 +621,6 @@ uint64 Spell::GetSinglePossibleFriend(uint32 i,float prange)
 			{
 				if( isFriendly( u_caster, static_cast< Unit* >( *itr ) ) && DidHit(i, ((Unit*)*itr))==SPELL_DID_HIT_SUCCESS)
 				{
-					m_caster->ReleaseInrangeLock();
 					return (*itr)->GetGUID();
 				}
 			}
@@ -641,14 +631,12 @@ uint64 Spell::GetSinglePossibleFriend(uint32 i,float prange)
 					//trap, check not to attack owner and friendly
 					if( isFriendly( g_caster->m_summoner, static_cast< Unit* >( *itr ) ) )
 					{
-						m_caster->ReleaseInrangeLock();
 						return (*itr)->GetGUID();
 					}
 				}
 			}
 		}
 	}
-	m_caster->ReleaseInrangeLock();
 	return 0;
 }
 
@@ -3626,7 +3614,6 @@ uint8 Spell::CanCast(bool tolerate)
 		{
 			bool found = false;
 
-			m_caster->AquireInrangeLock(); //make sure to release lock before exit function !
 			for(std::set<Object*>::iterator itr = p_caster->GetInRangeSetBegin(); itr != p_caster->GetInRangeSetEnd(); itr++ )
 			{
 				if ((*itr)->GetTypeId() != TYPEID_GAMEOBJECT)
@@ -3662,7 +3649,6 @@ uint8 Spell::CanCast(bool tolerate)
 				}
 			}
 
-			m_caster->ReleaseInrangeLock();
 			if (!found)
 				return SPELL_FAILED_REQUIRES_SPELL_FOCUS;
 		}

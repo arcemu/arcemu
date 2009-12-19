@@ -1689,8 +1689,6 @@ void Object::UpdateOppFactionSet()
 {
 	m_oppFactsInRange.clear();
 	
-    AquireInrangeLock();
-    
     for( std::set< Object* >::iterator itr = GetInRangeSetBegin(); itr != GetInRangeSetEnd(); ++itr)
 	{
         Object *i = *itr;
@@ -1714,14 +1712,12 @@ void Object::UpdateOppFactionSet()
 			}
 		}
 	}
-	ReleaseInrangeLock();
 }
 
 void Object::UpdateSameFactionSet()
 {
 	m_sameFactsInRange.clear();
 
-	AquireInrangeLock();
 
     for( std::set< Object* >::iterator itr = GetInRangeSetBegin(); itr != GetInRangeSetEnd(); ++itr)
 	{
@@ -1748,7 +1744,6 @@ void Object::UpdateSameFactionSet()
 			}
 		}
 	}
-	ReleaseInrangeLock();
 }
 
 void Object::EventSetUInt32Value(uint32 index, uint32 value)
@@ -3604,8 +3599,6 @@ void Object::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
 void Object::RemoveInRangeObject( Object *pObj ){
     assert( pObj != NULL );    
  
-    m_inrangechangelock.Acquire();
-    
     OnRemoveInRangeObject( pObj );
     
     if( pObj->GetTypeId() == TYPEID_PLAYER ){
@@ -3614,13 +3607,10 @@ void Object::RemoveInRangeObject( Object *pObj ){
         ASSERT( m_objectsInRange.erase( pObj ) == 1 );
     }
     
-    m_inrangechangelock.Release();
 }
 
 void Object::RemoveSelfFromInrangeSets(){
     std::set< Object* >::iterator itr;
-
-    m_inrangechangelock.Acquire();
 
     for( itr = m_objectsInRange.begin(); itr != m_objectsInRange.end(); ++itr ){
         Object *o = *itr;
@@ -3639,7 +3629,6 @@ void Object::RemoveSelfFromInrangeSets(){
         o->RemoveInRangeObject( this );
     }
 
-    m_inrangechangelock.Release();
 }
 
 

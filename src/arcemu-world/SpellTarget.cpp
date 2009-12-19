@@ -390,7 +390,7 @@ void Spell::SpellTargetSingleTargetEnemy(uint32 i, uint32 j)
 		float range = GetMaxRange( dbcSpellRange.LookupEntry( m_spellInfo->rangeIndex ) );//this is probably wrong
 		range *= range;
 		std::set<Object*>::iterator itr,itr2;
-		m_caster->AquireInrangeLock(); //make sure to release lock before exit function !
+
 		for( itr2 = m_caster->GetInRangeSetBegin(); itr2 != m_caster->GetInRangeSetEnd(); )
 		{
 			itr = itr2;
@@ -419,13 +419,11 @@ void Spell::SpellTargetSingleTargetEnemy(uint32 i, uint32 j)
 
 					if(!--jumps)
 					{
-						m_caster->ReleaseInrangeLock();
 						return;
 					}
 				}
 			}
 		}
-		m_caster->ReleaseInrangeLock();
 	}
 }
 
@@ -537,8 +535,8 @@ void Spell::SpellTargetInFrontOfCaster(uint32 i, uint32 j)
 	TargetsList* tmpMap=&m_targetUnits[i];
 	std::set<Object*>::iterator itr;
 	uint8 did_hit_result;
-	m_caster->AquireInrangeLock(); //make sure to release lock before exit function !
-	for( itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); itr++ )
+
+    for( itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); itr++ )
 	{
 		if(!((*itr)->IsUnit()) || !((Unit*)(*itr))->isAlive())
 			continue;
@@ -563,7 +561,6 @@ void Spell::SpellTargetInFrontOfCaster(uint32 i, uint32 j)
 			}
 		}
 	}
-	m_caster->ReleaseInrangeLock();
 }
 
 /// Spell Target Handling for type 25: Single Target Friend	 // Used o.a. in Duel
@@ -858,7 +855,7 @@ void Spell::SpellTargetDummyTarget(uint32 i, uint32 j)
 					return;
 
 				Object::InRangeSet::iterator itr,itr2;
-				p_caster->AquireInrangeLock(); //make sure to release lock before exit function !
+
 				for(itr2 = p_caster->GetInRangeSetBegin(); itr2 != p_caster->GetInRangeSetEnd(); )
 				{
 					itr=itr2;
@@ -870,12 +867,10 @@ void Spell::SpellTargetDummyTarget(uint32 i, uint32 j)
 						if(cloudtype == 24222 || cloudtype == 17408 || cloudtype == 17407 || cloudtype == 17378)
 						{
 							p_caster->SetSelection(creature->GetGUID());
-							p_caster->ReleaseInrangeLock();
 							return;
 						}
 					}
 				}
-				p_caster->ReleaseInrangeLock();
 			}
 			break;
 		case 51729: // Blessing of Zim'Torga
@@ -989,7 +984,7 @@ void Spell::SpellTargetChainTargeting(uint32 i, uint32 j)
 	else
 	{
 		std::set<Object*>::iterator itr;
-		firstTarget->AquireInrangeLock(); //make sure to release lock before exit function !
+
 		for( itr = firstTarget->GetInRangeSetBegin(); itr != firstTarget->GetInRangeSetEnd(); itr++ )
 		{
 			if( !(*itr)->IsUnit() || !((Unit*)(*itr))->isAlive())
@@ -1011,13 +1006,11 @@ void Spell::SpellTargetChainTargeting(uint32 i, uint32 j)
 					SafeAddTarget(tmpMap,(*itr)->GetGUID());
 					if(!--jumps)
 					{
-						firstTarget->ReleaseInrangeLock();
 						return;
 					}
 				}
 			}
 		}
-		firstTarget->ReleaseInrangeLock();
 	}
 }
 
@@ -1062,7 +1055,7 @@ void Spell::SpellTargetInFrontOfCaster2(uint32 i, uint32 j)
 	TargetsList* tmpMap=&m_targetUnits[i];
 	std::set<Object*>::iterator itr,itr2;
 	uint8 did_hit_result;
-	m_caster->AquireInrangeLock(); //make sure to release lock before exit function !
+
 	for( itr2 = m_caster->GetInRangeSetBegin(); itr2 != m_caster->GetInRangeSetEnd();)
 	{
 		itr = itr2;
@@ -1085,7 +1078,6 @@ void Spell::SpellTargetInFrontOfCaster2(uint32 i, uint32 j)
 			}
 		}
 	}
-	m_caster->ReleaseInrangeLock();
 }
 
 // Spell Target Handling for type 56: Target all raid members. (WotLK)

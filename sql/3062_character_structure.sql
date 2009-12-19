@@ -397,7 +397,7 @@ CREATE TABLE `gm_tickets` (
   `posZ` float NOT NULL DEFAULT '0',
   `message` text NOT NULL,
   `timestamp` text,
-  `deleted` bit(1) NOT NULL DEFAULT b'0',
+  `deleted` int UNSIGNED NOT NULL DEFAULT '0',
   `assignedto` int(11) NOT NULL DEFAULT '0',
   `comment` text NOT NULL,
   UNIQUE KEY `guid` (`ticketid`),

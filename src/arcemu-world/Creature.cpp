@@ -540,6 +540,15 @@ void Creature::SaveToDB()
 		spawnid = objmgr.GenerateCreatureSpawnID();
 
 	std::stringstream ss;
+
+	ss << "DELETE FROM creature_spawns WHERE id = ";
+	ss << spawnid;
+	ss << ";";
+
+	WorldDatabase.Execute( ss.str().c_str() );
+
+	ss.rdbuf()->str("");
+
 	ss << "INSERT INTO creature_spawns VALUES("
 		<< spawnid << ","
 		<< GetEntry() << ","

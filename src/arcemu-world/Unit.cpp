@@ -5400,10 +5400,8 @@ void Unit::AddInRangeObject(Object* pObj)
 
 void Unit::OnRemoveInRangeObject(Object* pObj)
 {
-	AquireInrangeLock();
 	m_oppFactsInRange.erase(pObj);
 	m_sameFactsInRange.erase(pObj);
-	ReleaseInrangeLock();
 
 	if(pObj->GetTypeId() == TYPEID_UNIT || pObj->GetTypeId() == TYPEID_PLAYER)
 	{
@@ -7669,7 +7667,6 @@ void Unit::RemoveFieldSummon()
 void Unit::AggroPvPGuards()
 {
 	Unit *tmpUnit;
-	this->AquireInrangeLock();
 	for(Object::InRangeSet::iterator i = GetInRangeSetBegin(); i != GetInRangeSetEnd(); ++i)
 	{
 		if((*i)->GetTypeId() == TYPEID_UNIT)
@@ -7681,7 +7678,6 @@ void Unit::AggroPvPGuards()
 			}
 		}
 	}
-	this->ReleaseInrangeLock();
 }
 
 //what is an Immobilize spell ? Have to add it later to spell effect handler

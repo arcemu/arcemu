@@ -745,6 +745,8 @@ void ObjectMgr::LoadGMTickets()
 	if(result == 0)
 		return;
 
+    uint32 deleted = 0;
+
 	do
 	{
 		Field *fields = result->Fetch();
@@ -760,7 +762,14 @@ void ObjectMgr::LoadGMTickets()
 		ticket->posZ = fields[7].GetFloat();
 		ticket->message = fields[8].GetString();
 		ticket->timestamp = fields[9].GetUInt32();
-		ticket->deleted = fields[10].GetBool();
+        
+        deleted = fields[10].GetUInt32();
+
+        if( deleted == 1 )
+            ticket->deleted = true;
+        else
+            ticket->deleted = false;
+
 		ticket->assignedToPlayer = fields[11].GetUInt64();
 		ticket->comment = fields[12].GetString();
 
@@ -851,7 +860,12 @@ void ObjectMgr::SaveGMTicket(GM_Ticket* ticket, QueryBuffer * buf)
 	ss << ticket->posZ << ", '";
 	ss << CharacterDatabase.EscapeString(ticket->message) << "', ";
 	ss << ticket->timestamp << ", ";
-	ss << ticket->deleted << ", ";
+    
+    if( ticket->deleted  )
+        ss << uint32( 1 );
+    else
+        ss << uint32( 0 );
+
 	ss << ticket->assignedToPlayer << ", '";
 	ss << CharacterDatabase.EscapeString(ticket->comment) << "');";
 

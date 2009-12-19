@@ -372,8 +372,6 @@ public:
 	virtual void AddInRangeObject(Object* pObj);
 
 	Mutex m_inrangechangelock;
-	void AquireInrangeLock(){ m_inrangechangelock.Acquire(); }
-	void ReleaseInrangeLock(){ m_inrangechangelock.Release(); }
 
 	void RemoveInRangeObject( Object* pObj );
 
@@ -414,10 +412,8 @@ public:
 
 	void RemoveInRangeObject(InRangeSet::iterator itr)
 	{
-		AquireInrangeLock();
 		OnRemoveInRangeObject(*itr);
 		m_objectsInRange.erase(itr);
-		ReleaseInrangeLock();
 	}
 
 	bool RemoveIfInRange( Object * obj )
@@ -429,10 +425,9 @@ public:
 		if( itr == m_objectsInRange.end() )
 			return false;
 
-		AquireInrangeLock();
 		m_objectsInRange.erase( itr );
-		ReleaseInrangeLock();
-		return true;
+
+        return true;
 	}
 
 	bool IsInRangeSameFactSet(Object* pObj) { return (m_sameFactsInRange.count(pObj) > 0); }

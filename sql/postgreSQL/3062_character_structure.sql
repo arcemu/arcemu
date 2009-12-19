@@ -468,7 +468,7 @@ CREATE TABLE gm_tickets (
     posz double precision DEFAULT 0.0 NOT NULL,
     message text DEFAULT ''::text NOT NULL,
     "timestamp" text DEFAULT ''::text NOT NULL,
-    deleted boolean DEFAULT false NOT NULL,
+    deleted integer DEFAULT '0' NOT NULL,
     assignedto integer DEFAULT 1 NOT NULL,
     comment text DEFAULT ''::text NOT NULL
 );
