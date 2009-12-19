@@ -845,7 +845,7 @@ void ObjectMgr::SaveGMTicket(GM_Ticket* ticket, QueryBuffer * buf)
     ss << ticket->guid;
     ss << ";";
 
-    CharacterDatabase.ExecuteNA("");
+    CharacterDatabase.ExecuteNA( ss.str().c_str() );
 
     ss.rdbuf()->str("");
 
