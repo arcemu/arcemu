@@ -1735,19 +1735,23 @@ Creature * CBattleground::SpawnSpiritGuide(float x, float y, float z, float o, u
 	pCreature->SetScale(  1.0f);
 
 	pCreature->SetUInt32Value(UNIT_FIELD_HEALTH, 100000);
-	pCreature->SetUInt32Value(UNIT_FIELD_POWER1, 4868);
-	pCreature->SetUInt32Value(UNIT_FIELD_POWER3, 200);
-	pCreature->SetUInt32Value(UNIT_FIELD_POWER5, 2000000);
+    pCreature->SetPower( POWER_TYPE_MANA, 4868 );
+    pCreature->SetPower( POWER_TYPE_FOCUS, 200 );
+    pCreature->SetPower( POWER_TYPE_HAPPINESS, 2000000 );
 
 	pCreature->SetUInt32Value(UNIT_FIELD_MAXHEALTH, 10000);
-	pCreature->SetUInt32Value(UNIT_FIELD_MAXPOWER1, 4868);
-	pCreature->SetUInt32Value(UNIT_FIELD_MAXPOWER3, 200);
-	pCreature->SetUInt32Value(UNIT_FIELD_MAXPOWER5, 2000000);
+	pCreature->SetMaxPower( POWER_TYPE_MANA, 4868 );
+	pCreature->SetMaxPower( POWER_TYPE_FOCUS, 200 );
+	pCreature->SetMaxPower( POWER_TYPE_HAPPINESS, 2000000 );
 
 	pCreature->SetUInt32Value(UNIT_FIELD_LEVEL, 60);
 	pCreature->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, 84 - horde);
 	pCreature->_setFaction();
-	pCreature->SetUInt32Value(UNIT_FIELD_BYTES_0, 0 | (2 << 8) | (1 << 16));
+
+    pCreature->setRace( 0 );
+    pCreature->setClass( 2 );
+    pCreature->setGender( 1 );
+    pCreature->SetPowerType( 0 );
 
 	pCreature->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, 22802);
 
@@ -1761,7 +1765,7 @@ Creature * CBattleground::SpawnSpiritGuide(float x, float y, float z, float o, u
 	pCreature->SetUInt32Value(UNIT_FIELD_DISPLAYID, 13337 + horde);
 	pCreature->SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID, 13337 + horde);
 
-	pCreature->SetUInt32Value(UNIT_CHANNEL_SPELL, 22011);
+	pCreature->SetChannelSpellId(  22011);
 	pCreature->SetFloatValue(UNIT_MOD_CAST_SPEED, 1.0f);
 
 	pCreature->SetUInt32Value(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPIRITGUIDE);
@@ -1836,8 +1840,8 @@ void CBattleground::EventResurrectPlayers()
 
 				plr->ResurrectPlayer();
 				plr->SetUInt32Value(UNIT_FIELD_HEALTH, plr->GetUInt32Value(UNIT_FIELD_MAXHEALTH));
-				plr->SetUInt32Value(UNIT_FIELD_POWER1, plr->GetUInt32Value(UNIT_FIELD_MAXPOWER1));
-				plr->SetUInt32Value(UNIT_FIELD_POWER4, plr->GetUInt32Value(UNIT_FIELD_MAXPOWER4));
+                plr->SetPower( POWER_TYPE_MANA, plr->GetMaxPower( POWER_TYPE_MANA ) );
+				plr->SetPower( POWER_TYPE_ENERGY, plr->GetMaxPower( POWER_TYPE_ENERGY ) );
 				plr->CastSpell(plr, BG_REVIVE_PREPARATION, true);
 			}
 		}

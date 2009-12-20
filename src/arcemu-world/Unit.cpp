@@ -6671,8 +6671,8 @@ Creature* Unit::create_guardian(uint32 guardian_entry,uint32 duration,float angl
 	{
 		/* MANA */
 		p->SetPowerType(POWER_TYPE_MANA);
-		p->SetUInt32Value(UNIT_FIELD_MAXPOWER1,p->GetUInt32Value(UNIT_FIELD_MAXPOWER1)+28+10*lvl);
-		p->SetUInt32Value(UNIT_FIELD_POWER1,p->GetUInt32Value(UNIT_FIELD_POWER1)+28+10*lvl);
+		p->SetMaxPower( POWER_TYPE_MANA,p->GetMaxPower( POWER_TYPE_MANA )+28+10*lvl);
+		p->SetPower( POWER_TYPE_MANA,p->GetPower( POWER_TYPE_MANA ) + 28 + 10 * lvl );
 		/* HEALTH */
 		p->SetUInt32Value(UNIT_FIELD_MAXHEALTH,p->GetUInt32Value(UNIT_FIELD_MAXHEALTH)+28+30*lvl);
 		p->SetUInt32Value(UNIT_FIELD_HEALTH,p->GetUInt32Value(UNIT_FIELD_HEALTH)+28+30*lvl);
@@ -7106,13 +7106,13 @@ void Unit::Energize( Unit* target, uint32 SpellId, uint32 amount, uint32 type )
 	if( !target || !SpellId || !amount )
 		return;
 
-	uint32 cur = target->GetUInt32Value( UNIT_FIELD_POWER1 + type );
-	uint32 max = target->GetUInt32Value( UNIT_FIELD_MAXPOWER1 + type );
+	uint32 cur = target->GetPower( POWER_TYPE_MANA + type );
+	uint32 max = target->GetMaxPower( POWER_TYPE_MANA + type );
 
 	if( cur + amount > max )
 		amount = max - cur;
 
-	target->SetUInt32Value( UNIT_FIELD_POWER1 + type, cur + amount );
+	target->SetPower( POWER_TYPE_MANA + type, cur + amount );
 
 	WorldPacket datamr( SMSG_SPELLENERGIZELOG, 30 );
 	datamr << target->GetNewGUID();
@@ -7917,10 +7917,12 @@ void Unit::RemoveReflect( uint32 spellid, bool apply )
 void Unit::SetPower(uint32 type, int32 value)
 {
 	uint32 maxpower = GetUInt32Value(UNIT_FIELD_MAXPOWER1 + type);
-	if(value < 0)
+	
+    if(value < 0)
 		value = 0;
 	else if(value > (int32)maxpower)
 		value = maxpower;
+
 	SetUInt32Value(UNIT_FIELD_POWER1 + type, value);
 }
 

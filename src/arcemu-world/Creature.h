@@ -529,7 +529,6 @@ public:
 	// Serialization
 	void SaveToDB();
 	void LoadAIAgents(CreatureTemplate * t);
-	void LoadAIAgents();
 	void DeleteFromDB();
 
 	void OnJustDied();

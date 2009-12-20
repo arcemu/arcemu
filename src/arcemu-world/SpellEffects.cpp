@@ -918,13 +918,7 @@ out:
 			if(!u_caster)
 				return;
 
-			uint32 val = u_caster->GetUInt32Value(UNIT_FIELD_POWER2);
-			uint32 max = u_caster->GetUInt32Value(UNIT_FIELD_MAXPOWER2);
-			val += rage_to_gen;
-			if(val > max)
-				val = max;
-
-			u_caster->SetUInt32Value(UNIT_FIELD_POWER2, val);
+            u_caster->ModPower( POWER_TYPE_RAGE, rage_to_gen );
 		}
 		break;
 		/*************************
@@ -1313,9 +1307,9 @@ out:
 
 				LocationVector *vec = new LocationVector(x,y,z);
 				Pet *summon = objmgr.CreatePet(26125);
-				summon->SetPower( POWER_TYPE_ENERGY, (uint32)100 );
-				summon->SetUInt32Value( UNIT_FIELD_POWER4, (uint32)100 );
-				if(p_caster->HasSpell(52143))
+				summon->SetPower( POWER_TYPE_ENERGY, 100 );
+
+                if(p_caster->HasSpell(52143))
 				{
 					summon->CreateAsSummon(26125, ci, NULL, p_caster, GetProto(), 6, 0, vec); // considered pet
 					summon->AddSpell(dbcSpell.LookupEntry(47481), true); // Gnaw
@@ -1533,10 +1527,10 @@ out:
 				return;
 			p_caster->DealDamage(playerTarget,damage,0,0,spellId);
 			damage = damage * (100 + playerTarget->m_lifetapbonus) / 100;	// Apply improved life tap
-			if(playerTarget->GetUInt32Value(UNIT_FIELD_POWER1)+damage > playerTarget->GetUInt32Value(UNIT_FIELD_MAXPOWER1))
-				playerTarget->SetUInt32Value(UNIT_FIELD_POWER1,playerTarget->GetUInt32Value(UNIT_FIELD_MAXPOWER1));
+			if(playerTarget->GetPower( POWER_TYPE_MANA ) + damage > playerTarget->GetMaxPower( POWER_TYPE_MANA ))
+				playerTarget->SetPower( POWER_TYPE_MANA,playerTarget->GetMaxPower( POWER_TYPE_MANA ));
 			else
-				playerTarget->SetUInt32Value(UNIT_FIELD_POWER1,playerTarget->GetUInt32Value(UNIT_FIELD_POWER1)+damage);
+				playerTarget->SetPower( POWER_TYPE_MANA, playerTarget->GetPower( POWER_TYPE_MANA ) + damage);
 			SendHealManaSpellOnPlayer(p_caster, playerTarget, damage, POWER_TYPE_MANA);
 		}break;
 	case 28730: //Arcane Torrent (Mana)
@@ -1579,7 +1573,7 @@ out:
 		{
 			if(unitTarget == NULL || unitTarget->IsDead() || unitTarget->getClass() == WARRIOR || unitTarget->getClass() == ROGUE)
 				return;
-			uint32 gain = (uint32) (unitTarget->GetUInt32Value(UNIT_FIELD_MAXPOWER1)*0.06);
+			uint32 gain = (uint32) (unitTarget->GetMaxPower( POWER_TYPE_MANA )*0.06);
 			unitTarget->Energize( unitTarget, 16191, gain, POWER_TYPE_MANA );
 		}break;
 	case 20425: //Judgement of Command
@@ -2457,12 +2451,13 @@ void Spell::SpellEffectHeal(uint32 i) // Heal
 					(mPlayer->GetShapeShift() != FORM_BEAR &&
 					mPlayer->GetShapeShift() != FORM_DIREBEAR))
 					break;
-				uint32 val = mPlayer->GetUInt32Value(UNIT_FIELD_POWER2);
+				uint32 val = mPlayer->GetPower( POWER_TYPE_RAGE );
 				if (val>100)
 					val = 100;
 				uint32 HpPerPoint = float2int32((mPlayer->GetUInt32Value( UNIT_FIELD_MAXHEALTH ) * 0.003f)); //0.3% of hp per point of rage
 				uint32 heal = HpPerPoint * (val/10); //1 point of rage = 0.3% of max hp
-				mPlayer->SetUInt32Value(UNIT_FIELD_POWER2,mPlayer->GetUInt32Value(UNIT_FIELD_POWER2)-val);
+				mPlayer->ModPower( POWER_TYPE_RAGE, -1 * val );
+
 				if (val)
 					mPlayer->Heal(mPlayer,22845,heal);
 			}break;
@@ -2608,7 +2603,7 @@ void Spell::SpellEffectResurrect(uint32 i) // Resurrect (Flat)
 				if(unitTarget->GetTypeId()==TYPEID_UNIT && unitTarget->IsPet() && unitTarget->IsDead())
 				{
 					uint32 hlth = ((uint32)GetProto()->EffectBasePoints[i] > unitTarget->GetUInt32Value(UNIT_FIELD_MAXHEALTH)) ? unitTarget->GetUInt32Value(UNIT_FIELD_MAXHEALTH) : (uint32)GetProto()->EffectBasePoints[i];
-					uint32 mana = ((uint32)GetProto()->EffectBasePoints[i] > unitTarget->GetUInt32Value(UNIT_FIELD_MAXPOWER1)) ? unitTarget->GetUInt32Value(UNIT_FIELD_MAXPOWER1) : (uint32)GetProto()->EffectBasePoints[i];
+					uint32 mana = ((uint32)GetProto()->EffectBasePoints[i] > unitTarget->GetMaxPower( POWER_TYPE_MANA )) ? unitTarget->GetMaxPower( POWER_TYPE_MANA ) : (uint32)GetProto()->EffectBasePoints[i];
 
 					if(!unitTarget->IsPet())
 					{
@@ -2620,7 +2615,7 @@ void Spell::SpellEffectResurrect(uint32 i) // Resurrect (Flat)
 						sEventMgr.RemoveEvents(unitTarget, EVENT_CREATURE_REMOVE_CORPSE);
 					}
 					unitTarget->SetUInt32Value(UNIT_FIELD_HEALTH, hlth);
-					unitTarget->SetUInt32Value(UNIT_FIELD_POWER1, mana);
+					unitTarget->SetPower( POWER_TYPE_MANA, mana);
 					unitTarget->SetUInt32Value(UNIT_DYNAMIC_FLAGS, 0);
 					unitTarget->setDeathState(ALIVE);
 					static_cast<Creature*>(unitTarget)->Tagged=false;
@@ -3132,8 +3127,8 @@ void Spell::SpellEffectPersistentAA(uint32 i) // Persistent Area Aura
 	if( u_caster != NULL )
 		if(GetProto()->ChannelInterruptFlags > 0)
 		{
-			u_caster->SetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT,dynObj->GetGUID());
-			u_caster->SetUInt32Value(UNIT_CHANNEL_SPELL,GetProto()->Id);
+			u_caster->SetChannelSpellTargetGUID( dynObj->GetGUID());
+			u_caster->SetChannelSpellId( GetProto()->Id);
 		}
 		m_AreaAura = true;
 }
@@ -3219,7 +3214,7 @@ void Spell::SpellEffectSummon(uint32 i)
 			doing the same attacks as the Death Knight.
 			*/
 			uint32 duration = 10000;
-			uint32 curPow = p_caster->GetUInt32Value(UNIT_FIELD_POWER7)+1;
+			uint32 curPow = p_caster->GetPower( POWER_TYPE_RUNIC_POWER) + 1;
 			uint32 extradur = float2int32(duration+(curPow/50.0f));
 
 			Pet *summon = objmgr.CreatePet(GetProto()->EffectMiscValue[i]);
@@ -3238,7 +3233,7 @@ void Spell::SpellEffectSummon(uint32 i)
 			else
 				summon->SetUInt32Value( UNIT_FIELD_BASEATTACKTIME, 2000 );
 
-			p_caster->SetUInt32Value(UNIT_FIELD_POWER7,0); //Drains all runic power.
+			p_caster->SetPower( POWER_TYPE_RUNIC_POWER, 0 ); //Drains all runic power.
 		}break;
 	default:
 		{
@@ -4352,7 +4347,7 @@ void Spell::SpellEffectSummonObject(uint32 i)
 		go->SetUInt32Value( GAMEOBJECT_FLAGS, 0 );
 		go->SetByte( GAMEOBJECT_BYTES_1, 0, 0 );
 		go->SetUInt64Value( OBJECT_FIELD_CREATED_BY, m_caster->GetGUID() );
-		u_caster->SetUInt64Value( UNIT_FIELD_CHANNEL_OBJECT, go->GetGUID() );
+        u_caster->SetChannelSpellTargetGUID( go->GetGUID() );
 
 		go->SetInstanceID( m_caster->GetInstanceID() );
 		go->PushToWorld( m_caster->GetMapMgr() );
@@ -4835,16 +4830,17 @@ void Spell::SpellEffectPowerBurn(uint32 i) // power burn
 		damage = float2int32( damage * (1 - ( ( static_cast<Player*>(unitTarget)->CalcRating( PLAYER_RATING_MODIFIER_SPELL_CRIT_RESILIENCE ) * 2 ) / 100.0f ) ) );
 	}
 	int32 mult = damage;
-	damage = mult * unitTarget->GetUInt32Value(UNIT_FIELD_MAXPOWER1) / 100;
+	damage = mult * unitTarget->GetMaxPower( POWER_TYPE_MANA ) / 100;
 	if( m_caster && m_caster->IsUnit() )
 	{
 		Unit* caster = static_cast<Unit*>( m_caster );
-		if ( (uint32) damage > caster->GetUInt32Value(UNIT_FIELD_MAXPOWER1) * (mult*2) / 100 ) 
-			damage = caster->GetUInt32Value(UNIT_FIELD_MAXPOWER1) * (mult*2) / 100;
+		if ( (uint32) damage > caster->GetMaxPower( POWER_TYPE_MANA ) * (mult*2) / 100 ) 
+			damage = caster->GetMaxPower( POWER_TYPE_MANA ) * (mult*2) / 100;
 	}
 
-	int32 mana = (int32)min( (int32)unitTarget->GetUInt32Value( UNIT_FIELD_POWER1 ), damage );
-	unitTarget->ModUnsigned32Value( UNIT_FIELD_POWER1, -mana );
+	int32 mana = (int32)min( (int32)unitTarget->GetPower( POWER_TYPE_MANA ), damage );
+	
+    unitTarget->ModPower( POWER_TYPE_MANA, -mana );
 
 	m_caster->SpellNonMeleeDamageLog( unitTarget, GetProto()->Id, (uint32)(mana * GetProto()->EffectMultipleValue[i]), pSpellId == 0, true );
 }
@@ -5953,11 +5949,14 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 	pTotem->SetCreatedByGUID( p_caster->GetGUID());
 	pTotem->SetUInt32Value(UNIT_FIELD_HEALTH, damage);
 	pTotem->SetUInt32Value(UNIT_FIELD_MAXHEALTH, damage);
-	pTotem->SetUInt32Value(UNIT_FIELD_POWER3, p_caster->getLevel() * 30);
-	pTotem->SetUInt32Value(UNIT_FIELD_MAXPOWER3, p_caster->getLevel() * 30);
+	pTotem->SetPower( POWER_TYPE_FOCUS, p_caster->getLevel() * 30);
+	pTotem->SetMaxPower( POWER_TYPE_FOCUS, p_caster->getLevel() * 30);
 	pTotem->SetUInt32Value(UNIT_FIELD_LEVEL, p_caster->getLevel() );
 	pTotem->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, p_caster->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
-	pTotem->SetUInt32Value(UNIT_FIELD_BYTES_0, (1 << 8) | (2 << 16) | (1 << 24));
+    pTotem->setRace( 0 );
+    pTotem->setClass( 1 );
+    pTotem->setGender( 2 );
+    pTotem->SetPowerType( 1 );
 	pTotem->SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED | UNIT_FLAG_SELF_RES);
 	pTotem->SetUInt32Value(UNIT_FIELD_BASEATTACKTIME, 2000);
 	pTotem->SetUInt32Value(UNIT_FIELD_BASEATTACKTIME+1, 2000);
@@ -5967,7 +5966,6 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 	pTotem->SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID, ci->Male_DisplayID); //blizzlike :P
 	pTotem->SetFloatValue(UNIT_MOD_CAST_SPEED, 1.0f);
 	pTotem->SetUInt32Value(UNIT_CREATED_BY_SPELL, GetProto()->Id);
-	// pTotem->SetUInt32Value(UNIT_FIELD_BYTES_2, 1 | (0x28 << 8));
 	pTotem->SetUInt32Value( UNIT_DYNAMIC_FLAGS, 0 );
 
 	if( p_caster->IsPvPFlagged() )
@@ -6172,14 +6170,14 @@ void Spell::SpellEffectSelfResurrect(uint32 i)
 				SM_PIValue(unitTarget->SM_PMiscEffect,&amt,GetProto()->SpellGroupType);
 			}
 			health = uint32((unitTarget->GetUInt32Value(UNIT_FIELD_MAXHEALTH) * amt) / 100);
-			mana = uint32((unitTarget->GetUInt32Value(UNIT_FIELD_MAXPOWER1) * amt) / 100);
+			mana = uint32((unitTarget->GetMaxPower( POWER_TYPE_MANA ) * amt) / 100);
 		}
 		break;
 	default:
 		{
 			if(damage < 0) return;
 			health = uint32(unitTarget->GetUInt32Value(UNIT_FIELD_MAXHEALTH) * damage / 100);
-			mana = uint32(unitTarget->GetUInt32Value(UNIT_FIELD_MAXPOWER1) * damage / 100);
+			mana = uint32(unitTarget->GetMaxPower( POWER_TYPE_MANA ) * damage / 100);
 		}break;
 	}
 
@@ -6681,7 +6679,7 @@ void Spell::SpellEffectResurrectNew(uint32 i)
 				if(unitTarget->GetTypeId()==TYPEID_UNIT && unitTarget->IsPet() && unitTarget->IsDead())
 				{
 					uint32 hlth = ((uint32)GetProto()->EffectBasePoints[i] > unitTarget->GetUInt32Value(UNIT_FIELD_MAXHEALTH)) ? unitTarget->GetUInt32Value(UNIT_FIELD_MAXHEALTH) : (uint32)GetProto()->EffectBasePoints[i];
-					uint32 mana = ((uint32)GetProto()->EffectBasePoints[i] > unitTarget->GetUInt32Value(UNIT_FIELD_MAXPOWER1)) ? unitTarget->GetUInt32Value(UNIT_FIELD_MAXPOWER1) : (uint32)GetProto()->EffectBasePoints[i];
+					uint32 mana = ((uint32)GetProto()->EffectBasePoints[i] > unitTarget->GetMaxPower( POWER_TYPE_MANA )) ? unitTarget->GetMaxPower( POWER_TYPE_MANA ) : (uint32)GetProto()->EffectBasePoints[i];
 
 					if(!unitTarget->IsPet())
 					{
@@ -6693,7 +6691,7 @@ void Spell::SpellEffectResurrectNew(uint32 i)
 						sEventMgr.RemoveEvents(unitTarget, EVENT_CREATURE_REMOVE_CORPSE);
 					}
 					unitTarget->SetUInt32Value(UNIT_FIELD_HEALTH, hlth);
-					unitTarget->SetUInt32Value(UNIT_FIELD_POWER1, mana);
+					unitTarget->SetPower( POWER_TYPE_MANA, mana);
 					unitTarget->SetUInt32Value(UNIT_DYNAMIC_FLAGS, 0);
 					unitTarget->setDeathState(ALIVE);
 					static_cast<Creature*>(unitTarget)->Tagged=false;
@@ -7383,14 +7381,17 @@ void Spell::SpellEffectActivateSpec(uint32 i)
 	p_caster->ActivateSpec(NewSpec);
 
 	WorldPacket data(SMSG_ACTION_BUTTONS, PLAYER_ACTION_BUTTON_SIZE + 1);
+
 	data << uint8(1); // Force the client to reset the actionbar and use new values
+
 	for(uint32 i = 0; i < PLAYER_ACTION_BUTTON_SIZE; ++i)
 	{
-		data << p_caster->m_specs[NewSpec].mActions[i].Action
-			 << p_caster->m_specs[NewSpec].mActions[i].Type
-			 << p_caster->m_specs[NewSpec].mActions[i].Misc;
+		data << p_caster->m_specs[NewSpec].mActions[i].Action;
+        data << p_caster->m_specs[NewSpec].mActions[i].Type;
+		data << p_caster->m_specs[NewSpec].mActions[i].Misc;
 	}
+
 	p_caster->GetSession()->SendPacket(&data);
-	p_caster->SetPower(p_caster->GetPowerType(), 0);
+	p_caster->SetPower( p_caster->GetPowerType(), 0);
 	p_caster->SendPowerUpdate(false);
 }

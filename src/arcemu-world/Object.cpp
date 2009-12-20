@@ -1951,30 +1951,11 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 			float level = (float)pVictim->getLevel();
 			float c = 0.0091107836f * level * level + 3.225598133f * level + 4.2652911f;
 			val = 2.5f * damage / c;
-			uint32 rage = pVictim->GetUInt32Value( UNIT_FIELD_POWER2 );
+            uint32 rage = pVictim->GetPower( POWER_TYPE_RAGE );
 			if( rage + float2int32( val ) > 1000 )
-				  val = 1000.0f - (float)pVictim->GetUInt32Value( UNIT_FIELD_POWER2 );
+				  val = 1000.0f - (float)pVictim->GetPower( POWER_TYPE_RAGE );
 			val *= 10.0;
-			pVictim->ModUnsigned32Value(UNIT_FIELD_POWER2, (int32)val);
-		/*if( pVictim->GetPowerType() == POWER_TYPE_RAGE && pVictim != this )
-		{
-		float val;
-		uint32 level = pVictim->getLevel();
-		float conv;
-		if( level <= PLAYER_LEVEL_CAP )
-			conv = DamageToRageConversionTable[ level ];
-		else
-			conv = ( 2.5f * 10 ) / (0.0091107836f * level * level + 3.225598133f * level + 4.2652911f);
-		float ragerate = sWorld.getRate(RATE_POWER2);
-		val = damage * conv * ragerate;
-		if( pVictim->IsPlayer() )
-			val *= ( 1 + ( static_cast< Player * >( pVictim )->rageFromDamageTaken / 100.0f ) );
-		uint32 rage = pVictim->GetUInt32Value( UNIT_FIELD_POWER2 );
-		if( rage + float2int32( val ) > 1000 )
-			val = 1000.0f - (float)pVictim->GetUInt32Value( UNIT_FIELD_POWER2 );
-
-		val *= 10.0;
-		pVictim->ModUnsigned32Value( UNIT_FIELD_POWER2, (int32)val) ;*/
+            pVictim->ModPower( POWER_TYPE_RAGE, (int32)val);
 	}
 
 	if( pVictim->IsPlayer() )
@@ -2251,7 +2232,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 			}
 		}
 
-		if(pVictim->GetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT) > 0)
+        if(pVictim->GetChannelSpellTargetGUID() != 0)
 		{
 			Spell *spl = pVictim->GetCurrentSpell();
 			if(spl != NULL)
@@ -2260,7 +2241,9 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 				{
 					if(spl->GetProto()->Effect[i] == SPELL_EFFECT_PERSISTENT_AREA_AURA)
 					{
-						DynamicObject *dObj = GetMapMgr()->GetDynamicObject(pVictim->GetUInt32Value(UNIT_FIELD_CHANNEL_OBJECT));
+                        uint64 guid = pVictim->GetChannelSpellTargetGUID();
+
+                        DynamicObject *dObj = GetMapMgr()->GetDynamicObject( GUID_LOPART( guid ) );
 						if(!dObj)
 							return;
 						WorldPacket data(SMSG_GAMEOBJECT_DESPAWN_ANIM, 8);
@@ -2709,9 +2692,9 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 					// dying pet looses 1 happiness level (not in BG)
 					if( !pPet->IsSummon() && !pPet->IsInBg() )
 					{
-						uint32 hap = pPet->GetUInt32Value( UNIT_FIELD_POWER5 );
+						uint32 hap = pPet->GetPower( POWER_TYPE_HAPPINESS );
 						hap = hap - PET_HAPPINESS_UPDATE_VALUE > 0 ? hap - PET_HAPPINESS_UPDATE_VALUE : 0;
-						pPet->SetUInt32Value( UNIT_FIELD_POWER5, hap );
+						pPet->SetPower( POWER_TYPE_HAPPINESS, hap );
 					}
 
 					pPet->DelayedRemove( false, true );
@@ -3121,7 +3104,7 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 			{
 				Player* pl = static_cast< Player* >( pVictim );
 
-				uint32 maxmana = pl->GetUInt32Value( UNIT_FIELD_MAXPOWER1 );
+				uint32 maxmana = pl->GetMaxPower( POWER_TYPE_MANA );
 				uint32 amount = uint32( maxmana * pl->m_RegenManaOnSpellResist );
 
 				pVictim->Energize( pVictim, 29442, amount, POWER_TYPE_MANA );

@@ -955,10 +955,10 @@ void Group::UpdateOutOfRangePlayer(Player * pPlayer, uint32 Flags, bool Distribu
 		*data << uint8(pPlayer->GetPowerType());
 
 	if(Flags & GROUP_UPDATE_FLAG_POWER)
-		*data << uint16(pPlayer->GetUInt32Value(UNIT_FIELD_POWER1 + pPlayer->GetPowerType()));
+		*data << uint16(pPlayer->GetPower( pPlayer->GetPowerType()  ) );
 
 	if(Flags & GROUP_UPDATE_FLAG_MAXPOWER)
-		*data << uint16(pPlayer->GetUInt32Value(UNIT_FIELD_MAXPOWER1 + pPlayer->GetPowerType()));
+		*data << uint16(pPlayer->GetMaxPower( pPlayer->GetPowerType() ));
 
 	if(Flags & GROUP_UPDATE_FLAG_LEVEL)
 		*data << uint16(pPlayer->getLevel());

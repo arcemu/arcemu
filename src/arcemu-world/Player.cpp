@@ -782,8 +782,8 @@ bool Player::Create(WorldPacket& data )
 	SetScale(  1.0f);
 	SetUInt32Value(UNIT_FIELD_HEALTH, info->health);
 	SetUInt32Value(UNIT_FIELD_POWER1, info->mana );
-	//SetUInt32Value(UNIT_FIELD_POWER2, 0 ); // this gets divided by 10
-	SetUInt32Value(UNIT_FIELD_POWER3, info->focus );
+	SetUInt32Value(UNIT_FIELD_POWER2, 0 );
+	SetUInt32Value(UNIT_FIELD_POWER3, info->focus ); // focus
 	SetUInt32Value(UNIT_FIELD_POWER4, info->energy );
 	SetUInt32Value(UNIT_FIELD_POWER6, 8);
 
@@ -819,12 +819,14 @@ bool Player::Create(WorldPacket& data )
 
 	SetUInt32Value(PLAYER_CHARACTER_POINTS2, sWorld.MaxProfs);
 
-	SetUInt32Value(UNIT_FIELD_BYTES_0, ( ( race ) | ( class_ << 8 ) | ( gender << 16 ) | ( powertype << 24 ) ) );
-	//UNIT_FIELD_BYTES_1	(standstate) | (unk1) | (unk2) | (attackstate)
+    setRace( race );
+    setClass( class_ );
+    setGender( gender );
+    SetPowerType( powertype );
+
 	SetUInt32Value(UNIT_FIELD_BYTES_2, (U_FIELD_BYTES_FLAG_PVP << 8));
-	SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED );
-	//SetUInt32Value(UNIT_FIELD_BYTES_2, (0x28 << 8) );
-	if(class_ == WARRIOR)
+
+    if(class_ == WARRIOR)
 		SetShapeShift(FORM_BATTLESTANCE);
 
 	SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED);
@@ -851,7 +853,6 @@ bool Player::Create(WorldPacket& data )
 	SetUInt32Value(UNIT_FIELD_ATTACK_POWER, info->attackpower );
 	SetUInt32Value(PLAYER_BYTES, ((skin) | (face << 8) | (hairStyle << 16) | (hairColor << 24)));
 	//PLAYER_BYTES_2							   GM ON/OFF	 BANKBAGSLOTS   RESTEDSTATE
-   // SetUInt32Value(PLAYER_BYTES_2, (facialHair | (0xEE << 8) | (0x01 << 16) | (0x02 << 24)));
 	SetUInt32Value(PLAYER_BYTES_2, (facialHair /*| (0xEE << 8)*/  | (0x02 << 24)));//no bank slot by default!
 
 	//PLAYER_BYTES_3						   DRUNKENSTATE				 PVPRANK
@@ -3129,7 +3130,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	// Initialize 'normal' fields
 	SetScale(  1.0f);
 	//SetUInt32Value(UNIT_FIELD_POWER2, 0);
-	SetUInt32Value(UNIT_FIELD_POWER3, info->focus);
+	SetUInt32Value(UNIT_FIELD_POWER3, info->focus); // focus
 	SetUInt32Value(UNIT_FIELD_POWER4, info->energy );
 	SetUInt32Value(UNIT_FIELD_POWER6, 8);
 	SetUInt32Value(UNIT_FIELD_MAXPOWER2, info->rage );
@@ -4780,7 +4781,7 @@ void Player::ResurrectPlayer()
 	if( m_resurrectHealth )
 		SetUInt32Value( UNIT_FIELD_HEALTH, (uint32)min( m_resurrectHealth, m_uint32Values[UNIT_FIELD_MAXHEALTH] ) );
 	if( m_resurrectMana )
-		SetPower(0, m_resurrectMana);
+		SetPower( POWER_TYPE_MANA, m_resurrectMana);
 
 	m_resurrectHealth = m_resurrectMana = 0;
 
@@ -4857,10 +4858,10 @@ void Player::KillPlayer()
 void Player::CreateCorpse()
 {
 	Corpse *pCorpse;
-	uint32 _uf, _pb, _pb2, _cfb1, _cfb2;
+	uint32 _pb, _pb2, _cfb1, _cfb2;
 
 	objmgr.DelinkPlayerCorpses(this);
-	if(!this->bCorpseCreateable)
+	if( !bCorpseCreateable )
 	{
 		bCorpseCreateable = true;   // For next time
 		return; // No corpse allowed!
@@ -4871,11 +4872,10 @@ void Player::CreateCorpse()
 	pCorpse->Create(this, GetMapId(), GetPositionX(),
 		GetPositionY(), GetPositionZ(), GetOrientation());
 
-	_uf = GetUInt32Value(UNIT_FIELD_BYTES_0);
 	_pb = GetUInt32Value(PLAYER_BYTES);
 	_pb2 = GetUInt32Value(PLAYER_BYTES_2);
 
-	uint8 race	   = (uint8)(_uf);
+    uint8 race	   = getRace();
 	uint8 skin	   = (uint8)(_pb);
 	uint8 face	   = (uint8)(_pb >> 8);
 	uint8 hairstyle  = (uint8)(_pb >> 16);
@@ -7056,7 +7056,7 @@ void Player::RegenerateMana(bool is_interrupted)
 //	which can be slightly out-of-sync with client regeneration [with latency] (and wastes packets since client can handle this on its own)
 	if(wrate != 1.0) // our config has custom regen rate, so send new amount to player's client
 	{
-		SetPower(0, cur);
+		SetPower( POWER_TYPE_MANA, cur);
 	}
 	else // let player's own client handle normal regen rates.
 	{
@@ -7119,7 +7119,7 @@ void Player::LooseRage(int32 decayValue)
 // which can be slightly out-of-sync with client rage loss
 // config file rage rate is rage gained, not lost, so we don't need that here
 //	SetUInt32Value(UNIT_FIELD_POWER2,newrage);
-	m_uint32Values[UNIT_FIELD_POWER2] = newrage;
+	SetPower( POWER_TYPE_RAGE, newrage );
 	SendPowerUpdate(false); // send update to other in-range players
 }
 
@@ -7139,7 +7139,7 @@ void Player::RegenerateEnergy()
 //	which can be slightly out-of-sync with client regeneration [latency] (and wastes packets since client can handle this on its own)
 	if(wrate != 1.0f) // our config has custom regen rate, so send new amount to player's client
 	{
-		SetPower(GetPowerType(), (cur>=mh) ? mh : cur);
+		SetPower( GetPowerType(), (cur>=mh) ? mh : cur);
 	}
 	else // let player's own client handle normal regen rates.
 	{
@@ -8131,7 +8131,7 @@ void Player::DuelCountdown()
 	{
 		// Start Duel.
 		SetUInt32Value( UNIT_FIELD_POWER2, 0 );
-		DuelingWith->SetUInt32Value( UNIT_FIELD_POWER2, 0 );
+		DuelingWith->SetPower( POWER_TYPE_RAGE, 0 );
 
 		//Give the players a Team
 		DuelingWith->SetUInt32Value( PLAYER_DUEL_TEAM, 1 ); // Duel Requester
@@ -8376,7 +8376,7 @@ void Player::ApplyLevelInfo(LevelInfo* Info, uint32 Level)
 	// Set health / mana
 	SetUInt32Value(UNIT_FIELD_HEALTH, Info->HP);
 	SetUInt32Value(UNIT_FIELD_MAXHEALTH, Info->HP);
-	SetPower(0, Info->Mana);
+	SetPower( POWER_TYPE_MANA, Info->Mana);
 	SetUInt32Value(UNIT_FIELD_MAXPOWER1, Info->Mana);
 
 	// Calculate talentpoints

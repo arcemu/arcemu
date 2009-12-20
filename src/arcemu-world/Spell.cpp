@@ -1270,7 +1270,7 @@ uint8 Spell::prepare( SpellCastTargets * targets )
 			// when a spell is channeling and a new spell is cast
 			// that is a channeling spell, but not triggered by a aura
 			// the channel bar/spell is bugged
-			if( u_caster && u_caster->GetUInt64Value( UNIT_FIELD_CHANNEL_OBJECT) > 0 && u_caster->GetCurrentSpell() )
+            if( u_caster && u_caster->GetChannelSpellTargetGUID() != 0 && u_caster->GetCurrentSpell() )
 			{
 				u_caster->GetCurrentSpell()->cancel();
 				SendChannelUpdate( 0 );
@@ -1348,7 +1348,7 @@ void Spell::cancel()
 		{
 			if(p_caster && p_caster->IsInWorld())
 			{
-				Unit *pTarget = p_caster->GetMapMgr()->GetUnit(m_caster->GetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT));
+                Unit *pTarget = p_caster->GetMapMgr()->GetUnit( p_caster->GetChannelSpellTargetGUID() );
 				if(!pTarget)
 					pTarget = p_caster->GetMapMgr()->GetUnit(p_caster->GetSelection());
 
@@ -1358,8 +1358,9 @@ void Spell::cancel()
 				}
 				if(m_AreaAura)//remove of blizz and shit like this
 				{
+                    uint64 guid = p_caster->GetChannelSpellTargetGUID();
 
-					DynamicObject* dynObj=m_caster->GetMapMgr()->GetDynamicObject(m_caster->GetUInt32Value(UNIT_FIELD_CHANNEL_OBJECT));
+                    DynamicObject* dynObj=m_caster->GetMapMgr()->GetDynamicObject( GUID_LOPART( guid ) );
 					if(dynObj)
 						dynObj->Remove();
 				}
@@ -1660,24 +1661,24 @@ void Spell::cast(bool check)
 					{
 						//Use channel interrupt flags here
 						if(m_targets.m_targetMask == TARGET_FLAG_DEST_LOCATION || m_targets.m_targetMask == TARGET_FLAG_SOURCE_LOCATION)
-							u_caster->SetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT, p_caster->GetSelection());
+							u_caster->SetChannelSpellTargetGUID(  p_caster->GetSelection());
 						else if(p_caster->GetSelection() == m_caster->GetGUID())
 						{
 							if(p_caster->GetSummon())
-								u_caster->SetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT, p_caster->GetSummon()->GetGUID());
+								u_caster->SetChannelSpellTargetGUID(  p_caster->GetSummon()->GetGUID());
 							else if(m_targets.m_unitTarget)
-								u_caster->SetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT, m_targets.m_unitTarget);
+								u_caster->SetChannelSpellTargetGUID(  m_targets.m_unitTarget);
 							else
-								u_caster->SetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT, p_caster->GetSelection());
+								u_caster->SetChannelSpellTargetGUID(  p_caster->GetSelection());
 						}
 						else
 						{
 							if(p_caster->GetSelection())
-								u_caster->SetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT, p_caster->GetSelection());
+								u_caster->SetChannelSpellTargetGUID(  p_caster->GetSelection());
 							else if(p_caster->GetSummon())
-								u_caster->SetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT, p_caster->GetSummon()->GetGUID());
+								u_caster->SetChannelSpellTargetGUID(  p_caster->GetSummon()->GetGUID());
 							else if(m_targets.m_unitTarget)
-								u_caster->SetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT, m_targets.m_unitTarget);
+								u_caster->SetChannelSpellTargetGUID(  m_targets.m_unitTarget);
 							else
 							{
 								m_isCasting = false;
@@ -2101,7 +2102,7 @@ void Spell::finish(bool successful)
 			Unit *pTarget = NULL;
 			if( p_caster->IsInWorld() )
 			{
-				pTarget = p_caster->GetMapMgr()->GetUnit(m_caster->GetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT));
+                pTarget = p_caster->GetMapMgr()->GetUnit(p_caster->GetChannelSpellTargetGUID() );
 				if(!pTarget)
 					pTarget = p_caster->GetMapMgr()->GetUnit(p_caster->GetSelection());
 			}
@@ -2587,12 +2588,14 @@ void Spell::SendChannelUpdate(uint32 time)
 	{
 		if(u_caster && u_caster->IsInWorld())
 		{
-			DynamicObject* dynObj=u_caster->GetMapMgr()->GetDynamicObject(u_caster->GetUInt32Value(UNIT_FIELD_CHANNEL_OBJECT));
+            uint64 guid = u_caster->GetChannelSpellTargetGUID();
+
+            DynamicObject* dynObj=u_caster->GetMapMgr()->GetDynamicObject( GUID_LOPART( guid ) );
 			if(dynObj)
 				dynObj->Remove();
 
-			u_caster->SetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT,0);
-			u_caster->SetUInt32Value(UNIT_CHANNEL_SPELL,0);
+			u_caster->SetChannelSpellTargetGUID( 0);
+			u_caster->SetChannelSpellId( 0);
 		}
 	}
 
@@ -2621,7 +2624,7 @@ void Spell::SendChannelStart(uint32 duration)
 	m_castTime = m_timer = duration;
 
 	if( u_caster != NULL )
-		u_caster->SetUInt32Value(UNIT_CHANNEL_SPELL,GetProto()->Id);
+		u_caster->SetChannelSpellId( GetProto()->Id);
 
 	/*
 	Unit* target = objmgr.GetCreature( static_cast< Player* >( m_caster )->GetSelection());
@@ -2816,7 +2819,7 @@ bool Spell::TakePower()
 					if(credit > 0 && p_caster->TakeRunes( RUNE_DEATH, credit ) > 0)
 						return false;
 					if(runecost->runePowerGain)
-						u_caster->SetPower(POWER_TYPE_RUNIC_POWER, runecost->runePowerGain + u_caster->GetUInt32Value(UNIT_FIELD_POWER7));
+						u_caster->SetPower( POWER_TYPE_RUNIC_POWER, runecost->runePowerGain + u_caster->GetPower( POWER_TYPE_RUNIC_POWER ) );
 				}
 				return true;
 			}
@@ -4693,7 +4696,7 @@ uint8 Spell::CanCast(bool tolerate)
 			}
 		}
 
-		if (u_caster->GetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT) > 0)
+        if (u_caster->GetChannelSpellTargetGUID() != 0)
 		{
 			SpellEntry * t_spellInfo = (u_caster->GetCurrentSpell() ? u_caster->GetCurrentSpell()->GetProto() : NULL);
 
@@ -4947,8 +4950,8 @@ exit:
 	else if( GetProto()->NameHash == SPELL_HASH_FEROCIOUS_BITE )
 	{
 		if (p_caster != NULL) {
-			value += (uint32)( ( p_caster->GetAP() * 0.1526f ) + ( p_caster->GetUInt32Value( UNIT_FIELD_POWER4 ) * GetProto()->dmg_multiplier[i] ) );
-			p_caster->SetUInt32Value( UNIT_FIELD_POWER4, 0 );
+			value += (uint32)( ( p_caster->GetAP() * 0.1526f ) + ( p_caster->GetPower( POWER_TYPE_ENERGY ) * GetProto()->dmg_multiplier[i] ) );
+			p_caster->SetPower( POWER_TYPE_ENERGY, 0 );
 		}
 	}
 	else if( GetProto()->Id == 34123) //Druid - Tree of Life
@@ -4962,7 +4965,7 @@ exit:
 	else if( GetProto()->Id == 57669 || GetProto()->Id == 61782) //Replenishment
 	{
 		if( i== 0 && p_caster != NULL && target != NULL )
-			value = uint32(0.0025*target->GetUInt32Value(UNIT_FIELD_MAXPOWER1));
+			value = uint32(0.0025*target->GetMaxPower( POWER_TYPE_MANA ));
 	}
 	// HACK FIX
 	else if( GetProto()->NameHash == SPELL_HASH_VICTORY_RUSH )

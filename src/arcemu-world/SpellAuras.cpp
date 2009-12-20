@@ -3758,14 +3758,14 @@ void Aura::EventPeriodicManaPct(float RegenPct)
 	if(!m_target->isAlive())
 		return;
 
-	uint32 add = float2int32(m_target->GetUInt32Value(UNIT_FIELD_MAXPOWER1) * (RegenPct / 100.0f));
+	uint32 add = float2int32(m_target->GetMaxPower( POWER_TYPE_MANA ) * (RegenPct / 100.0f));
 
 	uint32 newHealth = m_target->GetUInt32Value(UNIT_FIELD_POWER1) + add;
 
-	if(newHealth <= m_target->GetUInt32Value(UNIT_FIELD_MAXPOWER1))
-		m_target->SetUInt32Value(UNIT_FIELD_POWER1, newHealth);
+	if(newHealth <= m_target->GetMaxPower( POWER_TYPE_MANA ))
+		m_target->SetPower( POWER_TYPE_MANA, newHealth);
 	else
-		m_target->SetUInt32Value(UNIT_FIELD_POWER1, m_target->GetUInt32Value(UNIT_FIELD_MAXPOWER1));
+		m_target->SetPower( POWER_TYPE_MANA, m_target->GetMaxPower( POWER_TYPE_MANA ));
 
 	// CAPT
 	// TODO: sniff it or disasm wow.exe to find the mana flag
@@ -3860,11 +3860,11 @@ void Aura::SpellAuraPeriodicTriggerSpellWithValue(bool apply)
 
 		spe->EffectBasePoints[0] = mod->m_amount; // set the base damage value
 
-		if(m_caster->GetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT))
+        if( m_caster->GetChannelSpellTargetGUID() != 0 )
 		{
 			sEventMgr.AddEvent(this, &Aura::EventPeriodicTriggerSpell, spe,
 			EVENT_AURA_PERIODIC_TRIGGERSPELL,GetSpellProto()->EffectAmplitude[mod->i], 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-			periodic_target = m_caster->GetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT);
+            periodic_target = m_caster->GetChannelSpellTargetGUID();
 		}
 		else if(m_target)
 		{
@@ -3933,12 +3933,12 @@ void Aura::SpellAuraPeriodicTriggerSpell(bool apply)
 			return;
 		}
 
-		if(m_caster->GetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT))
+        if( m_caster->GetChannelSpellTargetGUID() )
 		{
 			sEventMgr.AddEvent(this, &Aura::EventPeriodicTriggerSpell, spe,
 			EVENT_AURA_PERIODIC_TRIGGERSPELL,GetSpellProto()->EffectAmplitude[mod->i], 0,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 
-            periodic_target = m_caster->GetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT);
+            periodic_target = m_caster->GetChannelSpellTargetGUID();
 		}
 		else if(m_target)
 		{
@@ -4491,9 +4491,9 @@ void Aura::SpellAuraModShapeshift(bool apply)
 			spellId = 3025;
 			if(apply)
 			{
-				m_target->SetByte(UNIT_FIELD_BYTES_0,3,POWER_TYPE_ENERGY);
-				m_target->SetUInt32Value(UNIT_FIELD_MAXPOWER4,100);//100 Energy
-				m_target->SetUInt32Value(UNIT_FIELD_POWER4,0);//0 Energy
+                m_target->SetPowerType( POWER_TYPE_ENERGY );
+				m_target->SetMaxPower( POWER_TYPE_ENERGY, 100 );//100 Energy
+				m_target->SetPower( POWER_TYPE_ENERGY, 0 );//0 Energy
 				if(m_target->getRace() != RACE_NIGHTELF)//TAUREN
 					modelId = 8571;
 
@@ -4501,7 +4501,7 @@ void Aura::SpellAuraModShapeshift(bool apply)
 			else
 			{//turn back to mana
 				//m_target->SetUInt32Value(UNIT_FIELD_BASEATTACKTIME,oldap);
-				m_target->SetByte(UNIT_FIELD_BYTES_0,3,POWER_TYPE_MANA);
+                m_target->SetPowerType( POWER_TYPE_MANA );
 				if(m_target->m_stealth)
 				{
 					uint32 sp = m_target->m_stealth;
@@ -4534,9 +4534,9 @@ void Aura::SpellAuraModShapeshift(bool apply)
 			spellId = 1178;
 			if(apply)
 			{
-				m_target->SetByte(UNIT_FIELD_BYTES_0,3,POWER_TYPE_RAGE);
-				m_target->SetUInt32Value(UNIT_FIELD_MAXPOWER2, 1000);
-				m_target->SetUInt32Value(UNIT_FIELD_POWER2, 0);//0 rage
+				m_target->SetPowerType( POWER_TYPE_RAGE);
+				m_target->SetMaxPower( POWER_TYPE_RAGE, 1000);
+				m_target->SetPower( POWER_TYPE_RAGE, 0);//0 rage
 
 				if( m_target->getRace() != RACE_NIGHTELF ) //TAUREN
 					modelId = 2289;
@@ -4551,7 +4551,7 @@ void Aura::SpellAuraModShapeshift(bool apply)
 			}
 			else
 			{//reset back to mana
-				m_target->SetByte(UNIT_FIELD_BYTES_0,3,POWER_TYPE_MANA);
+				m_target->SetPowerType( POWER_TYPE_MANA);
 				m_target->RemoveAura( 21178 ); // remove Bear Form (Passive2)
 			}
 		} break;
@@ -4561,14 +4561,14 @@ void Aura::SpellAuraModShapeshift(bool apply)
 			spellId = 9635;
 			if(apply)
 			{
-				m_target->SetByte(UNIT_FIELD_BYTES_0,3,POWER_TYPE_RAGE);
-				m_target->SetUInt32Value(UNIT_FIELD_MAXPOWER2, 1000);
-				m_target->SetUInt32Value(UNIT_FIELD_POWER2, 0);//0 rage
+				m_target->SetPowerType( POWER_TYPE_RAGE);
+				m_target->SetMaxPower( POWER_TYPE_RAGE, 1000);
+				m_target->SetPower( POWER_TYPE_RAGE, 0);//0 rage
 				if( m_target->getRace() != RACE_NIGHTELF ) //TAUREN
 					modelId = 2289;
 			}
 			else //reset back to mana
-				m_target->SetByte(UNIT_FIELD_BYTES_0,3,POWER_TYPE_MANA);
+				m_target->SetPowerType( POWER_TYPE_MANA);
 		} break;
 	case FORM_BATTLESTANCE:
 		{
@@ -4644,8 +4644,8 @@ void Aura::SpellAuraModShapeshift(bool apply)
 
 	if( apply )
 	{
-		if( m_target->getClass() == WARRIOR && m_target->GetUInt32Value( UNIT_FIELD_POWER2 ) > p_target->m_retainedrage )
-			m_target->SetUInt32Value(UNIT_FIELD_POWER2, p_target->m_retainedrage );
+		if( m_target->getClass() == WARRIOR && m_target->GetPower( POWER_TYPE_RAGE ) > p_target->m_retainedrage )
+			m_target->SetPower( POWER_TYPE_RAGE, p_target->m_retainedrage );
 
 		if( m_target->getClass() == DRUID )
 		{
@@ -5717,12 +5717,12 @@ void Aura::SpellAuraPeriodicManaLeech(bool apply)
 		uint32 amt = mod->m_amount;
 		uint32 mult = amt;
 
-		amt = mult * m_target->GetUInt32Value( UNIT_FIELD_MAXPOWER1 ) / 100;
+		amt = mult * m_target->GetMaxPower( POWER_TYPE_MANA ) / 100;
 		
 		Unit* caster = GetUnitCaster();
 		if( caster != NULL )
 		{
-			if( amt > caster->GetUInt32Value( UNIT_FIELD_MAXPOWER1 ) * ( mult << 1 ) / 100 ) 
+			if( amt > caster->GetMaxPower( POWER_TYPE_MANA ) * ( mult << 1 ) / 100 ) 
 				amt = caster->GetUInt32Value( UNIT_FIELD_MAXPOWER1) * ( mult << 1 ) / 100;
 		}
 		sEventMgr.AddEvent( this, &Aura::EventPeriodicManaLeech, amt,
@@ -5738,14 +5738,14 @@ void Aura::EventPeriodicManaLeech(uint32 amount)
 	if(m_target->isAlive() && m_caster->isAlive())
 	{
 
-		int32 amt = (int32)min( amount, m_target->GetUInt32Value( UNIT_FIELD_POWER1 ) );
-		uint32 cm = m_caster->GetUInt32Value(UNIT_FIELD_POWER1)+amt;
-		uint32 mm = m_caster->GetUInt32Value(UNIT_FIELD_MAXPOWER1);
+		int32 amt = (int32)min( amount, m_target->GetPower( POWER_TYPE_MANA ) );
+		uint32 cm = m_caster->GetPower( POWER_TYPE_MANA ) + amt;
+		uint32 mm = m_caster->GetMaxPower( POWER_TYPE_MANA );
 		if(cm <= mm)
-			m_caster->SetUInt32Value(UNIT_FIELD_POWER1, cm);
+			m_caster->SetPower( POWER_TYPE_MANA, cm);
 		else
-			m_caster->SetUInt32Value(UNIT_FIELD_POWER1, mm);
-		m_target->ModUnsigned32Value(UNIT_FIELD_POWER1, -amt);
+			m_caster->SetPower( POWER_TYPE_MANA, mm);
+		m_target->ModPower( POWER_TYPE_MANA, -amt);
 	}
 }
 
@@ -6414,11 +6414,12 @@ void Aura::EventPeriodicEnergizeVariable( uint32 amount, uint32 type )
 
 void Aura::EventPeriodicDrink(uint32 amount)
 {
-	uint32 v = m_target->GetUInt32Value(UNIT_FIELD_POWER1) + amount;
-	if( v > m_target->GetUInt32Value(UNIT_FIELD_MAXPOWER1) )
-		v = m_target->GetUInt32Value(UNIT_FIELD_MAXPOWER1);
+	uint32 v = m_target->GetPower( POWER_TYPE_MANA ) + amount;
 
-	m_target->SetUInt32Value(UNIT_FIELD_POWER1, v);
+	if( v > m_target->GetMaxPower( POWER_TYPE_MANA ) )
+		v = m_target->GetMaxPower( POWER_TYPE_MANA );
+
+	m_target->SetPower( POWER_TYPE_MANA, v);
 }
 
 void Aura::EventPeriodicHeal1(uint32 amount)
@@ -8966,12 +8967,12 @@ void Aura::EventPeriodicRegenManaStatPct(uint32 perc,uint32 stat)
 	if(m_target->IsDead())
 		return;
 
-	uint32 mana = m_target->GetUInt32Value(UNIT_FIELD_POWER1) + (m_target->GetUInt32Value(UNIT_FIELD_STAT0 + stat)*perc)/100;
+	uint32 mana = m_target->GetPower( POWER_TYPE_MANA ) + (m_target->GetUInt32Value(UNIT_FIELD_STAT0 + stat)*perc)/100;
 
-	if(mana <= m_target->GetUInt32Value(UNIT_FIELD_MAXPOWER1))
-		m_target->SetUInt32Value(UNIT_FIELD_POWER1, mana);
+	if(mana <= m_target->GetMaxPower( POWER_TYPE_MANA ) )
+		m_target->SetPower( POWER_TYPE_MANA, mana);
 	else
-		m_target->SetUInt32Value(UNIT_FIELD_POWER1, m_target->GetUInt32Value(UNIT_FIELD_MAXPOWER1));
+		m_target->SetPower( POWER_TYPE_MANA, m_target->GetMaxPower( POWER_TYPE_MANA ));
 }
 
 void Aura::SpellAuraRegenManaStatPCT(bool apply)
@@ -9294,9 +9295,9 @@ void Aura::HandleAuraControlVehicle(bool apply)
 		pcaster->SetUInt64Value( PLAYER_FARSIGHT, pcaster->GetVehicle()->GetGUID() ); //focus camera on this
 
 		//add mana to the vehicle. It is supposed to already have mana
-		if( m_target->GetUInt32Value( UNIT_FIELD_MAXPOWER1 ) < 100 )
-			m_target->SetUInt32Value( UNIT_FIELD_MAXPOWER1, 100000 );
-		m_target->SetUInt32Value( UNIT_FIELD_POWER1, m_target->GetUInt32Value( UNIT_FIELD_MAXPOWER1 ) );
+		if( m_target->GetMaxPower( POWER_TYPE_MANA ) < 100 )
+			m_target->SetMaxPower( POWER_TYPE_MANA, 100000 );
+		m_target->SetPower( POWER_TYPE_MANA, m_target->GetMaxPower( POWER_TYPE_MANA ) );
 
 		//root the player
 		pcaster->Root();

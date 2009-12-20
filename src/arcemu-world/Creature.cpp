@@ -1025,18 +1025,22 @@ void Creature::RegenerateMana()
 	if (m_interruptRegen)
 		return;
 
-	uint32 cur=GetUInt32Value(UNIT_FIELD_POWER1);
-	uint32 mm=GetUInt32Value(UNIT_FIELD_MAXPOWER1);
+	uint32 cur = GetPower( POWER_TYPE_MANA );
+	uint32 mm = GetMaxPower( POWER_TYPE_MANA );
 	if(cur>=mm)return;
 	amt=(getLevel()+10)*PctPowerRegenModifier[POWER_TYPE_MANA];
 
-	//Apply shit from conf file
+
 	amt*=sWorld.getRate(RATE_POWER1);
-	if(amt<=1.0)//this fixes regen like 0.98
+	if( amt <= 1.0 )//this fixes regen like 0.98
 		cur++;
 	else
-		cur+=(uint32)amt;
-	SetUInt32Value(UNIT_FIELD_POWER1,(cur>=mm)?mm:cur);
+		cur += (uint32)amt;
+
+    if( cur >= mm )
+        SetPower( POWER_TYPE_MANA, mm );
+    else
+        SetPower( POWER_TYPE_MANA, cur );
 }
 
 void Creature::RegenerateFocus()
@@ -1050,7 +1054,7 @@ void Creature::RegenerateFocus()
 	float regenrate = sWorld.getRate(RATE_POWER3);
 	float amt = 25.0f * PctPowerRegenModifier[POWER_TYPE_FOCUS] * regenrate;
 	cur+=(uint32)amt;
-	SetUInt32Value(UNIT_FIELD_POWER3,(cur>=mm)?mm:cur);
+	SetUInt32Value(UNIT_FIELD_POWER3,(cur>=mm)?mm:cur);  // focus
 }
 
 void Creature::CallScriptUpdate()
@@ -1174,8 +1178,8 @@ void Creature::ChannelLinkUpGO(uint32 SqlId)
 	if(go != 0)
 	{
 		event_RemoveEvents(EVENT_CREATURE_CHANNEL_LINKUP);
-		SetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT, go->GetGUID());
-		SetUInt32Value(UNIT_CHANNEL_SPELL, m_spawn->channel_spell);
+        SetChannelSpellTargetGUID( go->GetGUID());
+        SetChannelSpellId( m_spawn->channel_spell);
 	}
 }
 
@@ -1188,77 +1192,9 @@ void Creature::ChannelLinkUpCreature(uint32 SqlId)
 	if(go != 0)
 	{
 		event_RemoveEvents(EVENT_CREATURE_CHANNEL_LINKUP);
-		SetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT, go->GetGUID());
-		SetUInt32Value(UNIT_CHANNEL_SPELL, m_spawn->channel_spell);
+		SetChannelSpellTargetGUID( go->GetGUID() );
+		SetChannelSpellId( m_spawn->channel_spell );
 	}
-}
-
-void Creature::LoadAIAgents()
-{
-	/*std::stringstream ss;
-	ss << "SELECT * FROM ai_agents where entry=" << GetUInt32Value(OBJECT_FIELD_ENTRY);
-	QueryResult *result = sDatabase.Query( ss.str().c_str() );
-
-	if( !result )
-		return;
-
-	AI_Spell *sp;
-
-	do
-	{
-		Field *fields = result->Fetch();
-
-		sp = new AI_Spell;
-		sp->entryId = fields[0].GetUInt32();
-		sp->agent = fields[1].GetUInt16();
-		sp->procChance = fields[3].GetUInt32();
-		sp->spellId = fields[5].GetUInt32();
-		sp->spellType = fields[6].GetUInt32();;
-		sp->spelltargetType = fields[7].GetUInt32();
-		sp->floatMisc1 = fields[9].GetFloat();
-		sp->Misc2 = fields[10].GetUInt32();
-		sp->minrange = GetMinRange(sSpellRange.LookupEntry(sSpellStore.LookupEntry(sp->spellId)->rangeIndex));
-		sp->maxrange = GetMaxRange(sSpellRange.LookupEntry(sSpellStore.LookupEntry(sp->spellId)->rangeIndex));
-
-		if(sp->agent == AGENT_RANGED)
-		{
-			GetAIInterface()->m_canRangedAttack = true;
-		}
-		else if(sp->agent == AGENT_FLEE)
-		{
-			GetAIInterface()->m_canFlee = true;
-			if(sp->floatMisc1)
-			{
-				GetAIInterface()->m_FleeHealth = sp->floatMisc1;
-			}
-			else
-			{
-				GetAIInterface()->m_FleeHealth = 0.2f;
-			}
-			if(sp->Misc2)
-			{
-				GetAIInterface()->m_FleeDuration = sp->Misc2;
-			}
-			else
-			{
-				GetAIInterface()->m_FleeDuration = 10000;
-			}
-		}
-		else if(sp->agent == AGENT_CALLFORHELP)
-		{
-			GetAIInterface()->m_canCallForHelp = true;
-			if(sp->floatMisc1)
-				GetAIInterface()->m_CallForHelpHealth = sp->floatMisc1;
-			else
-				GetAIInterface()->m_CallForHelpHealth = 0.2f;
-		}
-		else
-		{
-			GetAIInterface()->addSpellToList(sp);
-		}
-	} while( result->NextRow() );
-
-	delete result;*/
 }
 
 WayPoint * Creature::CreateWaypointStruct()
@@ -1335,7 +1271,7 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	SetUInt32Value(UNIT_FIELD_MAXHEALTH, health);
 	SetUInt32Value(UNIT_FIELD_BASE_HEALTH, health);
 
-	SetUInt32Value(UNIT_FIELD_POWER1,proto->Mana);
+	SetPower( POWER_TYPE_MANA, proto->Mana );
 	SetUInt32Value(UNIT_FIELD_MAXPOWER1,proto->Mana);
 	SetUInt32Value(UNIT_FIELD_BASE_MANA,proto->Mana);
 
@@ -1348,7 +1284,6 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	// uint32 gender = creature_info->GenerateModelId(&model);
 	// setGender(gender);
 
-	SetByte(UNIT_FIELD_BYTES_0,2,get_byte(spawn->bytes0,2));
 	SetUInt32Value(UNIT_FIELD_DISPLAYID,spawn->displayid);
 	SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID,spawn->displayid);
 	SetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID,spawn->MountedDisplayID);
@@ -1585,7 +1520,7 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 	SetUInt32Value(UNIT_FIELD_MAXHEALTH, health);
 	SetUInt32Value(UNIT_FIELD_BASE_HEALTH, health);
 
-	SetUInt32Value(UNIT_FIELD_POWER1,proto->Mana);
+	SetPower( POWER_TYPE_MANA, proto->Mana );
 	SetUInt32Value(UNIT_FIELD_MAXPOWER1,proto->Mana);
 	SetUInt32Value(UNIT_FIELD_BASE_MANA,proto->Mana);
 

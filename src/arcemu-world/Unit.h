@@ -904,14 +904,8 @@ public:
 
 	/// Stats
 	uint32 getLevel() { return m_uint32Values[ UNIT_FIELD_LEVEL ]; };
-	uint8 getRace() { return GetByte(UNIT_FIELD_BYTES_0,0); }
-	uint8 getClass() { return GetByte(UNIT_FIELD_BYTES_0,1); }
-	void setRace(uint8 race) { SetByte(UNIT_FIELD_BYTES_0,0,race); }
-	void setClass(uint8 class_) { SetByte(UNIT_FIELD_BYTES_0,1, class_ ); }
 	uint32 getClassMask() { return 1 << (getClass() - 1); }
 	uint32 getRaceMask() { return 1 << (getRace() - 1); }
-	uint8 getGender() { return GetByte(UNIT_FIELD_BYTES_0,2); }
-	void setGender(uint8 gender) { SetByte(UNIT_FIELD_BYTES_0,2,gender); }
 	uint8 getStandState() { return ((uint8)m_uint32Values[UNIT_FIELD_BYTES_1]); }
  
 	//// Combat
@@ -1324,7 +1318,7 @@ public:
 
 	int32 PctRegenModifier;
 	float PctPowerRegenModifier[4];
-	uint32 GetPowerType(){ return (GetUInt32Value(UNIT_FIELD_BYTES_0)>> 24);}
+	
 	void UpdatePowerAmm();
 
 	void RemoveAurasByInterruptFlag(uint32 flag);
@@ -1341,7 +1335,6 @@ public:
 	std::list<ExtraStrike*> m_extraStrikeTargets;
 	int32 m_fearmodifiers;
 	int64 m_magnetcaster; // Unit who acts as a magnet for this unit
-	//std::set<SpellEntry*> m_onStrikeSpells;
 	
 	//Combat Mod Results:
 	int32 m_CombatResult_Dodge;
@@ -1423,11 +1416,6 @@ public:
 
 	void DisableAI() { m_useAI = false; }
 	void EnableAI() { m_useAI = true; }
-
-	void SetPowerType( uint8 type )
-	{
-		SetByte( UNIT_FIELD_BYTES_0, 3, type );
-	}
 
 	bool IsSpiritHealer()
 	{
@@ -1512,7 +1500,6 @@ public:
 	void EventStrikeWithAbility(uint64 guid, SpellEntry * sp, uint32 damage);
 	void DispelAll(bool positive);
 
-	void SetPower(uint32 type, int32 value);
 	void SendPowerUpdate(bool self);
 
 	int8 m_hasVampiricTouch;
@@ -1532,7 +1519,7 @@ public:
 	
 	void AggroPvPGuards();
 
-    /////////////////////////////////////////////////// Unit properties ///////////////////////////////////////////////////
+/////////////////////////////////////////////////////// Unit properties ///////////////////////////////////////////////////
     void SetCharmedUnitGUID( uint64 GUID ){ SetUInt64Value( UNIT_FIELD_CHARM, GUID ); }
     void SetSummonedUnitGUID( uint64 GUID ){ SetUInt64Value( UNIT_FIELD_SUMMON, GUID ); }
     void SetSummonedCritterGUID( uint64 GUID ){ SetUInt64Value( UNIT_FIELD_CRITTER, GUID ); }
@@ -1553,7 +1540,61 @@ public:
     void SetTargetGUID( uint64 GUID ){ SetUInt64Value( UNIT_FIELD_TARGET, GUID ); }
     uint64 GetTargetGUID(){ return GetUInt64Value( UNIT_FIELD_TARGET ); }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    void SetChannelSpellTargetGUID( uint64 GUID ){ SetUInt64Value( UNIT_FIELD_CHANNEL_OBJECT, GUID ); }
+    void SetChannelSpellId( uint32 SpellId ){ SetUInt32Value( UNIT_CHANNEL_SPELL, SpellId ); }
+    
+    uint64 GetChannelSpellTargetGUID(){ return GetUInt64Value( UNIT_FIELD_CHANNEL_OBJECT ); }
+    uint32 GetChannelSpellId(){ return GetUInt32Value( UNIT_CHANNEL_SPELL ); }
+    
+    //////////////////////////////////////////////////// bytes 0 //////////////////////////////////////////////////////
+    
+    void setRace( uint8 race ){ SetByte(UNIT_FIELD_BYTES_0, 0, race ); }
+    uint8 getRace() { return GetByte(UNIT_FIELD_BYTES_0, 0 ); }
+    
+    void setClass( uint8 class_ ){ SetByte( UNIT_FIELD_BYTES_0, 1, class_ ); }
+	uint8 getClass(){ return GetByte(UNIT_FIELD_BYTES_0, 1 ); }
+    
+    uint8 getGender(){ return GetByte(UNIT_FIELD_BYTES_0,2 ); }
+	void setGender( uint8 gender ){ SetByte(UNIT_FIELD_BYTES_0, 2, gender ); }
+    
+    void SetPowerType( uint8 type ){ SetByte(UNIT_FIELD_BYTES_0, 3, type ); }
+    uint8 GetPowerType(){ return GetByte( UNIT_FIELD_BYTES_0, 3 ); }
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void SetPower(uint32 type, int32 value);
+
+    void ModPower( uint32 index, int32 value ){
+        int32 power = static_cast< int32 >( m_uint32Values[ UNIT_FIELD_POWER1 + index ] );
+        int32 maxpower = static_cast< int32 >( m_uint32Values[ UNIT_FIELD_MAXPOWER1 + index ] );
+
+        if( value <= power )
+            SetUInt32Value( UNIT_FIELD_POWER1 + index, 0 ); 
+        else
+            SetUInt32Value( UNIT_FIELD_POWER1 + index, power + value ); 
+
+        if( ( value + power ) > maxpower )
+            SetUInt32Value( UNIT_FIELD_POWER1 + index, maxpower ); 
+        else
+            SetUInt32Value( UNIT_FIELD_POWER1 + index, power + value ); 
+    }
+
+    uint32 GetPower( uint32 index ){ return GetUInt32Value( UNIT_FIELD_POWER1 + index ); }
+    
+    void SetMaxPower( uint32 index, uint32 value ){ SetUInt32Value( UNIT_FIELD_MAXPOWER1 + index, value ); }
+    
+    void ModMaxPower( uint32 index, int32 value ){
+        int32 maxpower = static_cast< int32 >( m_uint32Values[ UNIT_FIELD_MAXPOWER1 + index ] );
+
+        if( value <= maxpower )
+            SetUInt32Value( UNIT_FIELD_POWER1 + index, 0 ); 
+        else
+            SetUInt32Value( UNIT_FIELD_POWER1 + index, maxpower + value ); 
+
+    }
+
+    uint32 GetMaxPower( uint32 index ){ return GetUInt32Value( UNIT_FIELD_MAXPOWER1 + index ); }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 protected:
 	Unit ();

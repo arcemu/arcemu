@@ -227,8 +227,8 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 
 					if( static_cast< Creature* >( m_Unit )->m_spawn && ( static_cast< Creature* >( m_Unit )->m_spawn->channel_target_go || static_cast< Creature* >( m_Unit )->m_spawn->channel_target_creature))
 					{
-						m_Unit->SetUInt32Value(UNIT_CHANNEL_SPELL, 0);
-						m_Unit->SetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT, 0);
+                        m_Unit->SetChannelSpellId( 0 );
+                        m_Unit->SetChannelSpellTargetGUID( 0 );
 					}
 				}
 
@@ -3559,12 +3559,12 @@ AI_Spell *AIInterface::getSpell()
 						switch(sp->spell->powerType)
 						{
 						case POWER_TYPE_MANA:
-							if(m_Unit->GetUInt32Value(UNIT_FIELD_POWER1) < sp->spell->manaCost)
+                            if(m_Unit->GetPower( POWER_TYPE_MANA ) < sp->spell->manaCost )
 								continue;
 							break;
 
 						case POWER_TYPE_FOCUS:
-							if(m_Unit->GetUInt32Value(UNIT_FIELD_POWER3) < sp->spell->manaCost)
+                            if(m_Unit->GetPower( POWER_TYPE_FOCUS ) < sp->spell->manaCost)
 								continue;
 							break;
 						}

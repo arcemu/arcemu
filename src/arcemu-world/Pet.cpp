@@ -181,7 +181,10 @@ void Pet::CreateAsSummon( uint32 entry, CreatureInfo *ci, Creature* created_from
 	EventModelChange();
 	SetSummonedByGUID( owner->GetGUID() );
 	SetCreatedByGUID( owner->GetGUID() );
-	SetUInt32Value( UNIT_FIELD_BYTES_0, 2048 | (0 << 24) );
+	
+    SetUInt32Value( UNIT_FIELD_BYTES_0, 2048 | (0 << 24) );
+
+
 	SetUInt32Value( UNIT_FIELD_BASEATTACKTIME, 2000 );
 	SetUInt32Value( UNIT_FIELD_BASEATTACKTIME+1, 2000 );
 	SetUInt32Value( UNIT_FIELD_FACTIONTEMPLATE, owner->GetUInt32Value( UNIT_FIELD_FACTIONTEMPLATE ) );
@@ -1419,8 +1422,8 @@ void Pet::ApplyStatsForLevel()
 
 	// Apply health fields.
 	SetUInt32Value( UNIT_FIELD_HEALTH, m_uint32Values[ UNIT_FIELD_MAXHEALTH ] );
-	SetUInt32Value( UNIT_FIELD_POWER1, m_uint32Values[ UNIT_FIELD_MAXPOWER1 ] );
-	SetUInt32Value( UNIT_FIELD_POWER3, m_uint32Values[ UNIT_FIELD_MAXPOWER3 ] );
+	SetUInt32Value( UNIT_FIELD_POWER1, m_uint32Values[ UNIT_FIELD_MAXPOWER1 ] ); // mana
+	SetUInt32Value( UNIT_FIELD_POWER3, m_uint32Values[ UNIT_FIELD_MAXPOWER3 ] ); // focus
 }
 
 void Pet::LoadPetAuras(int32 id)
@@ -1510,7 +1513,7 @@ AI_Spell * Pet::HandleAutoCastEvent()
 		{
 			// spells still spammed, I think the cooldowntime is being set incorrectly somewhere else
 			if( chance && (*itr)->spell && getMSTime() >= (*itr)->cooldowntime && //cebernic:crashfix
-				GetUInt32Value( UNIT_FIELD_POWER1 + (*itr)->spell->powerType ) >= (*itr)->spell->manaCost )
+				GetUInt32Value(UNIT_FIELD_POWER1 + (*itr)->spell->powerType ) >= (*itr)->spell->manaCost )
 			{
 				return *itr;
 			}
