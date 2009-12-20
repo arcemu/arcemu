@@ -36,8 +36,6 @@ bool WorldRunnable::run()
 	uint32 LastWorldUpdate = getMSTime();
 	uint32 LastSessionsUpdate = getMSTime();
 
-	THREAD_TRY_EXECUTION2
-
 	while(ThreadState != THREADSTATE_TERMINATE)
 	{
 		// Provision for pausing this thread.
@@ -98,6 +96,5 @@ bool WorldRunnable::run()
 			Sleep(WORLD_UPDATE_DELAY - diff);
 	}
 
-	THREAD_HANDLE_CRASH2
 	return true;
 }

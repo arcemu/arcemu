@@ -19,11 +19,6 @@
  */
 
 #include "StdAfx.h"
-//#include <vld.h>
-
-#ifdef WIN32
-#include "CrashHandler.h"
-#endif
 
 #ifndef WIN32
 #include <sys/resource.h>
@@ -57,17 +52,13 @@ int unix_main(int argc, char ** argv)
 int win32_main( int argc, char ** argv )
 {
 	SetThreadName( "Main Thread" );
-	StartCrashHandler();
 
 	//Andy: windows only, helps fight heap allocation on allocations lower then 16KB
 	unsigned long arg=2;
 	HeapSetInformation(GetProcessHeap(), HeapCompatibilityInformation, &arg, sizeof(arg));
+    
+    sMaster.Run( argc, argv );
 
-	THREAD_TRY_EXECUTION
-	{
-		sMaster.Run( argc, argv );
-	}
-	THREAD_HANDLE_CRASH;
 	exit( 0 );
 }
 

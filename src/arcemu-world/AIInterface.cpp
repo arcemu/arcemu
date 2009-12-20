@@ -4237,16 +4237,6 @@ void AIInterface::Event_Summon_FE_totem( uint32 summon_duration )
     else
         ourslave->RemoveFFAPvPFlag();
 }
-/*
-void AIInterface::CancelSpellCast()
-{
-	//hmm unit spell casting is not the same as Ai spell casting ? Have to test this
-	if(m_Unit->IsCasting())
-		m_Unit->m_currentSpell->safe_cancel();
-	//i can see this crashing already :P.
-	m_AIState = STATE_IDLE;
-}
-*/
 
 void AIInterface::EventChangeFaction( Unit *ForceAttackersToHateThisInstead )
 {

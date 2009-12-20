@@ -33,8 +33,6 @@ libshared_a_SOURCES = \
     Storage.h \
     arcemu_getopt.h \
     arcemu_getopt.cpp \
-    CrashHandler.h \
-    CrashHandler.cpp \
     Auth/BigNumber.cpp \
     Auth/BigNumber.h \
     Auth/MD5.cpp \

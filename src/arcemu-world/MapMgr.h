@@ -255,7 +255,6 @@ public:
 
 	void SendInitialStates(Player * plr);
 	void SetWorldState(uint32 zoneid, uint32 index, uint32 value);
-	//ARCEMU_INLINE uint32 GetWorldState(uint32 state);
 
 	// better hope to clear any references to us when calling this :P
 	void InstanceShutdown()
@@ -277,11 +276,6 @@ public:
 	}
 
 	float GetFirstZWithCPZ(float x,float y ,float z);
-
-//#ifdef FORCED_SERVER_KEEPALIVE
-	void	KillThreadWithCleanup();
-	void	TeleportCorruptedPlayers();	//we have to be prepared something is corrupted here
-//#endif
 
 protected:
 

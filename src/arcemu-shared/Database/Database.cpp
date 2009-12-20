@@ -25,7 +25,6 @@
 //////////////////////////////////////////////
 
 #include "DatabaseEnv.h"
-#include "../CrashHandler.h"
 #include "../NGLog.h"
 
 SQLCallbackBase::~SQLCallbackBase()

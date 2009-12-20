@@ -21,7 +21,6 @@
 #define WOWSERVER_ERRORS_H
 
 #include "printStackTrace.h"
-#include "CrashHandler.h"
 // TODO: handle errors better
 
 // An assert isn't necessarily fatal, although if compiled with asserts enabled it will be.

@@ -45,7 +45,6 @@
 #include <map>
 #include <sstream>
 #include <string>
-//#include <fstream>
 
 #include "../arcemu-shared/Common.h"
 #include "../arcemu-shared/MersenneTwister.h"
@@ -70,7 +69,6 @@
 #include "../arcemu-shared/Auth/BigNumber.h"
 #include "../arcemu-shared/Auth/Sha1.h"
 #include "../arcemu-shared/Auth/WowCrypt.h"
-#include "../arcemu-shared/CrashHandler.h"
 #include "../arcemu-shared/FastQueue.h"
 #include "../arcemu-shared/CircularQueue.h"
 #include "../arcemu-shared/Threading/RWLock.h"
@@ -79,8 +77,6 @@
 
 #ifdef WIN32
 #include "printStackTrace.h"
-//#include "StackTrace.h"
-//#include "MapFile.h"
 #endif
 
 #include "UpdateFields.h"

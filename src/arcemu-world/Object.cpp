@@ -1735,7 +1735,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 	if (this->IsPlayer())
 		plr = static_cast<Player* >(this);
 
-	if( damage > 14000 && this != pVictim && this->IsPlayer() && !static_cast< Player* >(this)->GetSession()->HasPermissions() && sWorld.m_limits.enable )
+	if( damage > 14000 && this != pVictim && IsPlayer() && !static_cast< Player* >(this)->GetSession()->HasPermissions() && sWorld.m_limits.enable )
 	{
 		if(spellId && sWorld.m_limits.spellDamageCap > 0)
 		{
@@ -1851,7 +1851,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 		}
 	}
 
-	if(this->IsUnit())
+	if( IsUnit() )
 	{
 		if( pVictim->CombatStatus.IsInCombat() && pVictim->IsPlayer() )
 			sHookInterface.OnEnterCombat( static_cast< Player* >( pVictim ), static_cast< Unit* >( this ) );
@@ -1994,7 +1994,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 	uint32 health = pVictim->GetUInt32Value(UNIT_FIELD_HEALTH );
 
 	/*------------------------------------ DUEL HANDLERS --------------------------*/
-	if((pVictim->IsPlayer()) && (this->IsPlayer()) && static_cast< Player* >(pVictim)->DuelingWith == static_cast< Player* >( this ) ) //Both Players
+	if((pVictim->IsPlayer()) && ( IsPlayer() ) && static_cast< Player* >(pVictim)->DuelingWith == static_cast< Player* >( this ) ) //Both Players
 	{
 		if((health <= damage) && static_cast< Player* >( this )->DuelingWith != NULL)
 		{
@@ -2082,13 +2082,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
             
                 // We've killed a summon summoned by a totem
                 if( pSummonerC->IsTotem() )
-				{
-                    // Removing the totem
-                    if( pSummonerC->IsInWorld() )
-                      pSummonerC->RemoveFromWorld( false, true );
-                    else
-                      pSummonerC->SafeDelete();
-                }
+                    pSummonerC->TotemExpire();
             }
         }
 		

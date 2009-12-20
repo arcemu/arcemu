@@ -1123,7 +1123,6 @@ void Task::execute()
 bool TaskExecutor::run()
 {
 	Task * t;
-	THREAD_TRY_EXECUTION
 	{
 		while(starter->running)
 		{
@@ -1139,7 +1138,6 @@ bool TaskExecutor::run()
 				Sleep(20);
 		}
 	}
-	THREAD_HANDLE_CRASH
 	return true;
 }
 

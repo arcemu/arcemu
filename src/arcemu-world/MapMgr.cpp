@@ -1263,103 +1263,19 @@ void MapMgr::ChangeFarsightLocation(Player *plr, DynamicObject *farsight)
 	}
 }
 
-/* new stuff
-*/
-
-//#ifdef FORCED_SERVER_KEEPALIVE
-
-//there is a chance at least one of the players got corrupted
-void MapMgr::TeleportCorruptedPlayers()
-{
-	PlayerStorageMap::iterator itr =  m_PlayerStorage.begin();
-	for(; itr !=  m_PlayerStorage.end();)
-	{
-		Player *p = itr->second;
-		++itr;
-		try
-		{
-//			p->EjectFromInstance();
-			if( p->GetSession() )
-			{
-				p->GetSession()->LogoutPlayer(false);
-			}
-			else
-			{
-				delete p;
-			}
-		}catch(int er)	{ er = 1; }//lols for the warning
-	}
-}
-//an exception occurred somewhere. We try to cleanup if there is anything to clean up and then kill this thread.
-//We should not save data in case some memory corruption occurred
-//we should be prepared that during cleanup process we meet the same exception and we have to skip that (or handle it)
-//there might be cases when we should restart the mapmanager made for the map (like always loaded maps)
-void MapMgr::KillThreadWithCleanup()
-{
-	try
-	{
-		// remove all events regarding to this map
-		sEventMgr.RemoveEvents( this );
-
-		// Teleport any left-over players out.
-		TeleportCorruptedPlayers();
-
-		if(m_battleground)
-		{
-			BattlegroundManager.DeleteBattleground(m_battleground);
-			sInstanceMgr.DeleteBattlegroundInstance( GetMapId(), GetInstanceID() );
-		}
-
-		if(pInstance)
-		{
-			// check for a non-raid instance, these expire after 10 minutes.
-			if(GetMapInfo()->type == INSTANCE_NONRAID || pInstance->m_isBattleground)
-			{
-				pInstance->m_mapMgr = NULL;
-				sInstanceMgr._DeleteInstance(pInstance, true);
-			}
-			else
-			{
-				// just null out the pointer
-				pInstance->m_mapMgr= NULL;
-			}
-		}
-		else if(GetMapInfo()->type == INSTANCE_NULL)
-		{
-			uint32 this_mapid = GetMapId();
-			sInstanceMgr.m_singleMaps[ this_mapid ] = NULL;
-			//if we are really cocky we try to create a new map instead of the crashed one
-			sInstanceMgr._CreateInstance( this_mapid, sInstanceMgr.GenerateInstanceID() );
-		}
-
-		thread_running = false;
-
-		// delete ourselves
-//		delete this; //threadpool will delete us ?
-	}
-	catch(int error)
-	{
-		error = 1;//deal with this later
-		//we are just avoiding the process to catch this exception. We know it was coming
-	}
-
-//	KillThread();
-}
-//#endif
-
 bool MapMgr::run()
 {
-	bool rv=true;
-	THREAD_TRY_EXECUTION_MapMgr
-		rv = Do();
-	THREAD_HANDLE_CRASH_MapMgr
+	bool rv = true;
+
+    rv = Do();
+    
 	return rv;
 }
 
 bool MapMgr::Do()
 {
 #ifdef WIN32
-	threadid=GetCurrentThreadId();
+	threadid = GetCurrentThreadId();
 #endif
 	thread_running = true;
 	ThreadState =THREADSTATE_BUSY;

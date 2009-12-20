@@ -552,8 +552,6 @@ Player::~Player ( )
 	if(!ok_to_remove)
 	{
 		printf("Player deleted from non-logoutplayer!\n");
-		OutputCrashLogLine("Player deleted from non-logoutplayer!");
-
 		printStackTrace(); // Win32 Debug
 
 		objmgr.RemovePlayer(this);

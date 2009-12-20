@@ -31,18 +31,12 @@
 #include <sched.h>
 #endif
 
-//#include <vld.h>
-//#include <vldapi.h>
-
 // Database impl
 Database * sLogonSQL;
 initialiseSingleton(LogonServer);
 bool mrunning = true;
 Mutex _authSocketLock;
 set<AuthSocket*> _authSockets;
-#ifdef WIN32
-CircularQueue<uint32,30> last_spells;
-#endif
 
 /*** Signal Handler ***/
 void _OnSignal(int s)
