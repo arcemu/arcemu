@@ -463,9 +463,9 @@ void Spell::SpellTargetAllPartyMembersRangeNR(uint32 i, uint32 j)
 			p = static_cast< Player* >( static_cast< Creature* >( u_caster )->GetTotemOwner() );
 		else if( u_caster->IsPet() && static_cast< Pet* >( u_caster )->GetPetOwner() ) 
 			p = static_cast< Pet* >( u_caster )->GetPetOwner();
-		else if( u_caster->GetUInt64Value( UNIT_FIELD_CREATEDBY ) )
+		else if( u_caster->GetCreatedByGUID() )
 		{
-			Unit *t = u_caster->GetMapMgr()->GetUnit( u_caster->GetUInt64Value( UNIT_FIELD_CREATEDBY ) );
+			Unit *t = u_caster->GetMapMgr()->GetUnit( u_caster->GetCreatedByGUID() );
 			if ( t && t->IsPlayer() )
 				p = static_cast< Player* >( t );
 		}
@@ -601,7 +601,7 @@ void Spell::SpellTargetPetOwner(uint32 i, uint32 j)
 { 
 	TargetsList* tmpMap = &m_targetUnits[i];
 	if( u_caster != NULL && u_caster->IsPet() && static_cast< Pet* >( u_caster )->GetPetOwner() )
-		SafeAddTarget( tmpMap, u_caster->GetUInt64Value( UNIT_FIELD_SUMMONEDBY ) );
+		SafeAddTarget( tmpMap, u_caster->GetSummonedByGUID() );
 	else if( u_caster != NULL && u_caster->GetAIInterface() && u_caster->GetAIInterface()->GetPetOwner() )
 		SafeAddTarget( tmpMap, u_caster->GetAIInterface()->GetPetOwner()->GetGUID() );
 }
@@ -727,10 +727,14 @@ void Spell::SpellTargetSummon(uint32 i, uint32 j)
 	if ( m_spellInfo->Effect[i] == SPELL_EFFECT_SUMMON_PET || m_spellInfo->Effect[i] == SPELL_EFFECT_SUMMON_OBJECT)
 	{
 		TargetsList* tmpMap=&m_targetUnits[i];
-		if(m_caster->GetUInt64Value(UNIT_FIELD_SUMMON) == 0)
-			SafeAddTarget(tmpMap,u_caster->GetGUID());
+
+        if( u_caster == NULL )
+            return;
+
+		if( u_caster->GetSummonedUnitGUID() == 0)
+			SafeAddTarget(tmpMap, u_caster->GetGUID());
 		else
-			SafeAddTarget(tmpMap,m_caster->GetUInt64Value(UNIT_FIELD_SUMMON));
+			SafeAddTarget(tmpMap, u_caster->GetSummonedUnitGUID() );
 	}
 }
 

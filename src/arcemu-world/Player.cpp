@@ -5916,7 +5916,7 @@ bool Player::CanSee(Object* obj) // * Invisibility & Stealth Detection - Partha 
 					return false;
 				
 				// always see our units
-				if( GetGUID() == uObj->GetUInt64Value( UNIT_FIELD_CREATEDBY ) )
+				if( GetGUID() == uObj->GetCreatedByGUID() )
 					return true;
 
 				if( uObj->m_invisible // Invisibility - Detection of Units
@@ -6012,7 +6012,7 @@ void Player::OnRemoveInRangeObject(Object* pObj)
 	if( m_Summon && pObj == m_Summon )
 		DismissActivePet();
 
-	if( pObj->GetGUID() == GetUInt64Value( UNIT_FIELD_SUMMON ) )
+    if( pObj->GetGUID() == GetSummonedUnitGUID() )
 		RemoveFieldSummon();
 
 	if(pObj->IsUnit())
@@ -9963,10 +9963,10 @@ void Player::Possess(Unit * pTarget)
 	}
 
 	m_noInterrupt++;
-	SetUInt64Value(UNIT_FIELD_CHARM, pTarget->GetGUID());
+	SetCharmedUnitGUID( pTarget->GetGUID() );
 	SetUInt64Value(PLAYER_FARSIGHT, pTarget->GetGUID());
 
-	pTarget->SetUInt64Value(UNIT_FIELD_CHARMEDBY, GetGUID());
+    pTarget->SetCharmedUnitGUID( GetGUID() );
 	pTarget->SetCharmTempVal(pTarget->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
 	pTarget->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
 	pTarget->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED_CREATURE);
@@ -10062,8 +10062,8 @@ void Player::UnPossess()
 
 	m_noInterrupt--;
 	SetUInt64Value(PLAYER_FARSIGHT, 0);
-	SetUInt64Value(UNIT_FIELD_CHARM, 0);
-	pTarget->SetUInt64Value(UNIT_FIELD_CHARMEDBY, 0);
+	SetCharmedUnitGUID( 0 );
+    pTarget->SetCharmedByGUID( 0 );
 
 	RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_LOCK_PLAYER);
 	pTarget->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED_CREATURE);

@@ -855,23 +855,14 @@ protected:
 
 //====================================================================
 //  Unit
-//  Base object for Players and Creatures
+//  Base class for Players and Creatures
 //====================================================================
 
 class SERVER_DECL Unit : public Object
 {
 public:
-	/************************************************************************/
-	/* LUA Stuff                                                            */
-	/************************************************************************/
-/*	typedef struct { const char *name; int(*mfunc)(lua_State*,Unit*); } RegType;
-	static const char className[];
-	static RegType methods[];
-	
-	// a lua script cannot create a unit.
-	Unit(lua_State * L) { ASSERT(false); }*/
 
-	void CombatStatusHandler_UpdatePvPTimeout();
+    void CombatStatusHandler_UpdatePvPTimeout();
 	void CombatStatusHandler_ResetPvPTimeout();
 
 	virtual ~Unit ( );
@@ -906,8 +897,6 @@ public:
 
 	bool  canReachWithAttack(Unit *pVictim);
 
-  //void StrikeWithAbility( Unit* pVictim, Spell* spell, uint32 addspelldmg, uint32 weapon_damage_type );
-
 	/// State flags are server-only flags to help me know when to do stuff, like die, or attack
 	void addStateFlag(uint32 f) { m_state |= f; };
 	bool hasStateFlag(uint32 f) { return (m_state & f ? true : false); }
@@ -926,16 +915,11 @@ public:
 	uint8 getStandState() { return ((uint8)m_uint32Values[UNIT_FIELD_BYTES_1]); }
  
 	//// Combat
-   // void DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32 unitEvent, uint32 spellId = 0);   // to stop from falling, etc
-	//void AttackerStateUpdate( Unit* pVictim, uint32 weapon_damage_type ); // weapon_damage_type: 0 = melee, 1 = offhand(dualwield), 2 = ranged
 	uint32 GetSpellDidHitResult( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability );
 	void Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability, int32 add_damage, int32 pct_dmg_mod, uint32 exclusive_damage, bool disable_proc, bool skip_hit_check );
-//	void PeriodicAuraLog(Unit *pVictim, SpellEntry* spellID, uint32 damage, uint32 damageType);
-	//void SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage);
 	uint32 m_procCounter;
 	uint32 HandleProc(uint32 flag, Unit* Victim, SpellEntry* CastingSpell,uint32 dmg=-1,uint32 abs= 0);
 	void HandleProcDmgShield(uint32 flag, Unit* attacker);//almost the same as handleproc :P
-//	void HandleProcSpellOnSpell(Unit* Victim,uint32 damage,bool critical);//nasty, some spells proc other spells
 
 	void RemoveExtraStrikeTarget(SpellEntry *spell_info);
 	void AddExtraStrikeTarget(SpellEntry *spell_info, uint32 charges);
@@ -1049,9 +1033,7 @@ public:
 	//caller is the caster
 	int32 GetSpellDmgBonus(Unit *pVictim, SpellEntry *spellInfo,int32 base_dmg, bool isdot);
    
-	
-
-	uint32 m_addDmgOnce;
+    uint32 m_addDmgOnce;
 	Creature *m_TotemSlots[4];
 	uint32 m_ObjectSlots[4];
 	uint32 m_triggerSpell;
@@ -1067,7 +1049,6 @@ public:
 	struct DamageSplitTarget *m_damageSplitTarget;
  
 	std::list<struct ProcTriggerSpell> m_procSpells;
-//	std::map<uint32,ProcTriggerSpellOnSpellList> m_procSpellonSpell; //index is namehash
 	std::map<uint32,struct SpellCharge> m_chargeSpells;
 	deque<uint32> m_chargeSpellRemoveQueue;
 	bool m_chargeSpellsInUse;
@@ -1087,8 +1068,6 @@ public:
 	void WipeHateList();
 	void WipeTargetList();
 	void setAItoUse(bool value){m_useAI = value;}
-
-//	virtual Group *GetGroup();
 
 	int32 GetThreatModifyer() { return m_threatModifyer; }
 	void ModThreatModifyer(int32 mod) { m_threatModifyer += mod; }
@@ -1141,7 +1120,6 @@ public:
 	float ModDamageTakenByMechPCT[32];
 	int32 DoTPctIncrease[7];
 	float AOEDmgMod;
-	//int32 RangedDamageTakenPct; 
 	float m_ignoreArmorPctMaceSpec;
 	float m_ignoreArmorPct;
 
@@ -1392,21 +1370,7 @@ public:
 	void DisableFlight();
 
 	// Escort Quests
-	//uint32 m_escortquestid;
-	//uint32 m_escortupdatetimer;
-	//bool bHasEscortQuest;
-	//bool bEscortActive;
-	//bool bStopAtEndOfWaypoints;
-	//bool bReturnOnDie;
-	//Player *q_AttachedPlayer;
-	//uint16 m_escortStartWP;
-	//uint16 m_escortEndWP;
-	/*void InitializeEscortQuest(uint32 questid, bool stopatend, bool returnondie);
-	void EscortSetStartWP(uint32 wp);
-	void EscortSetEndWP(uint32 wp);
-	void StartEscortQuest();
-	void PauseEscortQuest();
-	void EndEscortQuest();*/
+
 	void MoveToWaypoint(uint32 wp_id);	
 	void PlaySpellVisual(uint64 target, uint32 spellVisual);
 
@@ -1498,9 +1462,6 @@ public:
 	void RemoveAurasByBuffType(uint32 buff_type, const uint64 &guid,uint32 skip);
 	bool HasAurasOfBuffType(uint32 buff_type, const uint64 &guid,uint32 skip);
 	int	 HasAurasWithNameHash(uint32 name_hash);
-//	bool HasNegativeAuraWithNameHash(uint32 name_hash); //just to reduce search range in some cases
-//	bool HasNegativeAura(uint32 spell_id); //just to reduce search range in some cases
-//	uint32 CountNegativeAura(uint32 spell_id); //just to reduce search range in some cases
 	bool IsPoisoned();
 
 	AuraCheckResponse AuraCheck(SpellEntry *proto, Object *caster= NULL);
@@ -1541,7 +1502,6 @@ public:
 		int32 max;
 	} m_soulSiphon;
 
-//	uint32 fearSpell;
 	uint32 m_cTimer;
 	void EventUpdateFlag();
 	CombatStatusHandler CombatStatus;
@@ -1550,7 +1510,6 @@ public:
 
 	void CancelSpell(Spell * ptr);
 	void EventStrikeWithAbility(uint64 guid, SpellEntry * sp, uint32 damage);
-//	bool m_spellsbusy;
 	void DispelAll(bool positive);
 
 	void SetPower(uint32 type, int32 value);
@@ -1572,6 +1531,29 @@ public:
 	void SetDodgeFromSpell(float value) { m_dodgefromspell = value; }
 	
 	void AggroPvPGuards();
+
+    /////////////////////////////////////////////////// Unit properties ///////////////////////////////////////////////////
+    void SetCharmedUnitGUID( uint64 GUID ){ SetUInt64Value( UNIT_FIELD_CHARM, GUID ); }
+    void SetSummonedUnitGUID( uint64 GUID ){ SetUInt64Value( UNIT_FIELD_SUMMON, GUID ); }
+    void SetSummonedCritterGUID( uint64 GUID ){ SetUInt64Value( UNIT_FIELD_CRITTER, GUID ); }
+
+    void SetCharmedByGUID( uint64 GUID ){ SetUInt64Value( UNIT_FIELD_CHARMEDBY, GUID ); }
+    void SetSummonedByGUID( uint64 GUID ){ SetUInt64Value( UNIT_FIELD_SUMMONEDBY, GUID ); }
+    void SetCreatedByGUID( uint64 GUID ){ SetUInt64Value( UNIT_FIELD_CREATEDBY, GUID ); }
+
+
+    uint64 GetCharmedUnitGUID(){ return GetUInt64Value( UNIT_FIELD_CHARM ); }
+    uint64 GetSummonedUnitGUID(){ return GetUInt64Value( UNIT_FIELD_SUMMON ); }
+    uint64 GetSummonedCritterGUID(){ return GetUInt64Value( UNIT_FIELD_CRITTER ); }
+
+    uint64 GetCharmedByGUID(){ return GetUInt64Value( UNIT_FIELD_CHARMEDBY ); }
+    uint64 GetSummonedByGUID(){ return GetUInt64Value( UNIT_FIELD_SUMMONEDBY ); }
+    uint64 GetCreatedByGUID(){ return GetUInt64Value( UNIT_FIELD_CREATEDBY ); }
+
+    void SetTargetGUID( uint64 GUID ){ SetUInt64Value( UNIT_FIELD_TARGET, GUID ); }
+    uint64 GetTargetGUID(){ return GetUInt64Value( UNIT_FIELD_TARGET ); }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 protected:
 	Unit ();
@@ -1602,8 +1584,6 @@ protected:
 	uint32 m_stealthDetectBonus;	
 	
 	// DK:pet
-	//uint32 m_pet_state;
-	//uint32 m_pet_action;
 
 	// Spell currently casting
 	Spell * m_currentSpell;
@@ -1614,8 +1594,6 @@ protected:
 	bool can_parry;//will be enabled by block spell
 	int32 m_threatModifyer;
 	int32 m_generatedThreatModifyer[7];
-
-	//	float getDistance( float Position1X, float Position1Y, float Position2X, float Position2Y );	
 
 	int32 m_manashieldamt;
 	uint32 m_manaShieldId;

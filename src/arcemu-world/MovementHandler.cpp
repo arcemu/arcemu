@@ -258,7 +258,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 {
 	bool moved = true;
 
-	if(!_player->IsInWorld() || _player->m_uint32Values[UNIT_FIELD_CHARMEDBY] || _player->GetPlayerStatus() == TRANSFER_PENDING || _player->GetTaxiState() || _player->getDeathState() == JUST_DIED)
+    if(!_player->IsInWorld() || _player->GetCharmedByGUID() || _player->GetPlayerStatus() == TRANSFER_PENDING || _player->GetTaxiState() || _player->getDeathState() == JUST_DIED)
 		return;
 
 	// spell cancel on movement, for now only fishing is added
@@ -358,7 +358,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
         if( !_player->jumping && (recv_data.GetOpcode() == MSG_MOVE_JUMP || movement_info.flags & MOVEFLAG_FALLING))
                 _player->jumping = true;
 
-        if( !(HasGMPermissions() && sWorld.no_antihack_on_gm) && !_player->m_uint32Values[UNIT_FIELD_CHARM] )
+        if( !(HasGMPermissions() && sWorld.no_antihack_on_gm) && !_player->GetCharmedUnitGUID() )
         {
                 /************************************************************************/
                 /* Anti-Teleport                                                        */

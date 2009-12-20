@@ -620,7 +620,7 @@ void WorldSession::HandleNpcTextQueryOpcode( WorldPacket & recv_data )
 	sLog.outDetail("WORLD: CMSG_NPC_TEXT_QUERY ID '%u'", textID );
 
 	recv_data >> targetGuid;
-	GetPlayer()->SetUInt64Value(UNIT_FIELD_TARGET, targetGuid);
+	GetPlayer()->SetTargetGUID(  targetGuid);
 
 	pGossip = NpcTextStorage.LookupEntry(textID);
 	LocalizedNpcText * lnc = (language>0) ? sLocalizationMgr.GetLocalizedNpcText(textID,language) : NULL;

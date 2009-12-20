@@ -3255,9 +3255,9 @@ void Spell::SpellEffectSummon(uint32 i)
 			pCreature->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, u_caster->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
 			pCreature->_setFaction();
 
-			pCreature->SetUInt64Value(UNIT_FIELD_SUMMONEDBY, u_caster->GetGUID());
-			pCreature->SetUInt64Value(UNIT_FIELD_CREATEDBY, u_caster->GetGUID());
-			u_caster->SetUInt64Value(UNIT_FIELD_SUMMON, pCreature->GetGUID());
+			pCreature->SetSummonedByGUID( u_caster->GetGUID());
+			pCreature->SetCreatedByGUID( u_caster->GetGUID());
+			u_caster->SetSummonedUnitGUID(  pCreature->GetGUID());
 
 			uint32 MiscValue = m_spellInfo->EffectMiscValue[i];
 			if ( MiscValue == 19668 ) //shadowfiend
@@ -4132,8 +4132,8 @@ void Spell::SpellEffectSummonWild(uint32 i)  // Summon Wild
 
 		if ( p->GetProto() && p->GetProto()->Faction == 35 )
 		{
-			p->SetUInt64Value( UNIT_FIELD_SUMMONEDBY, m_caster->GetGUID() );
-			p->SetUInt64Value( UNIT_FIELD_CREATEDBY, m_caster->GetGUID() );
+			p->SetSummonedByGUID( m_caster->GetGUID() );
+			p->SetCreatedByGUID( m_caster->GetGUID() );
 			p->SetUInt32Value( UNIT_FIELD_FACTIONTEMPLATE, u_caster->GetUInt32Value( UNIT_FIELD_FACTIONTEMPLATE ) );
 		}
 		else
@@ -5045,8 +5045,8 @@ void Spell::SpellEffectSummonPossessed(uint32 i) // eye of kilrogg
 		NewSummon->SetUInt32Value(UNIT_FIELD_LEVEL, m_caster->GetUInt32Value(UNIT_FIELD_LEVEL) );
 		NewSummon->SetUInt32Value(UNIT_FIELD_DISPLAYID,  2421);
 		NewSummon->SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID, 2421);
-		NewSummon->SetUInt64Value(UNIT_FIELD_SUMMONEDBY, m_caster->GetGUID());
-		NewSummon->SetUInt64Value(UNIT_FIELD_CREATEDBY, m_caster->GetGUID());
+		NewSummon->SetSummonedByGUID( m_caster->GetGUID());
+		NewSummon->SetCreatedByGUID( m_caster->GetGUID());
 		NewSummon->SetUInt32Value(UNIT_FIELD_HEALTH, 12375);
 		NewSummon->SetUInt32Value(UNIT_FIELD_MAXHEALTH, 12375);
 		NewSummon->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, p_caster->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
@@ -5950,7 +5950,7 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 	// Set up the creature.
 	pTotem->SetEntry(  entry);
 	pTotem->SetScale(  1.0f);
-	pTotem->SetUInt64Value(UNIT_FIELD_CREATEDBY, p_caster->GetGUID());
+	pTotem->SetCreatedByGUID( p_caster->GetGUID());
 	pTotem->SetUInt32Value(UNIT_FIELD_HEALTH, damage);
 	pTotem->SetUInt32Value(UNIT_FIELD_MAXHEALTH, damage);
 	pTotem->SetUInt32Value(UNIT_FIELD_POWER3, p_caster->getLevel() * 30);
@@ -6334,7 +6334,7 @@ void Spell::SpellEffectSummonCritter(uint32 i)
 	pCreature->SetUInt32Value(UNIT_FIELD_LEVEL, 1);
 	pCreature->SetUInt32Value( UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED );
 	pCreature->GetAIInterface()->Init(pCreature,AITYPE_PET,MOVEMENTTYPE_NONE,u_caster);
-	pCreature->SetUInt64Value( UNIT_FIELD_CREATEDBY, u_caster->GetGUID() );
+	pCreature->SetCreatedByGUID( u_caster->GetGUID() );
 	pCreature->SetUInt32Value( UNIT_CREATED_BY_SPELL, this->GetProto()->Id );
 	pCreature->GetAIInterface()->SetUnitToFollow(u_caster);
 	pCreature->GetAIInterface()->SetUnitToFollowAngle(float(-(M_PI/2)));

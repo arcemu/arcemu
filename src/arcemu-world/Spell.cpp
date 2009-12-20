@@ -79,7 +79,7 @@ void SpellCastTargets::read( WorldPacket & data,uint64 caster )
 					m_targetMask = TARGET_FLAG_UNIT;
 					Player* plr = objmgr.GetPlayer( (uint32)caster );
 					if( plr != NULL )
-						m_unitTarget = plr->GetUInt64Value( UNIT_FIELD_TARGET );
+						m_unitTarget = plr->GetTargetGUID();
 				}break;
 			default:
 				m_unitTarget = caster;
@@ -1001,8 +1001,8 @@ void Spell::GenerateTargets(SpellCastTargets *store_buff)
 						}
 						else if( u_caster != NULL )
 						{
-							if(u_caster->GetUInt64Value(UNIT_FIELD_CREATEDBY))
-								store_buff->m_unitTarget = u_caster->GetUInt64Value(UNIT_FIELD_CREATEDBY);
+							if( u_caster->GetCreatedByGUID() )
+								store_buff->m_unitTarget = u_caster->GetCreatedByGUID();
 							 else
 							 {
 								//target friendly npcs
@@ -1059,9 +1059,11 @@ void Spell::GenerateTargets(SpellCastTargets *store_buff)
 				case EFF_TARGET_MINION:
 				case 73:
 					{// Minion Target
-						if(m_caster->GetUInt64Value(UNIT_FIELD_SUMMON) == 0)
-							store_buff->m_unitTarget = m_caster->GetGUID();
-						else store_buff->m_unitTarget = m_caster->GetUInt64Value(UNIT_FIELD_SUMMON);
+                        if( u_caster != NULL ){
+						    if( u_caster->GetSummonedUnitGUID() == 0)
+							    store_buff->m_unitTarget = u_caster->GetGUID();
+						    else store_buff->m_unitTarget = u_caster->GetSummonedUnitGUID();
+                        }
 					}break;
 				case 33://Party members of totem, inside given range
 				case EFF_TARGET_SINGLE_PARTY:// Single Target Party Member
@@ -1883,7 +1885,7 @@ void Spell::cast(bool check)
 				}
 				if( numTargets == 0 )
 				{
-					uint64 guid = p_caster->GetUInt64Value( UNIT_FIELD_TARGET );
+					uint64 guid = p_caster->GetTargetGUID();
 					sQuestMgr.OnPlayerCast( p_caster, GetProto()->Id, guid );
 				}
 			}
@@ -3247,7 +3249,7 @@ uint8 Spell::CanCast(bool tolerate)
 			if (GetProto()->NameHash == SPELL_HASH_MIND_CONTROL && target->HasAurasWithNameHash(SPELL_HASH_MIND_CONTROL))
 				return SPELL_FAILED_BAD_TARGETS;
 
-			if( GetProto()->NameHash == SPELL_HASH_DEATH_PACT && target->GetUInt64Value(UNIT_FIELD_SUMMONEDBY) != m_caster->GetGUID() )
+            if( GetProto()->NameHash == SPELL_HASH_DEATH_PACT && target->GetSummonedByGUID() != m_caster->GetGUID() )
 				return SPELL_FAILED_BAD_TARGETS;
 
 			// Check if we can attack this creature type
@@ -4730,7 +4732,7 @@ void Spell::RemoveItems()
 			for ( uint32 x = 0; x < 5; x++ )
 			{
 				int32 charges = static_cast< int32 >( i_caster->GetCharges( x ) );
-				if ( charges == -1 ) // if expendable item && item has no charges remaining -> delete item
+				if ( charges < 0 ) // if expendable item && item has no charges remaining -> delete item
 				{
 					//I bet this crashed happened due to some script. Items without owners ?
 					if( i_caster->GetOwner() && i_caster->GetOwner()->GetItemInterface() )

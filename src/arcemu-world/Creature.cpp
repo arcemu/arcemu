@@ -784,19 +784,24 @@ void Creature::EnslaveExpire()
 {
 
 	m_enslaveCount++;
-	Player *caster = objmgr.GetPlayer(GetUInt32Value(UNIT_FIELD_CHARMEDBY));
+
+    uint64 charmer = GetCharmedByGUID();
+
+    Player *caster = objmgr.GetPlayer( GUID_LOPART( charmer ) );
 	if(caster)
 	{
-		caster->SetUInt64Value(UNIT_FIELD_CHARM, 0);
-		caster->SetUInt64Value(UNIT_FIELD_SUMMON, 0);
-		WorldPacket data(8);
-		data.Initialize(SMSG_PET_SPELLS);
+        caster->SetCharmedUnitGUID( 0 );
+        caster->SetSummonedUnitGUID( 0 );
+
+		WorldPacket data(SMSG_PET_SPELLS, 8 );
+
 		data << uint64(0);
 		data << uint32(0);
-		caster->GetSession()->SendPacket(&data);
+
+		caster->SendPacket(&data);
 	}
-	SetUInt64Value(UNIT_FIELD_CHARMEDBY, 0);
-	SetUInt64Value(UNIT_FIELD_SUMMONEDBY, 0);
+	SetCharmedByGUID( 0 );
+	SetSummonedByGUID( 0 );
 
 	m_walkSpeed = m_base_walkSpeed;
 	m_runSpeed = m_base_runSpeed;
@@ -814,7 +819,6 @@ void Creature::EnslaveExpire()
 
 	GetAIInterface()->Init(((Unit *)this), AITYPE_AGRO, MOVEMENTTYPE_NONE);
 
-	// Update InRangeSet
 	UpdateOppFactionSet();
 	UpdateSameFactionSet();
 }
@@ -2069,9 +2073,9 @@ Group *Creature::GetGroup()
 		static_cast<Pet *>(this)->GetGroup();
 	else if( IsTotem() && totemOwner != NULL )
 		return totemOwner->GetGroup();
-	else if( GetUInt64Value( UNIT_FIELD_CREATEDBY ) && GetMapMgr() )
+	else if( GetCreatedByGUID() && GetMapMgr() )
 	{
-		Unit *tu = GetMapMgr()->GetUnit( GetUInt64Value( UNIT_FIELD_CREATEDBY ) );
+		Unit *tu = GetMapMgr()->GetUnit( GetCreatedByGUID() );
 		if( tu )
 		{
 			if( tu->IsPlayer() )

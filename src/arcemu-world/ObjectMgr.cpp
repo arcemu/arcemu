@@ -2988,7 +2988,7 @@ void ObjectMgr::HandleMonsterSayEvent(Creature * pCreature, MONSTER_SAY_EVENTS E
 			test = strstr((char*)text,"$r");
 		if(test != NULL)
 		{
-			uint64 targetGUID = pCreature->GetUInt64Value(UNIT_FIELD_TARGET);
+            uint64 targetGUID = pCreature->GetTargetGUID();
 			Unit* CurrentTarget = pCreature->GetMapMgr()->GetUnit(targetGUID);
 			if(CurrentTarget)
 			{
@@ -3001,7 +3001,7 @@ void ObjectMgr::HandleMonsterSayEvent(Creature * pCreature, MONSTER_SAY_EVENTS E
 			test = strstr((char*)text,"$n");
 		if(test != NULL)
 		{
-			uint64 targetGUID = pCreature->GetUInt64Value(UNIT_FIELD_TARGET);
+			uint64 targetGUID = pCreature->GetTargetGUID();
 			Unit* CurrentTarget = pCreature->GetMapMgr()->GetUnit(targetGUID);
 			if(CurrentTarget && CurrentTarget->IsPlayer())
 			{
@@ -3014,7 +3014,7 @@ void ObjectMgr::HandleMonsterSayEvent(Creature * pCreature, MONSTER_SAY_EVENTS E
 			test = strstr((char*)text,"$c");
 		if(test != NULL)
 		{
-			uint64 targetGUID = pCreature->GetUInt64Value(UNIT_FIELD_TARGET);
+			uint64 targetGUID = pCreature->GetTargetGUID();
 			Unit* CurrentTarget = pCreature->GetMapMgr()->GetUnit(targetGUID);
 			if(CurrentTarget)
 			{
@@ -3027,7 +3027,7 @@ void ObjectMgr::HandleMonsterSayEvent(Creature * pCreature, MONSTER_SAY_EVENTS E
 			test = strstr((char*)text,"$g");
 		if(test != NULL)
 		{
-			uint64 targetGUID = pCreature->GetUInt64Value(UNIT_FIELD_TARGET);
+			uint64 targetGUID = pCreature->GetTargetGUID();
 			Unit* CurrentTarget = pCreature->GetMapMgr()->GetUnit(targetGUID);
 			if(CurrentTarget)
 			{

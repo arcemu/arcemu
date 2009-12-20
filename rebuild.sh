@@ -1,7 +1,7 @@
 #!/bin/sh
 
 DEST=~/realm
-OPTS="--prefix=$DEST --enable-optimize"
+OPTS="--prefix=$DEST"
 
 autoreconf -fi
 ./configure $OPTS

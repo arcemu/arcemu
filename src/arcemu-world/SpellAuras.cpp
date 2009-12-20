@@ -1319,14 +1319,13 @@ void Aura::SpellAuraModPossess(bool apply)
 			{
 			unpossessfailed = true;
 			caster->SetUInt64Value(PLAYER_FARSIGHT, 0);
-	//		m_target->GetMapMgr()->ChangeFarsightLocation(static_cast< Player* >(caster), m_target, false);
-			caster->SetUInt64Value(UNIT_FIELD_CHARM, 0);
+			caster->SetCharmedUnitGUID( 0 );
 			caster->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_LOCK_PLAYER);
 			}
 		}
 
 		// make sure Player::UnPossess() didn't fail, if it did we will just free the target here
-		if( m_target->GetUInt64Value( UNIT_FIELD_CHARMEDBY ) != 0 )
+		if( m_target->GetCharmedByGUID() != 0 )
 		{
 			if( m_target->GetTypeId() == TYPEID_UNIT )
 			{
@@ -1334,7 +1333,7 @@ void Aura::SpellAuraModPossess(bool apply)
 				m_target->m_redirectSpellPackets = 0;
 			}
 
-			m_target->SetUInt64Value( UNIT_FIELD_CHARMEDBY, 0 );
+			m_target->SetCharmedByGUID(  0 );
 			m_target->RemoveFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED_CREATURE );
 			m_target->SetUInt32Value( UNIT_FIELD_FACTIONTEMPLATE, m_target->GetCharmTempVal() );
 			m_target->_setFaction();
@@ -2841,7 +2840,7 @@ void Aura::SpellAuraModCharm(bool apply)
 		if( target->GetEnslaveCount() >= 10 )
 			return;
 
-		if( caster->GetUInt64Value( UNIT_FIELD_CHARM ) != 0 )
+		if( caster->GetCharmedUnitGUID() != 0 )
 			return;
 
 		m_target->m_special_state |= UNIT_STATE_CHARM;
@@ -2850,8 +2849,8 @@ void Aura::SpellAuraModCharm(bool apply)
 		m_target->_setFaction();
 		m_target->UpdateOppFactionSet();
 		m_target->GetAIInterface()->Init(m_target, AITYPE_PET, MOVEMENTTYPE_NONE, caster);
-		m_target->SetUInt64Value(UNIT_FIELD_CHARMEDBY, caster->GetGUID());
-		caster->SetUInt64Value(UNIT_FIELD_CHARM, target->GetGUID());
+		m_target->SetCharmedByGUID(  caster->GetGUID());
+		caster->SetCharmedUnitGUID( target->GetGUID());
 		//damn it, the other effects of enslave demon will agro him on us anyway :S
 		m_target->GetAIInterface()->WipeHateList();
 		m_target->GetAIInterface()->WipeTargetList();
@@ -2887,11 +2886,11 @@ void Aura::SpellAuraModCharm(bool apply)
 		m_target->GetAIInterface()->WipeTargetList();
 		m_target->UpdateOppFactionSet();
 		m_target->GetAIInterface()->Init(m_target, AITYPE_AGRO, MOVEMENTTYPE_NONE);
-		m_target->SetUInt64Value(UNIT_FIELD_CHARMEDBY, 0);
+		m_target->SetCharmedByGUID(  0);
 
 		if( caster != NULL && caster->GetSession() != NULL ) // crashfix
 		{
-			caster->SetUInt64Value(UNIT_FIELD_CHARM, 0);
+			caster->SetCharmedUnitGUID( 0 );
 			WorldPacket data(SMSG_PET_SPELLS, 8);
 			data << uint64(0);
 			caster->GetSession()->SendPacket(&data);
@@ -9291,7 +9290,7 @@ void Aura::HandleAuraControlVehicle(bool apply)
 		pcaster->GetSession()->SendPacket(&data);
 
 		pcaster->SetVehicle( static_cast< Vehicle* >( m_target ), -1);
-		pcaster->SetUInt64Value( UNIT_FIELD_CHARM, pcaster->GetVehicle()->GetGUID() );
+		pcaster->SetCharmedUnitGUID( pcaster->GetVehicle()->GetGUID() );
 		pcaster->SetUInt64Value( PLAYER_FARSIGHT, pcaster->GetVehicle()->GetGUID() ); //focus camera on this
 
 		//add mana to the vehicle. It is supposed to already have mana
@@ -9377,7 +9376,7 @@ void Aura::HandleAuraControlVehicle(bool apply)
 		data << (uint8)0;
 		pcaster->GetSession()->SendPacket(&data);
 
-		pcaster->SetUInt64Value( UNIT_FIELD_CHARM, 0 );
+		pcaster->SetCharmedUnitGUID( 0 );
 		pcaster->SetUInt64Value( PLAYER_FARSIGHT, 0 );
 
 		//make the sound of the vehicle. I'm sure this should be dinamic from somewhere :P

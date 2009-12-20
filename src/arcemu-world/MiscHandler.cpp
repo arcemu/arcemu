@@ -948,7 +948,7 @@ void WorldSession::HandleSetSelectionOpcode( WorldPacket & recv_data )
 	if(_player->m_comboPoints)
 		_player->UpdateComboPoints();
 
-	_player->SetUInt64Value(UNIT_FIELD_TARGET, guid);
+	_player->SetTargetGUID(  guid);
 	if(guid == 0) // deselected target
 	{
 		_player->CombatStatusHandler_ResetPvPTimeout();
@@ -1790,7 +1790,7 @@ void WorldSession::HandleInspectOpcode( WorldPacket & recv_data )
 		return;
 	}
 
-	_player->SetUInt64Value(UNIT_FIELD_TARGET, guid);
+	_player->SetTargetGUID(  guid);
 
 	_player->SetSelection( guid );
 

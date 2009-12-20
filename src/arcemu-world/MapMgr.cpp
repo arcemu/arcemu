@@ -1755,39 +1755,6 @@ void MapMgr::EventRespawnGameObject(GameObject * o, MapCell * c)
 	}
 }
 
-void MapMgr::SendMessageToCellPlayers(Object * obj, WorldPacket * packet, uint32 cell_radius /* = 2 */)
-{
-	uint32 cellX = GetPosX(obj->GetPositionX());
-	uint32 cellY = GetPosY(obj->GetPositionY());
-	uint32 endX = ((cellX+cell_radius) <= _sizeX) ? cellX + cell_radius : (_sizeX-1);
-	uint32 endY = ((cellY+cell_radius) <= _sizeY) ? cellY + cell_radius : (_sizeY-1);
-	uint32 startX = (cellX-cell_radius) > 0 ? cellX - cell_radius : 0;
-	uint32 startY = (cellY-cell_radius) > 0 ? cellY - cell_radius : 0;
-
-	uint32 posX, posY;
-	MapCell *cell;
-	MapCell::ObjectSet::iterator iter, iend;
-	for (posX = startX; posX <= endX; ++posX )
-	{
-		for (posY = startY; posY <= endY; ++posY )
-		{
-			cell = GetCell(posX, posY);
-			if (cell && cell->HasPlayers() )
-			{
-				iter = cell->Begin();
-				iend = cell->End();
-				for(; iter != iend; ++iter)
-				{
-					if((*iter)->IsPlayer())
-					{
-						static_cast< Player* >(*iter)->GetSession()->SendPacket(packet);
-					}
-				}
-			}
-		}
-	}
-}
-
 void MapMgr::SendChatMessageToCellPlayers(Object * obj, WorldPacket * packet, uint32 cell_radius, uint32 langpos, int32 lang, WorldSession * originator)
 {
 	uint32 cellX = GetPosX(obj->GetPositionX());

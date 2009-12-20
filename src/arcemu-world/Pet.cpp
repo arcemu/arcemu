@@ -179,8 +179,8 @@ void Pet::CreateAsSummon( uint32 entry, CreatureInfo *ci, Creature* created_from
 	SetUInt32Value( UNIT_FIELD_DISPLAYID, ci->Male_DisplayID );
 	SetUInt32Value( UNIT_FIELD_NATIVEDISPLAYID, ci->Male_DisplayID );
 	EventModelChange();
-	SetUInt64Value( UNIT_FIELD_SUMMONEDBY, owner->GetGUID() );
-	SetUInt64Value( UNIT_FIELD_CREATEDBY, owner->GetGUID() );
+	SetSummonedByGUID( owner->GetGUID() );
+	SetCreatedByGUID( owner->GetGUID() );
 	SetUInt32Value( UNIT_FIELD_BYTES_0, 2048 | (0 << 24) );
 	SetUInt32Value( UNIT_FIELD_BASEATTACKTIME, 2000 );
 	SetUInt32Value( UNIT_FIELD_BASEATTACKTIME+1, 2000 );
@@ -652,7 +652,7 @@ void Pet::InitializeMe( bool first )
 	proto = CreatureProtoStorage.LookupEntry( GetEntry() );
 
 	m_Owner->SetSummon( this );
-	m_Owner->SetUInt64Value( UNIT_FIELD_SUMMON, GetGUID() );
+    m_Owner->SetSummonedUnitGUID( GetGUID() );
 
 	SetUInt32Value( UNIT_FIELD_PETNUMBER, GetUIdFromGUID() );
 	SetUInt32Value( UNIT_FIELD_PET_NAME_TIMESTAMP, (uint32)UNIXTIME );
@@ -792,7 +792,7 @@ void Pet::Remove( bool bUpdate, bool bSetOffline )
 			if( !IsSummon() )
 				m_Owner->_SavePet( NULL );
 		}
-		m_Owner->SetUInt64Value( UNIT_FIELD_SUMMON, 0 );
+		m_Owner->SetSummonedUnitGUID(  0 );
 		m_Owner->SetSummon( NULL );
 		SendNullSpellsToOwner();
 		ClearPetOwner();

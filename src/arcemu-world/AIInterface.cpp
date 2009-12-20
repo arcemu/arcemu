@@ -215,7 +215,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				// set the target first
 				if(pUnit && pUnit->GetInstanceID() == m_Unit->GetInstanceID())
 				{
-					m_Unit->SetUInt64Value(UNIT_FIELD_TARGET, pUnit->GetGUID());
+                    m_Unit->SetTargetGUID( pUnit->GetGUID());
 				}
 				/* send the message */
 				if( m_Unit->GetTypeId() == TYPEID_UNIT )
@@ -1667,7 +1667,7 @@ bool AIInterface::UnsafeCanOwnerAttackUnit(Unit *pUnit)
 		return false;
 
 	//don't attack owner
-	if( m_Unit->GetUInt64Value(UNIT_FIELD_CREATEDBY) == pUnit->GetGUID() )
+    if( m_Unit->GetCreatedByGUID() == pUnit->GetGUID() )
 		return false; 
 
 	//don't agro neutrals
@@ -1896,13 +1896,12 @@ Unit* AIInterface::FindTarget()
 			data << m_Unit->GetGUID() << uint32(2);		// Aggro sound
 			static_cast< Player* >( target )->GetSession()->SendPacket( &data );
 		}
-		if(target->GetUInt32Value(UNIT_FIELD_CREATEDBY) != 0)
+		if(target->GetCreatedByGUID() != 0)
 		{
-			Unit* target2 = m_Unit->GetMapMgr()->GetPlayer(target->GetUInt32Value(UNIT_FIELD_CREATEDBY));
-			/*if(!target2)
-			{
-				target2 = sObjHolder.GetObject<Player>(target->GetUInt32Value(UNIT_FIELD_CREATEDBY));
-			}*/
+            uint64 charmer = target->GetCharmedByGUID();
+
+			Unit* target2 = m_Unit->GetMapMgr()->GetPlayer( GUID_LOPART( charmer ) );
+
 			if(target2)
 			{
 				AttackReaction(target2, 1, 0);
@@ -1933,7 +1932,7 @@ Unit* AIInterface::FindTargetForSpell(AI_Spell *sp)
 			float healthPercent = float(cur) / float(max);
 			if(healthPercent <= sp->floatMisc1) // Heal ourselves cause we got too low HP
 			{
-				m_Unit->SetUInt64Value(UNIT_FIELD_TARGET, 0);
+				m_Unit->SetTargetGUID(  0);
 				return m_Unit;
 			}
 			for(AssistTargetSet::iterator i = m_assistTargets.begin(); i != m_assistTargets.end(); i++)
@@ -1947,14 +1946,14 @@ Unit* AIInterface::FindTargetForSpell(AI_Spell *sp)
 				healthPercent = float(cur) / float(max);
 				if(healthPercent <= sp->floatMisc1) // Heal ourselves cause we got too low HP
 				{
-					m_Unit->SetUInt64Value(UNIT_FIELD_TARGET, (*i)->GetGUID());
+					m_Unit->SetTargetGUID(  (*i)->GetGUID());
 					return (*i); // heal Assist Target which has low HP
 				}
 			}
 		}
 		if(sp->spellType == STYPE_BUFF)
 		{
-			m_Unit->SetUInt64Value(UNIT_FIELD_TARGET, 0);
+			m_Unit->SetTargetGUID(  0);
 			return m_Unit;
 		}
 	}
@@ -4177,7 +4176,7 @@ void AIInterface::ResetProcCounts()
 void AIInterface::Event_Summon_EE_totem( uint32 summon_duration )
 {
 	//some say it should inherit the level of the caster
-	Unit *caster = m_Unit->GetMapMgr()->GetUnit( m_Unit->GetUInt64Value( UNIT_FIELD_CREATEDBY ) );
+	Unit *caster = m_Unit->GetMapMgr()->GetUnit( m_Unit->GetCreatedByGUID() );
 	uint32 new_level = 0;
 	if( caster )
 		new_level = caster->getLevel( );
@@ -4210,7 +4209,7 @@ void AIInterface::Event_Summon_EE_totem( uint32 summon_duration )
 void AIInterface::Event_Summon_FE_totem( uint32 summon_duration )
 {
 	//some say it should inherit the level of the caster
-	Unit *caster = m_Unit->GetMapMgr()->GetUnit( m_Unit->GetUInt64Value( UNIT_FIELD_CREATEDBY ) );
+	Unit *caster = m_Unit->GetMapMgr()->GetUnit( m_Unit->GetCreatedByGUID() );
 	uint32 new_level = 0;
 	if( caster != NULL )
 		new_level = caster->getLevel( );
@@ -4365,7 +4364,7 @@ void AIInterface::SetNextTarget (Unit *nextTarget) {
 void AIInterface::SetNextTarget (uint64 nextTarget) 
 {
 	m_nextTarget = nextTarget; 
-	m_Unit->SetUInt64Value(UNIT_FIELD_TARGET, m_nextTarget);
+	m_Unit->SetTargetGUID(  m_nextTarget);
 	if(nextTarget)
 	{
 #ifdef ENABLE_GRACEFULL_HIT

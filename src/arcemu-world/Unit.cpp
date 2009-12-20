@@ -1527,8 +1527,8 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						Unit* new_caster;
 						if( static_cast< Player* >( this )->GetSummon() )
 							new_caster = static_cast< Player* >( this )->GetSummon();
-						else if( GetUInt64Value( UNIT_FIELD_CHARM ) )
-							new_caster = GetMapMgr()->GetUnit( GetUInt64Value( UNIT_FIELD_CHARM ) );
+						else if( GetCharmedUnitGUID() )
+							new_caster = GetMapMgr()->GetUnit( GetCharmedUnitGUID() );
 						else
 							new_caster = NULL;
 						if( new_caster != NULL && new_caster->isAlive() )
@@ -4142,11 +4142,11 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 		}
 
 		//ugly hack for shadowfiend restoring mana
-		if( GetUInt64Value(UNIT_FIELD_SUMMONEDBY) != 0 && GetEntry() == 19668 )
+		if( GetSummonedByGUID() != 0 && GetEntry() == 19668 )
 		{
-			Player* owner = GetMapMgr()->GetPlayer((uint32)GetUInt64Value(UNIT_FIELD_SUMMONEDBY));
+			Player* owner = GetMapMgr()->GetPlayer( (uint32)GetSummonedByGUID() );
 			if ( owner != NULL )
-				this->Energize(owner, 34433, uint32(2.5f*realdamage + 0.5f), POWER_TYPE_MANA );
+				Energize(owner, 34433, uint32(2.5f*realdamage + 0.5f), POWER_TYPE_MANA );
 		}
 	}
 
@@ -5410,7 +5410,7 @@ void Unit::OnRemoveInRangeObject(Object* pObj)
 		Unit *pUnit = static_cast<Unit*>(pObj);
 		GetAIInterface()->CheckTarget(pUnit);
 
-		if(GetUInt64Value(UNIT_FIELD_CHARM) == pObj->GetGUID())
+		if( GetCharmedUnitGUID() == pObj->GetGUID())
 			if(m_currentSpell)
 				m_currentSpell->cancel();
 
@@ -6680,8 +6680,8 @@ Creature* Unit::create_guardian(uint32 guardian_entry,uint32 duration,float angl
 		p->SetUInt32Value(UNIT_FIELD_LEVEL, lvl);
 	}
 
-	p->SetUInt64Value(UNIT_FIELD_SUMMONEDBY, GetGUID());
-	p->SetUInt64Value(UNIT_FIELD_CREATEDBY, GetGUID());
+	p->SetSummonedByGUID( GetGUID());
+	p->SetCreatedByGUID( GetGUID());
 	p->SetZoneId(GetZoneId());
 	p->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE,GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
 	p->_setFaction();
@@ -7651,7 +7651,7 @@ void Unit::EventModelChange()
 
 void Unit::RemoveFieldSummon()
 {
-	uint64 guid = GetUInt64Value(UNIT_FIELD_SUMMON);
+	uint64 guid = GetSummonedUnitGUID();
 	if(guid && GetMapMgr())
 	{
 		Creature *summon = static_cast< Creature* >( GetMapMgr()->GetUnit(guid) );
@@ -7660,7 +7660,7 @@ void Unit::RemoveFieldSummon()
 			summon->RemoveFromWorld(false,true);
 			summon->SafeDelete();
 		}
-		SetUInt64Value(UNIT_FIELD_SUMMON, 0);
+		SetSummonedUnitGUID(  0 );
 	}
 }
 

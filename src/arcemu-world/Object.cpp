@@ -445,10 +445,6 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 {
 	/* ByteBuffer *splinebuf = (m_objectTypeId == TYPEID_UNIT) ? target->GetAndRemoveSplinePacket(GetGUID()) : 0; */
 	uint16 flag16 = 0;	// some other flag
-	/* VLack: idea from Mangos, for future vehicle implementation
-	if(GetTypeId() == TYPEID_UNIT)
-		if(((Creature*)this)->isVehicle())
-			flag16 |= 0x20;*/
 
 	*data << (uint16)flags;
 
@@ -476,17 +472,6 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 		else if(uThis != NULL && uThis->m_transportGuid != 0 && uThis->m_transportPosition != NULL)
 			flags2 |= MOVEFLAG_TAXI; //0x200
 
-		/*if(splinebuf)
-		{
-			flags2 |= MOVEFLAG_IMMOBILIZED;	   //1=move forward
-			flags2 |= MOVEFLAG_MOVE_FORWARD;
-			if(uThis != NULL)
-			{
-				if(uThis->GetAIInterface()->m_moveRun == false)
-					flags2 |= MOVEFLAG_WALK;	//100=walk
-			}
-		}*/
-
 		if(uThis != NULL)
 		{
 			//		 Don't know what this is, but I've only seen it applied to spirit healers.
@@ -502,7 +487,6 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 			}
 
 			if(uThis->GetAIInterface()->IsFlying())
-				//flags2 |= 0x800; //in 2.3 this is some state that i was not able to decode yet
 				flags2 |= MOVEFLAG_NO_COLLISION; //0x400 Zack : Teribus the Cursed had flag 400 instead of 800 and he is flying all the time 
 			if(uThis->GetProto() && uThis->GetProto()->extra_a9_flags)
 			{
@@ -511,11 +495,6 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 				uint32 inherit = uThis->GetProto()->extra_a9_flags & UNKNOWN_FLAGS2;
 				flags2 |= inherit;
 			}
-			/*if(GetGUIDHigh() == HIGHGUID_WAYPOINT)
-			{
-				if(GetUInt32Value(UNIT_FIELD_STAT0) == 768)		// flying waypoint
-					flags2 |= 0x800;
-			}*/
 		}
 
 		*data << (uint32)flags2;
@@ -543,7 +522,6 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 				WoWGuid wowguid(pThis->m_TransporterGUID);
 				*data << wowguid;
 				*data << pThis->m_TransporterX << pThis->m_TransporterY << pThis->m_TransporterZ << pThis->m_TransporterO;
-				//*data << pThis->m_TransporterTime;
 				*data << pThis->m_TransporterUnk;
 				*data << (uint8)0;
 			}
@@ -574,20 +552,11 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 
 		if( flags2 & MOVEFLAG_JUMPING ) // 0x00001000
 		{
-			/*if(pThis && moveinfo)
-			{
-				*data << moveinfo->FallTime;
-				*data << moveinfo->jump_sinAngle;
-				*data << moveinfo->jump_cosAngle;
-				*data << moveinfo->jump_xySpeed;
-			}
-			else
-			{*/
+
 				*data << (float)0;
 				*data << (float)1.0;
 				*data << (float)0;
-				*data << (float)0;
-			//}
+				*data << (float)0;			
 		}
 
 		if( flags2 & MOVEFLAG_SPLINE_MOVER ) // 0x4000000
@@ -1644,7 +1613,7 @@ bool Object::isInRange(Object* target, float range)
 
 bool Object::IsPet()
 {
-    if (this->GetTypeId() != TYPEID_UNIT || !m_uint32Values || !this->IsCreature())
+    if ( GetTypeId() != TYPEID_UNIT || !m_uint32Values || !IsCreature())
 		return false;
 
     if (m_uint32Values[UNIT_FIELD_CREATEDBY] == 0 || m_uint32Values[UNIT_FIELD_SUMMONEDBY] == 0)
@@ -2122,9 +2091,9 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
         }
 
         // We've killed some kind of summon
-        if( pVictim->GetUInt64Value( UNIT_FIELD_CREATEDBY ) != 0 )
+        if( pVictim->GetCreatedByGUID() != 0 )
 		{
-            Unit *pSummoner = pVictim->GetMapMgr()->GetUnit( pVictim->GetUInt64Value( UNIT_FIELD_CREATEDBY ) );
+            Unit *pSummoner = pVictim->GetMapMgr()->GetUnit( pVictim->GetCreatedByGUID() );
 
             if( pSummoner && pSummoner->IsInWorld() && pSummoner->IsCreature() )
 			{
@@ -2420,7 +2389,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 			//bool isCritter = (pVictim->GetCreatureInfo() != NULL)? pVictim->GetCreatureInfo()->Type : 0;
 
 			//-----------------------------------LOOOT--------------------------------------------
-            if ((!pVictim->IsPet())&& ( !isCritter ) && pVictim->GetUInt64Value( UNIT_FIELD_CREATEDBY ) == 0)
+            if ((!pVictim->IsPet())&& ( !isCritter ) && pVictim->GetCreatedByGUID() == 0)
 			{
 				Creature * victim = static_cast<Creature*>(pVictim);
 
@@ -2531,7 +2500,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 
 
 			// ----------------------------- XP --------------
-			if ( pVictim->GetUInt64Value( UNIT_FIELD_CREATEDBY ) == 0 &&
+			if ( pVictim->GetCreatedByGUID() == 0 &&
 				pVictim->GetUInt64Value( OBJECT_FIELD_CREATED_BY ) == 0 &&
 				!pVictim->IsPet() && TO_CREATURE(pVictim)->Tagged)
 			{
@@ -2748,17 +2717,17 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 					pPet->DelayedRemove( false, true );
 				}
 				/* ----------------------------- PET DEATH HANDLING END -------------- */
-				else if( pVictim->GetUInt64Value( UNIT_FIELD_CHARMEDBY ) )
+				else if( pVictim->GetCharmedByGUID() )
 				{
 					//remove owner warlock soul link from caster
-					Unit *owner=pVictim->GetMapMgr()->GetUnit( pVictim->GetUInt64Value( UNIT_FIELD_CHARMEDBY ) );
+					Unit *owner=pVictim->GetMapMgr()->GetUnit( pVictim->GetCharmedByGUID() );
 					if( owner != NULL && owner->IsPlayer())
 						TO_PLAYER( owner )->EventDismissPet();
 				}
 			}
             // Clear owner, except pets
-            if( !pVictim->IsPet() && pVictim->GetUInt64Value( UNIT_FIELD_CREATEDBY ) != 0 )
-                pVictim->SetUInt64Value( UNIT_FIELD_CREATEDBY, 0 );
+            if( !pVictim->IsPet() && pVictim->GetCreatedByGUID() != 0 )
+                pVictim->SetCreatedByGUID( 0 );
             // Same as the above
             if( pVictim->IsCreature() )
 			{

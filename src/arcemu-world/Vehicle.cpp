@@ -135,7 +135,7 @@ void Vehicle::SendFarsightPacket(Player * player, bool enabled)
 	else
 	{
 		player->SetUInt64Value(PLAYER_FARSIGHT, 0);
-		player->SetUInt64Value(UNIT_FIELD_CHARM, 0);
+		player->SetCharmedUnitGUID( 0 );
 	}
 }
 
@@ -185,15 +185,6 @@ void Vehicle::AddPassenger(Player * player, int8 seat)
 			return;
 	}
 
-	/*
-	VehicleEntry* v = dbcVehicle.LookupEntry(m_VehicleEntry);
-	if (v == NULL)
-		return;
-	VehicleSeatEntry* seatentry = dbcVehicleSeat.LookupEntry(v->seatEntry[seat]);
-	if (seatentry == NULL)
-		return;
-	*/
-
 	sLog.outDebug("AddPassenger");
 
 	m_passengers[seat] = player;
@@ -207,61 +198,21 @@ void Vehicle::AddPassenger(Player * player, int8 seat)
 	SendFarsightPacket(player, true);
 	RelocateToVehicle(player);
 
-	/*
-	data.Initialize(MSG_MOVE_TELEPORT_ACK);
-	data << player->GetNewGUID();
-	data << uint32(0); //counter
-	data << uint32(0x200); //transport data
-	data << uint16(0);
-	data << getMSTime();
-	data << GetPositionX();
-	data << GetPositionY();
-	data << GetPositionZ();
-	data << GetOrientation();
-	data << GetGUID();
-	data << float(0.0f); //seatentry->offsetX;
-	data << float(0.0f); //seatentry->offsetY;
-	data << float(0.0f); //seatentry->offsetZ;
-	data << float(0.0f); //orientation ??
-	data <<getMSTime(); //WTF IS THIS
-	data << seat;
-	data << uint32(0);
-
-	player->GetSession()->SendPacket(&data);
-	*/
-
 	if (seat == 0) //todo: what if its uncontrollable (skybreaker flightpath, rocket mount from k3)
 	{
 		//give control to player
-		/*
-		data.Initialize(SMSG_FORCE_RUN_SPEED_CHANGE);
-		data << GetNewGUID();
-		data << uint32(0);
-		data << uint8(1);
-		data << m_runSpeed; //speed;
-		player->GetSession()->SendPacket(&data);
-		*/
 
 		WorldPacket data;
 		data.Initialize(SMSG_CLIENT_CONTROL_UPDATE);
-		data << GetNewGUID() << uint8(1);
-		player->GetSession()->SendPacket(&data);
-			m_controller = player;
-		player->SetUInt64Value(UNIT_FIELD_CHARM, GetGUID());
+		
+        data << GetNewGUID() << uint8(1);
+		
+        player->SendPacket(&data);
+		
+        m_controller = player;
+		player->SetUInt64Value( UNIT_FIELD_CHARM, GetGUID());
 		SetUInt64Value(UNIT_FIELD_CHARMEDBY, player->GetGUID());
 		SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED_CREATURE);
-
-		// Set player world states
-		// UNIX (LINKING PROBLEM WITH SetWorldState as INLINE)
-		/*
-		player->GetMapMgr()->SetWorldState(0x0DE5, 0x190);
-		player->GetMapMgr()->SetWorldState(0x0DE7, 0x06);
- 		player->GetMapMgr()->SetWorldState(0x0DE8, 0x28);
- 		player->GetMapMgr()->SetWorldState(0x0DE9, 0x00);
- 		player->GetMapMgr()->SetWorldState(0x0DE9, 0x00);
- 		player->GetMapMgr()->SetWorldState(0x0DE8, 0x28);
- 		player->GetMapMgr()->SetWorldState(0x0DE8, 0x04);
-		*/
 
 		 //set active mover
 		player->GetSession()->SetActiveMover(GetNewGUID());
@@ -279,17 +230,6 @@ void Vehicle::RemovePassenger(Player * player)
 			return;
 
 
-	// Set player's world state
-	/*
- 	player->GetMapMgr()->SetWorldState(0x0DE5, 0x18B);
- 	player->GetMapMgr()->SetWorldState(0x0DE7, 0x06);
- 	player->GetMapMgr()->SetWorldState(0x0DE8, 0x23);
- 	player->GetMapMgr()->SetWorldState(0x0DE9, 0x00);
-  	player->GetMapMgr()->SetWorldState(0x0DE9, 0x05);
-  	player->GetMapMgr()->SetWorldState(0x0DE8, 0x1E);
-  	player->GetMapMgr()->SetWorldState(0x0DE8, 0x03);
-	*/
-
 	SendFarsightPacket(player, false);
 	RelocateToVehicle(player);
 
@@ -298,7 +238,7 @@ void Vehicle::RemovePassenger(Player * player)
 		WorldPacket data;
 		m_controller = NULL;
 
-		SetUInt64Value(UNIT_FIELD_CHARMEDBY, 0);
+		SetCharmedByGUID(  0);
 		RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED_CREATURE);
 
 		player->GetSession()->SetActiveMover(player->GetNewGUID());
@@ -365,7 +305,6 @@ bool ChatHandler::HandleVehicleSpawn(const char * args, WorldSession * m_session
 	}
 
 	CreatureSpawn * sp = new CreatureSpawn;
-	//sp->displayid = info->DisplayID;
 	gender = info->GenerateModelId(&sp->displayid);
  	sp->entry = entry; 
 	sp->entry = entry;
