@@ -654,14 +654,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\arcemu-shared\CrashHandler.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\arcemu-shared\CrashHandler.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\arcemu-shared\Errors.h"
 				>
 			</File>
