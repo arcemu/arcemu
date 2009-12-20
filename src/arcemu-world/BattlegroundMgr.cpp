@@ -1519,7 +1519,7 @@ void CBattleground::RemovePlayer(Player * plr, bool logout)
 	/* revive the player if he is dead */
 	if(!plr->isAlive())
 	{
-		plr->SetUInt32Value(UNIT_FIELD_HEALTH, plr->GetUInt32Value(UNIT_FIELD_MAXHEALTH));
+		plr->SetHealth( plr->GetMaxHealth());
 		plr->ResurrectPlayer();
 	}
 
@@ -1734,12 +1734,12 @@ Creature * CBattleground::SpawnSpiritGuide(float x, float y, float z, float o, u
 	pCreature->SetEntry(  13116 + horde);
 	pCreature->SetScale(  1.0f);
 
-	pCreature->SetUInt32Value(UNIT_FIELD_HEALTH, 100000);
+	pCreature->SetHealth( 100000);
     pCreature->SetPower( POWER_TYPE_MANA, 4868 );
     pCreature->SetPower( POWER_TYPE_FOCUS, 200 );
     pCreature->SetPower( POWER_TYPE_HAPPINESS, 2000000 );
 
-	pCreature->SetUInt32Value(UNIT_FIELD_MAXHEALTH, 10000);
+	pCreature->SetMaxHealth( 10000);
 	pCreature->SetMaxPower( POWER_TYPE_MANA, 4868 );
 	pCreature->SetMaxPower( POWER_TYPE_FOCUS, 200 );
 	pCreature->SetMaxPower( POWER_TYPE_HAPPINESS, 2000000 );
@@ -1839,7 +1839,7 @@ void CBattleground::EventResurrectPlayers()
 				plr->SendMessageToSet(&data, true);
 
 				plr->ResurrectPlayer();
-				plr->SetUInt32Value(UNIT_FIELD_HEALTH, plr->GetUInt32Value(UNIT_FIELD_MAXHEALTH));
+				plr->SetHealth( plr->GetMaxHealth());
                 plr->SetPower( POWER_TYPE_MANA, plr->GetMaxPower( POWER_TYPE_MANA ) );
 				plr->SetPower( POWER_TYPE_ENERGY, plr->GetMaxPower( POWER_TYPE_ENERGY ) );
 				plr->CastSpell(plr, BG_REVIVE_PREPARATION, true);

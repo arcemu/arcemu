@@ -1021,7 +1021,7 @@ void WorldSession::HandleCorpseReclaimOpcode(WorldPacket &recv_data)
 	}
 
 	GetPlayer()->ResurrectPlayer();
-	GetPlayer()->SetUInt32Value(UNIT_FIELD_HEALTH, GetPlayer()->GetUInt32Value(UNIT_FIELD_MAXHEALTH)/2 );
+	GetPlayer()->SetHealth( GetPlayer()->GetMaxHealth()/2 );
 }
 
 void WorldSession::HandleResurrectResponseOpcode(WorldPacket & recv_data)

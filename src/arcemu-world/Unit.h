@@ -932,7 +932,7 @@ public:
 	bool IsInInstance();
     void CalculateResistanceReduction(Unit *pVictim,dealdamage *dmg,SpellEntry* ability, float ArmorPctReduce) ;
 	void RegenerateHealth();
-	void RegeneratePower(bool isinterrupted);
+    void RegeneratePower(bool isinterrupted);
 	void setHRegenTimer(uint32 time) {m_H_regenTimer = static_cast<uint16>( time ); }
 	void setPRegenTimer(uint32 time) {m_P_regenTimer = static_cast<uint16>( time ); }
 	void DelayPowerRegeneration(uint32 time) { m_P_regenTimer = static_cast<uint16>( time ); if (!m_interruptedRegenTime) m_interruptedRegenTime = 2000; }
@@ -1560,6 +1560,11 @@ public:
     void SetPowerType( uint8 type ){ SetByte(UNIT_FIELD_BYTES_0, 3, type ); }
     uint8 GetPowerType(){ return GetByte( UNIT_FIELD_BYTES_0, 3 ); }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void SetHealth(   uint32 val ) { SetUInt32Value( UNIT_FIELD_HEALTH,  val ); } 
+    void SetMaxHealth( uint32 val ) { SetUInt32Value( UNIT_FIELD_MAXHEALTH,  val ); } 
+    uint32 GetHealth()    const { return GetUInt32Value( UNIT_FIELD_HEALTH ); }
+    uint32 GetMaxHealth() const { return GetUInt32Value( UNIT_FIELD_MAXHEALTH ); }
 
     void SetPower(uint32 type, int32 value);
 

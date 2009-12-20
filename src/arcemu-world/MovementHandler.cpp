@@ -650,7 +650,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 		{
 			if( !_player->SetPosition(movement_info.x, movement_info.y, movement_info.z, movement_info.orientation) )
 			{
-				_player->SetUInt32Value(UNIT_FIELD_HEALTH, 0);
+				_player->SetHealth( 0);
 				_player->KillPlayer();
 				MapInfo *pMapinfo = WorldMapInfoStorage.LookupEntry( _player->GetMapId() );
 				if( pMapinfo != NULL )

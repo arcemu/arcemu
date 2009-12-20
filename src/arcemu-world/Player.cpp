@@ -780,14 +780,14 @@ bool Player::Create(WorldPacket& data )
 	// Set Starting stats for char
 	//SetScale(  ((race==RACE_TAUREN)?1.3f:1.0f));
 	SetScale(  1.0f);
-	SetUInt32Value(UNIT_FIELD_HEALTH, info->health);
+	SetHealth( info->health);
 	SetUInt32Value(UNIT_FIELD_POWER1, info->mana );
 	SetUInt32Value(UNIT_FIELD_POWER2, 0 );
 	SetUInt32Value(UNIT_FIELD_POWER3, info->focus ); // focus
 	SetUInt32Value(UNIT_FIELD_POWER4, info->energy );
 	SetUInt32Value(UNIT_FIELD_POWER6, 8);
 
-	SetUInt32Value(UNIT_FIELD_MAXHEALTH, info->health);
+	SetMaxHealth( info->health);
 	SetUInt32Value(UNIT_FIELD_MAXPOWER1, info->mana );
 	SetUInt32Value(UNIT_FIELD_MAXPOWER2, info->rage );
 	SetUInt32Value(UNIT_FIELD_MAXPOWER3, info->focus );
@@ -1708,7 +1708,7 @@ void Player::GiveXP(uint32 xp, const uint64 &guid, bool allowbonus)
 			ResurrectPlayer();
 
 		//set full hp and mana
-		SetUInt32Value(UNIT_FIELD_HEALTH,GetUInt32Value(UNIT_FIELD_MAXHEALTH));
+		SetHealth(GetMaxHealth());
 		SetUInt32Value(UNIT_FIELD_POWER1,GetUInt32Value(UNIT_FIELD_MAXPOWER1));
 
 		// if warlock has summoned pet, increase its level too
@@ -6031,14 +6031,14 @@ void Player::ClearInRangeSet()
 
 void Player::EventCannibalize(uint32 amount)
 {
-	uint32 amt = (GetUInt32Value(UNIT_FIELD_MAXHEALTH)*amount)/100;
+	uint32 amt = (GetMaxHealth()*amount)/100;
 
-	uint32 newHealth = GetUInt32Value(UNIT_FIELD_HEALTH) + amt;
+	uint32 newHealth = GetHealth() + amt;
 
-	if(newHealth <= GetUInt32Value(UNIT_FIELD_MAXHEALTH))
-		SetUInt32Value(UNIT_FIELD_HEALTH, newHealth);
+	if(newHealth <= GetMaxHealth())
+		SetHealth( newHealth);
 	else
-		SetUInt32Value(UNIT_FIELD_HEALTH, GetUInt32Value(UNIT_FIELD_MAXHEALTH));
+		SetHealth( GetMaxHealth());
 
 	cannibalizeCount++;
 	if(cannibalizeCount == 5)
@@ -7067,8 +7067,8 @@ void Player::RegenerateMana(bool is_interrupted)
 
 void Player::RegenerateHealth( bool inCombat )
 {
-	uint32 cur = GetUInt32Value(UNIT_FIELD_HEALTH);
-	uint32 mh = GetUInt32Value(UNIT_FIELD_MAXHEALTH);
+	uint32 cur = GetHealth();
+	uint32 mh = GetMaxHealth();
 
 	if ( cur== 0 ) return; // cebernic: bugfix dying but regenerated?
 
@@ -7100,7 +7100,7 @@ void Player::RegenerateHealth( bool inCombat )
 				cur++;
 			else
 				cur += float2int32(amt);
-			SetUInt32Value(UNIT_FIELD_HEALTH,(cur>=mh) ? mh : cur);
+			SetHealth((cur>=mh) ? mh : cur);
 		}
 		else
 			DealDamage(this, float2int32(-amt), 0, 0, 0);
@@ -8374,8 +8374,8 @@ void Player::ApplyLevelInfo(LevelInfo* Info, uint32 Level)
 	}
 
 	// Set health / mana
-	SetUInt32Value(UNIT_FIELD_HEALTH, Info->HP);
-	SetUInt32Value(UNIT_FIELD_MAXHEALTH, Info->HP);
+	SetHealth( Info->HP);
+	SetMaxHealth( Info->HP);
 	SetPower( POWER_TYPE_MANA, Info->Mana);
 	SetUInt32Value(UNIT_FIELD_MAXPOWER1, Info->Mana);
 
@@ -8998,7 +8998,7 @@ void Player::CalculateBaseStats()
 		sLog.outError("%s (%d): NULL pointer", __FUNCTION__, __LINE__);
 		return;
 	}
-	SetUInt32Value(UNIT_FIELD_MAXHEALTH, lvlinfo->HP);
+	SetMaxHealth( lvlinfo->HP);
 	SetUInt32Value(UNIT_FIELD_BASE_HEALTH, lvlinfo->HP - (lvlinfo->Stat[2]-levelone->Stat[2])*10);
 	SetUInt32Value(PLAYER_NEXT_LEVEL_XP, lvlinfo->XPToNextLevel);
 
@@ -9110,7 +9110,7 @@ void Player::CompleteLoading()
 
 	// this needs to be after the cast of passive spells, because it will cast ghost form, after the remove making it in ghost alive, if no corpse.
 	//death system checkout
-	if(GetUInt32Value(UNIT_FIELD_HEALTH) <= 0 && !HasFlag(PLAYER_FLAGS, PLAYER_FLAG_DEATH_WORLD_ENABLE))
+	if(GetHealth() <= 0 && !HasFlag(PLAYER_FLAGS, PLAYER_FLAG_DEATH_WORLD_ENABLE))
 	{
 		setDeathState(CORPSE);
 	}
@@ -12074,7 +12074,7 @@ void Player::FullHPMP()
 {
 	if(IsDead())
 		ResurrectPlayer();
-    SetUInt32Value(UNIT_FIELD_HEALTH, GetUInt32Value(UNIT_FIELD_MAXHEALTH));
+    SetHealth( GetMaxHealth());
 	SetPower(POWER_TYPE_MANA, GetUInt32Value(UNIT_FIELD_MAXPOWER1));
     SetUInt32Value(UNIT_FIELD_POWER4, GetUInt32Value(UNIT_FIELD_MAXPOWER4));
 }

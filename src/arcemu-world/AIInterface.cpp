@@ -774,7 +774,7 @@ void AIInterface::Update(uint32 p_time)
 			*/
 			// Set health to full if they at there last location before attacking
 			if(m_AIType != AITYPE_PET&&!skip_reset_hp)
-				m_Unit->SetUInt32Value(UNIT_FIELD_HEALTH,m_Unit->GetUInt32Value(UNIT_FIELD_MAXHEALTH));
+				m_Unit->SetHealth(m_Unit->GetMaxHealth());
 		}
 		else
 		{
@@ -1153,11 +1153,11 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 			*/
 
 			if(m_canFlee && !m_hasFleed 
-				&& ((m_Unit->GetUInt32Value(UNIT_FIELD_HEALTH) / m_Unit->GetUInt32Value(UNIT_FIELD_MAXHEALTH)) < m_FleeHealth ))
+				&& ((m_Unit->GetHealth() / m_Unit->GetMaxHealth()) < m_FleeHealth ))
 				agent = AGENT_FLEE;
 			else if(m_canCallForHelp 
 				&& !m_hasCalledForHelp 
-				/*&& (m_CallForHelpHealth > (m_Unit->GetUInt32Value(UNIT_FIELD_HEALTH) / (m_Unit->GetUInt32Value(UNIT_FIELD_MAXHEALTH) > 0 ? m_Unit->GetUInt32Value(UNIT_FIELD_MAXHEALTH) : 1)))*/)
+				/*&& (m_CallForHelpHealth > (m_Unit->GetHealth() / (m_Unit->GetMaxHealth() > 0 ? m_Unit->GetMaxHealth() : 1)))*/)
 				agent = AGENT_CALLFORHELP;
 			else if(m_nextSpell)
 			{
@@ -1257,7 +1257,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 							Unit *t_unit = GetNextTarget();
 							if( !t_unit )
 								return; //omg lol, in seconds we lost target. This might be possible due to the Eventrelocated
-							uint32 health_before_strike = t_unit->GetUInt32Value(UNIT_FIELD_HEALTH);
+							uint32 health_before_strike = t_unit->GetHealth();
 #endif
 							m_Unit->Strike( GetNextTarget(), ( agent == AGENT_MELEE ? MELEE : RANGED ), NULL, 0, 0, 0, false, false );
 #ifdef ENABLE_CREATURE_DAZE
@@ -1265,7 +1265,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 							//as far as i know dazed is casted by most of the creatures but feel free to remove this code if you think otherwise
 							if(GetNextTarget() && m_Unit->m_factionDBC &&
 								!(m_Unit->m_factionDBC->RepListId == -1 && m_Unit->m_faction->FriendlyMask== 0 && m_Unit->m_faction->HostileMask== 0) /* neutral creature */
-								&& GetNextTarget()->IsPlayer() && !m_Unit->IsPet() && health_before_strike>GetNextTarget()->GetUInt32Value(UNIT_FIELD_HEALTH)
+								&& GetNextTarget()->IsPlayer() && !m_Unit->IsPet() && health_before_strike>GetNextTarget()->GetHealth()
 								&& Rand(m_Unit->get_chance_to_daze(GetNextTarget())))
 							{
 								float our_facing=m_Unit->calcRadAngle(m_Unit->GetPositionX(),m_Unit->GetPositionY(),GetNextTarget()->GetPositionX(),GetNextTarget()->GetPositionY());
@@ -1927,8 +1927,8 @@ Unit* AIInterface::FindTargetForSpell(AI_Spell *sp)
 	{
 		if(sp->spellType == STYPE_HEAL)
 		{
-			uint32 cur = m_Unit->GetUInt32Value(UNIT_FIELD_HEALTH) + 1;
-			uint32 max = m_Unit->GetUInt32Value(UNIT_FIELD_MAXHEALTH) + 1;
+			uint32 cur = m_Unit->GetHealth() + 1;
+			uint32 max = m_Unit->GetMaxHealth() + 1;
 			float healthPercent = float(cur) / float(max);
 			if(healthPercent <= sp->floatMisc1) // Heal ourselves cause we got too low HP
 			{
@@ -1941,8 +1941,8 @@ Unit* AIInterface::FindTargetForSpell(AI_Spell *sp)
 				{
 					continue;
 				}
-				cur = (*i)->GetUInt32Value(UNIT_FIELD_HEALTH);
-				max = (*i)->GetUInt32Value(UNIT_FIELD_MAXHEALTH);
+				cur = (*i)->GetHealth();
+				max = (*i)->GetMaxHealth();
 				healthPercent = float(cur) / float(max);
 				if(healthPercent <= sp->floatMisc1) // Heal ourselves cause we got too low HP
 				{
@@ -2787,8 +2787,8 @@ bool AIInterface::showWayPoints(Player* pPlayer, bool Backwards)
 			pWayPoint->SetUInt32Value(UNIT_FIELD_LEVEL, wp->id);
 			pWayPoint->SetUInt32Value(UNIT_NPC_FLAGS, 0);
 			pWayPoint->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE , pPlayer->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
-			pWayPoint->SetUInt32Value(UNIT_FIELD_HEALTH, 1);
-			pWayPoint->SetUInt32Value(UNIT_FIELD_MAXHEALTH, 1);
+			pWayPoint->SetHealth( 1);
+			pWayPoint->SetMaxHealth( 1);
 			pWayPoint->SetUInt32Value(UNIT_FIELD_STAT0, wp->flags);
 
 			//Create on client

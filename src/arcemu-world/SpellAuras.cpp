@@ -3107,8 +3107,8 @@ void Aura::EventPeriodicHeal( uint32 amount )
 
 	SendPeriodicHealAuraLog( add );
 
-	uint32 curHealth = m_target->GetUInt32Value(UNIT_FIELD_HEALTH);
-	uint32 maxHealth = m_target->GetUInt32Value(UNIT_FIELD_MAXHEALTH);
+	uint32 curHealth = m_target->GetHealth();
+	uint32 maxHealth = m_target->GetMaxHealth();
 
 	if((curHealth + add) >= maxHealth)
 	{
@@ -3724,14 +3724,14 @@ void Aura::EventPeriodicHealPct(float RegenPct)
 	if(!m_target->isAlive())
 		return;
 
-	uint32 add = float2int32(m_target->GetUInt32Value(UNIT_FIELD_MAXHEALTH) * (RegenPct / 100.0f));
+	uint32 add = float2int32(m_target->GetMaxHealth() * (RegenPct / 100.0f));
 
-	uint32 newHealth = m_target->GetUInt32Value(UNIT_FIELD_HEALTH) + add;
+	uint32 newHealth = m_target->GetHealth() + add;
 
-	if(newHealth <= m_target->GetUInt32Value(UNIT_FIELD_MAXHEALTH))
-		m_target->SetUInt32Value(UNIT_FIELD_HEALTH, newHealth);
+	if(newHealth <= m_target->GetMaxHealth())
+		m_target->SetHealth( newHealth);
 	else
-		m_target->SetUInt32Value(UNIT_FIELD_HEALTH, m_target->GetUInt32Value(UNIT_FIELD_MAXHEALTH));
+		m_target->SetHealth( m_target->GetMaxHealth());
 
 	SendPeriodicAuraLog(m_casterGuid, m_target, m_spellProto->Id, m_spellProto->School, add, 0, 0, FLAG_PERIODIC_HEAL);
 
@@ -4402,7 +4402,7 @@ void Aura::SpellAuraModIncreaseHealth(bool apply)
 			  mod->m_amount = 1500;
 			  break;
 			case 12976:// Last Stand
-			  mod->m_amount = (uint32)(m_target->GetUInt32Value(UNIT_FIELD_MAXHEALTH) * 0.3);
+			  mod->m_amount = (uint32)(m_target->GetMaxHealth() * 0.3);
 			  break;
 		}
 		SetPositive();
@@ -4420,9 +4420,9 @@ void Aura::SpellAuraModIncreaseHealth(bool apply)
 			m_target->ModUnsigned32Value(UNIT_FIELD_HEALTH,amt);
 		else
 		{
-			if((int32)m_target->GetUInt32Value(UNIT_FIELD_HEALTH)>-amt)//watch it on remove value is negative
+			if((int32)m_target->GetHealth()>-amt)//watch it on remove value is negative
 				m_target->ModUnsigned32Value(UNIT_FIELD_HEALTH,amt);
-			else m_target->SetUInt32Value(UNIT_FIELD_HEALTH,1); //do not kill player but do strip him good
+			else m_target->SetHealth(1); //do not kill player but do strip him good
 		}
 	}
 	else
@@ -5231,13 +5231,13 @@ void Aura::EventPeriodicLeech(uint32 amount)
 			Amount+= bonus;
 		}
 
-		uint32 newHealth = m_caster->GetUInt32Value(UNIT_FIELD_HEALTH) + Amount ;
+		uint32 newHealth = m_caster->GetHealth() + Amount ;
 
-		uint32 mh = m_caster->GetUInt32Value(UNIT_FIELD_MAXHEALTH);
+		uint32 mh = m_caster->GetMaxHealth();
 		if(newHealth <= mh)
-			m_caster->SetUInt32Value(UNIT_FIELD_HEALTH, newHealth);
+			m_caster->SetHealth( newHealth);
 		else
-			m_caster->SetUInt32Value(UNIT_FIELD_HEALTH, mh);
+			m_caster->SetHealth( mh);
 
 		//SendPeriodicHealAuraLog(Amount);
 		WorldPacket data(SMSG_PERIODICAURALOG, 32);
@@ -5696,13 +5696,13 @@ void Aura::EventPeriodicHealthFunnel(uint32 amount)
 	{
 
 		m_caster->DealDamage(m_target, amount, 0, 0, GetSpellId(),true);
-		uint32 newHealth = m_caster->GetUInt32Value(UNIT_FIELD_HEALTH) + 1000;
+		uint32 newHealth = m_caster->GetHealth() + 1000;
 
-		uint32 mh = m_caster->GetUInt32Value(UNIT_FIELD_MAXHEALTH);
+		uint32 mh = m_caster->GetMaxHealth();
 		if(newHealth <= mh)
-			m_caster->SetUInt32Value(UNIT_FIELD_HEALTH, newHealth);
+			m_caster->SetHealth( newHealth);
 		else
-			m_caster->SetUInt32Value(UNIT_FIELD_HEALTH, mh);
+			m_caster->SetHealth( mh);
 
 		SendPeriodicAuraLog(m_target, m_target, m_spellProto->Id, m_spellProto->School, 1000, 0, 0, FLAG_PERIODIC_LEECH);
 
@@ -6427,14 +6427,14 @@ void Aura::EventPeriodicHeal1(uint32 amount)
 	if(!m_target->isAlive())
 		return;
 
-	uint32 ch = m_target->GetUInt32Value(UNIT_FIELD_HEALTH);
+	uint32 ch = m_target->GetHealth();
 	ch+=amount;
-	uint32 mh = m_target->GetUInt32Value(UNIT_FIELD_MAXHEALTH);
+	uint32 mh = m_target->GetMaxHealth();
 
 	if(ch>mh)
-		m_target->SetUInt32Value(UNIT_FIELD_HEALTH,mh);
+		m_target->SetHealth(mh);
 	else
-		m_target->SetUInt32Value(UNIT_FIELD_HEALTH,ch);
+		m_target->SetHealth(ch);
 
 	if(GetSpellProto()->AuraInterruptFlags & AURA_INTERRUPT_ON_STAND_UP)
 	{
@@ -6580,7 +6580,7 @@ void Aura::SpellAuraPeriodicDamagePercent(bool apply)
 
 		/*if(m_spellProto->Id == 28347) //Dimensional Siphon
 		{
-			uint32 dmg = (m_target->GetUInt32Value(UNIT_FIELD_MAXHEALTH)*5)/100;
+			uint32 dmg = (m_target->GetMaxHealth()*5)/100;
 			sEventMgr.AddEvent(this, &Aura::EventPeriodicDamagePercent, dmg,
 				EVENT_AURA_PERIODIC_DAMAGE_PERCENT, 1000, 0,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 		}
@@ -6602,7 +6602,7 @@ void Aura::EventPeriodicDamagePercent(uint32 amount)
 	if(m_target->SchoolImmunityList[GetSpellProto()->School])
 		return;
 
-	uint32 damage = float2int32(amount/100.0f*m_target->GetUInt32Value(UNIT_FIELD_MAXHEALTH));
+	uint32 damage = float2int32(amount/100.0f*m_target->GetMaxHealth());
 
 	Unit * c = GetUnitCaster();
 
@@ -9093,7 +9093,7 @@ void Aura::SpellAuraSpiritOfRedemption(bool apply)
 	if(apply)
 	{
 		m_target->SetScale(  0.5);
-		m_target->SetUInt32Value(UNIT_FIELD_HEALTH, 1);
+		m_target->SetHealth( 1);
 		SpellEntry * sorInfo = dbcSpell.LookupEntry(27792);
 		Spell * sor = new Spell(m_target, sorInfo, true, NULL);
 		SpellCastTargets targets;
@@ -9104,7 +9104,7 @@ void Aura::SpellAuraSpiritOfRedemption(bool apply)
 	{
 		m_target->SetScale(  1);
 		m_target->RemoveAura(27792);
-		m_target->SetUInt32Value(UNIT_FIELD_HEALTH, 0);
+		m_target->SetHealth( 0);
 	}
 }
 

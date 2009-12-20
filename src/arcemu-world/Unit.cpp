@@ -2310,7 +2310,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						//this should contain the same values as the fixed ones
 						dmg_overwrite = ( dmg *  (ospinfo->EffectBasePoints[0] + 1 )) / 100 ; //only half dmg
 
-						int32 half_health = this->GetUInt32Value(UNIT_FIELD_HEALTH) >> 1;
+						int32 half_health = this->GetHealth() >> 1;
 						if( dmg_overwrite > half_health )
 							dmg_overwrite = half_health ;
 					}break;
@@ -5235,16 +5235,16 @@ int32 Unit::GetSpellDmgBonus(Unit *pVictim, SpellEntry *spellInfo,int32 base_dmg
 		if( spellInfo->Id == 31893 || spellInfo->Id == 53719 )
 		{
 			int32 selfdamage = float2int32((( bonus_damage * summaryPCTmod) + bonus_damage ) * 0.1f);
-			if( caster->GetUInt32Value(UNIT_FIELD_HEALTH) - selfdamage < 0 )
-				caster->SetUInt32Value(UNIT_FIELD_HEALTH, 1);
+			if( caster->GetHealth() - selfdamage < 0 )
+				caster->SetHealth( 1);
 			else
 				caster->ModUnsigned32Value(UNIT_FIELD_HEALTH, -selfdamage);
 		}
 		else if( spellInfo->Id == 31898 || spellInfo->Id == 53726 )
 		{
 			int32 selfdamage = float2int32((( bonus_damage * summaryPCTmod) + bonus_damage ) * 0.33f);
-			if( caster->GetUInt32Value(UNIT_FIELD_HEALTH) - selfdamage < 0 )
-				caster->SetUInt32Value(UNIT_FIELD_HEALTH, 1);
+			if( caster->GetHealth() - selfdamage < 0 )
+				caster->SetHealth( 1);
 			else
 				caster->ModUnsigned32Value(UNIT_FIELD_HEALTH, -selfdamage);
 		}
@@ -5598,8 +5598,8 @@ uint32 Unit::AbsorbDamage( uint32 School, uint32* dmg )
 				if(!(static_cast< Player* >( this )->Cooldown_CanCast(dSpell)))
 					continue;
 
-				uint32 ch=this->GetUInt32Value(UNIT_FIELD_HEALTH);
-				uint32 mh=this->GetUInt32Value(UNIT_FIELD_MAXHEALTH);
+				uint32 ch=this->GetHealth();
+				uint32 mh=this->GetMaxHealth();
 
 				//check for proc chance
 				if (RandomFloat(100.0f)>float(aSpell->procChance))
@@ -6674,8 +6674,8 @@ Creature* Unit::create_guardian(uint32 guardian_entry,uint32 duration,float angl
 		p->SetMaxPower( POWER_TYPE_MANA,p->GetMaxPower( POWER_TYPE_MANA )+28+10*lvl);
 		p->SetPower( POWER_TYPE_MANA,p->GetPower( POWER_TYPE_MANA ) + 28 + 10 * lvl );
 		/* HEALTH */
-		p->SetUInt32Value(UNIT_FIELD_MAXHEALTH,p->GetUInt32Value(UNIT_FIELD_MAXHEALTH)+28+30*lvl);
-		p->SetUInt32Value(UNIT_FIELD_HEALTH,p->GetUInt32Value(UNIT_FIELD_HEALTH)+28+30*lvl);
+		p->SetMaxHealth(p->GetMaxHealth()+28+30*lvl);
+		p->SetHealth(p->GetHealth()+28+30*lvl);
 		/* LEVEL */
 		p->SetUInt32Value(UNIT_FIELD_LEVEL, lvl);
 	}
@@ -7071,8 +7071,8 @@ void Unit::Heal(Unit *target, uint32 SpellId, uint32 amount)
 	if(!target || !SpellId || !amount)
 		return;
 
-	uint32 ch = target->GetUInt32Value(UNIT_FIELD_HEALTH);
-	uint32 mh = target->GetUInt32Value(UNIT_FIELD_MAXHEALTH);
+	uint32 ch = target->GetHealth();
+	uint32 mh = target->GetMaxHealth();
 	if( mh != ch )
 	{
 		ch += amount;
@@ -7080,12 +7080,12 @@ void Unit::Heal(Unit *target, uint32 SpellId, uint32 amount)
 
 		if(ch > mh)
 		{
-			target->SetUInt32Value(UNIT_FIELD_HEALTH, mh);
+			target->SetHealth( mh);
 			overheal = amount - mh;
 			amount += (mh - ch);
 		}
 		else
-			target->SetUInt32Value(UNIT_FIELD_HEALTH, ch);
+			target->SetHealth( ch);
 
 		WorldPacket data(SMSG_SPELLHEALLOG, 29);
 		data << target->GetNewGUID();

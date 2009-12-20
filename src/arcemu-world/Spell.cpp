@@ -4473,10 +4473,10 @@ uint8 Spell::CanCast(bool tolerate)
 
 				if( GetProto()->Category==1131)//Hammer of wrath, requires target to have 20- % of hp
 				{
-					if(target->GetUInt32Value(UNIT_FIELD_HEALTH) == 0)
+					if(target->GetHealth() == 0)
 						return SPELL_FAILED_BAD_TARGETS;
 
-					if(target->GetUInt32Value(UNIT_FIELD_MAXHEALTH)/target->GetUInt32Value(UNIT_FIELD_HEALTH)<5)
+					if(target->GetMaxHealth()/target->GetHealth()<5)
 						 return SPELL_FAILED_BAD_TARGETS;
 				}
 				else if( GetProto()->Category==672)//Conflagrate, requires immolation spell on victim

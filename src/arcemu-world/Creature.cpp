@@ -375,7 +375,7 @@ void Creature::OnRespawn(MapMgr * m)
 	}
 
 	sLog.outDetail("Respawning "I64FMT"...", GetGUID());
-	SetUInt32Value(UNIT_FIELD_HEALTH, GetUInt32Value(UNIT_FIELD_MAXHEALTH));
+	SetHealth( GetMaxHealth());
 	SetUInt32Value(UNIT_DYNAMIC_FLAGS, 0); // not tagging shit
 	if(proto && m_spawn)
 	{
@@ -395,7 +395,7 @@ void Creature::OnRespawn(MapMgr * m)
 		/*uint32 newhealth = m_uint32Values[UNIT_FIELD_HEALTH] / 100;
 		if(!newhealth)
 			newhealth = 1;*/
-		SetUInt32Value(UNIT_FIELD_HEALTH, 1);
+		SetHealth( 1);
 		m_limbostate = true;
 		setDeathState( CORPSE );
 		SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_STATE_DEAD);
@@ -526,7 +526,7 @@ void Creature::generateLoot()
 				//generate copper
 				loot.gold = (uint32)((info->Rank+1)*getLevel()*(rand()%5 + 1)); 
 			else
-				loot.gold = (uint32)((info->Rank+1)*getLevel()*(rand()%5 + 1)*(this->GetUInt32Value(UNIT_FIELD_MAXHEALTH)*0.0006)); //generate copper
+				loot.gold = (uint32)((info->Rank+1)*getLevel()*(rand()%5 + 1)*(this->GetMaxHealth()*0.0006)); //generate copper
 		}
 	}
 
@@ -995,8 +995,8 @@ void Creature::RegenerateHealth()
 	if(m_limbostate || !m_canRegenerateHP)
 		return;
 
-	uint32 cur=GetUInt32Value(UNIT_FIELD_HEALTH);
-	uint32 mh=GetUInt32Value(UNIT_FIELD_MAXHEALTH);
+	uint32 cur=GetHealth();
+	uint32 mh=GetMaxHealth();
 	if(cur>=mh)return;
 
 	//though creatures have their stats we use some weird formula for amt
@@ -1016,7 +1016,7 @@ void Creature::RegenerateHealth()
 		cur++;
 	else
 		cur+=(uint32)amt;
-	SetUInt32Value(UNIT_FIELD_HEALTH,(cur>=mh)?mh:cur);
+	SetHealth((cur>=mh)?mh:cur);
 }
 
 void Creature::RegenerateMana()
@@ -1245,9 +1245,9 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	SetEntry( proto->Id);
 	SetScale( proto->Scale);
 
-	//SetUInt32Value(UNIT_FIELD_HEALTH, (mode ? long2int32(proto->Health * 1.5)  : proto->Health));
+	//SetHealth( (mode ? long2int32(proto->Health * 1.5)  : proto->Health));
 	//SetUInt32Value(UNIT_FIELD_BASE_HEALTH, (mode ? long2int32(proto->Health * 1.5)  : proto->Health));
-	//SetUInt32Value(UNIT_FIELD_MAXHEALTH, (mode ? long2int32(proto->Health * 1.5)  : proto->Health));
+	//SetMaxHealth( (mode ? long2int32(proto->Health * 1.5)  : proto->Health));
 	if( proto->MinHealth > proto->MaxHealth )
 	{
 		proto->MaxHealth = proto->MinHealth+1;
@@ -1267,8 +1267,8 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 
 	health = static_cast< uint32 >( health * diff_coeff );
 
-	SetUInt32Value(UNIT_FIELD_HEALTH, health);
-	SetUInt32Value(UNIT_FIELD_MAXHEALTH, health);
+	SetHealth( health);
+	SetMaxHealth( health);
 	SetUInt32Value(UNIT_FIELD_BASE_HEALTH, health);
 
 	SetPower( POWER_TYPE_MANA, proto->Mana );
@@ -1470,7 +1470,7 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 		/*uint32 newhealth = m_uint32Values[UNIT_FIELD_HEALTH] / 100;
 		if(!newhealth)
 			newhealth = 1;*/
-		SetUInt32Value(UNIT_FIELD_HEALTH, 1);
+		SetHealth( 1);
 		m_limbostate = true;
 		setDeathState( CORPSE );
 		SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_STATE_DEAD);
@@ -1516,8 +1516,8 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 
 	uint32 health = proto->MinHealth + RandomUInt(proto->MaxHealth - proto->MinHealth);
 
-	SetUInt32Value(UNIT_FIELD_HEALTH, health);
-	SetUInt32Value(UNIT_FIELD_MAXHEALTH, health);
+	SetHealth( health);
+	SetMaxHealth( health);
 	SetUInt32Value(UNIT_FIELD_BASE_HEALTH, health);
 
 	SetPower( POWER_TYPE_MANA, proto->Mana );
@@ -1671,7 +1671,7 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 		/*uint32 newhealth = m_uint32Values[UNIT_FIELD_HEALTH] / 100;
 		if(!newhealth)
 			newhealth = 1;*/
-		SetUInt32Value(UNIT_FIELD_HEALTH, 1);
+		SetHealth( 1);
 		m_limbostate = true;
 		setDeathState( CORPSE );
 		SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_STATE_DEAD);
@@ -1941,7 +1941,7 @@ void Creature::RemoveLimboState(Unit * healer)
 
 	m_limbostate = false;
 	SetUInt32Value(UNIT_NPC_EMOTESTATE, m_spawn ? m_spawn->emote_state : 0);
-	SetUInt32Value(UNIT_FIELD_HEALTH, GetUInt32Value(UNIT_FIELD_MAXHEALTH));
+	SetHealth( GetMaxHealth());
 	bInvincible = false;
 }
 

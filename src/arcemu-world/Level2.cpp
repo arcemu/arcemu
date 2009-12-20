@@ -422,7 +422,7 @@ bool ChatHandler::HandleKillCommand(const char *args, WorldSession *m_session)
 		Player * plr = static_cast< Player* >(target);
 		// cebernic: kill just is kill,don't use dealdamage for it
 		// godcheat will not stop the killing,godcheat for DealDamage() only.
-		//m_session->GetPlayer()->DealDamage(plr, plr->GetUInt32Value(UNIT_FIELD_HEALTH)*2,0,0,0);
+		//m_session->GetPlayer()->DealDamage(plr, plr->GetHealth()*2,0,0,0);
 		plr->SetUInt32Value(UNIT_FIELD_HEALTH, 0);
 		plr->KillPlayer();
 		BlueSystemMessageToPlr(plr, "%s killed you with a GM command.", m_session->GetPlayer()->GetName());

@@ -630,7 +630,7 @@ void Pet::LoadFromDB( Player* owner, PlayerPet * pi )
 	//if pet was dead on logout then it should be dead now too
 	if( HasFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_DEAD ) )
 	{
-		SetUInt32Value(UNIT_FIELD_HEALTH, 0); //this is probably already 0
+		SetHealth( 0); //this is probably already 0
 		setDeathState( JUST_DIED );
 		m_Owner->EventDismissPet();	//just in case in near future(or any other) on loading auras get applied then make sure we remove those
 	}
@@ -1349,7 +1349,7 @@ void Pet::ApplySummonLevelAbilities()
 		health = 100;
 	}
 	SetUInt32Value(UNIT_FIELD_BASE_HEALTH, FL2UINT(health));
-	SetUInt32Value(UNIT_FIELD_MAXHEALTH, FL2UINT(health));
+	SetMaxHealth( FL2UINT(health));
 	SetUInt32Value(UNIT_FIELD_BASE_MANA, FL2UINT(mana));
 	SetUInt32Value(UNIT_FIELD_MAXPOWER1, FL2UINT(mana));
 

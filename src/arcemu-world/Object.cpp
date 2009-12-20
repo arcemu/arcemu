@@ -1999,13 +1999,13 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 		if((health <= damage) && static_cast< Player* >( this )->DuelingWith != NULL)
 		{
 			//Player in Duel and Player Victim has lost
-			uint32 NewHP = pVictim->GetUInt32Value(UNIT_FIELD_MAXHEALTH)/100;
+			uint32 NewHP = pVictim->GetMaxHealth()/100;
 
 			if(NewHP < 5)
 				NewHP = 5;
 
 			//Set their health to 1% or 5 if 1% is lower then 5
-			pVictim->SetUInt32Value(UNIT_FIELD_HEALTH, NewHP);
+			pVictim->SetHealth( NewHP);
 			//End Duel
 			static_cast< Player* >( this )->EndDuel(DUEL_WINNER_KNOCKOUT);
 
@@ -2024,11 +2024,11 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 			if(petOwner)
 			{
 				//Player in Duel and Player Victim has lost
-				uint32 NewHP = pVictim->GetUInt32Value(UNIT_FIELD_MAXHEALTH)/100;
+				uint32 NewHP = pVictim->GetMaxHealth()/100;
 				if(NewHP < 5) NewHP = 5;
 
 				//Set their health to 1% or 5 if 1% is lower then 5
-				pVictim->SetUInt32Value(UNIT_FIELD_HEALTH, NewHP);
+				pVictim->SetHealth( NewHP);
 				//End Duel
 				petOwner->EndDuel(DUEL_WINNER_KNOCKOUT);
 				return;
@@ -2279,7 +2279,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 			static_cast< Player* >( pVictim )->EventAttackStop();
 
 		/* Set victim health to 0 */
-		pVictim->SetUInt32Value(UNIT_FIELD_HEALTH, 0);
+		pVictim->SetHealth( 0);
 		CALL_INSTANCE_SCRIPT_EVENT( m_mapMgr, OnPlayerDeath )( TO_PLAYER( pVictim ), TO_UNIT(this) );
 
 		if(pVictim->IsPlayer())
