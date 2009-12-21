@@ -93,7 +93,8 @@ void DynamicObject::Create(Unit * caster, Spell * pSpell, float x, float y, floa
 	}
 	caster->dynObj = this;
   
-	sEventMgr.AddEvent(this, &DynamicObject::UpdateTargets, EVENT_DYNAMICOBJECT_UPDATE, 100, 0,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+	//sEventMgr.AddEvent(this, &DynamicObject::UpdateTargets, EVENT_DYNAMICOBJECT_UPDATE, 100, 0,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+    UpdateTargets();
 }
 
 void DynamicObject::AddInRangeObject( Object* pObj )
@@ -117,24 +118,20 @@ void DynamicObject::UpdateTargets()
 
 	if(m_aliveDuration >= 100)
 	{
-		std::set<Object*>::iterator itr = GetInRangeSetBegin(),itr2;
-		std::set<Object*>::iterator iend = GetInRangeSetEnd();
 		Unit * target;
 		Aura * pAura;
-		float radius = m_floatValues[DYNAMICOBJECT_RADIUS]*m_floatValues[DYNAMICOBJECT_RADIUS];
 
-		while(itr != iend)
+		float radius = m_floatValues[DYNAMICOBJECT_RADIUS];
+
+        // Looking for targets in the Object set
+        for( std::set< Object* >::iterator itr = m_objectsInRange.begin(); itr != m_objectsInRange.end(); ++itr )
 		{
-//			target = *itr;
-//			++itr;
+            Object *o = *itr;
 
-			itr2 = itr;
-			++itr;
-
-			if( !( (*itr2)->IsUnit() ) || ! static_cast< Unit* >( *itr2 )->isAlive() || ( static_cast< Creature* >( *itr2 )->IsTotem() && !static_cast< Unit* >( *itr2 )->IsPlayer() ) )
+			if( !o->IsUnit() || !static_cast< Unit* >( o )->isAlive() )
 				continue;
 
-			target = static_cast< Unit* >( *itr2 );
+			target = static_cast< Unit* >( o );
 
 			if( !isAttackable( u_caster, target, !(m_spellProto->c_is_flags & SPELL_FLAG_IS_TARGETINGSTEALTHED) ) )
 				continue;
@@ -166,6 +163,44 @@ void DynamicObject::UpdateTargets()
 			}
 		}
 
+        // looking for targets in the Player set
+        for( std::set< Object* >::iterator itr = m_inRangePlayers.begin(); itr != m_inRangePlayers.end(); ++itr ){
+            
+            Player *target = static_cast< Player* >( *itr );
+
+            if( !target->isAlive() )
+                continue;
+            
+            if( !isAttackable( u_caster, target, !(m_spellProto->c_is_flags & SPELL_FLAG_IS_TARGETINGSTEALTHED) ) )
+				continue;
+
+			// skip units already hit, their range will be tested later
+			if(targets.find( target->GetGUID() ) != targets.end())
+				continue;
+
+			if(GetDistanceSq(target) <= radius)
+			{
+				pAura = new Aura(m_spellProto, m_aliveDuration, u_caster, target, true);
+				for(uint32 i = 0; i < 3; ++i)
+				{
+					if(m_spellProto->Effect[i] == SPELL_EFFECT_PERSISTENT_AREA_AURA)
+					{
+						pAura->AddMod(m_spellProto->EffectApplyAuraName[i],
+							m_spellProto->EffectBasePoints[i]+1, m_spellProto->EffectMiscValue[i], i);
+					}
+				}
+				target->AddAura(pAura);
+				if(p_caster)
+				{
+					p_caster->HandleProc(PROC_ON_CAST_SPECIFIC_SPELL | PROC_ON_CAST_SPELL,target, m_spellProto);
+					p_caster->m_procCounter = 0;
+				}
+
+				// add to target list
+				targets.insert(target->GetGUID());
+			}
+        }
+        
 		// loop the targets, check the range of all of them
 		DynamicObjectList::iterator jtr  = targets.begin();
 		DynamicObjectList::iterator jtr2;
@@ -200,20 +235,27 @@ void DynamicObject::UpdateTargets()
 void DynamicObject::Remove()
 {
 	// remove aura from all targets
-	DynamicObjectList::iterator jtr  = targets.begin();
-	DynamicObjectList::iterator jend = targets.end();
 	Unit * target;
 
-	while(jtr != jend)
+    if( !IsInWorld() ){
+        delete this;
+        return;
+    }
+
+    for( std::set< uint64 >::iterator itr = targets.begin(); itr != targets.end(); ++itr )
 	{
-		target = GetMapMgr() ? GetMapMgr()->GetUnit(*jtr) : NULL;
-		++jtr;
-		if (target != NULL)
+
+        uint64 TargetGUID = *itr;
+
+        target = m_mapMgr->GetUnit( TargetGUID );
+
+        if (target != NULL)
 			target->RemoveAura(m_spellProto->Id);
 	}
 
-	if(IsInWorld())
+	if( IsInWorld() )
 		RemoveFromWorld(true);
+
 	delete this;
 }
 

@@ -344,7 +344,7 @@ void MapMgr::PushObject(Object *obj)
 	uint32 count;
 	Player *plObj;
 
-	if(obj->GetTypeId() == TYPEID_PLAYER)
+    if( obj->IsPlayer() )
 		plObj = static_cast< Player* >( obj );
 	else
 		plObj = NULL;
@@ -1529,7 +1529,7 @@ void MapMgr::_PerformObjectDuties()
 		Player* ptr;
 		for(; itr != m_PlayerStorage.end(); )
 		{
-			ptr = static_cast< Player* >( (itr->second) );
+			ptr = static_cast< Player* >( itr->second );
 			++itr;
 			if( ptr != NULL )
 				ptr->Update( difftime );
@@ -1537,6 +1537,20 @@ void MapMgr::_PerformObjectDuties()
 
 		lastUnitUpdate = mstime;
 	}
+
+    // Dynamic objects
+    //
+    // We take the pointer, increment, and update in this order because during the update the DynamicObject might get deleted,
+    // rendering the iterator unincrementable. Which causes a crash!
+    {
+        for( DynamicObjectStorageMap::iterator itr = m_DynamicObjectStorage.begin(); itr != m_DynamicObjectStorage.end(); ){
+            
+            DynamicObject *o = itr->second;
+            ++itr;
+
+            o->UpdateTargets();
+        }
+    }
 
 	// Update gameobjects (not on every loop, however)
 	if( mLoopCounter % 2 )
