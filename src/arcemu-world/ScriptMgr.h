@@ -122,6 +122,7 @@ typedef InstanceScript* ( *exp_create_instance_ai )( MapMgr* pMapMgr );
 typedef bool(*exp_handle_dummy_spell)(uint32 i, Spell * pSpell);
 typedef bool(*exp_handle_dummy_aura)(uint32 i, Aura * pAura, bool apply);
 typedef void(*exp_script_register)(ScriptMgr * mgr);
+typedef void(*exp_engine_reload)();
 typedef uint32(*exp_get_script_type)();
 
 typedef uint32(*exp_get_version)();
@@ -171,6 +172,23 @@ public:
 	void register_item_gossip_script(uint32 entry, GossipScript * gs);
 	void register_quest_script(uint32 entry, QuestScript * qs);
 	void register_instance_script( uint32 pMapId, exp_create_instance_ai pCallback ); 
+	void ReloadScriptEngines() {
+		//for all scripting engines that allow reloading, assuming there will be new scripting engines.
+		exp_get_script_type version_function;
+		exp_engine_reload engine_reloadfunc;
+		for(LibraryHandleMap::iterator itr = _handles.begin(); itr != _handles.end(); ++itr)
+		{
+			version_function = (exp_get_script_type)GetProcAddress( (HMODULE)(*itr),"_exp_get_script_type");
+			if(version_function == 0)
+				continue;
+			if(version_function() & SCRIPT_TYPE_SCRIPT_ENGINE)
+			{
+				engine_reloadfunc = (exp_engine_reload)GetProcAddress( (HMODULE)(*itr),"_export_engine_reload");
+				if(engine_reloadfunc != 0)
+					engine_reloadfunc();
+			}
+		}
+	}
 
 	ARCEMU_INLINE GossipScript * GetDefaultGossipScript() { return DefaultGossipScript; }
 

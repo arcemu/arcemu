@@ -437,4 +437,9 @@ bool HandleReloadConsoleCommand(BaseConsole * pConsole, int argc, const char *ar
 
 	return true;
 }
+bool HandleScriptEngineReloadCommand(BaseConsole *, int, const char* [])
+{
+	sScriptMgr.ReloadScriptEngines();
+	return true;
+}
 
