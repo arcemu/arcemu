@@ -26,6 +26,10 @@
 #define ADD_INSTANCE_FACTORY_FUNCTION( ClassName ) static InstanceScript* Create( MapMgr* pMapMgr ) { return new ClassName( pMapMgr ); }; 
 #define ADD_GAMEOBJECT_FACTORY_FUNCTION( ClassName ) static GameObjectAIScript* Create(GameObject* GO) { return new ClassName(GO); }; 
 
+#ifndef WIN32
+#include <dlfcn.h>
+#endif
+
 class Channel;
 class Guild;
 struct Quest;
@@ -178,6 +182,7 @@ public:
 		exp_engine_reload engine_reloadfunc;
 		for(LibraryHandleMap::iterator itr = _handles.begin(); itr != _handles.end(); ++itr)
 		{
+#ifdef WIN32
 			version_function = (exp_get_script_type)GetProcAddress( (HMODULE)(*itr),"_exp_get_script_type");
 			if(version_function == 0)
 				continue;
@@ -187,6 +192,17 @@ public:
 				if(engine_reloadfunc != 0)
 					engine_reloadfunc();
 			}
+#else
+			version_function = (exp_get_script_type)dlsym( (SCRIPT_MODULE)(*itr),"_exp_get_script_type");
+			if(version_function == 0)
+				continue;
+			if(version_function() & SCRIPT_TYPE_SCRIPT_ENGINE)
+			{
+				engine_reloadfunc = (exp_engine_reload)dlsym( (SCRIPT_MODULE)(*itr),"_export_engine_reload");
+				if(engine_reloadfunc != 0)
+					engine_reloadfunc();
+			}
+#endif
 		}
 	}
 
