@@ -23,6 +23,11 @@
 //
 
 #include "StdAfx.h"
+
+#ifdef WIN32
+#include "CrashHandler.h"
+#endif
+
 #define MAP_MGR_UPDATE_PERIOD 100
 #define MAPMGR_INACTIVE_MOVE_TIME 30
 
@@ -1267,7 +1272,9 @@ bool MapMgr::run()
 {
 	bool rv = true;
 
-    rv = Do();
+    THREAD_TRY_EXECUTION
+        rv = Do();
+    THREAD_HANDLE_CRASH
     
 	return rv;
 }

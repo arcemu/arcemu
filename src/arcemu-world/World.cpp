@@ -19,6 +19,11 @@
  */
 
 #include "StdAfx.h"
+
+#ifdef WIN32
+#include <CrashHandler.h>
+#endif
+
 initialiseSingleton( World );
 
 DayWatcherThread* dw = NULL;
@@ -1035,16 +1040,19 @@ Task * TaskList::GetTask()
 	queueLock.Acquire();
 
 	Task* t = 0;
-	for(set<Task*>::iterator itr = tasks.begin(); itr != tasks.end(); ++itr)
+
+    for(set<Task*>::iterator itr = tasks.begin(); itr != tasks.end(); ++itr)
 	{
-		if(!(*itr)->in_progress)
+	    if(!(*itr)->in_progress)
 		{
-			t = (*itr);
+		    t = (*itr);
 			t->in_progress = true;
 			break;
 		}
-	}
+    }
+
 	queueLock.Release();
+
 	return t;
 }
 
@@ -1123,7 +1131,9 @@ void Task::execute()
 bool TaskExecutor::run()
 {
 	Task * t;
-	{
+    
+    THREAD_TRY_EXECUTION
+
 		while(starter->running)
 		{
 			t = starter->GetTask();
@@ -1137,7 +1147,9 @@ bool TaskExecutor::run()
 			else
 				Sleep(20);
 		}
-	}
+
+    THREAD_HANDLE_CRASH
+
 	return true;
 }
 

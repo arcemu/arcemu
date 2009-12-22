@@ -9,6 +9,8 @@
 #include "Network.h"
 #ifdef CONFIG_USE_IOCP
 
+#include "../CrashHandler.h"
+
 initialiseSingleton(SocketMgr);
 SocketMgr::SocketMgr()
 {
@@ -37,32 +39,36 @@ void SocketMgr::SpawnWorkerThreads()
 
 bool SocketWorkerThread::run()
 {
-	HANDLE cp = sSocketMgr.GetCompletionPort();
-	DWORD len;
-	Socket * s;
-	OverlappedStruct * ov;
-	LPOVERLAPPED ol_ptr;
+    THREAD_TRY_EXECUTION
 
-	while(true)
-	{
+	    HANDLE cp = sSocketMgr.GetCompletionPort();
+	    DWORD len;
+	    Socket * s;
+	    OverlappedStruct * ov;
+	    LPOVERLAPPED ol_ptr;
+
+	    while(true)
+	    {
 #ifndef _WIN64
-		if(!GetQueuedCompletionStatus(cp, &len, (LPDWORD)&s, &ol_ptr, 10000))
+		    if(!GetQueuedCompletionStatus(cp, &len, (LPDWORD)&s, &ol_ptr, 10000))
 #else
-		if(!GetQueuedCompletionStatus(cp, &len, (PULONG_PTR)&s, &ol_ptr, 10000))
+		    if(!GetQueuedCompletionStatus(cp, &len, (PULONG_PTR)&s, &ol_ptr, 10000))
 #endif
-			continue;
+			    continue;
 
-		ov = CONTAINING_RECORD(ol_ptr, OverlappedStruct, m_overlap);
+		    ov = CONTAINING_RECORD(ol_ptr, OverlappedStruct, m_overlap);
 
-		if(ov->m_event == SOCKET_IO_THREAD_SHUTDOWN)
-		{
-			delete ov;
-			return true;
-		}
+		    if(ov->m_event == SOCKET_IO_THREAD_SHUTDOWN)
+		    {
+			    delete ov;
+			    return true;
+		    }
 
-		if(ov->m_event < NUM_SOCKET_IO_EVENTS)
-			ophandlers[ov->m_event](s, len);
-	}
+		    if(ov->m_event < NUM_SOCKET_IO_EVENTS)
+			    ophandlers[ov->m_event](s, len);
+	    }
+
+    THREAD_HANDLE_CRASH
 
 	return true;
 }

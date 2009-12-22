@@ -613,13 +613,4 @@ inline static unsigned int MakeIP(const char * str)
 	return res;
 }
 
-// warning, by enabling this define you are aware that you are only delaying the inevitable
-// some crashes are not recorable and those will stack up in time and lead to a full crash
-// enabling this define will make windows servers shut down only the map instance in where the crash ocured
-// during this forced shutdown players are not saved to avoid saving corrupted data
-// there might be a lot of cases where each saved crash will lead to memory leaks or unhandled cases
-// crashreports are still created and do use them to report the actaul problem that casued the crash
-// fixing the problem that causes the crash is the proper way to fix things
-//#define FORCED_SERVER_KEEPALIVE
-
 #endif

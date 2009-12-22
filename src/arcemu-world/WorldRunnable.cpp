@@ -23,6 +23,10 @@
 //
 
 #include "StdAfx.h"
+#ifdef WIN32
+#include <CrashHandler.h>
+#endif
+
 #define WORLD_UPDATE_DELAY 50
 
 WorldRunnable::WorldRunnable() : CThread()
@@ -35,6 +39,8 @@ bool WorldRunnable::run()
 	SetThreadName("WorldRunnable (non-instance/logon)");
 	uint32 LastWorldUpdate = getMSTime();
 	uint32 LastSessionsUpdate = getMSTime();
+
+    THREAD_TRY_EXECUTION
 
 	while(ThreadState != THREADSTATE_TERMINATE)
 	{
@@ -96,5 +102,6 @@ bool WorldRunnable::run()
 			Sleep(WORLD_UPDATE_DELAY - diff);
 	}
 
+    THREAD_HANDLE_CRASH
 	return true;
 }
