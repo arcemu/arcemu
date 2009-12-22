@@ -209,7 +209,7 @@ void WorldSession::CharacterEnumProc(QueryResult * result)
 
 			if( Class == WARLOCK || Class == HUNTER )
 			{
-				res = CharacterDatabase.Query("SELECT entry FROM playerpets WHERE ownerguid = %u AND MOD( active, 10 ) = 1;", GUID_LOPART( guid ) );
+				res = CharacterDatabase.Query("SELECT entry FROM playerpets WHERE ownerguid = %u AND MOD( active, 10 ) = 1;", Arcemu::Util::GUID_LOPART( guid ) );
 
 				if(res)
 				{
@@ -232,7 +232,7 @@ void WorldSession::CharacterEnumProc(QueryResult * result)
                 data << uint32( 0 );
             }
 
-			res = CharacterDatabase.Query("SELECT containerslot, slot, entry, enchantments FROM playeritems WHERE ownerguid=%u", GUID_LOPART(guid));
+			res = CharacterDatabase.Query("SELECT containerslot, slot, entry, enchantments FROM playeritems WHERE ownerguid=%u", Arcemu::Util::GUID_LOPART( guid ));
 
 			memset(items, 0, sizeof(player_item) * 20);
 			uint32 enchantid;
@@ -835,7 +835,7 @@ void WorldSession::FullLogin(Player * plr)
 	// Find our transporter and add us if we're on one.
 	if(plr->m_TransporterGUID != 0)
 	{
-		Transporter * pTrans = objmgr.GetTransporter(GUID_LOPART(plr->m_TransporterGUID));
+		Transporter * pTrans = objmgr.GetTransporter( Arcemu::Util::GUID_LOPART(plr->m_TransporterGUID));
 		if(pTrans)
 		{
 			if(plr->IsDead())

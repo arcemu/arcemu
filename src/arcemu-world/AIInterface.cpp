@@ -1900,7 +1900,7 @@ Unit* AIInterface::FindTarget()
 		{
             uint64 charmer = target->GetCharmedByGUID();
 
-			Unit* target2 = m_Unit->GetMapMgr()->GetPlayer( GUID_LOPART( charmer ) );
+			Unit* target2 = m_Unit->GetMapMgr()->GetPlayer( Arcemu::Util::GUID_LOPART( charmer ) );
 
 			if(target2)
 			{

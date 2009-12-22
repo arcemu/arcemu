@@ -23,9 +23,7 @@
 //
 
 #include "StdAfx.h"
-#ifdef WIN32
 #include <CrashHandler.h>
-#endif
 
 #define WORLD_UPDATE_DELAY 50
 

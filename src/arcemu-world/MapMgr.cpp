@@ -23,10 +23,7 @@
 //
 
 #include "StdAfx.h"
-
-#ifdef WIN32
 #include "CrashHandler.h"
-#endif
 
 #define MAP_MGR_UPDATE_PERIOD 100
 #define MAPMGR_INACTIVE_MOVE_TIME 30
@@ -1485,7 +1482,7 @@ Object* MapMgr::_GetObject(const uint64 & guid)
 		return GetDynamicObject((uint32)guid);
 		break;
 	case	HIGHGUID_TYPE_TRANSPORTER:
-		return objmgr.GetTransporter(GUID_LOPART(guid));
+		return objmgr.GetTransporter(Arcemu::Util::GUID_LOPART( guid ));
 		break;
 	default:
 		return GetUnit(guid);

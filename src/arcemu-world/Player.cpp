@@ -3255,7 +3255,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	m_TransporterGUID = get_next_field.GetUInt32();
 	if(m_TransporterGUID)
 	{
-		Transporter * t = objmgr.GetTransporter(GUID_LOPART(m_TransporterGUID));
+		Transporter * t = objmgr.GetTransporter( Arcemu::Util::GUID_LOPART(m_TransporterGUID));
 		m_TransporterGUID = t ? t->GetGUID() : 0;
 	}
 
@@ -8507,7 +8507,7 @@ bool Player::SafeTeleport(uint32 MapID, uint32 InstanceID, const LocationVector 
 	}
 	if ( m_TransporterGUID )
 	{
-		Transporter * pTrans = objmgr.GetTransporter( GUID_LOPART( m_TransporterGUID ) );
+		Transporter * pTrans = objmgr.GetTransporter( Arcemu::Util::GUID_LOPART( m_TransporterGUID ) );
 		if ( pTrans && !m_lockTransportVariables )
 		{
 			pTrans->RemovePlayer( this );

@@ -808,8 +808,8 @@ void MailSystem::SendAutomatedMessage(uint32 type, uint64 sender, uint64 receive
 	msg.body = body;
 	msg.money = money;
 	msg.cod = cod;
-	if( GUID_LOPART(item_guid) != 0 )
-		msg.items.push_back( GUID_LOPART(item_guid) );
+	if( Arcemu::Util::GUID_LOPART(item_guid) != 0 )
+		msg.items.push_back( Arcemu::Util::GUID_LOPART(item_guid) );
 
 	msg.stationery = stationery;
 	msg.delivery_time = (uint32)UNIXTIME;

@@ -5,6 +5,8 @@ noinst_LIBRARIES = libshared.a
 libshared_a_SOURCES = \
     CThreads.cpp \
     CThreads.h \
+    CrashHandler.h \
+    CrashHandler.cpp \
     Log.cpp \
     MemoryLeaks.cpp \
     MersenneTwister.cpp \

@@ -2237,7 +2237,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 					{
                         uint64 guid = pVictim->GetChannelSpellTargetGUID();
 
-                        DynamicObject *dObj = GetMapMgr()->GetDynamicObject( GUID_LOPART( guid ) );
+                        DynamicObject *dObj = GetMapMgr()->GetDynamicObject( Arcemu::Util::GUID_LOPART( guid ) );
 						if(!dObj)
 							return;
 						WorldPacket data(SMSG_GAMEOBJECT_DESPAWN_ANIM, 8);

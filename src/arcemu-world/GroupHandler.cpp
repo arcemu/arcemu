@@ -252,8 +252,8 @@ void WorldSession::HandleGroupUninviteGuidOpcode( WorldPacket & recv_data )
 
 	recv_data >> PlayerGUID;
 
-	player = objmgr.GetPlayer(GUID_LOPART(PlayerGUID));
-	info = objmgr.GetPlayerInfo(GUID_LOPART(PlayerGUID));
+	player = objmgr.GetPlayer( Arcemu::Util::GUID_LOPART(PlayerGUID));
+	info = objmgr.GetPlayerInfo( Arcemu::Util::GUID_LOPART(PlayerGUID));
 	// If both conditions match the player gets thrown out of the group by the server since this means the character is deleted
 	if ( player == NULL && info == NULL )
 	{

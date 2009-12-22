@@ -434,7 +434,7 @@ void WorldSession::HandleGossipHelloOpcode( WorldPacket & recv_data )
 	// reputation
 	_player->Reputation_OnTalk(qst_giver->m_factionDBC);
 
-	sLog.outDebug( "WORLD: Received CMSG_GOSSIP_HELLO from %u",GUID_LOPART(guid) );
+	sLog.outDebug( "WORLD: Received CMSG_GOSSIP_HELLO from %u",Arcemu::Util::GUID_LOPART( guid ) );
 
 	GossipScript * Script = qst_giver->GetCreatureInfo() ? qst_giver->GetCreatureInfo()->gossip_script : NULL;
 	if(!Script)

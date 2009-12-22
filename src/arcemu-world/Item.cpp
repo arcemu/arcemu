@@ -366,12 +366,12 @@ void Item::SaveToDB( int8 containerslot, int8 slot, bool firstsave, QueryBuffer*
 
 	ss << "INSERT INTO playeritems VALUES(";
 
-    ss << ( GUID_LOPART( ownerGUID ) ) << ",";
+    ss << ( Arcemu::Util::GUID_LOPART( ownerGUID ) ) << ",";
 	ss << GetLowGUID() << ",";
 	ss << GetEntry() << ",";
 	ss << wrapped_item_id << ",";
-	ss << ( GUID_LOPART( GiftCreatorGUID ) ) << ",";
-    ss << ( GUID_LOPART( CreatorGUID ) ) << ",";
+	ss << ( Arcemu::Util::GUID_LOPART( GiftCreatorGUID ) ) << ",";
+    ss << ( Arcemu::Util::GUID_LOPART( CreatorGUID ) ) << ",";
 
 	ss << GetStackCount() << ",";
 	ss << int32( GetChargesLeft() ) << ",";

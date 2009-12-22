@@ -19,10 +19,7 @@
  */
 
 #include "StdAfx.h"
-
-#ifdef WIN32
 #include <CrashHandler.h>
-#endif
 
 initialiseSingleton( World );
 

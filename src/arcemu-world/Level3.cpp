@@ -700,7 +700,7 @@ bool ChatHandler::HandleAddSkillCommand(const char* args, WorldSession *m_sessio
 
 bool ChatHandler::HandleNpcInfoCommand(const char *args, WorldSession *m_session)
 {
-	uint32 guid = GUID_LOPART(m_session->GetPlayer()->GetSelection());
+    uint32 guid = Arcemu::Util::GUID_LOPART(m_session->GetPlayer()->GetSelection());
 	Creature *crt = getSelectedCreature(m_session);
 	if(!crt) return false;
 	if(crt->GetCreatureInfo())

@@ -1627,7 +1627,7 @@ Item * ObjectMgr::CreateItem(uint32 entry,Player * owner)
 
 Item * ObjectMgr::LoadItem(uint64 guid)
 {
-	QueryResult * result = CharacterDatabase.Query("SELECT * FROM playeritems WHERE guid = %u", GUID_LOPART(guid));
+	QueryResult * result = CharacterDatabase.Query("SELECT * FROM playeritems WHERE guid = %u", Arcemu::Util::GUID_LOPART( guid ));
 	Item * pReturn = 0;
 
 	if(result)
@@ -1657,7 +1657,7 @@ Item * ObjectMgr::LoadItem(uint64 guid)
 
 Item * ObjectMgr::LoadExternalItem(uint64 guid)
 {
-	QueryResult * result = CharacterDatabase.Query("SELECT * FROM playeritems_external WHERE guid = %u", GUID_LOPART(guid));
+	QueryResult * result = CharacterDatabase.Query("SELECT * FROM playeritems_external WHERE guid = %u", Arcemu::Util::GUID_LOPART( guid ));
 	Item * pReturn = 0;
 
 	if(result)

@@ -394,9 +394,6 @@ Scripting system exports/imports
 
 #endif
 
-#define GUID_HIPART( x ) ( *( reinterpret_cast< const uint32* >( &(x) ) + 1 ) )
-#define GUID_LOPART( x ) ( *( reinterpret_cast< const uint32* >( &(x) ) ) )
-
 #define atol(a) strtoul( a, NULL, 10)
 
 #define STRINGIZE(a) #a

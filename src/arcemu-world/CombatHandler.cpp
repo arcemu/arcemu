@@ -40,7 +40,7 @@ void WorldSession::HandleAttackSwingOpcode( WorldPacket & recv_data )
 	if(GetPlayer()->IsPacified() || GetPlayer()->IsStunned() || GetPlayer()->IsFeared())
 		return;
 
-//	printf("Got ATTACK SWING: %08X %08X\n", GUID_HIPART(guid), GUID_LOPART(guid));
+//	printf("Got ATTACK SWING: %08X %08X\n", GUID_HIPART(guid), Arcemu::Util::GUID_LOPART( guid ));
 	Unit *pEnemy = _player->GetMapMgr()->GetUnit(guid);
 	//printf("Pointer: %08X\n", pEnemy);
 

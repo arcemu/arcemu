@@ -787,7 +787,7 @@ void Creature::EnslaveExpire()
 
     uint64 charmer = GetCharmedByGUID();
 
-    Player *caster = objmgr.GetPlayer( GUID_LOPART( charmer ) );
+    Player *caster = objmgr.GetPlayer( Arcemu::Util::GUID_LOPART( charmer ) );
 	if(caster)
 	{
         caster->SetCharmedUnitGUID( 0 );

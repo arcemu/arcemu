@@ -22,10 +22,8 @@
 
 #ifndef WIN32
 #include <sys/resource.h>
-#else
-#include "CrashHandler.h"
 #endif
-
+#include "CrashHandler.h"
 
 uint8 loglevel = DEFAULT_LOG_LEVEL;
 
