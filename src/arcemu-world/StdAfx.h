@@ -91,6 +91,8 @@
 #include "LootMgr.h"
 #include "Unit.h"
 
+#include "WUtil.h"
+
 #ifdef ENABLE_ACHIEVEMENTS
 #include "AchievementMgr.h"
 #endif
