@@ -865,6 +865,15 @@ void WorldSession::HandleAutoEquipItemSlotOpcode( WorldPacket& recvData )
 	if( _player->DualWield2H && ( slotType == EQUIPMENT_SLOT_OFFHAND || slotType == EQUIPMENT_SLOT_MAINHAND ) )
 		hasDualWield2H = true;
 
+    // Need to check if the item even goes into that slot
+    // Item system is a mess too, so it needs rewrite, but hopefully this will do for now
+    int8 error = _player->GetItemInterface()->CanEquipItemInSlot2( INVENTORY_SLOT_NOT_SET, destSlot, item );
+    if( error ){
+        _player->GetItemInterface()->BuildInventoryChangeError( item, NULL, error );
+        return;
+    }
+
+
 	// Handle destination slot checking.
 	if( destSlot == slotType || hasDualWield2H )
 	{
