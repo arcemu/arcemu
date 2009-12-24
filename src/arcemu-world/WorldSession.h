@@ -44,7 +44,7 @@ struct TrainerSpell;
 #ifdef DEBUG
 #define CHECK_INWORLD_ASSERT ASSERT(_player || _player->IsInWorld())
 #else
-#define CHECK_INWORLD_ASSERT if(!_player|| !_player->IsInWorld) return;
+#define CHECK_INWORLD_ASSERT if(!_player|| !_player->IsInWorld() ) return;
 #endif
 
 #define CHECK_GUID_EXISTS(guidx) if(_player == NULL || _player->GetMapMgr() == NULL || _player->GetMapMgr()->GetUnit((guidx)) == NULL) { return; }
