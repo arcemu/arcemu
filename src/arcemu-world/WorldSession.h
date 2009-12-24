@@ -37,7 +37,16 @@ struct TrainerSpell;
 
 //#define SESSION_CAP 5
 #define CHECK_INWORLD_RETURN if(_player == NULL || !_player->IsInWorld()) { return; }
+
+/////////////////////////////////////////
+// Does nothing on release builds
+////////////////////////////////////////
+#ifdef DEBUG
 #define CHECK_INWORLD_ASSERT ASSERT(_player || _player->IsInWorld())
+#else
+#define CHECK_INWORLD_ASSERT if(!_player|| !_player->IsInWorld) return;
+#endif
+
 #define CHECK_GUID_EXISTS(guidx) if(_player == NULL || _player->GetMapMgr() == NULL || _player->GetMapMgr()->GetUnit((guidx)) == NULL) { return; }
 #define CHECK_PACKET_SIZE(pckp, ssize) if(ssize && pckp.size() < ssize) { Disconnect(); return; }
 

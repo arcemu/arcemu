@@ -70,10 +70,10 @@ enum BattleGroundMasterTypes
 
 enum BattleGroundStatus
 {
-	NOFLAGS		= 0, // wtfbbq, why aren't there any flags?
-	INQUEUE		= 1, // Battleground has a queue, player is now in queue
-	READY		= 2, // Battleground is ready to join
-	TIME		= 3, // Ex. Wintergrasp time remaining 
+	BGSTATUS_NOFLAGS		= 0, // wtfbbq, why aren't there any flags?
+	BGSTATUS_INQUEUE		= 1, // Battleground has a queue, player is now in queue
+	BGSTATUS_READY		= 2, // Battleground is ready to join
+	BGSTATUS_TIME		= 3, // Ex. Wintergrasp time remaining 
 };
 
 struct BGScore
