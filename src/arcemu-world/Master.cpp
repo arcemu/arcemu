@@ -306,10 +306,6 @@ bool Master::Run(int argc, char ** argv)
 	Log.Line();
 	sLog.outString( "" );
 
-#ifdef GM_SCRIPT
-	ScriptSystem = new ScriptEngine;
-	ScriptSystem->Reload();
-#endif
 
 	new EventMgr;
 	new World;

@@ -339,7 +339,7 @@ void EyeOfTheStorm::HookOnAreaTrigger(Player * plr, uint32 id)
 		// Remove player from battleground.
 		this->RemovePlayer(plr, false);
 		// Kick	player from server.
-		plr->Kick(6000);
+		plr->Kick(MSTIME_6SECONDS);
 		return;
 	}
 #endif
@@ -367,7 +367,6 @@ void EyeOfTheStorm::HookOnAreaTrigger(Player * plr, uint32 id)
 
 	/*
 	Points from flag captures
-
 	* 1 towers controlled = 75 points
 	* 2 towers controlled = 85 points
 	* 3 towers controlled = 100 points
@@ -483,7 +482,7 @@ void EyeOfTheStorm::DropFlag2(Player * plr, uint32 id)
 
 	switch(id)
 	{
-		case 4476:			// BE Tower
+		case 4476:			// Blood Elf Tower
 			m_dropFlag->SetPosition( LocationVector( 2048.83f, 1393.65f, 1194.49f, 0.20944f ) );
 			break;
 		case 4514:			// Fel Reaver Tower

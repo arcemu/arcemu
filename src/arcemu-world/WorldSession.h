@@ -36,6 +36,19 @@ class MovementInfo;
 struct TrainerSpell;
 
 //#define SESSION_CAP 5
+#define CHECK_INWORLD_RETURN if(_player == NULL || !_player->IsInWorld()) { return; }
+#define CHECK_INWORLD_ASSERT ASSERT(_player || _player->IsInWorld())
+#define CHECK_GUID_EXISTS(guidx) if(_player == NULL || _player->GetMapMgr() == NULL || _player->GetMapMgr()->GetUnit((guidx)) == NULL) { return; }
+#define CHECK_PACKET_SIZE(pckp, ssize) if(ssize && pckp.size() < ssize) { Disconnect(); return; }
+
+/**********************************************************************************
+* Worldsocket related
+**********************************************************************************/
+#define WORLDSOCKET_TIMEOUT		 120
+#define PLAYER_LOGOUT_DELAY (20*1000) // 20 seconds should be more than enough to gank ya.
+
+#define NOTIFICATION_MESSAGE_NO_PERMISSION "You do not have permission to perform that function."
+//#define CHECK_PACKET_SIZE(x, y) if(y > 0 && x.size() < y) { _socket->Disconnect(); return; }
 
 // MovementFlags Contribution by Tenshi
 enum MovementFlags
@@ -170,13 +183,6 @@ public:
 	void init(WorldPacket & data);
 	void write(WorldPacket & data);
 };
-
-#define CHECK_INWORLD_RETURN if(_player == NULL || !_player->IsInWorld()) { return; }
-#define CHECK_GUID_EXISTS(guidx) if(_player == NULL || _player->GetMapMgr() == NULL || _player->GetMapMgr()->GetUnit((guidx)) == NULL) { return; }
-#define CHECK_PACKET_SIZE(pckp, ssize) if(ssize && pckp.size() < ssize) { Disconnect(); return; }
-
-#define NOTIFICATION_MESSAGE_NO_PERMISSION "You do not have permission to perform that function."
-//#define CHECK_PACKET_SIZE(x, y) if(y > 0 && x.size() < y) { _socket->Disconnect(); return; }
 
 void EncodeHex(const char* source, char* dest, uint32 size);
 void DecodeHex(const char* source, char* dest, uint32 size);

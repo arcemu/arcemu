@@ -61,6 +61,21 @@ enum BattleGroundTypes
 	BATTLEGROUND_NUM_TYPES			= 33, //Based on BattlemasterList.dbc, make the storage arrays big enough! On 3.1.3 the last one was 11 The Ring of Valor, so 12 was enough here, but on 3.2.0 there is 32 All Battlegrounds!
 };
 
+enum BattleGroundMasterTypes
+{
+	BGMASTER_CREATURE		= 1,
+	BGMASTER_OBJECT			= 2,
+	BGMASTER_ITEM			= 3,
+};
+
+enum BattleGroundStatus
+{
+	NOFLAGS		= 0, // wtfbbq, why aren't there any flags?
+	INQUEUE		= 1, // Battleground has a queue, player is now in queue
+	READY		= 2, // Battleground is ready to join
+	TIME		= 3, // Ex. Wintergrasp time remaining 
+};
+
 struct BGScore
 {
 	uint32 KillingBlows;

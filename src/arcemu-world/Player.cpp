@@ -1580,7 +1580,7 @@ void Player::EventPotionCooldown()
 	RemoveAllAuraById(53787);
 
 	// add server cooldown
-	_Cooldown_Add( COOLDOWN_TYPE_CATEGORY, 4, getMSTime() + 60000, 2370, 2456);
+	_Cooldown_Add( COOLDOWN_TYPE_CATEGORY, 4, getMSTime() + TIME_MINUTE, 2370, 2456);
 
 	// clear all cooldowns
 	WorldPacket spell_data( SMSG_CLEAR_COOLDOWN, (4+8) );

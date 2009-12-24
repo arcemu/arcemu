@@ -27,7 +27,6 @@
 #include <mmsystem.h>
 #pragma comment(lib, "winmm.lib")
 #define DELTA_EPOCH_IN_USEC  11644473600000000ULL
-//#define ENABLE_CLASSICS_DETECTION
 uint32 TimeStamp()
 {
 	//return timeGetTime();
@@ -482,21 +481,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 		data << uint32(5);
 		SendPacket(&data);
 	}
-#ifdef ENABLE_CLASSICS_DETECTION
-	if( movement_info.z > -0.001 && movement_info.z < 0.001 && !(movement_info.flags & MOVEFLAG_FALLING_FAR) && (_player->GetPositionZ() > 3.0 || _player->GetPositionZ() < -3.0)/*3 meter tolerance to prevent false triggers*/)
-	{
-		sCheatLog.writefromsession(this, "Detected using teleport to plane");
-		Disconnect();
-		return;
-	}
 
-	if( !GetPermissionCount() && recv_data.GetOpcode() == MSG_MOVE_START_FORWARD &&  movement_info.flags == MOVEFLAG_TAXI && !_player->GetTaxiState() )
-	{
-		sCheatLog.writefromsession(this, "Detected taxi-flag/speed hacking (Maelstrom Hack Program)");
-		Disconnect();
-		return;
-	}
-#endif
 	/************************************************************************/
 	/* Falling damage checks                                                */
 	/************************************************************************/

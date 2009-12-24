@@ -1282,7 +1282,7 @@ bool MapMgr::Do()
 	threadid = GetCurrentThreadId();
 #endif
 	thread_running = true;
-	ThreadState =THREADSTATE_BUSY;
+	ThreadState = THREADSTATE_BUSY;
 	SetThreadName("Map mgr - M%u|I%u",this->_mapId ,this->m_instanceID);
 	ObjectSet::iterator i;
 	uint32 last_exec=getMSTime();

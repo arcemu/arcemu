@@ -1954,7 +1954,7 @@ void CBattlegroundManager::HandleArenaJoin(WorldSession * m_session, uint32 Batt
 			{
 				if((*itx)->m_loggedInPlayer)
 				{
-					SendBattlefieldStatus((*itx)->m_loggedInPlayer, 1, BattlegroundType, 0 , 0, 0,1);
+					SendBattlefieldStatus((*itx)->m_loggedInPlayer, 1, BattlegroundType, 0 , 0, 0, 1);
 					(*itx)->m_loggedInPlayer->m_bgIsQueued = true;
 					(*itx)->m_loggedInPlayer->m_bgQueueInstanceId = 0;
 					(*itx)->m_loggedInPlayer->m_bgQueueType = BattlegroundType;

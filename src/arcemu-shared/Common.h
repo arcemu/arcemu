@@ -46,16 +46,16 @@ enum TimeVariables
 enum MsTimeVariables
 {
 	MSTIME_SECOND = 1000,
+	MSTIME_6SECONDS = MSTIME_SECOND * 6,
 	MSTIME_MINUTE = MSTIME_SECOND * 60,
 	MSTIME_HOUR   = MSTIME_MINUTE * 60,
 	MSTIME_DAY	  = MSTIME_HOUR * 24
 };
 
 #ifdef WIN32
-#define ARCEMU_INLINE __forceinline
-#else
-#define ARCEMU_INLINE inline
+#define ARCEMU_FORCEINLINE __forceinline
 #endif
+#define ARCEMU_INLINE inline
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
