@@ -59,7 +59,6 @@ bool CanTrainAt(Player * plr, Trainer * trn)
 void WorldSession::HandleTabardVendorActivateOpcode( WorldPacket & recv_data )
 {
 	CHECK_INWORLD_ASSERT;
-	CHECK_INWORLD_RETURN;
 
 	uint64 guid;
 	recv_data >> guid;
@@ -84,7 +83,6 @@ void WorldSession::SendTabardHelp(Creature* pCreature)
 void WorldSession::HandleBankerActivateOpcode( WorldPacket & recv_data )
 {
 	CHECK_INWORLD_ASSERT;
-	CHECK_INWORLD_RETURN;
 
 	uint64 guid;
 	recv_data >> guid;
@@ -113,7 +111,6 @@ void WorldSession::SendBankerList(Creature* pCreature)
 void WorldSession::HandleTrainerListOpcode( WorldPacket & recv_data )
 {
 	CHECK_INWORLD_ASSERT;
-	CHECK_INWORLD_RETURN;
 
 	// Inits, grab creature, check.
 	uint64 guid;
@@ -188,7 +185,6 @@ void WorldSession::SendTrainerList(Creature* pCreature)
 void WorldSession::HandleTrainerBuySpellOpcode(WorldPacket& recvPacket)
 {
 	CHECK_INWORLD_ASSERT;
-	CHECK_INWORLD_RETURN;
 
     ////////////////////////////////////////////////////////////////////////////////
     // As of 3.1.3 the client sends this when buying a spell

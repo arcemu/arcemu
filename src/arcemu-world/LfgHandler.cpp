@@ -179,7 +179,7 @@ void WorldSession::HandleMeetingStoneInfo(WorldPacket & recvPacket)
 
 void WorldSession::HandleLfgInviteAccept(WorldPacket & recvPacket)
 {
-	CHECK_INWORLD_RETURN
+	CHECK_INWORLD_RETURN;
 	
 	_player->PartLFGChannel();
 	if(_player->m_lfgMatch == NULL && _player->m_lfgInviterGuid == 0)

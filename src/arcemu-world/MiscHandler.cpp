@@ -1775,7 +1775,7 @@ void WorldSession::HandlePlayedTimeOpcode( WorldPacket & recv_data )
 void WorldSession::HandleInspectOpcode( WorldPacket & recv_data )
 {
 	CHECK_PACKET_SIZE( recv_data, 8 );
-	CHECK_INWORLD_RETURN
+	CHECK_INWORLD_RETURN;
 
 	uint64 guid;
 	uint32 talent_points = 0x0000003D;

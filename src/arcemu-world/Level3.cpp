@@ -560,6 +560,55 @@ bool ChatHandler::HandleBanCharacterCommand(const char* args, WorldSession *m_se
 	}
 	return true;
 }
+bool ChatHandler::HandleBanListCharsCommand(const char* args, WorldSession *m_session)
+{
+	//Lists banned characters
+	QueryResult * result = CharacterDatabase.Query( "SELECT name, banned, banreason FROM characters WHERE banned != '0' AND name LIKE '%s%%' ORDER BY name", args);
+	uint32 count = 0;
+	std::string recout = MSG_COLOR_GREEN;
+	recout += "Banned Characters|r:\n\n";
+	if( result != NULL )
+	{
+		do
+		{
+			Field * fields = result->Fetch();
+			const char * charname = fields[0].GetString();
+			recout += MSG_COLOR_LIGHTBLUE;
+			recout += charname;
+			recout += "|r | ";
+			const char * duration = fields[1].GetString();
+			recout += MSG_COLOR_LIGHTBLUE;
+			recout += duration;
+			recout += "|r | ";
+			const char * reason = fields[2].GetString();
+			recout += MSG_COLOR_LIGHTBLUE;
+			recout += reason;
+			recout += "|r\n";
+			count++;
+			if( count > 20 )
+			{
+				recout += "Too many results found\n";
+				break;
+			}
+		}
+		while ( result->NextRow() );
+	}
+	else 
+		recout += "No results found.\n";
+
+	SendMultilineMessage( m_session, recout.c_str() );
+	delete result;
+	return true;
+}
+bool ChatHandler::HandleBanListAccountsCommand(const char* args, WorldSession *m_session)
+{
+	sLogonCommHandler.Account_GetBanned(args, m_session->GetAccountId());
+	return true;
+}
+bool ChatHandler::HandleBanListIPsCommand(const char* args, WorldSession *m_session)
+{
+	return true;
+}
 bool ChatHandler::HandleBanAllCommand(const char* args, WorldSession *m_session)
 {
 	if (!*args)

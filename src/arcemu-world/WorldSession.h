@@ -41,10 +41,10 @@ struct TrainerSpell;
 /////////////////////////////////////////
 // Does nothing on release builds
 ////////////////////////////////////////
-#ifdef DEBUG
+#ifdef _DEBUG
 #define CHECK_INWORLD_ASSERT ASSERT(_player || _player->IsInWorld())
 #else
-#define CHECK_INWORLD_ASSERT if(!_player|| !_player->IsInWorld() ) return;
+#define CHECK_INWORLD_ASSERT CHECK_INWORLD_RETURN
 #endif
 
 #define CHECK_GUID_EXISTS(guidx) if(_player == NULL || _player->GetMapMgr() == NULL || _player->GetMapMgr()->GetUnit((guidx)) == NULL) { return; }
