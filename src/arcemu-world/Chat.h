@@ -181,7 +181,6 @@ class SERVER_DECL CommandTableStorage : public Singleton<CommandTableStorage>
 	ChatCommand* _kickCommandTable;
 	ChatCommand* _banCommandTable;
 	ChatCommand* _unbanCommandTable;
-	ChatCommand* _banlistCommandTable;
 	ChatCommand* _instanceCommandTable;
 	ChatCommand* _arenaCommandTable;
 	ChatCommand* _achievementCommandTable;
@@ -209,7 +208,6 @@ public:
 	int ParseCommands(const char* text, WorldSession *session);
 
 	void SystemMessage(WorldSession *m_session, const char *message, ...);
-	void SendMultilineMessage(WorldSession *m_session, const char *str);
 	void ColorSystemMessage(WorldSession *m_session, const char *colorcode, const char *message, ...);
 	void RedSystemMessage(WorldSession *m_session, const char *message, ...);
 	void GreenSystemMessage(WorldSession *m_session, const char *message, ...);
@@ -222,6 +220,7 @@ public:
 protected:
 
 	bool hasStringAbbr(const char* s1, const char* s2);
+	void SendMultilineMessage(WorldSession *m_session, const char *str);
 
 	bool ExecuteCommandInTable(ChatCommand *table, const char* text, WorldSession *m_session);
 	bool ShowHelpForCommand(WorldSession *m_session, ChatCommand *table, const char* cmd);
@@ -431,9 +430,6 @@ protected:
 	bool HandleBanCharacterCommand(const char* args, WorldSession *m_session);
 	bool HandleBanAllCommand(const char* args, WorldSession *m_session);
 	bool HandleUnBanCharacterCommand(const char* args, WorldSession *m_session);
-	bool HandleBanListCharsCommand(const char* args, WorldSession *m_session);
-	bool HandleBanListAccountsCommand(const char* args, WorldSession *m_session);
-	bool HandleBanListIPsCommand(const char* args, WorldSession *m_session);
 
 	// BattleGround
 	bool HandleSetBGScoreCommand(const char* args, WorldSession *m_session);
