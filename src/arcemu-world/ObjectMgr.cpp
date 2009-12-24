@@ -1902,7 +1902,7 @@ void ObjectMgr::LoadTrainers()
 		tr->TrainerType = fields[7].GetUInt32();
 		tr->Can_Train_Gossip_TextId = fields[9].GetUInt32();
 		tr->Cannot_Train_GossipTextId = fields[10].GetUInt32();
-		tr->UIMessage = (char*)NormalTalkMessage;
+		
 		if(!tr->Can_Train_Gossip_TextId)
 			tr->Can_Train_Gossip_TextId=1;
 		if(!tr->Cannot_Train_GossipTextId)
@@ -1915,6 +1915,12 @@ void ObjectMgr::LoadTrainers()
 			tr->UIMessage = new char[len+1];
 			strcpy(tr->UIMessage, temp);
 			tr->UIMessage[len] = 0;
+		}
+		else
+		{
+			tr->UIMessage = new char[strlen(NormalTalkMessage) + 1];
+			strcpy(tr->UIMessage, NormalTalkMessage);
+			tr->UIMessage[strlen(NormalTalkMessage)] = 0;
 		}
 
 		//now load the spells

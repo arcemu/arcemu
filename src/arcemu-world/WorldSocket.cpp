@@ -368,6 +368,7 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 	WorldSession * pSession = new WorldSession(AccountID, AccountName, this);
 	mSession = pSession;
 	ASSERT(mSession);
+	// aquire delete mutex
 	pSession->deleteMutex.Acquire();
 	
 	// Set session properties
@@ -436,6 +437,7 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 		Disconnect();
 	}
 
+	// release delete mutex
 	pSession->deleteMutex.Release();
 }
 
@@ -446,7 +448,6 @@ void WorldSocket::Authenticate()
 	mQueued = false;
 
 	if(!pSession) return;
-	pSession->deleteMutex.Acquire();
 
 	if(pSession->HasFlag(ACCOUNT_FLAG_XPACK_02))
 		OutPacket(SMSG_AUTH_RESPONSE, 11, "\x0C\x30\x78\x00\x00\x00\x00\x00\x00\x00\x02");
@@ -469,11 +470,11 @@ void WorldSocket::Authenticate()
 /*		if(pSession->HasFlag(ACCOUNT_FLAG_XTEND_INFO))
 			sWorld.AddExtendedSession(pSession);*/
 
+		// Do we need to check for mSession here too?
 		if(pSession->HasGMPermissions() && mSession)
 			sWorld.gmList.insert(pSession);
 	}
 
-	pSession->deleteMutex.Release();
 }
 
 void WorldSocket::UpdateQueuePosition(uint32 Position)
