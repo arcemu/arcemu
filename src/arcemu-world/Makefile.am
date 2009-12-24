@@ -198,15 +198,17 @@ arcemu_world_SOURCES = \
     WorldRunnable.cpp \
     WordFilter.h \
     WordFilter.cpp \
-	Main.cpp \
-	Master.cpp \
-	Master.h \
-	CConsole.cpp \
-	CConsole.h \
-	BaseConsole.h \
-	ConsoleCommands.cpp \
-	ConsoleCommands.h \
-	ConsoleListener.cpp
+    Main.cpp \
+    Master.cpp \
+    Master.h \
+    CConsole.cpp \
+    CConsole.h \
+    BaseConsole.h \
+    ConsoleCommands.cpp \
+    ConsoleCommands.h \
+    ConsoleListener.cpp \
+    WUtil.h \
+    WUtil.cpp
 	
 arcemu_world_LDADD = -lshared -lz -lpcre -lcollision
 
