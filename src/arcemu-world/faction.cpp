@@ -526,15 +526,6 @@ bool isCombatSupport(Object* objA, Object* objB)// B combat supports A?
 		}
 	}
 
-#ifdef _TEST_EXTENDED_FEATURES_
-	if ( !combatSupport && objA->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE) == objB->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE) && ((Creature*)objA)->GetCreatureInfo()->Rank >= 1 )
-		combatSupport = true;
-
-	if ( objB->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE)==1080 || objA->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE)==1080 )
-		combatSupport = false;
-#endif
-
-
 	return combatSupport;
 }
 

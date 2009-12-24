@@ -619,37 +619,37 @@ MapMgr * InstanceMgr::GetInstance(Object* obj)
 MapMgr * InstanceMgr::_CreateInstance(uint32 mapid, uint32 instanceid)
 {
 	MapInfo * inf = WorldMapInfoStorage.LookupEntry(mapid);
-	MapMgr * ret;
-
-	ASSERT(inf && inf->type == INSTANCE_NULL);
-	ASSERT(mapid < NUM_MAPS && m_maps[mapid] != NULL);
+	   
+	assert( inf != NULL && inf->type == INSTANCE_NULL );
+	assert( mapid < NUM_MAPS && m_maps[ mapid ] != NULL );
 
 	Log.Notice("InstanceMgr", "Creating continent %s.", m_maps[mapid]->GetName());
 
-	ret = new MapMgr(m_maps[mapid], mapid, instanceid);
-	ASSERT(ret);
+	MapMgr *newMap = new MapMgr( m_maps[mapid], mapid, instanceid );
 
-	// start its thread
-	ThreadPool.ExecuteTask(ret);
-    
-	// assign pointer
-	m_singleMaps[mapid] = ret;
-	return ret;
+	assert( newMap );
+
+	// Scheduling the new map for running
+	ThreadPool.ExecuteTask( newMap );
+	m_singleMaps[mapid] = newMap;
+
+	return newMap;
 }
 
 MapMgr * InstanceMgr::_CreateInstance(Instance * in)
 {
-	if (!m_maps[in->m_mapId])
+	if ( m_maps[ in->m_mapId ] == 0 )
 		return NULL;
 
 	Log.Notice("InstanceMgr", "Creating saved instance %u (%s)", in->m_instanceId, m_maps[in->m_mapId]->GetName());
-	ASSERT(in->m_mapMgr== NULL);
+	assert( in->m_mapMgr == NULL );
 
 	// we don't have to check for world map info here, since the instance wouldn't have been saved if it didn't have any.
 	in->m_mapMgr = new MapMgr(m_maps[in->m_mapId], in->m_mapId, in->m_instanceId);
 	in->m_mapMgr->pInstance = in;
 	in->m_mapMgr->iInstanceMode = in->m_difficulty;
 	in->m_mapMgr->InactiveMoveTime = 60+UNIXTIME;
+
 	ThreadPool.ExecuteTask(in->m_mapMgr);
 	return in->m_mapMgr;
 }

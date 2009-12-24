@@ -119,10 +119,6 @@ bool GameObject::CreateFromProto(uint32 entry,uint32 mapid, float x, float y, fl
 	SetFloatValue(GAMEOBJECT_PARENTROTATION_02, r2);
 	SetFloatValue(GAMEOBJECT_PARENTROTATION_03, r3);
 	UpdateRotation();
-//	SetRotation(ang);
-	 
-	//SetUInt32Value( GAMEOBJECT_TIMESTAMP, (uint32)UNIXTIME);
-	//SetUInt32Value( GAMEOBJECT_ARTKIT, 0 );		   //these must be from wdb somewhere i guess
     SetByte( GAMEOBJECT_BYTES_1, 3, 0 );
 	SetByte( GAMEOBJECT_BYTES_1, 0, 1 );
 	SetUInt32Value( GAMEOBJECT_DISPLAYID, pInfo->DisplayID );
@@ -131,34 +127,7 @@ bool GameObject::CreateFromProto(uint32 entry,uint32 mapid, float x, float y, fl
 	InitAI();
 
 	 return true;
-	/*
-	original_flags = m_uint32Values[GAMEOBJECT_FLAGS];
-	original_state = m_uint32Values[GAMEOBJECT_BYTES_1, 0];
-	*/
 }
-/*
-void GameObject::Create(uint32 mapid, float x, float y, float z, float ang)
-{
-	Object::_Create( mapid, x, y, z, ang);
-
-	SetFloatValue( GAMEOBJECT_POS_X, x);
-	SetFloatValue( GAMEOBJECT_POS_Y, y );
-	SetFloatValue( GAMEOBJECT_POS_Z, z );
-	SetFloatValue( GAMEOBJECT_FACING, ang );
-	//SetUInt32Value( GAMEOBJECT_TIMESTAMP, (uint32)time(NULL));
-}
-
-void GameObject::Create( uint32 guidlow, uint32 guidhigh,uint32 displayid, uint8 state, uint32 entryid, float scale,uint32 typeId, uint32 type,uint32 flags, uint32 mapid, float x, float y, float z, float ang )
-{
-	Object::_Create( mapid, x, y, z, ang);
-
-	SetEntry(  entryid );
-	SetScale(  scale );
-	SetUInt32Value( GAMEOBJECT_DISPLAYID, displayid );
-	SetByte( GAMEOBJECT_BYTES_1, 0, state  );
-	SetByte( GAMEOBJECT_BYTES_1, 1, typeId  );
-	SetUInt32Value( GAMEOBJECT_FLAGS, flags );
-}*/
 
 void GameObject::EventCastSpell(uint32 guid, uint32 sp, bool triggered)
 {
@@ -193,21 +162,17 @@ void GameObject::Update(uint32 p_time)
 			if(counter++%checkrate)
 				return;
 		}
-		ObjectSet::iterator itr = GetInRangeSetBegin();
-		ObjectSet::iterator it2 = itr;
-		ObjectSet::iterator iend = GetInRangeSetEnd();
-		Unit * pUnit;
-		float dist;
 
-		for(; it2 != iend;)
+        for( std::set< Object* >::iterator itr = m_objectsInRange.begin(); itr != m_objectsInRange.end(); ++itr )
 		{
-			itr = it2;
-			++it2;
-			dist = GetDistanceSq((*itr));
-			if( (*itr) != m_summoner && (*itr)->IsUnit() && dist <= range)
-			{
-				pUnit = static_cast<Unit*>(*itr);
+            float dist;
 
+            Object *o = *itr;
+
+			dist = GetDistanceSq( o );
+
+			if( o != m_summoner && o->IsUnit() && dist <= range)
+			{
 				if(m_summonedGo)
 				{
 					if(!m_summoner)
@@ -215,11 +180,13 @@ void GameObject::Update(uint32 p_time)
 						ExpireAndDelete();
 						return;
 					}
-					if(!isAttackable(m_summoner,pUnit))continue;
+					
+                    if(!isAttackable(m_summoner, o ))
+                        continue;
 				}
 				
 				Spell * sp = new Spell( this, spell, true, NULL );
-				SpellCastTargets tgt((*itr)->GetGUID());
+				SpellCastTargets tgt( o->GetGUID() );
 				tgt.m_destX = GetPositionX();
 				tgt.m_destY = GetPositionY();
 				tgt.m_destZ = GetPositionZ();
@@ -229,7 +196,7 @@ void GameObject::Update(uint32 p_time)
 				if( pInfo->Type == GAMEOBJECT_TYPE_TRAP )
 				{
 					if( m_summoner != NULL )
-						m_summoner->HandleProc( PROC_ON_TRAP_TRIGGER, pUnit, spell );
+						m_summoner->HandleProc( PROC_ON_TRAP_TRIGGER, reinterpret_cast< Unit* >( o ), spell );
 				} 
 
 				if(m_summonedGo)
@@ -245,7 +212,7 @@ void GameObject::Update(uint32 p_time)
 				}
 			}
 		}
-	}
+    }
 }
 
 void GameObject::Spawn(MapMgr * m)

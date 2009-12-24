@@ -6686,7 +6686,7 @@ void Player::CalcResistance(uint32 type)
 void Player::UpdateNearbyGameObjects()
 {
 
-	for (Object::InRangeSet::iterator itr = GetInRangeSetBegin(); itr != GetInRangeSetEnd(); ++itr)
+    for (Object::InRangeSet::iterator itr = m_objectsInRange.begin(); itr != m_objectsInRange.end(); ++itr)
 	{
 		Object * obj = (*itr);
 		if(obj->GetTypeId() == TYPEID_GAMEOBJECT)
@@ -8787,7 +8787,7 @@ void Player::UpdatePvPArea()
 void Player::BuildFlagUpdateForNonGroupSet(uint32 index, uint32 flag)
 {
     Object *curObj;
-	for (Object::InRangeSet::iterator iter = GetInRangeSetBegin(); iter != GetInRangeSetEnd();)
+    for (Object::InRangeSet::iterator iter = m_objectsInRange.begin(); iter != m_objectsInRange.end();)
 	{
 		curObj = *iter;
 		iter++;

@@ -195,12 +195,10 @@ void World::RemoveSession(uint32 id)
 
 void World::AddSession(WorldSession* s)
 {
-	if(!s)
-		return;
+    assert( s != NULL );
 
 	m_sessionlock.AcquireWriteLock();
 
-	ASSERT(s);
 	m_sessions[s->GetAccountId()] = s;
 
 	if(m_sessions.size() >  PeakSessionCount)
@@ -213,8 +211,7 @@ void World::AddSession(WorldSession* s)
 
 void World::AddGlobalSession(WorldSession *session)
 {
-	if(!session)
-		return;
+    assert( session != NULL );
 
 	SessionsMutex.Acquire();
 	Sessions.insert(session);
@@ -223,6 +220,9 @@ void World::AddGlobalSession(WorldSession *session)
 
 void World::RemoveGlobalSession(WorldSession *session)
 {
+
+    assert( session != NULL );
+
 	SessionsMutex.Acquire();
 	Sessions.erase(session);
 	SessionsMutex.Release();
@@ -285,7 +285,6 @@ bool World::SetInitialWorldSettings()
 	Player::InitVisibleUpdateBits();
 
 	CharacterDatabase.WaitExecute("UPDATE characters SET online = 0 WHERE online = 1");
-	//CharacterDatabase.WaitExecute("UPDATE characters SET level = 70 WHERE level > 70");
 	CharacterDatabase.WaitExecute("UPDATE characters SET banned= 0,banReason='' WHERE banned > 100 AND banned < %u", UNIXTIME);
    
 	m_lastTick = UNIXTIME;

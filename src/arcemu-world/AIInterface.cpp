@@ -1836,13 +1836,7 @@ Unit* AIInterface::FindTarget()
 			if( !(*itr)->IsUnit() )
 				continue;
 
-            // We checked for player targets before, so this shouldn't happen
-            // [14:45] <+burlex> but andy
-            // [14:45] <+burlex> dey have dead pointerz
-            if( (*itr)->IsPlayer() )
-                continue;
-
-			pUnit = static_cast< Unit* >( (*itr) );
+			pUnit = static_cast< Unit* >( *itr );
 
 			if( UnsafeCanOwnerAttackUnit( pUnit ) == false )
 				continue;
@@ -1975,10 +1969,10 @@ bool AIInterface::FindFriends(float dist)
 
 	for( itr = m_Unit->GetInRangeSetBegin(); itr != m_Unit->GetInRangeSetEnd(); itr++ )
 	{
-		if(!(*itr) || (*itr)->GetTypeId() != TYPEID_UNIT)
+        if( !(*itr)->IsUnit() )
 			continue;
 
-		pUnit = static_cast<Unit*>((*itr));
+		pUnit = static_cast<Unit*>( *itr );
 		if(!pUnit->isAlive())
 			continue;
 
@@ -4161,7 +4155,7 @@ void AIInterface::WipeReferences()
 
 	//Clear targettable
 	for(set<Object*>::iterator itr = m_Unit->GetInRangeSetBegin(); itr != m_Unit->GetInRangeSetEnd(); ++itr)
-		if( (*itr) && (*itr)->GetTypeId() == TYPEID_UNIT && static_cast<Unit*>(*itr)->GetAIInterface())
+        if( (*itr)->IsUnit() && static_cast<Unit*>(*itr)->GetAIInterface())
 			static_cast<Unit*>(*itr)->GetAIInterface()->RemoveThreatByPtr( m_Unit );
 }
 
@@ -4252,7 +4246,7 @@ void AIInterface::EventChangeFaction( Unit *ForceAttackersToHateThisInstead )
 	if( ForceAttackersToHateThisInstead == NULL )
 	{
 		for(set<Object*>::iterator itr = m_Unit->GetInRangeSetBegin(); itr != m_Unit->GetInRangeSetEnd(); ++itr)
-			if( (*itr) && (*itr)->GetTypeId() == TYPEID_UNIT && static_cast<Unit*>(*itr)->GetAIInterface() )
+            if( (*itr)->IsUnit() && static_cast<Unit*>(*itr)->GetAIInterface() )
 				static_cast<Unit*>(*itr)->GetAIInterface()->RemoveThreatByPtr( m_Unit );
 
         SetNextTarget( (Unit*)NULL );
@@ -4260,7 +4254,7 @@ void AIInterface::EventChangeFaction( Unit *ForceAttackersToHateThisInstead )
 	else
 	{
 		for(set<Object*>::iterator itr = m_Unit->GetInRangeSetBegin(); itr != m_Unit->GetInRangeSetEnd(); ++itr)
-			if( (*itr) && (*itr)->GetTypeId() == TYPEID_UNIT && static_cast<Unit*>(*itr)->GetAIInterface() 
+            if( (*itr)->IsUnit() && static_cast<Unit*>(*itr)->GetAIInterface() 
 				&& static_cast<Unit*>(*itr)->GetAIInterface()->getThreatByPtr( m_Unit ) )//this guy will join me in fight since I'm telling him "sorry i was controlled"
 			{
 				static_cast<Unit*>(*itr)->GetAIInterface()->modThreatByPtr( ForceAttackersToHateThisInstead, 10 ); //just aping to be bale to hate him in case we got nothing else

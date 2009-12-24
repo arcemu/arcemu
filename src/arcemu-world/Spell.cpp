@@ -348,7 +348,6 @@ void Spell::FillSpecifiedTargetsInArea(uint32 i,float srcx,float srcy,float srcz
 		if( !( (*itr)->IsUnit() ) || ! static_cast< Unit* >( *itr )->isAlive())
 			continue;
 
-		//static_cast< Unit* >( *itr )->IsStealth()
 		if( GetProto()->TargetCreatureType)
 		{
 			if((*itr)->GetTypeId()!= TYPEID_UNIT)

@@ -5386,7 +5386,7 @@ void Unit::WipeTargetList()
 
 void Unit::AddInRangeObject(Object* pObj)
 {
-	if((pObj->GetTypeId() == TYPEID_UNIT) || (pObj->GetTypeId() == TYPEID_PLAYER))
+    if( pObj->IsUnit() )
 	{
 		if( isHostile( this, pObj ) )
 			m_oppFactsInRange.insert(pObj);

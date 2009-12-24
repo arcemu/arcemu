@@ -163,44 +163,7 @@ void DynamicObject::UpdateTargets()
 			}
 		}
 
-        // looking for targets in the Player set
-        for( std::set< Object* >::iterator itr = m_inRangePlayers.begin(); itr != m_inRangePlayers.end(); ++itr ){
-            
-            Player *target = static_cast< Player* >( *itr );
-
-            if( !target->isAlive() )
-                continue;
-            
-            if( !isAttackable( u_caster, target, !(m_spellProto->c_is_flags & SPELL_FLAG_IS_TARGETINGSTEALTHED) ) )
-				continue;
-
-			// skip units already hit, their range will be tested later
-			if(targets.find( target->GetGUID() ) != targets.end())
-				continue;
-
-			if(GetDistanceSq(target) <= radius)
-			{
-				pAura = new Aura(m_spellProto, m_aliveDuration, u_caster, target, true);
-				for(uint32 i = 0; i < 3; ++i)
-				{
-					if(m_spellProto->Effect[i] == SPELL_EFFECT_PERSISTENT_AREA_AURA)
-					{
-						pAura->AddMod(m_spellProto->EffectApplyAuraName[i],
-							m_spellProto->EffectBasePoints[i]+1, m_spellProto->EffectMiscValue[i], i);
-					}
-				}
-				target->AddAura(pAura);
-				if(p_caster)
-				{
-					p_caster->HandleProc(PROC_ON_CAST_SPECIFIC_SPELL | PROC_ON_CAST_SPELL,target, m_spellProto);
-					p_caster->m_procCounter = 0;
-				}
-
-				// add to target list
-				targets.insert(target->GetGUID());
-			}
-        }
-        
+       
 		// loop the targets, check the range of all of them
 		DynamicObjectList::iterator jtr  = targets.begin();
 		DynamicObjectList::iterator jtr2;

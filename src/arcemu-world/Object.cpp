@@ -1658,11 +1658,11 @@ void Object::UpdateOppFactionSet()
 {
 	m_oppFactsInRange.clear();
 	
-    for( std::set< Object* >::iterator itr = GetInRangeSetBegin(); itr != GetInRangeSetEnd(); ++itr)
+    for( std::set< Object* >::iterator itr = m_objectsInRange.begin(); itr != m_objectsInRange.end(); ++itr)
 	{
         Object *i = *itr;
 
-		if( ( i->GetTypeId() == TYPEID_UNIT) || ( i->GetTypeId() == TYPEID_PLAYER ) || ( i->GetTypeId() == TYPEID_GAMEOBJECT ) )
+        if( ( i->IsUnit() ) || ( i->GetTypeId() == TYPEID_GAMEOBJECT ) )
 		{
 			if(isHostile( this, i) )
 			{
@@ -1688,11 +1688,11 @@ void Object::UpdateSameFactionSet()
 	m_sameFactsInRange.clear();
 
 
-    for( std::set< Object* >::iterator itr = GetInRangeSetBegin(); itr != GetInRangeSetEnd(); ++itr)
+    for( std::set< Object* >::iterator itr = m_objectsInRange.begin(); itr != m_objectsInRange.end(); ++itr)
 	{
         Object *i = *itr;
 
-		if(( i->GetTypeId() == TYPEID_UNIT) || ( i->GetTypeId() == TYPEID_PLAYER) || ( i->GetTypeId() == TYPEID_GAMEOBJECT))
+        if( ( i->IsUnit() ) || ( i->GetTypeId() == TYPEID_GAMEOBJECT) )
 		{
 			if( isFriendly( this, i ) )
 			{
@@ -3508,12 +3508,10 @@ void Object::AddInRangeObject(Object *pObj){
 	if( pObj == this )
         sLog.outError( "We are in range of ourselves!" );
 
-	if( pObj->GetTypeId() == TYPEID_PLAYER )
+    if( pObj->IsPlayer() )
         m_inRangePlayers.insert( pObj ); 
-    else
-        m_objectsInRange.insert( pObj );
 
-
+    m_objectsInRange.insert( pObj );
 }
 
 void Object::OutPacketToSet(uint16 Opcode, uint16 Len, const void * Data, bool self)
@@ -3547,12 +3545,11 @@ void Object::RemoveInRangeObject( Object *pObj ){
  
     OnRemoveInRangeObject( pObj );
     
-    if( pObj->GetTypeId() == TYPEID_PLAYER ){
-        ASSERT( m_inRangePlayers.erase( pObj ) == 1 );
-    }else{
-        ASSERT( m_objectsInRange.erase( pObj ) == 1 );
+    if( pObj->IsPlayer() ){
+        assert( m_inRangePlayers.erase( pObj ) == 1 );
     }
     
+    assert( m_objectsInRange.erase( pObj ) == 1 );
 }
 
 void Object::RemoveSelfFromInrangeSets(){
@@ -3565,14 +3562,6 @@ void Object::RemoveSelfFromInrangeSets(){
         
         o->RemoveInRangeObject( this );
         
-    }
-
-    for( itr = m_inRangePlayers.begin(); itr != m_inRangePlayers.end(); ++itr ){
-        Object *o = *itr;
-
-        assert( o != NULL );
-        
-        o->RemoveInRangeObject( this );
     }
 
 }
