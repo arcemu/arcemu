@@ -54,6 +54,8 @@ enum MsTimeVariables
 
 #ifdef WIN32
 #define ARCEMU_FORCEINLINE __forceinline
+#else
+#define ARCEMU_FORCEINLINE inline
 #endif
 #define ARCEMU_INLINE inline
 
