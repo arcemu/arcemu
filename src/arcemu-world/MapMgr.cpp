@@ -45,14 +45,8 @@ MapMgr::MapMgr(Map *map, uint32 mapId, uint32 instanceid) : CellHandler<MapCell>
 	ScriptInterface = new MapScriptInterface(*this);
 
 	// Set up storage arrays
-	m_CreatureArraySize = map->CreatureSpawnCount;
-	m_GOArraySize = map->GameObjectSpawnCount;
-
-	m_CreatureStorage = new Creature*[m_CreatureArraySize];
-    memset(m_CreatureStorage,0,sizeof(Creature*)*m_CreatureArraySize);
-
-	m_GOStorage = new GameObject*[m_GOArraySize];
-	memset(m_GOStorage,0,sizeof(GameObject*)*m_GOArraySize);
+    CreatureStorage.resize( map->CreatureSpawnCount, NULL );
+    GOStorage.resize( map->GameObjectSpawnCount, NULL );
 
 	m_GOHighGuid = m_CreatureHighGuid = 0;
 	m_DynamicObjectHighGuid= 0;
@@ -130,14 +124,8 @@ MapMgr::~MapMgr()
 	}
 	_mapWideStaticObjects.clear();
 
-	if (m_GOStorage != NULL) {
-		delete[] m_GOStorage;
-		m_GOStorage = NULL;
-	}
-	if (m_CreatureStorage != NULL) {
-		delete[] m_CreatureStorage;
-		m_CreatureStorage = NULL;
-	}
+    GOStorage.clear();
+    CreatureStorage.clear();
 
 	Corpse * pCorpse;
 	for(set<Corpse*>::iterator itr = m_corpses.begin(); itr != m_corpses.end();)
@@ -249,7 +237,7 @@ void MapMgr::PushObject(Object *obj)
 	/////////////
 	// Assertions
 	/////////////
-	ASSERT(obj);
+	assert( obj );
 
 	// That object types are not map objects. TODO: add AI groups here?
 	if(obj->GetTypeId() == TYPEID_ITEM || obj->GetTypeId() == TYPEID_CONTAINER)
@@ -264,7 +252,8 @@ void MapMgr::PushObject(Object *obj)
 	}
 
 	obj->ClearInRangeSet();
-	ASSERT(obj->GetMapId() == _mapId);
+
+	assert( obj->GetMapId() == _mapId );
 	if(!(obj->GetPositionX() < _maxX && obj->GetPositionX() > _minX) ||
 	   !(obj->GetPositionY() < _maxY && obj->GetPositionY() > _minY))
 	{
@@ -290,8 +279,8 @@ void MapMgr::PushObject(Object *obj)
 		}
 	}
 
-	ASSERT(obj->GetPositionY() < _maxY && obj->GetPositionY() > _minY);
-	ASSERT(_cells);
+	assert( obj->GetPositionY() < _maxY && obj->GetPositionY() > _minY );
+	assert( _cells != NULL );
 
 	///////////////////////
 	// Get cell coordinates
@@ -328,11 +317,12 @@ void MapMgr::PushObject(Object *obj)
 	}
 
 	MapCell *objCell = GetCell(x,y);
-	if (!objCell)
+	if ( objCell == NULL )
 	{
 		objCell = Create(x,y);
 		objCell->Init(x, y, _mapId, this);
 	}
+    assert( objCell != NULL );
 
 	uint32 endX = (x <= _sizeX) ? x + 1 : (_sizeX-1);
 	uint32 endY = (y <= _sizeY) ? y + 1 : (_sizeY-1);
@@ -395,8 +385,8 @@ void MapMgr::PushObject(Object *obj)
 
 		case HIGHGUID_TYPE_UNIT:
 			{
-				ASSERT((obj->GetUIdFromGUID()) <= m_CreatureHighGuid);
-				m_CreatureStorage[obj->GetUIdFromGUID()] = (Creature*)obj;
+				assert( obj->GetUIdFromGUID() <= m_CreatureHighGuid );
+				CreatureStorage[ obj->GetUIdFromGUID() ] = static_cast< Creature* >( obj );
 				if(((Creature*)obj)->m_spawn != NULL)
 				{
 					_sqlids_creatures.insert(make_pair( ((Creature*)obj)->m_spawn->id, ((Creature*)obj) ) );
@@ -405,7 +395,7 @@ void MapMgr::PushObject(Object *obj)
 
 		case HIGHGUID_TYPE_GAMEOBJECT:
 			{
-				m_GOStorage[obj->GetUIdFromGUID()] = (GameObject*)obj;
+				GOStorage[ obj->GetUIdFromGUID() ] = static_cast< GameObject* >( obj );
 				if(((GameObject*)obj)->m_spawn != NULL)
 				{
 					_sqlids_gameobjects.insert(make_pair( ((GameObject*)obj)->m_spawn->id, ((GameObject*)obj) ) );
@@ -464,11 +454,11 @@ void MapMgr::PushStaticObject(Object *obj)
 	switch(obj->GetTypeFromGUID())
 	{
 		case HIGHGUID_TYPE_UNIT:
-			m_CreatureStorage[obj->GetUIdFromGUID()] = (Creature*)obj;
+			CreatureStorage[ obj->GetUIdFromGUID() ] = static_cast< Creature* >( obj );
 			break;
 
 		case HIGHGUID_TYPE_GAMEOBJECT:
-			m_GOStorage[obj->GetUIdFromGUID()] = (GameObject*)obj;
+			GOStorage[ obj->GetUIdFromGUID() ] = static_cast< GameObject* >( obj );
 			break;
 
 		default:
@@ -512,7 +502,7 @@ void MapMgr::RemoveObject(Object *obj, bool free_guid)
 	{
 		case HIGHGUID_TYPE_UNIT:
 			ASSERT(obj->GetUIdFromGUID() <= m_CreatureHighGuid);
-			m_CreatureStorage[obj->GetUIdFromGUID()] = 0;
+			CreatureStorage[ obj->GetUIdFromGUID() ] = NULL;
 			if(((Creature*)obj)->m_spawn != NULL)
 			{
 				_sqlids_creatures.erase(((Creature*)obj)->m_spawn->id);
@@ -532,8 +522,8 @@ void MapMgr::RemoveObject(Object *obj, bool free_guid)
 			break;
 
 		case HIGHGUID_TYPE_GAMEOBJECT:
-			ASSERT(obj->GetUIdFromGUID() <= m_GOHighGuid);
-			m_GOStorage[obj->GetUIdFromGUID()] = 0;
+			assert( obj->GetUIdFromGUID() <= m_GOHighGuid );
+			GOStorage[ obj->GetUIdFromGUID() ] = NULL;
 			if(((GameObject*)obj)->m_spawn != NULL)
 			{
 				_sqlids_gameobjects.erase(((GameObject*)obj)->m_spawn->id);
@@ -655,33 +645,29 @@ void MapMgr::ChangeObjectLocation( Object *obj )
 		return;
 	}
 
-	Player* plObj;
+	Player *plObj = NULL;
 	ByteBuffer * buf = 0;
 
-	if( obj->GetTypeId() == TYPEID_PLAYER )
+    if( obj->IsPlayer() )
 	{
 		plObj = static_cast< Player* >( obj );
 	}
-	else
-	{
-		plObj = NULL;
-	}
 
 	Object* curObj;
-	float fRange;
+	float fRange = 0.0f;
 
 	///////////////////////////////////////
 	// Update in-range data for old objects
 	///////////////////////////////////////
 
-	if(obj->HasInRangeObjects())
+	if( obj->HasInRangeObjects() )
 	{
-		for (Object::InRangeSet::iterator iter = obj->GetInRangeSetBegin(), iter2;
-			iter != obj->GetInRangeSetEnd();)
+		for( Object::InRangeSet::iterator iter = obj->GetInRangeSetBegin(); iter != obj->GetInRangeSetEnd(); )
 		{
 			curObj = *iter;
-			iter2 = iter++;
-			if( curObj->IsPlayer() && plObj != NULL && plObj->m_TransporterGUID && plObj->m_TransporterGUID == static_cast< Player* >( curObj )->m_TransporterGUID )
+            ++iter;
+
+            if( curObj->IsPlayer() && plObj != NULL && plObj->m_TransporterGUID && plObj->m_TransporterGUID == static_cast< Player* >( curObj )->m_TransporterGUID )
 				fRange = 0.0f; // unlimited distance for people on same boat
 			else if( curObj->GetTypeFromGUID() == HIGHGUID_TYPE_TRANSPORTER )
 				fRange = 0.0f; // unlimited distance for transporters (only up to 2 cells +/- anyway.)
@@ -696,22 +682,22 @@ void MapMgr::ChangeObjectLocation( Object *obj )
 			else
 				fRange = m_UpdateDistance; // normal distance
 
-			if( fRange > 0.0f && curObj->GetDistance2dSq(obj) > fRange )
+			if( fRange > 0.0f && ( curObj->GetDistance2dSq(obj) > fRange ) )
 			{
-				if( plObj )
-					plObj->RemoveIfVisible(curObj);
+				if( plObj != NULL )
+					plObj->RemoveIfVisible( curObj );
 
 				if( curObj->IsPlayer() )
-					static_cast< Player* >( curObj )->RemoveIfVisible(obj);
+					static_cast< Player* >( curObj )->RemoveIfVisible( obj );
 
-				curObj->RemoveInRangeObject(obj);
+				curObj->RemoveInRangeObject( obj );
 
 				if( obj->GetMapMgr() != this )
 				{
 					/* Something removed us. */
 					return;
 				}
-				obj->RemoveInRangeObject(iter2);
+				obj->RemoveInRangeObject( curObj );
 			}
 		}
 	}
@@ -759,11 +745,13 @@ void MapMgr::ChangeObjectLocation( Object *obj )
 
 	MapCell *objCell = GetCell(cellX, cellY);
 	MapCell * pOldCell = obj->GetMapCell();
-	if (!objCell)
+	if ( objCell == NULL )
 	{
 		objCell = Create(cellX,cellY);
 		objCell->Init(cellX, cellY, _mapId, this);
 	}
+
+    assert( objCell != NULL );
 
 	// If object moved cell
 	if (objCell != obj->GetMapCell())
@@ -1761,12 +1749,11 @@ Creature * MapMgr::CreateCreature(uint32 entry, bool isVehicle)
 			return new Creature(newguid);
 	}
 
-	if(++m_CreatureHighGuid  >= m_CreatureArraySize)
+    if( ++m_CreatureHighGuid  >= CreatureStorage.size() )
 	{
 		// Reallocate array with larger size.
-		m_CreatureArraySize += RESERVE_EXPAND_SIZE;
-		m_CreatureStorage = (Creature**)realloc(m_CreatureStorage, sizeof(Creature*) * m_CreatureArraySize);
-		memset(&m_CreatureStorage[m_CreatureHighGuid],0,(m_CreatureArraySize-m_CreatureHighGuid)*sizeof(Creature*));
+        uint32 newsize = CreatureStorage.size() + RESERVE_EXPAND_SIZE;
+        CreatureStorage.resize( newsize, NULL );
 	}
 
 	newguid |= m_CreatureHighGuid;
@@ -1840,12 +1827,11 @@ GameObject * MapMgr::CreateGameObject(uint32 entry)
 		return new GameObject((uint64)HIGHGUID_TYPE_GAMEOBJECT<<32 | guid);
 	}
 
-	if(++m_GOHighGuid  >= m_GOArraySize)
+    if(++m_GOHighGuid  >= GOStorage.size() )
 	{
 		// Reallocate array with larger size.
-		m_GOArraySize += RESERVE_EXPAND_SIZE;
-		m_GOStorage = (GameObject**)realloc(m_GOStorage, sizeof(GameObject*) * m_GOArraySize);
-		memset(&m_GOStorage[m_GOHighGuid],0,(m_GOArraySize-m_GOHighGuid)*sizeof(GameObject*));
+        uint32 newsize = GOStorage.size() + RESERVE_EXPAND_SIZE;
+        GOStorage.resize( newsize, NULL );
 	}
 	return new GameObject((uint64)HIGHGUID_TYPE_GAMEOBJECT<<32 | m_GOHighGuid);
 }

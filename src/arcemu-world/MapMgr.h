@@ -103,33 +103,31 @@ public:
 ////////////////////////////////////////////////////////
 // Local (mapmgr) storage/generation of GameObjects
 /////////////////////////////////////////////
-	uint32 m_GOArraySize;
 	uint32 m_GOHighGuid;
-	GameObject ** m_GOStorage;
+    std::vector< GameObject* > GOStorage;
 	GameObject * CreateGameObject(uint32 entry);
 	GameObject * CreateAndSpawnGameObject(uint32 entryID, float x, float y, float z, float o, float scale);
 
-	ARCEMU_INLINE uint32 GenerateGameobjectGuid() { return ++m_GOHighGuid; }
-	ARCEMU_INLINE GameObject * GetGameObject(uint32 guid)
+	uint32 GenerateGameobjectGuid() { return ++m_GOHighGuid; }
+	GameObject * GetGameObject(uint32 guid)
 	{
 		if(guid > m_GOHighGuid)
 			return 0;
-		return m_GOStorage[guid];
+		return GOStorage[guid];
 	}
 
 /////////////////////////////////////////////////////////
 // Local (mapmgr) storage/generation of Creatures
 /////////////////////////////////////////////
-	uint32 m_CreatureArraySize;
 	uint32 m_CreatureHighGuid;
-	Creature ** m_CreatureStorage;
+    std::vector< Creature* > CreatureStorage;
 	Creature * CreateCreature(uint32 entry, bool isVehicle = false);
 
-	__inline Creature * GetCreature(uint32 guid)
+	Creature * GetCreature(uint32 guid)
 	{
 		if(guid > m_CreatureHighGuid)
 			return NULL;
-		return m_CreatureStorage[guid];
+		return CreatureStorage[ guid ];
 	}
 
 //////////////////////////////////////////////////////////
@@ -140,7 +138,7 @@ public:
 	DynamicObjectStorageMap m_DynamicObjectStorage;
 	DynamicObject * CreateDynamicObject();
 
-	ARCEMU_INLINE DynamicObject * GetDynamicObject(uint32 guid)
+	DynamicObject * GetDynamicObject(uint32 guid)
 	{
 		DynamicObjectStorageMap::iterator itr = m_DynamicObjectStorage.find(guid);
 		return (itr != m_DynamicObjectStorage.end()) ? itr->second : NULL;
@@ -151,7 +149,7 @@ public:
 ///////////////////////////////////////////
 	typedef HM_NAMESPACE::hash_map<uint32, Pet*> PetStorageMap;
 	PetStorageMap m_PetStorage;
-	__inline Pet * GetPet(uint32 guid)
+	Pet * GetPet(uint32 guid)
 	{
 		PetStorageMap::iterator itr = m_PetStorage.find(guid);
 		return (itr != m_PetStorage.end()) ? itr->second : NULL;
@@ -164,7 +162,7 @@ public:
 	// double typedef lolz// a compile breaker..
 	typedef HM_NAMESPACE::hash_map<uint32, Player*> PlayerStorageMap;
 	PlayerStorageMap m_PlayerStorage;
-	__inline Player * GetPlayer(uint32 guid)
+	Player * GetPlayer(uint32 guid)
 	{
 		PlayerStorageMap::iterator itr = m_PlayerStorage.find(guid);
 		return (itr != m_PlayerStorage.end()) ? itr->second : NULL;
@@ -206,31 +204,31 @@ public:
 	void UpdateCellActivity(uint32 x, uint32 y, int radius);
 
 	// Terrain Functions
-	ARCEMU_INLINE float  GetLandHeight(float x, float y) { return GetBaseMap()->GetLandHeight(x, y); }
-	ARCEMU_INLINE bool   IsUnderground(float x, float y,float z) { return GetBaseMap()->GetLandHeight(x, y) > (z+0.5f); }
-	ARCEMU_INLINE float  GetWaterHeight(float x, float y) { return GetBaseMap()->GetWaterHeight(x, y); }
-	ARCEMU_INLINE uint8  GetWaterType(float x, float y) { return GetBaseMap()->GetWaterType(x, y); }
-	ARCEMU_INLINE uint8  GetWalkableState(float x, float y) { return GetBaseMap()->GetWalkableState(x, y); }
-	ARCEMU_INLINE uint16 GetAreaID(float x, float y) { return GetBaseMap()->GetAreaID(x, y); }
+	float  GetLandHeight(float x, float y) { return GetBaseMap()->GetLandHeight(x, y); }
+	bool   IsUnderground(float x, float y,float z) { return GetBaseMap()->GetLandHeight(x, y) > (z+0.5f); }
+	float  GetWaterHeight(float x, float y) { return GetBaseMap()->GetWaterHeight(x, y); }
+	uint8  GetWaterType(float x, float y) { return GetBaseMap()->GetWaterType(x, y); }
+	uint8  GetWalkableState(float x, float y) { return GetBaseMap()->GetWalkableState(x, y); }
+	uint16 GetAreaID(float x, float y) { return GetBaseMap()->GetAreaID(x, y); }
 
-	ARCEMU_INLINE uint32 GetMapId() { return _mapId; }
+	uint32 GetMapId() { return _mapId; }
 
 	void PushToProcessed(Player* plr);
 
-	ARCEMU_INLINE bool HasPlayers() { return (m_PlayerStorage.size() > 0); }
-	ARCEMU_INLINE bool IsCombatInProgress() { return (_combatProgress.size() > 0); }
+	bool HasPlayers() { return (m_PlayerStorage.size() > 0); }
+	bool IsCombatInProgress() { return (_combatProgress.size() > 0); }
 	void TeleportPlayers();
 
-	ARCEMU_INLINE uint32 GetInstanceID() { return m_instanceID; }
-	ARCEMU_INLINE MapInfo *GetMapInfo() { return pMapInfo; }
+	uint32 GetInstanceID() { return m_instanceID; }
+	MapInfo *GetMapInfo() { return pMapInfo; }
 
 	bool _shutdown;
 
-	ARCEMU_INLINE MapScriptInterface * GetInterface() { return ScriptInterface; }
+	MapScriptInterface * GetInterface() { return ScriptInterface; }
 	virtual int32 event_GetInstanceID() { return m_instanceID; }
 
 	void LoadAllCells();
-	ARCEMU_INLINE size_t GetPlayerCount() { return m_PlayerStorage.size(); }
+	size_t GetPlayerCount() { return m_PlayerStorage.size(); }
 	uint32 GetTeamPlayersCount(uint32 teamId);
 
 	void _PerformObjectDuties();
@@ -288,12 +286,8 @@ private:
 	uint32 _mapId;
 	set<Object*> _mapWideStaticObjects;
 
-	//std::map<uint32,uint32> _worldStateSet;
-
 	bool _CellActive(uint32 x, uint32 y);
 	void UpdateInRangeSet(Object *obj, Player *plObj, MapCell* cell, ByteBuffer ** buf);
-
-	//WorldPacket* BuildInitialWorldState();
 
 public:
 	// Distance a Player can "see" other objects and receive updates from them (!! ALREADY dist*dist !!)
