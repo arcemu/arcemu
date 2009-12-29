@@ -237,7 +237,7 @@ void MapMgr::PushObject(Object *obj)
 	/////////////
 	// Assertions
 	/////////////
-	assert( obj );
+	Arcemu::Util::ARCEMU_ASSERT(    obj != NULL  );
 
 	// That object types are not map objects. TODO: add AI groups here?
 	if(obj->GetTypeId() == TYPEID_ITEM || obj->GetTypeId() == TYPEID_CONTAINER)
@@ -253,7 +253,7 @@ void MapMgr::PushObject(Object *obj)
 
 	obj->ClearInRangeSet();
 
-	assert( obj->GetMapId() == _mapId );
+	Arcemu::Util::ARCEMU_ASSERT(    obj->GetMapId() == _mapId );
 	if(!(obj->GetPositionX() < _maxX && obj->GetPositionX() > _minX) ||
 	   !(obj->GetPositionY() < _maxY && obj->GetPositionY() > _minY))
 	{
@@ -279,8 +279,8 @@ void MapMgr::PushObject(Object *obj)
 		}
 	}
 
-	assert( obj->GetPositionY() < _maxY && obj->GetPositionY() > _minY );
-	assert( _cells != NULL );
+	Arcemu::Util::ARCEMU_ASSERT(    obj->GetPositionY() < _maxY && obj->GetPositionY() > _minY );
+	Arcemu::Util::ARCEMU_ASSERT(    _cells != NULL );
 
 	///////////////////////
 	// Get cell coordinates
@@ -322,7 +322,7 @@ void MapMgr::PushObject(Object *obj)
 		objCell = Create(x,y);
 		objCell->Init(x, y, _mapId, this);
 	}
-    assert( objCell != NULL );
+    Arcemu::Util::ARCEMU_ASSERT(    objCell != NULL );
 
 	uint32 endX = (x <= _sizeX) ? x + 1 : (_sizeX-1);
 	uint32 endY = (y <= _sizeY) ? y + 1 : (_sizeY-1);
@@ -385,7 +385,7 @@ void MapMgr::PushObject(Object *obj)
 
 		case HIGHGUID_TYPE_UNIT:
 			{
-				assert( obj->GetUIdFromGUID() <= m_CreatureHighGuid );
+				Arcemu::Util::ARCEMU_ASSERT(    obj->GetUIdFromGUID() <= m_CreatureHighGuid );
 				CreatureStorage[ obj->GetUIdFromGUID() ] = static_cast< Creature* >( obj );
 				if(((Creature*)obj)->m_spawn != NULL)
 				{
@@ -475,11 +475,11 @@ void MapMgr::RemoveObject(Object *obj, bool free_guid)
 	// Assertions
 	/////////////
 
-	ASSERT(obj);
-	ASSERT(obj->GetMapId() == _mapId);
-	//ASSERT(obj->GetPositionX() > _minX && obj->GetPositionX() < _maxX);
-	//ASSERT(obj->GetPositionY() > _minY && obj->GetPositionY() < _maxY);
-	ASSERT(_cells);
+	Arcemu::Util::ARCEMU_ASSERT(   obj != NULL );
+	Arcemu::Util::ARCEMU_ASSERT(   obj->GetMapId() == _mapId);
+	//Arcemu::Util::ARCEMU_ASSERT(   obj->GetPositionX() > _minX && obj->GetPositionX() < _maxX);
+	//Arcemu::Util::ARCEMU_ASSERT(   obj->GetPositionY() > _minY && obj->GetPositionY() < _maxY);
+	Arcemu::Util::ARCEMU_ASSERT(   _cells != NULL );
 
 	if (obj->IsActive())
 		obj->Deactivate(this);
@@ -501,7 +501,7 @@ void MapMgr::RemoveObject(Object *obj, bool free_guid)
 	switch(obj->GetTypeFromGUID())
 	{
 		case HIGHGUID_TYPE_UNIT:
-			ASSERT(obj->GetUIdFromGUID() <= m_CreatureHighGuid);
+			Arcemu::Util::ARCEMU_ASSERT(   obj->GetUIdFromGUID() <= m_CreatureHighGuid);
 			CreatureStorage[ obj->GetUIdFromGUID() ] = NULL;
 			if(((Creature*)obj)->m_spawn != NULL)
 			{
@@ -522,7 +522,7 @@ void MapMgr::RemoveObject(Object *obj, bool free_guid)
 			break;
 
 		case HIGHGUID_TYPE_GAMEOBJECT:
-			assert( obj->GetUIdFromGUID() <= m_GOHighGuid );
+			Arcemu::Util::ARCEMU_ASSERT(    obj->GetUIdFromGUID() <= m_GOHighGuid );
 			GOStorage[ obj->GetUIdFromGUID() ] = NULL;
 			if(((GameObject*)obj)->m_spawn != NULL)
 			{
@@ -562,7 +562,7 @@ void MapMgr::RemoveObject(Object *obj, bool free_guid)
 
 	if(obj->GetMapCell())
 	{
-		ASSERT(obj->GetMapCell());
+		Arcemu::Util::ARCEMU_ASSERT(   obj->GetMapCell() != NULL );
 
 		// Remove object from cell
 		obj->GetMapCell()->RemoveObject(obj);
@@ -637,7 +637,7 @@ void MapMgr::ChangeObjectLocation( Object *obj )
     if ( !obj ) return; // crashfix
     */
 
-    assert( obj != NULL );
+    Arcemu::Util::ARCEMU_ASSERT(    obj != NULL );
 
     // Items and containers are of no interest for us
 	if( obj->GetTypeId() == TYPEID_ITEM || obj->GetTypeId() == TYPEID_CONTAINER || obj->GetMapMgr() != this )
@@ -751,7 +751,7 @@ void MapMgr::ChangeObjectLocation( Object *obj )
 		objCell->Init(cellX, cellY, _mapId, this);
 	}
 
-    assert( objCell != NULL );
+    Arcemu::Util::ARCEMU_ASSERT(    objCell != NULL );
 
 	// If object moved cell
 	if (objCell != obj->GetMapCell())
@@ -1054,7 +1054,7 @@ void MapMgr::LoadAllCells()
 				sLog.outDetail( "Created cell [%u,%u] on map %u (instance %u)." , x , y , _mapId , m_instanceID );
 				cellInfo->SetActivity( true );
 				_map->CellGoneActive( x , y );
-				ASSERT( !cellInfo->IsLoaded() );
+				Arcemu::Util::ARCEMU_ASSERT(    !cellInfo->IsLoaded() );
 
 				spawns = _map->GetSpawnsList( x , y );
 				if( spawns )
@@ -1112,7 +1112,7 @@ void MapMgr::UpdateCellActivity(uint32 x, uint32 y, int radius)
 					objCell->SetActivity(true);
 					_map->CellGoneActive(posX, posY);
 
-					ASSERT(!objCell->IsLoaded());
+					Arcemu::Util::ARCEMU_ASSERT(   !objCell->IsLoaded());
 
 					sLog.outDetail("Loading objects for Cell [%u][%u] on map %u (instance %u)...",
 						posX, posY, this->_mapId, m_instanceID);
@@ -1902,6 +1902,6 @@ void MapMgr::LoadInstanceScript()
 
 void MapMgr::CallScriptUpdate()
 {
-	ASSERT( mInstanceScript );
+	Arcemu::Util::ARCEMU_ASSERT(    mInstanceScript  != NULL );
 	mInstanceScript->UpdateEvent();
 };

@@ -2414,7 +2414,7 @@ public:
 
 	 uint8 GetRune(uint32 index)
 	{
-		ASSERT(index < 6);
+		Arcemu::Util::ARCEMU_ASSERT(   index < 6);
 		return m_runes[index];
 	}
 	void ConvertRune(uint8 index, uint8 value);
@@ -2492,7 +2492,7 @@ public:
 	void BeginSearch()
 	{
 		// iteminterface doesn't use mutexes, maybe it should :P
-		ASSERT(!m_searchInProgress);
+		Arcemu::Util::ARCEMU_ASSERT(   !m_searchInProgress);
 		m_itr = m_target->m_skills.begin();
 		m_endItr = m_target->m_skills.end();
 		m_searchInProgress=true;
@@ -2501,7 +2501,7 @@ public:
 	void EndSearch()
 	{
 		// nothing here either
-		ASSERT(m_searchInProgress);
+		Arcemu::Util::ARCEMU_ASSERT(   m_searchInProgress);
 		m_searchInProgress=false;
 	}
 

@@ -77,7 +77,7 @@ void EventableObject::event_AddEvent(TimedEvent * ptr)
 		/* relocate to -1 eventholder :/ */
 		m_event_Instanceid = WORLD_INSTANCE;
 		m_holder = sEventMgr.GetEventHolder(m_event_Instanceid);
-		ASSERT(m_holder);
+		Arcemu::Util::ARCEMU_ASSERT(   m_holder != NULL );
 	}
 
 	m_holder->AddEvent(ptr);

@@ -57,7 +57,7 @@ void Container::LoadFromDB( Field*fields )
 	uint32 itemid=fields[2].GetUInt32();
 	m_itemProto = ItemPrototypeStorage.LookupEntry( itemid );
 
-	ASSERT(m_itemProto);
+	Arcemu::Util::ARCEMU_ASSERT(   m_itemProto  != NULL );
 	SetEntry(  itemid );
 	
 
@@ -82,7 +82,7 @@ void Container::Create( uint32 itemid, Player *owner )
 {
 
 	m_itemProto = ItemPrototypeStorage.LookupEntry( itemid );
-	ASSERT(m_itemProto);
+	Arcemu::Util::ARCEMU_ASSERT(   m_itemProto != NULL );
 
 	SetEntry(  itemid );
 
@@ -134,7 +134,7 @@ bool Container::AddItem(int16 slot, Item *item)
 	if (slot < 0 || (uint32)slot >= GetProto()->ContainerSlots)
 		return false;
 
-	//ASSERT(m_Slot[slot] == NULL);
+	//Arcemu::Util::ARCEMU_ASSERT(   m_Slot[slot] == NULL);
 	if(m_Slot[slot] != NULL)
 	{
 		//sLog.outString("Bad container item %u slot %d", item->GetGUID(), slot);

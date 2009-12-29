@@ -3238,7 +3238,7 @@ void Spell::SpellEffectSummon(uint32 i)
 	default:
 		{
 			Creature * pCreature = u_caster->GetMapMgr()->CreateCreature(cp->Id);
-			ASSERT(pCreature != NULL);
+			Arcemu::Util::ARCEMU_ASSERT(   pCreature != NULL);
 
 			pCreature->Load(cp, u_caster->GetPositionX(), u_caster->GetPositionY(), u_caster->GetPositionZ());
 			pCreature->_setFaction();
@@ -4121,7 +4121,7 @@ void Spell::SpellEffectSummonWild(uint32 i)  // Summon Wild
 		x += (GetRadius(i)*(cosf(m_fallowAngle+u_caster->GetOrientation())));
 		y += (GetRadius(i)*(sinf(m_fallowAngle+u_caster->GetOrientation())));
 		Creature * p = u_caster->GetMapMgr()->CreateCreature(cr_entry);
-		//ASSERT(p);
+		//Arcemu::Util::ARCEMU_ASSERT(   p);
 		p->Load(proto, x, y, z);
 		p->SetZoneId( m_caster->GetZoneId() );
 

@@ -198,7 +198,7 @@ public:
 	void BeginSearch()
 	{
 		// iteminterface doesn't use mutexes, maybe it should :P
-		ASSERT(!m_searchInProgress);
+		Arcemu::Util::ARCEMU_ASSERT(   !m_searchInProgress);
 		m_target->m_lock.Acquire();
 		m_itr = m_target->m_members.begin();
 		m_endItr = m_target->m_members.end();
@@ -208,7 +208,7 @@ public:
 	void EndSearch()
 	{
 		// nothing here either
-		ASSERT(m_searchInProgress);
+		Arcemu::Util::ARCEMU_ASSERT(   m_searchInProgress);
 		m_target->m_lock.Release();
 		m_searchInProgress=false;
 	}

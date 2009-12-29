@@ -898,7 +898,7 @@ void InstanceScript::RemoveUpdateEvent()
 /* Hook Stuff */
 void ScriptMgr::register_hook(ServerHookEvents event, void * function_pointer)
 {
-	ASSERT(event < NUM_SERVER_HOOKS);
+	Arcemu::Util::ARCEMU_ASSERT(   event < NUM_SERVER_HOOKS);
 	_hooks[event].push_back(function_pointer);
 }
 

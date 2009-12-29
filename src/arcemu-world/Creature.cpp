@@ -1059,7 +1059,7 @@ void Creature::RegenerateFocus()
 
 void Creature::CallScriptUpdate()
 {
-	ASSERT(_myScriptClass);
+	Arcemu::Util::ARCEMU_ASSERT(   _myScriptClass != NULL );
 	if(!IsInWorld())
 		return;
 
@@ -1897,7 +1897,7 @@ void Creature::Despawn(uint32 delay, uint32 respawntime)
 		if(!pCell)
 			pCell = m_mapCell;
 
-		ASSERT(pCell);
+		Arcemu::Util::ARCEMU_ASSERT(   pCell != NULL );
 		pCell->_respawnObjects.insert((Object*)this);
 		sEventMgr.RemoveEvents(this);
 		sEventMgr.AddEvent(m_mapMgr, &MapMgr::EventRespawnCreature, this, pCell, EVENT_CREATURE_RESPAWN, respawntime, 1, 0);

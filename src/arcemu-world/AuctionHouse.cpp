@@ -41,7 +41,7 @@ void Auction::UpdateInDB()
 AuctionHouse::AuctionHouse(uint32 ID)
 {
 	dbc = dbcAuctionHouse.LookupEntryForced(ID);
-	assert(dbc);
+	Arcemu::Util::ARCEMU_ASSERT(   dbc != NULL );
 
 	cut_percent = float( float(dbc->tax) / 100.0f );
 	deposit_percent = float( float(dbc->fee ) / 100.0f );
@@ -75,7 +75,7 @@ void AuctionHouse::UpdateDeletionQueue()
 	for(; it != removalList.end(); ++it)
 	{
 		auct = *it;
-		assert(auct->Deleted);
+		Arcemu::Util::ARCEMU_ASSERT(   auct->Deleted);
 		RemoveAuction(auct);
 	}
 

@@ -1639,7 +1639,7 @@ bool QuestMgr::OnActivateQuestGiver(Object *qst_giver, Player *plr)
 		if (sQuestMgr.CalcStatus(qst_giver, plr) < QMGR_QUEST_CHAT)
 			return false; 
 
-		ASSERT(itr != q_end);
+		Arcemu::Util::ARCEMU_ASSERT(   itr != q_end);
 
 		uint32 status = sQuestMgr.CalcStatus(qst_giver, plr);
 

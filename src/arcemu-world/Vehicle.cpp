@@ -331,7 +331,7 @@ bool ChatHandler::HandleVehicleSpawn(const char * args, WorldSession * m_session
 
 
 	Creature * p = m_session->GetPlayer()->GetMapMgr()->CreateCreature(entry, true);
-	ASSERT(p);
+	Arcemu::Util::ARCEMU_ASSERT(   p != NULL );
 	p->Load(sp, (uint32)NULL, NULL);
 	p->m_loadedFromDB = true;
 	p->PushToWorld(m_session->GetPlayer()->GetMapMgr());

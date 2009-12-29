@@ -965,7 +965,7 @@ uint32 ObjectMgr::GenerateMailID()
 }
 uint32 ObjectMgr::GenerateLowGuid(uint32 guidhigh)
 {
-	ASSERT(guidhigh == HIGHGUID_TYPE_ITEM || guidhigh == HIGHGUID_TYPE_CONTAINER || guidhigh == HIGHGUID_TYPE_PLAYER);
+	Arcemu::Util::ARCEMU_ASSERT(   guidhigh == HIGHGUID_TYPE_ITEM || guidhigh == HIGHGUID_TYPE_CONTAINER || guidhigh == HIGHGUID_TYPE_PLAYER);
 
 	uint32 ret;
 	if(guidhigh == HIGHGUID_TYPE_ITEM)
@@ -1182,7 +1182,7 @@ PlayerCreateInfo* ObjectMgr::GetPlayerCreateInfo(uint8 race, uint8 class_) const
 
 void ObjectMgr::AddGuild(Guild *pGuild)
 {
-	ASSERT( pGuild );
+	Arcemu::Util::ARCEMU_ASSERT(    pGuild != NULL  );
 	mGuild[pGuild->GetGuildId()] = pGuild;
 }
 
@@ -1237,7 +1237,7 @@ Guild* ObjectMgr::GetGuildByGuildName(std::string guildName)
 
 void ObjectMgr::AddGMTicket(GM_Ticket *ticket, bool startup)
 {
-	ASSERT( ticket );
+	Arcemu::Util::ARCEMU_ASSERT(    ticket  != NULL );
 	GM_TicketList.push_back(ticket);
 
 	// save
@@ -1846,7 +1846,7 @@ void GossipMenu::SendTo(Player* Plr)
 void ObjectMgr::CreateGossipMenuForPlayer(GossipMenu** Location, uint64 Guid, uint32 TextID, Player* Plr)
 {
 	GossipMenu *Menu = new GossipMenu(Guid, TextID);
-	ASSERT(Menu);
+	Arcemu::Util::ARCEMU_ASSERT(   Menu != NULL );
 
 	if(Plr->CurrentGossipMenu != NULL)
 		delete Plr->CurrentGossipMenu;
@@ -2264,7 +2264,7 @@ LevelInfo* ObjectMgr::GetLevelInfo(uint32 Race, uint32 Class, uint32 Level)
 
 			// Pull the level information from the second map.
 			LevelMap::iterator it2 = itr->second->find( Level );
-			ASSERT( it2 != itr->second->end() );
+			Arcemu::Util::ARCEMU_ASSERT(    it2 != itr->second->end() );
 
 			return it2->second;
 		}
@@ -2342,7 +2342,7 @@ void ObjectMgr::LoadPetSpellCooldowns()
 				else
 				{
 					uint32 SP2 = mPetSpellCooldowns[SpellId];
-					ASSERT(Cooldown == SP2);
+					Arcemu::Util::ARCEMU_ASSERT(   Cooldown == SP2);
 				}
 			}
 		}
@@ -2696,7 +2696,7 @@ void Charter::AddSignature(uint32 PlayerGuid)
 		}
 	}
 
-	assert(i != Slots);
+	Arcemu::Util::ARCEMU_ASSERT(   i != Slots);
 }
 
 void Charter::RemoveSignature(uint32 PlayerGuid)

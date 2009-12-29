@@ -147,7 +147,7 @@ void Guild::LogGuildEvent(uint8 iEvent, uint8 iStringCount, ...)
 	char * strs[4] = {NULL,NULL,NULL,NULL};
 
 	va_start(ap, iStringCount);
-	ASSERT(iStringCount <= 4);
+	Arcemu::Util::ARCEMU_ASSERT(   iStringCount <= 4);
 
 	WorldPacket data(SMSG_GUILD_EVENT, 100);
 	uint32 i;
@@ -174,7 +174,7 @@ void Guild::AddGuildLogEntry(uint8 iEvent, uint8 iParamCount, ...)
 	GuildLogEvent * ev;
 
 	va_start(ap, iParamCount);
-	ASSERT(iParamCount<=3);
+	Arcemu::Util::ARCEMU_ASSERT(   iParamCount<=3);
 
 	ev = new GuildLogEvent;
 	ev->iLogId = GenerateGuildLogEventId();
@@ -472,7 +472,7 @@ bool Guild::LoadFromDB(Field * f)
 		}
 
 		//m_ranks.push_back(r);
-		ASSERT(m_ranks[r->iId] == NULL);
+		Arcemu::Util::ARCEMU_ASSERT(   m_ranks[r->iId] == NULL);
 		m_ranks[r->iId] = r;
 
 	} while(result->NextRow());
@@ -995,7 +995,7 @@ void Guild::ChangeGuildMaster(PlayerInfo * pNewMaster, WorldSession * pClient)
 
 	GuildMemberMap::iterator itr = m_members.find(pNewMaster);
 	GuildMemberMap::iterator itr2 = m_members.find(pClient->GetPlayer()->getPlayerInfo());
-	ASSERT(m_ranks[0]!= NULL);
+	Arcemu::Util::ARCEMU_ASSERT(   m_ranks[0]!= NULL);
 	if(itr==m_members.end())
 	{
 		Guild::SendGuildCommandResult(pClient, GUILD_PROMOTE_S, pNewMaster->name, GUILD_PLAYER_NOT_IN_GUILD_S);

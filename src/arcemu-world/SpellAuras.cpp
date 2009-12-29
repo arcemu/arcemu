@@ -953,7 +953,7 @@ void Aura::AddMod( uint32 t, int32 a, uint32 miscValue, uint32 i )
 	m_modList[m_modcount].m_miscValue = miscValue;
 	m_modList[m_modcount].i = i;
 	m_modcount++;
-	//ASSERT(m_modcount<=3);
+	//Arcemu::Util::ARCEMU_ASSERT(   m_modcount<=3);
 }
 
 void Aura::ApplyModifiers( bool apply )
@@ -3696,7 +3696,7 @@ void Aura::SpellAuraModInvisibilityDetection(bool apply)
 {
 	//Always Positive
 
-	assert(mod->m_miscValue < INVIS_FLAG_TOTAL);
+	Arcemu::Util::ARCEMU_ASSERT(   mod->m_miscValue < INVIS_FLAG_TOTAL);
 	if(apply)
 	{
 		m_target->m_invisDetect[mod->m_miscValue] += mod->m_amount;
@@ -3953,7 +3953,7 @@ void Aura::EventPeriodicTriggerSpell(SpellEntry* spellInfo)
 {
 	// Trigger Spell
 	// check for spell id	
-	ASSERT(spellInfo != NULL);
+	Arcemu::Util::ARCEMU_ASSERT(   spellInfo != NULL);
 	Unit * m_caster = GetUnitCaster();
 	if(m_caster == NULL || !m_caster->IsInWorld() )
 		return;
@@ -4042,7 +4042,7 @@ void Aura::EventPeriodicEnergize( uint32 amount, uint32 type )
 {
 	uint32 POWER_TYPE = UNIT_FIELD_POWER1 + type;
 
-	ASSERT( POWER_TYPE <= UNIT_FIELD_POWER5 );
+	Arcemu::Util::ARCEMU_ASSERT(    POWER_TYPE <= UNIT_FIELD_POWER5 );
 	
 	Unit* ucaster = GetUnitCaster();
 	if( ucaster == NULL )
@@ -4219,7 +4219,7 @@ void Aura::SpellAuraModStat( bool apply )
 	}
 	else if( stat >= 0 )
 	{
-		ASSERT( mod->m_miscValue < 5 );
+		Arcemu::Util::ARCEMU_ASSERT(    mod->m_miscValue < 5 );
 		if( m_target->IsPlayer() )
 		{
 			if( mod->m_amount > 0 )
@@ -4857,7 +4857,7 @@ void Aura::SpellAuraModDmgImmunity(bool apply)
 
 void Aura::SpellAuraModDispelImmunity(bool apply)
 {
-	assert(mod->m_miscValue < 10);
+	Arcemu::Util::ARCEMU_ASSERT(   mod->m_miscValue < 10);
 	if(apply)
 		m_target->dispels[mod->m_miscValue]++;
 	else
@@ -6029,7 +6029,7 @@ void Aura::SpellAuraMechanicImmunity(bool apply)
 {
 	if(apply)
 	{
-		assert(mod->m_miscValue < MECHANIC_END);
+		Arcemu::Util::ARCEMU_ASSERT(   mod->m_miscValue < MECHANIC_END);
 		m_target->MechanicsDispels[mod->m_miscValue]++;
 
 		if(mod->m_miscValue != 16 && mod->m_miscValue != 25 && mod->m_miscValue != 19) // don't remove bandages, Power Word and protection effect
@@ -6243,7 +6243,7 @@ void Aura::SpellAuraModPercStat(bool apply)
 	}
 	else
 	{
-		ASSERT(mod->m_miscValue < 5);
+		Arcemu::Util::ARCEMU_ASSERT(   mod->m_miscValue < 5);
 		if( p_target != NULL )
 		{
 			if( mod->m_amount > 0 )
@@ -6379,7 +6379,7 @@ void Aura::EventPeriodicEnergizeVariable( uint32 amount, uint32 type )
 {
 	uint32 POWER_TYPE = UNIT_FIELD_POWER1 + type;
 
-	ASSERT(POWER_TYPE<=UNIT_FIELD_POWER5);
+	Arcemu::Util::ARCEMU_ASSERT(   POWER_TYPE<=UNIT_FIELD_POWER5);
 	uint32 curEnergy = m_target->GetUInt32Value( POWER_TYPE );
 	uint32 maxEnergy = m_target->GetUInt32Value( POWER_TYPE + 6 );
 
@@ -7328,7 +7328,7 @@ void Aura::SpellAuraModMechanicResistance(bool apply)
 	//mecanics=9 ?
 	if(apply)
 	{
-		assert( mod->m_miscValue < MECHANIC_END );
+		Arcemu::Util::ARCEMU_ASSERT(    mod->m_miscValue < MECHANIC_END );
 		m_target->MechanicsResistancesPCT[mod->m_miscValue]+=mod->m_amount;
 
 		if(mod->m_miscValue != MECHANIC_HEALING && mod->m_miscValue != MECHANIC_INVULNARABLE && mod->m_miscValue != MECHANIC_SHIELDED ) // don't remove bandages, Power Word and protection effect
@@ -7535,7 +7535,7 @@ void Aura::SpellAuraModTotalStatPerc(bool apply)
 	}
 	else
 	{
-		ASSERT(mod->m_miscValue < 5);
+		Arcemu::Util::ARCEMU_ASSERT(   mod->m_miscValue < 5);
 		if( p_target != NULL )
 		{
 			//druid hearth of the wild should add more features based on form

@@ -143,7 +143,7 @@ int WorldSession::Update(uint32 InstanceID)
 
 	while ((packet = _recvQueue.Pop()) != 0)
 	{
-		ASSERT(packet);
+		Arcemu::Util::ARCEMU_ASSERT(   packet != NULL );
 
 		if(packet->GetOpcode() >= NUM_MSG_TYPES)
 			sLog.outError("[Session] Received out of range packet with opcode 0x%.4X", packet->GetOpcode());

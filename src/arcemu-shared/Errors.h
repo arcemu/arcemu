@@ -24,7 +24,7 @@
 // TODO: handle errors better
 
 // An assert isn't necessarily fatal, although if compiled with asserts enabled it will be.
-#define WPAssert( EXPR ) if (!(EXPR)) { arcAssertFailed(__FILE__,__LINE__,#EXPR); assert(EXPR); }
+#define WPAssert( EXPR ) if (!(EXPR)) { arcAssertFailed(__FILE__,__LINE__,#EXPR); assert(EXPR); abort(); }
 
 #define WPError( assertion, errmsg ) if( ! (assertion) ) { Log::getSingleton( ).outError( "%s:%i ERROR:\n  %s\n", __FILE__, __LINE__, (char *)errmsg ); assert( false ); }
 #define WPWarning( assertion, errmsg ) if( ! (assertion) ) { Log::getSingleton( ).outError( "%s:%i WARNING:\n  %s\n", __FILE__, __LINE__, (char *)errmsg ); }

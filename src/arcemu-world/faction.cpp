@@ -37,14 +37,14 @@ Player* GetPlayerOwner( Object *A ){
         pAttacker = static_cast< Pet* >( A )->GetPetOwner();
 
         // Pet must have an owner if it's not being deleted
-		assert( static_cast< Pet* >( A )->IsBeingDeleted() || pAttacker != NULL );                
+		Arcemu::Util::ARCEMU_ASSERT(    static_cast< Pet* >( A )->IsBeingDeleted() || pAttacker != NULL );                
 	}
     else // Player totem
     if( A->IsCreature() && static_cast< Creature* >( A )->IsTotem() ){
         pAttacker = static_cast< Creature* >( A )->GetTotemOwner();
 
         // Totem must have an owner
-        assert( pAttacker != NULL );
+        Arcemu::Util::ARCEMU_ASSERT(    pAttacker != NULL );
 
     }
     else // Player summon

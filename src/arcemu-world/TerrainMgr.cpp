@@ -149,8 +149,8 @@ bool TerrainMgr::LoadTerrainHeader()
 
 	mFileSize = GetFileSize(hMappedFile, &sizehigh);
 
-	ASSERT(ReadFile(hMappedFile, CellOffsets, TERRAIN_HEADER_SIZE, &sizehigh, NULL));
-	ASSERT(sizehigh==TERRAIN_HEADER_SIZE);
+	Arcemu::Util::ARCEMU_ASSERT(   ReadFile(hMappedFile, CellOffsets, TERRAIN_HEADER_SIZE, &sizehigh, NULL));
+	Arcemu::Util::ARCEMU_ASSERT(   sizehigh==TERRAIN_HEADER_SIZE);
 
 	SetFilePointer(hMappedFile, 0, NULL, FILE_BEGIN);
 	m_Memory = (uint8*)MapViewOfFile(hMap, FILE_MAP_READ, 0, TERRAIN_HEADER_SIZE, mFileSize-TERRAIN_HEADER_SIZE);
@@ -194,7 +194,7 @@ bool TerrainMgr::LoadCellInformation(uint32 x, uint32 y)
 		return false;
 
 	// Make sure that we're not already loaded.
-	assert(CellInformation[x][y] == 0);
+	Arcemu::Util::ARCEMU_ASSERT(   CellInformation[x][y] == 0);
 
 	// Find our offset in our cached header.
 	uint32 Offset = CellOffsets[x][y];
@@ -242,10 +242,10 @@ bool TerrainMgr::UnloadCellInformation(uint32 x, uint32 y)
 #else
 	uint32 Start = getMSTime();
 
-	assert(!Instance);
+	Arcemu::Util::ARCEMU_ASSERT(   !Instance);
 	// Find our information pointer.
 	CellTerrainInformation * ptr = CellInformation[x][y];
-	assert(ptr != 0);
+	Arcemu::Util::ARCEMU_ASSERT(   ptr != 0);
 
 	// Set the spot to unloaded (null).
 	CellInformation[x][y] = 0;

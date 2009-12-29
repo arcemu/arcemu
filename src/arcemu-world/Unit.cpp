@@ -6595,7 +6595,7 @@ bool Unit::GetSpeedDecrease()
 
 void Unit::EventCastSpell(Unit * Target, SpellEntry * Sp)
 {
-	ASSERT(Sp != NULL);
+	Arcemu::Util::ARCEMU_ASSERT(   Sp != NULL);
 	Spell * pSpell = new Spell(Target, Sp, true, NULL);
 	SpellCastTargets targets(Target->GetGUID());
 	pSpell->prepare(&targets);
@@ -7959,7 +7959,7 @@ void Unit::UpdatePowerAmm()
 void Unit::RemoveGuardianRef( Creature* g )
 {
 
-    assert( g != NULL );
+    Arcemu::Util::ARCEMU_ASSERT(    g != NULL );
 
 	// just remove from the set	
 	std::set< Creature* >::iterator itr = m_Guardians.find( g );

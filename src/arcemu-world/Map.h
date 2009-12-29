@@ -119,16 +119,16 @@ public:
 
 	ARCEMU_INLINE CellSpawns *GetSpawnsList(uint32 cellx,uint32 celly)
 	{
-		ASSERT(cellx < _sizeX);
-		ASSERT(celly < _sizeY);
+		Arcemu::Util::ARCEMU_ASSERT(   cellx < _sizeX);
+		Arcemu::Util::ARCEMU_ASSERT(   celly < _sizeY);
 		if(spawns[cellx]== NULL) return NULL;
 
 		return spawns[cellx][celly];
 	}
 	ARCEMU_INLINE CellSpawns * GetSpawnsListAndCreate(uint32 cellx, uint32 celly)
 	{
-		ASSERT(cellx < _sizeX);
-		ASSERT(celly < _sizeY);
+		Arcemu::Util::ARCEMU_ASSERT(   cellx < _sizeX);
+		Arcemu::Util::ARCEMU_ASSERT(   celly < _sizeY);
 		if(spawns[cellx]== NULL)
 		{
 			spawns[cellx] = new CellSpawns*[_sizeY];

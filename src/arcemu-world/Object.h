@@ -21,6 +21,8 @@
 #ifndef _OBJECT_H
 #define _OBJECT_H
 
+#include "WUtil.h"
+
 class Unit;
 class Group;
 
@@ -235,13 +237,13 @@ public:
 	//! Get uint32 property
 	const uint32& GetUInt32Value( uint32 index ) const
 	{
-		ASSERT( index < m_valuesCount );
+		Arcemu::Util::ARCEMU_ASSERT(    index < m_valuesCount );
 		return m_uint32Values[ index ];
 	}
 
     const uint64& GetUInt64Value( uint32 index ) const
 	{
-		ASSERT( index + uint32(1) < m_valuesCount );
+		Arcemu::Util::ARCEMU_ASSERT(    index + uint32(1) < m_valuesCount );
 
         uint64 *p = reinterpret_cast< uint64* >( &m_uint32Values[ index ] );
 
@@ -251,7 +253,7 @@ public:
 	//! Get float property
 	const float& GetFloatValue( uint32 index ) const
 	{
-		ASSERT( index < m_valuesCount );
+		Arcemu::Util::ARCEMU_ASSERT(    index < m_valuesCount );
 		return m_floatValues[ index ];
 	}
 
@@ -266,8 +268,8 @@ public:
 
 	uint8 GetByte(uint32 i,uint32 i1)
 	{
-		ASSERT( i < m_valuesCount);
-		ASSERT(i1 < 4);
+		Arcemu::Util::ARCEMU_ASSERT(    i < m_valuesCount);
+		Arcemu::Util::ARCEMU_ASSERT(   i1 < 4);
 		return ((uint8*)m_uint32Values)[i*4+i1];
 	}
 
@@ -300,7 +302,7 @@ public:
 
 	bool HasFlag( const uint32 index, uint32 flag ) const
 	{
-		ASSERT( index < m_valuesCount );
+		Arcemu::Util::ARCEMU_ASSERT(    index < m_valuesCount );
 		return (m_uint32Values[ index ] & flag) != 0;
 	}
 
@@ -313,7 +315,7 @@ public:
 
 	bool HasUpdateField(uint32 index)
 	{
-		ASSERT( index < m_valuesCount);
+		Arcemu::Util::ARCEMU_ASSERT(    index < m_valuesCount);
 		return m_updateMask.GetBit(index);
 	}
 

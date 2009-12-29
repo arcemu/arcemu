@@ -124,7 +124,7 @@ void Item::Create( uint32 itemid, Player* owner )
 
 	m_itemProto = ItemPrototypeStorage.LookupEntry( itemid );
 
-	ASSERT( m_itemProto );
+	Arcemu::Util::ARCEMU_ASSERT(    m_itemProto  != NULL );
 	 
 	SetCharges( 0, m_itemProto->Spells[0].Charges );
 	SetCharges( 1, m_itemProto->Spells[1].Charges );
@@ -150,7 +150,7 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light )
 
 	m_itemProto = ItemPrototypeStorage.LookupEntry( itemid );
 
-	ASSERT( m_itemProto );
+	Arcemu::Util::ARCEMU_ASSERT(    m_itemProto != NULL  );
 	
 	if(m_itemProto->LockId > 1)
 		locked = true;
@@ -1302,7 +1302,7 @@ uint32 Item::CountGemsWithLimitId(uint32 LimitId)
 }
 
 void Item::EventRemoveItem(){
-    assert( this->GetOwner() != NULL );
+    Arcemu::Util::ARCEMU_ASSERT(    this->GetOwner() != NULL );
 
     m_owner->GetItemInterface()->SafeFullRemoveItemByGuid( this->GetGUID() );
 }

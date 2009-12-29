@@ -656,7 +656,7 @@ void WorldSession::HandlePlayerLoginOpcode( WorldPacket & recv_data )
 	}
 
 	Player* plr = new Player((uint32)playerGuid);
-	ASSERT(plr);
+	Arcemu::Util::ARCEMU_ASSERT(   plr != NULL );
 	plr->SetSession(this);
 	m_bIsWLevelSet = false;
 	

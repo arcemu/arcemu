@@ -503,7 +503,7 @@ void Pet::InitializeSpells()
 
 AI_Spell * Pet::CreateAISpell(SpellEntry * info)
 {
-	ASSERT( info != NULL );
+	Arcemu::Util::ARCEMU_ASSERT(    info != NULL );
 
 	// Create an AI_Spell
 	map<uint32,AI_Spell*>::iterator itr = m_AISpellStore.find( info->Id );
@@ -1602,8 +1602,8 @@ void Pet::HandleAutoCastEvent( AutoCastEvents Type )
 
 void Pet::SetAutoCast(AI_Spell * sp, bool on)
 {
-	ASSERT(sp != NULL);
-	ASSERT(sp->spell != NULL);
+	Arcemu::Util::ARCEMU_ASSERT(   sp != NULL);
+	Arcemu::Util::ARCEMU_ASSERT(   sp->spell != NULL);
 
 	if(sp->autocast_type > 0)
 	{

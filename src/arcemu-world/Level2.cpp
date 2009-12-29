@@ -545,7 +545,7 @@ bool ChatHandler::HandleCastSpellNECommand(const char* args, WorldSession *m_ses
 	data << uint32(0);
 	data << uint16(2);
 	data << target->GetGUID();
-	//		WPAssert(data.size() == 36);
+	//		WPArcemu::Util::ARCEMU_ASSERT(   data.size() == 36);
 	m_session->SendPacket( &data );
 
 	data.Initialize( SMSG_SPELL_GO );
@@ -557,7 +557,7 @@ bool ChatHandler::HandleCastSpellNECommand(const char* args, WorldSession *m_ses
 	data << uint8(0);
 	data << uint16(2);
 	data << target->GetGUID();
-	//		WPAssert(data.size() == 42);
+	//		WPArcemu::Util::ARCEMU_ASSERT(   data.size() == 42);
 	m_session->SendPacket( &data );
 
 	switch ( target->GetTypeId() )

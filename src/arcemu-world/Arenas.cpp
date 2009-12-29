@@ -186,7 +186,7 @@ void Arena::HookOnHK(Player * plr)
 
 void Arena::HookOnPlayerDeath(Player * plr)
 {
-	ASSERT(plr != NULL);
+	Arcemu::Util::ARCEMU_ASSERT(   plr != NULL);
 
 	if( plr->m_isGmInvisible == true ) return;
 
@@ -657,7 +657,7 @@ void Arena::HookOnAreaTrigger(Player * plr, uint32 id)
 {
 	int32 buffslot = -1;
 
-	ASSERT(plr != NULL);
+	Arcemu::Util::ARCEMU_ASSERT(   plr != NULL);
 
 	switch (id)
 	{
@@ -679,7 +679,7 @@ void Arena::HookOnAreaTrigger(Player * plr, uint32 id)
 		{
 			/* apply the buff */
 			SpellEntry * sp = dbcSpell.LookupEntryForced(m_buffs[buffslot]->GetInfo()->sound3);
-			ASSERT(sp != NULL);
+			Arcemu::Util::ARCEMU_ASSERT(   sp != NULL);
 
 			Spell * s = new Spell(plr, sp, true, 0);
 			SpellCastTargets targets(plr->GetGUID());

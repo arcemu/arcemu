@@ -187,7 +187,7 @@ public:
 	static RegType methods[];
 
 	// a lua script cannot create a unit.
-	GameObject(lua_State * L) { ASSERT(false); }*/
+	GameObject(lua_State * L) { Arcemu::Util::ARCEMU_ASSERT(   false); }*/
 
 	GameObject(uint64 guid);
 	~GameObject( );

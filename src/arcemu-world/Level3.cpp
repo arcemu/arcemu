@@ -2589,7 +2589,7 @@ bool ChatHandler::HandleCreatureSpawnCommand(const char *args, WorldSession *m_s
 
 
 	Creature * p = m_session->GetPlayer()->GetMapMgr()->CreateCreature(entry);
-	ASSERT(p);
+	Arcemu::Util::ARCEMU_ASSERT(   p != NULL );
 	p->Load(sp, (uint32)NULL, NULL);
 	p->m_loadedFromDB = true;
 	p->PushToWorld(m_session->GetPlayer()->GetMapMgr());
@@ -3257,7 +3257,7 @@ bool ChatHandler::HandleAIAgentDebugBegin(const char * args, WorldSession * m_se
 	for(list<SpellEntry*>::iterator itr = aiagent_spells.begin(); itr != aiagent_spells.end(); ++itr)
 	{
 		result = WorldDatabase.Query("SELECT * FROM ai_agents WHERE spell = %u", (*itr)->Id);
-		ASSERT(result);
+		Arcemu::Util::ARCEMU_ASSERT(   result != NULL );
 		spell_thingo t;
 		t.type = result->Fetch()[6].GetUInt32();
 		t.target = result->Fetch()[7].GetUInt32();
@@ -3324,7 +3324,7 @@ bool ChatHandler::HandleAIAgentDebugContinue(const char * args, WorldSession * m
 		BlueSystemMessage(m_session, "Casting %u, "MSG_COLOR_SUBWHITE"%u remaining.", sp->Id, aiagent_spells.size());
 
 		map<uint32, spell_thingo>::iterator it = aiagent_extra.find(sp->Id);
-		ASSERT(it != aiagent_extra.end());
+		Arcemu::Util::ARCEMU_ASSERT(   it != aiagent_extra.end());
 
 		SpellCastTargets targets;
 		if(it->second.type == STYPE_BUFF)

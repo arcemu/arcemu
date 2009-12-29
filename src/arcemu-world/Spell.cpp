@@ -159,7 +159,7 @@ void SpellCastTargets::write( WorldPacket& data )
 
 Spell::Spell(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 {
-	ASSERT( Caster != NULL && info != NULL );
+	Arcemu::Util::ARCEMU_ASSERT(    Caster != NULL && info != NULL );
 
 	chaindamage = 0;
 	bDurSet = 0;
@@ -1369,7 +1369,7 @@ void Spell::cancel()
 					if(p_caster->GetSummonedObject()->IsInWorld())
 						p_caster->GetSummonedObject()->RemoveFromWorld(true);
 					// for now..
-					ASSERT(p_caster->GetSummonedObject()->GetTypeId() == TYPEID_GAMEOBJECT);
+					Arcemu::Util::ARCEMU_ASSERT(   p_caster->GetSummonedObject()->GetTypeId() == TYPEID_GAMEOBJECT);
 					delete ((GameObject*)(p_caster->GetSummonedObject()));
 					p_caster->SetSummonedObject(NULL);
 				}
@@ -3160,7 +3160,7 @@ void Spell::TriggerSpell()
 		}
 
 		Spell *spell = new Spell(m_caster, spellInfo,false, NULL);
-		WPAssert(spell);
+		WPArcemu::Util::ARCEMU_ASSERT(   spell);
 
 		SpellCastTargets targets;
 		if(TriggerSpellTarget)

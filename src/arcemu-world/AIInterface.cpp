@@ -140,7 +140,7 @@ void AIInterface::EventAiInterfaceParamsetFinish()
 
 void AIInterface::Init(Unit *un, AIType at, MovementType mt)
 {
-	ASSERT(at != AITYPE_PET);
+	Arcemu::Util::ARCEMU_ASSERT(   at != AITYPE_PET);
 
 	m_AIType = at;
 	m_MovementType = mt;
@@ -176,7 +176,7 @@ AIInterface::~AIInterface()
 
 void AIInterface::Init(Unit *un, AIType at, MovementType mt, Unit *owner)
 {
-	ASSERT(at == AITYPE_PET || at == AITYPE_TOTEM);
+	Arcemu::Util::ARCEMU_ASSERT(   at == AITYPE_PET || at == AITYPE_TOTEM);
 
 	m_AIType = at;
 	m_MovementType = mt;
@@ -669,7 +669,7 @@ void AIInterface::Update(uint32 p_time)
 	float tdist;
 	if(m_AIType == AITYPE_TOTEM)
 	{
-		ASSERT(totemspell != 0);
+		Arcemu::Util::ARCEMU_ASSERT(   totemspell != 0);
 		if(p_time >= m_totemspelltimer)
 		{
 			Spell *pSpell = new Spell(m_Unit, totemspell, true, 0);
@@ -3413,7 +3413,7 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 
 void AIInterface::CastSpell(Unit* caster, SpellEntry *spellInfo, SpellCastTargets targets)
 {
-	ASSERT(spellInfo != NULL);
+	Arcemu::Util::ARCEMU_ASSERT(   spellInfo != NULL);
 	if( m_AIType != AITYPE_PET && disable_spell )
 		return;
 

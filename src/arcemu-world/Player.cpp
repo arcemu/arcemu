@@ -584,7 +584,7 @@ Player::~Player ( )
 	DuelingWith = NULL;
 
 	CleanupGossipMenu();
-	ASSERT(!IsInWorld());
+	Arcemu::Util::ARCEMU_ASSERT(   !IsInWorld());
 
 	// delete m_talenttree
 
@@ -3765,7 +3765,7 @@ void Player::_LoadQuestLogEntry(QueryResult * result)
 			questid = fields[1].GetUInt32();
 			quest = QuestStorage.LookupEntry(questid);
 			slot = fields[2].GetUInt32();
-			ASSERT(slot != -1);
+			Arcemu::Util::ARCEMU_ASSERT(   slot != -1);
 
 			// remove on next save if bad quest
 			if(!quest)
@@ -4084,7 +4084,7 @@ void Player::_ApplyItemMods(Item* item, int16 slot, bool apply, bool justdrokedo
 	if (slot >= INVENTORY_SLOT_BAG_END)
 		return;
 
-	ASSERT( item );
+	Arcemu::Util::ARCEMU_ASSERT(    item != NULL  );
 	ItemPrototype* proto = item->GetProto();
 
 	//fast check to skip mod applying if the item doesnt meat the requirements.
@@ -5209,7 +5209,7 @@ void Player::_SaveTutorials(QueryBuffer * buf)
 
 uint32 Player::GetTutorialInt(uint32 intId )
 {
-	ASSERT( intId < 8 );
+	Arcemu::Util::ARCEMU_ASSERT(    intId < 8 );
 	return m_Tutorials[intId];
 }
 
@@ -5218,7 +5218,7 @@ void Player::SetTutorialInt(uint32 intId, uint32 value)
 	if(intId >= 8)
 		return;
 
-	ASSERT( (intId < 8) );
+	Arcemu::Util::ARCEMU_ASSERT(    (intId < 8) );
 	m_Tutorials[intId] = value;
 	tutorialsDirty = true;
 }
@@ -6341,7 +6341,7 @@ void Player::EventRepeatSpell()
 	{
 		m_AutoShotAttackTimer = m_AutoShotDuration;
 
-		ASSERT(m_AutoShotSpell != NULL);
+		Arcemu::Util::ARCEMU_ASSERT(   m_AutoShotSpell != NULL);
 		Spell * sp = new Spell(this, m_AutoShotSpell, true, NULL);
 		SpellCastTargets tgt;
 		tgt.m_unitTarget = m_curSelection;
@@ -6495,7 +6495,7 @@ void Player::AreaExploredOrEventHappens( uint32 questId )
 void Player::Reset_Spells()
 {
 	PlayerCreateInfo *info = objmgr.GetPlayerCreateInfo(getRace(), getClass());
-	ASSERT(info);
+	Arcemu::Util::ARCEMU_ASSERT(   info != NULL );
 
 	std::list<uint32> spelllist;
 
@@ -6637,7 +6637,7 @@ void Player::CalcResistance(uint32 type)
 	int32 res;
 	int32 pos;
 	int32 neg;
-	ASSERT(type < 7);
+	Arcemu::Util::ARCEMU_ASSERT(   type < 7);
 	pos=(BaseResistance[type]*BaseResistanceModPctPos[type])/100;
 	neg=(BaseResistance[type]*BaseResistanceModPctNeg[type])/100;
 
@@ -7009,7 +7009,7 @@ void Player::RemoveSpellsFromLine(uint32 skill_line)
 void Player::CalcStat( uint32 type )
 {
 	int32 res;
-	ASSERT( type < 5 );
+	Arcemu::Util::ARCEMU_ASSERT(    type < 5 );
 
 	int32 pos = (int32)((int32)BaseStats[type] * (int32)StatModPctPos[type] ) / 100 + (int32)FlatStatModPos[type];
 	int32 neg = (int32)((int32)BaseStats[type] * (int32)StatModPctNeg[type] ) / 100 + (int32)FlatStatModNeg[type];
@@ -8037,7 +8037,7 @@ void Player::SendTradeUpdate()
 		{
 			count++;
 			ItemPrototype * pProto = pItem->GetProto();
-			ASSERT( pProto != 0 );
+			Arcemu::Util::ARCEMU_ASSERT(    pProto != 0 );
 
 			data << uint8( Index );
 
@@ -8355,7 +8355,7 @@ void Player::EventTeleportTaxi(uint32 mapid, float x, float y, float z)
 
 void Player::ApplyLevelInfo(LevelInfo* Info, uint32 Level)
 {
-	ASSERT(Info != NULL);
+	Arcemu::Util::ARCEMU_ASSERT(   Info != NULL);
 
 	// Apply level
 	uint32 PreviousLevel = getLevel();
@@ -10179,7 +10179,7 @@ void Player::_UpdateSkillFields()
 			continue;
 		}
 
-		ASSERT(f <= PLAYER_CHARACTER_POINTS1);
+		Arcemu::Util::ARCEMU_ASSERT(   f <= PLAYER_CHARACTER_POINTS1);
 		if(itr->second.Skill->type == SKILL_TYPE_PROFESSION)
 		{
 			SetUInt32Value(f++, itr->first | 0x10000);
@@ -10661,7 +10661,7 @@ void Player::save_ExploreData()
 		p += sprintf(&buffer[p], "%u,", m_uint32Values[PLAYER_EXPLORED_ZONES_1 + i]);
 	}
 
-	ASSERT(p < 2048);
+	Arcemu::Util::ARCEMU_ASSERT(   p < 2048);
 	CharacterDatabase.Execute("UPDATE characters SET exploration_data = '%s' WHERE guid = %u", buffer, m_uint32Values[OBJECT_FIELD_GUID]);
 }
 
@@ -10682,7 +10682,7 @@ void Player::save_Skills()
 			p += sprintf(&buffer[p], "%u;%u;%u;", itr->first, itr->second.CurrentValue, itr->second.MaximumValue);
 	}
 
-	ASSERT(p < 6000);
+	Arcemu::Util::ARCEMU_ASSERT(   p < 6000);
 	CharacterDatabase.Execute("UPDATE characters SET skills = '%s' WHERE guid = %u", buffer, m_uint32Values[OBJECT_FIELD_GUID]);
 }
 
@@ -10698,7 +10698,7 @@ void Player::save_Reputation()
 			iter->first, iter->second->flag, iter->second->baseStanding, iter->second->standing);
 	}
 
-	ASSERT(p < 10000);
+	Arcemu::Util::ARCEMU_ASSERT(   p < 10000);
 	CharacterDatabase.Execute("UPDATE characters SET reputation = '%s' WHERE guid = %u", buffer, m_uint32Values[OBJECT_FIELD_GUID]);
 }
 
@@ -10712,7 +10712,7 @@ void Player::save_Actions()
 		p += sprintf(&buffer[p], "%u,%u,%u,", m_specs[m_talentActiveSpec].mActions[i].Action, m_specs[m_talentActiveSpec].mActions[i].Misc, m_specs[m_talentActiveSpec].mActions[i].Type);
 	}
 
-	ASSERT(p < 2048);
+	Arcemu::Util::ARCEMU_ASSERT(   p < 2048);
 	CharacterDatabase.Execute("UPDATE characters SET actions = '%s' WHERE guid = %u", buffer, m_uint32Values[OBJECT_FIELD_GUID]);
 }
 
@@ -11168,7 +11168,7 @@ void Player::RemoveShapeShiftSpell(uint32 id)
 
 void Player::SendAuraUpdate(uint32 AuraSlot, bool RemoveAura)
 {
-	ASSERT(AuraSlot <= MAX_TOTAL_AURAS_END);
+	Arcemu::Util::ARCEMU_ASSERT(   AuraSlot <= MAX_TOTAL_AURAS_END);
 	Aura * VisualAura = m_auras[AuraSlot];
 	if(VisualAura == NULL)
 	{
@@ -12044,7 +12044,7 @@ uint32 Player::GetMaxPersonalRating()
 	uint32 maxrating = 0;
 	int i;
 
-	ASSERT(m_playerInfo != NULL);
+	Arcemu::Util::ARCEMU_ASSERT(   m_playerInfo != NULL);
 
 	for (i= 0; i<NUM_ARENA_TEAM_TYPES; i++)
 	{
@@ -12198,7 +12198,7 @@ void Player::SendAchievmentEarned( uint32 archiId, uint32 at_stamp )
 //wtf does this do ? How can i check the effect of this anyway ? Made this before SMSG_ACHIEVEMENT_EARNED :P
 void Player::ConvertRune(uint8 index, uint8 value)
 {
-	ASSERT(index < 6);
+	Arcemu::Util::ARCEMU_ASSERT(   index < 6);
 	m_runes[index] = value;
 	if( value >= RUNE_RECHARGE || GetSession() == NULL )
 		return;

@@ -909,7 +909,7 @@ void WorldSession::HandleLogoutCancelOpcode( WorldPacket & recv_data )
 void WorldSession::HandleZoneUpdateOpcode( WorldPacket & recv_data )
 {
 	uint32 newZone;
-	ASSERT(GetPlayer());
+	Arcemu::Util::ARCEMU_ASSERT(   _player != NULL );
 
 	recv_data >> newZone;
 
