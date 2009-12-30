@@ -845,7 +845,10 @@ void ObjectMgr::SaveGMTicket(GM_Ticket* ticket, QueryBuffer * buf)
     ss << ticket->guid;
     ss << ";";
 
-    CharacterDatabase.ExecuteNA( ss.str().c_str() );
+	if(buf == NULL)
+		CharacterDatabase.ExecuteNA(ss.str( ).c_str( ));
+	else
+		buf->AddQueryStr(ss.str());
 
     ss.rdbuf()->str("");
 
@@ -865,6 +868,7 @@ void ObjectMgr::SaveGMTicket(GM_Ticket* ticket, QueryBuffer * buf)
         ss << uint32( 1 );
     else
         ss << uint32( 0 );
+    ss << ",";
 
 	ss << ticket->assignedToPlayer << ", '";
 	ss << CharacterDatabase.EscapeString(ticket->comment) << "');";

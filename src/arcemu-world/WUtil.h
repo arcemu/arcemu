@@ -8,7 +8,7 @@ namespace Arcemu{
     public:
         SERVER_DECL static uint32 GUID_LOPART( uint64 GUID );
         SERVER_DECL static uint32 GUID_HIPART( uint64 GUID );
-		static void Arcemu::Util::ARCEMU_ASSERT(   bool condition );
+		static void ARCEMU_ASSERT(   bool condition );
     };
 }
 

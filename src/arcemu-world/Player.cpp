@@ -1968,10 +1968,22 @@ void Player::_SavePet(QueryBuffer * buf)
 
 	std::stringstream ss;
 
+    ss.rdbuf()->str("");
+
+    ss << "DELETE FROM playerpets WHERE ownerguid = ";
+    ss << GetLowGUID();
+    ss << ";";
+
+    if(buf == NULL)
+        CharacterDatabase.ExecuteNA( ss.str().c_str() );
+    else
+        buf->AddQueryStr( ss.str() );
+
 	for(std::map<uint32, PlayerPet*>::iterator itr = m_Pets.begin(); itr != m_Pets.end(); itr++)
 	{
 		ss.rdbuf()->str("");
-		ss << "INSERT INTO playerpets VALUES('"
+
+        ss << "INSERT INTO playerpets VALUES('"
 			<< GetLowGUID() << "','"
 			<< itr->second->number << "','"
 			<< itr->second->name << "','"

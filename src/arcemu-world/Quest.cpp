@@ -216,9 +216,21 @@ void QuestLogEntry::SaveToDB(QueryBuffer * buf)
 	if(!mDirty)
 		return;
 
-	CharacterDatabase.Execute("DELETE FROM questlog WHERE player_guid = %u AND quest_id = %u;", m_plr->GetLowGUID(), m_quest->id);
-
 	std::stringstream ss;
+
+    ss << "DELETE FROM questlog WHERE player_guid = ";
+    ss << m_plr->GetLowGUID();
+    ss << " AND quest_id = ";
+    ss << m_quest->id;
+    ss << ";";
+
+    if( buf == NULL )
+		CharacterDatabase.Execute( ss.str().c_str() );
+	else
+		buf->AddQueryStr(ss.str());
+
+    ss.rdbuf()->str("");
+
 	ss << "INSERT INTO questlog VALUES(";
 	ss << m_plr->GetLowGUID() << "," << m_quest->id << "," << m_slot << "," << m_time_left;
 	for(int i = 0; i < 4; ++i)
