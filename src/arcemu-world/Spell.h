@@ -1442,8 +1442,9 @@ typedef enum {
    //these are custom, feel free to move them further if targeting gets extended
    EFF_TARGET_CUSTOM_PARTY_INJURED_SINGLE				= 99,
    EFF_TARGET_CUSTOM_PARTY_INJURED_MULTI				= 100,
-   EFF_TARGET_LIST_LENGTH_MARKER						= 101,
-} SpellEffectTarget;
+   EFF_TARGET_CONE_IN_FRONT								= 104,
+   EFF_TARGET_LIST_LENGTH_MARKER						= 111,
+ } SpellEffectTarget;
 
 
 inline bool HasTargetType(SpellEntry *sp,uint32 ttype)
@@ -1478,7 +1479,8 @@ inline int GetAiTargetType(SpellEntry *sp)
 		HasTargetType(sp,EFF_TARGET_IN_FRONT_OF_CASTER) ||
 		HasTargetType(sp,EFF_TARGET_ALL_FRIENDLY_IN_AREA) ||
 		HasTargetType(sp,EFF_TARGET_PET_SUMMON_LOCATION) ||
-		HasTargetType(sp,EFF_TARGET_LOCATION_INFRONT_CASTER)
+		HasTargetType(sp,EFF_TARGET_LOCATION_INFRONT_CASTER) ||
+		HasTargetType(sp,EFF_TARGET_CONE_IN_FRONT)
 		)
 		return TTYPE_SOURCE;
 	if(

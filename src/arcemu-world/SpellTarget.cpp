@@ -124,6 +124,16 @@ pSpellTarget SpellTargetHandler[EFF_TARGET_LIST_LENGTH_MARKER] =
 	&Spell::SpellTargetNULL,					// 98
 	&Spell::SpellTargetNULL,					// 99
 	&Spell::SpellTargetNULL,					// 100
+	&Spell::SpellTargetNULL,					// 101
+	&Spell::SpellTargetNULL,					// 102
+	&Spell::SpellTargetNULL,					// 103
+	&Spell::SpellTargetInFrontOfCaster,			// 104
+	&Spell::SpellTargetNULL,					// 105
+	&Spell::SpellTargetNULL,					// 106
+	&Spell::SpellTargetNULL,					// 107
+	&Spell::SpellTargetNULL,					// 108
+	&Spell::SpellTargetNULL,					// 109
+	&Spell::SpellTargetNULL,					// 110
 	// all 81 > n spelltargettype's are from test spells
 };
 
