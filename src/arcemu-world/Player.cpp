@@ -9184,6 +9184,15 @@ void Player::CompleteLoading()
 
 	sInstanceMgr.BuildSavedInstancesForPlayer(this);
 	CombatStatus.UpdateFlag();
+	// add glyphs
+	for (uint8 i = 0; i < GLYPHS_COUNT; ++i)
+	{
+		GlyphPropertyEntry * glyph = dbcGlyphProperty.LookupEntryForced(m_specs[m_talentActiveSpec].glyphs[i]);
+		if(glyph == NULL)
+			continue;
+
+		CastSpell(this, glyph->SpellID, true);
+	}
 	//sEventMgr.AddEvent(this,&Player::SendAllAchievementData,EVENT_SEND_ACHIEVEMNTS_TO_PLAYER,ACHIEVEMENT_SEND_DELAY,1,0);
 	sEventMgr.AddEvent(static_cast< Unit* >(this),&Unit::UpdatePowerAmm,EVENT_SEND_PACKET_TO_PLAYER_AFTER_LOGIN,LOGIN_CIENT_SEND_DELAY,1,0);
 }
