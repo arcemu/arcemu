@@ -15,7 +15,9 @@ uint32 Arcemu::Util::GUID_LOPART( uint64 GUID ){
 
 void Arcemu::Util::ARCEMU_ASSERT(  bool condition){
 	if( !condition ){
-		std::cout << "Assertion failed at " << __FILE__ << " " <<  __LINE__ << std::endl;
-		abort();
+		std::cout << "Assertion failed. Please submit the callstack on forums(unless you are using a repack)."<< std::endl;
+
+		// bogus null function call to make sure we stop and make a core dump / crash dump
+		((void(*)())0)();
 	}
 }
