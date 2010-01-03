@@ -4048,7 +4048,7 @@ void Player::RemoveFromWorld()
 	{
 		if(m_SummonedObject->GetInstanceID() != GetInstanceID())
 		{
-			sEventMgr.AddEvent(m_SummonedObject, &Object::Delete, EVENT_GAMEOBJECT_EXPIRE, 100, 1,0);
+			sEventMgr.AddEvent(m_SummonedObject, &Object::Delete, EVENT_GAMEOBJECT_EXPIRE, 100, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT | EVENT_FLAG_DELETES_OBJECT);
 		}else
 		{
 			if(m_SummonedObject->GetTypeId() == TYPEID_PLAYER)
@@ -4976,7 +4976,7 @@ void Player::SpawnCorpseBones()
 		{
 			if(pCorpse->GetInstanceID() != GetInstanceID())
 			{
-				sEventMgr.AddEvent(pCorpse, &Corpse::SpawnBones, EVENT_CORPSE_SPAWN_BONES, 100, 1,0);
+				sEventMgr.AddEvent(pCorpse, &Corpse::SpawnBones, EVENT_CORPSE_SPAWN_BONES, 100, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 			}
 			else
 				pCorpse->SpawnBones();
@@ -6955,7 +6955,7 @@ void Player::TaxiStart(TaxiPath *path, uint32 modelid, uint32 start_node)
 	SendMessageToSet(&data, true);
 
 	sEventMgr.AddEvent(this, &Player::EventTaxiInterpolate,
-		EVENT_PLAYER_TAXI_INTERPOLATE, 900, 0,0);
+		EVENT_PLAYER_TAXI_INTERPOLATE, 900, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 
 	if( mapchangeid < 0 )
 	{
@@ -8150,8 +8150,8 @@ void Player::DuelCountdown()
 		SetDuelState( DUEL_STATE_STARTED );
 		DuelingWith->SetDuelState( DUEL_STATE_STARTED );
 
-		sEventMgr.AddEvent( this, &Player::DuelBoundaryTest, EVENT_PLAYER_DUEL_BOUNDARY_CHECK, 500, 0, 0 );
-		sEventMgr.AddEvent( DuelingWith, &Player::DuelBoundaryTest, EVENT_PLAYER_DUEL_BOUNDARY_CHECK, 500, 0, 0 );
+		sEventMgr.AddEvent( this, &Player::DuelBoundaryTest, EVENT_PLAYER_DUEL_BOUNDARY_CHECK, 500, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
+		sEventMgr.AddEvent( DuelingWith, &Player::DuelBoundaryTest, EVENT_PLAYER_DUEL_BOUNDARY_CHECK, 500, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
 	}
 }
 
@@ -9194,7 +9194,7 @@ void Player::CompleteLoading()
 		CastSpell(this, glyph->SpellID, true);
 	}
 	//sEventMgr.AddEvent(this,&Player::SendAllAchievementData,EVENT_SEND_ACHIEVEMNTS_TO_PLAYER,ACHIEVEMENT_SEND_DELAY,1,0);
-	sEventMgr.AddEvent(static_cast< Unit* >(this),&Unit::UpdatePowerAmm,EVENT_SEND_PACKET_TO_PLAYER_AFTER_LOGIN,LOGIN_CIENT_SEND_DELAY,1,0);
+	sEventMgr.AddEvent(static_cast< Unit* >(this),&Unit::UpdatePowerAmm,EVENT_SEND_PACKET_TO_PLAYER_AFTER_LOGIN,LOGIN_CIENT_SEND_DELAY,1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 }
 
 void Player::OnWorldPortAck()
@@ -12252,7 +12252,7 @@ uint32 Player::TakeRunes(uint8 type, uint32 count)
 		if(GetRune(i) == type)
 		{
 			ConvertRune(i, RUNE_RECHARGE);
-			sEventMgr.AddEvent( this, &Player::ConvertRune, i, baseRunes[i], EVENT_PLAYER_RUNE_REGEN + i, 10000, 1, 0 );
+			sEventMgr.AddEvent( this, &Player::ConvertRune, i, baseRunes[i], EVENT_PLAYER_RUNE_REGEN + i, 10000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
 			found++;
 		}
 	}

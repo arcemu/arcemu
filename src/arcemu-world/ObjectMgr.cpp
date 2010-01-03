@@ -733,7 +733,7 @@ void ObjectMgr::DelinkPlayerCorpses(Player *pOwner)
 	Corpse * c;
 	c=this->GetCorpseByOwner(pOwner->GetLowGUID());
 	if(!c)return;
-	sEventMgr.AddEvent(c, &Corpse::Delink, EVENT_CORPSE_SPAWN_BONES, 1, 1, 0);
+	sEventMgr.AddEvent(c, &Corpse::Delink, EVENT_CORPSE_SPAWN_BONES, 1, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 	CorpseAddEventDespawn(c);
 }
 
@@ -1747,7 +1747,7 @@ void ObjectMgr::CorpseAddEventDespawn(Corpse *pCorpse)
 	if(!pCorpse->IsInWorld())
 		delete pCorpse;
 	else
-		sEventMgr.AddEvent(pCorpse->GetMapMgr(), &MapMgr::EventCorpseDespawn, pCorpse->GetGUID(), EVENT_CORPSE_DESPAWN, 600000, 1,0);
+		sEventMgr.AddEvent(pCorpse->GetMapMgr(), &MapMgr::EventCorpseDespawn, pCorpse->GetGUID(), EVENT_CORPSE_DESPAWN, 600000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 }
 
 void ObjectMgr::DespawnCorpse(uint64 Guid)

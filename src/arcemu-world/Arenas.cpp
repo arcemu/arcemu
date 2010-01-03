@@ -420,7 +420,7 @@ void Arena::OnStart()
 	PlaySoundToAll(SOUND_BATTLEGROUND_BEGIN);
 
 	sEventMgr.RemoveEvents(this, EVENT_ARENA_SHADOW_SIGHT);
-	sEventMgr.AddEvent(((CBattleground*)this), &CBattleground::HookOnShadowSight, EVENT_ARENA_SHADOW_SIGHT, 90000, 1,0);
+	sEventMgr.AddEvent(((CBattleground*)this), &CBattleground::HookOnShadowSight, EVENT_ARENA_SHADOW_SIGHT, 90000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 }
 
 void Arena::UpdatePlayerCounts()
@@ -541,7 +541,7 @@ void Arena::Finish()
 	PlaySoundToAll(m_winningteam ? SOUND_ALLIANCEWINS : SOUND_HORDEWINS);
 
 	sEventMgr.RemoveEvents(this, EVENT_BATTLEGROUND_CLOSE);
-	sEventMgr.AddEvent(((CBattleground*)this), &CBattleground::Close, EVENT_BATTLEGROUND_CLOSE, 120000, 1,0);
+	sEventMgr.AddEvent(((CBattleground*)this), &CBattleground::Close, EVENT_BATTLEGROUND_CLOSE, 120000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 
 	for(int i = 0; i < 2; i++)
 	{

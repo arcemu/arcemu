@@ -297,8 +297,7 @@ void Creature::Update( uint32 p_time )
 void Creature::SafeDelete()
 {
 	sEventMgr.RemoveEvents(this);
-	//sEventMgr.AddEvent(World::getSingletonPtr(), &World::DeleteObject, ((Object*)this), EVENT_CREATURE_SAFE_DELETE, 1000, 1);
-	sEventMgr.AddEvent( this, &Creature::DeleteMe, EVENT_CREATURE_SAFE_DELETE, 2000, 1, EVENT_FLAG_DELETES_OBJECT );
+	sEventMgr.AddEvent( this, &Creature::DeleteMe, EVENT_CREATURE_SAFE_DELETE, 2000, 1, EVENT_FLAG_DELETES_OBJECT | EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
 }
 
 void Creature::DeleteMe()
@@ -1716,12 +1715,12 @@ void Creature::OnPushToWorld()
 
 		if(m_spawn->channel_target_creature)
 		{
-			sEventMgr.AddEvent(this, &Creature::ChannelLinkUpCreature, m_spawn->channel_target_creature, EVENT_CREATURE_CHANNEL_LINKUP, 1000, 5, 0);	// only 5 attempts
+			sEventMgr.AddEvent(this, &Creature::ChannelLinkUpCreature, m_spawn->channel_target_creature, EVENT_CREATURE_CHANNEL_LINKUP, 1000, 5, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);	// only 5 attempts
 		}
 
 		if(m_spawn->channel_target_go)
 		{
-			sEventMgr.AddEvent(this, &Creature::ChannelLinkUpGO, m_spawn->channel_target_go, EVENT_CREATURE_CHANNEL_LINKUP, 1000, 5, 0);	// only 5 attempts
+			sEventMgr.AddEvent(this, &Creature::ChannelLinkUpGO, m_spawn->channel_target_go, EVENT_CREATURE_CHANNEL_LINKUP, 1000, 5, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);	// only 5 attempts
 		}
 	}
 
@@ -1875,7 +1874,7 @@ void Creature::Despawn(uint32 delay, uint32 respawntime)
 {
 	if(delay)
 	{
-		sEventMgr.AddEvent(this, &Creature::Despawn, (uint32)0, respawntime, EVENT_CREATURE_RESPAWN, delay, 1,0);
+		sEventMgr.AddEvent(this, &Creature::Despawn, (uint32)0, respawntime, EVENT_CREATURE_RESPAWN, delay, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 		return;
 	}
 
@@ -1900,7 +1899,7 @@ void Creature::Despawn(uint32 delay, uint32 respawntime)
 		Arcemu::Util::ARCEMU_ASSERT(   pCell != NULL );
 		pCell->_respawnObjects.insert((Object*)this);
 		sEventMgr.RemoveEvents(this);
-		sEventMgr.AddEvent(m_mapMgr, &MapMgr::EventRespawnCreature, this, pCell, EVENT_CREATURE_RESPAWN, respawntime, 1, 0);
+		sEventMgr.AddEvent(m_mapMgr, &MapMgr::EventRespawnCreature, this, pCell, EVENT_CREATURE_RESPAWN, respawntime, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 		Unit::RemoveFromWorld(false);
 		m_position = m_spawnLocation;
 		m_respawnCell=pCell;

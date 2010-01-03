@@ -653,7 +653,7 @@ bool LootMgr::IsFishable(uint32 zoneid)
 LootRoll::LootRoll(uint32 timer, uint32 groupcount, uint64 guid, uint32 slotid, uint32 itemid, uint32 itemunk1, uint32 itemunk2, MapMgr * mgr) : EventableObject()
 {
 	_mgr = mgr;
-	sEventMgr.AddEvent(this, &LootRoll::Finalize, EVENT_LOOT_ROLL_FINALIZE, 60000, 1,0);
+	sEventMgr.AddEvent(this, &LootRoll::Finalize, EVENT_LOOT_ROLL_FINALIZE, 60000, 1, 0);
 	_groupcount = groupcount;
 	_guid = guid;
 	_slotid = slotid;

@@ -1622,7 +1622,7 @@ out:
 				p_caster->cannibalize = true;
 				p_caster->cannibalizeCount = 0;
 				sEventMgr.AddEvent(p_caster, &Player::EventCannibalize, uint32(7),
-					EVENT_CANNIBALIZE, 2000, 5,0);
+					EVENT_CANNIBALIZE, 2000, 5, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 				p_caster->SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_STATE_CANNIBALIZE);
 			}
 		}break;
@@ -3288,12 +3288,12 @@ void Spell::SpellEffectSummon(uint32 i)
 			if ( MiscValue == 31893 || MiscValue == 31894 || MiscValue == 31895 || MiscValue == 31896 || MiscValue == 31897 || MiscValue == 31883) //Light wells!
 			{
 				pCreature->CastSpell(pCreature, 59907, true);
-				sEventMgr.AddEvent(pCreature, &Creature::SafeDelete, EVENT_CREATURE_REMOVE_CORPSE, 180000, 1, 0);
+				sEventMgr.AddEvent(pCreature, &Creature::SafeDelete, EVENT_CREATURE_REMOVE_CORPSE, 180000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 				break;
 			}
 			pCreature->PushToWorld(u_caster->GetMapMgr());
 
-			sEventMgr.AddEvent(pCreature, &Creature::SafeDelete, EVENT_CREATURE_REMOVE_CORPSE, GetDuration(), 1, 0);
+			sEventMgr.AddEvent(pCreature, &Creature::SafeDelete, EVENT_CREATURE_REMOVE_CORPSE, GetDuration(), 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 		}break;
 	}
 }
@@ -4141,7 +4141,7 @@ void Spell::SpellEffectSummonWild(uint32 i)  // Summon Wild
 			p->m_factionDBC = dbcFaction.LookupEntry(p->m_faction->Faction);
 		p->PushToWorld(u_caster->GetMapMgr());
 		//make sure they will be desummoned (roxor)
-		sEventMgr.AddEvent(p, &Creature::SummonExpire, EVENT_SUMMON_EXPIRE, GetDuration(), 1,0);
+		sEventMgr.AddEvent(p, &Creature::SummonExpire, EVENT_SUMMON_EXPIRE, GetDuration(), 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 	}
 }
 
@@ -4357,7 +4357,7 @@ void Spell::SpellEffectSummonObject(uint32 i)
 			uint32 seconds = RandomUInt(17) + 2;
 			sEventMgr.AddEvent( go, &GameObject::FishHooked, static_cast< Player* >( m_caster ), EVENT_GAMEOBJECT_FISH_HOOKED, seconds * 1000, 1, 0 );
 		}
-		sEventMgr.AddEvent( go, &GameObject::EndFishing, static_cast< Player* >( m_caster ),false, EVENT_GAMEOBJECT_END_FISHING, 20000, 1, 0 );
+		sEventMgr.AddEvent( go, &GameObject::EndFishing, static_cast< Player* >( m_caster ),false, EVENT_GAMEOBJECT_END_FISHING, 20000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
 		p_caster->SetSummonedObject( go );
 	}
 	else
@@ -4386,7 +4386,7 @@ void Spell::SpellEffectSummonObject(uint32 i)
 		go->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 		go->SetUInt64Value(OBJECT_FIELD_CREATED_BY,m_caster->GetGUID());
 		go->PushToWorld(m_caster->GetMapMgr());
-		sEventMgr.AddEvent(go, &GameObject::ExpireAndDelete, EVENT_GAMEOBJECT_EXPIRE, GetDuration(), 1,0);
+		sEventMgr.AddEvent(go, &GameObject::ExpireAndDelete, EVENT_GAMEOBJECT_EXPIRE, GetDuration(), 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 		if ( entry == 17032 && p_caster) // this is a portal
 		{
 			// enable it for party only
@@ -4682,7 +4682,7 @@ void Spell::SpellEffectOpenLockItem(uint32 i)
 	if(gameObjTarget->GetMapMgr()->GetMapInfo()->type==INSTANCE_NULL)//don't close doors for instances
 		sEventMgr.AddEvent(gameObjTarget,&GameObject::EventCloseDoor, EVENT_GAMEOBJECT_DOOR_CLOSE,10000,1,0);
 
-	sEventMgr.AddEvent(gameObjTarget, &GameObject::Despawn, (uint32)0, (uint32)1, EVENT_GAMEOBJECT_ITEM_SPAWN, 6*60*1000, 1, 0);
+	sEventMgr.AddEvent(gameObjTarget, &GameObject::Despawn, (uint32)0, (uint32)1, EVENT_GAMEOBJECT_ITEM_SPAWN, 6*60*1000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 }
 
 void Spell::SpellEffectProficiency(uint32 i)
@@ -4772,7 +4772,7 @@ void Spell::SpellEffectSendEvent(uint32 i) //Send Event
 			pCreature->GetAIInterface()->taunt(p_caster, true);
 			pCreature->_setFaction();
 			pCreature->PushToWorld(p_caster->GetMapMgr());
-			sEventMgr.AddEvent(pCreature, &Creature::SafeDelete, EVENT_CREATURE_REMOVE_CORPSE,60000, 1, 0);
+			sEventMgr.AddEvent(pCreature, &Creature::SafeDelete, EVENT_CREATURE_REMOVE_CORPSE,60000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 		}break;
 
 		//Warlock: Summon Voidwalker Quest
@@ -4792,7 +4792,7 @@ void Spell::SpellEffectSendEvent(uint32 i) //Send Event
 			pCreature->GetAIInterface()->taunt(p_caster, true);
 			pCreature->_setFaction();
 			pCreature->PushToWorld(p_caster->GetMapMgr());
-			sEventMgr.AddEvent(pCreature, &Creature::SafeDelete, EVENT_CREATURE_REMOVE_CORPSE,60000, 1, 0);
+			sEventMgr.AddEvent(pCreature, &Creature::SafeDelete, EVENT_CREATURE_REMOVE_CORPSE,60000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 		}break;
 
 		//Warlock: Summon Felhunter Quest
@@ -4810,7 +4810,7 @@ void Spell::SpellEffectSendEvent(uint32 i) //Send Event
 			pCreature->GetAIInterface()->taunt(p_caster, true);
 			pCreature->_setFaction();
 			pCreature->PushToWorld(p_caster->GetMapMgr());
-			sEventMgr.AddEvent(pCreature, &Creature::SafeDelete, EVENT_CREATURE_REMOVE_CORPSE,60000, 1, 0);
+			sEventMgr.AddEvent(pCreature, &Creature::SafeDelete, EVENT_CREATURE_REMOVE_CORPSE,60000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 		}break;
 	}
 }
@@ -5145,7 +5145,7 @@ void Spell::SpellEffectSummonObjectWild(uint32 i)
 	GoSummon->PushToWorld(u_caster->GetMapMgr());
 	GoSummon->SetSummoned(u_caster);
 
-	sEventMgr.AddEvent(GoSummon, &GameObject::ExpireAndDelete, EVENT_GAMEOBJECT_EXPIRE, GetDuration(), 1,0);
+	sEventMgr.AddEvent(GoSummon, &GameObject::ExpireAndDelete, EVENT_GAMEOBJECT_EXPIRE, GetDuration(), 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 }
 
 void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
@@ -6103,7 +6103,7 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 	}
 
 	// Set up the deletion event. The totem needs to expire after a certain time, or upon its death.
-	sEventMgr.AddEvent(pTotem, &Creature::TotemExpire, EVENT_TOTEM_EXPIRE, GetDuration(), 1,0);
+	sEventMgr.AddEvent(pTotem, &Creature::TotemExpire, EVENT_TOTEM_EXPIRE, GetDuration(), 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 }
 
 void Spell::SpellEffectEnchantHeldItem( uint32 i )
@@ -6533,9 +6533,9 @@ void Spell::SpellEffectSummonObjectSlot(uint32 i)
 		GoSummon->invisibilityFlag = INVIS_FLAG_TRAP;
 		GoSummon->charges = 1;
 		GoSummon->checkrate = 1;
-		sEventMgr.AddEvent(GoSummon, &GameObject::TrapSearchTarget, EVENT_GAMEOBJECT_TRAP_SEARCH_TARGET, 100, 0,0);
+		sEventMgr.AddEvent(GoSummon, &GameObject::TrapSearchTarget, EVENT_GAMEOBJECT_TRAP_SEARCH_TARGET, 100, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 	}
-	sEventMgr.AddEvent(GoSummon, &GameObject::ExpireAndDelete, EVENT_GAMEOBJECT_EXPIRE, GetDuration(), 1,0);
+	sEventMgr.AddEvent(GoSummon, &GameObject::ExpireAndDelete, EVENT_GAMEOBJECT_EXPIRE, GetDuration(), 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 
 	GoSummon->PushToWorld(m_caster->GetMapMgr());
 	GoSummon->SetSummoned(u_caster);

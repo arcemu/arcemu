@@ -923,7 +923,7 @@ void Unit::GiveGroupXP(Unit *pVictim, Player *PlayerInGroup)
 			active_player_list[i]->SetFlag(UNIT_FIELD_AURASTATE,AURASTATE_FLAG_LASTKILLWITHHONOR);
 			if(!sEventMgr.HasEvent(active_player_list[i],EVENT_LASTKILLWITHHONOR_FLAG_EXPIRE))
 			{
-				sEventMgr.AddEvent((Unit*)active_player_list[i],&Unit::EventAurastateExpire,(uint32)AURASTATE_FLAG_LASTKILLWITHHONOR,EVENT_LASTKILLWITHHONOR_FLAG_EXPIRE,20000,1,0);
+				sEventMgr.AddEvent((Unit*)active_player_list[i],&Unit::EventAurastateExpire,(uint32)AURASTATE_FLAG_LASTKILLWITHHONOR,EVENT_LASTKILLWITHHONOR_FLAG_EXPIRE,20000,1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 			}
 			else
 			{
@@ -4394,7 +4394,7 @@ void Unit::smsg_AttackStop(Unit* pVictim)
 		{
 		m_cTimer = getMSTime() + 8000;
 		sEventMgr.RemoveEvents( this, EVENT_COMBAT_TIMER );
-			sEventMgr.AddEvent( this, &Unit::EventUpdateFlag, EVENT_COMBAT_TIMER, 8000, 1, 0 );
+			sEventMgr.AddEvent( this, &Unit::EventUpdateFlag, EVENT_COMBAT_TIMER, 8000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
 			if( pVictim->IsUnit() ) // there could be damage coming from objects/enviromental
 				sEventMgr.AddEvent( pVictim, &Unit::EventUpdateFlag, EVENT_COMBAT_TIMER, 8000, 1, 0 );		}
 		else
@@ -5437,7 +5437,7 @@ void Unit::EventAddEmote(EmoteType emote, uint32 time)
 {
 	m_oldEmote = GetUInt32Value(UNIT_NPC_EMOTESTATE);
 	SetUInt32Value(UNIT_NPC_EMOTESTATE,emote);
-	sEventMgr.AddEvent(this, &Creature::EmoteExpire, EVENT_UNIT_EMOTE, time, 1,0);
+	sEventMgr.AddEvent(this, &Creature::EmoteExpire, EVENT_UNIT_EMOTE, time, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 }
 
 void Unit::EmoteExpire()
@@ -6707,7 +6707,7 @@ Creature* Unit::create_guardian(uint32 guardian_entry,uint32 duration,float angl
 
 	p->PushToWorld( GetMapMgr() );
 
-	sEventMgr.AddEvent( p, &Creature::SummonExpire, EVENT_SUMMON_EXPIRE, duration, 1, 0 );
+	sEventMgr.AddEvent( p, &Creature::SummonExpire, EVENT_SUMMON_EXPIRE, duration, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
 
 	return p;
 }
@@ -7057,7 +7057,7 @@ void Unit::CombatStatusHandler_ResetPvPTimeout()
 	//this->SendChatMessage(
 	//	this->Emote( EMOTE_ONESHOT_SPELLCAST );
 	// yay for recursive mutexes
-	sEventMgr.AddEvent(this, &Unit::CombatStatusHandler_UpdatePvPTimeout, EVENT_ATTACK_TIMEOUT, 5000, 1, 0);
+	sEventMgr.AddEvent(this, &Unit::CombatStatusHandler_UpdatePvPTimeout, EVENT_ATTACK_TIMEOUT, 5000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 	m_lock.Release();
 }
 

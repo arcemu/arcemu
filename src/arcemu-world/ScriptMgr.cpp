@@ -571,7 +571,7 @@ void GameObjectAIScript::RemoveAIUpdateEvent()
 
 void GameObjectAIScript::RegisterAIUpdateEvent(uint32 frequency)
 {
-	sEventMgr.AddEvent(_gameobject, &GameObject::CallScriptUpdate, EVENT_SCRIPT_UPDATE_EVENT, frequency, 0,0);
+	sEventMgr.AddEvent(_gameobject, &GameObject::CallScriptUpdate, EVENT_SCRIPT_UPDATE_EVENT, frequency, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 }
 
 

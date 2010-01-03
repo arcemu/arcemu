@@ -185,7 +185,7 @@ void WarsongGulch::HookOnAreaTrigger(Player * plr, uint32 id)
 			m_homeFlags[plr->GetTeam() ? 0 : 1]->RemoveFromWorld(false);
 
 		// Add the Event to respawn the Flags
-		sEventMgr.AddEvent(this, &WarsongGulch::EventReturnFlags, EVENT_BATTLEGROUND_WSG_AUTO_RETURN_FLAG, 20000, 1, 0);
+		sEventMgr.AddEvent(this, &WarsongGulch::EventReturnFlags, EVENT_BATTLEGROUND_WSG_AUTO_RETURN_FLAG, 20000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 
 		/* give each player on that team bonus honor and reputation*/
 		uint32 honorToAdd = 2 * m_honorPerKill;
@@ -207,7 +207,7 @@ void WarsongGulch::HookOnAreaTrigger(Player * plr, uint32 id)
 			m_nextPvPUpdateTime = 0;
 
 			sEventMgr.RemoveEvents(this, EVENT_BATTLEGROUND_CLOSE);
-			sEventMgr.AddEvent(((CBattleground*)this), &CBattleground::Close, EVENT_BATTLEGROUND_CLOSE, 120000, 1,0);
+			sEventMgr.AddEvent(((CBattleground*)this), &CBattleground::Close, EVENT_BATTLEGROUND_CLOSE, 120000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 			/* add the marks of honor to all players */
 			SpellEntry * winner_spell = dbcSpell.LookupEntry(24951);
 			SpellEntry * loser_spell = dbcSpell.LookupEntry(24950);

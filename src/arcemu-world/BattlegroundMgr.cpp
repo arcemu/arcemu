@@ -902,7 +902,7 @@ CBattleground::CBattleground(MapMgr * mgr, uint32 id, uint32 levelgroup, uint32 
 	m_startTime = (uint32)UNIXTIME;
 	m_lastResurrect = (uint32)UNIXTIME;
 	m_invisGMs = 0;
-	sEventMgr.AddEvent(this, &CBattleground::EventResurrectPlayers, EVENT_BATTLEGROUND_QUEUE_UPDATE, 30000, 0,0);
+	sEventMgr.AddEvent(this, &CBattleground::EventResurrectPlayers, EVENT_BATTLEGROUND_QUEUE_UPDATE, 30000, 0,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 
 	/* create raid groups */
 	for(uint32 i = 0; i < 2; ++i)
@@ -1172,7 +1172,7 @@ void CBattleground::PortPlayer(Player * plr, bool skip_teleport /* = false*/)
 	if(!m_countdownStage)
 	{
 		m_countdownStage = 1;
-		sEventMgr.AddEvent(this, &CBattleground::EventCountdown, EVENT_BATTLEGROUND_COUNTDOWN, 30000, 0,0);
+		sEventMgr.AddEvent(this, &CBattleground::EventCountdown, EVENT_BATTLEGROUND_COUNTDOWN, 30000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 		sEventMgr.ModifyEventTimeLeft(this, EVENT_BATTLEGROUND_COUNTDOWN, 10000);
 	}
 
