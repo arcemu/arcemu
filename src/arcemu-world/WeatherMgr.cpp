@@ -170,6 +170,9 @@ WeatherInfo::WeatherInfo()
 	m_maxDensity = 0;
 	m_totalTime = 0;
 	m_zoneId = 0;
+    
+    // Weather updates run in WorldRunnable thread
+    m_holder = sEventMgr.GetEventHolder( WORLD_INSTANCE );
 }
 
 WeatherInfo::~WeatherInfo()

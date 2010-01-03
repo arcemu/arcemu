@@ -951,8 +951,9 @@ void WorldSession::HandleSetSelectionOpcode( WorldPacket & recv_data )
 	_player->SetTargetGUID(  guid);
 	if(guid == 0) // deselected target
 	{
-		_player->CombatStatusHandler_ResetPvPTimeout();
-		//_player->CombatStatus.ClearPrimaryAttackTarget();
+
+        if( _player->IsInWorld() )
+            _player->CombatStatusHandler_ResetPvPTimeout();
 	}
 }
 

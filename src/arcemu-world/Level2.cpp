@@ -199,7 +199,7 @@ bool ChatHandler::HandleDeleteCommand(const char* args, WorldSession *m_session)
 	}
 	unit->DeleteFromDB();
 
-	delete unit;
+	// delete unit;
 
 	return true;
 }

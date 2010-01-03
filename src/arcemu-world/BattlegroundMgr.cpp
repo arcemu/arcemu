@@ -58,7 +58,9 @@ CBattlegroundManager::CBattlegroundManager()
 :EventableObject()
 {
 	int i;
-	//dbcBattlemasterListStore.LookupEntry(
+
+    // Yes we will be running from WorldRunnable
+    m_holder = sEventMgr.GetEventHolder( WORLD_INSTANCE );
 
 	sEventMgr.AddEvent(this, &CBattlegroundManager::EventQueueUpdate, EVENT_BATTLEGROUND_QUEUE_UPDATE, 15000, 0,0);
 

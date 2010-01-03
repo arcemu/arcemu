@@ -4702,10 +4702,10 @@ void Unit::AddAura(Aura * aur)
 
 	// We add 500ms here to allow for the last tick in DoT spells. This is a dirty hack, but at least it doesn't crash like my other method.
 	// - Burlex
-	if(aur->GetDuration() > 0)
+	if( aur->GetDuration() > 0 )
 	{
-		sEventMgr.AddEvent(aur, &Aura::Remove, EVENT_AURA_REMOVE, aur->GetDuration() + 500, 1,
-			EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT | EVENT_FLAG_DELETES_OBJECT);
+        sEventMgr.AddEvent( this, &Unit::EventRemoveAura, aur->GetSpellId(), EVENT_AURA_REMOVE, aur->GetDuration() + 500, 1,
+            EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT | EVENT_FLAG_DELETES_OBJECT );
 	}
 
 	//have to hate these relocate events. They run in a separate thread :P
@@ -5415,11 +5415,13 @@ void Unit::OnRemoveInRangeObject(Object* pObj)
 				m_currentSpell->cancel();
 
         // Object::OnRemoveInRangeObject(pObj);   // this is commented for a reason, don't remove it! -dfighter
+        /*
         if(critterPet == pObj)
 		{
 			critterPet->SafeDelete();
 			critterPet = 0;
 		}
+        */
 	}
     else
     {

@@ -6304,7 +6304,6 @@ void Spell::SpellEffectSummonCritter(uint32 i)
 		if(u_caster->critterPet->GetCreatureInfo() && u_caster->critterPet->GetCreatureInfo()->Id == SummonCritterID)
 		{
 			u_caster->critterPet->RemoveFromWorld(false,true);
-			delete u_caster->critterPet;
 			u_caster->critterPet = NULL;
 			return;
 		}
@@ -6312,7 +6311,6 @@ void Spell::SpellEffectSummonCritter(uint32 i)
 		else
 		{
 			u_caster->critterPet->RemoveFromWorld(false,true);
-			delete u_caster->critterPet;
 			u_caster->critterPet = NULL;
 		}
 	}
@@ -6526,6 +6524,9 @@ void Spell::SpellEffectSummonObjectSlot(uint32 i)
 	GoSummon->SetUInt32Value(GAMEOBJECT_LEVEL, u_caster->getLevel());
 	GoSummon->SetUInt64Value(OBJECT_FIELD_CREATED_BY, m_caster->GetGUID());
 	GoSummon->SetInstanceID(m_caster->GetInstanceID());
+    
+    
+    GoSummon->PushToWorld(m_caster->GetMapMgr());
 
 	if(GoSummon->GetByte(GAMEOBJECT_BYTES_1, 1) == GAMEOBJECT_TYPE_TRAP)
 	{
@@ -6535,9 +6536,8 @@ void Spell::SpellEffectSummonObjectSlot(uint32 i)
 		GoSummon->checkrate = 1;
 		sEventMgr.AddEvent(GoSummon, &GameObject::TrapSearchTarget, EVENT_GAMEOBJECT_TRAP_SEARCH_TARGET, 100, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 	}
-	sEventMgr.AddEvent(GoSummon, &GameObject::ExpireAndDelete, EVENT_GAMEOBJECT_EXPIRE, GetDuration(), 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+    sEventMgr.AddEvent(GoSummon, &GameObject::ExpireAndDelete, EVENT_GAMEOBJECT_EXPIRE, GetDuration(), 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 
-	GoSummon->PushToWorld(m_caster->GetMapMgr());
 	GoSummon->SetSummoned(u_caster);
 	u_caster->m_ObjectSlots[slot] = GoSummon->GetUIdFromGUID();
 }

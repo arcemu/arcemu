@@ -708,9 +708,9 @@ void Pet::InitializeMe( bool first )
 		delete query;
 	}
 
+    PushToWorld( m_Owner->GetMapMgr() );
 	InitializeSpells();
-	PushToWorld( m_Owner->GetMapMgr() );
-
+	
 	if( first )
 	{
 		// Set up default actionbar
