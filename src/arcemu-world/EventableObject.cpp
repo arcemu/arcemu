@@ -35,14 +35,6 @@ EventableObject::~EventableObject()
 	m_events.clear();
 }
 
-//we virtually are destroying this object that means we will have no more events and we do not belong to any holder anymore
-void EventableObject::Virtual_Destructor()
-{
-	event_RemoveEvents();
-	m_holder = 0;
-	m_event_Instanceid = -1;
-}
-
 EventableObject::EventableObject()
 {
 	/* commented, these will be allocated when the first event is added. */

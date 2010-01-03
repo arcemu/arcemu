@@ -804,10 +804,6 @@ Aura::Aura( SpellEntry* proto, int32 duration, Object* caster, Unit* target, boo
 
 Aura::~Aura()
 {
-	// Call EventableObject virtual destructor
-	EventableObject::Virtual_Destructor();
-
-    // from virtual destructor
     sEventMgr.RemoveEvents( this );
 }
 
