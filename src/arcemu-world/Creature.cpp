@@ -321,7 +321,10 @@ void Creature::OnRemoveCorpse()
 
 		sLog.outDetail("Removing corpse of "I64FMT"...", GetGUID());
 
-			if((GetMapMgr()->GetMapInfo() && GetMapMgr()->GetMapInfo()->type == INSTANCE_RAID && this->GetProto() && this->GetProto()->boss) || m_noRespawn)
+		setDeathState(DEAD);
+		m_position = m_spawnLocation;
+
+			if((GetMapMgr()->GetMapInfo() && GetMapMgr()->GetMapInfo()->type == INSTANCE_RAID &&  proto != NULL && proto->boss) || m_noRespawn)
 			{
 				RemoveFromWorld(false, true);
 			}
@@ -332,15 +335,11 @@ void Creature::OnRemoveCorpse()
 				else
 					RemoveFromWorld(false, true);
 			}
-
-
-		setDeathState(DEAD);
-
-		m_position = m_spawnLocation;
 	}
 	else
 	{
 		// if we got here it's pretty bad
+		Arcemu::Util::ARCEMU_ASSERT( false );
 	}
 }
 
