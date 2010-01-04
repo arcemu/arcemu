@@ -3288,12 +3288,12 @@ void Spell::SpellEffectSummon(uint32 i)
 			if ( MiscValue == 31893 || MiscValue == 31894 || MiscValue == 31895 || MiscValue == 31896 || MiscValue == 31897 || MiscValue == 31883) //Light wells!
 			{
 				pCreature->CastSpell(pCreature, 59907, true);
-				sEventMgr.AddEvent(pCreature, &Creature::SafeDelete, EVENT_CREATURE_REMOVE_CORPSE, 180000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+				sEventMgr.AddEvent(pCreature, &Creature::RemoveFromWorld, false, true, EVENT_CREATURE_REMOVE_CORPSE, 180000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 				break;
 			}
 			pCreature->PushToWorld(u_caster->GetMapMgr());
 
-			sEventMgr.AddEvent(pCreature, &Creature::SafeDelete, EVENT_CREATURE_REMOVE_CORPSE, GetDuration(), 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+			sEventMgr.AddEvent(pCreature, &Creature::RemoveFromWorld, false, true, EVENT_CREATURE_REMOVE_CORPSE, GetDuration(), 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 		}break;
 	}
 }
@@ -4772,7 +4772,7 @@ void Spell::SpellEffectSendEvent(uint32 i) //Send Event
 			pCreature->GetAIInterface()->taunt(p_caster, true);
 			pCreature->_setFaction();
 			pCreature->PushToWorld(p_caster->GetMapMgr());
-			sEventMgr.AddEvent(pCreature, &Creature::SafeDelete, EVENT_CREATURE_REMOVE_CORPSE,60000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+			sEventMgr.AddEvent(pCreature, &Creature::RemoveFromWorld, false, true,  EVENT_CREATURE_REMOVE_CORPSE,60000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 		}break;
 
 		//Warlock: Summon Voidwalker Quest
@@ -4792,7 +4792,7 @@ void Spell::SpellEffectSendEvent(uint32 i) //Send Event
 			pCreature->GetAIInterface()->taunt(p_caster, true);
 			pCreature->_setFaction();
 			pCreature->PushToWorld(p_caster->GetMapMgr());
-			sEventMgr.AddEvent(pCreature, &Creature::SafeDelete, EVENT_CREATURE_REMOVE_CORPSE,60000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+			sEventMgr.AddEvent(pCreature, &Creature::RemoveFromWorld, false, true,  EVENT_CREATURE_REMOVE_CORPSE,60000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 		}break;
 
 		//Warlock: Summon Felhunter Quest
@@ -4810,7 +4810,7 @@ void Spell::SpellEffectSendEvent(uint32 i) //Send Event
 			pCreature->GetAIInterface()->taunt(p_caster, true);
 			pCreature->_setFaction();
 			pCreature->PushToWorld(p_caster->GetMapMgr());
-			sEventMgr.AddEvent(pCreature, &Creature::SafeDelete, EVENT_CREATURE_REMOVE_CORPSE,60000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+			sEventMgr.AddEvent(pCreature, &Creature::RemoveFromWorld, false, true,  EVENT_CREATURE_REMOVE_CORPSE,60000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 		}break;
 	}
 }

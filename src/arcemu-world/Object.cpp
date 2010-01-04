@@ -179,11 +179,7 @@ Object::~Object( )
 	if(m_objectTypeId != TYPEID_ITEM)
 		Arcemu::Util::ARCEMU_ASSERT(   !m_inQueue);
 
-	if (this->IsInWorld() && m_objectTypeId != TYPEID_ITEM && m_objectTypeId != TYPEID_CONTAINER)
-	{
-		this->RemoveFromWorld(false);
-		this->ClearInRangeSet();
-	}
+	Arcemu::Util::ARCEMU_ASSERT( !IsInWorld() );
 
 	// for linux
 	m_instanceId = -1;

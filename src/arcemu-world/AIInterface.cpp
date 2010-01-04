@@ -2107,7 +2107,11 @@ bool AIInterface::FindFriends(float dist)
 			}
 			else
 			{
-				guard->SafeDelete();
+				if( guard->IsInWorld() )
+					guard->RemoveFromWorld( false, true);
+				else
+					guard->SafeDelete();
+
 				return result;
 			}
 			
