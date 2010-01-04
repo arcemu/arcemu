@@ -716,15 +716,15 @@ void AuctionHouse::SendAuctionList(Player * plr, WorldPacket * packet)
 			continue;
 
 		// rarity
-		if(rarityCheck != -1 && rarityCheck != (int32)proto->Quality)
+		if(rarityCheck != -1 && rarityCheck > (int32)proto->Quality)
 			continue;
 
 		// level range check - lower boundary
-		if(levelRange1 && proto->ItemLevel < levelRange1)
+		if(levelRange1 && proto->RequiredLevel < levelRange1)
 			continue;
 
 		// level range check - high boundary
-		if(levelRange2 && proto->ItemLevel > levelRange2)
+		if(levelRange2 && proto->RequiredLevel > levelRange2)
 			continue;
 
 		// usable check - this will hurt too :(
@@ -744,6 +744,9 @@ void AuctionHouse::SendAuctionList(Player * plr, WorldPacket * packet)
 				continue;
 
 			if(proto->Class == 2 && proto->SubClass && !(plr->GetWeaponProficiency()&(((uint32)(1))<<proto->SubClass)))
+				continue;
+
+			if(proto->RequiredSkill && (!plr->_HasSkillLine(proto->RequiredSkill) || proto->RequiredSkillRank > plr->_GetSkillLineCurrent(proto->RequiredSkill, true)))
 				continue;
 		}
 

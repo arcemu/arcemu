@@ -705,10 +705,10 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 			pTrainer->RequiredClass == Plr->getClass() &&   // correct class
 			pCreature->getLevel() > 10 &&				   // creature level
 			pTrainer->TrainerType != TRAINER_TYPE_PET &&  // Pet Trainers do not respec hunter talents
-			Plr->getLevel() > 10 )						  // player level
+			Plr->getLevel() >= 10 )						  // player level
 		{
 			Menu->AddItem(0, Plr->GetSession()->LocalizedWorldSrv(22), 11);
-			if(Plr->getLevel() > 40 && Plr->m_talentSpecsCount < 2)
+			if(Plr->getLevel() >= 40 && Plr->m_talentSpecsCount < 2)
 				Menu->AddItem(0, "Learn about Dual Talent Specialization.", 15);
 		}
 	

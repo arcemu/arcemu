@@ -3733,7 +3733,7 @@ void Player::SetPersistentInstanceId(uint32 mapId, uint32 difficulty, uint32 ins
 			(*itr).second = instanceId;
 	}
 	m_playerInfo->savedInstanceIdsLock.Release();
-    CharacterDatabase.Execute("DELETE FROM instanceids WHERE instanceid = %u;", instanceId );
+	CharacterDatabase.Execute("DELETE FROM instanceids WHERE playerguid = %u AND mapid = %u AND mode = %u;", m_playerInfo->guid, mapId, difficulty );
 	CharacterDatabase.Execute("INSERT INTO instanceids (playerguid, mapid, mode, instanceid) VALUES ( %u, %u, %u, %u )", m_playerInfo->guid, mapId, difficulty, instanceId);
 }
 
