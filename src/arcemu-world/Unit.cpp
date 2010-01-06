@@ -7660,7 +7660,6 @@ void Unit::RemoveFieldSummon()
 		if (summon)
 		{
 			summon->RemoveFromWorld(false,true);
-			summon->SafeDelete();
 		}
 		SetSummonedUnitGUID(  0 );
 	}
