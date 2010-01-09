@@ -259,9 +259,20 @@ struct SERVER_DECL TimedEvent
 	void IncRef() { InterlockedIncrement(&ref); }
 #else
 
-	/* burlex: if anyone knows how to do the equivalent of InterlockedIncrement/Decrement on linux feel free
-	   to change this, I couldn't find the atomic functions anymore though :*( */
-
+#if defined( __GNUC__ ) && ( defined( __i386__  ) || defined( __ia64__ ) )
+	// These are GNU specific atomic operators, they only work on certain platforms
+	// those x86 and x64 surely supports them, no idea about others
+	void IncRef(){ __sync_add_and_fetch( &ref, 1 ); }
+	
+	void DecRef(){ 
+		__sync_add_and_fetch( &ref, -1 ); 
+		
+		if( ref == 0 ){
+			delete cb;
+			delete this;
+		}
+	}
+#else
 	void IncRef() { ++ref; }
     
 	void DecRef()
@@ -273,6 +284,7 @@ struct SERVER_DECL TimedEvent
 			 delete this;
 		}
 	}
+#endif
 #endif
 
 };
