@@ -3933,7 +3933,7 @@ bool ChatHandler::HandleNPCLootCommand(const char* args, WorldSession* m_session
 		return false;
 	}
 
-	QueryResult* _result = WorldDatabase.Query("SELECT itemid, percentchance, heroicpercentchance, mincount, maxcount FROM loot_creatures WHERE entryid=%u;", pCreature->GetEntry());
+	QueryResult* _result = WorldDatabase.Query("SELECT itemid, normal10percentchance, heroic10percentchance, normal25percentchance, heroic25percentchance, mincount, maxcount FROM loot_creatures WHERE entryid=%u;", pCreature->GetEntry());
 	if( _result != NULL )
 	{
 		Field* _field;
@@ -3958,7 +3958,7 @@ bool ChatHandler::HandleNPCLootCommand(const char* args, WorldSession* m_session
 				continue;
 			}
 			++numFound;
-			ss << _field[1].GetFloat() << "%c (Heroic " << _field[2].GetFloat() << "%c): ";
+			ss << "(N10 " << _field[1].GetFloat() << "%%) (N25 " << _field[3].GetFloat() << "%%) (H10 " << _field[2].GetFloat() << "%%) (H25 " << _field[4].GetFloat() << "%%): ";
 
 			switch( proto->Quality )
 			{
@@ -3992,7 +3992,7 @@ bool ChatHandler::HandleNPCLootCommand(const char* args, WorldSession* m_session
 			}
 
 			ss << "|" << color.c_str() << "|Hitem:" << proto->ItemId << ":0:0:0:0:0:0:0|h[" << proto->Name1;
-			ss << "]|h|r (" << _field[3].GetUInt32() << "-" << _field[4].GetUInt32() << ")";
+			ss << "]|h|r (" << _field[5].GetUInt32() << "-" << _field[6].GetUInt32() << ")";
 			SystemMessage( m_session, ss.str().c_str(), '%', '%' );
 		} while( _result->NextRow() && (numFound <= 25) );
 		delete _result;
