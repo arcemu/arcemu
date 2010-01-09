@@ -309,8 +309,8 @@ void Creature::DeleteMe()
 {
 	if(IsInWorld())
 		RemoveFromWorld(false, true);
-
-	delete this;
+    else
+        SafeDelete();
 }
 
 void Creature::OnRemoveCorpse()
