@@ -2060,10 +2060,8 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
             // If we have summons then let's remove them first
 			pTotem->RemoveAllGuardians();
 
-            if( pTotem->IsInWorld() )
-                pTotem->RemoveFromWorld( false, true );
-            else
-                pTotem->SafeDelete();
+            pTotem->DeleteMe();
+
             return;
         }
 

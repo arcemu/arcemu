@@ -274,11 +274,7 @@ void Creature::Update( uint32 p_time )
 	Unit::Update( p_time );
 	if(IsTotem() && IsDead())
 	{
-		if( IsInWorld() )
-			RemoveFromWorld( false, true );
-		else
-			SafeDelete();
-
+        DeleteMe();
 		return;
 	}
 
@@ -371,8 +367,8 @@ void Creature::OnRespawn(MapMgr * m)
 		}
 		if(skip)
 		{
-			this->m_noRespawn = true;
-			this->DeleteMe();
+			m_noRespawn = true;
+			DeleteMe();
 			return;
 		}
 	}
@@ -1152,10 +1148,7 @@ void Creature::TotemExpire()
 	if(pOwner != NULL)
 		DestroyForPlayer(pOwner); //make sure the client knows it's gone...
 
-	if( IsInWorld() )
-		RemoveFromWorld( false, true );
-	else
-		SafeDelete();
+    DeleteMe();
 }
 
 void Creature::FormationLinkUp(uint32 SqlId)
@@ -1868,10 +1861,7 @@ void Creature::AISpellUpdate()
 // this is used for guardians. They are non respawnable creatures linked to a player
 void Creature::SummonExpire()
 {
-	if( IsInWorld() )
-		RemoveFromWorld(false, true);
-	else
-		SafeDelete();
+    DeleteMe();
 }
 
 void Creature::Despawn(uint32 delay, uint32 respawntime)

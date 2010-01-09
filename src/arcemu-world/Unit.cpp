@@ -7974,14 +7974,13 @@ void Unit::RemoveAllGuardians( bool remove_from_world )
 	std::set< Creature* >::iterator itr = m_Guardians.begin();
 	while( itr != m_Guardians.end() )
 	{
-		(*itr)->SetOwner( NULL );
+        Creature *c = *itr;
+
+		c->SetOwner( NULL );
+
 		if( remove_from_world )
-		{
-			if( (*itr)->IsInWorld() )
-				(*itr)->RemoveFromWorld( false, true );
-			else
-				(*itr)->SafeDelete();
-		}
+            c->DeleteMe();
+
 		m_Guardians.erase( itr++ );
 	}
 }
