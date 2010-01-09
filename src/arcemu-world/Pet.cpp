@@ -815,11 +815,8 @@ void Pet::PetSafeDelete()
 	if( IsInWorld() )
 	{
 		RemoveFromWorld( false, false );
-	}
-
-	sEventMgr.RemoveEvents( this ); // to avoid crash of double delete
-	delete this;					// destructs pet -> creature -> unit...
-	//this = NULL;
+	}else
+        SafeDelete();
 }
 
 void Pet::DelayedRemove( bool bTime, bool bDeath )

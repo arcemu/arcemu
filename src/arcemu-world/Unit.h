@@ -1199,7 +1199,6 @@ public:
 	void EmoteExpire();
 	void setEmoteState(uint8 emote) { m_emoteState = emote; };
 	uint32 GetOldEmote() { return m_oldEmote; }
-	void EventSummonPetExpire();
 	void EventAurastateExpire(uint32 aurastateflag){RemoveFlag(UNIT_FIELD_AURASTATE,aurastateflag);} //hmm this looks like so not necessary :S
 	void EventHealthChangeSinceLastUpdate();
 

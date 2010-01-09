@@ -768,6 +768,7 @@ void Creature::RemoveFromWorld( bool addrespawnevent, bool free_guid )
 		if( IsPet() )
 		{
 			Unit::RemoveFromWorld( true );
+            SafeDelete();
 			return;
 		}
 		

@@ -5867,35 +5867,6 @@ bool Unit::HasVisialPosAurasOfNameHashWithCaster(uint32 namehash, Unit * caster)
 	return false;
 }
 
-void Unit::EventSummonPetExpire()
-{
-	std::set< Creature* >::iterator itr = m_Guardians.begin();
-	for( ; itr != m_Guardians.end(); ++itr )
-	{
-		if( (*itr)->GetEntry() == 7915 ) //Goblin Bomb
-		{
-			SpellEntry *spInfo = dbcSpell.LookupEntryForced( 13259 );
-			if( spInfo == NULL )
-				return;
-
-			Spell * sp = new Spell( (*itr), spInfo, true, NULL );
-			if( sp != NULL )
-			{
-				SpellCastTargets tgt;
-				tgt.m_unitTarget = (*itr)->GetGUID();
-				sp->prepare( &tgt );
-			}
-		}
-		else
-		{
-			(*itr)->RemoveFromWorld( false, true );
-			delete (*itr);
-			m_Guardians.erase( itr );
-		}
-	}
-	sEventMgr.RemoveEvents( this, EVENT_SUMMON_PET_EXPIRE );
-}
-
 uint8 Unit::CastSpell(Unit* Target, SpellEntry* Sp, bool triggered)
 {
 	if( Sp == NULL )
