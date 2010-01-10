@@ -248,15 +248,14 @@ struct SERVER_DECL TimedEvent
 #ifdef WIN32
 	void DecRef()
 	{
-		InterlockedDecrement(&ref);
-		if(ref == 0)
+		if( InterlockedDecrement( &ref ) == 0 )
 		{
 			delete cb;
 			delete this;
 		}
 	}
 
-	void IncRef() { InterlockedIncrement(&ref); }
+	void IncRef() { InterlockedIncrement( &ref ); }
 #else
 
 #if defined( __GNUC__ ) && ( defined( __i386__  ) || defined( __ia64__ ) )
@@ -265,9 +264,7 @@ struct SERVER_DECL TimedEvent
 	void IncRef(){ __sync_add_and_fetch( &ref, 1 ); }
 	
 	void DecRef(){ 
-		__sync_add_and_fetch( &ref, -1 ); 
-		
-		if( ref == 0 ){
+		if( __sync_add_and_fetch( &ref, -1 ) == 0 ){
 			delete cb;
 			delete this;
 		}
