@@ -3537,13 +3537,13 @@ void Object::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
 void Object::RemoveInRangeObject( Object *pObj ){
     Arcemu::Util::ARCEMU_ASSERT(    pObj != NULL );    
  
-    OnRemoveInRangeObject( pObj );
-    
     if( pObj->IsPlayer() ){
         Arcemu::Util::ARCEMU_ASSERT(    m_inRangePlayers.erase( pObj ) == 1 );
     }
     
     Arcemu::Util::ARCEMU_ASSERT(    m_objectsInRange.erase( pObj ) == 1 );
+
+    OnRemoveInRangeObject( pObj );
 }
 
 void Object::RemoveSelfFromInrangeSets(){

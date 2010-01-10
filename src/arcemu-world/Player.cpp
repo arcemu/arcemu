@@ -6010,18 +6010,21 @@ void Player::OnRemoveInRangeObject(Object* pObj)
 			static_cast< Creature* >( p )->SafeDelete();
 	}
 
-	if( m_Summon && pObj == m_Summon )
-		DismissActivePet();
-
-    if( pObj->GetGUID() == GetSummonedUnitGUID() )
-		RemoveFieldSummon();
-
 	if(pObj->IsUnit())
 	{
 		for(uint32 x = 0; x < NUM_SPELL_TYPE_INDEX; ++x)
 			if(m_spellIndexTypeTargets[x] == pObj->GetGUID())
 				m_spellIndexTypeTargets[x] = 0;
 	}
+
+    // We've just gone out of range of our pet :(
+    if( m_Summon && pObj == m_Summon ){
+		DismissActivePet();
+        return;
+    }
+
+    if( pObj->GetGUID() == GetSummonedUnitGUID() )
+		RemoveFieldSummon();
 }
 
 void Player::ClearInRangeSet()
