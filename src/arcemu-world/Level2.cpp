@@ -193,6 +193,7 @@ bool ChatHandler::HandleDeleteCommand(const char* args, WorldSession *m_session)
 						}
 				}
 				delete unit->m_spawn;
+                unit->m_spawn = NULL;
 			}
 		}
 		unit->RemoveFromWorld(false,true);
