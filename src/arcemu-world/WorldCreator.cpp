@@ -986,9 +986,8 @@ bool InstanceMgr::_DeleteInstance(Instance * in, bool ForcePlayersOut)
 
 	// delete the instance pointer.
 	delete in;
-	in = NULL;
 
-	m_mapLock.Release();
+    m_mapLock.Release();
 	
 	return true;
 }

@@ -1378,6 +1378,7 @@ bool MapMgr::Do()
 		{
 			pInstance->m_mapMgr = NULL;
 			sInstanceMgr._DeleteInstance(pInstance, true);
+            pInstance = NULL;
 		}
 		else
 		{
