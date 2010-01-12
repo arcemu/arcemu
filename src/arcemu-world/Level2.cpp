@@ -171,7 +171,8 @@ bool ChatHandler::HandleDeleteCommand(const char* args, WorldSession *m_session)
 		return true;
 	}
 	sGMLog.writefromsession(m_session, "used npc delete, sqlid %u, creature %s, pos %f %f %f", unit->GetSQL_id(), unit->GetCreatureInfo() ? unit->GetCreatureInfo()->Name : "wtfbbqhax", unit->GetPositionX(), unit->GetPositionY(), unit->GetPositionZ());
-	BlueSystemMessage(m_session, "Deleted creature ID %u", unit->spawnid);
+    
+    unit->DeleteFromDB();
 
 	if(unit->IsInWorld())
 	{
@@ -198,9 +199,8 @@ bool ChatHandler::HandleDeleteCommand(const char* args, WorldSession *m_session)
 		}
 		unit->RemoveFromWorld(false,true);
 	}
-	unit->DeleteFromDB();
 
-	// delete unit;
+	BlueSystemMessage(m_session, "Creature deleted");
 
 	return true;
 }
