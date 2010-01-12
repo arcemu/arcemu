@@ -57,7 +57,6 @@ GameObject::GameObject(uint64 guid)
 	m_deleted = false;
 	usage_remaining = 1;
 	m_respawnCell= NULL;
-	m_battleground = NULL;
 	m_rotation = 0;
 
 	m_overrides = 0;
@@ -89,15 +88,6 @@ GameObject::~GameObject()
 		for(int i = 0; i < 4; i++)
 			if (m_summoner->m_ObjectSlots[i] == GetLowGUID())
 				m_summoner->m_ObjectSlots[i] = 0;
-
-	if( m_battleground != NULL && m_battleground->GetType() == BATTLEGROUND_ARATHI_BASIN )
-	{
-		if( bannerslot >= 0 && static_cast<ArathiBasin*>(m_battleground)->m_controlPoints[bannerslot] == this )
-			static_cast<ArathiBasin*>(m_battleground)->m_controlPoints[bannerslot] = NULL;
-
-		if( bannerauraslot >= 0 && static_cast<ArathiBasin*>(m_battleground)->m_controlPointAuras[bannerauraslot] == this )
-			static_cast<ArathiBasin*>(m_battleground)->m_controlPointAuras[bannerauraslot] = NULL;
-	}
 }
 
 bool GameObject::CreateFromProto(uint32 entry,uint32 mapid, float x, float y, float z, float ang, float r0, float r1, float r2, float r3, uint32 overrides)

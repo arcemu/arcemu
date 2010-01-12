@@ -275,7 +275,6 @@ public:
 	Unit* m_summoner;
 	int8 bannerslot;
 	int8 bannerauraslot;
-	CBattleground * m_battleground;
 
 	void CallScriptUpdate();
    

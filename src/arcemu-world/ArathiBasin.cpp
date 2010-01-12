@@ -480,14 +480,12 @@ ArathiBasin::~ArathiBasin()
 		// buffs may not be spawned, so delete them if they're not
 		if(m_buffs[i] != NULL)
 		{
-			m_buffs[i]->m_battleground = NULL;
 			if( !m_buffs[i]->IsInWorld() )
 				delete m_buffs[i];
 		}
 
 		if(m_controlPoints[i] != NULL)
 		{
-			m_controlPoints[i]->m_battleground = NULL;
 			if( !m_controlPoints[i]->IsInWorld() )
 			{
 				delete m_controlPoints[i];
@@ -497,7 +495,6 @@ ArathiBasin::~ArathiBasin()
 
 		if(m_controlPointAuras[i] != NULL)
 		{
-			m_controlPointAuras[i]->m_battleground = NULL;
 			if( !m_controlPointAuras[i]->IsInWorld() )
 			{
 				delete m_controlPointAuras[i];
@@ -516,7 +513,6 @@ ArathiBasin::~ArathiBasin()
 	{
 		if((*itr) != NULL)
 		{
-			(*itr)->m_battleground = NULL;
 			if( !(*itr)->IsInWorld() )
 				delete (*itr);
 		}

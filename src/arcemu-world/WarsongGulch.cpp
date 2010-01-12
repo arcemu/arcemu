@@ -94,7 +94,6 @@ WarsongGulch::~WarsongGulch()
 	{
 		if((*itr) != NULL)
 		{
-			(*itr)->m_battleground = NULL;
 			if( !(*itr)->IsInWorld() )
 				delete (*itr);
 		}

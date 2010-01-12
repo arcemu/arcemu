@@ -81,7 +81,6 @@ Arena::~Arena()
 	{
 		if((*itr) != NULL)
 		{
-			(*itr)->m_battleground = NULL;
 			if( !(*itr)->IsInWorld() )
 				delete (*itr);
 		}
