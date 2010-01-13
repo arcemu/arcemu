@@ -5893,6 +5893,11 @@ void Aura::SpellAuraSchoolAbsorb(bool apply)
 	else
 	{
 		Absorb *ab = NULL;
+        std::set< Absorb* > aset;
+        aset.clear();
+
+        //this crap here tends to double delete so we collect the pointers into a set instead of deleting
+        //and then when we are done we delete
 		for( uint8 x = 0; x < SCHOOL_COUNT; x++ )
 		{
 			if( mod->m_miscValue & (((uint32)1) << x ) )
@@ -5903,12 +5908,17 @@ void Aura::SpellAuraSchoolAbsorb(bool apply)
 					{
 						ab = (*i);
 						m_target->Absorbs[x].erase(i);
-						delete ab;
+                        aset.insert( ab );
 						break;
 					}
 				}
 			}
 		}
+        
+        for( std::set< Absorb* >::iterator itr = aset.begin(); itr != aset.end(); ++itr )
+            delete *itr;
+        
+        aset.clear();
 	}
 }
 
