@@ -1131,15 +1131,7 @@ void Creature::TotemExpire()
 		if(GetUInt32Value(UNIT_CREATED_BY_SPELL) == 6495) // sentry totem
 			pOwner->RemoveAura(6495);
 		totemOwner->m_TotemSlots[totemSlot] = 0;
-
-        std::set< Creature* >::iterator itr;
-
-        for( itr = m_Guardians.begin(); itr != m_Guardians.end(); ++itr ){
-            Creature *c = (*itr);
-
-            pOwner->RemoveGuardianRef( c );
-        }
-	}
+    }
 
 	totemSlot = -1;
 	totemOwner = NULL;

@@ -6670,7 +6670,6 @@ Creature* Unit::create_guardian(uint32 guardian_entry,uint32 duration,float angl
 	{
 		Player* totem_owner = static_cast< Creature* >( this )->GetTotemOwner();
 		p->SetOwner( static_cast< Unit* >( totem_owner ) );
-		totem_owner->AddGuardianRef( p );
 	}
 	else
 	{
