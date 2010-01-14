@@ -1781,8 +1781,8 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 				if(!pVictim->HasAura(44441))
 					pVictim->CastSpell(pVictim->GetGUID(), 44441, true);
 			}
-			else if(pVictim->HasAura(44441))
-				pVictim->RemoveAllAuraById(44441);
+			else
+				pVictim->RemoveAllAuraById( 44441 );
 		}
 		
 		plr = NULL;

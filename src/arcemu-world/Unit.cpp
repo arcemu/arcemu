@@ -2625,8 +2625,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 				case 16886: // druid - Nature's Grace
 					{
 						// Remove aura if it exists so it gets reapplied
-						if (HasAura(16886))
-							RemoveAura(16886);
+						RemoveAura( 16886 );
 					}break;
 				case 38395:
 					{
@@ -2914,7 +2913,7 @@ void Unit::RegeneratePower(bool isinterrupted)
 				if(!CombatStatus.IsInCombat())
 				{
 					m_P_regenTimer = 3000;
-					if (static_cast< Player* >( this )->HasAura(12296))
+					if( HasAura( 12296 ) )
 					{
 						static_cast< Player* >( this )->LooseRage(20);
 					}
@@ -2923,7 +2922,7 @@ void Unit::RegeneratePower(bool isinterrupted)
 				}
 				else
 				{
-					if (static_cast< Player* >( this )->HasAura(12296))
+					if( HasAura( 12296 ) )
 					{
 						m_P_regenTimer = 3000;
 						static_cast< Player* >( this )->LooseRage(-10);
@@ -7876,8 +7875,7 @@ void Unit::RemoveReflect( uint32 spellid, bool apply )
 					if( member == NULL )
 						continue;
 
-					if( member->HasAura(59725) )
-						member->RemoveAura(59725);
+					member->RemoveAura( 59725 );
 				}
 			}
 			pGroup->Unlock();

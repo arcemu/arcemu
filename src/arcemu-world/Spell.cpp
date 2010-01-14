@@ -1516,21 +1516,15 @@ void Spell::cast(bool check)
 			}
 
 			if( GetProto()->NameHash == SPELL_HASH_HOLY_LIGHT || GetProto()->NameHash == SPELL_HASH_FLASH_OF_LIGHT)
-			{
-               if( p_caster->HasAura( 53672 ) )                   
-				   p_caster->RemoveAura(53672);
-
-               if( p_caster->HasAura( 54149 ) )
-                   p_caster->RemoveAura(54149);
+			{                   
+				p_caster->RemoveAura( 53672 );
+				p_caster->RemoveAura( 54149 );
 			}
 
 			if( p_caster->HasAurasWithNameHash(SPELL_HASH_ARCANE_POTENCY) && GetProto()->c_is_flags == SPELL_FLAG_IS_DAMAGING )
-			{
-               if( p_caster->HasAura( 57529 ) )                   
-				   p_caster->RemoveAura(57529);
-
-               if( p_caster->HasAura( 57531 ) )
-                   p_caster->RemoveAura(57531);
+			{                   
+				p_caster->RemoveAura( 57529 );
+				p_caster->RemoveAura( 57531 );
 			}
 
 			if( p_caster->IsStealth() && !hasAttributeEx(ATTRIBUTESEX_NOT_BREAK_STEALTH)
@@ -2114,8 +2108,8 @@ void Spell::finish(bool successful)
 
 		if(	GetProto()->NameHash == SPELL_HASH_LIGHTNING_BOLT || GetProto()->NameHash == SPELL_HASH_CHAIN_LIGHTNING )
 		{
-			if(p_caster->HasAura(53817)) //Maelstrom Weapon
-				p_caster->RemoveAllAuras(53817, u_caster->GetGUID());
+			//Maelstrom Weapon
+			p_caster->RemoveAllAuras( 53817, u_caster->GetGUID() );
 		}
 	}
 
@@ -5370,22 +5364,21 @@ void Spell::Heal( int32 amount, bool ForceCrit )
 		{
 			if( m_spellInfo->NameHash == SPELL_HASH_FLASH_HEAL || m_spellInfo->NameHash == SPELL_HASH_BINDING_HEAL || m_spellInfo->NameHash == SPELL_HASH_GREATER_HEAL )
 			{
-				if( p_caster->HasAura( 34754 ) )
-					p_caster->RemoveAura( 34754, p_caster->GetGUID() );
+				p_caster->RemoveAura( 34754, p_caster->GetGUID() );
 			}
 
 			if( m_spellInfo->NameHash == SPELL_HASH_LESSER_HEALING_WAVE || m_spellInfo->NameHash == SPELL_HASH_HEALING_WAVE )
 			{
-				if( p_caster->HasAura( 53390 ) ) //Tidal Waves
-					p_caster->RemoveAura( 53390, p_caster->GetGUID() );
+				//Tidal Waves
+				p_caster->RemoveAura( 53390, p_caster->GetGUID() );
 			}
 
 			if( m_spellInfo->NameHash == SPELL_HASH_LESSER_HEALING_WAVE || 
 				m_spellInfo->NameHash == SPELL_HASH_HEALING_WAVE || 
 				m_spellInfo->NameHash == SPELL_HASH_CHAIN_HEAL )
 			{
-				if( p_caster->HasAura( 53817 )) //Maelstrom Weapon
-					p_caster->RemoveAllAuras( 53817, p_caster->GetGUID() );
+				//Maelstrom Weapon
+				p_caster->RemoveAllAuras( 53817, p_caster->GetGUID() );
 			}
 		}
 

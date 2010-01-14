@@ -262,7 +262,7 @@ void WorldSession::HandleSpellClick(WorldPacket& recvPacket)
 	if( target_unit->GetEntry()  == 29929 )
 		cast_spell_id = 55531; // Mechano-Hog
 
-	if( target_unit->HasAura(59907) )
+	if( target_unit->RemoveAura( 59907 ) )
 	{
 		if( target_unit->GetEntry()  == 31897 )
 			cast_spell_id = 7001; // Lightwell Rank 1
@@ -279,7 +279,6 @@ void WorldSession::HandleSpellClick(WorldPacket& recvPacket)
 
 		target_unit->CastSpell(_player, cast_spell_id, true);
 
-		target_unit->RemoveAura(59907);
 		if( !target_unit->HasAura(59907) )
 			if(target_unit->IsCreature())
 				static_cast<Creature*>(target_unit)->Despawn(0,0);
