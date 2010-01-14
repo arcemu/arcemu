@@ -161,7 +161,7 @@ void WorldSocket::UpdateQueuedPackets()
 		default:
 			{
 				/* kill everything in the buffer */
-				while( (pck == _queue.Pop()) != NULL )
+				while( (pck == _queue.Pop()) != 0 )
 				{
 					delete pck;
 				}

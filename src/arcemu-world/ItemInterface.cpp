@@ -271,10 +271,12 @@ AddItemResult ItemInterface::m_AddItem(Item *item, int8 ContainerSlot, int16 slo
 				m_pItems[(int)slot] = item;
 
 				if(item->GetProto()->Bonding == ITEM_BIND_ON_PICKUP)
+				{
 					if(item->GetProto()->Flags & ITEM_FLAG_ACCOUNTBOUND) // don't "Soulbind" account-bound items
 						item->AccountBind();
 					else
 						item->SoulBind();
+				}
 
 				if( m_pOwner->IsInWorld() && !item->IsInWorld())
 				{
@@ -4038,10 +4040,12 @@ bool ItemInterface::AddItemById( uint32 itemid, uint32 count, int32 randomprop )
 			return false;
 
 		if( it->Bonding == ITEM_BIND_ON_PICKUP )
+		{
 			if( it->Flags & ITEM_FLAG_ACCOUNTBOUND ) // don't "Soulbind" account-bound items
 				item->AccountBind();
 			else
 				item->SoulBind();
+		}
 		
 		if( randomprop != 0 )
 		{

@@ -777,9 +777,9 @@ void Guild::RemoveGuildMember(PlayerInfo * pMember, WorldSession * pClient)
 	{
 		int RDiff = pMember->guildRank->iId - pClient->GetPlayer()->getPlayerInfo()->guildRank->iId;
 
-		if(pClient &&
-			!pClient->GetPlayer()->getPlayerInfo()->guildRank->CanPerformCommand(GR_RIGHT_REMOVE) &&
-			pClient->GetPlayer()->getPlayerInfo() != pMember || RDiff <= 0 && pClient->GetPlayer()->getPlayerInfo() != pMember)
+		if(	(!pClient->GetPlayer()->getPlayerInfo()->guildRank->CanPerformCommand(GR_RIGHT_REMOVE) 
+				&& pClient->GetPlayer()->getPlayerInfo() != pMember )
+			|| (RDiff <= 0 && pClient->GetPlayer()->getPlayerInfo() != pMember) )
 		{
 			Guild::SendGuildCommandResult(pClient, GUILD_CREATE_S, "", GUILD_PERMISSIONS);
 			return;
@@ -1414,7 +1414,7 @@ void Guild::DepositMoney(WorldSession * pClient, uint32 uAmount)
 
 	// broadcast guild event telling everyone the new balance
 	char buf[20];
-	snprintf(buf, 20, I64FMT, (uint64)m_bankBalance);
+	snprintf(buf, 20, I64FMT, m_bankBalance);
 	LogGuildEvent(GUILD_EVENT_SETNEWBALANCE, 1, buf);
 
 	// log it!
@@ -1479,7 +1479,7 @@ void Guild::SpendMoney(uint32 uAmount)
 
 	// notify everyone with the new balance
 	char buf[20];
-	snprintf(buf, 20, I64FMT, (uint64)m_bankBalance);
+	snprintf(buf, 20, I64FMT, m_bankBalance);
 	LogGuildEvent(GUILD_EVENT_SETNEWBALANCE, 1, buf);
 }
 void Guild::SendGuildBankLog(WorldSession * pClient, uint8 iSlot)

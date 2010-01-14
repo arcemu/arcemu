@@ -425,13 +425,13 @@ bool HandleReloadConsoleCommand(BaseConsole * pConsole, int argc, const char *ar
 	if (ret == 0)
 	{
 		pConsole->Write( "Database reload failed.\r\n" );
-		snprintf(str, 256, "%sDatabase reload failed.", MSG_COLOR_LIGHTRED);
+		snprintf(str, 200, "%sDatabase reload failed.", MSG_COLOR_LIGHTRED);
 	}
 	else
 	{
 		uint32 timediff = (unsigned int)(getMSTime() - mstime);
 		pConsole->Write( "Database reload completed in %u ms.\r\n", timediff );
-		snprintf( str, 256, "%sDatabase reload completed in %u ms.", MSG_COLOR_LIGHTBLUE, timediff );
+		snprintf( str, 200, "%sDatabase reload completed in %u ms.", MSG_COLOR_LIGHTBLUE, timediff );
 	}
 	sWorld.SendWorldText( str, 0 );
 

@@ -265,9 +265,13 @@ bool QuestLogEntry::LoadFromDB(Field *fields)
 	{
 		m_mobcount[i] = fields[f].GetUInt32();	f++;
 		if(GetQuest()->required_mobtype[i] == QUEST_MOB_TYPE_CREATURE)
+		{
 			CALL_QUESTSCRIPT_EVENT(this, OnCreatureKill)(GetQuest()->required_mob[i], m_plr, this);
+		}
 		else
+		{
 			CALL_QUESTSCRIPT_EVENT(this, OnGameObjectActivate)(GetQuest()->required_mob[i], m_plr, this);
+		}
 	}
 
     completed = fields[f].GetUInt32();

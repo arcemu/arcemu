@@ -3010,10 +3010,12 @@ void Spell::HandleAddAura(uint64 guid)
 	if(Target->IsPlayer() && p_caster && p_caster != static_cast< Player* >(Target))
 	{
         if(static_cast< Player* >(Target)->IsPvPFlagged() )
+		{
             if( p_caster->IsPlayer() && !p_caster->IsPvPFlagged() )
                 static_cast< Player* >( p_caster )->PvPToggle();
-            else
+			else
                 p_caster->SetPvPFlag();
+		}
 	}
 
 	// remove any auras with same type
@@ -3024,7 +3026,7 @@ void Spell::HandleAddAura(uint64 guid)
 
 	uint32 spellid = 0;
 
-	if( GetProto()->MechanicsType == 25 && GetProto()->Id != 25771 || GetProto()->Id == 31884 ) // Cast spell Forbearance
+	if( ( GetProto()->MechanicsType == 25 && GetProto()->Id != 25771 ) || GetProto()->Id == 31884 ) // Cast spell Forbearance
 	{
 		if( GetProto()->Id != 31884 )
 			spellid = 25771;
@@ -4211,7 +4213,7 @@ uint8 Spell::CanCast(bool tolerate)
 				}break;
 				case 27907: // Disciplinary Rod
 				{
-					if(!target->IsCreature() || target->GetEntry() != 15945 && target->GetEntry() != 15941 ) // 'Apprentice Meledor' and 'Apprentice Ralen'
+					if(!target->IsCreature() || ( target->GetEntry() != 15945 && target->GetEntry() != 15941 ) ) // 'Apprentice Meledor' and 'Apprentice Ralen'
 						return SPELL_FAILED_BAD_TARGETS;
 				}break;
 				case 19938: // Awaken Peon (Foreman's Blackjack)
@@ -5307,10 +5309,12 @@ void Spell::Heal( int32 amount, bool ForceCrit )
 	{
 		// Healing a flagged target will flag you.
 		if( playerTarget->IsPvPFlagged() )
+		{
             if( !p_caster->IsPvPFlagged() )
                 p_caster->PvPToggle();
             else
                 p_caster->SetPvPFlag();
+		}
 	}
 
 	//Make it critical

@@ -899,9 +899,9 @@ void Group::SaveToDB()
 		ss << "0,0,0,0,0,";
 
 	ss << (uint32)UNIXTIME << ",'";
-	for(int i= 0; i<NUM_MAPS; i++)
+	for(uint32 i= 0; i<NUM_MAPS; i++)
 	{
-		for(int j= 0; j<NUM_INSTANCE_MODES; j++)
+		for(uint32 j= 0; j<NUM_INSTANCE_MODES; j++)
 		{
 			if(m_instanceIds[i][j] > 0)
 			{

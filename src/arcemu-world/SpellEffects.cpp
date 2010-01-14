@@ -7020,10 +7020,12 @@ void Spell::SpellEffectSpellSteal( uint32 i )
 	if(unitTarget->IsPlayer() && p_caster && p_caster != static_cast< Player* >(unitTarget))
 	{
 		if(static_cast< Player* >(unitTarget)->IsPvPFlagged())
+		{
 			if(p_caster->IsPlayer())
 				static_cast< Player* >( p_caster )->PvPToggle();
 			else
 				p_caster->SetPvPFlag();
+		}
 	}
 
 	Aura *aur;

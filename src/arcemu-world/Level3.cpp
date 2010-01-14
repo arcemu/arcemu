@@ -1208,10 +1208,12 @@ bool ChatHandler::HandleAddItemSetCommand(const char* args, WorldSession* m_sess
 		Item *itm = objmgr.CreateItem((*itr)->ItemId, m_session->GetPlayer());
 		if(!itm) continue;
 		if(itm->GetProto()->Bonding == ITEM_BIND_ON_PICKUP)
+		{
 			if(itm->GetProto()->Flags & ITEM_FLAG_ACCOUNTBOUND) // don't "Soulbind" account-bound items
 				itm->AccountBind();
 			else
-			itm->SoulBind();
+				itm->SoulBind();
+		}
 
 		if(!chr->GetItemInterface()->AddItemToFreeSlot(itm))
 		{
@@ -1235,10 +1237,12 @@ bool ChatHandler::HandleCastTimeCheatCommand(const char* args, WorldSession* m_s
 		return true;
 
 	if (!*args)
+	{
 		if (plyr->CastTimeCheat)
 			args = "off";
 		else
 			args = "on";
+	}
 
 	if (stricmp(args, "on") == 0)
 	{
@@ -1267,10 +1271,12 @@ bool ChatHandler::HandleCooldownCheatCommand(const char* args, WorldSession* m_s
 		return true;
 
 	if(!*args)
+	{
 		if (plyr->CooldownCheat)
 			args = "off";
 		else
 			args = "on";
+	}
 
 	if(stricmp(args, "on") == 0)
 	{
@@ -1303,10 +1309,12 @@ bool ChatHandler::HandleGodModeCommand(const char* args, WorldSession* m_session
 		return true;
 
 	if(!*args)
+	{
 		if (plyr->GodModeCheat)
 			args = "off";
 		else
 			args = "on";
+	}
 
 	if(stricmp(args, "on") == 0)
 	{
@@ -1335,10 +1343,12 @@ bool ChatHandler::HandlePowerCheatCommand(const char* args, WorldSession* m_sess
 		return true;
 
 	if(!*args)
+	{
 		if (plyr->PowerCheat)
 			args = "off";
 		else
 			args = "on";
+	}
 
 	if(stricmp(args, "on") == 0)
 	{
@@ -1402,10 +1412,12 @@ bool ChatHandler::HandleFlyCommand(const char* args, WorldSession* m_session)
 		chr = m_session->GetPlayer();
 
 	if(!*args)
+	{
 		if (chr->FlyCheat)
 			args = "off";
 		else
 			args = "on";
+	}
 
 	if(stricmp(args, "on") == 0)
 	{
@@ -2251,10 +2263,12 @@ bool ChatHandler::HandleAuraStackCheatCommand(const char* args, WorldSession * m
 		return true;
 
 	if(!*args)
+	{
 		if (plyr->AuraStackCheat)
 			args = "off";
 		else
 			args = "on";
+	}
 
 	if(stricmp(args, "on") == 0)
 	{
@@ -2283,10 +2297,12 @@ bool ChatHandler::HandleTriggerpassCheatCommand(const char* args, WorldSession *
 		return true;
 
 	if(!*args)
+	{
 		if (plyr->TriggerpassCheat)
 			args = "off";
 		else
 			args = "on";
+	}
 
 	if(stricmp(args, "on") == 0)
 	{

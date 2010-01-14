@@ -965,7 +965,7 @@ void AIInterface::_UpdateTargets()
 					}
 				}
 
-				if( ai_t->event_GetCurrentInstanceId() != m_Unit->event_GetCurrentInstanceId() || !ai_t->isAlive() || (!instance && m_Unit->GetDistanceSq(ai_t) >= 6400.0f || !(ai_t->m_phase & m_Unit->m_phase))) {
+				if( ai_t->event_GetCurrentInstanceId() != m_Unit->event_GetCurrentInstanceId() || !ai_t->isAlive() || ( (!instance && m_Unit->GetDistanceSq(ai_t) >= 6400.0f ) || !(ai_t->m_phase & m_Unit->m_phase))) {
 					m_aiTargets.erase( it2 );
 				}
 			}
@@ -999,7 +999,7 @@ void AIInterface::_UpdateTargets()
 					AttackReaction(target, 1, 0);
 			}
 		}
-		else if( m_aiTargets.size() == 0 && (m_AIType == AITYPE_PET && (m_Unit->IsPet() && static_cast<Pet*>(m_Unit)->GetPetState() == PET_STATE_AGGRESSIVE) || (!m_Unit->IsPet() && disable_melee == false ) ) )
+		else if( m_aiTargets.size() == 0 && ( ( m_AIType == AITYPE_PET && (m_Unit->IsPet() && static_cast<Pet*>(m_Unit)->GetPetState() == PET_STATE_AGGRESSIVE) ) || (!m_Unit->IsPet() && disable_melee == false ) ) )
 		{
 			 Unit* target = FindTarget();
 			 if( target )

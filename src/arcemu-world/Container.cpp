@@ -152,10 +152,12 @@ bool Container::AddItem(int16 slot, Item *item)
 	item->SetOwner(m_owner);
 
 	if(item->GetProto()->Bonding == ITEM_BIND_ON_PICKUP)
+	{
 		if(item->GetProto()->Flags & ITEM_FLAG_ACCOUNTBOUND) // don't "Soulbind" account-bound items
 			item->AccountBind();
 		else
 			item->SoulBind();
+	}
 
 	SetUInt64Value(CONTAINER_FIELD_SLOT_1  + (slot*2), item->GetGUID());
 

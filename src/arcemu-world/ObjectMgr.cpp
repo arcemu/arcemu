@@ -198,7 +198,7 @@ ObjectMgr::~ObjectMgr()
 		delete (*itr);
 
 	Log.Notice("ObjectMgr", "Deleting Boss Information...");
-	for(int i= 0; i<NUM_MAPS; i++)
+	for(uint32 i= 0; i<NUM_MAPS; i++)
 	{
 		if(this->m_InstanceBossInfoMap[i] != NULL)
 		{

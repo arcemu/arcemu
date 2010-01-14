@@ -4264,7 +4264,7 @@ void Aura::SpellAuraModIncreaseSpeed(bool apply)
 
 void Aura::SpellAuraModIncreaseMountedSpeed(bool apply)
 {
-	if( GetSpellId() == 68768 || GetSpellId() == 68769 && p_target != NULL )
+	if( ( GetSpellId() == 68768 || GetSpellId() == 68769 ) && p_target != NULL )
 	{
 		int32 newspeed = 0;
 
@@ -9341,7 +9341,7 @@ void Aura::HandleAuraControlVehicle(bool apply)
 		data3 << float( 1.86570000648 ); // some orientation or not ?
 		data3 << uint32( 0 );
 		data3 << uint8( 0 );
-		pcaster->GetSession()->SendPacket(&data3);/**/
+		pcaster->GetSession()->SendPacket(&data3);*/
 
 		//the pet spells. These should be fetched from some dbc i guess
 		/*{

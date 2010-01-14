@@ -1202,7 +1202,7 @@ bool Creature::isattackable(CreatureSpawn *spawn){
 }
 
 uint8 get_byte(uint32 buffer, uint32 index){
-	uint32 mask = ~0ul;
+	uint32 mask = uint32(~0ul);
 	if(index > sizeof(uint32)-1)
 		return 0;
 

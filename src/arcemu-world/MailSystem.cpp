@@ -374,7 +374,7 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 		}
 	}
 
-	if(msg.money != 0 || msg.cod != 0 || !msg.items.size() && player->acct != _player->GetSession()->GetAccountId())
+	if(msg.money != 0 || msg.cod != 0 || ( !msg.items.size() && player->acct != _player->GetSession()->GetAccountId()) )
 	{
 		if(!sMailSystem.MailOption(MAIL_FLAG_DISABLE_HOUR_DELAY_FOR_ITEMS))
 			msg.delivery_time += 3600;  // 1hr

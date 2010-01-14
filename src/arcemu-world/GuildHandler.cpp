@@ -862,7 +862,7 @@ void WorldSession::HandleCharterOffer( WorldPacket & recv_data )
 		return;
 	}
 
-	if(pTarget == 0 || pTarget->GetTeam() != _player->GetTeam() || pTarget == _player && !sWorld.interfaction_guild)
+	if(pTarget == 0 || pTarget->GetTeam() != _player->GetTeam() || ( pTarget == _player && !sWorld.interfaction_guild ) )
 	{
 		SendNotification(_player->GetSession()->LocalizedWorldSrv(77));
 		return;

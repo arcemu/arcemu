@@ -533,7 +533,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 				SystemMessage("Your chat message was blocked by a server-side filter.");
 				return;
 			}
-			if( _player->m_bg != NULL && _player->GetTeam() != NULL )
+			if( _player->m_bg != NULL && _player->GetTeam() != 0 )
 			{
 				data = sChatHandler.FillMessageData( type, lang, msg.c_str(), _player->GetGUID() );
 				_player->m_bg->DistributePacketToTeam( data, _player->GetTeam() );

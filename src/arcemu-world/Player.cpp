@@ -5040,8 +5040,7 @@ void Player::RepopAtGraveyard(float ox, float oy, float oz, uint32 mapid)
 		while(!itr->AtEnd())
 		{
 			GraveyardTeleport *pGrave = itr->Get();
-			if((pGrave->MapId == mapid && pGrave->FactionID == GetTeam() || pGrave->MapId == mapid && pGrave->FactionID == 3)
-				|| (pGrave->MapId == mapid && pGrave->FactionID == GetTeam() || pGrave->MapId == mapid && pGrave->FactionID == 3))
+			if((pGrave->MapId == mapid && pGrave->FactionID == GetTeam()) || (pGrave->MapId == mapid && pGrave->FactionID == 3))
 			{
 				temp.ChangeCoords(pGrave->X, pGrave->Y, pGrave->Z);
 				dist = src.DistanceSq(temp);
@@ -6537,7 +6536,7 @@ void Player::ResetDualWield2H()
 	Item *mainhand = GetItemInterface()->GetInventoryItem( INVENTORY_SLOT_NOT_SET, EQUIPMENT_SLOT_MAINHAND );
 	Item *offhand = GetItemInterface()->GetInventoryItem( INVENTORY_SLOT_NOT_SET, EQUIPMENT_SLOT_OFFHAND );
 	if( offhand && ( offhand->GetProto()->InventoryType == INVTYPE_2HWEAPON ||
-		mainhand && mainhand->GetProto()->InventoryType == INVTYPE_2HWEAPON ) )
+		( mainhand && mainhand->GetProto()->InventoryType == INVTYPE_2HWEAPON ) ) )
 	{
 		// we need to de-equip this
 		offhand = GetItemInterface()->SafeRemoveAndRetreiveItemFromSlot( INVENTORY_SLOT_NOT_SET, EQUIPMENT_SLOT_OFFHAND, false );
@@ -8713,7 +8712,7 @@ void Player::UpdatePvPArea()
 		if(at->ZoneId)
 		{
 			AreaTable * at2 = dbcArea.LookupEntryForced(at->ZoneId);
-			if(at2 && (at2->category == AREAC_ALLIANCE_TERRITORY && GetTeam() == 0 || at2->category == AREAC_HORDE_TERRITORY && GetTeam() == 1))
+			if(at2 && ((at2->category == AREAC_ALLIANCE_TERRITORY && GetTeam() == 0) || (at2->category == AREAC_HORDE_TERRITORY && GetTeam() == 1)))
 			{
 				if(!HasFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP_TOGGLE) && !m_pvpTimer)
 				{
@@ -8725,7 +8724,7 @@ void Player::UpdatePvPArea()
 			//enemy territory check
 			if(at2 && ( at2->AreaFlags & AREA_CITY_AREA || at2->AreaFlags & AREA_CITY ) )
 			{
-				if(at2->category == AREAC_ALLIANCE_TERRITORY && GetTeam() == 1 || at2->category == AREAC_HORDE_TERRITORY && GetTeam() == 0)
+				if((at2->category == AREAC_ALLIANCE_TERRITORY && GetTeam() == 1) || (at2->category == AREAC_HORDE_TERRITORY && GetTeam() == 0))
 				{
 					if(!IsPvPFlagged())
 						SetPvPFlag();
@@ -8850,7 +8849,7 @@ void Player::PvPToggle()
                 AreaTable * at = dbcArea.LookupEntryForced(m_AreaID);
                 if(at && ( at->AreaFlags & AREA_CITY_AREA || at->AreaFlags & AREA_CITY ) )
                 {
-                    if( at->category == AREAC_ALLIANCE_TERRITORY && GetTeam() == 1 || at->category == AREAC_HORDE_TERRITORY && GetTeam() == 0 )
+                    if( ( at->category == AREAC_ALLIANCE_TERRITORY && GetTeam() == 1 ) || ( at->category == AREAC_HORDE_TERRITORY && GetTeam() == 0 ) )
                     {
                     }
                     else
@@ -8932,7 +8931,7 @@ void Player::PvPToggle()
             if(at->ZoneId)
             {
                 AreaTable * at2 = dbcArea.LookupEntryForced(at->ZoneId);
-                if(at2 && (at2->category == AREAC_ALLIANCE_TERRITORY && GetTeam() == 0 || at2->category == AREAC_HORDE_TERRITORY && GetTeam() == 1))
+                if(at2 && ((at2->category == AREAC_ALLIANCE_TERRITORY && GetTeam() == 0) || (at2->category == AREAC_HORDE_TERRITORY && GetTeam() == 1)))
                 {
                     if(m_pvpTimer > 0)
 	                {
@@ -12851,7 +12850,7 @@ void Player::LearnTalent(uint32 talentid, uint32 rank, bool isPreviewed ){
 				}
 			}
 
-			if( (spellInfo->Attributes & ATTRIBUTES_PASSIVE || (spellInfo->Effect[0] == SPELL_EFFECT_LEARN_SPELL ||
+			if( spellInfo->Attributes & ATTRIBUTES_PASSIVE || ( (spellInfo->Effect[0] == SPELL_EFFECT_LEARN_SPELL ||
 															   spellInfo->Effect[1] == SPELL_EFFECT_LEARN_SPELL ||
 															   spellInfo->Effect[2] == SPELL_EFFECT_LEARN_SPELL) 
 				&& ( (spellInfo->c_is_flags & SPELL_FLAG_IS_EXPIREING_WITH_PET) == 0 || ( (spellInfo->c_is_flags & SPELL_FLAG_IS_EXPIREING_WITH_PET) && GetSummon() ) ) )

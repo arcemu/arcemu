@@ -139,7 +139,7 @@ bool ChatHandler::HandleResetInstanceCommand(const char* args, WorldSession *m_s
 		{
 			bool foundSomething = false;
 			plr->getPlayerInfo()->savedInstanceIdsLock.Acquire();
-			for(int difficulty= 0; difficulty<NUM_INSTANCE_MODES; difficulty++)
+			for(uint32 difficulty= 0; difficulty<NUM_INSTANCE_MODES; difficulty++)
 			{
 				PlayerInstanceMap::iterator itr = plr->getPlayerInfo()->savedInstanceIds[difficulty].find(instance->m_mapId);
 				if(itr == plr->getPlayerInfo()->savedInstanceIds[difficulty].end() || (*itr).second != instance->m_instanceId)
@@ -361,7 +361,7 @@ bool ChatHandler::HandleShowInstancesCommand(const char* args, WorldSession* m_s
 	std::stringstream ss;
 	ss << "Show persistent instances of " << MSG_COLOR_CYAN << plr->GetName() << "|r\n";
 	plr->getPlayerInfo()->savedInstanceIdsLock.Acquire();
-	for(int difficulty= 0; difficulty<NUM_INSTANCE_MODES; difficulty++)
+	for(uint32 difficulty= 0; difficulty<NUM_INSTANCE_MODES; difficulty++)
 	{
 		for(PlayerInstanceMap::iterator itr = plr->getPlayerInfo()->savedInstanceIds[difficulty].begin(); itr != plr->getPlayerInfo()->savedInstanceIds[difficulty].end(); ++itr)
 		{
