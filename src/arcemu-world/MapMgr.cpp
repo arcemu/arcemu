@@ -1495,7 +1495,6 @@ void MapMgr::_PerformObjectDuties()
 	{
 		CreatureSet creatures(activeCreatures);
 		CreatureSet::iterator itr = creatures.begin();
-		PetStorageMap::iterator it2 = m_PetStorage.begin();
 		Creature * ptr;
 		Pet * ptr2;
 
@@ -1507,6 +1506,7 @@ void MapMgr::_PerformObjectDuties()
 				ptr->Update(difftime);
 		}
 
+		PetStorageMap::iterator it2 = m_PetStorage.begin();
 		for(; it2 != m_PetStorage.end();)
 		{
 			ptr2 = it2->second;
