@@ -782,6 +782,7 @@ void Pet::Dismiss() //Abandon pet
 
 void Pet::Remove( bool bUpdate, bool bSetOffline )
 {
+	bool alreadyBeingDeleted = ScheduledForDeletion;
 	ScheduledForDeletion = true;
 	RemoveAllAuras(); // Prevent pet overbuffing
 	if( m_Owner )
@@ -804,7 +805,8 @@ void Pet::Remove( bool bUpdate, bool bSetOffline )
 	if( IsInWorld() && IsActive() )
 		Deactivate( m_mapMgr );
 
-    PetSafeDelete();
+	if( !alreadyBeingDeleted )
+		PetSafeDelete();
 }
 
 void Pet::PetSafeDelete()

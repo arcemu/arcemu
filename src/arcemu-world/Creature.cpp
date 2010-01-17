@@ -767,6 +767,7 @@ void Creature::RemoveFromWorld( bool addrespawnevent, bool free_guid )
 	{
 		if( IsPet() )
 		{
+			static_cast<Pet*>(this)->ScheduledForDeletion = true;
 			Unit::RemoveFromWorld( true );
             SafeDelete();
 			return;
