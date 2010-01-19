@@ -22,13 +22,16 @@
 
 Mutex m_confSettingLock;
 vector<string> m_bannedChannels;
+vector<string> m_minimumChannel;
 uint64 voicechannelhigh = 0;
 
 void Channel::LoadConfSettings()
 {
 	string BannedChannels = Config.MainConfig.GetStringDefault("Channels", "BannedChannels", "");
+	string MinimumLevel = Config.MainConfig.GetStringDefault("Channels", "MinimumLevel", "");
 	m_confSettingLock.Acquire();
 	m_bannedChannels = StrSplit(BannedChannels, ";");
+	m_minimumChannel = StrSplit(MinimumLevel, ";");
 	m_confSettingLock.Release();
 }
 
@@ -88,12 +91,15 @@ Channel::Channel(const char * name, uint32 team, uint32 type_id)
 	else
 		m_flags = 0x01;
 
-	// scape stuff
-	if( !stricmp(name, "global") || !stricmp(name, "mall") || !stricmp(name, "lfg") )
+	for(vector<string>::iterator itr = m_minimumChannel.begin(); itr != m_minimumChannel.end(); ++itr)
 	{
-		m_minimumLevel = 10;
-		m_general = true;
-		m_announce = false;
+		if( stricmp(name, itr->c_str()) )
+		{
+			m_minimumLevel = 10;
+			m_general = true;
+			m_announce = false;
+			break;
+		}
 	}
 }
 
@@ -901,9 +907,9 @@ Channel * ChannelMgr::GetCreateChannel(const char *name, Player * p, uint32 type
 			return NULL;
 		}
 	}
-	m_confSettingLock.Release();
-
+	
 	chn = new Channel(name, ( seperatechannels && p != NULL ) ? p->GetTeam() : 0, type_id);
+	m_confSettingLock.Release();//Channel::Channel() reads configs so we release the lock after we create the Channel.
 	cl->insert(make_pair(chn->m_name, chn));
 	lock.Release();
 	return chn;

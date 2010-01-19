@@ -3191,10 +3191,10 @@ void Spell::SpellEffectSummon(uint32 i)
 			summon->CreateAsSummon(GetProto()->EffectMiscValue[i], ci, NULL, p_caster, GetProto(), 4, GetDuration());
 
 			//Second wolf
-			Pet *summon2 = objmgr.CreatePet(GetProto()->EffectMiscValue[i]);
+			/*Pet *summon2 = objmgr.CreatePet(GetProto()->EffectMiscValue[i]);
 			summon2->CreateAsSummon(GetProto()->EffectMiscValue[i], ci, NULL, p_caster, GetProto(), 4, GetDuration());
 			summon2->GetAIInterface()->SetUnitToFollow(p_caster);
-			summon2->GetAIInterface()->SetUnitToFollowAngle(float(-(M_PI/2)));
+			summon2->GetAIInterface()->SetUnitToFollowAngle(float(-(M_PI/2)));*/
 
 			//Spells
 			summon->AddSpell(dbcSpell.LookupEntry(58877), true); // Spirit Hunt
