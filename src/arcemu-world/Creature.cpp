@@ -1261,9 +1261,9 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	SetMaxHealth( health);
 	SetUInt32Value(UNIT_FIELD_BASE_HEALTH, health);
 
-	SetPower( POWER_TYPE_MANA, proto->Mana );
 	SetUInt32Value(UNIT_FIELD_MAXPOWER1,proto->Mana);
 	SetUInt32Value(UNIT_FIELD_BASE_MANA,proto->Mana);
+	SetPower( POWER_TYPE_MANA, proto->Mana );
 
 	// Whee, thank you blizz, I love patch 2.2! Later on, we can randomize male/female mobs! xD
 	// Determine gender (for voices)
@@ -1510,9 +1510,9 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 	SetMaxHealth( health);
 	SetUInt32Value(UNIT_FIELD_BASE_HEALTH, health);
 
-	SetPower( POWER_TYPE_MANA, proto->Mana );
 	SetUInt32Value(UNIT_FIELD_MAXPOWER1,proto->Mana);
 	SetUInt32Value(UNIT_FIELD_BASE_MANA,proto->Mana);
+	SetPower( POWER_TYPE_MANA, proto->Mana );
 
 	uint32 model = 0;
 	uint8 gender = creature_info->GenerateModelId(&model);

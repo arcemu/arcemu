@@ -8379,8 +8379,8 @@ void Player::ApplyLevelInfo(LevelInfo* Info, uint32 Level)
 	// Set health / mana
 	SetHealth( Info->HP);
 	SetMaxHealth( Info->HP);
-	SetPower( POWER_TYPE_MANA, Info->Mana);
 	SetUInt32Value(UNIT_FIELD_MAXPOWER1, Info->Mana);
+	SetPower( POWER_TYPE_MANA, Info->Mana);
 
 	// Calculate talentpoints
 	uint32 TalentPoints = GetUInt32Value(PLAYER_CHARACTER_POINTS1);

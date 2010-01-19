@@ -1735,15 +1735,15 @@ Creature * CBattleground::SpawnSpiritGuide(float x, float y, float z, float o, u
 	pCreature->SetEntry(  13116 + horde);
 	pCreature->SetScale(  1.0f);
 
-	pCreature->SetHealth( 100000);
-    pCreature->SetPower( POWER_TYPE_MANA, 4868 );
-    pCreature->SetPower( POWER_TYPE_FOCUS, 200 );
-    pCreature->SetPower( POWER_TYPE_HAPPINESS, 2000000 );
-
 	pCreature->SetMaxHealth( 10000);
 	pCreature->SetMaxPower( POWER_TYPE_MANA, 4868 );
 	pCreature->SetMaxPower( POWER_TYPE_FOCUS, 200 );
 	pCreature->SetMaxPower( POWER_TYPE_HAPPINESS, 2000000 );
+
+	pCreature->SetHealth( 100000);
+    pCreature->SetPower( POWER_TYPE_MANA, 4868 );
+    pCreature->SetPower( POWER_TYPE_FOCUS, 200 );
+    pCreature->SetPower( POWER_TYPE_HAPPINESS, 2000000 );
 
 	pCreature->SetUInt32Value(UNIT_FIELD_LEVEL, 60);
 	pCreature->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, 84 - horde);

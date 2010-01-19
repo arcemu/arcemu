@@ -5949,8 +5949,8 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 	pTotem->SetCreatedByGUID( p_caster->GetGUID());
 	pTotem->SetHealth( damage);
 	pTotem->SetMaxHealth( damage);
-	pTotem->SetPower( POWER_TYPE_FOCUS, p_caster->getLevel() * 30);
 	pTotem->SetMaxPower( POWER_TYPE_FOCUS, p_caster->getLevel() * 30);
+	pTotem->SetPower( POWER_TYPE_FOCUS, p_caster->getLevel() * 30);
 	pTotem->SetUInt32Value(UNIT_FIELD_LEVEL, p_caster->getLevel() );
 	pTotem->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, p_caster->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
     pTotem->setRace( 0 );
