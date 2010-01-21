@@ -1992,7 +1992,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
             
                 // We've killed a summon summoned by a totem
                 if( pSummonerC->IsTotem() )
-                    pSummonerC->TotemExpire();
+					sEventMgr.AddEvent( pSummonerC, &Creature::TotemExpire, EVENT_UNK, 1, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
             }
         }
 		
