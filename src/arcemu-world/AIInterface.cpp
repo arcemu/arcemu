@@ -4177,7 +4177,7 @@ void AIInterface::Event_Summon_EE_totem( uint32 summon_duration )
 	//timer should not reach this value thus not cast this spell again
 	m_totemspelltimer = 0xEFFFFFFF;
 	//creatures do not support PETs and the spell uses that effect so we force a summon guardian thing
-	Creature *ourslave = m_Unit->create_guardian( 15352, summon_duration, float(-M_PI * 2), new_level );
+	Creature *ourslave = m_Unit->create_guardian( 15352, 0xFFFFFFFF, float(-M_PI * 2), new_level );//since the totem is the only one allowed to despawn this, we set its despawn time to infinite.
     if( ourslave == NULL )
 		return;
 
@@ -4210,7 +4210,7 @@ void AIInterface::Event_Summon_FE_totem( uint32 summon_duration )
 	//timer should not reach this value thus not cast this spell again
 	m_totemspelltimer = 0xEFFFFFFF;
 	//creatures do not support PETs and the spell uses that effect so we force a summon guardian thing
-	Creature *ourslave = m_Unit->create_guardian( 15438, summon_duration, float(-M_PI * 2), new_level );
+	Creature *ourslave = m_Unit->create_guardian( 15438, 0xFFFFFFFF, float(-M_PI * 2), new_level );//since the totem is the only one allowed to despawn this, we set its despawn time to infinite.
     if( ourslave == NULL )
 		return;
 
