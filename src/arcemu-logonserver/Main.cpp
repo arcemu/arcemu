@@ -505,13 +505,13 @@ void LogonServer::Run(int argc, char ** argv)
 	sLog.outString("Success! Ready for connections");
 	while(mrunning && authsockcreated && intersockcreated)
 	{
-		if(!(++loop_counter % 400))	 // 20 seconds
+		if(!(++loop_counter % 20))	 // 20 seconds
 			CheckForDeadSockets();
 
-		if(!(loop_counter%10000))	// 5mins
+		if(!(loop_counter%300))	// 5mins
 			ThreadPool.IntegrityCheck();
 
-		if(!(loop_counter%10))
+		if(!(loop_counter%5))
 		{
 			sInfoCore.TimeoutSockets();
 			sSocketGarbageCollector.Update();
@@ -521,7 +521,7 @@ void LogonServer::Run(int argc, char ** argv)
 		}
 
 		PatchMgr::getSingleton().UpdateJobs();
-		Sleep(10);
+		Sleep(1000);
 	}
 
 	sLog.outString("Shutting down...");
