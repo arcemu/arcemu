@@ -677,7 +677,7 @@ void MapMgr::ChangeObjectLocation( Object *obj )
 			//If the object we're checking for possible removal is a transport or other special object, and we are players on the same map, don't remove it...
 			else if( plObj && curObj->GetTypeId() == TYPEID_GAMEOBJECT && (static_cast<GameObject*>(curObj)->GetOverrides() & GAMEOBJECT_INFVIS) && obj->GetMapId() == curObj->GetMapId() )
 				fRange = 0.0f;
-			else if( curObj->IsPlayer() && static_cast< Player* >( curObj )->GetUInt64Value(PLAYER_FARSIGHT) == obj->GetGUID())
+			else if( curObj->IsPlayer() && static_cast< Player* >( curObj )->GetFarsightTarget() == obj->GetGUID())
 				fRange = 0.0f;//Mind Vision, Eye of Kilrogg
 			else
 				fRange = m_UpdateDistance; // normal distance
@@ -1791,13 +1791,13 @@ GameObject * MapMgr::CreateAndSpawnGameObject(uint32 entryID, float x, float y, 
 	GOSpawn * gs = new GOSpawn;
 	gs->entry = go->GetEntry();
 	gs->facing = go->GetOrientation();
-	gs->faction = go->GetUInt32Value(GAMEOBJECT_FACTION);
+	gs->faction = go->GetFaction();
 	gs->flags = go->GetUInt32Value(GAMEOBJECT_FLAGS);
 	gs->id = objmgr.GenerateGameObjectSpawnID();
 //	gs->o = go->GetFloatValue(GAMEOBJECT_ROTATION);
-	gs->o1 = go->GetFloatValue(GAMEOBJECT_PARENTROTATION);
-	gs->o2 = go->GetFloatValue(GAMEOBJECT_PARENTROTATION_02);
-	gs->o3 = go->GetFloatValue(GAMEOBJECT_PARENTROTATION_03);
+	gs->o1 = go->GetParentRotation(0);
+	gs->o2 = go->GetParentRotation(2);
+	gs->o3 = go->GetParentRotation(3);
 	gs->scale = go->GetScale();
 	gs->x = go->GetPositionX();
 	gs->y = go->GetPositionY();

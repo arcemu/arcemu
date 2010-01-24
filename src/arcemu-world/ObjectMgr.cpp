@@ -686,7 +686,7 @@ Corpse* ObjectMgr::LoadCorpse(uint32 guid)
 		pCorpse->SetZoneId(fields[5].GetUInt32());
 		pCorpse->SetMapId(fields[6].GetUInt32());
 		pCorpse->LoadValues( fields[7].GetString());
-		if(pCorpse->GetUInt32Value(CORPSE_FIELD_DISPLAY_ID) == 0)
+		if(pCorpse->GetDisplayId() == 0)
 		{
 			delete pCorpse;
 			pCorpse = NULL;
@@ -715,7 +715,7 @@ Corpse *ObjectMgr::GetCorpseByOwner(uint32 ownerguid)
 	_corpseslock.Acquire();
 	for (itr = m_corpses.begin();itr != m_corpses.end(); ++itr)
 	{
-		if(itr->second->GetUInt32Value(CORPSE_FIELD_OWNER) == ownerguid)
+		if(GET_LOWGUID_PART(itr->second->GetOwner()) == ownerguid)
 		{
 			rv = itr->second;
 			break;
@@ -1622,7 +1622,7 @@ Item * ObjectMgr::CreateItem(uint32 entry,Player * owner)
 
         if( owner != NULL ){
             uint32 *played = owner->GetPlayedtime();
-            pItem->SetUInt32Value( ITEM_FIELD_CREATE_PLAYED_TIME, played[1] );
+            pItem->SetCreationTime( played[1] );
         }
 
 		return pItem;
@@ -1706,7 +1706,7 @@ void ObjectMgr::LoadCorpses(MapMgr * mgr)
 			pCorpse->SetMapId(fields[6].GetUInt32());
 			pCorpse->SetInstanceID(fields[7].GetUInt32());
 			pCorpse->LoadValues( fields[8].GetString());
-			if(pCorpse->GetUInt32Value(CORPSE_FIELD_DISPLAY_ID) == 0)
+			if(pCorpse->GetDisplayId() == 0)
 			{
 				delete pCorpse;
 				continue;

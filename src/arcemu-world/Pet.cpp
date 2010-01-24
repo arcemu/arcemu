@@ -175,9 +175,9 @@ void Pet::CreateAsSummon( uint32 entry, CreatureInfo *ci, Creature* created_from
 		level = created_from_creature->getLevel() < ( level - 5 ) ? level - 5 : created_from_creature->getLevel();
 
 	SetEntry(  entry );
-	SetUInt32Value( UNIT_FIELD_LEVEL, level );
-	SetUInt32Value( UNIT_FIELD_DISPLAYID, ci->Male_DisplayID );
-	SetUInt32Value( UNIT_FIELD_NATIVEDISPLAYID, ci->Male_DisplayID );
+	setLevel(level );
+	SetDisplayId(ci->Male_DisplayID );
+	SetNativeDisplayId(ci->Male_DisplayID );
 	EventModelChange();
 	SetSummonedByGUID( owner->GetGUID() );
 	SetCreatedByGUID( owner->GetGUID() );
@@ -185,10 +185,10 @@ void Pet::CreateAsSummon( uint32 entry, CreatureInfo *ci, Creature* created_from
     SetUInt32Value( UNIT_FIELD_BYTES_0, 2048 | (0 << 24) );
 
 
-	SetUInt32Value( UNIT_FIELD_BASEATTACKTIME, 2000 );
-	SetUInt32Value( UNIT_FIELD_BASEATTACKTIME+1, 2000 );
-	SetUInt32Value( UNIT_FIELD_FACTIONTEMPLATE, owner->GetUInt32Value( UNIT_FIELD_FACTIONTEMPLATE ) );
-	SetFloatValue( UNIT_MOD_CAST_SPEED, 1.0f );	// better set this one
+	SetBaseAttackTime(MELEE,2000 );
+	SetBaseAttackTime(OFFHAND,2000 );
+	SetFaction(owner->GetFaction( ) );
+	SetCastSpeedMod(1.0f );	// better set this one
 
 	if( type & 0x1 || created_from_creature == NULL )
 	{
@@ -199,8 +199,8 @@ void Pet::CreateAsSummon( uint32 entry, CreatureInfo *ci, Creature* created_from
 
 		SetUInt32Value( UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED );
 		SetUInt32Value( UNIT_FIELD_BYTES_2, (0x01 | (0x28 << 8) | (0x2 << 24) ) );
-		SetFloatValue( UNIT_FIELD_BOUNDINGRADIUS, 0.5f );
-		SetFloatValue( UNIT_FIELD_COMBATREACH, 0.75f );
+		SetBoundingRadius(0.5f );
+		SetCombatReach(0.75f );
 		SetPowerType( POWER_TYPE_MANA );
 	}
 	else // Hunter pet
@@ -210,20 +210,20 @@ void Pet::CreateAsSummon( uint32 entry, CreatureInfo *ci, Creature* created_from
 		else
 			m_name.assign( myFamily->name );
 
-		SetFloatValue( UNIT_FIELD_BOUNDINGRADIUS, created_from_creature->GetFloatValue( UNIT_FIELD_BOUNDINGRADIUS ) );
-		SetFloatValue( UNIT_FIELD_COMBATREACH, created_from_creature->GetFloatValue( UNIT_FIELD_COMBATREACH ) );
+		SetBoundingRadius(created_from_creature->GetBoundingRadius() );
+		SetCombatReach(created_from_creature->GetCombatReach() );
 
 		SetUInt32Value( UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED | UNIT_FLAG_COMBAT ); // why combat ??
-		SetUInt32Value( UNIT_FIELD_POWER5, PET_HAPPINESS_UPDATE_VALUE >> 1 );	//happiness
-		SetUInt32Value( UNIT_FIELD_MAXPOWER5, 1000000 );
+		SetPower( POWER_TYPE_HAPPINESS, PET_HAPPINESS_UPDATE_VALUE >> 1 );	//happiness
+		SetMaxPower( POWER_TYPE_HAPPINESS, 1000000 );
 		SetUInt32Value( UNIT_FIELD_PETEXPERIENCE, 0 );
 		SetUInt32Value( UNIT_FIELD_PETNEXTLEVELEXP, GetNextLevelXP( level ) );
-		SetUInt32Value( UNIT_FIELD_POWER3, 100 );// Focus
-		SetUInt32Value( UNIT_FIELD_MAXPOWER3, 100 );
+		SetPower(POWER_TYPE_FOCUS, 100 );// Focus
+		SetMaxPower( POWER_TYPE_FOCUS, 100 );
 		SetUInt32Value( UNIT_FIELD_BYTES_2, 1  /* | (0x28 << 8) */ | (PET_RENAME_ALLOWED << 16) );// 0x3 -> Enable pet rename.
-		SetPowerType( POWER_TYPE_FOCUS);
+		SetPowerType(POWER_TYPE_FOCUS);
 	}
-    SetUInt32Value( UNIT_FIELD_FACTIONTEMPLATE, owner->GetUInt32Value( UNIT_FIELD_FACTIONTEMPLATE ) );
+    SetFaction(owner->GetFaction( ) );
 
     if( owner->IsPvPFlagged() )
         this->SetPvPFlag();
@@ -320,7 +320,7 @@ void Pet::Update( uint32 time )
 			int32 burn = 1042;		//Based on WoWWiki pet looses 50 happiness over 6 min => 1042 every 7.5 s
 			if( CombatStatus.IsInCombat() )
 				burn >>= 1;			//in combat reduce burn by half (guessed)
-			ModUnsigned32Value( UNIT_FIELD_POWER5, -burn );
+			ModPower(POWER_TYPE_HAPPINESS, -burn );
 			m_HappinessTimer = PET_HAPPINESS_UPDATE_TIMER;// reset timer
 		}
 		else if( !IsInBg() )
@@ -597,9 +597,9 @@ void Pet::LoadFromDB( Player* owner, PlayerPet * pi )
 	}
 
 	//Preventing overbuffs
-	SetUInt32Value( UNIT_FIELD_ATTACK_POWER, 0 );
-	SetUInt32Value( UNIT_FIELD_ATTACK_POWER_MODS, 0 );
-	SetUInt32Value( UNIT_FIELD_BASEATTACKTIME, 2000 );
+	SetAttackPower(0 );
+	SetAttackPowerMods(0 );
+	SetBaseAttackTime(MELEE,2000 );
 
 	if( m_Owner )
 	{
@@ -614,7 +614,7 @@ void Pet::LoadFromDB( Player* owner, PlayerPet * pi )
 			if( !Summon )
 				SetTPs( GetTPsForLevel( level) - GetSpentTPs() );
 
-			SetUInt32Value( UNIT_FIELD_LEVEL, level );
+			setLevel(level );
 			SetUInt32Value( UNIT_FIELD_PETEXPERIENCE, 0 );
 			SetUInt32Value( UNIT_FIELD_PETNEXTLEVELEXP, GetNextLevelXP( level ) );
 			ApplyStatsForLevel();
@@ -681,7 +681,7 @@ void Pet::InitializeMe( bool first )
 		else if( GetEntry() == PET_IMP )
 			m_aiInterface->disable_melee = true;
 		else if( GetEntry() == PET_FELGUARD )
-			SetUInt32Value( UNIT_VIRTUAL_ITEM_SLOT_ID, 12784 );
+			SetEquippedItem(MELEE,12784 );
 
 	}
 	else if( first ) // Hunter pets - after taming
@@ -850,7 +850,7 @@ void Pet::GiveXP( uint32 xp )
 	if( xp >= nxp )
 	{
 		SetTPs( GetTPsForLevel( getLevel() + 1 ) - GetSpentTPs() );
-		ModUnsigned32Value( UNIT_FIELD_LEVEL, 1 );
+		modLevel(1 );
 		xp -= nxp;
 		nxp = GetNextLevelXP( getLevel() );
 		SetUInt32Value( UNIT_FIELD_PETNEXTLEVELEXP, nxp );
@@ -1204,7 +1204,7 @@ void Pet::Rename( string NewName )
 
 void Pet::ApplySummonLevelAbilities()
 {
-	uint32 level = m_uint32Values[UNIT_FIELD_LEVEL];
+	uint32 level = getLevel();
 	double pet_level = (double)level;
 
 	// Determine our stat index.
@@ -1332,7 +1332,7 @@ void Pet::ApplySummonLevelAbilities()
 	BaseDamage[1] = float(pet_max_dmg);
 
 	// Apply attack power.
-	SetUInt32Value(UNIT_FIELD_ATTACK_POWER, FL2UINT(pet_pwr));
+	SetAttackPower(FL2UINT(pet_pwr));
 
 	BaseResistance[0] = FL2UINT(pet_arm);
 	CalcResistance(0);
@@ -1345,10 +1345,10 @@ void Pet::ApplySummonLevelAbilities()
 		sLog.outError("Pet with entry %u has 0 health !! \n", GetEntry() );
 		health = 100;
 	}
-	SetUInt32Value(UNIT_FIELD_BASE_HEALTH, FL2UINT(health));
+	SetBaseHealth(FL2UINT(health));
 	SetMaxHealth( FL2UINT(health));
-	SetUInt32Value(UNIT_FIELD_BASE_MANA, FL2UINT(mana));
-	SetUInt32Value(UNIT_FIELD_MAXPOWER1, FL2UINT(mana));
+	SetBaseMana(FL2UINT(mana));
+	SetMaxPower(POWER_TYPE_MANA, FL2UINT(mana));
 
 	for(uint32 x = 0; x < 5; ++x)
 		CalcStat(x);
@@ -1383,7 +1383,7 @@ void Pet::ApplyPetLevelAbilities()
 	BaseStats[4] = R_pet_base_spi[ level - 1 ];
 
 	uint32 base_hp = BaseStats[2] * 10;
-	SetUInt32Value( UNIT_FIELD_BASE_HEALTH, base_hp );
+	SetBaseHealth(base_hp );
 	SetUInt32Value( UNIT_FIELD_MAXHEALTH, base_hp );
 
 	//Family Aura
@@ -1418,9 +1418,9 @@ void Pet::ApplyStatsForLevel()
 	}
 
 	// Apply health fields.
-	SetUInt32Value( UNIT_FIELD_HEALTH, m_uint32Values[ UNIT_FIELD_MAXHEALTH ] );
-	SetUInt32Value( UNIT_FIELD_POWER1, m_uint32Values[ UNIT_FIELD_MAXPOWER1 ] ); // mana
-	SetUInt32Value( UNIT_FIELD_POWER3, m_uint32Values[ UNIT_FIELD_MAXPOWER3 ] ); // focus
+	SetHealth(m_uint32Values[ UNIT_FIELD_MAXHEALTH ] );
+	SetPower( POWER_TYPE_MANA, GetMaxPower(POWER_TYPE_MANA) ); // mana
+	SetPower( POWER_TYPE_FOCUS, GetMaxPower(POWER_TYPE_FOCUS) ); // focus
 }
 
 void Pet::LoadPetAuras(int32 id)
@@ -1464,12 +1464,12 @@ void Pet::UpdateAP()
 	if( Summon )
 		return;
 
-	uint32 str = GetUInt32Value( UNIT_FIELD_STAT0 );
+	uint32 str = GetStat(STAT_STRENGTH);
 	uint32 AP = ( str * 2 - 20 );
 	if( m_Owner )
 		AP += m_Owner->GetRAP() * 22 / 100;
 	if( AP < 0 ) AP = 0;
-	SetUInt32Value( UNIT_FIELD_ATTACK_POWER, AP );
+	SetAttackPower(AP );
 }
 
 uint32 Pet::CanLearnSpell( SpellEntry * sp )
@@ -1510,7 +1510,7 @@ AI_Spell * Pet::HandleAutoCastEvent()
 		{
 			// spells still spammed, I think the cooldowntime is being set incorrectly somewhere else
 			if( chance && (*itr)->spell && getMSTime() >= (*itr)->cooldowntime && //cebernic:crashfix
-				GetUInt32Value(UNIT_FIELD_POWER1 + (*itr)->spell->powerType ) >= (*itr)->spell->manaCost )
+				GetPower((*itr)->spell->powerType) >= (*itr)->spell->manaCost )
 			{
 				return *itr;
 			}

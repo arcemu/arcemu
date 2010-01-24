@@ -123,7 +123,7 @@ uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player *target)
 	uint8 updatetype = UPDATETYPE_CREATE_OBJECT;
 	if(m_objectTypeId == TYPEID_CORPSE)
 	{
-		if(m_uint32Values[CORPSE_FIELD_DISPLAY_ID] == 0)
+		if(static_cast<Corpse*>(this)->GetDisplayId() == 0)
 			return 0;
 		updatetype = UPDATETYPE_CREATE_YOURSELF;
 	}
@@ -149,7 +149,7 @@ uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player *target)
 		// gameobject/dynamicobject
 	case TYPEID_GAMEOBJECT:
 		flags = 0x0350;
-		if( m_uint32Values[GAMEOBJECT_DISPLAYID]==3831 ) flags= 0x0252; //Deeprun Tram proper flags as of 3.2.0.
+		if( static_cast<GameObject*>(this)->GetDisplayId()==3831 ) flags= 0x0252; //Deeprun Tram proper flags as of 3.2.0.
 		break;
 
 	case TYPEID_DYNAMICOBJECT:
@@ -542,7 +542,12 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 		*data << GetHighGUID();
 
 	if( flags & UPDATEFLAG_HAS_TARGET ) //0x04
-		FastGUIDPack(*data, GetUInt64Value(UNIT_FIELD_TARGET));	//some compressed GUID
+	{
+		if (IsUnit())
+			FastGUIDPack(*data, TO_UNIT(this)->GetTargetGUID());	//some compressed GUID
+		else
+			*data << uint64( 0 );
+	}
 
 
 	if( flags & UPDATEFLAG_TRANSPORT ) //0x2
@@ -1483,9 +1488,9 @@ bool Object::isInBack(Object* target)
     angle = ( angle >= 0.0 ) ? angle : 2.0 * M_PI + angle;
 
 	// if we are a unit and have a UNIT_FIELD_TARGET then we are always facing them
-	if( m_objectTypeId == TYPEID_UNIT && m_uint32Values[UNIT_FIELD_TARGET] != 0 && static_cast< Unit* >( this )->GetAIInterface()->GetNextTarget() )
+	if( m_objectTypeId == TYPEID_UNIT && TO_UNIT(this)->GetTargetGUID() != 0 && TO_UNIT(this)->GetAIInterface()->GetNextTarget() )
 	{
-		Unit* pTarget = static_cast< Unit* >( this )->GetAIInterface()->GetNextTarget();
+		Unit* pTarget = TO_UNIT(this)->GetAIInterface()->GetNextTarget();
 		angle -= double( Object::calcRadAngle( target->m_position.x, target->m_position.y, pTarget->m_position.x, pTarget->m_position.y ) );
 	}
 	else
@@ -1526,7 +1531,7 @@ bool Object::IsPet()
     if ( GetTypeId() != TYPEID_UNIT || !m_uint32Values || !IsCreature())
 		return false;
 
-    if (m_uint32Values[UNIT_FIELD_CREATEDBY] == 0 || m_uint32Values[UNIT_FIELD_SUMMONEDBY] == 0)
+    if (TO_UNIT(this)->GetCreatedByGUID() == 0 || TO_UNIT(this)->GetSummonedByGUID() == 0)
         return false;
     if (static_cast< Creature * >(this)->IsPet())
         return true;
@@ -1540,16 +1545,16 @@ void Object::_setFaction()
 
 	if(GetTypeId() == TYPEID_UNIT || GetTypeId() == TYPEID_PLAYER)
 	{
-		factT = dbcFactionTemplate.LookupEntryForced(GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
+		factT = dbcFactionTemplate.LookupEntryForced(TO_UNIT(this)->GetFaction());
 		if( !factT )
-			sLog.outDetail("Unit does not have a valid faction. It will make him act stupid in world. Don't blame us, blame yourself for not checking :P, faction %u set to entry %u",GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE),GetEntry() );
+			sLog.outDetail("Unit does not have a valid faction. It will make him act stupid in world. Don't blame us, blame yourself for not checking :P, faction %u set to entry %u",TO_UNIT(this)->GetFaction(),GetEntry() );
 	}
 	else
 	if(GetTypeId() == TYPEID_GAMEOBJECT)
 	{
-		factT = dbcFactionTemplate.LookupEntryForced(GetUInt32Value(GAMEOBJECT_FACTION));
+		factT = dbcFactionTemplate.LookupEntryForced(static_cast<GameObject*>(this)->GetFaction());
 		if( !factT )
-			sLog.outDetail("Game Object does not have a valid faction. It will make him act stupid in world. Don't blame us, blame yourself for not checking :P, faction %u set to entry %u",GetUInt32Value(GAMEOBJECT_FACTION),GetEntry() );
+			sLog.outDetail("Game Object does not have a valid faction. It will make him act stupid in world. Don't blame us, blame yourself for not checking :P, faction %u set to entry %u",static_cast<GameObject*>(this)->GetFaction(),GetEntry() );
 	}
 
 	if(!factT)
@@ -1876,7 +1881,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 		if(pThis->cannibalize)
 		{
 			sEventMgr.RemoveEvents(pVictim, EVENT_CANNIBALIZE);
-			pThis->SetUInt32Value(UNIT_NPC_EMOTESTATE, 0);
+			pThis->SetEmoteState(0);
 			pThis->cannibalize = false;
 		}
 	}
@@ -1964,7 +1969,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 	{
 		// If it's a training dummy then we simply set the HP to 1 instead of killing the unit
 		if(pVictim->IsCreature() &&  (static_cast<Creature*>(pVictim))->GetProto() != NULL && (static_cast<Creature*>(pVictim))->GetProto()->isTrainingDummy ){
-			pVictim->SetUInt32Value( UNIT_FIELD_HEALTH, 1 );
+			pVictim->SetHealth(1 );
 			return;
 		}
 
@@ -2695,7 +2700,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 
 		}*/
 
-		pVictim->SetUInt32Value( UNIT_FIELD_HEALTH, health - damage );
+		pVictim->ModHealth(-(int32)damage);
 	}
 }
 
@@ -2920,7 +2925,7 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 			pctmod = 0.15f;
 
 		uint32 hp = static_cast<uint32>( 0.05f * pl->GetUInt32Value( UNIT_FIELD_MAXHEALTH ) );
-		uint32 spellpower = static_cast<uint32>( pctmod * pl->GetUInt32Value( PLAYER_FIELD_MOD_DAMAGE_DONE_POS ) );
+		uint32 spellpower = static_cast<uint32>( pctmod * pl->GetPosDamageDoneMod(SCHOOL_NORMAL) );
 
 		if( spellpower > hp )
 			spellpower = hp;

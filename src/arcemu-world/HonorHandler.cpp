@@ -26,9 +26,9 @@ void WorldSession::HandleSetVisibleRankOpcode( WorldPacket& recv_data )
 	uint32 ChosenRank;
 	recv_data >> ChosenRank; 
 	if( ChosenRank == 0xFFFFFFFF )
-		_player->SetUInt32Value( PLAYER_CHOSEN_TITLE, 0 );
+		_player->SetChosenTitle(0 );
 	else if( _player->HasTitle( static_cast< RankTitles >( ChosenRank ) ) )
-		_player->SetUInt32Value( PLAYER_CHOSEN_TITLE, ChosenRank );
+		_player->SetChosenTitle(ChosenRank );
 }
 
 void HonorHandler::AddHonorPointsToPlayer(Player *pPlayer, uint32 uAmount)
@@ -261,8 +261,8 @@ void HonorHandler::RecalculateHonorFields(Player *pPlayer)
 	pPlayer->SetUInt32Value(PLAYER_FIELD_TODAY_CONTRIBUTION, pPlayer->m_honorToday);
 	pPlayer->SetUInt32Value(PLAYER_FIELD_YESTERDAY_CONTRIBUTION, pPlayer->m_honorYesterday);
 	pPlayer->SetUInt32Value(PLAYER_FIELD_LIFETIME_HONORBALE_KILLS, pPlayer->m_killsLifetime);
-	pPlayer->SetUInt32Value(PLAYER_FIELD_HONOR_CURRENCY, pPlayer->m_honorPoints);
-	pPlayer->SetUInt32Value(PLAYER_FIELD_ARENA_CURRENCY, pPlayer->m_arenaPoints);
+	pPlayer->SetHonorCurrency(pPlayer->m_honorPoints);
+	pPlayer->SetArenaCurrency(pPlayer->m_arenaPoints);
 
 	// Currency tab - (Blizz Placeholders)
 	pPlayer->UpdateKnownCurrencies(43307, true); //Arena Points

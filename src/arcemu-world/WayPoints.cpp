@@ -72,9 +72,9 @@ bool ChatHandler::HandleWPAddCommand(const char* args, WorldSession *m_session)
 	char* pBackwardEmoteId = strtok(NULL, " ");
 	uint32 BackwardEmoteId = (pBackwardEmoteId)? atoi(pBackwardEmoteId) : 0;
 	char* pForwardSkinId = strtok(NULL, " ");
-	uint32 ForwardSkinId = (pForwardSkinId)? atoi(pForwardSkinId) : pCreature->GetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID);
+	uint32 ForwardSkinId = (pForwardSkinId)? atoi(pForwardSkinId) : pCreature->GetNativeDisplayId();
 	char* pBackwardSkinId = strtok(NULL, " ");
-	uint32 BackwardSkinId = (pBackwardSkinId)? atoi(pBackwardSkinId) : pCreature->GetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID);
+	uint32 BackwardSkinId = (pBackwardSkinId)? atoi(pBackwardSkinId) : pCreature->GetNativeDisplayId();
 	char* pForwardEmoteOneShot = strtok(NULL, " ");
 	uint32 ForwardEmoteOneShot = (pForwardEmoteOneShot)? atoi(pForwardEmoteOneShot) : 1;
 	char* pBackwardEmoteOneShot = strtok(NULL, " ");
@@ -862,9 +862,9 @@ bool ChatHandler::HandleWaypointAddFlyCommand(const char * args, WorldSession * 
 	char* pBackwardEmoteId = strtok(NULL, " ");
 	uint32 BackwardEmoteId = (pBackwardEmoteId)? atoi(pBackwardEmoteId) : 0;
 	char* pForwardSkinId = strtok(NULL, " ");
-	uint32 ForwardSkinId = (pForwardSkinId)? atoi(pForwardSkinId) : pCreature->GetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID);
+	uint32 ForwardSkinId = (pForwardSkinId)? atoi(pForwardSkinId) : pCreature->GetNativeDisplayId();
 	char* pBackwardSkinId = strtok(NULL, " ");
-	uint32 BackwardSkinId = (pBackwardSkinId)? atoi(pBackwardSkinId) : pCreature->GetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID);
+	uint32 BackwardSkinId = (pBackwardSkinId)? atoi(pBackwardSkinId) : pCreature->GetNativeDisplayId();
 	char* pForwardEmoteOneShot = strtok(NULL, " ");
 	uint32 ForwardEmoteOneShot = (pForwardEmoteOneShot)? atoi(pForwardEmoteOneShot) : 1;
 	char* pBackwardEmoteOneShot = strtok(NULL, " ");

@@ -1154,7 +1154,7 @@ void AVNode::Spawn()
 			// initial spawn
 			m_flag = m_bg.SpawnGameObject(g->id[m_state], m_bg.GetMapMgr()->GetMapId(), g->x, g->y, g->z, g->o, 0, 0, 1.0f);
 			m_flag->bannerslot = static_cast<int8>( m_nodeId );
-			m_flag->SetUInt32Value(GAMEOBJECT_FACTION, g_gameObjectFactions[m_state]);
+			m_flag->SetFaction(g_gameObjectFactions[m_state]);
 			m_flag->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 			m_flag->SetUInt32Value(GAMEOBJECT_DYNAMIC, 1);
 			m_flag->PushToWorld(m_bg.GetMapMgr());
@@ -1169,9 +1169,9 @@ void AVNode::Spawn()
 				m_flag->SetEntry( g->id[m_state] );
 				m_flag->SetNewGuid(m_bg.GetMapMgr()->GenerateGameobjectGuid());
 				m_flag->SetInfo(goi);
-				m_flag->SetUInt32Value(GAMEOBJECT_DISPLAYID, goi->DisplayID);
+				m_flag->SetDisplayId(goi->DisplayID);
 				m_flag->SetByte(GAMEOBJECT_BYTES_1, 1, static_cast<uint8>( goi->Type ));
-				m_flag->SetUInt32Value(GAMEOBJECT_FACTION, g_gameObjectFactions[m_state]);
+				m_flag->SetFaction(g_gameObjectFactions[m_state]);
 				m_flag->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 				m_flag->SetUInt32Value(GAMEOBJECT_DYNAMIC, 1);
 				m_flag->PushToWorld(m_bg.GetMapMgr());
@@ -1199,7 +1199,7 @@ void AVNode::Spawn()
 		{
 			// initial spawn
 			m_aura = m_bg.SpawnGameObject(g->id[m_state], m_bg.GetMapMgr()->GetMapId(), g->x, g->y, g->z, g->o, 0, 0, 3.0f);
-			m_aura->SetUInt32Value(GAMEOBJECT_FACTION, g_gameObjectFactions[m_state]);
+			m_aura->SetFaction(g_gameObjectFactions[m_state]);
 			m_aura->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 			m_aura->SetUInt32Value(GAMEOBJECT_FLAGS, 1);
 			m_aura->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
@@ -1215,9 +1215,9 @@ void AVNode::Spawn()
 				m_aura->SetEntry( g->id[m_state]);
 				m_aura->SetNewGuid(m_bg.GetMapMgr()->GenerateGameobjectGuid());
 				m_aura->SetInfo(goi);
-				m_aura->SetUInt32Value(GAMEOBJECT_DISPLAYID, goi->DisplayID);
+				m_aura->SetDisplayId(goi->DisplayID);
 				m_aura->SetByte(GAMEOBJECT_BYTES_1, 1, static_cast<uint8>( goi->Type ));
-				m_aura->SetUInt32Value(GAMEOBJECT_FACTION, g_gameObjectFactions[m_state]);
+				m_aura->SetFaction(g_gameObjectFactions[m_state]);
 				m_aura->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 				m_aura->SetUInt32Value(GAMEOBJECT_FLAGS, 1);
 				m_aura->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
@@ -1246,7 +1246,7 @@ void AVNode::Spawn()
 		{
 			// initial spawn
 			m_glow = m_bg.SpawnGameObject(g->id[m_state], m_bg.GetMapMgr()->GetMapId(), g->x, g->y, g->z, g->o, 0, 0, 1.0f);
-			m_glow->SetUInt32Value(GAMEOBJECT_FACTION, g_gameObjectFactions[m_state]);
+			m_glow->SetFaction(g_gameObjectFactions[m_state]);
 			m_glow->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 			m_glow->SetUInt32Value(GAMEOBJECT_FLAGS, 1);
 			m_glow->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
@@ -1266,9 +1266,9 @@ void AVNode::Spawn()
 				m_glow->SetEntry(  g->id[m_state]);
 				m_glow->SetNewGuid(m_bg.GetMapMgr()->GenerateGameobjectGuid());
 				m_glow->SetInfo(goi);
-				m_glow->SetUInt32Value(GAMEOBJECT_DISPLAYID, goi->DisplayID);
+				m_glow->SetDisplayId(goi->DisplayID);
 				m_glow->SetByte(GAMEOBJECT_BYTES_1, 1, static_cast<uint8>( goi->Type ));
-				m_glow->SetUInt32Value(GAMEOBJECT_FACTION, g_gameObjectFactions[m_state]);
+				m_glow->SetFaction(g_gameObjectFactions[m_state]);
 				m_glow->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 				m_glow->SetUInt32Value(GAMEOBJECT_FLAGS, 1);
 				m_glow->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
@@ -1607,15 +1607,15 @@ void AlteracValley::OnCreate()
 
 	// Alliance Gate
 	GameObject *gate = SpawnGameObject(AV_GAMEOBJECT_GATE, GetMapMgr()->GetMapId(), 780.487f, -493.024f, 99.9553f, 3.0976f, 32, 114, 3.000000f);
-	gate->SetFloatValue(GAMEOBJECT_PARENTROTATION_02,0.0129570f);
-	gate->SetFloatValue(GAMEOBJECT_PARENTROTATION_03,-0.0602880f);
+	gate->SetParentRotation(2, 0.0129570f);
+	gate->SetParentRotation(3, -0.0602880f);
 	gate->PushToWorld(m_mapMgr);
 	m_gates.push_back(gate);
 
 	// Horde gate
 	gate = SpawnGameObject(AV_GAMEOBJECT_GATE, GetMapMgr()->GetMapId(), -1375.73f, -538.966f, 55.3006f, 0.791198f, 32, 114, 3.000000f);
-	gate->SetFloatValue(GAMEOBJECT_PARENTROTATION_02, 0.36f);
-	gate->SetFloatValue(GAMEOBJECT_PARENTROTATION_03, 0.922766f);
+	gate->SetParentRotation(2, 0.36f);
+	gate->SetParentRotation(3, 0.922766f);
 	gate->PushToWorld(m_mapMgr);
 	m_gates.push_back(gate);
 

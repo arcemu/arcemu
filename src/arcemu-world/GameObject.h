@@ -312,6 +312,19 @@ public:
 
 	uint32 GetOverrides() { return m_overrides; }
 
+	//Easy Functions
+	void SetDisplayId( uint32 id ) { SetUInt32Value(GAMEOBJECT_DISPLAYID, id); }
+	uint32 GetDisplayId() { return GetUInt32Value(GAMEOBJECT_DISPLAYID); }
+
+	void SetParentRotation( uint8 rot, float value ) { SetFloatValue(GAMEOBJECT_PARENTROTATION+rot, value); }
+	float GetParentRotation( uint8 rot ) { return GetFloatValue(GAMEOBJECT_PARENTROTATION+rot); }
+
+	void SetFaction( uint32 id ) { SetUInt32Value(GAMEOBJECT_FACTION, id); }
+	uint32 GetFaction() { return GetUInt32Value(GAMEOBJECT_FACTION); }
+
+	void SetLevel( uint32 id ) { SetUInt32Value(GAMEOBJECT_FACTION, id); }
+	uint32 GetLevel() { return GetUInt32Value(GAMEOBJECT_FACTION); }
+
 protected:
 
 	bool m_summonedGo;

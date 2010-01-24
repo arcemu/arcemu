@@ -448,7 +448,7 @@ bool ChatHandler::HandleReviveCommand(const char* args, WorldSession *m_session)
 
 	SelectedPlayer->SetMovement(MOVE_UNROOT, 1);
 	SelectedPlayer->ResurrectPlayer();
-	SelectedPlayer->SetUInt32Value(UNIT_FIELD_HEALTH, SelectedPlayer->GetMaxHealth());
+	SelectedPlayer->SetHealth(SelectedPlayer->GetMaxHealth());
 	SelectedPlayer->SetPower( POWER_TYPE_MANA, SelectedPlayer->GetMaxPower( POWER_TYPE_MANA ));
 	SelectedPlayer->SetPower( POWER_TYPE_ENERGY, SelectedPlayer->GetMaxPower( POWER_TYPE_ENERGY ) );
 
@@ -706,7 +706,7 @@ bool ChatHandler::HandleNpcInfoCommand(const char *args, WorldSession *m_session
 	if(crt->GetCreatureInfo())
 		BlueSystemMessage(m_session, "Showing creature info for %s", crt->GetCreatureInfo()->Name);
 	SystemMessage(m_session, "GUID: %d", guid);
-	SystemMessage(m_session, "Faction: %d", crt->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
+	SystemMessage(m_session, "Faction: %d", crt->GetFaction());
 	SystemMessage(m_session, "Phase: %u", crt->GetPhase());
 	{
 		string s = "";
@@ -741,14 +741,14 @@ bool ChatHandler::HandleNpcInfoCommand(const char *args, WorldSession *m_session
 
 		SystemMessage(m_session, "NPCFlags: %d%s", crt->GetUInt32Value(UNIT_NPC_FLAGS), s.c_str());
 	}
-	SystemMessage(m_session, "DisplayID: %d", crt->GetUInt32Value(UNIT_FIELD_DISPLAYID));
+	SystemMessage(m_session, "DisplayID: %d", crt->GetDisplayId());
 	if(crt->m_faction)
 		SystemMessage(m_session, "Combat Support: 0x%.3X", crt->m_faction->FriendlyMask);
 	SystemMessage(m_session, "Health (cur/max): %d/%d", crt->GetHealth(), crt->GetMaxHealth());
 	SystemMessage(m_session, "Mana (cur/max): %d/%d", crt->GetPower( POWER_TYPE_MANA ), crt->GetMaxPower( POWER_TYPE_MANA ) );
 	SystemMessage(m_session, "Armor/Holy/Fire/Nature/Frost/Shadow/Arcane");
-	SystemMessage(m_session, "%d/%d/%d/%d/%d/%d/%d", crt->GetUInt32Value(UNIT_FIELD_RESISTANCES), crt->GetUInt32Value(UNIT_FIELD_RESISTANCES+1), crt->GetUInt32Value(UNIT_FIELD_RESISTANCES+2), crt->GetUInt32Value(UNIT_FIELD_RESISTANCES+3), crt->GetUInt32Value(UNIT_FIELD_RESISTANCES+4), crt->GetUInt32Value(UNIT_FIELD_RESISTANCES+5), crt->GetUInt32Value(UNIT_FIELD_RESISTANCES+6));
-	SystemMessage(m_session, "Damage (min/max): %f/%f", crt->GetFloatValue(UNIT_FIELD_MINDAMAGE),crt->GetFloatValue(UNIT_FIELD_MAXDAMAGE));
+	SystemMessage(m_session, "%d/%d/%d/%d/%d/%d/%d", crt->GetResistance(NORMAL_DAMAGE), crt->GetResistance(HOLY_DAMAGE), crt->GetResistance(FIRE_DAMAGE), crt->GetResistance(NATURE_DAMAGE), crt->GetResistance(FROST_DAMAGE), crt->GetResistance(SHADOW_DAMAGE), crt->GetResistance(ARCANE_DAMAGE));
+	SystemMessage(m_session, "Damage (min/max): %f/%f", crt->GetMinDamage(),crt->GetMaxDamage());
 
 	ColorSystemMessage(m_session, MSG_COLOR_RED, "Entry ID: %d", crt->GetEntry() );
 	ColorSystemMessage(m_session, MSG_COLOR_RED, "SQL Entry ID: %d", crt->GetSQL_id());
@@ -1514,7 +1514,7 @@ bool ChatHandler::HandleModifyLevelCommand(const char* args, WorldSession* m_ses
 	{
 		if( plr->GetSummon() && plr->GetSummon()->IsInWorld() && plr->GetSummon()->isAlive() )
 		{
-			plr->GetSummon()->SetUInt32Value(UNIT_FIELD_LEVEL, Level);
+			plr->GetSummon()->setLevel(Level);
 			plr->GetSummon()->ApplyStatsForLevel();
 			plr->GetSummon()->UpdateSpellList();
 		}
@@ -1843,7 +1843,7 @@ bool ChatHandler::HandlePetLevelCommand(const char* args, WorldSession* m_sessio
 		newLevel = plr->getLevel();
 	}
 
-	pPet->SetUInt32Value( UNIT_FIELD_LEVEL, newLevel );
+	pPet->setLevel(newLevel );
 	pPet->SetUInt32Value( UNIT_FIELD_PETEXPERIENCE, 0 );
 	pPet->SetUInt32Value( UNIT_FIELD_PETNEXTLEVELEXP, pPet->GetNextLevelXP(newLevel) );
 	pPet->ApplyStatsForLevel();
@@ -3127,8 +3127,8 @@ bool ChatHandler::HandleGORotate(const char * args, WorldSession * m_session)
 	case 'o':
 		if(m_session->GetPlayer()){
 			float ori = m_session->GetPlayer()->GetOrientation();
-			go->SetFloatValue(GAMEOBJECT_PARENTROTATION_02, sinf(ori / 2));
-			go->SetFloatValue(GAMEOBJECT_PARENTROTATION_03, cosf(ori / 2));
+			go->SetParentRotation(2, sinf(ori / 2));
+			go->SetParentRotation(3, cosf(ori / 2));
 			go->SetOrientation(ori);
 			go->UpdateRotation();
 		}
@@ -3588,7 +3588,7 @@ bool ChatHandler::HandleGenderChanger(const char* args, WorldSession *m_session)
 		SystemMessage(m_session, "Select A Player first.");
 		return true;
 	}
-	uint32 displayId = target->GetUInt32Value( UNIT_FIELD_NATIVEDISPLAYID );
+	uint32 displayId = target->GetNativeDisplayId();
 	if( *args == 0 )
 		gender = target->getGender()== 1 ? 0 : 1;
 	else
@@ -3608,13 +3608,13 @@ bool ChatHandler::HandleGenderChanger(const char* args, WorldSession *m_session)
 
 	if( target->getGender() == 0 )
 	{
-		target->SetUInt32Value( UNIT_FIELD_DISPLAYID, ( target->getRace() == RACE_BLOODELF ) ? ++displayId : --displayId );
-		target->SetUInt32Value( UNIT_FIELD_NATIVEDISPLAYID, displayId );
+		target->SetDisplayId(( target->getRace() == RACE_BLOODELF ) ? ++displayId : --displayId );
+		target->SetNativeDisplayId(displayId );
 	}
 	else
 	{
-		target->SetUInt32Value( UNIT_FIELD_DISPLAYID, ( target->getRace() == RACE_BLOODELF )? --displayId : ++displayId );
-		target->SetUInt32Value( UNIT_FIELD_NATIVEDISPLAYID, displayId );
+		target->SetDisplayId(( target->getRace() == RACE_BLOODELF )? --displayId : ++displayId );
+		target->SetNativeDisplayId(displayId );
 	}
 	target->EventModelChange();
 
@@ -3820,7 +3820,7 @@ bool ChatHandler::HandleLevelUpCommand(const char* args, WorldSession *m_session
 	{
 		if( plr->GetSummon() && plr->GetSummon()->IsInWorld() && plr->GetSummon()->isAlive() )
 		{
-			plr->GetSummon()->SetUInt32Value(UNIT_FIELD_LEVEL, levels);
+			plr->GetSummon()->setLevel(levels);
 			plr->GetSummon()->ApplyStatsForLevel();
 			plr->GetSummon()->UpdateSpellList();
 		}
@@ -3927,7 +3927,7 @@ bool ChatHandler::HandleSetTitle( const char *args, WorldSession *m_session )
 	else
 		plr->SetKnownTitle( static_cast< RankTitles >( -title ), false );
 
-	plr->SetUInt32Value( PLAYER_CHOSEN_TITLE, 0 ); // better remove chosen one
+	plr->SetChosenTitle(0 ); // better remove chosen one
 	SystemMessage( m_session, "Title has been %s.", title > 0 ? "set" : "reset" );
 
     std::stringstream logtext;

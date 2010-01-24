@@ -1213,7 +1213,7 @@ uint8 Spell::prepare( SpellCastTargets * targets )
 		// handle MOD_CAST_TIME
 		if( u_caster != NULL && m_castTime )
 		{
-			m_castTime = float2int32( m_castTime * u_caster->GetFloatValue( UNIT_MOD_CAST_SPEED ) );
+			m_castTime = float2int32( m_castTime * u_caster->GetCastSpeedMod() );
 		}
 	}
 
@@ -1222,7 +1222,7 @@ uint8 Spell::prepare( SpellCastTargets * targets )
 		if( p_caster->cannibalize )
 		{
 			sEventMgr.RemoveEvents( p_caster, EVENT_CANNIBALIZE );
-			p_caster->SetUInt32Value( UNIT_NPC_EMOTESTATE, 0 );
+			p_caster->SetEmoteState(0 );
 			p_caster->cannibalize = false;
 		}
 	}
@@ -2720,9 +2720,9 @@ bool Spell::HasPower()
 	if( GetProto()->ManaCostPercentage)//Percentage spells cost % of !!!BASE!!! mana
 	{
 		if( GetProto()->powerType==POWER_TYPE_MANA)
-			cost = (m_caster->GetUInt32Value(UNIT_FIELD_BASE_MANA)*GetProto()->ManaCostPercentage)/100;
+			cost = (u_caster->GetBaseMana()*GetProto()->ManaCostPercentage)/100;
 		else
-			cost = (m_caster->GetUInt32Value(UNIT_FIELD_BASE_HEALTH)*GetProto()->ManaCostPercentage)/100;
+			cost = (u_caster->GetBaseHealth()*GetProto()->ManaCostPercentage)/100;
 	}
 	else
 	{
@@ -2737,7 +2737,7 @@ bool Spell::HasPower()
 			cost += u_caster->PowerCostMod[GetProto()->School];//this is not percent!
 		else
 			cost += u_caster->PowerCostMod[0];
-		cost +=float2int32(cost*u_caster->GetFloatValue(UNIT_FIELD_POWER_COST_MULTIPLIER+GetProto()->School));
+		cost +=float2int32(cost*u_caster->GetPowerCostMultiplier(GetProto()->School));
 	}
 
 	 //hackfix for shiv's energy cost
@@ -2841,9 +2841,9 @@ bool Spell::TakePower()
 	if( GetProto()->ManaCostPercentage)//Percentage spells cost % of !!!BASE!!! mana
 	{
 		if( GetProto()->powerType==POWER_TYPE_MANA)
-			cost = (m_caster->GetUInt32Value(UNIT_FIELD_BASE_MANA)*GetProto()->ManaCostPercentage)/100;
+			cost = (u_caster->GetBaseMana()*GetProto()->ManaCostPercentage)/100;
 		else
-			cost = (m_caster->GetUInt32Value(UNIT_FIELD_BASE_HEALTH)*GetProto()->ManaCostPercentage)/100;
+			cost = (u_caster->GetBaseHealth()*GetProto()->ManaCostPercentage)/100;
 	}
 	else
 	{
@@ -2858,7 +2858,7 @@ bool Spell::TakePower()
 			cost += u_caster->PowerCostMod[GetProto()->School];//this is not percent!
 		else
 			cost += u_caster->PowerCostMod[0];
-		cost +=float2int32(cost*u_caster->GetFloatValue(UNIT_FIELD_POWER_COST_MULTIPLIER+GetProto()->School));
+		cost +=float2int32(cost*u_caster->GetPowerCostMultiplier(GetProto()->School));
 	}
 
 	 //hackfix for shiv's energy cost
@@ -3979,13 +3979,13 @@ uint8 Spell::CanCast(bool tolerate)
 
 			if( tolerate ) // add an extra 33% to range on final check (squared = 1.78x)
 			{
-				float localrange=maxRange + target->GetFloatValue(UNIT_FIELD_BOUNDINGRADIUS) + 1.5f;
+				float localrange=maxRange + target->GetBoundingRadius() + 1.5f;
 				if( !IsInrange( m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ(), target, ( localrange * localrange * 1.78f ) ) )
 					return SPELL_FAILED_OUT_OF_RANGE;
 			}
 			else
 			{
-				float localrange=maxRange + target->GetFloatValue(UNIT_FIELD_BOUNDINGRADIUS) + 1.5f;
+				float localrange=maxRange + target->GetBoundingRadius() + 1.5f;
 				if( !IsInrange( m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ(), target, ( localrange * localrange ) ) )
 					return SPELL_FAILED_OUT_OF_RANGE;
 			}
@@ -4927,7 +4927,7 @@ exit:
 				float block_multiplier = ( 100.0f + float( p_caster->m_modblockabsorbvalue ) ) / 100.0f;
 				if(block_multiplier < 1.0f)
 					block_multiplier = 1.0f;
-				int32 blockable_damage = float2int32( (float( it->GetProto()->Block ) + ( float( p_caster->m_modblockvaluefromspells + p_caster->GetUInt32Value( PLAYER_RATING_MODIFIER_BLOCK ) )) + ( ( float( p_caster->GetUInt32Value( UNIT_FIELD_STAT0 ) ) / 20.0f ) - 1.0f ) ) * block_multiplier);
+				int32 blockable_damage = float2int32( (float( it->GetProto()->Block ) + ( float( p_caster->m_modblockvaluefromspells + p_caster->GetUInt32Value( PLAYER_RATING_MODIFIER_BLOCK ) )) + ( ( float( p_caster->GetStat(STAT_STRENGTH) ) / 20.0f ) - 1.0f ) ) * block_multiplier);
 				value = (blockable_damage / (GetProto()->EffectBasePoints[0]+1));
 			}
 		}
@@ -5028,7 +5028,7 @@ exit:
 	else if ( GetProto()->Id == 34501 && ( i == 0 || i == 1 ) ) //Hunter - Expose Weakness
 	{
 		if (u_caster != NULL) {
-			value = u_caster->GetUInt32Value( UNIT_FIELD_STAT1 ) >> 2;
+			value = u_caster->GetStat(STAT_AGILITY) >> 2;
 		}
 	}
     else if ( GetProto()->NameHash == SPELL_HASH_HAMMER_OF_THE_RIGHTEOUS )
@@ -5036,7 +5036,7 @@ exit:
         if( p_caster != NULL )
 		{
             //4x 1h weapon-dps ->  4*(mindmg+maxdmg)/speed/2 = 2*(mindmg+maxdmg)/speed
-            value = float2int32( ( p_caster->GetFloatValue( UNIT_FIELD_MINDAMAGE ) + p_caster->GetFloatValue( UNIT_FIELD_MAXDAMAGE ) ) / ( float( p_caster->GetUInt32Value( UNIT_FIELD_BASEATTACKTIME ) ) / 1000.0f ) ) << 1;
+            value = float2int32( ( p_caster->GetMinDamage() + p_caster->GetMaxDamage() ) / ( float( p_caster->GetBaseAttackTime(MELEE) ) / 1000.0f ) ) << 1;
         }
     }
 	else if ( GetProto()->NameHash == SPELL_HASH_BACKSTAB && i == 2 ) // Egari: spell 31220 is interfering with combopoints
@@ -5330,7 +5330,7 @@ void Spell::Heal( int32 amount, bool ForceCrit )
 		if( p_caster != NULL )
 		{
 			for( uint8 a = 0; a < 6; a++ )
-				bonus += float2int32( p_caster->SpellHealDoneByAttribute[a][school] * p_caster->GetUInt32Value( UNIT_FIELD_STAT0 + a ) );
+				bonus += float2int32( p_caster->SpellHealDoneByAttribute[a][school] * p_caster->GetStat(a ) );
 		}
 
 		//Spell Coefficient
@@ -5386,13 +5386,13 @@ void Spell::Heal( int32 amount, bool ForceCrit )
 		{
 		case 20267: //Judgement of Light
 			if( playerTarget != NULL )
-				amount = (int)(0.10f * playerTarget->GetUInt32Value(UNIT_FIELD_ATTACK_POWER) + 0.10f * playerTarget->GetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS+1));
+				amount = (int)(0.10f * playerTarget->GetAttackPower() + 0.10f * playerTarget->GetPosDamageDoneMod(1));
 			else
-				amount = (int)(0.10f * unitTarget->GetUInt32Value(UNIT_FIELD_ATTACK_POWER));
+				amount = (int)(0.10f * unitTarget->GetAttackPower());
 			break;
 		case 20167: //Seal of Light
 			if( p_caster != NULL )
-				amount = (int)(0.15f * p_caster->GetUInt32Value(UNIT_FIELD_ATTACK_POWER) + 0.15f * (p_caster)->GetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS+1));
+				amount = (int)(0.15f * p_caster->GetAttackPower() + 0.15f * (p_caster)->GetPosDamageDoneMod(1));
 			break;
 		case 54172: //Paladin - Divine Storm heal effect
 			{
@@ -5453,11 +5453,11 @@ void Spell::Heal( int32 amount, bool ForceCrit )
 	uint32 maxHealth = unitTarget->GetUInt32Value( UNIT_FIELD_MAXHEALTH );
 	if((curHealth + amount) >= maxHealth)
 	{
-		unitTarget->SetUInt32Value( UNIT_FIELD_HEALTH, maxHealth );
+		unitTarget->SetHealth(maxHealth );
 		overheal = curHealth + amount - maxHealth;
 	}
 	else
-		unitTarget->ModUnsigned32Value( UNIT_FIELD_HEALTH, amount );
+		unitTarget->ModHealth(amount );
 
 	if( p_caster != NULL )
 	{

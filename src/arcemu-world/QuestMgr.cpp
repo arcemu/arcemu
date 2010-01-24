@@ -503,7 +503,7 @@ void QuestMgr::BuildRequestItems(WorldPacket *data, Quest* qst, Object* qst_give
 void QuestMgr::BuildQuestComplete(Player*plr, Quest* qst)
 {
 	uint32 xp ;
-	uint32 currtalentpoints = plr->GetUInt32Value(PLAYER_CHARACTER_POINTS1);
+	uint32 currtalentpoints = plr->GetTalentPoints(SPEC_PRIMARY);
 	uint32 rewardtalents = qst->rewardtalents;
 	uint32 playerlevel = plr->getLevel();
 	
@@ -987,7 +987,7 @@ void QuestMgr::GiveQuestRewardReputation(Player* plr, Quest* qst, Object *qst_gi
 				if( static_cast<Creature*>(qst_giver)->m_factionDBC != NULL )
 					fact = static_cast<Creature*>(qst_giver)->m_factionDBC->ID;
 			if( qst_giver->GetTypeId() == TYPEID_GAMEOBJECT )
-				fact = qst_giver->GetUInt32Value(GAMEOBJECT_FACTION );
+				fact = static_cast<GameObject*>(qst_giver)->GetFaction();
 		}
 		else
 		{

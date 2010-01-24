@@ -258,7 +258,7 @@ Achievement Working List:
 \todo Time limits on achievements
 \todo Special conditions for achievements (group size, nobody in raid die during fight, etc.)
 */
-class AchievementMgr
+class SERVER_DECL AchievementMgr
 {
 public:
 	AchievementMgr(Player* pl);

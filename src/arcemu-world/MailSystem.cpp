@@ -697,7 +697,7 @@ void WorldSession::HandleMailCreateTextItem(WorldPacket & recv_data )
 	if (pItem== NULL)
 		return;
 
-	pItem->SetUInt32Value(ITEM_FIELD_ITEM_TEXT_ID, message_id);
+	pItem->SetTextId(message_id);
 	if( _player->GetItemInterface()->AddItemToFreeSlot(pItem) )
 	{
 		// mail now has an item after it

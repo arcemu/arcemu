@@ -319,7 +319,7 @@ void WorldSession::HandleInspectHonorStatsOpcode( WorldPacket &recv_data )
 
     WorldPacket data( MSG_INSPECT_HONOR_STATS, 13 );
 
-    data << player->GetGUID() << (uint8)player->GetUInt32Value( PLAYER_FIELD_HONOR_CURRENCY );
+    data << player->GetGUID() << (uint8)player->GetHonorCurrency();
     data << player->GetUInt32Value( PLAYER_FIELD_KILLS );
     data << player->GetUInt32Value( PLAYER_FIELD_TODAY_CONTRIBUTION );
     data << player->GetUInt32Value( PLAYER_FIELD_YESTERDAY_CONTRIBUTION );

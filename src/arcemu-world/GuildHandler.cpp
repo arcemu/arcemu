@@ -1514,7 +1514,7 @@ void WorldSession::HandleGuildBankDepositItem(WorldPacket & recv_data)
 
 			/* remove the item's association with the player */
 			pSourceItem->SetOwner(NULL);
-            pSourceItem->SetOWnerGUID( 0 );
+            pSourceItem->SetOwnerGUID( 0 );
 			pSourceItem->SaveToDB(0, 0, true, NULL);
 
 			/* log it */
@@ -1532,7 +1532,7 @@ void WorldSession::HandleGuildBankDepositItem(WorldPacket & recv_data)
 		{
 			/* the guild was robbed by some n00b! :O */
 			pDestItem->SetOwner(_player);
-            pDestItem->SetOWnerGUID( _player->GetGUID() );
+            pDestItem->SetOwnerGUID( _player->GetGUID() );
 			pDestItem->SaveToDB(source_bagslot, source_slot, true, NULL);
 
 			/* add it to him in game */

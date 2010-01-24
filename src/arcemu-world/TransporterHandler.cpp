@@ -429,7 +429,7 @@ void Transporter::TransportPassengers(uint32 mapid, uint32 oldmap, float x, floa
 			if(plr->IsDead())
 			{
 				plr->ResurrectPlayer();
-				plr->SetUInt32Value(UNIT_FIELD_HEALTH, plr->GetMaxHealth());
+				plr->SetHealth(plr->GetMaxHealth());
 				plr->SetPower( POWER_TYPE_MANA, plr->GetMaxPower( POWER_TYPE_MANA ));
 			}
 		}

@@ -495,8 +495,8 @@ public:
 				else detectRange = 0.0f;
 			}
 
-			detectRange += GetFloatValue(UNIT_FIELD_BOUNDINGRADIUS); // adjust range for size of creature
-			detectRange += obj->GetFloatValue(UNIT_FIELD_BOUNDINGRADIUS); // adjust range for size of stealthed player
+			detectRange += GetBoundingRadius(); // adjust range for size of creature
+			detectRange += obj->GetBoundingRadius(); // adjust range for size of stealthed player
 
 			if(GetDistance2dSq(obj) > detectRange * detectRange)
 				return false;

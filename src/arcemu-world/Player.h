@@ -1313,6 +1313,10 @@ public:
 	 uint8        GetDuelState() { return m_duelState; }
     // duel variables
     Player*             DuelingWith;
+	void				SetDuelArbiter( uint64 guid ) { SetUInt64Value(PLAYER_DUEL_ARBITER, guid); }
+	uint64				GetDuelArbiter() { return GetUInt64Value(PLAYER_DUEL_ARBITER); }
+	void				SetDuelTeam( uint32 team ) { SetUInt32Value(PLAYER_DUEL_TEAM, team); }
+	uint32				GetDuelTeam() { return GetUInt32Value(PLAYER_DUEL_TEAM); }
 
     /************************************************************************/
     /* Trade                                                                */
@@ -1369,6 +1373,7 @@ public:
 	 bool			HasItemCount( uint32 item, uint32 count, bool inBankAlso = false ) const;
     // item interface variables
     ItemInterface *     m_ItemInterface;
+	int32 GetVisibleBase( int16 slot ) { return (PLAYER_VISIBLE_ITEM_1_ENTRYID + (slot * PLAYER_VISIBLE_ITEM_LENGTH)); }
 
     /************************************************************************/
     /* Loot                                                                 */
@@ -1975,6 +1980,48 @@ public:
         ModUnsigned32Value(PLAYER_FIELD_COINAGE, -coins);
     }
 
+	/////////////////////////////////////////////////
+	// EASY FUNCTIONS - MISC
+	/////////////////////////////////////////////////
+
+	 void SetChosenTitle( uint32 id ) { SetUInt32Value(PLAYER_CHOSEN_TITLE, id); }
+
+	 void SetInventorySlot( uint32 slot, uint64 guid ) { SetUInt64Value(PLAYER_FIELD_INV_SLOT_HEAD + (slot * 2), guid); }
+
+	 void SetFarsightTarget( uint64 guid ) { SetUInt64Value(PLAYER_FARSIGHT, guid); }
+	 uint64 GetFarsightTarget() { return GetUInt64Value(PLAYER_FARSIGHT); }
+
+	 void SetXp( uint32 xp ) { SetUInt32Value(PLAYER_XP, xp); }
+	 uint32 GetXp() { return GetUInt32Value(PLAYER_XP); }
+	 void SetNextLevelXp( uint32 xp ) { SetUInt32Value(PLAYER_NEXT_LEVEL_XP, xp); }
+
+	 void SetTalentPoints( uint8 spec, uint32 amt ) { SetUInt32Value(PLAYER_CHARACTER_POINTS1+spec, amt); }
+	 void ModTalentPoints( uint8 spec, int32 amt ) { ModUnsigned32Value(PLAYER_CHARACTER_POINTS1+spec, amt); }
+	 uint32 GetTalentPoints( uint8 spec ) { return GetUInt32Value(PLAYER_CHARACTER_POINTS1+spec); }
+
+	 void ModPosDamageDoneMod( uint32 school, uint32 value ) { ModUnsigned32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS+school, value); }
+	 uint32 GetPosDamageDoneMod( uint32 school ) { return GetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS+school); }
+
+	 void ModNegDamageDoneMod( uint32 school, uint32 value ) { ModUnsigned32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_NEG+school, value); }
+	 uint32 GetNegDamageDoneMod( uint32 school ) { return GetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_NEG+school); }
+
+	 void ModHealingDoneMod( uint32 value ) { SetUInt32Value(PLAYER_FIELD_MOD_HEALING_DONE_POS, value); }
+	 uint32 GetHealingDoneMod() { return GetUInt32Value(PLAYER_FIELD_MOD_HEALING_DONE_POS); }
+
+	 void SetAmmoId( uint32 id ) { SetUInt32Value(PLAYER_AMMO_ID, id); }
+	 uint32 GetAmmoId() { return GetUInt32Value(PLAYER_AMMO_ID); }
+
+	 void SetHonorCurrency( uint32 value ) { SetUInt32Value(PLAYER_FIELD_HONOR_CURRENCY, value); }
+	 void ModHonorCurrency( uint32 value ) { ModUnsigned32Value(PLAYER_FIELD_HONOR_CURRENCY, value); }
+	 uint32 GetHonorCurrency() { return GetUInt32Value(PLAYER_FIELD_HONOR_CURRENCY); }
+
+	 void SetArenaCurrency( uint32 value ) { SetUInt32Value(PLAYER_FIELD_ARENA_CURRENCY, value); }
+	 void ModArenaCurrency( uint32 value ) { ModUnsigned32Value(PLAYER_FIELD_ARENA_CURRENCY, value); }
+	 uint32 GetArenaCurrency() { return GetUInt32Value(PLAYER_FIELD_ARENA_CURRENCY); }
+
+     void SetGlyph( uint32 slot, uint32 id ) { SetUInt32Value(PLAYER_FIELD_GLYPHS_1 + slot, id); }
+	 uint32 GetGlyph( uint32 slot ) { return GetUInt32Value(PLAYER_FIELD_GLYPHS_1 + slot); }
+
 	//! Do this on /pvp off
 	 void ResetPvPTimer();
 	//! Stop the timer for pvp off
@@ -2104,7 +2151,7 @@ public:
 		SetPlayerSpeed( RUN, PLAYER_NORMAL_RUN_SPEED );
 		SetPlayerSpeed( SWIM, PLAYER_NORMAL_SWIM_SPEED );
 		SetMovement( MOVE_LAND_WALK, 8 );
-		SetUInt32Value( UNIT_FIELD_HEALTH, GetUInt32Value( UNIT_FIELD_MAXHEALTH ) );
+		SetHealth(GetUInt32Value( UNIT_FIELD_MAXHEALTH ) );
 	}
 
 	LocationVector m_last_group_position;

@@ -818,8 +818,8 @@ void WorldSession::FullLogin(Player * plr)
 	plr->m_playerInfo = info;
 	if(plr->m_playerInfo->guild)
 	{
-		plr->m_uint32Values[PLAYER_GUILDID] = plr->m_playerInfo->guild->GetGuildId();
-		plr->m_uint32Values[PLAYER_GUILDRANK] = plr->m_playerInfo->guildRank->iId;
+		plr->SetGuildId(plr->m_playerInfo->guild->GetGuildId());
+		plr->SetGuildRank(plr->m_playerInfo->guildRank->iId);
 	}
 
 	info->m_loggedInPlayer = plr;
@@ -841,7 +841,7 @@ void WorldSession::FullLogin(Player * plr)
 			if(plr->IsDead())
 			{
 				plr->ResurrectPlayer();
-				plr->SetUInt32Value(UNIT_FIELD_HEALTH, plr->GetMaxHealth());
+				plr->SetHealth(plr->GetMaxHealth());
                 plr->SetPower( POWER_TYPE_MANA, plr->GetMaxPower( POWER_TYPE_MANA ) );
 			}
 

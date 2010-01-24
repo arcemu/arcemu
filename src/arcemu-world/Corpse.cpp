@@ -60,7 +60,7 @@ void Corpse::Create( Player *owner, uint32 mapid, float x, float y, float z, flo
 	SetFloatValue( CORPSE_FIELD_POS_Z, z );
 	SetFloatValue( CORPSE_FIELD_FACING, ang );
 	*/
-	SetUInt64Value( CORPSE_FIELD_OWNER, owner->GetGUID() );
+	SetOwner(owner->GetGUID() );
 	_loadedfromdb = false;  // can't be created from db ;)
 }
 
@@ -116,7 +116,7 @@ void Corpse::generateLoot()
 void Corpse::SpawnBones()
 {
 	SetUInt32Value(CORPSE_FIELD_FLAGS, 5);
-	SetUInt64Value(CORPSE_FIELD_OWNER, 0); // remove corpse owner association
+	SetOwner(0); // remove corpse owner association
 	//remove item association
 	for (int i = 0; i < EQUIPMENT_SLOT_END; i++)
 	{
@@ -131,7 +131,7 @@ void Corpse::SpawnBones()
 void Corpse::Delink()
 {
 	SetUInt32Value(CORPSE_FIELD_FLAGS,5);
-	SetUInt64Value(CORPSE_FIELD_OWNER,0);
+	SetOwner(0);
 	SetCorpseState(CORPSE_STATE_BONES);
 	DeleteFromDB();
 }

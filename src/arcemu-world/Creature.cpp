@@ -215,8 +215,8 @@ Creature::Creature(uint64 guid)
 	spawnid = 0;
 	auctionHouse = 0;
 	has_waypoint_text = has_combat_text = false;
-	SetFloatValue(UNIT_FIELD_ATTACK_POWER_MULTIPLIER,0.0f);
-	SetFloatValue(UNIT_FIELD_RANGED_ATTACK_POWER_MULTIPLIER,0.0f);
+	SetAttackPowerMultiplier(0.0f);
+	SetRangedAttackPowerMultiplier(0.0f);
 	m_custom_waypoint_map = 0;
 	m_escorter = 0;
 	m_limbostate = false;
@@ -379,7 +379,7 @@ void Creature::OnRespawn(MapMgr * m)
 	if(proto && m_spawn)
 	{
 		SetUInt32Value(UNIT_NPC_FLAGS, proto->NPCFLags);
-		SetUInt32Value(UNIT_NPC_EMOTESTATE, m_spawn->emote_state);
+		SetEmoteState(m_spawn->emote_state);
 	}
 
 	RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SKINNABLE);
@@ -397,7 +397,7 @@ void Creature::OnRespawn(MapMgr * m)
 		SetHealth( 1);
 		m_limbostate = true;
 		setDeathState( CORPSE );
-		SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_STATE_DEAD);
+		SetEmoteState(EMOTE_STATE_DEAD);
 	}
 
 	//empty loot
@@ -558,7 +558,7 @@ void Creature::SaveToDB()
 		<< m_position.o << ","
 		<< m_aiInterface->getMoveType() << ","
 		<< m_uint32Values[UNIT_FIELD_DISPLAYID] << ","
-		<< m_uint32Values[UNIT_FIELD_FACTIONTEMPLATE] << ","
+		<< GetFaction() << ","
 		<< m_uint32Values[UNIT_FIELD_FLAGS] << ","
 		<< m_uint32Values[UNIT_FIELD_BYTES_0] << ","
 		<< m_uint32Values[UNIT_FIELD_BYTES_1] << ","
@@ -572,9 +572,9 @@ void Creature::SaveToDB()
 
 	ss << uint32(GetStandState()) << ","
 		<< m_uint32Values[UNIT_FIELD_MOUNTDISPLAYID] << ","
-		<< m_uint32Values[UNIT_VIRTUAL_ITEM_SLOT_ID] << ","
-		<< m_uint32Values[UNIT_VIRTUAL_ITEM_SLOT_ID+1] << ","
-		<< m_uint32Values[UNIT_VIRTUAL_ITEM_SLOT_ID+2] << ",";
+		<< GetEquippedItem(MELEE) << ","
+		<< GetEquippedItem(OFFHAND) << ","
+		<< GetEquippedItem(RANGED) << ",";
 
 	if(GetAIInterface()->m_moveFly)
 		ss << 1 << ",";
@@ -810,10 +810,10 @@ void Creature::EnslaveExpire()
 	switch(GetCreatureInfo()->Type)
 	{
 	case UNIT_TYPE_DEMON:
-		SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, 90);
+		SetFaction(90);
 		break;
 	default:
-		SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, 954);
+		SetFaction(954);
 		break;
 	};
 	_setFaction();
@@ -878,9 +878,9 @@ void Creature::CalcResistance(uint32 type)
 		{
 			Player * owner = pet->GetPetOwner();
 			if( type == 0 && owner )
-				pos += int32(0.35f * owner->GetUInt32Value( UNIT_FIELD_RESISTANCES + type ));
+				pos += int32(0.35f * owner->GetResistance(type ));
 			else if( owner )
-				pos += int32(0.40f * owner->GetUInt32Value( UNIT_FIELD_RESISTANCES + type ));
+				pos += int32(0.40f * owner->GetResistance(type ));
 		}
 	}
 
@@ -899,7 +899,7 @@ void Creature::CalcResistance(uint32 type)
 
     int32 tot = BaseResistance[ type ] + pos - neg;
 
-	SetUInt32Value( UNIT_FIELD_RESISTANCES + type, tot > 0 ? tot : 0);
+	SetResistance(type, tot > 0 ? tot : 0);
 }
 
 void Creature::CalcStat(uint32 type)
@@ -916,9 +916,9 @@ void Creature::CalcStat(uint32 type)
 	{
 		Player* owner = static_cast< Pet* >( this )->GetPetOwner();
 		if( type == STAT_STAMINA && owner )
-			pos += int32( 0.45f * owner->GetUInt32Value( UNIT_FIELD_STAT2 ) );
-		else if( type == STAT_INTELLECT && owner && GetUInt32Value( UNIT_CREATED_BY_SPELL ) )
-			pos += int32( 0.30f * owner->GetUInt32Value( UNIT_FIELD_STAT3 ) );
+			pos += int32( 0.45f * owner->GetStat(STAT_STAMINA) );
+		else if( type == STAT_INTELLECT && owner && GetCreatedBySpell() )
+			pos += int32( 0.30f * owner->GetStat(STAT_INTELLECT) );
 	}
 
 	if( TotalStatModPct[ type ] < 0 )
@@ -935,7 +935,7 @@ void Creature::CalcStat(uint32 type)
 	SetUInt32Value( UNIT_FIELD_NEGSTAT0 + type, neg );
 
     int32 tot = BaseStats[ type ] + pos - neg;
-	SetUInt32Value( UNIT_FIELD_STAT0 + type, tot > 0 ? tot : 0);
+	SetStat(type, tot > 0 ? tot : 0);
 
 	switch( type )
 	{
@@ -944,24 +944,24 @@ void Creature::CalcStat(uint32 type)
 			//Attack Power
 			if( !IsPet() )//We calculate pet's later
 			{
-				uint32 str = GetUInt32Value( UNIT_FIELD_STAT0 );
+				uint32 str = GetStat(STAT_STRENGTH);
 				int32 AP = ( str * 2 - 20 );
 				if( AP < 0 ) AP = 0;
-				SetUInt32Value( UNIT_FIELD_ATTACK_POWER, AP );
+				SetAttackPower(AP );
 			}
 			CalcDamage();
 		}break;
 	case STAT_AGILITY:
 		{
 			//Ranged Attack Power (Does any creature use this?)
-			int32 RAP = getLevel() + GetUInt32Value( UNIT_FIELD_STAT1 ) - 10;
+			int32 RAP = getLevel() + GetStat(STAT_AGILITY) - 10;
 			if( RAP < 0 ) RAP = 0;
-			SetUInt32Value( UNIT_FIELD_RANGED_ATTACK_POWER, RAP );
+			SetRangedAttackPower(RAP );
 		}break;
 	case STAT_STAMINA:
 		{
 			//Health
-			uint32 hp = GetUInt32Value( UNIT_FIELD_BASE_HEALTH );
+			uint32 hp = GetBaseHealth();
 			uint32 stat_bonus = GetUInt32Value( UNIT_FIELD_POSSTAT2 ) - GetUInt32Value( UNIT_FIELD_NEGSTAT2 );
 			if ( stat_bonus < 0 ) stat_bonus = 0;
 
@@ -971,13 +971,13 @@ void Creature::CalcStat(uint32 type)
 			if( res < hp ) res = hp;
 			SetUInt32Value( UNIT_FIELD_MAXHEALTH, res );
 			if( GetUInt32Value( UNIT_FIELD_HEALTH ) > GetUInt32Value( UNIT_FIELD_MAXHEALTH ) )
-				SetUInt32Value( UNIT_FIELD_HEALTH, GetUInt32Value( UNIT_FIELD_MAXHEALTH ) );
+				SetHealth(GetUInt32Value( UNIT_FIELD_MAXHEALTH ) );
 		}break;
 	case STAT_INTELLECT:
 		{
 			if( GetPowerType() == POWER_TYPE_MANA )
 			{
-				uint32 mana = GetUInt32Value( UNIT_FIELD_BASE_MANA );
+				uint32 mana = GetBaseMana();
 				uint32 stat_bonus = ( GetUInt32Value( UNIT_FIELD_POSSTAT3 ) - GetUInt32Value( UNIT_FIELD_NEGSTAT3 ) );
 				if( stat_bonus < 0 ) stat_bonus = 0;
 
@@ -985,7 +985,7 @@ void Creature::CalcStat(uint32 type)
 				uint32 res = mana + bonus;
 
 				if( res < mana ) res = mana;
-				SetUInt32Value( UNIT_FIELD_MAXPOWER1, res );
+				SetMaxPower(POWER_TYPE_MANA, res );
 			}
 		}break;
 	}
@@ -1049,13 +1049,13 @@ void Creature::RegenerateFocus()
 	if (m_interruptRegen)
 		return;
 
-	uint32 cur=GetUInt32Value(UNIT_FIELD_POWER3);
-	uint32 mm=GetUInt32Value(UNIT_FIELD_MAXPOWER3);
+	uint32 cur=GetPower(POWER_TYPE_FOCUS);
+	uint32 mm=GetMaxPower(POWER_TYPE_FOCUS);
 	if(cur>=mm)return;
 	float regenrate = sWorld.getRate(RATE_POWER3);
 	float amt = 25.0f * PctPowerRegenModifier[POWER_TYPE_FOCUS] * regenrate;
 	cur+=(uint32)amt;
-	SetUInt32Value(UNIT_FIELD_POWER3,(cur>=mm)?mm:cur);  // focus
+	SetPower(POWER_TYPE_FOCUS,(cur>=mm)?mm:cur);
 }
 
 void Creature::CallScriptUpdate()
@@ -1129,7 +1129,7 @@ void Creature::TotemExpire()
 	if( totemOwner != NULL )
 	{
 		pOwner = totemOwner;
-		if(GetUInt32Value(UNIT_CREATED_BY_SPELL) == 6495) // sentry totem
+		if(GetCreatedBySpell() == 6495) // sentry totem
 			pOwner->RemoveAura(6495);
 		totemOwner->m_TotemSlots[totemSlot] = 0;
     }
@@ -1236,7 +1236,7 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	SetScale( proto->Scale);
 
 	//SetHealth( (mode ? long2int32(proto->Health * 1.5)  : proto->Health));
-	//SetUInt32Value(UNIT_FIELD_BASE_HEALTH, (mode ? long2int32(proto->Health * 1.5)  : proto->Health));
+	//SetBaseHealth((mode ? long2int32(proto->Health * 1.5)  : proto->Health));
 	//SetMaxHealth( (mode ? long2int32(proto->Health * 1.5)  : proto->Health));
 	if( proto->MinHealth > proto->MaxHealth )
 	{
@@ -1259,10 +1259,10 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 
 	SetHealth( health);
 	SetMaxHealth( health);
-	SetUInt32Value(UNIT_FIELD_BASE_HEALTH, health);
+	SetBaseHealth(health);
 
-	SetUInt32Value(UNIT_FIELD_MAXPOWER1,proto->Mana);
-	SetUInt32Value(UNIT_FIELD_BASE_MANA,proto->Mana);
+	SetMaxPower(POWER_TYPE_MANA, proto->Mana);
+	SetBaseMana(proto->Mana);
 	SetPower( POWER_TYPE_MANA, proto->Mana );
 
 	// Whee, thank you blizz, I love patch 2.2! Later on, we can randomize male/female mobs! xD
@@ -1274,40 +1274,40 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	// uint32 gender = creature_info->GenerateModelId(&model);
 	// setGender(gender);
 
-	SetUInt32Value(UNIT_FIELD_DISPLAYID,spawn->displayid);
-	SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID,spawn->displayid);
-	SetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID,spawn->MountedDisplayID);
+	SetDisplayId(spawn->displayid);
+	SetNativeDisplayId(spawn->displayid);
+	SetMount(spawn->MountedDisplayID);
 
 	EventModelChange();
 
-    SetUInt32Value(UNIT_FIELD_LEVEL, proto->MinLevel + (RandomUInt(proto->MaxLevel - proto->MinLevel)));
+    setLevel(proto->MinLevel + (RandomUInt(proto->MaxLevel - proto->MinLevel)));
 	
 	if( mode && info )
-		ModUnsigned32Value(UNIT_FIELD_LEVEL, min(73 - GetUInt32Value(UNIT_FIELD_LEVEL), info->lvl_mod_a));
+		modLevel(min(73 - getLevel(), info->lvl_mod_a));
 
 	for(uint32 i = 0; i < 7; ++i)
-		SetUInt32Value(UNIT_FIELD_RESISTANCES+i,proto->Resistances[i]);
+		SetResistance(i,proto->Resistances[i]);
 
-	SetUInt32Value(UNIT_FIELD_BASEATTACKTIME,proto->AttackTime);
+	SetBaseAttackTime(MELEE,proto->AttackTime);
 
 	float dmg_coeff = CalcDMGCoefficient( info, mode );
 
-	SetFloatValue(UNIT_FIELD_MINDAMAGE, (mode ? proto->MinDamage * dmg_coeff  : proto->MinDamage ) );
-	SetFloatValue(UNIT_FIELD_MAXDAMAGE, (mode ? proto->MaxDamage * dmg_coeff  : proto->MaxDamage ) );
+	SetMinDamage((mode ? proto->MinDamage * dmg_coeff  : proto->MinDamage ) );
+	SetMaxDamage((mode ? proto->MaxDamage * dmg_coeff  : proto->MaxDamage ) );
 
-	SetUInt32Value(UNIT_FIELD_RANGEDATTACKTIME,proto->RangedAttackTime);
-	SetFloatValue(UNIT_FIELD_MINRANGEDDAMAGE,proto->RangedMinDamage);
-	SetFloatValue(UNIT_FIELD_MAXRANGEDDAMAGE,proto->RangedMaxDamage);
+	SetBaseAttackTime(RANGED,proto->RangedAttackTime);
+	SetMinRangedDamage(proto->RangedMinDamage);
+	SetMaxRangedDamage(proto->RangedMaxDamage);
 
-	SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, spawn->Item1SlotDisplay);
-	SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID+1, spawn->Item2SlotDisplay);
-	SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID+2, spawn->Item3SlotDisplay);
+	SetEquippedItem(MELEE,spawn->Item1SlotDisplay);
+	SetEquippedItem(OFFHAND,spawn->Item2SlotDisplay);
+	SetEquippedItem(RANGED,spawn->Item3SlotDisplay);
 
-	SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, spawn->factionid);
+	SetFaction(spawn->factionid);
 	SetUInt32Value(UNIT_FIELD_FLAGS, spawn->flags);
-	SetUInt32Value(UNIT_NPC_EMOTESTATE, spawn->emote_state);
-	SetFloatValue(UNIT_FIELD_BOUNDINGRADIUS, proto->BoundingRadius);
-	SetFloatValue(UNIT_FIELD_COMBATREACH, proto->CombatReach);
+	SetEmoteState(spawn->emote_state);
+	SetBoundingRadius(proto->BoundingRadius);
+	SetCombatReach(proto->CombatReach);
 	original_emotestate = spawn->emote_state;
 	// set position
 	m_position.ChangeCoords( spawn->x, spawn->y, spawn->z, spawn->o );
@@ -1357,19 +1357,19 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 
 	//load resistances
 	for(uint32 x= 0;x<7;x++)
-		BaseResistance[x]=GetUInt32Value(UNIT_FIELD_RESISTANCES+x);
+		BaseResistance[x]=GetResistance(x);
 	for(uint32 x= 0;x<5;x++)
-		BaseStats[x]=GetUInt32Value(UNIT_FIELD_STAT0+x);
+		BaseStats[x]=GetStat(x);
 
-	BaseDamage[0]=GetFloatValue(UNIT_FIELD_MINDAMAGE);
-	BaseDamage[1]=GetFloatValue(UNIT_FIELD_MAXDAMAGE);
-	BaseOffhandDamage[0]=GetFloatValue(UNIT_FIELD_MINOFFHANDDAMAGE);
-	BaseOffhandDamage[1]=GetFloatValue(UNIT_FIELD_MAXOFFHANDDAMAGE);
-	BaseRangedDamage[0]=GetFloatValue(UNIT_FIELD_MINRANGEDDAMAGE);
-	BaseRangedDamage[1]=GetFloatValue(UNIT_FIELD_MAXRANGEDDAMAGE);
+	BaseDamage[0]=GetMinDamage();
+	BaseDamage[1]=GetMaxDamage();
+	BaseOffhandDamage[0]=GetMinOffhandDamage();
+	BaseOffhandDamage[1]=GetMaxOffhandDamage();
+	BaseRangedDamage[0]=GetMinRangedDamage();
+	BaseRangedDamage[1]=GetMaxRangedDamage();
 	BaseAttackType=proto->AttackType;
 
-	SetFloatValue(UNIT_MOD_CAST_SPEED, 1.0f);   // better set this one
+	SetCastSpeedMod(1.0f);   // better set this one
 	SetUInt32Value(UNIT_FIELD_BYTES_0, spawn->bytes0);
 	SetUInt32Value(UNIT_FIELD_BYTES_1, spawn->bytes1);
 	SetUInt32Value(UNIT_FIELD_BYTES_2, spawn->bytes2);
@@ -1463,7 +1463,7 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 		SetHealth( 1);
 		m_limbostate = true;
 		setDeathState( CORPSE );
-		SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_STATE_DEAD);
+		SetEmoteState(EMOTE_STATE_DEAD);
 	}
 	m_invisFlag = static_cast<uint8>( proto->invisibility_type );
 	if( m_invisFlag > 0 )
@@ -1508,41 +1508,41 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 
 	SetHealth( health);
 	SetMaxHealth( health);
-	SetUInt32Value(UNIT_FIELD_BASE_HEALTH, health);
+	SetBaseHealth(health);
 
-	SetUInt32Value(UNIT_FIELD_MAXPOWER1,proto->Mana);
-	SetUInt32Value(UNIT_FIELD_BASE_MANA,proto->Mana);
+	SetMaxPower(POWER_TYPE_MANA, proto->Mana);
+	SetBaseMana(proto->Mana);
 	SetPower( POWER_TYPE_MANA, proto->Mana );
 
 	uint32 model = 0;
 	uint8 gender = creature_info->GenerateModelId(&model);
 	setGender(gender);
 
-	SetUInt32Value(UNIT_FIELD_DISPLAYID,model);
-	SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID,model);
-	SetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID,0);
+	SetDisplayId(model);
+	SetNativeDisplayId(model);
+	SetMount(0);
 
 	EventModelChange();
 
-	//SetUInt32Value(UNIT_FIELD_LEVEL, (mode ? proto->Level + (info ? info->lvl_mod_a : 0) : proto->Level));
-	SetUInt32Value(UNIT_FIELD_LEVEL, proto->MinLevel + (RandomUInt(proto->MaxLevel - proto->MinLevel)));
+	//setLevel((mode ? proto->Level + (info ? info->lvl_mod_a : 0) : proto->Level));
+	setLevel(proto->MinLevel + (RandomUInt(proto->MaxLevel - proto->MinLevel)));
 
 	for(uint32 i = 0; i < 7; ++i)
-		SetUInt32Value(UNIT_FIELD_RESISTANCES+i,proto->Resistances[i]);
+		SetResistance(i,proto->Resistances[i]);
 
-	SetUInt32Value(UNIT_FIELD_BASEATTACKTIME,proto->AttackTime);
-	SetFloatValue(UNIT_FIELD_MINDAMAGE, proto->MinDamage);
-	SetFloatValue(UNIT_FIELD_MAXDAMAGE, proto->MaxDamage);
+	SetBaseAttackTime(MELEE,proto->AttackTime);
+	SetMinDamage(proto->MinDamage);
+	SetMaxDamage(proto->MaxDamage);
 
 // m_spawn is invalid here - don't use it!
 // this is loading a CreatureProto, which doesn't have ItemSlotDisplays
-//	SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, m_spawn->Item1SlotDisplay);
+//	SetEquippedItem(MELEE,m_spawn->Item1SlotDisplay);
 //	SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_1, m_spawn->Item2SlotDisplay);
 //	SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_2, m_spawn->Item3SlotDisplay);
 
-	SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, proto->Faction);
-	SetFloatValue(UNIT_FIELD_BOUNDINGRADIUS, proto->BoundingRadius);
-	SetFloatValue(UNIT_FIELD_COMBATREACH, proto->CombatReach);
+	SetFaction(proto->Faction);
+	SetBoundingRadius(proto->BoundingRadius);
+	SetCombatReach(proto->CombatReach);
 	original_emotestate = 0;
 	// set position
 
@@ -1586,19 +1586,19 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 
 	//load resistances
 	for(uint32 x= 0;x<7;x++)
-		BaseResistance[x]=GetUInt32Value(UNIT_FIELD_RESISTANCES+x);
+		BaseResistance[x]=GetResistance(x);
 	for(uint32 x= 0;x<5;x++)
-		BaseStats[x]=GetUInt32Value(UNIT_FIELD_STAT0+x);
+		BaseStats[x]=GetStat(x);
 
-	BaseDamage[0]=GetFloatValue(UNIT_FIELD_MINDAMAGE);
-	BaseDamage[1]=GetFloatValue(UNIT_FIELD_MAXDAMAGE);
-	BaseOffhandDamage[0]=GetFloatValue(UNIT_FIELD_MINOFFHANDDAMAGE);
-	BaseOffhandDamage[1]=GetFloatValue(UNIT_FIELD_MAXOFFHANDDAMAGE);
-	BaseRangedDamage[0]=GetFloatValue(UNIT_FIELD_MINRANGEDDAMAGE);
-	BaseRangedDamage[1]=GetFloatValue(UNIT_FIELD_MAXRANGEDDAMAGE);
+	BaseDamage[0]=GetMinDamage();
+	BaseDamage[1]=GetMaxDamage();
+	BaseOffhandDamage[0]=GetMinOffhandDamage();
+	BaseOffhandDamage[1]=GetMaxOffhandDamage();
+	BaseRangedDamage[0]=GetMinRangedDamage();
+	BaseRangedDamage[1]=GetMaxRangedDamage();
 	BaseAttackType=proto->AttackType;
 
-	SetFloatValue(UNIT_MOD_CAST_SPEED, 1.0f);   // better set this one
+	SetCastSpeedMod(1.0f);   // better set this one
 
 	////////////AI
 
@@ -1664,7 +1664,7 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 		SetHealth( 1);
 		m_limbostate = true;
 		setDeathState( CORPSE );
-		SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_STATE_DEAD);
+		SetEmoteState(EMOTE_STATE_DEAD);
 	}
 	m_invisFlag = static_cast<uint8>( proto->invisibility_type );
 	if( m_invisFlag > 0 )
@@ -1927,7 +1927,7 @@ void Creature::RemoveLimboState(Unit * healer)
 		return;
 
 	m_limbostate = false;
-	SetUInt32Value(UNIT_NPC_EMOTESTATE, m_spawn ? m_spawn->emote_state : 0);
+	SetEmoteState(m_spawn ? m_spawn->emote_state : 0);
 	SetHealth( GetMaxHealth());
 	bInvincible = false;
 }

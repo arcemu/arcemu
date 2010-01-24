@@ -1356,7 +1356,7 @@ GameObject * CBattleground::SpawnGameObject(uint32 entry,uint32 MapId , float x,
 
 	go->CreateFromProto(entry, MapId, x, y, z, o);
 
-	go->SetUInt32Value(GAMEOBJECT_FACTION,faction);
+	go->SetFaction(faction);
 	go->_setFaction();
 	go->SetScale( scale);
 	go->SetUInt32Value(GAMEOBJECT_FLAGS, flags);
@@ -1745,8 +1745,8 @@ Creature * CBattleground::SpawnSpiritGuide(float x, float y, float z, float o, u
     pCreature->SetPower( POWER_TYPE_FOCUS, 200 );
     pCreature->SetPower( POWER_TYPE_HAPPINESS, 2000000 );
 
-	pCreature->SetUInt32Value(UNIT_FIELD_LEVEL, 60);
-	pCreature->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, 84 - horde);
+	pCreature->setLevel(60);
+	pCreature->SetFaction(84 - horde);
 	pCreature->_setFaction();
 
     pCreature->setRace( 0 );
@@ -1754,20 +1754,20 @@ Creature * CBattleground::SpawnSpiritGuide(float x, float y, float z, float o, u
     pCreature->setGender( 1 );
     pCreature->SetPowerType( 0 );
 
-	pCreature->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, 22802);
+	pCreature->SetEquippedItem(MELEE,22802);
 
 	pCreature->SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_PLUS_MOB | UNIT_FLAG_NOT_ATTACKABLE_9 | UNIT_FLAG_UNKNOWN_10 | UNIT_FLAG_PVP); // 4928
 
-	pCreature->SetUInt32Value(UNIT_FIELD_BASEATTACKTIME, 2000);
-	pCreature->SetUInt32Value(UNIT_FIELD_BASEATTACKTIME+1, 2000);
-	pCreature->SetFloatValue(UNIT_FIELD_BOUNDINGRADIUS, 0.208f);
-	pCreature->SetFloatValue(UNIT_FIELD_COMBATREACH, 1.5f);
+	pCreature->SetBaseAttackTime(MELEE,2000);
+	pCreature->SetBaseAttackTime(OFFHAND,2000);
+	pCreature->SetBoundingRadius(0.208f);
+	pCreature->SetCombatReach(1.5f);
 
-	pCreature->SetUInt32Value(UNIT_FIELD_DISPLAYID, 13337 + horde);
-	pCreature->SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID, 13337 + horde);
+	pCreature->SetDisplayId(13337 + horde);
+	pCreature->SetNativeDisplayId(13337 + horde);
 
 	pCreature->SetChannelSpellId(  22011);
-	pCreature->SetFloatValue(UNIT_MOD_CAST_SPEED, 1.0f);
+	pCreature->SetCastSpeedMod(1.0f);
 
 	pCreature->SetUInt32Value(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPIRITGUIDE);
 	pCreature->SetUInt32Value(UNIT_FIELD_BYTES_2, 1 | (0x10 << 8));

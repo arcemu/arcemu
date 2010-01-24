@@ -182,8 +182,8 @@ void ArathiBasin::SpawnBuff(uint32 x)
 		m_buffs[x] = SpawnGameObject(chosen_buffid, m_mapMgr->GetMapId(), BuffCoordinates[x][0], BuffCoordinates[x][1], BuffCoordinates[x][2],
 			BuffCoordinates[x][3], 0, 114, 1);
 
-		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_02, BuffRotations[x][0]);
-		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_03, BuffRotations[x][1]);
+		m_buffs[x]->SetParentRotation(2, BuffRotations[x][0]);
+		m_buffs[x]->SetParentRotation(3, BuffRotations[x][1]);
 		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 1, 6);
 		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
@@ -220,28 +220,28 @@ void ArathiBasin::SpawnControlPoint(uint32 Id, uint32 Type)
 		m_controlPoints[Id] = SpawnGameObject(gi->ID, m_mapMgr->GetMapId(), ControlPointCoordinates[Id][0], ControlPointCoordinates[Id][1],
 			ControlPointCoordinates[Id][2], ControlPointCoordinates[Id][3], 0, 35, 1.0f);
 
-		m_controlPoints[Id]->SetFloatValue(GAMEOBJECT_PARENTROTATION_02, ControlPointRotations[Id][0]);
-		m_controlPoints[Id]->SetFloatValue(GAMEOBJECT_PARENTROTATION_03, ControlPointRotations[Id][1]);
+		m_controlPoints[Id]->SetParentRotation(2, ControlPointRotations[Id][0]);
+		m_controlPoints[Id]->SetParentRotation(3, ControlPointRotations[Id][1]);
 		m_controlPoints[Id]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 		m_controlPoints[Id]->SetByte(GAMEOBJECT_BYTES_1, 1, static_cast<uint8>( gi->Type ));
 		m_controlPoints[Id]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 		m_controlPoints[Id]->SetUInt32Value(GAMEOBJECT_DYNAMIC, 1);
-		m_controlPoints[Id]->SetUInt32Value(GAMEOBJECT_DISPLAYID, gi->DisplayID);
+		m_controlPoints[Id]->SetDisplayId(gi->DisplayID);
 
 		switch(Type)
 		{
 		case AB_SPAWN_TYPE_ALLIANCE_ASSAULT:
 		case AB_SPAWN_TYPE_ALLIANCE_CONTROLLED:
-			m_controlPoints[Id]->SetUInt32Value(GAMEOBJECT_FACTION, 2);
+			m_controlPoints[Id]->SetFaction(2);
 			break;
 
 		case AB_SPAWN_TYPE_HORDE_ASSAULT:
 		case AB_SPAWN_TYPE_HORDE_CONTROLLED:
-			m_controlPoints[Id]->SetUInt32Value(GAMEOBJECT_FACTION, 1);
+			m_controlPoints[Id]->SetFaction(1);
 			break;
 
 		default:
-			m_controlPoints[Id]->SetUInt32Value(GAMEOBJECT_FACTION, 35);		// neutral
+			m_controlPoints[Id]->SetFaction(35);		// neutral
 			break;
 		}
 
@@ -256,23 +256,23 @@ void ArathiBasin::SpawnControlPoint(uint32 Id, uint32 Type)
 		// assign it a new guid (client needs this to see the entry change?)
 		m_controlPoints[Id]->SetNewGuid(m_mapMgr->GenerateGameobjectGuid());
 		m_controlPoints[Id]->SetEntry(  gi->ID);
-		m_controlPoints[Id]->SetUInt32Value(GAMEOBJECT_DISPLAYID, gi->DisplayID);
+		m_controlPoints[Id]->SetDisplayId(gi->DisplayID);
 		m_controlPoints[Id]->SetByte(GAMEOBJECT_BYTES_1, 1, static_cast<uint8>( gi->Type ));
 
 		switch(Type)
 		{
 		case AB_SPAWN_TYPE_ALLIANCE_ASSAULT:
 		case AB_SPAWN_TYPE_ALLIANCE_CONTROLLED:
-			m_controlPoints[Id]->SetUInt32Value(GAMEOBJECT_FACTION, 2);
+			m_controlPoints[Id]->SetFaction(2);
 			break;
 
 		case AB_SPAWN_TYPE_HORDE_ASSAULT:
 		case AB_SPAWN_TYPE_HORDE_CONTROLLED:
-			m_controlPoints[Id]->SetUInt32Value(GAMEOBJECT_FACTION, 1);
+			m_controlPoints[Id]->SetFaction(1);
 			break;
 
 		default:
-			m_controlPoints[Id]->SetUInt32Value(GAMEOBJECT_FACTION, 35);		// neutral
+			m_controlPoints[Id]->SetFaction(35);		// neutral
 			break;
 		}
 
@@ -294,8 +294,8 @@ void ArathiBasin::SpawnControlPoint(uint32 Id, uint32 Type)
 		m_controlPointAuras[Id] = SpawnGameObject(gi_aura->ID, m_mapMgr->GetMapId(), ControlPointCoordinates[Id][0], ControlPointCoordinates[Id][1],
 			ControlPointCoordinates[Id][2], ControlPointCoordinates[Id][3], 0, 35, 1.0f);
 
-		m_controlPointAuras[Id]->SetFloatValue(GAMEOBJECT_PARENTROTATION_02, ControlPointRotations[Id][0]);
-		m_controlPointAuras[Id]->SetFloatValue(GAMEOBJECT_PARENTROTATION_03, ControlPointRotations[Id][1]);
+		m_controlPointAuras[Id]->SetParentRotation(2, ControlPointRotations[Id][0]);
+		m_controlPointAuras[Id]->SetParentRotation(3, ControlPointRotations[Id][1]);
 		m_controlPointAuras[Id]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 		m_controlPointAuras[Id]->SetByte(GAMEOBJECT_BYTES_1, 1, 6);
 		m_controlPointAuras[Id]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
@@ -310,7 +310,7 @@ void ArathiBasin::SpawnControlPoint(uint32 Id, uint32 Type)
 		// re-spawn the aura
 		m_controlPointAuras[Id]->SetNewGuid(m_mapMgr->GenerateGameobjectGuid());
 		m_controlPointAuras[Id]->SetEntry(  gi_aura->ID);
-		m_controlPointAuras[Id]->SetUInt32Value(GAMEOBJECT_DISPLAYID, gi_aura->DisplayID);
+		m_controlPointAuras[Id]->SetDisplayId(gi_aura->DisplayID);
 		m_controlPointAuras[Id]->SetInfo(gi_aura);
 		m_controlPointAuras[Id]->PushToWorld(m_mapMgr);
 	}	

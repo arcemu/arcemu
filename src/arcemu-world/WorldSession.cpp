@@ -336,7 +336,7 @@ void WorldSession::LogoutPlayer(bool Save)
 		
 		// Save HP/Mana
 		_player->load_health = _player->GetUInt32Value( UNIT_FIELD_HEALTH );
-		_player->load_mana = _player->GetUInt32Value( UNIT_FIELD_POWER1 );
+		_player->load_mana = _player->GetPower(POWER_TYPE_MANA);
 
 		_player->DismissActivePet();
 		_player->RemoveAllGuardians();
@@ -1206,7 +1206,7 @@ void WorldSession::HandleUnlearnSkillOpcode(WorldPacket& recv_data)
 	if(!_player->IsInWorld()) return;
 	
     uint32 skill_line;
-	uint32 points_remaining=_player->GetUInt32Value(PLAYER_CHARACTER_POINTS2);
+	uint32 points_remaining=_player->GetTalentPoints(SPEC_SECONDARY);
 	recv_data >> skill_line;
 
 	// Cheater detection
@@ -1219,14 +1219,14 @@ void WorldSession::HandleUnlearnSkillOpcode(WorldPacket& recv_data)
 	_player->_RemoveSkillLine(skill_line);
 
 	//added by Zack : This is probably wrong or already made elsewhere : restore skill learnability
-	if(points_remaining==_player->GetUInt32Value(PLAYER_CHARACTER_POINTS2))
+	if(points_remaining==_player->GetTalentPoints(SPEC_SECONDARY))
 	{
 		//we unlearned a skill so we enable a new one to be learned
 		skilllineentry *sk=dbcSkillLine.LookupEntryForced(skill_line);
 		if(!sk)
 			return;
 		if(sk->type==SKILL_TYPE_PROFESSION && points_remaining<2)
-			_player->SetUInt32Value(PLAYER_CHARACTER_POINTS2,points_remaining+1);
+			_player->SetTalentPoints(SPEC_SECONDARY, points_remaining+1);
 	}
 }
 

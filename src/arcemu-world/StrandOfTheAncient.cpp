@@ -454,24 +454,24 @@ void StrandOfTheAncient::SpawnBuff(uint32 x)
 	{
 	case 0:
 		m_buffs[x] = SpawnGameObject(184977, mapid, 1449.9296875f, 1470.70971679688f, 342.634552001953f, -1.64060950279236f, 0, 114, 1);
-		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_02,0.73135370016098f);
-		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_03,-0.681998312473297f);
+		m_buffs[x]->SetParentRotation(2, 0.73135370016098f);
+		m_buffs[x]->SetParentRotation(3, -0.681998312473297f);
 		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 1, 6);
 		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 		break;
 	case 1:
 		m_buffs[x] = SpawnGameObject(184971, mapid, 1005.17071533203f, 1447.94567871094f, 335.903228759766f, 1.64060950279236f, 0, 114, 1);
-		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_02,0.73135370016098f);
-		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_03,0.681998372077942f);
+		m_buffs[x]->SetParentRotation(2, 0.73135370016098f);
+		m_buffs[x]->SetParentRotation(3, 0.681998372077942f);
 		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 1, 6);
 		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 		break;
 	case 2:
 		m_buffs[x] = SpawnGameObject(184965, mapid, 1317.50573730469f, 1550.85070800781f, 313.234375f, -0.26179963350296f, 0, 114, 1);
-		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_02,0.130526319146156f);
-		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_03,-0.991444826126099f);
+		m_buffs[x]->SetParentRotation(2, 0.130526319146156f);
+		m_buffs[x]->SetParentRotation(3, -0.991444826126099f);
 		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 1, 6);
 		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);

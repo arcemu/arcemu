@@ -116,7 +116,7 @@ void Item::Create( uint32 itemid, Player* owner )
 	{
         uint64 OwnerGUID = owner->GetGUID();
 
-        SetOWnerGUID( OwnerGUID );
+        SetOwnerGUID( OwnerGUID );
 		SetContainerGUID( OwnerGUID );
 	}
 
@@ -189,7 +189,7 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light )
 	else if( random_suffix )
 		SetRandomSuffix( random_suffix );
 
-	SetUInt32Value( ITEM_FIELD_ITEM_TEXT_ID, fields[11].GetUInt32() );
+	SetTextId( fields[11].GetUInt32() );
 
 	SetDurabilityMax( m_itemProto->MaxDurability );
 	SetDurability( fields[12].GetUInt32() );
@@ -290,11 +290,11 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light )
 void Item::ApplyRandomProperties( bool apply )
 {
 	// apply random properties
-	if( m_uint32Values[ITEM_FIELD_RANDOM_PROPERTIES_ID] != 0 )
+	if( GetItemRandomPropertyId() != 0 )
 	{
-		if( int32( m_uint32Values[ITEM_FIELD_RANDOM_PROPERTIES_ID] ) > 0 )		// Random Property
+		if( int32( GetItemRandomPropertyId() ) > 0 )
 		{
-			RandomProps* rp= dbcRandomProps.LookupEntry( m_uint32Values[ITEM_FIELD_RANDOM_PROPERTIES_ID] );
+			RandomProps* rp= dbcRandomProps.LookupEntry( GetItemRandomPropertyId() );
 			int32 Slot;
 			for( int k = 0; k < 3; k++ )
 			{
@@ -315,7 +315,7 @@ void Item::ApplyRandomProperties( bool apply )
 		}
 		else
 		{
-			ItemRandomSuffixEntry* rs = dbcItemRandomSuffix.LookupEntry( abs( int( m_uint32Values[ITEM_FIELD_RANDOM_PROPERTIES_ID] ) ) );
+			ItemRandomSuffixEntry* rs = dbcItemRandomSuffix.LookupEntry( abs( int( GetItemRandomPropertyId() ) ) );
 			int32 Slot;
 			for( uint32 k = 0; k < 3; ++k )
 			{
@@ -377,7 +377,7 @@ void Item::SaveToDB( int8 containerslot, int8 slot, bool firstsave, QueryBuffer*
 	ss << int32( GetChargesLeft() ) << ",";
 	ss << uint32( m_uint32Values[ ITEM_FIELD_FLAGS ] ) << ",";
 	ss << random_prop << ", " << random_suffix << ", ";
-	ss << GetUInt32Value(ITEM_FIELD_ITEM_TEXT_ID) << ",";
+	ss << GetTextId() << ",";
 	ss << GetDurability() << ",";
 	ss << static_cast<int>(containerslot) << ",";
 	ss << static_cast<int>(slot) << ",'";
@@ -607,9 +607,9 @@ void Item::RemoveFromWorld()
 void Item::SetOwner( Player* owner )
 { 
 	if( owner != NULL )
-		SetOWnerGUID( owner->GetGUID() );
+		SetOwnerGUID( owner->GetGUID() );
 	else 
-        SetOWnerGUID( 0 );
+        SetOwnerGUID( 0 );
 
 	m_owner = owner; 
 }
@@ -858,9 +858,9 @@ void Item::ApplyEnchantmentBonus( uint32 Slot, bool Apply )
 						val = RANDOM_SUFFIX_MAGIC_CALCULATION( RandomSuffixAmount, GetItemRandomSuffixFactor() );
 
 					if( Apply )
-						m_owner->ModUnsigned32Value( PLAYER_FIELD_MOD_DAMAGE_DONE_POS, val );
+						m_owner->ModPosDamageDoneMod(SCHOOL_NORMAL,val );
 					else
-						m_owner->ModUnsigned32Value( PLAYER_FIELD_MOD_DAMAGE_DONE_POS, -val );
+						m_owner->ModPosDamageDoneMod(SCHOOL_NORMAL,-val );
 					m_owner->CalcDamage();
 				}break;
 
@@ -931,7 +931,7 @@ void Item::ApplyEnchantmentBonus( uint32 Slot, bool Apply )
 							val = RANDOM_SUFFIX_MAGIC_CALCULATION( RandomSuffixAmount, GetItemRandomSuffixFactor() );
 
 						int32 value = GetProto()->Delay * val / 1000;
-						m_owner->ModUnsigned32Value( PLAYER_FIELD_MOD_DAMAGE_DONE_POS, value );
+						m_owner->ModPosDamageDoneMod(SCHOOL_NORMAL,value );
 					}
 					else
 					{
@@ -940,7 +940,7 @@ void Item::ApplyEnchantmentBonus( uint32 Slot, bool Apply )
 							val = RANDOM_SUFFIX_MAGIC_CALCULATION( RandomSuffixAmount, GetItemRandomSuffixFactor() );
 
 						int32 value =- (int32)(GetProto()->Delay * val / 1000 );
-						m_owner->ModUnsigned32Value( PLAYER_FIELD_MOD_DAMAGE_DONE_POS, value );
+						m_owner->ModPosDamageDoneMod(SCHOOL_NORMAL,value );
 					}
 					m_owner->CalcDamage();
 				}break;
@@ -998,19 +998,19 @@ int32 Item::FindFreeEnchantSlot( EnchantEntry* Enchantment, uint32 random_type )
 	if( random_type == 1 )		// random prop
 	{
 		for( uint32 Slot = 8; Slot < 11; ++Slot )
-			if( m_uint32Values[ITEM_FIELD_ENCHANTMENT_1_1 + Slot * 3] == 0 )
+			if( GetEnchantmentId(Slot) == 0 )
 				return Slot;
 	}
 	else if( random_type == 2 )	// random suffix
 	{
 		for( uint32 Slot = 6; Slot < 11; ++Slot )
-			if( m_uint32Values[ITEM_FIELD_ENCHANTMENT_1_1 + Slot * 3] == 0 )
+			if( GetEnchantmentId(Slot) == 0 )
 				return Slot;
 	}
 	
 	for( uint32 Slot = GemSlotsReserve + 2; Slot < 11; Slot++ )
 	{
-		if( m_uint32Values[ITEM_FIELD_ENCHANTMENT_1_1 + Slot * 3] == 0 )
+		if( GetEnchantmentId(Slot) == 0 )
 			return Slot;	
 	}
 
@@ -1021,7 +1021,7 @@ int32 Item::HasEnchantment( uint32 Id )
 {
 	for( uint32 Slot = 0; Slot < 11; Slot++ )
 	{
-		if( m_uint32Values[ITEM_FIELD_ENCHANTMENT_1_1 + Slot * 3] == Id )
+		if( GetEnchantmentId(Slot) == Id )
 			return Slot;
 	}
 

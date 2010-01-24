@@ -321,7 +321,7 @@ bool ChatHandler::HandleDismountCommand(const char* args, WorldSession *m_sessio
 		return true;
 	}
 
-	if(m_target->GetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID) == 0)
+	if(m_target->GetMount() == 0)
 	{
 		RedSystemMessage(m_session, "Target is not mounted.");
 		return true;

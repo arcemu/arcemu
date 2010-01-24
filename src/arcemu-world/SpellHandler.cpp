@@ -381,7 +381,7 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 			if(!_player->m_onAutoShot)
 			{
 				_player->m_AutoShotTarget = _player->GetSelection();
-				uint32 duration = _player->GetUInt32Value(UNIT_FIELD_RANGEDATTACKTIME);
+				uint32 duration = _player->GetBaseAttackTime(RANGED);
 				SpellCastTargets targets(recvPacket,GetPlayer()->GetGUID());
 				if(!targets.m_unitTarget)
 				{

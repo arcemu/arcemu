@@ -112,9 +112,9 @@ void DatabaseCleaner::CleanCharacters()
 			Corpse * pCorpse = new Corpse(0, result->Fetch()[0].GetUInt32());
 			pCorpse->LoadValues(result->Fetch()[8].GetString());
             pCorpse->SetLowGUID( 0 );
-			if(pCorpse->GetUInt32Value(CORPSE_FIELD_DISPLAY_ID) == 0 ||
-				pCorpse->GetUInt32Value(CORPSE_FIELD_OWNER) == 0 ||
-				chr_guids.find(pCorpse->GetUInt32Value(CORPSE_FIELD_OWNER)) == chr_guids.end())
+			if(pCorpse->GetDisplayId() == 0 ||
+				GET_LOWGUID_PART(pCorpse->GetOwner()) == 0 ||
+				chr_guids.find(GET_LOWGUID_PART(pCorpse->GetOwner())) == chr_guids.end())
 			{
 				tokill_corpses.push_back(pCorpse->GetLowGUID());
 			}

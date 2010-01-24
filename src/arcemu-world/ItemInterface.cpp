@@ -285,7 +285,7 @@ AddItemResult ItemInterface::m_AddItem(Item *item, int8 ContainerSlot, int16 slo
 					uint32 count = item->BuildCreateUpdateBlockForPlayer( &buf, m_pOwner );
 					m_pOwner->PushCreationData(&buf, count);
 				}
-				m_pOwner->SetUInt64Value(PLAYER_FIELD_INV_SLOT_HEAD + (slot*2), item->GetGUID());
+				m_pOwner->SetInventorySlot(slot, item->GetGUID());
 			}
 			else
 			{
@@ -317,7 +317,7 @@ AddItemResult ItemInterface::m_AddItem(Item *item, int8 ContainerSlot, int16 slo
 
 	if ( slot < EQUIPMENT_SLOT_END && ContainerSlot == INVENTORY_SLOT_NOT_SET )
 	{
-		int VisibleBase = PLAYER_VISIBLE_ITEM_1_ENTRYID + (slot * PLAYER_VISIBLE_ITEM_LENGTH);
+		int VisibleBase = GetOwner()->GetVisibleBase(slot);
 		if( VisibleBase > PLAYER_VISIBLE_ITEM_19_ENTRYID )
 		{
 			printf("Slot warning: slot: %d\n", slot);
@@ -418,12 +418,12 @@ Item *ItemInterface::SafeRemoveAndRetreiveItemFromSlot(int8 ContainerSlot, int16
 		{
 			pItem->m_isDirty = true;
 
-			m_pOwner->SetUInt64Value(PLAYER_FIELD_INV_SLOT_HEAD  + (slot*2), 0 );
+			m_pOwner->SetInventorySlot(slot, 0 );
 
 			if ( slot < EQUIPMENT_SLOT_END )
 			{
 				m_pOwner->ApplyItemMods( pItem, slot, false );
-				int VisibleBase = PLAYER_VISIBLE_ITEM_1_ENTRYID + (slot * PLAYER_VISIBLE_ITEM_LENGTH);
+				int VisibleBase = GetOwner()->GetVisibleBase(slot);
 				for (int i = VisibleBase; i < VisibleBase + PLAYER_VISIBLE_ITEM_LENGTH; ++i)
 				{
 					m_pOwner->SetUInt32Value(i, 0);
@@ -589,12 +589,12 @@ bool ItemInterface::SafeFullRemoveItemFromSlot(int8 ContainerSlot, int16 slot)
 		{
 			pItem->m_isDirty = true;
 
-			m_pOwner->SetUInt64Value(PLAYER_FIELD_INV_SLOT_HEAD  + (slot*2), 0 );
+			m_pOwner->SetInventorySlot(slot, 0 );
 
 			if ( slot < EQUIPMENT_SLOT_END )
 			{
 				m_pOwner->ApplyItemMods(pItem, slot, false );
-				int VisibleBase = PLAYER_VISIBLE_ITEM_1_ENTRYID + (slot * PLAYER_VISIBLE_ITEM_LENGTH);
+				int VisibleBase = GetOwner()->GetVisibleBase(slot);
 				for (int i = VisibleBase; i < VisibleBase + PLAYER_VISIBLE_ITEM_LENGTH; ++i)
 				{
 					m_pOwner->SetUInt32Value(i, 0);
@@ -2545,14 +2545,14 @@ void ItemInterface::BuyItem(ItemPrototype *item, uint32 total_amount, Creature *
 				m_pOwner->GetItemInterface()->RemoveItemAmt( ex->item[i], total_amount * ex->count[i] );
 		}
 
-		if(m_pOwner->GetUInt32Value(PLAYER_FIELD_HONOR_CURRENCY) >= (ex->honor*total_amount))
+		if(m_pOwner->GetHonorCurrency() >= (ex->honor*total_amount))
 		{
-			m_pOwner->ModUnsigned32Value(PLAYER_FIELD_HONOR_CURRENCY, -int32((ex->honor*total_amount)));
+			m_pOwner->ModHonorCurrency(-int32((ex->honor*total_amount)));
 			m_pOwner->m_honorPoints -=int32(ex->honor*total_amount);
 		}
-		if(m_pOwner->GetUInt32Value(PLAYER_FIELD_ARENA_CURRENCY ) >= (ex->arena*total_amount))
+		if(m_pOwner->GetArenaCurrency() >= (ex->arena*total_amount))
 		{
-			m_pOwner->ModUnsigned32Value(PLAYER_FIELD_ARENA_CURRENCY, -int32(ex->arena*total_amount));
+			m_pOwner->ModArenaCurrency(-int32(ex->arena*total_amount));
 			m_pOwner->m_arenaPoints -=int32(ex->arena*total_amount);
 		}        
 	}
@@ -2584,9 +2584,9 @@ int8 ItemInterface::CanAffordItem(ItemPrototype * item,uint32 amount, Creature *
 			}
 		}
 
-		if(m_pOwner->GetUInt32Value(PLAYER_FIELD_HONOR_CURRENCY) < (ex->honor*amount))
+		if(m_pOwner->GetHonorCurrency() < (ex->honor*amount))
 			return INV_ERR_NOT_ENOUGH_HONOR_POINTS;
-		if(m_pOwner->GetUInt32Value(PLAYER_FIELD_ARENA_CURRENCY ) < (ex->arena*amount))
+		if(m_pOwner->GetArenaCurrency() < (ex->arena*amount))
 			return INV_ERR_NOT_ENOUGH_ARENA_POINTS;
  		if(m_pOwner->GetMaxPersonalRating() < ex->personalrating)
 			return CAN_AFFORD_ITEM_ERROR_NOT_REQUIRED_RANK;
@@ -3169,23 +3169,23 @@ void ItemInterface::SwapItemSlots(int8 srcslot, int8 dstslot)
 	if( m_pItems[(int)dstslot] != NULL )
 	{
 		//sLog.outDebug( "(SrcItem) PLAYER_FIELD_INV_SLOT_HEAD + %u is now %u" , dstslot * 2 , m_pItems[(int)dstslot]->GetGUID() );
-		m_pOwner->SetUInt64Value( PLAYER_FIELD_INV_SLOT_HEAD + (dstslot*2),  m_pItems[(int)dstslot]->GetGUID() );
+		m_pOwner->SetInventorySlot(dstslot,  m_pItems[(int)dstslot]->GetGUID() );
 	}
 	else
 	{
 		//sLog.outDebug( "(SrcItem) PLAYER_FIELD_INV_SLOT_HEAD + %u is now 0" , dstslot * 2 );
-		m_pOwner->SetUInt64Value( PLAYER_FIELD_INV_SLOT_HEAD + (dstslot*2), 0 );
+		m_pOwner->SetInventorySlot(dstslot, 0 );
 	}
 
 	if( m_pItems[(int)srcslot] != NULL )
 	{
 		//sLog.outDebug( "(DstItem) PLAYER_FIELD_INV_SLOT_HEAD + %u is now %u" , dstslot * 2 , m_pItems[(int)srcslot]->GetGUID() );
-		m_pOwner->SetUInt64Value( PLAYER_FIELD_INV_SLOT_HEAD + (srcslot*2), m_pItems[(int)srcslot]->GetGUID() );
+		m_pOwner->SetInventorySlot(srcslot, m_pItems[(int)srcslot]->GetGUID() );
 	}
 	else
 	{
 		//sLog.outDebug( "(DstItem) PLAYER_FIELD_INV_SLOT_HEAD + %u is now 0" , dstslot * 2 );
-		m_pOwner->SetUInt64Value( PLAYER_FIELD_INV_SLOT_HEAD + (srcslot*2), 0 );
+		m_pOwner->SetInventorySlot(srcslot, 0 );
 	}
 
 	if( srcslot < INVENTORY_SLOT_BAG_END )	// source item is equipped

@@ -386,8 +386,8 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 	/************************************************************************/
 	/* Remove Emote State                                                   */
 	/************************************************************************/
-	if(_player->m_uint32Values[UNIT_NPC_EMOTESTATE])
-		_player->SetUInt32Value(UNIT_NPC_EMOTESTATE,0);
+	if(_player->GetEmoteState())
+		_player->SetEmoteState(0);
 
 	/************************************************************************/
 	/* Make sure the co-ordinates are valid.                                */

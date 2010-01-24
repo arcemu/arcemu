@@ -994,7 +994,7 @@ void WorldSession::HandleCorpseReclaimOpcode(WorldPacket &recv_data)
 	if( pCorpse == NULL )	return;
 
 	// Check that we're reviving from a corpse, and that corpse is associated with us.
-	if( pCorpse->GetUInt32Value( CORPSE_FIELD_OWNER ) != _player->GetLowGUID() && pCorpse->GetUInt32Value( CORPSE_FIELD_FLAGS ) == 5 )
+	if( GET_LOWGUID_PART(pCorpse->GetOwner()) != _player->GetLowGUID() && pCorpse->GetUInt32Value( CORPSE_FIELD_FLAGS ) == 5 )
 	{
 		WorldPacket data( SMSG_RESURRECT_FAILED, 4 );
 		data << uint32(1); // this is a real guess!
@@ -1276,7 +1276,7 @@ void WorldSession::HandleAmmoSetOpcode(WorldPacket & recv_data)
 		if(GetPlayer()->getLevel() < xproto->RequiredLevel)
 		{
 			GetPlayer()->GetItemInterface()->BuildInventoryChangeError(NULL,NULL,INV_ERR_ITEM_RANK_NOT_ENOUGH);
-			_player->SetUInt32Value(PLAYER_AMMO_ID, 0);
+			_player->SetAmmoId(0);
 			_player->CalcDamage();
 			return;
 		}
@@ -1286,7 +1286,7 @@ void WorldSession::HandleAmmoSetOpcode(WorldPacket & recv_data)
 		if(!GetPlayer()->_HasSkillLine(xproto->RequiredSkill))
 		{
 			GetPlayer()->GetItemInterface()->BuildInventoryChangeError(NULL,NULL,INV_ERR_ITEM_RANK_NOT_ENOUGH);
-			_player->SetUInt32Value(PLAYER_AMMO_ID, 0);
+			_player->SetAmmoId(0);
 			_player->CalcDamage();
 			return;
 		}
@@ -1296,7 +1296,7 @@ void WorldSession::HandleAmmoSetOpcode(WorldPacket & recv_data)
 			if(_player->_GetSkillLineCurrent(xproto->RequiredSkill, false) < xproto->RequiredSkillRank)
 			{
 				GetPlayer()->GetItemInterface()->BuildInventoryChangeError(NULL,NULL,INV_ERR_ITEM_RANK_NOT_ENOUGH);
-				_player->SetUInt32Value(PLAYER_AMMO_ID, 0);
+				_player->SetAmmoId(0);
 				_player->CalcDamage();
 				return;
 			}
@@ -1312,11 +1312,11 @@ void WorldSession::HandleAmmoSetOpcode(WorldPacket & recv_data)
 		case PALADIN:
 		case DEATHKNIGHT:
 			_player->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, INV_ERR_YOU_CAN_NEVER_USE_THAT_ITEM); // good error message?
-			_player->SetUInt32Value(PLAYER_AMMO_ID, 0);
+			_player->SetAmmoId(0);
 			_player->CalcDamage();
 			return;
 		default:
-			_player->SetUInt32Value(PLAYER_AMMO_ID, ammoId);
+			_player->SetAmmoId(ammoId);
 			_player->CalcDamage();
 #ifdef OPTIMIZED_PLAYER_SAVING
 			_player->save_Misc();
@@ -2535,13 +2535,13 @@ void WorldSession::HandleRemoveGlyph(WorldPacket & recv_data)
 	if(glyphNum < 0 || glyphNum > 5)
 		return; // Glyph doesn't exist
 	// Get info
-	uint32 glyphId = _player->GetUInt32Value(PLAYER_FIELD_GLYPHS_1 + glyphNum);
+	uint32 glyphId = _player->GetGlyph(glyphNum);
 	if(glyphId == 0)
 		return;
 	GlyphPropertyEntry *glyph = dbcGlyphProperty.LookupEntryForced(glyphId);
 	if(!glyph)
 		return;
-	_player->SetUInt32Value(PLAYER_FIELD_GLYPHS_1 + glyphNum, 0);
+	_player->SetGlyph(glyphNum, 0);
 	_player->RemoveAllAuras(glyph->SpellID, 0);
 	_player->m_specs[_player->m_talentActiveSpec].glyphs[glyphNum] = 0;
 	_player->smsg_TalentsInfo(false);

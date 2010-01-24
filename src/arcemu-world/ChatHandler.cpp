@@ -624,7 +624,7 @@ void WorldSession::HandleTextEmoteOpcode( WorldPacket & recv_data )
             case EMOTE_STATE_KNEEL:
 			case EMOTE_STATE_DANCE:
 				{
-					_player->SetUInt32Value(UNIT_NPC_EMOTESTATE, em->textid);
+					_player->SetEmoteState(em->textid);
 				}break;
 		}
 

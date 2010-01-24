@@ -135,7 +135,7 @@ public:
 	Player* GetOwner() const { return m_owner; }
 	void SetOwner( Player* owner );
 
-    void SetOWnerGUID( uint64 GUID ){ SetUInt64Value( ITEM_FIELD_OWNER, GUID );   }
+    void SetOwnerGUID( uint64 GUID ){ SetUInt64Value( ITEM_FIELD_OWNER, GUID );   }
     uint64 GetOwnerGUID(){ return GetUInt64Value( ITEM_FIELD_OWNER );  }
     
     void SetContainerGUID( uint64 GUID ){ SetUInt64Value( ITEM_FIELD_CONTAINED, GUID );   }
@@ -194,8 +194,8 @@ public:
 	{
 		int32 r_id = -(int32(id));
 		uint32 v = Item::GenerateRandomSuffixFactor( m_itemProto );
-		SetUInt32Value( ITEM_FIELD_RANDOM_PROPERTIES_ID, (uint32)r_id );
-		SetUInt32Value( ITEM_FIELD_PROPERTY_SEED, v );
+		SetRandomProperty( (uint32)r_id );
+		SetItemRandomSuffixFactor( v );
 		random_suffix = id;
 	}
 
@@ -207,6 +207,8 @@ public:
 
     uint32 GetEnchantmentId( uint32 index ){ return GetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1 + 3 * index ); }
     void SetEnchantmentId( uint32 index, uint32 value ){ SetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1 + 3 * index, value ); }
+	void SetTextId( uint32 message_id ) { SetUInt32Value( ITEM_FIELD_ITEM_TEXT_ID, message_id); }
+	uint32 GetTextId() { return GetUInt32Value( ITEM_FIELD_ITEM_TEXT_ID ); }
 
     //////////////////////////////////////////////////////////
     // Creation time in terms of played time
@@ -228,7 +230,7 @@ public:
 	{
 		for( uint32 x = 0; x < 5; x++ )
 			if( m_itemProto->Spells[x].Id )
-				return GetUInt32Value( ITEM_FIELD_SPELL_CHARGES + x );
+				return GetCharges(x);
 		return 0;
 	}
 

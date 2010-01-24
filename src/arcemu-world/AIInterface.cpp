@@ -233,7 +233,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				}
 
 				// Stop the emote - change to fight emote
-				m_Unit->SetUInt32Value( UNIT_NPC_EMOTESTATE, EMOTE_STATE_READY1H );
+				m_Unit->SetEmoteState(EMOTE_STATE_READY1H );
 				m_returnX = m_Unit->GetPositionX();
 				m_returnY = m_Unit->GetPositionY();
 				m_returnZ = m_Unit->GetPositionZ();
@@ -241,7 +241,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				m_moveRun = true; //run to the target
 
 				// dismount if mounted
-				m_Unit->SetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID, 0);
+				m_Unit->SetMount(0);
 
 				if(m_AIState != STATE_ATTACKING)
 					StopMovement(0);
@@ -326,9 +326,9 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 						objmgr.HandleMonsterSayEvent( static_cast< Creature* >( m_Unit ), MONSTER_SAY_EVENT_ON_COMBAT_STOP );
 
 					if( static_cast< Creature* >( m_Unit )->original_emotestate )
-						m_Unit->SetUInt32Value( UNIT_NPC_EMOTESTATE, static_cast< Creature* >( m_Unit )->original_emotestate );
+						m_Unit->SetEmoteState(static_cast< Creature* >( m_Unit )->original_emotestate );
 					else
-						m_Unit->SetUInt32Value( UNIT_NPC_EMOTESTATE, 0 );
+						m_Unit->SetEmoteState(0 );
 
 					if(static_cast<Creature*>(m_Unit)->m_spawn && (static_cast< Creature* >( m_Unit )->m_spawn->channel_target_go || static_cast< Creature* >( m_Unit )->m_spawn->channel_target_creature ) )
 					{
@@ -416,8 +416,8 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				{
 					Creature *creature = static_cast< Creature* >( m_Unit );
 					if( creature->GetProto() && creature->m_spawn )
-						m_Unit->SetUInt32Value( UNIT_FIELD_MOUNTDISPLAYID, creature->m_spawn->MountedDisplayID );
-						//m_Unit->SetUInt32Value( UNIT_FIELD_MOUNTDISPLAYID, static_cast< Creature* >( m_Unit )->GetSpawnO->MountedDisplayID );
+						m_Unit->SetMount(creature->m_spawn->MountedDisplayID );
+						//m_Unit->SetMount(static_cast< Creature* >( m_Unit )->GetSpawnO->MountedDisplayID );
 				}
 				//Zack : not sure we need to send this. Did not see it in the dumps since mob died eventually but it seems logical to make this
 				m_Unit->smsg_AttackStop( pUnit );
@@ -1286,7 +1286,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 				{
 					//calculate next move
 //					float dist = combatReach[1]; //this is theoretically right but annoying formula in game
-//					float dist = combatReach[1] - m_Unit->GetFloatValue( UNIT_FIELD_COMBATREACH ); //ignore our combat reach, make sure target (player) can reach us first.
+//					float dist = combatReach[1] - m_Unit->GetCombatReach(); //ignore our combat reach, make sure target (player) can reach us first.
 
 					//practical tests show that we really should try to jump on target to get good results :S
 					//simply ignore combat reach and move as close as visually not annoying 
@@ -1518,7 +1518,7 @@ void AIInterface::DismissPet()
 	if(m_PetOwner->GetTypeId() != TYPEID_PLAYER)
 		return;
 
-	if(m_Unit->GetUInt32Value(UNIT_CREATED_BY_SPELL) == 0)
+	if(m_Unit->GetCreatedBySpell() == 0)
 		static_cast< Player* >( m_PetOwner )->SetFreePetNo(false, (int)m_Unit->GetUInt32Value(UNIT_FIELD_PETNUMBER));
 	static_cast< Player* >( m_PetOwner )->SetPet(NULL);
 	static_cast< Player* >( m_PetOwner )->SetPetName("");
@@ -2298,12 +2298,12 @@ float AIInterface::_CalcCombatRange(Unit* target, bool ranged)
 		rang = 5.0f;
 	}
 
-	float selfreach = m_Unit->GetFloatValue(UNIT_FIELD_COMBATREACH);
+	float selfreach = m_Unit->GetCombatReach();
 	float targetradius;
-//	targetradius = target->GetFloatValue(UNIT_FIELD_BOUNDINGRADIUS); //this is plain wrong. Represents i have no idea what :)
+//	targetradius = target->GetBoundingRadius(); //this is plain wrong. Represents i have no idea what :)
 	targetradius = target->GetModelHalfSize();
 	float selfradius;
-//	selfradius = m_Unit->GetFloatValue(UNIT_FIELD_BOUNDINGRADIUS); //this is plain wrong. Represents i have no idea what :)
+//	selfradius = m_Unit->GetBoundingRadius(); //this is plain wrong. Represents i have no idea what :)
 	selfradius = m_Unit->GetModelHalfSize();
 //	float targetscale = target->GetScale();
 //	float selfscale = m_Unit->GetScale();
@@ -2768,22 +2768,22 @@ bool AIInterface::showWayPoints(Player* pPlayer, bool Backwards)
 			pWayPoint->SetScale(  0.5f );
 			if(Backwards)
 			{
-				uint32 DisplayID = (wp->backwardskinid == 0)? GetUnit()->GetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID) : wp->backwardskinid;
-				pWayPoint->SetUInt32Value(UNIT_FIELD_DISPLAYID, DisplayID);
-				pWayPoint->SetUInt32Value(UNIT_NPC_EMOTESTATE, wp->backwardemoteid);
+				uint32 DisplayID = (wp->backwardskinid == 0)? GetUnit()->GetNativeDisplayId() : wp->backwardskinid;
+				pWayPoint->SetDisplayId(DisplayID);
+				pWayPoint->SetEmoteState(wp->backwardemoteid);
 			}
 			else
 			{
-				uint32 DisplayID = (wp->forwardskinid == 0)? GetUnit()->GetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID) : wp->forwardskinid;
-				pWayPoint->SetUInt32Value(UNIT_FIELD_DISPLAYID, DisplayID);
-				pWayPoint->SetUInt32Value(UNIT_NPC_EMOTESTATE, wp->forwardemoteid);
+				uint32 DisplayID = (wp->forwardskinid == 0)? GetUnit()->GetNativeDisplayId() : wp->forwardskinid;
+				pWayPoint->SetDisplayId(DisplayID);
+				pWayPoint->SetEmoteState(wp->forwardemoteid);
 			}
-			pWayPoint->SetUInt32Value(UNIT_FIELD_LEVEL, wp->id);
+			pWayPoint->setLevel(wp->id);
 			pWayPoint->SetUInt32Value(UNIT_NPC_FLAGS, 0);
-			pWayPoint->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE , pPlayer->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
+			pWayPoint->SetFaction(pPlayer->GetFaction());
 			pWayPoint->SetHealth( 1);
 			pWayPoint->SetMaxHealth( 1);
-			pWayPoint->SetUInt32Value(UNIT_FIELD_STAT0, wp->flags);
+			pWayPoint->SetStat(STAT_STRENGTH, wp->flags);
 
 			//Create on client
 			ByteBuffer buf(3000);
@@ -2963,9 +2963,9 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 							}
 							else
 							{
-								if(GetUnit()->GetUInt32Value(UNIT_NPC_EMOTESTATE) != wp->forwardemoteid)
+								if(GetUnit()->GetEmoteState() != wp->forwardemoteid)
 								{
-									GetUnit()->SetUInt32Value(UNIT_NPC_EMOTESTATE, wp->forwardemoteid);
+									GetUnit()->SetEmoteState(wp->forwardemoteid);
 								}
 							}
 						}
@@ -2977,9 +2977,9 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 							}
 							else
 							{
-								if(GetUnit()->GetUInt32Value(UNIT_NPC_EMOTESTATE) != wp->backwardemoteid)
+								if(GetUnit()->GetEmoteState() != wp->backwardemoteid)
 								{
-									GetUnit()->SetUInt32Value(UNIT_NPC_EMOTESTATE, wp->backwardemoteid);
+									GetUnit()->SetEmoteState(wp->backwardemoteid);
 								}
 							}
 						}
@@ -3048,7 +3048,7 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 		if(sWorld.getAllowMovement() == false) //is creature movement enabled?
 			return;
 
-		if(m_Unit->GetUInt32Value(UNIT_FIELD_DISPLAYID) == 5233) //if Spirit Healer don't move
+		if(m_Unit->GetDisplayId() == 5233) //if Spirit Healer don't move
 			return;
 
 		// do we have a formation?
@@ -3164,17 +3164,17 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 					{
 						if(!m_moveBackward)
 						{
-							if((wp->forwardskinid != 0) && (GetUnit()->GetUInt32Value(UNIT_FIELD_DISPLAYID) != wp->forwardskinid))
+							if((wp->forwardskinid != 0) && (GetUnit()->GetDisplayId() != wp->forwardskinid))
 							{
-								GetUnit()->SetUInt32Value(UNIT_FIELD_DISPLAYID, wp->forwardskinid);
+								GetUnit()->SetDisplayId(wp->forwardskinid);
 								GetUnit()->EventModelChange();
 							}
 						}
 						else
 						{
-							if((wp->backwardskinid != 0) && (GetUnit()->GetUInt32Value(UNIT_FIELD_DISPLAYID) != wp->backwardskinid))
+							if((wp->backwardskinid != 0) && (GetUnit()->GetDisplayId() != wp->backwardskinid))
 							{
-								GetUnit()->SetUInt32Value(UNIT_FIELD_DISPLAYID, wp->backwardskinid);
+								GetUnit()->SetDisplayId(wp->backwardskinid);
 								GetUnit()->EventModelChange();
 							}
 						}

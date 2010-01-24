@@ -104,14 +104,14 @@ bool GameObject::CreateFromProto(uint32 entry,uint32 mapid, float x, float y, fl
 //	SetFloatValue( GAMEOBJECT_POS_Z, z );
 //	SetFloatValue( GAMEOBJECT_FACING, ang );
 	SetPosition(x, y, z, ang);
-	SetFloatValue(GAMEOBJECT_PARENTROTATION, r0);
-	SetFloatValue(GAMEOBJECT_PARENTROTATION_01, r1);
-	SetFloatValue(GAMEOBJECT_PARENTROTATION_02, r2);
-	SetFloatValue(GAMEOBJECT_PARENTROTATION_03, r3);
+	SetParentRotation(0, r0);
+	SetParentRotation(1, r1);
+	SetParentRotation(2, r2);
+	SetParentRotation(3, r3);
 	UpdateRotation();
     SetByte( GAMEOBJECT_BYTES_1, 3, 0 );
 	SetByte( GAMEOBJECT_BYTES_1, 0, 1 );
-	SetUInt32Value( GAMEOBJECT_DISPLAYID, pInfo->DisplayID );
+	SetDisplayId(pInfo->DisplayID );
 	SetByte( GAMEOBJECT_BYTES_1, 1, static_cast<uint8>( pInfo->Type ));
    
 	InitAI();
@@ -273,12 +273,12 @@ void GameObject::SaveToDB()
 		<< GetOrientation() << ","
 //		<< GetUInt64Value(GAMEOBJECT_ROTATION) << ","
 		<< uint64(0) << ","
-		<< GetFloatValue(GAMEOBJECT_PARENTROTATION) << ","
-		<< GetFloatValue(GAMEOBJECT_PARENTROTATION_02) << ","
-		<< GetFloatValue(GAMEOBJECT_PARENTROTATION_03) << ","
+		<< GetParentRotation(0) << ","
+		<< GetParentRotation(2) << ","
+		<< GetParentRotation(3) << ","
 		<< GetUInt32Value(GAMEOBJECT_BYTES_1) << ","
 		<< GetUInt32Value(GAMEOBJECT_FLAGS) << ","
-		<< GetUInt32Value(GAMEOBJECT_FACTION) << ","
+		<< GetFaction() << ","
 		<< GetScale() << ","
 		<< "0,"
 		<< m_phase << ","
@@ -301,12 +301,12 @@ void GameObject::SaveToFile(std::stringstream & name)
 		<< GetOrientation() << ","
 //		<< GetUInt64Value(GAMEOBJECT_ROTATION) << ","
 		<< uint64(0) << ","
-		<< GetFloatValue(GAMEOBJECT_PARENTROTATION) << ","
-		<< GetFloatValue(GAMEOBJECT_PARENTROTATION_02) << ","
-		<< GetFloatValue(GAMEOBJECT_PARENTROTATION_03) << ","
+		<< GetParentRotation(0) << ","
+		<< GetParentRotation(2) << ","
+		<< GetParentRotation(3) << ","
 		<< GetByte(GAMEOBJECT_BYTES_1, 0) << ","
 		<< GetUInt32Value(GAMEOBJECT_FLAGS) << ","
-		<< GetUInt32Value(GAMEOBJECT_FACTION) << ","
+		<< GetFaction() << ","
 		<< GetScale() << ","
 		<< "0,"
 		<< m_phase << ","
@@ -443,7 +443,7 @@ bool GameObject::Load(GOSpawn *spawn)
 	SetByte(GAMEOBJECT_BYTES_1, 0, static_cast<uint8>( spawn->state ));	
 	if(spawn->faction)
 	{
-		SetUInt32Value(GAMEOBJECT_FACTION,spawn->faction);
+		SetFaction(spawn->faction);
 		m_faction = dbcFactionTemplate.LookupEntryForced(spawn->faction);
 		if(m_faction)
 			m_factionDBC = dbcFaction.LookupEntry(m_faction->Faction);
@@ -777,14 +777,14 @@ void GameObject::UpdateRotation()
 
 	m_rotation = rotation;
 
-	float r2=GetFloatValue(GAMEOBJECT_PARENTROTATION_02);
-	float r3=GetFloatValue(GAMEOBJECT_PARENTROTATION_03);
+	float r2=GetParentRotation(2);
+	float r3=GetParentRotation(3);
 	if(r2== 0.0f && r3== 0.0f && !(m_overrides & GAMEOBJECT_OVERRIDE_PARENTROT) )
 	{
 		r2 = (float)f_rot1;
 		r3 = (float)f_rot2;
-		SetFloatValue(GAMEOBJECT_PARENTROTATION_02, r2);
-		SetFloatValue(GAMEOBJECT_PARENTROTATION_03, r3);
+		SetParentRotation(2, r2);
+		SetParentRotation(3, r3);
 	}
 }
 

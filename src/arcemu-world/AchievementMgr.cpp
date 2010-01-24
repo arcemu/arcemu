@@ -1978,7 +1978,7 @@ void AchievementMgr::GiveAchievementReward(AchievementEntry const* entry)
 		if( r.type & ACHIEVEMENT_REWARDTYPE_TITLE )
 		{
 			GetPlayer()->SetKnownTitle(static_cast< RankTitles >(r.rankId), true);
-			GetPlayer()->SetUInt32Value( PLAYER_CHOSEN_TITLE, 0 );
+			GetPlayer()->SetChosenTitle(0 );
 		}
 		if( r.type & ACHIEVEMENT_REWARDTYPE_ITEM )
 		{

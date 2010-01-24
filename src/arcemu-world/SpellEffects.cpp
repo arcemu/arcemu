@@ -614,7 +614,7 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 					{
 						float block_multiplier = ( 100.0f + float( p_caster->m_modblockabsorbvalue ) ) / 100.0f;
 						if( block_multiplier < 1.0f )block_multiplier = 1.0f;
-						int32 blockable_damage = float2int32( (float( it->GetProto()->Block ) + ( float( p_caster->m_modblockvaluefromspells + p_caster->GetUInt32Value( PLAYER_RATING_MODIFIER_BLOCK ) )) + ( ( float( p_caster->GetUInt32Value( UNIT_FIELD_STAT0 ) ) / 20.0f ) - 1.0f ) ) * block_multiplier);
+						int32 blockable_damage = float2int32( (float( it->GetProto()->Block ) + ( float( p_caster->m_modblockvaluefromspells + p_caster->GetUInt32Value( PLAYER_RATING_MODIFIER_BLOCK ) )) + ( ( float( p_caster->GetStat(STAT_STRENGTH) ) / 20.0f ) - 1.0f ) ) * block_multiplier);
 						dmg += blockable_damage;
 					}
 				}
@@ -1170,7 +1170,7 @@ out:
 					if( p_caster == NULL )
 						return;
 					SpellEntry * sp = p_caster->last_heal_spell ? p_caster->last_heal_spell : GetProto();
-					p_caster->Energize( p_caster, 20272, 60 * u_caster->GetUInt32Value( UNIT_FIELD_BASE_MANA ) * sp->ManaCostPercentage / 10000, POWER_TYPE_MANA );
+					p_caster->Energize( p_caster, 20272, 60 * u_caster->GetBaseMana() * sp->ManaCostPercentage / 10000, POWER_TYPE_MANA );
 				}break;
 			case 38443:
 				{
@@ -1195,7 +1195,7 @@ out:
 			if(!p_caster)
 				break;
 
-			p_caster->Energize(p_caster, 31930, uint32(0.15f*p_caster->GetUInt32Value(UNIT_FIELD_BASE_MANA)), POWER_TYPE_MANA );
+			p_caster->Energize(p_caster, 31930, uint32(0.15f*p_caster->GetBaseMana()), POWER_TYPE_MANA );
 			p_caster->CastSpell(p_caster, 57669, false);
 		}break;
 		/*************************
@@ -1273,7 +1273,7 @@ out:
 			uint32 pet_dmg = this->forced_basepoints[0]*20/100;
 			if( pet_dmg )
 			{
-				unitTarget->ModUnsigned32Value(UNIT_FIELD_HEALTH,pet_dmg);
+				unitTarget->ModHealth(pet_dmg);
 				unitTarget->DealDamage(u_caster,pet_dmg,0,0,25228,true);
 			}
 		}break;
@@ -1358,7 +1358,7 @@ out:
 				deltaY = u_caster->GetPositionY()-unitTarget->GetPositionY();
 				if(deltaX == 0.0f || deltaY == 0.0f)
 					return;
-				float d = sqrt(deltaX*deltaX+deltaY*deltaY)-u_caster->GetFloatValue(UNIT_FIELD_BOUNDINGRADIUS)-unitTarget->GetFloatValue(UNIT_FIELD_BOUNDINGRADIUS);
+				float d = sqrt(deltaX*deltaX+deltaY*deltaY)-u_caster->GetBoundingRadius()-unitTarget->GetBoundingRadius();
 				float alpha = atanf(deltaY/deltaX);
 				if(deltaX<0)
 					alpha += float(M_PI);
@@ -1522,7 +1522,7 @@ out:
 			else if(m_spellInfo->Id == 11687) mod = 5;
 			else mod = 6;
 
-			uint32 damage = m_spellInfo->EffectBasePoints[i] + 1 + mod * playerTarget->GetUInt32Value(UNIT_FIELD_STAT4) / 2;
+			uint32 damage = m_spellInfo->EffectBasePoints[i] + 1 + mod * playerTarget->GetStat(STAT_SPIRIT) / 2;
 			if (damage >= playerTarget->GetHealth())
 				return;
 			p_caster->DealDamage(playerTarget,damage,0,0,spellId);
@@ -2334,16 +2334,18 @@ void Spell::SpellEffectHealthLeech(uint32 i) // Health Leech
 	}
 	m_caster->DealDamage(unitTarget, damage, 0, 0, GetProto()->Id);
 
-	uint32 playerCurHealth = m_caster->GetUInt32Value(UNIT_FIELD_HEALTH);
-	uint32 playerMaxHealth = m_caster->GetUInt32Value(UNIT_FIELD_MAXHEALTH);
+	if (!u_caster)
+		return;
+	uint32 playerCurHealth = u_caster->GetUInt32Value(UNIT_FIELD_HEALTH);
+	uint32 playerMaxHealth = u_caster->GetUInt32Value(UNIT_FIELD_MAXHEALTH);
 
 	if(playerCurHealth + amt > playerMaxHealth)
 	{
-		m_caster->SetUInt32Value(UNIT_FIELD_HEALTH, playerMaxHealth);
+		u_caster->SetHealth(playerMaxHealth);
 	}
 	else
 	{
-		m_caster->SetUInt32Value(UNIT_FIELD_HEALTH, playerCurHealth + amt);
+		u_caster->ModHealth(amt);
 	}
 }
 
@@ -2523,7 +2525,9 @@ void Spell::SpellEffectHeal(uint32 i) // Heal
 			}break;
 		case 20167: // Paladin: Seal of Light
 			{
-				damage = ((uint32)ceilf(u_caster->GetAP() * 0.15f)) + ((uint32)ceilf(u_caster->GetUInt32Value(PLAYER_FIELD_MOD_HEALING_DONE_POS) * 0.15f));
+				if (!p_caster) 
+					return;
+				damage = ((uint32)ceilf(p_caster->GetAP() * 0.15f)) + ((uint32)ceilf(p_caster->GetHealingDoneMod() * 0.15f));
 			}break;
 		default:
 			Heal(damage);
@@ -2628,7 +2632,7 @@ void Spell::SpellEffectResurrect(uint32 i) // Resurrect (Flat)
 
 			return;
 		}
-		playerTarget = objmgr.GetPlayer(corpseTarget->GetUInt32Value(CORPSE_FIELD_OWNER));
+		playerTarget = objmgr.GetPlayer(GET_LOWGUID_PART(corpseTarget->GetOwner()));
 		if(!playerTarget) return;
 	}
 
@@ -3219,19 +3223,19 @@ void Spell::SpellEffectSummon(uint32 i)
 
 			Pet *summon = objmgr.CreatePet(GetProto()->EffectMiscValue[i]);
 			summon->CreateAsSummon(26125, ci, NULL, p_caster, GetProto(), 1, extradur );
-			summon->SetUInt32Value(UNIT_FIELD_DISPLAYID, (uint32)15435);
-			summon->SetFloatValue(UNIT_FIELD_MINDAMAGE,(float)p_caster->GetDamageDoneMod(SCHOOL_NORMAL));
-			summon->SetFloatValue(UNIT_FIELD_MAXDAMAGE,(float)p_caster->GetDamageDoneMod(SCHOOL_NORMAL));
+			summon->SetDisplayId((uint32)15435);
+			summon->SetMinDamage((float)p_caster->GetDamageDoneMod(SCHOOL_NORMAL));
+			summon->SetMaxDamage((float)p_caster->GetDamageDoneMod(SCHOOL_NORMAL));
 			summon->GetAIInterface()->SetUnitToFollowAngle(float(-(M_PI/2)));
 
 			Item * item = p_caster->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
 			if( item != NULL )
 			{
-				summon->SetUInt32Value( UNIT_VIRTUAL_ITEM_SLOT_ID, item->GetEntry()  );
-				summon->SetUInt32Value( UNIT_FIELD_BASEATTACKTIME, item->GetProto()->Delay );
+				summon->SetEquippedItem(MELEE,item->GetEntry()  );
+				summon->SetBaseAttackTime(MELEE,item->GetProto()->Delay );
 			}
 			else
-				summon->SetUInt32Value( UNIT_FIELD_BASEATTACKTIME, 2000 );
+				summon->SetBaseAttackTime(MELEE,2000 );
 
 			p_caster->SetPower( POWER_TYPE_RUNIC_POWER, 0 ); //Drains all runic power.
 		}break;
@@ -3246,8 +3250,8 @@ void Spell::SpellEffectSummon(uint32 i)
 			pCreature->GetAIInterface()->SetUnitToFollow(u_caster);
 			pCreature->GetAIInterface()->SetUnitToFollowAngle(float(-(M_PI/2)));
 			pCreature->GetAIInterface()->SetFollowDistance(GetRadius(i));
-			pCreature->SetUInt32Value(UNIT_FIELD_LEVEL, u_caster->getLevel());
-			pCreature->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, u_caster->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
+			pCreature->setLevel(u_caster->getLevel());
+			pCreature->SetFaction(u_caster->GetFaction());
 			pCreature->_setFaction();
 
 			pCreature->SetSummonedByGUID( u_caster->GetGUID());
@@ -3258,8 +3262,8 @@ void Spell::SpellEffectSummon(uint32 i)
 			if ( MiscValue == 19668 ) //shadowfiend
 			{
 				float parent_bonus = (float)(p_caster->GetDamageDoneMod(SCHOOL_SHADOW)*0.065f);
-				pCreature->SetFloatValue(UNIT_FIELD_MINDAMAGE, pCreature->GetFloatValue(UNIT_FIELD_MINDAMAGE) + parent_bonus);
-				pCreature->SetFloatValue(UNIT_FIELD_MAXDAMAGE, pCreature->GetFloatValue(UNIT_FIELD_MAXDAMAGE) + parent_bonus);
+				pCreature->SetMinDamage(pCreature->GetMinDamage() + parent_bonus);
+				pCreature->SetMaxDamage(pCreature->GetMaxDamage() + parent_bonus);
 				pCreature->BaseDamage[0] += parent_bonus;
 				pCreature->BaseDamage[1] += parent_bonus;
 				Unit* uTarget = p_caster->GetMapMgr()->GetUnit( p_caster->GetSelection() );
@@ -3273,8 +3277,8 @@ void Spell::SpellEffectSummon(uint32 i)
 			{
 				float parent_bonus = (float)(p_caster->GetDamageDoneMod(SCHOOL_NORMAL)*0.04f);
 				float pi_rand = ((int32)(rand()-RAND_MAX*0.5f)%15707)/10000.0f; // should be random enough.
-				pCreature->SetFloatValue(UNIT_FIELD_MINDAMAGE, pCreature->GetFloatValue(UNIT_FIELD_MINDAMAGE) + parent_bonus);
-				pCreature->SetFloatValue(UNIT_FIELD_MAXDAMAGE, pCreature->GetFloatValue(UNIT_FIELD_MAXDAMAGE) + parent_bonus);
+				pCreature->SetMinDamage(pCreature->GetMinDamage() + parent_bonus);
+				pCreature->SetMaxDamage(pCreature->GetMaxDamage() + parent_bonus);
 				pCreature->GetAIInterface()->SetUnitToFollowAngle(pi_rand);
 				pCreature->GetAIInterface()->SetFollowDistance(3.0f);
 				float x,y,z;
@@ -3451,7 +3455,7 @@ void Spell::SpellEffectEnergize(uint32 i) // Energize
 		}
 		break;
 	case 20268: //Judgement of Wisdom
-		modEnergy = uint32( 0.02f * unitTarget->GetUInt32Value(UNIT_FIELD_BASE_MANA) );
+		modEnergy = uint32( 0.02f * unitTarget->GetBaseMana() );
 		break;
 	case 2687: // Improved Bloodrage, dirty fix
 		{
@@ -4129,11 +4133,11 @@ void Spell::SpellEffectSummonWild(uint32 i)  // Summon Wild
 		{
 			p->SetSummonedByGUID( m_caster->GetGUID() );
 			p->SetCreatedByGUID( m_caster->GetGUID() );
-			p->SetUInt32Value( UNIT_FIELD_FACTIONTEMPLATE, u_caster->GetUInt32Value( UNIT_FIELD_FACTIONTEMPLATE ) );
+			p->SetFaction(u_caster->GetFaction( ) );
 		}
 		else
 		{
-			p->SetUInt32Value( UNIT_FIELD_FACTIONTEMPLATE, proto->Faction );
+			p->SetFaction(proto->Faction );
 		}
 
 		p->m_faction = dbcFactionTemplate.LookupEntryForced(proto->Faction);
@@ -4243,7 +4247,7 @@ void Spell::SpellEffectSkillStep(uint32 i) // Skill Step
 		return;*/
 
 		if( sk->type == SKILL_TYPE_PROFESSION )
-			target->ModUnsigned32Value( PLAYER_CHARACTER_POINTS2, -1 );
+			target->ModTalentPoints(SPEC_SECONDARY, -1 );
 
 		if( skill == SKILL_RIDING )
 			target->_AddSkillLine( skill, max, max );
@@ -4896,7 +4900,7 @@ void Spell::SpellEffectHealMaxHealth(uint32 i)   // Heal Max Health
 	{
 		SendHealSpellOnPlayer( static_cast< Player* >( m_caster ), static_cast< Player* >( unitTarget ), dif, false, 0, m_spellInfo->Id );
 	}
-	unitTarget->ModUnsigned32Value( UNIT_FIELD_HEALTH, dif );
+	unitTarget->ModHealth(dif);
 }
 
 void Spell::SpellEffectInterruptCast(uint32 i) // Interrupt Cast
@@ -5005,7 +5009,7 @@ void Spell::SpellEffectAddFarsight(uint32 i) // Add Farsight
 	dynObj->SetUInt32Value(OBJECT_FIELD_TYPE, 65);
 	dynObj->SetUInt32Value(DYNAMICOBJECT_BYTES, 0x80000002);
 	dynObj->SetInstanceID(p_caster->GetInstanceID());
-	p_caster->SetUInt64Value(PLAYER_FARSIGHT, dynObj->GetGUID());
+	p_caster->SetFarsightTarget(dynObj->GetGUID());
 
 	p_caster->GetMapMgr()->ChangeFarsightLocation(p_caster, dynObj);
 }
@@ -5018,7 +5022,7 @@ void Spell::SpellEffectSummonPossessed(uint32 i) // eye of kilrogg
 	m_target->SetUInt64Value(UNIT_FIELD_SUMMONEDBY, 0);
 	pCaster->SetUInt64Value(UNIT_FIELD_CHARM, m_target->GetGUID());
 	m_target->SetUInt64Value(UNIT_FIELD_CHARMEDBY, pCaster->GetGUID());
-	pCaster->SetUInt64Value(PLAYER_FARSIGHT, m_target->GetGUID());
+	pCaster->SetFarsightTarget(m_target->GetGUID());
 	pCaster->m_CurrentCharm = ((Creature*)m_target);
 	m_target->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED_CREATURE);
 	pCaster->m_noInterrupt = 1;
@@ -5038,14 +5042,14 @@ void Spell::SpellEffectSummonPossessed(uint32 i) // eye of kilrogg
 
 		// Fields
 		NewSummon->SetEntry(  GetProto()->EffectMiscValue[i]);
-		NewSummon->SetUInt32Value(UNIT_FIELD_LEVEL, m_caster->GetUInt32Value(UNIT_FIELD_LEVEL) );
-		NewSummon->SetUInt32Value(UNIT_FIELD_DISPLAYID,  2421);
-		NewSummon->SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID, 2421);
+		NewSummon->setLevel(u_caster->getLevel() );
+		NewSummon->SetDisplayId(2421);
+		NewSummon->SetNativeDisplayId(2421);
 		NewSummon->SetSummonedByGUID( m_caster->GetGUID());
 		NewSummon->SetCreatedByGUID( m_caster->GetGUID());
 		NewSummon->SetHealth( 12375);
 		NewSummon->SetMaxHealth( 12375);
-		NewSummon->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, p_caster->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
+		NewSummon->SetFaction(p_caster->GetFaction());
 		NewSummon->SetScale( 1.0f);
 
 		if(p_caster->IsPvPFlagged())
@@ -5066,7 +5070,7 @@ void Spell::SpellEffectSummonPossessed(uint32 i) // eye of kilrogg
 		p_caster->m_eyeofkilrogg = NewSummon;
 
 		//p_caster->SetUInt64Value(UNIT_FIELD_SUMMON, NewSummon->GetGUID());
-		p_caster->SetUInt64Value(PLAYER_FARSIGHT, NewSummon->GetGUID());
+		p_caster->SetFarsightTarget(NewSummon->GetGUID());
 		//p_caster->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_LOCK_PLAYER);
 		p_caster->Possess(NewSummon);
 	}
@@ -5088,7 +5092,7 @@ void Spell::SpellEffectUseGlyph(uint32 i)
 		return;
 	}
 
-	uint32 g_old = p_caster->GetUInt32Value( PLAYER_FIELD_GLYPHS_1 + m_glyphslot );
+	uint32 g_old = p_caster->GetGlyph(m_glyphslot);
 	if( g_old )
 	{
 		if( g_old == g_new )
@@ -5109,7 +5113,7 @@ void Spell::SpellEffectUseGlyph(uint32 i)
 			SendCastResult( SPELL_FAILED_INVALID_GLYPH );
 			return;
 		}
-		p_caster->SetUInt32Value( PLAYER_FIELD_GLYPHS_1 + m_glyphslot, g_new );
+		p_caster->SetGlyph( m_glyphslot, g_new );
 		p_caster->CastSpell( p_caster, gp_new->SpellID, true );
 		p_caster->m_specs[p_caster->m_talentActiveSpec].glyphs[m_glyphslot] = static_cast< uint16 >( g_new );
 		p_caster->smsg_TalentsInfo(false);
@@ -5951,21 +5955,21 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 	pTotem->SetMaxHealth( damage);
 	pTotem->SetMaxPower( POWER_TYPE_FOCUS, p_caster->getLevel() * 30);
 	pTotem->SetPower( POWER_TYPE_FOCUS, p_caster->getLevel() * 30);
-	pTotem->SetUInt32Value(UNIT_FIELD_LEVEL, p_caster->getLevel() );
-	pTotem->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, p_caster->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
+	pTotem->setLevel(p_caster->getLevel() );
+	pTotem->SetFaction(p_caster->GetFaction());
     pTotem->setRace( 0 );
     pTotem->setClass( 1 );
     pTotem->setGender( 2 );
     pTotem->SetPowerType( 1 );
 	pTotem->SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED | UNIT_FLAG_SELF_RES);
-	pTotem->SetUInt32Value(UNIT_FIELD_BASEATTACKTIME, 2000);
-	pTotem->SetUInt32Value(UNIT_FIELD_BASEATTACKTIME+1, 2000);
-	pTotem->SetFloatValue(UNIT_FIELD_BOUNDINGRADIUS, 1.0f);
-	pTotem->SetFloatValue(UNIT_FIELD_COMBATREACH, 1.0f);
-	pTotem->SetUInt32Value(UNIT_FIELD_DISPLAYID, displayID);
-	pTotem->SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID, ci->Male_DisplayID); //blizzlike :P
-	pTotem->SetFloatValue(UNIT_MOD_CAST_SPEED, 1.0f);
-	pTotem->SetUInt32Value(UNIT_CREATED_BY_SPELL, GetProto()->Id);
+	pTotem->SetBaseAttackTime(MELEE,2000);
+	pTotem->SetBaseAttackTime(OFFHAND,2000);
+	pTotem->SetBoundingRadius(1.0f);
+	pTotem->SetCombatReach(1.0f);
+	pTotem->SetDisplayId(displayID);
+	pTotem->SetNativeDisplayId(ci->Male_DisplayID); //blizzlike :P
+	pTotem->SetCastSpeedMod(1.0f);
+	pTotem->SetCreatedBySpell(GetProto()->Id);
 	pTotem->SetUInt32Value( UNIT_DYNAMIC_FLAGS, 0 );
 
 	if( p_caster->IsPvPFlagged() )
@@ -5999,7 +6003,7 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 		// Totems get spell damage and healing bonus from the Shaman
 		for( uint8 school = 0; school < SCHOOL_COUNT; school++ )
 		{
-			pTotem->ModDamageDone[school] = (int32)(p_caster->GetUInt32Value( PLAYER_FIELD_MOD_DAMAGE_DONE_POS + school ) - (int32)p_caster->GetUInt32Value( PLAYER_FIELD_MOD_DAMAGE_DONE_NEG + school ));
+			pTotem->ModDamageDone[school] = (int32)(p_caster->GetPosDamageDoneMod( school ) - (int32)p_caster->GetNegDamageDoneMod( school ));
 			pTotem->HealDoneMod[school] = p_caster->HealDoneMod[school];
 		}
 		// Set up AI, depending on our spells.
@@ -6099,7 +6103,7 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 	else
 	{
 		pTotem->PushToWorld(m_caster->GetMapMgr()); //Push the sentry totem...
-		//p_caster->SetUInt64Value(PLAYER_FARSIGHT, pTotem->GetGUID()); //works but farsight bugs it
+		//p_caster->SetFarsightTarget(pTotem->GetGUID()); //works but farsight bugs it
 	}
 
 	// Set up the deletion event. The totem needs to expire after a certain time, or upon its death.
@@ -6244,7 +6248,7 @@ void Spell::SpellEffectCharge(uint32 i)
 	dy=unitTarget->GetPositionY()-m_caster->GetPositionY();
 	if(dx == 0.0f || dy == 0.0f)
 		return;
-	float d = sqrt(dx*dx+dy*dy)-unitTarget->GetFloatValue(UNIT_FIELD_BOUNDINGRADIUS)-m_caster->GetFloatValue(UNIT_FIELD_BOUNDINGRADIUS);
+	float d = sqrt(dx*dx+dy*dy)-unitTarget->GetBoundingRadius()-u_caster->GetBoundingRadius();
 	float alpha = atanf(dy/dx);
 	if(dx<0)
 		alpha += float(M_PI);
@@ -6325,13 +6329,13 @@ void Spell::SpellEffectSummonCritter(uint32 i)
 	Creature * pCreature = u_caster->GetMapMgr()->CreateCreature(SummonCritterID);
 	pCreature->SetInstanceID(u_caster->GetMapMgr()->GetInstanceID());
 	pCreature->Load(cp, m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ());
-	pCreature->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, 35);
+	pCreature->SetFaction(35);
 	pCreature->_setFaction();
-	pCreature->SetUInt32Value(UNIT_FIELD_LEVEL, 1);
+	pCreature->setLevel(1);
 	pCreature->SetUInt32Value( UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED );
 	pCreature->GetAIInterface()->Init(pCreature,AITYPE_PET,MOVEMENTTYPE_NONE,u_caster);
 	pCreature->SetCreatedByGUID( u_caster->GetGUID() );
-	pCreature->SetUInt32Value( UNIT_CREATED_BY_SPELL, this->GetProto()->Id );
+	pCreature->SetCreatedBySpell(this->GetProto()->Id );
 	pCreature->GetAIInterface()->SetUnitToFollow(u_caster);
 	pCreature->GetAIInterface()->SetUnitToFollowAngle(float(-(M_PI/2)));
 	pCreature->GetAIInterface()->SetFollowDistance( GetRadius( i ) );
@@ -6580,7 +6584,7 @@ void Spell::SpellEffectSummonDeadPet(uint32 i)
 		}
 
 		pPet->SetUInt32Value( UNIT_DYNAMIC_FLAGS, 0 );
-		pPet->SetUInt32Value( UNIT_FIELD_HEALTH, ( uint32 )( ( pPet->GetMaxHealth() * damage ) / 100 ));
+		pPet->SetHealth((uint32)((pPet->GetMaxHealth() * damage) / 100));
 		pPet->setDeathState( ALIVE );
 		pPet->GetAIInterface()->HandleEvent( EVENT_FOLLOWOWNER, pPet, 0 );
 		sEventMgr.RemoveEvents( pPet, EVENT_PET_DELAYED_REMOVE );
@@ -6605,7 +6609,7 @@ void Spell::SpellEffectDestroyAllTotems(uint32 i)
 		// atm totems are considered creatures
 		if(p_caster->m_TotemSlots[x])
 		{
-			uint32 SpellID = p_caster->m_TotemSlots[x]->GetUInt32Value(UNIT_CREATED_BY_SPELL);
+			uint32 SpellID = p_caster->m_TotemSlots[x]->GetCreatedBySpell();
 			SpellEntry * sp = dbcSpell.LookupEntryForced(SpellID);
 			if (!sp)
 				continue;
@@ -6704,7 +6708,7 @@ void Spell::SpellEffectResurrectNew(uint32 i)
 
 			return;
 		}
-		playerTarget = objmgr.GetPlayer(corpseTarget->GetUInt32Value(CORPSE_FIELD_OWNER));
+		playerTarget = objmgr.GetPlayer(GET_LOWGUID_PART(corpseTarget->GetOwner()));
 		if(!playerTarget) return;
 	}
 
@@ -6775,7 +6779,7 @@ void Spell::SpellEffectSkinPlayerCorpse(uint32 i)
 	}else if(corpse)
 	{
 		// find the corpses' owner
-		Player * owner = objmgr.GetPlayer(corpse->GetUInt32Value(CORPSE_FIELD_OWNER));
+		Player * owner = objmgr.GetPlayer(GET_LOWGUID_PART(corpse->GetOwner()));
 		if(owner)
 		{
 			if(!owner->m_bg) return;
@@ -6791,7 +6795,7 @@ void Spell::SpellEffectSkinPlayerCorpse(uint32 i)
 		corpse->SetUInt32Value(CORPSE_FIELD_FLAGS, 5);
 
 		// remove owner association
-		corpse->SetUInt64Value(CORPSE_FIELD_OWNER, 0);
+		corpse->SetOwner(0);
 		corpse->SetCorpseState(CORPSE_STATE_BONES);
 		corpse->DeleteFromDB();
 		objmgr.CorpseAddEventDespawn(corpse);
@@ -6981,7 +6985,7 @@ void Spell::SpellEffectPlayerPull( uint32 i )
 	Player* p_target = static_cast< Player* >( unitTarget );
 
 	// calculate destination
-	float pullD = p_target->CalcDistance( m_caster ) - p_target->GetFloatValue( UNIT_FIELD_BOUNDINGRADIUS ) - m_caster->GetFloatValue( UNIT_FIELD_BOUNDINGRADIUS ) - 1.0f;
+	float pullD = p_target->CalcDistance( m_caster ) - p_target->GetBoundingRadius() - (u_caster ? u_caster->GetBoundingRadius() : 0) - 1.0f;
 	float pullO = p_target->calcRadAngle( p_target->GetPositionX(), p_target->GetPositionY(), m_caster->GetPositionX(), m_caster->GetPositionY() );
 	float pullX = p_target->GetPositionX() + pullD * cosf( pullO );
 	float pullY = p_target->GetPositionY() + pullD * sinf( pullO );
@@ -7171,7 +7175,7 @@ void Spell::SpellEffectRestorePowerPct(uint32 i)
 		return;
 	}
 
-	uint32 amount = damage * unitTarget->GetUInt32Value( UNIT_FIELD_MAXPOWER1 + power ) / 100;
+	uint32 amount = damage * unitTarget->GetPower( power ) / 100;
 	u_caster->Energize( unitTarget, GetProto()->Id, amount, power );
 }
 
@@ -7338,7 +7342,7 @@ void Spell::SpellEffectRestoreHealthPct(uint32 i)
 		unitTarget->SetHealth( maxHealth);
 		overheal = newHealth - maxHealth;
 	} else
-		unitTarget->ModUnsigned32Value(UNIT_FIELD_HEALTH, modHealth);
+		unitTarget->ModHealth(modHealth);
 
 	SendHealSpellOnPlayer( m_caster, unitTarget, modHealth, false, overheal, pSpellId ? pSpellId : m_spellInfo->Id  );
 }

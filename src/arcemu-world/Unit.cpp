@@ -739,7 +739,7 @@ bool Unit::canReachWithAttack(Unit *pVictim)
 	if( GetMapId() != pVictim->GetMapId() )
 		return false;
 
-//	float targetreach = pVictim->GetFloatValue(UNIT_FIELD_COMBATREACH);
+//	float targetreach = pVictim->GetCombatReach();
 	float selfreach;
 	if( IsPlayer() )
 		selfreach = 5.0f; // minimum melee range, UNIT_FIELD_COMBATREACH is too small and used eg. in melee spells
@@ -1510,7 +1510,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						if( CastingSpell->NameHash != SPELL_HASH_DRAIN_SOUL )
 							continue;
 						//null check was made before like 2 times already :P
-						dmg_overwrite = ( ospinfo->EffectBasePoints[2] + 1 ) * GetUInt32Value( UNIT_FIELD_MAXPOWER1 ) / 100;
+						dmg_overwrite = ( ospinfo->EffectBasePoints[2] + 1 ) * GetMaxPower(POWER_TYPE_MANA) / 100;
 					}break;
 				// warlock - Unstable Affliction
 				case 31117:
@@ -3077,7 +3077,7 @@ uint32 Unit::GetSpellDidHitResult( Unit* pVictim, uint32 weapon_damage_type, Spe
 	else
 	{
 		if( weapon_damage_type != RANGED && !backAttack )
-			dodge = pVictim->GetUInt32Value(UNIT_FIELD_STAT1) / 14.5f; // what is this value?
+			dodge = pVictim->GetStat(STAT_AGILITY) / 14.5f; // what is this value?
 		victim_skill = pVictim->getLevel() * 5;
 		if(pVictim->m_objectTypeId == TYPEID_UNIT)
 		{
@@ -3876,7 +3876,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 							float block_multiplier = ( 100.0f + float( static_cast< Player* >( pVictim )->m_modblockabsorbvalue ) ) / 100.0f;
 							if( block_multiplier < 1.0f )block_multiplier = 1.0f;
 
-							blocked_damage = float2int32( (float( shield->GetProto()->Block ) + ( float( static_cast< Player* >( pVictim )->m_modblockvaluefromspells + pVictim->GetUInt32Value( PLAYER_RATING_MODIFIER_BLOCK ) )) + ( ( float( pVictim->GetUInt32Value( UNIT_FIELD_STAT0 ) ) / 20.0f ) - 1.0f ) ) * block_multiplier);
+							blocked_damage = float2int32( (float( shield->GetProto()->Block ) + ( float( static_cast< Player* >( pVictim )->m_modblockvaluefromspells + pVictim->GetUInt32Value( PLAYER_RATING_MODIFIER_BLOCK ) )) + ( ( float( pVictim->GetStat(STAT_STRENGTH) ) / 20.0f ) - 1.0f ) ) * block_multiplier);
 							if( Rand( m_BlockModPct ) )
 								blocked_damage *= 2;
 						}
@@ -4275,7 +4275,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 			if( weapon_damage_type == OFFHAND )
 				s = GetUInt32Value( UNIT_FIELD_BASEATTACKTIME+1 ) / 1000.0f;
 			else
-				s = GetUInt32Value( UNIT_FIELD_BASEATTACKTIME ) / 1000.0f;
+				s = GetBaseAttackTime(MELEE) / 1000.0f;
 		}
 		else
 		{
@@ -4296,9 +4296,9 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 		//float p = ( 1 + ( static_cast< Player* >( this )->rageFromDamageDealt / 100.0f ) );
 		//sLog.outDebug( "Rd(%i) d(%i) c(%f) f(%f) s(%f) p(%f) r(%f) rage = %f", realdamage, dmg.full_damage, c, f, s, p, r, val );
 
-		ModUnsigned32Value( UNIT_FIELD_POWER2, (int32)val );
-		if( GetUInt32Value( UNIT_FIELD_POWER2 ) > 1000 )
-			ModUnsigned32Value( UNIT_FIELD_POWER2, 1000 - GetUInt32Value( UNIT_FIELD_POWER2 ) );
+		ModPower(POWER_TYPE_RAGE, (int32)val );
+		if( GetPower(POWER_TYPE_RAGE ) > 1000 )
+			ModPower(POWER_TYPE_RAGE, 1000 - GetPower(POWER_TYPE_RAGE ) );
 
 	}
 
@@ -4445,7 +4445,7 @@ void Unit::smsg_AttackStart(Unit* pVictim)
         if( pThis->cannibalize)
         {
             sEventMgr.RemoveEvents(pThis, EVENT_CANNIBALIZE);
-            pThis->SetUInt32Value(UNIT_NPC_EMOTESTATE, 0);
+            pThis->SetEmoteState(0);
             pThis->cannibalize = false;
         }
     }
@@ -5237,7 +5237,7 @@ int32 Unit::GetSpellDmgBonus(Unit *pVictim, SpellEntry *spellInfo,int32 base_dmg
 			if( caster->GetHealth() - selfdamage < 0 )
 				caster->SetHealth( 1);
 			else
-				caster->ModUnsigned32Value(UNIT_FIELD_HEALTH, -selfdamage);
+				caster->ModHealth(-selfdamage);
 		}
 		else if( spellInfo->Id == 31898 || spellInfo->Id == 53726 )
 		{
@@ -5245,7 +5245,7 @@ int32 Unit::GetSpellDmgBonus(Unit *pVictim, SpellEntry *spellInfo,int32 base_dmg
 			if( caster->GetHealth() - selfdamage < 0 )
 				caster->SetHealth( 1);
 			else
-				caster->ModUnsigned32Value(UNIT_FIELD_HEALTH, -selfdamage);
+				caster->ModHealth(-selfdamage);
 		}
 	}
 
@@ -5277,8 +5277,8 @@ void Unit::InterruptSpell()
 void Unit::DeMorph()
 {
 	// hope it solves it :)
-	uint32 displayid = this->GetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID);
-	this->SetUInt32Value(UNIT_FIELD_DISPLAYID, displayid);
+	uint32 displayid = this->GetNativeDisplayId();
+	this->SetDisplayId(displayid);
 	EventModelChange();
 }
 
@@ -5436,21 +5436,15 @@ void Unit::ClearInRangeSet()
 //Events
 void Unit::EventAddEmote(EmoteType emote, uint32 time)
 {
-	m_oldEmote = GetUInt32Value(UNIT_NPC_EMOTESTATE);
-	SetUInt32Value(UNIT_NPC_EMOTESTATE,emote);
+	m_oldEmote = GetEmoteState();
+	SetEmoteState(emote);
 	sEventMgr.AddEvent(this, &Creature::EmoteExpire, EVENT_UNIT_EMOTE, time, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 }
 
 void Unit::EmoteExpire()
 {
-	SetUInt32Value(UNIT_NPC_EMOTESTATE, m_oldEmote);
+	SetEmoteState(m_oldEmote);
 	sEventMgr.RemoveEvents(this, EVENT_UNIT_EMOTE);
-}
-
-
-uint32 Unit::GetResistance(uint32 type)
-{
-	return GetUInt32Value(UNIT_FIELD_RESISTANCES+type);
 }
 
 void Unit::MoveToWaypoint(uint32 wp_id)
@@ -5477,7 +5471,7 @@ int32 Unit::GetDamageDoneMod(uint32 school)
 	if (school < SCHOOL_COUNT)
 	{
 		if( this->IsPlayer() )
-		   return (int32)GetUInt32Value( PLAYER_FIELD_MOD_DAMAGE_DONE_POS + school ) - (int32)GetUInt32Value( PLAYER_FIELD_MOD_DAMAGE_DONE_NEG + school );
+		   return (int32)TO_PLAYER(this)->GetPosDamageDoneMod( school ) - (int32)TO_PLAYER(this)->GetNegDamageDoneMod( school );
 		else
 		   return static_cast< Creature* >( this )->ModDamageDone[school];
 	}
@@ -5514,18 +5508,18 @@ void Unit::CalcDamage()
 
 		float ap_bonus = float(GetAP())/14000.0f;
 
-		float bonus = ap_bonus * ( GetUInt32Value(UNIT_FIELD_BASEATTACKTIME) + static_cast< Creature* >( this )->m_speedFromHaste );
+		float bonus = ap_bonus * ( GetBaseAttackTime(MELEE) + static_cast< Creature* >( this )->m_speedFromHaste );
 
 		delta = float(((Creature*)this)->ModDamageDone[0]);
 		mult = float(((Creature*)this)->ModDamageDonePct[0]);
 		r = ( BaseDamage[0] + bonus ) * mult + delta;
 		// give some diversity to pet damage instead of having a 77-78 damage range (as an example)
-		SetFloatValue(UNIT_FIELD_MINDAMAGE,r > 0 ? ( IsPet() ? r * 0.9f : r ) : 0 );
+		SetMinDamage(r > 0 ? ( IsPet() ? r * 0.9f : r ) : 0 );
 		r = ( BaseDamage[1] + bonus ) * mult + delta;
-		SetFloatValue(UNIT_FIELD_MAXDAMAGE, r > 0 ? ( IsPet() ? r * 1.1f : r ) : 0 );
+		SetMaxDamage(r > 0 ? ( IsPet() ? r * 1.1f : r ) : 0 );
 
-	//	SetFloatValue(UNIT_FIELD_MINRANGEDDAMAGE,BaseRangedDamage[0]*mult+delta);
-	//	SetFloatValue(UNIT_FIELD_MAXRANGEDDAMAGE,BaseRangedDamage[1]*mult+delta);
+	//	SetMinRangedDamage(BaseRangedDamage[0]*mult+delta);
+	//	SetMaxRangedDamage(BaseRangedDamage[1]*mult+delta);
 
 	}
 }
@@ -5537,7 +5531,7 @@ uint32 Unit::ManaShieldAbsorb(uint32 dmg)
 		return 0;
 	//mana shield group->16. the only
 
-	uint32 mana = GetUInt32Value(UNIT_FIELD_POWER1);
+	uint32 mana = GetPower(POWER_TYPE_MANA);
 	int32 effectbonus = SM_PEffectBonus ? SM_PEffectBonus[16] : 0;
 
 	int32 potential = (mana*50)/((100+effectbonus));
@@ -5796,7 +5790,7 @@ void Unit::DropAurasOnDeath()
 
 void Unit::UpdateSpeed()
 {
-	if(GetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID) == 0)
+	if(GetMount() == 0)
 	{
 		if(IsPlayer())
 			m_runSpeed = m_base_runSpeed*(1.0f + ((float)m_speedModifier)/100.0f);
@@ -6530,7 +6524,7 @@ void Unit::EventHealthChangeSinceLastUpdate()
 
 int32 Unit::GetAP()
 {
-    int32 baseap = GetUInt32Value(UNIT_FIELD_ATTACK_POWER) + GetUInt32Value(UNIT_FIELD_ATTACK_POWER_MODS);
+    int32 baseap = GetAttackPower() + GetAttackPowerMods();
     float totalap = float(baseap)*(GetFloatValue(UNIT_FIELD_ATTACK_POWER_MULTIPLIER)+1);
 	if(totalap>= 0)
 		return float2int32(totalap);
@@ -6539,8 +6533,8 @@ int32 Unit::GetAP()
 
 int32 Unit::GetRAP()
 {
-    int32 baseap = GetUInt32Value(UNIT_FIELD_RANGED_ATTACK_POWER) + GetUInt32Value(UNIT_FIELD_RANGED_ATTACK_POWER_MODS);
-    float totalap = float(baseap)*(GetFloatValue(UNIT_FIELD_RANGED_ATTACK_POWER_MULTIPLIER)+1);
+    int32 baseap = GetRangedAttackPower() + GetRangedAttackPowerMods();
+    float totalap = float(baseap)*(GetRangedAttackPowerMultiplier()+1);
 	if(totalap>= 0)
 		return float2int32(totalap);
 	return	0;
@@ -6649,13 +6643,13 @@ Creature* Unit::create_guardian(uint32 guardian_entry,uint32 duration,float angl
 		p->SetMaxHealth(p->GetMaxHealth()+28+30*lvl);
 		p->SetHealth(p->GetHealth()+28+30*lvl);
 		/* LEVEL */
-		p->SetUInt32Value(UNIT_FIELD_LEVEL, lvl);
+		p->setLevel(lvl);
 	}
 
 	p->SetSummonedByGUID( GetGUID());
 	p->SetCreatedByGUID( GetGUID());
 	p->SetZoneId(GetZoneId());
-	p->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE,GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
+	p->SetFaction(GetFaction());
 	p->_setFaction();
 
 	p->GetAIInterface()->Init(p,AITYPE_PET,MOVEMENTTYPE_NONE,this);
@@ -7571,7 +7565,7 @@ void Unit::setAttackTimer(int32 time, bool offhand)
 	if(!time)
 		time = offhand ? m_uint32Values[UNIT_FIELD_BASEATTACKTIME+1] : m_uint32Values[UNIT_FIELD_BASEATTACKTIME];
 
-	time = std::max(1000,float2int32(float(time)*GetFloatValue(UNIT_MOD_CAST_SPEED)));
+	time = std::max(1000,float2int32(float(time)*GetCastSpeedMod()));
 	if(time>300000)		// just in case.. shouldn't happen though
 		time=offhand ? m_uint32Values[UNIT_FIELD_BASEATTACKTIME+1] : m_uint32Values[UNIT_FIELD_BASEATTACKTIME];
 
@@ -7605,10 +7599,10 @@ void Unit::EventModelChange()
 	UnitModelSizeEntry  *newmodelhalfsize = NULL;
 
 	//mounts are bigger then normal size
-	if( GetUInt32Value( UNIT_FIELD_MOUNTDISPLAYID ) )
-		newmodelhalfsize = UnitModelSizeStorage.LookupEntry( GetUInt32Value( UNIT_FIELD_MOUNTDISPLAYID ) );
+	if( GetMount() )
+		newmodelhalfsize = UnitModelSizeStorage.LookupEntry( GetMount() );
 	if( newmodelhalfsize == NULL )
-		newmodelhalfsize = UnitModelSizeStorage.LookupEntry( GetUInt32Value( UNIT_FIELD_DISPLAYID ) );
+		newmodelhalfsize = UnitModelSizeStorage.LookupEntry( GetDisplayId() );
 
 	if( newmodelhalfsize )
 	{

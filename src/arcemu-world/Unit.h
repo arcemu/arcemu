@@ -906,6 +906,8 @@ public:
 
 	/// Stats
 	uint32 getLevel() { return m_uint32Values[ UNIT_FIELD_LEVEL ]; };
+	void setLevel(uint32 level) { SetUInt32Value(UNIT_FIELD_LEVEL, level); };
+	void modLevel(int32 mod) { ModUnsigned32Value(UNIT_FIELD_LEVEL, mod); };
 	uint32 getClassMask() { return 1 << (getClass() - 1); }
 	uint32 getRaceMask() { return 1 << (getRace() - 1); }
 	uint8 getStandState() { return ((uint8)m_uint32Values[UNIT_FIELD_BYTES_1]); }
@@ -1256,6 +1258,8 @@ public:
 		return StandState (uint8 (bytes1));
 	}
 
+	uint32 GetFaction() { return GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE); }
+
 	void SetFaction(uint32 factionId)
 	{
 		SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, factionId );
@@ -1276,18 +1280,16 @@ public:
 		return (int)(GetUInt32Value(UNIT_FIELD_HEALTH) * 100 / GetUInt32Value(UNIT_FIELD_MAXHEALTH));
 	};
 
-    void SetHealthPct(uint32 val) { if (val>0) SetUInt32Value(UNIT_FIELD_HEALTH,float2int32(val*0.01f*GetUInt32Value(UNIT_FIELD_MAXHEALTH))); };
+    void SetHealthPct(uint32 val) { if (val>0) SetHealth(float2int32(val*0.01f*GetUInt32Value(UNIT_FIELD_MAXHEALTH))); };
 
 	int GetManaPct()
 	{
-		if (GetUInt32Value(UNIT_FIELD_POWER1) == 0 || GetUInt32Value(UNIT_FIELD_MAXPOWER1) == 0)
+		if (GetPower(0) == 0 || GetMaxPower(0) == 0) //POWER_TYPE_MANA
 			return 0;
 
-		return (int)(GetUInt32Value(UNIT_FIELD_POWER1) * 100 / GetUInt32Value(UNIT_FIELD_MAXPOWER1));
+		return (int)(GetPower(0) * 100 / GetMaxPower(0));
 	};
 		
-	uint32 GetResistance(uint32 type);	
-	
 	//In-Range
 	virtual void AddInRangeObject(Object* pObj);
 	virtual void OnRemoveInRangeObject(Object* pObj);
@@ -1542,10 +1544,106 @@ public:
     uint64 GetTargetGUID(){ return GetUInt64Value( UNIT_FIELD_TARGET ); }
 
     void SetChannelSpellTargetGUID( uint64 GUID ){ SetUInt64Value( UNIT_FIELD_CHANNEL_OBJECT, GUID ); }
-    void SetChannelSpellId( uint32 SpellId ){ SetUInt32Value( UNIT_CHANNEL_SPELL, SpellId ); }
+    void SetChannelSpellId( uint32 SpellId ){ SetUInt32Value(UNIT_CHANNEL_SPELL, SpellId); }
     
     uint64 GetChannelSpellTargetGUID(){ return GetUInt64Value( UNIT_FIELD_CHANNEL_OBJECT ); }
-    uint32 GetChannelSpellId(){ return GetUInt32Value( UNIT_CHANNEL_SPELL ); }
+    uint32 GetChannelSpellId(){ return GetUInt32Value(UNIT_CHANNEL_SPELL); }
+
+	void SetEquippedItem( uint8 slot, uint32 id ) { SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID+slot, id); }
+	uint32 GetEquippedItem( uint8 slot ) { return GetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID+slot); }
+
+	void SetBaseAttackTime( uint8 slot, uint32 time ) { SetUInt32Value(UNIT_FIELD_BASEATTACKTIME+slot, time); }
+	uint32 GetBaseAttackTime( uint8 slot ) { return GetUInt32Value(UNIT_FIELD_BASEATTACKTIME+slot); }
+	void ModBaseAttackTime( uint8 slot, int32 mod ) { ModUnsigned32Value(UNIT_FIELD_BASEATTACKTIME+slot, mod); }
+
+	void SetBoundingRadius( float rad ) { SetFloatValue(UNIT_FIELD_BOUNDINGRADIUS, rad); }
+	float GetBoundingRadius() { return GetFloatValue(UNIT_FIELD_BOUNDINGRADIUS); }
+
+	void SetCombatReach( float len ) { SetFloatValue(UNIT_FIELD_COMBATREACH, len); }
+	float GetCombatReach() { return GetFloatValue(UNIT_FIELD_COMBATREACH); }
+
+	void SetDisplayId( uint32 id ) { SetUInt32Value(UNIT_FIELD_DISPLAYID, id); }
+	uint32 GetDisplayId() { return GetUInt32Value(UNIT_FIELD_DISPLAYID); }
+
+	void SetNativeDisplayId( uint32 id ) { SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID, id); }
+	uint32 GetNativeDisplayId() { return GetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID); }
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	void SetMinDamage( float amt ) { SetFloatValue(UNIT_FIELD_MINDAMAGE, amt); }
+	float GetMinDamage() { return GetFloatValue(UNIT_FIELD_MINDAMAGE); }
+
+	void SetMaxDamage( float amt ) { SetFloatValue(UNIT_FIELD_MAXDAMAGE, amt); }
+	float GetMaxDamage() { return GetFloatValue(UNIT_FIELD_MAXDAMAGE); }
+
+	void SetMinOffhandDamage( float amt ) { SetFloatValue(UNIT_FIELD_MINOFFHANDDAMAGE, amt); }
+	float GetMinOffhandDamage() { return GetFloatValue(UNIT_FIELD_MINOFFHANDDAMAGE); }
+
+	void SetMaxOffhandDamage( float amt ) { SetFloatValue(UNIT_FIELD_MAXOFFHANDDAMAGE, amt); }
+	float GetMaxOffhandDamage() { return GetFloatValue(UNIT_FIELD_MAXOFFHANDDAMAGE); }
+
+	void SetMinRangedDamage( float amt ) { SetFloatValue(UNIT_FIELD_MINRANGEDDAMAGE, amt); }
+	float GetMinRangedDamage() { return GetFloatValue(UNIT_FIELD_MINRANGEDDAMAGE); }
+
+	void SetMaxRangedDamage( float amt ) { SetFloatValue(UNIT_FIELD_MAXRANGEDDAMAGE, amt); }
+	float GetMaxRangedDamage() { return GetFloatValue(UNIT_FIELD_MAXRANGEDDAMAGE); }
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	void SetMount( uint32 id ) { SetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID, id); }
+	uint32 GetMount() { return GetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID); }
+
+	void SetCastSpeedMod( float amt ) { SetFloatValue(UNIT_MOD_CAST_SPEED, amt); }
+	float GetCastSpeedMod() { return GetFloatValue(UNIT_MOD_CAST_SPEED); }
+	void ModCastSpeedMod( float mod ) { ModFloatValue(UNIT_MOD_CAST_SPEED, mod); }
+
+	void SetCreatedBySpell( uint32 id ) { SetUInt32Value(UNIT_CREATED_BY_SPELL, id); }
+	uint32 GetCreatedBySpell() { return GetUInt32Value(UNIT_CREATED_BY_SPELL); }
+
+	void SetEmoteState( uint32 id ) { SetUInt32Value(UNIT_NPC_EMOTESTATE, id); }
+	uint32 GetEmoteState() { return GetUInt32Value(UNIT_NPC_EMOTESTATE); }
+
+	void SetStat( uint32 stat, uint32 amt ) { SetUInt32Value(UNIT_FIELD_STAT0+stat, amt); }
+	uint32 GetStat( uint32 stat ) { return GetUInt32Value(UNIT_FIELD_STAT0+stat); }
+
+	void SetResistance( uint32 type, uint32 amt ) { SetUInt32Value(UNIT_FIELD_RESISTANCES+type, amt); }
+	uint32 GetResistance( uint32 type ) { return GetUInt32Value(UNIT_FIELD_RESISTANCES+type); }
+
+	void SetBaseMana( uint32 amt ) { SetUInt32Value(UNIT_FIELD_BASE_MANA, amt); }
+	uint32 GetBaseMana() { return GetUInt32Value(UNIT_FIELD_BASE_MANA); }
+
+	void SetBaseHealth( uint32 amt ) { SetUInt32Value(UNIT_FIELD_BASE_HEALTH, amt); }
+	uint32 GetBaseHealth() { return GetUInt32Value(UNIT_FIELD_BASE_HEALTH); }
+
+	void SetPowerCostMultiplier( uint32 school, float amt ) { SetFloatValue(UNIT_FIELD_POWER_COST_MULTIPLIER+school, amt); }
+	void ModPowerCostMultiplier( uint32 school, float amt ) { ModFloatValue(UNIT_FIELD_POWER_COST_MULTIPLIER+school, amt); }
+	float GetPowerCostMultiplier( uint32 school ) { return GetFloatValue(UNIT_FIELD_POWER_COST_MULTIPLIER+school); }
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	void SetAttackPower( uint32 amt ) { SetUInt32Value(UNIT_FIELD_ATTACK_POWER, amt); }
+	uint32 GetAttackPower() { return GetUInt32Value(UNIT_FIELD_ATTACK_POWER); }
+
+	void SetAttackPowerMods( uint32 amt ) { SetUInt32Value(UNIT_FIELD_ATTACK_POWER_MODS, amt); }
+	uint32 GetAttackPowerMods() { return GetUInt32Value(UNIT_FIELD_ATTACK_POWER_MODS); }
+	void ModAttackPowerMods( uint32 amt ) { ModUnsigned32Value(UNIT_FIELD_ATTACK_POWER_MODS, amt); }
+
+	void SetAttackPowerMultiplier( float amt ) { SetFloatValue(UNIT_FIELD_ATTACK_POWER_MULTIPLIER, amt); }
+	float GetAttackPowerMultiplier() { return GetFloatValue(UNIT_FIELD_ATTACK_POWER_MULTIPLIER); }
+	void ModAttackPowerMultiplier( float amt ) { ModFloatValue(UNIT_FIELD_ATTACK_POWER_MULTIPLIER, amt); }
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	void SetRangedAttackPower( uint32 amt ) { SetUInt32Value(UNIT_FIELD_RANGED_ATTACK_POWER, amt); }
+	uint32 GetRangedAttackPower() { return GetUInt32Value(UNIT_FIELD_RANGED_ATTACK_POWER); }
+
+	void SetRangedAttackPowerMods( uint32 amt ) { SetUInt32Value(UNIT_FIELD_RANGED_ATTACK_POWER_MODS, amt); }
+	uint32 GetRangedAttackPowerMods() { return GetUInt32Value(UNIT_FIELD_RANGED_ATTACK_POWER_MODS); }
+	void ModRangedAttackPowerMods( uint32 amt ) { ModUnsigned32Value(UNIT_FIELD_RANGED_ATTACK_POWER_MODS, amt); }
+
+	void SetRangedAttackPowerMultiplier( float amt ) { SetFloatValue(UNIT_FIELD_RANGED_ATTACK_POWER_MULTIPLIER, amt); }
+	float GetRangedAttackPowerMultiplier() { return GetFloatValue(UNIT_FIELD_RANGED_ATTACK_POWER_MULTIPLIER); }
+	void ModRangedAttackPowerMultiplier( float amt ) { ModFloatValue(UNIT_FIELD_RANGED_ATTACK_POWER_MULTIPLIER, amt); }
     
     //////////////////////////////////////////////////// bytes 0 //////////////////////////////////////////////////////
     
@@ -1562,10 +1660,12 @@ public:
     uint8 GetPowerType(){ return GetByte( UNIT_FIELD_BYTES_0, 3 ); }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SetHealth(   uint32 val ) { SetUInt32Value( UNIT_FIELD_HEALTH,  val ); } 
+    void SetHealth( uint32 val ) { SetUInt32Value( UNIT_FIELD_HEALTH,  val ); } 
     void SetMaxHealth( uint32 val ) { SetUInt32Value( UNIT_FIELD_MAXHEALTH,  val ); } 
     uint32 GetHealth()    const { return GetUInt32Value( UNIT_FIELD_HEALTH ); }
     uint32 GetMaxHealth() const { return GetUInt32Value( UNIT_FIELD_MAXHEALTH ); }
+	void ModHealth( int32 val ) { ModUnsigned32Value( UNIT_FIELD_HEALTH, val ); }
+	void ModMaxHealth( int32 val ) { ModUnsigned32Value( UNIT_FIELD_MAXHEALTH, val ); }
 
     void SetPower(uint32 type, int32 value);
 
