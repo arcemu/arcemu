@@ -6038,6 +6038,13 @@ void Player::ClearInRangeSet()
 
 void Player::EventCannibalize(uint32 amount)
 {
+	if (GetChannelSpellId() != 20577)
+	{
+		sEventMgr.RemoveEvents(this, EVENT_CANNIBALIZE);
+		cannibalize = false;
+		cannibalizeCount = 0;
+		return;
+	}
 	uint32 amt = (GetMaxHealth()*amount)/100;
 
 	uint32 newHealth = GetHealth() + amt;
@@ -8110,7 +8117,7 @@ void Player::RequestDuel(Player *pTarget)
 	//Spawn the Flag
 	pGameObj->SetUInt64Value(OBJECT_FIELD_CREATED_BY, GetGUID());
 	pGameObj->SetFaction(GetFaction());
-	pGameObj->SetUInt32Value(GAMEOBJECT_LEVEL, getLevel());
+	pGameObj->SetLevel(getLevel());
 
 	//Assign the Flag
 	SetDuelArbiter(pGameObj->GetGUID());

@@ -312,6 +312,16 @@ public:
 
 	uint32 GetOverrides() { return m_overrides; }
 
+
+
+
+
+
+
+
+
+
+
 	//Easy Functions
 	void SetDisplayId( uint32 id ) { SetUInt32Value(GAMEOBJECT_DISPLAYID, id); }
 	uint32 GetDisplayId() { return GetUInt32Value(GAMEOBJECT_DISPLAYID); }
@@ -322,8 +332,8 @@ public:
 	void SetFaction( uint32 id ) { SetUInt32Value(GAMEOBJECT_FACTION, id); }
 	uint32 GetFaction() { return GetUInt32Value(GAMEOBJECT_FACTION); }
 
-	void SetLevel( uint32 id ) { SetUInt32Value(GAMEOBJECT_FACTION, id); }
-	uint32 GetLevel() { return GetUInt32Value(GAMEOBJECT_FACTION); }
+	void SetLevel( uint32 level ) { SetUInt32Value(GAMEOBJECT_LEVEL, level); }
+	uint32 GetLevel() { return GetUInt32Value(GAMEOBJECT_LEVEL); }
 
 protected:
 

@@ -439,7 +439,7 @@ bool GameObject::Load(GOSpawn *spawn)
 	m_phase = spawn->phase;
 	//SetRotation(spawn->o);
 	SetUInt32Value(GAMEOBJECT_FLAGS,spawn->flags);
-//	SetUInt32Value(GAMEOBJECT_LEVEL,spawn->level);
+//	SetLevel(spawn->level);
 	SetByte(GAMEOBJECT_BYTES_1, 0, static_cast<uint8>( spawn->state ));	
 	if(spawn->faction)
 	{

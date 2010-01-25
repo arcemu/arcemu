@@ -5143,7 +5143,7 @@ void Spell::SpellEffectSummonObjectWild(uint32 i)
 	}
 
 	GoSummon->SetInstanceID(m_caster->GetInstanceID());
-	GoSummon->SetUInt32Value(GAMEOBJECT_LEVEL, u_caster->getLevel());
+	GoSummon->SetLevel(u_caster->getLevel());
 	GoSummon->SetUInt64Value(OBJECT_FIELD_CREATED_BY, m_caster->GetGUID());
 	GoSummon->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 	GoSummon->PushToWorld(u_caster->GetMapMgr());
@@ -6525,7 +6525,7 @@ void Spell::SpellEffectSummonObjectSlot(uint32 i)
 		return;
 	}
 
-	GoSummon->SetUInt32Value(GAMEOBJECT_LEVEL, u_caster->getLevel());
+	GoSummon->SetLevel(u_caster->getLevel());
 	GoSummon->SetUInt64Value(OBJECT_FIELD_CREATED_BY, m_caster->GetGUID());
 	GoSummon->SetInstanceID(m_caster->GetInstanceID());
     
