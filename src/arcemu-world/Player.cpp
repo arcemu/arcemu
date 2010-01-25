@@ -2935,6 +2935,11 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		return;
 	}
 
+	// load achievements before anything else otherwise skills would complete achievements already in the DB, leading to duplicate achievements and criterias(like achievement=126).
+#ifdef ENABLE_ACHIEVEMENTS
+	m_achievementMgr.LoadFromDB(CharacterDatabase.Query("SELECT achievement, date FROM character_achievement WHERE guid = '%u'", GetLowGUID() ),CharacterDatabase.Query("SELECT criteria, counter, date FROM character_achievement_progress WHERE guid = '%u'", GetLowGUID() ));
+#endif
+
 	CalculateBaseStats();
 
 	// set xp
@@ -3665,9 +3670,8 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 			}
 		}
 	}
-	// load and update achievements
+	// update achievements
 #ifdef ENABLE_ACHIEVEMENTS
-	m_achievementMgr.LoadFromDB(CharacterDatabase.Query("SELECT achievement, date FROM character_achievement WHERE guid = '%u'", GetLowGUID() ),CharacterDatabase.Query("SELECT criteria, counter, date FROM character_achievement_progress WHERE guid = '%u'", GetLowGUID() ));
 	m_achievementMgr.CheckAllAchievementCriteria();
 #endif
 
