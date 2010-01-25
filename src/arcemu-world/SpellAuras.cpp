@@ -2722,7 +2722,7 @@ void Aura::SpellAuraDummy(bool apply)
 					
 					Pet *pPet = objmgr.CreatePet( tamed->GetEntry() );
 					pPet->CreateAsSummon( tamed->GetEntry(), tamed->GetCreatureInfo(), tamed, p_caster, triggerspell, 2, 900000 );
-					tamed->SafeDelete();
+					tamed->Despawn(1,0);//we despawn the tamed creature once we are out of Aura::Remove()
 					
 					QuestLogEntry *qle = p_caster->GetQuestLogForEntry( tamequest->id );
 					if( qle != NULL )
