@@ -1,10 +1,10 @@
 /*
  * ArcEmu MMORPG Server
- * Copyright (C) 2008-2009 <http://www.ArcEmu.com/>
+ * Copyright (C) 2008-2010 <http://www.ArcEmu.com/>
  *
  * Circular Buffer Class
  * Based on the Bip Buffer concept, from http://www.codeproject.com/KB/IP/bipbuffer.aspx
- * Implementation Copyright (C) 2008-2009 Burlex
+ * Implementation Copyright (C) 2008-2010 Burlex
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by

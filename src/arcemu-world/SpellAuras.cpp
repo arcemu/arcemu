@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2009 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2010 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -5803,6 +5803,12 @@ void Aura::SpellAuraFeignDeath(bool apply)
 				}
 			}
 			p_target->setDeathState(ALIVE);
+			p_target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_COMBAT);
+            if(p_target->hasStateFlag(UF_ATTACKING)) 
+                    p_target->clearStateFlag(UF_ATTACKING);
+
+            p_target->GetSession()->OutPacket(SMSG_CANCEL_COMBAT);
+            p_target->GetSession()->OutPacket(SMSG_CANCEL_AUTO_REPEAT)
 		}
 		else
 		{
@@ -6419,6 +6425,9 @@ void Aura::EventPeriodicEnergizeVariable( uint32 amount, uint32 type )
 
 void Aura::EventPeriodicDrink(uint32 amount)
 {
+	if ( !m_target )
+		return;
+
 	uint32 v = m_target->GetPower( POWER_TYPE_MANA ) + amount;
 
 	if( v > m_target->GetMaxPower( POWER_TYPE_MANA ) )

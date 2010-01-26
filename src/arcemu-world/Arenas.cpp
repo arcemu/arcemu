@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2009 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2010 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,8 +21,6 @@
 #include "StdAfx.h"
 
 #define ARENA_PREPARATION 32727
-#define ARENA_WORLD_STATE_A_PLAYER_COUNT 3600
-#define ARENA_WORLD_STATE_H_PLAYER_COUNT 3601
 
 #define GREEN_TEAM 0
 #define GOLD_TEAM 1

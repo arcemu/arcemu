@@ -1454,6 +1454,10 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\src\arcemu-world\WorldStates.h"
+			>
+		</File>
+		<File
 			RelativePath="..\..\src\arcemu-world\WUtil.h"
 			>
 		</File>

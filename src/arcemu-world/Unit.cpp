@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2009 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2010 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -1180,16 +1180,16 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 		//these are player talents. Fuckem they pull the emu speed down
 		if( IsPlayer() )
 		{
-			if( spe->ProcOnNameHash[0] != 0 )
-			{
-				if( CastingSpell == NULL )
-					continue;
+        if( ospinfo->ProcOnNameHash[0] != 0 )
+                        {
+                                if( CastingSpell == NULL )
+                                        continue;
 
-				if( CastingSpell->NameHash != spe->ProcOnNameHash[0] &&
-					CastingSpell->NameHash != spe->ProcOnNameHash[1] &&
-					CastingSpell->NameHash != spe->ProcOnNameHash[2] )
-					continue;
-			}
+                                if( CastingSpell->NameHash != ospinfo->ProcOnNameHash[0] &&
+                                        CastingSpell->NameHash != ospinfo->ProcOnNameHash[1] &&
+                                        CastingSpell->NameHash != ospinfo->ProcOnNameHash[2] )
+                                        continue;
+                        }
 
 			uint32 talentlevel = 0;
 			switch( origId )
@@ -1210,6 +1210,25 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 
 			switch( spellId )
 			{
+				case 48108: // Mage - Hot Streak
+                                       {
+                                               if( CastingSpell == NULL )
+                                                       continue;
+
+                                               if( CastingSpell->NameHash != SPELL_HASH_FIREBALL ||
+                                                       CastingSpell->NameHash != SPELL_HASH_FIRE_BLAST ||
+                                                       CastingSpell->NameHash != SPELL_HASH_SCORCH ||
+                                                       CastingSpell->NameHash != SPELL_HASH_LIVING_BOMB ||
+                                                       CastingSpell->NameHash != SPELL_HASH_FROSTFIRE_BOLT )
+                                                       continue;
+
+                                               /*if( plr->CritsInRow < 1 )
+                                               {
+                                                       plr->CritsInRow++;
+                                                       continue;
+                                               }*/
+                                       }
+                                       break;
 				case 32747: //Deadly Throw Interrupt (rogue arena gloves set)
 					{
 						if( CastingSpell == NULL )
@@ -1964,38 +1983,27 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						if(CastingSpell->NameHash != SPELL_HASH_JUDGEMENT_OF_COMMAND && CastingSpell->NameHash != SPELL_HASH_JUDGEMENT)
 							continue;
 					}break;
-				// Flametongue Totem
+				/* Flametongue Totem
 				case 25555:
 				case 16389:
 				case 10523:
 				case 8248:
-				case 8253:
+				case 8253:*/
 				// Flametongue Weapon
-				case 8026:
-				case 8028:
-				case 8029:
-				case 10445:
-				case 16343:
-				case 16344:
-				case 25488:
+				case 8024:
+                case 8027:
+                case 8030:
+                case 16339:
+                case 16341:
+                case 16342:
+                case 25489:
+                case 58785:
+                case 58789:
+                case 58790:
 					{
-						if(spellId == 25555 ||
-							spellId == 16389 ||
-							spellId == 10523 ||
-							spellId == 8248 ||
-							spellId == 8253)
-								spellId = 16368;	// Flametongue Totem proc
-						else
-							spellId = 29469;	// Flametongue Weapon proc
-						Item * mh = static_cast< Player* >( this )->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
-
-						if( mh != NULL)
-						{
-							float mhs = float( mh->GetProto()->Delay );
-							dmg_overwrite = FL2UINT( mhs * 0.001f * (spe->EffectBasePoints[0] + 1)/88 );
-						}
-						else
-							continue;
+						uint32 dmg = static_cast< Player* >( this )->GetFlametongueDMG( origId );
+                                               SpellEntry * sp_for_the_logs = dbcSpell.LookupEntry( spellId );
+                                               Strike( victim, MELEE, sp_for_the_logs, dmg, 0, 0, true, false );
 					}break;
 				case 16246:
 					{
@@ -2670,6 +2678,8 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 			// Remove lightning overload aura after procing
 			RemoveAura(39805);
 		}
+		/*if( TO_PLAYER(this)->CritsInRow > 0 )
+              TO_PLAYER(this)->CritsInRow = 0;*/
 	}
 
 	m_chargeSpellsInUse = true;
@@ -3247,7 +3257,7 @@ uint32 Unit::GetSpellDidHitResult( Unit* pVictim, uint32 weapon_damage_type, Spe
 	return roll_results[r];
 }
 
-void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability, int32 add_damage, int32 pct_dmg_mod, uint32 exclusive_damage, bool disable_proc, bool skip_hit_check )
+void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability, int32 add_damage, int32 pct_dmg_mod, uint32 exclusive_damage, bool disable_proc, bool skip_hit_check, bool force_crit )
 {
 //==========================================================================================
 //==============================Unacceptable Cases Processing===============================
@@ -3262,6 +3272,8 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 			static_cast< Player* >( this )->GetSession()->OutPacket(SMSG_ATTACKSWING_BADFACING);
 			return;
 		}
+		if(force_crit)
+         r=5;
 	}
 
 //==========================================================================================
@@ -4145,8 +4157,15 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 		{
 			Player* owner = GetMapMgr()->GetPlayer( (uint32)GetSummonedByGUID() );
 			if ( owner != NULL )
-				Energize(owner, 34433, uint32(2.5f*realdamage + 0.5f), POWER_TYPE_MANA );
+				this->Energize(owner, 34433, float2int32(2.5f*realdamage + 0.5f), POWER_TYPE_MANA );
 		}
+		//ugly hack for Bloodsworm restoring hp
+               if( GetUInt64Value(UNIT_FIELD_SUMMONEDBY) != 0 && GetUInt32Value(OBJECT_FIELD_ENTRY) == 28017 )
+               {
+                       Player * owner = GetMapMgr()->GetPlayer((uint32)GetUInt64Value(UNIT_FIELD_SUMMONEDBY));
+                       if ( owner != NULL )
+                               Heal(owner, 50452, float2int32(1.5f*realdamage) );
+               }
 	}
 
 //==========================================================================================

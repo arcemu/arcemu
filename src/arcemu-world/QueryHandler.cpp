@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2009 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2010 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -261,19 +261,20 @@ void WorldSession::HandleCorpseQueryOpcode(WorldPacket &recv_data)
 				data << pMapinfo->repopy;
 				data << pMapinfo->repopz;
 				data << pCorpse->GetMapId(); //instance mapid (needs to be same as mapid to be able to recover corpse)
+				data << uint32(0);
 				SendPacket(&data);
 			}
 		}
 		else
 		{
 
-			data.Initialize(MSG_CORPSE_QUERY);
 			data << uint8(0x01); //show ?
 			data << pCorpse->GetMapId(); // mapid (that tombstones shown on)
 			data << pCorpse->GetPositionX();
 			data << pCorpse->GetPositionY();
 			data << pCorpse->GetPositionZ();
 			data << pCorpse->GetMapId(); //instance mapid (needs to be same as mapid to be able to recover corpse)
+			data << uint32(0);
 			SendPacket(&data);
 
 		}

@@ -1,7 +1,7 @@
 /*
 * ArcEmu MMORPG Server
 * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
-* Copyright (C) 2008-2009 <http://www.ArcEmu.org/>
+* Copyright (C) 2008-2010 <http://www.ArcEmu.org/>
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU Affero General Public License as published by
@@ -132,11 +132,11 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS]={
 	&Spell::SpellEffectDispelMechanic,			//SPELL_EFFECT_DISPEL_MECHANIC - 108
 	&Spell::SpellEffectSummonDeadPet,			//SPELL_EFFECT_SUMMON_DEAD_PET - 109
 	&Spell::SpellEffectDestroyAllTotems,		//SPELL_EFFECT_DESTROY_ALL_TOTEMS - 110
-	&Spell::SpellEffectNULL,					//SPELL_EFFECT_DURABILITY_DAMAGE - 111
+	&Spell::SpellEffectDurabilityDamage,        //SPELL_EFFECT_DURABILITY_DAMAGE - 111
 	&Spell::SpellEffectSummonDemon,				//SPELL_EFFECT_SUMMON_DEMON - 112
 	&Spell::SpellEffectResurrectNew,			//SPELL_EFFECT_RESURRECT_NEW - 113
 	&Spell::SpellEffectAttackMe,				//SPELL_EFFECT_ATTACK_ME - 114
-	&Spell::SpellEffectNULL,					//SPELL_EFFECT_DURABILITY_DAMAGE_PCT - 115
+	&Spell::SpellEffectDurabilityDamagePCT,     //SPELL_EFFECT_DURABILITY_DAMAGE_PCT - 115
 	&Spell::SpellEffectSkinPlayerCorpse,		//SPELL_EFFECT_SKIN_PLAYER_CORPSE - 116
 	&Spell::SpellEffectNULL,					//SPELL_EFFECT_SPIRIT_HEAL - 117//Not used
 	&Spell::SpellEffectSkill,					//SPELL_EFFECT_SKILL - 118
@@ -146,7 +146,7 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS]={
 	&Spell::SpellEffectNULL,					// unknown - 122 //not used
 	&Spell::SpellEffectFilming,					//SPELL_EFFECT_FILMING - 123 // http://www.thottbot.com/?sp=27998: flightpath
 	&Spell::SpellEffectPlayerPull,				//SPELL_EFFECT_PLAYER_PULL - 124 - http://thottbot.com/e2312
-	&Spell::SpellEffectReduceThreatPercent,					//SPELL_EFFECT_REDUCE_THREAT_PERCENT - 125 // Reduce Threat by % //http://www.thottbot.com/?sp=32835
+	&Spell::SpellEffectReduceThreatPercent,     //SPELL_EFFECT_REDUCE_THREAT_PERCENT - 125 // Reduce Threat by % //http://www.thottbot.com/?sp=32835
 	&Spell::SpellEffectSpellSteal,				//SPELL_EFFECT_SPELL_STEAL - 126 // Steal Beneficial Buff (Magic) //http://www.thottbot.com/?sp=30449
 	&Spell::SpellEffectProspecting,				// unknown - 127 // Search 5 ore of a base metal for precious gems.  This will destroy the ore in the process.
 	&Spell::SpellEffectApplyAura128,			// unknown - 128 // Adjust a stats by %: Mod Stat // ITS FLAT
@@ -477,6 +477,7 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 
 	uint32 dmg = 0;
 	bool static_damage = false;
+	bool force_crit = false;
 
 	if(GetProto()->EffectChainTarget[i])//chain
 	{
@@ -630,9 +631,25 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 			break;
 
 		case SPELL_HASH_JUDGEMENT_OF_COMMAND:
-			if( !unitTarget->IsStunned() )
-				dmg = dmg >> 1;
-			break;
+			{
+                               if( !unitTarget->IsStunned() )
+                                       dmg = dmg >> 1;
+                       }
+                       break;
+
+               case SPELL_HASH_EXORCISM:
+                        {
+                               if( p_caster != NULL )
+                               {
+                                       float sph = (float)(p_caster->GetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS+1));
+                                       float ap = (float)(p_caster->GetAP());
+                                       dmg += float2int32((0.15f * sph) + (0.15f * ap));
+                                        if(unitTarget && (TO_CREATURE(unitTarget)->GetCreatureInfo()->Type == UNIT_TYPE_UNDEAD || 
+                                                TO_CREATURE(unitTarget)->GetCreatureInfo()->Type == UNIT_TYPE_DEMON))
+                                                force_crit = true;
+                                }
+                        }
+                         break;
 
 		default:
 			break;
@@ -720,7 +737,7 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 						_type = MELEE;
 				}
 
-				u_caster->Strike( unitTarget, _type, GetProto(), 0, 0, dmg, pSpellId == 0, true );
+				u_caster->Strike( unitTarget, _type, GetProto(), 0, 0, dmg, pSpellId == 0, true, force_crit );
 			}
 		}
 	}
@@ -1394,6 +1411,18 @@ out:
 				unitTarget->GetAIInterface()->taunt(u_caster,true);
 			}
 		}break;
+		// Bloodworms
+     case 50452:
+                {
+                if(!u_caster || !u_caster->isAlive() || !unitTarget)
+                    return;
+ 
+                uint32 cnt = (2 + RandomUInt(2)); // 2 - 4 worms
+                for(uint8 j = 0; j < cnt; j++)
+                        {
+                                SpellEffectSummon(i);
+                        }
+                }break;
 		/*************************
 		Non-Class spells
 		- Done
@@ -3454,6 +3483,15 @@ void Spell::SpellEffectEnergize(uint32 i) // Energize
 			}
 		}
 		break;
+	case 57669:
+ 		{
+			modEnergy = float2int32(0.01f * unitTarget->GetUInt32Value(UNIT_FIELD_BASE_MANA));
+		}break;
+	case 31930:
+		{
+			if( u_caster )
+				modEnergy = float2int32(0.25f * unitTarget->GetUInt32Value(UNIT_FIELD_BASE_MANA));
+		}break;
 	case 20268: //Judgement of Wisdom
 		modEnergy = uint32( 0.02f * unitTarget->GetBaseMana() );
 		break;
@@ -4920,23 +4958,62 @@ void Spell::SpellEffectInterruptCast(uint32 i) // Interrupt Cast
 			}
 		}
 	}
-	// FIXME:This thing prevent target from spell casting too but cant find.
+	
 	uint32 school = 0;
+	uint32 prevtype = 0;
 	if(unitTarget->GetCurrentSpell())
 	{
-		school=unitTarget->GetCurrentSpell()->GetProto()->School;
+				prevtype = unitTarget->GetCurrentSpell()->GetProto()->PreventionType;
+
+                if((GetProto()->InterruptFlags & CAST_INTERRUPT_ON_INTERRUPT_SCHOOL) && (prevtype == PREVENTION_TYPE_SILENCE))
+                {
+                        school = unitTarget->GetCurrentSpell()->GetProto()->School;
+                }
+ 
+
 		unitTarget->GetCurrentSpell()->cancel();
 	}
 	if(school)//prevent from casts in this school
 	{
 		int32 duration = GetDuration();
-		if(unitTarget->IsPlayer()){		// Check for interruption reducing talents
+		if(unitTarget->IsPlayer())
+		{
 			int32 DurationModifier = static_cast< Player* >( unitTarget )->MechanicDurationPctMod[MECHANIC_INTERRUPTED];
 			if(DurationModifier >= - 100)
 				duration = (duration * (100 + DurationModifier)) / 100;
 		}
+
 		unitTarget->SchoolCastPrevent[school] = duration + getMSTime();
-		// TODO: visual!
+		
+                if(unitTarget->IsPlayer())
+               {
+                        TO_PLAYER(unitTarget)->SendPreventSchoolCast(school, duration + getMSTime());
+               }
+ 	}
+	else if((GetProto()->InterruptFlags & CAST_INTERRUPT_ON_INTERRUPT_ALL) && (prevtype == PREVENTION_TYPE_SILENCE))
+		{
+                int32 duration = GetDuration();
+ 
+                if(unitTarget->IsPlayer())
+                {               
+                       // Check for interruption reducing talents
+                        int32 DurationModifier = static_cast< Player* >( unitTarget )->MechanicDurationPctMod[MECHANIC_INTERRUPTED];
+ 
+                        if(DurationModifier >= - 100)
+                                duration = (duration * (100 + DurationModifier)) / 100;
+                }
+ 
+                for( uint8 j = 0; j < 7; j++)
+                {
+                        unitTarget->SchoolCastPrevent[j] = duration + getMSTime();
+                        if(unitTarget->IsPlayer())
+                        {
+                                TO_PLAYER(unitTarget)->SendPreventSchoolCast(j, duration + getMSTime());
+                        }
+                }
+        }
+ 
+        return;
 	}
 }
 
@@ -7400,4 +7477,193 @@ void Spell::SpellEffectActivateSpec(uint32 i)
 	p_caster->GetSession()->SendPacket(&data);
 	p_caster->SetPower( p_caster->GetPowerType(), 0);
 	p_caster->SendPowerUpdate(false);
+	}
+
+void Spell::SpellEffectDurabilityDamage(uint32 i)
+ {
+     if(!unitTarget || unitTarget->GetTypeId() != TYPEID_PLAYER)
+         return;
+ 
+     int32 slot = GetProto()->EffectMiscValue[i];
+ 
+        Item * pItem;
+        Container * pContainer;
+        uint32 j, k;
+ 
+     // FIXME: some spells effects have value -1/-2
+     // Possibly its mean -1 all player equipped items and -2 all items
+     if(slot < 0)
+     {
+               for( k = 0; k < MAX_INVENTORY_SLOT; k++ )
+               {
+                       pItem = p_caster->GetItemInterface()->GetInventoryItem( static_cast<uint16>( k ) );
+                       if( pItem != NULL )
+                       {
+                               if( pItem->IsContainer() )
+                               {
+                                       pContainer = static_cast<Container*>( pItem );
+                                       for( j = 0; j < pContainer->GetProto()->ContainerSlots; ++j )
+                                       {
+                                               pItem = pContainer->GetItem( static_cast<uint16>( j ) );
+                                               if( pItem != NULL )
+                                              {
+                                                       uint32 maxdur = pItem->GetDurabilityMax();
+                                                       uint32 olddur = pItem->GetDurability();
+                                                       uint32 newdur = (olddur) - (damage);
+
+                                                       if(newdur < 0)
+                                                               newdur = 0;
+
+                                                       if( newdur > maxdur )
+                                                              newdur = maxdur;
+
+                                                       pItem->SetDurability(newdur);
+                                               }
+                                       }
+                               }
+                               else
+                               {
+                                       uint32 maxdur = pItem->GetDurabilityMax();
+                                       uint32 olddur = pItem->GetDurability();
+                                       uint32 newdur = (olddur) - (damage);
+
+                                      if(newdur < 0)
+                                               newdur = 0;
+
+                                       if( newdur > maxdur )
+                                               newdur = maxdur;
+
+                                       // Apply / Disapply enchantements from this item
+                                       pItem->SetDurability(newdur);
+                                       if( newdur == 0 && olddur > 0 )
+                                              p_caster->ApplyItemMods( pItem, static_cast<uint16>( k ), false );
+                                       else if( newdur > 0 && olddur == 0 )
+                                               p_caster->ApplyItemMods( pItem, static_cast<uint16>( k ), true );
+                               }
+                       }
+               }
+        return;
+    }
+
+    // invalid slot value
+    if(slot >= INVENTORY_SLOT_BAG_END)
+        return;
+
+       pItem = p_caster->GetItemInterface()->GetInventoryItem( slot );
+       if( pItem )
+       {
+               uint32 maxdur = pItem->GetDurabilityMax();
+               uint32 olddur = pItem->GetDurability();
+               uint32 newdur = (olddur) - (damage);
+
+               if(newdur < 0)
+                      newdur = 0;
+
+               if( newdur > maxdur )
+                       newdur = maxdur;
+
+               pItem->SetDurability(newdur);
+
+               // Apply / Disapply enchantements from this item
+               if( newdur == 0 && olddur > 0 ) 
+                       p_caster->ApplyItemMods( pItem, slot, false );
+               else if( newdur > 0 && olddur == 0 )
+                       p_caster->ApplyItemMods( pItem, slot, true );
+       }
+}
+
+void Spell::SpellEffectDurabilityDamagePCT(uint32 i)
+{
+    if(!unitTarget || unitTarget->GetTypeId() != TYPEID_PLAYER)
+        return;
+
+    int32 slot = GetProto()->EffectMiscValue[i];
+
+       Item * pItem;
+       Container * pContainer;
+       uint32 j, k;
+
+    // FIXME: some spells effects have value -1/-2
+    // Possibly its mean -1 all player equipped items and -2 all items
+    if(slot < 0)
+    {
+               for( k = 0; k < MAX_INVENTORY_SLOT; k++ )
+               {
+                       pItem = p_caster->GetItemInterface()->GetInventoryItem( static_cast<uint16>( k ) );
+                      if( pItem != NULL )
+                       {
+                               if( pItem->IsContainer() )
+                               {
+                                       pContainer = static_cast<Container*>( pItem );
+                                       for( j = 0; j < pContainer->GetProto()->ContainerSlots; ++j )
+                                       {
+                                               pItem = pContainer->GetItem( static_cast<uint16>( j ) );
+                                               if( pItem != NULL )
+                                               {
+                                                       uint32 maxdur = pItem->GetDurabilityMax();
+                                                       uint32 olddur = pItem->GetDurability();
+                                                       uint32 newdur = (olddur - (uint32)(maxdur * (damage/100.0)));
+
+                                                       if(newdur < 0)
+                                                               newdur = 0;
+
+                                                       if( newdur > maxdur )
+                                                               newdur = maxdur;
+
+                                                       pItem->SetDurability(newdur);
+                                               }
+                                       }
+                               }
+                               else
+                               {
+                                       uint32 maxdur = pItem->GetDurabilityMax();
+                                       uint32 olddur = pItem->GetDurability();
+                                       uint32 newdur = (olddur - (uint32)(maxdur * (damage/100.0)));
+
+                                      if(newdur < 0)
+                                               newdur = 0;
+
+                                       if( newdur > maxdur )
+                                               newdur = maxdur;
+
+                                       // Apply / Disapply enchantements from this item
+                                       pItem->SetDurability(newdur);
+                                       if( newdur == 0 && olddur > 0 )
+                                               p_caster->ApplyItemMods( pItem, static_cast<uint16>( k ), false );
+                                       else if( newdur > 0 && olddur == 0 )
+                                               p_caster->ApplyItemMods( pItem, static_cast<uint16>( k ), true );
+                               }
+                       }
+               }
+        return;
+    }
+
+    // invalid slot value
+    if(slot >= INVENTORY_SLOT_BAG_END)
+        return;
+
+    if(damage <= 0)
+        return;
+
+       pItem = p_caster->GetItemInterface()->GetInventoryItem( slot );
+       if( pItem )
+       {
+               uint32 maxdur = pItem->GetDurabilityMax();
+               uint32 olddur = pItem->GetDurability();
+               uint32 newdur = (olddur - (uint32)(maxdur * (damage/100.0)));
+
+               if(newdur < 0)
+                       newdur = 0;
+
+               if( newdur > maxdur )
+                       newdur = maxdur;
+
+               pItem->SetDurability(newdur);
+
+               // Apply / Disapply enchantements from this item
+               if( newdur == 0 && olddur > 0 ) 
+                       p_caster->ApplyItemMods( pItem, slot, false );
+               else if( newdur > 0 && olddur == 0 )
+                       p_caster->ApplyItemMods( pItem, slot, true );
+       }
 }

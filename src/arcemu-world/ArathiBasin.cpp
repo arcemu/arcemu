@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2009 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2010 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,38 +26,6 @@
 #define RESOURCES_WARNINGVAL 1800
 
 uint32 buffentries[3] = {180380,180362,180146};
-
-// AB defines
-#define AB_CAPTURED_STABLES_ALLIANCE		0x6E7 //1767
-#define AB_CAPTURED_STABLES_HORDE		   0x6E8 //1768
-#define AB_CAPTURING_STABLES_ALLIANCE	   0x6E9 //1769
-#define AB_CAPTURING_STABLES_HORDE		  0x6EA //1770
-// 0x6EB is unknown
-#define AB_CAPTURED_FARM_ALLIANCE		   0x6EC //1772 // 1 is captured by the alliance
-#define AB_CAPTURED_FARM_HORDE			  0x6ED // 1773 / 1 is captured by the horde
-#define AB_CAPTURING_FARM_ALLIANCE		  0x6EE // 1774 1 is capturing by the alliance
-#define AB_CAPTURING_FARM_HORDE			 0x6EF // 1775 1 is capturing by the horde
-
-#define AB_CAPTURED_BLACKSMITH_ALLIANCE	 0x6F6 // 1782
-#define AB_CAPTURED_BLACKSMITH_HORDE		0x6F7 //1783
-#define AB_CAPTURING_BLACKSMITH_ALLIANCE	0x6F8 //1784
-#define AB_CAPTURING_BLACKSMITH_HORDE	   0x6F9 //1785
-// 0x6FA is unknown
-#define AB_CAPTURED_GOLDMINE_ALLIANCE	   0x6FB //1787
-#define AB_CAPTURED_GOLDMINE_HORDE		  0x6FC//1788
-#define AB_CAPTURING_GOLDMINE_ALLIANCE	  0x6FD//1789
-#define AB_CAPTURING_GOLDMINE_HORDE		 0x6FE//1790
-// 0x6FF is unknown
-#define AB_CAPTURED_LUMBERMILL_ALLIANCE	 0x700//1792
-#define AB_CAPTURED_LUMBERMILL_HORDE		0x701//1793
-#define AB_CAPTURING_LUMBERMILL_ALLIANCE	0x702//1794
-#define AB_CAPTURING_LUMBERMILL_HORDE	   0x703//1795
-
-#define AB_SHOW_STABLE_ICON				 0x732//1842
-#define AB_SHOW_GOLDMINE_ICON			   0x733//1843
-#define AB_SHOW_LUMBERMILL_ICON			 0x734//1844
-#define AB_SHOW_FARM_ICON				   0x735//1845
-#define AB_SHOW_BACKSMITH_ICON			  0x736//1846
 
 /* AB Battleground Data */
 

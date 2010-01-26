@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2009 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2010 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -1839,7 +1839,15 @@ void WorldSession::HandleReadItemOpcode(WorldPacket &recvPacket)
 			data << item->GetGUID();
 			SendPacket(&data);
 			sLog.outDebug("Sent SMSG_READ_OK %d", item->GetGUID());
-		}	
+		}
+		else
+		{
+			WorldPacket data(SMSG_READ_ITEM_FAILED, 5);
+			data << item->GetGUID();
+			data << uint8(2);
+			SendPacket(&data);
+			sLog.outDebug("Sent SMSG_READ_ITEM_FAILED %d", item->GetGUID());
+		}
 	}
 }
 
@@ -1935,12 +1943,28 @@ void WorldSession::HandleRepairItemOpcode(WorldPacket &recvPacket)
 	sLog.outDebug("Received CMSG_REPAIR_ITEM %d", itemguid);
 }
 
-void WorldSession::HandleBuyBankSlotOpcode(WorldPacket& recvPacket) 
+void WorldSession::HandleBuyBankSlotOpcode(WorldPacket& recvPacket)
 {
-	if(!_player->IsInWorld()) return;
-	//CHECK_PACKET_SIZE(recvPacket, 12);
+	CHECK_PACKET_SIZE(recvPacket, 8);
+
+	if(!_player->IsInWorld())
+		return;
+
+	uint64 guid;
+	recvPacket >> guid;
+	Creature* Banker = _player->GetMapMgr()->GetCreature( GET_LOWGUID_PART(guid) );
+
+	if(Banker == NULL || !Banker->isBanker())
+	{
+		WorldPacket data(SMSG_BUY_BANK_SLOT_RESULT, 4);
+		data << uint32(2); // E_ERR_BANKSLOT_NOTBANKER
+		SendPacket( &data );
+		return;
+	}
+
 	uint32 bytes,slots;
 	int32 price;
+
 	sLog.outDebug("WORLD: CMSG_BUY_bytes_SLOT");
 
 	bytes = GetPlayer()->GetUInt32Value(PLAYER_BYTES_2);
@@ -1948,8 +1972,15 @@ void WorldSession::HandleBuyBankSlotOpcode(WorldPacket& recvPacket)
 
 	sLog.outDetail("PLAYER: Buy bytes bag slot, slot number = %d", slots);
 	BankSlotPrice* bsp = dbcBankSlotPrices.LookupEntryForced(slots+1);
-	price = (bsp != NULL ) ? bsp->Price : 99999999;
+	if(bsp == NULL)
+	{
+		WorldPacket data(SMSG_BUY_BANK_SLOT_RESULT, 4);
+		data << uint32(0); // E_ERR_BANKSLOT_FAILED_TOO_MANY
+		SendPacket( &data );
+		return;
+	}
 
+	price = bsp->Price;
 	if( _player->HasGold(price) )
 	{
 	   _player->SetUInt32Value(PLAYER_BYTES_2, (bytes&0xff00ffff) | ((slots+1) << 16) );
@@ -1957,6 +1988,12 @@ void WorldSession::HandleBuyBankSlotOpcode(WorldPacket& recvPacket)
 #ifdef ENABLE_ACHIEVEMENTS
 		_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_BUY_BANK_SLOT, 1, 0, 0);
 #endif
+	}
+	else
+	{
+		WorldPacket data(SMSG_BUY_BANK_SLOT_RESULT, 4);
+		data << uint32(1); // E_ERR_BANKSLOT_INSUFFICIENT_FUNDS
+		SendPacket( &data );
 	}
 }
 

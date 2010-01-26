@@ -575,7 +575,7 @@ void Player::SendLoot(uint64 guid,uint8 loot_type)
 void Player::SendInitialLogonPackets()
 {
 	// Initial Packets... they seem to be re-sent on port.
-	m_session->OutPacket( SMSG_SET_REST_START_OBSOLETE, 4, &m_timeLogoff );
+	//m_session->OutPacket(SMSG_SET_REST_START_OBSOLETE, 4, &m_timeLogoff); // Seem to be unused by client
 
     StackWorldPacket<32> data( SMSG_BINDPOINTUPDATE );
 
@@ -601,6 +601,11 @@ void Player::SendInitialLogonPackets()
 
 	smsg_TalentsInfo( false );
 	smsg_InitialSpells();
+
+	data.Initialize(SMSG_SEND_UNLEARN_SPELLS);
+	data << uint32(0); // count, for(count) uint32;
+	GetSession()->SendPacket( &data );
+
 	SendInitialActions();
 	smsg_InitialFactions();
 

@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2009 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2010 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -354,12 +354,14 @@ enum customProcFlags
 
 enum CastInterruptFlags
 {
-    CAST_INTERRUPT_NULL            = 0x0,
-    CAST_INTERRUPT_ON_SILENCE      = 0x1,
-    CAST_INTERRUPT_PUSHBACK        = 0x2, // seems to be whether or not the spell is pushed back on dmg
-    CAST_INTERRUPT_ON_STUNNED      = 0x4, // could be wrong
-    CAST_INTERRUPT_ON_MOVEMENT     = 0x8,
-    CAST_INTERRUPT_ON_DAMAGE_TAKEN = 0x10
+    CAST_INTERRUPT_NULL                 = 0x0,
+    CAST_INTERRUPT_ON_MOVEMENT          = 0x1,
+    CAST_INTERRUPT_PUSHBACK             = 0x2, // seems to be whether or not the spell is pushed back on dmg
+    CAST_INTERRUPT_ON_INTERRUPT_CAST    = 0x4, // ? probably interrupt only cast
+    CAST_INTERRUPT_ON_INTERRUPT_SCHOOL  = 0x8, // seems that on 3.2.0 spell with this interrupts only 1 school, like counterspell
+    CAST_INTERRUPT_ON_DAMAGE_TAKEN      = 0x10,
+    CAST_INTERRUPT_ON_INTERRUPT_ALL     = 0x20 // guessed
+
 };
 
 enum AuraInterruptFlags
@@ -712,6 +714,13 @@ enum SpellTargetType
     TARGET_TYPE_CRITTER    = 0x80,
     TARGET_TYPE_MECHANICAL = 0x100,
 };
+
+enum PreventionType
+ {
+     PREVENTION_TYPE_NONE      = 0,
+     PREVENTION_TYPE_SILENCE   = 1,
+     PREVENTION_TYPE_PACIFY    = 2
+ };
 
 /****************SpellExtraFlags*****************/
 /* SpellExtraFlags defines                      */
@@ -1791,6 +1800,8 @@ public:
 	void SpellEffectDispelMechanic(uint32 i);
 	void SpellEffectSummonDeadPet(uint32 i);
 	void SpellEffectDestroyAllTotems(uint32 i);
+	void SpellEffectDurabilityDamage(uint32 i);
+    void SpellEffectDurabilityDamagePCT(uint32 i);
 	void SpellEffectSummonDemon(uint32 i);
 	void SpellEffectResurrectNew(uint32 i);
 	void SpellEffectAttackMe(uint32 i);

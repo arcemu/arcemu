@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2009 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2010 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -1128,3 +1128,10 @@ void HookInterface::OnAdvanceSkillLine(Player * pPlayer, uint32 skillLine, uint3
 	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
 		((tOnAdvanceSkillLine)*itr)(pPlayer, skillLine, current);
 }
+
+void HookInterface::OnDuelFinished(Player * Winner, Player * Looser)
+ {
+       ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_DUEL_FINISHED];
+       for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
+               ((tOnDuelFinished)*itr)(Winner, Looser);
+ }

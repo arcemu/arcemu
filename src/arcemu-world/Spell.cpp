@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2009 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2010 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -5385,11 +5385,13 @@ void Spell::Heal( int32 amount, bool ForceCrit )
 		switch( m_spellInfo->Id )
 		{
 		case 20267: //Judgement of Light
-			if( playerTarget != NULL )
-				amount = (int)(0.10f * playerTarget->GetAttackPower() + 0.10f * playerTarget->GetPosDamageDoneMod(1));
-			else
-				amount = (int)(0.10f * unitTarget->GetAttackPower());
-			break;
+			{
+            // Patch 3.2.0 (2009-08-04): Now heals for 2% of the attacker's maximum health instead of a 
+            // variable amount based on the spell power and attack power of the judging paladin.
+		    if( p_caster != NULL )
+            amount = float2int32(p_caster->GetUInt32Value(UNIT_FIELD_MAXHEALTH) * 0.02f);
+            }
+			               break;
 		case 20167: //Seal of Light
 			if( p_caster != NULL )
 				amount = (int)(0.15f * p_caster->GetAttackPower() + 0.15f * (p_caster)->GetPosDamageDoneMod(1));

@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2009 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2010 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -780,6 +780,34 @@ void WorldSession::HandleAuctionListItems( WorldPacket & recv_data )
 		return;
 
 	pCreature->auctionHouse->SendAuctionList(_player, &recv_data);
+}
+
+void WorldSession::HandleAuctionListPendingSales( WorldPacket & recv_data )
+{
+	CHECK_INWORLD_RETURN
+
+	uint64 guid;
+	recv_data >> guid;
+
+	Creature * pCreature = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
+	if(!pCreature || !pCreature->auctionHouse)
+		return;
+
+	sLog.outDebug("WORLD: Received CMSG_AUCTION_LIST_PENDING_SALES");
+
+	uint32 count = 0;
+
+	WorldPacket data(SMSG_AUCTION_LIST_PENDING_SALES, 4);
+	data << uint32(count);                                  // count
+	/*for(uint32 i = 0; i < count; ++i)
+	{
+		data << "";                                         // string
+		data << "";                                         // string
+		data << uint32(0);
+		data << uint32(0);
+		data << float(0);
+	}*/
+	SendPacket(&data);
 }
 
 void AuctionHouse::LoadAuctions()

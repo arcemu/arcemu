@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2009 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2010 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -123,18 +123,6 @@ const uint32 m_iconsStates[EOTS_TOWER_COUNT][3] = {
     {2728, 2730, 2729},
     {2731, 2732, 2733}
      };
-
-/**
- * WorldStates
- */
-#define EOTS_WORLDSTATE_DISPLAYON 2718
-#define EOTS_WORLDSTATE_DISPLAYVALUE 2719
-#define EOTS_WORLDSTATE_ALLIANCE_VICTORYPOINTS 2749
-#define EOTS_WORLDSTATE_HORDE_VICTORYPOINTS 2750
-#define EOTS_WORLDSTATE_ALLIANCE_BASES 2752
-#define EOTS_WORLDSTATE_HORDE_BASES 2753
-#define EOTS_NETHERWING_FLAG_SPELL 34976
-
 
 #define EOTS_CAPTURE_RATE 4
 

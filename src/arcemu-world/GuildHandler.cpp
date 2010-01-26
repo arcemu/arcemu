@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2009 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2010 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -913,6 +913,24 @@ void WorldSession::HandleCharterSign( WorldPacket & recv_data )
 	data.clear();
 	data << item_guid << (uint64)c->GetLeader() << uint32(0);
 	SendPacket(&data);
+}
+
+void WorldSession::HandleCharterDecline( WorldPacket & recv_data )
+{
+	uint64 item_guid;
+	recv_data >> item_guid;
+
+	Charter * c = objmgr.GetCharterByItemGuid(item_guid);
+	if(!c)
+		return;
+
+	Player *owner = objmgr.GetPlayer(c->GetLeader());
+	if(owner)
+	{
+		WorldPacket data(MSG_PETITION_DECLINE, 8);
+		data << _player->GetGUID();
+		owner->GetSession()->SendPacket(&data);
+	}
 }
 
 void WorldSession::HandleCharterTurnInCharter(WorldPacket & recv_data)

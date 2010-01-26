@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2009 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2010 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -4647,6 +4647,10 @@ void Player::SetPlayerSpeed(uint8 SpeedType, float value)
 
 void Player::BuildPlayerRepop()
 {
+	WorldPacket data(SMSG_PRE_RESURRECT, 8);
+	FastGUIDPack(data, GetGUID());		 // caster guid
+	GetSession()->SendPacket(&data);
+
 	// Cleanup first
 	uint32 AuraIds[] = {20584,9036,8326,0};
 	RemoveAuras(AuraIds); // Cebernic: Removeaura just remove once(bug?).
@@ -4658,7 +4662,7 @@ void Player::BuildPlayerRepop()
 
 	if(getRace()==RACE_NIGHTELF)
 	{
-		SpellEntry *inf=dbcSpell.LookupEntry(9036); // Cebernic:20584 triggered.
+		SpellEntry *inf=dbcSpell.LookupEntry(9036);
 		Spell * sp = new Spell(this,inf,true,NULL);
 		sp->prepare(&tgt);
 	}
@@ -8284,6 +8288,13 @@ void Player::EndDuel(uint8 WinCondition)
 	data << uint8( 1 );
 	SendMessageToSet( &data, true );
 
+	//Send hook OnDuelFinished
+
+    if ( WinCondition != 0 )
+            sHookInterface.OnDuelFinished( DuelingWith, this );
+    else
+            sHookInterface.OnDuelFinished( this, DuelingWith );
+
 	//Clear Duel Related Stuff
 
 	GameObject* arbiter = m_mapMgr ? GetMapMgr()->GetGameObject(GET_LOWGUID_PART(GetDuelArbiter())) : 0;
@@ -8296,6 +8307,32 @@ void Player::EndDuel(uint8 WinCondition)
 
 	SetDuelArbiter(0 );
 	DuelingWith->SetDuelArbiter(0 );
+	uint32 Player::GetFlametongueDMG(uint32 spellid)
+ {
+        float dmg = 0;
+        Item * i = GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
+       float delay = float(i->GetProto()->Delay * 0.001f);
+        SpellEntry * sp = dbcSpell.LookupEntry(spellid);
+ 
+        if( delay == 0 )
+                return 1;
+
+        // Based on calculation from Shauren, thx for it
+        float min = (float)sp->EffectBasePoints[0]/77.0f;
+        float max = (float)sp->EffectBasePoints[0]/25.0f;
+ 
+        dmg = float(float(min * delay) * 0.88f);
+      
+       if( dmg < min )
+              dmg = min;
+       else if( dmg > max )
+               dmg = max;
+
+       return float2int32(dmg);
+ }
+
+	SetUInt64Value( PLAYER_DUEL_ARBITER, 0 );
+	DuelingWith->SetUInt64Value( PLAYER_DUEL_ARBITER, 0 );
 
 	SetDuelTeam(0 );
 	DuelingWith->SetDuelTeam(0 );
@@ -8565,14 +8602,14 @@ bool Player::SafeTeleport(uint32 MapID, uint32 InstanceID, const LocationVector 
 	// Lookup map info
 	if(mi && mi->flags & WMI_INSTANCE_XPACK_01 && !m_session->HasFlag(ACCOUNT_FLAG_XPACK_01) && !m_session->HasFlag(ACCOUNT_FLAG_XPACK_02))
 	{
-		WorldPacket msg(SMSG_MOTD, 50);
+		WorldPacket msg(SMSG_MOTD, 50); // Need to be replaced with correct one !
 		msg << uint32(3) << "You must have The Burning Crusade Expansion to access this content." << uint8(0);
 		m_session->SendPacket(&msg);
 		return false;
 	}
 	if(mi && mi->flags & WMI_INSTANCE_XPACK_02 && !m_session->HasFlag(ACCOUNT_FLAG_XPACK_02))
 	{
-		WorldPacket msg(SMSG_MOTD, 50);
+		WorldPacket msg(SMSG_MOTD, 50); // Need to be replaced with correct one !
 		msg << uint32(3) << "You must have Wrath of the Lich King Expansion to access this content." << uint8(0);
 		m_session->SendPacket(&msg);
 		return false;
@@ -9903,11 +9940,6 @@ void Player::removeSoulStone()
 		{
 			sSoulStone = 27239;
 		}break;
-	case 47882:
-		{//Rank 7
-			sSoulStone = 47883;
-		}break;
-
 	}
 	this->RemoveAura(sSoulStone);
 	this->SoulStone = this->SoulStoneReceiver = 0; //just incase
@@ -9918,6 +9950,10 @@ void Player::SoftDisconnect()
       sEventMgr.RemoveEvents(this, EVENT_PLAYER_SOFT_DISCONNECT);
 	  WorldSession *session=GetSession();
       session->LogoutPlayer(true);
+	case 47882:
+		{
+			sSoulStone = 47883;
+		}
 	  session->Disconnect();
 }
 
@@ -10581,6 +10617,9 @@ void Player::_ModifySkillMaximum(uint32 SkillLine, uint32 NewMax)
 
 void Player::RemoveSpellTargets(uint32 Type, Unit* target)
 {
+    if( Type == SPELL_TYPE_INDEX_EARTH_SHIELD )
+        return;
+
 	if( m_spellIndexTypeTargets[Type] != 0 )
 	{
 		Unit * pUnit = m_mapMgr ? m_mapMgr->GetUnit(m_spellIndexTypeTargets[Type]) : NULL;
@@ -12902,6 +12941,39 @@ void Player::SetRaidDifficulty(uint32 diff){
 uint32 Player::GetRaidDifficulty(){
 	return m_RaidDifficulty;
 }
+
+void Player::SendPreventSchoolCast(uint32 SpellSchool, uint32 unTimeMs)
+{
+    WorldPacket data(SMSG_SPELL_COOLDOWN, 8 + 1 + mSpells.size() * 8);
+    data << GetGUID();
+    data << uint8(0x0);
+
+       SpellSet::iterator sitr;
+       for (sitr = mSpells.begin(); sitr != mSpells.end(); ++sitr)
+    {
+        uint32 SpellId = (*sitr);
+
+        SpellEntry * spellInfo = dbcSpell.LookupEntry(SpellId);
+
+       if (!spellInfo)
+        {
+            ASSERT(spellInfo);
+            continue;
+        }
+
+        // Not send cooldown for this spells
+        if (spellInfo->Attributes & ATTRIBUTES_TRIGGER_COOLDOWN)
+           continue;
+
+               if( spellInfo->School == SpellSchool )
+        {
+           data << uint32(SpellId);
+            data << uint32(unTimeMs);                       // in m.secs
+        }
+    }
+    GetSession()->SendPacket(&data);
+ }
+
 
 void Player::ToggleXpGain(){
 	

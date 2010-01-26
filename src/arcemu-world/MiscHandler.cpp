@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2009 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2010 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -923,6 +923,8 @@ void WorldSession::HandleZoneUpdateOpcode( WorldPacket & recv_data )
 	_player->GetItemInterface()->EmptyBuyBack();
 }
 
+/*
+// Unused in 3.2
 void WorldSession::HandleSetTargetOpcode( WorldPacket & recv_data )
 {
 	uint64 guid ;
@@ -938,6 +940,7 @@ void WorldSession::HandleSetTargetOpcode( WorldPacket & recv_data )
 		GetPlayer( )->SetTarget(guid);
 	}
 }
+*/
 
 void WorldSession::HandleSetSelectionOpcode( WorldPacket & recv_data )
 {
@@ -1631,6 +1634,14 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 	case GAMEOBJECT_TYPE_GOOBER:
 		{
 			//Quest related mostly
+
+			// show page
+			if(goinfo->sound7)
+			{
+				WorldPacket data(SMSG_GAMEOBJECT_PAGETEXT, 8);
+				data << obj->GetGUID();
+				plyr->GetSession()->SendPacket(&data);
+			}
 		}
 	case GAMEOBJECT_TYPE_CAMERA://eye of azora
 		{
@@ -2568,6 +2579,37 @@ void WorldSession::HandleGameobjReportUseOpCode( WorldPacket& recv_data )   // C
 void WorldSession::HandleWorldStateUITimerUpdate(WorldPacket& recv_data)
 {
 	WorldPacket data(SMSG_WORLD_STATE_UI_TIMER_UPDATE, 4);
-	data << (uint32)UNIXTIME;;
+	data << (uint32)UNIXTIME;
+	SendPacket(&data);
+}
+
+void WorldSession::HandleSetTaxiBenchmarkOpcode( WorldPacket & recv_data )
+{
+	CHECK_PACKET_SIZE(recv_data, 1);
+
+	uint8 mode;
+	recv_data >> mode;
+
+	sLog.outDebug("Client used \"/timetest %d\" command", mode);
+}
+
+void WorldSession::HandleRealmStateRequestOpcode( WorldPacket & recv_data )
+{
+	CHECK_PACKET_SIZE(recv_data, 4);
+
+	sLog.outDebug( "WORLD: Received CMSG_REALM_SPLIT");
+
+	uint32 unk;
+	std::string split_date = "01/01/01";
+	recv_data >> unk;
+
+	WorldPacket data(SMSG_REALM_SPLIT, 4+4+split_date.size()+1);
+	data << unk;
+	data << uint32(0x00000000);                             // realm split state
+	// split states:
+	// 0x0 realm normal
+	// 0x1 realm split
+	// 0x2 realm split pending
+	data << split_date;
 	SendPacket(&data);
 }

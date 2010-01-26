@@ -1,7 +1,7 @@
 /*
 * ArcEmu MMORPG Server
 * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
-* Copyright (C) 2008-2009 <http://www.ArcEmu.org/>
+* Copyright (C) 2008-2010 <http://www.ArcEmu.org/>
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU Affero General Public License as published by
@@ -1909,7 +1909,7 @@ void CBattlegroundManager::HandleArenaJoin(WorldSession * m_session, uint32 Batt
 
 			if(pGroup->GetLeader()->m_loggedInPlayer && pGroup->GetLeader()->m_loggedInPlayer->m_arenaTeams[type] == NULL)
 			{
-				m_session->SystemMessage( m_session->LocalizedWorldSrv(57));
+				m_session->SendNotInArenaTeamPacket(uint8(maxplayers));
 				return;
 			}
 

@@ -1,6 +1,6 @@
 /*
  * ArcEmu MMORPG Server
- * Copyright (C) 2008-2009 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2010 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -65,7 +65,7 @@ PatchMgr::PatchMgr()
 		if(hFile == INVALID_HANDLE_VALUE)
 			continue;
 
-		Log.Notice("PatchMgr", "Found patch for b%u locale `%s`.", srcversion,locality);
+		Log.Notice("PatchMgr", "Found patch for %u locale `%s`.", srcversion,locality);
 		pPatch = new Patch;
 		size = GetFileSize(hFile, &sizehigh);
 		pPatch->FileSize = size;

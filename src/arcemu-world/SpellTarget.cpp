@@ -1101,9 +1101,7 @@ void Spell::SpellTargetAllRaid( uint32 i, uint32 j )
 		return;
 
     TargetsList* tmpMap = &m_targetUnits[i];
-    SafeAddTarget( tmpMap, m_caster->GetGUID() );
-
-	Group * group = static_cast< Unit* >( m_caster )->GetGroup(); 
+    	Group * group = static_cast< Unit* >( m_caster )->GetGroup(); 
 	if( group == NULL )
 		return;
 	
@@ -1119,7 +1117,14 @@ void Spell::SpellTargetAllRaid( uint32 i, uint32 j )
 			for( GroupMembersSet::iterator itr = subgroup->GetGroupMembersBegin(); itr != subgroup->GetGroupMembersEnd(); ++itr )
 			{
 				if( (*itr)->m_loggedInPlayer && (*itr)->m_loggedInPlayer != m_caster)
+				{
+					if (GetProto()->casterAuraSpellNot) // ?targetAuraSpellNot
+					{
+						if ((*itr)->m_loggedInPlayer->HasAura(GetProto()->casterAuraSpellNot))
+							continue;
+					}
 					SafeAddTarget( tmpMap,(*itr)->m_loggedInPlayer->GetGUID() );
+				}
 			}
 		}
 	}

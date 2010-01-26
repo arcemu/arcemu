@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2009 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2010 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -543,6 +543,22 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 	}
 }
 
+void WorldSession::HandleEmoteOpcode( WorldPacket & recv_data )
+{
+	CHECK_PACKET_SIZE(recv_data,4);
+
+	if(!_player->isAlive())
+		return;
+
+	uint32 emote;
+	recv_data >> emote;
+	_player->Emote((EmoteType)emote);
+#ifdef ENABLE_ACHIEVEMENTS
+	_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_DO_EMOTE, emote, 0, 0);
+#endif
+	sQuestMgr.OnPlayerEmote(_player, emote, uint64(_player->GetGUID()));
+}
+
 void WorldSession::HandleTextEmoteOpcode( WorldPacket & recv_data )
 {
 	CHECK_PACKET_SIZE(recv_data, 16);
@@ -648,25 +664,59 @@ void WorldSession::HandleTextEmoteOpcode( WorldPacket & recv_data )
 	}
 }
 
-void WorldSession::HandleReportSpamOpcode(WorldPacket & recvPacket)
+void WorldSession::HandleReportSpamOpcode( WorldPacket & recv_data )
 {
-	CHECK_PACKET_SIZE(recvPacket, 29);
+	CHECK_PACKET_SIZE(recv_data, 1+8);
+	sLog.outDebug("WORLD: CMSG_REPORT_SPAM");
 
-    // the 0 in the out packet is unknown
-    GetPlayer()->GetSession()->OutPacket(SMSG_COMMENTATOR_GET_PLAYER_INFO, 1, 0 );
+	uint8 spam_type;                                        // 0 - mail, 1 - chat
+	uint64 spammer_guid;
+	uint32 unk1, unk2, unk3, unk4 = 0;
+	std::string description = "";
+	recv_data >> spam_type;                                 // unk 0x01 const, may be spam type (mail/chat)
+	recv_data >> spammer_guid;                              // player guid
+	switch(spam_type)
+	{
+		case 0:
+			CHECK_PACKET_SIZE(recv_data, recv_data.rpos()+4+4+4);
+			recv_data >> unk1;                              // const 0
+			recv_data >> unk2;                              // probably mail id
+			recv_data >> unk3;                              // const 0
+			break;
+		case 1:
+			CHECK_PACKET_SIZE(recv_data, recv_data.rpos()+4+4+4+4+1);
+			recv_data >> unk1;                              // probably language
+			recv_data >> unk2;                              // message type?
+			recv_data >> unk3;                              // probably channel id
+			recv_data >> unk4;                              // unk random value
+			recv_data >> description;                       // spam description string (messagetype, channel name, player name, message)
+			break;
+	}
+	// NOTE: all chat messages from this spammer automatically ignored by spam reporter until logout in case chat spam.
+	// if it's mail spam - ALL mails from this spammer automatically removed by client
 
-	/* This whole thing is guess-work */
-	uint8 unk1;
-	uint64 reportedGuid;
-	uint32 unk2;
-	uint32 messagetype;
-	uint32 unk3;
-	uint32 unk4;
-	std::string message;
-	recvPacket >> unk1 >> reportedGuid >> unk2 >> messagetype >> unk3 >> unk4 >> message;
+	// Complaint Received message
+	WorldPacket data(SMSG_COMPLAIN_RESULT, 1);
+	data << uint8(0);
+	SendPacket(&data);
 
-	Player * rPlayer = objmgr.GetPlayer((uint32)reportedGuid);
-	if(!rPlayer)
+	sLog.outDebug("REPORT SPAM: type %u, guid %u, unk1 %u, unk2 %u, unk3 %u, unk4 %u, message %s", spam_type, GUID_LOPART(spammer_guid), unk1, unk2, unk3, unk4, description.c_str());
+}
+
+void WorldSession::HandleChatIgnoredOpcode(WorldPacket & recvPacket )
+{
+	CHECK_PACKET_SIZE(recvPacket, 8+1);
+
+	uint64 iguid;
+	uint8 unk;
+
+	recvPacket >> iguid;
+	recvPacket >> unk; // probably related to spam reporting
+
+	Player *player = objmgr.GetPlayer(uint32(iguid));
+	if(!player || !player->GetSession())
 		return;
 
+	WorldPacket * data = sChatHandler.FillMessageData(CHAT_MSG_IGNORED, LANG_UNIVERSAL, _player->GetName(), _player->GetGUID());
+	player->GetSession()->SendPacket(data);
 }

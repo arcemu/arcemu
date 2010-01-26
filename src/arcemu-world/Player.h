@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2009 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2010 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -1137,7 +1137,8 @@ public:
 		//Shady: actually ghostwolf form doesn't use weapon too.
 	}
 	void CalcDamage();
-	uint32 GetMainMeleeDamage(uint32 AP_owerride); //i need this for windfury
+	uint32 GetMainMeleeDamage(uint32 AP_owerride); // I need this for windfury
+	uint32 GetFlametongueDMG(uint32 spellid); // For flametongue
     uint32 GetMaxLevel(){ return GetUInt32Value(PLAYER_FIELD_MAX_LEVEL); }
 
     const uint64& GetSelection( ) const { return m_curSelection; }
@@ -1158,6 +1159,7 @@ public:
 	void removeSpellByHashName(uint32 hash);
 	bool removeSpell(uint32 SpellID, bool MoveToDeleted, bool SupercededSpell, uint32 SupercededSpellID);
 	bool removeDeletedSpell( uint32 SpellID );
+	void SendPreventSchoolCast(uint32 SpellSchool, uint32 unTimeMs);
 
     // PLEASE DO NOT INLINE!
     void AddOnStrikeSpell(SpellEntry* sp, uint32 delay)

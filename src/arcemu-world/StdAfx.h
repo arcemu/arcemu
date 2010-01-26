@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2009 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2010 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -176,6 +176,7 @@
 #include "CConsole.h"
 #include "SpeedDetector.h"
 #include "ProcCondHandler.h"
+#include "WorldStates.h"
 #endif
 
 #define RECRUITING "Info: |cff00FF7FArcEmu is recruiting developers: Join us on irc.emulationnetwork.com:6667 #arcemu"

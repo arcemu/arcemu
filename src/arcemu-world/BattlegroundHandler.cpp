@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2009 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2010 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -376,5 +376,10 @@ void WorldSession::HandlePVPLogDataOpcode(WorldPacket &recv_data)
 		_player->m_bg->SendPVPData(_player);
 }
 
-
-
+void WorldSession::SendNotInArenaTeamPacket(uint8 type)
+{
+	WorldPacket data(SMSG_ARENA_ERROR, 4+1); // 886 - You are not in a %uv%u arena team
+	data << uint32(0);                       // E_ERR_ARENA_NO_TEAM_II (1 = E_ERR_ARENA_EXPIRED_CAIS)
+	data << uint8(type);                     // team type (2=2v2,3=3v3,5=5v5), can be used for custom types...
+	SendPacket(&data);
+}

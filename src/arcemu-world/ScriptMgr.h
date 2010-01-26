@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2009 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2010 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -64,6 +64,7 @@ enum ServerHookEvents
 	SERVER_HOOK_EVENT_ON_POST_LEVELUP       = 27,
 	SERVER_HOOK_EVENT_ON_PRE_DIE	        = 28,	//general unit die, not only based on players
 	SERVER_HOOK_EVENT_ON_ADVANCE_SKILLLINE  = 29,
+    SERVER_HOOK_EVENT_ON_DUEL_FINISHED      = 30,
 
 	NUM_SERVER_HOOKS,
 };
@@ -397,6 +398,7 @@ public:
 	void OnPostLevelUp(Player * pPlayer);
 	void OnPreUnitDie(Unit *Killer, Unit *Victim);
 	void OnAdvanceSkillLine(Player * pPlayer, uint32 SkillLine, uint32 Current);
+	void OnDuelFinished(Player * Winner, Player * Looser);
 };
 
 #define sScriptMgr ScriptMgr::getSingleton()

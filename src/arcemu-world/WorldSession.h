@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2009 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2010 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -316,6 +316,7 @@ public:
 	void SendNotification(const char *message, ...);
 	void SendAuctionPlaceBidResultPacket(uint32 itemId, uint32 error);
     void SendRefundInfo( uint64 GUID );
+	void SendNotInArenaTeamPacket(uint8 type);
 
 	void SetInstance(uint32 Instance) { instanceId = Instance; }
 	uint32 GetLatency() { return _latency; }
@@ -354,6 +355,7 @@ protected:
 	uint8 DeleteCharacter(uint32 guid);
 	void HandleCharCreateOpcode(WorldPacket& recvPacket);
 	void HandlePlayerLoginOpcode(WorldPacket& recvPacket);
+	void HandleRealmStateRequestOpcode(WorldPacket& recvPacket);
 
 	/// Authentification and misc opcodes (MiscHandler.cpp):
 	void HandlePingOpcode(WorldPacket& recvPacket);
@@ -370,7 +372,7 @@ protected:
 	void HandlePlayerLogoutOpcode(WorldPacket& recvPacket);
 	void HandleLogoutCancelOpcode(WorldPacket& recvPacket);
 	void HandleZoneUpdateOpcode(WorldPacket& recvPacket);
-	void HandleSetTargetOpcode(WorldPacket& recvPacket);
+	//void HandleSetTargetOpcode(WorldPacket& recvPacket);
 	void HandleSetSelectionOpcode(WorldPacket& recvPacket);
 	void HandleStandStateChangeOpcode(WorldPacket& recvPacket);
 	void HandleDismountOpcode(WorldPacket & recvPacket);
@@ -487,6 +489,7 @@ protected:
 	void HandleAuctionListOwnerItems( WorldPacket & recv_data );
 	void HandleAuctionPlaceBid( WorldPacket & recv_data );
 	void HandleCancelAuction( WorldPacket & recv_data);
+	void HandleAuctionListPendingSales( WorldPacket & recv_data);
 
 	// Mail opcodes
 	void HandleGetMail( WorldPacket & recv_data );
@@ -561,8 +564,10 @@ protected:
 
 	/// Chat opcodes (Chat.cpp)
 	void HandleMessagechatOpcode(WorldPacket& recvPacket);
+	void HandleEmoteOpcode(WorldPacket& recvPacket);
 	void HandleTextEmoteOpcode(WorldPacket& recvPacket);
 	void HandleReportSpamOpcode(WorldPacket& recvPacket);
+	void HandleChatIgnoredOpcode(WorldPacket& recvPacket);
 
 	/// Corpse opcodes (Corpse.cpp)
 	void HandleCorpseReclaimOpcode( WorldPacket& recvPacket );
@@ -632,6 +637,7 @@ protected:
 	void HandleCharterQuery(WorldPacket & recv_data);
 	void HandleCharterOffer(WorldPacket & recv_data);
 	void HandleCharterSign(WorldPacket &recv_data);
+	void HandleCharterDecline(WorldPacket &recv_data);
 	void HandleCharterRename(WorldPacket & recv_data);
 	void HandleSetGuildInformation(WorldPacket & recv_data);
 	void HandleGuildLog(WorldPacket & recv_data);
@@ -750,6 +756,7 @@ protected:
 
 	//MISC
 	void HandleWorldStateUITimerUpdate( WorldPacket & recv_data );
+	void HandleSetTaxiBenchmarkOpcode( WorldPacket & recv_data );
 
 public:
 
