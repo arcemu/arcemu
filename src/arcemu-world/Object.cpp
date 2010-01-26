@@ -1981,7 +1981,10 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
             // If we have summons then let's remove them first
 			pTotem->RemoveAllGuardians();
 
-            pTotem->DeleteMe();
+			//we delete the summon later since its reference is used outside of this loop, like AIInterface::_UpdateCombat(). 
+			//this fixes totems not properly disappearing from the clients.
+			//on a side note, it would be better to modify AIInterface::_UpdateCombat() instead of this.
+			sEventMgr.AddEvent( pTotem, &Creature::TotemExpire, EVENT_UNK, 1, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
 
             return;
         }
