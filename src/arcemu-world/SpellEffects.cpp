@@ -4943,7 +4943,8 @@ void Spell::SpellEffectHealMaxHealth(uint32 i)   // Heal Max Health
 
 void Spell::SpellEffectInterruptCast(uint32 i) // Interrupt Cast
 {
-	if(!unitTarget || !unitTarget->isAlive()) return;
+	if(!unitTarget || !unitTarget->isAlive())
+		return;
 
 	if(!playerTarget)
 	{
@@ -4963,16 +4964,16 @@ void Spell::SpellEffectInterruptCast(uint32 i) // Interrupt Cast
 	uint32 prevtype = 0;
 	if(unitTarget->GetCurrentSpell())
 	{
-				prevtype = unitTarget->GetCurrentSpell()->GetProto()->PreventionType;
+		prevtype = unitTarget->GetCurrentSpell()->GetProto()->PreventionType;
 
-                if((GetProto()->InterruptFlags & CAST_INTERRUPT_ON_INTERRUPT_SCHOOL) && (prevtype == PREVENTION_TYPE_SILENCE))
-                {
-                        school = unitTarget->GetCurrentSpell()->GetProto()->School;
-                }
+		if((GetProto()->InterruptFlags & CAST_INTERRUPT_ON_INTERRUPT_SCHOOL) && (prevtype == PREVENTION_TYPE_SILENCE))
+		{
+				school = unitTarget->GetCurrentSpell()->GetProto()->School;
+		}
  
-
 		unitTarget->GetCurrentSpell()->cancel();
 	}
+
 	if(school)//prevent from casts in this school
 	{
 		int32 duration = GetDuration();
@@ -4985,35 +4986,32 @@ void Spell::SpellEffectInterruptCast(uint32 i) // Interrupt Cast
 
 		unitTarget->SchoolCastPrevent[school] = duration + getMSTime();
 		
-                if(unitTarget->IsPlayer())
-               {
-                        TO_PLAYER(unitTarget)->SendPreventSchoolCast(school, duration + getMSTime());
-               }
+		if(unitTarget->IsPlayer())
+		{
+				TO_PLAYER(unitTarget)->SendPreventSchoolCast(school, duration + getMSTime());
+		}
  	}
 	else if((GetProto()->InterruptFlags & CAST_INTERRUPT_ON_INTERRUPT_ALL) && (prevtype == PREVENTION_TYPE_SILENCE))
+	{
+		int32 duration = GetDuration();
+
+		if(unitTarget->IsPlayer())
+		{               
+			// Check for interruption reducing talents
+			int32 DurationModifier = static_cast< Player* >( unitTarget )->MechanicDurationPctMod[MECHANIC_INTERRUPTED];
+
+			if(DurationModifier >= - 100)
+				duration = (duration * (100 + DurationModifier)) / 100;
+		}
+
+		for( uint8 j = 0; j < 7; j++)
 		{
-                int32 duration = GetDuration();
- 
-                if(unitTarget->IsPlayer())
-                {               
-                       // Check for interruption reducing talents
-                        int32 DurationModifier = static_cast< Player* >( unitTarget )->MechanicDurationPctMod[MECHANIC_INTERRUPTED];
- 
-                        if(DurationModifier >= - 100)
-                                duration = (duration * (100 + DurationModifier)) / 100;
-                }
- 
-                for( uint8 j = 0; j < 7; j++)
-                {
-                        unitTarget->SchoolCastPrevent[j] = duration + getMSTime();
-                        if(unitTarget->IsPlayer())
-                        {
-                                TO_PLAYER(unitTarget)->SendPreventSchoolCast(j, duration + getMSTime());
-                        }
-                }
-        }
- 
-        return;
+			unitTarget->SchoolCastPrevent[j] = duration + getMSTime();
+			if(unitTarget->IsPlayer())
+			{
+				TO_PLAYER(unitTarget)->SendPreventSchoolCast(j, duration + getMSTime());
+			}
+		}
 	}
 }
 
@@ -7480,190 +7478,190 @@ void Spell::SpellEffectActivateSpec(uint32 i)
 	}
 
 void Spell::SpellEffectDurabilityDamage(uint32 i)
- {
-     if(!unitTarget || unitTarget->GetTypeId() != TYPEID_PLAYER)
-         return;
+{
+	if(!unitTarget || unitTarget->GetTypeId() != TYPEID_PLAYER)
+		return;
  
-     int32 slot = GetProto()->EffectMiscValue[i];
+	int16 slot = int16(GetProto()->EffectMiscValue[i]);
  
-        Item * pItem;
-        Container * pContainer;
-        uint32 j, k;
+	Item * pItem;
+	Container * pContainer;
+	uint32 j, k;
  
-     // FIXME: some spells effects have value -1/-2
-     // Possibly its mean -1 all player equipped items and -2 all items
-     if(slot < 0)
-     {
-               for( k = 0; k < MAX_INVENTORY_SLOT; k++ )
-               {
-                       pItem = p_caster->GetItemInterface()->GetInventoryItem( static_cast<uint16>( k ) );
-                       if( pItem != NULL )
-                       {
-                               if( pItem->IsContainer() )
-                               {
-                                       pContainer = static_cast<Container*>( pItem );
-                                       for( j = 0; j < pContainer->GetProto()->ContainerSlots; ++j )
-                                       {
-                                               pItem = pContainer->GetItem( static_cast<uint16>( j ) );
-                                               if( pItem != NULL )
-                                              {
-                                                       uint32 maxdur = pItem->GetDurabilityMax();
-                                                       uint32 olddur = pItem->GetDurability();
-                                                       uint32 newdur = (olddur) - (damage);
+	// FIXME: some spells effects have value -1/-2
+	// Possibly its mean -1 all player equipped items and -2 all items
+	if(slot < 0)
+	{
+		for( k = 0; k < MAX_INVENTORY_SLOT; k++ )
+        {
+			pItem = p_caster->GetItemInterface()->GetInventoryItem( static_cast<uint16>( k ) );
+			if( pItem != NULL )
+			{
+				if( pItem->IsContainer() )
+				{
+					pContainer = static_cast<Container*>( pItem );
+					for( j = 0; j < pContainer->GetProto()->ContainerSlots; ++j )
+					{
+						pItem = pContainer->GetItem( static_cast<uint16>( j ) );
+						if( pItem != NULL )
+						{
+							uint32 maxdur = pItem->GetDurabilityMax();
+							uint32 olddur = pItem->GetDurability();
+							uint32 newdur = (olddur) - (damage);
 
-                                                       if(newdur < 0)
-                                                               newdur = 0;
+							if(newdur < 0)
+								   newdur = 0;
 
-                                                       if( newdur > maxdur )
-                                                              newdur = maxdur;
+							if( newdur > maxdur )
+								  newdur = maxdur;
 
-                                                       pItem->SetDurability(newdur);
-                                               }
-                                       }
-                               }
-                               else
-                               {
-                                       uint32 maxdur = pItem->GetDurabilityMax();
-                                       uint32 olddur = pItem->GetDurability();
-                                       uint32 newdur = (olddur) - (damage);
+							pItem->SetDurability(newdur);
+						}
+					}
+				}
+				else
+				{
+					uint32 maxdur = pItem->GetDurabilityMax();
+					uint32 olddur = pItem->GetDurability();
+					uint32 newdur = (olddur) - (damage);
 
-                                      if(newdur < 0)
-                                               newdur = 0;
+					if(newdur < 0)
+						   newdur = 0;
 
-                                       if( newdur > maxdur )
-                                               newdur = maxdur;
+					if( newdur > maxdur )
+						   newdur = maxdur;
 
-                                       // Apply / Disapply enchantements from this item
-                                       pItem->SetDurability(newdur);
-                                       if( newdur == 0 && olddur > 0 )
-                                              p_caster->ApplyItemMods( pItem, static_cast<uint16>( k ), false );
-                                       else if( newdur > 0 && olddur == 0 )
-                                               p_caster->ApplyItemMods( pItem, static_cast<uint16>( k ), true );
-                               }
-                       }
-               }
+					// Apply / Disapply enchantements from this item
+					pItem->SetDurability(newdur);
+					if( newdur == 0 && olddur > 0 )
+						p_caster->ApplyItemMods( pItem, static_cast<uint16>( k ), false );
+					else if( newdur > 0 && olddur == 0 )
+							p_caster->ApplyItemMods( pItem, static_cast<uint16>( k ), true );
+				}
+			}
+		}
         return;
     }
 
-    // invalid slot value
-    if(slot >= INVENTORY_SLOT_BAG_END)
-        return;
+	// invalid slot value
+	if(slot >= INVENTORY_SLOT_BAG_END)
+		return;
 
-       pItem = p_caster->GetItemInterface()->GetInventoryItem( slot );
-       if( pItem )
-       {
-               uint32 maxdur = pItem->GetDurabilityMax();
-               uint32 olddur = pItem->GetDurability();
-               uint32 newdur = (olddur) - (damage);
+	pItem = p_caster->GetItemInterface()->GetInventoryItem( slot );
+	if( pItem )
+	{
+		uint32 maxdur = pItem->GetDurabilityMax();
+		uint32 olddur = pItem->GetDurability();
+		uint32 newdur = (olddur) - (damage);
 
-               if(newdur < 0)
-                      newdur = 0;
+		if(newdur < 0)
+			newdur = 0;
 
-               if( newdur > maxdur )
-                       newdur = maxdur;
+		if( newdur > maxdur )
+			newdur = maxdur;
 
-               pItem->SetDurability(newdur);
+		pItem->SetDurability(newdur);
 
-               // Apply / Disapply enchantements from this item
-               if( newdur == 0 && olddur > 0 ) 
-                       p_caster->ApplyItemMods( pItem, slot, false );
-               else if( newdur > 0 && olddur == 0 )
-                       p_caster->ApplyItemMods( pItem, slot, true );
-       }
+		// Apply / Disapply enchantements from this item
+		if( newdur == 0 && olddur > 0 ) 
+			p_caster->ApplyItemMods( pItem, slot, false );
+		else if( newdur > 0 && olddur == 0 )
+			p_caster->ApplyItemMods( pItem, slot, true );
+	}
 }
 
 void Spell::SpellEffectDurabilityDamagePCT(uint32 i)
 {
-    if(!unitTarget || unitTarget->GetTypeId() != TYPEID_PLAYER)
-        return;
+	if(!unitTarget || unitTarget->GetTypeId() != TYPEID_PLAYER)
+		return;
 
-    int32 slot = GetProto()->EffectMiscValue[i];
+	int16 slot = int16(GetProto()->EffectMiscValue[i]);
 
-       Item * pItem;
-       Container * pContainer;
-       uint32 j, k;
+	Item * pItem;
+	Container * pContainer;
+	uint32 j, k;
 
-    // FIXME: some spells effects have value -1/-2
-    // Possibly its mean -1 all player equipped items and -2 all items
-    if(slot < 0)
-    {
-               for( k = 0; k < MAX_INVENTORY_SLOT; k++ )
-               {
-                       pItem = p_caster->GetItemInterface()->GetInventoryItem( static_cast<uint16>( k ) );
-                      if( pItem != NULL )
-                       {
-                               if( pItem->IsContainer() )
-                               {
-                                       pContainer = static_cast<Container*>( pItem );
-                                       for( j = 0; j < pContainer->GetProto()->ContainerSlots; ++j )
-                                       {
-                                               pItem = pContainer->GetItem( static_cast<uint16>( j ) );
-                                               if( pItem != NULL )
-                                               {
-                                                       uint32 maxdur = pItem->GetDurabilityMax();
-                                                       uint32 olddur = pItem->GetDurability();
-                                                       uint32 newdur = (olddur - (uint32)(maxdur * (damage/100.0)));
+	// FIXME: some spells effects have value -1/-2
+	// Possibly its mean -1 all player equipped items and -2 all items
+	if(slot < 0)
+	{
+		for( k = 0; k < MAX_INVENTORY_SLOT; k++ )
+		{
+			pItem = p_caster->GetItemInterface()->GetInventoryItem( static_cast<uint16>( k ) );
+			if( pItem != NULL )
+			{
+				if( pItem->IsContainer() )
+				{
+					pContainer = static_cast<Container*>( pItem );
+					for( j = 0; j < pContainer->GetProto()->ContainerSlots; ++j )
+					{
+						pItem = pContainer->GetItem( static_cast<uint16>( j ) );
+						if( pItem != NULL )
+						{
+							uint32 maxdur = pItem->GetDurabilityMax();
+							uint32 olddur = pItem->GetDurability();
+							uint32 newdur = (olddur - (uint32)(maxdur * (damage/100.0)));
 
-                                                       if(newdur < 0)
-                                                               newdur = 0;
+							if(newdur < 0)
+								newdur = 0;
 
-                                                       if( newdur > maxdur )
-                                                               newdur = maxdur;
+							if( newdur > maxdur )
+								newdur = maxdur;
 
-                                                       pItem->SetDurability(newdur);
-                                               }
-                                       }
-                               }
-                               else
-                               {
-                                       uint32 maxdur = pItem->GetDurabilityMax();
-                                       uint32 olddur = pItem->GetDurability();
-                                       uint32 newdur = (olddur - (uint32)(maxdur * (damage/100.0)));
+							pItem->SetDurability(newdur);
+						}
+					}
+				}
+				else
+				{
+					uint32 maxdur = pItem->GetDurabilityMax();
+					uint32 olddur = pItem->GetDurability();
+					uint32 newdur = (olddur - (uint32)(maxdur * (damage/100.0)));
 
-                                      if(newdur < 0)
-                                               newdur = 0;
+					if(newdur < 0)
+						newdur = 0;
 
-                                       if( newdur > maxdur )
-                                               newdur = maxdur;
+					if( newdur > maxdur )
+						newdur = maxdur;
 
-                                       // Apply / Disapply enchantements from this item
-                                       pItem->SetDurability(newdur);
-                                       if( newdur == 0 && olddur > 0 )
-                                               p_caster->ApplyItemMods( pItem, static_cast<uint16>( k ), false );
-                                       else if( newdur > 0 && olddur == 0 )
-                                               p_caster->ApplyItemMods( pItem, static_cast<uint16>( k ), true );
-                               }
-                       }
-               }
-        return;
-    }
+					// Apply / Disapply enchantements from this item
+					pItem->SetDurability(newdur);
+					if( newdur == 0 && olddur > 0 )
+						p_caster->ApplyItemMods( pItem, static_cast<uint16>( k ), false );
+					else if( newdur > 0 && olddur == 0 )
+							p_caster->ApplyItemMods( pItem, static_cast<uint16>( k ), true );
+				}
+			}
+		}
+		return;
+	}
 
-    // invalid slot value
-    if(slot >= INVENTORY_SLOT_BAG_END)
-        return;
+	// invalid slot value
+	if(slot >= INVENTORY_SLOT_BAG_END)
+		return;
 
-    if(damage <= 0)
-        return;
+	if(damage <= 0)
+		return;
 
-       pItem = p_caster->GetItemInterface()->GetInventoryItem( slot );
-       if( pItem )
-       {
-               uint32 maxdur = pItem->GetDurabilityMax();
-               uint32 olddur = pItem->GetDurability();
-               uint32 newdur = (olddur - (uint32)(maxdur * (damage/100.0)));
+	pItem = p_caster->GetItemInterface()->GetInventoryItem( slot );
+	if( pItem )
+	{
+		uint32 maxdur = pItem->GetDurabilityMax();
+		uint32 olddur = pItem->GetDurability();
+		uint32 newdur = (olddur - (uint32)(maxdur * (damage/100.0)));
 
-               if(newdur < 0)
-                       newdur = 0;
+		if(newdur < 0)
+			newdur = 0;
 
-               if( newdur > maxdur )
-                       newdur = maxdur;
+		if( newdur > maxdur )
+			newdur = maxdur;
 
-               pItem->SetDurability(newdur);
+		pItem->SetDurability(newdur);
 
-               // Apply / Disapply enchantements from this item
-               if( newdur == 0 && olddur > 0 ) 
-                       p_caster->ApplyItemMods( pItem, slot, false );
-               else if( newdur > 0 && olddur == 0 )
-                       p_caster->ApplyItemMods( pItem, slot, true );
-       }
+		// Apply / Disapply enchantements from this item
+		if( newdur == 0 && olddur > 0 ) 
+			p_caster->ApplyItemMods( pItem, slot, false );
+		else if( newdur > 0 && olddur == 0 )
+				p_caster->ApplyItemMods( pItem, slot, true );
+	}
 }

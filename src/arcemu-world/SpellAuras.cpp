@@ -5808,7 +5808,7 @@ void Aura::SpellAuraFeignDeath(bool apply)
                     p_target->clearStateFlag(UF_ATTACKING);
 
             p_target->GetSession()->OutPacket(SMSG_CANCEL_COMBAT);
-            p_target->GetSession()->OutPacket(SMSG_CANCEL_AUTO_REPEAT)
+            p_target->GetSession()->OutPacket(SMSG_CANCEL_AUTO_REPEAT);
 		}
 		else
 		{

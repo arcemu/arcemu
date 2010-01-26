@@ -8307,33 +8307,6 @@ void Player::EndDuel(uint8 WinCondition)
 
 	SetDuelArbiter(0 );
 	DuelingWith->SetDuelArbiter(0 );
-	uint32 Player::GetFlametongueDMG(uint32 spellid)
- {
-        float dmg = 0;
-        Item * i = GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
-       float delay = float(i->GetProto()->Delay * 0.001f);
-        SpellEntry * sp = dbcSpell.LookupEntry(spellid);
- 
-        if( delay == 0 )
-                return 1;
-
-        // Based on calculation from Shauren, thx for it
-        float min = (float)sp->EffectBasePoints[0]/77.0f;
-        float max = (float)sp->EffectBasePoints[0]/25.0f;
- 
-        dmg = float(float(min * delay) * 0.88f);
-      
-       if( dmg < min )
-              dmg = min;
-       else if( dmg > max )
-               dmg = max;
-
-       return float2int32(dmg);
- }
-
-	SetUInt64Value( PLAYER_DUEL_ARBITER, 0 );
-	DuelingWith->SetUInt64Value( PLAYER_DUEL_ARBITER, 0 );
-
 	SetDuelTeam(0 );
 	DuelingWith->SetDuelTeam(0 );
 
@@ -9940,6 +9913,10 @@ void Player::removeSoulStone()
 		{
 			sSoulStone = 27239;
 		}break;
+	case 47882:
+		{
+			sSoulStone = 47883;
+		}break;
 	}
 	this->RemoveAura(sSoulStone);
 	this->SoulStone = this->SoulStoneReceiver = 0; //just incase
@@ -9947,14 +9924,10 @@ void Player::removeSoulStone()
 
 void Player::SoftDisconnect()
 {
-      sEventMgr.RemoveEvents(this, EVENT_PLAYER_SOFT_DISCONNECT);
-	  WorldSession *session=GetSession();
-      session->LogoutPlayer(true);
-	case 47882:
-		{
-			sSoulStone = 47883;
-		}
-	  session->Disconnect();
+	sEventMgr.RemoveEvents(this, EVENT_PLAYER_SOFT_DISCONNECT);
+	WorldSession *session=GetSession();
+	session->LogoutPlayer(true);
+	session->Disconnect();
 }
 
 void Player::SetNoseLevel()
@@ -13119,4 +13092,28 @@ void Player::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
 			}
 		}
 	}
+}
+
+uint32 Player::GetFlametongueDMG(uint32 spellid)
+{
+	Item * i = GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
+	float delay = i->GetProto()->Delay * 0.001f;
+	SpellEntry * sp = dbcSpell.LookupEntry(spellid);
+
+	if( delay == 0 )
+		return 1;
+
+	// Based on calculation from Shauren, thx for it
+	float min = sp->EffectBasePoints[0]/77.0f;
+	float max = sp->EffectBasePoints[0]/25.0f;
+
+	float dmg = min * delay * 0.88f;
+
+	if( dmg < min )
+		dmg = min;
+	else 
+		if( dmg > max )
+			dmg = max;
+
+	return float2int32(dmg);
 }

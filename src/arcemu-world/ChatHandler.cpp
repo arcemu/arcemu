@@ -556,7 +556,8 @@ void WorldSession::HandleEmoteOpcode( WorldPacket & recv_data )
 #ifdef ENABLE_ACHIEVEMENTS
 	_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_DO_EMOTE, emote, 0, 0);
 #endif
-	sQuestMgr.OnPlayerEmote(_player, emote, uint64(_player->GetGUID()));
+	uint64 guid = _player->GetGUID();
+	sQuestMgr.OnPlayerEmote(_player, emote, guid);
 }
 
 void WorldSession::HandleTextEmoteOpcode( WorldPacket & recv_data )
@@ -671,7 +672,7 @@ void WorldSession::HandleReportSpamOpcode( WorldPacket & recv_data )
 
 	uint8 spam_type;                                        // 0 - mail, 1 - chat
 	uint64 spammer_guid;
-	uint32 unk1, unk2, unk3, unk4 = 0;
+	uint32 unk1 = 0, unk2 = 0, unk3 = 0, unk4 = 0;
 	std::string description = "";
 	recv_data >> spam_type;                                 // unk 0x01 const, may be spam type (mail/chat)
 	recv_data >> spammer_guid;                              // player guid
@@ -700,7 +701,7 @@ void WorldSession::HandleReportSpamOpcode( WorldPacket & recv_data )
 	data << uint8(0);
 	SendPacket(&data);
 
-	sLog.outDebug("REPORT SPAM: type %u, guid %u, unk1 %u, unk2 %u, unk3 %u, unk4 %u, message %s", spam_type, GUID_LOPART(spammer_guid), unk1, unk2, unk3, unk4, description.c_str());
+	sLog.outDebug("REPORT SPAM: type %u, guid %u, unk1 %u, unk2 %u, unk3 %u, unk4 %u, message %s", spam_type, Arcemu::Util::GUID_LOPART(spammer_guid), unk1, unk2, unk3, unk4, description.c_str());
 }
 
 void WorldSession::HandleChatIgnoredOpcode(WorldPacket & recvPacket )

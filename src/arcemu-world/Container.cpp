@@ -304,7 +304,7 @@ bool Container::AddItemToFreeSlot(Item *pItem, uint32 * r_slot)
             pItem->SetContainerGUID( GetGUID() );
 			pItem->SetOwner(m_owner);
 
-			SetSlot(slot, pItem->GetGUID());
+			SetSlot(uint16(slot), pItem->GetGUID());
 
 			if(m_owner->IsInWorld() && !pItem->IsInWorld())
 			{

@@ -3272,8 +3272,6 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 			static_cast< Player* >( this )->GetSession()->OutPacket(SMSG_ATTACKSWING_BADFACING);
 			return;
 		}
-		if(force_crit)
-         r=5;
 	}
 
 //==========================================================================================
@@ -3684,6 +3682,8 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 	{
 		r++;
 	}
+	if(force_crit)
+		r=5;
 //--------------------------------postroll processing---------------------------------------
 	uint32 abs = 0;
 	

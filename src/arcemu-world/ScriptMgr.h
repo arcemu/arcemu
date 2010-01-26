@@ -108,6 +108,7 @@ typedef void(*tOnAreaTrigger)(Player * pPlayer, uint32 areaTrigger);
 typedef void(*tOnPostLevelUp)(Player * pPlayer);
 typedef void(*tOnPreUnitDie)(Unit *killer, Unit *target);
 typedef void(*tOnAdvanceSkillLine)(Player * pPlayer, uint32 SkillLine, uint32 Current);
+typedef void(*tOnDuelFinished)(Player * Winner, Player * Looser);
 
 class Spell;
 class Aura;
