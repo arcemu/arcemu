@@ -236,9 +236,6 @@ void WorldSession::HandleGroupUninviteOpcode( WorldPacket & recv_data )
 	if(group)
 	{
 		group->RemovePlayer(info);
-
-		WorldPacket data( SMSG_GROUP_UNINVITE, 0 );
-		player->GetSession()->SendPacket( &data );
 	}
 }
 
@@ -292,9 +289,6 @@ void WorldSession::HandleGroupUninviteGuidOpcode( WorldPacket & recv_data )
 	if(group)
 	{
 		group->RemovePlayer(info);
-
-		WorldPacket data( SMSG_GROUP_UNINVITE, 0 );
-		player->GetSession()->SendPacket( &data );
 	}
 }
 
