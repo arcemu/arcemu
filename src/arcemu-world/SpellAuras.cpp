@@ -4449,13 +4449,13 @@ void Aura::SpellAuraModIncreaseEnergy(bool apply)
 	else // Capt: if we can not use identify the type: do nothing
 		return; */
 
-	m_target->ModPower(mod->m_miscValue,apply?mod->m_amount:-mod->m_amount);
-	m_target->ModPower(mod->m_miscValue+8,apply?mod->m_amount:-mod->m_amount);
+	int32 amount = apply ? mod->m_amount : -mod->m_amount;
+	m_target->ModMaxPower(mod->m_miscValue, amount);
+	m_target->ModPower(mod->m_miscValue, amount);
 
 	if(mod->m_miscValue == 0 && m_target->GetTypeId() == TYPEID_PLAYER)
 	{
-		int32 amt = apply ? mod->m_amount : -mod->m_amount;
-		static_cast< Player* >( m_target )->SetManaFromSpell(static_cast< Player* >( m_target )->GetManaFromSpell() + amt);
+		static_cast< Player* >( m_target )->SetManaFromSpell(static_cast< Player* >( m_target )->GetManaFromSpell() + amount);
 	}
 }
 

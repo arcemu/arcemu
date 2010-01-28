@@ -1688,14 +1688,7 @@ public:
     
     void SetMaxPower( uint32 index, uint32 value ){ SetUInt32Value( UNIT_FIELD_MAXPOWER1 + index, value ); }
     
-    void ModMaxPower( uint32 index, int32 value ){
-        int32 maxpower = static_cast< int32 >( m_uint32Values[ UNIT_FIELD_MAXPOWER1 + index ] );
-
-        if( value <= maxpower )
-            SetUInt32Value( UNIT_FIELD_POWER1 + index, 0 ); 
-        else
-            SetUInt32Value( UNIT_FIELD_POWER1 + index, maxpower + value ); 
-
+    void ModMaxPower( uint32 index, int32 value ){ ModUnsigned32Value(UNIT_FIELD_MAXPOWER1 + index, value);
     }
 
     uint32 GetMaxPower( uint32 index ){ return GetUInt32Value( UNIT_FIELD_MAXPOWER1 + index ); }
