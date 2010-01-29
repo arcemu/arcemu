@@ -265,7 +265,7 @@ void WorldSession::CharacterEnumProc(QueryResult * result)
 										if( enc != NULL )
 											items[slot].enchantment = enc->visual;
 										else
-											items[slot].enchantment = 0;;
+											items[slot].enchantment = 0;
 									}
 								}
 							}

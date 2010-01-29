@@ -320,7 +320,7 @@ void Spell::SpellTargetPet(uint32 i, uint32 j)
 	if(p_caster)
 	{
 		TargetsList* tmpMap=&m_targetUnits[i];
-		if(p_caster->GetSummon())
+		if(p_caster->GetSummon())//should we add only 1 pet of all the pets of p_caster?
 			SafeAddTarget(tmpMap,p_caster->GetSummon()->GetGUID());
 	}
 }

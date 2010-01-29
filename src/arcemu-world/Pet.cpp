@@ -134,7 +134,7 @@ void Pet::SetNameForEntry( uint32 entry )
 	}
 }
 
-void Pet::CreateAsSummon( uint32 entry, CreatureInfo *ci, Creature* created_from_creature, Player* owner, SpellEntry* created_by_spell, uint32 type, uint32 expiretime, LocationVector* Vec )
+void Pet::CreateAsSummon( uint32 entry, CreatureInfo *ci, Creature* created_from_creature, Player* owner, SpellEntry* created_by_spell, uint32 type, uint32 expiretime, LocationVector* Vec, bool dismiss_old_pet )
 {
 	if( ci == NULL || owner == NULL )
 	{
@@ -142,8 +142,10 @@ void Pet::CreateAsSummon( uint32 entry, CreatureInfo *ci, Creature* created_from
 		return;
 	}
 	
-	if( owner->GetSummon() != NULL )
-		owner->GetSummon()->Dismiss(); // to avoid problems caused by loosing reference to old pet
+	if( dismiss_old_pet )
+	{
+		owner->DismissActivePets();
+	}
 
 	m_Owner = owner;
 	m_OwnerGuid = m_Owner->GetGUID();
@@ -654,7 +656,7 @@ void Pet::InitializeMe( bool first )
 	SetCreatureInfo( CreatureNameStorage.LookupEntry( GetEntry() ) );
 	proto = CreatureProtoStorage.LookupEntry( GetEntry() );
 
-	m_Owner->SetSummon( this );
+	m_Owner->AddSummon( this );
     m_Owner->SetSummonedUnitGUID( GetGUID() );
 
 	SetUInt32Value( UNIT_FIELD_PETNUMBER, GetUIdFromGUID() );
@@ -796,9 +798,21 @@ void Pet::Remove( bool bUpdate, bool bSetOffline )
 			if( !IsSummon() )
 				m_Owner->_SavePet( NULL );
 		}
-		m_Owner->SetSummonedUnitGUID(  0 );
-		m_Owner->SetSummon( NULL );
-		SendNullSpellsToOwner();
+
+		bool main_summon = m_Owner->GetSummon() == this ;
+		m_Owner->RemoveSummon( this );
+
+		if( m_Owner->GetSummon() == NULL )//we have no more summons, required by spells summoning more than 1.
+		{
+			m_Owner->SetSummonedUnitGUID( 0 );
+			SendNullSpellsToOwner();
+		}
+		else if( main_summon )//we just removed the summon displayed in the portrait so we need to update it with another one.
+		{
+			m_Owner->SetSummonedUnitGUID( m_Owner->GetSummon()->GetGUID() );//set the summon still alive
+			m_Owner->GetSummon()->SendSpellsToOwner();
+		}
+
 		ClearPetOwner();
 	}
 
@@ -807,6 +821,16 @@ void Pet::Remove( bool bUpdate, bool bSetOffline )
 
 	if( !alreadyBeingDeleted )
 		PetSafeDelete();
+}
+
+void Pet::setDeathState(DeathState s)
+{
+	Creature::setDeathState(s);
+	if ( s == JUST_DIED && IsSummon() )
+	{
+		//we can't dimiss the summon now now since it's still needed in DealDamage()
+		sEventMgr.AddEvent( this ,&Pet::Dismiss , EVENT_UNK, 1 , 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT ); 
+	}
 }
 
 void Pet::PetSafeDelete()
@@ -959,7 +983,7 @@ void Pet::AddSpell( SpellEntry * sp, bool learning, bool showLearnSpell )
 	{
 		if( IsInWorld() )
 		{
-			Spell * spell = new Spell(this, sp, true, false);
+			Spell * spell = new Spell(this, sp, true, NULL);
 			SpellCastTargets targets(this->GetGUID());
 			spell->prepare(&targets);
 			mSpells[sp] = 0x0100;

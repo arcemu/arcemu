@@ -31,7 +31,7 @@ void Player::SendTalentResetConfirm()
 
 void Player::SendPetUntrainConfirm()
 {
-    Pet* pPet = m_Summon;
+    Pet* pPet = GetSummon();
 
 	if( pPet == NULL )
 		return;

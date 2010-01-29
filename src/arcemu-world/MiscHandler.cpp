@@ -1405,8 +1405,8 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 	uint64 guid;
 	recv_data >> guid;
 	SpellCastTargets targets;
-	Spell *spell = NULL;;
-	SpellEntry *spellInfo = NULL;;
+	Spell *spell = NULL;
+	SpellEntry *spellInfo = NULL;
 	sLog.outDebug("WORLD: CMSG_GAMEOBJ_USE: [GUID %d]", guid);
 
 	GameObject *obj = _player->GetMapMgr()->GetGameObject((uint32)guid);

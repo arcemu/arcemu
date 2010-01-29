@@ -749,7 +749,7 @@ bool Unit::canReachWithAttack(Unit *pVictim)
 	float targetradius;
 //	targetradius = pVictim->m_floatValues[UNIT_FIELD_BOUNDINGRADIUS]; //this is plain wrong. Represents i have no idea what :)
 	targetradius = pVictim->GetModelHalfSize();
-	float selfradius;;
+	float selfradius;
 //	selfradius = m_floatValues[UNIT_FIELD_BOUNDINGRADIUS];
 	selfradius = GetModelHalfSize();
 //	float targetscale = pVictim->m_floatValues[OBJECT_FIELD_SCALE_X];
@@ -7008,8 +7008,12 @@ bool CombatStatusHandler::IsInCombat()
 		} break;
 		case TYPEID_PLAYER:
 		{
-			if (((Player*)m_Unit)->GetSummon() != NULL && ((Player*)m_Unit)->GetSummon()->GetPetOwner() == m_Unit && ((Player*)m_Unit)->GetSummon()->CombatStatus.IsInCombat())
-				return true;
+			std::list<Pet*> summons = ((Player*)m_Unit)->GetSummons();
+			for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
+			{
+				if((*itr)->GetPetOwner() == m_Unit && (*itr)->CombatStatus.IsInCombat())
+					return true;
+			}
 
 			return m_lastStatus;
 		} break;

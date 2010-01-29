@@ -927,7 +927,7 @@ bool ChatHandler::HandleResetTalentsCommand(const char* args, WorldSession *m_se
 
 	plr->Reset_Talents();
 
-	SystemMessage(m_session, "Reset talents of %s.", plr->GetName());;
+	SystemMessage(m_session, "Reset talents of %s.", plr->GetName());
 	BlueSystemMessageToPlr(plr, "%s reset all your talents.", m_session->GetPlayer()->GetName());
 	sGMLog.writefromsession(m_session, "reset talents of %s", plr->GetName());
 	return true;
@@ -940,7 +940,7 @@ bool ChatHandler::HandleResetSpellsCommand(const char* args, WorldSession *m_ses
 
 	plr->Reset_Spells();
 
-	SystemMessage(m_session, "Reset spells of %s to level 1.", plr->GetName());;
+	SystemMessage(m_session, "Reset spells of %s to level 1.", plr->GetName());
 	BlueSystemMessageToPlr(plr, "%s reset all your spells to starting values.", m_session->GetPlayer()->GetName());
 	sGMLog.writefromsession(m_session, "reset spells of %s", plr->GetName());
 	return true;
@@ -1512,11 +1512,16 @@ bool ChatHandler::HandleModifyLevelCommand(const char* args, WorldSession* m_ses
 	plr->ApplyLevelInfo(Info, Level);
 	if( plr->getClass() == WARLOCK )
 	{
-		if( plr->GetSummon() && plr->GetSummon()->IsInWorld() && plr->GetSummon()->isAlive() )
+		std::list<Pet*> summons = plr->GetSummons();
+		for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
 		{
-			plr->GetSummon()->setLevel(Level);
-			plr->GetSummon()->ApplyStatsForLevel();
-			plr->GetSummon()->UpdateSpellList();
+			Pet* summon = *itr;
+			if( summon->IsInWorld() && summon->isAlive() )
+			{
+				summon->setLevel(Level);
+				summon->ApplyStatsForLevel();
+				summon->UpdateSpellList();
+			}
 		}
 	}
 
@@ -1685,8 +1690,7 @@ bool ChatHandler::HandleAddPetSpellCommand(const char* args, WorldSession* m_ses
 	if(!plr)
 		return false;
 
-	Pet * pPet = plr->GetSummon();
-	if(pPet == 0)
+	if( plr->GetSummon() == NULL)
 	{
 		RedSystemMessage(m_session, "%s has no pet.", plr->GetName());
 		return true;
@@ -1700,7 +1704,11 @@ bool ChatHandler::HandleAddPetSpellCommand(const char* args, WorldSession* m_ses
 		return true;
 	}
 
-	pPet->AddSpell(spell, true);
+	std::list<Pet*> summons = plr->GetSummons();
+	for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
+	{
+		(*itr)->AddSpell(spell, true);
+	}
 	GreenSystemMessage( m_session, "Added spell %u to %s's pet.", SpellId, plr->GetName() );
 	return true;
 }
@@ -1711,8 +1719,7 @@ bool ChatHandler::HandleRemovePetSpellCommand(const char* args, WorldSession* m_
 	if(!plr)
 		return false;
 
-	Pet * pPet = plr->GetSummon();
-	if(pPet == 0)
+	if( plr->GetSummon() == NULL )
 	{
 		RedSystemMessage(m_session, "%s has no pet.", plr->GetName());
 		return true;
@@ -1726,7 +1733,11 @@ bool ChatHandler::HandleRemovePetSpellCommand(const char* args, WorldSession* m_
 		return true;
 	}
 
-	pPet->RemoveSpell(SpellId);
+	std::list<Pet*> summons = plr->GetSummons();
+	for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
+	{
+		(*itr)->RemoveSpell(SpellId);
+	}
 	GreenSystemMessage(m_session, "Removed spell %u from %s's pet.", SpellId, plr->GetName());
 	return true;
 }
@@ -1735,7 +1746,7 @@ bool ChatHandler::HandleRenamePetCommand(const char* args, WorldSession* m_sessi
 {
 	Player * plr = m_session->GetPlayer();
 	Pet * pPet = plr->GetSummon();
-	if(pPet == 0)
+	if(pPet == NULL)
 	{
 		RedSystemMessage(m_session, "You have no pet.");
 		return true;
@@ -1748,7 +1759,7 @@ bool ChatHandler::HandleRenamePetCommand(const char* args, WorldSession* m_sessi
 	}
 
 	GreenSystemMessage(m_session, "Renamed your pet to %s.", args);
-	pPet->Rename(args);
+	pPet->Rename(args);//support for only 1st pet
 	return true;
 }
 
@@ -1758,11 +1769,14 @@ bool ChatHandler::HandleDismissPetCommand(const char* args, WorldSession* m_sess
 	Pet* pPet = NULL;
 	if(plr)
 	{
-		pPet = plr->GetSummon();
-		if(!pPet)
+		if(plr->GetSummon() == NULL)
 		{
 			RedSystemMessage(m_session, "Player has no pet.");
 			return true;
+		}
+		else
+		{
+			plr->DismissActivePets();
 		}
 	}
 	else
@@ -1784,9 +1798,9 @@ bool ChatHandler::HandleDismissPetCommand(const char* args, WorldSession* m_sess
 			return true;
 		}
 		plr = pPet->GetPetOwner();
+		pPet->Dismiss();
 	}
 
-	pPet->Dismiss();
 	GreenSystemMessage(m_session, "Dismissed %s's pet.", plr->GetName());
 	plr->GetSession()->SystemMessage("%s dismissed your pet.", m_session->GetPlayer()->GetName());
 	return true;
@@ -1843,6 +1857,7 @@ bool ChatHandler::HandlePetLevelCommand(const char* args, WorldSession* m_sessio
 		newLevel = plr->getLevel();
 	}
 
+	//support for only 1 pet
 	pPet->setLevel(newLevel );
 	pPet->SetUInt32Value( UNIT_FIELD_PETEXPERIENCE, 0 );
 	pPet->SetUInt32Value( UNIT_FIELD_PETNEXTLEVELEXP, pPet->GetNextLevelXP(newLevel) );
@@ -2753,7 +2768,7 @@ bool ChatHandler::HandleSetStandingCommand(const char * args, WorldSession * m_s
 	if(sscanf(args, "%u %d", (unsigned int*)&faction, (unsigned int*)&standing) != 2)
 		return false;
 	Player * plr = getSelectedChar(m_session, true);
-	if(!plr) return true;;
+	if(!plr) return true;
 
 	BlueSystemMessage(m_session, "Setting standing of %u to %d on %s.", faction, standing, plr->GetName());
 	plr->SetStanding(faction, standing);
@@ -3818,11 +3833,15 @@ bool ChatHandler::HandleLevelUpCommand(const char* args, WorldSession *m_session
 	plr->ApplyLevelInfo(inf,levels);
 	if(plr->getClass() == WARLOCK)
 	{
-		if( plr->GetSummon() && plr->GetSummon()->IsInWorld() && plr->GetSummon()->isAlive() )
+		std::list<Pet*> summons = plr->GetSummons();
+		for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
 		{
-			plr->GetSummon()->setLevel(levels);
-			plr->GetSummon()->ApplyStatsForLevel();
-			plr->GetSummon()->UpdateSpellList();
+			if( (*itr)->IsInWorld() && (*itr)->isAlive() )
+			{
+				(*itr)->setLevel(levels);
+				(*itr)->ApplyStatsForLevel();
+				(*itr)->UpdateSpellList();
+			}
 		}
 	}
 

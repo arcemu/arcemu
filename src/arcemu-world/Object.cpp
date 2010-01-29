@@ -2660,7 +2660,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 			static_cast< Player* >( pVictim )->m_SwimmingTime = 0;
 
 			/* -------------------- KILL PET / GUARDIANS WHEN PLAYER DIES ---------------*/
-			static_cast< Player* >( pVictim )->DismissActivePet();
+			static_cast< Player* >( pVictim )->DismissActivePets();
 			pVictim->RemoveAllGuardians();
 		}
 		else sLog.outError("DealDamage for Unknown Object.");
@@ -2687,11 +2687,15 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 				else
 				{
 					// Defensive pet
-					Pet* pPet = static_cast< Player* >( pVictim )->GetSummon();
-					if( pPet != NULL && pPet->GetPetState() != PET_STATE_PASSIVE )
+					std::list<Pet*> summons = static_cast< Player* >( pVictim )->GetSummons();
+					for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
 					{
-						pPet->GetAIInterface()->AttackReaction( static_cast< Unit* >( this ), 1, 0 );
-						pPet->HandleAutoCastEvent( AUTOCAST_EVENT_OWNER_ATTACKED );
+						Pet* pPet = *itr;
+						if( pPet->GetPetState() != PET_STATE_PASSIVE )
+						{
+							pPet->GetAIInterface()->AttackReaction( static_cast< Unit* >( this ), 1, 0 );
+							pPet->HandleAutoCastEvent( AUTOCAST_EVENT_OWNER_ATTACKED );
+						}
 					}
 				}
 			}
@@ -3400,10 +3404,14 @@ void Object::Phase(uint8 command, uint32 newphase)
 		return;
 	}
 
-	if ( IsPlayer() ) {
+	if ( IsPlayer() ) 
+	{
 		Player * p_player=static_cast< Player* >( this );
-		if ( p_player->GetSummon() )
-			p_player->GetSummon()->Phase(command, newphase);
+		std::list<Pet*> summons = p_player->GetSummons();
+		for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
+		{
+			(*itr)->Phase(command, newphase);
+		}
 		//We should phase other, non-combat "pets" too...
 	}
 

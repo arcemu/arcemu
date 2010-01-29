@@ -1072,7 +1072,7 @@ void Aura::EventUpdateAA(float r)
 	}
 
 	//report say that aura should also affect pet
-	if( plr && plr->GetSummon() &&
+	if( plr &&
 		(
 			GetSpellProto()->NameHash == SPELL_HASH_TRUESHOT_AURA ||
 			GetSpellProto()->NameHash == SPELL_HASH_ASPECT_OF_THE_PACK ||
@@ -1080,15 +1080,19 @@ void Aura::EventUpdateAA(float r)
 			)
 		 )
 	{
-		Unit *summon = plr->GetSummon();
-		if( summon && summon->isAlive() && summon->GetDistanceSq(u_caster) <= r && !summon->HasAura( m_spellProto->Id ))
+		std::list<Pet*> summons = plr->GetSummons();
+		for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
 		{
-			Aura * aura = new Aura(m_spellProto, -1, u_caster, summon, true );
-			aura->m_areaAura = true;
-			aura->AddMod( mod->m_type, mod->m_amount, mod->m_miscValue, mod->i);
-			summon->AddAura( aura );
-			//make sure we remove this
-//			sEventMgr.AddEvent(((Unit*)summon), &Unit::EventRemoveAura, m_spellProto->Id, EVENT_DELETE_TIMER, 10, 1,0);
+			Pet* summon = *itr;
+			if( summon->isAlive() && summon->GetDistanceSq(u_caster) <= r && !summon->HasAura( m_spellProto->Id ))
+			{
+				Aura * aura = new Aura(m_spellProto, -1, u_caster, summon, true );
+				aura->m_areaAura = true;
+				aura->AddMod( mod->m_type, mod->m_amount, mod->m_miscValue, mod->i);
+				summon->AddAura( aura );
+				//make sure we remove this
+	//			sEventMgr.AddEvent(((Unit*)summon), &Unit::EventRemoveAura, m_spellProto->Id, EVENT_DELETE_TIMER, 10, 1,0);
+			}
 		}
 	}
 
@@ -1197,7 +1201,7 @@ void Aura::RemoveAA()
 	Player *plr = NULL;
 	if( caster && caster->IsPlayer() )
 		plr = static_cast<Player*>( caster );
-	if( plr && plr->GetSummon() &&
+	if( plr &&
 		(
 			GetSpellProto()->NameHash == SPELL_HASH_TRUESHOT_AURA ||
 			GetSpellProto()->NameHash == SPELL_HASH_ASPECT_OF_THE_PACK ||
@@ -1205,9 +1209,13 @@ void Aura::RemoveAA()
 			)
 		 )
 	{
-		Unit *summon = plr->GetSummon();
-		if( summon && summon->isAlive() )
-			summon->RemoveAura( m_spellProto->Id );
+		std::list<Pet*> summons = plr->GetSummons();
+		for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
+		{
+			Pet* summon = *itr;
+			if( summon->isAlive() )
+				summon->RemoveAura( m_spellProto->Id );
+		}
 	}
 
 	for(itr = targets.begin(); itr != targets.end(); ++itr)
@@ -6130,7 +6138,7 @@ void Aura::SpellAuraMounted(bool apply)
 		if( p_target->GetShapeShift() && !(p_target->GetShapeShift() & ( FORM_BATTLESTANCE | FORM_DEFENSIVESTANCE | FORM_BERSERKERSTANCE ) ) && p_target->m_ShapeShifted != m_spellProto->Id )
 			p_target->RemoveAura( p_target->m_ShapeShifted );
 
-		p_target->DismissActivePet();
+		p_target->DismissActivePets();
 	}
 	else
 	{
@@ -7296,7 +7304,7 @@ void Aura::SpellAuraModRangedDamageTaken(bool apply)
 		m_target->RangedDamageTaken += mod->m_amount;
 	else
 	{
-		m_target->RangedDamageTaken -= mod->m_amount;;
+		m_target->RangedDamageTaken -= mod->m_amount;
 		if( m_target->RangedDamageTaken < 0)
 			m_target->RangedDamageTaken = 0;
 	}
@@ -8019,7 +8027,7 @@ void Aura::SpellAuraIncreaseDamageTypePCT(bool apply)
 		{
 			for(uint32 x = 0; x < 11; x++)
 				if (mod->m_miscValue & (((uint32)1)<<x) )
-					static_cast< Player* >( m_target )->IncreaseDamageByTypePCT[x+1] += ((float)(mod->m_amount))/100;;
+					static_cast< Player* >( m_target )->IncreaseDamageByTypePCT[x+1] += ((float)(mod->m_amount))/100;
 			if(mod->m_amount < 0)
 				SetNegative();
 			else
@@ -8030,7 +8038,7 @@ void Aura::SpellAuraIncreaseDamageTypePCT(bool apply)
 			for(uint32 x = 0; x < 11; x++)
 			{
 				if (mod->m_miscValue & (((uint32)1)<<x) )
-					static_cast< Player* >( m_target )->IncreaseDamageByTypePCT[x+1] -= ((float)(mod->m_amount))/100;;
+					static_cast< Player* >( m_target )->IncreaseDamageByTypePCT[x+1] -= ((float)(mod->m_amount))/100;
 			}
 		}
 	}
@@ -9248,19 +9256,26 @@ void Aura::SpellAuraModPossessPet(bool apply)
 	else
 		return;
 
-	if( !m_target->IsPet() || pCaster->GetSummon() != m_target )
+	if( !m_target->IsPet() )
 		return;
 
-
-	if( apply )
+	std::list<Pet*> summons = pCaster->GetSummons();
+	for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
 	{
-		pCaster->Possess( m_target );
-		pCaster->SpeedCheatDelay( GetDuration() );
-	}
-	else
-	{
-		pCaster->UnPossess();
-
+		if( *itr == m_target )
+		{	
+			if( apply )
+			{
+				pCaster->Possess( m_target );
+				pCaster->SpeedCheatDelay( GetDuration() );
+			}
+			else
+			{
+				pCaster->UnPossess();
+			}
+			break;
+		}
+			
 	}
 }
 

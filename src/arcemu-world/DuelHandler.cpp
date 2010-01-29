@@ -96,10 +96,13 @@ void WorldSession::HandleDuelCancelled(WorldPacket & recv_data)
 			_player->m_auras[x]->Remove();
 		}
 	}
-    Pet * pPet = _player->GetSummon();;
-	if(pPet && pPet->isAlive())
+	std::list<Pet*> summons = _player->GetSummons();
+	for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
 	{
-	    pPet->SetPetAction(PET_ACTION_STAY);
-		pPet->SetPetAction(PET_ACTION_FOLLOW);
+		if((*itr)->isAlive())
+		{
+			(*itr)->SetPetAction(PET_ACTION_STAY);
+			(*itr)->SetPetAction(PET_ACTION_FOLLOW);
+		}
 	}
 }

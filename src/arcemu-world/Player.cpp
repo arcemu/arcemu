@@ -67,7 +67,7 @@ m_ShapeShifted(0),
 m_curTarget(0),
 m_curSelection(0),
 m_lootGuid(0),
-m_Summon(NULL),
+m_Summons(),
 
 m_PetNumberMax(0),
 m_lastShotTime(0),
@@ -576,7 +576,7 @@ Player::~Player ( )
 	if(pTarget)
 		pTarget->SetInviter(0);
 
-	DismissActivePet();
+	DismissActivePets();
 	mTradeTarget = 0;
 
 	if( DuelingWith != NULL )
@@ -1712,10 +1712,11 @@ void Player::GiveXP(uint32 xp, const uint64 &guid, bool allowbonus)
 		// if warlock has summoned pet, increase its level too
 		if(info->class_ == WARLOCK)
 		{
-			if((m_Summon != NULL) && (m_Summon->IsInWorld()) && (m_Summon->isAlive())) {
-				m_Summon->modLevel(1);
-				m_Summon->ApplyStatsForLevel();
-				m_Summon->UpdateSpellList();
+			Pet* summon = GetSummon();
+			if((summon != NULL) && (summon->IsInWorld()) && (summon->isAlive())) {
+				summon->modLevel(1);
+				summon->ApplyStatsForLevel();
+				summon->UpdateSpellList();
 			}
 		}
 		//Event_Achiement_Received(ACHIEVEMENT_CRITERIA_TYPE_REACH_LEVEL,0,level);
@@ -1939,24 +1940,25 @@ void Player::_SavePet(QueryBuffer * buf)
 	else
 		buf->AddQuery("DELETE FROM playerpets WHERE ownerguid = %u", GetLowGUID() );
 
-	if( m_Summon && m_Summon->IsInWorld() && m_Summon->GetPetOwner() == this )	// update PlayerPets array with current pet's info
+	Pet* summon = GetSummon();
+	if( summon && summon->IsInWorld() && summon->GetPetOwner() == this )	// update PlayerPets array with current pet's info
 	{
-		PlayerPet*pPet = GetPlayerPet(m_Summon->m_PetNumber);
+		PlayerPet*pPet = GetPlayerPet(summon->m_PetNumber);
 		if(!pPet || pPet->active == false)
-			m_Summon->UpdatePetInfo(true);
-		else m_Summon->UpdatePetInfo(false);
+			summon->UpdatePetInfo(true);
+		else summon->UpdatePetInfo(false);
 
-		if(!m_Summon->Summon)	   // is a pet
+		if(!summon->Summon)	   // is a pet
 		{
 			// save pet spellz
-			PetSpellMap::iterator itr = m_Summon->mSpells.begin();
-			uint32 pn = m_Summon->m_PetNumber;
+			PetSpellMap::iterator itr = summon->mSpells.begin();
+			uint32 pn = summon->m_PetNumber;
 			if(buf == NULL)
 				CharacterDatabase.Execute("DELETE FROM playerpetspells WHERE petnumber=%u", pn);
 			else
 				buf->AddQuery("DELETE FROM playerpetspells WHERE petnumber=%u", pn);
 
-			for(; itr != m_Summon->mSpells.end(); ++itr)
+			for(; itr != summon->mSpells.end(); ++itr)
 			{
 				if(buf == NULL)
 					CharacterDatabase.Execute("INSERT INTO playerpetspells VALUES(%u, %u, %u, %u)", GetLowGUID(), pn, itr->first->Id, itr->second);
@@ -2136,7 +2138,7 @@ void Player::SpawnPet( uint32 pet_number )
 }
 void Player::SpawnActivePet()
 {
-	if( m_Summon != NULL || getClass() != HUNTER || !isAlive() ) //TODO: only hunters for now
+	if( GetSummon() != NULL || getClass() != HUNTER || !isAlive() ) //TODO: only hunters for now
 		return;
 
 	std::map< uint32, PlayerPet* >::iterator itr = m_Pets.begin();
@@ -2147,15 +2149,17 @@ void Player::SpawnActivePet()
 			return;
 		}
 }
-void Player::DismissActivePet()
+void Player::DismissActivePets()
 {
-	if( m_Summon == NULL )
-		return;
-
-	if( m_Summon->IsSummon() )
-		m_Summon->Dismiss();			// summons
-	else
-		m_Summon->Remove( true, false );// hunter pets
+	for(std::list<Pet*>::iterator itr = m_Summons.begin(); itr != m_Summons.end();)
+	{
+		Pet* summon = (*itr);
+		++itr;
+		if( summon->IsSummon() )
+			summon->Dismiss();			// summons
+		else
+			summon->Remove( true, false );// hunter pets
+	}
 }
 
 void Player::_LoadPetSpells(QueryResult * result)
@@ -4036,7 +4040,7 @@ void Player::RemoveFromWorld()
 
 	ClearSplinePackets();
 
-	DismissActivePet();
+	DismissActivePets();
 	RemoveFieldSummon();
 
 	if(m_SummonedObject)
@@ -6025,10 +6029,20 @@ void Player::OnRemoveInRangeObject(Object* pObj)
 	}
 
     // We've just gone out of range of our pet :(
-    if( m_Summon && pObj == m_Summon ){
-		DismissActivePet();
-        return;
-    }
+	std::list<Pet*> summons = GetSummons();
+	for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end();)
+	{	
+		Pet* summon = (*itr);
+		++itr;
+		if( pObj == summon )
+		{
+			if( summon->IsSummon() )
+				summon->Dismiss();			// summons
+			else
+				summon->Remove( true, false );// hunter pets
+			return;
+		}
+	}
 
     if( pObj->GetGUID() == GetSummonedUnitGUID() )
 		RemoveFieldSummon();
@@ -6688,8 +6702,11 @@ void Player::CalcResistance(uint32 type)
 	SetUInt32Value(UNIT_FIELD_RESISTANCEBUFFMODSNEGATIVE+type,-neg);
 	SetResistance(type,res>0?res:0);
 
-	if( GetSummon() )
-		GetSummon()->CalcResistance( type );//Re-calculate pet's too.
+	std::list<Pet*> summons = GetSummons();
+	for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
+	{
+		(*itr)->CalcResistance( type );//Re-calculate pet's too.
+	}
 
 	// Dynamic aura 285 application, adding bonus
 	for( uint32 x = MAX_TOTAL_AURAS_START; x < MAX_TOTAL_AURAS_END; x++ )
@@ -6835,7 +6852,7 @@ void Player::TaxiStart(TaxiPath *path, uint32 modelid, uint32 start_node)
 		RemoveAllAuraType( SPELL_AURA_MOD_SHAPESHIFT );
 	}
 	
-	DismissActivePet();
+	DismissActivePets();
 
 	SetMount(modelid );
 	SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_MOUNTED_TAXI);
@@ -7048,8 +7065,14 @@ void Player::CalcStat( uint32 type )
 	if( type == STAT_AGILITY )
 	   CalcResistance( 0 );
 
-	if( GetSummon() && ( type == STAT_STAMINA || type == STAT_INTELLECT ) )
-		GetSummon()->CalcStat( type );//Re-calculate pet's too
+	if( type == STAT_STAMINA || type == STAT_INTELLECT )
+	{
+		std::list<Pet*> summons = GetSummons();
+		for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
+		{
+			(*itr)->CalcStat( type );//Re-calculate pet's too
+		}
+	}
 }
 
 void Player::RegenerateMana(bool is_interrupted)
@@ -8314,12 +8337,13 @@ void Player::EndDuel(uint8 WinCondition)
 	DuelingWith->EventAttackStop();
 
 	// Call off pet
-	if( this->GetSummon() != NULL )
+	std::list<Pet*> summons = GetSummons();
+	for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
 	{
-		this->GetSummon()->CombatStatus.Vanished();
-		this->GetSummon()->GetAIInterface()->SetUnitToFollow( this );
-		this->GetSummon()->GetAIInterface()->HandleEvent( EVENT_FOLLOWOWNER, this->GetSummon(), 0 );
-		this->GetSummon()->GetAIInterface()->WipeTargetList();
+		(*itr)->CombatStatus.Vanished();
+		(*itr)->GetAIInterface()->SetUnitToFollow( this );
+		(*itr)->GetAIInterface()->HandleEvent( EVENT_FOLLOWOWNER, *itr, 0 );
+		(*itr)->GetAIInterface()->WipeTargetList();
 	}
 
 	// removing auras that kills players after if low HP
@@ -9799,8 +9823,11 @@ void Player::CalcDamage()
 		SetUInt32Value( PLAYER_RATING_MODIFIER_RANGED_SKILL, cr );
 
 /////////////////////////////////RANGED end
-		if( GetSummon() )
-			GetSummon()->CalcDamage();//Re-calculate pet's too
+		std::list<Pet*> summons = GetSummons();
+		for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
+		{
+			(*itr)->CalcDamage();//Re-calculate pet's too
+		}
 }
 
 uint32 Player::GetMainMeleeDamage(uint32 AP_owerride)
@@ -10019,7 +10046,7 @@ void Player::Possess(Unit * pTarget)
 	if(pTarget->m_temp_summon)
 		return;
 
-	if( !( pTarget->IsPet() && static_cast< Pet* >( pTarget ) == m_Summon ) )
+	if( !( pTarget->IsPet() && static_cast< Pet* >( pTarget ) == GetSummon() ) )
 	{
 		list<uint32> avail_spells;
 		//Steam Tonks
@@ -10111,7 +10138,7 @@ void Player::UnPossess()
 	if(pTarget->m_temp_summon)
 		return;
 
-	if( !( pTarget->IsPet() && static_cast< Pet* >( pTarget ) == m_Summon ) )
+	if( !( pTarget->IsPet() && static_cast< Pet* >( pTarget ) == GetSummon() ) )
 	{
 		data.Initialize( SMSG_PET_SPELLS );
 		data << uint64(0);
@@ -12591,8 +12618,11 @@ void Player::SetPvPFlag()
 	}
 	
 	// flagging the pet too for PvP, if we have one
-	if( m_Summon != NULL )
-		m_Summon->SetPvPFlag();
+	std::list<Pet*> summons = GetSummons();
+	for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
+	{
+		(*itr)->SetPvPFlag();
+	}
 	
 	if( CombatStatus.IsInCombat() )
 		SetFlag(PLAYER_FLAGS, 0x100);
@@ -12617,8 +12647,11 @@ void Player::RemovePvPFlag()
 	}
 	
 	// If we have a pet we will remove the pvp flag from that too
-	if( m_Summon != NULL )
-		m_Summon->RemovePvPFlag();
+	std::list<Pet*> summons = GetSummons();
+	for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
+	{
+		(*itr)->RemovePvPFlag();
+	}
 
 	// adjust our guardians too
 	std::set< Creature* >::iterator itr = m_Guardians.begin();
@@ -12644,8 +12677,11 @@ void Player::SetFFAPvPFlag()
 	}
 	
 	// flagging the pet too for FFAPvP, if we have one
-	if( m_Summon != NULL )
-		m_Summon->SetFFAPvPFlag();
+	std::list<Pet*> summons = GetSummons();
+	for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
+	{
+		(*itr)->SetFFAPvPFlag();
+	}
 
 	// adjust our guardians too
 	std::set< Creature* >::iterator itr = m_Guardians.begin();
@@ -12667,8 +12703,11 @@ void Player::RemoveFFAPvPFlag()
 	}
 	
 	// If we have a pet we will remove the FFA pvp flag from that too
-	if( m_Summon != NULL )
-		m_Summon->RemoveFFAPvPFlag();
+	std::list<Pet*> summons = GetSummons();
+	for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
+	{
+		(*itr)->RemoveFFAPvPFlag();
+	}
 
 	// adjust our guardians too
 	std::set< Creature* >::iterator itr = m_Guardians.begin();
@@ -12692,8 +12731,11 @@ void Player::SetSanctuaryFlag()
 	}
 	
 	// flagging the pet too for sanctuary, if we have one
-	if( m_Summon != NULL )
-		m_Summon->SetSanctuaryFlag();
+	std::list<Pet*> summons = GetSummons();
+	for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
+	{
+		(*itr)->SetSanctuaryFlag();
+	}
 	
 	// adjust our guardians too
 	std::set< Creature* >::iterator itr = m_Guardians.begin();
@@ -12713,8 +12755,11 @@ void Player::RemoveSanctuaryFlag()
 	}
 	
 	// If we have a pet we will remove the sanctuary flag from that too
-	if( m_Summon != NULL )
-		m_Summon->RemoveSanctuaryFlag();
+	std::list<Pet*> summons = GetSummons();
+	for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
+	{
+		(*itr)->RemoveSanctuaryFlag();
+	}
 
 	// adjust our guardians too
 	std::set< Creature* >::iterator itr = m_Guardians.begin();

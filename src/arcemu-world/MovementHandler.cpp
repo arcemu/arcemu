@@ -134,8 +134,12 @@ void WorldSession::HandleMoveTeleportAckOpcode( WorldPacket & recv_data )
 			GetPlayer()->SetMovement(MOVE_UNROOT,5);
 		_player->SpeedCheatReset();
 
-		if(GetPlayer()->GetSummon() != NULL)		// move pet too
-			GetPlayer()->GetSummon()->SetPosition((GetPlayer()->GetPositionX() + 2), (GetPlayer()->GetPositionY() + 2), GetPlayer()->GetPositionZ(), float(M_PI));
+		std::list<Pet*> summons = _player->GetSummons();
+		for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
+		{
+			// move pet too
+			(*itr)->SetPosition((GetPlayer()->GetPositionX() + 2), (GetPlayer()->GetPositionY() + 2), GetPlayer()->GetPositionZ(), float(M_PI));
+		}
 		if(_player->m_sentTeleportPosition.x != 999999.0f)
 		{
 			_player->m_position = _player->m_sentTeleportPosition;

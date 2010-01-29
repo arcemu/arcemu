@@ -502,7 +502,7 @@ void WorldSession::HandlePetCastSpell(WorldPacket & recvPacket)
 	// Summoned Elemental's Freeze
     if (spellid == 33395)
     {
-        if (!_player->m_Summon)
+		if (!_player->GetSummon())
             return;
     }
     else if ( guid != _player->m_CurrentCharm )
@@ -538,7 +538,7 @@ void WorldSession::HandlePetCastSpell(WorldPacket & recvPacket)
 	}
 	if(spellid == 33395)	// Summoned Water Elemental's freeze
 	{
-		Spell * pSpell = new Spell(_player->m_Summon, sp, false, 0);
+		Spell * pSpell = new Spell(_player->GetSummon(), sp, false, 0);
 		pSpell->prepare(&targets);
 	}
 	else			// trinket?

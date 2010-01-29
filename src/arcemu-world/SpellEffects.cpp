@@ -1339,7 +1339,7 @@ out:
 					summon->CreateAsSummon(26125, ci, NULL, p_caster, GetProto(), 6, 120, vec); // 2 min duration
 				}
 				summon->CastSpell(summon,50142,true);
-				if(vec) delete vec;
+				delete vec;
 
 			}
 		}break;
@@ -3222,18 +3222,25 @@ void Spell::SpellEffectSummon(uint32 i)
 			//First wolf
 			Pet *summon = objmgr.CreatePet(GetProto()->EffectMiscValue[i]);
 			summon->CreateAsSummon(GetProto()->EffectMiscValue[i], ci, NULL, p_caster, GetProto(), 4, GetDuration());
-
-			//Second wolf
-			/*Pet *summon2 = objmgr.CreatePet(GetProto()->EffectMiscValue[i]);
-			summon2->CreateAsSummon(GetProto()->EffectMiscValue[i], ci, NULL, p_caster, GetProto(), 4, GetDuration());
-			summon2->GetAIInterface()->SetUnitToFollow(p_caster);
-			summon2->GetAIInterface()->SetUnitToFollowAngle(float(-(M_PI/2)));*/
-
 			//Spells
 			summon->AddSpell(dbcSpell.LookupEntry(58877), true); // Spirit Hunt
 			summon->AddSpell(dbcSpell.LookupEntry(58875), true); // Spirit walk
 			summon->AddSpell(dbcSpell.LookupEntry(58857), true); // Twin Howl
 			summon->AddSpell(dbcSpell.LookupEntry(58861), true); // Spirit Bash
+
+			//Second wolf
+			Pet *summon2 = objmgr.CreatePet(GetProto()->EffectMiscValue[i]);
+			LocationVector* lv = new LocationVector(p_caster->GetPositionX() - 2.0f, p_caster->GetPositionY() - 2.0f, p_caster->GetPositionZ());
+			summon2->CreateAsSummon(GetProto()->EffectMiscValue[i], ci, NULL, p_caster, GetProto(), 4, GetDuration(), lv, false);
+			delete lv;
+			summon2->GetAIInterface()->SetUnitToFollowAngle(float(-(M_PI/2)));
+			
+			//Spells
+			summon2->AddSpell(dbcSpell.LookupEntry(58877), true); // Spirit Hunt
+			summon2->AddSpell(dbcSpell.LookupEntry(58875), true); // Spirit walk
+			summon2->AddSpell(dbcSpell.LookupEntry(58857), true); // Twin Howl
+			summon2->AddSpell(dbcSpell.LookupEntry(58861), true); // Spirit Bash
+
 		}break;
 	case 27893: // Dancing Rune Weapon
 		{

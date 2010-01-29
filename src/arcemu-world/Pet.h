@@ -129,7 +129,7 @@ public:
     //bool IsPet() { return Creature  }
 
 	void LoadFromDB(Player* owner, PlayerPet * pi);
-	void CreateAsSummon(uint32 entry, CreatureInfo *ci, Creature *created_from_creature, Player* owner, SpellEntry *created_by_spell, uint32 type, uint32 expiretime, LocationVector* Vec = NULL);
+	void CreateAsSummon(uint32 entry, CreatureInfo *ci, Creature *created_from_creature, Player* owner, SpellEntry *created_by_spell, uint32 type, uint32 expiretime, LocationVector* Vec = NULL, bool dismiss_old_pet = true);
 
 	virtual void Update(uint32 time);
 	void OnPushToWorld();
@@ -165,6 +165,7 @@ public:
 	void UpdatePetInfo(bool bSetToOffline);
 	void Remove( bool bUpdate, bool bSetOffline );
 	void Dismiss();
+	void setDeathState(DeathState s);
 
 	void DelayedRemove(bool bTime, bool bDeath);
 

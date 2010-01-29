@@ -1336,8 +1336,26 @@ public:
     /************************************************************************/
     /* Pets                                                                 */
     /************************************************************************/
-	 void			SetSummon(Pet *pet) { m_Summon = pet; }
-	 Pet*			GetSummon(void) { return m_Summon; }
+	void			AddSummon(Pet *pet) { m_Summons.push_front(pet); }
+	Pet*			GetSummon(void) //returns 1st summon
+	{ 
+		if( !m_Summons.empty() )
+			return m_Summons.front();
+		else
+			return NULL;
+	}
+	std::list<Pet*> GetSummons(void) { return m_Summons; }
+	void			RemoveSummon(Pet *pet)
+	{ 
+		for(std::list<Pet*>::iterator itr = m_Summons.begin(); itr != m_Summons.end(); ++itr)
+		{
+			if( *itr == pet )
+			{
+				m_Summons.erase(itr);
+				break;
+			}
+		}
+	}
 	uint32						GeneratePetNumber(void);
 	void						RemovePlayerPet(uint32 pet_number);
 	 void			AddPlayerPet(PlayerPet* pet, uint32 index) { m_Pets[index] = pet; }
@@ -1350,7 +1368,7 @@ public:
 	}
 	void						SpawnPet(uint32 pet_number);
 	void						SpawnActivePet();
-	void						DismissActivePet();
+	void						DismissActivePets();
 	 uint8         GetPetCount(void) { return (uint8)m_Pets.size(); }
 	 void			SetStableSlotCount(uint8 count) { m_StableSlotCount = count; }
 	 uint8			GetStableSlotCount(void) { return m_StableSlotCount; }
@@ -2286,7 +2304,7 @@ protected:
 	uint32      m_banned;
 	string      m_banreason;
 	uint32      m_AreaID;
-	Pet*        m_Summon;
+	std::list< Pet* >  m_Summons;
 	uint32      m_PetNumberMax;
 	std::map<uint32, PlayerPet*> m_Pets;
 
