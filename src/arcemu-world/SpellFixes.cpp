@@ -1761,6 +1761,34 @@ void ApplyNormalFixes()
 	sp = dbcSpell.LookupEntryForced( 33663 );
 	if( sp != NULL )
 		sp->c_is_flags |= SPELL_FLAG_IS_INHERITING_LEVEL;
+	 
+	/**********************************************************
+	 * Scaled Mounts
+	 **********************************************************/
+	//Big Blizzard Bear
+	sp = dbcSpell.LookupEntryForced( 58983 );
+	if( sp != NULL )
+		sp->Effect[0] = SPELL_EFFECT_NULL; 
+	//Winged Steed of Ebon Blade
+	sp = dbcSpell.LookupEntryForced( 54729 );
+	if( sp != NULL )
+		sp->Effect[0] = SPELL_EFFECT_NULL; 
+	//Headless Horsemen Mount
+	sp = dbcSpell.LookupEntryForced( 48025 );
+	if( sp != NULL )
+		sp->Effect[0] = SPELL_EFFECT_NULL; 
+	//Magic Broom
+	sp = dbcSpell.LookupEntryForced( 47977 );
+	if( sp != NULL )
+		sp->Effect[0] = SPELL_EFFECT_NULL; 
+	//Magic Rooster
+	sp = dbcSpell.LookupEntryForced( 65917 );
+	if( sp != NULL )
+		sp->Effect[0] = SPELL_EFFECT_NULL; 
+	//Invincible
+	/*sp = dbcSpell.LookupEntryForced( 72286 ); not yet handled in ItemSpells_1.cpp
+	if( sp != NULL )
+		sp->Effect[0] = SPELL_EFFECT_NULL; */
 
 	//////////////////////////////////////////////////////
 	// CLASS-SPECIFIC SPELL FIXES						//
