@@ -1101,7 +1101,8 @@ void Spell::SpellTargetAllRaid( uint32 i, uint32 j )
 		return;
 
     TargetsList* tmpMap = &m_targetUnits[i];
-    	Group * group = static_cast< Unit* >( m_caster )->GetGroup(); 
+	SafeAddTarget( tmpMap, m_caster->GetGUID() );
+    Group * group = static_cast< Unit* >( m_caster )->GetGroup(); 
 	if( group == NULL )
 		return;
 	
