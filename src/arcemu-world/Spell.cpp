@@ -2563,6 +2563,7 @@ void Spell::SendInterrupted( uint8 result )
 		if( plr != NULL && plr->IsPlayer() )
 		{
 			data << m_caster->GetNewGUID();
+			data << extra_cast_number;
 			data << m_spellInfo->Id;
 			data << uint8( result );
 			plr->GetSession()->SendPacket( &data );

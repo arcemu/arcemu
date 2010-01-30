@@ -151,9 +151,9 @@ void Player::SendCastResult(uint32 SpellId, uint8 ErrorMessage, uint8 MultiCast,
 
     WorldPacket data( SMSG_CAST_FAILED, 80 );
 
+	data << uint8( MultiCast );
     data << uint32( SpellId );
     data << uint8( ErrorMessage );
-    data << uint8( MultiCast );
     
     if( Extra )
         data << uint32( Extra );
