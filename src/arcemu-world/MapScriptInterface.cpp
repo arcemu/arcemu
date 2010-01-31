@@ -147,6 +147,7 @@ Creature* MapScriptInterface::SpawnCreature(uint32 Entry, float cX, float cY, fl
 	sp->Item1SlotDisplay = 0;
 	sp->Item2SlotDisplay = 0;
 	sp->Item3SlotDisplay = 0;
+	sp->CanFly = 0;
 
 	Creature * p = this->mapMgr.CreateCreature(Entry);
 	Arcemu::Util::ARCEMU_ASSERT(   p != NULL );
