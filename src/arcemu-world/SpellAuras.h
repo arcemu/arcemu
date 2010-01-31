@@ -493,7 +493,7 @@ public:
 
 	bool HasModType( uint32 type )
 	{
-		for( uint8 x = 0; x <= m_modcount; ++x )
+		for( uint8 x = 0; x < m_modcount; ++x )
 			if( m_modList[x].m_type == type )
 				return true;
 		return false;
