@@ -637,19 +637,22 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
                        }
                        break;
 
-               case SPELL_HASH_EXORCISM:
-                        {
-                               if( p_caster != NULL )
-                               {
-                                       float sph = (float)(p_caster->GetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS+1));
-                                       float ap = (float)(p_caster->GetAP());
-                                       dmg += float2int32((0.15f * sph) + (0.15f * ap));
-                                        if(unitTarget && (TO_CREATURE(unitTarget)->GetCreatureInfo()->Type == UNIT_TYPE_UNDEAD || 
-                                                TO_CREATURE(unitTarget)->GetCreatureInfo()->Type == UNIT_TYPE_DEMON))
-                                                force_crit = true;
-                                }
-                        }
-                         break;
+		case SPELL_HASH_EXORCISM:
+		{
+			if( p_caster != NULL )
+			{
+				uint32 sph = p_caster->GetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS+1);
+				int32 ap = p_caster->GetAP();
+				dmg += float2int32((0.15f * sph) + (0.15f * ap));
+				if(unitTarget && unitTarget->IsCreature())
+				{
+					uint32 type = TO_CREATURE(unitTarget)->GetCreatureInfo()->Type;
+					if( type == UNIT_TYPE_UNDEAD || type == UNIT_TYPE_DEMON )
+						force_crit = true;
+				}
+			}
+		}
+		break;
 
 		default:
 			break;
