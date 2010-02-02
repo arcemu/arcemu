@@ -468,6 +468,7 @@ void WorldSession::HandleCharCreateOpcode( WorldPacket & recv_data )
 	pn->guild= NULL;
 	pn->guildRank= NULL;
 	pn->guildMember= NULL;
+	pn->lastOnline = UNIXTIME;
 #ifdef VOICE_CHAT
 	pn->groupVoiceId = -1;
 #endif
