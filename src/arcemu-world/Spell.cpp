@@ -415,7 +415,7 @@ void Spell::FillAllTargetsInArea(uint32 i,float srcx,float srcy,float srcz, floa
 		itr = itr2;
 		//maybe scripts can change list. Should use lock instead of this to prevent multiple changes. This protects to 1 deletion only
 		itr2++;
-		if( !( (*itr)->IsUnit() ) || ! static_cast< Unit* >( *itr )->isAlive() || ( static_cast< Creature* >( *itr )->IsTotem() && !static_cast< Unit* >( *itr )->IsPlayer() ) )
+		if( !( (*itr)->IsUnit() ) || ! static_cast< Unit* >( *itr )->isAlive() )//|| ( static_cast< Creature* >( *itr )->IsTotem() && !static_cast< Unit* >( *itr )->IsPlayer() ) ) why shouldn't we fill totems?
 			continue;
 
 		if( u_caster && u_caster->IsPlayer() && (*itr)->IsPlayer() && static_cast< Player* >(u_caster)->GetGroup() && static_cast< Player* >( *itr )->GetGroup() && static_cast< Player* >( *itr )->GetGroup() == static_cast< Player* >(u_caster)->GetGroup() )//Don't attack party members!!
