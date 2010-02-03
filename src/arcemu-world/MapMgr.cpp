@@ -1502,7 +1502,7 @@ void MapMgr::_PerformObjectDuties()
 		{
 			ptr = *itr;
 			++itr;
-			if(ptr != NULL)
+			if( activeCreatures.find(ptr) != activeCreatures.end())//required by owners despawning creatures and deleting *(++itr)
 				ptr->Update(difftime);
 		}
 
