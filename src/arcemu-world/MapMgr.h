@@ -121,6 +121,7 @@ public:
 /////////////////////////////////////////////
 	uint32 m_CreatureHighGuid;
     std::vector< Creature* > CreatureStorage;
+	CreatureSet::iterator creature_iterator;//required by owners despawning creatures and deleting *(++itr)
 	Creature * CreateCreature(uint32 entry, bool isVehicle = false);
 
 	Creature * GetCreature(uint32 guid)

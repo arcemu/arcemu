@@ -1493,17 +1493,15 @@ void MapMgr::_PerformObjectDuties()
 
 	// Update creatures.
 	{
-		CreatureSet creatures(activeCreatures);
-		CreatureSet::iterator itr = creatures.begin();
+		creature_iterator = activeCreatures.begin();
 		Creature * ptr;
 		Pet * ptr2;
 
-		for(; itr != creatures.end();)
+		for(; creature_iterator != activeCreatures.end();)
 		{
-			ptr = *itr;
-			++itr;
-			if( activeCreatures.find(ptr) != activeCreatures.end())//required by owners despawning creatures and deleting *(++itr)
-				ptr->Update(difftime);
+			ptr = *creature_iterator;
+			++creature_iterator;
+			ptr->Update(difftime);
 		}
 
 		PetStorageMap::iterator it2 = m_PetStorage.begin();

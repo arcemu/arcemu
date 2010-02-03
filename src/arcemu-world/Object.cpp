@@ -3240,6 +3240,9 @@ void Object::Deactivate(MapMgr * mgr)
 	switch(m_objectTypeId)
 	{
 	case TYPEID_UNIT:
+		// check iterator
+		if(mgr->creature_iterator != mgr->activeCreatures.end() && (*mgr->creature_iterator) == TO_CREATURE(this))
+			++mgr->creature_iterator;
 		mgr->activeCreatures.erase((Creature*)this);
 		break;
 
