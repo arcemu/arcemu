@@ -741,44 +741,11 @@ bool Creature::CanAddToWorld()
 
 void Creature::RemoveFromWorld( bool addrespawnevent, bool free_guid )
 {
+	uint32 delay = 0;
+	if( addrespawnevent && ( m_respawnTimeOverride > 0 || ( proto && proto->RespawnTime > 0 ) ) )
+		delay = m_respawnTimeOverride > 0 ? m_respawnTimeOverride : proto->RespawnTime;
 
-    //remove ai stuff
-	sEventMgr.RemoveEvents( this, EVENT_CREATURE_AISPELL );
-
-	if( GetScript() != NULL )
-	{
-		GetScript()->Destroy();
-		_myScriptClass = NULL;
-	}
-
-	RemoveAllAuras();
-	
-	// If we have a summons then let's remove them
-	RemoveAllGuardians();
-	
-	// remove our reference from owner
-	if( m_owner != NULL )
-	{
-		m_owner->RemoveGuardianRef( this );
-		m_owner = NULL;
-	}
-
-	if( IsInWorld() )
-	{
-		if( IsPet() )
-		{
-			static_cast<Pet*>(this)->ScheduledForDeletion = true;
-			Unit::RemoveFromWorld( true );
-            SafeDelete();
-			return;
-		}
-		
-		uint32 delay = 0;
-		if( addrespawnevent && ( m_respawnTimeOverride > 0 || ( proto && proto->RespawnTime > 0 ) ) )
-			delay = m_respawnTimeOverride > 0 ? m_respawnTimeOverride : proto->RespawnTime;
-
-		Despawn( 0, delay );
-	}
+	Despawn( 0, delay );
 }
 
 void Creature::EnslaveExpire()
@@ -1866,6 +1833,27 @@ void Creature::Despawn(uint32 delay, uint32 respawntime)
 		return;
 	}
 
+	//remove ai stuff
+	sEventMgr.RemoveEvents( this, EVENT_CREATURE_AISPELL );
+
+	if( GetScript() != NULL )
+	{
+		GetScript()->Destroy();
+		_myScriptClass = NULL;
+	}
+
+	RemoveAllAuras();
+	
+	// If we have a summons then let's remove them
+	RemoveAllGuardians();
+	
+	// remove our reference from owner
+	if( m_owner != NULL )
+	{
+		m_owner->RemoveGuardianRef( this );
+		m_owner = NULL;
+	}
+
 	if(!IsInWorld())
 		return;
 
@@ -1877,6 +1865,14 @@ void Creature::Despawn(uint32 delay, uint32 respawntime)
 		}
 	}
 
+	if( IsPet() )
+	{
+		static_cast<Pet*>(this)->ScheduledForDeletion = true;
+		Unit::RemoveFromWorld( true );
+        SafeDelete();
+		return;
+	}
+	
 	if(respawntime && !m_noRespawn)
 	{
 		/* get the cell with our SPAWN location. if we've moved cell this might break :P */
