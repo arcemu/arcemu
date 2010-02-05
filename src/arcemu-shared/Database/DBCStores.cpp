@@ -97,7 +97,9 @@ const char* GlyphPropertyEntryFormat = "uuuu";
 const char* GlyphSlotEntryFormat = "uuu";
 const char* skilllineentrYFormat = "uuulxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 
-const char* BattlemasterListEntryFormat = "uiiiiiiiiuuuuuiiiiiiiiiiiiiiiiiiuux";
+// const char* BattlemasterListEntryFormat = "uiiiiiiiiuuuuuiiiiiiiiiiiiiiiiiiuux";
+// const char* BattlemasterListEntryFormat = "uiiiiiiiiuuiiiiiiiiiiiiiiiiiuux";
+const char* BattlemasterListEntryFormat = "uiiiiiiiiuuiiiiiiiiiiiiiiiiiuux";
 
 const char* CharTitlesEntryfmt =
 	"u" // ID
@@ -270,6 +272,7 @@ const char* spellentryFormat =
 	"x" //Added in 3.1
 	"xxx" // unk 3.2.0, float!
 	"x" // unk 3.2.0
+    "x"
 ;
 
 
@@ -286,7 +289,9 @@ const char* areagroupFormat = "uuuuuuuu";
 const char* areatableFormat = "uuuuuxxxuxulxxxxxxxxxxxxxxxxuxxxxxxx";
 const char* factiontemplatedbcFormat = "uuuuuuuuuuuuuu";
 const char* auctionhousedbcFormat = "uuuuxxxxxxxxxxxxxxxxx";
-const char* factiondbcFormat = "uiuuuuuuuuiiiiuuuuulxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+const char* factiondbcFormat = "uiuuuuuuuuiiiiuuuuulxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+
+
 const char* dbctaxinodeFormat = "uufffxxxxxxxxxxxxxxxxxuu";
 const char* dbctaxipathFormat = "uuuu";
 const char* dbctaxipathnodeFormat = "uuuufffuuxx";
@@ -299,19 +304,20 @@ const char* mapentryFormat =
 	"s"					// 1 name_internal
 	"u"					// 2 map_type
 	"u"					// 3 is_pvp_zone
-	"lxxxxxxxxxxxxxxxx"	// 4-20 real_name
-	"u"					// 21 linked_zone
-	"xxxxxxxxxxxxxxxxx" // 22-38 hordeIntro
-	"xxxxxxxxxxxxxxxxx" // 39-55 allianceIntro
-	"u"					// 56 multimap_id
-	"x"					// 57 unk_float (all 1 but arathi 1.25)
-	"u"					// 58 parent_map
-	"u"					// 59 start_x
-	"u"					// 60 start_y
-	"x"					// 61 unk
-	"u"					// 62 addon
-	"x"					// 63 unk
-	"x";					// 64 unk, but as it is always one of the following ones, it could be a max. player count: 0, 5, 10, 20, 25, 40
+    "x"
+	"lxxxxxxxxxxxxxxxx"	// 5-21 real_name
+	"u"					// 22 linked_zone
+	"xxxxxxxxxxxxxxxxx" // 23-39 hordeIntro
+	"xxxxxxxxxxxxxxxxx" // 40-56 allianceIntro
+	"u"					// 57 multimap_id
+	"x"					// 58 unk_float (all 1 but arathi 1.25)
+	"u"					// 59 parent_map
+	"u"					// 60 start_x
+	"u"					// 61 start_y
+	"x"					// 62 unk
+	"u"					// 63 addon
+	"x"					// 64 unk
+	"x";				// 65 unk, but as it is always one of the following ones, it could be a max. player count: 0, 5, 10, 20, 25, 40
 
 const char* itemrandomsuffixformat = "uxxxxxxxxxxxxxxxxxxuuuxxuuuxx";//19, 20, 21, 24, 25, 26
 const char* chatchannelformat = "iixssssssssssssssslxxxxxxxxxxxxxxxxxx";

@@ -814,13 +814,13 @@ uint32 CBattlegroundManager::GetMinimumPlayers(uint32 dbcIndex)
 	switch(dbcIndex)
 	{
 		case BATTLEGROUND_ALTERAC_VALLEY:
-			return Config.MainConfig.GetIntDefault("Battleground", "AV_MIN", dbcBattlemasterListStore.LookupEntry(dbcIndex)->min_players_per_faction);
+			return Config.MainConfig.GetIntDefault("Battleground", "AV_MIN", 1);
 		case BATTLEGROUND_WARSONG_GULCH:
-			return Config.MainConfig.GetIntDefault("Battleground", "WS_MIN", dbcBattlemasterListStore.LookupEntry(dbcIndex)->min_players_per_faction);
+			return Config.MainConfig.GetIntDefault("Battleground", "WS_MIN", 1);
 		case BATTLEGROUND_ARATHI_BASIN:
-			return Config.MainConfig.GetIntDefault("Battleground", "AB_MIN", dbcBattlemasterListStore.LookupEntry(dbcIndex)->min_players_per_faction);
+			return Config.MainConfig.GetIntDefault("Battleground", "AB_MIN", 1);
 		case BATTLEGROUND_EYE_OF_THE_STORM:
-			return Config.MainConfig.GetIntDefault("Battleground", "EOS_MIN", dbcBattlemasterListStore.LookupEntry(dbcIndex)->min_players_per_faction);
+			return Config.MainConfig.GetIntDefault("Battleground", "EOS_MIN", 1);
 		case BATTLEGROUND_ARENA_2V2:
 			return 2;
 		case BATTLEGROUND_ARENA_3V3:
@@ -828,9 +828,9 @@ uint32 CBattlegroundManager::GetMinimumPlayers(uint32 dbcIndex)
 		case BATTLEGROUND_ARENA_5V5:
 			return 5;
 		case BATTLEGROUND_STRAND_OF_THE_ANCIENT:
-			return Config.MainConfig.GetIntDefault("Battleground", "SOTA_MIN", dbcBattlemasterListStore.LookupEntry(dbcIndex)->min_players_per_faction);
+			return Config.MainConfig.GetIntDefault("Battleground", "SOTA_MIN", 1);
 		default:
-			return dbcBattlemasterListStore.LookupEntry(dbcIndex)->min_players_per_faction;
+			return 1;
 	}
 }
 
@@ -840,13 +840,13 @@ uint32 CBattlegroundManager::GetMaximumPlayers(uint32 dbcIndex)
 	switch(dbcIndex)
 	{
 		case BATTLEGROUND_ALTERAC_VALLEY:
-			return Config.MainConfig.GetIntDefault("Battleground", "AV_MAX", dbcBattlemasterListStore.LookupEntry(dbcIndex)->min_players_per_faction);
+			return Config.MainConfig.GetIntDefault("Battleground", "AV_MAX", 1);
 		case BATTLEGROUND_WARSONG_GULCH:
-			return Config.MainConfig.GetIntDefault("Battleground", "WS_MAX", dbcBattlemasterListStore.LookupEntry(dbcIndex)->min_players_per_faction);
+			return Config.MainConfig.GetIntDefault("Battleground", "WS_MAX", 1);
 		case BATTLEGROUND_ARATHI_BASIN:
-			return Config.MainConfig.GetIntDefault("Battleground", "AB_MAX", dbcBattlemasterListStore.LookupEntry(dbcIndex)->min_players_per_faction);
+			return Config.MainConfig.GetIntDefault("Battleground", "AB_MAX", 1);
 		case BATTLEGROUND_EYE_OF_THE_STORM:
-			return Config.MainConfig.GetIntDefault("Battleground", "EOS_MAX", dbcBattlemasterListStore.LookupEntry(dbcIndex)->min_players_per_faction);
+			return Config.MainConfig.GetIntDefault("Battleground", "EOS_MAX", 1);
 		case BATTLEGROUND_ARENA_2V2:
 			return 2;
 		case BATTLEGROUND_ARENA_3V3:
@@ -854,9 +854,9 @@ uint32 CBattlegroundManager::GetMaximumPlayers(uint32 dbcIndex)
 		case BATTLEGROUND_ARENA_5V5:
 			return 5;
 		case BATTLEGROUND_STRAND_OF_THE_ANCIENT:
-			return Config.MainConfig.GetIntDefault("Battleground", "SOTA_MAX", dbcBattlemasterListStore.LookupEntry(dbcIndex)->min_players_per_faction);
+			return Config.MainConfig.GetIntDefault("Battleground", "SOTA_MAX", 1);
 		default:
-			return dbcBattlemasterListStore.LookupEntry(dbcIndex)->min_players_per_faction;
+			return 1;
 	}
 }
 

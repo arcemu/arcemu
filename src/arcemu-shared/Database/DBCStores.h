@@ -478,9 +478,6 @@ struct BattlemasterListEntry
 	int32	maps[8];
 	uint32	instance_type;
 	uint32	max_players_per_faction;
-	uint32	min_players_per_faction;
-	uint32	flag; // EOTS AND SOTA have this set to nine, otherwise it's zero
-	uint32  always_true;
 	uint32	some_id;
 	int32	zeros[15];
 	uint32	unk[2];

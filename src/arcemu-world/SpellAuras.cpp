@@ -328,6 +328,17 @@ pSpellAura SpellAuraHandler[TOTAL_SPELL_AURAS]={
 		&Aura::SpellAuraNULL,//304
 		&Aura::SpellAuraNULL,//305
 		&Aura::SpellAuraNULL,//306
+        &Aura::SpellAuraNULL,//307
+        &Aura::SpellAuraNULL,//308
+        &Aura::SpellAuraNULL,//309
+        &Aura::SpellAuraNULL,//310
+        &Aura::SpellAuraNULL,//311
+        &Aura::SpellAuraNULL,//312
+        &Aura::SpellAuraNULL,//313
+        &Aura::SpellAuraNULL,//314
+        &Aura::SpellAuraNULL,//315
+        &Aura::SpellAuraNULL //316
+
 };
 
 const char* SpellAuraNames[TOTAL_SPELL_AURAS] = {
@@ -638,6 +649,16 @@ const char* SpellAuraNames[TOTAL_SPELL_AURAS] = {
 	"",													// 304
 	"",													// 305
 	"",													// 306
+    "",													// 307
+    "",													// 308
+    "",													// 309
+    "",													// 310
+    "",													// 311
+    "",													// 312
+    "",													// 313
+    "",													// 314
+    "",													// 315
+    ""													// 316
 };
 
 

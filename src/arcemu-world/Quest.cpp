@@ -52,12 +52,24 @@ WorldPacket* WorldSession::BuildQuestQueryResponse(Quest *qst)
 	*data << uint32(qst->reward_money<0 ? -qst->reward_money : 0);		   // Required Money
 	*data << uint32(qst->effect_on_player);		 // Spell casted on player upon completion
 	*data << uint32(qst->reward_spell);			 // Spell added to spellbook upon completion
+    *data << float( 0 );
 	*data << qst->bonushonor;								// 2.3.0 - bonus honor
 	*data << uint32(qst->srcitem);				  // Item given at the start of a quest (srcitem)
 	*data << uint32(qst->quest_flags);			  // Quest Flags
 	*data << qst->rewardtitleid;								// 2.4.0 unk
-	*data << uint32(0);								// playerkillcount
+	*data << uint32( 0 );								// playerkillcount
 	*data << qst->rewardtalents;
+    *data << uint32( 0 );
+    *data << uint32( 0 );
+
+    for( i = 0; i < 5; ++i )
+        *data << uint32( 0 );
+
+    for( i = 0; i < 5; ++i )
+        *data << uint32( 0 );
+
+    for( i = 0; i < 5; ++i )
+        *data << uint32( 0 );
 
 	// (loop 4 times)
 	for(i = 0; i < 4; ++i)
@@ -92,6 +104,8 @@ WorldPacket* WorldSession::BuildQuestQueryResponse(Quest *qst)
 		*data << qst->details;						  // Details
 		*data << qst->endtext;						  // Subdescription
 	}
+
+    *data << uint8( 0 );
 
 	for(i = 0; i < 4; ++i)
 	{
