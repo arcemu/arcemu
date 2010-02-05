@@ -35,6 +35,7 @@ WorldPacket* WorldSession::BuildQuestQueryResponse(Quest *qst)
 	*data << uint32(qst->id);					   // Quest ID
 	*data << uint32(2);							 // Unknown, always seems to be 2
 	*data << uint32(qst->max_level);				// Quest level
+    *data << uint32( 0 );
 
 	if(qst->quest_sort > 0)
 		*data << int32(-(int32)qst->quest_sort);	  // Negative if pointing to a sort.
@@ -48,6 +49,7 @@ WorldPacket* WorldSession::BuildQuestQueryResponse(Quest *qst)
 	*data << uint32(0);							 // Unknown (always 0)
 	*data << uint32(0);							 // Unknown (always 0)
 	*data << uint32(qst->next_quest_id);			// Next Quest ID
+    *data << uint32( 0 );
 	*data << uint32( sQuestMgr.GenerateRewardMoney( _player, qst ) );			 // Copper reward
 	*data << uint32(qst->reward_money<0 ? -qst->reward_money : 0);		   // Required Money
 	*data << uint32(qst->effect_on_player);		 // Spell casted on player upon completion

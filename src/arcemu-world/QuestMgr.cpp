@@ -318,7 +318,7 @@ void QuestMgr::BuildOfferReward(WorldPacket *data, Quest* qst, Object* qst_giver
 	
 	//uint32 a = 0, b = 0, c = 1, d = 0, e = 1;
 
-	*data << ( qst->next_quest_id ? uint32(1) : uint32(0) );// next quest shit
+	*data << uint8( qst->next_quest_id ? uint8( 1 ) : uint8( 0 ) );// next quest shit
 	*data << uint32(0);										// maybe required money
 
 	*data << qst->completionemotecount;
@@ -361,11 +361,23 @@ void QuestMgr::BuildOfferReward(WorldPacket *data, Quest* qst, Object* qst_giver
 
 	*data << GenerateRewardMoney( plr, qst );
 	*data << qst->bonushonor;
+    *data << float( 0 );
 	*data << uint32(0);
 	*data << qst->reward_spell;
 	*data << qst->effect_on_player;
 	*data << qst->rewardtitleid;
 	*data << qst->rewardtalents;
+    *data << uint32( 0 );
+    *data << uint32( 0 );
+
+    for( i = 0; i < 5; ++i )
+        *data << uint32( 0 );
+
+    for( i = 0; i < 5; ++i )
+        *data << uint32( 0 );
+
+    for( i = 0; i < 5; ++i )
+        *data << uint32( 0 );
 }
 
 void QuestMgr::BuildQuestDetails(WorldPacket *data, Quest* qst, Object* qst_giver, uint32 menutype, uint32 language, Player * plr)
@@ -392,11 +404,11 @@ void QuestMgr::BuildQuestDetails(WorldPacket *data, Quest* qst, Object* qst_give
 		*data <<  qst->objectives;
 	}
 
-	*data << uint32(1);						// Activate accept
+	*data << uint8(1);						// Activate accept
 	*data << qst->suggestedplayers;			// "Suggested players"
 	*data << uint8(0);						// Added in 3.0.2, name or text(?)
 	*data << uint8(0); //VLack: some 3.1.x thing
-
+    *data << uint8( 0 );
 
 	ItemPrototype *ip;
 	uint32 i;
@@ -427,11 +439,24 @@ void QuestMgr::BuildQuestDetails(WorldPacket *data, Quest* qst, Object* qst_give
 	}
 
 	*data << GenerateRewardMoney( plr, qst );	// Money reward
+    *data << uint32( 0 );
 	*data << qst->bonushonor;					// Honor reward
+    *data << float( 0 );
 	*data << qst->reward_spell;					// this is the spell (id) the quest finisher teaches you, or the icon of the spell if effect_on_player is not 0
 	*data << qst->effect_on_player;				// this is the spell (id) the quest finisher casts on you as a reward
 	*data << qst->rewardtitleid;				// Title reward (ID)
 	*data << qst->rewardtalents;				// Talent reward
+    *data << uint32( 0 );
+    *data << uint32( 0 );
+
+    for( i = 0; i < 5; ++i )
+        *data << uint32( 0 );
+
+    for( i = 0; i < 5; ++i )
+        *data << uint32( 0 );
+
+    for( i = 0; i < 5; ++i )
+        *data << uint32( 0 );
 
 	*data << qst->detailemotecount;				// Amount of emotes (4?)
 	for( i = 0; i < qst->detailemotecount; i++ )
