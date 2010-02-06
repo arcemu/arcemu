@@ -418,9 +418,9 @@ void WorldSession::HandleMarkAsRead(WorldPacket & recv_data )
 	// mark the message as read
 	message->read_flag = 1;
 
-	// mail now has a 3 day expiry time
+	// mail now has a 30 day expiry time
 	if(!sMailSystem.MailOption(MAIL_FLAG_NO_EXPIRY))
-		message->expire_time = (uint32)UNIXTIME + (TIME_DAY * 3);
+		message->expire_time = (uint32)UNIXTIME + (TIME_DAY * 30);
 
 	// update it in sql
 	CharacterDatabase.WaitExecute("UPDATE mailbox SET read_flag = 1, expiry_time = %u WHERE message_id = %u", message->message_id, message->expire_time);

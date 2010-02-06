@@ -650,7 +650,7 @@ bool LootMgr::IsFishable(uint32 zoneid)
 #define NEED 1
 #define GREED 2
 
-LootRoll::LootRoll(uint32 timer, uint32 groupcount, uint64 guid, uint32 slotid, uint32 itemid, uint32 itemunk1, uint32 itemunk2, MapMgr * mgr) : EventableObject()
+LootRoll::LootRoll(uint32 timer, uint32 groupcount, uint64 guid, uint32 slotid, uint32 itemid, uint32 randomsuffixid, uint32 randompropertyid, MapMgr * mgr) : EventableObject()
 {
 	_mgr = mgr;
 	sEventMgr.AddEvent(this, &LootRoll::Finalize, EVENT_LOOT_ROLL_FINALIZE, 60000, 1, 0);
@@ -658,8 +658,8 @@ LootRoll::LootRoll(uint32 timer, uint32 groupcount, uint64 guid, uint32 slotid, 
 	_guid = guid;
 	_slotid = slotid;
 	_itemid = itemid;
-	_itemunk1 = itemunk1;
-	_itemunk2 = itemunk2;
+	_randomsuffixid = randomsuffixid;
+	_randompropertyid = randompropertyid;
 	_remaining = groupcount;
 }
 
@@ -710,7 +710,7 @@ void LootRoll::Finalize()
 		/*
 		data.Initialize(SMSG_LOOT_ROLL);
 		data << _guid << _slotid << itr->first;
-		data << _itemid << _itemunk1 << _itemunk2;
+		data << _itemid << _randomsuffixid << _randompropertyid;
 		data << uint8(itr->second) << uint8(NEED);
 		if(gplr && gplr->GetGroup())
 			gplr->GetGroup()->SendPacketToAll(&data);
@@ -730,7 +730,7 @@ void LootRoll::Finalize()
 		/*
 		data.Initialize(SMSG_LOOT_ROLL);
 		data << _guid << _slotid << itr->first;
-		data << _itemid << _itemunk1 << _itemunk2;
+		data << _itemid << _randomsuffixid << _randompropertyid;
 		data << uint8(itr->second) << uint8(GREED);
 		if(gplr && gplr->GetGroup())
 			gplr->GetGroup()->SendPacketToAll(&data);
@@ -778,7 +778,7 @@ void LootRoll::Finalize()
 	{
 		/* all passed */
 		data.Initialize(SMSG_LOOT_ALL_PASSED);
-		data << _guid << _groupcount << _itemid << _itemunk1 << _itemunk2;
+		data << _guid << _groupcount << _itemid << _randomsuffixid << _randompropertyid;
 		set<uint32>::iterator pitr = m_passRolls.begin();
 		while(_player == NULL && pitr != m_passRolls.end())
 			_player = _mgr->GetPlayer( (*(pitr++)) );
@@ -799,7 +799,7 @@ void LootRoll::Finalize()
 
     pLoot->items.at(_slotid).roll = 0;
 	data.Initialize(SMSG_LOOT_ROLL_WON);
-	data << _guid << _slotid << _itemid << _itemunk1 << _itemunk2;
+	data << _guid << _slotid << _itemid << _randomsuffixid << _randompropertyid;
 	data << _player->GetGUID() << uint8(highest) << uint8(hightype);
 	if(_player->InGroup())
 		_player->GetGroup()->SendPacketToAll(&data);
@@ -891,9 +891,10 @@ void LootRoll::PlayerRolled(Player *player, uint8 choice)
 	WorldPacket data(34);
 	data.SetOpcode(SMSG_LOOT_ROLL);
 	data << _guid << _slotid << player->GetGUID();
-	data << _itemid << _itemunk1 << _itemunk2;
+	data << _itemid << _randomsuffixid << _randompropertyid;
 
-	if(choice == NEED) {
+	if(choice == NEED)
+	{
 		m_NeedRolls.insert( std::make_pair(player->GetLowGUID(), roll) );
 		data << uint8(roll) << uint8(NEED);
 	} 
@@ -908,6 +909,8 @@ void LootRoll::PlayerRolled(Player *player, uint8 choice)
 		m_passRolls.insert( player->GetLowGUID() );
 		data << uint8(128) << uint8(128);
 	}
+
+	data << uint8( 0 );	// Requires research - possibly related to disenchanting of loot
 	
 	if(player->InGroup())
 		player->GetGroup()->SendPacketToAll(&data);

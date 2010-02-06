@@ -302,8 +302,8 @@ void QuestMgr::BuildOfferReward(WorldPacket *data, Quest* qst, Object* qst_giver
 	ItemPrototype * it;
 	uint32 i = 0;
 	data->SetOpcode(SMSG_QUESTGIVER_OFFER_REWARD);
-	*data << qst_giver->GetGUID();
-	*data << qst->id;
+	*data << uint64(qst_giver->GetGUID());
+	*data << uint32(qst->id);
 
 	if( lq )
 	{
@@ -358,26 +358,24 @@ void QuestMgr::BuildOfferReward(WorldPacket *data, Quest* qst, Object* qst_giver
 		}
 	}
 	
-
+	*data << uint32(0);
 	*data << GenerateRewardMoney( plr, qst );
-	*data << qst->bonushonor;
+	*data << (qst->bonushonor * 10);
+	*data << float(0);
     *data << float( 0 );
 	*data << uint32(0);
 	*data << qst->reward_spell;
 	*data << qst->effect_on_player;
 	*data << qst->rewardtitleid;
 	*data << qst->rewardtalents;
-    *data << uint32( 0 );
-    *data << uint32( 0 );
-
-    for( i = 0; i < 5; ++i )
-        *data << uint32( 0 );
-
-    for( i = 0; i < 5; ++i )
-        *data << uint32( 0 );
-
-    for( i = 0; i < 5; ++i )
-        *data << uint32( 0 );
+ 	*data << uint32(0); 
+ 	*data << uint32(0); 
+ 	for(int i = 0; i < 5; ++i)              // reward factions ids 
+ 	*data << uint32(0); 
+  	for(int i = 0; i < 5; ++i)              // columnid in QuestFactionReward.dbc (zero based)? 
+ 	*data << uint32(0); 
+  	for(int i = 0; i < 5; ++i)              // reward reputation override? 
+ 	*data << uint32(0); 
 }
 
 void QuestMgr::BuildQuestDetails(WorldPacket *data, Quest* qst, Object* qst_giver, uint32 menutype, uint32 language, Player * plr)
@@ -408,8 +406,7 @@ void QuestMgr::BuildQuestDetails(WorldPacket *data, Quest* qst, Object* qst_give
 	*data << qst->suggestedplayers;			// "Suggested players"
 	*data << uint8(0);						// Added in 3.0.2, name or text(?)
 	*data << uint8(0); //VLack: some 3.1.x thing
-    *data << uint8( 0 );
-
+	*data << uint8(0); //new 3.3
 	ItemPrototype *ip;
 	uint32 i;
 
@@ -439,16 +436,22 @@ void QuestMgr::BuildQuestDetails(WorldPacket *data, Quest* qst, Object* qst_give
 	}
 
 	*data << GenerateRewardMoney( plr, qst );	// Money reward
-    *data << uint32( 0 );
-	*data << qst->bonushonor;					// Honor reward
+	*data << uint32(0); //New 3.3
+	*data << (qst->bonushonor * 10);					// Honor reward
+	*data << float(0); //New 3.3
     *data << float( 0 );
 	*data << qst->reward_spell;					// this is the spell (id) the quest finisher teaches you, or the icon of the spell if effect_on_player is not 0
 	*data << qst->effect_on_player;				// this is the spell (id) the quest finisher casts on you as a reward
 	*data << qst->rewardtitleid;				// Title reward (ID)
 	*data << qst->rewardtalents;				// Talent reward
-    *data << uint32( 0 );
-    *data << uint32( 0 );
-
+ 	*data << uint32(0);                                                     // new 3.3.0 
+ 	*data << uint32(0);                                                     // new 3.3.0 
+ 	for(int i = 0; i < 5; ++i) 
+ 	*data << uint32(0); 
+ 	for(int i = 0; i < 5; ++i) 
+ 	*data << uint32(0); 
+ 	for(int i = 0; i < 5; ++i) 
+ 	*data << uint32(0); 
     for( i = 0; i < 5; ++i )
         *data << uint32( 0 );
 
@@ -500,15 +503,27 @@ void QuestMgr::BuildRequestItems(WorldPacket *data, Quest* qst, Object* qst_give
 	*data << qst->count_required_item;
 
 	// (loop for each item)
-	for(uint32 i = 0; i < 4; ++i)
+	for(uint32 i = 0; i < 6; ++i)
 	{
 		if(qst->required_item[i] != 0)
 		{
-			*data << qst->required_item[i];
-			*data << qst->required_itemcount[i];
-			it = ItemPrototypeStorage.LookupEntry(qst->required_item[i]);
-			*data << (it ? it->DisplayInfoID : uint32(0));
+ 			*data << qst->required_item[i]; 
+ 			*data << qst->required_itemcount[i]; 
+ 			it = ItemPrototypeStorage.LookupEntry(qst->required_item[i]); 
+ 			*data << (it ? it->DisplayInfoID : uint32(0)); 
 		}
+ 		else 
+ 		{ 
+ 			*data << uint32(0); 
+ 			*data << uint32(0); 
+ 			*data << uint32(0); 
+ 		} 
+ 			*data << uint32(0); 
+ 			*data << uint32(0); 
+ 			*data << uint32(0); 
+ 			*data << uint32(0); 
+ 			*data << uint32(0); 
+ 			*data << uint32(0); 
 	}
 
 	// wtf is this?
@@ -518,9 +533,10 @@ void QuestMgr::BuildRequestItems(WorldPacket *data, Quest* qst, Object* qst_give
 	}
 	else
 	{
-		*data << uint32(2);
+		*data << uint32(3);
 	}
 
+	*data << uint32(4);
 	*data << uint32(8);
 	*data << uint32(10);
 }
@@ -552,7 +568,7 @@ void QuestMgr::BuildQuestComplete(Player*plr, Quest* qst)
 	data << uint32( qst->id );
 	data << uint32( xp );
 	data << uint32( GenerateRewardMoney( plr, qst ) );
-	data << uint32( 0 );
+	data << uint32(qst->bonushonor * 10);
 	data << uint32( rewardtalents );
 	data << uint32( qst->count_reward_item ); //Reward item count
 

@@ -1450,6 +1450,8 @@ void CBattlegroundManager::SendBattlefieldStatus(Player * plr, uint32 Status, ui
 			data << uint8(0xC);
 			data << uint32(6);
 			data << uint16(0x1F90);
+			data << uint8(0);                // 3.3.0
+			data << uint8(0);                // 3.3.0
 			data << uint32(11);
 			data << uint8(RatedMatch);      // 1 = rated match
 		}
@@ -1458,6 +1460,8 @@ void CBattlegroundManager::SendBattlefieldStatus(Player * plr, uint32 Status, ui
 			data << uint32(0);
 			data << uint8(0) << uint8(2);
 			data << Type;
+			data << uint8(0);                // 3.3.0
+			data << uint8(0);                // 3.3.0
 			data << uint16(0x1F90);
 			data << InstanceID;
 			data << uint8(0);

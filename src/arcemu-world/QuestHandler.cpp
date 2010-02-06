@@ -116,9 +116,11 @@ void WorldSession::HandleQuestGiverQueryQuestOpcode( WorldPacket & recv_data )
 	uint64 guid;
 	uint32 quest_id;
 	uint32 status = 0;
+	uint8 unk;
 
 	recv_data >> guid;
 	recv_data >> quest_id;
+	recv_data >> unk;
 
 	Object *qst_giver = NULL;
 

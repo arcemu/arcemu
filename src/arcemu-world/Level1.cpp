@@ -200,10 +200,16 @@ bool ChatHandler::HandleGPSCommand(const char* args, WorldSession *m_session)
 	else
 		obj = (Object*)m_session->GetPlayer();
 
-	AreaTable * at = dbcArea.LookupEntryForced(obj->GetMapMgr()->GetAreaID(obj->GetPositionX(), obj->GetPositionY()));
-	if(!at) return true;
-
 	char buf[328];
+	AreaTable * at = dbcArea.LookupEntryForced(obj->GetMapMgr()->GetAreaID(obj->GetPositionX(), obj->GetPositionY()));
+	if(!at)
+	{
+		snprintf((char*)buf, 328, "|cff00ff00Current Position: |cffffffffMap: |cff00ff00%d |cffffffffX: |cff00ff00%f |cffffffffY: |cff00ff00%f |cffffffffZ: |cff00ff00%f |cffffffffOrientation: |cff00ff00%f|r",
+			(unsigned int)obj->GetMapId(), obj->GetPositionX(), obj->GetPositionY(), obj->GetPositionZ());
+		SystemMessage(m_session, buf);
+		return true;
+	}
+
 	snprintf((char*)buf, 328, "|cff00ff00Current Position: |cffffffffMap: |cff00ff00%d |cffffffffZone: |cff00ff00%u |cffffffffArea: |cff00ff00%u  |cffffffffX: |cff00ff00%f |cffffffffY: |cff00ff00%f |cffffffffZ: |cff00ff00%f |cffffffffOrientation: |cff00ff00%f |cffffffffArea Name: |cff00ff00%s |r",
 		(unsigned int)obj->GetMapId(), at->ZoneId,at->AreaId, obj->GetPositionX(), obj->GetPositionY(), obj->GetPositionZ(), obj->GetOrientation(),at->name);
 	
@@ -949,11 +955,9 @@ bool ChatHandler::HandleModifyTPsCommand(const char* args, WorldSession *m_sessi
 		SystemMessage(m_session, "Enter two amounts to modify your target's both specs to (enter 0 to that spec at default).");
 		return true;
 	}
-
-	if(TP1)
-		Pl->m_specs[SPEC_PRIMARY].m_customTalentPointOverride = TP1;
-	if(TP2)
-		Pl->m_specs[SPEC_SECONDARY].m_customTalentPointOverride = TP2;
+	
+	Pl->m_specs[SPEC_PRIMARY].m_customTalentPointOverride = TP1;
+	Pl->m_specs[SPEC_SECONDARY].m_customTalentPointOverride = TP2;
 	Pl->smsg_TalentsInfo(false);
 	return true;
 }

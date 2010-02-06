@@ -37,8 +37,11 @@ enum PartyErrors
 
 enum GroupTypes
 {
-	GROUP_TYPE_PARTY					= 0,
-	GROUP_TYPE_RAID						= 1,
+	GROUP_TYPE_PARTY					= 0x0,
+	GROUP_TYPE_BG						= 0x1,
+	GROUP_TYPE_RAID						= 0x2,
+	GROUP_TYPE_BGRAID					= GROUP_TYPE_BG | GROUP_TYPE_RAID,
+	GROUP_TYPE_LFD						= 0x8,
 };
 
 enum MaxGroupCount

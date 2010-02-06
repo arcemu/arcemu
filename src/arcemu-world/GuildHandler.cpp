@@ -527,24 +527,34 @@ void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 
 	// Arena team charters are full of crap
 	uint64 creature_guid;
-	uint64 crap;
-	uint32 crap2;
-	string name;
-	uint64 crap3, crap4, crap5, crap6, crap7, crap8;
-	uint32 crap9;
-	uint8 crap10;
-	uint32 arena_index;
+	uint32 crap;
+	uint64 crap2;
+	string name, UnkString;
+	//uint32 crap3, crap4, crap5, crap6, crap7, crap8, crap9;
+	uint32 Data[7];
+	uint16 crap10;
 	uint32 crap11;
+	uint32 crap12, PetitionSignerCount;
+	string PetitionSignerNames[9];
+	uint32 crap13, arena_index;
 
 		
 	recv_data >> creature_guid;
 	recv_data >> crap >> crap2;
 	recv_data >> name;
-	recv_data >> crap3 >> crap4 >> crap5 >> crap6 >> crap7 >> crap8;
-	recv_data >> crap9;
+	recv_data >> UnkString;
+	recv_data >> Data[0] >> Data[1] >> Data[2] >> Data[3] >> Data[4] >> Data[5] >> Data[6];
 	recv_data >> crap10;
-	recv_data >> arena_index;
-	recv_data >> crap11;
+	recv_data >> crap11 >> crap12 >> PetitionSignerCount;
+	if(PetitionSignerCount > 0)
+	{
+		for (uint32 s = 0; s < PetitionSignerCount; ++s)
+		{
+			if(s < 9)
+				recv_data >> PetitionSignerNames[s];
+		}
+	}
+	recv_data >> crap13 >> arena_index;
 
 
 	Creature * crt = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(creature_guid));
@@ -623,7 +633,15 @@ void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 			c->GuildName = name;
 			c->ItemGuid = i->GetGUID();
 
-			i->SetStackCount(  1);
+			c->UnkString = UnkString;
+			c->Unk1 = crap10;
+			c->Unk2 = crap11;
+			c->Unk3 = crap12;
+			c->PetitionSignerCount = PetitionSignerCount;
+			memcpy(&Data, c->Data, sizeof(Data));
+			memcpy(&PetitionSignerNames, c->PetitionSignerNames, sizeof(PetitionSignerNames));
+
+			i->SetUInt32Value(ITEM_FIELD_STACK_COUNT, 1);
             i->SoulBind();
             i->SetEnchantmentId( 0,  c->GetID() );
             i->SetItemRandomSuffixFactor( 57813883 );
@@ -696,6 +714,13 @@ void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 			c->GuildName = name;
 			c->ItemGuid = i->GetGUID();
 
+			c->UnkString = UnkString;
+			c->Unk1 = crap10;
+			c->Unk2 = crap11;
+			c->Unk3 = crap12;
+			c->PetitionSignerCount = PetitionSignerCount;
+			memcpy(&Data, c->Data, sizeof(Data));
+			memcpy(&PetitionSignerNames, c->PetitionSignerNames, sizeof(PetitionSignerNames));
 
 			i->SetStackCount(  1);
             i->SoulBind();

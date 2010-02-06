@@ -130,6 +130,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 		case CHAT_MSG_SAY:
 		case CHAT_MSG_EMOTE:
 		case CHAT_MSG_PARTY:
+		case CHAT_MSG_PARTY_LEADER:
 		case CHAT_MSG_RAID:
 		case CHAT_MSG_RAID_LEADER:
 		case CHAT_MSG_RAID_WARNING:
@@ -240,6 +241,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 
 		} break;
 	case CHAT_MSG_PARTY:
+	case CHAT_MSG_PARTY_LEADER:
 	case CHAT_MSG_RAID:
 	case CHAT_MSG_RAID_LEADER:
 	case CHAT_MSG_RAID_WARNING:

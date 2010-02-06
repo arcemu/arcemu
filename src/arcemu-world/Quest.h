@@ -37,18 +37,18 @@ finished = 8
 
 enum QUEST_STATUS
 {
-	QMGR_QUEST_NOT_AVAILABLE		= 0x00,	// There aren't any quests available.		| "No Mark"
-	QMGR_QUEST_AVAILABLELOW_LEVEL		= 0x01,	// Quest available, and your level isn't enough.| "Gray Quotation Mark !"
-	QMGR_QUEST_CHAT				= 0x02,	// Quest available it shows a talk balloon.	| "No Mark"
-		// On 3.1.2 0x03 and 0x04 is some new status, so the old ones are now shifted by 2 (0x03->0x05 and so on). 
-	QMGR_QUEST_REPEATABLE_FINISHED_LOWLEVEL	= 0x03, 
-	QMGR_QUEST_REPEATABLE_LOWLEVEL		= 0x04, 
-	QMGR_QUEST_NOT_FINISHED			= 0x05,	// Quest isn't finished yet.			| "Gray Question ? Mark"
-	QMGR_QUEST_REPEATABLE_FINISHED		= 0x06,
-	QMGR_QUEST_REPEATABLE			= 0x07,	// Quest repeatable				| "Blue Question ? Mark" 
-	QMGR_QUEST_AVAILABLE			= 0x08,	// Quest available, and your level is enough	| "Yellow Quotation ! Mark" 
-	QMGR_QUEST_FINISHED			= 0x0A,	// Quest has been finished.			| "Yellow Question  ? Mark" (7 has no minimap icon)
-	//QUEST_ITEM_UPDATE			= 0x06	// Yellow Question "?" Mark. //Unknown
+	QMGR_QUEST_NOT_AVAILABLE					= 0x00,	// There aren't any quests available.		| "No Mark"
+	QMGR_QUEST_AVAILABLELOW_LEVEL				= 0x01,	// Quest available, and your level isn't enough.| "Gray Quotation Mark !"
+	QMGR_QUEST_CHAT								= 0x02,	// Quest available it shows a talk balloon.	| "No Mark"
+	// On 3.1.2 0x03 and 0x04 is some new status, so the old ones are now shifted by 2 (0x03->0x05 and so on). 
+	QMGR_QUEST_REPEATABLE_FINISHED_LOWLEVEL		= 0x03, 
+	QMGR_QUEST_REPEATABLE_LOWLEVEL				= 0x04, 
+	QMGR_QUEST_NOT_FINISHED						= 0x05,	// Quest isn't finished yet.			| "Gray Question ? Mark"
+	QMGR_QUEST_REPEATABLE_FINISHED				= 0x06,
+	QMGR_QUEST_REPEATABLE						= 0x07,	// Quest repeatable				| "Blue Question ? Mark" 
+	QMGR_QUEST_AVAILABLE						= 0x08,	// Quest available, and your level is enough	| "Yellow Quotation ! Mark" 
+	QMGR_QUEST_FINISHED							= 0x0A,	// Quest has been finished.			| "Yellow Question  ? Mark" (7 has no minimap icon)
+	//QUEST_ITEM_UPDATE							= 0x06	// Yellow Question "?" Mark. //Unknown
 };
 
 enum QuestStatus		// dupe for scriptdev2
@@ -284,7 +284,7 @@ public:
 
 	ARCEMU_INLINE uint32 GetBaseField(uint32 slot)
 	{
-		return PLAYER_QUEST_LOG_1_1 + (slot * 4);
+		return PLAYER_QUEST_LOG_1_1 + (slot * 5);
 	}
 
 private:

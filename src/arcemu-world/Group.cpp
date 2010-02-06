@@ -295,6 +295,7 @@ void Group::Update()
 				data << uint8(0);	// unk2
 				//data << uint64(0);	// unk3
 				data << uint64(0x500000000004BC0CULL);
+				data << uint32(0);		// 3.3 - increments every time a group list update is being sent to client
 				data << uint32(m_MemberCount-1);	// we don't include self
 
 				for( j = 0; j < m_SubGroupCount; j++ )
@@ -312,7 +313,8 @@ void Group::Update()
 							if( (*itr2) == NULL )
 								continue;
 
-							data << (*itr2)->name << (*itr2)->guid << uint32(0);	// highguid
+							data << (*itr2)->name;
+							data << (*itr2)->guid << uint32(0);	// highguid
 							
 							if( (*itr2)->m_loggedInPlayer != NULL )
 								data << uint8( 1 );
@@ -331,6 +333,7 @@ void Group::Update()
 								flags |= 4;
 
 							data << flags;
+							data << uint8(0); // 3.3 - may have some use
 						}
 					}
 				}
@@ -350,6 +353,7 @@ void Group::Update()
 				data << uint8( m_LootThreshold );
 				data << uint8( m_difficulty );
 				data << uint8( m_raiddifficulty );
+				data << uint8( 0 ); // 3.3 - unk
 
 				if( !(*itr1)->m_loggedInPlayer->IsInWorld() )
 					(*itr1)->m_loggedInPlayer->CopyAndSendDelayedPacket( &data );
@@ -749,10 +753,10 @@ void Group::MovePlayer(PlayerInfo *info, uint8 subgroup)
 
 void Group::SendNullUpdate( Player *pPlayer )
 {
-	// this packet is 24 bytes long.		// AS OF 2.1.0
-	uint8 buffer[24];
-	memset(buffer, 0, 24);
-	pPlayer->GetSession()->OutPacket( SMSG_GROUP_LIST, 24, buffer );
+	// this packet is 28 bytes long.		// AS OF 3.3
+	uint8 buffer[28];
+	memset(buffer, 0, 28);
+	pPlayer->GetSession()->OutPacket( SMSG_GROUP_LIST, 28, buffer );
 }
 
 // player is object class because its called from unit class

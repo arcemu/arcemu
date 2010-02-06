@@ -531,7 +531,8 @@ void Player::SendLoot(uint64 guid,uint8 loot_type)
 						data2 << uint32( 0 );
 
 					data2 << uint32( iter->iItemsCount );
-					data2 << uint32( 60000 ); // countdown
+					data2 << uint32( 60000 );	// countdown
+					data2 << uint8( 7 );		// some sort of flags that require research
 				}
 
 				Group * pGroup = m_playerInfo->m_Group;

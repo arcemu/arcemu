@@ -315,6 +315,17 @@ public:
 	uint32 CharterId;
 	string GuildName;
 
+	/************************************************************************/
+	/* Developer Fields                                                     */
+	/************************************************************************/
+	string UnkString;
+	uint32 Data[7];
+	uint16 Unk1;
+	uint32 Unk2;
+	uint32 Unk3;
+	uint32 PetitionSignerCount;
+	string PetitionSignerNames[9];
+
 	Charter(Field * fields);
 	Charter(uint32 id, uint32 leader, uint32 type) : CharterType(type), LeaderGuid(leader), CharterId(id)
 	{

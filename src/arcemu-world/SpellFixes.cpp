@@ -1786,9 +1786,9 @@ void ApplyNormalFixes()
 	if( sp != NULL )
 		sp->Effect[0] = SPELL_EFFECT_NULL; 
 	//Invincible
-	/*sp = dbcSpell.LookupEntryForced( 72286 ); not yet handled in ItemSpells_1.cpp
+	sp = dbcSpell.LookupEntryForced( 72286 ); 
 	if( sp != NULL )
-		sp->Effect[0] = SPELL_EFFECT_NULL; */
+		sp->Effect[0] = SPELL_EFFECT_NULL; 
 
 	//////////////////////////////////////////////////////
 	// CLASS-SPECIFIC SPELL FIXES						//

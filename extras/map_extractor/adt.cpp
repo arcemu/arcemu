@@ -338,6 +338,11 @@ void LoadMapChunk(MPQFile & mf, chunk*_chunk)
 			nextpos = mf.getPos() + 0x1C0; // size fix
 
 			}
+            if(fourcc=0xefb88b70)
+            {
+             nextpos = mf.getPos() + 0x1199;
+            }
+
 		else
 			/*if(fourcc==0x4d434c51) //MCLQ
 			{
