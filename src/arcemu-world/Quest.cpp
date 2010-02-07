@@ -36,6 +36,7 @@ WorldPacket* WorldSession::BuildQuestQueryResponse(Quest *qst)
 	*data << uint32(2);								// Unknown, always seems to be 2
 	*data << uint32(qst->max_level);				// Quest level
 	*data << uint32(qst->min_level);				// Quest required level
+
 	if(qst->quest_sort > 0)
 		*data << int32(-(int32)qst->quest_sort);	// Negative if pointing to a sort.
 	else
@@ -58,18 +59,10 @@ WorldPacket* WorldSession::BuildQuestQueryResponse(Quest *qst)
 	*data << uint32(qst->srcitem);					// Item given at the start of a quest (srcitem)
 	*data << uint32(qst->quest_flags);				// Quest Flags
 	*data << qst->rewardtitleid;					// 2.4.0 unk
-	*data << uint32( 0 );								// playerkillcount
+	*data << uint32(0);								// playerkillcount
 	*data << qst->rewardtalents;
 	*data << uint32(0);								// 3.3.0 Unknown
 	*data << uint32(0);								// 3.3.0 Unknown
-    for( i = 0; i < 5; ++i )
-        *data << uint32( 0 );
-
-    for( i = 0; i < 5; ++i )
-        *data << uint32( 0 );
-
-    for( i = 0; i < 5; ++i )
-        *data << uint32( 0 );
 
 	// (loop 4 times)
 	for(i = 0; i < 4; ++i)
@@ -122,8 +115,6 @@ WorldPacket* WorldSession::BuildQuestQueryResponse(Quest *qst)
 		*data << qst->endtext;						// Subdescription
 		*data << uint8(0);							// most 3.3.0 quests i seen have something like "Return to NPCNAME"
 	}
-
-    *data << uint8( 0 );
 
 	for(i = 0; i < 4; ++i)
 	{
