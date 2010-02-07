@@ -748,6 +748,12 @@ void Creature::RemoveFromWorld( bool addrespawnevent, bool free_guid )
 	Despawn( 0, delay );
 }
 
+void Creature::RemoveFromWorld(bool free_guid)
+{
+	PrepareForDeletion();
+	Unit::RemoveFromWorld(free_guid);
+}
+
 void Creature::EnslaveExpire()
 {
 
@@ -1833,37 +1839,10 @@ void Creature::Despawn(uint32 delay, uint32 respawntime)
 		return;
 	}
 
-	//remove ai stuff
-	sEventMgr.RemoveEvents( this, EVENT_CREATURE_AISPELL );
-
-	if( GetScript() != NULL )
-	{
-		GetScript()->Destroy();
-		_myScriptClass = NULL;
-	}
-
-	RemoveAllAuras();
-	
-	// If we have a summons then let's remove them
-	RemoveAllGuardians();
-	
-	// remove our reference from owner
-	if( m_owner != NULL )
-	{
-		m_owner->RemoveGuardianRef( this );
-		m_owner = NULL;
-	}
+	PrepareForDeletion();
 
 	if(!IsInWorld())
 		return;
-
-	if(GetMapMgr() && GetMapMgr()->GetMapInfo() && GetMapMgr()->GetMapInfo()->type == INSTANCE_RAID)
-	{
-		if(GetCreatureInfo() && GetCreatureInfo()->Rank == 3)
-		{
-			GetMapMgr()->RemoveCombatInProgress(GetGUID());
-		}
-	}
 
 	if( IsPet() )
 	{
@@ -2114,4 +2093,39 @@ void Creature::RemoveSanctuaryFlag()
 	std::set< Creature* >::iterator itr = m_Guardians.begin();
 	for( ; itr != m_Guardians.end(); ++itr )
 		(*itr)->RemoveSanctuaryFlag();
+}
+
+void Creature::PrepareForDeletion()
+{
+	//remove ai stuff
+	sEventMgr.RemoveEvents( this, EVENT_CREATURE_AISPELL );
+
+	if( GetScript() != NULL )
+	{
+		GetScript()->Destroy();
+		_myScriptClass = NULL;
+	}
+
+	RemoveAllAuras();
+	
+	// If we have a summons then let's remove them
+	RemoveAllGuardians();
+	
+	// remove our reference from owner
+	if( m_owner != NULL )
+	{
+		m_owner->RemoveGuardianRef( this );
+		m_owner = NULL;
+	}
+
+	if(!IsInWorld())
+		return;
+
+	if(GetMapMgr() && GetMapMgr()->GetMapInfo() && GetMapMgr()->GetMapInfo()->type == INSTANCE_RAID)
+	{
+		if(GetCreatureInfo() && GetCreatureInfo()->Rank == 3)
+		{
+			GetMapMgr()->RemoveCombatInProgress(GetGUID());
+		}
+	}
 }

@@ -299,6 +299,9 @@ public:
 	void AddToWorld();
 	void AddToWorld(MapMgr * pMapMgr);
 	void RemoveFromWorld(bool addrespawnevent, bool free_guid);
+	void RemoveFromWorld(bool free_guid);
+
+	void PrepareForDeletion();//remove auras, guardians, scripts
 
 	/// Creation
 	void Create ( const char* creature_name, uint32 mapid, float x, float y, float z, float ang);
