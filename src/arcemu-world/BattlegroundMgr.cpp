@@ -81,8 +81,14 @@ void CBattlegroundManager::HandleBattlegroundListPacket(WorldSession * m_session
 	if(BattlegroundType == BATTLEGROUND_ARENA_2V2 || BattlegroundType == BATTLEGROUND_ARENA_3V3 || BattlegroundType == BATTLEGROUND_ARENA_5V5)
 	{
 		WorldPacket data(SMSG_BATTLEFIELD_LIST, 18);
-		data << m_session->GetPlayer()->GetGUID() << from << uint32(6) << uint32(0xC) << uint8(0);
+		data << m_session->GetPlayer()->GetGUID();
+        data << from;
+        data << uint32( 6 );
+        data << uint32( 0xC );
+        data << uint8( 0 );
+        data << uint8( 0 );
 		m_session->SendPacket(&data);
+
 		return;
 	}
 
@@ -94,6 +100,10 @@ void CBattlegroundManager::HandleBattlegroundListPacket(WorldSession * m_session
 	data << from;
 	data << BattlegroundType;
 	data << uint8(2);
+    data << uint8( 0 );
+    
+    size_t pos = data.wpos();
+
 	data << uint32(0);      // Count
 
 	/* Append the battlegrounds */
@@ -102,13 +112,13 @@ void CBattlegroundManager::HandleBattlegroundListPacket(WorldSession * m_session
 	{
 		if(itr->second->CanPlayerJoin(m_session->GetPlayer(),BattlegroundType) && !itr->second->HasEnded() )
 		{
-			data << itr->first;
+			data << uint32( itr->first );
 			++Count;
 		}
 	}
 	m_instanceLock.Release();
 
-	*(uint32*)&data.contents()[13] = Count;
+    data.put< uint32 >( pos, Count );
 
     m_session->SendPacket(&data);
 }
