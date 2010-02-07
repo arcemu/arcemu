@@ -438,7 +438,10 @@ void WorldSession::HandleSetPlayerIconOpcode(WorldPacket& recv_data)
 
 		// setting icon
 		WorldPacket data(MSG_RAID_TARGET_UPDATE, 10);
-		data << uint8(0) << icon << guid;
+		data << uint8(0);
+		data << icon;
+		data << uint64(GetPlayer()->GetGUID());
+		data << guid;
 		pGroup->SendPacketToAll(&data);
 
 		pGroup->m_targetIcons[icon] = guid;
