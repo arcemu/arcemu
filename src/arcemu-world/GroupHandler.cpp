@@ -432,11 +432,27 @@ void WorldSession::HandleSetPlayerIconOpcode(WorldPacket& recv_data)
 		if(icon > 7)
 			return;			// whoops, buffer overflow :p
 
+		//removing other icon
+		for(uint8 i = 0; i < 8; ++i)
+		{
+			if( pGroup->m_targetIcons[i] == guid )
+			{
+				WorldPacket data(MSG_RAID_TARGET_UPDATE, 10);
+				data << uint8(0);
+				data << uint64(0);
+				data << uint8(i);
+				data << uint64(0);
+				pGroup->SendPacketToAll(&data);
+
+				pGroup->m_targetIcons[i] = 0;
+				break;
+			}
+		}
 		// setting icon
 		WorldPacket data(MSG_RAID_TARGET_UPDATE, 10);
 		data << uint8(0);
-		data << icon;
 		data << uint64(GetPlayer()->GetGUID());
+		data << icon;
 		data << guid;
 		pGroup->SendPacketToAll(&data);
 
