@@ -104,11 +104,7 @@ void WorldSession::HandleGroupInviteOpcode( WorldPacket & recv_data )
 
 	player->GetSession()->SendPacket(&data);
 
-	uint32 gtype = 0;
-	if(group)
-		gtype = group->GetGroupType();
-
-	SendPartyCommandResult(_player, gtype, membername, ERR_PARTY_NO_ERROR);
+	SendPartyCommandResult(_player, 0, membername, ERR_PARTY_NO_ERROR);
 
 	// 16/08/06 - change to guid to prevent very unlikely event of a crash in deny, etc
 	player->SetInviter(_player->GetLowGUID());

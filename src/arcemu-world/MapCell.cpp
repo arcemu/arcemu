@@ -40,6 +40,7 @@ void MapCell::Init(uint32 x, uint32 y, uint32 mapid, MapMgr *mapmgr)
 	_y= static_cast<uint16>( y );
 	_unloadpending=false;
 	_objects.clear();
+	objects_iterator = _objects.begin();
 }
 
 void MapCell::AddObject(Object *obj)
@@ -54,6 +55,9 @@ void MapCell::RemoveObject(Object *obj)
 {
 	if(obj->IsPlayer())
 		--_playerCount;
+
+	if(objects_iterator != _objects.end() && (*objects_iterator) == obj)  
+		++objects_iterator;
 
 	_objects.erase(obj);
 }
@@ -128,13 +132,13 @@ void MapCell::RemoveObjects()
 	_respawnObjects.clear();
 
 	//This time it's simpler! We just remove everything :)
-	for(itr = _objects.begin(); itr != _objects.end(); )
+	for(objects_iterator = _objects.begin(); objects_iterator != _objects.end(); )
 	{
 		count++;
 
-		Object *obj = (*itr);
+		Object *obj = (*objects_iterator);
 
-		itr++;
+		objects_iterator++;
 
 		//zack : we actually never set this to null. Useless check for lucky memory corruption hit.
 		if(!obj)
