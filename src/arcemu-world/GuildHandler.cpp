@@ -1717,6 +1717,7 @@ void Guild::SendGuildBank(WorldSession * pClient, GuildBankTab * pTab, int8 upda
 
 			data << uint8(j);			// slot
 			data << pTab->pSlots[j]->GetEntry();
+			data << uint32(0);			// 3.3.0 (0x8000, 0x8020) from MaNGOS
 			data << (uint32)pTab->pSlots[j]->GetItemRandomPropertyId();
 
 			if( pTab->pSlots[j]->GetItemRandomPropertyId() )
