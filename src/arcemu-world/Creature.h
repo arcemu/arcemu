@@ -301,7 +301,7 @@ public:
 	void RemoveFromWorld(bool addrespawnevent, bool free_guid);
 	void RemoveFromWorld(bool free_guid);
 
-	void PrepareForDeletion();//remove auras, guardians, scripts
+	void PrepareForRemove();//remove auras, guardians, scripts
 
 	/// Creation
 	void Create ( const char* creature_name, uint32 mapid, float x, float y, float z, float ang);

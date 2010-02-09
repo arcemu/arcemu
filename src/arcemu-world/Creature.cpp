@@ -242,6 +242,12 @@ Creature::~Creature()
 {
 	sEventMgr.RemoveEvents(this);
 
+	if( _myScriptClass != NULL )
+	{
+		_myScriptClass->Destroy();
+		_myScriptClass = NULL;
+	}
+
 	if( IsTotem() )
 		totemOwner->m_TotemSlots[totemSlot] = 0;
 
@@ -750,7 +756,7 @@ void Creature::RemoveFromWorld( bool addrespawnevent, bool free_guid )
 
 void Creature::RemoveFromWorld(bool free_guid)
 {
-	PrepareForDeletion();
+	PrepareForRemove();
 	Unit::RemoveFromWorld(free_guid);
 }
 
@@ -1661,7 +1667,12 @@ void Creature::OnPushToWorld()
 		if ( this->GetProto()->AISpells[0] != 0 )
 			sEventMgr.AddEvent(this, &Creature::AISpellUpdate, EVENT_CREATURE_AISPELL, 500, 0, 0);
 	}
-	LoadScript();
+
+	if( GetScript() == NULL )
+	{
+		LoadScript();
+	}
+
 	Unit::OnPushToWorld();
 
 	if(_myScriptClass)
@@ -1839,7 +1850,7 @@ void Creature::Despawn(uint32 delay, uint32 respawntime)
 		return;
 	}
 
-	PrepareForDeletion();
+	PrepareForRemove();
 
 	if(!IsInWorld())
 		return;
@@ -2095,16 +2106,10 @@ void Creature::RemoveSanctuaryFlag()
 		(*itr)->RemoveSanctuaryFlag();
 }
 
-void Creature::PrepareForDeletion()
+void Creature::PrepareForRemove()
 {
 	//remove ai stuff
 	sEventMgr.RemoveEvents( this, EVENT_CREATURE_AISPELL );
-
-	if( GetScript() != NULL )
-	{
-		GetScript()->Destroy();
-		_myScriptClass = NULL;
-	}
 
 	RemoveAllAuras();
 	
