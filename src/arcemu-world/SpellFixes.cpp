@@ -6606,11 +6606,10 @@ void ApplyNormalFixes()
 		// Druid - Bash - Interrupt effect
 		sp = dbcSpell.LookupEntryForced( 5211 );
 		if( sp != NULL )
-       {
-		   sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
-          sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL;
-          sp->EffectTriggerSpell[1] = 20584; // MesoX: Trigger spell with other values, like transform etc.
-       }
+		{
+			sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL;  
+			sp->EffectTriggerSpell[1] = 32747; 
+		}
 		sp = dbcSpell.LookupEntryForced( 6798 );
 		if( sp != NULL )
 		{
@@ -8055,6 +8054,8 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
+			sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL;
+			sp->EffectTriggerSpell[1] = 20584;
 		}
 
 		sp = dbcSpell.LookupEntryForced( 8326 );
