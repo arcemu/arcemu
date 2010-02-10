@@ -70,6 +70,12 @@ GameObject::~GameObject()
 		m_ritualmembers = NULL;
 	}
 
+	if(myScript != NULL)
+	{
+		myScript->Destroy();
+		myScript = NULL;
+	}
+
 	uint32 guid = GetUInt32Value(OBJECT_FIELD_CREATED_BY);
 	if(guid)
 	{
@@ -450,10 +456,10 @@ bool GameObject::Load(GOSpawn *spawn)
 	}
 	SetScale( spawn->scale);
 	_LoadQuests();
-	CALL_GO_SCRIPT_EVENT(this, OnCreate)();
-	CALL_GO_SCRIPT_EVENT(this, OnSpawn)();
 
 	InitAI();
+	CALL_GO_SCRIPT_EVENT(this, OnCreate)();
+	CALL_GO_SCRIPT_EVENT(this, OnSpawn)();
 
 	_LoadQuests();
 	return true;
