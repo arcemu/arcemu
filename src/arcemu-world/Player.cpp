@@ -1954,9 +1954,9 @@ void Player::_SavePet(QueryBuffer * buf)
 			PetSpellMap::iterator itr = summon->mSpells.begin();
 			uint32 pn = summon->m_PetNumber;
 			if(buf == NULL)
-				CharacterDatabase.Execute("DELETE FROM playerpetspells WHERE petnumber=%u", pn);
+				CharacterDatabase.Execute("DELETE FROM playerpetspells WHERE ownerguid=%u AND petnumber=%u", GetLowGUID(), pn);
 			else
-				buf->AddQuery("DELETE FROM playerpetspells WHERE petnumber=%u", pn);
+				buf->AddQuery("DELETE FROM playerpetspells WHERE ownerguid=%u AND petnumber=%u", GetLowGUID(), pn);
 
 			for(; itr != summon->mSpells.end(); ++itr)
 			{

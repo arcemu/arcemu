@@ -1250,7 +1250,8 @@ bool ChatHandler::CmdSetValueField(WorldSession *m_session, uint32 field, uint32
 			if(field == UNIT_FIELD_FACTIONTEMPLATE)
 				cr->_setFaction();
 
-			cr->SaveToDB();
+			if(!cr->IsPet())
+				cr->SaveToDB();
 		}
 		else
 		{
