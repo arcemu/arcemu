@@ -7475,7 +7475,7 @@ void Spell::SpellEffectActivateSpec(uint32 i)
 
 	data << uint8(1); // Force the client to reset the actionbar and use new values
 
-	for(uint32 i = 0; i < PLAYER_ACTION_BUTTON_SIZE; ++i)
+	for(uint32 i = 0; i < PLAYER_ACTION_BUTTON_COUNT; ++i)
 	{
 		data << p_caster->m_specs[NewSpec].mActions[i].Action;
         data << p_caster->m_specs[NewSpec].mActions[i].Type;

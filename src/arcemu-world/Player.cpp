@@ -417,7 +417,7 @@ mOutOfRangeIdCount(0)
 	{
 		m_specs[s].talents.clear();
 		m_specs[s].m_customTalentPointOverride = 0;
-		memset(m_specs[s].glyphs, 0, GLYPHS_COUNT);
+		memset(m_specs[s].glyphs, 0, GLYPHS_COUNT * sizeof(uint16));
 		memset(m_specs[s].mActions, 0, PLAYER_ACTION_BUTTON_SIZE);
 	}
 
@@ -5137,7 +5137,7 @@ void Player::SendInitialActions()
 
 	data << uint8( 0 );       // VLack: 3.1, some bool - 0 or 1. seems to work both ways
 
-	for(uint32 i = 0; i < PLAYER_ACTION_BUTTON_SIZE; ++i)
+	for(uint32 i = 0; i < PLAYER_ACTION_BUTTON_COUNT; ++i)
 	{
 		data << m_specs[m_talentActiveSpec].mActions[i].Action;
         data << m_specs[m_talentActiveSpec].mActions[i].Type;
