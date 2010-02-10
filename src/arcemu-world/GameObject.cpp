@@ -397,7 +397,8 @@ void GameObject::InitAI()
 		CalcFishRemaining( true );
 	}
 
-	myScript = sScriptMgr.CreateAIScriptClassForGameObject(GetEntry(), this);
+	if( myScript == NULL )
+		myScript = sScriptMgr.CreateAIScriptClassForGameObject(GetEntry(), this);
 
 	// hackfix for bad spell in BWL
 	if(!spellid || spellid == 22247)
@@ -457,11 +458,9 @@ bool GameObject::Load(GOSpawn *spawn)
 	SetScale( spawn->scale);
 	_LoadQuests();
 
-	InitAI();
 	CALL_GO_SCRIPT_EVENT(this, OnCreate)();
 	CALL_GO_SCRIPT_EVENT(this, OnSpawn)();
 
-	_LoadQuests();
 	return true;
 }
 
