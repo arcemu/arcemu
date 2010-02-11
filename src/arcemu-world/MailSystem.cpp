@@ -277,7 +277,12 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 		}
 		if(pItem->IsAccountbound() && GetAccountId() !=  player->acct) // don't mail account-bound items to another account
 		{
-			SendMailError( MAIL_ERR_INTERNAL_ERROR );
+			WorldPacket data(SMSG_SEND_MAIL_RESULT, 16);
+			data << uint32(0);
+			data << uint32(0); 
+			data << uint32(MAIL_ERR_BAG_FULL); 
+			data << uint32(INV_ERR_ARTEFACTS_ONLY_FOR_OWN_CHARACTERS); 
+			SendPacket(&data);
 			return;
 		}
 
