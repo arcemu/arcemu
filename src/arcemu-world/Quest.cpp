@@ -210,7 +210,8 @@ void QuestLogEntry::Init(Quest* quest, Player* plr, uint32 slot)
 	else
 		m_time_left = 0;
 
-	CALL_QUESTSCRIPT_EVENT(this, OnQuestStart)(plr, this);
+	if (!plr->GetSession()->m_loggingInPlayer) //quest script should not be called on login
+		CALL_QUESTSCRIPT_EVENT(this, OnQuestStart)(plr, this);
 }
 
 void QuestLogEntry::ClearAffectedUnits()
