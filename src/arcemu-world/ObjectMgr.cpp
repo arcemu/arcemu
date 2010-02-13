@@ -1800,7 +1800,7 @@ void GossipMenu::AddItem(uint8 Icon, const char* Text, int32 Id /* = -1 */, int8
 	Menu.push_back(Item);
 }
 
-void GossipMenu::AddMenuItem(uint8 Icon, char* Message, uint32 dtSender, uint32 dtAction, char* BoxMessage, uint32 BoxMoney, bool Coded)
+void GossipMenu::AddMenuItem(uint8 Icon, const char* Message, uint32 dtSender, uint32 dtAction, const char* BoxMessage, uint32 BoxMoney, bool Coded)
 {
 	GossipMenuItem Item;
 

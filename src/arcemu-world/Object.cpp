@@ -71,7 +71,7 @@ Object::Object() : m_position(0,0,0,0), m_spawnLocation(0,0,0,0)
 	m_faction = NULL;
 	m_factionDBC = NULL;
 
-	m_instanceId = 0;
+	m_instanceId = -1;
 	Active = false;
 	m_inQueue = false;
 	m_extensions = NULL;
@@ -3177,10 +3177,8 @@ void Object::SendAttackerStateUpdate( Object* Caster, Object* Target, dealdamage
 int32 Object::event_GetInstanceID()
 {
 	// return -1 for non-inworld.. so we get our shit moved to the right thread
-	if(!IsInWorld())
-		return -1;
-	else
-		return m_instanceId;
+	//default value is -1, if it's something else then we are/will be soon InWorld.
+	return m_instanceId;
 }
 
 void Object::EventSpellDamage(uint64 Victim, uint32 SpellID, uint32 Damage)

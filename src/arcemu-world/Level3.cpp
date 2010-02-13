@@ -2469,7 +2469,7 @@ bool ChatHandler::HandlePlayerInfo(const char* args, WorldSession * m_session)
 	BlueSystemMessage(m_session, "%s is connecting from account '%s'[%u] with permissions '%s'",
 		(plr->getGender()?"She":"He"), sess->GetAccountName().c_str(), sess->GetAccountId(), sess->GetPermissions());
 
-	char *client;
+	const char *client;
 
 	// Clean code says you need to work from highest combined bit to lowest. Second, you need to check if both flags exists.
         if(sess->HasFlag(ACCOUNT_FLAG_XPACK_02) && sess->HasFlag(ACCOUNT_FLAG_XPACK_01))
@@ -2777,7 +2777,7 @@ bool ChatHandler::HandleSetStandingCommand(const char * args, WorldSession * m_s
 	return true;
 }
 
-void ChatHandler::SendHighlightedName(WorldSession * m_session, const char* prefix, char* full_name, string& lowercase_name, string& highlight, uint32 id)
+void ChatHandler::SendHighlightedName(WorldSession * m_session, const char* prefix, const char* full_name, string& lowercase_name, string& highlight, uint32 id)
 {
 	char message[1024];
 	char start[50];
@@ -3022,9 +3022,9 @@ bool ChatHandler::HandleLookupSpellCommand(const char * args, WorldSession * m_s
 			// SendHighlightedName(m_session, "Spell", spell->Name, y, x, spell->Id);
 			// Send spell link instead
 			sprintf((char*)itoabuf,"%u",spell->Id);
-			recout = (char*)itoabuf;
+			recout = (const char*)itoabuf;
 			recout += ": |cff71d5ff|Hspell:";
-			recout += (char*)itoabuf;
+			recout += (const char*)itoabuf;
 			recout += "|h[";
 			recout += spell->Name;
 			recout += "]|h|r";

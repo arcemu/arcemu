@@ -744,7 +744,7 @@ void ApplyNormalFixes()
 		if( strstr( sp->Name, "Lightning Shield" ) && sp->EffectTriggerSpell[0] )
 		{
 			//check if we can find in the description
-			char *startofid = strstr(sp->Description, "for $");
+			const char *startofid = strstr(sp->Description, "for $");
 			if( startofid )
 			{
 				startofid += strlen("for $");
@@ -756,7 +756,7 @@ void ApplyNormalFixes()
 		else if( strstr( sp->Name, "Ignite") && sp->Id>=11119 && sp->Id<=12848 && sp->EffectApplyAuraName[0] == 4 )
 		{
 			//check if we can find in the description
-			char *startofid=strstr(sp->Description, "an additional ");
+			const char *startofid=strstr(sp->Description, "an additional ");
 			if(startofid)
 			{
 				startofid += strlen("an additional ");
@@ -796,7 +796,7 @@ void ApplyNormalFixes()
 		else if( strstr( sp->Name, "Holy Shock"))
 		{
 			//check if we can find in the description
-			char *startofid=strstr(sp->Description, "causing $");
+			const char *startofid=strstr(sp->Description, "causing $");
 			if(startofid)
 			{
 				startofid += strlen("causing $");
@@ -813,7 +813,7 @@ void ApplyNormalFixes()
 		else if( strstr( sp->Name, "Touch of Weakness"))
 		{
 			//check if we can find in the description
-			char *startofid=strstr(sp->Description, "cause $");
+			const char *startofid=strstr(sp->Description, "cause $");
 			if(startofid)
 			{
 				startofid += strlen("cause $");

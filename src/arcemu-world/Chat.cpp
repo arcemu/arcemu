@@ -938,7 +938,7 @@ WorldPacket * ChatHandler::FillMessageData( uint32 type, uint32 language, const 
 	//uint8	    afk_state;
 	Arcemu::Util::ARCEMU_ASSERT(   type != CHAT_MSG_CHANNEL);
 	   //channels are handled in channel handler and so on
-	uint32 messageLength = (uint32)strlen((char*)message) + 1;
+	uint32 messageLength = (uint32)strlen(message) + 1;
 
 	WorldPacket *data = new WorldPacket(SMSG_MESSAGECHAT, messageLength + 30);
 
@@ -959,7 +959,7 @@ WorldPacket * ChatHandler::FillMessageData( uint32 type, uint32 language, const 
 
 WorldPacket* ChatHandler::FillSystemMessageData(const char *message) const
 {
-	uint32 messageLength = (uint32)strlen((char*)message) + 1;
+	uint32 messageLength = (uint32)strlen(message) + 1;
 
 	WorldPacket * data = new WorldPacket(SMSG_MESSAGECHAT, 30 + messageLength);
 	*data << (uint8)CHAT_MSG_SYSTEM;

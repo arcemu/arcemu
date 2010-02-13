@@ -38,7 +38,7 @@ Item::Item()//this is called when constructing as container
 	mSemaphoreTeleport = false;
 	m_faction = NULL;
 	m_factionDBC = NULL;
-	m_instanceId = 0;
+	m_instanceId = -1;
 	m_inQueue = false;
 	m_extensions = NULL;
 	m_loadedFromDB = false;
@@ -71,7 +71,7 @@ void Item::Init( uint32 high, uint32 low )
 	mSemaphoreTeleport = false;
 	m_faction = NULL;
 	m_factionDBC = NULL;
-	m_instanceId = 0;
+	m_instanceId = -1;
 	m_inQueue = false;
 	m_extensions = NULL;
 	m_loadedFromDB = false;

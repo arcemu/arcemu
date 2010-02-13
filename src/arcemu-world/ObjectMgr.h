@@ -269,7 +269,7 @@ public:
 	GossipMenu(uint64 Creature_Guid, uint32 Text_Id);
 	void AddItem(GossipMenuItem* GossipItem);
 	void AddItem(uint8 Icon, const char* Text, int32 Id = -1, int8 Extra = 0);
-	void AddMenuItem(uint8 Icon, char* Message, uint32 dtSender, uint32 dtAction, char* BoxMessage, uint32 BoxMoney, bool Coded = false);
+	void AddMenuItem(uint8 Icon, const char* Message, uint32 dtSender, uint32 dtAction, const char* BoxMessage, uint32 BoxMoney, bool Coded = false);
 	void BuildPacket(WorldPacket& Packet);
 	void SendTo(Player* Plr);
 	void SendGossipMenu( uint32 TitleTextId, uint64 npcGUID );

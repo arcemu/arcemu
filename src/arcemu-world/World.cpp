@@ -2115,7 +2115,7 @@ void World::SendBCMessageByID(uint32 id)
 			itr->second->GetPlayer()->IsInWorld() )
 		{
 			const char *text = itr->second->LocalizedBroadCast(id);
-			uint32 textLen = (uint32)strlen((char*)text) + 1;
+			uint32 textLen = (uint32)strlen(text) + 1;
 			WorldPacket data(textLen + 40);
 			data.Initialize(SMSG_MESSAGECHAT);
 			data << uint8(CHAT_MSG_SYSTEM);

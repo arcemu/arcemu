@@ -5613,7 +5613,7 @@ void Player::UpdateStats()
 	}
 	SetUInt32Value( UNIT_FIELD_MAXHEALTH, res );
 
-	if( ( int32 )GetUInt32Value( UNIT_FIELD_HEALTH ) > res )
+	if( GetUInt32Value( UNIT_FIELD_HEALTH ) > res )
 		SetHealth(res );
 	else if( ( cl == DRUID) && ( GetShapeShift() == FORM_BEAR || GetShapeShift() == FORM_DIREBEAR ) )
 	{
@@ -5662,7 +5662,7 @@ void Player::UpdateStats()
 		}
 		SetMaxPower(POWER_TYPE_MANA, res );
 
-		if((int32)GetPower(POWER_TYPE_MANA)>res)
+		if(GetPower(POWER_TYPE_MANA)>res)
 			SetPower(POWER_TYPE_MANA,res);
 
 		//Manaregen

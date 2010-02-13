@@ -2090,7 +2090,7 @@ int8 ItemInterface::CanEquipItemInSlot( int8 DstInvSlot, int8 slot, ItemPrototyp
 			return INV_ERR_YOU_ARE_DEAD;
 	}
 
-	switch(slot)
+	switch(uint8(slot))//CURRENCYTOKEN_SLOT_ are over 128
 	{
 	case EQUIPMENT_SLOT_HEAD:
 		{

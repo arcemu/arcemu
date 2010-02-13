@@ -1500,7 +1500,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 							//this spell builds up in time
 							(*itr2).procCharges += dmg;
 							if( (int32)(*itr2).procCharges >= ospinfo->EffectBasePoints[ 1 ] && //if charge built up
-								dmg < (int32)this->GetUInt32Value( UNIT_FIELD_HEALTH ) ) //if this is not a killer blow
+								dmg < this->GetUInt32Value( UNIT_FIELD_HEALTH ) ) //if this is not a killer blow
 								can_proc_now = true;
 						}
 						else can_proc_now = true; //target died

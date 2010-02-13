@@ -205,7 +205,7 @@ bool ChatHandler::HandleGPSCommand(const char* args, WorldSession *m_session)
 	if(!at)
 	{
 		snprintf((char*)buf, 328, "|cff00ff00Current Position: |cffffffffMap: |cff00ff00%d |cffffffffX: |cff00ff00%f |cffffffffY: |cff00ff00%f |cffffffffZ: |cff00ff00%f |cffffffffOrientation: |cff00ff00%f|r",
-			(unsigned int)obj->GetMapId(), obj->GetPositionX(), obj->GetPositionY(), obj->GetPositionZ());
+			(unsigned int)obj->GetMapId(), obj->GetPositionX(), obj->GetPositionY(), obj->GetPositionZ(), obj->GetOrientation());
 		SystemMessage(m_session, buf);
 		return true;
 	}
@@ -1208,7 +1208,7 @@ bool ChatHandler::HandleLookupAchievementCmd(const char* args, WorldSession* m_s
 				recout += ": |cfffff000|Hachievement:";
 				recout += strm.str();
 				recout += ":";
-				recout += (char*)playerGUID;
+				recout += (const char*)playerGUID;
 				time_t completetime = m_session->GetPlayer()->GetAchievementMgr().GetCompletedTime(achievement);
 				if( completetime )
 				{
@@ -1284,7 +1284,7 @@ bool ChatHandler::HandleLookupAchievementCmd(const char* args, WorldSession* m_s
 					recout += ": |cfffff000|Hachievement:";
 					recout += strm.str();
 					recout += ":";
-					recout += (char*)playerGUID;
+					recout += (const char*)playerGUID;
 					time_t completetime = m_session->GetPlayer()->GetAchievementMgr().GetCompletedTime(achievement);
 					if( completetime )
 					{

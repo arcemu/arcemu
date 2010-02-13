@@ -89,7 +89,7 @@ struct GameObjectInfo
 	uint32 ID;
 	uint32 Type;
 	uint32 DisplayID;
-	char * Name;
+	const char * Name;
 	char * Category;
 	char * Castbartext;
 	char * Unkstr;

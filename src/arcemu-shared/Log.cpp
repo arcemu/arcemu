@@ -242,7 +242,7 @@ void oLog::SetFileLoggingLevel(int32 level)
 
 	if (m_fileLogLevel >= 0)
 	{
-		char *filename = "file.log";
+		const char *filename = "file.log";
 		m_file = fopen(filename, "w");
 		if (m_file == NULL)
 		{

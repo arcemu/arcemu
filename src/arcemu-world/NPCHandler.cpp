@@ -660,8 +660,8 @@ void WorldSession::HandleNpcTextQueryOpcode( WorldPacket & recv_data )
 	else 
 	{
 		data << float(1.0f);		// unknown
-		data << (char*)_player->GetSession()->LocalizedWorldSrv(70);
-		data << (char*)_player->GetSession()->LocalizedWorldSrv(70);
+		data << _player->GetSession()->LocalizedWorldSrv(70);
+		data << _player->GetSession()->LocalizedWorldSrv(70);
 		data << uint32(0x00);	// ?
 		data << uint32(0x00);	// ?
 		for(uint32 e = 0; e < 6; e++)
