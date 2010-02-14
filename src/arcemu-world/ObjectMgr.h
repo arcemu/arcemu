@@ -607,6 +607,7 @@ public:
 
 	void LoadExtraItemStuff();
 	void LoadExtraCreatureProtoStuff();
+	void LoadExtraGameObjectStuff();
 	void LoadProfessionDiscoveries();
 
 	void StoreBroadCastGroupKey();

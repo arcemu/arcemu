@@ -146,20 +146,6 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 		itr->Destruct();
 	}
 
-	{
-		StorageContainerIterator<Quest> * itr = QuestStorage.MakeIterator();
-		Quest * qst;
-		while(!itr->AtEnd())
-		{
-			qst = itr->Get();
-			qst->pQuestScript = NULL;
-
-			if( !itr->Inc() )
-				break;
-		}
-		itr->Destruct();
-	}
-
 	// Load AI Agents
 	if(Config.MainConfig.GetBoolDefault("Server", "LoadAIAgents", true))
 	{
@@ -484,6 +470,21 @@ void ObjectMgr::LoadExtraItemStuff()
 
 	itr->Destruct();
 	foodItems.clear();
+}
+
+void ObjectMgr::LoadExtraGameObjectStuff()
+{
+	StorageContainerIterator<GameObjectInfo> * itr = GameObjectNameStorage.MakeIterator();
+	GameObjectInfo * goi;
+	while(!itr->AtEnd())
+	{
+		goi = itr->Get();
+		goi->gossip_script = NULL;
+
+		if( !itr->Inc() )
+		break;
+	}
+	itr->Destruct();
 }
 
 #define make_task(storage, itype, storagetype, tablename, format) tl.AddTask( new Task( \

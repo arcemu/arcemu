@@ -1919,6 +1919,8 @@ void QuestMgr::LoadExtraQuestStuff()
 				qst->count_reward_choiceitem++;
 		}
 
+		qst->pQuestScript = NULL;
+
 		if(!it->Inc())
 			break;
 	}
