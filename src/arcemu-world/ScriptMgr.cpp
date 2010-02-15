@@ -411,21 +411,33 @@ void ScriptMgr::UnloadScripts()
 
 void ScriptMgr::register_creature_script(uint32 entry, exp_create_creature_ai callback)
 {
+	if(_creatures.find(entry) != _creatures.end())
+		sLog.outError("ScriptMgr is trying to register a script for Creature ID: %u even if there's already one for that Creature. Remove one of those scripts.\n", entry);
+
 	_creatures.insert( CreatureCreateMap::value_type( entry, callback ) );
 }
 
 void ScriptMgr::register_gameobject_script(uint32 entry, exp_create_gameobject_ai callback)
 {
+	if(_gameobjects.find(entry) != _gameobjects.end())
+		sLog.outError("ScriptMgr is trying to register a script for GameObject ID: %u even if there's already one for that GameObject. Remove one of those scripts.\n", entry);
+
 	_gameobjects.insert( GameObjectCreateMap::value_type( entry, callback ) );
 }
 
 void ScriptMgr::register_dummy_aura(uint32 entry, exp_handle_dummy_aura callback)
 {
+	if(_auras.find(entry) != _auras.end())
+		sLog.outError("ScriptMgr is trying to register a script for Aura ID: %u even if there's already one for that Aura. Remove one of those scripts.\n", entry);
+
 	_auras.insert( HandleDummyAuraMap::value_type( entry, callback ) );
 }
 
 void ScriptMgr::register_dummy_spell(uint32 entry, exp_handle_dummy_spell callback)
 {
+	if(_spells.find(entry) != _spells.end())
+		sLog.outError("ScriptMgr is trying to register a script for Spell ID: %u even if there's already one for that Spell. Remove one of those scripts.\n", entry);
+
 	_spells.insert( HandleDummySpellMap::value_type( entry, callback ) );
 }
 
@@ -433,7 +445,12 @@ void ScriptMgr::register_gossip_script(uint32 entry, GossipScript * gs)
 {
 	CreatureInfo * ci = CreatureNameStorage.LookupEntry(entry);
 	if(ci)
+	{
+		if(ci->gossip_script != DefaultGossipScript)
+			sLog.outError("ScriptMgr is trying to register a gossip for Creature ID: %u even if there's already one for that Creature. Remove one of those gossips.\n", entry);
+
 		ci->gossip_script = gs;
+	}
 
 	_customgossipscripts.insert(gs);
 }
@@ -442,7 +459,12 @@ void ScriptMgr::register_go_gossip_script(uint32 entry, GossipScript * gs)
 {
 	GameObjectInfo * gi = GameObjectNameStorage.LookupEntry(entry);
 	if(gi)
+	{
+		if(gi->gossip_script != NULL)
+			sLog.outError("ScriptMgr is trying to register a gossip for GameObject ID: %u even if there's already one for that GameObject. Remove one of those gossips.\n", entry);
+
 		gi->gossip_script = gs;
+	}
 
 	_customgossipscripts.insert(gs);
 }
@@ -451,13 +473,21 @@ void ScriptMgr::register_quest_script(uint32 entry, QuestScript * qs)
 {
 	Quest * q = QuestStorage.LookupEntry( entry );
 	if( q != NULL )
+	{
+		if(q->pQuestScript != NULL)
+		sLog.outError("ScriptMgr is trying to register a script for Quest ID: %u even if there's already one for that Quest. Remove one of those scripts.\n", entry);
+
 		q->pQuestScript = qs;
+	}
 
 	_questscripts.insert( qs );
 }
 
 void ScriptMgr::register_instance_script( uint32 pMapId, exp_create_instance_ai pCallback ) 
 { 
+	if(mInstances.find(pMapId) != mInstances.end())
+		sLog.outError("ScriptMgr is trying to register a script for Instance ID: %u even if there's already one for that Instance. Remove one of those scripts.\n", pMapId);
+
 	mInstances.insert( InstanceCreateMap::value_type( pMapId, pCallback ) ); 
 }; 
 
@@ -525,7 +555,12 @@ void ScriptMgr::register_item_gossip_script(uint32 entry, GossipScript * gs)
 {
 	ItemPrototype * proto = ItemPrototypeStorage.LookupEntry(entry);
 	if(proto)
+	{
+		if(proto->gossip_script != NULL)
+		sLog.outError("ScriptMgr is trying to register a gossip for Item ID: %u even if there's already one for that Item. Remove one of those gossips.\n", entry);
+
 		proto->gossip_script = gs;
+	}
 
 	_customgossipscripts.insert(gs);
 }
