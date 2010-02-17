@@ -909,9 +909,6 @@ bool EyeOfTheStorm::GivePoints(uint32 team, uint32 points)
 
 				p->Root();
 				
-				if ( p == NULL )
-					continue;
-
 				if(i == m_winningteam)
 				{
 					p->m_bgScore.BonusHonor += winHonorToAdd;

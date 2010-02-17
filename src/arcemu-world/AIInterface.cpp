@@ -678,14 +678,13 @@ void AIInterface::Update(uint32 p_time)
 		{
 			Spell *pSpell = new Spell(m_Unit, totemspell, true, 0);
 			SpellCastTargets targets(0);
-			if(!GetNextTarget() ||
-				(GetNextTarget() && 
-					(!m_Unit->GetMapMgr()->GetUnit(GetNextTarget()->GetGUID()) || 
-					!GetNextTarget()->isAlive() ||
-					!IsInrange(m_Unit,GetNextTarget(),pSpell->GetProto()->base_range_or_radius_sqr) ||
-					!isAttackable(m_Unit, GetNextTarget(),!(pSpell->GetProto()->c_is_flags & SPELL_FLAG_IS_TARGETINGSTEALTHED))
+			Unit * nextTarget = GetNextTarget();
+			if(nextTarget == NULL ||
+				(!m_Unit->GetMapMgr()->GetUnit(nextTarget->GetGUID()) || 
+				!nextTarget->isAlive() ||
+				!IsInrange(m_Unit,nextTarget,pSpell->GetProto()->base_range_or_radius_sqr) ||
+				!isAttackable(m_Unit, nextTarget,!(pSpell->GetProto()->c_is_flags & SPELL_FLAG_IS_TARGETINGSTEALTHED))
 					)
-				)
 				)
 			{
 				//we set no target and see if we managed to fid a new one
@@ -695,9 +694,10 @@ void AIInterface::Update(uint32 p_time)
 				if(targets.m_targetMask & TARGET_FLAG_UNIT)
 					SetNextTarget( targets.m_unitTarget );
 			}
-			if(GetNextTarget())
+			nextTarget = GetNextTarget();
+			if(nextTarget)
 			{
-				SpellCastTargets targets(GetNextTarget()->GetGUID());
+				SpellCastTargets targets(nextTarget->GetGUID());
 				pSpell->prepare(&targets);
 				// need proper cooldown time!
 				m_totemspelltimer = m_totemspelltime;
@@ -1041,6 +1041,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 	// If creature is very far from spawn point return to spawnpoint
 	// If at instance don't return -- this is wrong ... instance creatures always returns to spawnpoint, dunno how do you got this idea. 
 	// If at instance returns to spawnpoint after empty agrolist
+	Unit * nextTarget = GetNextTarget();
 	if(	m_AIType != AITYPE_PET 
 		&& m_AIState != STATE_EVADE
 		&& m_AIState != STATE_SCRIPTMOVE
@@ -1049,7 +1050,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 	{
 		HandleEvent( EVENT_LEAVECOMBAT, m_Unit, 0 );
 	}
-	else if( GetNextTarget() == NULL && m_AIState != STATE_FOLLOWING && m_AIState != STATE_SCRIPTMOVE )
+	else if( nextTarget == NULL && m_AIState != STATE_FOLLOWING && m_AIState != STATE_SCRIPTMOVE )
 	{
 //		SetNextTarget(FindTargetForSpell(m_nextSpell));
 		if( m_is_in_instance )
@@ -1061,7 +1062,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 		{
 			HandleEvent( EVENT_LEAVECOMBAT, m_Unit, 0 );
 		}
-	} else if( GetNextTarget() && !(GetNextTarget()->m_phase & m_Unit->m_phase) ) // the target or we changed phase, stop attacking
+	} else if( nextTarget != NULL && !(nextTarget->m_phase & m_Unit->m_phase) ) // the target or we changed phase, stop attacking
 	{
 		if( m_is_in_instance )
 			SetNextTarget( FindTarget() );
@@ -4273,42 +4274,44 @@ void AIInterface::EventChangeFaction( Unit *ForceAttackersToHateThisInstead )
 
 void AIInterface::WipeCurrentTarget()
 {
-	if( GetNextTarget() )
+	Unit * nextTarget = GetNextTarget();
+	if( nextTarget )
 	{
 		LockAITargets( true );
-		TargetMap::iterator itr = m_aiTargets.find( GetNextTarget()->GetGUID() );
+		TargetMap::iterator itr = m_aiTargets.find( nextTarget->GetGUID() );
 		if( itr != m_aiTargets.end() )
 			m_aiTargets.erase( itr );
 		LockAITargets( false );
 	}
 
-	SetNextTarget( (Unit*)NULL );
-
-	if( GetNextTarget() == UnitToFollow )
+	if( nextTarget == UnitToFollow )
 		UnitToFollow = NULL;
 
-	if( GetNextTarget() == UnitToFollow_backup )
+	if( nextTarget == UnitToFollow_backup )
 		UnitToFollow_backup = NULL;
+	
+	SetNextTarget( (Unit*)NULL );
 }
 
 #ifdef HACKY_CRASH_FIXES
 
 bool AIInterface::CheckCurrentTarget()
 {
+	Unit * nextTarget = GetNextTarget();
 	//in case target was removed from map since our last check on him
-	if( GetNextTarget() == NULL )
+	if( nextTarget == NULL )
 	{
 		WipeCurrentTarget();
 		return false;
 	}
 	
 	bool cansee = false;
-	if( GetNextTarget()->GetInstanceID() == m_Unit->GetInstanceID())
+	if( nextTarget->GetInstanceID() == m_Unit->GetInstanceID())
 	{
 		if( m_Unit->GetTypeId() == TYPEID_UNIT )
-			cansee = static_cast< Creature* >( m_Unit )->CanSee( GetNextTarget() );
+			cansee = static_cast< Creature* >( m_Unit )->CanSee( nextTarget );
 		else
-			cansee = static_cast< Player* >( m_Unit )->CanSee( GetNextTarget() );
+			cansee = static_cast< Player* >( m_Unit )->CanSee( nextTarget );
 	}
 	else 
 	{

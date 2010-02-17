@@ -1727,8 +1727,9 @@ void Guild::SendGuildBank(WorldSession * pClient, GuildBankTab * pTab, int8 upda
 			data << uint32(0);			// unknown value
 			data << uint8(0);			// unknown 2.4.2
 			uint32 Enchant0 = 0;
-			if (pTab->pSlots[j]->GetEnchantment(0))
-				Enchant0 = pTab->pSlots[j]->GetEnchantment(0)->Enchantment->Id;
+			EnchantmentInstance * ei = pTab->pSlots[j]->GetEnchantment(0);
+			if ( ei != NULL )
+				Enchant0 = ei->Enchantment->Id;
 			if (Enchant0)
 			{
 				data << uint8(1);			// number of enchants

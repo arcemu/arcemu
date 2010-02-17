@@ -537,11 +537,12 @@ void Group::RemovePlayer(PlayerInfo * info)
 		//Remove some party auras.
 		for (uint32 i=MAX_POSITIVE_AURAS_EXTEDED_START;i<MAX_POSITIVE_AURAS_EXTEDED_END;i++)
 		{
-			if (pPlayer->m_auras[i] && 
-				pPlayer->m_auras[i]->m_areaAura && 
-				pPlayer->m_auras[i]->GetUnitCaster() &&
-				(!pPlayer->m_auras[i]->GetUnitCaster() ||(pPlayer->m_auras[i]->GetUnitCaster()->IsPlayer() && pPlayer!=pPlayer->m_auras[i]->GetUnitCaster())))
-				pPlayer->m_auras[i]->Remove();
+			if (pPlayer->m_auras[i] && pPlayer->m_auras[i]->m_areaAura)
+			{
+				Unit * caster = pPlayer->m_auras[i]->GetUnitCaster();
+				if( caster != NULL && caster->IsPlayer() && pPlayer->GetLowGUID() != caster->GetLowGUID() )
+					pPlayer->m_auras[i]->Remove();
+			}
 		}
 	}
 

@@ -4396,7 +4396,7 @@ void Aura::SpellAuraModDecreaseSpeed(bool apply)
 
 void Aura::UpdateAuraModDecreaseSpeed()
 {
-	if( m_target->MechanicsDispels[MECHANIC_ENSNARED] )
+	if( m_target && m_target->MechanicsDispels[MECHANIC_ENSNARED] )
 	{
 		m_flags |= 1 << mod->i;
 		return;
@@ -7672,7 +7672,7 @@ void Aura::SpellAuraModHaste( bool apply )
 void Aura::SpellAuraForceReaction( bool apply )
 {
 	map<uint32,uint32>::iterator itr;
-	if( p_target != NULL )
+	if( p_target == NULL )
 		return;
 
 	if( apply )
@@ -8598,7 +8598,7 @@ void Aura::SpellAuraIncreaseArmorByPctInt(bool apply)
 	{
 		if(mod->m_miscValue & (((uint32)1)<< x))
 		{
-			if( p_target == NULL )
+			if( p_target != NULL )
 			{
 				p_target->FlatResistanceModifierPos[x] += amt;
 				p_target->CalcResistance(x);

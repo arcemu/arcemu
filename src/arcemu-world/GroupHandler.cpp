@@ -207,7 +207,7 @@ void WorldSession::HandleGroupUninviteOpcode( WorldPacket & recv_data )
 		return;
 	}
 
-	if ( !_player->InGroup() || info->m_Group != _player->GetGroup() )
+	if ( !_player->InGroup() || ( info != NULL && info->m_Group != _player->GetGroup() ) )
 	{
 		SendPartyCommandResult(_player, 0, membername, ERR_PARTY_IS_NOT_IN_YOUR_PARTY);
 		return;
@@ -261,7 +261,7 @@ void WorldSession::HandleGroupUninviteGuidOpcode( WorldPacket & recv_data )
 
 	membername = player ? player->GetName() : info->name;
 
-	if ( !_player->InGroup() || info->m_Group != _player->GetGroup() )
+	if ( !_player->InGroup() || ( info != NULL && info->m_Group != _player->GetGroup() ) )
 	{
 		SendPartyCommandResult(_player, 0, membername, ERR_PARTY_IS_NOT_IN_YOUR_PARTY);
 		return;

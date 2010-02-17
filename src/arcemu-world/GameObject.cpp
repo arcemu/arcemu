@@ -259,6 +259,11 @@ void GameObject::Despawn(uint32 delay, uint32 respawntime)
 
 void GameObject::SaveToDB()
 {
+	if(m_spawn == NULL)
+	{
+		sLog.outError("GameObject::SaveToDB() is trying to save a GameObject with spawn Id = 0");
+		return;
+	}
 	std::stringstream ss;
 
     ss << "DELETE FROM gameobject_spawns WHERE id = ";
@@ -270,7 +275,7 @@ void GameObject::SaveToDB()
     ss.rdbuf()->str("");
 
 	ss << "INSERT INTO gameobject_spawns VALUES("
-		<< ((m_spawn == NULL) ? 0 : m_spawn->id) << ","
+		<< m_spawn->id << ","
 		<< GetEntry() << ","
 		<< GetMapId() << ","
 		<< GetPositionX() << ","

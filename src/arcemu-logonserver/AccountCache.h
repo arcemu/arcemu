@@ -42,16 +42,13 @@ struct Account
 
 	~Account()
 	{
-		if(GMFlags)
-			delete [] GMFlags;
-		if(SessionKey)
-			delete [] SessionKey;
+		delete [] GMFlags;
+		delete [] SessionKey;
 	}
 
 	void SetGMFlags(const char * flags)
 	{
-		if(GMFlags)
-			delete [] GMFlags;
+		delete [] GMFlags;
 
 		size_t len = strlen(flags);
 		if(len == 0 || (len == 1 && flags[0] == '0'))

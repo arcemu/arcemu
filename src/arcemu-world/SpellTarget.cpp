@@ -1008,7 +1008,7 @@ void Spell::SpellTargetChainTargeting(uint32 i, uint32 j)
 			if( (*itr)->GetUInt32Value( UNIT_FIELD_HEALTH ) == (*itr)->GetUInt32Value( UNIT_FIELD_MAXHEALTH ) )
 				continue;
 
-			if (sWorld.Collision) {
+			if (sWorld.Collision && u_caster != NULL ) {
 				if (u_caster->GetMapId() == (*itr)->GetMapId() && !CollideInterface.CheckLOS(u_caster->GetMapId(),u_caster->GetPositionNC(),(*itr)->GetPositionNC()))
 					continue;
 			}

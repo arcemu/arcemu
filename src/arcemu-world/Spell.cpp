@@ -891,11 +891,12 @@ void Spell::GenerateTargets(SpellCastTargets *store_buff)
 						}
 						else if( u_caster != NULL )
 						{
-							if(	u_caster->GetAIInterface()->GetNextTarget() &&
-								isAttackable(u_caster,u_caster->GetAIInterface()->GetNextTarget(),!(GetProto()->c_is_flags & SPELL_FLAG_IS_TARGETINGSTEALTHED)) &&
-								u_caster->GetDistanceSq(u_caster->GetAIInterface()->GetNextTarget()) <= r)
+							Unit * nextTarget = u_caster->GetAIInterface()->GetNextTarget();
+							if(	nextTarget &&
+								isAttackable(u_caster,nextTarget,!(GetProto()->c_is_flags & SPELL_FLAG_IS_TARGETINGSTEALTHED)) &&
+								u_caster->GetDistanceSq(nextTarget) <= r)
 							{
-								store_buff->m_unitTarget = u_caster->GetAIInterface()->GetNextTarget()->GetGUID();
+								store_buff->m_unitTarget = nextTarget->GetGUID();
 							}
 							if(u_caster->GetAIInterface()->getAITargetsCount() && u_caster->GetMapMgr())
 							{
@@ -4895,7 +4896,7 @@ exit:
 						float wepspd = (it->GetProto()->Delay * 0.001f);
 						int32 dmg = float2int32( (avgwepdmg) + p_caster->GetAP() / 14 * wepspd);
 
-						if(target->GetHealthPct() > 75)
+						if(target && target->GetHealthPct() > 75)
 						{
 							sLog.outBasic("REND: base dmg %u", value);
 							dmg = float2int32(dmg + dmg * 0.35f);
