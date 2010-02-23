@@ -696,7 +696,7 @@ CREATE TABLE `playeritems` (
   `wrapped_creator` int(30) NOT NULL DEFAULT '0',
   `creator` int(10) unsigned NOT NULL DEFAULT '0',
   `count` int(10) unsigned NOT NULL DEFAULT '0',
-  `charges` int(10) unsigned NOT NULL DEFAULT '0',
+  `charges` int(10) NOT NULL DEFAULT '0',
   `flags` int(10) unsigned NOT NULL DEFAULT '0',
   `randomprop` int(10) unsigned NOT NULL DEFAULT '0',
   `randomsuffix` int(10) NOT NULL,
