@@ -3661,12 +3661,16 @@ uint8 Spell::CanCast(bool tolerate)
 		if( GetProto()->RequiresAreaId > 0 )
 		{
 			AreaGroup *ag = dbcAreaGroup.LookupEntry(GetProto()->RequiresAreaId);
-			uint16 plrarea = p_caster->GetMapMgr()->GetAreaID( p_caster->GetPositionX(), p_caster->GetPositionY() );
-			for( i = 0; i < 7; i++ )
-				if( ag->AreaId[i] == plrarea )
-					break;
-			if( i == 7 )
-				return SPELL_FAILED_REQUIRES_AREA;
+			uint32 plrarea = p_caster->GetMapMgr()->GetAreaID( p_caster->GetPositionX(), p_caster->GetPositionY() );
+			if(plrarea != 0xFFFF)//disabling Area checks for maps with no Map_XY.bin file.
+			{	
+				AreaTable * at = dbcArea.LookupEntry(plrarea);
+				for( i = 0; i < 7; i++ )
+					if( ag->AreaId[i] == plrarea || ( at->ZoneId != 0 && ag->AreaId[i] == at->ZoneId ) )//we check both Area and Zone but only if Zone is a valid one, so != 0.
+						break;
+				if( i == 7 )
+					return SPELL_FAILED_REQUIRES_AREA;
+			}
 		}
 
 		/**

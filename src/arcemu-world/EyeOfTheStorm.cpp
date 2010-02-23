@@ -153,6 +153,8 @@ EyeOfTheStorm::EyeOfTheStorm(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t) :
 	m_flagHolder = 0;
 	m_points[0] = m_points[1] = 0;
 	m_lastHonorGainPoints[0] = m_lastHonorGainPoints[1] = 0;
+	m_standFlag = NULL;
+	m_dropFlag = NULL;
 }
 
 EyeOfTheStorm::~EyeOfTheStorm()
