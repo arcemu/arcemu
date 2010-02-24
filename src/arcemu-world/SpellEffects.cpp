@@ -4170,11 +4170,11 @@ void Spell::SpellEffectSummonWild(uint32 i)  // Summon Wild
 	for(int j= 0;j<damage;j++)
 	{
 		float m_fallowAngle=-((float(M_PI)/2)*j);
-		x += (GetRadius(i)*(cosf(m_fallowAngle+u_caster->GetOrientation())));
-		y += (GetRadius(i)*(sinf(m_fallowAngle+u_caster->GetOrientation())));
+		float tempx = x + (GetRadius(i)*(cosf(m_fallowAngle+u_caster->GetOrientation())));
+		float tempy = y + (GetRadius(i)*(sinf(m_fallowAngle+u_caster->GetOrientation())));
 		Creature * p = u_caster->GetMapMgr()->CreateCreature(cr_entry);
 		//Arcemu::Util::ARCEMU_ASSERT(   p);
-		p->Load(proto, x, y, z);
+		p->Load(proto, tempx, tempy, z);
 		p->SetZoneId( m_caster->GetZoneId() );
 
 		if ( p->GetProto() && p->GetProto()->Faction == 35 )
