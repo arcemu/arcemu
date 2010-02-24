@@ -510,7 +510,7 @@ void QuestLogEntry::UpdatePlayerFields()
 
 	m_plr->SetUInt32Value(base + 1, field0);
 	m_plr->SetUInt64Value(base + 2, field1);
-	m_plr->SetUInt32Value(base + 3, ( m_time_left ? (uint32)(UNIXTIME+m_time_left/1000) : 0 ) );
+	m_plr->SetUInt32Value(base + 4, ( m_time_left ? (uint32)(UNIXTIME+m_time_left/1000) : 0 ) );
 }
 
 void QuestLogEntry::SendQuestComplete()
