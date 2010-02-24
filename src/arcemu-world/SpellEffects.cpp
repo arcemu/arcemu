@@ -4167,9 +4167,9 @@ void Spell::SpellEffectSummonWild(uint32 i)  // Summon Wild
 		y = u_caster->GetPositionY();
 		z = u_caster->GetPositionZ();
 	}
-	for(int i= 0;i<damage;i++)
+	for(int j= 0;j<damage;j++)
 	{
-		float m_fallowAngle=-((float(M_PI)/2)*i);
+		float m_fallowAngle=-((float(M_PI)/2)*j);
 		x += (GetRadius(i)*(cosf(m_fallowAngle+u_caster->GetOrientation())));
 		y += (GetRadius(i)*(sinf(m_fallowAngle+u_caster->GetOrientation())));
 		Creature * p = u_caster->GetMapMgr()->CreateCreature(cr_entry);
