@@ -36,15 +36,15 @@ DynamicObject::DynamicObject(uint32 high, uint32 low)
 
 	m_parentSpell= NULL;
 	m_aliveDuration = 0;
-	u_caster = 0;
-	m_spellProto = 0;
-	p_caster = 0;
+	u_caster = NULL;
+	m_spellProto = NULL;
+	p_caster = NULL;
 }
 
 DynamicObject::~DynamicObject()
 {
-	if(u_caster->dynObj == this)
-		u_caster->dynObj = 0;
+	if(u_caster != NULL && u_caster->dynObj == this)
+		u_caster->dynObj = NULL;
 }
 
 void DynamicObject::Create(Unit * caster, Spell * pSpell, float x, float y, float z, uint32 duration, float radius)
