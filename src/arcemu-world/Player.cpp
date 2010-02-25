@@ -1119,6 +1119,8 @@ void Player::EventDismount(uint32 money, float x, float y, float z)
 {
 	ModGold( -(int32)money );
 
+	if ( money>0 && m_fallDisabledUntil<time(NULL)+5 ) m_fallDisabledUntil = time(NULL)+5; //VLack: If the ride wasn't free, the player shouldn't die after arrival because of fall damage... So we'll disable it for 5 seconds.
+
 	SetPosition(x, y, z, true);
 	if(!m_taxiPaths.size())
 		SetTaxiState(false);
