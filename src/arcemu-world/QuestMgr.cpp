@@ -358,8 +358,15 @@ void QuestMgr::BuildOfferReward(WorldPacket *data, Quest* qst, Object* qst_giver
 		}
 	}
 	
-	*data << uint32(0);
 	*data << GenerateRewardMoney( plr, qst );
+
+	uint32 xp=0;
+	if( plr->getLevel() < plr->GetMaxLevel() )
+	{
+		xp = float2int32(GenerateQuestXP(plr,qst) * sWorld.getRate(RATE_QUESTXP));
+	}
+	*data << uint32(xp); //VLack: The quest will give you this amount of XP
+
 	*data << (qst->bonushonor * 10);
 	*data << float(0);
 	*data << uint32(0);
