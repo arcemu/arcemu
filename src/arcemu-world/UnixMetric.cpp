@@ -25,6 +25,7 @@
  * Returns the RAM utilization in MB percent.
  */
 float UnixMetric::GetRAMUsageUnix(){
+#ifdef linux
     std::ifstream memf;
     std::string line;
     std::string value;
@@ -54,10 +55,15 @@ float UnixMetric::GetRAMUsageUnix(){
 
     memusage /= 1024.0f;
     return memusage;
+
+#else
+	return 0.0f;
+#endif
 }
 
 
 void UnixMetric::m_GetCPUCount(){
+#ifdef linux
   char line[500];
   ifstream is;
   unsigned long nocpu = 0;
@@ -70,6 +76,9 @@ void UnixMetric::m_GetCPUCount(){
   }while( !is.eof() );
   
   nocpus = nocpu;    
+#else
+	nocpus = 1;
+#endif
 }
 
 /*
