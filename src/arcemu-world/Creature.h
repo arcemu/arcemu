@@ -520,6 +520,11 @@ public:
 
 	bool Tagged;
 	uint64 TaggerGuid;
+	void Tag( uint64 TaggerGUID );
+	void UnTag();
+	bool IsTagged();
+	bool IsTaggable();
+	uint64 GetTaggerGUID();
 
 	/// Misc
 	ARCEMU_INLINE void setEmoteState(uint8 emote) { m_emoteState = emote; };

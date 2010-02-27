@@ -583,14 +583,14 @@ void Object::_BuildValuesUpdate(ByteBuffer * data, UpdateMask *updateMask, Playe
 	if(updateMask->GetBit(OBJECT_FIELD_GUID) && target)	   // We're creating.
 	{
 		Creature * pThis = static_cast<Creature*>(this);
-		if(GetTypeId() == TYPEID_UNIT && pThis->Tagged && (pThis->loot.gold || pThis->loot.items.size()))
+		if(GetTypeId() == TYPEID_UNIT && pThis->IsTagged() && (pThis->loot.gold || pThis->loot.items.size()))
 		{
 			// Let's see if we're the tagger or not.
 			oldflags = m_uint32Values[UNIT_DYNAMIC_FLAGS];
 			uint32 Flags = m_uint32Values[UNIT_DYNAMIC_FLAGS];
 			uint32 oldFlags = 0;
 
-			if(pThis->TaggerGuid == target->GetGUID())
+			if(pThis->GetTaggerGUID() == target->GetGUID())
 			{
 				// Our target is our tagger.
 				oldFlags = U_DYN_FLAG_TAGGED_BY_OTHER;
@@ -1799,19 +1799,16 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 		else if(IsPlayer())
 			plr = static_cast< Player* >( this );
 
-		if(pVictim->GetTypeId()==TYPEID_UNIT && plr && plr->GetTypeId() == TYPEID_PLAYER) // Units can't tag..
+		if( plr != NULL && pVictim->IsCreature() ) // Units can't tag..
 		{
 			// Tagging
 			Creature *victim = static_cast<Creature*>(pVictim);
-			bool taggable;
-			if( ( victim->GetCreatureInfo() && victim->GetCreatureInfo()->Type == UNIT_TYPE_CRITTER ) || victim->IsPet())
-				taggable = false;
-			else taggable = true;
+			bool taggable = victim->IsTaggable();
 
-			if(!victim->Tagged && taggable)
+			if( taggable )
 			{
-				victim->Tagged = true;
-				victim->TaggerGuid = plr->GetGUID();
+
+				victim->Tag( plr->GetGUID() );
 
 				/* set loot method */
 				if( plr->GetGroup() != NULL )
@@ -1820,8 +1817,6 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 				// For new players who get a create object
 				uint32 Flags = pVictim->m_uint32Values[UNIT_DYNAMIC_FLAGS];
 				Flags |= U_DYN_FLAG_TAPPED_BY_PLAYER;
-
-				pVictim->m_uint32Values[UNIT_DYNAMIC_FLAGS] |= U_DYN_FLAG_TAGGED_BY_OTHER;
 
 				// Update existing players.
 				ByteBuffer buf(500);
@@ -2292,8 +2287,8 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 				Creature * victim = static_cast<Creature*>(pVictim);
 
                 Player *owner = 0;
-				if(victim->TaggerGuid)
-					owner = GetMapMgr()->GetPlayer( (uint32)victim->TaggerGuid );
+				if( victim->GetTaggerGUID() )
+					owner = GetMapMgr()->GetPlayer( (uint32)victim->GetTaggerGUID() );
 
                 if(owner == 0 || victim->IsTotem() )  // no owner, or a totem
 				{
@@ -2402,7 +2397,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 				pVictim->GetUInt64Value( OBJECT_FIELD_CREATED_BY ) == 0 &&
 				!pVictim->IsPet() && TO_CREATURE(pVictim)->Tagged)
 			{
-				Unit *uTagger = pVictim->GetMapMgr()->GetUnit(static_cast<Creature*>(pVictim)->TaggerGuid);
+				Unit *uTagger = pVictim->GetMapMgr()->GetUnit(static_cast<Creature*>(pVictim)->GetTaggerGUID() );
 				if (uTagger != NULL)
 				{
 					if (uTagger->IsPlayer())

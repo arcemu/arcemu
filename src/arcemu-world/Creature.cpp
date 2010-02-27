@@ -2134,3 +2134,31 @@ void Creature::PrepareForRemove()
 		}
 	}
 }
+
+void Creature::Tag( uint64 TaggerGUID ){
+	Tagged = true;
+	this->TaggerGuid = TaggerGUID;
+	m_uint32Values[ UNIT_DYNAMIC_FLAGS ] |= U_DYN_FLAG_TAGGED_BY_OTHER;
+
+}
+
+void Creature::UnTag(){
+	Tagged = false;
+	TaggerGuid = 0;
+	m_uint32Values[ UNIT_DYNAMIC_FLAGS ] &= ~U_DYN_FLAG_TAGGED_BY_OTHER;
+}
+
+bool Creature::IsTagged(){
+	return Tagged;
+}
+
+bool Creature::IsTaggable(){
+	if( creature_info != NULL && creature_info->Type != UNIT_TYPE_CRITTER && !IsPet() && !Tagged )
+		return true;
+	else
+		return false;
+}
+
+uint64 Creature::GetTaggerGUID(){
+	return TaggerGuid;
+}

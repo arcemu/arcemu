@@ -2654,8 +2654,7 @@ void Spell::SpellEffectResurrect(uint32 i) // Resurrect (Flat)
 					unitTarget->SetPower( POWER_TYPE_MANA, mana);
 					unitTarget->SetUInt32Value(UNIT_DYNAMIC_FLAGS, 0);
 					unitTarget->setDeathState(ALIVE);
-					static_cast<Creature*>(unitTarget)->Tagged=false;
-					static_cast<Creature*>(unitTarget)->TaggerGuid=false;
+					static_cast<Creature*>(unitTarget)->UnTag();
 					static_cast<Creature*>(unitTarget)->loot.gold= 0;
 					static_cast<Creature*>(unitTarget)->loot.looters.clear();
 					static_cast<Creature*>(unitTarget)->loot.items.clear();
@@ -6783,8 +6782,7 @@ void Spell::SpellEffectResurrectNew(uint32 i)
 					unitTarget->SetPower( POWER_TYPE_MANA, mana);
 					unitTarget->SetUInt32Value(UNIT_DYNAMIC_FLAGS, 0);
 					unitTarget->setDeathState(ALIVE);
-					static_cast<Creature*>(unitTarget)->Tagged=false;
-					static_cast<Creature*>(unitTarget)->TaggerGuid=false;
+					static_cast<Creature*>(unitTarget)->UnTag();
 					static_cast<Creature*>(unitTarget)->loot.gold= 0;
 					static_cast<Creature*>(unitTarget)->loot.looters.clear();
 					static_cast<Creature*>(unitTarget)->loot.items.clear();
