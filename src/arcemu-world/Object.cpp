@@ -3497,3 +3497,59 @@ void Object::OnRemoveInRangeObject( Object *pObj ){
     -dfighter
     */
 }
+
+Object * Object::GetMapMgrObject(const uint64 & guid)
+{
+	if(!IsInWorld())
+		return NULL;
+
+	return GetMapMgr()->_GetObject(guid);
+}
+
+Pet * Object::GetMapMgrPet(const uint64 & guid)
+{
+	if(!IsInWorld())
+		return NULL;
+
+	return GetMapMgr()->GetPet(GET_LOWGUID_PART(guid));
+}
+
+Unit * Object::GetMapMgrUnit(const uint64 & guid)
+{
+	if(!IsInWorld())
+		return NULL;
+
+	return GetMapMgr()->GetUnit(guid);
+}
+
+Player * Object::GetMapMgrPlayer(const uint64 & guid)
+{
+	if(!IsInWorld())
+		return NULL;
+
+	return GetMapMgr()->GetPlayer(GET_LOWGUID_PART(guid));
+}
+
+Creature * Object::GetMapMgrCreature(const uint64 & guid)
+{
+	if(!IsInWorld())
+		return NULL;
+
+	return GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
+}
+
+GameObject * Object::GetMapMgrGameObject(const uint64 & guid)
+{
+	if(!IsInWorld())
+		return NULL;
+
+	return GetMapMgr()->GetGameObject(GET_LOWGUID_PART(guid));
+}
+
+DynamicObject * Object::GetMapMgrDynamicObject(const uint64 & guid)
+{
+	if(!IsInWorld())
+		return NULL;
+
+	return GetMapMgr()->GetDynamicObject(GET_LOWGUID_PART(guid));
+}

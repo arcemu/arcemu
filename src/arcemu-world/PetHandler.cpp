@@ -132,7 +132,7 @@ void WorldSession::HandlePetAction(WorldPacket & recv_data)
 						pPet->GetAIInterface()->WipeHateList();
 
 						// Stop following the owner, and sit.
-						pPet->GetAIInterface()->SetUnitToFollow(NULL);
+						pPet->GetAIInterface()->ResetUnitToFollow();
 					}break;
 				case PET_ACTION_DISMISS:
 					{

@@ -42,7 +42,7 @@ m_returnZ(0),
 m_nextPosX(0),
 m_nextPosY(0),
 m_nextPosZ(0),
-UnitToFollow(NULL),
+m_UnitToFollow(0),
 FollowDistance(0.0f),
 m_fallowAngle(float(M_PI/2)),
 m_timeToMove(0),
@@ -82,7 +82,7 @@ m_PetOwner(NULL),
 m_aiCurrentAgent(AGENT_NULL),
 m_runSpeed(0.0f),
 m_flySpeed(0.0f),
-UnitToFear(NULL),
+m_UnitToFear(0),
 m_outOfCombatRange(2500), // Where did u get this value?
 
 tauntedBy(NULL),
@@ -115,7 +115,7 @@ disable_targeting(false),
 
 next_spell_time(0),
 waiting_for_cooldown(false),
-UnitToFollow_backup(NULL),
+m_UnitToFollow_backup(0),
 m_isGuard(false),
 m_isNeutralGuard(false),
 m_is_in_instance(false),
@@ -361,7 +361,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				if(m_AIType == AITYPE_PET)
 				{
 					m_AIState = STATE_FOLLOWING;
-					UnitToFollow = m_PetOwner;
+					SetUnitToFollow(m_PetOwner);
 					FollowDistance = 3.0f;
 					m_lastFollowX = m_lastFollowY = 0;
 					if( m_Unit->IsPet() )
@@ -378,8 +378,8 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				{
 					m_AIState = STATE_EVADE;
 
-					Unit* SavedFollow = UnitToFollow;
-					UnitToFollow = NULL;
+					Unit* SavedFollow = getUnitToFollow();
+					m_UnitToFollow = 0;
 					FollowDistance = 0.0f;
 					m_lastFollowX = m_lastFollowY = 0;
 
@@ -447,7 +447,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				m_AIState = STATE_FOLLOWING;
 				if(m_Unit->IsPet())
 					((Pet*)m_Unit)->SetPetAction(PET_ACTION_FOLLOW);
-				UnitToFollow = m_PetOwner;
+				SetUnitToFollow(m_PetOwner);
 				m_lastFollowX = m_lastFollowY = 0;
 				FollowDistance = 4.0f;
 
@@ -473,8 +473,8 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				m_AIState = STATE_FEAR;
 				StopMovement(1);
 
-				UnitToFollow_backup = UnitToFollow;
-				UnitToFollow = NULL;
+				m_UnitToFollow_backup = m_UnitToFollow;
+				m_UnitToFollow = 0;
 				m_lastFollowX = m_lastFollowY = 0;
 				FollowDistance_backup = FollowDistance;
 				FollowDistance = 0.0f;
@@ -496,11 +496,11 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 
 		case EVENT_UNFEAR:
 			{
-				UnitToFollow = UnitToFollow_backup;
+				m_UnitToFollow = m_UnitToFollow_backup;
 				FollowDistance = FollowDistance_backup;
 				m_AIState = STATE_IDLE; // we need this to prevent permanent fear, wander, and other problems
 
-				SetUnitToFear(NULL);
+				m_UnitToFear = 0;
 				StopMovement(1);
 			}break;
 
@@ -514,8 +514,8 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				m_AIState = STATE_WANDER;
 				StopMovement(1);
 
-				UnitToFollow_backup = UnitToFollow;
-				UnitToFollow = NULL;
+				m_UnitToFollow_backup = m_UnitToFollow;
+				m_UnitToFollow = 0;
 				m_lastFollowX = m_lastFollowY = 0;
 				FollowDistance_backup = FollowDistance;
 				FollowDistance = 0.0f;
@@ -537,7 +537,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 
 		case EVENT_UNWANDER:
 			{
-				UnitToFollow = UnitToFollow_backup;
+				m_UnitToFollow = m_UnitToFollow_backup;
 				FollowDistance = FollowDistance_backup;
 				m_AIState = STATE_IDLE; // we need this to prevent permanent fear, wander, and other problems
 
@@ -570,9 +570,9 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 			LockAITargets(true);
 			m_aiTargets.clear();
 			LockAITargets(false);
-			UnitToFollow = NULL;
+			m_UnitToFollow = 0;
 			m_lastFollowX = m_lastFollowY = 0;
-			UnitToFear = NULL;
+			m_UnitToFear = 0;
 			FollowDistance = 0.0f;
 			m_fleeTimer = 0;
 			m_hasFleed = false;
@@ -1229,9 +1229,9 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 					) // Target is in Range -> Attack
 				{
 //					gracefull_hit_on_target = NULL;
-					if(UnitToFollow != NULL)
+					if(m_UnitToFollow != 0)
 					{
-						UnitToFollow = NULL; //we shouldn't be following any one
+						m_UnitToFollow = 0;//we shouldn't be following any one
 						m_lastFollowX = m_lastFollowY = 0;
 						//m_Unit->setAttackTarget(NULL);  // remove ourselves from any target that might have been followed
 					}
@@ -1320,9 +1320,9 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 
 				if(distance >= combatReach[0] && distance <= combatReach[1]) // Target is in Range -> Attack
 				{
-					if(UnitToFollow != NULL)
+					if(m_UnitToFollow != 0)
 					{
-						UnitToFollow = NULL; //we shouldn't be following any one
+						m_UnitToFollow = 0;//we shouldn't be following any one
 						m_lastFollowX = m_lastFollowY = 0;
 						//m_Unit->setAttackTarget(NULL);  // remove ourselves from any target that might have been followed
 					}
@@ -3048,7 +3048,7 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 			}
 		}
 	}
-	else if(m_creatureState == STOPPED && (m_AIState == STATE_IDLE || m_AIState == STATE_SCRIPTMOVE) && !m_moveTimer && !m_timeToMove && UnitToFollow == NULL) //creature is stopped and out of Combat
+	else if(m_creatureState == STOPPED && (m_AIState == STATE_IDLE || m_AIState == STATE_SCRIPTMOVE) && !m_moveTimer && !m_timeToMove && getUnitToFollow() == NULL) //creature is stopped and out of Combat
 	{
 		if(sWorld.getAllowMovement() == false) //is creature movement enabled?
 			return;
@@ -3074,12 +3074,12 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 			else
 			{
 				// we've got a formation target, set unittofollow to this
-				UnitToFollow = m_formationLinkTarget;
+				SetUnitToFollow(m_formationLinkTarget);
 				FollowDistance = m_formationFollowDistance;
 				m_fallowAngle = m_formationFollowAngle;
 			}
 		}
-		if(UnitToFollow == 0)
+		if(getUnitToFollow() == NULL)
 		{
 			// no formation, use waypoints
 			int destpoint = -1;
@@ -3193,7 +3193,8 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 	}
 
 	//Fear Code
-	if(m_AIState == STATE_FEAR && UnitToFear != NULL && m_creatureState == STOPPED)
+	Unit* unitToFear = getUnitToFear();
+	if(m_AIState == STATE_FEAR && unitToFear != NULL && m_creatureState == STOPPED)
 	{
 		if(getMSTime() > m_FearTimer)   // Wait at point for x ms ;)
 		{
@@ -3209,11 +3210,11 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 				}
 			}
 			// Calculate new angle to target.
-			float Fo = m_Unit->calcRadAngle(UnitToFear->GetPositionX(), UnitToFear->GetPositionY(), m_Unit->GetPositionX(), m_Unit->GetPositionY());
+			float Fo = m_Unit->calcRadAngle(unitToFear->GetPositionX(), unitToFear->GetPositionY(), m_Unit->GetPositionX(), m_Unit->GetPositionY());
 			double fAngleAdd = RandomDouble(((M_PI/2) * 2)) - (M_PI/2);
 			Fo += (float)fAngleAdd;
 			
-			float dist = m_Unit->CalcDistance(UnitToFear);
+			float dist = m_Unit->CalcDistance(unitToFear);
 			if(dist > 30.0f || (Rand(25) && dist > 10.0f))	// not too far or too close
 			{
 					if( m_Unit->GetMapId() == 572 || m_Unit->GetMapId() == 562 || m_Unit->GetMapId() == 559 ) //GET MAP ID
@@ -3341,78 +3342,65 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 	}
 
 	//Unit Follow Code
-	if(UnitToFollow != NULL)
+	Unit* unitToFollow = getUnitToFollow();
+	if(unitToFollow != NULL)
 	{
-#if !defined(WIN32) && !defined(HACKY_CRASH_FIXES)
-		if( UnitToFollow->event_GetCurrentInstanceId() != m_Unit->event_GetCurrentInstanceId() || !UnitToFollow->IsInWorld() )
-			UnitToFollow = NULL;
+		if( unitToFollow->event_GetCurrentInstanceId() != m_Unit->event_GetCurrentInstanceId() )
+		{
+			m_UnitToFollow = 0;
+		}
 		else
 		{
-#else
-		__try
-		{
-			if( UnitToFollow->event_GetCurrentInstanceId() != m_Unit->event_GetCurrentInstanceId() || !UnitToFollow->IsInWorld() )
-				UnitToFollow = NULL;
-			else
+			if(m_AIState == STATE_IDLE || m_AIState == STATE_FOLLOWING)
 			{
-#endif
-				if(m_AIState == STATE_IDLE || m_AIState == STATE_FOLLOWING)
+				float dist = m_Unit->GetDistanceSq(unitToFollow);
+
+				// re-calculate orientation based on target's movement
+				if(m_lastFollowX != unitToFollow->GetPositionX() ||
+					m_lastFollowY != unitToFollow->GetPositionY())
 				{
-					float dist = m_Unit->GetDistanceSq(UnitToFollow);
-
-					// re-calculate orientation based on target's movement
-					if(m_lastFollowX != UnitToFollow->GetPositionX() ||
-						m_lastFollowY != UnitToFollow->GetPositionY())
+					float dx = unitToFollow->GetPositionX() - m_Unit->GetPositionX();
+					float dy = unitToFollow->GetPositionY() - m_Unit->GetPositionY();
+					if(dy != 0.0f)
 					{
-						float dx = UnitToFollow->GetPositionX() - m_Unit->GetPositionX();
-						float dy = UnitToFollow->GetPositionY() - m_Unit->GetPositionY();
-						if(dy != 0.0f)
-						{
-							float angle = atan2(dx,dy);
-							m_Unit->SetOrientation(angle);
-						}
-						m_lastFollowX = UnitToFollow->GetPositionX();
-						m_lastFollowY = UnitToFollow->GetPositionY();
+						float angle = atan2(dx,dy);
+						m_Unit->SetOrientation(angle);
 					}
+					m_lastFollowX = unitToFollow->GetPositionX();
+					m_lastFollowY = unitToFollow->GetPositionY();
+				}
 
-					if (dist > (FollowDistance*FollowDistance)) //if out of range
+				if (dist > (FollowDistance*FollowDistance)) //if out of range
+				{
+					m_AIState = STATE_FOLLOWING;
+					
+					if(dist > 25.0f) //25 yard away lets run else we will loose the them
+						m_moveRun = true;
+					else 
+						m_moveRun = false;
+
+					if(m_AIType == AITYPE_PET || (m_formationLinkTarget != NULL && unitToFollow->GetGUID() == m_formationLinkTarget->GetGUID())) //Unit is Pet/formation
 					{
-						m_AIState = STATE_FOLLOWING;
-						
-						if(dist > 25.0f) //25 yard away lets run else we will loose the them
-							m_moveRun = true;
-						else 
-							m_moveRun = false;
+						if(dist > 900.0f/*30*/)
+							m_moveSprint = true;
 
-						if(m_AIType == AITYPE_PET || UnitToFollow == m_formationLinkTarget) //Unit is Pet/formation
-						{
-							if(dist > 900.0f/*30*/)
-								m_moveSprint = true;
+						float delta_x = unitToFollow->GetPositionX();
+						float delta_y = unitToFollow->GetPositionY();
+						float d = 3;
+						if(m_formationLinkTarget)
+							d = m_formationFollowDistance;
 
-							float delta_x = UnitToFollow->GetPositionX();
-							float delta_y = UnitToFollow->GetPositionY();
-							float d = 3;
-							if(m_formationLinkTarget)
-								d = m_formationFollowDistance;
-
-							MoveTo(delta_x+(d*(cosf(m_fallowAngle+UnitToFollow->GetOrientation()))),
-								delta_y+(d*(sinf(m_fallowAngle+UnitToFollow->GetOrientation()))),
-								UnitToFollow->GetPositionZ(),UnitToFollow->GetOrientation());				
-						}
-						else
-						{
-							_CalcDestinationAndMove(UnitToFollow, FollowDistance);
-						}
+						MoveTo(delta_x+(d*(cosf(m_fallowAngle+unitToFollow->GetOrientation()))),
+							delta_y+(d*(sinf(m_fallowAngle+unitToFollow->GetOrientation()))),
+							unitToFollow->GetPositionZ(),unitToFollow->GetOrientation());				
+					}
+					else
+					{
+						_CalcDestinationAndMove(unitToFollow, FollowDistance);
 					}
 				}
 			}
-#if defined(WIN32) && defined(HACKY_CRASH_FIXES)
 		}
-		__except(EXCEPTION_EXECUTE_HANDLER)
-		{
-			UnitToFollow = NULL;
-		}
-#endif
 	}
 }
 
@@ -4036,16 +4024,16 @@ void AIInterface::CheckTarget(Unit* target)
 	if( target == NULL )
 		return;
 
-	if( target == UnitToFollow )		  // fix for crash here
+	if( target == getUnitToFollow() )		  // fix for crash here
 	{
-		UnitToFollow = NULL;
+		m_UnitToFollow = 0;
 		m_lastFollowX = m_lastFollowY = 0;
 		FollowDistance = 0;
 	}
 
-	if( target == UnitToFollow_backup )
+	if( target == getUnitToFollowBackup() )
 	{
-		UnitToFollow_backup = NULL;
+		m_UnitToFollow_backup = 0;
 	}
 
 	AssistTargetSet::iterator  itr = m_assistTargets.find(target);
@@ -4095,12 +4083,12 @@ void AIInterface::CheckTarget(Unit* target)
 			target->GetAIInterface()->GetMostHated();
 		}
 
-		if( target->GetAIInterface()->UnitToFollow == m_Unit )
-			target->GetAIInterface()->UnitToFollow = NULL;
+		if( target->GetAIInterface()->getUnitToFollow() == m_Unit )
+			target->GetAIInterface()->m_UnitToFollow = 0;
 	}
 
-	if(target == UnitToFear)
-		UnitToFear = NULL;
+	if(target == getUnitToFear())
+		m_UnitToFear = 0;
 
 	if(tauntedBy == target)
 		tauntedBy = NULL;
@@ -4154,8 +4142,8 @@ void AIInterface::WipeReferences()
 	m_aiTargets.clear();
 	LockAITargets(false);
 	SetNextTarget( (Unit*)NULL );
-	UnitToFear = 0;
-	UnitToFollow = 0;
+	m_UnitToFear = 0;
+	m_UnitToFollow = 0;
 	tauntedBy = 0;
 
 	//Clear targettable
@@ -4283,11 +4271,11 @@ void AIInterface::WipeCurrentTarget()
 		LockAITargets( false );
 	}
 
-	if( nextTarget == UnitToFollow )
-		UnitToFollow = NULL;
+	if( nextTarget == getUnitToFollow() )
+		m_UnitToFollow = 0;
 
-	if( nextTarget == UnitToFollow_backup )
-		UnitToFollow_backup = NULL;
+	if( nextTarget == getUnitToFollowBackup() )
+		m_UnitToFollow_backup = 0;
 	
 	SetNextTarget( (Unit*)NULL );
 }
@@ -4362,4 +4350,19 @@ void AIInterface::SetNextTarget (uint64 nextTarget)
 		have_graceful_hit=false;
 #endif
 	}
+}
+
+Unit * AIInterface::getUnitToFollow()
+{
+	return m_Unit->GetMapMgrUnit(m_UnitToFollow);
+}
+
+Unit * AIInterface::getUnitToFollowBackup()
+{
+	return m_Unit->GetMapMgrUnit(m_UnitToFollow_backup);
+}
+
+Unit * AIInterface::getUnitToFear()
+{
+	return m_Unit->GetMapMgrUnit(m_UnitToFear);
 }

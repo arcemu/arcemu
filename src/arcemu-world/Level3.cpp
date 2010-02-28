@@ -2225,7 +2225,7 @@ bool ChatHandler::HandleFormationClearCommand(const char* args, WorldSession * m
 	c->GetAIInterface()->m_formationLinkTarget = 0;
 	c->GetAIInterface()->m_formationFollowAngle = 0.0f;
 	c->GetAIInterface()->m_formationFollowDistance = 0.0f;
-	c->GetAIInterface()->SetUnitToFollow(0);
+	c->GetAIInterface()->ResetUnitToFollow();
 
 	WorldDatabase.Execute("DELETE FROM creature_formations WHERE spawn_id=%u", c->GetSQL_id());
 	return true;
@@ -2238,7 +2238,7 @@ bool ChatHandler::HandleNullFollowCommand(const char* args, WorldSession * m_ses
 
 	// restart movement
 	c->GetAIInterface()->SetAIState(STATE_IDLE);
-	c->GetAIInterface()->SetUnitToFollow(0);
+	c->GetAIInterface()->ResetUnitToFollow();
 
 	sGMLog.writefromsession( m_session, "cancelled npc follow command on %s, sqlid %u", c->GetCreatureInfo()->Name, c->GetSQL_id() );
 	return true;

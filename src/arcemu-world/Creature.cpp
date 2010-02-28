@@ -677,7 +677,7 @@ void Creature::setDeathState(DeathState s)
 	if ( s == JUST_DIED )
 	{
 
-		GetAIInterface()->SetUnitToFollow( NULL );
+		GetAIInterface()->ResetUnitToFollow();
 		m_deathState = CORPSE;
 		m_corpseEvent = true;
 
