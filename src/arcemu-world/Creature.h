@@ -562,10 +562,8 @@ public:
 	void SetEnslaveSpell(uint32 spellId) { m_enslaveSpell = spellId; }
 	bool RemoveEnslave();
 
-	ARCEMU_INLINE Player *GetTotemOwner() { return totemOwner; }
     // Owner unit (the one that summoned it)
     ARCEMU_INLINE Unit *GetOwner(){ return m_owner; }
-	ARCEMU_INLINE void SetTotemOwner(Player *owner) { totemOwner = owner; }
 	ARCEMU_INLINE uint32 GetTotemSlot() { return totemSlot; }
 	ARCEMU_INLINE void SetTotemSlot(uint32 slot) { totemSlot = slot; }
     ARCEMU_INLINE void SetOwner( Unit *pUnitOwner ){ m_owner = pUnitOwner; }
@@ -590,7 +588,7 @@ public:
 	void RegenerateFocus();
 
 	CreatureFamilyEntry * myFamily;
-	ARCEMU_INLINE bool IsTotem() { return totemOwner != NULL && totemSlot != -1; }
+	ARCEMU_INLINE bool IsTotem() { return m_owner != NULL && totemSlot != -1; }
 
 	ARCEMU_INLINE bool IsExotic()
 	{
@@ -670,7 +668,6 @@ protected:
 	uint32 m_enslaveCount;
 	uint32 m_enslaveSpell;
 
-	Player * totemOwner;
     Unit * m_owner;
 	int32 totemSlot;
 

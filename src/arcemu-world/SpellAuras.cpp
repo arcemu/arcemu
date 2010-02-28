@@ -1054,7 +1054,7 @@ void Aura::EventUpdateAA(float r)
 		if(u_caster->IsPet())
 			plr = static_cast<Pet*>(u_caster)->GetPetOwner();
 		else
-			plr = static_cast< Player* >(static_cast<Creature*>(u_caster)->GetTotemOwner());
+			plr = static_cast< Player* >(static_cast<Creature*>(u_caster)->GetOwner());
 	}
 
 

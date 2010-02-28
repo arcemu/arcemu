@@ -196,7 +196,6 @@ Creature::Creature(uint64 guid)
 		FlatStatMod[x]= 0;
 	}
 
-	totemOwner = NULL;
 	totemSlot = -1;
 
     m_owner = NULL;
@@ -249,7 +248,7 @@ Creature::~Creature()
 	}
 
 	if( IsTotem() )
-		totemOwner->m_TotemSlots[totemSlot] = 0;
+		m_owner->m_TotemSlots[totemSlot] = 0;
 
 	if(m_custom_waypoint_map != 0)
 	{
@@ -815,7 +814,7 @@ void Creature::AddInRangeObject(Object* pObj)
 
 void Creature::OnRemoveInRangeObject(Object* pObj)
 {
-	if(totemOwner == pObj)		// player gone out of range of the totem
+	if( IsTotem() && m_owner == pObj)		// player gone out of range of the totem
 	{
 		// Expire next loop.
 		event_ModifyTimeLeft(EVENT_TOTEM_EXPIRE, 1);
@@ -1104,22 +1103,19 @@ void Creature::UpdateItemAmount(uint32 itemid)
 
 void Creature::TotemExpire()
 {
-	Player *pOwner = NULL;
-	if( totemOwner != NULL )
-	{
-		pOwner = totemOwner;
+	if( m_owner != NULL )
+	{		
 		if(GetCreatedBySpell() == 6495) // sentry totem
-			pOwner->RemoveAura(6495);
-		totemOwner->m_TotemSlots[totemSlot] = 0;
+			m_owner->RemoveAura(6495);
+		m_owner->m_TotemSlots[totemSlot] = 0;
     }
 
+	if( m_owner->IsPlayer() )
+		DestroyForPlayer( static_cast< Player* >( m_owner ) ); //make sure the client knows it's gone...
+
 	totemSlot = -1;
-	totemOwner = NULL;
+	m_owner = NULL; 
 
- 
-
-	if(pOwner != NULL)
-		DestroyForPlayer(pOwner); //make sure the client knows it's gone...
 
     DeleteMe();
 }
@@ -1979,8 +1975,8 @@ Group *Creature::GetGroup()
 {
 	if ( IsPet() )
 		static_cast<Pet *>(this)->GetGroup();
-	else if( IsTotem() && totemOwner != NULL )
-		return totemOwner->GetGroup();
+	else if( IsTotem() && m_owner != NULL )
+		return static_cast< Player* >( m_owner )->GetGroup();
 	else if( GetCreatedByGUID() && GetMapMgr() )
 	{
 		Unit *tu = GetMapMgr()->GetUnit( GetCreatedByGUID() );

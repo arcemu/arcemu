@@ -6678,9 +6678,9 @@ Creature* Unit::create_guardian(uint32 guardian_entry,uint32 duration,float angl
 	p->m_noRespawn = true;
 
 	// if it's summoned by a totem owned by a player it will be owned by the player, so we can PvP check on them in dealdamage, and isattackable
-	if( IsCreature() && static_cast< Creature* >( this )->IsTotem() && static_cast< Creature* >( this )->GetTotemOwner() != NULL )
+	if( IsCreature() && static_cast< Creature* >( this )->IsTotem() && static_cast< Creature* >( this )->GetOwner() != NULL )
 	{
-		Player* totem_owner = static_cast< Creature* >( this )->GetTotemOwner();
+		Player* totem_owner = static_cast< Player* >( static_cast< Creature* >( this )->GetOwner() );
 		p->SetOwner( static_cast< Unit* >( totem_owner ) );
 	}
 	else

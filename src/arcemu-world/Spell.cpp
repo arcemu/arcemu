@@ -947,7 +947,7 @@ void Spell::GenerateTargets(SpellCastTargets *store_buff)
 						if( p == NULL)
 						{
 							if( static_cast< Creature* >( u_caster )->IsTotem() )
-								p = static_cast< Player* >( static_cast< Creature* >( u_caster )->GetTotemOwner() );
+								p = static_cast< Player* >( static_cast< Creature* >( u_caster )->GetOwner() );
 						}
 						if( p != NULL )
 						{
@@ -1072,8 +1072,8 @@ void Spell::GenerateTargets(SpellCastTargets *store_buff)
 						Player *p= NULL;
 						if( p_caster != NULL )
 								p = p_caster;
-						else if( u_caster && u_caster->GetTypeId() == TYPEID_UNIT && static_cast< Creature* >( u_caster )->IsTotem() )
-								p = static_cast< Player* >( static_cast< Creature* >( u_caster )->GetTotemOwner() );
+						else if( u_caster && u_caster->IsUnit() && static_cast< Creature* >( u_caster )->IsTotem() )
+								p = static_cast< Player* >( static_cast< Creature* >( u_caster )->GetOwner() );
 						if( p_caster != NULL )
 						{
 							if(IsInrange(m_caster->GetPositionX(),m_caster->GetPositionY(),m_caster->GetPositionZ(),p,r))

@@ -5988,7 +5988,7 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 		p_caster->m_TotemSlots[slot]->TotemExpire();
 
 	p_caster->m_TotemSlots[slot] = pTotem;
-	pTotem->SetTotemOwner(p_caster);
+	pTotem->SetOwner(p_caster);
 	pTotem->SetTotemSlot(slot);
 
     pTotem->SetCreatureInfo( ci );

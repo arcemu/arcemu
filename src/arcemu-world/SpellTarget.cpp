@@ -470,7 +470,7 @@ void Spell::SpellTargetAllPartyMembersRangeNR(uint32 i, uint32 j)
 	if( p == NULL )
 	{
 		if( static_cast< Creature* >( u_caster)->IsTotem() )
-			p = static_cast< Player* >( static_cast< Creature* >( u_caster )->GetTotemOwner() );
+			p = static_cast< Player* >( static_cast< Creature* >( u_caster )->GetOwner() );
 		else if( u_caster->IsPet() && static_cast< Pet* >( u_caster )->GetPetOwner() ) 
 			p = static_cast< Pet* >( u_caster )->GetPetOwner();
 		else if( u_caster->GetCreatedByGUID() )
@@ -762,7 +762,7 @@ void Spell::SpellTargetNearbyPartyMembers(uint32 i, uint32 j)
 				float r = GetRadius(i);
 				r *= r;
 
-				Player* p = static_cast< Player* >( static_cast< Creature* >( u_caster )->GetTotemOwner() );
+				Player* p = static_cast< Player* >( static_cast< Creature* >( u_caster )->GetOwner() );
 				
 				if( p == NULL)
 					return;

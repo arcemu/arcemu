@@ -3373,9 +3373,9 @@ uint32 Object::GetTeam()
 	}
 	if (IsUnit() && !IsPlayer() && static_cast< Creature* >( this )->IsTotem() )
 	{
-		if (static_cast< Creature* >( this )->GetTotemOwner() != NULL)
+		if (static_cast< Creature* >( this )->GetOwner() != NULL)
 		{
-			return static_cast< Creature* >( this )->GetTotemOwner()->GetTeam();
+			return static_cast< Creature* >( this )->GetOwner()->GetTeam();
 		}
 	}
 
