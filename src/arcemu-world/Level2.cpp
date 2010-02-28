@@ -845,7 +845,7 @@ bool ChatHandler::HandleGOSpawn(const char *args, WorldSession *m_session)
 	gs->faction = go->GetFaction();
 	gs->flags = go->GetUInt32Value(GAMEOBJECT_FLAGS);
 	gs->id = objmgr.GenerateGameObjectSpawnID();
-//	gs->o = go->GetFloatValue(GAMEOBJECT_ROTATION);
+	gs->o = 0.0f;
 	gs->o1 = go->GetParentRotation(0);
 	gs->o2 = go->GetParentRotation(2);
 	gs->o3 = go->GetParentRotation(3);
