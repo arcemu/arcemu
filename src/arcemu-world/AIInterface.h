@@ -267,9 +267,9 @@ public:
 	void SetFollowDistance(float dist) { FollowDistance = dist; };
 	void SetUnitToFollowAngle(float angle) { m_fallowAngle = angle; }
 	bool setInFront(Unit* target);
-	ARCEMU_INLINE Unit* getUnitToFollow();
-	ARCEMU_INLINE Unit* getUnitToFollowBackup();
-	ARCEMU_INLINE Unit* getUnitToFear();
+	Unit* getUnitToFollow();
+	Unit* getUnitToFollowBackup();
+	Unit* getUnitToFear();
 	void setCreatureState(CreatureState state){ m_creatureState = state; }
 	ARCEMU_INLINE uint8 getAIState() { return static_cast<uint8>( m_AIState ); }
 	ARCEMU_INLINE uint8 getAIType() { return static_cast<uint8>( m_AIType ); }
