@@ -6992,7 +6992,7 @@ void CombatStatusHandler::OnRemoveFromWorld()
 bool CombatStatusHandler::IsInCombat()
 {
 	// If the unit doesn't exist - OR - the unit exists but is not in world
-	if( !m_Unit || ( m_Unit && !m_Unit->IsInWorld() ) )
+	if (m_Unit == NULL || !m_Unit->IsInWorld())
 		return false;
 
 	switch (m_Unit->GetTypeId())
