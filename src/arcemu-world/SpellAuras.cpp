@@ -3803,6 +3803,23 @@ void Aura::EventPeriodicManaPct(float RegenPct)
 	}
 }
 
+void Aura::EventPeriodicTriggerDummy(){
+	
+	switch( GetSpellProto()->Id ){
+	case 48018:{
+		GameObject * circle = m_target->GetMapMgr()->GetGameObject( m_target->m_ObjectSlots[ 0 ] );
+		SpellEntry* sp = dbcSpell.LookupEntryForced( 48020 );
+		
+		if( circle != NULL && sp != NULL && m_target->CalcDistance( circle ) <= GetMaxRange( dbcSpellRange.LookupEntry( sp->rangeIndex ) )){
+			if( !m_target->HasAura( 62388 ) )
+				m_target->CastSpell( m_target, 62388, true );
+		}else
+			m_target->RemoveAura( 62388 );
+
+			   break; }
+	}
+}
+
 void Aura::SpellAuraModResistance(bool apply)
 {
 	uint32 Flag = mod->m_miscValue;
@@ -6108,6 +6125,17 @@ out:
 		}
 		else
 			SetNegative();
+
+		// Demonic Circle hack
+		if ( m_spellProto->Id == 48020 && m_target->IsPlayer() && m_target->HasAura( 62388 ) ){
+			GameObject* obj = m_target->GetMapMgr()->GetGameObject( m_target->m_ObjectSlots[ 0 ] );
+
+			if( obj != NULL ){
+				Player *ptarget = static_cast< Player* >( m_target );
+
+				ptarget->SafeTeleport( obj->GetMapId(), obj->GetInstanceID(), obj->GetPositionX(), obj->GetPositionY(), obj->GetPositionZ(), m_target->GetOrientation() );
+			}
+		}
 	}
 	else
 		m_target->MechanicsDispels[mod->m_miscValue]--;
@@ -6346,6 +6374,17 @@ void Aura::SpellAuraDrinkNew(bool apply)
 {
 	switch( m_spellProto->NameHash )
 	{
+		// Demonic Circle
+		case SPELL_HASH_DEMONIC_CIRCLE__SUMMON:{
+			if (apply)
+				sEventMgr.AddEvent( this, &Aura::EventPeriodicTriggerDummy, EVENT_AURA_PERIODIC_TRIGGERSPELL, GetSpellProto()->EffectAmplitude[mod->i],360,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
+			else{
+				sEventMgr.RemoveEvents( this );
+				m_target->RemoveAllAuraById(62388);
+				}
+
+				break;}
+
 		case SPELL_HASH_ASPECT_OF_THE_VIPER:
 			if( p_target )
 			{

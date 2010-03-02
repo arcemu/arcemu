@@ -5613,6 +5613,19 @@ void ApplyNormalFixes()
 
 	// Insert warlock spell fixes here
 		
+		//Dummy for Demonic Circle
+		sp = dbcSpell.LookupEntryForced( 48018 );
+		if (sp != NULL){
+			
+			sp->EffectImplicitTargetA[1] = 1;
+			CreateDummySpell( 62388 );
+			sp = dbcSpell.LookupEntryForced( 62388 );
+			if ( sp != NULL ){
+				sp->Effect[0] = 6;
+				sp->EffectApplyAuraName[0] = SPELL_AURA_DUMMY;
+			}
+		}
+		
 		//megai2: Immolation Aura
 		sp = dbcSpell.LookupEntryForced( 50589 );
 		if (sp != NULL)
