@@ -615,7 +615,7 @@ public:
 
 	void OnPushToWorld();
 	void Despawn(uint32 delay, uint32 respawntime);
-	void TriggerScriptEvent(string func);
+	void TriggerScriptEvent(uint16);
 
 	AuctionHouse * auctionHouse;
 	bool has_waypoint_text;
