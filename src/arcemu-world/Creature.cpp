@@ -234,6 +234,7 @@ Creature::Creature(uint64 guid)
 	m_lootMethod = -1;
 	m_healthfromspell = 0;
 	m_speedFromHaste = 0;
+	memset(AISpellsCooldown,0,sizeof(int32)*4);
 }
 
 
