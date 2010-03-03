@@ -4722,7 +4722,7 @@ void Unit::AddAura(Aura * aur)
 	// - Burlex
 	if( aur->GetDuration() > 0 )
 	{
-        sEventMgr.AddEvent( this, &Unit::EventRemoveAura, aur->GetSpellId(), EVENT_AURA_REMOVE, aur->GetDuration() + 500, 1,
+        sEventMgr.AddEvent(aur, &Aura::Remove, EVENT_AURA_REMOVE, aur->GetDuration() + 500, 1,
             EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT | EVENT_FLAG_DELETES_OBJECT );
 	}
 
