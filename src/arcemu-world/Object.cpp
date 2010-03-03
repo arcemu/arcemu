@@ -1550,14 +1550,14 @@ void Object::_setFaction()
 	{
 		factT = dbcFactionTemplate.LookupEntryForced(TO_UNIT(this)->GetFaction());
 		if( !factT )
-			sLog.outDetail("Unit does not have a valid faction. It will make him act stupid in world. Don't blame us, blame yourself for not checking :P, faction %u set to entry %u",TO_UNIT(this)->GetFaction(),GetEntry() );
+			sLog.outError("Unit does not have a valid faction. It will make him act stupid in world. Don't blame us, blame yourself for not checking :P, faction %u set to entry %u",TO_UNIT(this)->GetFaction(),GetEntry() );
 	}
 	else
 	if(GetTypeId() == TYPEID_GAMEOBJECT)
 	{
 		factT = dbcFactionTemplate.LookupEntryForced(static_cast<GameObject*>(this)->GetFaction());
 		if( !factT )
-			sLog.outDetail("Game Object does not have a valid faction. It will make him act stupid in world. Don't blame us, blame yourself for not checking :P, faction %u set to entry %u",static_cast<GameObject*>(this)->GetFaction(),GetEntry() );
+			sLog.outError("Game Object does not have a valid faction. It will make him act stupid in world. Don't blame us, blame yourself for not checking :P, faction %u set to entry %u",static_cast<GameObject*>(this)->GetFaction(),GetEntry() );
 	}
 
 	if(!factT)

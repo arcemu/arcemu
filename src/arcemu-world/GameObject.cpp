@@ -456,9 +456,6 @@ bool GameObject::Load(GOSpawn *spawn)
 	if(spawn->faction)
 	{
 		SetFaction(spawn->faction);
-		m_faction = dbcFactionTemplate.LookupEntryForced(spawn->faction);
-		if(m_faction)
-			m_factionDBC = dbcFaction.LookupEntry(m_faction->Faction);
 	}
 	SetScale( spawn->scale);
 	_LoadQuests();

@@ -1293,15 +1293,10 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 
 	m_aiInterface->timed_emotes = objmgr.GetTimedEmoteList(spawn->id);
 
-	m_faction = dbcFactionTemplate.LookupEntryForced(spawn->factionid);
-	if(m_faction)
+	// not a neutral creature
+	if(!(m_factionDBC->RepListId == -1 && m_faction->HostileMask == 0 && m_faction->FriendlyMask == 0))
 	{
-		m_factionDBC = dbcFaction.LookupEntry(m_faction->Faction);
-		// not a neutral creature
-		if(!(m_factionDBC->RepListId == -1 && m_faction->HostileMask == 0 && m_faction->FriendlyMask == 0))
-		{
-			GetAIInterface()->m_canCallForHelp = true;
-		}
+		GetAIInterface()->m_canCallForHelp = true;
 	}
 
 	// set if creature can shoot or not.
@@ -1524,16 +1519,11 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 
 	m_position.ChangeCoords( x, y, z, o );
 	m_spawnLocation.ChangeCoords(x, y, z, o);
-	m_faction = dbcFactionTemplate.LookupEntryForced(proto->Faction);
 
-	if(m_faction)
+	// not a neutral creature
+	if(!(m_factionDBC->RepListId == -1 && m_faction->HostileMask == 0 && m_faction->FriendlyMask == 0))
 	{
-		m_factionDBC = dbcFaction.LookupEntry(m_faction->Faction);
-		// not a neutral creature
-		if(!(m_factionDBC->RepListId == -1 && m_faction->HostileMask == 0 && m_faction->FriendlyMask == 0))
-		{
-			GetAIInterface()->m_canCallForHelp = true;
-		}
+		GetAIInterface()->m_canCallForHelp = true;
 	}
 
 	// set if creature can shoot or not.

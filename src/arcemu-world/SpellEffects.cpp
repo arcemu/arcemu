@@ -4186,10 +4186,6 @@ void Spell::SpellEffectSummonWild(uint32 i)  // Summon Wild
 		{
 			p->SetFaction(proto->Faction );
 		}
-
-		p->m_faction = dbcFactionTemplate.LookupEntryForced(proto->Faction);
-		if(p->m_faction)
-			p->m_factionDBC = dbcFaction.LookupEntry(p->m_faction->Faction);
 		p->PushToWorld(u_caster->GetMapMgr());
 		//make sure they will be desummoned (roxor)
 		sEventMgr.AddEvent(p, &Creature::SummonExpire, EVENT_SUMMON_EXPIRE, GetDuration(), 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);

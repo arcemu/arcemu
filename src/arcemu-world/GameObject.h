@@ -329,7 +329,11 @@ public:
 	void SetParentRotation( uint8 rot, float value ) { SetFloatValue(GAMEOBJECT_PARENTROTATION+rot, value); }
 	float GetParentRotation( uint8 rot ) { return GetFloatValue(GAMEOBJECT_PARENTROTATION+rot); }
 
-	void SetFaction( uint32 id ) { SetUInt32Value(GAMEOBJECT_FACTION, id); }
+	void SetFaction( uint32 id ) 
+	{ 
+		SetUInt32Value(GAMEOBJECT_FACTION, id); 
+		_setFaction();
+	}
 	uint32 GetFaction() { return GetUInt32Value(GAMEOBJECT_FACTION); }
 
 	void SetLevel( uint32 level ) { SetUInt32Value(GAMEOBJECT_LEVEL, level); }
