@@ -607,8 +607,9 @@ void WarsongGulch::OnStart()
 	{
 		(*itr)->SetUInt32Value(GAMEOBJECT_FLAGS, 64);
 		(*itr)->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
-		(*itr)->Despawn(5000, 0);
 	}
+
+	DespawnGates(5000);
 
 	/* add the flags to the world */
 	for(int i = 0; i < 2; ++i)
@@ -643,3 +644,16 @@ void WarsongGulch::SetIsWeekend(bool isweekend)
 	m_isWeekend = isweekend;
 }
 
+void WarsongGulch::DespawnGates(uint32 delay)
+{
+	if(delay != 0)
+	{
+		sEventMgr.AddEvent(this, &WarsongGulch::DespawnGates, (uint32)0, EVENT_GAMEOBJECT_EXPIRE, delay, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+		return;
+	}
+	for(list<GameObject*>::iterator itr = m_gates.begin(); itr != m_gates.end(); ++itr)
+	{
+		(*itr)->Despawn(0,0);
+	}
+	m_gates.clear();
+}
