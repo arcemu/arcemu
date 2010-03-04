@@ -157,7 +157,7 @@ void LootMgr::LoadLootProp()
 			rp = dbcRandomProps.LookupEntryForced(eid);
 			if(rp == NULL)
 			{
-				Log.Error("LoadLootProp", "RandomProp group %u references non-existent randomprop %u.", id, eid);
+				sLog.outError("LoadLootProp", "RandomProp group %u references non-existent randomprop %u.", id, eid);
 				continue;
 			}
 
@@ -189,7 +189,7 @@ void LootMgr::LoadLootProp()
 			rs = dbcItemRandomSuffix.LookupEntryForced(eid);
 			if(rs == NULL)
 			{
-				Log.Error("LoadLootProp", "RandomSuffix group %u references non-existent randomsuffix %u.", id, eid);
+				sLog.outError("LoadLootProp", "RandomSuffix group %u references non-existent randomsuffix %u.", id, eid);
 				continue;
 			}
 
@@ -246,7 +246,7 @@ void LootMgr::LoadLootTables(const char * szTableName,LootStore * LootTable)
 	QueryResult *result =WorldDatabase.Query("SELECT * FROM %s ORDER BY entryid ASC",szTableName);
 	if(!result)
 	{
-		Log.Error("LootMgr", "Loading loot from table %s failed.", szTableName);
+		sLog.outError("LootMgr", "Loading loot from table %s failed.", szTableName);
 		return;
 	}
 	uint32 entry_id = 0;
@@ -262,7 +262,7 @@ void LootMgr::LoadLootTables(const char * szTableName,LootStore * LootTable)
 		entry_id = fields[1].GetUInt32();
 		if(entry_id < last_entry)
 		{
-			Log.Error("LootMgr", "WARNING: Out of order loot table being loaded.\n");
+			sLog.outError("LootMgr", "WARNING: Out of order loot table being loaded.\n");
 			return;
 		}
 		if(entry_id != last_entry)

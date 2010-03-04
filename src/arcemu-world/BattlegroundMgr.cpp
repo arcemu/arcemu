@@ -403,7 +403,7 @@ int CBattlegroundManager::CreateArenaType(int type, Group * group1, Group * grou
 	Arena * ar = ((Arena*)CreateInstance(type, LEVEL_GROUP_70));
 	if (ar == NULL)
 	{
-		Log.Error("BattlegroundMgr", "%s (%u): Couldn't create Arena Instance", __FILE__, __LINE__);
+		sLog.outError("BattlegroundMgr", "%s (%u): Couldn't create Arena Instance", __FILE__, __LINE__);
 		m_queueLock.Release();
 		m_instanceLock.Release();
 		return -1;
@@ -582,7 +582,7 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 					arena = ((Arena*)CreateInstance(i, j));
 					if ( arena == NULL )
 					{
-						Log.Error("BattlegroundMgr", "%s (%u): Couldn't create Arena Instance", __FILE__, __LINE__);
+						sLog.outError("BattlegroundMgr", "%s (%u): Couldn't create Arena Instance", __FILE__, __LINE__);
 						m_queueLock.Release();
 						m_instanceLock.Release();
  						return;
@@ -673,7 +673,7 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 
 			if(itz == m_queuedGroups[i].end())
 			{
-				Log.Error("BattlegroundMgr", "Internal error at %s:%u", __FILE__, __LINE__);
+				sLog.outError("BattlegroundMgr", "Internal error at %s:%u", __FILE__, __LINE__);
 				m_queueLock.Release();
 				m_instanceLock.Release();
 				return;
@@ -720,7 +720,7 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 
 				if(itz == possibleGroups.end())
 				{
-					Log.Error("BattlegroundMgr", "Internal error at %s:%u", __FILE__, __LINE__);
+					sLog.outError("BattlegroundMgr", "Internal error at %s:%u", __FILE__, __LINE__);
 					m_queueLock.Release();
 					m_instanceLock.Release();
 					return;
@@ -1226,7 +1226,7 @@ CBattleground * CBattlegroundManager::CreateInstance(uint32 Type, uint32 LevelGr
 		mgr = sInstanceMgr.CreateBattlegroundInstance(mapid);
 		if(mgr == NULL)
 		{
-			Log.Error("BattlegroundManager", "Arena CreateInstance() call failed for map %u, type %u, level group %u", mapid, Type, LevelGroup);
+			sLog.outError("BattlegroundManager", "Arena CreateInstance() call failed for map %u, type %u, level group %u", mapid, Type, LevelGroup);
 			return NULL;      // Shouldn't happen
 		}
 
@@ -1261,7 +1261,7 @@ CBattleground * CBattlegroundManager::CreateInstance(uint32 Type, uint32 LevelGr
 
 	if(cfunc == NULL)
 	{
-		Log.Error("BattlegroundManager", "Could not find CreateBattlegroundFunc pointer for type %u level group %u", Type, LevelGroup);
+		sLog.outError("BattlegroundManager", "Could not find CreateBattlegroundFunc pointer for type %u level group %u", Type, LevelGroup);
 		return NULL;
 	}
 
@@ -1292,7 +1292,7 @@ CBattleground * CBattlegroundManager::CreateInstance(uint32 Type, uint32 LevelGr
 	mgr = sInstanceMgr.CreateBattlegroundInstance(BGMapIds[Type]);
 	if(mgr == NULL)
 	{
-		Log.Error("BattlegroundManager", "CreateInstance() call failed for map %u, type %u, level group %u", BGMapIds[Type], Type, LevelGroup);
+		sLog.outError("BattlegroundManager", "CreateInstance() call failed for map %u, type %u, level group %u", BGMapIds[Type], Type, LevelGroup);
 		return NULL;      // Shouldn't happen
 	}
 

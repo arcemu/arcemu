@@ -293,7 +293,7 @@ void EyeOfTheStorm::HookOnAreaTrigger(Player * plr, uint32 id)
 		bonusid = EOTS_TOWER_MAGE;
 		break;
 	default:
-		Log.Error("EyeOfTheStorm", "Encountered unhandled areatrigger id %u", id);
+		sLog.outError("EyeOfTheStorm", "Encountered unhandled areatrigger id %u", id);
 		return;
 		break;
 	}

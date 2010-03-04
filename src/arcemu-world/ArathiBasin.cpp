@@ -684,7 +684,7 @@ void ArathiBasin::HookOnAreaTrigger(Player * plr, uint32 id)
 		return;
 		break;
 	default:
-		Log.Error("ArathiBasin", "Encountered unhandled areatrigger id %u", id);
+		sLog.outError("ArathiBasin", "Encountered unhandled areatrigger id %u", id);
 		return;
 		break;
 	}

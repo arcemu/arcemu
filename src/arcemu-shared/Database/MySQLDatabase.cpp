@@ -158,7 +158,7 @@ bool MySQLDatabase::_SendQuery(DatabaseConnection *con, const char* Sql, bool Se
 			result = _SendQuery(con, Sql, true);
 		}
 		else
-			Log.Error("Sql query failed due to [%s], Query: [%s]\n", mysql_error( static_cast<MySQLDatabaseConnection*>(con)->MySql ), Sql);
+			sLog.outError("Sql query failed due to [%s], Query: [%s]", mysql_error( static_cast<MySQLDatabaseConnection*>(con)->MySql ), Sql);
 	}
 
 	return (result == 0 ? true : false);

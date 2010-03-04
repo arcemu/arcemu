@@ -253,7 +253,7 @@ bool Master::Run(int argc, char ** argv)
 		Log.Success( "Config", ">> configs/world.conf" );
 	else
 	{
-		Log.Error( "Config", ">> configs/world.conf" );
+		sLog.outError( "Config", ">> configs/world.conf" );
 		return false;
 	}
 
@@ -261,7 +261,7 @@ bool Master::Run(int argc, char ** argv)
 		Log.Success( "Config", ">> configs/optional.conf");
 	else
 	{
-		Log.Error("Config", ">> configs/optional.conf");
+		sLog.outError("Config", ">> configs/optional.conf");
 		return false;
 	}
 
