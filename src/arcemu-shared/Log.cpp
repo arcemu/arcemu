@@ -243,7 +243,7 @@ void oLog::SetFileLoggingLevel(int32 level)
 	if (m_fileLogLevel >= 0)
 	{
 		const char *filename = "file.log";
-		m_file = fopen(filename, "w");
+		m_file = fopen(filename, "a");
 		if (m_file == NULL)
 		{
 			fprintf(stderr, "%s: Error opening '%s': %s\n", __FUNCTION__, filename, strerror(errno));
