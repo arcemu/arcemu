@@ -6038,16 +6038,13 @@ void Player::OnRemoveInRangeObject(Object* pObj)
 		++itr;
 		if( pObj == summon )
 		{
-			if( summon->IsSummon() )
-				summon->Dismiss();			// summons
-			else
-				summon->Remove( true, false );// hunter pets
+			summon->DelayedRemove(false,1);//otherwise Pet::Update() will access free'd memory
 			return;
 		}
 	}
 
     if( pObj->GetGUID() == GetSummonedUnitGUID() )
-		RemoveFieldSummon();
+		sEventMgr.AddEvent(TO_UNIT(this), &Unit::RemoveFieldSummon, EVENT_SUMMON_EXPIRE, 1, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);//otherwise Creature::Update() will access free'd memory
 }
 
 void Player::ClearInRangeSet()

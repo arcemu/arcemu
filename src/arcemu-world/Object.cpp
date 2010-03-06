@@ -2607,7 +2607,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 						pPet->SetPower( POWER_TYPE_HAPPINESS, hap );
 					}
 
-					pPet->DelayedRemove( false, true );
+					pPet->DelayedRemove( false );
 				}
 				/* ----------------------------- PET DEATH HANDLING END -------------- */
 				else if( pVictim->GetCharmedByGUID() )

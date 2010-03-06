@@ -843,7 +843,7 @@ void Pet::PetSafeDelete()
         SafeDelete();
 }
 
-void Pet::DelayedRemove( bool bTime, bool bDeath )
+void Pet::DelayedRemove( bool bTime, uint32 delay )
 {
 	// called when pet has died
 	if( bTime )
@@ -854,7 +854,7 @@ void Pet::DelayedRemove( bool bTime, bool bDeath )
 			Remove( true, false );
 	}
 	else
-		sEventMgr.AddEvent(this, &Pet::DelayedRemove, true, bDeath, EVENT_PET_DELAYED_REMOVE, PET_DELAYED_REMOVAL_TIME, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+		sEventMgr.AddEvent(this, &Pet::DelayedRemove, true, uint32(0), EVENT_PET_DELAYED_REMOVE, delay, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 }
 
 bool Pet::CanGainXP()
