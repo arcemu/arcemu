@@ -689,7 +689,8 @@ void Creature::setDeathState(DeathState s)
 		if ( m_currentSpell )
 			m_currentSpell->cancel();
 
-		if ( lootmgr.IsSkinnable(GetEntry()))
+		// if it's not a Pet, and not a summon and it has skinningloot then we will allow skinning
+		if ( !IsPet() && m_owner == NULL && lootmgr.IsSkinnable(GetEntry()))
 			SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SKINNABLE);
 
 
