@@ -1,0 +1,1 @@
+ALTER TABLE `playerpets` ADD COLUMN `alive` tinyint(1) NOT NULL DEFAULT '1' AFTER `petstate`;

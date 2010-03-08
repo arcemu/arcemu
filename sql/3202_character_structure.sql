@@ -756,6 +756,7 @@ CREATE TABLE `playerpets` (
   `reset_cost` int(10) NOT NULL DEFAULT '0',
   `spellid` int(10) unsigned NOT NULL DEFAULT '0',
   `petstate` int(10) unsigned NOT NULL DEFAULT '0',
+  `alive` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`ownerguid`,`petnumber`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 

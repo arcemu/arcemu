@@ -4583,7 +4583,14 @@ void Spell::SpellEffectSummonPet(uint32 i) //summon - pet
 		uint32 petno = p_caster->GetUnstabledPetNumber();
 		if( petno )
 		{
-			p_caster->SpawnPet(petno);
+			if( p_caster->GetPlayerPet(petno)->alive )
+			{
+				p_caster->SpawnPet(petno);
+			}
+			else
+			{
+				SendTameFailure( PETTAME_DEAD );
+			}
 		}
 		else
 		{
@@ -6669,6 +6676,20 @@ void Spell::SpellEffectSummonDeadPet(uint32 i)
 		pPet->GetAIInterface()->HandleEvent( EVENT_FOLLOWOWNER, pPet, 0 );
 		sEventMgr.RemoveEvents( pPet, EVENT_PET_DELAYED_REMOVE );
 		pPet->SendSpellsToOwner();
+	}
+	else
+	{
+		
+		p_caster->SpawnPet( p_caster->GetUnstabledPetNumber() );
+		pPet = p_caster->GetSummon();
+		if(pPet == NULL)//no pets to Revive
+			return;
+		if( GetProto()->SpellGroupType)
+		{
+			SM_FIValue(p_caster->SM_FMiscEffect,&damage,GetProto()->SpellGroupType);
+			SM_PIValue(p_caster->SM_PMiscEffect,&damage,GetProto()->SpellGroupType);
+		}
+		pPet->SetHealth((uint32)((pPet->GetMaxHealth() * damage) / 100));
 	}
 }
 

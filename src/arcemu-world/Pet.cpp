@@ -263,6 +263,8 @@ void Pet::CreateAsSummon( uint32 entry, CreatureInfo *ci, Creature* created_from
 		pp->number = m_PetNumber;
 		pp->stablestate = STABLE_STATE_ACTIVE;
 		pp->spellid = created_by_spell ? created_by_spell->Id : 0;
+		pp->alive = true;
+		mPi = pp;
 		owner->AddPlayerPet( pp, pp->number );
 	}
 
@@ -295,6 +297,7 @@ Pet::Pet( uint64 guid ) : Creature( guid )
 
 	m_AISpellStore.clear();
 	mSpells.clear();
+	mPi = NULL;
 }
 
 Pet::~Pet()
@@ -307,11 +310,23 @@ Pet::~Pet()
 		m_autoCastSpells[i].clear();
 
 	mSpells.clear();
+
+	Arcemu::Util::ARCEMU_ASSERT( m_Owner == NULL );//if it's not NULL then it's being deleted without notifing the owner
 }
 
 void Pet::Update( uint32 time )
 {
-	Creature::Update( time ); // passthrough
+	if(Summon)
+		Creature::Update( time ); // passthrough
+	else
+	{
+		Unit::Update( time);//Dead Hunter's Pets should be despawned only if the Owner logs out or goes out of range.
+		if(m_corpseEvent)
+		{
+			sEventMgr.RemoveEvents(this);
+			m_corpseEvent = false;
+		}
+	}
 
 	if( !Summon && !bExpires && isAlive() )
 	{
@@ -627,15 +642,16 @@ void Pet::LoadFromDB( Player* owner, PlayerPet * pi )
 			ApplyPetLevelAbilities();
 	}
 
-	InitializeMe( false );
-
-	//if pet was dead on logout then it should be dead now too
-	if( HasFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_DEAD ) )
+	//if pet was dead on logout then it should be dead now too.//we could use mPi->alive but this will break backward compatibility
+	if( HasFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_DEAD ))//LoadFromDB() (called by Player::SpawnPet() ) now always revive the Pet if it was dead.
+													//This is because now we call SpawnPet() only if it's alive or we wanna revive it.
 	{
-		SetHealth( 0); //this is probably already 0
-		setDeathState( JUST_DIED );
-		m_Owner->EventDismissPet();	//just in case in near future(or any other) on loading auras get applied then make sure we remove those
+		SetUInt32Value( UNIT_DYNAMIC_FLAGS, 0 );
+		SetHealth( GetMaxHealth() );//this is modified (if required) in Spell::SpellEffectSummonDeadPet() 
+		setDeathState( ALIVE );
 	}
+
+	InitializeMe( false );
 }
 
 void Pet::OnPushToWorld()
@@ -772,6 +788,7 @@ void Pet::UpdatePetInfo( bool bSetToOffline )
 	pi->reset_cost = reset_cost;
 	pi->reset_time = reset_time;
     pi->petstate = m_State;
+	pi->alive = isAlive();
 }
 
 void Pet::Dismiss() //Abandon pet
@@ -831,6 +848,8 @@ void Pet::setDeathState(DeathState s)
 		//we can't dimiss the summon now now since it's still needed in DealDamage()
 		sEventMgr.AddEvent( this ,&Pet::Dismiss , EVENT_UNK, 1 , 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT ); 
 	}
+	if(mPi != NULL)
+		mPi->alive = isAlive();
 }
 
 void Pet::PetSafeDelete()

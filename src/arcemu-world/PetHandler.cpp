@@ -255,7 +255,7 @@ void WorldSession::HandleStablePet(WorldPacket & recv_data)
 
 	// remove pet from world and association with player
 	Pet *pPet = _player->GetSummon();
-	if( !pPet || pPet->IsSummon() ) 
+	if( pPet != NULL && pPet->IsSummon() ) 
 		return;
 	
 	PlayerPet *pet = _player->GetPlayerPet( _player->GetUnstabledPetNumber() );
@@ -263,7 +263,8 @@ void WorldSession::HandleStablePet(WorldPacket & recv_data)
 		return;
 	pet->stablestate = STABLE_STATE_PASSIVE;
 	
-	pPet->Remove( true, true );
+	if( pPet != NULL )//if pPet is NULL here then the pet is dead and we relogged.
+		pPet->Remove( true, true );
 
 	WorldPacket data(1);
 	data.SetOpcode(SMSG_STABLE_RESULT);
@@ -285,7 +286,9 @@ void WorldSession::HandleUnstablePet(WorldPacket & recv_data)
 		sLog.outError("PET SYSTEM: Player "I64FMT" tried to unstable non-existent pet %d", _player->GetGUID(), petnumber);
 		return;
 	}
-	_player->SpawnPet( petnumber );
+	//unstable selected pet but spawn it only if it's alive
+	if( pet->alive )
+		_player->SpawnPet( petnumber );
 	pet->stablestate = STABLE_STATE_ACTIVE;
 
 	WorldPacket data(1);
@@ -308,7 +311,7 @@ void WorldSession::HandleStableSwapPet(WorldPacket & recv_data)
 		return;
 	}
 	Pet *pPet = _player->GetSummon();
-	if( !pPet || pPet->IsSummon() )
+	if( pPet != NULL && pPet->IsSummon() )
 		return;
 
 	//stable current pet
@@ -316,11 +319,13 @@ void WorldSession::HandleStableSwapPet(WorldPacket & recv_data)
 	if( !pet2 )
 		return;
 
-	pPet->Remove( true, true );
+	if( pPet != NULL)//if pPet is NULL here then the pet is dead and we relogged.
+		pPet->Remove( true, true );
 	pet2->stablestate = STABLE_STATE_PASSIVE;
 
-	//unstable selected pet
-	_player->SpawnPet( petnumber );
+	//unstable selected pet but spawn it only if it's alive
+	if( pet->alive )
+		_player->SpawnPet( petnumber );
 	pet->stablestate = STABLE_STATE_ACTIVE;
 
 	WorldPacket data;

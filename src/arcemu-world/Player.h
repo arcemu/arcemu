@@ -683,6 +683,7 @@ struct PlayerPet
 	string fields;
 	uint32 xp;
 	bool active;
+	bool alive;
 	char stablestate;
 	uint32 number;
 	uint32 level;

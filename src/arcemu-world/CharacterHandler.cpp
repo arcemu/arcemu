@@ -209,7 +209,7 @@ void WorldSession::CharacterEnumProc(QueryResult * result)
 
 			if( Class == WARLOCK || Class == HUNTER )
 			{
-				res = CharacterDatabase.Query("SELECT entry FROM playerpets WHERE ownerguid = %u AND MOD( active, 10 ) = 1;", Arcemu::Util::GUID_LOPART( guid ) );
+				res = CharacterDatabase.Query("SELECT entry FROM playerpets WHERE ownerguid = %u AND MOD( active, 10 ) = 1 AND alive = TRUE;", Arcemu::Util::GUID_LOPART( guid ) );
 
 				if(res)
 				{

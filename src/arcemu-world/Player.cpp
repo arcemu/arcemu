@@ -1993,7 +1993,8 @@ void Player::_SavePet(QueryBuffer * buf)
 			<< (long)itr->second->reset_time << "','"
 			<< itr->second->reset_cost << "','"
 			<< itr->second->spellid << "','"
-            << itr->second->petstate << "')";
+            << itr->second->petstate << "','"
+			<< itr->second->alive << "')";
 
         if(buf == NULL)
 			CharacterDatabase.ExecuteNA(ss.str().c_str());
@@ -2092,6 +2093,7 @@ void Player::_LoadPet(QueryResult * result)
 		pet->reset_cost = fields[12].GetUInt32();
 		pet->spellid = fields[13].GetUInt32();
         pet->petstate = fields[14].GetUInt32();
+		pet->alive = fields[15].GetBool();
 
 		m_Pets[pet->number] = pet;
 
@@ -2147,7 +2149,8 @@ void Player::SpawnActivePet()
 	for( ; itr != m_Pets.end(); itr++ )
 		if( itr->second->stablestate == STABLE_STATE_ACTIVE && itr->second->active )
 		{
-			SpawnPet( itr->first );
+			if( itr->second->alive )
+				SpawnPet( itr->first );
 			return;
 		}
 }
