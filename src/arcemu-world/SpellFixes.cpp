@@ -3013,6 +3013,13 @@ void ApplyNormalFixes()
 			sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
         }
 
+		// Paladin - Consecration
+        if( sp->NameHash == SPELL_HASH_CONSECRATION   )
+        {
+            sp->School = SCHOOL_HOLY; //Consecration is a holy redirected spell.
+            sp->Spell_Dmg_Type = SPELL_DMG_TYPE_MAGIC; //Speaks for itself.
+        }
+
 	//////////////////////////////////////////
 	// HUNTER								//
 	//////////////////////////////////////////
