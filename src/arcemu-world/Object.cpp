@@ -2591,7 +2591,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 				// ----------------------------- XP --------------
 
                 
-
+			}
 			/* ----------------------------- PET XP HANDLING END-------------- */
 
 			/* ----------------------------- PET DEATH HANDLING -------------- */
@@ -2617,7 +2617,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 					if( owner != NULL && owner->IsPlayer())
 						TO_PLAYER( owner )->EventDismissPet();
 				}
-			}
+
             // Clear owner, except pets
             if( !pVictim->IsPet() && pVictim->GetCreatedByGUID() != 0 )
                 pVictim->SetCreatedByGUID( 0 );
