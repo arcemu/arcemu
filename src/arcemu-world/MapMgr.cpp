@@ -77,6 +77,7 @@ MapMgr::MapMgr(Map *map, uint32 mapId, uint32 instanceid) : CellHandler<MapCell>
 
 	activeGameObjects.clear();
 	activeCreatures.clear();
+	creature_iterator = activeCreatures.begin();
 	m_corpses.clear();
 	_sqlids_creatures.clear();
 	_sqlids_gameobjects.clear();
