@@ -3192,7 +3192,14 @@ void Spell::SpellEffectSummon(uint32 i)
 	if( !u_caster ) return;
 
 	if(GetProto()->EffectMiscValue[i] != 24207) //Tempfix
+	{
+		if(p_caster != NULL)
+		{
+			p_caster->DismissActivePets();//RemoveFieldSummon() doesn't remove Player's Pets in the right way.
+		}
+
 		u_caster->RemoveFieldSummon();
+	}
 
 	/* This is for summon water elemental, etc */
 	CreatureInfo * ci = CreatureNameStorage.LookupEntry(GetProto()->EffectMiscValue[i]);
