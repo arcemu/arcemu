@@ -3807,6 +3807,9 @@ void Aura::EventPeriodicTriggerDummy(){
 	
 	switch( GetSpellProto()->Id ){
 	case 48018:{
+		if( m_target->GetMapMgr() == NULL )
+			return;
+
 		GameObject * circle = m_target->GetMapMgr()->GetGameObject( m_target->m_ObjectSlots[ 0 ] );
 		SpellEntry* sp = dbcSpell.LookupEntryForced( 48020 );
 		
