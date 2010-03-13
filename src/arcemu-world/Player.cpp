@@ -8541,6 +8541,13 @@ bool Player::SafeTeleport(uint32 MapID, uint32 InstanceID, float X, float Y, flo
 
 bool Player::SafeTeleport(uint32 MapID, uint32 InstanceID, const LocationVector & vec)
 {
+	// Checking if we have a unit whose waypoints are shown
+	// If there is such, then we "unlink" it
+	// Failing to do so leads to a crash if we try to show some other Unit's wps, after the map was shut down
+	if( waypointunit != NULL )
+		waypointunit->hideWayPoints( this );	
+	waypointunit = NULL;
+
 	SpeedCheatDelay(10000);
 
 	if ( GetTaxiState() )
