@@ -1845,9 +1845,17 @@ void Creature::Despawn(uint32 delay, uint32 respawntime)
 
 	if( IsPet() )
 	{
-		static_cast<Pet*>(this)->ScheduledForDeletion = true;
-		Unit::RemoveFromWorld( true );
-        SafeDelete();
+		Pet* pet = TO_PET(this);
+		if( pet->GetPetOwner() != NULL )
+		{
+			pet->DelayedRemove(true);
+		}
+		else
+		{
+			pet->ScheduledForDeletion = true;
+			Unit::RemoveFromWorld( true );
+			SafeDelete();
+		}
 		return;
 	}
 	
