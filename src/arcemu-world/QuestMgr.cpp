@@ -392,7 +392,7 @@ void QuestMgr::BuildQuestDetails(WorldPacket *data, Quest* qst, Object* qst_give
 	data->SetOpcode( SMSG_QUESTGIVER_QUEST_DETAILS );
 
 	*data << qst_giver->GetGUID();			// npc guid
-	*data << uint64(0);						// (questsharer?) guid
+	*data << uint64( qst_giver->IsPlayer() ? qst_giver->GetGUID() : 0 );						// (questsharer?) guid
 	*data << qst->id;						// quest id
 
 	if(lq)
@@ -410,9 +410,9 @@ void QuestMgr::BuildQuestDetails(WorldPacket *data, Quest* qst, Object* qst_give
 
 	*data << uint8(1);						// Activate accept
 	*data << qst->suggestedplayers;			// "Suggested players"
-	*data << uint8(0);						// Added in 3.0.2, name or text(?)
-	*data << uint8(0); //VLack: some 3.1.x thing
-	*data << uint8(0); //new 3.3
+	*data << uint8(0);						// Added in 3.0.2, name or text(?) - or flags nowadays
+	*data << uint8(0); //VLack: some 3.1.x thing - if the client answers, this byte will be sent back in the response, so it could be used for a few interesting things...
+	*data << uint8(0); //new 3.3 - if you set it to 1 then it'll show the quest panel without the decline button, however the accept button won't work either, just closes the dialog. Probably the client expects the server to auto-accept the quest without client side intervention.
 
 
 	ItemPrototype *ip;
@@ -444,7 +444,7 @@ void QuestMgr::BuildQuestDetails(WorldPacket *data, Quest* qst, Object* qst_give
 	}
 
 	*data << GenerateRewardMoney( plr, qst );	// Money reward
-	*data << uint32(0); //New 3.3
+	*data << uint32(0); //New 3.3 - this is the XP you'll see on the quest reward panel too, but I think it is fine not to show it, because it can change if the player levels up before completing the quest.
 	*data << (qst->bonushonor * 10);					// Honor reward
 	*data << float(0); //New 3.3
 	*data << qst->reward_spell;					// this is the spell (id) the quest finisher teaches you, or the icon of the spell if effect_on_player is not 0
@@ -688,12 +688,11 @@ void QuestMgr::BuildQuestUpdateComplete(WorldPacket* data, Quest* qst)
 	*data << qst->id;
 }
 
-void QuestMgr::SendPushToPartyResponse(Player *plr, Player* pTarget, uint32 response)
+void QuestMgr::SendPushToPartyResponse(Player *plr, Player* pTarget, uint8 response)
 {
-	WorldPacket data(MSG_QUEST_PUSH_RESULT, 13);
-	data << pTarget->GetGUID();
-	data << response;
-	data << uint8(0);
+	WorldPacket data(MSG_QUEST_PUSH_RESULT, 9);
+	data << uint64(pTarget->GetGUID());
+	data << uint8(response);
 	plr->GetSession()->SendPacket(&data);
 }
 

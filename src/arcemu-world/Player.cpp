@@ -2366,15 +2366,22 @@ void Player::InitVisibleUpdateBits()
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_AURASTATE);
 
 	// Players visible items are not inventory stuff
-    for(uint16 i = 0; i < EQUIPMENT_SLOT_END; ++i)
+	for(uint16 i = 0; i < EQUIPMENT_SLOT_END; ++i)
 	{
 		uint32 offset = i * PLAYER_VISIBLE_ITEM_LENGTH; //VLack: for 3.1.1 "* 18" is a bad idea, now it's "* 2"; but this could have been calculated based on UpdateFields.h! This is PLAYER_VISIBLE_ITEM_LENGTH
 
-	// item entry
-	Player::m_visibleUpdateMask.SetBit(PLAYER_VISIBLE_ITEM_1_ENTRYID + offset);
-	// enchant
-	Player::m_visibleUpdateMask.SetBit(PLAYER_VISIBLE_ITEM_1_ENCHANTMENT + offset);
-     }
+		// item entry
+		Player::m_visibleUpdateMask.SetBit(PLAYER_VISIBLE_ITEM_1_ENTRYID + offset);
+		// enchant
+		Player::m_visibleUpdateMask.SetBit(PLAYER_VISIBLE_ITEM_1_ENCHANTMENT + offset);
+	}
+
+	//VLack: we have to send our quest list to the members of our group all the time for quest sharing's "who's on that quest" feature to work (in the quest log this way a number will be shown before the quest's name).
+	//Unfortunately we don't have code for doing this only on our group's members, so everyone will receive it. The non-group member's client will do whatever it wants with it, probably wasting a few CPU cycles, but that's fine with me.
+	for(uint16 i = PLAYER_QUEST_LOG_1_1; i <= PLAYER_QUEST_LOG_25_1; i+=5)
+	{
+		Player::m_visibleUpdateMask.SetBit(i);
+	}
 
 	Player::m_visibleUpdateMask.SetBit(PLAYER_CHOSEN_TITLE);
 }
@@ -3764,11 +3771,11 @@ void Player::_LoadQuestLogEntry(QueryResult * result)
 	// clear all fields
 	for(int i = 0; i < 25; ++i)
 	{
-		baseindex = PLAYER_QUEST_LOG_1_1 + (i * 4);
+		baseindex = PLAYER_QUEST_LOG_1_1 + (i * 5);
 		SetUInt32Value(baseindex + 0, 0);
 		SetUInt32Value(baseindex + 1, 0);
-		SetUInt32Value(baseindex + 2, 0);
-		SetUInt32Value(baseindex + 3, 0);
+		SetUInt64Value(baseindex + 2, 0);
+		SetUInt32Value(baseindex + 4, 0);
 	}
 
 	int slot = 0;

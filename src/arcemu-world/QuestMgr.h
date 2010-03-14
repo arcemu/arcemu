@@ -65,7 +65,7 @@ public:
 	void BuildQuestUpdateAddItem(WorldPacket* data, uint32 itemid, uint32 count);
 	void BuildQuestUpdateComplete(WorldPacket* data, Quest* qst);
 	void BuildQuestFailed(WorldPacket* data, uint32 questid);
-	void SendPushToPartyResponse(Player *plr, Player* pTarget, uint32 response);
+	void SendPushToPartyResponse(Player *plr, Player* pTarget, uint8 response);
 
 	bool OnGameObjectActivate(Player *plr, GameObject *go);
 	void OnPlayerKill(Player* plr, Creature* victim, bool IsGroupKill);

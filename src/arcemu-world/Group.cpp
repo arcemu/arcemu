@@ -1057,7 +1057,7 @@ void Group::UpdateAllOutOfRangePlayersFor(Player * pPlayer)
 					hisMask.Clear();
 					myMask.Clear();
 					u1 = u2 = false;
-					for(uint32 i = PLAYER_QUEST_LOG_1_1; i < PLAYER_QUEST_LOG_25_1; ++i)
+					for(uint32 i = PLAYER_QUEST_LOG_1_1; i <= PLAYER_QUEST_LOG_25_5; ++i)
 					{
 						if(plr->GetUInt32Value(i))
 						{
@@ -1075,7 +1075,7 @@ void Group::UpdateAllOutOfRangePlayersFor(Player * pPlayer)
 					if(u1)
 					{
 						data.clear();
-                        plr->BuildValuesUpdateBlockForPlayer(&data, &hisMask);
+						plr->BuildValuesUpdateBlockForPlayer(&data, &hisMask);
 						pPlayer->PushUpdateData(&data, 1);
 					}
 

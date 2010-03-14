@@ -120,11 +120,15 @@ enum QUEST_SHARE
 	QUEST_SHARE_MSG_CANT_TAKE_QUEST			= 1,
 	QUEST_SHARE_MSG_ACCEPT_QUEST			= 2,
 	QUEST_SHARE_MSG_REFUSE_QUEST			= 3,
-	QUEST_SHARE_MSG_TOO_FAR					= 4,
-	QUEST_SHARE_MSG_BUSY					= 5,
-	QUEST_SHARE_MSG_LOG_FULL				= 6,
-	QUEST_SHARE_MSG_HAVE_QUEST				= 7,
-	QUEST_SHARE_MSG_FINISH_QUEST			= 8,
+//	QUEST_SHARE_MSG_TOO_FAR				= 4, //VLack: This message seems to be non-existent as of 3.2.x, plus it isn't used in ArcEmu, so it is safe to get rid of it.
+	QUEST_SHARE_MSG_BUSY				= 4,
+	QUEST_SHARE_MSG_LOG_FULL			= 5,
+	QUEST_SHARE_MSG_HAVE_QUEST			= 6,
+	QUEST_SHARE_MSG_FINISH_QUEST			= 7,
+	QUEST_SHARE_MSG_CANT_BE_SHARED_TODAY		= 8, //VLack: the following 4 messages (from 8 to 11) are unused on ArcEmu, but for completeness I have included them here, maybe we'll need them later...
+	QUEST_SHARE_MSG_SHARING_TIMER_EXPIRED		= 9,
+	QUEST_SHARE_MSG_NOT_IN_PARTY			= 10,
+	QUEST_SHARE_MSG_DIFFERENT_SERVER_DAILY		= 11,
 };
 
 #define arcemu_QUEST_REPEATABLE 1
