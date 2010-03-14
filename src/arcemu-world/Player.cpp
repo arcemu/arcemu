@@ -1566,8 +1566,8 @@ void Player::EventDeath()
 	if (m_onTaxi)
 		sEventMgr.RemoveEvents(this, EVENT_PLAYER_TAXI_DISMOUNT);
 
-	if(!IS_INSTANCE(GetMapId()) && !sEventMgr.HasEvent(this,EVENT_PLAYER_FORECED_RESURECT)) //Should never be true
-		sEventMgr.AddEvent(this,&Player::RepopRequestedPlayer,EVENT_PLAYER_FORECED_RESURECT,PLAYER_FORCED_RESURECT_INTERVAL,1,0); //in case he forgets to release spirit (afk or something)
+	if(!IS_INSTANCE(GetMapId()) && !sEventMgr.HasEvent(this,EVENT_PLAYER_FORCED_RESURRECT)) //Should never be true
+		sEventMgr.AddEvent(this,&Player::RepopRequestedPlayer,EVENT_PLAYER_FORCED_RESURRECT,PLAYER_FORCED_RESURRECT_INTERVAL,1,0); //in case he forgets to release spirit (afk or something)
 
 	RemoveNegativeAuras();
 
@@ -3543,6 +3543,11 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 
 	UpdateGlyphs();
 
+	for (uint8 i = 0; i < GLYPHS_COUNT; ++i)
+	{
+		SetGlyph(i, m_specs[m_talentActiveSpec].glyphs[i]);
+	}
+
 	//class fixes
 	switch(getClass())
 	{
@@ -4702,7 +4707,7 @@ void Player::BuildPlayerRepop()
 void Player::RepopRequestedPlayer()
 {
 	sEventMgr.RemoveEvents(this, EVENT_PLAYER_CHECKFORCHEATS); // cebernic:-> Remove this first
-	sEventMgr.RemoveEvents( this, EVENT_PLAYER_FORECED_RESURECT ); //in case somebody resurrected us before this event happened
+	sEventMgr.RemoveEvents( this, EVENT_PLAYER_FORCED_RESURRECT ); //in case somebody resurrected us before this event happened
 
 	if( myCorpse != NULL ) {
 		// Cebernic: wOOo dead+dead = undead ? :D just resurrect player
@@ -4802,7 +4807,7 @@ void Player::RepopRequestedPlayer()
 
 void Player::ResurrectPlayer()
 {
-	sEventMgr.RemoveEvents(this,EVENT_PLAYER_FORECED_RESURECT); // In case somebody resurected us before this event happened
+	sEventMgr.RemoveEvents(this,EVENT_PLAYER_FORCED_RESURRECT); // In case somebody resurrected us before this event happened
 	if( m_resurrectHealth )
 		SetHealth((uint32)min( m_resurrectHealth, m_uint32Values[UNIT_FIELD_MAXHEALTH] ) );
 	if( m_resurrectMana )
