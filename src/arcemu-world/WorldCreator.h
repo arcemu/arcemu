@@ -82,7 +82,7 @@ public:
 	}
 };
 
-class Instance
+class SERVER_DECL Instance
 {
 public:
 	uint32 m_instanceId;
