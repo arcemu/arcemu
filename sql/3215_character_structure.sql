@@ -337,7 +337,7 @@ CREATE TABLE `charters` (
   `signer8` int(10) unsigned NOT NULL DEFAULT '0',
   `signer9` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`charterId`),
-  UNIQUE KEY `leaderGuid` (`leaderGuid`)
+  UNIQUE KEY `leaderGuid` (`charterType`,`leaderGuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 11264 kB; InnoDB free: 18432 kB';
 
 /*Table structure for table `clientaddons` */

@@ -324,7 +324,7 @@ public:
 	uint32 Unk2;
 	uint32 Unk3;
 	uint32 PetitionSignerCount;
-	string PetitionSignerNames[9];
+	string PetitionSignerNames[10];
 
 	Charter(Field * fields);
 	Charter(uint32 id, uint32 leader, uint32 type) : CharterType(type), LeaderGuid(leader), CharterId(id)

@@ -2797,24 +2797,21 @@ Charter * ObjectMgr::GetCharterByItemGuid(uint64 guid)
 Charter * ObjectMgr::GetCharterByGuid(uint64 playerguid, CharterTypes type)
 {
 	m_charterLock.AcquireReadLock();
-	for(int i = 0; i < NUM_CHARTER_TYPES; ++i)
+	HM_NAMESPACE::hash_map<uint32, Charter*>::iterator itr = m_charters[type].begin();
+	for(; itr != m_charters[type].end(); ++itr)
 	{
-		HM_NAMESPACE::hash_map<uint32, Charter*>::iterator itr = m_charters[i].begin();
-		for(; itr != m_charters[i].end(); ++itr)
+		if(playerguid == itr->second->LeaderGuid)
 		{
-			if(playerguid == itr->second->LeaderGuid)
+			m_charterLock.ReleaseReadLock();
+			return itr->second;
+		}
+
+		for(uint32 j = 0; j < itr->second->SignatureCount; ++j)
+		{
+			if(itr->second->Signatures[j] == playerguid)
 			{
 				m_charterLock.ReleaseReadLock();
 				return itr->second;
-			}
-
-			for(uint32 j = 0; j < itr->second->SignatureCount; ++j)
-			{
-				if(itr->second->Signatures[j] == playerguid)
-				{
-					m_charterLock.ReleaseReadLock();
-					return itr->second;
-				}
 			}
 		}
 	}

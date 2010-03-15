@@ -535,7 +535,7 @@ void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 	uint16 crap10;
 	uint32 crap11;
 	uint32 crap12, PetitionSignerCount;
-	string PetitionSignerNames[9];
+	string PetitionSignerNames[10];
 	uint32 crap13, arena_index;
 
 		
@@ -546,16 +546,11 @@ void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 	recv_data >> Data[0] >> Data[1] >> Data[2] >> Data[3] >> Data[4] >> Data[5] >> Data[6];
 	recv_data >> crap10;
 	recv_data >> crap11 >> crap12 >> PetitionSignerCount;
-	if(PetitionSignerCount > 0)
+	for (uint32 s = 0; s < 10; ++s)
 	{
-		for (uint32 s = 0; s < PetitionSignerCount; ++s)
-		{
-			if(s < 9)
-				recv_data >> PetitionSignerNames[s];
-		}
+		recv_data >> PetitionSignerNames[s];
 	}
-	recv_data >> crap13 >> arena_index;
-
+	recv_data >> arena_index;
 
 	Creature * crt = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(creature_guid));
 	if(!crt)
@@ -570,7 +565,7 @@ void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 		if(arena_type > 2)
 			return;
 
-		if(_player->m_arenaTeams[arena_type] || _player->m_charters[arena_index])
+		if(_player->m_arenaTeams[arena_type])
 		{
 			SendNotification(_player->GetSession()->LocalizedWorldSrv(71));
 			return;
@@ -589,7 +584,7 @@ void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 			return;
 		}
 
-		if(_player->m_charters[arena_type])
+		if(_player->m_charters[arena_index])
 		{
 			SendNotification(_player->GetSession()->LocalizedWorldSrv(73));
             return;
