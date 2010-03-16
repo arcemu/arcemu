@@ -526,14 +526,15 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 		{
 		case SPELL_HASH_METEOR_SLASH:
 			{
-				int splitCount = 0;
+				uint32 splitCount = 0;
 				for( std::set<Object*>::iterator itr = u_caster->GetInRangeOppFactsSetBegin(); itr != u_caster->GetInRangeOppFactsSetEnd(); ++itr )
 				{
 					if( (*itr)->isInFront( u_caster ) && u_caster->CalcDistance( (*itr) ) <= 65 )
 						splitCount++;
 				};
-
-				dmg = dmg / splitCount;
+				
+				if(splitCount != 0)
+					dmg = dmg / splitCount;
 			}break;
 		case SPELL_HASH_PULSING_SHOCKWAVE: // loken Pulsing shockwave 
 			{
