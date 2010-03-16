@@ -355,7 +355,6 @@ void WorldSession::HandleStabledPetList(WorldPacket & recv_data)
 
 	data << uint8(_player->m_Pets.size());
 	data << uint8(_player->m_StableSlotCount);
-	uint8 i = 0;
 	for(std::map<uint32, PlayerPet*>::iterator itr = _player->m_Pets.begin(); itr != _player->m_Pets.end(); ++itr)
 	{
 		data << uint32( itr->first );			// pet no
@@ -366,8 +365,7 @@ void WorldSession::HandleStabledPetList(WorldPacket & recv_data)
 			data << uint8(STABLE_STATE_ACTIVE);
 		else
 		{
-			data << uint8(STABLE_STATE_PASSIVE + i);
-			i++;
+			data << uint8(STABLE_STATE_PASSIVE + 1);
 		}
 	}
 

@@ -536,7 +536,7 @@ void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 	uint32 crap11;
 	uint32 crap12, PetitionSignerCount;
 	string PetitionSignerNames[10];
-	uint32 crap13, arena_index;
+	uint32 arena_index;
 
 		
 	recv_data >> creature_guid;
