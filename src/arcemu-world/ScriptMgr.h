@@ -253,7 +253,7 @@ public:
 	virtual void OnLootTaken(Player* pPlayer, ItemPrototype *pItemPrototype) {}
 	virtual void AIUpdate() {}
 	virtual void OnEmote(Player * pPlayer, EmoteType Emote) {}
-	virtual void StringFunctionCall(uint16) {}
+	virtual void StringFunctionCall(int) {}
 
 	void RegisterAIUpdateEvent(uint32 frequency);
 	void ModifyAIUpdateEvent(uint32 newfrequency);

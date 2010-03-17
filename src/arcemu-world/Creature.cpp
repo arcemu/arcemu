@@ -1881,7 +1881,7 @@ void Creature::Despawn(uint32 delay, uint32 respawntime)
 	}
 }
 
-void Creature::TriggerScriptEvent(uint16 fRef)
+void Creature::TriggerScriptEvent(int fRef)
 {
 	if( _myScriptClass )
 		_myScriptClass->StringFunctionCall(fRef);
