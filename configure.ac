@@ -35,6 +35,10 @@ AH_TEMPLATE([NO_DBLAYER_MYSQL], Define this if you want to disable mysql support
 AH_TEMPLATE([ENABLE_DATABASE_POSTGRES], Define this if you want postgres support.)
 AH_TEMPLATE([ENABLE_DATABASE_SQLITE], Define this if you want sqlite support.)
 
+# Reset 
+CFLAGS=""
+CXXFLAGS=""
+
 # Default prefix
 AC_PREFIX_DEFAULT(`pwd`)
 test "$prefix" = "NONE" && prefix=`pwd`
