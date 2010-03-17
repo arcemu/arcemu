@@ -726,3 +726,29 @@ void WorldSession::SendSpiritHealerRequest(Creature* pCreature)
 	data << pCreature->GetGUID();
 	SendPacket(&data);
 }
+
+void WorldSession::SendStabledPetList(uint64 npcguid)
+{
+	WorldPacket data(10 + (_player->m_Pets.size() * 25));
+	data.SetOpcode(MSG_LIST_STABLED_PETS);
+
+	data << npcguid;
+
+	data << uint8(_player->m_Pets.size());
+	data << uint8(_player->m_StableSlotCount);
+	for(std::map<uint32, PlayerPet*>::iterator itr = _player->m_Pets.begin(); itr != _player->m_Pets.end(); ++itr)
+	{
+		data << uint32( itr->first );			// pet no
+		data << uint32( itr->second->entry );	// entryid
+		data << uint32( itr->second->level );	// level
+		data << itr->second->name;			// name
+		if( itr->second->stablestate == STABLE_STATE_ACTIVE )
+			data << uint8(STABLE_STATE_ACTIVE);
+		else
+		{
+			data << uint8(STABLE_STATE_PASSIVE + 1);
+		}
+	}
+
+	SendPacket(&data);
+}

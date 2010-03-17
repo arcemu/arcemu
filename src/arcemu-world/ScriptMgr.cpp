@@ -789,15 +789,19 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 	if (pCreature->isTabardDesigner())
 		Menu->AddItem(0, Plr->GetSession()->LocalizedWorldSrv(20), 9);
 
+	if ( pCreature->isStableMaster() && Plr->getClass() == HUNTER )
+		Menu->AddItem(0, "I'd like to stable my pet here.", 17);
+
 	if(AutoSend)
 		Menu->SendTo(Plr);
 }
 
 void GossipScript::GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, uint32 IntId, const char * EnteredCode)
 {
-	Creature* pCreature = static_cast< Creature* >( pObject );
 	if( pObject->GetTypeId() != TYPEID_UNIT )
 		return;
+
+	Creature* pCreature = static_cast< Creature* >( pObject );
 
 	sLog.outDebug("GossipSelectOption: Id = %u, IntId = %u", Id, IntId);
 
@@ -898,6 +902,10 @@ void GossipScript::GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, u
 			Plr->SaveToDB(false); // hai gm i bought dual spec but no werk plis gief mi 1000g back - GTFO you never bought anything
 			Plr->Gossip_Complete();
 		}
+		break;
+
+	case 17:
+		Plr->GetSession()->SendStabledPetList(pCreature->GetGUID());
 		break;
 
 	default:

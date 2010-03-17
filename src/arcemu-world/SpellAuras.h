@@ -483,6 +483,7 @@ public:
 	Object* GetCaster();
 	ARCEMU_INLINE uint64 GetCasterGUID(){return m_casterGuid;}
 	Unit* GetUnitCaster();
+	Player* GetPlayerCaster();
 	ARCEMU_INLINE Unit* GetTarget() { return m_target; }
 
 	Aura* StrongerThat(Aura *aur);
@@ -726,6 +727,7 @@ public:
 	void SpellAuraModBaseHealth(bool apply);
 	void SpellAuraModAttackPowerOfArmor(bool apply);
 	void SpellAuraReflectSpellsInfront(bool apply);
+	void SpellAuraCallStabledPet(bool apply);
 	void UpdateAuraModDecreaseSpeed();
 
 	void SendModifierLog(int32 ** m,int32 v,uint32* mask,uint8 type,bool pct = false);

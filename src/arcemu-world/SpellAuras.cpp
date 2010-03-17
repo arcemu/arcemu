@@ -313,7 +313,7 @@ pSpellAura SpellAuraHandler[TOTAL_SPELL_AURAS]={
 		&Aura::SpellAuraNULL,//289 unused
 		&Aura::SpellAuraNULL,//290 unused
 		&Aura::SpellAuraNULL,//291 unused
-		&Aura::SpellAuraNULL,//292 call stabled pet
+		&Aura::SpellAuraCallStabledPet,//292 call stabled pet
 		&Aura::SpellAuraNULL,//293 2 test spells
 		&Aura::SpellAuraNULL,//294 2 spells, possible prevent mana regen
 		&Aura::SpellAuraNULL,//295
@@ -634,7 +634,7 @@ const char* SpellAuraNames[TOTAL_SPELL_AURAS] = {
 	"",													// 289
 	"",													// 290
 	"",													// 291
-	"",													// 292
+	"SPELL_AURA_CALL_STABLED_PET",						// 292
 	"",													// 293
 	"",													// 294
 	"",													// 295
@@ -708,6 +708,13 @@ ARCEMU_INLINE void ApplyFloatPSM(float ** m,int32 v,uint32 mask, float def)
 		}
 	}
 }*/
+Player * Aura::GetPlayerCaster()
+{
+	if( GET_TYPE_FROM_GUID( m_casterGuid ) == HIGHGUID_TYPE_PLAYER )
+		return objmgr.GetPlayer( (uint32)m_casterGuid );
+
+	return NULL;
+}
 
 Unit * Aura::GetUnitCaster()
 {
@@ -9788,5 +9795,15 @@ void Aura::SpellAuraPhase(bool apply)
 			data << uint32(m_target->m_phase);
 			static_cast<Player*>(m_target)->GetSession()->SendPacket(&data);
 		}
+	}
+}
+
+void Aura::SpellAuraCallStabledPet(bool apply)
+{
+	if(apply)
+	{
+		Player* pcaster = GetPlayerCaster();
+		if( pcaster != NULL && pcaster->getClass() == HUNTER && pcaster->GetSession() != NULL )
+			pcaster->GetSession()->SendStabledPetList(0);
 	}
 }

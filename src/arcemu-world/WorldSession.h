@@ -772,6 +772,7 @@ public:
 	void SendAuctionList(Creature* pCreature);
 	void SendSpiritHealerRequest(Creature* pCreature);
 	void SendAccountDataTimes(uint32 mask);
+	void SendStabledPetList(uint64 npcguid);
 	void FullLogin(Player * plr);
     void SendMOTD();
 
