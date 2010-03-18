@@ -3643,6 +3643,12 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		_RemoveSkillLine(SKILL_DUAL_WIELD);
 	}
 
+	// update achievements before adding player to World, otherwise we'll get a nice race condition.
+	//move CheckAllAchievementCriteria() after FullLogin(this) and i'll cut your b***s.
+#ifdef ENABLE_ACHIEVEMENTS
+	m_achievementMgr.CheckAllAchievementCriteria();
+#endif
+
 	m_session->FullLogin(this);
 	m_session->m_loggingInPlayer = NULL;
 
@@ -3691,11 +3697,6 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 			}
 		}
 	}
-	// update achievements
-#ifdef ENABLE_ACHIEVEMENTS
-	m_achievementMgr.CheckAllAchievementCriteria();
-#endif
-
 }
 
 void Player::SetPersistentInstanceId(Instance *pInstance)
