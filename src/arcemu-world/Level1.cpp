@@ -860,7 +860,7 @@ bool ChatHandler::HandleTriggerCommand(const char* args, WorldSession* m_session
 	int32 instance_id;
 	uint32 trigger_id;
 	int valcount = sscanf(args, "%u %d", (unsigned int*)&trigger_id, (int*)&instance_id);
-	if(!valcount)
+	if(valcount < 1)
 		return false;
 	if(valcount == 1)
 		instance_id = 0;
@@ -922,7 +922,7 @@ bool ChatHandler::HandleNpcSpawnLinkCommand(const char* args, WorldSession *m_se
 		return false;
 
 	int valcount = sscanf(args, "%u", (unsigned int*)&id);
-	if(valcount)
+	if(valcount == 1)
 	{
 		snprintf(sql, 512, "UPDATE creature_spawns SET npc_respawn_link = '%u' WHERE id = '%u'", (unsigned int)id, (unsigned int)target->GetSQL_id());
 		WorldDatabase.Execute( sql );

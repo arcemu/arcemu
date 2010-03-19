@@ -183,7 +183,7 @@ void ApplyNormalFixes()
 			sp->talent_tree = talentSpellIterator->second;
 
 		// parse rank text
-		if( !sscanf( sp->Rank, "Rank %d", (unsigned int*)&rank) )
+		if( sscanf( sp->Rank, "Rank %d", (unsigned int*)&rank) != 1)
 			rank = 0;
 
 		//seal of command

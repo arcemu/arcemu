@@ -634,7 +634,7 @@ bool ChatHandler::HandleUnBanCharacterCommand(const char* args, WorldSession *m_
 		return false;
 
 	char Character[255];
-	if(sscanf(args, "%s", Character) == 0)
+	if(sscanf(args, "%s", Character) != 1)
 	{
 		RedSystemMessage(m_session, "A character name and reason is required.");
 		return true;
