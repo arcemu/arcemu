@@ -307,7 +307,7 @@ enum MOD_TYPES
 	SPELL_AURA_INCREASE_SPELL_DOT_DAMAGE_PCT = 271,
 	SPELL_AURA_272 = 272,
 	SPELL_AURA_273 = 273,
-	SPELL_AURA_274 = 274,
+	SPELL_AURA_CONSUMES_NO_AMMO = 274,
 	SPELL_AURA_275 = 275,
 	SPELL_AURA_276 = 276,
 	SPELL_AURA_277 = 277,
@@ -721,6 +721,7 @@ public:
 	void SpellAuraAllowOnlyAbility(bool apply);
 	void SpellAuraIncreaseAPbyStatPct(bool apply);
 	void SpellAuraModSpellDamageDOTPct(bool apply);
+	void SpellAuraConsumeNoAmmo( bool apply );
 	void SpellAuraIgnoreShapeshift(bool apply);
 	void SpellAuraPhase(bool apply);
 	void SpellAuraModIgnoreArmorPct(bool apply);

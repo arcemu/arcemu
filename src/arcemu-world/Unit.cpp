@@ -6239,6 +6239,16 @@ int Unit::HasAurasWithNameHash(uint32 name_hash)
 	return 0;
 }
 
+bool Unit::HasAuraWithEffect( uint32 effect ){
+
+	for( uint32 i = MAX_TOTAL_AURAS_START; i < MAX_TOTAL_AURAS_END; ++i ){		
+		if( m_auras[ i ] != NULL && m_auras[ i ]->GetSpellProto()->HasEffect( effect ) )
+			return true;
+	}
+
+	return false;
+}
+
 bool Unit::HasAuraWithMechanics(uint32 mechanic)
 {
 	for( uint32 x = MAX_NEGATIVE_AURAS_EXTEDED_START; x < MAX_NEGATIVE_AURAS_EXTEDED_END; ++x )

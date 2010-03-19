@@ -1453,6 +1453,7 @@ public:
 	void RemoveAurasByBuffType(uint32 buff_type, const uint64 &guid,uint32 skip);
 	bool HasAurasOfBuffType(uint32 buff_type, const uint64 &guid,uint32 skip);
 	int	 HasAurasWithNameHash(uint32 name_hash);
+	bool HasAuraWithEffect( uint32 effect );
 	bool IsPoisoned();
 
 	AuraCheckResponse AuraCheck(SpellEntry *proto, Object *caster= NULL);

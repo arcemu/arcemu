@@ -295,7 +295,7 @@ pSpellAura SpellAuraHandler[TOTAL_SPELL_AURAS]={
 		&Aura::SpellAuraModSpellDamageDOTPct,//271
 		&Aura::SpellAuraNULL,//272 Unknown
 		&Aura::SpellAuraNULL,//273 Some sort of dummy aura? (http://thottbot.com/s54844 + http://thottbot.com/s26659)
-		&Aura::SpellAuraNULL,//274 Consumes no ammo
+		&Aura::SpellAuraConsumeNoAmmo,//274 Consumes no ammo
 		&Aura::SpellAuraIgnoreShapeshift,//275 Ignore unit states
 		&Aura::SpellAuraNULL,//276 Mod Damage % Mechanic
 		&Aura::SpellAuraNULL,//277 SPELL_AURA_REDIRECT_THREAT or SPELL_AURA_MOD_MAX_AFFECTED_TARGETS ?
@@ -616,7 +616,7 @@ const char* SpellAuraNames[TOTAL_SPELL_AURAS] = {
 	"SPELL_AURA_INCREASE_SPELL_DOT_DAMAGE_PCT",			// 271
 	"",													// 272
 	"",													// 273
-	"",													// 274
+	"SPELL_AURA_CONSUMES_NO_AMMO",						// 274
 	"",													// 275
 	"",													// 276
 	"",													// 277
@@ -1714,7 +1714,7 @@ void Aura::SpellAuraDummy(bool apply)
 	case 46699:
 		{
 			if( p_target )
-				p_target->m_requiresNoAmmo = apply;
+				SpellAuraConsumeNoAmmo( apply );
 
 		}break;
 	//Hunter - Bestial Wrath & The Beast Within
@@ -9660,6 +9660,19 @@ void Aura::SpellAuraModSpellDamageDOTPct(bool apply)
 				m_target->DoTPctIncrease[x] += val;
 			}
 		}
+}
+
+void Aura::SpellAuraConsumeNoAmmo( bool apply ){
+	if( p_target == NULL )
+		return;
+
+	if( apply ){
+		p_target->m_requiresNoAmmo = true;
+	}else{
+		
+		if( !p_target->HasAurasWithNameHash( SPELL_HASH_REQUIRES_NO_AMMO ) && !p_target->HasAuraWithEffect( SPELL_AURA_CONSUMES_NO_AMMO ) )
+			p_target->m_requiresNoAmmo = false;
+	}
 }
 
 void Aura::SpellAuraIgnoreShapeshift( bool apply )

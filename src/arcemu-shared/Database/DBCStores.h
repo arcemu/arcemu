@@ -840,105 +840,14 @@ struct SpellEntry
 	bool   noproc;
 
 	uint32 SchoolMask;                      // Custom
-/*
-//3.0.1 client column namings
-m_id
-m_category
-m_castUI
-m_dispelType
-m_mechanic
-m_attributes
-m_attributesEx
-m_attributesExB
-m_attributesExC
-m_attributesExD
-m_attributesExE
-m_attributesExF
-m_shapeshiftMask
-m_shapeshiftExclude
-m_targets
-m_targetCreatureType
-m_requiresSpellFocus
-m_facingCasterFlags
-m_casterAuraState
-m_targetAuraState
-m_excludeCasterAuraState
-m_excludeTargetAuraState
-m_castingTimeIndex
-m_recoveryTime
-m_categoryRecoveryTime
-m_interruptFlags
-m_auraInterruptFlags
-m_channelInterruptFlags
-m_procTypeMask
-m_procChance
-m_procCharges
-m_maxLevel
-m_baseLevel
-m_spellLevel
-m_durationIndex
-m_powerType
-m_manaCost
-m_manaCostPerLevel
-m_manaPerSecond
-m_manaPerSecondPerLevel
-m_rangeIndex
-m_speed
-m_modalNextSpell
-m_cumulativeAura
-m_totem
-m_reagent
-m_reagentCount
-m_equippedItemClass
-m_equippedItemSubclass
-m_equippedItemInvTypes
-m_effect
-m_effectDieSides
-m_effectBaseDice
-m_effectDicePerLevel
-m_effectRealPointsPerLevel
-m_effectBasePoints
-m_effectMechanic
-m_implicitTargetA
-m_implicitTargetB
-m_effectRadiusIndex
-m_effectAura
-m_effectAuraPeriod
-m_effectAmplitude
-m_effectChainTargets
-m_effectItemType
-m_effectMiscValue
-m_effectMiscValueB
-m_effectTriggerSpell
-m_effectPointsPerCombo
-m_spellVisualID
-m_spellIconID
-m_activeIconID
-m_spellPriority
-m_name_lang
-m_nameSubtext_lang
-m_description_lang
-m_auraDescription_lang
-m_manaCostPct
-m_startRecoveryCategory
-m_startRecoveryTime
-m_maxTargetLevel
-m_spellClassSet
-m_spellClassMask
-m_maxTargets
-m_defenseType
-m_preventionType
-m_stanceBarOrder
-m_effectChainAmplitude
-m_minFactionID
-m_minReputation
-m_requiredAuraVision
-m_requiredTotemCategoryID
-m_requiredAreaID
-m_schoolMask
-m_RuneCostID
-m_spellMissileID
-*/
+	
+	
+	bool HasEffect( uint32 effect ){
+		for( uint32 i = 0; i < 3; ++i )
+			if( Effect[ i ] == effect )
+				return true;
+		return false;
+	}
 };
 
 struct SpellRuneCostEntry
