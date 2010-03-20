@@ -9669,9 +9669,21 @@ void Aura::SpellAuraConsumeNoAmmo( bool apply ){
 	if( apply ){
 		p_target->m_requiresNoAmmo = true;
 	}else{
-		
-		if( !p_target->HasAurasWithNameHash( SPELL_HASH_REQUIRES_NO_AMMO ) && !p_target->HasAuraWithEffect( SPELL_AURA_CONSUMES_NO_AMMO ) )
-			p_target->m_requiresNoAmmo = false;
+		bool other = false;
+
+		// we have Thori'dal too
+		if( m_spellProto->NameHash != SPELL_HASH_REQUIRES_NO_AMMO && p_target->HasAurasWithNameHash( SPELL_HASH_REQUIRES_NO_AMMO ) )
+			other = true;
+
+		// We are unequipping Thori'dal but have an aura with no ammo consumption effect
+		if( m_spellProto->NameHash == SPELL_HASH_REQUIRES_NO_AMMO && p_target->HasAuraWithName( SPELL_AURA_CONSUMES_NO_AMMO ) )
+			other = true;
+
+		// We have more than 1 aura with no ammo consumption effect
+		if( p_target->GetAuraCountWithName( SPELL_AURA_CONSUMES_NO_AMMO ) >= 2 )
+			other = true;
+
+		p_target->m_requiresNoAmmo = other;
 	}
 }
 

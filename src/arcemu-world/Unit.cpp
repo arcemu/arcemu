@@ -6239,14 +6239,25 @@ int Unit::HasAurasWithNameHash(uint32 name_hash)
 	return 0;
 }
 
-bool Unit::HasAuraWithEffect( uint32 effect ){
+bool Unit::HasAuraWithName( uint32 name ){
 
 	for( uint32 i = MAX_TOTAL_AURAS_START; i < MAX_TOTAL_AURAS_END; ++i ){		
-		if( m_auras[ i ] != NULL && m_auras[ i ]->GetSpellProto()->HasEffect( effect ) )
+		if( m_auras[ i ] != NULL && m_auras[ i ]->GetSpellProto()->AppliesAura( name ) )
 			return true;
 	}
 
 	return false;
+}
+
+uint32 Unit::GetAuraCountWithName( uint32 name ){
+	uint32 count = 0;
+
+	for( uint32 i = MAX_TOTAL_AURAS_START; i < MAX_TOTAL_AURAS_END; ++i ){
+		if( m_auras[ i ] != NULL && m_auras[ i ]->GetSpellProto()->AppliesAura( name ) )
+			++count;
+	}
+
+	return count;
 }
 
 bool Unit::HasAuraWithMechanics(uint32 mechanic)

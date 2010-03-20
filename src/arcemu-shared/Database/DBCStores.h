@@ -848,6 +848,15 @@ struct SpellEntry
 				return true;
 		return false;
 	}
+
+	bool AppliesAura( uint32 aura ){
+		for( uint32 i = 0; i < 3; ++i ){
+			if( ( Effect[ i ] == 6 || Effect[ i ] == 119 || Effect[ i ] == 128 ) && EffectApplyAuraName[ i ] == aura )
+				return true;
+		}
+
+		return false;
+	}
 };
 
 struct SpellRuneCostEntry
