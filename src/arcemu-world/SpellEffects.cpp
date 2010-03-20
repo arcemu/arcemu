@@ -533,7 +533,7 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 						splitCount++;
 				};
 				
-				if(splitCount != 0)
+				if( splitCount > 1 )
 					dmg = dmg / splitCount;
 			}break;
 		case SPELL_HASH_PULSING_SHOCKWAVE: // loken Pulsing shockwave 
@@ -670,8 +670,8 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 					if( (*itr)->isInFront( u_caster ) )
 						splitCount++;
 				};
-
-				dmg = dmg / splitCount;
+				if( splitCount > 1 )
+					dmg /= splitCount;
 			}break;
 		
 		default:
