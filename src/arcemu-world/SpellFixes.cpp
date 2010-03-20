@@ -1172,10 +1172,6 @@ void ApplyNormalFixes()
 			}
 		}
 
-		///	SPELLS CAN CRIT ///
-		sp->spell_can_crit = true; // - except in special cases noted in this section
-
-
 		//////////////////////////////////////////////////////
 		// CLASS-SPECIFIC SPELL FIXES						//
 		//////////////////////////////////////////////////////
@@ -1194,10 +1190,6 @@ void ApplyNormalFixes()
 		//////////////////////////////////////////
 
 		// Insert paladin spell fixes here
-
-		// Seal of Righteousness - cannot crit
-		if( sp->NameHash == SPELL_HASH_SEAL_OF_RIGHTEOUSNESS )
-			sp->spell_can_crit = false;
 
 		// Shield of Righteousness
 		if( sp->NameHash == SPELL_HASH_SHIELD_OF_RIGHTEOUSNESS)
@@ -1292,10 +1284,6 @@ void ApplyNormalFixes()
 		   sp->fixed_dddhcoef = 0.1f;
 		   sp->School = 2;
 		}
-
-		// Lightning Shield - cannot crit
-		if( sp->NameHash == SPELL_HASH_LIGHTNING_SHIELD ) // not a mistake, the correct proc spell for lightning shield is also called lightning shield
-			sp->spell_can_crit = false;
 
 		// Frostbrand Weapon - 10% spd coefficient
 		if( sp->NameHash == SPELL_HASH_FROSTBRAND_ATTACK )

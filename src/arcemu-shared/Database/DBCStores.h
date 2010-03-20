@@ -836,7 +836,6 @@ struct SpellEntry
 	bool   always_apply;
 	bool   is_melee_spell;                  //!!! CUSTOM,
 	bool   is_ranged_spell;                 //!!! CUSTOM,
-	bool   spell_can_crit;                  //!!! CUSTOM,
 	bool   noproc;
 
 	uint32 SchoolMask;                      // Custom

@@ -3633,6 +3633,9 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 		block = 0.0f;
 	}
 
+	if( ability && ability->AttributesExB & ATTRIBUTESEXB_CANT_CRIT )
+		crit = 0.0f;
+
 //--------------------------------by victim state-------------------------------------------
 	if(pVictim->IsPlayer()&&pVictim->GetStandState()) //every not standing state is >0
 	{

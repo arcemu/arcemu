@@ -2769,7 +2769,7 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 //==========================================================================================
 		if( res < 0 )
 			res = 0;
-		else if( spellInfo->spell_can_crit == true )
+		else if( !( spellInfo->AttributesExB & ATTRIBUTESEXB_CANT_CRIT ) )
 		{
 //------------------------------critical strike chance--------------------------------------
 			// lol ranged spells were using spell crit chance
