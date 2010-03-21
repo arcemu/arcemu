@@ -3285,20 +3285,38 @@ void Spell::SpellEffectSummon(uint32 i)
 
 			p_caster->SetPower( POWER_TYPE_RUNIC_POWER, 0 ); //Drains all runic power.
 		}break;
+	case 31893://Lightwells
+	case 31894:
+	case 31895:
+	case 31896:
+	case 31897:
+	case 31883: 
+		{
+			Creature * pCreature = u_caster->GetMapMgr()->CreateCreature(cp->Id);
+			Arcemu::Util::ARCEMU_ASSERT(   pCreature != NULL);
+
+			pCreature->Load(cp, m_targets.m_destX, m_targets.m_destY, m_targets.m_destZ);
+			pCreature->GetAIInterface()->Init(pCreature, AITYPE_PASSIVE, MOVEMENTTYPE_NONE);
+			pCreature->setLevel(u_caster->getLevel());
+			pCreature->SetFaction(u_caster->GetFaction());
+
+			pCreature->PushToWorld(u_caster->GetMapMgr());
+			sEventMgr.AddEvent(pCreature, &Creature::RemoveFromWorld, false, true, EVENT_CREATURE_REMOVE_CORPSE, GetDuration(), 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+			
+			pCreature->CastSpell(pCreature, 59907, true);
+		}break;
 	default:
 		{
 			Creature * pCreature = u_caster->GetMapMgr()->CreateCreature(cp->Id);
 			Arcemu::Util::ARCEMU_ASSERT(   pCreature != NULL);
 
 			pCreature->Load(cp, u_caster->GetPositionX(), u_caster->GetPositionY(), u_caster->GetPositionZ());
-			pCreature->_setFaction();
 			pCreature->GetAIInterface()->Init(pCreature,AITYPE_PET,MOVEMENTTYPE_NONE,u_caster);
 			pCreature->GetAIInterface()->SetUnitToFollow(u_caster);
 			pCreature->GetAIInterface()->SetUnitToFollowAngle(float(-(M_PI/2)));
 			pCreature->GetAIInterface()->SetFollowDistance(GetRadius(i));
 			pCreature->setLevel(u_caster->getLevel());
 			pCreature->SetFaction(u_caster->GetFaction());
-			pCreature->_setFaction();
 
 			pCreature->SetSummonedByGUID( u_caster->GetGUID());
 			pCreature->SetCreatedByGUID( u_caster->GetGUID());
@@ -3335,12 +3353,6 @@ void Spell::SpellEffectSummon(uint32 i)
 				pCreature->CastSpell(pCreature,50142,true);
 			}
 
-			if ( MiscValue == 31893 || MiscValue == 31894 || MiscValue == 31895 || MiscValue == 31896 || MiscValue == 31897 || MiscValue == 31883) //Light wells!
-			{
-				pCreature->CastSpell(pCreature, 59907, true);
-				sEventMgr.AddEvent(pCreature, &Creature::RemoveFromWorld, false, true, EVENT_CREATURE_REMOVE_CORPSE, 180000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-				break;
-			}
 			pCreature->PushToWorld(u_caster->GetMapMgr());
 
 			sEventMgr.AddEvent(pCreature, &Creature::RemoveFromWorld, false, true, EVENT_CREATURE_REMOVE_CORPSE, GetDuration(), 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);

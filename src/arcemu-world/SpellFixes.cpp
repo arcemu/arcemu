@@ -4212,63 +4212,6 @@ void ApplyNormalFixes()
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_SINGLE_FRIEND;
 		}
 
-
-		//Ranger: Priest - Lightwell (rewrite, based on 2.4.3)
-		sp = dbcSpell.LookupEntryForced( 724 );
-		if ( sp != NULL )
-		{
-			sp->Effect[0] = 50;
-			sp->EffectImplicitTargetA[0] = 52;
-			sp->EffectRadiusIndex[0] = 7;
-			sp->EffectMiscValue[0] = 3000000; //Gameobject in DB
-		}
-
-		sp = dbcSpell.LookupEntryForced( 27870 );
-		if ( sp != NULL )
-		{
-			sp->Effect[0] = 50;
-			sp->EffectImplicitTargetA[0] = 52;
-			sp->EffectRadiusIndex[0] = 7;
-			sp->EffectMiscValue[0] = 3000001; //Gameobject in DB
-		}
-
-		sp = dbcSpell.LookupEntryForced( 27871 );
-		if ( sp != NULL )
-		{
-			sp->Effect[0] = 50;
-			sp->EffectImplicitTargetA[0] = 52;
-			sp->EffectRadiusIndex[0] = 7;
-			sp->EffectMiscValue[0] = 3000002; //Gameobject in DB
-		}
-
-		sp = dbcSpell.LookupEntryForced( 28275 );
-		if ( sp != NULL )
-		{
-			sp->Effect[0] = 50;
-			sp->EffectImplicitTargetA[0] = 52;
-			sp->EffectRadiusIndex[0] = 7;
-			sp->EffectMiscValue[0] = 3000003; //Gameobject in DB
-		}
-
-		sp = dbcSpell.LookupEntryForced( 48086 );
-		if ( sp != NULL )
-		{
-			sp->Effect[0] = 50;
-			sp->EffectImplicitTargetA[0] = 52;
-			sp->EffectRadiusIndex[0] = 7;
-			sp->EffectMiscValue[0] = 3000004; //Gameobject in DB
-		}
-
-		sp = dbcSpell.LookupEntryForced( 48087 );
-		if ( sp != NULL )
-		{
-			sp->Effect[0] = 50;
-			sp->EffectImplicitTargetA[0] = 52;
-			sp->EffectRadiusIndex[0] = 7;
-			sp->EffectMiscValue[0] = 3000005; //Gameobject in DB
-		}
-
-
 		//Grace Rank 1
 		sp = dbcSpell.LookupEntryForced(47516);
 		if(sp != NULL)
