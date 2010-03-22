@@ -1157,7 +1157,6 @@ bool ChatHandler::HandleLookupAchievementCmd(const char* args, WorldSession* m_s
 	uint32 t = getMSTime();
 	uint32 i, j, numFound= 0;
 	string y, recout;
-	std::set<uint8, uint32> foundList;
 	char playerGUID[17];
 	snprintf(playerGUID,17,I64FMT,m_session->GetPlayer()->GetGUID());
 

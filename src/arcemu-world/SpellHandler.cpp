@@ -518,9 +518,9 @@ void WorldSession::HandlePetCastSpell(WorldPacket & recvPacket)
 		targets.m_unitTarget = guid;
 	else if(flags & TARGET_FLAG_UNIT)
 	{
-		WoWGuid guid;
-		recvPacket >> guid;
-		targets.m_unitTarget = guid.GetOldGuid();
+		WoWGuid guid2;
+		recvPacket >> guid2;
+		targets.m_unitTarget = guid2.GetOldGuid();
 	}
 	else if(flags & TARGET_FLAG_SOURCE_LOCATION)
 	{

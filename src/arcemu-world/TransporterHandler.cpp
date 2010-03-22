@@ -219,7 +219,7 @@ bool Transporter::GenerateWaypoints()
 					newY = keyFrames[i].y + (keyFrames[i + 1].y - keyFrames[i].y) * d / keyFrames[i + 1].distFromPrev;
 					newZ = keyFrames[i].z + (keyFrames[i + 1].z - keyFrames[i].z) * d / keyFrames[i + 1].distFromPrev;
 
-					bool teleport = false;
+					teleport = false;
 					if ((int)keyFrames[i].mapid != cM)
 					{
 						teleport = true;
@@ -227,10 +227,10 @@ bool Transporter::GenerateWaypoints()
 					}
 
 					//					sLog.outString("T: %d, D: %f, x: %f, y: %f, z: %f", t, d, newX, newY, newZ);
-					TWayPoint pos(keyFrames[i].mapid, newX, newY, newZ, teleport);
+					TWayPoint pos2(keyFrames[i].mapid, newX, newY, newZ, teleport);
 					if (teleport || ((t - last_t) >= 1000))
 					{
-						m_WayPoints[t] = pos;
+						m_WayPoints[t] = pos2;
 						last_t = t;
 					}
 				}
@@ -269,23 +269,23 @@ bool Transporter::GenerateWaypoints()
 		else
 			t += (long)keyFrames[i + 1].tTo % 100;
 
-		bool teleport = false;
+		teleport = false;
 		if ((keyFrames[i + 1].actionflag == 1) || (keyFrames[i + 1].mapid != keyFrames[i].mapid))
 		{
 			teleport = true;
 			cM = keyFrames[i + 1].mapid;
 		}
 
-		TWayPoint pos(keyFrames[i + 1].mapid, keyFrames[i + 1].x, keyFrames[i + 1].y, keyFrames[i + 1].z, teleport);
+		TWayPoint pos2(keyFrames[i + 1].mapid, keyFrames[i + 1].x, keyFrames[i + 1].y, keyFrames[i + 1].z, teleport);
 
 		//		sLog.outString("T: %d, x: %f, y: %f, z: %f, t:%d", t, pos.x, pos.y, pos.z, teleport);
 
 		//if (teleport)
 		//m_WayPoints[t] = pos;
 		if(keyFrames[i+1].delay > 5)
-			pos.delayed = true;
+			pos2.delayed = true;
 
-		m_WayPoints.insert(WaypointMap::value_type(t, pos));
+		m_WayPoints.insert(WaypointMap::value_type(t, pos2));
 		last_t = t;
 
 		t += keyFrames[i + 1].delay * 1000;

@@ -104,7 +104,7 @@ void InstanceMgr::Load(TaskList * l)
 			if(strlen(id) <= 20)
 				continue;
 			uint32 mapId = atoi(id + 20);
-			if(mapId > NUM_MAPS)
+			if(mapId >= NUM_MAPS)
 				continue;
 			m_nextInstanceReset[mapId] = value;
 		}while(result->NextRow());

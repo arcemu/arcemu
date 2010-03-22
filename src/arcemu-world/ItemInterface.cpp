@@ -1814,7 +1814,7 @@ uint32 ItemInterface::CalculateFreeSlots(ItemPrototype *proto)
 		{
 			if(proto->BagFamily & ITEM_TYPE_KEYRING || proto->Class == ITEM_CLASS_KEY)
 			{
-				for(uint32 i = INVENTORY_KEYRING_START; i < INVENTORY_KEYRING_END; i++)
+				for(i = INVENTORY_KEYRING_START; i < INVENTORY_KEYRING_END; i++)
 				{
 					if(m_pItems[i] == NULL)
 					{
@@ -1824,7 +1824,7 @@ uint32 ItemInterface::CalculateFreeSlots(ItemPrototype *proto)
 			}
 			else if(proto->BagFamily & ITEM_TYPE_CURRENCY )
 			{
-				for(uint32 i = CURRENCYTOKEN_SLOT_START; i < CURRENCYTOKEN_SLOT_END; i++)
+				for(i = CURRENCYTOKEN_SLOT_START; i < CURRENCYTOKEN_SLOT_END; i++)
 				{
 					if(m_pItems[i] == NULL)
 					{
@@ -1834,7 +1834,7 @@ uint32 ItemInterface::CalculateFreeSlots(ItemPrototype *proto)
 			}
 			else
 			{
-				for(uint32 i = INVENTORY_SLOT_BAG_START; i < INVENTORY_SLOT_BAG_END;i++)
+				for(i = INVENTORY_SLOT_BAG_START; i < INVENTORY_SLOT_BAG_END;i++)
 				{
 					if(m_pItems[i] && m_pItems[i]->IsContainer())
 					{

@@ -154,7 +154,7 @@ void LfgMgr::RemovePlayerFromLfgQueue( Player* plr, uint32 LfgDungeonId )
 
 void LfgMgr::UpdateLfgQueue(uint32 LfgDungeonId)
 {
-	if( LfgDungeonId > MAX_DUNGEONS )
+	if( LfgDungeonId >= MAX_DUNGEONS )
 		return;
 
 	LfgPlayerList possibleGroupLeaders;

@@ -578,11 +578,11 @@ void ObjectMgr::LoadPlayerCreateInfo()
 		{
 			do
 			{
-				Field *fields = sk_sql->Fetch();
+				Field *fields2 = sk_sql->Fetch();
 				CreateInfo_SkillStruct tsk;
-				tsk.skillid = fields[1].GetUInt32();
-				tsk.currentval = fields[2].GetUInt32();
-				tsk.maxval = fields[3].GetUInt32();
+				tsk.skillid = fields2[1].GetUInt32();
+				tsk.currentval = fields2[2].GetUInt32();
+				tsk.maxval = fields2[3].GetUInt32();
 				pPlayerCreateInfo->skills.push_back(tsk);
 			} while(sk_sql->NextRow());
 			delete sk_sql;
@@ -606,11 +606,11 @@ void ObjectMgr::LoadPlayerCreateInfo()
 		{
 			do
 			{
-				Field *fields = items_sql->Fetch();
+				Field *fields2 = items_sql->Fetch();
 				CreateInfo_ItemStruct itm;
-				itm.protoid = fields[1].GetUInt32();
-				itm.slot = fields[2].GetUInt8();
-				itm.amount = fields[3].GetUInt32();
+				itm.protoid = fields2[1].GetUInt32();
+				itm.slot = fields2[2].GetUInt8();
+				itm.amount = fields2[3].GetUInt32();
 				pPlayerCreateInfo->items.push_back(itm);
 			} while(items_sql->NextRow());
 		   delete items_sql;
@@ -623,12 +623,12 @@ void ObjectMgr::LoadPlayerCreateInfo()
 		{
 			do
 			{
-				Field *fields = bars_sql->Fetch();
+				Field *fields2 = bars_sql->Fetch();
 				CreateInfo_ActionBarStruct bar;
-				bar.button = fields[2].GetUInt32();
-				bar.action = fields[3].GetUInt32();
-				bar.type = fields[4].GetUInt32();
-				bar.misc = fields[5].GetUInt32();
+				bar.button = fields2[2].GetUInt32();
+				bar.action = fields2[3].GetUInt32();
+				bar.type = fields2[4].GetUInt32();
+				bar.misc = fields2[5].GetUInt32();
 				pPlayerCreateInfo->actionbars.push_back(bar);
 			} while(bars_sql->NextRow());
 			delete bars_sql;
@@ -2841,7 +2841,7 @@ void ObjectMgr::RemoveCharter(Charter * c)
 {
 	if( c == NULL )
 		return;
-	if( c->CharterType > NUM_CHARTER_TYPES )
+	if( c->CharterType >= NUM_CHARTER_TYPES )
 	{
 		Log.Notice("ObjectMgr", "Charter %u cannot be destroyed as type %u is not a sane type value.", c->CharterId, c->CharterType );
 		return;

@@ -344,19 +344,19 @@ void WorldSession::HandleLootMoneyOpcode( WorldPacket & recv_data )
 			pkt.SetOpcode(SMSG_LOOT_MONEY_NOTIFY);
 			pkt << share;
 
-			for(vector<Player*>::iterator itr = targets.begin(); itr != targets.end(); ++itr)
+			for(vector<Player*>::iterator itr2 = targets.begin(); itr2 != targets.end(); ++itr2)
 			{
 				// Check they don't have more than the max gold
-				if( sWorld.GoldCapEnabled && ((*itr)->GetGold() + share) > sWorld.GoldLimit )
+				if( sWorld.GoldCapEnabled && ((*itr2)->GetGold() + share) > sWorld.GoldLimit )
 				{
-					(*itr)->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, INV_ERR_TOO_MUCH_GOLD);
+					(*itr2)->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, INV_ERR_TOO_MUCH_GOLD);
 				}
 				else
 				{
-					(*itr)->ModGold( share );
-					(*itr)->GetSession()->SendPacket(&pkt);
+					(*itr2)->ModGold( share );
+					(*itr2)->GetSession()->SendPacket(&pkt);
 #ifdef ENABLE_ACHIEVEMENTS
-					(*itr)->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_MONEY, share, 0, 0);
+					(*itr2)->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_MONEY, share, 0, 0);
 #endif
 				}
 			}
@@ -1419,7 +1419,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 	CALL_GO_SCRIPT_EVENT(obj, OnActivate)(_player);
 	CALL_INSTANCE_SCRIPT_EVENT( _player->GetMapMgr(), OnGameObjectActivate )( obj, _player ); 
 
-  _player->RemoveStealth(); // cebernic:RemoveStealth due to GO was using. Blizzlike
+	_player->RemoveStealth(); // cebernic:RemoveStealth due to GO was using. Blizzlike
 
 
 	uint32 type = obj->GetByte(GAMEOBJECT_BYTES_1, 1);
@@ -1513,9 +1513,8 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 			SpellEntry *info = dbcSpell.LookupEntryForced(goinfo->SpellFocus);
 			if(!info)
 				break;
-			Spell * spell = new Spell(plyr, info, false, NULL);
+			spell = new Spell(plyr, info, false, NULL);
 			//spell->SpellByOther = true;
-			SpellCastTargets targets;
 			targets.m_unitTarget = plyr->GetGUID();
 			spell->prepare(&targets);
 			if ( obj->charges > 0 && !--obj->charges )
@@ -1572,14 +1571,12 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 					if( target == NULL || !target->IsInWorld() )
 						return;
 					spell = new Spell( _player->GetMapMgr()->GetPlayer( obj->m_ritualcaster ), info, true, NULL );
-					SpellCastTargets targets;
 					targets.m_unitTarget = target->GetGUID();
 					spell->prepare( &targets );
 				}
 				else if ( goinfo->ID == 177193 ) // doom portal
 				{
 					Player *psacrifice = NULL;
-					Spell * spell = NULL;
 
 					// kill the sacrifice player
 					psacrifice = _player->GetMapMgr()->GetPlayer(obj->m_ritualmembers[(int)(rand()%(goinfo->SpellFocus-1))]);
@@ -1597,13 +1594,13 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 					// summons demon
 					info = dbcSpell.LookupEntry(goinfo->sound1);
 					spell = new Spell(pCaster, info, true, NULL);
-					SpellCastTargets targets;
-					targets.m_unitTarget = pCaster->GetGUID();
-					spell->prepare(&targets);
+					SpellCastTargets targets2;
+					targets2.m_unitTarget = pCaster->GetGUID();
+					spell->prepare(&targets2);
 				}
 				else if ( goinfo->ID == 179944 ) // Summoning portal for meeting stones
 				{
-					Player * plr = _player->GetMapMgr()->GetPlayer(obj->m_ritualtarget);
+					plr = _player->GetMapMgr()->GetPlayer(obj->m_ritualtarget);
 					if(!plr)
 						return;
 
@@ -1612,9 +1609,9 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 						return;
 
 					info = dbcSpell.LookupEntry(goinfo->sound1);
-					Spell * spell = new Spell( pleader, info, true, NULL );
-					SpellCastTargets targets( plr->GetGUID() );
-					spell->prepare(&targets);
+					spell = new Spell( pleader, info, true, NULL );
+					SpellCastTargets targets2( plr->GetGUID() );
+					spell->prepare(&targets2);
 
 					/* expire the gameobject */
 					obj->ExpireAndDelete();
@@ -1624,9 +1621,9 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 					info = dbcSpell.LookupEntryForced( goinfo->sound1 );
 					if ( info == NULL )
 						return;
-					Spell * spell = new Spell( _player->GetMapMgr()->GetPlayer( obj->m_ritualcaster ), info, true, NULL );
-					SpellCastTargets targets( obj->m_ritualcaster );
-					spell->prepare( &targets );
+					spell = new Spell( _player->GetMapMgr()->GetPlayer( obj->m_ritualcaster ), info, true, NULL );
+					SpellCastTargets targets2( obj->m_ritualcaster );
+					spell->prepare( &targets2 );
 					obj->ExpireAndDelete();
 				}
 			}
@@ -2358,8 +2355,8 @@ void WorldSession::HandleOpenItemOpcode(WorldPacket &recv_data)
 		{
 			if(lock->locktype[i] == 1 && lock->lockmisc[i] > 0)
 			{
-				int16 slot = _player->GetItemInterface()->GetInventorySlotById(lock->lockmisc[i]);
-				if(slot != ITEM_NO_SLOT_AVAILABLE && slot >= INVENTORY_SLOT_ITEM_START && slot < INVENTORY_SLOT_ITEM_END)
+				int16 slot2 = _player->GetItemInterface()->GetInventorySlotById(lock->lockmisc[i]);
+				if(slot2 != ITEM_NO_SLOT_AVAILABLE && slot2 >= INVENTORY_SLOT_ITEM_START && slot2 < INVENTORY_SLOT_ITEM_END)
 				{
 					removeLockItems[i] = lock->lockmisc[i];
 				}

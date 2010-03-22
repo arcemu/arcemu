@@ -42,7 +42,7 @@ struct TrainerSpell;
 // Does nothing on release builds
 ////////////////////////////////////////
 #ifdef _DEBUG
-#define CHECK_INWORLD_ASSERT Arcemu::Util::ARCEMU_ASSERT(   _player || _player->IsInWorld())
+#define CHECK_INWORLD_ASSERT Arcemu::Util::ARCEMU_ASSERT( _player != NULL && _player->IsInWorld() )
 #else
 #define CHECK_INWORLD_ASSERT CHECK_INWORLD_RETURN
 #endif

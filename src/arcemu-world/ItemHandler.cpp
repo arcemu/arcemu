@@ -1052,7 +1052,6 @@ void WorldSession::HandleBuyBackOpcode( WorldPacket & recv_data )
 	if( !_player || !_player->IsInWorld() )
 		return;
 	CHECK_PACKET_SIZE(recv_data, 8);
-	WorldPacket data(16);
 	uint64 guid;
 	int32 stuff;
 	Item* add ;
@@ -1120,6 +1119,7 @@ void WorldSession::HandleBuyBackOpcode( WorldPacket & recv_data )
 			it->DeleteMe();
 		}
 
+		WorldPacket data(16);
 		data.Initialize( SMSG_BUY_ITEM );
 		data << uint64(guid);
 		data << getMSTime(); //VLack: seen is Aspire code

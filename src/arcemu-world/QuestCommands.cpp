@@ -660,7 +660,7 @@ bool ChatHandler::HandleQuestGiverCommand(const char * args, WorldSession * m_se
 			string spawnId1;
 			if(spawnResult1)
 			{
-				Field *fields = spawnResult1->Fetch();
+				fields = spawnResult1->Fetch();
 				spawnId1 = fields[0].GetString();
 
 				delete spawnResult1;
@@ -715,7 +715,7 @@ bool ChatHandler::HandleQuestGiverCommand(const char * args, WorldSession * m_se
 			string spawnId2;
 			if(spawnResult2)
 			{
-				Field *fields = spawnResult2->Fetch();
+				fields = spawnResult2->Fetch();
 				spawnId2 = fields[0].GetString();
 
 				delete spawnResult2;
@@ -853,8 +853,8 @@ bool ChatHandler::HandleQuestListCommand(const char * args, WorldSession * m_ses
 
 		do
 		{
-			Field *fields = creatureResult->Fetch();
-			uint32 quest_id = fields[0].GetUInt32();
+			fields = creatureResult->Fetch();
+			quest_id = fields[0].GetUInt32();
 
 			qst = QuestStorage.LookupEntry(quest_id);
 			if(qst== NULL)
@@ -1285,7 +1285,7 @@ bool ChatHandler::HandleQuestFinisherCommand(const char * args, WorldSession * m
 			string spawnId1;
 			if(spawnResult1)
 			{
-				Field *fields = spawnResult1->Fetch();
+				fields = spawnResult1->Fetch();
 				spawnId1 = fields[0].GetString();
 
 				delete spawnResult1;
@@ -1339,7 +1339,7 @@ bool ChatHandler::HandleQuestFinisherCommand(const char * args, WorldSession * m
 			string spawnId2;
 			if(spawnResult2)
 			{
-				Field *fields = spawnResult2->Fetch();
+				fields = spawnResult2->Fetch();
 				spawnId2 = fields[0].GetString();
 
 				delete spawnResult2;

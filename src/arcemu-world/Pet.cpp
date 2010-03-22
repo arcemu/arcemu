@@ -1405,9 +1405,15 @@ void Pet::ApplyPetLevelAbilities()
 		level = PLAYER_LEVEL_CAP;
 	else if (level < 1)
 		level = 1;
-	static uint32 family_aura[46] = { 0, 17223, 17210, 17129, 17208, 7000, 17212, 17209, 17211, 17214, 0, 17217, 17220, 0, 0, 0, 0, 0, 0, 0, 17218, 17221, 0, 0, 17206, 17215, 17216, 17222, 0, 0, 34887, 35257, 35254, 35258, 35253, 35386, 50297, 54676, 0, 55192, 55729, 56634, 56635, 58598, 61199 };
+	static uint32 family_aura[47] = { 0   /*0*/,
+		17223 /*1*/, 17210 /*2*/, 17129 /*3*/, 17208 /*4*/, 7000  /*5*/, 17212 /*6*/, 17209 /*7*/, 17211 /*8*/, 17214 /*9*/, 0    /*10*/,
+		17217/*11*/, 17220/*12*/, 0	   /*13*/, 0    /*14*/, 0    /*15*/, 0    /*16*/, 0    /*17*/, 0    /*18*/, 0    /*19*/, 17218/*20*/,
+		17221/*21*/, 0    /*22*/, 0	   /*23*/, 17206/*24*/, 17215/*25*/, 17216/*26*/, 17222/*27*/, 0    /*28*/, 0    /*29*/, 34887/*30*/,
+		35257/*31*/, 35254/*32*/, 35258/*33*/, 35253/*34*/, 35386/*35*/, 0    /*36*/, 50297/*37*/, 54642/*38*/, 54676/*39*/, 0    /*40*/,
+		55192/*41*/, 55729/*42*/, 56634/*43*/, 56635/*44*/, 58598/*45*/, 61199/*46*/};
 
-	RemoveAura( family_aura[ pet_family ] );//If the pet gained a level, we need to remove the auras to re-calculate everything.
+	if( pet_family < 47 )
+		RemoveAura( family_aura[ pet_family ] );//If the pet gained a level, we need to remove the auras to re-calculate everything.
 	LoadPetAuras(-1);//These too
 
 	//Base attributes from http://petopia.brashendeavors.net/html/art...ttributes.shtml

@@ -1238,9 +1238,9 @@ void Aura::RemoveAA()
 		 )
 	{
 		std::list<Pet*> summons = plr->GetSummons();
-		for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
+		for(std::list<Pet*>::iterator itr2 = summons.begin(); itr2 != summons.end(); ++itr2)
 		{
-			Pet* summon = *itr;
+			Pet* summon = *itr2;
 			if( summon->isAlive() )
 				summon->RemoveAura( m_spellProto->Id );
 		}
@@ -3047,7 +3047,7 @@ void Aura::EventPeriodicHeal( uint32 amount )
 		bonus += c->HealDoneMod[m_spellProto->School] + m_target->HealTakenMod[m_spellProto->School];
 		if( c->IsPlayer() )
 		{
-			for(uint32 a = 0; a < 6; a++)
+			for(uint32 a = 0; a < 5; a++)
 				bonus += float2int32( static_cast< Player* >( c )->SpellHealDoneByAttribute[a][m_spellProto->School] * static_cast< Player* >( c )->GetStat(a) );
 		}
 		//Spell Coefficient
@@ -5229,7 +5229,6 @@ void Aura::EventPeriodicLeech(uint32 amount)
 			// Use std::map to prevent counting duplicate auras (stacked ones, from the same unit)
 			std::map<uint64, std::set<uint32> *> auras;
 			std::map<uint64, std::set<uint32> *>::iterator itx, itx2;
-			uint32 bonus;
 			int32 pct;
 			int32 count= 0;
 
@@ -5278,8 +5277,7 @@ void Aura::EventPeriodicLeech(uint32 amount)
 			pct = count * m_caster->m_soulSiphon.amt;
 			if (pct > m_caster->m_soulSiphon.max)
 				pct = m_caster->m_soulSiphon.max;
-			bonus = (Amount * pct) / 100;
-			Amount+= bonus;
+			Amount += (Amount * pct) / 100;
 		}
 
 		uint32 newHealth = m_caster->GetHealth() + Amount ;

@@ -346,7 +346,7 @@ void QuestMgr::BuildOfferReward(WorldPacket *data, Quest* qst, Object* qst_giver
 	*data << qst->count_reward_item;
 	if( qst->count_reward_item )
 	{
-		for( uint32 i = 0; i < 4; ++i )
+		for( i = 0; i < 4; ++i )
 		{
 			if(qst->reward_item[i])
 			{
@@ -376,11 +376,11 @@ void QuestMgr::BuildOfferReward(WorldPacket *data, Quest* qst, Object* qst_giver
 	*data << qst->rewardtalents;
  	*data << uint32(0); 
  	*data << uint32(0); 
- 	for(int i = 0; i < 5; ++i)              // reward factions ids 
+ 	for(i = 0; i < 5; ++i)              // reward factions ids 
  	*data << uint32(0); 
-  	for(int i = 0; i < 5; ++i)              // columnid in QuestFactionReward.dbc (zero based)? 
+  	for(i = 0; i < 5; ++i)              // columnid in QuestFactionReward.dbc (zero based)? 
  	*data << uint32(0); 
-  	for(int i = 0; i < 5; ++i)              // reward reputation override? 
+  	for(i = 0; i < 5; ++i)              // reward reputation override? 
  	*data << uint32(0); 
 }
 
@@ -453,11 +453,11 @@ void QuestMgr::BuildQuestDetails(WorldPacket *data, Quest* qst, Object* qst_give
 	*data << qst->rewardtalents;				// Talent reward
  	*data << uint32(0);                                                     // new 3.3.0 
  	*data << uint32(0);                                                     // new 3.3.0 
- 	for(int i = 0; i < 5; ++i) 
+ 	for(i = 0; i < 5; ++i) 
  	*data << uint32(0); 
- 	for(int i = 0; i < 5; ++i) 
+ 	for(i = 0; i < 5; ++i) 
  	*data << uint32(0); 
- 	for(int i = 0; i < 5; ++i) 
+ 	for(i = 0; i < 5; ++i) 
  	*data << uint32(0); 
 
 

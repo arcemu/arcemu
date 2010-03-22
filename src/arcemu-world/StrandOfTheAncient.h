@@ -65,7 +65,7 @@ private:
 	uint32 Attackers; // 0 - horde / 1 - alliance
 	uint32 BattleRound;
 	uint32 RoundTime;
-	GameObject * m_boats[2];
+	GameObject * m_boats[4];
 	GameObject * m_buffs[BUFF_COUNT];
 	GameObject * m_relic;
 	GameObject * m_endgate;

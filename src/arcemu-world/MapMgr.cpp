@@ -192,9 +192,9 @@ void MapMgr::SetWorldState(uint32 zoneid, uint32 index, uint32 value)
 	data << index << value;
 
 	//update all players in this zone
-	for (PlayerStorageMap::iterator itr=m_PlayerStorage.begin(); itr!=m_PlayerStorage.end(); ++itr)
-		if (itr->second->GetSession() != NULL && itr->second->GetZoneId() == zoneid)
-			itr->second->GetSession()->SendPacket(&data);
+	for (PlayerStorageMap::iterator itr2=m_PlayerStorage.begin(); itr2!=m_PlayerStorage.end(); ++itr2)
+		if (itr2->second->GetSession() != NULL && itr2->second->GetZoneId() == zoneid)
+			itr2->second->GetSession()->SendPacket(&data);
 }
 
 void MapMgr::SendInitialStates(Player * plr)

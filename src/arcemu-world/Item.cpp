@@ -835,18 +835,18 @@ void Item::ApplyEnchantmentBonus( uint32 Slot, bool Apply )
 					{
 						// Remove the proctriggerspell
 						uint32 SpellId;
-						list< struct ProcTriggerSpell >::iterator itr/*, itr2*/;
-						for( itr = m_owner->m_procSpells.begin(); itr != m_owner->m_procSpells.end(); )
+						list< struct ProcTriggerSpell >::iterator itr2;
+						for( itr2 = m_owner->m_procSpells.begin(); itr2 != m_owner->m_procSpells.end(); )
 						{
-							SpellId = itr->spellId;
+							SpellId = itr2->spellId;
 							/*itr2 = itr++;*/
 							
 							if( SpellId == Entry->spell[c] )
 							{
 								//m_owner->m_procSpells.erase(itr2);
-								itr->deleted = true;
+								itr2->deleted = true;
 							}
-							itr++;
+							itr2++;
 						}
 					}
 				}break;

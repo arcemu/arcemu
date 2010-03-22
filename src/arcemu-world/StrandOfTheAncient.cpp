@@ -266,7 +266,7 @@ StrandOfTheAncient::StrandOfTheAncient(MapMgr * mgr, uint32 id, uint32 lgroup, u
 		//uint32 mapId = BattlegroundManager.GetMap(BATTLEGROUND_STRAND_OF_THE_ANCIENT);
 
 		// Boats
-		for (int i = 0; i < 4; i++)
+		for (i = 0; i < 4; i++)
 		{
 			m_boats[i] = m_mapMgr->CreateAndSpawnGameObject(20808,
 				sotaBoats[i][0], sotaBoats[i][1], sotaBoats[i][2], sotaBoats[i][3], 1.0f);

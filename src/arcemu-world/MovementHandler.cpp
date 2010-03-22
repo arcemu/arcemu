@@ -201,7 +201,7 @@ void _HandleBreathing(MovementInfo &movement_info, Player * _player, WorldSessio
 	}
 
 	// player is not swimming and is not stationary and is flagged as in the water
-	if( !( movement_info.flags & MOVEFLAG_SWIMMING ) && !( movement_info.flags & MOVEFLAG_MOVE_STOP ) && _player->m_UnderwaterState & UNDERWATERSTATE_SWIMMING )
+	if( !( movement_info.flags & MOVEFLAG_SWIMMING ) && ( movement_info.flags != MOVEFLAG_MOVE_STOP ) && (_player->m_UnderwaterState & UNDERWATERSTATE_SWIMMING) )
 	{
 		// player is above water level
 		if( ( movement_info.z + _player->m_noseLevel ) > pSession->m_wLevel )

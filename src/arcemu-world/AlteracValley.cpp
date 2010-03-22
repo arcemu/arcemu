@@ -1657,6 +1657,7 @@ void AlteracValley::HookOnUnitKill(Player * plr, Unit * pVictim)
 	if(pVictim->IsPlayer())
 		return;
 
+	Player * plr2;
 	if(pVictim->GetEntry() == AV_NPC_GENERAL_VANNDAR_STORMPIKE) 
 	{
 		Herald("The Stormpike General is dead!");
@@ -1664,10 +1665,10 @@ void AlteracValley::HookOnUnitKill(Player * plr, Unit * pVictim)
 
 		for(set<Player*>::iterator itx = m_players[1].begin(); itx != m_players[1].end(); ++itx)
 		{
-			Player * plr = (*itx);
-			if(!plr) continue;
+			plr2 = (*itx);
+			if(!plr2) continue;
 
-			HonorHandler::AddHonorPointsToPlayer( plr, 62);
+			HonorHandler::AddHonorPointsToPlayer( plr2, 62);
 		}
 	}
 	else if(pVictim->GetEntry() == AV_NPC_GENERAL_DREK_THAR)
@@ -1677,10 +1678,10 @@ void AlteracValley::HookOnUnitKill(Player * plr, Unit * pVictim)
 
 		for(set<Player*>::iterator itx = m_players[0].begin(); itx != m_players[0].end(); ++itx)
 		{
-			Player * plr = (*itx);
-			if(!plr) continue;
+			plr2 = (*itx);
+			if(!plr2) continue;
 
-			HonorHandler::AddHonorPointsToPlayer( plr, AV_HONOR_ON_KILL_BOSS );
+			HonorHandler::AddHonorPointsToPlayer( plr2, AV_HONOR_ON_KILL_BOSS );
 		}
 	}
 	else if(pVictim->GetEntry() == AV_NPC_CAPTAIN_GALVANGAR)
@@ -1688,10 +1689,10 @@ void AlteracValley::HookOnUnitKill(Player * plr, Unit * pVictim)
 		RemoveReinforcements( 1, AV_POINTS_ON_KILL_CAPTAIN );
 		for(set<Player*>::iterator itx = m_players[0].begin(); itx != m_players[0].end(); ++itx)
 		{
-			Player * plr = (*itx);
-			if(!plr) continue;
+			plr2 = (*itx);
+			if(!plr2) continue;
 
-			HonorHandler::AddHonorPointsToPlayer( plr, AV_HONOR_ON_KILL_BOSS);
+			HonorHandler::AddHonorPointsToPlayer( plr2, AV_HONOR_ON_KILL_BOSS);
 		}
 	}
 	else if(pVictim->GetEntry() == AV_NPC_CAPTAIN_BALINDA_STONEHEARTH)
@@ -1699,10 +1700,10 @@ void AlteracValley::HookOnUnitKill(Player * plr, Unit * pVictim)
 		RemoveReinforcements( 0, AV_POINTS_ON_KILL_CAPTAIN );
 		for(set<Player*>::iterator itx = m_players[1].begin(); itx != m_players[1].end(); ++itx)
 		{
-			Player * plr = (*itx);
-			if(!plr) continue;
+			plr2 = (*itx);
+			if(!plr2) continue;
 
-			HonorHandler::AddHonorPointsToPlayer( plr, AV_HONOR_ON_KILL_BOSS);
+			HonorHandler::AddHonorPointsToPlayer( plr2, AV_HONOR_ON_KILL_BOSS);
 		}
 	}
 	/*else if(pVictim->GetEntry() == AV_NPC_TASKMASTER_SNIVVLE)

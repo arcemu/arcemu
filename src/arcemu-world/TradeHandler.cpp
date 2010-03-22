@@ -165,11 +165,9 @@ void WorldSession::HandleCancelTrade(WorldPacket & recv_data)
         if(plr->m_session && plr->m_session->GetSocket())
 		plr->m_session->OutPacket(SMSG_TRADE_STATUS, 4, &TradeStatus);
 	
-	    plr->mTradeTarget = 0;
 		plr->ResetTradeVariables();
     }
 	
-	_player->mTradeTarget = 0;
 	_player->ResetTradeVariables();
 }
 
@@ -248,19 +246,14 @@ void WorldSession::HandleSetTradeItem(WorldPacket & recv_data)
 
 			//--trade cancel
 
-			    uint32 TradeStatus = TRADE_STATUS_CANCELLED;
-			
-			    OutPacket(SMSG_TRADE_STATUS, 4, &TradeStatus);
-			
-					Player * plr = _player->GetTradeTarget();
-			    if(plr)
-			    {
-				    if(plr->m_session && plr->m_session->GetSocket())
-						plr->m_session->OutPacket(SMSG_TRADE_STATUS, 4, &TradeStatus);
-				    plr->mTradeTarget = 0;
-			    }
-			    OutPacket(SMSG_TRADE_STATUS, 4, &TradeStatus);
-					_player->mTradeTarget = 0;
+			TradeStatus = TRADE_STATUS_CANCELLED;
+
+			OutPacket(SMSG_TRADE_STATUS, 4, &TradeStatus);
+			_player->ResetTradeVariables();
+
+			plr->m_session->OutPacket(SMSG_TRADE_STATUS, 4, &TradeStatus);
+			plr->ResetTradeVariables();
+
 			return;
 		}
 	}			
@@ -520,9 +513,6 @@ void WorldSession::HandleAcceptTrade(WorldPacket & recv_data)
 			_player->ResetTradeVariables();
 			pTarget->ResetTradeVariables();
 			
-			plr->mTradeTarget = 0;
-			_player->mTradeTarget = 0;
-
 			// Save for each other
 			plr->SaveToDB(false);
 			_player->SaveToDB(false);
