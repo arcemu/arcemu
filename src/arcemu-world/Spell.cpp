@@ -1017,9 +1017,9 @@ void Spell::GenerateTargets(SpellCastTargets *store_buff)
 
 										//check if an aura is being applied, and check if it already exists
 										bool applies_aura=false;
-										for (int i= 0; i<3; i++)
+										for (int k= 0; k<3; k++)
 										{
-											if (GetProto()->Effect[i] == SPELL_EFFECT_APPLY_AURA || GetProto()->Effect[i] == SPELL_EFFECT_APPLY_AREA_AURA || GetProto()->Effect[i] == SPELL_EFFECT_APPLY_AREA_AURA2 )
+											if (GetProto()->Effect[k] == SPELL_EFFECT_APPLY_AURA || GetProto()->Effect[k] == SPELL_EFFECT_APPLY_AREA_AURA || GetProto()->Effect[k] == SPELL_EFFECT_APPLY_AREA_AURA2 )
 											{
 												applies_aura=true;
 												break;
@@ -1155,9 +1155,9 @@ void Spell::GenerateTargets(SpellCastTargets *store_buff)
 
 								//check if an aura is being applied, and check if it already exists
 								bool applies_aura=false;
-								for (int i= 0; i<3; i++)
+								for (int k= 0; k<3; k++)
 								{
-									if (m_spellInfo->Effect[i] == SPELL_EFFECT_APPLY_AURA || m_spellInfo->Effect[i] == SPELL_EFFECT_APPLY_AREA_AURA || m_spellInfo->Effect[i] == SPELL_EFFECT_APPLY_AREA_AURA2 )
+									if (m_spellInfo->Effect[k] == SPELL_EFFECT_APPLY_AURA || m_spellInfo->Effect[k] == SPELL_EFFECT_APPLY_AREA_AURA || m_spellInfo->Effect[k] == SPELL_EFFECT_APPLY_AREA_AURA2 )
 									{
 										applies_aura=true;
 										break;
@@ -2390,9 +2390,9 @@ void Spell::SendSpellGo()
 	if (p_caster && p_caster->getClass() == DEATHKNIGHT) //send our rune updates ^^
 	{
 		//see what we will have after cast
-		for( uint8 i= 0; i < TOTAL_USED_RUNES; i++ )
-			if( p_caster->m_runes[ i ] < RUNE_RECHARGE )
-				cur_have_runes |= (1 << i);
+		for( uint8 k= 0; k < TOTAL_USED_RUNES; k++ )
+			if( p_caster->m_runes[ k ] < RUNE_RECHARGE )
+				cur_have_runes |= (1 << k);
 		if( cur_have_runes != m_rune_avail_before )
 			flags |= SPELL_GO_FLAGS_RUNE_UPDATE | SPELL_GO_FLAGS_POWER_UPDATE;
 	}
@@ -2465,7 +2465,7 @@ void Spell::SendSpellGo()
 		//we already subtracted power
 		data << uint8( m_rune_avail_before );
 		data << uint8( cur_have_runes );
-		for(uint8 i= 0;i<m_runes_to_update;i++)
+		for(uint8 k= 0;k<m_runes_to_update;k++)
 			data << uint8( 0 ); //values of the rune converted into byte. We just think it is 0 but maybe it is not :P
 	}
 	if( m_targets.m_targetMask & 0x40 )
@@ -4615,7 +4615,7 @@ uint8 Spell::CanCast(bool tolerate)
 		Unit *target = (m_caster->IsInWorld()) ? m_caster->GetMapMgr()->GetUnit(m_targets.m_unitTarget) : NULL;
 		if (target) /* -Supalosa- Shouldn't this be handled on Spell Apply? */
 		{
-			for(int i = 0; i < 3; i++) // if is going to cast a spell that breaks stun remove stun auras, looks a bit hacky but is the best way i can find
+			for( i = 0; i < 3; i++) // if is going to cast a spell that breaks stun remove stun auras, looks a bit hacky but is the best way i can find
 			{
 				if (GetProto()->EffectApplyAuraName[i] == SPELL_AURA_MECHANIC_IMMUNITY)
 				{
@@ -5336,7 +5336,7 @@ void Spell::Heal( int32 amount, bool ForceCrit )
 		//Bonus from Intellect & Spirit
 		if( p_caster != NULL )
 		{
-			for( uint8 a = 0; a < 6; a++ )
+			for( uint8 a = 0; a < 5; a++ )
 				bonus += float2int32( p_caster->SpellHealDoneByAttribute[a][school] * p_caster->GetStat(a ) );
 		}
 

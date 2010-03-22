@@ -1013,10 +1013,10 @@ out:
 				36554  /* Shadowstep       */
 			};
 
-			for(i = 0; i < 11; ++i)
+			for(uint32 j = 0; j < 11; ++j)
 			{
-				if( p_caster->HasSpell( ClearSpellId[i] ) )
-					p_caster->ClearCooldownForSpell( ClearSpellId[i] );
+				if( p_caster->HasSpell( ClearSpellId[j] ) )
+					p_caster->ClearCooldownForSpell( ClearSpellId[j] );
 			}
 		}break;
 		/*
@@ -1034,9 +1034,9 @@ out:
 				return;
 
 			Aura * pAura;
-			for(uint32 i = MAX_NEGATIVE_AURAS_EXTEDED_START; i < MAX_NEGATIVE_AURAS_EXTEDED_END; ++i)
+			for(uint32 j = MAX_NEGATIVE_AURAS_EXTEDED_START; j < MAX_NEGATIVE_AURAS_EXTEDED_END; ++j)
 			{
-				pAura = unitTarget->m_auras[i];
+				pAura = unitTarget->m_auras[j];
 				if( pAura != NULL && !pAura->IsPassive()
 					&& !pAura->IsPositive()
 					&& !(pAura->GetSpellProto()->Attributes & ATTRIBUTES_IGNORE_INVULNERABILITY)
@@ -1142,7 +1142,7 @@ out:
 			if(!unitTarget || !u_caster)
 				break;
 			Unit *targets[3];
-			int targets_got= 0;
+			uint32 targets_got= 0;
 			for(std::set<Object*>::iterator itr = unitTarget->GetInRangeSetBegin(), i2; itr != unitTarget->GetInRangeSetEnd(); )
 			{
 				i2 = itr++;
@@ -1156,16 +1156,16 @@ out:
 				if(targets_got==3)
 					break;
 			}
-			for(int i= 0;i<targets_got;i++)
+			for(uint32 j= 0;j<targets_got;j++)
 			{
 				//set threat to this target so we are the msot hated
-				uint32 threat_to_him = targets[i]->GetAIInterface()->getThreatByPtr( unitTarget );
-				uint32 threat_to_us = targets[i]->GetAIInterface()->getThreatByPtr(u_caster);
+				uint32 threat_to_him = targets[j]->GetAIInterface()->getThreatByPtr( unitTarget );
+				uint32 threat_to_us = targets[j]->GetAIInterface()->getThreatByPtr(u_caster);
 				int threat_dif = threat_to_him - threat_to_us;
 				if(threat_dif>0)//should nto happen
-					targets[i]->GetAIInterface()->modThreatByPtr(u_caster,threat_dif);
-				targets[i]->GetAIInterface()->AttackReaction(u_caster,1,0);
-				targets[i]->GetAIInterface()->SetNextTarget(u_caster);
+					targets[j]->GetAIInterface()->modThreatByPtr(u_caster,threat_dif);
+				targets[j]->GetAIInterface()->AttackReaction(u_caster,1,0);
+				targets[j]->GetAIInterface()->SetNextTarget(u_caster);
 			}
 		}break;
 		/*
@@ -1201,8 +1201,8 @@ out:
 					if(p_caster->m_TotemSlots[0] && p_caster->m_TotemSlots[1] && p_caster->m_TotemSlots[2] && p_caster->m_TotemSlots[3])
 					{
 						Aura *aur = new Aura(dbcSpell.LookupEntry(38437), 5000, p_caster, p_caster, true);
-						for( uint32 i= 0; i<3; i++ )
-							aur->AddMod( aur->GetSpellProto()->EffectApplyAuraName[i], aur->GetSpellProto()->EffectBasePoints[i]+1, aur->GetSpellProto()->EffectMiscValue[i], i );
+						for( uint32 j= 0; j<3; j++ )
+							aur->AddMod( aur->GetSpellProto()->EffectApplyAuraName[j], aur->GetSpellProto()->EffectBasePoints[j]+1, aur->GetSpellProto()->EffectMiscValue[j], j );
 						p_caster->AddAura(aur);
 					}
 				}break;
@@ -1452,10 +1452,8 @@ out:
 				return;
 
 			uint32 ClearSpellId[6] = { 8401,8408,930,118,1680,10159 };
-			int min = 1;
-			uint32 effect = min + int( ((6-min)+1) * rand() / (RAND_MAX + 1.0) );
 
-			u_caster->CastSpell(unitTarget, ClearSpellId[effect] ,true);
+			u_caster->CastSpell(unitTarget, ClearSpellId[RandomUInt(5)] ,true);
 		}break;
 
 	case 30427: // Extract Gas
@@ -1467,15 +1465,15 @@ out:
 			if(!p_caster)
 				return;
 
-			for(Object::InRangeSet::iterator i = p_caster->GetInRangeSetBegin(); i != p_caster->GetInRangeSetEnd(); ++i)
+			for(Object::InRangeSet::iterator itr = p_caster->GetInRangeSetBegin(); itr != p_caster->GetInRangeSetEnd(); ++itr)
 			{
-				if((*i)->GetTypeId() == TYPEID_UNIT)
+				if((*itr)->GetTypeId() == TYPEID_UNIT)
 				{
-					creature=static_cast<Creature *>((*i));
+					creature=static_cast<Creature *>((*itr));
 					cloudtype=creature->GetEntry();
 					if(cloudtype == 24222 || cloudtype == 17408 || cloudtype == 17407 || cloudtype == 17378)
 					{
-						if(p_caster->GetDistance2dSq((*i)) < 400)
+						if(p_caster->GetDistance2dSq((*itr)) < 400)
 						{
 							p_caster->SetSelection(creature->GetGUID());
 							check = true;
@@ -1630,16 +1628,16 @@ out:
 			bool check = false;
 			float rad = GetRadius(i);
 			rad *= rad;
-			for(Object::InRangeSet::iterator i = p_caster->GetInRangeSetBegin(); i != p_caster->GetInRangeSetEnd(); ++i)
+			for(Object::InRangeSet::iterator itr = p_caster->GetInRangeSetBegin(); itr != p_caster->GetInRangeSetEnd(); ++itr)
 			{
-				if((*i)->GetTypeId() == TYPEID_UNIT)
+				if((*itr)->GetTypeId() == TYPEID_UNIT)
 				{
-					if(static_cast<Creature *>((*i))->getDeathState() == CORPSE)
+					if(static_cast<Creature *>((*itr))->getDeathState() == CORPSE)
 					{
-						CreatureInfo *cn = static_cast<Creature *>((*i))->GetCreatureInfo();
+						CreatureInfo *cn = static_cast<Creature *>((*itr))->GetCreatureInfo();
 						if(cn && ( cn->Type == UNIT_TYPE_HUMANOID || cn->Type == UNIT_TYPE_UNDEAD ) )
 						{
-							if(p_caster->GetDistance2dSq((*i)) < rad)
+							if(p_caster->GetDistance2dSq((*itr)) < rad)
 							{
 								check = true;
 								break;
