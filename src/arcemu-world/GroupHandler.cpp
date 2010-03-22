@@ -366,26 +366,15 @@ void WorldSession::HandleLootMethodOpcode( WorldPacket & recv_data )
 	if( pGroup == NULL)
 		return;
 
-	/*Player * pLootMaster = objmgr.GetPlayer((uint32)lootMaster);
-
-	if ( pLootMaster )
-		pGroup->SetLooter(pLootMaster , lootMethod, threshold );
-	else
-		pGroup->SetLooter(_player , lootMethod, threshold );*/
-
-  // cebernic: Extended this code,it supports diff leader & lootmaster.
-  Player *plr = objmgr.GetPlayer((uint32)lootMaster);
-  if ( _player->m_playerInfo->guid == lootMaster || !plr) {
-    Group* pGroup = _player->GetGroup();
-    if ( !pGroup ) return;
-    pGroup->SetLooter(_player, static_cast<uint8>( lootMethod ), static_cast<uint16>( threshold ));
-  }
-  else {
-    Group* pGroup = plr->GetGroup();
-    if ( !pGroup ) 
-		return;
-    pGroup->SetLooter(plr, static_cast<uint8>( lootMethod ), static_cast<uint16>( threshold ));
-  }
+	Player *plr = objmgr.GetPlayer((uint32)lootMaster);
+	if ( plr != NULL ) 
+	{
+		pGroup->SetLooter(plr, static_cast<uint8>( lootMethod ), static_cast<uint16>( threshold ));
+	}
+	else 
+	{
+		pGroup->SetLooter(_player, static_cast<uint8>( lootMethod ), static_cast<uint16>( threshold ));
+	}
 
 }
 

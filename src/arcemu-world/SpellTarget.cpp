@@ -696,7 +696,6 @@ void Spell::SpellTargetScriptedEffects( uint32 i, uint32 j )
 			return;
 
 		std::vector<Player*> raidList;
-		std::vector<Player*>::iterator itr;
 
 		uint32 count = group->GetSubGroupCount();
 
@@ -722,6 +721,7 @@ void Spell::SpellTargetScriptedEffects( uint32 i, uint32 j )
 		if( GetProto()->NameHash == SPELL_HASH_CIRCLE_OF_HEALING && p_caster->HasSpell( 55675 ) ) // Glyph of circle of healing
 			maxTargets++;
 
+		std::vector<Player*>::iterator itr;
 		for( itr = raidList.begin(); itr != raidList.end() && maxTargets > 0; ++itr, maxTargets-- )
 		{
 			SafeAddTarget( tmpMap, (*itr)->GetGUID() );

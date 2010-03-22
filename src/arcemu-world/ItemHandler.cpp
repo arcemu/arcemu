@@ -670,7 +670,6 @@ void WorldSession::HandleAutoEquipItemOpcode( WorldPacket & recv_data )
 	CHECK_PACKET_SIZE(recv_data, 2);
 	WorldPacket data;
 
-	AddItemResult result;
 	int8 SrcInvSlot, SrcSlot, error= 0;
 	
 	recv_data >> SrcInvSlot >> SrcSlot;
@@ -799,6 +798,7 @@ void WorldSession::HandleAutoEquipItemOpcode( WorldPacket & recv_data )
 	{
 		eitem = _player->GetItemInterface()->SafeRemoveAndRetreiveItemFromSlot( SrcInvSlot, SrcSlot, false );
 		oitem = _player->GetItemInterface()->SafeRemoveAndRetreiveItemFromSlot( INVENTORY_SLOT_NOT_SET, Slot, false );
+		AddItemResult result;
 		if( oitem != NULL )
 		{
 			result = _player->GetItemInterface()->SafeAddItem( oitem, SrcInvSlot, SrcSlot );

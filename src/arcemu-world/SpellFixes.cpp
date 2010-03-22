@@ -54,7 +54,7 @@ void ApplyNormalFixes()
 
 	map<uint32, uint32> talentSpells;
 	map<uint32,uint32>::iterator talentSpellIterator;
-	unsigned int i,j;
+	uint32 i,j;
 	for(i = 0; i < dbcTalent.GetNumRows(); ++i)
 	{
 		TalentEntry * tal = dbcTalent.LookupRow(i);
@@ -980,7 +980,7 @@ void ApplyNormalFixes()
 		bool spcheck = false;
 
 		//Flag for DoT and HoT
-		for( uint8 i = 0 ; i < 3 ; i++ )
+		for( i = 0 ; i < 3 ; i++ )
 		{
 			if (sp->EffectApplyAuraName[i] == SPELL_AURA_PERIODIC_DAMAGE ||
 				sp->EffectApplyAuraName[i] == SPELL_AURA_PERIODIC_HEAL ||
@@ -992,7 +992,7 @@ void ApplyNormalFixes()
 		}
 
 		//Flag for DD or DH
-		for( uint8 i = 0 ; i < 3 ; i++ )
+		for( i = 0 ; i < 3 ; i++ )
 		{
 			if ( sp->EffectApplyAuraName[i] == SPELL_AURA_PERIODIC_TRIGGER_SPELL && sp->EffectTriggerSpell[i] )
 			{
@@ -1013,7 +1013,7 @@ void ApplyNormalFixes()
 			}
 		}
 
-		for(uint8 i = 0 ; i < 3; i++)
+		for( i = 0 ; i < 3; i++)
 		{
 			switch (sp->EffectImplicitTargetA[i])
 			{
@@ -1039,7 +1039,7 @@ void ApplyNormalFixes()
 			}
 		}
 
-		for(uint8 i = 0 ; i < 3 ; i++)
+		for(i = 0 ; i < 3 ; i++)
 		{
 			switch (sp->EffectImplicitTargetB[i])
 			{
@@ -1073,7 +1073,7 @@ void ApplyNormalFixes()
 
 
 		//Additional Effect (not healing or damaging)
-		for( uint8 i = 0 ; i < 3 ; i++ )
+		for( i = 0 ; i < 3 ; i++ )
 		{
 			if(sp->Effect[i] == 0)
 				continue;
@@ -1344,7 +1344,7 @@ void ApplyNormalFixes()
 		{
 			Field * f;
 			f = resultx->Fetch();
-			SpellEntry * sp = dbcSpell.LookupEntryForced( f[0].GetUInt32() );
+			sp = dbcSpell.LookupEntryForced( f[0].GetUInt32() );
 			if( sp != NULL )
 			{
 				sp->Dspell_coef_override = f[2].GetFloat();
@@ -1360,11 +1360,11 @@ void ApplyNormalFixes()
 	for(uint32 x= 0; x < cnt; x++)
 	{
 		// get spellentry
-		SpellEntry * sp = dbcSpell.LookupRow(x);
+		sp = dbcSpell.LookupRow(x);
 		SpellEntry * spz;
 
 		//Case SPELL_AURA_PERIODIC_TRIGGER_SPELL
-		for( uint8 i = 0 ; i < 3 ; i++ )
+		for( i = 0 ; i < 3 ; i++ )
 		{
 			if ( sp->EffectApplyAuraName[i] == SPELL_AURA_PERIODIC_TRIGGER_SPELL )
 			{
@@ -2502,11 +2502,6 @@ void ApplyNormalFixes()
 			sp->EffectTriggerSpell[0] = 31803;
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 		}
-		//Paladin - Holy Vengeance
-		sp = dbcSpell.LookupEntryForced( 31803 );
-		if(sp != NULL)
-			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;
 
 		//Paladin - Seal of Corruption
 		sp = dbcSpell.LookupEntryForced( 53736 );
@@ -4990,7 +4985,7 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 20608 ); //Reincarnation
 		if( sp != NULL )
 		{
-			for(uint32 i= 0;i<8;i++)
+			for(i= 0;i<8;i++)
 			{
 				if(sp->Reagent[i])
 				{
@@ -6222,7 +6217,7 @@ void ApplyNormalFixes()
 			sp->c_is_flags |= SPELL_FLAG_IS_EXPIREING_WITH_PET;
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
 		}
-		for(uint32 i=23833;i<=23844;i++)
+		for(i=23833;i<=23844;i++)
 		{
 			sp = dbcSpell.LookupEntryForced( i );
 			if( sp != NULL )
@@ -6398,7 +6393,7 @@ void ApplyNormalFixes()
 
 		//Warlock Healthstones
 		int HealthStoneID[8]={6201,6202,5699,11729,11730,27230,47871,47878};
-		for(int i= 0;i<8;i++)
+		for(i= 0;i<8;i++)
 		{
 			sp = dbcSpell.LookupEntryForced( HealthStoneID[i] );
 			if( sp != NULL )
@@ -7887,7 +7882,7 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced(20619);
 		if(sp != NULL)
 		{
-			for(int i= 0; i<3; i++)
+			for(i= 0; i<3; i++)
 			{
 				if(sp->EffectImplicitTargetA[i] > 0)
 					sp->EffectImplicitTargetA[i] = EFF_TARGET_ALL_FRIENDLY_IN_AREA;
@@ -7900,7 +7895,7 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced(21075);
 		if(sp != NULL)
 		{
-			for(int i= 0; i<3; i++)
+			for(i= 0; i<3; i++)
 			{
 				if(sp->EffectImplicitTargetA[i] > 0)
 					sp->EffectImplicitTargetA[i] = EFF_TARGET_ALL_FRIENDLY_IN_AREA;

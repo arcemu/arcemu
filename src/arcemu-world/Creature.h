@@ -271,7 +271,7 @@ class CreatureAIScript;
 class GossipScript;
 class AuctionHouse;
 struct Trainer;
-#define CALL_SCRIPT_EVENT(obj, func) if(obj && obj->IsInWorld() && obj->GetTypeId() == TYPEID_UNIT && obj->GetMapMgr() && static_cast<Creature*>(obj)->GetScript() != NULL) static_cast<Creature*>(obj)->GetScript()->func
+#define CALL_SCRIPT_EVENT(obj, func) if(obj->IsInWorld() && obj->GetTypeId() == TYPEID_UNIT && static_cast<Creature*>(obj)->GetScript() != NULL) static_cast<Creature*>(obj)->GetScript()->func
 
 
 uint8 get_byte(uint32 buffer, uint32 index);

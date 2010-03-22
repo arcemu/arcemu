@@ -3395,13 +3395,13 @@ void Spell::SpellEffectLeap(uint32 i) // Leap
 
 		uint8 steps = 20; // higher precision, but more performance waste, radius =20.0f may each 1y will be checked.
 		float radius_steps = radius / steps;
-		uint8 i = 0;
+		uint8 j = 0;
 
 		float _SharpCounter = 0.0f;
-		for ( i = 1; i < steps; i++ )
+		for ( j = 1; j < steps; j++ )
 		{
-			newposX = posX + ( float(i) * radius_steps * cosf( ori ) );
-			newposY = posY + ( float(i) * radius_steps * sinf( ori ) );
+			newposX = posX + ( j * radius_steps * cosf( ori ) );
+			newposY = posY + ( j * radius_steps * sinf( ori ) );
 			newposZ =  m_caster->GetMapMgr()->GetFirstZWithCPZ(newposX,newposY,posZ);
 
 			if ( newposZ != NO_WMO_HEIGHT ) flag |= _COLLIDED;
@@ -3419,13 +3419,13 @@ void Spell::SpellEffectLeap(uint32 i) // Leap
 
 			LocationVector dest(newposX,newposY,newposZ);
 			dest.o = ori;
-			if ( i>1 && CollideInterface.GetFirstPoint( m_caster->GetMapId(),src, dest,dest, -1.5f ) ) {flag |= _BLOCK_BREAK; break;} // blocked then break;
+			if ( j>1 && CollideInterface.GetFirstPoint( m_caster->GetMapId(),src, dest,dest, -1.5f ) ) {flag |= _BLOCK_BREAK; break;} // blocked then break;
 
 			if ( newposZ > finaldest.z ){
 				_SharpCounter = _SharpCounter+(newposZ - finaldest.z); // this value reserved for more extends.
 			}
 
-			//printf("x:%f y:%f z:%f counter%d sharp%f\n",newposX,newposY,newposZ,i,_SharpCounter );
+			//printf("x:%f y:%f z:%f counter%d sharp%f\n",newposX,newposY,newposZ,j,_SharpCounter );
 
 			finaldest.x = newposX;
 			finaldest.y = newposY;
@@ -3440,7 +3440,7 @@ void Spell::SpellEffectLeap(uint32 i) // Leap
 		if ( flag & _BLOCK_BREAK ) printf("_BLOCK_BREAK 1\n");*/
 
 
-		if ( i <3 ) return; //wallhack?
+		if ( j <3 ) return; //wallhack?
 
 		if ( !(flag & _UNDERGROUND) )
 		{
@@ -3451,8 +3451,8 @@ void Spell::SpellEffectLeap(uint32 i) // Leap
 		if ( !(flag&_COLLIDED) && (flag&_POS_BREAK) ) {
 			// just test again ,landheight wasn't strictly, collision system better;p
 			// so it makes you on falling.
-			newposX = posX + ( ((float(i) * radius_steps)+0.5f) * cosf( m_caster->GetOrientation() ) );
-			newposY = posY + ( ((float(i) * radius_steps)+0.5f) * sinf( m_caster->GetOrientation() ) );
+			newposX = posX + ( ((j * radius_steps)+0.5f) * cosf( m_caster->GetOrientation() ) );
+			newposY = posY + ( ((j * radius_steps)+0.5f) * sinf( m_caster->GetOrientation() ) );
 			newposZ = m_caster->GetMapMgr()->GetLandHeight(newposX,newposY);
 			if ( newposZ > finaldest.z ) finaldest.z = finaldest.z+4.0f; // taking big Z
 		}
@@ -3635,10 +3635,10 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 
 				Lock *lock = dbcLock.LookupEntryForced( itemTarget->GetProto()->LockId );
 				if(!lock) return;
-				for(int i = 0; i<5; i++)
-					if(lock->locktype[i] == 2 && lock->minlockskill[i] && lockskill >= lock->minlockskill[i])
+				for(int j = 0; j<5; j++)
+					if(lock->locktype[j] == 2 && lock->minlockskill[j] && lockskill >= lock->minlockskill[j])
 					{
-						v = lock->minlockskill[i];
+						v = lock->minlockskill[j];
 						itemTarget->locked = false;
                         itemTarget->UnLock();
 						DetermineSkillUp(SKILL_LOCKPICKING,v/5);
@@ -3653,11 +3653,11 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 				if(lock == 0)
 					return;
 
-				for(int i= 0;i<5;i++)
+				for(int j= 0;j<5;j++)
 				{
-					if(lock->locktype[i] == 2 && lock->minlockskill[i] && lockskill >= lock->minlockskill[i])
+					if(lock->locktype[j] == 2 && lock->minlockskill[j] && lockskill >= lock->minlockskill[j])
 					{
-						v = lock->minlockskill[i];
+						v = lock->minlockskill[j];
 						gameObjTarget->SetUInt32Value(GAMEOBJECT_FLAGS, 0);
 						gameObjTarget->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 						//Add Fill GO loot here
@@ -3892,11 +3892,11 @@ void Spell::SpellEffectLearnSpell(uint32 i) // Learn Spell
 		if( !i_caster || !p_caster ) return;
 
 		uint32 spellid = 0;
-		for(int i = 0; i < 5; ++i)
+		for(int j = 0; j < 5; ++j)
 		{
-			if( i_caster->GetProto()->Spells[i].Trigger == LEARNING && i_caster->GetProto()->Spells[i].Id != 0 )
+			if( i_caster->GetProto()->Spells[j].Trigger == LEARNING && i_caster->GetProto()->Spells[j].Id != 0 )
 			{
-				spellid = i_caster->GetProto()->Spells[i].Id;
+				spellid = i_caster->GetProto()->Spells[j].Id;
 				break;
 			}
 		}
@@ -3996,10 +3996,10 @@ void Spell::SpellEffectLearnSpell(uint32 i) // Learn Spell
 			playerTarget->removeSpell(17041, false, false, 0); //Master Axesmith
 			break;
 		}
-		for(uint32 i = 0; i<3; i++)
-			if(spellinfo->Effect[i] == SPELL_EFFECT_WEAPON ||
-				spellinfo->Effect[i] == SPELL_EFFECT_PROFICIENCY ||
-				spellinfo->Effect[i] == SPELL_EFFECT_DUAL_WIELD )
+		for(uint32 j = 0; j<3; j++)
+			if(spellinfo->Effect[j] == SPELL_EFFECT_WEAPON ||
+				spellinfo->Effect[j] == SPELL_EFFECT_PROFICIENCY ||
+				spellinfo->Effect[j] == SPELL_EFFECT_DUAL_WIELD )
 			{
 				Spell *sp = new Spell(unitTarget, spellinfo, true, NULL);
 				SpellCastTargets targets;
@@ -4247,9 +4247,9 @@ void Spell::SpellEffectSummonGuardian(uint32 i) // Summon Guardian
 		damage = 1;
 
 	float angle_for_each_spawn = -float(M_PI) * 2 / damage;
-	for( int i = 0; i < damage; i++ )
+	for( int j = 0; j < damage; j++ )
 	{
-		float m_fallowAngle = angle_for_each_spawn * i;
+		float m_fallowAngle = angle_for_each_spawn * j;
 		u_caster->create_guardian( cr_entry, GetDuration(), m_fallowAngle, level, obj, vec );
 	}
 	if( vec != NULL )
@@ -4348,8 +4348,8 @@ void Spell::SpellEffectSpawn(uint32 i)
 
 			static float coord[3][3]= {{-108.9034f,2129.5678f,144.9210f},{-108.9034f,2155.5678f,155.678f},{-77.9034f,2155.5678f,155.678f}};
 
-			int i = (int)(rand()%3);
-			u_caster->GetAIInterface()->SendMoveToPacket(coord[i][0],coord[i][1],coord[i][2],0.0f,0,u_caster->GetAIInterface()->getMoveFlags());
+			int j = rand()%3;
+			u_caster->GetAIInterface()->SendMoveToPacket(coord[j][0],coord[j][1],coord[j][2],0.0f,0,u_caster->GetAIInterface()->getMoveFlags());
 		}
 	}
 }
@@ -4903,7 +4903,7 @@ void Spell::SpellEffectPowerBurn(uint32 i) // power burn
 	}
 	int32 mult = damage;
 	damage = mult * unitTarget->GetMaxPower( POWER_TYPE_MANA ) / 100;
-	if( m_caster && m_caster->IsUnit() )
+	if( m_caster->IsUnit() )//Spell ctor has ASSERT( m_caster != NULL ) so there's no need to add NULL checks, even if static analysis reports them.
 	{
 		Unit* caster = static_cast<Unit*>( m_caster );
 		if ( (uint32) damage > caster->GetMaxPower( POWER_TYPE_MANA ) * (mult*2) / 100 ) 
@@ -5799,7 +5799,7 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 	case 24590: // Zandalarian Hero Badge
 		if( u_caster != NULL )
 		{
-			for(int i= 0;i<20;i++)
+			for(int j= 0;j<20;j++)
 				u_caster->CastSpell(u_caster, 24575, true);
 		}break;
 	}
@@ -7183,20 +7183,20 @@ void Spell::SpellEffectSpellSteal( uint32 i )
 					uint32 aurdur = ( aur->GetDuration()>120000 ? 120000 : aur->GetDuration() );
 					Aura *aura = new Aura(aur->GetSpellProto(), aurdur, u_caster, u_caster );
 					uint32 aur_removed = unitTarget->RemoveAllAuraByNameHash( aur->GetSpellProto()->NameHash );
-					for ( uint32 i = 0; i < 3; i++ )
+					for ( uint32 j = 0; j < 3; j++ )
 					{
-						if ( aura->GetSpellProto()->Effect[i] )
+						if ( aura->GetSpellProto()->Effect[j] )
 						{
-							aura->AddMod( aura->GetSpellProto()->EffectApplyAuraName[i], aura->GetSpellProto()->EffectBasePoints[i]+1, aura->GetSpellProto()->EffectMiscValue[i], i );
+							aura->AddMod( aura->GetSpellProto()->EffectApplyAuraName[j], aura->GetSpellProto()->EffectBasePoints[j]+1, aura->GetSpellProto()->EffectMiscValue[j], j );
 						}
 					}
 					if( aura->GetSpellProto()->procCharges>0 )
 					{
-						Aura *aur;
-						for(uint32 i = 0; i<aur_removed-1; i++)
+						Aura *aur2;
+						for(uint32 j = 0; j<aur_removed-1; j++)
 						{
-							aur = new Aura(aura->GetSpellProto(), aurdur, u_caster, u_caster);
-							u_caster->AddAura(aur);
+							aur2 = new Aura(aura->GetSpellProto(), aurdur, u_caster, u_caster);
+							u_caster->AddAura(aur2);
 						}
 						if(!(aura->GetSpellProto()->procFlags & PROC_REMOVEONUSE))
 						{
@@ -7508,11 +7508,11 @@ void Spell::SpellEffectActivateSpec(uint32 i)
 
 	data << uint8(1); // Force the client to reset the actionbar and use new values
 
-	for(uint32 i = 0; i < PLAYER_ACTION_BUTTON_COUNT; ++i)
+	for(uint32 j = 0; j < PLAYER_ACTION_BUTTON_COUNT; ++j)
 	{
-		data << p_caster->m_specs[NewSpec].mActions[i].Action;
-        data << p_caster->m_specs[NewSpec].mActions[i].Type;
-		data << p_caster->m_specs[NewSpec].mActions[i].Misc;
+		data << p_caster->m_specs[NewSpec].mActions[j].Action;
+        data << p_caster->m_specs[NewSpec].mActions[j].Type;
+		data << p_caster->m_specs[NewSpec].mActions[j].Misc;
 	}
 
 	p_caster->GetSession()->SendPacket(&data);

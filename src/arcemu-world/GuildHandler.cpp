@@ -746,10 +746,10 @@ void SendShowSignatures(Charter * c, uint64 i, Player * p)
 	data << (uint64)c->GetLeader();
 	data << c->GetID();
 	data << uint8(c->SignatureCount);
-	for(uint32 i = 0; i < c->Slots; ++i)
+	for(uint32 j = 0; j < c->Slots; ++j)
 	{
-		if(c->Signatures[i] == 0) continue;
-		data << uint64(c->Signatures[i]) << uint32(1);
+		if(c->Signatures[j] == 0) continue;
+		data << uint64(c->Signatures[j]) << uint32(1);
 	}
 	data << uint8(0);
 	p->GetSession()->SendPacket(&data);
