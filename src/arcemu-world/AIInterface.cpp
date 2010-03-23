@@ -676,7 +676,6 @@ void AIInterface::Update(uint32 p_time)
 		if(p_time >= m_totemspelltimer)
 		{
 			Spell *pSpell = new Spell(m_Unit, totemspell, true, 0);
-			SpellCastTargets targets(0);
 			Unit * nextTarget = GetNextTarget();
 			if(nextTarget == NULL ||
 				(!m_Unit->GetMapMgr()->GetUnit(nextTarget->GetGUID()) || 
@@ -689,6 +688,7 @@ void AIInterface::Update(uint32 p_time)
 				//we set no target and see if we managed to fid a new one
 				SetNextTarget( (Unit*)NULL );
 				//something happened to our target, pick another one
+				SpellCastTargets targets(0);
 				pSpell->GenerateTargets(&targets);
 				if(targets.m_targetMask & TARGET_FLAG_UNIT)
 					SetNextTarget( targets.m_unitTarget );
@@ -4162,15 +4162,14 @@ void AIInterface::ResetProcCounts()
 //we only cast once a spell and we will set his health and resistances. Note that this can be made with db too !
 void AIInterface::Event_Summon_EE_totem( uint32 summon_duration )
 {
-	//some say it should inherit the level of the caster
+	//Event_Summon_EE_totem() is called only by Spell::SpellEffectSummonTotem() only if caster is not NULL, 
+	//so NULL-checks are not needed here.
 	Unit *caster = m_Unit->GetMapMgr()->GetUnit( m_Unit->GetCreatedByGUID() );
-	uint32 new_level = 0;
-	if( caster )
-		new_level = caster->getLevel( );
 	//timer should not reach this value thus not cast this spell again
 	m_totemspelltimer = 0xEFFFFFFF;
+	//some say it should inherit the level of the caster
 	//creatures do not support PETs and the spell uses that effect so we force a summon guardian thing
-	Creature *ourslave = m_Unit->create_guardian( 15352, 0xFFFFFFFF, float(-M_PI * 2), new_level );//since the totem is the only one allowed to despawn this, we set its despawn time to infinite.
+	Creature *ourslave = m_Unit->create_guardian( 15352, 0xFFFFFFFF, float(-M_PI * 2), caster->getLevel() );//since the totem is the only one allowed to despawn this, we set its despawn time to infinite.
     if( ourslave == NULL )
 		return;
 
@@ -4195,15 +4194,14 @@ void AIInterface::Event_Summon_EE_totem( uint32 summon_duration )
 //we only cast once a spell and we will set his health and resistances. Note that this can be made with db too !
 void AIInterface::Event_Summon_FE_totem( uint32 summon_duration )
 {
-	//some say it should inherit the level of the caster
+	//Event_Summon_FE_totem() is called only by Spell::SpellEffectSummonTotem() only if caster is not NULL, 
+	//so NULL-checks are not needed here.
 	Unit *caster = m_Unit->GetMapMgr()->GetUnit( m_Unit->GetCreatedByGUID() );
-	uint32 new_level = 0;
-	if( caster != NULL )
-		new_level = caster->getLevel( );
 	//timer should not reach this value thus not cast this spell again
 	m_totemspelltimer = 0xEFFFFFFF;
+	//some say it should inherit the level of the caster
 	//creatures do not support PETs and the spell uses that effect so we force a summon guardian thing
-	Creature *ourslave = m_Unit->create_guardian( 15438, 0xFFFFFFFF, float(-M_PI * 2), new_level );//since the totem is the only one allowed to despawn this, we set its despawn time to infinite.
+	Creature *ourslave = m_Unit->create_guardian( 15438, 0xFFFFFFFF, float(-M_PI * 2), caster->getLevel() );//since the totem is the only one allowed to despawn this, we set its despawn time to infinite.
     if( ourslave == NULL )
 		return;
 

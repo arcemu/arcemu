@@ -316,14 +316,14 @@ void ObjectMgr::LoadExtraItemStuff()
 		pItemPrototype = itr->Get();
 		if(pItemPrototype->ItemSet > 0)
 		{
-			ItemSetContentMap::iterator itr = mItemSets.find(pItemPrototype->ItemSet);
+			ItemSetContentMap::iterator itr2 = mItemSets.find(pItemPrototype->ItemSet);
 			std::list<ItemPrototype*>* l;
-			if(itr == mItemSets.end())
+			if(itr2 == mItemSets.end())
 			{
 				l = new std::list<ItemPrototype*>;				
 				mItemSets.insert( ItemSetContentMap::value_type( pItemPrototype->ItemSet, l) );
 			} else {
-				l = itr->second;
+				l = itr2->second;
 			}
 			l->push_back(pItemPrototype);
 		}

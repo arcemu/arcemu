@@ -1215,10 +1215,10 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
                                                if( CastingSpell == NULL )
                                                        continue;
 
-                                               if( CastingSpell->NameHash != SPELL_HASH_FIREBALL ||
-                                                       CastingSpell->NameHash != SPELL_HASH_FIRE_BLAST ||
-                                                       CastingSpell->NameHash != SPELL_HASH_SCORCH ||
-                                                       CastingSpell->NameHash != SPELL_HASH_LIVING_BOMB ||
+                                               if( CastingSpell->NameHash != SPELL_HASH_FIREBALL &&
+                                                       CastingSpell->NameHash != SPELL_HASH_FIRE_BLAST &&
+                                                       CastingSpell->NameHash != SPELL_HASH_SCORCH &&
+                                                       CastingSpell->NameHash != SPELL_HASH_LIVING_BOMB &&
                                                        CastingSpell->NameHash != SPELL_HASH_FROSTFIRE_BOLT )
                                                        continue;
 
@@ -1763,7 +1763,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						Player *First_new_target,*Next_new_target,*First_whatever;
 						First_new_target = Next_new_target = First_whatever = NULL;
 						bool passed_prev_target = false;
-						GroupMembersSet::iterator itr;
+						GroupMembersSet::iterator itr3;
 						SubGroup * pGroup = p_caster->GetGroup() ?
 							p_caster->GetGroup()->GetSubGroup(p_caster->GetSubGroup()) : 0;
 
@@ -1774,35 +1774,35 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 							float range=GetMaxRange(dbcSpellRange.LookupEntry(ospinfo->rangeIndex));
 							range*=range;
 
-							for(itr = pGroup->GetGroupMembersBegin();itr != pGroup->GetGroupMembersEnd(); ++itr)
+							for(itr3 = pGroup->GetGroupMembersBegin();itr3 != pGroup->GetGroupMembersEnd(); ++itr3)
 							{
-								if(!(*itr)->m_loggedInPlayer || !(*itr)->m_loggedInPlayer->isAlive() )
+								if(!(*itr3)->m_loggedInPlayer || !(*itr3)->m_loggedInPlayer->isAlive() )
 									continue;
 
 								//we cannot retarget self
-								if( (*itr)->m_loggedInPlayer == this )
+								if( (*itr3)->m_loggedInPlayer == this )
 								{
 									passed_prev_target = true;
 									continue;
 								}
 
-								if( IsInrange(p_caster,(*itr)->m_loggedInPlayer, range) )
+								if( IsInrange(p_caster,(*itr3)->m_loggedInPlayer, range) )
 								{
 
 									if( !First_whatever )
-										First_whatever = (*itr)->m_loggedInPlayer;
+										First_whatever = (*itr3)->m_loggedInPlayer;
 
 									//we target stuff that has no full health. No idea if we must fill target list or not :(
-									if( First_whatever && (*itr)->m_loggedInPlayer->GetUInt32Value( UNIT_FIELD_HEALTH ) == (*itr)->m_loggedInPlayer->GetUInt32Value( UNIT_FIELD_MAXHEALTH ) )
+									if( First_whatever && (*itr3)->m_loggedInPlayer->GetUInt32Value( UNIT_FIELD_HEALTH ) == (*itr3)->m_loggedInPlayer->GetUInt32Value( UNIT_FIELD_MAXHEALTH ) )
 										continue;
 
 									//first targatable player in group (like make circular buffer from normal list)
 									if( !First_new_target )
-										First_new_target = (*itr)->m_loggedInPlayer;
+										First_new_target = (*itr3)->m_loggedInPlayer;
 
 									if( passed_prev_target )
 									{
-										Next_new_target = (*itr)->m_loggedInPlayer;
+										Next_new_target = (*itr3)->m_loggedInPlayer;
 										break;
 									}
 								}
@@ -2001,9 +2001,9 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
                 case 58789:
                 case 58790:
 					{
-						uint32 dmg = static_cast< Player* >( this )->GetFlametongueDMG( origId );
-                                               SpellEntry * sp_for_the_logs = dbcSpell.LookupEntry( spellId );
-                                               Strike( victim, MELEE, sp_for_the_logs, dmg, 0, 0, true, false );
+						uint32 dmg2 = static_cast< Player* >( this )->GetFlametongueDMG( origId );
+                        SpellEntry * sp_for_the_logs = dbcSpell.LookupEntry( spellId );
+                        Strike( victim, MELEE, sp_for_the_logs, dmg2, 0, 0, true, false );
 					}break;
 				case 16246:
 					{
@@ -2029,10 +2029,10 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						//we have to recalc the value of this spell
 						SpellEntry *spellInfo = dbcSpell.LookupEntry(origId);
 						uint32 AP_owerride = spellInfo->EffectBasePoints[0]+1;
-						uint32 dmg = static_cast< Player* >( this )->GetMainMeleeDamage(AP_owerride);
+						uint32 dmg2 = static_cast< Player* >( this )->GetMainMeleeDamage(AP_owerride);
 						SpellEntry *sp_for_the_logs = dbcSpell.LookupEntry(spellId);
-						Strike( victim, MELEE, sp_for_the_logs, dmg, 0, 0, true, false );
-						Strike( victim, MELEE, sp_for_the_logs, dmg, 0, 0, true, false );
+						Strike( victim, MELEE, sp_for_the_logs, dmg2, 0, 0, true, false );
+						Strike( victim, MELEE, sp_for_the_logs, dmg2, 0, 0, true, false );
 						spellId = 33010; // WF animation
 					}break;
 				//rogue - Ruthlessness
@@ -2055,12 +2055,12 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 					{
 						if( CastingSpell == NULL )
 							continue;//this should not occur unless we made a fuckup somewhere
-						int32 proc_Chance;
+						int32 proc_Chance2;
 						//chance is based actually on combopoint count and not 100% always
 						if( CastingSpell->c_is_flags & SPELL_FLAG_IS_FINISHING_MOVE && IsPlayer())
-							proc_Chance = static_cast< Player* >( this )->m_comboPoints*ospinfo->EffectBasePoints[1];
+							proc_Chance2 = static_cast< Player* >( this )->m_comboPoints*ospinfo->EffectBasePoints[1];
 						else continue;
-						if(!Rand(proc_Chance))
+						if(!Rand(proc_Chance2))
 							continue;
 					}break;
 				//rogue - Find Weakness
@@ -3353,8 +3353,8 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 			// can block ranged attacks
 
 			// Is an offhand equipped and is it a shield?
-			Item* it = plr->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_OFFHAND );
-			if( it != NULL && it->GetProto()->InventoryType == INVTYPE_SHIELD )
+			Item* it2 = plr->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_OFFHAND );
+			if( it2 != NULL && it2->GetProto()->InventoryType == INVTYPE_SHIELD )
 			{
 				block = plr->GetBlockChance();
 			}
@@ -4139,19 +4139,18 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 		{
 			map< uint32, OnHitSpell >::iterator it2 = static_cast< Player* >( this )->m_onStrikeSpellDmg.begin();
 			map< uint32, OnHitSpell >::iterator itr;
-			uint32 min_dmg, max_dmg, range, dmg;
+			uint32 range, dmg2;
 			for(; it2 != static_cast< Player* >( this )->m_onStrikeSpellDmg.end(); )
 			{
 				itr = it2;
 				++it2;
 
-				min_dmg = itr->second.mindmg;
-				max_dmg = itr->second.maxdmg;
-				range = min_dmg - max_dmg;
-				dmg = min_dmg;
-				if(range) range += RandomUInt(range);
+				dmg2 = itr->second.mindmg;
+				range = itr->second.maxdmg - itr->second.mindmg;
+				if(range != 0)
+					dmg2 += RandomUInt(range);
 
-				SpellNonMeleeDamageLog(pVictim, itr->second.spellid, dmg, true);
+				SpellNonMeleeDamageLog(pVictim, itr->second.spellid, dmg2, true);
 			}
 		}
 
@@ -4359,10 +4358,10 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 				if(CalcDistance(*itr) < 5.0f && isAttackable(this, (*itr)) && (*itr)->isInFront(this) && !((Unit*)(*itr))->IsPacified())
 				{
 					// Sweeping Strikes hits cannot be dodged, missed or parried (from wowhead)
-					bool skip_hit_check = ex->spell_info->Id == 12328 ? true : false;
+					bool skip_hit_check2 = ex->spell_info->Id == 12328 ? true : false;
 					//zack : should we use the spell id the registered this extra strike when striking ? It would solve a few proc on proc problems if so ;)
 //					Strike( static_cast< Unit* >( *itr ), weapon_damage_type, ability, add_damage, pct_dmg_mod, exclusive_damage, false, skip_hit_check );
-					Strike( static_cast< Unit* >( *itr ), weapon_damage_type, ex->spell_info, add_damage, pct_dmg_mod, exclusive_damage, false, skip_hit_check );
+					Strike( static_cast< Unit* >( *itr ), weapon_damage_type, ex->spell_info, add_damage, pct_dmg_mod, exclusive_damage, false, skip_hit_check2 );
 					break;
 				}
 			}
@@ -6358,7 +6357,7 @@ uint32 Unit::ModVisualAuraStackCount(Aura *aur, int32 count)
 		data << uint32(aur->GetSpellId());
 		data << uint16(flags);
 		data << uint8(m_auraStackCount[slot]);
-		if( flags & 0x0000 || !aur->IsPositive() )
+		if( !aur->IsPositive() )
 //			FastGUIDPack(data, aur->m_casterGuid);
 			data << uint8(0);
 		data << uint32(aur->GetDuration()) << uint32(aur->GetTimeLeft());
@@ -6461,10 +6460,10 @@ void Unit::UpdateVisibility()
 	if( m_objectTypeId == TYPEID_PLAYER )
 	{
 		plr = static_cast< Player* >( this );
-		for( Object::InRangeSet::iterator itr = m_objectsInRange.begin(); itr != m_objectsInRange.end();)
+		for( Object::InRangeSet::iterator itr2 = m_objectsInRange.begin(); itr2 != m_objectsInRange.end();)
 		{
-			pObj = (*itr);
-			++itr;
+			pObj = (*itr2);
+			++itr2;
 
 			can_see = plr->CanSee(pObj);
 			is_visible = plr->GetVisibility(pObj, &it3);

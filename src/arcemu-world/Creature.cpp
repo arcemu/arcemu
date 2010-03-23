@@ -1110,14 +1110,12 @@ void Creature::TotemExpire()
 		if(GetCreatedBySpell() == 6495) // sentry totem
 			m_owner->RemoveAura(6495);
 		m_owner->m_TotemSlots[totemSlot] = 0;
+		if( m_owner->IsPlayer() )
+			DestroyForPlayer( static_cast< Player* >( m_owner ) ); //make sure the client knows it's gone...
+		m_owner = NULL;
     }
 
-	if( m_owner->IsPlayer() )
-		DestroyForPlayer( static_cast< Player* >( m_owner ) ); //make sure the client knows it's gone...
-
 	totemSlot = -1;
-	m_owner = NULL; 
-
 
     DeleteMe();
 }
@@ -1552,10 +1550,10 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 		auctionHouse = sAuctionMgr.GetAuctionHouse(GetEntry());
 
 	//load resistances
-	for(uint32 x= 0;x<7;x++)
-		BaseResistance[x]=GetResistance(x);
-	for(uint32 x= 0;x<5;x++)
-		BaseStats[x]=GetStat(x);
+	for(uint32 j= 0;j<7;j++)
+		BaseResistance[j]=GetResistance(j);
+	for(uint32 j= 0;j<5;j++)
+		BaseStats[j]=GetStat(j);
 
 	BaseDamage[0]=GetMinDamage();
 	BaseDamage[1]=GetMaxDamage();

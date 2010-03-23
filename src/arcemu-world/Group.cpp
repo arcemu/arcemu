@@ -1057,18 +1057,18 @@ void Group::UpdateAllOutOfRangePlayersFor(Player * pPlayer)
 					hisMask.Clear();
 					myMask.Clear();
 					u1 = u2 = false;
-					for(uint32 i = PLAYER_QUEST_LOG_1_1; i <= PLAYER_QUEST_LOG_25_5; ++i)
+					for(uint32 j = PLAYER_QUEST_LOG_1_1; j <= PLAYER_QUEST_LOG_25_5; ++j)
 					{
-						if(plr->GetUInt32Value(i))
+						if(plr->GetUInt32Value(j))
 						{
-							hisMask.SetBit(i);
+							hisMask.SetBit(j);
 							u1 = true;
 						}
 
-						if(pPlayer->GetUInt32Value(i))
+						if(pPlayer->GetUInt32Value(j))
 						{
 							u2 = true;
-							myMask.SetBit(i);
+							myMask.SetBit(j);
 						}
 					}
 

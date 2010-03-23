@@ -541,10 +541,10 @@ void Player::SendLoot(uint64 guid,uint8 loot_type)
 					pGroup->Lock();
 					for(uint32 i = 0; i < pGroup->GetSubGroupCount(); ++i)
 					{
-						for(GroupMembersSet::iterator itr = pGroup->GetSubGroup(i)->GetGroupMembersBegin(); itr != pGroup->GetSubGroup(i)->GetGroupMembersEnd(); ++itr)
+						for(GroupMembersSet::iterator itr2 = pGroup->GetSubGroup(i)->GetGroupMembersBegin(); itr2 != pGroup->GetSubGroup(i)->GetGroupMembersEnd(); ++itr2)
 						{
 
-                            PlayerInfo *pinfo = *itr;
+                            PlayerInfo *pinfo = *itr2;
 
 							if( pinfo->m_loggedInPlayer && pinfo->m_loggedInPlayer->GetItemInterface()->CanReceiveItem( itemProto, iter->iItemsCount ) == 0 )
 							{

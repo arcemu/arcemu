@@ -2338,34 +2338,34 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 						case PARTY_LOOT_NBG:
 							{
 								// Loop party players and push update data.
-								GroupMembersSet::iterator itr;
+								GroupMembersSet::iterator itr2;
 								SubGroup * sGrp;
 								pGroup->Lock();
 								for( uint32 Index = 0; Index < pGroup->GetSubGroupCount(); ++Index )
 								{
 									sGrp = pGroup->GetSubGroup( Index );
-									itr = sGrp->GetGroupMembersBegin();
-									for( ; itr != sGrp->GetGroupMembersEnd(); ++itr )
+									itr2 = sGrp->GetGroupMembersBegin();
+									for( ; itr2 != sGrp->GetGroupMembersEnd(); ++itr2 )
 									{
-										if( (*itr)->m_loggedInPlayer && (*itr)->m_loggedInPlayer->IsVisible( victim ) )	   // Save updates for non-existent creatures
-											(*itr)->m_loggedInPlayer->PushUpdateData( &buf, 1 );
+										if( (*itr2)->m_loggedInPlayer && (*itr2)->m_loggedInPlayer->IsVisible( victim ) )	   // Save updates for non-existent creatures
+											(*itr2)->m_loggedInPlayer->PushUpdateData( &buf, 1 );
 									}
 								}
 								pGroup->Unlock();
 							}break;
 						case PARTY_LOOT_MASTER:
 							{
-								GroupMembersSet::iterator itr;
+								GroupMembersSet::iterator itr2;
 								SubGroup * sGrp;
 								pGroup->Lock();
 								for( uint32 Index = 0; Index < pGroup->GetSubGroupCount(); ++Index )
 								{
 									sGrp = pGroup->GetSubGroup( Index );
-									itr = sGrp->GetGroupMembersBegin();
-									for( ; itr != sGrp->GetGroupMembersEnd(); ++itr )
+									itr2 = sGrp->GetGroupMembersBegin();
+									for( ; itr2 != sGrp->GetGroupMembersEnd(); ++itr2 )
 									{
-										if( (*itr)->m_loggedInPlayer && (*itr)->m_loggedInPlayer->IsVisible( victim ) )	   // Save updates for non-existent creatures
-											(*itr)->m_loggedInPlayer->PushUpdateData( &buf, 1 );
+										if( (*itr2)->m_loggedInPlayer && (*itr2)->m_loggedInPlayer->IsVisible( victim ) )	   // Save updates for non-existent creatures
+											(*itr2)->m_loggedInPlayer->PushUpdateData( &buf, 1 );
 									}
 								}
 								pGroup->Unlock();
@@ -2447,12 +2447,12 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 										Player *active_player_list[MAX_GROUP_SIZE_RAID];
 										Player *pGroupGuy = NULL;
 										int active_player_count= 0;
-										GroupMembersSet::iterator itr;
+										GroupMembersSet::iterator itr2;
 										pGroup->Lock();
 										for(uint32 i = 0; i < pGroup->GetSubGroupCount(); ++i) {
-											for(itr = pGroup->GetSubGroup(i)->GetGroupMembersBegin(); itr != pGroup->GetSubGroup(i)->GetGroupMembersEnd(); ++itr)
+											for(itr2 = pGroup->GetSubGroup(i)->GetGroupMembersBegin(); itr2 != pGroup->GetSubGroup(i)->GetGroupMembersEnd(); ++itr2)
 											{
-												pGroupGuy = (*itr)->m_loggedInPlayer;
+												pGroupGuy = (*itr2)->m_loggedInPlayer;
 												if( pGroupGuy &&
 													pGroupGuy->isAlive() &&
 													pVictim->GetMapMgr() == pGroupGuy->GetMapMgr() &&
@@ -2472,10 +2472,10 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 										}
 										for(int i = 0; i < active_player_count; ++i)
 										{
-											Player * plr = active_player_list[i];
+											Player * plr2 = active_player_list[i];
 #ifdef ENABLE_ACHIEVEMENTS
-											plr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, pVictim->GetEntry(), 1, 0);
-											plr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE_TYPE, highGUID, lowGUID, 0);
+											plr2->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, pVictim->GetEntry(), 1, 0);
+											plr2->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE_TYPE, highGUID, lowGUID, 0);
 #endif
 										}
 									}
@@ -2541,12 +2541,12 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 											Player *active_player_list[MAX_GROUP_SIZE_RAID];
 											Player *pGroupGuy = NULL;
 											int active_player_count = 0;
-											GroupMembersSet::iterator itr;
+											GroupMembersSet::iterator itr2;
 											pGroup->Lock();
 											for(uint32 i = 0; i < pGroup->GetSubGroupCount(); ++i) {
-												for(itr = pGroup->GetSubGroup(i)->GetGroupMembersBegin(); itr != pGroup->GetSubGroup(i)->GetGroupMembersEnd(); ++itr)
+												for(itr2 = pGroup->GetSubGroup(i)->GetGroupMembersBegin(); itr2 != pGroup->GetSubGroup(i)->GetGroupMembersEnd(); ++itr2)
 												{
-													pGroupGuy = (*itr)->m_loggedInPlayer;
+													pGroupGuy = (*itr2)->m_loggedInPlayer;
 													if( pGroupGuy &&
 														pGroupGuy->isAlive() &&
 														//
@@ -2568,10 +2568,10 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 											}
 											for(int i = 0; i < active_player_count; ++i)
 											{
-												Player * plr = active_player_list[i];
+												Player * plr2 = active_player_list[i];
 #ifdef ENABLE_ACHIEVEMENTS
-												plr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, pVictim->GetEntry(), 1, 0);
-												plr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE_TYPE, highGUID, lowGUID, 0);
+												plr2->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, pVictim->GetEntry(), 1, 0);
+												plr2->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE_TYPE, highGUID, lowGUID, 0);
 #endif
 											}
 										}
@@ -2987,11 +2987,11 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 
 	if( IsUnit() && allowProc && spellInfo->Id != 25501 && spellInfo->noproc == false )
 	{
-		int32 dmg = float2int32(res);
+		int32 dmg2 = float2int32(res);
 
-		pVictim->HandleProc( vproc, static_cast< Unit* >( this ), spellInfo, dmg, abs_dmg);
+		pVictim->HandleProc( vproc, static_cast< Unit* >( this ), spellInfo, dmg2, abs_dmg);
 		pVictim->m_procCounter = 0;
-		static_cast< Unit* >( this )->HandleProc( aproc, pVictim, spellInfo, dmg, abs_dmg);
+		static_cast< Unit* >( this )->HandleProc( aproc, pVictim, spellInfo, dmg2, abs_dmg);
 		static_cast< Unit* >( this )->m_procCounter = 0;
 	}
 	if( this->IsPlayer() )
@@ -3039,10 +3039,10 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 			//Shadow Word:Death
 			if( spellID == 32379 || spellID == 32996 || spellID == 48157 || spellID == 48158 ) 
 			{
-				uint32 damage = uint32( res + abs_dmg );
-				uint32 absorbed = static_cast< Unit* >( this )->AbsorbDamage( school, &damage );
-				DealDamage( static_cast< Unit* >( this ), damage, 2, 0, spellID );
-				SendSpellNonMeleeDamageLog( this, this, spellID, damage, static_cast<uint8>( school ), absorbed, 0, false, 0, false, IsPlayer() );
+				uint32 damage2 = uint32( res + abs_dmg );
+				uint32 absorbed = static_cast< Unit* >( this )->AbsorbDamage( school, &damage2 );
+				DealDamage( static_cast< Unit* >( this ), damage2, 2, 0, spellID );
+				SendSpellNonMeleeDamageLog( this, this, spellID, damage2, static_cast<uint8>( school ), absorbed, 0, false, 0, false, IsPlayer() );
 			}
 		}
 	}

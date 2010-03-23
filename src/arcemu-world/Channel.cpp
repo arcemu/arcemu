@@ -796,7 +796,7 @@ void Channel::List(Player * plr)
 	data << uint8(1) << m_name;
 	data << uint8(m_flags);
 	data << uint32(m_members.size());
-	for(MemberMap::iterator itr = m_members.begin(); itr != m_members.end(); ++itr)
+	for(itr = m_members.begin(); itr != m_members.end(); ++itr)
 	{
 		data << itr->first->GetGUID();
 		flags = 0;
@@ -898,9 +898,9 @@ Channel * ChannelMgr::GetCreateChannel(const char *name, Player * p, uint32 type
 
 	// make sure the name isn't banned
 	m_confSettingLock.Acquire();
-	for(vector<string>::iterator itr = m_bannedChannels.begin(); itr != m_bannedChannels.end(); ++itr)
+	for(vector<string>::iterator itr2 = m_bannedChannels.begin(); itr2 != m_bannedChannels.end(); ++itr2)
 	{
-		if(!strnicmp( name, itr->c_str(), itr->size() ) )
+		if(!strnicmp( name, itr2->c_str(), itr2->size() ) )
 		{
 			lock.Release();
 			m_confSettingLock.Release();

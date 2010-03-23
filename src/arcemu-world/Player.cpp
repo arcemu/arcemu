@@ -373,7 +373,7 @@ mOutOfRangeIdCount(0)
 		m_charters[i]= NULL;
 	for(i = 0; i < NUM_ARENA_TEAM_TYPES; ++i)
 		m_arenaTeams[i]= NULL;
-	for(int i = 0; i < 6; ++i)
+	for(i = 0; i < 6; ++i)
 	{
 		m_runes[i] = baseRunes[i];
 		m_runetimer[i] = 0;
@@ -734,7 +734,7 @@ bool Player::Create(WorldPacket& data )
 	}
 
 	// check that the account CAN create TBC characters, if we're making some
-	if(race >= RACE_BLOODELF && !m_session->_accountFlags & (ACCOUNT_FLAG_XPACK_01 || ACCOUNT_FLAG_XPACK_02))
+	if(race >= RACE_BLOODELF && !((m_session->_accountFlags & ACCOUNT_FLAG_XPACK_01) && (m_session->_accountFlags & ACCOUNT_FLAG_XPACK_02)))
 	{
 		//sCheatLog.writefromsession(m_session, "tried to create player with race %u and class %u but no expansion flags", race, class_);
 		m_session->Disconnect();
@@ -1862,7 +1862,7 @@ void Player::smsg_TalentsInfo(bool SendPetTalents)
 
 void Player::ActivateSpec(uint8 spec)
 {
-	if(spec > MAX_SPEC_COUNT || m_talentActiveSpec > MAX_SPEC_COUNT)
+	if(spec >= MAX_SPEC_COUNT || m_talentActiveSpec >= MAX_SPEC_COUNT)
 		return;
 
 	uint8 OldSpec = m_talentActiveSpec;
@@ -8095,7 +8095,7 @@ void Player::SendTradeUpdate()
 		{
 			count++;
 			ItemPrototype * pProto = pItem->GetProto();
-			Arcemu::Util::ARCEMU_ASSERT(    pProto != 0 );
+			Arcemu::Util::ARCEMU_ASSERT(    pProto != NULL );
 
 			data << uint8( Index );
 
@@ -9245,9 +9245,9 @@ void Player::CompleteLoading()
 	sInstanceMgr.BuildSavedInstancesForPlayer(this);
 	CombatStatus.UpdateFlag();
 	// add glyphs
-	for (uint8 i = 0; i < GLYPHS_COUNT; ++i)
+	for (uint8 j = 0; j < GLYPHS_COUNT; ++j)
 	{
-		GlyphPropertyEntry * glyph = dbcGlyphProperty.LookupEntryForced(m_specs[m_talentActiveSpec].glyphs[i]);
+		GlyphPropertyEntry * glyph = dbcGlyphProperty.LookupEntryForced(m_specs[m_talentActiveSpec].glyphs[j]);
 		if(glyph == NULL)
 			continue;
 
@@ -9836,9 +9836,9 @@ void Player::CalcDamage()
 
 			if(m_wratings.size ())
 			{
-				std::map<uint32, uint32>::iterator i=m_wratings.find(it->GetProto()->SubClass);
-				if(i != m_wratings.end())
-					cr=i->second;
+				std::map<uint32, uint32>::iterator itr=m_wratings.find(it->GetProto()->SubClass);
+				if(itr != m_wratings.end())
+					cr=itr->second;
 			}
 
 		}
