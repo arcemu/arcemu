@@ -165,7 +165,7 @@ void AuthSocket::HandleChallenge()
 	}
 
 	// Null-terminate the account string
-	if(m_challenge.I_len >= 0x50) { Disconnect(); return; }
+	if(m_challenge.I_len >= 50) { Disconnect(); return; }
 	m_challenge.I[m_challenge.I_len] = 0;
 
 	// Clear the shitty hash (for server)

@@ -98,7 +98,7 @@ void WorldSession::HandleMsgLookingForGroup(WorldPacket& recvPacket)
 	uint32 LfgType,LfgDungeonId,unk1;
 	recvPacket >> LfgType >> LfgDungeonId >> unk1;
 	
-	if(LfgDungeonId > MAX_DUNGEONS)
+	if(LfgDungeonId >= MAX_DUNGEONS)
 		return;
 
 	if(LfgDungeonId)
