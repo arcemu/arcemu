@@ -2563,13 +2563,10 @@ void WorldSession::HandleGameobjReportUseOpCode( WorldPacket& recv_data )   // C
 	GameObject* gameobj = _player->GetMapMgr()->GetGameObject((uint32)guid);
 	if( gameobj== NULL )
 		return;
-	if( gameobj->CanActivate() )
-	{
-		sQuestMgr.OnGameObjectActivate(_player, gameobj);
+	sQuestMgr.OnGameObjectActivate(_player, gameobj);
 #ifdef ENABLE_ACHIEVEMENTS	
-		_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_USE_GAMEOBJECT,gameobj->GetEntry(),0,0);
+	_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_USE_GAMEOBJECT,gameobj->GetEntry(),0,0);
 #endif	
-	}
 	return;
 }
 
