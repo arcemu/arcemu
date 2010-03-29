@@ -1602,7 +1602,7 @@ public:
 	SpellTargetConstraint(){ }
 	~SpellTargetConstraint(){ 
 		CreatureTargets.clear();
-		CreatureTargets.clear();
+		GameobjectTargets.clear();
 	}
 
 	bool HasCreature( int id ){
