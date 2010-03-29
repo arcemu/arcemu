@@ -219,8 +219,14 @@ ObjectMgr::~ObjectMgr()
 	for ( ; itr != ProfessionDiscoveryTable.end(); itr++ )
 		delete (*itr);
 
-	Log.Notice("ObjectMgr", "Cleanup BroadCastStorages...");
+	Log.Notice("ObjectMgr", "Cleaning up BroadCastStorages...");
 	m_BCEntryStorage.clear();
+
+	Log.Notice("ObjectMgr", "Cleaning up spell target constraints...");
+	for( SpellTargetConstraintMap::iterator itr = m_spelltargetconstraints.begin(); itr != m_spelltargetconstraints.end(); ++itr )
+		delete itr->second;
+
+	m_spelltargetconstraints.clear();
 
 }
 
@@ -3389,3 +3395,55 @@ void ObjectMgr::GroupVoiceReconnected()
 	m_groupLock.ReleaseReadLock();
 }
 #endif
+
+void ObjectMgr::LoadSpellTargetConstraints(){
+	enum{ CREATURE_TYPE, GAMEOBJECT_TYPE };
+
+	Log.Notice("ObjectMgr","Loading spell target constraints...");
+
+	// Let's try to be idiot proof :/
+	QueryResult *result = WorldDatabase.Query("SELECT * FROM SpellTargetConstraints WHERE SpellID > 0 ORDER BY SpellID");
+
+	if( result != NULL ){
+		uint32 oldspellid = 0;
+		SpellTargetConstraint *stc = NULL;
+		Field *fields = NULL;
+
+		do{
+			fields = result->Fetch();
+			
+			if( fields != NULL ){
+				uint32 spellid = fields[ 0 ].GetUInt32();
+
+				if( oldspellid != spellid ){
+					stc = new SpellTargetConstraint;
+
+					m_spelltargetconstraints.insert( std::make_pair< uint32, SpellTargetConstraint* >( spellid, stc ) );
+				}
+
+				uint32 type = fields[ 1 ].GetUInt32();
+				uint32 value = fields[ 2 ].GetUInt32();
+
+				if( type == CREATURE_TYPE )
+					stc->AddCreature( value );
+				else
+					stc->AddGameobject( value );
+
+				oldspellid = spellid;
+			}
+		}while( result->NextRow() );
+	}
+
+	delete result;
+
+	Log.Notice("ObjectMgr", "Loaded constraints for %u spells...",m_spelltargetconstraints.size() );
+}
+
+SpellTargetConstraint* ObjectMgr::GetSpellTargetConstraintForSpell( uint32 spellid ){
+	SpellTargetConstraintMap::const_iterator itr = m_spelltargetconstraints.find( spellid );
+
+	if( itr != m_spelltargetconstraints.end() )
+		return itr->second;
+	else
+		return NULL;
+}

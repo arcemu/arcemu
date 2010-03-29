@@ -288,6 +288,8 @@ Spell::Spell(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 			if( p_caster->m_runes[ i ] < RUNE_RECHARGE )
 				m_rune_avail_before |= (1 << i);
 	}
+
+	m_target_constraint = objmgr.GetSpellTargetConstraintForSpell( info->Id );
 }
 
 Spell::~Spell()
@@ -4090,6 +4092,24 @@ uint8 Spell::CanCast(bool tolerate)
 				}
 			}
 
+////////////////////////////////////////////////////// Target check spells that are only castable on certain creatures/gameobjects ///////////////
+
+			if( m_target_constraint != NULL ){
+				// Spell has GO and/or Creature target constraint, yet target is neither -> bad target
+				if( !target->IsCreature() && !target->IsGameObject() )
+					return SPELL_FAILED_BAD_TARGETS;
+
+				// target is the wrong creature
+				if( target->IsCreature() && !m_target_constraint->HasCreature( target->GetEntry() ))
+					return SPELL_FAILED_BAD_TARGETS;
+				
+				// target is the wrong GO :/
+				if( target->IsGameObject() && !m_target_constraint->HasGameobject( target->GetEntry() ) )
+					return SPELL_FAILED_BAD_TARGETS;
+			}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 			// scripted spell stuff
 			switch(GetProto()->Id)
 			{
@@ -4138,89 +4158,7 @@ uint8 Spell::CanCast(bool tolerate)
 						return SPELL_FAILED_DONT_REPORT;
 					}
 				}break;
-				case 2699:
-				{
-					if(target->GetEntry() != 5307 || target->isAlive())
-						return SPELL_FAILED_BAD_TARGETS;
-				}break;
-				case 30877:
-				{
-					if(target->GetEntry() != 17326 && target != m_caster)
-						return SPELL_FAILED_BAD_TARGETS;
-				}break;
-				case 34665:
-				{
-					if(target->GetEntry() != 16880)
-						return SPELL_FAILED_BAD_TARGETS;
-				}break;
-				case 3607:
-				{
-					if(target->GetEntry() != 2530)
-						return SPELL_FAILED_BAD_TARGETS;
-				}break;
-				case 36310:
-				{
-					if(target->GetEntry() != 20058)
-						return SPELL_FAILED_BAD_TARGETS;
-				}break;
-				case 41291:
-				{
-					if(target->GetEntry() != 22357)
-						return SPELL_FAILED_BAD_TARGETS;
-				}break;
-				case 37136:
-				{
-					if(target->GetEntry() != 21731)
-						return SPELL_FAILED_BAD_TARGETS;
-				}break;
-				case 28369: // Gas
-				{
-					if( !target->IsCreature() || target->GetEntry() != 18879 ) // Phase Hunter
-						return SPELL_FAILED_BAD_TARGETS;
-				} break;
-				case 29528: // Inoculation
-				{
-					if( !target->IsCreature() || target->GetEntry() != 16518 ) // Nestlewood Owlkin
-						return SPELL_FAILED_BAD_TARGETS;
-				}break;
-				case 41621: // Wolpertinger Net
-				{
-					if(!target->IsCreature() || target->GetEntry()!=23487 ) // Wild Wolpertinger
-						return SPELL_FAILED_BAD_TARGETS;
-				}break;
-				case 32578: // Gor'drek's Ointment
-				{
-					if(!target->IsCreature() || target->GetEntry()!=20748) // Thunderlord Dire Wolf NPC
-						return SPELL_FAILED_BAD_TARGETS;
-				}break;
-				case 44997: // Converting Sentry
-				{
-					if( !target->IsCreature() || target->GetEntry()!=24972 ) // Erratic Sentry
-						return SPELL_FAILED_BAD_TARGETS;
 
-					if( !target->IsCreature() || !target->IsDead() )
-						return SPELL_FAILED_TARGET_NOT_DEAD;
-				}break;
-				case 30077: // Carinda's Retribution
-				{
-					if(!target->IsCreature() || target->GetEntry()!=17226 ) // Viera Sunwhisper
-						return SPELL_FAILED_BAD_TARGETS;
-				}break;
-				case 32825: // Soul Cannon
-				{
-					if( !target->IsCreature() || target->GetEntry() != 22357 ) // Reth'hedron the Subduer
-						return SPELL_FAILED_BAD_TARGETS;
-				}break;
-				case 27907: // Disciplinary Rod
-				{
-					if(!target->IsCreature() || ( target->GetEntry() != 15945 && target->GetEntry() != 15941 ) ) // 'Apprentice Meledor' and 'Apprentice Ralen'
-						return SPELL_FAILED_BAD_TARGETS;
-				}break;
-				case 19938: // Awaken Peon (Foreman's Blackjack)
-				{
-					if( !target->IsCreature() || target->GetEntry() != 10556 ) // Lazy Peon
-						return SPELL_FAILED_BAD_TARGETS;
-				}break;
 				case 603: //curse of doom, can't be cast on players
 				case 30910:
 				case 47867: // Curse of doom rank 4
@@ -4233,117 +4171,13 @@ uint8 Spell::CanCast(bool tolerate)
 					if ( target->IsPlayer() || target->getClass()!=TARGET_TYPE_DEMON )
 						return SPELL_FAILED_SPELL_UNAVAILABLE;
 				}break;
-				case 38554: //Absorb Eye of Grillok
-				{
-					if( !target->IsCreature() || target->GetEntry()!= 19440 )
-						return SPELL_FAILED_BAD_TARGETS;
-				}break;
-				case 36314: //The Seer's Presence
-				{
-					// this spell can be cast only on socrethar. Otherwife cool exploit
-					if(target->IsPlayer() || !target->IsUnit())
-						return SPELL_FAILED_BAD_TARGETS;
-					// this spell should be used only for a specific quest on specific monster = "Socrethar"
-					if(target->GetEntry()!=20132) //nasty fixed numbers :(
-						return SPELL_FAILED_BAD_TARGETS;
-				}break;
 				case 982: //Revive Pet
 				{
 					Pet *pPet = p_caster->GetSummon();
 					if(pPet && !pPet->IsDead())
 						return SPELL_FAILED_TARGET_NOT_DEAD;
 				}break;
-				case 38177: //Blackwhelp Net
-				{
-					if( !target->IsCreature() || target->GetEntry()!= 21387 ) // castable only on Wyrmcult Blackwhelps
-						return SPELL_FAILED_BAD_TARGETS;
-				} break;
-				case 35772: // Energy Field Modulator
-				{
-					if ( !target->IsCreature() || target->GetEntry() != 20774 ) // castable only on Farahlon Lasher
-						return SPELL_FAILED_BAD_TARGETS;
-				} break;
-				case 52487:// Charm Channel
-				{
-					if( !target->IsCreature() || target->GetEntry() != 28843 ) // castable only on Bloated Abomination
-							return SPELL_FAILED_BAD_TARGETS;
-				}break;
-				case 19688: // Taming rod
-					if( !target || target->GetEntry() != 2956 ) // Adult Plainstrider
-						return SPELL_FAILED_BAD_TARGETS;
-					break;
-				case 19694: // Taming rod
-					if( !target || target->GetEntry() != 3099 ) // Dire Mottled Boar
-						return SPELL_FAILED_BAD_TARGETS;
-					break;
-				case 19693: // Taming rod
-					if( !target || target->GetEntry() != 1998) // Webwood Lurker
-						return SPELL_FAILED_BAD_TARGETS;
-					break;
-				case 19674: // Taming rod
-					if( !target || target->GetEntry() != 1126) // Large Crag Boar
-						return SPELL_FAILED_BAD_TARGETS;
-					break;
-				case 19697: // Taming rod
-					if( !target || target->GetEntry() != 3126) // Armored Scorpid
-						return SPELL_FAILED_BAD_TARGETS;
-					break;
-				case 19696: // Taming rod
-					if( !target || target->GetEntry() != 3107) // Surf Crawler
-						return SPELL_FAILED_BAD_TARGETS;
-					break;
-				case 19687: // Taming rod
-					if( !target || target->GetEntry() != 1201) // Snow Leopard
-						return SPELL_FAILED_BAD_TARGETS;
-					break;
-				case 19548: // Taming rod
-					if( !target || target->GetEntry() != 1196) // Ice Claw Bear
-						return SPELL_FAILED_BAD_TARGETS;
-					break;
-				case 19689: // Taming rod
-					if( !target || target->GetEntry() != 2959) // Prairie Stalker
-						return SPELL_FAILED_BAD_TARGETS;
-					break;
-				case 19692: // Taming rod
-					if( !target || target->GetEntry() != 2970) // Swoop
-						return SPELL_FAILED_BAD_TARGETS;
-					break;
-				case 19699: // Taming rod
-					if( !target || target->GetEntry() != 2043) // Nightsaber Stalker
-						return SPELL_FAILED_BAD_TARGETS;
-					break;
-				case 19700: // Taming rod
-					if( !target || target->GetEntry() != 1996) // Strigid Screecher
-						return SPELL_FAILED_BAD_TARGETS;
-					break;
-				case 30099: // Taming rod
-					if( !target || target->GetEntry() != 15650) // Crazed Dragonhawk
-						return SPELL_FAILED_BAD_TARGETS;
-					break;
-				case 30105: // Taming rod
-					if( !target || target->GetEntry() != 16353) // Mistbat
-						return SPELL_FAILED_BAD_TARGETS;
-					break;
-				case 30102: // Taming rod
-					if( !target || target->GetEntry() != 15652) // Elder Springpaw
-						return SPELL_FAILED_BAD_TARGETS;
-					break;
-				case 30646: // Taming totem
-					if( !target || target->GetEntry() != 17217) // Barbed Crawler
-						return SPELL_FAILED_BAD_TARGETS;
-					break;
-				case 30653: // Taming totem
-					if( !target || target->GetEntry() != 17374) // Greater Timberstrider
-						return SPELL_FAILED_BAD_TARGETS;
-					break;
-				case 30654: // Taming totem
-					if( !target || target->GetEntry() != 17203) // Nightstalker
-						return SPELL_FAILED_BAD_TARGETS;
-					break;
-				case 47394: // Kurun's Blessing
-					if( !target || target->GetEntry() != 26261) // Grizzly Hills Giant
-						return SPELL_FAILED_BAD_TARGETS;
-					break;
+
 				default:
 					break;
 			}
@@ -4351,25 +4185,7 @@ uint8 Spell::CanCast(bool tolerate)
 			// if the target is not the unit caster and not the masters pet
 			if(target != u_caster && !m_caster->IsPet())
 			{
-				// Dummy spells check
-				switch ( GetProto()->Id )
-				{
-					case 4130: // Banish Burning Exile
-					{
-						if(target->GetEntry()!= 2760) // target needs to be a Burning Exile
-							return SPELL_FAILED_BAD_TARGETS;
-					} break;
-					case 4131:// Banish Cresting Exile
-					{
-						if(target->GetEntry()!= 2761) // target needs to be a Cresting Exile
-							return SPELL_FAILED_BAD_TARGETS;
-					} break;
-					case 4132:// Banish Thundering Exile
-					{
-						if(target->GetEntry()!= 2762) // target needs to be a Thundering Exile
-							return SPELL_FAILED_BAD_TARGETS;
-					} break;
-				}
+
 				/***********************************************************
 				* Inface checks, these are checked in 2 ways
 				* 1e way is check for damage type, as 3 is always ranged
@@ -4506,31 +4322,6 @@ uint8 Spell::CanCast(bool tolerate)
 				if( u_caster->FindAuraByNameHash( SPELL_HASH_FAERIE_FIRE ) || u_caster->FindAuraByNameHash( SPELL_HASH_FAERIE_FIRE__FERAL_ ) )
 					return SPELL_FAILED_SPELL_UNAVAILABLE;
 			}
-
-			/*SpellReplacement*rp=objmgr.GetReplacingSpells(GetProto()->Id);
-			if(rp)
-			{
-				if(isAttackable(u_caster,target))//negative, replace only our own spell
-				{
-					for(uint32 x= 0;x<rp->count;x++)
-					{
-						if(target->HasActiveAura(rp->spells[x],m_caster->GetGUID()))
-						{
-							return SPELL_FAILED_AURA_BOUNCED;
-						}
-					}
-				}
-				else
-				{
-					for(uint32 x= 0;x<rp->count;x++)
-					{
-						if(target->HasActiveAura(rp->spells[x]))
-						{
-							return SPELL_FAILED_AURA_BOUNCED;
-						}
-					}
-				}
-			}	*/
 		}
 	}
 

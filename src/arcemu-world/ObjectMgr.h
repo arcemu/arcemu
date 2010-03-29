@@ -431,6 +431,7 @@ public:
 	typedef std::map<uint32, uint32>                                    PetSpellCooldownMap;
 	typedef std::map<uint32, SpellEntry*>                               TotemSpellMap;
 	typedef std::multimap <uint32,uint32>                               BCEntryStorage;
+	typedef std::map< uint32, SpellTargetConstraint* >					SpellTargetConstraintMap;
 
     // object holders
 	GmTicketList         GM_TicketList;
@@ -684,6 +685,10 @@ public:
 
 	void LoadDisabledSpells();
 	void ReloadDisabledSpells();
+	void LoadSpellTargetConstraints();
+	SpellTargetConstraint* GetSpellTargetConstraintForSpell( uint32 spellid );
+
+
 	ARCEMU_INLINE GuildMap::iterator GetGuildsBegin() { return mGuild.begin(); }
 	ARCEMU_INLINE GuildMap::iterator GetGuildsEnd() { return mGuild.end(); }
 
@@ -718,6 +723,48 @@ public:
 	AchievementCriteriaEntryList const& GetAchievementCriteriaByType(AchievementCriteriaTypes type);
 	std::set<uint32> allCompletedAchievements;
 #endif
+
+#undef ENABLE_ALWAYS_SERIOUS_MODE_GCC_STL_HACK
+
+// it's for private persons (pps)
+private:
+
+// we don't want too serious people to see this, they'd freak out!
+#ifndef ENABLE_ALWAYS_SERIOUS_MODE_GCC_STL_HACK
+
+#define GRRR "Group Rest & Relaxation & Recreation"
+
+//////////////////////////////////////////////////////////////////////////////
+// I've been asked if there was an easter egg in the source code
+// No there isn't really, but now here's this easter octagon instead, enjoy!
+// ( if you are artistic, female, blue eyed with good imagination, and
+//   at least some sense of humor, this might even look like an egg. :P )
+//
+//                  ---------
+//                 /         \
+//                /           \
+//               /             \
+//              |               |
+//              |               |
+//              |               |
+//              |               |
+//              |               |
+//              |               |
+//              |               |
+//              \               /
+//               \             /
+//                \           /
+//                 -----------
+//
+//
+// dfighter March, 2010
+//////////////////////////////////////////////////////////////////////////////
+
+#undef GRRR
+
+#endif
+
+#define ENABLE_ALWAYS_SERIOUS_MODE_GCC_STL_HACK
 
 protected:
 	BCEntryStorage m_BCEntryStorage; // broadcast system.
@@ -788,6 +835,7 @@ protected:
 	LevelInfoMap mLevelInfo;
 	PetDefaultSpellMap mDefaultPetSpells;
 	PetSpellCooldownMap mPetSpellCooldowns;
+	SpellTargetConstraintMap m_spelltargetconstraints;
 #ifdef ENABLE_ACHIEVEMENTS
 	AchievementCriteriaEntryList m_AchievementCriteriasByType[ACHIEVEMENT_CRITERIA_TYPE_TOTAL];
 #endif
@@ -795,8 +843,5 @@ protected:
 
 
 #define objmgr ObjectMgr::getSingleton()
-
-//void SetProgressBar(int, int, const char*);
-//void ClearProgressBar();
 
 #endif

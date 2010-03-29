@@ -426,6 +426,7 @@ bool World::SetInitialWorldSettings()
 	MAKE_TASK(ObjectMgr,  LoadAIThreatToSpellId);
 	MAKE_TASK(ObjectMgr,  LoadSpellProcs);
 	MAKE_TASK(ObjectMgr,  LoadSpellEffectsOverride);
+	MAKE_TASK( ObjectMgr, LoadSpellTargetConstraints );
 	MAKE_TASK(ObjectMgr,  LoadDefaultPetSpells);
 	MAKE_TASK(ObjectMgr,  LoadPetSpellCooldowns);
 	MAKE_TASK(ObjectMgr,  LoadGuildCharters);

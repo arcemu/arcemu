@@ -1595,6 +1595,53 @@ enum SpellDidHitResult
 	SPELL_DID_HIT_IMMUNE					= 7,
 };
 
+// Target constraints for spells ( mostly scripted stuff )
+class SpellTargetConstraint{
+
+public:
+	SpellTargetConstraint(){ }
+	~SpellTargetConstraint(){ 
+		CreatureTargets.clear();
+		CreatureTargets.clear();
+	}
+
+	bool HasCreature( int id ){
+		int size = CreatureTargets.size();
+		
+		for( int i = 0; i < size; ++i )
+			if( CreatureTargets[ i ] == id )
+				return true;
+
+		return false;
+	}
+
+	bool HasGameobject( int id ){
+		int size = GameobjectTargets.size();
+
+		for( int i = 0; i < size; ++i )
+			if( GameobjectTargets[ i ] == id )
+				return true;
+
+		return false;
+	}
+
+	void AddCreature( int id ){
+
+		if( !HasCreature( id ) )
+			CreatureTargets.push_back( id );
+	}
+
+	void AddGameobject( int id ){
+
+		if( !HasGameobject( id ) )
+			GameobjectTargets.push_back( id );
+	}
+
+private:
+	std::vector< int > CreatureTargets;
+	std::vector< int > GameobjectTargets;
+};
+
 // Spell instance
 class SERVER_DECL Spell
 {
@@ -2133,6 +2180,8 @@ protected:
 
 		return false;
 	}
+
+	SpellTargetConstraint *m_target_constraint;
 
 public: //Modified by LUAppArc private->public
 	TargetsList m_targetUnits[3];
