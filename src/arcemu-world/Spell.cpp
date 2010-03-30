@@ -2668,6 +2668,10 @@ bool Spell::HasPower()
 	if(p_caster && p_caster->PowerCheat)
 		return true;
 
+	//Items do not use owner's power
+	if( i_caster != NULL )
+		return true;
+
 	// Free cast for battle preparation
 	if (p_caster && p_caster->HasAura(44521))
 		return true;
@@ -2788,7 +2792,11 @@ bool Spell::TakePower()
 	if(p_caster && p_caster->PowerCheat)
 		return true;
 
-		// Free cast for battle preparation
+	//Items do not use owner's power
+	if( i_caster != NULL )
+		return true;
+
+	// Free cast for battle preparation
 	if (p_caster && p_caster->HasAura(44521))
 		return true;
 	if (p_caster && p_caster->HasAura(44535))
