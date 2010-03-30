@@ -9213,8 +9213,9 @@ void Player::CompleteLoading()
 		//RepopRequestedPlayer();
 		//sEventMgr.AddEvent(this, &Player::RepopRequestedPlayer, EVENT_PLAYER_CHECKFORCHEATS, 2000, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 	}
-
-	SpawnActivePet();
+	
+	if(!IsMounted())
+		SpawnActivePet();
 
 	// useless logon spell
 	Spell *logonspell = new Spell(this, dbcSpell.LookupEntry(836), false, NULL);
