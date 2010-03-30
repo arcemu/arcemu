@@ -5049,7 +5049,7 @@ void Player::RepopAtGraveyard(float ox, float oy, float oz, uint32 mapid)
 	StorageContainerIterator<GraveyardTeleport> * itr;
 
 	LocationVector src(ox, oy, oz);
-	LocationVector dest(0, 0, 0, 0);
+	LocationVector dest;
 	LocationVector temp;
 	float closest_dist = 999999.0f;
 	float dist;
@@ -5060,17 +5060,12 @@ void Player::RepopAtGraveyard(float ox, float oy, float oz, uint32 mapid)
 	}
 	else
 	{
-		uint32 areaid = sInstanceMgr.GetMap(mapid)->GetAreaID(ox,oy);
-		AreaTable * at = dbcArea.LookupEntryForced(areaid);
-		if(!at) return;
-
-		// uint32 mzone = ( at->ZoneId ? at->ZoneId : at->AreaId);
-
 		itr = GraveyardStorage.MakeIterator();
+		GraveyardTeleport *pGrave = NULL;
 		while(!itr->AtEnd())
 		{
-			GraveyardTeleport *pGrave = itr->Get();
-			if((pGrave->MapId == mapid && pGrave->FactionID == GetTeam()) || (pGrave->MapId == mapid && pGrave->FactionID == 3))
+			pGrave = itr->Get();
+			if(pGrave->MapId == mapid && (pGrave->FactionID == GetTeam() || pGrave->FactionID == 3))
 			{
 				temp.ChangeCoords(pGrave->X, pGrave->Y, pGrave->Z);
 				dist = src.DistanceSq(temp);
@@ -5085,14 +5080,20 @@ void Player::RepopAtGraveyard(float ox, float oy, float oz, uint32 mapid)
 			if(!itr->Inc())
 				break;
 		}
+		/* Fix on 3/13/2010, defaults to last graveyard, if none fit the criteria.
+		Keeps the player from hanging out to dry.*/
+		if(first)
+			dest.ChangeCoords(pGrave->X, pGrave->Y, pGrave->Z);
+
 		itr->Destruct();
 	}
 
-	if(sHookInterface.OnRepop(this) && dest.x != 0 && dest.y != 0 && dest.z != 0)
+	if(sHookInterface.OnRepop(this))//dest has now always a value != {0,0,0,0}
 	{
 		SafeTeleport(mapid, 0, dest);
 	}
 
+	/* Todo: Generate error message here, compensate for failed teleport. */
 
 //	//correct method as it works on official server, and does not require any damn sql
 //	//no factions! no zones! no sqls! 1word: blizz-like

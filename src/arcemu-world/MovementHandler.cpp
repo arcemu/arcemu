@@ -639,8 +639,13 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 		{
 			if( !_player->SetPosition(movement_info.x, movement_info.y, movement_info.z, movement_info.orientation) )
 			{
-				_player->SetHealth( 0);
-				_player->KillPlayer();
+				//extra check to set HP to 0 only if the player is dead (KillPlayer() has already this check)
+				if ( _player->isAlive() )
+				{
+					_player->SetHealth(0);
+					_player->KillPlayer();
+				}
+
 				MapInfo *pMapinfo = WorldMapInfoStorage.LookupEntry( _player->GetMapId() );
 				if( pMapinfo != NULL )
 				{
