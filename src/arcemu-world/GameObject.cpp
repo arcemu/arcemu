@@ -214,7 +214,6 @@ void GameObject::Update(uint32 p_time)
 void GameObject::Spawn(MapMgr * m)
 {
 	PushToWorld(m);	
-	CALL_GO_SCRIPT_EVENT(this, OnSpawn)();
 }
 
 void GameObject::Despawn(uint32 delay, uint32 respawntime)
@@ -460,9 +459,6 @@ bool GameObject::Load(GOSpawn *spawn)
 	SetScale( spawn->scale);
 	_LoadQuests();
 
-	CALL_GO_SCRIPT_EVENT(this, OnCreate)();
-	CALL_GO_SCRIPT_EVENT(this, OnSpawn)();
-
 	return true;
 }
 
@@ -692,6 +688,8 @@ void GameObject::CallScriptUpdate()
 void GameObject::OnPushToWorld()
 {
 	Object::OnPushToWorld();
+	CALL_GO_SCRIPT_EVENT(this, OnCreate)();
+	CALL_GO_SCRIPT_EVENT(this, OnSpawn)();
 	CALL_INSTANCE_SCRIPT_EVENT( m_mapMgr, OnGameObjectPushToWorld )( this );
 }
 
