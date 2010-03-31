@@ -1794,7 +1794,7 @@ void Creature::AISpellUpdate()
 				//hacky
 				spell->m_targets = t;
 
-				if (spell->CanCast(false) != SPELL_CANCAST_OK || !spell->HasPower() || m_silenced || IsStunned() || IsFeared())
+				if (objmgr.IsSpellDisabled(spell->GetProto()->Id) || spell->CanCast(false) != SPELL_CANCAST_OK || !spell->HasPower() || m_silenced || IsStunned() || IsFeared())
 				{
 					delete spell;
 					spell = NULL;
