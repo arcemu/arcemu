@@ -642,6 +642,12 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 			TextID = Text;
 	}
 
+	if (pCreature->isSpiritHealer())
+	{
+		Plr->GetSession()->SendSpiritHealerRequest(pCreature);
+		return;
+	}
+
 	objmgr.CreateGossipMenuForPlayer(&Menu, pCreature->GetGUID(), TextID, Plr);
 	
 	if (pCreature->isVendor())
@@ -771,12 +777,6 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 
 	if (pCreature->isBanker())
 		Menu->AddItem(0, Plr->GetSession()->LocalizedWorldSrv(17), 6);
-
-	if (pCreature->isSpiritHealer())
-	{	// Spirit Healers should NOT have a menu!
-		//Menu->AddItem(0, Plr->GetSession()->LocalizedWorldSrv(18), 7);
-		Plr->GetSession()->SendSpiritHealerRequest(pCreature);
-	}
 
 	if (pCreature->isCharterGiver())
 	{
