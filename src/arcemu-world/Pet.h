@@ -178,7 +178,6 @@ public:
 	void ApplySummonLevelAbilities();
 	void ApplyPetLevelAbilities();
 	void UpdateAP();
-	void PetSafeDelete();
 	void LoadPetAuras(int32 id);
 	void SetDefaultActionbar();
 	void SetActionBarSlot(uint32 slot, uint32 spell){ ActionBar[ slot ] = spell; }

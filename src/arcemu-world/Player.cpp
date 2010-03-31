@@ -6037,7 +6037,7 @@ void Player::OnRemoveInRangeObject(Object* pObj)
 		m_CurrentCharm= 0;
 
 		if( p->m_temp_summon && p->GetTypeId() == TYPEID_UNIT )
-			static_cast< Creature* >( p )->SafeDelete();
+			static_cast< Creature* >( p )->DeleteMe();
 	}
 
 	if(pObj->IsUnit())

@@ -138,7 +138,7 @@ void Pet::CreateAsSummon( uint32 entry, CreatureInfo *ci, Creature* created_from
 {
 	if( ci == NULL || owner == NULL )
 	{
-		sEventMgr.AddEvent( this, &Pet::PetSafeDelete, EVENT_CREATURE_SAFE_DELETE, 1, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
+		sEventMgr.AddEvent( TO_CREATURE(this)/*gay cast because <T> is gay*/, &Pet::DeleteMe, EVENT_CREATURE_SAFE_DELETE, 1, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
 		return;
 	}
 	
@@ -837,7 +837,7 @@ void Pet::Remove( bool bUpdate, bool bSetOffline )
 		Deactivate( m_mapMgr );
 
 	if( !alreadyBeingDeleted )
-		PetSafeDelete();
+		DeleteMe();
 }
 
 void Pet::setDeathState(DeathState s)
@@ -850,16 +850,6 @@ void Pet::setDeathState(DeathState s)
 	}
 	if(mPi != NULL)
 		mPi->alive = isAlive();
-}
-
-void Pet::PetSafeDelete()
-{
-	// remove from world, and delete
-	if( IsInWorld() )
-	{
-		RemoveFromWorld( false, false );
-	}else
-        SafeDelete();
 }
 
 void Pet::DelayedRemove( bool bTime, uint32 delay )
