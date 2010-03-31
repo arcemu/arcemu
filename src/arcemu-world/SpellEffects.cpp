@@ -2903,12 +2903,12 @@ void Spell::SpellEffectCreateItem(uint32 i) // Create item
 	}
 	else
 	{
-		// scale item_count down if total stack will be more than 20
-		if( (add->GetStackCount() + item_count > 20) && !p_target->ItemStackCheat )
+		// scale item_count down if total stack will be more than Max Stack
+		if( (add->GetStackCount() + item_count > itemMaxStack) && !p_target->ItemStackCheat )
 		{
 			uint32 item_count_filled;
-			item_count_filled = 20 - add->GetStackCount();
-			add->SetStackCount( 20);
+			item_count_filled = itemMaxStack - add->GetStackCount();
+			add->SetStackCount( itemMaxStack);
 			add->m_isDirty = true;
 
 			slotresult = p_target->GetItemInterface()->FindFreeInventorySlot(m_itemProto);
