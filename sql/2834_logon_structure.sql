@@ -2,7 +2,7 @@
 SQLyog Community Edition- MySQL GUI v6.56
 MySQL - 5.0.51a-24+lenny1 : Database - arclogon
 *********************************************************************
-*/
+*/
 
 /*!40101 SET NAMES utf8 */;
 

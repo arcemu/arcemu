@@ -2,7 +2,7 @@
 SQLyog Community Edition- MySQL GUI v8.18 
 MySQL - 5.1.41-community : Database - test
 *********************************************************************
-*/
+*/
 
 /*!40101 SET NAMES utf8 */;
 
