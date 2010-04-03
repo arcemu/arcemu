@@ -461,8 +461,8 @@ void WorldSession::HandleCancelAuraOpcode( WorldPacket& recvPacket )
 
 		if(info != NULL && !(info->Attributes & static_cast<uint32>(ATTRIBUTES_CANT_CANCEL)))
 		{
-			_player->RemoveAura( spellId );
-			sLog.outDebug("removing aura %u",spellId);
+			_player->RemoveAllAuraById( spellId );
+			sLog.outDebug("Removing all auras with ID: %u",spellId);
 		}
 	}
 }
