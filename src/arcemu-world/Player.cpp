@@ -5082,13 +5082,16 @@ void Player::RepopAtGraveyard(float ox, float oy, float oz, uint32 mapid)
 		}
 		/* Fix on 3/13/2010, defaults to last graveyard, if none fit the criteria.
 		Keeps the player from hanging out to dry.*/
-		if(first)
+		if(first && pGrave != NULL)//crappy Databases with no graveyards.
+		{
 			dest.ChangeCoords(pGrave->X, pGrave->Y, pGrave->Z);
+			first = false;
+		}
 
 		itr->Destruct();
 	}
 
-	if(sHookInterface.OnRepop(this))//dest has now always a value != {0,0,0,0}
+	if(sHookInterface.OnRepop(this) && !first)//dest has now always a value != {0,0,0,0}//but there may be DBs with no graveyards
 	{
 		SafeTeleport(mapid, 0, dest);
 	}
