@@ -5146,6 +5146,8 @@ void Spell::SpellEffectSummonPossessed(uint32 i) // eye of kilrogg
 		NewSummon->Create( "Eye of Kilrogg", m_caster->GetMapId(), m_caster->GetPositionX()+(3*(cos((float(M_PI)/2)+m_caster->GetOrientation()))), m_caster->GetPositionY()+(3*(cos((float(M_PI)/2)+m_caster->GetOrientation()))), m_caster->GetPositionZ(), m_caster->GetOrientation());
 
 		// Fields
+		NewSummon->SetCreatureInfo( CreatureNameStorage.LookupEntry( GetProto()->EffectMiscValue[i] ) );
+		NewSummon->SetCreatureProto( CreatureProtoStorage.LookupEntry( GetProto()->EffectMiscValue[i] ) );
 		NewSummon->SetEntry(  GetProto()->EffectMiscValue[i]);
 		NewSummon->setLevel(u_caster->getLevel() );
 		NewSummon->SetDisplayId(2421);
@@ -5162,8 +5164,6 @@ void Spell::SpellEffectSummonPossessed(uint32 i) // eye of kilrogg
 		if(p_caster->IsFFAPvPFlagged())
 			NewSummon->SetByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_FFA_PVP);
 
-		//Setting faction
-		NewSummon->_setFaction();
 		NewSummon->m_temp_summon=true;
 
 		// Add To World

@@ -1638,21 +1638,37 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 
 void Creature::OnPushToWorld()
 {
-	if(proto)
+	if( proto == NULL )
 	{
-		set<uint32>::iterator itr = proto->start_auras.begin();
-		SpellEntry * sp;
-		for(; itr != proto->start_auras.end(); ++itr)
-		{
-			sp = dbcSpell.LookupEntryForced((*itr));
-			if(sp == NULL) continue;
-
-			CastSpell(this, sp, 0);
-		}
-		//generic ai stuff
-		if ( this->GetProto()->AISpells[0] != 0 )
-			sEventMgr.AddEvent(this, &Creature::AISpellUpdate, EVENT_CREATURE_AISPELL, 500, 0, 0);
+		sLog.outError("Something tried to push to world Creature ID %u with proto set to NULL.", GetEntry()); 
+#ifdef _DEBUG
+		Arcemu::Util::ARCEMU_ASSERT( false );
+#else
+		SetCreatureProto( CreatureProtoStorage.LookupEntry( GetEntry() ) );
+#endif
 	}
+	if( creature_info == NULL )
+	{
+		sLog.outError("Something tried to push to world Creature ID %u with creature_info set to NULL.", GetEntry()); 
+#ifdef _DEBUG
+		Arcemu::Util::ARCEMU_ASSERT( false );
+#else
+		SetCreatureInfo( CreatureNameStorage.LookupEntry( GetEntry() ) );
+#endif
+	}
+
+	set<uint32>::iterator itr = proto->start_auras.begin();
+	SpellEntry * sp;
+	for(; itr != proto->start_auras.end(); ++itr)
+	{
+		sp = dbcSpell.LookupEntryForced((*itr));
+		if(sp == NULL) continue;
+
+		CastSpell(this, sp, 0);
+	}
+	//generic ai stuff
+	if ( this->GetProto()->AISpells[0] != 0 )
+		sEventMgr.AddEvent(this, &Creature::AISpellUpdate, EVENT_CREATURE_AISPELL, 500, 0, 0);
 
 	if( GetScript() == NULL )
 	{
