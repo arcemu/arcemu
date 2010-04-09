@@ -133,9 +133,13 @@ bool ConfigFile::SetSource(const char *file, bool ignorecase)
 	/* open the file */
 	if(file != 0)
 	{
-		//the right mode is "rb" since in Windows '\n' is saved as 0x0D,0x0A but fopen(file,"r") reads these 2 chars
+		//the right mode in Windows is "rb" since '\n' is saved as 0x0D,0x0A but fopen(file,"r") reads these 2 chars
 		//as only 1 char, so ftell(f) returns a higher value than the required by fread() to the file to buf.
+#ifdef WIN32
 		FILE * f = fopen(file, "rb");
+#else 
+		FILE * f = fopen(file, "r");
+#endif
 		char * buf;
 		int length;
 		if(!f)

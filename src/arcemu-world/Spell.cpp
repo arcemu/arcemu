@@ -1249,14 +1249,11 @@ uint8 Spell::prepare( SpellCastTargets * targets )
 	m_spellState = SPELL_STATE_PREPARING;
 
 	if(objmgr.IsSpellDisabled(GetProto()->Id))//if it's disabled it will not be casted, even if it's triggered.
-		cancastresult = SPELL_FAILED_SPELL_UNAVAILABLE;
+		cancastresult = m_triggeredSpell ? SPELL_FAILED_DONT_REPORT : SPELL_FAILED_SPELL_UNAVAILABLE;
+	else if( m_triggeredSpell )
+		cancastresult = SPELL_CANCAST_OK;
 	else
-	{
-		if( m_triggeredSpell )
-			cancastresult = SPELL_CANCAST_OK;
-		else
-			cancastresult = CanCast(false);
-	}
+		cancastresult = CanCast(false);
 
 	//sLog.outString( "CanCast result: %u. Refer to SpellFailure.h to work out why." , cancastresult );
 
@@ -1430,15 +1427,12 @@ void Spell::cast(bool check)
 	sLog.outDebug("Spell::cast %u, Unit: %u", GetProto()->Id, m_caster->GetLowGUID());
 
 	if(objmgr.IsSpellDisabled(GetProto()->Id))//if it's disabled it will not be casted, even if it's triggered.
-		cancastresult = SPELL_FAILED_SPELL_UNAVAILABLE;
+		cancastresult = m_triggeredSpell ? SPELL_FAILED_DONT_REPORT : SPELL_FAILED_SPELL_UNAVAILABLE;
+	else if(check)
+		cancastresult = CanCast(true);
 	else
-	{
-		if(check)
-			cancastresult = CanCast(true);
-		else
-			cancastresult = SPELL_CANCAST_OK;
-	}
-	
+		cancastresult = SPELL_CANCAST_OK;
+
 	if(cancastresult == SPELL_CANCAST_OK)
 	{
 		if (hasAttribute(ATTRIBUTE_ON_NEXT_ATTACK))

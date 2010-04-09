@@ -12828,7 +12828,15 @@ void Player::LearnTalent(uint32 talentid, uint32 rank, bool isPreviewed ){
 
 	TalentEntry * talentInfo = dbcTalent.LookupEntryForced(talentid);
 	if(!talentInfo)return;
-  
+
+	if(objmgr.IsSpellDisabled(talentInfo->RankID[rank]))
+	{
+		if(IsInWorld())
+			SendCastResult(talentInfo->RankID[rank], SPELL_FAILED_SPELL_UNAVAILABLE, 0, 0);
+
+		return;
+	}
+
 	// Check if it requires another talent
 	if (talentInfo->DependsOn > 0)
 	{
