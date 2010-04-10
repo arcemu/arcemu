@@ -812,6 +812,7 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 			rss->require_aura_hash = SPELL_HASH_FROST_WARD;
 			rss->school = SCHOOL_FROST;
 			rss->infront = false;
+			rss->charges = 0;
 
 			unitTarget->m_reflectSpellSchool.push_back(rss);
 		}break;
@@ -835,6 +836,7 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 			rss->require_aura_hash = SPELL_HASH_FIRE_WARD;
 			rss->school = SCHOOL_FIRE;
 			rss->infront = false;
+			rss->charges = 0;
 
 			unitTarget->m_reflectSpellSchool.push_back(rss);
 		}break;

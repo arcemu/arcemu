@@ -4209,16 +4209,12 @@ void Aura::SpellAuraReflectSpells(bool apply)
 
 	if( apply )
 	{
-		SpellEntry *sp = dbcSpell.LookupEntry(GetSpellId());
-		if (sp == NULL)
-			return;
-
 		ReflectSpellSchool *rss = new ReflectSpellSchool;
 		rss->chance = mod->m_amount;
 		rss->spellId = GetSpellId();
 		rss->school = -1;
 		rss->require_aura_hash = 0;
-		rss->charges = sp->procCharges;
+		rss->charges = m_spellProto->procCharges;
 		rss->infront = false;
 
 		m_target->m_reflectSpellSchool.push_back(rss);
@@ -6060,6 +6056,8 @@ void Aura::SpellAuraReflectSpellsSchool(bool apply)
 			rss->school = (int)(log10((float)mod->m_miscValue) / log10((float)2));
 		else
 			rss->school = m_spellProto->School;
+
+		rss->charges = 0;
 
 		m_target->m_reflectSpellSchool.push_back( rss );
 	}
@@ -9788,7 +9786,7 @@ void Aura::SpellAuraReflectSpellsInfront(bool apply)
 		rss->spellId = GetSpellId();
 		rss->school = -1;
 		rss->require_aura_hash = 0;
-		rss->charges = static_cast<uint32>( -1 );
+		rss->charges = 0;
 		rss->infront = true;
 
 		m_target->m_reflectSpellSchool.push_back(rss);
