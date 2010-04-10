@@ -444,7 +444,7 @@ enum Attributes
 	ATTRIBUTES_STOP_ATTACK							= 0x00100000,	//switch off auto attack on use. Maim,Gouge,Disengage,Polymorph etc
 	ATTRIBUTES_CANT_BE_DPB							= 0x00200000,	//can't be dodged, blocked, parried
 	ATTRIBUTES_UNK24								= 0x00400000,	// related to ranged
-	ATTRIBUTES_UNK25								= 0x00800000,
+	ATTRIBUTES_DEAD_CASTABLE						= 0x00800000,	//castable while dead
 	ATTRIBUTES_MOUNT_CASTABLE						= 0x01000000,	//castable on mounts
 	ATTRIBUTES_TRIGGER_COOLDOWN						= 0x02000000,	//also requires atributes ex = 32 ?
 	ATTRIBUTES_UNK28								= 0x04000000,
