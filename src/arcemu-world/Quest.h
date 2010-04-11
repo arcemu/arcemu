@@ -290,6 +290,7 @@ public:
 	{
 		return PLAYER_QUEST_LOG_1_1 + (slot * 5);
 	}
+	ARCEMU_INLINE int32 GetSlot() { return m_slot; }
 
 private:
 	uint32 completed;

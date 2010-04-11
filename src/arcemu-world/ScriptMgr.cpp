@@ -1158,12 +1158,19 @@ void HookInterface::OnPostLevelUp(Player * pPlayer)
 		((tOnPostLevelUp)*itr)(pPlayer);
 }
 
-void HookInterface::OnPreUnitDie(Unit *killer, Unit *victim)
+bool HookInterface::OnPreUnitDie(Unit *killer, Unit *victim)
 {
 	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_PRE_DIE];
+	bool ret_val = true;
 	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
-		((tOnPreUnitDie)*itr)(killer, victim);
+	{
+		bool rv = ((tOnPreUnitDie)*itr)(killer, victim);
+		if (rv == false) // never set ret_val back to true, once it's false
+			ret_val = false;
+	}
+	return ret_val;
 }
+		
 
 void HookInterface::OnAdvanceSkillLine(Player * pPlayer, uint32 skillLine, uint32 current)
 {

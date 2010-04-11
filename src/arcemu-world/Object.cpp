@@ -2026,7 +2026,8 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 		}
 #endif
 		//general hook for die
-		sHookInterface.OnPreUnitDie( static_cast< Unit* >( this ), pVictim);
+		if (!sHookInterface.OnPreUnitDie( static_cast< Unit* >( this ), pVictim))
+			return;
 		//warlock - seed of corruption
 		if( IsUnit() )
 		{

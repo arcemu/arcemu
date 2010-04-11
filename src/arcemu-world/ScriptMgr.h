@@ -106,7 +106,7 @@ typedef void(*tOnArenaFinish)(Player * pPlayer, ArenaTeam * pTeam, bool victory,
 typedef void(*tOnObjectLoot)(Player * pPlayer, Object * pTarget, uint32 Money, uint32 ItemId);
 typedef void(*tOnAreaTrigger)(Player * pPlayer, uint32 areaTrigger);
 typedef void(*tOnPostLevelUp)(Player * pPlayer);
-typedef void(*tOnPreUnitDie)(Unit *killer, Unit *target);
+typedef bool(*tOnPreUnitDie)(Unit *killer, Unit *target);
 typedef void(*tOnAdvanceSkillLine)(Player * pPlayer, uint32 SkillLine, uint32 Current);
 typedef void(*tOnDuelFinished)(Player * Winner, Player * Looser);
 
@@ -397,7 +397,7 @@ public:
 	void OnObjectLoot(Player * pPlayer, Object * pTarget, uint32 Money, uint32 ItemId);
 	void OnAreaTrigger(Player * pPlayer, uint32 areaTrigger);
 	void OnPostLevelUp(Player * pPlayer);
-	void OnPreUnitDie(Unit *Killer, Unit *Victim);
+	bool OnPreUnitDie(Unit *Killer, Unit *Victim);
 	void OnAdvanceSkillLine(Player * pPlayer, uint32 SkillLine, uint32 Current);
 	void OnDuelFinished(Player * Winner, Player * Looser);
 };

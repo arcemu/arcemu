@@ -114,7 +114,7 @@ enum CHANNEL_PACKET_FLAGS
 	CHANNEL_PACKET_VOICE		= 0x80,
 };
 
-class Channel
+class SERVER_DECL Channel
 {
 	Mutex m_lock;
 	typedef map<Player*, uint32> MemberMap;
