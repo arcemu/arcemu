@@ -1367,7 +1367,6 @@ GameObject * CBattleground::SpawnGameObject(uint32 entry,uint32 MapId , float x,
 	go->CreateFromProto(entry, MapId, x, y, z, o);
 
 	go->SetFaction(faction);
-	go->_setFaction();
 	go->SetScale( scale);
 	go->SetUInt32Value(GAMEOBJECT_FLAGS, flags);
 	go->SetPosition(x, y, z, o);
@@ -1761,7 +1760,6 @@ Creature * CBattleground::SpawnSpiritGuide(float x, float y, float z, float o, u
 
 	pCreature->setLevel(60);
 	pCreature->SetFaction(84 - horde);
-	pCreature->_setFaction();
 
     pCreature->setRace( 0 );
     pCreature->setClass( 2 );

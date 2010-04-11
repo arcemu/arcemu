@@ -4841,10 +4841,8 @@ void Spell::SpellEffectSendEvent(uint32 i) //Send Event
 
 			Creature * pCreature = p_caster->GetMapMgr()->CreateCreature(cp->Id);
 			pCreature->Load(cp, p_caster->GetPositionX(), p_caster->GetPositionY(), p_caster->GetPositionZ());
-			pCreature->_setFaction();
 			pCreature->GetAIInterface()->Init(pCreature, AITYPE_AGRO,MOVEMENTTYPE_NONE);
 			pCreature->GetAIInterface()->taunt(p_caster, true);
-			pCreature->_setFaction();
 			pCreature->PushToWorld(p_caster->GetMapMgr());
 			sEventMgr.AddEvent(pCreature, &Creature::RemoveFromWorld, false, true,  EVENT_CREATURE_REMOVE_CORPSE,60000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 		}break;
@@ -4861,10 +4859,8 @@ void Spell::SpellEffectSendEvent(uint32 i) //Send Event
 
 			Creature * pCreature = p_caster->GetMapMgr()->CreateCreature(cp->Id);
 			pCreature->Load(cp, p_caster->GetPositionX(), p_caster->GetPositionY(), p_caster->GetPositionZ());
-			pCreature->_setFaction();
 			pCreature->GetAIInterface()->Init(pCreature, AITYPE_AGRO,MOVEMENTTYPE_NONE);
 			pCreature->GetAIInterface()->taunt(p_caster, true);
-			pCreature->_setFaction();
 			pCreature->PushToWorld(p_caster->GetMapMgr());
 			sEventMgr.AddEvent(pCreature, &Creature::RemoveFromWorld, false, true,  EVENT_CREATURE_REMOVE_CORPSE,60000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 		}break;
@@ -4879,10 +4875,8 @@ void Spell::SpellEffectSendEvent(uint32 i) //Send Event
 
 			Creature * pCreature = p_caster->GetMapMgr()->CreateCreature(cp->Id);
 			pCreature->Load(cp, p_caster->GetPositionX(), p_caster->GetPositionY(), p_caster->GetPositionZ());
-			pCreature->_setFaction();
 			pCreature->GetAIInterface()->Init(pCreature, AITYPE_AGRO,MOVEMENTTYPE_NONE);
 			pCreature->GetAIInterface()->taunt(p_caster, true);
-			pCreature->_setFaction();
 			pCreature->PushToWorld(p_caster->GetMapMgr());
 			sEventMgr.AddEvent(pCreature, &Creature::RemoveFromWorld, false, true,  EVENT_CREATURE_REMOVE_CORPSE,60000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 		}break;
@@ -6437,7 +6431,6 @@ void Spell::SpellEffectSummonCritter(uint32 i)
 	pCreature->SetInstanceID(u_caster->GetMapMgr()->GetInstanceID());
 	pCreature->Load(cp, m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ());
 	pCreature->SetFaction(35);
-	pCreature->_setFaction();
 	pCreature->setLevel(1);
 	pCreature->SetUInt32Value( UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED );
 	pCreature->GetAIInterface()->Init(pCreature,AITYPE_PET,MOVEMENTTYPE_NONE,u_caster);

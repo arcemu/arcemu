@@ -148,6 +148,7 @@ Creature* MapScriptInterface::SpawnCreature(uint32 Entry, float cX, float cY, fl
 	sp->Item2SlotDisplay = 0;
 	sp->Item3SlotDisplay = 0;
 	sp->CanFly = 0;
+	sp->phase = phase;
 
 	Creature * p = this->mapMgr.CreateCreature(Entry);
 	Arcemu::Util::ARCEMU_ASSERT(   p != NULL );
@@ -155,7 +156,6 @@ Creature* MapScriptInterface::SpawnCreature(uint32 Entry, float cX, float cY, fl
 	p->setGender(Gender);
 	p->spawnid = 0;
 	p->m_spawn = 0;
-	p->m_phase = phase;
 	delete sp;
 	if (AddToWorld)
 		p->PushToWorld(&mapMgr);

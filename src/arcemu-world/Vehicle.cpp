@@ -328,6 +328,8 @@ bool ChatHandler::HandleVehicleSpawn(const char * args, WorldSession * m_session
 	sp->Item1SlotDisplay = 0;
 	sp->Item2SlotDisplay = 0;
 	sp->Item3SlotDisplay = 0;
+	sp->CanFly = 0;
+	sp->phase = m_session->GetPlayer()->GetPhase();
 
 
 	Creature * p = m_session->GetPlayer()->GetMapMgr()->CreateCreature(entry, true);

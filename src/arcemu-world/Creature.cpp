@@ -796,7 +796,6 @@ void Creature::EnslaveExpire()
 		SetFaction(954);
 		break;
 	};
-	_setFaction();
 
 	GetAIInterface()->Init(((Unit *)this), AITYPE_AGRO, MOVEMENTTYPE_NONE);
 

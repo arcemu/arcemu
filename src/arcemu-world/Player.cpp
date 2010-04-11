@@ -3185,7 +3185,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	SetFaction(info->factiontemplate);
 	if(cfaction)
 	{
-		SetFaction(info->factiontemplate);
+		SetFaction(cfaction);
 		// re-calculate team
 		switch(cfaction)
 		{
@@ -3538,8 +3538,6 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 
 	for(uint32 x= 0;x<5;x++)
 		BaseStats[x]=GetStat(x);
-
-	_setFaction();
 
 	UpdateGlyphs();
 
@@ -10065,7 +10063,6 @@ void Player::Possess(Unit * pTarget)
 	m_session->SendPacket(&data1);
 
 	/* update target faction set */
-	pTarget->_setFaction();
 	pTarget->UpdateOppFactionSet();
 
 
@@ -10154,7 +10151,6 @@ void Player::UnPossess()
 	RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_LOCK_PLAYER);
 	pTarget->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED_CREATURE);
 	pTarget->SetFaction(pTarget->GetCharmTempVal());
-	pTarget->_setFaction();
 	pTarget->UpdateOppFactionSet();
 
 	/* send "switch mover" packet */
