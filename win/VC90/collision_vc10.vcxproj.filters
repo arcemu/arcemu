@@ -1,0 +1,221 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="interface">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="g3dlite">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="vmap">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\collision\Interface.cpp">
+      <Filter>interface</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\collision\g3dlite\AABox.cpp">
+      <Filter>g3dlite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\collision\g3dlite\Box.cpp">
+      <Filter>g3dlite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\collision\g3dlite\Crypto.cpp">
+      <Filter>g3dlite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\collision\g3dlite\format.cpp">
+      <Filter>g3dlite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\collision\g3dlite\Matrix3.cpp">
+      <Filter>g3dlite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\collision\g3dlite\Plane.cpp">
+      <Filter>g3dlite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\collision\g3dlite\System.cpp">
+      <Filter>g3dlite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\collision\g3dlite\Triangle.cpp">
+      <Filter>g3dlite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\collision\g3dlite\Vector3.cpp">
+      <Filter>g3dlite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\collision\g3dlite\Vector4.cpp">
+      <Filter>g3dlite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\collision\vmap\BaseModel.cpp">
+      <Filter>vmap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\collision\vmap\CoordModelMapping.cpp">
+      <Filter>vmap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\collision\vmap\ManagedModelContainer.cpp">
+      <Filter>vmap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\collision\vmap\ModelContainer.cpp">
+      <Filter>vmap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\collision\vmap\SubModel.cpp">
+      <Filter>vmap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\collision\vmap\TileAssembler.cpp">
+      <Filter>vmap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\collision\vmap\TreeNode.cpp">
+      <Filter>vmap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\collision\vmap\VMapManager.cpp">
+      <Filter>vmap</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\AABox.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\Array.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\Box.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\collision\g3dlite\CollisionDetection.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\collision\g3dlite\CoordinateFrame.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\Crypto.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\debug.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\format.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\g3dmath.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\GCamera.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\Line.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\Matrix3.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\Plane.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\platform.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\Quat.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\Ray.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\RegistryUtil.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\Sphere.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\stringutils.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\System.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\Table.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\Triangle.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\Vector2.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\Vector2int16.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\Vector3.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\Vector3int16.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\Vector4.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\collision\vmap\AABSPTree.h">
+      <Filter>vmap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\collision\vmap\BaseModel.h">
+      <Filter>vmap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\collision\vmap\CoordModelMapping.h">
+      <Filter>vmap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\collision\vmap\IVMapManager.h">
+      <Filter>vmap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\collision\vmap\ManagedModelContainer.h">
+      <Filter>vmap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\collision\vmap\ModelContainer.h">
+      <Filter>vmap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\collision\vmap\NodeValueAccess.h">
+      <Filter>vmap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\collision\vmap\RayIntersectionIterator.h">
+      <Filter>vmap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\collision\vmap\ShortBox.h">
+      <Filter>vmap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\collision\vmap\ShortVector.h">
+      <Filter>vmap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\collision\vmap\SubModel.h">
+      <Filter>vmap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\collision\vmap\TileAssembler.h">
+      <Filter>vmap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\collision\vmap\TreeNode.h">
+      <Filter>vmap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\collision\vmap\VMapManager.h">
+      <Filter>vmap</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\src\collision\g3dlite\G3D\g3dmath.inl">
+      <Filter>g3dlite</Filter>
+    </None>
+    <None Include="..\..\src\collision\g3dlite\G3D\Quat.inl">
+      <Filter>g3dlite</Filter>
+    </None>
+    <None Include="..\..\src\collision\g3dlite\G3D\Vector2.inl">
+      <Filter>g3dlite</Filter>
+    </None>
+    <None Include="..\..\src\collision\g3dlite\G3D\Vector3.inl">
+      <Filter>g3dlite</Filter>
+    </None>
+    <None Include="..\..\src\collision\g3dlite\G3D\Vector4.inl">
+      <Filter>g3dlite</Filter>
+    </None>
+    <None Include="..\..\src\collision\Makefile.am">
+      <Filter>vmap</Filter>
+    </None>
+  </ItemGroup>
+</Project>

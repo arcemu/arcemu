@@ -1,0 +1,323 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Database">
+      <UniqueIdentifier>{3df00c74-bf36-47db-bd16-344a47cd9198}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Database\DataStores">
+      <UniqueIdentifier>{0edbe303-96f5-46cb-b863-fade90732746}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Database\Database Wrappers">
+      <UniqueIdentifier>{9a74e865-5429-42de-b32e-fde910a5afda}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Config">
+      <UniqueIdentifier>{af7b0287-c43a-4e94-a0fe-786e86ced4de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Auth">
+      <UniqueIdentifier>{8f15123d-b6f0-47b1-bde9-7c6977818aba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Network">
+      <UniqueIdentifier>{6b46e538-33f8-4da8-84f8-ec6b81858eb7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Threading">
+      <UniqueIdentifier>{efec199c-2b2a-4d3d-a28a-08ab29fc2d9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Threading\ThreadPool">
+      <UniqueIdentifier>{4143e3d9-dffd-4153-91cc-bcbff0ed3daf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Util">
+      <UniqueIdentifier>{c59aecd3-7461-4480-9532-295bbdb5592d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Util\Log">
+      <UniqueIdentifier>{dd4664df-0d36-4fc6-ab6d-614a6dea899a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\arcemu-shared\Database\CreateInterface.cpp">
+      <Filter>Database</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-shared\Database\Database.cpp">
+      <Filter>Database</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-shared\Database\dbcfile.cpp">
+      <Filter>Database</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-shared\Database\DBC.cpp">
+      <Filter>Database\DataStores</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-shared\Database\DBCStores.cpp">
+      <Filter>Database\DataStores</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-shared\Database\MySQLDatabase.cpp">
+      <Filter>Database\Database Wrappers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-shared\Database\PostgresDatabase.cpp">
+      <Filter>Database\Database Wrappers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-shared\Database\SQLiteDatabase.cpp">
+      <Filter>Database\Database Wrappers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-shared\Config\Config.cpp">
+      <Filter>Config</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-shared\Auth\BigNumber.cpp">
+      <Filter>Auth</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-shared\crc32.cpp">
+      <Filter>Auth</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-shared\Auth\MD5.cpp">
+      <Filter>Auth</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-shared\Auth\Sha1.cpp">
+      <Filter>Auth</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-shared\Auth\WowCrypt.cpp">
+      <Filter>Auth</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-shared\Network\CircularBuffer.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-shared\Network\Socket.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-shared\Network\SocketMgrWin32.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-shared\Network\SocketOpsWin32.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-shared\Network\SocketWin32.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-shared\CThreads.cpp">
+      <Filter>Threading</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-shared\Threading\Mutex.cpp">
+      <Filter>Threading</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-shared\Threading\ThreadPool.cpp">
+      <Filter>Threading\ThreadPool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-shared\arcemu_getopt.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-shared\CallBack.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-shared\CrashHandler.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-shared\MapFile.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-shared\MapFileEntry.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-shared\MemoryLeaks.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-shared\MersenneTwister.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-shared\printStackTrace.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-shared\StackTrace.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-shared\StackWalker.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-shared\TextFile.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-shared\Util.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-shared\Log.cpp">
+      <Filter>Util\Log</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\arcemu-shared\Database\Database.h">
+      <Filter>Database</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\Database\DatabaseEnv.h">
+      <Filter>Database</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\Database\dbcfile.h">
+      <Filter>Database</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\Database\Field.h">
+      <Filter>Database</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\Database\DataStore.h">
+      <Filter>Database\DataStores</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\Database\DBC.h">
+      <Filter>Database\DataStores</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\Database\DBCStores.h">
+      <Filter>Database\DataStores</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\Database\MySQLDatabase.h">
+      <Filter>Database\Database Wrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\Database\PostgresDatabase.h">
+      <Filter>Database\Database Wrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\Database\SQLiteDatabase.h">
+      <Filter>Database\Database Wrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\Config\Config.h">
+      <Filter>Config</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\Config\ConfigEnv.h">
+      <Filter>Config</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\Auth\BigNumber.h">
+      <Filter>Auth</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\crc32.h">
+      <Filter>Auth</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\Auth\MD5.h">
+      <Filter>Auth</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\Auth\Sha1.h">
+      <Filter>Auth</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\Auth\WowCrypt.h">
+      <Filter>Auth</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\Network\CircularBuffer.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\Network\ListenSocketWin32.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\Network\Network.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\Network\Socket.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\Network\SocketDefines.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\Network\SocketMgrWin32.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\Network\SocketOps.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\Threading\Condition.h">
+      <Filter>Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\CThreads.h">
+      <Filter>Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\Threading\Guard.h">
+      <Filter>Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\Threading\LockedQueue.h">
+      <Filter>Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\Threading\Mutex.h">
+      <Filter>Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\Threading\Queue.h">
+      <Filter>Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\Threading\RWLock.h">
+      <Filter>Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\Threading\Threading.h">
+      <Filter>Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\Threading\ThreadStarter.h">
+      <Filter>Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\Threading\ThreadPool.h">
+      <Filter>Threading\ThreadPool</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\arcemu_getopt.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\Array.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\ByteBuffer.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\CallBack.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\CrashHandler.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\Errors.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\LocationVector.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\MapFile.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\MapFileEntry.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\MemoryLeaks.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\MersenneTwister.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-logonserver\PeriodicFunctionCall_Thread.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\PreallocatedQueue.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\printStackTrace.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\Singleton.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\StackBuffer.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\StackTrace.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\StackWalker.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\TextFile.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\Timer.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\Util.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\WoWGuid.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\Log.h">
+      <Filter>Util\Log</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\NGLog.h">
+      <Filter>Util\Log</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\arcemuConfig.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\AuthCodes.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\Common.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\FastQueue.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\Storage.h" />
+  </ItemGroup>
+</Project>

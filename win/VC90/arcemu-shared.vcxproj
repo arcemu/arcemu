@@ -1,17 +1,10 @@
-﻿<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug|Win32">
-      <Configuration>Debug</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug|x64">
-      <Configuration>Debug</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
       <Platform>x64</Platform>
@@ -19,14 +12,6 @@
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|Win32">
-      <Configuration>Release</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|x64">
-      <Configuration>Release</Configuration>
-      <Platform>x64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
@@ -34,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGUID>{90297C34-F231-4DF4-848E-A74BCC0E40ED}</ProjectGUID>
+    <ProjectGuid>{90297C34-F231-4DF4-848E-A74BCC0E40ED}</ProjectGuid>
     <RootNamespace>shared</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -49,12 +34,12 @@
     <CharacterSet>MultiByte</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
-  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|X64'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
-  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|X64'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
@@ -62,28 +47,33 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
-  <ImportGroup Label="PropertySheets">
-    <Import Project="$(LocalAppData)\Microsoft\VisualStudio\10.0\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(LocalAppData)\Microsoft\VisualStudio\10.0\Microsoft.Cpp.$(Platform).user.props')" />
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)</OutDir>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\arcemu-shared___Win32_Release\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\arcemu-shared___Win32_Release\</IntDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">shared</TargetName>
-    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.lib</TargetExt>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|X64'">$(IntDir)</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|X64'">.\arcemu-shared___Win32_Release_x64\</IntDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|X64'">shared</TargetName>
-    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|X64'">.lib</TargetExt>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\arcemu-shared___Win32_Debug\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\arcemu-shared___Win32_Debug\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\arcemu-shared___Win32_Release_x64\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\arcemu-shared___Win32_Release_x64\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\arcemu-shared___Win32_Debug_x64\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\arcemu-shared___Win32_Debug_x64\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">shared</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">shared</TargetName>
-    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.lib</TargetExt>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|X64'">$(IntDir)</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|X64'">.\arcemu-shared___Win32_Debug_x64\</IntDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|X64'">shared</TargetName>
-    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|X64'">.lib</TargetExt>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">shared</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">shared</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <PreBuildEvent>
@@ -126,6 +116,7 @@ RevisionExtractor.exe
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
+      <OutputFile>$(IntDir)shared.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <PostBuildEvent>
@@ -133,7 +124,50 @@ RevisionExtractor.exe
       </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|X64'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <PreBuildEvent>
+      <Message>Extracting SVN revision...</Message>
+      <Command>cd $(SolutionDir)\..\src\arcemu-shared
+RevisionExtractor.exe
+</Command>
+    </PreBuildEvent>
+    <ClCompile>
+      <AdditionalOptions>/Zm256 /bigobj %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <AdditionalIncludeDirectories>..\..\src\arcemu-shared;..\..\extras\arcemu-windows-libraries\VC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <FloatingPointExceptions>true</FloatingPointExceptions>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <PrecompiledHeaderOutputFile>.\shared___Win32_Debug/shared.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
+      <WarningLevel>Level4</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+      <DisableSpecificWarnings>4127;4100;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+    </ResourceCompile>
+    <Lib>
+      <OutputFile>$(IntDir)shared.lib</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <PreBuildEvent>
       <Message>Extracting SVN revision...</Message>
       <Command>cd $(SolutionDir)\..\src\arcemu-shared
@@ -144,9 +178,9 @@ RevisionExtractor.exe
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <Optimization>Disabled</Optimization>
+      <Optimization>Full</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
       <AdditionalIncludeDirectories>..\..\src\arcemu-shared;..\..\extras\arcemu-windows-libraries\VC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_HAS_ITERATOR_DEBUGGING=0;WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;X64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
@@ -166,63 +200,26 @@ RevisionExtractor.exe
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers>true</OmitFramePointers>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
+      <OutputFile>$(IntDir)shared.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
+      <LinkTimeCodeGeneration>true</LinkTimeCodeGeneration>
     </Lib>
     <PostBuildEvent>
       <Command>
       </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <PreBuildEvent>
-      <Message>Extracting SVN revision...</Message>
-      <Command>cd $(SolutionDir)\..\src\arcemu-shared
-RevisionExtractor.exe
-</Command>
-    </PreBuildEvent>
-    <ClCompile>
-      <AdditionalOptions>/Zm256 /bigobj %(AdditionalOptions)</AdditionalOptions>
-      <Optimization>Disabled</Optimization>
-      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\..\src\arcemu-shared;..\..\extras\arcemu-windows-libraries\VC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>false</MinimalRebuild>
-      <ExceptionHandling>Async</ExceptionHandling>
-      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <FloatingPointExceptions>true</FloatingPointExceptions>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
-      <PrecompiledHeaderOutputFile>.\shared___Win32_Debug/shared.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
-      <ObjectFileName>$(IntDir)</ObjectFileName>
-      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
-      <WarningLevel>EnableAllWarnings</WarningLevel>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <CompileAs>Default</CompileAs>
-      <DisableSpecificWarnings>4127;4100;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
-    </ClCompile>
-    <ResourceCompile>
-      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <Culture>0x0409</Culture>
-    </ResourceCompile>
-    <Lib>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-    </Lib>
-    <PostBuildEvent>
-      <Command>
-      </Command>
-    </PostBuildEvent>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|X64'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <PreBuildEvent>
       <Message>Extracting SVN revision...</Message>
       <Command>cd $(SolutionDir)\..\src\arcemu-shared
@@ -258,6 +255,7 @@ RevisionExtractor.exe
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
+      <OutputFile>$(IntDir)shared.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <PostBuildEvent>
@@ -266,41 +264,60 @@ RevisionExtractor.exe
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\src\arcemu-shared\arcemuConfig.h" />
-    <ClInclude Include="..\..\src\arcemu-shared\arcemu_getopt.h" />
-    <ClInclude Include="..\..\src\arcemu-shared\Array.h" />
-    <ClInclude Include="..\..\src\arcemu-shared\AuthCodes.h" />
-    <ClInclude Include="..\..\src\arcemu-shared\Auth\BigNumber.h" />
-    <ClInclude Include="..\..\src\arcemu-shared\Auth\MD5.h" />
-    <ClInclude Include="..\..\src\arcemu-shared\Auth\Sha1.h" />
-    <ClInclude Include="..\..\src\arcemu-shared\Auth\WowCrypt.h" />
-    <ClInclude Include="..\..\src\arcemu-shared\ByteBuffer.h" />
-    <ClInclude Include="..\..\src\arcemu-shared\CallBack.h" />
-    <ClInclude Include="..\..\src\arcemu-shared\Common.h" />
-    <ClInclude Include="..\..\src\arcemu-shared\Config\Config.h" />
-    <ClInclude Include="..\..\src\arcemu-shared\Config\ConfigEnv.h" />
-    <ClInclude Include="..\..\src\arcemu-shared\CrashHandler.h" />
-    <ClInclude Include="..\..\src\arcemu-shared\crc32.h" />
-    <ClInclude Include="..\..\src\arcemu-shared\CThreads.h" />
+    <ClCompile Include="..\..\src\arcemu-shared\Database\CreateInterface.cpp" />
+    <ClCompile Include="..\..\src\arcemu-shared\Database\Database.cpp" />
+    <ClCompile Include="..\..\src\arcemu-shared\Database\dbcfile.cpp" />
+    <ClCompile Include="..\..\src\arcemu-shared\Database\DBC.cpp" />
+    <ClCompile Include="..\..\src\arcemu-shared\Database\DBCStores.cpp" />
+    <ClCompile Include="..\..\src\arcemu-shared\Database\MySQLDatabase.cpp" />
+    <ClCompile Include="..\..\src\arcemu-shared\Database\PostgresDatabase.cpp" />
+    <ClCompile Include="..\..\src\arcemu-shared\Database\SQLiteDatabase.cpp" />
+    <ClCompile Include="..\..\src\arcemu-shared\Config\Config.cpp" />
+    <ClCompile Include="..\..\src\arcemu-shared\Auth\BigNumber.cpp" />
+    <ClCompile Include="..\..\src\arcemu-shared\crc32.cpp" />
+    <ClCompile Include="..\..\src\arcemu-shared\Auth\MD5.cpp" />
+    <ClCompile Include="..\..\src\arcemu-shared\Auth\Sha1.cpp" />
+    <ClCompile Include="..\..\src\arcemu-shared\Auth\WowCrypt.cpp" />
+    <ClCompile Include="..\..\src\arcemu-shared\Network\CircularBuffer.cpp" />
+    <ClCompile Include="..\..\src\arcemu-shared\Network\Socket.cpp" />
+    <ClCompile Include="..\..\src\arcemu-shared\Network\SocketMgrWin32.cpp" />
+    <ClCompile Include="..\..\src\arcemu-shared\Network\SocketOpsWin32.cpp" />
+    <ClCompile Include="..\..\src\arcemu-shared\Network\SocketWin32.cpp" />
+    <ClCompile Include="..\..\src\arcemu-shared\CThreads.cpp" />
+    <ClCompile Include="..\..\src\arcemu-shared\Threading\Mutex.cpp" />
+    <ClCompile Include="..\..\src\arcemu-shared\Threading\ThreadPool.cpp" />
+    <ClCompile Include="..\..\src\arcemu-shared\arcemu_getopt.cpp" />
+    <ClCompile Include="..\..\src\arcemu-shared\CallBack.cpp" />
+    <ClCompile Include="..\..\src\arcemu-shared\CrashHandler.cpp" />
+    <ClCompile Include="..\..\src\arcemu-shared\MapFile.cpp" />
+    <ClCompile Include="..\..\src\arcemu-shared\MapFileEntry.cpp" />
+    <ClCompile Include="..\..\src\arcemu-shared\MemoryLeaks.cpp" />
+    <ClCompile Include="..\..\src\arcemu-shared\MersenneTwister.cpp" />
+    <ClCompile Include="..\..\src\arcemu-shared\printStackTrace.cpp" />
+    <ClCompile Include="..\..\src\arcemu-shared\StackTrace.cpp" />
+    <ClCompile Include="..\..\src\arcemu-shared\StackWalker.cpp" />
+    <ClCompile Include="..\..\src\arcemu-shared\TextFile.cpp" />
+    <ClCompile Include="..\..\src\arcemu-shared\Util.cpp" />
+    <ClCompile Include="..\..\src\arcemu-shared\Log.cpp" />
+  </ItemGroup>
+  <ItemGroup>
     <ClInclude Include="..\..\src\arcemu-shared\Database\Database.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Database\DatabaseEnv.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\Database\dbcfile.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\Database\Field.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Database\DataStore.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Database\DBC.h" />
-    <ClInclude Include="..\..\src\arcemu-shared\Database\dbcfile.h" />
-    <ClInclude Include="..\..\src\arcemu-shared\Database\dbcfile.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Database\DBCStores.h" />
-    <ClInclude Include="..\..\src\arcemu-shared\Database\Field.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Database\MySQLDatabase.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Database\PostgresDatabase.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Database\SQLiteDatabase.h" />
-    <ClInclude Include="..\..\src\arcemu-shared\Errors.h" />
-    <ClInclude Include="..\..\src\arcemu-shared\FastQueue.h" />
-    <ClInclude Include="..\..\src\arcemu-shared\LocationVector.h" />
-    <ClInclude Include="..\..\src\arcemu-shared\Log.h" />
-    <ClInclude Include="..\..\src\arcemu-shared\MapFile.h" />
-    <ClInclude Include="..\..\src\arcemu-shared\MapFileEntry.h" />
-    <ClInclude Include="..\..\src\arcemu-shared\MemoryLeaks.h" />
-    <ClInclude Include="..\..\src\arcemu-shared\MersenneTwister.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\Config\Config.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\Config\ConfigEnv.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\Auth\BigNumber.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\crc32.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\Auth\MD5.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\Auth\Sha1.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\Auth\WowCrypt.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Network\CircularBuffer.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Network\ListenSocketWin32.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Network\Network.h" />
@@ -308,72 +325,54 @@ RevisionExtractor.exe
     <ClInclude Include="..\..\src\arcemu-shared\Network\SocketDefines.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Network\SocketMgrWin32.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Network\SocketOps.h" />
-    <ClInclude Include="..\..\src\arcemu-shared\NGLog.h" />
-    <ClInclude Include="..\..\src\arcemu-shared\PreallocatedQueue.h" />
-    <ClInclude Include="..\..\src\arcemu-shared\printStackTrace.h" />
-    <ClInclude Include="..\..\src\arcemu-shared\Singleton.h" />
-    <ClInclude Include="..\..\src\arcemu-shared\StackBuffer.h" />
-    <ClInclude Include="..\..\src\arcemu-shared\StackTrace.h" />
-    <ClInclude Include="..\..\src\arcemu-shared\StackWalker.h" />
-    <ClInclude Include="..\..\src\arcemu-shared\Storage.h" />
-    <ClInclude Include="..\..\src\arcemu-shared\TextFile.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Threading\Condition.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\CThreads.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Threading\Guard.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Threading\LockedQueue.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Threading\Mutex.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Threading\Queue.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Threading\RWLock.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Threading\Threading.h" />
-    <ClInclude Include="..\..\src\arcemu-shared\Threading\ThreadPool.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Threading\ThreadStarter.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\Threading\ThreadPool.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\arcemu_getopt.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\Array.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\ByteBuffer.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\CallBack.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\CrashHandler.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\Errors.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\LocationVector.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\MapFile.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\MapFileEntry.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\MemoryLeaks.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\MersenneTwister.h" />
+    <ClInclude Include="..\..\src\arcemu-logonserver\PeriodicFunctionCall_Thread.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\PreallocatedQueue.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\printStackTrace.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\Singleton.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\StackBuffer.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\StackTrace.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\StackWalker.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\TextFile.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Timer.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Util.h" />
     <ClInclude Include="..\..\src\arcemu-shared\WoWGuid.h" />
-    <ClInclude Include="..\..\src\logonserver\PeriodicFunctionCall_Thread.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\src\arcemu-shared\arcemu_getopt.cpp" />
-    <ClCompile Include="..\..\src\arcemu-shared\Auth\BigNumber.cpp" />
-    <ClCompile Include="..\..\src\arcemu-shared\Auth\MD5.cpp" />
-    <ClCompile Include="..\..\src\arcemu-shared\Auth\Sha1.cpp" />
-    <ClCompile Include="..\..\src\arcemu-shared\Auth\WowCrypt.cpp" />
-    <ClCompile Include="..\..\src\arcemu-shared\CallBack.cpp" />
-    <ClCompile Include="..\..\src\arcemu-shared\Config\Config.cpp" />
-    <ClCompile Include="..\..\src\arcemu-shared\CrashHandler.cpp" />
-    <ClCompile Include="..\..\src\arcemu-shared\crc32.cpp" />
-    <ClCompile Include="..\..\src\arcemu-shared\CThreads.cpp" />
-    <ClCompile Include="..\..\src\arcemu-shared\Database\CreateInterface.cpp" />
-    <ClCompile Include="..\..\src\arcemu-shared\Database\Database.cpp" />
-    <ClCompile Include="..\..\src\arcemu-shared\Database\DBC.cpp" />
-    <ClCompile Include="..\..\src\arcemu-shared\Database\dbcfile.cpp" />
-    <ClCompile Include="..\..\src\arcemu-shared\Database\DBCStores.cpp" />
-    <ClCompile Include="..\..\src\arcemu-shared\Database\MySQLDatabase.cpp" />
-    <ClCompile Include="..\..\src\arcemu-shared\Database\PostgresDatabase.cpp" />
-    <ClCompile Include="..\..\src\arcemu-shared\Database\SQLiteDatabase.cpp" />
-    <ClCompile Include="..\..\src\arcemu-shared\Log.cpp" />
-    <ClCompile Include="..\..\src\arcemu-shared\MapFile.cpp" />
-    <ClCompile Include="..\..\src\arcemu-shared\MapFileEntry.cpp" />
-    <ClCompile Include="..\..\src\arcemu-shared\MemoryLeaks.cpp" />
-    <ClCompile Include="..\..\src\arcemu-shared\MersenneTwister.cpp" />
-    <ClCompile Include="..\..\src\arcemu-shared\Network\CircularBuffer.cpp" />
-    <ClCompile Include="..\..\src\arcemu-shared\Network\Socket.cpp" />
-    <ClCompile Include="..\..\src\arcemu-shared\Network\SocketMgrWin32.cpp" />
-    <ClCompile Include="..\..\src\arcemu-shared\Network\SocketOpsWin32.cpp" />
-    <ClCompile Include="..\..\src\arcemu-shared\Network\SocketWin32.cpp" />
-    <ClCompile Include="..\..\src\arcemu-shared\printStackTrace.cpp" />
-    <ClCompile Include="..\..\src\arcemu-shared\StackTrace.cpp" />
-    <ClCompile Include="..\..\src\arcemu-shared\StackWalker.cpp" />
-    <ClCompile Include="..\..\src\arcemu-shared\TextFile.cpp" />
-    <ClCompile Include="..\..\src\arcemu-shared\Threading\Mutex.cpp" />
-    <ClCompile Include="..\..\src\arcemu-shared\Threading\ThreadPool.cpp" />
-    <ClCompile Include="..\..\src\arcemu-shared\Util.cpp" />
+    <ClInclude Include="..\..\src\arcemu-shared\Log.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\NGLog.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\arcemuConfig.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\AuthCodes.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\Common.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\FastQueue.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\Storage.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\extras\arcemu-windows-libraries\Sources\VC90-pcre.vcxproj">
       <Project>{311f016d-f785-47ef-b032-5350397f16b6}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
     <ProjectReference Include="..\..\extras\arcemu-windows-libraries\Sources\VC90-zlib.vcxproj">
       <Project>{8f1dea42-6a5b-4b62-839d-c141a7bfacf2}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,0 +1,176 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>vmap_assembler</ProjectName>
+    <ProjectGuid>{572FFF74-480C-4472-8ABF-81733BB4049D}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Debug\obj\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Release\obj\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.\vmap;.\g3dlite;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <OutputFile>$(OutDir)vmap_assembler.exe</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)vmap_assembler.pdb</ProgramDatabaseFile>
+      <SubSystem>Console</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.\vmap;.\g3dlite;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <OutputFile>$(OutDir)vmap_assembler.exe</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="vmap\AABSPTree.h" />
+    <ClInclude Include="vmap\BaseModel.h" />
+    <ClInclude Include="vmap\CoordModelMapping.h" />
+    <ClInclude Include="vmap\DebugCmdLogger.h" />
+    <ClInclude Include="vmap\IVMapManager.h" />
+    <ClInclude Include="vmap\ManagedModelContainer.h" />
+    <ClInclude Include="vmap\ModelContainer.h" />
+    <ClInclude Include="vmap\NodeValueAccess.h" />
+    <ClInclude Include="vmap\RayIntersectionIterator.h" />
+    <ClInclude Include="vmap\ShortBox.h" />
+    <ClInclude Include="vmap\ShortVector.h" />
+    <ClInclude Include="vmap\SubModel.h" />
+    <ClInclude Include="vmap\TileAssembler.h" />
+    <ClInclude Include="vmap\TreeNode.h" />
+    <ClInclude Include="vmap\VMapDefinitions.h" />
+    <ClInclude Include="vmap\VMapFactory.h" />
+    <ClInclude Include="vmap\VMapManager.h" />
+    <ClInclude Include="g3dlite\G3d\AABox.h" />
+    <ClInclude Include="g3dlite\G3d\Array.h" />
+    <ClInclude Include="g3dlite\G3d\Box.h" />
+    <ClInclude Include="g3dlite\G3d\CollisionDetection.h" />
+    <ClInclude Include="g3dlite\G3d\CoordinateFrame.h" />
+    <ClInclude Include="g3dlite\G3d\Crypto.h" />
+    <ClInclude Include="g3dlite\G3d\debug.h" />
+    <ClInclude Include="g3dlite\G3d\format.h" />
+    <ClInclude Include="g3dlite\G3d\g3dmath.h" />
+    <ClInclude Include="g3dlite\G3d\GCamera.h" />
+    <ClInclude Include="g3dlite\G3d\Line.h" />
+    <ClInclude Include="g3dlite\G3d\Matrix3.h" />
+    <ClInclude Include="g3dlite\G3d\Plane.h" />
+    <ClInclude Include="g3dlite\G3d\platform.h" />
+    <ClInclude Include="g3dlite\G3d\Quat.h" />
+    <ClInclude Include="g3dlite\G3d\Ray.h" />
+    <ClInclude Include="g3dlite\G3d\RegistryUtil.h" />
+    <ClInclude Include="g3dlite\G3d\Sphere.h" />
+    <ClInclude Include="g3dlite\G3d\stringutils.h" />
+    <ClInclude Include="g3dlite\G3d\System.h" />
+    <ClInclude Include="g3dlite\G3d\Table.h" />
+    <ClInclude Include="g3dlite\G3d\Triangle.h" />
+    <ClInclude Include="g3dlite\G3d\Vector2.h" />
+    <ClInclude Include="g3dlite\G3d\Vector2int16.h" />
+    <ClInclude Include="g3dlite\G3d\Vector3.h" />
+    <ClInclude Include="g3dlite\G3d\Vector3int16.h" />
+    <ClInclude Include="g3dlite\G3d\Vector4.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="vmap\BaseModel.cpp" />
+    <ClCompile Include="vmap\CoordModelMapping.cpp" />
+    <ClCompile Include="vmap\DebugCmdLogger.cpp" />
+    <ClCompile Include="vmap\ManagedModelContainer.cpp" />
+    <ClCompile Include="vmap\ModelContainer.cpp" />
+    <ClCompile Include="vmap\SubModel.cpp" />
+    <ClCompile Include="vmap\TileAssembler.cpp" />
+    <ClCompile Include="vmap\TreeNode.cpp" />
+    <ClCompile Include="vmap\VMapFactory.cpp" />
+    <ClCompile Include="vmap\VMapManager.cpp" />
+    <ClCompile Include="g3dlite\AABox.cpp" />
+    <ClCompile Include="g3dlite\Box.cpp" />
+    <ClCompile Include="g3dlite\Crypto.cpp" />
+    <ClCompile Include="g3dlite\format.cpp" />
+    <ClCompile Include="g3dlite\Matrix3.cpp" />
+    <ClCompile Include="g3dlite\Plane.cpp" />
+    <ClCompile Include="g3dlite\System.cpp" />
+    <ClCompile Include="g3dlite\Triangle.cpp" />
+    <ClCompile Include="g3dlite\Vector3.cpp" />
+    <ClCompile Include="g3dlite\Vector4.cpp" />
+    <ClCompile Include="vmap_assembler.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="vmap\Makefile.am" />
+    <None Include="g3dlite\G3d\g3dmath.inl" />
+    <None Include="g3dlite\license.html" />
+    <None Include="g3dlite\Makefile.am" />
+    <None Include="g3dlite\G3d\Quat.inl" />
+    <None Include="g3dlite\G3d\Vector2.inl" />
+    <None Include="g3dlite\G3d\Vector3.inl" />
+    <None Include="g3dlite\G3d\Vector4.inl" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

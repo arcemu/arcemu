@@ -17,6 +17,8 @@
 #define G3DMATH_H
 
 #ifdef _MSC_VER
+//#include <intrin.h>
+#include <xmmintrin.h>
 // Disable conditional expression is constant, which occurs incorrectly on inlined functions
 #   pragma warning (push)
 #   pragma warning (disable : 4127)
@@ -52,9 +54,6 @@
 namespace G3D {
 
 #ifdef _MSC_VER
-
-//#include <intrin.h>
-#include <xmmintrin.h>
 
 /**
    Win32 implementation of the C99 fast rounding routines.

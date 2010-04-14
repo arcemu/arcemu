@@ -42,6 +42,7 @@ typedef unsigned __int8 uint8;
 #include "LocationVector.h"
 #include "conio.h"
 
+#undef MAXINT//needed by WSDK 7, since it declares its own MAXINT
 #define MAXINT (1<<31)
 #define COLLISION 1
 #define vMapPath "./maps/"

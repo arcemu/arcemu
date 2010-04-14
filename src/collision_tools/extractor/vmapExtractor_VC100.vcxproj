@@ -1,0 +1,427 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug Ansi Static|Win32">
+      <Configuration>Debug Ansi Static</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release Ansi Static|Win32">
+      <Configuration>Release Ansi Static</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>vmapExtractor</ProjectName>
+    <ProjectGuid>{87335BBF-5DA8-4FEC-A51E-1FB948F2FFE9}</ProjectGuid>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">.\bin\Win32\DebugAS\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">.\bin\Win32\DebugAS\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">.\bin\Win32\ReleaseAS\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">.\bin\Win32\ReleaseAS\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">false</LinkIncremental>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">vmapextract_v3</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">vmapextract_v3</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">
+    <Midl>
+      <TypeLibraryName>.\bin\StormLibTest\Win32\DebugAS/StormLibTest.tlb</TypeLibraryName>
+      <HeaderFileName>
+      </HeaderFileName>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.\stormlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <PrecompiledHeaderOutputFile>.\bin\Win32\DebugAS/StormLib.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\bin\Win32\DebugAS/</AssemblerListingLocation>
+      <ObjectFileName>.\bin\Win32\DebugAS/</ObjectFileName>
+      <ProgramDataBaseFileName>.\bin\Win32\DebugAS/</ProgramDataBaseFileName>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level4</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0405</Culture>
+    </ResourceCompile>
+    <Link>
+      <OutputFile>.\bin\Win32\DebugAS\vmapextract_v3.exe</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>.\bin\Win32\DebugAS/StormLib.pdb</ProgramDatabaseFile>
+      <SubSystem>Console</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">
+    <Midl>
+      <TypeLibraryName>.\bin\StormLibTest\Win32\ReleaseAS/StormLibTest.tlb</TypeLibraryName>
+      <HeaderFileName>
+      </HeaderFileName>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <AdditionalIncludeDirectories>.\stormlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <PrecompiledHeaderOutputFile>.\bin\Win32\ReleaseAS/StormLib.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\bin\Win32\ReleaseAS/</AssemblerListingLocation>
+      <ObjectFileName>.\bin\Win32\ReleaseAS/</ObjectFileName>
+      <ProgramDataBaseFileName>.\bin\Win32\ReleaseAS/</ProgramDataBaseFileName>
+      <WarningLevel>Level4</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <CompileAs>Default</CompileAs>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0405</Culture>
+    </ResourceCompile>
+    <Link>
+      <OutputFile>.\bin\Win32\ReleaseAS\vmapextract_v3.exe</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <ProgramDatabaseFile>.\bin\Win32\ReleaseAS/StormLib.pdb</ProgramDatabaseFile>
+      <SubSystem>Console</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="stormlib\pklib\crc32.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">EnableFastChecks</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <ClCompile Include="stormlib\pklib\explode.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">EnableFastChecks</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <ClCompile Include="stormlib\pklib\implode.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">EnableFastChecks</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <ClCompile Include="stormlib\zlib\adler32.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">EnableFastChecks</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">true</BrowseInformation>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">Level3</WarningLevel>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">Level3</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="stormlib\zlib\deflate.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">EnableFastChecks</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">true</BrowseInformation>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">Level3</WarningLevel>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">Level3</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="stormlib\zlib\infblock.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">EnableFastChecks</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">true</BrowseInformation>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">Level3</WarningLevel>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">Level3</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="stormlib\zlib\infcodes.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">EnableFastChecks</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">true</BrowseInformation>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">Level3</WarningLevel>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">Level3</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="stormlib\zlib\inffast.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">EnableFastChecks</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">true</BrowseInformation>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">Level3</WarningLevel>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">Level3</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="stormlib\zlib\inflate.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">EnableFastChecks</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">true</BrowseInformation>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">Level3</WarningLevel>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">Level3</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="stormlib\zlib\inftrees.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">EnableFastChecks</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">true</BrowseInformation>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">Level3</WarningLevel>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">Level3</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="stormlib\zlib\infutil.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">EnableFastChecks</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">true</BrowseInformation>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">Level3</WarningLevel>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">Level3</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="stormlib\zlib\trees.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">EnableFastChecks</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">true</BrowseInformation>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">Level3</WarningLevel>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">Level3</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="stormlib\zlib\zmemory.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">EnableFastChecks</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">true</BrowseInformation>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">Level3</WarningLevel>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">Level3</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="stormlib\huffman\huff.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">EnableFastChecks</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <ClCompile Include="stormlib\wave\wave.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">EnableFastChecks</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <ClCompile Include="stormlib\bzip2\blocksort.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">EnableFastChecks</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">true</BrowseInformation>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">Level3</WarningLevel>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">Level3</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="stormlib\bzip2\bzlib.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">EnableFastChecks</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">true</BrowseInformation>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">Level3</WarningLevel>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">Level3</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="stormlib\bzip2\compress.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">EnableFastChecks</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">true</BrowseInformation>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">Level3</WarningLevel>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">Level3</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="stormlib\bzip2\crctable.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">EnableFastChecks</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">true</BrowseInformation>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">Level3</WarningLevel>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">Level3</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="stormlib\bzip2\decompress.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">EnableFastChecks</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">true</BrowseInformation>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">Level3</WarningLevel>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">Level3</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="stormlib\bzip2\huffman.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">EnableFastChecks</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">true</BrowseInformation>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">Level3</WarningLevel>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">Level3</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="stormlib\bzip2\randtable.c">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">EnableFastChecks</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">true</BrowseInformation>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug Ansi Static|Win32'">Level3</WarningLevel>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release Ansi Static|Win32'">Level3</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="vmapextract\adtfile.cpp" />
+    <ClCompile Include="vmapextract\dbcfile.cpp" />
+    <ClCompile Include="vmapextract\model.cpp" />
+    <ClCompile Include="vmapextract\mpq.cpp" />
+    <ClCompile Include="vmapextract\vmapexport.cpp" />
+    <ClCompile Include="vmapextract\wdtfile.cpp" />
+    <ClCompile Include="vmapextract\wmo.cpp" />
+    <ClCompile Include="stormlib\SCommon.cpp" />
+    <ClCompile Include="stormlib\SCompression.cpp" />
+    <ClCompile Include="stormlib\SFileCompactArchive.cpp" />
+    <ClCompile Include="stormlib\SFileCreateArchiveEx.cpp" />
+    <ClCompile Include="stormlib\SFileExtractFile.cpp" />
+    <ClCompile Include="stormlib\SFileFindFile.cpp" />
+    <ClCompile Include="stormlib\SFileOpenArchive.cpp" />
+    <ClCompile Include="stormlib\SFileOpenFileEx.cpp" />
+    <ClCompile Include="stormlib\SFileReadFile.cpp" />
+    <ClCompile Include="stormlib\SListFile.cpp" />
+    <ClCompile Include="stormlib\StormPortLinux.cpp" />
+    <ClCompile Include="stormlib\StormPortMac.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stormlib\pklib\pklib.h" />
+    <ClInclude Include="stormlib\zlib\zconf.h" />
+    <ClInclude Include="stormlib\zlib\zlib.h" />
+    <ClInclude Include="stormlib\huffman\huff.h" />
+    <ClInclude Include="stormlib\wave\wave.h" />
+    <ClInclude Include="vmapextract\adtfile.h" />
+    <ClInclude Include="vmapextract\dbcfile.h" />
+    <ClInclude Include="vmapextract\model.h" />
+    <ClInclude Include="vmapextract\modelheaders.h" />
+    <ClInclude Include="vmapextract\mpq.h" />
+    <ClInclude Include="vmapextract\vec3d.h" />
+    <ClInclude Include="vmapextract\wdtfile.h" />
+    <ClInclude Include="vmapextract\wmo.h" />
+    <ClInclude Include="stormlib\SCommon.h" />
+    <ClInclude Include="stormlib\StormDll.h" />
+    <ClInclude Include="stormlib\StormLib.h" />
+    <ClInclude Include="stormlib\StormPort.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
