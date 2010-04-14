@@ -1752,7 +1752,7 @@ Creature * MapMgr::CreateCreature(uint32 entry, bool isVehicle)
     if( ++m_CreatureHighGuid  >= CreatureStorage.size() )
 	{
 		// Reallocate array with larger size.
-        uint32 newsize = CreatureStorage.size() + RESERVE_EXPAND_SIZE;
+        size_t newsize = CreatureStorage.size() + RESERVE_EXPAND_SIZE;
         CreatureStorage.resize( newsize, NULL );
 	}
 
@@ -1830,7 +1830,7 @@ GameObject * MapMgr::CreateGameObject(uint32 entry)
     if(++m_GOHighGuid  >= GOStorage.size() )
 	{
 		// Reallocate array with larger size.
-        uint32 newsize = GOStorage.size() + RESERVE_EXPAND_SIZE;
+        size_t newsize = GOStorage.size() + RESERVE_EXPAND_SIZE;
         GOStorage.resize( newsize, NULL );
 	}
 	return new GameObject((uint64)HIGHGUID_TYPE_GAMEOBJECT<<32 | m_GOHighGuid);

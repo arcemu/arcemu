@@ -3018,7 +3018,7 @@ void ObjectMgr::HandleMonsterSayEvent(Creature * pCreature, MONSTER_SAY_EVENTS E
 			Unit* CurrentTarget = pCreature->GetMapMgr()->GetUnit(targetGUID);
 			if(CurrentTarget && CurrentTarget->IsPlayer())
 			{
-				uint32 testOfs = test-text;
+				ptrdiff_t testOfs = test-text;
 				newText.replace(testOfs, 2, ((Player*)CurrentTarget)->GetName());
 			}
 		}
@@ -3031,7 +3031,7 @@ void ObjectMgr::HandleMonsterSayEvent(Creature * pCreature, MONSTER_SAY_EVENTS E
 			Unit* CurrentTarget = pCreature->GetMapMgr()->GetUnit(targetGUID);
 			if(CurrentTarget)
 			{
-				uint32 testOfs = test-text;
+				ptrdiff_t testOfs = test-text;
 				newText.replace(testOfs, 2, classes[CurrentTarget->getClass()]);
 			}
 		}

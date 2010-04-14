@@ -1606,9 +1606,9 @@ public:
 	}
 
 	bool HasCreature( int id ){
-		int size = CreatureTargets.size();
+		size_t size = CreatureTargets.size();
 		
-		for( int i = 0; i < size; ++i )
+		for( size_t i = 0; i < size; ++i )
 			if( CreatureTargets[ i ] == id )
 				return true;
 
@@ -1616,9 +1616,9 @@ public:
 	}
 
 	bool HasGameobject( int id ){
-		int size = GameobjectTargets.size();
+		size_t size = GameobjectTargets.size();
 
-		for( int i = 0; i < size; ++i )
+		for( size_t i = 0; i < size; ++i )
 			if( GameobjectTargets[ i ] == id )
 				return true;
 

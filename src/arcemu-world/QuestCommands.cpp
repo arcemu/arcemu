@@ -394,7 +394,7 @@ bool ChatHandler::HandleQuestFinishCommand(const char * args, WorldSession * m_s
 					// I need some way to get the guid without targeting the creature or looking through all the spawns...
 					Object *quest_giver = 0;
 
-                    for(uint32 guid=1; guid < plr->GetMapMgr()->CreatureStorage.size(); guid++)
+                    for(size_t guid=1; guid < plr->GetMapMgr()->CreatureStorage.size(); guid++)
 					{
 						Creature *pCreature = plr->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
 						if(pCreature)
