@@ -366,11 +366,11 @@ RevisionExtractor.exe
     <ClInclude Include="..\..\src\arcemu-shared\Storage.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\extras\arcemu-windows-libraries\Sources\VC90-pcre.vcxproj">
+    <ProjectReference Include="..\..\extras\arcemu-windows-libraries\Sources\VC100-pcre.vcxproj">
       <Project>{311f016d-f785-47ef-b032-5350397f16b6}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\..\extras\arcemu-windows-libraries\Sources\VC90-zlib.vcxproj">
+    <ProjectReference Include="..\..\extras\arcemu-windows-libraries\Sources\VC100-zlib.vcxproj">
       <Project>{8f1dea42-6a5b-4b62-839d-c141a7bfacf2}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
