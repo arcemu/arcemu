@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ShowAllFiles>true</ShowAllFiles>
+    <LocalDebuggerWorkingDirectory Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerWorkingDirectory Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerWorkingDirectory Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor Condition="'$(Configuration)|$(Platform)'=='Release|x64'">WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerWorkingDirectory Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+</Project>
