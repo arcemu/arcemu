@@ -5014,7 +5014,7 @@ void Spell::SpellEffectInterruptCast(uint32 i) // Interrupt Cast
 		
 		if(unitTarget->IsPlayer())
 		{
-				TO_PLAYER(unitTarget)->SendPreventSchoolCast(school, duration + getMSTime());
+				TO_PLAYER(unitTarget)->SendPreventSchoolCast(school, duration);
 		}
  	}
 	else if((GetProto()->InterruptFlags & CAST_INTERRUPT_ON_INTERRUPT_ALL) && (prevtype == PREVENTION_TYPE_SILENCE))
@@ -5032,10 +5032,10 @@ void Spell::SpellEffectInterruptCast(uint32 i) // Interrupt Cast
 
 		for( uint8 j = 0; j < 7; j++)
 		{
-			unitTarget->SchoolCastPrevent[j] = duration + getMSTime();
+			unitTarget->SchoolCastPrevent[j] = duration;
 			if(unitTarget->IsPlayer())
 			{
-				TO_PLAYER(unitTarget)->SendPreventSchoolCast(j, duration + getMSTime());
+				TO_PLAYER(unitTarget)->SendPreventSchoolCast(j, duration);
 			}
 		}
 	}
