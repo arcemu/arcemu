@@ -158,7 +158,7 @@ arcemu_world_SOURCES = \
     Spell.h \
     SpellEffects.cpp \
     SpellHandler.cpp \
-    SpellFixes.cpp \
+    HackFixes.cpp \
     Stats.h \
     Stats.cpp \
     StdAfx.cpp \
