@@ -1313,7 +1313,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\arcemu-world\SpellFixes.cpp"
+				RelativePath="..\..\src\arcemu-world\HackFixes.cpp"
 				>
 			</File>
 			<File

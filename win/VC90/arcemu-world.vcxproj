@@ -383,7 +383,7 @@
     <ClCompile Include="..\..\src\arcemu-world\WorldSession.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\Spell.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\SpellEffects.cpp" />
-    <ClCompile Include="..\..\src\arcemu-world\SpellFixes.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\HackFixes.cpp"/>
     <ClCompile Include="..\..\src\arcemu-world\SpellTarget.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\CommonScheduleThread.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\DayWatcherThread.cpp" />
