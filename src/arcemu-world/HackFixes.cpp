@@ -1200,6 +1200,13 @@ void ApplyNormalFixes()
 			sp->Effect[2] = SPELL_EFFECT_SCHOOL_DAMAGE; //hack
 		}
 
+		// Paladin - Consecration
+        if( sp->NameHash == SPELL_HASH_CONSECRATION   )
+        {
+            sp->School = SCHOOL_HOLY; //Consecration is a holy redirected spell.
+            sp->Spell_Dmg_Type = SPELL_DMG_TYPE_MAGIC; //Speaks for itself.
+        }
+
 		//////////////////////////////////////////
 		// HUNTER								//
 		//////////////////////////////////////////
@@ -2952,13 +2959,6 @@ void ApplyNormalFixes()
 			sp->EffectApplyAuraName[1] = 42;
 			sp->EffectTriggerSpell[1] = 54203;
 			sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
-        }
-
-		// Paladin - Consecration
-        if( sp->NameHash == SPELL_HASH_CONSECRATION   )
-        {
-            sp->School = SCHOOL_HOLY; //Consecration is a holy redirected spell.
-            sp->Spell_Dmg_Type = SPELL_DMG_TYPE_MAGIC; //Speaks for itself.
         }
 
 	//////////////////////////////////////////
