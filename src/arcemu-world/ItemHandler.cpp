@@ -1171,11 +1171,6 @@ void WorldSession::HandleSellItemOpcode( WorldPacket & recv_data )
 	}
 
 	ItemPrototype *it = item->GetProto();
-	if(!it)
-	{
-		SendSellItem(vendorguid, itemguid, 2);
-		return; //our player doesn't have this item
-	}
 
 	if(item->IsContainer() && ((Container*)item)->HasItems())
 	{
@@ -1321,7 +1316,7 @@ void WorldSession::HandleBuyItemInSlotOpcode( WorldPacket & recv_data ) // drag 
 			if(!c)return;
 			bagslot = (int8)_player->GetItemInterface()->GetBagSlotByGuid(bagguid);
 
-			if(bagslot == INVENTORY_SLOT_NOT_SET || (c->GetProto() && (uint32)slot > c->GetProto()->ContainerSlots))
+			if(bagslot == INVENTORY_SLOT_NOT_SET || ((uint32)slot > c->GetProto()->ContainerSlots))
 			{
 				_player->GetItemInterface()->BuildInventoryChangeError(0, 0, INV_ERR_ITEM_DOESNT_GO_TO_SLOT);
 				return;
@@ -2172,7 +2167,6 @@ void WorldSession::HandleInsertGemOpcode(WorldPacket &recvPacket)
 			it = itemi->SafeRemoveAndRetreiveItemByGuid(gemguid,true);
 			if( !it ) 
 				return; //someone sending hacked packets to crash server
-			ip = it->GetProto();
 
 			gp = dbcGemProperty.LookupEntryForced(it->GetProto()->GemProperties);
 			it->DeleteMe();
@@ -2429,29 +2423,27 @@ void WorldSession::HandleItemRefundRequestOpcode( WorldPacket& recvPacket ){
                     ex = dbcItemExtendedCost.LookupEntry( RefundEntry.second );
             }
 
-            if( ex != NULL ){
+            if( ex != NULL )
+			{
                 proto = itm->GetProto();
 
-                if( proto != NULL ){
-                    
 ////////////////////////////////// We remove the refunded item and refund the cost //////////////////////////////////
                     
-                    for( int i = 0; i < 5; ++i ){
-                        _player->GetItemInterface()->AddItemById( ex->item[i], ex->count[i], 0 );
-                    }
-
-                    _player->GetItemInterface()->AddItemById( 43308, ex->honor, 0 );   // honor points
-                    _player->GetItemInterface()->AddItemById( 43307, ex->arena, 0 );  // arena points
-                    _player->ModGold( proto->BuyPrice );
-
-                    _player->GetItemInterface()->RemoveItemAmtByGuid( GUID, 1 );
-
-                    _player->GetItemInterface()->RemoveRefundable( GUID );
-
-					// we were successful!
-					error = 0;
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                for( int i = 0; i < 5; ++i ){
+                    _player->GetItemInterface()->AddItemById( ex->item[i], ex->count[i], 0 );
                 }
+
+                _player->GetItemInterface()->AddItemById( 43308, ex->honor, 0 );   // honor points
+                _player->GetItemInterface()->AddItemById( 43307, ex->arena, 0 );  // arena points
+                _player->ModGold( proto->BuyPrice );
+
+                _player->GetItemInterface()->RemoveItemAmtByGuid( GUID, 1 );
+
+                _player->GetItemInterface()->RemoveRefundable( GUID );
+
+				// we were successful!
+				error = 0;
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             }
         }
     }

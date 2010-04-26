@@ -3573,6 +3573,23 @@ void Spell::SpellEffectWeaponDmgPerc(uint32 i) // Weapon Percent damage
 		}
 
 		u_caster->Strike( unitTarget, _type, GetProto(), add_damage, damage, 0, false, true );
+
+        if( GetProto()->NameHash == SPELL_HASH_FAN_OF_KNIVES && p_caster != NULL ) // rogue - fan of knives
+	    {
+			Item *oit = p_caster->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_OFFHAND);
+			if( oit != NULL )
+			{
+				if( oit->GetDurability() != 0 )
+				{	
+					if ( oit->GetProto()->Class == 2 && oit->GetProto()->SubClass == 15) // daggers
+						damage = 105; //causing 105% weapon damage with daggers
+					else
+						damage = GetProto()->EffectBasePoints[i] + 1;// and 70% weapon damage with all other weapons.
+
+					u_caster->Strike( unitTarget, OFFHAND, GetProto(), add_damage, damage, 0, false, true );
+				}
+			}
+	    }
 	}
 }
 
@@ -4711,11 +4728,7 @@ void Spell::SpellEffectOpenLockItem(uint32 i)
 		return;
 
 	if( p_caster != NULL && i_caster != NULL ){
-		ItemPrototype *ip = i_caster->GetProto();
-		if( ip == NULL )
-			return;
-		else
-			p_caster->HandleSpellLoot( ip->ItemId );
+			p_caster->HandleSpellLoot( i_caster->GetProto()->ItemId );
 	}
 
 	if( gameObjTarget == NULL || !gameObjTarget->IsInWorld() )
@@ -6547,8 +6560,7 @@ void Spell::SpellEffectFeedPet(uint32 i)  // Feed Pet
 		return;
 
 	/**	Cast feed pet effect
-	- effect is item level and pet level dependent, aura ticks are 35, 17, 8 (*1000) happiness
-	- http://petopia.brashendeavors.net/html/articles/basics_feeding.shtml */
+	- effect is item level and pet level dependent, aura ticks are 35, 17, 8 (*1000) happiness*/
 	int8 deltaLvl = static_cast<int8>(pPet->getLevel() - itemTarget->GetProto()->ItemLevel);
 	damage /= 1000; //damage of Feed pet spell is 35000
 	if(deltaLvl > 10) damage = damage >> 1;//divide by 2

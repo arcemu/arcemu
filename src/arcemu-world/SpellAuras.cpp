@@ -763,7 +763,7 @@ Aura::Aura( SpellEntry* proto, int32 duration, Object* caster, Unit* target, boo
 	else
 		p_target = NULL;
 
-	if ( i_caster != NULL && i_caster->GetProto() )
+	if ( i_caster != NULL )
 		m_castedItemId = i_caster->GetProto()->ItemId;
 	else
 		m_castedItemId = 0;
@@ -1451,7 +1451,7 @@ void Aura::SpellAuraPeriodicDamage(bool apply)
 				{
 					Item *it;
 					it = pr->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_MAINHAND);
-					if(it && it->GetProto())
+					if(it)
 					{
 						dmg = 0;
 						for(int i= 0;i<5;i++)

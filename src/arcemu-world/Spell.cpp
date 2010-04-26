@@ -3574,7 +3574,7 @@ uint8 Spell::CanCast(bool tolerate)
 		/**
 		 *	Item spell checks
 		 */
-		if (i_caster && i_caster->GetProto()) //Let's just make sure there's something here, so we don't crash ;)
+		if (i_caster)
 		{
 			if (i_caster->GetProto()->ZoneNameID && i_caster->GetProto()->ZoneNameID != i_caster->GetZoneId())
 				return SPELL_FAILED_NOT_HERE;
@@ -3595,7 +3595,7 @@ uint8 Spell::CanCast(bool tolerate)
 		if (!(p_caster->removeReagentCost && hasAttributeExD(FLAGS6_REAGENT_REMOVAL)))
 		{
 			// Skip this with enchanting scrolls
-			if (!i_caster || (i_caster->GetProto() && i_caster->GetProto()->Flags != 268435520))
+			if (!i_caster || i_caster->GetProto()->Flags != 268435520)
 			{
 				for(i= 0; i<8 ;i++)
 				{
@@ -3759,10 +3759,6 @@ uint8 Spell::CanCast(bool tolerate)
 			return SPELL_FAILED_BAD_TARGETS;
 
 		ItemPrototype* proto = i_target->GetProto();
-
-		// check to make sure we have it's prototype info
-		if (!proto)
-			return SPELL_FAILED_BAD_TARGETS;
 
 		// check to make sure the targeted item is acceptable
 		switch (GetProto()->Effect[0])
@@ -4859,6 +4855,16 @@ exit:
 	{
 		if( u_caster != NULL )
 			value += (uint32)ceilf(u_caster->GetAP() * 0.21f);
+	}
+
+	else if( GetProto()->NameHash == SPELL_HASH_FAN_OF_KNIVES && p_caster != NULL ) // rogue - fan of knives
+	{
+		Item *mit = p_caster->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_MAINHAND);
+		if( mit != NULL )
+		{
+			if ( mit->GetProto()->Class == 2 && mit->GetProto()->SubClass == 15) // daggers
+				value = 105;
+		}
 	}
 
 	if( p_caster != NULL )

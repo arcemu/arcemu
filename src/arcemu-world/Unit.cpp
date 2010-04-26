@@ -1316,10 +1316,10 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						uint32 reqskillMH = 0;
 						uint32 reqskillOH = 0;
 
-						if( itMH != NULL && itMH->GetProto() ) 
+						if( itMH != NULL ) 
 							reqskillMH = GetSkillByProto( itMH->GetProto()->Class, itMH->GetProto()->SubClass );
 
-						if( itOH != NULL && itOH->GetProto() )
+						if( itOH != NULL )
 							reqskillOH = GetSkillByProto( itOH->GetProto()->Class, itOH->GetProto()->SubClass );
 
 						if( reqskillMH != SKILL_SWORDS && reqskillMH != SKILL_2H_SWORDS && reqskillOH != SKILL_SWORDS && reqskillOH != SKILL_2H_SWORDS )
@@ -1335,7 +1335,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 					if( static_cast< Player* >( this )->GetItemInterface())
 					{
 						it = static_cast< Player* >( this )->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
-						if( it != NULL && it->GetProto() )
+						if( it != NULL )
 						{
 							//class 2 means weapons ;)
 							if( it->GetProto()->Class != 2 )
@@ -1392,7 +1392,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 					if( static_cast< Player* >( this )->GetItemInterface() )
 					{
 						it = static_cast< Player* >( this )->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
-						if( !( it != NULL && it->GetProto() ) )
+						if( it == NULL )
 							continue; //no weapon no joy
 					}
 					else
@@ -3134,7 +3134,7 @@ uint32 Unit::GetSpellDidHitResult( Unit* pVictim, uint32 weapon_damage_type, Spe
 			hitmodifier += pr->CalcRating( PLAYER_RATING_MODIFIER_MELEE_HIT );
 			self_skill = float2int32( pr->CalcRating( PLAYER_RATING_MODIFIER_MELEE_MAIN_HAND_SKILL ) );
 		}
-		if(it && it->GetProto())
+		if(it)
 			SubClassSkill = GetSkillByProto(it->GetProto()->Class,it->GetProto()->SubClass);
 		else
 			SubClassSkill = SKILL_UNARMED;
@@ -3265,7 +3265,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 	if( !pVictim || !pVictim->isAlive() || !isAlive()  || IsStunned() || IsPacified() || IsFeared() )
 		return;
 
-	if(!isInFront(pVictim))
+	if(!(ability && ability->AttributesEx & ATTRIBUTESEX_IGNORE_IN_FRONT) && !isInFront(pVictim))
 	{
 		if(IsPlayer())
 		{
@@ -3411,7 +3411,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 		case MELEE:   // melee main hand weapon
 			it = disarmed ? NULL : pr->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
 			self_skill = float2int32( pr->CalcRating( PLAYER_RATING_MODIFIER_MELEE_MAIN_HAND_SKILL ) );
-			if (it && it->GetProto())
+			if (it)
 			{
 				dmg.school_type = it->GetProto()->Damage[0].Type;
 				if( it->GetProto()->SubClass == ITEM_SUBCLASS_WEAPON_MACE )
@@ -3422,7 +3422,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 			it = disarmed ? NULL : pr->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_OFFHAND );
 			self_skill = float2int32( pr->CalcRating( PLAYER_RATING_MODIFIER_MELEE_OFF_HAND_SKILL ) );
 			hit_status |= HITSTATUS_DUALWIELD;//animation
-			if (it && it->GetProto())
+			if (it)
 			{
 				dmg.school_type = it->GetProto()->Damage[0].Type;
 				if( it->GetProto()->SubClass == ITEM_SUBCLASS_WEAPON_MACE )
@@ -3432,12 +3432,12 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 		case RANGED:  // ranged weapon
 			it = disarmed ? NULL : pr->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_RANGED );
 			self_skill = float2int32( pr->CalcRating( PLAYER_RATING_MODIFIER_RANGED_SKILL ) );
-			if (it && it->GetProto())
+			if (it)
 				dmg.school_type = it->GetProto()->Damage[0].Type;
 			break;
 		}
 
-		if(it && it->GetProto())
+		if(it)
 		{
 			SubClassSkill = GetSkillByProto(it->GetProto()->Class,it->GetProto()->SubClass);
 			if(SubClassSkill==SKILL_FIST_WEAPONS)

@@ -43,8 +43,6 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 	if (!tmpItem)
 		return;
 	ItemPrototype *itemProto = tmpItem->GetProto();
-	if(!itemProto)
-		return;
 
   if ( tmpItem->IsSoulbound() ){ // SouldBind item will be used after SouldBind()
     if(sScriptMgr.CallScriptedItem(tmpItem,_player))

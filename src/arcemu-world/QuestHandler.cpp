@@ -162,8 +162,6 @@ void WorldSession::HandleQuestGiverQueryQuestOpcode( WorldPacket & recv_data )
 //------cebernic: added it for script engine
     if ( !quest_giver ) return;
     ItemPrototype *itemProto = quest_giver->GetProto();
-	  if(!itemProto)
-		  return;
 
     if ( itemProto->Bonding != ITEM_BIND_ON_USE || quest_giver->IsSoulbound() ){ // SoulBind item will be used after SoulBind()
       if(sScriptMgr.CallScriptedItem(quest_giver,GetPlayer()))

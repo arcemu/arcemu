@@ -6322,9 +6322,8 @@ int32 Player::CanShootRangedWeapon( uint32 spellid, Unit* target, bool autoshot 
 	if( spellid == SPELL_RANGED_THROW )
 	{
 		if( itm != NULL ) // no need for this
-			if( itm->GetProto() )
-				if( GetItemInterface()->GetItemCount( itm->GetProto()->ItemId ) == 0 )
-					fail = SPELL_FAILED_NO_AMMO;
+			if( GetItemInterface()->GetItemCount( itm->GetProto()->ItemId ) == 0 )
+				fail = SPELL_FAILED_NO_AMMO;
 	}
 
 	if( fail > 0 )// && fail != SPELL_FAILED_OUT_OF_RANGE)
@@ -12551,9 +12550,9 @@ void Player::CalcExpertise()
 				uint32 reqskillMH = 0;
 				uint32 reqskillOH = 0;
 
-				if( itMH != NULL && itMH->GetProto() ) 
+				if( itMH != NULL ) 
 					reqskillMH = entry->EquippedItemSubClass & ( ( ( uint32 )1 ) << itMH->GetProto()->SubClass );
-				if( itOH != NULL && itOH->GetProto() )
+				if( itOH != NULL )
 					reqskillOH = entry->EquippedItemSubClass & ( ( ( uint32 )1 ) << itOH->GetProto()->SubClass );
 
 				if( reqskillMH != 0 || reqskillOH != 0 )

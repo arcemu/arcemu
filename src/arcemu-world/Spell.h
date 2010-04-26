@@ -462,7 +462,7 @@ enum AttributesEx
 	ATTRIBUTESEX_DRAIN_WHOLE_MANA					= 0x00000002,	// 1, Uses all power
 	ATTRIBUTESEX_CHANNELED_1						= 0x00000004,	// 2, Channeled
 	ATTRIBUTESEX_UNK5								= 0x00000008,	// 3, 
-	ATTRIBUTESEX_UNK6								= 0x00000010,	// 4, stealth effects but Rockbiter wtf 0_0
+	ATTRIBUTESEX_IGNORE_IN_FRONT					= 0x00000010,	// 4, ignore verification isInFront() in unit::strike
 	ATTRIBUTESEX_NOT_BREAK_STEALTH					= 0x00000020,	// 5, does not break stealth
 	ATTRIBUTESEX_CHANNELED_2						= 0x00000040,	// 6, Channeled - [POSSIBLY: dynamite, grenades from engineering etc..]
 	ATTRIBUTESEX_NEGATIVE							= 0x00000080,	// 7,

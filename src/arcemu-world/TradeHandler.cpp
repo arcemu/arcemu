@@ -373,7 +373,7 @@ void WorldSession::HandleAcceptTrade(WorldPacket & recv_data)
 			pItem = _player->mTradeItems[Index];
 			if( pItem )
 			{
-				if( ( pItem->IsContainer() && ((Container*)pItem)->HasItems() )   || ( pItem->GetProto() && pItem->GetProto()->Bonding==ITEM_BIND_ON_PICKUP) )
+				if( ( pItem->IsContainer() && ((Container*)pItem)->HasItems() )   || ( pItem->GetProto()->Bonding==ITEM_BIND_ON_PICKUP) )
 				{
 					ItemCount = 0;
 					TargetItemCount = 0;
@@ -385,7 +385,7 @@ void WorldSession::HandleAcceptTrade(WorldPacket & recv_data)
 			pItem = pTarget->mTradeItems[Index];
 			if( pItem )
 			{
-				if( ( pItem->IsContainer() && ((Container*)pItem)->HasItems() )   || ( pItem->GetProto() && pItem->GetProto()->Bonding==ITEM_BIND_ON_PICKUP) )
+				if( ( pItem->IsContainer() && ((Container*)pItem)->HasItems() )   || ( pItem->GetProto()->Bonding==ITEM_BIND_ON_PICKUP) )
 				{
 					ItemCount = 0;
 					TargetItemCount = 0;

@@ -1107,8 +1107,6 @@ void WorldSession::SendRefundInfo( uint64 GUID ){
             return;
 
         ItemPrototype *proto = itm->GetProto();
-        if( proto == NULL)
-            return;
 
         //////////////////////////////////////////////////////////////////////////////////////////
         //  As of 3.2.0a the server sends this packet to provide refund info on an item
