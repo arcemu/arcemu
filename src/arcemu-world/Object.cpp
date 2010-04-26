@@ -3131,27 +3131,28 @@ void Object::SendAttackerStateUpdate( Object* Caster, Object* Target, dealdamage
 	data << float( Dmg->full_damage );	// Damage float
 	data << uint32( Dmg->full_damage );	// Damage amount
 
-    if( HitStatus & HITSTATUS_ABSORBED) {
+	if( HitStatus & HITSTATUS_ABSORBED ) {
 		data << uint32( Abs );				// Damage absorbed
 	}
 
-    if( HitStatus & HITSTATUS_RESIST ){
+	if( HitStatus & HITSTATUS_RESIST ){
 		data << uint32( Dmg->resisted_damage );	// Damage resisted
 	}
 
-    data << uint8( VState );
+	data << uint8( VState );
 	data << uint32( 0 );				// can be 0,1000 or -1
 	data << uint32( 0 );
-	
-    if( HitStatus & HITSTATUS_BLOCK ){
+
+	if( HitStatus & HITSTATUS_BLOCK ){
 		data << uint32( BlockedDamage );		// Damage amount blocked
 	}
-	
-    if ( HitStatus & 0x00800000 ){
+
+
+	if ( HitStatus & HITSTATUS_UNK2 ){
 		data << uint32( 0 );				// unknown
 	}
 
-	if( HitStatus & HITSTATUS_unk )
+	if( HitStatus & HITSTATUS_UNK )
 	{
 		data << uint32( 0 );
 		data << float( 0 );
@@ -3162,11 +3163,9 @@ void Object::SendAttackerStateUpdate( Object* Caster, Object* Target, dealdamage
 		data << float( 0 );
 		data << float( 0 );
 		data << float( 0 );
-		for(uint8 i = 0; i < 5; ++i)
-		{
-			data << float( 0 );
-			data << float( 0 );
-		}
+
+		data << float( 0 ); // Found in loop
+		data << float( 0 );	// Found in loop
 		data << uint32( 0 );
 	}
 
