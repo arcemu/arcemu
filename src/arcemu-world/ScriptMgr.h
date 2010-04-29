@@ -53,7 +53,7 @@ enum ServerHookEvents
 	SERVER_HOOK_EVENT_ON_CHAT				= 16,
 	SERVER_HOOK_EVENT_ON_LOOT				= 17,
 	SERVER_HOOK_EVENT_ON_GUILD_CREATE		= 18,
-	SERVER_HOOK_EVENT_ON_ENTER_WORLD_2		= 19,
+	SERVER_HOOK_EVENT_ON_FULL_LOGIN			= 19,
 	SERVER_HOOK_EVENT_ON_CHARACTER_CREATE	= 20,
 	SERVER_HOOK_EVENT_ON_QUEST_CANCELLED	= 21,
 	SERVER_HOOK_EVENT_ON_QUEST_FINISHED		= 22,
@@ -168,16 +168,24 @@ public:
 	bool CallScriptedDummyAura( uint32 uSpellId, uint32 i, Aura* pAura, bool apply);
 	bool CallScriptedItem(Item * pItem, Player * pPlayer);
 
+	//Single Entry Registers
 	void register_creature_script(uint32 entry, exp_create_creature_ai callback);
 	void register_gameobject_script(uint32 entry, exp_create_gameobject_ai callback);
-	void register_gossip_script(uint32 entry, GossipScript * gs);
-	void register_go_gossip_script(uint32 entry, GossipScript * gs);
 	void register_dummy_aura(uint32 entry, exp_handle_dummy_aura callback);
 	void register_dummy_spell(uint32 entry, exp_handle_dummy_spell callback);
+	void register_instance_script( uint32 pMapId, exp_create_instance_ai pCallback ); 
+	void register_gossip_script(uint32 entry, GossipScript * gs);
+	void register_go_gossip_script(uint32 entry, GossipScript * gs);
 	void register_hook(ServerHookEvents event, void * function_pointer);
 	void register_item_gossip_script(uint32 entry, GossipScript * gs);
 	void register_quest_script(uint32 entry, QuestScript * qs);
-	void register_instance_script( uint32 pMapId, exp_create_instance_ai pCallback ); 
+
+	//Mutliple Entry Registers
+	void register_creature_script(uint32* entries, exp_create_creature_ai callback);
+	void register_gameobject_script(uint32* entries, exp_create_gameobject_ai callback);
+	void register_dummy_aura(uint32* entries, exp_handle_dummy_aura callback);
+	void register_dummy_spell(uint32* entries, exp_handle_dummy_spell callback);
+
 	void ReloadScriptEngines() {
 		//for all scripting engines that allow reloading, assuming there will be new scripting engines.
 		exp_get_script_type version_function;
@@ -388,7 +396,7 @@ public:
 	void OnZone(Player * pPlayer, uint32 Zone);
 	bool OnChat(Player * pPlayer, uint32 Type, uint32 Lang, const char * Message, const char * Misc);
 	void OnLoot(Player * pPlayer, Unit * pTarget, uint32 Money, uint32 ItemId);
-	void OnEnterWorld2(Player * pPlayer);
+	void OnFullLogin(Player * pPlayer);
 	void OnCharacterCreate(Player * pPlayer);
 	void OnQuestCancelled(Player * pPlayer, Quest * pQuest);
 	void OnQuestFinished(Player * pPlayer, Quest * pQuest, Object * pQuestGiver);

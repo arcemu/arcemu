@@ -984,7 +984,7 @@ void WorldSession::FullLogin(Player * plr)
 			plr->AddCalculatedRestXP(timediff);
 	}
 
-	sHookInterface.OnEnterWorld2(_player);
+	sHookInterface.OnFullLogin(_player);
 
 	if(info->m_Group)
 		info->m_Group->Update();

@@ -491,6 +491,38 @@ void ScriptMgr::register_instance_script( uint32 pMapId, exp_create_instance_ai 
 	mInstances.insert( InstanceCreateMap::value_type( pMapId, pCallback ) ); 
 }; 
 
+void ScriptMgr::register_creature_script( uint32* entries, exp_create_creature_ai callback ) 
+{ 
+	for( uint32 y = 0; entries[y] != 0; y++)
+	{
+		register_creature_script(entries[y], callback);
+	}
+};
+
+void ScriptMgr::register_gameobject_script( uint32* entries, exp_create_gameobject_ai callback ) 
+{ 
+	for( uint32 y = 0; entries[y] != 0; y++)
+	{
+		register_gameobject_script(entries[y], callback);
+	}
+};
+
+void ScriptMgr::register_dummy_aura( uint32* entries, exp_handle_dummy_aura callback ) 
+{ 
+	for( uint32 y = 0; entries[y] != 0; y++)
+	{
+		register_dummy_aura(entries[y], callback);
+	}
+};
+
+void ScriptMgr::register_dummy_spell( uint32* entries, exp_handle_dummy_spell callback ) 
+{ 
+	for( uint32 y = 0; entries[y] != 0; y++)
+	{
+		register_dummy_spell(entries[y], callback);
+	}
+};
+
 CreatureAIScript* ScriptMgr::CreateAIScriptClassForEntry(Creature* pCreature)
 {
 	CreatureCreateMap::iterator itr = _creatures.find(pCreature->GetEntry());
@@ -1109,9 +1141,9 @@ void HookInterface::OnObjectLoot(Player * pPlayer, Object * pTarget, uint32 mone
 		((tOnObjectLoot)*itr)(pPlayer, pTarget, money, itemId);
 }
 
-void HookInterface::OnEnterWorld2(Player * pPlayer)
+void HookInterface::OnFullLogin(Player * pPlayer)
 {
-	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_ENTER_WORLD_2];
+	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_FULL_LOGIN];
 	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
 		((tOnEnterWorld)*itr)(pPlayer);
 }
