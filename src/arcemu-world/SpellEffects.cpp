@@ -144,7 +144,7 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS]={
 	&Spell::SpellEffectNULL,					//SPELL_EFFECT_TELEPORT_GRAVEYARD - 120//Not used
 	&Spell::SpellEffectDummyMelee,				//SPELL_EFFECT_DUMMYMELEE	- 121
 	&Spell::SpellEffectNULL,					// unknown - 122 //not used
-	&Spell::SpellEffectFilming,					//SPELL_EFFECT_FILMING - 123 // http://www.thottbot.com/?sp=27998: flightpath
+	&Spell::SpellEffectStartTaxi,				//SPELL_EFFECT_START_TAXI - 123 // http://www.wowhead.com/?spell=54575
 	&Spell::SpellEffectPlayerPull,				//SPELL_EFFECT_PLAYER_PULL - 124 - http://thottbot.com/e2312
 	&Spell::SpellEffectReduceThreatPercent,     //SPELL_EFFECT_REDUCE_THREAT_PERCENT - 125 // Reduce Threat by % //http://www.thottbot.com/?sp=32835
 	&Spell::SpellEffectSpellSteal,				//SPELL_EFFECT_SPELL_STEAL - 126 // Steal Beneficial Buff (Magic) //http://www.thottbot.com/?sp=30449
@@ -310,7 +310,7 @@ const char* SpellEffectNames[TOTAL_SPELL_EFFECTS] = {
 	"TELEPORT_GRAVEYARD",        //    120
 	"DUMMYMELEE",                //    121
 	"UNKNOWN1",                  //    122
-	"FILMING",                   //    123
+	"START_TAXI",                //    123
 	"PLAYER_PULL",               //    124
 	"UNKNOWN4",                  //    125
 	"UNKNOWN5",                  //    126
@@ -7064,7 +7064,7 @@ void Spell::SpellEffectDummyMelee( uint32 i ) // Normalized Weapon damage +
 		u_caster->Strike( unitTarget, _type, GetProto(), damage, pct_dmg_mod, 0, false, true );
 }
 
-void Spell::SpellEffectFilming( uint32 i )
+void Spell::SpellEffectStartTaxi( uint32 i )
 {
 	if (!playerTarget || !playerTarget->isAlive() || !u_caster)
 		return;

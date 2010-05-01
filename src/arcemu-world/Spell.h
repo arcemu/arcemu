@@ -914,7 +914,7 @@ enum SpellEffects
 	SPELL_EFFECT_TELEPORT_GRAVEYARD,        //    120
 	SPELL_EFFECT_DUMMYMELEE,                //    121
 	SPELL_EFFECT_UNKNOWN1,                  //    122
-	SPELL_EFFECT_FILMING,                   //    123
+	SPELL_EFFECT_START_TAXI,                //    123
 	SPELL_EFFECT_PLAYER_PULL,               //    124
 	SPELL_EFFECT_UNKNOWN4,                  //    125
 	SPELL_EFFECT_UNKNOWN5,                  //    126
@@ -1856,7 +1856,7 @@ public:
 	void SpellEffectSkill(uint32 i);
 	void SpellEffectApplyPetAura(uint32 i);
 	void SpellEffectDummyMelee( uint32 i );
-	void SpellEffectFilming( uint32 i );
+	void SpellEffectStartTaxi( uint32 i );
 	void SpellEffectPlayerPull( uint32 i );
 	void SpellEffectReduceThreatPercent(uint32 i);
 	void SpellEffectSpellSteal( uint32 i );
