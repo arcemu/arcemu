@@ -753,6 +753,20 @@ void World::SendGMWorldText(const char* text, WorldSession *self)
 	SendGamemasterMessage(&data, self);
 }
 
+void World::SendDamageLimitTextToGM( const char *playername, const char *dmglog ){
+	string gm_ann( MSG_COLOR_GREEN );
+	
+	gm_ann += "|Hplayer:";
+	gm_ann += playername;
+	gm_ann += "|h[";
+	gm_ann += playername;
+	gm_ann += "]|h: ";
+	gm_ann += MSG_COLOR_YELLOW;
+	gm_ann += dmglog;
+	
+	sWorld.SendGMWorldText(gm_ann.c_str());
+}
+
 void World::SendWorldWideScreenText(const char *text, WorldSession *self)
 {
 	WorldPacket data(256);

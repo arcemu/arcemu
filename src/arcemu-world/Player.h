@@ -2468,6 +2468,7 @@ private:
 public:
 
     void AddGarbageItem( Item *it );
+	uint32 CheckDamageLimits( uint32 dmg, uint32 spellid );
 
 	 PlayerInfo * getPlayerInfo() const { return m_playerInfo; }
 
