@@ -13194,10 +13194,12 @@ uint32 Player::GetFlametongueDMG(uint32 spellid)
 }
 
 
-uint32 Player::CheckDamageLimits( uint32 dmg, uint32 spellid ){
-	if( ( spellid != 0 ) && ( sWorld.m_limits.spellDamageCap > 0 ) ){
-		
-		if( dmg > sWorld.m_limits.spellDamageCap ){
+uint32 Player::CheckDamageLimits( uint32 dmg, uint32 spellid )
+{
+	if( ( spellid != 0 ) && ( sWorld.m_limits.spellDamageCap > 0 ) )
+	{
+		if( dmg > sWorld.m_limits.spellDamageCap )
+		{
 			std::stringstream dmglog;
 			dmglog << "Dealt " << dmg << " with spell " << spellid;
 			
@@ -13208,26 +13210,25 @@ uint32 Player::CheckDamageLimits( uint32 dmg, uint32 spellid ){
 			
 			if( sWorld.m_limits.disconnect != 0 )
 				m_session->Disconnect();
-			else
-				dmg = sWorld.m_limits.spellDamageCap;
-			}
-	}else{
-		
-		if( ( sWorld.m_limits.autoattackDamageCap > 0) && ( dmg > sWorld.m_limits.autoattackDamageCap) ){
-			std::stringstream dmglog;
-			
-			dmglog << "Dealt " << dmg << " with auto attack";
-			sCheatLog.writefromsession( m_session,dmglog.str().c_str() );
-			
-			if( sWorld.m_limits.broadcast != 0 )
-				sWorld.SendDamageLimitTextToGM( GetName(), dmglog.str().c_str() );
-			
-			if( sWorld.m_limits.disconnect != 0 )
-				m_session->Disconnect();
-			else
-				dmg = sWorld.m_limits.autoattackDamageCap;
-		
+
+			dmg = sWorld.m_limits.spellDamageCap;
 		}
+	}
+
+	else if( ( sWorld.m_limits.autoattackDamageCap > 0) && ( dmg > sWorld.m_limits.autoattackDamageCap) )
+	{
+		std::stringstream dmglog;
+			
+		dmglog << "Dealt " << dmg << " with auto attack";
+		sCheatLog.writefromsession( m_session,dmglog.str().c_str() );
+			
+		if( sWorld.m_limits.broadcast != 0 )
+			sWorld.SendDamageLimitTextToGM( GetName(), dmglog.str().c_str() );
+			
+		if( sWorld.m_limits.disconnect != 0 )
+			m_session->Disconnect();
+
+		dmg = sWorld.m_limits.autoattackDamageCap;
 	}
 	
 	return dmg;
