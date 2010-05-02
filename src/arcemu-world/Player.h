@@ -2539,7 +2539,7 @@ private:
 
 public:
     void SendTeleportAckMsg( const LocationVector &v );
-
+	void SendUpdateDataToSet( ByteBuffer *groupbuf, ByteBuffer *nongroupbuf, bool sendtoself );
 };
 
 class SkillIterator

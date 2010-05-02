@@ -1771,33 +1771,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 				pVictim->BuildFieldUpdatePacket(&buf1, UNIT_DYNAMIC_FLAGS, Flags);
 				pVictim->BuildFieldUpdatePacket(&buf, UNIT_DYNAMIC_FLAGS, pVictim->m_uint32Values[UNIT_DYNAMIC_FLAGS]);
 
-				// Loop inrange set, append to their update data.
-				for( std::set< Object* >::iterator itr = m_inRangePlayers.begin(); itr != m_inRangePlayers.end(); ++itr)
-				{
-
-                    Player *p = static_cast< Player* >( *itr );
-
-					if ( plr->InGroup())
-					{
-						if ( p->GetGroup() && plr->GetGroup()->GetID() == p->GetGroup()->GetID())
-						{
-							p->PushUpdateData(&buf1, 1);
-						}
-						else
-						{
-							p->PushUpdateData(&buf, 1);
-						}
-
-					}
-					else
-					{
-						p->PushUpdateData(&buf, 1);
-					}
-				}
-
-				// Update ourselves
-				plr->PushUpdateData(&buf1, 1);
-
+				plr->SendUpdateDataToSet( &buf1, &buf, true );
 			}
 		}
 	}
@@ -2208,8 +2182,8 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 			}
 		}
 		uint64 victimGuid = pVictim->GetGUID();
-		lowGUID = victimGuid & 0x00000000ffffffff;
-		highGUID = victimGuid >> 32;
+		lowGUID = Arcemu::Util::GUID_LOPART( victimGuid );
+		highGUID = Arcemu::Util::GUID_HIPART( victimGuid );
 
 		if(pVictim->GetTypeId() == TYPEID_UNIT)
 		{
