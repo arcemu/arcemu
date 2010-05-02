@@ -2032,7 +2032,7 @@ public:
 	 void ModNegDamageDoneMod( uint32 school, uint32 value ) { ModUnsigned32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_NEG+school, value); }
 	 uint32 GetNegDamageDoneMod( uint32 school ) { return GetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_NEG+school); }
 
-	 void ModHealingDoneMod( uint32 value ) { SetUInt32Value(PLAYER_FIELD_MOD_HEALING_DONE_POS, value); }
+	 void ModHealingDoneMod( uint32 value ) { ModUnsigned32Value(PLAYER_FIELD_MOD_HEALING_DONE_POS, value); }
 	 uint32 GetHealingDoneMod() { return GetUInt32Value(PLAYER_FIELD_MOD_HEALING_DONE_POS); }
 
 	 void SetAmmoId( uint32 id ) { SetUInt32Value(PLAYER_AMMO_ID, id); }
