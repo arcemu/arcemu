@@ -685,3 +685,18 @@ void Player::SendInitialLogonPackets()
 
 	sLog.outDetail("WORLD: Sent initial logon packets for %s.", GetName());
 }
+
+void Player::SendLootUpdate( Object *o ){
+
+	// Build the actual update.
+	ByteBuffer buf( 500 );
+	
+	uint32 Flags = o->GetUInt32Value( UNIT_DYNAMIC_FLAGS );
+	
+	Flags |= U_DYN_FLAG_LOOTABLE;
+	Flags |= U_DYN_FLAG_TAPPED_BY_PLAYER;
+	
+	o->BuildFieldUpdatePacket( &buf, UNIT_DYNAMIC_FLAGS, Flags );
+
+	PushUpdateData( &buf, 1 );
+}

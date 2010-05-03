@@ -199,8 +199,7 @@ public:
 	
 	void SetDungeonDifficulty( uint32 diff );
 	void SetRaidDifficulty( uint32 diff );
-
-	//void SetDifficulty(uint8 difficulty);
+	void SendLootUpdates( Object *o );
 	
 	/************************************************************************/
 	/* Voicechat                                                            */

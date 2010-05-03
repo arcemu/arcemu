@@ -2205,95 +2205,21 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 
                 Player *owner = 0;
 				if( victim->GetTaggerGUID() )
-					owner = GetMapMgr()->GetPlayer( (uint32)victim->GetTaggerGUID() );
+					owner = GetMapMgr()->GetPlayer( Arcemu::Util::GUID_LOPART( victim->GetTaggerGUID() ) );
 
 				if( owner != NULL && !victim->IsTotem() )
 				{
                     // fill loot vector.
 				    victim->generateLoot();
 
-					// Build the actual update.
-					ByteBuffer buf( 500 );
-
-					uint32 Flags = victim->m_uint32Values[ UNIT_DYNAMIC_FLAGS ];
-					Flags |= U_DYN_FLAG_LOOTABLE;
-					Flags |= U_DYN_FLAG_TAPPED_BY_PLAYER;
-
-					victim->BuildFieldUpdatePacket( &buf, UNIT_DYNAMIC_FLAGS, Flags );
-
 					// Check for owner's group.
 					Group * pGroup = owner->GetGroup();
 					if( pGroup != NULL )
-					{
-						// Owner was in a party.
-						// Check loot method.
-						switch( pGroup->GetMethod() )
-						{
-						case PARTY_LOOT_RR:
-/*						//this commented code is not used because it was never tested and finished !
-						{
-								//get new tagger for creature
-								Player *tp = pGroup->GetnextRRlooter();
-								if(tp)
-								{
-									//we force on creature a new tagger
-									victim->TaggerGuid = tp->GetGUID();
-									victim->Tagged = true;
-									if(tp->IsVisible(victim))  // Save updates for non-existent creatures
-										tp->PushUpdateData(&buf, 1);
-								}
-							}break;*/
-						case PARTY_LOOT_FFA:
-						case PARTY_LOOT_GROUP:
-						case PARTY_LOOT_NBG:
-							{
-								// Loop party players and push update data.
-								GroupMembersSet::iterator itr2;
-								SubGroup * sGrp;
-								pGroup->Lock();
-								for( uint32 Index = 0; Index < pGroup->GetSubGroupCount(); ++Index )
-								{
-									sGrp = pGroup->GetSubGroup( Index );
-									itr2 = sGrp->GetGroupMembersBegin();
-									for( ; itr2 != sGrp->GetGroupMembersEnd(); ++itr2 )
-									{
-										if( (*itr2)->m_loggedInPlayer && (*itr2)->m_loggedInPlayer->IsVisible( victim ) )	   // Save updates for non-existent creatures
-											(*itr2)->m_loggedInPlayer->PushUpdateData( &buf, 1 );
-									}
-								}
-								pGroup->Unlock();
-							}break;
-						case PARTY_LOOT_MASTER:
-							{
-								GroupMembersSet::iterator itr2;
-								SubGroup * sGrp;
-								pGroup->Lock();
-								for( uint32 Index = 0; Index < pGroup->GetSubGroupCount(); ++Index )
-								{
-									sGrp = pGroup->GetSubGroup( Index );
-									itr2 = sGrp->GetGroupMembersBegin();
-									for( ; itr2 != sGrp->GetGroupMembersEnd(); ++itr2 )
-									{
-										if( (*itr2)->m_loggedInPlayer && (*itr2)->m_loggedInPlayer->IsVisible( victim ) )	   // Save updates for non-existent creatures
-											(*itr2)->m_loggedInPlayer->PushUpdateData( &buf, 1 );
-									}
-								}
-								pGroup->Unlock();
-
-								Player * pLooter = pGroup->GetLooter() ? pGroup->GetLooter()->m_loggedInPlayer : NULL;
-								if( pLooter == NULL )
-									pLooter = pGroup->GetLeader()->m_loggedInPlayer;
-
-								if( pLooter->IsVisible( victim ) )  // Save updates for non-existent creatures
-									pLooter->PushUpdateData( &buf, 1 );
-							}break;
-						}
-					}
-					else
-					{
-						// Owner killed the mob solo.
+						pGroup->SendLootUpdates( victim );
+					else{
+						
 						if( owner->IsVisible( victim ) )
-							owner->PushUpdateData( &buf, 1 );
+							owner->SendLootUpdate( victim );
 					}
 				}
 			}

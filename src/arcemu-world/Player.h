@@ -1405,9 +1405,10 @@ public:
     /************************************************************************/
     /* Loot                                                                 */
     /************************************************************************/
-	 const uint64& GetLootGUID() const { return m_lootGuid; }
-	 void         SetLootGUID(const uint64 &guid) { m_lootGuid = guid; }
-	void                SendLoot(uint64 guid,uint8 loot_type);
+	const uint64& GetLootGUID() const { return m_lootGuid; }
+	void SetLootGUID(const uint64 &guid) { m_lootGuid = guid; }
+	void SendLoot(uint64 guid,uint8 loot_type);
+	void SendLootUpdate( Object *o );
     // loot variables
     uint64              m_lootGuid;
     uint64              m_currentLoot;
