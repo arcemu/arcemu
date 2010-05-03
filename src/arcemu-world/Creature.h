@@ -622,7 +622,6 @@ public:
 	AuctionHouse * auctionHouse;
 	bool has_waypoint_text;
 	bool has_combat_text;
-	int8 m_lootMethod;
 
 	void DeleteMe();
 	bool CanAddToWorld();

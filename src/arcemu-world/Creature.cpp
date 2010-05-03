@@ -231,7 +231,6 @@ Creature::Creature(uint64 guid)
 	m_transportGuid = 0;
 	m_transportPosition = NULL;
 	BaseAttackType = SCHOOL_NORMAL;
-	m_lootMethod = -1;
 	m_healthfromspell = 0;
 	m_speedFromHaste = 0;
 	memset(AISpellsCooldown,0,sizeof(int32)*4);
@@ -392,7 +391,6 @@ void Creature::OnRespawn(MapMgr * m)
 	Skinned = false;
 	Tagged = false;
 	TaggerGuid = 0;
-	m_lootMethod = -1;
 
 	/* creature death state */
 	if(proto && proto->death_state == 1)
@@ -441,10 +439,10 @@ void Creature::generateLoot()
 	loot.gold = proto ? proto->money : 0;
 
 	// Master Looting Ninja Checker
-	if(sWorld.antiMasterLootNinja && this->m_lootMethod == PARTY_LOOT_MASTER)
+	if( sWorld.antiMasterLootNinja )
 	{
 		Player *looter = objmgr.GetPlayer((uint32)this->TaggerGuid);
-		if(looter && looter->GetGroup())
+		if( looter && looter->GetGroup() && looter->GetGroup()->GetMethod() == PARTY_LOOT_MASTER )
 		{
 			uint16 lootThreshold = looter->GetGroup()->GetThreshold();
 

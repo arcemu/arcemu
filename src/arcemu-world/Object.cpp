@@ -1756,10 +1756,6 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 
 				victim->Tag( plr->GetGUID() );
 
-				/* set loot method */
-				if( plr->GetGroup() != NULL )
-					victim->m_lootMethod = plr->GetGroup()->GetMethod();
-
 				// For new players who get a create object
 				uint32 Flags = pVictim->m_uint32Values[UNIT_DYNAMIC_FLAGS];
 				Flags |= U_DYN_FLAG_TAPPED_BY_PLAYER;
@@ -2211,13 +2207,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 				if( victim->GetTaggerGUID() )
 					owner = GetMapMgr()->GetPlayer( (uint32)victim->GetTaggerGUID() );
 
-                if(owner == 0 || victim->IsTotem() )  // no owner, or a totem
-				{
-                    // dunno why this would happen, but anyway.. anyone can loot ;p
-					// no owner no loot
-					//victim->SetFlag(UNIT_DYNAMIC_FLAGS, U_DYN_FLAG_LOOTABLE);
-				}
-				else
+				if( owner != NULL && !victim->IsTotem() )
 				{
                     // fill loot vector.
 				    victim->generateLoot();
@@ -2237,8 +2227,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 					{
 						// Owner was in a party.
 						// Check loot method.
-						victim->m_lootMethod = pGroup->GetMethod();
-						switch( victim->m_lootMethod )
+						switch( pGroup->GetMethod() )
 						{
 						case PARTY_LOOT_RR:
 /*						//this commented code is not used because it was never tested and finished !

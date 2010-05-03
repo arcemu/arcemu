@@ -300,7 +300,13 @@ void Player::SendLoot(uint64 guid,uint8 loot_type)
 
 	Loot * pLoot = NULL;
 	uint32 guidtype = GET_TYPE_FROM_GUID(guid);
-	int8 loot_method = -1;
+	
+	int8 loot_method;
+
+	if( m_Group != NULL )
+		loot_method = m_Group->GetMethod();
+	else
+		loot_method = PARTY_LOOT_FFA;
 
 	if(guidtype == HIGHGUID_TYPE_UNIT)
 	{
@@ -308,12 +314,7 @@ void Player::SendLoot(uint64 guid,uint8 loot_type)
 		if(!pCreature)return;
 		pLoot=&pCreature->loot;
 		m_currentLoot = pCreature->GetGUID();
-		loot_method = pCreature->m_lootMethod;
-		if ( loot_method < 0 )
-		{
-			loot_method = PARTY_LOOT_FFA;
-			pCreature->m_lootMethod = PARTY_LOOT_FFA;
-		}
+		
 	}else if(guidtype == HIGHGUID_TYPE_GAMEOBJECT)
 	{
 		GameObject* pGO = GetMapMgr()->GetGameObject(GET_LOWGUID_PART(guid));
