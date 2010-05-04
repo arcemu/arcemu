@@ -1409,6 +1409,7 @@ public:
 	void SetLootGUID(const uint64 &guid) { m_lootGuid = guid; }
 	void SendLoot(uint64 guid,uint8 loot_type);
 	void SendLootUpdate( Object *o );
+	void TagUnit( Object *o );
     // loot variables
     uint64              m_lootGuid;
     uint64              m_currentLoot;

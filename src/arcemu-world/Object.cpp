@@ -1749,25 +1749,10 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 		{
 			// Tagging
 			Creature *victim = static_cast<Creature*>(pVictim);
-			bool taggable = victim->IsTaggable();
-
-			if( taggable )
-			{
-
+			
+			if( victim->IsTaggable() ){
 				victim->Tag( plr->GetGUID() );
-
-				// For new players who get a create object
-				uint32 Flags = pVictim->m_uint32Values[UNIT_DYNAMIC_FLAGS];
-				Flags |= U_DYN_FLAG_TAPPED_BY_PLAYER;
-
-				// Update existing players.
-				ByteBuffer buf(500);
-				ByteBuffer buf1(500);
-
-				pVictim->BuildFieldUpdatePacket(&buf1, UNIT_DYNAMIC_FLAGS, Flags);
-				pVictim->BuildFieldUpdatePacket(&buf, UNIT_DYNAMIC_FLAGS, pVictim->m_uint32Values[UNIT_DYNAMIC_FLAGS]);
-
-				plr->SendUpdateDataToSet( &buf1, &buf, true );
+				plr->TagUnit( victim );
 			}
 		}
 	}
@@ -2198,7 +2183,8 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 			// it Seems that pets some how don't get a name and cause a crash here
 			//bool isCritter = (pVictim->GetCreatureInfo() != NULL)? pVictim->GetCreatureInfo()->Type : 0;
 
-			//-----------------------------------LOOOT--------------------------------------------
+///////////////////////////////////////////////////////////// Loot  //////////////////////////////////////////////////////////////////////////////////////////////
+
             if ((!pVictim->IsPet())&& ( !isCritter ) && pVictim->GetCreatedByGUID() == 0)
 			{
 				Creature * victim = static_cast<Creature*>(pVictim);
@@ -2207,129 +2193,75 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 				if( victim->GetTaggerGUID() )
 					owner = GetMapMgr()->GetPlayer( Arcemu::Util::GUID_LOPART( victim->GetTaggerGUID() ) );
 
-				if( owner != NULL && !victim->IsTotem() )
-				{
-                    // fill loot vector.
-				    victim->generateLoot();
+				if( owner != NULL && !victim->IsTotem() ){
+					victim->generateLoot();
 
-					// Check for owner's group.
-					Group * pGroup = owner->GetGroup();
-					if( pGroup != NULL )
-						pGroup->SendLootUpdates( victim );
-					else{
-						
-						if( owner->IsVisible( victim ) )
-							owner->SendLootUpdate( victim );
-					}
+					if( owner->InGroup() )
+						owner->GetGroup()->SendLootUpdates( victim );
+					else
+						owner->SendLootUpdate( victim );
 				}
 			}
-			//---------------------------------looot-----------------------------------------
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-            
+/////////////////////////////////////////////////////////// Experience /////////////////////////////////////////////////////////////////////////////////////////////
 
-
-			// ----------------------------- XP --------------
 			if ( pVictim->GetCreatedByGUID() == 0 && pVictim->GetUInt64Value( OBJECT_FIELD_CREATED_BY ) == 0 && !pVictim->IsPet() && TO_CREATURE(pVictim)->Tagged){
 				Unit *uTagger = pVictim->GetMapMgr()->GetUnit(static_cast<Creature*>(pVictim)->GetTaggerGUID() );
 
-				if (uTagger != NULL)
-				{
-					if (uTagger->IsPlayer())
-					{
-						Player *pTagger = TO_PLAYER(uTagger);
-						if (pTagger)
-						{
-							if (pTagger->InGroup())
-							{
-								pTagger->GiveGroupXP( pVictim, pTagger);
-							}
-							else if( IsUnit() )
-							{
-								uint32 xp = CalculateXpToGive( pVictim, uTagger );
-								if( xp > 0 )
-								{
-									pTagger->GiveXP( xp, victimGuid, true );
+				if (uTagger != NULL && uTagger->IsPlayer() ){
+					Player *pTagger = TO_PLAYER(uTagger);
+					
+					if (pTagger != NULL ){
+						
+						if (pTagger->InGroup())
+							pTagger->GiveGroupXP( pVictim, pTagger);
+						else if( IsUnit() ){
+							uint32 xp = CalculateXpToGive( pVictim, uTagger );
+							
+							if( xp > 0 ){
+								pTagger->GiveXP( xp, victimGuid, true );
 
-									this->SetFlag(UNIT_FIELD_AURASTATE,AURASTATE_FLAG_LASTKILLWITHHONOR);
-									if(!sEventMgr.HasEvent(this,EVENT_LASTKILLWITHHONOR_FLAG_EXPIRE))
-									{
-										sEventMgr.AddEvent((Unit*)this,&Unit::EventAurastateExpire,(uint32)AURASTATE_FLAG_LASTKILLWITHHONOR,EVENT_LASTKILLWITHHONOR_FLAG_EXPIRE,20000,1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-									}
-									else
-									{
-										sEventMgr.ModifyEventTimeLeft(this,EVENT_LASTKILLWITHHONOR_FLAG_EXPIRE,20000);
-									}
+								SetFlag(UNIT_FIELD_AURASTATE,AURASTATE_FLAG_LASTKILLWITHHONOR);
 
-									if( pTagger->GetSummon() && pTagger->GetSummon()->CanGainXP() )
-									{
-										xp = CalculateXpToGive( pVictim, pTagger->GetSummon() );
-										if( xp > 0 )
-											pTagger->GetSummon()->GiveXP( xp );
-									}
+								if(!sEventMgr.HasEvent(this,EVENT_LASTKILLWITHHONOR_FLAG_EXPIRE))
+									sEventMgr.AddEvent((Unit*)this,&Unit::EventAurastateExpire,(uint32)AURASTATE_FLAG_LASTKILLWITHHONOR,EVENT_LASTKILLWITHHONOR_FLAG_EXPIRE,20000,1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+								else
+									sEventMgr.ModifyEventTimeLeft(this,EVENT_LASTKILLWITHHONOR_FLAG_EXPIRE,20000);
+								
+								// let's give the pet some experience too
+								if( pTagger->GetSummon() && pTagger->GetSummon()->CanGainXP() ){
+									xp = CalculateXpToGive( pVictim, pTagger->GetSummon() );
+									
+									if( xp > 0 )
+										pTagger->GetSummon()->GiveXP( xp );
 								}
 							}
-							if( !pVictim->IsPlayer() )
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+							if(pVictim->IsCreature())
 							{
 								sQuestMgr.OnPlayerKill( pTagger, TO_CREATURE( pVictim ), true );
-								if(pVictim->IsCreature())
-								{
-									// code stolen from Unit::GiveGroupXP()
-									if(pTagger->InGroup())
-									{
-										Group *pGroup = pTagger->GetGroup();
-										//since group is small we can afford to do this rather then recheck again the whole active player set
-										Player *active_player_list[MAX_GROUP_SIZE_RAID];
-										Player *pGroupGuy = NULL;
-										int active_player_count= 0;
-										GroupMembersSet::iterator itr2;
-										pGroup->Lock();
-										for(uint32 i = 0; i < pGroup->GetSubGroupCount(); ++i) {
-											for(itr2 = pGroup->GetSubGroup(i)->GetGroupMembersBegin(); itr2 != pGroup->GetSubGroup(i)->GetGroupMembersEnd(); ++itr2)
-											{
-												pGroupGuy = (*itr2)->m_loggedInPlayer;
-												if( pGroupGuy &&
-													pGroupGuy->isAlive() &&
-													pVictim->GetMapMgr() == pGroupGuy->GetMapMgr() &&
-													pGroupGuy->GetDistanceSq(pVictim)<100*100
-												)
-												{
-													active_player_list[active_player_count] = pGroupGuy;
-													active_player_count++;
-												}
-											}
-										}
-										pGroup->Unlock();
-										if(active_player_count<1) //killer is always close to the victim. This should never execute
-										{
-											active_player_list[0] = pTagger;
-											active_player_count=1;
-										}
-										for(int i = 0; i < active_player_count; ++i)
-										{
-											Player * plr2 = active_player_list[i];
+
+///////////////////////////////////////////////// Kill creature/creature type Achievements /////////////////////////////////////////////////////////////////////
 #ifdef ENABLE_ACHIEVEMENTS
-											plr2->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, pVictim->GetEntry(), 1, 0);
-											plr2->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE_TYPE, highGUID, lowGUID, 0);
+								if(pTagger->InGroup()){
+									Group *pGroup = pTagger->GetGroup();
+									
+									pGroup->UpdateAchievementCriteriaForInrange( pVictim, ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, pVictim->GetEntry(), 1, 0 );
+									pGroup->UpdateAchievementCriteriaForInrange( pVictim, ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE_TYPE, highGUID, lowGUID, 0 );
+
+								}else{
+									pTagger->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, pVictim->GetEntry(), 1, 0);
+									pTagger->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE_TYPE, highGUID, lowGUID, 0);
 #endif
-										}
-									}
-									else // not in group, just update for pTagger
-									{
-#ifdef ENABLE_ACHIEVEMENTS
-										pTagger->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, pVictim->GetEntry(), 1, 0);
-										pTagger->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE_TYPE, highGUID, lowGUID, 0);
-#endif
-									}
 								}
 							}
 						}
 					}
 				}
-				// ----------------------------- XP --------------
-
-                
 			}
-			/* ----------------------------- PET XP HANDLING END-------------- */
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 			/* ----------------------------- PET DEATH HANDLING -------------- */
 				if( pVictim->IsPet() )
@@ -2404,14 +2336,6 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 	{
 		if(pVictim != this /* && updateskill */)
 		{
-			// Send AI Reaction UNIT vs UNIT
-			/* Weird: why should WE react on OUR damage?
-			If meaning of this is to get reaction of victim, then its already handled few rows below...
-			if( GetTypeId() ==TYPEID_UNIT )
-			{
-				static_cast< Unit* >( this )->GetAIInterface()->AttackReaction( pVictim, damage, spellId );
-			}*/
-
 			// Send AI Victim Reaction
 			if( this->IsPlayer() || this->IsCreature() )
 			{
@@ -2435,13 +2359,6 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 				}
 			}
 		}
-
-		// TODO: Mark victim as a HK
-		/*if( static_cast< Player* >( pVictim )->GetCurrentBattleground() != NULL && static_cast< Player* >( this )->GetCurrentBattleground() != NULL)
-		{
-
-		}*/
-
 		pVictim->ModHealth(-(int32)damage);
 	}
 }

@@ -1564,7 +1564,7 @@ void Group::SendLootUpdates( Object *o ){
 			for( ; itr2 != sGrp->GetGroupMembersEnd(); ++itr2 ){
 				PlayerInfo *p = *itr2;
 
-				if( p->m_loggedInPlayer && p->m_loggedInPlayer->IsVisible( o ) )   // Save updates for non-existent creatures
+				if( p->m_loggedInPlayer != NULL && p->m_loggedInPlayer->IsVisible( o ) )   // Save updates for non-existent creatures
 					p->m_loggedInPlayer->PushUpdateData( &buf, 1 );
 			}
 		}
@@ -1581,9 +1581,10 @@ void Group::SendLootUpdates( Object *o ){
 			itr2 = sGrp->GetGroupMembersBegin();
 			
 			for( ; itr2 != sGrp->GetGroupMembersEnd(); ++itr2 ){
+				PlayerInfo *p = *itr2;
 				
-				if( (*itr2)->m_loggedInPlayer && (*itr2)->m_loggedInPlayer->IsVisible( o ) )	   // Save updates for non-existent creatures
-					(*itr2)->m_loggedInPlayer->PushUpdateData( &buf, 1 );
+				if( p->m_loggedInPlayer != NULL && p->m_loggedInPlayer->IsVisible( o ) )	   // Save updates for non-existent creatures
+					p->m_loggedInPlayer->PushUpdateData( &buf, 1 );
 			}
 		}
 		
@@ -1601,3 +1602,28 @@ void Group::SendLootUpdates( Object *o ){
 	Unlock();
 }
 
+
+#ifdef ENABLE_ACHIEVEMENTS
+
+void Group::UpdateAchievementCriteriaForInrange( Object *o, AchievementCriteriaTypes type, int32 miscvalue1, int32 miscvalue2, uint32 time ){
+	Lock();
+
+	SubGroup *sGrp = NULL;
+	GroupMembersSet::iterator itr2;
+	
+	for( uint32 Index = 0; Index < GetSubGroupCount(); ++Index ){
+		sGrp = GetSubGroup( Index );
+		itr2 = sGrp->GetGroupMembersBegin();
+		
+		for( ; itr2 != sGrp->GetGroupMembersEnd(); ++itr2 ){
+			PlayerInfo *p = *itr2;
+			
+			if( p->m_loggedInPlayer != NULL && p->m_loggedInPlayer->IsVisible( o ) )
+				p->m_loggedInPlayer->GetAchievementMgr().UpdateAchievementCriteria( type, miscvalue1, miscvalue2, time );
+		}
+	}
+
+	Unlock();
+}
+
+#endif

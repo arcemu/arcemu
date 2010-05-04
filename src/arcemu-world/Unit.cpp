@@ -829,25 +829,6 @@ void Unit::GiveGroupXP(Unit *pVictim, Player *PlayerInGroup)
 	int total_level= 0;
 	float xp_mod = 1.0f;
 
-/*	if(pGroup->GetGroupType() == GROUP_TYPE_RAID)
-	{   //needs to change
-		//Calc XP
-		xp = CalculateXpToGive(pVictim, PlayerInGroup);
-		xp /= pGroup->MemberCount();
-
-		GroupMembersSet::iterator itr;
-		for(uint32 i = 0; i < pGroup->GetSubGroupCount(); i++)
-		{
-			for(itr = pGroup->GetSubGroup(i)->GetGroupMembersBegin(); itr != pGroup->GetSubGroup(i)->GetGroupMembersEnd(); ++itr)
-			{
-				if((*itr)->getLevel() < sWorld.LevelCap)
-					(*itr)->GiveXP(xp, pVictim->GetGUID(), true);
-			}
-		}
-	}
-	else if(pGroup->GetGroupType() == GROUP_TYPE_PARTY) */
-	//change on 2007 04 22 by Zack
-	//we only take into count players that are near us, on same map
 	GroupMembersSet::iterator itr;
 	pGroup->Lock();
 	for(uint32 i = 0; i < pGroup->GetSubGroupCount(); i++) {
@@ -938,43 +919,6 @@ void Unit::GiveGroupXP(Unit *pVictim, Player *PlayerInGroup)
 			}
 		}
 	}
-		/* old code start before 2007 04 22
-		GroupMembersSet::iterator itr;
-		for(uint32 i = 0; i < pGroup->GetSubGroupCount(); i++)
-		{
-			for(itr = pGroup->GetSubGroup(i)->GetGroupMembersBegin(); itr != pGroup->GetSubGroup(i)->GetGroupMembersEnd(); ++itr)
-			{
-				pGroupGuy = (*itr);
-				if(pGroupGuy)
-				{
-					if(pHighLvlPlayer)
-					{
-						if(pGroupGuy->getLevel() > pHighLvlPlayer->getLevel())
-						{
-							pHighLvlPlayer = pGroupGuy;
-						}
-					}
-					else
-						pHighLvlPlayer = pGroupGuy;
-				}
-			}
-		}
-
-		//Calc XP
-		xp = CalculateXpToGive(pVictim, pHighLvlPlayer);
-		uint32 giveXP = 0;
-
-		for(uint32 i = 0; i < pGroup->GetSubGroupCount(); i++)
-		{
-			for(itr = pGroup->GetSubGroup(i)->GetGroupMembersBegin(); itr != pGroup->GetSubGroup(i)->GetGroupMembersEnd(); ++itr)
-			{
-				pGroupGuy = (*itr);
-				giveXP = xp * pGroupGuy->getLevel() / (pHighLvlPlayer->getLevel() + pGroupGuy->getLevel());
-				if(pGroupGuy->getLevel() < sWorld.LevelCap)
-					pGroupGuy->GiveXP(giveXP, pVictim->GetGUID(), true);
-			}
-		}
-	}*/
 }
 
 uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint32 dmg, uint32 abs )

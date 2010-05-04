@@ -688,6 +688,9 @@ void Player::SendInitialLogonPackets()
 
 void Player::SendLootUpdate( Object *o ){
 
+	if( !IsVisible( o ) )
+		return;
+
 	// Build the actual update.
 	ByteBuffer buf( 500 );
 	
@@ -699,4 +702,69 @@ void Player::SendLootUpdate( Object *o ){
 	o->BuildFieldUpdatePacket( &buf, UNIT_DYNAMIC_FLAGS, Flags );
 
 	PushUpdateData( &buf, 1 );
+}
+
+void Player::SendUpdateDataToSet( ByteBuffer *groupbuf, ByteBuffer *nongroupbuf, bool sendtoself ){
+
+	/////////////////////////// first case we need to send to both grouped and ungrouped players in the set /////////////////////////////
+	if( groupbuf != NULL && nongroupbuf != NULL ){
+
+		for( std::set< Object* >::iterator itr= m_inRangePlayers.begin(); itr!= m_inRangePlayers.end(); ++itr ){
+			Player *p = static_cast< Player* >( *itr );
+
+			if( p->GetGroup() != NULL && GetGroup() != NULL && p->GetGroup()->GetID() == GetGroup()->GetID() )
+				p->PushUpdateData( groupbuf, 1 );
+			else
+				p->PushUpdateData( nongroupbuf, 1 );
+		}
+	}
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	else
+
+	////////////////////////////////////////////// second case we send to group only ///////////////////////////////////////////////////
+	if( groupbuf != NULL && nongroupbuf == NULL ){
+
+		for( std::set< Object* >::iterator itr= m_inRangePlayers.begin(); itr!= m_inRangePlayers.end(); ++itr ){
+			Player *p = static_cast< Player* >( *itr );
+
+			if( p->GetGroup() != NULL && GetGroup() != NULL && p->GetGroup()->GetID() == GetGroup()->GetID() )
+				p->PushUpdateData( groupbuf, 1 );
+		}
+	}
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	else
+
+	////////////////////////////////////////// Last case we send to nongroup only ////////////////////////////////////////////////////
+	if( groupbuf == NULL && nongroupbuf != NULL ){
+
+		for( std::set< Object* >::iterator itr= m_inRangePlayers.begin(); itr!= m_inRangePlayers.end(); ++itr ){
+			Player *p = static_cast< Player* >( *itr );
+
+			if( p->GetGroup() == NULL || p->GetGroup()->GetID() != GetGroup()->GetID() )
+				p->PushUpdateData( nongroupbuf, 1 );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+	if( sendtoself )
+		PushUpdateData( groupbuf, 1 );
+}
+
+void Player::TagUnit( Object *o ){
+				
+	// For new players who get a create object
+	uint32 Flags = o->GetUInt32Value( UNIT_DYNAMIC_FLAGS );
+	Flags |= U_DYN_FLAG_TAPPED_BY_PLAYER;
+	
+	// Update existing players.
+	ByteBuffer buf(500);
+	ByteBuffer buf1(500);
+	
+	o->BuildFieldUpdatePacket(&buf1, UNIT_DYNAMIC_FLAGS, Flags);
+	o->BuildFieldUpdatePacket(&buf, UNIT_DYNAMIC_FLAGS, o->GetUInt32Value( UNIT_DYNAMIC_FLAGS ) );
+	
+	SendUpdateDataToSet( &buf1, &buf, true );
 }

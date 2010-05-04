@@ -200,6 +200,10 @@ public:
 	void SetDungeonDifficulty( uint32 diff );
 	void SetRaidDifficulty( uint32 diff );
 	void SendLootUpdates( Object *o );
+
+#ifdef ENABLE_ACHIEVEMENTS
+	void UpdateAchievementCriteriaForInrange( Object *o, AchievementCriteriaTypes type, int32 miscvalue1, int32 miscvalue2, uint32 time );
+#endif
 	
 	/************************************************************************/
 	/* Voicechat                                                            */
