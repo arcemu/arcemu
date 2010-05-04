@@ -2229,11 +2229,9 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 
 
 			// ----------------------------- XP --------------
-			if ( pVictim->GetCreatedByGUID() == 0 &&
-				pVictim->GetUInt64Value( OBJECT_FIELD_CREATED_BY ) == 0 &&
-				!pVictim->IsPet() && TO_CREATURE(pVictim)->Tagged)
-			{
+			if ( pVictim->GetCreatedByGUID() == 0 && pVictim->GetUInt64Value( OBJECT_FIELD_CREATED_BY ) == 0 && !pVictim->IsPet() && TO_CREATURE(pVictim)->Tagged){
 				Unit *uTagger = pVictim->GetMapMgr()->GetUnit(static_cast<Creature*>(pVictim)->GetTaggerGUID() );
+
 				if (uTagger != NULL)
 				{
 					if (uTagger->IsPlayer())
@@ -2321,103 +2319,6 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 										pTagger->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, pVictim->GetEntry(), 1, 0);
 										pTagger->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE_TYPE, highGUID, lowGUID, 0);
 #endif
-									}
-								}
-							}
-						}
-					}
-					else if (uTagger->IsPet())
-					{
-						Pet* petTagger = TO_PET(uTagger);
-						if (petTagger != NULL)
-						{
-							Player* petOwner = petTagger->GetPetOwner();
-							if( petOwner != NULL)
-							{
-								if( petOwner->InGroup() )
-								{
-									//Calc Group XP
-									petOwner->GiveGroupXP( pVictim, petOwner );
-								}
-								else if( IsUnit() )
-								{
-									uint32 xp = CalculateXpToGive( pVictim, petOwner );
-									if( xp > 0 )
-									{
-										petOwner->GiveXP( xp, victimGuid, true );
-
-										this->SetFlag(UNIT_FIELD_AURASTATE,AURASTATE_FLAG_LASTKILLWITHHONOR);
-										if(!sEventMgr.HasEvent(this,EVENT_LASTKILLWITHHONOR_FLAG_EXPIRE))
-										{
-											sEventMgr.AddEvent((Unit*)this,&Unit::EventAurastateExpire,(uint32)AURASTATE_FLAG_LASTKILLWITHHONOR,EVENT_LASTKILLWITHHONOR_FLAG_EXPIRE,20000,1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-										}
-										else
-										{
-											sEventMgr.ModifyEventTimeLeft(this,EVENT_LASTKILLWITHHONOR_FLAG_EXPIRE,20000);
-										}
-
-										if( petTagger->CanGainXP() )
-										{
-											xp = CalculateXpToGive( pVictim, petTagger );
-											if( xp > 0 )
-												petTagger->GiveXP( xp );
-										}
-									}
-								}
-								if(pVictim->GetTypeId() != TYPEID_PLAYER)
-								{
-									sQuestMgr.OnPlayerKill( petOwner, TO_CREATURE( pVictim ), true );
-									if(pVictim->IsCreature())
-									{
-										if(petOwner->InGroup())
-										{
-											Group *pGroup = petOwner->GetGroup();
-											// since group is small we can afford to do this rather then recheck again the whole active player set
-											// This needs to be looked at..
-											Player *active_player_list[MAX_GROUP_SIZE_RAID];
-											Player *pGroupGuy = NULL;
-											int active_player_count = 0;
-											GroupMembersSet::iterator itr2;
-											pGroup->Lock();
-											for(uint32 i = 0; i < pGroup->GetSubGroupCount(); ++i) {
-												for(itr2 = pGroup->GetSubGroup(i)->GetGroupMembersBegin(); itr2 != pGroup->GetSubGroup(i)->GetGroupMembersEnd(); ++itr2)
-												{
-													pGroupGuy = (*itr2)->m_loggedInPlayer;
-													if( pGroupGuy &&
-														pGroupGuy->isAlive() &&
-														//
-														pVictim->GetMapMgr() == pGroupGuy->GetMapMgr() &&
-														pGroupGuy->GetDistanceSq(pVictim)<100*100
-													)
-													{
-														active_player_list[active_player_count] = pGroupGuy;
-														active_player_count++;
-													}
-												}
-											}
-											pGroup->Unlock();
-											//killer is always close to the victim. This should never execute
-											if(active_player_count < 1) 
-											{
-												active_player_list[0] = petOwner;
-												active_player_count=1;
-											}
-											for(int i = 0; i < active_player_count; ++i)
-											{
-												Player * plr2 = active_player_list[i];
-#ifdef ENABLE_ACHIEVEMENTS
-												plr2->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, pVictim->GetEntry(), 1, 0);
-												plr2->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE_TYPE, highGUID, lowGUID, 0);
-#endif
-											}
-										}
-										else // not in group, just update for petOwner
-										{
-#ifdef ENABLE_ACHIEVEMENTS
-											petOwner->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, pVictim->GetEntry(), 1, 0);
-											petOwner->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE_TYPE, highGUID, lowGUID, 0);
-#endif									
-										}
 									}
 								}
 							}
