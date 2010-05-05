@@ -1778,13 +1778,17 @@ Creature * CBattleground::SpawnSpiritGuide(float x, float y, float z, float o, u
 	pCreature->SetDisplayId(13337 + horde);
 	pCreature->SetNativeDisplayId(13337 + horde);
 
-	pCreature->SetChannelSpellId(  22011);
+	pCreature->SetChannelSpellId(22011);
 	pCreature->SetCastSpeedMod(1.0f);
 
 	pCreature->SetUInt32Value(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPIRITGUIDE);
 	pCreature->SetUInt32Value(UNIT_FIELD_BYTES_2, 1 | (0x10 << 8));
 
 	pCreature->DisableAI();
+
+	pCreature->SetCreatureInfo( pInfo );
+	pCreature->SetCreatureProto( CreatureProtoStorage.LookupEntry( pInfo->Id ) );
+
 	pCreature->PushToWorld(m_mapMgr);
 	return pCreature;
 }

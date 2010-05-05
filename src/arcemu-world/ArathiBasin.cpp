@@ -21,9 +21,8 @@
 #include "StdAfx.h"
 
 #define BASE_RESOURCES_GAIN 10
-#define RESOURCES_WARNING_THRESHOLD 1800
-#define RESOURCES_WINVAL 2000
-#define RESOURCES_WARNINGVAL 1800
+#define RESOURCES_WARNING_THRESHOLD 1400
+#define RESOURCES_WINVAL 1600
 
 uint32 buffentries[3] = {180380,180362,180146};
 
@@ -133,8 +132,8 @@ uint32 buffentries[3] = {180380,180362,180146};
 		30,
 	};
 
-static uint32 resourcesToGainBH = 330;
-static uint32 resourcesToGainBR = 200;
+static uint32 resourcesToGainBH = 260;
+static uint32 resourcesToGainBR = 160;
 
 /* End BG Data */
 
@@ -1019,7 +1018,7 @@ void ArathiBasin::AssaultControlPoint(Player * pPlayer, uint32 Id)
 				}break;
 			}
 		}
-		sEventMgr.AddEvent(this, &ArathiBasin::CaptureControlPoint, Id, Team, EVENT_AB_CAPTURE_CP_1 + Id, TIME_MINUTE, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+		sEventMgr.AddEvent(this, &ArathiBasin::CaptureControlPoint, Id, Team, EVENT_AB_CAPTURE_CP_1 + Id, MSTIME_MINUTE, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 		pPlayer->m_bgScore.MiscData[BG_SCORE_AB_BASES_ASSAULTED]++;
 		UpdatePvPData();
 	}
@@ -1029,7 +1028,7 @@ void ArathiBasin::AssaultControlPoint(Player * pPlayer, uint32 Id)
 		SendChatMessage(Team ? CHAT_MSG_BG_EVENT_HORDE : CHAT_MSG_BG_EVENT_ALLIANCE, pPlayer->GetGUID(), "$N claims the %s! If left unchallenged, the %s will control it in 1 minute!", ControlPointNames[Id],
 		Team ? "Horde" : "Alliance");
 		PlaySoundToAll(8192);
-		sEventMgr.AddEvent(this, &ArathiBasin::CaptureControlPoint, Id, Team, EVENT_AB_CAPTURE_CP_1 + Id, TIME_MINUTE, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+		sEventMgr.AddEvent(this, &ArathiBasin::CaptureControlPoint, Id, Team, EVENT_AB_CAPTURE_CP_1 + Id, MSTIME_MINUTE, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 	}
 }
 
@@ -1069,13 +1068,13 @@ void ArathiBasin::SetIsWeekend(bool isweekend)
 {
 	if (isweekend)
 	{
-		resourcesToGainBH = 200;
+		resourcesToGainBH = 160;
 		resourcesToGainBR = 150;
 	}
 	else
 	{
-		resourcesToGainBH = 330;
-		resourcesToGainBR = 200;
+		resourcesToGainBH = 260;
+		resourcesToGainBR = 160;
 	}
 }
 

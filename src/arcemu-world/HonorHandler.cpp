@@ -65,14 +65,8 @@ int32 HonorHandler::CalculateHonorPointsForKill( uint32 playerLevel, uint32 vict
 	if(v_level <= k_grey)
 		return 0;
 
-	// Correct formula unknown. This one is correct for lvl 70 killing lvl 70 and scales down for lower levels
-	// uint32 diff_level = v_level - k_level; // Should somehow affect the result
-
-	float honor_points = 20.9f;
-	honor_points *= ((float)k_level) / PLAYER_LEVEL_CAP;
+	float honor_points = -0.53177f + 0.59357f * exp((k_level +23.54042f) / 26.07859f);
 	honor_points *= World::getSingleton().getRate( RATE_HONOR );
-	if(honor_points < 1.0f) // Make sure we get at least 1 point on low levels
-		return 1;
 	return float2int32( honor_points );
 }
 
