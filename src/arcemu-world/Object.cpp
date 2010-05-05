@@ -2058,9 +2058,6 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
                         DynamicObject *dObj = GetMapMgr()->GetDynamicObject( Arcemu::Util::GUID_LOPART( guid ) );
 						if(!dObj)
 							return;
-						WorldPacket data(SMSG_GAMEOBJECT_DESPAWN_ANIM, 8);
-						data << dObj->GetGUID();
-						dObj->SendMessageToSet(&data, false);
 						dObj->Remove();
 					}
 				}
@@ -2075,12 +2072,12 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 		for( itr = pVictim->GetInRangePlayerSetBegin() ; itr != pVictim->GetInRangePlayerSetEnd() ; itr ++ )
 		{
 
-            Player *p = static_cast< Player* >( *itr );
+           Unit *attacker = static_cast< Unit* >( *itr );
 
-			if( p->GetCurrentSpell() != NULL)
+			if( attacker->GetCurrentSpell() != NULL)
 			{
-				if ( p->GetCurrentSpell()->m_targets.m_unitTarget == pVictim->GetGUID())
-					p->GetCurrentSpell()->cancel();
+				if ( attacker->GetCurrentSpell()->m_targets.m_unitTarget == pVictim->GetGUID())
+					attacker->GetCurrentSpell()->cancel();
 			}
 		}
 		/* Stop victim from attacking */
@@ -2173,12 +2170,8 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 			/* Tell Unit that it's target has Died */
 			static_cast< Unit* >( pVictim )->SetFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_DEAD );
 
-			if(GetTypeId() == TYPEID_PLAYER)
-			{
-				WorldPacket data(SMSG_PARTYKILLLOG, 16);
-				data << GetGUID() << pVictim->GetGUID();
-				SendMessageToSet(&data, true);
-			}
+			if( IsPlayer() )
+				static_cast< Player* >( this )->SendPartyKillLog( pVictim->GetGUID() );
 
 			// it Seems that pets some how don't get a name and cause a crash here
 			//bool isCritter = (pVictim->GetCreatureInfo() != NULL)? pVictim->GetCreatureInfo()->Type : 0;

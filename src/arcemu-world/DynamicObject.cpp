@@ -216,6 +216,11 @@ void DynamicObject::Remove()
 			target->RemoveAura(m_spellProto->Id);
 	}
 
+	WorldPacket data( SMSG_GAMEOBJECT_DESPAWN_ANIM, 8 );
+	
+	data << GetGUID();
+	SendMessageToSet( &data, false );
+
 	if( IsInWorld() )
 		RemoveFromWorld(true);
 

@@ -760,18 +760,6 @@ void Group::SendNullUpdate( Player *pPlayer )
 	pPlayer->GetSession()->OutPacket( SMSG_GROUP_LIST, 28, buffer );
 }
 
-// player is object class because its called from unit class
-void Group::SendPartyKillLog( Object * player, Object * Unit )
-{
-	if( !player || !Unit || !HasMember( static_cast< Player* >( player ) ) )
-		return;
-
-	WorldPacket data( SMSG_PARTYKILLLOG, 16 );
-	data << player->GetGUID();
-	data << Unit->GetGUID();
-	SendPacketToAll( &data );
-}
-
 void Group::LoadFromDB(Field *fields)
 {
 #define LOAD_ASSISTANT(__i, __d) g = fields[__i].GetUInt32(); if(g != 0) { __d = objmgr.GetPlayerInfo(g); }
