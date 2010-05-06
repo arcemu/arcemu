@@ -4821,7 +4821,7 @@ void Spell::SpellEffectSendEvent(uint32 i) //Send Event
 		{
 			if (p_caster && p_caster->m_bg) {
 
-				if( p_caster->GetTeam() == 1 )
+				if( p_caster->IsTeamHorde() )
 					p_caster->m_bg->SendChatMessage( CHAT_MSG_BG_EVENT_HORDE, p_caster->GetGUID(), "The Alliance flag was picked up by %s!", p_caster->GetName() );
 				else
 					p_caster->m_bg->SendChatMessage( CHAT_MSG_BG_EVENT_ALLIANCE, p_caster->GetGUID(), "The Horde flag was picked up by %s!", p_caster->GetName() );
@@ -7084,7 +7084,7 @@ void Spell::SpellEffectStartTaxi( uint32 i )
 
 	uint32 modelid = 0;
 
-	if( playerTarget->GetTeam() )
+	if( playerTarget->IsTeamHorde() )
 	{
 		CreatureInfo* ci = CreatureNameStorage.LookupEntry( taxinode->horde_mount );
 		if(!ci) return;

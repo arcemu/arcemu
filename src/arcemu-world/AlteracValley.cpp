@@ -990,21 +990,21 @@ void AVNode::Assault(Player *plr)
 	// player assaulted the control point.
 	// safety check
 	Log.Debug("AlteracValley", "AVNode::Assault(%s) : entering", m_template->m_name);
-	if( plr->GetTeam() == 0 && ( m_state == AV_NODE_STATE_ALLIANCE_ASSAULTING || m_state == AV_NODE_STATE_ALLIANCE_CONTROLLED ) )
+	if( plr->IsTeamAlliance() && ( m_state == AV_NODE_STATE_ALLIANCE_ASSAULTING || m_state == AV_NODE_STATE_ALLIANCE_CONTROLLED ) )
 		return;
 
-	if( plr->GetTeam() == 1 && ( m_state == AV_NODE_STATE_HORDE_ASSAULTING || m_state == AV_NODE_STATE_HORDE_CONTROLLED ) )
+	if( plr->IsTeamHorde() && ( m_state == AV_NODE_STATE_HORDE_ASSAULTING || m_state == AV_NODE_STATE_HORDE_CONTROLLED ) )
 		return;
 
 	if( m_destroyed )
 		return;
 
 	// are we returning the node to us? 
-	if( ( plr->GetTeam() == 0 && m_lastState == AV_NODE_STATE_ALLIANCE_CONTROLLED ) ||
-		( plr->GetTeam() == 1 && m_lastState == AV_NODE_STATE_HORDE_CONTROLLED ) )
+	if( ( plr->IsTeamAlliance() && m_lastState == AV_NODE_STATE_ALLIANCE_CONTROLLED ) ||
+		( plr->IsTeamHorde() && m_lastState == AV_NODE_STATE_HORDE_CONTROLLED ) )
 	{
 		// set the state for capture
-		m_state = (plr->GetTeam() == 0) ? AV_NODE_STATE_ALLIANCE_ASSAULTING : AV_NODE_STATE_HORDE_ASSAULTING;
+		m_state = plr->IsTeamAlliance() ? AV_NODE_STATE_ALLIANCE_ASSAULTING : AV_NODE_STATE_HORDE_ASSAULTING;
 
 		// no timer delay
 		Capture();
@@ -1027,20 +1027,20 @@ void AVNode::Assault(Player *plr)
 #endif
 
 	// update state
-	ChangeState(plr->GetTeam() ? AV_NODE_STATE_HORDE_ASSAULTING : AV_NODE_STATE_ALLIANCE_ASSAULTING);
+	ChangeState(plr->IsTeamHorde() ? AV_NODE_STATE_HORDE_ASSAULTING : AV_NODE_STATE_ALLIANCE_ASSAULTING);
 
 	// pvp data
 	if( m_template->m_isGraveyard )
 	{
 		// send message
 		m_bg.SendChatMessage(CHAT_MSG_BG_EVENT_ALLIANCE + plr->GetTeam(), 0, "%s claims the %s! If left unchallenged, the %s will control it!", plr->GetName(), m_template->m_name,
-			plr->GetTeam() ? "Horde" : "Alliance");
+			plr->IsTeamHorde() ? "Horde" : "Alliance");
 		
 		plr->m_bgScore.MiscData[BG_SCORE_AV_GRAVEYARDS_ASSAULTED]++;
 	}
 	else
 	{
-		m_bg.Herald("%s is under attack! If left unchecked the %s will destroy it!", m_template->m_name , plr->GetTeam() ? "Horde" : "Alliance");
+		m_bg.Herald("%s is under attack! If left unchecked the %s will destroy it!", m_template->m_name , plr->IsTeamHorde() ? "Horde" : "Alliance");
 		plr->m_bgScore.MiscData[BG_SCORE_AV_TOWERS_ASSAULTED]++;
 	}
 }
@@ -1468,7 +1468,7 @@ bool AlteracValley::HookHandleRepop(Player * plr)
 	float dist = 999999.0f;
 	float dt;
 	LocationVector dest_pos;
-	if( plr->GetTeam() == 1 )
+	if( plr->IsTeamHorde() )
 		dest_pos.ChangeCoords(-1433.550903f, -608.329529f, 51.149689f);
 	else
 		dest_pos.ChangeCoords(876.434448f, -489.599579f, 96.517174f);
@@ -1482,8 +1482,8 @@ bool AlteracValley::HookHandleRepop(Player * plr)
 				continue;
 
 			// make sure they're owned by us
-			if( ( plr->GetTeam() == 0 && m_nodes[x]->m_state == AV_NODE_STATE_ALLIANCE_CONTROLLED ) ||
-				( plr->GetTeam() == 1 && m_nodes[x]->m_state == AV_NODE_STATE_HORDE_CONTROLLED ) )
+			if( ( plr->IsTeamAlliance() && m_nodes[x]->m_state == AV_NODE_STATE_ALLIANCE_CONTROLLED ) ||
+				( plr->IsTeamHorde() && m_nodes[x]->m_state == AV_NODE_STATE_HORDE_CONTROLLED ) )
 			{
 				dt = plr->GetPositionNC().Distance2DSq(m_nodes[x]->m_template->m_graveyardLocation.x, m_nodes[x]->m_template->m_graveyardLocation.y);
 				if( dt < dist )
@@ -1587,7 +1587,7 @@ void AlteracValley::OnAddPlayer(Player * plr)
 	if(!m_started)
 		plr->CastSpell(plr, BG_PREPARATION, true);
 
-	if( plr->GetTeam() )
+	if( plr->IsTeamHorde() )
 	{
 		plr->SetAtWar( 730, true );
 		plr->SetStanding( 730, -9000);

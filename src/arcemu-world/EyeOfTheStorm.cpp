@@ -246,8 +246,8 @@ bool EyeOfTheStorm::HookHandleRepop(Player * plr)
 	for(i = 0; i < EOTS_TOWER_COUNT; ++i)
 	{
 		if(m_CPBanner[i] && 
-			(((m_CPBanner[i]->GetEntry() == EOTS_BANNER_ALLIANCE) && (t == 0)) ||
-			 ((m_CPBanner[i]->GetEntry() == EOTS_BANNER_HORDE   ) && (t == 1)))  )
+			(((m_CPBanner[i]->GetEntry() == EOTS_BANNER_ALLIANCE) && (t == TEAM_ALLIANCE)) ||
+			 ((m_CPBanner[i]->GetEntry() == EOTS_BANNER_HORDE   ) && (t == TEAM_HORDE)))  )
 		{
 			distcur = plr->GetPositionNC().Distance2DSq( EOTSGraveyardLocations[i][0], EOTSGraveyardLocations[i][1] );
 			if( distcur < dist )
@@ -341,7 +341,7 @@ void EyeOfTheStorm::HookOnAreaTrigger(Player * plr, uint32 id)
 	int32 val;
 	uint32 i;
 	uint32 towers = 0;
-	if( team == 0 )
+	if( team == TEAM_ALLIANCE )
 		val = EOTS_BANNER_ALLIANCE;
 	else
 		val = EOTS_BANNER_HORDE;
@@ -402,7 +402,7 @@ void EyeOfTheStorm::HookFlagDrop(Player * plr, GameObject * obj)
 	plr->CastSpell( plr->GetGUID(), EOTS_NETHERWING_FLAG_SPELL, true );
 
 	SetWorldState( 2757, 0 );
-	PlaySoundToAll((plr->GetTeam()) ? SOUND_HORDE_CAPTURE : SOUND_ALLIANCE_CAPTURE);
+	PlaySoundToAll( plr->IsTeamHorde() ? SOUND_HORDE_CAPTURE : SOUND_ALLIANCE_CAPTURE );
 	SendChatMessage( CHAT_MSG_BG_EVENT_ALLIANCE + plr->GetTeam(), plr->GetGUID(), "$N has taken the flag!" );
 	m_flagHolder = plr->GetLowGUID();
 
@@ -423,7 +423,7 @@ bool EyeOfTheStorm::HookSlowLockOpen(GameObject * pGo, Player * pPlayer, Spell *
 	pPlayer->CastSpell( pPlayer->GetGUID(), EOTS_NETHERWING_FLAG_SPELL, true );
 
 	SetWorldState( 2757, 0 );
-	PlaySoundToAll((pPlayer->GetTeam()) ? SOUND_HORDE_CAPTURE : SOUND_ALLIANCE_CAPTURE);
+	PlaySoundToAll( pPlayer->IsTeamHorde() ? SOUND_HORDE_CAPTURE : SOUND_ALLIANCE_CAPTURE );
 	SendChatMessage( CHAT_MSG_BG_EVENT_ALLIANCE + pPlayer->GetTeam(), pPlayer->GetGUID(), "$N has taken the flag!" );
 	m_flagHolder = pPlayer->GetLowGUID();
 	return true;

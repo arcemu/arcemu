@@ -144,14 +144,14 @@ void WarsongGulch::HookOnAreaTrigger(Player * plr, uint32 id)
 		return;
 	}
 
-	if(((id == 3646 && plr->GetTeam() == 0) || (id == 3647 && plr->GetTeam() == 1)) && (plr->m_bgHasFlag && m_flagHolders[plr->GetTeam()] == plr->GetLowGUID()))
+	if(((id == 3646 && plr->IsTeamAlliance()) || (id == 3647 && plr->IsTeamHorde())) && (plr->m_bgHasFlag && m_flagHolders[plr->GetTeam()] == plr->GetLowGUID()))
 	{
-		if(m_flagHolders[plr->GetTeam() ? 0 : 1] != 0 || m_dropFlags[plr->GetTeam() ? 0 : 1]->IsInWorld())
+		if(m_flagHolders[plr->IsTeamHorde() ? TEAM_ALLIANCE : TEAM_HORDE] != 0 || m_dropFlags[plr->IsTeamHorde() ? TEAM_ALLIANCE : TEAM_HORDE]->IsInWorld())
 		{
 			/* can't cap while flag dropped */
 			return;
 		}
-		float distance = (plr->GetTeam() == 0)? plr->CalcDistance(1540.29f, 1481.34f, 352.64f) :plr->CalcDistance(915.367f, 1433.78f, 346.089f);
+		float distance = plr->IsTeamAlliance() ? plr->CalcDistance(1540.29f, 1481.34f, 352.64f) :plr->CalcDistance(915.367f, 1433.78f, 346.089f);
 		if (distance > 50.0f)
 		{
 			//50 yards from the spawn, gtfo hacker.
@@ -170,18 +170,18 @@ void WarsongGulch::HookOnAreaTrigger(Player * plr, uint32 id)
 		/* capture flag points */
 		plr->m_bgScore.MiscData[BG_SCORE_WSG_FLAGS_CAPTURED]++;
 
-		PlaySoundToAll( plr->GetTeam() ? SOUND_HORDE_SCORES : SOUND_ALLIANCE_SCORES );
+		PlaySoundToAll( plr->IsTeamHorde() ? SOUND_HORDE_SCORES : SOUND_ALLIANCE_SCORES );
 
-		if( plr->GetTeam() == 1 )
+		if( plr->IsTeamHorde() )
 			SendChatMessage( CHAT_MSG_BG_EVENT_HORDE, plr->GetGUID(), "%s captured the Alliance flag!", plr->GetName() );
 		else
 			SendChatMessage( CHAT_MSG_BG_EVENT_ALLIANCE, plr->GetGUID(), "%s captured the Horde flag!", plr->GetName() );
 
-		SetWorldState( plr->GetTeam() ? WSG_ALLIANCE_FLAG_CAPTURED : WSG_HORDE_FLAG_CAPTURED, 1 );
+		SetWorldState( plr->IsTeamHorde() ? WSG_ALLIANCE_FLAG_CAPTURED : WSG_HORDE_FLAG_CAPTURED, 1 );
 
 		// Remove the Other Flag
-		if (m_homeFlags[plr->GetTeam() ? 0 : 1]->IsInWorld())
-			m_homeFlags[plr->GetTeam() ? 0 : 1]->RemoveFromWorld(false);
+		if (m_homeFlags[plr->IsTeamHorde() ? TEAM_ALLIANCE : TEAM_HORDE]->IsInWorld())
+			m_homeFlags[plr->IsTeamHorde() ? TEAM_ALLIANCE : TEAM_HORDE]->RemoveFromWorld(false);
 
 		// Add the Event to respawn the Flags
 		sEventMgr.AddEvent(this, &WarsongGulch::EventReturnFlags, EVENT_BATTLEGROUND_WSG_AUTO_RETURN_FLAG, 20000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
@@ -189,7 +189,7 @@ void WarsongGulch::HookOnAreaTrigger(Player * plr, uint32 id)
 		/* give each player on that team bonus honor and reputation*/
 		uint32 honorToAdd = 2 * m_honorPerKill;
 		uint32 repToAdd = m_isWeekend ? 45 : 35;
-		uint32 fact = plr->GetTeam() ? 889 : 890; /*Warsong Outriders : Sliverwing Sentinels*/
+		uint32 fact = plr->IsTeamHorde() ? 889 : 890; /*Warsong Outriders : Sliverwing Sentinels*/
 		for(set<Player*>::iterator itr = m_players[plr->GetTeam()].begin(); itr != m_players[plr->GetTeam()].end(); ++itr)
 		{
 			(*itr)->m_bgScore.BonusHonor += honorToAdd;
@@ -202,7 +202,7 @@ void WarsongGulch::HookOnAreaTrigger(Player * plr, uint32 id)
 		{
 			/* victory! */
 			m_ended = true;
-			m_winningteam = plr->GetTeam() ? 1 : 0;
+			m_winningteam = (uint8)plr->GetTeam();
 			m_nextPvPUpdateTime = 0;
 
 			sEventMgr.RemoveEvents(this, EVENT_BATTLEGROUND_CLOSE);
@@ -241,7 +241,7 @@ void WarsongGulch::HookOnAreaTrigger(Player * plr, uint32 id)
 		}
 
 		/* increment the score world state */
-		SetWorldState(plr->GetTeam() ? WSG_CURRENT_HORDE_SCORE : WSG_CURRENT_ALLIANCE_SCORE, m_scores[plr->GetTeam()]);
+		SetWorldState(plr->IsTeamHorde() ? WSG_CURRENT_HORDE_SCORE : WSG_CURRENT_ALLIANCE_SCORE, m_scores[plr->GetTeam()]);
 
 		UpdatePvPData();
 	}
@@ -275,11 +275,11 @@ void WarsongGulch::HookOnFlagDrop(Player * plr)
 	plr->m_bgHasFlag = false;
 	plr->RemoveAura(23333 + (plr->GetTeam() * 2));
 
-	SetWorldState(plr->GetTeam() ? WSG_ALLIANCE_FLAG_CAPTURED : WSG_HORDE_FLAG_CAPTURED, 1);
+	SetWorldState(plr->IsTeamHorde() ? WSG_ALLIANCE_FLAG_CAPTURED : WSG_HORDE_FLAG_CAPTURED, 1);
 
 	sEventMgr.AddEvent( this, &WarsongGulch::ReturnFlag, plr->GetTeam(), EVENT_BATTLEGROUND_WSG_AUTO_RETURN_FLAG + plr->GetTeam(), 5000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
 
-	if( plr->GetTeam() == 1 )
+	if( plr->IsTeamHorde() )
 		SendChatMessage( CHAT_MSG_BG_EVENT_ALLIANCE, plr->GetGUID(), "The Alliance flag was dropped by %s!", plr->GetName() );
 	else
 		SendChatMessage( CHAT_MSG_BG_EVENT_HORDE, plr->GetGUID(), "The Horde flag was dropped by %s!", plr->GetName() );
@@ -291,11 +291,11 @@ void WarsongGulch::HookFlagDrop(Player * plr, GameObject * obj)
 	if(m_dropFlags[plr->GetTeam()] != obj)
 	{
 		/* are we returning it? */
-		if( (obj->GetEntry() == 179785 && plr->GetTeam() == 0) ||
-			(obj->GetEntry() == 179786 && plr->GetTeam() == 1) )
+		if( (obj->GetEntry() == 179785 && plr->IsTeamAlliance()) ||
+			(obj->GetEntry() == 179786 && plr->IsTeamHorde()) )
 		{
 			uint32 x = plr->GetTeam() ? 0 : 1;
-			sEventMgr.RemoveEvents(this, EVENT_BATTLEGROUND_WSG_AUTO_RETURN_FLAG + (plr->GetTeam() ? 0 : 1));
+			sEventMgr.RemoveEvents(this, EVENT_BATTLEGROUND_WSG_AUTO_RETURN_FLAG + (plr->IsTeamHorde() ? TEAM_ALLIANCE : TEAM_HORDE));
 
 			if( m_dropFlags[x]->IsInWorld() )
 				m_dropFlags[x]->RemoveFromWorld(false);
@@ -306,13 +306,13 @@ void WarsongGulch::HookFlagDrop(Player * plr, GameObject * obj)
 			plr->m_bgScore.MiscData[BG_SCORE_WSG_FLAGS_RETURNED]++;
 			UpdatePvPData();
 
-			if( plr->GetTeam() == 1 )
+			if( plr->IsTeamHorde() )
 				SendChatMessage( CHAT_MSG_BG_EVENT_HORDE, plr->GetGUID(), "The Horde flag was returned to its base by %s!", plr->GetName() );
 			else
 				SendChatMessage( CHAT_MSG_BG_EVENT_ALLIANCE, plr->GetGUID(), "The Alliance flag was returned to its base by %s!", plr->GetName() );
 
-			SetWorldState(plr->GetTeam() ? WSG_ALLIANCE_FLAG_CAPTURED : WSG_HORDE_FLAG_CAPTURED, 1);
-			PlaySoundToAll(plr->GetTeam() ? SOUND_HORDE_RETURNED : SOUND_ALLIANCE_RETURNED);
+			SetWorldState(plr->IsTeamHorde() ? WSG_ALLIANCE_FLAG_CAPTURED : WSG_HORDE_FLAG_CAPTURED, 1);
+			PlaySoundToAll(plr->IsTeamHorde() ? SOUND_HORDE_RETURNED : SOUND_ALLIANCE_RETURNED);
 		}
 		return;
 	}
@@ -322,7 +322,7 @@ void WarsongGulch::HookFlagDrop(Player * plr, GameObject * obj)
 		return;
 	}
 
-	if( plr->GetTeam() == 0 )
+	if( plr->IsTeamAlliance() )
 		sEventMgr.RemoveEvents(this, EVENT_BATTLEGROUND_WSG_AUTO_RETURN_FLAG);
 	else
 		sEventMgr.RemoveEvents(this, EVENT_BATTLEGROUND_WSG_AUTO_RETURN_FLAG + 1);
@@ -344,8 +344,8 @@ void WarsongGulch::HookFlagDrop(Player * plr, GameObject * obj)
 	Spell * sp = new Spell(plr, pSp, true, 0);
 	SpellCastTargets targets(plr->GetGUID());
 	sp->prepare(&targets);
-	SetWorldState(plr->GetTeam() ? WSG_ALLIANCE_FLAG_CAPTURED : WSG_HORDE_FLAG_CAPTURED, 2);
-	if( plr->GetTeam() == 1 )
+	SetWorldState(plr->IsTeamHorde() ? WSG_ALLIANCE_FLAG_CAPTURED : WSG_HORDE_FLAG_CAPTURED, 2);
+	if( plr->IsTeamHorde() )
 		SendChatMessage( CHAT_MSG_BG_EVENT_HORDE, plr->GetGUID(), "The Alliance's flag has been taken by %s !", plr->GetName() );
 	else
 		SendChatMessage( CHAT_MSG_BG_EVENT_ALLIANCE, plr->GetGUID(), "The Horde's flag has been taken by %s !", plr->GetName() );
@@ -379,7 +379,7 @@ void WarsongGulch::HookFlagStand(Player * plr, GameObject * obj)
 		return;
 	}
 #endif
-	if(m_flagHolders[plr->GetTeam()] || m_homeFlags[plr->GetTeam()] != obj || m_flagHolders[plr->GetTeam() ? 1 : 0] != 0 || m_dropFlags[plr->GetTeam() ? 1 : 0]->IsInWorld())
+	if(m_flagHolders[plr->GetTeam()] || m_homeFlags[plr->GetTeam()] != obj || m_dropFlags[plr->GetTeam()]->IsInWorld())
 	{
 		// cheater!
 		return;
@@ -401,8 +401,8 @@ void WarsongGulch::HookFlagStand(Player * plr, GameObject * obj)
 	if(m_homeFlags[plr->GetTeam()]->IsInWorld())
 		m_homeFlags[plr->GetTeam()]->RemoveFromWorld(false);
 
-	PlaySoundToAll(plr->GetTeam() ? SOUND_HORDE_CAPTURE : SOUND_ALLIANCE_CAPTURE);
-	SetWorldState(plr->GetTeam() ? WSG_ALLIANCE_FLAG_CAPTURED : WSG_HORDE_FLAG_CAPTURED, 2);
+	PlaySoundToAll(plr->IsTeamHorde() ? SOUND_HORDE_CAPTURE : SOUND_ALLIANCE_CAPTURE);
+	SetWorldState(plr->IsTeamHorde() ? WSG_ALLIANCE_FLAG_CAPTURED : WSG_HORDE_FLAG_CAPTURED, 2);
 }
 
 void WarsongGulch::HookOnPlayerKill(Player * plr, Player * pVictim)
@@ -466,7 +466,7 @@ void WarsongGulch::HookOnMount(Player * plr)
 bool WarsongGulch::HookHandleRepop(Player * plr)
 {
     LocationVector dest;
-	if(plr->GetTeam())
+	if(plr->IsTeamHorde())
 		dest.ChangeCoords(1032.644775f, 1388.316040f, 340.559937f, 0.043200f);
 	else
 		dest.ChangeCoords(1423.218872f, 1554.663574f, 342.833801f, 3.124139f);

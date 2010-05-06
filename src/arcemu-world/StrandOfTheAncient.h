@@ -25,8 +25,6 @@
 #define GUN_LEFT		0
 #define GUN_RIGHT		1
 
-#define HORDE 0
-#define ALLIANCE 1
 #define ROUND_LENGTH 600 //in secs
 
 // Is this number importing or just an ID?

@@ -2027,18 +2027,18 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 
 				if( pAttacker != NULL)
                 {
-				    uint8 teamId = (uint8)pAttacker->GetTeam();
-				    if(teamId == 0) // Swap it.
-					    teamId = 1;
+				    uint32 teamId = pAttacker->GetTeam();
+				    if(teamId == TEAM_ALLIANCE) // Swap it.
+					    teamId = TEAM_HORDE;
 				    else
-					    teamId = 0;
+					    teamId = TEAM_ALLIANCE;
 				    uint32 AreaID = pVictim->GetMapMgr()->GetAreaID(pVictim->GetPositionX(), pVictim->GetPositionY());
 				    if(!AreaID)
 					    AreaID = pAttacker->GetZoneId(); // Failsafe for a shitty TerrainMgr
 
 				    if(AreaID)
 				    {
-                        sWorld.SendZoneUnderAttackMsg( AreaID, teamId );
+                        sWorld.SendZoneUnderAttackMsg( AreaID, (uint8)teamId );
 				    }
                 }
 			}

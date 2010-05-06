@@ -188,7 +188,7 @@ void WorldSession::HandleActivateTaxiOpcode( WorldPacket & recv_data )
 	// fer0x: Incorrect system. Need take values from TaxiNodes.dbc
 
 	uint32 modelid = 0;
-	if( _player->GetTeam() )
+	if( _player->IsTeamHorde() )
 	{
 		/*
 		if( taxinode->horde_mount == 2224 )
@@ -335,7 +335,7 @@ void WorldSession::HandleMultipleActivateTaxiOpcode(WorldPacket & recvPacket)
 	// hippogryph: 479
 
 	uint32 modelid = 0;
-	if( _player->GetTeam() )
+	if( _player->IsTeamHorde() )
 	{
 		/*
 		if( taxinode->horde_mount == 2224 )

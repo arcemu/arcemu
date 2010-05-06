@@ -572,8 +572,8 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 			continue;
 		}
 
-		if( (achievement->factionFlag == ACHIEVEMENT_FACTION_FLAG_HORDE && GetPlayer()->GetTeam() != HORDE) ||
-			(achievement->factionFlag == ACHIEVEMENT_FACTION_FLAG_ALLIANCE && GetPlayer()->GetTeam() != ALLIANCE) )
+		if( (achievement->factionFlag == ACHIEVEMENT_FACTION_FLAG_HORDE && !GetPlayer()->IsTeamHorde() ) ||
+			(achievement->factionFlag == ACHIEVEMENT_FACTION_FLAG_ALLIANCE && !GetPlayer()->IsTeamAlliance() ) )
 		{
 			// achievement requires a faction of which the player is not a member
 			continue;
@@ -1223,8 +1223,8 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type)
 		AchievementEntry const *achievement = dbcAchievementStore.LookupEntryForced(achievementCriteria->referredAchievement);
 		if( !achievement //|| IsCompletedCriteria(achievementCriteria)
 			|| (achievement->flags & ACHIEVEMENT_FLAG_COUNTER)
-			|| (achievement->factionFlag == ACHIEVEMENT_FACTION_FLAG_HORDE && m_player->GetTeam() != HORDE)
-			|| (achievement->factionFlag == ACHIEVEMENT_FACTION_FLAG_ALLIANCE && m_player->GetTeam() != ALLIANCE) )
+			|| (achievement->factionFlag == ACHIEVEMENT_FACTION_FLAG_HORDE && !m_player->IsTeamHorde() )
+			|| (achievement->factionFlag == ACHIEVEMENT_FACTION_FLAG_ALLIANCE && !m_player->IsTeamAlliance() ) )
 		{
 			continue;
 		}
@@ -1931,7 +1931,7 @@ void AchievementMgr::GiveAchievementReward(AchievementEntry const* entry)
 				break;
 			case 0x00000d7d: // Title Reward: Of the Horde or Of the Alliance
 				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
-				r.rankId = (GetPlayer()->GetTeam()==HORDE) ? /* Horde */ PVPTITLE_OF_THE_HORDE : /* Alliance */ PVPTITLE_OF_THE_ALLIANCE;
+				r.rankId = GetPlayer()->IsTeamHorde() ? /* Horde */ PVPTITLE_OF_THE_HORDE : /* Alliance */ PVPTITLE_OF_THE_ALLIANCE;
 				break;
 			case 0x00000da5: // Reward: Tabard of the Explorer
 				r.type = ACHIEVEMENT_REWARDTYPE_ITEM;
@@ -2055,8 +2055,8 @@ bool AchievementMgr::GMCompleteAchievement(WorldSession* gmSession, int32 achiev
 			{
 				if( !(ach->flags & ACHIEVEMENT_FLAG_COUNTER) )
 				{
-					if( (ach->factionFlag == ACHIEVEMENT_FACTION_FLAG_HORDE && m_player->GetTeam() != HORDE) ||
-						(ach->factionFlag == ACHIEVEMENT_FACTION_FLAG_ALLIANCE && m_player->GetTeam() != ALLIANCE) )
+					if( (ach->factionFlag == ACHIEVEMENT_FACTION_FLAG_HORDE && !m_player->IsTeamHorde() ) ||
+						(ach->factionFlag == ACHIEVEMENT_FACTION_FLAG_ALLIANCE && !m_player->IsTeamAlliance() ) )
 					{
 						continue;
 					}

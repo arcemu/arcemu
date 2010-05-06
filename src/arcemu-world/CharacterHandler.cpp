@@ -415,7 +415,7 @@ void WorldSession::HandleCharCreateOpcode( WorldPacket & recv_data )
 	uint32 realmType = sLogonCommHandler.GetRealmType();
 	if( !HasGMPermissions() && realmType == REALMTYPE_PVP && _side >= 0 && !sWorld.crossover_chars) // ceberwow fixed bug
 	{
-		if( ((pNewChar->GetTeam()== 0) && (_side == 1)) || ((pNewChar->GetTeam()== 1) && (_side == 0)) )
+		if( (pNewChar->IsTeamAlliance() && (_side == 1)) || (pNewChar->IsTeamHorde() && (_side == 0)) )
 		{
 			pNewChar->ok_to_remove = true;
 			delete pNewChar;
@@ -887,7 +887,7 @@ void WorldSession::FullLogin(Player * plr)
 		if ( sWorld.m_AdditionalFun ) //cebernic: tells people who 's newbie :D
 		{
 			const int classtext[] ={0,5,6,8,9,11,0,4,3,7,0,10};
-			sWorld.SendLocalizedWorldText(true,"{65}",classtext[ (uint32)plr->getClass() ] , plr->GetName() , (plr->GetTeam() ? "{63}":"{64}") );
+			sWorld.SendLocalizedWorldText(true,"{65}",classtext[ (uint32)plr->getClass() ] , plr->GetName() , (plr->IsTeamHorde() ? "{63}":"{64}") );
 		}
 
 	}

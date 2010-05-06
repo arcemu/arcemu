@@ -511,7 +511,7 @@ void ArathiBasin::EventUpdateResources(uint32 Team)
 		m_mainLock.Acquire();
 		for(set<Player*>::iterator itr = m_players[Team].begin(); itr != m_players[Team].end(); ++itr)
 		{
-			uint32 fact = (*itr)->GetTeam() ? 510 : 509; //The Defilers : The League of Arathor
+			uint32 fact = (*itr)->IsTeamHorde() ? 510 : 509; //The Defilers : The League of Arathor
 			(*itr)->ModStanding(fact, 10);
 		}
 		m_mainLock.Release();

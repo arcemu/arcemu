@@ -67,6 +67,9 @@ class SpeedCheatDetector;
 #define TOTAL_RUNE_TYPES 4
 #define MAX_RUNE_VALUE 1
 
+#define TEAM_ALLIANCE 0
+#define TEAM_HORDE 1
+
 //====================================================================
 //  Inventory
 //  Holds the display id and item type id for objects in
@@ -1129,9 +1132,11 @@ public:
 
     void EventPortToGM(Player *p);
 	 uint32 GetTeam() { return m_team; }
-	 uint32 GetTeamInitial() { return myRace->team_id==7 ? 0 : 1; }
+	 uint32 GetTeamInitial() { return myRace->team_id==7 ? TEAM_ALLIANCE : TEAM_HORDE; }
 	 void SetTeam(uint32 t) { m_team = t; m_bgTeam=t; }
-	 void ResetTeam() { m_team = myRace->team_id==7 ? 0 : 1; m_bgTeam=m_team; }
+	 void ResetTeam() { m_team = myRace->team_id==7 ? TEAM_ALLIANCE : TEAM_HORDE; m_bgTeam=m_team; }
+	 bool IsTeamHorde() { return m_team == TEAM_HORDE; }
+	 bool IsTeamAlliance() { return m_team == TEAM_ALLIANCE; }
 
 	 bool IsInFeralForm()
 	{

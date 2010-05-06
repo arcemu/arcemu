@@ -225,7 +225,7 @@ void HonorHandler::OnPlayerKilledUnit( Player *pPlayer, Unit* pVictim )
 				if(pAffectedPlayer->GetZoneId() == 3518)
 				{
 					// Add Halaa Battle Token
-					SpellEntry * pvp_token_spell = dbcSpell.LookupEntry(pAffectedPlayer->GetTeam()? 33004 : 33005);
+					SpellEntry * pvp_token_spell = dbcSpell.LookupEntry(pAffectedPlayer->IsTeamHorde() ? 33004 : 33005);
 					pAffectedPlayer->CastSpell(pAffectedPlayer, pvp_token_spell, true);
 				}
 				// If we are in Hellfire Peninsula <http://www.wowwiki.com/Hellfire_Peninsula#World_PvP_-_Hellfire_Fortifications>
@@ -241,7 +241,7 @@ void HonorHandler::OnPlayerKilledUnit( Player *pPlayer, Unit* pVictim )
 					*/
 
 					// Add Mark of Thrallmar/Honor Hold
-					SpellEntry * pvp_token_spell = dbcSpell.LookupEntry(pAffectedPlayer->GetTeam()? 32158 : 32155);
+					SpellEntry * pvp_token_spell = dbcSpell.LookupEntry(pAffectedPlayer->IsTeamHorde() ? 32158 : 32155);
 					pAffectedPlayer->CastSpell(pAffectedPlayer, pvp_token_spell, true);
 				}
 			}

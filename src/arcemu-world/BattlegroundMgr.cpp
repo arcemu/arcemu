@@ -289,9 +289,9 @@ void CBattlegroundManager::HandleGetBattlegroundQueueCommand(WorldSession * m_se
 						continue;
 					}
 
-					if(plr->GetTeam() == 0)
+					if( plr->IsTeamAlliance() )
 						ally++;
-					if(plr->GetTeam() == 1)
+					else
 						horde++;
 				}
 

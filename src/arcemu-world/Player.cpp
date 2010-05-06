@@ -1490,7 +1490,7 @@ void Player::_EventExploration()
 	if(at->AreaFlags & AREA_CITY_AREA || at->AreaFlags & AREA_CITY)
 	{
 		// check faction
-		if((at->category == AREAC_ALLIANCE_TERRITORY && GetTeam() == 0) || (at->category == AREAC_HORDE_TERRITORY && GetTeam() == 1) )
+		if((at->category == AREAC_ALLIANCE_TERRITORY && IsTeamAlliance()) || (at->category == AREAC_HORDE_TERRITORY && IsTeamHorde()) )
 		{
 			rest_on = true;
 		}
@@ -1507,7 +1507,7 @@ void Player::_EventExploration()
 			AreaTable * at2 = dbcArea.LookupEntryForced(at->ZoneId);
 			if(at2 && (at2->AreaFlags & AREA_CITY_AREA || at2->AreaFlags & AREA_CITY ) )
 			{
-				if((at2->category == AREAC_ALLIANCE_TERRITORY && GetTeam() == 0) || (at2->category == AREAC_HORDE_TERRITORY && GetTeam() == 1) )
+				if((at2->category == AREAC_ALLIANCE_TERRITORY && IsTeamAlliance()) || (at2->category == AREAC_HORDE_TERRITORY && IsTeamHorde()) )
 				{
 					rest_on = true;
 				}
@@ -8752,7 +8752,7 @@ void Player::UpdatePvPArea()
 	}
 
 	// This is where all the magic happens :P
-	if((at->category == AREAC_ALLIANCE_TERRITORY && GetTeam() == 0) || (at->category == AREAC_HORDE_TERRITORY && GetTeam() == 1))
+	if((at->category == AREAC_ALLIANCE_TERRITORY && IsTeamAlliance()) || (at->category == AREAC_HORDE_TERRITORY && IsTeamHorde()))
 	{
 		if(!HasFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP_TOGGLE) && !m_pvpTimer)
 		{
@@ -8766,7 +8766,7 @@ void Player::UpdatePvPArea()
 		//Enemy city check
 		if(at->AreaFlags & AREA_CITY_AREA || at->AreaFlags & AREA_CITY)
 		{
-			if((at->category == AREAC_ALLIANCE_TERRITORY && GetTeam() == 1) || (at->category == AREAC_HORDE_TERRITORY && GetTeam() == 0))
+			if((at->category == AREAC_ALLIANCE_TERRITORY && IsTeamHorde()) || (at->category == AREAC_HORDE_TERRITORY && IsTeamAlliance()))
 			{
 				if(!IsPvPFlagged())
 					SetPvPFlag();
@@ -8780,7 +8780,7 @@ void Player::UpdatePvPArea()
 		if(at->ZoneId)
 		{
 			AreaTable * at2 = dbcArea.LookupEntryForced(at->ZoneId);
-			if(at2 && ((at2->category == AREAC_ALLIANCE_TERRITORY && GetTeam() == 0) || (at2->category == AREAC_HORDE_TERRITORY && GetTeam() == 1)))
+			if(at2 && ((at2->category == AREAC_ALLIANCE_TERRITORY && IsTeamAlliance()) || (at2->category == AREAC_HORDE_TERRITORY && IsTeamHorde())))
 			{
 				if(!HasFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP_TOGGLE) && !m_pvpTimer)
 				{
@@ -8792,7 +8792,7 @@ void Player::UpdatePvPArea()
 			//enemy territory check
 			if(at2 && ( at2->AreaFlags & AREA_CITY_AREA || at2->AreaFlags & AREA_CITY ) )
 			{
-				if((at2->category == AREAC_ALLIANCE_TERRITORY && GetTeam() == 1) || (at2->category == AREAC_HORDE_TERRITORY && GetTeam() == 0))
+				if((at2->category == AREAC_ALLIANCE_TERRITORY && IsTeamHorde()) || (at2->category == AREAC_HORDE_TERRITORY && IsTeamAlliance()))
 				{
 					if(!IsPvPFlagged())
 						SetPvPFlag();
@@ -8882,7 +8882,7 @@ void Player::LoginPvPSetup()
 
 	AreaTable * at = dbcArea.LookupEntryForced( ( m_AreaID != 0 ) ? m_AreaID : m_zoneId );
 
-	if ( at != NULL && isAlive() && ( at->category == AREAC_CONTESTED || ( GetTeam() == 0 && at->category == AREAC_HORDE_TERRITORY ) || ( GetTeam() == 1 && at->category == AREAC_ALLIANCE_TERRITORY ) ) )
+	if ( at != NULL && isAlive() && ( at->category == AREAC_CONTESTED || ( IsTeamAlliance() && at->category == AREAC_HORDE_TERRITORY ) || ( IsTeamHorde() && at->category == AREAC_ALLIANCE_TERRITORY ) ) )
 		CastSpell(this, PLAYER_HONORLESS_TARGET_SPELL, true);
 
 #ifdef PVP_REALM_MEANS_CONSTANT_PVP
@@ -8917,7 +8917,7 @@ void Player::PvPToggle()
                 AreaTable * at = dbcArea.LookupEntryForced(m_AreaID);
                 if(at && ( at->AreaFlags & AREA_CITY_AREA || at->AreaFlags & AREA_CITY ) )
                 {
-                    if( ( at->category == AREAC_ALLIANCE_TERRITORY && GetTeam() == 1 ) || ( at->category == AREAC_HORDE_TERRITORY && GetTeam() == 0 ) )
+                    if( ( at->category == AREAC_ALLIANCE_TERRITORY && IsTeamHorde() ) || ( at->category == AREAC_HORDE_TERRITORY && IsTeamAlliance() ) )
                     {
                     }
                     else
@@ -8960,7 +8960,7 @@ void Player::PvPToggle()
             return;
 
 	    // This is where all the magic happens :P
-        if((at->category == AREAC_ALLIANCE_TERRITORY && GetTeam() == 0) || (at->category == AREAC_HORDE_TERRITORY && GetTeam() == 1))
+        if((at->category == AREAC_ALLIANCE_TERRITORY && IsTeamAlliance()) || (at->category == AREAC_HORDE_TERRITORY && IsTeamHorde()))
 	    {
             if(m_pvpTimer > 0)
 	        {
@@ -8999,7 +8999,7 @@ void Player::PvPToggle()
             if(at->ZoneId)
             {
                 AreaTable * at2 = dbcArea.LookupEntryForced(at->ZoneId);
-                if(at2 && ((at2->category == AREAC_ALLIANCE_TERRITORY && GetTeam() == 0) || (at2->category == AREAC_HORDE_TERRITORY && GetTeam() == 1)))
+                if(at2 && ((at2->category == AREAC_ALLIANCE_TERRITORY && IsTeamAlliance()) || (at2->category == AREAC_HORDE_TERRITORY && IsTeamHorde())))
                 {
                     if(m_pvpTimer > 0)
 	                {
