@@ -5802,43 +5802,56 @@ void Aura::SpellAuraModCastingSpeed(bool apply)
 	m_target->SetCastSpeedMod(current );
 }
 
+bool isFeignDeathResisted( uint32 playerlevel, uint32 moblevel ){
+	int fMobRes = 0;
+	int diff = 0;
+	
+	if( playerlevel < moblevel ){
+		diff = moblevel - playerlevel;
+
+		if( diff <= 2 )
+			fMobRes = diff + 4;
+		else
+			fMobRes = ( diff - 2 ) * 11 + 6;
+		
+		if( fMobRes > 100 )
+			fMobRes = 100;
+		
+		if( ( rand() % 100 ) < fMobRes )
+			return true;		
+	}
+
+	return false;
+}
+
 void Aura::SpellAuraFeignDeath(bool apply)
 {
 	if( p_target != NULL )
 	{
 		WorldPacket data(50);
+
 		if( apply )
 		{
 			p_target->EventAttackStop();
-			p_target->SetFlag( UNIT_FIELD_FLAGS_2, 1 );
-			p_target->SetFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_FEIGN_DEATH );
-			//p_target->SetFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_DEAD );
-			p_target->SetFlag( UNIT_DYNAMIC_FLAGS, U_DYN_FLAG_DEAD );
-			//p_target->SetEmoteState(EMOTE_STATE_DEAD );
-
-			data.SetOpcode( SMSG_START_MIRROR_TIMER );
-			data << uint32( 2 );		// type
-			data << uint32( GetDuration() );
-			data << uint32( GetDuration() );
-			data << uint32( 0xFFFFFFFF );
-			data << uint8( 0 );
-			data << uint32( m_spellProto->Id );		// ???
-			p_target->GetSession()->SendPacket( &data );
-
-			data.Initialize( SMSG_CLEAR_TARGET );
-			data << p_target->GetGUID();
-//			pTarget->setDeathState(DEAD);
+			p_target->setDeathState(ALIVE);
 
 			//now get rid of mobs agro. pTarget->CombatStatus.AttackersForgetHate() - this works only for already attacking mobs
 		    for(std::set<Object*>::iterator itr = p_target->GetInRangeSetBegin(); itr != p_target->GetInRangeSetEnd(); itr++ )
 			{
-				if((*itr)->IsUnit() && ((Unit*)(*itr))->isAlive())
+				if( (*itr)->IsUnit() && ( static_cast< Unit* >( *itr ))->isAlive())
 				{
-					if((*itr)->GetTypeId()==TYPEID_UNIT)
-						static_cast< Unit* >(*itr)->GetAIInterface()->RemoveThreatByPtr( p_target );
+					Unit *u = static_cast< Unit* >( *itr );
+
+					if( isFeignDeathResisted( p_target->getLevel(), u->getLevel() ) ){
+						sEventMgr.AddEvent( this, &Aura::Remove, EVENT_AURA_REMOVE, 1, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT | EVENT_FLAG_DELETES_OBJECT );
+						return;
+					}
+
+					if(u->IsCreature() )
+						u->GetAIInterface()->RemoveThreatByPtr( p_target );
 
 					//if this is player and targeting us then we interrupt cast
-					if( (*itr)->IsPlayer() )
+					if( u->IsPlayer() )
 					{
 						Player* plr = static_cast< Player* >( *itr );
 
@@ -5849,8 +5862,27 @@ void Aura::SpellAuraFeignDeath(bool apply)
 					}
 				}
 			}
-			p_target->setDeathState(ALIVE);
+
+			p_target->SetFlag( UNIT_FIELD_FLAGS_2, 1 );
+			p_target->SetFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_FEIGN_DEATH );
+			p_target->SetFlag( UNIT_DYNAMIC_FLAGS, U_DYN_FLAG_DEAD );
+
+			data.SetOpcode( SMSG_START_MIRROR_TIMER );
+
+			data << uint32( 2 );		// type
+			data << uint32( GetDuration() );
+			data << uint32( GetDuration() );
+			data << uint32( 0xFFFFFFFF );
+			data << uint8( 0 );
+			data << uint32( m_spellProto->Id );		// ???
+
+			p_target->GetSession()->SendPacket( &data );
+
+			data.Initialize( SMSG_CLEAR_TARGET );
+			data << p_target->GetGUID();
+
 			p_target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_COMBAT);
+
             if(p_target->hasStateFlag(UF_ATTACKING)) 
                     p_target->clearStateFlag(UF_ATTACKING);
 
@@ -5862,8 +5894,6 @@ void Aura::SpellAuraFeignDeath(bool apply)
 			p_target->RemoveFlag(UNIT_FIELD_FLAGS_2, 1);
 			p_target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_FEIGN_DEATH);
 			p_target->RemoveFlag(UNIT_DYNAMIC_FLAGS, U_DYN_FLAG_DEAD);
-			//p_target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DEAD);
-			//p_target->SetEmoteState(0);
 			data.SetOpcode(SMSG_STOP_MIRROR_TIMER);
             data << uint32( TIMER_FEIGNDEATH );
 			p_target->GetSession()->SendPacket(&data);
