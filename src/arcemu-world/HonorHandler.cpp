@@ -267,14 +267,16 @@ bool ChatHandler::HandleAddKillCommand(const char* args, WorldSession* m_session
 {
 	uint32 KillAmount = args ? atol(args) : 1;
 	Player *plr = getSelectedChar(m_session, true);
-	if(plr == 0)
+	if(plr == NULL)
 		return true;
 
 	BlueSystemMessage(m_session, "Adding %u kills to player %s.", KillAmount, plr->GetName());
 	GreenSystemMessage(plr->GetSession(), "You have had %u honor kills added to your character.", KillAmount);
 
-	for(uint32 i = 0; i < KillAmount; ++i)
-		HonorHandler::OnPlayerKilledUnit(plr, 0);
+	plr->m_killsToday += KillAmount;
+	plr->m_killsLifetime += KillAmount;
+	plr->SetUInt32Value(PLAYER_FIELD_KILLS, uint16(plr->m_killsToday) | ( plr->m_killsYesterday << 16 ) );
+	plr->SetUInt32Value(PLAYER_FIELD_LIFETIME_HONORBALE_KILLS, plr->m_killsLifetime);
 
 	return true;
 }
