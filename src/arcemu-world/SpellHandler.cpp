@@ -260,26 +260,34 @@ void WorldSession::HandleSpellClick(WorldPacket& recvPacket)
 	if( target_unit->GetEntry()  == 29929 )
 		cast_spell_id = 55531; // Mechano-Hog
 
-	if( target_unit->RemoveAura( 59907 ) )
+	if( !_player->HasAurasWithNameHash(SPELL_HASH_LIGHTWELL_RENEW) && target_unit->RemoveAura( 59907 ) )
 	{
-		if( target_unit->GetEntry()  == 31897 )
-			cast_spell_id = 7001; // Lightwell Rank 1
-		if( target_unit->GetEntry()  == 31896 )
-			cast_spell_id = 27873; // Lightwell Rank 2
-		if( target_unit->GetEntry()  == 31895 )
-			cast_spell_id = 27874; // Lightwell Rank 3
-		if( target_unit->GetEntry()  == 31894 )
-			cast_spell_id = 28276; // Lightwell Rank 4
-		if( target_unit->GetEntry()  == 31893 )
-			cast_spell_id = 48084; // Lightwell Rank 5
-		if( target_unit->GetEntry()  == 31883 )
-			cast_spell_id = 48085; // Lightwell Rank 6
+		switch( target_unit->GetEntry() )
+		{
+			case 31897:
+				cast_spell_id = 7001; // Lightwell Rank 1
+				break;
+			case 31896 :
+				cast_spell_id = 27873; // Lightwell Rank 2
+				break;
+			case 31895:
+				cast_spell_id = 27874; // Lightwell Rank 3
+				break;
+			case 31894:
+				cast_spell_id = 28276; // Lightwell Rank 4
+				break;
+			case 31893:
+				cast_spell_id = 48084; // Lightwell Rank 5
+				break;
+			case 31883:
+				cast_spell_id = 48085; // Lightwell Rank 6
+				break;
+		}
 
 		target_unit->CastSpell(_player, cast_spell_id, true);
 
 		if( !target_unit->HasAura(59907) )
-			if(target_unit->IsCreature())
-				static_cast<Creature*>(target_unit)->Despawn(0,0);
+			TO_CREATURE(target_unit)->Despawn(0,0);//IsCreature() check is not needed, refer to r2387 and r3230
 
 		return;
 	}
