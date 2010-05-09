@@ -3367,11 +3367,11 @@ uint8 Spell::CanCast(bool tolerate)
 		}
 
 		/**
-		*	Arena spell check, is cooldown longer then 15 minutes?
+		*	Arena spell check
 		 */
 		if (p_caster->m_bg && ( p_caster->m_bg->GetType() >= BATTLEGROUND_ARENA_2V2 && p_caster->m_bg->GetType() <= BATTLEGROUND_ARENA_5V5 ) &&
-			( GetProto()->RecoveryTime > 900000 || GetProto()->CategoryRecoveryTime > 900000 ) )
-				return SPELL_FAILED_SPELL_UNAVAILABLE;
+			hasAttributeExD( FLAGS5_NOT_IN_ARENA ) )
+				return SPELL_FAILED_NOT_IN_ARENA;
 		if (p_caster->m_bg && !p_caster->m_bg->HasStarted() && (m_spellInfo->Id == 1953 || m_spellInfo->Id == 36554))//Don't allow blink or shadowstep  if in a BG and the BG hasn't started.
 			return SPELL_FAILED_SPELL_UNAVAILABLE;
 
@@ -3592,7 +3592,7 @@ uint8 Spell::CanCast(bool tolerate)
 		/**
 		 *	Check if we have the required reagents
 		 */
-		if (!(p_caster->removeReagentCost && hasAttributeExD(FLAGS6_REAGENT_REMOVAL)))
+		if (!(p_caster->removeReagentCost && hasAttributeExE(FLAGS6_REAGENT_REMOVAL)))
 		{
 			// Skip this with enchanting scrolls
 			if (!i_caster || i_caster->GetProto()->Flags != 268435520)

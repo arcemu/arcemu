@@ -5869,7 +5869,7 @@ void Aura::SpellAuraFeignDeath(bool apply)
 
 			data.SetOpcode( SMSG_START_MIRROR_TIMER );
 
-			data << uint32( 2 );		// type
+			data << uint32( TIMER_FEIGNDEATH );		// type
 			data << uint32( GetDuration() );
 			data << uint32( GetDuration() );
 			data << uint32( 0xFFFFFFFF );

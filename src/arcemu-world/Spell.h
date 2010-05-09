@@ -585,7 +585,7 @@ enum Flags5
 	FLAGS5_UNK15						= 0x2000,
 	FLAGS5_UNK16						= 0x4000,
 	FLAGS5_UNK17						= 0x8000,
-	FLAGS5_UNK18						= 0x10000,
+	FLAGS5_NOT_IN_ARENA					= 0x10000,
 	FLAGS5_UNK19						= 0x20000,
 	FLAGS5_UNK20						= 0x40000,
 	FLAGS5_UNK21						= 0x80000,
@@ -1712,6 +1712,10 @@ public:
 	ARCEMU_INLINE bool hasAttributeExD(uint32 attribute)
 	{
 		return ((GetProto()->AttributesExD & attribute) > 0);
+	}
+	ARCEMU_INLINE bool hasAttributeExE(uint32 attribute)
+	{
+		return ((GetProto()->AttributesExE & attribute) > 0);
 	}
     // Removes reagents, ammo, and items/charges
     void RemoveItems();
