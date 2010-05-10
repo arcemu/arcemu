@@ -13244,7 +13244,7 @@ void Player::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 	if( pVictim->IsSpiritHealer() )
 		return;
 
-	if( this != pVictim && GetSession()->HasPermissions() && sWorld.m_limits.enable != 0 )
+	if( this != pVictim && !GetSession()->HasPermissions() && sWorld.m_limits.enable != 0 )
 		damage = CheckDamageLimits( damage, spellId );
 
 	if( pVictim != this )
@@ -13382,12 +13382,15 @@ void Player::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 
 ///////////////////////////////////////////////////////////// Loot  //////////////////////////////////////////////////////////////////////////////////////////////
 		
-		if( !pVictim->IsPet() && !pVictim->isCritter() && !( pVictim->IsPlayer() && !pVictim->IsInBg() ) && pVictim->GetCreatedByGUID() == 0 ){
-			if( pVictim->GetTaggerGUID() == GetGUID() ){
-				if( InGroup() )
-					GetGroup()->SendLootUpdates( pVictim );
+		if( pVictim->isLootable() ){
+			Player *tagger = GetMapMgr()->GetPlayer( Arcemu::Util::GUID_LOPART( pVictim->GetTaggerGUID() ) );
+
+			// Tagger might have left the map so we need to check
+			if( tagger != NULL ){
+				if( tagger->InGroup() )
+					tagger->GetGroup()->SendLootUpdates( pVictim );
 				else
-					SendLootUpdate( pVictim);
+					tagger->SendLootUpdate( pVictim);
 			}
 		}
 

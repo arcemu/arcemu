@@ -1559,29 +1559,17 @@ void Group::SendLootUpdates( Object *o ){
 
 		break;}
 
-	case PARTY_LOOT_MASTER:{
-		
-		GroupMembersSet::iterator itr2;
-		SubGroup * sGrp = NULL;
-		
-		for( uint32 Index = 0; Index < GetSubGroupCount(); ++Index ){			
-			sGrp = GetSubGroup( Index );
-			itr2 = sGrp->GetGroupMembersBegin();
-			
-			for( ; itr2 != sGrp->GetGroupMembersEnd(); ++itr2 ){
-				PlayerInfo *p = *itr2;
-				
-				if( p->m_loggedInPlayer != NULL && p->m_loggedInPlayer->IsVisible( o ) )	   // Save updates for non-existent creatures
-					p->m_loggedInPlayer->PushUpdateData( &buf, 1 );
-			}
-		}
-		
+	case PARTY_LOOT_MASTER:{	
 		Player * pLooter = GetLooter() ? GetLooter()->m_loggedInPlayer : NULL;
 		if( pLooter == NULL )
 			pLooter = GetLeader()->m_loggedInPlayer;
 		
-		if( pLooter->IsVisible( o ) )  // Save updates for non-existent creatures
+		if( pLooter->IsVisible( o ) ){
+			Unit *victim = static_cast< Unit* >( o );
+
+			victim->Tag( pLooter->GetGUID() );
 			pLooter->PushUpdateData( &buf, 1 );
+		}
 		
 		break;}
 	}

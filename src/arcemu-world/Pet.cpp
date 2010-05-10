@@ -1806,12 +1806,15 @@ void Pet::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32 un
 
 ///////////////////////////////////////////////////////////// Loot  //////////////////////////////////////////////////////////////////////////////////////////////
 		
-		if( !pVictim->IsPet() && !pVictim->isCritter() && !( pVictim->IsPlayer() && !pVictim->IsInBg() ) && pVictim->GetCreatedByGUID() == 0 ){
-			if( pVictim->GetTaggerGUID() == m_Owner->GetGUID() ){
-				if( m_Owner->InGroup() )
-					m_Owner->GetGroup()->SendLootUpdates( pVictim );
+		if( pVictim->isLootable() ){
+			Player *tagger = GetMapMgr()->GetPlayer( Arcemu::Util::GUID_LOPART( pVictim->GetTaggerGUID() ) );
+
+			// Tagger might have left the map so we need to check
+			if( tagger != NULL ){
+				if( tagger->InGroup() )
+					tagger->GetGroup()->SendLootUpdates( pVictim );
 				else
-					m_Owner->SendLootUpdate( pVictim);
+					tagger->SendLootUpdate( pVictim);
 			}
 		}
 

@@ -8005,6 +8005,13 @@ uint64 Unit::GetTaggerGUID(){
 	return TaggerGuid;
 }
 
+bool Unit::isLootable(){
+	if( IsTagged() && !IsPet() && !isCritter() && !( IsPlayer() && !IsInBg() ) && GetCreatedByGUID() == 0 )
+		return true;
+	else
+		return false;
+}
+
 
 void Unit::TakeDamage(Unit *pAttacker, uint32 damage, uint32 spellid, bool no_remove_auras ){}
 void Unit::Die( Unit *pAttacker, uint32 damage, uint32 spellid ){}

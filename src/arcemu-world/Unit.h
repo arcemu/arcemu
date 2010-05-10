@@ -1446,6 +1446,7 @@ public:
 	bool IsTagged();
 	bool IsTaggable();
 	uint64 GetTaggerGUID();
+	bool isLootable();
 
 	void Root();
 	void Unroot();
