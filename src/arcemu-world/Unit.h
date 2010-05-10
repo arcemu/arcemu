@@ -1439,6 +1439,14 @@ public:
 		return false;
 	}
 
+	bool Tagged;
+	uint64 TaggerGuid;
+	void Tag( uint64 TaggerGUID );
+	void UnTag();
+	bool IsTagged();
+	bool IsTaggable();
+	uint64 GetTaggerGUID();
+
 	void Root();
 	void Unroot();
     bool isRooted(){
@@ -1698,6 +1706,10 @@ public:
     uint32 GetMaxPower( uint32 index ){ return GetUInt32Value( UNIT_FIELD_MAXPOWER1 + index ); }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	virtual void TakeDamage(Unit *pAttacker, uint32 damage, uint32 spellid, bool no_remove_auras = false );
+	virtual void Die( Unit *pAttacker, uint32 damage, uint32 spellid );
+	virtual bool isCritter(){ return false; }
 
 protected:
 	Unit ();

@@ -7977,3 +7977,34 @@ void Unit::RemoveGarbage(){
 
 }
 
+void Unit::Tag( uint64 TaggerGUID ){
+	Tagged = true;
+	this->TaggerGuid = TaggerGUID;
+	m_uint32Values[ UNIT_DYNAMIC_FLAGS ] |= U_DYN_FLAG_TAGGED_BY_OTHER;
+
+}
+
+void Unit::UnTag(){
+	Tagged = false;
+	TaggerGuid = 0;
+	m_uint32Values[ UNIT_DYNAMIC_FLAGS ] &= ~U_DYN_FLAG_TAGGED_BY_OTHER;
+}
+
+bool Unit::IsTagged(){
+	return Tagged;
+}
+
+bool Unit::IsTaggable(){
+	if( !IsPet() && !Tagged )
+		return true;
+	else
+		return false;
+}
+
+uint64 Unit::GetTaggerGUID(){
+	return TaggerGuid;
+}
+
+
+void Unit::TakeDamage(Unit *pAttacker, uint32 damage, uint32 spellid, bool no_remove_auras ){}
+void Unit::Die( Unit *pAttacker, uint32 damage, uint32 spellid ){}

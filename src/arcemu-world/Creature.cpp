@@ -428,6 +428,10 @@ void Creature::CreateWayPoint (uint32 WayPointID, uint32 mapid, float x, float y
 
 void Creature::generateLoot()
 {
+
+	if( isCritter()  )
+		return;
+
 	if ( !loot.items.empty() )
 		return;
 
@@ -2142,30 +2146,207 @@ void Creature::PrepareForRemove()
 	}
 }
 
-void Creature::Tag( uint64 TaggerGUID ){
-	Tagged = true;
-	this->TaggerGuid = TaggerGUID;
-	m_uint32Values[ UNIT_DYNAMIC_FLAGS ] |= U_DYN_FLAG_TAGGED_BY_OTHER;
-
-}
-
-void Creature::UnTag(){
-	Tagged = false;
-	TaggerGuid = 0;
-	m_uint32Values[ UNIT_DYNAMIC_FLAGS ] &= ~U_DYN_FLAG_TAGGED_BY_OTHER;
-}
-
-bool Creature::IsTagged(){
-	return Tagged;
-}
-
-bool Creature::IsTaggable(){
-	if( creature_info != NULL && creature_info->Type != UNIT_TYPE_CRITTER && !IsPet() && !Tagged )
+bool Creature::isCritter(){
+	if( creature_info->Type == UNIT_TYPE_CRITTER )
 		return true;
 	else
 		return false;
 }
 
-uint64 Creature::GetTaggerGUID(){
-	return TaggerGuid;
+void Creature::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32 unitEvent, uint32 spellId, bool no_remove_auras ){
+	if( !pVictim || !pVictim->isAlive() || !pVictim->IsInWorld() || !IsInWorld() )
+		return;
+	if( pVictim->IsPlayer() && static_cast< Player* >( pVictim )->GodModeCheat == true )
+		return;
+	if( pVictim->bInvincible )
+		return;
+	if( pVictim->IsSpiritHealer() )
+		return;
+
+	if( pVictim != this )
+		CombatStatus.OnDamageDealt( pVictim );
+
+	pVictim->SetStandState( STANDSTATE_STAND );
+
+	if( pVictim->IsPvPFlagged() && m_owner != NULL && m_owner->IsPlayer() ){
+		Player *p = static_cast< Player* >( m_owner );
+
+		if( !p->IsPvPFlagged() )
+			p->PvPToggle();
+
+		p->AggroPvPGuards();
+	}
+
+	// Bg dmg counter
+	if( pVictim != this ){
+		if( m_owner != NULL && m_owner->IsPlayer() ){
+			Player *p = static_cast< Player* >( m_owner );
+
+			if( p != NULL && p->m_bg != NULL && GetMapMgr() == pVictim->GetMapMgr() ){
+				p->m_bgScore.DamageDone += damage;
+				p->m_bg->UpdatePvPData();
+			}
+		}
+	}
+
+	if( pVictim->GetHealth() <= damage )
+		pVictim->Die( this, damage, spellId );
+	else
+		pVictim->TakeDamage( this, damage, spellId, no_remove_auras );
 }
+
+
+void Creature::TakeDamage(Unit *pAttacker, uint32 damage, uint32 spellid, bool no_remove_auras ){
+
+	if( !no_remove_auras ){
+		//zack 2007 04 24 : root should not remove self (and also other unknown spells)
+		if( spellid ){
+			RemoveAurasByInterruptFlagButSkip( AURA_INTERRUPT_ON_ANY_DAMAGE_TAKEN, spellid );
+			if( Rand( 35.0f ) )
+				RemoveAurasByInterruptFlagButSkip( AURA_INTERRUPT_ON_UNUSED2, spellid );
+		}else{
+			RemoveAurasByInterruptFlag( AURA_INTERRUPT_ON_ANY_DAMAGE_TAKEN );
+			if( Rand( 35.0f ) )
+				RemoveAurasByInterruptFlag( AURA_INTERRUPT_ON_UNUSED2 );
+		}
+	}
+	
+	if( pAttacker != this ){
+		GetAIInterface()->AttackReaction( this, damage, spellid );
+	}
+
+	ModHealth( -1 * static_cast< int32 >( damage ) );
+}
+
+void Creature::Die( Unit *pAttacker, uint32 damage, uint32 spellid ){
+	
+	// If it's a training dummy then we simply set the HP to 1 instead of killing the unit
+	if( GetProto() != NULL && GetProto()->isTrainingDummy ){
+			SetHealth( 1 );
+			return;
+	}
+
+	// We've just killed a totem
+	if( IsTotem() ){
+		// If we have summons then let's remove them first
+		RemoveAllGuardians();
+		
+		//we delete the summon later since its reference is used outside of this loop, like AIInterface::_UpdateCombat().
+		//this fixes totems not properly disappearing from the clients.
+		//on a side note, it would be better to modify AIInterface::_UpdateCombat() instead of this.
+		sEventMgr.AddEvent( this, &Creature::TotemExpire, EVENT_UNK, 1, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
+		return;
+	}
+	
+	// We've killed some kind of summon
+	if( GetCreatedByGUID() != 0 ){
+		Unit *pSummoner = GetMapMgr()->GetUnit( GetCreatedByGUID() );
+		
+		if( pSummoner && pSummoner->IsInWorld() && pSummoner->IsCreature() ){
+			Creature *pSummonerC = static_cast< Creature* >( pSummoner );
+			
+			// We've killed a summon summoned by a totem
+			if( pSummonerC->IsTotem() )
+				sEventMgr.AddEvent( pSummonerC, &Creature::TotemExpire, EVENT_UNK, 1, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
+		}
+	}
+
+	//general hook for die
+	if( !sHookInterface.OnPreUnitDie( pAttacker, this) )
+		return;
+
+	
+
+	// on die and an target die proc
+	{
+		SpellEntry *killerspell;
+		if( spellid )
+			killerspell = dbcSpell.LookupEntry( spellid );
+		else killerspell = NULL;
+		
+		HandleProc( PROC_ON_DIE, this, killerspell );
+		m_procCounter = 0;
+		pAttacker->HandleProc( PROC_ON_TARGET_DIE, this, killerspell );
+		pAttacker->m_procCounter = 0;
+	}
+
+	setDeathState( JUST_DIED );
+	GetAIInterface()->HandleEvent( EVENT_LEAVECOMBAT, this, 0);
+
+	
+	if( GetChannelSpellTargetGUID() != 0 ){
+		
+		Spell *spl = GetCurrentSpell();
+		
+		if( spl != NULL ){
+			
+			for(int i = 0; i < 3; i++){
+				if(spl->GetProto()->Effect[i] == SPELL_EFFECT_PERSISTENT_AREA_AURA){
+					uint64 guid = GetChannelSpellTargetGUID();
+					DynamicObject *dObj = GetMapMgr()->GetDynamicObject( Arcemu::Util::GUID_LOPART( guid ) );
+					if(!dObj)
+						return;
+					
+					dObj->Remove();
+				}
+			}
+
+			if( spl->GetProto()->ChannelInterruptFlags == 48140) spl->cancel();
+		}
+	}
+
+	/* Stop players from casting */
+	for( std::set< Object* >::iterator itr = GetInRangePlayerSetBegin() ; itr != GetInRangePlayerSetEnd() ; itr ++ ){
+		Unit *attacker = static_cast< Unit* >( *itr );
+		
+		if( attacker->GetCurrentSpell() != NULL){
+			if ( attacker->GetCurrentSpell()->m_targets.m_unitTarget == GetGUID())
+				attacker->GetCurrentSpell()->cancel();
+		}
+	}
+
+	smsg_AttackStop( this );
+	SetHealth( 0 );
+
+	// Wipe our attacker set on death
+	CombatStatus.Vanished();
+	
+	RemoveAllNonPersistentAuras();
+
+	CALL_SCRIPT_EVENT( pAttacker, OnTargetDied )( this );
+	pAttacker->smsg_AttackStop( this );
+	
+	/* Tell Unit that it's target has Died */
+	pAttacker->addStateFlag( UF_TARGET_DIED );
+
+	GetAIInterface()->OnDeath(this);
+
+	SetFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_DEAD );
+
+	
+	if( !IsTotem() && GetCreatedByGUID() == 0 && GetTaggerGUID() != 0 ){
+		Unit *owner = m_mapMgr->GetUnit( GetTaggerGUID() );
+
+		if( owner != NULL )
+			generateLoot();		
+	}
+
+	if( GetCharmedByGUID() ){		
+		//remove owner warlock soul link from caster
+		Unit *owner = GetMapMgr()->GetUnit( GetCharmedByGUID() );
+
+		if( owner != NULL && owner->IsPlayer())
+			TO_PLAYER( owner )->EventDismissPet();
+	}
+	
+	if( GetCreatedByGUID() != 0 )
+		SetCreatedByGUID( 0 );
+
+	if( GetOwner() != NULL ){
+		GetOwner()->RemoveGuardianRef( this );
+		SetOwner( NULL );
+	}
+
+
+}
+

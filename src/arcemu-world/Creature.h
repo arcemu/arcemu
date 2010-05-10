@@ -518,14 +518,6 @@ public:
 	bool Skinned;
 	uint32 GetRequiredLootSkill();
 
-	bool Tagged;
-	uint64 TaggerGuid;
-	void Tag( uint64 TaggerGUID );
-	void UnTag();
-	bool IsTagged();
-	bool IsTaggable();
-	uint64 GetTaggerGUID();
-
 	/// Misc
 	ARCEMU_INLINE void setEmoteState(uint8 emote) { m_emoteState = emote; };
 	ARCEMU_INLINE uint32 GetSQL_id() { return spawnid; };
@@ -602,6 +594,9 @@ public:
 		return false;
 	}
 
+
+	bool isCritter();
+
 	void TotemExpire();
 	void FormationLinkUp(uint32 SqlId);
 	void ChannelLinkUpGO(uint32 SqlId);
@@ -646,6 +641,11 @@ public:
 
 	float GetBaseParry();
 	bool isattackable(CreatureSpawn *spawn);
+
+	void DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32 unitEvent, uint32 spellId, bool no_remove_auras = false);
+	void TakeDamage(Unit *pAttacker, uint32 damage, uint32 spellid, bool no_remove_auras = false );
+	void Die( Unit *pAttacker, uint32 damage, uint32 spellid );
+
 protected:
 	CreatureAIScript *_myScriptClass;
 	bool m_limbostate;

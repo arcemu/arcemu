@@ -13233,3 +13233,432 @@ uint32 Player::CheckDamageLimits( uint32 dmg, uint32 spellid )
 	
 	return dmg;
 }
+
+void Player::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32 unitEvent, uint32 spellId, bool no_remove_auras ){
+	if( !pVictim || !pVictim->isAlive() || !pVictim->IsInWorld() || !IsInWorld() )
+		return;
+	if( pVictim->IsPlayer() && static_cast< Player* >( pVictim )->GodModeCheat == true )
+		return;
+	if( pVictim->bInvincible )
+		return;
+	if( pVictim->IsSpiritHealer() )
+		return;
+
+	if( this != pVictim && GetSession()->HasPermissions() && sWorld.m_limits.enable != 0 )
+		damage = CheckDamageLimits( damage, spellId );
+
+	if( pVictim != this )
+		CombatStatus.OnDamageDealt( pVictim );
+
+	pVictim->SetStandState( STANDSTATE_STAND );
+
+	if( pVictim->IsPvPFlagged() ){
+		if( !IsPvPFlagged() )
+			PvPToggle();
+
+		AggroPvPGuards();
+	}
+
+	if( CombatStatus.IsInCombat()  )
+		sHookInterface.OnEnterCombat( this, this );
+
+///////////////////////////////////////////////////// Hackatlon ///////////////////////////////////////////////////////////
+	
+	//the black sheep , no actually it is paladin : Ardent Defender
+	if( DamageTakenPctModOnHP35 && HasFlag( UNIT_FIELD_AURASTATE , AURASTATE_FLAG_HEALTH35 ) )
+			damage = damage - float2int32( damage * DamageTakenPctModOnHP35 ) / 100;
+
+	
+	//Mage: Fiery Payback
+	if( FieryPaybackModHP35 == 1 ){
+		
+		if( GetHealthPct() <= 35){
+			if( HasAura( 44441 ) )
+				CastSpell( GetGUID(), 44441, true );
+		}else
+			RemoveAllAuraById( 44441 );
+	}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if( pVictim->IsCreature() && pVictim->IsTaggable() ){
+		pVictim->Tag( GetGUID() );
+		TagUnit( pVictim );
+	}
+
+	// Bg dmg counter
+	if( pVictim != this ){
+		if( m_bg != NULL && GetMapMgr() == pVictim->GetMapMgr() ){
+			m_bgScore.DamageDone += damage;
+			m_bg->UpdatePvPData();
+		}
+	}
+
+
+	// Duel
+	if( pVictim->IsPlayer() && DuelingWith != NULL && DuelingWith->GetGUID() == pVictim->GetGUID() ){
+		if( pVictim->GetHealth() <= damage ){
+			uint32 NewHP = pVictim->GetMaxHealth()/100;
+
+			if(NewHP < 5)
+				NewHP = 5;
+
+			pVictim->SetHealth( NewHP );
+			EndDuel(DUEL_WINNER_KNOCKOUT);
+			pVictim->Emote(EMOTE_ONESHOT_BEG);
+			return;
+		}
+	}
+
+	if( pVictim->GetHealth() <= damage ){
+		
+		if( m_bg != NULL ){
+			m_bg->HookOnUnitKill( this, pVictim );
+
+			if( pVictim->IsPlayer() )
+				m_bg->HookOnPlayerKill( this, static_cast< Player* >( pVictim ) );
+		}
+
+		if( pVictim->IsPlayer() ){
+
+			sHookInterface.OnKillPlayer( this, static_cast< Player* >( pVictim ) );
+			
+			bool setAurastateFlag = false;
+			
+			if( getLevel() >= (pVictim->getLevel() - 8) && ( GetGUID() != pVictim->GetGUID() ) ){
+
+#ifdef ENABLE_ACHIEVEMENTS
+				GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_HONORABLE_KILL_AT_AREA, GetAreaID(), 1, 0);
+				GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_EARN_HONORABLE_KILL, 1, 0, 0);
+#endif
+				HonorHandler::OnPlayerKilledUnit( this, pVictim );
+				setAurastateFlag = true;
+
+				}
+
+			if ( setAurastateFlag ){
+				SetFlag(UNIT_FIELD_AURASTATE,AURASTATE_FLAG_LASTKILLWITHHONOR);
+				
+				if( !sEventMgr.HasEvent(this,EVENT_LASTKILLWITHHONOR_FLAG_EXPIRE ) )
+					sEventMgr.AddEvent( static_cast< Unit* >( this ), &Unit::EventAurastateExpire, static_cast< uint32 >( AURASTATE_FLAG_LASTKILLWITHHONOR ),EVENT_LASTKILLWITHHONOR_FLAG_EXPIRE,20000,1,0);
+				else
+					sEventMgr.ModifyEventTimeLeft(this,EVENT_LASTKILLWITHHONOR_FLAG_EXPIRE,20000);
+
+				}
+		}else{
+			if( pVictim->IsCreature() ){
+				Reputation_OnKilledUnit( pVictim, false );
+
+#ifdef ENABLE_ACHIEVEMENTS
+				GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILLING_BLOW, GetMapId(), 0, 0);
+#endif
+
+			}
+		}
+
+		pVictim->Die( this, damage, spellId );
+
+		EventAttackStop();
+		
+		SendPartyKillLog( pVictim->GetGUID() );
+
+		if( pVictim->IsPvPFlagged() ){
+			uint32 team = GetTeam();
+
+			if( team == TEAM_ALLIANCE )
+				team = TEAM_HORDE;
+			else
+				team = TEAM_ALLIANCE;
+			
+			uint32 AreaID = pVictim->GetMapMgr()->GetAreaID(pVictim->GetPositionX(), pVictim->GetPositionY());
+			
+			if( AreaID == 0 )
+				AreaID = GetZoneId(); // Failsafe for a shitty TerrainMgr
+			
+			if(AreaID){
+				sWorld.SendZoneUnderAttackMsg( AreaID, static_cast< uint8 >( team ) );
+			}
+		}
+
+///////////////////////////////////////////////////////////// Loot  //////////////////////////////////////////////////////////////////////////////////////////////
+		
+		if( !pVictim->IsPet() && !pVictim->isCritter() && !( pVictim->IsPlayer() && !pVictim->IsInBg() ) && pVictim->GetCreatedByGUID() == 0 ){
+			if( pVictim->GetTaggerGUID() == GetGUID() ){
+				if( InGroup() )
+					GetGroup()->SendLootUpdates( pVictim );
+				else
+					SendLootUpdate( pVictim);
+			}
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////// Experience /////////////////////////////////////////////////////////////////////////////////////////////
+
+		if ( pVictim->GetCreatedByGUID() == 0 && !pVictim->IsPet() && pVictim->IsTagged() ){
+				Unit *uTagger = pVictim->GetMapMgr()->GetUnit( pVictim->GetTaggerGUID() ); 
+
+				if (uTagger != NULL && uTagger->IsPlayer() ){
+					Player *pTagger = TO_PLAYER(uTagger);
+					
+					if (pTagger != NULL ){
+						
+						if (pTagger->InGroup())
+							pTagger->GiveGroupXP( pVictim, pTagger);
+						else if( IsUnit() ){
+							uint32 xp = CalculateXpToGive( pVictim, uTagger );
+							
+							if( xp > 0 ){
+								pTagger->GiveXP( xp, pVictim->GetGUID(), true );
+
+								SetFlag(UNIT_FIELD_AURASTATE,AURASTATE_FLAG_LASTKILLWITHHONOR);
+
+								if(!sEventMgr.HasEvent(this,EVENT_LASTKILLWITHHONOR_FLAG_EXPIRE))
+									sEventMgr.AddEvent((Unit*)this,&Unit::EventAurastateExpire,(uint32)AURASTATE_FLAG_LASTKILLWITHHONOR,EVENT_LASTKILLWITHHONOR_FLAG_EXPIRE,20000,1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+								else
+									sEventMgr.ModifyEventTimeLeft(this,EVENT_LASTKILLWITHHONOR_FLAG_EXPIRE,20000);
+								
+								// let's give the pet some experience too
+								if( pTagger->GetSummon() && pTagger->GetSummon()->CanGainXP() ){
+									xp = CalculateXpToGive( pVictim, pTagger->GetSummon() );
+									
+									if( xp > 0 )
+										pTagger->GetSummon()->GiveXP( xp );
+								}
+							}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+							if(pVictim->IsCreature())
+							{
+								sQuestMgr.OnPlayerKill( pTagger, TO_CREATURE( pVictim ), true );
+
+///////////////////////////////////////////////// Kill creature/creature type Achievements /////////////////////////////////////////////////////////////////////
+#ifdef ENABLE_ACHIEVEMENTS
+								if(pTagger->InGroup()){
+									Group *pGroup = pTagger->GetGroup();
+									
+									pGroup->UpdateAchievementCriteriaForInrange( pVictim, ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, pVictim->GetEntry(), 1, 0 );
+									pGroup->UpdateAchievementCriteriaForInrange( pVictim, ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE_TYPE, GetHighGUID(), GetLowGUID(), 0 );
+
+								}else{
+									pTagger->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, pVictim->GetEntry(), 1, 0);
+									pTagger->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE_TYPE, GetHighGUID(), GetLowGUID(), 0);
+#endif
+								}
+							}
+						}
+					}
+				}
+			}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#ifdef ENABLE_ACHIEVEMENTS
+
+		if( pVictim->isCritter() ){
+			GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, pVictim->GetEntry(), 1, 0);
+			GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE_TYPE, GetHighGUID(), GetLowGUID(), 0);
+		}
+
+#endif
+
+	}else{
+		pVictim->TakeDamage( this, damage, spellId, no_remove_auras );
+	}
+}
+
+
+void Player::TakeDamage(Unit *pAttacker, uint32 damage, uint32 spellid, bool no_remove_auras ){
+
+	if( !no_remove_auras ){
+		//zack 2007 04 24 : root should not remove self (and also other unknown spells)
+		if( spellid ){
+			RemoveAurasByInterruptFlagButSkip( AURA_INTERRUPT_ON_ANY_DAMAGE_TAKEN, spellid );
+			if( Rand( 35.0f ) )
+				RemoveAurasByInterruptFlagButSkip( AURA_INTERRUPT_ON_UNUSED2, spellid );
+		}else{
+			RemoveAurasByInterruptFlag( AURA_INTERRUPT_ON_ANY_DAMAGE_TAKEN );
+			if( Rand( 35.0f ) )
+				RemoveAurasByInterruptFlag( AURA_INTERRUPT_ON_UNUSED2 );
+		}
+	}
+
+	if( CombatStatus.IsInCombat() )
+		sHookInterface.OnEnterCombat( this, pAttacker );
+
+
+	// Rage generation on damage
+	if( GetPowerType() == POWER_TYPE_RAGE && pAttacker != this ){
+		float val;
+		float level = static_cast< float >( getLevel() );
+		float c = 0.0091107836f * level * level + 3.225598133f * level + 4.2652911f;
+		
+		val = 2.5f * damage / c;
+		uint32 rage = GetPower( POWER_TYPE_RAGE );
+
+		if( rage + float2int32( val ) > 1000 )
+			val = 1000.0f - static_cast< float >( GetPower( POWER_TYPE_RAGE ) );
+
+		val *= 10.0;
+		ModPower( POWER_TYPE_RAGE, static_cast< int32 >( val ) );
+	}
+
+
+	// Cannibalize, when we are hit we need to stop munching that nice fresh corpse
+	{
+		if( cannibalize ){
+			sEventMgr.RemoveEvents( this, EVENT_CANNIBALIZE );
+			SetEmoteState(0);
+			cannibalize = false;
+		}
+	}
+
+	if( pAttacker != this ){
+		
+		// Defensive pet
+		std::list<Pet*> summons = GetSummons();
+		
+		for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr){
+			Pet* pPet = *itr;
+			
+			if( pPet->GetPetState() != PET_STATE_PASSIVE ){
+				pPet->GetAIInterface()->AttackReaction( pAttacker, 1, 0 );
+				pPet->HandleAutoCastEvent( AUTOCAST_EVENT_OWNER_ATTACKED );
+			}
+		}
+	}
+
+	ModHealth( -1 * static_cast< int32 >( damage ) );
+}
+
+void Player::Die( Unit *pAttacker, uint32 damage, uint32 spellid ){
+
+#ifdef ENABLE_ACHIEVEMENTS
+	// A Player has died
+	if( IsPlayer() ){
+		GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_DEATH, 1, 0, 0);
+		GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_DEATH_AT_MAP, GetMapId(), 1, 0);
+		
+		// A Player killed a Player
+		if( pAttacker->IsPlayer() ){
+			GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILLED_BY_PLAYER, 1, 0, 0);
+		}// A Creature killed a Player
+		else if( pAttacker->IsCreature() ){
+			GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILLED_BY_CREATURE, 1, 0, 0);
+		}
+	}
+#endif
+
+	//general hook for die
+	if( !sHookInterface.OnPreUnitDie( pAttacker, this) )
+		return;
+
+	// on die and an target die proc
+	{
+		SpellEntry *killerspell;
+		if( spellid )
+			killerspell = dbcSpell.LookupEntry( spellid );
+		else killerspell = NULL;
+		
+		HandleProc( PROC_ON_DIE, this, killerspell );
+		m_procCounter = 0;
+		pAttacker->HandleProc( PROC_ON_TARGET_DIE, this, killerspell );
+		pAttacker->m_procCounter = 0;
+	}
+
+	KillPlayer();
+
+	if( !pAttacker->IsPlayer() )
+		DeathDurabilityLoss(0.10);
+
+
+	if( GetChannelSpellTargetGUID() != 0 ){
+		
+		Spell *spl = GetCurrentSpell();
+		
+		if( spl != NULL ){
+			
+			for(int i = 0; i < 3; i++){
+				if(spl->GetProto()->Effect[i] == SPELL_EFFECT_PERSISTENT_AREA_AURA){
+					uint64 guid = GetChannelSpellTargetGUID();
+					DynamicObject *dObj = GetMapMgr()->GetDynamicObject( Arcemu::Util::GUID_LOPART( guid ) );
+					if(!dObj)
+						return;
+					
+					dObj->Remove();
+				}
+			}
+
+			if( spl->GetProto()->ChannelInterruptFlags == 48140) spl->cancel();
+		}
+	}
+
+	/* Stop players from casting */
+	for( std::set< Object* >::iterator itr = GetInRangePlayerSetBegin() ; itr != GetInRangePlayerSetEnd() ; itr ++ ){
+		Unit *attacker = static_cast< Unit* >( *itr );
+		
+		if( attacker->GetCurrentSpell() != NULL){
+			if ( attacker->GetCurrentSpell()->m_targets.m_unitTarget == GetGUID())
+				attacker->GetCurrentSpell()->cancel();
+		}
+	}
+
+	smsg_AttackStop( this );
+	EventAttackStop();
+	
+	SetHealth( 0 );
+	CALL_INSTANCE_SCRIPT_EVENT( m_mapMgr, OnPlayerDeath )( this, pAttacker );
+
+	{
+		uint32 self_res_spell = 0;
+		if( m_bg == NULL || ( m_bg != NULL && m_bg->GetType() != BATTLEGROUND_ARENA_5V5 && m_bg->GetType() != BATTLEGROUND_ARENA_3V3 && m_bg->GetType() != BATTLEGROUND_ARENA_2V2 ) ){
+			
+			self_res_spell = SoulStone;
+			
+			SoulStone = SoulStoneReceiver = 0;
+			
+			if( self_res_spell == 0 && bReincarnation ){
+				SpellEntry* m_reincarnSpellInfo = dbcSpell.LookupEntry( 20608 );
+				if( Cooldown_CanCast( m_reincarnSpellInfo ) ){
+					
+					uint32 ankh_count = GetItemInterface()->GetItemCount( 17030 );
+					if( ankh_count )
+						self_res_spell = 21169;
+				}
+			}
+		}
+		
+		SetUInt32Value( PLAYER_SELF_RES_SPELL, self_res_spell );
+		SetUInt32Value( UNIT_FIELD_MOUNTDISPLAYID , 0 );
+	}
+
+	// Wipe our attacker set on death
+	CombatStatus.Vanished();
+
+	CALL_SCRIPT_EVENT( pAttacker, OnTargetDied )( this );
+	pAttacker->smsg_AttackStop( this );
+	
+	/* Tell Unit that it's target has Died */
+	pAttacker->addStateFlag( UF_TARGET_DIED );
+
+	
+	//check for spirit of Redemption
+	if( HasSpell( 20711 ) ){
+		SpellEntry* sorInfo = dbcSpell.LookupEntryForced(27827);
+		
+		if( sorInfo != NULL ){
+			Spell *sor = new Spell( this, sorInfo, true, NULL);
+			SpellCastTargets targets;
+			targets.m_unitTarget = GetGUID();
+			sor->prepare(&targets);
+		}
+	}
+
+	m_UnderwaterTime = 0;
+	m_UnderwaterState = 0;
+	m_BreathDamageTimer = 0;
+	m_SwimmingTime = 0;
+	DismissActivePets();
+	RemoveAllGuardians();
+}
+
