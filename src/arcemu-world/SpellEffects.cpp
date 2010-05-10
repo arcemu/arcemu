@@ -789,15 +789,6 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 			// if(unitTarget->FindAuraByNameHash( SPELL_HASH_FROST_NOVA ) )
 
 		}break;
-	case 44440: // Fiery Payback
-	case 44441:
-		{
-			if(!u_caster)
-				break;
-			if(!u_caster->HasFlag(UNIT_FIELD_AURASTATE, AURASTATE_FLAG_HEALTH35 ))
-				GetProto()->Effect[0] = GetProto()->Effect[1] = GetProto()->Effect[2] = 0;
-		}break;
-
 	case 11189:
 	case 28332:
 		{

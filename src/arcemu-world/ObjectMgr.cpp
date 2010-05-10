@@ -1574,7 +1574,7 @@ void ObjectMgr::LoadSpellEffectsOverride()
 				if( sp != NULL )
 				{
 					if( seo_Disable )
-						sp->Effect[seo_EffectId] = 0;
+						sp->Effect[seo_EffectId] = SPELL_EFFECT_NULL;
 
 					if( seo_Effect )
 						sp->Effect[seo_EffectId] = seo_Effect;

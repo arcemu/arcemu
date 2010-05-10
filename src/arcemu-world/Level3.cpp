@@ -2081,7 +2081,7 @@ bool ChatHandler::HandleCastAllCommand(const char* args, WorldSession* m_session
 	// this makes sure no moron casts a learn spell on everybody and wrecks the server
 	for (int i = 0; i < 3; i++)
 	{
-		if (info->Effect[i] == 36) //SPELL_EFFECT_LEARN_SPELL - 36
+		if (info->Effect[i] == SPELL_EFFECT_LEARN_SPELL) //SPELL_EFFECT_LEARN_SPELL - 36
 		{
 			sGMLog.writefromsession(m_session, "used wrong / learnall castall command, spellid %u", spellid);
 			RedSystemMessage(m_session, "Learn spell specified.");

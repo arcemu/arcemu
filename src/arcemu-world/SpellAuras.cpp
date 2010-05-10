@@ -3692,7 +3692,7 @@ void Aura::SpellAuraModDetect(bool apply)
 void Aura::SpellAuraModInvisibility(bool apply)
 {
 	SetPositive();
-	if(m_spellProto->Effect[mod->i] == 128)
+	if(m_spellProto->Effect[mod->i] == SPELL_EFFECT_UNKNOWN7)
 		return;
 
 	if(apply)
@@ -6187,7 +6187,7 @@ void Aura::SpellAuraMounted(bool apply)
 		m_target->RemoveAura(id);
 	}*/
 
-	bool isVehicleSpell  = m_spellProto->Effect[1] == SPELL_EFFECT_SUMMON ? true : false;
+	bool isVehicleSpell = (m_spellProto->Effect[1] == SPELL_EFFECT_SUMMON);
 
 	if(apply)
 	{

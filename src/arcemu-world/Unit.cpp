@@ -1208,9 +1208,9 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						CastingSpell->Id == 16953 ||
 						CastingSpell->Id == 16959)
 						continue;
-					if( CastingSpell->Effect[0] != 80 &&
-						CastingSpell->Effect[1] != 80 &&
-						CastingSpell->Effect[2] != 80 &&
+					if( CastingSpell->Effect[0] != SPELL_EFFECT_ADD_COMBO_POINTS &&
+						CastingSpell->Effect[1] != SPELL_EFFECT_ADD_COMBO_POINTS &&
+						CastingSpell->Effect[2] != SPELL_EFFECT_ADD_COMBO_POINTS &&
 						CastingSpell->NameHash != SPELL_HASH_MANGLE___CAT )
 						continue;
 				}break;
