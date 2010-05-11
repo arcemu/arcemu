@@ -608,13 +608,13 @@ void ApplyNormalFixes()
 						pr|=PROC_ON_ANY_DAMAGE_VICTIM; //maybe melee damage ?
 					if( strstr( sp->Description, "gives your"))
 					{
-						if( strstr( sp->Description, "melee"))
+						if( strstr( sp->Description,"finishing moves"))
+							pr|=PROC_ON_CAST_SPELL;
+						else if( strstr( sp->Description, "melee"))
 							pr|=PROC_ON_MELEE_ATTACK;
 						else if( strstr( sp->Description,"sinister strike, backstab, gouge and shiv"))
 							pr|=PROC_ON_CAST_SPELL;
 						else if( strstr( sp->Description,"chance to daze the target"))
-							pr|=PROC_ON_CAST_SPELL;
-						else if( strstr( sp->Description,"finishing moves"))
 							pr|=PROC_ON_CAST_SPELL;
 						else pr|=PROC_ON_CAST_SPECIFIC_SPELL;
 					}

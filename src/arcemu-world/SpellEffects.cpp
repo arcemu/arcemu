@@ -5837,7 +5837,7 @@ void Spell::SpellEffectAddComboPoints(uint32 i) // Add Combo Points
 		return;
 
 	//if this is a procspell Ruthlessness (maybe others later)
-	if(pSpellId && GetProto()->Id==14157)
+	if(pSpellId && ( GetProto()->Id == 14157 || GetProto()->Id == 70802 ) )
 	{
 		//it seems this combo adding procspell is going to change combopoint count before they will get reset. We add it after the reset
 		/* burlex - this is wrong, and exploitable.. :/ if someone uses this they will have unlimited combo points */

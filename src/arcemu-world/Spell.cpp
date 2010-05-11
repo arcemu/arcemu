@@ -4856,6 +4856,46 @@ exit:
 		if( u_caster != NULL )
 			value += (uint32)ceilf(u_caster->GetAP() * 0.21f);
 	}
+	else if( GetProto()->c_is_flags & SPELL_FLAG_IS_POISON ) // poison damage modifier
+	{
+		switch ( GetProto()->NameHash )
+		{
+			case SPELL_HASH_DEADLY_POISON_IX:
+			case SPELL_HASH_DEADLY_POISON_VIII:
+			case SPELL_HASH_DEADLY_POISON_VII:
+			case SPELL_HASH_DEADLY_POISON_VI:
+			case SPELL_HASH_DEADLY_POISON_V:
+			case SPELL_HASH_DEADLY_POISON_IV:
+			case SPELL_HASH_DEADLY_POISON_III:
+			case SPELL_HASH_DEADLY_POISON_II:
+			case SPELL_HASH_DEADLY_POISON:
+				if (GetProto()->EffectApplyAuraName[i] == SPELL_AURA_PERIODIC_DAMAGE )
+					value += float2int32(u_caster->GetAP() * 0.03f);
+				break;
+			case SPELL_HASH_INSTANT_POISON_IX:
+			case SPELL_HASH_INSTANT_POISON_VIII:
+			case SPELL_HASH_INSTANT_POISON_VII:
+			case SPELL_HASH_INSTANT_POISON_VI:
+			case SPELL_HASH_INSTANT_POISON_V:
+			case SPELL_HASH_INSTANT_POISON_IV:
+			case SPELL_HASH_INSTANT_POISON_III:
+			case SPELL_HASH_INSTANT_POISON_II:
+			case SPELL_HASH_INSTANT_POISON:
+				if ( GetProto()->Effect[i] == SPELL_EFFECT_SCHOOL_DAMAGE )
+					value += float2int32(u_caster->GetAP() * 0.10f);
+				break;
+			case SPELL_HASH_WOUND_POISON_VII:
+			case SPELL_HASH_WOUND_POISON_VI:
+			case SPELL_HASH_WOUND_POISON_V:
+			case SPELL_HASH_WOUND_POISON_IV:
+			case SPELL_HASH_WOUND_POISON_III:
+			case SPELL_HASH_WOUND_POISON_II:
+			case SPELL_HASH_WOUND_POISON:
+				if ( GetProto()->Effect[i] == SPELL_EFFECT_SCHOOL_DAMAGE )
+					value += float2int32(u_caster->GetAP() * 0.04f);
+				break;
+		}
+	}
 
 	else if( GetProto()->NameHash == SPELL_HASH_FAN_OF_KNIVES && p_caster != NULL ) // rogue - fan of knives
 	{

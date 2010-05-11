@@ -1994,6 +1994,13 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 							static_cast<Player*>(this)->UpdateComboPoints();
 						}
 					}break;
+				// rogue - T10 4P bonus
+				case 70802:
+					{
+						// The rogue bonus set of T10 requires a finishing move
+						if ( ! (CastingSpell && CastingSpell->c_is_flags & SPELL_FLAG_IS_FINISHING_MOVE))
+							continue;
+					}break;
 				//rogue - Relentless Strikes
 				case 14181:
 					{
@@ -4582,6 +4589,87 @@ void Unit::AddAura(Aura * aur)
 			if(deleteAur)
 			{
 				sEventMgr.RemoveEvents( aur );
+
+				// Once stacked 5 times, each application of Deadly poison also causes the poison on the Rogue's other weapon to apply
+				// http://www.wowhead.com/?item=43233#comments
+				if ( AlreadyApplied >= maxStack && info->c_is_flags & SPELL_FLAG_IS_POISON )
+				{
+					Player* caster = aur->GetPlayerCaster();
+					if( caster != NULL )
+					{
+						switch ( info->NameHash )
+						{
+							case SPELL_HASH_DEADLY_POISON_IX:
+							case SPELL_HASH_DEADLY_POISON_VIII:
+							case SPELL_HASH_DEADLY_POISON_VII:
+							case SPELL_HASH_DEADLY_POISON_VI:
+							case SPELL_HASH_DEADLY_POISON_V:
+							case SPELL_HASH_DEADLY_POISON_IV:
+							case SPELL_HASH_DEADLY_POISON_III:
+							case SPELL_HASH_DEADLY_POISON_II:
+							case SPELL_HASH_DEADLY_POISON:
+							{
+								Item * mh = caster->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
+								Item * oh = caster->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_OFFHAND );
+
+								if (mh != NULL && oh != NULL )
+								{
+									uint32 mh_spell = 0;
+									uint32 oh_spell = 0;
+
+									// Find mainhand enchantment
+									EnchantmentInstance * ench = mh->GetEnchantment( 1 ); 
+									if(ench)
+									{
+										EnchantEntry* Entry = ench->Enchantment;
+										for( uint32 c = 0; c < 3; c++ )
+										{
+											if( Entry->type[c] && Entry->spell[c] )
+											{
+												SpellEntry *sp = dbcSpell.LookupEntryForced( Entry->spell[c] );
+												if( sp && sp->c_is_flags & SPELL_FLAG_IS_POISON )
+												{
+													mh_spell = Entry->spell[c];
+													break;								                
+												}
+											}
+										}
+
+										// Find offhand enchantment
+										ench = oh->GetEnchantment( 1 ); 
+										if(ench)
+										{
+											EnchantEntry* Entry = ench->Enchantment;
+											for( uint32 c = 0; c < 3; c++ )
+											{
+												if( Entry->type[c] && Entry->spell[c] )
+												{
+													SpellEntry *sp = dbcSpell.LookupEntryForced( Entry->spell[c] );
+													if( sp && sp->c_is_flags & SPELL_FLAG_IS_POISON )
+													{
+														oh_spell = Entry->spell[c];
+														break;								                
+													}
+												}
+											}
+										}
+									}
+
+									if (mh_spell && oh_spell && mh_spell != oh_spell)
+									{
+										if (mh_spell != info->Id)
+											caster->CastSpell(aur->GetTarget(), mh_spell, true);
+										else
+											caster->CastSpell(aur->GetTarget(), oh_spell, true);
+									}
+								}
+
+								break;
+							}
+						}
+					}
+				}
+
 				delete aur;
 				return;
 			}
