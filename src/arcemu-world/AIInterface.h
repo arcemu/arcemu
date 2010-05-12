@@ -36,6 +36,7 @@
 #ifdef ENABLE_CREATURE_DAZE
 	#define CREATURE_SPELL_TO_DAZE 1604
 	#define CREATURE_DAZE_TRIGGER_ANGLE M_PI/2 //for the beginners this means 45 degrees 
+	#define CREATURE_DAZE_MIN_LEVEL 6	// minimal level of the target player to daze, from 3.3.0
 #endif
 
 #define DISTANCE_TO_SMALL_TO_WALK 2.0f //this is required so creature will not try to reposition itself to obtain perfect combat range. Not using this might lead to exploits

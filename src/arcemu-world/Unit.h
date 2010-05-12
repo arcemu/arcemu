@@ -1349,6 +1349,7 @@ public:
 	int8 asc_frozen;
 	int8 asc_enraged;
 	int8 asc_seal;
+	int8 asc_bleed;
 
 	uint16 m_noInterrupt;
 	int32 m_rooted;

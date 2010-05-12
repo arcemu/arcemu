@@ -897,7 +897,7 @@ void Pet::GiveXP( uint32 xp )
 
 uint32 Pet::GetNextLevelXP(uint32 level)
 {
-	// Pets need only 10% of xp to level up compared to players
+	// Pets need only 5% of xp to level up compared to players
 	uint32 nextLvlXP = 0;
 	if( level > 0 && level <= MAX_PREDEFINED_NEXTLEVELXP )
 	{
@@ -907,7 +907,7 @@ uint32 Pet::GetNextLevelXP(uint32 level)
 	{
 		nextLvlXP = ((int)((((double)(((8 * level) + ((level - 30) * 5)) * ((level * 5) + 45)))/100)+0.5))*100;
 	}
-	double xp = double(nextLvlXP) / 10;
+	double xp = double( nextLvlXP ) / 20;
 	return FL2UINT(xp);
 }
 

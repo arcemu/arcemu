@@ -405,6 +405,7 @@ Unit::Unit()
 	asc_frozen = 0;
 	asc_enraged = 0;
 	asc_seal = 0;
+	asc_bleed = 0;
 }
 
 Unit::~Unit()
@@ -4798,9 +4799,12 @@ void Unit::AddAura(Aura * aur)
 		}
 	}
     
+	/* Set aurastates */
 	uint32 flag = 0;
 	if( aur->GetSpellProto()->MechanicsType == MECHANIC_ENRAGED && !asc_enraged++ )
         flag |= AURASTATE_FLAG_ENRAGED;
+	else if( aur->GetSpellProto()->MechanicsType == MECHANIC_BLEEDING && !asc_bleed++ )
+		flag |= AURASTATE_FLAG_BLEED;
 	if( aur->GetSpellProto()->BGR_one_buff_on_target & SPELL_TYPE_SEAL && !asc_seal++ )
 		flag |= AURASTATE_FLAG_JUDGEMENT;
 
@@ -6752,8 +6756,8 @@ Creature* Unit::create_guardian(uint32 guardian_entry,uint32 duration,float angl
 
 float Unit::get_chance_to_daze(Unit *target)
 {
-//	if(GetTypeId()!=TYPEID_UNIT)
-//		return 0.0f;
+	if( target->getLevel() < CREATURE_DAZE_MIN_LEVEL ) // since 3.3.0
+		return 0.0f;
 	float attack_skill = float( getLevel() ) * 5.0f;
 	float defense_skill;
 	if( target->IsPlayer() )

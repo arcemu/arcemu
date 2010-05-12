@@ -941,16 +941,17 @@ void Aura::Remove()
 		}
 	}
 
+	/* Remove aurastates */
     uint32 flag = 0;
 	if( m_spellProto->MechanicsType == MECHANIC_ENRAGED && !--m_target->asc_enraged )
 		flag |= AURASTATE_FLAG_ENRAGED;
+	else if( m_spellProto->MechanicsType == MECHANIC_BLEEDING && !--m_target->asc_bleed )
+		flag |= AURASTATE_FLAG_BLEED;
 	if( m_spellProto->BGR_one_buff_on_target & SPELL_TYPE_SEAL && !--m_target->asc_seal )
         flag |= AURASTATE_FLAG_JUDGEMENT;
     if( flag != 0 )
 		m_target->RemoveFlag( UNIT_FIELD_AURASTATE, flag );
 
-	// delete this; // suicide xD	leaking this shit out
-    
     // We will delete this on the next update, eluding some spell crashes :|
     m_target->AddGarbageAura( this );
     m_target->m_auras[ m_auraSlot ] = NULL;
