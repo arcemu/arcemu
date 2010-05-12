@@ -2196,24 +2196,26 @@ void Creature::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint
 }
 
 
-void Creature::TakeDamage(Unit *pAttacker, uint32 damage, uint32 spellid, bool no_remove_auras ){
-
-	if( !no_remove_auras ){
+void Creature::TakeDamage(Unit *pAttacker, uint32 damage, uint32 spellid, bool no_remove_auras )
+{
+	if( !no_remove_auras )
+	{
 		//zack 2007 04 24 : root should not remove self (and also other unknown spells)
-		if( spellid ){
+		if( spellid )
+		{
 			RemoveAurasByInterruptFlagButSkip( AURA_INTERRUPT_ON_ANY_DAMAGE_TAKEN, spellid );
 			if( Rand( 35.0f ) )
 				RemoveAurasByInterruptFlagButSkip( AURA_INTERRUPT_ON_UNUSED2, spellid );
-		}else{
+		}
+		else
+		{
 			RemoveAurasByInterruptFlag( AURA_INTERRUPT_ON_ANY_DAMAGE_TAKEN );
 			if( Rand( 35.0f ) )
 				RemoveAurasByInterruptFlag( AURA_INTERRUPT_ON_UNUSED2 );
 		}
 	}
 	
-	if( pAttacker != this ){
-		GetAIInterface()->AttackReaction( this, damage, spellid );
-	}
+	GetAIInterface()->AttackReaction( pAttacker, damage, spellid );
 
 	ModHealth( -1 * static_cast< int32 >( damage ) );
 }
@@ -2319,11 +2321,10 @@ void Creature::Die( Unit *pAttacker, uint32 damage, uint32 spellid ){
 	/* Tell Unit that it's target has Died */
 	pAttacker->addStateFlag( UF_TARGET_DIED );
 
-	GetAIInterface()->OnDeath(this);
+	GetAIInterface()->OnDeath(pAttacker);
 
 	SetFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_DEAD );
 
-	
 	if( !IsTotem() && GetCreatedByGUID() == 0 && GetTaggerGUID() != 0 ){
 		Unit *owner = m_mapMgr->GetUnit( GetTaggerGUID() );
 
