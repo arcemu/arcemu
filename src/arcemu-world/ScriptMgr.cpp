@@ -808,7 +808,15 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 		Menu->AddItem(0, Plr->GetSession()->LocalizedWorldSrv(21), 10);
 
 	if (pCreature->isBanker())
-		Menu->AddItem(0, Plr->GetSession()->LocalizedWorldSrv(17), 6);
+	{
+		if(pCreature->isQuestGiver())
+			Menu->AddItem(0, Plr->GetSession()->LocalizedWorldSrv(17), 6);
+		else
+		{
+			Plr->GetSession()->SendBankerList(pCreature);
+			return;
+		}
+	}
 
 	if (pCreature->isCharterGiver())
 	{
