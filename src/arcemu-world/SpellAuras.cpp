@@ -3534,6 +3534,12 @@ void Aura::SpellAuraModStealth(bool apply)
 {
 	if(apply)
 	{
+		//Overkill must proc only if we aren't already stealthed
+		if( !m_target->IsStealth() && m_target->HasAurasWithNameHash(SPELL_HASH_OVERKILL) )
+		{
+			m_target->CastSpell(m_target, 58427, true);
+		}
+
 		if(p_target && p_target->m_bgHasFlag)
 		{
 			if(p_target->m_bg && p_target->m_bg->GetType() == BATTLEGROUND_WARSONG_GULCH)
@@ -3667,10 +3673,13 @@ void Aura::SpellAuraModStealth(bool apply)
 				 m_target->m_auras[x]->GetSpellProto()->NameHash == SPELL_HASH_OVERKILL) && 
 				 m_target->m_auras[x]->GetSpellProto()->EffectApplyAuraName[0] != SPELL_AURA_DUMMY )
 				{
-					m_target->m_auras[x]->SetDuration(6000);
-					//m_target->m_auras[x]->SetTimeLeft(6000);
+					uint32 tmp_duration = MSTIME_6SECONDS;
+					if( m_target->m_auras[x]->GetSpellProto()->NameHash == SPELL_HASH_OVERKILL )
+						tmp_duration = MSTIME_SECOND * 20;
 
-					sEventMgr.AddEvent(m_target->m_auras[x], &Aura::Remove, EVENT_AURA_REMOVE, 6000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT | EVENT_FLAG_DELETES_OBJECT);
+					m_target->m_auras[x]->SetDuration(tmp_duration);
+
+					sEventMgr.AddEvent(m_target->m_auras[x], &Aura::Remove, EVENT_AURA_REMOVE, tmp_duration, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT | EVENT_FLAG_DELETES_OBJECT);
 				}
 			}
 		}
