@@ -13430,25 +13430,24 @@ void Player::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 										pTagger->GetSummon()->GiveXP( xp );
 								}
 							}
+						}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-							if(pVictim->IsCreature())
-							{
-								sQuestMgr.OnPlayerKill( pTagger, TO_CREATURE( pVictim ), true );
-
+						if(pVictim->IsCreature()){
+							sQuestMgr.OnPlayerKill( pTagger, TO_CREATURE( pVictim ), true );
 ///////////////////////////////////////////////// Kill creature/creature type Achievements /////////////////////////////////////////////////////////////////////
 #ifdef ENABLE_ACHIEVEMENTS
-								if(pTagger->InGroup()){
-									Group *pGroup = pTagger->GetGroup();
-									
-									pGroup->UpdateAchievementCriteriaForInrange( pVictim, ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, pVictim->GetEntry(), 1, 0 );
-									pGroup->UpdateAchievementCriteriaForInrange( pVictim, ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE_TYPE, GetHighGUID(), GetLowGUID(), 0 );
-
-								}else{
-									pTagger->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, pVictim->GetEntry(), 1, 0);
-									pTagger->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE_TYPE, GetHighGUID(), GetLowGUID(), 0);
+							if(pTagger->InGroup()){
+								Group *pGroup = pTagger->GetGroup();
+								
+								pGroup->UpdateAchievementCriteriaForInrange( pVictim, ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, pVictim->GetEntry(), 1, 0 );
+								pGroup->UpdateAchievementCriteriaForInrange( pVictim, ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE_TYPE, GetHighGUID(), GetLowGUID(), 0 );
+							
+							}else{
+								pTagger->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, pVictim->GetEntry(), 1, 0);
+								pTagger->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE_TYPE, GetHighGUID(), GetLowGUID(), 0);
 #endif
-								}
 							}
 						}
 					}
