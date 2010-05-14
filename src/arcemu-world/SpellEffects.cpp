@@ -6451,7 +6451,7 @@ void Spell::SpellEffectSummonCritter(uint32 i)
 
 void Spell::SpellEffectKnockBack(uint32 i)
 {
-	if(!playerTarget || !playerTarget->isAlive() || !m_caster || m_caster == playerTarget)
+	if( playerTarget == NULL || !playerTarget->isAlive() || m_caster == NULL )
 		return;
 
 	float dx, dy;
