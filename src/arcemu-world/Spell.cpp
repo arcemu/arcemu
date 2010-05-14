@@ -3242,6 +3242,9 @@ uint8 Spell::CanCast(bool tolerate)
 
 	uint32 i;
 
+	if( p_caster != NULL && HasCustomFlag( CUSTOM_FLAG_SPELL_REQUIRES_COMBAT ) && !p_caster->CombatStatus.IsInCombat() )
+		return SPELL_FAILED_SPELL_UNAVAILABLE;
+
 	/**
 	 *	Object cast checks
 	 */

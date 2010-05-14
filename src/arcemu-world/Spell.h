@@ -663,6 +663,11 @@ enum Flags7
 	FLAGS7_UNK19						= 0x20000,
 };
 
+
+enum SpellCustomFlags{
+	CUSTOM_FLAG_SPELL_REQUIRES_COMBAT		= 0x1
+};
+
 enum SpellCastFlags
 {
     CAST_FLAG_UNKNOWN1           = 0x2,
@@ -1693,6 +1698,14 @@ public:
     
 	// Checks the caster is ready for cast
     uint8 CanCast(bool);
+
+	bool HasCustomFlag( uint32 flag ){
+		if( ( GetProto()->CustomFlags & flag ) != 0 )
+			return true;
+		else
+			return false;
+	}
+
 	ARCEMU_INLINE bool hasAttribute(uint32 attribute)
 	{
 		return ((GetProto()->Attributes & attribute) > 0);

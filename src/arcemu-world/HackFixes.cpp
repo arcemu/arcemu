@@ -1216,6 +1216,12 @@ void ApplyNormalFixes()
 		if( sp->NameHash == SPELL_HASH_MEND_PET )
 			sp->ChannelInterruptFlags = 0;
 
+
+		// Disengage
+		// Only works in combat
+		if( sp->Id == 781 )
+			sp->CustomFlags = CUSTOM_FLAG_SPELL_REQUIRES_COMBAT;
+
 		//////////////////////////////////////////
 		// ROGUE								//
 		//////////////////////////////////////////

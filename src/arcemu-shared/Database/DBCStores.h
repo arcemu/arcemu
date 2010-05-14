@@ -839,6 +839,7 @@ struct SpellEntry
 	bool   noproc;
 
 	uint32 SchoolMask;                      // Custom
+	uint32 CustomFlags;						// Custom
 	
 	
 	bool HasEffect( uint32 effect ){
@@ -855,6 +856,10 @@ struct SpellEntry
 		}
 
 		return false;
+	}
+
+	SpellEntry(){
+		CustomFlags = 0;
 	}
 };
 
