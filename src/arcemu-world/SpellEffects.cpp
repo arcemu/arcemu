@@ -159,7 +159,7 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS]={
 	&Spell::SpellEffectNULL,					// Summon Pet: http://www.thottbot.com/s23498 - 135
 	&Spell::SpellEffectRestoreHealthPct,		// Restore Health % - 136 // http://www.thottbot.com/s41542 and http://www.thottbot.com/s39703
 	&Spell::SpellEffectRestorePowerPct,			// Restore Power % - 137 // http://www.thottbot.com/s41542
-	&Spell::SpellEffectNULL,					// unknown - 138 // related to superjump or even "*jump" spells http://www.thottbot.com/?e=Unknown%20138
+	&Spell::SpellEffectKnockBack2,				// knockback2 - 138 // related to superjump or even "*jump" spells http://www.thottbot.com/?e=Unknown%20138
 	&Spell::SpellEffectNULL,					// Remove Quest - 139 // no spells
 	&Spell::SpellEffectTriggerSpell,			// triggers a spell from target back to caster - used at Malacrass f.e.
 	&Spell::SpellEffectNULL,					// unknown - 141 // triggers spell, magic one,  (Mother spell) http://www.thottbot.com/s41065
@@ -325,7 +325,7 @@ const char* SpellEffectNames[TOTAL_SPELL_EFFECTS] = {
 	"UNKNOWN15",                 //    135
 	"UNKNOWN16",                 //    136
 	"UNKNOWN17",                 //    137
-	"UNKNOWN18",                 //    138
+	"KNOCKBACK2",                 //    138
 	"UNKNOWN19",                 //    139
 	"UNKNOWN20",                 //    140
 	"UNKNOWN21",                 //    141
@@ -6453,35 +6453,15 @@ void Spell::SpellEffectKnockBack(uint32 i)
 	if( playerTarget == NULL || !playerTarget->isAlive() || m_caster == NULL )
 		return;
 
-	float dx, dy;
-	float value1 = float(GetProto()->EffectBasePoints[i]+1);
-	float value2 = float(GetProto()->EffectMiscValue[i]);
-	float proportion;
-	value2 ? proportion = value1/value2 : proportion = 0;
+	playerTarget->knockback( m_caster->GetOrientation(), GetProto()->EffectBasePoints[ i ] + 1, GetProto()->EffectMiscValue[ i ] );
+}
 
-	if(proportion)
-	{
-		value1 = value1 / (10 * proportion);
-		value2 = value2 / 10 * proportion;
-	}
-	else
-	{
-		value2 = value1 / 10;
-		value1 = 0.1f;
-	}
-
-	dx = sinf(m_caster->GetOrientation());
-	dy = cosf(m_caster->GetOrientation());
-
-	WorldPacket data(SMSG_MOVE_KNOCK_BACK, 50);
-	data << unitTarget->GetNewGUID();
-	data << getMSTime();
-	data << dy << dx;
-	data << value1;
-	data << -value2;
-	playerTarget->GetSession()->SendPacket(&data);
-	playerTarget->blinked = true;
-	playerTarget->SpeedCheatDelay(10000);
+void Spell::SpellEffectKnockBack2(uint32 i)
+{
+	if( playerTarget == NULL || !playerTarget->isAlive() || m_caster == NULL )
+		return;
+	
+	playerTarget->knockback( m_caster->GetOrientation(), GetProto()->EffectBasePoints[ i ] + 1, GetProto()->EffectMiscValue[ i ], true );
 }
 
 void Spell::SpellEffectDisenchant( uint32 i )

@@ -1842,6 +1842,7 @@ public:
 	void SpellEffectCharge(uint32 i);
 	void SpellEffectSummonCritter(uint32 i);
 	void SpellEffectKnockBack(uint32 i);
+	void SpellEffectKnockBack2(uint32 i);
 	void SpellEffectDisenchant( uint32 i );
 	void SpellEffectInebriate(uint32 i);
 	void SpellEffectFeedPet(uint32 i);

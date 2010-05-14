@@ -13654,3 +13654,47 @@ void Player::Die( Unit *pAttacker, uint32 damage, uint32 spellid ){
 	RemoveAllGuardians();
 }
 
+
+void Player::knockback( float CasterOrientation, int32 basepoint, uint32 miscvalue, bool invert ){
+	float dx, dy;
+	float value1 = float( basepoint );
+	float value2 = float( miscvalue );
+	float proportion;
+	float multiplier;
+
+	if( invert )
+		multiplier = -1.0f;
+	else
+		multiplier = 1.0f;
+
+	if( value2 != 0 )
+		proportion = value1 / value2;
+	else
+		proportion = 0;
+
+	if(proportion){
+		value1 = value1 / (10 * proportion);
+		value2 = value2 / 10 * proportion;
+	}else{
+		value2 = value1 / 10;
+		value1 = 0.1f;
+	}
+
+	dx = sinf( CasterOrientation );
+	dy = cosf( CasterOrientation );
+
+	WorldPacket data(SMSG_MOVE_KNOCK_BACK, 50);
+
+	data << GetNewGUID();
+	data << uint32( getMSTime() );
+	data << float( multiplier * dy );
+	data << float( multiplier * dx );
+	data << float( value1 );
+	data << float( -value2 );
+	
+	GetSession()->SendPacket( &data );
+	
+	blinked = true;
+	SpeedCheatDelay(10000);
+}
+
