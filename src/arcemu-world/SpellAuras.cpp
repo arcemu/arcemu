@@ -4027,7 +4027,7 @@ void Aura::EventPeriodicTriggerSpell(SpellEntry* spellInfo)
 		return;
 	}
 
-	Object * oTarget = m_target->GetMapMgr()->_GetObject(periodic_target);
+	Object * oTarget = m_target->GetMapMgrObject(periodic_target);
 	if(oTarget== NULL)
 		return;
 
