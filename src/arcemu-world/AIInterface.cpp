@@ -434,7 +434,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 
 				pUnit->RemoveAura( 24575 );
 
-				CALL_SCRIPT_EVENT(m_Unit, OnDamageTaken)(pUnit, float(misc1));
+				CALL_SCRIPT_EVENT(m_Unit, OnDamageTaken)(pUnit, misc1);
 				if(!modThreatByPtr(pUnit, misc1))
 				{
 					m_aiTargets.insert(TargetMap::value_type(pUnit->GetGUID(), misc1));
@@ -1924,10 +1924,7 @@ Unit* AIInterface::FindTargetForSpell(AI_Spell *sp)
 	{
 		if(sp->spellType == STYPE_HEAL)
 		{
-			uint32 cur = m_Unit->GetHealth() + 1;
-			uint32 max = m_Unit->GetMaxHealth() + 1;
-			float healthPercent = float(cur) / float(max);
-			if(healthPercent <= sp->floatMisc1) // Heal ourselves cause we got too low HP
+			if(m_Unit->GetHealthPct() / 100.0f <= sp->floatMisc1) // Heal ourselves cause we got too low HP
 			{
 				m_Unit->SetTargetGUID(  0);
 				return m_Unit;
@@ -1938,10 +1935,7 @@ Unit* AIInterface::FindTargetForSpell(AI_Spell *sp)
 				{
 					continue;
 				}
-				cur = (*i)->GetHealth();
-				max = (*i)->GetMaxHealth();
-				healthPercent = float(cur) / float(max);
-				if(healthPercent <= sp->floatMisc1) // Heal ourselves cause we got too low HP
+				if((*i)->GetHealthPct() / 100.0f <= sp->floatMisc1) // Heal ourselves cause we got too low HP
 				{
 					m_Unit->SetTargetGUID(  (*i)->GetGUID());
 					return (*i); // heal Assist Target which has low HP

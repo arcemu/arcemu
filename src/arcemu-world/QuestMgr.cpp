@@ -1016,7 +1016,7 @@ void QuestMgr::GiveQuestRewardReputation(Player* plr, Quest* qst, Object *qst_gi
 	for(int z = 0; z < 6; z++)
 	{
 		uint32 fact = 19;   // default to 19 if no factiondbc
-		int32 amt  = float2int32( float( GenerateQuestXP( plr, qst) ) * 0.1f );   // guess
+		int32 amt  = float2int32( GenerateQuestXP( plr, qst) * 0.1f );   // guess
 		if(!qst->reward_repfaction[z])
 		{
 			if( z >= 1 )
@@ -1040,7 +1040,7 @@ void QuestMgr::GiveQuestRewardReputation(Player* plr, Quest* qst, Object *qst_gi
 			if(plr->GetStanding(fact) >= (int32)qst->reward_replimit)
 				continue;
 	  
-		amt = float2int32( float( amt ) * sWorld.getRate( RATE_QUESTREPUTATION ) ); // reputation rewards 
+		amt = float2int32( amt * sWorld.getRate( RATE_QUESTREPUTATION ) ); // reputation rewards 
 		plr->ModStanding(fact, amt);
 	}
 }

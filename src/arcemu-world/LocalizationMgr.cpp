@@ -118,7 +118,7 @@ void LocalizationMgr::Shutdown()
 	delete [] m_WorldBroadCast;
 	delete [] m_WorldMapInfo;
 	m_languages.clear();
-	Log.Notice("LocalizationMgr", "Pointer cleanup completed in %.4f seconds.", float(float(getMSTime()-t) / 1000.0f));
+	Log.Notice("LocalizationMgr", "Pointer cleanup completed in %.4f seconds.", (getMSTime()-t) / 1000.0f);
 #undef SAFE_FREE_PTR
 }
 

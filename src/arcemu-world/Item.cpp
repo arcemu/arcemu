@@ -563,7 +563,7 @@ uint32 GetBuyPriceForItem( ItemPrototype* proto, uint32 count, Player* plr, Crea
 	if( plr != NULL && vendor != NULL )
 	{
 		Standing plrstanding = plr->GetStandingRank( vendor->m_faction->Faction );
-		cost = float2int32( ceilf( float( proto->BuyPrice ) * pricemod[plrstanding] ) );
+		cost = float2int32( ceilf( proto->BuyPrice * pricemod[plrstanding] ) );
 	}
 
 	return cost * count;

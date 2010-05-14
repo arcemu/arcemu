@@ -196,17 +196,17 @@ uint32 CalculateXpToGive(Unit *pVictim, Unit *pAttacker)
 	float fAttacker = float(AttackerLvl);
 
 	if(VictimLvl == AttackerLvl)
-		xp = float( ((fVictim * 5.0f) + 45.0f) );
+		xp = ((fVictim * 5.0f) + 45.0f);
 	else if(VictimLvl > AttackerLvl)
 	{
 		float j = 1.0f + (0.25f * (fVictim - fAttacker));
-		xp = float( ((AttackerLvl * 5.0f) + 45.0f) * j );
+		xp = ((AttackerLvl * 5.0f) + 45.0f) * j;
 	}
 	else
 	{
 		if((AttackerLvl - VictimLvl) < g)
 		{
-			float j = (1.0f - float((fAttacker - fVictim) / zd));
+			float j = (1.0f - ((fAttacker - fVictim) / zd));
 			xp = (AttackerLvl * 5.0f + 45.0f) * j;
 		}
 	}
@@ -662,7 +662,7 @@ if(ability && ability->NameHash == SPELL_HASH_FLAMETONGUE_WEAPON)
 	float result = min_damage;
 
 	if(diff >= 1)
-		result += float(RandomDouble(diff));
+		result += RandomFloat(diff);
 
 	if(result >= 0)
 	{
@@ -671,10 +671,10 @@ if(ability && ability->NameHash == SPELL_HASH_FLAMETONGUE_WEAPON)
 			if( (uint32)UNIXTIME >= ((Player*)pAttacker)->m_outStealthDamageBonusTimer )
 				((Player*)pAttacker)->m_outStealthDamageBonusTimer = 0;
 			else
-				result *= ((float(((Player*)pAttacker)->m_outStealthDamageBonusPct) / 100.0f) + 1.0f);
+				result *= ((((Player*)pAttacker)->m_outStealthDamageBonusPct) / 100.0f) + 1.0f;
 		}
 
-		return FL2UINT(result);
+		return float2int32(result);
 	}
 
 	return 0;

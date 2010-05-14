@@ -347,13 +347,13 @@ float TerrainMgr::GetLandHeight(float x, float y)
 
 	// Calculate x index.
 	float TempFloat = IntX * (MAP_RESOLUTION / CellsPerTile / _cellSize);
-	uint32 XOffset = FL2UINT(TempFloat);
+	uint32 XOffset = float2int32(TempFloat);
 	if((TempFloat - (XOffset * _cellSize)) >= 0.5f)
 		++XOffset;
 
 	// Calculate y index.
 	TempFloat = IntY * (MAP_RESOLUTION / CellsPerTile / _cellSize);
-	uint32 YOffset = FL2UINT(TempFloat);
+	uint32 YOffset = float2int32(TempFloat);
 	if((TempFloat - (YOffset * _cellSize)) >= 0.5f)
 		++YOffset;
 

@@ -239,17 +239,17 @@ public:
 
 	virtual void OnCombatStart(Unit* mTarget) {}
 	virtual void OnCombatStop(Unit* mTarget) {}
-	virtual void OnDamageTaken(Unit* mAttacker, float fAmount) {}
+	virtual void OnDamageTaken(Unit* mAttacker, uint32 fAmount) {}
 	virtual void OnCastSpell(uint32 iSpellId) {}
 	virtual void OnTargetParried(Unit* mTarget) {}
 	virtual void OnTargetDodged(Unit* mTarget) {}
 	virtual void OnTargetBlocked(Unit* mTarget, int32 iAmount) {}
-	virtual void OnTargetCritHit(Unit* mTarget, float fAmount) {}
+	virtual void OnTargetCritHit(Unit* mTarget, int32 fAmount) {}
 	virtual void OnTargetDied(Unit* mTarget) {}
 	virtual void OnParried(Unit* mTarget) {}
 	virtual void OnDodged(Unit* mTarget) {}
 	virtual void OnBlocked(Unit* mTarget, int32 iAmount) {}
-	virtual void OnCritHit(Unit* mTarget, float fAmount) {}
+	virtual void OnCritHit(Unit* mTarget, int32 fAmount) {}
 	virtual void OnHit(Unit* mTarget, float fAmount) {}
 	virtual void OnDied(Unit *mKiller) {}
 	virtual void OnAssistTargetDied(Unit* mAssistTarget) {}

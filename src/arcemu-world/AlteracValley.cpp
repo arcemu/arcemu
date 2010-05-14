@@ -1829,7 +1829,7 @@ void AlteracValley::HookGenerateLoot(Player *plr, Object *pCorpse)
 	}
 
 	// add some money
-	float gold = ((float(plr->getLevel()) / 2.5f)+1) * 100.0f;			// fix this later
+	float gold = ((plr->getLevel() / 2.5f) + 1.0f) * 100.0f;			// fix this later
 	gold *= sWorld.getRate(RATE_MONEY);
 
 	// set it

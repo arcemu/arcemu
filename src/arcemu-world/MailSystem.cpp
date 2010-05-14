@@ -138,7 +138,7 @@ bool MailMessage::AddMessageDataToPacket(WorldPacket& data)
 	data << stationery;
 	data << money;		// money
 	data << uint32(0x10);
-	data << float(float(expire_time - (uint32)UNIXTIME) / 86400.0f);
+	data << float((expire_time - (uint32)UNIXTIME) / 86400.0f);
 	data << uint32(0);	// mail template
 	data << subject;
 	pos = data.wpos();

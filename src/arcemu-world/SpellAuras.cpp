@@ -1524,23 +1524,15 @@ void Aura::EventPeriodicDamage(uint32 amount)
 		{
 			c->RemoveAurasByInterruptFlag(AURA_INTERRUPT_ON_START_ATTACK);
 
-			float bonus_damage;
-
 			int amp = m_spellProto->EffectAmplitude[mod->i];
 			if( !amp )
 				amp = static_cast< EventableObject* >( this )->event_GetEventPeriod( EVENT_AURA_PERIODIC_DAMAGE );
 
 			if(GetDuration())
 			{
-				if( GetSpellProto() && GetSpellProto()->NameHash == SPELL_HASH_IGNITE )  //static damage for Ignite. Need to be reworked when "static DoTs" will be implemented
-					bonus_damage= 0;
-				else bonus_damage = (float)c->GetSpellDmgBonus(m_target,m_spellProto,amount,true);
-				float ticks= float((amp) ? GetDuration()/amp : 0);
-				float fbonus = float(bonus);
-				fbonus += (ticks) ? bonus_damage/ticks : 0;
-				bonus = float2int32(fbonus);
+				if( GetSpellProto()->NameHash != SPELL_HASH_IGNITE )  //static damage for Ignite. Need to be reworked when "static DoTs" will be implemented
+					bonus += c->GetSpellDmgBonus(m_target,m_spellProto,amount,true) * amp / GetDuration();
 			}
-			else bonus = 0;
 
 			res += bonus;
 
@@ -1773,7 +1765,7 @@ void Aura::SpellAuraDummy(bool apply)
 	case 33983:
 		{
 			int32 val = (apply) ? 30 : -30;
-			m_target->ModDamageTakenByMechPCT[MECHANIC_BLEEDING] += float( val ) / 100.0f;
+			m_target->ModDamageTakenByMechPCT[MECHANIC_BLEEDING] += val / 100.0f;
 		}break;
 	//warrior - berserker rage (Forcing a dummy aura, so we can add the missing 4th effect).
 	case 18499:
@@ -3050,20 +3042,20 @@ void Aura::EventPeriodicHeal( uint32 amount )
 		}
 		//Spell Coefficient
 		if( m_spellProto->OTspell_coef_override >= 0 ) //In case we have forced coefficients
-			bonus = float2int32( float( bonus ) * m_spellProto->OTspell_coef_override );
+			bonus = float2int32( bonus * m_spellProto->OTspell_coef_override );
 		else
 		{
 			//Bonus to HoT part
 			if( m_spellProto->fixed_hotdotcoef >= 0 )
 			{
-				bonus = float2int32( float( bonus ) * m_spellProto->fixed_hotdotcoef );
+				bonus = float2int32( bonus * m_spellProto->fixed_hotdotcoef );
 				//we did most calculations in world.cpp, but talents that increase DoT spells duration
 				//must be included now.
 				if( c->IsPlayer() )
 				{
 					int durmod = 0;
 					SM_FIValue(c->SM_FDur, &durmod, m_spellProto->SpellGroupType);
-					bonus += float2int32( float( bonus * durmod ) / 15000.0f );
+					bonus += bonus * durmod / 15000;
 				}
 			}
 		}
@@ -4967,9 +4959,9 @@ void Aura::SpellAuraProcTriggerSpell(bool apply)
 			Item* of = static_cast< Player* >( m_target )->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_OFFHAND );
 			if( mh != NULL && of != NULL )
 			{
-				float mhs = float( mh->GetProto()->Delay );
-				float ohs = float( of->GetProto()->Delay );
-				pts.procChance = FL2UINT( float( mhs * ohs / ( 800.0f * ( mhs + ohs ) ) ) ); // 0.75 ppm
+				uint32 mhs = mh->GetProto()->Delay;
+				uint32 ohs = of->GetProto()->Delay;
+				pts.procChance = mhs * ohs / ( 800 * ( mhs + ohs ) ); // 0.75 ppm
 			}
 		}
 
@@ -4982,11 +4974,11 @@ void Aura::SpellAuraProcTriggerSpell(bool apply)
 			/* The formula for SoC proc rate is: [ 7 / ( 60 / Weapon Speed ) - from wowwiki */
 			if(m_target->IsPlayer())
 			{
-				float weapspeed = 1.0f;
+				uint32 weapspeed = 1;
 				Item* itm = static_cast< Player* >( m_target )->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_MAINHAND);
 				if( itm != NULL )
-					weapspeed = float( itm->GetProto()->Delay );
-				pts.procChance = FL2UINT( float(7.0f / (600.0f / weapspeed)) );
+					weapspeed = itm->GetProto()->Delay;
+				pts.procChance = 7 * weapspeed / 600;
 				if( pts.procChance >= 50 )
 					pts.procChance = 50;
 			}
@@ -5214,11 +5206,9 @@ void Aura::EventPeriodicLeech(uint32 amount)
 
 		if(GetDuration())
 		{
-			float fbonus = float( m_caster->GetSpellDmgBonus(m_target,GetSpellProto(),amount,true) ) * 0.5f;
+			float fbonus = ( m_caster->GetSpellDmgBonus(m_target,GetSpellProto(),amount,true) ) * 0.5f;
 			if(fbonus < 0) fbonus = 0.0f;
-			float ticks= float((amp) ? GetDuration()/amp : 0);
-			fbonus = (ticks) ? fbonus/ticks : 0;
-			bonus = float2int32(fbonus);
+			bonus = float2int32(fbonus * amp / GetDuration());
 		}
 
 		amount += bonus;
@@ -5777,9 +5767,9 @@ void Aura::SpellAuraModCastingSpeed(bool apply)
 {
 	float current = m_target->GetCastSpeedMod() ;
 	if( apply )
-		current -= float( mod->m_amount ) / 100.0f;
+		current -= mod->m_amount / 100.0f;
 	else
-		current += float( mod->m_amount ) / 100.0f;
+		current += mod->m_amount / 100.0f;
 
 	m_target->SetCastSpeedMod(current );
 }
@@ -5936,14 +5926,14 @@ void Aura::SpellAuraSchoolAbsorb(bool apply)
 			//This will fix talents that affects damage absorbed.
 			int flat = 0;
 			SM_FIValue( caster->SM_FMiscEffect, &flat, GetSpellProto()->SpellGroupType );
-			val += float2int32( float( val * flat ) / 100.0f );
+			val += val * flat / 100;
 
 			//For spells Affected by Bonus Healing we use Dspell_coef_override.
 			if( GetSpellProto()->Dspell_coef_override >= 0 )
-				val += float2int32( float( caster->HealDoneMod[GetSpellProto()->School] ) * GetSpellProto()->Dspell_coef_override );
+				val += float2int32( caster->HealDoneMod[GetSpellProto()->School] * GetSpellProto()->Dspell_coef_override );
 			//For spells Affected by Bonus Damage we use OTspell_coef_override.
 			else if( GetSpellProto()->OTspell_coef_override >= 0 )
-				val += float2int32( float( caster->GetDamageDoneMod( GetSpellProto()->School ) ) * GetSpellProto()->OTspell_coef_override );
+				val += float2int32( caster->GetDamageDoneMod( GetSpellProto()->School ) * GetSpellProto()->OTspell_coef_override );
 		}
 
 		Absorb *ab = new Absorb;
@@ -6441,7 +6431,7 @@ void Aura::SpellAuraDrinkNew(bool apply)
 			if( apply )
 			{
 				SetPositive();
-				sEventMgr.AddEvent(this, &Aura::EventPeriodicDrink, uint32(float2int32(float(mod->m_amount)/5.0f)),
+				sEventMgr.AddEvent(this, &Aura::EventPeriodicDrink, static_cast<uint32>(mod->m_amount / 5),
 				EVENT_AURA_PERIODIC_REGEN, 1000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 			}
 		}
@@ -8502,10 +8492,8 @@ void Aura::SpellAuraModHealingDone(bool apply)
 		val = -mod->m_amount;
 	
 	uint32 player_class = m_target->getClass();
-	if( player_class != DRUID && player_class != PALADIN && player_class != SHAMAN && player_class != PRIEST )
-		val = (int32)( float( val ));
-	else
-		val = (int32)( float( val ) * 1.88f );
+	if( player_class == DRUID || player_class == PALADIN || player_class == SHAMAN || player_class == PRIEST )
+		val = float2int32( val * 1.88f );
 
 	for( uint8 x = 0; x < SCHOOL_COUNT; x++ )
 	{
@@ -8586,20 +8574,20 @@ void Aura::SpellAuraModPenetration(bool apply) // armor penetration & spell pene
 		if( apply )
 		{
 			if( m_spellProto->Id == 14171 )
-				p_target->PowerCostPctMod[0] += float( m_target->getLevel() * 2.67 );
+				p_target->PowerCostPctMod[0] += m_target->getLevel() * 2.67f;
 			else if( m_spellProto->Id == 14172 )
-				p_target->PowerCostPctMod[0] += float( m_target->getLevel() * 5.43 );
+				p_target->PowerCostPctMod[0] += m_target->getLevel() * 5.43f;
 			else if( m_spellProto->Id == 14173 )
-				p_target->PowerCostPctMod[0] += float( m_target->getLevel() * 8 );
+				p_target->PowerCostPctMod[0] += m_target->getLevel() * 8.0f;
 		}
 		else
 		{
 			if( m_spellProto->Id == 14171 )
-				p_target->PowerCostPctMod[0] -= float( m_target->getLevel() * 2.67 );
+				p_target->PowerCostPctMod[0] -= m_target->getLevel() * 2.67f;
 			else if( m_spellProto->Id == 14172 )
-				p_target->PowerCostPctMod[0] -= float( m_target->getLevel() * 5.43 );
+				p_target->PowerCostPctMod[0] -= m_target->getLevel() * 5.43f;
 			else if( m_spellProto->Id == 14173 )
-				p_target->PowerCostPctMod[0] -= float( m_target->getLevel() * 8 );
+				p_target->PowerCostPctMod[0] -= m_target->getLevel() * 8.0f;
 		}
 		return;
 	}

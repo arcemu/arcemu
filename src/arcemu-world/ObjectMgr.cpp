@@ -478,7 +478,7 @@ void ObjectMgr::LoadPlayersInfo()
 			 m_playersinfo[(uint32)pn->guid]=pn;
 
 			 if( !((++c) % period) )
-				 Log.Notice("PlayerInfo", "Done %u/%u, %u%% complete.", c, result->GetRowCount(), float2int32( (float(c) / float(result->GetRowCount()))*100.0f ));
+				 Log.Notice("PlayerInfo", "Done %u/%u, %u%% complete.", c, result->GetRowCount(), c * 100 / result->GetRowCount());
 		} while( result->NextRow() );
 
 		delete result;
@@ -668,7 +668,7 @@ void ObjectMgr::LoadGuilds()
 				mGuild.insert(make_pair(pGuild->GetGuildId(), pGuild));
 
 			if( !((++c) % period) )
-				Log.Notice("Guilds", "Done %u/%u, %u%% complete.", c, result->GetRowCount(), float2int32( (float(c) / float(result->GetRowCount()))*100.0f ));
+				Log.Notice("Guilds", "Done %u/%u, %u%% complete.", c, result->GetRowCount(), c * 100 / result->GetRowCount());
 
 		} while(result->NextRow());
 		delete result;
@@ -3149,7 +3149,7 @@ bool ObjectMgr::HandleInstanceReputationModifiers(Player * pPlayer, Unit * pVict
 			continue;
 
 		//value *= sWorld.getRate(RATE_KILLREPUTATION);
-		value = float2int32(float(value) * sWorld.getRate(RATE_KILLREPUTATION));
+		value = float2int32(value * sWorld.getRate(RATE_KILLREPUTATION));
 		pPlayer->ModStanding(i->faction[team], value);
 	}
 

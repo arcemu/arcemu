@@ -263,8 +263,7 @@ void Player::ModStanding( uint32 Faction, int32 Value )
 	{
 		if( pctReputationMod > 0 )
 		{
-			float d = float( float( pctReputationMod ) / 100.0f );
-			newValue = Value + FL2UINT( float( float( Value ) * d ) );
+			newValue = Value + ( Value * pctReputationMod / 100 );
 		}
 		// Increment it.
 		if ( RankChanged( itr->second->standing, newValue ) )
@@ -399,7 +398,7 @@ void Player::Reputation_OnKilledUnit( Unit * pUnit, bool InnerLoop )
 						continue;
 				}
 			}
-			ModStanding( itr->faction[team], int32( float( itr->value ) * sWorld.getRate( RATE_KILLREPUTATION ) ) );
+			ModStanding( itr->faction[team], float2int32( itr->value * sWorld.getRate( RATE_KILLREPUTATION ) ) );
 		}
 	}
 	else

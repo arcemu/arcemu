@@ -1177,9 +1177,9 @@ void Object::ModFloatValueByPCT( const uint32 index, int32 byPct )
 {
 	Arcemu::Util::ARCEMU_ASSERT(    index < m_valuesCount );
 	if( byPct > 0 )
-		m_floatValues[ index ] *= 1.0f + float( byPct ) / 100.0f;
+		m_floatValues[ index ] *= 1.0f + byPct / 100.0f;
 	else
-		m_floatValues[ index ] /= 1.0f + float( -byPct ) / 100.0f;
+		m_floatValues[ index ] /= 1.0f - byPct / 100.0f;
 
 
 	if( IsInWorld() )
@@ -1783,9 +1783,9 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 					// the bonuses are halved by 50% (funky blizzard math :S)
 					float b;
 					if( spellInfo->School == 0 || spellInfo->is_melee_spell || spellInfo->is_ranged_spell )		// physical || hackfix SoCommand/JoCommand
-						b = ( ( float(critical_bonus) ) / 100.0f ) + 1.0f;
+						b = ( critical_bonus / 100.0f ) + 1.0f;
 					else
-						b = ( ( float(critical_bonus) / 2.0f ) / 100.0f ) + 1.0f;
+						b = ( ( critical_bonus / 2.0f ) / 100.0f ) + 1.0f;
 
 					res *= b;
 				}

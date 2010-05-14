@@ -29,7 +29,6 @@ typedef struct
 	float Z[32][32];
 }CellTerrainInformation; 
 
-#define FL2UINT (uint32)
 #define TERRAIN_HEADER_SIZE 1048576	 // size of [512][512] array.
 #define MAP_RESOLUTION 256
 
@@ -178,7 +177,7 @@ protected:
 	  */
 	ARCEMU_INLINE uint32 ConvertGlobalXCoordinate(float x)
 	{
-		return FL2UINT((_maxX-x)/_cellSize);
+		return float2int32((_maxX-x)/_cellSize);
 	}
 
 	/* Converts a global y co-ordinate into a cell y co-ordinate.
@@ -187,7 +186,7 @@ protected:
 	*/
 	ARCEMU_INLINE uint32 ConvertGlobalYCoordinate(float y)
 	{
-		return FL2UINT((_maxY-y)/_cellSize);
+		return float2int32((_maxY-y)/_cellSize);
 	}
 
 	/* Converts a global x co-ordinate into a INTERNAL cell x co-ordinate.
@@ -229,7 +228,7 @@ protected:
 	  */
 	ARCEMU_INLINE uint32 ConvertTo2dArray(float c)
 	{
-		return FL2UINT(c*(16/CellsPerTile/_cellSize));
+		return float2int32(c*(16/CellsPerTile/_cellSize));
 	}
 
 	/* Checks that the co-ordinates are within range.

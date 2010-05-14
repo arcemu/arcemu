@@ -43,8 +43,8 @@ AuctionHouse::AuctionHouse(uint32 ID)
 	dbc = dbcAuctionHouse.LookupEntryForced(ID);
 	Arcemu::Util::ARCEMU_ASSERT(   dbc != NULL );
 
-	cut_percent = float( float(dbc->tax) / 100.0f );
-	deposit_percent = float( float(dbc->fee ) / 100.0f );
+	cut_percent = dbc->tax / 100.0f ;
+	deposit_percent = dbc->fee / 100.0f ;
 }
 
 AuctionHouse::~AuctionHouse()
@@ -172,7 +172,7 @@ void AuctionHouse::RemoveAuction(Auction * auct)
 			sMailSystem.SendAutomatedMessage(AUCTION, dbc->id, auct->HighestBidder, subject, body, 0, 0, auct->pItem->GetGUID(), MAIL_STATIONERY_AUCTION );
 
 			// Send a mail to the owner with his cut of the price.
-			uint32 auction_cut = FL2UINT(float(cut_percent * float(auct->HighestBid)));
+			uint32 auction_cut = float2int32(cut_percent * auct->HighestBid);
 			int32 amount = auct->HighestBid - auction_cut + auct->DepositAmount;
 			if(amount < 0)
 				amount = 0;
@@ -198,7 +198,7 @@ void AuctionHouse::RemoveAuction(Auction * auct)
 	case AUCTION_REMOVE_CANCELLED:
 		{
 			snprintf(subject, 100, "%u:0:5", (unsigned int)auct->pItem->GetEntry());
-			uint32 cut = uint32(float(cut_percent * auct->HighestBid));
+			uint32 cut = float2int32(cut_percent * auct->HighestBid);
 			Player * plr = objmgr.GetPlayer(auct->Owner);
 			if( cut && plr && plr->HasGold(cut) )
 				plr->ModGold( -(int32)cut );

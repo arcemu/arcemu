@@ -5259,9 +5259,7 @@ void Player::SetTutorialInt(uint32 intId, uint32 value)
 
 float Player::GetDefenseChance(uint32 opLevel)
 {
-	float chance;
-
-	chance = float( _GetSkillLineCurrent( SKILL_DEFENSE, true ) - ( opLevel * 5.0f ) );
+	float chance = _GetSkillLineCurrent( SKILL_DEFENSE, true ) - ( opLevel * 5.0f );
 	chance += CalcRating( PLAYER_RATING_MODIFIER_DEFENCE );
 	chance = floorf( chance ) * 0.04f; // defense skill is treated as an integer on retail
 
@@ -5569,7 +5567,7 @@ void Player::UpdateStats()
 	}
 
 	/* modifiers */
-	RAP += int32(float(float(m_rap_mod_pct) * float(float(m_uint32Values[UNIT_FIELD_STAT3]) / 100.0f)));
+	RAP += m_rap_mod_pct * m_uint32Values[UNIT_FIELD_STAT3] / 100;
 
 	if( RAP < 0 )RAP = 0;
 	if( AP < 0 )AP = 0;
@@ -5637,7 +5635,7 @@ void Player::UpdateStats()
 		SetHealth(res );
 	else if( ( cl == DRUID) && ( GetShapeShift() == FORM_BEAR || GetShapeShift() == FORM_DIREBEAR ) )
 	{
-		res = float2int32( ( float )GetUInt32Value( UNIT_FIELD_MAXHEALTH ) * ( float )GetUInt32Value( UNIT_FIELD_HEALTH ) / float( oldmaxhp ) );
+		res = GetUInt32Value( UNIT_FIELD_MAXHEALTH ) * GetUInt32Value( UNIT_FIELD_HEALTH ) / oldmaxhp;
 		SetHealth(res );
 	}
 
@@ -5715,10 +5713,10 @@ void Player::UpdateStats()
 	Item* shield = GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_OFFHAND);
 	if( shield != NULL && shield->GetProto()->InventoryType == INVTYPE_SHIELD )
 	{
-		float block_multiplier = ( ( 100.0f + float( m_modblockabsorbvalue ) ) / 100.0f );
+		float block_multiplier = ( 100.0f + m_modblockabsorbvalue ) / 100.0f;
 		if( block_multiplier < 1.0f )block_multiplier = 1.0f;
 
-		int32 blockable_damage = float2int32( (float( shield->GetProto()->Block ) + ( float(m_modblockvaluefromspells + GetUInt32Value( PLAYER_RATING_MODIFIER_BLOCK ) )) + ( ( float( str ) / 20.0f ) - 1.0f ) ) * block_multiplier);
+		int32 blockable_damage = float2int32( (shield->GetProto()->Block + m_modblockvaluefromspells + GetUInt32Value( PLAYER_RATING_MODIFIER_BLOCK ) + ( str / 20.0f ) - 1.0f ) * block_multiplier);
 		SetUInt32Value( PLAYER_SHIELD_BLOCK, blockable_damage );
 	}
 	else
@@ -10499,7 +10497,7 @@ void Player::_ModifySkillBonusByType(uint32 SkillType, int32 Delta)
 float PlayerSkill::GetSkillUpChance()
 {
 	float diff = float(MaximumValue - CurrentValue);
-	return (diff * 100.0f / float(MaximumValue));
+	return (diff * 100.0f / MaximumValue);
 }
 
 void Player::_RemoveLanguages()
@@ -10685,8 +10683,8 @@ void Player::EventTalentHearthOfWildChange(bool apply)
 	//increase attackpower if :
 	else if(SS==FORM_CAT)
 	{
-		SetAttackPowerMultiplier(GetFloatValue(UNIT_FIELD_ATTACK_POWER_MULTIPLIER)+float(tval/200.0f));
-		SetRangedAttackPowerMultiplier(GetRangedAttackPowerMultiplier()+float(tval/200.0f));
+		SetAttackPowerMultiplier(GetFloatValue(UNIT_FIELD_ATTACK_POWER_MULTIPLIER) + tval/200.0f);
+		SetRangedAttackPowerMultiplier(GetRangedAttackPowerMultiplier() + tval/200.0f);
 		UpdateStats();
 
 
@@ -11425,7 +11423,7 @@ void Player::Cooldown_AddStart(SpellEntry * pSpell)
 	if( m_floatValues[UNIT_MOD_CAST_SPEED] >= 1.0f )
 		atime = pSpell->StartRecoveryTime;
 	else
-		atime = float2int32( float(pSpell->StartRecoveryTime) * m_floatValues[UNIT_MOD_CAST_SPEED] );
+		atime = float2int32( pSpell->StartRecoveryTime * m_floatValues[UNIT_MOD_CAST_SPEED] );
 
 	if( pSpell->SpellGroupType )
 	{
@@ -12051,7 +12049,7 @@ void Player::VampiricSpell(uint32 dmg, Unit* pTarget)
 		SM_FIValue(SM_FMiscEffect, &perc, spellgroup);
 
 
-		bonus = float2int32(fdmg * (float(perc)/100.0f));
+		bonus = float2int32(fdmg * perc/100.0f);
 		if( bonus > 0 )
 		{
 			Heal(this, 15286, bonus);
@@ -12072,7 +12070,7 @@ void Player::VampiricSpell(uint32 dmg, Unit* pTarget)
 	{
 		perc = 5;
 
-		bonus = float2int32(fdmg * (float(perc)/100.0f));
+		bonus = float2int32(fdmg * perc/100.0f);
 		if( bonus > 0 )
 		{
 			Energize(this, 34919, bonus, POWER_TYPE_MANA);

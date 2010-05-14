@@ -562,7 +562,7 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 		case SPELL_HASH_ARCANE_SHOT: //hunter - arcane shot
 			{
 				if(u_caster)
-					dmg += float2int32(float(u_caster->GetRAP())*0.15f);
+					dmg += float2int32(u_caster->GetRAP()*0.15f);
 				dmg = float2int32( dmg * (0.9f + RandomFloat( 0.2f ) ) ); // randomized damage
 			}break;
 		case SPELL_HASH_GORE: // boar/ravager: Gore (50% chance of double damage)
@@ -587,7 +587,7 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 			}break;
 		case SPELL_HASH_CONCUSSION_BLOW:
 			{
-				dmg = float2int32( float( u_caster->GetAP() ) * 0.75f );
+				dmg = float2int32( u_caster->GetAP() * 0.75f );
 			}break;
 		case SPELL_HASH_HEROIC_THROW:   // Heroic Throw
 			{
@@ -604,7 +604,7 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 			{
 				if( p_caster != NULL )
 				{
-					dmg += float2int32(1.30f * float( p_caster->GetUInt32Value( PLAYER_RATING_MODIFIER_BLOCK ) ) + GetProto()->EffectBasePoints[0]);
+					dmg += float2int32(1.30f * p_caster->GetUInt32Value( PLAYER_RATING_MODIFIER_BLOCK ) + GetProto()->EffectBasePoints[0]);
 				}
 			}break;
 		case SPELL_HASH_SHIELD_SLAM:	// Shield Slam - damage is increased by block value
@@ -614,9 +614,9 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 					Item *it = p_caster->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_OFFHAND );
 					if( it && it->GetProto()->InventoryType == INVTYPE_SHIELD )
 					{
-						float block_multiplier = ( 100.0f + float( p_caster->m_modblockabsorbvalue ) ) / 100.0f;
+						float block_multiplier = ( 100.0f + p_caster->m_modblockabsorbvalue ) / 100.0f;
 						if( block_multiplier < 1.0f )block_multiplier = 1.0f;
-						int32 blockable_damage = float2int32( (float( it->GetProto()->Block ) + ( float( p_caster->m_modblockvaluefromspells + p_caster->GetUInt32Value( PLAYER_RATING_MODIFIER_BLOCK ) )) + ( ( float( p_caster->GetStat(STAT_STRENGTH) ) / 20.0f ) - 1.0f ) ) * block_multiplier);
+						int32 blockable_damage = float2int32( ( it->GetProto()->Block + p_caster->m_modblockvaluefromspells + p_caster->GetUInt32Value( PLAYER_RATING_MODIFIER_BLOCK ) + ( ( p_caster->GetStat(STAT_STRENGTH) / 20.0f ) - 1.0f ) ) * block_multiplier);
 						dmg += blockable_damage;
 					}
 				}
@@ -3546,8 +3546,7 @@ void Spell::SpellEffectWeaponDmgPerc(uint32 i) // Weapon Percent damage
 
 	if( GetType() == SPELL_DMG_TYPE_MAGIC )
 	{
-		float fdmg = (float)CalculateDamage( u_caster, unitTarget, MELEE, 0, GetProto() );
-		uint32 dmg = float2int32(fdmg*(float(damage/100.0f)));
+		uint32 dmg = CalculateDamage( u_caster, unitTarget, MELEE, 0, GetProto() ) * damage / 100;
 		u_caster->SpellNonMeleeDamageLog(unitTarget, GetProto()->Id, dmg, false, false, false);
 	}
 	else
@@ -6512,7 +6511,7 @@ void Spell::SpellEffectDisenchant( uint32 i )
 	uint32 skill = p_caster->_GetSkillLineCurrent( SKILL_ENCHANTING );
 	if( skill && skill < 60 )
 	{
-		if( Rand( 100.0f - float( skill ) * 0.75f ) )
+		if( Rand( 100.0f - skill * 0.75f ) )
 		{
 			uint32 SkillUp = float2int32( 1.0f * sWorld.getRate( RATE_SKILLRATE ) );
 			if( skill + SkillUp > 60 )
@@ -6720,7 +6719,7 @@ void Spell::SpellEffectDestroyAllTotems(uint32 i)
 {
 	if(!p_caster || !p_caster->IsInWorld()) return;
 
-	float RetreivedMana = 0.0f;
+	uint32 RetreivedMana = 0;
 	for(uint32 x= 0;x<4;x++)
 	{
 		// atm totems are considered creatures
@@ -6731,8 +6730,7 @@ void Spell::SpellEffectDestroyAllTotems(uint32 i)
 			if (!sp)
 				continue;
 
-			float pts = float(GetProto()->EffectBasePoints[i]+1) / 100.0f;
-			RetreivedMana += float(sp->manaCost) * pts;
+			RetreivedMana += sp->manaCost * (GetProto()->EffectBasePoints[i]+1) / 100;
 
 			p_caster->m_TotemSlots[x]->TotemExpire();
 		}
@@ -6748,7 +6746,7 @@ void Spell::SpellEffectDestroyAllTotems(uint32 i)
 		}
 	}
 
-	p_caster->Energize( p_caster, GetProto()->Id, uint32( RetreivedMana ), POWER_TYPE_MANA );
+	p_caster->Energize( p_caster, GetProto()->Id, RetreivedMana, POWER_TYPE_MANA );
 }
 
 void Spell::SpellEffectSummonDemon(uint32 i)

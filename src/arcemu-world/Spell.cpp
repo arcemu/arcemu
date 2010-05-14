@@ -800,7 +800,7 @@ uint8 Spell::DidHit( uint32 effindex, Unit* target )
 			if( GetProto()->SchoolMask & ( 1 << i ) && min > p_victim->m_resist_hit_spell[ i ] )
 				min = p_victim->m_resist_hit_spell[ i ];
 		}
-		resistchance += float( min );
+		resistchance += min;
 	}
 
 	if( GetProto()->Effect[effindex] == SPELL_EFFECT_DISPEL && GetProto()->SpellGroupType )
@@ -1983,7 +1983,7 @@ void Spell::update(uint32 difftime)
 	// Client knows this, so it should be easy once we find the flag.
 	// XD, it's already there!
 	if( ( GetProto()->InterruptFlags & CAST_INTERRUPT_ON_MOVEMENT ) &&
-		(((float)m_castTime / 1.5f) > (float)m_timer ) &&
+		((m_castTime / 1.5f) > m_timer ) &&
 //		float(m_castTime)/float(m_timer) >= 2.0f		&&
 		(
 		m_castPositionX != m_caster->GetPositionX() ||
@@ -3953,7 +3953,7 @@ uint8 Spell::CanCast(bool tolerate)
 			lat = ( lat > 500 ) ? 500 : lat;
 
 			// calculate the added distance
-			maxRange += ( u_caster->m_runSpeed * 0.001f ) * float( lat );
+			maxRange += u_caster->m_runSpeed * 0.001f * lat;
 		}
 	}
 
@@ -4674,7 +4674,7 @@ exit:
 					if(it)
 					{
 						float weapondmg = RandomFloat(1)*(it->GetProto()->Damage[0].Max - it->GetProto()->Damage[0].Min) + it->GetProto()->Damage[0].Min;
-                        value += float2int32(GetProto()->EffectBasePoints[0] + weapondmg/float(it->GetProto()->Delay/1000.0f)*2.8f);
+                        value += float2int32(GetProto()->EffectBasePoints[0] + weapondmg/(it->GetProto()->Delay/1000.0f)*2.8f);
 					}
 				}
 			}
@@ -4729,10 +4729,10 @@ exit:
 			Item *it = p_caster->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_OFFHAND);
 			if(it && it->GetProto()->InventoryType == INVTYPE_SHIELD)
 			{
-				float block_multiplier = ( 100.0f + float( p_caster->m_modblockabsorbvalue ) ) / 100.0f;
+				float block_multiplier = ( 100.0f + p_caster->m_modblockabsorbvalue ) / 100.0f;
 				if(block_multiplier < 1.0f)
 					block_multiplier = 1.0f;
-				int32 blockable_damage = float2int32( (float( it->GetProto()->Block ) + ( float( p_caster->m_modblockvaluefromspells + p_caster->GetUInt32Value( PLAYER_RATING_MODIFIER_BLOCK ) )) + ( ( float( p_caster->GetStat(STAT_STRENGTH) ) / 20.0f ) - 1.0f ) ) * block_multiplier);
+				int32 blockable_damage = float2int32( ( it->GetProto()->Block + ( p_caster->m_modblockvaluefromspells + p_caster->GetUInt32Value( PLAYER_RATING_MODIFIER_BLOCK ) ) + ( ( p_caster->GetStat(STAT_STRENGTH) / 20.0f ) - 1.0f ) ) * block_multiplier);
 				value = (blockable_damage / (GetProto()->EffectBasePoints[0]+1));
 			}
 		}
@@ -4778,11 +4778,11 @@ exit:
 		//Rake the target for ${$AP/100+$m1} bleed damage and an additional ${$m2*3+$AP*0.06} damage over $d.
 		if( u_caster != NULL )
 		{
-			float ap = (float)u_caster->GetAP();
+			float ap = float(u_caster->GetAP());
 			if(i== 0)
-				value+=(uint32)ceilf((ap*0.01f));	// / 100
+				value+=float2int32(ceilf(ap*0.01f));	// / 100
 			else if(i==1)
-				value=(int32)ceilf((float(value * 3) + ceilf((ap*0.06f))) / 3.0f);
+				value=float2int32(ceilf((value * 3 + ceilf(ap*0.06f)) / 3.0f));
 		}
 	}
 	else if( GetProto()->NameHash == SPELL_HASH_GARROTE )
@@ -5190,12 +5190,12 @@ void Spell::Heal( int32 amount, bool ForceCrit )
 
 		//Spell Coefficient
 		if(  GetProto()->Dspell_coef_override >= 0 ) //In case we have forced coefficients
-			bonus = float2int32( float( bonus ) * GetProto()->Dspell_coef_override );
+			bonus = float2int32( bonus * GetProto()->Dspell_coef_override );
 		else
 		{
 			//Bonus to DH part
 			if( GetProto()->fixed_dddhcoef >= 0 )
-				bonus = float2int32( float( bonus ) * GetProto()->fixed_dddhcoef );
+				bonus = float2int32( bonus * GetProto()->fixed_dddhcoef );
 		}
 
 		critchance = float2int32( u_caster->spellcritperc + u_caster->SpellCritChanceSchool[school] );
@@ -5279,7 +5279,7 @@ void Spell::Heal( int32 amount, bool ForceCrit )
 
 		amount += bonus;
 		amount += amount * (int32)(u_caster->HealDonePctMod[ school ]);
-		amount += float2int32( float( amount ) * unitTarget->HealTakenPctMod[ school ] );
+		amount += float2int32( amount * unitTarget->HealTakenPctMod[ school ] );
 
 		if( GetProto()->SpellGroupType )
 			SM_PIValue( u_caster->SM_PDamageBonus, &amount, GetProto()->SpellGroupType );
@@ -5293,8 +5293,8 @@ void Spell::Heal( int32 amount, bool ForceCrit )
 			if( critical_bonus > 0 )
 			{
 				// the bonuses are halved by 50% (funky blizzard math :S)
-				float b = ( ( float(critical_bonus) / 2.0f ) / 100.0f );
-				amount += float2int32( float(amount) * b );
+				float b = ( critical_bonus / 2.0f ) / 100.0f;
+				amount += float2int32( amount * b );
 			}
 
 			unitTarget->HandleProc( PROC_ON_SPELL_CRIT_HIT_VICTIM, u_caster, GetProto(), amount );

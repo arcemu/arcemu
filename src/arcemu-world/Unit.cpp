@@ -791,7 +791,7 @@ bool Unit::canReachWithAttack(Unit *pVictim)
 			lat = ( lat > 500 ) ? 500 : lat;
 
 			// calculate the added distance
-			attackreach += ( m_runSpeed * 0.001f ) * float( lat );
+			attackreach += m_runSpeed * 0.001f * lat;
 		}
 
 		if( static_cast< Player* >( this )->m_isMoving )
@@ -803,7 +803,7 @@ bool Unit::canReachWithAttack(Unit *pVictim)
 			lat = ( lat > 500) ? 500 : lat;
 
 			// calculate the added distance
-			attackreach += ( m_runSpeed * 0.001f ) * float( lat );
+			attackreach += m_runSpeed * 0.001f * lat;
 		}
 	}
 	return ( distance <= attackreach );
@@ -1078,13 +1078,13 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 
 			if( mh != NULL && of != NULL )
 			{
-				float mhs = float( mh->GetProto()->Delay );
-				float ohs = float( of->GetProto()->Delay );
-				proc_Chance = FL2UINT( ( mhs + ohs ) * 0.001f * ppm / 0.6f );
+				uint32 mhs = mh->GetProto()->Delay;
+				uint32 ohs = of->GetProto()->Delay;
+				proc_Chance = float2int32( ( mhs + ohs ) * 0.001f * ppm / 0.6f );
 			}
 			else if( mh != NULL )
 			{
-				float mhs = float( mh->GetProto()->Delay );
+				uint32 mhs = mh->GetProto()->Delay;
 				proc_Chance = float2int32( mhs * 0.001f * ppm / 0.6f );
 			}
 			else
@@ -1094,11 +1094,11 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 			{
 				if( static_cast< Player* >( this )->GetShapeShift() == FORM_CAT )
 				{
-					proc_Chance = FL2UINT( ppm / 0.6f );
+					proc_Chance =float2int32( ppm / 0.6f );
 				}
 				else if( static_cast< Player* >( this )->GetShapeShift() == FORM_BEAR || static_cast< Player* >( this )->GetShapeShift() == FORM_DIREBEAR )
 				{
-					proc_Chance = FL2UINT( ppm / 0.24f );
+					proc_Chance = float2int32( ppm / 0.24f );
 				}
 			}
 		}
@@ -1343,7 +1343,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 					else
 						continue; //no weapon no joy
 					//float chance=float(it->GetProto()->Delay)*float(talentlevel)/600.0f;
-					float chance = float( it->GetProto()->Delay ) * float(talentlevel ) / 300.0f; //zack this had a very low proc rate. Kinda like a wasted talent
+					uint32 chance = it->GetProto()->Delay * talentlevel / 300; //zack this had a very low proc rate. Kinda like a wasted talent
 					uint32 myroll = RandomUInt( 100 );
 					if( myroll > chance )
 						continue;
@@ -2970,7 +2970,7 @@ void Unit::CalculateResistanceReduction(Unit *pVictim,dealdamage * dmg, SpellEnt
 	else
 	{
 		// applying resistance to other type of damage
-		int32 RResist = float2int32( float(pVictim->GetResistance( (*dmg).school_type ) + ((pVictim->getLevel() > getLevel()) ? (pVictim->getLevel() - this->getLevel()) * 5 : 0)) - PowerCostPctMod[(*dmg).school_type] );
+		int32 RResist = float2int32( (pVictim->GetResistance( (*dmg).school_type ) + ((pVictim->getLevel() > getLevel()) ? (pVictim->getLevel() - this->getLevel()) * 5 : 0)) - PowerCostPctMod[(*dmg).school_type] );
 		if (RResist<0)
 			RResist = 0;
 		AverageResistance = (float)(RResist) / (float)(getLevel() * 5) * 0.75f;
@@ -3754,7 +3754,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 			}
 
 			if( pct_dmg_mod > 0 )
-				dmg.full_damage = float2int32( dmg.full_damage *  ( float( pct_dmg_mod) / 100.0f ) );
+				dmg.full_damage = dmg.full_damage * pct_dmg_mod / 100;
 
 			dmg.full_damage += add_damage;
 
@@ -3824,7 +3824,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 					float damage_reduction = (high_dmg_mod + low_dmg_mod) / 2.0f;
 					if(damage_reduction > 0)
 					{
-							dmg.full_damage = float2int32(damage_reduction * float(dmg.full_damage));
+							dmg.full_damage = float2int32(damage_reduction * dmg.full_damage);
 					}
 					hit_status |= HITSTATUS_GLANCING;
 				}
@@ -3840,10 +3840,10 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 
 						if( shield->GetProto()->InventoryType == INVTYPE_SHIELD )
 						{
-							float block_multiplier = ( 100.0f + float( static_cast< Player* >( pVictim )->m_modblockabsorbvalue ) ) / 100.0f;
+							float block_multiplier = ( 100.0f + static_cast< Player* >( pVictim )->m_modblockabsorbvalue ) / 100.0f;
 							if( block_multiplier < 1.0f )block_multiplier = 1.0f;
 
-							blocked_damage = float2int32( (float( shield->GetProto()->Block ) + ( float( static_cast< Player* >( pVictim )->m_modblockvaluefromspells + pVictim->GetUInt32Value( PLAYER_RATING_MODIFIER_BLOCK ) )) + ( ( float( pVictim->GetStat(STAT_STRENGTH) ) / 20.0f ) - 1.0f ) ) * block_multiplier);
+							blocked_damage = float2int32( (shield->GetProto()->Block + ( ( static_cast< Player* >( pVictim )->m_modblockvaluefromspells + pVictim->GetUInt32Value( PLAYER_RATING_MODIFIER_BLOCK ) )) + ( ( pVictim->GetStat(STAT_STRENGTH) / 20.0f ) - 1.0f ) ) * block_multiplier);
 							if( Rand( m_BlockModPct ) )
 								blocked_damage *= 2;
 						}
@@ -3881,7 +3881,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 					{
 						int32 dmg_bonus_pct = 100;
 						SM_FIValue(SM_PCriticalDamage,&dmg_bonus_pct,ability->SpellGroupType);
-						dmgbonus = float2int32( float(dmgbonus) * (float(dmg_bonus_pct)/100.0f) );
+						dmgbonus = dmgbonus * dmg_bonus_pct / 100;
 					}
 
 					//sLog.outString( "DEBUG: After CritMeleeDamageTakenPctMod: %u" , dmg.full_damage );
@@ -3889,8 +3889,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 					{
 						if( weapon_damage_type != RANGED )
 						{
-							float critextra=float(static_cast< Player* >( this )->m_modphyscritdmgPCT);
-							dmg.full_damage += int32((float(dmg.full_damage)*critextra/100.0f));
+							dmg.full_damage += dmg.full_damage * static_cast< Player* >( this )->m_modphyscritdmgPCT / 100;
 						}
 						if(!pVictim->IsPlayer())
 							dmg.full_damage += float2int32(dmg.full_damage*static_cast< Player* >( this )->IncreaseCricticalByTypePCT[((Creature*)pVictim)->GetCreatureInfo() ? ((Creature*)pVictim)->GetCreatureInfo()->Type : 0]);
@@ -3934,8 +3933,8 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 						else sEventMgr.ModifyEventTimeLeft( this, EVENT_CRIT_FLAG_EXPIRE, 5000 );
 					}
 
-					CALL_SCRIPT_EVENT(pVictim, OnTargetCritHit)(this, float(dmg.full_damage));
-					CALL_SCRIPT_EVENT(this, OnCritHit)(pVictim, float(dmg.full_damage));
+					CALL_SCRIPT_EVENT(pVictim, OnTargetCritHit)(this, dmg.full_damage);
+					CALL_SCRIPT_EVENT(this, OnCritHit)(pVictim, dmg.full_damage);
 				}
 				break;
 //--------------------------------crushing blow---------------------------------------------
@@ -5213,32 +5212,32 @@ int32 Unit::GetSpellDmgBonus(Unit *pVictim, SpellEntry *spellInfo,int32 base_dmg
 //------------------------------by cast duration--------------------------------------------
 	float dmgdoneaffectperc = 1.0f;
 	if( spellInfo->Dspell_coef_override >= 0 && !isdot )
-		plus_damage = float2int32( float( plus_damage ) * spellInfo->Dspell_coef_override );
+		plus_damage = float2int32( plus_damage * spellInfo->Dspell_coef_override );
 	else if( spellInfo->OTspell_coef_override >= 0 && isdot )
-		plus_damage = float2int32( float( plus_damage ) * spellInfo->OTspell_coef_override );
+		plus_damage = float2int32( plus_damage * spellInfo->OTspell_coef_override );
 	else
 	{
 		//Bonus to DD part
 		if( spellInfo->fixed_dddhcoef >= 0 && !isdot )
-			plus_damage = float2int32( float( plus_damage ) * spellInfo->fixed_dddhcoef );
+			plus_damage = float2int32( plus_damage * spellInfo->fixed_dddhcoef );
 		//Bonus to DoT part
 		else if( spellInfo->fixed_hotdotcoef >= 0 && isdot )
 		{
-			plus_damage = float2int32( float( plus_damage ) * spellInfo->fixed_hotdotcoef );
+			plus_damage = float2int32( plus_damage * spellInfo->fixed_hotdotcoef );
 			if( caster->IsPlayer() )
 			{
 				int durmod = 0;
 				SM_FIValue(caster->SM_FDur, &durmod, spellInfo->SpellGroupType);
-				plus_damage += float2int32( float( plus_damage * durmod ) / 15000.0f );
+				plus_damage += plus_damage * durmod / 15000;
 			}
 		}
 		//In case we dont fit in previous cases do old thing
 		else
 		{
-			plus_damage = float2int32( float( plus_damage ) * spellInfo->casttime_coef );
-			float td = float( GetDuration( dbcSpellDuration.LookupEntry( spellInfo->DurationIndex ) ));
+			plus_damage = float2int32( plus_damage * spellInfo->casttime_coef );
+			float td = float(GetDuration( dbcSpellDuration.LookupEntry( spellInfo->DurationIndex ) ) );
 			if( spellInfo->NameHash == SPELL_HASH_MOONFIRE || spellInfo->NameHash == SPELL_HASH_IMMOLATE || spellInfo->NameHash == SPELL_HASH_ICE_LANCE || spellInfo->NameHash == SPELL_HASH_PYROBLAST )
-				plus_damage = float2int32( float( plus_damage ) * float( 1.0f - ( ( td / 15000.0f ) / ( ( td / 15000.0f ) + dmgdoneaffectperc ) ) ) );
+				plus_damage = float2int32( plus_damage * ( 1.0f - ( ( td / 15000.0f ) / ( ( td / 15000.0f ) + dmgdoneaffectperc ) ) ) );
 		}
 	}
 
@@ -5250,7 +5249,7 @@ int32 Unit::GetSpellDmgBonus(Unit *pVictim, SpellEntry *spellInfo,int32 base_dmg
 		float downrank1 = 1.0f;
 		if(spellInfo->baseLevel < 20)
 		    downrank1 = 1.0f - (20.0f - float (spellInfo->baseLevel) ) * 0.0375f;
-		float downrank2 = ( float(spellInfo->maxLevel + 5.0f) / float(static_cast< Player* >(caster)->getLevel()) );
+		float downrank2 = (spellInfo->maxLevel + 5.0f) / static_cast< Player* >(caster)->getLevel();
 		if(downrank2 >= 1 || downrank2 < 0)
 		        downrank2 = 1.0f;
 		dmgdoneaffectperc *= downrank1 * downrank2;
@@ -5563,7 +5562,7 @@ void Unit::CalcDamage()
 		float delta;
 		float mult;
 
-		float ap_bonus = float(GetAP())/14000.0f;
+		float ap_bonus = GetAP() / 14000.0f;
 
 		float bonus = ap_bonus * ( GetBaseAttackTime(MELEE) + static_cast< Creature* >( this )->m_speedFromHaste );
 
@@ -5654,7 +5653,7 @@ uint32 Unit::AbsorbDamage( uint32 School, uint32* dmg )
 				uint32 mh=this->GetMaxHealth();
 
 				//check for proc chance
-				if (RandomFloat(100.0f)>float(aSpell->procChance))
+				if (RandomFloat(100.0f) > aSpell->procChance)
 					continue;
 				if((*dmg) >= ch)
 				{
@@ -6603,7 +6602,7 @@ void Unit::EventHealthChangeSinceLastUpdate()
 int32 Unit::GetAP()
 {
     int32 baseap = GetAttackPower() + GetAttackPowerMods();
-    float totalap = float(baseap)*(GetFloatValue(UNIT_FIELD_ATTACK_POWER_MULTIPLIER)+1);
+    float totalap = baseap * (GetFloatValue(UNIT_FIELD_ATTACK_POWER_MULTIPLIER)+1);
 	if(totalap>= 0)
 		return float2int32(totalap);
 	return	0;
@@ -6612,7 +6611,7 @@ int32 Unit::GetAP()
 int32 Unit::GetRAP()
 {
     int32 baseap = GetRangedAttackPower() + GetRangedAttackPowerMods();
-    float totalap = float(baseap)*(GetRangedAttackPowerMultiplier()+1);
+    float totalap = baseap * (GetRangedAttackPowerMultiplier()+1);
 	if(totalap>= 0)
 		return float2int32(totalap);
 	return	0;
@@ -6758,11 +6757,11 @@ float Unit::get_chance_to_daze(Unit *target)
 {
 	if( target->getLevel() < CREATURE_DAZE_MIN_LEVEL ) // since 3.3.0
 		return 0.0f;
-	float attack_skill = float( getLevel() ) * 5.0f;
+	float attack_skill = getLevel() * 5.0f;
 	float defense_skill;
 	if( target->IsPlayer() )
-		defense_skill = float( static_cast< Player* >( target )->_GetSkillLineCurrent( SKILL_DEFENSE, false ) );
-	else defense_skill = float( target->getLevel() * 5 );
+		defense_skill = float(static_cast< Player* >( target )->_GetSkillLineCurrent( SKILL_DEFENSE, false ));
+	else defense_skill = target->getLevel() * 5.0f;
 	if( !defense_skill )
 		defense_skill = 1;
 	float chance_to_daze = attack_skill * 20 / defense_skill;//if level is equal then we get a 20% chance to daze
@@ -7646,7 +7645,7 @@ void Unit::setAttackTimer(int32 time, bool offhand)
 	if(!time)
 		time = offhand ? m_uint32Values[UNIT_FIELD_BASEATTACKTIME+1] : m_uint32Values[UNIT_FIELD_BASEATTACKTIME];
 
-	time = std::max(1000,float2int32(float(time)*GetCastSpeedMod()));
+	time = std::max(1000,float2int32(time * GetCastSpeedMod()));
 	if(time>300000)		// just in case.. shouldn't happen though
 		time=offhand ? m_uint32Values[UNIT_FIELD_BASEATTACKTIME+1] : m_uint32Values[UNIT_FIELD_BASEATTACKTIME];
 
