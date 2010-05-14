@@ -8107,3 +8107,34 @@ bool Unit::isLootable(){
 
 void Unit::TakeDamage(Unit *pAttacker, uint32 damage, uint32 spellid, bool no_remove_auras ){}
 void Unit::Die( Unit *pAttacker, uint32 damage, uint32 spellid ){}
+
+void Unit::SendPeriodicAuraLog( const WoWGuid& CasterGUID, const WoWGuid& TargetGUID, uint32 SpellID, uint32 School, uint32 Amount, uint32 abs_dmg, uint32 resisted_damage, uint32 Flags ){
+		WorldPacket data( SMSG_PERIODICAURALOG, 46 );
+
+		data << TargetGUID;		   // target guid
+		data << CasterGUID;		   // caster guid
+		data << uint32( SpellID );						// spellid
+		data << uint32( 1 );					  // unknown? need research?
+		data << uint32( Flags | 0x1 );			// aura school
+		data << uint32( Amount );						 // amount of done to target / heal / damage
+		data << uint32( 0 );				 // cebernic: unknown?? needs more research, but it should fix unknown damage type with suffered.
+		data << uint32( g_spellSchoolConversionTable[School] );
+		data << uint32( abs_dmg );
+		data << uint32( resisted_damage );
+
+		SendMessageToSet( &data, true );
+}
+
+void Unit::SendPeriodicHealAuraLog( const WoWGuid& CasterGUID, const WoWGuid& TargetGUID, uint32 SpellID, uint32 amt ){
+	WorldPacket data( SMSG_PERIODICAURALOG, 32 );
+	
+	data << TargetGUID;
+	data << CasterGUID;
+	data << SpellID;
+	data << uint32( 1 );
+	data << uint32( FLAG_PERIODIC_HEAL );
+	data << uint32( amt );
+	
+	SendMessageToSet(&data,true);
+}
+

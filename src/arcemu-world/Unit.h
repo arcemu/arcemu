@@ -1518,6 +1518,8 @@ public:
 	void DispelAll(bool positive);
 
 	void SendPowerUpdate(bool self);
+	void SendPeriodicAuraLog( const WoWGuid& CasterGUID, const WoWGuid& casterGUID, uint32 SpellID, uint32 School, uint32 Amount, uint32 abs_dmg, uint32 resisted_damage, uint32 Flags );
+	void SendPeriodicHealAuraLog( const WoWGuid& CasterGUID, const WoWGuid& TargetGUID, uint32 SpellID, uint32 amt );
 
 	int8 m_hasVampiricTouch;
 	int8 m_hasVampiricEmbrace;

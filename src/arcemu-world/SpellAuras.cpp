@@ -1596,7 +1596,7 @@ void Aura::EventPeriodicDamage(uint32 amount)
 		}
 
 
-		SendPeriodicAuraLog(m_casterGuid, m_target, GetSpellProto()->Id, school, float2int32(res), abs_dmg, dmg.resisted_damage, FLAG_PERIODIC_DAMAGE);
+		m_target->SendPeriodicAuraLog( m_casterGuid, m_target->GetNewGUID(), GetSpellProto()->Id, school, float2int32(res), abs_dmg, dmg.resisted_damage, FLAG_PERIODIC_DAMAGE);
 
 		if(school == SHADOW_DAMAGE)
 			if( c != NULL && c->isAlive() && c->IsPlayer() && c->getClass() == PRIEST )
@@ -3135,7 +3135,7 @@ void Aura::EventPeriodicHeal( uint32 amount )
 			SM_PIValue(c->SM_PDOT,&add,m_spellProto->SpellGroupType);
 	}
 
-	SendPeriodicHealAuraLog( add );
+	m_target->SendPeriodicHealAuraLog( m_casterGuid, m_target->GetGUID(), GetSpellId(), add );
 
 	uint32 curHealth = m_target->GetHealth();
 	uint32 maxHealth = m_target->GetMaxHealth();
@@ -3772,7 +3772,7 @@ void Aura::EventPeriodicHealPct(float RegenPct)
 	else
 		m_target->SetHealth( m_target->GetMaxHealth());
 
-	SendPeriodicAuraLog(m_casterGuid, m_target, m_spellProto->Id, m_spellProto->School, add, 0, 0, FLAG_PERIODIC_HEAL);
+	m_target->SendPeriodicAuraLog( m_casterGuid, m_target->GetNewGUID(), m_spellProto->Id, m_spellProto->School, add, 0, 0, FLAG_PERIODIC_HEAL);
 
 	if(GetSpellProto()->AuraInterruptFlags & AURA_INTERRUPT_ON_STAND_UP)
 	{
@@ -3808,8 +3808,6 @@ void Aura::EventPeriodicManaPct(float RegenPct)
 
 	// CAPT
 	// TODO: sniff it or disasm wow.exe to find the mana flag
-	//SendPeriodicAuraLog(m_target, m_casterGuid, GetSpellProto()->Id, FLAG_PERIODIC_HEAL, add,true);
-	//SendPeriodicAuraLog(m_target, m_casterGuid, GetSpellProto()->Id, FLAG_PERIODIC_HEAL, add);
 
 	if(GetSpellProto()->AuraInterruptFlags & AURA_INTERRUPT_ON_STAND_UP)
 	{
@@ -5301,7 +5299,7 @@ void Aura::EventPeriodicLeech(uint32 amount)
 		data << uint32(Amount);
 		m_target->SendMessageToSet(&data,true);
 
-		SendPeriodicAuraLog(m_target, m_target, m_spellProto->Id, m_spellProto->School, Amount, 0, 0, FLAG_PERIODIC_LEECH);
+		m_target->SendPeriodicAuraLog( m_target->GetNewGUID(), m_target->GetNewGUID(), m_spellProto->Id, m_spellProto->School, Amount, 0, 0, FLAG_PERIODIC_LEECH);
 
 		//deal damage before we add healing bonus to damage
 		SpellEntry* m_SpellProto = GetSpellProto();
@@ -5756,7 +5754,7 @@ void Aura::EventPeriodicHealthFunnel(uint32 amount)
 		else
 			m_caster->SetHealth( mh);
 
-		SendPeriodicAuraLog(m_target, m_target, m_spellProto->Id, m_spellProto->School, 1000, 0, 0, FLAG_PERIODIC_LEECH);
+		m_target->SendPeriodicAuraLog( m_target->GetNewGUID(), m_target->GetNewGUID(), m_spellProto->Id, m_spellProto->School, 1000, 0, 0, FLAG_PERIODIC_LEECH);
 
 		m_caster->RemoveAurasByHeal();
 	}
@@ -6568,7 +6566,7 @@ void Aura::EventPeriodicHeal1(uint32 amount)
 	else
 	{
 		if(!(m_spellProto->BGR_one_buff_on_target & SPELL_TYPE_ARMOR))
-			SendPeriodicHealAuraLog(amount);
+			m_target->SendPeriodicHealAuraLog( m_casterGuid, m_target->GetGUID(), GetSpellId(), amount );
 	}
 
 	m_target->RemoveAurasByHeal();
@@ -8041,7 +8039,7 @@ void Aura::EventPeriodicBurn(uint32 amount, uint32 misc)
 		uint32 Amount = (uint32)min( amount, m_target->GetPower( misc ) );
 		uint32 newHealth = m_target->GetPower(misc) - Amount ;
 
-		SendPeriodicAuraLog(m_target, m_target, m_spellProto->Id, m_spellProto->School, newHealth, 0, 0, FLAG_PERIODIC_DAMAGE);
+		m_target->SendPeriodicAuraLog( m_target->GetNewGUID(), m_target->GetNewGUID(), m_spellProto->Id, m_spellProto->School, newHealth, 0, 0, FLAG_PERIODIC_DAMAGE);
 		m_caster->DealDamage(m_target, Amount, 0, 0, GetSpellProto()->Id);
 	}
 }
