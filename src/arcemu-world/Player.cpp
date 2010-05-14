@@ -6093,15 +6093,7 @@ void Player::EventCannibalize(uint32 amount)
 	if(cannibalizeCount == 5)
 		SetEmoteState(0);
 
-	WorldPacket data(SMSG_PERIODICAURALOG, 38);
-	data << GetNewGUID();				   // caster guid
-	data << GetNewGUID();				   // target guid
-	data << (uint32)(20577);				// spellid
-	data << (uint32)1;					  // unknown?? need resource?
-	data << (uint32)FLAG_PERIODIC_HEAL;		// aura school
-	data << amt;							// amount of done to target / heal / damage
-	data << (uint32)0;					  // unknown in some sniff this was 0x0F
-	SendMessageToSet(&data, true);
+	SendPeriodicHealAuraLog( GetNewGUID(), GetNewGUID(), 20577, amt );
 }
 
 ///The player sobers by 256 every 10 seconds

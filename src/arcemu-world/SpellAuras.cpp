@@ -3135,7 +3135,7 @@ void Aura::EventPeriodicHeal( uint32 amount )
 			SM_PIValue(c->SM_PDOT,&add,m_spellProto->SpellGroupType);
 	}
 
-	m_target->SendPeriodicHealAuraLog( m_casterGuid, m_target->GetGUID(), GetSpellId(), add );
+	m_target->SendPeriodicHealAuraLog( m_casterGuid, m_target->GetNewGUID(), GetSpellId(), add );
 
 	uint32 curHealth = m_target->GetHealth();
 	uint32 maxHealth = m_target->GetMaxHealth();
@@ -5289,16 +5289,7 @@ void Aura::EventPeriodicLeech(uint32 amount)
 		else
 			m_caster->SetHealth( mh);
 
-		//SendPeriodicHealAuraLog(Amount);
-		WorldPacket data(SMSG_PERIODICAURALOG, 32);
-		data << m_caster->GetNewGUID();
-		data << m_target->GetNewGUID();
-		data << m_spellProto->Id;
-		data << uint32(1);
-		data << uint32(FLAG_PERIODIC_HEAL);
-		data << uint32(Amount);
-		m_target->SendMessageToSet(&data,true);
-
+		m_target->SendPeriodicHealAuraLog( m_caster->GetNewGUID(), m_caster->GetNewGUID(), m_spellProto->Id, Amount );
 		m_target->SendPeriodicAuraLog( m_target->GetNewGUID(), m_target->GetNewGUID(), m_spellProto->Id, m_spellProto->School, Amount, 0, 0, FLAG_PERIODIC_LEECH);
 
 		//deal damage before we add healing bonus to damage
@@ -5316,23 +5307,6 @@ void Aura::EventPeriodicLeech(uint32 amount)
 		m_target->m_procCounter = 0;
 
 		m_target->RemoveAurasByHeal();
-
-		//add here bonus to healing taken. Maybe not all spells should receive it ?
-		/*
-		//zack : have no idea if we should use downranking here so I'm removing it until confirmed
-		float healdoneaffectperc = 1500 / 3500;
-		//Downranking
-		if(GetSpellProto()->baseLevel > 0 && GetSpellProto()->maxLevel > 0)
-		{
-			float downrank1 = 1.0f;
-			if (GetSpellProto()->baseLevel < 20)
-			downrank1 = 1.0f - (20.0f - float (GetSpellProto()->baseLevel) ) * 0.0375f;
-			float downrank2 = ( float(GetSpellProto()->maxLevel + 5.0f) / float(m_caster->getLevel()) );
-			if (downrank2 >= 1 || downrank2 < 0)
-			downrank2 = 1.0f;
-			healdoneaffectperc *= downrank1 * downrank2;
-		}
-		*/
 	}
 }
 
@@ -6566,7 +6540,7 @@ void Aura::EventPeriodicHeal1(uint32 amount)
 	else
 	{
 		if(!(m_spellProto->BGR_one_buff_on_target & SPELL_TYPE_ARMOR))
-			m_target->SendPeriodicHealAuraLog( m_casterGuid, m_target->GetGUID(), GetSpellId(), amount );
+			m_target->SendPeriodicHealAuraLog( m_casterGuid, m_target->GetNewGUID(), GetSpellId(), amount );
 	}
 
 	m_target->RemoveAurasByHeal();
