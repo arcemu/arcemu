@@ -777,3 +777,13 @@ void Player::SendPartyKillLog( uint64 GUID ){
 	
 	SendMessageToSet( &data, true );
 }
+
+void Player::SendDestroyObject( uint64 GUID ){
+	
+	WorldPacket data( SMSG_DESTROY_OBJECT, 9 );
+
+	data << GUID;
+	data << uint8( 0 ); //TODO: unk bool
+	
+	m_session->SendPacket( &data );
+}

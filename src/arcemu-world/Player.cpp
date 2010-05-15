@@ -2387,11 +2387,6 @@ void Player::InitVisibleUpdateBits()
 }
 
 
-void Player::DestroyForPlayer( Player *target ) const
-{
-	Unit::DestroyForPlayer( target );
-}
-
 #define IS_ARENA(x) ( (x) >= BATTLEGROUND_ARENA_2V2 && (x) <= BATTLEGROUND_ARENA_5V5 )
 
 void Player::SaveToDB(bool bNewCharacter /* =false */)
@@ -13705,4 +13700,17 @@ void Player::RemoveIfVisible( uint64 obj ){
 	
 	m_visibleObjects.erase( obj );
 	PushOutOfRange( obj );
+}
+
+void Player::Phase( uint8 command, uint32 newphase ){
+	Unit::Phase( command, newphase );
+
+	std::list<Pet*> summons = GetSummons();
+	for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr){
+		Pet *p = *itr;
+		p->Phase( command, newphase );
+	}
+		//We should phase other, non-combat "pets" too...
+
+
 }

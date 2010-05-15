@@ -6484,7 +6484,6 @@ bool Unit::IsDazed()
 void Unit::UpdateVisibility()
 {
 	ByteBuffer buf(3000);
-	InRangeSet::iterator itr, it3;
 	uint32 count;
 	bool can_see;
 	bool is_visible;
@@ -6516,8 +6515,8 @@ void Unit::UpdateVisibility()
 			{
 				if(is_visible)
 				{
-					pObj->DestroyForPlayer(plr);
-					plr->RemoveVisibleObject( (*it3)->GetGUID() );
+					plr->SendDestroyObject( pObj->GetGUID() );
+					plr->RemoveVisibleObject( pObj->GetGUID() );
 				}
 			}
 
@@ -6540,8 +6539,8 @@ void Unit::UpdateVisibility()
 				{
 					if(is_visible)
 					{
-						plr->DestroyForPlayer(pl);
-						pl->RemoveVisibleObject( (*it3)->GetGUID() );
+						pl->SendDestroyObject( plr->GetGUID() );
+						pl->RemoveVisibleObject( plr->GetGUID() );
 					}
 				}
 			}
@@ -6560,8 +6559,8 @@ void Unit::UpdateVisibility()
 			{
 				if(is_visible)
 				{
-					DestroyForPlayer( p );
-					p->RemoveVisibleObject( (*itr)->GetGUID() );
+					p->SendDestroyObject( GetGUID() );
+					p->RemoveVisibleObject( GetGUID() );
 				}
 			}
 			else
@@ -8137,3 +8136,15 @@ void Unit::SendPeriodicHealAuraLog( const WoWGuid& CasterGUID, const WoWGuid& Ta
 	SendMessageToSet(&data,true);
 }
 
+
+void Unit::Phase(uint8 command, uint32 newphase ){
+
+	Object::Phase( command, newphase );
+
+	for( std::set<Object*>::iterator itr=m_objectsInRange.begin(); itr!=m_objectsInRange.end(); ++itr ){
+		if ( (*itr)->IsUnit() )
+			static_cast< Unit* >( *itr )->UpdateVisibility();
+	}
+	
+	UpdateVisibility();
+}

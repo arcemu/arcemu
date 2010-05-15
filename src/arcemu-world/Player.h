@@ -1021,6 +1021,7 @@ public:
 	void SendDungeonDifficulty();
 	void SendRaidDifficulty();
 	void SendExploreXP( uint32 areaid, uint32 xp );
+	void SendDestroyObject( uint64 GUID );
 
     void OutPacket( uint16 opcode, uint16 len, const void *data );
     void SendPacket( WorldPacket *packet );
@@ -1816,6 +1817,8 @@ public:
 	void ClearCooldownsOnLine(uint32 skill_line, uint32 called_from);
 	void ResetAllCooldowns();
 	void ClearCooldownForSpell(uint32 spell_id);
+
+	void Phase(uint8 command=PHASE_SET, uint32 newphase=1);
 
 	bool bProcessPending;
 	Mutex _bufferS;

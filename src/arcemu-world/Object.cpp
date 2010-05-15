@@ -329,22 +329,6 @@ uint32 Object::BuildValuesUpdateBlockForPlayer(ByteBuffer * buf, UpdateMask * ma
 	return 1;
 }
 
-void Object::DestroyForPlayer(Player * target) const
-{
-	// If the target doesn't exist, return. If the target exists, but it session is null return
-	 if( target == NULL || target->GetSession() == NULL )
-		return;
-
-	Arcemu::Util::ARCEMU_ASSERT(   target != NULL );
-
-	WorldPacket data( SMSG_DESTROY_OBJECT, 9 );
-	data << GetGUID();
-	data << uint8( 0 ); //TODO: unk bool
-
-	target->GetSession()->SendPacket( &data );
-}
-
-
 ///////////////////////////////////////////////////////////////
 /// Build the Movement Data portion of the update packet
 /// Fills the data with this object's movement/speed info
@@ -1529,16 +1513,7 @@ bool Object::isInRange(Object* target, float range)
 	return( dist <= range );
 }
 
-bool Object::IsPet()
-{
-    if ( GetTypeId() != TYPEID_UNIT || !m_uint32Values || !IsCreature())
-		return false;
-
-    if (TO_UNIT(this)->GetCreatedByGUID() == 0 || TO_UNIT(this)->GetSummonedByGUID() == 0)
-        return false;
-    if (static_cast< Creature * >(this)->IsPet())
-        return true;
-
+bool Object::IsPet(){
 	return false;
 }
 
@@ -2332,28 +2307,8 @@ void Object::Phase(uint8 command, uint32 newphase)
 		m_phase = 1;
 		break;
 	default:
-		return;
+		Arcemu::Util::ARCEMU_ASSERT( false );
 	}
-
-	if ( IsPlayer() ) 
-	{
-		Player * p_player=static_cast< Player* >( this );
-		std::list<Pet*> summons = p_player->GetSummons();
-		for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
-		{
-			(*itr)->Phase(command, newphase);
-		}
-		//We should phase other, non-combat "pets" too...
-	}
-
-	for( std::set<Object*>::iterator itr=m_objectsInRange.begin(); itr!=m_objectsInRange.end(); ++itr )
-	{
-		if ( (*itr)->IsUnit() )
-			static_cast< Unit* >( *itr )->UpdateVisibility();
-	}
-
-	if ( IsUnit() )
-		static_cast< Unit* >( this )->UpdateVisibility();
 
 	return;
 }

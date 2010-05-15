@@ -1440,6 +1440,8 @@ public:
 		return false;
 	}
 
+	void Phase(uint8 command=PHASE_SET, uint32 newphase=1);
+
 	bool Tagged;
 	uint64 TaggerGuid;
 	void Tag( uint64 TaggerGUID );

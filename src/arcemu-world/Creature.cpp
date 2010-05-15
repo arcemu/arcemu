@@ -176,7 +176,6 @@ Creature::Creature(uint64 guid)
 	TaggerGuid = 0;
 
 	Skinned = false;
-    m_isPet = false;
     m_enslaveCount = 0;
 	m_enslaveSpell = 0;
 
@@ -1112,7 +1111,7 @@ void Creature::TotemExpire()
 			m_owner->RemoveAura(6495);
 		m_owner->m_TotemSlots[totemSlot] = 0;
 		if( m_owner->IsPlayer() )
-			DestroyForPlayer( static_cast< Player* >( m_owner ) ); //make sure the client knows it's gone...
+			static_cast< Player* >( m_owner )->SendDestroyObject( GetGUID() ); //make sure the client knows it's gone...
 		m_owner = NULL;
     }
 

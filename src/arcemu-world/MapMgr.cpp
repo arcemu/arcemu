@@ -834,7 +834,6 @@ void MapMgr::UpdateInRangeSet( Object *obj, Player *plObj, MapCell* cell, ByteBu
 	Object* curObj;
 	Player* plObj2;
 	int count;
-	ObjectSet::iterator itr;
 	float fRange;
 	bool cansee, isvisible;
 
@@ -906,7 +905,7 @@ void MapMgr::UpdateInRangeSet( Object *obj, Player *plObj, MapCell* cell, ByteBu
 					if(!cansee && isvisible)
 					{
 						plObj2->PushOutOfRange(obj->GetNewGUID());
-						plObj2->RemoveVisibleObject( (*itr)->GetGUID() );
+						plObj2->RemoveVisibleObject( obj->GetGUID() );
 					}
 					else if(cansee && !isvisible)
 					{
@@ -925,7 +924,7 @@ void MapMgr::UpdateInRangeSet( Object *obj, Player *plObj, MapCell* cell, ByteBu
 					if(!cansee && isvisible)
 					{
 						plObj->PushOutOfRange( curObj->GetNewGUID() );
-						plObj->RemoveVisibleObject( (*itr)->GetGUID() );
+						plObj->RemoveVisibleObject( curObj->GetGUID() );
 					}
 					else if(cansee && !isvisible)
 					{

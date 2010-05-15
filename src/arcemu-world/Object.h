@@ -189,8 +189,6 @@ public:
 
 	virtual void DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32 unitEvent, uint32 spellId, bool no_remove_auras = false);
 
-	virtual void DestroyForPlayer( Player *target ) const;
-
 	void BuildHeartBeatMsg( WorldPacket *data ) const;
 	bool IsBeingTeleported() { return mSemaphoreTeleport; }
 	void SetSemaphoreTeleport(bool semphsetting) { mSemaphoreTeleport = semphsetting; }
@@ -517,7 +515,7 @@ public:
 	uint32 m_phase; //This stores the phase, if two objects have the same bit set, then they can see each other. The default phase is 0x1.
 
 	const uint32 GetPhase() { return m_phase; }
-	void Phase(uint8 command=PHASE_SET, uint32 newphase=1);
+	virtual void Phase(uint8 command=PHASE_SET, uint32 newphase=1);
 
 	void EventSpellDamage(uint64 Victim, uint32 SpellID, uint32 Damage);
 	void SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage, bool allowProc, bool static_damage = false, bool no_remove_auras = false);
