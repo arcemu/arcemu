@@ -688,7 +688,7 @@ void Player::SendInitialLogonPackets()
 
 void Player::SendLootUpdate( Object *o ){
 
-	if( !IsVisible( o ) )
+	if( !IsVisible( o->GetGUID() ) )
 		return;
 
 	// Build the actual update.

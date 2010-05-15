@@ -822,7 +822,7 @@ void WorldSession::HandlePushQuestToPartyOpcode(WorldPacket &recv_data)
 						//or create a fake bad response, as we no longer have an out of range response. I'll go with the latter option and send that the other player is busy...
 						//Also, pPlayer's client can send a busy response automatically even if the players see each other, but they are still too far away.
 						//But sometimes nothing happens on pPlayer's client (near the end of mutual visibility line), no quest window and no busy response either. This has to be solved later, maybe a distance check here...
-						if( response == QUEST_SHARE_MSG_SHARING_QUEST && !pPlayer->IsVisible(_player) )
+						if( response == QUEST_SHARE_MSG_SHARING_QUEST && !pPlayer->IsVisible(_player->GetGUID()) )
 						{
 							response = QUEST_SHARE_MSG_BUSY;
 						}

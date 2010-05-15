@@ -6018,10 +6018,10 @@ void Player::OnRemoveInRangeObject(Object* pObj)
 	if (pObj == NULL)
 		return;
 
-    if( IsVisible( pObj ) )
+	if( IsVisible( pObj->GetGUID() ) )
         PushOutOfRange( pObj->GetNewGUID() );
 
-	m_visibleObjects.erase(pObj);
+	m_visibleObjects.erase(pObj->GetGUID());
 	Unit::OnRemoveInRangeObject(pObj);
 
 	if( pObj->GetGUID() == m_CurrentCharm )
@@ -13698,3 +13698,11 @@ void Player::knockback( float CasterOrientation, int32 basepoint, uint32 miscval
 	SpeedCheatDelay(10000);
 }
 
+void Player::RemoveIfVisible( uint64 obj ){
+	std::set< uint64 >::iterator itr = m_visibleObjects.find( obj );
+	if( itr == m_visibleObjects.end() )
+		return;
+	
+	m_visibleObjects.erase( obj );
+	PushOutOfRange( obj );
+}

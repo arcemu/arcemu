@@ -6501,7 +6501,7 @@ void Unit::UpdateVisibility()
 			++itr2;
 
 			can_see = plr->CanSee(pObj);
-			is_visible = plr->GetVisibility(pObj, &it3);
+			is_visible = plr->IsVisible( pObj->GetGUID() );
 			if(can_see)
 			{
 				if(!is_visible)
@@ -6509,7 +6509,7 @@ void Unit::UpdateVisibility()
 					buf.clear();
 					count = pObj->BuildCreateUpdateBlockForPlayer( &buf, plr );
 					plr->PushCreationData(&buf, count);
-					plr->AddVisibleObject(pObj);
+					plr->AddVisibleObject(pObj->GetGUID());
 				}
 			}
 			else
@@ -6517,7 +6517,7 @@ void Unit::UpdateVisibility()
 				if(is_visible)
 				{
 					pObj->DestroyForPlayer(plr);
-					plr->RemoveVisibleObject(it3);
+					plr->RemoveVisibleObject( (*it3)->GetGUID() );
 				}
 			}
 
@@ -6525,7 +6525,7 @@ void Unit::UpdateVisibility()
 			{
 				pl = static_cast< Player* >( pObj );
 				can_see = pl->CanSee( plr );
-				is_visible = pl->GetVisibility( plr, &it3 );
+				is_visible = pl->IsVisible( plr->GetGUID() );
 				if( can_see )
 				{
 					if(!is_visible)
@@ -6533,7 +6533,7 @@ void Unit::UpdateVisibility()
 						buf.clear();
 						count = plr->BuildCreateUpdateBlockForPlayer( &buf, pl );
 						pl->PushCreationData(&buf, count);
-						pl->AddVisibleObject(plr);
+						pl->AddVisibleObject(plr->GetGUID());
 					}
 				}
 				else
@@ -6541,7 +6541,7 @@ void Unit::UpdateVisibility()
 					if(is_visible)
 					{
 						plr->DestroyForPlayer(pl);
-						pl->RemoveVisibleObject(it3);
+						pl->RemoveVisibleObject( (*it3)->GetGUID() );
 					}
 				}
 			}
@@ -6555,13 +6555,13 @@ void Unit::UpdateVisibility()
             Player *p = static_cast< Player* >( *it2 );
 
 			can_see = p->CanSee(this);
-			is_visible = p->GetVisibility(this, &itr);
+			is_visible = p->IsVisible( this->GetGUID() );
 			if(!can_see)
 			{
 				if(is_visible)
 				{
 					DestroyForPlayer( p );
-					p->RemoveVisibleObject(itr);
+					p->RemoveVisibleObject( (*itr)->GetGUID() );
 				}
 			}
 			else
@@ -6571,7 +6571,7 @@ void Unit::UpdateVisibility()
 					buf.clear();
 					count = BuildCreateUpdateBlockForPlayer(&buf, p);
 					p->PushCreationData(&buf, count);
-					p->AddVisibleObject(this);
+					p->AddVisibleObject( this->GetGUID() );
 				}
 			}
 		}

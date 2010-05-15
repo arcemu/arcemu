@@ -1614,32 +1614,15 @@ public:
 	uint32 m_BreathDamageTimer;
 	// Visible objects
 	bool CanSee(Object* obj);
-	 bool IsVisible(Object* pObj) { return !(m_visibleObjects.find(pObj) == m_visibleObjects.end()); }
+	 bool IsVisible( uint64 pObj ) { return !(m_visibleObjects.find(pObj) == m_visibleObjects.end()); }
 	void AddInRangeObject(Object* pObj);
 	void OnRemoveInRangeObject(Object* pObj);
 	void ClearInRangeSet();
-	 void AddVisibleObject(Object* pObj) { m_visibleObjects.insert(pObj); }
-	 void RemoveVisibleObject(Object* pObj) { m_visibleObjects.erase(pObj); }
-	 void RemoveVisibleObject(InRangeSet::iterator itr) { m_visibleObjects.erase(itr); }
-	 InRangeSet::iterator FindVisible(Object * obj) { return m_visibleObjects.find(obj); }
-	 void RemoveIfVisible(Object * obj)
-	{
-		InRangeSet::iterator itr = m_visibleObjects.find(obj);
-		if(itr == m_visibleObjects.end())
-			return;
-
-		m_visibleObjects.erase(obj);
-		PushOutOfRange(obj->GetNewGUID());
-	}
-
-	 bool GetVisibility(Object * obj, InRangeSet::iterator *itr)
-	{
-		*itr = m_visibleObjects.find(obj);
-		return ((*itr) != m_visibleObjects.end());
-	}
-
-	 InRangeSet::iterator GetVisibleSetBegin() { return m_visibleObjects.begin(); }
-	 InRangeSet::iterator GetVisibleSetEnd() { return m_visibleObjects.end(); }
+	 void AddVisibleObject( uint64 pObj ) { m_visibleObjects.insert(pObj); }
+	 void RemoveVisibleObject( uint64 pObj ) { m_visibleObjects.erase(pObj); }
+	 void RemoveVisibleObject( std::set< uint64 >::iterator itr) { m_visibleObjects.erase(itr); }
+	 std::set< uint64 >::iterator FindVisible( uint64 obj ) { return m_visibleObjects.find(obj); }	 
+	 void RemoveIfVisible( uint64 obj );
 
 	//Transporters
 	bool m_lockTransportVariables;
@@ -2384,7 +2367,7 @@ protected:
 	// Channels
 	std::set<Channel*> m_channels;
 	// Visible objects
-	std::set<Object*> m_visibleObjects;
+	std::set< uint64 > m_visibleObjects;
 	// Groups/Raids
 	uint32 m_GroupInviter;
 	uint8 m_StableSlotCount;
