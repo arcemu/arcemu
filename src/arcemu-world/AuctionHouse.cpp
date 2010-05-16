@@ -28,9 +28,7 @@ void Auction::DeleteFromDB()
 
 void Auction::SaveToDB(uint32 AuctionHouseId)
 {
-	CharacterDatabase.Execute("INSERT INTO auctions VALUES(%u, %u, "I64FMTD", %u, %u, %u, %u, %u, %u)",
-		Id, AuctionHouseId, pItem->GetGUID(), Owner, BuyoutPrice, ExpiryTime, HighestBidder, HighestBid,
-		DepositAmount);
+	CharacterDatabase.Execute("INSERT INTO auctions VALUES(%u, %u, "I64FMTD", %u, %u, %u, %u, %u, %u, %u)",Id, AuctionHouseId, pItem->GetGUID(), Owner, StartingPrice, BuyoutPrice, ExpiryTime, HighestBidder, HighestBid, DepositAmount );
 }
 
 void Auction::UpdateInDB()
@@ -262,6 +260,11 @@ void Auction::AddToPacket(WorldPacket & data)
         data << uint32( pItem->GetCharges( i ) );  // charges
 	}
 
+	// TODO: merge into the loop above when arcemu adds support for prismatic socket enchants
+	for (uint32 i = 0; i < 3; i++)
+		data << uint32( 0 );
+
+
     data << pItem->GetItemRandomPropertyId();		 // -ItemRandomSuffix / random property	 : If the value is negative its ItemRandomSuffix if its possitive its RandomItemProperty
     data << pItem->GetItemRandomSuffixFactor();			  // when ItemRandomSuffix is used this is the modifier
 
@@ -279,20 +282,18 @@ void Auction::AddToPacket(WorldPacket & data)
 	* (Modifier / 10000) * enchantmentvalue = EnchantmentGain;	
 	*/
 	
-	data << uint32(0);				  // Unknown
-	data << uint32(0);				  // Unknown
-	data << uint32(0);				  // Unknown
-	data << pItem->GetStackCount(); // Amount
-	data << uint32(0);				  // Unknown
-	data << uint32(0);				  // Unknown
-	data << uint64(Owner);			  // Owner guid
-	data << HighestBid;				 // Current prize
-	// hehe I know its evil, this creates a nice trough put of money
-	data << uint32(50);				 // Next bid value modifier, like current bid + this value
-	data << BuyoutPrice;				// Buyout
-	data << uint32((ExpiryTime - UNIXTIME) * 1000); // Time left
-	data << uint64(HighestBidder);	  // Last bidder
-	data << HighestBid;				 // The bid of the last bidder
+	data << pItem->GetStackCount();         // Amount
+	data << pItem->GetChargesLeft();        // Charges Left
+	data << uint32(0);                                      // Unknown
+	data << uint64(Owner);                          // Owner guid
+	data << uint32(StartingPrice);          // Starting bid
+	// If there's no bid yet, we should start at starting bid
+	data << uint32((HighestBid > 0 ? 50 : 0));      // Next bid value modifier, like current bid + this value
+	data << uint32(BuyoutPrice);            // Buyout
+	data << uint32((ExpiryTime - UNIXTIME) * 1000);         // Time left
+	data << uint64(HighestBidder);          // Last bidder
+	data << uint32(HighestBid);                     // The bid of the last bidder
+
 }
 
 void AuctionHouse::SendBidListPacket(Player * plr, WorldPacket * packet)
@@ -628,7 +629,8 @@ void WorldSession::HandleAuctionSellItem( WorldPacket & recv_data )
 	Auction * auct = new Auction;
 	auct->BuyoutPrice = buyout;
 	auct->ExpiryTime = (uint32)UNIXTIME + (etime * 60);
-	auct->HighestBid = bid;
+	auct->StartingPrice = bid;
+	auct->HighestBid = 0;
 	auct->HighestBidder = 0;	// hm
 	auct->Id = sAuctionMgr.GenerateAuctionId();
 	auct->Owner = _player->GetLowGUID();
@@ -837,11 +839,13 @@ void AuctionHouse::LoadAuctions()
 		}
 		auct->pItem = pItem;
 		auct->Owner = fields[3].GetUInt32();
-		auct->BuyoutPrice = fields[4].GetUInt32();
-		auct->ExpiryTime = fields[5].GetUInt32();
-		auct->HighestBidder = fields[6].GetUInt32();
-		auct->HighestBid = fields[7].GetUInt32();
-		auct->DepositAmount = fields[8].GetUInt32();
+		auct->StartingPrice = fields[4].GetUInt32();
+		auct->BuyoutPrice = fields[5].GetUInt32();
+		auct->ExpiryTime = fields[6].GetUInt32();
+		auct->HighestBidder = fields[7].GetUInt32();
+		auct->HighestBid = fields[8].GetUInt32();
+		auct->DepositAmount = fields[9].GetUInt32();
+
 		auct->DeletedReason = 0;
 		auct->Deleted = false;
 

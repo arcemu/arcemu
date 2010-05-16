@@ -59,7 +59,7 @@ struct Auction
 	uint32 Owner;
 	uint32 HighestBidder;
 	uint32 HighestBid;
-
+	uint32 StartingPrice;
 	uint32 BuyoutPrice;
 	uint32 DepositAmount;
 
