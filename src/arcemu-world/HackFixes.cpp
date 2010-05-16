@@ -133,8 +133,8 @@ void ApplyNormalFixes()
 					float ftemp;
 					temp = sp->Effect[col1_swap];			sp->Effect[col1_swap] = sp->Effect[col2_swap] ;						sp->Effect[col2_swap] = temp;
 					temp = sp->EffectDieSides[col1_swap];	sp->EffectDieSides[col1_swap] = sp->EffectDieSides[col2_swap] ;		sp->EffectDieSides[col2_swap] = temp;
-					temp = sp->EffectBaseDice[col1_swap];	sp->EffectBaseDice[col1_swap] = sp->EffectBaseDice[col2_swap] ;		sp->EffectBaseDice[col2_swap] = temp;
-					ftemp = sp->EffectDicePerLevel[col1_swap];			sp->EffectDicePerLevel[col1_swap] = sp->EffectDicePerLevel[col2_swap] ;				sp->EffectDicePerLevel[col2_swap] = ftemp;
+					//temp = sp->EffectBaseDice[col1_swap];	sp->EffectBaseDice[col1_swap] = sp->EffectBaseDice[col2_swap] ;		sp->EffectBaseDice[col2_swap] = temp;
+					//ftemp = sp->EffectDicePerLevel[col1_swap];			sp->EffectDicePerLevel[col1_swap] = sp->EffectDicePerLevel[col2_swap] ;				sp->EffectDicePerLevel[col2_swap] = ftemp;
 					ftemp = sp->EffectRealPointsPerLevel[col1_swap];	sp->EffectRealPointsPerLevel[col1_swap] = sp->EffectRealPointsPerLevel[col2_swap] ;	sp->EffectRealPointsPerLevel[col2_swap] = ftemp;
 					temp = sp->EffectBasePoints[col1_swap];	sp->EffectBasePoints[col1_swap] = sp->EffectBasePoints[col2_swap] ;	sp->EffectBasePoints[col2_swap] = temp;
 					temp = sp->EffectMechanic[col1_swap];	sp->EffectMechanic[col1_swap] = sp->EffectMechanic[col2_swap] ;	sp->EffectMechanic[col2_swap] = temp;
@@ -3707,8 +3707,8 @@ void ApplyNormalFixes()
 				healsp->Effect[0] = SPELL_EFFECT_HEAL;
 				healsp->Effect[1] = healsp->Effect[2] = SPELL_EFFECT_NULL;
 				healsp->EffectBasePoints[0] = sp->EffectBasePoints[0];
-				healsp->EffectBaseDice[0] = sp->EffectBaseDice[0];
-				healsp->EffectDicePerLevel[0] = sp->EffectDicePerLevel[0];
+				//healsp->EffectBaseDice[0] = sp->EffectBaseDice[0];
+				//healsp->EffectDicePerLevel[0] = sp->EffectDicePerLevel[0];
 				healsp->EffectDieSides[0] = sp->EffectDieSides[0];
 				healsp->EffectImplicitTargetA[0] = EFF_TARGET_PARTY_MEMBER;
 			}
@@ -5327,7 +5327,7 @@ void ApplyNormalFixes()
 			sp->Effect[2] = SPELL_EFFECT_APPLY_AURA;
             sp->EffectAmplitude[2] = 3000;
 			sp->EffectImplicitTargetA[2] = EFF_TARGET_SELF;
-			sp->EffectBaseDice[2] = 1;
+			//sp->EffectBaseDice[2] = 1;
 			sp->EffectDieSides[2] = 1;
 			sp->EffectTriggerSpell[2] = 32612;
 			sp->EffectBasePoints[2] = -1;

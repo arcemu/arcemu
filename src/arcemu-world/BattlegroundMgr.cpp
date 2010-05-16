@@ -78,30 +78,42 @@ CBattlegroundManager::~CBattlegroundManager()
 
 void CBattlegroundManager::HandleBattlegroundListPacket(WorldSession * m_session, uint32 BattlegroundType, uint8 from)
 {
+	WorldPacket data(SMSG_BATTLEFIELD_LIST, 18);
+	
+	data << m_session->GetPlayer()->GetGUID();
+	data << from;
+	data << uint32( 6 ); // typeid
+	data << uint8(0);                                      // unk
+	data << uint8(0);                                      // unk
+	
+	// Rewards
+	data << uint8(0);                                      // 3.3.3 hasWin
+	data << uint32(0);                                     // 3.3.3 winHonor
+	data << uint32(0);                                     // 3.3.3 winArena
+	data << uint32(0);                                     // 3.3.3 lossHonor
+	
+	uint8 isRandom = 0;
+	data << uint8(isRandom);                               // 3.3.3 isRandom
+	
+	// Random bgs
+	if( isRandom == 1 ){
+		// rewards
+		data << uint8(0);                                  // win random
+		data << uint32(0);                                 // Reward honor if won
+		data << uint32(0);                                 // Reward arena point if won
+		data << uint32(0);                                 // Lost honor if lost
+	}
+
 	if(BattlegroundType == BATTLEGROUND_ARENA_2V2 || BattlegroundType == BATTLEGROUND_ARENA_3V3 || BattlegroundType == BATTLEGROUND_ARENA_5V5)
 	{
-		WorldPacket data(SMSG_BATTLEFIELD_LIST, 18);
-		data << m_session->GetPlayer()->GetGUID();
-        data << from;
-        data << uint32( 6 );
-        data << uint32( 0xC );
-        data << uint8( 0 );
-        data << uint8( 0 );
+		data << uint32( 0 );
 		m_session->SendPacket(&data);
-
 		return;
 	}
 
 	if( BattlegroundType >= BATTLEGROUND_NUM_TYPES ) return; //VLack: Nasty hackers might try to abuse this packet to crash us...
 
 	uint32 Count = 0;
-	WorldPacket data(SMSG_BATTLEFIELD_LIST, 200);
-	data << m_session->GetPlayer()->GetGUID();
-	data << from;
-	data << BattlegroundType;
-	data << uint8(2);
-    data << uint8( 0 );
-    
     size_t pos = data.wpos();
 
 	data << uint32(0);      // Count

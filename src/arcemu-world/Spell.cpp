@@ -4594,7 +4594,7 @@ int32 Spell::CalculateEffect(uint32 i,Unit *target)
 	int32 value = 0;
 
 	float basePointsPerLevel    = GetProto()->EffectRealPointsPerLevel[i];
-	float randomPointsPerLevel  = GetProto()->EffectDicePerLevel[i];
+	//float randomPointsPerLevel  = GetProto()->EffectDicePerLevel[i];
 	int32 basePoints = GetProto()->EffectBasePoints[i] + 1;
 	int32 randomPoints = GetProto()->EffectDieSides[i];
 
@@ -4641,7 +4641,7 @@ exit:
 			diff +=GetProto()->maxLevel;
 		else
 			diff +=u_caster->getLevel();
-		randomPoints += float2int32(diff * randomPointsPerLevel);
+		//randomPoints += float2int32(diff * randomPointsPerLevel);
 		basePoints += float2int32(diff * basePointsPerLevel );
 	}
 

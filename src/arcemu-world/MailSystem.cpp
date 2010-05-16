@@ -133,7 +133,6 @@ bool MailMessage::AddMessageDataToPacket(WorldPacket& data)
 		data << sender_guid;
 
 	data << cod;			// cod
-	data << message_id;		// itempageid
 	data << uint32(0);
 	data << stationery;
 	data << money;		// money
@@ -141,6 +140,7 @@ bool MailMessage::AddMessageDataToPacket(WorldPacket& data)
 	data << float((expire_time - (uint32)UNIXTIME) / 86400.0f);
 	data << uint32(0);	// mail template
 	data << subject;
+    data << body;
 	pos = data.wpos();
 	data << uint8(items.size());		// item count
 
@@ -156,7 +156,7 @@ bool MailMessage::AddMessageDataToPacket(WorldPacket& data)
             data << pItem->GetLowGUID();
 			data << pItem->GetEntry();
 
-			for( j = 0; j < 6; ++j )
+			for( j = 0; j < 7; ++j )
 			{
                 /* Don't remove this please - dfighter
 				data << pItem->GetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1 + ( j * 3 ) );
@@ -165,8 +165,8 @@ bool MailMessage::AddMessageDataToPacket(WorldPacket& data)
                 */
 
                 data << uint32( pItem->GetEnchantmentId( j ) );
-                data << uint32( pItem->GetEnchantmentId( j + 1 * 3 ) );
-                data << uint32( pItem->GetEnchantmentId( j + 2 * 3 ) );
+                data << uint32( pItem->GetEnchantmentDuration( j ) );
+                data << uint32( 0 );
 			}
 
             data << uint32( pItem->GetItemRandomPropertyId() );
@@ -702,7 +702,7 @@ void WorldSession::HandleMailCreateTextItem(WorldPacket & recv_data )
 	if (pItem== NULL)
 		return;
 
-	pItem->SetTextId(message_id);
+	//pItem->SetTextId(message_id);
 	if( _player->GetItemInterface()->AddItemToFreeSlot(pItem) )
 	{
 		// mail now has an item after it
@@ -722,17 +722,23 @@ void WorldSession::HandleMailCreateTextItem(WorldPacket & recv_data )
 
 void WorldSession::HandleItemTextQuery(WorldPacket & recv_data)
 {
-	uint32 message_id;
-	recv_data >> message_id;
+	uint64 itemGuid;
+	recv_data >> itemGuid;
 
 	string body = "Internal Error";
 
-	MailMessage * msg = _player->m_mailBox.GetMessage(message_id);
-	if(msg)
-		body = msg->body;
+	//TODO: Store text in database even after we deleted the mail and access it by item GUID (low guid)
+	Item *pItem = _player->GetItemInterface()->GetItemByGUID(itemGuid);
+	WorldPacket data(SMSG_ITEM_TEXT_QUERY_RESPONSE, body.length() + 9);
+	if(!pItem)
+		data << uint8(1);
+	else
+	{
+		data << uint8(0);
+		data << uint64(itemGuid);
+		data << body;
+	}
 
-	WorldPacket data(SMSG_ITEM_TEXT_QUERY_RESPONSE, body.length() + 5);
-	data << message_id << body;
 	SendPacket(&data);
 }
 

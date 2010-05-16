@@ -201,6 +201,7 @@ void AddonMgr::SendAddonInfoPacket(WorldPacket *source, uint32 pos, WorldSession
 
 	/*unknown 4 bytes at the end of the packet. Stays 0 for me. Tried custom addons, deleting, faulty etc. It stays 0.
 	*/
+	returnpacket << uint32(0); //Some additional count for additional records, but we won't send them.
 
 	m_session->SendPacket(&returnpacket);
 }

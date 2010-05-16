@@ -319,7 +319,8 @@ void QuestMgr::BuildOfferReward(WorldPacket *data, Quest* qst, Object* qst_giver
 	//uint32 a = 0, b = 0, c = 1, d = 0, e = 1;
 
 	*data << ( qst->next_quest_id ? uint8(1) : uint8(0) );// next quest shit
-	*data << uint32(0);										// maybe required money
+    *data << qst->quest_flags;
+    *data << qst->suggestedplayers;
 
 	*data << qst->completionemotecount;
 	for( i = 0; i < qst->completionemotecount; i++ )
@@ -357,9 +358,8 @@ void QuestMgr::BuildOfferReward(WorldPacket *data, Quest* qst, Object* qst_giver
 			}
 		}
 	}
-	
-	*data << GenerateRewardMoney( plr, qst );
 
+    *data << uint32(0);
 	uint32 xp=0;
 	if( plr->getLevel() < plr->GetMaxLevel() )
 	{
@@ -409,11 +409,9 @@ void QuestMgr::BuildQuestDetails(WorldPacket *data, Quest* qst, Object* qst_give
 	}
 
 	*data << uint8(1);						// Activate accept
+    *data << qst->quest_flags;
 	*data << qst->suggestedplayers;			// "Suggested players"
-	*data << uint8(0);						// Added in 3.0.2, name or text(?) - or flags nowadays
-	*data << uint8(0); //VLack: some 3.1.x thing - if the client answers, this byte will be sent back in the response, so it could be used for a few interesting things...
-	*data << uint8(0); //new 3.3 - if you set it to 1 then it'll show the quest panel without the decline button, however the accept button won't work either, just closes the dialog. Probably the client expects the server to auto-accept the quest without client side intervention.
-
+	*data << uint8(0);						// MANGOS: IsFinished? value is sent back to server in quest accept packet
 
 	ItemPrototype *ip;
 	uint32 i;
@@ -497,6 +495,9 @@ void QuestMgr::BuildRequestItems(WorldPacket *data, Quest* qst, Object* qst_give
 
 	*data << uint32(0);				 // Emote delay
 	*data << uint32(1);				 // Emote type
+	
+    *data << qst->quest_flags;
+    *data << qst->suggestedplayers;
 	*data << uint32( qst->reward_money < 0 ? -qst->reward_money : 0 );	   // Required Money
 
 	// item count
@@ -517,13 +518,13 @@ void QuestMgr::BuildRequestItems(WorldPacket *data, Quest* qst, Object* qst_give
  			*data << uint32(0); 
  			*data << uint32(0); 
  			*data << uint32(0); 
- 		} 
- 			*data << uint32(0); 
- 			*data << uint32(0); 
- 			*data << uint32(0); 
- 			*data << uint32(0); 
- 			*data << uint32(0); 
- 			*data << uint32(0); 
+        }
+        *data << uint32(0);
+        *data << uint32(0);
+        *data << uint32(0);
+        *data << uint32(0);
+        *data << uint32(0);
+        *data << uint32(0);
 	}
 
 	// wtf is this?
@@ -644,20 +645,24 @@ void QuestMgr::BuildQuestList(WorldPacket *data, Object* qst_giver, Player *plr,
 				switch(status)
 				{
 				case QMGR_QUEST_NOT_FINISHED:
-					*data << uint32(4) << uint32(0);
+					*data << uint32(4);
 					break;
 
 				case QMGR_QUEST_FINISHED:
-					*data << uint32(4) << uint32(1);
+					*data << uint32(4);
 					break;
 
 				case QMGR_QUEST_CHAT:
-					*data << uint32( QMGR_QUEST_AVAILABLE ) << uint32( 0 );
+					*data << uint32( QMGR_QUEST_AVAILABLE );
 					break;
 
 				default:
-					*data << status << uint32(0);
+					*data << status;
 				}
+                *data << (*it)->qst->max_level;
+				*data << uint32( (*it)->qst->quest_flags );
+				*data << uint8( 0 ); // According to MANGOS: "changes icon: blue question or yellow exclamation"
+
 				if(lq)
 					*data << lq->Title;
 				else

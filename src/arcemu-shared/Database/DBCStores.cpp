@@ -32,7 +32,7 @@ SERVER_DECL DBCStorage<AuctionHouseDBC> dbcAuctionHouse;
 SERVER_DECL DBCStorage<BankSlotPrice> dbcBankSlotPrices;
 SERVER_DECL DBCStorage<BankSlotPrice> dbcStableSlotPrices;
 SERVER_DECL DBCStorage<BarberShopStyleEntry> dbcBarberShopStyleStore;
-SERVER_DECL DBCStorage<BattlemasterListEntry> dbcBattlemasterListStore;
+//SERVER_DECL DBCStorage<BattlemasterListEntry> dbcBattlemasterListStore;
 SERVER_DECL DBCStorage<CharClassEntry> dbcCharClass;
 SERVER_DECL DBCStorage<CharRaceEntry> dbcCharRace;
 SERVER_DECL DBCStorage<CharTitlesEntry> dbcCharTitlesEntry;
@@ -99,7 +99,7 @@ const char* skilllineentrYFormat = "uuulxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 // const char* BattlemasterListEntryFormat = "uiiiiiiiiuuuuuiiiiiiiiiiiiiiiiiiuux";
 // const char* BattlemasterListEntryFormat = "uiiiiiiiiuuiiiiiiiiiiiiiiiiiuux";
-const char* BattlemasterListEntryFormat = "uiiiiiiiiuuiiiiiiiiiiiiiiiiiuux";
+//const char* BattlemasterListEntryFormat = "uiiiiiiiiuuiiiiiiiiiiiiiiiiiuux";
 
 const char* CharTitlesEntryfmt =
 	"u" // ID
@@ -221,8 +221,6 @@ const char* spellentryFormat =
 	"u" // RequiredItemFlags
 	"uuu" // Effect[3]
 	"uuu" // EffectDieSides[3]
-	"uuu" // EffectBaseDice[3]
-	"uuu" // EffectDicePerLevel[3]
 	"uuu" // EffectRealPointsPerLevel[3]
 	"uuu" // EffectBasePoints[3]
 	"uuu" // EffectMechanic[3]
@@ -349,7 +347,7 @@ bool LoadDBCs()
 	LOAD_DBC("DBC/Achievement_Criteria.dbc", AchievementCriteriaStoreFormat, true, dbcAchievementCriteriaStore, true);
 	LOAD_DBC("DBC/Achievement.dbc", AchievementStoreFormat, true, dbcAchievementStore, true);
 #endif
-	LOAD_DBC("DBC/BattlemasterList.dbc", BattlemasterListEntryFormat, true, dbcBattlemasterListStore, true);
+	//LOAD_DBC("DBC/BattlemasterList.dbc", BattlemasterListEntryFormat, true, dbcBattlemasterListStore, true);
 	LOAD_DBC("DBC/CharTitles.dbc", CharTitlesEntryfmt, true, dbcCharTitlesEntry, true);
 	LOAD_DBC("DBC/CurrencyTypes.dbc", CurrencyTypesEntryFormat, true, dbcCurrencyTypesStore, true);
 	LOAD_DBC("DBC/BarberShopStyle.dbc", BarberShopStyleEntryFormat, true, dbcBarberShopStyleStore, true);

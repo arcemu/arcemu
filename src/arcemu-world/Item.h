@@ -207,6 +207,8 @@ public:
 
     uint32 GetEnchantmentId( uint32 index ){ return GetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1 + 3 * index ); }
     void SetEnchantmentId( uint32 index, uint32 value ){ SetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1 + 3 * index, value ); }
+    uint32 GetEnchantmentDuration( uint32 index ){ return GetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1 + 1 + 3 * index ); }
+    void SetEnchantmentDuration( uint32 index, uint32 value ){ SetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1 + 1 + 3 * index, value ); }
 	void SetTextId( uint32 message_id ) { SetUInt32Value( ITEM_FIELD_ITEM_TEXT_ID, message_id); }
 	uint32 GetTextId() { return GetUInt32Value( ITEM_FIELD_ITEM_TEXT_ID ); }
 

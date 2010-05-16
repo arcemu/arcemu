@@ -472,20 +472,19 @@ struct AchievementCriteriaEntry
 };
 #endif
 
-struct BattlemasterListEntry
-{
-	uint32	bg_index;
-	int32	maps[8];
-	uint32	instance_type;
-	uint32	max_players_per_faction;
-	uint32	some_id;
-	int32	zeros[15];
-	uint32	unk[2];
-	uint32	always_same; // Always 16712190
-	uint32	minimum_payer_level; // ??? Is it, 3.0.8 doesn't match 3.0.3 numbers
-								 // Do not use for now (NAQUADA)
-	//char*	name;
-};
+//struct BattlemasterListEntry
+//{
+//	uint32 entry;											// 0
+//	int32 maps[8];											// 1-8 mapid
+//	uint32 instance_type;									// 9 (3 - BG, 4 - arena)
+//	uint32 canJoinAsGroup;									// 10 (0 or 1)
+//	char *name[16];											// 11-26 name
+//	uint32 nameFlags;										// 27 string flag, unused
+//	uint32 maxGroupSize;									// 28 maxGroupSize, used for checking if queue as group
+//	uint32 HolidayWorldStateId;								// 29 new 3.1
+//	uint32 minLevel;										// 30 Min level
+//	uint32 maxLevel;										// 31 Max level
+//};
 
 struct BankSlotPrice
 {
@@ -742,8 +741,6 @@ struct SpellEntry
 	uint32 RequiredItemFlags;               //71
 	uint32 Effect[3];                       //72 - 74
 	uint32 EffectDieSides[3];               //75 - 77
-	uint32 EffectBaseDice[3];               //78 - 80
-	float  EffectDicePerLevel[3];           //81 - 83
 	float  EffectRealPointsPerLevel[3];     //84 - 86
 	int32  EffectBasePoints[3];             //87 - 89
 	int32  EffectMechanic[3];               //90 - 92       Related to SpellMechanic.dbc
@@ -1689,7 +1686,7 @@ extern SERVER_DECL DBCStorage<AchievementEntry> dbcAchievementStore;
 extern SERVER_DECL DBCStorage<AchievementCriteriaEntry> dbcAchievementCriteriaStore;
 extern SERVER_DECL DBCStorage<AchievementCategoryEntry> dbcAchievementCategoryStore;
 #endif
-extern SERVER_DECL DBCStorage<BattlemasterListEntry> dbcBattlemasterListStore;
+//extern SERVER_DECL DBCStorage<BattlemasterListEntry> dbcBattlemasterListStore;
 extern SERVER_DECL DBCStorage<CharTitlesEntry> dbcCharTitlesEntry;
 extern SERVER_DECL DBCStorage<CurrencyTypesEntry> dbcCurrencyTypesStore;
 extern SERVER_DECL DBCStorage<BarberShopStyleEntry> dbcBarberShopStyleStore;

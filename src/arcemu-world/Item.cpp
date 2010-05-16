@@ -668,10 +668,9 @@ int32 Item::AddEnchantment( EnchantEntry* Enchantment, uint32 Duration, bool Per
 	Instance.RandomSuffix = RandomSuffix;
 
 	// Set the enchantment in the item fields.
-	uint32 EnchantBase = Slot * 3 + ITEM_FIELD_ENCHANTMENT_1_1;
-	SetUInt32Value( EnchantBase, Enchantment->Id );
-	SetUInt32Value( EnchantBase + 1, (uint32)Instance.ApplyTime );
-	SetUInt32Value( EnchantBase + 2, 0 ); // charges
+	SetEnchantmentId( Slot, Enchantment->Id );
+	SetEnchantmentDuration( Slot, (uint32)Instance.ApplyTime );
+	SetUInt32Value( Slot * 3 + ITEM_FIELD_ENCHANTMENT_1_3, 0 ); // charges
 
 	// Add it to our map.
 	Enchantments.insert(make_pair((uint32)Slot, Instance));
@@ -726,10 +725,9 @@ void Item::RemoveEnchantment( uint32 EnchantmentSlot )
 		ApplyEnchantmentBonus( EnchantmentSlot, REMOVE );
 
 	// Unset the item fields.
-	uint32 EnchantBase = Slot * 3 + ITEM_FIELD_ENCHANTMENT_1_1;
-	SetUInt32Value( EnchantBase + 0, 0 );
-	SetUInt32Value( EnchantBase + 1, 0 );
-	SetUInt32Value( EnchantBase + 2, 0 );
+	SetEnchantmentId( Slot, 0 );
+	SetEnchantmentDuration( Slot, 0 );
+	SetUInt32Value( Slot * 3 + ITEM_FIELD_ENCHANTMENT_1_3, 0 );
 
 	// Remove the enchantment event for removal.
 	event_RemoveEvents( EVENT_REMOVE_ENCHANTMENT1 + Slot );

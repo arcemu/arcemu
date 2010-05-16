@@ -407,9 +407,9 @@ void WorldSession::SendAuctionList(Creature* auctioneer)
 	}
 
 	WorldPacket data(MSG_AUCTION_HELLO, 12);
-	data << auctioneer->GetGUID();
+	data << uint64(auctioneer->GetGUID());
 	data << uint32(AH->GetID());
-
+	data << uint8(AH->enabled ? 1 : 0); // Alleycat - Need to correct this properly.
 	SendPacket( &data );
 }
 
@@ -466,27 +466,34 @@ void WorldSession::HandleGossipHelloOpcode( WorldPacket & recv_data )
 				{	
 					ql.insert((*it)->qst->id);
 					count++;
-					data << (*it)->qst->id;
-					/*data << status;//sQuestMgr.CalcQuestStatus(qst_giver, GetPlayer(), *it);
-					data << uint32(0);*/
+
+					uint32 questid = (*it)->qst->id;
+					uint32 icon;
+
 					switch(status)
 					{
 					case QMGR_QUEST_NOT_FINISHED:
-						data << uint32(4) << uint32(0);
+						icon = QMGR_QUEST_REPEATABLE_LOWLEVEL;
 						break;
 
 					case QMGR_QUEST_FINISHED:
-						data << uint32(4) << uint32(1);
+						icon = QMGR_QUEST_REPEATABLE_LOWLEVEL;
 						break;
 
 					case QMGR_QUEST_CHAT:
-						data << QMGR_QUEST_AVAILABLE << uint32(0);
+						icon = QMGR_QUEST_AVAILABLE;
 						break;
 
 					default:
-						data << status << uint32(0);
+						icon = status;
 						break;
 					}
+
+					data << uint32( questid );
+					data << uint32( icon );
+					data << int32( (*it)->qst->min_level );
+					data << uint32( (*it)->qst->quest_flags );
+					data << uint8( 0 );   // 3.3.3 According to Mangos: "changes icon: blue question or yellow exclamation"
 
 					LocalizedQuest * lq = (language>0) ? sLocalizationMgr.GetLocalizedQuest((*it)->qst->id,language):NULL;
 					if(lq)

@@ -45,6 +45,8 @@ AuctionHouse::AuctionHouse(uint32 ID)
 
 	cut_percent = dbc->tax / 100.0f ;
 	deposit_percent = dbc->fee / 100.0f ;
+
+	enabled = true;
 }
 
 AuctionHouse::~AuctionHouse()

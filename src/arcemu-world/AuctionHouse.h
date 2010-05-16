@@ -114,6 +114,8 @@ private:
 public:
 	float cut_percent;
 	float deposit_percent;
+
+	bool enabled;
 };
 #endif
 

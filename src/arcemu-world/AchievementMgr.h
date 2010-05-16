@@ -193,8 +193,8 @@ enum AchievementCriteriaTypes
 	ACHIEVEMENT_CRITERIA_TYPE_LEARN_SKILL_LINE= 112,
 	ACHIEVEMENT_CRITERIA_TYPE_EARN_HONORABLE_KILL = 113,
 	ACHIEVEMENT_CRITERIA_TYPE_ACCEPTED_SUMMONINGS = 114,
-	// 0..114 => 115 criteria types total
-	ACHIEVEMENT_CRITERIA_TYPE_TOTAL = 120,
+	// 0..114 => 124 criteria types total : Alleycat - We need to get the new Acheivements!
+	ACHIEVEMENT_CRITERIA_TYPE_TOTAL = 124,
 };
 
 /**

@@ -28,7 +28,7 @@ WorldPacket* WorldSession::BuildQuestQueryResponse(Quest *qst)
 	// 2048 bytes should be more than enough. The fields cost ~200 bytes.
 	// better to allocate more at startup than have to realloc the buffer later on.
 
-	WorldPacket *data = new WorldPacket(SMSG_QUEST_QUERY_RESPONSE, 2048);
+	WorldPacket *data = new WorldPacket(SMSG_QUEST_QUERY_RESPONSE, 248);
 	LocalizedQuest * lci = (language>0) ? sLocalizationMgr.GetLocalizedQuest(qst->id, language) : NULL;
 	uint32 i;
    
@@ -52,8 +52,8 @@ WorldPacket* WorldSession::BuildQuestQueryResponse(Quest *qst)
 	*data << uint32(0);								// Column id +1 from QuestXp.dbc, entry is quest level
 	*data << uint32( sQuestMgr.GenerateRewardMoney( _player, qst ) );	// Copper reward
 	*data << uint32(qst->reward_money<0 ? -qst->reward_money : 0);		// Required Money
+    *data << uint32(qst->reward_spell);                                 // Spell added to spellbook upon completion
 	*data << uint32(qst->effect_on_player);			// Spell casted on player upon completion
-	*data << uint32(qst->reward_spell);				// Spell added to spellbook upon completion
 	*data << uint32(qst->bonushonor);				// 2.3.0 - bonus honor
 	*data << float(0);								// 3.3.0 - some multiplier for honor
 	*data << uint32(qst->srcitem);					// Item given at the start of a quest (srcitem)

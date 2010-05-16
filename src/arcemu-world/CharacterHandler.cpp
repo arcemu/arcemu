@@ -119,35 +119,33 @@ void WorldSession::CharacterEnumProc(QueryResult * result)
 		uint32 enchantment; // added in 2.4
 	};
 
-    uint32 start_time = getMSTime();
+	uint32 start_time = getMSTime();
 
-	player_item items[20];
+	player_item items[23];
 	int8 slot;
-	int8 containerslot;
 	uint32 i;
 	ItemPrototype * proto;
 	QueryResult * res;
 	CreatureInfo *info = NULL;
-	uint8 num = 0;
 	uint8 race;
 	has_dk = false;
 	_side = -1; // side should be set on every enumeration for safety
 
-    uint32 numchar;
+	uint32 numchar;
 
-    if( result )
-        numchar = result->GetRowCount();
-    else
-        numchar = 1;
+	if(result)
+		numchar = result->GetRowCount();
+	else
+		numchar = 0;
 
 	// should be more than enough.. 200 bytes per char..
-	WorldPacket data(SMSG_CHAR_ENUM, numchar * 200 );	
+	WorldPacket data(SMSG_CHAR_ENUM, 1+numchar * 200);	
 
 	// parse m_characters and build a mighty packet of
 	// characters to send to the client.
-	data << uint8( num );
+	data << uint8(numchar);
 
-	if( result )
+	if(result)
 	{
 		uint64 guid;
 		uint8 Class;
@@ -155,6 +153,7 @@ void WorldSession::CharacterEnumProc(QueryResult * result)
 		uint32 flags;
 		uint32 banned;
 		Field *fields;
+		uint32 petLevel = 0;
 		do
 		{
 			fields = result->Fetch();
@@ -165,54 +164,60 @@ void WorldSession::CharacterEnumProc(QueryResult * result)
 			flags = fields[17].GetUInt32();
 			race = fields[2].GetUInt8();
 
-			if( _side < 0 )
+			if(_side < 0)
 			{
 				// work out the side
-				static uint8 sides[RACE_DRAENEI+1] = { 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 0 };
+				static uint8 sides[RACE_DRAENEI+1] = {0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 0};
 				_side = sides[race];
 			}
 
-		// Death Knight starting information
-		// Note: To change what level is required to make a dk change the >= 55 to something. 
-		// For example >=80 would require a level 80 to create a DK
-		has_level_55_char = has_level_55_char || ( fields[1].GetUInt8() >= 55 );
-		has_dk = has_dk || (Class == 6);
+			// Death Knight starting information
+			// Note: To change what level is required to make a dk change the >= 55 to something. 
+			// For example >=80 would require a level 80 to create a DK
+			has_level_55_char = has_level_55_char || ( fields[1].GetUInt8() >= 55 );
+			has_dk = has_dk || (Class == 6);
 
 			/* build character enum, w0000t :p */
-			data << uint64( guid );						// guid
-			data << fields[7].GetString();		// name
-			data << uint8( race );						// race
-			data << uint8( Class );						// class
-			data << uint8( fields[4].GetUInt8() );		// gender
-			data << uint32( fields[5].GetUInt32() );		// PLAYER_BYTES
-			data << uint8( bytes2 & 0xFF );		// facial hair
-			data << uint8( fields[1].GetUInt8() );		// Level
-			data << uint32( fields[12].GetUInt32() );		// zoneid
-			data << uint32( fields[11].GetUInt32() );		// Mapid
-			data << float( fields[8].GetFloat() );		// X
-			data << float( fields[9].GetFloat() );		// Y
-			data << float( fields[10].GetFloat() );		// Z
-			data << uint32( fields[18].GetUInt32() );		// GuildID
+			data << uint64(guid);						//guid
+			data << fields[7].GetString();				//name
+			data << uint8(race);						//race
+			data << uint8(Class);						//class
+			data << uint8(fields[4].GetUInt8());		//gender
+			data << uint32(fields[5].GetUInt32());		//PLAYER_BYTES
+			data << uint8(bytes2 & 0xFF);				//facial hair
+			data << uint8(fields[1].GetUInt8());		//Level
+			data << uint32(fields[12].GetUInt32());		//zoneid
+			data << uint32(fields[11].GetUInt32());		//Mapid
+			data << float(fields[8].GetFloat());		//X
+			data << float(fields[9].GetFloat());		//Y
+			data << float(fields[10].GetFloat());		//Z
+			data << uint32(fields[18].GetUInt32());		//GuildID
 
 			banned = fields[13].GetUInt32();
+			uint32 char_flags = 0;
 			
-            if( banned && (banned<10 || banned > uint32( UNIXTIME ) ))
-				data << uint32( 0x01A04040 );
-			else{
-                if( fields[16].GetUInt32() != 0 )       data << uint32( 0x00A04342 );
-                else if( fields[15].GetUInt32() != 0 )  data << uint32( 8704 ); // Dead (displaying as Ghost)
-			    else                                    data << uint32( 1 );	// alive
-			}
+			if(banned && (banned < 10 || banned > (uint32)UNIXTIME))
+				char_flags |= 0x01000000;	//Character is banned
+			if(fields[15].GetUInt32() != 0)
+				char_flags |= 0x00002000;	//Character is dead
+			if(flags & PLAYER_FLAG_NOHELM)
+				char_flags |= 0x00000400;	//Helm not displayed
+			if(flags & PLAYER_FLAG_NOCLOAK)
+				char_flags |= 0x00000800;	//Cloak not displayed
+            if(fields[16].GetUInt32() != 0)
+				char_flags |= 0x00004000;	//Character has to be renamed before logging in
 
-			data << uint32( 0 ); //Added in 3.0.2 - if 1, faction change at logon...
-			data << uint8( 0 ); //3.2.0
+			data << uint32(char_flags);
+			data << uint32(0);				//Character recustomization flags
+			data << uint8(0);				//Unknown 3.2.0
 
-			if( Class == WARLOCK || Class == HUNTER )
+			if(Class == WARLOCK || Class == HUNTER)
 			{
-				res = CharacterDatabase.Query("SELECT entry FROM playerpets WHERE ownerguid = %u AND MOD( active, 10 ) = 1 AND alive = TRUE;", Arcemu::Util::GUID_LOPART( guid ) );
+				res = CharacterDatabase.Query("SELECT entry, level FROM playerpets WHERE ownerguid = %u AND MOD( active, 10 ) = 1 AND alive = TRUE;", Arcemu::Util::GUID_LOPART( guid ) );
 
 				if(res)
 				{
+					petLevel = res->Fetch()[1].GetUInt32();
 					info = CreatureNameStorage.LookupEntry(res->Fetch()[0].GetUInt32());
 					delete res;
 				}
@@ -222,52 +227,45 @@ void WorldSession::CharacterEnumProc(QueryResult * result)
 			else
 				info = NULL;
 
-            if(info){
-				data << uint32( info->Male_DisplayID );
-                data << uint32( 10 );
-                data << uint32( info->Family );
-            }else{
-				data << uint32( 0 ); 
-                data << uint32( 0 );
-                data << uint32( 0 );
-            }
+			if(info)
+			{
+				data << uint32(info->Male_DisplayID);
+				data << uint32(petLevel);
+				data << uint32(info->Family);
+			}
+			else
+			{
+				data << uint32(0);
+				data << uint32(0);
+				data << uint32(0);
+			}
 
-			res = CharacterDatabase.Query("SELECT containerslot, slot, entry, enchantments FROM playeritems WHERE ownerguid=%u", Arcemu::Util::GUID_LOPART( guid ));
+			res = CharacterDatabase.Query("SELECT slot, entry, enchantments FROM playeritems WHERE ownerguid=%u AND containerslot = '-1' AND slot BETWEEN '0' AND '22'", Arcemu::Util::GUID_LOPART( guid ));
 
-			memset(items, 0, sizeof(player_item) * 20);
+			memset(items, 0, sizeof(player_item) * 23);
 			uint32 enchantid;
 			EnchantEntry * enc;
 			if(res)
 			{
 				do 
 				{
-					containerslot = res->Fetch()[0].GetInt8();
-					slot = res->Fetch()[1].GetInt8();
-					if( containerslot == -1 && slot < EQUIPMENT_SLOT_END && slot >= EQUIPMENT_SLOT_START )
+					slot = res->Fetch()[0].GetInt8();
+					proto = ItemPrototypeStorage.LookupEntry(res->Fetch()[1].GetUInt32());
+					if(proto)
 					{
-						proto = ItemPrototypeStorage.LookupEntry(res->Fetch()[2].GetUInt32());
-						if( proto )
+						items[slot].displayid = proto->DisplayInfoID;
+						items[slot].invtype = static_cast<uint8>(proto->InventoryType);
+
+						// weapon glows
+						if(slot == EQUIPMENT_SLOT_MAINHAND || slot == EQUIPMENT_SLOT_OFFHAND)
 						{
-							if( !( slot == EQUIPMENT_SLOT_HEAD && ( flags & ( uint32 )PLAYER_FLAG_NOHELM ) != 0 ) && 
-								!( slot == EQUIPMENT_SLOT_BACK && ( flags & ( uint32 )PLAYER_FLAG_NOCLOAK ) != 0 ) ) 
+							// get enchant visual ID
+							const char * enchant_field = res->Fetch()[2].GetString();	
+							if(sscanf(enchant_field , "%u,0,0;" , (unsigned int *)&enchantid) == 1 && enchantid > 0)
 							{
-								items[slot].displayid = proto->DisplayInfoID;
-								items[slot].invtype = static_cast<uint8>( proto->InventoryType );
-								
-                                // weapon glows
-								if( slot == EQUIPMENT_SLOT_MAINHAND || slot == EQUIPMENT_SLOT_OFFHAND )
-								{
-									// get enchant visual ID
-									const char * enchant_field = res->Fetch()[3].GetString();	
-									if( sscanf( enchant_field , "%u,0,0;" , (unsigned int *)&enchantid ) == 1 && enchantid > 0 )
-									{
-										enc = dbcEnchant.LookupEntryForced( enchantid );
-										if( enc != NULL )
-											items[slot].enchantment = enc->visual;
-										else
-											items[slot].enchantment = 0;
-									}
-								}
+								enc = dbcEnchant.LookupEntryForced(enchantid);
+								if(enc != NULL)
+									items[slot].enchantment = enc->visual;
 							}
 						}
 					}
@@ -275,21 +273,18 @@ void WorldSession::CharacterEnumProc(QueryResult * result)
 				delete res;
 			}
 
-            for( i = 0; i < EQUIPMENT_SLOT_END + 1; ++i ){
-                data << uint32( items[i].displayid );
-                data << uint8( items[i].invtype );
-                data << uint32( items[i].enchantment );
+			for(i = 0; i < INVENTORY_SLOT_BAG_END; ++i)
+			{
+				data << uint32(items[i].displayid);
+				data << uint8(items[i].invtype);
+				data << uint32(items[i].enchantment);
 			}
-
-			num++;
 		}
-		while( result->NextRow() );
+		while(result->NextRow());
 	}
 
-	data.put< uint8 >(0, num);
-
 	Log.Debug("Character Enum", "Built in %u ms.", getMSTime() - start_time);
-	SendPacket( &data );
+	SendPacket(&data);
 }
 
 void WorldSession::HandleCharEnumOpcode( WorldPacket & recv_data )
