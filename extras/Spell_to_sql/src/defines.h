@@ -13,15 +13,15 @@
 
 #define SERVER_DECL __declspec(dllexport)
 
-#define SPELL_DBC_CLIENT_BUILD 11403 // 3.3.2
+#define SPELL_DBC_CLIENT_BUILD 11723 // 3.3.3
 
 #define SQL_INSERTS_PER_QUERY 1000
 
 //this might change from 1 version to another of the DBC
-#define SPELL_COLUMN_COUNT 240
+#define SPELL_COLUMN_COUNT 234
 //last column is "skip_this_for_sql"
 
-const char sql_translation_table[SPELL_COLUMN_COUNT][3][SPELL_COLUMN_COUNT] = 
+const char sql_translation_table[SPELL_COLUMN_COUNT][3][300] = 
 {
 	{"uint32",	"Id", "0"},								//1
 	{"uint32",	"Category", "0"},						//2
@@ -100,12 +100,6 @@ const char sql_translation_table[SPELL_COLUMN_COUNT][3][SPELL_COLUMN_COUNT] =
 	{"uint32",	"EffectDieSides_1", "0"},				//75
 	{"uint32",	"EffectDieSides_2", "0"},				//76
 	{"uint32",	"EffectDieSides_3", "0"},				//77
-	{"uint32",	"EffectBaseDice_1", "0"},				//78
-	{"uint32",	"EffectBaseDice_2", "0"},				//79
-	{"uint32",	"EffectBaseDice_3", "0"},				//80
-	{"float",	"EffectDicePerLevel_1", "0"},			//81
-	{"float",	"EffectDicePerLevel_2", "0"},			//82
-	{"float",	"EffectDicePerLevel_3", "0"},			//83
 	{"float",	"EffectRealPointsPerLevel_1", "0"},		//84
 	{"float",	"EffectRealPointsPerLevel_2", "0"},		//85
 	{"float",	"EffectRealPointsPerLevel_3", "0"},		//86
