@@ -1070,7 +1070,7 @@ void Player::Update( uint32 p_time )
 				}
 				for(uint32 x=MAX_POSITIVE_AURAS_EXTEDED_START;x<MAX_POSITIVE_AURAS_EXTEDED_END;x++)
 				{
-					if(m_auras[x] && m_auras[x]->GetSpellProto() && m_auras[x]->GetSpellProto()->Attributes & ATTRIBUTES_ONLY_OUTDOORS )
+					if(m_auras[x] && m_auras[x]->GetSpellProto()->Attributes & ATTRIBUTES_ONLY_OUTDOORS )
 						RemoveAura( m_auras[x] );
 				}
 			}

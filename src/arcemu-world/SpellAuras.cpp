@@ -3845,7 +3845,7 @@ void Aura::SpellAuraModResistance(bool apply)
 	if (!IsPositive() && GetUnitCaster() != NULL && m_target->GetTypeId() == TYPEID_UNIT)
 		m_target->GetAIInterface()->AttackReaction(GetUnitCaster(), 1, GetSpellId());
 
-	if( GetSpellProto() && ( GetSpellProto()->NameHash == SPELL_HASH_FAERIE_FIRE || GetSpellProto()->NameHash == SPELL_HASH_FAERIE_FIRE__FERAL_ ) )
+	if( GetSpellProto()->NameHash == SPELL_HASH_FAERIE_FIRE || GetSpellProto()->NameHash == SPELL_HASH_FAERIE_FIRE__FERAL_ )
 		m_target->m_can_stealth = !apply;
 	
 	Unit* ucaster = GetUnitCaster();
@@ -4783,7 +4783,6 @@ void Aura::SpellAuraModShapeshift(bool apply)
 		for(uint32 i = MAX_REMOVABLE_AURAS_START; i < MAX_REMOVABLE_AURAS_END; ++i)
 		{
 			if( m_target->m_auras[i] != NULL 
-				&& m_target->m_auras[i]->GetSpellProto() 
 				&& m_target->m_auras[i]->IsPositive()
 				&& ssf->id != FORM_STEALTH 
 				){
