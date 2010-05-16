@@ -79,10 +79,15 @@ CBattlegroundManager::~CBattlegroundManager()
 void CBattlegroundManager::HandleBattlegroundListPacket(WorldSession * m_session, uint32 BattlegroundType, uint8 from)
 {
 	WorldPacket data(SMSG_BATTLEFIELD_LIST, 18);
-	
-	data << m_session->GetPlayer()->GetGUID();
+
+	// Send 0 instead of GUID when using the BG UI instead of Battlemaster
+	if( from == 0 )
+		data << uint64( m_session->GetPlayer()->GetGUID() );
+	else
+		data << uint64( 0 );
+
 	data << from;
-	data << uint32( 6 ); // typeid
+	data << uint32( BattlegroundType ); // typeid
 	data << uint8(0);                                      // unk
 	data << uint8(0);                                      // unk
 	
