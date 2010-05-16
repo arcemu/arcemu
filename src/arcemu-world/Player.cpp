@@ -13299,6 +13299,11 @@ void Player::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 	}
 
 	if( pVictim->GetHealth() <= damage ){
+
+		if( pVictim->isTrainingDummy() ){
+			pVictim->SetHealth( 1 );
+			return;
+		}
 		
 		if( m_bg != NULL ){
 			m_bg->HookOnUnitKill( this, pVictim );

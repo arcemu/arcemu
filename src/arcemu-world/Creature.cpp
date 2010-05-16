@@ -2222,7 +2222,7 @@ void Creature::TakeDamage(Unit *pAttacker, uint32 damage, uint32 spellid, bool n
 void Creature::Die( Unit *pAttacker, uint32 damage, uint32 spellid ){
 	
 	// If it's a training dummy then we simply set the HP to 1 instead of killing the unit
-	if( GetProto() != NULL && GetProto()->isTrainingDummy ){
+	if( isTrainingDummy() ){
 			SetHealth( 1 );
 			return;
 	}

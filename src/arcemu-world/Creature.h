@@ -596,6 +596,13 @@ public:
 
 
 	bool isCritter();
+	bool isTrainingDummy(){
+
+		if( GetProto() != NULL && GetProto()->isTrainingDummy )
+			return true;
+		else
+			return false;
+	}
 
 	void TotemExpire();
 	void FormationLinkUp(uint32 SqlId);

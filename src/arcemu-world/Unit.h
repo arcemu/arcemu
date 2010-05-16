@@ -1461,6 +1461,9 @@ public:
             return false;
     }
 
+
+	virtual bool isTrainingDummy(){ return false; }
+
 	void SetFacing(float newo);//only working if creature is idle
 
 	void RemoveAurasByBuffIndexType(uint32 buff_index_type, const uint64 &guid);
