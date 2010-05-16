@@ -953,7 +953,7 @@ enum SpellEffects
 	SPELL_EFFECT_SUMMON_TARGET,             //    153
 	SPELL_EFFECT_SUMMON_REFER_A_FRIEND,     //    154
 	SPELL_EFFECT_TAME_CREATURE,             //    155
-	SPELL_EFFECT_UNKNOWN34,                 //    156
+	SPELL_EFFECT_ADD_SOCKET,                //    156
 	SPELL_EFFECT_CREATE_ITEM2,				//    157
 	SPELL_EFFECT_MILLING,					//    158
 	SPELL_EFFECT_UNKNOWN37,                 //    159

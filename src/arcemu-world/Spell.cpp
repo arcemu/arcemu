@@ -3776,7 +3776,11 @@ uint8 Spell::CanCast(bool tolerate)
 			// Enchanting Targeted Item Check
 			case SPELL_EFFECT_ENCHANT_ITEM:
 			case SPELL_EFFECT_ENCHANT_ITEM_TEMPORARY:
+			case SPELL_EFFECT_ADD_SOCKET:
 			{
+				if( GetProto()->Effect[ 0 ] == SPELL_EFFECT_ADD_SOCKET && i_target->GetSocketsCount() >= 3 )
+					return SPELL_FAILED_MAX_SOCKETS;
+
 				// If enchant is permanent and we are casting on Vellums
 				if(GetProto()->Effect[0] == SPELL_EFFECT_ENCHANT_ITEM && GetProto()->EffectItemType[0] != 0 &&
 				   (proto->ItemId == 38682 || proto->ItemId == 37602 || proto->ItemId == 43145 || 

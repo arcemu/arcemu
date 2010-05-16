@@ -2097,7 +2097,7 @@ void WorldSession::HandleCancelTemporaryEnchantmentOpcode(WorldPacket &recvPacke
 void WorldSession::HandleInsertGemOpcode(WorldPacket &recvPacket)
 {
 	uint64 itemguid;
-	uint64 gemguid;
+	uint64 gemguid[ 3 ];
 	ItemInterface *itemi = _player->GetItemInterface();
 	GemPropertyEntry * gp;
 	EnchantEntry * Enchantment;
@@ -2106,14 +2106,24 @@ void WorldSession::HandleInsertGemOpcode(WorldPacket &recvPacket)
 	Item * TargetItem = itemi->GetItemByGUID(itemguid);
 	if(!TargetItem)
 		return;
+
+	ItemPrototype *TargetProto = TargetItem->GetProto();
 	int slot =itemi->GetInventorySlotByGuid(itemguid);
+
 	bool apply = (slot>= 0 && slot <19);
 	uint32 FilledSlots= 0;
 
+	//cheat -> tried to socket same gem multiple times
+	for(uint32 i = 0; i < 3; i++)
+		recvPacket >> gemguid[i];
+	
+	if((gemguid[0] && (gemguid[0] == gemguid[1] || gemguid[0] == gemguid[2])) || (gemguid[1] && (gemguid[1] == gemguid[2]))){
+		return;
+	}
+
 	bool ColorMatch = true;
-	for(uint32 i = 0;i<TargetItem->GetSocketsCount();i++)
+	for(uint32 i = 0;i<TargetItem->GetSocketsCount() + 1;i++) // +1 for the prismatic socket
 	{
-		recvPacket >> gemguid;
 		EnchantmentInstance * EI= TargetItem->GetEnchantment(2+i);
 		if(EI)
 		{
@@ -2123,18 +2133,35 @@ void WorldSession::HandleInsertGemOpcode(WorldPacket &recvPacket)
 				gp = NULL;
 			else
 				gp = dbcGemProperty.LookupEntry(ip->GemProperties);
-	
-			if(gp && !(gp->SocketMask & TargetItem->GetProto()->Sockets[i].SocketColor))
-				ColorMatch=false;
+
+			if(gp && !(gp->SocketMask & TargetProto->Sockets[i].SocketColor))
+				ColorMatch = false;
 		}
 
-		if(gemguid)//add or replace gem
+		if( gemguid[ i ] )//add or replace gem
 		{
 			Item * it = NULL;
 			ItemPrototype * ip = NULL;
+
+			ItemInterface * itemi = _player->GetItemInterface();
+			
+			// tried to put gem in socket where no socket exists (take care about prismatic sockets)
+			if (!TargetProto->Sockets[i].SocketColor){
+				// no prismatic socket
+				if(!TargetItem->GetEnchantment(6))
+					return;
+				
+				// not first not-colored (not normally used) socket
+				if(i != 0 && !TargetProto->Sockets[i-1].SocketColor && (i+1 >= 3 || TargetProto->Sockets[i+1].SocketColor))
+					return;
+				
+				// ok, this is first not colored socket for item with prismatic socket
+			}
+
+
 			if (apply) 
 			{
-				it = itemi->GetItemByGUID(gemguid);
+				it = itemi->GetItemByGUID( gemguid[ i ] );
 				if( !it )
 					continue;
 
@@ -2164,7 +2191,7 @@ void WorldSession::HandleInsertGemOpcode(WorldPacket &recvPacket)
 				}
 			}
 
-			it = itemi->SafeRemoveAndRetreiveItemByGuid(gemguid,true);
+			it = itemi->SafeRemoveAndRetreiveItemByGuid( gemguid[ i ],true );
 			if( !it ) 
 				return; //someone sending hacked packets to crash server
 
@@ -2173,13 +2200,14 @@ void WorldSession::HandleInsertGemOpcode(WorldPacket &recvPacket)
 		
 			if(!gp)
 				continue;
-			if(!(gp->SocketMask & TargetItem->GetProto()->Sockets[i].SocketColor))
-				ColorMatch=false;
+			
+			if(!(gp->SocketMask & TargetProto->Sockets[i].SocketColor))
+				ColorMatch = false;
 
 			if(!gp->EnchantmentID)//this is ok in few cases
 				continue;
 			//Meta gems only go in meta sockets.
-			if (TargetItem->GetProto()->Sockets[i].SocketColor != GEM_META_SOCKET && gp->SocketMask == GEM_META_SOCKET)
+			if(TargetProto->Sockets[i].SocketColor != GEM_META_SOCKET && gp->SocketMask == GEM_META_SOCKET)
 				continue;
 			if(EI)//replace gem
 				TargetItem->RemoveEnchantment(2+i);//remove previous

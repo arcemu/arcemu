@@ -7343,14 +7343,26 @@ void Spell::SpellEffectDualWield2H( uint32 i )
 
 void Spell::SpellEffectEnchantItemPrismatic(uint32 i)
 {
-	if(!itemTarget || !p_caster) return;
-	EnchantEntry * Enchantment = dbcEnchant.LookupEntryForced(GetProto()->EffectMiscValue[i]);
-	if(!Enchantment) return;
+	if(!itemTarget || !p_caster)
+		return;
 
-	itemTarget->RemoveEnchantment(0);
-	int32 Slot = itemTarget->AddEnchantment(Enchantment, 0, true, true, false, 0);
-	if(Slot < 0)
+	EnchantEntry * Enchantment = dbcEnchant.LookupEntry(m_spellInfo->EffectMiscValue[i]);
+	
+	if(!Enchantment)
+		return;
+	
+	if(p_caster->GetSession()->GetPermissionCount() > 0)
+		sGMLog.writefromsession(p_caster->GetSession(), "enchanted item for %s", itemTarget->GetOwner()->GetName());
+	
+	//remove other socket enchant
+	itemTarget->RemoveEnchantment(6);
+	int32 Slot = itemTarget->AddEnchantment(Enchantment, 0, true, true, false, 6);
+	
+	if(Slot < 6)
 		return; // Apply failed
+	
+	itemTarget->m_isDirty = true;
+
 }
 
 void Spell::SpellEffectCreateItem2(uint32 i) // Create item
