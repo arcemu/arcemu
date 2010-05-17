@@ -13561,8 +13561,6 @@ void Player::Die( Unit *pAttacker, uint32 damage, uint32 spellid ){
 		pAttacker->m_procCounter = 0;
 	}
 
-	KillPlayer();
-
 	if( !pAttacker->IsPlayer() )
 		DeathDurabilityLoss(0.10);
 
@@ -13601,7 +13599,6 @@ void Player::Die( Unit *pAttacker, uint32 damage, uint32 spellid ){
 	smsg_AttackStop( this );
 	EventAttackStop();
 	
-	SetHealth( 0 );
 	CALL_INSTANCE_SCRIPT_EVENT( m_mapMgr, OnPlayerDeath )( this, pAttacker );
 
 	{
@@ -13637,6 +13634,16 @@ void Player::Die( Unit *pAttacker, uint32 damage, uint32 spellid ){
 	pAttacker->addStateFlag( UF_TARGET_DIED );
 
 	
+	m_UnderwaterTime = 0;
+	m_UnderwaterState = 0;
+	m_BreathDamageTimer = 0;
+	m_SwimmingTime = 0;
+
+	DismissActivePets();
+	RemoveAllGuardians();
+
+	SetHealth( 0 );
+
 	//check for spirit of Redemption
 	if( HasSpell( 20711 ) ){
 		SpellEntry* sorInfo = dbcSpell.LookupEntryForced(27827);
@@ -13648,13 +13655,9 @@ void Player::Die( Unit *pAttacker, uint32 damage, uint32 spellid ){
 			sor->prepare(&targets);
 		}
 	}
-
-	m_UnderwaterTime = 0;
-	m_UnderwaterState = 0;
-	m_BreathDamageTimer = 0;
-	m_SwimmingTime = 0;
-	DismissActivePets();
-	RemoveAllGuardians();
+	
+	
+	KillPlayer();
 }
 
 
