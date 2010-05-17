@@ -83,6 +83,10 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 		}
     }
 
+	// Let's see if it is an onuse spellid
+	if( tmpItem->HasOnUseSpellID( spellId ) )
+		found = true;
+
     // We didn't find the spell, so the player is probably trying to cheat
     // with an edited itemcache.wdb
     //
@@ -104,12 +108,22 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 	uint32 x;
 	for(x = 0; x < 5; x++)
 	{
-		if(itemProto->Spells[x].Trigger == USE)
-		{
-			if(itemProto->Spells[x].Id)
-			{
-				spellId = itemProto->Spells[x].Id;
 
+		bool castable = false;
+
+		if( ( itemProto->Spells[x].Trigger == USE && itemProto->Spells[x].Id ) ){
+			spellId = itemProto->Spells[x].Id;
+			castable = true;
+		}else
+		if( x < 3 && tmpItem->GetOnUseSpellID( x ) != 0 ){
+			spellId = tmpItem->GetOnUseSpellID( x );
+			castable = true;
+		}
+
+		if( castable )
+		{
+			if( castable )
+			{
 				// check for spell id
 				SpellEntry *spellInfo = dbcSpell.LookupEntryForced( spellId );
 

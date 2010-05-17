@@ -321,7 +321,16 @@ public:
     void RemoveFromRefundableMap();
 	bool RepairItem(Player * pPlayer, bool guildmoney = false, int32 * pCost = NULL);
 	uint32 RepairItemCost();
-        
+
+	uint32 GetOnUseSpellID( uint32 index ){ return OnUseSpellIDs[ index ]; }
+	bool HasOnUseSpellID( uint32 id ){
+		for( uint32 i = 0; i < 3; ++i )
+			if( OnUseSpellIDs[ i ] == id )
+				return true;
+
+		return false;
+	}
+       
 protected:
 
 	ItemPrototype* m_itemProto;
@@ -331,6 +340,10 @@ protected:
 	uint32 random_prop;
 	uint32 random_suffix;
     time_t ItemExpiresOn; // this is for existingduration
+
+private:
+	// Enchant type 3 spellids, like engineering gadgets appliable to items.
+	uint32 OnUseSpellIDs[ 3 ];
 };
 
 uint32 GetSkillByProto( uint32, uint32 );
