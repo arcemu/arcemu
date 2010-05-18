@@ -78,7 +78,7 @@ CREATE TABLE `auctions` (
   `auctionhouse` int(32) DEFAULT NULL,
   `item` bigint(10) DEFAULT NULL,
   `owner` bigint(10) DEFAULT NULL,
-  `startbid` INT(32) DEFAULT NULL,ssss
+  `startbid` INT(32) DEFAULT NULL,
   `buyout` int(32) DEFAULT NULL,
   `time` int(32) DEFAULT NULL,
   `bidder` bigint(10) DEFAULT NULL,

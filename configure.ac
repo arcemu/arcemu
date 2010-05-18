@@ -289,6 +289,11 @@ AC_CONFIG_FILES([
 
 AC_OUTPUT
 
+echo "#!/bin/bash" > make_precompiled_header.sh
+echo "cd src/arcemu-world" >> make_precompiled_header.sh
+echo "g++ -DHAVE_CONFIG_H -I. -I../.. -I../arcemu-shared ${CXXFLAGS} -MD -MP -c StdAfx.h -o StdAfx.h.gch" >> make_precompiled_header.sh
+
+
 echo
 echo "===================================="
 echo "ArcEmu configure report:"
