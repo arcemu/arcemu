@@ -1413,7 +1413,7 @@ public:
     /************************************************************************/
 	const uint64& GetLootGUID() const { return m_lootGuid; }
 	void SetLootGUID(const uint64 &guid) { m_lootGuid = guid; }
-	void SendLoot(uint64 guid,uint8 loot_type);
+	void SendLoot(uint64 guid,uint8 loot_type, uint32 mapid);
 	void SendLootUpdate( Object *o );
 	void TagUnit( Object *o );
 	void SendPartyKillLog( uint64 GUID );

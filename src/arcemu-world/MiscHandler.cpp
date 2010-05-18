@@ -418,20 +418,9 @@ void WorldSession::HandleLootOpcode( WorldPacket & recv_data )
 
 				party->SendPacketToAll(&data);
 			}
-/*			//this commented code is not used because it was never tested and finished !
-			else if(party->GetMethod() == PARTY_LOOT_RR)
-			{
-				Creature *target=GetPlayer()->GetMapMgr()->GetCreature(guid); //maybe we should extend this to other object types too
-				if(target)
-				{
-					if(target->TaggerGuid==GetPlayer()->GetGUID())
-						GetPlayer()->SendLoot(guid,LOOT_CORPSE);
-					else return;
-				}
-			}*/
 		}
 	}
-	GetPlayer()->SendLoot(guid,LOOT_CORPSE);
+	_player->SendLoot(guid,LOOT_CORPSE, _player->GetMapId());
 }
 
 
@@ -2384,7 +2373,7 @@ void WorldSession::HandleOpenItemOpcode(WorldPacket &recv_data)
 		pItem->loot = new Loot;
 		lootmgr.FillItemLoot(pItem->loot, pItem->GetEntry());
 	}
-	_player->SendLoot(pItem->GetGUID(), LOOT_DISENCHANTING);
+	_player->SendLoot(pItem->GetGUID(), LOOT_DISENCHANTING, _player->GetMapId() );
 }
 
 void WorldSession::HandleCompleteCinematic(WorldPacket &recv_data)

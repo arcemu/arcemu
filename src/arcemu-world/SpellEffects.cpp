@@ -3821,7 +3821,7 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 		break;
 	};
 	if( gameObjTarget && gameObjTarget->GetByte( GAMEOBJECT_BYTES_1, 1 ) == GAMEOBJECT_TYPE_CHEST)
-		static_cast< Player* >( m_caster )->SendLoot( gameObjTarget->GetGUID(), loottype );
+		static_cast< Player* >( m_caster )->SendLoot( gameObjTarget->GetGUID(), loottype, gameObjTarget->GetMapId() );
 }
 
 void Spell::SpellEffectTransformItem(uint32 i)
@@ -4747,7 +4747,7 @@ void Spell::SpellEffectOpenLockItem(uint32 i)
 		
 		if(gameObjTarget->loot.items.size() > 0)
 		{
-			static_cast<Player*>(caster)->SendLoot(gameObjTarget->GetGUID(),LOOT_CORPSE);
+			static_cast<Player*>(caster)->SendLoot(gameObjTarget->GetGUID(),LOOT_CORPSE, gameObjTarget->GetMapId() );
 		}
 	}
 
@@ -5084,7 +5084,7 @@ void Spell::SpellEffectPickpocket(uint32 i) // pickpocket
 	uint32 _rank = static_cast<Creature*>(unitTarget)->GetCreatureInfo() ? static_cast<Creature*>(unitTarget)->GetCreatureInfo()->Rank : 0;
 	unitTarget->loot.gold = float2int32((_rank+1) * unitTarget->getLevel() * (RandomUInt(5) + 1) * sWorld.getRate(RATE_MONEY));
 
-	p_caster->SendLoot(unitTarget->GetGUID(), LOOT_PICKPOCKETING );
+	p_caster->SendLoot(unitTarget->GetGUID(), LOOT_PICKPOCKETING, unitTarget->GetMapId() );
 	target->SetPickPocketed(true);
 }
 
@@ -6318,7 +6318,7 @@ void Spell::SpellEffectSkinning(uint32 i)
 	{
 		//Fill loot for Skinning
 		lootmgr.FillSkinningLoot(&cr->loot,unitTarget->GetEntry());
-		TO_PLAYER( m_caster )->SendLoot( unitTarget->GetGUID(), LOOT_SKINNING );
+		TO_PLAYER( m_caster )->SendLoot( unitTarget->GetGUID(), LOOT_SKINNING, unitTarget->GetMapId() );
 
 		//Not skinable again
 		cr->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SKINNABLE);
@@ -6485,7 +6485,7 @@ void Spell::SpellEffectDisenchant( uint32 i )
 	}
 
 	Log.Debug( "SpellEffect", "Successfully disenchanted item %d", uint32( itemTarget->GetEntry() ) );
-	p_caster->SendLoot( itemTarget->GetGUID(), LOOT_DISENCHANTING );
+	p_caster->SendLoot( itemTarget->GetGUID(), LOOT_DISENCHANTING, p_caster->GetMapId() );
 
 	//We can increase Enchanting skill up to 60
 	uint32 skill = p_caster->_GetSkillLineCurrent( SKILL_ENCHANTING );
@@ -6856,7 +6856,7 @@ void Spell::SpellEffectSkinPlayerCorpse(uint32 i)
 		playerTarget->SetFlag(UNIT_DYNAMIC_FLAGS, U_DYN_FLAG_LOOTABLE);
 
 		// Send the loot.
-		p_caster->SendLoot(playerTarget->GetGUID(), LOOT_SKINNING);
+		p_caster->SendLoot(playerTarget->GetGUID(), LOOT_SKINNING, playerTarget->GetMapId() );
 
 		// Send a message to the died player, telling him he has to resurrect at the graveyard.
 		// Send an empty corpse location too, :P
@@ -6895,7 +6895,7 @@ void Spell::SpellEffectSkinPlayerCorpse(uint32 i)
 		objmgr.CorpseAddEventDespawn(corpse);
 
 		// send loot
-		p_caster->SendLoot(corpse->GetGUID(), LOOT_SKINNING);
+		p_caster->SendLoot(corpse->GetGUID(), LOOT_SKINNING, corpse->GetMapId() );
 	}
 }
 
@@ -7214,7 +7214,7 @@ void Spell::SpellEffectProspecting(uint32 i)
 	if ( itemTarget->loot->items.size() > 0 )
 	{
 		Log.Debug("SpellEffect","Successfully prospected item %d", uint32(itemTarget->GetEntry()));
-		p_caster->SendLoot( itemTarget->GetGUID(), LOOT_PROSPECTING );
+		p_caster->SendLoot( itemTarget->GetGUID(), LOOT_PROSPECTING, p_caster->GetMapId() );
 	}
 	else // this should never happen either
 	{
@@ -7382,14 +7382,6 @@ void Spell::SpellEffectCreateItem2(uint32 i) // Create item
 	{
 		// provide player with item loot (clams)
 		// TODO: Finish this
-		/*if( !i_caster->loot )
-		{
-		i_caster->loot = new Loot;
-		lootmgr.FillItemLoot( i_caster->loot, i_caster->GetEntry() );
-		}
-		p_caster->SetLootGUID( i_caster->GetGUID() );
-		p_caster->SendLoot( i_caster->GetGUID(), LOOT_DISENCHANTING );
-		*/	
 	}
 }
 
@@ -7414,7 +7406,7 @@ void Spell::SpellEffectMilling(uint32 i)
 	if ( itemTarget->loot->items.size() > 0 )
 	{
 		Log.Debug("SpellEffect","Successfully milled item %d", uint32(itemTarget->GetEntry()));
-		p_caster->SendLoot( itemTarget->GetGUID(), LOOT_MILLING );
+		p_caster->SendLoot( itemTarget->GetGUID(), LOOT_MILLING, p_caster->GetMapId() );
 	}
 	else // this should never happen either
 	{

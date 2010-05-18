@@ -527,7 +527,7 @@ void GameObject::UseFishingNode(Player *player)
 		else
 			lootmgr.FillGOLoot( &school->loot, school->GetEntry(), 0 );
 		
-		player->SendLoot( school->GetGUID(), LOOT_FISHING );
+		player->SendLoot( school->GetGUID(), LOOT_FISHING, school->GetMapId() );
 		EndFishing( player, false );
 		school->CatchFish();
 		
@@ -537,7 +537,7 @@ void GameObject::UseFishingNode(Player *player)
 	else if( Rand( ( ( player->_GetSkillLineCurrent( SKILL_FISHING, true ) - minskill ) * 100 ) / maxskill ) ) // Open loot on success, otherwise FISH_ESCAPED.
 	{
 		lootmgr.FillFishingLoot( &loot, zone );
-		player->SendLoot( GetGUID(), LOOT_FISHING );
+		player->SendLoot( GetGUID(), LOOT_FISHING, GetMapId() );
 		EndFishing( player, false );
 	}
 	else // Failed
