@@ -3201,7 +3201,6 @@ void Aura::SpellAuraModAttackSpeed( bool apply )
 	{
 		if(apply)
 		{
-
 			static_cast< Player* >( m_target )->ModAttackSpeed( mod->m_amount, MOD_MELEE );
 		}
 		else

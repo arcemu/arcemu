@@ -4057,7 +4057,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 		{
 			SpellCastTargets targets;
 			targets.m_unitTarget = pVictim->GetGUID();
-			targets.m_targetMask = 0x2;
+			targets.m_targetMask = TARGET_FLAG_UNIT;
 			Spell* cspell;
 
 			// Loop on hit spells, and strike with those.

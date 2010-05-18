@@ -1773,6 +1773,10 @@ void Spell::cast(bool check)
                         {
 							HandleEffects(m_caster->GetGUID(),x);
                         }
+						else if( m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION )
+						{
+							HandleEffects( m_caster->GetGUID(), x );
+						}
 					}
 				}
 				/* don't call HandleAddAura unless we actually have auras... - Burlex*/
@@ -2472,10 +2476,10 @@ void Spell::SendSpellGo()
 		//we already subtracted power
 		data << uint8( m_rune_avail_before );
 		data << uint8( cur_have_runes );
-		for(uint8 k= 0;k<m_runes_to_update;k++)
+		for( uint8 k = 0; k < m_runes_to_update; k++ )
 			data << uint8( 0 ); //values of the rune converted into byte. We just think it is 0 but maybe it is not :P
 	}
-	if( m_targets.m_targetMask & 0x40 )
+	if( m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION )
 		data << uint8( 0 ); //some spells require this ? not sure if it is last byte or before that.
 
 	m_caster->SendMessageToSet( &data, true );

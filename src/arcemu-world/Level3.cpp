@@ -3314,19 +3314,19 @@ SpellCastTargets SetTargets(SpellEntry * sp, uint32 type, uint32 targettype, Uni
 
 	if(targettype == TTYPE_SINGLETARGET)
 	{
-		targets.m_targetMask = 2;
+		targets.m_targetMask = TARGET_FLAG_UNIT;
 		targets.m_unitTarget = dst->GetGUID();
 	}
 	else if(targettype == TTYPE_SOURCE)
 	{
-		targets.m_targetMask = 32;
+		targets.m_targetMask = TARGET_FLAG_SOURCE_LOCATION;
 		targets.m_srcX = src->GetPositionX();
 		targets.m_srcY = src->GetPositionY();
 		targets.m_srcZ = src->GetPositionZ();
 	}
 	else if(targettype == TTYPE_DESTINATION)
 	{
-		targets.m_targetMask = 64;
+		targets.m_targetMask = TARGET_FLAG_DEST_LOCATION;
 		targets.m_destX = dst->GetPositionX();
 		targets.m_destY = dst->GetPositionY();
 		targets.m_destZ = dst->GetPositionZ();

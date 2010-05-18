@@ -5241,7 +5241,7 @@ void Player::_SaveTutorials(QueryBuffer * buf)
 
 uint32 Player::GetTutorialInt(uint32 intId )
 {
-	Arcemu::Util::ARCEMU_ASSERT(    intId < 8 );
+	Arcemu::Util::ARCEMU_ASSERT( intId < 8 );
 	return m_Tutorials[intId];
 }
 
@@ -5250,7 +5250,7 @@ void Player::SetTutorialInt(uint32 intId, uint32 value)
 	if(intId >= 8)
 		return;
 
-	Arcemu::Util::ARCEMU_ASSERT(    (intId < 8) );
+	Arcemu::Util::ARCEMU_ASSERT( intId < 8 );
 	m_Tutorials[intId] = value;
 	tutorialsDirty = true;
 }
@@ -9076,7 +9076,7 @@ void Player::CompleteLoading()
 	SpellEntry *info;
 	SpellCastTargets targets;
 	targets.m_unitTarget = this->GetGUID();
-	targets.m_targetMask = 0x2;
+	targets.m_targetMask = TARGET_FLAG_UNIT;
 
 	// warrior has to have battle stance
 	if( getClass() == WARRIOR )
@@ -11418,10 +11418,10 @@ void Player::Cooldown_AddStart(SpellEntry * pSpell)
 	uint32 mstime = getMSTime();
 	int32 atime; // = float2int32( float( pSpell->StartRecoveryTime ) / SpellHasteRatingBonus );
 
-	if( m_floatValues[UNIT_MOD_CAST_SPEED] >= 1.0f )
+	if( GetCastSpeedMod() >= 1.0f )
 		atime = pSpell->StartRecoveryTime;
 	else
-		atime = float2int32( pSpell->StartRecoveryTime * m_floatValues[UNIT_MOD_CAST_SPEED] );
+		atime = float2int32( pSpell->StartRecoveryTime * GetCastSpeedMod() );
 
 	if( pSpell->SpellGroupType )
 	{

@@ -3586,7 +3586,7 @@ void Spell::SpellEffectWeaponDmgPerc(uint32 i) // Weapon Percent damage
 void Spell::SpellEffectTriggerMissile(uint32 i) // Trigger Missile
 {
 	//Used by mortar team
-	//Triggers area affect spell at destinatiom
+	//Triggers area effect spell at destinatiom
 	if(!m_caster) return;
 
 	uint32 spellid = GetProto()->EffectTriggerSpell[i];
@@ -3597,6 +3597,14 @@ void Spell::SpellEffectTriggerMissile(uint32 i) // Trigger Missile
 
 	float spellRadius = GetRadius(i);
 
+	if( m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION )
+	{
+		Spell * sp = new Spell( m_caster, spInfo, true, NULL );
+		sp->prepare( &m_targets );
+		return;
+	}
+	
+	// TODO: Following should be / is probably in SpellTarget code
 	for(std::set<Object*>::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); itr++ )
 	{
 		if(!((*itr)->IsUnit()) || !static_cast<Unit*>((*itr))->isAlive())
@@ -4013,7 +4021,7 @@ void Spell::SpellEffectLearnSpell(uint32 i) // Learn Spell
 				Spell *sp = new Spell(unitTarget, spellinfo, true, NULL);
 				SpellCastTargets targets;
 				targets.m_unitTarget = unitTarget->GetGUID();
-				targets.m_targetMask = 0x02;
+				targets.m_targetMask = TARGET_FLAG_UNIT;
 				sp->prepare(&targets);
 				break;
 			}
@@ -6601,7 +6609,21 @@ void Spell::SpellEffectSummonObjectSlot(uint32 i)
 
 	// spawn a new one
 	GoSummon = u_caster->GetMapMgr()->CreateGameObject(GetProto()->EffectMiscValue[i]);
-	if(! GoSummon->CreateFromProto(GetProto()->EffectMiscValue[i], m_caster->GetMapId(), m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ(), m_caster->GetOrientation() ))
+	float x, y, z;
+	if( m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION )
+	{
+		x = m_targets.m_destX;
+		y = m_targets.m_destY;
+		z = m_targets.m_destZ;
+	}
+	else
+	{
+		x = m_caster->GetPositionX();
+		y = m_caster->GetPositionY();
+		z = m_caster->GetPositionZ();
+	}
+	
+	if( !GoSummon->CreateFromProto(GetProto()->EffectMiscValue[i], m_caster->GetMapId(), x, y, z, m_caster->GetOrientation() ))
 	{
 		delete GoSummon;
 		return;
