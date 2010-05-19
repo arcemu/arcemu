@@ -116,7 +116,6 @@ bool MailMessage::AddMessageDataToPacket(WorldPacket& data)
 {
 	uint8 i = 0;
 	uint32 j;
-	size_t pos;
 	vector<uint64>::iterator itr;
 	Item * pItem;
 
@@ -124,25 +123,42 @@ bool MailMessage::AddMessageDataToPacket(WorldPacket& data)
 	if(deleted_flag)
 		return false;
 
-	data << uint16(0x0032);
-	data << message_id;
-	data << uint8(message_type);
-	if(message_type)
-		data << uint32(sender_guid);
+	uint8 guidsize;
+	if( message_type == 0 )
+		guidsize = 8;
 	else
-		data << sender_guid;
+		guidsize = 4;
 
-	data << cod;			// cod
-	data << uint32(0);
-	data << stationery;
-	data << money;		// money
-	data << uint32(0x10);
-	data << float((expire_time - (uint32)UNIXTIME) / 86400.0f);
-	data << uint32(0);	// mail template
+	unsigned msize = 2 + 4 + 1 + guidsize + 7 * 4 + ( subject.size() + 1 ) + ( body.size() + 1 ) + 1 + ( items.size() * ( 1 + 2*4 + 7 * ( 3*4 ) + 6*4 + 1 ) );
+
+	data << uint16( msize );   // message size
+	data << uint32( message_id );
+	data << uint8( message_type );
+	
+	switch( message_type ){
+	case NORMAL:
+		data << uint64( sender_guid ); 
+		break;
+	case COD:
+	case AUCTION:
+	case CREATURE:
+	case GAMEOBJECT:
+	case ITEM: 
+		data << uint32(  Arcemu::Util::GUID_LOPART( sender_guid ) );
+		break;
+	}
+
+	data << uint32( cod );			// cod
+	data << uint32( 0 );
+	data << uint32( stationery );
+	data << uint32( money );		// money
+	data << uint32( 0x10 );         // "checked" flag
+	data << float( ( expire_time - uint32( UNIXTIME ) ) / 86400.0f );
+	data << uint32( 0 );	// mail template
 	data << subject;
     data << body;
-	pos = data.wpos();
-	data << uint8(items.size());		// item count
+
+	data << uint8( items.size() );		// item count
 
 	if( !items.empty( ) )
 	{
@@ -152,40 +168,25 @@ bool MailMessage::AddMessageDataToPacket(WorldPacket& data)
 			if( pItem == NULL )
 				continue;
 
-			data << uint8(i++);
-            data << pItem->GetLowGUID();
-			data << pItem->GetEntry();
+			data << uint8( i++ );
+            data << uint32( pItem->GetLowGUID() );
+			data << uint32( pItem->GetEntry() );
 
-			for( j = 0; j < 7; ++j )
-			{
-                /* Don't remove this please - dfighter
-				data << pItem->GetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1 + ( j * 3 ) );
-				data << pItem->GetUInt32Value( ITEM_FIELD_ENCHANTMENT_2_1 + ( j * 3 ) );
-				data << pItem->GetUInt32Value( ITEM_FIELD_ENCHANTMENT_3_1 + ( j * 3 ) );
-                */
-
-                data << uint32( pItem->GetEnchantmentId( j ) );
-                data << uint32( pItem->GetEnchantmentDuration( j ) );
-                data << uint32( 0 );
+			for( j = 0; j < 7; ++j ){
+				data << uint32( pItem->GetEnchantmentId( j ) );
+				data << uint32( pItem->GetEnchantmentDuration( j ) );
+				data << uint32( 0 );
 			}
 
             data << uint32( pItem->GetItemRandomPropertyId() );
-            if( ( (int32)pItem->GetItemRandomPropertyId() ) < 0 )
-                data << uint32( pItem->GetItemRandomSuffixFactor() );
-			else
-				data << uint32( 0 );
-
-			data << uint8( pItem->GetStackCount() );
+			data << uint32( pItem->GetItemRandomSuffixFactor() );
+			data << uint32( pItem->GetStackCount() );
 			data << uint32( pItem->GetChargesLeft() );
             data << uint32( pItem->GetDurabilityMax() );
             data << uint32( pItem->GetDurability() );
-			data << uint32( 0 );
-			data << uint32( 0 );
-			data << uint32( 0 );
-			data << uint32( 0 );
+			data << uint8( 0 ); // unknown
 		}
 
-		data.put< uint8 >( pos, i );
 	}
 
 	return true;
