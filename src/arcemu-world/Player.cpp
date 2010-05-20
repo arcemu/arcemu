@@ -4478,20 +4478,7 @@ void Player::_ApplyItemMods(Item* item, int16 slot, bool apply, bool justdrokedo
 			}
 			else if( item->GetProto()->Spells[k].Trigger == 2 )
 			{
-				ProcTriggerSpell ts;
-				ts.origId = 0;
-				ts.spellId = item->GetProto()->Spells[k].Id;
-				ts.procChance = 5;
-				ts.caster = this->GetGUID();
-				ts.procFlags = PROC_ON_MELEE_ATTACK;
-				ts.deleted = false;
-				ts.groupRelation[0] = 0;
-				ts.groupRelation[1] = 0;
-				ts.groupRelation[2] = 0;
-				ts.ProcType = 0;
-				ts.LastTrigger = 0;
-				ts.procCharges = 0;
-				m_procSpells.push_front( ts );
+				this->AddProcTriggerSpell( item->GetProto()->Spells[k].Id, 0, this->GetGUID(), 5, PROC_ON_MELEE_ATTACK, 0, NULL );
 			}
 		}
 	}
@@ -4511,20 +4498,7 @@ void Player::_ApplyItemMods(Item* item, int16 slot, bool apply, bool justdrokedo
 			}
 			else if( item->GetProto()->Spells[k].Trigger == 2 )
 			{
-				std::list<struct ProcTriggerSpell>::iterator i;
-				// Debug: i changed this a bit the if was not indented to the for
-				// so it just set last one to deleted looks like unintended behavior
-				// because you can just use end()-1 to remove last so i put the if
-				// into the for
-				for( i = m_procSpells.begin(); i != m_procSpells.end(); i++ )
-				{
-					if( (*i).spellId == item->GetProto()->Spells[k].Id && !(*i).deleted )
-					{
-						//m_procSpells.erase(i);
-						i->deleted = true;
-						break;
-					}
-				}
+				this->RemoveProcTriggerSpell(item->GetProto()->Spells[k].Id);
 			}
 		}
 	}

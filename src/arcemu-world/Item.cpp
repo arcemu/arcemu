@@ -742,72 +742,14 @@ void Item::ApplyEnchantmentBonus( uint32 Slot, bool Apply )
 			{
 			case 1:		 // Trigger spell on melee attack.
 				{
-					if( Apply && Entry->spell[c] != 0 )
+					if( Apply )
 					{
-						// Create a proc trigger spell
-
-						ProcTriggerSpell TS;
-						TS.caster = m_owner->GetGUID();
-						TS.origId = 0;
-						TS.procFlags = PROC_ON_MELEE_ATTACK;
-						TS.procCharges = 0;
-						/* This needs to be modified based on the attack speed of the weapon.
-						 * Secondly, need to assign some static chance for instant attacks (ss,
-						 * gouge, etc.) */
-						if( !Entry->min[c] && GetProto()->Class == 2 )
-						{
-							float speed = (float)GetProto()->Delay;
-							/////// procChance calc ///////
-							float ppm = 0;
-							SpellEntry* sp = dbcSpell.LookupEntryForced( Entry->spell[c] );
-							if( sp )
-							{
-								switch( sp->NameHash )
-								{
-								case SPELL_HASH_FROSTBRAND_ATTACK:
-									ppm = 9;
-									break;
-								}
-							}
-							if( ppm != 0 )
-							{
-								float pcount = 60/ppm;
-								float chance = (speed/10) / pcount;
-								TS.procChance = (uint32)chance;
-							}
-							else
-								TS.procChance = (uint32)( speed / 600.0f );
-							///////////////////////////////
-						}
-						else
-							TS.procChance = Entry->min[c];
-						Log.Debug( "Enchant", "Setting procChance to %u%%.", TS.procChance );
-						TS.deleted = false;
-						TS.spellId = Entry->spell[c];
-						TS.groupRelation[0] = 0;
-						TS.groupRelation[1] = 0;
-						TS.groupRelation[2] = 0;
-						TS.ProcType = 0;
-						TS.LastTrigger = 0;
-						m_owner->m_procSpells.push_back( TS );
+						if( Entry->spell[c] != 0 )
+							m_owner->AddProcTriggerSpell(Entry->spell[c], 0, m_owner->GetGUID(), Entry->min[c], PROC_ON_MELEE_ATTACK, 0, NULL, this);
 					}
 					else
 					{
-						// Remove the proctriggerspell
-						uint32 SpellId;
-						list< struct ProcTriggerSpell >::iterator itr2;
-						for( itr2 = m_owner->m_procSpells.begin(); itr2 != m_owner->m_procSpells.end(); )
-						{
-							SpellId = itr2->spellId;
-							/*itr2 = itr++;*/
-							
-							if( SpellId == Entry->spell[c] )
-							{
-								//m_owner->m_procSpells.erase(itr2);
-								itr2->deleted = true;
-							}
-							itr2++;
-						}
+						m_owner->RemoveProcTriggerSpell(Entry->spell[c]);
 					}
 				}break;
 

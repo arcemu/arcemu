@@ -409,25 +409,7 @@ struct DamageSplitTarget
 	void * creator;
 };
 
-#ifndef NEW_PROCFLAGS
-struct ProcTriggerSpell
-{
-	//  ProcTriggerSpell() : origId(0), trigger(0), spellId(0), caster(0), procChance(0), procFlags(0), procCharges(0) { }
-	uint32 origId;
-	// uint32 trigger;
-	uint32 spellId;
-	uint64 caster;
-	uint32 procChance;
-	uint32 procFlags;
-	uint32 procCharges;
-	//    SpellEntry *ospinfo;
-	//    SpellEntry *spinfo;
-	uint32 LastTrigger;
-	uint32 ProcType; //0=triggerspell/1=triggerclassspell
-	uint32 groupRelation[3];
-	bool deleted;
-};
-#else
+#ifdef NEW_PROCFLAGS
 struct ProcTriggerSpell
 {
 	uint32 spellId;

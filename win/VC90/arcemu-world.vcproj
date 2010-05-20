@@ -1297,6 +1297,10 @@
 			Name="Spells"
 			>
 			<File
+				RelativePath="..\..\src\arcemu-world\HackFixes.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\arcemu-world\Spell.cpp"
 				>
 			</File>
@@ -1313,7 +1317,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\arcemu-world\HackFixes.cpp"
+				RelativePath="..\..\src\arcemu-world\SpellProc.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\arcemu-world\SpellProc.h"
 				>
 			</File>
 			<File
@@ -1450,11 +1458,11 @@
 			>
 		</File>
 		<File
-			RelativePath="..\..\src\arcemu-world\WUtil.cpp"
+			RelativePath="..\..\src\arcemu-world\WorldStates.h"
 			>
 		</File>
 		<File
-			RelativePath="..\..\src\arcemu-world\WorldStates.h"
+			RelativePath="..\..\src\arcemu-world\WUtil.cpp"
 			>
 		</File>
 		<File

@@ -34,6 +34,7 @@
 #define TO_OBJECT(ptr) static_cast<Object*>(ptr)
 #define TO_UNIT(ptr) static_cast<Unit*>(ptr)
 #define TO_PET(ptr) static_cast<Pet*>(ptr)
+#define TO_ITEM(ptr) static_cast<Item*>(ptr)
 
 
 #include "Definitions.h"
@@ -79,6 +80,7 @@
 #include "printStackTrace.h"
 #endif
 
+#include "WUtil.h"
 #include "UpdateFields.h"
 #include "UpdateMask.h"
 #include "Opcodes.h"
@@ -89,9 +91,8 @@
 #include "EventableObject.h"
 #include "Object.h"
 #include "LootMgr.h"
+#include "SpellProc.h"
 #include "Unit.h"
-
-#include "WUtil.h"
 
 #ifdef ENABLE_ACHIEVEMENTS
 #include "AchievementMgr.h"

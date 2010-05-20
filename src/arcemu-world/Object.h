@@ -21,8 +21,6 @@
 #ifndef _OBJECT_H
 #define _OBJECT_H
 
-#include "WUtil.h"
-
 class Unit;
 class Group;
 

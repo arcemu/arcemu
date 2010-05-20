@@ -2002,80 +2002,9 @@ void Aura::SpellAuraDummy(bool apply)
 	case 49283:
 		{
 			if(apply)
-			{
-				ProcTriggerSpell pts;
-				pts.origId = GetSpellProto()->Id;
-				pts.caster = m_casterGuid;
-				pts.spellId=GetSpellProto()->Id;
-				if(!pts.spellId)
-					return;
-				pts.procChance = GetSpellProto()->procChance;
-				pts.procFlags = GetSpellProto()->procFlags;
-				pts.groupRelation[0] = 0;
-				pts.groupRelation[1] = 0;
-				pts.groupRelation[2] = 0;
-				pts.ProcType = 0;
-				pts.procCharges = GetSpellProto()->procCharges;
-				pts.LastTrigger = 0;
-				pts.deleted = false;
-				m_target->m_procSpells.push_front(pts);
-			}
+				m_target->AddProcTriggerSpell(GetSpellProto(), m_casterGuid, NULL);
 			else
-			{
-				for(std::list<struct ProcTriggerSpell>::iterator itr = m_target->m_procSpells.begin();itr != m_target->m_procSpells.end();itr++)
-				{
-					if(itr->origId == GetSpellId() && itr->caster == m_casterGuid && !itr->deleted)
-					{
-						itr->deleted = true;
-						break;
-					}
-				}
-			}
-
-			/* if(apply)
-			{
-			ProcTriggerSpell pts;
-			pts.origId = GetSpellProto()->Id;
-			pts.caster = m_casterGuid;
-			pts.spellId=GetSpellProto()->Id;
-			if(!pts.spellId)
-				return;
-			pts.procChance = GetSpellProto()->procChance;
-			pts.procFlags = GetSpellProto()->procFlags;
-			int charges = GetSpellProto()->procCharges;
-			if( GetSpellProto()->SpellGroupType && GetUnitCaster() != NULL )
-			{
-				SM_FIValue( GetUnitCaster()->SM_FCharges, &charges, GetSpellProto()->SpellGroupType );
-				SM_PIValue( GetUnitCaster()->SM_PCharges, &charges, GetSpellProto()->SpellGroupType );
-#ifdef COLLECTION_OF_UNTESTED_STUFF_AND_TESTERS
-				float spell_flat_modifers= 0;
-				float spell_pct_modifers= 0;
-				SM_FIValue(GetUnitCaster()->SM_FCharges,&spell_flat_modifers,GetSpellProto()->SpellGroupType);
-				SM_FIValue(GetUnitCaster()->SM_PCharges,&spell_pct_modifers,GetSpellProto()->SpellGroupType);
-				if(spell_flat_modifers!= 0 || spell_pct_modifers!= 0)
-					printf("!!!!!spell charge bonus mod flat %f , spell range bonus pct %f , spell range %f, spell group %u\n",spell_flat_modifers,spell_pct_modifers,maxRange,m_spellInfo->SpellGroupType);
-#endif
-			}
-			pts.procCharges = charges;
-			pts.LastTrigger = 0;
-			pts.deleted = false;
-			pts.groupRelation[0] = 0;
-			pts.groupRelation[1] = 0;
-			pts.groupRelation[2] = 0;
-			m_target->m_procSpells.push_front(pts);
-			}
-			else
-			{
-			for(std::list<struct ProcTriggerSpell>::iterator itr = m_target->m_procSpells.begin();itr != m_target->m_procSpells.end();itr++)
-			{
-				if(itr->origId == GetSpellId() && itr->caster == m_casterGuid && !itr->deleted)
-				{
-					//m_target->m_procSpells.erase(itr);
-					itr->deleted = true;
-					break;
-				}
-			}
-			}*/
+				m_target->RemoveProcTriggerSpell(GetSpellId(), m_casterGuid);
 		}break;
 	case 126: //Eye of Kilrogg
 		{
@@ -4921,87 +4850,38 @@ void Aura::SpellAuraProcTriggerSpell(bool apply)
 {
 	if(apply)
 	{
-		ProcTriggerSpell pts;
-		pts.origId = GetSpellProto()->Id;
-		pts.caster = m_casterGuid;
-		pts.groupRelation[0] = GetSpellProto()->EffectSpellClassMask[mod->i][0];
-		pts.groupRelation[1] = GetSpellProto()->EffectSpellClassMask[mod->i][1];
-		pts.groupRelation[2] = GetSpellProto()->EffectSpellClassMask[mod->i][2];
-		if(GetSpellProto()->EffectTriggerSpell[mod->i])
-			pts.spellId=GetSpellProto()->EffectTriggerSpell[mod->i];
-		else
+		uint32 groupRelation[3];
+		int charges;
+		uint32 spellId;
+
+		// Find spell of effect to be triggered
+		spellId = GetSpellProto()->EffectTriggerSpell[mod->i];
+		if( spellId == 0 )
 		{
-			sLog.outDebug("Warning,trigger spell is null for spell %u",GetSpellProto()->Id);
+			sLog.outDebug("Warning! trigger spell is null for spell %u", GetSpellProto()->Id);
 			return;
 		}
-		pts.procChance = GetSpellProto()->procChance;
-		pts.procFlags = GetSpellProto()->procFlags;
-		int charges = GetSpellProto()->procCharges;
 
+		// Initialize mask
+		groupRelation[0] = GetSpellProto()->EffectSpellClassMask[mod->i][0];
+		groupRelation[1] = GetSpellProto()->EffectSpellClassMask[mod->i][1];
+		groupRelation[2] = GetSpellProto()->EffectSpellClassMask[mod->i][2];
+
+		// Initialize charges
+		charges = GetSpellProto()->procCharges;
 		Unit* ucaster = GetUnitCaster();
-		if( GetSpellProto()->SpellGroupType && ucaster != NULL )
+		if( ucaster != NULL && GetSpellProto()->SpellGroupType )
 		{
 			SM_FIValue( ucaster->SM_FCharges, &charges, GetSpellProto()->SpellGroupType );
 			SM_PIValue( ucaster->SM_PCharges, &charges, GetSpellProto()->SpellGroupType );
 		}
-		pts.ProcType = 0;
-		pts.procCharges = charges;
-		pts.LastTrigger = 0;
-		pts.deleted = false;
 
-		if( m_spellProto->NameHash == SPELL_HASH_THE_TWIN_BLADES_OF_AZZINOTH && m_target->IsPlayer() )
-		{
-			/* The Twin Blades of Azzinoth.
-			 * According to comments on wowhead, this proc has ~0.75ppm (procs-per-minute). */
-			Item* mh = static_cast< Player* >( m_target )->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
-			Item* of = static_cast< Player* >( m_target )->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_OFFHAND );
-			if( mh != NULL && of != NULL )
-			{
-				uint32 mhs = mh->GetProto()->Delay;
-				uint32 ohs = of->GetProto()->Delay;
-				pts.procChance = mhs * ohs / ( 800 * ( mhs + ohs ) ); // 0.75 ppm
-			}
-		}
+		m_target->AddProcTriggerSpell(spellId, GetSpellProto()->Id, m_casterGuid, GetSpellProto()->procChance, GetSpellProto()->procFlags, charges, groupRelation);
 
-		/* We have a custom formula for seal of command. */
-		else if( m_spellProto->NameHash == SPELL_HASH_SEAL_OF_COMMAND )
-		{
-			// default chance of proc
-			pts.procChance = 25;
-
-			/* The formula for SoC proc rate is: [ 7 / ( 60 / Weapon Speed ) - from wowwiki */
-			if(m_target->IsPlayer())
-			{
-				uint32 weapspeed = 1;
-				Item* itm = static_cast< Player* >( m_target )->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_MAINHAND);
-				if( itm != NULL )
-					weapspeed = itm->GetProto()->Delay;
-				pts.procChance = 7 * weapspeed / 600;
-				if( pts.procChance >= 50 )
-					pts.procChance = 50;
-			}
-		}
-/*		pts.ospinfo = m_spellProto;
-		pts.spinfo = sSpellStore.LookupEntry(pts.spellId);
-		if(!pts.spinfo)
-		{
-			sLog.outDebug("Error, could not register procspell %u\n",pts.spellId);
-			return;
-		}*/
-		m_target->m_procSpells.push_front(pts);
-		sLog.outDebug("%u is registering %u chance %u flags %u charges %u triggeronself %u interval %u\n",pts.origId,pts.spellId,pts.procChance,m_spellProto->procFlags & ~PROC_TARGET_SELF,charges,m_spellProto->procFlags & PROC_TARGET_SELF,m_spellProto->proc_interval);
+		sLog.outDebug("%u is registering %u chance %u flags %u charges %u triggeronself %u interval %u\n",GetSpellProto()->Id,spellId,GetSpellProto()->procChance,GetSpellProto()->procFlags & ~PROC_TARGET_SELF,charges,GetSpellProto()->procFlags & PROC_TARGET_SELF,GetSpellProto()->proc_interval);
 	}
 	else
-	{
-		for(std::list<struct ProcTriggerSpell>::iterator itr = m_target->m_procSpells.begin();itr != m_target->m_procSpells.end();itr++)
-		{
-			if(itr->origId == GetSpellId() && itr->caster == m_casterGuid && !itr->deleted)
-			{
-				itr->deleted = true;
-				break; //only 1 instance of a proc spell per caster ?
-			}
-		}
-	}
+		m_target->RemoveProcTriggerSpell(GetSpellId(), m_casterGuid);
 }
 
 void Aura::SpellAuraProcTriggerDamage(bool apply)

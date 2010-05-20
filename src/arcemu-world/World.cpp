@@ -155,6 +155,9 @@ World::~World()
 		delete i->second;
 	}
 
+	Log.Notice("SpellProcMgr", "~SpellProcMgr()");
+	delete SpellProcMgr::getSingletonPtr();
+
 	//eventholder = 0;
 	delete eventholder;
 
@@ -388,6 +391,7 @@ bool World::SetInitialWorldSettings()
 	new AddonMgr;
 	new WorldLog;
 	new ChatHandler;
+	new SpellProcMgr;
 
 	// grep: this only has to be done once between version updates
 	// to re-fill the table.

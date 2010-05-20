@@ -209,7 +209,9 @@ arcemu_world_SOURCES = \
     ConsoleCommands.h \
     ConsoleListener.cpp \
     WUtil.h \
-    WUtil.cpp
+    WUtil.cpp \
+	SpellProc.h\
+	SpellProc.cpp
 	
 arcemu_world_LDADD = -lshared -lz -lpcre -lcollision
 

@@ -1061,22 +1061,8 @@ out:
 		{
 			if (!u_caster->IsPlayer())
 				return;
-			ProcTriggerSpell ILotP;
-			ILotP.origId = 34299;
-			ILotP.spellId = 34299;
-			ILotP.procChance = 100;
-			ILotP.procFlags = PROC_ON_CRIT_ATTACK | static_cast<uint32>(PROC_TARGET_SELF);
-#ifndef NEW_PROCFLAGS
-			ILotP.ProcType = 0;
-#endif
-			ILotP.procCharges = 0;
-			ILotP.deleted = false;
-			ILotP.caster = u_caster->GetGUID();
-			ILotP.LastTrigger = 0;
-			ILotP.groupRelation[0] = 0;
-			ILotP.groupRelation[1] = 0;
-			ILotP.groupRelation[2] = 0;
-			u_caster->m_procSpells.push_back(ILotP);
+
+			u_caster->AddProcTriggerSpell(34299, 34299, u_caster->GetGUID(), 100, PROC_ON_CRIT_ATTACK | static_cast<uint32>(PROC_TARGET_SELF), 0, NULL);
 		}break;
 		/*************************
 		* HUNTER SPELLS
@@ -5844,7 +5830,7 @@ void Spell::SpellEffectAddComboPoints(uint32 i) // Add Combo Points
 		return;
 
 	//if this is a procspell Ruthlessness (maybe others later)
-	if(pSpellId && ( GetProto()->Id == 14157 || GetProto()->Id == 70802 ) )
+	if(pSpellId && ( GetProto()->Id == 14157 || GetProto()->Id == 70802 || GetProto()->Id == 14181 ) )
 	{
 		//it seems this combo adding procspell is going to change combopoint count before they will get reset. We add it after the reset
 		/* burlex - this is wrong, and exploitable.. :/ if someone uses this they will have unlimited combo points */

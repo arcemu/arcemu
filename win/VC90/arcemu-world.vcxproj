@@ -275,6 +275,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\src\arcemu-world\Channel.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\Chat.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\SpellProc.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\WayPoints.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\WordFilter.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\AIInterface.cpp" />
@@ -383,7 +384,7 @@
     <ClCompile Include="..\..\src\arcemu-world\WorldSession.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\Spell.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\SpellEffects.cpp" />
-    <ClCompile Include="..\..\src\arcemu-world\HackFixes.cpp"/>
+    <ClCompile Include="..\..\src\arcemu-world\HackFixes.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\SpellTarget.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\CommonScheduleThread.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\DayWatcherThread.cpp" />
@@ -411,6 +412,7 @@
     <ClInclude Include="..\..\src\arcemu-world\Channel.h" />
     <ClInclude Include="..\..\src\arcemu-world\ChannelMgr.h" />
     <ClInclude Include="..\..\src\arcemu-world\Chat.h" />
+    <ClInclude Include="..\..\src\arcemu-world\SpellProc.h" />
     <ClInclude Include="..\..\src\arcemu-world\WordFilter.h" />
     <ClInclude Include="..\..\src\arcemu-world\AIInterface.h" />
     <ClInclude Include="..\..\src\arcemu-world\DatabaseCleaner.h" />

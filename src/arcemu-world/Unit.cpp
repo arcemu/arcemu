@@ -952,37 +952,46 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 	sharedprocdata.victim = victim;
 #endif
 
-	std::list< uint32 > remove;
-	std::list< struct ProcTriggerSpell >::iterator itr,itr2;
+	std::list<SpellProc*>::iterator itr,itr2;
 	for( itr = m_procSpells.begin(); itr != m_procSpells.end(); )  // Proc Trigger Spells for Victim
 	{
 		itr2 = itr;
 		++itr;
-		if( itr2->deleted )
+
+		SpellProc* spell_proc = *itr2;
+
+		// Check if list item was deleted elsewhere, so here it's removed and freed
+		if( spell_proc->mDeleted )
 		{
 			if( can_delete )
+			{
 				m_procSpells.erase( itr2 );
+				delete spell_proc;
+			}
 			continue;
 		}
 
-		//flags can be mixed, we test them in mixed way. Maybe we should handle each one ?
-		if( !( itr2->procFlags & flag ) )
+		// A spell cannot proc itself
+		if( CastingSpell != NULL && CastingSpell->Id == spell_proc->mSpell->Id )
 			continue;
 
-		if( CastingSpell != NULL )
-		{
-			if(	CastingSpell->Id == itr2->spellId )
-				continue;
-		}
+		// Check if this can proc
+		if( ! spell_proc->CanProc( victim, CastingSpell ) )
+			continue;
 
-		uint32 spellId = itr2->spellId;
-		if( !spellId )
-			continue; //there are procs without spells ?
+		// Check for flags
+		if( ! spell_proc->CheckProcFlags( flag ) )
+			continue;
 
-		//lookupentry returns first spell for wrong ids to avoid crash, there is no need for NULL check
-		SpellEntry* spe  = dbcSpell.LookupEntry( spellId );
+		uint32 spellId = spell_proc->mSpell->Id;
 
-		uint32 origId = itr2->origId;
+		SpellEntry* spe = spell_proc->mSpell;
+
+		uint32 origId;		
+		if( spell_proc->mOrigSpell != NULL )
+			origId = spell_proc->mOrigSpell->Id;
+		else
+			origId = 0;
 		SpellEntry* ospinfo = dbcSpell.LookupEntry( origId );//no need to check if exists or not since we were not able to register this trigger if it would not exist :P
 
 		/*if( itr2->procFlags & PROC_ON_CAST_SPECIFIC_SPELL || itr2->procFlags & PROC_ON_CAST_SPELL) {
@@ -997,7 +1006,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 
 		//this requires some specific spell check,not yet implemented
 		//this sucks and should be rewrote
-		if( itr2->procFlags & PROC_ON_CAST_SPECIFIC_SPELL )
+		if( spell_proc->mProcFlags & PROC_ON_CAST_SPECIFIC_SPELL )
 		{
 			if( CastingSpell == NULL )
 				continue;
@@ -1035,7 +1044,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 		}
 #endif
 
-		uint32 proc_Chance = itr2->procChance;
+		uint32 proc_Chance = spell_proc->CalcProcChance( victim, CastingSpell );
 
 		// feral = no procs (need a better way to do this)
 		/*if( this->IsPlayer() && static_cast<Player*>(this)->GetShapeShift() )
@@ -1114,13 +1123,13 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 		if( ospinfo->proc_interval )
 		{
 			uint32 now_in_ms=getMSTime();
-			if( itr2->LastTrigger + ospinfo->proc_interval > now_in_ms )
+			if( spell_proc->mLastTrigger + ospinfo->proc_interval > now_in_ms )
 				continue; //we can't trigger it yet.
-			itr2->LastTrigger = now_in_ms; // consider it triggered
+			spell_proc->mLastTrigger = now_in_ms; // consider it triggered
 		}
 
 		//since we did not allow to remove auras like these with interrupt flag we have to remove them manually.
-		if( itr2->procFlags & PROC_REMOVEONUSE )
+		if( spell_proc->mProcFlags & PROC_REMOVEONUSE )
 			RemoveAura( origId );
 
 		int dmg_overwrite = 0;
@@ -1445,9 +1454,9 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 							//only trigger effect for specified spells
 							if( CastingSpell->NameHash != SPELL_HASH_SEED_OF_CORRUPTION )
 								continue;
-							//this spell builds up in time
-							(*itr2).procCharges += dmg;
-							if( (int32)(*itr2).procCharges >= ospinfo->EffectBasePoints[ 1 ] && //if charge built up
+							//this spell builds up n time
+							spell_proc->mProcCharges += dmg;
+							if( (int32)spell_proc->mProcCharges >= ospinfo->EffectBasePoints[ 1 ] && //if charge built up
 								dmg < this->GetUInt32Value( UNIT_FIELD_HEALTH ) ) //if this is not a killer blow
 								can_proc_now = true;
 						}
@@ -1465,7 +1474,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 							targets.m_destZ = GetPositionZ();
 							spell->prepare(&targets);
 						}
-						(*itr2).deleted = true;
+						spell_proc->mDeleted = true;
 						continue;
 					}break;
 				// warlock - Improved Drain Soul
@@ -1650,8 +1659,8 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 							continue;
 						if( flag & PROC_ON_SPELL_CRIT_HIT )
 						{
-							itr2->procCharges++;
-							if( itr2->procCharges >= 3 ) //whatch that number cause it depends on original stack count !
+							spell_proc->mProcCharges++;
+							if( spell_proc->mProcCharges >= 3 ) //whatch that number cause it depends on original stack count !
 							{
 								RemoveAllAuraByNameHash( SPELL_HASH_COMBUSTION );
 								continue;
@@ -2003,19 +2012,6 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 					{
 						// The rogue bonus set of T10 requires a finishing move
 						if ( ! (CastingSpell && CastingSpell->c_is_flags & SPELL_FLAG_IS_FINISHING_MOVE))
-							continue;
-					}break;
-				//rogue - Relentless Strikes
-				case 14181:
-					{
-						if( CastingSpell == NULL )
-							continue;//this should not occur unless we made a fuckup somewhere
-						int32 proc_Chance2;
-						//chance is based actually on combopoint count and not 100% always
-						if( CastingSpell->c_is_flags & SPELL_FLAG_IS_FINISHING_MOVE && IsPlayer())
-							proc_Chance2 = static_cast< Player* >( this )->m_comboPoints*ospinfo->EffectBasePoints[1];
-						else continue;
-						if(!Rand(proc_Chance2))
 							continue;
 					}break;
 				//rogue - Find Weakness
@@ -2607,7 +2603,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 			continue;
 
 		SpellCastTargets targets;
-		if( itr2->procFlags & PROC_TARGET_SELF )
+		if( spell_proc->mProcFlags & PROC_TARGET_SELF )
 			targets.m_unitTarget = GetGUID();
 		else
 			targets.m_unitTarget = victim->GetGUID();
@@ -2619,7 +2615,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 		//Spell *spell = new Spell(this,spellInfo,false,0,true,false);
 		if( spellId == 974 || spellId == 32593 || spellId == 32594 || spellId == 49283 || spellId == 49284 ) // Earth Shield handler
 		{
-			spell->pSpellId=itr2->spellId;
+			spell->pSpellId=spellId;
 			spell->SpellEffectDummy(0);
 			delete spell;
 			spell = NULL;
@@ -6113,7 +6109,7 @@ AuraCheckResponse Unit::AuraCheck(SpellEntry *proto, Object *caster)
 			break;
 		}
 	}
-	sLog.outDebug( "resp = %i", resp.Error );
+	//sLog.outDebug( "resp = %i", resp.Error );
 	// return it back to our caller
 	return resp;
 }
@@ -8105,6 +8101,52 @@ bool Unit::isLootable(){
 		return false;
 }
 
+void Unit::AddProcTriggerSpell(uint32 spell_id, uint32 orig_spell_id, uint64 caster, uint32 procChance, uint32 procFlags, uint32 procCharges, uint32 *groupRelation, Object *obj)
+{
+	SpellProc* sp;
+	sp = sSpellProcMgr.NewSpellProc(this, spell_id, orig_spell_id, caster, procChance, procFlags, procCharges, groupRelation, obj);
+
+	m_procSpells.push_back(sp);
+}
+
+void Unit::AddProcTriggerSpell(SpellEntry *spell, SpellEntry *orig_spell, uint64 caster, uint32 procChance, uint32 procFlags, uint32 procCharges, uint32 *groupRelation, Object *obj)
+{
+	SpellProc* sp;
+	sp = sSpellProcMgr.NewSpellProc(this, spell, orig_spell, caster, procChance, procFlags, procCharges, groupRelation, obj);
+
+	m_procSpells.push_back(sp);
+}
+
+void Unit::AddProcTriggerSpell(SpellEntry *sp, uint64 caster, uint32 *groupRelation, Object *obj)
+{
+	AddProcTriggerSpell(sp, sp, caster, sp->procChance, sp->procFlags, sp->procCharges, groupRelation, obj);
+}
+
+void Unit::RemoveProcTriggerSpell(uint32 spellId, uint64 guid)
+{
+	for(std::list<SpellProc*>::iterator itr = m_procSpells.begin(); itr != m_procSpells.end(); ++itr)
+	{
+		SpellProc* sp = *itr;
+		if(sp->mSpell->Id == spellId && sp->mCaster == guid && !sp->mDeleted)
+		{
+			sp->mDeleted = true;
+			return;
+		}
+	}
+}
+
+void Unit::RemoveProcTriggerSpell(uint32 spellId)
+{
+	for(std::list<SpellProc*>::iterator itr = m_procSpells.begin(); itr != m_procSpells.end(); ++itr)
+	{
+		SpellProc* sp = *itr;
+		if(sp->mSpell->Id == spellId && !sp->mDeleted)
+		{
+			sp->mDeleted = true;
+			return;
+		}
+	}
+}
 
 void Unit::TakeDamage(Unit *pAttacker, uint32 damage, uint32 spellid, bool no_remove_auras ){}
 void Unit::Die( Unit *pAttacker, uint32 damage, uint32 spellid ){}

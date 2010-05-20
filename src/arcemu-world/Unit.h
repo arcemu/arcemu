@@ -21,8 +21,6 @@
 #ifndef __UNIT_H
 #define __UNIT_H
 
-#include "WUtil.h"
-
 class AIInterface;
 class DynamicObject;
 
@@ -1048,7 +1046,15 @@ public:
 	void RemoveReflect( uint32 spellid , bool apply);
 	struct DamageSplitTarget *m_damageSplitTarget;
  
-	std::list<struct ProcTriggerSpell> m_procSpells;
+	/********************************************************/
+	/*   ProcTrigger                                        */
+	/********************************************************/
+	std::list<SpellProc*> m_procSpells;
+	void AddProcTriggerSpell(uint32 spell_id, uint32 orig_spell_id, uint64 caster, uint32 procChance, uint32 procFlags, uint32 procCharges, uint32 *groupRelation, Object *obj = NULL);
+	void AddProcTriggerSpell(SpellEntry *spell, SpellEntry *orig_spell, uint64 caster, uint32 procChance, uint32 procFlags, uint32 procCharges, uint32 *groupRelation, Object *obj = NULL);
+	void AddProcTriggerSpell(SpellEntry *sp, uint64 caster, uint32 *groupRelation, Object *obj = NULL);
+	void RemoveProcTriggerSpell(uint32 spellId, uint64 guid);
+	void RemoveProcTriggerSpell(uint32 spellId);
 	std::map<uint32,struct SpellCharge> m_chargeSpells;
 	deque<uint32> m_chargeSpellRemoveQueue;
 	bool m_chargeSpellsInUse;

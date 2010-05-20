@@ -598,7 +598,7 @@ void ApplyNormalFixes()
 						pr|=PROC_ON_MELEE_ATTACK;
 					if( strstr( sp->Description, "chance to get an extra attack"))
 						pr|=PROC_ON_MELEE_ATTACK;
-					if( strstr( sp->Description, "melee attacks has"))
+					if( strstr( sp->Description, "melee attacks have"))
 						pr|=PROC_ON_MELEE_ATTACK;
 					if( strstr( sp->Description, "any damage spell hits a target"))
 						pr|=PROC_ON_CAST_SPELL;
@@ -3633,7 +3633,6 @@ void ApplyNormalFixes()
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;//proc spell
 			sp->procFlags = PROC_ON_CAST_SPELL;
-			sp->EffectBasePoints[1] = 20; //client showes 20% chance but we do not have it ? :O
 		}
 	#else
 		//Relentless Strikes

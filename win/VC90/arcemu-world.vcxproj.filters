@@ -411,9 +411,6 @@
     <ClCompile Include="..\..\src\arcemu-world\SpellEffects.cpp">
       <Filter>Spells</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\arcemu-world\SpellFixes.cpp">
-      <Filter>Spells</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\arcemu-world\SpellTarget.cpp">
       <Filter>Spells</Filter>
     </ClCompile>
@@ -459,6 +456,10 @@
     <ClCompile Include="..\..\src\arcemu-world\faction.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\StdAfx.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\WUtil.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\HackFixes.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\SpellProc.cpp">
+      <Filter>Spells</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\arcemu-world\Channel.h">
@@ -724,6 +725,9 @@
     <ClInclude Include="..\..\src\arcemu-world\StdAfx.h" />
     <ClInclude Include="..\..\src\arcemu-world\WorldStates.h" />
     <ClInclude Include="..\..\src\arcemu-world\WUtil.h" />
+    <ClInclude Include="..\..\src\arcemu-world\SpellProc.h">
+      <Filter>Spells</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\src\arcemu-world\resources.rc" />
