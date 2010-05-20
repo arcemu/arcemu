@@ -916,6 +916,11 @@ void Item::ApplyEnchantmentBonus( uint32 Slot, bool Apply )
 				}
 				   break;}
 
+			case 8:{
+				// Adding a prismatic socket to belt, hands, etc is type 8, it has no bonus to apply HERE
+				break;
+				   }
+
 			default:
 				{
 					sLog.outError( "Unknown enchantment type: %u (%u)", Entry->type[c], Entry->Id );

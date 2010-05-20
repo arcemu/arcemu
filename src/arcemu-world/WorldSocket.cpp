@@ -309,9 +309,6 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 	
 	_crypt.Init(K);
 	
-	BigNumber BNK;
-	BNK.SetBinary(K, 40);
-	
 	//checking if player is already connected
 	//disconnect current player and login this one(blizzlike)
 
@@ -354,7 +351,7 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 	sha.UpdateData((uint8 *)&t, 4);
 	sha.UpdateData((uint8 *)&mClientSeed, 4);
 	sha.UpdateData((uint8 *)&mSeed, 4);
-	sha.UpdateBigNumbers(&BNK, NULL);
+	sha.UpdateData((uint8 *)&K, 40);
 	sha.Finalize();
 
 	if (memcmp(sha.GetDigest(), digest, 20))
