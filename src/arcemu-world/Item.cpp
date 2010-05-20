@@ -621,45 +621,6 @@ int32 Item::AddEnchantment( EnchantEntry* Enchantment, uint32 Duration, bool Per
 	int32 Slot = Slot_;
 	m_isDirty = true;
 
-/*
-	if(Perm)
-	{
-		if(Slot_)
-		{
-			Slot=Slot_;
-		}
-		else
-        {
-			Slot = FindFreeEnchantSlot(Enchantment);
-        }
-	}
-	else
-	{
-		if(Enchantment->EnchantGroups > 1) // replaceable temp enchants
-		{
-			Slot = 1;
-			RemoveEnchantment(1);
-		}
-		else
-		{
-			Slot = FindFreeEnchantSlot(Enchantment);*/
-			/*
-			Slot = Enchantment->type ? 3 : 0;
-			 //that's 's code
-				for(uint32 Index = ITEM_FIELD_ENCHANTMENT_9_1; Index < ITEM_FIELD_ENCHANTMENT_32_1; Index += 3)
-			{
-				if(m_uint32Values[Index] == 0) break;;	
-				++Slot;
-			}
-
-			//Slot = FindFreeEnchantSlot(Enchantment);
-			// reach max of temp enchants
-			if(Slot >= 11) return -1;
-			*/
-		/*}
-	}   
-*/
-
 	// Create the enchantment struct.
 	EnchantmentInstance Instance;
 	Instance.ApplyTime = UNIXTIME;
@@ -673,7 +634,7 @@ int32 Item::AddEnchantment( EnchantEntry* Enchantment, uint32 Duration, bool Per
 	// Set the enchantment in the item fields.
 	SetEnchantmentId( Slot, Enchantment->Id );
 	SetEnchantmentDuration( Slot, (uint32)Instance.ApplyTime );
-	SetUInt32Value( Slot * 3 + ITEM_FIELD_ENCHANTMENT_1_3, 0 ); // charges
+	SetEnchantmentCharges( Slot, 0 );
 
 	// Add it to our map.
 	Enchantments.insert(make_pair((uint32)Slot, Instance));
@@ -730,7 +691,7 @@ void Item::RemoveEnchantment( uint32 EnchantmentSlot )
 	// Unset the item fields.
 	SetEnchantmentId( Slot, 0 );
 	SetEnchantmentDuration( Slot, 0 );
-	SetUInt32Value( Slot * 3 + ITEM_FIELD_ENCHANTMENT_1_3, 0 );
+	SetEnchantmentCharges( Slot, 0 );
 
 	// Remove the enchantment event for removal.
 	event_RemoveEvents( EVENT_REMOVE_ENCHANTMENT1 + Slot );
@@ -992,28 +953,19 @@ void Item::EventRemoveEnchantment( uint32 Slot )
 
 int32 Item::FindFreeEnchantSlot( EnchantEntry* Enchantment, uint32 random_type )
 {	
-	//if(!Enchantment) return -1;
-
-   /* uint32 Slot = Enchantment->type ? 3 : 0;
-	for(uint32 Index = ITEM_FIELD_ENCHANTMENT_09; Index < ITEM_FIELD_ENCHANTMENT_32; Index += 3)
-	{
-		if(m_uint32Values[Index] == 0) return Slot;	
-		++Slot;
-	}*/
-
 	uint32 GemSlotsReserve = GetSocketsCount();
 	if( GetProto()->SocketBonus )
 		GemSlotsReserve++;
 
-	if( random_type == 1 )		// random prop
+	if( random_type == RANDOMPROPERTY )		// random prop
 	{
-		for( uint32 Slot = 8; Slot < 11; ++Slot )
+		for( uint32 Slot = PROP_ENCHANTMENT_SLOT_2; Slot < MAX_ENCHANTMENT_SLOT; ++Slot )
 			if( GetEnchantmentId(Slot) == 0 )
 				return Slot;
 	}
-	else if( random_type == 2 )	// random suffix
+	else if( random_type == RANDOMSUFFIX )	// random suffix
 	{
-		for( uint32 Slot = 6; Slot < 11; ++Slot )
+		for( uint32 Slot = PROP_ENCHANTMENT_SLOT_0; Slot < MAX_ENCHANTMENT_SLOT; ++Slot )
 			if( GetEnchantmentId(Slot) == 0 )
 				return Slot;
 	}
@@ -1029,7 +981,7 @@ int32 Item::FindFreeEnchantSlot( EnchantEntry* Enchantment, uint32 random_type )
 
 int32 Item::HasEnchantment( uint32 Id )
 {
-	for( uint32 Slot = 0; Slot < 11; Slot++ )
+	for( uint32 Slot = 0; Slot < MAX_ENCHANTMENT_SLOT; Slot++ )
 	{
 		if( GetEnchantmentId(Slot) == Id )
 			return Slot;

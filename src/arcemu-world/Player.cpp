@@ -8073,7 +8073,8 @@ void Player::SendTradeUpdate()
 	data << uint32(0x19);
 	data << m_tradeSequence;
 	data << m_tradeSequence++;
-	data << mTradeGold << uint32(0);
+	data << mTradeGold;
+	data << uint32(0);
 
 	uint8 count = 0;
 	// Items
@@ -8105,8 +8106,7 @@ void Player::SendTradeUpdate()
 			}
             data << uint64( pItem->GetCreatorGUID() );		// item creator	 OK
             data << uint32( pItem->GetCharges( 0 ) );	// Spell Charges	OK
-
-			data << uint32( 0 );											// seems like time stamp or something like that
+			data << uint32( pItem->GetItemRandomSuffixFactor() );											// seems like time stamp or something like that
             data << uint32( pItem->GetItemRandomPropertyId() );
 			data << uint32( pProto->LockId );										// lock ID		  OK
             data << uint32( pItem->GetDurabilityMax() );

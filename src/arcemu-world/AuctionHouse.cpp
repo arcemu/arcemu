@@ -250,20 +250,15 @@ void WorldSession::HandleAuctionListBidderItems( WorldPacket & recv_data )
 
 void Auction::AddToPacket(WorldPacket & data)
 {
-	data << Id;
-	data << pItem->GetEntry();
+	data << uint32( Id );
+	data << uint32( pItem->GetEntry() );
 
-	for (uint32 i = 0; i < 6; i++)
+	for (uint32 i = 0; i < MAX_INSPECTED_ENCHANTMENT_SLOT; i++)
 	{
         data << uint32( pItem->GetEnchantmentId( i ) );   // Enchantment ID
 		data << uint32( pItem->GetEnchantmentApplytime( i ) );						 // Unknown / maybe ApplyTime
-        data << uint32( pItem->GetCharges( i ) );  // charges
+		data << uint32( pItem->GetEnchantmentCharges( i ) );  // charges
 	}
-
-	// TODO: merge into the loop above when arcemu adds support for prismatic socket enchants
-	for (uint32 i = 0; i < 3; i++)
-		data << uint32( 0 );
-
 
     data << pItem->GetItemRandomPropertyId();		 // -ItemRandomSuffix / random property	 : If the value is negative its ItemRandomSuffix if its possitive its RandomItemProperty
     data << pItem->GetItemRandomSuffixFactor();			  // when ItemRandomSuffix is used this is the modifier
@@ -691,7 +686,7 @@ void AuctionHouse::SendAuctionList(Player * plr, WorldPacket * packet)
 	}
 
 	WorldPacket data(SMSG_AUCTION_LIST_RESULT, 7000);
-	data << uint32(0);
+	data << uint32(0); // count of items
 
 	auctionLock.AcquireReadLock();
 	HM_NAMESPACE::hash_map<uint32, Auction*>::iterator itr = auctions.begin();
@@ -768,6 +763,7 @@ void AuctionHouse::SendAuctionList(Player * plr, WorldPacket * packet)
 
 	// total count
 	data << uint32(1 + counted_items);
+	data << uint32(300);
 
 	auctionLock.ReleaseReadLock();
 	plr->GetSession()->SendPacket(&data);

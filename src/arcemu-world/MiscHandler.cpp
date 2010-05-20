@@ -1874,7 +1874,7 @@ void WorldSession::HandleInspectOpcode( WorldPacket & recv_data )
 	// ----[ Build the item list with their enchantments ]----
 	uint32 slot_mask = 0;
 	size_t slot_mask_pos = data.wpos();
-	data << uint32(slot_mask); // VLack: 3.1, this is a mask field, if we send 0 we can skip implementing this for now; here should come the player's enchantments from its items (the ones you would see on the character sheet).
+	data << uint32( slot_mask ); // VLack: 3.1, this is a mask field, if we send 0 we can skip implementing this for now; here should come the player's enchantments from its items (the ones you would see on the character sheet).
 
 	ItemInterface *iif = player->GetItemInterface();
 
@@ -1887,13 +1887,14 @@ void WorldSession::HandleInspectOpcode( WorldPacket & recv_data )
 
 		slot_mask |= (1 << i);
 
-		data << uint32(item->GetEntry());
+		data << uint32( item->GetEntry() );
 
 		uint16 enchant_mask = 0;
 		size_t enchant_mask_pos = data.wpos();
+
 		data << uint16(enchant_mask);
 
-		for(uint32 Slot = 0; Slot < 12; ++Slot) // In UpdateFields.h we have ITEM_FIELD_ENCHANTMENT_1_1 to ITEM_FIELD_ENCHANTMENT_12_1, iterate on them...
+		for(uint32 Slot = 0; Slot < MAX_ENCHANTMENT_SLOT; ++Slot) // In UpdateFields.h we have ITEM_FIELD_ENCHANTMENT_1_1 to ITEM_FIELD_ENCHANTMENT_12_1, iterate on them...
 		{
             uint32 enchantId = item->GetEnchantmentId( Slot ); // This calculation has to be in sync with Item.cpp line ~614, at the moment it is:    uint32 EnchantBase = Slot * 3 + ITEM_FIELD_ENCHANTMENT_1_1;
 
@@ -1907,7 +1908,7 @@ void WorldSession::HandleInspectOpcode( WorldPacket & recv_data )
 		data.put<uint16>(enchant_mask_pos, enchant_mask);
 
 		data << uint16( 0 ); // UNKNOWN
-        FastGUIDPack(data, item->GetCreatorGUID() ); // Usually 0 will do, but if your friend created that item for you, then it is nice to display it when you get inspected.
+		FastGUIDPack(data, item->GetCreatorGUID() ); // Usually 0 will do, but if your friend created that item for you, then it is nice to display it when you get inspected.
 		data << uint32( 0 ); // UNKNOWN
 	}
 	data.put<uint32>(slot_mask_pos, slot_mask);
