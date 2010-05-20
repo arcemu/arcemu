@@ -172,9 +172,6 @@ Creature::Creature(uint64 guid)
 	m_useAI = true;
 	mTaxiNode = 0;
 
-	Tagged = false;
-	TaggerGuid = 0;
-
 	Skinned = false;
     m_enslaveCount = 0;
 	m_enslaveSpell = 0;

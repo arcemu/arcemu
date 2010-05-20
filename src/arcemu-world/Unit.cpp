@@ -406,6 +406,9 @@ Unit::Unit()
 	asc_enraged = 0;
 	asc_seal = 0;
 	asc_bleed = 0;
+
+	Tagged = false;
+	TaggerGuid = 0;
 }
 
 Unit::~Unit()
