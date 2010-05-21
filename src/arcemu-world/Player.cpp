@@ -4454,15 +4454,18 @@ void Player::_ApplyItemMods(Item* item, int16 slot, bool apply, bool justdrokedo
 		// Apply all enchantment bonuses
 		item->ApplyEnchantmentBonuses();
 
+		SpellEntry *spells;
 		for( int k = 0; k < 5; k++ )
 		{
-			// stupid fucked dbs
 			if( item->GetProto()->Spells[k].Id == 0 )
+				continue;//this isn't needed since the check below handles this case but it's a lot faster performance-wise.
+
+			spells = dbcSpell.LookupEntryForced( item->GetProto()->Spells[k].Id );
+			if( spells == NULL )
 				continue;
 
 			if( item->GetProto()->Spells[k].Trigger == 1 )
 			{
-				SpellEntry* spells = dbcSpell.LookupEntry( item->GetProto()->Spells[k].Id );
 				if( spells->RequiredShapeShift )
 				{
 					AddShapeShiftSpell( spells->Id );
@@ -4478,7 +4481,7 @@ void Player::_ApplyItemMods(Item* item, int16 slot, bool apply, bool justdrokedo
 			}
 			else if( item->GetProto()->Spells[k].Trigger == 2 )
 			{
-				this->AddProcTriggerSpell( item->GetProto()->Spells[k].Id, 0, this->GetGUID(), 5, PROC_ON_MELEE_ATTACK, 0, NULL );
+				this->AddProcTriggerSpell( spells, NULL, this->GetGUID(), 5, PROC_ON_MELEE_ATTACK, 0, NULL );
 			}
 		}
 	}
