@@ -61,6 +61,8 @@ enum BattleGroundTypes
 	BATTLEGROUND_NUM_TYPES			= 33, //Based on BattlemasterList.dbc, make the storage arrays big enough! On 3.1.3 the last one was 11 The Ring of Valor, so 12 was enough here, but on 3.2.0 there is 32 All Battlegrounds!
 };
 
+#define IS_ARENA(x) ( (x) >= BATTLEGROUND_ARENA_2V2 && (x) <= BATTLEGROUND_ARENA_5V5 )
+
 enum BattleGroundMasterTypes
 {
 	BGMASTER_CREATURE		= 1,
@@ -251,7 +253,7 @@ public:
 	void DeleteBattleground(CBattleground * bg);
 
 	/* Build SMSG_BATTLEFIELD_STATUS */
-	void SendBattlefieldStatus(Player * plr, uint32 Status, uint32 Type, uint32 InstanceID, uint32 Time, uint32 MapId, uint8 RatedMatch);
+	void SendBattlefieldStatus(Player * plr, BattleGroundStatus Status, uint32 Type, uint32 InstanceID, uint32 Time, uint32 MapId, uint8 RatedMatch);
 
 	/* Gets ArenaTeam info from group */
 	uint32 GetArenaGroupQInfo(Group * group, int type, uint32 *avgRating);

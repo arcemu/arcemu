@@ -3376,7 +3376,7 @@ uint8 Spell::CanCast(bool tolerate)
 		/**
 		*	Arena spell check
 		 */
-		if (p_caster->m_bg && ( p_caster->m_bg->GetType() >= BATTLEGROUND_ARENA_2V2 && p_caster->m_bg->GetType() <= BATTLEGROUND_ARENA_5V5 ) &&
+		if( p_caster->m_bg && IS_ARENA( p_caster->m_bg->GetType() ) && 
 			hasAttributeExD( FLAGS5_NOT_IN_ARENA ) )
 				return SPELL_FAILED_NOT_IN_ARENA;
 		if (p_caster->m_bg && !p_caster->m_bg->HasStarted() && (m_spellInfo->Id == 1953 || m_spellInfo->Id == 36554))//Don't allow blink or shadowstep  if in a BG and the BG hasn't started.

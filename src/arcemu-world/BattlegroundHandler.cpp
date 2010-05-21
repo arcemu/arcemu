@@ -55,7 +55,7 @@ void WorldSession::HandleBattlefieldStatusOpcode(WorldPacket &recv_data)
 	else if(_player->m_bg)					// Inside a bg
 		BattlegroundManager.SendBattlefieldStatus(_player, BGSTATUS_TIME, _player->m_bg->GetType(), _player->m_bg->GetId(), (uint32)UNIXTIME - _player->m_bg->GetStartTime(), _player->GetMapId(), _player->m_bg->Rated());
 	else									// None
-		BattlegroundManager.SendBattlefieldStatus(_player, BGSTATUS_NOFLAGS, 0, 0, 0, 0, 0);	
+		BattlegroundManager.SendBattlefieldStatus(_player, BGSTATUS_NOFLAGS, 0, 0, 0, 0, 0);
 }
 
 void WorldSession::HandleBattlefieldListOpcode(WorldPacket &recv_data)

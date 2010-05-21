@@ -154,7 +154,7 @@ m_bgEntryPointO(0),
 m_bgQueueType(0),
 m_bgQueueInstanceId(0),
 m_bgIsQueued(false),
-m_bg(0),
+m_bg(NULL),
 m_bgHasFlag(false),
 m_bgEntryPointInstance(0),
 
@@ -446,7 +446,7 @@ mOutOfRangeIdCount(0)
 	m_modblockvaluefromspells = 0;
 	m_summoner = m_summonInstanceId = m_summonMapId = 0;
 	m_spellcomboPoints = 0;
-	m_pendingBattleground = 0;
+	m_pendingBattleground = NULL;
 	m_deathVision = false;
 	m_resurrecter = 0;
 	m_retainComboPoints = false;
@@ -2390,8 +2390,6 @@ void Player::InitVisibleUpdateBits()
 }
 
 
-#define IS_ARENA(x) ( (x) >= BATTLEGROUND_ARENA_2V2 && (x) <= BATTLEGROUND_ARENA_5V5 )
-
 void Player::SaveToDB(bool bNewCharacter /* =false */)
 {
 	bool in_arena = false;
@@ -4002,8 +4000,7 @@ void Player::OnPushToWorld()
 
 	if( m_mapMgr && m_mapMgr->m_battleground != NULL && m_bg != m_mapMgr->m_battleground )
 	{
-		m_bg = m_mapMgr->m_battleground;
-		m_bg->PortPlayer( this, true );
+		m_mapMgr->m_battleground->PortPlayer( this, true );
 	}
 
 	if( m_bg != NULL )
@@ -4030,7 +4027,6 @@ void Player::RemoveFromWorld()
 	if(m_bg)
 	{
 		m_bg->RemovePlayer(this, true);
-		m_bg = NULL;
 	}
 
 	// Cancel trade if it's active.
@@ -8606,7 +8602,6 @@ bool Player::SafeTeleport(uint32 MapID, uint32 InstanceID, const LocationVector 
 	if( m_bg && m_bg->GetMapMgr() && GetMapMgr()->GetMapInfo()->mapid != MapID )
 	{
 		m_bg->RemovePlayer(this, false);
-		m_bg = NULL;
 	}
 
 	_Relocate(MapID, vec, true, instance, InstanceID);
@@ -10152,7 +10147,6 @@ void Player::RemoveFromBattlegroundQueue()
 
 	m_pendingBattleground->RemovePendingPlayer(this);
 	sChatHandler.SystemMessage(m_session, "You were removed from the queue for the battleground for not joining after 1 minute 20 seconds.");
-	m_pendingBattleground = 0;
 }
 
 void Player::_AddSkillLine(uint32 SkillLine, uint32 Curr_sk, uint32 Max_sk)
@@ -13580,8 +13574,8 @@ void Player::Die( Unit *pAttacker, uint32 damage, uint32 spellid ){
 
 	{
 		uint32 self_res_spell = 0;
-		if( m_bg == NULL || ( m_bg != NULL && m_bg->GetType() != BATTLEGROUND_ARENA_5V5 && m_bg->GetType() != BATTLEGROUND_ARENA_3V3 && m_bg->GetType() != BATTLEGROUND_ARENA_2V2 ) ){
-			
+		if( m_bg == NULL || ( m_bg != NULL && !IS_ARENA( m_bg->GetType() ) ) )
+		{
 			self_res_spell = SoulStone;
 			
 			SoulStone = SoulStoneReceiver = 0;

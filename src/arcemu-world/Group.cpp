@@ -175,9 +175,9 @@ bool Group::AddMember(PlayerInfo * info, int32 subgroupid/* =-1 */)
 				info->m_Group->RemovePlayer(info);
 
 			if(m_Leader== NULL && info->m_loggedInPlayer)
-				m_Leader=info;
+				m_Leader = info;
 
-			info->m_Group=this;
+			info->m_Group = this;
 			info->subGroup = (int8)subgroup->GetID();
 
 			m_groupLock.Release();
@@ -474,7 +474,7 @@ void Group::RemovePlayer(PlayerInfo * info)
 	m_groupLock.Acquire();
 	if(m_isqueued)
 	{
-		m_isqueued=false;
+		m_isqueued = false;
 		BattlegroundManager.RemoveGroupFromQueues(this);
 	}
 	
@@ -497,20 +497,20 @@ void Group::RemovePlayer(PlayerInfo * info)
 		}
 	}
 
-	info->m_Group= NULL;
-	info->subGroup=-1;
+	info->m_Group = NULL;
+	info->subGroup = -1;
 #ifdef VOICE_CHAT
 	if( info->groupVoiceId <= 0 )
 		RemoveVoiceMember(info);
 #endif
 
-	if(sg== NULL)
+	if(sg == NULL)
 	{
 		m_groupLock.Release();
 		return;
 	}
 
-	m_dirty=true;
+	m_dirty = true;
 	sg->RemovePlayer(info);
 	--m_MemberCount;
 
@@ -740,7 +740,6 @@ void Group::MovePlayer(PlayerInfo *info, uint8 subgroup)
 	if(!sg->AddPlayer(info))
 	{
 		RemovePlayer(info);
-		info->m_Group= NULL;
 	}
 	else
 	{

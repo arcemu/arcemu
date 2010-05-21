@@ -7475,7 +7475,7 @@ void Spell::SpellEffectActivateSpec(uint32 i)
 	else if(p_caster->m_bg)
 	{
 		uint32 Type = p_caster->m_bg->GetType();
-		if(Type >= BATTLEGROUND_ARENA_2V2 && Type <= BATTLEGROUND_ARENA_5V5)
+		if( IS_ARENA( Type ) )
 		{
 			SendCastResult(SPELL_FAILED_AFFECTING_COMBAT); // does the job
 			return;

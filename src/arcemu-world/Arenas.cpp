@@ -154,8 +154,6 @@ void Arena::OnRemovePlayer(Player * plr)
 	plr->RemoveAura(plr->GetTeamInitial() ? 35775-plr->m_bgTeam : 32725-plr->m_bgTeam);
     plr->RemoveFFAPvPFlag();
 
-	plr->m_bg = NULL;
-
 	// Reset all their cooldowns and restore their HP/Mana/Energy to max
 	plr->ResetAllCooldowns();
 	plr->FullHPMP();
