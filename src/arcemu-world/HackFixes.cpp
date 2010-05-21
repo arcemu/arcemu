@@ -2201,16 +2201,6 @@ void ApplyNormalFixes()
 			sp->EffectTriggerSpell[1] = 30339; //evil , but this is good for us :D
 		}
 
-		// Warrior - Rampage
-		sp = dbcSpell.LookupEntryForced( 29801 );
-		if( sp != NULL )
-		{
-			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->procFlags = PROC_ON_CRIT_ATTACK | static_cast<uint32>(PROC_TARGET_SELF);
-			sp->EffectTriggerSpell[0] = 30029;
-		}
-		
 		// Warrior - Berserker Rage
 		sp = dbcSpell.LookupEntryForced( 18499 );
 		if( sp != NULL )

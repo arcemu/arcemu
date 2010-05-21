@@ -8103,17 +8103,20 @@ bool Unit::isLootable(){
 
 void Unit::AddProcTriggerSpell(uint32 spell_id, uint32 orig_spell_id, uint64 caster, uint32 procChance, uint32 procFlags, uint32 procCharges, uint32 *groupRelation, Object *obj)
 {
-	SpellProc* sp;
-	sp = sSpellProcMgr.NewSpellProc(this, spell_id, orig_spell_id, caster, procChance, procFlags, procCharges, groupRelation, obj);
-
-	m_procSpells.push_back(sp);
+	AddProcTriggerSpell(dbcSpell.LookupEntryForced(spell_id), dbcSpell.LookupEntryForced(orig_spell_id), caster, procChance, procFlags, procCharges, groupRelation, obj);
 }
 
 void Unit::AddProcTriggerSpell(SpellEntry *spell, SpellEntry *orig_spell, uint64 caster, uint32 procChance, uint32 procFlags, uint32 procCharges, uint32 *groupRelation, Object *obj)
 {
-	SpellProc* sp;
-	sp = sSpellProcMgr.NewSpellProc(this, spell, orig_spell, caster, procChance, procFlags, procCharges, groupRelation, obj);
-
+	SpellProc *sp = sSpellProcMgr.NewSpellProc(this, spell, orig_spell, caster, procChance, procFlags, procCharges, groupRelation, obj);
+	if( sp == NULL )
+	{
+		if( orig_spell != NULL )
+			sLog.outError("Spell id %u tried to add a non-existent spell to Unit %p as SpellProc", orig_spell->Id, this);
+		else
+			sLog.outError("Something tried to add a non-existent spell to Unit %p as SpellProc", this);
+		return;
+	}
 	m_procSpells.push_back(sp);
 }
 

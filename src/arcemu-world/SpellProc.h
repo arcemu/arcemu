@@ -100,6 +100,9 @@ public:
 
 	SpellProc* NewSpellProc(Unit *target, SpellEntry *spell, SpellEntry *orig_spell, uint64 caster, uint32 procChance, uint32 procFlags, uint32 procCharges, uint32 *groupRelation, Object *obj)
 	{
+		if( spell == NULL )
+			return NULL;
+
 		SpellProc* result;
 		SpellProcMap::iterator itr;
 		spell_proc_factory_function ptr = NULL;
