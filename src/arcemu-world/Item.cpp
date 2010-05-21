@@ -187,10 +187,14 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light )
 	random_prop = fields[9].GetUInt32();
 	random_suffix = fields[10].GetUInt32();
 
-	if( random_prop )
-		SetRandomProperty( random_prop );
-	else if( random_suffix )
-		SetRandomSuffix( random_suffix );
+	SetItemRandomPropertyId( random_prop );
+
+	int32 rprop = int32( random_prop );
+	// If random properties point is negative that means the item uses random suffix as random enchantment
+	if( rprop < 0 )
+		SetItemRandomSuffixFactor( random_suffix );
+	else
+		SetItemRandomSuffixFactor( 0 );
 
 	SetTextId( fields[11].GetUInt32() );
 

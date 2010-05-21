@@ -2857,7 +2857,7 @@ void Spell::SpellEffectCreateItem(uint32 i) // Create item
 				sLog.outError( "DB Error: Item %u has unknown RandomPropId %u", m_itemProto->ItemId, m_itemProto->RandomPropId );
 			else
 			{
-				newItem->SetRandomProperty(iRandomProperty->ID);
+				newItem->SetItemRandomPropertyId(iRandomProperty->ID);
 				newItem->ApplyRandomProperties(false);
 			}
 		}

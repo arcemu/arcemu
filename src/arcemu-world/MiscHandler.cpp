@@ -143,7 +143,7 @@ void WorldSession::HandleAutostoreLootItemOpcode( WorldPacket & recv_data )
 		item->SetStackCount( amt);
 		if(pLoot->items.at(lootSlot).iRandomProperty!= NULL)
 		{
-			item->SetRandomProperty(pLoot->items.at(lootSlot).iRandomProperty->ID);
+			item->SetItemRandomPropertyId(pLoot->items.at(lootSlot).iRandomProperty->ID);
 			item->ApplyRandomProperties(false);
 		}
 		else if(pLoot->items.at(lootSlot).iRandomSuffix != NULL)
@@ -2180,7 +2180,7 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
 	item->SetStackCount( amt);
 	if(pLoot->items.at(slotid).iRandomProperty!= NULL)
 	{
-		item->SetRandomProperty(pLoot->items.at(slotid).iRandomProperty->ID);
+		item->SetItemRandomPropertyId(pLoot->items.at(slotid).iRandomProperty->ID);
 		item->ApplyRandomProperties(false);
 	}
 	else if(pLoot->items.at(slotid).iRandomSuffix != NULL)

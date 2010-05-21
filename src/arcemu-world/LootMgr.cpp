@@ -834,7 +834,7 @@ void LootRoll::Finalize()
 		item->SetStackCount( amt);
 		if(pLoot->items.at(_slotid).iRandomProperty!= NULL)
 		{
-			item->SetRandomProperty(pLoot->items.at(_slotid).iRandomProperty->ID);
+			item->SetItemRandomPropertyId(pLoot->items.at(_slotid).iRandomProperty->ID);
 			item->ApplyRandomProperties(false);
 		}
 		else if(pLoot->items.at(_slotid).iRandomSuffix != NULL)

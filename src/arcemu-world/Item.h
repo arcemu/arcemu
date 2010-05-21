@@ -206,20 +206,22 @@ public:
 
 	uint32 GetItemRandomPropertyId() const { return m_uint32Values[ITEM_FIELD_RANDOM_PROPERTIES_ID]; }
 	uint32 GetItemRandomSuffixFactor() { return m_uint32Values[ITEM_FIELD_PROPERTY_SEED]; }
-    void SetItemRandomPropertyId( uint32 id ){ SetUInt32Value( ITEM_FIELD_RANDOM_PROPERTIES_ID, id ); }
-    void SetItemRandomSuffixFactor( uint32 factor ){ SetUInt32Value( ITEM_FIELD_PROPERTY_SEED, factor ); }
-
-	void SetRandomProperty( uint32 id )
-	{
-		SetUInt32Value( ITEM_FIELD_RANDOM_PROPERTIES_ID, id );
+    
+	void SetItemRandomPropertyId( uint32 id ){
 		random_prop = id;
+		SetUInt32Value( ITEM_FIELD_RANDOM_PROPERTIES_ID, id );
+	}
+
+    void SetItemRandomSuffixFactor( uint32 factor ){
+		random_suffix = factor;
+		SetUInt32Value( ITEM_FIELD_PROPERTY_SEED, factor );
 	}
 
 	void SetRandomSuffix( uint32 id )
 	{
 		int32 r_id = -(int32(id));
 		uint32 v = Item::GenerateRandomSuffixFactor( m_itemProto );
-		SetRandomProperty( (uint32)r_id );
+		SetItemRandomPropertyId( (uint32)r_id );
 		SetItemRandomSuffixFactor( v );
 		random_suffix = id;
 	}

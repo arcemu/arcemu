@@ -4010,7 +4010,7 @@ bool ItemInterface::AddItemById( uint32 itemid, uint32 count, int32 randomprop )
 			if( randomprop < 0 )
 				item->SetRandomSuffix( -randomprop );
 			else
-				item->SetRandomProperty( randomprop );
+				item->SetItemRandomPropertyId( randomprop );
 
 			item->ApplyRandomProperties( false );
 		}
