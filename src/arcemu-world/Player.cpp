@@ -13567,7 +13567,7 @@ void Player::Die( Unit *pAttacker, uint32 damage, uint32 spellid ){
 		}
 	}
 
-	smsg_AttackStop( this );
+	smsg_AttackStop( pAttacker );
 	EventAttackStop();
 	
 	CALL_INSTANCE_SCRIPT_EVENT( m_mapMgr, OnPlayerDeath )( this, pAttacker );

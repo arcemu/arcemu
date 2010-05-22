@@ -1387,8 +1387,9 @@ void Spell::cancel()
 //				p_caster->setAttackTimer(1000, false);
 			 }
 		}
-		SendChannelUpdate(0);
 	}
+	
+	SendChannelUpdate(0);
 
 	//m_spellState = SPELL_STATE_FINISHED;
 
@@ -2575,16 +2576,21 @@ void Spell::SendInterrupted( uint8 result )
 		if( plr != NULL && plr->IsPlayer() )
 		{
 			data << m_caster->GetNewGUID();
-			data << extra_cast_number;
-			data << m_spellInfo->Id;
+			data << uint8( extra_cast_number );
+			data << uint32( m_spellInfo->Id );
 			data << uint8( result );
+
 			plr->GetSession()->SendPacket( &data );
 		}
 	}
 
 	data.Initialize( SMSG_SPELL_FAILED_OTHER );
+
 	data << m_caster->GetNewGUID();
-	data << GetProto()->Id;
+	data << uint8( extra_cast_number );
+	data << uint32( GetProto()->Id );
+	data << uint8( result );
+
 	m_caster->SendMessageToSet( &data, false );
 }
 
