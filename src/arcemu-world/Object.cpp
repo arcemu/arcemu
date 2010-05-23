@@ -71,7 +71,7 @@ Object::Object() : m_position(0,0,0,0), m_spawnLocation(0,0,0,0)
 	m_faction = NULL;
 	m_factionDBC = NULL;
 
-	m_instanceId = -1;
+	m_instanceId = 0;
 	Active = false;
 	m_inQueue = false;
 	m_extensions = NULL;
@@ -96,7 +96,7 @@ Object::~Object( )
 	Arcemu::Util::ARCEMU_ASSERT( !IsInWorld() );
 
 	// for linux
-	m_instanceId = -1;
+	m_instanceId = 0;
 	m_objectTypeId=TYPEID_UNUSED;
 
 	if( m_extensions != NULL )
@@ -952,6 +952,7 @@ void Object::RemoveFromWorld(bool free_guid)
 
 	m->RemoveObject(this, free_guid);
 
+	m_instanceId = 0;
 	// update our event holder
 	event_Relocate();
 }

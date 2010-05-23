@@ -417,14 +417,24 @@ void EventableObject::event_Relocate()
 		// whee, we changed event holder :>
 		// doing this will change the instanceid on all the events, as well as add to the new holder.
 		
-		// no need to do this if we don't have any events, though.
-		if(!nh)
-			nh = sEventMgr.GetEventHolder( WORLD_INSTANCE );
-
-		nh->AddObject(this);
-
-		// reset our m_holder pointer and instance id
-		m_event_Instanceid = nh->GetInstanceID();
+		//If nh is NULL then we were removed from world. There's no reason to be added to WORLD_INSTANCE EventMgr, let's just wait till something will add us again to world.
+		if( nh == NULL )
+		{
+			//set instaceId to 0 to each event of this EventableObject, so EventableObjectHolder::Update() will remove them from its EventList.
+			for( EventMap::iterator itr = m_events.begin(); itr != m_events.end(); ++itr )
+			{
+				itr->second->instanceId = 0;
+			}
+			// reset our instance id. 
+			m_event_Instanceid = 0;
+		}
+		else
+		{
+			nh->AddObject(this);
+			// reset our instance id
+			m_event_Instanceid = nh->GetInstanceID();
+		}
+		// reset our m_holder pointer
 		m_holder = nh;
 	}
 
