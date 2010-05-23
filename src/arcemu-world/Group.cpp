@@ -284,16 +284,23 @@ void Group::Update()
 #endif
 
 				data.Initialize( SMSG_GROUP_LIST );
-				data << uint8(m_GroupType);	//0=party, 1=raid
+				data << uint8(m_GroupType);
+				data << uint8( (*itr1)->subGroup );
 				
+				flags = 0;
+				if( (*itr1) == m_assistantLeader )
+					flags |= 1;
+				if( (*itr1) == m_mainTank )
+					flags |= 2;
+				if( (*itr1) == m_mainAssist )
+					flags |= 4;
+				data << uint8( flags );
+
 				if( m_Leader != NULL && m_Leader->m_loggedInPlayer != NULL && m_Leader->m_loggedInPlayer->IsInBg() )
 					data << uint8(1);   //if the leader is in a BG, then the group is a BG group
 				else
 					data << uint8(0);
 
-				data << uint8(sg1->GetID());
-				data << uint8(0);	// unk2
-				//data << uint64(0);	// unk3
 				data << uint64(0x500000000004BC0CULL);
 				data << uint32(0);		// 3.3 - increments every time a group list update is being sent to client
 				data << uint32(m_MemberCount-1);	// we don't include self
@@ -306,7 +313,7 @@ void Group::Update()
 					{
 						for( itr2 = sg2->GetGroupMembersBegin(); itr2 != sg2->GetGroupMembersEnd(); ++itr2 )
 						{
-							if( (*itr1) == (*itr2) )
+							if( (*itr1) == (*itr2) ) // skip self
 								continue;
 
 							// should never happen but just in case
@@ -321,7 +328,7 @@ void Group::Update()
 							else
 								data << uint8( 0 );
 
-							data << uint8( sg2->GetID() );
+							data << uint8( (*itr2)->subGroup );
 							
 							flags = 0;
 
@@ -332,7 +339,7 @@ void Group::Update()
 							if( (*itr2) == m_mainAssist )
 								flags |= 4;
 
-							data << flags;
+							data << uint8( flags );
 							data << uint8(0); // 3.3 - may have some use
 						}
 					}
