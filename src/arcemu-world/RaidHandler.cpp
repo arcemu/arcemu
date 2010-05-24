@@ -143,9 +143,10 @@ void WorldSession::HandleReadyCheckOpcode(WorldPacket& recv_data)
 	if(!pGroup || !_player->IsInWorld())
 		return;
 
-	if(recv_data.size() == 0)
+	if( recv_data.size() == 0 )
 	{
-		if(pGroup->GetLeader() == _player->m_playerInfo)
+		// only leader or leader assistant can perform the ready check
+		if( pGroup->GetLeader() == _player->m_playerInfo || pGroup->GetAssistantLeader() == _player->m_playerInfo )
 		{
 			WorldPacket data(MSG_RAID_READY_CHECK, 8);
 			data << GetPlayer()->GetGUID();
@@ -166,8 +167,10 @@ void WorldSession::HandleReadyCheckOpcode(WorldPacket& recv_data)
 		data << _player->GetGUID();
 		data << ready;
 
-		if(pGroup->GetLeader() && pGroup->GetLeader()->m_loggedInPlayer)
+		if( pGroup->GetLeader() && pGroup->GetLeader()->m_loggedInPlayer )
 			pGroup->GetLeader()->m_loggedInPlayer->GetSession()->SendPacket(&data);
+		if( pGroup->GetAssistantLeader() && pGroup->GetAssistantLeader()->m_loggedInPlayer )
+			pGroup->GetAssistantLeader()->m_loggedInPlayer->GetSession()->SendPacket(&data);
 	}
 }
 
