@@ -375,6 +375,7 @@ Scripting system exports/imports
 // Include all threading files
 #include <assert.h>
 #include "Threading/Threading.h"
+#include "Threading/Atomicity.h"
 
 #include "MersenneTwister.h"
 

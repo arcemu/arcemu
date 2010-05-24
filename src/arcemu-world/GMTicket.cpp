@@ -54,7 +54,7 @@ void WorldSession::HandleGMTicketCreateOpcode(WorldPacket & recv_data)
 	// Remove pending tickets
 	objmgr.RemoveGMTicketByPlayer(GetPlayer()->GetGUID());
 
-	ticket->guid = objmgr.GenerateTicketID();
+	ticket->guid = uint64( objmgr.GenerateTicketID() );
 	ticket->playerGuid = GetPlayer()->GetGUID();
 	ticket->map = map;
 	ticket->posX = x;

@@ -18,20 +18,37 @@
  *
  */
 
-#ifndef ARCWORLDUTILS__H
-#define ARCWORLDUTILS__H
+#include "../Common.h"
 
 namespace Arcemu{
-	
-	// Common Arcemu world stuff
-    class Util{
-    public:
-        SERVER_DECL static uint32 GUID_LOPART( uint64 GUID );
-        SERVER_DECL static uint32 GUID_HIPART( uint64 GUID );
-		static void ARCEMU_ASSERT(   bool condition );
-		static uint64 MAKE_PET_GUID( uint32 entry, uint32 lowGUID );
-    };
-}
+	namespace Threading{
 
 
+		unsigned long AtomicCounter::operator++(){
+			unsigned long val = 0;
+
+#ifdef WIN32
+			val = InterlockedIncrement( &counter );
+#else
+#if defined( __GNUC__ ) && ( defined( __i386__  ) || defined( __ia64__ ) )
+			val = __sync_add_and_fetch( &counter, 1 );
 #endif
+#endif
+
+			return val;
+		}
+
+		unsigned long AtomicCounter::operator--(){
+			unsigned long val = 0;
+
+#ifdef WIN32
+			val = InterlockedDecrement( &counter );
+#else
+#if defined( __GNUC__ ) && ( defined( __i386__  ) || defined( __ia64__ ) )
+			val = __sync_add_and_fetch( &counter, -1 );
+#endif
+#endif
+			return val;
+		}
+	}
+}

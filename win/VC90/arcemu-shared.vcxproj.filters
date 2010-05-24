@@ -138,6 +138,9 @@
     <ClCompile Include="..\..\src\arcemu-shared\Log.cpp">
       <Filter>Util\Log</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-shared\Threading\Atomicity.cpp">
+      <Filter>Threading</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\arcemu-shared\Database\Database.h">
@@ -319,5 +322,8 @@
     <ClInclude Include="..\..\src\arcemu-shared\Common.h" />
     <ClInclude Include="..\..\src\arcemu-shared\FastQueue.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Storage.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\Threading\Atomicity.h">
+      <Filter>Threading</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

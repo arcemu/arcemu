@@ -284,6 +284,7 @@ RevisionExtractor.exe
     <ClCompile Include="..\..\src\arcemu-shared\Network\SocketOpsWin32.cpp" />
     <ClCompile Include="..\..\src\arcemu-shared\Network\SocketWin32.cpp" />
     <ClCompile Include="..\..\src\arcemu-shared\CThreads.cpp" />
+    <ClCompile Include="..\..\src\arcemu-shared\Threading\Atomicity.cpp" />
     <ClCompile Include="..\..\src\arcemu-shared\Threading\Mutex.cpp" />
     <ClCompile Include="..\..\src\arcemu-shared\Threading\ThreadPool.cpp" />
     <ClCompile Include="..\..\src\arcemu-shared\arcemu_getopt.cpp" />
@@ -325,6 +326,7 @@ RevisionExtractor.exe
     <ClInclude Include="..\..\src\arcemu-shared\Network\SocketDefines.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Network\SocketMgrWin32.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Network\SocketOps.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\Threading\Atomicity.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Threading\Condition.h" />
     <ClInclude Include="..\..\src\arcemu-shared\CThreads.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Threading\Guard.h" />

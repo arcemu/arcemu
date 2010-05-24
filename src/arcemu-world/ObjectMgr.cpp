@@ -24,18 +24,17 @@ initialiseSingleton( ObjectMgr );
 
 const char * NormalTalkMessage = "DMSG";
 
-ObjectMgr::ObjectMgr()
+ObjectMgr::ObjectMgr() :
+m_hiItemGuid( 0 ),
+m_hiGroupId( 0 ),
+m_mailid( 0 ),
+m_ticketid( 0 ),
+m_hiCorpseGuid( 0 ),
+m_hiGuildId( 0 ),
+m_hiPetGuid( 0 ),
+m_hiArenaTeamId( 0 ),
+m_hiPlayerGuid( 1 )
 {
-	m_hiPetGuid = 0;
-	m_hiContainerGuid = 0;
-	m_hiItemGuid = 0;
-	m_hiGroupId = 1;
-	m_mailid = 0;
-	m_hiPlayerGuid = 1;
-	m_hiCorpseGuid = 0;
-	m_hiArenaTeamId= 0;
-	m_hiGuildId= 0;
-	m_ticketid = 0;
 	memset(m_InstanceBossInfoMap , 0, sizeof(InstanceBossInfoMap*) * NUM_MAPS);
 }
 
@@ -891,86 +890,86 @@ void ObjectMgr::SetHighestGuids()
 	result = CharacterDatabase.Query( "SELECT MAX(guid) FROM characters" );
 	if( result )
 	{
-		m_hiPlayerGuid = result->Fetch()[0].GetUInt32();
+		m_hiPlayerGuid.SetVal( result->Fetch()[0].GetUInt32() );
 		delete result;
 	}
 
 	result = CharacterDatabase.Query("SELECT MAX(guid) FROM playeritems");
 	if( result )
 	{
-		m_hiItemGuid = (uint32)result->Fetch()[0].GetUInt32();
+		m_hiItemGuid.SetVal(  (uint32)result->Fetch()[0].GetUInt32() );
 		delete result;
 	}
 
 	result = CharacterDatabase.Query( "SELECT MAX(guid) FROM corpses" );
 	if( result )
 	{
-		m_hiCorpseGuid = result->Fetch()[0].GetUInt32();
+		m_hiCorpseGuid.SetVal( result->Fetch()[0].GetUInt32() );
 		delete result;
 	}
 
 	result = WorldDatabase.Query("SELECT MAX(id) FROM creature_spawns");
 	if(result)
 	{
-		m_hiCreatureSpawnId = result->Fetch()[0].GetUInt32();
+		m_hiCreatureSpawnId.SetVal( result->Fetch()[0].GetUInt32() );
 		delete result;
 	}
 
 	result = WorldDatabase.Query("SELECT MAX(id) FROM gameobject_spawns");
 	if(result)
 	{
-		m_hiGameObjectSpawnId = result->Fetch()[0].GetUInt32();
+		m_hiGameObjectSpawnId.SetVal( result->Fetch()[0].GetUInt32() );
 		delete result;
 	}
 
 	result = CharacterDatabase.Query("SELECT MAX(group_id) FROM groups");
 	if(result)
 	{
-		m_hiGroupId = result->Fetch()[0].GetUInt32();
+		m_hiGroupId.SetVal( result->Fetch()[0].GetUInt32() );
 		delete result;
 	}
 
 	result = CharacterDatabase.Query("SELECT MAX(charterid) FROM charters");
 	if(result)
 	{
-		m_hiCharterId = result->Fetch()[0].GetUInt32();
+		m_hiCharterId.SetVal( result->Fetch()[0].GetUInt32() );
 		delete result;
 	}
 
 	result = CharacterDatabase.Query("SELECT MAX(guildid) FROM guilds");
 	if(result)
 	{
-		m_hiGuildId = result->Fetch()[0].GetUInt32();
+		m_hiGuildId.SetVal( result->Fetch()[0].GetUInt32() );
 		delete result;
 	}
 
 	result = CharacterDatabase.Query("SELECT MAX(ticketid) FROM gm_tickets");
 	if(result)
 	{
-		m_ticketid = result->Fetch()[0].GetUInt64() + 1;
+		m_ticketid.SetVal( uint32( result->Fetch()[0].GetUInt64() + 1 ) );
 		delete result;
 	}
 
-	Log.Notice("ObjectMgr", "HighGuid(CORPSE) = %u", m_hiCorpseGuid);
-	Log.Notice("ObjectMgr", "HighGuid(PLAYER) = %u", m_hiPlayerGuid);
-	Log.Notice("ObjectMgr", "HighGuid(GAMEOBJ) = %u", m_hiGameObjectSpawnId);
-	Log.Notice("ObjectMgr", "HighGuid(UNIT) = %u", m_hiCreatureSpawnId);
-	Log.Notice("ObjectMgr", "HighGuid(ITEM) = %u", m_hiItemGuid);
-	Log.Notice("ObjectMgr", "HighGuid(CONTAINER) = %u", m_hiContainerGuid);
-	Log.Notice("ObjectMgr", "HighGuid(GROUP) = %u", m_hiGroupId);
-	Log.Notice("ObjectMgr", "HighGuid(CHARTER) = %u", m_hiCharterId);
-	Log.Notice("ObjectMgr", "HighGuid(GUILD) = %u", m_hiGuildId);
-	Log.Notice("ObjectMgr", "HighGuid(TICKET) = %u", m_ticketid - 1);
+	Log.Notice("ObjectMgr", "HighGuid(CORPSE) = %u", m_hiCorpseGuid.GetVal() );
+	Log.Notice("ObjectMgr", "HighGuid(PLAYER) = %u", m_hiPlayerGuid.GetVal() );
+	Log.Notice("ObjectMgr", "HighGuid(GAMEOBJ) = %u", m_hiGameObjectSpawnId.GetVal() );
+	Log.Notice("ObjectMgr", "HighGuid(UNIT) = %u", m_hiCreatureSpawnId.GetVal() );
+	Log.Notice("ObjectMgr", "HighGuid(ITEM) = %u", m_hiItemGuid.GetVal() );
+	Log.Notice("ObjectMgr", "HighGuid(CONTAINER) = %u", m_hiItemGuid.GetVal() );
+	Log.Notice("ObjectMgr", "HighGuid(GROUP) = %u", m_hiGroupId.GetVal() );
+	Log.Notice("ObjectMgr", "HighGuid(CHARTER) = %u", m_hiCharterId.GetVal() );
+	Log.Notice("ObjectMgr", "HighGuid(GUILD) = %u", m_hiGuildId.GetVal() );
+	Log.Notice("ObjectMgr", "HighGuid(TICKET) = %u", uint32( m_ticketid.GetVal() - 1 ) );
 }
 
-uint64 ObjectMgr::GenerateTicketID()
+uint32 ObjectMgr::GenerateTicketID()
 {
-	return m_ticketid++;
+	return ++m_ticketid;
 }
 
 uint32 ObjectMgr::GenerateMailID()
 {
-	return m_mailid++;
+	return ++m_mailid;
 }
 uint32 ObjectMgr::GenerateLowGuid(uint32 guidhigh)
 {
@@ -979,105 +978,22 @@ uint32 ObjectMgr::GenerateLowGuid(uint32 guidhigh)
 	uint32 ret;
 	if(guidhigh == HIGHGUID_TYPE_ITEM)
 	{
-		m_guidGenMutex.Acquire();
+
 		ret = ++m_hiItemGuid;
-		m_guidGenMutex.Release();
+
 	}else if(guidhigh==HIGHGUID_TYPE_PLAYER)
 	{
-		m_playerguidlock.Acquire();
 		ret = ++m_hiPlayerGuid;
-		m_playerguidlock.Release();
 	}else{
-		m_guidGenMutex.Acquire();
-		ret = ++m_hiContainerGuid;
-		m_guidGenMutex.Release();
+
+		ret = ++m_hiItemGuid;
+
 	}
 	return ret;
 }
 
 void ObjectMgr::ProcessGameobjectQuests()
 {
-	/*if(!mGameObjectNames.size())
-		return;
-
-	int total = mGameObjectNames.size();
-	std::set<Quest*> tmp;
-	for(HM_NAMESPACE::hash_map<uint32, Quest*>::iterator itr = sQuestMgr.Begin(); itr != sQuestMgr.End(); ++itr)
-	{
-		Quest *qst = itr->second;
-		if(qst->count_required_item > 0 ||
-			qst->required_mobtype[0] == QUEST_MOB_TYPE_GAMEOBJECT ||
-			qst->required_mobtype[1] == QUEST_MOB_TYPE_GAMEOBJECT ||
-			qst->required_mobtype[2] == QUEST_MOB_TYPE_GAMEOBJECT ||
-			qst->required_mobtype[3] == QUEST_MOB_TYPE_GAMEOBJECT )
-		{
-			tmp.insert(qst);
-		}
-	}
-	std::vector<GameObjectInfo*> gos;
-	gos.reserve(5000);
-	for(GameObjectNameMap::iterator it0 = mGameObjectNames.begin(); it0 != mGameObjectNames.end(); ++it0)
-	{
-		GameObjectInfo *gon = it0->second;
-		gos.push_back(it0->second);
-	}
-
-	int c = 0;
-	total = gos.size();
-	for(std::vector<GameObjectInfo*>::iterator it0 = gos.begin(); it0 != gos.end(); ++it0)
-	{
-		GameObjectInfo *gon = (*it0);
-
-		map<uint32, std::set<uint32> >* golootlist = &(LootMgr::getSingleton().quest_loot_go);
-		map<uint32, std::set<uint32> >::iterator it2 = golootlist->find(gon->ID);
-		//// QUEST PARSING
-		for(std::set<Quest*>::iterator itr = tmp.begin(); itr != tmp.end(); ++itr)
-		{
-			Quest *qst = *itr;
-			int max = qst->count_required_mob;
-			if(qst->count_required_item > max)
-				max = qst->count_required_item;
-
-			if(max > 0)
-			{
-				for(int i = 0; i < max; ++i)
-				{
-					if(qst->required_mob[i] > 0)
-					{
-						if(qst->required_mob[i] == gon->ID &&
-						qst->required_mobtype[i] == QUEST_MOB_TYPE_GAMEOBJECT)
-						{
-							gon->goMap.insert( GameObjectGOMap::value_type( qst, qst->required_mobcount[i] ) );
-							sDatabase.WaitExecute("INSERT INTO gameobject_quest_pickup_binding VALUES(%u, %u, %u)",
-								gon->ID, qst->id, qst->required_mobcount[i]);
-						}
-					}
-					if(qst->required_itemcount[i] > 0 && it2 != golootlist->end())
-					{
-						// check our loot template for this item
-						for(std::set<uint32>::iterator it4 = it2->second.begin(); it4 != it2->second.end(); ++it4)
-						{
-							if((*it4) == qst->required_item[i])
-							{
-								//GOQuestItem it;
-								//it.itemid = qst->required_item[i];
-								//it.requiredcount = qst->required_itemcount[i];
-								//gon->itemMap.insert( GameObjectItemMap::value_type( qst, it ) );
-								//gon->itemMap[qst].insert(it);
-								gon->itemMap[qst].insert( std::map<uint32, uint32>::value_type( qst->required_item[i], qst->required_itemcount[i]) );
-								sDatabase.WaitExecute("INSERT INTO gameobject_quest_item_binding VALUES(%u, %u, %u, %u)",
-									gon->ID, qst->id, qst->required_item[i], qst->required_itemcount[i]);
-							}
-						}
-					}
-				}
-			}
-		}
-		c++;
-		if(!(c % 150))
-			SetProgressBar(c, total, "Binding");
-	}
-	ClearProgressBar();*/
 	QueryResult * result  = WorldDatabase.Query("SELECT * FROM gameobject_quest_item_binding");
 	QueryResult * result2 = WorldDatabase.Query("SELECT * FROM gameobject_quest_pickup_binding");
 
@@ -2536,18 +2452,18 @@ WayPointMap*ObjectMgr::GetWayPointMap(uint32 spawnid)
 Pet * ObjectMgr::CreatePet( uint32 entry )
 {
 	uint32 guid;
-	m_petlock.Acquire();
-	guid =++m_hiPetGuid;
-	m_petlock.Release();
-	return new Pet( ( ( uint64 )HIGHGUID_TYPE_PET << 32 ) | ( ( uint64 )entry << 24 ) | guid );
+
+	guid = ++m_hiPetGuid;
+	
+	return new Pet( Arcemu::Util::MAKE_PET_GUID( entry, guid ) );
 }
 
 Player * ObjectMgr::CreatePlayer()
 {
 	uint32 guid;
-	m_playerguidlock.Acquire();
-	guid =++m_hiPlayerGuid;
-	m_playerguidlock.Release();
+
+	guid = ++m_hiPlayerGuid;
+
 	return new Player(guid);
 }
 
@@ -2569,9 +2485,9 @@ void ObjectMgr::RemovePlayer(Player * p)
 Corpse * ObjectMgr::CreateCorpse()
 {
 	uint32 guid;
-	m_corpseguidlock.Acquire();
-	guid =++m_hiCorpseGuid;
-	m_corpseguidlock.Release();
+
+	guid = ++m_hiCorpseGuid;
+
 	return new Corpse(HIGHGUID_TYPE_CORPSE,guid);
 }
 
@@ -2635,15 +2551,15 @@ Transporter * ObjectMgr::GetTransporterByEntry(uint32 entry)
 
 void ObjectMgr::LoadGuildCharters()
 {
-	m_hiCharterId = 0;
+	m_hiCharterId.SetVal( 0 );
 	QueryResult * result = CharacterDatabase.Query("SELECT * FROM charters");
 	if(!result) return;
 	do
 	{
 		Charter * c = new Charter(result->Fetch());
 		m_charters[c->CharterType].insert(make_pair(c->GetID(), c));
-		if(c->GetID() > m_hiCharterId)
-			m_hiCharterId = c->GetID();
+		if( c->GetID() > int64( m_hiCharterId.GetVal() ) )
+			m_hiCharterId.SetVal( c->GetID() );
 	} while(result->NextRow());
 	delete result;
 	Log.Notice("ObjectMgr", "%u charters loaded.", m_charters[0].size());
@@ -2662,10 +2578,14 @@ Charter * ObjectMgr::GetCharter(uint32 CharterId, CharterTypes Type)
 
 Charter * ObjectMgr::CreateCharter(uint32 LeaderGuid, CharterTypes Type)
 {
-	m_charterLock.AcquireWriteLock();
-	Charter * c = new Charter(++m_hiCharterId, LeaderGuid, Type);
+
+	uint32 charterid = 0;
+
+	charterid = ++m_hiCharterId;
+
+	Charter * c = new Charter( charterid, LeaderGuid, Type);
 	m_charters[c->CharterType].insert(make_pair(c->GetID(), c));
-	m_charterLock.ReleaseWriteLock();
+
 	return c;
 }
 
@@ -3211,8 +3131,8 @@ void ObjectMgr::LoadArenaTeams()
 		{
 			ArenaTeam * team = new ArenaTeam(result->Fetch());
 			AddArenaTeam(team);
-			if(team->m_id > m_hiArenaTeamId)
-				m_hiArenaTeamId=team->m_id;
+			if(team->m_id > uint32( m_hiArenaTeamId.GetVal() ) )
+				m_hiArenaTeamId.SetVal( uint32( team->m_id  ) );
 
 		} while(result->NextRow());
 		delete result;
@@ -3446,3 +3366,44 @@ SpellTargetConstraint* ObjectMgr::GetSpellTargetConstraintForSpell( uint32 spell
 	else
 		return NULL;
 }
+
+uint32 ObjectMgr::GenerateArenaTeamId(){
+	uint32 ret;
+
+	ret = ++m_hiArenaTeamId;
+
+	return ret;
+}
+
+uint32 ObjectMgr::GenerateGroupId(){
+	uint32 r;
+	
+	r = ++m_hiGroupId;
+	
+	return r;
+}
+
+uint32 ObjectMgr::GenerateGuildId(){
+	uint32 r;
+	
+	r = ++m_hiGuildId;
+	
+	return r;
+}
+
+uint32 ObjectMgr::GenerateCreatureSpawnID(){
+	uint32 r;
+
+	r = ++m_hiCreatureSpawnId;
+	
+	return r;
+}
+
+uint32 ObjectMgr::GenerateGameObjectSpawnID(){
+	uint32 r;
+
+	r = ++m_hiGameObjectSpawnId;
+	
+	return r;
+}
+
