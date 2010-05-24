@@ -587,7 +587,10 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 			}break;
 		case SPELL_HASH_CONCUSSION_BLOW:
 			{
-				dmg = float2int32( u_caster->GetAP() * 0.75f );
+				//3.2.2
+				//[Concussion Blow]: The damage done by this ability has been reduced by 50%,
+				//but its threat generation will remain approximately the same. 
+				dmg = u_caster->GetAP() * ( GetProto()->EffectBasePoints[2] + 1 ) / 100;
 			}break;
 		case SPELL_HASH_HEROIC_THROW:   // Heroic Throw
 			{
@@ -616,8 +619,24 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 					{
 						float block_multiplier = ( 100.0f + p_caster->m_modblockabsorbvalue ) / 100.0f;
 						if( block_multiplier < 1.0f )block_multiplier = 1.0f;
-						int32 blockable_damage = float2int32( ( it->GetProto()->Block + p_caster->m_modblockvaluefromspells + p_caster->GetUInt32Value( PLAYER_RATING_MODIFIER_BLOCK ) + ( ( p_caster->GetStat(STAT_STRENGTH) / 20.0f ) - 1.0f ) ) * block_multiplier);
+
+						int32 blockable_damage = float2int32( ( it->GetProto()->Block + p_caster->m_modblockvaluefromspells + p_caster->GetUInt32Value( PLAYER_RATING_MODIFIER_BLOCK ) + ( ( p_caster->GetStat(STAT_STRENGTH) / 2.0f ) - 1.0f ) ) * block_multiplier);
+						
+						/*
+							3.2.0:
+						    The benefit from additional block value this ability gains is now subject
+							to diminishing returns. Diminishing returns occur once block value exceeds
+							30 times the player's level and caps the maximum damage benefit from shield
+							block value at 34.5 times the player's level. 
+						*/
+						int32 max_blockable_damage = static_cast< int >( p_caster->getLevel() )  * float2int32(34.5f);
+						if ( blockable_damage > max_blockable_damage )
+						{
+							blockable_damage = max_blockable_damage;
+						}
+
 						dmg += blockable_damage;
+
 					}
 				}
 			}break;

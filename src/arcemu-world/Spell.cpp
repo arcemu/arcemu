@@ -4749,7 +4749,7 @@ exit:
 				float block_multiplier = ( 100.0f + p_caster->m_modblockabsorbvalue ) / 100.0f;
 				if(block_multiplier < 1.0f)
 					block_multiplier = 1.0f;
-				int32 blockable_damage = float2int32( ( it->GetProto()->Block + ( p_caster->m_modblockvaluefromspells + p_caster->GetUInt32Value( PLAYER_RATING_MODIFIER_BLOCK ) ) + ( ( p_caster->GetStat(STAT_STRENGTH) / 20.0f ) - 1.0f ) ) * block_multiplier);
+				int32 blockable_damage = float2int32( ( it->GetProto()->Block + ( p_caster->m_modblockvaluefromspells + p_caster->GetUInt32Value( PLAYER_RATING_MODIFIER_BLOCK ) ) + ( ( p_caster->GetStat(STAT_STRENGTH) / 2.0f ) - 1.0f ) ) * block_multiplier);
 				value = (blockable_damage / (GetProto()->EffectBasePoints[0]+1));
 			}
 		}

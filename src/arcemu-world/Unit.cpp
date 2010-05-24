@@ -3842,7 +3842,8 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 							float block_multiplier = ( 100.0f + static_cast< Player* >( pVictim )->m_modblockabsorbvalue ) / 100.0f;
 							if( block_multiplier < 1.0f )block_multiplier = 1.0f;
 
-							blocked_damage = float2int32( (shield->GetProto()->Block + ( ( static_cast< Player* >( pVictim )->m_modblockvaluefromspells + pVictim->GetUInt32Value( PLAYER_RATING_MODIFIER_BLOCK ) )) + ( ( pVictim->GetStat(STAT_STRENGTH) / 20.0f ) - 1.0f ) ) * block_multiplier);
+							blocked_damage = float2int32( (shield->GetProto()->Block + ( ( static_cast< Player* >( pVictim )->m_modblockvaluefromspells + pVictim->GetUInt32Value( PLAYER_RATING_MODIFIER_BLOCK ) )) + ( ( pVictim->GetStat(STAT_STRENGTH) / 2.0f ) - 1.0f ) ) * block_multiplier);
+
 							if( Rand( m_BlockModPct ) )
 								blocked_damage *= 2;
 						}
