@@ -4175,49 +4175,28 @@ void ApplyNormalFixes()
 			sp->proc_interval = 100;
 		}
 
-		//megai2: Borrowed Time
-		sp = dbcSpell.LookupEntryForced( 52795 ); //Rank 1
-        if( sp != NULL )
-        {
-			sp->procFlags = PROC_ON_CAST_SPELL;
-		}
-		sp = dbcSpell.LookupEntryForced( 52797 ); //Rank 2
-        if( sp != NULL )
-        {
-			sp->procFlags = PROC_ON_CAST_SPELL;
-		}
-		sp = dbcSpell.LookupEntryForced( 52798 ); //Rank 3
-        if( sp != NULL )
-        {
-			sp->procFlags = PROC_ON_CAST_SPELL;
-		}
-		sp = dbcSpell.LookupEntryForced( 52799 ); //Rank 4
-        if( sp != NULL )
-        {
-			sp->procFlags = PROC_ON_CAST_SPELL;
-		}
-		sp = dbcSpell.LookupEntryForced( 52800 ); //Rank 5
-        if( sp != NULL )
-        {
+		//Borrowed Time
+		if( sp->NameHash == SPELL_HASH_BORROWED_TIME )
+		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
 		}
 
 		//megai2: Grace http://www.wowhead.com/?spell=47516
-		sp = dbcSpell.LookupEntryForced( 47516 ); //Rank 1
-        if( sp != NULL )
-        {
-			sp->procFlags = PROC_ON_CAST_SPELL;
-		}
-		sp = dbcSpell.LookupEntryForced( 47517 ); //Rank 2
-        if( sp != NULL )
-        {
-			sp->procFlags = PROC_ON_CAST_SPELL;
-		}
-		sp = dbcSpell.LookupEntryForced( 47930 );
-		if( sp != NULL )
+		if( sp->NameHash == SPELL_HASH_GRACE )
 		{
-			sp->rangeIndex = 4;
+			switch( sp->Id )
+			{
+				case 47516:	// Rank 1
+				case 47517:	// Rank 2
+					sp->procFlags = PROC_ON_CAST_SPELL;
+				break;
+
+				case 47930:
+					sp->rangeIndex = 4;
+				break;
+			}
 		}
+
 
 	//////////////////////////////////////////
 	// SHAMAN								//
