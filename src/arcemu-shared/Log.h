@@ -26,25 +26,6 @@
 class WorldPacket;
 class WorldSession;
 
-#ifdef WIN32
-
-#define TRED FOREGROUND_RED | FOREGROUND_INTENSITY
-#define TGREEN FOREGROUND_GREEN | FOREGROUND_INTENSITY
-#define TYELLOW FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY
-#define TNORMAL FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_BLUE
-#define TWHITE TNORMAL | FOREGROUND_INTENSITY
-#define TBLUE FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_INTENSITY
-
-#else
-
-#define TRED 1
-#define TGREEN 2
-#define TYELLOW 3
-#define TNORMAL 4
-#define TWHITE 5
-#define TBLUE 6
-
-#endif
 std::string FormatOutputString(const char * Prefix, const char * Description, bool useTimeStamp);
 
 class SERVER_DECL oLog : public Singleton< oLog > {
@@ -61,7 +42,7 @@ public:
   void SetLogging(bool enabled);
   
   void Init(int32 fileLogLevel, int32 screenLogLevel);
-  void SetFileLoggingLevel(int32 level);
+  void SetFileLoggingLevel(int32 level, const char *filename);
   void SetScreenLoggingLevel(int32 level);
 
   void outColor(uint8 colorcode, const char * str, ...);
@@ -117,4 +98,3 @@ private:
 #define sWorldLog WorldLog::getSingleton()
 
 #endif
-

@@ -150,6 +150,8 @@ bool startdb()
 	}
 
 	sLog.SetScreenLoggingLevel(Config.MainConfig.GetIntDefault("LogLevel", "Screen", 0));
+	Log.log_level = Config.MainConfig.GetIntDefault("LogLevel", "Screen", 0);
+	sLog.SetFileLoggingLevel(Config.MainConfig.GetIntDefault("LogLevel", "File", -1), "logonserver.log");
 	sLogonSQL = Database::CreateDatabaseInterface( ltype );
 
 	// Initialize it
@@ -406,7 +408,14 @@ void LogonServer::Run(int argc, char ** argv)
 		*/
 		return;
 	}
+
+	/* set new log levels */
+	if( screen_log_level != (int)DEF_VALUE_NOT_SET )
+		sLog.SetScreenLoggingLevel(screen_log_level);
 	
+	if( file_log_level != (int)DEF_VALUE_NOT_SET )
+		sLog.SetFileLoggingLevel(file_log_level, "logonserver.log");
+
 	sLog.outString("The key combination <Ctrl-C> will safely shut down the server at any time.");
 	sLog.outString("");
 	Log.Notice("System","Initializing Random Number Generators...");

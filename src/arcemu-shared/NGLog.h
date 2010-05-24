@@ -44,6 +44,18 @@ class WorldSession;
 #define TWHITE 5
 #define TBLUE 6
 
+static const char* colorstrings[TBLUE+1] =
+{
+	"",
+	"\033[22;31m",
+	"\033[22;32m",
+	"\033[01;33m",
+	//"\033[22;37m",
+	"\033[0m",
+	"\033[01;37m",
+	"\033[1;34m",
+};
+
 #endif
 
 extern SERVER_DECL time_t UNIXTIME;		/* update this every loop to avoid the time() syscall! */
@@ -81,19 +93,9 @@ public:
 	void Color(unsigned int color)
 	{
 #ifndef WIN32
-		static const char* colorstrings[TBLUE+1] = {
-			"",
-				"\033[22;31m",
-				"\033[22;32m",
-				"\033[01;33m",
-				//"\033[22;37m",
-				"\033[0m",
-				"\033[01;37m",
-				"\033[1;34m",
-		};
 		fputs(colorstrings[color], stdout);
 #else
-        SetConsoleTextAttribute(stdout_handle, (WORD)color);
+		SetConsoleTextAttribute(stdout_handle, (WORD)color);
 #endif
 	}
 
@@ -341,4 +343,3 @@ public:
 #define Log CLog::getSingleton()
 
 #endif
-

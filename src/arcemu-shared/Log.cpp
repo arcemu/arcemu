@@ -50,20 +50,9 @@ initialiseSingleton( WorldLog );
 
 SERVER_DECL time_t UNIXTIME;
 SERVER_DECL tm g_localTime;
-#ifndef WIN32
-static const char* colorstrings[TBLUE+1] = {
-"",
-"\033[22;31m",
-"\033[22;32m",
-"\033[01;33m",
-//"\033[22;37m",
-"\033[0m",
-"\033[01;37m",
-"\033[22;34m",
-};
-#endif
 
-void oLog::outTime(){
+void oLog::outTime()
+{
 	time_t now;
 	struct tm * timeinfo = NULL;
 	char buffer[10];
@@ -71,8 +60,9 @@ void oLog::outTime(){
 	time( &now );
 	timeinfo = localtime( &now );
 
-	if( timeinfo != NULL ){
-		strftime(buffer,10,"[ %H:%M ]",timeinfo);
+	if( timeinfo != NULL )
+	{
+		strftime(buffer,10,"[%H:%M]",timeinfo);
 		fprintf( m_file, buffer );
 	}
 }
@@ -82,13 +72,13 @@ void oLog::outString( const char * str, ... )
 	if(m_fileLogLevel < 0 && m_screenLogLevel < 0)
 		return;
 
-	va_list ap;
 	char buf[32768];
+	va_list ap;
 
 	va_start(ap, str);
 	vsnprintf(buf, 32768, str, ap);
 	va_end(ap);
-	
+
 	if(m_screenLogLevel >= 0)
 	{
 		printf(buf);
@@ -106,9 +96,9 @@ void oLog::outError( const char * err, ... )
 {
 	if(m_fileLogLevel < 1 && m_screenLogLevel < 1)
 		return;
-		
-	va_list ap;
+
 	char buf[32768];
+	va_list ap;
 
 	va_start(ap, err);
 	vsnprintf(buf, 32768, err, ap);
@@ -117,14 +107,14 @@ void oLog::outError( const char * err, ... )
 	if(m_screenLogLevel >= 1)
 	{
 #ifdef WIN32
-		SetConsoleTextAttribute(stderr_handle, FOREGROUND_RED | FOREGROUND_INTENSITY);
+		SetConsoleTextAttribute(stderr_handle, TRED);
 #else
 		puts(colorstrings[TRED]);
 #endif
 		fprintf(stderr, buf);
 		putc('\n', stderr);
 #ifdef WIN32
-		SetConsoleTextAttribute(stderr_handle, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
+		SetConsoleTextAttribute(stderr_handle, TNORMAL);
 #else
 		puts(colorstrings[TNORMAL]);
 #endif
@@ -141,9 +131,9 @@ void oLog::outBasic( const char * str, ... )
 {
 	if(m_fileLogLevel < 1 && m_screenLogLevel < 1)
 		return;
-	
-	va_list ap;
+
 	char buf[32768];
+	va_list ap;
 
 	va_start(ap, str);
 	vsnprintf(buf, 32768, str, ap);
@@ -166,8 +156,8 @@ void oLog::outDetail( const char * str, ... )
 	if(m_fileLogLevel < 2 && m_screenLogLevel < 2)
 		return;
 
-	va_list ap;
 	char buf[32768];
+	va_list ap;
 
 	va_start(ap, str);
 	vsnprintf(buf, 32768, str, ap);
@@ -190,8 +180,9 @@ void oLog::outDebug( const char * str, ... )
 {
 	if(m_fileLogLevel < 3 && m_screenLogLevel < 3)
 		return;
-	va_list ap;
+
 	char buf[32768];
+	va_list ap;
 
 	va_start(ap, str);
 	vsnprintf(buf, 32768, str, ap);
@@ -236,13 +227,12 @@ void oLog::SetScreenLoggingLevel(int32 level)
 	m_screenLogLevel = level;
 }
 
-void oLog::SetFileLoggingLevel(int32 level)
+void oLog::SetFileLoggingLevel(int32 level, const char *filename)
 {
 	m_fileLogLevel = level;
 
 	if (m_fileLogLevel >= 0)
 	{
-		const char *filename = "file.log";
 		m_file = fopen(filename, "a");
 		if (m_file == NULL)
 		{
@@ -256,16 +246,15 @@ void SessionLogWriter::write(const char* format, ...)
 	if(!m_file)
 		return;
 
-	va_list ap;
-	va_start(ap, format);
 	char out[32768];
+	va_list ap;
 
+	va_start(ap, format);
 	time_t t = time(NULL);
 	tm* aTm = localtime(&t);
 	sprintf(out, "[%-4d-%02d-%02d %02d:%02d:%02d] ",aTm->tm_year+1900,aTm->tm_mon+1,aTm->tm_mday,aTm->tm_hour,aTm->tm_min,aTm->tm_sec);
 	size_t l = strlen(out);
 	vsnprintf(&out[l], 32768 - l, format, ap);
-
 	fprintf(m_file, "%s\n", out);
 	va_end(ap);
 }
@@ -295,7 +284,7 @@ void WorldLog::Enable()
 		Disable();
 		bEnabled=true;
 	}
-	m_file = fopen("world.log", "w");
+	m_file = fopen("world.log", "a");
 }
 
 void WorldLog::Disable()
@@ -324,6 +313,7 @@ if (m_file)
 void oLog::outColor(uint8 colorcode, const char * str, ...)
 {
 	if( !str ) return;
+
 	va_list ap;
 	va_start(ap, str);
 #ifdef WIN32

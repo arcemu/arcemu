@@ -298,9 +298,10 @@ bool Master::Run(int argc, char ** argv)
 		DatabaseCleaner::getSingleton().Run();
 		delete DatabaseCleaner::getSingletonPtr();
 		Log.Color(TYELLOW);
-		printf( "\nMaintenence finished. Take a moment to review the output, and hit space to continue startup." );
+		printf( "\nMaintenance finished. Take a moment to review the output.\n" );
 		Log.Color(TNORMAL);
 		fflush(stdout);
+		system("PAUSE");
 	}
 
 	Log.Line();
@@ -326,7 +327,7 @@ bool Master::Run(int argc, char ** argv)
 		sLog.SetScreenLoggingLevel(screen_log_level);
 	
 	if( file_log_level != (int)DEF_VALUE_NOT_SET )
-		sLog.SetFileLoggingLevel(file_log_level);
+		sLog.SetFileLoggingLevel(file_log_level, "file.log");
 
 	// Initialize Opcode Table
 	WorldSession::InitPacketHandlerTable();
