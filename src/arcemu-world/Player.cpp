@@ -12004,19 +12004,21 @@ void Player::VampiricSpell(uint32 dmg, Unit* pTarget)
 	float fdmg = float(dmg);
 	uint32 bonus;
 	int32 perc;
+	int32 percP;
+	uint32 bonusP;
 	Group * pGroup = GetGroup();
 	SubGroup * pSubGroup = (pGroup != NULL) ? pGroup->GetSubGroup(GetSubGroup()) : NULL;
 	GroupMembersSet::iterator itr;
-
+	
 	if( ( !m_vampiricEmbrace && !m_vampiricTouch ) || getClass() != PRIEST )
 		return;
-
-	if( m_vampiricEmbrace > 0 && pTarget->m_hasVampiricEmbrace > 0 && pTarget->HasAurasWithNameHash(SPELL_HASH_VAMPIRIC_EMBRACE) )
+	
+	if( m_vampiricEmbrace < 0 && this->m_hasVampiricEmbrace < 0 && this->HasAurasWithNameHash(SPELL_HASH_VAMPIRIC_EMBRACE) )
 	{
 		perc = 15;
+		percP = 3;
 		uint32 spellgroup[3] = {4, 0, 0};
 		SM_FIValue(SM_FMiscEffect, &perc, spellgroup);
-
 
 		bonus = float2int32(fdmg * perc/100.0f);
 		if( bonus > 0 )
@@ -12029,7 +12031,9 @@ void Player::VampiricSpell(uint32 dmg, Unit* pTarget)
 				for( itr = pSubGroup->GetGroupMembersBegin(); itr != pSubGroup->GetGroupMembersEnd(); ++itr )
 				{
 					if( (*itr)->m_loggedInPlayer != NULL && (*itr) != m_playerInfo && (*itr)->m_loggedInPlayer->isAlive() )
-						Heal( (*itr)->m_loggedInPlayer, 15286, bonus );
+						
+						bonusP = float2int32(fdmg * (float(percP)/100.0f));
+						Heal( (*itr)->m_loggedInPlayer, 15286, bonusP );
 				}
 			}
 		}

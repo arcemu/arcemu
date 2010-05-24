@@ -2093,15 +2093,7 @@ void Aura::SpellAuraDummy(bool apply)
 		{
 			if(apply)
 			{
-				SetNegative();
-				Unit * caster =this->GetUnitCaster();
-				if(caster && caster->IsPlayer())
-					((Player*)caster)->m_vampiricEmbrace++;
-				++m_target->m_hasVampiricEmbrace;
-			}
-			else
-			{
-				Unit * caster =this->GetUnitCaster();
+				Unit * caster = this->GetUnitCaster();
 				if(caster && caster->IsPlayer())
 					((Player*)caster)->m_vampiricEmbrace--;
 				--m_target->m_hasVampiricEmbrace;
