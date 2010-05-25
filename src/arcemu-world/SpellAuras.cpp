@@ -4873,7 +4873,17 @@ void Aura::SpellAuraProcTriggerSpell(bool apply)
 		sLog.outDebug("%u is registering %u chance %u flags %u charges %u triggeronself %u interval %u\n",GetSpellProto()->Id,spellId,GetSpellProto()->procChance,GetSpellProto()->procFlags & ~PROC_TARGET_SELF,charges,GetSpellProto()->procFlags & PROC_TARGET_SELF,GetSpellProto()->proc_interval);
 	}
 	else
-		m_target->RemoveProcTriggerSpell(GetSpellId(), m_casterGuid);
+	{
+		// Find spell of effect to be triggered
+		uint32 spellId = GetSpellProto()->EffectTriggerSpell[mod->i];
+		if( spellId == 0 )
+		{
+			sLog.outDebug("Warning! trigger spell is null for spell %u", GetSpellProto()->Id);
+			return;
+		}
+
+		m_target->RemoveProcTriggerSpell(spellId, m_casterGuid);
+	}
 }
 
 void Aura::SpellAuraProcTriggerDamage(bool apply)
