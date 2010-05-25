@@ -350,44 +350,53 @@ public:
 
 	EventableObjectHolder * GetEventHolder(int32 InstanceId)
 	{
+		holderLock.AcquireReadLock();
+
 		HolderMap::iterator itr = mHolders.find(InstanceId);
-		if(itr == mHolders.end()) return 0;
+		
+		if(itr == mHolders.end()){
+			holderLock.ReleaseReadLock();
+			return 0;
+		}
+
+		holderLock.ReleaseReadLock();
+
 		return itr->second;
 	}
 
 	void AddEventHolder(EventableObjectHolder * holder, int32 InstanceId)
 	{
-		holderLock.Acquire();
+		holderLock.AcquireWriteLock();
 		mHolders.insert( HolderMap::value_type( InstanceId, holder) );
-		holderLock.Release();
+		holderLock.ReleaseWriteLock();
 	}
 
 	void RemoveEventHolder(int32 InstanceId)
 	{
-		holderLock.Acquire();
+		holderLock.AcquireWriteLock();
 		mHolders.erase(InstanceId);
-		holderLock.Release();
+		holderLock.ReleaseWriteLock();
 	}
 
 	void RemoveEventHolder(EventableObjectHolder * holder)
 	{
-		holderLock.Acquire();
+		holderLock.AcquireWriteLock();
 		HolderMap::iterator itr = mHolders.begin();
 		for(; itr != mHolders.end(); ++itr)
 		{
 			if(itr->second == holder)
 			{
 				mHolders.erase(itr);
-				holderLock.Release();
+				holderLock.ReleaseWriteLock();
 				return;
 			}
 		}
-		holderLock.Release();
+		holderLock.ReleaseWriteLock();
 	}
 
 protected:
 	HolderMap mHolders;
-	Mutex holderLock;
+	RWLock holderLock;
 };
 
 #define sEventMgr EventMgr::getSingleton()
