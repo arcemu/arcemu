@@ -457,6 +457,39 @@
     <ClCompile Include="..\..\src\arcemu-world\StdAfx.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\WUtil.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\HackFixes.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\SpellProc_DeathKnight.cpp">
+      <Filter>Spells</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-world\SpellProc_Druid.cpp">
+      <Filter>Spells</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-world\SpellProc_Hunter.cpp">
+      <Filter>Spells</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-world\SpellProc_Items.cpp">
+      <Filter>Spells</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-world\SpellProc_Mage.cpp">
+      <Filter>Spells</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-world\SpellProc_Paladin.cpp">
+      <Filter>Spells</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-world\SpellProc_Priest.cpp">
+      <Filter>Spells</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-world\SpellProc_Rogue.cpp">
+      <Filter>Spells</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-world\SpellProc_Shaman.cpp">
+      <Filter>Spells</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-world\SpellProc_Warlock.cpp">
+      <Filter>Spells</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-world\SpellProc_Warrior.cpp">
+      <Filter>Spells</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\arcemu-world\SpellProc.cpp">
       <Filter>Spells</Filter>
     </ClCompile>

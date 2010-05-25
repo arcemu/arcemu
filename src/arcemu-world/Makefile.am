@@ -211,7 +211,18 @@ arcemu_world_SOURCES = \
     WUtil.h \
     WUtil.cpp \
 	SpellProc.h\
-	SpellProc.cpp
+	SpellProc.cpp\
+	SpellProc_DeathKnight.cpp\
+	SpellProc_Druid.cpp\
+	SpellProc_Hunter.cpp\
+	SpellProc_Items.cpp\
+	SpellProc_Mage.cpp\
+	SpellProc_Paladin.cpp\
+	SpellProc_Priest.cpp\
+	SpellProc_Rogue.cpp\
+	SpellProc_Shaman.cpp\
+	SpellProc_Warlock.cpp\
+	SpellProc_Warrior.cpp
 	
 arcemu_world_LDADD = -lshared -lz -lpcre -lcollision
 

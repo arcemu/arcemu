@@ -22,118 +22,74 @@
 
 initialiseSingleton( SpellProcMgr );
 
-class RelentlessStrikesSpellProc : public SpellProc
+SpellProc* SpellProcMgr::NewSpellProc(Unit *target, uint32 spell_id, uint32 orig_spell_id, uint64 caster, uint32 procChance, uint32 procFlags, uint32 procCharges, uint32 *groupRelation, Object *obj)
 {
-    SPELL_PROC_FACTORY_FUNCTION(RelentlessStrikesSpellProc);
+	return NewSpellProc(target, dbcSpell.LookupEntryForced(spell_id), dbcSpell.LookupEntryForced(orig_spell_id), caster, procChance, procFlags, procCharges, groupRelation, obj);
+}
 
-	uint32 CalcProcChance(Unit *victim, SpellEntry *CastingSpell)
+SpellProc* SpellProcMgr::NewSpellProc(Unit *target, SpellEntry *spell, SpellEntry *orig_spell, uint64 caster, uint32 procChance, uint32 procFlags, uint32 procCharges, uint32 *groupRelation, Object *obj)
+{
+	if( spell == NULL )
+		return NULL;
+
+	SpellProc* result;
+	SpellProcMap::iterator itr;
+	spell_proc_factory_function ptr = NULL;
+
+	// Search for SpellProc in hash_map
+	itr = mSpellProcNameHash.find(spell->NameHash);
+	if ( itr != mSpellProcNameHash.end() )
+		ptr=itr->second;
+	else {
+		itr = mSpellProc.find(spell->Id);
+		if ( itr != mSpellProc.end() )
+			ptr=itr->second;
+	}
+				
+	if (ptr)
+		result = (*ptr)();      // Found. Create a new object of this specific class
+	else
+		result = new SpellProc; // Not found. Create a new object of generic SpellProc
+
+	result->mSpell            = spell;
+	result->mOrigSpell        = orig_spell;
+	result->mTarget           = target;
+	result->mCaster           = caster;
+	result->mProcChance       = procChance;
+	result->mProcFlags        = procFlags;
+	result->mProcCharges      = procCharges;
+	result->mLastTrigger      = 0;
+	result->mProcType         = 0;
+	result->mDeleted          = false;
+	if ( groupRelation )
 	{
-		if( CastingSpell && CastingSpell->c_is_flags & SPELL_FLAG_IS_FINISHING_MOVE && mTarget->IsPlayer() )//mTarget is the caster
-			return float2int32( TO_PLAYER(mTarget)->m_comboPoints * mOrigSpell->EffectPointsPerComboPoint[0] );
-		else
-			return 0;
+		result->mGroupRelation[0] = groupRelation[0];
+		result->mGroupRelation[1] = groupRelation[1];
+		result->mGroupRelation[2] = groupRelation[2];
 	}
-};
-
-class TwinBladesOfAzzinothSpellProc : public SpellProc
-{
-	SPELL_PROC_FACTORY_FUNCTION(TwinBladesOfAzzinothSpellProc);
-
-	void Init(Object *obj)
+	else
 	{
-		if( ! mTarget->IsPlayer() )
-			return;
-
-		/* The Twin Blades of Azzinoth.
-			* According to comments on wowhead, this proc has ~0.75ppm (procs-per-minute). */
-		Item* mh = TO_PLAYER( mTarget )->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
-		Item* of = TO_PLAYER( mTarget )->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_OFFHAND );
-		if( mh != NULL && of != NULL )
-		{
-			uint32 mhs = mh->GetProto()->Delay;
-			uint32 ohs = of->GetProto()->Delay;
-			mProcChance = mhs * ohs / ( 800 * ( mhs + ohs ) ); // 0.75 ppm
-		}
+		result->mGroupRelation[0] = 0;
+		result->mGroupRelation[1] = 0;
+		result->mGroupRelation[2] = 0;
 	}
-};
 
-class SealOfCommandSpellProc : public SpellProc
-{
-	SPELL_PROC_FACTORY_FUNCTION(SealOfCommandSpellProc);
+	result->Init(obj);
 
-	void Init(Object *obj)
-	{
-		// default chance of proc
-		mProcChance = 25;
-
-		/* The formula for SoC proc rate is: [ 7 / ( 60 / Weapon Speed ) - from wowwiki */
-		if( ! mTarget->IsPlayer() )
-			return;
-
-		uint32 weapspeed = 1;
-		Item* itm = TO_PLAYER( mTarget )->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_MAINHAND);
-		if( itm != NULL )
-			weapspeed = itm->GetProto()->Delay;
-		mProcChance = 7 * weapspeed / 600;
-		if( mProcChance >= 50 )
-			mProcChance = 50;
-	}
-};
-
-class FrostBrandAttackSpellProc : public SpellProc
-{
-	SPELL_PROC_FACTORY_FUNCTION(FrostBrandAttackSpellProc);
-
-	void Init(Object *obj)
-	{		
-		mProcChance = TO_ITEM(obj)->GetProto()->Delay * 9 / 600;
-	}
-};
-
-void SpellProcMgr::SetupItems()
-{
-	AddByNameHash( SPELL_HASH_THE_TWIN_BLADES_OF_AZZINOTH, &TwinBladesOfAzzinothSpellProc::Create );
+	return result;
 }
 
-void SpellProcMgr::SetupDeathKnight()
+void SpellProcMgr::Setup()
 {
-}
-
-void SpellProcMgr::SetupDruid()
-{
-}
-
-void SpellProcMgr::SetupHunter()
-{
-}
-
-void SpellProcMgr::SetupMage()
-{
-}
-
-void SpellProcMgr::SetupPaladin()
-{
-	AddByNameHash( SPELL_HASH_SEAL_OF_COMMAND, &SealOfCommandSpellProc::Create );
-}
-
-void SpellProcMgr::SetupPriest()
-{
-}
-
-void SpellProcMgr::SetupRogue()
-{
-	AddByNameHash( SPELL_HASH_RELENTLESS_STRIKES_EFFECT, &RelentlessStrikesSpellProc::Create );
-}
-
-void SpellProcMgr::SetupShamman()
-{
-	AddByNameHash( SPELL_HASH_FROSTBRAND_ATTACK, &FrostBrandAttackSpellProc::Create );
-}
-
-void SpellProcMgr::SetupWarlock()
-{
-}
-
-void SpellProcMgr::SetupWarrior()
-{
+	SetupItems();
+	SetupDeathKnight();
+	SetupDruid();
+	SetupHunter();
+	SetupMage();
+	SetupPaladin();
+	SetupPriest();
+	SetupRogue();
+	SetupShamman();
+	SetupWarlock();
+	SetupWarrior();
 }

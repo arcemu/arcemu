@@ -276,6 +276,17 @@
     <ClCompile Include="..\..\src\arcemu-world\Channel.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\Chat.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\SpellProc.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\SpellProc_DeathKnight.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\SpellProc_Druid.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\SpellProc_Hunter.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\SpellProc_Items.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\SpellProc_Mage.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\SpellProc_Paladin.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\SpellProc_Priest.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\SpellProc_Rogue.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\SpellProc_Shaman.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\SpellProc_Warlock.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\SpellProc_Warrior.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\WayPoints.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\WordFilter.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\AIInterface.cpp" />

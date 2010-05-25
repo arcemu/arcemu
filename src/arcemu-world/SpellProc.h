@@ -38,7 +38,6 @@ class SpellProc
 public:
 	~SpellProc()
 	{
-		sLog.outDebug( "SpellProc %u destroyed", mSpell->Id );
 	}
 
 	// Returns true if this spell can proc, false otherwise
@@ -93,62 +92,9 @@ public:
 	{
 	}
 
-	SpellProc* NewSpellProc(Unit *target, uint32 spell_id, uint32 orig_spell_id, uint64 caster, uint32 procChance, uint32 procFlags, uint32 procCharges, uint32 *groupRelation, Object *obj)
-	{
-		return NewSpellProc(target, dbcSpell.LookupEntryForced(spell_id), dbcSpell.LookupEntryForced(orig_spell_id), caster, procChance, procFlags, procCharges, groupRelation, obj);
-	}
+	SpellProc* NewSpellProc(Unit *target, uint32 spell_id, uint32 orig_spell_id, uint64 caster, uint32 procChance, uint32 procFlags, uint32 procCharges, uint32 *groupRelation, Object *obj);
 
-	SpellProc* NewSpellProc(Unit *target, SpellEntry *spell, SpellEntry *orig_spell, uint64 caster, uint32 procChance, uint32 procFlags, uint32 procCharges, uint32 *groupRelation, Object *obj)
-	{
-		if( spell == NULL )
-			return NULL;
-
-		SpellProc* result;
-		SpellProcMap::iterator itr;
-		spell_proc_factory_function ptr = NULL;
-
-		// Search for SpellProc in hash_map
-		itr = mSpellProcNameHash.find(spell->NameHash);
-		if ( itr != mSpellProcNameHash.end() )
-			ptr=itr->second;
-		else {
-			itr = mSpellProc.find(spell->Id);
-			if ( itr != mSpellProc.end() )
-				ptr=itr->second;
-		}
-				
-		if (ptr)
-			result = (*ptr)();      // Found. Create a new object of this specific class
-		else
-			result = new SpellProc; // Not found. Create a new object of generic SpellProc
-
-		result->mSpell            = spell;
-		result->mOrigSpell        = orig_spell;
-		result->mTarget           = target;
-		result->mCaster           = caster;
-		result->mProcChance       = procChance;
-		result->mProcFlags        = procFlags;
-		result->mProcCharges      = procCharges;
-		result->mLastTrigger      = 0;
-		result->mProcType         = 0;
-		result->mDeleted          = false;
-		if ( groupRelation )
-		{
-			result->mGroupRelation[0] = groupRelation[0];
-			result->mGroupRelation[1] = groupRelation[1];
-			result->mGroupRelation[2] = groupRelation[2];
-		}
-		else
-		{
-			result->mGroupRelation[0] = 0;
-			result->mGroupRelation[1] = 0;
-			result->mGroupRelation[2] = 0;
-		}
-
-		result->Init(obj);
-
-		return result;
-	}
+	SpellProc* NewSpellProc(Unit *target, SpellEntry *spell, SpellEntry *orig_spell, uint64 caster, uint32 procChance, uint32 procFlags, uint32 procCharges, uint32 *groupRelation, Object *obj);
 
 private:
 
@@ -165,20 +111,7 @@ private:
 		mSpellProcNameHash.insert(make_pair(name_hash, spell_proc));
 	}
 
-	void Setup()
-	{
-		SetupItems();
-		SetupDeathKnight();
-		SetupDruid();
-		SetupHunter();
-		SetupMage();
-		SetupPaladin();
-		SetupPriest();
-		SetupRogue();
-		SetupShamman();
-		SetupWarlock();
-		SetupWarrior();
-	}
+	void Setup();
 
 	void SetupItems();
 	void SetupDeathKnight();
