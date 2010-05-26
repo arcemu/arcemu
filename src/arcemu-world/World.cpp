@@ -1918,9 +1918,6 @@ void World::PollCharacterInsertQueue(DatabaseConnection * con)
 			// create his playerinfo in the server
 			PlayerInfo * inf = new PlayerInfo();
 			inf->acct = f[1].GetUInt32();
-#ifdef VOICE_CHAT
-			inf->groupVoiceId = -1;
-#endif
 
 			while(*p != 0)
 			{

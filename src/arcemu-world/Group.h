@@ -201,26 +201,6 @@ public:
 #ifdef ENABLE_ACHIEVEMENTS
 	void UpdateAchievementCriteriaForInrange( Object *o, AchievementCriteriaTypes type, int32 miscvalue1, int32 miscvalue2, uint32 time );
 #endif
-	
-	/************************************************************************/
-	/* Voicechat                                                            */
-	/************************************************************************/
-#ifdef VOICE_CHAT
-	void AddVoiceMember(PlayerInfo * pPlayer);
-	void RemoveVoiceMember(PlayerInfo * pPlayer);
-	void SendVoiceUpdate();
-	void CreateVoiceSession();
-	void VoiceChannelCreated(uint16 id);
-	void VoiceSessionDropped();
-	void VoiceSessionReconnected();
-
-public:
-	bool m_voiceChannelRequested;
-	int16 m_voiceChannelId;
-	uint32 m_voiceMemberCount;
-protected:
-	PlayerInfo* m_voiceMembersList[41];
-#endif	// VOICE_CHAT
 
 protected:
 	PlayerInfo * m_Leader;

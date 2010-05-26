@@ -676,9 +676,6 @@ struct PlayerInfo
 	int8 subGroup;
 	Mutex savedInstanceIdsLock;
 	PlayerInstanceMap savedInstanceIds[NUM_INSTANCE_MODES];
-#ifdef VOICE_CHAT
-	int8 groupVoiceId;
-#endif
 
 	Player * m_loggedInPlayer;
 	Guild * guild;

@@ -312,9 +312,6 @@
     <ClCompile Include="..\..\src\arcemu-world\UnixMetric.cpp">
       <Filter>Networking, Handlers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\arcemu-world\VoiceChatClientSocket.cpp">
-      <Filter>Networking, Handlers</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\arcemu-world\WorldSocket.cpp">
       <Filter>Networking, Handlers</Filter>
     </ClCompile>
@@ -711,9 +708,6 @@
     <ClInclude Include="..\..\src\arcemu-world\UnixMetric.h">
       <Filter>Networking, Handlers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\arcemu-world\VoiceChatClientSocket.h">
-      <Filter>Networking, Handlers</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\arcemu-world\WorldSocket.h">
       <Filter>Networking, Handlers</Filter>
     </ClInclude>
@@ -727,9 +721,6 @@
       <Filter>Networking, Handlers\Handlers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\arcemu-world\NPCHandler.h">
-      <Filter>Networking, Handlers\Handlers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\arcemu-world\VoiceChatHandler.h">
       <Filter>Networking, Handlers\Handlers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\arcemu-world\AreaTrigger.h">

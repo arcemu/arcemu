@@ -7,10 +7,7 @@ arcemu_world_SOURCES = \
     AchievementMgr.h \
     CollideInterface.cpp \
     CollideInterface.h \
-    VoiceChatClientSocket.cpp \
-    VoiceChatClientSocket.h \
     VoiceChatHandler.cpp \
-    VoiceChatHandler.h \
     DayWatcherThread.cpp \
     DayWatcherThread.h \
     CommonScheduleThread.cpp \

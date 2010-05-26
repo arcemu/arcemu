@@ -362,7 +362,6 @@
     <ClCompile Include="..\..\src\arcemu-world\AuctionMgr.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\Opcodes.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\UnixMetric.cpp" />
-    <ClCompile Include="..\..\src\arcemu-world\VoiceChatClientSocket.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\WorldSocket.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\LogonCommClient.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\LogonCommHandler.cpp" />
@@ -493,13 +492,11 @@
     <ClInclude Include="..\..\src\arcemu-world\NameTables.h" />
     <ClInclude Include="..\..\src\arcemu-world\Opcodes.h" />
     <ClInclude Include="..\..\src\arcemu-world\UnixMetric.h" />
-    <ClInclude Include="..\..\src\arcemu-world\VoiceChatClientSocket.h" />
     <ClInclude Include="..\..\src\arcemu-world\WorldSocket.h" />
     <ClInclude Include="..\..\src\arcemu-world\LogonCommClient.h" />
     <ClInclude Include="..\..\src\arcemu-world\LogonCommHandler.h" />
     <ClInclude Include="..\..\src\arcemu-world\HonorHandler.h" />
     <ClInclude Include="..\..\src\arcemu-world\NPCHandler.h" />
-    <ClInclude Include="..\..\src\arcemu-world\VoiceChatHandler.h" />
     <ClInclude Include="..\..\src\arcemu-world\AreaTrigger.h" />
     <ClInclude Include="..\..\src\arcemu-world\WorldSession.h" />
     <ClInclude Include="..\..\src\arcemu-world\Spell.h" />

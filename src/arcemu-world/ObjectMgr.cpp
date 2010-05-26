@@ -414,9 +414,7 @@ void ObjectMgr::LoadPlayersInfo()
 			pn->guild= NULL;
 			pn->guildRank= NULL;
 			pn->guildMember= NULL;
-#ifdef VOICE_CHAT
-			pn->groupVoiceId = -1;
-#endif
+
 			// Raid & heroic Instance IDs
 			// Must be done before entering world...
 			QueryResult *result2 = CharacterDatabase.Query("SELECT instanceid, mode, mapid FROM instanceids WHERE playerguid = %u", pn->guid);
@@ -3304,16 +3302,6 @@ void ObjectMgr::ResetDailies()
 	}
 	_playerslock.ReleaseReadLock();
 }
-
-#ifdef VOICE_CHAT
-void ObjectMgr::GroupVoiceReconnected()
-{
-	m_groupLock.AcquireReadLock();
-	for(GroupMap::iterator itr = m_groups.begin(); itr != m_groups.end(); ++itr)
-		itr->second->VoiceSessionReconnected();
-	m_groupLock.ReleaseReadLock();
-}
-#endif
 
 void ObjectMgr::LoadSpellTargetConstraints(){
 	enum{ CREATURE_TYPE, GAMEOBJECT_TYPE };

@@ -170,7 +170,6 @@
 #include "DatabaseCleaner.h"
 #include "DayWatcherThread.h"
 #include "CommonScheduleThread.h"
-#include "VoiceChatHandler.h"
 #include "LocalizationMgr.h"
 #include "CollideInterface.h"
 #include "Master.h"
