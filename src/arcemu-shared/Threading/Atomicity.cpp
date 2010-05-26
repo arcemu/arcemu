@@ -30,7 +30,7 @@ namespace Arcemu{
 #ifdef WIN32
 			val = InterlockedIncrement( reinterpret_cast< volatile LONG* >( &counter ) );
 #else
-#if defined( __GNUC__ ) && ( defined( __i386__  ) || defined( __ia64__ ) )
+#if defined( __GNUC__ ) && ( defined( __i486__  ) || defined( __amd64__ ) || defined( __ia64__ ) )
 			val = __sync_add_and_fetch( &counter, 1 );
 #endif
 #endif
@@ -44,7 +44,7 @@ namespace Arcemu{
 #ifdef WIN32
 			val = InterlockedDecrement( reinterpret_cast< volatile LONG* >( &counter ) );
 #else
-#if defined( __GNUC__ ) && ( defined( __i386__  ) || defined( __ia64__ ) )
+#if defined( __GNUC__ ) && ( defined( __i486__  ) || defined( __amd64__ ) || defined( __ia64__ ) )
 			val = __sync_add_and_fetch( &counter, -1 );
 #endif
 #endif

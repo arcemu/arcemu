@@ -96,7 +96,7 @@ namespace Arcemu{
 #ifdef WIN32
 			__declspec( align( 4 ) )  volatile unsigned long counter;
 #else
-#if defined( __GNUC__ ) && ( defined( __i386__  ) || defined( __ia64__ ) )
+#if defined( __GNUC__ ) && ( defined( __i486__  ) || defined( __amd64__ ) || defined( __ia64__ ) )
 			volatile unsigned long counter;
 #endif
 #endif
