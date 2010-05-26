@@ -570,6 +570,14 @@
 			Name="Threading"
 			>
 			<File
+				RelativePath="..\..\src\arcemu-shared\Threading\Atomicity.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\arcemu-shared\Threading\Atomicity.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\arcemu-shared\Threading\Condition.h"
 				>
 			</File>

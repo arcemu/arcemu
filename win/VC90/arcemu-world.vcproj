@@ -1325,6 +1325,50 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\arcemu-world\SpellProc_DeathKnight.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\arcemu-world\SpellProc_Druid.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\arcemu-world\SpellProc_Hunter.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\arcemu-world\SpellProc_Items.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\arcemu-world\SpellProc_Mage.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\arcemu-world\SpellProc_Paladin.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\arcemu-world\SpellProc_Priest.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\arcemu-world\SpellProc_Rogue.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\arcemu-world\SpellProc_Shaman.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\arcemu-world\SpellProc_Warlock.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\arcemu-world\SpellProc_Warrior.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\arcemu-world\SpellTarget.cpp"
 				>
 			</File>
