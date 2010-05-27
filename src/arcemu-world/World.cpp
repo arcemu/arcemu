@@ -783,6 +783,9 @@ void World::UpdateSessions(uint32 diff)
 	SessionSet::iterator itr, it2;
 	WorldSession *session;
 	int result;
+
+	SessionsMutex.Acquire();
+
 	for(itr = Sessions.begin(); itr != Sessions.end();)
 	{
 		session = (*itr);
@@ -804,6 +807,8 @@ void World::UpdateSessions(uint32 diff)
 			Sessions.erase(it2);
 		}
 	}
+
+	SessionsMutex.Release();
 }
 
 std::string World::GenerateName(uint32 type)
