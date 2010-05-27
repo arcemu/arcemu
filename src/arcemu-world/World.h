@@ -306,7 +306,13 @@ public:
 	void RemoveGlobalSession(WorldSession *session);
 	void DeleteSession(WorldSession *session);
 
-	ARCEMU_INLINE size_t GetSessionCount() const { return m_sessions.size(); }
+	size_t GetSessionCount(){
+		m_sessionlock.AcquireReadLock();
+		size_t ssize = m_sessions.size();
+		m_sessionlock.ReleaseReadLock();
+
+		return ssize;
+	}
 	uint32 GetNonGmSessionCount();
 	ARCEMU_INLINE size_t GetQueueCount() { return mQueuedSessions.size(); }
 	void GetStats(uint32 * GMCount, float * AverageLatency);
@@ -452,7 +458,6 @@ public:
 	bool UnloadMapFiles;
 	bool BreathingEnabled;
 	bool SpeedhackProtection;
-	uint32 mInWorldPlayerCount;
 	uint32 mAcceptedConnections;
 	uint32 SocketSendBufSize;
 	uint32 SocketRecvBufSize;

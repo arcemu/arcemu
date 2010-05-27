@@ -47,7 +47,6 @@ World::World()
 
 	mQueueUpdateInterval = 10000;
 	PeakSessionCount = 0;
-	mInWorldPlayerCount = 0;
 	mAcceptedConnections = 0;
 	gm_skip_attunement = false;
 	show_gm_in_who_list = true;

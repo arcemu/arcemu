@@ -3931,7 +3931,6 @@ void Player::OnPushToWorld()
 	WorldPacket * data = new WorldPacket(SMSG_TIME_SYNC_REQ, 4);
 	*data << uint32(0);
 	delayedPackets.add(data);
-	sWorld.mInWorldPlayerCount++;
 
 	// Update PVP Situation
 	LoginPvPSetup();
@@ -4082,7 +4081,6 @@ void Player::RemoveFromWorld()
 		Unit::RemoveFromWorld(false);
 	}
 
-	sWorld.mInWorldPlayerCount--;
 #ifdef ENABLE_COMPRESSED_MOVEMENT
 	MovementCompressor->RemovePlayer(this);
 	m_movementBufferLock.Acquire();
