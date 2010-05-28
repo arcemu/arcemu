@@ -7873,7 +7873,7 @@ void Player::ZoneUpdate(uint32 ZoneId)
 	}
 
 	m_playerInfo->lastZone = ZoneId;
-	sHookInterface.OnZone(this, ZoneId);
+	sHookInterface.OnZone(this, ZoneId, oldzone);
 	CALL_INSTANCE_SCRIPT_EVENT( m_mapMgr, OnZoneChange )( this, ZoneId, oldzone );
 
 	AreaTable * at = dbcArea.LookupEntryForced(GetAreaID());

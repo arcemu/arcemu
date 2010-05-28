@@ -1115,11 +1115,11 @@ void HookInterface::OnQuestAccept(Player * pPlayer, Quest * pQuest, Object * pQu
 		((tOnQuestAccept)*itr)(pPlayer, pQuest, pQuestGiver);
 }
 
-void HookInterface::OnZone(Player * pPlayer, uint32 zone)
+void HookInterface::OnZone(Player * pPlayer, uint32 zone, uint32 oldZone)
 {
 	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_ZONE];
 	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
-		((tOnZone)*itr)(pPlayer, zone);
+		((tOnZone)*itr)(pPlayer, zone, oldZone);
 }
 
 bool HookInterface::OnChat(Player * pPlayer, uint32 type, uint32 lang, const char * message, const char * misc)
@@ -1224,4 +1224,11 @@ void HookInterface::OnDuelFinished(Player * Winner, Player * Looser)
        ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_DUEL_FINISHED];
        for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
                ((tOnDuelFinished)*itr)(Winner, Looser);
+ }
+
+void HookInterface::OnAuraRemove(Aura * aura)
+ {
+       ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_AURA_REMOVE];
+       for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
+               ((tOnAuraRemove)*itr)(aura);
  }

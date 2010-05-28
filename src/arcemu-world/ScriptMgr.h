@@ -65,6 +65,7 @@ enum ServerHookEvents
 	SERVER_HOOK_EVENT_ON_PRE_DIE	        = 28,	//general unit die, not only based on players
 	SERVER_HOOK_EVENT_ON_ADVANCE_SKILLLINE  = 29,
     SERVER_HOOK_EVENT_ON_DUEL_FINISHED      = 30,
+	SERVER_HOOK_EVENT_ON_AURA_REMOVE		= 31,
 
 	NUM_SERVER_HOOKS,
 };
@@ -95,7 +96,7 @@ typedef void(*tOnTick)();
 typedef bool(*tOnLogoutRequest)(Player * pPlayer);
 typedef void(*tOnLogout)(Player * pPlayer);
 typedef void(*tOnQuestAccept)(Player * pPlayer, Quest * pQuest, Object * pQuestGiver);
-typedef void(*tOnZone)(Player * pPlayer, uint32 Zone);
+typedef void(*tOnZone)(Player * pPlayer, uint32 Zone, uint32 oldzone);
 typedef bool(*tOnChat)(Player * pPlayer, uint32 Type, uint32 Lang, const char * Message, const char * Misc);
 typedef void(*tOnLoot)(Player * pPlayer, Unit * pTarget, uint32 Money, uint32 ItemId);
 typedef bool(*ItemScript)(Item * pItem, Player * pPlayer);
@@ -109,6 +110,7 @@ typedef void(*tOnPostLevelUp)(Player * pPlayer);
 typedef bool(*tOnPreUnitDie)(Unit *killer, Unit *target);
 typedef void(*tOnAdvanceSkillLine)(Player * pPlayer, uint32 SkillLine, uint32 Current);
 typedef void(*tOnDuelFinished)(Player * Winner, Player * Looser);
+typedef void(*tOnAuraRemove)(Aura * aura);
 
 class Spell;
 class Aura;
@@ -393,7 +395,7 @@ public:
 	bool OnLogoutRequest(Player * pPlayer);
 	void OnLogout(Player * pPlayer);
 	void OnQuestAccept(Player * pPlayer, Quest * pQuest, Object * pQuestGiver);
-	void OnZone(Player * pPlayer, uint32 Zone);
+	void OnZone(Player * pPlayer, uint32 Zone, uint32 oldZone);
 	bool OnChat(Player * pPlayer, uint32 Type, uint32 Lang, const char * Message, const char * Misc);
 	void OnLoot(Player * pPlayer, Unit * pTarget, uint32 Money, uint32 ItemId);
 	void OnFullLogin(Player * pPlayer);
@@ -408,6 +410,7 @@ public:
 	bool OnPreUnitDie(Unit *Killer, Unit *Victim);
 	void OnAdvanceSkillLine(Player * pPlayer, uint32 SkillLine, uint32 Current);
 	void OnDuelFinished(Player * Winner, Player * Looser);
+	void OnAuraRemove(Aura * aura);
 };
 
 #define sScriptMgr ScriptMgr::getSingleton()

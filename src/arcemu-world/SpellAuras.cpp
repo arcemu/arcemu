@@ -844,6 +844,8 @@ void Aura::Remove()
 	if( m_deleted )
 		return;
 
+	sHookInterface.OnAuraRemove(this);
+
 	sLog.outDebug("Removing aura %u from unit %u", m_spellProto->Id, m_target->GetGUID());
 
 	m_deleted = true;
