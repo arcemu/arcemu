@@ -386,7 +386,7 @@ bool ChatHandler::HandleSummonCommand(const char* args, WorldSession *m_session)
 			return true;
 		}
 
-		if (chr->IsBeingTeleported() == true) 
+		if (chr->GetMapMgr() == NULL)
 		{
 			snprintf((char*)buf,256, "%s is already being teleported.", chr->GetName());
 			SystemMessage(m_session, buf);
@@ -491,7 +491,7 @@ bool ChatHandler::HandleAppearCommand(const char* args, WorldSession *m_session)
 			return true;
 		}
 
-		if (chr->IsBeingTeleported())
+		if (chr->GetMapMgr() == NULL)
 		{
 			snprintf((char*)buf,256, "%s is already being teleported.", chr->GetName());
 			SystemMessage(m_session, buf);

@@ -188,8 +188,6 @@ public:
 	virtual void DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32 unitEvent, uint32 spellId, bool no_remove_auras = false);
 
 	void BuildHeartBeatMsg( WorldPacket *data ) const;
-	bool IsBeingTeleported() { return mSemaphoreTeleport; }
-	void SetSemaphoreTeleport(bool semphsetting) { mSemaphoreTeleport = semphsetting; }
 
 	bool SetPosition( float newX, float newY, float newZ, float newOrientation, bool allowPorting = false );
 	bool SetPosition( const LocationVector & v, bool allowPorting = false);
@@ -601,9 +599,6 @@ protected:
 	LocationVector m_position;
 	LocationVector m_lastMapUpdatePosition;
 	LocationVector m_spawnLocation;
-
-	// Semaphores - needed to forbid two operations on the same object at the same very time (may cause crashing\lack of data)
-	bool mSemaphoreTeleport;
 
 	//! Object properties.
 	union{

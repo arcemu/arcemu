@@ -35,7 +35,6 @@ Item::Item()//this is called when constructing as container
 	random_suffix = 0;
 	m_mapMgr = 0;
 	m_mapCell = 0;
-	mSemaphoreTeleport = false;
 	m_faction = NULL;
 	m_factionDBC = NULL;
 	m_instanceId = 0;
@@ -71,7 +70,6 @@ void Item::Init( uint32 high, uint32 low )
 
 	m_mapMgr = 0;
 	m_mapCell = 0;
-	mSemaphoreTeleport = false;
 	m_faction = NULL;
 	m_factionDBC = NULL;
 	m_instanceId = 0;
@@ -601,7 +599,6 @@ void Item::RemoveFromWorld()
 	if( !IsInWorld() )
 		return;
 
-	mSemaphoreTeleport = true;
 	m_mapMgr->RemoveObject( this, false );
 	m_mapMgr = NULL;
   

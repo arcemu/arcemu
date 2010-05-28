@@ -6836,7 +6836,6 @@ void Spell::SpellEffectResurrectNew(uint32 i)
 	if(playerTarget->isAlive() || !playerTarget->IsInWorld())
 		return;
 	//resurrect
-	//playerTarget->resurrector = p_caster->GetLowGUID();
 	playerTarget->m_resurrectMapId = p_caster->GetMapId();
 	playerTarget->m_resurrectInstanceID = p_caster->GetInstanceID();
 	playerTarget->m_resurrectPosition = p_caster->GetPosition();

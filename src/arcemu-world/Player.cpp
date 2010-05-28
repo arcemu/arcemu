@@ -40,8 +40,6 @@ m_achievementMgr(this),
 m_finishingmovesdodge(false),
 disableAppear(false),
 disableSummon(false),
-//resurrector(0),
-SpellCrtiticalStrikeRatingBonus(0),
 SpellHasteRatingBonus(1.0f),
 m_lifetapbonus(0),
 info(NULL), // Playercreate info
@@ -70,7 +68,6 @@ m_lootGuid(0),
 m_Summons(),
 
 m_PetNumberMax(0),
-m_lastShotTime(0),
 
 m_onTaxi(false),
 
@@ -78,6 +75,8 @@ m_taxi_pos_x(0),
 m_taxi_pos_y(0),
 m_taxi_pos_z(0),
 m_taxi_ride_time(0),
+taxi_model_id(0),
+lastNode(0),
 
 // Attack related variables
 m_blockfromspellPCT(0),
@@ -177,8 +176,6 @@ m_UnderwaterState(0),
 m_UnderwaterTime(180000),
 m_UnderwaterMaxTime(180000),
 m_UnderwaterLastDmg(getMSTime()),
-m_SwimmingTime(0),
-m_BreathDamageTimer(0),
 
 //transport shit
 m_TransporterGUID(0),
@@ -215,12 +212,15 @@ m_CurrentTransporter(NULL),
 m_SummonedObject(NULL),
 m_currentLoot(0),
 pctReputationMod(0),
-roll(0),
 mUpdateCount(0),
 mCreationCount(0),
-mOutOfRangeIdCount(0)
+mOutOfRangeIdCount(0),
+m_questSharer(0),
+PlayerTalkClass(NULL),
+m_resurrectMapId(0),
+m_resurrectInstanceID(0)
 {
-	int i,j;
+	int i;
 
 	// Reset vehicle settings
 	ResetVehicleSettings();
@@ -235,20 +235,7 @@ mOutOfRangeIdCount(0)
 	//These should be set in the object constructor..
 	m_runSpeed = PLAYER_NORMAL_RUN_SPEED;
 	m_walkSpeed = 2.5f;
-	felSynergyChance = 0;
-	felSynergyPctBonus = 0;
-	demonicEmpathySpell = 0;
 	activePotionSpid = 0;
-	conflagrCritCoef = 0;
-	immolateBonus = 0;		
-	improvedSoulLeech = 0;
-	improvedFearVal = 0;
-	armToApCoeff = 0;
-	armToApValue = 0;
-	lastArmToApBonus = 0;
-	deathEmrDrain = 0;
-	deathEmrShadow = 0;
-	m_MasterShapeshift = 0;
 	m_objectTypeId = TYPEID_PLAYER;
 	m_valuesCount = PLAYER_END;
 	//////////////////////////////////////////////////////////////////////////
@@ -302,11 +289,6 @@ mOutOfRangeIdCount(0)
 
 	for(i = 0; i < 5; i++)
 	{
-		for(j = 0; j < 7; j++)
-		{
-			SpellDmgDoneByAttribute[i][j] = 0;
-			SpellHealDoneByAttribute[i][j] = 0;
-		}
 		FlatStatModPos[i] = 0;
 		FlatStatModNeg[i] = 0;
 		StatModPctPos[i] = 0;
@@ -339,7 +321,6 @@ mOutOfRangeIdCount(0)
 	cannibalize			 = false;
 	mAvengingWrath		 = true;
 	m_AreaID				= 0;
-	m_actionsDirty		 = false;
 	cannibalizeCount		= 0;
 	rageFromDamageDealt	 = 0;
 	rageFromDamageTaken	 = 0;
@@ -350,7 +331,7 @@ mOutOfRangeIdCount(0)
 	m_killsToday			= 0;
 	m_killsYesterday		= 0;
 	m_killsLifetime		 = 0;
-	m_honorless			 = false;
+	m_honorless			 = 0;
 	m_lastSeenWeather	   = 0;
 	m_attacking			 = false;
 
@@ -428,20 +409,10 @@ mOutOfRangeIdCount(0)
 	m_modphyscritdmgPCT = 0;
 	m_RootedCritChanceBonus = 0;
 	m_IncreaseDmgSnaredSlowed = 0;
-	m_MoltenFuryDmgBonus = 0; // DuKJIoHuyC: in Player.h
-	ShatteredBarrierMod = 0;
-	FieryPaybackModHP35 = 0;
-	TormentTheWeakDmgBns = 0;
-	ArcanePotencyMod = 0;
-	LivingBmbTgt = 0;
-	JungleKingMod = 0;
-	FittestSurvivalMod = -1;
-	StunDamageReductPct = 0;
-	isGuardianSpirit = false;
 	m_ModInterrMRegenPCT = 0;
 	m_ModInterrMRegen = 0;
 	m_RegenManaOnSpellResist= 0;
-	m_rap_mod_pct = 0;
+	m_rap_mod_pct = 0;//only initialized to 0: why?
 	m_modblockabsorbvalue = 0;
 	m_modblockvaluefromspells = 0;
 	m_summoner = m_summonInstanceId = m_summonMapId = 0;
@@ -499,7 +470,6 @@ mOutOfRangeIdCount(0)
 	m_skills.clear();
 	m_wratings.clear();
 	m_taxiPaths.clear();
-	m_QuestGOInProgress.clear();
 	m_removequests.clear();
 	m_finishedQuests.clear();
 	m_finishedDailies.clear();
@@ -523,7 +493,6 @@ mOutOfRangeIdCount(0)
 	m_hasFriendList.clear();
 
 	loginauras.clear();
-	OnMeleeAuras.clear();
 	damagedone.clear();
 	tocritchance.clear();
 	m_visibleFarsightObjects.clear();
@@ -531,7 +500,6 @@ mOutOfRangeIdCount(0)
 	PetSpells.clear();
 	delayedPackets.clear();
 	gmTargets.clear();
-	visiblityChangableSet.clear();
 	_splineMap.clear();
 
 	m_lastPotionId		= 0;
@@ -3409,7 +3377,6 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		}
 	}
 
-	//LoadAuras = get_next_field.GetString();
 	start = (char*)get_next_field.GetString();//buff;
 	do
 	{
@@ -9227,7 +9194,6 @@ void Player::OnWorldPortAck()
 		{
 			if(pMapinfo->type != INSTANCE_NULL)
 			{
-				// resurrector = 0; // ceberwow: This should be seriously BUG.It makes player statz stackable.
 				ResurrectPlayer();
 			}
 		}
@@ -13231,14 +13197,14 @@ void Player::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 
 	
 	//Mage: Fiery Payback
-	if( FieryPaybackModHP35 == 1 ){
+	/*if( FieryPaybackModHP35 == 1 ){
 		
 		if( GetHealthPct() <= 35){
 			if( HasAura( 44441 ) )
 				CastSpell( GetGUID(), 44441, true );
 		}else
 			RemoveAllAuraById( 44441 );
-	}
+	}*/
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -13609,8 +13575,6 @@ void Player::Die( Unit *pAttacker, uint32 damage, uint32 spellid ){
 	
 	m_UnderwaterTime = 0;
 	m_UnderwaterState = 0;
-	m_BreathDamageTimer = 0;
-	m_SwimmingTime = 0;
 
 	DismissActivePets();
 	RemoveAllGuardians();

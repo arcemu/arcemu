@@ -65,9 +65,6 @@ Object::Object() : m_position(0,0,0,0), m_spawnLocation(0,0,0,0)
 	m_mapMgr = 0;
 	m_mapCell = 0;
 
-	mSemaphoreTeleport = false;
-
-
 	m_faction = NULL;
 	m_factionDBC = NULL;
 
@@ -893,8 +890,6 @@ void Object::AddToWorld()
 	m_instanceId = m_mapMgr->GetInstanceID();
 
 	mapMgr->AddObject(this);
-
-	mSemaphoreTeleport = false;
 }
 
 void Object::AddToWorld(MapMgr * pMapMgr)
@@ -909,8 +904,6 @@ void Object::AddToWorld(MapMgr * pMapMgr)
 
 	// correct incorrect instance id's
 	m_instanceId = pMapMgr->GetInstanceID();
-
-	mSemaphoreTeleport = false;
 }
 
 //Unlike addtoworld it pushes it directly ignoring add pool
@@ -932,7 +925,6 @@ void Object::PushToWorld(MapMgr*mgr)
 	mgr->PushObject(this);
 
 	// correct incorrect instance id's
-	mSemaphoreTeleport = false;
 	m_inQueue = false;
 
 	event_Relocate();
@@ -947,8 +939,6 @@ void Object::RemoveFromWorld(bool free_guid)
 	Arcemu::Util::ARCEMU_ASSERT(   m_mapMgr != NULL );
 	MapMgr * m = m_mapMgr;
 	m_mapMgr = NULL;
-
-	mSemaphoreTeleport = true;
 
 	m->RemoveObject(this, free_guid);
 
