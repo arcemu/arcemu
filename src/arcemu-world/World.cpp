@@ -1079,7 +1079,7 @@ Task * TaskList::GetTask()
 void TaskList::spawn()
 {
 	running = true;
-	thread_count = 0;
+	thread_count.SetVal(0);
 
 	uint32 threadcount;
 	if(Config.MainConfig.GetBoolDefault("Startup", "EnableMultithreadedLoading", true))
@@ -1175,7 +1175,7 @@ bool TaskExecutor::run()
 
 void TaskList::waitForThreadsToExit()
 {
-	while(thread_count)
+	while(thread_count.GetVal())
 	{
 		Sleep(20);
 	}

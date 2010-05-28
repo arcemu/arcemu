@@ -205,6 +205,7 @@ class TaskList
 	set<Task*> tasks;
 	Mutex queueLock;
 public:
+	TaskList() : thread_count(0){};
 	Task * GetTask();
 	void AddTask(Task* task);
 	void RemoveTask(Task * task)
@@ -219,23 +220,8 @@ public:
 
 	void wait();
 	void waitForThreadsToExit();
-	uint32 thread_count;
+	Arcemu::Threading::AtomicCounter thread_count;
 	bool running;
-
-	Mutex tcMutex;
-	void incrementThreadCount()
-	{
-		tcMutex.Acquire();
-		++thread_count;
-		tcMutex.Release();
-	}
-
-	void decrementThreadCount()
-	{
-		tcMutex.Acquire();
-		--thread_count;
-		tcMutex.Release();
-	}
 };
 
 enum BasicTaskExecutorPriorities
@@ -249,8 +235,8 @@ class TaskExecutor : public ThreadBase
 {
 	TaskList * starter;
 public:
-	TaskExecutor(TaskList * l) : starter(l) { l->incrementThreadCount(); }
-	~TaskExecutor() { starter->decrementThreadCount(); }
+	TaskExecutor(TaskList * l) : starter(l) { ++l->thread_count; }
+	~TaskExecutor() { --starter->thread_count; }
 
 	bool run();
 };
