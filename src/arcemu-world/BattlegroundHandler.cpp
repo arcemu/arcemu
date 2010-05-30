@@ -82,25 +82,15 @@ void WorldSession::SendBattlegroundList(Creature* pCreature, uint32 mapid)
 	* uint32 t = BattleGroundType
 	**********************************************************************************/
 	uint32 t = BATTLEGROUND_WARSONG_GULCH;
-	if (mapid == 0)
-	{
-		if(pCreature->GetCreatureInfo())
-		{
-			if(strstr(pCreature->GetCreatureInfo()->SubName, "Arena") != NULL)
+	if(mapid == 0){
+		if( strstr(pCreature->GetCreatureInfo()->SubName, "Arena") != NULL){
 				t = BATTLEGROUND_ARENA_2V2;
-			else if(strstr(pCreature->GetCreatureInfo()->SubName, "Arathi") != NULL)
-				t = BATTLEGROUND_ARATHI_BASIN;
-			else if(strstr(pCreature->GetCreatureInfo()->SubName, "Eye of the Storm") != NULL)
-				t = BATTLEGROUND_EYE_OF_THE_STORM;
-			else if(strstr(pCreature->GetCreatureInfo()->SubName, "Warsong") != NULL)
-				t = BATTLEGROUND_WARSONG_GULCH;
-			else if(strstr(pCreature->GetCreatureInfo()->SubName, "Alterac") != NULL)
-				t = BATTLEGROUND_ALTERAC_VALLEY;
-			else if(strstr(pCreature->GetCreatureInfo()->SubName, "Strand") != NULL)
-				t = BATTLEGROUND_STRAND_OF_THE_ANCIENT;
+		}else{
+			BGMaster *battlemaster = BGMasterStorage.LookupEntry( pCreature->GetProto()->Id );			
+			if( battlemaster != NULL )
+				t = battlemaster->bg;
 		}
-	}
-	else
+	}else
 		t = mapid;
 
     BattlegroundManager.HandleBattlegroundListPacket(this, t);
