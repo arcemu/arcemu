@@ -112,6 +112,12 @@ else
 	fi
 fi
 
+# Check for __sync_val_compare_and_swap
+LIBGOMP_CHECK_SYNC_BUILTINS
+if test "$libgomp_cv_have_sync_builtins" = no; then
+	AC_MSG_ERROR(Your environment doesn't support __sync_*_compare_and_swap. Arcemu requires GCC 4.1 or above)
+fi
+
 # Check for pthread
 ACX_PTHREAD( [
 	LDFLAGS="$PTHREAD_LIBS $LDFLAGS"

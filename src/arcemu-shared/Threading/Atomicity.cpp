@@ -28,7 +28,7 @@ namespace Arcemu{
 #ifdef WIN32
 			InterlockedExchange( reinterpret_cast< volatile LONG* >( &counter ), LONG( val ) );
 #else
-#if defined( __GNUC__ ) && ( defined( __GCC_HAVE_SYNC_COMPARE_AND_SWAP_4 ) )
+#ifdef __GNUC__
 			__sync_val_compare_and_swap( &counter, counter, val );
 #else
 #error Your platform (architecture and compiler) is NOT supported. Arcemu requires little endian architecture, and at least GCC 4.1
@@ -43,7 +43,7 @@ namespace Arcemu{
 #ifdef WIN32
 			val = InterlockedIncrement( reinterpret_cast< volatile LONG* >( &counter ) );
 #else
-#if defined( __GNUC__ ) && ( defined( __GCC_HAVE_SYNC_COMPARE_AND_SWAP_4 ) )
+#ifdef __GNUC__
 			val = __sync_add_and_fetch( &counter, 1 );
 #else
 #error Your platform (architecture and compiler) is NOT supported. Arcemu requires little endian architecture, and at least GCC 4.1
@@ -59,7 +59,7 @@ namespace Arcemu{
 #ifdef WIN32
 			val = InterlockedDecrement( reinterpret_cast< volatile LONG* >( &counter ) );
 #else
-#if defined( __GNUC__ ) && ( defined( __GCC_HAVE_SYNC_COMPARE_AND_SWAP_4 ) )
+#ifdef __GNUC__
 			val = __sync_add_and_fetch( &counter, -1 );
 #else
 #error Your platform (architecture and compiler) is NOT supported. Arcemu requires little endian architecture, and at least GCC 4.1
