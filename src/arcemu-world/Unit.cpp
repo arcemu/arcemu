@@ -941,17 +941,6 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 		return 0;
 	}
 
-#if 0
-	//will be used only on new system
-	ProcCondSharedDataStruct sharedprocdata;
-	sharedprocdata.owner = this;
-	sharedprocdata.ProcFlags = flag;
-	sharedprocdata.CastingSpell = CastingSpell;
-	sharedprocdata.Fulldmg = dmg;
-	sharedprocdata.Absdmg = abs;
-	sharedprocdata.victim = victim;
-#endif
-
 	std::list<SpellProc*>::iterator itr,itr2;
 	for( itr = m_procSpells.begin(); itr != m_procSpells.end(); )  // Proc Trigger Spells for Victim
 	{
@@ -981,6 +970,10 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 
 		// Check for flags
 		if( ! spell_proc->CheckProcFlags( flag ) )
+			continue;
+
+		// Check proc class mask
+		if( flag & PROC_ON_CAST_SPELL && CastingSpell && ! spell_proc->CheckClassMask(victim, CastingSpell) )
 			continue;
 
 		uint32 spellId = spell_proc->mSpell->Id;
@@ -1027,22 +1020,6 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 				if( spe->spellIconID == 1 )
 					continue;
 		}
-
-#if 0
-		if( itr2->spellId < MAX_SPELL_ID_FROMDBC && G_ProcCondHandlers[ itr2->spellId ] )
-		{
-			sharedprocdata.cur_itr = itr2;
-			ProcCondHandlerRes res = (*G_ProcCondHandlers[ itr2->spellId ])( &sharedprocdata );
-			if( res == PROCCOND_BREAK_EXECUTION )
-				continue;
-			else if( res == PROCCOND_FATAL_EXIT )
-			{
-				//this is panic situation and should not happen !
-				bProcInUse = false;
-				return;
-			}
-		}
-#endif
 
 		uint32 proc_Chance = spell_proc->CalcProcChance( victim, CastingSpell );
 
@@ -1328,17 +1305,6 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						continue;
 
 					if( CastingSpell->NameHash != SPELL_HASH_REND )
-						continue;
-				}break;
-				//Warrior - Blood Frenzy
-				case 30069:
-				case 30070:
-				{
-					if( CastingSpell == NULL )
-						continue;
-
-					if( CastingSpell->NameHash != SPELL_HASH_REND &&
-						CastingSpell->NameHash != SPELL_HASH_DEEP_WOUND )
 						continue;
 				}break;
 				//Warrior - Unbridled Wrath
@@ -1797,14 +1763,6 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 								continue;
 						}
 					}break;
-				//priest - Shadow Weaving
-				case 15258:
-					{
-						if( CastingSpell == NULL )
-							continue;//this should not occur unless we made a fuckup somewhere
-						if( CastingSpell->School != SCHOOL_SHADOW || !( CastingSpell->c_is_flags & SPELL_FLAG_IS_DAMAGING ) ) //we need damaging spells for this, so we suppose all shadow spells cast on target are dmging spells = Wrong
-							continue;
-					}break;
 				//priest - Inspiration
 				case 15363:
 				case 14893:
@@ -1885,23 +1843,6 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						if( !(CastingSpell->NameHash == SPELL_HASH_CHAIN_HEAL || CastingSpell->NameHash == SPELL_HASH_RIPTIDE) )
 							continue;
 					}break;
-				// Resilient
-				case 46089:
-				case 43839:
-				case 43848:
-				case 43849:
-					{
-						if( CastingSpell == NULL )
-							continue;
-						if(	(origId==46097 || origId==43860 || origId==43861 || origId==43862)&&
-							(CastingSpell->NameHash == SPELL_HASH_EARTH_SHOCK ||
-							CastingSpell->NameHash == SPELL_HASH_FROST_SHOCK ||
-							CastingSpell->NameHash == SPELL_HASH_FLAME_SHOCK))
-							break;
-						if(	(origId==43859 || origId==43858 || origId==43857 || origId==46096)&&
-							CastingSpell->NameHash == SPELL_HASH_STORMSTRIKE)
-							break;
-					}continue;
 				// Totem of the Third Wind
 				case 42371:
 				case 34132:
@@ -2026,20 +1967,6 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						if(!(CastingSpell->c_is_flags & SPELL_FLAG_IS_FINISHING_MOVE))
 							continue;
 					}break;
-				//rogue - Initiative
-				case 13977:
-					{
-						if( CastingSpell == NULL )
-							continue;//this should not occur unless we made a fuckup somewhere
-						//we need a Ambush, Garrote, or Cheap Shot
-						if( CastingSpell == NULL )
-							continue;
-
-						if( CastingSpell->NameHash != SPELL_HASH_CHEAP_SHOT && //Cheap Shot
-							CastingSpell->NameHash != SPELL_HASH_AMBUSH && //Ambush
-							CastingSpell->NameHash != SPELL_HASH_GARROTE )  //Garrote
-							continue;
-					}break;
 				//Priest - Shadowguard
 				case 28377:
 				case 28378:
@@ -2126,14 +2053,6 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						//somehow we should make this not caused any threat (to be done)
 						SpellNonMeleeDamageLog( victim, power_word_id, tdmg, false, true );
 						continue;
-					}break;
-				//rogue - improved sprint
-				case 30918:
-					{
-						if( CastingSpell == NULL )
-							continue;
-						if( CastingSpell->NameHash != SPELL_HASH_SPRINT || victim != this ) //sprint
-							continue;
 					}break;
 				//rogue - combat potency
 				case 35542:
@@ -2445,11 +2364,6 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						if( CastingSpell->NameHash != SPELL_HASH_LIFE_TAP )
 							continue;
 					}break;
-				case 37193:
-					{
-						if (!CastingSpell || CastingSpell->NameHash != SPELL_HASH_HOLY_SHIELD)
-							continue;
-					}break;
 				case 37196:
 				case 43838:
 					{
@@ -2568,14 +2482,6 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 					}break;
 
 					//http://www.wowhead.com/?item=32492 Ashtongue Talisman of Lethality
-				case 40461:
-					{
-						if( CastingSpell == NULL )
-							continue;
-						//we need a finishing move for this
-						if(!(CastingSpell->c_is_flags & SPELL_FLAG_IS_FINISHING_MOVE) || victim==this)
-							continue;
-					}break;
 				case 37445: //using a mana gem grants you 225 spell damage for 15 sec
 					{
 						if (!CastingSpell || CastingSpell->NameHash != SPELL_HASH_REPLENISH_MANA)
@@ -8102,14 +8008,14 @@ bool Unit::isLootable(){
 		return false;
 }
 
-void Unit::AddProcTriggerSpell(uint32 spell_id, uint32 orig_spell_id, uint64 caster, uint32 procChance, uint32 procFlags, uint32 procCharges, uint32 *groupRelation, Object *obj)
+void Unit::AddProcTriggerSpell(uint32 spell_id, uint32 orig_spell_id, uint64 caster, uint32 procChance, uint32 procFlags, uint32 procCharges, uint32 *groupRelation, uint32 *procClassMask, Object *obj)
 {
-	AddProcTriggerSpell(dbcSpell.LookupEntryForced(spell_id), dbcSpell.LookupEntryForced(orig_spell_id), caster, procChance, procFlags, procCharges, groupRelation, obj);
+	AddProcTriggerSpell(dbcSpell.LookupEntryForced(spell_id), dbcSpell.LookupEntryForced(orig_spell_id), caster, procChance, procFlags, procCharges, groupRelation, procClassMask, obj);
 }
 
-void Unit::AddProcTriggerSpell(SpellEntry *spell, SpellEntry *orig_spell, uint64 caster, uint32 procChance, uint32 procFlags, uint32 procCharges, uint32 *groupRelation, Object *obj)
+void Unit::AddProcTriggerSpell(SpellEntry *spell, SpellEntry *orig_spell, uint64 caster, uint32 procChance, uint32 procFlags, uint32 procCharges, uint32 *groupRelation, uint32 *procClassMask, Object *obj)
 {
-	SpellProc *sp = sSpellProcMgr.NewSpellProc(this, spell, orig_spell, caster, procChance, procFlags, procCharges, groupRelation, obj);
+	SpellProc *sp = sSpellProcMgr.NewSpellProc(this, spell, orig_spell, caster, procChance, procFlags, procCharges, groupRelation, procClassMask, obj);
 	if( sp == NULL )
 	{
 		if( orig_spell != NULL )
@@ -8121,9 +8027,9 @@ void Unit::AddProcTriggerSpell(SpellEntry *spell, SpellEntry *orig_spell, uint64
 	m_procSpells.push_back(sp);
 }
 
-void Unit::AddProcTriggerSpell(SpellEntry *sp, uint64 caster, uint32 *groupRelation, Object *obj)
+void Unit::AddProcTriggerSpell(SpellEntry *sp, uint64 caster, uint32 *groupRelation, uint32 *procClassMask, Object *obj)
 {
-	AddProcTriggerSpell(sp, sp, caster, sp->procChance, sp->procFlags, sp->procCharges, groupRelation, obj);
+	AddProcTriggerSpell(sp, sp, caster, sp->procChance, sp->procFlags, sp->procCharges, groupRelation, procClassMask, obj);
 }
 
 void Unit::RemoveProcTriggerSpell(uint32 spellId, uint64 guid)

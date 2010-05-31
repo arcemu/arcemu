@@ -20,20 +20,6 @@
 
 #include "StdAfx.h"
 
-class RelentlessStrikesSpellProc : public SpellProc
-{
-    SPELL_PROC_FACTORY_FUNCTION(RelentlessStrikesSpellProc);
-
-	uint32 CalcProcChance(Unit *victim, SpellEntry *CastingSpell)
-	{
-		if( CastingSpell && CastingSpell->c_is_flags & SPELL_FLAG_IS_FINISHING_MOVE && mTarget->IsPlayer() )//mTarget is the caster
-			return float2int32( TO_PLAYER(mTarget)->m_comboPoints * mOrigSpell->EffectPointsPerComboPoint[0] );
-		else
-			return 0;
-	}
-};
-
 void SpellProcMgr::SetupRogue()
 {
-	AddByNameHash( SPELL_HASH_RELENTLESS_STRIKES_EFFECT, &RelentlessStrikesSpellProc::Create );
 }

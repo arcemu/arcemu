@@ -173,7 +173,7 @@ enum MOD_TYPES
     SPELL_AURA_HOVER = 106,                             // Hover
     SPELL_AURA_ADD_FLAT_MODIFIER = 107,                 // Add Flat Modifier
     SPELL_AURA_ADD_PCT_MODIFIER = 108,                  // Add % Modifier
-    SPELL_AURA_ADD_TARGET_TRIGGER = 109,                // Add Class Target Trigger
+    SPELL_AURA_ADD_CLASS_TARGET_TRIGGER = 109,          // Add Class Target Trigger
     SPELL_AURA_MOD_POWER_REGEN_PERCENT = 110,           // Mod Power Regen %
     SPELL_AURA_ADD_CASTER_HIT_TRIGGER = 111,            // Add Class Caster Hit Trigger
     SPELL_AURA_OVERRIDE_CLASS_SCRIPTS = 112,            // Override Class Scripts
@@ -596,7 +596,7 @@ public:
 	void SpellAuraHover(bool apply);
 	void SpellAuraAddFlatModifier(bool apply);
 	void SpellAuraAddPctMod(bool apply);
-	void SpellAuraAddTargetTrigger(bool apply);
+	void SpellAuraAddClassTargetTrigger(bool apply);
 	void SpellAuraModPowerRegPerc(bool apply);
 	void SpellAuraOverrideClassScripts(bool apply);
 	void SpellAuraModRangedDamageTaken(bool apply);

@@ -1081,7 +1081,7 @@ out:
 			if (!u_caster->IsPlayer())
 				return;
 
-			u_caster->AddProcTriggerSpell(34299, 34299, u_caster->GetGUID(), 100, PROC_ON_CRIT_ATTACK | static_cast<uint32>(PROC_TARGET_SELF), 0, NULL);
+			u_caster->AddProcTriggerSpell(34299, 34299, u_caster->GetGUID(), 100, PROC_ON_CRIT_ATTACK | static_cast<uint32>(PROC_TARGET_SELF), 0, NULL, NULL);
 		}break;
 		/*************************
 		* HUNTER SPELLS

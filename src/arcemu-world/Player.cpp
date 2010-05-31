@@ -4447,7 +4447,7 @@ void Player::_ApplyItemMods(Item* item, int16 slot, bool apply, bool justdrokedo
 			}
 			else if( item->GetProto()->Spells[k].Trigger == 2 )
 			{
-				this->AddProcTriggerSpell( spells, NULL, this->GetGUID(), 5, PROC_ON_MELEE_ATTACK, 0, NULL );
+				this->AddProcTriggerSpell( spells, NULL, this->GetGUID(), 5, PROC_ON_MELEE_ATTACK, 0, NULL, NULL );
 			}
 		}
 	}

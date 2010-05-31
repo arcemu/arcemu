@@ -1050,9 +1050,9 @@ public:
 	/*   ProcTrigger                                        */
 	/********************************************************/
 	std::list<SpellProc*> m_procSpells;
-	void AddProcTriggerSpell(uint32 spell_id, uint32 orig_spell_id, uint64 caster, uint32 procChance, uint32 procFlags, uint32 procCharges, uint32 *groupRelation, Object *obj = NULL);
-	void AddProcTriggerSpell(SpellEntry *spell, SpellEntry *orig_spell, uint64 caster, uint32 procChance, uint32 procFlags, uint32 procCharges, uint32 *groupRelation, Object *obj = NULL);
-	void AddProcTriggerSpell(SpellEntry *sp, uint64 caster, uint32 *groupRelation, Object *obj = NULL);
+	void AddProcTriggerSpell(uint32 spell_id, uint32 orig_spell_id, uint64 caster, uint32 procChance, uint32 procFlags, uint32 procCharges, uint32 *groupRelation, uint32 *procClassMask = NULL, Object *obj = NULL);
+	void AddProcTriggerSpell(SpellEntry *spell, SpellEntry *orig_spell, uint64 caster, uint32 procChance, uint32 procFlags, uint32 procCharges, uint32 *groupRelation, uint32 *procClassMask = NULL, Object *obj = NULL);
+	void AddProcTriggerSpell(SpellEntry *sp, uint64 caster, uint32 *groupRelation, uint32 *procClassMask = NULL, Object *obj = NULL);
 	void RemoveProcTriggerSpell(uint32 spellId, uint64 guid);
 	void RemoveProcTriggerSpell(uint32 spellId);
 	std::map<uint32,struct SpellCharge> m_chargeSpells;
@@ -1235,6 +1235,7 @@ public:
     }
     void EventStunOrImmobilize(Unit *proc_target,bool is_victim=false);
 
+	// TODO: Remove this hack
     /************************************************************************/
     /* Chill                                                                */
     /************************************************************************/

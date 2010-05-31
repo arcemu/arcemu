@@ -130,7 +130,7 @@ pSpellAura SpellAuraHandler[TOTAL_SPELL_AURAS]={
 		&Aura::SpellAuraHover,//SPELL_AURA_HOVER = 106,
 		&Aura::SpellAuraAddFlatModifier,//SPELL_AURA_ADD_FLAT_MODIFIER = 107,
 		&Aura::SpellAuraAddPctMod,//SPELL_AURA_ADD_PCT_MODIFIER = 108,
-		&Aura::SpellAuraAddTargetTrigger,//SPELL_AURA_ADD_TARGET_TRIGGER = 109,
+		&Aura::SpellAuraAddClassTargetTrigger,//SPELL_AURA_ADD_CLASS_TARGET_TRIGGER = 109,
 		&Aura::SpellAuraModPowerRegPerc,//SPELL_AURA_MOD_POWER_REGEN_PERCENT = 110,
 		&Aura::SpellAuraNULL,//SPELL_AURA_ADD_CASTER_HIT_TRIGGER = 111,
 		&Aura::SpellAuraOverrideClassScripts,//SPELL_AURA_OVERRIDE_CLASS_SCRIPTS = 112,
@@ -2004,7 +2004,7 @@ void Aura::SpellAuraDummy(bool apply)
 	case 49283:
 		{
 			if(apply)
-				m_target->AddProcTriggerSpell(GetSpellProto(), m_casterGuid, NULL);
+				m_target->AddProcTriggerSpell(GetSpellProto(), m_casterGuid, NULL, NULL);
 			else
 				m_target->RemoveProcTriggerSpell(GetSpellId(), m_casterGuid);
 		}break;
@@ -4870,7 +4870,7 @@ void Aura::SpellAuraProcTriggerSpell(bool apply)
 			SM_PIValue( ucaster->SM_PCharges, &charges, GetSpellProto()->SpellGroupType );
 		}
 
-		m_target->AddProcTriggerSpell(spellId, GetSpellProto()->Id, m_casterGuid, GetSpellProto()->procChance, GetSpellProto()->procFlags, charges, groupRelation);
+		m_target->AddProcTriggerSpell(spellId, GetSpellProto()->Id, m_casterGuid, GetSpellProto()->procChance, GetSpellProto()->procFlags, charges, groupRelation, NULL);
 
 		sLog.outDebug("%u is registering %u chance %u flags %u charges %u triggeronself %u interval %u\n",GetSpellProto()->Id,spellId,GetSpellProto()->procChance,GetSpellProto()->procFlags & ~PROC_TARGET_SELF,charges,GetSpellProto()->procFlags & PROC_TARGET_SELF,GetSpellProto()->proc_interval);
 	}
@@ -7053,58 +7053,57 @@ void Aura::SendDummyModifierLog( std::map< SpellEntry*, uint32 >* m, SpellEntry*
 	}
 }
 
-void Aura::SpellAuraAddTargetTrigger(bool apply)
+void Aura::SpellAuraAddClassTargetTrigger(bool apply)
 {
-#ifdef NEW_PROCFLAGS
-	if (m_target == NULL)
-		return;
-
-	if( apply )
+	if(apply)
 	{
-		ProcTriggerSpell pts;
-		pts.parentId = GetSpellProto()->Id;
-		pts.caster = m_casterGuid;
-		int charges = GetSpellProto()->procCharges;
-		if( GetSpellProto()->SpellGroupType && u_caster != NULL )
-		{
-			SM_FIValue( u_caster->SM_FCharges, &charges, GetSpellProto()->SpellGroupType );
-			SM_PIValue( u_caster->SM_PCharges, &charges, GetSpellProto()->SpellGroupType );
-#ifdef COLLECTION_OF_UNTESTED_STUFF_AND_TESTERS
-			float spell_flat_modifers= 0;
-			float spell_pct_modifers= 0;
-			SM_FIValue(u_caster->SM_FCharges,&spell_flat_modifers,GetSpellProto()->SpellGroupType);
-			SM_FIValue(u_caster->SM_PCharges,&spell_pct_modifers,GetSpellProto()->SpellGroupType);
-			if(spell_flat_modifers!= 0 || spell_pct_modifers!= 0)
-				printf("!!!!!spell charge bonus mod flat %f , spell range bonus pct %f , spell range %f, spell group %u\n",spell_flat_modifers,spell_pct_modifers,maxRange,m_spellInfo->SpellGroupType);
-#endif
-		}
-		pts.procCharges = charges;
-		pts.i = mod->i;
-		pts.LastTrigger = 0;
-		pts.groupRelation = 0;
+		uint32 groupRelation[3], procClassMask[3];
+		int charges;
+		SpellEntry *sp;
 
-		if(GetSpellProto()->EffectTriggerSpell[mod->i])
-			pts.spellId=GetSpellProto()->EffectTriggerSpell[mod->i];
-		else
+		// Find spell of effect to be triggered
+		sp = dbcSpell.LookupEntryForced(GetSpellProto()->EffectTriggerSpell[mod->i]);
+		if( sp == NULL )
 		{
-			sLog.outDebug("Warning,trigger spell is null for spell %u",GetSpellProto()->Id);
+			sLog.outDebug("Warning! class trigger spell is null for spell %u", GetSpellProto()->Id);
 			return;
 		}
-		m_target->m_procSpells.push_front(pts);
-		sLog.outDebug("%u is registering %u chance %u flags %u charges %u triggeronself %u interval %u\n",pts.origId,pts.spellId,pts.procChance,m_spellProto->procFlags & ~PROC_TARGET_SELF,charges,m_spellProto->procFlags & PROC_TARGET_SELF,m_spellProto->proc_interval);
+
+		// Initialize proc class mask
+		procClassMask[0] = GetSpellProto()->EffectSpellClassMask[mod->i][0];
+		procClassMask[1] = GetSpellProto()->EffectSpellClassMask[mod->i][1];
+		procClassMask[2] = GetSpellProto()->EffectSpellClassMask[mod->i][2];
+
+		// Initialize mask
+		groupRelation[0] = sp->EffectSpellClassMask[mod->i][0];
+		groupRelation[1] = sp->EffectSpellClassMask[mod->i][1];
+		groupRelation[2] = sp->EffectSpellClassMask[mod->i][2];
+
+		// Initialize charges
+		charges = GetSpellProto()->procCharges;
+		Unit* ucaster = GetUnitCaster();
+		if( ucaster != NULL && GetSpellProto()->SpellGroupType )
+		{
+			SM_FIValue( ucaster->SM_FCharges, &charges, GetSpellProto()->SpellGroupType );
+			SM_PIValue( ucaster->SM_PCharges, &charges, GetSpellProto()->SpellGroupType );
+		}
+
+		m_target->AddProcTriggerSpell(sp->Id, GetSpellProto()->Id, m_casterGuid, GetSpellProto()->EffectBasePoints[mod->i] +1, PROC_ON_CAST_SPELL, charges, groupRelation, procClassMask);
+
+		sLog.outDebug("%u is registering %u chance %u flags %u charges %u triggeronself %u interval %u\n",GetSpellProto()->Id,sp->Id,GetSpellProto()->procChance,PROC_ON_CAST_SPELL,charges,GetSpellProto()->procFlags & PROC_TARGET_SELF,GetSpellProto()->proc_interval);
 	}
 	else
 	{
-		for(std::list<struct ProcTriggerSpell>::iterator itr = m_target->m_procSpells.begin();itr != m_target->m_procSpells.end();itr++)
+		// Find spell of effect to be triggered
+		uint32 spellId = GetSpellProto()->EffectTriggerSpell[mod->i];
+		if( spellId == 0 )
 		{
-			if(itr->parentId == GetSpellId() && itr->caster == m_casterGuid && !itr->deleted)
-			{
-				itr->deleted = true;
-				break; //only 1 instance of a proc spell per caster ?
-			}
+			sLog.outDebug("Warning! trigger spell is null for spell %u", GetSpellProto()->Id);
+			return;
 		}
+
+		m_target->RemoveProcTriggerSpell(spellId, m_casterGuid);
 	}
-#endif
 }
 
 void Aura::SpellAuraModPowerRegPerc(bool apply)

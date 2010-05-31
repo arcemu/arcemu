@@ -746,7 +746,7 @@ void Item::ApplyEnchantmentBonus( uint32 Slot, bool Apply )
 					if( Apply )
 					{
 						if( Entry->spell[c] != 0 )
-							m_owner->AddProcTriggerSpell(Entry->spell[c], 0, m_owner->GetGUID(), Entry->min[c], PROC_ON_MELEE_ATTACK, 0, NULL, this);
+							m_owner->AddProcTriggerSpell(Entry->spell[c], 0, m_owner->GetGUID(), Entry->min[c], PROC_ON_MELEE_ATTACK, 0, NULL, NULL, this);
 					}
 					else
 					{

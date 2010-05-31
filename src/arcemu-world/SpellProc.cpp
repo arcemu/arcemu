@@ -22,12 +22,21 @@
 
 initialiseSingleton( SpellProcMgr );
 
-SpellProc* SpellProcMgr::NewSpellProc(Unit *target, uint32 spell_id, uint32 orig_spell_id, uint64 caster, uint32 procChance, uint32 procFlags, uint32 procCharges, uint32 *groupRelation, Object *obj)
+uint32 SpellProc::CalcProcChance(Unit *victim, SpellEntry *CastingSpell)
 {
-	return NewSpellProc(target, dbcSpell.LookupEntryForced(spell_id), dbcSpell.LookupEntryForced(orig_spell_id), caster, procChance, procFlags, procCharges, groupRelation, obj);
+	// Check if proc chance is based on combo points
+	if( mTarget->IsPlayer() && mOrigSpell && mOrigSpell->AttributesEx & ATTRIBUTESEX_REQ_COMBO_POINTS1 && mOrigSpell->AttributesExD & FLAGS5_PROCCHANCE_COMBOBASED )
+		return float2int32( TO_PLAYER(mTarget)->m_comboPoints * mOrigSpell->EffectPointsPerComboPoint[0] );
+	else
+		return mProcChance;		
 }
 
-SpellProc* SpellProcMgr::NewSpellProc(Unit *target, SpellEntry *spell, SpellEntry *orig_spell, uint64 caster, uint32 procChance, uint32 procFlags, uint32 procCharges, uint32 *groupRelation, Object *obj)
+SpellProc* SpellProcMgr::NewSpellProc(Unit *target, uint32 spell_id, uint32 orig_spell_id, uint64 caster, uint32 procChance, uint32 procFlags, uint32 procCharges, uint32 *groupRelation, uint32 *procClassMask, Object *obj)
+{
+	return NewSpellProc(target, dbcSpell.LookupEntryForced(spell_id), dbcSpell.LookupEntryForced(orig_spell_id), caster, procChance, procFlags, procCharges, groupRelation, procClassMask, obj);
+}
+
+SpellProc* SpellProcMgr::NewSpellProc(Unit *target, SpellEntry *spell, SpellEntry *orig_spell, uint64 caster, uint32 procChance, uint32 procFlags, uint32 procCharges, uint32 *groupRelation, uint32 *procClassMask, Object *obj)
 {
 	if( spell == NULL )
 		return NULL;
@@ -46,7 +55,7 @@ SpellProc* SpellProcMgr::NewSpellProc(Unit *target, SpellEntry *spell, SpellEntr
 			ptr=itr->second;
 	}
 				
-	if (ptr)
+	if (ptr != NULL )
 		result = (*ptr)();      // Found. Create a new object of this specific class
 	else
 		result = new SpellProc; // Not found. Create a new object of generic SpellProc
@@ -59,9 +68,9 @@ SpellProc* SpellProcMgr::NewSpellProc(Unit *target, SpellEntry *spell, SpellEntr
 	result->mProcFlags        = procFlags;
 	result->mProcCharges      = procCharges;
 	result->mLastTrigger      = 0;
-	result->mProcType         = 0;
 	result->mDeleted          = false;
-	if ( groupRelation )
+
+	if ( groupRelation != NULL )
 	{
 		result->mGroupRelation[0] = groupRelation[0];
 		result->mGroupRelation[1] = groupRelation[1];
@@ -72,6 +81,18 @@ SpellProc* SpellProcMgr::NewSpellProc(Unit *target, SpellEntry *spell, SpellEntr
 		result->mGroupRelation[0] = 0;
 		result->mGroupRelation[1] = 0;
 		result->mGroupRelation[2] = 0;
+	}
+	if ( procClassMask != NULL )
+	{
+		result->mProcClassMask[0] = procClassMask[0];
+		result->mProcClassMask[1] = procClassMask[1];
+		result->mProcClassMask[2] = procClassMask[2];
+	}
+	else
+	{
+		result->mProcClassMask[0] = 0;
+		result->mProcClassMask[1] = 0;
+		result->mProcClassMask[2] = 0;
 	}
 
 	result->Init(obj);

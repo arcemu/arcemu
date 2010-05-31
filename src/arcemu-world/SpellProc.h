@@ -24,6 +24,7 @@
 #include "StdAfx.h"
 
 class SpellProc;
+class Unit;
 
 #define SPELL_PROC_FACTORY_FUNCTION(T) \
   public: \
@@ -42,41 +43,66 @@ public:
 
 	// Returns true if this spell can proc, false otherwise
 	virtual bool CanProc(Unit *victim, SpellEntry *CastingSpell)
-    {
-        return true;
-    }
+	{
+		return true;
+	}
 
 	// Called when procFlags is to be compared.
 	// Return true on success, false otherwise
 	virtual bool CheckProcFlags(uint32 flag)
-    {
-	    if ( mProcFlags & flag )
-		    return true;
-	    else	
-		    return false;
-    }
+	{
+		if ( mProcFlags & flag )
+			return true;
+		else	
+			return false;
+	}
 
-	// Returns the chance of proc
-	virtual uint32 CalcProcChance(Unit *victim, SpellEntry *CastingSpell)
-    {
-        return mProcChance;
-    }
+	// Called when is proccing from casting spell. It checks proc class mask with spell group type
+	// Return true allow proc, false otherwise
+	virtual bool CheckClassMask(Unit *victim, SpellEntry *CastingSpell)
+	{
+		if( ( mProcClassMask[0] == 0 && mProcClassMask[1] == 0 && mProcClassMask[2] == 0 )||
+			mProcClassMask[0] & CastingSpell->SpellGroupType[0] ||
+			mProcClassMask[1] & CastingSpell->SpellGroupType[1] ||
+			mProcClassMask[2] & CastingSpell->SpellGroupType[2] )
+			return true;
+		else
+			return false;
+	}
 
 	// Called just after this object is created. Usefull for initialize object members
 	virtual void Init(Object *obj)
 	{
 	}
 
+	virtual uint32 CalcProcChance(Unit *victim, SpellEntry *CastingSpell);
+
+	// Spell to proc
 	SpellEntry* mSpell;
+
+	// Spell that created this proc
 	SpellEntry* mOrigSpell;
+
+	// Unit 'owner' of this proc
 	Unit*  mTarget;
+
+	// GUID of the caster of this proc
 	uint64 mCaster;
+
 	uint32 mProcChance;
 	uint32 mProcFlags;
 	uint32 mProcCharges;
+
+	// Time of last time of proc
 	uint32 mLastTrigger;
-	uint32 mProcType; //0=triggerspell/1=triggerclassspell
+
+	// Mask used to compare with casting spell group_type
+	uint32 mProcClassMask[3];
+
+	// Mask used on spell effect
 	uint32 mGroupRelation[3];
+
+	// Indicate that this object is deleted, and should be remove on next iteration
 	bool mDeleted;
 };
 
@@ -92,9 +118,9 @@ public:
 	{
 	}
 
-	SpellProc* NewSpellProc(Unit *target, uint32 spell_id, uint32 orig_spell_id, uint64 caster, uint32 procChance, uint32 procFlags, uint32 procCharges, uint32 *groupRelation, Object *obj);
-
-	SpellProc* NewSpellProc(Unit *target, SpellEntry *spell, SpellEntry *orig_spell, uint64 caster, uint32 procChance, uint32 procFlags, uint32 procCharges, uint32 *groupRelation, Object *obj);
+	SpellProc* NewSpellProc(Unit *target, uint32 spell_id, uint32 orig_spell_id, uint64 caster, uint32 procChance, uint32 procFlags, uint32 procCharges, uint32 *groupRelation, uint32 *procClassMask, Object *obj);
+	
+	SpellProc* NewSpellProc(Unit *target, SpellEntry *spell, SpellEntry *orig_spell, uint64 caster, uint32 procChance, uint32 procFlags, uint32 procCharges, uint32 *groupRelation, uint32 *procClassMask, Object *obj);
 
 private:
 

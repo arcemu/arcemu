@@ -777,16 +777,6 @@ void ApplyNormalFixes()
 		{
 			sp->School = 5;
 		}
-#ifndef NEW_PROCFLAGS
-		// Shadow Weaving
-		else if( strstr( sp->Name, "Shadow Weaving"))
-		{
-			sp->School = 5;
-			sp->EffectApplyAuraName[0] = 42;
-			sp->procChance = sp->EffectBasePoints[0] + 1;
-			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
-		}
-#endif
 		//more triggered spell ids are wrong. I think blizz is trying to outsmart us :S
 		//Chain Heal all ranks %50 heal value (49 + 1)
 		else if( strstr( sp->Name, "Chain Heal"))
@@ -2005,20 +1995,6 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 57755 );
 		if( sp != NULL ){
 			sp->Effect[0] = SPELL_EFFECT_SCHOOL_DAMAGE;
-		}
-
-		// Warrior - Blood Frenzy
-		sp = dbcSpell.LookupEntryForced( 29836 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_CAST_SPELL;
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-		}
-		sp = dbcSpell.LookupEntryForced( 29859 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_CAST_SPELL;
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 		}
 
 		// Warrior - Rend
@@ -3545,29 +3521,6 @@ void ApplyNormalFixes()
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
 			sp->procChance = 100;
 		}
-	#ifndef NEW_PROCFLAGS
-		//Improved Sprint
-		sp = dbcSpell.LookupEntryForced( 13743 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_CAST_SPELL;
-			sp->procChance = 50;
-		}
-		sp = dbcSpell.LookupEntryForced( 13875 );
-		if( sp != NULL )
-		{
-			sp->procChance = 100;
-			sp->procFlags = PROC_ON_CAST_SPELL;
-		}
-	#else
-		//Improved Sprint
-		sp = dbcSpell.LookupEntryForced( 13743 );
-		if( sp != NULL )
-			sp->EffectSpellGroupRelation[0]=64;
-		sp = dbcSpell.LookupEntryForced( 13875 );
-		if( sp != NULL )
-			sp->EffectSpellGroupRelation[0]=64;
-	#endif
 		//garrot
 		sp = dbcSpell.LookupEntryForced( 703 );
 		if( sp != NULL )
@@ -3616,52 +3569,6 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 26867 );
 		if( sp != NULL )
 			sp->MechanicsType = MECHANIC_BLEEDING;
-	#ifndef NEW_PROCFLAGS
-		//Relentless Strikes
-		sp = dbcSpell.LookupEntryForced( 14179 );
-		if( sp != NULL )
-		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;//proc spell
-			sp->procFlags = PROC_ON_CAST_SPELL;
-		}
-	#else
-		//Relentless Strikes
-		sp = dbcSpell.LookupEntryForced( 14179 );
-		if( sp != NULL )
-			sp->EffectSpellGroupRelation[0]= 262144 | 2097152 | 8388608 | 8519680 | 524288 | 1048576 | 8388608;
-	#endif
-	#ifndef NEW_PROCFLAGS
-		//rogue - initiative
-		sp = dbcSpell.LookupEntryForced( 13976 );
-		if( sp != NULL )
-		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->procFlags = uint32(PROC_ON_CAST_SPELL|PROC_TARGET_SELF);
-		}
-		sp = dbcSpell.LookupEntryForced( 13979 );
-		if( sp != NULL )
-		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->procFlags = uint32(PROC_ON_CAST_SPELL|PROC_TARGET_SELF);
-		}
-		sp = dbcSpell.LookupEntryForced( 13980 );
-		if( sp != NULL )
-		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->procFlags = uint32(PROC_ON_CAST_SPELL|PROC_TARGET_SELF);
-		}
-	#else
-		//rogue - initiative
-		sp = dbcSpell.LookupEntryForced( 13976 );
-		if( sp != NULL )
-			sp->EffectSpellGroupRelation[0] = 8389120 | 256 | 1024;
-		sp = dbcSpell.LookupEntryForced( 13979 );
-		if( sp != NULL )
-			sp->EffectSpellGroupRelation[0] = 8389120 | 256 | 1024;
-		sp = dbcSpell.LookupEntryForced( 13980 );
-		if( sp != NULL )
-			sp->EffectSpellGroupRelation[0] = 8389120 | 256 | 1024;
-	#endif
 
 	//Rogue - Killing Spree Stealth fix
 	sp = dbcSpell.LookupEntryForced( 51690 );
@@ -3981,29 +3888,6 @@ void ApplyNormalFixes()
 			sp->EffectApplyAuraName[0] = SPELL_AURA_ADD_PCT_MODIFIER;
 			sp->EffectMiscValue[0] = SMT_MISC_EFFECT;
 		}
-
-	#ifdef NEW_PROCFLAGS
-		//priest -  Shadow Weaving
-		if (sp != NULL)
-		{
-			uint32 group = sp->EffectSpellGroupRelation[0];
-			sp = dbcSpell.LookupEntryForced(15334);
-			if (sp != NULL)
-				sp->EffectSpellGroupRelation[0] = group;
-			sp = dbcSpell.LookupEntryForced(15333);
-			if (sp != NULL)
-				sp->EffectSpellGroupRelation[0] = group;
-			sp = dbcSpell.LookupEntryForced(15332);
-			if (sp != NULL)
-				sp->EffectSpellGroupRelation[0] = group;
-			sp = dbcSpell.LookupEntryForced(15331);
-			if (sp != NULL)
-				sp->EffectSpellGroupRelation[0] = group;
-			sp = dbcSpell.LookupEntryForced(15257);
-			if (sp != NULL)
-				sp->EffectSpellGroupRelation[0] = group;
-		}
-	#endif
 
 		//Priest - Inspiration proc spell
 		sp = dbcSpell.LookupEntryForced( 14893 );
@@ -4647,50 +4531,6 @@ void ApplyNormalFixes()
 		}
 
 		// Shaman Arena totems fix
-		// Totem of Survival
-		sp = dbcSpell.LookupEntryForced( 46097 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_CAST_SPELL;
-		}
-		sp = dbcSpell.LookupEntryForced( 43860 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_CAST_SPELL;
-		}
-		sp = dbcSpell.LookupEntryForced( 43861 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_CAST_SPELL;
-		}
-		sp = dbcSpell.LookupEntryForced( 43862 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_CAST_SPELL;
-		}
-
-		// Totem of Indomitability
-		sp = dbcSpell.LookupEntryForced( 43859 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_CAST_SPELL;
-		}
-		sp = dbcSpell.LookupEntryForced( 46096 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_CAST_SPELL;
-		}
-		sp = dbcSpell.LookupEntryForced( 43857 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_CAST_SPELL;
-		}
-		sp = dbcSpell.LookupEntryForced( 43858 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_CAST_SPELL;
-		}
-
 		// Totem of Third WInd
 		sp = dbcSpell.LookupEntryForced( 46098 );
 		if( sp != NULL )
@@ -5421,16 +5261,6 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 			sp->EffectTriggerSpell[0] = 31643;
 
-		//mage talent "frostbyte". we make it to be dummy
-		sp = dbcSpell.LookupEntryForced( 11071 );
-		if( sp != NULL )
-			sp->EffectApplyAuraName[0] = SPELL_AURA_DUMMY;
-		sp = dbcSpell.LookupEntryForced( 12496 );
-		if( sp != NULL )
-			sp->EffectApplyAuraName[0] = SPELL_AURA_DUMMY;
-		sp = dbcSpell.LookupEntryForced( 12497 );
-		if( sp != NULL )
-			sp->EffectApplyAuraName[0] = SPELL_AURA_DUMMY;
 		//Mage - Improved Scorch
 		sp = dbcSpell.LookupEntryForced( 11095 );
 		if( sp != NULL )
@@ -6721,134 +6551,6 @@ void ApplyNormalFixes()
 
 	// Insert items spell fixes here
 
-	#ifdef NEW_PROCFLAGS
-
-		//Bonescythe Armor
-		sp = dbcSpell.LookupEntryForced( 28814 );
-		if (sp != NULL)
-			sp->EffectSpellGroupRelation[0]=8519680;
-
-		//Tome of the Lightbringer
-		sp = dbcSpell.LookupEntryForced( 41042 );
-		if (sp != NULL)
-			sp->EffectSpellGroupRelation[0]=8388608;
-		//Gladiator's Libram of Fortitude
-		sp = dbcSpell.LookupEntryForced( 43850 );
-		if (sp != NULL)
-			sp->EffectSpellGroupRelation[0]=8388608;
-		//Vengeful Gladiator's Libram of Fortitude
-		sp = dbcSpell.LookupEntryForced( 43852 );
-		if (sp != NULL)
-			sp->EffectSpellGroupRelation[0]=8388608;
-		//Merciless Gladiator's Libram of Fortitude
-		sp = dbcSpell.LookupEntryForced( 43851 );
-		if (sp != NULL)
-			sp->EffectSpellGroupRelation[0]=8388608;
-		//Gladiator's Libram of Vengeance
-		sp = dbcSpell.LookupEntryForced( 43854 );
-		if (sp != NULL)
-			sp->EffectSpellGroupRelation_high[0]=64;
-		//Merciless Gladiator's Libram of Vengeance
-		sp = dbcSpell.LookupEntryForced( 43855 );
-		if (sp != NULL)
-			sp->EffectSpellGroupRelation_high[0]=64;
-		//Vengeful Gladiator's Libram of Vengeance
-		sp = dbcSpell.LookupEntryForced( 43856 );
-		if (sp != NULL)
-			sp->EffectSpellGroupRelation_high[0]=64;
-		//The Earthshatterer
-		sp = dbcSpell.LookupEntryForced( 28821 );
-		if (sp != NULL)
-			sp->EffectSpellGroupRelation[0]=1024;
-		//Idol of the White Stag
-		sp = dbcSpell.LookupEntryForced( 41037 );
-		if (sp != NULL)
-			sp->EffectSpellGroupRelation_high[0]=64 | 1024;
-		//Merciless Gladiator's Idol of Resolve
-		sp = dbcSpell.LookupEntryForced( 43842 );
-		if (sp != NULL)
-			sp->EffectSpellGroupRelation_high[0]=64 | 1024;
-		//Vengeful Gladiator's Idol of Resolve
-		sp = dbcSpell.LookupEntryForced( 43843 );
-		if (sp != NULL)
-			sp->EffectSpellGroupRelation_high[0]=64 | 1024;
-		//Merciless Gladiator's Idol of Steadfastness
-		sp = dbcSpell.LookupEntryForced( 43844 );
-		if (sp != NULL)
-			sp->EffectSpellGroupRelation[0]=2;
-		//Vengeful Gladiator's Idol of Steadfastness
-		sp = dbcSpell.LookupEntryForced( 43845 );
-		if (sp != NULL)
-			sp->EffectSpellGroupRelation[0]=2;
-		//Merciless Gladiator's Totem of Indomitability
-		sp = dbcSpell.LookupEntryForced( 43858 );
-		if (sp != NULL)
-			sp->EffectSpellGroupRelation_high[0]=16;
-		//Vengeful Gladiator's Totem of Indomitability
-		sp = dbcSpell.LookupEntryForced( 43859 );
-		if (sp != NULL)
-			sp->EffectSpellGroupRelation_high[0]=16;
-		//Gladiator's Totem of Indomitability
-		sp = dbcSpell.LookupEntryForced( 43857 );
-		if (sp != NULL)
-			sp->EffectSpellGroupRelation_high[0]=16;
-		//Merciless Gladiator's Totem of Survival
-		sp = dbcSpell.LookupEntryForced( 43861 );
-		if (sp != NULL)
-			sp->EffectSpellGroupRelation[0]= 1048576 |268435456 | 2147483648;
-		//Vengeful Gladiator's Totem of Survival
-		sp = dbcSpell.LookupEntryForced( 43862 );
-		if (sp != NULL)
-			sp->EffectSpellGroupRelation[0]= 1048576 |268435456 | 2147483648;
-		//Gladiator's Totem of Survival
-		sp = dbcSpell.LookupEntryForced( 43861 );
-		if (sp != NULL)
-			sp->EffectSpellGroupRelation[0]= 1048576 |268435456 | 2147483648;
-		//Wolfshead Helm
-		sp = dbcSpell.LookupEntryForced( 17768 );
-		if (sp != NULL)
-		{
-			sp->EffectSpellGroupRelation[0]= 1073741824;
-			sp->EffectSpellGroupRelation[1]= 2147483648;
-		}
-		//Set: Plagueheart Raiment
-		sp = dbcSpell.LookupEntryForced( 28831 );
-		if (sp != NULL)
-			sp->EffectSpellGroupRelation[0]= 1;
-		//Set: Gladiator's Idol of Resolve
-		sp = dbcSpell.LookupEntryForced( 37191 );
-		if (sp != NULL)
-			sp->EffectSpellGroupRelation_high[0]=64 | 1024;
-		//Set: Gladiator's Idol of Steadfastness
-		sp = dbcSpell.LookupEntryForced( 43841 );
-		if (sp != NULL)
-			sp->EffectSpellGroupRelation[0]=2;
-		//Set: Incarnate Raiment
-		sp = dbcSpell.LookupEntryForced( 37564 );
-		if (sp != NULL)
-			sp->EffectSpellGroupRelation[0]=512;
-		//Talon of Al'ar
-		sp = dbcSpell.LookupEntryForced( 37507 );
-		if (sp != NULL)
-			sp->EffectSpellGroupRelation[0]=2048;
-		//Set: Crystalforge Armor
-		sp = dbcSpell.LookupEntryForced( 37191 );
-		if (sp != NULL)
-			sp->EffectSpellGroupRelation_high[0]=64;
-		//Set: Redemption Armor
-		sp = dbcSpell.LookupEntryForced( 28787 );
-		if (sp != NULL)
-			sp->EffectSpellGroupRelation[0]=4096;
-		//Idol of the Claw
-		sp = dbcSpell.LookupEntryForced( 34323 );
-		if( sp != NULL )
-		{
-			sp->Flags5 = FLAGS5_PROCCHANCE_COMBOBASED;
-			sp->EffectSpellGroupRelation[0]=8388608;
-			sp->EffectSpellGroupRelation_high[0]=128;
-		}
-
-	#endif
 		//Compact Harvest Reaper
 		sp = dbcSpell.LookupEntryForced( 4078 );
 		if( sp != NULL )
@@ -6952,52 +6654,36 @@ void ApplyNormalFixes()
 			sp->proc_interval = 45000;
 		}
 
-		// Deadly Gladiator's Death Knight Relic
-		sp = dbcSpell.LookupEntryForced( 60686 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
-			sp->ProcOnNameHash[0] = SPELL_HASH_PLAGUE_STRIKE;
-			sp->procChance = 100;
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 60549;
-		}
-		// Deadly Gladiator's Idol of Resolve
-		sp = dbcSpell.LookupEntryForced( 60696 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
-			sp->ProcOnNameHash[0] = SPELL_HASH_PLAGUE_STRIKE;
-			sp->procChance = 100;
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 60549;
-		}
-		// Deadly Gladiator's Libram of Fortitude
-		sp = dbcSpell.LookupEntryForced( 60633 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
-			sp->ProcOnNameHash[0] = SPELL_HASH_PLAGUE_STRIKE;
-			sp->procChance = 100;
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 60549;
-		}
-		// Deadly Totem of Indomitability
-		sp = dbcSpell.LookupEntryForced( 60548 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
-			sp->ProcOnNameHash[0] = SPELL_HASH_PLAGUE_STRIKE;
-			sp->procChance = 100;
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 60549;
-		}
+		// Deadly Aggression - triggered by Deadly Gladiator's Relic/Idol/Libram/Totem
 		sp = dbcSpell.LookupEntryForced( 60549 );
 		if( sp != NULL )
 		{
-			// it have 2 same effects dunno why
-			sp->EffectApplyAuraName[1] = 0;
-			sp->EffectBasePoints[1] = 0;
+			// effect 1 and 2 are the same... dunno why
+			sp->Effect[1] = SPELL_EFFECT_NULL;
+		}
+
+		// Furious Gladiator's Libram of Fortitude - triggered by LK Arena 4 Gladiator's Relic/Idol/Libram/Totem
+		sp = dbcSpell.LookupEntryForced( 60551 );
+		if( sp != NULL )
+		{
+			// effect 1 and 2 are the same... dunno why
+			sp->Effect[1] = SPELL_EFFECT_NULL;
+		}
+
+		// Relentless Aggression - triggered by LK Arena 5 Gladiator's Relic/Idol/Libram/Totem
+		sp = dbcSpell.LookupEntryForced( 60553 );
+		if( sp != NULL )
+		{
+			// effect 1 and 2 are the same... dunno why
+			sp->Effect[1] = SPELL_EFFECT_NULL;
+		}
+
+		// Savage Aggression - triggered by Savage Gladiator's Relic/Idol/Libram/Totem
+		sp = dbcSpell.LookupEntryForced( 60544 );
+		if( sp != NULL )
+		{
+			// effect 1 and 2 are the same... dunno why
+			sp->Effect[1] = SPELL_EFFECT_NULL;
 		}
 
 		// Sigil of Haunted Dreams
@@ -7316,23 +7002,6 @@ void ApplyNormalFixes()
 			sp->procFlags  = PROC_ON_MELEE_ATTACK | PROC_ON_RANGED_ATTACK;
 			sp->proc_interval = 30000;
 		}
-	#ifndef NEW_PROCFLAGS
-		//Ashtongue Talisman of Lethality
-		sp = dbcSpell.LookupEntryForced( 40460 );
-		if( sp != NULL )
-		{
-			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->procChance = 20;
-			sp->procFlags = PROC_ON_CAST_SPELL;
-			sp->EffectTriggerSpell[0] = 40461;
-			sp->maxstack = 1;
-		}
-	#else
-		sp = dbcSpell.LookupEntryForced( 40460 );
-		if( sp != NULL )
-			sp->EffectSpellGroupRelation[0] = 262144 | 2097152 | 8388608 | 8519680 | 524288 | 1048576 | 8388608;
-	#endif
 
 		//Serpent-Coil Braid
 		sp = dbcSpell.LookupEntryForced( 37447 );
@@ -7490,13 +7159,6 @@ void ApplyNormalFixes()
 		{
 			sp->procFlags = PROC_ON_MELEE_ATTACK;
 			sp->procChance = 20;
-		}
-
-		//Item Set: Crystalforge Armor
-		sp = dbcSpell.LookupEntryForced( 37191 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_CAST_SPELL;
 		}
 
 		//Item Set: Crystalforge Battlegear
