@@ -220,7 +220,7 @@ PlayerTalkClass(NULL),
 m_resurrectMapId(0),
 m_resurrectInstanceID(0)
 {
-	int i;
+	int i,j;
 
 	// Reset vehicle settings
 	ResetVehicleSettings();
@@ -289,6 +289,11 @@ m_resurrectInstanceID(0)
 
 	for(i = 0; i < 5; i++)
 	{
+		for(j = 0; j < 7; j++)
+		{
+			SpellHealDoneByAttribute[i][j] = 0;
+		}
+
 		FlatStatModPos[i] = 0;
 		FlatStatModNeg[i] = 0;
 		StatModPctPos[i] = 0;

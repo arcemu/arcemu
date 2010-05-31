@@ -1500,7 +1500,6 @@ public:
 	//Note:ModSkillLine -> value+=amt;ModSkillMax -->value=amt; --weird
 	float GetSkillUpChance(uint32 id);
 	// std::list<struct skilllines>getSkillLines() { return m_skilllines; }
-	float SpellCrtiticalStrikeRatingBonus;
 	float SpellHasteRatingBonus;
 	void ModAttackSpeed( int32 mod, ModType type );
 	void UpdateAttackSpeed();
