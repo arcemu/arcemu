@@ -2129,10 +2129,9 @@ void Player::SpawnActivePet()
 }
 void Player::DismissActivePets()
 {
-	for(std::list<Pet*>::iterator itr = m_Summons.begin(); itr != m_Summons.end();)
+	for(std::list<Pet*>::reverse_iterator itr = m_Summons.rbegin(); itr != m_Summons.rend();)
 	{
 		Pet* summon = (*itr);
-		++itr;
 		if( summon->IsSummon() )
 			summon->Dismiss();			// summons
 		else
