@@ -6818,18 +6818,26 @@ void Aura::SpellAuraWaterWalk( bool apply )
 
 void Aura::SpellAuraFeatherFall( bool apply )
 {
-	//FIXME:Find true flag
-	if( p_target != NULL )
+	//TODO: FIX ME: Find true flag for this
+	if( p_target == NULL )
+		return;
+
+	WorldPacket data( 12 );
+	if( apply )
 	{
-		if( apply )
-		{
-			p_target->m_safeFall += mod->m_amount;
-        }
-        else
-        {
-			p_target->m_safeFall -= mod->m_amount;
-        }
+		SetPositive();
+		data.SetOpcode( SMSG_MOVE_FEATHER_FALL );
+		p_target->m_noFallDamage = true;
 	}
+	else
+	{
+		data.SetOpcode(SMSG_MOVE_NORMAL_FALL);
+		p_target->m_noFallDamage = false;
+	}
+
+	data << m_target->GetNewGUID();
+	data << uint32( 0 );
+	p_target->SendMessageToSet( &data, true );
 }
 
 void Aura::SpellAuraHover( bool apply )
@@ -7800,26 +7808,18 @@ void Aura::SpellAuraModUnderwaterBreathing(bool apply)
 
 void Aura::SpellAuraSafeFall(bool apply)
 {
-	//TODO: FIX ME: Find true flag for this
-	if( p_target == NULL )
-		return;
-
-	WorldPacket data( 12 );
-	if( apply )
+	//FIXME:Find true flag
+	if( p_target != NULL )
 	{
-		SetPositive();
-		data.SetOpcode( SMSG_MOVE_FEATHER_FALL );
-		p_target->m_safeFall += mod->m_amount;
+		if( apply )
+		{
+			p_target->m_safeFall += mod->m_amount;
+        }
+        else
+        {
+			p_target->m_safeFall -= mod->m_amount;
+        }
 	}
-	else
-	{
-		data.SetOpcode(SMSG_MOVE_NORMAL_FALL);
-		p_target->m_safeFall -= mod->m_amount;
-	}
-
-	data << m_target->GetNewGUID();
-	data << uint32( 0 );
-	p_target->GetSession()->SendPacket( &data );
 }
 
 void Aura::SpellAuraModReputationAdjust(bool apply)
