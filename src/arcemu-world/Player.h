@@ -1878,8 +1878,7 @@ public:
 	set<Player *> gmTargets;
 	uint32 m_UnderwaterMaxTime;
 	uint32 m_UnderwaterLastDmg;
-	 void setMyCorpse(Corpse * corpse) { myCorpse = corpse; }
-	 Corpse * getMyCorpse() { return myCorpse; }
+	LocationVector getMyCorpseLocation() const { return myCorpseLocation; }
 	bool bCorpseCreateable;
 	uint32 m_resurrectHealth, m_resurrectMana;
 	uint32 m_resurrectInstanceID, m_resurrectMapId;
@@ -2332,7 +2331,8 @@ protected:
 	Object *m_SummonedObject;
 
     // other system
-	Corpse *    myCorpse;
+	LocationVector myCorpseLocation;
+	int32		myCorpseInstanceId;
 
 	uint32      m_lastHonorResetTime;
 	uint32      _fields[PLAYER_END];

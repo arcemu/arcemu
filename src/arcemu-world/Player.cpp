@@ -218,7 +218,8 @@ mOutOfRangeIdCount(0),
 m_questSharer(0),
 PlayerTalkClass(NULL),
 m_resurrectMapId(0),
-m_resurrectInstanceID(0)
+m_resurrectInstanceID(0),
+myCorpseLocation()
 {
 	int i,j;
 
@@ -339,7 +340,7 @@ m_resurrectInstanceID(0)
 	m_lastSeenWeather	   = 0;
 	m_attacking			 = false;
 
-	myCorpse				= 0;
+	myCorpseInstanceId		= 0;
 	bCorpseCreateable	   = true;
 	blinked				 = false;
 	m_explorationTimer	  = getMSTime();
@@ -3587,7 +3588,14 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	m_session->m_loggingInPlayer = NULL;
 
 	if( !isAlive() )
-		myCorpse = objmgr.GetCorpseByOwner(GetLowGUID());
+	{
+		Corpse *myCorpse = objmgr.GetCorpseByOwner(GetLowGUID());
+		if(myCorpse != NULL)
+		{
+			myCorpseLocation = myCorpse->GetPosition();
+			myCorpseInstanceId = myCorpse->GetInstanceID();
+		}
+	}
 
 	// check for multiple gems with unique-equipped flag
 	uint32 count;
@@ -4617,9 +4625,12 @@ void Player::RepopRequestedPlayer()
 	sEventMgr.RemoveEvents(this, EVENT_PLAYER_CHECKFORCHEATS); // cebernic:-> Remove this first
 	sEventMgr.RemoveEvents( this, EVENT_PLAYER_FORCED_RESURRECT ); //in case somebody resurrected us before this event happened
 
-	if( myCorpse != NULL ) {
+	if( myCorpseInstanceId != 0 )
+	{
 		// Cebernic: wOOo dead+dead = undead ? :D just resurrect player
-		myCorpse->ResetDeathClock();
+		Corpse *myCorpse = objmgr.GetCorpseByOwner(GetLowGUID());
+		if(myCorpse != NULL)
+			myCorpse->ResetDeathClock();
 		ResurrectPlayer();
 		RepopAtGraveyard( GetPositionX(), GetPositionY(), GetPositionZ(), GetMapId() );
 		return;
@@ -4695,7 +4706,12 @@ void Player::RepopRequestedPlayer()
 	{
 		SpawnCorpseBody();
 
-		if ( myCorpse!= NULL ) myCorpse->ResetDeathClock();
+		if( myCorpseInstanceId != 0 )
+		{
+			Corpse *myCorpse = objmgr.GetCorpseByOwner(GetLowGUID());
+			if(myCorpse != NULL)
+				myCorpse->ResetDeathClock();
+		}
 
 		/* Send Spirit Healer Location */
 		WorldPacket data( SMSG_DEATH_RELEASE_LOC, 16 );
@@ -4880,24 +4896,34 @@ void Player::SpawnCorpseBody()
 	Corpse *pCorpse;
 
 	pCorpse = objmgr.GetCorpseByOwner(this->GetLowGUID());
-	if(pCorpse && !pCorpse->IsInWorld())
+	if(pCorpse)
 	{
-		if(bShouldHaveLootableOnCorpse && pCorpse->GetUInt32Value(CORPSE_FIELD_DYNAMIC_FLAGS) != 1)
-			pCorpse->SetUInt32Value(CORPSE_FIELD_DYNAMIC_FLAGS, 1); // sets it so you can loot the plyr
+		if(!pCorpse->IsInWorld())
+		{
+			if(bShouldHaveLootableOnCorpse && pCorpse->GetUInt32Value(CORPSE_FIELD_DYNAMIC_FLAGS) != 1)
+				pCorpse->SetUInt32Value(CORPSE_FIELD_DYNAMIC_FLAGS, 1); // sets it so you can loot the plyr
 
-		if(m_mapMgr == 0)
-			pCorpse->AddToWorld();
-		else
-			pCorpse->PushToWorld(m_mapMgr);
+			if(m_mapMgr == 0)
+				pCorpse->AddToWorld();
+			else
+				pCorpse->PushToWorld(m_mapMgr);
+		}
+		myCorpseLocation = pCorpse->GetPosition();
+		myCorpseInstanceId = pCorpse->GetInstanceID();
 	}
-	myCorpse = pCorpse;
+	else
+	{
+		myCorpseLocation.ChangeCoords(0,0,0,0);
+		myCorpseInstanceId = 0;
+	}
 }
 
 void Player::SpawnCorpseBones()
 {
 	Corpse *pCorpse;
 	pCorpse = objmgr.GetCorpseByOwner(GetLowGUID());
-	myCorpse = 0;
+	myCorpseLocation.ChangeCoords(0,0,0,0);
+	myCorpseInstanceId = 0;
 	if(pCorpse)
 	{
 		if (pCorpse->IsInWorld() && pCorpse->GetCorpseState() == CORPSE_STATE_BODY)
@@ -5748,7 +5774,7 @@ bool Player::CanSee(Object* obj) // * Invisibility & Stealth Detection - Partha 
 		{
 			Player *pObj = static_cast< Player* >(obj);
 
-			if(myCorpse && myCorpse->GetDistanceSq(obj) <= CORPSE_VIEW_DISTANCE)
+			if(myCorpseInstanceId == GetInstanceID() && obj->GetDistanceSq(myCorpseLocation) <= CORPSE_VIEW_DISTANCE)
 				return !pObj->m_isGmInvisible; // we can see all players within range of our corpse except invisible GMs
 
 			if(m_deathVision) // if we have arena death-vision we can see all players except invisible GMs
@@ -5757,12 +5783,12 @@ bool Player::CanSee(Object* obj) // * Invisibility & Stealth Detection - Partha 
 			return (pObj->getDeathState() == CORPSE); // we can only see players that are spirits
 		}
 
-		if(myCorpse)
+		if(myCorpseInstanceId == GetInstanceID())
 		{
-			if(myCorpse == obj)
+			if(obj->GetTypeId() == TYPEID_CORPSE && static_cast<Corpse*>(obj)->GetOwner() == GetGUID())
 				return true;
 
-			if(myCorpse->GetDistanceSq(obj) <= CORPSE_VIEW_DISTANCE)
+			if(obj->GetDistanceSq(myCorpseLocation) <= CORPSE_VIEW_DISTANCE)
 				return true; // we can see everything within range of our corpse
 		}
 
@@ -9100,10 +9126,13 @@ void Player::CompleteLoading()
 
 	if( IsDead() )
 	{
-		if ( myCorpse!= NULL ) {
+		if ( myCorpseInstanceId != 0 ) 
+		{
 			// cebernic: tempfix. This send a counter for player with just logging in.
 			// TODO: counter will be follow with death time.
-			myCorpse->ResetDeathClock();
+			Corpse *myCorpse = objmgr.GetCorpseByOwner(GetLowGUID());
+			if(myCorpse != NULL)
+				myCorpse->ResetDeathClock();
 			WorldPacket SendCounter( SMSG_CORPSE_RECLAIM_DELAY, 4 );
 			SendCounter << (uint32)( CORPSE_RECLAIM_TIME_MS );
 			GetSession()->SendPacket( &SendCounter );
