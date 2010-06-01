@@ -25,7 +25,7 @@
 //////////////////////////////////////////////////////////////
 void WorldSession::HandleGroupInviteOpcode( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN;
 	CHECK_PACKET_SIZE(recv_data, 1);
 	WorldPacket data(100);
 	std::string membername;
@@ -124,7 +124,7 @@ void WorldSession::HandleGroupCancelOpcode( WorldPacket & recv_data )
 ////////////////////////////////////////////////////////////////
 void WorldSession::HandleGroupAcceptOpcode( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN;
 
 	Player *player = objmgr.GetPlayer(_player->GetInviter());
 	if ( !player )
@@ -172,7 +172,7 @@ void WorldSession::HandleGroupAcceptOpcode( WorldPacket & recv_data )
 //////////////////////////////////////////////////////////////////////////////////////
 void WorldSession::HandleGroupDeclineOpcode( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN;
 	WorldPacket data(SMSG_GROUP_DECLINE, 100);
 
 	Player *player = objmgr.GetPlayer(_player->GetInviter());
@@ -190,7 +190,7 @@ void WorldSession::HandleGroupDeclineOpcode( WorldPacket & recv_data )
 //////////////////////////////////////////////////////////////////////////////////////////
 void WorldSession::HandleGroupUninviteOpcode( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN;
 	CHECK_PACKET_SIZE(recv_data, 1);
 	std::string membername;
 	Group *group;
@@ -229,9 +229,9 @@ void WorldSession::HandleGroupUninviteOpcode( WorldPacket & recv_data )
 
 	group = _player->GetGroup();
 
-	if(group)
+	if( group != NULL )
 	{
-		group->RemovePlayer(info);
+		group->RemovePlayer( info );
 	}
 }
 
@@ -240,7 +240,7 @@ void WorldSession::HandleGroupUninviteOpcode( WorldPacket & recv_data )
 //////////////////////////////////////////////////////////////////////////////////////////
 void WorldSession::HandleGroupUninviteGuidOpcode( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN;
 	CHECK_PACKET_SIZE(recv_data, 1);
 	uint64 PlayerGUID;
 	std::string membername = "unknown";
@@ -282,7 +282,7 @@ void WorldSession::HandleGroupUninviteGuidOpcode( WorldPacket & recv_data )
 	}
 
 	group = _player->GetGroup();
-	if(group)
+	if( group != NULL )
 	{
 		group->RemovePlayer(info);
 	}
@@ -293,7 +293,7 @@ void WorldSession::HandleGroupUninviteGuidOpcode( WorldPacket & recv_data )
 //////////////////////////////////////////////////////////////////////////////////////////
 void WorldSession::HandleGroupSetLeaderOpcode( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN;
 	// important note _player->GetName() can be wrong.
 	CHECK_PACKET_SIZE(recv_data, 1);
 	WorldPacket data;
@@ -334,12 +334,17 @@ void WorldSession::HandleGroupSetLeaderOpcode( WorldPacket & recv_data )
 //////////////////////////////////////////////////////////////////////////////////////////
 void WorldSession::HandleGroupDisbandOpcode( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld()) return;
+	// this is actually leaving a party, disband is not possible anymore
+	CHECK_INWORLD_RETURN;
 	Group* pGroup = _player->GetGroup();
-	if(!pGroup) return;
+	if( pGroup == NULL )
+		return;
 
-	//pGroup->Disband();
-	pGroup->RemovePlayer(_player->m_playerInfo);
+	// cant leave a battleground group (blizzlike 3.3.3)
+	if( pGroup->GetGroupType() & GROUP_TYPE_BG )
+		return;
+
+	pGroup->RemovePlayer( _player->m_playerInfo );
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -347,7 +352,7 @@ void WorldSession::HandleGroupDisbandOpcode( WorldPacket & recv_data )
 //////////////////////////////////////////////////////////////////////////////////////////
 void WorldSession::HandleLootMethodOpcode( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN;
 	CHECK_PACKET_SIZE(recv_data, 16);
 	uint32 lootMethod;
 	uint64 lootMaster;
@@ -380,8 +385,7 @@ void WorldSession::HandleLootMethodOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleMinimapPingOpcode( WorldPacket & recv_data )
 {
-	if( !_player->IsInWorld() ) 
-		return;
+	CHECK_INWORLD_RETURN;
 	CHECK_PACKET_SIZE(recv_data, 8);
 	if( !_player->InGroup() )
 	return;
@@ -399,10 +403,12 @@ void WorldSession::HandleMinimapPingOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleSetPlayerIconOpcode(WorldPacket& recv_data)
 {
+	CHECK_INWORLD_RETURN;
 	uint64 guid;
 	uint8 icon;
 	Group * pGroup = _player->GetGroup();
-	if(!_player->IsInWorld() || !pGroup) return;
+	if( pGroup == NULL )
+		return;
 
 	recv_data >> icon;
 	if(icon == 0xFF)
@@ -451,7 +457,7 @@ void WorldSession::HandleSetPlayerIconOpcode(WorldPacket& recv_data)
 
 void WorldSession::SendPartyCommandResult(Player *pPlayer, uint32 p1, std::string name, uint32 err)
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN;
 	// if error message do not work, please sniff it and leave me a message
 	if(pPlayer)
 	{
@@ -466,4 +472,29 @@ void WorldSession::SendPartyCommandResult(Player *pPlayer, uint32 p1, std::strin
 		data << err;
 		pPlayer->GetSession()->SendPacket(&data);
 	}
+}
+
+void WorldSession::HandlePartyMemberStatsOpcode(WorldPacket & recv_data)
+{
+	if(!_player->IsInWorld())
+		return;
+
+	uint64 guid;
+	recv_data >> guid;
+
+	Player * plr = _player->GetMapMgr()->GetPlayer((uint32)guid);
+
+	if(!_player->GetGroup() || !plr)
+		return;
+
+	WorldPacket data(200);
+	if(!_player->GetGroup()->HasMember(plr))
+		return;			// invalid player
+
+	if(_player->IsVisible(plr->GetGUID()))
+		return;
+
+	_player->GetGroup()->UpdateOutOfRangePlayer(plr, GROUP_UPDATE_TYPE_FULL_CREATE | GROUP_UPDATE_TYPE_FULL_REQUEST_REPLY, false, &data);
+	data.SetOpcode(SMSG_PARTY_MEMBER_STATS_FULL);
+	SendPacket(&data);
 }
