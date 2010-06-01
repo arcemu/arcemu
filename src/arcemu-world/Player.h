@@ -994,7 +994,6 @@ protected:
 
 public:
     void RemoveItemByGuid( uint64 GUID );
-	uint32 activePotionSpid;
 
 	//! Okay to remove from world
 	bool ok_to_remove;
@@ -1496,7 +1495,6 @@ public:
 	void EventAttackStop();
 	void EventAttackUpdateSpeed() { }
 	void EventDeath();
-	void EventPotionCooldown();
 	//Note:ModSkillLine -> value+=amt;ModSkillMax -->value=amt; --weird
 	float GetSkillUpChance(uint32 id);
 	// std::list<struct skilllines>getSkillLines() { return m_skilllines; }

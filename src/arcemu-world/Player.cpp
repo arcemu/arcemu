@@ -235,7 +235,6 @@ m_resurrectInstanceID(0)
 	//These should be set in the object constructor..
 	m_runSpeed = PLAYER_NORMAL_RUN_SPEED;
 	m_walkSpeed = 2.5f;
-	activePotionSpid = 0;
 	m_objectTypeId = TYPEID_PLAYER;
 	m_valuesCount = PLAYER_END;
 	//////////////////////////////////////////////////////////////////////////
@@ -1545,36 +1544,6 @@ void Player::EventDeath()
 	RemoveNegativeAuras();
 
 	SetDrunkValue(0);
-}
-
-void Player::EventPotionCooldown()
-{
-	if (activePotionSpid == 0)
-		return;
-
-	RemoveAllAuraById(53787);
-
-	// add server cooldown
-	_Cooldown_Add( COOLDOWN_TYPE_CATEGORY, 4, getMSTime() + TIME_MINUTE, 2370, 2456);
-
-	// clear all cooldowns
-	WorldPacket spell_data( SMSG_CLEAR_COOLDOWN, (4+8) );
-	spell_data << uint32(activePotionSpid);
-	spell_data << uint64(GetGUID());
-	GetSession()->SendPacket(&spell_data);
-
-    
-
-	// resend cooldowns
-	WorldPacket item_data(SMSG_SPELL_COOLDOWN, 8+1+4);
-	item_data << uint64(GetGUID());
-	item_data << uint8(1);
-	item_data << uint32(2597); //a potion spell with 1min cooldown
-	item_data << uint32(0);
-	GetSession()->SendPacket(&item_data);
-
-	// set to 0 after completion
-	activePotionSpid = 0;
 }
 
 /*  Gives numtps talent points to the player  */
