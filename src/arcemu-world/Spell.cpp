@@ -1222,6 +1222,10 @@ uint8 Spell::prepare( SpellCastTargets * targets )
 
 	if( p_caster != NULL )
 	{
+		// HookInterface events
+		if (!sHookInterface.OnCastSpell(p_caster, GetProto(), this))
+			return SPELL_FAILED_UNKNOWN;
+
 		if( p_caster->cannibalize )
 		{
 			sEventMgr.RemoveEvents( p_caster, EVENT_CANNIBALIZE );

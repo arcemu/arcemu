@@ -1075,13 +1075,13 @@ void HookInterface::OnEnterCombat(Player * pPlayer, Unit * pTarget)
 		((tOnEnterCombat)*itr)(pPlayer, pTarget);
 }
 
-bool HookInterface::OnCastSpell(Player * pPlayer, SpellEntry* pSpell)
+bool HookInterface::OnCastSpell(Player * pPlayer, SpellEntry* pSpell, Spell * spell)
 {
 	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_CAST_SPELL];
 	bool ret_val = true;
 	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
 	{
-		bool rv = ((tOnCastSpell)*itr)(pPlayer, pSpell);
+		bool rv = ((tOnCastSpell)*itr)(pPlayer, pSpell, spell);
 		if (rv == false) // never set ret_val back to true, once it's false
 			ret_val = false;
 	}

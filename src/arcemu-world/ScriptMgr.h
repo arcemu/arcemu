@@ -91,7 +91,7 @@ typedef void(*tOnDeath)(Player * pPlayer);
 typedef bool(*tOnRepop)(Player * pPlayer);
 typedef void(*tOnEmote)(Player * pPlayer, uint32 Emote, Unit * pUnit);
 typedef void(*tOnEnterCombat)(Player * pPlayer, Unit * pTarget);
-typedef bool(*tOnCastSpell)(Player * pPlayer, SpellEntry * pSpell);
+typedef bool(*tOnCastSpell)(Player * pPlayer, SpellEntry * pSpell, Spell * spell);
 typedef void(*tOnTick)();
 typedef bool(*tOnLogoutRequest)(Player * pPlayer);
 typedef void(*tOnLogout)(Player * pPlayer);
@@ -391,7 +391,7 @@ public:
 	bool OnRepop(Player * pPlayer);
 	void OnEmote(Player * pPlayer, uint32 Emote, Unit * pUnit);
 	void OnEnterCombat(Player * pPlayer, Unit * pTarget);
-	bool OnCastSpell(Player * pPlayer, SpellEntry * pSpell);
+	bool OnCastSpell(Player * pPlayer, SpellEntry * pSpell, Spell * spell);
 	bool OnLogoutRequest(Player * pPlayer);
 	void OnLogout(Player * pPlayer);
 	void OnQuestAccept(Player * pPlayer, Quest * pQuest, Object * pQuestGiver);

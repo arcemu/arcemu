@@ -119,10 +119,6 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 		return;
 	}
 	
-	// HookInterface
-	if (!sHookInterface.OnCastSpell( _player, spellInfo ))
-		return;
-	
 	if( spellInfo->AuraInterruptFlags & AURA_INTERRUPT_ON_STAND_UP ){
 		if (p_User->CombatStatus.IsInCombat() || p_User->IsMounted()){
 			_player->GetItemInterface()->BuildInventoryChangeError(tmpItem,NULL,INV_ERR_CANT_DO_IN_COMBAT);
@@ -305,10 +301,6 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 	
 	sLog.outDetail("WORLD: got cast spell packet, spellId - %i (%s), data length = %i",
 		spellId, spellInfo->Name, recvPacket.size());
-
-	// HookInterface events
-	if (!sHookInterface.OnCastSpell(_player, spellInfo))
-		return;
 
 /*  this is breaks capturing flags at arathi basin (marcelo)
 	if (spellInfo->Attributes & ATTRIBUTES_NO_CAST)
