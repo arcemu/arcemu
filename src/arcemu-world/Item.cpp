@@ -1072,6 +1072,9 @@ uint32 Item::GetSocketsCount()
 	for( uint32 x = 0; x < 3; x++ )
 		if( GetProto()->Sockets[x].SocketColor )
 			c++;
+	//prismatic socket
+	if( GetEnchantment(PRISMATIC_ENCHANTMENT_SLOT) != NULL )
+		c++;
 	return c;
 }
 
@@ -1198,7 +1201,7 @@ uint32 Item::CountGemsWithLimitId(uint32 LimitId)
 	uint32 result = 0;
 	for( uint32 count = 0; count < GetSocketsCount(); count++ )
 	{
-		EnchantmentInstance *ei = GetEnchantment( 2 + count );
+		EnchantmentInstance *ei = GetEnchantment( SOCK_ENCHANTMENT_SLOT1 + count );
 		if (ei 
 			&& ei->Enchantment->GemEntry //huh ? Gem without entry ?
 			)

@@ -2122,9 +2122,9 @@ void WorldSession::HandleInsertGemOpcode(WorldPacket &recvPacket)
 	}
 
 	bool ColorMatch = true;
-	for(uint32 i = 0;i<TargetItem->GetSocketsCount() + 1;i++) // +1 for the prismatic socket
+	for(uint32 i = 0;i<TargetItem->GetSocketsCount();i++)
 	{
-		EnchantmentInstance * EI= TargetItem->GetEnchantment(2+i);
+		EnchantmentInstance * EI= TargetItem->GetEnchantment(SOCK_ENCHANTMENT_SLOT1 + i);
 		if(EI)
 		{
 			FilledSlots++;
@@ -2148,7 +2148,7 @@ void WorldSession::HandleInsertGemOpcode(WorldPacket &recvPacket)
 			// tried to put gem in socket where no socket exists (take care about prismatic sockets)
 			if (!TargetProto->Sockets[i].SocketColor){
 				// no prismatic socket
-				if(!TargetItem->GetEnchantment(6))
+				if(!TargetItem->GetEnchantment(PRISMATIC_ENCHANTMENT_SLOT))
 					return;
 				
 				// not first not-colored (not normally used) socket

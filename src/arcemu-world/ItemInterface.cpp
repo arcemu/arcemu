@@ -1940,7 +1940,7 @@ int8 ItemInterface::CanEquipItemInSlot2( int8 DstInvSlot, int8 slot, Item* item,
 	{
 		for( uint32 count = 0; count < item->GetSocketsCount(); count++ )
 		{
-			EnchantmentInstance *ei = item->GetEnchantment( 2 + count );
+			EnchantmentInstance *ei = item->GetEnchantment( SOCK_ENCHANTMENT_SLOT1 + count );
 			if (ei 
 				&& ei->Enchantment->GemEntry //huh ? Gem without entry ?
 				)
@@ -3653,7 +3653,7 @@ bool ItemInterface::IsEquipped(uint32 itemid)
 			// check gems as well
 			for( uint32 count= 0; count<it->GetSocketsCount(); count++ )
 			{
-				EnchantmentInstance *ei = it->GetEnchantment(2+count);
+				EnchantmentInstance *ei = it->GetEnchantment(SOCK_ENCHANTMENT_SLOT1 + count);
 				
 				if (ei && ei->Enchantment)
 				{
@@ -3704,7 +3704,7 @@ uint32 ItemInterface::GetEquippedCountByItemLimit(uint32 LimitId)
 		{
 			for( uint32 socketcount = 0; socketcount < it->GetSocketsCount(); socketcount++ )
 			{
-				EnchantmentInstance *ei = it->GetEnchantment( 2 + socketcount );
+				EnchantmentInstance *ei = it->GetEnchantment( SOCK_ENCHANTMENT_SLOT1 + socketcount );
 				if (ei && ei->Enchantment)
 				{
 					ItemPrototype * ip = ItemPrototypeStorage.LookupEntry(ei->Enchantment->GemEntry);

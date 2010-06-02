@@ -4524,7 +4524,7 @@ void Unit::AddAura(Aura * aur)
 									uint32 oh_spell = 0;
 
 									// Find mainhand enchantment
-									EnchantmentInstance * ench = mh->GetEnchantment( 1 ); 
+									EnchantmentInstance * ench = mh->GetEnchantment( TEMP_ENCHANTMENT_SLOT ); 
 									if(ench)
 									{
 										EnchantEntry* Entry = ench->Enchantment;
@@ -4542,7 +4542,7 @@ void Unit::AddAura(Aura * aur)
 										}
 
 										// Find offhand enchantment
-										ench = oh->GetEnchantment( 1 ); 
+										ench = oh->GetEnchantment( TEMP_ENCHANTMENT_SLOT ); 
 										if(ench)
 										{
 											EnchantEntry* Entry = ench->Enchantment;

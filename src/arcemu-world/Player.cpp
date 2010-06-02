@@ -3611,7 +3611,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		{
 			for( count= 0; count<it->GetSocketsCount(); count++ )
 			{
-				EnchantmentInstance *ei = it->GetEnchantment(2+count);
+				EnchantmentInstance *ei = it->GetEnchantment(SOCK_ENCHANTMENT_SLOT1 + count);
 
 				if (ei && ei->Enchantment)
 				{

@@ -977,7 +977,7 @@ out:
 				if( it == NULL )
 					return;
 
-				EnchantmentInstance * ench = it->GetEnchantment( 1 ); // temp enchantment slot
+				EnchantmentInstance * ench = it->GetEnchantment( TEMP_ENCHANTMENT_SLOT );
 				if(ench)
 				{
 					EnchantEntry* Entry = ench->Enchantment;
