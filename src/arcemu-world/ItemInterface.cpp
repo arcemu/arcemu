@@ -1631,7 +1631,7 @@ AddItemResult ItemInterface::AddItemToFreeSlot(Item *item)
 	uint32 i = 0;
 	bool result2;
 	AddItemResult result3;
-	Player* p = item->GetOwner();
+	Player* p = m_pOwner;
 	uint32 itemMaxStack = item->GetProto()->MaxCount;
 
 	//detect special bag item
