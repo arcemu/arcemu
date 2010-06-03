@@ -72,8 +72,9 @@ GameObject::~GameObject()
 
 	if(myScript != NULL)
 	{
-		myScript->Destroy();
+		GameObjectAIScript * script = myScript;
 		myScript = NULL;
+		script->Destroy();
 	}
 
 	uint32 guid = GetUInt32Value(OBJECT_FIELD_CREATED_BY);

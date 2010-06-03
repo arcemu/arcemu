@@ -280,7 +280,15 @@ class SERVER_DECL GameObjectAIScript
 {
 public:
 	GameObjectAIScript(GameObject* goinstance);
-	virtual ~GameObjectAIScript() {}
+	virtual ~GameObjectAIScript()
+	{
+		//GetScript() returns NULL if the destructor is called by GameObject::~GameObject()
+		if( _gameobject->GetScript() != NULL )
+		{
+			sLog.outError("GameObjectAIScript of GameObject %u is not being deleted by GameObject::~GameObject()", _gameobject->GetEntry());
+			Arcemu::Util::ARCEMU_ASSERT( false );
+		}
+	}
 
 	virtual void OnCreate() {}
 	virtual void OnSpawn() {}
