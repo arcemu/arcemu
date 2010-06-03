@@ -3986,6 +3986,11 @@ void Player::RemoveFromWorld()
 
 		ResetTradeVariables();
 	}
+
+	//stop dueling
+	if( DuelingWith != NULL )
+		DuelingWith->EndDuel( DUEL_WINNER_RETREAT );
+
 	//clear buyback
 	GetItemInterface()->EmptyBuyBack();
 

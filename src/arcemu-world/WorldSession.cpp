@@ -252,7 +252,7 @@ void WorldSession::LogoutPlayer(bool Save)
 		
 		sHookInterface.OnLogout( pPlayer );
 		if( _player->DuelingWith )
-			_player->EndDuel( DUEL_WINNER_RETREAT );
+			_player->DuelingWith->EndDuel( DUEL_WINNER_RETREAT );
 
 		if( _player->m_currentLoot && _player->IsInWorld() )
 		{
@@ -317,10 +317,6 @@ void WorldSession::LogoutPlayer(bool Save)
 		}
 		else if( _player->IsDead() && _player->getDeathState() == JUST_DIED )
 			_player->RepopRequestedPlayer();
-
-		//Duel Cancel on Leave
-		if( _player->DuelingWith != NULL )
-			_player->EndDuel( DUEL_WINNER_RETREAT );
 
 		//Issue a message telling all guild members that this player signed off
 		if( _player->IsInGuild() )
