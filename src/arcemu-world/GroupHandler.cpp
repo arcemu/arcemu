@@ -126,6 +126,10 @@ void WorldSession::HandleGroupAcceptOpcode( WorldPacket & recv_data )
 {
 	CHECK_INWORLD_RETURN;
 
+	// we are in group already
+	if( _player->GetGroup() != NULL )
+		return;
+
 	Player *player = objmgr.GetPlayer(_player->GetInviter());
 	if ( !player )
 		return;
@@ -134,10 +138,9 @@ void WorldSession::HandleGroupAcceptOpcode( WorldPacket & recv_data )
 	_player->SetInviter(0);
 	
 	Group *grp = player->GetGroup();
-
-	if(grp)
+	if( grp != NULL )
 	{
-		grp->AddMember(_player->m_playerInfo);
+		grp->AddMember( _player->m_playerInfo );
 		_player->iInstanceType = grp->m_difficulty;
 		_player->SendDungeonDifficulty();
 
@@ -148,8 +151,8 @@ void WorldSession::HandleGroupAcceptOpcode( WorldPacket & recv_data )
 	// If we're this far, it means we have no existing group, and have to make one.
 	grp = new Group(true);
 	grp->m_difficulty = static_cast<uint8>( player->iInstanceType );
-	grp->AddMember(player->m_playerInfo);		// add the inviter first, therefore he is the leader
-	grp->AddMember(_player->m_playerInfo);	   // add us.
+	grp->AddMember( player->m_playerInfo );		// add the inviter first, therefore he is the leader
+	grp->AddMember( _player->m_playerInfo );	// add us.
 	_player->iInstanceType = grp->m_difficulty;
 	_player->SendDungeonDifficulty();
 
