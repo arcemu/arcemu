@@ -4522,6 +4522,8 @@ void Unit::AddAura(Aura * aur)
 								{
 									uint32 mh_spell = 0;
 									uint32 oh_spell = 0;
+									bool is_mh_deadly_poison = false;
+									bool is_oh_deadly_poison = false;
 
 									// Find mainhand enchantment
 									EnchantmentInstance * ench = mh->GetEnchantment( TEMP_ENCHANTMENT_SLOT ); 
@@ -4535,6 +4537,21 @@ void Unit::AddAura(Aura * aur)
 												SpellEntry *sp = dbcSpell.LookupEntryForced( Entry->spell[c] );
 												if( sp && sp->c_is_flags & SPELL_FLAG_IS_POISON )
 												{
+													switch ( sp->NameHash )
+													{
+														case SPELL_HASH_DEADLY_POISON_IX:
+														case SPELL_HASH_DEADLY_POISON_VIII:
+														case SPELL_HASH_DEADLY_POISON_VII:
+														case SPELL_HASH_DEADLY_POISON_VI:
+														case SPELL_HASH_DEADLY_POISON_V:
+														case SPELL_HASH_DEADLY_POISON_IV:
+														case SPELL_HASH_DEADLY_POISON_III:
+														case SPELL_HASH_DEADLY_POISON_II:
+														case SPELL_HASH_DEADLY_POISON:
+															is_mh_deadly_poison = true;
+															break;
+													}
+
 													mh_spell = Entry->spell[c];
 													break;								                
 												}
@@ -4553,6 +4570,21 @@ void Unit::AddAura(Aura * aur)
 													SpellEntry *sp = dbcSpell.LookupEntryForced( Entry->spell[c] );
 													if( sp && sp->c_is_flags & SPELL_FLAG_IS_POISON )
 													{
+														switch ( sp->NameHash )
+														{
+															case SPELL_HASH_DEADLY_POISON_IX:
+															case SPELL_HASH_DEADLY_POISON_VIII:
+															case SPELL_HASH_DEADLY_POISON_VII:
+															case SPELL_HASH_DEADLY_POISON_VI:
+															case SPELL_HASH_DEADLY_POISON_V:
+															case SPELL_HASH_DEADLY_POISON_IV:
+															case SPELL_HASH_DEADLY_POISON_III:
+															case SPELL_HASH_DEADLY_POISON_II:
+															case SPELL_HASH_DEADLY_POISON:
+																is_oh_deadly_poison = true;
+																break;
+														}
+
 														oh_spell = Entry->spell[c];
 														break;								                
 													}
@@ -4561,7 +4593,8 @@ void Unit::AddAura(Aura * aur)
 										}
 									}
 
-									if (mh_spell && oh_spell && mh_spell != oh_spell)
+									// Only apply if both weapons are enchanted and enchantment is poison and enchantment type is different
+									if (mh_spell && oh_spell && mh_spell != oh_spell && is_mh_deadly_poison != is_oh_deadly_poison)
 									{
 										if (mh_spell != info->Id)
 											caster->CastSpell(aur->GetTarget(), mh_spell, true);
