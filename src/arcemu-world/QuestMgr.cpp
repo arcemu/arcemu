@@ -890,6 +890,7 @@ void QuestMgr::OnPlayerCast(Player* plr, uint32 spellid, uint64& victimguid)
 					{
 						qle->AddAffectedUnit(victim);
 						qle->IncrementMobCount( j );
+						qle->SendUpdateAddKill( j );
 						qle->UpdatePlayerFields();
 						if( qle->CanBeFinished() )
 							qle->SendQuestComplete();

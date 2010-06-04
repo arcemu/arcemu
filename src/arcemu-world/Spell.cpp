@@ -1863,44 +1863,6 @@ void Spell::cast(bool check)
 
 		//if( u_caster != NULL )
 		//	u_caster->RemoveAurasByInterruptFlagButSkip(AURA_INTERRUPT_ON_CAST_SPELL, GetProto()->Id);
-
-		// Send Spell cast info to QuestMgr
-		if( p_caster && p_caster->IsInWorld() )
-		{
-			// Taming quest spells are handled in SpellAuras.cpp, in SpellAuraDummy
-			// OnPlayerCast shouldn't be called here for taming-quest spells, in case the tame fails (which is handled in SpellAuras)
-			bool isTamingQuestSpell = false;
-			uint32 tamingQuestSpellIds[] = { 19688, 19694, 19693, 19674, 19697, 19696, 19687, 19548, 19689, 19692, 19699, 19700, 30099, 30105, 30102, 30646, 30653, 30654, 0 };
-			uint32* spellidPtr = &tamingQuestSpellIds[0];
-			while( *spellidPtr ) // array ends with 0, so this works
-			{
-				if( *spellidPtr == m_spellInfo->Id ) // it is a spell for taming beast quest
-				{
-					isTamingQuestSpell = true;
-					break;
-				}
-				++spellidPtr;
-			}
-			// Don't call QuestMgr::OnPlayerCast for next-attack spells, either.  It will be called during the actual spell cast.
-			if( !(hasAttribute(ATTRIBUTE_ON_NEXT_ATTACK) && !m_triggeredSpell) && !isTamingQuestSpell )
-			{
-				uint32 numTargets = 0;
-				TargetsList::iterator itr = UniqueTargets.begin();
-				for(; itr != UniqueTargets.end(); ++itr)
-				{
-					if( GET_TYPE_FROM_GUID(*itr) == HIGHGUID_TYPE_UNIT )
-					{
-						++numTargets;
-						sQuestMgr.OnPlayerCast(p_caster,GetProto()->Id,*itr);
-					}
-				}
-				if( numTargets == 0 )
-				{
-					uint64 guid = p_caster->GetTargetGUID();
-					sQuestMgr.OnPlayerCast( p_caster, GetProto()->Id, guid );
-				}
-			}
-		}
 	}
 	else
 	{
@@ -2174,6 +2136,45 @@ void Spell::finish(bool successful)
 		if( !m_triggeredSpell && (GetProto()->ChannelInterruptFlags || m_castTime>0) )
 			u_caster->SetCurrentSpell(NULL);
 	}
+
+	// Send Spell cast info to QuestMgr
+	if( successful && p_caster != NULL && p_caster->IsInWorld() )
+	{
+		// Taming quest spells are handled in SpellAuras.cpp, in SpellAuraDummy
+		// OnPlayerCast shouldn't be called here for taming-quest spells, in case the tame fails (which is handled in SpellAuras)
+		bool isTamingQuestSpell = false;
+		uint32 tamingQuestSpellIds[] = { 19688, 19694, 19693, 19674, 19697, 19696, 19687, 19548, 19689, 19692, 19699, 19700, 30099, 30105, 30102, 30646, 30653, 30654, 0 };
+		uint32* spellidPtr = tamingQuestSpellIds;
+		while( *spellidPtr ) // array ends with 0, so this works
+		{
+			if( *spellidPtr == m_spellInfo->Id ) // it is a spell for taming beast quest
+			{
+				isTamingQuestSpell = true;
+				break;
+			}
+			++spellidPtr;
+		}
+		// Don't call QuestMgr::OnPlayerCast for next-attack spells, either.  It will be called during the actual spell cast.
+		if( !(hasAttribute(ATTRIBUTE_ON_NEXT_ATTACK) && !m_triggeredSpell) && !isTamingQuestSpell )
+		{
+			uint32 numTargets = 0;
+			TargetsList::iterator itr = UniqueTargets.begin();
+			for(; itr != UniqueTargets.end(); ++itr)
+			{
+				if( GET_TYPE_FROM_GUID(*itr) == HIGHGUID_TYPE_UNIT )
+				{
+					++numTargets;
+					sQuestMgr.OnPlayerCast(p_caster,GetProto()->Id,*itr);
+				}
+			}
+			if( numTargets == 0 )
+			{
+				uint64 guid = p_caster->GetTargetGUID();
+					sQuestMgr.OnPlayerCast( p_caster, GetProto()->Id, guid );
+			}
+		}
+	}
+
 	delete this;
 }
 
