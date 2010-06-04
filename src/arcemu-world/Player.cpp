@@ -1926,7 +1926,6 @@ void Player::_SavePet(QueryBuffer * buf)
 			<< itr->second->number << "','"
 			<< itr->second->name << "','"
 			<< itr->second->entry << "','"
-			<< itr->second->fields << "','"
 			<< itr->second->xp << "','"
 			<< (itr->second->active ?  1 : 0) + itr->second->stablestate * 10 << "','"
 			<< itr->second->level << "','"
@@ -1937,7 +1936,12 @@ void Player::_SavePet(QueryBuffer * buf)
 			<< itr->second->reset_cost << "','"
 			<< itr->second->spellid << "','"
             << itr->second->petstate << "','"
-			<< itr->second->alive << "')";
+			<< itr->second->alive << "','"
+			<< itr->second->talentpoints << "','"
+			<< itr->second->current_power << "','"
+			<< itr->second->current_hp << "','"
+			<< itr->second->current_happiness << "','"
+			<< itr->second->renamable << "')";
 
         if(buf == NULL)
 			CharacterDatabase.ExecuteNA(ss.str().c_str());
@@ -2024,19 +2028,24 @@ void Player::_LoadPet(QueryResult * result)
 		pet->number  = fields[1].GetUInt32();
 		pet->name	= fields[2].GetString();
 		pet->entry   = fields[3].GetUInt32();
-		pet->fields  = fields[4].GetString();
-		pet->xp	  = fields[5].GetUInt32();
-		pet->active  = fields[6].GetInt8()%10 > 0 ? true : false;
-		pet->stablestate = fields[6].GetInt8() / 10;
-		pet->level   = fields[7].GetUInt32();
-		pet->actionbar = fields[8].GetString();
-		pet->happinessupdate = fields[9].GetUInt32();
-		pet->summon = (fields[10].GetUInt32()>0 ? true : false);
-		pet->reset_time = fields[11].GetUInt32();
-		pet->reset_cost = fields[12].GetUInt32();
-		pet->spellid = fields[13].GetUInt32();
-        pet->petstate = fields[14].GetUInt32();
-		pet->alive = fields[15].GetBool();
+
+		pet->xp	  = fields[4].GetUInt32();
+		pet->active  = fields[5].GetInt8()%10 > 0 ? true : false;
+		pet->stablestate = fields[5].GetInt8() / 10;
+		pet->level   = fields[6].GetUInt32();
+		pet->actionbar = fields[7].GetString();
+		pet->happinessupdate = fields[8].GetUInt32();
+		pet->summon = (fields[9].GetUInt32()>0 ? true : false);
+		pet->reset_time = fields[10].GetUInt32();
+		pet->reset_cost = fields[11].GetUInt32();
+		pet->spellid = fields[12].GetUInt32();
+        pet->petstate = fields[13].GetUInt32();
+		pet->alive = fields[14].GetBool();
+		pet->talentpoints = fields[15].GetUInt32();
+		pet->current_power = fields[16].GetUInt32();
+		pet->current_hp = fields[17].GetUInt32();
+		pet->current_happiness = fields[18].GetUInt32();
+		pet->renamable = fields[19].GetUInt32();
 
 		m_Pets[pet->number] = pet;
 

@@ -700,6 +700,17 @@ bool ChatHandler::HandleAddSkillCommand(const char* args, WorldSession *m_sessio
 
 bool ChatHandler::HandleNpcInfoCommand(const char *args, WorldSession *m_session)
 {
+
+	static const char *POWERTYPE[] = {
+		"Mana",
+		"Rage",
+		"Focus",
+		"Energy",
+		"Happiness",
+		"Runes",
+		"Runic Power"
+	};
+
     uint32 guid = Arcemu::Util::GUID_LOPART(m_session->GetPlayer()->GetSelection());
 	Creature *crt = getSelectedCreature(m_session);
 	if(!crt) return false;
@@ -746,6 +757,13 @@ bool ChatHandler::HandleNpcInfoCommand(const char *args, WorldSession *m_session
 		SystemMessage(m_session, "Combat Support: 0x%.3X", crt->m_faction->FriendlyMask);
 	SystemMessage(m_session, "Health (cur/max): %d/%d", crt->GetHealth(), crt->GetMaxHealth());
 	SystemMessage(m_session, "Mana (cur/max): %d/%d", crt->GetPower( POWER_TYPE_MANA ), crt->GetMaxPower( POWER_TYPE_MANA ) );
+	SystemMessage(m_session, "Happiness (cur/max): %d/%d", crt->GetPower( POWER_TYPE_HAPPINESS ), crt->GetMaxPower( POWER_TYPE_HAPPINESS ) );
+	SystemMessage(m_session, "Focus (cur/max): %d/%d", crt->GetPower( POWER_TYPE_FOCUS ), crt->GetMaxPower( POWER_TYPE_FOCUS ) );
+
+	uint32 powertype = crt->GetPowerType();
+	if( powertype >= 0 && powertype <= 6 )
+		SystemMessage(m_session, "Powertype: %s", POWERTYPE[ powertype ] );
+
 	SystemMessage(m_session, "Armor/Holy/Fire/Nature/Frost/Shadow/Arcane");
 	SystemMessage(m_session, "%d/%d/%d/%d/%d/%d/%d", crt->GetResistance(NORMAL_DAMAGE), crt->GetResistance(HOLY_DAMAGE), crt->GetResistance(FIRE_DAMAGE), crt->GetResistance(NATURE_DAMAGE), crt->GetResistance(FROST_DAMAGE), crt->GetResistance(SHADOW_DAMAGE), crt->GetResistance(ARCANE_DAMAGE));
 	SystemMessage(m_session, "Damage (min/max): %f/%f", crt->GetMinDamage(),crt->GetMaxDamage());

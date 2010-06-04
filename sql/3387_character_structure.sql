@@ -746,7 +746,6 @@ CREATE TABLE `playerpets` (
   `petnumber` int(11) NOT NULL DEFAULT '0',
   `name` varchar(21) NOT NULL DEFAULT '',
   `entry` int(10) unsigned NOT NULL DEFAULT '0',
-  `fields` longtext CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `xp` int(11) NOT NULL DEFAULT '0',
   `active` tinyint(1) NOT NULL DEFAULT '0',
   `level` int(11) NOT NULL DEFAULT '0',
@@ -758,8 +757,13 @@ CREATE TABLE `playerpets` (
   `spellid` int(10) unsigned NOT NULL DEFAULT '0',
   `petstate` int(10) unsigned NOT NULL DEFAULT '0',
   `alive` tinyint(1) NOT NULL DEFAULT '1',
+  `talentpoints` int(10) unsigned NOT NULL DEFAULT '0',
+  `current_power` int(10) unsigned NOT NULL DEFAULT '1',
+  `current_hp` int(10) unsigned NOT NULL DEFAULT '1',
+  `current_happiness` int(10) unsigned NOT NULL DEFAULT '1000000',
+  `renamable` int(10) unsigned NOT NULL DEFAULT '1',
   PRIMARY KEY (`ownerguid`,`petnumber`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci; 
 
 /*Table structure for table `playerpetspells` */
 

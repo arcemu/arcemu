@@ -686,7 +686,6 @@ struct PlayerPet
 {
 	string name;
 	uint32 entry;
-	string fields;
 	uint32 xp;
 	bool active;
 	bool alive;
@@ -700,6 +699,11 @@ struct PlayerPet
 	uint32 reset_cost;
 	uint32 spellid;
     uint32 petstate;
+	uint32 talentpoints;
+	uint32 current_power;
+	uint32 current_hp;
+	uint32 current_happiness;
+	uint32 renamable;
 };
 enum MeetingStoneQueueStatus
 {

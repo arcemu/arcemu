@@ -565,15 +565,19 @@ void Pet::LoadFromDB( Player* owner, PlayerPet * pi )
 	m_phase = m_Owner->GetPhase();
 	mPi = pi;
 	creature_info = CreatureNameStorage.LookupEntry( mPi->entry );
+	proto = CreatureProtoStorage.LookupEntry( mPi->entry );
+	myFamily = dbcCreatureFamily.LookupEntry( creature_info->Family );
 
 	Create( pi->name.c_str(), owner->GetMapId(), owner->GetPositionX() + 2 , owner->GetPositionY() + 2, owner->GetPositionZ(), owner->GetOrientation() );
-
-	LoadValues( mPi->fields.c_str() );
 
 	m_PetNumber = mPi->number;
 	m_PetXP = mPi->xp;
 	m_name = mPi->name;
 	Summon = mPi->summon;
+	SetEntry( mPi->entry );
+	setLevel( mPi->level );
+
+
 	m_HappinessTimer = mPi->happinessupdate;
 	reset_time = mPi->reset_time;
 	reset_cost = mPi->reset_cost;
@@ -616,30 +620,69 @@ void Pet::LoadFromDB( Player* owner, PlayerPet * pi )
 	SetAttackPower(0 );
 	SetAttackPowerMods(0 );
 	SetBaseAttackTime(MELEE,2000 );
+	SetBaseAttackTime(OFFHAND,2000 );
+	SetCastSpeedMod(1.0f ); // better set this one
 
-	if( m_Owner )
-	{
-		uint32 level = getLevel();
-		if( level < m_Owner->getLevel() - 5 )
-			level = m_Owner->getLevel() - 5;
-		else if( level > m_Owner->getLevel() )
-			level = m_Owner->getLevel();
 
-		if( getLevel() != level )
-		{
-			if( !Summon )
-				SetTPs( GetTPsForLevel( level) - GetSpentTPs() );
+	SetUInt32Value( UNIT_FIELD_BYTES_0, 2048 | (0 << 24) );
+	
 
-			setLevel(level );
-			SetUInt32Value( UNIT_FIELD_PETEXPERIENCE, 0 );
-			SetUInt32Value( UNIT_FIELD_PETNEXTLEVELEXP, GetNextLevelXP( level ) );
-			ApplyStatsForLevel();
-		}
-		else if( Summon )
-			ApplySummonLevelAbilities();
-		else
-			ApplyPetLevelAbilities();
+	if( Summon ){
+		SetNameForEntry( mPi->entry );
+		SetUInt64Value( UNIT_CREATED_BY_SPELL, mPi->spellid );
+		SetUInt32Value( UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED );
+		SetUInt32Value( UNIT_FIELD_BYTES_2, (0x01 | (0x28 << 8) | (0x2 << 24) ) );
+		SetBoundingRadius(0.5f );
+		SetCombatReach(0.75f );
+		SetPowerType( POWER_TYPE_MANA );
+	}else{
+		SetBoundingRadius( proto->BoundingRadius  );
+		SetCombatReach( proto->CombatReach );
+		SetUInt32Value( UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED | UNIT_FLAG_COMBAT ); // why combat ??
+		SetPower( POWER_TYPE_HAPPINESS, PET_HAPPINESS_UPDATE_VALUE >> 1 );      //happiness
+		SetMaxPower( POWER_TYPE_HAPPINESS, 1000000 );
+		SetUInt32Value( UNIT_FIELD_PETEXPERIENCE, 0 );
+		SetUInt32Value( UNIT_FIELD_PETNEXTLEVELEXP, GetNextLevelXP( mPi->level ) );
+		SetUInt32Value( UNIT_FIELD_BYTES_2, 1 );
+		SetPower(POWER_TYPE_FOCUS, 100 );// Focus
+		SetMaxPower( POWER_TYPE_FOCUS, 100 );
+		SetPowerType(POWER_TYPE_FOCUS);
 	}
+
+
+	BaseDamage[0] = 0;
+	BaseDamage[1] = 0;
+	BaseOffhandDamage[0] = 0;
+	BaseOffhandDamage[1] = 0;
+	BaseRangedDamage[0] = 0;
+	BaseRangedDamage[1] = 0;
+	m_base_runSpeed = m_runSpeed = owner->m_base_runSpeed;
+	m_base_walkSpeed = m_walkSpeed = owner->m_base_walkSpeed;
+
+	setLevel( mPi->level );
+
+	
+	SetDisplayId(creature_info->Male_DisplayID );
+	SetNativeDisplayId(creature_info->Male_DisplayID );
+	
+	EventModelChange();
+	
+	SetSummonedByGUID( owner->GetGUID() );
+	SetCreatedByGUID( owner->GetGUID() );
+	SetCreatedBySpell( mPi->spellid );
+
+	ApplyStatsForLevel();
+
+
+	SetTPs( mPi->talentpoints );
+	SetPower( GetPowerType(), mPi->current_power );
+	SetHealth( mPi->current_hp );
+	SetPower( POWER_TYPE_HAPPINESS, mPi->current_happiness );
+
+	if( mPi->renamable == 0 )
+		SetByte( UNIT_FIELD_BYTES_2, 2, PET_RENAME_NOT_ALLOWED );
+	else
+		SetByte( UNIT_FIELD_BYTES_2, 2, PET_RENAME_ALLOWED );
 
 	//if pet was dead on logout then it should be dead now too.//we could use mPi->alive but this will break backward compatibility
 	if( HasFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_DEAD ))//LoadFromDB() (called by Player::SpawnPet() ) now always revive the Pet if it was dead.
@@ -757,11 +800,7 @@ void Pet::UpdatePetInfo( bool bSetToOffline )
 	pi->active = !bSetToOffline;
 	pi->entry = GetEntry();
 	std::stringstream ss;
-	for( uint32 index = 0; index < UNIT_END; index ++ )
-	{
-		ss << GetUInt32Value(index) << " ";
-	}
-	pi->fields = ss.str();
+
 	pi->name = GetName();
 	pi->number = m_PetNumber;
 	pi->xp = m_PetXP;
@@ -788,6 +827,17 @@ void Pet::UpdatePetInfo( bool bSetToOffline )
 	pi->reset_time = reset_time;
     pi->petstate = m_State;
 	pi->alive = isAlive();
+	pi->current_power = GetPower( GetPowerType() );
+	pi->talentpoints = GetTPs();
+	pi->current_hp = GetHealth();
+	pi->current_happiness = GetPower( POWER_TYPE_HAPPINESS );
+	
+	uint32 renamable = GetByte( UNIT_FIELD_BYTES_2, 2 );
+
+	if( renamable == PET_RENAME_ALLOWED )
+		pi->renamable = 1;
+	else
+		pi->renamable = 0;
 }
 
 void Pet::Dismiss() //Abandon pet
@@ -1444,7 +1494,7 @@ void Pet::ApplyStatsForLevel()
 
 	// Apply common stuff
 	// Apply scale for this family.
-	if( myFamily )
+	if( myFamily != NULL )
 	{
 		float pet_level = float( getLevel() );
 		float level_diff = float( myFamily->maxlevel - myFamily->minlevel );
