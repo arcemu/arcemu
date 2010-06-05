@@ -20,6 +20,45 @@
 
 #include "StdAfx.h"
 
+class WoundPoisonSpellProc : public SpellProc
+{
+	SPELL_PROC_FACTORY_FUNCTION(WoundPoisonSpellProc);
+
+	void Init(Object* obj)
+	{
+		// PPM for Wound Poison is 21
+		mProcChance = TO_ITEM(obj)->GetProto()->Delay * 21 / 600;
+	}
+};
+
+class InstantPoisonSpellProc : public SpellProc
+{
+	SPELL_PROC_FACTORY_FUNCTION(InstantPoisonSpellProc);
+
+	void Init(Object* obj)
+	{
+		// PPM for Instant Poison is 8
+		mProcChance = TO_ITEM(obj)->GetProto()->Delay * 8 / 600;
+	}
+};
+
 void SpellProcMgr::SetupRogue()
 {
+	AddByNameHash( SPELL_HASH_WOUND_POISON_VII, &WoundPoisonSpellProc::Create );
+	AddByNameHash( SPELL_HASH_WOUND_POISON_VI , &WoundPoisonSpellProc::Create );
+	AddByNameHash( SPELL_HASH_WOUND_POISON_V  , &WoundPoisonSpellProc::Create );
+	AddByNameHash( SPELL_HASH_WOUND_POISON_IV , &WoundPoisonSpellProc::Create );
+	AddByNameHash( SPELL_HASH_WOUND_POISON_III, &WoundPoisonSpellProc::Create );
+	AddByNameHash( SPELL_HASH_WOUND_POISON_II , &WoundPoisonSpellProc::Create );
+	AddByNameHash( SPELL_HASH_WOUND_POISON    , &WoundPoisonSpellProc::Create );
+
+	AddByNameHash( SPELL_HASH_INSTANT_POISON_IX  , &InstantPoisonSpellProc::Create );
+	AddByNameHash( SPELL_HASH_INSTANT_POISON_VIII, &InstantPoisonSpellProc::Create );
+	AddByNameHash( SPELL_HASH_INSTANT_POISON_VII , &InstantPoisonSpellProc::Create );
+	AddByNameHash( SPELL_HASH_INSTANT_POISON_VI  , &InstantPoisonSpellProc::Create );
+	AddByNameHash( SPELL_HASH_INSTANT_POISON_V   , &InstantPoisonSpellProc::Create );
+	AddByNameHash( SPELL_HASH_INSTANT_POISON_IV  , &InstantPoisonSpellProc::Create );
+	AddByNameHash( SPELL_HASH_INSTANT_POISON_III , &InstantPoisonSpellProc::Create );
+	AddByNameHash( SPELL_HASH_INSTANT_POISON_II  , &InstantPoisonSpellProc::Create );
+	AddByNameHash( SPELL_HASH_INSTANT_POISON     , &InstantPoisonSpellProc::Create );
 }
