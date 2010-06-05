@@ -671,7 +671,10 @@ void GameObject::ExpireAndDelete()
 	
 	//! remove any events
 	sEventMgr.RemoveEvents(this);
-	sEventMgr.AddEvent(this, &GameObject::_Expire, EVENT_GAMEOBJECT_EXPIRE, 1, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+	if( IsInWorld() )
+		sEventMgr.AddEvent(this, &GameObject::_Expire, EVENT_GAMEOBJECT_EXPIRE, 1, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+	else
+		delete this;
 }
 
 //! Deactivates selected gameobject ex. stops doors from opening/closing.

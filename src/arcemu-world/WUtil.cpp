@@ -36,6 +36,7 @@ uint32 Arcemu::Util::GUID_LOPART( uint64 GUID ){
 void Arcemu::Util::ARCEMU_ASSERT(  bool condition){
 	if( !condition ){
 		sLog.outError("Assertion failed. Please submit the callstack on forums(unless you are using a repack).");
+		sLog.Close();
 
 		// bogus null function call to make sure we stop and make a core dump / crash dump
 		((void(*)())0)();

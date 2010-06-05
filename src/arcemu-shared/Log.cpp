@@ -222,6 +222,14 @@ void oLog::Init(int32 fileLogLevel, int32 screenLogLevel)
 #endif
 }
 
+void oLog::Close()
+{
+	if(!m_file) return;
+	fflush(m_file);
+	fclose(m_file);
+	m_file= NULL;
+}
+
 void oLog::SetScreenLoggingLevel(int32 level)
 {
 	m_screenLogLevel = level;
