@@ -70,6 +70,14 @@ public:
 			return false;
 	}
 
+	// Called after proc chance is rolled
+	// Return false so Unit::HandleProc execute subsequent statements
+	// Return true if this handle everything, so Unit::HandleProc skips to next iteration
+	virtual bool DoEffect(Unit *victim, SpellEntry *CastingSpell, uint32 dmg, uint32 abs)
+	{
+		return false;
+	}
+
 	// Called just after this object is created. Usefull for initialize object members
 	virtual void Init(Object *obj)
 	{

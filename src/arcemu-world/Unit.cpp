@@ -1109,6 +1109,10 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 		if( spell_proc->mProcFlags & PROC_REMOVEONUSE )
 			RemoveAura( origId );
 
+		// give spell_proc a chance to handle the effect
+		if( spell_proc->DoEffect(victim, CastingSpell, dmg, abs) )
+			continue;
+
 		int dmg_overwrite = 0;
 
 		//these are player talents. Fuckem they pull the emu speed down

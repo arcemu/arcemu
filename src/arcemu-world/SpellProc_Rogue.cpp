@@ -42,6 +42,31 @@ class InstantPoisonSpellProc : public SpellProc
 	}
 };
 
+class CutToTheChaseSpellProc : public SpellProc
+{
+	SPELL_PROC_FACTORY_FUNCTION(CutToTheChaseSpellProc);
+
+	bool DoEffect(Unit *victim, SpellEntry *CastingSpell, uint32 dmg, uint32 abs)
+	{
+		Aura *aura = mTarget->FindAuraByNameHash(SPELL_HASH_SLICE_AND_DICE);
+		if (aura)
+		{
+			// Duration of 5 combo maximum
+			int32 dur = 21 * MSTIME_SECOND;
+
+			SM_FIValue(mTarget->SM_FDur,&dur,aura->GetSpellProto()->SpellGroupType);
+			SM_PIValue(mTarget->SM_PDur,&dur,aura->GetSpellProto()->SpellGroupType);
+
+			// Set new aura's duration, reset event timer and set client visual aura
+			aura->SetDuration(dur);
+			sEventMgr.ModifyEventTimeLeft(aura, EVENT_AURA_REMOVE, aura->GetDuration());
+			mTarget->ModVisualAuraStackCount(aura, 0);
+		}
+
+		return true;
+	}
+};
+
 void SpellProcMgr::SetupRogue()
 {
 	AddByNameHash( SPELL_HASH_WOUND_POISON_VII, &WoundPoisonSpellProc::Create );
@@ -61,4 +86,6 @@ void SpellProcMgr::SetupRogue()
 	AddByNameHash( SPELL_HASH_INSTANT_POISON_III , &InstantPoisonSpellProc::Create );
 	AddByNameHash( SPELL_HASH_INSTANT_POISON_II  , &InstantPoisonSpellProc::Create );
 	AddByNameHash( SPELL_HASH_INSTANT_POISON     , &InstantPoisonSpellProc::Create );
+
+	AddByNameHash( SPELL_HASH_CUT_TO_THE_CHASE, &CutToTheChaseSpellProc::Create );
 }

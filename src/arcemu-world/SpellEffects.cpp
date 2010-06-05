@@ -261,7 +261,7 @@ const char* SpellEffectNames[TOTAL_SPELL_EFFECTS] = {
 	"PICKPOCKET",                //    71
 	"ADD_FARSIGHT",              //    72
 	"SUMMON_POSSESSED",          //    73
-	"SUMMON_TOTEM",              //    74
+	"USE_GLYPH",                 //    74
 	"HEAL_MECHANICAL",           //    75
 	"SUMMON_OBJECT_WILD",        //    76
 	"SCRIPT_EFFECT",             //    77
