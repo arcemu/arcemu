@@ -2373,24 +2373,6 @@ void Aura::SpellAuraDummy(bool apply)
 				static_cast< Player* >( m_target )->m_RegenManaOnSpellResist += ((apply) ? 1:-1)*(float)mod->m_amount/100;
 			}
 		}break;
-	// Mage - Living bomb
-	case 44457:
-	case 55359:
-	case 55360:
-		{
-			Unit *caster = GetUnitCaster();
-			if( caster && !apply )
-			{
-				uint32 spellid = 0;
-				if( GetSpellId() == 44457 )
-					spellid = 44461;
-				else if( GetSpellId() == 55359 )
-					spellid = 55361;
-				else if( GetSpellId() == 55360 )
-					spellid = 55362;
-				caster->CastSpell( m_target, spellid, true );
-			}
-		}break;
 /*	//warlock - seed of corruption
 	case 27243:
 	case 32863:

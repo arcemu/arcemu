@@ -958,79 +958,10 @@ out:
 		* ROGUE SPELLS
 		*************************
 		* IDs:
-		* 14185 Preparation		STATUS: DONE
 		*  --------------------------------------------
 		* 35729 Cloak of Shadows	STATUS: DONE
 		*  --------------------------------------------
 		*************************/
-
-	case 5938: //shiv
-		{
-			if( p_caster == NULL || unitTarget == NULL )
-				return;
-
-			p_caster->CastSpell(unitTarget->GetGUID(),5940,true);
-
-			if( p_caster->GetItemInterface() )
-			{
-				Item *it = p_caster->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_OFFHAND );
-				if( it == NULL )
-					return;
-
-				EnchantmentInstance * ench = it->GetEnchantment( TEMP_ENCHANTMENT_SLOT );
-				if(ench)
-				{
-					EnchantEntry* Entry = ench->Enchantment;
-					for( uint32 c = 0; c < 3; c++ )
-					{
-						if( Entry->type[c] && Entry->spell[c] )
-						{
-							SpellEntry *sp = dbcSpell.LookupEntryForced( Entry->spell[c] );
-							if( sp == NULL )
-								return;
-
-							if( sp->c_is_flags & SPELL_FLAG_IS_POISON )
-							{
-								p_caster->CastSpell(unitTarget->GetGUID(),Entry->spell[c], true);
-							}
-						}
-					}
-				}
-			}
-
-		} break;
-		/*
-		Preparation
-		When activated, this ability immediately finishes the cooldown on your Evasion, Sprint, Vanish, Cold Blood, Shadowstep and Premeditation abilities.
-
-		Effect	Dummy
-		*/
-	case 14185:
-		{
-			if( !p_caster )
-				return;
-
-			uint32 ClearSpellId[11] =
-			{
-				5277,  /* Evasion - Rank 1 */
-				26669, /* Evasion - Rank 2 */
-				2983,  /* Sprint  - Rank 1 */
-				8696,  /* Sprint  - Rank 2 */
-				11305, /* Sprint  - Rank 3 */
-				1856,  /* Vanish  - Rank 1 */
-				1857,  /* Vanish  - Rank 2 */
-				26889, /* Vanish  - Rank 3 */
-				14177, /* Cold Blood       */
-				14183, /* Premeditation    */
-				36554  /* Shadowstep       */
-			};
-
-			for(uint32 j = 0; j < 11; ++j)
-			{
-				if( p_caster->HasSpell( ClearSpellId[j] ) )
-					p_caster->ClearCooldownForSpell( ClearSpellId[j] );
-			}
-		}break;
 		/*
 		Cloak of Shadows
 		Instantly removes all existing harmful spell effects and increases your chance to resist all spells by 90% for 5 sec.  Does not remove effects that prevent you from using Cloak of Shadows.
