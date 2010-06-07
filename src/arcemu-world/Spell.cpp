@@ -4374,32 +4374,30 @@ uint8 Spell::CanCast(bool tolerate)
 					case 0x9840A1A6: //Divine Shield
 						break;
 					*/
-					case 0x3DFA70E5: //Will of the Forsaken
+					case SPELL_HASH_WILL_OF_THE_FORSAKEN:
 						{
 							if( u_caster->m_special_state & ( UNIT_STATE_FEAR | UNIT_STATE_CHARM | UNIT_STATE_SLEEP ) )
 								break;
 						}break;
 
-					case 0xF60291F4: //Death Wish
-					case 0xD77038F4: //Fear Ward
-					case 0x19700707: //Berserker Rage
+					case SPELL_HASH_DEATH_WISH:
+					case SPELL_HASH_FEAR_WARD:
+					case SPELL_HASH_BERSERKER_RAGE:
 						{
 							if( u_caster->m_special_state & UNIT_STATE_FEAR )
 								break;
 						}break;
 
 					// {Insignia|Medallion} of the {Horde|Alliance}
-					case 0xC7C45478: //Immune Movement Impairment and Loss of Control
-					case 0x048c32f9:	// insignia of the alliance/horde
-					case 0xDD06F1BF: // Stop fucking renaming the spell, Blizzard! (This time it's PvP Trinket)
-					case 0xAEBB0513: // Every Man for Himself
-					case 0x9840A1A6: //Divine Shield
+					case SPELL_HASH_PVP_TRINKET:
+					case SPELL_HASH_EVERY_MAN_FOR_HIMSELF:
+					case SPELL_HASH_DIVINE_SHIELD:
 						{
 							if( u_caster->m_special_state & ( UNIT_STATE_FEAR | UNIT_STATE_CHARM | UNIT_STATE_SLEEP | UNIT_STATE_ROOT | UNIT_STATE_STUN | UNIT_STATE_CONFUSE | UNIT_STATE_SNARE ) )
 								break;
 						}break;
 
-					case 0xCD4CDF55: // Barksin
+					case SPELL_HASH_BARKSKIN:
 					{ // This spell is usable while stunned, frozen, incapacitated, feared or asleep.  Lasts 12 sec.
 						if( u_caster->m_special_state & ( UNIT_STATE_STUN | UNIT_STATE_FEAR | UNIT_STATE_SLEEP ) ) // Uh, what unit_state is Frozen? (freezing trap...)
 							break;
@@ -4493,17 +4491,12 @@ uint8 Spell::CanCast(bool tolerate)
 				/* -Supalosa- For some reason, being charmed or sleep'd is counted as 'Stunned'.
 				Check it: http://www.wowhead.com/?spell=700 */
 
-				// Immune Movement Impairment and Loss of Control (PvP Trinkets) --- USED STILL???
-				case SPELL_HASH_IMMUNE_MOVEMENT_IMPAIRMENT:
-					break;
-
 				// Will of the Forsaken (Undead Racial)
 				case SPELL_HASH_WILL_OF_THE_FORSAKEN: 
 					break;
 
-				case 0x048c32f9:	// insignia of the alliance/horde
 				case SPELL_HASH_PVP_TRINKET:
-				case 0xAEBB0513: // Every Man for Himself
+				case SPELL_HASH_EVERY_MAN_FOR_HIMSELF:
 					break;
 
 				case SPELL_HASH_BERSERKER_RAGE://Berserker Rage frees the caster from fear effects.

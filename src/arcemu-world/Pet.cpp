@@ -674,7 +674,7 @@ void Pet::LoadFromDB( Player* owner, PlayerPet * pi )
 	ApplyStatsForLevel();
 
 
-	SetTPs( mPi->talentpoints );
+	SetTPs( static_cast<uint8>( mPi->talentpoints ) );
 	SetPower( GetPowerType(), mPi->current_power );
 	SetHealth( mPi->current_hp );
 	SetPower( POWER_TYPE_HAPPINESS, mPi->current_happiness );

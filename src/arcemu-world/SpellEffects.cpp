@@ -4698,7 +4698,7 @@ void Spell::SpellEffectWeapondamage( uint32 i ) // Weapon damage +
 	if( !unitTarget || !u_caster ) return;
 
 	//Hackfix for Mangle
-	if( GetProto()->NameHash == SPELL_HASH_MANGLE___CAT && u_caster->IsPlayer() )
+	if( GetProto()->NameHash == SPELL_HASH_MANGLE__CAT_ && u_caster->IsPlayer() )
 		static_cast< Player* >( u_caster )->AddComboPoints( unitTarget->GetGUID(), 1 );
 
 	// Hacky fix for druid spells where it would "double attack".

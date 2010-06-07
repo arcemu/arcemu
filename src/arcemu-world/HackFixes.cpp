@@ -1222,7 +1222,27 @@ void ApplyNormalFixes()
 		// PRIEST								//
 		//////////////////////////////////////////
 
-		// Insert priest spell fixes here
+		//Borrowed Time
+		if( sp->NameHash == SPELL_HASH_BORROWED_TIME )
+		{
+			sp->procFlags = PROC_ON_CAST_SPELL;
+		}
+
+		//megai2: Grace http://www.wowhead.com/?spell=47516
+		if( sp->NameHash == SPELL_HASH_GRACE )
+		{
+			switch( sp->Id )
+			{
+				case 47516:	// Rank 1
+				case 47517:	// Rank 2
+					sp->procFlags = PROC_ON_CAST_SPELL;
+				break;
+
+				case 47930:
+					sp->rangeIndex = 4;
+				break;
+			}
+		}
 
 		//////////////////////////////////////////
 		// SHAMAN								//
@@ -4047,7 +4067,6 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced(47516);
 		if(sp != NULL)
 		{
-			sp->procFlags = PROC_ON_CAST_SPELL;
 			sp->proc_interval = 100;
 		}
 
@@ -4055,32 +4074,8 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced(47517);
 		if(sp != NULL)
 		{
-			sp->procFlags = PROC_ON_CAST_SPELL;
 			sp->proc_interval = 100;
 		}
-
-		//Borrowed Time
-		if( sp->NameHash == SPELL_HASH_BORROWED_TIME )
-		{
-			sp->procFlags = PROC_ON_CAST_SPELL;
-		}
-
-		//megai2: Grace http://www.wowhead.com/?spell=47516
-		if( sp->NameHash == SPELL_HASH_GRACE )
-		{
-			switch( sp->Id )
-			{
-				case 47516:	// Rank 1
-				case 47517:	// Rank 2
-					sp->procFlags = PROC_ON_CAST_SPELL;
-				break;
-
-				case 47930:
-					sp->rangeIndex = 4;
-				break;
-			}
-		}
-
 
 	//////////////////////////////////////////
 	// SHAMAN								//
@@ -6604,8 +6599,8 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 		{
 			sp->self_cast_only = true;
-			sp->ProcOnNameHash[0] = SPELL_HASH_MANGLE___CAT;
-			sp->ProcOnNameHash[1] = SPELL_HASH_MANGLE___BEAR;
+			sp->ProcOnNameHash[0] = SPELL_HASH_MANGLE__CAT_;
+			sp->ProcOnNameHash[1] = SPELL_HASH_MANGLE__BEAR_;
 		}
 
 		//Tome of Fiery Redemption
