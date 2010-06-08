@@ -6309,36 +6309,56 @@ uint32 Unit::ModVisualAuraStackCount(Aura *aur, int32 count)
 	{
 		m_auraStackCount[slot] = 0;
 		m_auravisuals[slot] = 0;
+		
+		
 		WorldPacket data(SMSG_AURA_UPDATE, 20);
-		FastGUIDPack(data, GetGUID());
-		data << uint8(slot);
-		data << uint32(0);
+
+		data << WoWGuid( GetNewGUID() );
+		data << uint8( slot );
+		data << uint32( 0 );
+
+
 		SendMessageToSet(&data, true);
  	}
  	else {
  		m_auraStackCount[slot] += static_cast<uint8>( count );
 		m_auravisuals[slot] = aur->GetSpellId();
-		uint16 flags;
+		uint8 flags = ( 1 | 2 | 4 );
+		
 		if( aur->IsPositive() )
-		{
-//			flags = 0x0000;
-			flags = 0x1D39;
-//			if( stack != 0 )
-//				flags = 0x1D3B;
-		}
+			flags |= AFLAG_POSTIVE;
 		else
-//			flags = 0x8000;
-			flags = 0x1DA1;
-		WorldPacket data(SMSG_AURA_UPDATE, 20);
-		FastGUIDPack(data, GetGUID());
-		data << uint8(slot);
-		data << uint32(aur->GetSpellId());
-		data << uint16(flags);
-		data << uint8(m_auraStackCount[slot]);
-		if( !aur->IsPositive() )
-//			FastGUIDPack(data, aur->m_casterGuid);
-			data << uint8(0);
-		data << uint32(aur->GetDuration()) << uint32(aur->GetTimeLeft());
+			flags |= AFLAG_NEGATIVE;
+
+		if( aur->GetDuration() != 0 )
+			flags |= AFLAG_DURATION;
+
+		if( aur->GetCaster()->GetGUID() == GetGUID() )
+			flags |= AFLAG_NOT_CASTER;
+
+
+		WorldPacket data(SMSG_AURA_UPDATE, 30);
+
+		data << WoWGuid( GetNewGUID() );
+		data << uint8( slot );
+		data << uint32( aur->GetSpellId() );
+		data << uint8( flags );
+
+		if( aur->GetUnitCaster() != NULL )
+			data << uint8( aur->GetUnitCaster()->getLevel() );  // level
+		else
+			data << uint8( sWorld.m_levelCap );
+
+		data << uint8( m_auraStackCount[ slot ] );
+
+		if( ( flags & AFLAG_NOT_CASTER ) == 0 )
+			data << WoWGuid( aur->GetCaster()->GetNewGUID() );
+
+		if( flags & AFLAG_DURATION ){
+			data << uint32( aur->GetDuration() );
+			data << uint32( aur->GetTimeLeft() );
+		}
+
 		SendMessageToSet(&data, true);
 	}
 
