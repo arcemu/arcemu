@@ -30,7 +30,66 @@ class FrostBrandAttackSpellProc : public SpellProc
 	}
 };
 
+class FlametongueWeaponSpellProc : public SpellProc
+{
+	SPELL_PROC_FACTORY_FUNCTION(FlametongueWeaponSpellProc);
+
+	bool CanProc(Unit *victim, SpellEntry *CastingSpell)
+	{
+		if ( mTarget->IsPlayer() )
+			return true;
+		return false;
+	}
+
+	bool DoEffect(Unit *victim, SpellEntry *CastingSpell, uint32 flag, uint32 dmg, uint32 abs, int *dmg_overwrite)
+	{
+		Item *item;
+		EnchantmentInstance *enchant;
+		SpellEntry *sp = NULL;
+		uint32 wp_speed = 0;
+
+		item = TO_PLAYER(mTarget)->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_MAINHAND);
+		if ( item != NULL )
+		{
+			enchant = item->GetEnchantment(TEMP_ENCHANTMENT_SLOT);
+			if ( enchant != NULL )
+			{
+				sp = dbcSpell.LookupEntryForced(enchant->Enchantment->spell[0]);
+				if ( sp != NULL && sp->NameHash == SPELL_HASH_FLAMETONGUE_WEAPON__PASSIVE_ )
+					wp_speed = item->GetProto()->Delay;
+			}
+		}
+
+		//this part will be enabled once HandleProc() will get as additional parameter if melee damage is done by main or off hand weapons.
+		//at the moment Flametongue procs even if the damage is done by the other hand.
+		/*if ( ! wp_speed )
+		{
+			item = TO_PLAYER(mTarget)->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_OFFHAND);
+			if ( item != NULL )
+			{
+				enchant = item->GetEnchantment(TEMP_ENCHANTMENT_SLOT);
+				if ( enchant != NULL )
+				{
+					sp = dbcSpell.LookupEntryForced(enchant->Enchantment->spell[0]);
+					if ( sp != NULL && sp->NameHash == SPELL_HASH_FLAMETONGUE_WEAPON__PASSIVE_ )
+						wp_speed = item->GetProto()->Delay;
+				}
+			}
+		}*/
+
+		if ( wp_speed )
+		{
+			*dmg_overwrite = (sp->EffectBasePoints[0] + 1) * wp_speed / 100000;
+			return false;
+		}
+		
+		return true;
+	}
+};
+
 void SpellProcMgr::SetupShamman()
 {
 	AddByNameHash( SPELL_HASH_FROSTBRAND_ATTACK, &FrostBrandAttackSpellProc::Create );
+
+	AddById( 10444, &FlametongueWeaponSpellProc::Create );
 }

@@ -1109,11 +1109,11 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 		if( spell_proc->mProcFlags & PROC_REMOVEONUSE )
 			RemoveAura( origId );
 
-		// give spell_proc a chance to handle the effect
-		if( spell_proc->DoEffect(victim, CastingSpell, dmg, abs) )
-			continue;
-
 		int dmg_overwrite = 0;
+
+		// give spell_proc a chance to handle the effect
+		if( spell_proc->DoEffect(victim, CastingSpell, flag, dmg, abs, &dmg_overwrite) )
+			continue;
 
 		//these are player talents. Fuckem they pull the emu speed down
 		if( IsPlayer() )
@@ -1884,28 +1884,6 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 							continue;
 						if(CastingSpell->NameHash != SPELL_HASH_JUDGEMENT_OF_COMMAND && CastingSpell->NameHash != SPELL_HASH_JUDGEMENT)
 							continue;
-					}break;
-				/* Flametongue Totem
-				case 25555:
-				case 16389:
-				case 10523:
-				case 8248:
-				case 8253:*/
-				// Flametongue Weapon
-				case 8024:
-                case 8027:
-                case 8030:
-                case 16339:
-                case 16341:
-                case 16342:
-                case 25489:
-                case 58785:
-                case 58789:
-                case 58790:
-					{
-						uint32 dmg2 = static_cast< Player* >( this )->GetFlametongueDMG( origId );
-                        SpellEntry * sp_for_the_logs = dbcSpell.LookupEntry( spellId );
-                        Strike( victim, MELEE, sp_for_the_logs, dmg2, 0, 0, true, false );
 					}break;
 				case 16246:
 					{

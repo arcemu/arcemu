@@ -13112,31 +13112,6 @@ void Player::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
 	}
 }
 
-uint32 Player::GetFlametongueDMG(uint32 spellid)
-{
-	Item * i = GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
-	float delay = i->GetProto()->Delay * 0.001f;
-	SpellEntry * sp = dbcSpell.LookupEntry(spellid);
-
-	if( delay == 0 )
-		return 1;
-
-	// Based on calculation from Shauren, thx for it
-	float min = sp->EffectBasePoints[0]/77.0f;
-	float max = sp->EffectBasePoints[0]/25.0f;
-
-	float dmg = min * delay * 0.88f;
-
-	if( dmg < min )
-		dmg = min;
-	else 
-		if( dmg > max )
-			dmg = max;
-
-	return float2int32(dmg);
-}
-
-
 uint32 Player::CheckDamageLimits( uint32 dmg, uint32 spellid )
 {
 	if( ( spellid != 0 ) && ( sWorld.m_limits.spellDamageCap > 0 ) )

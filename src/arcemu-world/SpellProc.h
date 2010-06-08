@@ -73,7 +73,7 @@ public:
 	// Called after proc chance is rolled
 	// Return false so Unit::HandleProc execute subsequent statements
 	// Return true if this handle everything, so Unit::HandleProc skips to next iteration
-	virtual bool DoEffect(Unit *victim, SpellEntry *CastingSpell, uint32 dmg, uint32 abs)
+	virtual bool DoEffect(Unit *victim, SpellEntry *CastingSpell, uint32 flag, uint32 dmg, uint32 abs, int *dmg_overwrite)
 	{
 		return false;
 	}

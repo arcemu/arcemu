@@ -1137,7 +1137,6 @@ public:
 	}
 	void CalcDamage();
 	uint32 GetMainMeleeDamage(uint32 AP_owerride); // I need this for windfury
-	uint32 GetFlametongueDMG(uint32 spellid); // For flametongue
     uint32 GetMaxLevel(){ return GetUInt32Value(PLAYER_FIELD_MAX_LEVEL); }
 
     const uint64& GetSelection( ) const { return m_curSelection; }

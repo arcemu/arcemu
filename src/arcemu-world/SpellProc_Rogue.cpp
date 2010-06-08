@@ -46,7 +46,7 @@ class CutToTheChaseSpellProc : public SpellProc
 {
 	SPELL_PROC_FACTORY_FUNCTION(CutToTheChaseSpellProc);
 
-	bool DoEffect(Unit *victim, SpellEntry *CastingSpell, uint32 dmg, uint32 abs)
+	bool DoEffect(Unit *victim, SpellEntry *CastingSpell, uint32 flag, uint32 dmg, uint32 abs, int *dmg_overwrite)
 	{
 		Aura *aura = mTarget->FindAuraByNameHash(SPELL_HASH_SLICE_AND_DICE);
 		if (aura)
