@@ -544,11 +544,6 @@ bool ChatHandler::HandleBanCharacterCommand(const char* args, WorldSession *m_se
 		pInfo = pPlayer->getPlayerInfo();
 	}
 	SystemMessage(m_session, "This ban is due to expire %s%s.", BanTime ? "on " : "", BanTime ? ConvertTimeStampToDataTime(BanTime+(uint32)UNIXTIME).c_str() : "Never");
-	if(pPlayer)
-	{
-		SystemMessage(m_session, "Kicking %s.", pPlayer->GetName());
-		pPlayer->Kick();
-	}
 
 	sGMLog.writefromsession(m_session, "banned %s, reason %s, for %s", pCharacter, (pReason== NULL)?"No reason":pReason, BanTime ? ConvertTimeStampToString(BanTime).c_str() : "ever");
 	char msg[200];
@@ -557,6 +552,12 @@ bool ChatHandler::HandleBanCharacterCommand(const char* args, WorldSession *m_se
 	if( sWorld.m_banTable && pInfo )
 	{
 		CharacterDatabase.Execute("INSERT INTO %s VALUES('%s', '%s', %u, %u, '%s')", sWorld.m_banTable, m_session->GetPlayer()->GetName(), pInfo->name, (uint32)UNIXTIME, (uint32)UNIXTIME + BanTime, (pReason== NULL)?"No reason.":CharacterDatabase.EscapeString(string(pReason)).c_str() );
+	}
+	
+	if(pPlayer)
+	{
+		SystemMessage(m_session, "Kicking %s.", pPlayer->GetName());
+		pPlayer->Kick();
 	}
 	return true;
 }
