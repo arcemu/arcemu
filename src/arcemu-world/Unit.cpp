@@ -1148,25 +1148,6 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 
 			switch( spellId )
 			{
-				case 48108: // Mage - Hot Streak
-                                       {
-                                               if( CastingSpell == NULL )
-                                                       continue;
-
-                                               if( CastingSpell->NameHash != SPELL_HASH_FIREBALL &&
-                                                       CastingSpell->NameHash != SPELL_HASH_FIRE_BLAST &&
-                                                       CastingSpell->NameHash != SPELL_HASH_SCORCH &&
-                                                       CastingSpell->NameHash != SPELL_HASH_LIVING_BOMB &&
-                                                       CastingSpell->NameHash != SPELL_HASH_FROSTFIRE_BOLT )
-                                                       continue;
-
-                                               /*if( plr->CritsInRow < 1 )
-                                               {
-                                                       plr->CritsInRow++;
-                                                       continue;
-                                               }*/
-                                       }
-                                       break;
 				case 32747: //Deadly Throw Interrupt (rogue arena gloves set)
 					{
 						if( CastingSpell == NULL )
@@ -2517,8 +2498,6 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 			// Remove lightning overload aura after procing
 			RemoveAura(39805);
 		}
-		/*if( TO_PLAYER(this)->CritsInRow > 0 )
-              TO_PLAYER(this)->CritsInRow = 0;*/
 	}
 
 	m_chargeSpellsInUse = true;
@@ -6178,6 +6157,11 @@ void Unit::RemoveAurasByInterruptFlagButSkip(uint32 flag, uint32 skip)
 						    SpellEntry *spi = dbcSpell.LookupEntryForced( skip );
 							if (spi && !(spi->School==SCHOOL_FIRE||spi->School==SCHOOL_FROST||spi->School==SCHOOL_NATURE))
 								continue;
+						}break;
+					case 48108: // Hot Streak
+						{
+							if( m_currentSpell && m_currentSpell->GetProto()->NameHash != SPELL_HASH_PYROBLAST)
+							continue;
 						}break;
 				}
 			}

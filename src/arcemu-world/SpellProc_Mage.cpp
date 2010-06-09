@@ -20,6 +20,40 @@
 
 #include "StdAfx.h"
 
+class HotStreakSpellProc : public SpellProc
+{
+	SPELL_PROC_FACTORY_FUNCTION(HotStreakSpellProc);
+
+	void Init(Object* obj)
+	{
+		mCritsInARow = 0;
+	}
+
+	bool DoEffect(Unit *victim, SpellEntry *CastingSpell, uint32 flag, uint32 dmg, uint32 abs, int *dmg_overwrite)
+	{
+		// Check for classmask. Should proc only if CastingSpell is one listed in http://www.wowhead.com/spell=44448
+		if ( ! CheckClassMask(victim, CastingSpell) )
+			return true;
+
+		// If was not a crit, reset counter and don't proc
+		if ( ! (flag & PROC_ON_SPELL_CRIT_HIT) )
+		{
+			mCritsInARow = 0;
+			return true;
+		}
+
+		// If was not at least 2nd crit in a row, don't proc
+		if ( ++mCritsInARow < 2 )
+			return true;
+
+		return false;
+	}
+
+private:
+	int mCritsInARow;
+};
+
 void SpellProcMgr::SetupMage()
 {
+	AddById( 48108, &HotStreakSpellProc::Create );
 }

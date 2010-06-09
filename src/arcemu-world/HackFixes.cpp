@@ -4696,43 +4696,6 @@ void ApplyNormalFixes()
 			sp->procChance = 20;
         }
 
-		//mage - Hot Streak
-		sp = dbcSpell.LookupEntryForced( 44445 );
-		if( sp != NULL )
-		{
-			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
-			sp->Effect[1]= SPELL_EFFECT_NULL;
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 48108;
-			sp->procChance= 33;
-			sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
-			sp->procCharges = 0;
-		}
-
-		sp = dbcSpell.LookupEntryForced( 44446 );
-		if( sp != NULL )
-		{
-			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
-			sp->Effect[1]= SPELL_EFFECT_NULL;
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 48108;
-			sp->procChance= 66;
-			sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
-			sp->procCharges = 0;
-		}
-
-		sp = dbcSpell.LookupEntryForced( 44448 );
-		if( sp != NULL )
-		{
-			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
-			sp->Effect[1]= SPELL_EFFECT_NULL;
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 48108;
-			sp->procChance= 100;
-			sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
-			sp->procCharges = 0;
-		}
-
 		// Brain Freeze rank 1
 		sp = dbcSpell.LookupEntryForced( 44546 );
 		if(sp != NULL)
@@ -5016,8 +4979,7 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 48108 );
 		if( sp != NULL )
 		{
-			sp->procFlags = PROC_ON_CAST_SPELL;
-			sp->procCharges = 1;
+			sp->AuraInterruptFlags |= AURA_INTERRUPT_ON_CAST_SPELL;
 		}
 
 		//Ice Lances
