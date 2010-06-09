@@ -1931,7 +1931,6 @@ void Player::_SavePet(QueryBuffer * buf)
 			<< itr->second->level << "','"
 			<< itr->second->actionbar << "','"
 			<< itr->second->happinessupdate << "','"
-			<< itr->second->summon << "','"
 			<< (long)itr->second->reset_time << "','"
 			<< itr->second->reset_cost << "','"
 			<< itr->second->spellid << "','"
@@ -1941,7 +1940,8 @@ void Player::_SavePet(QueryBuffer * buf)
 			<< itr->second->current_power << "','"
 			<< itr->second->current_hp << "','"
 			<< itr->second->current_happiness << "','"
-			<< itr->second->renamable << "')";
+			<< itr->second->renamable << "','"
+			<< itr->second->type << "')";
 
         if(buf == NULL)
 			CharacterDatabase.ExecuteNA(ss.str().c_str());
@@ -2035,17 +2035,17 @@ void Player::_LoadPet(QueryResult * result)
 		pet->level   = fields[6].GetUInt32();
 		pet->actionbar = fields[7].GetString();
 		pet->happinessupdate = fields[8].GetUInt32();
-		pet->summon = (fields[9].GetUInt32()>0 ? true : false);
-		pet->reset_time = fields[10].GetUInt32();
-		pet->reset_cost = fields[11].GetUInt32();
-		pet->spellid = fields[12].GetUInt32();
-        pet->petstate = fields[13].GetUInt32();
-		pet->alive = fields[14].GetBool();
-		pet->talentpoints = fields[15].GetUInt32();
-		pet->current_power = fields[16].GetUInt32();
-		pet->current_hp = fields[17].GetUInt32();
-		pet->current_happiness = fields[18].GetUInt32();
-		pet->renamable = fields[19].GetUInt32();
+		pet->reset_time = fields[9].GetUInt32();
+		pet->reset_cost = fields[10].GetUInt32();
+		pet->spellid = fields[11].GetUInt32();
+        pet->petstate = fields[12].GetUInt32();
+		pet->alive = fields[13].GetBool();
+		pet->talentpoints = fields[14].GetUInt32();
+		pet->current_power = fields[15].GetUInt32();
+		pet->current_hp = fields[16].GetUInt32();
+		pet->current_happiness = fields[17].GetUInt32();
+		pet->renamable = fields[18].GetUInt32();
+		pet->type = fields[19].GetUInt32();
 
 		m_Pets[pet->number] = pet;
 
@@ -2094,7 +2094,7 @@ void Player::SpawnPet( uint32 pet_number )
 }
 void Player::SpawnActivePet()
 {
-	if( GetSummon() != NULL || getClass() != HUNTER || !isAlive() ) //TODO: only hunters for now
+	if( GetSummon() != NULL || !isAlive() ) //TODO: only hunters for now
 		return;
 
 	std::map< uint32, PlayerPet* >::iterator itr = m_Pets.begin();

@@ -192,9 +192,11 @@ void Pet::CreateAsSummon( uint32 entry, CreatureInfo *ci, Creature* created_from
 	SetFaction(owner->GetFaction( ) );
 	SetCastSpeedMod(1.0f );	// better set this one
 
-	if( type & 0x1 || created_from_creature == NULL )
-	{
+	if( type == 1 )
 		Summon = true;
+
+	if( created_from_creature == NULL )
+	{
 		SetNameForEntry( entry );
 		if( created_by_spell != NULL )
 			SetUInt64Value( UNIT_CREATED_BY_SPELL, created_by_spell->Id );
@@ -256,7 +258,7 @@ void Pet::CreateAsSummon( uint32 entry, CreatureInfo *ci, Creature* created_from
 	m_ExpireTime = expiretime;
 	bExpires = m_ExpireTime > 0 ? true : false;
 
-	if( !bExpires )
+	if( !bExpires && owner->IsPlayer() )
 	{
 		// Create PlayerPet struct (Rest done by UpdatePetInfo)
 		PlayerPet *pp = new PlayerPet;
@@ -264,6 +266,14 @@ void Pet::CreateAsSummon( uint32 entry, CreatureInfo *ci, Creature* created_from
 		pp->stablestate = STABLE_STATE_ACTIVE;
 		pp->spellid = created_by_spell ? created_by_spell->Id : 0;
 		pp->alive = true;
+		
+
+
+		if( owner->getClass() == HUNTER )
+			pp->type = HUNTERPET;
+		else
+			pp->type = WARLOCKPET;
+
 		mPi = pp;
 		owner->AddPlayerPet( pp, pp->number );
 	}
@@ -573,7 +583,7 @@ void Pet::LoadFromDB( Player* owner, PlayerPet * pi )
 	m_PetNumber = mPi->number;
 	m_PetXP = mPi->xp;
 	m_name = mPi->name;
-	Summon = mPi->summon;
+	Summon = false;
 	SetEntry( mPi->entry );
 	setLevel( mPi->level );
 
@@ -627,7 +637,7 @@ void Pet::LoadFromDB( Player* owner, PlayerPet * pi )
 	SetUInt32Value( UNIT_FIELD_BYTES_0, 2048 | (0 << 24) );
 	
 
-	if( Summon ){
+	if( pi->type == WARLOCKPET ){
 		SetNameForEntry( mPi->entry );
 		SetUInt64Value( UNIT_CREATED_BY_SPELL, mPi->spellid );
 		SetUInt32Value( UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED );
@@ -822,7 +832,6 @@ void Pet::UpdatePetInfo( bool bSetToOffline )
 	}
 
 	pi->actionbar = ss.str();
-	pi->summon = Summon;
 	pi->reset_cost = reset_cost;
 	pi->reset_time = reset_time;
     pi->petstate = m_State;

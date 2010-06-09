@@ -4595,7 +4595,7 @@ void Spell::SpellEffectSummonPet(uint32 i) //summon - pet
 		}
 
 		Pet *summon = objmgr.CreatePet( GetProto()->EffectMiscValue[i] );
-		summon->CreateAsSummon( GetProto()->EffectMiscValue[i], ci, NULL, p_caster, GetProto(), 1, 0 );
+		summon->CreateAsSummon( GetProto()->EffectMiscValue[i], ci, NULL, p_caster, GetProto(), 2, 0 );
 	}
 }
 

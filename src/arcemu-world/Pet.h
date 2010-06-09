@@ -112,6 +112,12 @@ enum AutoCastEvents
 #define DEFAULT_SPELL_STATE 0x8100
 #define AUTOCAST_SPELL_STATE 0xC100
 
+
+enum PetType{
+	HUNTERPET = 1,
+	WARLOCKPET = 2,
+};
+
 typedef map<SpellEntry*, uint16> PetSpellMap;
 struct PlayerPet;
 

@@ -751,7 +751,6 @@ CREATE TABLE `playerpets` (
   `level` int(11) NOT NULL DEFAULT '0',
   `actionbar` varchar(200) NOT NULL DEFAULT '',
   `happinessupdate` int(11) NOT NULL DEFAULT '0',
-  `summon` int(11) NOT NULL DEFAULT '0',
   `reset_time` int(10) unsigned NOT NULL DEFAULT '0',
   `reset_cost` int(10) NOT NULL DEFAULT '0',
   `spellid` int(10) unsigned NOT NULL DEFAULT '0',
@@ -762,6 +761,7 @@ CREATE TABLE `playerpets` (
   `current_hp` int(10) unsigned NOT NULL DEFAULT '1',
   `current_happiness` int(10) unsigned NOT NULL DEFAULT '1000000',
   `renamable` int(10) unsigned NOT NULL DEFAULT '1',
+  `type` int(10) unsigned DEFAULT '1' NOT NULL,
   PRIMARY KEY (`ownerguid`,`petnumber`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci; 
 

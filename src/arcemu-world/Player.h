@@ -694,7 +694,6 @@ struct PlayerPet
 	uint32 level;
 	uint32 happinessupdate;
 	string actionbar;
-	bool summon;
 	time_t reset_time;
 	uint32 reset_cost;
 	uint32 spellid;
@@ -704,6 +703,7 @@ struct PlayerPet
 	uint32 current_hp;
 	uint32 current_happiness;
 	uint32 renamable;
+	uint32 type;
 };
 enum MeetingStoneQueueStatus
 {
