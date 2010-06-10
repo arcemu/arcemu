@@ -46,6 +46,7 @@
 #include <map>
 #include <sstream>
 #include <string>
+#include <array>
 
 #include "../arcemu-shared/Common.h"
 #include "../arcemu-shared/MersenneTwister.h"
@@ -149,6 +150,7 @@
 #include "WarsongGulch.h"
 #include "WeatherMgr.h"
 #include "World.h"
+#include "EquipmentSetMgr.h"
 #include "ItemInterface.h"
 #include "Stats.h"
 #include "WorldCreator.h"

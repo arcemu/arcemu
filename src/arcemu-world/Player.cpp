@@ -2666,6 +2666,8 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 	// Inventory
 	 GetItemInterface()->mSaveItemsToDatabase(bNewCharacter, buf);
 
+	 GetItemInterface()->m_EquipmentSets.SavetoDB( buf );
+
 	// save quest progress
 	_SaveQuestLogEntry(buf);
 
@@ -2785,6 +2787,7 @@ bool Player::LoadFromDB(uint32 guid)
 	q->AddQuery("SELECT friend_guid, note FROM social_friends WHERE character_guid = %u", guid);
 	q->AddQuery("SELECT character_guid FROM social_friends WHERE friend_guid = %u", guid);
 	q->AddQuery("SELECT ignore_guid FROM social_ignores WHERE character_guid = %u", guid);
+	q->AddQuery("SELECT * FROM equipmentsets WHERE ownerguid = %u", guid ); // 11
 
     // queue it!
 	SetLowGUID( guid );
@@ -3545,6 +3548,8 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	_LoadPlayerCooldowns(results[2].result);
 	_LoadQuestLogEntry(results[3].result);
 	m_ItemInterface->mLoadItemsFromDatabase(results[4].result);
+	m_ItemInterface->m_EquipmentSets.LoadfromDB( results[ 11 ].result );
+	
 	m_mailBox.Load(results[7].result);
 
 	// SOCIAL
@@ -13017,10 +13022,12 @@ void Player::SendTeleportAckMsg( const LocationVector &v ){
 }
 
 void Player::OutPacket( uint16 opcode, uint16 len, const void *data ){
+	Arcemu::Util::ARCEMU_ASSERT( m_session != NULL );
     m_session->OutPacket( opcode, len, data );
 }
 
 void Player::SendPacket( WorldPacket *packet ){
+	Arcemu::Util::ARCEMU_ASSERT( m_session != NULL );
     m_session->SendPacket( packet );
 }
 

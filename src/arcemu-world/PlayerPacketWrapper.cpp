@@ -788,3 +788,36 @@ void Player::SendDestroyObject( uint64 GUID ){
 	
 	m_session->SendPacket( &data );
 }
+
+
+void Player::SendEquipmentSetList(){
+
+	WorldPacket data( SMSG_EQUIPMENT_SET_LIST, 1000 );
+	
+	m_ItemInterface->m_EquipmentSets.FillEquipmentSetListPacket( data );
+
+	m_session->SendPacket( &data );
+
+	sLog.outDebug("Sent SMSG_EQUIPMENT_SET_LIST.");
+}
+
+void Player::SendEquipmentSetSaved( uint32 setID, uint32 setGUID ){
+	WorldPacket data( SMSG_EQUIPMENT_SET_SAVED, 12 );
+	
+	data << uint32( setID );
+	data << WoWGuid( uint64( setGUID ) );
+
+	m_session->SendPacket( &data );
+
+	sLog.outDebug("Sent SMSG_EQUIPMENT_SET_SAVED.");
+}
+
+void Player::SendEquipmentSetUseResult( uint8 result ){
+	WorldPacket data( SMSG_EQUIPMENT_SET_USE_RESULT, 1 );
+
+	data << uint8( result );
+
+	m_session->SendPacket( &data );
+
+	sLog.outDebug("SMSG_EQUIPMENT_SET_USE_RESULT sent.");
+}

@@ -29,6 +29,7 @@ m_hiItemGuid( 0 ),
 m_hiGroupId( 0 ),
 m_mailid( 0 ),
 m_ticketid( 0 ),
+m_setGUID( 0 ),
 m_hiCorpseGuid( 0 ),
 m_hiGuildId( 0 ),
 m_hiPetGuid( 0 ),
@@ -948,6 +949,13 @@ void ObjectMgr::SetHighestGuids()
 		delete result;
 	}
 
+	result = CharacterDatabase.Query("SELECT MAX( setGUID ) FROM equipmentsets");
+	if( result != NULL )
+	{
+		m_setGUID.SetVal( uint32( result->Fetch()[0].GetUInt32() + 1 ) );
+		delete result;
+	}
+
 	Log.Notice("ObjectMgr", "HighGuid(CORPSE) = %u", m_hiCorpseGuid.GetVal() );
 	Log.Notice("ObjectMgr", "HighGuid(PLAYER) = %u", m_hiPlayerGuid.GetVal() );
 	Log.Notice("ObjectMgr", "HighGuid(GAMEOBJ) = %u", m_hiGameObjectSpawnId.GetVal() );
@@ -958,11 +966,17 @@ void ObjectMgr::SetHighestGuids()
 	Log.Notice("ObjectMgr", "HighGuid(CHARTER) = %u", m_hiCharterId.GetVal() );
 	Log.Notice("ObjectMgr", "HighGuid(GUILD) = %u", m_hiGuildId.GetVal() );
 	Log.Notice("ObjectMgr", "HighGuid(TICKET) = %u", uint32( m_ticketid.GetVal() - 1 ) );
+	Log.Notice("ObjectMgr", "HighGuid(EQUIPMENTSET) = %u", uint32( m_setGUID.GetVal() - 1 ) );
 }
 
 uint32 ObjectMgr::GenerateTicketID()
 {
 	return ++m_ticketid;
+}
+
+
+uint32 ObjectMgr::GenerateEquipmentSetID(){
+	return ++m_setGUID;
 }
 
 uint32 ObjectMgr::GenerateMailID()

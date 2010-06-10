@@ -30,13 +30,14 @@
 #include "Player.h"
 //
 //-------------------------------------------------------------------//
-ItemInterface::ItemInterface( Player *pPlayer )
+ItemInterface::ItemInterface( Player *pPlayer ) :
+m_EquipmentSets( pPlayer->GetLowGUID() )
 {
 	m_pOwner = pPlayer;
 	memset(m_pItems, 0, sizeof(Item*)*MAX_INVENTORY_SLOT);
 	memset(m_pBuyBack, 0, sizeof(Item*)*MAX_BUYBACK_SLOT);
-    this->m_refundableitems.clear();
-    
+    m_refundableitems.clear();
+		
 }
 
 //-------------------------------------------------------------------//
@@ -2816,27 +2817,31 @@ Item* ItemInterface::GetItemByGUID(uint64 Guid)
 //-------------------------------------------------------------------//
 void ItemInterface::BuildInventoryChangeError(Item *SrcItem, Item *DstItem, uint8 Error)
 {
+	WorldPacket data( SMSG_INVENTORY_CHANGE_FAILURE, 22);
 
-	if( !m_pOwner->GetSession() )
-		return; // low chances for this
+	data << uint8( Error );
 
-	WorldPacket data(22);
+	if( SrcItem != NULL )
+		data << uint64( SrcItem->GetGUID() );
+	else
+		data << uint64( 0 );
 
-	data.Initialize( SMSG_INVENTORY_CHANGE_FAILURE );
-	data << Error;
-	data << (SrcItem ? SrcItem->GetGUID() : uint64(0));
-	data << (DstItem ? DstItem->GetGUID() : uint64(0));
-	data << uint8(0);
+	if( DstItem != NULL )
+		data << uint64( DstItem->GetGUID() );
+	else
+		data << uint64( 0 );
+
+	data << uint8( 0 );
 
 	if( Error == INV_ERR_YOU_MUST_REACH_LEVEL_N ) 
 	{
 		if(SrcItem)
 		{
-			data << SrcItem->GetProto()->RequiredLevel;
+			data << uint32( SrcItem->GetProto()->RequiredLevel );
 		}
 	}
 
-	m_pOwner->GetSession()->SendPacket( &data );
+	m_pOwner->SendPacket( &data );
 }
 
 void ItemInterface::EmptyBuyBack()
@@ -4036,4 +4041,242 @@ bool ItemInterface::AddItemById( uint32 itemid, uint32 count, int32 randomprop )
 		}
 	}
 	return true;
+}
+
+
+bool ItemInterface::SwapItems( int8 DstInvSlot, int8 DstSlot, int8 SrcInvSlot, int8 SrcSlot )
+{
+	Item *SrcItem = NULL;
+	Item *DstItem = NULL;
+	bool adderror = false;
+	int8 error;
+
+	if( DstInvSlot == SrcSlot && SrcInvSlot == -1 ) // player trying to add self container to self container slots
+	{
+		BuildInventoryChangeError( NULL, NULL, INV_ERR_ITEMS_CANT_BE_SWAPPED );
+		return false;
+	}
+
+	if( ( DstInvSlot <= 0 && DstSlot < 0 ) || DstInvSlot < -1 )
+		return false;
+	
+	if( ( SrcInvSlot <= 0 && SrcSlot < 0 ) || SrcInvSlot < -1 )
+		return false;
+
+	SrcItem = GetInventoryItem( SrcInvSlot,SrcSlot );
+	if( !SrcItem )
+		return false;
+
+	DstItem = GetInventoryItem( DstInvSlot,DstSlot );
+
+	if( DstItem )
+	{   //check if it will go to equipment slot
+		if( SrcInvSlot == INVENTORY_SLOT_NOT_SET )//not bag
+		{
+			if( DstItem->IsContainer() )
+			{
+				if(((Container*)DstItem)->HasItems())
+				{
+					if(SrcSlot < INVENTORY_SLOT_BAG_START || SrcSlot >= INVENTORY_SLOT_BAG_END || SrcSlot < BANK_SLOT_BAG_START || SrcSlot >= BANK_SLOT_BAG_END)
+					{
+						BuildInventoryChangeError(SrcItem, DstItem, INV_ERR_NONEMPTY_BAG_OVER_OTHER_BAG);
+						return false;
+					}
+				}
+			}
+
+			if(SrcSlot <  CURRENCYTOKEN_SLOT_END)
+			{
+				if((error = CanEquipItemInSlot2(SrcInvSlot, SrcSlot, DstItem)) != 0)
+				{
+					BuildInventoryChangeError(SrcItem, DstItem, error);
+					return false;
+				}
+			}
+		}
+		else
+		{
+			if(DstItem->IsContainer())
+			{
+				if(((Container*)DstItem)->HasItems())
+				{
+					BuildInventoryChangeError(SrcItem, DstItem, INV_ERR_NONEMPTY_BAG_OVER_OTHER_BAG);
+					return false;
+				}
+			}
+
+			if(( error = CanEquipItemInSlot2(SrcInvSlot, SrcInvSlot, DstItem)) != 0)
+			{
+				BuildInventoryChangeError(SrcItem, DstItem, error);
+				return false;
+			}
+		}
+	}
+
+	if(SrcItem)
+	{   //check if it will go to equipment slot
+		if(DstInvSlot==INVENTORY_SLOT_NOT_SET)//not bag
+		{
+			if(SrcItem->IsContainer())
+			{
+				if(((Container*)SrcItem)->HasItems())
+				{
+					if(DstSlot < INVENTORY_SLOT_BAG_START || DstSlot >= INVENTORY_SLOT_BAG_END || DstSlot < BANK_SLOT_BAG_START || DstSlot >= BANK_SLOT_BAG_END)
+					{
+						BuildInventoryChangeError(SrcItem, DstItem, INV_ERR_NONEMPTY_BAG_OVER_OTHER_BAG);
+						return false;
+					}
+				}
+			}
+
+			if(DstSlot <  CURRENCYTOKEN_SLOT_END)
+			{
+				if(( error = CanEquipItemInSlot2(DstInvSlot, DstSlot, SrcItem)) != 0)
+				{
+					BuildInventoryChangeError(SrcItem, DstItem, error);
+					return false;
+				}
+			} 
+		}
+		else
+		{
+			if(SrcItem->IsContainer())
+			{
+				if(((Container*)SrcItem)->HasItems())
+				{
+					BuildInventoryChangeError(SrcItem, DstItem, INV_ERR_NONEMPTY_BAG_OVER_OTHER_BAG);
+					return false;
+				}
+			}
+
+			if(( error = CanEquipItemInSlot2(DstInvSlot, DstInvSlot, SrcItem)) != 0)
+			{
+				BuildInventoryChangeError(SrcItem, DstItem, error);
+				return false;
+			}
+		}
+	}
+
+#ifdef ENABLE_ACHIEVEMENTS
+	if( SrcItem && DstSlot < INVENTORY_SLOT_BAG_END && DstInvSlot == INVENTORY_SLOT_NOT_SET ) //equip - bags can be soulbound too
+	{
+		if( SrcItem->GetProto()->Bonding == ITEM_BIND_ON_EQUIP )
+			SrcItem->SoulBind();
+
+		m_pOwner->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_EQUIP_ITEM, SrcItem->GetProto()->ItemId, 0, 0);
+
+		if(DstSlot<INVENTORY_SLOT_BAG_START) // check Superior/Epic achievement
+		{
+			// Achievement ID:556 description Equip an epic item in every slot with a minimum item level of 213.
+			// "213" value not found in achievement or criteria entries, have to hard-code it here? :(
+			// Achievement ID:557 description Equip a superior item in every slot with a minimum item level of 187.
+			// "187" value not found in achievement or criteria entries, have to hard-code it here? :(
+			if( (SrcItem->GetProto()->Quality == ITEM_QUALITY_RARE_BLUE && SrcItem->GetProto()->ItemLevel >= 187) ||
+				(SrcItem->GetProto()->Quality == ITEM_QUALITY_EPIC_PURPLE && SrcItem->GetProto()->ItemLevel >= 213) )
+				m_pOwner->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_EQUIP_EPIC_ITEM, DstSlot, SrcItem->GetProto()->Quality, 0);
+		}
+	}
+
+	if( DstItem && SrcSlot < INVENTORY_SLOT_BAG_END && SrcInvSlot == INVENTORY_SLOT_NOT_SET ) //equip - make sure to soulbind items swapped from equip slot to bag slot
+	{
+		if( DstItem->GetProto()->Bonding == ITEM_BIND_ON_EQUIP )
+			DstItem->SoulBind();
+		m_pOwner->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_EQUIP_ITEM, DstItem->GetProto()->ItemId, 0, 0);
+		if(SrcSlot<INVENTORY_SLOT_BAG_START) // check Superior/Epic achievement
+		{
+			if( (DstItem->GetProto()->Quality == ITEM_QUALITY_RARE_BLUE && DstItem->GetProto()->ItemLevel >= 187) ||
+				(DstItem->GetProto()->Quality == ITEM_QUALITY_EPIC_PURPLE && DstItem->GetProto()->ItemLevel >= 213) )
+				m_pOwner->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_EQUIP_EPIC_ITEM, SrcSlot, DstItem->GetProto()->Quality, 0);
+		}
+	}
+#endif
+
+	if( SrcInvSlot == DstInvSlot )//in 1 bag
+	{
+		if( SrcInvSlot == INVENTORY_SLOT_NOT_SET ) //in backpack
+		{
+			SwapItemSlots( SrcSlot, DstSlot );
+		}
+		else//in bag
+		{
+			static_cast< Container* >( GetInventoryItem( SrcInvSlot ) )->SwapItems( SrcSlot, DstSlot );
+		}
+	}
+	else
+	{
+		//Check for stacking
+		uint32 srcItemMaxStack = (SrcItem) ? ((SrcItem->GetOwner()->ItemStackCheat) ? 0x7fffffff : SrcItem->GetProto()->MaxCount) : 0;
+		uint32 dstItemMaxStack = (DstItem) ? ((DstItem->GetOwner()->ItemStackCheat) ? 0x7fffffff : DstItem->GetProto()->MaxCount) : 0;
+		if(DstItem && SrcItem && SrcItem->GetEntry()==DstItem->GetEntry() && srcItemMaxStack>1 && SrcItem->wrapped_item_id == 0 && DstItem->wrapped_item_id == 0)
+		{
+			uint32 total=SrcItem->GetStackCount()+DstItem->GetStackCount();
+			if( total <= dstItemMaxStack )
+			{
+				DstItem->ModStackCount( SrcItem->GetStackCount());
+				DstItem->m_isDirty = true;
+				bool result = SafeFullRemoveItemFromSlot(SrcInvSlot,SrcSlot);
+				if(!result)
+				{
+					BuildInventoryChangeError(SrcItem, DstItem, INV_ERR_ITEM_CANT_STACK);
+				}
+				return false;
+			}
+			else
+			{
+				if( DstItem->GetStackCount() == dstItemMaxStack )
+				{
+
+				}
+				else
+				{
+					int32 delta = dstItemMaxStack - DstItem->GetStackCount();
+					DstItem->SetStackCount( dstItemMaxStack);
+					SrcItem->ModStackCount( -delta);
+					SrcItem->m_isDirty = true;
+					DstItem->m_isDirty = true;
+					return false;
+				}
+			}
+		}
+
+		if(SrcItem)
+			SrcItem = SafeRemoveAndRetreiveItemFromSlot(SrcInvSlot,SrcSlot, false);
+
+		if(DstItem)
+			DstItem = SafeRemoveAndRetreiveItemFromSlot(DstInvSlot,DstSlot, false);
+
+		if(SrcItem)
+		{
+			AddItemResult result = SafeAddItem(SrcItem,DstInvSlot,DstSlot);
+			if(!result)
+			{
+				printf("HandleSwapItem: Error while adding item to dstslot\n");
+				SrcItem->DeleteFromDB();
+				SrcItem->DeleteMe();
+				SrcItem = NULL;
+				adderror = true;
+			}
+		}
+
+		if(DstItem)
+		{
+			AddItemResult result = SafeAddItem(DstItem,SrcInvSlot,SrcSlot);
+			if(!result)
+			{
+				printf("HandleSwapItem: Error while adding item to srcslot\n");
+				DstItem->DeleteFromDB();
+				DstItem->DeleteMe();
+				DstItem = NULL;
+				adderror = true;
+			}
+		}
+	}
+
+	//Recalculate Expertise (for Weapon specs)
+	m_pOwner->CalcExpertise();
+
+	if( adderror )
+		return false;
+	else
+		return true;
 }

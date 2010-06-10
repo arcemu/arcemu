@@ -1011,6 +1011,9 @@ public:
 	void SendRaidDifficulty();
 	void SendExploreXP( uint32 areaid, uint32 xp );
 	void SendDestroyObject( uint64 GUID );
+	void SendEquipmentSetList();
+	void SendEquipmentSetSaved( uint32 setID, uint32 setGUID );
+	void SendEquipmentSetUseResult( uint8 result );
 
     void OutPacket( uint16 opcode, uint16 len, const void *data );
     void SendPacket( WorldPacket *packet );

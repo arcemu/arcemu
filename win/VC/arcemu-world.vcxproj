@@ -275,6 +275,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\src\arcemu-world\Channel.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\Chat.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\EquipmentSetMgr.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\SpellProc.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\SpellProc_DeathKnight.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\SpellProc_Druid.cpp" />
@@ -422,6 +423,7 @@
     <ClInclude Include="..\..\src\arcemu-world\Channel.h" />
     <ClInclude Include="..\..\src\arcemu-world\ChannelMgr.h" />
     <ClInclude Include="..\..\src\arcemu-world\Chat.h" />
+    <ClInclude Include="..\..\src\arcemu-world\EquipmentSetMgr.h" />
     <ClInclude Include="..\..\src\arcemu-world\SpellProc.h" />
     <ClInclude Include="..\..\src\arcemu-world\WordFilter.h" />
     <ClInclude Include="..\..\src\arcemu-world\AIInterface.h" />

@@ -905,6 +905,8 @@ void WorldSession::FullLogin(Player * plr)
     plr->SendDungeonDifficulty();
     plr->SendRaidDifficulty();
 
+	plr->SendEquipmentSetList();
+
 #ifndef GM_TICKET_MY_MASTER_COMPATIBLE
 	GM_Ticket * ticket = objmgr.GetGMTicketByPlayer(_player->GetGUID());
 	if(ticket != NULL)

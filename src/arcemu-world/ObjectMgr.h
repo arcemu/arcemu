@@ -569,6 +569,7 @@ public:
 	uint32 GenerateLowGuid(uint32 guidhigh);
 	uint32 GenerateMailID();
 	uint32 GenerateTicketID();
+	uint32 GenerateEquipmentSetID();
 	
 	void LoadTransporters();
 	void ProcessGameobjectQuests();
@@ -740,6 +741,7 @@ protected:
 	Arcemu::Threading::AtomicCounter m_hiGameObjectSpawnId;
 	Arcemu::Threading::AtomicCounter m_mailid;
 	Arcemu::Threading::AtomicCounter m_ticketid;
+	Arcemu::Threading::AtomicCounter m_setGUID;
 	Arcemu::Threading::AtomicCounter m_hiCorpseGuid;
 	Arcemu::Threading::AtomicCounter m_hiGuildId;
 	Arcemu::Threading::AtomicCounter m_hiPetGuid;

@@ -526,6 +526,11 @@ protected:
 	void HandleItemRefundInfoOpcode( WorldPacket& recvPacket );
 	void HandleItemRefundRequestOpcode( WorldPacket& recvPacket );
 
+	//Equipment set opcode
+	void HandleEquipmentSetUse( WorldPacket &data );
+	void HandleEquipmentSetSave( WorldPacket &data );
+	void HandleEquipmentSetDelete( WorldPacket &data );
+
 	/// Combat opcodes (CombatHandler.cpp)
 	void HandleAttackSwingOpcode(WorldPacket& recvPacket);
 	void HandleAttackStopOpcode(WorldPacket& recvPacket);

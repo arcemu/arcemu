@@ -727,6 +727,9 @@ void WorldSession::InitPacketHandlerTable()
     WorldPacketHandlers[CMSG_ITEMREFUNDINFO].handler									= &WorldSession::HandleItemRefundInfoOpcode;
     WorldPacketHandlers[CMSG_ITEMREFUNDREQUEST].handler									= &WorldSession::HandleItemRefundRequestOpcode;
 
+	WorldPacketHandlers[ CMSG_EQUIPMENT_SET_SAVE ].handler						=&WorldSession::HandleEquipmentSetSave;
+	WorldPacketHandlers[ CMSG_EQUIPMENT_SET_USE ].handler						=&WorldSession::HandleEquipmentSetUse;
+	WorldPacketHandlers[ CMSG_EQUIPMENT_SET_DELETE ].handler					=&WorldSession::HandleEquipmentSetDelete;
 	
 	// Spell System / Talent System
 	WorldPacketHandlers[CMSG_USE_ITEM].handler								  = &WorldSession::HandleUseItemOpcode;
@@ -1279,4 +1282,133 @@ void WorldSession::SendMOTD(){
     data << sWorld.GetMotd();
 
     SendPacket( &data );
+}
+
+void WorldSession::HandleEquipmentSetUse( WorldPacket &data ){
+	sLog.outDebug("Received CMSG_EQUIPMENT_SET_USE");
+
+	WoWGuid GUID;
+	int8 SrcBagID;
+	uint8 SrcSlotID;
+	uint8 result = 0;
+
+	for( uint32 i = EQUIPMENT_SLOT_START; i < EQUIPMENT_SLOT_END; ++i ){
+		uint64 ItemGUID = 0;
+
+		GUID.Clear();
+
+		data >> GUID;
+		data >> SrcBagID;
+		data >> SrcSlotID;
+
+		ItemGUID = GUID.GetOldGuid();
+
+		// Let's see if we even have this item
+		Item *item = _player->GetItemInterface()->GetItemByGUID( ItemGUID );
+		if( item == NULL ){
+			// Nope we don't probably WPE hack :/
+			result = 1;
+			continue;
+		}
+
+		int8 dstslot = i;
+		int8 dstbag = INVALID_BACKPACK_SLOT;
+
+		// This is the best case, we already have the item equipped
+		if( ( SrcBagID == dstbag ) && ( SrcSlotID == dstslot ) )
+			continue;
+
+		// Let's see if we have an item in the destination slot
+		Item *dstslotitem = _player->GetItemInterface()->GetInventoryItem( dstslot );
+		
+		if( dstslotitem == NULL ){
+			// we have no item equipped in the slot, so let's equip
+			AddItemResult additemresult;
+			int8 EquipError = _player->GetItemInterface()->CanEquipItemInSlot( dstbag, dstslot, item->GetProto(), false, false );
+
+			if(  EquipError == INV_ERR_OK ){
+				dstslotitem = _player->GetItemInterface()->SafeRemoveAndRetreiveItemFromSlot( SrcBagID, SrcSlotID, false );
+				additemresult = _player->GetItemInterface()->SafeAddItem( item, dstbag, dstslot );
+				
+				
+				if( additemresult != ADD_ITEM_RESULT_OK ){
+					// We failed for w/e reason, so let's revert
+					_player->GetItemInterface()->SafeAddItem( item, SrcBagID, SrcSlotID );
+					result = 1;
+				}
+
+
+			}else{
+				result = 1;
+			}
+
+		}else{
+			// There is something equipped so we need to swap
+			if( !_player->GetItemInterface()->SwapItems( INVALID_BACKPACK_SLOT, dstslot, SrcBagID, SrcSlotID ) )
+				result = 1;
+		}
+		
+	}
+	
+	_player->SendEquipmentSetUseResult( result );
+}
+
+void WorldSession::HandleEquipmentSetSave( WorldPacket &data ){
+	sLog.outDebug("Received CMSG_EQUIPMENT_SET_SAVE");
+
+	WoWGuid GUID;
+	uint32 setGUID;
+	
+	data >> GUID;
+
+	setGUID = Arcemu::Util::GUID_LOPART( GUID.GetOldGuid() );
+	
+	if( setGUID == 0 )
+		setGUID = objmgr.GenerateEquipmentSetID();
+
+	Arcemu::EquipmentSet *set = new Arcemu::EquipmentSet();
+
+	set->SetGUID = setGUID;
+
+
+	data >> set->SetID;
+	data >> set->SetName;
+	data >> set->IconName;
+
+	for( uint32 i = EQUIPMENT_SLOT_START; i < EQUIPMENT_SLOT_END; ++i ){
+		GUID.Clear();
+		data >> GUID;
+		set->ItemGUID[ i ] = Arcemu::Util::GUID_LOPART( GUID.GetOldGuid() );
+	}
+
+
+	bool success;
+	success = _player->GetItemInterface()->m_EquipmentSets.AddEquipmentSet( set->SetGUID, set );
+
+	if( success ){
+		sLog.outDebug("Player %u successfully stored equipment set %u at slot %u ", _player->GetLowGUID(), set->SetGUID, set->SetID );
+		_player->SendEquipmentSetSaved( set->SetID, set->SetGUID );
+	}else{
+		sLog.outDebug("Player %u couldn't store equipment set %u at slot %u ", _player->GetLowGUID(), set->SetGUID, set->SetID );
+	}
+}
+
+void WorldSession::HandleEquipmentSetDelete( WorldPacket &data ){
+	sLog.outDebug("Received CMSG_EQUIPMENT_SET_DELETE");
+
+	WoWGuid setGUID;
+	bool success;
+
+	data >> setGUID;
+
+	uint32 GUID =  Arcemu::Util::GUID_LOPART( setGUID.GetOldGuid() );
+
+	success = _player->GetItemInterface()->m_EquipmentSets.DeleteEquipmentSet( GUID );
+
+	if( success ){
+		sLog.outDebug("Equipmentset with GUID %u was successfully deleted.",GUID );
+	}else{
+		sLog.outDebug("Equipmentset with GUID %u couldn't be deleted.",GUID );
+	}
+
 }

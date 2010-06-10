@@ -60,6 +60,8 @@ arcemu_world_SOURCES = \
     DuelHandler.cpp \
     DynamicObject.cpp \
     DynamicObject.h \
+    EquipmentSetMgr.cpp \
+    EquipmentSetMgr.h \
     EventableObject.cpp \
     EyeOfTheStorm.cpp \
     EyeOfTheStorm.h \

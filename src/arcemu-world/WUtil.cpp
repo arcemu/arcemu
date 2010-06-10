@@ -52,3 +52,14 @@ uint64 Arcemu::Util::MAKE_PET_GUID( uint32 entry, uint32 lowGUID ){
 
 	return val;
 }
+
+uint64 Arcemu::Util::MAKE_ITEM_GUID( uint32 lowguid ){
+	uint64 GUID = 0;
+
+	uint32 *u = reinterpret_cast< uint32* >( &GUID );
+
+	u[ 0 ] = lowguid;
+	u[ 1 ] = HIGHGUID_TYPE_ITEM;
+
+	return GUID;
+}

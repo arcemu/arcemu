@@ -490,6 +490,7 @@
     <ClCompile Include="..\..\src\arcemu-world\SpellProc.cpp">
       <Filter>Spells</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-world\EquipmentSetMgr.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\arcemu-world\Channel.h">
@@ -752,6 +753,7 @@
     <ClInclude Include="..\..\src\arcemu-world\SpellProc.h">
       <Filter>Spells</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-world\EquipmentSetMgr.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\src\arcemu-world\resources.rc" />
