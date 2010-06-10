@@ -746,6 +746,7 @@ public:
 	uint16 m_auraSlot;
 
 	uint32 m_castedItemId;
+	uint64 itemCasterGUID;
 	// Area aura stuff -> never passive.
 	bool m_areaAura;		
 	uint8 m_visualSlot;

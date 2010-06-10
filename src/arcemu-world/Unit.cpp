@@ -4730,17 +4730,6 @@ bool Unit::RemoveAura(uint32 spellId)
 	return false;
 }
 
-bool Unit::RemoveAuraFirst(uint32 spellId) // cebernic: just remove and return true
-{
-	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
-		if(m_auras[x] && m_auras[x]->GetSpellId()==spellId )
-		{
-			m_auras[x]->Remove();
-			return true;
-		}
-	return false;
-}
-
 bool Unit::RemoveAuras(uint32 * SpellIds)
 {
 	if(!SpellIds || *SpellIds == 0)
@@ -4826,13 +4815,13 @@ bool Unit::RemoveAura(uint32 spellId, uint64 guid)
 	return false;
 }
 
-bool Unit::RemoveAuraFirst(uint32 spellId, uint64 guid)
+bool Unit::RemoveAuraByItemGUID(uint32 spellId, uint64 guid)
 {
 	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
 	{
 		if(m_auras[x])
 		{
-			if(m_auras[x]->GetSpellId()==spellId && m_auras[x]->m_casterGuid == guid)
+			if(m_auras[x]->GetSpellId()==spellId && m_auras[x]->itemCasterGUID == guid)
 			{
 				m_auras[x]->Remove();
 				return true;

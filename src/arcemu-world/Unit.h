@@ -993,8 +993,7 @@ public:
 	bool RemoveAura(Aura *aur);
 	bool RemoveAura(uint32 spellId);
 	bool RemoveAura(uint32 spellId,uint64 guid);
-	bool RemoveAuraFirst(uint32 spellId);
-	bool RemoveAuraFirst(uint32 spellId,uint64 guid);
+	bool RemoveAuraByItemGUID(uint32 spellId,uint64 guid);
 	bool RemoveAuraByNameHash(uint32 namehash);//required to remove weaker instances of a spell
 	bool RemoveAuras(uint32 * SpellIds);
 	bool RemoveAurasByHeal();

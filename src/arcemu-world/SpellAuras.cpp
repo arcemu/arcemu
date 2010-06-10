@@ -764,9 +764,15 @@ Aura::Aura( SpellEntry* proto, int32 duration, Object* caster, Unit* target, boo
 		p_target = NULL;
 
 	if ( i_caster != NULL )
+	{
 		m_castedItemId = i_caster->GetProto()->ItemId;
+		itemCasterGUID = i_caster->GetGUID();
+	}
 	else
+	{
 		m_castedItemId = 0;
+		itemCasterGUID = 0;
+	}
 
 	// Modifies current aura duration based on its mechanic type
 	if( p_target && GetDuration() > 0 )
