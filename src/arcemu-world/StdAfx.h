@@ -46,7 +46,12 @@
 #include <map>
 #include <sstream>
 #include <string>
+
+#ifdef WIN32
 #include <array>
+#else
+#include <tr1/array>
+#endif
 
 #include "../arcemu-shared/Common.h"
 #include "../arcemu-shared/MersenneTwister.h"
