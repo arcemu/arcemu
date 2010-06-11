@@ -667,6 +667,10 @@ Unit::~Unit()
 		delete i->second;
 	tmpAura.clear();
 
+	for( std::list<SpellProc*>::iterator itr = m_procSpells.begin(); itr != m_procSpells.end(); ++itr)
+		delete *itr;
+	m_procSpells.clear();
+
     RemoveGarbage();
 }
 
