@@ -491,7 +491,7 @@ enum Opcodes {
     CMSG_QUERY_TIME                                 = 0x1CE,	// implemented
     SMSG_QUERY_TIME_RESPONSE                        = 0x1CF,	// implemented
     SMSG_LOG_XPGAIN                                 = 0x1D0,	// implemented
-    SMSG_AURACASTLOG                                = 0x1D1,	// implemented
+    SMSG_AURACASTLOG_OBSOLETE                       = 0x1D1,	// OBSOLETE
     CMSG_RECLAIM_CORPSE                             = 0x1D2,	// implemented
     CMSG_WRAP_ITEM                                  = 0x1D3,	// implemented
     SMSG_LEVELUP_INFO                               = 0x1D4,	// implemented

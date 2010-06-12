@@ -775,18 +775,6 @@ bool Unit::canReachWithAttack(Unit *pVictim)
 	//formula adjustment for player side.
 	if( IsPlayer() )
 	{
-/*
-		if( attackreach <= 8 && attackreach >= 5 && targetradius >= 1.80f)
-			attackreach = 11; //giant type units
-
-		if( attackreach > 11)
-			attackreach = 11; //distance limited to max 11 yards attack range //max attack distance
-
-		if( attackreach < 5 )
-			attackreach = 5; //normal units with too small reach.
-
-		//range can not be less than 5 yards - this is normal combat range, SCALE IS NOT SIZE
-*/
 		// latency compensation!!
 		// figure out how much extra distance we need to allow for based on our movespeed and latency.
 		if( pVictim->IsPlayer() && static_cast< Player* >( pVictim )->m_isMoving )
@@ -991,16 +979,6 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 			origId = 0;
 		SpellEntry* ospinfo = dbcSpell.LookupEntry( origId );//no need to check if exists or not since we were not able to register this trigger if it would not exist :P
 
-		/*if( itr2->procFlags & PROC_ON_CAST_SPECIFIC_SPELL || itr2->procFlags & PROC_ON_CAST_SPELL) {
-			if( CastingSpell == NULL )
-				continue;
-
-			if (itr2->groupRelation) {
-				if (!(itr2->groupRelation & CastingSpell->SpellGroupType))
-					continue;
-			}
-		}*/
-
 		//this requires some specific spell check,not yet implemented
 		//this sucks and should be rewrote
 		if( spell_proc->mProcFlags & PROC_ON_CAST_SPECIFIC_SPELL )
@@ -1026,15 +1004,6 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 		}
 
 		uint32 proc_Chance = spell_proc->CalcProcChance( victim, CastingSpell );
-
-		// feral = no procs (need a better way to do this)
-		/*if( this->IsPlayer() && static_cast<Player*>(this)->GetShapeShift() )
-		{
-			if( spe->NameHash == SPELL_HASH_LIGHTNING_SPEED ) // mongoose
-				continue;
-			else if( spe->NameHash == SPELL_HASH_HOLY_STRENGTH ) //crusader
-				continue;
-		}*/
 
 		//Custom procchance modifications based on equipped weapon speed.
 		if( this->IsPlayer() && (
@@ -3535,20 +3504,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 		pVictim->Emote(EMOTE_ONESHOT_PARRYUNARMED);			// Animation
 		if( this->IsPlayer() && this->getClass() == WARRIOR)
 		{
-			//almighty warrior overpower
-			/*if( this->IsPlayer() && static_cast< Player* >( this )->getClass() == WARRIOR )
-			{
-				static_cast< Player* >( this )->AddComboPoints( pVictim->GetGUID(), 1 );
-				static_cast< Player* >( this )->UpdateComboPoints();
-				if( !sEventMgr.HasEvent( static_cast< Player* >( this ), EVENT_COMBO_POINT_CLEAR_FOR_TARGET ) )
-					sEventMgr.AddEvent( static_cast< Player* >( this ), &Player::NullComboPoints, (uint32)EVENT_COMBO_POINT_CLEAR_FOR_TARGET, (uint32)5000, (uint32)1, (uint32)0 );
-				else
-					sEventMgr.ModifyEventTimeLeft( static_cast< Player* >( this ), EVENT_COMBO_POINT_CLEAR_FOR_TARGET, 5000 ,0 );
-			}
-			pVictim->SetFlag(UNIT_FIELD_AURASTATE,AURASTATE_FLAG_DODGE_BLOCK);	//SB@L: Enables spells requiring dodge
-			if(!sEventMgr.HasEvent(pVictim,EVENT_DODGE_BLOCK_FLAG_EXPIRE))
-				sEventMgr.AddEvent(pVictim,&Unit::EventAurastateExpire,(uint32)AURASTATE_FLAG_DODGE_BLOCK,EVENT_DODGE_BLOCK_FLAG_EXPIRE,5000,1,0);
-			else sEventMgr.ModifyEventTimeLeft(pVictim,EVENT_DODGE_BLOCK_FLAG_EXPIRE,5000,0);*/
+
 			static_cast< Player* >( this )->AddComboPoints( pVictim->GetGUID(), 1 );
 			static_cast< Player* >( this )->UpdateComboPoints();
 			if( !sEventMgr.HasEvent( static_cast< Player* >( this ), EVENT_COMBO_POINT_CLEAR_FOR_TARGET ) )
@@ -4257,25 +4213,10 @@ void Unit::smsg_AttackStop(uint64 victimGuid)
 
 void Unit::smsg_AttackStart(Unit* pVictim)
 {
-    // Prevent user from ignoring attack speed and stopping and start combat really really fast
-    /*if(!isAttackReady())
-        setAttackTimer(uint32(0));
-    else if(!canReachWithAttack(pVictim))
-    {
-        setAttackTimer(uint32(500));
-        //pThis->GetSession()->OutPacket(SMSG_ATTACKSWING_NOTINRANGE);
-    }
-    else if(!isInFront(pVictim))
-    {
-        setAttackTimer(uint32(500));
-        //pThis->GetSession()->OutPacket(SMSG_ATTACKSWING_NOTINRANGE);
-    }*/
-
     // Send out ATTACKSTART
     WorldPacket data(SMSG_ATTACKSTART, 16);
     data << GetGUID();
     data << pVictim->GetGUID();
-//    SendMessageToSet(&data, true);
     SendMessageToSet(&data, false);
     sLog.outDebug( "WORLD: Sent SMSG_ATTACKSTART" );
 
@@ -4618,18 +4559,6 @@ void Unit::AddAura(Aura * aur)
 	}
 
 	Unit* target = aur->GetTarget();
-	if (target != NULL)
-	{
-		//send the aura log
-		WorldPacket data(SMSG_AURACASTLOG, 28);
-
-		data << aur->m_casterGuid;
-		data << aur->GetTarget()->GetGUID();
-		data << aur->m_spellProto->Id;
-		data << uint64(0);
-
-		target->SendMessageToSet(&data, true);
-	}
 
 	//Zack : if all mods were resisted it means we did not apply anything and we do not need to delete this spell either
 	if( aur->TargetWasImuneToMods() )
@@ -4645,7 +4574,6 @@ void Unit::AddAura(Aura * aur)
 	if( !aur->IsPassive() || (aur->m_spellProto->AttributesEx & 1024))
 		visualslot = FindVisualSlot( aur->GetSpellId(), aur->IsPositive() );
 	aur->m_visualSlot = visualslot;
-	ModVisualAuraStackCount(aur, 1);
 
 	// Zack : No idea how a new aura can already have a slot. Leaving it for compatibility
 	if( aur->m_auraSlot != 0xffff )
@@ -4654,6 +4582,9 @@ void Unit::AddAura(Aura * aur)
 	aur->m_auraSlot = AuraSlot;
 
 	m_auras[ AuraSlot ] = aur;
+
+	ModVisualAuraStackCount(aur, 1);
+
 	aur->ApplyModifiers(true);
 
 	// We add 500ms here to allow for the last tick in DoT spells. This is a dirty hack, but at least it doesn't crash like my other method.
@@ -4970,18 +4901,6 @@ bool Unit::SetAurDuration(uint32 spellId,Unit* caster,uint32 duration)
 	aur->SetDuration(duration);
 	sEventMgr.ModifyEventTimeLeft(aur, EVENT_AURA_REMOVE, duration);
 
-/*	if(this->IsPlayer())
-	{
-		WorldPacket data(5);
-		data.SetOpcode(SMSG_UPDATE_AURA_DURATION_OBSOLETE);
-		data << (uint8)(aur)->m_visualSlot << duration; // cebernic: GetAuraSlot replaced due to Zack's patch...*sigh*..
-		static_cast< Player* >( this )->GetSession()->SendPacket( &data );
-	}
-
-	WorldPacket data(SMSG_SET_EXTRA_AURA_INFO_OBSOLETE,21);
-	data << GetNewGUID() << aur->m_visualSlot << uint32(spellId) << uint32(duration) << uint32(duration);
-	SendMessageToSet(&data,false);*/
-
 	return true;
 }
 
@@ -4996,18 +4915,6 @@ bool Unit::SetAurDuration(uint32 spellId,uint32 duration)
 	sLog.outString("setAurDuration2");
 	aur->SetDuration(duration);
 	sEventMgr.ModifyEventTimeLeft(aur, EVENT_AURA_REMOVE, duration);
-
-/*	if(this->IsPlayer())
-	{
-		WorldPacket data(5);
-		data.SetOpcode(SMSG_UPDATE_AURA_DURATION_OBSOLETE);
-		data << (uint8)(aur)->m_visualSlot << duration;
-		static_cast< Player* >( this )->GetSession()->SendPacket( &data );
-	}
-	WorldPacket data(SMSG_SET_EXTRA_AURA_INFO_OBSOLETE,21);
-	data << GetNewGUID() << aur->m_visualSlot << uint32(spellId) << uint32(duration) << uint32(duration);
-	SendMessageToSet(&data,false);*/
-
 
 	return true;
 }
@@ -5055,15 +4962,6 @@ void Unit::castSpell( Spell * pSpell )
 	// check if we have a spell already casting etc
 	if(m_currentSpell && pSpell != m_currentSpell)
 	{
-/*
-		//removed by zack : Spell system does not really handle well parallel casting. We are forced to cancel previous cast
-		//eventually make creatures be able to cast secondary spell that is tracked or figure out where is this deleted
-		if(m_spellsbusy)
-		{
-			// shouldn't really happen. but due to spell system bugs there are some cases where this can happen.
-			sEventMgr.AddEvent(this,&Unit::CancelSpell,m_currentSpell,EVENT_UNIT_DELAYED_SPELL_CANCEL,1,1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-		}
-		else*/
 		m_currentSpell->cancel();
 	}
 
@@ -5152,11 +5050,6 @@ int32 Unit::GetSpellDmgBonus(Unit *pVictim, SpellEntry *spellInfo,int32 base_dmg
 //==========================================================================================
 	int32 bonus_damage = float2int32(plus_damage * dmgdoneaffectperc);
 
-	/*if( isdot )
-		bonus_damage += float2int32(bonus_damage * (pVictim->DoTPctIncrease[spellInfo->School] / 100.0f));
-	else if( (spellInfo->c_is_flags & SPELL_FLAG_IS_DAMAGING) && (spellInfo->spell_coef_flags & SPELL_FLAG_AOE_SPELL) )
-		bonus_damage *= (int32)pVictim->AOEDmgMod;*/
-
 	if( ( pVictim->HasAuraWithMechanics(MECHANIC_ENSNARED) || pVictim->HasAuraWithMechanics(MECHANIC_DAZED) ) && caster->IsPlayer() )
 			bonus_damage += static_cast< Player* >(caster)->m_IncreaseDmgSnaredSlowed;
 
@@ -5209,16 +5102,6 @@ void Unit::InterruptSpell()
 {
 	if(m_currentSpell)
 	{
-/*		//ok wtf is this
-		//m_currentSpell->SendInterrupted(SPELL_FAILED_INTERRUPTED);
-		//m_currentSpell->cancel();
-		if(m_spellsbusy)
-		{
-			// shouldn't really happen. but due to spell system bugs there are some cases where this can happen.
-			sEventMgr.AddEvent(this,&Unit::CancelSpell,m_currentSpell,EVENT_UNIT_DELAYED_SPELL_CANCEL,1,1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-			m_currentSpell= NULL;
-		}
-		else*/
 			m_currentSpell->cancel();
 	}
 }
@@ -5353,7 +5236,6 @@ void Unit::OnRemoveInRangeObject(Object* pObj)
 
 	if(pObj->GetTypeId() == TYPEID_UNIT || pObj->GetTypeId() == TYPEID_PLAYER)
 	{
-		/*if(m_useAI)*/
 
 		Unit *pUnit = static_cast<Unit*>(pObj);
 		GetAIInterface()->CheckTarget(pUnit);
@@ -5362,19 +5244,7 @@ void Unit::OnRemoveInRangeObject(Object* pObj)
 			if(m_currentSpell)
 				m_currentSpell->cancel();
 
-        // Object::OnRemoveInRangeObject(pObj);   // this is commented for a reason, don't remove it! -dfighter
-        /*
-        if(critterPet == pObj)
-		{
-			critterPet->SafeDelete();
-			critterPet = 0;
-		}
-        */
 	}
-    else
-    {
-        // Object::OnRemoveInRangeObject(pObj);   // this is commented for a reason, don't remove it! -dfighter
-    }
 }
 
 void Unit::ClearInRangeSet()
@@ -5499,26 +5369,6 @@ uint32 Unit::ManaShieldAbsorb(uint32 dmg)
 	return potential;
 }
 
-// grep: Remove any AA spells that aren't owned by this player.
-//		 Otherwise, if he logs out and in and joins another group,
-//		 he'll apply it to them.
-/*
-void Unit::RemoveAllAreaAuras()
-{
-	AuraList::iterator itr,it1;
-	for(itr = m_auras.begin();itr!=m_auras.end();)
-	{
-		it1 = itr++;
-		if(((*it1)->m_spellProto->Effect[0] == SPELL_EFFECT_APPLY_AREA_AURA ||
-			(*it1)->m_spellProto->Effect[1] == SPELL_EFFECT_APPLY_AREA_AURA ||
-			(*it1)->m_spellProto->Effect[2] == SPELL_EFFECT_APPLY_AREA_AURA) && (*it1)->GetCaster() != this)
-		{
-			(*it1)->Remove();
-			m_auras.erase(it1);
-		}
-	}
-}
-*/
 uint32 Unit::AbsorbDamage( uint32 School, uint32* dmg )
 {
 	if( dmg == NULL )
@@ -6207,41 +6057,6 @@ bool Unit::HasAuraWithMechanics(uint32 mechanic)
 	return false;
 }
 
-/*
-bool Unit::HasNegativeAuraWithNameHash(uint32 name_hash)
-{
-	for(uint32 x = MAX_POSITIVE_AURAS; x < MAX_AURAS + MAX_PASSIVE_AURAS; ++x)
-	{
-		if(m_auras[x] && m_auras[x]->GetSpellProto()->NameHash == name_hash)
-			return true;
-	}
-
-	return false;
-}
-
-bool Unit::HasNegativeAura(uint32 spell_id)
-{
-	for(uint32 x = MAX_POSITIVE_AURAS; x < MAX_AURAS + MAX_PASSIVE_AURAS; ++x)
-	{
-		if(m_auras[x] && m_auras[x]->GetSpellProto()->Id == spell_id)
-			return true;
-	}
-
-	return false;
-}
-
-uint32 Unit::CountNegativeAura(uint32 spell_id)
-{
-	uint32 ret= 0;
-	for(uint32 x = MAX_POSITIVE_AURAS; x < MAX_AURAS + MAX_PASSIVE_AURAS; ++x)
-	{
-		if(m_auras[x] && m_auras[x]->GetSpellProto()->Id == spell_id)
-			ret++;
-	}
-
-	return ret;
-}*/
-
 bool Unit::IsPoisoned()
 {
 	for(uint32 x = MAX_NEGATIVE_AURAS_EXTEDED_START; x < MAX_NEGATIVE_AURAS_EXTEDED_END; ++x)
@@ -6560,25 +6375,6 @@ void Unit::EventCastSpell(Unit * Target, SpellEntry * Sp)
 void Unit::SetFacing(float newo)
 {
 	SetOrientation(newo);
-	/*WorldPacket data(40);
-	data.SetOpcode(MSG_MOVE_SET_FACING);
-	data << GetNewGUID();
-	data << (uint32)0; //flags
-	data << (uint32)0; //time
-	data << GetPositionX() << GetPositionY() << GetPositionZ() << newo;
-	data << (uint32)0; //unk
-	SendMessageToSet( &data, false );*/
-
-	/*WorldPacket data(SMSG_MONSTER_MOVE, 60);
-	data << GetNewGUID();
-	data << uint8(0);
-	data << m_position << getMSTime();
-	data << uint8(4) << newo;
-	data << uint32(0x00000000);		// flags
-	data << uint32(0);				// time
-	data << m_position;				// position
-	SendMessageToSet(&data, true);*/
-
 	m_aiInterface->SendMoveToPacket(m_position.x,m_position.y,m_position.z,m_position.o,1,0x1000); // MoveFlags = 0x1000 (run)
 }
 
@@ -7010,11 +6806,7 @@ void Unit::CombatStatusHandler_ResetPvPTimeout()
 			}
 		}
 	}
-	// TESTING GROUND TESTING
-	//this->SendChatMessage( CHAT_MSG_MONSTER_SAY , LANG_UNIVERSAL , "Eye of C'thun AI Initialized" );
-	//this->SendChatMessage(
-	//	this->Emote( EMOTE_ONESHOT_SPELLCAST );
-	// yay for recursive mutexes
+
 	sEventMgr.AddEvent(this, &Unit::CombatStatusHandler_UpdatePvPTimeout, EVENT_ATTACK_TIMEOUT, 5000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 	m_lock.Release();
 }
@@ -7080,43 +6872,7 @@ void Unit::Energize( Unit* target, uint32 SpellId, uint32 amount, uint32 type )
 	datamr << amount;
 	SendMessageToSet( &datamr, true );
 }
-/*
-void Unit::Energize( Unit* target, uint32 SpellId, uint32 amount, uint32 type )
-{	
-	//Static energize
-	if( !target || !SpellId || !amount )
-		return;
 
-	uint32 cur = target->GetUInt32Value( UNIT_FIELD_POWER1 + type );
-	uint32 max = target->GetUInt32Value( UNIT_FIELD_MAXPOWER1 + type );
-
-	if(max != cur)
-	{
-		amount += GetSpellDmgBonus( target, dbcSpell.LookupEntry(SpellId), amount, false );
-		if( !amount )
-			return;
-
-		cur += amount;
-		if( cur > max )
-		{
-			target->SetUInt32Value( UNIT_FIELD_POWER1 + type, max );
-			amount = max - cur;
-		}
-		else 
-			target->SetUInt32Value( UNIT_FIELD_POWER1 + type, cur );
-
-		WorldPacket datamr( SMSG_SPELLENERGIZELOG, 30 );
-		datamr << target->GetNewGUID();
-		datamr << this->GetNewGUID();
-		datamr << SpellId;
-		datamr << type;
-		datamr << amount;
-
-		this->SendMessageToSet( &datamr, true );
-		target->SendPowerUpdate( false );
-	}
-}
-*/
 void Unit::InheritSMMods(Unit *inherit_from)
 {
 	if(inherit_from == NULL)
