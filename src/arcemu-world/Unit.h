@@ -1498,6 +1498,8 @@ public:
 	//! returns: aura stack count
 	uint8 m_auraStackCount[MAX_NEGATIVE_VISUAL_AURAS_END];
 
+	void SendFullAuraUpdate();
+	void SendAuraUpdate( uint32 AuraSlot, bool remove );
 	uint32 ModVisualAuraStackCount(Aura *aur, int32 count);
 	uint8 FindVisualSlot(uint32 SpellId,bool IsPos);
 	uint32 m_auravisuals[MAX_NEGATIVE_VISUAL_AURAS_END];

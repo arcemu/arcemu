@@ -536,21 +536,7 @@ bool ChatHandler::HandleAuraUpdateAdd( const char *args, WorldSession *m_session
 	if(Aura * AuraPtr = Pl->FindAura(SpellID))
 	{
 		uint8 VisualSlot = AuraPtr->m_visualSlot;
-		WorldPacket data(SMSG_AURA_UPDATE, 20);
-		FastGUIDPack(data, Pl->GetGUID());
-		data << (uint8)VisualSlot;
-		data << (uint32)SpellID;
-		data << (uint8)Flags;
-		data << (uint8)Pl->getLevel();
-		data << (uint8)StackCount;
-		if( !(Flags & AFLAG_NOT_CASTER) )
-			data << WoWGuid(Pl->GetSelection());
-		if(Flags & AFLAG_DURATION)
-		{
-			data << (uint32)AuraPtr->GetDuration();
-			data << (uint32)AuraPtr->GetTimeLeft();
-		}
-		m_session->SendPacket(&data);
+		Pl->SendAuraUpdate( AuraPtr->m_auraSlot, false );
 		SystemMessage(m_session, "SMSG_AURA_UPDATE (update): VisualSlot %u - SpellID %u - Flags %i (0x%04X) - StackCount %i", VisualSlot, SpellID, Flags, Flags, StackCount);
 	}
 	else
@@ -564,23 +550,7 @@ bool ChatHandler::HandleAuraUpdateAdd( const char *args, WorldSession *m_session
 		Spell * SpellPtr = new Spell(Pl, Sp, false, NULL);
 		AuraPtr = new Aura(Sp, SpellPtr->GetDuration(), Pl, Pl);
 		Pl->AddAura(AuraPtr); // Serves purpose to just add the aura to our auraslots
-		uint8 VisualSlot = Pl->FindVisualSlot(SpellID, AuraPtr->IsPositive());
-		WorldPacket data(SMSG_AURA_UPDATE, 20);
-		FastGUIDPack(data, Pl->GetGUID());
-		data << (uint8)VisualSlot;
-		data << (uint32)SpellID;
-		data << (uint8)Flags;
-		data << (uint8)Pl->getLevel();
-		data << (uint8)StackCount;
-		if( !(Flags & AFLAG_NOT_CASTER) )
-			data << (uint8)0; // caster guid
-		if(Flags & AFLAG_DURATION)
-		{
-			data << (uint32)SpellPtr->GetDuration();
-			data << (uint32)SpellPtr->GetDuration();
-		}
-		m_session->SendPacket(&data);
-		SystemMessage(m_session, "SMSG_AURA_UPDATE (add): VisualSlot %u - SpellID %u - Flags %i (0x%04X) - StackCount %i", VisualSlot, SpellID, Flags, Flags, StackCount);
+		SystemMessage(m_session, "SMSG_AURA_UPDATE (add): VisualSlot %u - SpellID %u - Flags %i (0x%04X) - StackCount %i", AuraPtr->m_visualSlot, SpellID, Flags, Flags, StackCount);
 		delete SpellPtr;
 	}
 	return true;
@@ -602,11 +572,6 @@ bool ChatHandler::HandleAuraUpdateRemove( const char *args, WorldSession *m_sess
 		SystemMessage(m_session, "No auraid found in slot %u", VisualSlot);
 		return true;
 	}
-	WorldPacket data(SMSG_AURA_UPDATE, 20);
-	FastGUIDPack(data, Pl->GetGUID());
-	data << (uint8)VisualSlot;
-	data << (uint32)0;
-	m_session->SendPacket(&data);
 	SystemMessage(m_session, "SMSG_AURA_UPDATE (remove): VisualSlot %u - SpellID 0", VisualSlot);
 	AuraPtr->Remove();
 	return true;

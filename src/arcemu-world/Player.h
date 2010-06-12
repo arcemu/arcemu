@@ -1195,11 +1195,7 @@ public:
 	void AddShapeShiftSpell(uint32 id);
 	void RemoveShapeShiftSpell(uint32 id);
 
-	void SendAuraUpdate(uint32 AuraSlot, bool RemoveAura);
-	void SendFullAuraUpdate();
-
-
-    /************************************************************************/
+	/************************************************************************/
     /* Actionbar                                                            */
     /************************************************************************/
 	void                setAction(uint8 button, uint16 action, uint8 type, uint8 misc);
