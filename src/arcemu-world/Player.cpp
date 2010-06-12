@@ -11222,7 +11222,7 @@ void Player::SendAuraUpdate(uint32 AuraSlot, bool RemoveAura)
 	data << (uint32)VisualAura->GetSpellId(); // Client will ignore rest of packet if visual aura is 0
 	uint8 Flags = (uint8)VisualAura->GetAuraFlags();
 	if(VisualAura->IsPositive())
-		Flags |= AFLAG_POSTIVE | AFLAG_SET;
+		Flags |= AFLAG_CANCELLABLE | AFLAG_SET;
 	else
 		Flags |= AFLAG_NEGATIVE | AFLAG_SET;
 
@@ -11258,7 +11258,7 @@ void Player::SendFullAuraUpdate()
 			data << (uint32)aur->GetSpellId(); // Client will ignore rest of packet if visual aura is 0
 			uint8 Flags = (uint8)aur->GetAuraFlags();
 			if(aur->IsPositive())
-				Flags |= AFLAG_POSTIVE | AFLAG_SET;
+				Flags |= AFLAG_CANCELLABLE | AFLAG_SET;
 			else
 				Flags |= AFLAG_NEGATIVE | AFLAG_SET;
 

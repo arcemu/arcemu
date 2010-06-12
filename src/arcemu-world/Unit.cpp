@@ -6278,19 +6278,15 @@ uint32 Unit::ModVisualAuraStackCount(Aura *aur, int32 count)
  	else {
  		m_auraStackCount[slot] += static_cast<uint8>( count );
 		m_auravisuals[slot] = aur->GetSpellId();
-		uint8 flags = ( 1 | 2 | 4 );
+		uint8 flags = ( AFLAG_EFFECT_1 | AFLAG_EFFECT_2 | AFLAG_EFFECT_3 );
 		
 		if( aur->IsPositive() )
-			flags |= AFLAG_POSTIVE;
+			flags |= AFLAG_CANCELLABLE;
 		else
 			flags |= AFLAG_NEGATIVE;
 
 		if( aur->GetDuration() != 0 )
 			flags |= AFLAG_DURATION;
-
-		if( aur->GetCaster()->GetGUID() == GetGUID() )
-			flags |= AFLAG_NOT_CASTER;
-
 
 		WorldPacket data(SMSG_AURA_UPDATE, 30);
 
@@ -6307,7 +6303,7 @@ uint32 Unit::ModVisualAuraStackCount(Aura *aur, int32 count)
 		data << uint8( m_auraStackCount[ slot ] );
 
 		if( ( flags & AFLAG_NOT_CASTER ) == 0 )
-			data << WoWGuid( aur->GetCaster()->GetNewGUID() );
+			data << WoWGuid( aur->GetCasterGUID() );
 
 		if( flags & AFLAG_DURATION ){
 			data << uint32( aur->GetDuration() );
