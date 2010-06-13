@@ -291,6 +291,7 @@ public:
 	void AddGlobalSession(WorldSession *session);
 	void RemoveGlobalSession(WorldSession *session);
 	void DeleteSession(WorldSession *session);
+	void DeleteSessions( std::list< WorldSession* > &slist );
 
 	size_t GetSessionCount(){
 		m_sessionlock.AcquireReadLock();

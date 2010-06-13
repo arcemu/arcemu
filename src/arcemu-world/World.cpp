@@ -784,6 +784,9 @@ void World::UpdateSessions(uint32 diff)
 	WorldSession *session;
 	int result;
 
+
+	std::list< WorldSession* > ErasableSessions;
+
 	SessionsMutex.Acquire();
 
 	for(itr = Sessions.begin(); itr != Sessions.end();)
@@ -801,14 +804,18 @@ void World::UpdateSessions(uint32 diff)
 		{
 			if(result == 1)
 			{
-				// complete deletion
-				DeleteSession(session);
+				// complete deletion after relinquishing SessionMutex!
+				// Otherwise Valgrind (probably falsely) reports a possible deadlock!
+				ErasableSessions.push_back( session );
 			}
 			Sessions.erase(it2);
 		}
 	}
 
 	SessionsMutex.Release();
+
+	DeleteSessions( ErasableSessions );
+	ErasableSessions.clear();
 }
 
 std::string World::GenerateName(uint32 type)
@@ -823,13 +830,22 @@ std::string World::GenerateName(uint32 type)
 void World::DeleteSession(WorldSession *session)
 {
 	m_sessionlock.AcquireWriteLock();
-	// remove from big map
 	m_sessions.erase(session->GetAccountId());
+	m_sessionlock.ReleaseWriteLock();
+	delete session;
+}
+
+void World::DeleteSessions( std::list< WorldSession* > &slist ){
+	m_sessionlock.AcquireWriteLock();
+
+	for( std::list< WorldSession* >::iterator itr = slist.begin(); itr != slist.end(); ++itr ){
+		WorldSession *s = *itr;
+
+		m_sessions.erase( s->GetAccountId() );
+		delete s;
+	}
 
 	m_sessionlock.ReleaseWriteLock();
-
-	// delete us
-	session->Delete();
 }
 
 uint32 World::GetNonGmSessionCount()
