@@ -6433,7 +6433,7 @@ void Unit::SetFacing(float newo)
 }
 
 //guardians are temporary spawn that will inherit master faction and will follow them. Apart from that they have their own mind
-Creature* Unit::create_guardian(uint32 guardian_entry,uint32 duration,float angle, uint32 lvl, GameObject * obj, LocationVector * Vec)
+Creature* Unit::create_guardian(uint32 guardian_entry,uint32 duration,float angle, uint32 lvl, GameObject * obj, LocationVector * Vec, uint32 spellid )
 {
 	CreatureProto * proto = CreatureProtoStorage.LookupEntry( guardian_entry );
 	CreatureInfo * info = CreatureNameStorage.LookupEntry( guardian_entry );
@@ -6488,8 +6488,10 @@ Creature* Unit::create_guardian(uint32 guardian_entry,uint32 duration,float angl
 
 	p->SetSummonedByGUID( GetGUID());
 	p->SetCreatedByGUID( GetGUID());
+	p->SetCreatedBySpell( spellid );
 	p->SetZoneId(GetZoneId());
 	p->SetFaction(GetFaction());
+	p->SetUInt32Value( UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED );
 
 	p->GetAIInterface()->Init(p,AITYPE_PET,MOVEMENTTYPE_NONE,this);
 	p->GetAIInterface()->SetUnitToFollow(this);

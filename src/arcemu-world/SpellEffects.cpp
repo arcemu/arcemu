@@ -1235,45 +1235,29 @@ out:
 			p_caster->SetHealth(( uint32 )((p_caster->GetHealth())+(p_caster->GetMaxHealth()) / 10 ));
 		}break;
 
-	case 46584:
-		{
-			if(p_caster	!= NULL)
-			{
+	case 46584:{
+			if( p_caster	!= NULL ){
 				float x = p_caster->GetPositionX()+rand()%25;
 				float y = p_caster->GetPositionY()+rand()%25;
 				float z = p_caster->GetPositionZ();
-				SpellEntry *ghoulSpell = dbcSpell.LookupEntryForced(52150);
-				if(corpseTarget) // We are targeting a corpse.
+
+				if( corpseTarget ) // We are targeting a corpse.
 				{
 					x = corpseTarget->GetPositionX();
 					y = corpseTarget->GetPositionY();
 					z = corpseTarget->GetPositionZ();
 				}
-				p_caster->CastSpellAoF(x,y,z,ghoulSpell,true );
-				CreatureInfo * ci = CreatureNameStorage.LookupEntry(26125);
-				CreatureProto * cp = CreatureProtoStorage.LookupEntry(26125);
-				if( !ci || !cp )
-					return;
 
-				LocationVector *vec = new LocationVector(x,y,z);
-				Pet *summon = objmgr.CreatePet(26125);
-				summon->SetPower( POWER_TYPE_ENERGY, 100 );
+				if( p_caster->HasSpellwithNameHash( SPELL_HASH_MASTER_OF_GHOULS ) ){
+					SpellEntry *ghoulSpell = dbcSpell.LookupEntryForced(52150);
+					if( ghoulSpell != NULL )
+						p_caster->CastSpellAoF(x,y,z,ghoulSpell,true );
+				}else{
+					LocationVector vec( x, y, z );
 
-                if(p_caster->HasSpell(52143))
-				{
-					summon->CreateAsSummon(26125, ci, NULL, p_caster, GetProto(), 6, 0, vec); // considered pet
-					summon->AddSpell(dbcSpell.LookupEntry(47481), true); // Gnaw
-					summon->AddSpell(dbcSpell.LookupEntry(47482), true); // Leap
-					summon->AddSpell(dbcSpell.LookupEntry(47484), true); // Huddle
-					summon->AddSpell(dbcSpell.LookupEntry(47468), true); // Claw
+					Creature *c = p_caster->create_guardian( 26125, 3*60*1000, float( M_PI ), p_caster->getLevel(), NULL, &vec );
+					c->CastSpell( c->GetGUID(), 50142, true ); // emerge
 				}
-				else
-				{
-					summon->CreateAsSummon(26125, ci, NULL, p_caster, GetProto(), 6, 120, vec); // 2 min duration
-				}
-				summon->CastSpell(summon,50142,true);
-				delete vec;
-
 			}
 		}break;
 	case 49576: //Death grip

@@ -1416,7 +1416,7 @@ public:
 
 	//guardians are temporary spawn that will inherit master faction and will follow them. Apart from that they have their own mind	
 	std::set<Creature*> m_Guardians;
-	Creature* create_guardian( uint32 guardian_entry, uint32 duration, float angle, uint32 lvl = 0, GameObject * obj = NULL, LocationVector * Vec = NULL); 
+	Creature* create_guardian( uint32 guardian_entry, uint32 duration, float angle, uint32 lvl = 0, GameObject * obj = NULL, LocationVector * Vec = NULL, uint32 spellid = 0 ); 
 	void AddGuardianRef( Creature* guard ){ Arcemu::Util::ARCEMU_ASSERT(    guard != NULL );  m_Guardians.insert( guard );	}
 	void RemoveGuardianRef( Creature* g );
 	void RemoveAllGuardians( bool remove_from_world = true );

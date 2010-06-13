@@ -7721,7 +7721,8 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 		{
 		sp->Effect[0] = SPELL_EFFECT_DUMMY;
-		sp->Effect[1] = SPELL_EFFECT_DUMMY;
+		sp->Effect[1] = 0;
+		sp->Effect[2] = 0;
 		}
 
 		//PvP Librams of Justice 
