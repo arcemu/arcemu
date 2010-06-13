@@ -342,9 +342,8 @@ void EventableObjectHolder::Update(time_t time_difference)
 		it2 = itr++;
 
 		if((*it2)->instanceId != mInstanceId || (*it2)->deleted ){
-			if( !(*it2)->deleted ){
-				(*it2)->DecRef();
-			}
+
+			(*it2)->DecRef();
 			
 			// remove from this list.
 			m_events.erase(it2);
