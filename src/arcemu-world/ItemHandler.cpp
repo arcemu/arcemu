@@ -156,7 +156,7 @@ void WorldSession::HandleSwapItemOpcode(WorldPacket& recv_data)
 
 	CHECK_PACKET_SIZE(recv_data, 4);
 
-	int8 DstInvSlot= 0, DstSlot= 0, SrcInvSlot= 0, SrcSlot= 0, error= 0;
+	int8 DstInvSlot= 0, DstSlot= 0, SrcInvSlot= 0, SrcSlot= 0;
 
 	recv_data >> DstInvSlot >> DstSlot >> SrcInvSlot >> SrcSlot;
 

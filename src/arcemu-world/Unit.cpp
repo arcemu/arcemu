@@ -4558,8 +4558,6 @@ void Unit::AddAura(Aura * aur)
 	*/	return;
 	}
 
-	Unit* target = aur->GetTarget();
-
 	//Zack : if all mods were resisted it means we did not apply anything and we do not need to delete this spell either
 	if( aur->TargetWasImuneToMods() )
 	{

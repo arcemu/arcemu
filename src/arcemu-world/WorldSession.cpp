@@ -1292,7 +1292,7 @@ void WorldSession::HandleEquipmentSetUse( WorldPacket &data ){
 	uint8 SrcSlotID;
 	uint8 result = 0;
 
-	for( uint32 i = EQUIPMENT_SLOT_START; i < EQUIPMENT_SLOT_END; ++i ){
+	for( int8 i = EQUIPMENT_SLOT_START; i < EQUIPMENT_SLOT_END; ++i ){
 		uint64 ItemGUID = 0;
 
 		GUID.Clear();
