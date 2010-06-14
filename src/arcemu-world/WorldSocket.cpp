@@ -443,7 +443,7 @@ void WorldSocket::Authenticate()
 	Arcemu::Util::ARCEMU_ASSERT(   pAuthenticationPacket != NULL );
 	mQueued = false;
 
-	if( mSession )
+	if( mSession == NULL )
 		return;
 
 	if( mSession->HasFlag( ACCOUNT_FLAG_XPACK_02 ) )
