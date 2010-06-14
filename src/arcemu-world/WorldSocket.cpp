@@ -440,37 +440,30 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 
 void WorldSocket::Authenticate()
 {
-	WorldSession * pSession = mSession;
 	Arcemu::Util::ARCEMU_ASSERT(   pAuthenticationPacket != NULL );
 	mQueued = false;
 
-	if(!pSession) return;
+	if( mSession )
+		return;
 
-	if(pSession->HasFlag(ACCOUNT_FLAG_XPACK_02))
-		OutPacket(SMSG_AUTH_RESPONSE, 11, "\x0C\x30\x78\x00\x00\x00\x00\x00\x00\x00\x02");
-	else if(pSession->HasFlag(ACCOUNT_FLAG_XPACK_01))
-		OutPacket(SMSG_AUTH_RESPONSE, 11, "\x0C\x30\x78\x00\x00\x00\x00\x00\x00\x00\x01");
+	if( mSession->HasFlag( ACCOUNT_FLAG_XPACK_02 ) )
+		OutPacket( SMSG_AUTH_RESPONSE, 11, "\x0C\x30\x78\x00\x00\x00\x00\x00\x00\x00\x02" );
+	else if( mSession->HasFlag( ACCOUNT_FLAG_XPACK_01 ) )
+		OutPacket( SMSG_AUTH_RESPONSE, 11, "\x0C\x30\x78\x00\x00\x00\x00\x00\x00\x00\x01" );
 	else
-		OutPacket(SMSG_AUTH_RESPONSE, 11, "\x0C\x30\x78\x00\x00\x00\x00\x00\x00\x00\x00");
+		OutPacket( SMSG_AUTH_RESPONSE, 11, "\x0C\x30\x78\x00\x00\x00\x00\x00\x00\x00\x00" );
 
-	sAddonMgr.SendAddonInfoPacket(pAuthenticationPacket, (uint32)pAuthenticationPacket->rpos(), pSession);
-	pSession->_latency = _latency;
+	sAddonMgr.SendAddonInfoPacket( pAuthenticationPacket, static_cast< uint32 >( pAuthenticationPacket->rpos() ), mSession );
+	mSession->_latency = _latency;
 
 	delete pAuthenticationPacket;
-	pAuthenticationPacket = 0;
+	pAuthenticationPacket = NULL;
 
-	if(mSession)
-	{
-		sWorld.AddSession(mSession);
-		sWorld.AddGlobalSession(mSession);
-
-/*		if(pSession->HasFlag(ACCOUNT_FLAG_XTEND_INFO))
-			sWorld.AddExtendedSession(pSession);*/
-
-		// Do we need to check for mSession here too?
-		if(pSession->HasGMPermissions() && mSession)
-			sWorld.gmList.insert(pSession);
-	}
+	sWorld.AddSession( mSession );
+	sWorld.AddGlobalSession( mSession );
+	
+	if( mSession->HasGMPermissions() )
+		sWorld.gmList.insert( mSession );
 
 }
 
