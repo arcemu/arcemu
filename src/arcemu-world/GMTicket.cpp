@@ -36,6 +36,8 @@ enum GMticketType
 
 void WorldSession::HandleGMTicketCreateOpcode(WorldPacket & recv_data)
 {
+	CHECK_INWORLD_RETURN
+
 	uint32 map;
 	float x, y, z;
 	std::string message = "";
@@ -95,6 +97,8 @@ void WorldSession::HandleGMTicketCreateOpcode(WorldPacket & recv_data)
 
 void WorldSession::HandleGMTicketUpdateOpcode(WorldPacket & recv_data)
 {
+	CHECK_INWORLD_RETURN
+
 	std::string message = "";
 	WorldPacket data(SMSG_GMTICKET_UPDATETEXT, 4);
 
@@ -135,6 +139,8 @@ void WorldSession::HandleGMTicketUpdateOpcode(WorldPacket & recv_data)
 
 void WorldSession::HandleGMTicketDeleteOpcode(WorldPacket & recv_data)
 {
+	CHECK_INWORLD_RETURN
+
 	GM_Ticket* ticket = objmgr.GetGMTicketByPlayer(GetPlayer()->GetGUID());
 
 	// Remove Tickets from Player
@@ -162,6 +168,8 @@ void WorldSession::HandleGMTicketDeleteOpcode(WorldPacket & recv_data)
 
 void WorldSession::HandleGMTicketGetTicketOpcode(WorldPacket & recv_data)
 {
+	CHECK_INWORLD_RETURN
+
 	WorldPacket data(SMSG_GMTICKET_GETTICKET, 400);
 	// no data
 

@@ -235,8 +235,7 @@ void AuctionHouse::RemoveAuction(Auction * auct)
 
 void WorldSession::HandleAuctionListBidderItems( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld())
-		return;
+	CHECK_INWORLD_RETURN
 
 	uint64 guid;
 	recv_data >> guid;
@@ -453,8 +452,7 @@ void WorldSession::SendAuctionPlaceBidResultPacket(uint32 itemId, uint32 error)
 
 void WorldSession::HandleAuctionPlaceBid( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld())
-		return;
+	CHECK_INWORLD_RETURN
 
 	uint64 guid;
 	recv_data >> guid;
@@ -530,8 +528,7 @@ void WorldSession::HandleAuctionPlaceBid( WorldPacket & recv_data )
 
 void WorldSession::HandleCancelAuction( WorldPacket & recv_data)
 {
-	if(!_player->IsInWorld())
-		return;
+	CHECK_INWORLD_RETURN
 
 	uint64 guid;
 	recv_data >> guid;
@@ -560,8 +557,7 @@ void WorldSession::HandleCancelAuction( WorldPacket & recv_data)
 
 void WorldSession::HandleAuctionSellItem( WorldPacket & recv_data )
 {
-	if (!_player->IsInWorld())
-		return;
+	CHECK_INWORLD_RETURN
 
 	uint64 guid,item;
 	uint32 bid, buyout, etime, unk1, unk2;	// etime is in minutes
@@ -651,8 +647,7 @@ void WorldSession::HandleAuctionSellItem( WorldPacket & recv_data )
 
 void WorldSession::HandleAuctionListOwnerItems( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld())
-		return;
+	CHECK_INWORLD_RETURN
 
 	uint64 guid;
 	recv_data >> guid;
@@ -772,7 +767,8 @@ void AuctionHouse::SendAuctionList(Player * plr, WorldPacket * packet)
 void WorldSession::HandleAuctionListItems( WorldPacket & recv_data )
 {
 	CHECK_INWORLD_RETURN;
-		uint64 guid;
+	
+	uint64 guid;
 	recv_data >> guid;
 
 	Creature * pCreature = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));

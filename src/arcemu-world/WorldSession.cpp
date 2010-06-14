@@ -1184,7 +1184,7 @@ void WorldSession::SendAccountDataTimes(uint32 mask)
 
 void WorldSession::HandleLearnTalentOpcode( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN
  	 
 	uint32 talent_id, requested_rank, unk;
 	recv_data >> talent_id >> requested_rank >> unk;
@@ -1195,8 +1195,7 @@ void WorldSession::HandleLearnTalentOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleUnlearnTalents( WorldPacket & recv_data )
 {
-	if( !_player->IsInWorld() )
-		return;
+	CHECK_INWORLD_RETURN
 	
 	uint32 price = GetPlayer()->CalcTalentResetCost(GetPlayer()->GetTalentResetTimes());
 	if( !GetPlayer()->HasGold(price) )
@@ -1209,7 +1208,7 @@ void WorldSession::HandleUnlearnTalents( WorldPacket & recv_data )
 
 void WorldSession::HandleUnlearnSkillOpcode(WorldPacket& recv_data)
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN
 	
     uint32 skill_line;
 	uint32 points_remaining=_player->GetTalentPoints(SPEC_SECONDARY);
@@ -1237,14 +1236,13 @@ void WorldSession::HandleUnlearnSkillOpcode(WorldPacket& recv_data)
 }
 
 void WorldSession::HandleLearnMultipleTalentsOpcode(WorldPacket &recvPacket){
+	CHECK_INWORLD_RETURN
+
     uint32 talentcount;
     uint32 talentid;
     uint32 rank;
 
 	sLog.outDebug("Recieved packet CMSG_LEARN_TALENTS_MULTIPLE.");
-
-    if( !_player->IsInWorld() )
-        return;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // 0x04C1 CMSG_LEARN_TALENTS_MULTIPLE
@@ -1285,6 +1283,8 @@ void WorldSession::SendMOTD(){
 }
 
 void WorldSession::HandleEquipmentSetUse( WorldPacket &data ){
+	CHECK_INWORLD_RETURN
+
 	sLog.outDebug("Received CMSG_EQUIPMENT_SET_USE");
 
 	WoWGuid GUID;
@@ -1354,6 +1354,8 @@ void WorldSession::HandleEquipmentSetUse( WorldPacket &data ){
 }
 
 void WorldSession::HandleEquipmentSetSave( WorldPacket &data ){
+	CHECK_INWORLD_RETURN
+
 	sLog.outDebug("Received CMSG_EQUIPMENT_SET_SAVE");
 
 	WoWGuid GUID;
@@ -1394,6 +1396,8 @@ void WorldSession::HandleEquipmentSetSave( WorldPacket &data ){
 }
 
 void WorldSession::HandleEquipmentSetDelete( WorldPacket &data ){
+	CHECK_INWORLD_RETURN
+
 	sLog.outDebug("Received CMSG_EQUIPMENT_SET_DELETE");
 
 	WoWGuid setGUID;

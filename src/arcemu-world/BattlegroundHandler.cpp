@@ -22,11 +22,12 @@
 
 void WorldSession::HandleBattlefieldPortOpcode(WorldPacket &recv_data)
 {
+	CHECK_INWORLD_RETURN
+
 	uint16 mapinfo, unk;
 	uint8 action;
 	uint32 bgtype;
 
-	CHECK_INWORLD_ASSERT;
 	recv_data >> unk >> bgtype >> mapinfo >> action;
 
 	if(action == 0)
@@ -47,6 +48,8 @@ void WorldSession::HandleBattlefieldPortOpcode(WorldPacket &recv_data)
 
 void WorldSession::HandleBattlefieldStatusOpcode(WorldPacket &recv_data)
 {
+	CHECK_INWORLD_RETURN
+
 /**********************************************************************************
 * This is done based on whether we are queued, inside, or not in a battleground.
 ***********************************************************************************/
@@ -60,8 +63,8 @@ void WorldSession::HandleBattlefieldStatusOpcode(WorldPacket &recv_data)
 
 void WorldSession::HandleBattlefieldListOpcode(WorldPacket &recv_data)
 {
-//	uint64 guid;
-//	recv_data >> guid;
+	CHECK_INWORLD_RETURN
+
 	uint32 BGType;
 	recv_data >> BGType;
 	uint8 from;
@@ -119,13 +122,19 @@ void WorldSession::HandleBattleMasterHelloOpcode(WorldPacket &recv_data)
 
 void WorldSession::HandleLeaveBattlefieldOpcode(WorldPacket &recv_data)
 {
+	CHECK_INWORLD_RETURN
+
 	if( _player->m_bg && _player->IsInWorld() )
 		_player->m_bg->RemovePlayer(_player, false);
 }
 
 void WorldSession::HandleAreaSpiritHealerQueryOpcode(WorldPacket &recv_data)
 {
-	if(!_player->IsInWorld() || !_player->m_bg) return;
+	CHECK_INWORLD_RETURN
+
+	if( !_player->m_bg )
+		return;
+
 	uint64 guid;
 	recv_data >> guid;
 
@@ -146,7 +155,11 @@ void WorldSession::HandleAreaSpiritHealerQueryOpcode(WorldPacket &recv_data)
 
 void WorldSession::HandleAreaSpiritHealerQueueOpcode(WorldPacket &recv_data)
 {
-	if(!_player->IsInWorld() || !_player->m_bg) return;
+	CHECK_INWORLD_RETURN
+
+	if( !_player->m_bg)
+		return;
+
 	uint64 guid;
 	recv_data >> guid;
 	Creature * psg = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
@@ -159,9 +172,11 @@ void WorldSession::HandleAreaSpiritHealerQueueOpcode(WorldPacket &recv_data)
 
 void WorldSession::HandleBattlegroundPlayerPositionsOpcode(WorldPacket &recv_data)
 {
+	CHECK_INWORLD_RETURN
+
 	// empty opcode
 	CBattleground *bg = _player->m_bg;
-    if(!_player->IsInWorld() || !bg)
+    if( !bg )
         return;
 
 	if(bg->GetType() == BATTLEGROUND_WARSONG_GULCH)
@@ -244,6 +259,7 @@ void WorldSession::HandleBattleMasterJoinOpcode(WorldPacket &recv_data)
 void WorldSession::HandleArenaJoinOpcode(WorldPacket &recv_data)
 {
 	CHECK_INWORLD_RETURN;
+
 	if(_player->GetGroup() && _player->GetGroup()->m_isqueued)
 	{
 		SystemMessage("You are in a group that is already queued for a battleground or inside a battleground. Leave this first.");
@@ -286,12 +302,6 @@ void WorldSession::HandleInspectHonorStatsOpcode( WorldPacket &recv_data )
 
     uint64 guid;
     recv_data >> guid;
-
-  	if( _player == NULL )
-	{
-		sLog.outError( "HandleInspectHonorStatsOpcode : _player was null" );
-		return;
-	}
 
 	if( _player->GetMapMgr() == NULL )
 	{

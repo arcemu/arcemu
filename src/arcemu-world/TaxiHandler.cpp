@@ -22,7 +22,8 @@
 
 void WorldSession::HandleTaxiNodeStatusQueryOpcode( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN
+
 	sLog.outDebug( "WORLD: Received CMSG_TAXINODE_STATUS_QUERY" );
 
 	uint64 guid;
@@ -58,7 +59,8 @@ void WorldSession::HandleTaxiNodeStatusQueryOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleTaxiQueryAvaibleNodesOpcode( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN
+
 	sLog.outDebug( "WORLD: Received CMSG_TAXIQUERYAVAILABLENODES" );
 	uint64 guid;
 	recv_data >> guid;
@@ -122,7 +124,8 @@ void WorldSession::SendTaxiList(Creature* pCreature)
 
 void WorldSession::HandleActivateTaxiOpcode( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN
+
 	sLog.outDebug( "WORLD: Received CMSG_ACTIVATETAXI" );
 
 	uint64 guid;
@@ -244,8 +247,8 @@ void WorldSession::HandleActivateTaxiOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleMultipleActivateTaxiOpcode(WorldPacket & recvPacket)
 {
-	if( !_player->IsInWorld() )
-		return;
+	CHECK_INWORLD_RETURN
+
 	sLog.outDebug( "WORLD: Received CMSG_ACTIVATETAXI" );
 
 	uint64 guid;
@@ -337,13 +340,6 @@ void WorldSession::HandleMultipleActivateTaxiOpcode(WorldPacket & recvPacket)
 	uint32 modelid = 0;
 	if( _player->IsTeamHorde() )
 	{
-		/*
-		if( taxinode->horde_mount == 2224 )
-			modelid =295; // In case it's a wyvern
-		else
-			modelid =1566; // In case it's a bat or a bad id
-		*/
-
 		CreatureInfo* ci = CreatureNameStorage.LookupEntry( taxinode->horde_mount );
 		if(!ci) return;
 		modelid = ci->Male_DisplayID;
@@ -351,13 +347,6 @@ void WorldSession::HandleMultipleActivateTaxiOpcode(WorldPacket & recvPacket)
 	}
 	else
 	{
-		/*
-		if( taxinode->alliance_mount == 3837 )
-			modelid =479; // In case it's an hippogryph
-		else
-			modelid =1147; // In case it's a gryphon or a bad id
-		*/
-
 		CreatureInfo* ci = CreatureNameStorage.LookupEntry( taxinode->alliance_mount );
 		if(!ci) return;
 		modelid = ci->Male_DisplayID;
@@ -387,12 +376,6 @@ void WorldSession::HandleMultipleActivateTaxiOpcode(WorldPacket & recvPacket)
 		TaxiPath * np = sTaxiMgr.GetTaxiPath(pathes[i-1], pathes[i]);
 		if(!np) return;
 
-/*		if (np->GetID() == 766 || np->GetID() == 767 || np->GetID() == 771 || np->GetID() == 772)
-		{
-			_player->m_taxiPaths.clear();
-			return;
-		}
-*/
 		// add to the list.. :)
 		_player->m_taxiPaths.push_back(np);
 	}

@@ -22,6 +22,8 @@
 
 void WorldSession::HandleRepopRequestOpcode( WorldPacket & recv_data )
 {
+	CHECK_INWORLD_RETURN
+
 	sLog.outDebug( "WORLD: Recvd CMSG_REPOP_REQUEST Message" );
     if(_player->getDeathState() != JUST_DIED)
         return;
@@ -33,8 +35,8 @@ void WorldSession::HandleRepopRequestOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleAutostoreLootItemOpcode( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld()) return;
-//	uint8 slot = 0;
+	CHECK_INWORLD_RETURN
+
 	uint32 itemid = 0;
 	uint32 amt = 1;
 	uint8 lootSlot = 0;
@@ -200,19 +202,6 @@ void WorldSession::HandleAutostoreLootItemOpcode( WorldPacket & recv_data )
 		_player->GetSession()->SendPacket(&data);
 	}
 
-/*    WorldPacket idata(45);
-    if(it->Class == ITEM_CLASS_QUEST)
-    {
-        uint32 pcount = _player->GetItemInterface()->GetItemCount(it->ItemId, true);
-		BuildItemPushResult(&idata, _player->GetGUID(), ITEM_PUSH_TYPE_LOOT, amt, itemid, pLoot->items.at(lootSlot).iRandomProperty ? pLoot->items.at(lootSlot).iRandomProperty->ID : 0,0xFF,0,0xFFFFFFFF,pcount);
-    }
-	else BuildItemPushResult(&idata, _player->GetGUID(), ITEM_PUSH_TYPE_LOOT, amt, itemid, pLoot->items.at(lootSlot).iRandomProperty ? pLoot->items.at(lootSlot).iRandomProperty->ID : 0);
-
-	if(_player->InGroup())
-		_player->GetGroup()->SendPacketToAll(&idata);
-	else
-		SendPacket(&idata);*/
-
 	/* any left yet? (for fishing bobbers) */
 	if(pGO && pGO->GetEntry() ==GO_FISHING_BOBBER)
 	{
@@ -226,7 +215,8 @@ void WorldSession::HandleAutostoreLootItemOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleLootMoneyOpcode( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN
+
 	Loot * pLoot = NULL;
 	uint64 lootguid=GetPlayer()->GetLootGUID();
 	if(!lootguid)
@@ -366,13 +356,12 @@ void WorldSession::HandleLootMoneyOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleLootOpcode( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld()) // Check that the player is currently in world
-		return;
+	CHECK_INWORLD_RETURN
 
 	uint64 guid;
 	recv_data >> guid;
 
-	if ( !guid ) // Check that the player exists
+	if ( guid == 0 )
 	  return;
 
 	if ( _player->IsDead() ) // If the player is dead they can't loot!
@@ -426,8 +415,7 @@ void WorldSession::HandleLootOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleLootReleaseOpcode( WorldPacket & recv_data )
 {
-	if ( !_player->IsInWorld() )
-		return;
+	CHECK_INWORLD_RETURN
 
 	uint64 guid;
 	recv_data >> guid;
@@ -611,6 +599,8 @@ void WorldSession::HandleLootReleaseOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleWhoOpcode( WorldPacket & recv_data )
 {
+	CHECK_INWORLD_RETURN
+
 	uint32 min_level;
 	uint32 max_level;
 	uint32 class_mask;
@@ -796,6 +786,8 @@ void WorldSession::HandleWhoOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleLogoutRequestOpcode( WorldPacket & recv_data )
 {
+	CHECK_INWORLD_RETURN
+
 	Player *pPlayer = GetPlayer();
 	WorldPacket data( SMSG_LOGOUT_RESPONSE, 5 );
 
@@ -855,6 +847,8 @@ void WorldSession::HandleLogoutRequestOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandlePlayerLogoutOpcode( WorldPacket & recv_data )
 {
+	CHECK_INWORLD_RETURN
+
 	sLog.outDebug( "WORLD: Recvd CMSG_PLAYER_LOGOUT Message" );
 	if(!HasGMPermissions())
 	{
@@ -867,7 +861,7 @@ void WorldSession::HandlePlayerLogoutOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleLogoutCancelOpcode( WorldPacket & recv_data )
 {
-
+	CHECK_INWORLD_RETURN
 	sLog.outDebug( "WORLD: Recvd CMSG_LOGOUT_CANCEL Message" );
 
 	Player *pPlayer = GetPlayer();
@@ -897,8 +891,8 @@ void WorldSession::HandleLogoutCancelOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleZoneUpdateOpcode( WorldPacket & recv_data )
 {
+	CHECK_INWORLD_RETURN
 	uint32 newZone;
-	Arcemu::Util::ARCEMU_ASSERT(   _player != NULL );
 
 	recv_data >> newZone;
 
@@ -912,27 +906,10 @@ void WorldSession::HandleZoneUpdateOpcode( WorldPacket & recv_data )
 	_player->GetItemInterface()->EmptyBuyBack();
 }
 
-/*
-// Unused in 3.2
-void WorldSession::HandleSetTargetOpcode( WorldPacket & recv_data )
-{
-	uint64 guid ;
-	recv_data >> guid;
-
-		if(guid == 0) // deselected target
-		{
-			// wait dude, 5 seconds -.-
-			_player->CombatStatusHandler_ResetPvPTimeout();
-			//_player->CombatStatus.ClearPrimaryAttackTarget();
-		}
-	if( GetPlayer( ) != 0 ){
-		GetPlayer( )->SetTarget(guid);
-	}
-}
-*/
-
 void WorldSession::HandleSetSelectionOpcode( WorldPacket & recv_data )
 {
+	CHECK_INWORLD_RETURN
+
 	uint64 guid;
 	recv_data >> guid;
 	_player->SetSelection(guid);
@@ -951,6 +928,8 @@ void WorldSession::HandleSetSelectionOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleStandStateChangeOpcode( WorldPacket & recv_data )
 {
+	CHECK_INWORLD_RETURN
+
 	uint8 animstate;
 	recv_data >> animstate;
 
@@ -959,6 +938,8 @@ void WorldSession::HandleStandStateChangeOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleBugOpcode( WorldPacket & recv_data )
 {
+	CHECK_INWORLD_RETURN
+
 	uint32 suggestion, contentlen;
 	std::string content;
 	uint32 typelen;
@@ -977,11 +958,15 @@ void WorldSession::HandleBugOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleCorpseReclaimOpcode(WorldPacket &recv_data)
 {
+	CHECK_INWORLD_RETURN
 	sLog.outDetail("WORLD: Received CMSG_RECLAIM_CORPSE");
 
 	uint64 guid;
 	recv_data >> guid;
-	if ( !guid ) return;
+	
+	if ( guid == 0 )
+		return;
+
 	Corpse* pCorpse = objmgr.GetCorpse( (uint32)guid );
 	if( pCorpse == NULL )	return;
 
@@ -1019,7 +1004,8 @@ void WorldSession::HandleCorpseReclaimOpcode(WorldPacket &recv_data)
 
 void WorldSession::HandleResurrectResponseOpcode(WorldPacket & recv_data)
 {
-	if ( !_player->IsInWorld() ) return;
+	CHECK_INWORLD_RETURN
+
 	sLog.outDetail("WORLD: Received CMSG_RESURRECT_RESPONSE");
 
 	if ( _player->isAlive() )
@@ -1190,6 +1176,8 @@ void WorldSession::HandleRequestAccountData(WorldPacket& recv_data)
 
 void WorldSession::HandleSetActionButtonOpcode(WorldPacket& recv_data)
 {
+	CHECK_INWORLD_RETURN
+
 	sLog.outDebug( "WORLD: Received CMSG_SET_ACTION_BUTTON" );
 	uint8 button, misc, type;
 	uint16 action;
@@ -1230,6 +1218,8 @@ void WorldSession::HandleSetActionButtonOpcode(WorldPacket& recv_data)
 
 void WorldSession::HandleSetWatchedFactionIndexOpcode(WorldPacket &recvPacket)
 {
+	CHECK_INWORLD_RETURN
+
 	uint32 factionid;
 	recvPacket >> factionid;
 	GetPlayer()->SetUInt32Value(PLAYER_FIELD_WATCHED_FACTION_INDEX, factionid);
@@ -1241,11 +1231,15 @@ void WorldSession::HandleSetWatchedFactionIndexOpcode(WorldPacket &recvPacket)
 
 void WorldSession::HandleTogglePVPOpcode(WorldPacket& recv_data)
 {
+	CHECK_INWORLD_RETURN
+
 	_player->PvPToggle();
 }
 
 void WorldSession::HandleAmmoSetOpcode(WorldPacket & recv_data)
 {
+	CHECK_INWORLD_RETURN
+
 	uint32 ammoId;
 	recv_data >> ammoId;
 
@@ -1321,8 +1315,10 @@ void WorldSession::HandleAmmoSetOpcode(WorldPacket & recv_data)
 
 void WorldSession::HandleBarberShopResult(WorldPacket & recv_data)
 {
+	CHECK_INWORLD_RETURN
+
 	sLog.outDebug("WORLD: CMSG_ALTER_APPEARANCE ");
-	CHECK_INWORLD_RETURN;
+
 	uint32 hair, haircolor, facialhairorpiercing;
 	recv_data >> hair >> haircolor >> facialhairorpiercing;
 	uint32 oldhair = _player->GetByte( PLAYER_BYTES, 2 );
@@ -1390,7 +1386,8 @@ void WorldSession::HandleBarberShopResult(WorldPacket & recv_data)
 
 void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN
+
 	uint64 guid;
 	recv_data >> guid;
 	SpellCastTargets targets;
@@ -1678,6 +1675,8 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 
 void WorldSession::HandleTutorialFlag( WorldPacket & recv_data )
 {
+	CHECK_INWORLD_RETURN
+
 	uint32 iFlag;
 	recv_data >> iFlag;
 
@@ -1699,18 +1698,24 @@ void WorldSession::HandleTutorialFlag( WorldPacket & recv_data )
 
 void WorldSession::HandleTutorialClear( WorldPacket & recv_data )
 {
+	CHECK_INWORLD_RETURN
+
 	for ( uint32 iI = 0; iI < 8; iI++)
 		GetPlayer()->SetTutorialInt( iI, 0xFFFFFFFF );
 }
 
 void WorldSession::HandleTutorialReset( WorldPacket & recv_data )
 {
+	CHECK_INWORLD_RETURN
+
 	for ( uint32 iI = 0; iI < 8; iI++)
 		GetPlayer()->SetTutorialInt( iI, 0x00000000 );
 }
 
 void WorldSession::HandleSetSheathedOpcode( WorldPacket & recv_data )
 {
+	CHECK_INWORLD_RETURN
+
 	uint32 active;
 	recv_data >> active;
 	_player->SetByte(UNIT_FIELD_BYTES_2,0,(uint8)active);
@@ -1718,6 +1723,8 @@ void WorldSession::HandleSetSheathedOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandlePlayedTimeOpcode( WorldPacket & recv_data )
 {
+	CHECK_INWORLD_RETURN
+
 	uint32 playedt = (uint32)UNIXTIME - _player->m_playedtime[2];
     uint8 displayinui = 0;
     
@@ -1918,6 +1925,8 @@ void WorldSession::HandleInspectOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleSetActionBarTogglesOpcode(WorldPacket &recvPacket)
 {
+	CHECK_INWORLD_RETURN
+
 	uint8 cActionBarId;
 	recvPacket >> cActionBarId;
 	sLog.outDebug("Received CMSG_SET_ACTIONBAR_TOGGLES for actionbar id %d.", cActionBarId);
@@ -1928,8 +1937,8 @@ void WorldSession::HandleSetActionBarTogglesOpcode(WorldPacket &recvPacket)
 // Handlers for acknowledgement opcodes (removes some 'unknown opcode' flood from the logs)
 void WorldSession::HandleAcknowledgementOpcodes( WorldPacket & recv_data )
 {
-	if(!_player)
-		return;
+	CHECK_INWORLD_RETURN
+
 	switch(recv_data.GetOpcode())
 	{
 	case CMSG_MOVE_WATER_WALK_ACK:
@@ -1940,70 +1949,12 @@ void WorldSession::HandleAcknowledgementOpcodes( WorldPacket & recv_data )
 		_player->FlyCheat = _player->m_setflycheat;
 		break;
 	}
-
-//NOTE: VLack: since 3.2.0, the first field of this packet is a _packed_ GUID, so keep this in mind if you plan to read data (just use WoWGuid, it'll read it correctly).
-
-   /* uint16 opcode = recv_data.GetOpcode();
-	std::stringstream ss;
-	ss << "Received ";
-	switch( opcode )
-	{
-	case CMSG_MOVE_FEATHER_FALL_ACK:			ss << "Move_Feather_Fall"; break;
-	case CMSG_MOVE_WATER_WALK_ACK:			  ss << "Move_Water_Walk"; break;
-	case CMSG_MOVE_KNOCK_BACK_ACK:			  ss << "Move_Knock_Back"; break;
-	case CMSG_MOVE_HOVER_ACK:				   ss << "Move_Hover"; break;
-	case CMSG_FORCE_WALK_SPEED_CHANGE_ACK:	  ss << "Force_Walk_Speed_Change"; break;
-	case CMSG_FORCE_SWIM_SPEED_CHANGE_ACK:	  ss << "Force_Swim_Speed_Change"; break;
-	case CMSG_FORCE_SWIM_BACK_SPEED_CHANGE_ACK: ss << "Force_Swim_Back_Speed_Change"; break;
-	case CMSG_FORCE_TURN_RATE_CHANGE_ACK:	   ss << "Force_Turn_Rate_Change"; break;
-	case CMSG_FORCE_RUN_SPEED_CHANGE_ACK:	   ss << "Force_Run_Speed_Change"; break;
-	case CMSG_FORCE_RUN_BACK_SPEED_CHANGE_ACK:  ss << "Force_Run_Back_Speed_Change"; break;
-	case CMSG_FORCE_MOVE_ROOT_ACK:			  ss << "Force_Move_Root"; break;
-	case CMSG_FORCE_MOVE_UNROOT_ACK:			ss << "Force_Move_Unroot"; break;
-	default:									ss << "Unknown"; break;
-	}
-	ss << " Acknowledgement. PktSize: " << recv_data.size();
-	sLog.outDebug( ss.str().c_str() );*/
-
-	/*uint16 opcode = recv_data.GetOpcode();
-	if (opcode == CMSG_FORCE_RUN_SPEED_CHANGE_ACK)
-	{
-
-		uint64 GUID;
-		uint32 Flags, unk0, unk1, d_time;
-		float X, Y, Z, O, speed;
-
-		recv_data >> GUID;
-		recv_data >> unk0 >> Flags;
-		if (Flags & (0x2000 | 0x6000))			 //0x2000 == jumping  0x6000 == Falling
-		{
-			uint32 unk2, unk3, unk4, unk5;
-			float OldSpeed;
-
-			recv_data >> d_time;
-			recv_data >> X >> Y >> Z >> O;
-			recv_data >> unk2 >> unk3;						  //no idea, maybe unk2 = flags2
-			recv_data >> unk4 >> unk5;						  //no idea
-			recv_data >> OldSpeed >> speed;
-		}
-		else													//single check
-		{
-			recv_data >> d_time;
-			recv_data >> X >> Y >> Z >> O;
-			recv_data >> unk1 >> speed;
-		}
-
-		// if its not good kick player???
-		if (_player->GetPlayerSpeed() != speed)
-		{
-			sLog.outError("SpeedChange player:%s is NOT correct, its set to: %f he seems to be cheating",_player->GetName(), speed);
-		}
-	}*/
-
 }
 
 void WorldSession::HandleSelfResurrectOpcode(WorldPacket& recv_data)
 {
+	CHECK_INWORLD_RETURN
+
 	uint32 self_res_spell = _player->GetUInt32Value(PLAYER_SELF_RES_SPELL);
 	if(self_res_spell)
 	{
@@ -2017,6 +1968,8 @@ void WorldSession::HandleSelfResurrectOpcode(WorldPacket& recv_data)
 
 void WorldSession::HandleRandomRollOpcode(WorldPacket &recv_data)
 {
+	CHECK_INWORLD_RETURN
+
 	uint32 min, max;
 	recv_data >> min >> max;
 
@@ -2050,7 +2003,8 @@ void WorldSession::HandleRandomRollOpcode(WorldPacket &recv_data)
 
 void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN
+
 //	uint8 slot = 0;
 	uint32 itemid = 0;
 	uint32 amt = 1;
@@ -2117,14 +2071,7 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
 	if ( !pObj )
 		return;
 
-  // telling him or not.
-	/*float targetDist = player->CalcDistance(pObj);
-  if(targetDist > 130.0f) {
-    _player->GetSession()->SendNotification("so far!"));
-    return;
-  }*/
-
-	if (slotid >= pLoot->items.size())
+ 	if (slotid >= pLoot->items.size())
 	{
 		sLog.outDebug("AutoLootItem: Player %s might be using a hack! (slot %d, size %d)",
 						GetPlayer()->GetName(), slotid, pLoot->items.size());
@@ -2222,27 +2169,12 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
 	{
 		pLoot->items.at(slotid).has_looted.insert(player->GetLowGUID());
 	}
-
-/*    WorldPacket idata(45);
-    if(it->Class == ITEM_CLASS_QUEST)
-    {
-        uint32 pcount = player->GetItemInterface()->GetItemCount(it->ItemId, true);
-		BuildItemPushResult(&idata, GetPlayer()->GetGUID(), ITEM_PUSH_TYPE_LOOT, amt, itemid, pLoot->items.at(slotid).iRandomProperty ? pLoot->items.at(slotid).iRandomProperty->ID : 0,0xFF,0,0xFFFFFFFF,pcount);
-    }
-    else
-    {
-		BuildItemPushResult(&idata, player->GetGUID(), ITEM_PUSH_TYPE_LOOT, amt, itemid, pLoot->items.at(slotid).iRandomProperty ? pLoot->items.at(slotid).iRandomProperty->ID : 0);
-    }
-
-	if(_player->InGroup())
-		_player->GetGroup()->SendPacketToAll(&idata);
-	else
-		SendPacket(&idata);*/
 }
 
 void WorldSession::HandleLootRollOpcode(WorldPacket& recv_data)
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN
+
 	/* struct:
 
 	{CLIENT} Packet: (0x02A0) CMSG_LOOT_ROLL PacketSize = 13
@@ -2298,7 +2230,8 @@ void WorldSession::HandleLootRollOpcode(WorldPacket& recv_data)
 
 void WorldSession::HandleOpenItemOpcode(WorldPacket &recv_data)
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN
+
 	CHECK_PACKET_SIZE(recv_data, 2);
 	int8 slot, containerslot;
 	recv_data >> containerslot >> slot;
@@ -2379,12 +2312,16 @@ void WorldSession::HandleOpenItemOpcode(WorldPacket &recv_data)
 
 void WorldSession::HandleCompleteCinematic(WorldPacket &recv_data)
 {
+	CHECK_INWORLD_RETURN
+
 	// when a Cinematic is started the player is going to sit down, when its finished its standing up.
 	_player->SetStandState(STANDSTATE_STAND);
 };
 
 void WorldSession::HandleResetInstanceOpcode(WorldPacket& recv_data)
 {
+	CHECK_INWORLD_RETURN
+
 	sInstanceMgr.ResetSavedInstances(_player);
 }
 
@@ -2412,6 +2349,8 @@ void DecodeHex(const char* source, char* dest, uint32 size)
 
 void WorldSession::HandleToggleCloakOpcode(WorldPacket &recv_data)
 {
+	CHECK_INWORLD_RETURN
+
 	//////////////////////////
 	//	PLAYER_FLAGS									   = 3104 / 0x00C20 / 0000000000000000000110000100000
 	//																							 ^
@@ -2427,6 +2366,8 @@ void WorldSession::HandleToggleCloakOpcode(WorldPacket &recv_data)
 
 void WorldSession::HandleToggleHelmOpcode(WorldPacket &recv_data)
 {
+	CHECK_INWORLD_RETURN
+
 	//////////////////////////
 	//	PLAYER_FLAGS									   = 3104 / 0x00C20 / 0000000000000000000110000100000
 	//																							  ^
@@ -2442,6 +2383,8 @@ void WorldSession::HandleToggleHelmOpcode(WorldPacket &recv_data)
 
 void WorldSession::HandleDungeonDifficultyOpcode(WorldPacket& recv_data)
 {
+	CHECK_INWORLD_RETURN
+
     uint32 data;
     recv_data >> data;
 
@@ -2462,6 +2405,8 @@ void WorldSession::HandleDungeonDifficultyOpcode(WorldPacket& recv_data)
 
 void WorldSession::HandleRaidDifficultyOpcode(WorldPacket& recv_data)
 {
+	CHECK_INWORLD_RETURN
+
 	uint32 data;
 	recv_data >> data;
 
@@ -2482,6 +2427,8 @@ void WorldSession::HandleRaidDifficultyOpcode(WorldPacket& recv_data)
 
 void WorldSession::HandleSummonResponseOpcode(WorldPacket & recv_data)
 {
+	CHECK_INWORLD_RETURN
+
 	uint32 unk;
 	uint32 SummonerGUID;
 	uint8 IsClickOk;
@@ -2506,6 +2453,7 @@ void WorldSession::HandleSummonResponseOpcode(WorldPacket & recv_data)
 
 void WorldSession::HandleDismountOpcode(WorldPacket& recv_data)
 {
+	CHECK_INWORLD_RETURN
 	sLog.outDebug( "WORLD: Received CMSG_DISMOUNT"  );
 
 	if( !_player->IsInWorld() || _player->GetTaxiState())
@@ -2517,6 +2465,8 @@ void WorldSession::HandleDismountOpcode(WorldPacket& recv_data)
 
 void WorldSession::HandleSetAutoLootPassOpcode(WorldPacket & recv_data)
 {
+	CHECK_INWORLD_RETURN
+
 	uint32 on;
 	recv_data >> on;
 
@@ -2528,6 +2478,8 @@ void WorldSession::HandleSetAutoLootPassOpcode(WorldPacket & recv_data)
 
 void WorldSession::HandleRemoveGlyph(WorldPacket & recv_data)
 {
+	CHECK_INWORLD_RETURN
+
 	uint32 glyphNum;
 	recv_data >> glyphNum;
 	if(glyphNum < 0 || glyphNum > 5)
@@ -2562,6 +2514,8 @@ void WorldSession::HandleGameobjReportUseOpCode( WorldPacket& recv_data )   // C
 
 void WorldSession::HandleWorldStateUITimerUpdate(WorldPacket& recv_data)
 {
+	CHECK_INWORLD_RETURN
+
 	WorldPacket data(SMSG_WORLD_STATE_UI_TIMER_UPDATE, 4);
 	data << (uint32)UNIXTIME;
 	SendPacket(&data);
@@ -2569,6 +2523,7 @@ void WorldSession::HandleWorldStateUITimerUpdate(WorldPacket& recv_data)
 
 void WorldSession::HandleSetTaxiBenchmarkOpcode( WorldPacket & recv_data )
 {
+	CHECK_INWORLD_RETURN
 	CHECK_PACKET_SIZE(recv_data, 1);
 
 	uint8 mode;

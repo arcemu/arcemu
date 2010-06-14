@@ -355,7 +355,6 @@ ArenaTeamMember * ArenaTeam::GetMemberByGuid(uint32 guid)
 
 void WorldSession::HandleArenaTeamRosterOpcode(WorldPacket & recv_data)
 {
-	//uint8 slot;
 	uint32 teamId;
 	ArenaTeam * team;
 	recv_data >> teamId;
@@ -389,6 +388,8 @@ void WorldSession::HandleArenaTeamQueryOpcode(WorldPacket & recv_data)
 
 void WorldSession::HandleArenaTeamAddMemberOpcode(WorldPacket & recv_data)
 {
+	CHECK_INWORLD_RETURN
+
 	WorldPacket data(SMSG_ARENA_TEAM_INVITE, 40);
 	string player_name;
 	uint32 teamId;
@@ -449,6 +450,9 @@ void WorldSession::HandleArenaTeamAddMemberOpcode(WorldPacket & recv_data)
 
 void WorldSession::HandleArenaTeamRemoveMemberOpcode(WorldPacket & recv_data)
 {
+
+	CHECK_INWORLD_RETURN
+
 	ArenaTeam * team;
 	uint8 slot;
 	uint32 teamId;
@@ -503,6 +507,8 @@ void WorldSession::HandleArenaTeamRemoveMemberOpcode(WorldPacket & recv_data)
 
 void WorldSession::HandleArenaTeamInviteAcceptOpcode(WorldPacket & recv_data)
 {
+	CHECK_INWORLD_RETURN
+
 	ArenaTeam * team;
 
 	if(_player->m_arenateaminviteguid == 0)
@@ -548,6 +554,8 @@ void WorldSession::HandleArenaTeamInviteAcceptOpcode(WorldPacket & recv_data)
 
 void WorldSession::HandleArenaTeamInviteDenyOpcode(WorldPacket & recv_data)
 {
+	CHECK_INWORLD_RETURN
+
 	ArenaTeam * team;
 	if(_player->m_arenateaminviteguid == 0)
 	{
@@ -567,6 +575,8 @@ void WorldSession::HandleArenaTeamInviteDenyOpcode(WorldPacket & recv_data)
 
 void WorldSession::HandleArenaTeamLeaveOpcode(WorldPacket & recv_data)
 {
+	CHECK_INWORLD_RETURN
+
 	ArenaTeam * team;
 	uint32 teamId;
 	recv_data >> teamId;
@@ -611,6 +621,8 @@ void WorldSession::HandleArenaTeamLeaveOpcode(WorldPacket & recv_data)
 
 void WorldSession::HandleArenaTeamDisbandOpcode(WorldPacket & recv_data)
 {
+	CHECK_INWORLD_RETURN
+
 	ArenaTeam * team;
 	uint32 teamId;
 	recv_data >> teamId;
@@ -639,6 +651,8 @@ void WorldSession::HandleArenaTeamDisbandOpcode(WorldPacket & recv_data)
 
 void WorldSession::HandleArenaTeamPromoteOpcode(WorldPacket & recv_data)
 {
+	CHECK_INWORLD_RETURN
+
 	uint32 teamId;
 	uint8 slot;
 	string name;

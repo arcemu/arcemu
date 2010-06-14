@@ -314,7 +314,8 @@ uint8 WorldSession::TrainerGetSpellStatus(TrainerSpell* pSpell)
 //////////////////////////////////////////////////////////////
 void WorldSession::HandleCharterShowListOpcode( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN
+
 	uint64 guid;
 	recv_data >> guid;
 
@@ -387,7 +388,8 @@ void WorldSession::SendCharterRequest(Creature* pCreature)
 //////////////////////////////////////////////////////////////
 void WorldSession::HandleAuctionHelloOpcode( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN
+
 	uint64 guid;
 	recv_data >> guid;
 	Creature* auctioneer = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
@@ -418,7 +420,8 @@ void WorldSession::SendAuctionList(Creature* auctioneer)
 //////////////////////////////////////////////////////////////
 void WorldSession::HandleGossipHelloOpcode( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN
+
 	uint64 guid;
 	list<QuestRelation *>::iterator it;
 	std::set<uint32> ql;
@@ -519,8 +522,8 @@ void WorldSession::HandleGossipHelloOpcode( WorldPacket & recv_data )
 //////////////////////////////////////////////////////////////
 void WorldSession::HandleGossipSelectOptionOpcode( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld()) return;
-	//WorldPacket data;
+	CHECK_INWORLD_RETURN
+
 	uint32 option;
 	uint32 unk24;
 	uint64 guid;
@@ -589,7 +592,11 @@ void WorldSession::HandleGossipSelectOptionOpcode( WorldPacket & recv_data )
 //////////////////////////////////////////////////////////////
 void WorldSession::HandleSpiritHealerActivateOpcode( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld() ||!_player->IsDead()) return;
+	CHECK_INWORLD_RETURN
+
+	if( !_player->IsDead() )
+		return;
+
 	GetPlayer( )->DeathDurabilityLoss(0.25);
 	GetPlayer( )->ResurrectPlayer();
 
@@ -623,6 +630,8 @@ void WorldSession::HandleSpiritHealerActivateOpcode( WorldPacket & recv_data )
 //////////////////////////////////////////////////////////////
 void WorldSession::HandleNpcTextQueryOpcode( WorldPacket & recv_data )
 {
+	CHECK_INWORLD_RETURN
+
 	WorldPacket data;
 	uint32 textID;
 	uint64 targetGuid;

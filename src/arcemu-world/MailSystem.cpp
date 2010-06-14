@@ -233,6 +233,8 @@ void MailSystem::SaveMessageToSQL(MailMessage * message)
 
 void WorldSession::HandleSendMail(WorldPacket & recv_data )
 {
+	CHECK_INWORLD_RETURN
+
 	MailMessage msg;
 	uint64 gameobject;
 	uint32 unk2;
@@ -414,6 +416,8 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 
 void WorldSession::HandleMarkAsRead(WorldPacket & recv_data )
 {
+	CHECK_INWORLD_RETURN
+
 	uint64 mailbox;
 	uint32 message_id;
 	recv_data >> mailbox >> message_id;
@@ -434,6 +438,8 @@ void WorldSession::HandleMarkAsRead(WorldPacket & recv_data )
 
 void WorldSession::HandleMailDelete(WorldPacket & recv_data )
 {
+	CHECK_INWORLD_RETURN
+
 	uint64 mailbox;
 	uint32 message_id;
 	recv_data >> mailbox >> message_id;
@@ -473,6 +479,8 @@ void WorldSession::HandleMailDelete(WorldPacket & recv_data )
 
 void WorldSession::HandleTakeItem(WorldPacket & recv_data )
 {
+	CHECK_INWORLD_RETURN
+
 	uint64 mailbox;
 	uint32 message_id;
 	uint32 lowguid;
@@ -582,6 +590,8 @@ void WorldSession::HandleTakeItem(WorldPacket & recv_data )
 
 void WorldSession::HandleTakeMoney(WorldPacket & recv_data )
 {
+	CHECK_INWORLD_RETURN
+
 	uint64 mailbox;
 	uint32 message_id;
 	recv_data >> mailbox >> message_id;
@@ -624,6 +634,8 @@ void WorldSession::HandleTakeMoney(WorldPacket & recv_data )
 
 void WorldSession::HandleReturnToSender(WorldPacket & recv_data )
 {
+	CHECK_INWORLD_RETURN
+
 	uint64 mailbox;
 	uint32 message_id;
 	recv_data >> mailbox >> message_id;
@@ -672,6 +684,8 @@ void WorldSession::HandleReturnToSender(WorldPacket & recv_data )
 
 void WorldSession::HandleMailCreateTextItem(WorldPacket & recv_data )
 {
+	CHECK_INWORLD_RETURN
+
 	uint64 mailbox;
 	uint32 message_id;
 	recv_data >> mailbox >> message_id;
@@ -723,6 +737,8 @@ void WorldSession::HandleMailCreateTextItem(WorldPacket & recv_data )
 
 void WorldSession::HandleItemTextQuery(WorldPacket & recv_data)
 {
+	CHECK_INWORLD_RETURN
+
 	uint64 itemGuid;
 	recv_data >> itemGuid;
 
@@ -778,6 +794,8 @@ void Mailbox::FillTimePacket(WorldPacket& data)
 
 void WorldSession::HandleMailTime(WorldPacket & recv_data)
 {
+	CHECK_INWORLD_RETURN
+
 	WorldPacket data(MSG_QUERY_NEXT_MAIL_TIME, 100);
 	_player->m_mailBox.FillTimePacket(data);
 	SendPacket(&data);
@@ -794,6 +812,8 @@ void WorldSession::SendMailError(uint32 error)
 
 void WorldSession::HandleGetMail(WorldPacket & recv_data )
 {
+	CHECK_INWORLD_RETURN
+
 	WorldPacket * data = _player->m_mailBox.BuildMailboxListingPacket();
 	SendPacket(data);
 	delete data;
@@ -908,23 +928,6 @@ void Mailbox::Load(QueryResult * result)
 		msg.copy_made = fields[i++].GetBool();
 		msg.read_flag = fields[i++].GetBool();
 		msg.deleted_flag = fields[i++].GetBool();
-
-		/*if( msg.copy_made )
-		{
-			QueryResult * result = CharacterDatabase.Query( "SELECT * FROM playeritems WHERE itemtext = %u", msg.message_id );
-			if( result == NULL )
-			{
-				if( msg.deleted_flag )
-					CharacterDatabase.WaitExecute( "DELETE FROM mailbox WHERE message_id = %u", msg.message_id );
-				else
-				{
-					msg.copy_made = false;
-					CharacterDatabase.WaitExecute( "UPDATE mailbox SET copy_made = 0 WHERE message_id = %u", msg.message_id	);
-				}
-			}
-			else
-				delete result;
-		}*/
 
 		// Add to the mailbox
 		AddMessage(&msg);

@@ -64,10 +64,10 @@ static const uint32 LanguageSkills[NUM_LANGUAGES] = {
 
 void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 {
+	CHECK_INWORLD_RETURN
+
 	CHECK_PACKET_SIZE(recv_data, 9);
 	WorldPacket *data;
-	if(!_player->IsInWorld())
-		return;
 
 	uint32 type;
 	int32 lang;
@@ -547,6 +547,8 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleEmoteOpcode( WorldPacket & recv_data )
 {
+	CHECK_INWORLD_RETURN
+
 	CHECK_PACKET_SIZE(recv_data,4);
 
 	if(!_player->isAlive())
@@ -564,8 +566,10 @@ void WorldSession::HandleEmoteOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleTextEmoteOpcode( WorldPacket & recv_data )
 {
+	CHECK_INWORLD_RETURN
+
 	CHECK_PACKET_SIZE(recv_data, 16);
-	if(!_player->IsInWorld() || !_player->isAlive())
+	if(!_player->isAlive())
 		return;
 
 	uint64 guid;
@@ -669,6 +673,8 @@ void WorldSession::HandleTextEmoteOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleReportSpamOpcode( WorldPacket & recv_data )
 {
+	CHECK_INWORLD_RETURN
+
 	CHECK_PACKET_SIZE(recv_data, 1+8);
 	sLog.outDebug("WORLD: CMSG_REPORT_SPAM");
 
@@ -708,6 +714,8 @@ void WorldSession::HandleReportSpamOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleChatIgnoredOpcode(WorldPacket & recvPacket )
 {
+	CHECK_INWORLD_RETURN
+
 	CHECK_PACKET_SIZE(recvPacket, 8+1);
 
 	uint64 iguid;

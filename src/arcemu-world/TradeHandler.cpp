@@ -22,7 +22,8 @@
 
 void WorldSession::HandleInitiateTrade(WorldPacket & recv_data)
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN
+
 	CHECK_PACKET_SIZE(recv_data, 8);
 	uint64 guid;
 	recv_data >> guid;
@@ -70,7 +71,8 @@ void WorldSession::HandleInitiateTrade(WorldPacket & recv_data)
 
 void WorldSession::HandleBeginTrade(WorldPacket & recv_data)
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN
+
 	uint32 TradeStatus = TRADE_STATUS_INITIATED;
 
 	Player * plr = _player->GetTradeTarget();
@@ -101,7 +103,8 @@ void WorldSession::HandleBeginTrade(WorldPacket & recv_data)
 
 void WorldSession::HandleBusyTrade(WorldPacket & recv_data)
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN
+
 	uint32 TradeStatus = TRADE_STATUS_PLAYER_BUSY;
 
 	Player * plr = _player->GetTradeTarget();
@@ -127,7 +130,8 @@ void WorldSession::HandleBusyTrade(WorldPacket & recv_data)
 
 void WorldSession::HandleIgnoreTrade(WorldPacket & recv_data)
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN
+
 	uint32 TradeStatus = TRADE_STATUS_PLAYER_IGNORED;
 
 	Player * plr = _player->GetTradeTarget();
@@ -151,7 +155,8 @@ void WorldSession::HandleIgnoreTrade(WorldPacket & recv_data)
 
 void WorldSession::HandleCancelTrade(WorldPacket & recv_data)
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN
+
 	if(_player->mTradeTarget == 0 || _player->mTradeStatus == TRADE_STATUS_COMPLETE)
 		return;
 
@@ -173,7 +178,8 @@ void WorldSession::HandleCancelTrade(WorldPacket & recv_data)
 
 void WorldSession::HandleUnacceptTrade(WorldPacket & recv_data)
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN
+
 	Player * plr = _player->GetTradeTarget();
 	//_player->ResetTradeVariables();
 
@@ -199,11 +205,11 @@ void WorldSession::HandleUnacceptTrade(WorldPacket & recv_data)
 
 void WorldSession::HandleSetTradeItem(WorldPacket & recv_data)
 {
+	CHECK_INWORLD_RETURN
+
 	if(_player->mTradeTarget == 0)
 		return;
 
-	if(!_player->IsInWorld()) return;
-	  
 	CHECK_PACKET_SIZE(recv_data, 3);
 
 	uint8 TradeSlot = recv_data.contents()[0];
@@ -286,6 +292,8 @@ void WorldSession::HandleSetTradeItem(WorldPacket & recv_data)
 
 void WorldSession::HandleSetTradeGold(WorldPacket & recv_data)
 {
+	CHECK_INWORLD_RETURN
+
 	if(_player->mTradeTarget == 0)
 		return;
   // cebernic: TradeGold sameway.
@@ -312,6 +320,8 @@ void WorldSession::HandleSetTradeGold(WorldPacket & recv_data)
 
 void WorldSession::HandleClearTradeItem(WorldPacket & recv_data)
 {
+	CHECK_INWORLD_RETURN
+
 	CHECK_PACKET_SIZE(recv_data, 1);
 	if(_player->mTradeTarget == 0)
 		return;
@@ -339,6 +349,8 @@ void WorldSession::HandleClearTradeItem(WorldPacket & recv_data)
 
 void WorldSession::HandleAcceptTrade(WorldPacket & recv_data) 
 {
+	CHECK_INWORLD_RETURN
+
 	Player * plr = _player->GetTradeTarget();
 	if(_player->mTradeTarget == 0 || !plr)
 		return;

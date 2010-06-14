@@ -21,7 +21,8 @@
 #include "StdAfx.h"
 void WorldSession::HandleAreaTriggerOpcode(WorldPacket & recv_data)
 {
-	 if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN
+
 	CHECK_PACKET_SIZE(recv_data, 4);
 	uint32 id ;
 	recv_data >> id;

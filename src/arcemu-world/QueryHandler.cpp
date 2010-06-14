@@ -66,10 +66,11 @@ void WorldSession::HandleQueryTimeOpcode( WorldPacket & recv_data )
 //////////////////////////////////////////////////////////////
 void WorldSession::HandleCreatureQueryOpcode( WorldPacket & recv_data )
 {
+	CHECK_INWORLD_RETURN
+
 	CHECK_PACKET_SIZE(recv_data, 12);
+
 	WorldPacket data(SMSG_CREATURE_QUERY_RESPONSE, 250); //VLack: thanks Aspire, this was 146 before
-//	uint8 databuffer[10000];
-//	StackPacket data(SMSG_CREATURE_QUERY_RESPONSE, databuffer, 10000);
 	uint32 entry;
 	uint64 guid;
 	CreatureInfo *ci;
@@ -148,6 +149,8 @@ void WorldSession::HandleCreatureQueryOpcode( WorldPacket & recv_data )
 //////////////////////////////////////////////////////////////
 void WorldSession::HandleGameObjectQueryOpcode( WorldPacket & recv_data )
 {
+	CHECK_INWORLD_RETURN
+
 	CHECK_PACKET_SIZE(recv_data, 12);
 	WorldPacket data(SMSG_GAMEOBJECT_QUERY_RESPONSE, 900);
 
@@ -160,12 +163,6 @@ void WorldSession::HandleGameObjectQueryOpcode( WorldPacket & recv_data )
 	recv_data >> guid;
 
 	sLog.outDetail("WORLD: CMSG_GAMEOBJECT_QUERY '%u'", entryID);
-
-/*	if (entryID==192683) { //VLack: f.ckin' gameobject which makes my client go boom...
-		data << uint32(entryID | 0x80000000);
-		SendPacket( &data );
-		return;
-	}*/
 
 	goinfo = GameObjectNameStorage.LookupEntry(entryID);
 	if(goinfo == NULL)
@@ -230,6 +227,8 @@ void WorldSession::HandleGameObjectQueryOpcode( WorldPacket & recv_data )
 //////////////////////////////////////////////////////////////
 void WorldSession::HandleCorpseQueryOpcode(WorldPacket &recv_data)
 {
+	CHECK_INWORLD_RETURN
+
 	sLog.outDetail("WORLD: Received MSG_CORPSE_QUERY");
 
 	Corpse *pCorpse;
@@ -283,6 +282,8 @@ void WorldSession::HandleCorpseQueryOpcode(WorldPacket &recv_data)
 
 void WorldSession::HandlePageTextQueryOpcode( WorldPacket & recv_data )
 {
+	CHECK_INWORLD_RETURN
+
 	CHECK_PACKET_SIZE(recv_data, 4);
 	uint32 pageid = 0;
 	recv_data >> pageid;
@@ -311,6 +312,8 @@ void WorldSession::HandlePageTextQueryOpcode( WorldPacket & recv_data )
 //////////////////////////////////////////////////////////////
 void WorldSession::HandleItemNameQueryOpcode( WorldPacket & recv_data )
 {
+	CHECK_INWORLD_RETURN
+
 	CHECK_PACKET_SIZE(recv_data, 4);
 	WorldPacket reply(SMSG_ITEM_NAME_QUERY_RESPONSE, 100);
 	uint32 itemid;

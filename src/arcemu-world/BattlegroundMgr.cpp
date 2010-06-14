@@ -142,6 +142,7 @@ void CBattlegroundManager::HandleBattlegroundListPacket(WorldSession * m_session
 
 void CBattlegroundManager::HandleBattlegroundJoin(WorldSession * m_session, WorldPacket & pck)
 {
+
 	uint64 guid;
 	uint32 pguid = m_session->GetPlayer()->GetLowGUID();
 	uint32 lgroup = GetLevelGrouping(m_session->GetPlayer()->getLevel());

@@ -115,7 +115,8 @@ void WorldSession::HandleGroupInviteOpcode( WorldPacket & recv_data )
 ///////////////////////////////////////////////////////////////
 void WorldSession::HandleGroupCancelOpcode( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN
+
 	sLog.outDebug( "WORLD: got CMSG_GROUP_CANCEL." );
 }
 
@@ -479,8 +480,7 @@ void WorldSession::SendPartyCommandResult(Player *pPlayer, uint32 p1, std::strin
 
 void WorldSession::HandlePartyMemberStatsOpcode(WorldPacket & recv_data)
 {
-	if(!_player->IsInWorld())
-		return;
+	CHECK_INWORLD_RETURN
 
 	uint64 guid;
 	recv_data >> guid;

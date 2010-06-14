@@ -22,7 +22,7 @@
 
 void WorldSession::HandlePetAction(WorldPacket & recv_data)
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN
 
 	//WorldPacket data;
 	uint64 petGuid = 0;
@@ -223,14 +223,16 @@ void WorldSession::HandlePetAction(WorldPacket & recv_data)
 
 void WorldSession::HandlePetInfo(WorldPacket & recv_data)
 {
+	CHECK_INWORLD_RETURN
+
 	//nothing
 	sLog.outDebug("HandlePetInfo is called");
 }
 
 void WorldSession::HandlePetNameQuery( WorldPacket & recv_data )
 {
-	if( !_player->IsInWorld() )
-		return;
+	CHECK_INWORLD_RETURN
+
 	uint32 petNumber = 0;
 	uint64 petGuid = 0;
 
@@ -250,8 +252,7 @@ void WorldSession::HandlePetNameQuery( WorldPacket & recv_data )
 
 void WorldSession::HandleStablePet(WorldPacket & recv_data)
 {
-	if( !_player->IsInWorld() )
-		return;
+	CHECK_INWORLD_RETURN
 
 	// remove pet from world and association with player
 	Pet *pPet = _player->GetSummon();
@@ -274,7 +275,7 @@ void WorldSession::HandleStablePet(WorldPacket & recv_data)
 
 void WorldSession::HandleUnstablePet(WorldPacket & recv_data)
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN
 	
 	uint64 npcguid = 0;
 	uint32 petnumber = 0;
@@ -298,7 +299,7 @@ void WorldSession::HandleUnstablePet(WorldPacket & recv_data)
 }
 void WorldSession::HandleStableSwapPet(WorldPacket & recv_data)
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN
 
 	uint64 npcguid = 0;
 	uint32 petnumber = 0;
@@ -336,7 +337,7 @@ void WorldSession::HandleStableSwapPet(WorldPacket & recv_data)
 
 void WorldSession::HandleStabledPetList(WorldPacket & recv_data)
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN
 
     uint64 npcguid = 0;
 	recv_data >> npcguid;
@@ -353,8 +354,7 @@ void WorldSession::HandleStabledPetList(WorldPacket & recv_data)
 
 void WorldSession::HandleBuyStableSlot( WorldPacket &recv_data )
 {
-	if( !_player->IsInWorld() || _player->GetStableSlotCount() >= 4 ) 
-		return;
+	CHECK_INWORLD_RETURN
 
 	BankSlotPrice* bsp = dbcStableSlotPrices.LookupEntryForced( _player->GetStableSlotCount() + 1 );
 	int32 cost = ( bsp != NULL ) ? bsp->Price : 99999999;
@@ -382,8 +382,8 @@ void WorldSession::HandleBuyStableSlot( WorldPacket &recv_data )
 
 void WorldSession::HandlePetSetActionOpcode( WorldPacket& recv_data )
 {
-	if( !_player->IsInWorld() )
-		return;
+	CHECK_INWORLD_RETURN
+
 	uint64 guid;
 	uint32 slot;
 	uint16 spell;
@@ -410,7 +410,8 @@ void WorldSession::HandlePetSetActionOpcode( WorldPacket& recv_data )
 
 void WorldSession::HandlePetRename(WorldPacket & recv_data)
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN
+
 	uint64 guid;
 	string name;
 	recv_data >> guid >> name;
@@ -457,7 +458,8 @@ void WorldSession::HandlePetRename(WorldPacket & recv_data)
 
 void WorldSession::HandlePetAbandon(WorldPacket & recv_data)
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN
+
 	Pet * pet = _player->GetSummon();
 	if(!pet) return;
 
@@ -465,8 +467,7 @@ void WorldSession::HandlePetAbandon(WorldPacket & recv_data)
 }
 void WorldSession::HandlePetUnlearn( WorldPacket & recv_data )
 {
-	if( !_player->IsInWorld() )
-		return;
+	CHECK_INWORLD_RETURN
 
 	uint64 guid;
 	recv_data >> guid;
@@ -498,8 +499,7 @@ void WorldSession::HandlePetUnlearn( WorldPacket & recv_data )
 void WorldSession::HandlePetSpellAutocast( WorldPacket& recvPacket )
 {
 	// handles toggle autocast from spellbook
-	if( !_player->IsInWorld() )
-		return;
+	CHECK_INWORLD_RETURN
 
 	uint64 guid;
     uint16 spellid;
@@ -524,8 +524,7 @@ void WorldSession::HandlePetSpellAutocast( WorldPacket& recvPacket )
 }
 void WorldSession::HandlePetCancelAura( WorldPacket& recvPacket )
 {
-	if( !_player->IsInWorld() )
-		return;
+	CHECK_INWORLD_RETURN
 
 	uint64 guid;
     uint16 spellid;
@@ -546,8 +545,7 @@ void WorldSession::HandlePetCancelAura( WorldPacket& recvPacket )
 
 void WorldSession::HandlePetLearnTalent( WorldPacket & recvPacket )
 {
-	if( !_player->IsInWorld() )
-		return;
+	CHECK_INWORLD_RETURN
 
 	uint64 guid;
     uint32 talentid;

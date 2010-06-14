@@ -23,10 +23,12 @@ initialiseSingleton( QuestMgr );
 
 void WorldSession::HandleQuestgiverStatusQueryOpcode( WorldPacket & recv_data )
 {
+	CHECK_INWORLD_RETURN
+
 	sLog.outDebug( "WORLD: Received CMSG_QUESTGIVER_STATUS_QUERY." );
-	if(!_player) return;
-    if(!_player->IsInWorld()) return;
-	if(_player->IsInBg()) return; //Added in 3.0.2, quests can be shared anywhere besides a BG
+	
+	if(_player->IsInBg())
+		return; //Added in 3.0.2, quests can be shared anywhere besides a BG
 
 	uint64 guid;
 	WorldPacket data(SMSG_QUESTGIVER_STATUS, 12);
@@ -77,9 +79,9 @@ void WorldSession::HandleQuestgiverStatusQueryOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleQuestgiverHelloOpcode( WorldPacket & recv_data )
 {
+	CHECK_INWORLD_RETURN
+
 	sLog.outDebug( "WORLD: Received CMSG_QUESTGIVER_HELLO." );
-    if(!_player) return;
-	if(!_player->IsInWorld()) return;
 
 	uint64 guid;
 
@@ -108,9 +110,9 @@ void WorldSession::HandleQuestgiverHelloOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleQuestGiverQueryQuestOpcode( WorldPacket & recv_data )
 {
+	CHECK_INWORLD_RETURN
+
 	sLog.outDebug( "WORLD: Received CMSG_QUESTGIVER_QUERY_QUEST." );
-    if(!_player) return;
-	if(!_player->IsInWorld()) return;
 
 	WorldPacket data;
 	uint64 guid;
@@ -191,11 +193,6 @@ void WorldSession::HandleQuestGiverQueryQuestOpcode( WorldPacket & recv_data )
 		return;
 	}
 
-	/*if (!qst_giver->FindQuest(quest_id, QUESTGIVER_QUEST_START | QUESTGIVER_QUEST_END))
-	{
-		sLog.outDebug("WORLD: QuestGiver doesn't have that quest.");
-		return;
-	}*/	// bleh.. not needed.. maybe for antihack later on would be a good idea though
 	
 	if ((status == QMGR_QUEST_AVAILABLE) || (status == QMGR_QUEST_REPEATABLE) || (status == QMGR_QUEST_CHAT))
 	{
@@ -203,12 +200,7 @@ void WorldSession::HandleQuestGiverQueryQuestOpcode( WorldPacket & recv_data )
 		SendPacket(&data);
 		sLog.outDebug( "WORLD: Sent SMSG_QUESTGIVER_QUEST_DETAILS." );
 	}
-	/*else if (status == QMGR_QUEST_FINISHED)
-	{
-		sQuestMgr.BuildOfferReward(&data, qst, qst_giver, 1);
-		SendPacket(&data);
-		sLog.outDebug( "WORLD: Sent SMSG_QUESTGIVER_OFFER_REWARD." );
-	}*/
+
 	else if (status == QMGR_QUEST_NOT_FINISHED || status == QMGR_QUEST_FINISHED)
 	{
 		sQuestMgr.BuildRequestItems(&data, qst, qst_giver, status, language);
@@ -219,11 +211,9 @@ void WorldSession::HandleQuestGiverQueryQuestOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleQuestgiverAcceptQuestOpcode( WorldPacket & recv_data )
 {
-	sLog.outDebug( "WORLD: Received CMSG_QUESTGIVER_ACCEPT_QUEST" );
-    if(!_player) return;
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN
 
-	//WorldPacket data;
+	sLog.outDebug( "WORLD: Received CMSG_QUESTGIVER_ACCEPT_QUEST" );
 
 	uint64 guid;
 	uint32 quest_id;
@@ -403,6 +393,8 @@ void WorldSession::HandleQuestgiverAcceptQuestOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleQuestgiverCancelOpcode(WorldPacket& recvPacket)
 {
+	CHECK_INWORLD_RETURN
+
     OutPacket(SMSG_GOSSIP_COMPLETE, 0, NULL);
 
 	sLog.outDebug("WORLD: Sent SMSG_GOSSIP_COMPLETE");
@@ -410,9 +402,9 @@ void WorldSession::HandleQuestgiverCancelOpcode(WorldPacket& recvPacket)
 
 void WorldSession::HandleQuestlogRemoveQuestOpcode(WorldPacket& recvPacket)
 {
+	CHECK_INWORLD_RETURN
+
 	sLog.outDebug( "WORLD: Received CMSG_QUESTLOG_REMOVE_QUEST" );
-    if(!_player) return;
-	if(!_player->IsInWorld()) return;
 
 	uint8 quest_slot;
 	recvPacket >> quest_slot;
@@ -446,8 +438,9 @@ void WorldSession::HandleQuestlogRemoveQuestOpcode(WorldPacket& recvPacket)
 
 void WorldSession::HandleQuestQueryOpcode( WorldPacket & recv_data )
 {
-    if(!_player) return;
-	if(!_player->IsInWorld()) return;
+
+	CHECK_INWORLD_RETURN
+
 	sLog.outDebug( "WORLD: Received CMSG_QUEST_QUERY" );
 
 	uint32 quest_id;
@@ -471,8 +464,8 @@ void WorldSession::HandleQuestQueryOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleQuestgiverRequestRewardOpcode( WorldPacket & recv_data )
 {
-    if(!_player) return;
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN
+
 	sLog.outDebug( "WORLD: Received CMSG_QUESTGIVER_REQUESTREWARD_QUEST." );
 
 	uint64 guid;
@@ -557,8 +550,8 @@ void WorldSession::HandleQuestgiverRequestRewardOpcode( WorldPacket & recv_data 
 
 void WorldSession::HandleQuestgiverCompleteQuestOpcode( WorldPacket & recvPacket )
 {
-    if(!_player) return;
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN
+
 	sLog.outDebug( "WORLD: Received CMSG_QUESTGIVER_COMPLETE_QUEST." );
 
 	uint64 guid;
@@ -648,8 +641,8 @@ void WorldSession::HandleQuestgiverCompleteQuestOpcode( WorldPacket & recvPacket
 
 void WorldSession::HandleQuestgiverChooseRewardOpcode(WorldPacket& recvPacket)
 {
-    if(!_player) return;
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN
+
 	sLog.outDebug( "WORLD: Received CMSG_QUESTGIVER_CHOOSE_REWARD." );
 
 	uint64 guid;
@@ -753,11 +746,7 @@ void WorldSession::HandleQuestgiverChooseRewardOpcode(WorldPacket& recvPacket)
 
 void WorldSession::HandlePushQuestToPartyOpcode(WorldPacket &recv_data)
 {
-	if( !_player )
-		return;
-
-	if( !_player->IsInWorld() )
-		return;
+	CHECK_INWORLD_RETURN
 
 	uint32 questid;
 	recv_data >> questid;
@@ -847,8 +836,8 @@ void WorldSession::HandlePushQuestToPartyOpcode(WorldPacket &recv_data)
 
 void WorldSession::HandleQuestPushResult(WorldPacket& recvPacket)
 {
-    if(!_player) return;
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN
+
 	uint64 guid;
 	uint8 msg;
 	recvPacket >> guid;

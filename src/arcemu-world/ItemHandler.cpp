@@ -151,8 +151,7 @@ void WorldSession::HandleSplitOpcode(WorldPacket& recv_data)
 
 void WorldSession::HandleSwapItemOpcode(WorldPacket& recv_data)
 {
-	if( !_player || !_player->IsInWorld() )
-		return;
+	CHECK_INWORLD_RETURN
 
 	CHECK_PACKET_SIZE(recv_data, 4);
 
@@ -168,8 +167,8 @@ void WorldSession::HandleSwapItemOpcode(WorldPacket& recv_data)
 
 void WorldSession::HandleSwapInvItemOpcode( WorldPacket & recv_data )
 {
-	if( !_player || !_player->IsInWorld() )
-		return;
+	CHECK_INWORLD_RETURN
+
 	CHECK_PACKET_SIZE(recv_data, 2);
 	WorldPacket data;
 	int8 srcslot= 0, dstslot= 0;
@@ -325,8 +324,8 @@ void WorldSession::HandleSwapInvItemOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleDestroyItemOpcode( WorldPacket & recv_data )
 {
-	if( !_player || !_player->IsInWorld() )
-		return;
+	CHECK_INWORLD_RETURN
+
 	CHECK_PACKET_SIZE(recv_data, 2);
 
 	int8 SrcInvSlot, SrcSlot;
@@ -412,8 +411,8 @@ void WorldSession::HandleDestroyItemOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleAutoEquipItemOpcode( WorldPacket & recv_data )
 {
-	if( !_player || !_player->IsInWorld() )
-		return;
+	CHECK_INWORLD_RETURN
+
 	CHECK_PACKET_SIZE(recv_data, 2);
 	WorldPacket data;
 
@@ -588,6 +587,8 @@ void WorldSession::HandleAutoEquipItemOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleAutoEquipItemSlotOpcode( WorldPacket& recvData )
 {
+	CHECK_INWORLD_RETURN
+
 	sLog.outDetail( "WORLD: Received CMSG_AUTOEQUIP_ITEM_SLOT");
 	CHECK_PACKET_SIZE( recvData, 8 + 1 );
 	uint64 itemguid;
@@ -667,6 +668,8 @@ void WorldSession::HandleAutoEquipItemSlotOpcode( WorldPacket& recvData )
 
 void WorldSession::HandleItemQuerySingleOpcode( WorldPacket & recv_data )
 {
+	CHECK_INWORLD_RETURN
+
 	CHECK_PACKET_SIZE(recv_data, 4);
  
 	uint32 i;
@@ -796,8 +799,8 @@ void WorldSession::HandleItemQuerySingleOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleBuyBackOpcode( WorldPacket & recv_data )
 {
-	if( !_player || !_player->IsInWorld() )
-		return;
+	CHECK_INWORLD_RETURN
+
 	CHECK_PACKET_SIZE(recv_data, 8);
 	uint64 guid;
 	int32 stuff;
@@ -877,8 +880,8 @@ void WorldSession::HandleBuyBackOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleSellItemOpcode( WorldPacket & recv_data )
 {
-	if( !_player || !_player->IsInWorld() )
-		return;
+	CHECK_INWORLD_RETURN
+
 	CHECK_PACKET_SIZE(recv_data, 17);
 	sLog.outDetail( "WORLD: Received CMSG_SELL_ITEM" );
 
@@ -985,8 +988,7 @@ void WorldSession::HandleSellItemOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleBuyItemInSlotOpcode( WorldPacket & recv_data ) // drag & drop
 {
-	if( !_player || !_player->IsInWorld() )
-		return;
+	CHECK_INWORLD_RETURN
 
 	CHECK_PACKET_SIZE( recv_data, 22 );
 
@@ -1340,8 +1342,7 @@ void WorldSession::HandleBuyItemOpcode( WorldPacket & recv_data ) // right-click
 
 void WorldSession::HandleListInventoryOpcode( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld())
-		return;
+	CHECK_INWORLD_RETURN
 
 	CHECK_PACKET_SIZE(recv_data, 8);
 	sLog.outDetail( "WORLD: Recvd CMSG_LIST_INVENTORY" );
@@ -1448,6 +1449,8 @@ void WorldSession::SendListInventory(Creature* unit)
 
 void WorldSession::HandleAutoStoreBagItemOpcode( WorldPacket & recv_data )
 {
+	CHECK_INWORLD_RETURN
+
 	CHECK_PACKET_SIZE(recv_data, 3);
 	sLog.outDetail( "WORLD: Recvd CMSG_AUTO_STORE_BAG_ITEM" );
 	
@@ -1562,8 +1565,8 @@ void WorldSession::HandleAutoStoreBagItemOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleReadItemOpcode(WorldPacket &recvPacket)
 {
-	if( !_player || !_player->IsInWorld() )
-		return;
+	CHECK_INWORLD_RETURN
+
 	CHECK_PACKET_SIZE(recvPacket, 2);
 	int8 uslot= 0, slot= 0;
 	recvPacket >> uslot >> slot;
@@ -1595,8 +1598,8 @@ void WorldSession::HandleReadItemOpcode(WorldPacket &recvPacket)
 
 void WorldSession::HandleRepairItemOpcode(WorldPacket &recvPacket)
 {
-	if( !_player || !_player->IsInWorld() )
-		return;
+	CHECK_INWORLD_RETURN
+
 	CHECK_PACKET_SIZE(recvPacket, 17);//8+8+1
 
 	uint64 npcguid;
@@ -1687,10 +1690,9 @@ void WorldSession::HandleRepairItemOpcode(WorldPacket &recvPacket)
 
 void WorldSession::HandleBuyBankSlotOpcode(WorldPacket& recvPacket)
 {
-	CHECK_PACKET_SIZE(recvPacket, 8);
+	CHECK_INWORLD_RETURN
 
-	if(!_player->IsInWorld())
-		return;
+	CHECK_PACKET_SIZE(recvPacket, 8);
 
 	uint64 guid;
 	recvPacket >> guid;
@@ -1741,8 +1743,8 @@ void WorldSession::HandleBuyBankSlotOpcode(WorldPacket& recvPacket)
 
 void WorldSession::HandleAutoBankItemOpcode(WorldPacket &recvPacket)
 {
-	if( !_player || !_player->IsInWorld() )
-		return;
+	CHECK_INWORLD_RETURN
+
 	CHECK_PACKET_SIZE(recvPacket, 2);
 	sLog.outDebug("WORLD: CMSG_AUTO_BANK_ITEM");
 
@@ -1787,8 +1789,8 @@ void WorldSession::HandleAutoBankItemOpcode(WorldPacket &recvPacket)
 
 void WorldSession::HandleAutoStoreBankItemOpcode(WorldPacket &recvPacket)
 {
-	if( !_player || !_player->IsInWorld() )
-		return;
+	CHECK_INWORLD_RETURN
+
 	CHECK_PACKET_SIZE(recvPacket, 2);
 	sLog.outDebug("WORLD: CMSG_AUTOSTORE_BANK_ITEM");
 
@@ -1831,7 +1833,8 @@ void WorldSession::HandleAutoStoreBankItemOpcode(WorldPacket &recvPacket)
 
 void WorldSession::HandleCancelTemporaryEnchantmentOpcode(WorldPacket &recvPacket)
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN
+
 	uint32 inventory_slot;
 	recvPacket >> inventory_slot;
 
@@ -1843,6 +1846,8 @@ void WorldSession::HandleCancelTemporaryEnchantmentOpcode(WorldPacket &recvPacke
 
 void WorldSession::HandleInsertGemOpcode(WorldPacket &recvPacket)
 {
+	CHECK_INWORLD_RETURN
+
 	uint64 itemguid;
 	uint64 gemguid[ 3 ];
 	ItemInterface *itemi = _player->GetItemInterface();
@@ -1992,8 +1997,7 @@ void WorldSession::HandleInsertGemOpcode(WorldPacket &recvPacket)
 
 void WorldSession::HandleWrapItemOpcode( WorldPacket& recv_data )
 {
-	if( !_player || !_player->IsInWorld() )
-		return;
+	CHECK_INWORLD_RETURN
 
 	int8 sourceitem_bagslot, sourceitem_slot;
 	int8 destitem_bagslot, destitem_slot;
@@ -2129,8 +2133,7 @@ void WorldSession::HandleWrapItemOpcode( WorldPacket& recv_data )
 }
 
 void WorldSession::HandleItemRefundInfoOpcode( WorldPacket& recvPacket ){
-    if( !_player || !_player->IsInWorld() )
-        return;
+	CHECK_INWORLD_RETURN
 
     sLog.outDebug("Recieved CMSG_ITEMREFUNDINFO.");
 
@@ -2154,8 +2157,7 @@ void WorldSession::HandleItemRefundInfoOpcode( WorldPacket& recvPacket ){
 }
 
 void WorldSession::HandleItemRefundRequestOpcode( WorldPacket& recvPacket ){
-    if( !_player || !_player->IsInWorld() )
-        return;
+	CHECK_INWORLD_RETURN
 
     sLog.outDebug("Recieved CMSG_ITEMREFUNDREQUEST.");
 
@@ -2271,7 +2273,7 @@ void WorldSession::HandleItemRefundRequestOpcode( WorldPacket& recvPacket ){
 
         }
 
-        this->SendPacket( &packet );
+        SendPacket( &packet );
 
         sLog.outDebug("Sent SMSG_ITEMREFUNDREQUEST.");
 }
