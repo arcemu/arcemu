@@ -1364,6 +1364,9 @@ bool MapMgr::Do()
 			break;
 	}
 
+	// Teleport any left-over players out.
+	TeleportPlayers();
+
 	// Clear the instance's reference to us.
 	if(m_battleground)
 	{
@@ -1388,9 +1391,6 @@ bool MapMgr::Do()
 	}
 	else if(GetMapInfo()->type == INSTANCE_NULL)
 		sInstanceMgr.m_singleMaps[GetMapId()] = NULL;
-
-	// Teleport any left-over players out.
-	TeleportPlayers();
 
 	thread_running = false;
 	if(thread_kill_only)
