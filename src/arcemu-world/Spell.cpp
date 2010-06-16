@@ -1778,10 +1778,6 @@ void Spell::cast(bool check)
                         {
 							HandleEffects(m_caster->GetGUID(),x);
                         }
-						else if( m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION )
-						{
-							HandleEffects( m_caster->GetGUID(), x );
-						}
 					}
 				}
 				/* don't call HandleAddAura unless we actually have auras... - Burlex*/

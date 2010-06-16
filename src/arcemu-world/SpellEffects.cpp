@@ -3517,13 +3517,6 @@ void Spell::SpellEffectTriggerMissile(uint32 i) // Trigger Missile
 
 	float spellRadius = GetRadius(i);
 
-	if( m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION )
-	{
-		Spell * sp = new Spell( m_caster, spInfo, true, NULL );
-		sp->prepare( &m_targets );
-		return;
-	}
-	
 	// TODO: Following should be / is probably in SpellTarget code
 	for(std::set<Object*>::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); itr++ )
 	{
@@ -6529,21 +6522,8 @@ void Spell::SpellEffectSummonObjectSlot(uint32 i)
 
 	// spawn a new one
 	GoSummon = u_caster->GetMapMgr()->CreateGameObject(GetProto()->EffectMiscValue[i]);
-	float x, y, z;
-	if( m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION )
-	{
-		x = m_targets.m_destX;
-		y = m_targets.m_destY;
-		z = m_targets.m_destZ;
-	}
-	else
-	{
-		x = m_caster->GetPositionX();
-		y = m_caster->GetPositionY();
-		z = m_caster->GetPositionZ();
-	}
 	
-	if( !GoSummon->CreateFromProto(GetProto()->EffectMiscValue[i], m_caster->GetMapId(), x, y, z, m_caster->GetOrientation() ))
+	if( !GoSummon->CreateFromProto(GetProto()->EffectMiscValue[i], m_caster->GetMapId(), m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ(), m_caster->GetOrientation() ))
 	{
 		delete GoSummon;
 		return;
