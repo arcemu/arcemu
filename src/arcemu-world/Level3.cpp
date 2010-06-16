@@ -2199,7 +2199,7 @@ bool ChatHandler::HandleFormationLink2Command(const char* args, WorldSession * m
 		return true;
 	}
 
-	if(m_session->GetPlayer()->linkTarget == 0 || m_session->GetPlayer()->linkTarget->GetTypeId() != TYPEID_UNIT)
+	if(m_session->GetPlayer()->linkTarget == NULL || m_session->GetPlayer()->linkTarget->IsPet())
 	{
 		RedSystemMessage(m_session, "Master not selected. select the master, and use formationlink1.");
 		return true;
@@ -2210,8 +2210,8 @@ bool ChatHandler::HandleFormationLink2Command(const char* args, WorldSession * m
 
 	slave->GetAIInterface()->m_formationFollowDistance = dist;
 	slave->GetAIInterface()->m_formationFollowAngle = ang;
-	slave->GetAIInterface()->m_formationLinkTarget = static_cast< Creature* >( m_session->GetPlayer()->linkTarget );
-	slave->GetAIInterface()->m_formationLinkSqlId = slave->GetAIInterface()->m_formationLinkTarget->GetSQL_id();
+	slave->GetAIInterface()->m_formationLinkTarget = m_session->GetPlayer()->linkTarget->GetGUID();
+	slave->GetAIInterface()->m_formationLinkSqlId = m_session->GetPlayer()->linkTarget->GetSQL_id();
 	slave->GetAIInterface()->SetUnitToFollowAngle(ang);
 
 	// add to db
@@ -2219,7 +2219,7 @@ bool ChatHandler::HandleFormationLink2Command(const char* args, WorldSession * m
 		slave->GetSQL_id(), slave->GetAIInterface()->m_formationLinkSqlId, ang, dist);
 
 	BlueSystemMessage(m_session, "%s linked up to %s with a distance of %f at %f radians.", slave->GetCreatureInfo()->Name,
-		static_cast< Creature* >( m_session->GetPlayer()->linkTarget )->GetCreatureInfo()->Name, dist, ang );
+		m_session->GetPlayer()->linkTarget->GetCreatureInfo()->Name, dist, ang );
 
 	return true;
 }

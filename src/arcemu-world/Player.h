@@ -1902,7 +1902,7 @@ public:
 	// DBC stuff
 	CharRaceEntry * myRace;
 	CharClassEntry * myClass;
-	Unit * linkTarget;
+	Creature * linkTarget;
 	bool ItemStackCheat;
 	bool AuraStackCheat;
 	bool TriggerpassCheat;

@@ -1125,7 +1125,7 @@ void Creature::FormationLinkUp(uint32 SqlId)
 	Creature * creature = m_mapMgr->GetSqlIdCreature(SqlId);
 	if(creature != 0)
 	{
-		m_aiInterface->m_formationLinkTarget = creature;
+		m_aiInterface->m_formationLinkTarget = creature->GetGUID();
 		haslinkupevent = false;
 		event_RemoveEvents(EVENT_CREATURE_FORMATION_LINKUP);
 	}

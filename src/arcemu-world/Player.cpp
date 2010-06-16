@@ -344,7 +344,7 @@ myCorpseLocation()
 	bCorpseCreateable	   = true;
 	blinked				 = false;
 	m_explorationTimer	  = getMSTime();
-	linkTarget			  = 0;
+	linkTarget			  = NULL;
 	AuraStackCheat			 = false;
 	ItemStackCheat = false;
 	TriggerpassCheat = false;

@@ -3052,7 +3052,7 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 		// do we have a formation?
 		if(m_formationLinkSqlId != 0)
 		{
-			if(!m_formationLinkTarget)
+			if(m_formationLinkTarget == 0)
 			{
 				// haven't found our target yet
 				Creature * c = static_cast<Creature*>(m_Unit);
@@ -3372,7 +3372,7 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 					else 
 						m_moveRun = false;
 
-					if(m_AIType == AITYPE_PET || (m_formationLinkTarget != NULL && unitToFollow->GetGUID() == m_formationLinkTarget->GetGUID())) //Unit is Pet/formation
+					if(m_AIType == AITYPE_PET || (m_UnitToFollow == m_formationLinkTarget)) //Unit is Pet/formation
 					{
 						if(dist > 900.0f/*30*/)
 							m_moveSprint = true;
@@ -3380,7 +3380,7 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 						float delta_x = unitToFollow->GetPositionX();
 						float delta_y = unitToFollow->GetPositionY();
 						float d = 3;
-						if(m_formationLinkTarget)
+						if(m_formationLinkTarget != 0)
 							d = m_formationFollowDistance;
 
 						MoveTo(delta_x+(d*(cosf(m_fallowAngle+unitToFollow->GetOrientation()))),
@@ -4345,15 +4345,40 @@ void AIInterface::SetNextTarget (uint64 nextTarget)
 
 Unit * AIInterface::getUnitToFollow()
 {
-	return m_Unit->GetMapMgrUnit(m_UnitToFollow);
+	if( m_UnitToFollow == 0 )
+		return NULL;
+	Unit* unit = m_Unit->GetMapMgrUnit(m_UnitToFollow);
+	if( unit == NULL )
+		m_UnitToFollow = 0;
+	return unit;
 }
 
 Unit * AIInterface::getUnitToFollowBackup()
 {
-	return m_Unit->GetMapMgrUnit(m_UnitToFollow_backup);
+	if( m_UnitToFollow_backup == 0 )
+		return NULL;
+	Unit* unit = m_Unit->GetMapMgrUnit(m_UnitToFollow_backup);
+	if( unit == NULL )
+		m_UnitToFollow_backup = 0;
+	return unit;
 }
 
 Unit * AIInterface::getUnitToFear()
 {
-	return m_Unit->GetMapMgrUnit(m_UnitToFear);
+	if( m_UnitToFear == 0 )
+		return NULL;
+	Unit* unit = m_Unit->GetMapMgrUnit(m_UnitToFear);
+	if( unit == NULL )
+		m_UnitToFear = 0;
+	return unit;
+}
+
+Creature * AIInterface::getFormationLinkTarget()
+{
+	if( m_formationLinkTarget == 0 )
+		return NULL;
+	Creature* creature = m_Unit->GetMapMgrCreature(m_formationLinkTarget);
+	if( creature == NULL )
+		m_formationLinkTarget = 0;
+	return creature;
 }
