@@ -78,6 +78,7 @@ MapMgr::MapMgr(Map *map, uint32 mapId, uint32 instanceid) : CellHandler<MapCell>
 	activeGameObjects.clear();
 	activeCreatures.clear();
 	creature_iterator = activeCreatures.begin();
+	pet_iterator = m_PetStorage.begin();
 	m_corpses.clear();
 	_sqlids_creatures.clear();
 	_sqlids_gameobjects.clear();
@@ -515,6 +516,8 @@ void MapMgr::RemoveObject(Object *obj, bool free_guid)
 			  break;
 
 		case HIGHGUID_TYPE_PET:
+			if(pet_iterator != m_PetStorage.end() && pet_iterator->second->GetGUID() == obj->GetGUID())
+				++pet_iterator;
 			m_PetStorage.erase(obj->GetUIdFromGUID());
 			break;
 
@@ -1504,13 +1507,12 @@ void MapMgr::_PerformObjectDuties()
 			ptr->Update(difftime);
 		}
 
-		PetStorageMap::iterator it2 = m_PetStorage.begin();
-		for(; it2 != m_PetStorage.end();)
+		pet_iterator = m_PetStorage.begin();
+		for(; pet_iterator != m_PetStorage.end();)
 		{
-			ptr2 = it2->second;
-			++it2;
-			if(ptr2 != NULL)
-				ptr2->Update(difftime);
+			ptr2 = pet_iterator->second;
+			++pet_iterator;
+			ptr2->Update(difftime);
 		}
 	}
 

@@ -150,6 +150,7 @@ public:
 ///////////////////////////////////////////
 	typedef HM_NAMESPACE::hash_map<uint32, Pet*> PetStorageMap;
 	PetStorageMap m_PetStorage;
+	PetStorageMap::iterator pet_iterator;
 	Pet * GetPet(uint32 guid)
 	{
 		PetStorageMap::iterator itr = m_PetStorage.find(guid);
