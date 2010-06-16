@@ -1036,11 +1036,8 @@ void Player::Update( uint32 p_time )
 			if( CollideInterface.IsIndoor( m_mapId, m_position ) )
 			{
 				 // this is duplicated check, but some mount auras comes w/o this flag set, maybe due to spellfixes.cpp line:663
-				if ( m_MountSpellId )
-				{
-					RemoveAura( m_MountSpellId );
-					m_MountSpellId = 0;
-				}
+				Dismount();
+
 				for(uint32 x=MAX_POSITIVE_AURAS_EXTEDED_START;x<MAX_POSITIVE_AURAS_EXTEDED_END;x++)
 				{
 					if(m_auras[x] && m_auras[x]->GetSpellProto()->Attributes & ATTRIBUTES_ONLY_OUTDOORS )
@@ -1304,8 +1301,7 @@ void Player::_EventCharmAttack()
 void Player::EventAttackStart()
 {
 	m_attacking = true;
-	if(m_MountSpellId)
-        RemoveAura(m_MountSpellId);
+	Dismount();
 }
 
 void Player::EventAttackStop()
@@ -6803,8 +6799,8 @@ void Player::TaxiStart(TaxiPath *path, uint32 modelid, uint32 start_node)
 
 	m_taxiMapChangeNode = 0;
 
-	if( m_MountSpellId )
-		RemoveAura( m_MountSpellId );
+	Dismount();
+
 	//also remove morph spells
 	if( GetDisplayId()!= GetNativeDisplayId() )
 	{
@@ -7229,8 +7225,7 @@ void Player::_Relocate(uint32 mapid, const LocationVector & v, bool sendpending,
 
 	z_axisposition = 0.0f;
 	//Dismount before teleport
-	if( m_MountSpellId )
-		RemoveAura( m_MountSpellId );
+	Dismount();
 }
 
 
@@ -8548,8 +8543,7 @@ bool Player::SafeTeleport(uint32 MapID, uint32 InstanceID, const LocationVector 
 
 	if (sWorld.Collision == 0) {
 		// if we are mounted remove it
-		if( m_MountSpellId )
-			RemoveAura( m_MountSpellId );
+		Dismount();
 	}
 
 	// make sure player does not drown when teleporting from under water

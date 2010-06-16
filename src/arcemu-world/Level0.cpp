@@ -327,8 +327,8 @@ bool ChatHandler::HandleDismountCommand(const char* args, WorldSession *m_sessio
 		return true;
 	}
 
-	if(p_target && p_target->m_MountSpellId)
-		p_target->RemoveAura(p_target->m_MountSpellId);
+	if( p_target != NULL )
+		p_target->Dismount();
 
 	m_target->SetUInt32Value( UNIT_FIELD_MOUNTDISPLAYID , 0);
 	//m_target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_MOUNTED_TAXI);

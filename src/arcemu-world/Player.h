@@ -1745,7 +1745,19 @@ public:
 	uint32 m_ShapeShifted;
 	uint32 m_MountSpellId;
 
-	 bool IsMounted() {return (m_MountSpellId!= 0 ? true : false); }
+	bool IsMounted(){
+		if( m_MountSpellId != 0 )
+			return true;
+		else
+			return false;
+	}
+
+	void Dismount(){
+		if( m_MountSpellId != 0 ){
+			RemoveAura( m_MountSpellId );
+			m_MountSpellId = 0;
+		}
+	}
 
 	void SendMountResult(uint32 result)
 	{

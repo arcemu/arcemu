@@ -3528,8 +3528,7 @@ void Aura::SpellAuraModStealth(bool apply)
 				if( stealth_id != 0 )
 					p_target->CastSpell( p_target, dbcSpell.LookupEntry( stealth_id ), true );
 
-				if( p_target->IsMounted() )
-					p_target->RemoveAura( p_target->m_MountSpellId );
+				p_target->Dismount();
 
 				if( p_target->m_bg && p_target->m_bgHasFlag )
 				{
@@ -4425,7 +4424,7 @@ void Aura::SpellAuraModShapeshift(bool apply)
 
 	if( p_target->m_MountSpellId && p_target->m_MountSpellId != m_spellProto->Id )
 		if( !(mod->m_miscValue & ( FORM_BATTLESTANCE | FORM_DEFENSIVESTANCE | FORM_BERSERKERSTANCE ) ) )
-			m_target->RemoveAura( p_target->m_MountSpellId ); // these spells are not compatible
+			p_target->Dismount(); // these spells are not compatible
 
 	SpellShapeshiftForm * ssf = dbcSpellShapeshiftForm.LookupEntry( mod->m_miscValue );
 	if( !ssf )
@@ -5235,8 +5234,8 @@ void Aura::SpellAuraTransform(bool apply)
 	if(ci)
 		displayId = ci->Male_DisplayID;
 
-	if(p_target && p_target->m_MountSpellId)
-		m_target->RemoveAura(p_target->m_MountSpellId);
+	if( p_target != NULL )
+		p_target->Dismount();
 
    // SetPositive();
 	switch( GetSpellProto()->Id )
@@ -6043,8 +6042,7 @@ void Aura::SpellAuraMounted(bool apply)
 		if(p_target->m_bg)
 			p_target->m_bg->HookOnMount(p_target);
 
-		if(p_target->m_MountSpellId)
-			m_target->RemoveAura(p_target->m_MountSpellId);
+		p_target->Dismount();
 
 		m_target->RemoveAurasByInterruptFlag(AURA_INTERRUPT_ON_MOUNT);
 

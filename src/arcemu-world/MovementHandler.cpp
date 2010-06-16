@@ -572,8 +572,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 			if(!_player->m_TransporterGUID)
 			{
 				/* just walked into a transport */
-				if(_player->IsMounted())
-					_player->RemoveAura(_player->m_MountSpellId);
+				_player->Dismount();
 
 				_player->m_CurrentTransporter = objmgr.GetTransporter( uint32( Arcemu::Util::GUID_LOPART(movement_info.transGuid ) ));
 				if(_player->m_CurrentTransporter)

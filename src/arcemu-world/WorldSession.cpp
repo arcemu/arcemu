@@ -345,8 +345,7 @@ void WorldSession::LogoutPlayer(bool Save)
 		// Dismounting with RemoveAllAuras may in certain cases add a player aura,
 		// which can result in a nice crash during shutdown. Therefore let's dismount on logout.
 		// Ofc if the player was mounted on login they will be still mounted ;)
-		if( _player->IsMounted() )
-			_player->RemoveAura( _player->m_MountSpellId );
+		_player->Dismount();
 		
 		_player->RemoveAllAuras();
 		if( _player->IsInWorld() )

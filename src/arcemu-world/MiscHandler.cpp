@@ -2456,11 +2456,10 @@ void WorldSession::HandleDismountOpcode(WorldPacket& recv_data)
 	CHECK_INWORLD_RETURN
 	sLog.outDebug( "WORLD: Received CMSG_DISMOUNT"  );
 
-	if( !_player->IsInWorld() || _player->GetTaxiState())
+	if( _player->GetTaxiState() )
 		return;
 
-	if( _player->m_MountSpellId )
-		_player->RemoveAura( _player->m_MountSpellId );
+	_player->Dismount();
 }
 
 void WorldSession::HandleSetAutoLootPassOpcode(WorldPacket & recv_data)
