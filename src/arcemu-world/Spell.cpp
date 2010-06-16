@@ -3450,16 +3450,6 @@ uint8 Spell::CanCast(bool tolerate)
 		}
 
 		/**
-		 *	On transport checks
-		 */
-		if (p_caster->m_CurrentTransporter)
-		{
-			// no mounts while on transporters
-			if (GetProto()->EffectApplyAuraName[0] == SPELL_AURA_MOUNTED || GetProto()->EffectApplyAuraName[1] == SPELL_AURA_MOUNTED || GetProto()->EffectApplyAuraName[2] == SPELL_AURA_MOUNTED)
-				return SPELL_FAILED_NOT_ON_TRANSPORT;
-		}
-
-		/**
 		 *	Is mounted check
 		 */
 		if (!p_caster->IsMounted())
