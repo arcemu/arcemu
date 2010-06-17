@@ -752,6 +752,12 @@ bool ChatHandler::HandleGODelete(const char *args, WorldSession *m_session)
 		return true;
 	}
 
+	if( GObj->IsInBg() )
+	{
+		RedSystemMessage(m_session, "GameObjects can't be deleted in Battlegrounds");
+		return true;
+	}
+
 	if( GObj->m_spawn != NULL && GObj->m_spawn->entry == GObj->GetEntry() )
 	{
 		uint32 cellx = uint32(((_maxX-GObj->m_spawn->x)/_cellSize));
