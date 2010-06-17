@@ -376,6 +376,7 @@ public:
 	bool m_moveRun;
 	bool m_moveFly;
 	bool m_moveSprint;
+	bool onGameobject;
 	CreatureState m_creatureState;
 	size_t GetWayPointsCount()
 	{

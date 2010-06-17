@@ -379,6 +379,8 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 
 			if(uThis->GetAIInterface()->IsFlying())
 				flags2 |= MOVEFLAG_NO_COLLISION; //0x400 Zack : Teribus the Cursed had flag 400 instead of 800 and he is flying all the time 
+			if(uThis->GetAIInterface()->onGameobject)
+				flags2 |= MOVEFLAG_FLYING;
 			if(uThis->GetProto() && uThis->GetProto()->extra_a9_flags)
 			{
 //do not send shit we can't honor

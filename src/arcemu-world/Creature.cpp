@@ -582,6 +582,8 @@ void Creature::SaveToDB()
 
 	if(GetAIInterface()->m_moveFly)
 		ss << 1 << ",";
+	else if(GetAIInterface()->onGameobject)
+		ss << 2 << ",";
 	else
 		ss << 0 << ",";
 
@@ -1399,7 +1401,8 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 
 	if(spawn->CanFly == 1)
 		GetAIInterface()->m_moveFly = true;
-
+	else if(spawn->CanFly == 2)
+		GetAIInterface()->onGameobject = true;
 	/* more hacks! */
 	if(proto->Mana != 0)
 		SetPowerType(POWER_TYPE_MANA);

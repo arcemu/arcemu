@@ -2690,6 +2690,48 @@ bool ChatHandler::HandleCreatureRespawnCommand(const char *args, WorldSession *m
 	return false;
 }
 
+bool ChatHandler::HandleNPCCanFlyCommand(const char * args, WorldSession * m_session)
+{
+	Creature * pCreature = getSelectedCreature(m_session, true);
+	if(pCreature == NULL)
+		return true;
+	pCreature->GetAIInterface()->m_moveFly = !pCreature->GetAIInterface()->m_moveFly;
+	pCreature->GetAIInterface()->onGameobject = false;
+	char* sSave = strtok((char*)args, " ");
+	if (sSave)
+	{
+		bool save = (atoi(sSave)>0?true:false);
+		if (save)
+		{
+			pCreature->SaveToDB();
+			pCreature->m_loadedFromDB = true;
+		}
+	}
+	GreenSystemMessage(m_session, "You may have to leave and re-enter this zone for changes to take effect.");
+	return true;
+}
+
+bool ChatHandler::HandleNPCOnGOCommand(const char * args, WorldSession * m_session)
+{
+	Creature * pCreature = getSelectedCreature(m_session, true);
+	if(pCreature == NULL)
+		return true;
+	pCreature->GetAIInterface()->m_moveFly = false;
+	pCreature->GetAIInterface()->onGameobject = !pCreature->GetAIInterface()->onGameobject;
+	char* sSave = strtok((char*)args, " ");
+	if (sSave)
+	{
+		bool save = (atoi(sSave)>0?true:false);
+		if (save)
+		{
+			pCreature->SaveToDB();
+			pCreature->m_loadedFromDB = true;
+		}
+	}
+	GreenSystemMessage(m_session, "You may have to leave and re-enter this zone for changes to take effect.");
+	return true;
+}
+
 bool ChatHandler::HandleRemoveItemCommand(const char * args, WorldSession * m_session)
 {
 	uint32 item_id;
