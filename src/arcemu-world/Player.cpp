@@ -4044,6 +4044,8 @@ void Player::RemoveFromWorld()
 		Unit::RemoveFromWorld(false);
 	}
 
+	RemoveAllGuardians();
+
 #ifdef ENABLE_COMPRESSED_MOVEMENT
 	MovementCompressor->RemovePlayer(this);
 	m_movementBufferLock.Acquire();
