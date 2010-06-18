@@ -917,7 +917,7 @@ void Unit::GiveGroupXP(Unit *pVictim, Player *PlayerInGroup)
 	}
 }
 
-uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint32 dmg, uint32 abs )
+uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, bool is_triggered, uint32 dmg, uint32 abs, uint32 weapon_damage_type )
 {
 	uint32 resisted_dmg = 0;
 	++m_procCounter;
@@ -951,10 +951,17 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 			}
 			continue;
 		}
+				
+		if( CastingSpell != NULL )
+		{
+			// A spell cannot proc itself
+			if ( CastingSpell->Id == spell_proc->mSpell->Id )
+				continue;
 
-		// A spell cannot proc itself
-		if( CastingSpell != NULL && CastingSpell->Id == spell_proc->mSpell->Id )
-			continue;
+			// If this is called by a triggered spell, check if it's allowed
+			if( is_triggered && ! spell_proc->CanProcOnTriggered( victim, CastingSpell ) )
+				continue;
+		}
 
 		// Check if this can proc
 		if( ! spell_proc->CanProc( victim, CastingSpell ) )
@@ -1085,7 +1092,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 		int dmg_overwrite = 0;
 
 		// give spell_proc a chance to handle the effect
-		if( spell_proc->DoEffect(victim, CastingSpell, flag, dmg, abs, &dmg_overwrite) )
+		if( spell_proc->DoEffect(victim, CastingSpell, flag, dmg, abs, &dmg_overwrite, weapon_damage_type) )
 			continue;
 
 		//these are player talents. Fuckem they pull the emu speed down
@@ -3849,34 +3856,29 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 //--------------------------dirty fixes-----------------------------------------------------
 	//vstate=1-wound,2-dodge,3-parry,4-interrupt,5-block,6-evade,7-immune,8-deflect
 	// the above code was remade it for reasons : damage shield needs moslty same flags as handleproc + dual wield should proc too ?
-	if (ability && ability->noproc)
+
+	uint32 resisted_dmg;
+
+	//damage shield must come before handleproc to not loose 1 charge : spell gets removed before last charge
+	if( (realdamage > 0 || vproc & PROC_ON_BLOCK_VICTIM) && weapon_damage_type != OFFHAND )
 	{
-		disable_proc = true;
+		pVictim->HandleProcDmgShield(vproc,this);
+		HandleProcDmgShield(aproc,pVictim);
 	}
-	if( !disable_proc )//offhand should proc too!
+
+	HandleProc( aproc, pVictim, ability, disable_proc, realdamage, abs, weapon_damage_type ); //maybe using dmg.resisted_damage is better sometimes but then if using godmode dmg is resisted instead of absorbed....bad
+	m_procCounter = 0;
+
+	resisted_dmg = pVictim->HandleProc( vproc, this, ability, disable_proc, realdamage, abs, weapon_damage_type );
+	pVictim->m_procCounter = 0;
+
+	if (resisted_dmg) 
 	{
-		uint32 resisted_dmg;
-
-		//damage shield must come before handleproc to not loose 1 charge : spell gets removed before last charge
-		if( (realdamage > 0 || vproc & PROC_ON_BLOCK_VICTIM) && weapon_damage_type != OFFHAND )
-		{
-			pVictim->HandleProcDmgShield(vproc,this);
-			HandleProcDmgShield(aproc,pVictim);
-		}
-
-		this->HandleProc( aproc, pVictim, ability, realdamage, abs ); //maybe using dmg.resisted_damage is better sometimes but then if using godmode dmg is resisted instead of absorbed....bad
-		m_procCounter = 0;
-
-		resisted_dmg = pVictim->HandleProc( vproc, this, ability, realdamage, abs );
-		pVictim->m_procCounter = 0;
-
-		if (resisted_dmg) 
-		{
-			dmg.resisted_damage+= resisted_dmg;
-			dmg.full_damage-= resisted_dmg;
-			realdamage-= resisted_dmg;
-		}
+		dmg.resisted_damage+= resisted_dmg;
+		dmg.full_damage-= resisted_dmg;
+		realdamage-= resisted_dmg;
 	}
+
 //--------------------------spells triggering-----------------------------------------------
 	if(realdamage > 0 && ability == 0)
 	{
@@ -7850,25 +7852,12 @@ void Unit::AddProcTriggerSpell(SpellEntry *sp, uint64 caster, uint32 *groupRelat
 	AddProcTriggerSpell(sp, sp, caster, sp->procChance, sp->procFlags, sp->procCharges, groupRelation, procClassMask, obj);
 }
 
-void Unit::RemoveProcTriggerSpell(uint32 spellId, uint64 guid)
+void Unit::RemoveProcTriggerSpell(uint32 spellId, uint64 guid, Object *obj)
 {
 	for(std::list<SpellProc*>::iterator itr = m_procSpells.begin(); itr != m_procSpells.end(); ++itr)
 	{
 		SpellProc* sp = *itr;
-		if(sp->mSpell->Id == spellId && sp->mCaster == guid && !sp->mDeleted)
-		{
-			sp->mDeleted = true;
-			return;
-		}
-	}
-}
-
-void Unit::RemoveProcTriggerSpell(uint32 spellId)
-{
-	for(std::list<SpellProc*>::iterator itr = m_procSpells.begin(); itr != m_procSpells.end(); ++itr)
-	{
-		SpellProc* sp = *itr;
-		if(sp->mSpell->Id == spellId && !sp->mDeleted)
+		if( sp->CanDelete(spellId, guid, obj) )
 		{
 			sp->mDeleted = true;
 			return;

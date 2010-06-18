@@ -20,25 +20,82 @@
 
 #include "StdAfx.h"
 
-class WoundPoisonSpellProc : public SpellProc
+class PoisonSpellProc : public SpellProc
+{
+	SPELL_PROC_FACTORY_FUNCTION(PoisonSpellProc);
+
+	PoisonSpellProc()
+	{
+		mItemGUID = 0;
+		mProcPerMinute = 0;
+	}
+
+	void Init(Object* obj)
+	{
+		mItemGUID = TO_ITEM(obj)->GetGUID();
+		if ( mProcPerMinute )
+			mProcChance = TO_ITEM(obj)->GetProto()->Delay * mProcPerMinute / 600;
+	}
+
+	bool CanDelete(uint32 spellId, uint64 guid = 0, Object *obj = NULL)
+	{
+		if ( mSpell->Id == spellId && mCaster == guid && TO_ITEM(obj)->GetGUID() == mItemGUID && !mDeleted )
+			return true;
+
+		return false;
+	}
+
+	// Allow proc on ability cast (like eviscerate, envenom, fan of knives, rupture)
+	bool CanProcOnTriggered(Unit *victim, SpellEntry *CastingSpell)
+	{
+		if ( CastingSpell != NULL && (CastingSpell->SpellGroupType[0] & 0x120000 || CastingSpell->SpellGroupType[1] & 0x240008) )
+			return true;
+
+		return false;
+	}
+
+	// Allow proc only if proccing hand is the one where poison was applied
+	bool DoEffect(Unit *victim, SpellEntry *CastingSpell, uint32 flag, uint32 dmg, uint32 abs, int *dmg_overwrite, uint32 weapon_damage_type)
+	{
+		Item *item;
+
+		if ( weapon_damage_type == OFFHAND )
+			item = TO_PLAYER(mTarget)->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_OFFHAND);
+		else
+			item = TO_PLAYER(mTarget)->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_MAINHAND);
+
+		if ( item != NULL && item->GetGUID() == mItemGUID )
+			return false;
+		
+		return true;
+	}
+
+protected:
+	uint64 mItemGUID;
+	uint32 mProcPerMinute;
+};
+
+class WoundPoisonSpellProc : public PoisonSpellProc
 {
 	SPELL_PROC_FACTORY_FUNCTION(WoundPoisonSpellProc);
 
 	void Init(Object* obj)
 	{
-		// PPM for Wound Poison is 21
-		mProcChance = TO_ITEM(obj)->GetProto()->Delay * 21 / 600;
+		mProcPerMinute = 21;
+
+		PoisonSpellProc::Init(obj);
 	}
 };
 
-class InstantPoisonSpellProc : public SpellProc
+class InstantPoisonSpellProc : public PoisonSpellProc
 {
 	SPELL_PROC_FACTORY_FUNCTION(InstantPoisonSpellProc);
 
 	void Init(Object* obj)
 	{
-		// PPM for Instant Poison is 8
-		mProcChance = TO_ITEM(obj)->GetProto()->Delay * 8 / 600;
+		mProcPerMinute = 8;
+
+		PoisonSpellProc::Init(obj);
 	}
 };
 
@@ -46,7 +103,7 @@ class CutToTheChaseSpellProc : public SpellProc
 {
 	SPELL_PROC_FACTORY_FUNCTION(CutToTheChaseSpellProc);
 
-	bool DoEffect(Unit *victim, SpellEntry *CastingSpell, uint32 flag, uint32 dmg, uint32 abs, int *dmg_overwrite)
+	bool DoEffect(Unit *victim, SpellEntry *CastingSpell, uint32 flag, uint32 dmg, uint32 abs, int *dmg_overwrite, uint32 weapon_damage_type)
 	{
 		Aura *aura = mTarget->FindAuraByNameHash(SPELL_HASH_SLICE_AND_DICE);
 		if (aura)
@@ -86,6 +143,20 @@ void SpellProcMgr::SetupRogue()
 	AddByNameHash( SPELL_HASH_INSTANT_POISON_III , &InstantPoisonSpellProc::Create );
 	AddByNameHash( SPELL_HASH_INSTANT_POISON_II  , &InstantPoisonSpellProc::Create );
 	AddByNameHash( SPELL_HASH_INSTANT_POISON     , &InstantPoisonSpellProc::Create );
+
+	AddByNameHash( SPELL_HASH_DEADLY_POISON_IX  , &PoisonSpellProc::Create );
+	AddByNameHash( SPELL_HASH_DEADLY_POISON_VIII, &PoisonSpellProc::Create );
+	AddByNameHash( SPELL_HASH_DEADLY_POISON_VII , &PoisonSpellProc::Create );
+	AddByNameHash( SPELL_HASH_DEADLY_POISON_VI  , &PoisonSpellProc::Create );
+	AddByNameHash( SPELL_HASH_DEADLY_POISON_V   , &PoisonSpellProc::Create );
+	AddByNameHash( SPELL_HASH_DEADLY_POISON_IV  , &PoisonSpellProc::Create );
+	AddByNameHash( SPELL_HASH_DEADLY_POISON_III , &PoisonSpellProc::Create );
+	AddByNameHash( SPELL_HASH_DEADLY_POISON_II  , &PoisonSpellProc::Create );
+	AddByNameHash( SPELL_HASH_DEADLY_POISON     , &PoisonSpellProc::Create );
+
+	AddByNameHash( SPELL_HASH_CRIPPLING_POISON, &PoisonSpellProc::Create );
+
+	AddByNameHash( SPELL_HASH_MIND_NUMBING_POISON, &PoisonSpellProc::Create );		
 
 	AddByNameHash( SPELL_HASH_CUT_TO_THE_CHASE, &CutToTheChaseSpellProc::Create );
 }

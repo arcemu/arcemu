@@ -1614,9 +1614,9 @@ void Aura::EventPeriodicDamage(uint32 amount)
 		if(abs_dmg)
 			vproc |= PROC_ON_ABSORB;
 
-		c->HandleProc(aproc, m_target, sp, dmg, abs_dmg);
+		c->HandleProc(aproc, m_target, sp, false, dmg, abs_dmg);
 		c->m_procCounter = 0;
-		m_target->HandleProc(vproc, c, sp, dmg, abs_dmg);
+		m_target->HandleProc(vproc, c, sp, false, dmg, abs_dmg);
 		m_target->m_procCounter = 0;
 	}
 
@@ -5155,14 +5155,14 @@ void Aura::EventPeriodicLeech(uint32 amount)
 		SpellEntry* m_SpellProto = GetSpellProto();
 		m_caster->DealDamage( m_target, Amount, 0, 0, GetSpellProto()->Id, true );
 
-		m_caster->HandleProc( PROC_ON_ANY_HOSTILE_ACTION, m_target, m_SpellProto, Amount );
+		m_caster->HandleProc( PROC_ON_ANY_HOSTILE_ACTION, m_target, m_SpellProto, false, Amount );
 		m_caster->m_procCounter = 0;
 
 		//some say this prevents some crashes atm
 		if( !m_target->isAlive() )
 			return;
 
-		m_target->HandleProc(PROC_ON_ANY_HOSTILE_ACTION|PROC_ON_ANY_DAMAGE_VICTIM|PROC_ON_SPELL_HIT_VICTIM,m_caster,m_spellProto,Amount);
+		m_target->HandleProc(PROC_ON_ANY_HOSTILE_ACTION | PROC_ON_ANY_DAMAGE_VICTIM | PROC_ON_SPELL_HIT_VICTIM, m_caster, m_spellProto, false, Amount);
 		m_target->m_procCounter = 0;
 
 		m_target->RemoveAurasByHeal();

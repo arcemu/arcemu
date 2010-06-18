@@ -1809,12 +1809,9 @@ void Spell::cast(bool check)
 						if( !Target )
 							continue; //we already made this check, so why make it again ?
 
-						if( !m_triggeredSpell || GetProto()->NameHash == SPELL_HASH_DEEP_WOUND )//Deep Wounds may trigger Blood Frenzy
-						{
-							p_caster->HandleProc( PROC_ON_CAST_SPECIFIC_SPELL | PROC_ON_CAST_SPELL, Target, GetProto() );
-							Target->HandleProc( PROC_ON_SPELL_LAND_VICTIM, u_caster, GetProto() );
-							p_caster->m_procCounter = 0; //this is required for to be able to count the depth of procs (though i have no idea where/why we use proc on proc)
-						}
+						p_caster->HandleProc( PROC_ON_CAST_SPECIFIC_SPELL | PROC_ON_CAST_SPELL, Target, GetProto(), m_triggeredSpell );
+						Target->HandleProc( PROC_ON_SPELL_LAND_VICTIM, u_caster, GetProto(), m_triggeredSpell );
+						p_caster->m_procCounter = 0; //this is required for to be able to count the depth of procs (though i have no idea where/why we use proc on proc)
 
 						Target->RemoveFlag( UNIT_FIELD_AURASTATE, GetProto()->TargetAuraState );
 					}
@@ -5298,8 +5295,8 @@ void Spell::Heal( int32 amount, bool ForceCrit )
 				amount += float2int32( amount * b );
 			}
 
-			unitTarget->HandleProc( PROC_ON_SPELL_CRIT_HIT_VICTIM, u_caster, GetProto(), amount );
-			u_caster->HandleProc( PROC_ON_SPELL_CRIT_HIT, unitTarget, GetProto(), amount );
+			unitTarget->HandleProc( PROC_ON_SPELL_CRIT_HIT_VICTIM, u_caster, GetProto(), false, amount );
+			u_caster->HandleProc( PROC_ON_SPELL_CRIT_HIT, unitTarget, GetProto(), false, amount );
 		}
 	}
 

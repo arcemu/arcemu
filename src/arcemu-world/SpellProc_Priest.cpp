@@ -20,6 +20,18 @@
 
 #include "StdAfx.h"
 
+class ShadowWeavingSpellProc : public SpellProc
+{
+	SPELL_PROC_FACTORY_FUNCTION(ShadowWeavingSpellProc);
+
+	void Init(Object* obj)
+	{
+		mProcFlags |= PROC_ON_SPELL_HIT;
+	}
+};
+
+
 void SpellProcMgr::SetupPriest()
 {
+	AddById( 15258, &ShadowWeavingSpellProc::Create );
 }

@@ -1886,13 +1886,13 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 	SendSpellNonMeleeDamageLog(this, pVictim, spellID, float2int32(res), static_cast<uint8>( school ), abs_dmg, dmg.resisted_damage, false, 0, critical, IsPlayer());
 	DealDamage( pVictim, float2int32( res ), 2, 0, spellID );
 
-	if( IsUnit() && allowProc && spellInfo->Id != 25501 && spellInfo->noproc == false )
+	if( IsUnit() )
 	{
 		int32 dmg2 = float2int32(res);
 
-		pVictim->HandleProc( vproc, static_cast< Unit* >( this ), spellInfo, dmg2, abs_dmg);
+		pVictim->HandleProc( vproc, static_cast< Unit* >( this ), spellInfo, !allowProc, dmg2, abs_dmg);
 		pVictim->m_procCounter = 0;
-		static_cast< Unit* >( this )->HandleProc( aproc, pVictim, spellInfo, dmg2, abs_dmg);
+		static_cast< Unit* >( this )->HandleProc( aproc, pVictim, spellInfo, !allowProc, dmg2, abs_dmg);
 		static_cast< Unit* >( this )->m_procCounter = 0;
 	}
 	if( this->IsPlayer() )

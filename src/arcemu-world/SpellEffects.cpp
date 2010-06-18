@@ -743,7 +743,7 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 	{
 		if( GetType() == SPELL_DMG_TYPE_MAGIC )
 		{
-			m_caster->SpellNonMeleeDamageLog( unitTarget, GetProto()->Id, dmg, pSpellId == 0, static_damage );
+			m_caster->SpellNonMeleeDamageLog( unitTarget, GetProto()->Id, dmg, !m_triggeredSpell, static_damage );
 		}
 		else
 		{
@@ -760,7 +760,7 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 						_type = MELEE;
 				}
 
-				u_caster->Strike( unitTarget, _type, GetProto(), 0, 0, dmg, pSpellId == 0, true, force_crit );
+				u_caster->Strike( unitTarget, _type, GetProto(), 0, 0, dmg, !m_triggeredSpell, true, force_crit );
 			}
 		}
 	}
@@ -3984,7 +3984,7 @@ void Spell::SpellEffectDispel(uint32 i) // Dispel
 			{
 				if(GetProto()->DispelType == DISPEL_ALL)
 				{
-					unitTarget->HandleProc( PROC_ON_PRE_DISPELL_AURA_VICTIM , u_caster , GetProto(), aur->GetSpellId() );
+					unitTarget->HandleProc( PROC_ON_PRE_DISPELL_AURA_VICTIM , u_caster , GetProto(), m_triggeredSpell, aur->GetSpellId() );
 
 					data.clear();
 					data << m_caster->GetNewGUID();
@@ -4001,7 +4001,7 @@ void Spell::SpellEffectDispel(uint32 i) // Dispel
 				}
 				else if(aur->GetSpellProto()->DispelType == GetProto()->EffectMiscValue[i])
 				{
-					unitTarget->HandleProc( PROC_ON_PRE_DISPELL_AURA_VICTIM , u_caster , GetProto(), aur->GetSpellId() );
+					unitTarget->HandleProc( PROC_ON_PRE_DISPELL_AURA_VICTIM , u_caster , GetProto(), m_triggeredSpell, aur->GetSpellId() );
 
 					data.clear();
 					data << m_caster->GetNewGUID();
@@ -4860,7 +4860,7 @@ void Spell::SpellEffectTriggerSpell(uint32 i) // Trigger Spell
 		return;
 
 	SpellCastTargets targets = m_targets;
-	Spell *sp = new Spell( m_caster, entry, true, NULL );
+	Spell *sp = new Spell( m_caster, entry, m_triggeredSpell, NULL );
 	sp->prepare( &targets );
 }
 

@@ -34,6 +34,32 @@ class FlametongueWeaponSpellProc : public SpellProc
 {
 	SPELL_PROC_FACTORY_FUNCTION(FlametongueWeaponSpellProc);
 
+	void Init(Object *obj)
+	{		
+		mItemGUID = obj->GetGUID();
+		damage = 0;
+		uint32 wp_speed;
+		Item* item = TO_ITEM(obj);
+		EnchantmentInstance* enchant = item->GetEnchantment(TEMP_ENCHANTMENT_SLOT);
+		if ( enchant != NULL )
+		{
+			SpellEntry* sp = dbcSpell.LookupEntryForced(enchant->Enchantment->spell[0]);
+			if ( sp != NULL && sp->NameHash == SPELL_HASH_FLAMETONGUE_WEAPON__PASSIVE_ )
+			{
+				wp_speed = item->GetProto()->Delay;
+				damage = (sp->EffectBasePoints[0] + 1) * wp_speed / 100000;
+			}
+		}
+	}
+
+	bool CanDelete(uint32 spellId, uint64 guid = 0, Object *obj = NULL)
+	{
+		if ( mSpell->Id == spellId && mCaster == guid && TO_ITEM(obj)->GetGUID() == mItemGUID && !mDeleted )
+			return true;
+
+		return false;
+	}
+
 	bool CanProc(Unit *victim, SpellEntry *CastingSpell)
 	{
 		if ( mTarget->IsPlayer() )
@@ -41,50 +67,27 @@ class FlametongueWeaponSpellProc : public SpellProc
 		return false;
 	}
 
-	bool DoEffect(Unit *victim, SpellEntry *CastingSpell, uint32 flag, uint32 dmg, uint32 abs, int *dmg_overwrite)
+	bool DoEffect(Unit *victim, SpellEntry *CastingSpell, uint32 flag, uint32 dmg, uint32 abs, int *dmg_overwrite, uint32 weapon_damage_type)
 	{
 		Item *item;
-		EnchantmentInstance *enchant;
-		SpellEntry *sp = NULL;
-		uint32 wp_speed = 0;
 
-		item = TO_PLAYER(mTarget)->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_MAINHAND);
-		if ( item != NULL )
-		{
-			enchant = item->GetEnchantment(TEMP_ENCHANTMENT_SLOT);
-			if ( enchant != NULL )
-			{
-				sp = dbcSpell.LookupEntryForced(enchant->Enchantment->spell[0]);
-				if ( sp != NULL && sp->NameHash == SPELL_HASH_FLAMETONGUE_WEAPON__PASSIVE_ )
-					wp_speed = item->GetProto()->Delay;
-			}
-		}
-
-		//this part will be enabled once HandleProc() will get as additional parameter if melee damage is done by main or off hand weapons.
-		//at the moment Flametongue procs even if the damage is done by the other hand.
-		/*if ( ! wp_speed )
-		{
+		if ( weapon_damage_type == OFFHAND )
 			item = TO_PLAYER(mTarget)->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_OFFHAND);
-			if ( item != NULL )
-			{
-				enchant = item->GetEnchantment(TEMP_ENCHANTMENT_SLOT);
-				if ( enchant != NULL )
-				{
-					sp = dbcSpell.LookupEntryForced(enchant->Enchantment->spell[0]);
-					if ( sp != NULL && sp->NameHash == SPELL_HASH_FLAMETONGUE_WEAPON__PASSIVE_ )
-						wp_speed = item->GetProto()->Delay;
-				}
-			}
-		}*/
+		else
+			item = TO_PLAYER(mTarget)->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_MAINHAND);
 
-		if ( wp_speed )
+		if ( item != NULL && item->GetGUID() == mItemGUID )
 		{
-			*dmg_overwrite = (sp->EffectBasePoints[0] + 1) * wp_speed / 100000;
+			*dmg_overwrite = damage;
 			return false;
 		}
-		
+
 		return true;
 	}
+
+private:
+	uint64 mItemGUID;
+	int damage;
 };
 
 void SpellProcMgr::SetupShamman()
