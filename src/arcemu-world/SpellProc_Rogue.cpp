@@ -37,9 +37,9 @@ class PoisonSpellProc : public SpellProc
 			mProcChance = TO_ITEM(obj)->GetProto()->Delay * mProcPerMinute / 600;
 	}
 
-	bool CanDelete(uint32 spellId, uint64 guid = 0, Object *obj = NULL)
+	bool CanDelete(uint32 spellId, uint64 casterGuid = 0, uint64 misc = 0)//in this case misc is the item guid.
 	{
-		if ( mSpell->Id == spellId && mCaster == guid && TO_ITEM(obj)->GetGUID() == mItemGUID && !mDeleted )
+		if ( mSpell->Id == spellId && mCaster == casterGuid && misc == mItemGUID && !mDeleted )
 			return true;
 
 		return false;

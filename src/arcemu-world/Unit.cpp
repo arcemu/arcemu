@@ -7852,12 +7852,12 @@ void Unit::AddProcTriggerSpell(SpellEntry *sp, uint64 caster, uint32 *groupRelat
 	AddProcTriggerSpell(sp, sp, caster, sp->procChance, sp->procFlags, sp->procCharges, groupRelation, procClassMask, obj);
 }
 
-void Unit::RemoveProcTriggerSpell(uint32 spellId, uint64 guid, Object *obj)
+void Unit::RemoveProcTriggerSpell(uint32 spellId, uint64 casterGuid, uint64 misc)
 {
 	for(std::list<SpellProc*>::iterator itr = m_procSpells.begin(); itr != m_procSpells.end(); ++itr)
 	{
 		SpellProc* sp = *itr;
-		if( sp->CanDelete(spellId, guid, obj) )
+		if( sp->CanDelete(spellId, casterGuid, misc) )
 		{
 			sp->mDeleted = true;
 			return;

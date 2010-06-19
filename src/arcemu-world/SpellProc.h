@@ -58,9 +58,9 @@ public:
 	}
 
 	// Check if this object is identified by method arguments, so it can be deleted
-	virtual bool CanDelete(uint32 spellId, uint64 guid = 0, Object *obj = NULL)
+	virtual bool CanDelete(uint32 spellId, uint64 casterGuid = 0, uint64 misc = 0)
 	{
-		if ( mSpell->Id == spellId && (guid == 0 || mCaster == guid) && !mDeleted)
+		if ( mSpell->Id == spellId && (casterGuid == 0 || mCaster == casterGuid) && !mDeleted)
 			return true;
 
 		return false;

@@ -750,7 +750,7 @@ void Item::ApplyEnchantmentBonus( uint32 Slot, bool Apply )
 					}
 					else
 					{
-						m_owner->RemoveProcTriggerSpell(Entry->spell[c], m_owner->GetGUID(), this);
+						m_owner->RemoveProcTriggerSpell(Entry->spell[c], m_owner->GetGUID(), GetGUID());
 					}
 				}break;
 
