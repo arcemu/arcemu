@@ -3128,9 +3128,16 @@ void Spell::SpellEffectSummon(uint32 i)
 	case 510:	// Water Elemental
 		{
 			Pet *summon = objmgr.CreatePet(GetProto()->EffectMiscValue[i]);
-			summon->CreateAsSummon( GetProto()->EffectMiscValue[i], ci, NULL, p_caster, GetProto(), 1, GetDuration() );
-			summon->AddSpell( dbcSpell.LookupEntry(31707), true );
-			summon->AddSpell( dbcSpell.LookupEntry(33395), true );
+			if( ! summon->CreateAsSummon( GetProto()->EffectMiscValue[i], ci, NULL, p_caster, GetProto(), 1, GetDuration() ) )
+			{
+				summon->DeleteMe();//CreateAsSummon() returns false if an error occurred.
+				summon = NULL;
+			}
+			else
+			{
+				summon->AddSpell( dbcSpell.LookupEntry(31707), true );
+				summon->AddSpell( dbcSpell.LookupEntry(33395), true );
+			}
 		}break;
 	case 29264: // Feral Spirit
 		{
@@ -3142,26 +3149,39 @@ void Spell::SpellEffectSummon(uint32 i)
 			*/
 			//First wolf
 			Pet *summon = objmgr.CreatePet(GetProto()->EffectMiscValue[i]);
-			summon->CreateAsSummon(GetProto()->EffectMiscValue[i], ci, NULL, p_caster, GetProto(), 4, GetDuration());
+			if( ! summon->CreateAsSummon(GetProto()->EffectMiscValue[i], ci, NULL, p_caster, GetProto(), 4, GetDuration()) )
+			{
+				summon->DeleteMe();//CreateAsSummon() returns false if an error occurred.
+				summon = NULL;
+			}
+			else
+			{
 			//Spells
-			summon->AddSpell(dbcSpell.LookupEntry(58877), true); // Spirit Hunt
-			summon->AddSpell(dbcSpell.LookupEntry(58875), true); // Spirit walk
-			summon->AddSpell(dbcSpell.LookupEntry(58857), true); // Twin Howl
-			summon->AddSpell(dbcSpell.LookupEntry(58861), true); // Spirit Bash
+				summon->AddSpell(dbcSpell.LookupEntry(58877), true); // Spirit Hunt
+				summon->AddSpell(dbcSpell.LookupEntry(58875), true); // Spirit walk
+				summon->AddSpell(dbcSpell.LookupEntry(58857), true); // Twin Howl
+				summon->AddSpell(dbcSpell.LookupEntry(58861), true); // Spirit Bash
+			}
 
 			//Second wolf
 			Pet *summon2 = objmgr.CreatePet(GetProto()->EffectMiscValue[i]);
 			LocationVector* lv = new LocationVector(p_caster->GetPositionX() - 2.0f, p_caster->GetPositionY() - 2.0f, p_caster->GetPositionZ());
-			summon2->CreateAsSummon(GetProto()->EffectMiscValue[i], ci, NULL, p_caster, GetProto(), 4, GetDuration(), lv, false);
-			delete lv;
-			summon2->GetAIInterface()->SetUnitToFollowAngle(float(-(M_PI/2)));
+			if( ! summon2->CreateAsSummon(GetProto()->EffectMiscValue[i], ci, NULL, p_caster, GetProto(), 4, GetDuration(), lv, false) )
+			{
+				summon2->DeleteMe();//CreateAsSummon() returns false if an error occurred.
+				summon2 = NULL;
+			}
+			else
+			{
+				summon2->GetAIInterface()->SetUnitToFollowAngle(float(-(M_PI/2)));
 			
-			//Spells
-			summon2->AddSpell(dbcSpell.LookupEntry(58877), true); // Spirit Hunt
-			summon2->AddSpell(dbcSpell.LookupEntry(58875), true); // Spirit walk
-			summon2->AddSpell(dbcSpell.LookupEntry(58857), true); // Twin Howl
-			summon2->AddSpell(dbcSpell.LookupEntry(58861), true); // Spirit Bash
-
+				//Spells
+				summon2->AddSpell(dbcSpell.LookupEntry(58877), true); // Spirit Hunt
+				summon2->AddSpell(dbcSpell.LookupEntry(58875), true); // Spirit walk
+				summon2->AddSpell(dbcSpell.LookupEntry(58857), true); // Twin Howl
+				summon2->AddSpell(dbcSpell.LookupEntry(58861), true); // Spirit Bash
+			}
+			delete lv;
 		}break;
 	case 27893: // Dancing Rune Weapon
 		{
@@ -3179,20 +3199,27 @@ void Spell::SpellEffectSummon(uint32 i)
 			uint32 extradur = float2int32(duration+(curPow/50.0f));
 
 			Pet *summon = objmgr.CreatePet(GetProto()->EffectMiscValue[i]);
-			summon->CreateAsSummon(26125, ci, NULL, p_caster, GetProto(), 1, extradur );
-			summon->SetDisplayId((uint32)15435);
-			summon->SetMinDamage((float)p_caster->GetDamageDoneMod(SCHOOL_NORMAL));
-			summon->SetMaxDamage((float)p_caster->GetDamageDoneMod(SCHOOL_NORMAL));
-			summon->GetAIInterface()->SetUnitToFollowAngle(float(-(M_PI/2)));
-
-			Item * item = p_caster->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
-			if( item != NULL )
+			if( ! summon->CreateAsSummon(26125, ci, NULL, p_caster, GetProto(), 1, extradur ) )
 			{
-				summon->SetEquippedItem(MELEE,item->GetEntry()  );
-				summon->SetBaseAttackTime(MELEE,item->GetProto()->Delay );
+				summon->DeleteMe();//CreateAsSummon() returns false if an error occurred.
+				summon = NULL;
 			}
 			else
-				summon->SetBaseAttackTime(MELEE,2000 );
+			{
+				summon->SetDisplayId((uint32)15435);
+				summon->SetMinDamage((float)p_caster->GetDamageDoneMod(SCHOOL_NORMAL));
+				summon->SetMaxDamage((float)p_caster->GetDamageDoneMod(SCHOOL_NORMAL));
+				summon->GetAIInterface()->SetUnitToFollowAngle(float(-(M_PI/2)));
+
+				Item * item = p_caster->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
+				if( item != NULL )
+				{
+					summon->SetEquippedItem(MELEE,item->GetEntry()  );
+					summon->SetBaseAttackTime(MELEE,item->GetProto()->Delay );
+				}
+				else
+					summon->SetBaseAttackTime(MELEE,2000 );
+			}
 
 			p_caster->SetPower( POWER_TYPE_RUNIC_POWER, 0 ); //Drains all runic power.
 		}break;
@@ -4512,7 +4539,11 @@ void Spell::SpellEffectTameCreature(uint32 i)
 	// Remove target
 	tame->GetAIInterface()->HandleEvent(EVENT_LEAVECOMBAT, p_caster, 0);
 	Pet *pPet = objmgr.CreatePet( tame->GetEntry() );
-	pPet->CreateAsSummon(tame->GetEntry(), tame->GetCreatureInfo(), tame, p_caster, NULL, 2, 0);
+	if( ! pPet->CreateAsSummon(tame->GetEntry(), tame->GetCreatureInfo(), tame, p_caster, NULL, 2, 0) )
+	{
+		pPet->DeleteMe();//CreateAsSummon() returns false if an error occurred.
+		pPet = NULL;
+	}
 	tame->Despawn(0,tame->GetProto()? tame->GetProto()->RespawnTime:0);
 }
 
@@ -4572,7 +4603,11 @@ void Spell::SpellEffectSummonPet(uint32 i) //summon - pet
 		}
 
 		Pet *summon = objmgr.CreatePet( GetProto()->EffectMiscValue[i] );
-		summon->CreateAsSummon( GetProto()->EffectMiscValue[i], ci, NULL, p_caster, GetProto(), 2, 0 );
+		if( ! summon->CreateAsSummon( GetProto()->EffectMiscValue[i], ci, NULL, p_caster, GetProto(), 2, 0 ) )
+		{
+			summon->DeleteMe();//CreateAsSummon() returns false if an error occurred.
+			summon = NULL;
+		}
 	}
 }
 
@@ -6671,7 +6706,11 @@ void Spell::SpellEffectSummonDemon(uint32 i)
 			vec = new LocationVector(m_targets.m_destX, m_targets.m_destY, m_targets.m_destZ);
 		}
 		pPet = objmgr.CreatePet( GetProto()->EffectMiscValue[i] );
-		pPet->CreateAsSummon(GetProto()->EffectMiscValue[i], ci, NULL, p_caster, GetProto(), 1, 300000, vec);
+		if( ! pPet->CreateAsSummon(GetProto()->EffectMiscValue[i], ci, NULL, p_caster, GetProto(), 1, 300000, vec) )
+		{
+			pPet->DeleteMe();//CreateAsSummon() returns false if an error occurred.
+			pPet = NULL;
+		}
 		if (vec) delete vec;
 	}
 	//Create Enslave Aura if its inferno spell
@@ -7228,7 +7267,11 @@ void Spell::SpellEffectCreatePet(uint32 i)
 	if( ci )
 	{
 		Pet *pPet = objmgr.CreatePet( GetProto()->EffectMiscValue[i] );
-		pPet->CreateAsSummon( GetProto()->EffectMiscValue[i], ci, NULL, playerTarget, GetProto(), 1, 0 );
+		if( ! pPet->CreateAsSummon( GetProto()->EffectMiscValue[i], ci, NULL, playerTarget, GetProto(), 1, 0 ) )
+		{
+			pPet->DeleteMe();//CreateAsSummon() returns false if an error occurred.
+			pPet = NULL;
+		}
 	}
 }
 

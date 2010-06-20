@@ -134,12 +134,11 @@ void Pet::SetNameForEntry( uint32 entry )
 	}
 }
 
-void Pet::CreateAsSummon( uint32 entry, CreatureInfo *ci, Creature* created_from_creature, Player* owner, SpellEntry* created_by_spell, uint32 type, uint32 expiretime, LocationVector* Vec, bool dismiss_old_pet )
+bool Pet::CreateAsSummon( uint32 entry, CreatureInfo *ci, Creature* created_from_creature, Player* owner, SpellEntry* created_by_spell, uint32 type, uint32 expiretime, LocationVector* Vec, bool dismiss_old_pet )
 {
 	if( ci == NULL || owner == NULL )
 	{
-		sEventMgr.AddEvent( TO_CREATURE(this)/*gay cast because <T> is gay*/, &Pet::DeleteMe, EVENT_CREATURE_SAFE_DELETE, 1, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
-		return;
+		return false;//the caller will delete us.
 	}
 	
 	if( dismiss_old_pet )
@@ -279,6 +278,7 @@ void Pet::CreateAsSummon( uint32 entry, CreatureInfo *ci, Creature* created_from
 	}
 
 	InitializeMe( true );
+	return true;
 }
 
 Pet::Pet( uint64 guid ) : Creature( guid )
@@ -708,9 +708,10 @@ void Pet::LoadFromDB( Player* owner, PlayerPet * pi )
 
 void Pet::OnPushToWorld()
 {
+	//Pets MUST always have an owner
+	Arcemu::Util::ARCEMU_ASSERT( m_Owner != NULL );
 	//before we initialize pet spells so we can apply spell mods on them
-	if( m_Owner )
-		m_Owner->EventSummonPet( this );
+	m_Owner->EventSummonPet( this );
 
 	Creature::OnPushToWorld();
 }
