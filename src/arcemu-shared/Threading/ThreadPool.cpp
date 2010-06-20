@@ -230,12 +230,24 @@ void CThreadPool::Shutdown()
 	}
 	_mutex.Release();
 
-	for(;;)
+	for(int i = 0;; i++)
 	{
 		_mutex.Acquire();
 		if(m_activeThreads.size() || m_freeThreads.size())
 		{
-			Log.Debug("ThreadPool", "%u threads remaining...",m_activeThreads.size() + m_freeThreads.size() );
+			if( i != 0 && m_freeThreads.size() != 0 )
+			{
+				/*if we are here then a thread in the free pool checked if it was being shut down just before CThreadPool::Shutdown() was called,
+				but called Suspend() just after KillFreeThreads(). All we need to do is to resume it.*/
+				Thread * t;
+				ThreadSet::iterator itr;
+				for(itr = m_freeThreads.begin(); itr != m_freeThreads.end(); ++itr)
+				{
+					t = *itr;
+					t->ControlInterface.Resume();
+				}
+			}
+			Log.Debug("ThreadPool", "%u active and %u free threads remaining...",m_activeThreads.size(), m_freeThreads.size() );
 			_mutex.Release();
 			Sleep(1000);
 			continue;

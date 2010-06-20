@@ -50,7 +50,7 @@ public:
 	{
 		// This SHOULD be called by someone else.
 		ASSERT(GetCurrentThreadId() != thread_id);
-		if(!ResumeThread(hThread))
+		if(ResumeThread(hThread) == DWORD(-1))
 		{
 			DWORD le = GetLastError();
 			printf("lasterror: %u\n", le);
