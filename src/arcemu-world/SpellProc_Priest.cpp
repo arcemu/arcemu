@@ -30,8 +30,40 @@ class ShadowWeavingSpellProc : public SpellProc
 	}
 };
 
+class ImprovedSpiritTapSpellProc : public SpellProc
+{
+	SPELL_PROC_FACTORY_FUNCTION(ImprovedSpiritTapSpellProc);
+
+	void Init(Object* obj)
+	{
+		mProcFlags = PROC_ON_SPELL_CRIT_HIT;
+	}
+
+	bool CanProcOnTriggered(Unit *victim, SpellEntry *CastingSpell)
+	{
+		if ( mOrigSpell->AttributesExC & FLAGS4_CAN_PROC_ON_TRIGGERED )
+			return true;
+		return false;
+	}
+
+	uint32 CalcProcChance(Unit *victim, SpellEntry *CastingSpell)
+	{
+		if( CastingSpell == NULL )
+			return 0;
+
+		if( CastingSpell->NameHash == SPELL_HASH_MIND_FLAY )
+			return 50;
+
+		if( CastingSpell->NameHash == SPELL_HASH_MIND_BLAST || CastingSpell->NameHash == SPELL_HASH_SHADOW_WORD__DEATH )
+			return 100;
+
+		return 0;
+	}
+};
+
 
 void SpellProcMgr::SetupPriest()
 {
 	AddById( 15258, &ShadowWeavingSpellProc::Create );
+	AddByNameHash( SPELL_HASH_IMPROVED_SPIRIT_TAP, &ImprovedSpiritTapSpellProc::Create );
 }

@@ -3500,18 +3500,6 @@ void ApplyNormalFixes()
 //			sp->procFlags = PROC_ON_TARGET_DIE;
 			sp->procFlags = PROC_ON_GAIN_EXPIERIENCE;
 		}
-		sp = dbcSpell.LookupEntryForced( 15337 ); //rank 4
-		if( sp != NULL )
-		{
-//			sp->procFlags = PROC_ON_TARGET_DIE;
-			sp->procFlags = PROC_ON_GAIN_EXPIERIENCE;
-		}
-		sp = dbcSpell.LookupEntryForced( 15338 ); //rank 5
-		if( sp != NULL )
-		{
-//			sp->procFlags = PROC_ON_TARGET_DIE;
-			sp->procFlags = PROC_ON_GAIN_EXPIERIENCE;
-		}
 
 		/**********************************************************
 		 *	Holy Nova
