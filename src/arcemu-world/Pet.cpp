@@ -1760,6 +1760,8 @@ void Pet::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32 un
 	if( pVictim->IsSpiritHealer() )
 		return;
 
+	Arcemu::Util::ARCEMU_ASSERT( m_Owner != NULL );
+
 	if( pVictim != this )
 		CombatStatus.OnDamageDealt( pVictim );
 
