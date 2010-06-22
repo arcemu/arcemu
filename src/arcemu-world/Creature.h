@@ -534,8 +534,8 @@ public:
 	void OnJustDied();
 	void OnRemoveCorpse();
 	void OnRespawn(MapMgr * m);
-private:
-	void SafeDelete();//use DeleteMe() instead of SafeDelete() to avoid crashes like InWorld Creatures deleted.
+protected:
+	virtual void SafeDelete();//use DeleteMe() instead of SafeDelete() to avoid crashes like InWorld Creatures deleted.
 public:
 	void SummonExpire(); // this is used for guardians. They are non respawnable creatures linked to a player
 
@@ -618,7 +618,7 @@ public:
 	void AISpellUpdate();
 
 	void OnPushToWorld();
-	void Despawn(uint32 delay, uint32 respawntime);
+	virtual void Despawn(uint32 delay, uint32 respawntime);
 	void TriggerScriptEvent(int);
 
 	AuctionHouse * auctionHouse;

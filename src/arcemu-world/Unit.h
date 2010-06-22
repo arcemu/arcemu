@@ -1727,6 +1727,8 @@ public:
 	virtual void Die( Unit *pAttacker, uint32 damage, uint32 spellid );
 	virtual bool isCritter(){ return false; }
 
+	void AddGarbagePet( Pet *pet );
+
 protected:
 	Unit ();
     void RemoveGarbage();
@@ -1747,6 +1749,7 @@ protected:
 
     std::list< Aura* > m_GarbageAuras;
     std::list< Spell* > m_GarbageSpells;
+	std::list< Pet* > m_GarbagePets;
 
 	/// Combat
 	DeathState m_deathState;

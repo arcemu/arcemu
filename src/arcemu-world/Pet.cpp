@@ -319,8 +319,6 @@ Pet::~Pet()
 		m_autoCastSpells[i].clear();
 
 	mSpells.clear();
-
-	Arcemu::Util::ARCEMU_ASSERT( m_Owner == NULL );//if it's not NULL then it's being deleted without notifing the owner
 }
 
 void Pet::Update( uint32 time )
@@ -860,43 +858,69 @@ void Pet::Dismiss() //Abandon pet
 
 void Pet::Remove( bool bUpdate, bool bSetOffline )
 {
-	bool alreadyBeingDeleted = ScheduledForDeletion;
+	if( ScheduledForDeletion )
+		return;
 	ScheduledForDeletion = true;
 	RemoveAllAuras(); // Prevent pet overbuffing
-	if( m_Owner )
+	m_Owner->EventDismissPet();
+
+	if( bUpdate )
 	{
-		m_Owner->EventDismissPet();
+		if( !bExpires )
+			UpdatePetInfo( bSetOffline );
+		if( !IsSummon() )
+			m_Owner->_SavePet( NULL );
+	}
 
-		if( bUpdate )
-		{
-			if( !bExpires )
-				UpdatePetInfo( bSetOffline );
-			if( !IsSummon() )
-				m_Owner->_SavePet( NULL );
-		}
+	bool main_summon = m_Owner->GetSummon() == this ;
+	m_Owner->RemoveSummon( this );
 
-		bool main_summon = m_Owner->GetSummon() == this ;
-		m_Owner->RemoveSummon( this );
-
-		if( m_Owner->GetSummon() == NULL )//we have no more summons, required by spells summoning more than 1.
-		{
-			m_Owner->SetSummonedUnitGUID( 0 );
-			SendNullSpellsToOwner();
-		}
-		else if( main_summon )//we just removed the summon displayed in the portrait so we need to update it with another one.
-		{
-			m_Owner->SetSummonedUnitGUID( m_Owner->GetSummon()->GetGUID() );//set the summon still alive
-			m_Owner->GetSummon()->SendSpellsToOwner();
-		}
-
-		ClearPetOwner();
+	if( m_Owner->GetSummon() == NULL )//we have no more summons, required by spells summoning more than 1.
+	{
+		m_Owner->SetSummonedUnitGUID( 0 );
+		SendNullSpellsToOwner();
+	}
+	else if( main_summon )//we just removed the summon displayed in the portrait so we need to update it with another one.
+	{
+		m_Owner->SetSummonedUnitGUID( m_Owner->GetSummon()->GetGUID() );//set the summon still alive
+		m_Owner->GetSummon()->SendSpellsToOwner();
 	}
 
 	if( IsInWorld() && IsActive() )
 		Deactivate( m_mapMgr );
 
-	if( !alreadyBeingDeleted )
-		DeleteMe();
+	Unit::RemoveFromWorld( true );
+	SafeDelete();
+}
+
+void Pet::Despawn(uint32 delay, uint32 respawntime)
+{
+	bool delayed = ( delay != 0 );
+	DelayedRemove(delayed, true, delay);
+}
+
+void Pet::SafeDelete()
+{
+	sEventMgr.RemoveEvents(this);
+	
+	m_Owner->AddGarbagePet(this);
+}
+
+void Pet::DelayedRemove(bool bTime, bool dismiss, uint32 delay)
+{
+	if( ScheduledForDeletion )
+			return;
+
+	// called when pet has died
+	if( bTime )
+	{
+		if( Summon || dismiss )
+			Dismiss();  // remove us..
+		else
+			Remove( true, false );
+	}
+	else
+		sEventMgr.AddEvent(this, &Pet::DelayedRemove, true, dismiss, uint32(0), EVENT_PET_DELAYED_REMOVE, delay, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 }
 
 void Pet::setDeathState(DeathState s)
@@ -909,20 +933,6 @@ void Pet::setDeathState(DeathState s)
 	}
 	if(mPi != NULL)
 		mPi->alive = isAlive();
-}
-
-void Pet::DelayedRemove( bool bTime, uint32 delay )
-{
-	// called when pet has died
-	if( bTime )
-	{
-		if( Summon )
-			Dismiss();  // remove us..
-		else
-			Remove( true, false );
-	}
-	else
-		sEventMgr.AddEvent(this, &Pet::DelayedRemove, true, uint32(0), EVENT_PET_DELAYED_REMOVE, delay, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 }
 
 bool Pet::CanGainXP()
@@ -1760,8 +1770,6 @@ void Pet::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32 un
 	if( pVictim->IsSpiritHealer() )
 		return;
 
-	Arcemu::Util::ARCEMU_ASSERT( m_Owner != NULL );
-
 	if( pVictim != this )
 		CombatStatus.OnDamageDealt( pVictim );
 
@@ -1843,9 +1851,6 @@ void Pet::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32 un
 			}
 		}
 
-		pVictim->Die( this, damage, spellId );
-
-
 		if( pVictim->IsPvPFlagged() ){
 			uint32 team = m_Owner->GetTeam();
 
@@ -1863,6 +1868,8 @@ void Pet::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32 un
 				sWorld.SendZoneUnderAttackMsg( AreaID, static_cast< uint8 >( team ) );
 			}
 		}
+
+		pVictim->Die( this, damage, spellId );
 
 ///////////////////////////////////////////////////////////// Loot  //////////////////////////////////////////////////////////////////////////////////////////////
 		

@@ -7770,6 +7770,11 @@ void Unit::AddGarbageSpell( Spell *sp ){
     m_GarbageSpells.push_back( sp );
 }
 
+void Unit::AddGarbagePet( Pet *pet ){
+	Arcemu::Util::ARCEMU_ASSERT( pet->GetPetOwner()->GetGUID() == GetGUID() && !pet->IsInWorld() );
+	m_GarbagePets.push_back( pet );
+}
+
 void Unit::RemoveGarbage(){
     
     std::list< Aura* >::iterator itr1;
@@ -7788,9 +7793,17 @@ void Unit::RemoveGarbage(){
         delete sp;
     }
 
+	std::list< Pet* >::iterator itr3;
+
+	for( itr3 = m_GarbagePets.begin(); itr3 != m_GarbagePets.end(); ++itr3 ){
+		Pet *pet = *itr3;
+
+		delete pet;
+	}
+
     m_GarbageAuras.clear();
     m_GarbageSpells.clear();
-
+	m_GarbagePets.clear();
 }
 
 void Unit::Tag( uint64 TaggerGUID ){

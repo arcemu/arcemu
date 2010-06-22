@@ -6006,7 +6006,7 @@ void Player::OnRemoveInRangeObject(Object* pObj)
 		++itr;
 		if( pObj == summon )
 		{
-			summon->DelayedRemove(false,1);//otherwise Pet::Update() will access free'd memory
+			summon->DelayedRemove(true);
 			return;
 		}
 	}
@@ -13195,8 +13195,6 @@ void Player::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 			}
 		}
 
-		pVictim->Die( this, damage, spellId );
-
 		EventAttackStop();
 		
 		SendPartyKillLog( pVictim->GetGUID() );
@@ -13218,6 +13216,8 @@ void Player::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 				sWorld.SendZoneUnderAttackMsg( AreaID, static_cast< uint8 >( team ) );
 			}
 		}
+
+		pVictim->Die( this, damage, spellId );
 
 ///////////////////////////////////////////////////////////// Loot  //////////////////////////////////////////////////////////////////////////////////////////////
 		

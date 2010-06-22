@@ -1857,22 +1857,6 @@ void Creature::Despawn(uint32 delay, uint32 respawntime)
 	if(!IsInWorld())
 		return;
 
-	if( IsPet() )
-	{
-		Pet* pet = TO_PET(this);
-		if( pet->GetPetOwner() != NULL )
-		{
-			pet->DelayedRemove(true);
-		}
-		else
-		{
-			pet->ScheduledForDeletion = true;
-			Unit::RemoveFromWorld( true );
-			SafeDelete();
-		}
-		return;
-	}
-	
 	if(respawntime && !m_noRespawn)
 	{
 		/* get the cell with our SPAWN location. if we've moved cell this might break :P */

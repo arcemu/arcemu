@@ -174,7 +174,9 @@ public:
 	void Dismiss();
 	void setDeathState(DeathState s);
 
-	void DelayedRemove(bool bTime, uint32 delay = PET_DELAYED_REMOVAL_TIME);
+	void DelayedRemove(bool bTime, bool dismiss = false, uint32 delay = PET_DELAYED_REMOVAL_TIME);
+	void Despawn(uint32 delay, uint32 respawntime);
+	void SafeDelete();
 
 	ARCEMU_INLINE Player* GetPetOwner() { return m_Owner; }
 	ARCEMU_INLINE void ClearPetOwner() { m_Owner = NULL; }
