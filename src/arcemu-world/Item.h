@@ -243,9 +243,6 @@ public:
 	uint32 GetEnchantmentCharges( uint32 index ){ return GetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1 + 2 + 3 * index ); }
 	void SetEnchantmentCharges( uint32 index, uint32 value ){ SetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1 + 2 + 3 * index, value ); }
 
-	void SetTextId( uint32 message_id ) { SetUInt32Value( ITEM_FIELD_ITEM_TEXT_ID, message_id); }
-	uint32 GetTextId() { return GetUInt32Value( ITEM_FIELD_ITEM_TEXT_ID ); }
-
     //////////////////////////////////////////////////////////
     // Creation time in terms of played time
     /////////////////////////////////////////////////////////

@@ -383,9 +383,11 @@ void WorldSession::HandleDestroyItemOpcode( WorldPacket & recv_data )
 			_player->m_charters[CHARTER_TYPE_ARENA_3V3] = NULL;
 		}
 
+		/* Changed in 3.3.3 or 3.3.5
 		uint32 mail_id = it->GetTextId();
 		if(mail_id)
 			sMailSystem.RemoveMessageIfDeleted(mail_id, _player);
+		*/
 		
 
 
