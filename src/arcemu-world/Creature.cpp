@@ -852,15 +852,11 @@ void Creature::CalcResistance(uint32 type)
 
 	if( IsPet() && isAlive() && IsInWorld() )
 	{
-		Pet * pet = static_cast< Pet* >( this );
-		if (pet->IsPet()) // HACK
-		{
-			Player * owner = pet->GetPetOwner();
-			if( type == 0 && owner )
-				pos += int32(0.35f * owner->GetResistance(type ));
-			else if( owner )
-				pos += int32(0.40f * owner->GetResistance(type ));
-		}
+		Player * owner = TO_PET( this )->GetPetOwner();
+		if( type == 0 && owner )
+			pos += int32(0.35f * owner->GetResistance(type ));
+		else if( owner )
+			pos += int32(0.40f * owner->GetResistance(type ));
 	}
 
 	if( ResistanceModPct[ type ] < 0 )

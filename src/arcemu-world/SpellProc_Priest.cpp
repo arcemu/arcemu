@@ -20,16 +20,6 @@
 
 #include "StdAfx.h"
 
-class ShadowWeavingSpellProc : public SpellProc
-{
-	SPELL_PROC_FACTORY_FUNCTION(ShadowWeavingSpellProc);
-
-	void Init(Object* obj)
-	{
-		mProcFlags |= PROC_ON_SPELL_HIT;
-	}
-};
-
 class ImprovedSpiritTapSpellProc : public SpellProc
 {
 	SPELL_PROC_FACTORY_FUNCTION(ImprovedSpiritTapSpellProc);
@@ -37,13 +27,6 @@ class ImprovedSpiritTapSpellProc : public SpellProc
 	void Init(Object* obj)
 	{
 		mProcFlags = PROC_ON_SPELL_CRIT_HIT;
-	}
-
-	bool CanProcOnTriggered(Unit *victim, SpellEntry *CastingSpell)
-	{
-		if ( mOrigSpell->AttributesExC & FLAGS4_CAN_PROC_ON_TRIGGERED )
-			return true;
-		return false;
 	}
 
 	uint32 CalcProcChance(Unit *victim, SpellEntry *CastingSpell)
@@ -61,9 +44,7 @@ class ImprovedSpiritTapSpellProc : public SpellProc
 	}
 };
 
-
 void SpellProcMgr::SetupPriest()
 {
-	AddById( 15258, &ShadowWeavingSpellProc::Create );
 	AddByNameHash( SPELL_HASH_IMPROVED_SPIRIT_TAP, &ImprovedSpiritTapSpellProc::Create );
 }

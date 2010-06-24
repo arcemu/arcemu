@@ -4896,6 +4896,7 @@ void Spell::SpellEffectTriggerSpell(uint32 i) // Trigger Spell
 
 	SpellCastTargets targets = m_targets;
 	Spell *sp = new Spell( m_caster, entry, m_triggeredSpell, NULL );
+	sp->ProcedOnSpell = GetProto();
 	sp->prepare( &targets );
 }
 

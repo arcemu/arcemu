@@ -1254,7 +1254,7 @@ uint8 Spell::prepare( SpellCastTargets * targets )
 
 	if(objmgr.IsSpellDisabled(GetProto()->Id))//if it's disabled it will not be casted, even if it's triggered.
 		cancastresult = uint8( m_triggeredSpell ? SPELL_FAILED_DONT_REPORT : SPELL_FAILED_SPELL_UNAVAILABLE );
-	else if( m_triggeredSpell )
+	else if( m_triggeredSpell || ProcedOnSpell != NULL)
 		cancastresult = SPELL_CANCAST_OK;
 	else
 		cancastresult = CanCast(false);
