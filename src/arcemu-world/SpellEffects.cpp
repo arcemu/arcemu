@@ -3173,7 +3173,7 @@ void Spell::SpellEffectSummon(uint32 i)
 			}
 			else
 			{
-				summon2->GetAIInterface()->SetUnitToFollowAngle(float(-(M_PI/2)));
+				summon2->GetAIInterface()->setFollowAngle(float(-(M_PI/2)));
 			
 				//Spells
 				summon2->AddSpell(dbcSpell.LookupEntry(58877), true); // Spirit Hunt
@@ -3209,7 +3209,7 @@ void Spell::SpellEffectSummon(uint32 i)
 				summon->SetDisplayId((uint32)15435);
 				summon->SetMinDamage((float)p_caster->GetDamageDoneMod(SCHOOL_NORMAL));
 				summon->SetMaxDamage((float)p_caster->GetDamageDoneMod(SCHOOL_NORMAL));
-				summon->GetAIInterface()->SetUnitToFollowAngle(float(-(M_PI/2)));
+				summon->GetAIInterface()->setFollowAngle(float(-(M_PI/2)));
 
 				Item * item = p_caster->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
 				if( item != NULL )
