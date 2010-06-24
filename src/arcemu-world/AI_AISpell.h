@@ -1,5 +1,4 @@
 #pragma once
-#include "Chat.h"
 
 struct SpellEntry;
 enum Field_AIAGENT

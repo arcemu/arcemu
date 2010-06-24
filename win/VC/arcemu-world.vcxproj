@@ -273,6 +273,13 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\arcemu-world\AIAHealSupport.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\AIInterfaceMgr.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\AI_Critter.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\AI_Guardian.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\AI_Mob.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\AI_Pet.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\AI_Totem.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\Channel.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\Chat.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\EquipmentSetMgr.cpp" />
@@ -420,6 +427,14 @@
     <ClCompile Include="..\..\src\arcemu-world\WUtil.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\src\arcemu-world\AIAHealSupport.h" />
+    <ClInclude Include="..\..\src\arcemu-world\AIInterfaceMgr.h" />
+    <ClInclude Include="..\..\src\arcemu-world\AI_AISpell.h" />
+    <ClInclude Include="..\..\src\arcemu-world\AI_Critter.h" />
+    <ClInclude Include="..\..\src\arcemu-world\AI_Guardian.h" />
+    <ClInclude Include="..\..\src\arcemu-world\AI_Mob.h" />
+    <ClInclude Include="..\..\src\arcemu-world\AI_Pet.h" />
+    <ClInclude Include="..\..\src\arcemu-world\AI_Totem.h" />
     <ClInclude Include="..\..\src\arcemu-world\Channel.h" />
     <ClInclude Include="..\..\src\arcemu-world\ChannelMgr.h" />
     <ClInclude Include="..\..\src\arcemu-world\Chat.h" />

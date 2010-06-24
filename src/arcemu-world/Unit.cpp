@@ -6335,7 +6335,7 @@ void Unit::UpdateVisibility()
 
 void Unit::EventHealthChangeSinceLastUpdate()
 {
-	int pct = GetHealthPct();
+	uint32 pct = GetHealthPct();
 	if( pct < 35 )
 	{
 		uint32 toset = AURASTATE_FLAG_HEALTH35;

@@ -1,5 +1,4 @@
 #pragma  once
-#include "StdAfx.h"
 enum AIType
 {
 	AITYPE_MOB,

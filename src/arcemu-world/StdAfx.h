@@ -105,6 +105,7 @@
 #include "AchievementMgr.h"
 #endif
 
+#include "Chat.h"
 #include "AddonMgr.h"
 #include "AI_AISpell.h"
 #include "AIInterfaceMgr.h"
@@ -122,7 +123,6 @@
 #include "EyeOfTheStorm.h"
 #include "WorldState.h"
 #include "CellHandler.h"
-#include "Chat.h"
 #include "Corpse.h"
 #include "Quest.h"
 #include "QuestMgr.h"

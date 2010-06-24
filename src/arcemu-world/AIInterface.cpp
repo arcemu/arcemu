@@ -326,9 +326,9 @@ bool AIInterface::isFlying()
 uint32 AIInterface::getMoveFlags()
 {
 	uint32 MoveFlags = 0;
-	uint32 freeRoam = 0x00040000;
-	uint32 animation = 0x20000000;
-	uint32 finalO = 0x00020000;
+	static uint32 freeRoam = 0x00040000;
+	static uint32 animation = 0x20000000;
+	static uint32 finalO = 0x00020000;
 	if(m_moveMode == AIMOVESTATE_FLY) //Fly
 	{
 		m_flySpeed = m_Self->m_flySpeed*0.001f;

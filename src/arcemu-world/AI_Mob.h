@@ -1,6 +1,5 @@
 #ifndef MOB_AI_H
 #define MOB_AI_H
-#include "StdAfx.h"
 
 enum MOBAI_MISCATTRIBUTES
 {

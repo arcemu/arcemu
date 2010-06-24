@@ -279,7 +279,7 @@ Unit * GuardianAI::getSpellTarget(AI_Spell* nSpell)
 		/* If we are too far, we simply move to the max range area and try to cast. */
 		if(nSpell->minrange > 0 && dist < nSpell->minrange ||
 			nSpell->maxrange > 0 && dist > nSpell->maxrange ||
-			(uint32)target->GetHealthPct() > hspell->heal_hp )
+			target->GetHealthPct() > hspell->heal_hp )
 		{	// Check health requirements, if we fail the hp requirements, try again in 2secs.
 			if(target->GetHealthPct() > hspell->heal_hp)
 			{

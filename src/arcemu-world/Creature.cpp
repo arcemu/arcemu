@@ -1534,11 +1534,11 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 	}
 	if( proto->m_canCallForHelp)
 		TO_AIMOB(m_aiInterface)->setCallHelpAgent();
-	m_aiInterface->setCallHelpHp( proto->m_callForHelpHealth);
+	m_aiInterface->setCallHelpHp( static_cast< uint32 >(proto->m_callForHelpHealth) );
 	if( proto->m_canFlee )
 		TO_AIMOB(m_aiInterface)->setPanicAgent();
 	if(proto->m_fleeHealth < 100 && proto->m_fleeHealth > 0)
-		m_aiInterface->setPanicHp( proto->m_fleeHealth);
+		m_aiInterface->setPanicHp( static_cast< uint32 >(proto->m_fleeHealth) );
 	else
 		m_aiInterface->setPanicHp(0);
 	m_aiInterface->setPanicDuration( proto->m_fleeDuration);

@@ -1460,8 +1460,8 @@ void Object::setInFront(Object *target)
 		//angle the object has to face
 		float angle = calcRadAngle(m_position.x, m_position.y, target->GetPositionX(), target->GetPositionY() ); 
 		//Change angle slowly 2000ms to turn 180 deg around
-		if(angle > M_PI) angle += (M_PI/2);
-		else angle -= (M_2PI); //angle < 180
+		if(angle > M_PI) angle += static_cast< float >(M_PI/2);
+		else angle -= static_cast< float >(M_2PI); //angle < 180
 		//Update Orientation Server Side
 		SetPosition(m_position.x,m_position.y,m_position.z,angle);
 	}

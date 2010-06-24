@@ -1287,13 +1287,13 @@ public:
 	void SendChatMessageAlternateEntry(uint32 entry, uint8 type, uint32 lang, const char * msg);
 	void RegisterPeriodicChatMessage(uint32 delay, uint32 msgid, std::string message, bool sendnotify);
 
-	int GetHealthPct()
+	uint32 GetHealthPct()
 	{
 		//shitty db? pet/guardian bug?
 		if (GetUInt32Value(UNIT_FIELD_HEALTH) == 0 || GetUInt32Value(UNIT_FIELD_MAXHEALTH) == 0)
 			return 0;
 
-		return (int)(GetUInt32Value(UNIT_FIELD_HEALTH) * 100 / GetUInt32Value(UNIT_FIELD_MAXHEALTH));
+		return (GetUInt32Value(UNIT_FIELD_HEALTH) * 100 / GetUInt32Value(UNIT_FIELD_MAXHEALTH));
 	};
 
     void SetHealthPct(uint32 val) { if (val>0) SetHealth(float2int32(val*0.01f*GetUInt32Value(UNIT_FIELD_MAXHEALTH))); };
