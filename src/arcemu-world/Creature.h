@@ -293,8 +293,13 @@ public:
 	virtual bool IsVehicle() { return false; }
     bool IsPet(){ return false; }
 
+	bool isGuard() { return false; }
+	bool isNeutralGuard() { return false; }
+	void setIsGuard(bool) {}
+	void setIsNeutralGuard(bool) {}
+
 	bool Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info);
-	void Load(CreatureProto * proto_, float x, float y, float z, float o= 0);
+	void Load(CreatureProto * proto_, float x, float y, float z, float o = 0.0f);
 
 	void AddToWorld();
 	void AddToWorld(MapMgr * pMapMgr);
@@ -507,9 +512,6 @@ public:
 
 		return true;
 	}
-
-	//Make this unit face another unit
-	bool setInFront(Unit* target);
 
 	/// Looting
 	void generateLoot();

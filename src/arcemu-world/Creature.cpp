@@ -560,7 +560,7 @@ void Creature::SaveToDB()
 		<< m_position.y << ","
 		<< m_position.z << ","
 		<< m_position.o << ","
-		<< m_aiInterface->getMoveType() << ","
+		<< TO_AIMOB(m_aiInterface)->getWPMoveType() << ","
 		<< m_uint32Values[UNIT_FIELD_DISPLAYID] << ","
 		<< GetFaction() << ","
 		<< m_uint32Values[UNIT_FIELD_FLAGS] << ","
@@ -580,9 +580,9 @@ void Creature::SaveToDB()
 		<< GetEquippedItem(OFFHAND) << ","
 		<< GetEquippedItem(RANGED) << ",";
 
-	if(GetAIInterface()->m_moveFly)
+	if(m_aiInterface->isFlying() )
 		ss << 1 << ",";
-	else if(GetAIInterface()->onGameobject)
+	else if(GetAIInterface()->hasBehavior(BEHAVIOR_SKYWALKER) )
 		ss << 2 << ",";
 	else
 		ss << 0 << ",";
@@ -678,7 +678,7 @@ void Creature::setDeathState(DeathState s)
 	if ( s == JUST_DIED )
 	{
 
-		GetAIInterface()->ResetUnitToFollow();
+		GetAIInterface()->setUnitToFollow(0);
 		m_deathState = CORPSE;
 		m_corpseEvent = true;
 
@@ -701,38 +701,26 @@ void Creature::setDeathState(DeathState s)
 
 void Creature::AddToWorld()
 {
-	// force set faction
-	if  (m_faction == 0 || m_factionDBC == 0 )
+	if(m_faction && m_factionDBC)
+	{
+		if( creature_info != NULL || (creature_info = CreatureNameStorage.LookupEntry(GetEntry()) ) != NULL )
+			Object::AddToWorld();
+	}
+	else
+		// force set faction
 		_setFaction();
-
-	if ( creature_info == 0 )
-		creature_info = CreatureNameStorage.LookupEntry( GetEntry() );
-
-	if ( creature_info == 0 )
-		return;
-
-	if ( m_faction == 0 || m_factionDBC == 0 )
-		return;
-
-	Object::AddToWorld();
 }
 
 void Creature::AddToWorld(MapMgr * pMapMgr)
 {
-	// force set faction
-	if ( m_faction == 0 || m_factionDBC == 0 )
+	if(m_faction && m_factionDBC)
+	{
+		if( creature_info != NULL || (creature_info = CreatureNameStorage.LookupEntry(GetEntry() ) ) != NULL )
+			Object::AddToWorld(pMapMgr);
+	}
+	else
+		// force set faction
 		_setFaction();
-
-	if ( creature_info == 0 )
-		creature_info = CreatureNameStorage.LookupEntry( GetEntry() );
-
-	if ( creature_info == 0)
-		return;
-
-	if ( m_faction == 0 || m_factionDBC == 0 )
-		return;
-
-	Object::AddToWorld(pMapMgr);
 }
 
 bool Creature::CanAddToWorld()
@@ -796,9 +784,6 @@ void Creature::EnslaveExpire()
 		SetFaction(954);
 		break;
 	};
-
-	GetAIInterface()->Init(((Unit *)this), AITYPE_AGRO, MOVEMENTTYPE_NONE);
-
 	UpdateOppFactionSet();
 	UpdateSameFactionSet();
 }
@@ -826,7 +811,7 @@ void Creature::OnRemoveInRangeObject(Object* pObj)
 		// we lost our escorter, return to the spawn.
 		m_aiInterface->StopMovement(10000);
 		m_escorter = NULL;
-		GetAIInterface()->setMoveType(MOVEMENTTYPE_DONTMOVEWP);
+		TO_AIMOB(GetAIInterface() )->setWPMoveType(MOVEMENTTYPE_DONTMOVEWP);
 		//DestroyCustomWaypointMap(); //function not needed at all, crashing on delete(*int)
 		//GetAIInterface()->deleteWaypoints();//this can repleace DestroyCustomWaypointMap, but it's crashing on delete too
 		Despawn(1000, 1000);
@@ -1125,9 +1110,9 @@ void Creature::FormationLinkUp(uint32 SqlId)
 		return;
 
 	Creature * creature = m_mapMgr->GetSqlIdCreature(SqlId);
-	if(creature != 0)
+	if(creature != NULL )
 	{
-		m_aiInterface->m_formationLinkTarget = creature->GetGUID();
+		m_aiInterface->setUnitToFollow(creature->GetGUID() );
 		haslinkupevent = false;
 		event_RemoveEvents(EVENT_CREATURE_FORMATION_LINKUP);
 	}
@@ -1197,6 +1182,8 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	creature_info = CreatureNameStorage.LookupEntry(spawn->entry);
 	if( creature_info == NULL )
 		return false;
+
+	m_aiInterface = AIInterface_Mgr::CreateAIInterface(this, AITYPE_MOB, NULL);
 
 	spawnid = spawn->id;
 	m_phase = spawn->phase;
@@ -1286,22 +1273,19 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	// set position
 	m_position.ChangeCoords( spawn->x, spawn->y, spawn->z, spawn->o );
 	m_spawnLocation.ChangeCoords(spawn->x, spawn->y, spawn->z, spawn->o);
-	m_aiInterface->setMoveType(spawn->movetype);
-	m_aiInterface->m_waypoints = objmgr.GetWayPointMap(spawn->id);
+	TO_AIMOB(m_aiInterface)->setWPMoveType( MovementType(spawn->movetype) );
+	//TO_AIMOB(m_aiInterface->m_waypoints = objmgr.GetWayPointMap(spawn->id);
 
-	m_aiInterface->timed_emotes = objmgr.GetTimedEmoteList(spawn->id);
+	//m_aiInterface->timed_emotes = objmgr.GetTimedEmoteList(spawn->id);
 
 	// not a neutral creature
 	if(!(m_factionDBC->RepListId == -1 && m_faction->HostileMask == 0 && m_faction->FriendlyMask == 0))
-	{
-		GetAIInterface()->m_canCallForHelp = true;
-	}
+		TO_AIMOB(m_aiInterface)->setCallHelpAgent();
 
+	TO_AIMOB(m_aiInterface)->setMeleeAgent();
 	// set if creature can shoot or not.
 	if( proto->CanRanged == 1 )
-		GetAIInterface()->m_canRangedAttack = true;
-	else
-		m_aiInterface->m_canRangedAttack = false;
+		TO_AIMOB(m_aiInterface)->setRangedAgent();
 
 //SETUP NPC FLAGS
 	SetUInt32Value(UNIT_NPC_FLAGS,proto->NPCFLags);
@@ -1322,7 +1306,7 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 		auctionHouse = sAuctionMgr.GetAuctionHouse(GetEntry());
 
 //NPC FLAGS
-	 m_aiInterface->m_waypoints=objmgr.GetWayPointMap(spawn->id);
+	// m_aiInterface->m_waypoints=objmgr.GetWayPointMap(spawn->id);
 
 	//load resistances
 	for(uint32 x= 0;x<7;x++)
@@ -1343,66 +1327,48 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	SetUInt32Value(UNIT_FIELD_BYTES_1, spawn->bytes1);
 	SetUInt32Value(UNIT_FIELD_BYTES_2, spawn->bytes2);
 
-////////////AI
 
-	// kek
 	for(list<AI_Spell*>::iterator itr = proto->spells.begin(); itr != proto->spells.end(); ++itr)
 	{
 		// Load all spells that are not bound to a specific difficulty, OR mathces this maps' difficulty
-		if( (*itr)->instance_mode == mode || (*itr)->instance_mode == AISPELL_ANY_DIFFICULTY )
-			m_aiInterface->addSpellToList(*itr);
+		if( (*itr)->difficulty == (uint8)mode || (*itr)->difficulty == AISPELL_ANY_DIFFICULTY )
+			m_aiInterface->addSpell( (*itr) );
 	}
-
-	// m_aiInterface->m_canCallForHelp = proto->m_canCallForHelp;
-	// m_aiInterface->m_CallForHelpHealth = proto->m_callForHelpHealth;
-	m_aiInterface->m_canFlee = proto->m_canFlee;
-	m_aiInterface->m_FleeHealth = proto->m_fleeHealth;
-	m_aiInterface->m_FleeDuration = proto->m_fleeDuration;
+	TO_AIMOB(m_aiInterface)->setPanicAgent(proto->m_canFlee);
+	if(proto->m_fleeHealth && proto->m_fleeHealth > 0)
+		m_aiInterface->setPanicHp( (uint32)proto->m_fleeHealth);
+	else
+		m_aiInterface->setPanicHp(0);
+	m_aiInterface->setPanicDuration(proto->m_fleeDuration);
 
 	//these fields are always 0 in db
-	GetAIInterface()->setMoveType(0);
-	GetAIInterface()->setMoveRunFlag(0);
+	TO_AIMOB(GetAIInterface() )->setWPMoveType(MOVEMENTTYPE_NONE);
+	GetAIInterface()->setAIMoveFlags(AIMOVESTATE_WALK);
 
-    if(isattackable(spawn) && !(proto->isTrainingDummy) ){
-	  GetAIInterface()->SetAllowedToEnterCombat(true);
-    }else{
+    if(isattackable(spawn) && !(proto->isTrainingDummy) )
+		GetAIInterface()->SetAllowedToEnterCombat(true);
+	else
+	{
         GetAIInterface()->SetAllowedToEnterCombat(false);
-        GetAIInterface()->SetAIType( AITYPE_PASSIVE );
         Root();
     }
 	 
 	// load formation data
 	if( spawn->form != NULL )
 	{
-		m_aiInterface->m_formationLinkSqlId = spawn->form->fol;
-		m_aiInterface->m_formationFollowDistance = spawn->form->dist;
-		m_aiInterface->m_formationFollowAngle = spawn->form->ang;
-	}
-	else
-	{
-		m_aiInterface->m_formationLinkSqlId = 0;
-		m_aiInterface->m_formationFollowDistance = 0;
-		m_aiInterface->m_formationFollowAngle = 0;
+		m_aiInterface->setFormationHeadSqlId(spawn->form->fol);
+		m_aiInterface->setFollowDistance( (uint32)spawn->form->dist);
+		m_aiInterface->setFollowAngle(spawn->form->ang);
 	}
 
 //////////////AI
 
 	myFamily = dbcCreatureFamily.LookupEntry(creature_info->Family);
 
-
- //HACK!
-	if(m_uint32Values[UNIT_FIELD_DISPLAYID] == 17743 ||
-		m_uint32Values[UNIT_FIELD_DISPLAYID] == 20242 ||
-		m_uint32Values[UNIT_FIELD_DISPLAYID] == 15435 ||
-		(creature_info->Family == UNIT_TYPE_MISC))
-	{
-		m_useAI = false;
-	}
-
 	if(spawn->CanFly == 1)
-		GetAIInterface()->m_moveFly = true;
+		GetAIInterface()->setAIMoveFlags(AIMOVESTATE_FLY);
 	else if(spawn->CanFly == 2)
-		GetAIInterface()->onGameobject = true;
+		GetAIInterface()->setBehavior(BEHAVIOR_SKYWALKER);
 	/* more hacks! */
 	if(proto->Mana != 0)
 		SetPowerType(POWER_TYPE_MANA);
@@ -1413,16 +1379,10 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	has_waypoint_text = objmgr.HasMonsterSay(GetEntry(), MONSTER_SAY_EVENT_RANDOM_WAYPOINT);
 
     if( proto->guardtype == GUARDTYPE_CITY )
-        m_aiInterface->m_isGuard = true;
-    else
-        m_aiInterface->m_isGuard = false;
+		setIsGuard(true);
 
     if( proto->guardtype == GUARDTYPE_NEUTRAL )
-        m_aiInterface->m_isNeutralGuard = true;
-    else
-        m_aiInterface->m_isNeutralGuard = false;
-
-	m_aiInterface->getMoveFlags();
+		setIsNeutralGuard(true);
 
 	/* creature death state */
 	if(proto->death_state == 1)
@@ -1441,7 +1401,7 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	if( spawn->stand_state )
 		SetStandState( (uint8)spawn->stand_state );
 
-	m_aiInterface->EventAiInterfaceParamsetFinish();
+	//m_aiInterface->EventAiInterfaceParamsetFinish();
 	this->m_position.x = spawn->x;
 	this->m_position.y = spawn->y;
 	this->m_position.z = spawn->z;
@@ -1459,13 +1419,14 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 	if(!creature_info)
 		return;
 
-    if( proto_->isTrainingDummy == 0){
-		GetAIInterface()->SetAllowedToEnterCombat( true );
-    }else{
-        GetAIInterface()->SetAllowedToEnterCombat( false );
-        GetAIInterface()->SetAIType( AITYPE_PASSIVE );
-        Root();
-    }
+	//Create a mob ai script.
+	m_aiInterface = AIInterface_Mgr::CreateAIInterface(this, AITYPE_MOB, NULL);
+
+    if(proto->isTrainingDummy)
+	{
+		m_aiInterface->SetAllowedToEnterCombat(false);
+		m_aiInterface->setAIMoveFlags(AIMOVESTATE_CANTMOVE);
+	}
 
 	m_walkSpeed = m_base_walkSpeed = proto->walk_speed; //set speeds
 	m_runSpeed = m_base_runSpeed = proto->run_speed; //set speeds
@@ -1520,16 +1481,13 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 	m_spawnLocation.ChangeCoords(x, y, z, o);
 
 	// not a neutral creature
-	if(!(m_factionDBC->RepListId == -1 && m_faction->HostileMask == 0 && m_faction->FriendlyMask == 0))
-	{
-		GetAIInterface()->m_canCallForHelp = true;
-	}
+	if(!(m_factionDBC->RepListId == -1 && m_faction->HostileMask == 0 && m_faction->FriendlyMask == 0) )
+		TO_AIMOB(m_aiInterface)->setCallHelpAgent();
 
 	// set if creature can shoot or not.
+	TO_AIMOB(m_aiInterface)->setMeleeAgent();
 	if( proto->CanRanged == 1 )
-		GetAIInterface()->m_canRangedAttack = true;
-	else
-		m_aiInterface->m_canRangedAttack = false;
+		TO_AIMOB(m_aiInterface)->setRangedAgent();
 
 	//SETUP NPC FLAGS
 	SetUInt32Value(UNIT_NPC_FLAGS,proto->NPCFLags);
@@ -1571,23 +1529,23 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 	for(list<AI_Spell*>::iterator itr = proto->spells.begin(); itr != proto->spells.end(); ++itr)
 	{
 		// Load all spell that are not set for a specific difficulty
-		if( (*itr)->instance_mode == AISPELL_ANY_DIFFICULTY )
-			m_aiInterface->addSpellToList(*itr);
+		if( (*itr)->difficulty == AISPELL_ANY_DIFFICULTY )
+			m_aiInterface->addSpell( (*itr) );
 	}
-	m_aiInterface->m_canCallForHelp = proto->m_canCallForHelp;
-	m_aiInterface->m_CallForHelpHealth = proto->m_callForHelpHealth;
-	m_aiInterface->m_canFlee = proto->m_canFlee;
-	m_aiInterface->m_FleeHealth = proto->m_fleeHealth;
-	m_aiInterface->m_FleeDuration = proto->m_fleeDuration;
+	if( proto->m_canCallForHelp)
+		TO_AIMOB(m_aiInterface)->setCallHelpAgent();
+	m_aiInterface->setCallHelpHp( proto->m_callForHelpHealth);
+	if( proto->m_canFlee )
+		TO_AIMOB(m_aiInterface)->setPanicAgent();
+	if(proto->m_fleeHealth < 100 && proto->m_fleeHealth > 0)
+		m_aiInterface->setPanicHp( proto->m_fleeHealth);
+	else
+		m_aiInterface->setPanicHp(0);
+	m_aiInterface->setPanicDuration( proto->m_fleeDuration);
 
 	//these fields are always 0 in db
-	GetAIInterface()->setMoveType(0);
-	GetAIInterface()->setMoveRunFlag(0);
-
-	// load formation data
-	m_aiInterface->m_formationLinkSqlId = 0;
-	m_aiInterface->m_formationFollowDistance = 0;
-	m_aiInterface->m_formationFollowAngle = 0;
+	TO_AIMOB(m_aiInterface)->setWPMoveType(MOVEMENTTYPE_NONE);
+	TO_AIMOB(m_aiInterface)->setAIMoveFlags(AIMOVESTATE_WALK);
 
 	//////////////AI
 
@@ -1609,14 +1567,9 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 	has_waypoint_text = objmgr.HasMonsterSay(GetEntry(), MONSTER_SAY_EVENT_RANDOM_WAYPOINT);
 	
     if( proto->guardtype == GUARDTYPE_CITY )
-        m_aiInterface->m_isGuard = true;
-    else
-        m_aiInterface->m_isGuard = false;
-
+       setIsGuard(true);
     if( proto->guardtype == GUARDTYPE_NEUTRAL )
-        m_aiInterface->m_isNeutralGuard = true;
-    else
-        m_aiInterface->m_isNeutralGuard = false;
+        setIsNeutralGuard(true);
 
 	m_aiInterface->getMoveFlags();
 
@@ -1676,44 +1629,46 @@ void Creature::OnPushToWorld()
 	}
 
 	Unit::OnPushToWorld();
-
-	if(_myScriptClass)
-		_myScriptClass->OnLoad();
-
-	if(m_spawn)
+	MobAI * ai = (m_aiInterface->AIType_isMob() ) ? TO_AIMOB(m_aiInterface) : NULL;
+	if(ai != NULL)
 	{
-		if(m_aiInterface->m_formationLinkSqlId)
+		/* Only allow mob types to load and utilize scripts */
+		if( GetScript() == NULL )
+			LoadScript();
+		if(_myScriptClass != NULL)
+			_myScriptClass->OnLoad();
+		if(m_spawn)
 		{
-			// add event
-			sEventMgr.AddEvent(this, &Creature::FormationLinkUp, m_aiInterface->m_formationLinkSqlId,
-				EVENT_CREATURE_FORMATION_LINKUP, 1000, 0,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-			haslinkupevent = true;
+			uint32 sqlId = ai->getFormationHeadSqlId();
+			if( sqlId)
+			{
+				// add event
+				sEventMgr.AddEvent(this, &Creature::FormationLinkUp, sqlId ,
+					EVENT_CREATURE_FORMATION_LINKUP, 1000, 0,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+				haslinkupevent = true;
+			}
+
+			if(m_spawn->channel_target_creature)
+				sEventMgr.AddEvent(this, &Creature::ChannelLinkUpCreature, m_spawn->channel_target_creature, EVENT_CREATURE_CHANNEL_LINKUP, 1000, 5, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);	// only 5 attempts
+
+			if(m_spawn->channel_target_go)
+				sEventMgr.AddEvent(this, &Creature::ChannelLinkUpGO, m_spawn->channel_target_go, EVENT_CREATURE_CHANNEL_LINKUP, 1000, 5, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);	// only 5 attempts
 		}
 
-		if(m_spawn->channel_target_creature)
+		ai->setInInstace( (m_mapMgr->GetMapInfo()->type!=INSTANCE_NULL) ? true : false );
+		if(HasItems() )
 		{
-			sEventMgr.AddEvent(this, &Creature::ChannelLinkUpCreature, m_spawn->channel_target_creature, EVENT_CREATURE_CHANNEL_LINKUP, 1000, 5, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);	// only 5 attempts
-		}
+			for(std::vector<CreatureItem>::iterator itr = m_SellItems->begin(); itr != m_SellItems->end(); ++itr)
+			{
+					if (itr->max_amount == 0)
+						itr->available_amount= 0;
+					else if (itr->available_amount<itr->max_amount)
+						sEventMgr.AddEvent(this, &Creature::UpdateItemAmount, itr->itemid, EVENT_ITEM_UPDATE, VENDOR_ITEMS_UPDATE_TIME, 1,0);
+			}
 
-		if(m_spawn->channel_target_go)
-		{
-			sEventMgr.AddEvent(this, &Creature::ChannelLinkUpGO, m_spawn->channel_target_go, EVENT_CREATURE_CHANNEL_LINKUP, 1000, 5, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);	// only 5 attempts
 		}
+		CALL_INSTANCE_SCRIPT_EVENT( m_mapMgr, OnCreaturePushToWorld )( this );
 	}
-
-	m_aiInterface->m_is_in_instance = (m_mapMgr->GetMapInfo()->type!=INSTANCE_NULL) ? true : false;
-	if (this->HasItems())
-	{
-		for(std::vector<CreatureItem>::iterator itr = m_SellItems->begin(); itr != m_SellItems->end(); ++itr)
-		{
-				if (itr->max_amount == 0)
-					itr->available_amount= 0;
-				else if (itr->available_amount<itr->max_amount)
-					sEventMgr.AddEvent(this, &Creature::UpdateItemAmount, itr->itemid, EVENT_ITEM_UPDATE, VENDOR_ITEMS_UPDATE_TIME, 1,0);
-		}
-
-	}
-	CALL_INSTANCE_SCRIPT_EVENT( m_mapMgr, OnCreaturePushToWorld )( this );
 }
 
 void Creature::AISpellUpdate()
@@ -1897,7 +1852,7 @@ void Creature::DestroyCustomWaypointMap()
 		//delete m_custom_waypoint_map;
 		m_custom_waypoint_map->clear();
 		m_custom_waypoint_map = 0;
-		m_aiInterface->SetWaypointMap(0);
+		//m_aiInterface->SetWaypointMap(0);
 	}
 }
 
@@ -1918,7 +1873,7 @@ void Creature::SetGuardWaypoints()
 	if(!GetMapMgr()) return;
 	if(!GetCreatureInfo()) return;
 
-	GetAIInterface()->setMoveType(1);
+	TO_AIMOB(m_aiInterface)->setWPMoveType(MOVEMENTTYPE_DONTMOVEWP);
 	for(int i = 1; i <= 4; i++)
 	{
 		float ang = rand()/100.0f;
@@ -1951,7 +1906,7 @@ void Creature::SetGuardWaypoints()
 		wp->forwardemoteoneshot = 0;
 		wp->backwardskinid = m_uint32Values[UNIT_FIELD_NATIVEDISPLAYID];
 		wp->forwardskinid = m_uint32Values[UNIT_FIELD_NATIVEDISPLAYID];
-		GetAIInterface()->addWayPoint(wp);
+		//TO_AIMOB(m_aiInterface)->addWayPoint(wp);
 	}
 }
 
@@ -2304,7 +2259,7 @@ void Creature::Die( Unit *pAttacker, uint32 damage, uint32 spellid ){
 	/* Tell Unit that it's target has Died */
 	pAttacker->addStateFlag( UF_TARGET_DIED );
 
-	GetAIInterface()->OnDeath(pAttacker);
+	GetAIInterface()->HandleEvent(EVENT_UNITDIED, pAttacker, 0);
 
 	SetFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_DEAD );
 

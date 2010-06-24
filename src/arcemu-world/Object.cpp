@@ -377,9 +377,9 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 				}break;
 			}
 
-			if(uThis->GetAIInterface()->IsFlying())
+			if(uThis->GetAIInterface()->isFlying())
 				flags2 |= MOVEFLAG_NO_COLLISION; //0x400 Zack : Teribus the Cursed had flag 400 instead of 800 and he is flying all the time 
-			if(uThis->GetAIInterface()->onGameobject)
+			if(uThis->GetAIInterface()->hasBehavior(BEHAVIOR_SKYWALKER) )
 				flags2 |= MOVEFLAG_FLYING;
 			if(uThis->GetProto() && uThis->GetProto()->extra_a9_flags)
 			{
@@ -1453,6 +1453,19 @@ bool Object::isInFront(Object* target)
 
     return( ( angle >= left ) && ( angle <= right ) );
 }
+void Object::setInFront(Object *target)
+{
+	if(target != NULL) 
+	{
+		//angle the object has to face
+		float angle = calcRadAngle(m_position.x, m_position.y, target->GetPositionX(), target->GetPositionY() ); 
+		//Change angle slowly 2000ms to turn 180 deg around
+		if(angle > M_PI) angle += (M_PI/2);
+		else angle -= (M_2PI); //angle < 180
+		//Update Orientation Server Side
+		SetPosition(m_position.x,m_position.y,m_position.z,angle);
+	}
+}
 
 bool Object::isInBack(Object* target)
 {
@@ -1467,7 +1480,7 @@ bool Object::isInBack(Object* target)
 	// if we are a unit and have a UNIT_FIELD_TARGET then we are always facing them
 	if( m_objectTypeId == TYPEID_UNIT && TO_UNIT(this)->GetTargetGUID() != 0 )
 	{
-		Unit* pTarget = TO_UNIT(this)->GetAIInterface()->GetNextTarget();
+		Unit* pTarget = TO_UNIT(this)->GetAIInterface()->getNextTarget();
 		if( pTarget != NULL )
 			angle -= double( Object::calcRadAngle( target->m_position.x, target->m_position.y, pTarget->m_position.x, pTarget->m_position.y ) );
 		else

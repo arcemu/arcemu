@@ -157,139 +157,17 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 
 		if( result != NULL )
 		{
-			AI_Spell *sp;
-			SpellEntry * spe;
-			uint32 entry;
-
 			do
 			{
-				Field *fields = result->Fetch();
-				entry = fields[0].GetUInt32();
-				cn = CreatureProtoStorage.LookupEntry(entry);
-				spe = dbcSpell.LookupEntryForced(fields[6].GetUInt32());
-				if( spe == NULL )
-				{
-					Log.Warning("AIAgent", "For %u has nonexistent spell %u.", fields[0].GetUInt32(), fields[6].GetUInt32());
+				Field * fields = result->Fetch();
+				//uint32 spellid = fields[AIAGENTFIELD_SPELLID].GetUInt32();
+				cn = CreatureProtoStorage.LookupEntry( fields[AIAGENTFIELD_OBJECTENTRY].GetUInt32() );
+				if(cn == NULL) continue;
+				//Let aiinterface_mgr construct an ai spell.
+				AI_Spell * sp = AIInterface_Mgr::ConstructAISpell(fields);
+				if(sp == NULL)
 					continue;
-				}
-				if(!cn)
-					continue;
-
-				sp = new AI_Spell;
-				sp->entryId = fields[0].GetUInt32();
-				sp->instance_mode = fields[1].GetUInt32();
-				sp->agent = fields[2].GetUInt16();
-				sp->procChance = fields[4].GetUInt32();
-				sp->procCount = fields[5].GetUInt32();
-				sp->spell = spe;
-				sp->spellType = static_cast<uint8>( fields[7].GetUInt32() );
-
-				int32  targettype = fields[8].GetInt32();
-				if( targettype == -1 )
-					sp->spelltargetType = static_cast<uint8>( GetAiTargetType( spe ) );
-				else sp->spelltargetType = static_cast<uint8>( targettype );
-
-				sp->cooldown = fields[9].GetInt32();
-				sp->floatMisc1 = fields[10].GetFloat();
-				sp->autocast_type=(uint32)-1;
-				sp->cooldowntime=getMSTime();
-				sp->procCounter= 0;
-				sp->Misc2 = fields[11].GetUInt32();
-				if(sp->agent == AGENT_SPELL)
-				{
-					if(!sp->spell)
-					{
-						sLog.outDebug("SpellId %u in ai_agent for %u is invalid.\n", (unsigned int)fields[6].GetUInt32(), (unsigned int)sp->entryId);
-						delete sp;
-						sp = NULL;
-						continue;
-					}
-					
-					if(sp->spell->Effect[0] == SPELL_EFFECT_LEARN_SPELL || sp->spell->Effect[1] == SPELL_EFFECT_LEARN_SPELL ||
-						sp->spell->Effect[2] == SPELL_EFFECT_LEARN_SPELL)
-					{
-						sLog.outDebug("Teaching spell %u in ai_agent for %u\n", (unsigned int)fields[6].GetUInt32(), (unsigned int)sp->entryId);
-						delete sp;
-						sp = NULL;
-						continue;
-					}
-
-					sp->minrange = GetMinRange(dbcSpellRange.LookupEntry(sp->spell->rangeIndex));
-					sp->maxrange = GetMaxRange(dbcSpellRange.LookupEntry(sp->spell->rangeIndex));
-
-					//omg the poor darling has no clue about making ai_agents
-					if(sp->cooldown == (uint32)-1)
-					{
-						//now this will not be exact cooldown but maybe a bigger one to not make him spam spells to often
-						int cooldown;
-						SpellDuration *sd=dbcSpellDuration.LookupEntry(sp->spell->DurationIndex);
-						int Dur= 0;
-						int Casttime= 0;//most of the time 0
-						int RecoveryTime=sp->spell->RecoveryTime;
-						if(sp->spell->DurationIndex)
-							Dur =::GetDuration(sd);
-						Casttime=GetCastTime(dbcSpellCastTime.LookupEntry(sp->spell->CastingTimeIndex));
-						cooldown=Dur+Casttime+RecoveryTime;
-						if(cooldown<0)
-							sp->cooldown=2000;//huge value that should not loop while adding some timestamp to it
-						else sp->cooldown=cooldown;
-					}
-
-					/*
-					//now apply the moron filter
-					if(sp->procChance== 0)
-					{
-						//printf("SpellId %u in ai_agent for %u is invalid.\n", (unsigned int)fields[5].GetUInt32(), (unsigned int)sp->entryId);
-						delete sp;
-						sp = NULL;
-						continue;
-					}
-					if(sp->spellType== 0)
-					{
-						//right now only these 2 are used
-						if(IsBeneficSpell(sp->spell))
-							sp->spellType==STYPE_HEAL;
-						else sp->spellType==STYPE_BUFF;
-					}
-					if(sp->spelltargetType== 0)
-						sp->spelltargetType = RecommandAISpellTargetType(sp->spell);
-						*/
-				}
-
-				if(sp->agent == AGENT_RANGED)
-				{
-					cn->m_canRangedAttack = true;
-					delete sp;
-					sp = NULL;
-				}
-				else if(sp->agent == AGENT_FLEE)
-				{
-					cn->m_canFlee = true;
-					if(sp->floatMisc1)
-						cn->m_canFlee = (sp->floatMisc1>0.0f ? true : false);
-					else
-						cn->m_fleeHealth = 0.2f;
-
-					if(sp->Misc2)
-						cn->m_fleeDuration = sp->Misc2;
-					else
-						cn->m_fleeDuration = 10000;
-
-					delete sp;
-					sp = NULL;
-				}
-				else if(sp->agent == AGENT_CALLFORHELP)
-				{
-					cn->m_canCallForHelp = true;
-					if(sp->floatMisc1)
-						cn->m_callForHelpHealth = 0.2f;
-					delete sp;
-					sp = NULL;
-				}
-				else
-				{
-					cn->spells.push_back(sp);
-				}
+				cn->spells.push_back(sp);
 			} while( result->NextRow() );
 
 			delete result;

@@ -1540,14 +1540,16 @@ public:
 	{
 		return ( (uint32)1 << (GetShapeShift() - 1) );
 	}
-
+	 void delayBaseTime(uint32 delay) { m_baseAttackTime += delay; }
+	 void delayOffHandTime(uint32 delay) { m_offHandAttackTime += delay; }
+	 void delayRangedTime(uint32 delay) { m_rangedAttackTime += delay; }
 	void delayAttackTimer(int32 delay)
 	{
 		if(!delay)
 			return;
 
-		m_attackTimer += delay;
-		m_attackTimer_1 += delay;
+		m_baseAttackTime += delay;
+		m_offHandAttackTime += delay;
 	}
 
 	void SetShapeShift(uint8 ss);

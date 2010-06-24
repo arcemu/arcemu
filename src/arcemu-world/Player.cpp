@@ -914,10 +914,10 @@ void Player::Update( uint32 p_time )
 	if(m_attacking)
 	{
 		// Check attack timer.
-		if(mstime >= m_attackTimer)
+		if(mstime >= m_baseAttackTime)
 			_EventAttack(false);
 
-		if( m_dualWield && mstime >= m_attackTimer_1 )
+		if( m_dualWield && mstime >= m_offHandAttackTime )
 			_EventAttack( true );
 	}
 
@@ -8298,9 +8298,9 @@ void Player::EndDuel(uint8 WinCondition)
 	for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
 	{
 		(*itr)->CombatStatus.Vanished();
-		(*itr)->GetAIInterface()->SetUnitToFollow( this );
+		(*itr)->GetAIInterface()->setUnitToFollow( GetGUID() );
 		(*itr)->GetAIInterface()->HandleEvent( EVENT_FOLLOWOWNER, *itr, 0 );
-		(*itr)->GetAIInterface()->WipeTargetList();
+		(*itr)->GetAIInterface()->setNextTarget(NULL);
 	}
 
 	// removing auras that kills players after if low HP
@@ -8499,9 +8499,9 @@ bool Player::SafeTeleport(uint32 MapID, uint32 InstanceID, const LocationVector 
 	// Checking if we have a unit whose waypoints are shown
 	// If there is such, then we "unlink" it
 	// Failing to do so leads to a crash if we try to show some other Unit's wps, after the map was shut down
-	if( waypointunit != NULL )
-		waypointunit->hideWayPoints( this );	
-	waypointunit = NULL;
+	//if( waypointunit != NULL )
+		//waypointunit->hideWayPoints( this );	
+	//waypointunit = NULL;
 
 	SpeedCheatDelay(10000);
 
@@ -10013,6 +10013,7 @@ void Player::Possess(Unit * pTarget)
 	if( !( pTarget->IsPet() && static_cast< Pet* >( pTarget ) == GetSummon() ) )
 	{
 		list<uint32> avail_spells;
+		list<AI_Spell*> * spells = pTarget->GetAIInterface()->getSpellStore();
 		//Steam Tonks
 		if(pTarget->GetEntry() == 15328)
 		{
@@ -10024,15 +10025,18 @@ void Player::Possess(Unit * pTarget)
 		}
 		else
 		{
-			for(list<AI_Spell*>::iterator itr = pTarget->GetAIInterface()->m_spells.begin(); itr != pTarget->GetAIInterface()->m_spells.end(); ++itr)
+			if(spells != NULL)
 			{
-				if((*itr)->agent == AGENT_SPELL)
-					avail_spells.push_back((*itr)->spell->Id);
+				for(list<AI_Spell*>::iterator itr = spells->begin(); itr != spells->end() ; ++itr)
+				{
+					if( (*itr)->spell_agent == AGENT_SPELL)
+						avail_spells.push_back( (*itr)->sEntry->Id );
 			}
+		}
 		}
 		list<uint32>::iterator itr = avail_spells.begin();
 
-		WorldPacket data(SMSG_PET_SPELLS, pTarget->GetAIInterface()->m_spells.size() * 4 + 20);
+		WorldPacket data(SMSG_PET_SPELLS,  avail_spells.size() * 4 + 20);
 		data << pTarget->GetGUID();
 		data << uint16(0x00000000);//unk1
 		data << uint32(0x00000101);//unk2
@@ -13362,7 +13366,7 @@ void Player::TakeDamage(Unit *pAttacker, uint32 damage, uint32 spellid, bool no_
 		for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr){
 			Pet* pPet = *itr;
 			
-			if( pPet->GetPetState() != PET_STATE_PASSIVE ){
+			if( TO_AIGUARDIAN(pPet->GetAIInterface())->getPetState() != PET_STATE_PASSIVE ){
 				pPet->GetAIInterface()->AttackReaction( pAttacker, 1, 0 );
 				pPet->HandleAutoCastEvent( AUTOCAST_EVENT_OWNER_ATTACKED );
 			}

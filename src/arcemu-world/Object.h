@@ -331,6 +331,7 @@ public:
 
 	//! Use this to Check if a object is in front of another object.
 	bool isInFront(Object* target);
+	void setInFront(Object *target);
 	//! Use this to Check if a object is in back of another object.
 	bool isInBack(Object* target);
 	//! Check to see if an object is in front of a target in a specified arc (in degrees)
@@ -360,16 +361,21 @@ public:
 		return comp.Distance(m_position);
 	}
 
-	const float GetDistanceSq(float x, float y, float z)
+	const float GetDistanceSq(float & x, float & y, float &z)
 	{
 		return m_position.DistanceSq(x, y, z);
 	}
 
 	const float GetDistance2dSq( Object* obj )
 	{
-		if( obj->GetMapId() != m_mapId )
-			return 40000.0f; //enough for out of range
-		return m_position.Distance2DSq( obj->m_position );
+		float distance = 40000.0f;
+		if( obj->GetMapId() == m_mapId )
+			distance = m_position.Distance2DSq( obj->m_position );
+		return distance;
+	}
+	const float GetDistance2dSq(float & x, float & y)
+	{
+		return m_position.Distance2DSq(x,y);
 	}
 
 	// In-range object management, not sure if we need it
@@ -443,6 +449,7 @@ public:
 	void UpdateSameFactionSet();
 	std::set<Object*>::iterator GetInRangeSameFactsSetBegin() { return m_sameFactsInRange.begin(); }
 	std::set<Object*>::iterator GetInRangeSameFactsSetEnd() { return m_sameFactsInRange.end(); }
+	size_t GetInRangeSameFactsSize() { return m_sameFactsInRange.size(); }
 
 	bool IsInRangeOppFactSet(Object* pObj) { return (m_oppFactsInRange.count(pObj) > 0); }
 	void UpdateOppFactionSet();

@@ -612,8 +612,8 @@ void Spell::SpellTargetPetOwner(uint32 i, uint32 j)
 	TargetsList* tmpMap = &m_targetUnits[i];
 	if( u_caster != NULL && u_caster->IsPet() && static_cast< Pet* >( u_caster )->GetPetOwner() )
 		SafeAddTarget( tmpMap, u_caster->GetSummonedByGUID() );
-	else if( u_caster != NULL && u_caster->GetAIInterface() && u_caster->GetAIInterface()->GetPetOwner() )
-		SafeAddTarget( tmpMap, u_caster->GetAIInterface()->GetPetOwner()->GetGUID() );
+	else if( u_caster != NULL && u_caster->GetAIInterface() && u_caster->GetAIInterface()->getOwner() != NULL)
+		SafeAddTarget( tmpMap, u_caster->GetAIInterface()->getOwner()->GetGUID());
 }
 
 /// this is handled in DO

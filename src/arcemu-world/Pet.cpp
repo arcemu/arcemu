@@ -40,18 +40,11 @@ uint32 Pet::GetAutoCastTypeForSpell( SpellEntry * ent )
 	case SPELL_HASH_BLOOD_PACT:			// Blood Pact
 	case SPELL_HASH_FEL_INTELLIGENCE:
 	case SPELL_HASH_AVOIDANCE:
-	case SPELL_HASH_PARANOIA:
 		return AUTOCAST_EVENT_ON_SPAWN;
 		break;
 
 	case SPELL_HASH_FIRE_SHIELD:		// Fire Shield
 		return AUTOCAST_EVENT_OWNER_ATTACKED;
-		break;
-
-	case SPELL_HASH_PHASE_SHIFT:		// Phase Shift
-	case SPELL_HASH_CONSUME_SHADOWS:
-	case SPELL_HASH_LESSER_INVISIBILITY:
-		return AUTOCAST_EVENT_LEAVE_COMBAT;
 		break;
 
 	case SPELL_HASH_WAR_STOMP: // Doomguard spell
@@ -293,8 +286,6 @@ Pet::Pet( uint64 guid ) : Creature( guid )
 	m_HappinessTimer = PET_HAPPINESS_UPDATE_TIMER;
 	m_PetNumber = 0;
 
-	m_State = PET_STATE_DEFENSIVE;
-	m_Action = PET_ACTION_FOLLOW;
 	m_ExpireTime = 0;
 	bExpires = false;
 	m_Diet = 0;
@@ -377,12 +368,13 @@ void Pet::SendSpellsToOwner()
 		return;
 
 	uint16 packetsize = ( GetEntry() != WATER_ELEMENTAL && GetEntry() != SPIRITWOLF ) ? ( ( uint16 )mSpells.size() * 4 + 59 ) : 62;
+	GuardianAI * ai = TO_AIGUARDIAN(GetAIInterface() );
 	WorldPacket * data = new WorldPacket( SMSG_PET_SPELLS, packetsize );
 	*data << GetGUID();
 	*data << uint16( myFamily != NULL ? myFamily->ID : 0 );	// pet family to determine talent tree
 	*data << m_ExpireTime;
-	*data << uint8( GetPetState() );	// 0x0 = passive, 0x1 = defensive, 0x2 = aggressive
-	*data << uint8( GetPetAction() );	// 0x0 = stay, 0x1 = follow, 0x2 = attack
+	*data << uint8( ai->getPetState() );	// 0x0 = passive, 0x1 = defensive, 0x2 = aggressive
+	*data << uint8( ai->getPetAction() );	// 0x0 = stay, 0x1 = follow, 0x2 = attack
 	*data << uint16( 0 );				// flags: 0xFF = disabled pet bar (eg. when pet stunned)
 
 	// Send the actionbar
@@ -493,13 +485,6 @@ void Pet::SendCastFailed( uint32 spellid, uint8 fail )
 	m_Owner->GetSession()->SendPacket( &data );
 }
 
-void Pet::SendActionFeedback( PetActionFeedback value )
-{
-	if( m_Owner == NULL || m_Owner->GetSession() == NULL)
-		return;
-	m_Owner->GetSession()->OutPacket( SMSG_PET_ACTION_FEEDBACK, 1, &value );
-}
-
 void Pet::InitializeSpells()
 {
 	for( PetSpellMap::iterator itr = mSpells.begin(); itr != mSpells.end(); ++itr )
@@ -535,33 +520,30 @@ AI_Spell * Pet::CreateAISpell(SpellEntry * info)
 		return itr->second;
 
 	AI_Spell *sp = new AI_Spell;
-	sp->agent = AGENT_SPELL;
-	sp->entryId = GetEntry();
-	sp->floatMisc1 = 0;
 	sp->maxrange = GetMaxRange( dbcSpellRange.LookupEntry( info->rangeIndex ) );
 	if( sp->maxrange < sqrt( info->base_range_or_radius_sqr ) )
 		sp->maxrange = sqrt( info->base_range_or_radius_sqr );
 	sp->minrange = GetMinRange( dbcSpellRange.LookupEntry( info->rangeIndex ) );
-	sp->Misc2 = 0;
-	sp->procChance = 0;
-	sp->spell = info;
+	sp->sEntry = info;
 	sp->cooldown = objmgr.GetPetSpellCooldown(info->Id);
-	if( sp->cooldown == 0 )
+	if( !sp->cooldown)
 		sp->cooldown = info->StartRecoveryTime; //avoid spell spamming
-	if( sp->cooldown == 0 )
+	if( !sp->cooldown)
 		sp->cooldown = info->StartRecoveryCategory; //still 0 ?
-	if( sp->cooldown == 0 )
+	if( !sp->cooldown)
 		sp->cooldown = PET_SPELL_SPAM_COOLDOWN; //omg, avoid spamming at least
-	sp->cooldowntime = 0;
+	sp->interval = 0;
 
-	if( /* info->Effect[0] == SPELL_EFFECT_APPLY_AURA || */ info->Effect[0] == SPELL_EFFECT_APPLY_AREA_AURA || info->Effect[0] == SPELL_EFFECT_APPLY_AREA_AURA2 )
-		sp->spellType = STYPE_BUFF;
+	if(info->Effect[0] == SPELL_EFFECT_APPLY_AREA_AURA || info->Effect[0] == SPELL_EFFECT_APPLY_AREA_AURA2 )
+		sp->type = AISPELLTYPE_BUFF;
+	else if(info->Effect[0] == SPELL_EFFECT_DISPEL)
+		sp->type = AISPELLTYPE_DISPEL;
 	else
-		sp->spellType = STYPE_DAMAGE;
+		sp->type = AISPELLTYPE_SINGLETARGET;
 
-	sp->spelltargetType = static_cast<uint8>( info->ai_target_type );
-	sp->autocast_type = GetAutoCastTypeForSpell( info );
-	sp->procCount = 0;
+	sp->spellTargeType = static_cast<uint8>( info->ai_target_type );
+	//sp->autocast_type = GetAutoCastTypeForSpell( info );
+	sp->maxcastcount = -1;
 	m_AISpellStore[ info->Id ] = sp;
 	return sp;
 }
@@ -589,7 +571,6 @@ void Pet::LoadFromDB( Player* owner, PlayerPet * pi )
 	m_HappinessTimer = mPi->happinessupdate;
 	reset_time = mPi->reset_time;
 	reset_cost = mPi->reset_cost;
-    m_State = mPi->petstate;
 
 	bExpires = false;
 
@@ -716,9 +697,7 @@ void Pet::OnPushToWorld()
 
 void Pet::InitializeMe( bool first )
 {
-	GetAIInterface()->Init( this, AITYPE_PET, MOVEMENTTYPE_NONE, m_Owner );
-	GetAIInterface()->SetUnitToFollow( m_Owner );
-	GetAIInterface()->SetFollowDistance( 3.0f );
+	//TO DO: Initialize ai class.
 
 	SetCreatureInfo( CreatureNameStorage.LookupEntry( GetEntry() ) );
 	proto = CreatureProtoStorage.LookupEntry( GetEntry() );
@@ -748,7 +727,7 @@ void Pet::InitializeMe( bool first )
 			ModDamageDone[SCHOOL_FROST] = (uint32)parentfrost;
 		}
 		else if( GetEntry() == PET_IMP )
-			m_aiInterface->disable_melee = true;
+			m_aiInterface->disableMelee();
 		else if( GetEntry() == PET_FELGUARD )
 			SetEquippedItem(MELEE,12784 );
 
@@ -833,7 +812,6 @@ void Pet::UpdatePetInfo( bool bSetToOffline )
 	pi->actionbar = ss.str();
 	pi->reset_cost = reset_cost;
 	pi->reset_time = reset_time;
-    pi->petstate = m_State;
 	pi->alive = isAlive();
 	pi->current_power = GetPower( GetPowerType() );
 	pi->talentpoints = GetTPs();
@@ -1098,8 +1076,8 @@ void Pet::AddSpell( SpellEntry * sp, bool learning, bool showLearnSpell )
 					if(ss==AUTOCAST_SPELL_STATE)
 						SetAutoCast(asp, true);
 
-					if( asp->autocast_type == AUTOCAST_EVENT_ON_SPAWN )
-						CastSpell(this, sp, false);
+					/*if( asp->autocast_type == AUTOCAST_EVENT_ON_SPAWN )
+						CastSpell(this, sp, false);*/
 
 					RemoveSpell(itr->first, showLearnSpell);
 					done=true;
@@ -1147,7 +1125,7 @@ void Pet::AddSpell( SpellEntry * sp, bool learning, bool showLearnSpell )
 					SetAutoCast(asp,true);
 
 				// Phase shift gets cast on spawn, right?
-				if( asp->autocast_type == AUTOCAST_EVENT_ON_SPAWN || asp->spell->NameHash == SPELL_HASH_PHASE_SHIFT )
+				if( asp->autocast_type == AUTOCAST_EVENT_ON_SPAWN || asp->sEntry->NameHash == SPELL_HASH_PHASE_SHIFT )
 					CastSpell(this, sp, false);
 			}
 			else
@@ -1234,6 +1212,7 @@ void Pet::RemoveSpell(SpellEntry * sp, bool showUnlearnSpell)
 {
 	mSpells.erase(sp);
 	map<uint32, AI_Spell*>::iterator itr = m_AISpellStore.find(sp->Id);
+	std::list<AI_Spell*> * spells = m_aiInterface->getSpellStore();
 	if( itr != m_AISpellStore.end() )
 	{
 		if( itr->second->autocast_type != AUTOCAST_EVENT_NONE )
@@ -1248,12 +1227,12 @@ void Pet::RemoveSpell(SpellEntry * sp, bool showUnlearnSpell)
 				}
 			}
 		}
-		for(list<AI_Spell*>::iterator it = m_aiInterface->m_spells.begin(); it != m_aiInterface->m_spells.end(); ++it)
+		for(list<AI_Spell*>::iterator it = spells->begin(); it != spells->end(); ++it)
 		{
 			if((*it) == itr->second)
 			{
-				m_aiInterface->m_spells.erase(it);
-				m_aiInterface->CheckNextSpell(itr->second);
+				spells->erase(it);
+				//m_aiInterface->CheckNextSpell(itr->second);
 				break;
 			}
 		}
@@ -1263,13 +1242,13 @@ void Pet::RemoveSpell(SpellEntry * sp, bool showUnlearnSpell)
 	}
 	else
 	{
-		for(list<AI_Spell*>::iterator it = m_aiInterface->m_spells.begin(); it != m_aiInterface->m_spells.end(); ++it)
+		for(list<AI_Spell*>::iterator it = spells->begin(); it != spells->end(); ++it)
 		{
-			if((*it)->spell == sp)
+			if((*it)->sEntry == sp)
 			{
 				// woot?
 				AI_Spell * spe = *it;
-				m_aiInterface->m_spells.erase(it);
+				spells->erase(it);
 				delete spe;
 				break;
 			}
@@ -1317,7 +1296,7 @@ void Pet::ApplySummonLevelAbilities()
 	{
 	case PET_IMP:
 		stat_index = 0;
-		m_aiInterface->disable_melee = true;
+		m_aiInterface->disableMelee();
 		break;
 	case PET_VOIDWALKER:
 		stat_index = 1;
@@ -1345,7 +1324,7 @@ void Pet::ApplySummonLevelAbilities()
 		break;*/
 	case WATER_ELEMENTAL:
 		stat_index = 5;
-		m_aiInterface->disable_melee = true;
+		m_aiInterface->disableMelee();
 		break;
 	case SHADOWFIEND:
 		stat_index = 5;
@@ -1616,8 +1595,8 @@ AI_Spell * Pet::HandleAutoCastEvent()
 		if((*itr)->autocast_type == AUTOCAST_EVENT_ATTACK)
 		{
 			// spells still spammed, I think the cooldowntime is being set incorrectly somewhere else
-			if( chance && (*itr)->spell && getMSTime() >= (*itr)->cooldowntime && //cebernic:crashfix
-				GetPower((*itr)->spell->powerType) >= (*itr)->spell->manaCost )
+			if( chance && (*itr)->sEntry && getMSTime() >= (*itr)->interval && //cebernic:crashfix
+				GetPower((*itr)->sEntry->powerType) >= (*itr)->sEntry->manaCost )
 			{
 				return *itr;
 			}
@@ -1648,28 +1627,28 @@ void Pet::HandleAutoCastEvent( AutoCastEvents Type )
 			{
 				if( itr == m_autoCastSpells[ AUTOCAST_EVENT_ATTACK ].end() )
 				{
-					if( getMSTime() >= (*itr)->cooldowntime )
-						m_aiInterface->SetNextSpell(*itr);
+					if( getMSTime() >= (*itr)->interval )
+						m_aiInterface->setNextSpell(*itr);
 					else
 						return;
 					break;
 				}
 				else
 				{
-					if( (*itr)->cooldowntime > getMSTime() )
+					if( (*itr)->interval > getMSTime() )
 						continue;
 
-					m_aiInterface->SetNextSpell(*itr);
+					m_aiInterface->setNextSpell(*itr);
 				}
 			}
 		}
 		else if( m_autoCastSpells[ AUTOCAST_EVENT_ATTACK ].size() )
 		{
 			sp =*m_autoCastSpells[ AUTOCAST_EVENT_ATTACK ].begin();
-			if( sp->cooldown && getMSTime() < sp->cooldowntime )
+			if( sp->cooldown && getMSTime() < sp->interval )
 				return;
 
-			m_aiInterface->SetNextSpell( sp );
+			m_aiInterface->setNextSpell( sp );
 		}
 
 		return;
@@ -1680,26 +1659,26 @@ void Pet::HandleAutoCastEvent( AutoCastEvents Type )
 		it2 = itr++;
 		sp = *it2;
 
-		if( sp->spell == NULL )
+		if( sp->sEntry == NULL )
 		{
 			sLog.outError("Found corrupted spell at m_autoCastSpells, skipping");
 			continue;
 		}
 		else if( sp->autocast_type != static_cast<uint32>( Type ) )
 		{
-			sLog.outError("Found corrupted spell (%lu) at m_autoCastSpells, skipping", sp->entryId);
+			sLog.outError("Found corrupted spell (%lu) at m_autoCastSpells, skipping", sp->sEntry->Id);
 			continue;
 		}
 
-		if( sp->spelltargetType == TTYPE_OWNER )
+		if( sp->spellTargeType == TTYPE_OWNER )
 		{
-			if( !m_Owner->HasAura( sp->spell->Id ) )
-				CastSpell( m_Owner, sp->spell, false );
+			if( !m_Owner->HasAura( sp->sEntry->Id ) )
+				CastSpell( m_Owner, sp->sEntry, false );
 		}
 		else
 		{
 			//modified by Zack: Spell targeting will be generated in the castspell function now.You cannot force to target self all the time
-			CastSpell( static_cast< Unit* >( NULL ), sp->spell, false);
+			CastSpell( static_cast< Unit* >( NULL ), sp->sEntry, false);
 		}
 	}
 }
@@ -1707,7 +1686,7 @@ void Pet::HandleAutoCastEvent( AutoCastEvents Type )
 void Pet::SetAutoCast(AI_Spell * sp, bool on)
 {
 	Arcemu::Util::ARCEMU_ASSERT(   sp != NULL);
-	Arcemu::Util::ARCEMU_ASSERT(   sp->spell != NULL);
+	Arcemu::Util::ARCEMU_ASSERT(   sp->sEntry != NULL);
 
 	if(sp->autocast_type > 0)
 	{
@@ -2050,7 +2029,7 @@ void Pet::Die( Unit *pAttacker, uint32 damage, uint32 spellid ){
 	/* Tell Unit that it's target has Died */
 	pAttacker->addStateFlag( UF_TARGET_DIED );
 
-	GetAIInterface()->OnDeath(pAttacker);
+	GetAIInterface()->HandleEvent(EVENT_UNITDIED, pAttacker, 0);
 	
 	{/* ----------------------------- PET DEATH HANDLING -------------- */
 		Pet* pPet = this;

@@ -63,12 +63,11 @@ void WorldSession::HandlePetAction(WorldPacket & recv_data)
 		return;
 	}
 	
-	Pet *pPet = _player->GetMapMgr()->GetPet( GET_LOWGUID_PART( petGuid ) );
+	Pet * pPet = _player->GetMapMgr()->GetPet( GET_LOWGUID_PART( petGuid ) );
 	
-	if( !pPet )
-		return;
+	if(pPet == NULL) return;
 	
-	Unit *pTarget = NULL;
+	Unit * pTarget = NULL;
 
 	if(action == PET_ACTION_SPELL || action == PET_ACTION_SPELL_1 || action == PET_ACTION_SPELL_2 || (action == PET_ACTION_ACTION && misc == PET_ACTION_ATTACK )) // >> target
 	{
@@ -83,126 +82,28 @@ void WorldSession::HandlePetAction(WorldPacket & recv_data)
 	{
 		pPet = (*itr);
 		++itr;
-		if( !pPet->isAlive() )
-			continue;
+		if( !pPet->isAlive() ) continue;
+
 		alive_summon = true;//we found a an alive summon
 		uint64 GUID = pPet->GetGUID();
 		switch(action)
 		{
 		case PET_ACTION_ACTION:
 			{
-				pPet->SetPetAction(misc);	   // set current action
-				switch(misc)
-				{
-				case PET_ACTION_ATTACK:
-					{
-						// make sure the target is attackable
-						if( pTarget == pPet || !isAttackable( pPet, pTarget ) )
- 						{
-							pPet->SendActionFeedback( PET_FEEDBACK_CANT_ATTACK_TARGET );
-							return;
-						}
-
-						// Clear the threat
-						pPet->GetAIInterface()->WipeTargetList();
-						pPet->GetAIInterface()->WipeHateList();
-
-						// Attack target with melee if the owner if we don't have spells - other wise cast. All done by AIInterface.
-						if(pPet->GetAIInterface()->getUnitToFollow() == NULL)
-							pPet->GetAIInterface()->SetUnitToFollow(_player);
-
-						// EVENT_PET_ATTACK
-						pPet->GetAIInterface()->SetAIState(STATE_ATTACKING);
-						pPet->GetAIInterface()->AttackReaction(pTarget, 1, 0);
-					}break;
-				case PET_ACTION_FOLLOW:
-					{
-						// Clear the threat
-						pPet->GetAIInterface()->WipeTargetList();
-						pPet->GetAIInterface()->WipeHateList();
-
-						// Follow the owner... run to him...
-						pPet->GetAIInterface()->SetUnitToFollow(_player);
-						pPet->GetAIInterface()->HandleEvent(EVENT_FOLLOWOWNER, pPet, 0);
-					}break;
-				case PET_ACTION_STAY:
-					{
-						// Clear the threat
-						pPet->GetAIInterface()->WipeTargetList();
-						pPet->GetAIInterface()->WipeHateList();
-
-						// Stop following the owner, and sit.
-						pPet->GetAIInterface()->ResetUnitToFollow();
-					}break;
-				case PET_ACTION_DISMISS:
-					{
-						// Bye byte...
+				if(misc == PET_ACTION_DISMISS)
 						pPet->Dismiss();
+				else
+					TO_AIGUARDIAN(pPet->GetAIInterface())->setPetAction( (uint32)misc );
 					}break;
-				}
-			}break;
 
 		case PET_ACTION_SPELL_2:
 		case PET_ACTION_SPELL_1:
 		case PET_ACTION_SPELL:
-			{
-				// misc == spellid
-				SpellEntry * entry = dbcSpell.LookupEntryForced( misc );
-				if( entry == NULL ) 
-					return;
-
-				AI_Spell * sp = pPet->GetAISpellForSpellId( entry->Id );
-				if( sp != NULL )
-				{
-					// Check the cooldown
-					if(sp->cooldowntime && getMSTime() < sp->cooldowntime)
-					{
-						pPet->SendCastFailed( misc, SPELL_FAILED_NOT_READY );
-						return;
-					}
-					else
-					{
-						if( sp->spellType != STYPE_BUFF )
-						{
-							// make sure the target is attackable
-							if( pTarget == pPet || !isAttackable( pPet, pTarget ) )
-							{
-								pPet->SendActionFeedback( PET_FEEDBACK_CANT_ATTACK_TARGET );
-								return;
-							}
-						}
-
-						if(sp->autocast_type != AUTOCAST_EVENT_ATTACK)
-						{
-							if(sp->autocast_type == AUTOCAST_EVENT_OWNER_ATTACKED)
-								pPet->CastSpell(_player, sp->spell, false);
-							else
-								pPet->CastSpell(pPet, sp->spell, false);
-						}
-						else
-						{
-							// Clear the threat
-							pPet->GetAIInterface()->WipeTargetList();
-							pPet->GetAIInterface()->WipeHateList();
-
-							pPet->GetAIInterface()->AttackReaction(pTarget, 1, 0);
-							pPet->GetAIInterface()->SetNextSpell(sp);
-						}
-					}
-				}
-			}break;
+			pPet->GetAIInterface()->setNextSpell(pPet->GetAISpellForSpellId( (uint32)misc) );
+			break;
 		case PET_ACTION_STATE:
-			{
-				 if( misc == PET_STATE_PASSIVE ){
-					// stop attacking and run to owner
-					pPet->GetAIInterface()->WipeTargetList();
-					pPet->GetAIInterface()->WipeHateList();
-					pPet->GetAIInterface()->SetUnitToFollow(_player);
-					pPet->GetAIInterface()->HandleEvent(EVENT_FOLLOWOWNER, pPet, 0);
-				}
-				pPet->SetPetState(misc);
-
-			}break;
+			TO_AIGUARDIAN(pPet->GetAIInterface())->setPetState((uint32)misc);
+			break;
 		default:
 			{
 				printf("WARNING: Unknown pet action received. Action = %.4X, Misc = %.4X\n", action, misc);
@@ -214,11 +115,8 @@ void WorldSession::HandlePetAction(WorldPacket & recv_data)
 		actionp << GUID << uint32(1);//should we send only 1 sound for all the pets?
 		SendPacket(&actionp);
 	}
-	if( !alive_summon )
-	{	
-		pPet->SendActionFeedback( PET_FEEDBACK_PET_DEAD );	
-		return;
-	}
+	/*if( !alive_summon )
+		pPet->SendActionFeedback( PET_FEEDBACK_PET_DEAD );	*/
 }
 
 void WorldSession::HandlePetInfo(WorldPacket & recv_data)

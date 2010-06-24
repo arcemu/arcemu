@@ -75,115 +75,36 @@ uint32 MapScriptInterface::GetPlayerCountInRadius(float x, float y, float z /* =
 
 	return PlayerCount;
 }
-
-GameObject* MapScriptInterface::SpawnGameObject(uint32 Entry, float cX, float cY, float cZ, float cO, bool AddToWorld, uint32 Misc1, uint32 Misc2, uint32 phase)
+Creature * MapScriptInterface::SpawnCreature(MapMgr * mapMgr, uint32 entry_id, LocationVector & location, uint32 phase)
+{
+	CreatureProto * cproto = CreatureProtoStorage.LookupEntry(entry_id);
+	CreatureInfo * cinfo = CreatureNameStorage.LookupEntry(entry_id);
+	Creature * ncreature = NULL;
+	if(cproto != NULL && cinfo != NULL)
+	{
+		ncreature = mapMgr->CreateCreature(entry_id, false);
+		Arcemu::Util::ARCEMU_ASSERT(ncreature != NULL);
+		ncreature->Load(cproto, location.x, location.y, location.z, location.o);
+		ncreature->spawnid = 0;
+		ncreature->m_spawn = NULL;
+		ncreature->m_phase = phase;
+		ncreature->AddToWorld(mapMgr);
+	}
+	return ncreature;
+}
+GameObject* MapScriptInterface::SpawnGameObject(uint32 Entry, LocationVector & location, uint32 phase)
 {
 
 	GameObject *pGameObject = mapMgr.CreateGameObject(Entry);
-	if(!pGameObject->CreateFromProto(Entry, mapMgr.GetMapId(), cX, cY, cZ, cO))
+	if(!pGameObject->CreateFromProto(Entry, mapMgr.GetMapId(), location.x, location.y, location.z, location.o) )
 	{
 		delete pGameObject;
 		return NULL;
 	}
 	pGameObject->SetInstanceID(mapMgr.GetInstanceID());
 	pGameObject->m_phase = phase;
-
-	if(AddToWorld)
-		pGameObject->PushToWorld(&mapMgr);
-
+	pGameObject->AddToWorld(&mapMgr);
 	return pGameObject;
-}
-
-GameObject * MapScriptInterface::SpawnGameObject(GOSpawn * gs, bool AddToWorld)
-{
-	if(!gs)
-		return NULL;
-
-	GameObject *pGameObject = mapMgr.CreateGameObject(gs->entry);
-	pGameObject->SetInstanceID(mapMgr.GetInstanceID());
-	if(!pGameObject->Load(gs))
-	{
-		delete pGameObject;
-		return NULL;
-	}
-
-	if(AddToWorld)
-		pGameObject->PushToWorld(&mapMgr);
-
-	return pGameObject;
-}
-
-Creature* MapScriptInterface::SpawnCreature(uint32 Entry, float cX, float cY, float cZ, float cO, bool AddToWorld, bool tmplate, uint32 Misc1, uint32 Misc2, uint32 phase)
-{
-	CreatureProto * proto = CreatureProtoStorage.LookupEntry(Entry);
-	CreatureInfo * info = CreatureNameStorage.LookupEntry(Entry);
-	if(proto == 0 || info == 0)
-	{
-		return 0;
-	}
-
-	CreatureSpawn * sp = new CreatureSpawn;
-	sp->entry = Entry;
-	uint32 DisplayID = 0;
-	uint8 Gender = info->GenerateModelId(&DisplayID);
-	sp->displayid = DisplayID;
-	sp->form = 0;
-	sp->id = 0;
-	sp->movetype = 0;
-	sp->x = cX;
-	sp->y = cY;
-	sp->z = cZ;
-	sp->o = cO;
-	sp->emote_state = 0;
-	sp->flags = 0;
-	sp->factionid = proto->Faction;
-	sp->bytes0 = 0;
-	sp->bytes1 = 0;
-	sp->bytes2 = 0;
-	//sp->respawnNpcLink = 0;
-	sp->stand_state = 0;
-	sp->channel_target_creature = sp->channel_target_go = sp->channel_spell = 0;
-	sp->MountedDisplayID = 0;
-	sp->Item1SlotDisplay = 0;
-	sp->Item2SlotDisplay = 0;
-	sp->Item3SlotDisplay = 0;
-	sp->CanFly = 0;
-	sp->phase = phase;
-
-	Creature * p = this->mapMgr.CreateCreature(Entry);
-	Arcemu::Util::ARCEMU_ASSERT(   p != NULL );
-	p->Load(sp, (uint32)NULL, NULL);
-	p->setGender(Gender);
-	p->spawnid = 0;
-	p->m_spawn = 0;
-	delete sp;
-	if (AddToWorld)
-		p->PushToWorld(&mapMgr);
-	return p;
-}
-
-Creature * MapScriptInterface::SpawnCreature(CreatureSpawn * sp, bool AddToWorld)
-{
-	if(!sp)
-		return NULL;
-
-	CreatureProto * proto = CreatureProtoStorage.LookupEntry(sp->entry);
-	CreatureInfo * info = CreatureNameStorage.LookupEntry(sp->entry);
-	if(proto == 0 || info == 0)
-	{
-		return 0;
-	}
-
-	uint8 Gender = info->GenerateModelId(&sp->displayid);
-	Creature * p = this->mapMgr.CreateCreature(sp->entry);
-	Arcemu::Util::ARCEMU_ASSERT(   p != NULL );
-	p->Load(sp, (uint32)NULL, NULL);
-	p->setGender(Gender);
-	p->spawnid = 0;
-	p->m_spawn = 0;
-	if (AddToWorld)
-		p->PushToWorld(&mapMgr);
-	return p;
 }
 
 void MapScriptInterface::DeleteCreature(Creature* ptr)
