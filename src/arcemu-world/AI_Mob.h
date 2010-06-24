@@ -293,6 +293,9 @@ public:
 	/*	Deletes an existing wp specified by wpid */
 	void deleteWaypoint(uint8 wpid) {}
 
+	/* TODO: Implement */
+	void setCustomWaypointMap(WayPointMap *) {}
+
 	/*	Deletes all our previous waypoints	*/
 	void deleteWaypoints() {}
 

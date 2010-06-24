@@ -90,7 +90,7 @@ enum BehaviorBits
 
 };
 
-class SERVER_DECL AIInterface abstract
+class SERVER_DECL AIInterface
 {
 protected:
 	/* Movement data */
@@ -169,7 +169,7 @@ public:
 
 	/* owner methods */
 	virtual Unit * getOwner() { return NULL; }
-	virtual void setOwner() {}
+	virtual void setOwner(Unit *) {}
 
 	/* Formation head methods */
 	void clearFormationData() {
