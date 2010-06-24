@@ -893,14 +893,14 @@ void Spell::GenerateTargets(SpellCastTargets *store_buff)
 						}
 						else if( u_caster != NULL )
 						{
-							Unit * nextTarget = u_caster->GetAIInterface()->getNextTarget();
+							Unit * nextTarget = u_caster->GetAIInterface()->GetNextTarget();
 							if(	nextTarget &&
 								isAttackable(u_caster,nextTarget,!(GetProto()->c_is_flags & SPELL_FLAG_IS_TARGETINGSTEALTHED)) &&
 								u_caster->GetDistanceSq(nextTarget) <= r)
 							{
 								store_buff->m_unitTarget = nextTarget->GetGUID();
 							}
-							/*if(u_caster->GetAIInterface()->getAITargetsCount() && u_caster->GetMapMgr())
+							if(u_caster->GetAIInterface()->getAITargetsCount() && u_caster->GetMapMgr())
 							{
 								//try to get most hated creature
 								u_caster->GetAIInterface()->LockAITargets(true);
@@ -909,7 +909,7 @@ void Spell::GenerateTargets(SpellCastTargets *store_buff)
 								for(itr = m_aiTargets->begin(); itr != m_aiTargets->end();itr++)
 								{
 									Unit *hate_t = u_caster->GetMapMgr()->GetUnit( itr->first );
-									if( /*m_caster->GetMapMgr()->GetUnit(itr->first->GetGUID()) &&
+									if( /*m_caster->GetMapMgr()->GetUnit(itr->first->GetGUID()) &&*/
 										hate_t &&
 										hate_t->GetMapMgr() == m_caster->GetMapMgr() &&
 										hate_t->isAlive() &&
@@ -922,8 +922,8 @@ void Spell::GenerateTargets(SpellCastTargets *store_buff)
 									}
 								}
 								u_caster->GetAIInterface()->LockAITargets(false);
-							}*/
 							}
+						}
 						//try to get a whatever target
 						if(!store_buff->m_unitTarget)
 						{
@@ -1254,7 +1254,7 @@ uint8 Spell::prepare( SpellCastTargets * targets )
 
 	if(objmgr.IsSpellDisabled(GetProto()->Id))//if it's disabled it will not be casted, even if it's triggered.
 		cancastresult = uint8( m_triggeredSpell ? SPELL_FAILED_DONT_REPORT : SPELL_FAILED_SPELL_UNAVAILABLE );
-	else if( m_triggeredSpell || ProcedOnSpell != NULL)
+	else if( m_triggeredSpell )
 		cancastresult = SPELL_CANCAST_OK;
 	else
 		cancastresult = CanCast(false);
@@ -1388,6 +1388,7 @@ void Spell::cancel()
 					p_caster->delayAttackTimer(-m_timer);
 					RemoveItems();
 				}
+//				p_caster->setAttackTimer(1000, false);
 			 }
 		}
 	}
@@ -4064,7 +4065,7 @@ uint8 Spell::CanCast(bool tolerate)
 				}
 				else
 				{
-					if (target->GetAIInterface()->isSoulLinked() && u_caster && target->GetAIInterface()->getSoulLinker() != u_caster)
+					if (target->GetAIInterface()->GetIsSoulLinked() && u_caster && target->GetAIInterface()->getSoullinkedWith() != u_caster)
 						return SPELL_FAILED_BAD_TARGETS;
 				}
 
@@ -5343,15 +5344,11 @@ void Spell::Heal( int32 amount, bool ForceCrit )
 			if( (*itr)->GetTypeId() != TYPEID_UNIT )
 				continue;
 			
-			tmp_unit = TO_UNIT(*itr);
-			if( !tmp_unit->CombatStatus.IsInCombat() )
+			tmp_unit = static_cast< Unit* >( *itr );
+
+			if( !tmp_unit->CombatStatus.IsInCombat() || ( tmp_unit->GetAIInterface()->getThreatByPtr( u_caster ) == 0 && tmp_unit->GetAIInterface()->getThreatByPtr( unitTarget ) == 0 ) )
 				continue;
-			AIInterface * ai = tmp_unit->GetAIInterface();
-			if(ai != NULL && ai->AIType_isMob() )
-			{
-				if( TO_AIMOB(ai)->getThreatByPtr(u_caster) == 0 || TO_AIMOB(ai)->getThreatByPtr(unitTarget) == 0 )
-					continue;
-			}
+
 			if( !( u_caster->GetPhase() & (*itr)->GetPhase() ) ) //Can't see, can't be a threat
 				continue;
 

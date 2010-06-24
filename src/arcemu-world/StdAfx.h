@@ -105,17 +105,8 @@
 #include "AchievementMgr.h"
 #endif
 
-#include "Chat.h"
 #include "AddonMgr.h"
-#include "AI_AISpell.h"
-#include "AIInterfaceMgr.h"
 #include "AIInterface.h"
-#include "AI_Critter.h"
-#include "AI_Guardian.h"
-#include "AI_Pet.h"
-#include "AI_Totem.h"
-#include "AI_Mob.h"
-
 #include "AreaTrigger.h"
 #include "BattlegroundMgr.h"
 #include "AlteracValley.h"
@@ -123,6 +114,7 @@
 #include "EyeOfTheStorm.h"
 #include "WorldState.h"
 #include "CellHandler.h"
+#include "Chat.h"
 #include "Corpse.h"
 #include "Quest.h"
 #include "QuestMgr.h"

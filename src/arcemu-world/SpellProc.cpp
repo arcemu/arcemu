@@ -33,7 +33,7 @@ uint32 SpellProc::CalcProcChance(Unit *victim, SpellEntry *CastingSpell)
 
 bool SpellProc::CanProcOnTriggered(Unit *victim, SpellEntry *CastingSpell)
 {
-	if ( mOrigSpell != NULL && mOrigSpell->AttributesExC & FLAGS4_CAN_PROC_ON_TRIGGERED )
+	if ( mSpell->AttributesExC & FLAGS4_CAN_PROC_ON_TRIGGERED )
 		return true;
 	return false;
 }

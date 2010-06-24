@@ -1487,7 +1487,7 @@ inline int GetAiTargetType(SpellEntry *sp)
 		HasTargetType(sp,EFF_TARGET_ALL_ENEMY_IN_AREA_CHANNELED) ||
 		HasTargetType(sp,EFF_TARGET_ALL_TARGETABLE_AROUND_LOCATION_IN_RADIUS_OVER_TIME)
 		)
-		return TTYPE_CURRENTTARGET_DESTINATION;
+		return TTYPE_DESTINATION;
 	if(
 		HasTargetType(sp,EFF_TARGET_LOCATION_TO_SUMMON) ||
 		HasTargetType(sp,EFF_TARGET_IN_FRONT_OF_CASTER) ||
@@ -1496,7 +1496,7 @@ inline int GetAiTargetType(SpellEntry *sp)
 		HasTargetType(sp,EFF_TARGET_LOCATION_INFRONT_CASTER) ||
 		HasTargetType(sp,EFF_TARGET_CONE_IN_FRONT)
 		)
-		return TTYPE_SELF;
+		return TTYPE_SOURCE;
 	if(
 		HasTargetType(sp,EFF_TARGET_SINGLE_ENEMY) ||
 		HasTargetType(sp,EFF_TARGET_ALL_ENEMIES_AROUND_CASTER) ||
@@ -1508,7 +1508,7 @@ inline int GetAiTargetType(SpellEntry *sp)
 		HasTargetType(sp,EFF_TARGET_MULTIPLE_GUARDIAN_SUMMON_LOCATION) ||
 		HasTargetType(sp,EFF_TARGET_SELECTED_ENEMY_CHANNELED)
 		)
-		return TTYPE_CURRENTTARGET;
+		return TTYPE_SINGLETARGET;
 	if(
 		HasTargetType(sp,EFF_TARGET_ALL_PARTY_AROUND_CASTER) ||
 		HasTargetType(sp,EFF_TARGET_SINGLE_FRIEND) ||
@@ -1528,7 +1528,7 @@ inline int GetAiTargetType(SpellEntry *sp)
 		HasTargetType(sp,EFF_TARGET_PET) ||
 		HasTargetType(sp,EFF_TARGET_MINION)
 		)
-		return TTYPE_SELF;
+		return TTYPE_CASTER;
 	return TTYPE_NULL;
 }
 

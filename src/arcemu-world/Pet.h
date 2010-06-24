@@ -150,6 +150,12 @@ public:
 	void SendCastFailed( uint32 spellid, uint8 fail );
 	void SendActionFeedback( PetActionFeedback value  );
 
+	ARCEMU_INLINE void SetPetAction(uint32 act) { m_Action = act; }
+	ARCEMU_INLINE uint32 GetPetAction(void) { return m_Action; }
+
+	ARCEMU_INLINE void SetPetState(uint32 state) { m_State = state; }
+	ARCEMU_INLINE uint32 GetPetState(void) { return m_State; }
+
 	ARCEMU_INLINE void SetPetDiet(uint32 diet) { m_Diet = diet; }
 	ARCEMU_INLINE void SetPetDiet() { m_Diet = myFamily->petdietflags; }
 	ARCEMU_INLINE uint32 GetPetDiet(void) { return m_Diet; }
@@ -262,6 +268,8 @@ protected:
 
 	uint32 m_HappinessTimer;
 	uint32 m_PetNumber;
+	uint32 m_Action;
+	uint32 m_State;
 	uint32 m_ExpireTime;
 	uint32 m_Diet;
 	uint64 m_OwnerGuid;

@@ -491,27 +491,6 @@
       <Filter>Spells</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\arcemu-world\EquipmentSetMgr.cpp" />
-    <ClCompile Include="..\..\src\arcemu-world\AI_Critter.cpp">
-      <Filter>CreatureAI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\arcemu-world\AI_Pet.cpp">
-      <Filter>CreatureAI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\arcemu-world\AI_Guardian.cpp">
-      <Filter>CreatureAI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\arcemu-world\AI_Mob.cpp">
-      <Filter>CreatureAI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\arcemu-world\AI_Totem.cpp">
-      <Filter>CreatureAI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\arcemu-world\AIAHealSupport.cpp">
-      <Filter>CreatureAI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\arcemu-world\AIInterfaceMgr.cpp">
-      <Filter>CreatureAI</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\arcemu-world\Channel.h">
@@ -775,30 +754,6 @@
       <Filter>Spells</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\arcemu-world\EquipmentSetMgr.h" />
-    <ClInclude Include="..\..\src\arcemu-world\AI_Guardian.h">
-      <Filter>CreatureAI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\arcemu-world\AI_Totem.h">
-      <Filter>CreatureAI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\arcemu-world\AI_AISpell.h">
-      <Filter>CreatureAI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\arcemu-world\AI_Critter.h">
-      <Filter>CreatureAI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\arcemu-world\AI_Mob.h">
-      <Filter>CreatureAI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\arcemu-world\AI_Pet.h">
-      <Filter>CreatureAI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\arcemu-world\AIAHealSupport.h">
-      <Filter>CreatureAI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\arcemu-world\AIInterfaceMgr.h">
-      <Filter>CreatureAI</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\src\arcemu-world\resources.rc" />

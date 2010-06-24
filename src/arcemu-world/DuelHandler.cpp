@@ -100,9 +100,8 @@ void WorldSession::HandleDuelCancelled(WorldPacket & recv_data)
 	{
 		if((*itr)->isAlive())
 		{
-			GuardianAI * ai = TO_AIGUARDIAN( (*itr)->GetAIInterface() );
-			if(ai != NULL)
-				ai->setPetAction(PET_ACTION_FOLLOW);
+			(*itr)->SetPetAction(PET_ACTION_STAY);
+			(*itr)->SetPetAction(PET_ACTION_FOLLOW);
 		}
 	}
 }
