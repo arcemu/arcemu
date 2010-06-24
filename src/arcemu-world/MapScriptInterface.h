@@ -81,7 +81,7 @@ public:
 	}
 
 	uint32 GetPlayerCountInRadius(float x, float y, float z = 0.0f, float radius = 5.0f);
-	Creature * SpawnCreature(MapMgr * mapMgr, uint32 entry_id, LocationVector & location, uint32 phase = 0xFFFFFFFF);
+	Creature * SpawnCreature(uint32 entry_id, LocationVector & location, uint32 phase = 0xFFFFFFFF);
 	GameObject* SpawnGameObject(uint32 Entry, LocationVector & location ,uint32 phase = 0xFFFFFFF);
 	WayPoint * CreateWaypoint();
 

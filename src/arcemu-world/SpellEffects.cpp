@@ -5626,7 +5626,7 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 			if( tgt != NULL && isAttackable( p_caster, tgt ) )
 			{
 			unitTarget->GetAIInterface()->AttackReaction( tgt, 1 );
-			unitTarget->GetAIInterface()->SetNextTarget( tgt );
+			unitTarget->GetAIInterface()->setNextTarget( tgt );
 			}
 			else if( unitTarget->CombatStatus.GetPrimaryAttackTarget() == 0 )
 			return;

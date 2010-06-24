@@ -75,20 +75,20 @@ uint32 MapScriptInterface::GetPlayerCountInRadius(float x, float y, float z /* =
 
 	return PlayerCount;
 }
-Creature * MapScriptInterface::SpawnCreature(MapMgr * mapMgr, uint32 entry_id, LocationVector & location, uint32 phase)
+Creature * MapScriptInterface::SpawnCreature(uint32 entry_id, LocationVector & location, uint32 phase)
 {
 	CreatureProto * cproto = CreatureProtoStorage.LookupEntry(entry_id);
 	CreatureInfo * cinfo = CreatureNameStorage.LookupEntry(entry_id);
 	Creature * ncreature = NULL;
 	if(cproto != NULL && cinfo != NULL)
 	{
-		ncreature = mapMgr->CreateCreature(entry_id, false);
+		ncreature = mapMgr.CreateCreature(entry_id, false);
 		Arcemu::Util::ARCEMU_ASSERT(ncreature != NULL);
 		ncreature->Load(cproto, location.x, location.y, location.z, location.o);
 		ncreature->spawnid = 0;
 		ncreature->m_spawn = NULL;
 		ncreature->m_phase = phase;
-		ncreature->AddToWorld(mapMgr);
+		ncreature->AddToWorld(&mapMgr);
 	}
 	return ncreature;
 }
