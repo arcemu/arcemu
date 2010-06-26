@@ -259,6 +259,7 @@ public:
 	virtual void OnFlee(Unit* mFlee) {}
 	virtual void OnCallForHelp() {}
 	virtual void OnLoad() {}
+	virtual void OnDespawn() {}
 	virtual void OnReachWP(uint32 iWaypointId, bool bForwards) {}
 	virtual void OnLootTaken(Player* pPlayer, ItemPrototype *pItemPrototype) {}
 	virtual void AIUpdate() {}
