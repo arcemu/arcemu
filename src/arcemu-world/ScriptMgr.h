@@ -66,6 +66,7 @@ enum ServerHookEvents
 	SERVER_HOOK_EVENT_ON_ADVANCE_SKILLLINE  = 29,
     SERVER_HOOK_EVENT_ON_DUEL_FINISHED      = 30,
 	SERVER_HOOK_EVENT_ON_AURA_REMOVE		= 31,
+	SERVER_HOOK_EVENT_ON_RESURRECT		= 32,
 
 	NUM_SERVER_HOOKS,
 };
@@ -111,6 +112,7 @@ typedef bool(*tOnPreUnitDie)(Unit *killer, Unit *target);
 typedef void(*tOnAdvanceSkillLine)(Player * pPlayer, uint32 SkillLine, uint32 Current);
 typedef void(*tOnDuelFinished)(Player * Winner, Player * Looser);
 typedef void(*tOnAuraRemove)(Aura * aura);
+typedef bool(*tOnResurrect)(Player * pPlayer);
 
 class Spell;
 class Aura;
@@ -412,6 +414,7 @@ public:
 	void OnAdvanceSkillLine(Player * pPlayer, uint32 SkillLine, uint32 Current);
 	void OnDuelFinished(Player * Winner, Player * Looser);
 	void OnAuraRemove(Aura * aura);
+	bool OnResurrect(Player * pPlayer);
 };
 
 #define sScriptMgr ScriptMgr::getSingleton()

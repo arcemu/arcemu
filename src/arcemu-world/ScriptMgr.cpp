@@ -1232,3 +1232,16 @@ void HookInterface::OnAuraRemove(Aura * aura)
        for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
                ((tOnAuraRemove)*itr)(aura);
  }
+
+bool HookInterface::OnResurrect(Player * pPlayer)
+{
+	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_RESURRECT];
+	bool ret_val = true;
+	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
+	{
+		bool rv = ((tOnResurrect)*itr)(pPlayer);
+		if (rv == false) // never set ret_val back to true, once it's false
+			ret_val = false;
+	}
+	return ret_val;
+}

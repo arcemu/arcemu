@@ -4748,6 +4748,9 @@ void Player::RepopRequestedPlayer()
 
 void Player::ResurrectPlayer()
 {
+	if (!sHookInterface.OnResurrect(this))
+		return;
+
 	sEventMgr.RemoveEvents(this,EVENT_PLAYER_FORCED_RESURRECT); // In case somebody resurrected us before this event happened
 	if( m_resurrectHealth )
 		SetHealth((uint32)min( m_resurrectHealth, m_uint32Values[UNIT_FIELD_MAXHEALTH] ) );
