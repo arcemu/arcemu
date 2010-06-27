@@ -136,6 +136,17 @@ class DeadlyBrewSpellProc : public SpellProc
 	}
 };
 
+class WaylaySpellProc : public SpellProc
+{
+	SPELL_PROC_FACTORY_FUNCTION(WaylaySpellProc);
+
+	void Init(Object* obj)
+	{
+		mProcFlags = PROC_ON_CAST_SPELL;
+		mProcClassMask[0] = 0x204;
+	}
+};
+
 void SpellProcMgr::SetupRogue()
 {
 	AddByNameHash( SPELL_HASH_WOUND_POISON_VII, &WoundPoisonSpellProc::Create );
@@ -173,4 +184,6 @@ void SpellProcMgr::SetupRogue()
 	AddByNameHash( SPELL_HASH_CUT_TO_THE_CHASE, &CutToTheChaseSpellProc::Create );
 
 	AddByNameHash( SPELL_HASH_DEADLY_BREW, &DeadlyBrewSpellProc::Create );
+	
+	AddByNameHash( SPELL_HASH_WAYLAY, &WaylaySpellProc::Create );
 }

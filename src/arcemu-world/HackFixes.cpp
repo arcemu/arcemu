@@ -3209,23 +3209,6 @@ void ApplyNormalFixes()
 			sp->procChance = 10;
 		}
 
-		// Waylay talent rank 1
-		sp = dbcSpell.LookupEntryForced(51692);
-		if(sp != NULL)
-		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0]=51693;// Waylay debuff
-			sp->procChance = 50;
-		}
-		//Waylay talent rank 2
-		sp = dbcSpell.LookupEntryForced(51696);
-		if(sp != NULL)
-		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0]=51693;// Waylay debuff
-			sp->procChance = 100;
-		}
-
 		/**********************************************************
 		 *	Garrote - this is used?
 		 **********************************************************/
