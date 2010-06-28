@@ -44,7 +44,21 @@ class ImprovedSpiritTapSpellProc : public SpellProc
 	}
 };
 
+class HolyConcentrationSpellProc : public SpellProc
+{
+	SPELL_PROC_FACTORY_FUNCTION(HolyConcentrationSpellProc);
+
+	void Init(Object* obj)
+	{
+		mProcFlags = PROC_ON_SPELL_CRIT_HIT;
+		mProcClassMask[0] = 0x1800;
+		mProcClassMask[1] = 0x4;
+		mProcClassMask[2] = 0x1000;
+	}
+};
+
 void SpellProcMgr::SetupPriest()
 {
 	AddByNameHash( SPELL_HASH_IMPROVED_SPIRIT_TAP, &ImprovedSpiritTapSpellProc::Create );
+	AddByNameHash( SPELL_HASH_HOLY_CONCENTRATION, &HolyConcentrationSpellProc::Create );
 }

@@ -5215,11 +5215,6 @@ void Spell::Heal( int32 amount, bool ForceCrit )
 
 		if( p_caster != NULL )
 		{
-			if( m_spellInfo->NameHash == SPELL_HASH_FLASH_HEAL || m_spellInfo->NameHash == SPELL_HASH_BINDING_HEAL || m_spellInfo->NameHash == SPELL_HASH_GREATER_HEAL )
-			{
-				p_caster->RemoveAura( 34754, p_caster->GetGUID() );
-			}
-
 			if( m_spellInfo->NameHash == SPELL_HASH_LESSER_HEALING_WAVE || m_spellInfo->NameHash == SPELL_HASH_HEALING_WAVE )
 			{
 				//Tidal Waves

@@ -3555,32 +3555,6 @@ void ApplyNormalFixes()
 			sp->EffectTriggerSpell[1] = 48076;
 		}
 
-		// Holy Concentration
-        sp = dbcSpell.LookupEntryForced( 34753 ); //Rank 1
-            if( sp != NULL )
-            {
-            sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-            sp->procChance = 10;
-            sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
-            sp->EffectTriggerSpell[0] = 34754;
-			}	
-        sp = dbcSpell.LookupEntryForced( 34859 ); //Rank 2
-            if( sp != NULL )
-            {
-            sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-            sp->procChance = 20;
-            sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
-            sp->EffectTriggerSpell[0] = 34754;
-			}
-		sp = dbcSpell.LookupEntryForced( 34860 ); //Rank 3
-            if( sp != NULL )
-            {
-            sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-            sp->procChance = 30;
-            sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
-            sp->EffectTriggerSpell[0] = 34754;
-			}
-
 		//Priest: Blessed Recovery
 		sp = dbcSpell.LookupEntryForced(27811);
 		if(sp != NULL)
