@@ -57,8 +57,27 @@ class HolyConcentrationSpellProc : public SpellProc
 	}
 };
 
+class DivineAegisSpellProc : public SpellProc
+{
+	SPELL_PROC_FACTORY_FUNCTION(DivineAegisSpellProc);
+
+	bool DoEffect(Unit *victim, SpellEntry *CastingSpell, uint32 flag, uint32 dmg, uint32 abs, int *dmg_overwrite, uint32 weapon_damage_type)
+	{
+		if ( CastingSpell == NULL )
+			return true;
+
+		if ( ! CastingSpell->HasEffect(SPELL_EFFECT_HEAL) )
+			return true;
+
+		*dmg_overwrite = dmg * (mOrigSpell->EffectBasePoints[0] +1) / 100;
+
+		return false;
+	}
+};
+
 void SpellProcMgr::SetupPriest()
 {
 	AddByNameHash( SPELL_HASH_IMPROVED_SPIRIT_TAP, &ImprovedSpiritTapSpellProc::Create );
 	AddByNameHash( SPELL_HASH_HOLY_CONCENTRATION, &HolyConcentrationSpellProc::Create );
+	AddByNameHash( SPELL_HASH_DIVINE_AEGIS, &DivineAegisSpellProc::Create );
 }
