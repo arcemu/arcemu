@@ -31,6 +31,17 @@ UpdateMask Player::m_visibleUpdateMask;
 static uint32 TonkSpecials[4] = {FLAMETHROWER,MACHINEGUN,DROPMINE,SHIELD};
 static const uint8 baseRunes[6] = {0,0,1,1,2,2};
 
+//	 0x3F = 0x01 | 0x02 | 0x04 | 0x08 | 0x10 | 0x20 for 80 level
+//			minor|Major |minor |Major |minor |Major
+static const uint8 glyphMask[81] = {
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, //lvl 0-14, no glyphs
+	3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, //lvl 15-29, 1 Minor 1 Major
+	11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, //lvl 30-49, 1 Minor 2 Major
+	15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, //lvl 50-69, 2 Minor 2 Major
+	31, 31, 31, 31, 31, 31, 31, 31, 31, 31, //lvl 70-79, 3 Minor 2 Major
+	63 //lvl 80, 3 Minor 3 Major
+};
+
 Player::Player( uint32 guid )
 :
 m_mailBox(guid),
@@ -12320,19 +12331,11 @@ void Player::UpdateGlyphs()
 		}
 	}
 
+	if( level > 80 )
+		level = 80;
+
 	// Enable number of glyphs depending on level
-	uint32 glyph_mask = 0;
-	if(level == 80)
-		glyph_mask = 6;
-	else if(level >= 70)
-		glyph_mask = 5;
-	else if(level >= 50)
-		glyph_mask = 4;
-	else if(level >= 30)
-		glyph_mask = 3;
-	else if(level >= 15)
-		glyph_mask = 2;
-	SetUInt32Value(PLAYER_GLYPHS_ENABLED, (1 << glyph_mask) -1 );
+	SetUInt32Value(PLAYER_GLYPHS_ENABLED, glyphMask[level]);
 }
 
 // Fills fields from firstField to firstField+fieldsNum-1 with integers from the string

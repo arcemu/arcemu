@@ -4122,7 +4122,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 
 			for(set<Object*>::iterator itr = m_objectsInRange.begin(); itr != m_objectsInRange.end(); ++itr)
 			{
-				if (!(*itr) || (*itr) == pVictim || !(*itr)->IsUnit())
+				if ( (*itr) == pVictim || !(*itr)->IsUnit() )
 					continue;
 
 				if(CalcDistance(*itr) < 5.0f && isAttackable(this, (*itr)) && (*itr)->isInFront(this) && !((Unit*)(*itr))->IsPacified())
