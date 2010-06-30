@@ -236,6 +236,7 @@ void WorldSocket::_HandleAuthSession(WorldPacket* recvPacket)
 	std::string account;
 	uint32 unk2, unk3;
 	uint64 unk4;
+	uint32 unk5, unk6, unk7;
 	
 	_latency = getMSTime() - _latency;
 
@@ -247,6 +248,9 @@ void WorldSocket::_HandleAuthSession(WorldPacket* recvPacket)
 		*recvPacket >> unk3;
 		*recvPacket >> mClientSeed;
 		*recvPacket >> unk4;
+		*recvPacket >> unk5;
+		*recvPacket >> unk6;
+		*recvPacket >> unk7;
 	}
 	catch(ByteBuffer::error &)
 	{
