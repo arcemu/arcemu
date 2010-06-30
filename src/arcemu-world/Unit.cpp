@@ -1198,39 +1198,30 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, bo
 				case 16459:
 				{
 					//sword specialization
-					if( static_cast< Player* >( this )->GetItemInterface())
-					{
-						Item* itMH = static_cast< Player* >( this )->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
-						Item* itOH = static_cast< Player* >( this )->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_OFFHAND );
-						uint32 reqskillMH = 0;
-						uint32 reqskillOH = 0;
+					Item* itMH = static_cast< Player* >( this )->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
+					Item* itOH = static_cast< Player* >( this )->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_OFFHAND );
+					uint32 reqskillMH = 0;
+					uint32 reqskillOH = 0;
 
-						if( itMH != NULL ) 
-							reqskillMH = GetSkillByProto( itMH->GetProto()->Class, itMH->GetProto()->SubClass );
+					if( itMH != NULL ) 
+						reqskillMH = GetSkillByProto( itMH->GetProto()->Class, itMH->GetProto()->SubClass );
 
-						if( itOH != NULL )
-							reqskillOH = GetSkillByProto( itOH->GetProto()->Class, itOH->GetProto()->SubClass );
+					if( itOH != NULL )
+						reqskillOH = GetSkillByProto( itOH->GetProto()->Class, itOH->GetProto()->SubClass );
 
-						if( reqskillMH != SKILL_SWORDS && reqskillMH != SKILL_2H_SWORDS && reqskillOH != SKILL_SWORDS && reqskillOH != SKILL_2H_SWORDS )
-							continue;
-					}
-					else
-						continue; //no weapon no joy
+					if( reqskillMH != SKILL_SWORDS && reqskillMH != SKILL_2H_SWORDS && reqskillOH != SKILL_SWORDS && reqskillOH != SKILL_2H_SWORDS )
+						continue;
 				}break;
 				case 12721:
 				{
 					//deep wound requires a melee weapon
 					Item* it;
-					if( static_cast< Player* >( this )->GetItemInterface())
+					it = static_cast< Player* >( this )->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
+					if( it != NULL )
 					{
-						it = static_cast< Player* >( this )->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
-						if( it != NULL )
-						{
-							//class 2 means weapons ;)
-							if( it->GetProto()->Class != 2 )
-								continue;
-						}
-						else continue; //no weapon no joy
+						//class 2 means weapons ;)
+						if( it->GetProto()->Class != 2 )
+							continue;
 					}
 					else continue; //no weapon no joy
 				}break;
@@ -1267,13 +1258,8 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, bo
 				{
 					//let's recalc chance to cast since we have a full 100 all time on this one
 					Item* it;
-					if( static_cast< Player* >( this )->GetItemInterface() )
-					{
-						it = static_cast< Player* >( this )->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
-						if( it == NULL )
-							continue; //no weapon no joy
-					}
-					else
+					it = static_cast< Player* >( this )->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
+					if( it == NULL )
 						continue; //no weapon no joy
 					//float chance=float(it->GetProto()->Delay)*float(talentlevel)/600.0f;
 					uint32 chance = it->GetProto()->Delay * talentlevel / 300; //zack this had a very low proc rate. Kinda like a wasted talent

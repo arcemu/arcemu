@@ -586,10 +586,8 @@ Player::~Player ( )
 		delete itr->second;
 	_splineMap.clear();
 
-	if(m_ItemInterface) {
-		delete m_ItemInterface;
-		m_ItemInterface = NULL;
-	}
+	delete m_ItemInterface;
+	m_ItemInterface = NULL;
 
 	for(ReputationMap::iterator itr = m_reputation.begin(); itr != m_reputation.end(); ++itr)
 		delete itr->second;
@@ -6531,9 +6529,6 @@ void Player::ResetDualWield2H()
 {
 	DualWield2H = false;
 
-	if( !GetItemInterface() )
-		return;
-
 	Item *mainhand = GetItemInterface()->GetInventoryItem( INVENTORY_SLOT_NOT_SET, EQUIPMENT_SLOT_MAINHAND );
 	Item *offhand = GetItemInterface()->GetInventoryItem( INVENTORY_SLOT_NOT_SET, EQUIPMENT_SLOT_OFFHAND );
 	if( offhand && ( offhand->GetProto()->InventoryType == INVTYPE_2HWEAPON ||
@@ -6541,8 +6536,6 @@ void Player::ResetDualWield2H()
 	{
 		// we need to de-equip this
 		offhand = GetItemInterface()->SafeRemoveAndRetreiveItemFromSlot( INVENTORY_SLOT_NOT_SET, EQUIPMENT_SLOT_OFFHAND, false );
-		if( offhand == NULL )
-			return; // should never happen
 		SlotResult result = GetItemInterface()->FindFreeInventorySlot( offhand->GetProto() );
 		if( !result.Result )
 		{
@@ -12406,7 +12399,7 @@ void Player::CalcExpertise()
 			entry = m_auras[x]->m_spellProto;
 			val = m_auras[x]->GetModAmountByMod();
 
-			if( GetItemInterface() && entry->EquippedItemSubClass != 0)
+			if( entry->EquippedItemSubClass != 0)
 			{
 				itMH = GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
 				itOH = GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_OFFHAND );

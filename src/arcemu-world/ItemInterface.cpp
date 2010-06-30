@@ -441,7 +441,6 @@ Item *ItemInterface::SafeRemoveAndRetreiveItemFromSlot(int8 ContainerSlot, int16
 		if(pContainer && pContainer->IsContainer())
 		{
 			pItem = static_cast<Container*>(pContainer)->SafeRemoveAndRetreiveItemFromSlot(slot, destroy);
-			if (pItem == NULL) { return NULL; }
 		}
 	}
 

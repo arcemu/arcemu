@@ -1896,8 +1896,6 @@ void WorldSession::HandleInsertGemOpcode(WorldPacket &recvPacket)
 		{
 			Item * it = NULL;
 			ItemPrototype * ip = NULL;
-
-			ItemInterface * itemi = _player->GetItemInterface();
 			
 			// tried to put gem in socket where no socket exists (take care about prismatic sockets)
 			if (!TargetProto->Sockets[i].SocketColor){

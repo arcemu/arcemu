@@ -1456,18 +1456,15 @@ void Aura::SpellAuraPeriodicDamage(bool apply)
 			if(multiplyer)
 			{
 				Player *pr=static_cast< Player* >(c);
-				if(pr->GetItemInterface())
+				Item *it;
+				it = pr->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_MAINHAND);
+				if(it)
 				{
-					Item *it;
-					it = pr->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_MAINHAND);
-					if(it)
-					{
-						dmg = 0;
-						for(int i= 0;i<5;i++)
-							if(it->GetProto()->Damage[i].Type==SCHOOL_NORMAL)
-								dmg += int32((it->GetProto()->Damage[i].Min + it->GetProto()->Damage[i].Max) / 2);
-						dmg = multiplyer * dmg /100;
-					}
+					dmg = 0;
+					for(int i= 0;i<5;i++)
+						if(it->GetProto()->Damage[i].Type==SCHOOL_NORMAL)
+							dmg += int32((it->GetProto()->Damage[i].Min + it->GetProto()->Damage[i].Max) / 2);
+					dmg = multiplyer * dmg /100;
 				}
 			}
 		}

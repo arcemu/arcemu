@@ -2766,7 +2766,7 @@ bool Spell::HasPower()
 	}
 
 	 //hackfix for shiv's energy cost
-	if (p_caster != NULL && m_spellInfo->NameHash == SPELL_HASH_SHIV && p_caster->GetItemInterface())
+	if (p_caster != NULL && m_spellInfo->NameHash == SPELL_HASH_SHIV)
 	{
 		Item *it = p_caster->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_OFFHAND );
 		if( it != NULL )
@@ -2891,11 +2891,11 @@ bool Spell::TakePower()
 	}
 
 	 //hackfix for shiv's energy cost
-	if (p_caster != NULL && m_spellInfo->NameHash == SPELL_HASH_SHIV && p_caster->GetItemInterface())
+	if (p_caster != NULL && m_spellInfo->NameHash == SPELL_HASH_SHIV)
 	{
 		Item *it = p_caster->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_OFFHAND );
 		if( it != NULL )
-			cost += (uint32)(10* (it->GetProto()->Delay / 1000.0f));
+			cost += it->GetProto()->Delay / 100;//10 * it->GetProto()->Delay / 1000;
 	}
 
 	//apply modifiers
@@ -4539,7 +4539,7 @@ void Spell::RemoveItems()
 				if ( charges < 0 ) // if expendable item && item has no charges remaining -> delete item
 				{
 					//I bet this crashed happened due to some script. Items without owners ?
-					if( i_caster->GetOwner() && i_caster->GetOwner()->GetItemInterface() )
+					if( i_caster->GetOwner() )
 						i_caster->GetOwner()->GetItemInterface()->SafeFullRemoveItemByGuid( i_caster->GetGUID() );
 					i_caster = NULL;
 					break;
@@ -4670,14 +4670,11 @@ exit:
 			if( p_caster != NULL )
 			{
 				Item *it;
-				if(p_caster->GetItemInterface())
+				it = p_caster->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_RANGED);
+				if(it)
 				{
-					it = p_caster->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_RANGED);
-					if(it)
-					{
-						float weapondmg = RandomFloat(1)*(it->GetProto()->Damage[0].Max - it->GetProto()->Damage[0].Min) + it->GetProto()->Damage[0].Min;
-                        value += float2int32(GetProto()->EffectBasePoints[0] + weapondmg/(it->GetProto()->Delay/1000.0f)*2.8f);
-					}
+					float weapondmg = RandomFloat(1)*(it->GetProto()->Damage[0].Max - it->GetProto()->Damage[0].Min) + it->GetProto()->Damage[0].Min;
+                    value += float2int32(GetProto()->EffectBasePoints[0] + weapondmg/(it->GetProto()->Delay/1000.0f)*2.8f);
 				}
 			}
             if(target && target->IsDazed())
@@ -4690,26 +4687,23 @@ exit:
 		if(p_caster != NULL)
 		{
 			Item *it;
-			if(p_caster->GetItemInterface())
+			it = p_caster->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_MAINHAND);
+			if(it)
 			{
-				it = p_caster->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_MAINHAND);
-				if(it)
+				if( it->GetProto()->Class == 2 )
 				{
-					if( it->GetProto()->Class == 2 )
+					float avgwepdmg = (it->GetProto()->Damage[0].Min + it->GetProto()->Damage[0].Max) * 0.5f;
+					float wepspd = (it->GetProto()->Delay * 0.001f);
+					int32 dmg = float2int32( (avgwepdmg) + p_caster->GetAP() / 14 * wepspd);
+
+					if(target && target->GetHealthPct() > 75)
 					{
-						float avgwepdmg = (it->GetProto()->Damage[0].Min + it->GetProto()->Damage[0].Max) * 0.5f;
-						float wepspd = (it->GetProto()->Delay * 0.001f);
-						int32 dmg = float2int32( (avgwepdmg) + p_caster->GetAP() / 14 * wepspd);
-
-						if(target && target->GetHealthPct() > 75)
-						{
-							sLog.outBasic("REND: base dmg %u", value);
-							dmg = float2int32(dmg + dmg * 0.35f);
-							sLog.outBasic("REND: final dmg %u", value);
-						}
-
-						value += dmg / 5;
+						sLog.outBasic("REND: base dmg %u", value);
+						dmg = float2int32(dmg + dmg * 0.35f);
+						sLog.outBasic("REND: final dmg %u", value);
 					}
+
+					value += dmg / 5;
 				}
 			}
 		}
