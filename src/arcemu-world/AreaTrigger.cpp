@@ -129,7 +129,9 @@ void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
 		return;
 	}
 
-	sHookInterface.OnAreaTrigger(GetPlayer(), id);
+	Player* pPlayer = GetPlayer();
+	sHookInterface.OnAreaTrigger( pPlayer, id);
+	CALL_INSTANCE_SCRIPT_EVENT( pPlayer->GetMapMgr(), OnAreaTrigger )( GetPlayer(), id );
 
 #ifdef GM_Z_DEBUG_DIRECTLY
 	if( _player->GetSession() && _player->GetSession()->CanUseCommand('z') )

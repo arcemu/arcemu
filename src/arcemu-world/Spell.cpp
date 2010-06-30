@@ -2015,6 +2015,10 @@ void Spell::finish(bool successful)
 		return;
 
 	m_spellState = SPELL_STATE_FINISHED;
+
+	if( m_caster->IsCreature() )
+		CALL_SCRIPT_EVENT( m_caster, OnCastSpell)( GetProto()->Id );
+
 	if( u_caster != NULL )
 	{
 		u_caster->m_canMove = true;
