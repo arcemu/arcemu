@@ -381,6 +381,22 @@ void Creature::OnRespawn(MapMgr * m)
 	{
 		SetUInt32Value(UNIT_NPC_FLAGS, proto->NPCFLags);
 		SetEmoteState(m_spawn->emote_state);
+
+		/* creature's death state */
+		if( m_spawn->death_state == CREATURE_STATE_APPEAR_DEAD )
+		{
+			m_limbostate = true;
+			setDeathState( ALIVE ); // we are not actually dead, we just appear dead
+			SetUInt32Value(UNIT_DYNAMIC_FLAGS, U_DYN_FLAG_DEAD);
+		}
+		else if(m_spawn->death_state == CREATURE_STATE_DEAD)
+		{
+			SetHealth(0);
+			m_limbostate = true;
+			setDeathState( CORPSE );
+		}
+		else
+			setDeathState(ALIVE);
 	}
 
 	RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SKINNABLE);
@@ -388,22 +404,9 @@ void Creature::OnRespawn(MapMgr * m)
 	Tagged = false;
 	TaggerGuid = 0;
 
-	/* creature death state */
-	if(proto && proto->death_state == 1)
-	{
-		/*uint32 newhealth = m_uint32Values[UNIT_FIELD_HEALTH] / 100;
-		if(!newhealth)
-			newhealth = 1;*/
-		SetHealth( 1);
-		m_limbostate = true;
-		setDeathState( CORPSE );
-		SetEmoteState(EMOTE_STATE_DEAD);
-	}
-
 	//empty loot
 	loot.items.clear();
 
-	setDeathState(ALIVE);
 	GetAIInterface()->StopMovement(0); // after respawn monster can move
 	m_PickPocketed = false;
 	PushToWorld(m);
@@ -1421,15 +1424,16 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	m_aiInterface->getMoveFlags();
 
 	/* creature death state */
-	if(proto->death_state == 1)
+	if( spawn->death_state == CREATURE_STATE_APPEAR_DEAD )
 	{
-		/*uint32 newhealth = m_uint32Values[UNIT_FIELD_HEALTH] / 100;
-		if(!newhealth)
-			newhealth = 1;*/
-		SetHealth( 1);
+		m_limbostate = true;
+		SetUInt32Value(UNIT_DYNAMIC_FLAGS, U_DYN_FLAG_DEAD);
+	}
+	else if(spawn->death_state == CREATURE_STATE_DEAD)
+	{
+		SetHealth(0);
 		m_limbostate = true;
 		setDeathState( CORPSE );
-		SetEmoteState(EMOTE_STATE_DEAD);
 	}
 	m_invisFlag = static_cast<uint8>( proto->invisibility_type );
 	if( m_invisFlag > 0 )
@@ -1616,17 +1620,6 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 
 	m_aiInterface->getMoveFlags();
 
-	/* creature death state */
-	if(proto->death_state == 1)
-	{
-		/*uint32 newhealth = m_uint32Values[UNIT_FIELD_HEALTH] / 100;
-		if(!newhealth)
-			newhealth = 1;*/
-		SetHealth( 1);
-		m_limbostate = true;
-		setDeathState( CORPSE );
-		SetEmoteState(EMOTE_STATE_DEAD);
-	}
 	m_invisFlag = static_cast<uint8>( proto->invisibility_type );
 	if( m_invisFlag > 0 )
 		m_invisible = true;

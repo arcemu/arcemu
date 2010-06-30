@@ -24,7 +24,7 @@
 
 #include "StdAfx.h"
 
-#define CREATURESPAWNSFIELDCOUNT 26
+#define CREATURESPAWNSFIELDCOUNT 27
 #define GOSPAWNSFIELDCOUNT		 18
 
 Map::Map(uint32 mapid, MapInfo * inf)
@@ -187,12 +187,13 @@ void Map::LoadSpawns(bool reload)
 					cspawn->channel_target_go = fields[17].GetUInt32();
 					cspawn->channel_target_creature = fields[18].GetUInt32();
 					cspawn->stand_state = fields[19].GetUInt16();
-					cspawn->MountedDisplayID = fields[20].GetUInt32();
-					cspawn->Item1SlotDisplay = fields[21].GetUInt32();
-					cspawn->Item2SlotDisplay = fields[22].GetUInt32();
-					cspawn->Item3SlotDisplay = fields[23].GetUInt32();
-					cspawn->CanFly = fields[24].GetUInt32();
-					cspawn->phase = fields[25].GetUInt32();
+					cspawn->death_state = fields[20].GetUInt32();
+					cspawn->MountedDisplayID = fields[21].GetUInt32();
+					cspawn->Item1SlotDisplay = fields[22].GetUInt32();
+					cspawn->Item2SlotDisplay = fields[23].GetUInt32();
+					cspawn->Item3SlotDisplay = fields[24].GetUInt32();
+					cspawn->CanFly = fields[25].GetUInt32();
+					cspawn->phase = fields[26].GetUInt32();
 					if( cspawn->phase == 0 ) cspawn->phase= 0xFFFFFFFF;
 
 					spawns[cellx][celly]->CreatureSpawns.push_back(cspawn);
@@ -232,12 +233,13 @@ void Map::LoadSpawns(bool reload)
 				cspawn->channel_target_creature= 0;
 				cspawn->channel_target_go= 0;
 				cspawn->stand_state = fields[19].GetUInt16();
-				cspawn->MountedDisplayID = fields[20].GetUInt32();
-				cspawn->Item1SlotDisplay = fields[21].GetUInt32();
-				cspawn->Item2SlotDisplay = fields[22].GetUInt32();
-				cspawn->Item3SlotDisplay = fields[23].GetUInt32();
-				cspawn->CanFly = fields[24].GetUInt32();
-				cspawn->phase = fields[25].GetUInt32();
+				cspawn->death_state = fields[20].GetUInt32();
+				cspawn->MountedDisplayID = fields[21].GetUInt32();
+				cspawn->Item1SlotDisplay = fields[22].GetUInt32();
+				cspawn->Item2SlotDisplay = fields[23].GetUInt32();
+				cspawn->Item3SlotDisplay = fields[24].GetUInt32();
+				cspawn->CanFly = fields[25].GetUInt32();
+				cspawn->phase = fields[26].GetUInt32();
 				if( cspawn->phase == 0 ) cspawn->phase= 0xFFFFFFFF;
 				staticSpawns.CreatureSpawns.push_back(cspawn);
 				++CreatureSpawnCount;

@@ -130,7 +130,6 @@ struct CreatureProto
 	uint32 boss;
 	uint32 money;
 	uint32 invisibility_type;
-	uint32 death_state;
 	float	walk_speed;//base movement
 	float	run_speed;//most of the time mobs use this
 	float fly_speed;
@@ -257,6 +256,14 @@ enum TIME_REMOVE_CORPSE
 	TIME_CREATURE_REMOVE_CORPSE = 180000,
 	TIME_CREATURE_REMOVE_RARECORPSE = 180000*3,
 	TIME_CREATURE_REMOVE_BOSSCORPSE = 180000*5,
+};
+
+// THIS IS NOT SAME AS DEATH STATE IN Unit.h
+enum CREATURE_DEATH_STATE
+{
+	CREATURE_STATE_ALIVE = 0,			// no special death state
+	CREATURE_STATE_APPEAR_DEAD = 1,		// these creatures are actually alive but appears as dead for client
+	CREATURE_STATE_DEAD = 2				// these creatures are dead
 };
 
 struct PetSpellCooldown
@@ -635,6 +642,7 @@ public:
 	Player * m_escorter;
 	void DestroyCustomWaypointMap();
 	bool IsInLimboState() { return m_limbostate; }
+	void SetLimboState(bool set) { m_limbostate = set; };
 	uint32 GetLineByFamily(CreatureFamilyEntry * family){return family->skilline ? family->skilline : 0;};
 	void RemoveLimboState(Unit * healer);
 	void SetGuardWaypoints();

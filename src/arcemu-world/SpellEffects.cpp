@@ -2570,6 +2570,7 @@ void Spell::SpellEffectResurrect(uint32 i) // Resurrect (Flat)
 					static_cast<Creature*>(unitTarget)->loot.gold= 0;
 					static_cast<Creature*>(unitTarget)->loot.looters.clear();
 					static_cast<Creature*>(unitTarget)->loot.items.clear();
+					static_cast<Creature*>(unitTarget)->SetLimboState(false); // we can regenerate health now
 				}
 			}
 
