@@ -26858,7 +26858,7 @@
 #define SPELL_HASH_ITEM___CHAMBER_OF_ASPECTS_TWOFIVE_HEROIC_NUKER_TRINKET                 0x03EF2D79
 #define SPELL_HASH_ITEM___CHAMBER_OF_ASPECTS_TWOFIVE_TANK_TRINKET                         0xBCA10DC7
 #define SPELL_HASH_DUSK_SHROUD                                                            0x4491D4FD
-#define SPELL_HASH_SCALY_FORTITUDE                                                        0x0A5C9C3A
+#define SPELL_HASH_SCALY_NIMBLENESS                                                       0x595D365A
 #define SPELL_HASH_ITEM___CHAMBER_OF_ASPECTS_TWOFIVE_HEROIC_TANK_TRINKET                  0x29EA60E1
 #define SPELL_HASH_EYES_OF_TWILIGHT                                                       0xD43CBE52
 #define SPELL_HASH_TWILIGHT_RENEWAL                                                       0xC23F829A
@@ -26895,6 +26895,14 @@
 #define SPELL_HASH_REANIMATED_ABOMINATION_SCRIPT                                          0x07E59F7C
 #define SPELL_HASH_AREA_RESTRICT_ABOM                                                     0x92EB8AB6
 #define SPELL_HASH_TSUNAMI                                                                0x1DCF3045
+#define SPELL_HASH__DND_PLAY                                                              0xC251F000
+#define SPELL_HASH__DND__PLAY                                                             0xE0F734B4
+#define SPELL_HASH_TWILIGHT_PRECISION                                                     0x6FAAAADB
+#define SPELL_HASH_MINI_THOR                                                              0x8B0F7CFB
+#define SPELL_HASH_TWILIGHT_PULSE_PERIODIC                                                0x676DD9A9
+#define SPELL_HASH_TWILIGHT_PULSE                                                         0x0395F728
+#define SPELL_HASH_MULTI_SHADOW_SHOT                                                      0xAD8B60FF
+#define SPELL_HASH_ONEFIVE_SEC_COOLDOWN_CREATURE_SPECIAL_TWO                              0x5A6F0397
 
 
 #endif		// _SPELLHASHES_H
