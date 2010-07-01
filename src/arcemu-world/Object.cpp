@@ -1506,10 +1506,6 @@ bool Object::isInRange(Object* target, float range)
 	return( dist <= range );
 }
 
-bool Object::IsPet(){
-	return false;
-}
-
 void Object::_setFaction()
 {
 	FactionTemplateDBC* factT = NULL;

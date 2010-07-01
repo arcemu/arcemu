@@ -876,9 +876,6 @@ public:
 	virtual void RemoveFromWorld(bool free_guid);
 	virtual void OnPushToWorld();
 
-	// Have subclasses change these to true
-	virtual bool IsCreature() { return false; }
-
     virtual bool IsPvPFlagged() = 0;
 	virtual void SetPvPFlag() = 0;
 	virtual void RemovePvPFlag() = 0;

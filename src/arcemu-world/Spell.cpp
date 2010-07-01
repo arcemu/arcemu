@@ -2016,11 +2016,10 @@ void Spell::finish(bool successful)
 
 	m_spellState = SPELL_STATE_FINISHED;
 
-	if( m_caster->IsCreature() )
-		CALL_SCRIPT_EVENT( m_caster, OnCastSpell)( GetProto()->Id );
-
 	if( u_caster != NULL )
 	{
+		CALL_SCRIPT_EVENT( u_caster, OnCastSpell)( GetProto()->Id );
+
 		u_caster->m_canMove = true;
 		// mana           channeled                                                     power type is mana                             if spell wasn't cast successfully, don't delay mana regeneration
 		if(m_usesMana && (GetProto()->ChannelInterruptFlags == 0 && !m_triggeredSpell) && u_caster->GetPowerType()==POWER_TYPE_MANA && successful)

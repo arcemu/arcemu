@@ -171,8 +171,8 @@ public:
 	const uint8& GetTypeId() const { return m_objectTypeId; }
 	bool IsUnit()	{ return ( m_objectTypeId == TYPEID_UNIT || m_objectTypeId == TYPEID_PLAYER ); }
 	bool IsPlayer() { return m_objectTypeId == TYPEID_PLAYER; }
-	virtual bool IsCreature() { return m_objectTypeId == TYPEID_UNIT; }
-	virtual bool IsPet();
+	bool IsCreature() { return m_objectTypeId == TYPEID_UNIT; }
+	virtual bool IsPet() { return false; }
 	bool IsGameObject() { return m_objectTypeId == TYPEID_GAMEOBJECT; }
 
 	//! This includes any nested objects we have, inventory for example.
