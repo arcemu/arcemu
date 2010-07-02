@@ -2093,24 +2093,6 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, bo
 						if( CastingSpell->NameHash != SPELL_HASH_HOLY_LIGHT )
 							continue;
 					}break;
-				//paladin - Eye for an Eye
-				case 25997:
-					{
-						if( victim == this )
-							continue; //not self-cast crits
-						//requires damaging spell
-						if( CastingSpell == NULL )
-							continue;//this should not occur unless we made a fuckup somewhere
-						if(!(CastingSpell->c_is_flags & SPELL_FLAG_IS_DAMAGING))
-							continue;
-
-						//this should contain the same values as the fixed ones
-						dmg_overwrite = ( dmg *  (ospinfo->EffectBasePoints[0] + 1 )) / 100 ; //only half dmg
-
-						int32 half_health = this->GetHealth() >> 1;
-						if( dmg_overwrite > half_health )
-							dmg_overwrite = half_health ;
-					}break;
 				//paladin - Blessed Life
 				case 31828:
 					{

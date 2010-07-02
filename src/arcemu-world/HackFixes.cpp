@@ -2455,27 +2455,6 @@ void ApplyNormalFixes()
 			sp->procFlags = PROC_ON_MELEE_ATTACK | static_cast<uint32>(PROC_TARGET_SELF);
 		}
 
-		//Paladin - Eye for an Eye
-		sp = dbcSpell.LookupEntryForced( 9799 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_SPELL_CRIT_HIT_VICTIM;
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 25997;
-			sp->fixed_dddhcoef = 0.0f;
-		}
-		sp = dbcSpell.LookupEntryForced( 25988 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_SPELL_CRIT_HIT_VICTIM;
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 25997;
-			sp->fixed_dddhcoef = 0.0f;
-		}
-		sp = dbcSpell.LookupEntryForced( 25997 );
-		if( sp != NULL )
-			sp->fixed_dddhcoef = 0.0f;
-
 		//Paladin - Judgements of the Wise
 		sp = dbcSpell.LookupEntryForced( 31930 );
 		if( sp != NULL )

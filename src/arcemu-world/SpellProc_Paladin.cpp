@@ -43,7 +43,34 @@ class SealOfCommandSpellProc : public SpellProc
 	}
 };
 
+class EyeForAnEyeSpellProc : public SpellProc
+{
+	SPELL_PROC_FACTORY_FUNCTION(EyeForAnEyeSpellProc);
+
+	bool DoEffect(Unit *victim, SpellEntry *CastingSpell, uint32 flag, uint32 dmg, uint32 abs, int *dmg_overwrite, uint32 weapon_damage_type)
+	{
+		// If this player died by crit damage, don't do dmg back
+		if( ! mTarget->isAlive() )
+			return true;
+
+		// Prevent proc on healing criticals
+		if( CastingSpell != NULL && ! (CastingSpell->c_is_flags & SPELL_FLAG_IS_DAMAGING) )
+			return true;
+
+		*dmg_overwrite = dmg * (mOrigSpell->EffectBasePoints[0] +1) / 100;
+
+		int max_dmg = mTarget->GetMaxHealth() / 2;
+
+		if( *dmg_overwrite > max_dmg )
+			*dmg_overwrite = max_dmg;
+
+		return false;
+	}
+};
+
 void SpellProcMgr::SetupPaladin()
 {
 	AddByNameHash( SPELL_HASH_SEAL_OF_COMMAND, &SealOfCommandSpellProc::Create );
+	
+	AddByNameHash( SPELL_HASH_EYE_FOR_AN_EYE, &EyeForAnEyeSpellProc::Create );
 }
