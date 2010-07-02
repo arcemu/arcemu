@@ -577,8 +577,14 @@ void Creature::SaveToDB()
 	else
 		ss << "0,0,0,";
 
-	ss << uint32(GetStandState()) << ","
-		<< m_uint32Values[UNIT_FIELD_MOUNTDISPLAYID] << ","
+	ss << uint32(GetStandState()) << ",";
+
+	if( m_spawn )
+		ss << m_spawn->death_state << ",";
+	else
+		ss << "0,";
+
+	ss << m_uint32Values[UNIT_FIELD_MOUNTDISPLAYID] << ","
 		<< GetEquippedItem(MELEE) << ","
 		<< GetEquippedItem(OFFHAND) << ","
 		<< GetEquippedItem(RANGED) << ",";
