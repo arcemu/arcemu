@@ -6968,6 +6968,7 @@ void Aura::SendModifierLog( int32** m, int32 v, uint32* mask, uint8 type, bool p
 				++groupnum;
 				intbit = 0;
 			}
+
 			if( ( 1 << intbit ) & mask[groupnum] )
 			{
 				(*m)[bit] = v;
@@ -6975,8 +6976,7 @@ void Aura::SendModifierLog( int32** m, int32 v, uint32* mask, uint8 type, bool p
 				if( !m_target->IsPlayer() )
                     continue;
                 
-                static_cast<Player*>(m_target)->SendFlatSpellModifier( static_cast< uint8 >( bit ), type, v );
-                
+                TO_PLAYER(m_target)->SendSpellModifier( static_cast< uint8 >( bit ), type, v, pct );                
 			}
 			else
 				(*m)[bit] = 0;
@@ -6991,6 +6991,7 @@ void Aura::SendModifierLog( int32** m, int32 v, uint32* mask, uint8 type, bool p
 				++groupnum;
 				intbit = 0;
 			}
+
 			if( ( 1 << intbit ) & mask[groupnum] )
 			{
 				(*m)[bit] += v;
@@ -6998,8 +6999,7 @@ void Aura::SendModifierLog( int32** m, int32 v, uint32* mask, uint8 type, bool p
 				if( !m_target->IsPlayer() )
 					continue;
 
-                static_cast<Player*>(m_target)->SendFlatSpellModifier( bit, type, (*m)[ bit ] );
-
+                TO_PLAYER(m_target)->SendSpellModifier( bit, type, (*m)[ bit ], pct );
 			}
 		}
 	}
@@ -7036,7 +7036,7 @@ void Aura::SendDummyModifierLog( std::map< SpellEntry*, uint32 >* m, SpellEntry*
 			if( p_target == NULL)
 				continue;
 
-            p_target->SendFlatSpellModifier( bit, type, v );
+            p_target->SendSpellModifier( bit, type, v, pct );
 		}
 	}
 }
