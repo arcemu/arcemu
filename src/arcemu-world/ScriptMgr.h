@@ -239,7 +239,7 @@ class SERVER_DECL CreatureAIScript
 {
 public:
 	CreatureAIScript(Creature* creature);
-	virtual ~CreatureAIScript() {};
+	virtual ~CreatureAIScript();
 
 	virtual void OnCombatStart(Unit* mTarget) {}
 	virtual void OnCombatStop(Unit* mTarget) {}
@@ -272,11 +272,20 @@ public:
 	void ModifyAIUpdateEvent(uint32 newfrequency);
 	void RemoveAIUpdateEvent();
 
+	bool IsAlive();
+
 	virtual void Destroy() { delete this; }
 	Creature* GetUnit() { return _unit; }
 
+	CreatureAIScript* GetLinkedCreature() { return linkedCreatureAI; }
+	void SetLinkedCreature(CreatureAIScript* creatureAI);
+	void LinkedCreatureDeleted();
+
 protected:
 	Creature* _unit;
+
+private:
+	CreatureAIScript* linkedCreatureAI;
 };
 
 class SERVER_DECL GameObjectAIScript
