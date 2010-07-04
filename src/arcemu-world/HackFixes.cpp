@@ -1384,90 +1384,6 @@ void ApplyNormalFixes()
 
 	EnchantEntry * Enchantment;
 
-	/********************************************************
-	 * Windfury Enchantment
-	 ********************************************************/
-
-	/*Enchantment = dbcEnchant.LookupEntryForced( 283 );
-	if( Enchantment != NULL )
-	{
-		Enchantment->spell[0] = 33757; //this is actually good
-		sp = dbcSpell.LookupEntryForced( 33757 );
-		if( sp != NULL )
-		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->procFlags = PROC_ON_MELEE_ATTACK; //we do not need proc on spell ;)
-			sp->EffectTriggerSpell[0] = 8232; //for the logs and rest
-			sp->procChance = 20;
-			sp->proc_interval = 3000;//http://www.wowwiki.com/Windfury_Weapon
-			sp->maxstack = 1;
-		}
-	}*/
-
-	Enchantment = dbcEnchant.LookupEntryForced( 284 );
-	if( Enchantment != NULL )
-	{
-		Enchantment->spell[0] = 33756;
-		sp = dbcSpell.LookupEntryForced( 33756 );
-		if( sp != NULL )
-		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->procFlags = PROC_ON_MELEE_ATTACK; //we do not need proc on spell ;)
-			sp->EffectTriggerSpell[0] = 8235; //for the logs and rest
-			sp->procChance = 20;
-			sp->proc_interval = 3000; //http://www.wowwiki.com/Windfury_Weapon
-			sp->maxstack = 1;
-		}
-	}
-
-	Enchantment = dbcEnchant.LookupEntryForced( 525 );
-	if( Enchantment != NULL )
-	{
-		Enchantment->spell[0] = 33755;
-		sp = dbcSpell.LookupEntryForced( 33755 );
-		if( sp != NULL )
-		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->procFlags = PROC_ON_MELEE_ATTACK; //we do not need proc on spell ;)
-			sp->EffectTriggerSpell[0] = 10486; //for the logs and rest
-			sp->procChance = 20;
-			sp->proc_interval = 3000;//http://www.wowwiki.com/Windfury_Weapon
-			sp->maxstack = 1;
-		}
-	}
-
-	Enchantment = dbcEnchant.LookupEntryForced( 1669 );
-	if( Enchantment != NULL )
-	{
-		Enchantment->spell[0] = 33754;
-		sp = dbcSpell.LookupEntryForced( 33754 );
-		if( sp != NULL )
-		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->procFlags = PROC_ON_MELEE_ATTACK; //we do not need proc on spell ;)
-			sp->EffectTriggerSpell[0] = 16362; //for the logs and rest
-			sp->procChance = 20;
-			sp->proc_interval = 3000;//http://www.wowwiki.com/Windfury_Weapon
-			sp->maxstack = 1;
-		}
-	}
-
-	Enchantment = dbcEnchant.LookupEntryForced( 2636 );
-	if( Enchantment != NULL )
-	{
-		Enchantment->spell[0] = 33727;
-		sp = dbcSpell.LookupEntryForced( 33727 );
-		if( sp != NULL )
-		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->procFlags = PROC_ON_MELEE_ATTACK; //we do not need proc on spell ;)
-			sp->EffectTriggerSpell[0] = 25505; //for the logs and rest
-			sp->procChance = 20;
-			sp->proc_interval = 3000;//http://www.wowwiki.com/Windfury_Weapon
-			sp->maxstack = 1;
-		}
-	}
-
 	/**********************************************************
 	 *	PROFFESION - Enchant Cloak - Major Resistance
 	 **********************************************************/
@@ -1477,48 +1393,6 @@ void ApplyNormalFixes()
 	sp = dbcSpell.LookupEntryForced( 36285 );
 	if( sp != NULL )
 		sp->EffectMiscValue[0] = 2998;
-
-	/**********************************************************
-	 * Berserking - TROLL'S RACIAL SPELL
-	 **********************************************************/
-	sp = dbcSpell.LookupEntryForced( 20554 );
-	if( sp != NULL )
-	{
-		sp->Effect[0] = SPELL_EFFECT_TRIGGER_SPELL;
-		sp->EffectTriggerSpell[0] = 26635;
-	}
-	sp = dbcSpell.LookupEntryForced( 26296 );
-	if( sp != NULL )
-	{
-		sp->Effect[0] = SPELL_EFFECT_TRIGGER_SPELL;
-		sp->EffectTriggerSpell[0] = 26635;
-	}
-	sp = dbcSpell.LookupEntryForced( 26297 );
-	if( sp != NULL )
-	{
-		sp->Effect[0] = SPELL_EFFECT_TRIGGER_SPELL;
-		sp->EffectTriggerSpell[0] = 26635;
-	}
-
-	sp = dbcSpell.LookupEntryForced( 20134 ); // << --- WTF?
-	if( sp != NULL )
-		sp->procChance = 50;
-
-	/**********************************************************
-	* Mana Tap - BLOOD ELF RACIAL
-	**********************************************************/
-	sp = dbcSpell.LookupEntryForced( 28734 );
-	if( sp != NULL )
-//		sp->Effect[0] = SPELL_EFFECT_POWER_BURN; // should be Power Burn, not Power Drain. Power Drain leeches mana which is incorrect.
-		//Zazk : tested on retail and it is only leech and not burn !
-		sp->Effect[0] = SPELL_EFFECT_POWER_DRAIN; // should be Power Burn, not Power Drain. Power Drain leeches mana which is incorrect.
-
-	/**********************************************************
-	* Gift of the Naaru - Draenei RACIAL
-	**********************************************************/
-	sp = dbcSpell.LookupEntryForced( 28880 );
-	if( sp != NULL )
-		sp->Effect[1] = SPELL_EFFECT_DUMMY;
 
 	/**********************************************************
 	 * thrown - add a 1.6 second cooldown
@@ -7626,20 +7500,6 @@ void ApplyNormalFixes()
 			sp->EffectBasePoints[0] = -50;
 			sp->maxstack = 1;
       	}
-
-		sp = dbcSpell.LookupEntryForced( 46585 );
-		if( sp != NULL )
-		{
-		sp->Effect[0] = SPELL_EFFECT_SUMMON;
-		sp->EffectMiscValue[0] = 26125;
-		}
-
-		sp = dbcSpell.LookupEntryForced( 51052 );
-		if( sp != NULL )
-		{
-		sp->Effect[0] = SPELL_EFFECT_SUMMON;
-		sp->EffectMiscValue[0] = 26125;
-		}
 
 		sp = dbcSpell.LookupEntryForced( 46584 );
 		if( sp != NULL )
