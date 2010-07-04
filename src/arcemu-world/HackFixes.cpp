@@ -1382,22 +1382,10 @@ void ApplyNormalFixes()
 	//SPELL COEFFICIENT SETTINGS END
 	/////////////////////////////////////////////////////////////////
 
-	EnchantEntry * Enchantment;
-
-	/**********************************************************
-	 *	PROFFESION - Enchant Cloak - Major Resistance
-	 **********************************************************/
-	sp = dbcSpell.LookupEntryForced( 27962 );
-	if( sp != NULL )
-		sp->EffectMiscValue[0] = 2998;
-	sp = dbcSpell.LookupEntryForced( 36285 );
-	if( sp != NULL )
-		sp->EffectMiscValue[0] = 2998;
-
 	/**********************************************************
 	 * thrown - add a 1.6 second cooldown
 	 **********************************************************/
-	const static uint32 thrown_spells[] = {SPELL_RANGED_GENERAL,SPELL_RANGED_THROW,SPELL_RANGED_WAND, 26679, 27084, 29436, 37074, 41182, 41346, 0};
+	const static uint32 thrown_spells[] = {SPELL_RANGED_GENERAL,SPELL_RANGED_THROW,SPELL_RANGED_WAND, 26679, 29436, 37074, 41182, 41346, 0};
 	for(i = 0; thrown_spells[i] != 0; ++i)
 	{
 		sp = dbcSpell.LookupEntryForced( thrown_spells[i] );
@@ -1417,16 +1405,6 @@ void ApplyNormalFixes()
 	/**********************************************************
 	 * Misc stuff (questfixes etc)
 	 **********************************************************/
-
-	sp = dbcSpell.LookupEntryForced( 30877 );
-	if( sp != NULL )
-	{
-		sp->EffectImplicitTargetB[0]= 0;
-	}
-
-	sp = dbcSpell.LookupEntryForced( 23179 );
-	if( sp != NULL )
-		sp->EffectMiscValue[0] = 1434;
 
 	// list of guardians that should inherit casters level
 	//fire elemental
@@ -1488,22 +1466,6 @@ void ApplyNormalFixes()
 		if(sp != NULL)
 			sp->AuraInterruptFlags = AURA_INTERRUPT_ON_CAST_SPELL;
 
-		// Trauma Rank 1
-		sp = dbcSpell.LookupEntryForced( 46854 );
-		if(sp != NULL)
-		{
-			//sp->procChance = 100;
-			sp->procFlags = PROC_ON_CRIT_ATTACK;
-		}
-
-		// Trauma Rank 2
-		sp = dbcSpell.LookupEntryForced( 46855 );
-		if(sp != NULL)
-		{
-			//sp->procChance = 100;
-			sp->procFlags = PROC_ON_CRIT_ATTACK;
-		}
-
 		// Taste for Blood Rank 1
 		sp = dbcSpell.LookupEntryForced( 56636 );
 		if(sp != NULL)
@@ -1535,45 +1497,35 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 46867 );
 		if(sp != NULL)
 		{
-			sp->EffectTriggerSpell[1] = 57518;
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
-			sp->procChance = 100;
 		}
 
 		// Wrecking Crew Rank 2
 		sp = dbcSpell.LookupEntryForced( 56611 );
 		if(sp != NULL)
 		{
-			sp->EffectTriggerSpell[1] = 57519;
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
-			sp->procChance = 100;
 		}
 
 		// Wrecking Crew Rank 3
 		sp = dbcSpell.LookupEntryForced( 56612 );
 		if(sp != NULL)
 		{
-			sp->EffectTriggerSpell[1] = 57520;
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
-			sp->procChance = 100;
 		}
 
 		// Wrecking Crew Rank 4
 		sp = dbcSpell.LookupEntryForced( 56613 );
 		if(sp != NULL)
 		{
-			sp->EffectTriggerSpell[1] = 57521;
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
-			sp->procChance = 100;
 		}
 
 		// Wrecking Crew Rank 5
 		sp = dbcSpell.LookupEntryForced( 56614 );
 		if(sp != NULL)
 		{
-			sp->EffectTriggerSpell[1] = 57522;
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
-			sp->procChance = 100;
 		}
 
 		// Warrior - Deep Wounds
@@ -1581,41 +1533,19 @@ void ApplyNormalFixes()
 		if(sp != NULL)
 		{
 			sp->EffectTriggerSpell[0] = 12721;
-			sp->procFlags = PROC_ON_CRIT_ATTACK | PROC_ON_SPELL_CRIT_HIT;
+			sp->procFlags |= PROC_ON_SPELL_CRIT_HIT;
 		}
 		sp = dbcSpell.LookupEntryForced( 12849 );
 		if(sp != NULL)
 		{
 			sp->EffectTriggerSpell[0] = 12721;
-			sp->procFlags = PROC_ON_CRIT_ATTACK | PROC_ON_SPELL_CRIT_HIT;
+			sp->procFlags |= PROC_ON_SPELL_CRIT_HIT;
 		}
 		sp = dbcSpell.LookupEntryForced( 12867 );
 		if(sp != NULL)
 		{
 			sp->EffectTriggerSpell[0] = 12721;
-			sp->procFlags = PROC_ON_CRIT_ATTACK | PROC_ON_SPELL_CRIT_HIT;
-		}
-
-		// Warrior - Charge Rank 1
-		sp = dbcSpell.LookupEntryForced( 100 );
-		if(sp != NULL)
-		{
-			sp->Effect[1] = SPELL_EFFECT_DUMMY;
-			sp->EffectMiscValue[1] = 90;
-		}
-		// Warrior - Charge Rank 2
-		sp = dbcSpell.LookupEntryForced( 6178 );
-		if(sp != NULL)
-		{
-			sp->Effect[1] = SPELL_EFFECT_DUMMY;
-			sp->EffectMiscValue[1] = 120;
-		}
-		// Warrior - Charge Rank 3
-		sp = dbcSpell.LookupEntryForced( 11578 );
-		if(sp != NULL)
-		{
-			sp->Effect[1] = SPELL_EFFECT_DUMMY;
-			sp->EffectMiscValue[1] = 150;
+			sp->procFlags |= PROC_ON_SPELL_CRIT_HIT;
 		}
 
 		// Warrior - Improved Hamstring Rank 1

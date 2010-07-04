@@ -900,57 +900,22 @@ out:
 	case 6178:
 	case 11578:
 		{
-			uint32 rage_to_gen;
-			switch(GetProto()->Id)
-			{
-			case 100:   // Charge Rank 1
-				rage_to_gen = 90;
-				if(p_caster)
-				{
-					for(set<uint32>::iterator itr = p_caster->mSpells.begin(); itr != p_caster->mSpells.end(); ++itr)
-					{
-						if(*itr == 12697)
-							rage_to_gen += 100;
-						if(*itr == 12285)
-							rage_to_gen += 50;
-					}
-				}
-				break;
-
-			case 6178:  // Charge Rank 2
-				rage_to_gen = 120;
-				if(p_caster)
-				{
-					for(set<uint32>::iterator itr = p_caster->mSpells.begin(); itr != p_caster->mSpells.end(); ++itr)
-					{
-						if(*itr == 12697)
-							rage_to_gen += 100;
-						if(*itr == 12285)
-							rage_to_gen += 50;
-					}
-				}
-				break;
-
-			default:    // Charge Rank 3 +
-				rage_to_gen = 150;
-				if(p_caster)
-				{
-					for(set<uint32>::iterator itr = p_caster->mSpells.begin(); itr != p_caster->mSpells.end(); ++itr)
-					{
-						if(*itr == 12697)
-							rage_to_gen += 100;
-						if(*itr == 12285)
-							rage_to_gen += 50;
-					}
-				}
-
-				break;
-			}
-
-			// Add the rage to the caster
 			if(!u_caster)
 				return;
 
+			uint32 rage_to_gen = GetProto()->EffectBasePoints[i] + 1;
+			if(p_caster)
+			{
+				for(set<uint32>::iterator itr = p_caster->mSpells.begin(); itr != p_caster->mSpells.end(); ++itr)
+				{
+					if(*itr == 12697)
+						rage_to_gen += 100;
+					if(*itr == 12285)
+						rage_to_gen += 50;
+				}
+			}
+
+			// Add the rage to the caster
             u_caster->ModPower( POWER_TYPE_RAGE, rage_to_gen );
 		}
 		break;
