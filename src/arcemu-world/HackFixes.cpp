@@ -3531,39 +3531,6 @@ void ApplyNormalFixes()
 			sp->EffectTriggerSpell[0] = 33619; //!! WRONG spell, we will make direct dmg here
 		}
 
-		// Mind Flay - Reduce movements by 50% and deal periodic damage to target.
-/*
-		const uint32 MindFlayRanks[] = { 15407, 17311, 17312, 17313, 17314, 18807, 25387, 48155, 48156, 0 };
-		for(uint8 _i= 0; MindFlayRanks[_i]!= 0; ++_i)
-		{
-			sp = dbcSpell.LookupEntryForced( MindFlayRanks[_i] );
-			if( sp != NULL )
-			{
-				sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;
-				sp->EffectImplicitTargetA[0] = EFF_TARGET_SINGLE_ENEMY;
-			}
-		}
-*/
-		//Mind Sear - Effect rank 1
-
-		sp = dbcSpell.LookupEntryForced( 49821 );
-		if( sp != NULL )
-		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;
-			sp->EffectImplicitTargetA[0] = EFF_TARGET_SINGLE_ENEMY;
-			sp->EffectImplicitTargetB[0] = EFF_TARGET_SINGLE_ENEMY;
-		}
-
-		// Mind Sear - Effect rank 2
-
-		sp = dbcSpell.LookupEntryForced( 53023 );
-		if( sp != NULL )
-		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;
-			sp->EffectImplicitTargetA[0] = EFF_TARGET_SINGLE_ENEMY;
-			sp->EffectImplicitTargetB[0] = EFF_TARGET_SINGLE_ENEMY;
-		}
-
 		// Weakened Soul - Is forced debuff
 		sp = dbcSpell.LookupEntryForced( 6788 );
 		if( sp != NULL )

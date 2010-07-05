@@ -1449,7 +1449,7 @@ typedef enum {
    EFF_TARGET_NETHETDRAKE_SUMMON_LOCATION				= 73,
    EFF_TARGET_SCRIPTED_LOCATION							= 74,
    EFF_TARGET_LOCATION_INFRONT_CASTER_AT_RANGE			= 75,
-   EFF_TARGET_ENEMYS_IN_ARE_CHANNELED_WITH_EXCEPTIONS	= 76,
+   EFF_TARGET_ENEMIES_IN_AREA_CHANNELED_WITH_EXCEPTIONS	= 76,
    EFF_TARGET_SELECTED_ENEMY_CHANNELED					= 77,
    EFF_TARGET_SELECTED_ENEMY_DEADLY_POISON				= 86,
    EFF_TARGET_NON_COMBAT_PET							= 90,
@@ -1940,6 +1940,7 @@ public:
     void SpellTargetSinglePartyInjured(uint32 i, uint32 j);
     void SpellTargetMultiplePartyInjured(uint32 i, uint32 j);
 	void SpellTargetNonCombatPet(uint32 i, uint32 j);
+	void SpellTargetEnemiesInAreaChanneled(uint32 i, uint32 j);
 
     void Heal(int32 amount, bool ForceCrit = false);
 

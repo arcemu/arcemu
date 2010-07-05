@@ -99,8 +99,8 @@ pSpellTarget SpellTargetHandler[EFF_TARGET_LIST_LENGTH_MARKER] =
 	&Spell::SpellTargetSummon,				  // 73
 	&Spell::SpellTargetNULL,					// 74
 	&Spell::SpellTargetNULL,					// 75
-	&Spell::SpellTargetNULL,					// 76
-	&Spell::SpellTargetSingleTargetEnemy,	   // 77
+	&Spell::SpellTargetEnemiesInAreaChanneled,	// 76
+	&Spell::SpellTargetSingleTargetEnemy,	    // 77
 	&Spell::SpellTargetNULL,					// 78
 	&Spell::SpellTargetNULL,					// 79
 	&Spell::SpellTargetNULL,					// 80
@@ -1265,3 +1265,14 @@ void Spell::SpellTargetNonCombatPet( uint32 i, uint32 j )
 	SafeAddTarget( &m_targetUnits[i], u_caster->critterPet->GetGUID() );
 }
 
+void Spell::SpellTargetEnemiesInAreaChanneled(uint32 i, uint32 j)
+{
+	if( ! m_caster->IsInWorld() )
+		return;
+
+	Unit * target = m_caster->GetMapMgr()->GetUnit(m_targets.m_unitTarget);
+	if( target == NULL )
+		return;
+
+	FillAllTargetsInArea(i, target->GetPositionX(), target->GetPositionY(), target->GetPositionZ(), GetRadius(i));
+}
