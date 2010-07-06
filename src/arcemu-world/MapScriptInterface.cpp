@@ -142,6 +142,7 @@ Creature* MapScriptInterface::SpawnCreature(uint32 Entry, float cX, float cY, fl
 	sp->bytes2 = 0;
 	//sp->respawnNpcLink = 0;
 	sp->stand_state = 0;
+	sp->death_state = 0;
 	sp->channel_target_creature = sp->channel_target_go = sp->channel_spell = 0;
 	sp->MountedDisplayID = 0;
 	sp->Item1SlotDisplay = 0;
