@@ -6098,8 +6098,9 @@ void Unit::SendAuraUpdate( uint32 AuraSlot, bool remove ){
 		data << uint32( aur->GetSpellId() );
 		data << uint8( flags );
 
-		if( aur->GetUnitCaster() != NULL )
-			data << uint8( aur->GetUnitCaster()->getLevel() );
+		Unit* caster = aur->GetUnitCaster();
+		if( caster != NULL )
+			data << uint8( caster->getLevel() );
 		else
 			data << uint8( sWorld.m_levelCap );
 

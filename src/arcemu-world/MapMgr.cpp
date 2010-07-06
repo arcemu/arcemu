@@ -1446,7 +1446,7 @@ Unit* MapMgr::GetUnit(const uint64 & guid)
 		break;
 
 	case HIGHGUID_TYPE_PLAYER:
-		return GetPlayer( (uint32)guid );
+		return GetPlayer( Arcemu::Util::GUID_LOPART(guid) );
 		break;
 
 	case HIGHGUID_TYPE_PET:

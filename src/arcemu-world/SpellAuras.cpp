@@ -710,23 +710,23 @@ ARCEMU_INLINE void ApplyFloatPSM(float ** m,int32 v,uint32 mask, float def)
 }*/
 Player * Aura::GetPlayerCaster()
 {
-	if( GET_TYPE_FROM_GUID( m_casterGuid ) == HIGHGUID_TYPE_PLAYER )
-		return objmgr.GetPlayer( (uint32)m_casterGuid );
+	//caster and target are the same
+	if( m_casterGuid == m_target->GetGUID() )
+	{
+		if( m_target->IsPlayer() )
+			return TO_PLAYER(m_target);
+		else//caster is not a player
+			return NULL;
+	}
 
-	return NULL;
+	if( m_target->GetMapMgr() )
+		return m_target->GetMapMgr()->GetPlayer( Arcemu::Util::GUID_LOPART(m_casterGuid) );
+	else
+		return NULL;
 }
 
 Unit * Aura::GetUnitCaster()
 {
-	if( GET_TYPE_FROM_GUID( m_casterGuid ) == HIGHGUID_TYPE_PLAYER )
-	{
-		Unit * unit = objmgr.GetPlayer( (uint32)m_casterGuid );
-		if( unit )
-			return unit;
-	}
-	if( !m_target )
-		return NULL;
-
 	if( m_casterGuid == m_target->GetGUID() )
 		return m_target;
 
@@ -1331,36 +1331,36 @@ void Aura::SpellAuraBindSight(bool apply)
 {
 	SetPositive();
 	// MindVision
-	Unit *caster = GetUnitCaster();
-	if( caster == NULL || !caster->IsPlayer() )
+	Player *caster = GetPlayerCaster();
+	if( caster == NULL )
 		return;
 
 	if( apply )
-		TO_PLAYER(caster)->SetFarsightTarget(m_target->GetGUID() );
+		caster->SetFarsightTarget(m_target->GetGUID() );
 	else
-		TO_PLAYER(caster)->SetFarsightTarget(0 );
+		caster->SetFarsightTarget(0 );
 }
 
 void Aura::SpellAuraModPossess(bool apply)
 {
-	Unit *caster = GetUnitCaster();
+	Player *caster = GetPlayerCaster();
 
 	if(apply)
 	{
-		if( caster != NULL && caster->IsInWorld() && caster->GetTypeId() == TYPEID_PLAYER )
+		if( caster != NULL && caster->IsInWorld() )
 			static_cast< Player* >(caster)->Possess( m_target );
 	}
 	else
 	{
 		bool unpossessfailed = false;
-		if( caster != NULL && caster->IsInWorld() && caster->GetTypeId() == TYPEID_PLAYER )
+		if( caster != NULL && caster->IsInWorld() )
 		{
-			static_cast< Player* >(caster)->UnPossess();
+			caster->UnPossess();
 			m_target->RemoveAura(GetSpellId());
-			if (TO_PLAYER(caster)->GetFarsightTarget() != 0 )
+			if (caster->GetFarsightTarget() != 0 )
 			{
 			unpossessfailed = true;
-			TO_PLAYER(caster)->SetFarsightTarget(0);
+			caster->SetFarsightTarget(0);
 			caster->SetCharmedUnitGUID( 0 );
 			caster->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_LOCK_PLAYER);
 			}
@@ -1641,12 +1641,10 @@ void Aura::SpellAuraDummy(bool apply)
 	// for seal -> set judgment crap
 	if( GetSpellProto()->BGR_one_buff_on_target & SPELL_TYPE_SEAL && mod->i == 2 )
 	{
-		Unit* uc = GetUnitCaster();
+		Player* c = GetPlayerCaster();
 
-		if( uc == NULL || !uc->IsPlayer() )
+		if( c == NULL )
 			return;
-
-		Player* c = static_cast< Player* >( uc );
 
 		if( apply )
 		{
@@ -2096,9 +2094,9 @@ void Aura::SpellAuraDummy(bool apply)
 		{
 			if(apply)
 			{
-				Unit * caster = this->GetUnitCaster();
-				if(caster && caster->IsPlayer())
-					((Player*)caster)->m_vampiricEmbrace--;
+				Player * caster = GetPlayerCaster();
+				if(caster != NULL)
+					caster->m_vampiricEmbrace--;
 				--m_target->m_hasVampiricEmbrace;
 			}
 		}break;
@@ -2109,17 +2107,17 @@ void Aura::SpellAuraDummy(bool apply)
 			if(apply)
 			{
 				SetNegative();
-				Unit * caster =this->GetUnitCaster();
-				if(caster && caster->IsPlayer())
-					++((Player*)caster)->m_vampiricTouch;
+				Player * caster = GetPlayerCaster();
+				if(caster != NULL)
+					++caster->m_vampiricTouch;
 
 				++m_target->m_hasVampiricTouch;
 			}
 			else
 			{
-				Unit * caster = GetUnitCaster();
-				if(caster && caster->IsPlayer())
-					--((Player*)caster)->m_vampiricTouch;
+				Player * caster = GetPlayerCaster();
+				if(caster != NULL)
+					--caster->m_vampiricTouch;
 
 				--m_target->m_hasVampiricTouch;
 			}
@@ -2310,15 +2308,15 @@ void Aura::SpellAuraDummy(bool apply)
 	//Second Wind - triggers only on stun and Immobilize
 	case 29834:
 		{
-			Unit *caster = GetUnitCaster();
-			if(caster && caster->IsPlayer())
-				static_cast< Player* >(caster)->SetTriggerStunOrImmobilize( 29841, 100, true );//fixed 100% chance
+			Player *caster = GetPlayerCaster();
+			if(caster != NULL)
+				caster->SetTriggerStunOrImmobilize( 29841, 100, true );//fixed 100% chance
 		}break;
 	case 29838:
 		{
-			Unit *caster = GetUnitCaster();
-			if(caster && caster->IsPlayer())
-				static_cast< Player* >(caster)->SetTriggerStunOrImmobilize( 29842, 100, true );//fixed 100% chance
+			Player *caster = GetPlayerCaster();
+			if(caster != NULL)
+				caster->SetTriggerStunOrImmobilize( 29842, 100, true );//fixed 100% chance
 		}break;
 	// Mage - Torment the Weak
 	case 29447:
@@ -2335,9 +2333,9 @@ void Aura::SpellAuraDummy(bool apply)
 	case 12496:
 	case 12497:
 		{
-			Unit *caster = GetUnitCaster();
-			if(caster && caster->IsPlayer())
-				static_cast< Player* >(caster)->SetTriggerChill( 12494, mod->m_amount, false );
+			Player *caster = GetPlayerCaster();
+			if(caster != NULL)
+				caster->SetTriggerChill( 12494, mod->m_amount, false );
 		}break;
 	// Mage - Invisibility override
 	case 32612:
@@ -2352,18 +2350,18 @@ void Aura::SpellAuraDummy(bool apply)
 	case 44543:
 	case 44545:
 		{
-			Unit *caster = GetUnitCaster();
-			if(caster && caster->IsPlayer())
-				static_cast< Player* >(caster)->SetTriggerChill(44544,mod->m_amount, true);
+			Player *caster = GetPlayerCaster();
+			if(caster != NULL)
+				caster->SetTriggerChill(44544,mod->m_amount, true);
 		}break;
 	// Mage - Brain Freeze 
 	case 44546:
 	case 44548:
 	case 44549:
 		{
-			Unit *caster = GetUnitCaster();
-			if(caster && caster->IsPlayer())
-				static_cast< Player* >(caster)->SetTriggerChill(57761,mod->m_amount, true);
+			Player *caster = GetPlayerCaster();
+			if(caster != NULL)
+				caster->SetTriggerChill(57761,mod->m_amount, true);
 		}break;
 	//Mage - Magic Absorption
 	case 29441:
@@ -2573,13 +2571,13 @@ void Aura::SpellAuraDummy(bool apply)
 
 	case 34477: // Misdirection
 		{
-			Unit* caster = GetUnitCaster();
-			if( caster == NULL || !caster->IsPlayer() )
+			Player *caster = GetPlayerCaster();
+			if(caster == NULL)
 				return;
 
 			if (!apply)
 			{
-				sEventMgr.AddEvent( static_cast<Player*>( caster ), &Player::SetMisdirectionTarget,(uint64)0, EVENT_UNK, 250, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+				sEventMgr.AddEvent( caster, &Player::SetMisdirectionTarget,(uint64)0, EVENT_UNK, 250, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 				//static_cast<Player *>(GetUnitCaster())->SetMisdirectionTarget(0);
 			}
 		}break;
@@ -2632,10 +2630,9 @@ void Aura::SpellAuraDummy(bool apply)
 		}break;
 	}
 	
-	Unit * caster = GetUnitCaster();
-	if( TamingSpellid && caster && caster->IsPlayer() )
+	Player *p_caster = GetPlayerCaster();
+	if( TamingSpellid && p_caster != NULL )
 	{
-		Player *p_caster = static_cast< Player* >( caster );
 		SpellEntry *triggerspell = dbcSpell.LookupEntry( TamingSpellid );
 		Quest* tamequest = QuestStorage.LookupEntry( triggerspell->EffectMiscValue[1] );
 		if ( !p_caster->GetQuestLogForEntry(tamequest->id ) || m_target->GetEntry() != static_cast<uint32>( tamequest->required_mob[0] ))
@@ -2747,13 +2744,12 @@ void Aura::SpellAuraModConfuse(bool apply)
 
 void Aura::SpellAuraModCharm(bool apply)
 {
-	Unit* ucaster = GetUnitCaster();
-	if( ucaster == NULL || ucaster->GetTypeId() != TYPEID_PLAYER )
+	Player *caster = GetPlayerCaster();
+	if( caster == NULL )
 		return;
 	if( m_target->GetTypeId() != TYPEID_UNIT )
 		return;
 
-	Player* caster = static_cast< Player* >( ucaster );
 	Creature* target = static_cast< Creature* >( m_target );
 
 	if( target->IsTotem() )
@@ -3739,18 +3735,17 @@ void Aura::SpellAuraModResistance(bool apply)
 	}
 	else
 		amt = -mod->m_amount;
-
-	if (!IsPositive() && GetUnitCaster() != NULL && m_target->GetTypeId() == TYPEID_UNIT)
-		m_target->GetAIInterface()->AttackReaction(GetUnitCaster(), 1, GetSpellId());
+	Unit* caster = GetUnitCaster();
+	if (!IsPositive() && caster != NULL && m_target->GetTypeId() == TYPEID_UNIT)
+		m_target->GetAIInterface()->AttackReaction(caster, 1, GetSpellId());
 
 	if( GetSpellProto()->NameHash == SPELL_HASH_FAERIE_FIRE || GetSpellProto()->NameHash == SPELL_HASH_FAERIE_FIRE__FERAL_ )
 		m_target->m_can_stealth = !apply;
 	
-	Unit* ucaster = GetUnitCaster();
-	if( ucaster != NULL && ucaster->IsPlayer() && GetSpellProto()->NameHash == SPELL_HASH_DEVOTION_AURA)
+	Player *plr = GetPlayerCaster();
+	if( plr != NULL && GetSpellProto()->NameHash == SPELL_HASH_DEVOTION_AURA)
 	{
 		// Increases the armor bonus of your Devotion Aura by %u - HACKY
-		Player * plr = static_cast< Player* >( ucaster );
 		if( plr->HasSpell( 20140 ) ) // Improved Devotion Aura Rank 3
 			amt = (int32)(amt * 1.5);
 		else if( plr->HasSpell( 20139 ) ) // Improved Devotion Aura Rank 2
@@ -4717,8 +4712,8 @@ void Aura::SpellAuraModEffectImmunity(bool apply)
 	{
 		if( m_spellProto->Id == 23333 || m_spellProto->Id == 23335 || m_spellProto->Id == 34976 )
 		{
-			Player* plr = static_cast< Player* >( GetUnitCaster() );
-			if( plr == NULL || !plr->IsPlayer() || plr->m_bg == NULL)
+			Player* plr = GetPlayerCaster();
+			if( plr == NULL || plr->m_bg == NULL)
 				return;
 
 			plr->m_bg->HookOnFlagDrop(plr);
@@ -5376,8 +5371,9 @@ void Aura::SpellAuraTransform(bool apply)
 
 				if(apply)
 				{
-					if (GetUnitCaster() != NULL && m_target->GetTypeId() == TYPEID_UNIT)
-						m_target->GetAIInterface()->AttackReaction(GetUnitCaster(), 1, GetSpellId());
+					Unit* caster = GetUnitCaster();
+					if (caster != NULL && m_target->GetTypeId() == TYPEID_UNIT)
+						m_target->GetAIInterface()->AttackReaction(caster, 1, GetSpellId());
 
 					m_target->SetDisplayId(displayId);
 
@@ -5770,16 +5766,17 @@ void Aura::SpellAuraSchoolAbsorb(bool apply)
 		SetPositive();
 
 		int32 val = mod->m_amount;
-		Unit *c = GetUnitCaster();
-		if (c && GetSpellProto()->SpellGroupType) {
-			SM_FIValue(c->SM_FMiscEffect,&val,GetSpellProto()->SpellGroupType);
-			SM_PIValue(c->SM_PMiscEffect,&val,GetSpellProto()->SpellGroupType);
-		}
 
 		Unit* caster = GetUnitCaster();
-		
+
 		if( caster != NULL )
 		{
+			if (GetSpellProto()->SpellGroupType) 
+			{
+				SM_FIValue(caster->SM_FMiscEffect,&val,GetSpellProto()->SpellGroupType);
+				SM_PIValue(caster->SM_PMiscEffect,&val,GetSpellProto()->SpellGroupType);
+			}
+
 			//This will fix talents that affects damage absorbed.
 			int flat = 0;
 			SM_FIValue( caster->SM_FMiscEffect, &flat, GetSpellProto()->SpellGroupType );
@@ -7086,14 +7083,12 @@ void Aura::SpellAuraModPowerRegPerc(bool apply)
 
 void Aura::SpellAuraOverrideClassScripts(bool apply)
 {
-	Unit* ucaster = GetUnitCaster();
-	if( ucaster == NULL || !ucaster->IsPlayer() )
+	Player* plr = GetPlayerCaster();
+	if( plr == NULL )
 		return;
 
 	//misc value is spell to add
 	//spell familyname && grouprelation
-
-	Player *plr = static_cast< Player* >( ucaster );
 
 	//Adding bonus to effect
 	switch(mod->m_miscValue)
@@ -8000,11 +7995,6 @@ void Aura::SpellAuraIncreaseSpellDamageByAttribute(bool apply)
 
 	if(apply)
 	{
-		//!! caster may log out before spell expires on target !
-		Unit * pCaster = GetUnitCaster();
-		if(!pCaster)
-			return;
-
 		val = mod->m_amount;
 		if(val<0)
 			SetNegative();
@@ -8085,11 +8075,6 @@ void Aura::SpellAuraIncreaseHealingByAttribute(bool apply)
 
 	if(apply)
 	{
-		//!! caster may log out before spell expires on target !
-		Unit * pCaster = GetUnitCaster();
-		if(!pCaster)
-			return;
-
 		val = mod->m_amount;
 
 		if(val<0)
@@ -8379,8 +8364,8 @@ void Aura::SpellAuraModHealingDonePct(bool apply)
 void Aura::SpellAuraEmphaty(bool apply)
 {
 	SetPositive();
-	Unit * caster = GetUnitCaster();
-	if(caster == 0 || caster->GetTypeId() != TYPEID_PLAYER)
+	Player * caster = GetPlayerCaster();
+	if(caster == NULL)
 		return;
 
 	// Show extra info about beast
@@ -8388,7 +8373,7 @@ void Aura::SpellAuraEmphaty(bool apply)
 	if(apply)
 		dynflags |= U_DYN_FLAG_PLAYER_INFO;
 
-	m_target->BuildFieldUpdatePacket(static_cast< Player* >(caster), UNIT_DYNAMIC_FLAGS, dynflags);
+	m_target->BuildFieldUpdatePacket(caster, UNIT_DYNAMIC_FLAGS, dynflags);
 }
 
 void Aura::SpellAuraModOffhandDamagePCT(bool apply)
@@ -9147,11 +9132,8 @@ void Aura::SpellAuraExpertise(bool apply)
 
 void Aura::SpellAuraModPossessPet(bool apply)
 {
-	Unit *caster = GetUnitCaster();
-	Player* pCaster;
-	if( caster != NULL && caster->IsPlayer() && caster->IsInWorld() )
-		pCaster = static_cast< Player* >( caster );
-	else
+	Player* pCaster = GetPlayerCaster();;
+	if( pCaster == NULL || ! pCaster->IsInWorld() )
 		return;
 
 	if( !m_target->IsPet() )
@@ -9200,11 +9182,9 @@ void Aura::SpellAuraReduceEffectDuration(bool apply)
 void Aura::HandleAuraControlVehicle(bool apply)
 {
 	//we are casting this spell as player. Just making sure in future noone is dumb enough to forget that
-	Unit* ucaster = GetUnitCaster();
-	if( ucaster == NULL || !ucaster->IsPlayer() || !m_target->IsUnit() )
+	Player* pcaster = GetPlayerCaster();
+	if( pcaster == NULL || !m_target->IsUnit() )
 		return;
-
-	Player *pcaster = static_cast< Player* >( ucaster );
 
 	if( apply )
 	{

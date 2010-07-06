@@ -488,8 +488,8 @@ void Group::RemovePlayer(PlayerInfo * info)
 		{
 			if (pPlayer->m_auras[i] && pPlayer->m_auras[i]->m_areaAura)
 			{
-				Unit * caster = pPlayer->m_auras[i]->GetUnitCaster();
-				if( caster != NULL && caster->IsPlayer() && pPlayer->GetLowGUID() != caster->GetLowGUID() )
+				Player * caster = pPlayer->m_auras[i]->GetPlayerCaster();
+				if( caster != NULL && pPlayer->GetLowGUID() != caster->GetLowGUID() )
 					pPlayer->m_auras[i]->Remove();
 			}
 		}
