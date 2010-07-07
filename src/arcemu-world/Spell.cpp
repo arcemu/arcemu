@@ -2587,7 +2587,14 @@ void Spell::HandleEffects(uint64 guid, uint32 i)
 {
 	uint32 id;
 
-	if(guid == m_caster->GetGUID() || guid == 0)
+	if (guid == 0)
+	{
+		unitTarget = NULL;
+		gameObjTarget = NULL;
+		playerTarget = NULL;
+		itemTarget = NULL;
+	}
+	else if(guid == m_caster->GetGUID())
 	{
 		unitTarget = u_caster;
 		gameObjTarget = g_caster;
