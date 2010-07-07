@@ -2429,3 +2429,13 @@ DynamicObject * Object::GetMapMgrDynamicObject(const uint64 & guid)
 
 	return GetMapMgr()->GetDynamicObject(GET_LOWGUID_PART(guid));
 }
+
+Player* Object::GetPlayerOwner()
+{
+	if (IsPlayer())
+		return TO_PLAYER(this);
+
+	if (IsCreature() && (IsPet() || TO_CREATURE(this)->IsTotem()) && TO_PET(this)->GetOwner() != NULL && TO_PET(this)->GetOwner()->IsPlayer())
+		return TO_PLAYER(TO_CREATURE(this)->GetOwner());
+	return NULL;
+}

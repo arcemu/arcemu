@@ -3013,7 +3013,7 @@ uint32 Unit::GetSpellDidHitResult( Unit* pVictim, uint32 weapon_damage_type, Spe
 		r++;
 	}
 
-	uint32 roll_results[5] = { SPELL_DID_HIT_MISS,SPELL_DID_HIT_DODGE,SPELL_DID_HIT_DEFLECT,SPELL_DID_HIT_BLOCK,SPELL_DID_HIT_SUCCESS };
+	uint32 roll_results[5] = { SPELL_DID_HIT_MISS,SPELL_DID_HIT_DODGE,SPELL_DID_HIT_PARRY,SPELL_DID_HIT_BLOCK,SPELL_DID_HIT_SUCCESS };
 	return roll_results[r];
 }
 
@@ -7934,4 +7934,38 @@ void Unit::RemoveCurrentUnitForSingleTargetAura(uint32 spell_id)
 
 	if ( itr != m_singleTargetAura.end() )
 		m_singleTargetAura.erase(itr);
+}
+
+bool Unit::InParty( Unit* u )
+{
+	Player* p = GetPlayerOwner();
+	Player* uFrom = u->GetPlayerOwner();
+
+	if (p == NULL || uFrom == NULL)
+		return false;
+
+	if (p == uFrom)
+		return true;
+
+	if (p->GetGroup() != NULL && uFrom->GetGroup() != NULL && p->GetGroup() == uFrom->GetGroup() && p->GetSubGroup() == uFrom->GetSubGroup())
+		return true;
+
+	return false;
+}
+
+bool Unit::InRaid( Unit* u )
+{
+	Player* p = GetPlayerOwner();
+	Player* uFrom = u->GetPlayerOwner();
+
+	if (p == NULL || uFrom == NULL)
+		return false;
+
+	if (p == uFrom)
+		return true;
+
+	if (p->GetGroup() != NULL && uFrom->GetGroup() != NULL && p->GetGroup() == uFrom->GetGroup())
+		return true;
+
+	return false;
 }

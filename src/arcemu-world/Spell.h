@@ -21,6 +21,7 @@
 #ifndef __SPELL_H
 #define __SPELL_H
 
+#include "SpellTarget.h"
 #include "SpellFailure.h"
 #include "StdAfx.h"
 
@@ -1594,10 +1595,15 @@ enum SpellDidHitResult
 	SPELL_DID_HIT_MISS						= 1,
 	SPELL_DID_HIT_RESIST					= 2,
 	SPELL_DID_HIT_DODGE						= 3,
-	SPELL_DID_HIT_DEFLECT					= 4,
+	SPELL_DID_HIT_PARRY						= 4,
 	SPELL_DID_HIT_BLOCK						= 5,
 	SPELL_DID_HIT_EVADE						= 6,
 	SPELL_DID_HIT_IMMUNE					= 7,
+	SPELL_DID_HIT_IMMUNE2					= 8, 
+	SPELL_DID_HIT_DEFLECT					= 9,  // See - http://www.wowwiki.com/Deflect
+	SPELL_DID_HIT_ABSORB					= 10, // See - http://www.wowwiki.com/Absorb
+	SPELL_DID_HIT_REFLECT					= 11, // See - http://www.wowwiki.com/Reflect
+	NUM_SPELL_DID_HIT_RESULTS,
 };
 
 // Target constraints for spells ( mostly scripted stuff )
@@ -1672,7 +1678,7 @@ public:
     //get single Enemy as target
     uint64 GetSinglePossibleFriend(uint32 i, float prange= 0);
 	//generate possible target list for a spell. Use as last resort since it is not accurate
-    void GenerateTargets(SpellCastTargets *store_buff);
+    bool GenerateTargets(SpellCastTargets *store_buff);
     // Fills the target map of the spell packet
     void FillTargetMap(uint32);
     // See if we hit the target or can it resist (evade/immune/resist on spellgo) (0=success)
@@ -1940,7 +1946,6 @@ public:
     void SpellTargetSinglePartyInjured(uint32 i, uint32 j);
     void SpellTargetMultiplePartyInjured(uint32 i, uint32 j);
 	void SpellTargetNonCombatPet(uint32 i, uint32 j);
-	void SpellTargetEnemiesInAreaChanneled(uint32 i, uint32 j);
 
     void Heal(int32 amount, bool ForceCrit = false);
 
@@ -2212,6 +2217,14 @@ public: //Modified by LUAppArc private->public
     friend class DynamicObject;
     void DetermineSkillUp(uint32 skillid,uint32 targetlevel,uint32 multiplicator = 1);
     void DetermineSkillUp(uint32 skillid);
+
+	uint32 GetTargetType(uint32 value, uint32 i);
+	bool AddTarget(uint32 i, uint32 TargetType, Object* obj);
+	void AddAOETargets(uint32 i, uint32 TargetType, float r, uint32 maxtargets);
+	void AddPartyTargets(uint32 i, uint32 TargetType, float r, uint32 maxtargets);
+	void AddRaidTargets(uint32 i, uint32 TargetType, float r, uint32 maxtargets, bool partylimit = false);
+	void AddChainTargets(uint32 i, uint32 TargetType, float r, uint32 maxtargets);
+	void AddConeTargets(uint32 i, uint32 TargetType, float r, uint32 maxtargets);
 
 public:
 	SpellEntry* m_spellInfo;

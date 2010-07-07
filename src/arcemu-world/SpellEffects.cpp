@@ -3048,6 +3048,22 @@ void Spell::SpellEffectPersistentAA(uint32 i) // Persistent Area Aura
 
 void Spell::SpellEffectSummon(uint32 i)
 {
+	float spawnx, spawny, spawnz;
+
+	if (m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION)
+	{
+		spawnx = m_targets.m_destX;
+		spawny = m_targets.m_destY;
+		spawnz = m_targets.m_destZ;
+	}
+	else
+	{
+		spawnx = m_caster->GetPositionX();
+		spawny = m_caster->GetPositionY();
+		spawnz = m_caster->GetPositionZ();
+	}
+
+
 	switch(m_spellInfo->EffectMiscValueB[i])
 	{
 	case 63:
@@ -3249,14 +3265,9 @@ void Spell::SpellEffectSummon(uint32 i)
 				pCreature->SetMaxDamage(pCreature->GetMaxDamage() + parent_bonus);
 				pCreature->GetAIInterface()->SetUnitToFollowAngle(pi_rand);
 				pCreature->GetAIInterface()->SetFollowDistance(3.0f);
-				float x,y,z;
-				x = u_caster->GetPositionX()+rand()%20;
-				y = u_caster->GetPositionY()+rand()%20;
-				z = u_caster->GetPositionZ();
-				pCreature->SetPosition(x,y,z,0.0f,true);
-				pCreature->CastSpell(pCreature,50142,true);
+				pCreature->SetPosition(spawnx, spawny, spawnz, 0.0f,true);
 			}
-
+			
 			pCreature->PushToWorld(u_caster->GetMapMgr());
 
 			sEventMgr.AddEvent(pCreature, &Creature::RemoveFromWorld, false, true, EVENT_CREATURE_REMOVE_CORPSE, GetDuration(), 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);

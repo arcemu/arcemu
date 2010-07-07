@@ -242,6 +242,7 @@ bool Master::Run(int argc, char ** argv)
 		Log.LargeErrorMessage( LARGERRORMESSAGE_WARNING, "You are running ArcEmu as root.", "This is not needed, and may be a possible security risk.", "It is advised to hit CTRL+C now and", "start as a non-privileged user.", NULL);
 #endif
 
+	InitImplicitTargetFlags();
 	InitRandomNumberGenerators();
 	Log.Success( "Rnd", "Initialized Random Number Generators." );
 

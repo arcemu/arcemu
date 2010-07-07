@@ -1796,6 +1796,12 @@ protected:
 	float m_parryfromspell;
 	uint32 m_BlockModPct; // is % but does not need float and does not need /100!
 
+
+public:
+	//Andy's crap
+
+	bool InParty(Unit* u);
+	bool InRaid(Unit* u);
 };
 
 

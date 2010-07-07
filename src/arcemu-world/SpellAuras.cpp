@@ -3843,124 +3843,17 @@ void Aura::SpellAuraPeriodicTriggerSpell(bool apply)
 
 	if(apply)
 	{
-		//FIX ME: positive or negative?
-		uint32 sp = GetSpellProto()->EffectTriggerSpell[mod->i];
-		SpellEntry *spe = dbcSpell.LookupEntryForced(sp);
-		if(!sp || !spe)
-		{
-			//	sp=22845;
-			return;//null spell
-		}
-
-		Unit *m_caster = GetUnitCaster();
-		if(!m_caster)
-			return;
-
-		if ( GetSpellProto()->Id == 23493 || GetSpellProto()->Id == 24379 )
-			// Cebernic: Restoration on battleground fixes(from p2wow's merged)
-			// it wasn't working perfectly, this is just a tempfix
-		{
-			SetPositive();
-			sEventMgr.AddEvent(this, &Aura::EventPeriodicHealPct,10.0f,
-			EVENT_AURA_PERIODIC_HEALPERC,	GetSpellProto()->EffectAmplitude[mod->i],0,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-
-			sEventMgr.AddEvent(this, &Aura::EventPeriodicManaPct,10.0f,
-			EVENT_AURA_PERIOCIC_MANA,	GetSpellProto()->EffectAmplitude[mod->i],0,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-			return;
-		}
-
-        if( m_caster->GetChannelSpellTargetGUID() )
-		{
-			sEventMgr.AddEvent(this, &Aura::EventPeriodicTriggerSpell, spe,
-			EVENT_AURA_PERIODIC_TRIGGERSPELL,GetSpellProto()->EffectAmplitude[mod->i], 0,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-
-            periodic_target = m_caster->GetChannelSpellTargetGUID();
-		}
-		else
-		{
-			sEventMgr.AddEvent(this, &Aura::EventPeriodicTriggerSpell, spe,
-				EVENT_AURA_PERIODIC_TRIGGERSPELL,GetSpellProto()->EffectAmplitude[mod->i], 0,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-			periodic_target = m_target->GetGUID();
-		}
+		SpellEntry* trigger = dbcSpell.LookupEntry(GetSpellProto()->EffectTriggerSpell[mod->i]);
+		sEventMgr.AddEvent(this, &Aura::EventPeriodicTriggerSpell, trigger,
+		EVENT_AURA_PERIODIC_TRIGGERSPELL,GetSpellProto()->EffectAmplitude[mod->i], 0,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 	}
 }
 
 void Aura::EventPeriodicTriggerSpell(SpellEntry* spellInfo)
 {
-	// Trigger Spell
-	// check for spell id	
-	Arcemu::Util::ARCEMU_ASSERT(   spellInfo != NULL);
-	Unit * m_caster = GetUnitCaster();
-	if(m_caster == NULL || !m_caster->IsInWorld() )
-		return;
-
-	if( spellInfo->EffectImplicitTargetA[0] == 18 )			// Hellfire, if there are any others insert here
-	{
-		Spell *spell = new Spell(m_caster, spellInfo, true, this);
-		SpellCastTargets targets;
-		targets.m_targetMask = TARGET_FLAG_SOURCE_LOCATION;
-		targets.m_srcX = m_caster->GetPositionX();
-		targets.m_srcY = m_caster->GetPositionY();
-		targets.m_srcZ = m_caster->GetPositionZ();
-		spell->prepare(&targets);
-		return;
-	}
-
-	Object * oTarget = m_target->GetMapMgrObject(periodic_target);
-	if(oTarget== NULL)
-		return;
-
-	if(oTarget->GetTypeId()==TYPEID_DYNAMICOBJECT)
-	{
-		Spell *spell = new Spell(m_caster, spellInfo, true, this);
-		SpellCastTargets targets;
-		targets.m_targetMask = TARGET_FLAG_DEST_LOCATION;
-		targets.m_destX = oTarget->GetPositionX();
-		targets.m_destY = oTarget->GetPositionY();
-		targets.m_destZ = oTarget->GetPositionZ();
-		spell->prepare(&targets);
-		return;
-	}
-
-	Unit *pTarget = ((Unit*)oTarget);
-
-	if(!oTarget->IsUnit())
-		return;
-
-	if(!pTarget || pTarget->IsDead())
-	{
-		SendInterrupted(SPELL_FAILED_TARGETS_DEAD, m_caster);
-		SendChannelUpdate(0, m_caster);
-		this->Remove();
-		return;
-	}
-
-	if(spellInfo->spellIconID == 225 ) // this is arcane missiles to avoid casting on self
-		if(m_casterGuid == pTarget->GetGUID())
-			return;
-
-	// set up our max Range
-	float maxRange = GetMaxRange( dbcSpellRange.LookupEntry( spellInfo->rangeIndex ) );
-
-	if( spellInfo->SpellGroupType )
-	{
-		SM_FFValue( m_caster->SM_FRange, &maxRange, spellInfo->SpellGroupType );
-		SM_PFValue( m_caster->SM_PRange, &maxRange, spellInfo->SpellGroupType );
-	}
-
-	if( m_caster->IsStunned() || m_caster->IsFeared() || ( maxRange != 0 && m_caster->GetDistance2dSq( pTarget ) > ( maxRange*maxRange )) )
-	{
-		// no longer valid
-		SendInterrupted(SPELL_FAILED_INTERRUPTED, m_caster);
-		SendChannelUpdate(0, m_caster);
-		this->Remove();
-		return;
-	}
-
-	Spell *spell = new Spell(m_caster, spellInfo, true, this);
+	Spell* spell = new Spell(m_target, spellInfo, true, this);
 	SpellCastTargets targets;
-	targets.m_unitTarget = pTarget->GetGUID();
-	targets.m_targetMask = TARGET_FLAG_UNIT;
+	spell->GenerateTargets(&targets);
 	spell->prepare(&targets);
 }
 

@@ -146,12 +146,7 @@ void SpellCastTargets::write( WorldPacket& data )
 		data << m_srcX << m_srcY << m_srcZ;
 
 	if( m_targetMask & TARGET_FLAG_DEST_LOCATION )
-	{ //VLack: guess what, some Aspire fix
-		if(m_unitTarget) FastGUIDPack( data, m_unitTarget ); 
-		else data << uint8(0); 
-		data << m_destX << m_destY << m_destZ; 
-	}
-//		data << uint8(0) << m_destX << m_destY << m_destZ;
+		data << uint8(0) << m_destX << m_destY << m_destZ;
 
 	if( m_targetMask & TARGET_FLAG_STRING )
 		data << m_strTarget.c_str();
@@ -837,355 +832,6 @@ uint8 Spell::DidHit( uint32 effindex, Unit* target )
 		return res;
 	}
 }
-//generate possible target list for a spell. Use as last resort since it is not accurate
-//this function makes a rough estimation for possible target !
-//!!!disabled parts that were not tested !!
-void Spell::GenerateTargets(SpellCastTargets *store_buff)
-{
-	float r = GetProto()->base_range_or_radius_sqr;
-	if( GetProto()->SpellGroupType && u_caster)
-	{
-		SM_FFValue(u_caster->SM_FRadius,&r,GetProto()->SpellGroupType);
-		SM_PFValue(u_caster->SM_PRadius,&r,GetProto()->SpellGroupType);
-	}
-	uint32 cur;
-	for(uint32 i= 0;i<3;i++)
-		for(uint32 j= 0;j<2;j++)
-		{
-			if(j== 0)
-				cur = GetProto()->EffectImplicitTargetA[i];
-			else // if(j==1)
-				cur = GetProto()->EffectImplicitTargetB[i];
-			switch(cur)
-			{
-				case EFF_TARGET_NONE:{
-					//this is bad for us :(
-					}break;
-				case EFF_TARGET_SELF:{
-						if(m_caster->IsUnit())
-							store_buff->m_unitTarget = m_caster->GetGUID();
-					}break;
-					// need more research
-				case 4:{ // dono related to "Wandering Plague", "Spirit Steal", "Contagion of Rot", "Retching Plague" and "Copy of Wandering Plague"
-					}break;
-				case EFF_TARGET_PET:
-					{// Target: Pet
-						if(p_caster && p_caster->GetSummon())
-							store_buff->m_unitTarget = p_caster->GetSummon()->GetGUID();
-					}break;
-				case EFF_TARGET_SINGLE_ENEMY:// Single Target Enemy
-				case 77:					// grep: i think this fits
-				case 8: // related to Chess Move (DND), Firecrackers, Spotlight, aedm, Spice Mortar
-				case EFF_TARGET_ALL_ENEMY_IN_AREA: // All Enemies in Area of Effect (TEST)
-				case EFF_TARGET_ALL_ENEMY_IN_AREA_INSTANT: // All Enemies in Area of Effect instant (e.g. Flamestrike)
-				case EFF_TARGET_ALL_ENEMIES_AROUND_CASTER:
-				case EFF_TARGET_IN_FRONT_OF_CASTER:
-				case EFF_TARGET_ALL_ENEMY_IN_AREA_CHANNELED:// All Enemies in Area of Effect(Blizzard/Rain of Fire/volley) channeled
-				case 31:// related to scripted effects
-				case 53:// Target Area by Players CurrentSelection()
-				case 54:// Targets in Front of the Caster
-					{
-						if( p_caster != NULL )
-						{
-							Unit *selected = p_caster->GetMapMgr()->GetUnit(p_caster->GetSelection());
-							if(isAttackable(p_caster,selected,!(GetProto()->c_is_flags & SPELL_FLAG_IS_TARGETINGSTEALTHED)))
-								store_buff->m_unitTarget = p_caster->GetSelection();
-						}
-						else if( u_caster != NULL )
-						{
-							Unit * nextTarget = u_caster->GetAIInterface()->GetNextTarget();
-							if(	nextTarget &&
-								isAttackable(u_caster,nextTarget,!(GetProto()->c_is_flags & SPELL_FLAG_IS_TARGETINGSTEALTHED)) &&
-								u_caster->GetDistanceSq(nextTarget) <= r)
-							{
-								store_buff->m_unitTarget = nextTarget->GetGUID();
-							}
-							if(u_caster->GetAIInterface()->getAITargetsCount() && u_caster->GetMapMgr())
-							{
-								//try to get most hated creature
-								u_caster->GetAIInterface()->LockAITargets(true);
-								TargetMap *m_aiTargets = u_caster->GetAIInterface()->GetAITargets();
-								TargetMap::iterator itr;
-								for(itr = m_aiTargets->begin(); itr != m_aiTargets->end();itr++)
-								{
-									Unit *hate_t = u_caster->GetMapMgr()->GetUnit( itr->first );
-									if( /*m_caster->GetMapMgr()->GetUnit(itr->first->GetGUID()) &&*/
-										hate_t &&
-										hate_t->GetMapMgr() == m_caster->GetMapMgr() &&
-										hate_t->isAlive() &&
-										m_caster->GetDistanceSq(hate_t) <= r &&
-										isAttackable(u_caster,hate_t,!(GetProto()->c_is_flags & SPELL_FLAG_IS_TARGETINGSTEALTHED))
-										)
-									{
-										store_buff->m_unitTarget=itr->first;
-										break;
-									}
-								}
-								u_caster->GetAIInterface()->LockAITargets(false);
-							}
-						}
-						//try to get a whatever target
-						if(!store_buff->m_unitTarget)
-						{
-							store_buff->m_unitTarget=GetSinglePossibleEnemy(i);
-						}
-						//if we still couldn't get a target, check maybe we could use
-//						if(!store_buff->m_unitTarget)
-//						{
-//						}
-					}break;
-					// spells like 17278:Cannon Fire and 21117:Summon Son of Flame A
-				case 17: // A single target at a xyz location or the target is a position xyz
-				case 18:// Land under caster.Maybe not correct
-					{
-						store_buff->m_srcX=m_caster->GetPositionX();
-						store_buff->m_srcY=m_caster->GetPositionY();
-						store_buff->m_srcZ=m_caster->GetPositionZ();
-						store_buff->m_targetMask |= TARGET_FLAG_SOURCE_LOCATION;
-					}break;
-				case EFF_TARGET_ALL_PARTY_AROUND_CASTER:
-					{// All Party Members around the Caster in given range NOT RAID!
-						Player* p = p_caster;
-						if( p == NULL)
-						{
-							if( static_cast< Creature* >( u_caster )->IsTotem() )
-								p = static_cast< Player* >( static_cast< Creature* >( u_caster )->GetOwner() );
-						}
-						if( p != NULL )
-						{
-							if(IsInrange(m_caster->GetPositionX(),m_caster->GetPositionY(),m_caster->GetPositionZ(),p,r))
-							{
-								store_buff->m_unitTarget = m_caster->GetGUID();
-								break;
-							}
-							SubGroup * subgroup = p->GetGroup() ?
-								p->GetGroup()->GetSubGroup(p->GetSubGroup()) : 0;
-
-							if(subgroup)
-							{
-								p->GetGroup()->Lock();
-								for(GroupMembersSet::iterator itr = subgroup->GetGroupMembersBegin(); itr != subgroup->GetGroupMembersEnd(); ++itr)
-								{
-									if(!(*itr)->m_loggedInPlayer || m_caster == (*itr)->m_loggedInPlayer)
-										continue;
-									if(IsInrange(m_caster->GetPositionX(),m_caster->GetPositionY(),m_caster->GetPositionZ(),(*itr)->m_loggedInPlayer,r) && (m_caster->GetPhase() & (*itr)->m_loggedInPlayer->GetPhase()) )
-									{
-										store_buff->m_unitTarget = (*itr)->m_loggedInPlayer->GetGUID();
-										break;
-									}
-								}
-								p->GetGroup()->Unlock();
-							}
-						}
-
-						if ( u_caster != NULL && u_caster->IsCreature() )
-						{
-							//target friendly npcs
-							for( std::set<Object*>::iterator itr = u_caster->GetInRangeSameFactsSetBegin(); itr != u_caster->GetInRangeSameFactsSetEnd(); itr++ )
-							{
-								if ( (*itr) != NULL && ((*itr)->GetTypeId() == TYPEID_UNIT || (*itr)->GetTypeId() == TYPEID_PLAYER) && (*itr)->IsInWorld() && ((Unit*)*itr)->isAlive() && IsInrange(u_caster, (*itr), r) && (u_caster->GetPhase() & (*itr)->GetPhase()) )
-								{
-									store_buff->m_unitTarget = (*itr)->GetGUID();
-									break;
-								}
-							}
-						}
-					}break;
-				case EFF_TARGET_SINGLE_FRIEND:
-				case 45:// Chain,!!only for healing!! for chain lightning =6
-				case 57:// Targeted Party Member
-					{// Single Target Friend
-						if( p_caster != NULL )
-						{
-							if(isFriendly(p_caster,p_caster->GetMapMgr()->GetUnit(p_caster->GetSelection())))
-								store_buff->m_unitTarget = p_caster->GetSelection();
-							else store_buff->m_unitTarget = p_caster->GetGUID();
-						}
-						else if( u_caster != NULL )
-						{
-							if( u_caster->GetCreatedByGUID() )
-								store_buff->m_unitTarget = u_caster->GetCreatedByGUID();
-							 else
-							 {
-								//target friendly npcs
-								for( std::set<Object*>::iterator itr = u_caster->GetInRangeSameFactsSetBegin(); itr != u_caster->GetInRangeSameFactsSetEnd(); itr++ )
-								{
-									if ( (*itr) != NULL && ((*itr)->GetTypeId() == TYPEID_UNIT || (*itr)->GetTypeId() == TYPEID_PLAYER) && (*itr)->IsInWorld() && ((Unit*)*itr)->isAlive() && IsInrange(u_caster, (*itr), r) && (u_caster->GetPhase() & (*itr)->GetPhase()) )
-									{
-
-										//few additional checks
-										if (IsHealingSpell(GetProto()) && ((Unit*)*itr)->GetHealthPct() == 100 && !((Unit*)*itr)->HasAura(GetProto()->Id) /*!((Unit*)*itr)->HasActiveAura(GetProto()->Id, m_caster->GetGUID())*/)
-											continue;
-
-										//check if an aura is being applied, and check if it already exists
-										bool applies_aura=false;
-										for (int k= 0; k<3; k++)
-										{
-											if (GetProto()->Effect[k] == SPELL_EFFECT_APPLY_AURA || GetProto()->Effect[k] == SPELL_EFFECT_APPLY_AREA_AURA || GetProto()->Effect[k] == SPELL_EFFECT_APPLY_AREA_AURA2 )
-											{
-												applies_aura=true;
-												break;
-											}
-										}
-
-										//majority of healing spells stack, infact I think they all do as of 2.0.1
-										if (!IsHealingSpell(GetProto()) && applies_aura && ((Unit*)*itr)->HasAura(GetProto()->Id))
-											continue;
-
-
-										store_buff->m_unitTarget = (*itr)->GetGUID();
-										break;
-									 }
-								}
-							}
-						}
-					}break;
-				case EFF_TARGET_GAMEOBJECT:
-					{
-						if(p_caster && p_caster->GetSelection())
-							store_buff->m_unitTarget = p_caster->GetSelection();
-					}break;
-				case EFF_TARGET_DUEL:
-					{// Single Target Friend Used in Duel
-						if(p_caster && p_caster->DuelingWith && p_caster->DuelingWith->isAlive() && IsInrange(p_caster,p_caster->DuelingWith,r))
-							store_buff->m_unitTarget = p_caster->GetSelection();
-					}break;
-				case EFF_TARGET_GAMEOBJECT_ITEM:{// Gameobject/Item Target
-						//shit
-					}break;
-				case 27:{ // target is owner of pet
-					// please correct this if not correct does the caster variable need a Pet caster variable?
-						if(u_caster && u_caster->IsPet())
-							store_buff->m_unitTarget = static_cast< Pet* >( u_caster )->GetPetOwner()->GetGUID();
-					}break;
-				case EFF_TARGET_MINION:
-				case 73:
-					{// Minion Target
-                        if( u_caster != NULL ){
-						    if( u_caster->GetSummonedUnitGUID() == 0)
-							    store_buff->m_unitTarget = u_caster->GetGUID();
-						    else store_buff->m_unitTarget = u_caster->GetSummonedUnitGUID();
-                        }
-					}break;
-				case 33://Party members of totem, inside given range
-				case EFF_TARGET_SINGLE_PARTY:// Single Target Party Member
-				case EFF_TARGET_ALL_PARTY: // all Members of the targets party
-					{
-						Player *p= NULL;
-						if( p_caster != NULL )
-								p = p_caster;
-						else if( u_caster && u_caster->IsUnit() && static_cast< Creature* >( u_caster )->IsTotem() )
-								p = static_cast< Player* >( static_cast< Creature* >( u_caster )->GetOwner() );
-						if( p_caster != NULL )
-						{
-							if(IsInrange(m_caster->GetPositionX(),m_caster->GetPositionY(),m_caster->GetPositionZ(),p,r))
-							{
-								store_buff->m_unitTarget = p->GetGUID();
-								break;
-							}
-							SubGroup * pGroup = p_caster->GetGroup() ?
-								p_caster->GetGroup()->GetSubGroup(p_caster->GetSubGroup()) : 0;
-
-							if( pGroup )
-							{
-								p_caster->GetGroup()->Lock();
-								for(GroupMembersSet::iterator itr = pGroup->GetGroupMembersBegin();
-									itr != pGroup->GetGroupMembersEnd(); ++itr)
-								{
-									if(!(*itr)->m_loggedInPlayer || p == (*itr)->m_loggedInPlayer)
-										continue;
-									if(IsInrange(m_caster->GetPositionX(),m_caster->GetPositionY(),m_caster->GetPositionZ(),(*itr)->m_loggedInPlayer,r) && (m_caster->GetPhase() & (*itr)->m_loggedInPlayer->GetPhase()) )
-									{
-										store_buff->m_unitTarget = (*itr)->m_loggedInPlayer->GetGUID();
-										break;
-									}
-								}
-								p_caster->GetGroup()->Unlock();
-							}
-						}
-
-						if ( u_caster != NULL && u_caster->IsCreature() )
-						{
-							//target friendly npcs
-							for( std::set<Object*>::iterator itr = u_caster->GetInRangeSameFactsSetBegin(); itr != u_caster->GetInRangeSameFactsSetEnd(); itr++ )
-							{
-								if ( (*itr) != NULL && ((*itr)->GetTypeId() == TYPEID_UNIT || (*itr)->GetTypeId() == TYPEID_PLAYER) && (*itr)->IsInWorld() && ((Unit*)*itr)->isAlive() && IsInrange(u_caster, (*itr), r) && (u_caster->GetPhase() & (*itr)->GetPhase()) )
-								{
-									store_buff->m_unitTarget = (*itr)->GetGUID();
-									break;
-								}
-							}
-						}
-					}break;
-				case 38:{//Dummy Target
-					//have no idea
-					}break;
-				case EFF_TARGET_SELF_FISHING://Fishing
-				case 46://Unknown Summon Atal'ai Skeleton
-				case 47:// Portal
-				case 52:	// Lightwells, etc
-					{
-						store_buff->m_unitTarget = m_caster->GetGUID();
-					}break;
-				case 40://Activate Object target(probably based on focus)
-				case EFF_TARGET_TOTEM_EARTH:
-				case EFF_TARGET_TOTEM_WATER:
-				case EFF_TARGET_TOTEM_AIR:
-				case EFF_TARGET_TOTEM_FIRE:// Totem
-					{
-						if( p_caster != NULL )
-						{
-							uint32 slot = GetProto()->Effect[i] - SPELL_EFFECT_SUMMON_TOTEM_SLOT1;
-							if(p_caster->m_TotemSlots[slot] != 0)
-								store_buff->m_unitTarget = p_caster->m_TotemSlots[slot]->GetGUID();
-						}
-					}break;
-				case 61:{ // targets with the same group/raid and the same class
-					//shit again
-				}break;
-				case EFF_TARGET_ALL_FRIENDLY_IN_AREA:{
-					if ( u_caster != NULL && u_caster->IsCreature() )
-					{
-						for( std::set<Object*>::iterator itr = u_caster->GetInRangeSetBegin(); itr != u_caster->GetInRangeSetEnd(); itr++ )
-						{
-							if ( (*itr) != NULL && ((*itr)->GetTypeId() == TYPEID_UNIT || (*itr)->GetTypeId() == TYPEID_PLAYER) && (*itr)->IsInWorld() && ((Unit*)*itr)->isAlive() && IsInrange(u_caster, (*itr), r) && isFriendly(u_caster, (*itr)))
-							{
-
-								//few additional checks
-								if(((Unit*)*itr)->HasAura(m_spellInfo->Id))
-									continue;
-
-								//check if an aura is being applied, and check if it already exists
-								bool applies_aura=false;
-								for (int k= 0; k<3; k++)
-								{
-									if (m_spellInfo->Effect[k] == SPELL_EFFECT_APPLY_AURA || m_spellInfo->Effect[k] == SPELL_EFFECT_APPLY_AREA_AURA || m_spellInfo->Effect[k] == SPELL_EFFECT_APPLY_AREA_AURA2 )
-									{
-										applies_aura=true;
-										break;
-									}
-								}
-
-								if (applies_aura && ((Unit*)*itr)->HasAura(m_spellInfo->Id))
-									continue;
-
-
-								store_buff->m_unitTarget = (*itr)->GetGUID();
-							}
-						}
-					}
-				}break;
-
-			}//end switch
-		}//end for
-	if(store_buff->m_unitTarget)
-		store_buff->m_targetMask |= TARGET_FLAG_UNIT;
-	if(store_buff->m_srcX)
-		store_buff->m_targetMask |= TARGET_FLAG_SOURCE_LOCATION;
-	if(store_buff->m_destX)
-		store_buff->m_targetMask |= TARGET_FLAG_DEST_LOCATION;
-}//end function
-
 uint8 Spell::prepare( SpellCastTargets * targets )
 {
 	uint8 ccr;
@@ -1482,6 +1128,27 @@ void Spell::cast(bool check)
 
 		for(uint32 i= 0;i<3;i++)
 		{
+			uint32 TargetType = 0;
+			TargetType |= GetTargetType(m_spellInfo->EffectImplicitTargetA[i], i);
+
+			//never get info from B if it is 0 :P
+			if (m_spellInfo->EffectImplicitTargetB[i] != 0)
+				TargetType |= GetTargetType(m_spellInfo->EffectImplicitTargetB[i], i);
+
+			if (TargetType & SPELL_TARGET_AREA_CURTARGET)
+			{
+				//this just forces dest as the targets location :P
+				Object* target = m_caster->GetMapMgr()->_GetObject(m_targets.m_unitTarget);
+
+				if (target != NULL)
+				{
+					m_targets.m_targetMask = TARGET_FLAG_DEST_LOCATION;
+					m_targets.m_destX = target->GetPositionX();
+					m_targets.m_destY = target->GetPositionY();
+					m_targets.m_destZ = target->GetPositionZ();
+				}
+			}
+
 			if( GetProto()->Effect[i] && GetProto()->Effect[i] != SPELL_EFFECT_PERSISTENT_AREA_AURA)
 				FillTargetMap(i);
 		}
@@ -1758,26 +1425,17 @@ void Spell::cast(bool check)
 					if( GetProto()->Effect[x])
 					{
 						isDuelEffect = isDuelEffect ||  GetProto()->Effect[x] == SPELL_EFFECT_DUEL;
-						if( GetProto()->Effect[x] == SPELL_EFFECT_PERSISTENT_AREA_AURA )
-                        {
-							HandleEffects( m_caster->GetGUID(), x );
-                        }
-						else if ( m_targetUnits[x].size()>0 )
+
+						if (m_targetUnits[x].size() > 0)
 						{
-							for( i=m_targetUnits[x].begin(); i!=m_targetUnits[x].end(); )
+							for(i = m_targetUnits[x].begin(); i != m_targetUnits[x].end();)
 							{
 								i2 = i++;
 								HandleEffects(*i2,x);
 							}
 						}
-
-						// Capt: The way this is done is NOT GOOD. Target code should be redone.
-						else if( GetProto()->Effect[x] == SPELL_EFFECT_TELEPORT_UNITS ||
-							     GetProto()->Effect[x] == SPELL_EFFECT_SUMMON ||
-								 GetProto()->Effect[x] == SPELL_EFFECT_TRIGGER_SPELL)
-                        {
-							HandleEffects(m_caster->GetGUID(),x);
-                        }
+						else
+							HandleEffects(0, x);
 					}
 				}
 				/* don't call HandleAddAura unless we actually have auras... - Burlex*/
@@ -5885,4 +5543,18 @@ uint8 Spell::GetErrorAtShapeshiftedCast(SpellEntry *spellInfo, uint32 form)
 	}
 
 	return 0;
+}
+
+uint32 Spell::GetTargetType( uint32 value, uint32 i )
+{
+	uint32 type = g_spellImplicitTargetFlags[value];
+
+	//CHAIN SPELLS ALWAYS CHAIN!
+	uint32 jumps = m_spellInfo->EffectChainTarget[i];
+	if (u_caster != NULL)
+		SM_FIValue(u_caster->SM_FAdditionalTargets, (int32*)&jumps, m_spellInfo->SpellGroupType);
+	if (jumps != 0)
+		type |= SPELL_TARGET_AREA_CHAIN;
+
+	return type;
 }
