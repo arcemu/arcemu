@@ -418,7 +418,7 @@ bool Spell::AddTarget(uint32 i, uint32 TargetType, Object* obj)
 
 	//final checks, require line of sight unless range/radius is 50000 yards
 	SpellRange* r = dbcSpellRange.LookupEntry(m_spellInfo->rangeIndex);
-	if (r->maxRange < 50000 && GetRadius(i) < 50000 && !obj->IsItem())
+	if (sWorld.Collision && r->maxRange < 50000 && GetRadius(i) < 50000 && !obj->IsItem())
 	{
 		float x = m_caster->GetPositionX(), y = m_caster->GetPositionY(), z = m_caster->GetPositionZ() + 0.5f;
 
