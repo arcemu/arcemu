@@ -1524,8 +1524,6 @@ void Aura::EventPeriodicDamage(uint32 amount)
 	{
 		if(c)
 		{
-			c->RemoveAurasByInterruptFlag(AURA_INTERRUPT_ON_START_ATTACK);
-
 			int amp = m_spellProto->EffectAmplitude[mod->i];
 			if( !amp )
 				amp = static_cast< EventableObject* >( this )->event_GetEventPeriod( EVENT_AURA_PERIODIC_DAMAGE );
