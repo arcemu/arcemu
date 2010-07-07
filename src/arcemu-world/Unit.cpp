@@ -409,6 +409,8 @@ Unit::Unit()
 
 	Tagged = false;
 	TaggerGuid = 0;
+
+	m_singleTargetAura.clear();
 }
 
 Unit::~Unit()
@@ -670,6 +672,8 @@ Unit::~Unit()
 	for( std::list<SpellProc*>::iterator itr = m_procSpells.begin(); itr != m_procSpells.end(); ++itr)
 		delete *itr;
 	m_procSpells.clear();
+
+	m_singleTargetAura.clear();
 
     RemoveGarbage();
 }
@@ -4256,6 +4260,23 @@ void Unit::AddAura(Aura * aur)
 		return;
 	}
 
+	// If this aura can only affect one target at a time, remove it from the previous applied target
+	if( aur->GetSpellProto()->AttributesExE & FLAGS6_SINGLE_TARGET_AURA )
+	{
+		Unit* caster = aur->GetUnitCaster();
+		if( caster != NULL )
+		{
+			uint64 prev_target_guid = caster->GetCurrentUnitForSingleTargetAura( aur->GetSpellId() );
+
+			if( prev_target_guid )
+			{
+				Unit* prev_target = this->GetMapMgr()->GetUnit(prev_target_guid);
+				if( prev_target != NULL )
+					prev_target->RemoveAura( aur->GetSpellId(), aur->GetCasterGUID() );
+			}
+		}
+	}
+
 	uint16 AuraSlot = 0xFFFF;
 	//all this code block is to try to find a valid slot for our new aura.
 	if( !aur->IsPassive() )
@@ -4590,7 +4611,15 @@ void Unit::AddAura(Aura * aur)
 			pCaster->RemoveAllAuraByNameHash(SPELL_HASH_BLESSING_OF_PROTECTION);
 		}
 	}
-    
+
+	// If this aura can only affect one target at a time, store this target GUID for future reference
+	if( aur->GetSpellProto()->AttributesExE & FLAGS6_SINGLE_TARGET_AURA )
+	{
+		Unit* caster = aur->GetUnitCaster();
+		if( caster != NULL )
+			caster->SetCurrentUnitForSingleTargetAura( aur->GetSpellId(), aur->GetTarget()->GetGUID() );
+	}
+
 	/* Set aurastates */
 	uint32 flag = 0;
 	if( aur->GetSpellProto()->MechanicsType == MECHANIC_ENRAGED && !asc_enraged++ )
@@ -5727,16 +5756,6 @@ void Unit::RemoveAurasByBuffType(uint32 buff_type, const uint64 &guid, uint32 sk
 			&& m_auras[x]->GetSpellId() != skip // make sure to not do self removes in case aura will stack
 			&& (!sguid || (sguid && m_auras[x]->m_casterGuid == sguid)) // we either remove everything or just buffs from us
 			)
-				m_auras[x]->Remove();
-	}
-}
-
-void Unit::RemoveAurasByBuffIndexType(uint32 buff_index_type, const uint64 &guid)
-{
-	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
-	{
-		if(m_auras[x] && m_auras[x]->GetSpellProto()->BGR_one_buff_from_caster_on_1target == buff_index_type)
-			if(!guid || (guid && m_auras[x]->m_casterGuid == guid))
 				m_auras[x]->Remove();
 	}
 }
@@ -7881,4 +7900,38 @@ void Unit::Phase(uint8 command, uint32 newphase ){
 	}
 	
 	UpdateVisibility();
+}
+
+uint64 Unit::GetCurrentUnitForSingleTargetAura(uint32 spell_id)
+{
+	UniqueAuraTargetMap::iterator itr;
+
+	itr = m_singleTargetAura.find(spell_id);
+
+	if ( itr != m_singleTargetAura.end() )
+		return itr->second;
+	else
+		return 0;
+}
+
+void Unit::SetCurrentUnitForSingleTargetAura(uint32 spell_id, uint64 guid)
+{
+	UniqueAuraTargetMap::iterator itr;
+
+	itr = m_singleTargetAura.find(spell_id);
+
+	if ( itr != m_singleTargetAura.end() )
+		itr->second = guid;
+	else
+		m_singleTargetAura.insert( make_pair(spell_id, guid) );
+}
+
+void Unit::RemoveCurrentUnitForSingleTargetAura(uint32 spell_id)
+{
+	UniqueAuraTargetMap::iterator itr;
+
+	itr = m_singleTargetAura.find(spell_id);
+
+	if ( itr != m_singleTargetAura.end() )
+		m_singleTargetAura.erase(itr);
 }

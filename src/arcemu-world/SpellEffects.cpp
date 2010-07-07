@@ -6879,28 +6879,6 @@ void Spell::SpellEffectDummyMelee( uint32 i ) // Normalized Weapon damage +
 				return; //no damage = no joy
 			damage = damage*sunder_count;
 	}
-	/*else if( GetProto()->NameHash == SPELL_HASH_CRUSADER_STRIKE ) // Crusader Strike - refreshes *all* judgements, not just your own
-	{
-	for( int x = MAX_NEGATIVE_AURAS_EXTEDED_START ; x < MAX_NEGATIVE_AURAS_EXTEDED_END ; x ++ ) // there are only debuff judgements anyway :P
-	{
-	if( unitTarget->m_auras[x] && unitTarget->m_auras[x]->GetSpellProto()->BGR_one_buff_from_caster_on_1target == SPELL_TYPE_INDEX_JUDGEMENT )
-	{
-	// Refresh it!
-	// oh noes, they don't stack...
-	Aura * aur = unitTarget->m_auras[x];
-	SpellEntry * spinfo = aur->GetSpellProto();
-	aur->Remove();
-	Spell * sp = SpellPool.PooledNew();
-	if (!sp)
-	return;
-	sp->Init( this->u_caster , spinfo , true , NULL );
-
-	SpellCastTargets tgt;
-	tgt.m_unitTarget = unitTarget->GetGUID();
-	sp->prepare( &tgt );
-	}
-	}
-	}*/
 	//Hemorrhage
 	if( p_caster && GetProto()->NameHash == SPELL_HASH_HEMORRHAGE )
 		p_caster->AddComboPoints(p_caster->GetSelection(), 1);

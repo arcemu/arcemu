@@ -75,9 +75,28 @@ class DivineAegisSpellProc : public SpellProc
 	}
 };
 
+class ImprovedDevouringPlagueSpellProc : public SpellProc
+{
+	SPELL_PROC_FACTORY_FUNCTION(ImprovedDevouringPlagueSpellProc);
+
+	bool DoEffect(Unit *victim, SpellEntry *CastingSpell, uint32 flag, uint32 dmg, uint32 abs, int *dmg_overwrite, uint32 weapon_damage_type)
+	{
+		// Get dmg amt for 1 tick
+		dmg = CastingSpell->EffectBasePoints[0] +1;
+
+		// Get total ticks
+		int ticks = GetDuration(dbcSpellDuration.LookupEntry(CastingSpell->DurationIndex)) / CastingSpell->EffectAmplitude[0];
+
+		*dmg_overwrite = dmg * ticks * (mOrigSpell->EffectBasePoints[0] +1) / 100;
+
+		return false;
+	}
+};
+
 void SpellProcMgr::SetupPriest()
 {
 	AddByNameHash( SPELL_HASH_IMPROVED_SPIRIT_TAP, &ImprovedSpiritTapSpellProc::Create );
 	AddByNameHash( SPELL_HASH_HOLY_CONCENTRATION, &HolyConcentrationSpellProc::Create );
 	AddByNameHash( SPELL_HASH_DIVINE_AEGIS, &DivineAegisSpellProc::Create );
+	AddByNameHash( SPELL_HASH_IMPROVED_DEVOURING_PLAGUE, &ImprovedDevouringPlagueSpellProc::Create );
 }

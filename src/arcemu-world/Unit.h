@@ -59,6 +59,7 @@ struct CreatureInfo;
 struct FactionTemplateDBC;
 struct FactionDBC;
 
+typedef HM_NAMESPACE::hash_map<uint32, uint64> UniqueAuraTargetMap;
 
 struct ReflectSpellSchool
 {
@@ -1468,7 +1469,6 @@ public:
 
 	void SetFacing(float newo);//only working if creature is idle
 
-	void RemoveAurasByBuffIndexType(uint32 buff_index_type, const uint64 &guid);
 	void RemoveAurasByBuffType(uint32 buff_type, const uint64 &guid,uint32 skip);
 	bool HasAurasOfBuffType(uint32 buff_type, const uint64 &guid,uint32 skip);
 	int	 HasAurasWithNameHash(uint32 name_hash);
@@ -1726,6 +1726,13 @@ public:
 
 	void AddGarbagePet( Pet *pet );
 
+	//******************************************************
+	// Auras that can affect only one target at a time
+	//******************************************************
+	uint64 GetCurrentUnitForSingleTargetAura(uint32 spell_id);
+	void SetCurrentUnitForSingleTargetAura(uint32 spell_id, uint64 guid);
+	void RemoveCurrentUnitForSingleTargetAura(uint32 spell_id);
+
 protected:
 	Unit ();
     void RemoveGarbage();
@@ -1773,6 +1780,10 @@ protected:
 	// Quest emote
 	uint8 m_emoteState;
 	uint32 m_oldEmote;
+
+	// Some auras can only be cast on one target at a time
+	// This will map aura spell id to target guid
+	UniqueAuraTargetMap m_singleTargetAura;
 
 	uint32 m_charmtemp;
 

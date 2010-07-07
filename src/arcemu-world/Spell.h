@@ -611,7 +611,7 @@ enum Flags6
 	FLAGS6_UNK4							= 0x4,
 	FLAGS6_UNK5							= 0x8,
 	FLAGS6_UNK6							= 0x10,
-	FLAGS6_UNK7							= 0x20,
+	FLAGS6_SINGLE_TARGET_AURA			= 0x20,
 	FLAGS6_UNK8							= 0x40,
 	FLAGS6_UNK9							= 0x80,
 	FLAGS6_UNK10						= 0x100,

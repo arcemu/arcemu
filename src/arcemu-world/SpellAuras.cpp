@@ -798,11 +798,6 @@ Aura::Aura( SpellEntry* proto, int32 duration, Object* caster, Unit* target, boo
 
 	if( caster->IsUnit() )
 	{
-		if( m_spellProto->BGR_one_buff_from_caster_on_1target > 0 && caster->IsPlayer() )
-		{
-			( ( Player* )caster )->RemoveSpellTargets( m_spellProto->BGR_one_buff_from_caster_on_1target, target);
-			( ( Player* )caster )->SetSpellTargetType( m_spellProto->BGR_one_buff_from_caster_on_1target, target);
-		}
 		if( m_spellProto->BGR_one_buff_from_caster_on_self != 0 )
 			static_cast<Unit*>(caster)->RemoveAllAuraFromSelfType2( m_spellProto->BGR_one_buff_from_caster_on_self, m_spellProto->NameHash );
 
@@ -916,9 +911,6 @@ void Aura::Remove()
 			caster->CombatStatus.RemoveAttackTarget( m_target );
 			m_target->CombatStatus.RemoveAttacker( caster, caster->GetGUID() );
 		}
-
-		if( m_spellProto->BGR_one_buff_from_caster_on_1target != 0 && m_target->IsPlayer() )
-			( ( Player* )m_target )->RemoveSpellIndexReferences( m_spellProto->BGR_one_buff_from_caster_on_1target );
 	}
 	else
 		m_target->CombatStatus.RemoveAttacker( NULL, m_casterGuid );
@@ -949,6 +941,10 @@ void Aura::Remove()
 			TO_PLAYER(caster)->SetFarsightTarget(0 );
 		}
 	}
+
+	// If this aura can affect one target at a time, remove this target from the caster map
+	if( caster != NULL && GetSpellProto()->AttributesExE & FLAGS6_SINGLE_TARGET_AURA )
+		caster->RemoveCurrentUnitForSingleTargetAura( GetSpellId() );
 
 	/* Remove aurastates */
     uint32 flag = 0;
@@ -5046,111 +5042,134 @@ void Aura::EventPeriodicLeech(uint32 amount)
 	if( m_caster == NULL )
 		return;
 
-	if( m_target->isAlive() && m_caster->isAlive() )
+	if( ! ( m_target->isAlive() && m_caster->isAlive() ) )
+		return;
+
+	SpellEntry* sp = GetSpellProto();
+
+	if( m_target->SchoolImmunityList[sp->School] )
 	{
-		if(m_target->SchoolImmunityList[GetSpellProto()->School])
-			return;
-
-		int amp = m_spellProto->EffectAmplitude[mod->i];
-		if( !amp )
-			amp = static_cast< EventableObject* >( this )->event_GetEventPeriod( EVENT_AURA_PERIODIC_LEECH );
-
-		int bonus = 0;
-
-		if(GetDuration())
-		{
-			float fbonus = ( m_caster->GetSpellDmgBonus(m_target,GetSpellProto(),amount,true) ) * 0.5f;
-			if(fbonus < 0) fbonus = 0.0f;
-			bonus = float2int32(fbonus * amp / GetDuration());
-		}
-
-		amount += bonus;
-
-		uint32 Amount = (uint32)min( amount, m_target->GetUInt32Value( UNIT_FIELD_HEALTH ) );
-
-		// Apply bonus from [Warlock] Soul Siphon
-		if (m_caster->m_soulSiphon.amt) {
-			// Use std::map to prevent counting duplicate auras (stacked ones, from the same unit)
-			std::map<uint64, std::set<uint32> *> auras;
-			std::map<uint64, std::set<uint32> *>::iterator itx, itx2;
-			int32 pct;
-			int32 count= 0;
-
-			auras.clear();
-			for(uint32 x=MAX_NEGATIVE_AURAS_EXTEDED_START;x<MAX_NEGATIVE_AURAS_EXTEDED_END;x++)
-			{
-				if(m_target->m_auras[x])
-				{
-					Aura *aura = m_target->m_auras[x];
-					if (aura->GetSpellProto()->SpellFamilyName == 5)
-					{
-						skilllinespell *sk;
-
-						sk = objmgr.GetSpellSkill(aura->GetSpellId());
-						if(sk && sk->skilline == SKILL_AFFLICTION)
-						{
-							itx = auras.find(aura->GetCasterGUID());
-							if( itx == auras.end() )
-							{
-								std::set<uint32> *ids = new std::set<uint32>;
-								auras.insert(make_pair(aura->GetCasterGUID(),ids));
-								itx = auras.find(aura->GetCasterGUID());
-							}
-
-							std::set<uint32> *ids = itx->second;
-							if( ids->find(aura->GetSpellId()) == ids->end() )
-							{
-								ids->insert( aura->GetSpellId() );
-							}
-						}
-					}
-				}
-			}
-
-			if( auras.size() )
-			{
-				itx = auras.begin();
-				while( itx != auras.end() )
-				{
-					itx2 = itx++;
-					count += (int32)itx2->second->size();
-					delete itx2->second;
-				}
-			}
-
-			pct = count * m_caster->m_soulSiphon.amt;
-			if (pct > m_caster->m_soulSiphon.max)
-				pct = m_caster->m_soulSiphon.max;
-			Amount += (Amount * pct) / 100;
-		}
-
-		uint32 newHealth = m_caster->GetHealth() + Amount ;
-
-		uint32 mh = m_caster->GetMaxHealth();
-		if(newHealth <= mh)
-			m_caster->SetHealth( newHealth);
-		else
-			m_caster->SetHealth( mh);
-
-		m_target->SendPeriodicHealAuraLog( m_caster->GetNewGUID(), m_caster->GetNewGUID(), m_spellProto->Id, Amount );
-		m_target->SendPeriodicAuraLog( m_target->GetNewGUID(), m_target->GetNewGUID(), m_spellProto->Id, m_spellProto->School, Amount, 0, 0, FLAG_PERIODIC_LEECH);
-
-		//deal damage before we add healing bonus to damage
-		SpellEntry* m_SpellProto = GetSpellProto();
-		m_caster->DealDamage( m_target, Amount, 0, 0, GetSpellProto()->Id, true );
-
-		m_caster->HandleProc( PROC_ON_ANY_HOSTILE_ACTION, m_target, m_SpellProto, false, Amount );
-		m_caster->m_procCounter = 0;
-
-		//some say this prevents some crashes atm
-		if( !m_target->isAlive() )
-			return;
-
-		m_target->HandleProc(PROC_ON_ANY_HOSTILE_ACTION | PROC_ON_ANY_DAMAGE_VICTIM | PROC_ON_SPELL_HIT_VICTIM, m_caster, m_spellProto, false, Amount);
-		m_target->m_procCounter = 0;
-
-		m_target->RemoveAurasByHeal();
+		SendTickImmune(m_target, m_caster);
+		return;
 	}
+
+	int amp = sp->EffectAmplitude[mod->i];
+	if( !amp )
+		amp = event_GetEventPeriod(EVENT_AURA_PERIODIC_LEECH);
+
+	int32 bonus = 0;
+
+	if( GetDuration() )
+	{
+		float fbonus = m_caster->GetSpellDmgBonus(m_target, sp, amount, true) * 0.5f;
+		if( fbonus < 0 ) 
+			fbonus = 0.0f;
+		bonus = float2int32( fbonus * amp / GetDuration() );
+	}
+
+	amount += bonus;
+
+	if( sp->SpellGroupType )
+	{
+		SM_FIValue( m_caster->SM_FDOT, (int32*)&amount, sp->SpellGroupType );
+		SM_PIValue( m_caster->SM_PDOT, (int32*)&amount, sp->SpellGroupType );
+	}
+
+	amount = (uint32) min( amount, m_target->GetUInt32Value(UNIT_FIELD_HEALTH) );
+
+	// Apply bonus from [Warlock] Soul Siphon
+	if (m_caster->m_soulSiphon.amt) {
+		// Use std::map to prevent counting duplicate auras (stacked ones, from the same unit)
+		std::map<uint64, std::set<uint32> *> auras;
+		std::map<uint64, std::set<uint32> *>::iterator itx, itx2;
+		int32 pct;
+		int32 count= 0;
+
+		auras.clear();
+		for(uint32 x=MAX_NEGATIVE_AURAS_EXTEDED_START;x<MAX_NEGATIVE_AURAS_EXTEDED_END;x++)
+		{
+			if( m_target->m_auras[x] == NULL)
+				continue;
+
+			Aura *aura = m_target->m_auras[x];
+			if( aura->GetSpellProto()->SpellFamilyName != 5 )
+				continue;
+
+			skilllinespell *sk = objmgr.GetSpellSkill( aura->GetSpellId() );
+			if( sk == NULL || sk->skilline != SKILL_AFFLICTION )
+				continue;
+
+			itx = auras.find( aura->GetCasterGUID() );
+			if( itx == auras.end() )
+			{
+				std::set<uint32> *ids = new std::set<uint32>;
+				auras.insert( make_pair(aura->GetCasterGUID(), ids) );
+				itx = auras.find( aura->GetCasterGUID() );
+			}
+
+			std::set<uint32> *ids = itx->second;
+			if( ids->find( aura->GetSpellId() ) == ids->end() )
+			{
+				ids->insert( aura->GetSpellId() );
+			}
+		}
+
+		if( auras.size() )
+		{
+			itx = auras.begin();
+			while( itx != auras.end() )
+			{
+				itx2 = itx++;
+				count += (int32)itx2->second->size();
+				delete itx2->second;
+			}
+		}
+
+		pct = count * m_caster->m_soulSiphon.amt;
+		if ( pct > m_caster->m_soulSiphon.max )
+			pct = m_caster->m_soulSiphon.max;
+		amount += amount * pct / 100;
+	}
+
+	uint32 dmg_amount  = amount;
+	uint32 heal_amount = float2int32(amount * sp->EffectMultipleValue[mod->i]);
+
+	uint32 newHealth = m_caster->GetHealth() + heal_amount;
+
+	uint32 mh = m_caster->GetMaxHealth();
+	if( newHealth <= mh )
+		m_caster->SetHealth(newHealth);
+	else
+		m_caster->SetHealth(mh);
+
+	m_target->SendPeriodicHealAuraLog( m_caster->GetNewGUID(), m_caster->GetNewGUID(), sp->Id, heal_amount );
+	m_target->SendPeriodicAuraLog( m_target->GetNewGUID(), m_target->GetNewGUID(), sp->Id, sp->School, heal_amount, 0, 0, FLAG_PERIODIC_LEECH);
+
+	//deal damage before we add healing bonus to damage
+	m_caster->DealDamage( m_target, dmg_amount, 0, 0, sp->Id, true );
+	m_caster->SendSpellNonMeleeDamageLog( m_caster, m_target, sp->Id, dmg_amount, (uint8) sp->School, 0, 0, true, 0, false, true );
+ 
+	m_caster->HandleProc( PROC_ON_ANY_HOSTILE_ACTION, m_target, sp, false, dmg_amount );
+	m_caster->m_procCounter = 0;
+
+	//some say this prevents some crashes atm
+	if( !m_target->isAlive() )
+		return;
+
+	m_target->HandleProc( PROC_ON_ANY_HOSTILE_ACTION | PROC_ON_ANY_DAMAGE_VICTIM | PROC_ON_SPELL_HIT_VICTIM, m_caster, sp, false, dmg_amount);
+	m_target->m_procCounter = 0;
+
+	m_target->RemoveAurasByHeal();
+}
+
+void Aura::SendTickImmune(Unit * target, Unit *caster)
+{
+    WorldPacket data(SMSG_SPELLORDAMAGE_IMMUNE, 21);
+    data << ( caster ? caster->GetGUID() : target->GetGUID() );
+    data << target->GetGUID();
+    data << GetSpellProto()->Id;
+    data << uint8(1);
+    target->SendMessageToSet(&data,true);
 }
 
 void Aura::SpellAuraModHitChance(bool apply)

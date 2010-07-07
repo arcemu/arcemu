@@ -817,6 +817,8 @@ protected:
 
 	void SendInterrupted(uint8 result, Object * m_caster);
 	void SendChannelUpdate(uint32 time, Object * m_caster);
+	void SendTickImmune(Unit * target, Unit *caster);
+	
 public:
 	bool m_temporary;	// Skip saving
 	bool m_deleted;

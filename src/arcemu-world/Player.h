@@ -817,22 +817,6 @@ struct PlayerSkill
 	void Reset(uint32 Id);
 };
 
-enum SPELL_INDEX
-{
-	SPELL_TYPE_INDEX_MARK			= 1,
-	SPELL_TYPE_INDEX_POLYMORPH		= 2,
-	SPELL_TYPE_INDEX_FEAR			= 3,
-	SPELL_TYPE_INDEX_SAP			= 4,
-	SPELL_TYPE_INDEX_SCARE_BEAST	= 5,
-	SPELL_TYPE_INDEX_HIBERNATE		= 6,
-	SPELL_TYPE_INDEX_EARTH_SHIELD	= 7,
-	SPELL_TYPE_INDEX_CYCLONE		= 8,
-	SPELL_TYPE_INDEX_BANISH			= 9,
-	SPELL_TYPE_INDEX_JUDGEMENT		= 10,
-	SPELL_TYPE_INDEX_FOCUS_MAGIC	= 11,
-	NUM_SPELL_TYPE_INDEX			= 12,
-};
-
 enum SPELL_INDEX2
 {
 	SPELL_TYPE2_PALADIN_AURA			= 1,
@@ -1001,11 +985,7 @@ public:
 
 	//! Okay to remove from world
 	bool ok_to_remove;
-	uint64 m_spellIndexTypeTargets[NUM_SPELL_TYPE_INDEX];
 	void OnLogin();//custom stuff on player login.
-	void RemoveSpellTargets(uint32 Type, Unit* target);
-	void RemoveSpellIndexReferences(uint32 Type);
-	void SetSpellTargetType(uint32 Type, Unit* target);
 	void SendMeetingStoneQueue(uint32 DungeonId, uint8 Status);
 	void SendDungeonDifficulty();
 	void SendRaidDifficulty();

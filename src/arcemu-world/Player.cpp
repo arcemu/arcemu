@@ -443,7 +443,6 @@ myCorpseLocation()
 	m_speedChangeCounter=1;
 	memset(&m_bgScore,0,sizeof(BGScore));
 	m_arenaPoints = 0;
-	memset(&m_spellIndexTypeTargets, 0, sizeof(uint64)*NUM_SPELL_TYPE_INDEX);
 	m_base_runSpeed = m_runSpeed;
 	m_base_walkSpeed = m_walkSpeed;
 	m_arenateaminviteguid= 0;
@@ -6003,13 +6002,6 @@ void Player::OnRemoveInRangeObject(Object* pObj)
 			static_cast< Creature* >( p )->DeleteMe();
 	}
 
-	if(pObj->IsUnit())
-	{
-		for(uint32 x = 0; x < NUM_SPELL_TYPE_INDEX; ++x)
-			if(m_spellIndexTypeTargets[x] == pObj->GetGUID())
-				m_spellIndexTypeTargets[x] = 0;
-	}
-
     // We've just gone out of range of our pet :(
 	std::list<Pet*> summons = GetSummons();
 	for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end();)
@@ -10582,32 +10574,6 @@ void Player::_ModifySkillMaximum(uint32 SkillLine, uint32 NewMax)
 		m_achievementMgr.UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LEARN_SKILL_LEVEL, SkillLine, NewMax/75, 0);
 #endif
 	}
-}
-
-void Player::RemoveSpellTargets(uint32 Type, Unit* target)
-{
-    if( Type == SPELL_TYPE_INDEX_EARTH_SHIELD )
-        return;
-
-	if( m_spellIndexTypeTargets[Type] != 0 )
-	{
-		Unit * pUnit = m_mapMgr ? m_mapMgr->GetUnit(m_spellIndexTypeTargets[Type]) : NULL;
-		if( pUnit != NULL /*&& pUnit != target*/ ) //some auras can stack on target. There is no need to remove them if target is same as previous one // KFL: This is wrong and allows casting all Judgements on 1 target
-		{
-			pUnit->RemoveAurasByBuffIndexType(Type, GetGUID());
-			m_spellIndexTypeTargets[Type] = 0;
-		}
-	}
-}
-
-void Player::RemoveSpellIndexReferences(uint32 Type)
-{
-	m_spellIndexTypeTargets[Type] = 0;
-}
-
-void Player::SetSpellTargetType(uint32 Type, Unit* target)
-{
-	m_spellIndexTypeTargets[Type] = target->GetGUID();
 }
 
 void Player::RecalculateHonor()

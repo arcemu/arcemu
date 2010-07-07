@@ -367,59 +367,6 @@ void ApplyNormalFixes()
 			sp->BGR_one_buff_from_caster_on_self = SPELL_TYPE3_DEATH_KNIGHT_AURA;
 			break;
 		}
-		//grouping rule
-		switch(namehash)
-		{
-		case SPELL_HASH_HUNTER_S_MARK:		// Hunter's mark
-			sp->BGR_one_buff_from_caster_on_1target = SPELL_TYPE_INDEX_MARK;
-			break;
-
-		case SPELL_HASH_POLYMORPH:			// Polymorph
-		case SPELL_HASH_POLYMORPH__CHICKEN:	// Polymorph: Chicken
-		case SPELL_HASH_POLYMORPH___PENGUIN: // Polymorph: Penguin
-		case SPELL_HASH_POLYMORPH__SHEEP:	// Polymorph: Sheep
-		//case SPELL_HASH_POLYMORPH__TURTLE:	// Polymorph: Turtle
-			sp->BGR_one_buff_from_caster_on_1target = SPELL_TYPE_INDEX_POLYMORPH;
-			break;
-
-		case SPELL_HASH_FOCUS_MAGIC:				// Focus Magic buff
-			sp->BGR_one_buff_from_caster_on_1target = SPELL_TYPE_INDEX_FOCUS_MAGIC;
-			break;
-
-		case SPELL_HASH_FEAR:				// Fear
-			sp->BGR_one_buff_from_caster_on_1target = SPELL_TYPE_INDEX_FEAR;
-			break;
-
-		case SPELL_HASH_SAP:				// Sap
-			sp->BGR_one_buff_from_caster_on_1target = SPELL_TYPE_INDEX_SAP;
-			break;
-
-		case SPELL_HASH_SCARE_BEAST:		// Scare Beast
-			sp->BGR_one_buff_from_caster_on_1target = SPELL_TYPE_INDEX_SCARE_BEAST;
-			break;
-
-		case SPELL_HASH_HIBERNATE:			// Hibernate
-			sp->BGR_one_buff_from_caster_on_1target = SPELL_TYPE_INDEX_HIBERNATE;
-			break;
-
-		case SPELL_HASH_EARTH_SHIELD:		// Earth Shield
-			sp->BGR_one_buff_from_caster_on_1target = SPELL_TYPE_INDEX_EARTH_SHIELD;
-			break;
-
-		case SPELL_HASH_CYCLONE:			// Cyclone
-			sp->BGR_one_buff_from_caster_on_1target = SPELL_TYPE_INDEX_CYCLONE;
-			break;
-
-		case SPELL_HASH_BANISH:				// Banish
-			sp->BGR_one_buff_from_caster_on_1target = SPELL_TYPE_INDEX_BANISH;
-			break;
-
-		case SPELL_HASH_JUDGEMENT_OF_LIGHT:
-		case SPELL_HASH_JUDGEMENT_OF_WISDOM:
-		case SPELL_HASH_JUDGEMENT_OF_JUSTICE:
-			sp->BGR_one_buff_from_caster_on_1target = SPELL_TYPE_INDEX_JUDGEMENT;
-			break;
-		}
 
 		// HACK FIX: Break roots/fear on damage.. this needs to be fixed properly!
 		if(!(sp->AuraInterruptFlags & AURA_INTERRUPT_ON_ANY_DAMAGE_TAKEN))
