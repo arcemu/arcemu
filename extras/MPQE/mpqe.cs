@@ -22,6 +22,7 @@ using System.IO;
 using System.Collections;
 using SFmpqapi;
 
+#error Use trunk\extras\mpqe_cpp or the one on the wiki at http://www.arcemu.info/wiki/index.php?title=Compiling:_Windows
 namespace MPQE {
 	class MPQE {
 	
