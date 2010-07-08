@@ -3834,6 +3834,8 @@ void Player::AddToWorld()
 
 	if(m_session)
 		m_session->SetInstance(m_mapMgr->GetInstanceID());
+
+	SendInstanceDifficulty( m_mapMgr->iInstanceMode );
 }
 
 void Player::AddToWorld(MapMgr * pMapMgr)
@@ -3867,6 +3869,8 @@ void Player::AddToWorld(MapMgr * pMapMgr)
 
 	if(m_session)
 		m_session->SetInstance(m_mapMgr->GetInstanceID());
+
+	SendInstanceDifficulty( m_mapMgr->iInstanceMode );
 }
 
 void Player::OnPrePushToWorld()

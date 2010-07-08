@@ -275,6 +275,15 @@ void Player::SendRaidDifficulty()
 	m_session->SendPacket(&data);
 }
 
+void Player::SendInstanceDifficulty( uint32 difficulty ){
+	WorldPacket data( SMSG_INSTANCE_DIFFICULTY, 8 );
+	
+	data << uint32( difficulty );
+	data << uint32( 0 );
+
+	m_session->SendPacket( &data );
+}
+
 void Player::SendNewDrunkState(uint32 state, uint32 itemid){
 
     WorldPacket data( SMSG_CROSSED_INEBRIATION_THRESHOLD, (8+4+4) );

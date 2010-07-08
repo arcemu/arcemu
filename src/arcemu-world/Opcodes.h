@@ -853,7 +853,7 @@ enum Opcodes {
     SMSG_CHARACTER_PROFILE                          = 0x338,	// not used in client
     SMSG_CHARACTER_PROFILE_REALM_CONNECTED          = 0x339,	// not used in client
     SMSG_DEFENSE_MESSAGE                            = 0x33A,	// implemented
-    SMSG_INSTANCE_DIFFICULTY                        = 0x33B,	/// TODO: implement
+    SMSG_INSTANCE_DIFFICULTY                        = 0x33B,	// implemented
     MSG_GM_RESETINSTANCELIMIT                       = 0x33C,	// GM client only
     SMSG_MOTD                                       = 0x33D,	// implemented
     SMSG_MOVE_SET_FLIGHT_OBSOLETE                   = 0x33E,	// not used in client

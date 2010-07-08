@@ -989,6 +989,7 @@ public:
 	void SendMeetingStoneQueue(uint32 DungeonId, uint8 Status);
 	void SendDungeonDifficulty();
 	void SendRaidDifficulty();
+	void SendInstanceDifficulty( uint32 difficulty );
 	void SendExploreXP( uint32 areaid, uint32 xp );
 	void SendDestroyObject( uint64 GUID );
 	void SendEquipmentSetList();

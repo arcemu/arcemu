@@ -559,7 +559,15 @@ MapMgr * InstanceMgr::GetInstance(Object* obj)
 			{
 				in = itr->second;
 				++itr;
-				if(in->m_difficulty == plr->iInstanceType && PlayerOwnsInstance(in, plr))
+
+				uint32 difficulty;
+
+				if( in->m_mapInfo->type == INSTANCE_RAID )
+					difficulty = plr->GetRaidDifficulty();
+				else
+					difficulty = plr->GetDungeonDifficulty();
+
+				if(in->m_difficulty == difficulty && PlayerOwnsInstance(in, plr))
 				{
 					// this is our instance.
 					if(in->m_mapMgr == NULL)
