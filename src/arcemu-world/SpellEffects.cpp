@@ -1492,6 +1492,9 @@ out:
 	case 20968: //Judgement of Command
 	case 27172: //Judgement of Command
 		{
+			if(unitTarget == NULL)
+				return;
+
 			uint32 SpellID = GetProto()->EffectBasePoints[i]+1;
 			Spell * spell = new Spell(m_caster,dbcSpell.LookupEntry(SpellID),true,NULL);
 			SpellCastTargets targets;
@@ -6418,8 +6421,8 @@ void Spell::SpellEffectDisenchant( uint32 i )
 		lootmgr.FillItemLoot( it->loot, it->GetEntry() );
 	}
 
-	Log.Debug( "SpellEffect", "Successfully disenchanted item %d", uint32( itemTarget->GetEntry() ) );
-	p_caster->SendLoot( itemTarget->GetGUID(), LOOT_DISENCHANTING, p_caster->GetMapId() );
+	Log.Debug( "SpellEffect", "Successfully disenchanted item %d", uint32( it->GetEntry() ) );
+	p_caster->SendLoot( it->GetGUID(), LOOT_DISENCHANTING, p_caster->GetMapId() );
 
 	//We can increase Enchanting skill up to 60
 	uint32 skill = p_caster->_GetSkillLineCurrent( SKILL_ENCHANTING );
