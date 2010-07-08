@@ -2596,7 +2596,7 @@ void Spell::HandleEffects(uint64 guid, uint32 i)
 
 		if (p_caster != NULL && m_targets.m_itemTarget)
 		{
-			itemTarget = p_caster->GetItemInterface()->GetItemByGUID(guid);
+			itemTarget = p_caster->GetItemInterface()->GetItemByGUID(m_targets.m_itemTarget);
 		}
 	}
 	else if(guid == m_caster->GetGUID())
