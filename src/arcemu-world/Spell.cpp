@@ -2594,9 +2594,16 @@ void Spell::HandleEffects(uint64 guid, uint32 i)
 		playerTarget = NULL;
 		itemTarget = NULL;
 
-		if (p_caster != NULL && m_targets.m_itemTarget)
+		if (p_caster != NULL)
 		{
-			itemTarget = p_caster->GetItemInterface()->GetItemByGUID(m_targets.m_itemTarget);
+			if (m_targets.m_targetMask & TARGET_FLAG_ITEM)
+				itemTarget = p_caster->GetItemInterface()->GetItemByGUID(m_targets.m_itemTarget);
+			if (m_targets.m_targetMask & TARGET_FLAG_TRADE_ITEM)
+			{
+				Player* p_trader = p_caster->GetTradeTarget();
+				if(p_trader != NULL)
+					itemTarget = p_trader->getTradeItem((uint32)m_targets.m_itemTarget);
+			}
 		}
 	}
 	else if(guid == m_caster->GetGUID())
