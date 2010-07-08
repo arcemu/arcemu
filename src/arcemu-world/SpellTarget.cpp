@@ -457,7 +457,7 @@ bool Spell::AddTarget(uint32 i, uint32 TargetType, Object* obj)
 
 bool Spell::GenerateTargets(SpellCastTargets* t)
 {
-	if (u_caster == NULL || u_caster->GetAIInterface() == NULL)
+	if (u_caster == NULL || u_caster->GetAIInterface() == NULL || !u_caster->IsInWorld())
 		return false;
 
 	bool result = false;
@@ -609,10 +609,13 @@ bool Spell::GenerateTargets(SpellCastTargets* t)
 			if (u_caster->GetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT))
 			{
 				Object* target = u_caster->GetMapMgr()->_GetObject(u_caster->GetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT));
-				t->m_targetMask |= TARGET_FLAG_DEST_LOCATION | TARGET_FLAG_UNIT;
-				t->m_destX = target->GetPositionX();
-				t->m_destY = target->GetPositionY();
-				t->m_destZ = target->GetPositionZ();
+				if (target != NULL)
+				{
+					t->m_targetMask |= TARGET_FLAG_DEST_LOCATION | TARGET_FLAG_UNIT;
+					t->m_destX = target->GetPositionX();
+					t->m_destY = target->GetPositionY();
+					t->m_destZ = target->GetPositionZ();
+				}
 				result = true;
 			}
 			else
