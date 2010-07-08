@@ -4260,21 +4260,30 @@ void Unit::AddAura(Aura * aur)
 		return;
 	}
 
-	// If this aura can only affect one target at a time, remove it from the previous applied target
+	// If this aura can only affect one target at a time
 	if( aur->GetSpellProto()->AttributesExE & FLAGS6_SINGLE_TARGET_AURA )
 	{
+		// remove aura from the previous applied target
 		Unit* caster = aur->GetUnitCaster();
 		if( caster != NULL )
 		{
-			uint64 prev_target_guid = caster->GetCurrentUnitForSingleTargetAura( aur->GetSpellId() );
+			uint64 prev_target_guid = caster->GetCurrentUnitForSingleTargetAura( aur->GetSpellProto() );
 
 			if( prev_target_guid )
 			{
 				Unit* prev_target = this->GetMapMgr()->GetUnit(prev_target_guid);
 				if( prev_target != NULL )
-					prev_target->RemoveAura( aur->GetSpellId(), aur->GetCasterGUID() );
+					prev_target->RemoveAuraByNameHash( aur->GetSpellProto()->NameHash );
 			}
 		}
+
+		// remove aura from this unit. other player/unit may have casted on this target
+		// this is necessary for the following case:
+		//  1) attacker A cast on target A
+		//  2) attacker B cast on target B
+		//  3) attacker A cast on target B, and aura is removed from target A 
+		//  4) attacker B cast on target A, and aura is not removed from target B, because caster A is now the one that casted on target B
+		RemoveAuraByNameHash( aur->GetSpellProto()->NameHash );
 	}
 
 	uint16 AuraSlot = 0xFFFF;
@@ -4617,7 +4626,7 @@ void Unit::AddAura(Aura * aur)
 	{
 		Unit* caster = aur->GetUnitCaster();
 		if( caster != NULL )
-			caster->SetCurrentUnitForSingleTargetAura( aur->GetSpellId(), aur->GetTarget()->GetGUID() );
+			caster->SetCurrentUnitForSingleTargetAura( aur->GetSpellProto(), this->GetGUID() );
 	}
 
 	/* Set aurastates */
@@ -7902,11 +7911,11 @@ void Unit::Phase(uint8 command, uint32 newphase ){
 	UpdateVisibility();
 }
 
-uint64 Unit::GetCurrentUnitForSingleTargetAura(uint32 spell_id)
+uint64 Unit::GetCurrentUnitForSingleTargetAura(SpellEntry* spell)
 {
 	UniqueAuraTargetMap::iterator itr;
 
-	itr = m_singleTargetAura.find(spell_id);
+	itr = m_singleTargetAura.find(spell->NameHash);
 
 	if ( itr != m_singleTargetAura.end() )
 		return itr->second;
@@ -7914,23 +7923,23 @@ uint64 Unit::GetCurrentUnitForSingleTargetAura(uint32 spell_id)
 		return 0;
 }
 
-void Unit::SetCurrentUnitForSingleTargetAura(uint32 spell_id, uint64 guid)
+void Unit::SetCurrentUnitForSingleTargetAura(SpellEntry* spell, uint64 guid)
 {
 	UniqueAuraTargetMap::iterator itr;
 
-	itr = m_singleTargetAura.find(spell_id);
+	itr = m_singleTargetAura.find(spell->NameHash);
 
 	if ( itr != m_singleTargetAura.end() )
 		itr->second = guid;
 	else
-		m_singleTargetAura.insert( make_pair(spell_id, guid) );
+		m_singleTargetAura.insert( make_pair(spell->NameHash, guid) );
 }
 
-void Unit::RemoveCurrentUnitForSingleTargetAura(uint32 spell_id)
+void Unit::RemoveCurrentUnitForSingleTargetAura(SpellEntry* spell)
 {
 	UniqueAuraTargetMap::iterator itr;
 
-	itr = m_singleTargetAura.find(spell_id);
+	itr = m_singleTargetAura.find(spell->NameHash);
 
 	if ( itr != m_singleTargetAura.end() )
 		m_singleTargetAura.erase(itr);

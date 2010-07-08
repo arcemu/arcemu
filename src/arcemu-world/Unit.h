@@ -1729,9 +1729,9 @@ public:
 	//******************************************************
 	// Auras that can affect only one target at a time
 	//******************************************************
-	uint64 GetCurrentUnitForSingleTargetAura(uint32 spell_id);
-	void SetCurrentUnitForSingleTargetAura(uint32 spell_id, uint64 guid);
-	void RemoveCurrentUnitForSingleTargetAura(uint32 spell_id);
+	uint64 GetCurrentUnitForSingleTargetAura(SpellEntry* spell);
+	void SetCurrentUnitForSingleTargetAura(SpellEntry* spell, uint64 guid);
+	void RemoveCurrentUnitForSingleTargetAura(SpellEntry* spell);
 
 protected:
 	Unit ();
