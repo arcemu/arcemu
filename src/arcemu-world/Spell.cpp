@@ -2593,6 +2593,11 @@ void Spell::HandleEffects(uint64 guid, uint32 i)
 		gameObjTarget = NULL;
 		playerTarget = NULL;
 		itemTarget = NULL;
+
+		if (p_caster != NULL && m_targets.m_itemTarget)
+		{
+			itemTarget = p_caster->GetItemInterface()->GetItemByGUID(guid);
+		}
 	}
 	else if(guid == m_caster->GetGUID())
 	{
