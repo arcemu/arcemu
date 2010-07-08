@@ -415,7 +415,6 @@ protected:
 	bool HandleCreatureRespawnCommand(const char *args, WorldSession *m_session);
 	bool HandleNPCCanFlyCommand(const char * args, WorldSession * m_session);
 	bool HandleNPCOnGOCommand(const char * args, WorldSession * m_session);
-	bool HandleSpawnByDisplayId(const char * args, WorldSession * m_session);
 	bool HandleNPCLootCommand(const char* args, WorldSession* m_session);
 
 	// Vehicles

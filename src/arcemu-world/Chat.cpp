@@ -383,7 +383,6 @@ void CommandTableStorage::Init()
 		{ "export",       'o', &ChatHandler::HandleGOExport,       "Exports the current GO selected",          NULL, 0, 0, 0 },
 		{ "move",         'g', &ChatHandler::HandleGOMove,         "Moves gameobject to player xyz",           NULL, 0, 0, 0 },
 		{ "rotate",       'g', &ChatHandler::HandleGORotate,       "<Axis> <Value> - Rotates the object. <Axis> x,y, Default o.",             NULL, 0, 0, 0 },
-		{ "sdid",         'g', &ChatHandler::HandleSpawnByDisplayId, "Spawns a generic game object with the specified display id. Clear your client cache after using this!", NULL, 0, 0, 0 },
 		{ "portto",       'v', &ChatHandler::HandlePortToGameObjectSpawnCommand, "Teleports you to the gameobject with spawn id x.", NULL, 0, 0, 0 },
 		{ NULL,           '0', NULL,                               "",                                         NULL, 0, 0, 0 }
 	};
