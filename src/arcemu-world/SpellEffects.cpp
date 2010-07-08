@@ -2593,9 +2593,7 @@ void Spell::SpellEffectBlock(uint32 i)
 
 void Spell::SpellEffectCreateItem(uint32 i) // Create item
 {
-	if(!unitTarget->IsPlayer()) return;
-
-	Player *p_target = static_cast<Player*>(unitTarget);
+	if(playerTarget == NULL) return;
 
 	Item* newItem;
 	Item *add;
@@ -2721,7 +2719,7 @@ void Spell::SpellEffectCreateItem(uint32 i) // Create item
 	}
 
 	// item count cannot be more than allowed in a single stack
-	uint32 itemMaxStack = (p_target->ItemStackCheat) ? 0x7fffffff : m_itemProto->MaxCount;
+	uint32 itemMaxStack = (playerTarget->ItemStackCheat) ? 0x7fffffff : m_itemProto->MaxCount;
 	if( item_count > itemMaxStack )
 		item_count = itemMaxStack;
 
@@ -2729,24 +2727,24 @@ void Spell::SpellEffectCreateItem(uint32 i) // Create item
 	if (m_itemProto->Unique && item_count > m_itemProto->Unique)
 		item_count = m_itemProto->Unique;
 
-	if(p_target->GetItemInterface()->CanReceiveItem(m_itemProto, item_count)) //reversed since it sends >1 as invalid and 0 as valid
+	if(playerTarget->GetItemInterface()->CanReceiveItem(m_itemProto, item_count)) //reversed since it sends >1 as invalid and 0 as valid
 	{
 		SendCastResult(SPELL_FAILED_TOO_MANY_OF_ITEM);
 		return;
 	}
 
 	slot = 0;
-	add = p_target->GetItemInterface()->FindItemLessMax(GetProto()->EffectItemType[i],1, false);
+	add = playerTarget->GetItemInterface()->FindItemLessMax(GetProto()->EffectItemType[i],1, false);
 	if (!add)
 	{
-		slotresult = p_target->GetItemInterface()->FindFreeInventorySlot(m_itemProto);
+		slotresult = playerTarget->GetItemInterface()->FindFreeInventorySlot(m_itemProto);
 		if(!slotresult.Result)
 		{
 			SendCastResult(SPELL_FAILED_TOO_MANY_OF_ITEM);
 			return;
 		}
 
-		newItem =objmgr.CreateItem(GetProto()->EffectItemType[i],p_target);
+		newItem =objmgr.CreateItem(GetProto()->EffectItemType[i],playerTarget);
 		if (!newItem)
 			return;
 
@@ -2776,9 +2774,9 @@ void Spell::SpellEffectCreateItem(uint32 i) // Create item
 			}
 		}
 
-		if(p_target->GetItemInterface()->SafeAddItem(newItem,slotresult.ContainerSlot, slotresult.Slot))
+		if(playerTarget->GetItemInterface()->SafeAddItem(newItem,slotresult.ContainerSlot, slotresult.Slot))
 		{
-            p_target->SendItemPushResult( true,false,true,true,slotresult.ContainerSlot,slotresult.Slot,item_count , newItem->GetEntry(), newItem->GetItemRandomSuffixFactor(), newItem->GetItemRandomPropertyId(), newItem->GetStackCount()  );
+            playerTarget->SendItemPushResult( true,false,true,true,slotresult.ContainerSlot,slotresult.Slot,item_count , newItem->GetEntry(), newItem->GetItemRandomSuffixFactor(), newItem->GetItemRandomPropertyId(), newItem->GetStackCount()  );
 		} else {
 			newItem->DeleteMe();
 		}
@@ -2786,38 +2784,38 @@ void Spell::SpellEffectCreateItem(uint32 i) // Create item
 	else
 	{
 		// scale item_count down if total stack will be more than Max Stack
-		if( (add->GetStackCount() + item_count > itemMaxStack) && !p_target->ItemStackCheat )
+		if( (add->GetStackCount() + item_count > itemMaxStack) && !playerTarget->ItemStackCheat )
 		{
 			uint32 item_count_filled;
 			item_count_filled = itemMaxStack - add->GetStackCount();
 			add->SetStackCount( itemMaxStack);
 			add->m_isDirty = true;
 
-			slotresult = p_target->GetItemInterface()->FindFreeInventorySlot(m_itemProto);
+			slotresult = playerTarget->GetItemInterface()->FindFreeInventorySlot(m_itemProto);
 			if(!slotresult.Result)
 				item_count = item_count_filled;
 			else
 			{
-				newItem =objmgr.CreateItem(GetProto()->EffectItemType[i], p_target);
+				newItem =objmgr.CreateItem(GetProto()->EffectItemType[i], playerTarget);
 				if (!newItem)
 					return;
 
                 newItem->SetCreatorGUID( m_caster->GetGUID() );
 				newItem->SetStackCount(  item_count - item_count_filled);
-				if(!p_target->GetItemInterface()->SafeAddItem(newItem,slotresult.ContainerSlot, slotresult.Slot))
+				if(!playerTarget->GetItemInterface()->SafeAddItem(newItem,slotresult.ContainerSlot, slotresult.Slot))
 				{
 					newItem->DeleteMe();
 					item_count = item_count_filled;
 				}
 				else
-                    p_target->SendItemPushResult( true, false, true, true, slotresult.ContainerSlot, slotresult.Slot, item_count , newItem->GetEntry(), newItem->GetItemRandomSuffixFactor(), newItem->GetItemRandomPropertyId(), newItem->GetStackCount()  );
+                    playerTarget->SendItemPushResult( true, false, true, true, slotresult.ContainerSlot, slotresult.Slot, item_count , newItem->GetEntry(), newItem->GetItemRandomSuffixFactor(), newItem->GetItemRandomPropertyId(), newItem->GetStackCount()  );
 			}
 		}
 		else
 		{
 			add->SetStackCount( add->GetStackCount() + item_count);
 			add->m_isDirty = true;
-            p_target->SendItemPushResult( true, false, true, false, (uint8)p_target->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()), 0xFFFFFFFF, item_count , add->GetEntry(), add->GetItemRandomSuffixFactor(), add->GetItemRandomPropertyId(), add->GetStackCount()  );
+            playerTarget->SendItemPushResult( true, false, true, false, (uint8)playerTarget->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()), 0xFFFFFFFF, item_count , add->GetEntry(), add->GetItemRandomSuffixFactor(), add->GetItemRandomPropertyId(), add->GetStackCount()  );
 		}
 	}
 	if (p_caster && skill)
