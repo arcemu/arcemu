@@ -37,7 +37,7 @@ void InitImplicitTargetFlags()
 	SET_TARGET_TYPE(8, SPELL_TARGET_AREA | SPELL_TARGET_REQUIRE_ATTACKABLE);
 	SET_TARGET_TYPE(15, SPELL_TARGET_AREA_SELF | SPELL_TARGET_REQUIRE_ATTACKABLE);
 	SET_TARGET_TYPE(16, SPELL_TARGET_AREA | SPELL_TARGET_REQUIRE_ATTACKABLE);
-	SET_TARGET_TYPE(17, SPELL_TARGET_AREA);
+	//SET_TARGET_TYPE(17, SPELL_TARGET_AREA);
 	SET_TARGET_TYPE(18, SPELL_TARGET_AREA_SELF | SPELL_TARGET_REQUIRE_ATTACKABLE);
 	SET_TARGET_TYPE(20, SPELL_TARGET_AREA_PARTY);
 	SET_TARGET_TYPE(21, SPELL_TARGET_REQUIRE_FRIENDLY);
@@ -80,7 +80,7 @@ void InitImplicitTargetFlags()
 	SET_TARGET_TYPE(66, SPELL_TARGET_OBJECT_SELF);
 	SET_TARGET_TYPE(67, SPELL_TARGET_OBJECT_SELF);
 	SET_TARGET_TYPE(69, SPELL_TARGET_OBJECT_SELF);
-	SET_TARGET_TYPE(72, SPELL_TARGET_AREA);
+	SET_TARGET_TYPE(72, SPELL_TARGET_AREA_RANDOM);
 	SET_TARGET_TYPE(73, SPELL_TARGET_OBJECT_SELF);
 	SET_TARGET_TYPE(76, SPELL_TARGET_REQUIRE_ATTACKABLE);
 	SET_TARGET_TYPE(77, SPELL_TARGET_REQUIRE_ATTACKABLE);
@@ -598,7 +598,7 @@ bool Spell::GenerateTargets(SpellCastTargets* t)
 				t->m_destZ = sWorld.Collision? CollideInterface.GetHeight(m_caster->GetMapId(), t->m_destX, t->m_destY, m_caster->GetPositionZ() + 2.0f) : NO_WMO_HEIGHT;
 				if (t->m_destZ == NO_WMO_HEIGHT)
 					t->m_destZ = m_caster->GetMapMgr()->GetLandHeight(t->m_destX, t->m_destY);
-				t->m_targetMask |= TARGET_FLAG_DEST_LOCATION;
+				t->m_targetMask = TARGET_FLAG_DEST_LOCATION;
 			}
 			while (sWorld.Collision && !CollideInterface.CheckLOS(m_caster->GetMapId(), m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ(), t->m_destX, t->m_destY, t->m_destZ));
 			result = true;
@@ -638,7 +638,7 @@ bool Spell::GenerateTargets(SpellCastTargets* t)
 				}
 			}
 		}
-		if (TargetType & SPELL_TARGET_AREA_SELF)
+		else if (TargetType & SPELL_TARGET_AREA_SELF)
 		{
 			t->m_targetMask |= TARGET_FLAG_SOURCE_LOCATION | TARGET_FLAG_UNIT;
 			t->m_unitTarget = u_caster->GetGUID();

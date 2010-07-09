@@ -4500,8 +4500,8 @@ void Spell::SpellEffectEnchantItemTemporary(uint32 i)  // Enchant Item Temporary
 	EnchantEntry * Enchantment = dbcEnchant.LookupEntryForced(GetProto()->EffectMiscValue[i]);
 	if(!Enchantment) return;
 
-	itemTarget->RemoveEnchantment(1);
-	int32 Slot = itemTarget->AddEnchantment(Enchantment, Duration, false, true, false, 1);
+	itemTarget->RemoveEnchantment(TEMP_ENCHANTMENT_SLOT);
+	int32 Slot = itemTarget->AddEnchantment(Enchantment, Duration, false, true, false, TEMP_ENCHANTMENT_SLOT);
 	if(Slot < 0) return; // Apply failed
 
 	skilllinespell* skill = objmgr.GetSpellSkill(GetProto()->Id);

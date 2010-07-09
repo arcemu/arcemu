@@ -1501,6 +1501,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 				break;
 			spell = new Spell(plyr, info, false, NULL);
 			//spell->SpellByOther = true;
+			targets.m_targetMask |= TARGET_FLAG_UNIT;
 			targets.m_unitTarget = plyr->GetGUID();
 			spell->prepare(&targets);
 			if ( obj->charges > 0 && !--obj->charges )
