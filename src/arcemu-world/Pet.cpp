@@ -886,10 +886,14 @@ void Pet::Remove( bool bUpdate, bool bSetOffline )
 		m_Owner->GetSummon()->SendSpellsToOwner();
 	}
 
-	if( IsInWorld() && IsActive() )
-		Deactivate( m_mapMgr );
+	if( IsInWorld() )
+	{
+		if( IsActive() )
+			Deactivate( m_mapMgr );
 
-	Unit::RemoveFromWorld( true );
+		Unit::RemoveFromWorld( true );
+	}
+
 	SafeDelete();
 }
 
