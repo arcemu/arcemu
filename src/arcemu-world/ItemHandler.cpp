@@ -1379,15 +1379,6 @@ void WorldSession::HandleListInventoryOpcode( WorldPacket & recv_data )
 
 void WorldSession::SendInventoryList(Creature* unit)
 {
-	// Get on a vehicle
-	if (unit->IsVehicle())
-	{
-		sLog.outDebug("*** Get on a vehicle ***");
-		//Vehicle * vehicle = (Vehicle *)unit;
-		//vehicle->AddPassenger(GetPlayer());
-		GetPlayer()->Gossip_Complete();
-		return;
-	}
 
 	if( !unit->HasItems() )
 	{

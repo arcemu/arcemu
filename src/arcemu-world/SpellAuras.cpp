@@ -5923,12 +5923,8 @@ void Aura::SpellAuraMounted(bool apply)
 		m_target->RemoveAura(id);
 	}*/
 
-	bool isVehicleSpell = (m_spellProto->Effect[1] == SPELL_EFFECT_SUMMON);
-
 	if(apply)
 	{
-		if( isVehicleSpell )
-			SetDuration(100);
 
 		SetPositive();
 
@@ -9091,126 +9087,6 @@ void Aura::SpellAuraReduceEffectDuration(bool apply)
 
 void Aura::HandleAuraControlVehicle(bool apply)
 {
-	//we are casting this spell as player. Just making sure in future noone is dumb enough to forget that
-	Player* pcaster = GetPlayerCaster();
-	if( pcaster == NULL || !m_target->IsUnit() )
-		return;
-
-	if( apply )
-	{
-		WorldPacket data(SMSG_CLIENT_CONTROL_UPDATE, 9);
-		data << m_target->GetNewGUID();
-		data << (uint8)1; // we are going to loose control !
-		pcaster->GetSession()->SendPacket(&data);
-
-		pcaster->SetVehicle( static_cast< Vehicle* >( m_target ), -1);
-		pcaster->SetCharmedUnitGUID( pcaster->GetVehicle()->GetGUID() );
-		pcaster->SetFarsightTarget(pcaster->GetVehicle()->GetGUID() ); //focus camera on this
-
-		//add mana to the vehicle. It is supposed to already have mana
-		if( m_target->GetMaxPower( POWER_TYPE_MANA ) < 100 )
-			m_target->SetMaxPower( POWER_TYPE_MANA, 100000 );
-		m_target->SetPower( POWER_TYPE_MANA, m_target->GetMaxPower( POWER_TYPE_MANA ) );
-
-		//root the player
-		pcaster->Root();
-
-		//set our speed to the speed of the controlled vehicle
-		WorldPacket data5(SMSG_FORCE_RUN_SPEED_CHANGE, 0);
-		data5 << m_target->GetNewGUID();
-		data5 << pcaster->m_speedChangeCounter++;
-		data5 << uint8( 1 );
-		data5 << float( 40 );
-		pcaster->GetSession()->SendPacket(&data5);
-
-		//show the interface for the vehicle
-		WorldPacket data2(SMSG_CONTROL_VECHICLE, 0);
-		pcaster->GetSession()->SendPacket(&data2);
-
-		//port ourselfs on it
-		pcaster->SetPosition( m_target->GetPosition() );
-		float o = m_target->GetOrientation();
-		pcaster->SetOrientation( o );
-/*		WorldPacket data3(MSG_MOVE_TELEPORT_ACK, 74);
-		data3 << pcaster->GetNewGUID();
-		data3 << uint32(1); // no idea really
-		data3 << uint32(0x200); //some might think this is the spell targeting mask for a unit ;)
-		data3 << uint16(0);
-//		data3 << uint32( getMSTime() ); //got a strong feeling this is something else
-		data3 << uint32( 0 ); //got a strong feeling this is something else
-		data3 << pcaster->GetPosition();
-		data3 << pcaster->GetOrientation();
-		data3 << m_target->GetGUID();
-		data3 << float( 0.213100001216 ); // maybe orientation for vehicle seat ?
-		data3 << uint32( 0 );
-		data3 << float( 1.86570000648 ); // maybe orientation for vehicle seat ?
-		data3 << uint32( 0 );
-		data3 << float( 1.86570000648 ); // some orientation or not ?
-		data3 << uint32( 0 );
-		data3 << uint8( 0 );
-		pcaster->GetSession()->SendPacket(&data3);*/
-
-		//the pet spells. These should be fetched from some dbc i guess
-		/*{
-			if( m_target->IsCreature() )
-			{
-				Creature *vehicle = static_cast< Creature* >( m_target );
-				if( vehicle->GetCreatureInfo() )
-				{
-					CreatureSpellDataEntry * SpellData = dbcCreatureSpellData.LookupEntry( vehicle->GetCreatureInfo()->SpellDataID );
-					if( SpellData )
-						for( uint32 i = 0; i < 3; ++i )
-							if( SpellData->Spells[i] != 0 )
-								AddSpell( dbcSpell.LookupEntry( SpellData->Spells[i] ), false ); //add spell to pet
-				}
-		}*/
-
-		WorldPacket data4(SMSG_PET_SPELLS, 62);
-		data4 << m_target->GetGUID();
-		data4 << uint16(0);
-		data4 << uint32(0);
-		data4 << uint32(0x101);
-		data4 << uint32(0x0800CC28); //cc28 = 52264 =
-		data4 << uint32(0x0900CC2C);
-		data4 << uint32(0x0A000000);
-		data4 << uint32(0x0B000000);
-		data4 << uint32(0x0C000000);
-		data4 << uint32(0x0D000000);
-		data4 << uint32(0x0E000000);
-		data4 << uint32(0x0F000000);
-		data4 << uint32(0x10000000);
-		data4 << uint32(0x11000000);
-		data4 << uint16(0x0);
-		pcaster->GetSession()->SendPacket(&data4);
-	}
-	else
-	{
-		WorldPacket data(SMSG_CLIENT_CONTROL_UPDATE, 9);
-		data << m_target->GetNewGUID();
-		data << (uint8)0;
-		pcaster->GetSession()->SendPacket(&data);
-
-		pcaster->SetCharmedUnitGUID( 0 );
-		pcaster->SetFarsightTarget(0 );
-
-		//make the sound of the vehicle. I'm sure this should be dinamic from somewhere :P
-		WorldPacket data2(SMSG_PET_DISMISS_SOUND, 16);
-		data2 << uint32(0x41);
-		data2 << m_target->GetPosition();
-		pcaster->GetSession()->SendPacket(&data2);
-
-		pcaster->ResetVehicleSettings();
-
-		//unroot the player
-		pcaster->Unroot();
-
-		//put him near vehicle. Or not ?
-
-		//need to send him no more pet spells ?
-		WorldPacket data3(SMSG_PET_SPELLS, 8);
-		data3 << uint64(0);
-		pcaster->GetSession()->SendPacket(&data3);
-	}
 }
 
 void Aura::SpellAuraModCombatResultChance(bool apply)

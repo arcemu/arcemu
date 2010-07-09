@@ -1725,7 +1725,7 @@ GameObject * MapMgr::GetSqlIdGameObject(uint32 sqlid)
 	return (itr == _sqlids_gameobjects.end()) ? NULL : itr->second;
 }
 
-Creature * MapMgr::CreateCreature(uint32 entry, bool isVehicle)
+Creature * MapMgr::CreateCreature(uint32 entry)
 {
 	uint64 newguid = (uint64)HIGHGUID_TYPE_UNIT << 32;
 	char * pHighGuid = (char*)&newguid;
@@ -1735,19 +1735,13 @@ Creature * MapMgr::CreateCreature(uint32 entry, bool isVehicle)
 	pHighGuid[5] |= pEntry[2];
 	pHighGuid[6] |= pEntry[3];
 
-	if (isVehicle)
-		sLog.outDebug("CreateCreature: IsVehicle = true");
-
 	if(_reusable_guids_creature.size())
 	{
 		uint32 guid = _reusable_guids_creature.front();
 		_reusable_guids_creature.pop_front();
 
 		newguid |= guid;
-		if (isVehicle)
-			return new Vehicle(newguid);
-		else
-			return new Creature(newguid);
+		return new Creature(newguid);
 	}
 
     if( ++m_CreatureHighGuid  >= CreatureStorage.size() )
@@ -1758,10 +1752,7 @@ Creature * MapMgr::CreateCreature(uint32 entry, bool isVehicle)
 	}
 
 	newguid |= m_CreatureHighGuid;
-	if (isVehicle)
-		return new Vehicle(newguid);
-	else
-		return new Creature(newguid);
+	return new Creature(newguid);
 }
 
 // Spawns the object too, without which you can not interact with the object

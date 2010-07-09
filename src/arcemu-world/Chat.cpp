@@ -45,8 +45,6 @@ ChatCommand * CommandTableStorage::GetSubCommandTable(const char * name)
 		return _BattlegroundCommandTable;
 	else if(!stricmp(name, "npc"))
 		return _NPCCommandTable;
-	else if(!stricmp(name, "vehicle"))
-		return _VehicleCommandTable;
 	else if(!stricmp(name, "cheat"))
 		return _CheatCommandTable;
 	else if(!stricmp(name, "account"))
@@ -201,7 +199,6 @@ void CommandTableStorage::Dealloc()
 	free( _GameObjectCommandTable );
 	free( _BattlegroundCommandTable );
 	free( _NPCCommandTable );
-	free( _VehicleCommandTable );
 	free( _CheatCommandTable );
 	free( _accountCommandTable );
 	free( _honorCommandTable );
@@ -442,21 +439,6 @@ void CommandTableStorage::Init()
 		{ NULL,               '0', NULL,                                      "",                                                                                                                                        NULL, 0, 0, 0 }
 	};
 	dupe_command_table(NPCCommandTable, _NPCCommandTable);
-
-	static ChatCommand VehicleCommandTable[] =
-	{
-		{ "spawn",           'm', &ChatHandler::HandleVehicleSpawn,             "Creates a vehicle with the specified creature id",         NULL, 0, 0, 0 },
-		{ "possess",         'm', &ChatHandler::HandleVehiclePossess,           "Possess the selected vehicle",                             NULL, 0, 0, 0 },
-		{ "unpossess",       'm', &ChatHandler::HandleVehicleUnpossess,         "Unpossess a possessed vehicle",                            NULL, 0, 0, 0 },
-		{ "movespeed",       'm', &ChatHandler::HandleVehicleMoveSpeed,         "Sets the integer movement speed",                          NULL, 0, 0, 0 },
-		{ "turnspeed",       'm', &ChatHandler::HandleVehicleTurnSpeed,         "Sets the integer turn speed",                              NULL, 0, 0, 0 },
-		{ "projectilespeed", 'm', &ChatHandler::HandleVehicleProtectileSpeed,   "Sets the integer speed that a projectile travels at",      NULL, 0, 0, 0 },
-		{ "turnrad",         'm', &ChatHandler::HandleVehicleTurnRadians,       "Turn x:float radians in orientation (in radians)",         NULL, 0, 0, 0 },
-		{ "move",            'm', &ChatHandler::HandleVehicleMove,              "Moves forwards or backwards x:float distance from present location",      NULL, 0, 0, 0 },
-		{ "fire",            'm', &ChatHandler::HandleVehicleFire,              "Fires the specified game object id that uses the specified spell id",     NULL, 0, 0, 0 },
-		{ NULL,              '0', NULL,                                         "",                                                         NULL, 0, 0, 0 }
-	};
-	dupe_command_table(VehicleCommandTable, _VehicleCommandTable);
 
 	static ChatCommand CheatCommandTable[] =
 	{
@@ -728,7 +710,6 @@ void CommandTableStorage::Init()
 		{ "gobject",         '0', NULL,                                                     "",                                                                                                                                        GameObjectCommandTable,   0, 0, 0 },
 		{ "battleground",    '0', NULL,                                                     "",                                                                                                                                        BattlegroundCommandTable, 0, 0, 0 },
 		{ "npc",             '0', NULL,                                                     "",                                                                                                                                        NPCCommandTable,          0, 0, 0 },
-		{ "vehicle",         '0', NULL,                                                     "",                                                                                                                                        NPCCommandTable,          0, 0, 0 },
 		{ "cheat",           '0', NULL,                                                     "",                                                                                                                                        CheatCommandTable,        0, 0, 0 },
 		{ "account",         '0', NULL,                                                     "",                                                                                                                                        accountCommandTable,      0, 0, 0 },
 		{ "honor",           '0', NULL,                                                     "",                                                                                                                                        honorCommandTable,        0, 0, 0 },

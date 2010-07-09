@@ -234,8 +234,6 @@ myCorpseLocation()
 {
 	int i,j;
 
-	// Reset vehicle settings
-	ResetVehicleSettings();
 
 	//These should really be done in the unit constructor...
 	m_currentSpell = NULL;

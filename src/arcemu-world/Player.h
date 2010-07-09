@@ -34,7 +34,6 @@ class Corpse;
 class Guild;
 struct GuildRank;
 class Pet;
-class Vehicle;
 class Charter;
 class LFGMatch;
 struct LevelInfo;
@@ -2460,29 +2459,6 @@ public:
 	uint8 m_talentActiveSpec;
 
 	PlayerSpec m_specs[MAX_SPEC_COUNT];
-
-    /************************************************************************/
-    /* Player Vehicles							                            */
-    /************************************************************************/
-public:
-
-	 Vehicle * GetVehicle() { return (Vehicle *)m_vehicle; }
-	 int8 GetVehicleSeat() { return m_vehicleSeat; }
-	 void SetVehicle(Vehicle *v, int8 seat)
-	{
-		m_vehicle = (Unit *)v;
-		m_vehicleSeat = seat;
-	}
-	 void ResetVehicleSettings()
-	{
-		m_vehicle = NULL;
-		m_vehicleSeat = -1;
-	}
-
-private:
-	Unit *		m_vehicle;
-	int8		m_vehicleSeat;
-
 
 public:
     void SendTeleportAckMsg( const LocationVector &v );

@@ -312,7 +312,6 @@
     <ClCompile Include="..\..\src\arcemu-world\Container.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\Item.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\ItemInterface.cpp" />
-    <ClCompile Include="..\..\src\arcemu-world\ObjectContainer.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\SpellAuras.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\AlteracValley.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\ArathiBasin.cpp" />
@@ -450,7 +449,6 @@
     <ClInclude Include="..\..\src\arcemu-world\Item.h" />
     <ClInclude Include="..\..\src\arcemu-world\ItemInterface.h" />
     <ClInclude Include="..\..\src\arcemu-world\ItemPrototype.h" />
-    <ClInclude Include="..\..\src\arcemu-world\ObjectContainer.h" />
     <ClInclude Include="..\..\src\arcemu-world\SpellAuras.h" />
     <ClInclude Include="..\..\src\arcemu-world\AlteracValley.h" />
     <ClInclude Include="..\..\src\arcemu-world\ArathiBasin.h" />

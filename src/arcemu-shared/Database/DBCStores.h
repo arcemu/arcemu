@@ -1298,60 +1298,6 @@ struct AreaTriggerEntry
 	float     box_o;        // 9 extent rotation by about z axis
 };
 
-/*struct VehicleEntry
-{
-	m_ID;
-	m_flags;
-	m_turnSpeed;
-	m_pitchSpeed;
-	m_pitchMin;
-	m_pitchMax;
-	m_seatID[8];
-}
-
-struct VehicleSeatEntry
-{
-	m_ID;
-	m_flags;
-	m_attachmentID;
-	m_attachmentOffsetX;
-	m_attachmentOffsetY;
-	m_attachmentOffsetZ;
-	m_enterPreDelay;
-	m_enterSpeed;
-	m_enterGravity;
-	m_enterMinDuration;
-	m_enterMaxDuration;
-	m_enterMinArcHeight;
-	m_enterMaxArcHeight;
-	m_enterAnimStart;
-	m_enterAnimLoop;
-	m_rideAnimStart;
-	m_rideAnimLoop;
-	m_rideUpperAnimStart;
-	m_rideUpperAnimLoop;
-	m_exitPreDelay;
-	m_exitSpeed;
-	m_exitGravity;
-	m_exitMinDuration;
-	m_exitMaxDuration;
-	m_exitMinArcHeight;
-	m_exitMaxArcHeight;
-	m_exitAnimStart;
-	m_exitAnimLoop;
-	m_exitAnimEnd;
-}
-
-struct WeatherEntry
-{
-	m_ID;
-	m_ambienceID;
-	m_effectType;
-	m_effectColor[3];
-	m_effectTexture;
-}
-*/
-
 struct ScalingStatDistributionEntry{
 	uint32 id;
 	int32 stat[10];
