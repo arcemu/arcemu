@@ -3624,7 +3624,19 @@ uint8 Spell::CanCast(bool tolerate)
 	 *	figure out how much extra distance we need to allow for based on our
 	 *	movespeed and latency.
 	 */
-	float maxRange = GetMaxRange( dbcSpellRange.LookupEntry( GetProto()->rangeIndex ) );
+	float maxRange = 0;
+
+	// Holy shock has a 40yd range for friendly target
+	if( GetProto()->NameHash == SPELL_HASH_HOLY_SHOCK && GetProto()->Effect[0] == SPELL_EFFECT_DUMMY && p_caster != NULL && p_caster->IsInWorld() )
+	{
+		Unit *target = p_caster->GetMapMgr()->GetUnit( m_targets.m_unitTarget );
+		if( target != NULL && isFriendly(p_caster, target) )
+			maxRange = 40;
+	}
+	
+	if( maxRange == 0 )
+		maxRange = GetMaxRange( dbcSpellRange.LookupEntry( GetProto()->rangeIndex ) );
+
 	if( u_caster && m_caster->GetMapMgr() && m_targets.m_unitTarget )
 	{
 		Unit * utarget = m_caster->GetMapMgr()->GetUnit( m_targets.m_unitTarget );
@@ -3885,8 +3897,14 @@ uint8 Spell::CanCast(bool tolerate)
 				*
 				**********************************************************/
 
+				uint32 facing_flags = GetProto()->FacingCasterFlags;
+
+				// Holy shock need enemies be in front of caster
+				if( GetProto()->NameHash == SPELL_HASH_HOLY_SHOCK && GetProto()->Effect[0] == SPELL_EFFECT_DUMMY && ! isFriendly(u_caster, target) )
+					facing_flags = SPELL_INFRONT_STATUS_REQUIRE_INFRONT; 
+
 				/* burlex: units are always facing the target! */
-				if(p_caster && 	GetProto()->FacingCasterFlags != SPELL_INFRONT_STATUS_REQUIRE_SKIPCHECK )
+				if(p_caster && facing_flags != SPELL_INFRONT_STATUS_REQUIRE_SKIPCHECK )
 				{
 					if( GetProto()->Spell_Dmg_Type == SPELL_DMG_TYPE_RANGED )
 					{ // our spell is a ranged spell
@@ -3895,13 +3913,13 @@ uint8 Spell::CanCast(bool tolerate)
 					}
 					else
 					{ // our spell is not a ranged spell
-						if( GetProto()->FacingCasterFlags == SPELL_INFRONT_STATUS_REQUIRE_INFRONT )
+						if( facing_flags == SPELL_INFRONT_STATUS_REQUIRE_INFRONT )
 						{
 							// must be in front
 							if(!u_caster->isInFront(target))
 								return SPELL_FAILED_UNIT_NOT_INFRONT;
 						}
-						else if( GetProto()->FacingCasterFlags == SPELL_INFRONT_STATUS_REQUIRE_INBACK)
+						else if( facing_flags == SPELL_INFRONT_STATUS_REQUIRE_INBACK)
 						{
 							// behind
 							if(target->isInFront(u_caster))

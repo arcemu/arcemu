@@ -730,23 +730,6 @@ void ApplyNormalFixes()
 		{
 			sp->EffectDieSides[0] = 49;
 		}
-		else if( strstr( sp->Name, "Holy Shock"))
-		{
-			//check if we can find in the description
-			const char *startofid=strstr(sp->Description, "causing $");
-			if(startofid)
-			{
-				startofid += strlen("causing $");
-				sp->EffectTriggerSpell[0] = atoi(startofid);
-			}
-			//check if we can find in the description
-			startofid=strstr(sp->Description, " or $");
-			if(startofid)
-			{
-				startofid += strlen(" or $");
-				sp->EffectTriggerSpell[1]=atoi(startofid);
-			}
-		}
 		else if( strstr( sp->Name, "Touch of Weakness"))
 		{
 			//check if we can find in the description
