@@ -2195,19 +2195,19 @@ void Spell::SpellEffectEnvironmentalDamage(uint32 i)
 {
 	if(!playerTarget) return;
 
-	if(unitTarget->SchoolImmunityList[GetProto()->School])
+	if(playerTarget->SchoolImmunityList[GetProto()->School])
 	{
 		SendCastResult(SPELL_FAILED_IMMUNE);
 		return;
 	}
 	//this is GO, not unit
-	m_caster->SpellNonMeleeDamageLog(unitTarget,GetProto()->Id,damage, pSpellId== 0);
+	m_caster->SpellNonMeleeDamageLog(playerTarget,GetProto()->Id,damage, pSpellId== 0);
 
 	WorldPacket data(SMSG_ENVIRONMENTALDAMAGELOG, 13);
-	data << unitTarget->GetGUID();
+	data << playerTarget->GetGUID();
 	data << uint8(DAMAGE_FIRE);
 	data << uint32(damage);
-	unitTarget->SendMessageToSet( &data, true );
+	playerTarget->SendMessageToSet( &data, true );
 }
 
 void Spell::SpellEffectPowerDrain(uint32 i)  // Power Drain

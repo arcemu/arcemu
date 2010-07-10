@@ -63,7 +63,7 @@ Database * Database::CreateDatabaseInterface(uint32 uType)
 #endif
 	}
 
-	Log.LargeErrorMessage(LARGERRORMESSAGE_ERROR, "You have attempted to connect to a database that is unsupported or nonexistant.\nCheck your config and try again.");
+	Log.LargeErrorMessage(LARGERRORMESSAGE_ERROR, "You have attempted to connect to a database that is unsupported or nonexistant.\nCheck your config and try again.", NULL);
 	abort();
 	return NULL;
 }

@@ -48,6 +48,14 @@ void ApplyNormalFixes()
 
 	Log.Notice("World", "Processing %u spells...", dbcSpell.GetNumRows());
 
+	//checking if the DBCs have been extracted from an english client, based on namehash of spell 4, the first with a different name in non-english DBCs
+	SpellEntry * sp = dbcSpell.LookupEntry(4);
+	if( crc32((const unsigned char*)sp->Name, (unsigned int)strlen(sp->Name)) != SPELL_HASH_WORD_OF_RECALL_OTHER )
+	{
+		Log.LargeErrorMessage(LARGERRORMESSAGE_ERROR,"You are using DBCs extracted from an unsupported client.", "ArcEmu supports only enUS and enGB!!!", NULL);
+		abort();
+	}
+
 	uint32 cnt = dbcSpell.GetNumRows();
 	uint32 effect;
 	uint32 result;
@@ -67,7 +75,7 @@ void ApplyNormalFixes()
 	for(uint32 x= 0; x < cnt; x++)
 	{
 		// Read every SpellEntry row
-		SpellEntry * sp = dbcSpell.LookupRow(x);
+		sp = dbcSpell.LookupRow(x);
 
 		uint32 rank = 0;
 		uint32 namehash = 0;
@@ -878,7 +886,6 @@ void ApplyNormalFixes()
 	/////////////////////////////////////////////////////////////////
 	//SPELL COEFFICIENT SETTINGS START
 	//////////////////////////////////////////////////////////////////
-	SpellEntry * sp;
 
 	for(uint32 x= 0; x < cnt; x++)
 	{
