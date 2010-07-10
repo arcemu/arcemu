@@ -8246,9 +8246,6 @@ void Player::EndDuel(uint8 WinCondition)
 	sEventMgr.RemoveEvents( DuelingWith, EVENT_PLAYER_DUEL_BOUNDARY_CHECK );
 	sEventMgr.RemoveEvents( DuelingWith, EVENT_PLAYER_DUEL_COUNTDOWN );
 
-	// spells waiting to hit
-	sEventMgr.RemoveEvents(this, EVENT_SPELL_DAMAGE_HIT);
-
 	for( uint32 x = MAX_POSITIVE_AURAS_EXTEDED_START; x < MAX_POSITIVE_AURAS_EXTEDED_END; ++x )
 	{
 		if( DuelingWith->m_auras[x] == NULL )

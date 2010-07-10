@@ -40,7 +40,7 @@ EventableObject::EventableObject()
 	/* commented, these will be allocated when the first event is added. */
 	//m_event_Instanceid = event_GetInstanceID();
 	//m_holder = sEventMgr.GetEventHolder(m_event_Instanceid);
-
+	m_refs = 1;
 	m_holder = 0;
 	m_event_Instanceid = -1;
 

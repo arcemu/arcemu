@@ -1,5 +1,9 @@
 INCLUDES += -I$(srcdir)/../arcemu-shared
 
+StdAfx.gch: StdAfx.h
+		@echo "Building precompiled header."
+		@$(CXX) $(CXXFLAGS) $(LDFLAGS) $(INCLUDES) -o StdAfx.gch StdAfx.h-include StdAfx.gch
+
 bin_PROGRAMS = arcemu-world
 
 arcemu_world_SOURCES = \

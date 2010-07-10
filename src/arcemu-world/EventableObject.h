@@ -67,13 +67,16 @@ public:
 	
 	virtual int32 event_GetInstanceID() { return WORLD_INSTANCE; }
 
+	void AddRef() { Sync_Add(&m_refs); }
+	void DecRef() { if (Sync_Sub(&m_refs) == 0) delete this; }
+
 protected:
 
 	int32 m_event_Instanceid;
 	Mutex m_lock;
 	EventMap m_events;
 	EventableObjectHolder * m_holder;
-	
+	volatile long m_refs;
 };
 
 /**

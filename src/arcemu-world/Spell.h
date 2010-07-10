@@ -1654,12 +1654,14 @@ private:
 };
 
 // Spell instance
-class SERVER_DECL Spell
+class SERVER_DECL Spell : public EventableObject
 {
 public:
     friend class DummySpellHandler;
     Spell(Object* Caster, SpellEntry *info, bool triggered, Aura* aur);
     ~Spell();
+
+	int32 GetInstanceID() { return m_caster->GetInstanceID(); }
 
     // Fills specified targets at the area of effect
     void FillSpecifiedTargetsInArea(float srcx,float srcy,float srcz,uint32 ind, uint32 specification);
@@ -1695,6 +1697,7 @@ public:
     void finish(bool successful = true);
     // Handle the Effects of the Spell
     void HandleEffects(uint64 guid,uint32 i);
+	void HandleCastEffects(uint64 guid, uint32 i);
     // Take Power from the caster based on spell power usage
     bool TakePower();
     // Has power?
@@ -1961,6 +1964,7 @@ public:
 	// It should NOT be used for weapon_damage_type which needs: 0 = MELEE, 1 = OFFHAND, 2 = RANGED
 	ARCEMU_INLINE uint32 GetType() { return ( GetProto()->Spell_Dmg_Type == SPELL_DMG_TYPE_NONE ? SPELL_DMG_TYPE_MAGIC : GetProto()->Spell_Dmg_Type ); }
 
+	std::set<uint64> m_aurasHandled;
 	TargetsList UniqueTargets;
     SpellTargetsList    ModeratedTargets;
 

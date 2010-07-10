@@ -723,21 +723,7 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 
 	if(GetProto()->speed > 0 && m_triggeredSpell == false )
 	{
-		//FIXME:Use this one and check player movement and update distance
-		//It now only checks the first distance and hits the player after time expires.
-		//sEventMgr.AddEvent(this, &Spell::_DamageRangeUpdate, (uint32)100, EVENT_SPELL_DAMAGE_HIT, 100, 0);
-		float dist = m_caster->CalcDistance( unitTarget );
-		float time = ((dist*1000.0f)/GetProto()->speed);
-		if(time <= 100)
-			m_caster->SpellNonMeleeDamageLog(unitTarget,GetProto()->Id, dmg, pSpellId== 0);
-		else
-		{
-			damageToHit = dmg;
-			/*sEventMgr.AddEvent(m_caster, &Object::SpellNonMeleeDamageLog,
-			unitTarget,GetProto()->Id,dmg, EVENT_SPELL_DAMAGE_HIT, uint32(time), 1);*/
-			sEventMgr.AddEvent(m_caster, &Object::EventSpellDamage, unitTarget->GetGUID(),
-				GetProto()->Id, dmg, EVENT_SPELL_DAMAGE_HIT, uint32(time), 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-		}
+		m_caster->SpellNonMeleeDamageLog(unitTarget,GetProto()->Id, dmg, pSpellId== 0);
 	}
 	else
 	{
@@ -2173,6 +2159,8 @@ void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
 		pAura->pSpellId = pSpellId; //this is required for triggered spells
 
 		unitTarget->tmpAura[GetProto()->Id] = pAura;
+		AddRef();
+		sEventMgr.AddEvent(this, &Spell::HandleAddAura, unitTarget->GetGUID(), EVENT_SPELL_HIT, 100, 1, 0);
 	}
 	else
 	{
@@ -2494,17 +2482,7 @@ void Spell::SpellEffectWeapondamageNoschool(uint32 i) // Weapon damage + (no Sch
 	if(!unitTarget ||!u_caster)
 		return;
 
-	if( GetType() == SPELL_DMG_TYPE_RANGED && GetProto()->speed > 0.0f )
-	{
-		float time = (m_caster->CalcDistance(unitTarget) * 1000.0f) / GetProto()->speed;
-		if(time <= 100.0f)
-			u_caster->Strike( unitTarget, RANGED, GetProto(), 0, 0, 0, false, true );
-		else
-			sEventMgr.AddEvent(u_caster,&Unit::EventStrikeWithAbility,unitTarget->GetGUID(),
-			GetProto(), (uint32)damage, EVENT_SPELL_DAMAGE_HIT, float2int32(time), 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-	}
-	else
-		u_caster->Strike( unitTarget, ( GetType() == SPELL_DMG_TYPE_RANGED ? RANGED : MELEE ), GetProto(), damage, 0, 0, false, true );
+	u_caster->Strike( unitTarget, ( GetType() == SPELL_DMG_TYPE_RANGED ? RANGED : MELEE ), GetProto(), damage, 0, 0, false, true );
 }
 
 void Spell::SpellEffectResurrect(uint32 i) // Resurrect (Flat)
@@ -3804,7 +3782,10 @@ void Spell::SpellEffectApplyAA(uint32 i) // Apply Area Aura
 		if(!sEventMgr.HasEvent(pAura, EVENT_AREAAURA_UPDATE))		/* only add it once */
 			sEventMgr.AddEvent(pAura, &Aura::EventUpdateAA, r*r, EVENT_AREAAURA_UPDATE, 1000, 0,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 
-	}else
+		AddRef();
+		sEventMgr.AddEvent(this, &Spell::HandleAddAura, unitTarget->GetGUID(), EVENT_SPELL_HIT, 100, 1, 0);
+	}
+	else
 	{
 		pAura = itr->second;
 	}

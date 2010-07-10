@@ -391,3 +391,20 @@ SERVER_DECL bool _IsStringUTF8(const char *str)
 
  } 
 
+volatile long Sync_Add( volatile long* value )
+{
+#ifdef WIN32
+	return InterlockedIncrement(value);
+#else
+	return __sync_add_and_fetch(value, 1);
+#endif
+}
+
+volatile long Sync_Sub( volatile long* value )
+{
+#ifdef WIN32
+	return InterlockedDecrement(value);
+#else
+	return __sync_sub_and_fetch(value, 1);
+#endif
+}

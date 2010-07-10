@@ -944,6 +944,15 @@ void Object::RemoveFromWorld(bool free_guid)
 
 	m->RemoveObject(this, free_guid);
 
+	std::set<Spell*>::iterator itr, itr2;
+	for (itr = m_pendingSpells.begin(); itr != m_pendingSpells.end();)
+	{
+		itr2 = itr++;
+		delete *itr2;
+	}
+	//shouldnt need to clear, spell destructor will erase
+	//m_pendingSpells.clear();
+
 	m_instanceId = 0;
 	// update our event holder
 	event_Relocate();

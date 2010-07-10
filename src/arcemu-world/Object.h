@@ -124,6 +124,7 @@ class GameObject;
 class Unit;
 class Group;
 class Pet;
+class Spell;
 
 //====================================================================
 //  Object
@@ -659,6 +660,7 @@ public:
 
 	//Andy's crap
 	Player* GetPlayerOwner();
+	std::set<Spell*> m_pendingSpells;
 };
 
 

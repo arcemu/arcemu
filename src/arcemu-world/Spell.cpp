@@ -156,6 +156,7 @@ Spell::Spell(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 {
 	Arcemu::Util::ARCEMU_ASSERT(    Caster != NULL && info != NULL );
 
+	Caster->m_pendingSpells.insert(this);
 	chaindamage = 0;
 	bDurSet = 0;
 	damage = 0;
@@ -289,6 +290,8 @@ Spell::Spell(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 
 Spell::~Spell()
 {
+	m_caster->m_pendingSpells.erase(this);
+
     ///////////////////////////// This is from the virtual_destructor shit ///////////////
     if( u_caster != NULL && u_caster->GetCurrentSpell() == this )
 		u_caster->SetCurrentSpell(NULL);
@@ -1431,29 +1434,11 @@ void Spell::cast(bool check)
 							for(i = m_targetUnits[x].begin(); i != m_targetUnits[x].end();)
 							{
 								i2 = i++;
-								HandleEffects(*i2,x);
+								HandleCastEffects(*i2,x);
 							}
 						}
 						else
-							HandleEffects(0, x);
-					}
-				}
-				/* don't call HandleAddAura unless we actually have auras... - Burlex*/
-				if( m_spellInfo->EffectApplyAuraName[0] || m_spellInfo->EffectApplyAuraName[1] || m_spellInfo->EffectApplyAuraName[2] )
-				{
-					for( i = UniqueTargets.begin(); i != UniqueTargets.end(); ++i )
-					{
-						// don't apply auras to dead things - this is causing problems. why?
-						//if( m_caster && m_caster->GetMapMgr() )
-						//{
-						//	Unit* Target = m_caster->GetMapMgr()->GetUnit(*i);
-						//	if( Target && Target->IsDead() && !Target->IsPlayer() )
-						//	{
-						//		continue;
-						//	}
-						//}
-						hadEffect = true; // spell has had an effect (for item removal)
-						HandleAddAura(*i);
+							HandleCastEffects(0, x);
 					}
 				}
 
@@ -1829,7 +1814,7 @@ void Spell::finish(bool successful)
 		}
 	}
 
-	delete this;
+	DecRef();
 }
 
 void Spell::SendCastResult(uint8 result)
@@ -2635,6 +2620,9 @@ void Spell::HandleEffects(uint64 guid, uint32 i)
 		else
 		{
 			unitTarget = NULL;
+			gameObjTarget = NULL;
+			playerTarget = NULL;
+			itemTarget = NULL;
 			switch(GET_TYPE_FROM_GUID(guid))
 			{
 			case HIGHGUID_TYPE_UNIT:
@@ -2661,6 +2649,7 @@ void Spell::HandleEffects(uint64 guid, uint32 i)
 				break;
 			default:
 				sLog.outError("unitTarget not set");
+				DecRef();
 				return;
 			}
 		}
@@ -2688,13 +2677,20 @@ void Spell::HandleEffects(uint64 guid, uint32 i)
 	}
 	else
 		sLog.outError("SPELL: unknown effect %u spellid %u", id, GetProto()->Id);
+
+	DecRef();
 }
 
 void Spell::HandleAddAura(uint64 guid)
 {
 	Unit * Target = NULL;
-	if(guid == 0)
+	if(guid == 0 || m_aurasHandled.find(guid) != m_aurasHandled.end())
+	{
+		DecRef();
 		return;
+	}
+
+	m_aurasHandled.insert(guid);
 
 	if(u_caster && u_caster->GetGUID() == guid)
 		Target = u_caster;
@@ -2702,7 +2698,10 @@ void Spell::HandleAddAura(uint64 guid)
 		Target = m_caster->GetMapMgr()->GetUnit(guid);
 
 	if( Target == NULL )
+	{
+		DecRef();
 		return;
+	}
 
 	// Applying an aura to a flagged target will cause you to get flagged.
 	// self casting doesn't flag himself.
@@ -2764,7 +2763,10 @@ void Spell::HandleAddAura(uint64 guid)
 	{
 		SpellEntry *spellInfo = dbcSpell.LookupEntryForced( 51185 );
 		if(!spellInfo) 
+		{
+			DecRef();
 			return;
+		}
 
 		Spell *spell = new Spell(p_caster, spellInfo ,true, NULL);
 		spell->forced_basepoints[0] = p_caster->FindAuraByNameHash(SPELL_HASH_KING_OF_THE_JUNGLE)->m_spellProto->RankNumber * 5;
@@ -2796,7 +2798,10 @@ void Spell::HandleAddAura(uint64 guid)
 	{
 		SpellEntry *spellInfo = dbcSpell.LookupEntryForced( spellid );
 		if( !spellInfo )
+		{
+			DecRef();
 			return;
+		}
 
 		Spell *spell = new Spell( u_caster, spellInfo ,true, NULL );
 
@@ -2809,7 +2814,10 @@ void Spell::HandleAddAura(uint64 guid)
 
 	// avoid map corruption
 	if(Target->GetInstanceID()!=m_caster->GetInstanceID())
+	{
+		DecRef();
 		return;
+	}
 
 	std::map<uint32,Aura*>::iterator itr=Target->tmpAura.find(GetProto()->Id);
 	if(itr!=Target->tmpAura.end())
@@ -2843,6 +2851,7 @@ void Spell::HandleAddAura(uint64 guid)
 			Target->tmpAura.erase(itr);
 		}
 	}
+	DecRef();
 }
 
 
@@ -5594,4 +5603,58 @@ uint32 Spell::GetTargetType( uint32 value, uint32 i )
 		type |= SPELL_TARGET_AREA_CHAIN;
 
 	return type;
+}
+
+void Spell::HandleCastEffects( uint64 guid, uint32 i )
+{
+	if (m_spellInfo->speed == 0) //instant
+	{
+		AddRef();
+		HandleEffects(guid, i);
+	}
+	else
+	{
+		float destx, desty, destz;
+
+		if (guid == 0)
+		{
+			if (m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION)
+			{
+				destx = m_targets.m_destX;
+				desty = m_targets.m_destY;
+				destz = m_targets.m_destZ;
+			}
+			else
+				return;
+		}
+		else
+		{
+			if (!m_caster->IsInWorld())
+				return;
+			Object* obj = m_caster->GetMapMgr()->_GetObject(guid);
+			if (obj == NULL)
+				return;
+			destx = obj->GetPositionX();
+			desty = obj->GetPositionY();
+			//todo: this should be destz = obj->GetPositionZ() + (obj->GetModelHighBoundZ() / 2 * obj->GetUInt32Value(OBJECT_FIELD_SCALE_X))
+			destz = obj->GetPositionZ();
+		}
+
+		float dist = m_caster->CalcDistance(destx, desty, destz);
+
+		if (dist == 0.0f)
+		{
+			AddRef();
+			HandleEffects(guid, i);
+		}
+		else
+		{
+			float time = dist * 1000.0f / m_spellInfo->speed;
+			//todo: arcemu doesn't support reflected spells
+			//if (reflected)
+			//	time *= 1.25; //reflected projectiles move back 4x faster
+			sEventMgr.AddEvent(this, &Spell::HandleEffects, guid, i, EVENT_SPELL_HIT, float2int32(time), 1, 0);
+			AddRef();
+		}
+	}
 }

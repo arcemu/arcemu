@@ -42,6 +42,10 @@ extern SERVER_DECL const char* _StringToUTF8(const char*pASCIIBuf);
 extern SERVER_DECL const char* _StringToANSI(const char*pUtf8Buf);
 extern SERVER_DECL bool _IsStringUTF8(const char *str);
 
+volatile long Sync_Add(volatile long* value);
+
+volatile long Sync_Sub(volatile long* value);
+
 #ifdef WIN32
 
 	typedef struct tagTHREADNAME_INFO
