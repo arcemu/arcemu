@@ -6012,7 +6012,7 @@ void Player::OnRemoveInRangeObject(Object* pObj)
 		++itr;
 		if( pObj == summon )
 		{
-			summon->DelayedRemove(true);
+			summon->DelayedRemove(false, false, 1);//delayed otherwise Object::RemoveInRangeObject() will remove twice the Pet from inrangeset. Refer to r3199
 			return;
 		}
 	}
