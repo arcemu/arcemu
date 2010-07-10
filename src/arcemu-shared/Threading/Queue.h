@@ -27,122 +27,81 @@ template<class T>
 class FQueue 
 {
 public:
-	ARCEMU_INLINE FQueue() : cond(&lock) {first=last= NULL;size= 0;}
+	FQueue() { first = last = NULL; size = 0; }
 	volatile unsigned int size;
 
 	uint32 get_size()
 	{
-		uint32 ret;
-		cond.BeginSynchronized();
-		ret = size;
-		cond.EndSynchronized();
-		return ret;
+		lock.Acquire();
+		uint32 retval = size;
+		lock.Release();
+		return retval;
 	}
 
 	void push(T &item)
 	{
-		h*p=new h;
-		p->value=item;
-		p->pNext= NULL;
+		h* p = new h;
+		p->value = item;
+		p->pNext = NULL;
 		
-		//lock.Acquire();
-		cond.BeginSynchronized();
-		if(last)//have some items
+		lock.Acquire();
+		if(last != NULL)//have some items
 		{
-			last->pNext=(h*)p;
-			last=p;
-			size++;
+			last->pNext = (h*)p;
+			last = p;
+			++size;
 		}
-		else//first item
+		else //first item
 		{
-			last=first=p;
-			size=1;
-			cond.Signal();
+			last = first = p;
+			size = 1;
 		}
-		//lock.Release();
-		cond.EndSynchronized();
+		lock.Release();
 	}
 
-	T pop_nowait()
-	{
-		//lock.Acquire();
-		cond.BeginSynchronized();
-		if(size== 0)
-		{
-			cond.EndSynchronized();
-			return NULL;
-		}
-
-		h*tmp=first;
-		if(tmp == NULL)
-		{
-			cond.EndSynchronized();
-			return NULL;
-		}
-
-		if(--size)//more than 1 item
-		{
-			first=(h*)first->pNext;
-		}
-		else//last item
-		{
-			first=last= NULL;
-		}
-		//lock.Release();
-		cond.EndSynchronized();
-
-		T returnVal = tmp->value;
-		delete tmp;
-
-		return returnVal;
-	}
+	T pop_nowait() { return pop(); }
 
 	T pop()
 	{
-		//lock.Acquire();
-		cond.BeginSynchronized();
-		if(size== 0)
-		cond.Wait();
-
-		h*tmp=first;
-		if(tmp == NULL)
+		lock.Acquire();
+		if(size == 0)
 		{
-			cond.EndSynchronized();
+			lock.Release();
 			return NULL;
 		}
 
-		if(--size)//more than 1 item
+		h* tmp = first;
+		if(tmp == NULL)
 		{
-			first=(h*)first->pNext;
+			lock.Release();
+			return NULL;
 		}
-		else//last item
+
+		if(--size) //more than 1 item
+			first = (h*)first->pNext;
+		else //last item
 		{
-			first=last= NULL;
+			first = last = NULL;
 		}
-		//lock.Release();
-		cond.EndSynchronized();
+		
+		lock.Release();
 
 		T returnVal = tmp->value;
 		delete tmp;
-		
 		return returnVal;
-	}	
-
-	ARCEMU_INLINE Condition& GetCond() { return cond; }
+	}
 	
 private:
 	struct h
 	{
 		T value;
-		void *pNext;
+		void* pNext;
 	};
 
-	h*first;
-	h*last;
+	h * first;
+	h * last;
 	
 	Mutex lock;
-	Condition cond;
-
 };
 
 #endif 

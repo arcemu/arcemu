@@ -235,32 +235,35 @@ bool Database::run()
 	SetThreadName("Database Execute Thread");
 	SetThreadState(THREADSTATE_BUSY);
 	ThreadRunning = true;
-	char * query = queries_queue.pop();
-	DatabaseConnection * con = GetFreeConnection();
-	while(query)
+	char* query = queries_queue.pop();
+	DatabaseConnection* con = GetFreeConnection();
+	while(1)
 	{
-		_SendQuery( con, query, false );
-		delete[] query;
+		if (query != NULL)
+		{
+			_SendQuery(con, query, false);
+			delete[] query;
+		}
+
 		if(ThreadState == THREADSTATE_TERMINATE)
 			break;
-
 		query = queries_queue.pop();
+
+		if (query == NULL)
+			Sleep(10);
 	}
 
 	con->Busy.Release();
 
-	if(queries_queue.get_size() > 0)
+	// execute all the remaining queries
+	query = queries_queue.pop();
+	while(query)
 	{
-		// execute all the remaining queries
-		query = queries_queue.pop_nowait();
-		while(query)
-		{
-			DatabaseConnection * con = GetFreeConnection();
-			_SendQuery( con, query, false );
-			con->Busy.Release();
-			delete[] query;
-			query=queries_queue.pop_nowait();
-		}
+		DatabaseConnection* con = GetFreeConnection();
+		_SendQuery( con, query, false );
+		con->Busy.Release();
+		delete[] query;
+		query = queries_queue.pop();
 	}
 
 	ThreadRunning = false;
@@ -311,20 +314,29 @@ AsyncQuery::~AsyncQuery()
 
 void Database::EndThreads()
 {
+	//these 2 loops spin until theres nothing left
+	while (1)
+	{
+		QueryBuffer* buf = query_buffer.pop();
+		if (buf == NULL)
+			break;
+		query_buffer.push(buf);
+	}
+	while (1)
+	{
+		char* buf = queries_queue.pop();
+		if (buf == NULL)
+			break;
+		queries_queue.push(buf);
+	}
+
 	SetThreadState(THREADSTATE_TERMINATE);
+
 	while(ThreadRunning || qt)
 	{
-		if(query_buffer.get_size() == 0)
-			query_buffer.GetCond().Broadcast();
-	
-		if(queries_queue.get_size() == 0)
-			queries_queue.GetCond().Broadcast();
-
 		Sleep(100);
 		if(!ThreadRunning)
 			break;
-			
-		Sleep(1000);
 	}
 }
 
@@ -341,31 +353,36 @@ QueryThread::~QueryThread()
 
 void Database::thread_proc_query()
 {
-	QueryBuffer * q;
-	DatabaseConnection * con = GetFreeConnection();
+	QueryBuffer* q;
+	DatabaseConnection* con = GetFreeConnection();
 
-	q = query_buffer.pop( );
-	while( q != NULL )
+	q = query_buffer.pop();
+	while(1)
 	{
-		PerformQueryBuffer( q, con );
-		delete q;
+		if (q != NULL)
+		{
+			PerformQueryBuffer( q, con );
+			delete q;
+		}
 
-		if( ThreadState == THREADSTATE_TERMINATE )
+		if(ThreadState == THREADSTATE_TERMINATE)
 			break;
 
 		q = query_buffer.pop( );
+		if (q == NULL)
+			Sleep(10);
 	}
 
 	con->Busy.Release();
 
 	// kill any queries
-	q = query_buffer.pop_nowait( );
-	while( q != NULL )
+	q = query_buffer.pop( );
+	while(q != NULL)
 	{
 		PerformQueryBuffer( q, NULL );
 		delete q;
 
-		q = query_buffer.pop_nowait( );
+		q = query_buffer.pop();
 	}
 }
 
