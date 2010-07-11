@@ -959,7 +959,14 @@ void Aura::Remove()
 
     // We will delete this on the next update, eluding some spell crashes :|
     m_target->AddGarbageAura( this );
-    m_target->m_auras[ m_auraSlot ] = NULL;
+	m_target->m_auras[ m_auraSlot ] = NULL;
+
+	//only remove channel stuff if caster == target, then it's not removed twice, for example, arcane missiles applies a dummy aura to target
+	if (caster != NULL && caster == m_target && m_spellProto->ChannelInterruptFlags != 0)
+	{
+		caster->SetChannelSpellTargetGUID(0);
+		caster->SetChannelSpellId(0);
+	}
 }
 
 void Aura::AddMod( uint32 t, int32 a, uint32 miscValue, uint32 i )

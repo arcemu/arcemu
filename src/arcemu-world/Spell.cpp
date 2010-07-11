@@ -2250,8 +2250,11 @@ void Spell::SendChannelUpdate(uint32 time)
 			if(dynObj)
 				dynObj->Remove();
 
-			u_caster->SetChannelSpellTargetGUID( 0);
-			u_caster->SetChannelSpellId( 0);
+			if (dynObj == NULL && m_aurasHandled.find(m_caster->GetGUID()) == m_aurasHandled.end()) //no persistant aura or aura on caster
+			{
+				u_caster->SetChannelSpellTargetGUID(0);
+				u_caster->SetChannelSpellId(0);
+			}
 		}
 	}
 

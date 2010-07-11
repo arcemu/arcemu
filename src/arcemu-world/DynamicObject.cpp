@@ -224,6 +224,12 @@ void DynamicObject::Remove()
 	if( IsInWorld() )
 		RemoveFromWorld(true);
 
+	if (u_caster != NULL && m_spellProto->ChannelInterruptFlags != 0)
+	{
+		u_caster->SetChannelSpellTargetGUID(0);
+		u_caster->SetChannelSpellId(0);
+	}
+
 	delete this;
 }
 
