@@ -2010,7 +2010,7 @@ bool AIInterface::FindFriends(float dist)
 		}
 	}
 
-	uint32 family = (((Creature*)m_Unit)->GetCreatureInfo()->Type);
+	uint32 family = TO_CREATURE(m_Unit)->GetCreatureInfo()->Type;
 	
 	CreatureProto *pt = static_cast< Creature* >( m_Unit )->GetProto();
 
@@ -2136,7 +2136,7 @@ float AIInterface::_CalcAggroRange(Unit* target)
 	{
 		lvlDiff = -8;
 	}
-	if (!((Creature*)m_Unit)->CanSee(target))
+	if (!TO_CREATURE(m_Unit)->CanSee(target))
 		return 0;
 
 	// Retrieve aggrorange from table
@@ -2164,9 +2164,9 @@ float AIInterface::_CalcAggroRange(Unit* target)
 	}
 
 	// Multiply by elite value
-	if (m_Unit->IsCreature() && ((Creature*)m_Unit)->GetCreatureInfo()->Rank > 0)
+	if (m_Unit->IsCreature() && TO_CREATURE(m_Unit)->GetCreatureInfo()->Rank > 0)
 	{
-		AggroRange *= (((Creature*)m_Unit)->GetCreatureInfo()->Rank) * 1.50f;
+		AggroRange *= (TO_CREATURE(m_Unit)->GetCreatureInfo()->Rank) * 1.50f;
 	}
 
 	// Cap Aggro range at 40.0f
@@ -2834,7 +2834,7 @@ bool AIInterface::saveWayPoints()
 	if(!GetUnit()) return false;
 	if(GetUnit()->GetTypeId() != TYPEID_UNIT) return false;
 
-	WorldDatabase.Execute("DELETE FROM creature_waypoints WHERE spawnid = %u", ((Creature*)GetUnit())->GetSQL_id());
+	WorldDatabase.Execute("DELETE FROM creature_waypoints WHERE spawnid = %u", TO_CREATURE(GetUnit())->GetSQL_id());
 	WayPointMap::const_iterator itr;
 	WayPoint* wp = NULL;
 	std::stringstream ss;
@@ -2851,7 +2851,7 @@ bool AIInterface::saveWayPoints()
 
 		ss << "INSERT INTO creature_waypoints ";
 		ss << "(spawnid,waypointid,position_x,position_y,position_z,waittime,flags,forwardemoteoneshot,forwardemoteid,backwardemoteoneshot,backwardemoteid,forwardskinid,backwardskinid) VALUES (";
-		ss << ((Creature*)GetUnit())->GetSQL_id() << ", ";
+		ss << TO_CREATURE(GetUnit())->GetSQL_id() << ", ";
 		ss << wp->id << ", ";
 		ss << wp->x << ", ";
 		ss << wp->y << ", ";
@@ -2947,8 +2947,8 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 					if(wp)
 					{
 						CALL_SCRIPT_EVENT(m_Unit, OnReachWP)(wp->id, !m_moveBackward);
-						if(((Creature*)m_Unit)->has_waypoint_text)
-							objmgr.HandleMonsterSayEvent(((Creature*)m_Unit), MONSTER_SAY_EVENT_RANDOM_WAYPOINT);
+						if(TO_CREATURE(m_Unit)->has_waypoint_text)
+							objmgr.HandleMonsterSayEvent(TO_CREATURE(m_Unit), MONSTER_SAY_EVENT_RANDOM_WAYPOINT);
 
 						//Lets face to correct orientation
 						wayO = wp->o;

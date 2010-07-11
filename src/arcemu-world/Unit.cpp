@@ -2851,7 +2851,7 @@ uint32 Unit::GetSpellDidHitResult( Unit* pVictim, uint32 weapon_damage_type, Spe
 		victim_skill = pVictim->getLevel() * 5;
 		if(pVictim->m_objectTypeId == TYPEID_UNIT)
 		{
-			Creature * c = (Creature*)(pVictim);
+			Creature * c = TO_CREATURE(pVictim);
 			if( c->GetCreatureInfo()->Rank == ELITE_WORLDBOSS )
 			{
 				victim_skill = std::max(victim_skill,((int32)this->getLevel()+3)*5); //used max to avoid situation when lowlvl hits boss.
@@ -2922,7 +2922,7 @@ uint32 Unit::GetSpellDidHitResult( Unit* pVictim, uint32 weapon_damage_type, Spe
 		self_skill = this->getLevel() * 5;
 		if(m_objectTypeId == TYPEID_UNIT)
 		{
-			Creature * c = (Creature*)(this);
+			Creature * c = TO_CREATURE(this);
 			if( c->GetCreatureInfo()->Rank == ELITE_WORLDBOSS )
 				self_skill = std::max(self_skill,((int32)pVictim->getLevel()+3)*5);//used max to avoid situation when lowlvl hits boss.
 		}
@@ -3226,7 +3226,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 		self_skill = this->getLevel() * 5;
 		if(m_objectTypeId == TYPEID_UNIT)
 		{
-			Creature * c = (Creature*)(this);
+			Creature * c = TO_CREATURE(this);
 			if(c->GetCreatureInfo()->Rank == ELITE_WORLDBOSS)
 				self_skill = std::max(self_skill,((int32)pVictim->getLevel()+3)*5);//used max to avoid situation when lowlvl hits boss.
 		}
@@ -3688,7 +3688,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 							dmg.full_damage += dmg.full_damage * static_cast< Player* >( this )->m_modphyscritdmgPCT / 100;
 						}
 						if(!pVictim->IsPlayer())
-							dmg.full_damage += float2int32(dmg.full_damage*static_cast< Player* >( this )->IncreaseCricticalByTypePCT[((Creature*)pVictim)->GetCreatureInfo()->Type]);
+							dmg.full_damage += float2int32(dmg.full_damage*static_cast< Player* >( this )->IncreaseCricticalByTypePCT[TO_CREATURE(pVictim)->GetCreatureInfo()->Type]);
 					//sLog.outString( "DEBUG: After IncreaseCricticalByTypePCT: %u" , dmg.full_damage );
 					}
 
@@ -4991,7 +4991,7 @@ int32 Unit::GetSpellDmgBonus(Unit *pVictim, SpellEntry *spellInfo,int32 base_dmg
 	plus_damage += pVictim->DamageTakenMod[school];
 //------------------------------by victim type----------------------------------------------
 	if(!pVictim->IsPlayer() && caster->IsPlayer())
-		plus_damage += static_cast< Player* >(caster)->IncreaseDamageByType[((Creature*)pVictim)->GetCreatureInfo()->Type];
+		plus_damage += static_cast< Player* >(caster)->IncreaseDamageByType[TO_CREATURE(pVictim)->GetCreatureInfo()->Type];
 //==========================================================================================
 //==============================+Spell Damage Bonus Modifications===========================
 //==========================================================================================
@@ -5123,7 +5123,7 @@ void Unit::Emote(EmoteType emote)
 void Unit::SendChatMessageToPlayer(uint8 type, uint32 lang, const char *msg, Player *plr)
 {
 	size_t UnitNameLength = 0, MessageLength = 0;
-	CreatureInfo *ci = (m_objectTypeId == TYPEID_UNIT) ? ((Creature*)this)->GetCreatureInfo() : NULL;
+	CreatureInfo *ci = (m_objectTypeId == TYPEID_UNIT) ? TO_CREATURE(this)->GetCreatureInfo() : NULL;
 
 	if(plr == NULL)
 		return;
@@ -5174,7 +5174,7 @@ void Unit::SendChatMessageAlternateEntry(uint32 entry, uint8 type, uint32 lang, 
 void Unit::SendChatMessage(uint8 type, uint32 lang, const char *msg)
 {
 	size_t UnitNameLength = 0, MessageLength = 0;
-	CreatureInfo *ci = (m_objectTypeId == TYPEID_UNIT) ? ((Creature*)this)->GetCreatureInfo() : NULL;
+	CreatureInfo *ci = (m_objectTypeId == TYPEID_UNIT) ? TO_CREATURE(this)->GetCreatureInfo() : NULL;
 
 	UnitNameLength = strlen((char*)ci->Name) + 1;
 	MessageLength = strlen((char*)msg) + 1;
@@ -5298,7 +5298,7 @@ float Unit::GetDamageDonePctMod(uint32 school)
 	    if(this->IsPlayer())
 		   return m_floatValues[PLAYER_FIELD_MOD_DAMAGE_DONE_PCT+school];
 		else
-		   return ((Creature*)this)->ModDamageDonePct[school];
+		   return TO_CREATURE(this)->ModDamageDonePct[school];
 	}
 	else
 		sLog.outDebug("[NOTICE] You have bad DB, spell school = %u\n",school);
@@ -5321,8 +5321,8 @@ void Unit::CalcDamage()
 
 		float bonus = ap_bonus * ( GetBaseAttackTime(MELEE) + static_cast< Creature* >( this )->m_speedFromHaste );
 
-		delta = float(((Creature*)this)->ModDamageDone[0]);
-		mult = float(((Creature*)this)->ModDamageDonePct[0]);
+		delta = float(TO_CREATURE(this)->ModDamageDone[0]);
+		mult = float(TO_CREATURE(this)->ModDamageDonePct[0]);
 		r = ( BaseDamage[0] + bonus ) * mult + delta;
 		// give some diversity to pet damage instead of having a 77-78 damage range (as an example)
 		SetMinDamage(r > 0 ? ( IsPet() ? r * 0.9f : r ) : 0 );

@@ -76,11 +76,11 @@ uint32 CalculateXpToGive(Unit *pVictim, Unit *pAttacker)
 	if(pVictim->IsPlayer())
 		return 0;
 
-	if(((Creature*)pVictim)->IsTotem())
+	if(TO_CREATURE(pVictim)->IsTotem())
 		return 0;
 
 	CreatureInfo *victimI;
-	victimI = ((Creature*)pVictim)->GetCreatureInfo();
+	victimI = TO_CREATURE(pVictim)->GetCreatureInfo();
 
 	if(victimI->Type == UNIT_TYPE_CRITTER)
 		return 0;
@@ -524,7 +524,7 @@ if(ability && ability->NameHash == SPELL_HASH_FLAMETONGUE_WEAPON)
 
 		if(!pVictim->IsPlayer())
 		{
-			uint32 creatType = ((Creature*)pVictim)->GetCreatureInfo()->Type;
+			uint32 creatType = TO_CREATURE(pVictim)->GetCreatureInfo()->Type;
 			ap += (float)pAttacker->CreatureRangedAttackPowerMod[creatType];
 
 			if(pAttacker->IsPlayer())
@@ -588,7 +588,7 @@ if(ability && ability->NameHash == SPELL_HASH_FLAMETONGUE_WEAPON)
 
 		if(!pVictim->IsPlayer())
 		{
-			uint32 creatType = ((Creature*)pVictim)->GetCreatureInfo()->Type;
+			uint32 creatType = TO_CREATURE(pVictim)->GetCreatureInfo()->Type;
 			ap += (float)pAttacker->CreatureAttackPowerMod[creatType];
 
 			if(pAttacker->IsPlayer())

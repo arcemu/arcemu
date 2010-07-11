@@ -1113,8 +1113,8 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 						bool yieldXP = CalculateXpToGive( pUnit, GetPlayer() )  > 0;
 						if( crTypeId == TYPEID_UNIT )
 						{
-							crTotem = ((Creature*)pUnit)->IsTotem();
-							crType = ((Creature*)pUnit)->GetCreatureInfo()->Type;
+							crTotem = TO_CREATURE(pUnit)->IsTotem();
+							crType = TO_CREATURE(pUnit)->GetCreatureInfo()->Type;
 							if(     (achievementCriteria->ID == 4944)                             // Total NPC kills              refAch==1197
 								|| ( (achievementCriteria->ID == 4946) && (yieldXP)            )   // Kill an NPC that yields XP   refAch==1198
 								|| ( (achievementCriteria->ID == 4948) && (crType==UNIT_TYPE_BEAST)      )   // Beasts                       refAch== 107

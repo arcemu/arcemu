@@ -2144,7 +2144,7 @@ void Object::Deactivate(MapMgr * mgr)
 		// check iterator
 		if(mgr->creature_iterator != mgr->activeCreatures.end() && (*mgr->creature_iterator)->GetGUID() == GetGUID())
 			++mgr->creature_iterator;
-		mgr->activeCreatures.erase((Creature*)this);
+		mgr->activeCreatures.erase(TO_CREATURE(this));
 		break;
 
 	case TYPEID_GAMEOBJECT:

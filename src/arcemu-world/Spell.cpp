@@ -356,7 +356,7 @@ void Spell::FillSpecifiedTargetsInArea(uint32 i,float srcx,float srcy,float srcz
 		{
 			if((*itr)->GetTypeId()!= TYPEID_UNIT)
 				continue;
-			CreatureInfo *inf = ((Creature*)(*itr))->GetCreatureInfo();
+			CreatureInfo *inf = TO_CREATURE(*itr)->GetCreatureInfo();
 			if(!(1<<(inf->Type-1) & GetProto()->TargetCreatureType))
 				continue;
 		}
@@ -432,7 +432,7 @@ void Spell::FillAllTargetsInArea(uint32 i,float srcx,float srcy,float srcz, floa
 		{
 			if( (*itr)->GetTypeId()!= TYPEID_UNIT )
 				continue;
-			CreatureInfo *inf = ((Creature*)(*itr))->GetCreatureInfo();
+			CreatureInfo *inf = TO_CREATURE(*itr)->GetCreatureInfo();
 			if( !( 1 << (inf->Type-1) & GetProto()->TargetCreatureType ) )
 				continue;
 		}
@@ -493,7 +493,7 @@ void Spell::FillAllFriendlyInArea( uint32 i, float srcx, float srcy, float srcz,
 		{
 			if((*itr)->GetTypeId()!= TYPEID_UNIT)
 				continue;
-			CreatureInfo *inf = ((Creature*)(*itr))->GetCreatureInfo();
+			CreatureInfo *inf = TO_CREATURE(*itr)->GetCreatureInfo();
 			if(!(1<<(inf->Type-1) & GetProto()->TargetCreatureType))
 				continue;
 		}
@@ -561,7 +561,7 @@ uint64 Spell::GetSinglePossibleEnemy(uint32 i,float prange)
 		{
 			if( (*itr)->GetTypeId() != TYPEID_UNIT )
 				continue;
-			CreatureInfo *inf = ((Creature*)(*itr))->GetCreatureInfo();
+			CreatureInfo *inf = TO_CREATURE(*itr)->GetCreatureInfo();
 			if(!(1<<(inf->Type-1) & GetProto()->TargetCreatureType))
 				continue;
 		}
@@ -614,7 +614,7 @@ uint64 Spell::GetSinglePossibleFriend(uint32 i,float prange)
 		{
 			if((*itr)->GetTypeId()!= TYPEID_UNIT)
 				continue;
-			CreatureInfo *inf = ((Creature*)(*itr))->GetCreatureInfo();
+			CreatureInfo *inf = TO_CREATURE(*itr)->GetCreatureInfo();
 				if(!(1<<(inf->Type-1) & GetProto()->TargetCreatureType))
 					continue;
 		}
@@ -3806,7 +3806,7 @@ uint8 Spell::CanCast(bool tolerate)
 							return SPELL_FAILED_HIGHLEVEL;
 						else if(target->GetTypeId() == TYPEID_UNIT)
 						{
-							Creature * c = (Creature*)(target);
+							Creature * c = TO_CREATURE(target);
 							if (c->GetCreatureInfo()->Rank >ELITE_ELITE)
 								return SPELL_FAILED_HIGHLEVEL;
 						}
@@ -3949,7 +3949,7 @@ uint8 Spell::CanCast(bool tolerate)
 
 			// if target is already skinned, don't let it be skinned again
 			if( GetProto()->Effect[0] == SPELL_EFFECT_SKINNING) // skinning
-				if(target->IsUnit() && (((Creature*)target)->Skinned) )
+				if(target->IsUnit() && TO_CREATURE(target)->Skinned )
 					return SPELL_FAILED_TARGET_UNSKINNABLE;
 
 			// all spells with target 61 need to be in group or raid
