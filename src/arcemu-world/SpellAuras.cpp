@@ -813,7 +813,7 @@ Aura::Aura( SpellEntry* proto, int32 duration, Object* caster, Unit* target, boo
 
 		if( p_target && caster->IsPlayer() )
 		{
-			if( p_target->DuelingWith == ((Player*)caster) )
+			if( p_target->DuelingWith == TO_PLAYER(caster) )
 			{
 				m_castInDuel = true;
 			}
@@ -1602,7 +1602,7 @@ void Aura::EventPeriodicDamage(uint32 amount)
 
 		if(school == SHADOW_DAMAGE)
 			if( c != NULL && c->isAlive() && c->IsPlayer() && c->getClass() == PRIEST )
-				((Player*)c)->VampiricSpell(float2int32(res), m_target);
+				TO_PLAYER(c)->VampiricSpell(float2int32(res), m_target);
 	}
 	// grep: this is hack.. some auras seem to delete this shit.
 	SpellEntry * sp = m_spellProto;

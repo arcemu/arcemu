@@ -1311,7 +1311,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, bo
 				{
 					if (!this->IsPlayer())
 						continue;
-					Player* mPlayer = (Player*)this;
+					Player* mPlayer = TO_PLAYER(this);
 					if (!mPlayer->IsInFeralForm() ||
 						(mPlayer->GetShapeShift() != FORM_CAT &&
 						mPlayer->GetShapeShift() != FORM_BEAR &&
@@ -1627,7 +1627,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, bo
 							break;
 
 						//the nasty part : get a new target ^^
-						Player *p_caster = (Player*)oricaster;
+						Player *p_caster = TO_PLAYER(oricaster);
 						Player *First_new_target,*Next_new_target,*First_whatever;
 						First_new_target = Next_new_target = First_whatever = NULL;
 						bool passed_prev_target = false;
@@ -4241,7 +4241,7 @@ void Unit::AddAura(Aura * aur)
 		return;
 	}
 
-	if(m_mapId!=530 && (m_mapId!=571 || (IsPlayer() && !((Player*)this)->HasSpellwithNameHash(SPELL_HASH_COLD_WEATHER_FLYING))))
+	if(m_mapId!=530 && (m_mapId!=571 || (IsPlayer() && !TO_PLAYER(this)->HasSpellwithNameHash(SPELL_HASH_COLD_WEATHER_FLYING))))
 	// can't use flying auras in non-outlands or non-northrend (northrend requires cold weather flying)
 	{
 		for( uint32 i = 0; i < 3; ++i )
@@ -5449,7 +5449,7 @@ uint32 Unit::AbsorbDamage( uint32 School, uint32* dmg )
 		}
 	}
 
-	if(IsPlayer() && ((Player*)this)->GodModeCheat)
+	if(IsPlayer() && TO_PLAYER(this)->GodModeCheat)
 	{
 		abs += *dmg;
 		*dmg = 0;
@@ -5614,7 +5614,7 @@ void Unit::UpdateSpeed()
 
 	if(IsPlayer())
 	{
-		if(((Player*)this)->m_changingMaps)
+		if(TO_PLAYER(this)->m_changingMaps)
 			static_cast< Player* >( this )->resend_speed = true;
 		else
 		{
@@ -6181,7 +6181,7 @@ void Unit::RemoveAurasOfSchool(uint32 School, bool Positive, bool Immune)
 
 void Unit::EnableFlight()
 {
-	if(m_objectTypeId != TYPEID_PLAYER || ((Player*)this)->m_changingMaps)
+	if(m_objectTypeId != TYPEID_PLAYER || TO_PLAYER(this)->m_changingMaps)
 	{
 		WorldPacket data(SMSG_MOVE_SET_CAN_FLY, 13);
 		data << GetNewGUID();
@@ -6207,7 +6207,7 @@ void Unit::EnableFlight()
 
 void Unit::DisableFlight()
 {
-	if(m_objectTypeId != TYPEID_PLAYER || ((Player*)this)->m_changingMaps)
+	if(m_objectTypeId != TYPEID_PLAYER || TO_PLAYER(this)->m_changingMaps)
 	{
 		WorldPacket data(SMSG_MOVE_UNSET_CAN_FLY, 13);
 		data << GetNewGUID();
@@ -6813,7 +6813,7 @@ bool CombatStatusHandler::IsInCombat()
 		} break;
 		case TYPEID_PLAYER:
 		{
-			std::list<Pet*> summons = ((Player*)m_Unit)->GetSummons();
+			std::list<Pet*> summons = TO_PLAYER(m_Unit)->GetSummons();
 			for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
 			{
 				if((*itr)->GetPetOwner() == m_Unit && (*itr)->CombatStatus.IsInCombat())

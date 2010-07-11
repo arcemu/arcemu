@@ -665,12 +665,12 @@ if(ability && ability->NameHash == SPELL_HASH_FLAMETONGUE_WEAPON)
 
 	if(result >= 0)
 	{
-		if( pAttacker->IsPlayer() && ((Player*)pAttacker)->m_outStealthDamageBonusTimer )
+		if( pAttacker->IsPlayer() && TO_PLAYER(pAttacker)->m_outStealthDamageBonusTimer )
 		{
-			if( (uint32)UNIXTIME >= ((Player*)pAttacker)->m_outStealthDamageBonusTimer )
-				((Player*)pAttacker)->m_outStealthDamageBonusTimer = 0;
+			if( (uint32)UNIXTIME >= TO_PLAYER(pAttacker)->m_outStealthDamageBonusTimer )
+				TO_PLAYER(pAttacker)->m_outStealthDamageBonusTimer = 0;
 			else
-				result *= ((((Player*)pAttacker)->m_outStealthDamageBonusPct) / 100.0f) + 1.0f;
+				result *= ((TO_PLAYER(pAttacker)->m_outStealthDamageBonusPct) / 100.0f) + 1.0f;
 		}
 
 		return float2int32(result);

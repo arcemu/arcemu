@@ -2950,7 +2950,7 @@ void ObjectMgr::HandleMonsterSayEvent(Creature * pCreature, MONSTER_SAY_EVENTS E
 			if(CurrentTarget && CurrentTarget->IsPlayer())
 			{
 				ptrdiff_t testOfs = test-text;
-				newText.replace(testOfs, 2, ((Player*)CurrentTarget)->GetName());
+				newText.replace(testOfs, 2, TO_PLAYER(CurrentTarget)->GetName());
 			}
 		}
 		test = strstr((char*)text,"$C");

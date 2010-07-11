@@ -158,7 +158,7 @@ void HonorHandler::OnPlayerKilledUnit( Player *pPlayer, Unit* pVictim )
 					continue;
 
 				bool added = false;
-				Player * plr = (Player*)(*itr);
+				Player * plr = TO_PLAYER(*itr);
 				if(pVictim->CombatStatus.m_attackers.find(plr->GetGUID()) != pVictim->CombatStatus.m_attackers.end())
 				{
 					added = true;
@@ -201,7 +201,7 @@ void HonorHandler::OnPlayerKilledUnit( Player *pPlayer, Unit* pVictim )
 				AddHonorPointsToPlayer(pAffectedPlayer, contributorpts);
 				if(pVictim->IsPlayer())
 				{
-					sHookInterface.OnHonorableKill(pAffectedPlayer, (Player*)pVictim);
+					sHookInterface.OnHonorableKill(pAffectedPlayer, TO_PLAYER(pVictim));
 
 					WorldPacket data(SMSG_PVP_CREDIT, 12);
 					uint32 pvppoints = contributorpts * 10; // Why *10?
