@@ -605,7 +605,7 @@ void Object::_BuildValuesUpdate(ByteBuffer * data, UpdateMask *updateMask, Playe
 
 		if( target && GetTypeId() == TYPEID_GAMEOBJECT )
 		{
-			GameObject *go = ((GameObject*)this);
+			GameObject *go = TO_GAMEOBJECT(this);
 			QuestLogEntry *qle;
 			GameObjectInfo *info;
 			if( go->HasQuests() )
@@ -2148,7 +2148,7 @@ void Object::Deactivate(MapMgr * mgr)
 		break;
 
 	case TYPEID_GAMEOBJECT:
-		mgr->activeGameObjects.erase((GameObject*)this);
+		mgr->activeGameObjects.erase(TO_GAMEOBJECT(this));
 		break;
 	}
 	Active = false;

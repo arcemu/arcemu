@@ -139,7 +139,7 @@ Item *ItemInterface::SafeAddItem(uint32 ItemId, int8 ContainerSlot, int16 slot)
 
 	if(pProto->InventoryType == INVTYPE_BAG)
 	{
-		pItem = (Item*)new Container(HIGHGUID_TYPE_CONTAINER,objmgr.GenerateLowGuid(HIGHGUID_TYPE_CONTAINER));
+		pItem = TO_ITEM(new Container(HIGHGUID_TYPE_CONTAINER,objmgr.GenerateLowGuid(HIGHGUID_TYPE_CONTAINER)));
 		static_cast<Container*>(pItem)->Create( ItemId, m_pOwner);
 		if(m_AddItem(pItem, ContainerSlot, slot))
 		{

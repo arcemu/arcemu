@@ -271,7 +271,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 	if (t_go)
 	{
 		if (t_go->GetEntry() == GO_FISHING_BOBBER)
-			((GameObject*)t_go)->EndFishing(GetPlayer(),true);
+			TO_GAMEOBJECT(t_go)->EndFishing(GetPlayer(),true);
 	}
 
 	/************************************************************************/

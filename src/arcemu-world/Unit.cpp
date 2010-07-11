@@ -904,7 +904,7 @@ void Unit::GiveGroupXP(Unit *pVictim, Player *PlayerInGroup)
 			active_player_list[i]->SetFlag(UNIT_FIELD_AURASTATE,AURASTATE_FLAG_LASTKILLWITHHONOR);
 			if(!sEventMgr.HasEvent(active_player_list[i],EVENT_LASTKILLWITHHONOR_FLAG_EXPIRE))
 			{
-				sEventMgr.AddEvent((Unit*)active_player_list[i],&Unit::EventAurastateExpire,(uint32)AURASTATE_FLAG_LASTKILLWITHHONOR,EVENT_LASTKILLWITHHONOR_FLAG_EXPIRE,20000,1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+				sEventMgr.AddEvent(TO_UNIT(active_player_list[i]),&Unit::EventAurastateExpire,(uint32)AURASTATE_FLAG_LASTKILLWITHHONOR,EVENT_LASTKILLWITHHONOR_FLAG_EXPIRE,20000,1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 			}
 			else
 			{
@@ -3555,8 +3555,8 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 
 			if(ability && ability->SpellGroupType)
 			{
-				SM_FIValue( ((Unit*)this)->SM_FDamageBonus, &dmg.full_damage, ability->SpellGroupType );
-				SM_PIValue( ((Unit*)this)->SM_PDamageBonus, &dmg.full_damage, ability->SpellGroupType );
+				SM_FIValue( TO_UNIT(this)->SM_FDamageBonus, &dmg.full_damage, ability->SpellGroupType );
+				SM_PIValue( TO_UNIT(this)->SM_PDamageBonus, &dmg.full_damage, ability->SpellGroupType );
 			} 
 			else 
 			{
@@ -4097,7 +4097,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 				if ( (*itr) == pVictim || !(*itr)->IsUnit() )
 					continue;
 
-				if(CalcDistance(*itr) < 5.0f && isAttackable(this, (*itr)) && (*itr)->isInFront(this) && !((Unit*)(*itr))->IsPacified())
+				if(CalcDistance(*itr) < 5.0f && isAttackable(this, (*itr)) && (*itr)->isInFront(this) && !TO_UNIT(*itr)->IsPacified())
 				{
 					// Sweeping Strikes hits cannot be dodged, missed or parried (from wowhead)
 					bool skip_hit_check2 = ex->spell_info->Id == 12328 ? true : false;

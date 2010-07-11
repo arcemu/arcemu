@@ -6688,7 +6688,7 @@ void Player::UpdateNearbyGameObjects()
 		if(obj->GetTypeId() == TYPEID_GAMEOBJECT)
 		{
 			bool activate_quest_object = false;
-			GameObject *go = ((GameObject*)obj);
+			GameObject *go = TO_GAMEOBJECT(obj);
 			QuestLogEntry *qle = NULL;
 			GameObjectInfo *info = go->GetInfo();
 
@@ -6767,7 +6767,7 @@ void Player::UpdateNearbyGameObjects()
 				}
 			}
 			if(!bPassed)
-				EventDeActivateGameObject((GameObject*)(*itr));
+				EventDeActivateGameObject(TO_GAMEOBJECT(*itr));
 		}
 	}
 }
@@ -13143,7 +13143,7 @@ void Player::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 				SetFlag(UNIT_FIELD_AURASTATE,AURASTATE_FLAG_LASTKILLWITHHONOR);
 				
 				if( !sEventMgr.HasEvent(this,EVENT_LASTKILLWITHHONOR_FLAG_EXPIRE ) )
-					sEventMgr.AddEvent( static_cast< Unit* >( this ), &Unit::EventAurastateExpire, static_cast< uint32 >( AURASTATE_FLAG_LASTKILLWITHHONOR ),EVENT_LASTKILLWITHHONOR_FLAG_EXPIRE,20000,1,0);
+					sEventMgr.AddEvent( TO_UNIT(this), &Unit::EventAurastateExpire, static_cast< uint32 >( AURASTATE_FLAG_LASTKILLWITHHONOR ),EVENT_LASTKILLWITHHONOR_FLAG_EXPIRE,20000,1,0);
 				else
 					sEventMgr.ModifyEventTimeLeft(this,EVENT_LASTKILLWITHHONOR_FLAG_EXPIRE,20000);
 
@@ -13221,7 +13221,7 @@ void Player::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 								SetFlag(UNIT_FIELD_AURASTATE,AURASTATE_FLAG_LASTKILLWITHHONOR);
 
 								if(!sEventMgr.HasEvent(this,EVENT_LASTKILLWITHHONOR_FLAG_EXPIRE))
-									sEventMgr.AddEvent((Unit*)this,&Unit::EventAurastateExpire,(uint32)AURASTATE_FLAG_LASTKILLWITHHONOR,EVENT_LASTKILLWITHHONOR_FLAG_EXPIRE,20000,1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+									sEventMgr.AddEvent(TO_UNIT(this),&Unit::EventAurastateExpire,(uint32)AURASTATE_FLAG_LASTKILLWITHHONOR,EVENT_LASTKILLWITHHONOR_FLAG_EXPIRE,20000,1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 								else
 									sEventMgr.ModifyEventTimeLeft(this,EVENT_LASTKILLWITHHONOR_FLAG_EXPIRE,20000);
 								

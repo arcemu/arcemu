@@ -722,7 +722,7 @@ bool ChatHandler::HandleGOSelect(const char *args, WorldSession *m_session)
 				{
 					cDist = nDist;
 					nDist = 0.0f;
-					GObj = (GameObject*)(*Itr);
+					GObj = TO_GAMEOBJECT(*Itr);
 				}
 			}
 		}

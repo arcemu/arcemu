@@ -785,7 +785,7 @@ Aura::Aura( SpellEntry* proto, int32 duration, Object* caster, Unit* target, boo
 	}
 
 	if (GetDuration() > 0 && m_spellProto->ChannelInterruptFlags != 0 && caster->IsUnit())
-		SetDuration(GetDuration() * TO_UNIT(caster)->GetCastSpeedMod());
+		SetDuration(GetDuration() * float2int32(TO_UNIT(caster)->GetCastSpeedMod()));
 
 	//SetCasterFaction(caster->_getFaction());
 
@@ -1206,7 +1206,7 @@ void Aura::EventUpdateAA(float r)
 			{
 				// execute in the correct context
                 if(iplr->GetInstanceID() != plr->GetInstanceID())
-					sEventMgr.AddEvent(((Unit*)iplr), &Unit::EventRemoveAura, m_spellProto->Id, EVENT_DELETE_TIMER, 10, 1,0);
+					sEventMgr.AddEvent(TO_UNIT(iplr), &Unit::EventRemoveAura, m_spellProto->Id, EVENT_DELETE_TIMER, 10, 1,0);
 				else
 					iplr->RemoveAura(m_spellProto->Id);
 			}
@@ -1222,7 +1222,7 @@ void Aura::EventUpdateAA(float r)
 		{
 			// execute in the correct context
 			if(iplr->GetInstanceID() != plr->GetInstanceID())
-				sEventMgr.AddEvent(((Unit*)iplr), &Unit::EventRemoveAura, m_spellProto->Id, EVENT_DELETE_TIMER, 10, 1,0);
+				sEventMgr.AddEvent(TO_UNIT(iplr), &Unit::EventRemoveAura, m_spellProto->Id, EVENT_DELETE_TIMER, 10, 1,0);
 			else
 				iplr->RemoveAura(m_spellProto->Id);
 			targets.erase(it2);
@@ -2783,7 +2783,7 @@ void Aura::SpellAuraModCharm(bool apply)
 		//damn it, the other effects of enslave demon will agro him on us anyway :S
 		m_target->GetAIInterface()->WipeHateList();
 		m_target->GetAIInterface()->WipeTargetList();
-		m_target->GetAIInterface()->SetNextTarget( (Unit*)NULL);
+		m_target->GetAIInterface()->SetNextTarget( TO_UNIT(NULL));
 
 		target->SetEnslaveCount(target->GetEnslaveCount() + 1);
 
@@ -3204,7 +3204,7 @@ void Aura::SpellAuraModStun(bool apply)
 		m_target->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_STUNNED);
 
 		if(m_target->GetTypeId() == TYPEID_UNIT)
-			m_target->GetAIInterface()->SetNextTarget( (Unit*)NULL );
+			m_target->GetAIInterface()->SetNextTarget( TO_UNIT(NULL) );
 
 		// remove the current spell (for channalers)
 		if(m_target->m_currentSpell && m_target->GetGUID() != m_casterGuid &&
@@ -3793,7 +3793,7 @@ void Aura::SpellAuraPeriodicTriggerSpellWithValue(bool apply)
 		if(spe == NULL)
 			return;
 
-		float amptitude = GetSpellProto()->EffectAmplitude[mod->i];
+		float amptitude = static_cast<float>( GetSpellProto()->EffectAmplitude[mod->i] );
 		Unit* caster = GetUnitCaster();
 		uint32 numticks = GetSpellDuration(m_spellProto, caster) / m_spellProto->EffectAmplitude[mod->i];
 		if (caster != NULL)
@@ -3847,7 +3847,7 @@ void Aura::SpellAuraPeriodicTriggerSpell(bool apply)
 			return;
 
 
-		float amptitude = GetSpellProto()->EffectAmplitude[mod->i];
+		float amptitude = static_cast<float>( GetSpellProto()->EffectAmplitude[mod->i] );
 		Unit* caster = GetUnitCaster();
 		uint32 numticks = GetSpellDuration(m_spellProto, caster) / m_spellProto->EffectAmplitude[mod->i];
 		if (caster != NULL)
@@ -9434,6 +9434,6 @@ void Aura::SpellAuraCallStabledPet(bool apply)
 
 void Aura::ResetDuration()
 {
-	timeleft = UNIXTIME;
+	timeleft = static_cast<uint32>(UNIXTIME);
 	sEventMgr.ModifyEventTimeLeft(this, EVENT_AURA_REMOVE, GetDuration());
 }

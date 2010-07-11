@@ -380,7 +380,7 @@ void Spell::FillSpecifiedTargetsInArea(uint32 i,float srcx,float srcy,float srcz
 				if ( g_caster && g_caster->GetUInt32Value( OBJECT_FIELD_CREATED_BY ) && g_caster->m_summoner )
 				{
 					//trap, check not to attack owner and friendly
-					if(isAttackable(g_caster->m_summoner,(Unit*)(*itr),!(GetProto()->c_is_flags & SPELL_FLAG_IS_TARGETINGSTEALTHED)))
+					if(isAttackable(g_caster->m_summoner,TO_UNIT(*itr),!(GetProto()->c_is_flags & SPELL_FLAG_IS_TARGETINGSTEALTHED)))
 						SafeAddTarget(tmpMap, (*itr)->GetGUID());
 				}
 				else
@@ -569,7 +569,7 @@ uint64 Spell::GetSinglePossibleEnemy(uint32 i,float prange)
 		{
 			if( u_caster != NULL )
 			{
-				if(isAttackable(u_caster, static_cast< Unit* >( *itr ),!(GetProto()->c_is_flags & SPELL_FLAG_IS_TARGETINGSTEALTHED)) && DidHit(i,((Unit*)*itr))==SPELL_DID_HIT_SUCCESS)
+				if(isAttackable(u_caster, static_cast< Unit* >( *itr ),!(GetProto()->c_is_flags & SPELL_FLAG_IS_TARGETINGSTEALTHED)) && DidHit(i,TO_UNIT(*itr))==SPELL_DID_HIT_SUCCESS)
 				{
 					return (*itr)->GetGUID();
 				}
@@ -622,7 +622,7 @@ uint64 Spell::GetSinglePossibleFriend(uint32 i,float prange)
 		{
 			if( u_caster != NULL )
 			{
-				if( isFriendly( u_caster, static_cast< Unit* >( *itr ) ) && DidHit(i, ((Unit*)*itr))==SPELL_DID_HIT_SUCCESS)
+				if( isFriendly( u_caster, static_cast< Unit* >( *itr ) ) && DidHit(i, TO_UNIT(*itr))==SPELL_DID_HIT_SUCCESS)
 				{
 					return (*itr)->GetGUID();
 				}
@@ -1032,7 +1032,7 @@ void Spell::cancel()
 						p_caster->GetSummonedObject()->RemoveFromWorld(true);
 					// for now..
 					Arcemu::Util::ARCEMU_ASSERT(   p_caster->GetSummonedObject()->GetTypeId() == TYPEID_GAMEOBJECT);
-					delete ((GameObject*)(p_caster->GetSummonedObject()));
+					delete p_caster->GetSummonedObject();
 					p_caster->SetSummonedObject(NULL);
 				}
 
@@ -1336,7 +1336,7 @@ void Spell::cast(bool check)
 
 					uint32 channelDuration = GetDuration();
 					if (u_caster != NULL)
-						channelDuration *= u_caster->GetCastSpeedMod();
+						channelDuration = static_cast<uint32>(channelDuration * u_caster->GetCastSpeedMod());
 					m_spellState = SPELL_STATE_CASTING;
 					SendChannelStart(channelDuration);
 					if( p_caster != NULL )
@@ -3339,7 +3339,7 @@ uint8 Spell::CanCast(bool tolerate)
 				if ( !(p_caster->GetPhase() & (*itr)->GetPhase()) ) //We can't see this, can't be the focus, skip further checks
 					continue;
 
-				GameObjectInfo *info = ((GameObject*)(*itr))->GetInfo();
+				GameObjectInfo *info = TO_GAMEOBJECT(*itr)->GetInfo();
 				if (!info)
 				{
 					sLog.outDebug("Warning: could not find info about game object %u",(*itr)->GetEntry());

@@ -398,9 +398,9 @@ void MapMgr::PushObject(Object *obj)
 		case HIGHGUID_TYPE_GAMEOBJECT:
 			{
 				GOStorage[ obj->GetUIdFromGUID() ] = static_cast< GameObject* >( obj );
-				if(((GameObject*)obj)->m_spawn != NULL)
+				if(TO_GAMEOBJECT(obj)->m_spawn != NULL)
 				{
-					_sqlids_gameobjects.insert(make_pair( ((GameObject*)obj)->m_spawn->id, ((GameObject*)obj) ) );
+					_sqlids_gameobjects.insert(make_pair( TO_GAMEOBJECT(obj)->m_spawn->id, TO_GAMEOBJECT(obj) ) );
 				}
 			}break;
 
@@ -528,9 +528,9 @@ void MapMgr::RemoveObject(Object *obj, bool free_guid)
 		case HIGHGUID_TYPE_GAMEOBJECT:
 			Arcemu::Util::ARCEMU_ASSERT(    obj->GetUIdFromGUID() <= m_GOHighGuid );
 			GOStorage[ obj->GetUIdFromGUID() ] = NULL;
-			if(((GameObject*)obj)->m_spawn != NULL)
+			if(TO_GAMEOBJECT(obj)->m_spawn != NULL)
 			{
-				_sqlids_gameobjects.erase(((GameObject*)obj)->m_spawn->id);
+				_sqlids_gameobjects.erase(TO_GAMEOBJECT(obj)->m_spawn->id);
 			}
 
 			if(free_guid)
