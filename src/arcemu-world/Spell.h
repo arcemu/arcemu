@@ -1663,6 +1663,9 @@ public:
 
 	int32 GetInstanceID() { return m_caster->GetInstanceID(); }
 
+	bool m_overrideBasePoints;
+	uint32 m_overridenBasePoints[3];
+
     // Fills specified targets at the area of effect
     void FillSpecifiedTargetsInArea(float srcx,float srcy,float srcz,uint32 ind, uint32 specification);
     // Fills specified targets at the area of effect. We suppose we already inited this spell and know the details
@@ -2239,5 +2242,6 @@ public:
 void ApplyDiminishingReturnTimer(uint32 * Duration, Unit * Target, SpellEntry * spell);
 void UnapplyDiminishingReturnTimer(Unit * Target, SpellEntry * spell);
 uint32 GetDiminishingGroup(uint32 NameHash);
+uint32 GetSpellDuration(SpellEntry* sp, Unit* caster = NULL);
 
 #endif

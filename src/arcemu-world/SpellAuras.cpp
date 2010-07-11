@@ -784,6 +784,9 @@ Aura::Aura( SpellEntry* proto, int32 duration, Object* caster, Unit* target, boo
 		SetDuration( ( GetDuration() * ( 100 + DurationModifier ) ) / 100 );
 	}
 
+	if (GetDuration() > 0 && m_spellProto->ChannelInterruptFlags != 0 && caster->IsUnit())
+		SetDuration(GetDuration() * TO_UNIT(caster)->GetCastSpeedMod());
+
 	//SetCasterFaction(caster->_getFaction());
 
 	//m_auraSlot = 0;
@@ -3784,37 +3787,25 @@ void Aura::SpellAuraModResistance(bool apply)
 
 void Aura::SpellAuraPeriodicTriggerSpellWithValue(bool apply)
 {
-	if(m_spellProto->EffectTriggerSpell[mod->i] == 0)
-		return;
 	if(apply)
 	{
-		uint32 sp = GetSpellProto()->EffectTriggerSpell[mod->i];
-		SpellEntry *spe = dbcSpell.LookupEntry(sp);
-		if(!sp || !spe)
-		{
-			return; // invalid spell
+		SpellEntry *spe = dbcSpell.LookupEntry(m_spellProto->EffectTriggerSpell[mod->i]);
+		if(spe == NULL)
+			return;
+
+		float amptitude = GetSpellProto()->EffectAmplitude[mod->i];
+		Unit* caster = GetUnitCaster();
+		uint32 numticks = GetSpellDuration(m_spellProto, caster) / m_spellProto->EffectAmplitude[mod->i];
+		if (caster != NULL)
+		{	
+			SM_FFValue(caster->SM_FAmptitude, &amptitude, m_spellProto->SpellGroupType);
+			SM_PFValue(caster->SM_PAmptitude, &amptitude, m_spellProto->SpellGroupType);
+			if (m_spellProto->ChannelInterruptFlags != 0)
+				amptitude *= caster->GetCastSpeedMod();
 		}
 
-		Unit *m_caster = GetUnitCaster();
-		if(!m_caster)
-		{
-			return; // invalid caster
-		}
-
-		spe->EffectBasePoints[0] = mod->m_amount; // set the base damage value
-
-        if( m_caster->GetChannelSpellTargetGUID() != 0 )
-		{
-			sEventMgr.AddEvent(this, &Aura::EventPeriodicTriggerSpell, spe,
-			EVENT_AURA_PERIODIC_TRIGGERSPELL,GetSpellProto()->EffectAmplitude[mod->i], 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-            periodic_target = m_caster->GetChannelSpellTargetGUID();
-		}
-		else
-		{
-			sEventMgr.AddEvent(this, &Aura::EventPeriodicTriggerSpell, spe,
-				EVENT_AURA_PERIODIC_TRIGGERSPELL,GetSpellProto()->EffectAmplitude[mod->i], 0,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-			periodic_target = m_target->GetGUID();
-		}
+ 		sEventMgr.AddEvent(this, &Aura::EventPeriodicTriggerSpell, spe, true, mod->m_amount,
+			EVENT_AURA_PERIODIC_TRIGGERSPELL, float2int32(amptitude), numticks, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 	}
 }
 
@@ -3850,15 +3841,32 @@ void Aura::SpellAuraPeriodicTriggerSpell(bool apply)
 
 	if(apply)
 	{
+		float amptitude = GetSpellProto()->EffectAmplitude[mod->i];
+		Unit* caster = GetUnitCaster();
+		uint32 numticks = GetSpellDuration(m_spellProto, caster) / m_spellProto->EffectAmplitude[mod->i];
+		if (caster != NULL)
+		{	
+			SM_FFValue(caster->SM_FAmptitude, &amptitude, m_spellProto->SpellGroupType);
+			SM_PFValue(caster->SM_PAmptitude, &amptitude, m_spellProto->SpellGroupType);
+			if (m_spellProto->ChannelInterruptFlags != 0)
+				amptitude *= caster->GetCastSpeedMod();
+		}
+		
 		SpellEntry* trigger = dbcSpell.LookupEntry(GetSpellProto()->EffectTriggerSpell[mod->i]);
-		sEventMgr.AddEvent(this, &Aura::EventPeriodicTriggerSpell, trigger,
-		EVENT_AURA_PERIODIC_TRIGGERSPELL,GetSpellProto()->EffectAmplitude[mod->i], 0,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+		sEventMgr.AddEvent(this, &Aura::EventPeriodicTriggerSpell, trigger, false, int32(0),
+		EVENT_AURA_PERIODIC_TRIGGERSPELL, float2int32(amptitude), numticks, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 	}
 }
 
-void Aura::EventPeriodicTriggerSpell(SpellEntry* spellInfo)
+void Aura::EventPeriodicTriggerSpell(SpellEntry* spellInfo, bool overridevalues, int32 overridevalue)
 {
 	Spell* spell = new Spell(m_target, spellInfo, true, this);
+	if (overridevalues)
+	{
+		spell->m_overrideBasePoints = true;
+		for (uint32 i = 0; i < 3; ++i)
+			spell->m_overridenBasePoints[i] = overridevalue;
+	}
 	SpellCastTargets targets;
 	spell->GenerateTargets(&targets);
 	spell->prepare(&targets);
@@ -9417,4 +9425,10 @@ void Aura::SpellAuraCallStabledPet(bool apply)
 		if( pcaster != NULL && pcaster->getClass() == HUNTER && pcaster->GetSession() != NULL )
 			pcaster->GetSession()->SendStabledPetList(0);
 	}
+}
+
+void Aura::ResetDuration()
+{
+	timeleft = UNIXTIME;
+	sEventMgr.ModifyEventTimeLeft(this, EVENT_AURA_REMOVE, GetDuration());
 }

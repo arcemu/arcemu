@@ -157,6 +157,10 @@ Spell::Spell(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 	Arcemu::Util::ARCEMU_ASSERT(    Caster != NULL && info != NULL );
 
 	Caster->m_pendingSpells.insert(this);
+	m_overrideBasePoints = false;
+	m_overridenBasePoints[0] = 0xFFFFFFFF;
+	m_overridenBasePoints[1] = 0xFFFFFFFF;
+	m_overridenBasePoints[2] = 0xFFFFFFFF;
 	chaindamage = 0;
 	bDurSet = 0;
 	damage = 0;
@@ -1331,6 +1335,8 @@ void Spell::cast(bool check)
 					*/
 
 					uint32 channelDuration = GetDuration();
+					if (u_caster != NULL)
+						channelDuration *= u_caster->GetCastSpeedMod();
 					m_spellState = SPELL_STATE_CASTING;
 					SendChannelStart(channelDuration);
 					if( p_caster != NULL )
@@ -4300,7 +4306,11 @@ int32 Spell::CalculateEffect(uint32 i,Unit *target)
 
 	float basePointsPerLevel    = GetProto()->EffectRealPointsPerLevel[i];
 	//float randomPointsPerLevel  = GetProto()->EffectDicePerLevel[i];
-	int32 basePoints = GetProto()->EffectBasePoints[i] + 1;
+	int32 basePoints;
+	if (m_overrideBasePoints)
+		basePoints = m_overridenBasePoints[i];
+	else
+		basePoints = GetProto()->EffectBasePoints[i] + 1;
 	int32 randomPoints = GetProto()->EffectDieSides[i];
 
 	//added by Zack : some talents inherit their basepoints from the previously cast spell: see mage - Master of Elements
@@ -5504,6 +5514,19 @@ uint32 GetDiminishingGroup(uint32 NameHash)
 	else
 		ret = grp;
 
+	return ret;
+}
+
+uint32 GetSpellDuration( SpellEntry* sp, Unit* caster /*= NULL*/ )
+{
+	SpellDuration* dur = dbcSpellDuration.LookupEntry(sp->DurationIndex);
+	if (dur == NULL)
+		return 0;
+	if (caster == NULL)
+		return dur->Duration1;
+	uint32 ret = dur->Duration1 + (dur->Duration2 * caster->getLevel());
+	if (ret > dur->Duration3)
+		return dur->Duration3;
 	return ret;
 }
 

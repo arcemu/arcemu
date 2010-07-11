@@ -4344,8 +4344,7 @@ void Unit::AddAura(Aura * aur)
 						}
 						AlreadyApplied++;
 						//update duration,the same aura (update the whole stack whenever we cast a new one)
-						m_auras[x]->SetDuration(aur->GetDuration());
-						sEventMgr.ModifyEventTimeLeft(m_auras[x], EVENT_AURA_REMOVE, aur->GetDuration());
+						m_auras[x]->ResetDuration();
 
 						if(maxStack <= AlreadyApplied)
 						{

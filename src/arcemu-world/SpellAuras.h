@@ -448,12 +448,14 @@ public:
     ARCEMU_INLINE uint32 GetSpellId() const {return m_spellProto->Id; }
     ARCEMU_INLINE bool IsPassive(){ if(!m_spellProto) return false; return (m_spellProto->Attributes & ATTRIBUTES_PASSIVE && !m_areaAura);}
 
+	void ResetDuration();
+
     ARCEMU_INLINE int32 GetDuration() const { return m_duration; }
-	 void SetDuration(int32 duration)
-	 {
-		 m_duration = duration;
-		 timeleft = (uint32)UNIXTIME;
-	 }
+	void SetDuration(int32 duration)
+	{
+		m_duration = duration;
+		ResetDuration();
+	}
 
     ARCEMU_INLINE uint16 GetAuraSlot() const { return m_auraSlot; }
 	void SetAuraSlot( uint16 slot ) { m_auraSlot = slot; }
@@ -720,7 +722,7 @@ public:
 	void EventPeriodicDamage(uint32);
 	void EventPeriodicDamagePercent(uint32);
 	void EventPeriodicHeal(uint32);
-	void EventPeriodicTriggerSpell(SpellEntry* spellInfo);
+	void EventPeriodicTriggerSpell(SpellEntry* spellInfo, bool overridevalues, int32 overridevalue);
 	void EventPeriodicTrigger(uint32 amount, uint32 type);
 	void EventPeriodicEnergize(uint32,uint32);
 	void EventPeriodicEnergizeVariable(uint32,uint32);
