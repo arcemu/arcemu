@@ -339,14 +339,6 @@ public:
 	void LoadAccountDataProc(QueryResult * result);
 	bool IsLoggingOut() { return _loggingOut; }
 
-	// Vehicles
-	void SetActiveMover(WoWGuid guid)
-	{
-		m_MoverWoWGuid = guid;
-		movement_packet[0] = m_MoverWoWGuid.GetNewGuidMask();
-		memcpy(&movement_packet[1], m_MoverWoWGuid.GetNewGuid(), m_MoverWoWGuid.GetNewGuidLen());
-	}
-
 protected:
 
 	/// Login screen opcodes (PlayerHandler.cpp):

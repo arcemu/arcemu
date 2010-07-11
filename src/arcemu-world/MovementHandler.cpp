@@ -290,7 +290,12 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 	WoWGuid guid;
 	recv_data >> guid;
 	movement_info.init(recv_data);
-	m_MoverWoWGuid = guid;
+	
+	if( guid != m_MoverWoWGuid.GetOldGuid() ){
+		return;
+	}
+
+	// m_MoverWoWGuid = guid;
 
 	/************************************************************************/
 	/* Update player movement state                                         */
@@ -625,48 +630,38 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 	/************************************************************************/
 	/* Update our position in the server.                                   */
 	/************************************************************************/
-	if( _player->m_CurrentCharm && _player->GetMapMgr() )
-	{
-		Unit *cc = _player->GetMapMgr()->GetUnit( _player->m_CurrentCharm );
-		if( cc )
-			cc->SetPosition(movement_info.x, movement_info.y, movement_info.z, movement_info.orientation);
-	}
-	else
-	{
-		if(!_player->m_CurrentTransporter)
-		{
-			if( !_player->SetPosition(movement_info.x, movement_info.y, movement_info.z, movement_info.orientation) )
-			{
+
+	// Player is the active mover
+	if( m_MoverWoWGuid.GetOldGuid() == _player->GetGUID() ){
+		
+		if( _player->m_CurrentTransporter == NULL ){
+			if( !_player->SetPosition(movement_info.x, movement_info.y, movement_info.z, movement_info.orientation) ){
 				//extra check to set HP to 0 only if the player is dead (KillPlayer() has already this check)
-				if ( _player->isAlive() )
-				{
+				if ( _player->isAlive() ){
 					_player->SetHealth(0);
 					_player->KillPlayer();
 				}
 
 				MapInfo *pMapinfo = WorldMapInfoStorage.LookupEntry( _player->GetMapId() );
-				if( pMapinfo != NULL )
-				{
-					if( pMapinfo->type == INSTANCE_NULL || pMapinfo->type == INSTANCE_BATTLEGROUND )
-					{
+				if( pMapinfo != NULL ){
+
+					if( pMapinfo->type == INSTANCE_NULL || pMapinfo->type == INSTANCE_BATTLEGROUND ){
 						_player->RepopAtGraveyard( _player->GetPositionX(), _player->GetPositionY(), _player->GetPositionZ(), _player->GetMapId() );
-					}
-					else
-					{
+					}else{
 						_player->RepopAtGraveyard( pMapinfo->repopx, pMapinfo->repopy, pMapinfo->repopz, pMapinfo->repopmapid );
 					}
-				}
-				else
-				{
+				}else{
 					_player->RepopAtGraveyard( _player->GetPositionX(), _player->GetPositionY(), _player->GetPositionZ(), _player->GetMapId() );
 				}//Teleport player to graveyard. Stops players from QQing..
 			}
 		}
-		else
-		{
-			_player->SetPosition(movement_info.x, movement_info.y, movement_info.z,
-				movement_info.orientation + movement_info.transO, false);
-		}
+	}else{
+		// Player is in control of some entity, so we move that instead of the player
+		Unit *mover = _player->GetMapMgr()->GetUnit( m_MoverWoWGuid.GetOldGuid() );
+		if( mover == NULL )
+			return;
+
+		mover->SetPosition( movement_info.x, movement_info.y, movement_info.z, movement_info.orientation );
 	}
 }
 
@@ -687,7 +682,7 @@ void WorldSession::HandleMoveNotActiveMoverOpcode( WorldPacket & recv_data )
 
 	movement_info.init(recv_data);
 
-	if(guid != uint64(0))
+	if( ( guid != uint64( 0 ) ) && ( guid == _player->GetCharmedUnitGUID() ) )
 		m_MoverWoWGuid = guid;
 	else
 		m_MoverWoWGuid.Init(_player->GetGUID());
