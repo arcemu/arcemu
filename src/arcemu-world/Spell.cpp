@@ -300,9 +300,7 @@ Spell::~Spell()
     if( u_caster != NULL && u_caster->GetCurrentSpell() == this )
 		u_caster->SetCurrentSpell(NULL);
 
-	if( p_caster )
-		if( hadEffect || ( cancastresult == SPELL_CANCAST_OK && !GetSpellFailed() ) )
-			RemoveItems();
+
 
 	if( m_spellInfo_override != NULL)
 		delete[] m_spellInfo_override;
@@ -1819,6 +1817,10 @@ void Spell::finish(bool successful)
 			}
 		}
 	}
+
+	if( p_caster )
+		if( hadEffect || ( cancastresult == SPELL_CANCAST_OK && !GetSpellFailed() ) )
+			RemoveItems();
 
 	DecRef();
 }
