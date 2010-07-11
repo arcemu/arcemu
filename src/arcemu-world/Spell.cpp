@@ -357,7 +357,7 @@ void Spell::FillSpecifiedTargetsInArea(uint32 i,float srcx,float srcy,float srcz
 			if((*itr)->GetTypeId()!= TYPEID_UNIT)
 				continue;
 			CreatureInfo *inf = ((Creature*)(*itr))->GetCreatureInfo();
-			if(!inf || !(1<<(inf->Type-1) & GetProto()->TargetCreatureType))
+			if(!(1<<(inf->Type-1) & GetProto()->TargetCreatureType))
 				continue;
 		}
 
@@ -433,7 +433,7 @@ void Spell::FillAllTargetsInArea(uint32 i,float srcx,float srcy,float srcz, floa
 			if( (*itr)->GetTypeId()!= TYPEID_UNIT )
 				continue;
 			CreatureInfo *inf = ((Creature*)(*itr))->GetCreatureInfo();
-			if( !inf || !( 1 << (inf->Type-1) & GetProto()->TargetCreatureType ) )
+			if( !( 1 << (inf->Type-1) & GetProto()->TargetCreatureType ) )
 				continue;
 		}
 		if( IsInrange( srcx, srcy, srcz, (*itr), r ) )
@@ -494,7 +494,7 @@ void Spell::FillAllFriendlyInArea( uint32 i, float srcx, float srcy, float srcz,
 			if((*itr)->GetTypeId()!= TYPEID_UNIT)
 				continue;
 			CreatureInfo *inf = ((Creature*)(*itr))->GetCreatureInfo();
-			if(!inf || !(1<<(inf->Type-1) & GetProto()->TargetCreatureType))
+			if(!(1<<(inf->Type-1) & GetProto()->TargetCreatureType))
 				continue;
 		}
 
@@ -562,7 +562,7 @@ uint64 Spell::GetSinglePossibleEnemy(uint32 i,float prange)
 			if( (*itr)->GetTypeId() != TYPEID_UNIT )
 				continue;
 			CreatureInfo *inf = ((Creature*)(*itr))->GetCreatureInfo();
-			if(!inf || !(1<<(inf->Type-1) & GetProto()->TargetCreatureType))
+			if(!(1<<(inf->Type-1) & GetProto()->TargetCreatureType))
 				continue;
 		}
 		if(IsInrange(srcx,srcy,srcz,(*itr),r))
@@ -615,7 +615,7 @@ uint64 Spell::GetSinglePossibleFriend(uint32 i,float prange)
 			if((*itr)->GetTypeId()!= TYPEID_UNIT)
 				continue;
 			CreatureInfo *inf = ((Creature*)(*itr))->GetCreatureInfo();
-				if(!inf || !(1<<(inf->Type-1) & GetProto()->TargetCreatureType))
+				if(!(1<<(inf->Type-1) & GetProto()->TargetCreatureType))
 					continue;
 		}
 		if(IsInrange(srcx,srcy,srcz,(*itr),r))
@@ -3807,7 +3807,7 @@ uint8 Spell::CanCast(bool tolerate)
 						else if(target->GetTypeId() == TYPEID_UNIT)
 						{
 							Creature * c = (Creature*)(target);
-							if (c&&c->GetCreatureInfo()&&c->GetCreatureInfo()->Rank >ELITE_ELITE)
+							if (c->GetCreatureInfo()->Rank >ELITE_ELITE)
 								return SPELL_FAILED_HIGHLEVEL;
 						}
 					}
@@ -3856,7 +3856,7 @@ uint8 Spell::CanCast(bool tolerate)
 						result = PETTAME_DEAD;
 					else if( tame->IsPet() )
 						result = PETTAME_CREATUREALREADYOWNED;
-					else if( !tame->GetCreatureInfo() || tame->GetCreatureInfo()->Type != UNIT_TYPE_BEAST || !tame->GetCreatureInfo()->Family || !( tame->GetCreatureInfo()->Flags1 & CREATURE_FLAG1_TAMEABLE ) )
+					else if( tame->GetCreatureInfo()->Type != UNIT_TYPE_BEAST || !tame->GetCreatureInfo()->Family || !( tame->GetCreatureInfo()->Flags1 & CREATURE_FLAG1_TAMEABLE ) )
 						result = PETTAME_NOTTAMEABLE;
 					else if( !p_caster->isAlive() || p_caster->getClass() != HUNTER )
 						result = PETTAME_UNITSCANTTAME;

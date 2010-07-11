@@ -2852,7 +2852,7 @@ uint32 Unit::GetSpellDidHitResult( Unit* pVictim, uint32 weapon_damage_type, Spe
 		if(pVictim->m_objectTypeId == TYPEID_UNIT)
 		{
 			Creature * c = (Creature*)(pVictim);
-			if( c->GetCreatureInfo() && c->GetCreatureInfo()->Rank == ELITE_WORLDBOSS )
+			if( c->GetCreatureInfo()->Rank == ELITE_WORLDBOSS )
 			{
 				victim_skill = std::max(victim_skill,((int32)this->getLevel()+3)*5); //used max to avoid situation when lowlvl hits boss.
 			}
@@ -2923,7 +2923,7 @@ uint32 Unit::GetSpellDidHitResult( Unit* pVictim, uint32 weapon_damage_type, Spe
 		if(m_objectTypeId == TYPEID_UNIT)
 		{
 			Creature * c = (Creature*)(this);
-			if( c->GetCreatureInfo()&&c->GetCreatureInfo()->Rank == ELITE_WORLDBOSS )
+			if( c->GetCreatureInfo()->Rank == ELITE_WORLDBOSS )
 				self_skill = std::max(self_skill,((int32)pVictim->getLevel()+3)*5);//used max to avoid situation when lowlvl hits boss.
 		}
 	}
@@ -3151,7 +3151,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 		victim_skill = pVictim->getLevel() * 5;
 		if ( pVictim->m_objectTypeId == TYPEID_UNIT )
 		{
-			if ( c != NULL && c->GetCreatureInfo() && c->GetCreatureInfo()->Rank == ELITE_WORLDBOSS )
+			if ( c->GetCreatureInfo()->Rank == ELITE_WORLDBOSS )
 			{
 				victim_skill = std::max( victim_skill, ( (int32)getLevel() + 3 ) * 5 ); //used max to avoid situation when lowlvl hits boss.
 			}
@@ -3227,7 +3227,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 		if(m_objectTypeId == TYPEID_UNIT)
 		{
 			Creature * c = (Creature*)(this);
-			if(c&&c->GetCreatureInfo()&&c->GetCreatureInfo()->Rank == ELITE_WORLDBOSS)
+			if(c->GetCreatureInfo()->Rank == ELITE_WORLDBOSS)
 				self_skill = std::max(self_skill,((int32)pVictim->getLevel()+3)*5);//used max to avoid situation when lowlvl hits boss.
 		}
 		crit = 5.0f; //will be modified later
@@ -3688,7 +3688,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 							dmg.full_damage += dmg.full_damage * static_cast< Player* >( this )->m_modphyscritdmgPCT / 100;
 						}
 						if(!pVictim->IsPlayer())
-							dmg.full_damage += float2int32(dmg.full_damage*static_cast< Player* >( this )->IncreaseCricticalByTypePCT[((Creature*)pVictim)->GetCreatureInfo() ? ((Creature*)pVictim)->GetCreatureInfo()->Type : 0]);
+							dmg.full_damage += float2int32(dmg.full_damage*static_cast< Player* >( this )->IncreaseCricticalByTypePCT[((Creature*)pVictim)->GetCreatureInfo()->Type]);
 					//sLog.outString( "DEBUG: After IncreaseCricticalByTypePCT: %u" , dmg.full_damage );
 					}
 
@@ -3709,7 +3709,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 						//sLog.outString( "DEBUG: After Resilience check: %u" , dmg.full_damage );
 					}
 
-					if (pVictim->GetTypeId() == TYPEID_UNIT && static_cast<Creature*>(pVictim)->GetCreatureInfo() && static_cast<Creature*>(pVictim)->GetCreatureInfo()->Rank != ELITE_WORLDBOSS)
+					if (pVictim->GetTypeId() == TYPEID_UNIT && static_cast<Creature*>(pVictim)->GetCreatureInfo()->Rank != ELITE_WORLDBOSS)
 						pVictim->Emote( EMOTE_ONESHOT_WOUNDCRITICAL );
 
 					vproc |= PROC_ON_CRIT_HIT_VICTIM;
@@ -4990,7 +4990,7 @@ int32 Unit::GetSpellDmgBonus(Unit *pVictim, SpellEntry *spellInfo,int32 base_dmg
 	plus_damage += caster->GetDamageDoneMod(school);
 	plus_damage += pVictim->DamageTakenMod[school];
 //------------------------------by victim type----------------------------------------------
-	if(((Creature*)pVictim)->GetCreatureInfo() && caster->IsPlayer()&& !pVictim->IsPlayer())
+	if(!pVictim->IsPlayer() && caster->IsPlayer())
 		plus_damage += static_cast< Player* >(caster)->IncreaseDamageByType[((Creature*)pVictim)->GetCreatureInfo()->Type];
 //==========================================================================================
 //==============================+Spell Damage Bonus Modifications===========================
@@ -5125,7 +5125,7 @@ void Unit::SendChatMessageToPlayer(uint8 type, uint32 lang, const char *msg, Pla
 	size_t UnitNameLength = 0, MessageLength = 0;
 	CreatureInfo *ci = (m_objectTypeId == TYPEID_UNIT) ? ((Creature*)this)->GetCreatureInfo() : NULL;
 
-	if(ci == NULL || plr == NULL)
+	if(plr == NULL)
 		return;
 
 	UnitNameLength = strlen((char*)ci->Name) + 1;
@@ -5175,9 +5175,6 @@ void Unit::SendChatMessage(uint8 type, uint32 lang, const char *msg)
 {
 	size_t UnitNameLength = 0, MessageLength = 0;
 	CreatureInfo *ci = (m_objectTypeId == TYPEID_UNIT) ? ((Creature*)this)->GetCreatureInfo() : NULL;
-
-	if(ci == NULL)
-		return;
 
 	UnitNameLength = strlen((char*)ci->Name) + 1;
 	MessageLength = strlen((char*)msg) + 1;

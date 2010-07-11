@@ -257,7 +257,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				{
 					if(m_Unit->GetTypeId() == TYPEID_UNIT)
 					{
-						if(static_cast<Creature*>(m_Unit)->GetCreatureInfo() && static_cast<Creature*>(m_Unit)->GetCreatureInfo()->Rank == 3)
+						if(static_cast<Creature*>(m_Unit)->GetCreatureInfo()->Rank == 3)
 						{
 							 m_Unit->GetMapMgr()->AddCombatInProgress(m_Unit->GetGUID());
 						}
@@ -408,7 +408,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				{
 					if(m_Unit->GetTypeId() == TYPEID_UNIT)
 					{
-						if(static_cast<Creature*>(m_Unit)->GetCreatureInfo() && static_cast<Creature*>(m_Unit)->GetCreatureInfo()->Rank == 3)
+						if(static_cast<Creature*>(m_Unit)->GetCreatureInfo()->Rank == 3)
 						{
 							  m_Unit->GetMapMgr()->RemoveCombatInProgress(m_Unit->GetGUID());
 						}
@@ -419,7 +419,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				if(m_Unit->GetTypeId() == TYPEID_UNIT)
 				{
 					Creature *creature = static_cast< Creature* >( m_Unit );
-					if( creature->GetProto() && creature->m_spawn )
+					if( creature->m_spawn )
 						m_Unit->SetMount(creature->m_spawn->MountedDisplayID );
 						//m_Unit->SetMount(static_cast< Creature* >( m_Unit )->GetSpawnO->MountedDisplayID );
 				}
@@ -613,7 +613,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				Creature *pCreature = static_cast< Creature* >( m_Unit );
 				bool found = false;
 
-				if(IS_PERSISTENT_INSTANCE(pInstance) && bossInfoMap != NULL && pCreature->GetProto())
+				if(IS_PERSISTENT_INSTANCE(pInstance) && bossInfoMap != NULL)
 				{
 					uint32 npcGuid = pCreature->GetProto()->Id;
 					InstanceBossInfoMap::const_iterator bossInfo = bossInfoMap->find(npcGuid);
@@ -651,7 +651,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 			{
 				if(m_Unit->GetTypeId() == TYPEID_UNIT)
 				{
-					if(static_cast<Creature*>(m_Unit)->GetCreatureInfo() && static_cast<Creature*>(m_Unit)->GetCreatureInfo()->Rank == 3)
+					if(static_cast<Creature*>(m_Unit)->GetCreatureInfo()->Rank == 3)
 					{
 						m_Unit->GetMapMgr()->RemoveCombatInProgress(m_Unit->GetGUID());
 					}
@@ -881,7 +881,7 @@ void AIInterface::_UpdateTargets()
 {
 	if( m_Unit->IsPlayer() || (m_AIType != AITYPE_PET && disable_targeting ))
 		return;
-	if( ( ( Creature* )m_Unit )->GetCreatureInfo() && ( ( Creature* )m_Unit )->GetCreatureInfo()->Type == UNIT_TYPE_CRITTER )
+	if( ( ( Creature* )m_Unit )->GetCreatureInfo()->Type == UNIT_TYPE_CRITTER )
 		return;
 
 	if(  m_Unit->GetMapMgr() == NULL )
@@ -2010,14 +2010,13 @@ bool AIInterface::FindFriends(float dist)
 		}
 	}
 
-	uint32 family = (((Creature*)m_Unit)->GetCreatureInfo()) ? (((Creature*)m_Unit)->GetCreatureInfo()->Type) : 0;
+	uint32 family = (((Creature*)m_Unit)->GetCreatureInfo()->Type);
 	
 	CreatureProto *pt = static_cast< Creature* >( m_Unit )->GetProto();
 
 	uint32 summonguard = 0;
 
-	if( pt != NULL )
-		summonguard = pt->summonguard;
+	summonguard = pt->summonguard;
 
 	if(family == UNIT_TYPE_HUMANOID && summonguard > 0 && getMSTime() > m_guardTimer && !IS_INSTANCE(m_Unit->GetMapId()))
 	{
@@ -2165,7 +2164,7 @@ float AIInterface::_CalcAggroRange(Unit* target)
 	}
 
 	// Multiply by elite value
-	if (m_Unit->IsCreature() && ((Creature*)m_Unit)->GetCreatureInfo() && ((Creature*)m_Unit)->GetCreatureInfo()->Rank > 0)
+	if (m_Unit->IsCreature() && ((Creature*)m_Unit)->GetCreatureInfo()->Rank > 0)
 	{
 		AggroRange *= (((Creature*)m_Unit)->GetCreatureInfo()->Rank) * 1.50f;
 	}

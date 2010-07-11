@@ -601,7 +601,7 @@ public:
 	bool isCritter();
 	bool isTrainingDummy(){
 
-		if( GetProto() != NULL && GetProto()->isTrainingDummy )
+		if( GetProto()->isTrainingDummy )
 			return true;
 		else
 			return false;

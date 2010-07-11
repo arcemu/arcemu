@@ -1502,7 +1502,7 @@ out:
 					if(static_cast<Creature *>((*itr))->getDeathState() == CORPSE)
 					{
 						CreatureInfo *cn = static_cast<Creature *>((*itr))->GetCreatureInfo();
-						if(cn && ( cn->Type == UNIT_TYPE_HUMANOID || cn->Type == UNIT_TYPE_UNDEAD ) )
+						if( cn->Type == UNIT_TYPE_HUMANOID || cn->Type == UNIT_TYPE_UNDEAD )
 						{
 							if(p_caster->GetDistance2dSq((*itr)) < rad)
 							{
@@ -1947,7 +1947,7 @@ out:
 			else if( unitTarget->IsCreature() )
 			{
 				CreatureInfo * ci = static_cast< Creature* >( unitTarget )->GetCreatureInfo();
-				if( ci && ci->Type == UNIT_TYPE_UNDEAD )
+				if( ci->Type == UNIT_TYPE_UNDEAD )
 					u_caster->Heal( unitTarget, spellId, float2int32( damage * 1.5f ) );
 			}
 		}break;
@@ -2006,7 +2006,7 @@ void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
 			*/
 
 			//Spells with Mechanic also add other ugly auras, but if the main aura is the effect --> immune to whole spell
-			if (c->GetProto() && c->GetProto()->modImmunities)
+			if (c->GetProto()->modImmunities)
 			{
 				bool immune = false;
 				if (m_spellInfo->MechanicsType)
@@ -4110,7 +4110,7 @@ void Spell::SpellEffectSummonWild(uint32 i)  // Summon Wild
 		p->Load(proto, tempx, tempy, z);
 		p->SetZoneId( m_caster->GetZoneId() );
 
-		if ( p->GetProto() && p->GetProto()->Faction == 35 )
+		if ( p->GetProto()->Faction == 35 )
 		{
 			p->SetSummonedByGUID( m_caster->GetGUID() );
 			p->SetCreatedByGUID( m_caster->GetGUID() );
@@ -4504,7 +4504,7 @@ void Spell::SpellEffectTameCreature(uint32 i)
 		pPet->DeleteMe();//CreateAsSummon() returns false if an error occurred.
 		pPet = NULL;
 	}
-	tame->Despawn(0,tame->GetProto()? tame->GetProto()->RespawnTime:0);
+	tame->Despawn(0, tame->GetProto()->RespawnTime);
 }
 
 void Spell::SpellEffectSummonPet(uint32 i) //summon - pet
@@ -4898,11 +4898,8 @@ void Spell::SpellEffectInterruptCast(uint32 i) // Interrupt Cast
 		{
 			unitTarget->GetAIInterface()->AttackReaction(u_caster, 1, m_spellInfo->Id);
 			Creature *c = static_cast<Creature*>( unitTarget );
-			if (c && c->GetProto() && c->GetProto()->modImmunities)
-			{
-				if (c->GetProto()->modImmunities & 32768)
-					return;
-			}
+			if (c->GetProto()->modImmunities & 32768)
+				return;
 		}
 	}
 	
@@ -4990,7 +4987,7 @@ void Spell::SpellEffectPickpocket(uint32 i) // pickpocket
 		return;
 
 	Creature *target = static_cast<Creature*>( unitTarget );
-	if(target->IsPickPocketed() || (target->GetCreatureInfo() && target->GetCreatureInfo()->Type != UNIT_TYPE_HUMANOID))
+	if(target->IsPickPocketed() || (target->GetCreatureInfo()->Type != UNIT_TYPE_HUMANOID))
 	{
 		SendCastResult(SPELL_FAILED_TARGET_NO_POCKETS);
 		return;
@@ -4998,7 +4995,7 @@ void Spell::SpellEffectPickpocket(uint32 i) // pickpocket
 
 	lootmgr.FillPickpocketingLoot(&static_cast<Creature*>(unitTarget)->loot,unitTarget->GetEntry());
 
-	uint32 _rank = static_cast<Creature*>(unitTarget)->GetCreatureInfo() ? static_cast<Creature*>(unitTarget)->GetCreatureInfo()->Rank : 0;
+	uint32 _rank = static_cast<Creature*>(unitTarget)->GetCreatureInfo()->Rank;
 	unitTarget->loot.gold = float2int32((_rank+1) * unitTarget->getLevel() * (RandomUInt(5) + 1) * sWorld.getRate(RATE_MONEY));
 
 	p_caster->SendLoot(unitTarget->GetGUID(), LOOT_PICKPOCKETING, unitTarget->GetMapId() );
@@ -6326,7 +6323,7 @@ void Spell::SpellEffectSummonCritter(uint32 i)
 	if(u_caster->critterPet)
 	{
 		// if we already have this critter, we will just dismiss it and return
-		if(u_caster->critterPet->GetCreatureInfo() && u_caster->critterPet->GetCreatureInfo()->Id == SummonCritterID)
+		if(u_caster->critterPet->GetCreatureInfo()->Id == SummonCritterID)
 		{
 			u_caster->critterPet->RemoveFromWorld(false,true);
 			u_caster->critterPet = NULL;

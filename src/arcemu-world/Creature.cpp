@@ -151,7 +151,6 @@ float CalcDMGCoefficient( MapInfo *mi, uint32 mode ){
 
 Creature::Creature(uint64 guid)
 {
-	proto = 0;
 	m_valuesCount = UNIT_END;
 	m_objectTypeId = TYPEID_UNIT;
 	m_uint32Values = _fields;
@@ -282,9 +281,7 @@ void Creature::Update( uint32 p_time )
 	if(m_corpseEvent)
 	{
 		sEventMgr.RemoveEvents(this);
-		if(this->GetProto()== NULL)
-			sEventMgr.AddEvent(this, &Creature::OnRemoveCorpse, EVENT_CREATURE_REMOVE_CORPSE, 1000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-		else if (this->creature_info->Rank == ELITE_WORLDBOSS)
+		if (this->creature_info->Rank == ELITE_WORLDBOSS)
 			sEventMgr.AddEvent(this, &Creature::OnRemoveCorpse, EVENT_CREATURE_REMOVE_CORPSE, TIME_CREATURE_REMOVE_BOSSCORPSE, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 		else if ( this->creature_info->Rank == ELITE_RAREELITE || this->creature_info->Rank == ELITE_RARE)
 			sEventMgr.AddEvent(this, &Creature::OnRemoveCorpse, EVENT_CREATURE_REMOVE_CORPSE, TIME_CREATURE_REMOVE_RARECORPSE, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
@@ -321,13 +318,13 @@ void Creature::OnRemoveCorpse()
 		setDeathState(DEAD);
 		m_position = m_spawnLocation;
 
-			if((GetMapMgr()->GetMapInfo() && GetMapMgr()->GetMapInfo()->type == INSTANCE_RAID &&  proto != NULL && proto->boss) || m_noRespawn)
+			if((GetMapMgr()->GetMapInfo() && GetMapMgr()->GetMapInfo()->type == INSTANCE_RAID && proto->boss) || m_noRespawn)
 			{
 				RemoveFromWorld(false, true);
 			}
 			else
 			{
-				if((proto && proto->RespawnTime) || m_respawnTimeOverride)
+				if(proto->RespawnTime || m_respawnTimeOverride)
 					RemoveFromWorld(true, false);
 				else
 					RemoveFromWorld(false, true);
@@ -353,7 +350,7 @@ void Creature::OnRespawn(MapMgr * m)
 		for( std::set<uint32>::iterator killedNpc = pInstance->m_killedNpcs.begin(); killedNpc != pInstance->m_killedNpcs.end(); ++killedNpc )
 		{
 			// Is killed boss?
-			if(creature_info && (*killedNpc) == creature_info->Id)
+			if((*killedNpc) == creature_info->Id)
 			{
 				skip = true;
 				break;
@@ -377,7 +374,7 @@ void Creature::OnRespawn(MapMgr * m)
 	sLog.outDetail("Respawning "I64FMT"...", GetGUID());
 	SetHealth( GetMaxHealth());
 	SetUInt32Value(UNIT_DYNAMIC_FLAGS, 0); // not tagging shit
-	if(proto && m_spawn)
+	if(m_spawn)
 	{
 		SetUInt32Value(UNIT_NPC_FLAGS, proto->NPCFLags);
 		SetEmoteState(m_spawn->emote_state);
@@ -439,7 +436,7 @@ void Creature::generateLoot()
 	else
 		lootmgr.FillCreatureLoot( &loot, GetEntry(), 0 );
 
-	loot.gold = proto ? proto->money : 0;
+	loot.gold = proto->money;
 
 	// Master Looting Ninja Checker
 	if( sWorld.antiMasterLootNinja )
@@ -526,7 +523,7 @@ void Creature::generateLoot()
 	else /* if(!loot.gold) */
 	{
 		CreatureInfo *info=GetCreatureInfo();
-		if (info && info->Type != UNIT_TYPE_BEAST)
+		if (info->Type != UNIT_TYPE_BEAST)
 		{
 			if(m_uint32Values[UNIT_FIELD_MAXHEALTH] <= 1667)
 				//generate copper
@@ -758,7 +755,7 @@ bool Creature::CanAddToWorld()
 void Creature::RemoveFromWorld( bool addrespawnevent, bool free_guid )
 {
 	uint32 delay = 0;
-	if( addrespawnevent && ( m_respawnTimeOverride > 0 || ( proto && proto->RespawnTime > 0 ) ) )
+	if( addrespawnevent && ( m_respawnTimeOverride > 0 || proto->RespawnTime > 0 ) )
 		delay = m_respawnTimeOverride > 0 ? m_respawnTimeOverride : proto->RespawnTime;
 
 	Despawn( 0, delay );
@@ -992,7 +989,7 @@ void Creature::RegenerateHealth()
 	if (PctRegenModifier)
 		amt+= (amt * PctRegenModifier) / 100;
 
-	if (GetCreatureInfo() && GetCreatureInfo()->Rank == 3)
+	if (GetCreatureInfo()->Rank == 3)
 		amt *= 10000.0f;
 	//Apply shit from conf file
 	amt*=sWorld.getRate(RATE_HEALTH);
@@ -1914,7 +1911,6 @@ void Creature::RemoveLimboState(Unit * healer)
 void Creature::SetGuardWaypoints()
 {
 	if(!GetMapMgr()) return;
-	if(!GetCreatureInfo()) return;
 
 	GetAIInterface()->setMoveType(1);
 	for(int i = 1; i <= 4; i++)
@@ -2120,7 +2116,7 @@ void Creature::PrepareForRemove()
 
 	if(GetMapMgr() && GetMapMgr()->GetMapInfo() && GetMapMgr()->GetMapInfo()->type == INSTANCE_RAID)
 	{
-		if(GetCreatureInfo() && GetCreatureInfo()->Rank == 3)
+		if(GetCreatureInfo()->Rank == 3)
 		{
 			GetMapMgr()->RemoveCombatInProgress(GetGUID());
 		}

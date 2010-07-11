@@ -381,7 +381,7 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 				flags2 |= MOVEFLAG_NO_COLLISION; //0x400 Zack : Teribus the Cursed had flag 400 instead of 800 and he is flying all the time 
 			if(uThis->GetAIInterface()->onGameobject)
 				flags2 |= MOVEFLAG_FLYING;
-			if(uThis->GetProto() && uThis->GetProto()->extra_a9_flags)
+			if(uThis->GetProto()->extra_a9_flags)
 			{
 //do not send shit we can't honor
 #define UNKNOWN_FLAGS2 ( 0x00002000 | 0x04000000 | 0x08000000 )
@@ -1777,7 +1777,7 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 					res = res - res * dmg_reduction_pct;
 				}
 
-				if (pVictim->GetTypeId() == TYPEID_UNIT && static_cast<Creature*>(pVictim)->GetCreatureInfo() && static_cast<Creature*>(pVictim)->GetCreatureInfo()->Rank != ELITE_WORLDBOSS)
+				if (pVictim->GetTypeId() == TYPEID_UNIT && static_cast<Creature*>(pVictim)->GetCreatureInfo()->Rank != ELITE_WORLDBOSS)
 					pVictim->Emote( EMOTE_ONESHOT_WOUNDCRITICAL );
 				/*aproc |= PROC_ON_SPELL_CRIT_HIT;
 				vproc |= PROC_ON_SPELL_CRIT_HIT_VICTIM;*/

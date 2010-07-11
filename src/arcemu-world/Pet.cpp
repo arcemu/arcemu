@@ -729,9 +729,7 @@ void Pet::InitializeMe( bool first )
 	SetUInt32Value( UNIT_FIELD_PETNUMBER, GetUIdFromGUID() );
 	SetUInt32Value( UNIT_FIELD_PET_NAME_TIMESTAMP, (uint32)UNIXTIME );
 
-	if( GetCreatureInfo() )
-		myFamily = dbcCreatureFamily.LookupEntry( GetCreatureInfo()->Family );
-	else myFamily = NULL;
+	myFamily = dbcCreatureFamily.LookupEntry( GetCreatureInfo()->Family );
 
 	SetInstanceID( m_Owner->GetInstanceID() );
 	SetPetDiet();
@@ -990,33 +988,30 @@ void Pet::UpdateSpellList( bool showLearnSpells )
 	// SkillLine 2
 	uint32 s2 = 0;
 
-	if( GetCreatureInfo() )
+	if( GetCreatureInfo()->Family == 0 && Summon )
 	{
-		if( GetCreatureInfo()->Family == 0 && Summon )
+		// Get spells from the owner
+		map<uint32, set<uint32> >::iterator it1;
+		set<uint32>::iterator it2;
+		it1 = m_Owner->SummonSpells.find(GetEntry());
+		if(it1 != m_Owner->SummonSpells.end())
 		{
-			// Get spells from the owner
-			map<uint32, set<uint32> >::iterator it1;
-			set<uint32>::iterator it2;
-			it1 = m_Owner->SummonSpells.find(GetEntry());
-			if(it1 != m_Owner->SummonSpells.end())
+			it2 = it1->second.begin();
+			for(; it2 != it1->second.end(); ++it2)
 			{
-				it2 = it1->second.begin();
-				for(; it2 != it1->second.end(); ++it2)
-				{
-					AddSpell( dbcSpell.LookupEntry( *it2 ), false, false );
-				}
+				AddSpell( dbcSpell.LookupEntry( *it2 ), false, false );
 			}
-			return;
 		}
-		else
+		return;
+	}
+	else
+	{
+		// Get Creature family from DB (table creature_names, field family), load the skill line from CreatureFamily.dbc for use with SkillLineAbiliby.dbc entry
+		CreatureFamilyEntry* f = dbcCreatureFamily.LookupEntryForced( GetCreatureInfo()->Family );
+		if( f )
 		{
-			// Get Creature family from DB (table creature_names, field family), load the skill line from CreatureFamily.dbc for use with SkillLineAbiliby.dbc entry
-			CreatureFamilyEntry* f = dbcCreatureFamily.LookupEntryForced( GetCreatureInfo()->Family );
-			if( f )
-			{
-				s = f->skilline;
-				s2 = f->tameable;
-			}
+			s = f->skilline;
+			s2 = f->tameable;
 		}
 	}
 

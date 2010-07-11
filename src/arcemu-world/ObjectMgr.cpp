@@ -3052,9 +3052,9 @@ bool ObjectMgr::HandleInstanceReputationModifiers(Player * pPlayer, Unit * pVict
 	if(itr == m_reputation_instance.end())
 		return false;
 
-	is_boss = 0;//static_cast< Creature* >( pVictim )->GetCreatureInfo() ? ((Creature*)pVictim)->GetCreatureInfo()->Rank : 0;
-	if( !is_boss && static_cast< Creature* >( pVictim )->GetProto() && static_cast< Creature* >( pVictim )->GetProto()->boss )
-		is_boss = 1;
+	is_boss = false;//static_cast< Creature* >( pVictim )->GetCreatureInfo() ? ((Creature*)pVictim)->GetCreatureInfo()->Rank : 0;
+	if( static_cast< Creature* >( pVictim )->GetProto()->boss )
+		is_boss = true;
 
 	// Apply the bonuses as normal.
 	int32 replimit;

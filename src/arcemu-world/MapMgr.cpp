@@ -1522,10 +1522,9 @@ void MapMgr::_PerformObjectDuties()
 		Player* ptr;
 		for(; itr != m_PlayerStorage.end(); )
 		{
-			ptr = static_cast< Player* >( itr->second );
+			ptr = itr->second;
 			++itr;
-			if( ptr != NULL )
-				ptr->Update( difftime );
+			ptr->Update( difftime );
 		}
 
 		lastUnitUpdate = mstime;

@@ -1198,8 +1198,7 @@ bool ChatHandler::CmdSetValueField(WorldSession *m_session, uint32 field, uint32
 		{
 			if(!(field < UNIT_END && fieldmax < UNIT_END)) return false;
 			std::string creaturename = "Unknown Being";
-			if(cr->GetCreatureInfo())
-				creaturename = cr->GetCreatureInfo()->Name;
+			creaturename = cr->GetCreatureInfo()->Name;
 			if(fieldmax)
 				BlueSystemMessage(m_session, "Setting %s of %s to %d/%d.", fieldname, creaturename.c_str(), av, mv);
 			else
@@ -1218,8 +1217,7 @@ bool ChatHandler::CmdSetValueField(WorldSession *m_session, uint32 field, uint32
 				}break;
 			case UNIT_NPC_FLAGS:
 				{
-					if(cr->GetProto())
-						WorldDatabase.Execute("UPDATE creature_proto SET npcflags = %u WHERE entry = %u", av, cr->GetProto()->Id);
+					WorldDatabase.Execute("UPDATE creature_proto SET npcflags = %u WHERE entry = %u", av, cr->GetProto()->Id);
 				}break;
 			}
 
@@ -1307,8 +1305,7 @@ bool ChatHandler::CmdSetFloatField(WorldSession *m_session, uint32 field, uint32
 		{
 			if(!(field < UNIT_END && fieldmax < UNIT_END)) return false;
 			std::string creaturename = "Unknown Being";
-			if(cr->GetCreatureInfo())
-				creaturename = cr->GetCreatureInfo()->Name;
+			creaturename = cr->GetCreatureInfo()->Name;
 			if(fieldmax)
 				BlueSystemMessage(m_session, "Setting %s of %s to %.1f/%.1f.", fieldname, creaturename.c_str(), av, mv);
 			else

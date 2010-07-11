@@ -670,8 +670,7 @@ bool ChatHandler::HandleNpcInfoCommand(const char *args, WorldSession *m_session
     uint32 guid = Arcemu::Util::GUID_LOPART(m_session->GetPlayer()->GetSelection());
 	Creature *crt = getSelectedCreature(m_session);
 	if(!crt) return false;
-	if(crt->GetCreatureInfo())
-		BlueSystemMessage(m_session, "Showing creature info for %s", crt->GetCreatureInfo()->Name);
+	BlueSystemMessage(m_session, "Showing creature info for %s", crt->GetCreatureInfo()->Name);
 	SystemMessage(m_session, "GUID: %d", guid);
 	SystemMessage(m_session, "Faction: %d", crt->GetFaction());
 	SystemMessage(m_session, "Phase: %u", crt->GetPhase());
@@ -3234,7 +3233,7 @@ bool ChatHandler::HandleNpcPossessCommand(const char * args, WorldSession * m_se
 			sGMLog.writefromsession( m_session, "used possess command on PLAYER %s", static_cast< Player* >( pTarget )->GetName() );
 			break;
 		case TYPEID_UNIT:
-			sGMLog.writefromsession( m_session, "used possess command on CREATURE %s, sqlid %u", static_cast< Creature* >( pTarget )->GetCreatureInfo() ? static_cast< Creature* >( pTarget )->GetCreatureInfo()->Name : "unknown", static_cast< Creature* >( pTarget )->GetSQL_id() );
+			sGMLog.writefromsession( m_session, "used possess command on CREATURE %s, sqlid %u", static_cast< Creature* >( pTarget )->GetCreatureInfo()->Name, static_cast< Creature* >( pTarget )->GetSQL_id() );
 			break;
 	}
 	return true;
