@@ -4492,8 +4492,9 @@ void Spell::SpellEffectEnchantItemTemporary(uint32 i)  // Enchant Item Temporary
 
 void Spell::SpellEffectTameCreature(uint32 i)
 {
-	Creature* tame = ( ( unitTarget->GetTypeId() == TYPEID_UNIT ) ? static_cast< Creature* >( unitTarget ) : NULL );
-	if( !tame ) return;
+	if (unitTarget == NULL || !unitTarget->IsCreature())
+		return;
+	Creature* tame = TO_CREATURE(unitTarget);
 
 	// Remove target
 	tame->GetAIInterface()->HandleEvent(EVENT_LEAVECOMBAT, p_caster, 0);
