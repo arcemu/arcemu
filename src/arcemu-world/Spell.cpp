@@ -5519,7 +5519,7 @@ uint32 GetDiminishingGroup(uint32 NameHash)
 
 uint32 GetSpellDuration( SpellEntry* sp, Unit* caster /*= NULL*/ )
 {
-	SpellDuration* dur = dbcSpellDuration.LookupEntry(sp->DurationIndex);
+	SpellDuration* dur = dbcSpellDuration.LookupEntryForced(sp->DurationIndex);
 	if (dur == NULL)
 		return 0;
 	if (caster == NULL)

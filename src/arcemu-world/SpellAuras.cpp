@@ -3789,7 +3789,7 @@ void Aura::SpellAuraPeriodicTriggerSpellWithValue(bool apply)
 {
 	if(apply)
 	{
-		SpellEntry *spe = dbcSpell.LookupEntry(m_spellProto->EffectTriggerSpell[mod->i]);
+		SpellEntry* spe = dbcSpell.LookupEntryForced(m_spellProto->EffectTriggerSpell[mod->i]);
 		if(spe == NULL)
 			return;
 
@@ -3841,6 +3841,12 @@ void Aura::SpellAuraPeriodicTriggerSpell(bool apply)
 
 	if(apply)
 	{
+		SpellEntry* trigger = dbcSpell.LookupEntryForced(GetSpellProto()->EffectTriggerSpell[mod->i]);
+
+		if (trigger == NULL)
+			return;
+
+
 		float amptitude = GetSpellProto()->EffectAmplitude[mod->i];
 		Unit* caster = GetUnitCaster();
 		uint32 numticks = GetSpellDuration(m_spellProto, caster) / m_spellProto->EffectAmplitude[mod->i];
@@ -3852,7 +3858,6 @@ void Aura::SpellAuraPeriodicTriggerSpell(bool apply)
 				amptitude *= caster->GetCastSpeedMod();
 		}
 		
-		SpellEntry* trigger = dbcSpell.LookupEntry(GetSpellProto()->EffectTriggerSpell[mod->i]);
 		sEventMgr.AddEvent(this, &Aura::EventPeriodicTriggerSpell, trigger, false, int32(0),
 		EVENT_AURA_PERIODIC_TRIGGERSPELL, float2int32(amptitude), numticks, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 	}
