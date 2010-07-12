@@ -1109,9 +1109,9 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 					}
 					else if (static_cast<Player*>(GetNextTarget())->GetSession() != NULL)
 					{
-						MovementInfo* mi=static_cast<Player*>(GetNextTarget())->GetSession()->GetMovementInfo();
+						MovementInfo* mi = TO_PLAYER(GetNextTarget())->GetSession()->GetMovementInfo();
 
-						if ( mi != NULL && !(mi->flags & MOVEFLAG_FALLING) && !(mi->flags & MOVEFLAG_SWIMMING) && !(mi->flags & MOVEFLAG_LEVITATE))
+						if (mi->flags & MOVEFLAG_AIR_SWIMMING)
 							HandleEvent( EVENT_LEAVECOMBAT, m_Unit, 0);
 					}
 				}
@@ -3005,28 +3005,6 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 				float x = m_Unit->GetPositionX() + (m_destinationX - m_Unit->GetPositionX()) * q;
 				float y = m_Unit->GetPositionY() + (m_destinationY - m_Unit->GetPositionY()) * q;
 				float z = m_Unit->GetPositionZ() + (m_destinationZ - m_Unit->GetPositionZ()) * q;
-
-				//Andy
-				if (sWorld.Collision) {
-					float target_land_z= 0.0f;
-					if( m_Unit->GetMapMgr() != NULL )
-					{
-						if(m_moveFly != true)
-						{
-							target_land_z = CollideInterface.GetHeight(m_Unit->GetMapId(), x, y, z + 2.0f);
-							if ( target_land_z == NO_WMO_HEIGHT )
-							{
-								target_land_z = m_Unit->GetMapMgr()->GetLandHeight(x, y);
-								if ( target_land_z == 999999.0f )
-									target_land_z = z;
-							}
-						}
-
-						if ( z > m_Unit->GetMapMgr()->GetWaterHeight( m_nextPosX, m_nextPosY ) && target_land_z != 0.0f )
-							z = target_land_z;
-					}
-				}
-
 				m_Unit->SetPosition(x, y, z, m_Unit->GetOrientation());
 				
 				m_timeToMove -= m_timeMoved;
