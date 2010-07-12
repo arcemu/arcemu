@@ -5175,6 +5175,8 @@ void Unit::SendChatMessage(uint8 type, uint32 lang, const char *msg)
 {
 	size_t UnitNameLength = 0, MessageLength = 0;
 	CreatureInfo *ci = (m_objectTypeId == TYPEID_UNIT) ? TO_CREATURE(this)->GetCreatureInfo() : NULL;
+	if(ci == NULL)
+		return;
 
 	UnitNameLength = strlen((char*)ci->Name) + 1;
 	MessageLength = strlen((char*)msg) + 1;
@@ -6604,6 +6606,9 @@ void CombatStatusHandler::AddAttackTarget(const uint64& guid)
 	if(guid == m_Unit->GetGUID())
 		return;
 
+	//we MUST be in world
+	Arcemu::Util::ARCEMU_ASSERT( m_Unit->IsInWorld() );
+
 	m_attackTargets.insert(guid);
 	//printf("Adding attack target "I64FMT" to "I64FMT"\n", guid, m_Unit->GetGUID());
 	if(m_Unit->GetTypeId() == TYPEID_PLAYER &&
@@ -6720,12 +6725,17 @@ void CombatStatusHandler::OnDamageDealt( Unit * pTarget )
 
 void CombatStatusHandler::AddAttacker(const uint64& guid)
 {
+	//we MUST be in world
+	Arcemu::Util::ARCEMU_ASSERT( m_Unit->IsInWorld() );
 	m_attackers.insert(guid);
 	UpdateFlag();
 }
 
 void CombatStatusHandler::ClearAttackers()
 {
+	//If we are not in world, CombatStatusHandler::OnRemoveFromWorld() would have been already called so m_attackTargets
+	//and m_attackers should be empty. If it's not, something wrong happened.
+
 	// this is a FORCED function, only use when the reference will be destroyed.
 	AttackerMap::iterator itr = m_attackTargets.begin();
 	Unit * pt;
@@ -6757,9 +6767,8 @@ void CombatStatusHandler::ClearAttackers()
 
 void CombatStatusHandler::ClearHealers()
 {
-
-	if( m_Unit->GetMapMgr() == NULL )
-		return; //wierd crash bug
+	//If we are not in world, CombatStatusHandler::OnRemoveFromWorld() would have been already called so m_healed should
+	//be empty. If it's not, something wrong happened.
 
 	HealedSet::iterator itr = m_healed.begin();
 	Player * pt;
