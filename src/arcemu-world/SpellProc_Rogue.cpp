@@ -32,6 +32,12 @@ class PoisonSpellProc : public SpellProc
 
 	void Init(Object* obj)
 	{
+		if(obj == NULL)
+		{
+			mDeleted = true;
+			return;
+		}
+
 		mItemGUID = TO_ITEM(obj)->GetGUID();
 		if ( mProcPerMinute )
 			mProcChance = TO_ITEM(obj)->GetProto()->Delay * mProcPerMinute / 600;
