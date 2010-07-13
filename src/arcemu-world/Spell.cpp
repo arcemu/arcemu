@@ -2581,6 +2581,12 @@ bool Spell::TakePower()
 
 void Spell::HandleEffects(uint64 guid, uint32 i)
 {
+	if(event_GetInstanceID() != m_caster->event_GetInstanceID() || event_GetInstanceID() == WORLD_INSTANCE)
+	{
+		DecRef();
+		return;
+	}
+
 	uint32 id;
 
 	if (guid == 0)
@@ -2702,6 +2708,12 @@ void Spell::HandleAddAura(uint64 guid)
 	}
 
 	m_aurasHandled.insert(guid);
+
+	if(event_GetInstanceID() != m_caster->event_GetInstanceID() || event_GetInstanceID() == WORLD_INSTANCE)
+	{
+		DecRef();
+		return;
+	}
 
 	if(u_caster && u_caster->GetGUID() == guid)
 		Target = u_caster;
