@@ -1661,7 +1661,7 @@ public:
     Spell(Object* Caster, SpellEntry *info, bool triggered, Aura* aur);
     ~Spell();
 
-	int32 GetInstanceID() { return m_caster->GetInstanceID(); }
+	int32 event_GetInstanceID() { return m_caster->GetInstanceID(); }
 
 	bool m_overrideBasePoints;
 	uint32 m_overridenBasePoints[3];
