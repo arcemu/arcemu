@@ -5125,7 +5125,7 @@ void Unit::SendChatMessageToPlayer(uint8 type, uint32 lang, const char *msg, Pla
 	size_t UnitNameLength = 0, MessageLength = 0;
 	CreatureInfo *ci = (m_objectTypeId == TYPEID_UNIT) ? TO_CREATURE(this)->GetCreatureInfo() : NULL;
 
-	if(plr == NULL)
+	if(ci == NULL || plr == NULL)
 		return;
 
 	UnitNameLength = strlen((char*)ci->Name) + 1;
