@@ -1,4 +1,5 @@
 #define _CRT_SECURE_NO_DEPRECATE
+//#define PROGRESS_BAR
 
 #include <stdio.h>
 #include <vector>
@@ -30,6 +31,7 @@ map_id * map_ids;
 
 uint32 MapCount;
 
+#ifdef PROGRESS_BAR
 void SetProgressBar(int val, int max, const char* label)
 {
     printf("\r");
@@ -74,6 +76,7 @@ void SimpleProgressBar(int val, int max)
     printf ("\xba %d%%\r", val * 100 / max);
     fflush(stdout);
 }
+#endif
 
 
 void ExtractMapsFromMpq()
@@ -124,13 +127,17 @@ void ExtractMapsFromMpq()
                 }
                 ++TotalTiles;
 
+#ifdef PROGRESS_BAR
                 // Update Progress Bar
                 SimpleProgressBar( (x * 64 + y), 64 * 64 );
+#endif
             }
         }
 
+#ifdef PROGRESS_BAR
         // Clear progress bar.
         ClearProgressBar();
+#endif
 
         // Calculate the estimated size.
         float Estimated_Size = 1048576.0f;
@@ -172,7 +179,9 @@ void ExtractMapsFromMpq()
                         Offsets[x][y] = Offset;
 
                     ++DoneTiles;
+#ifdef PROGRESS_BAR
                     SimpleProgressBar( DoneTiles, TilesToExtract );
+#endif
                 }
             }
 
@@ -180,7 +189,9 @@ void ExtractMapsFromMpq()
             if(!(x % 8))
                 CleanCache();
         }
+#ifdef PROGRESS_BAR
         ClearProgressBar();
+#endif
         // clean any leftover cells
         CleanCache();
 
