@@ -69,7 +69,7 @@ class DivineAegisSpellProc : public SpellProc
 		if ( ! CastingSpell->HasEffect(SPELL_EFFECT_HEAL) )
 			return true;
 
-		*dmg_overwrite = dmg * (mOrigSpell->EffectBasePoints[0] +1) / 100;
+		dmg_overwrite[0] = dmg * (mOrigSpell->EffectBasePoints[0] +1) / 100;
 
 		return false;
 	}
@@ -87,10 +87,82 @@ class ImprovedDevouringPlagueSpellProc : public SpellProc
 		// Get total ticks
 		int ticks = GetDuration(dbcSpellDuration.LookupEntry(CastingSpell->DurationIndex)) / CastingSpell->EffectAmplitude[0];
 
-		*dmg_overwrite = dmg * ticks * (mOrigSpell->EffectBasePoints[0] +1) / 100;
+		dmg_overwrite[0] = dmg * ticks * (mOrigSpell->EffectBasePoints[0] +1) / 100;
 
 		return false;
 	}
+};
+
+class VampiricEmbraceSpellProc : public SpellProc
+{
+	SPELL_PROC_FACTORY_FUNCTION(VampiricEmbraceSpellProc);
+
+	bool DoEffect(Unit *victim, SpellEntry *CastingSpell, uint32 flag, uint32 dmg, uint32 abs, int *dmg_overwrite, uint32 weapon_damage_type)
+	{
+		// Only proc for damaging shadow spells
+		if ( CastingSpell->School != SHADOW_DAMAGE || ! IsDamagingSpell(CastingSpell) )
+			return true;
+
+		// Only proc for single target spells
+		if ( ! (HasTargetType(CastingSpell, EFF_TARGET_SINGLE_ENEMY) || HasTargetType(CastingSpell, EFF_TARGET_SELECTED_ENEMY_CHANNELED)) )
+			return true;
+
+		dmg_overwrite[0] = dmg;
+		dmg_overwrite[1] = dmg;
+
+		return false;
+	}
+};
+
+class VampiricTouchEnergizeSpellProc : public SpellProc
+{
+	SPELL_PROC_FACTORY_FUNCTION(VampiricTouchEnergizeSpellProc);
+
+	void Init(Object* obj)
+	{
+		mReplenishmentSpell = dbcSpell.LookupEntryForced(57669);
+	}
+
+	bool DoEffect(Unit *victim, SpellEntry *CastingSpell, uint32 flag, uint32 dmg, uint32 abs, int *dmg_overwrite, uint32 weapon_damage_type)
+	{
+		// Check for Mind Blast hit from this proc caster
+		if( CastingSpell == NULL || CastingSpell->NameHash != SPELL_HASH_MIND_BLAST || mCaster != victim->GetGUID() )
+			return true;
+
+		// Cast Replenishment
+		victim->CastSpell( victim, mReplenishmentSpell, true );
+
+		return true;
+	}
+
+private:
+	SpellEntry* mReplenishmentSpell;
+};
+
+class VampiricTouchDispelDamageSpellProc : public SpellProc
+{
+	SPELL_PROC_FACTORY_FUNCTION(VampiricTouchDispelDamageSpellProc);
+
+	void Init(Object* obj)
+	{
+		mDispelDmg = 8 * (mOrigSpell->EffectBasePoints[1] +1);
+	}
+
+	bool DoEffect(Unit *victim, SpellEntry *CastingSpell, uint32 flag, uint32 dmg, uint32 abs, int *dmg_overwrite, uint32 weapon_damage_type)
+	{
+		// For PROC_ON_PRE_DISPELL_AURA_VICTIM, parameter dmg has aur->GetSpellId()
+		SpellEntry* sp = dbcSpell.LookupEntryForced(dmg);
+
+		if( CastingSpell == NULL || sp == NULL || sp->NameHash != SPELL_HASH_VAMPIRIC_TOUCH )
+			return true;
+
+		dmg_overwrite[0] = mDispelDmg;
+
+		return false;
+}
+
+private:
+	int32 mDispelDmg;
 };
 
 void SpellProcMgr::SetupPriest()
@@ -99,4 +171,16 @@ void SpellProcMgr::SetupPriest()
 	AddByNameHash( SPELL_HASH_HOLY_CONCENTRATION, &HolyConcentrationSpellProc::Create );
 	AddByNameHash( SPELL_HASH_DIVINE_AEGIS, &DivineAegisSpellProc::Create );
 	AddByNameHash( SPELL_HASH_IMPROVED_DEVOURING_PLAGUE, &ImprovedDevouringPlagueSpellProc::Create );
+	AddByNameHash( SPELL_HASH_VAMPIRIC_EMBRACE, &VampiricEmbraceSpellProc::Create );
+
+	AddById( 34919, &VampiricTouchEnergizeSpellProc::Create );
+	AddById( 64085, &VampiricTouchDispelDamageSpellProc::Create );
+
+	// Adjustments for Vampiric Embrace heal spell
+	SpellEntry* sp = dbcSpell.LookupEntryForced(15290);
+	if( sp != NULL )
+	{
+		sp->EffectBasePoints[0] = 2;
+		sp->EffectBasePoints[1] = 14;
+	}
 }

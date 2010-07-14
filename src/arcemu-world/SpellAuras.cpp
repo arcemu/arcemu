@@ -1599,10 +1599,6 @@ void Aura::EventPeriodicDamage(uint32 amount)
 
 
 		m_target->SendPeriodicAuraLog( m_casterGuid, m_target->GetNewGUID(), GetSpellProto()->Id, school, float2int32(res), abs_dmg, dmg.resisted_damage, FLAG_PERIODIC_DAMAGE);
-
-		if(school == SHADOW_DAMAGE)
-			if( c != NULL && c->isAlive() && c->IsPlayer() && c->getClass() == PRIEST )
-				TO_PLAYER(c)->VampiricSpell(float2int32(res), m_target);
 	}
 	// grep: this is hack.. some auras seem to delete this shit.
 	SpellEntry * sp = m_spellProto;
@@ -2092,38 +2088,6 @@ void Aura::SpellAuraDummy(bool apply)
 				}
 				m_target->SetFarsightTarget(0);
 #endif
-			}
-		}break;
-	case 15286://Vampiric Embrace
-		{
-			if(apply)
-			{
-				Player * caster = GetPlayerCaster();
-				if(caster != NULL)
-					caster->m_vampiricEmbrace--;
-				--m_target->m_hasVampiricEmbrace;
-			}
-		}break;
-	case 34914://Vampiric Touch
-	case 34916:
-	case 34917:
-		{
-			if(apply)
-			{
-				SetNegative();
-				Player * caster = GetPlayerCaster();
-				if(caster != NULL)
-					++caster->m_vampiricTouch;
-
-				++m_target->m_hasVampiricTouch;
-			}
-			else
-			{
-				Player * caster = GetPlayerCaster();
-				if(caster != NULL)
-					--caster->m_vampiricTouch;
-
-				--m_target->m_hasVampiricTouch;
 			}
 		}break;
 	case 18182:

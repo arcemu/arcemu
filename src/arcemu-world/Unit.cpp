@@ -369,7 +369,6 @@ Unit::Unit()
 	m_chargeSpellsInUse=false;
 //	m_spellsbusy=false;
 	m_interruptedRegenTime = 0;
-	m_hasVampiricEmbrace = m_hasVampiricTouch = 0;
 	m_hitfrommeleespell	 = 0;
 	m_damageSplitTarget = NULL;
 	m_extrastriketarget = 0;
@@ -1093,10 +1092,10 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, bo
 		if( spell_proc->mProcFlags & PROC_REMOVEONUSE )
 			RemoveAura( origId );
 
-		int dmg_overwrite = 0;
+		int dmg_overwrite[3] = { 0, 0, 0 };
 
 		// give spell_proc a chance to handle the effect
-		if( spell_proc->DoEffect(victim, CastingSpell, flag, dmg, abs, &dmg_overwrite, weapon_damage_type) )
+		if( spell_proc->DoEffect(victim, CastingSpell, flag, dmg, abs, dmg_overwrite, weapon_damage_type) )
 			continue;
 
 		//these are player talents. Fuckem they pull the emu speed down
@@ -1303,7 +1302,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, bo
 					SpellEntry* spellInfo = dbcSpell.LookupEntry( spellId ); //we already modified this spell on server loading so it must exist
 					SpellDuration* sd = dbcSpellDuration.LookupEntryForced( spellInfo->DurationIndex );
 					uint32 tickcount = GetDuration( sd ) / spellInfo->EffectAmplitude[0] ;
-					dmg_overwrite = ospinfo->EffectBasePoints[0] * dmg / (100  * tickcount );
+					dmg_overwrite[0] = ospinfo->EffectBasePoints[0] * dmg / (100  * tickcount );
 				}break;
 				//druid - Primal Fury
 				case 37116:
@@ -1397,13 +1396,13 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, bo
 						if( CastingSpell->NameHash != SPELL_HASH_DRAIN_SOUL )
 							continue;
 						//null check was made before like 2 times already :P
-						dmg_overwrite = ( ospinfo->EffectBasePoints[2] + 1 ) * GetMaxPower(POWER_TYPE_MANA) / 100;
+						dmg_overwrite[0] = ( ospinfo->EffectBasePoints[2] + 1 ) * GetMaxPower(POWER_TYPE_MANA) / 100;
 					}break;
 				// warlock - Unstable Affliction
 				case 31117:
 					{
 						//null check was made before like 2 times already :P
-						dmg_overwrite = ( ospinfo->EffectBasePoints[0] + 1 ) * 9;
+						dmg_overwrite[0] = ( ospinfo->EffectBasePoints[0] + 1 ) * 9;
 					}break;
 				//warlock soul link
 				case 25228:
@@ -1943,7 +1942,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, bo
 							continue;
 						if( CastingSpell->School!=SCHOOL_FIRE && CastingSpell->School!=SCHOOL_FROST) //fire and frost critical's
 							continue;
-						dmg_overwrite = CastingSpell->manaCost * ( ospinfo->EffectBasePoints[0] + 1 ) / 100;
+						dmg_overwrite[0] = CastingSpell->manaCost * ( ospinfo->EffectBasePoints[0] + 1 ) / 100;
 					}break;
 				//Hunter - The Beast Within
 				case 34471:
@@ -1959,7 +1958,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, bo
 					{
 						if( CastingSpell == NULL )
 							continue;
-						dmg_overwrite = CastingSpell->manaCost * 40 / 100;
+						dmg_overwrite[0] = CastingSpell->manaCost * 40 / 100;
 					}break;
 				//priest - Reflective Shield
 				case 33619:
@@ -2052,7 +2051,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, bo
 						SpellEntry* spellInfo = dbcSpell.LookupEntry( 54203 ); 
 						SpellDuration* sd = dbcSpellDuration.LookupEntryForced( spellInfo->DurationIndex );
 						uint32 tickcount = GetDuration( sd ) / spellInfo->EffectAmplitude[0] ;
-						dmg_overwrite = ospinfo->EffectBasePoints[0] * dmg / (100  * tickcount );
+						dmg_overwrite[0] = ospinfo->EffectBasePoints[0] * dmg / (100  * tickcount );
 					}break;
 				case 59578: //Paladin - Art of War
 				case 53489:
@@ -2087,7 +2086,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, bo
 						if( !( CastingSpell->c_is_flags & SPELL_FLAG_IS_HEALING ) || this == victim )
 							continue;
 						//this is not counting the bonus effects on heal
-						dmg_overwrite = (CastingSpell->EffectBasePoints[IsHealingSpell(CastingSpell)-1] + 1) * (ospinfo->EffectBasePoints[0] + 1 ) / 100;
+						dmg_overwrite[0] = (CastingSpell->EffectBasePoints[IsHealingSpell(CastingSpell)-1] + 1) * (ospinfo->EffectBasePoints[0] + 1 ) / 100;
 					}break;
 				//paladin - Light's Grace
 				case 31834:
@@ -2421,7 +2420,9 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, bo
 
 		SpellEntry *spellInfo = dbcSpell.LookupEntry(spellId );
 		Spell *spell = new Spell(this, spellInfo ,true, NULL);
-		spell->forced_basepoints[0] = dmg_overwrite;
+		spell->forced_basepoints[0] = dmg_overwrite[0];
+		spell->forced_basepoints[1] = dmg_overwrite[1];
+		spell->forced_basepoints[2] = dmg_overwrite[2];
 		spell->ProcedOnSpell = CastingSpell;
 		//Spell *spell = new Spell(this,spellInfo,false,0,true,false);
 		if( spellId == 974 || spellId == 32593 || spellId == 32594 || spellId == 49283 || spellId == 49284 ) // Earth Shield handler

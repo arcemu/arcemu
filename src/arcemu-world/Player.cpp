@@ -473,7 +473,6 @@ myCorpseLocation()
 	m_passOnLoot = false;
 	m_changingMaps = true;
 	m_outStealthDamageBonusPct = m_outStealthDamageBonusPeriod = m_outStealthDamageBonusTimer = 0;
-	m_vampiricEmbrace = m_vampiricTouch = 0;
 	LastSeal = 0;
 	m_flyhackCheckTimer = 0;
 #ifdef TRACK_IMMUNITY_BUG
@@ -11863,68 +11862,6 @@ void Player::Social_SendFriendList(uint32 flag)
 
 	m_socialLock.Release();
 	m_session->SendPacket(&data);
-}
-
-void Player::VampiricSpell(uint32 dmg, Unit* pTarget)
-{
-	float fdmg = float(dmg);
-	uint32 bonus;
-	int32 perc;
-	int32 percP;
-	uint32 bonusP;
-	Group * pGroup = GetGroup();
-	SubGroup * pSubGroup = (pGroup != NULL) ? pGroup->GetSubGroup(GetSubGroup()) : NULL;
-	GroupMembersSet::iterator itr;
-	
-	if( ( !m_vampiricEmbrace && !m_vampiricTouch ) || getClass() != PRIEST )
-		return;
-	
-	if( m_vampiricEmbrace < 0 && this->m_hasVampiricEmbrace < 0 && this->HasAurasWithNameHash(SPELL_HASH_VAMPIRIC_EMBRACE) )
-	{
-		perc = 15;
-		percP = 3;
-		uint32 spellgroup[3] = {4, 0, 0};
-		SM_FIValue(SM_FMiscEffect, &perc, spellgroup);
-
-		bonus = float2int32(fdmg * perc/100.0f);
-		if( bonus > 0 )
-		{
-			Heal(this, 15286, bonus);
-
-			// loop party
-			if( pSubGroup != NULL )
-			{
-				for( itr = pSubGroup->GetGroupMembersBegin(); itr != pSubGroup->GetGroupMembersEnd(); ++itr )
-				{
-					if( (*itr)->m_loggedInPlayer != NULL && (*itr) != m_playerInfo && (*itr)->m_loggedInPlayer->isAlive() )
-						
-						bonusP = float2int32(fdmg * (float(percP)/100.0f));
-						Heal( (*itr)->m_loggedInPlayer, 15286, bonusP );
-				}
-			}
-		}
-	}
-
-	if( m_vampiricTouch > 0 && pTarget->m_hasVampiricTouch > 0 && pTarget->HasAurasWithNameHash(SPELL_HASH_VAMPIRIC_TOUCH) )
-	{
-		perc = 5;
-
-		bonus = float2int32(fdmg * perc/100.0f);
-		if( bonus > 0 )
-		{
-			Energize(this, 34919, bonus, POWER_TYPE_MANA);
-
-			// loop party
-			if( pSubGroup != NULL )
-			{
-				for( itr = pSubGroup->GetGroupMembersBegin(); itr != pSubGroup->GetGroupMembersEnd(); ++itr )
-				{
-					if( (*itr)->m_loggedInPlayer != NULL && (*itr) != m_playerInfo && (*itr)->m_loggedInPlayer->isAlive() && (*itr)->m_loggedInPlayer->GetPowerType() == POWER_TYPE_MANA )
-						Energize((*itr)->m_loggedInPlayer, 34919, bonus, POWER_TYPE_MANA);
-				}
-			}
-		}
-	}
 }
 
 void Player::SpeedCheatDelay(uint32 ms_delay)

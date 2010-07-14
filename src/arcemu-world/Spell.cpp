@@ -4491,7 +4491,7 @@ exit:
 	else if( GetProto()->Id == 57669 || GetProto()->Id == 61782) //Replenishment
 	{
 		if( i== 0 && p_caster != NULL && target != NULL )
-			value = uint32(0.0025*target->GetMaxPower( POWER_TYPE_MANA ));
+			value = uint32(0.002 * target->GetMaxPower( POWER_TYPE_MANA ));
 	}
 	// HACK FIX
 	else if( GetProto()->NameHash == SPELL_HASH_VICTORY_RUSH )
@@ -4622,7 +4622,6 @@ exit:
 				break;
 		}
 	}
-
 	else if( GetProto()->NameHash == SPELL_HASH_FAN_OF_KNIVES && p_caster != NULL ) // rogue - fan of knives
 	{
 		Item *mit = p_caster->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_MAINHAND);
@@ -4631,6 +4630,12 @@ exit:
 			if ( mit->GetProto()->Class == 2 && mit->GetProto()->SubClass == 15) // daggers
 				value = 105;
 		}
+	}
+	else if( GetProto()->NameHash == SPELL_HASH_VAMPIRIC_EMBRACE )
+	{
+		value = value * (GetProto()->EffectBasePoints[i] +1) / 100;
+		SM_FIValue(p_caster->SM_FMiscEffect, &value, GetProto()->SpellGroupType);
+		SM_PIValue(p_caster->SM_PMiscEffect, &value, GetProto()->SpellGroupType);
 	}
 
 	if( p_caster != NULL )
@@ -4898,7 +4903,7 @@ void Spell::Heal( int32 amount, bool ForceCrit )
 	int32 bonus = 0;
 	uint32 school = GetProto()->School;
 
-	if( u_caster != NULL )
+	if( u_caster != NULL && ! (GetProto()->AttributesExC & FLAGS4_NO_HEALING_BONUS) )
 	{
 		//Basic bonus
 		if( p_caster == NULL || 

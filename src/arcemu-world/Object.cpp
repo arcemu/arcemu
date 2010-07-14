@@ -1937,9 +1937,6 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 	}
 	if( school == SHADOW_DAMAGE )
 	{
-		if( IsPlayer() && TO_PLAYER(this)->isAlive() && TO_PLAYER(this)->getClass() == PRIEST )
-			TO_PLAYER(this)->VampiricSpell(float2int32(res), pVictim);
-
 		if( pVictim->isAlive() && this->IsUnit() )
 		{
 			//Shadow Word:Death

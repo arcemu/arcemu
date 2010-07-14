@@ -2435,10 +2435,6 @@ public:
 	bool mAvengingWrath;
 	void AvengingWrath() { mAvengingWrath = true; }
 
-	int16 m_vampiricEmbrace;
-	int16 m_vampiricTouch;
-	void VampiricSpell(uint32 dmg, Unit* pTarget);
-
 	void ToggleXpGain();
 	bool CanGainXp();
 

@@ -93,7 +93,7 @@ class FlametongueWeaponSpellProc : public SpellProc
 
 		if ( item != NULL && item->GetGUID() == mItemGUID )
 		{
-			*dmg_overwrite = damage;
+			dmg_overwrite[0] = damage;
 			return false;
 		}
 

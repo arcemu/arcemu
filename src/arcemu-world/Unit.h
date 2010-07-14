@@ -1530,9 +1530,6 @@ public:
 	void SendPeriodicAuraLog( const WoWGuid& CasterGUID, const WoWGuid& casterGUID, uint32 SpellID, uint32 School, uint32 Amount, uint32 abs_dmg, uint32 resisted_damage, uint32 Flags );
 	void SendPeriodicHealAuraLog( const WoWGuid& CasterGUID, const WoWGuid& TargetGUID, uint32 SpellID, uint32 amt );
 
-	int8 m_hasVampiricTouch;
-	int8 m_hasVampiricEmbrace;
-
 	void			EventModelChange();			//model size changes when model changes
 	inline float	GetModelHalfSize() { return ModelHalfSize * GetScale();	}	//used to calculate combat reach and stuff
 
