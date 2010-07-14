@@ -859,40 +859,21 @@ void Pet::Remove( bool bUpdate, bool bSetOffline )
 	if( ScheduledForDeletion )
 		return;
 	ScheduledForDeletion = true;
-	RemoveAllAuras(); // Prevent pet overbuffing
-	m_Owner->EventDismissPet();
-
-	if( bUpdate )
-	{
-		if( !bExpires )
-			UpdatePetInfo( bSetOffline );
-		if( !IsSummon() )
-			m_Owner->_SavePet( NULL );
-	}
-
-	bool main_summon = m_Owner->GetSummon() == this ;
-	m_Owner->RemoveSummon( this );
-
-	if( m_Owner->GetSummon() == NULL )//we have no more summons, required by spells summoning more than 1.
-	{
-		m_Owner->SetSummonedUnitGUID( 0 );
-		SendNullSpellsToOwner();
-	}
-	else if( main_summon )//we just removed the summon displayed in the portrait so we need to update it with another one.
-	{
-		m_Owner->SetSummonedUnitGUID( m_Owner->GetSummon()->GetGUID() );//set the summon still alive
-		m_Owner->GetSummon()->SendSpellsToOwner();
-	}
+	PrepareForRemove(bUpdate, bSetOffline);
 
 	if( IsInWorld() )
-	{
-		if( IsActive() )
-			Deactivate( m_mapMgr );
-
 		Unit::RemoveFromWorld( true );
-	}
 
 	SafeDelete();
+}
+
+void Pet::RemoveFromWorld(bool free_guid)
+{
+	if(IsSummon())
+		PrepareForRemove(false, true);
+	else
+		PrepareForRemove(true, false);
+	Unit::RemoveFromWorld(free_guid);
 }
 
 void Pet::Despawn(uint32 delay, uint32 respawntime)
@@ -923,6 +904,37 @@ void Pet::DelayedRemove(bool bTime, bool dismiss, uint32 delay)
 	}
 	else
 		sEventMgr.AddEvent(this, &Pet::DelayedRemove, true, dismiss, uint32(0), EVENT_PET_DELAYED_REMOVE, delay, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+}
+
+void Pet::PrepareForRemove(bool bUpdate, bool bSetOffline)
+{
+	RemoveAllAuras(); // Prevent pet overbuffing
+	m_Owner->EventDismissPet();
+
+	if( bUpdate )
+	{
+		if( !bExpires )
+			UpdatePetInfo( bSetOffline );
+		if( !IsSummon() )
+			m_Owner->_SavePet( NULL );
+	}
+
+	bool main_summon = m_Owner->GetSummon() == this ;
+	m_Owner->RemoveSummon( this );
+
+	if( m_Owner->GetSummon() == NULL )//we have no more summons, required by spells summoning more than 1.
+	{
+		m_Owner->SetSummonedUnitGUID( 0 );
+		SendNullSpellsToOwner();
+	}
+	else if( main_summon )//we just removed the summon displayed in the portrait so we need to update it with another one.
+	{
+		m_Owner->SetSummonedUnitGUID( m_Owner->GetSummon()->GetGUID() );//set the summon still alive
+		m_Owner->GetSummon()->SendSpellsToOwner();
+	}
+
+	if( IsInWorld() && IsActive() )
+		Deactivate( m_mapMgr );
 }
 
 void Pet::setDeathState(DeathState s)
