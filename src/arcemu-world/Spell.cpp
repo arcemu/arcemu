@@ -311,6 +311,12 @@ Spell::~Spell()
 	{
 		m_targetUnits[i].clear();
 	}
+
+	for (auto itr = m_pendingAuras.begin(); itr != m_pendingAuras.end(); ++itr)
+	{
+		if (itr->second != NULL)
+			delete itr->second;
+	}
 }
 
 //i might forget conditions here. Feel free to add them
@@ -2258,7 +2264,7 @@ void Spell::SendChannelUpdate(uint32 time)
 			if(dynObj)
 				dynObj->Remove();
 
-			if (dynObj == NULL && m_aurasHandled.find(m_caster->GetGUID()) == m_aurasHandled.end()) //no persistant aura or aura on caster
+			if (dynObj == NULL && m_pendingAuras.find(m_caster->GetGUID()) == m_pendingAuras.end()) //no persistant aura or aura on caster
 			{
 				u_caster->SetChannelSpellTargetGUID(0);
 				u_caster->SetChannelSpellId(0);
@@ -2701,13 +2707,18 @@ void Spell::HandleEffects(uint64 guid, uint32 i)
 void Spell::HandleAddAura(uint64 guid)
 {
 	Unit * Target = NULL;
-	if(guid == 0 || m_aurasHandled.find(guid) != m_aurasHandled.end())
+
+	auto itr = m_pendingAuras.find(guid);
+
+	if (itr == m_pendingAuras.end() || itr->second == NULL)
 	{
 		DecRef();
 		return;
 	}
 
-	m_aurasHandled.insert(guid);
+	//If this aura isn't added correctly it MUST be deleted
+	Aura* aur = itr->second;
+	itr->second = NULL;
 
 	if(event_GetInstanceID() == WORLD_INSTANCE)
 	{
@@ -2722,6 +2733,7 @@ void Spell::HandleAddAura(uint64 guid)
 
 	if( Target == NULL )
 	{
+		delete aur;
 		DecRef();
 		return;
 	}
@@ -2787,6 +2799,7 @@ void Spell::HandleAddAura(uint64 guid)
 		SpellEntry *spellInfo = dbcSpell.LookupEntryForced( 51185 );
 		if(!spellInfo) 
 		{
+			delete aur;
 			DecRef();
 			return;
 		}
@@ -2822,6 +2835,7 @@ void Spell::HandleAddAura(uint64 guid)
 		SpellEntry *spellInfo = dbcSpell.LookupEntryForced( spellid );
 		if( !spellInfo )
 		{
+			delete aur;
 			DecRef();
 			return;
 		}
@@ -2835,45 +2849,40 @@ void Spell::HandleAddAura(uint64 guid)
 		spell->prepare( &targets );	
 	}
 
-	// avoid map corruption
-	if(Target->GetInstanceID()!=m_caster->GetInstanceID())
+	// avoid map corruption (this is impossible, btw)
+	if(Target->GetInstanceID() != m_caster->GetInstanceID())
 	{
+		delete aur;
 		DecRef();
 		return;
 	}
 
-	std::map<uint32,Aura*>::iterator itr=Target->tmpAura.find(GetProto()->Id);
-	if(itr!=Target->tmpAura.end())
+	if(aur->GetSpellProto()->procCharges > 0)
 	{
-		if(itr->second)
+		int charges = aur->GetSpellProto()->procCharges;
+		if(u_caster != NULL)
 		{
-			if(itr->second->GetSpellProto()->procCharges>0)
-			{
-				int charges = itr->second->GetSpellProto()->procCharges;
-				if( itr->second->GetSpellProto()->SpellGroupType && u_caster != NULL )
-				{
-					SM_FIValue( u_caster->SM_FCharges, &charges, itr->second->GetSpellProto()->SpellGroupType );
-					SM_PIValue( u_caster->SM_PCharges, &charges, itr->second->GetSpellProto()->SpellGroupType );
-				}
-				for(int i= 0;i<charges-1;i++)
-				{
-					Aura *aur = new Aura(itr->second->GetSpellProto(),itr->second->GetDuration(),itr->second->GetCaster(),itr->second->GetTarget(), m_triggeredSpell, i_caster);
-					Target->AddAura(aur);
-				}
-				if( !(itr->second->GetSpellProto()->procFlags & PROC_REMOVEONUSE) )
-				{
-					SpellCharge charge;
-					charge.count=charges;
-					charge.spellId=itr->second->GetSpellId();
-					charge.ProcFlag=itr->second->GetSpellProto()->procFlags;
-					charge.lastproc = 0;
-					Target->m_chargeSpells.insert(make_pair(itr->second->GetSpellId(),charge));
-				}
-			}
-			Target->AddAura(itr->second); // the real spell is added last so the modifier is removed last
-			Target->tmpAura.erase(itr);
+			SM_FIValue( u_caster->SM_FCharges, &charges, aur->GetSpellProto()->SpellGroupType );
+			SM_PIValue( u_caster->SM_PCharges, &charges, aur->GetSpellProto()->SpellGroupType );
+		}
+		for(int i= 0; i < (charges - 1); ++i)
+		{
+			Aura* staur = new Aura(aur->GetSpellProto(), aur->GetDuration(), aur->GetCaster(), aur->GetTarget(), m_triggeredSpell, i_caster);
+			Target->AddAura(staur);
+		}
+		if(!(aur->GetSpellProto()->procFlags & PROC_REMOVEONUSE))
+		{
+			SpellCharge charge;
+			charge.count = charges;
+			charge.spellId = aur->GetSpellId();
+			charge.ProcFlag = aur->GetSpellProto()->procFlags;
+			charge.lastproc = 0;
+			Target->m_chargeSpells.insert(make_pair(aur->GetSpellId(), charge));
 		}
 	}
+
+	Target->AddAura(aur); // the real spell is added last so the modifier is removed last
+
 	DecRef();
 }
 

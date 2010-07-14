@@ -1967,7 +1967,7 @@ public:
 	// It should NOT be used for weapon_damage_type which needs: 0 = MELEE, 1 = OFFHAND, 2 = RANGED
 	ARCEMU_INLINE uint32 GetType() { return ( GetProto()->Spell_Dmg_Type == SPELL_DMG_TYPE_NONE ? SPELL_DMG_TYPE_MAGIC : GetProto()->Spell_Dmg_Type ); }
 
-	std::set<uint64> m_aurasHandled;
+	std::map<uint64, Aura*> m_pendingAuras;
 	TargetsList UniqueTargets;
     SpellTargetsList    ModeratedTargets;
 

@@ -2132,9 +2132,9 @@ void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
 	//check if we already have stronger aura
 	Aura *pAura;
 
-	std::map<uint32,Aura*>::iterator itr=unitTarget->tmpAura.find(GetProto()->Id);
+	auto itr = m_pendingAuras.find(unitTarget->GetGUID());
 	//if we do not make a check to see if the aura owner is the same as the caster then we will stack the 2 auras and they will not be visible client sided
-	if(itr == unitTarget->tmpAura.end())
+	if(itr == m_pendingAuras.end())
 	{
 		if( GetProto()->NameHash == SPELL_HASH_BLOOD_FRENZY && ProcedOnSpell )//Warrior's Blood Frenzy
 			GetProto()->DurationIndex = ProcedOnSpell->DurationIndex;
@@ -2158,13 +2158,13 @@ void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
 
 		pAura->pSpellId = pSpellId; //this is required for triggered spells
 
-		unitTarget->tmpAura[GetProto()->Id] = pAura;
+		m_pendingAuras.insert(std::make_pair(unitTarget->GetGUID(), pAura));
 		AddRef();
 		sEventMgr.AddEvent(this, &Spell::HandleAddAura, unitTarget->GetGUID(), EVENT_SPELL_HIT, 100, 1, 0);
 	}
 	else
 	{
-		pAura=itr->second;
+		pAura = itr->second;
 	}
 	pAura->AddMod( GetProto()->EffectApplyAuraName[i], damage, GetProto()->EffectMiscValue[i], i );
 
@@ -3771,17 +3771,16 @@ void Spell::SpellEffectApplyAA(uint32 i) // Apply Area Aura
 	if(u_caster != unitTarget) return;
 
 	Aura * pAura;
-	std::map<uint32,Aura*>::iterator itr=unitTarget->tmpAura.find(GetProto()->Id);
-	if(itr==unitTarget->tmpAura.end())
+	auto itr = m_pendingAuras.find(unitTarget->GetGUID());
+	if(itr == m_pendingAuras.end())
 	{
 		pAura = new Aura(GetProto(),GetDuration(),m_caster,unitTarget);
-
-		unitTarget->tmpAura [GetProto()->Id]= pAura;
 
 		float r = GetRadius(i);
 		if(!sEventMgr.HasEvent(pAura, EVENT_AREAAURA_UPDATE))		/* only add it once */
 			sEventMgr.AddEvent(pAura, &Aura::EventUpdateAA, r*r, EVENT_AREAAURA_UPDATE, 1000, 0,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 
+		m_pendingAuras.insert(std::make_pair(unitTarget->GetGUID(), pAura));
 		AddRef();
 		sEventMgr.AddEvent(this, &Spell::HandleAddAura, unitTarget->GetGUID(), EVENT_SPELL_HIT, 100, 1, 0);
 	}
