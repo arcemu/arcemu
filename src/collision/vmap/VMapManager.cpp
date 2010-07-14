@@ -23,7 +23,7 @@
 #define snprintf _snprintf
 #endif
 
-#define MAX_MAPS 700
+#define MAX_MAPS 800
 
 namespace VMAP
 {
