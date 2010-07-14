@@ -3658,16 +3658,18 @@ uint8 Spell::CanCast(bool tolerate)
 	 */
 	float maxRange = 0;
 
-	// Holy shock has a 40yd range for friendly target
-	if( GetProto()->NameHash == SPELL_HASH_HOLY_SHOCK && GetProto()->Effect[0] == SPELL_EFFECT_DUMMY && p_caster != NULL && p_caster->IsInWorld() )
+	SpellRange* range = dbcSpellRange.LookupEntry(GetProto()->rangeIndex);
+
+	if (m_caster->IsInWorld())
 	{
-		Unit *target = p_caster->GetMapMgr()->GetUnit( m_targets.m_unitTarget );
-		if( target != NULL && isFriendly(p_caster, target) )
-			maxRange = 40;
+		Unit* target = m_caster->GetMapMgr()->GetUnit(m_targets.m_unitTarget);
+		if (target != NULL && isFriendly(m_caster, target))
+			maxRange = range->maxRangeFriendly;
+		else
+			maxRange = range->maxRange;
 	}
-	
-	if( maxRange == 0 )
-		maxRange = GetMaxRange( dbcSpellRange.LookupEntry( GetProto()->rangeIndex ) );
+	else
+		maxRange = range->maxRange;
 
 	if( u_caster && m_caster->GetMapMgr() && m_targets.m_unitTarget )
 	{

@@ -949,9 +949,9 @@ struct SpellRange
 {
 	uint32 ID;
 	float  minRange;
-	float  minRange2;
+	float  minRangeFriendly;
 	float  maxRange;
-	float  maxRange2;
+	float  maxRangeFriendly;
 //	uint32 unks[35];
 };
 
