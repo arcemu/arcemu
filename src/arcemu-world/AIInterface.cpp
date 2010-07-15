@@ -2758,11 +2758,14 @@ bool AIInterface::showWayPoints(Player* pPlayer, bool Backwards)
 		if( (*itr) != NULL )
 		{
 			wp = *itr;
+			Creature *c = TO_CREATURE( GetUnit() );  // yes this is terrible
 
 			//Create
 			Creature* pWayPoint = new Creature((uint64)HIGHGUID_TYPE_WAYPOINT << 32 | wp->id);
 			pWayPoint->CreateWayPoint(wp->id,pPlayer->GetMapId(),wp->x,wp->y,wp->z,0);
-            pWayPoint->SetEntry( 3000000 );
+			pWayPoint->SetCreatureInfo( c->GetCreatureInfo() );
+			pWayPoint->SetCreatureProto( c->GetProto() );
+			pWayPoint->SetEntry( 1 );
 			pWayPoint->SetScale(  0.5f );
 			if(Backwards)
 			{
