@@ -61,6 +61,15 @@ struct FactionDBC;
 
 typedef HM_NAMESPACE::hash_map<uint32, uint64> UniqueAuraTargetMap;
 
+#pragma pack(push, 1)
+struct DisplayBounding
+{
+	uint32 displayid;
+	float low[3];
+	float high[3];
+};
+#pragma pack(pop)
+
 struct ReflectSpellSchool
 {
 	uint32 spellId;

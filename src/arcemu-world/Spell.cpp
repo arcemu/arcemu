@@ -5672,16 +5672,15 @@ void Spell::HandleCastEffects( uint64 guid, uint32 i )
 	{
 		float destx, desty, destz;
 
-		if (guid == 0)
+		if (m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION)
 		{
-			if (m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION)
-			{
-				destx = m_targets.m_destX;
-				desty = m_targets.m_destY;
-				destz = m_targets.m_destZ;
-			}
-			else
-				return;
+			destx = m_targets.m_destX;
+			desty = m_targets.m_destY;
+			destz = m_targets.m_destZ;
+		}
+		else if (guid == 0)
+		{
+			return;
 		}
 		else
 		{
@@ -5693,7 +5692,16 @@ void Spell::HandleCastEffects( uint64 guid, uint32 i )
 			destx = obj->GetPositionX();
 			desty = obj->GetPositionY();
 			//todo: this should be destz = obj->GetPositionZ() + (obj->GetModelHighBoundZ() / 2 * obj->GetUInt32Value(OBJECT_FIELD_SCALE_X))
-			destz = obj->GetPositionZ();
+			if (obj->IsUnit())
+			{
+				DisplayBounding* bounding = DisplayBoundingStorage.LookupEntry(obj->GetUInt32Value(UNIT_FIELD_DISPLAYID));
+				if (bounding != NULL)
+					destz = obj->GetPositionZ() + ((bounding->high[2] / 2) * obj->GetFloatValue(OBJECT_FIELD_SCALE_X));
+				else
+					destz = obj->GetPositionZ();
+			}
+			else
+				destz = obj->GetPositionZ();
 		}
 
 		float dist = m_caster->CalcDistance(destx, desty, destz);
