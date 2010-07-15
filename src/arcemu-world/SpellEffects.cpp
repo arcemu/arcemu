@@ -3229,6 +3229,8 @@ void Spell::SpellEffectSummon(uint32 i)
 				pCreature->SetMaxDamage(pCreature->GetMaxDamage() + parent_bonus);
 				pCreature->BaseDamage[0] += parent_bonus;
 				pCreature->BaseDamage[1] += parent_bonus;
+				//summon MUST be pushed to world before calling AttackReaction()
+				pCreature->PushToWorld(u_caster->GetMapMgr());
 				Unit* uTarget = p_caster->GetMapMgr()->GetUnit( p_caster->GetSelection() );
 				if( uTarget && isAttackable( p_caster, uTarget ) )
 				{
@@ -3236,7 +3238,7 @@ void Spell::SpellEffectSummon(uint32 i)
 					pCreature->GetAIInterface()->SetNextTarget( uTarget );
 				}
 			}
-			if ( MiscValue == 24207 ) //Army of the dead ghoul.
+			else if ( MiscValue == 24207 ) //Army of the dead ghoul.
 			{
 				float parent_bonus = (float)(p_caster->GetDamageDoneMod(SCHOOL_NORMAL)*0.04f);
 				float pi_rand = ((int32)(rand()-RAND_MAX*0.5f)%15707)/10000.0f; // should be random enough.
@@ -3245,9 +3247,10 @@ void Spell::SpellEffectSummon(uint32 i)
 				pCreature->GetAIInterface()->SetUnitToFollowAngle(pi_rand);
 				pCreature->GetAIInterface()->SetFollowDistance(3.0f);
 				pCreature->SetPosition(spawnx, spawny, spawnz, 0.0f,true);
+				pCreature->PushToWorld(u_caster->GetMapMgr());
 			}
-			
-			pCreature->PushToWorld(u_caster->GetMapMgr());
+			else
+				pCreature->PushToWorld(u_caster->GetMapMgr());
 
 			sEventMgr.AddEvent(pCreature, &Creature::RemoveFromWorld, false, true, EVENT_CREATURE_REMOVE_CORPSE, GetDuration(), 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 		}break;
