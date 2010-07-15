@@ -2132,7 +2132,7 @@ void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
 	//check if we already have stronger aura
 	Aura *pAura;
 
-	auto itr = m_pendingAuras.find(unitTarget->GetGUID());
+	std::map<uint64, Aura*>::iterator itr = m_pendingAuras.find(unitTarget->GetGUID());
 	//if we do not make a check to see if the aura owner is the same as the caster then we will stack the 2 auras and they will not be visible client sided
 	if(itr == m_pendingAuras.end())
 	{
@@ -3771,7 +3771,7 @@ void Spell::SpellEffectApplyAA(uint32 i) // Apply Area Aura
 	if(u_caster != unitTarget) return;
 
 	Aura * pAura;
-	auto itr = m_pendingAuras.find(unitTarget->GetGUID());
+	std::map<uint64, Aura*>::iterator itr = m_pendingAuras.find(unitTarget->GetGUID());
 	if(itr == m_pendingAuras.end())
 	{
 		pAura = new Aura(GetProto(),GetDuration(),m_caster,unitTarget);

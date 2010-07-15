@@ -312,7 +312,8 @@ Spell::~Spell()
 		m_targetUnits[i].clear();
 	}
 
-	for (auto itr = m_pendingAuras.begin(); itr != m_pendingAuras.end(); ++itr)
+	std::map<uint64, Aura*>::iterator itr;
+	for (itr = m_pendingAuras.begin(); itr != m_pendingAuras.end(); ++itr)
 	{
 		if (itr->second != NULL)
 			delete itr->second;
@@ -2708,7 +2709,7 @@ void Spell::HandleAddAura(uint64 guid)
 {
 	Unit * Target = NULL;
 
-	auto itr = m_pendingAuras.find(guid);
+	std::map<uint64, Aura*>::iterator itr = m_pendingAuras.find(guid);
 
 	if (itr == m_pendingAuras.end() || itr->second == NULL)
 	{
