@@ -3409,3 +3409,86 @@ uint32 ObjectMgr::GenerateGameObjectSpawnID(){
 	return r;
 }
 
+void ObjectMgr::AddPlayerCache( uint32 guid, PlayerCache* cache )
+{
+	m_playerCacheLock.Acquire();
+	cache->AddRef();
+	PlayerCacheMap::iterator itr = m_playerCache.find(guid);
+	if (itr != m_playerCache.end())
+	{
+		itr->second->DecRef();
+		itr->second = cache;
+	}
+	else
+		m_playerCache.insert(std::make_pair(guid, cache));
+	m_playerCacheLock.Release();
+}
+
+void ObjectMgr::RemovePlayerCache( uint32 guid )
+{
+	m_playerCacheLock.Acquire();
+	PlayerCacheMap::iterator itr = m_playerCache.find(guid);
+	if (itr != m_playerCache.end())
+	{
+		itr->second->DecRef();
+		m_playerCache.erase(itr);
+	}
+	m_playerCacheLock.Release();
+}
+
+PlayerCache* ObjectMgr::GetPlayerCache( uint32 guid )
+{
+	m_playerCacheLock.Acquire();
+	PlayerCacheMap::iterator itr = m_playerCache.find(guid);
+	if (itr != m_playerCache.end())
+	{
+		PlayerCache* ret = itr->second;
+		ret->AddRef();
+		m_playerCacheLock.Release();
+		return ret;
+	}
+	m_playerCacheLock.Release();
+	return NULL;
+}
+
+PlayerCache* ObjectMgr::GetPlayerCache( const char* name, bool caseSensitive /*= true*/ )
+{
+	PlayerCache* ret = NULL;
+	m_playerCacheLock.Acquire();
+	PlayerCacheMap::iterator itr;
+
+	if(!caseSensitive)
+	{
+		std::string strName = name;
+		arcemu_TOLOWER(strName);
+		for (itr = m_playerCache.begin(); itr != m_playerCache.end(); ++itr)
+		{
+			std::string cachename;
+			itr->second->GetStringValue(CACHE_PLAYER_NAME, cachename);
+			if(!stricmp(cachename.c_str(), strName.c_str()))
+			{
+				ret = itr->second;
+				ret->AddRef();
+				break;
+			}
+		}
+	}
+	else
+	{
+		for (itr = m_playerCache.begin(); itr != m_playerCache.end(); ++itr)
+		{
+			std::string cachename;
+			itr->second->GetStringValue(CACHE_PLAYER_NAME, cachename);
+			if(!strcmp(cachename.c_str(), name))
+			{
+				ret = itr->second;
+				itr->second->AddRef();
+				break;
+			}
+		}
+	}
+
+	m_playerCacheLock.Release();
+
+	return ret;
+}

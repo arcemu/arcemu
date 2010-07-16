@@ -378,7 +378,7 @@ void Channel::Say(Player * plr, const char * message, Player * for_gm_client, bo
 	data << plr->GetGUID();	// guid again?
 	data << uint32(strlen(message)+1);
 	data << message;
-	data << (uint8)(plr->bGMTagOn ? 4 : 0);
+	data << (uint8)(plr->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_GM) ? 4 : 0);
 	if(for_gm_client != NULL)
 		for_gm_client->GetSession()->SendPacket(&data);
 	else

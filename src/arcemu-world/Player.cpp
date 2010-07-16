@@ -151,8 +151,6 @@ m_timeLogoff(0),
 m_isResting(0),
 m_restState(0),
 m_restAmount(0),
-m_afk_reason(""),
-
 m_AllowAreaTriggerPort(true),
 
 // Battleground
@@ -170,7 +168,6 @@ m_bgEntryPointInstance(0),
 
 // gm stuff
 //m_invincible(false),
-bGMTagOn(false),
 CooldownCheat(false),
 CastTimeCheat(false),
 PowerCheat(false),
@@ -232,8 +229,10 @@ m_resurrectMapId(0),
 m_resurrectInstanceID(0),
 myCorpseLocation()
 {
+	m_cache = new PlayerCache;
+	m_cache->SetUInt32Value(CACHE_PLAYER_LOWGUID, guid);
+	objmgr.AddPlayerCache(guid, m_cache);
 	int i,j;
-
 
 	//These should really be done in the unit constructor...
 	m_currentSpell = NULL;
@@ -501,8 +500,6 @@ myCorpseLocation()
 	m_visibleObjects.clear();
 	m_forcedReactions.clear();
 	m_friends.clear();
-	m_ignores.clear();
-	m_hasFriendList.clear();
 
 	loginauras.clear();
 	damagedone.clear();
@@ -511,7 +508,6 @@ myCorpseLocation()
 	SummonSpells.clear();
 	PetSpells.clear();
 	delayedPackets.clear();
-	gmTargets.clear();
 	_splineMap.clear();
 
 	m_lastPotionId		= 0;
@@ -529,6 +525,10 @@ void Player::OnLogin()
 
 Player::~Player ( )
 {
+	objmgr.RemovePlayerCache(GetLowGUID());
+	m_cache->DecRef();
+	m_cache = NULL;
+
 	if(!ok_to_remove)
 	{
 		printf("Player deleted from non-logoutplayer!\n");
@@ -746,6 +746,7 @@ bool Player::Create(WorldPacket& data )
 		m_team = 0;
 	else
 		m_team = 1;
+	m_cache->SetUInt32Value(CACHE_PLAYER_INITIALTEAM, m_team);
 
 	uint8 powertype = static_cast<uint8>(myClass->power_type);
 
@@ -1088,6 +1089,14 @@ void Player::Update( uint32 p_time )
 		m_immunityTime = 0;
 	}
 #endif
+
+	WorldPacket* pending_packet = m_cache->m_pendingPackets.pop();
+	while (pending_packet != NULL)
+	{
+		SendPacket(pending_packet);
+		delete pending_packet;
+		pending_packet = m_cache->m_pendingPackets.pop();
+	}
 }
 
 void Player::EventDismount(uint32 money, float x, float y, float z)
@@ -2848,6 +2857,8 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 
 	// Load name
 	m_name = get_next_field.GetString();
+	// Update Cache
+	m_cache->SetStringValue(CACHE_PLAYER_NAME, m_name);
 
 	// Load race/class from fields
 	setRace(get_next_field.GetUInt8());
@@ -2874,6 +2885,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	{
 		m_bgTeam = m_team = 1;
 	}
+	m_cache->SetUInt32Value(CACHE_PLAYER_INITIALTEAM, m_team);
 
 	SetNoseLevel();
 
@@ -3582,7 +3594,8 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		result = results[10].result;
 		do
 		{
-			m_ignores.insert( result->Fetch()[0].GetUInt32() );
+			uint32 guid = result->Fetch()[0].GetUInt32();
+			m_cache->Insert64Value(CACHE_SOCIAL_IGNORELIST, guid);
 		} while (result->NextRow());
 	}
 
@@ -3661,7 +3674,7 @@ void Player::SetPersistentInstanceId(Instance *pInstance)
 	if(pInstance == NULL)
 		return;
 	// Skip this handling for flagged GMs.
-	if(bGMTagOn)
+	if(HasFlag(PLAYER_FLAGS, PLAYER_FLAG_GM))
 		return;
 	// Bind instance to "my" group.
 	if(m_playerInfo && m_playerInfo->m_Group && pInstance->m_creatorGroup == 0)
@@ -3803,7 +3816,8 @@ void Player::SetQuestLogSlot(QuestLogEntry *entry, uint32 slot)
 void Player::AddToWorld()
 {
 	FlyCheat = false;
-	m_setflycheat=false;
+	m_setflycheat = false;
+
 	// check transporter
 	if(m_TransporterGUID && m_CurrentTransporter)
 	{
@@ -5847,7 +5861,7 @@ bool Player::CanSee(Object* obj) // * Invisibility & Stealth Detection - Partha 
 				if(pObj->m_invisible) // Invisibility - Detection of Players
 				{
 					if(pObj->getDeathState() == CORPSE)
-						return bGMTagOn; // only GM can see players that are spirits
+						return (HasFlag(PLAYER_FLAGS, PLAYER_FLAG_GM) != 0); // only GM can see players that are spirits
 
 					if(GetGroup() && pObj->GetGroup() == GetGroup() // can see invisible group members except when dueling them
 							&& DuelingWith != pObj)
@@ -5858,7 +5872,7 @@ bool Player::CanSee(Object* obj) // * Invisibility & Stealth Detection - Partha 
 
 					if(m_invisDetect[INVIS_FLAG_NORMAL] < 1 // can't see invisible without proper detection
 							|| pObj->m_isGmInvisible) // can't see invisible GM
-						return bGMTagOn; // GM can see invisible players
+						return (HasFlag(PLAYER_FLAGS, PLAYER_FLAG_GM) != 0); // GM can see invisible players
 				}
 
 				if( m_invisible && pObj->m_invisDetect[m_invisFlag] < 1 ) // Invisible - can see those that detect, but not others
@@ -5895,7 +5909,7 @@ bool Player::CanSee(Object* obj) // * Invisibility & Stealth Detection - Partha 
 					detectRange += pObj->GetBoundingRadius(); // adjust range for size of stealthed player
 					//sLog.outString( "Player::CanSee(%s): detect range = %f yards (%f ingame units), cansee = %s , distance = %f" , pObj->GetName() , detectRange , detectRange * detectRange , ( GetDistance2dSq(pObj) > detectRange * detectRange ) ? "yes" : "no" , GetDistanceSq(pObj) );
 					if(GetDistanceSq(pObj) > detectRange * detectRange)
-						return bGMTagOn; // GM can see stealthed players
+						return (HasFlag(PLAYER_FLAGS, PLAYER_FLAG_GM) != 0); // GM can see stealthed players
 				}
 
 				return !pObj->m_isGmInvisible;
@@ -5915,7 +5929,7 @@ bool Player::CanSee(Object* obj) // * Invisibility & Stealth Detection - Partha 
 
 				if( uObj->m_invisible // Invisibility - Detection of Units
 						&& m_invisDetect[uObj->m_invisFlag] < 1) // can't see invisible without proper detection
-					return bGMTagOn; // GM can see invisible units
+					return (HasFlag(PLAYER_FLAGS, PLAYER_FLAG_GM) != 0); // GM can see invisible units
 
 				if( m_invisible && uObj->m_invisDetect[m_invisFlag] < 1 ) // Invisible - can see those that detect, but not others
 					return m_isGmInvisible;
@@ -5943,7 +5957,7 @@ bool Player::CanSee(Object* obj) // * Invisibility & Stealth Detection - Partha 
 					}
 
 					if(m_invisDetect[gObj->invisibilityFlag] < 1) // can't see invisible without proper detection
-						return bGMTagOn; // GM can see invisible objects
+						return (HasFlag(PLAYER_FLAGS, PLAYER_FLAG_GM) != 0); // GM can see invisible objects
 				}
 
 				return true;
@@ -8677,7 +8691,7 @@ void Player::UpdatePvPArea()
 	}
 #endif
 
-	if( bGMTagOn )
+	if( HasFlag(PLAYER_FLAGS, PLAYER_FLAG_GM) )
 	{
 		if(IsPvPFlagged())
 			RemovePvPFlag();
@@ -11524,7 +11538,7 @@ void Player::Social_AddFriend(const char * name, const char * note)
 	PlayerInfo* info = objmgr.GetPlayerInfoByName(name);
 	Player* player = objmgr.GetPlayer(name, false);
 
-	if( info == NULL || ( player != NULL && player->bGMTagOn ) )
+	if( info == NULL || ( player != NULL && player->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_GM) ) )
 	{
 		data << uint8(FRIEND_NOT_FOUND);
 		m_session->SendPacket(&data);
@@ -11666,8 +11680,7 @@ void Player::Social_SetNote(uint32 guid, const char * note)
 void Player::Social_AddIgnore(const char * name)
 {
 	WorldPacket data(SMSG_FRIEND_STATUS, 10);
-	set<uint32>::iterator itr;
-	PlayerInfo * info;
+	PlayerInfo* info;
 
 	// lookup the player
 	info = objmgr.GetPlayerInfoByName(name);
@@ -11686,22 +11699,17 @@ void Player::Social_AddIgnore(const char * name)
 		return;
 	}
 
-	m_socialLock.Acquire();
-	itr = m_ignores.find(info->guid);
-	if( itr != m_ignores.end() )
+	if (m_cache->Count64Value(CACHE_SOCIAL_IGNORELIST, info->guid) > 0)
 	{
 		data << uint8(FRIEND_IGNORE_ALREADY) << uint64(info->guid);
 		m_session->SendPacket(&data);
-		m_socialLock.Release();
 		return;
 	}
 
 	data << uint8(FRIEND_IGNORE_ADDED);
 	data << uint64(info->guid);
 
-	m_ignores.insert( info->guid );
-
-	m_socialLock.Release();
+	m_cache->Insert64Value(CACHE_SOCIAL_IGNORELIST, info->guid);
 	m_session->SendPacket(&data);
 
 	// dump into db
@@ -11711,7 +11719,6 @@ void Player::Social_AddIgnore(const char * name)
 void Player::Social_RemoveIgnore(uint32 guid)
 {
 	WorldPacket data(SMSG_FRIEND_STATUS, 10);
-	set<uint32>::iterator itr;
 
 	// are we ourselves?
 	if( guid == GetLowGUID() )
@@ -11721,17 +11728,9 @@ void Player::Social_RemoveIgnore(uint32 guid)
 		return;
 	}
 
-	m_socialLock.Acquire();
-	itr = m_ignores.find(guid);
-	if( itr != m_ignores.end() )
-	{
-		m_ignores.erase(itr);
-	}
-
+	m_cache->Remove64Vaue(CACHE_SOCIAL_IGNORELIST, guid);
 	data << uint8(FRIEND_IGNORE_REMOVED);
 	data << uint64(guid);
-
-	m_socialLock.Release();
 
 	m_session->SendPacket(&data);
 
@@ -11742,28 +11741,12 @@ void Player::Social_RemoveIgnore(uint32 guid)
 
 bool Player::Social_IsIgnoring(PlayerInfo * m_info)
 {
-	bool res;
-	m_socialLock.Acquire();
-	if( m_ignores.find( m_info->guid ) == m_ignores.end() )
-		res = false;
-	else
-		res = true;
-
-	m_socialLock.Release();
-	return res;
+	return m_cache->Count64Value(CACHE_SOCIAL_IGNORELIST, m_info->guid) > 0;
 }
 
 bool Player::Social_IsIgnoring(uint32 guid)
 {
-	bool res;
-	m_socialLock.Acquire();
-	if( m_ignores.find( guid ) == m_ignores.end() )
-		res = false;
-	else
-		res = true;
-
-	m_socialLock.Release();
-	return res;
+	return m_cache->Count64Value(CACHE_SOCIAL_IGNORELIST, guid) > 0;
 }
 
 void Player::Social_TellFriendsOnline()
@@ -11848,19 +11831,21 @@ void Player::Social_SendFriendList(uint32 flag)
 			data << uint8( 0 );
 	}
 
-	for( itr2 = m_ignores.begin(); itr2 != m_ignores.end(); ++itr2 )
+	m_socialLock.Release();
+
+	m_cache->AcquireSetLock(CACHE_SOCIAL_IGNORELIST);
+	PlayerCacheSet::iterator ignoreitr = m_cache->Begin64(CACHE_SOCIAL_IGNORELIST);
+	for(; ignoreitr != m_cache->End64(CACHE_SOCIAL_IGNORELIST); ++ignoreitr )
 	{
 		// guid
-		data << uint64( (*itr2) );
-
+		data << uint64( (*ignoreitr) );
 		// ignore flag - 2
 		data << uint32( 2 );
-
 		// no note
 		data << uint8( 0 );
 	}
 
-	m_socialLock.Release();
+	m_cache->ReleaseSetLock(CACHE_SOCIAL_IGNORELIST);
 	m_session->SendPacket(&data);
 }
 

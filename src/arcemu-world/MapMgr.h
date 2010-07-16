@@ -84,7 +84,7 @@ class Transporter;
 
 #define CALL_INSTANCE_SCRIPT_EVENT( Mgr, Func ) if ( Mgr != NULL && Mgr->GetScript() != NULL ) Mgr->GetScript()->Func 
 
-class SERVER_DECL MapMgr : public CellHandler <MapCell>, public EventableObject,public CThread
+class SERVER_DECL MapMgr : public CellHandler <MapCell>, public EventableObject, public CThread
 {
 	friend class MapCell;
 	friend class MapScriptInterface;

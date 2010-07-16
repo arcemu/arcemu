@@ -5675,13 +5675,7 @@ void Spell::HandleCastEffects( uint64 guid, uint32 i )
 			desty = obj->GetPositionY();
 			//todo: this should be destz = obj->GetPositionZ() + (obj->GetModelHighBoundZ() / 2 * obj->GetUInt32Value(OBJECT_FIELD_SCALE_X))
 			if (obj->IsUnit())
-			{
-				DisplayBounding* bounding = DisplayBoundingStorage.LookupEntry(obj->GetUInt32Value(UNIT_FIELD_DISPLAYID));
-				if (bounding != NULL)
-					destz = obj->GetPositionZ() + ((bounding->high[2] / 2) * obj->GetFloatValue(OBJECT_FIELD_SCALE_X));
-				else
-					destz = obj->GetPositionZ();
-			}
+				destz = obj->GetPositionZ() + TO_UNIT(obj)->GetModelHalfSize();
 			else
 				destz = obj->GetPositionZ();
 		}

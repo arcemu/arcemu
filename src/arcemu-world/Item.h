@@ -186,13 +186,13 @@ public:
     /////////////////////////////////////////////////// FLAGS ////////////////////////////////////////////////////////////
 
 	void SoulBind(){ SetFlag( ITEM_FIELD_FLAGS, ITEM_FLAG_SOULBOUND ); }
-	bool IsSoulbound(){ return HasFlag( ITEM_FIELD_FLAGS, ITEM_FLAG_QUEST | ITEM_FLAG_SOULBOUND ); }
+	uint32 IsSoulbound(){ return HasFlag( ITEM_FIELD_FLAGS, ITEM_FLAG_QUEST | ITEM_FLAG_SOULBOUND ); }
 	
     void AccountBind(){ SetFlag( ITEM_FIELD_FLAGS, ITEM_FLAG_ACCOUNTBOUND ); }
-	bool IsAccountbound(){ return HasFlag( ITEM_FIELD_FLAGS, ITEM_FLAG_ACCOUNTBOUND );  }
+	uint32 IsAccountbound(){ return HasFlag( ITEM_FIELD_FLAGS, ITEM_FLAG_ACCOUNTBOUND );  }
    
     void MakeConjured(){ SetFlag( ITEM_FIELD_FLAGS, ITEM_FLAG_CONJURED ); }
-    bool IsConjured(){ return HasFlag( ITEM_FIELD_FLAGS, ITEM_FLAG_CONJURED ); }
+    uint32 IsConjured(){ return HasFlag( ITEM_FIELD_FLAGS, ITEM_FLAG_CONJURED ); }
 
     void Lock(){ RemoveFlag( ITEM_FIELD_FLAGS, ITEM_FLAG_LOOTABLE  ); }
     void UnLock(){ SetFlag( ITEM_FIELD_FLAGS, ITEM_FLAG_LOOTABLE  ); }

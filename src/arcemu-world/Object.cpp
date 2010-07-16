@@ -855,7 +855,7 @@ void Object::AddToWorld()
 	if( IsPlayer() )
 	{
 		Player *plr = static_cast< Player* >( this );
-		if(mapMgr->pInstance != NULL && !plr->bGMTagOn)
+		if(mapMgr->pInstance != NULL && !plr->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_GM))
 		{
 			// Player limit?
 			if(mapMgr->GetMapInfo()->playerlimit && mapMgr->GetPlayerCount() >= mapMgr->GetMapInfo()->playerlimit)
@@ -890,7 +890,6 @@ void Object::AddToWorld()
 
 	// correct incorrect instance id's
 	m_instanceId = m_mapMgr->GetInstanceID();
-
 	mapMgr->AddObject(this);
 }
 
@@ -920,6 +919,12 @@ void Object::PushToWorld(MapMgr*mgr)
 
 	m_mapId=mgr->GetMapId();
 	m_instanceId = mgr->GetInstanceID();
+
+	if (IsPlayer())
+	{
+		TO_PLAYER(this)->m_cache->SetInt32Value(CACHE_MAPID, m_mapId);
+		TO_PLAYER(this)->m_cache->SetInt32Value(CACHE_INSTANCEID, m_instanceId);
+	}
 
 	m_mapMgr = mgr;
 	OnPrePushToWorld();
@@ -984,6 +989,7 @@ void Object::SetUInt32Value( const uint32 index, const uint32 value )
 	//! Group update handling
 	if(m_objectTypeId == TYPEID_PLAYER)
 	{
+		TO_PLAYER(this)->HandleUpdateFieldChanged(index);
 		if(IsInWorld())
 		{
 			Group* pGroup = static_cast< Player* >( this )->GetGroup();
@@ -1229,47 +1235,13 @@ void Object::SetFloatValue( const uint32 index, const float value )
 
 void Object::SetFlag( const uint32 index, uint32 newFlag )
 {
-	Arcemu::Util::ARCEMU_ASSERT(    index < m_valuesCount );
-
-	//no change -> no update
-	if((m_uint32Values[ index ] & newFlag)==newFlag)
-		return;
-
-	m_uint32Values[ index ] |= newFlag;
-
-	if(IsInWorld())
-	{
-		m_updateMask.SetBit( index );
-
-		if(!m_objectUpdated)
-		{
-			m_mapMgr->ObjectUpdated(this);
-			m_objectUpdated = true;
-		}
-	}
+	SetUInt32Value(index, GetUInt32Value(index) | newFlag);
 }
 
 
 void Object::RemoveFlag( const uint32 index, uint32 oldFlag )
 {
-	Arcemu::Util::ARCEMU_ASSERT(    index < m_valuesCount );
-
-	//no change -> no update
-	if((m_uint32Values[ index ] & oldFlag)== 0)
-		return;
-
-	m_uint32Values[ index ] &= ~oldFlag;
-
-	if(IsInWorld())
-	{
-		m_updateMask.SetBit( index );
-
-		if(!m_objectUpdated)
-		{
-			m_mapMgr->ObjectUpdated(this);
-			m_objectUpdated = true;
-		}
-	}
+	SetUInt32Value(index, GetUInt32Value(index) & ~oldFlag);
 }
 
 ////////////////////////////////////////////////////////////

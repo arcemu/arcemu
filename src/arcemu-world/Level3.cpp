@@ -1902,30 +1902,34 @@ bool ChatHandler::HandleCancelShutdownCommand(const char* args, WorldSession* m_
 bool ChatHandler::HandleAllowWhispersCommand(const char* args, WorldSession* m_session)
 {
 	if(args == 0 || strlen(args) < 2) return false;
-	Player * plr = objmgr.GetPlayer(args, false);
-	if(!plr)
+	PlayerCache* playercache = objmgr.GetPlayerCache(args, false);
+	if(playercache == NULL)
 	{
 		RedSystemMessage(m_session, "Player not found.");
 		return true;
 	}
 
-	m_session->GetPlayer()->gmTargets.insert(plr);
-	BlueSystemMessage(m_session, "Now accepting whispers from %s.", plr->GetName());
+	m_session->GetPlayer()->m_cache->Insert64Value(CACHE_GM_TARGETS, playercache->GetUInt32Value(CACHE_PLAYER_LOWGUID));
+	std::string name;
+	playercache->GetStringValue(CACHE_PLAYER_NAME, name);
+	BlueSystemMessage(m_session, "Now accepting whispers from %s.", name.c_str());
 	return true;
 }
 
 bool ChatHandler::HandleBlockWhispersCommand(const char* args, WorldSession* m_session)
 {
 	if(args == 0 || strlen(args) < 2) return false;
-	Player * plr = objmgr.GetPlayer(args, false);
-	if(!plr)
+	PlayerCache* playercache = objmgr.GetPlayerCache(args, false);
+	if(playercache == NULL)
 	{
 		RedSystemMessage(m_session, "Player not found.");
 		return true;
 	}
 
-	m_session->GetPlayer()->gmTargets.erase(plr);
-	BlueSystemMessage(m_session, "Now blocking whispers from %s.", plr->GetName());
+	m_session->GetPlayer()->m_cache->Remove64Vaue(CACHE_GM_TARGETS, playercache->GetUInt32Value(CACHE_PLAYER_LOWGUID));
+	std::string name;
+	playercache->GetStringValue(CACHE_PLAYER_NAME, name);
+	BlueSystemMessage(m_session, "Now blocking whispers from %s.", name.c_str());
 	return true;
 }
 
@@ -3603,10 +3607,10 @@ bool ChatHandler::HandleArenaResetAllRatingsCommand(const char * args, WorldSess
 
 bool ChatHandler::HandleWhisperBlockCommand(const char * args, WorldSession * m_session)
 {
-	if(m_session->GetPlayer()->bGMTagOn)
+	if(m_session->GetPlayer()->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_GM))
 		return false;
 
-	m_session->GetPlayer()->bGMTagOn = true;
+	m_session->GetPlayer()->SetFlag(PLAYER_FLAGS, PLAYER_FLAG_GM);
 	return true;
 }
 

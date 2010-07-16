@@ -20,6 +20,9 @@
 
 #ifndef _PLAYER_H
 #define _PLAYER_H
+
+#include "PlayerCache.h"
+
 struct BGScore;
 #ifdef ENABLE_ACHIEVEMENTS
 class AchievementMgr;
@@ -897,9 +900,16 @@ class SERVER_DECL Player : public Unit
 	friend class SkillIterator;
 
 public:
-
 	Player ( uint32 guid );
 	~Player ( );
+
+	PlayerCache* m_cache;
+
+	void HandleUpdateFieldChanged(uint32 index)
+	{
+		if (index == PLAYER_FLAGS)
+			m_cache->SetUInt32Value(CACHE_PLAYER_FLAGS, GetUInt32Value(PLAYER_FLAGS));
+	}
 
 	void EventGroupFullUpdate();
 
@@ -1007,8 +1017,7 @@ public:
 
 	void Update( uint32 time );
     void BuildFlagUpdateForNonGroupSet(uint32 index, uint32 flag);
-	std::string m_afk_reason;
-	void SetAFKReason(std::string reason) { m_afk_reason = reason; };
+	void SetAFKReason(std::string reason) { m_cache->SetStringValue(CACHE_AFK_DND_REASON, reason); };
 	 const char* GetName() { return m_name.c_str(); }
 	 std::string* GetNameString() { return &m_name; }
 	void Die();
@@ -1755,7 +1764,6 @@ public:
 	}
 
     bool bHasBindDialogOpen;
-	bool bGMTagOn;
 	uint32 TrackingSpell;
 	void _EventCharmAttack();
 	void _Kick();
@@ -1870,7 +1878,6 @@ public:
 	void RemoveSummonSpell(uint32 Entry, uint32 SpellID);
 	set<uint32>* GetSummonSpells(uint32 Entry);
 	LockedQueue<WorldPacket*> delayedPackets;
-	set<Player *> gmTargets;
 	uint32 m_UnderwaterMaxTime;
 	uint32 m_UnderwaterLastDmg;
 	LocationVector getMyCorpseLocation() const { return myCorpseLocation; }

@@ -143,9 +143,11 @@ void WorldSession::HandleQuestGiverQueryQuestOpcode( WorldPacket & recv_data )
 			qst_giver = (Object*)quest_giver;
 		else
 			return;
-		bValid = quest_giver->isQuestGiver();
-		if(bValid)
+		if(quest_giver->isQuestGiver())
+		{
+			bValid = true;
 			status = sQuestMgr.CalcQuestStatus(qst_giver, GetPlayer(), qst, (uint8)quest_giver->GetQuestRelation(qst->id), false);
+		}
 	} 
 	else if(guidtype==HIGHGUID_TYPE_GAMEOBJECT)
 	{
@@ -155,8 +157,11 @@ void WorldSession::HandleQuestGiverQueryQuestOpcode( WorldPacket & recv_data )
 		else
 			return;
 		bValid = quest_giver->isQuestGiver();
-		if(bValid)
+		if(quest_giver->isQuestGiver())
+		{
+			bValid = true;
 			status = sQuestMgr.CalcQuestStatus(qst_giver, GetPlayer(), qst, (uint8)quest_giver->GetQuestRelation(qst->id), false);
+		}
 	} 
 	else if(guidtype==HIGHGUID_TYPE_ITEM)
 	{
@@ -235,10 +240,12 @@ void WorldSession::HandleQuestgiverAcceptQuestOpcode( WorldPacket & recv_data )
 			qst_giver = (Object*)quest_giver;
 		else
 			return;
-		bValid = quest_giver->isQuestGiver();
 		hasquest = quest_giver->HasQuest(quest_id, 1);
-		if(bValid)
+		if(quest_giver->isQuestGiver())
+		{
+			bValid = true;
 			qst = QuestStorage.LookupEntry(quest_id);
+		}
 	} 
 	else if(guidtype==HIGHGUID_TYPE_GAMEOBJECT)
 	{
@@ -487,9 +494,9 @@ void WorldSession::HandleQuestgiverRequestRewardOpcode( WorldPacket & recv_data 
 			qst_giver = (Object*)quest_giver;
 		else
 			return;
-		bValid = quest_giver->isQuestGiver();
-		if(bValid)
+		if(quest_giver->isQuestGiver())
 		{
+			bValid = true;
 			qst = quest_giver->FindQuest(quest_id, QUESTGIVER_QUEST_END);
 			if(!qst)
 				qst = quest_giver->FindQuest(quest_id, QUESTGIVER_QUEST_START);
@@ -573,9 +580,9 @@ void WorldSession::HandleQuestgiverCompleteQuestOpcode( WorldPacket & recvPacket
 			qst_giver = (Object*)quest_giver;
 		else
 			return;
-		bValid = quest_giver->isQuestGiver();
-		if(bValid)
+		if(quest_giver->isQuestGiver())
 		{
+			bValid = true;
 			qst = quest_giver->FindQuest(quest_id, QUESTGIVER_QUEST_END);
 			/*if(!qst) 
 				sQuestMgr.FindQuest(quest_id);*/
@@ -668,9 +675,11 @@ void WorldSession::HandleQuestgiverChooseRewardOpcode(WorldPacket& recvPacket)
 			qst_giver = (Object*)quest_giver;
 		else
 			return;
-		bValid = quest_giver->isQuestGiver();
-		if(bValid)
+		if(quest_giver->isQuestGiver())
+		{
+			bValid = true;
 			qst = QuestStorage.LookupEntry(quest_id);
+		}
 	} 
 	else if(guidtype==HIGHGUID_TYPE_GAMEOBJECT)
 	{

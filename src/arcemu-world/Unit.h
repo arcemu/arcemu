@@ -1539,8 +1539,8 @@ public:
 	void SendPeriodicAuraLog( const WoWGuid& CasterGUID, const WoWGuid& casterGUID, uint32 SpellID, uint32 School, uint32 Amount, uint32 abs_dmg, uint32 resisted_damage, uint32 Flags );
 	void SendPeriodicHealAuraLog( const WoWGuid& CasterGUID, const WoWGuid& TargetGUID, uint32 SpellID, uint32 amt );
 
-	void			EventModelChange();			//model size changes when model changes
-	inline float	GetModelHalfSize() { return ModelHalfSize * GetScale();	}	//used to calculate combat reach and stuff
+	void EventModelChange();
+	ARCEMU_INLINE float GetModelHalfSize() { return m_modelhalfsize * GetScale(); }
 
 	void RemoveFieldSummon();
 
@@ -1795,7 +1795,7 @@ protected:
 
 	bool m_extraAttackCounter;
 
-	float ModelHalfSize; // used to calculate if something is in range of this unit
+	float m_modelhalfsize; // used to calculate if something is in range of this unit
 
 	float m_blockfromspell;
 	float m_dodgefromspell;

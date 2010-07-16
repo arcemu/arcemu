@@ -186,9 +186,6 @@
     <ClCompile Include="..\..\src\arcemu-world\ItemInterface.cpp">
       <Filter>EventableObject\Object\Item</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\arcemu-world\ObjectContainer.cpp">
-      <Filter>EventableObject\Object\ObjectContainer</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\arcemu-world\SpellAuras.cpp">
       <Filter>EventableObject\Aura</Filter>
     </ClCompile>
@@ -577,9 +574,6 @@
     <ClInclude Include="..\..\src\arcemu-world\ItemPrototype.h">
       <Filter>EventableObject\Object\Item</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\arcemu-world\ObjectContainer.h">
-      <Filter>EventableObject\Object\ObjectContainer</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\arcemu-world\SpellAuras.h">
       <Filter>EventableObject\Aura</Filter>
     </ClInclude>
@@ -754,6 +748,7 @@
       <Filter>Spells</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\arcemu-world\EquipmentSetMgr.h" />
+    <ClInclude Include="..\..\src\arcemu-world\PlayerCache.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\src\arcemu-world\resources.rc" />

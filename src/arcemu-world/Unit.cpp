@@ -383,7 +383,7 @@ Unit::Unit()
 	trigger_on_chill_chance_victim = 100;
 	m_soulSiphon.amt = 0;
 	m_soulSiphon.max = 0;
-	ModelHalfSize = 1.0f; //worst case unit size. (Should be overwritten)
+	m_modelhalfsize = 1.0f; //worst case unit size. (Should be overwritten)
 
 	m_blockfromspell		= 0;
 	m_dodgefromspell		= 0;
@@ -7359,22 +7359,13 @@ void Unit::EventUpdateFlag()
 
 void Unit::EventModelChange()
 {
-	UnitModelSizeEntry  *newmodelhalfsize = NULL;
+	DisplayBounding* entry = DisplayBoundingStorage.LookupEntry(GetUInt32Value(UNIT_FIELD_DISPLAYID));
 
-	//mounts are bigger then normal size
-	if( GetMount() )
-		newmodelhalfsize = UnitModelSizeStorage.LookupEntry( GetMount() );
-	if( newmodelhalfsize == NULL )
-		newmodelhalfsize = UnitModelSizeStorage.LookupEntry( GetDisplayId() );
-
-	if( newmodelhalfsize )
-	{
-		ModelHalfSize = newmodelhalfsize->HalfSize;
-//		if( IsCreature() && static_cast<Creature*>(this)->GetProto() )
-//			ModelHalfSize *=  static_cast<Creature*>(this)->GetProto()->BoundingRadius;
-	}
+	//TODO: if has mount, grab mount model and add the z value of attachment 0
+	if( entry )
+		m_modelhalfsize = entry->high[2] / 2;
 	else
-		ModelHalfSize = 1.0f; //baaad, but it happens :(
+		m_modelhalfsize = 1.0f;
 }
 
 void Unit::RemoveFieldSummon()

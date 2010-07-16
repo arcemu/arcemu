@@ -140,11 +140,10 @@ bool ChatHandler::HandleGMOnCommand(const char* args, WorldSession *m_session)
 	GreenSystemMessage(m_session, "Setting GM Flag on yourself.");
 
 	Player * _player = m_session->GetPlayer();
-	if(_player->bGMTagOn)
+	if(_player->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_GM))
 		RedSystemMessage(m_session, "GM Flag is already set on. Use .gm off to disable it.");
 	else
 	{
-		_player->bGMTagOn = true;
 		_player->SetFlag(PLAYER_FLAGS, PLAYER_FLAG_GM);	// <GM>
 
 		_player->SetFaction( 35 );
@@ -165,11 +164,10 @@ bool ChatHandler::HandleGMOffCommand(const char* args, WorldSession *m_session)
 	GreenSystemMessage(m_session, "Unsetting GM Flag on yourself...");
 
 	Player * _player = m_session->GetPlayer();
-	if(!_player->bGMTagOn)
+	if(!_player->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_GM))
 		RedSystemMessage(m_session, "GM Flag not set. Use .gm on to enable it.");
 	else
 	{
-		_player->bGMTagOn = false;
 		_player->RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_GM);	// <GM>
 
 		_player->SetFaction( _player->GetInitialFactionId() );

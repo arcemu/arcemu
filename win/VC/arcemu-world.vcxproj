@@ -423,6 +423,7 @@
     <ClInclude Include="..\..\src\arcemu-world\ChannelMgr.h" />
     <ClInclude Include="..\..\src\arcemu-world\Chat.h" />
     <ClInclude Include="..\..\src\arcemu-world\EquipmentSetMgr.h" />
+    <ClInclude Include="..\..\src\arcemu-world\PlayerCache.h" />
     <ClInclude Include="..\..\src\arcemu-world\SpellProc.h" />
     <ClInclude Include="..\..\src\arcemu-world\WordFilter.h" />
     <ClInclude Include="..\..\src\arcemu-world\AIInterface.h" />
