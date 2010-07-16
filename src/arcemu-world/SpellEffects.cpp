@@ -3520,7 +3520,7 @@ void Spell::SpellEffectTriggerMissile(uint32 i) // Trigger Missile
 
 		if(sqrt(r)> spellRadius) continue;
 
-		if(!isAttackable(m_caster, static_cast<Unit*>(*itr)))//Fix Me: only enemy targets?
+		if(!isAttackable(m_caster, *itr))//Fix Me: only enemy targets?
 			continue;
 
 		Spell * sp = new Spell(m_caster,spInfo,true,NULL);

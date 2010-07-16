@@ -881,7 +881,7 @@ void AIInterface::_UpdateTargets()
 {
 	if( m_Unit->IsPlayer() || (m_AIType != AITYPE_PET && disable_targeting ))
 		return;
-	if( ( ( Creature* )m_Unit )->GetCreatureInfo()->Type == UNIT_TYPE_CRITTER )
+	if( TO_CREATURE(m_Unit)->GetCreatureInfo()->Type == UNIT_TYPE_CRITTER )
 		return;
 
 	if(  m_Unit->GetMapMgr() == NULL )
@@ -2001,7 +2001,7 @@ bool AIInterface::FindFriends(float dist)
 				for(it = m_aiTargets.begin(); it != m_aiTargets.end(); ++it)
 				{
 					Unit *ai_t = m_Unit->GetMapMgr()->GetUnit( it->first );
-					if( ai_t && pUnit->GetAIInterface() && isHostile((Object*)ai_t,(Object*)pUnit) )
+					if( ai_t && pUnit->GetAIInterface() && isHostile(ai_t, pUnit) )
 						pUnit->GetAIInterface()->AttackReaction( ai_t, 1, 0 );
 				}
 

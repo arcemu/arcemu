@@ -804,7 +804,7 @@ Aura::Aura( SpellEntry* proto, int32 duration, Object* caster, Unit* target, boo
 		if( m_spellProto->BGR_one_buff_from_caster_on_self != 0 )
 			static_cast<Unit*>(caster)->RemoveAllAuraFromSelfType2( m_spellProto->BGR_one_buff_from_caster_on_self, m_spellProto->NameHash );
 
-		if( isAttackable( ( Unit* )caster, target ) )
+		if( isAttackable( caster, target ) )
 		{
 			SetNegative();
 		}
@@ -2615,7 +2615,7 @@ void Aura::SpellAuraDummy(bool apply)
 				
 				if( m_target->GetTypeId() == TYPEID_UNIT )
 				{
-					Creature *tamed = ( Creature* ) m_target;
+					Creature *tamed = TO_CREATURE(m_target);
 					tamed->GetAIInterface()->HandleEvent( EVENT_LEAVECOMBAT, p_caster, 0 );
 					
 					Pet *pPet = objmgr.CreatePet( tamed->GetEntry() );
@@ -7305,7 +7305,7 @@ void Aura::SpellAuraModIncreaseHealthPerc( bool apply )
 		if( m_target->GetUInt32Value( UNIT_FIELD_HEALTH ) > m_target->GetUInt32Value( UNIT_FIELD_MAXHEALTH ) )
 			m_target->SetHealth(m_target->GetUInt32Value( UNIT_FIELD_MAXHEALTH ) );
 		if( p_target != NULL )
-			p_target->SetHealthFromSpell( ( ( Player* )m_target )->GetHealthFromSpell() - mod->fixed_amount[mod->i] );
+			p_target->SetHealthFromSpell( TO_PLAYER(m_target)->GetHealthFromSpell() - mod->fixed_amount[mod->i] );
 //		else if( m_target->IsPet() )
 //			static_cast< Pet* >( m_target )->SetHealthFromSpell( ( ( Pet* )m_target )->GetHealthFromSpell() - mod->fixed_amount[mod->i] );
 	}

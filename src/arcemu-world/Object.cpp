@@ -2099,11 +2099,11 @@ void Object::Activate(MapMgr * mgr)
 	switch ( m_objectTypeId )
 	{
 	case TYPEID_UNIT:
-		mgr->activeCreatures.insert( ( Creature* )this );
+		mgr->activeCreatures.insert( TO_CREATURE(this) );
 		break;
 
 	case TYPEID_GAMEOBJECT:
-		mgr->activeGameObjects.insert( ( GameObject* )this );
+		mgr->activeGameObjects.insert( TO_GAMEOBJECT(this) );
 		break;
 	}
 	// Objects are active so set to true.
