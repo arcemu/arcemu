@@ -2412,29 +2412,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, bo
 		if( spellId==22858 && isInBack(victim) ) //retatliation needs target to be not in front. Can be cast by creatures too
 			continue;
 
-		SpellCastTargets targets;
-		if( spell_proc->mProcFlags & PROC_TARGET_SELF )
-			targets.m_unitTarget = GetGUID();
-		else
-			targets.m_unitTarget = victim->GetGUID();
-
-		SpellEntry *spellInfo = dbcSpell.LookupEntry(spellId );
-		Spell *spell = new Spell(this, spellInfo ,true, NULL);
-		spell->forced_basepoints[0] = dmg_overwrite[0];
-		spell->forced_basepoints[1] = dmg_overwrite[1];
-		spell->forced_basepoints[2] = dmg_overwrite[2];
-		spell->ProcedOnSpell = CastingSpell;
-		//Spell *spell = new Spell(this,spellInfo,false,0,true,false);
-		if( spellId == 974 || spellId == 32593 || spellId == 32594 || spellId == 49283 || spellId == 49284 ) // Earth Shield handler
-		{
-			spell->pSpellId=spellId;
-			spell->SpellEffectDummy(0);
-			delete spell;
-			spell = NULL;
-			continue;
-		}
-		spell->pSpellId=origId;
-		spell->prepare(&targets);
+		spell_proc->CastSpell(victim, CastingSpell, dmg_overwrite);
 
 		if (origId == 39805)
 		{

@@ -98,6 +98,9 @@ public:
 	// Return true allow proc, false otherwise
 	virtual bool CanProcOnTriggered(Unit *victim, SpellEntry *CastingSpell);
 
+	// Cast proc spell
+	virtual void CastSpell(Unit *victim, SpellEntry *CastingSpell, int *dmg_overwrite);
+
 	// Spell to proc
 	SpellEntry* mSpell;
 

@@ -38,6 +38,34 @@ bool SpellProc::CanProcOnTriggered(Unit *victim, SpellEntry *CastingSpell)
 	return false;
 }
 
+void SpellProc::CastSpell(Unit *victim, SpellEntry *CastingSpell, int *dmg_overwrite)
+{
+	SpellCastTargets targets;
+	if( mProcFlags & PROC_TARGET_SELF )
+		targets.m_unitTarget = mTarget->GetGUID();
+	else
+		targets.m_unitTarget = victim->GetGUID();
+
+	Spell *spell = new Spell(mTarget, mSpell, true, NULL);
+	spell->forced_basepoints[0] = dmg_overwrite[0];
+	spell->forced_basepoints[1] = dmg_overwrite[1];
+	spell->forced_basepoints[2] = dmg_overwrite[2];
+	spell->ProcedOnSpell = CastingSpell;
+
+	if( mSpell->Id == 974 || mSpell->Id == 32593 || mSpell->Id == 32594 || mSpell->Id == 49283 || mSpell->Id == 49284 ) // Earth Shield handler
+	{
+		spell->pSpellId = mSpell->Id;
+		spell->SpellEffectDummy(0);
+		delete spell;
+		return;
+	}
+
+	if( mOrigSpell != NULL )
+		spell->pSpellId = mOrigSpell->Id;
+
+	spell->prepare(&targets);
+}
+
 SpellProc* SpellProcMgr::NewSpellProc(Unit *target, uint32 spell_id, uint32 orig_spell_id, uint64 caster, uint32 procChance, uint32 procFlags, uint32 procCharges, uint32 *groupRelation, uint32 *procClassMask, Object *obj)
 {
 	return NewSpellProc(target, dbcSpell.LookupEntryForced(spell_id), dbcSpell.LookupEntryForced(orig_spell_id), caster, procChance, procFlags, procCharges, groupRelation, procClassMask, obj);

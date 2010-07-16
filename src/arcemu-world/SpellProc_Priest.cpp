@@ -165,6 +165,39 @@ private:
 	int32 mDispelDmg;
 };
 
+class EmpoweredRenewSpellProc : public SpellProc
+{
+	SPELL_PROC_FACTORY_FUNCTION(EmpoweredRenewSpellProc);
+
+	bool DoEffect(Unit *victim, SpellEntry *CastingSpell, uint32 flag, uint32 dmg, uint32 abs, int *dmg_overwrite, uint32 weapon_damage_type)
+	{
+		// Get heal amt for 1 tick
+		dmg = CastingSpell->EffectBasePoints[0] +1;
+
+		// Get total ticks
+		int ticks = GetDuration(dbcSpellDuration.LookupEntry(CastingSpell->DurationIndex)) / CastingSpell->EffectAmplitude[0];
+
+		// Total periodic effect is a single tick amount multiplied by number of ticks
+		dmg_overwrite[0] = dmg * ticks * (mOrigSpell->EffectBasePoints[0] +1) / 100;
+
+		return false;
+	}
+
+	void CastSpell(Unit *victim, SpellEntry *CastingSpell, int *dmg_overwrite)
+	{
+		SpellCastTargets targets;
+		targets.m_unitTarget = victim->GetGUID();
+
+		Spell *spell = new Spell(mTarget, mSpell, true, NULL);
+		spell->forced_basepoints[0] = dmg_overwrite[0];
+		spell->forced_basepoints[1] = dmg_overwrite[1];
+		spell->forced_basepoints[2] = dmg_overwrite[2];
+		spell->ProcedOnSpell = CastingSpell;
+
+		spell->prepare(&targets);
+	}
+};
+
 void SpellProcMgr::SetupPriest()
 {
 	AddByNameHash( SPELL_HASH_IMPROVED_SPIRIT_TAP, &ImprovedSpiritTapSpellProc::Create );
@@ -172,6 +205,7 @@ void SpellProcMgr::SetupPriest()
 	AddByNameHash( SPELL_HASH_DIVINE_AEGIS, &DivineAegisSpellProc::Create );
 	AddByNameHash( SPELL_HASH_IMPROVED_DEVOURING_PLAGUE, &ImprovedDevouringPlagueSpellProc::Create );
 	AddByNameHash( SPELL_HASH_VAMPIRIC_EMBRACE, &VampiricEmbraceSpellProc::Create );
+	AddByNameHash( SPELL_HASH_EMPOWERED_RENEW, &EmpoweredRenewSpellProc::Create );
 
 	AddById( 34919, &VampiricTouchEnergizeSpellProc::Create );
 	AddById( 64085, &VampiricTouchDispelDamageSpellProc::Create );
