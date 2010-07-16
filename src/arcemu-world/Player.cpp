@@ -11800,7 +11800,7 @@ void Player::Social_SendFriendList(uint32 flag)
 	m_socialLock.Acquire();
 
 	data << flag;
-	data << uint32( m_friends.size() + m_ignores.size() );
+	data << uint32( m_friends.size() + m_cache->GetSet64Size(CACHE_SOCIAL_IGNORELIST) );
 	for( itr = m_friends.begin(); itr != m_friends.end(); ++itr )
 	{
 		// guid

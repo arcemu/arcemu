@@ -8,7 +8,6 @@ enum FourByteFields
 	CACHE_PLAYER_LOWGUID,
 	CACHE_PLAYER_FLAGS,
 	CACHE_PLAYER_INITIALTEAM,
-	CACHE_GM_TAG_ON,
 	NUM_FOURBYTE_CACHE_FIELDS
 };
 
@@ -90,6 +89,7 @@ public:
 	void Insert64Value(uint32 field, uint64 value) { m_set64lock.Acquire(); m_set64fields[field].insert(value); m_set64lock.Release(); }
 	void Remove64Vaue(uint32 field, uint64 value) { m_set64lock.Acquire(); m_set64fields[field].erase(value); m_set64lock.Release(); }
 	size_t Count64Value(uint32 field, uint64 value) { m_set64lock.Acquire(); size_t ret = m_set64fields[field].count(value); m_set64lock.Release(); return ret; }
+	size_t GetSet64Size(uint32 field) { m_set64lock.Acquire(); size_t ret = m_set64fields[field].size(); m_set64lock.Release(); return ret; }
 	//Set64 locks
 	//These functions request the field you're going to use, so we can turn them into an array of mutexes if needed. Scalability testing needs done first :P
 	void AcquireSetLock(uint32 field) { m_set64lock.Acquire(); }

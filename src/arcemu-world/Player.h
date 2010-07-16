@@ -2377,7 +2377,6 @@ private:
 	/* we may have multiple threads on this(chat) - burlex */
 	Mutex m_socialLock;
 	map<uint32, char*> m_friends;
-	set<uint32> m_ignores;
 	set<uint32> m_hasFriendList;
 
 	void Social_SendFriendList(uint32 flag);
