@@ -310,10 +310,10 @@ public:
 
 	void  RemoveFlag( const uint32 index, uint32 oldFlag );
 
-	bool HasFlag( const uint32 index, uint32 flag ) const
+	uint32 HasFlag( const uint32 index, uint32 flag ) const
 	{
 		Arcemu::Util::ARCEMU_ASSERT(    index < m_valuesCount );
-		return (m_uint32Values[ index ] & flag) != 0;
+		return m_uint32Values[ index ] & flag;
 	}
 
 	////////////////////////////////////////
