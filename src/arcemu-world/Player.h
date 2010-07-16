@@ -1489,6 +1489,7 @@ public:
 	float GetParryChance();
 	void UpdateChances();
 	void UpdateStats();
+	uint32 GetBlockDamageReduction();
 
 	bool canCast(SpellEntry *m_spellInfo);
 	 float GetSpellCritFromSpell() { return m_spellcritfromspell; }

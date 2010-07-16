@@ -1620,170 +1620,176 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 //==========================================================================================
 //==============================Unacceptable Cases Processing===============================
 //==========================================================================================
-	if(!pVictim || !pVictim->isAlive())
+	if( pVictim == NULL || !pVictim->isAlive() )
 		return;
 
 	SpellEntry *spellInfo = dbcSpell.LookupEntryForced( spellID );
-	if(!spellInfo)
+	if( spellInfo == NULL )
         return;
 
-	if (this->IsPlayer() && !static_cast< Player* >( this )->canCast(spellInfo))
+	if( this->IsPlayer() && ! TO_PLAYER(this)->canCast(spellInfo) )
 		return;
 //==========================================================================================
 //==============================Variables Initialization====================================
 //==========================================================================================
-	uint32 school = spellInfo->School;
 	float res = float(damage);
+	bool critical = false;
+
 	uint32 aproc = PROC_ON_ANY_HOSTILE_ACTION; /*| PROC_ON_SPELL_HIT;*/
 	uint32 vproc = PROC_ON_ANY_HOSTILE_ACTION | PROC_ON_ANY_DAMAGE_VICTIM; /*| PROC_ON_SPELL_HIT_VICTIM;*/
 
 	//A school damage is not necessarily magic
 	switch( spellInfo->Spell_Dmg_Type )
 	{
-	case SPELL_DMG_TYPE_RANGED:	{
-			aproc |= PROC_ON_RANGED_ATTACK;
-			vproc |= PROC_ON_RANGED_ATTACK_VICTIM;
-		}break;
+		case SPELL_DMG_TYPE_RANGED:	{
+				aproc |= PROC_ON_RANGED_ATTACK;
+				vproc |= PROC_ON_RANGED_ATTACK_VICTIM;
+			}break;
 
-	case SPELL_DMG_TYPE_MELEE:{
-			aproc |= PROC_ON_MELEE_ATTACK;
-			vproc |= PROC_ON_MELEE_ATTACK_VICTIM;
-		}break;
+		case SPELL_DMG_TYPE_MELEE:{
+				aproc |= PROC_ON_MELEE_ATTACK;
+				vproc |= PROC_ON_MELEE_ATTACK_VICTIM;
+			}break;
 
-	case SPELL_DMG_TYPE_MAGIC:{
-			aproc |= PROC_ON_SPELL_HIT;
-			vproc |= PROC_ON_SPELL_HIT_VICTIM;
-		}break;
+		case SPELL_DMG_TYPE_MAGIC:{
+				aproc |= PROC_ON_SPELL_HIT;
+				vproc |= PROC_ON_SPELL_HIT_VICTIM;
+			}break;
 	}
 
-	bool critical = false;
 //==========================================================================================
 //==============================+Spell Damage Bonus Calculations============================
 //==========================================================================================
 //------------------------------by stats----------------------------------------------------
 	if( IsUnit() && !static_damage )
 	{
-		Unit* caster = static_cast< Unit* >( this );
+		Unit* caster = TO_UNIT(this);
+
 		caster->RemoveAurasByInterruptFlag( AURA_INTERRUPT_ON_START_ATTACK );
 
-		int32 spelldmgbonus = caster->GetSpellDmgBonus( pVictim, spellInfo, ( int )res, false );
+		res += caster->GetSpellDmgBonus( pVictim, spellInfo, ( int )res, false );
 
-		res += spelldmgbonus;
-
+		if( res < 0 )
+			res = 0;
+	}
 //==========================================================================================
 //==============================Post +SpellDamage Bonus Modifications=======================
 //==========================================================================================
-		if( res < 0 )
-			res = 0;
-		else if( !( spellInfo->AttributesExB & ATTRIBUTESEXB_CANT_CRIT ) )
+	if( res > 0 && IsUnit() && !( spellInfo->AttributesExB & ATTRIBUTESEXB_CANT_CRIT ) )
+	{
+		Unit* caster = TO_UNIT(this);
+
+		//------------------------------critical strike chance--------------------------------------
+		float CritChance = 0.0f;
+		uint32 resilience_type = 0;
+		
+		if( spellInfo->is_ranged_spell )
 		{
-//------------------------------critical strike chance--------------------------------------
-			// lol ranged spells were using spell crit chance
-			float CritChance= 0.0f;
-			if( spellInfo->is_ranged_spell )
+			if( IsPlayer() )
 			{
-
-				if( IsPlayer() )
-				{
-					CritChance = GetFloatValue( PLAYER_RANGED_CRIT_PERCENTAGE );
-					if( pVictim->IsPlayer() )
-						CritChance += static_cast< Player* >(pVictim)->res_R_crit_get();
-
-					CritChance += (float)(pVictim->AttackerCritChanceMod[spellInfo->School]);
-				}
-				else
-				{
-					CritChance = 5.0f; // static value for mobs.. not blizzlike, but an unfinished formula is not fatal :)
-				}
+				CritChance = GetFloatValue( PLAYER_RANGED_CRIT_PERCENTAGE );
 				if( pVictim->IsPlayer() )
-					CritChance -= static_cast< Player* >(pVictim)->CalcRating( PLAYER_RATING_MODIFIER_RANGED_CRIT_RESILIENCE );
-			}
-			else if( spellInfo->is_melee_spell )
-			{
-				// Same shit with the melee spells, such as Judgement/Seal of Command
-				if( IsPlayer() )
-				{
-					CritChance = GetFloatValue(PLAYER_CRIT_PERCENTAGE);
-				}
-				if( pVictim->IsPlayer() )
-				{
-					CritChance += static_cast< Player* >(pVictim)->res_R_crit_get(); //this could be ability but in that case we overwrite the value
-				}
-				// Resilience
-				CritChance -= pVictim->IsPlayer() ? static_cast< Player* >(pVictim)->CalcRating( PLAYER_RATING_MODIFIER_MELEE_CRIT_RESILIENCE ) : 0.0f;
-				// Victim's (!) crit chance mod for physical attacks?
-				CritChance += (float)(pVictim->AttackerCritChanceMod[0]);
+					CritChance += TO_PLAYER(pVictim)->res_R_crit_get();
 
+				CritChance += (float)(pVictim->AttackerCritChanceMod[spellInfo->School]);
 			}
 			else
+				CritChance = 5.0f; // static value for mobs.. not blizzlike, but an unfinished formula is not fatal :)
+
+			if( pVictim->IsPlayer() )
+				resilience_type = PLAYER_RATING_MODIFIER_RANGED_CRIT_RESILIENCE;
+		}
+		else if( spellInfo->is_melee_spell )
+		{
+			// Same shit with the melee spells, such as Judgement/Seal of Command
+			if( IsPlayer() )
+				CritChance = GetFloatValue( PLAYER_CRIT_PERCENTAGE );
+
+			if( pVictim->IsPlayer() )
 			{
-				CritChance = caster->spellcritperc + caster->SpellCritChanceSchool[school] + pVictim->AttackerCritChanceMod[school];
-				if( caster->IsPlayer() && ( pVictim->m_rooted - pVictim->m_stunned ) )
-					CritChance += static_cast< Player* >( caster )->m_RootedCritChanceBonus;
-
-				if( spellInfo->SpellGroupType )
-				{
-					SM_FFValue(caster->SM_CriticalChance, &CritChance, spellInfo->SpellGroupType);
-				}
-
-				if( pVictim->IsPlayer() )
-				CritChance -= static_cast< Player* >(pVictim)->CalcRating( PLAYER_RATING_MODIFIER_SPELL_CRIT_RESILIENCE );
+				CritChance += TO_PLAYER(pVictim)->res_R_crit_get(); //this could be ability but in that case we overwrite the value
+				resilience_type = PLAYER_RATING_MODIFIER_MELEE_CRIT_RESILIENCE;
 			}
-			if( CritChance < 0 ) CritChance = 0;
-			if( CritChance > 95 ) CritChance = 95;
-			critical = Rand(CritChance);
-			//sLog.outString( "SpellNonMeleeDamageLog: Crit Chance %f%%, WasCrit = %s" , CritChance , critical ? "Yes" : "No" );
 
-			Aura *fs = NULL;
-			if(spellInfo->NameHash == SPELL_HASH_LAVA_BURST && (fs = pVictim->FindAuraByNameHash(SPELL_HASH_FLAME_SHOCK)) != NULL)
-			{
-				critical = true;
-				if( !caster->HasAura(55447) )	// Glyph of Flame Shock
-						fs->Remove();
-			}
+			// Victim's (!) crit chance mod for physical attacks?
+			CritChance += (float)(pVictim->AttackerCritChanceMod[0]);
+		}
+		else
+		{
+			CritChance = caster->spellcritperc + caster->SpellCritChanceSchool[spellInfo->School] + pVictim->AttackerCritChanceMod[spellInfo->School];
+
+			if( caster->IsPlayer() && ( pVictim->m_rooted - pVictim->m_stunned ) )
+				CritChance += TO_PLAYER(caster)->m_RootedCritChanceBonus;
+
+			if( spellInfo->SpellGroupType )
+				SM_FFValue(caster->SM_CriticalChance, &CritChance, spellInfo->SpellGroupType);
+
+			if( pVictim->IsPlayer() )
+				resilience_type = PLAYER_RATING_MODIFIER_SPELL_CRIT_RESILIENCE;
+		}
+
+		if( resilience_type )
+			CritChance -= TO_PLAYER(pVictim)->CalcRating( resilience_type );
+
+		if( CritChance < 0 )
+			CritChance = 0;
+		else if( CritChance > 95 )
+			CritChance = 95;
+
+		critical = Rand(CritChance);
+		//sLog.outString( "SpellNonMeleeDamageLog: Crit Chance %f%%, WasCrit = %s" , CritChance , critical ? "Yes" : "No" );
+		
+		// HACK!!!
+		Aura *fs = NULL;
+		if( spellInfo->NameHash == SPELL_HASH_LAVA_BURST && (fs = pVictim->FindAuraByNameHash(SPELL_HASH_FLAME_SHOCK)) != NULL )
+		{
+			critical = true;
+			if( !caster->HasAura(55447) )	// Glyph of Flame Shock
+				fs->Remove();
+		}
 
 //==========================================================================================
 //==============================Spell Critical Hit==========================================
 //==========================================================================================
-			if (critical)
+		if( critical )
+		{
+			int32 critical_bonus = 100;
+			if( spellInfo->SpellGroupType )
+				SM_FIValue( caster->SM_PCriticalDamage, &critical_bonus, spellInfo->SpellGroupType );
+
+			if( critical_bonus > 0 )
 			{
-				int32 critical_bonus = 100;
-				if( spellInfo->SpellGroupType )
-					SM_FIValue( caster->SM_PCriticalDamage, &critical_bonus, spellInfo->SpellGroupType );
+				// the bonuses are halved by 50% (funky blizzard math :S)
+				float b;
+				if( spellInfo->School == 0 || spellInfo->is_melee_spell || spellInfo->is_ranged_spell )		// physical || hackfix SoCommand/JoCommand
+					b = ( critical_bonus / 100.0f ) + 1.0f;
+				else
+					b = ( ( critical_bonus / 2.0f ) / 100.0f ) + 1.0f;
 
-				if( critical_bonus > 0 )
-				{
-					// the bonuses are halved by 50% (funky blizzard math :S)
-					float b;
-					if( spellInfo->School == 0 || spellInfo->is_melee_spell || spellInfo->is_ranged_spell )		// physical || hackfix SoCommand/JoCommand
-						b = ( critical_bonus / 100.0f ) + 1.0f;
-					else
-						b = ( ( critical_bonus / 2.0f ) / 100.0f ) + 1.0f;
+				res *= b;
+			}
 
-					res *= b;
-				}
+			if( pVictim->IsPlayer() )
+			{
+				//res = res*(1.0f-2.0f*static_cast< Player* >(pVictim)->CalcRating(PLAYER_RATING_MODIFIER_MELEE_CRIT_RESISTANCE));
+				//Resilience is a special new rating which was created to reduce the effects of critical hits against your character.
+				//It has two components; it reduces the chance you will be critically hit by x%,
+				//and it reduces the damage dealt to you by critical hits by 2x%. x is the percentage resilience granted by a given resilience rating.
+				//It is believed that resilience also functions against spell crits,
+				//though it's worth noting that NPC mobs cannot get critical hits with spells.
+				float dmg_reduction_pct = 2 * TO_PLAYER(pVictim)->CalcRating( PLAYER_RATING_MODIFIER_MELEE_CRIT_RESILIENCE ) / 100.0f;
+				if( dmg_reduction_pct > 1.0f )
+					dmg_reduction_pct = 1.0f; //we cannot resist more then he is criticalling us, there is no point of the critical then :P
+				res = res - res * dmg_reduction_pct;
+			}
 
-				if( pVictim->IsPlayer() )
-				{
-					//res = res*(1.0f-2.0f*static_cast< Player* >(pVictim)->CalcRating(PLAYER_RATING_MODIFIER_MELEE_CRIT_RESISTANCE));
-					//Resilience is a special new rating which was created to reduce the effects of critical hits against your character.
-					//It has two components; it reduces the chance you will be critically hit by x%,
-					//and it reduces the damage dealt to you by critical hits by 2x%. x is the percentage resilience granted by a given resilience rating.
-					//It is believed that resilience also functions against spell crits,
-					//though it's worth noting that NPC mobs cannot get critical hits with spells.
-					float dmg_reduction_pct = 2 * static_cast< Player* >(pVictim)->CalcRating( PLAYER_RATING_MODIFIER_MELEE_CRIT_RESILIENCE ) / 100.0f;
-					if( dmg_reduction_pct > 1.0f )
-						dmg_reduction_pct = 1.0f; //we cannot resist more then he is criticalling us, there is no point of the critical then :P
-					res = res - res * dmg_reduction_pct;
-				}
+			if( pVictim->GetTypeId() == TYPEID_UNIT && TO_CREATURE(pVictim)->GetCreatureInfo()->Rank != ELITE_WORLDBOSS )
+				pVictim->Emote( EMOTE_ONESHOT_WOUNDCRITICAL );
+			/*aproc |= PROC_ON_SPELL_CRIT_HIT;
+			vproc |= PROC_ON_SPELL_CRIT_HIT_VICTIM;*/
 
-				if (pVictim->GetTypeId() == TYPEID_UNIT && static_cast<Creature*>(pVictim)->GetCreatureInfo()->Rank != ELITE_WORLDBOSS)
-					pVictim->Emote( EMOTE_ONESHOT_WOUNDCRITICAL );
-				/*aproc |= PROC_ON_SPELL_CRIT_HIT;
-				vproc |= PROC_ON_SPELL_CRIT_HIT_VICTIM;*/
-
-				switch( spellInfo->Spell_Dmg_Type )
-				{
+			switch( spellInfo->Spell_Dmg_Type )
+			{
 				case SPELL_DMG_TYPE_RANGED:	{
 						aproc |= PROC_ON_RANGED_CRIT_ATTACK;
 						vproc |= PROC_ON_RANGED_CRIT_ATTACK_VICTIM;
@@ -1798,17 +1804,17 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 						aproc |= PROC_ON_SPELL_CRIT_HIT;
 						vproc |= PROC_ON_SPELL_CRIT_HIT_VICTIM;
 					}break;
-				}
 			}
 		}
 	}
-//==========================================================================================
+
+	//==========================================================================================
 //==============================Post Roll Calculations======================================
 //==========================================================================================
 
 //------------------------------absorption--------------------------------------------------
 	uint32 ress=(uint32)res;
-	uint32 abs_dmg = pVictim->AbsorbDamage(school, &ress);
+	uint32 abs_dmg = pVictim->AbsorbDamage(spellInfo->School, &ress);
 	uint32 ms_abs_dmg= pVictim->ManaShieldAbsorb(ress);
 	if (ms_abs_dmg)
 	{
@@ -1856,7 +1862,7 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 
 	res=(float)ress;
 	dealdamage dmg;
-	dmg.school_type = school;
+	dmg.school_type = spellInfo->School;
 	dmg.full_damage = ress;
 	dmg.resisted_damage = 0;
 
@@ -1882,13 +1888,13 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 	// Paladin: Blessing of Sacrifice, and Warlock: Soul Link
 	if( pVictim->m_damageSplitTarget)
 	{
-		res = (float)pVictim->DoDamageSplitTarget((uint32)res, school, false);
+		res = (float)pVictim->DoDamageSplitTarget((uint32)res, spellInfo->School, false);
 	}
 
 //==========================================================================================
 //==============================Data Sending ProcHandling===================================
 //==========================================================================================
-	SendSpellNonMeleeDamageLog(this, pVictim, spellID, float2int32(res), static_cast<uint8>( school ), abs_dmg, dmg.resisted_damage, false, 0, critical, IsPlayer());
+	SendSpellNonMeleeDamageLog(this, pVictim, spellID, float2int32(res), static_cast<uint8>( spellInfo->School ), abs_dmg, dmg.resisted_damage, false, 0, critical, IsPlayer());
 	DealDamage( pVictim, float2int32( res ), 2, 0, spellID );
 
 	if( IsUnit() )
@@ -1902,14 +1908,14 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 	}
 	if( this->IsPlayer() )
 	{
-			static_cast< Player* >( this )->m_casted_amount[school] = ( uint32 )res;
+			static_cast< Player* >( this )->m_casted_amount[spellInfo->School] = ( uint32 )res;
 	}
 
 	if( !(dmg.full_damage == 0 && abs_dmg) )
 	{
 		//Only pushback the victim current spell if it's not fully absorbed
 		if( pVictim->GetCurrentSpell() )
-			pVictim->GetCurrentSpell()->AddTime( school );
+			pVictim->GetCurrentSpell()->AddTime( spellInfo->School );
 	}
 
 //==========================================================================================
@@ -1935,7 +1941,7 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 		if( IsPlayer() )
 			static_cast< Player* >(this)->CombatStatusHandler_ResetPvPTimeout();
 	}
-	if( school == SHADOW_DAMAGE )
+	if( spellInfo->School == SHADOW_DAMAGE )
 	{
 		if( pVictim->isAlive() && this->IsUnit() )
 		{
@@ -1943,9 +1949,9 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 			if( spellID == 32379 || spellID == 32996 || spellID == 48157 || spellID == 48158 ) 
 			{
 				uint32 damage2 = uint32( res + abs_dmg );
-				uint32 absorbed = static_cast< Unit* >( this )->AbsorbDamage( school, &damage2 );
+				uint32 absorbed = static_cast< Unit* >( this )->AbsorbDamage( spellInfo->School, &damage2 );
 				DealDamage( static_cast< Unit* >( this ), damage2, 2, 0, spellID );
-				SendSpellNonMeleeDamageLog( this, this, spellID, damage2, static_cast<uint8>( school ), absorbed, 0, false, 0, false, IsPlayer() );
+				SendSpellNonMeleeDamageLog( this, this, spellID, damage2, static_cast<uint8>( spellInfo->School ), absorbed, 0, false, 0, false, IsPlayer() );
 			}
 		}
 	}

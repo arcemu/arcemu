@@ -13467,6 +13467,18 @@ void Player::Phase( uint8 command, uint32 newphase ){
 		p->Phase( command, newphase );
 	}
 		//We should phase other, non-combat "pets" too...
-
-
 }
+
+// TODO: Use this method all over source code
+uint32 Player::GetBlockDamageReduction()
+{
+	Item* it = this->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_OFFHAND);
+	if( it == NULL || it->GetProto()->InventoryType != INVTYPE_SHIELD )
+		return 0;
+
+	float block_multiplier = ( 100.0f + this->m_modblockabsorbvalue ) / 100.0f;
+	if( block_multiplier < 1.0f )
+		block_multiplier = 1.0f;
+
+	return float2int32( (it->GetProto()->Block + this->m_modblockvaluefromspells + this->GetUInt32Value( PLAYER_RATING_MODIFIER_BLOCK ) + this->GetStat(STAT_STRENGTH) / 2.0f - 1.0f) * block_multiplier );
+ }

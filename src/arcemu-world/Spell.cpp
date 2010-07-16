@@ -4460,25 +4460,6 @@ exit:
 			value += float2int32( (GetProto()->EffectBasePoints[0]+1)+avgWeaponDmg );
 		}
 	}
-	else if( GetProto()->NameHash == SPELL_HASH_DAMAGE_SHIELD) // Damage Shield
-	{
-		if (p_caster != NULL)
-		{
-			Item *it = p_caster->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_OFFHAND);
-			if(it && it->GetProto()->InventoryType == INVTYPE_SHIELD)
-			{
-				float block_multiplier = ( 100.0f + p_caster->m_modblockabsorbvalue ) / 100.0f;
-				if(block_multiplier < 1.0f)
-					block_multiplier = 1.0f;
-				int32 blockable_damage = float2int32( ( it->GetProto()->Block + ( p_caster->m_modblockvaluefromspells + p_caster->GetUInt32Value( PLAYER_RATING_MODIFIER_BLOCK ) ) + ( ( p_caster->GetStat(STAT_STRENGTH) / 2.0f ) - 1.0f ) ) * block_multiplier);
-				value = (blockable_damage / (GetProto()->EffectBasePoints[0]+1));
-			}
-		}
-		else if( u_caster != NULL && !p_caster )
-		{
-			value = GetProto()->EffectBasePoints[0]+1;
-		}
-	}
 	else if( GetProto()->NameHash == SPELL_HASH_EVISCERATE ) //Eviscerate
 	{
 		if (p_caster != NULL) {

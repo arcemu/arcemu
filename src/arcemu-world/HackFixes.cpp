@@ -1851,28 +1851,6 @@ void ApplyNormalFixes()
 		if(sp != NULL)
 			sp->procFlags = PROC_ON_DODGE_VICTIM | PROC_ON_BLOCK_VICTIM;
 
-		// Damage Shield Rank 1
-		sp = dbcSpell.LookupEntryForced( 58872 );
-		if(sp != NULL)
-		{
-			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 59652;
-			sp->procChance = 100;
-			sp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM | PROC_ON_BLOCK_VICTIM;
-		}
-
-		// Damage Shield Rank 2
-		sp = dbcSpell.LookupEntryForced( 58874 );
-		if(sp != NULL)
-		{
-			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 59653;
-			sp->procChance = 100;
-			sp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM | PROC_ON_BLOCK_VICTIM;
-		}
-
 		// Improved Revenge Rank 1
 		sp = dbcSpell.LookupEntryForced( 12797 );
 		if(sp != NULL)
