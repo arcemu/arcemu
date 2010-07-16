@@ -209,12 +209,4 @@ void SpellProcMgr::SetupPriest()
 
 	AddById( 34919, &VampiricTouchEnergizeSpellProc::Create );
 	AddById( 64085, &VampiricTouchDispelDamageSpellProc::Create );
-
-	// Adjustments for Vampiric Embrace heal spell
-	SpellEntry* sp = dbcSpell.LookupEntryForced(15290);
-	if( sp != NULL )
-	{
-		sp->EffectBasePoints[0] = 2;
-		sp->EffectBasePoints[1] = 14;
-	}
 }

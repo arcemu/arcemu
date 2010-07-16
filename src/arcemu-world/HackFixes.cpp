@@ -3182,6 +3182,14 @@ void ApplyNormalFixes()
 			sp->procFlags = PROC_ON_GAIN_EXPIERIENCE;
 		}
 
+		// Vampiric Embrace heal spell
+		sp = dbcSpell.LookupEntryForced( 15290 );
+		if( sp != NULL )
+		{
+			sp->EffectBasePoints[0] = 2;
+			sp->EffectBasePoints[1] = 14;
+		}
+
 		/**********************************************************
 		 *	Holy Nova
 		 **********************************************************/
