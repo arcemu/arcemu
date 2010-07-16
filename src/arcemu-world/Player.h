@@ -1334,7 +1334,7 @@ public:
 	{ 
 		for(std::list<Pet*>::iterator itr = m_Summons.begin(); itr != m_Summons.end(); ++itr)
 		{
-			if( *itr == pet )
+			if( (*itr)->GetGUID() == pet->GetGUID() )
 			{
 				m_Summons.erase(itr);
 				break;

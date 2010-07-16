@@ -876,6 +876,17 @@ void Pet::RemoveFromWorld(bool free_guid)
 	Unit::RemoveFromWorld(free_guid);
 }
 
+void Pet::OnRemoveFromWorld()
+{
+	std::list<Pet*> ownerSummons = m_Owner->GetSummons();
+	std::list<Pet*>::iterator itr;
+	for(itr = ownerSummons.begin(); itr != ownerSummons.end(); ++itr)
+	{
+		//m_Owner MUST NOT have a reference to us anymore
+		Arcemu::Util::ARCEMU_ASSERT( (*itr)->GetGUID() != GetGUID() );
+	}
+}
+
 void Pet::Despawn(uint32 delay, uint32 respawntime)
 {
 	bool delayed = ( delay != 0 );

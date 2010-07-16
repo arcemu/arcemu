@@ -148,6 +148,8 @@ public:
 	virtual void OnPushToWorld() { }
 	virtual void OnPrePushToWorld() { }
 	virtual void RemoveFromWorld(bool free_guid);
+	//called AFTER removing the Object from world.
+	virtual void OnRemoveFromWorld() { }
 
 	//! Guid always comes first
 	const uint64& GetGUID() const{ return GetUInt64Value( OBJECT_FIELD_GUID ); }

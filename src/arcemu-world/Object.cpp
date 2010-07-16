@@ -958,6 +958,8 @@ void Object::RemoveFromWorld(bool free_guid)
 	//shouldnt need to clear, spell destructor will erase
 	//m_pendingSpells.clear();
 
+	OnRemoveFromWorld();
+
 	m_instanceId = 0;
 	// update our event holder
 	event_Relocate();
