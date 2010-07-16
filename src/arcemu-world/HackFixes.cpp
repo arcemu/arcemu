@@ -3190,6 +3190,44 @@ void ApplyNormalFixes()
 			sp->EffectBasePoints[1] = 14;
 		}
 
+		// Improved Mind Blast
+		sp = dbcSpell.LookupEntryForced( 15273 ); //rank 1
+		if( sp != NULL )
+		{
+			sp->procChance = 20;
+			sp->Effect[1] = SPELL_EFFECT_APPLY_AURA;
+			sp->EffectApplyAuraName[1] = SPELL_AURA_DUMMY;
+		}
+		sp = dbcSpell.LookupEntryForced( 15312 ); //rank 2
+		if( sp != NULL )
+		{
+			sp->procChance = 40;
+			sp->Effect[1] = SPELL_EFFECT_APPLY_AURA;
+			sp->EffectApplyAuraName[1] = SPELL_AURA_DUMMY;
+		}
+		sp = dbcSpell.LookupEntryForced( 15313 ); //rank 3
+		if( sp != NULL )
+		{
+			sp->procChance = 60;
+			sp->Effect[1] = SPELL_EFFECT_APPLY_AURA;
+			sp->EffectApplyAuraName[1] = SPELL_AURA_DUMMY;
+		}
+		sp = dbcSpell.LookupEntryForced( 15314 ); //rank 4
+		if( sp != NULL )
+		{
+			sp->procChance = 80;
+			sp->Effect[1] = SPELL_EFFECT_APPLY_AURA;
+			sp->EffectApplyAuraName[1] = SPELL_AURA_DUMMY;
+		}
+		sp = dbcSpell.LookupEntryForced( 15316 ); //rank 5
+		if( sp != NULL )
+		{
+			sp->procChance = 100;
+			sp->Effect[1] = SPELL_EFFECT_APPLY_AURA;
+			sp->EffectApplyAuraName[1] = SPELL_AURA_DUMMY;
+		}
+
+
 		/**********************************************************
 		 *	Holy Nova
 		 **********************************************************/

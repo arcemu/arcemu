@@ -198,6 +198,20 @@ class EmpoweredRenewSpellProc : public SpellProc
 	}
 };
 
+class ImprovedMindBlastSpellProc : public SpellProc
+{
+	SPELL_PROC_FACTORY_FUNCTION(ImprovedMindBlastSpellProc);
+
+	bool DoEffect(Unit *victim, SpellEntry *CastingSpell, uint32 flag, uint32 dmg, uint32 abs, int *dmg_overwrite, uint32 weapon_damage_type)
+	{
+		// If spell is not Mind Blast (by SpellGroupType) or player is not on shadowform, don't proc
+		if( ! (CastingSpell->SpellGroupType[0] & mProcClassMask[0] && mTarget->IsPlayer() && TO_PLAYER(mTarget)->GetShapeShift() == FORM_SHADOW) )
+			return true;
+
+		return false;
+	}
+};
+
 void SpellProcMgr::SetupPriest()
 {
 	AddByNameHash( SPELL_HASH_IMPROVED_SPIRIT_TAP, &ImprovedSpiritTapSpellProc::Create );
@@ -209,4 +223,5 @@ void SpellProcMgr::SetupPriest()
 
 	AddById( 34919, &VampiricTouchEnergizeSpellProc::Create );
 	AddById( 64085, &VampiricTouchDispelDamageSpellProc::Create );
+	AddById( 48301, &ImprovedMindBlastSpellProc::Create );
 }
