@@ -457,7 +457,6 @@ public:
 	
 	Item * CreateItem(uint32 entry,Player * owner);
 	Item * LoadItem(uint64 guid);
-	Item * LoadExternalItem(uint64 guid);
   
 	// Groups
 	Group * GetGroupByLeader(Player *pPlayer);
