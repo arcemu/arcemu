@@ -1773,9 +1773,9 @@ public:
     void SendChannelUpdate(uint32 time);
     void SendChannelStart(uint32 duration);
     void SendResurrectRequest(Player* target);
-    void SendHealSpellOnPlayer(Object* caster, Object* target, uint32 dmg,bool critical, uint32 overheal, uint32 spellid);
-	void SendHealManaSpellOnPlayer(Object * caster, Object * target, uint32 dmg, uint32 powertype);
 	void SendTameFailure( uint8 failure );
+	static void SendHealSpellOnPlayer(Object* caster, Object* target, uint32 healed, bool critical, uint32 overhealed, uint32 spellid, uint32 absorbed = 0);
+	static void SendHealManaSpellOnPlayer(Object * caster, Object * target, uint32 dmg, uint32 powertype, uint32 spellid);
 
 
     void HandleAddAura(uint64 guid);

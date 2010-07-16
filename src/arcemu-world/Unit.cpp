@@ -6864,14 +6864,7 @@ void Unit::Heal(Unit *target, uint32 SpellId, uint32 amount)
 		else
 			target->SetHealth( ch);
 
-		WorldPacket data(SMSG_SPELLHEALLOG, 29);
-		data << target->GetNewGUID();
-		data << this->GetNewGUID();
-		data << uint32(SpellId);
-		data << uint32(amount);							// amt healed
-		data << uint32(overheal);						// Amount Overhealed
-		data << uint8(0);								// critical message
-		this->SendMessageToSet(&data, true);
+		Spell::SendHealSpellOnPlayer(this, target, amount, false, overheal, SpellId);
 
 		target->RemoveAurasByHeal();
 	}
@@ -6891,13 +6884,7 @@ void Unit::Energize( Unit* target, uint32 SpellId, uint32 amount, uint32 type )
 
 	target->SetPower( POWER_TYPE_MANA + type, cur + amount );
 
-	WorldPacket datamr( SMSG_SPELLENERGIZELOG, 30 );
-	datamr << target->GetNewGUID();
-	datamr << GetNewGUID();
-	datamr << SpellId;
-	datamr << type;
-	datamr << amount;
-	SendMessageToSet( &datamr, true );
+	Spell::SendHealManaSpellOnPlayer( this, target, amount, type, SpellId);
 }
 
 void Unit::InheritSMMods(Unit *inherit_from)

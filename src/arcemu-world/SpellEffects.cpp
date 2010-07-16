@@ -1426,7 +1426,7 @@ out:
 				playerTarget->SetPower( POWER_TYPE_MANA,playerTarget->GetMaxPower( POWER_TYPE_MANA ));
 			else
 				playerTarget->SetPower( POWER_TYPE_MANA, playerTarget->GetPower( POWER_TYPE_MANA ) + damage);
-			SendHealManaSpellOnPlayer(p_caster, playerTarget, damage, POWER_TYPE_MANA);
+			SendHealManaSpellOnPlayer( p_caster, playerTarget, damage, POWER_TYPE_MANA, GetProto()->Id );
 		}break;
 	case 28730: //Arcane Torrent (Mana)
 		{
@@ -4882,10 +4882,8 @@ void Spell::SpellEffectHealMaxHealth(uint32 i)   // Heal Max Health
 		return;
 	}
 
-	if( unitTarget->GetTypeId() == TYPEID_PLAYER)
-	{
-		SendHealSpellOnPlayer( static_cast< Player* >( m_caster ), static_cast< Player* >( unitTarget ), dif, false, 0, m_spellInfo->Id );
-	}
+	SendHealSpellOnPlayer( m_caster, unitTarget, dif, false, 0, pSpellId ? pSpellId : GetProto()->Id );
+
 	unitTarget->ModHealth(dif);
 }
 
@@ -7344,7 +7342,7 @@ void Spell::SpellEffectRestoreHealthPct(uint32 i)
 	} else
 		unitTarget->ModHealth(modHealth);
 
-	SendHealSpellOnPlayer( m_caster, unitTarget, modHealth, false, overheal, pSpellId ? pSpellId : m_spellInfo->Id  );
+	SendHealSpellOnPlayer( m_caster, unitTarget, modHealth, false, overheal, pSpellId ? pSpellId : GetProto()->Id  );
 }
 
 void Spell::SpellEffectLearnSpec(uint32 i)

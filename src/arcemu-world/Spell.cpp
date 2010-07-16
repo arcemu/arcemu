@@ -4838,31 +4838,33 @@ void Spell::CreateItem( uint32 itemId )
 	}
 }
 
-void Spell::SendHealSpellOnPlayer(Object* caster, Object* target, uint32 dmg, bool critical, uint32 overheal, uint32 spellid)
+void Spell::SendHealSpellOnPlayer(Object* caster, Object* target, uint32 healed, bool critical, uint32 overhealed, uint32 spellid, uint32 absorbed)
 {
-	if(!caster || !target || !target->IsPlayer())
+	if( caster == NULL || target == NULL || !target->IsPlayer() )
 		return;
-	WorldPacket data(SMSG_SPELLHEALLOG, 29);
+
+	WorldPacket data(SMSG_SPELLHEALLOG, 33);
 	data << target->GetNewGUID();
 	data << caster->GetNewGUID();
-	data << uint32(spellid);
-	data << uint32(dmg);							// amt healed
-	data << uint32(overheal);						// Amount Overhealed
-	data << uint8(critical);						// critical message
+	data << spellid;
+	data << healed;
+	data << overhealed;
+	data << absorbed;
+	data << uint8(critical);
 
 	caster->SendMessageToSet(&data, true);
 }
 
-void Spell::SendHealManaSpellOnPlayer(Object * caster, Object * target, uint32 dmg, uint32 powertype)
+void Spell::SendHealManaSpellOnPlayer(Object * caster, Object * target, uint32 dmg, uint32 powertype, uint32 spellid)
 {
-	if(!caster || !target || !target->IsPlayer())
+	if( caster == NULL || target == NULL || !target->IsPlayer() )
 		return;
 
 	WorldPacket data(SMSG_SPELLENERGIZELOG, 30);
 
 	data << target->GetNewGUID();
 	data << caster->GetNewGUID();
-	data << (pSpellId ? pSpellId : m_spellInfo->Id);
+	data << spellid;
 	data << powertype;
 	data << dmg;
 
@@ -5035,12 +5037,10 @@ void Spell::Heal( int32 amount, bool ForceCrit )
 	else
 		unitTarget->ModHealth(amount );
 
+	SendHealSpellOnPlayer( m_caster, unitTarget, amount, critical, overheal, pSpellId ? pSpellId : GetProto()->Id );
+
 	if( p_caster != NULL )
 	{
-		if( playerTarget != NULL )
-		{
-			SendHealSpellOnPlayer( p_caster, playerTarget, amount, critical, overheal, pSpellId ? pSpellId : m_spellInfo->Id );
-		}
 		p_caster->m_bgScore.HealingDone += amount;
 		if( p_caster->m_bg != NULL )
 			p_caster->m_bg->UpdatePvPData();
