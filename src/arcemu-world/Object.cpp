@@ -2208,8 +2208,12 @@ void Object::SetZoneId(uint32 newZone)
 {
 	m_zoneId = newZone;
 
-	if( m_objectTypeId == TYPEID_PLAYER && static_cast< Player* >( this )->GetGroup() )
-		static_cast< Player* >( this )->GetGroup()->HandlePartialChange( PARTY_UPDATE_FLAG_ZONEID, static_cast< Player* >( this ) );
+	if (IsPlayer())
+	{
+		TO_PLAYER(this)->m_cache->SetUInt32Value(CACHE_PLAYER_ZONEID, newZone);
+		if (TO_PLAYER(this)->GetGroup() != NULL)
+			TO_PLAYER(this)->GetGroup()->HandlePartialChange(PARTY_UPDATE_FLAG_ZONEID, TO_PLAYER(this));
+	}
 }
 
 void Object::PlaySoundToSet(uint32 sound_entry)

@@ -684,6 +684,7 @@ struct PlayerInfo
 	GuildRank * guildRank;
 	GuildMember * guildMember;
 };
+
 struct PlayerPet
 {
 	string name;
@@ -2374,11 +2375,6 @@ public:
 	/* SOCIAL                                                               */
 	/************************************************************************/
 private:
-	/* we may have multiple threads on this(chat) - burlex */
-	Mutex m_socialLock;
-	map<uint32, char*> m_friends;
-	set<uint32> m_hasFriendList;
-
 	void Social_SendFriendList(uint32 flag);
 
 	void Social_AddFriend(const char * name, const char * note);

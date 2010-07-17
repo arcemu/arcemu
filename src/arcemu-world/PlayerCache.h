@@ -8,6 +8,7 @@ enum FourByteFields
 	CACHE_PLAYER_LOWGUID,
 	CACHE_PLAYER_FLAGS,
 	CACHE_PLAYER_INITIALTEAM,
+	CACHE_PLAYER_ZONEID,
 	NUM_FOURBYTE_CACHE_FIELDS
 };
 
@@ -18,12 +19,13 @@ enum StringFields
 	NUM_STRING_CACHE_FIELDS,
 };
 
-enum Set64Fields
+enum Map64Fields
 {
 	CACHE_SOCIAL_FRIENDLIST,
+	CACHE_SOCIAL_HASFRIENDLIST,
 	CACHE_SOCIAL_IGNORELIST,
 	CACHE_GM_TARGETS,
-	NUM_SET64_CACHE_FIELDS
+	NUM_MAP64_CACHE_FIELDS
 };
 
 union CacheField
@@ -33,7 +35,7 @@ union CacheField
 	int32 i;
 };
 
-typedef std::set<uint64> PlayerCacheSet;
+typedef std::map<uint64, void*> PlayerCacheMap;
 
 class Player;
 class PlayerCache
@@ -58,6 +60,14 @@ public:
 			delete pending_packets;
 			pending_packets = m_pendingPackets.pop();
 		}
+
+		//Remove friend notes
+		PlayerCacheMap::iterator itr = Begin64(CACHE_SOCIAL_FRIENDLIST);
+		for (; itr != End64(CACHE_SOCIAL_FRIENDLIST); ++itr)
+		{
+			if (itr->second != NULL)
+				free(itr->second);
+		}
 	}
 
 	//String cache
@@ -68,8 +78,8 @@ public:
 	CacheField m_fields[NUM_FOURBYTE_CACHE_FIELDS];
 
 	//Set uint64 cache (valid gm talk targets, ignore lists, friend lists)
-	FastMutex m_set64lock; //Protects dick
-	PlayerCacheSet m_set64fields[NUM_SET64_CACHE_FIELDS];
+	FastMutex m_set64lock; 
+	PlayerCacheMap m_map64fields[NUM_MAP64_CACHE_FIELDS];
 
 	FQueue<WorldPacket*> m_pendingPackets; //used for sending packets to another context
 
@@ -85,18 +95,20 @@ public:
 	float GetFloatValue(uint32 field) { return m_fields[field].f; }
 	uint32 HasFlag(uint32 field, uint32 flag) { return m_fields[field].u & flag; }
 
-	//Set64
-	void Insert64Value(uint32 field, uint64 value) { m_set64lock.Acquire(); m_set64fields[field].insert(value); m_set64lock.Release(); }
-	void Remove64Vaue(uint32 field, uint64 value) { m_set64lock.Acquire(); m_set64fields[field].erase(value); m_set64lock.Release(); }
-	size_t Count64Value(uint32 field, uint64 value) { m_set64lock.Acquire(); size_t ret = m_set64fields[field].count(value); m_set64lock.Release(); return ret; }
-	size_t GetSet64Size(uint32 field) { m_set64lock.Acquire(); size_t ret = m_set64fields[field].size(); m_set64lock.Release(); return ret; }
-	//Set64 locks
+	//64bit guid lists
+	void InsertValue64(uint32 field, uint64 value, void* extra = NULL) { m_set64lock.Acquire(); m_map64fields[field].insert(std::make_pair(value, extra)); m_set64lock.Release(); }
+	void RemoveValue64(uint32 field, uint64 value) { m_set64lock.Acquire(); m_map64fields[field].erase(value); m_set64lock.Release(); }
+	size_t CountValue64(uint32 field, uint64 value) { m_set64lock.Acquire(); size_t ret = m_map64fields[field].count(value); m_set64lock.Release(); return ret; }
+	size_t GetSize64(uint32 field) { m_set64lock.Acquire(); size_t ret = m_map64fields[field].size(); m_set64lock.Release(); return ret; }
+	//64bit guid lists
 	//These functions request the field you're going to use, so we can turn them into an array of mutexes if needed. Scalability testing needs done first :P
-	void AcquireSetLock(uint32 field) { m_set64lock.Acquire(); }
-	void ReleaseSetLock(uint32 field) { m_set64lock.Release(); }
+	void AcquireLock64(uint32 field) { m_set64lock.Acquire(); }
+	void ReleaseLock64(uint32 field) { m_set64lock.Release(); }
 	//Set64 iterators, you must have the lock before using these!
-	PlayerCacheSet::iterator Begin64(uint32 field) { return m_set64fields[field].begin(); }
-	PlayerCacheSet::iterator End64(uint32 field) { return m_set64fields[field].end(); }
+	PlayerCacheMap::iterator Begin64(uint32 field) { return m_map64fields[field].begin(); }
+	PlayerCacheMap::iterator End64(uint32 field) { return m_map64fields[field].end(); }
+	PlayerCacheMap::iterator Find64(uint32 field, uint64 value) { return m_map64fields[field].find(value); }
+
 
 	//Queues a packet to send to the player. The packet must be created using the new operator, and SendPacket takes ownership of the packet.
 	void SendPacket(WorldPacket* p)
