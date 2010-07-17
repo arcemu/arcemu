@@ -3048,6 +3048,12 @@ bool ChatHandler::HandleLookupSpellCommand(const char * args, WorldSession * m_s
 			recout += "|h[";
 			recout += spell->Name;
 			recout += "]|h|r";
+
+			std::string::size_type pos = recout.find('%');
+			if( pos != std::string::npos ){
+				recout.insert( pos + 1, "%");
+			}
+
 			SendMultilineMessage(m_session, recout.c_str());
 
 			++count;
