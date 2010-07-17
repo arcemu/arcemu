@@ -776,6 +776,9 @@ void Pet::InitializeMe( bool first )
 	}
 
     PushToWorld( m_Owner->GetMapMgr() );
+	//we MUST be sure Pet was pushed to world.
+	Arcemu::Util::ARCEMU_ASSERT( IsInWorld() );
+
 	InitializeSpells();
 	
 	if( first )
