@@ -2103,7 +2103,7 @@ void Player::SpawnPet( uint32 pet_number )
 }
 void Player::SpawnActivePet()
 {
-	if( GetSummon() != NULL || !isAlive() ) //TODO: only hunters for now
+	if( GetSummon() != NULL || !isAlive() || !IsInWorld() ) //TODO: only hunters for now
 		return;
 
 	std::map< uint32, PlayerPet* >::iterator itr = m_Pets.begin();
