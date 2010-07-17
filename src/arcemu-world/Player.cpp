@@ -7195,6 +7195,10 @@ void Player::_Relocate(uint32 mapid, const LocationVector & v, bool sendpending,
         m_session->SendPacket(&data);
 	}
 
+	//Dismount before teleport and before being removed from world,
+	//otherwise we may spawn the active pet while not being in world.
+	Dismount();
+
 	if(m_mapId != mapid || force_new_world)
 	{
 		uint32 status = sInstanceMgr.PreTeleport(mapid, this, instance_id);
@@ -7240,8 +7244,6 @@ void Player::_Relocate(uint32 mapid, const LocationVector & v, bool sendpending,
 	SpeedCheatReset();
 
 	z_axisposition = 0.0f;
-	//Dismount before teleport
-	Dismount();
 }
 
 
@@ -8552,11 +8554,6 @@ bool Player::SafeTeleport(uint32 MapID, uint32 InstanceID, const LocationVector 
 	else if(m_mapId != MapID)
 	{
 		instance = true;
-	}
-
-	if (sWorld.Collision == 0) {
-		// if we are mounted remove it
-		Dismount();
 	}
 
 	// make sure player does not drown when teleporting from under water
