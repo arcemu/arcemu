@@ -288,7 +288,7 @@ void Player::SendNewDrunkState(uint32 state, uint32 itemid){
 
     WorldPacket data( SMSG_CROSSED_INEBRIATION_THRESHOLD, (8+4+4) );
 
-	data << GetNewGUID();
+	data << GetGUID();
 	data << uint32( state );
 	data << uint32( itemid );
 
