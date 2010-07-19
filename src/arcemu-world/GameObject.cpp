@@ -345,16 +345,6 @@ void GameObject::InitAI()
 		pInfo->sound9 == 1)
 		return;
 
-	if(pInfo->DisplayID == 1027)//Shaman Shrine
-	{
-		if(pInfo->ID != 177964 && pInfo->ID != 153556)
-		{
-			//Deactivate
-			//SetUInt32Value(GAMEOBJECT_DYNAMIC, 0);
-		}
-	}
-
-
 	uint32 spellid = 0;
 	if(pInfo->Type==GAMEOBJECT_TYPE_TRAP)
 	{	
