@@ -3100,6 +3100,19 @@ void Spell::SpellEffectSummon(uint32 i)
 				summon->AddSpell( dbcSpell.LookupEntry(33395), true );
 			}
 		}break;
+	case 37994:	// Water Elemental - no duration timer
+		{
+			Pet *summon = objmgr.CreatePet(GetProto()->EffectMiscValue[i]);
+			if( ! summon->CreateAsSummon( GetProto()->EffectMiscValue[i], ci, NULL, p_caster, GetProto(), 1, -1 ) )
+			{
+				summon->DeleteMe();//CreateAsSummon() returns false if an error occurred.
+				summon = NULL;
+			}
+			else
+			{
+				summon->AddSpell( dbcSpell.LookupEntry(31707), true );
+			}
+		}break;
 	case 29264: // Feral Spirit
 		{
 			/*

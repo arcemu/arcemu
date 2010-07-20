@@ -20,15 +20,16 @@
 
 #include "StdAfx.h"
 
-#define WATER_ELEMENTAL	510
-#define PET_IMP			416
-#define PET_VOIDWALKER	1860
-#define PET_SUCCUBUS	1863
-#define PET_FELHUNTER	417
-#define PET_FELGUARD	17252
-#define SHADOWFIEND		19668
-#define SPIRITWOLF		29264
-#define DANCINGRUNEWEAPON 27893
+#define WATER_ELEMENTAL		510
+#define WATER_ELEMENTAL_NEW 37994
+#define PET_IMP				416
+#define PET_VOIDWALKER		1860
+#define PET_SUCCUBUS		1863
+#define PET_FELHUNTER		417
+#define PET_FELGUARD		17252
+#define SHADOWFIEND			19668
+#define SPIRITWOLF			29264
+#define DANCINGRUNEWEAPON	27893
 
 uint32 Pet::GetAutoCastTypeForSpell( SpellEntry * ent )
 {
@@ -100,6 +101,7 @@ void Pet::SetNameForEntry( uint32 entry )
 	switch( entry )
 	{
 		case WATER_ELEMENTAL:
+		case WATER_ELEMENTAL_NEW:
 			m_name = "Water Elemental";
 			break;
 		case SHADOWFIEND:
@@ -376,7 +378,7 @@ void Pet::SendSpellsToOwner()
 	if( m_Owner == NULL )
 		return;
 
-	uint16 packetsize = ( GetEntry() != WATER_ELEMENTAL && GetEntry() != SPIRITWOLF ) ? ( ( uint16 )mSpells.size() * 4 + 59 ) : 62;
+	uint16 packetsize = ( GetEntry() != WATER_ELEMENTAL && GetEntry() != WATER_ELEMENTAL_NEW && GetEntry() != SPIRITWOLF ) ? ( ( uint16 )mSpells.size() * 4 + 59 ) : 62;
 	WorldPacket * data = new WorldPacket( SMSG_PET_SPELLS, packetsize );
 	*data << GetGUID();
 	*data << uint16( myFamily != NULL ? myFamily->ID : 0 );	// pet family to determine talent tree
@@ -400,7 +402,7 @@ void Pet::SendSpellsToOwner()
 	}
 
 	// we don't send spells for the water elemental so it doesn't show up in the spellbook
-	if( GetEntry() != WATER_ELEMENTAL && GetEntry() != SPIRITWOLF )
+	if( GetEntry() != WATER_ELEMENTAL && GetEntry() != WATER_ELEMENTAL_NEW && GetEntry() != SPIRITWOLF )
 	{
 		// Send the rest of the spells.
 		*data << uint8( mSpells.size() );
@@ -739,7 +741,7 @@ void Pet::InitializeMe( bool first )
 	if( Summon ) // Summons - always
 	{
 		// Adds parent +frost spell damage
-		if( GetEntry() == WATER_ELEMENTAL )
+		if( GetEntry() == WATER_ELEMENTAL || GetEntry() == WATER_ELEMENTAL_NEW )
 		{
 			float parentfrost = (float)m_Owner->GetDamageDoneMod(SCHOOL_FROST);
 			parentfrost *= 0.40f;
@@ -1369,6 +1371,7 @@ void Pet::ApplySummonLevelAbilities()
 		stat_index = 6;
 		break;*/
 	case WATER_ELEMENTAL:
+	case WATER_ELEMENTAL_NEW:
 		stat_index = 5;
 		m_aiInterface->disable_melee = true;
 		break;
