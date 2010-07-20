@@ -83,69 +83,6 @@ struct AVNodeTemplate
 	uint32 m_defaultState;							// State of the node when battleground is spawned
 };
 
-class AlteracValley;
-class AVNode
-{
-
-	AlteracValley &m_bg;
-	AVNodeTemplate *m_template;
-
-	// boss, changes ownership upon death?
-	Creature *m_boss;
-
-	// guards, need to be respawned when changes ownership
-	vector<Creature*> m_guards;
-
-	// peon locations, used in mines (todo)
-	vector<Creature*> m_peonLocations;
-
-	// control point (capturable)
-	GameObject *m_flag;
-
-	// aura (light-shiny stuff)
-	GameObject *m_aura;
-	GameObject *m_glow;
-
-	// home NPc
-	Creature *m_homeNPC;
-
-	// destroyed flag (prevent all actions)
-	bool m_destroyed;
-
-	// state
-	uint32 m_state;
-	uint32 m_lastState;
-	uint32 m_nodeId;
-
-	// spirit guides
-	Creature *m_spiritGuide;
-
-public:
-	friend class AlteracValley;
-
-	// constructor
-	AVNode(AlteracValley &parent, AVNodeTemplate *tmpl, uint32 node_id);
-	~AVNode();
-
-    // initial spawn
-	void Spawn();
-
-	// assault
-	void Assault(Player *plr);
-
-	// capture event
-	void Capture();
-
-	// spawn guards
-	void SpawnGuards(uint32 x);
-
-	// state change
-	void ChangeState(uint32 new_state);
-
-	// spawn home buff guard
-	void SpawnHomeGuard();
-};
-
 // GENERAL AV DEFINES
 #define AV_NUM_REINFORCEMENTS				600		// Amount of reinforcements we start off with
 #define AV_SCORE_WARNING					530		// Dunno what this should be ;p
@@ -205,7 +142,6 @@ protected:
 	list<GameObject*> m_gates;
 	uint32 m_reinforcements[2];
 	bool m_nearingVictory[2];
-	AVNode *m_nodes[AV_NUM_CONTROL_POINTS];
 	ARCEMU_INLINE map<Creature*, set<uint32> > Get_m_resurrectMap() { return CBattleground::m_resurrectMap; }
 public:
 	AlteracValley(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t);
@@ -250,5 +186,68 @@ public:
 
 	void HookOnFlagDrop(Player *plr);
 	void HookOnShadowSight();
+
+	class AVNode
+	{
+		AlteracValley* m_bg;
+		AVNodeTemplate *m_template;
+
+		// boss, changes ownership upon death?
+		Creature *m_boss;
+
+		// guards, need to be respawned when changes ownership
+		vector<Creature*> m_guards;
+
+		// peon locations, used in mines (todo)
+		vector<Creature*> m_peonLocations;
+
+		// control point (capturable)
+		GameObject *m_flag;
+
+		// aura (light-shiny stuff)
+		GameObject *m_aura;
+		GameObject *m_glow;
+
+		// home NPc
+		Creature *m_homeNPC;
+
+		// destroyed flag (prevent all actions)
+		bool m_destroyed;
+
+		// state
+		uint32 m_state;
+		uint32 m_lastState;
+		uint32 m_nodeId;
+
+		// spirit guides
+		Creature *m_spiritGuide;
+
+	public:
+		friend class AlteracValley;
+
+		// constructor
+		AVNode(AlteracValley *parent, AVNodeTemplate *tmpl, uint32 node_id);
+		~AVNode();
+
+		// initial spawn
+		void Spawn();
+
+		// assault
+		void Assault(Player *plr);
+
+		// capture event
+		void Capture();
+
+		// spawn guards
+		void SpawnGuards(uint32 x);
+
+		// state change
+		void ChangeState(uint32 new_state);
+
+		// spawn home buff guard
+		void SpawnHomeGuard();
+	};
+	protected:
+		AVNode *m_nodes[AV_NUM_CONTROL_POINTS];
 };
 
