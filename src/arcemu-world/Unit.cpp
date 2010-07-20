@@ -4894,11 +4894,23 @@ bool Unit::SetAurDuration(uint32 spellId,uint32 duration)
 }
 
 
+Aura* Unit::FindAuraByNameHash(uint32 namehash, uint64 guid)
+{
+	Aura *aura;
+	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
+	{
+		aura = m_auras[x];
+		if( aura != NULL && aura->GetSpellProto()->NameHash == namehash && aura->m_casterGuid == guid )
+			return aura;
+	}
+	return NULL;
+}
+
 Aura* Unit::FindAuraByNameHash(uint32 namehash)
 {
 	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
 		if( m_auras[x] && m_auras[x]->GetSpellProto()->NameHash==namehash )
-				return m_auras[x];
+			return m_auras[x];
 	return NULL;
 }
 

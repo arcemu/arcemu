@@ -1025,6 +1025,7 @@ public:
 	// Temporary remove all auras
 	   // Find auras
 	Aura *FindAuraByNameHash(uint32 namehash);
+	Aura *FindAuraByNameHash(uint32 namehash, uint64 guid);
 	Aura* FindAura(uint32 spellId);
 	Aura* FindAura(uint32 spellId, uint64 guid);
 	bool SetAurDuration(uint32 spellId,Unit* caster,uint32 duration);
