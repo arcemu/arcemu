@@ -1057,3 +1057,58 @@ bool ChatHandler::HandleSendpacket(const char * args, WorldSession * m_session)
 #endif
     return true;
 }
+
+bool ChatHandler::HandleDebugSpawnWarCommand(const char *args, WorldSession *m_session)
+{
+	uint32 count, npcid;
+	uint32 health = 0;
+
+	// takes 2 or 3 arguments: npcid, count, (health)
+	if( sscanf( args, "%u %u %u %u", &npcid, &count, &health ) != 3 )
+		if( sscanf( args, "%u %u", &count, &npcid ) != 2 )
+			return false;
+
+	if( !count || !npcid )
+		return false;
+
+	CreatureProto *cp = CreatureProtoStorage.LookupEntry( npcid );
+	CreatureInfo *ci = CreatureNameStorage.LookupEntry( npcid );
+	if( cp == NULL || ci == NULL )
+		return false;
+
+	MapMgr *m = m_session->GetPlayer()->GetMapMgr();
+
+	// if we have selected unit, use its position
+	Unit* unit = m->GetUnit( m_session->GetPlayer()->GetSelection() );
+	if( unit == NULL )
+		unit = m_session->GetPlayer(); // otherwise ours
+		
+	float bx = unit->GetPositionX();
+	float by = unit->GetPositionY();
+	float x, y, z;
+
+	float angle = 1;
+	float r = 3; // starting radius
+	for( ; count > 0; --count )
+	{
+		// spawn in spiral		
+		x = r * sinf( angle );
+		y = r * cosf( angle );
+		z = m->GetBaseMap()->GetLandHeight( bx + x, by + y );
+		
+		Creature *c = m->CreateCreature( npcid );
+		c->Load( cp, bx + x, by + y, z, 0.0f );
+		if( health != 0 ) 
+		{
+			c->SetUInt32Value( UNIT_FIELD_MAXHEALTH, health );
+			c->SetUInt32Value( UNIT_FIELD_HEALTH, health );
+		}
+		c->SetUInt32Value( UNIT_FIELD_FACTIONTEMPLATE, (count % 2) ? 1 : 2 );
+		c->_setFaction();
+		c->PushToWorld( m );
+
+		r += 0.5;
+		angle += 8 / r;
+	}
+	return true;
+}
