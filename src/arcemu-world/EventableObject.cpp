@@ -359,9 +359,9 @@ void EventableObjectHolder::Update(time_t time_difference)
 			// execute the callback
 			if(ev->eventFlag & EVENT_FLAG_DELETES_OBJECT)
 			{
+				m_events.erase(it2);
 				ev->deleted = true;
 				ev->cb->execute();
-				m_events.erase(it2);
 				ev->DecRef();
 				continue;
 			}
