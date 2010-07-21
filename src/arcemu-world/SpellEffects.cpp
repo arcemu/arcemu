@@ -3103,7 +3103,7 @@ void Spell::SpellEffectSummon(uint32 i)
 	case 37994:	// Water Elemental - no duration timer
 		{
 			Pet *summon = objmgr.CreatePet(GetProto()->EffectMiscValue[i]);
-			if( ! summon->CreateAsSummon( GetProto()->EffectMiscValue[i], ci, NULL, p_caster, GetProto(), 1, -1 ) )
+			if( ! summon->CreateAsSummon( GetProto()->EffectMiscValue[i], ci, NULL, p_caster, GetProto(), 1, uint32(-1)) )
 			{
 				summon->DeleteMe();//CreateAsSummon() returns false if an error occurred.
 				summon = NULL;
@@ -6138,7 +6138,7 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 	}
 
 	// Set up the deletion event. The totem needs to expire after a certain time, or upon its death.
-	sEventMgr.AddEvent(pTotem, &Creature::TotemExpire, EVENT_TOTEM_EXPIRE, GetDuration(), 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+	sEventMgr.AddEvent(pTotem, &Creature::TotemExpire, uint32(0), EVENT_TOTEM_EXPIRE, GetDuration(), 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 }
 
 void Spell::SpellEffectEnchantHeldItem( uint32 i )

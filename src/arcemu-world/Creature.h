@@ -607,7 +607,7 @@ public:
 			return false;
 	}
 
-	void TotemExpire();
+	void TotemExpire(uint32 delayedDespawn = 0);
 	void FormationLinkUp(uint32 SqlId);
 	void ChannelLinkUpGO(uint32 SqlId);
 	void ChannelLinkUpCreature(uint32 SqlId);

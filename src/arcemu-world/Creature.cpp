@@ -1104,8 +1104,9 @@ void Creature::UpdateItemAmount(uint32 itemid)
 	}
 }
 
-void Creature::TotemExpire()
+void Creature::TotemExpire(uint32 delayedDespawn)
 {
+	//notice in any case the owner that we expired.
 	if( m_owner != NULL )
 	{		
 		if(GetCreatedBySpell() == 6495) // sentry totem
@@ -1118,7 +1119,14 @@ void Creature::TotemExpire()
 
 	totemSlot = -1;
 
-    DeleteMe();
+	//allow the despawn to be delayed.
+	if(IsInWorld())
+		Despawn(delayedDespawn, 0);
+	else
+	{
+		sLog.outError("A Totem created by spellid %u expired after it was removed from world", GetCreatedBySpell());
+		SafeDelete();
+	}
 }
 
 void Creature::FormationLinkUp(uint32 SqlId)
@@ -2210,7 +2218,7 @@ void Creature::Die( Unit *pAttacker, uint32 damage, uint32 spellid ){
 		//we delete the summon later since its reference is used outside of this loop, like AIInterface::_UpdateCombat().
 		//this fixes totems not properly disappearing from the clients.
 		//on a side note, it would be better to modify AIInterface::_UpdateCombat() instead of this.
-		sEventMgr.AddEvent( this, &Creature::TotemExpire, EVENT_UNK, 1, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
+		TotemExpire(1);
 		return;
 	}
 	
@@ -2223,7 +2231,7 @@ void Creature::Die( Unit *pAttacker, uint32 damage, uint32 spellid ){
 			
 			// We've killed a summon summoned by a totem
 			if( pSummonerC->IsTotem() )
-				sEventMgr.AddEvent( pSummonerC, &Creature::TotemExpire, EVENT_UNK, 1, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
+				pSummonerC->TotemExpire(1);
 		}
 	}
 
