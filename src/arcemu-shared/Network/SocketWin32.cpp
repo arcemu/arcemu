@@ -44,8 +44,12 @@ void Socket::WriteCallback()
 		int r = WSASend(m_fd, &buf, 1, &w_length, flags, &m_writeEvent.m_overlap, 0);
 		if(r == SOCKET_ERROR)
 		{
-			if(WSAGetLastError() != WSA_IO_PENDING)
+			int wsaerror = WSAGetLastError();
+
+			if( wsaerror != WSA_IO_PENDING)
 			{
+				sLog.outError( "WSAGetLastError() = %d on socket %u",wsaerror, m_fd );
+
 				m_writeEvent.Unmark();
 				DecSendLock();
 				Disconnect();

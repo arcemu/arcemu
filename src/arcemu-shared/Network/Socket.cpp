@@ -28,13 +28,15 @@ Socket::Socket(SOCKET fd, uint32 sendbuffersize, uint32 recvbuffersize) : m_fd(f
 #endif
 
 	// Check for needed fd allocation.
-	if(m_fd == 0)
+	if(m_fd == 0){
 		m_fd = SocketOps::CreateTCPFileDescriptor();
+	}
+
+	sLog.outDebug("Created Socket %u", m_fd);
 }
 
 Socket::~Socket()
 {
-
 }
 
 bool Socket::Connect(const char * Address, uint32 Port)
@@ -115,12 +117,12 @@ string Socket::GetRemoteIP()
 
 void Socket::Disconnect()
 {
+	sLog.outBasic("Socket::Disconnect on socket %u", m_fd);
+
 	m_connected = false;
 
 	// remove from mgr
 	sSocketMgr.RemoveSocket(this);
-
-	SocketOps::CloseSocket(m_fd);
 
 	// Call virtual ondisconnect
 	OnDisconnect();
@@ -130,10 +132,14 @@ void Socket::Disconnect()
 
 void Socket::Delete()
 {
+	sLog.outDebug("Socket::Delete() on socket %u", m_fd);
+
 	if(m_deleted) return;
 	m_deleted = true;
 
 	if(m_connected) Disconnect();
+
+	SocketOps::CloseSocket( m_fd );
+
 	sSocketGarbageCollector.QueueSocket(this);
 }
-

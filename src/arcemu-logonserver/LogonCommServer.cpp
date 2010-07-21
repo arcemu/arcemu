@@ -37,6 +37,8 @@ LogonCommServerSocket::LogonCommServerSocket(SOCKET fd) : Socket(fd, 65536, 5242
 
 	use_crypto = false;
 	authenticated = 0;
+
+	sLog.outBasic("Created LogonCommServerSocket %u", m_fd);
 }
 
 LogonCommServerSocket::~LogonCommServerSocket()
@@ -46,6 +48,8 @@ LogonCommServerSocket::~LogonCommServerSocket()
 
 void LogonCommServerSocket::OnDisconnect()
 {
+	sLog.outBasic("LogonCommServerSocket::Ondisconnect event.");
+
 	// if we're registered -> Set offline
 	if(!removed)
 	{

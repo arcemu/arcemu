@@ -38,6 +38,8 @@ LogonCommClientSocket::LogonCommClientSocket(SOCKET fd) : Socket(fd, 724288, 262
 	latency = 0;
 	use_crypto = false;
 	authenticated = 0;
+
+	sLog.outDebug("Created LogonCommClientSocket %u", m_fd);
 }
 
 void LogonCommClientSocket::OnRead()
@@ -221,7 +223,6 @@ void LogonCommClientSocket::OnDisconnect()
 
 LogonCommClientSocket::~LogonCommClientSocket()
 {
-	SocketOps::CloseSocket( m_fd );
 }
 
 void LogonCommClientSocket::SendChallenge()
