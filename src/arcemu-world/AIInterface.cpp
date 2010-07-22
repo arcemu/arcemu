@@ -3618,26 +3618,6 @@ uint32 AIInterface::getThreatByPtr(Unit* obj)
 	return 0;
 }
 
-/*
-#if defined(WIN32) && defined(HACKY_CRASH_FIXES)
-__declspec(noinline) bool ___CheckTarget(Unit * ptr, Unit * him)
-{
-	__try
-	{
-		if( him->GetInstanceID() != ptr->GetInstanceID() || !him->isAlive() || !isAttackable( ptr, him ) )
-		{
-			return false;
-		}
-	}
-	__except(EXCEPTION_EXECUTE_HANDLER)
-	{
-		return false;
-	}
-	return true;
-}
-#endif
-*/
-
 //should return a valid target
 Unit *AIInterface::GetMostHated()
 {
@@ -3998,14 +3978,14 @@ void AIInterface::CheckTarget(Unit* target)
 	if( target == NULL )
 		return;
 
-	if( target == getUnitToFollow() )		  // fix for crash here
+	if( target->GetGUID() == getUnitToFollowGUID() )		  // fix for crash here
 	{
 		m_UnitToFollow = 0;
 		m_lastFollowX = m_lastFollowY = 0;
 		FollowDistance = 0;
 	}
 
-	if( target == getUnitToFollowBackup() )
+	if( target->GetGUID() == getUnitToFollowBackupGUID() )
 	{
 		m_UnitToFollow_backup = 0;
 	}
@@ -4057,11 +4037,11 @@ void AIInterface::CheckTarget(Unit* target)
 			target->GetAIInterface()->GetMostHated();
 		}
 
-		if( target->GetAIInterface()->getUnitToFollow() == m_Unit )
+		if( target->GetAIInterface()->getUnitToFollowGUID() == m_Unit->GetGUID() )
 			target->GetAIInterface()->m_UnitToFollow = 0;
 	}
 
-	if(target == getUnitToFear())
+	if(target->GetGUID() == getUnitToFearGUID())
 		m_UnitToFear = 0;
 
 	if(tauntedBy == target)
@@ -4243,10 +4223,10 @@ void AIInterface::WipeCurrentTarget()
 		LockAITargets( false );
 	}
 
-	if( nextTarget == getUnitToFollow() )
+	if( nextTarget->GetGUID() == getUnitToFollowGUID() )
 		m_UnitToFollow = 0;
 
-	if( nextTarget == getUnitToFollowBackup() )
+	if( nextTarget->GetGUID() == getUnitToFollowBackupGUID() )
 		m_UnitToFollow_backup = 0;
 	
 	SetNextTarget( TO_UNIT(NULL) );
@@ -4316,12 +4296,6 @@ void AIInterface::SetNextTarget (uint64 nextTarget)
 {
 	m_nextTarget = nextTarget; 
 	m_Unit->SetTargetGUID(  m_nextTarget);
-	if(nextTarget)
-	{
-#ifdef ENABLE_GRACEFULL_HIT
-		have_graceful_hit=false;
-#endif
-	}
 }
 
 Unit * AIInterface::getUnitToFollow()
