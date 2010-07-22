@@ -24,11 +24,6 @@
 #include <cmath>
 #endif
 
-
-#ifdef WIN32
-#define HACKY_CRASH_FIXES 1		// SEH stuff
-#endif
-
 AIInterface::AIInterface()
 :
 m_waypoints(NULL),
@@ -1121,26 +1116,23 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 
 	if ( GetNextTarget() != NULL && GetNextTarget()->GetTypeId() == TYPEID_UNIT && m_AIState == STATE_EVADE)
 		HandleEvent( EVENT_LEAVECOMBAT, m_Unit, 0);
-#ifdef HACKY_CRASH_FIXES
-	bool cansee = (GetNextTarget() != NULL) ? CheckCurrentTarget() : NULL;
 
-#else
-	bool cansee;
-	if(GetNextTarget() && GetNextTarget()->event_GetCurrentInstanceId() == m_Unit->event_GetCurrentInstanceId())
+	bool cansee = false;
+	if(GetNextTarget())
 	{
-		if( m_Unit->GetTypeId() == TYPEID_UNIT )
-			cansee = static_cast< Creature* >( m_Unit )->CanSee( GetNextTarget() );
-		else
-			cansee = static_cast< Player* >( m_Unit )->CanSee( GetNextTarget() );
+		if(GetNextTarget()->event_GetCurrentInstanceId() == m_Unit->event_GetCurrentInstanceId())
+		{
+			if( m_Unit->GetTypeId() == TYPEID_UNIT )
+				cansee = static_cast< Creature* >( m_Unit )->CanSee( GetNextTarget() );
+			else
+				cansee = static_cast< Player* >( m_Unit )->CanSee( GetNextTarget() );
+		}
+		else 
+		{
+			SetNextTarget( TO_UNIT(NULL) );
+		}
 	}
-	else 
-	{
-		if( GetNextTarget() )
-			SetNextTarget( TO_UNIT(NULL) );			// corrupt pointer
 
-		cansee = false;
-	}
-#endif
 	if( cansee && GetNextTarget() && GetNextTarget()->isAlive() && m_AIState != STATE_EVADE && !m_Unit->IsCasting() )
 	{
 		if( agent == AGENT_NULL || ( m_AIType == AITYPE_PET && !m_nextSpell ) ) // allow pets autocast
@@ -3646,25 +3638,6 @@ Unit *AIInterface::GetMostHated()
 		++it2;
 
 		/* check the target is valid */
-/*
-#if defined(WIN32) && defined(HACKY_CRASH_FIXES)
-		if(!___CheckTarget( m_Unit, itr->first ) )
-		{
-			if( m_nextTarget == itr->first )
-				m_nextTarget = NULL;
-
-			m_aiTargets.erase(itr);
-			continue;
-		}
-#else
-		if(itr->first->event_GetCurrentInstanceId() != m_Unit->event_GetCurrentInstanceId() || !itr->first->isAlive() || !isAttackable(m_Unit, itr->first))
-		{
-			m_aiTargets.erase(itr);
-			continue;
-		}
-#endif
-*/
-		// this is a much slower version then the previous one but it causes a lot of crashes and that is above speed right now.
 		Unit *ai_t = m_Unit->GetMapMgr()->GetUnit( itr->first );
 
 		if( !ai_t || ai_t->GetInstanceID() != m_Unit->GetInstanceID() || !ai_t->isAlive() || !isAttackable( m_Unit, ai_t ) )
@@ -4221,64 +4194,17 @@ void AIInterface::WipeCurrentTarget()
 		if( itr != m_aiTargets.end() )
 			m_aiTargets.erase( itr );
 		LockAITargets( false );
+
+		if( nextTarget->GetGUID() == getUnitToFollowGUID() )
+			m_UnitToFollow = 0;
+
+		if( nextTarget->GetGUID() == getUnitToFollowBackupGUID() )
+			m_UnitToFollow_backup = 0;
 	}
-
-	if( nextTarget->GetGUID() == getUnitToFollowGUID() )
-		m_UnitToFollow = 0;
-
-	if( nextTarget->GetGUID() == getUnitToFollowBackupGUID() )
-		m_UnitToFollow_backup = 0;
 	
 	SetNextTarget( TO_UNIT(NULL) );
 }
 
-#ifdef HACKY_CRASH_FIXES
-
-bool AIInterface::CheckCurrentTarget()
-{
-	Unit * nextTarget = GetNextTarget();
-	//in case target was removed from map since our last check on him
-	if( nextTarget == NULL )
-	{
-		WipeCurrentTarget();
-		return false;
-	}
-	
-	bool cansee = false;
-	if( nextTarget->GetInstanceID() == m_Unit->GetInstanceID())
-	{
-		if( m_Unit->GetTypeId() == TYPEID_UNIT )
-			cansee = static_cast< Creature* >( m_Unit )->CanSee( nextTarget );
-		else
-			cansee = static_cast< Player* >( m_Unit )->CanSee( nextTarget );
-	}
-	else 
-	{
-		WipeCurrentTarget();
-	}
-
-	return cansee;
-}
-
-bool AIInterface::TargetUpdateCheck(Unit * ptr)
-{
-	__try
-	{
-		if( ptr->event_GetCurrentInstanceId() != m_Unit->event_GetCurrentInstanceId() ||
-			!ptr->isAlive() || m_Unit->GetDistanceSq(ptr) >= 6400.0f )
-		{
-			return false;
-		}
-	}
-	__except(EXCEPTION_EXECUTE_HANDLER)
-	{
-		return false;
-	}
-
-	return true;
-}
-
-#endif
 Unit* AIInterface::GetNextTarget()
 {
 	if (m_nextTarget && m_Unit && m_Unit->GetMapMgr()) return m_Unit->GetMapMgr()->GetUnit(m_nextTarget);

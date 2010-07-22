@@ -547,7 +547,5 @@ public:
 	bool skip_reset_hp;
 
 	void WipeCurrentTarget();
-	bool CheckCurrentTarget();
-	bool TargetUpdateCheck(Unit * ptr);
 };
 #endif
