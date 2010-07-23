@@ -256,7 +256,8 @@ void main()
 		boundhigh[0] = header->boundingbox2[0] * modelscale;
 		boundhigh[1] = header->boundingbox2[1] * modelscale;
 		boundhigh[2] = header->boundingbox2[2] * modelscale;
-		fprintf(fo, "insert into `display_bounding_boxes` VALUES (%u, %f, %f, %f, %f, %f, %f);\n", displayid, boundlow[0], boundlow[1], boundlow[2], boundhigh[0], boundhigh[1], boundhigh[2]);
+		float boundradius = header->boundingradius * modelscale;
+		fprintf(fo, "insert into `display_bounding_boxes` VALUES (%u, %f, %f, %f, %f, %f, %f, %f);\n", displayid, boundlow[0], boundlow[1], boundlow[2], boundhigh[0], boundhigh[1], boundhigh[2], boundradius);
 	}
 
 

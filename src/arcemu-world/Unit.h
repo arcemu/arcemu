@@ -67,6 +67,7 @@ struct DisplayBounding
 	uint32 displayid;
 	float low[3];
 	float high[3];
+	float boundradius;
 };
 #pragma pack(pop)
 
