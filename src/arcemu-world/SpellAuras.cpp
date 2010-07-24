@@ -4420,6 +4420,7 @@ void Aura::SpellAuraModShapeshift(bool apply)
 			{
                 static_cast< Player* >( m_target )->SendSpellCooldownEvent( m_spellProto->Id );
 			}
+			spellId = 49868;
 		}break;
 	case FORM_FLIGHT:
 		{// druid
@@ -9450,14 +9451,31 @@ bool Aura::DotCanCrit()
 		return false;
 
 	SpellEntry *sp = this->GetSpellProto();
+	bool found = false;
+	std::list<Aura*> auras = caster->GetAllAurasWithAuraEffect(SPELL_AURA_ALLOW_DOT_TO_CRIT);
+	for (std::list<Aura*>::iterator itr = auras.begin(); itr != auras.end(); ++itr)
+	{
+		SpellEntry *aura_sp = (*itr)->GetSpellProto();
 
-	Aura *aura = caster->FindAuraWithAuraEffect(SPELL_AURA_ALLOW_DOT_TO_CRIT);
+		uint32 i = 0;
+		if( aura_sp->EffectApplyAuraName[1] == SPELL_AURA_ALLOW_DOT_TO_CRIT)
+			i = 1;
+		else if( aura_sp->EffectApplyAuraName[2] == SPELL_AURA_ALLOW_DOT_TO_CRIT)
+			i = 2;
 
-	if( aura != NULL && 
-		aura->GetSpellProto()->SpellFamilyName == sp->SpellFamilyName && 
-		(aura->GetSpellProto()->EffectSpellClassMask[this->mod->i][0] & sp->SpellGroupType[0] || 
-		 aura->GetSpellProto()->EffectSpellClassMask[this->mod->i][1] & sp->SpellGroupType[1] || 
-		 aura->GetSpellProto()->EffectSpellClassMask[this->mod->i][2] & sp->SpellGroupType[2]) )
+		if( aura_sp->SpellFamilyName == sp->SpellFamilyName && 
+			(aura_sp->EffectSpellClassMask[i][0] & sp->SpellGroupType[0] || 
+			 aura_sp->EffectSpellClassMask[i][1] & sp->SpellGroupType[1] || 
+			 aura_sp->EffectSpellClassMask[i][2] & sp->SpellGroupType[2]) )
+		{
+			found = true;
+			break;
+		}
+	}
+
+	auras.clear();
+
+	if( found )
 		return true;
 
 	if( caster->IsPlayer() )
@@ -9466,14 +9484,6 @@ bool Aura::DotCanCrit()
 
 		switch( caster->getClass() )
 		{
-			case PRIEST:
-
-				// Shadow Word: Pain, Devouring Plague or Vampiric touch can be critical if priest is in shadow form
-				if( (sp->SpellGroupType[0] & 0x8000 | sp->SpellGroupType[1] & 0x1400) && pCaster->GetShapeShift() == FORM_SHADOW )
-					return true;
-
-				break;
-
 			case ROGUE:
 
 				// Rupture can be critical in patch 3.3.3
