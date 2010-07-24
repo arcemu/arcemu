@@ -307,7 +307,7 @@ pSpellAura SpellAuraHandler[TOTAL_SPELL_AURAS]={
 		&Aura::SpellAuraModHealingPCT,//283 Increases all healing received by X pct
 		&Aura::SpellAuraNULL,//284 not used by any spells (3.08a)
 		&Aura::SpellAuraModAttackPowerOfArmor,//285 SPELL_AURA_MOD_ATTACK_POWER_OF_ARMOR
-		&Aura::SpellAuraNULL,//286 SPELL_AURA_ALLOW_CRIT_PERIODIC_DAMAGE
+		&Aura::SpellAuraNULL,//286 SPELL_AURA_ALLOW_DOT_TO_CRIT
 		&Aura::SpellAuraReflectSpellsInfront,//287 SPELL_AURA_DEFLECT_SPELLS
 		&Aura::SpellAuraNULL,//288 not used by any spells (3.09) except 1 test spell.
 		&Aura::SpellAuraNULL,//289 unused
@@ -1520,33 +1520,39 @@ void Aura::SpellAuraPeriodicDamage(bool apply)
 void Aura::EventPeriodicDamage(uint32 amount)
 {
 	//DOT
-	if(! m_target->isAlive())
+	if( ! m_target->isAlive() )
 		return;
-	if(m_target->SchoolImmunityList[GetSpellProto()->School])
+
+	if( m_target->SchoolImmunityList[GetSpellProto()->School] )
+	{
+		if( GetUnitCaster() != NULL )
+			SendTickImmune( m_target, GetUnitCaster() );
 		return;
+	}
+
 	float res = float(amount);
 	uint32 abs_dmg = 0;
 	int bonus = 0;
 	uint32 school = GetSpellProto()->School;
 	Unit * c = GetUnitCaster();
+	uint32 aproc = PROC_ON_ANY_HOSTILE_ACTION;
+	uint32 vproc = PROC_ON_ANY_HOSTILE_ACTION | PROC_ON_ANY_DAMAGE_VICTIM;
+	bool is_critical = false;
 
-	if(m_target->GetGUID()!=m_casterGuid)//don't use resist when cast on self-- this is some internal stuff
+	if( m_target->GetGUID() != m_casterGuid )	//don't use resist when cast on self-- this is some internal stuff
 	{
-		if(c)
+		if( c != NULL )
 		{
 			int amp = m_spellProto->EffectAmplitude[mod->i];
 			if( !amp )
-				amp = static_cast< EventableObject* >( this )->event_GetEventPeriod( EVENT_AURA_PERIODIC_DAMAGE );
+				amp = event_GetEventPeriod( EVENT_AURA_PERIODIC_DAMAGE );
 
-			if(GetDuration())
-			{
-				if( GetSpellProto()->NameHash != SPELL_HASH_IGNITE )  //static damage for Ignite. Need to be reworked when "static DoTs" will be implemented
-					bonus += c->GetSpellDmgBonus(m_target,m_spellProto,amount,true) * amp / GetDuration();
-			}
+			if( GetDuration() && GetSpellProto()->NameHash != SPELL_HASH_IGNITE )  //static damage for Ignite. Need to be reworked when "static DoTs" will be implemented
+				bonus += c->GetSpellDmgBonus(m_target,m_spellProto,amount,true) * amp / GetDuration();
 
 			res += bonus;
 
-			if(res < 0)
+			if( res < 0 )
 				res = 0;
 			else
 			{
@@ -1561,6 +1567,19 @@ void Aura::EventPeriodicDamage(uint32 amount)
 				res *= summaryPCTmod;
 				if( res < 0.0f )
 					res = 0.0f;
+			}
+
+			if( DotCanCrit() )
+			{
+				is_critical = c->IsCriticalDamageForSpell( m_target, GetSpellProto() );
+
+				if( is_critical )
+				{
+					res = c->GetCriticalDamageBonusForSpell( m_target, GetSpellProto(), res);
+
+					aproc |= PROC_ON_SPELL_CRIT_HIT;
+					vproc |= PROC_ON_SPELL_CRIT_HIT_VICTIM;
+				}
 			}
 		}
 
@@ -1597,37 +1616,33 @@ void Aura::EventPeriodicDamage(uint32 amount)
 				res = float(dmg.full_damage - dmg.resisted_damage);
 		}
 
-
-		m_target->SendPeriodicAuraLog( m_casterGuid, m_target->GetNewGUID(), GetSpellProto()->Id, school, float2int32(res), abs_dmg, dmg.resisted_damage, FLAG_PERIODIC_DAMAGE);
+		m_target->SendPeriodicAuraLog( m_casterGuid, m_target->GetNewGUID(), GetSpellProto()->Id, school, float2int32(res), abs_dmg, dmg.resisted_damage, FLAG_PERIODIC_DAMAGE, is_critical);
 	}
+
 	// grep: this is hack.. some auras seem to delete this shit.
-	SpellEntry * sp = m_spellProto;
+	SpellEntry *sp = m_spellProto;
 
-	if( m_target->GetGUID()!= m_casterGuid && c)//don't use resist when cast on self-- this is some internal stuff
+	if( m_target->m_damageSplitTarget )
+		res = (float)m_target->DoDamageSplitTarget((uint32)res, GetSpellProto()->School, false);
+
+	if( c != NULL )
+		c->DealDamage(m_target, float2int32(res),  2, 0, GetSpellId() );
+	else
+		m_target->DealDamage(m_target, float2int32(res),  2, 0,  GetSpellId() );
+
+	if( m_target->GetGUID() != m_casterGuid && c != NULL )	//don't use resist when cast on self-- this is some internal stuff
 	{
-		uint32 aproc = PROC_ON_ANY_HOSTILE_ACTION;
-		uint32 vproc = PROC_ON_ANY_HOSTILE_ACTION | PROC_ON_ANY_DAMAGE_VICTIM;
-		int32 dmg =  float2int32(res);
+		int32 dmg = float2int32(res);
 
-		if(abs_dmg)
+		if( abs_dmg )
 			vproc |= PROC_ON_ABSORB;
 
 		c->HandleProc(aproc, m_target, sp, false, dmg, abs_dmg);
 		c->m_procCounter = 0;
+
 		m_target->HandleProc(vproc, c, sp, false, dmg, abs_dmg);
 		m_target->m_procCounter = 0;
 	}
-
-	if( m_target->m_damageSplitTarget)
-	{
-		res = (float)m_target->DoDamageSplitTarget((uint32)res, GetSpellProto()->School, false);
-	}
-
-	if(c)
-		c->DealDamage(m_target, float2int32(res),  2, 0, GetSpellId ());
-	else
-		m_target->DealDamage(m_target, float2int32(res),  2, 0,  GetSpellId ());
-
 }
 
 void Aura::SpellAuraDummy(bool apply)
@@ -2898,6 +2913,7 @@ void Aura::EventPeriodicHeal( uint32 amount )
 	Unit* c = GetUnitCaster();
 
 	int32 bonus = 0;
+	bool is_critical = false;
 
 	if( c != NULL)
 	{
@@ -2992,20 +3008,28 @@ void Aura::EventPeriodicHeal( uint32 amount )
 		add += float2int32( add * ( m_target->HealTakenPctMod[m_spellProto->School]+ c->HealDonePctMod[GetSpellProto()->School] ) );
 		if (m_spellProto->SpellGroupType)
 			SM_PIValue(c->SM_PDOT,&add,m_spellProto->SpellGroupType);
-	}
 
-	m_target->SendPeriodicHealAuraLog( m_casterGuid, m_target->GetNewGUID(), GetSpellId(), add );
+		if( this->DotCanCrit() )
+		{
+			is_critical = c->IsCriticalHealForSpell( m_target, GetSpellProto() );
+			if( is_critical )
+				add = float2int32( c->GetCriticalHealBonusForSpell( m_target, GetSpellProto(), (float) add) );
+		}
+	}
 
 	uint32 curHealth = m_target->GetHealth();
 	uint32 maxHealth = m_target->GetMaxHealth();
+	uint32 over_heal = 0;
 
-	if((curHealth + add) >= maxHealth)
+	if( (curHealth + add) >= maxHealth )
 	{
-		add = maxHealth - curHealth;
+		m_target->SetHealth(maxHealth);
+		over_heal = curHealth + add - maxHealth;
 	}
-
-	if (add > 0)
+	else
 		m_target->ModHealth(add);
+
+	m_target->SendPeriodicHealAuraLog( m_casterGuid, m_target->GetNewGUID(), GetSpellId(), add, over_heal, is_critical );
 
 	m_target->RemoveAurasByHeal();
 
@@ -3626,7 +3650,7 @@ void Aura::EventPeriodicHealPct(float RegenPct)
 	else
 		m_target->SetHealth( m_target->GetMaxHealth());
 
-	m_target->SendPeriodicAuraLog( m_casterGuid, m_target->GetNewGUID(), m_spellProto->Id, m_spellProto->School, add, 0, 0, FLAG_PERIODIC_HEAL);
+	m_target->SendPeriodicAuraLog( m_casterGuid, m_target->GetNewGUID(), m_spellProto->Id, m_spellProto->School, add, 0, 0, FLAG_PERIODIC_HEAL, false);
 
 	if(GetSpellProto()->AuraInterruptFlags & AURA_INTERRUPT_ON_STAND_UP)
 	{
@@ -4928,6 +4952,10 @@ void Aura::EventPeriodicLeech(uint32 amount)
 		return;
 	}
 
+	bool is_critical = false;
+	uint32 aproc = PROC_ON_ANY_HOSTILE_ACTION;
+	uint32 vproc = PROC_ON_ANY_HOSTILE_ACTION | PROC_ON_ANY_DAMAGE_VICTIM | PROC_ON_SPELL_HIT_VICTIM;
+
 	int amp = sp->EffectAmplitude[mod->i];
 	if( !amp )
 		amp = event_GetEventPeriod(EVENT_AURA_PERIODIC_LEECH);
@@ -4948,6 +4976,19 @@ void Aura::EventPeriodicLeech(uint32 amount)
 	{
 		SM_FIValue( m_caster->SM_FDOT, (int32*)&amount, sp->SpellGroupType );
 		SM_PIValue( m_caster->SM_PDOT, (int32*)&amount, sp->SpellGroupType );
+	}
+
+	if( DotCanCrit() )
+	{
+		is_critical = m_caster->IsCriticalDamageForSpell( m_target, sp );
+
+		if( is_critical )
+		{
+			amount = float2int32( m_caster->GetCriticalDamageBonusForSpell(m_target, sp, (float) amount) );
+
+			aproc |= PROC_ON_SPELL_CRIT_HIT;
+			vproc |= PROC_ON_SPELL_CRIT_HIT_VICTIM;
+		}
 	}
 
 	amount = (uint32) min( amount, m_target->GetUInt32Value(UNIT_FIELD_HEALTH) );
@@ -5017,21 +5058,21 @@ void Aura::EventPeriodicLeech(uint32 amount)
 	else
 		m_caster->SetHealth(mh);
 
-	m_target->SendPeriodicHealAuraLog( m_caster->GetNewGUID(), m_caster->GetNewGUID(), sp->Id, heal_amount );
-	m_target->SendPeriodicAuraLog( m_target->GetNewGUID(), m_target->GetNewGUID(), sp->Id, sp->School, heal_amount, 0, 0, FLAG_PERIODIC_LEECH);
+	m_target->SendPeriodicHealAuraLog( m_caster->GetNewGUID(), m_caster->GetNewGUID(), sp->Id, heal_amount, 0, false );
+	m_target->SendPeriodicAuraLog( m_target->GetNewGUID(), m_target->GetNewGUID(), sp->Id, sp->School, heal_amount, 0, 0, FLAG_PERIODIC_LEECH, is_critical);
 
 	//deal damage before we add healing bonus to damage
 	m_caster->DealDamage( m_target, dmg_amount, 0, 0, sp->Id, true );
-	m_caster->SendSpellNonMeleeDamageLog( m_caster, m_target, sp->Id, dmg_amount, (uint8) sp->School, 0, 0, true, 0, false, true );
+	m_caster->SendSpellNonMeleeDamageLog( m_caster, m_target, sp->Id, dmg_amount, (uint8) sp->School, 0, 0, true, 0, is_critical, true );
  
-	m_caster->HandleProc( PROC_ON_ANY_HOSTILE_ACTION, m_target, sp, false, dmg_amount );
+	m_caster->HandleProc( aproc, m_target, sp, false, dmg_amount );
 	m_caster->m_procCounter = 0;
 
 	//some say this prevents some crashes atm
 	if( !m_target->isAlive() )
 		return;
 
-	m_target->HandleProc( PROC_ON_ANY_HOSTILE_ACTION | PROC_ON_ANY_DAMAGE_VICTIM | PROC_ON_SPELL_HIT_VICTIM, m_caster, sp, false, dmg_amount);
+	m_target->HandleProc( vproc, m_caster, sp, false, dmg_amount);
 	m_target->m_procCounter = 0;
 
 	m_target->RemoveAurasByHeal();
@@ -5465,7 +5506,7 @@ void Aura::EventPeriodicHealthFunnel(uint32 amount)
 		else
 			m_caster->SetHealth( mh);
 
-		m_target->SendPeriodicAuraLog( m_target->GetNewGUID(), m_target->GetNewGUID(), m_spellProto->Id, m_spellProto->School, 1000, 0, 0, FLAG_PERIODIC_LEECH);
+		m_target->SendPeriodicAuraLog( m_target->GetNewGUID(), m_target->GetNewGUID(), m_spellProto->Id, m_spellProto->School, 1000, 0, 0, FLAG_PERIODIC_LEECH, false);
 
 		m_caster->RemoveAurasByHeal();
 	}
@@ -6267,7 +6308,7 @@ void Aura::EventPeriodicHeal1(uint32 amount)
 	else
 	{
 		if(!(m_spellProto->BGR_one_buff_on_target & SPELL_TYPE_ARMOR))
-			m_target->SendPeriodicHealAuraLog( m_casterGuid, m_target->GetNewGUID(), GetSpellId(), amount );
+			m_target->SendPeriodicHealAuraLog( m_casterGuid, m_target->GetNewGUID(), GetSpellId(), amount, 0, false );
 	}
 
 	m_target->RemoveAurasByHeal();
@@ -7732,7 +7773,7 @@ void Aura::EventPeriodicBurn(uint32 amount, uint32 misc)
 		uint32 Amount = (uint32)min( amount, m_target->GetPower( misc ) );
 		uint32 newHealth = m_target->GetPower(misc) - Amount ;
 
-		m_target->SendPeriodicAuraLog( m_target->GetNewGUID(), m_target->GetNewGUID(), m_spellProto->Id, m_spellProto->School, newHealth, 0, 0, FLAG_PERIODIC_DAMAGE);
+		m_target->SendPeriodicAuraLog( m_target->GetNewGUID(), m_target->GetNewGUID(), m_spellProto->Id, m_spellProto->School, newHealth, 0, 0, FLAG_PERIODIC_DAMAGE, false);
 		m_caster->DealDamage(m_target, Amount, 0, 0, GetSpellProto()->Id);
 	}
 }
@@ -9400,4 +9441,48 @@ void Aura::ResetDuration()
 {
 	timeleft = static_cast<uint32>(UNIXTIME);
 	sEventMgr.ModifyEventTimeLeft(this, EVENT_AURA_REMOVE, GetDuration());
+}
+
+bool Aura::DotCanCrit()
+{
+	Unit *caster = this->GetUnitCaster();
+	if( caster == NULL )
+		return false;
+
+	SpellEntry *sp = this->GetSpellProto();
+
+	Aura *aura = caster->FindAuraWithAuraEffect(SPELL_AURA_ALLOW_DOT_TO_CRIT);
+
+	if( aura != NULL && 
+		aura->GetSpellProto()->SpellFamilyName == sp->SpellFamilyName && 
+		(aura->GetSpellProto()->EffectSpellClassMask[this->mod->i][0] & sp->SpellGroupType[0] || 
+		 aura->GetSpellProto()->EffectSpellClassMask[this->mod->i][1] & sp->SpellGroupType[1] || 
+		 aura->GetSpellProto()->EffectSpellClassMask[this->mod->i][2] & sp->SpellGroupType[2]) )
+		return true;
+
+	if( caster->IsPlayer() )
+	{
+		Player *pCaster = this->GetPlayerCaster();
+
+		switch( caster->getClass() )
+		{
+			case PRIEST:
+
+				// Shadow Word: Pain, Devouring Plague or Vampiric touch can be critical if priest is in shadow form
+				if( (sp->SpellGroupType[0] & 0x8000 | sp->SpellGroupType[1] & 0x1400) && pCaster->GetShapeShift() == FORM_SHADOW )
+					return true;
+
+				break;
+
+			case ROGUE:
+
+				// Rupture can be critical in patch 3.3.3
+				if( sp->NameHash == SPELL_HASH_RUPTURE )
+					return true;
+
+				break;
+		}
+	}
+
+	return false;
 }

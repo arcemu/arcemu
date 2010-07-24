@@ -1649,118 +1649,16 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 //==========================================================================================
 //==============================Post +SpellDamage Bonus Modifications=======================
 //==========================================================================================
-	if( res > 0 && IsUnit() && !( spellInfo->AttributesExB & ATTRIBUTESEXB_CANT_CRIT ) )
+	if( res > 0 && !( spellInfo->AttributesExB & ATTRIBUTESEXB_CANT_CRIT ) )
 	{
-		Unit* caster = TO_UNIT(this);
-
-		//------------------------------critical strike chance--------------------------------------
-		float CritChance = 0.0f;
-		uint32 resilience_type = 0;
-		
-		if( spellInfo->is_ranged_spell )
-		{
-			if( IsPlayer() )
-			{
-				CritChance = GetFloatValue( PLAYER_RANGED_CRIT_PERCENTAGE );
-				if( pVictim->IsPlayer() )
-					CritChance += TO_PLAYER(pVictim)->res_R_crit_get();
-
-				CritChance += (float)(pVictim->AttackerCritChanceMod[spellInfo->School]);
-			}
-			else
-				CritChance = 5.0f; // static value for mobs.. not blizzlike, but an unfinished formula is not fatal :)
-
-			if( pVictim->IsPlayer() )
-				resilience_type = PLAYER_RATING_MODIFIER_RANGED_CRIT_RESILIENCE;
-		}
-		else if( spellInfo->is_melee_spell )
-		{
-			// Same shit with the melee spells, such as Judgement/Seal of Command
-			if( IsPlayer() )
-				CritChance = GetFloatValue( PLAYER_CRIT_PERCENTAGE );
-
-			if( pVictim->IsPlayer() )
-			{
-				CritChance += TO_PLAYER(pVictim)->res_R_crit_get(); //this could be ability but in that case we overwrite the value
-				resilience_type = PLAYER_RATING_MODIFIER_MELEE_CRIT_RESILIENCE;
-			}
-
-			// Victim's (!) crit chance mod for physical attacks?
-			CritChance += (float)(pVictim->AttackerCritChanceMod[0]);
-		}
-		else
-		{
-			CritChance = caster->spellcritperc + caster->SpellCritChanceSchool[spellInfo->School] + pVictim->AttackerCritChanceMod[spellInfo->School];
-
-			if( caster->IsPlayer() && ( pVictim->m_rooted - pVictim->m_stunned ) )
-				CritChance += TO_PLAYER(caster)->m_RootedCritChanceBonus;
-
-			if( spellInfo->SpellGroupType )
-				SM_FFValue(caster->SM_CriticalChance, &CritChance, spellInfo->SpellGroupType);
-
-			if( pVictim->IsPlayer() )
-				resilience_type = PLAYER_RATING_MODIFIER_SPELL_CRIT_RESILIENCE;
-		}
-
-		if( resilience_type )
-			CritChance -= TO_PLAYER(pVictim)->CalcRating( resilience_type );
-
-		if( CritChance < 0 )
-			CritChance = 0;
-		else if( CritChance > 95 )
-			CritChance = 95;
-
-		critical = Rand(CritChance);
-		//sLog.outString( "SpellNonMeleeDamageLog: Crit Chance %f%%, WasCrit = %s" , CritChance , critical ? "Yes" : "No" );
-		
-		// HACK!!!
-		Aura *fs = NULL;
-		if( spellInfo->NameHash == SPELL_HASH_LAVA_BURST && (fs = pVictim->FindAuraByNameHash(SPELL_HASH_FLAME_SHOCK)) != NULL )
-		{
-			critical = true;
-			if( !caster->HasAura(55447) )	// Glyph of Flame Shock
-				fs->Remove();
-		}
+		critical = this->IsCriticalDamageForSpell(pVictim, spellInfo);
 
 //==========================================================================================
 //==============================Spell Critical Hit==========================================
 //==========================================================================================
 		if( critical )
 		{
-			int32 critical_bonus = 100;
-			if( spellInfo->SpellGroupType )
-				SM_FIValue( caster->SM_PCriticalDamage, &critical_bonus, spellInfo->SpellGroupType );
-
-			if( critical_bonus > 0 )
-			{
-				// the bonuses are halved by 50% (funky blizzard math :S)
-				float b;
-				if( spellInfo->School == 0 || spellInfo->is_melee_spell || spellInfo->is_ranged_spell )		// physical || hackfix SoCommand/JoCommand
-					b = ( critical_bonus / 100.0f ) + 1.0f;
-				else
-					b = ( ( critical_bonus / 2.0f ) / 100.0f ) + 1.0f;
-
-				res *= b;
-			}
-
-			if( pVictim->IsPlayer() )
-			{
-				//res = res*(1.0f-2.0f*static_cast< Player* >(pVictim)->CalcRating(PLAYER_RATING_MODIFIER_MELEE_CRIT_RESISTANCE));
-				//Resilience is a special new rating which was created to reduce the effects of critical hits against your character.
-				//It has two components; it reduces the chance you will be critically hit by x%,
-				//and it reduces the damage dealt to you by critical hits by 2x%. x is the percentage resilience granted by a given resilience rating.
-				//It is believed that resilience also functions against spell crits,
-				//though it's worth noting that NPC mobs cannot get critical hits with spells.
-				float dmg_reduction_pct = 2 * TO_PLAYER(pVictim)->CalcRating( PLAYER_RATING_MODIFIER_MELEE_CRIT_RESILIENCE ) / 100.0f;
-				if( dmg_reduction_pct > 1.0f )
-					dmg_reduction_pct = 1.0f; //we cannot resist more then he is criticalling us, there is no point of the critical then :P
-				res = res - res * dmg_reduction_pct;
-			}
-
-			if( pVictim->GetTypeId() == TYPEID_UNIT && TO_CREATURE(pVictim)->GetCreatureInfo()->Rank != ELITE_WORLDBOSS )
-				pVictim->Emote( EMOTE_ONESHOT_WOUNDCRITICAL );
-			/*aproc |= PROC_ON_SPELL_CRIT_HIT;
-			vproc |= PROC_ON_SPELL_CRIT_HIT_VICTIM;*/
+			res = this->GetCriticalDamageBonusForSpell(pVictim, spellInfo, res);
 
 			switch( spellInfo->Spell_Dmg_Type )
 			{

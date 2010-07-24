@@ -4932,6 +4932,21 @@ Aura* Unit::FindAura(uint32 spellId, uint64 guid)
 	return NULL;
 }
 
+Aura* Unit::FindAuraWithAuraEffect(uint32 effect)
+{
+	Aura *aura;
+	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
+	{
+		aura = m_auras[x];
+		if( aura != NULL && ((aura->GetSpellProto()->Effect[0] == SPELL_EFFECT_APPLY_AURA && aura->GetSpellProto()->EffectApplyAuraName[0] == effect) ||
+			(aura->GetSpellProto()->Effect[1] == SPELL_EFFECT_APPLY_AURA && aura->GetSpellProto()->EffectApplyAuraName[1] == effect) ||
+			(aura->GetSpellProto()->Effect[2] == SPELL_EFFECT_APPLY_AURA && aura->GetSpellProto()->EffectApplyAuraName[2] == effect)) )
+			return aura;
+	}
+
+	return NULL;
+}
+
 void Unit::_UpdateSpells( uint32 time )
 {
 	/* to avoid deleting the current spell */
@@ -5551,6 +5566,7 @@ bool Unit::HasAura(uint32 spellid)
 
 		return false;
 }
+
 uint16 Unit::GetAuraStackCount(uint32 spellid)
 {
 	uint16 count = 0;
@@ -7842,34 +7858,40 @@ void Unit::RemoveProcTriggerSpell(uint32 spellId, uint64 casterGuid, uint64 misc
 void Unit::TakeDamage(Unit *pAttacker, uint32 damage, uint32 spellid, bool no_remove_auras ){}
 void Unit::Die( Unit *pAttacker, uint32 damage, uint32 spellid ){}
 
-void Unit::SendPeriodicAuraLog( const WoWGuid& CasterGUID, const WoWGuid& TargetGUID, uint32 SpellID, uint32 School, uint32 Amount, uint32 abs_dmg, uint32 resisted_damage, uint32 Flags ){
-		WorldPacket data( SMSG_PERIODICAURALOG, 46 );
+void Unit::SendPeriodicAuraLog( const WoWGuid& CasterGUID, const WoWGuid& TargetGUID, uint32 SpellID, uint32 School, uint32 Amount, uint32 abs_dmg, uint32 resisted_damage, uint32 Flags, bool is_critical ){
 
-		data << TargetGUID;		   // target guid
-		data << CasterGUID;		   // caster guid
-		data << uint32( SpellID );						// spellid
-		data << uint32( 1 );					  // unknown? need research?
-		data << uint32( Flags | 0x1 );			// aura school
-		data << uint32( Amount );						 // amount of done to target / heal / damage
-		data << uint32( 0 );				 // cebernic: unknown?? needs more research, but it should fix unknown damage type with suffered.
-		data << uint32( g_spellSchoolConversionTable[School] );
-		data << uint32( abs_dmg );
-		data << uint32( resisted_damage );
+	WorldPacket data( SMSG_PERIODICAURALOG, 47 );
 
-		SendMessageToSet( &data, true );
+	data << TargetGUID;		   // target guid
+	data << CasterGUID;		   // caster guid
+	data << uint32( SpellID );						// spellid
+	data << uint32( 1 );					  // unknown? need research?
+	data << uint32( Flags | 0x1 );			// aura school
+	data << uint32( Amount );						 // amount of done to target / heal / damage
+	data << uint32( 0 );				 // cebernic: unknown?? needs more research, but it should fix unknown damage type with suffered.
+	data << uint32( g_spellSchoolConversionTable[School] );
+	data << uint32( abs_dmg );
+	data << uint32( resisted_damage );
+	data << uint8( is_critical );
+
+	SendMessageToSet( &data, true );
 }
 
-void Unit::SendPeriodicHealAuraLog( const WoWGuid& CasterGUID, const WoWGuid& TargetGUID, uint32 SpellID, uint32 amt ){
-	WorldPacket data( SMSG_PERIODICAURALOG, 32 );
-	
+void Unit::SendPeriodicHealAuraLog( const WoWGuid& CasterGUID, const WoWGuid& TargetGUID, uint32 SpellID, uint32 healed, uint32 over_healed, bool is_critical ){
+
+	WorldPacket data( SMSG_PERIODICAURALOG, 41 );
+
 	data << TargetGUID;
 	data << CasterGUID;
 	data << SpellID;
 	data << uint32( 1 );
 	data << uint32( FLAG_PERIODIC_HEAL );
-	data << uint32( amt );
+	data << uint32( healed );
+	data << uint32( over_healed );
+	data << uint32( 0 );		// I don't know what it is. maybe something related to absorbed heal?
+	data << uint8( is_critical );
 	
-	SendMessageToSet(&data,true);
+	SendMessageToSet( &data, true );
 }
 
 
@@ -7951,4 +7973,158 @@ bool Unit::InRaid( Unit* u )
 		return true;
 
 	return false;
+}
+
+bool Unit::IsCriticalDamageForSpell(Object *victim, SpellEntry *spell)
+{
+	bool result = false;
+	float CritChance = 0.0f;
+	uint32 resilience_type = 0;
+
+	if( spell->is_ranged_spell )
+	{
+		if( IsPlayer() )
+		{
+			CritChance = GetFloatValue( PLAYER_RANGED_CRIT_PERCENTAGE );
+			if( victim->IsPlayer() )
+				CritChance += TO_PLAYER(victim)->res_R_crit_get();
+
+			if( victim->IsUnit() )
+				CritChance += (float)(TO_UNIT(victim)->AttackerCritChanceMod[spell->School]);
+		}
+		else
+			CritChance = 5.0f; // static value for mobs.. not blizzlike, but an unfinished formula is not fatal :)
+
+		if( victim->IsPlayer() )
+			resilience_type = PLAYER_RATING_MODIFIER_RANGED_CRIT_RESILIENCE;
+	}
+	else if( spell->is_melee_spell )
+	{
+		// Same shit with the melee spells, such as Judgement/Seal of Command
+		if( IsPlayer() )
+			CritChance = GetFloatValue( PLAYER_CRIT_PERCENTAGE );
+
+		if( victim->IsPlayer() )
+		{
+			CritChance += TO_PLAYER(victim)->res_R_crit_get(); //this could be ability but in that case we overwrite the value
+			resilience_type = PLAYER_RATING_MODIFIER_MELEE_CRIT_RESILIENCE;
+		}
+
+		// Victim's (!) crit chance mod for physical attacks?
+		if( victim->IsUnit() )
+			CritChance += (float)(TO_UNIT(victim)->AttackerCritChanceMod[0]);
+	}
+	else
+	{
+		CritChance = spellcritperc + SpellCritChanceSchool[spell->School];
+
+		if( victim->IsUnit() )
+		{
+			CritChance += TO_UNIT(victim)->AttackerCritChanceMod[spell->School];
+
+			if( IsPlayer() && ( TO_UNIT(victim)->m_rooted - TO_UNIT(victim)->m_stunned ) )
+				CritChance += TO_PLAYER(this)->m_RootedCritChanceBonus;
+		}
+
+		if( spell->SpellGroupType )
+			SM_FFValue(SM_CriticalChance, &CritChance, spell->SpellGroupType);
+
+		if( victim->IsPlayer() )
+			resilience_type = PLAYER_RATING_MODIFIER_SPELL_CRIT_RESILIENCE;
+	}
+
+	if( resilience_type )
+		CritChance -= TO_PLAYER(victim)->CalcRating( resilience_type );
+
+	if( CritChance < 0 )
+		CritChance = 0;
+	else if( CritChance > 95 )
+		CritChance = 95;
+
+	result = Rand(CritChance);
+
+	// HACK!!!
+	Aura *fs = NULL;
+	if( victim->IsUnit() && spell->NameHash == SPELL_HASH_LAVA_BURST && (fs = TO_UNIT(victim)->FindAuraByNameHash(SPELL_HASH_FLAME_SHOCK)) != NULL )
+	{
+		result = true;
+		if( ! HasAura(55447) )	// Glyph of Flame Shock
+			fs->Remove();
+	}
+
+	return result;
+}
+
+float Unit::GetCriticalDamageBonusForSpell(Object *victim, SpellEntry *spell, float amount)
+{
+	int32 critical_bonus = 100;
+
+	if( spell->SpellGroupType )
+		SM_FIValue( SM_PCriticalDamage, &critical_bonus, spell->SpellGroupType );
+
+	if( critical_bonus > 0 )
+	{
+		// the bonuses are halved by 50% (funky blizzard math :S)
+		float b;
+		if( spell->School == 0 || spell->is_melee_spell || spell->is_ranged_spell )		// physical || hackfix SoCommand/JoCommand
+			b = critical_bonus / 100.0f + 1.0f;
+		else
+			b = critical_bonus / 200.0f + 1.0f;
+
+		amount *= b;
+	}
+
+	if( victim->IsPlayer() )
+	{
+		//res = res*(1.0f-2.0f*static_cast< Player* >(pVictim)->CalcRating(PLAYER_RATING_MODIFIER_MELEE_CRIT_RESISTANCE));
+		//Resilience is a special new rating which was created to reduce the effects of critical hits against your character.
+		//It has two components; it reduces the chance you will be critically hit by x%,
+		//and it reduces the damage dealt to you by critical hits by 2x%. x is the percentage resilience granted by a given resilience rating.
+		//It is believed that resilience also functions against spell crits,
+		//though it's worth noting that NPC mobs cannot get critical hits with spells.
+
+		float dmg_reduction_pct = 2 * TO_PLAYER(victim)->CalcRating( PLAYER_RATING_MODIFIER_MELEE_CRIT_RESILIENCE ) / 100.0f;
+
+		if( dmg_reduction_pct > 1.0f )
+			dmg_reduction_pct = 1.0f; //we cannot resist more then he is criticalling us, there is no point of the critical then :P
+
+		amount -= amount * dmg_reduction_pct;
+	}
+
+	if( victim->IsCreature() && TO_CREATURE(victim)->GetCreatureInfo()->Rank != ELITE_WORLDBOSS )
+		TO_CREATURE(victim)->Emote( EMOTE_ONESHOT_WOUNDCRITICAL );
+
+	return amount;
+}
+
+bool Unit::IsCriticalHealForSpell(Object *victim, SpellEntry *spell)
+{
+	int32 crit_chance = 0;
+
+	crit_chance = float2int32( this->spellcritperc + this->SpellCritChanceSchool[spell->School] );
+
+	//Sacred Shield
+	if( victim->IsUnit() && TO_UNIT(victim)->HasAurasWithNameHash( SPELL_HASH_SACRED_SHIELD ) && spell->NameHash == SPELL_HASH_FLASH_OF_LIGHT )
+		crit_chance += 50;
+
+	if( spell->SpellGroupType )
+		SM_FIValue( this->SM_CriticalChance, &crit_chance, spell->SpellGroupType );
+
+	return Rand(crit_chance);
+}
+
+float Unit::GetCriticalHealBonusForSpell(Object *victim, SpellEntry *spell, float amount)
+{
+	int32 critical_bonus = 100;
+	if( spell->SpellGroupType )
+		SM_FIValue( this->SM_PCriticalDamage, &critical_bonus, spell->SpellGroupType );
+
+	if( critical_bonus > 0 )
+	{
+		// the bonuses are halved by 50% (funky blizzard math :S)
+		float b = critical_bonus / 200.0f;
+		amount += float2int32( amount * b );
+	}
+
+	return amount;
 }

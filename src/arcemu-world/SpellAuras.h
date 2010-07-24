@@ -319,7 +319,7 @@ enum MOD_TYPES
 	SPELL_AURA_283 = 283,
 	SPELL_AURA_284 = 284,
 	SPELL_AURA_MOD_ATTACK_POWER_OF_ARMOR = 285,
-	SPELL_AURA_286 = 286,
+	SPELL_AURA_ALLOW_DOT_TO_CRIT = 286,
 	SPELL_AURA_REFLECT_INFRONT = 287,
 	SPELL_AURA_288 = 288,
 	SPELL_AURA_289 = 289,
@@ -475,6 +475,8 @@ public:
 	void UpdateModifiers();
 	void EventUpdateAA(float r);
 	void RemoveAA();
+
+	bool DotCanCrit();
 
 	//! GetTimeLeft() milliseconds
 	ARCEMU_INLINE uint32 GetTimeLeft() 

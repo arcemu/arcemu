@@ -520,6 +520,10 @@ public:
 
 	void EventSpellDamage(uint64 Victim, uint32 SpellID, uint32 Damage);
 	void SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage, bool allowProc, bool static_damage = false, bool no_remove_auras = false);
+	virtual bool IsCriticalDamageForSpell(Object *victim, SpellEntry *spell) { return false; }
+	virtual float GetCriticalDamageBonusForSpell(Object *victim, SpellEntry *spell, float amount) { return 0; }
+	virtual bool IsCriticalHealForSpell(Object *victim, SpellEntry *spell) { return false; }
+	virtual float GetCriticalHealBonusForSpell(Object *victim, SpellEntry *spell, float amount) { return 0; }
 
 	//*****************************************************************************************
 	//* SpellLog packets just to keep the code cleaner and better to read

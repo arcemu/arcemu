@@ -926,6 +926,10 @@ public:
 	uint32 m_procCounter;
 	uint32 HandleProc(uint32 flag, Unit* Victim, SpellEntry* CastingSpell, bool is_triggered = false, uint32 dmg = -1, uint32 abs = 0, uint32 weapon_damage_type = 0);
 	void HandleProcDmgShield(uint32 flag, Unit* attacker);//almost the same as handleproc :P
+	bool IsCriticalDamageForSpell(Object *victim, SpellEntry *spell);
+	float GetCriticalDamageBonusForSpell(Object *victim, SpellEntry *spell, float amount);
+	bool IsCriticalHealForSpell(Object *victim, SpellEntry *spell);
+	float GetCriticalHealBonusForSpell(Object *victim, SpellEntry *spell, float amount);
 
 	void RemoveExtraStrikeTarget(SpellEntry *spell_info);
 	void AddExtraStrikeTarget(SpellEntry *spell_info, uint32 charges);
@@ -1029,6 +1033,7 @@ public:
 	Aura *FindAuraByNameHash(uint32 namehash, uint64 guid);
 	Aura* FindAura(uint32 spellId);
 	Aura* FindAura(uint32 spellId, uint64 guid);
+	Aura* FindAuraWithAuraEffect(uint32 effect);
 	bool SetAurDuration(uint32 spellId,Unit* caster,uint32 duration);
 	bool SetAurDuration(uint32 spellId,uint32 duration);
 	void DropAurasOnDeath();
@@ -1538,8 +1543,8 @@ public:
 	void DispelAll(bool positive);
 
 	void SendPowerUpdate(bool self);
-	void SendPeriodicAuraLog( const WoWGuid& CasterGUID, const WoWGuid& casterGUID, uint32 SpellID, uint32 School, uint32 Amount, uint32 abs_dmg, uint32 resisted_damage, uint32 Flags );
-	void SendPeriodicHealAuraLog( const WoWGuid& CasterGUID, const WoWGuid& TargetGUID, uint32 SpellID, uint32 amt );
+	void SendPeriodicAuraLog( const WoWGuid& CasterGUID, const WoWGuid& casterGUID, uint32 SpellID, uint32 School, uint32 Amount, uint32 abs_dmg, uint32 resisted_damage, uint32 Flags, bool is_critical );
+	void SendPeriodicHealAuraLog( const WoWGuid& CasterGUID, const WoWGuid& TargetGUID, uint32 SpellID, uint32 healed, uint32 over_healed, bool is_critical );
 
 	void EventModelChange();
 	ARCEMU_INLINE float GetModelHalfSize() { return m_modelhalfsize * GetScale(); }

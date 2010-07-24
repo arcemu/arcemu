@@ -6063,7 +6063,7 @@ void Player::EventCannibalize(uint32 amount)
 	if(cannibalizeCount == 5)
 		SetEmoteState(0);
 
-	SendPeriodicHealAuraLog( GetNewGUID(), GetNewGUID(), 20577, amt );
+	SendPeriodicHealAuraLog( GetNewGUID(), GetNewGUID(), 20577, amt, 0, false );
 }
 
 ///The player sobers by 256 every 10 seconds
