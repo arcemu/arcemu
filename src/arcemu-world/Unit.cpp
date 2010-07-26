@@ -4344,7 +4344,7 @@ void Unit::AddAura(Aura * aur)
 						// Check for auras with the same name and a different rank.
 						else
 						{
-							acr = AuraCheck(info->NameHash, info->RankNumber, m_auras[x],aur->GetCaster());
+							acr = AuraCheck( info, m_auras[x], aur->GetCaster() );
 							if(acr.Error == AURA_CHECK_RESULT_HIGHER_BUFF_PRESENT)
 							{
 								deleteAur = true;
@@ -5817,33 +5817,43 @@ AuraCheckResponse Unit::AuraCheck(SpellEntry *proto, Object *caster)
 	
 	uint32 name_hash = proto->NameHash;
 	uint32 rank = proto->RankNumber;
+	Aura *aura;
+	SpellEntry *aura_sp;
 
 	// look for spells with same namehash
 	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
 	{
-		//if(m_auras[x] && m_auras[x]->GetSpellProto()->NameHash == name_hash && m_auras[x]->GetCaster()==caster)
-		if(m_auras[x] && m_auras[x]->GetSpellProto()->NameHash == name_hash)
+		aura = m_auras[x];
+		if( aura != NULL && aura->GetSpellProto()->NameHash == name_hash)
 		{
 			// we've got an aura with the same name as the one we're trying to apply
-			resp.Misc = m_auras[x]->GetSpellProto()->Id;
+			// but first we check if it has the same effects
+			aura_sp = aura->GetSpellProto();
 
-			// compare the rank to our applying spell
-			if( m_auras[x]->GetSpellProto()->RankNumber > rank )
+			if( (aura_sp->Effect[0] == proto->Effect[0] && (aura_sp->Effect[0] != SPELL_EFFECT_APPLY_AURA || aura_sp->EffectApplyAuraName[0] == proto->EffectApplyAuraName[0])) &&
+				(aura_sp->Effect[1] == proto->Effect[1] && (aura_sp->Effect[1] != SPELL_EFFECT_APPLY_AURA || aura_sp->EffectApplyAuraName[1] == proto->EffectApplyAuraName[1])) &&
+				(aura_sp->Effect[2] == proto->Effect[2] && (aura_sp->Effect[2] != SPELL_EFFECT_APPLY_AURA || aura_sp->EffectApplyAuraName[2] == proto->EffectApplyAuraName[2])) )
 			{
-				if(	proto->Effect[0] == SPELL_EFFECT_TRIGGER_SPELL ||
-					proto->Effect[1] == SPELL_EFFECT_TRIGGER_SPELL ||
-					proto->Effect[2] == SPELL_EFFECT_TRIGGER_SPELL )
+				resp.Misc = aura->GetSpellProto()->Id;
+
+				// compare the rank to our applying spell
+				if( aura_sp->RankNumber > rank )
 				{
-					resp.Error = AURA_CHECK_RESULT_LOWER_BUFF_PRESENT;
+					if(	proto->Effect[0] == SPELL_EFFECT_TRIGGER_SPELL ||
+						proto->Effect[1] == SPELL_EFFECT_TRIGGER_SPELL ||
+						proto->Effect[2] == SPELL_EFFECT_TRIGGER_SPELL )
+					{
+						resp.Error = AURA_CHECK_RESULT_LOWER_BUFF_PRESENT;
+					}
+					else
+						resp.Error = AURA_CHECK_RESULT_HIGHER_BUFF_PRESENT;
 				}
 				else
-					resp.Error = AURA_CHECK_RESULT_HIGHER_BUFF_PRESENT;
-			}
-			else
-				resp.Error = AURA_CHECK_RESULT_LOWER_BUFF_PRESENT;
+					resp.Error = AURA_CHECK_RESULT_LOWER_BUFF_PRESENT;
 
-			// we found something, save some loops and exit
-			break;
+				// we found something, save some loops and exit
+				break;
+			}
 		}
 	}
 	//sLog.outDebug( "resp = %i", resp.Error );
@@ -5852,26 +5862,32 @@ AuraCheckResponse Unit::AuraCheck(SpellEntry *proto, Object *caster)
 }
 
 
-AuraCheckResponse Unit::AuraCheck(uint32 name_hash, uint32 rank, Aura* aur, Object *caster)
+AuraCheckResponse Unit::AuraCheck(SpellEntry *proto, Aura* aur, Object *caster)
 {
 	AuraCheckResponse resp;
+	SpellEntry *aura_sp = aur->GetSpellProto();
 
 	// no error for now
 	resp.Error = AURA_CHECK_RESULT_NONE;
 	resp.Misc  = 0;
 
 	// look for spells with same namehash
-//	if(aur->GetSpellProto()->NameHash == name_hash && aur->GetCaster()==caster)
-	if(aur->GetSpellProto()->NameHash == name_hash)
+	if(aur->GetSpellProto()->NameHash == proto->NameHash)
 	{
 		// we've got an aura with the same name as the one we're trying to apply
-		resp.Misc = aur->GetSpellProto()->Id;
+		// but first we check if it has the same effects
+		if( (aura_sp->Effect[0] == proto->Effect[0] && (aura_sp->Effect[0] != SPELL_EFFECT_APPLY_AURA || aura_sp->EffectApplyAuraName[0] == proto->EffectApplyAuraName[0])) &&
+			(aura_sp->Effect[1] == proto->Effect[1] && (aura_sp->Effect[1] != SPELL_EFFECT_APPLY_AURA || aura_sp->EffectApplyAuraName[1] == proto->EffectApplyAuraName[1])) &&
+			(aura_sp->Effect[2] == proto->Effect[2] && (aura_sp->Effect[2] != SPELL_EFFECT_APPLY_AURA || aura_sp->EffectApplyAuraName[2] == proto->EffectApplyAuraName[2])) )
+		{
+			resp.Misc = aur->GetSpellProto()->Id;
 
-		// compare the rank to our applying spell
-		if(aur->GetSpellProto()->RankNumber > rank)
-			resp.Error = AURA_CHECK_RESULT_HIGHER_BUFF_PRESENT;
-		else
-			resp.Error = AURA_CHECK_RESULT_LOWER_BUFF_PRESENT;
+			// compare the rank to our applying spell
+			if(aur->GetSpellProto()->RankNumber > proto->RankNumber)
+				resp.Error = AURA_CHECK_RESULT_HIGHER_BUFF_PRESENT;
+			else
+				resp.Error = AURA_CHECK_RESULT_LOWER_BUFF_PRESENT;
+		}
 	}
 
 	// return it back to our caller

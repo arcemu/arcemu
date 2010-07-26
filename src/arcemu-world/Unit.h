@@ -1493,7 +1493,7 @@ public:
 	bool IsPoisoned();
 
 	AuraCheckResponse AuraCheck(SpellEntry *proto, Object *caster= NULL);
-	AuraCheckResponse AuraCheck(uint32 name_hash, uint32 rank, Aura* aur, Object *caster= NULL);
+	AuraCheckResponse AuraCheck(SpellEntry *proto, Aura* aur, Object *caster= NULL);
 
 	uint16 m_diminishCount[DIMINISHING_GROUP_COUNT];
 	uint8  m_diminishAuraCount[DIMINISHING_GROUP_COUNT];

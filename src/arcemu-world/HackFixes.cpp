@@ -3227,6 +3227,10 @@ void ApplyNormalFixes()
 			sp->EffectApplyAuraName[1] = SPELL_AURA_DUMMY;
 		}
 
+		// Body and soul - fix duration of cleanse poison
+		sp = dbcSpell.LookupEntryForced( 64134 );
+		if( sp != NULL )
+			sp->DurationIndex = 29;
 
 		/**********************************************************
 		 *	Holy Nova

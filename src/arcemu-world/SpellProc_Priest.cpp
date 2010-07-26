@@ -212,6 +212,30 @@ class ImprovedMindBlastSpellProc : public SpellProc
 	}
 };
 
+class BodyAndSoulDummySpellProc : public SpellProc
+{
+	SPELL_PROC_FACTORY_FUNCTION(BodyAndSoulDummySpellProc);
+
+	bool CanProc(Unit *victim, SpellEntry *CastingSpell)
+	{
+		if( victim != NULL && mTarget->GetGUID() == victim->GetGUID() )
+			return true;
+
+		return false;
+	}
+};
+
+class BodyAndSoulSpellProc : public SpellProc
+{
+	SPELL_PROC_FACTORY_FUNCTION(BodyAndSoulSpellProc);
+
+	void Init(Object* obj)
+	{
+		mProcFlags = PROC_ON_CAST_SPELL;
+		mProcClassMask[0] = 1;
+	}
+};
+
 void SpellProcMgr::SetupPriest()
 {
 	AddByNameHash( SPELL_HASH_IMPROVED_SPIRIT_TAP, &ImprovedSpiritTapSpellProc::Create );
@@ -224,4 +248,8 @@ void SpellProcMgr::SetupPriest()
 	AddById( 34919, &VampiricTouchEnergizeSpellProc::Create );
 	AddById( 64085, &VampiricTouchDispelDamageSpellProc::Create );
 	AddById( 48301, &ImprovedMindBlastSpellProc::Create );
+
+	AddById( 64128, &BodyAndSoulSpellProc::Create );
+	AddById( 65081, &BodyAndSoulSpellProc::Create );
+	AddById( 64134, &BodyAndSoulDummySpellProc::Create );
 }
