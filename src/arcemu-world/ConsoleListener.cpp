@@ -190,7 +190,7 @@ void TestConsoleLogin(string& username, string& password, uint32 requestid);
 
 void ConsoleSocket::OnRead()
 {
-	uint32 readlen = (uint32)GetReadBuffer().GetSize();
+	uint32 readlen = (uint32)readBuffer.GetSize();
 	uint32 len;
 	char * p;
 	if( ( readlen + m_pBufferPos ) >= m_pBufferLen )
@@ -199,7 +199,7 @@ void ConsoleSocket::OnRead()
 		return;
 	}
 
-	GetReadBuffer().Read((uint8*)&m_pBuffer[m_pBufferPos],  readlen);
+	readBuffer.Read((uint8*)&m_pBuffer[m_pBufferPos],  readlen);
 	m_pBufferPos += readlen;
 
 	// let's look for any newline bytes.

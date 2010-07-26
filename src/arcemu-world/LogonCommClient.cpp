@@ -48,12 +48,12 @@ void LogonCommClientSocket::OnRead()
 	{
 		if(!remaining)
 		{
-			if(GetReadBuffer().GetSize() < 6)
+			if(readBuffer.GetSize() < 6)
 				return;	 // no header
 
 			// read header
-			GetReadBuffer().Read((uint8*)&opcode, 2);
-			GetReadBuffer().Read((uint8*)&remaining, 4);
+			readBuffer.Read((uint8*)&opcode, 2);
+			readBuffer.Read((uint8*)&remaining, 4);
 
 			// decrypt the first two bytes
 			if(use_crypto)
@@ -67,7 +67,7 @@ void LogonCommClientSocket::OnRead()
 		}
 
 		// do we have a full packet?
-		if(GetReadBuffer().GetSize() < remaining)
+		if(readBuffer.GetSize() < remaining)
 			return;
 
 		// create the buffer
@@ -76,7 +76,7 @@ void LogonCommClientSocket::OnRead()
 		{
 			buff.resize(remaining);
 			//Read(remaining, (uint8*)buff.contents());
-			GetReadBuffer().Read((uint8*)buff.contents(), remaining);
+			readBuffer.Read((uint8*)buff.contents(), remaining);
 		}
 
 		// decrypt the rest of the packet
