@@ -46,7 +46,7 @@ public:
 	bool Send(const uint8 * Bytes, uint32 Size);
 
 	// Burst system - Locks the sending mutex.
-	ARCEMU_INLINE void BurstBegin() { m_writeMutex.Acquire(); }
+	void BurstBegin() { m_writeMutex.Acquire(); }
 
 	// Burst system - Adds bytes to output buffer.
 	bool BurstSend(const uint8 * Bytes, uint32 Size);
@@ -55,28 +55,28 @@ public:
 	void BurstPush();
 
 	// Burst system - Unlocks the sending mutex.
-	ARCEMU_INLINE void BurstEnd() { m_writeMutex.Release(); }
+	void BurstEnd() { m_writeMutex.Release(); }
 
 /* Client Operations */
 
 	// Get the client's ip in numerical form.
 	string GetRemoteIP();
-	ARCEMU_INLINE uint32 GetRemotePort() { return ntohs(m_client.sin_port); }
-	ARCEMU_INLINE SOCKET GetFd() { return m_fd; }
+	uint32 GetRemotePort() { return ntohs(m_client.sin_port); }
+	SOCKET GetFd() { return m_fd; }
 	
 /* Platform-specific methods */
 
-	void SetupReadEvent();
-	void ReadCallback(uint32 len);
-	void WriteCallback();
+	bool SetupReadEvent();
+	bool ReadCallback(uint32 len);
+	bool WriteCallback();
 
-	ARCEMU_INLINE bool IsDeleted() { return m_deleted; }
-	ARCEMU_INLINE bool IsConnected() { return m_connected; }
-	ARCEMU_INLINE sockaddr_in & GetRemoteStruct() { return m_client; }
+	bool IsDeleted() { return m_deleted; }
+	bool IsConnected() { return m_connected; }
+	sockaddr_in & GetRemoteStruct() { return m_client; }
 
 	void Delete();
 
-	ARCEMU_INLINE in_addr GetRemoteAddress() { return m_client.sin_addr; }
+	in_addr GetRemoteAddress() { return m_client.sin_addr; }
 
 
 	CircularBuffer readBuffer;
@@ -109,12 +109,12 @@ protected:
 public:
 
 	// Set completion port that this socket will be assigned to.
-	ARCEMU_INLINE void SetCompletionPort(HANDLE cp) { m_completionPort = cp; }
+	void SetCompletionPort(HANDLE cp) { m_completionPort = cp; }
 	
 	// Atomic wrapper functions for increasing read/write locks
-	ARCEMU_INLINE void IncSendLock() { InterlockedIncrement(&m_writeLock); }
-	ARCEMU_INLINE void DecSendLock() { InterlockedDecrement(&m_writeLock); }
-	ARCEMU_INLINE bool AcquireSendLock()
+	void IncSendLock() { InterlockedIncrement(&m_writeLock); }
+	void DecSendLock() { InterlockedDecrement(&m_writeLock); }
+	bool AcquireSendLock()
 	{
 		if(m_writeLock)
 			return false;
@@ -146,9 +146,9 @@ public:
 	void PostEvent(uint32 events);
 
 	// Atomic wrapper functions for increasing read/write locks
-	ARCEMU_INLINE void IncSendLock() { m_writeLockMutex.Acquire(); m_writeLock++; m_writeLockMutex.Release(); }
-	ARCEMU_INLINE void DecSendLock() { m_writeLockMutex.Acquire(); m_writeLock--; m_writeLockMutex.Release(); }
-	ARCEMU_INLINE bool HasSendLock() { bool res; m_writeLockMutex.Acquire(); res = (m_writeLock != 0); m_writeLockMutex.Release(); return res; }
+	void IncSendLock() { m_writeLockMutex.Acquire(); m_writeLock++; m_writeLockMutex.Release(); }
+	void DecSendLock() { m_writeLockMutex.Acquire(); m_writeLock--; m_writeLockMutex.Release(); }
+	bool HasSendLock() { bool res; m_writeLockMutex.Acquire(); res = (m_writeLock != 0); m_writeLockMutex.Release(); return res; }
 	bool AcquireSendLock()
 	{
 	  bool rv;
@@ -175,9 +175,9 @@ public:
 	// Posts a epoll event with the specifed arguments.
 	void PostEvent(int events, bool oneshot);
 	// Atomic wrapper functions for increasing read/write locks
-	ARCEMU_INLINE void IncSendLock() { m_writeLockMutex.Acquire(); m_writeLock++; m_writeLockMutex.Release(); }
-	ARCEMU_INLINE void DecSendLock() { m_writeLockMutex.Acquire(); m_writeLock--; m_writeLockMutex.Release(); }
-	ARCEMU_INLINE bool HasSendLock() { bool res; m_writeLockMutex.Acquire(); res = (m_writeLock != 0); m_writeLockMutex.Release(); return res; }
+	void IncSendLock() { m_writeLockMutex.Acquire(); m_writeLock++; m_writeLockMutex.Release(); }
+	void DecSendLock() { m_writeLockMutex.Acquire(); m_writeLock--; m_writeLockMutex.Release(); }
+	bool HasSendLock() { bool res; m_writeLockMutex.Acquire(); res = (m_writeLock != 0); m_writeLockMutex.Release(); return res; }
 	bool AcquireSendLock()
 	{
 		bool rv;
@@ -243,46 +243,5 @@ T* ConnectTCPSocket(const char * hostname, u_short port)
 	return s;	
 }
 
-/* Socket Garbage Collector */
-#define SOCKET_GC_TIMEOUT 15
-
-class SocketGarbageCollector : public Singleton<SocketGarbageCollector>
-{
-	map<Socket*, time_t> deletionQueue;
-	Mutex lock;
-public:
-	~SocketGarbageCollector()
-	{
-		map<Socket*, time_t>::iterator i;
-		for(i=deletionQueue.begin();i!=deletionQueue.end();++i)
-			delete i->first;
-	}
-
-	void Update()
-	{
-		map<Socket*, time_t>::iterator i, i2;
-		time_t t = UNIXTIME;
-		lock.Acquire();
-		for(i = deletionQueue.begin(); i != deletionQueue.end();)
-		{
-			i2 = i++;
-			if(i2->second <= t)
-			{
-				delete i2->first;
-				deletionQueue.erase(i2);
-			}
-		}
-		lock.Release();
-	}
-
-	void QueueSocket(Socket * s)
-	{
-		lock.Acquire();
-		deletionQueue.insert( map<Socket*, time_t>::value_type( s, UNIXTIME + SOCKET_GC_TIMEOUT ) );
-		lock.Release();
-	}
-};
-
-#define sSocketGarbageCollector SocketGarbageCollector::getSingleton()
-
 #endif
+

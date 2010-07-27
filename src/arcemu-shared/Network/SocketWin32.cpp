@@ -10,10 +10,10 @@
 #include "Network.h"
 #ifdef CONFIG_USE_IOCP
 
-void Socket::WriteCallback()
+bool Socket::WriteCallback()
 {
 	if(m_deleted || !m_connected)
-		return;
+		return true;
 
 	//printf("\nSocket::Writecallback(): sendsize : %u\n", this->m_writeByteCount);
 	// We don't want any writes going on while this is happening.
@@ -28,17 +28,6 @@ void Socket::WriteCallback()
 		buf.len = (u_long)writeBuffer.GetContiguiousBytes();
 		buf.buf = (char*)writeBuffer.GetBufferStart();
 
-		/*OverlappedStruct * ov = new OverlappedStruct(SOCKET_IO_EVENT_WRITE_END);
-		int r = WSASend(m_fd, &buf, 1, &w_length, flags, &ov->m_overlap, 0);
-		if(r == SOCKET_ERROR)
-		{
-			if(WSAGetLastError() != WSA_IO_PENDING)
-			{
-				DecSendLock();
-				Disconnect();
-			}
-		}*/
-
 		m_writeEvent.Mark();
 		m_writeEvent.Reset(SOCKET_IO_EVENT_WRITE_END);
 		int r = WSASend(m_fd, &buf, 1, &w_length, flags, &m_writeEvent.m_overlap, 0);
@@ -52,7 +41,13 @@ void Socket::WriteCallback()
 
 				m_writeEvent.Unmark();
 				DecSendLock();
+
+				m_writeMutex.Release();
+
+				BurstEnd();
 				Disconnect();
+
+				return false;
 			}
 		}
         m_BytesSent += w_length;
@@ -63,12 +58,14 @@ void Socket::WriteCallback()
 		DecSendLock();
 	}
 	m_writeMutex.Release();
+
+	return true;
 }
 
-void Socket::SetupReadEvent()
+bool Socket::SetupReadEvent()
 {
 	if(m_deleted || !m_connected)
-		return;
+		return true;
 
 	m_readMutex.Acquire();
 	DWORD r_length = 0;
@@ -77,15 +74,6 @@ void Socket::SetupReadEvent()
 	buf.len = (u_long)readBuffer.GetSpace();
 	buf.buf = (char*)readBuffer.GetBuffer();	
 
-	// event that will trigger after data is receieved
-	/*OverlappedStruct * ov = new OverlappedStruct(SOCKET_IO_EVENT_READ_COMPLETE);
-
-	if(WSARecv(m_fd, &buf, 1, &r_length, &flags, &ov->m_overlap, 0) == SOCKET_ERROR)
-	{
-		if(WSAGetLastError() != WSA_IO_PENDING)
-			Disconnect();
-	}*/
-
 	m_readEvent.Mark();
 	m_readEvent.Reset(SOCKET_IO_EVENT_READ_COMPLETE);
 	if(WSARecv(m_fd, &buf, 1, &r_length, &flags, &m_readEvent.m_overlap, 0) == SOCKET_ERROR)
@@ -93,19 +81,27 @@ void Socket::SetupReadEvent()
 		if(WSAGetLastError() != WSA_IO_PENDING)
 		{
 			m_readEvent.Unmark();
+			m_readMutex.Release();
+
 			Disconnect();
+
+			return false;
 		}
 	}
     m_BytesRecieved += r_length;
-	//m_readEvent = ov;
 	m_readMutex.Release();
+
+	return true;
 }
 
-void Socket::ReadCallback(uint32 len)
+bool Socket::ReadCallback(uint32 len)
 {
 	readBuffer.IncrementWritten(len);
 	OnRead();
-	SetupReadEvent();
+	
+	bool ret = SetupReadEvent();
+
+	return ret;
 }
 
 void Socket::AssignToCompletionPort()

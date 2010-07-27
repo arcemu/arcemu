@@ -135,7 +135,10 @@ bool SocketWorkerThread::run()
 			else if(events[i].filter == EVFILT_WRITE)
             {
                 ptr->BurstBegin();          // Lock receive mutex
-                ptr->WriteCallback();       // Perform actual send()
+                bool ret = ptr->WriteCallback();       // Perform actual send()
+				if( !ret )
+					continue;
+
                 if(ptr->writeBuffer.GetSize() > 0)
                     ptr->PostEvent(EVFILT_WRITE, true);   // Still remaining data.
                 else
@@ -147,7 +150,10 @@ bool SocketWorkerThread::run()
             }
 			else if(events[i].filter == EVFILT_READ)
             {
-                ptr->ReadCallback(0);               // Len is unknown at this point.
+                bool ret = ptr->ReadCallback(0);               // Len is unknown at this point.
+				if( !ret )
+					continue;
+
 				if(ptr->writeBuffer.GetSize() > 0 && ptr->IsConnected() && !ptr->HasSendLock())
 				{
 					ptr->PostEvent(EVFILT_WRITE, true);

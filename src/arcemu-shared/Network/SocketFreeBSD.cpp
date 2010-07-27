@@ -24,7 +24,7 @@ void Socket::PostEvent(int events, bool oneshot)
 		Log.Warning("kqueue", "Could not modify event for fd %u", GetFd());
 }
 
-void Socket::ReadCallback(uint32 len)
+bool Socket::ReadCallback(uint32 len)
 {
     // We have to lock here.
     m_readMutex.Acquire();
@@ -35,7 +35,7 @@ void Socket::ReadCallback(uint32 len)
     {
         m_readMutex.Release();
         Disconnect();
-        return;
+        return false;
     }    
     else if(bytes > 0)
     {
@@ -47,6 +47,8 @@ void Socket::ReadCallback(uint32 len)
     m_BytesRecieved += bytes;
 
     m_readMutex.Release();
+
+	return true;
 }
 
 void Socket::WriteCallback()
@@ -56,6 +58,7 @@ void Socket::WriteCallback()
     if(bytes_written < 0)
     {
         // error.
+		BurstEnd();
         Disconnect();
         return;
     }

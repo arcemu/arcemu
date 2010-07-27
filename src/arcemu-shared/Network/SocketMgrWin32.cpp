@@ -97,8 +97,12 @@ void HandleWriteComplete(Socket * s, uint32 len)
 		s->m_writeEvent.Unmark();
 		s->BurstBegin();					// Lock
 		s->writeBuffer.Remove(len);
-		if( s->writeBuffer.GetContiguiousBytes() > 0 )
-			s->WriteCallback();
+		if( s->writeBuffer.GetContiguiousBytes() > 0 ){
+			bool ret = s->WriteCallback();
+
+			if( !ret )
+				return;
+		}
 		else
 			s->DecSendLock();
 		s->BurstEnd();					  // Unlock
