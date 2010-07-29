@@ -157,9 +157,7 @@ bool SocketWorkerThread::run()
             }
 			else if(events[i].events & EPOLLIN)
             {
-                bool ret = ptr->ReadCallback(0);               // Len is unknown at this point.
-				if( !ret )
-					continue;
+                ptr->ReadCallback(0);               // Len is unknown at this point.
 
 				/* changing to written state? */
 				if(ptr->writeBuffer.GetSize() && !ptr->HasSendLock() && ptr->IsConnected())
@@ -168,11 +166,7 @@ bool SocketWorkerThread::run()
 			else if(events[i].events & EPOLLOUT)
             {
                 ptr->BurstBegin();          // Lock receive mutex
-                bool ret = ptr->WriteCallback();       // Perform actual send()
-
-				if( !ret )
-					continue;
-
+                ptr->WriteCallback();       // Perform actual send()
                 if(ptr->writeBuffer.GetSize() > 0)
                 {
                     /* we don't have to do anything here. no more oneshots :) */
