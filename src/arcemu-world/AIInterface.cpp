@@ -30,9 +30,11 @@ AIInterface::AIInterface(Unit * self)
 	m_timeToMove = 0;
 	m_timeMoved = 0;
 	m_moveTimer = 0;
-	m_moveMode = AIMOVESTATE_WALK;
+	m_moveMode = 0;
+	//Walking by default.
+	Movement_setmovemode(AIMOVESTATE_WALK);
 	m_creatureState = STOPPED;
-	m_AIState = STATE_IDLE;
+	setAIState(STATE_IDLE);
 	m_runSpeed = 0.0f;
 	m_flySpeed = 0.0f;
 	m_totalMoveTime = 0;
@@ -375,7 +377,7 @@ void AIInterface::handleMovement()
 			m_destVector.x = 0.0f;
 			m_destVector.y = 0.0f;
 			m_destVector.z = 0.0f;
-			m_timeMoved = m_timeToMove = 0;
+			m_timeMoved = m_timeToMove = m_moveTimer = 0;
 			//Handle waypoints here.
 			if( hasWaypoints() && ( state == STATE_IDLE || state == STATE_SCRIPTMOVE) )
 				TO_AIMOB(this)->OnReachWp();
@@ -890,18 +892,21 @@ AIMovementFlags AIInterface::Movement_getmovemode()
 }
 void AIInterface::Movement_setmovemode( AIMovementFlags flag )
 {
+	//clear lower nibble
+	m_moveMode &= 0xF0;
+	//set
 	m_moveMode |= (flag & 0x0F);
 }
 void AIInterface::Movement_allowmovement( bool allow)
 {
-	if( allow)
+	if(!allow && !Movement_canmove() )
 		m_moveMode |= AIMOVESTATE_CANTMOVE;
-	else
+	else if(Movement_canmove() )
 		m_moveMode &= ~AIMOVESTATE_CANTMOVE;
 }
 bool AIInterface::Movement_canmove()
 {
-	return (m_moveMode & AIMOVESTATE_CANTMOVE) != 0;
+	return (m_moveMode & AIMOVESTATE_CANTMOVE) == 0;
 }
 bool AIInterface::Movement_isflying()
 {
