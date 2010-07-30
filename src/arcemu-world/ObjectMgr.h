@@ -338,7 +338,8 @@ public:
 
 	~Charter()
 	{
-		delete [] Signatures;
+		if( SignatureCount > 0 )
+			delete [] Signatures;
 	}
 	
 	void SaveToDB();
