@@ -620,12 +620,12 @@ bool Spell::GenerateTargets(SpellCastTargets* t)
 			}
 			else
 			{
-				if (u_caster->GetAIInterface()->GetNextTarget() != NULL && TargetType & SPELL_TARGET_REQUIRE_ATTACKABLE)
+				if (u_caster->GetAIInterface()->getNextTarget() != NULL && TargetType & SPELL_TARGET_REQUIRE_ATTACKABLE)
 				{
 					t->m_targetMask |= TARGET_FLAG_DEST_LOCATION | TARGET_FLAG_UNIT;
-					t->m_destX = u_caster->GetAIInterface()->GetNextTarget()->GetPositionX();
-					t->m_destY = u_caster->GetAIInterface()->GetNextTarget()->GetPositionY();
-					t->m_destZ = u_caster->GetAIInterface()->GetNextTarget()->GetPositionZ();
+					t->m_destX = u_caster->GetAIInterface()->getNextTarget()->GetPositionX();
+					t->m_destY = u_caster->GetAIInterface()->getNextTarget()->GetPositionY();
+					t->m_destZ = u_caster->GetAIInterface()->getNextTarget()->GetPositionZ();
 					result = true;
 				}
 				else if (TargetType & SPELL_TARGET_REQUIRE_FRIENDLY)
@@ -655,10 +655,10 @@ bool Spell::GenerateTargets(SpellCastTargets* t)
 		{
 			if (TargetType & SPELL_TARGET_REQUIRE_ATTACKABLE)
 			{
-				if (u_caster->GetAIInterface()->GetNextTarget() != NULL)
+				if (u_caster->GetAIInterface()->getNextTarget() != NULL)
 				{
 					t->m_targetMask |= TARGET_FLAG_UNIT;
-					t->m_unitTarget = u_caster->GetAIInterface()->GetNextTarget()->GetGUID();
+					t->m_unitTarget = u_caster->GetAIInterface()->getNextTarget()->GetGUID();
 					result = true;
 				}
 			}
@@ -672,12 +672,12 @@ bool Spell::GenerateTargets(SpellCastTargets* t)
 		//target cone
 		if (TargetType & SPELL_TARGET_AREA_CONE)
 		{
-			if (u_caster->GetAIInterface()->GetNextTarget() != NULL)
+			if (u_caster->GetAIInterface()->getNextTarget() != NULL)
 			{
 				t->m_targetMask |= TARGET_FLAG_DEST_LOCATION;
-				t->m_destX = u_caster->GetAIInterface()->GetNextTarget()->GetPositionX();
-				t->m_destY = u_caster->GetAIInterface()->GetNextTarget()->GetPositionY();
-				t->m_destZ = u_caster->GetAIInterface()->GetNextTarget()->GetPositionZ();
+				t->m_destX = u_caster->GetAIInterface()->getNextTarget()->GetPositionX();
+				t->m_destY = u_caster->GetAIInterface()->getNextTarget()->GetPositionY();
+				t->m_destZ = u_caster->GetAIInterface()->getNextTarget()->GetPositionZ();
 				result = true;
 			}
 		}

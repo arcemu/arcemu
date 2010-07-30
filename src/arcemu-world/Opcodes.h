@@ -1260,7 +1260,7 @@ enum Opcodes {
     MSG_SET_RAID_DIFFICULTY                         = 0x4EB,	// implemented
     CMSG_WORLD_STATE_UI_TIMER_UPDATE                = 0x4F6,	// implemented
     SMSG_WORLD_STATE_UI_TIMER_UPDATE                = 0x4F7,	// implemented
-    NUM_MSG_TYPES                                   = 0x4F8,	// max msg number
+    NUM_MSG_TYPES                                   = 0x51B,	// max msg number
 };
 
 enum FriendsResult {

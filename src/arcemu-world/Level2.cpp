@@ -172,7 +172,7 @@ bool ChatHandler::HandleDeleteCommand(const char* args, WorldSession *m_session)
 	}
 	sGMLog.writefromsession(m_session, "used npc delete, sqlid %u, creature %s, pos %f %f %f", unit->GetSQL_id(), unit->GetCreatureInfo()->Name, unit->GetPositionX(), unit->GetPositionY(), unit->GetPositionZ());
 
-	unit->GetAIInterface()->hideWayPoints( m_session->GetPlayer() );
+	//unit->GetAIInterface()->hideWayPoints( m_session->GetPlayer() );
     
     unit->DeleteFromDB();
 
@@ -1198,31 +1198,29 @@ bool ChatHandler::HandleAddAIAgentCommand(const char* args, WorldSession *m_sess
 	WorldDatabase.Execute( qry.str().c_str( ) );
 
 	AI_Spell * sp = new AI_Spell;
-	sp->agent = static_cast<uint16>( atoi(agent) );
-	sp->procChance = atoi(procChance);
+	sp->spell_agent = (uint8)atoi(agent);
+	sp->procChance = (uint8)atoi(procChance);
 /*	sp->procCount = atoi(procCount);*/
-	sp->spell = dbcSpell.LookupEntry(atoi(spellId));
-	sp->spellType = static_cast<uint8>( atoi(spellType) );
+	sp->proto = dbcSpell.LookupEntry(atoi(spellId));
+	sp->type = (uint8)atoi(spellType);
 //	sp->spelltargetType = atoi(spelltargetType);
-	sp->floatMisc1 = (float)atof(floatMisc1);
-	sp->Misc2 = (uint32)atof(Misc2);
 	sp->cooldown = (uint32)atoi(spellCooldown);
-	sp->procCount= 0;
-	sp->procCounter= 0;
-	sp->cooldowntime= 0;
+	//sp->procCount= 0;
+	//sp->procCounter= 0;
+	//sp->interval= 0;
 	sp->minrange = GetMinRange(dbcSpellRange.LookupEntry(dbcSpell.LookupEntry(atoi(spellId))->rangeIndex));
 	sp->maxrange = GetMaxRange(dbcSpellRange.LookupEntry(dbcSpell.LookupEntry(atoi(spellId))->rangeIndex));
 
 	target->GetProto()->spells.push_back(sp);
 
-	if(sp->agent == AGENT_CALLFORHELP)
+	/*if(sp->agent == AGENT_CALLFORHELP)
 		target->GetAIInterface()->m_canCallForHelp = true;
 	else if(sp->agent == AGENT_FLEE)
 		target->GetAIInterface()->m_canFlee = true;
 	else if(sp->agent == AGENT_RANGED)
 		target->GetAIInterface()->m_canRangedAttack = true;
 	else
-		target->GetAIInterface()->addSpellToList(sp);
+		target->GetAIInterface()->addSpellToList(sp);*/
 
 	return true;
 }

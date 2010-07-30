@@ -21,8 +21,6 @@
 #ifndef _PET_H
 #define _PET_H
 
-#define PET_SPELL_SPAM_COOLDOWN 2000 //applied only to spells that have no cooldown
-
 /* Taken from ItemPetFood.dbc
  * Each value is equal to a flag
  * so 1 << PET_FOOD_BREAD for example
@@ -41,23 +39,6 @@ enum PET_FOOD
 	PET_FOOD_RAW_FISH  // not used in pet diet
 };
 
-
-enum PET_ACTION
-{
-	PET_ACTION_STAY,
-	PET_ACTION_FOLLOW,
-	PET_ACTION_ATTACK,
-	PET_ACTION_DISMISS,
-	PET_ACTION_CASTING,
-};
-
-enum PET_STATE
-{
-	PET_STATE_PASSIVE,
-	PET_STATE_DEFENSIVE,
-	PET_STATE_AGGRESSIVE
-};
-
 enum PetActionFeedback
 {
 	PET_FEEDBACK_NONE,
@@ -72,16 +53,6 @@ enum PET_RENAME
 	PET_RENAME_ALLOWED		= 0x03
 };
 
-enum PET_SPELL
-{
-	PET_SPELL_PASSIVE = 0x06000000,
-	PET_SPELL_DEFENSIVE,
-	PET_SPELL_AGRESSIVE,
-	PET_SPELL_STAY = 0x07000000,
-	PET_SPELL_FOLLOW,
-	PET_SPELL_ATTACK
-};
-
 enum StableState
 {
 	STABLE_STATE_ACTIVE		= 1,
@@ -94,26 +65,16 @@ enum HappinessState
 	HAPPY		= 3
 };
 
-enum AutoCastEvents
-{
-	AUTOCAST_EVENT_NONE					= 0,
-	AUTOCAST_EVENT_ATTACK				= 1,
-	AUTOCAST_EVENT_ON_SPAWN				= 2,
-	AUTOCAST_EVENT_OWNER_ATTACKED		= 3,
-	AUTOCAST_EVENT_LEAVE_COMBAT			= 4,
-	AUTOCAST_EVENT_COUNT				= 5,
-};
-
 #define PET_TALENT_TREE_START	409	// Tenacity
 #define PET_TALENT_TREE_END		411	// Cunning
 
 #define PET_DELAYED_REMOVAL_TIME 60000  // 1 min
 
-#define DEFAULT_SPELL_STATE 0x8100
-#define AUTOCAST_SPELL_STATE 0xC100
 
 
-enum PetType{
+
+enum PetType
+{
 	HUNTERPET = 1,
 	WARLOCKPET = 2,
 };
@@ -135,39 +96,21 @@ public:
     bool IsPet() { return true; }
 
 	void LoadFromDB(Player* owner, PlayerPet * pi);
-	//CreateAsSummon() returns false if an error occurred. The caller MUST delete us.
+
 	bool CreateAsSummon(uint32 entry, CreatureInfo *ci, Creature *created_from_creature, Player* owner, SpellEntry *created_by_spell, uint32 type, uint32 expiretime, LocationVector* Vec = NULL, bool dismiss_old_pet = true);
 
 	virtual void Update(uint32 time);
 	void OnPushToWorld();
 
-	ARCEMU_INLINE uint32 GetXP(void) { return m_PetXP; }
-
-	void InitializeSpells();
 	void InitializeMe(bool first);
 	void SendSpellsToOwner();
 	void SendNullSpellsToOwner();
 	void SendCastFailed( uint32 spellid, uint8 fail );
 	void SendActionFeedback( PetActionFeedback value  );
 
-	ARCEMU_INLINE void SetPetAction(uint32 act) { m_Action = act; }
-	ARCEMU_INLINE uint32 GetPetAction(void) { return m_Action; }
-
-	ARCEMU_INLINE void SetPetState(uint32 state) { m_State = state; }
-	ARCEMU_INLINE uint32 GetPetState(void) { return m_State; }
-
 	ARCEMU_INLINE void SetPetDiet(uint32 diet) { m_Diet = diet; }
 	ARCEMU_INLINE void SetPetDiet() { m_Diet = myFamily->petdietflags; }
 	ARCEMU_INLINE uint32 GetPetDiet(void) { return m_Diet; }
-
-	ARCEMU_INLINE AI_Spell* GetAISpellForSpellId(uint32 spellid)
-	{
-		std::map<uint32, AI_Spell*>::iterator itr = m_AISpellStore.find(spellid);
-		if(itr != m_AISpellStore.end())
-			return itr->second;
-		else
-			return NULL;
-	}
 
 	void UpdatePetInfo(bool bSetToOffline);
 	void Remove( bool bUpdate, bool bSetOffline );
@@ -183,59 +126,94 @@ public:
 
 	ARCEMU_INLINE Player* GetPetOwner() { return m_Owner; }
 	ARCEMU_INLINE void ClearPetOwner() { m_Owner = NULL; }
+	
+	/*	Returns the current pet exp. */
+	ARCEMU_INLINE uint32 getPetXP() { return GetUInt32Value(UNIT_FIELD_PETEXPERIENCE); }
+	/*	Sets our current exp */
+	ARCEMU_INLINE void setPetXP(uint32 xp) { SetUInt32Value(UNIT_FIELD_PETEXPERIENCE, xp); }
+	/*	Gets the exp to the next level. */
+	ARCEMU_INLINE uint32 getPetNextLvlXP() { return GetUInt32Value(UNIT_FIELD_PETNEXTLEVELEXP); }
+	/*	Sets exp to the next level. */
+	ARCEMU_INLINE void setPetNextLvlXP(uint32 xp) { SetUInt32Value(UNIT_FIELD_PETNEXTLEVELEXP, xp); }
+
 	bool CanGainXP();
 	void GiveXP( uint32 xp );
-	uint32 GetNextLevelXP(uint32 currentlevel);
+	uint32 calcNextLvlXP(uint32 currentlevel);
 	void ApplyStatsForLevel();
 	void ApplySummonLevelAbilities();
 	void ApplyPetLevelAbilities();
 	void UpdateAP();
 	void LoadPetAuras(int32 id);
-	void SetDefaultActionbar();
+	void setDefaultActionbar();
 	void SetActionBarSlot(uint32 slot, uint32 spell){ ActionBar[ slot ] = spell; }
+	
+	//////////////////////////////////////////////////////////////////////////
+	//-----------------PET SPELL MUTATORS-------------------//
+	//////////////////////////////////////////////////////////////////////////
 
-	void AddSpell(SpellEntry * sp, bool learning, bool showLearnSpell = true);
-	void RemoveSpell(SpellEntry * sp, bool showUnlearnSpell = true);
-	void WipeTalents();
-	uint32 GetUntrainCost();
-	void SetSpellState(SpellEntry * sp, uint16 State);
-	uint16 GetSpellState(SpellEntry * sp);
-	bool HasSpell( uint32 SpellID )
-	{
-		SpellEntry * sp = dbcSpell.LookupEntryForced( SpellID );
-		if( sp )
-			return mSpells.find( sp ) != mSpells.end();
-		return false;
-	}
-	ARCEMU_INLINE void RemoveSpell( uint32 SpellID )
-	{
-		SpellEntry * sp = dbcSpell.LookupEntryForced( SpellID );
-		if( sp ) RemoveSpell( sp );
-	}
-	ARCEMU_INLINE void SetSpellState( uint32 SpellID, uint16 State )
-	{
-		SpellEntry * sp = dbcSpell.LookupEntryForced( SpellID );
-		if( sp ) SetSpellState(sp, State);
-	}
-	ARCEMU_INLINE uint16 GetSpellState( uint32 SpellID )
-	{
-		if( SpellID == 0 )
-			return DEFAULT_SPELL_STATE;
+	//************************************
+	// Purpose:	Adds the specified ai pet spell to the ai autocast list.
+	// Parameter: AI_PetSpell *	spell - a pointer to a ai pet spell to add.
+	// Parameter: bool learning - when true if this spell is a successer to a previous action bar spell or the action bar has extar slots, it gets placed there.
+	// Parameter: bool showLearnSpell - when true, it sends a pet learnt spell packet.
+	//************************************
+	void Spell_add(AI_PetSpell* spell, bool learning, bool showLearnSpell = true);
 
-		SpellEntry * sp = dbcSpell.LookupEntryForced( SpellID );
-		if( sp )
-			return GetSpellState( sp );
-		return DEFAULT_SPELL_STATE;
-	}
+	//************************************
+	// Purpose:	Returns true if we have the pet spell specified in either autocast list or talent list, false otherwise
+	// Parameter: uint32 SpellID - a valid spell id
+	//************************************
+	bool Spell_has( uint32 SpellID );
 
-	AI_Spell * CreateAISpell(SpellEntry * info);
-	ARCEMU_INLINE PetSpellMap* GetSpells() { return &mSpells; }
+	//************************************
+	// Purpose:	Removes the specified spell_id from either the talent list or autocast list. If it's a talent, then it also removes the aura from the unit.
+	// Parameter: uint32 spell_id - a valid spell id.
+	// Parameter: bool showUnlearnSpell - if true, it sends a pet unlearnt packet.
+	//************************************
+	void Spell_remove(uint32 spell_id, bool showUnlearnSpell = true);
+
+	//////////////////////////////////////////////////////////////////////////
+	//-----------------PET TALENT MUTATORS-------------------//
+	//////////////////////////////////////////////////////////////////////////
+
+	//************************************
+	// Purpose: Adds a new talent to our list. If the spell is a passive, it casts on itself, 
+	//			otherwise it adds an AI_PetSpell represented by this id to the pets ai auto cast list.
+	// Parameter: uint32 spell - a valid spell id to add.
+	// Parameter: bool show - if this is true, the pet owner sends an smsg pet learnt spell packet to show the learnt spell.
+	//************************************/
+	void Talent_add(uint32 spell, bool show = false);
+
+	//************************************
+	// Purpose:	Removes the id from the internal list.If  the spell is a passive spell, it removes the aura from the unit,
+	//			otherwise it removes the spell from the ai autocast list.
+	// Parameter: uint32 spell - a valid spell id to remove.
+	// Parameter: bool show	- if this is true, it sends a pet unlearned packet.
+	//************************************
+	void Talent_remove(uint32 spell, bool show = false);
+
+	//************************************
+	// Purpose:	Returns true if we have the specified spell in our talent list.
+	// Parameter: uint32 spell - a valid spell id to check.
+	//************************************
+	bool Talent_has(uint32 spell);
+
+	//************************************
+	// Purpose:	Clears our talent list of all entries. For every entry, if it is a passive spell, we remove the aura from the unit,
+	//			otherwise, we remove the spell from our ai autocast list.
+	//************************************
+	void Talent_wipe();
+
+	//************************************
+	// Purpose:	Returns a reference to the internal talent list.
+	//************************************
+	std::set<uint32> & Talent_getAll() { return m_talentSpells; }
+	
+	uint32 getUntrainCost();
 	ARCEMU_INLINE bool IsSummon() { return Summon; }
 
-	void  SetAutoCastSpell(AI_Spell * sp);
 	void Rename(string NewName);
 	ARCEMU_INLINE string& GetName() { return m_name; }
-	uint32 CanLearnSpell( SpellEntry* sp );
 	void UpdateSpellList( bool showLearnSpells = true );
 
 	// talents
@@ -245,10 +223,6 @@ public:
 	ARCEMU_INLINE uint8 GetTPs() { return GetByte( UNIT_FIELD_BYTES_1, 1 ); }				// returns available talent points
 	ARCEMU_INLINE uint8 GetSpentTPs() { return GetTPsForLevel( getLevel() ) - GetTPs(); }	// returns amount of spent talent points
 
-	void HandleAutoCastEvent( AutoCastEvents Type );
-	AI_Spell * HandleAutoCastEvent();
-	void SetPetSpellState(uint32 spell, uint16 state);
-	void SetAutoCast(AI_Spell * sp, bool on);
 	float GetHappinessDmgMod() { return 0.25f * GetHappinessState() + 0.5f; };
 	bool IsBeingDeleted(){ return ScheduledForDeletion; }
 
@@ -259,23 +233,16 @@ public:
 	void Die( Unit *pAttacker, uint32 damage, uint32 spellid );
 
 protected:
-	Player *m_Owner;
-	uint32 m_PetXP;
-	PetSpellMap mSpells;
+	
+	Player * m_Owner;	//our owner, only players can be pet owners, creature owners have guardians.
 	PlayerPet * mPi;
 	uint32 ActionBar[10];   // 10 slots
-
-	std::map<uint32, AI_Spell*> m_AISpellStore;
-
-	uint32 m_AutoCombatSpell;
+	std::set<uint32> m_talentSpells;	//any talent auras we store them here.
 
 	uint32 m_HappinessTimer;
 	uint32 m_PetNumber;
-	uint32 m_Action;
-	uint32 m_State;
 	uint32 m_ExpireTime;
 	uint32 m_Diet;
-	uint64 m_OwnerGuid;
 	time_t reset_time;
 	uint32 reset_cost;
 	bool bExpires;
@@ -284,9 +251,6 @@ protected:
 	string m_name;
 	HappinessState GetHappinessState();
 	void SetNameForEntry( uint32 entry );
-	uint32 GetAutoCastTypeForSpell( SpellEntry * ent );
-
-	list<AI_Spell*> m_autoCastSpells[AUTOCAST_EVENT_COUNT];
 };
 
 #define PET_HAPPINESS_UPDATE_VALUE 333000

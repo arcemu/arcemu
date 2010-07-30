@@ -722,9 +722,7 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 		return;
 
 	if(GetProto()->speed > 0 && m_triggeredSpell == false )
-	{
 		m_caster->SpellNonMeleeDamageLog(unitTarget,GetProto()->Id, dmg, pSpellId== 0);
-	}
 	else
 	{
 		if( GetType() == SPELL_DMG_TYPE_MAGIC )
@@ -1031,12 +1029,12 @@ out:
 					continue;
 
 				Creature *cr= static_cast<Creature*>((*i2));
-				if(cr->GetAIInterface()->GetNextTarget()==unitTarget)
+				if(cr->GetAIInterface()->getNextTarget()==unitTarget)
 					targets[targets_got++]=cr;
 				if(targets_got==3)
 					break;
 			}
-			for(uint32 j= 0;j<targets_got;j++)
+			/*for(uint32 j= 0;j<targets_got;j++)
 			{
 				//set threat to this target so we are the msot hated
 				uint32 threat_to_him = targets[j]->GetAIInterface()->getThreatByPtr( unitTarget );
@@ -1045,8 +1043,8 @@ out:
 				if(threat_dif>0)//should nto happen
 					targets[j]->GetAIInterface()->modThreatByPtr(u_caster,threat_dif);
 				targets[j]->GetAIInterface()->AttackReaction(u_caster,1,0);
-				targets[j]->GetAIInterface()->SetNextTarget(u_caster);
-			}
+				targets[j]->GetAIInterface()->setNextTarget(u_caster);
+			}*/
 		}break;
 		/*
 		Illumination
@@ -1276,7 +1274,7 @@ out:
 				unitTarget->smsg_AttackStart( unitTarget );
 				unitTarget->setAttackTimer(time, false);
 				unitTarget->setAttackTimer(time, true);
-				unitTarget->GetAIInterface()->taunt(u_caster,true);
+				unitTarget->GetAIInterface()->setForcedTarget(u_caster);
 			}
 		}break;
 		// Bloodworms
@@ -2160,7 +2158,7 @@ void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
 
 		m_pendingAuras.insert(std::make_pair(unitTarget->GetGUID(), pAura));
 		AddRef();
-		sEventMgr.AddEvent(this, &Spell::HandleAddAura, unitTarget->GetGUID(), EVENT_SPELL_HIT, 100, 1, 0);
+		sEventMgr.AddEvent(this, &Spell::HandleAddAura, unitTarget->GetGUID(), EVENT_SPELL_DAMAGE_HIT, 100, 1, 0);
 	}
 	else
 	{
@@ -3094,11 +3092,6 @@ void Spell::SpellEffectSummon(uint32 i)
 				summon->DeleteMe();//CreateAsSummon() returns false if an error occurred.
 				summon = NULL;
 			}
-			else
-			{
-				summon->AddSpell( dbcSpell.LookupEntry(31707), true );
-				summon->AddSpell( dbcSpell.LookupEntry(33395), true );
-			}
 		}break;
 	case 37994:	// Water Elemental - no duration timer
 		{
@@ -3107,10 +3100,6 @@ void Spell::SpellEffectSummon(uint32 i)
 			{
 				summon->DeleteMe();//CreateAsSummon() returns false if an error occurred.
 				summon = NULL;
-			}
-			else
-			{
-				summon->AddSpell( dbcSpell.LookupEntry(31707), true );
 			}
 		}break;
 	case 29264: // Feral Spirit
@@ -3128,15 +3117,6 @@ void Spell::SpellEffectSummon(uint32 i)
 				summon->DeleteMe();//CreateAsSummon() returns false if an error occurred.
 				summon = NULL;
 			}
-			else
-			{
-			//Spells
-				summon->AddSpell(dbcSpell.LookupEntry(58877), true); // Spirit Hunt
-				summon->AddSpell(dbcSpell.LookupEntry(58875), true); // Spirit walk
-				summon->AddSpell(dbcSpell.LookupEntry(58857), true); // Twin Howl
-				summon->AddSpell(dbcSpell.LookupEntry(58861), true); // Spirit Bash
-			}
-
 			//Second wolf
 			Pet *summon2 = objmgr.CreatePet(GetProto()->EffectMiscValue[i]);
 			LocationVector* lv = new LocationVector(p_caster->GetPositionX() - 2.0f, p_caster->GetPositionY() - 2.0f, p_caster->GetPositionZ());
@@ -3146,15 +3126,7 @@ void Spell::SpellEffectSummon(uint32 i)
 				summon2 = NULL;
 			}
 			else
-			{
-				summon2->GetAIInterface()->SetUnitToFollowAngle(float(-(M_PI/2)));
-			
-				//Spells
-				summon2->AddSpell(dbcSpell.LookupEntry(58877), true); // Spirit Hunt
-				summon2->AddSpell(dbcSpell.LookupEntry(58875), true); // Spirit walk
-				summon2->AddSpell(dbcSpell.LookupEntry(58857), true); // Twin Howl
-				summon2->AddSpell(dbcSpell.LookupEntry(58861), true); // Spirit Bash
-			}
+				summon2->GetAIInterface()->setFollowAngle(float(-(M_PI/2)));
 			delete lv;
 		}break;
 	case 27893: // Dancing Rune Weapon
@@ -3183,7 +3155,7 @@ void Spell::SpellEffectSummon(uint32 i)
 				summon->SetDisplayId((uint32)15435);
 				summon->SetMinDamage((float)p_caster->GetDamageDoneMod(SCHOOL_NORMAL));
 				summon->SetMaxDamage((float)p_caster->GetDamageDoneMod(SCHOOL_NORMAL));
-				summon->GetAIInterface()->SetUnitToFollowAngle(float(-(M_PI/2)));
+				summon->GetAIInterface()->setFollowAngle(float(-(M_PI/2)));
 
 				Item * item = p_caster->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
 				if( item != NULL )
@@ -3208,7 +3180,6 @@ void Spell::SpellEffectSummon(uint32 i)
 			Arcemu::Util::ARCEMU_ASSERT(   pCreature != NULL);
 
 			pCreature->Load(cp, m_targets.m_destX, m_targets.m_destY, m_targets.m_destZ);
-			pCreature->GetAIInterface()->Init(pCreature, AITYPE_PASSIVE, MOVEMENTTYPE_NONE);
 			pCreature->setLevel(u_caster->getLevel());
 			pCreature->SetFaction(u_caster->GetFaction());
 
@@ -3223,10 +3194,11 @@ void Spell::SpellEffectSummon(uint32 i)
 			Arcemu::Util::ARCEMU_ASSERT(   pCreature != NULL);
 
 			pCreature->Load(cp, u_caster->GetPositionX(), u_caster->GetPositionY(), u_caster->GetPositionZ());
-			pCreature->GetAIInterface()->Init(pCreature,AITYPE_PET,MOVEMENTTYPE_NONE,u_caster);
-			pCreature->GetAIInterface()->SetUnitToFollow(u_caster);
-			pCreature->GetAIInterface()->SetUnitToFollowAngle(float(-(M_PI/2)));
-			pCreature->GetAIInterface()->SetFollowDistance(GetRadius(i));
+			AIInterface * ai = pCreature->GetAIInterface();
+			Arcemu::Util::ARCEMU_ASSERT(ai != NULL);
+			ai->setUnitToFollow(u_caster->GetGUID() );
+			ai->setFollowAngle(float(-(M_PI/2)) );
+			ai->setFollowDistance( (uint32)GetRadius(i) );
 			pCreature->setLevel(u_caster->getLevel());
 			pCreature->SetFaction(u_caster->GetFaction());
 
@@ -3248,7 +3220,7 @@ void Spell::SpellEffectSummon(uint32 i)
 				if( uTarget && isAttackable( p_caster, uTarget ) )
 				{
 					pCreature->GetAIInterface()->AttackReaction( uTarget, 1 );
-					pCreature->GetAIInterface()->SetNextTarget( uTarget );
+					pCreature->GetAIInterface()->setNextTarget( uTarget );
 				}
 			}
 			else if ( MiscValue == 24207 ) //Army of the dead ghoul.
@@ -3257,14 +3229,12 @@ void Spell::SpellEffectSummon(uint32 i)
 				float pi_rand = ((int32)(rand()-RAND_MAX*0.5f)%15707)/10000.0f; // should be random enough.
 				pCreature->SetMinDamage(pCreature->GetMinDamage() + parent_bonus);
 				pCreature->SetMaxDamage(pCreature->GetMaxDamage() + parent_bonus);
-				pCreature->GetAIInterface()->SetUnitToFollowAngle(pi_rand);
-				pCreature->GetAIInterface()->SetFollowDistance(3.0f);
+				pCreature->GetAIInterface()->setFollowAngle(pi_rand);
+				pCreature->GetAIInterface()->setFollowDistance(3);
 				pCreature->SetPosition(spawnx, spawny, spawnz, 0.0f,true);
 				pCreature->PushToWorld(u_caster->GetMapMgr());
 			}
 			else
-				pCreature->PushToWorld(u_caster->GetMapMgr());
-
 			sEventMgr.AddEvent(pCreature, &Creature::RemoveFromWorld, false, true, EVENT_CREATURE_REMOVE_CORPSE, GetDuration(), 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 		}break;
 	}
@@ -3798,7 +3768,7 @@ void Spell::SpellEffectApplyAA(uint32 i) // Apply Area Aura
 
 		m_pendingAuras.insert(std::make_pair(unitTarget->GetGUID(), pAura));
 		AddRef();
-		sEventMgr.AddEvent(this, &Spell::HandleAddAura, unitTarget->GetGUID(), EVENT_SPELL_HIT, 100, 1, 0);
+		sEventMgr.AddEvent(this, &Spell::HandleAddAura, unitTarget->GetGUID(), EVENT_SPELL_DAMAGE_HIT, 100, 1, 0);
 	}
 	else
 	{
@@ -4277,10 +4247,15 @@ void Spell::SpellEffectSpawn(uint32 i)
 			if(!u_caster || u_caster->IsPlayer())
 				return;
 
-			static float coord[3][3]= {{-108.9034f,2129.5678f,144.9210f},{-108.9034f,2155.5678f,155.678f},{-77.9034f,2155.5678f,155.678f}};
+			static float coord[3][3]= {
+				{-108.9034f,2129.5678f,144.9210f},
+				{-108.9034f,2155.5678f,155.678f},
+				{-77.9034f,2155.5678f,155.678f}
+			};
+			float o = 0.0f;
 
 			int j = rand()%3;
-			u_caster->GetAIInterface()->SendMoveToPacket(coord[j][0],coord[j][1],coord[j][2],0.0f,0,u_caster->GetAIInterface()->getMoveFlags());
+			u_caster->GetAIInterface()->MoveTo( coord[j][0],coord[j][1],coord[j][2],o );
 		}
 	}
 }
@@ -4586,30 +4561,25 @@ void Spell::SpellEffectSummonPet(uint32 i) //summon - pet
 	}
 }
 
-void Spell::SpellEffectLearnPetSpell(uint32 i)
-{
-	/*if(unitTarget && m_caster->GetTypeId() == TYPEID_PLAYER)
-	{
-	if(unitTarget->IsPet() && unitTarget->GetTypeId() == TYPEID_UNIT)
-	{
-	static_cast< Player* >(m_caster)->AddPetSpell(GetProto()->EffectTriggerSpell[i], unitTarget->GetEntry());
-	}
-	}*/
-
+//Obselete spell effect
+void Spell::SpellEffectLearnPetSpell(uint32 i) {}
+/*{
 	if(unitTarget && unitTarget->IsPet() && p_caster)
 	{
-		Pet * pPet = static_cast<Pet*>( unitTarget );
-		if(pPet->IsSummon())
+		Pet * pPet = TO_PET(unitTarget);
+		if(pPet->IsSummon() )
 			p_caster->AddSummonSpell(unitTarget->GetEntry(), GetProto()->EffectTriggerSpell[i]);
 
-		pPet->AddSpell( dbcSpell.LookupEntry( GetProto()->EffectTriggerSpell[i] ), true );
-
-		// Send Packet
-		/*		WorldPacket data(SMSG_SET_EXTRA_AURA_INFO_OBSOLETE, 22);
-		data << pPet->GetGUID() << uint8(0) << uint32(GetProto()->EffectTriggerSpell[i]) << uint32(-1) << uint32(0);
-		p_caster->GetSession()->SendPacket(&data);*/
+		//Try to retrieve the spell from objmgr first.
+		AI_PetSpell * aispell = objmgr.Pet_getAISpell(pPet->GetCreatureInfo()->Family, GetProto()->EffectTriggerSpell[i] );
+		if(aispell == NULL)
+			//Create one if one doesn't exist.
+			aispell = AIInterface_Mgr::ConstructPetSpell( GetProto()->EffectTriggerSpell[i] );
+		//passive spells will return null but doesn't seem to be any passive spells being taught by this spell effect.
+		if(aispell != NULL )
+			pPet->AddSpell( aispell, true);
 	}
-}
+}*/
 
 void Spell::SpellEffectWeapondamage( uint32 i ) // Weapon damage +
 {
@@ -4775,8 +4745,7 @@ void Spell::SpellEffectSendEvent(uint32 i) //Send Event
 
 			Creature * pCreature = p_caster->GetMapMgr()->CreateCreature(cp->Id);
 			pCreature->Load(cp, p_caster->GetPositionX(), p_caster->GetPositionY(), p_caster->GetPositionZ());
-			pCreature->GetAIInterface()->Init(pCreature, AITYPE_AGRO,MOVEMENTTYPE_NONE);
-			pCreature->GetAIInterface()->taunt(p_caster, true);
+			pCreature->GetAIInterface()->setForcedTarget(p_caster);
 			pCreature->PushToWorld(p_caster->GetMapMgr());
 			sEventMgr.AddEvent(pCreature, &Creature::RemoveFromWorld, false, true,  EVENT_CREATURE_REMOVE_CORPSE,60000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 		}break;
@@ -4793,8 +4762,7 @@ void Spell::SpellEffectSendEvent(uint32 i) //Send Event
 
 			Creature * pCreature = p_caster->GetMapMgr()->CreateCreature(cp->Id);
 			pCreature->Load(cp, p_caster->GetPositionX(), p_caster->GetPositionY(), p_caster->GetPositionZ());
-			pCreature->GetAIInterface()->Init(pCreature, AITYPE_AGRO,MOVEMENTTYPE_NONE);
-			pCreature->GetAIInterface()->taunt(p_caster, true);
+			pCreature->GetAIInterface()->setForcedTarget(p_caster);
 			pCreature->PushToWorld(p_caster->GetMapMgr());
 			sEventMgr.AddEvent(pCreature, &Creature::RemoveFromWorld, false, true,  EVENT_CREATURE_REMOVE_CORPSE,60000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 		}break;
@@ -4809,8 +4777,7 @@ void Spell::SpellEffectSendEvent(uint32 i) //Send Event
 
 			Creature * pCreature = p_caster->GetMapMgr()->CreateCreature(cp->Id);
 			pCreature->Load(cp, p_caster->GetPositionX(), p_caster->GetPositionY(), p_caster->GetPositionZ());
-			pCreature->GetAIInterface()->Init(pCreature, AITYPE_AGRO,MOVEMENTTYPE_NONE);
-			pCreature->GetAIInterface()->taunt(p_caster, true);
+			pCreature->GetAIInterface()->setForcedTarget(p_caster);
 			pCreature->PushToWorld(p_caster->GetMapMgr());
 			sEventMgr.AddEvent(pCreature, &Creature::RemoveFromWorld, false, true,  EVENT_CREATURE_REMOVE_CORPSE,60000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 		}break;
@@ -4857,9 +4824,12 @@ void Spell::SpellEffectThreat(uint32 i) // Threat
 		SM_FIValue(u_caster->SM_FMiscEffect,&amount,GetProto()->SpellGroupType);
 		SM_PIValue(u_caster->SM_PMiscEffect,&amount,GetProto()->SpellGroupType);
 	}
-
-	bool chck = unitTarget->GetAIInterface()->modThreatByPtr(u_caster, amount);
-	if(!chck)
+	AIInterface * ai = unitTarget->GetAIInterface();
+	Arcemu::Util::ARCEMU_ASSERT(ai != NULL);
+	bool threat_exists = false;
+	if(AIType_isMob(ai) )
+		threat_exists = TO_AIMOB(ai)->modThreatByPtr(u_caster,amount);
+	if(!threat_exists)
 		unitTarget->GetAIInterface()->AttackReaction(u_caster,1,0);
 }
 
@@ -4923,9 +4893,7 @@ void Spell::SpellEffectInterruptCast(uint32 i) // Interrupt Cast
 		prevtype = unitTarget->GetCurrentSpell()->GetProto()->PreventionType;
 
 		if((GetProto()->InterruptFlags & CAST_INTERRUPT_ON_INTERRUPT_SCHOOL) && (prevtype == PREVENTION_TYPE_SILENCE))
-		{
 				school = unitTarget->GetCurrentSpell()->GetProto()->School;
-		}
  
 		unitTarget->GetCurrentSpell()->cancel();
 	}
@@ -4943,9 +4911,7 @@ void Spell::SpellEffectInterruptCast(uint32 i) // Interrupt Cast
 		unitTarget->SchoolCastPrevent[school] = duration + getMSTime();
 		
 		if(unitTarget->IsPlayer())
-		{
-				TO_PLAYER(unitTarget)->SendPreventSchoolCast(school, duration);
-		}
+			TO_PLAYER(unitTarget)->SendPreventSchoolCast(school, duration);
  	}
 	else if((GetProto()->InterruptFlags & CAST_INTERRUPT_ON_INTERRUPT_ALL) && (prevtype == PREVENTION_TYPE_SILENCE))
 	{
@@ -5752,8 +5718,8 @@ void Spell::SpellEffectSanctuary(uint32 i) // Stop all attacks made to you
 		{
 			pUnit = static_cast<Unit*>(*itr);
 
-			if( pUnit && pUnit->GetTypeId() == TYPEID_UNIT )
-				pUnit->GetAIInterface()->RemoveThreatByPtr( unitTarget );
+			if( pUnit && pUnit->GetTypeId() == TYPEID_UNIT && AIType_isMob(pUnit->GetAIInterface()) )
+				TO_AIMOB(pUnit->GetAIInterface() )->removeThreatByPtr(unitTarget);
 		}
 }
 
@@ -5907,7 +5873,6 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 	}
 
 	uint32 entry = GetProto()->EffectMiscValue[i];
-
 	CreatureInfo* ci = CreatureNameStorage.LookupEntry(entry);
 	if(!ci )
 	{
@@ -5922,7 +5887,6 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
     }
 
 	Creature * pTotem = p_caster->GetMapMgr()->CreateCreature(entry);
-
 	// send the packet for the totem timer
 	WorldPacket data(SMSG_TOTEM_CREATED, 17);
 	data << uint8(slot);
@@ -5950,13 +5914,10 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 		pTotem->Create(ci->Name, p_caster->GetMapId(), x, y, landh, p_caster->GetOrientation());
 
 	uint32 displayID = 0;
-
 	if( p_caster->GetTeamInitial() == 0 )
 	{
 		if ( ci->Female_DisplayID != 0 )
-		{
 			displayID = ci->Female_DisplayID; //this is the nice solution provided by emsy
-		}
 		else //this is the case when you are using a blizzlike db
 		{
 			if( ci->Male_DisplayID == 4587 )
@@ -5974,9 +5935,7 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 		}
 	}
 	else
-	{
 		displayID = ci->Male_DisplayID;
-	}
 
 	// Set up the creature.
 	pTotem->SetEntry(  entry);
@@ -6002,6 +5961,8 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 	pTotem->SetCastSpeedMod(1.0f);
 	pTotem->SetCreatedBySpell(GetProto()->Id);
 	pTotem->SetUInt32Value( UNIT_DYNAMIC_FLAGS, 0 );
+	pTotem->SetFaction(p_caster->GetFaction() );
+	pTotem->UpdateOppFactionSet();
 
 	if( p_caster->IsPvPFlagged() )
 		pTotem->SetPvPFlag();
@@ -6012,130 +5973,8 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 		pTotem->SetFFAPvPFlag();
 	else
 		pTotem->RemoveFFAPvPFlag();
-
-	// Initialize faction stuff.
-	pTotem->m_faction = p_caster->m_faction;
-	pTotem->m_factionDBC = p_caster->m_factionDBC;
-
-	if(ci->Id != 3968) //Exclude the sentry totem, it does not cast
-	{
-		// Obtain the spell we will be casting.
-		SpellEntry * TotemSpell = ObjectMgr::getSingleton().GetTotemSpell(GetProto()->Id);
-
-		if(TotemSpell == NULL)
-		{
-			sLog.outDebug("Totem %u does not have any spells to cast, exiting\n",entry);
-			return;
-		}
-
-		//added by Zack : Some shaman talents are cast on player but it should be inherited or something by totems
-		pTotem->InheritSMMods(p_caster);
-
-		// Totems get spell damage and healing bonus from the Shaman
-		for( uint8 school = 0; school < SCHOOL_COUNT; school++ )
-		{
-			pTotem->ModDamageDone[school] = (int32)(p_caster->GetPosDamageDoneMod( school ) - (int32)p_caster->GetNegDamageDoneMod( school ));
-			pTotem->HealDoneMod[school] = p_caster->HealDoneMod[school];
-		}
-		// Set up AI, depending on our spells.
-		uint32 j;
-		for( j = 0; j < 3; ++j )
-		{
-			if( TotemSpell->Effect[j] == SPELL_EFFECT_APPLY_AREA_AURA ||
-				TotemSpell->Effect[j] == SPELL_EFFECT_APPLY_AREA_AURA2 ||
-				TotemSpell->Effect[j] == SPELL_EFFECT_PERSISTENT_AREA_AURA ||
-				TotemSpell->EffectApplyAuraName[j] == SPELL_AURA_PERIODIC_TRIGGER_SPELL )
-			{
-				break;
-			}
-		}
-		// Setup complete. Add us to the world.
+	// TO DO : Make totem load spells from their proto.
 		pTotem->PushToWorld(m_caster->GetMapMgr());
-
-		if(j != 3)
-		{
-			// We're an area aura. Simple. Disable AI and cast the spell.
-			pTotem->DisableAI();
-			pTotem->GetAIInterface()->totemspell = GetProto();
-
-			Spell * pSpell = new Spell(pTotem, TotemSpell, true, 0);
-
-			SpellCastTargets targets;
-			targets.m_destX = pTotem->GetPositionX();
-			targets.m_destY = pTotem->GetPositionY();
-			targets.m_destZ = pTotem->GetPositionZ();
-			targets.m_targetMask = TARGET_FLAG_DEST_LOCATION;
-
-			pSpell->prepare(&targets);
-		}
-		else
-		{
-			// We're a casting totem. Switch AI on, and tell it to cast this spell.
-			pTotem->EnableAI();
-			pTotem->GetAIInterface()->Init(pTotem, AITYPE_TOTEM, MOVEMENTTYPE_NONE, p_caster);
-			pTotem->GetAIInterface()->totemspell = TotemSpell;
-			int32 totemspelltimer = 3000, totemspelltime = 3000;	// need a proper resource for this.
-
-			switch(TotemSpell->Id)
-			{
-			case 8167: //Poison Cleansing Totem
-			case 8172: //Disease Cleansing Totem
-				{
-					if(TotemSpell->Id == 8167)
-						TotemSpell = dbcSpell.LookupEntry( 8168 );	// Better to use this spell
-					else
-						TotemSpell = dbcSpell.LookupEntry( 8171 );
-					pTotem->GetAIInterface()->totemspell = TotemSpell;
-					totemspelltime =  5000;
-					totemspelltimer = 0; //First tick done immediately
-					break;
-				}
-			case 8146: //Tremor Totem
-				{
-					totemspelltime = 1000;
-					totemspelltimer = 0; //First tick done immediately
-					break;
-				}
-			case 8178: //Grounding Totem
-			case 3600: //Earthbind Totem
-				{
-					totemspelltimer = 0; //First tick done immediately
-					break;
-				}
-			case 8349: //Fire Nova Totem 1
-			case 8502: //Fire Nova Totem 2
-			case 8503: //Fire Nova Totem 3
-			case 11306: //Fire Nova Totem 4
-			case 11307: //Fire Nova Totem 5
-			case 25535: //Fire Nova Totem 6
-			case 25537: //Fire Nova Totem 7
-			case 61650: //Fire Nova Totem 8
-			case 61654: //Fire Nova Totem 9
-				{
-					totemspelltimer =  4000;
-					// Improved Fire Totems
-					SM_FIValue(p_caster->SM_FDur, &totemspelltimer, TotemSpell->SpellGroupType);
-					totemspelltime = totemspelltimer;
-					break;
-				}
-			default:break;
-			}
-
-			pTotem->GetAIInterface()->m_totemspelltimer = totemspelltimer;
-			pTotem->GetAIInterface()->m_totemspelltime = totemspelltime;
-		}
-
-		//in case these are our elemental totems then we should set them up
-		if(GetProto()->Id==2062)
-			pTotem->GetAIInterface()->Event_Summon_EE_totem(GetDuration());
-		else if(GetProto()->Id==2894)
-			pTotem->GetAIInterface()->Event_Summon_FE_totem(GetDuration());
-	}
-	else
-	{
-		pTotem->PushToWorld(m_caster->GetMapMgr()); //Push the sentry totem...
-		//p_caster->SetFarsightTarget(pTotem->GetGUID()); //works but farsight bugs it
-	}
 
 	// Set up the deletion event. The totem needs to expire after a certain time, or upon its death.
 	sEventMgr.AddEvent(pTotem, &Creature::TotemExpire, uint32(0), EVENT_TOTEM_EXPIRE, GetDuration(), 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
@@ -6363,14 +6202,15 @@ void Spell::SpellEffectSummonCritter(uint32 i)
 	pCreature->SetFaction(35);
 	pCreature->setLevel(1);
 	pCreature->SetUInt32Value( UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED );
-	pCreature->GetAIInterface()->Init(pCreature,AITYPE_PET,MOVEMENTTYPE_NONE,u_caster);
 	pCreature->SetCreatedByGUID( u_caster->GetGUID() );
 	pCreature->SetCreatedBySpell(this->GetProto()->Id );
-	pCreature->GetAIInterface()->SetUnitToFollow(u_caster);
-	pCreature->GetAIInterface()->SetUnitToFollowAngle(float(-(M_PI/2)));
-	pCreature->GetAIInterface()->SetFollowDistance( GetRadius( i ) );
-	pCreature->GetAIInterface()->disable_melee = true;
-	pCreature->bInvincible = true;
+	AIInterface * ai = pCreature->GetAIInterface();
+	ai->setUnitToFollow(u_caster->GetGUID() );
+	ai->setFollowAngle( float(-(M_PI/2)) );
+	ai->setFollowDistance( (uint32)GetRadius(i) );
+	ai->disableMelee();
+
+	pCreature->bInvincible = true; // ew?
 	pCreature->PushToWorld(u_caster->GetMapMgr());
 	u_caster->critterPet = pCreature;
 }
@@ -7014,10 +6854,17 @@ void Spell::SpellEffectPlayerPull( uint32 i )
 
 void Spell::SpellEffectReduceThreatPercent(uint32 i)
 {
-	if (!unitTarget || !unitTarget->IsCreature() || !u_caster || unitTarget->GetAIInterface()->getThreatByPtr(u_caster) == 0)
-		return;
-
-	unitTarget->GetAIInterface()->modThreatByPtr(u_caster, (int32)unitTarget->GetAIInterface()->getThreatByPtr(u_caster) * damage / 100);
+	if (unitTarget != NULL && unitTarget->IsCreature() && u_caster != NULL )
+	{
+		AIInterface * ai = unitTarget->GetAIInterface();
+		Arcemu::Util::ARCEMU_ASSERT(ai != NULL);
+		if(AIType_isMob(ai) )
+		{
+			int32 current_threat = TO_AIMOB(ai)->getThreatByGUID(u_caster->GetGUID() );
+			int32 new_threat = current_threat * damage / 100;
+			TO_AIMOB(ai)->modThreatByGUID(u_caster->GetGUID(),new_threat );
+		}
+	}
 }
 
 void Spell::SpellEffectSpellSteal( uint32 i )

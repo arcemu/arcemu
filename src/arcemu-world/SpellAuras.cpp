@@ -1124,8 +1124,8 @@ void Aura::EventUpdateAA(float r)
 			)
 		 )
 	{
-		std::list<Pet*> summons = plr->GetSummons();
-		for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
+		//std::list<Pet*> & summons = plr->GetSummons();
+		for(std::list<Pet*>::iterator itr = plr->getSummonStart(); itr != plr->getSummonEnd(); ++itr)
 		{
 			Pet* summon = *itr;
 			if( summon->isAlive() && summon->GetDistanceSq(u_caster) <= r && !summon->HasAura( m_spellProto->Id ))
@@ -1253,12 +1253,11 @@ void Aura::RemoveAA()
 			)
 		 )
 	{
-		std::list<Pet*> summons = plr->GetSummons();
-		for(std::list<Pet*>::iterator itr2 = summons.begin(); itr2 != summons.end(); ++itr2)
+		//std::list<Pet*> summons = plr->GetSummons();
+		for(std::list<Pet*>::iterator itr2 = plr->getSummonStart(); itr2 != plr->getSummonEnd(); ++itr2)
 		{
-			Pet* summon = *itr2;
-			if( summon->isAlive() )
-				summon->RemoveAura( m_spellProto->Id );
+			if( (*itr2)->isAlive() )
+				(*itr2)->RemoveAura(m_spellProto->Id);
 		}
 	}
 
@@ -1385,13 +1384,6 @@ void Aura::SpellAuraModPossess(bool apply)
 			m_target->RemoveFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED_CREATURE );
 			m_target->SetFaction(m_target->GetCharmTempVal() );
 			m_target->UpdateOppFactionSet();
-		}
-		else
-		{
-			//mob woke up and realized he was controlled. He will turn to controller and also notify the other mobs he is fighting that they should attack the caster
-			//sadly i got only 3 test cases about this so i might be wrong :(
-			//zack : disabled until tested
-			m_target->GetAIInterface()->EventChangeFaction( caster );
 		}
 	}
 }
@@ -2756,14 +2748,10 @@ void Aura::SpellAuraModCharm(bool apply)
 		m_target->SetCharmTempVal( m_target->GetFaction( ) );
 		m_target->SetFaction(caster->GetFaction());
 		m_target->UpdateOppFactionSet();
-		m_target->GetAIInterface()->Init(m_target, AITYPE_PET, MOVEMENTTYPE_NONE, caster);
+		//m_target->GetAIInterface()->Init(m_target, AITYPE_PET, MOVEMENTTYPE_NONE, caster);
 		m_target->SetCharmedByGUID(  caster->GetGUID());
 		caster->SetCharmedUnitGUID( target->GetGUID());
 		//damn it, the other effects of enslave demon will agro him on us anyway :S
-		m_target->GetAIInterface()->WipeHateList();
-		m_target->GetAIInterface()->WipeTargetList();
-		m_target->GetAIInterface()->SetNextTarget( TO_UNIT(NULL));
-
 		target->SetEnslaveCount(target->GetEnslaveCount() + 1);
 
 		if( caster->GetSession() ) // crashfix
@@ -2789,10 +2777,6 @@ void Aura::SpellAuraModCharm(bool apply)
 	{
 		m_target->m_special_state &= ~UNIT_STATE_CHARM;
 		m_target->SetFaction(m_target->GetCharmTempVal() );
-		m_target->GetAIInterface()->WipeHateList();
-		m_target->GetAIInterface()->WipeTargetList();
-		m_target->UpdateOppFactionSet();
-		m_target->GetAIInterface()->Init(m_target, AITYPE_AGRO, MOVEMENTTYPE_NONE);
 		m_target->SetCharmedByGUID(  0);
 
 		if( caster->GetSession() != NULL ) // crashfix
@@ -3057,9 +3041,14 @@ void Aura::EventPeriodicHeal( uint32 amount )
 		int count = 0;
 		for(std::set<Object*>::iterator itr = u_caster->GetInRangeSetBegin(); itr != u_caster->GetInRangeSetEnd(); ++itr)
 		{
-			if((*itr)->GetTypeId() != TYPEID_UNIT || !static_cast<Unit *>(*itr)->CombatStatus.IsInCombat() || (static_cast<Unit *>(*itr)->GetAIInterface()->getThreatByPtr(u_caster) == 0 && static_cast<Unit *>(*itr)->GetAIInterface()->getThreatByPtr(m_target) == 0))
+			if((*itr)->GetTypeId() != TYPEID_UNIT || !static_cast<Unit *>(*itr)->CombatStatus.IsInCombat() )
 				continue;
-
+			AIInterface * ai = TO_UNIT(*itr)->GetAIInterface();
+			if(ai != NULL && AIType_isMob(ai) )
+			{
+				if( TO_AIMOB(ai)->getThreatByPtr(u_caster) == 0 || TO_AIMOB(ai)->getThreatByPtr(m_target) == 0)
+					continue;
+			}
 			if( !(u_caster->GetPhase() & (*itr)->GetPhase()) ) //Can't see, no threat
 				continue;
 
@@ -3147,14 +3136,12 @@ void Aura::SpellAuraModTaunt(bool apply)
 	if(apply)
 	{
 		m_target->GetAIInterface()->AttackReaction(m_caster, 1, 0);
-		m_target->GetAIInterface()->taunt(m_caster, true);
+		m_target->GetAIInterface()->setForcedTarget(m_caster);
 	}
 	else
 	{
-		if(m_target->GetAIInterface()->getTauntedBy() == m_caster)
-		{
-			m_target->GetAIInterface()->taunt(m_caster, false);
-		}
+		if(m_target->GetAIInterface()->getForcedTarget() == m_caster)
+			m_target->GetAIInterface()->setForcedTarget(NULL);
 	}
 }
 
@@ -3192,7 +3179,7 @@ void Aura::SpellAuraModStun(bool apply)
 		m_target->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_STUNNED);
 
 		if(m_target->GetTypeId() == TYPEID_UNIT)
-			m_target->GetAIInterface()->SetNextTarget( TO_UNIT(NULL) );
+			m_target->GetAIInterface()->setNextTarget( NULL);
 
 		// remove the current spell (for channalers)
 		if(m_target->m_currentSpell && m_target->GetGUID() != m_casterGuid &&
@@ -3231,8 +3218,8 @@ void Aura::SpellAuraModStun(bool apply)
 		if(m_target->GetTypeId() == TYPEID_UNIT)
 		{
 			Unit * target = GetUnitCaster();
-			if( m_target->GetAIInterface()->GetNextTarget() != NULL )
-				target = m_target->GetAIInterface()->GetNextTarget();
+			if( m_target->GetAIInterface()->getNextTarget() != NULL )
+				target = m_target->GetAIInterface()->getNextTarget();
 
 			if( target == NULL )
 				return;
@@ -3462,8 +3449,9 @@ void Aura::SpellAuraModStealth(bool apply)
 				if( _unit->GetCurrentSpell() && _unit->GetCurrentSpell()->GetUnitTarget() == m_target)
 					_unit->GetCurrentSpell()->cancel();
 
-				if( _unit->GetAIInterface() != NULL )
-					_unit->GetAIInterface()->RemoveThreatByPtr( m_target );
+				AIInterface * ai = _unit->GetAIInterface();
+				if(ai != NULL && AIType_isMob(ai) )
+					TO_AIMOB(ai)->removeThreatByPtr(m_target);
 			}
 
 			for( uint32 x = MAX_POSITIVE_AURAS_EXTEDED_START; x < MAX_POSITIVE_AURAS_EXTEDED_END; x++ )
@@ -5597,19 +5585,23 @@ void Aura::SpellAuraFeignDeath(bool apply)
 			p_target->setDeathState(ALIVE);
 
 			//now get rid of mobs agro. pTarget->CombatStatus.AttackersForgetHate() - this works only for already attacking mobs
+			/* Paroxysm : This iteration is not even needed if creatures and players check whether the target is feigned in the 1st place.
+			Creature * obj = NULL;
 		    for(std::set<Object*>::iterator itr = p_target->GetInRangeSetBegin(); itr != p_target->GetInRangeSetEnd(); itr++ )
 			{
-				if( (*itr)->IsUnit() && ( static_cast< Unit* >( *itr ))->isAlive())
+				if( (*itr)->IsCreature() )
 				{
-					Unit *u = static_cast< Unit* >( *itr );
-
-					if( isFeignDeathResisted( p_target->getLevel(), u->getLevel() ) ){
+					obj = TO_CREATURE(*itr);
+					if(obj->isAlive() )
+					{
+						AIInterface * ai = obj->GetAIInterface();
+						if(ai != NULL && ai->AIType_isMob() )
+							TO_AIMOB(ai)->removeThreatByPtr(p_target);
+					}
+					if( isFeignDeathResisted( p_target->getLevel(), obj->getLevel() ) ){
 						sEventMgr.AddEvent( this, &Aura::Remove, EVENT_AURA_REMOVE, 1, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT | EVENT_FLAG_DELETES_OBJECT );
 						return;
 					}
-
-					if(u->IsCreature() )
-						u->GetAIInterface()->RemoveThreatByPtr( p_target );
 
 					//if this is player and targeting us then we interrupt cast
 					if( u->IsPlayer() )
@@ -5622,7 +5614,7 @@ void Aura::SpellAuraFeignDeath(bool apply)
 						plr->GetSession()->SendPacket( &data );
 					}
 				}
-			}
+			}*/
 
 			p_target->SetFlag( UNIT_FIELD_FLAGS_2, 1 );
 			p_target->SetFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_FEIGN_DEATH );
@@ -9071,8 +9063,8 @@ void Aura::SpellAuraModPossessPet(bool apply)
 	if( !m_target->IsPet() )
 		return;
 
-	std::list<Pet*> summons = pCaster->GetSummons();
-	for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
+	//std::list<Pet*> summons = pCaster->GetSummons();
+	for(std::list<Pet*>::iterator itr = pCaster->getSummonStart(); itr != pCaster->getSummonEnd(); ++itr)
 	{
 		if( *itr == m_target )
 		{	
@@ -9480,8 +9472,6 @@ bool Aura::DotCanCrit()
 
 	if( caster->IsPlayer() )
 	{
-		Player *pCaster = this->GetPlayerCaster();
-
 		switch( caster->getClass() )
 		{
 			case ROGUE:

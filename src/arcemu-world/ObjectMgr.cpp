@@ -96,9 +96,9 @@ ObjectMgr::~ObjectMgr()
 	}
 
 	Log.Notice("ObjectMgr", "Deleting Waypoint Cache...");
-	for(HM_NAMESPACE::hash_map<uint32, WayPointMap*>::iterator i = m_waypoints.begin(); i != m_waypoints.end(); ++i)
+	for(HM_NAMESPACE::hash_map<uint32, AIWaypointStorage*>::iterator i = m_waypoints.begin(); i != m_waypoints.end(); ++i)
 	{
-		for(WayPointMap::iterator i2 = i->second->begin(); i2 != i->second->end(); ++i2)
+		for(AIWaypointStorage::iterator i2 = i->second->begin(); i2 != i->second->end(); ++i2)
 			if((*i2))
 				delete (*i2);
 
@@ -227,6 +227,11 @@ ObjectMgr::~ObjectMgr()
 		delete itr->second;
 
 	m_spelltargetconstraints.clear();
+
+	Log.Notice("ObjectMgr", "De-allocating cached pet family spells...");
+	for(PetSpellMap::iterator itr = m_PetAISpells.begin(); itr != m_PetAISpells.end(); ++itr)
+		delete itr->second;
+	m_PetAISpells.clear();
 
 }
 
@@ -2180,43 +2185,32 @@ LevelInfo* ObjectMgr::GetLevelInfo(uint32 Race, uint32 Class, uint32 Level)
 	return NULL;
 }
 
-void ObjectMgr::LoadDefaultPetSpells()
+void ObjectMgr::Pet_CreateAISpells()
 {
-	QueryResult * result = WorldDatabase.Query("SELECT * FROM petdefaultspells");
-	if(result)
+	uint32 dbcFamMax = dbcCreatureFamily.GetNumRows();
+	uint32 dbcSkillLineMax = dbcSkillLineSpell.GetNumRows();
+	CreatureFamilyEntry * family = NULL;
+	skilllinespell * sline = NULL;
+	for(uint32 i = 0; i < dbcFamMax; ++i)
 	{
-		do
+		family = dbcCreatureFamily.LookupRow(i);
+		for(uint32 idx = 0; idx < dbcSkillLineMax; ++idx)
 		{
-			Field * f = result->Fetch();
-			uint32 Entry = f[0].GetUInt32();
-			uint32 spell = f[1].GetUInt32();
-			SpellEntry * sp = dbcSpell.LookupEntryForced(spell);
-
-			if(spell && Entry && sp)
+			sline = dbcSkillLineSpell.LookupRow(idx);
+			AI_PetSpell * aispell = NULL;
+			//we found a spell belonging to this family.
+			if( family->skilline == sline->skilline || family->tameable == sline->skilline )
 			{
-				PetDefaultSpellMap::iterator itr = mDefaultPetSpells.find(Entry);
-				if(itr != mDefaultPetSpells.end())
-					itr->second.insert(sp);
-				else
+				aispell = AIInterface_Mgr::ConstructPetSpell( sline->spell);
+				if(aispell != NULL)
 				{
-					set<SpellEntry*> s;
-					s.insert(sp);
-					mDefaultPetSpells[Entry] = s;
+					//Store this spell by the family id.
+					aispell->acquire_type = (uint8)sline->acquireMethod;
+					m_PetAISpells.insert( make_pair(family->ID, aispell) );
 				}
 			}
-		} while(result->NextRow());
-
-		delete result;
+		}
 	}
-}
-
-set<SpellEntry*>* ObjectMgr::GetDefaultPetSpells(uint32 Entry)
-{
-	PetDefaultSpellMap::iterator itr = mDefaultPetSpells.find(Entry);
-	if(itr == mDefaultPetSpells.end())
-		return 0;
-
-	return &(itr->second);
 }
 
 void ObjectMgr::LoadPetSpellCooldowns()
@@ -2379,12 +2373,13 @@ void ObjectMgr::LoadCreatureWaypoints()
 	{
 		Field *fields = result->Fetch();
 		WayPoint* wp = new WayPoint;
-		wp->id = fields[1].GetUInt32();
+		wp->isFromDB = true;
+		wp->id = fields[1].GetUInt8();
 		wp->x = fields[2].GetFloat();
 		wp->y = fields[3].GetFloat();
 		wp->z = fields[4].GetFloat();
 		wp->waittime = fields[5].GetUInt32();
-		wp->flags = fields[6].GetUInt32();
+		wp->flags = fields[6].GetUInt16();
 		wp->forwardemoteoneshot = fields[7].GetBool();
 		wp->forwardemoteid = fields[8].GetUInt32();
 		wp->backwardemoteoneshot = fields[9].GetBool();
@@ -2392,22 +2387,18 @@ void ObjectMgr::LoadCreatureWaypoints()
 		wp->forwardskinid = fields[11].GetUInt32();
 		wp->backwardskinid = fields[12].GetUInt32();
 
-		HM_NAMESPACE::hash_map<uint32,WayPointMap*>::const_iterator i;
+		HM_NAMESPACE::hash_map<uint32,AIWaypointStorage*>::const_iterator i;
 		uint32 spawnid=fields[0].GetUInt32();
 		i=m_waypoints.find(spawnid);
 		if(i==m_waypoints.end())
 		{
-			WayPointMap* m=new WayPointMap;
-			if(m->size() <= wp->id)
-				m->resize(wp->id+1);
-			(*m)[wp->id]=wp;
+			AIWaypointStorage * m = new AIWaypointStorage;
+			m->push_back(wp);
 			m_waypoints[spawnid]=m;
-		}else
+		}
+		else
 		{
-			if(i->second->size() <= wp->id)
-				i->second->resize(wp->id+1);
-
-			(*(i->second))[wp->id]=wp;
+			(*(i->second)).push_back(wp);
 		}
 	}while( result->NextRow() );
 
@@ -2415,13 +2406,12 @@ void ObjectMgr::LoadCreatureWaypoints()
 	delete result;
 }
 
-WayPointMap*ObjectMgr::GetWayPointMap(uint32 spawnid)
+AIWaypointStorage*ObjectMgr::GetWayPointMap(uint32 spawnid)
 {
-	HM_NAMESPACE::hash_map<uint32,WayPointMap*>::const_iterator i;
-	i=m_waypoints.find(spawnid);
-	if(i!=m_waypoints.end())
+	HM_NAMESPACE::hash_map<uint32,AIWaypointStorage*>::const_iterator i = m_waypoints.find(spawnid);
+	if(i != m_waypoints.end() )
 	{
-		WayPointMap * m=i->second;
+		AIWaypointStorage * m=i->second;
 		// we don't wanna erase from the map, because some are used more
 		// than once (for instances)
 

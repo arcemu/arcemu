@@ -39,7 +39,7 @@ void Player::SendPetUntrainConfirm()
 	WorldPacket data( SMSG_PET_UNLEARN_CONFIRM, 12 );
 
 	data << uint64( pPet->GetGUID() );
-	data << uint32( pPet->GetUntrainCost() );
+	data << uint32( pPet->getUntrainCost() );
 
 	m_session->SendPacket( &data );
 }

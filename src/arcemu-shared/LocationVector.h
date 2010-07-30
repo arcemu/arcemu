@@ -165,10 +165,26 @@ public:
 
 	bool operator == (const LocationVector & eq)
 	{
-		if(eq.x == x && eq.y == y && eq.z == z)
-			return true;
-		else
-			return false;
+		float dx = abs(eq.x - x);
+		float dy = abs(eq.y - y);
+		float dz = abs(eq.z - z);
+		float e = 0.0001f;
+		bool result = false;
+		if(dx <= e && dy <= e && dz <= e)
+			result = true;
+		return result;
+	}
+	bool operator != (const LocationVector & loc)
+	{
+		float dx = abs(loc.x - x);
+		float dy = abs(loc.y - y);
+		float dz = abs(loc.z - z);
+		float e = 0.0001f;
+		bool result = false;
+		//If the difference between either coord and their counter part is significant.
+		if(dx > e || dy > e || dz > e)
+			result = true;
+		return result;
 	}
 
 	float x;

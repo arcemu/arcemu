@@ -488,9 +488,7 @@ void WorldSession::HandlePetCastSpell(WorldPacket & recvPacket)
             return;
     }
     else if ( guid != _player->m_CurrentCharm )
-    {
         return;
-    }
 
 	/* burlex: this is.. strange */
 	SpellCastTargets targets;
@@ -528,15 +526,7 @@ void WorldSession::HandlePetCastSpell(WorldPacket & recvPacket)
 		Unit *nc = _player->GetMapMgr()->GetUnit( _player->m_CurrentCharm );
 		if( nc )
 		{
-			bool check = false;
-			for(list<AI_Spell*>::iterator itr = nc->GetAIInterface()->m_spells.begin(); itr != nc->GetAIInterface()->m_spells.end(); ++itr)//.......meh. this is a crappy way of doing this, I bet.
-			{
-				if( (*itr)->spell->Id == spellid )
-				{
-					check = true;
-					break;
-				}
-			}
+			bool check = nc->GetAIInterface()->Spell_has(spellid);
 			if( !check )
 				return;
 

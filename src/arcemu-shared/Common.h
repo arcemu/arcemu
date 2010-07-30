@@ -493,14 +493,16 @@ struct WayPoint
 	WayPoint()
 	{
 		o = 0.0f;
+		isFromDB = false;
 	}
-	uint32 id;
+	uint8 id;
+	bool isFromDB;	//Way points can be manually created, that creates a dilemma of how to deallocate them.
+	uint16 flags;
 	float x;
 	float y;
 	float z;
 	float o;
 	uint32 waittime; //ms
-	uint32 flags;
 	bool forwardemoteoneshot;
 	uint32 forwardemoteid;
 	bool backwardemoteoneshot;
@@ -531,7 +533,7 @@ ARCEMU_INLINE void reverse_array(uint8 * pointer, size_t count)
 	free(temp);
 }
 
-typedef std::vector<WayPoint*> WayPointMap;
+typedef std::deque<WayPoint*> AIWaypointStorage;
 
 int32 GetTimePeriodFromString(const char * str);
 std::string ConvertTimeStampToString(uint32 timestamp);
