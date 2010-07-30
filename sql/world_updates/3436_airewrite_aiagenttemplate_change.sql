@@ -12,12 +12,3 @@ ALTER TABLE ai_agents
 	CHANGE targettype_overwrite targettype TINYINT(2) UNSIGNED NOT NULL DEFAULT '3',
 	CHANGE event creature_event TINYINT(2) UNSIGNED NOT NULL,
 	CHANGE cooldown_overwrite `interval` INT(11) UNSIGNED NOT NULL;
-	
-DROP TABLE IF EXISTS petdefaultspells;
-DROP TABLE IF EXISTS pet_talents;
-CREATE TABLE pet_talents 
-(
-	pet_owner INT(11) UNSIGNED NOT NULL,
-	pet_family TINYINT(3) NOT NULL,
-	talent_array VARCHAR(255)
-) ENGINE=MYISAM DEFAULT CHARSET=latin1 COMMENT='Pet Talents';

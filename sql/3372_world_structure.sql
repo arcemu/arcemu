@@ -1156,19 +1156,6 @@ CREATE TABLE `npc_text_localized` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Data for the table `npc_text_localized` */
-
-/*Table structure for table `petdefaultspells` */
-
-DROP TABLE IF EXISTS `pet_talents`;
-
-CREATE TABLE `pet_talents` (
-	`pet_owner` INT(11) UNSIGNED NOT NULL,
-	`pet_family` TINYINT(3) NOT NULL,
-	`talent_array` VARCHAR(255),
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Pet System';
-
-/*Data for the table `pet_talents` */
-
 /*Table structure for table `playercreateinfo` */
 
 DROP TABLE IF EXISTS `playercreateinfo`;
