@@ -294,7 +294,7 @@ void AIInterface::MoveTo(float x, float y, float z, float o)
 		{
 			m_Self->SetPosition(x,y,z,o);
 			m_destVector.x = x, m_destVector.y = y, m_destVector.z = z;
-			StopMovement(0);
+			//StopMovement(0);
 		}
 	}
 }

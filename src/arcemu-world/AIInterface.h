@@ -220,7 +220,12 @@ public:
 	uint32 getPanicHp() { return uint32(m_panicFlag & AIPANICK_HPMASK); }
 	void setPanicHp(uint32 hp) {
 		if(hp && hp <= 100)
+		{
+			//first clear the previous hp
+			m_panicFlag &= ~ AIPANICK_HPMASK;
+			//then set
 			m_panicFlag |= (hp & AIPANICK_HPMASK);
+		}
 	}
 	/*
 		Returns the panic duration in SECONDS */
@@ -238,7 +243,10 @@ public:
 	uint32 getCallHelpHp() { return uint32(m_callhelpFlag & AICALLHELP_HPMASK); }
 	void setCallHelpHp(uint32 hp) {
 		if(hp && hp <= 100)
+		{
+			m_callhelpFlag &= ~AICALLHELP_HPMASK;
 			m_callhelpFlag |= (hp & AICALLHELP_HPMASK);
+		}
 	}
 	bool hasCalledHelp() { return ((m_callhelpFlag & AICALLHELP_HASCALLED) != 0); }
 	void setHasCalledHelp(bool set = true) {

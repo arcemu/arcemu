@@ -432,7 +432,7 @@ void MobAI::OnUpdate()
 		if(state == STATE_EVADE)
 		{
 			float tdist = m_Self->CalcDistance(m_returnToVector.x,m_returnToVector.y,m_returnToVector.z);
-			if(tdist <= 2.0f)
+			if(tdist <= 0.5f)
 			{
 				setAIState(STATE_IDLE);
 				//m_returnToVector.x = m_returnToVector.y = m_returnToVector.z = 0.0f;
@@ -442,7 +442,7 @@ void MobAI::OnUpdate()
 			}
 		}
 
-		if (state == STATE_IDLE || state == STATE_SCRIPTMOVE && !isMoving() && !m_nextTarget && m_Self->isAlive() )
+		if (state == STATE_IDLE || state == STATE_SCRIPTMOVE && !isMoving() && !m_nextTarget )
 		{
 			if(!Behavior_has(BEHAVIOR_ISMOVINGTOWAYPOINT) )
 				handleWaypointMovement();

@@ -384,7 +384,7 @@ void LogonServer::Run(int argc, char ** argv)
 	printf(" Credits: http://www.ArcEmu.org/credits         \n");
 	printf(" SVN: http://arcemu.info/svn/                   \n");
 	printf(" Have fun!                                      \n");
-	Log.Line();
+	Log.Line("");
 #ifdef REPACK
 	sLog.outString("Repack: %s | Author: %s | %s\n", REPACK, REPACK_AUTHOR, REPACK_WEBSITE);
 #endif
@@ -441,7 +441,7 @@ void LogonServer::Run(int argc, char ** argv)
 	Log.Notice("AccountMgr", "Precaching accounts...");
 	sAccountMgr.ReloadAccounts(true);
 	Log.Notice("AccountMgr", "%u accounts are loaded and ready.", sAccountMgr.GetCount());
-	Log.Line();
+	Log.Line("");
 
 
 	// Spawn periodic function caller thread for account reload every 10mins

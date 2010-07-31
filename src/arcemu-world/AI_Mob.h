@@ -313,12 +313,22 @@ public:
 	// Purpose:	Sets a new move type which causes the unit to change it's waypoint behavior.
 	// Parameter: MovementType mType - a new waypoint movement type to use.
 	//************************************
-	ARCEMU_INLINE void Waypoint_setmovetype(MovementType mType) { m_WaypointFlags |= (mType & WAYPOINT_MOVETYPEMASK); }
+	ARCEMU_INLINE void Waypoint_setmovetype(MovementType mType) 
+	{
+		//first clear the current movetype
+		m_WaypointFlags &= ~WAYPOINT_MOVETYPEMASK;
+		//then set the new movetype.
+		m_WaypointFlags |= (mType & WAYPOINT_MOVETYPEMASK); 
+	}
 
 	//************************************
 	// Purpose:	Returns the current waypoint moving type.
 	//************************************
-	ARCEMU_INLINE uint32 Waypoint_getmovetype() { return (m_WaypointFlags & WAYPOINT_MOVETYPEMASK); }
+	ARCEMU_INLINE uint32 Waypoint_getmovetype() 
+	{
+		uint32 move_type = (m_WaypointFlags & WAYPOINT_MOVETYPEMASK);
+		return move_type;
+	}
 
 	//************************************
 	// Purpose:	Returns the waypoint we are currently at, or are moving to if we are in motion.
