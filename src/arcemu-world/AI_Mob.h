@@ -363,29 +363,25 @@ public:
 	/*	Returns our current waypoints count. */
 	size_t Waypoint_getcount()
 	{
-		size_t cnt = 0;
-		if(!m_waypoints.empty() )
-			cnt = m_waypoints.size()-1;
-		return cnt;
+		return m_waypoints.size();
 	}
+
+	void Waypoint_show(Player * plr, bool back = false);
+	void Waypoint_show(Player * plr, uint32 id, bool back = false);
+	void Waypoint_hide(Player * plr);
+	void Waypoint_hide(Player * plr, uint32 id);
 
 	/*	Returns our current waypoint flags	*/
 	uint32 Waypoint_getflags() { return uint32(m_WaypointFlags); }
 
 	/*	If we are currently showing waypoints, this functionality was removed. */
-	bool Waypoint_isforwardshowing() { return (m_WaypointFlags & WAYPOINT_SHOWFORWARD) != 0; }
-	void Waypoint_showforward(bool show = true) { 
+	bool Waypoint_isShowing() { return (m_WaypointFlags & WAYPOINT_ISSHOWING) != 0; }
+	bool Waypoint_isShowing( uint32 wpid);
+	void Waypoint_setshowing(bool show = true) { 
 		if(show)
-			m_WaypointFlags |= WAYPOINT_SHOWFORWARD;
+			m_WaypointFlags |= WAYPOINT_ISSHOWING;
 		else
-			m_WaypointFlags &= ~WAYPOINT_SHOWFORWARD;
-	}
-	bool Waypoint_isbackwardshowing() { return (m_WaypointFlags & WAYPOINT_SHOWBACKWARD) != 0; }
-	void Waypoint_showbackward(bool show = true) {
-		if(show)
-			m_WaypointFlags |= WAYPOINT_SHOWBACKWARD;
-		else
-			m_WaypointFlags &= ~WAYPOINT_SHOWBACKWARD;
+			m_WaypointFlags &= ~WAYPOINT_ISSHOWING;
 	}
 	bool Waypoint_ismovingbackward() { return (m_WaypointFlags & WAYPOINT_MOVEBACKWARD) != 0; }
 	void Waypoint_setbackwardmove(bool set = true) {
@@ -511,5 +507,5 @@ public:
 };
 
 #define TO_AIMOB(ai) static_cast<MobAI*>(ai)
-#define AIType_isMob(aii) (aii->getAIType() == AITYPE_MOB)
+#define AIType_isMob(aii) ( aii != NULL && aii->getAIType() == AITYPE_MOB)
 #endif

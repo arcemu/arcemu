@@ -492,8 +492,7 @@ struct WayPoint
 {
 	WayPoint()
 	{
-		o = 0.0f;
-		isFromDB = false;
+		memset(this, 0, sizeof(WayPoint) );
 	}
 	uint8 id;
 	bool isFromDB;	//Way points can be manually created, that creates a dilemma of how to deallocate them.
@@ -504,8 +503,9 @@ struct WayPoint
 	float o;
 	uint32 waittime; //ms
 	bool forwardemoteoneshot;
-	uint32 forwardemoteid;
 	bool backwardemoteoneshot;
+	bool isShowing;
+	uint32 forwardemoteid;
 	uint32 backwardemoteid;
 	uint32 forwardskinid;
 	uint32 backwardskinid;

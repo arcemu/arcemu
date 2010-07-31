@@ -196,7 +196,7 @@ bool Master::Run(int argc, char ** argv)
 	printf(" Credits: http://www.ArcEmu.org/credits         \n");
 	printf(" SVN: http://arcemu.info/svn/                   \n");
 	printf(" Have fun!                                      \n");
-	Log.Line();
+	Log.Line("");
 #ifdef REPACK
 	Log.Color(TRED);
 	printf("Warning: Using repacks is potentially dangerous. You should always compile\n");
@@ -235,7 +235,7 @@ bool Master::Run(int argc, char ** argv)
 	}
 
 	printf( "The key combination <Ctrl-C> will safely shut down the server at any time.\n" );
-	Log.Line();
+	Log.Line("");
     
 #ifndef WIN32
 	if(geteuid() == 0 || getegid() == 0)
@@ -305,7 +305,7 @@ bool Master::Run(int argc, char ** argv)
 		system("PAUSE");
 	}
 
-	Log.Line();
+	Log.Line("");
 	sLog.outString( "" );
 
 

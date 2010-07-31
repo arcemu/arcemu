@@ -65,6 +65,7 @@ enum BehaviorBits
 	BEHAVIOR_BLOCKSPELLSPAMMING = 1 << 7,	//set to prevent spell spamming.
 	BEHAVIOR_PANIC_EFFECT = 1 << 8,	//set when we are feared.
 	BEHAVIOR_SKYWALKER = 1 << 9,	//used by some creatures spawning on gameobjects so as to send proper update flags.
+	BEHAVIOR_ISMOVINGTOWAYPOINT  = 1 << 10,	//set when unit is moving to a waypoint, cleared when we reach a waypoint.
 
 	//TO DO : More bits to define custom functionality
 

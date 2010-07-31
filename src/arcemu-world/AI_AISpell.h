@@ -113,7 +113,7 @@ struct AI_Spell
 		memset(this,0,sizeof(AI_Spell));
 		type = AISPELLTYPE_SINGLETARGET;
 	}
-	virtual ~AI_Spell() 
+	~AI_Spell() 
 	{
 		if(rdata != NULL)
 		{
@@ -203,9 +203,11 @@ struct AI_SummonSpellDest : public AI_SummonSpell
 		summon_count = 1;
 	}
 	~AI_SummonSpellDest() {
+		Log.Notice("AI_AISpell.h","~AI_SummonSpellDest");
 		if(dest != NULL)
 			delete dest;
 		dest = NULL;
+		AI_Spell::~AI_Spell();
 	}
 };
 //structure holding dispel spell types

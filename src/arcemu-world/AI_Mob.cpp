@@ -5,7 +5,7 @@ MobAI::MobAI(Unit * self) : AIInterface(self)
 	m_ShootSpell = NULL;
 	m_nextTarget = 0;
 	m_aiAgent = AGENT_NULL;
-	m_currentWaypoint = 0;
+	m_currentWaypoint = 1;
 	m_WaypointFlags = 0;
 	m_type = AITYPE_MOB;
 	timed_emotes = NULL;
@@ -31,7 +31,7 @@ MobAI::MobAI(Unit * self) : AIInterface(self)
 		setPanicHp(0);
 	setPanicDuration(cn->m_fleeDuration);
 
-	Waypoint_setmovetype( MOVEMENTTYPE_NONE);
+	Waypoint_setmovetype( MOVEMENTTYPE_DONTMOVEWP);
 	Movement_setmovemode(AIMOVESTATE_RUN);
 
 	CreatureSpawn * spawn = _self->m_spawn;
@@ -42,9 +42,8 @@ MobAI::MobAI(Unit * self) : AIInterface(self)
 		else
 		{
 			SetAllowedToEnterCombat(false);
-			self->Root();
+			Movement_allowmovement(false);
 		}
-
 		if( spawn->form != NULL )
 		{
 			setFormationHeadSqlId(spawn->form->fol);
@@ -443,8 +442,10 @@ void MobAI::OnUpdate()
 			}
 		}
 
-		if (state == STATE_IDLE && m_creatureState == STOPPED && !m_nextTarget && m_Self->isAlive() )
+		if (state == STATE_IDLE || state == STATE_SCRIPTMOVE && !isMoving() && !m_nextTarget && m_Self->isAlive() )
 		{
+			if(!Behavior_has(BEHAVIOR_ISMOVINGTOWAYPOINT) )
+				handleWaypointMovement();
 			if ( timed_emote_expire <= AIINTERFACE_UPDATE_INTERVAL ) // note that creature might go idle and p_time might get big next time ...We do not skip emotes because of lost time
 			{
 				if ( (*next_timed_emote)->type == 1) //standstate
@@ -1059,20 +1060,20 @@ uint32 MobAI::calcThreat(uint32 damage, SpellEntry * sp, Unit* Attacker)
 }
 void MobAI::handleWaypointMovement()
 {
-
 	int32 destpoint = -1;
 	uint32 move_type = Waypoint_getmovetype();
 	if(move_type == MOVEMENTTYPE_RANDOMWP) //is random move on if so move to a random waypoint
 	{
 		if(Waypoint_getcount() > 1)
-			destpoint = RandomUInt((uint32)Waypoint_getcount());
+			destpoint = RandomUInt((uint32)Waypoint_getcount()-1);
 	}
 	else if (move_type == MOVEMENTTYPE_CIRCLEWP) //random move is not on lets follow the path in circles
 	{
 		// 1 -> 10 then 1 -> 10
-		m_currentWaypoint++;
-		if (m_currentWaypoint > Waypoint_getcount()) m_currentWaypoint = 1; //Happens when you delete last wp seems to continue ticking
 		destpoint = m_currentWaypoint;
+		m_currentWaypoint++;
+		if (m_currentWaypoint > Waypoint_getcount() )
+			destpoint = m_currentWaypoint = 1; //Happens when you delete last wp seems to continue ticking
 	}
 	else if(move_type == MOVEMENTTYPE_WANTEDWP)//Move to wanted wp
 	{
@@ -1086,11 +1087,11 @@ void MobAI::handleWaypointMovement()
 	}
 	else if(move_type == MOVEMENTTYPE_FORWARDTHENSTOP)// move to end, then stop
 	{
-		++m_currentWaypoint;
 		if(m_currentWaypoint > Waypoint_getcount())
 			destpoint = -1; //hmm maybe we should stop being path walker since we are waiting here anyway
 		else
 			destpoint = m_currentWaypoint;
+		++m_currentWaypoint;
 	}
 	else if(move_type != MOVEMENTTYPE_DONTMOVEWP)//4 Unused
 	{
@@ -1132,6 +1133,7 @@ void MobAI::handleWaypointMovement()
 				Movement_setmovemode(AIMOVESTATE_WALK);
 
 			MoveTo(wp->x, wp->y, wp->z, wp->o);
+			Behavior_set(BEHAVIOR_ISMOVINGTOWAYPOINT);
 		}
 	}
 }
@@ -1165,8 +1167,7 @@ void MobAI::OnReachWp()
 				getUnit()->SetEmoteState(wp->backwardemoteid);
 		}
 	}
-	else
-		m_moveTimer = RandomUInt( (Movement_getmovemode() == AIMOVESTATE_RUN) ? 5000 : 10000); // wait before next move
+	Behavior_clear(BEHAVIOR_ISMOVINGTOWAYPOINT);
 }
 void MobAI::OnAgentMelee()
 {
@@ -2078,4 +2079,151 @@ void MobAI::Spell_handlevent( AiEvents evt )
 			m_rangedSpellDeck.push_back(*itr);
 		(*itr)->isQueued = true;
 	}
+}
+
+void MobAI::Waypoint_show( Player * plr, bool back)
+{
+	if(Waypoint_getcount() > 0 && !Waypoint_isShowing() )
+	{
+		AIWaypointStorage::iterator itr = m_waypoints.begin();
+		Creature * owner = TO_CREATURE(m_Self);
+		Creature * wp_creature = NULL;
+		WayPoint * wp = NULL;
+		for(; itr != m_waypoints.end(); ++itr)
+		{
+			wp = *itr;
+			
+			//We are going to pack the waypoint id and the owner's low guid into the guid so we can be able to retrieve it.
+			uint32 hiPart = HIGHGUID_TYPE_WAYPOINT | wp->id;
+			wp_creature = new Creature( (uint64)hiPart << 32| owner->GetLowGUID() );
+			wp_creature->Create(NULL,plr->GetMapId(),wp->x,wp->y,wp->z, 0);
+			wp_creature->SetCreatureInfo( owner->GetCreatureInfo() );
+			wp_creature->SetCreatureProto( owner->GetProto() );
+			wp_creature->SetEntry(1337);
+			wp_creature->SetScale(  0.5f );
+			if(back)
+			{
+				uint32 DisplayID = (wp->backwardskinid == 0)? owner->GetNativeDisplayId() : wp->backwardskinid;
+				wp_creature->SetDisplayId(DisplayID);
+				wp_creature->SetEmoteState(wp->backwardemoteid);
+			}
+			else
+			{
+				uint32 DisplayID = (wp->forwardskinid == 0)? owner->GetNativeDisplayId() : wp->forwardskinid;
+				wp_creature->SetDisplayId(DisplayID);
+				wp_creature->SetEmoteState(wp->forwardemoteid);
+			}
+			wp_creature->setLevel(wp->id);
+			wp_creature->SetUInt32Value(UNIT_NPC_FLAGS, 0);
+			wp_creature->SetFaction(plr->GetFaction());
+			wp_creature->SetHealth( 1);
+			wp_creature->SetMaxHealth( 1);
+			wp_creature->SetStat(STAT_STRENGTH, wp->flags);
+
+			//Create on client
+			ByteBuffer buf(3000);
+			uint32 count = wp_creature->BuildCreateUpdateBlockForPlayer(&buf, plr);
+			plr->PushCreationData(&buf, count);
+			//root the object
+			WorldPacket data1;
+			data1.Initialize(SMSG_FORCE_MOVE_ROOT);
+			data1 << wp_creature->GetNewGUID();
+			plr->GetSession()->SendPacket( &data1 );
+			//Cleanup
+			delete wp_creature;
+			wp->isShowing = true;
+		}
+		Waypoint_setshowing();
+	}
+}
+
+void MobAI::Waypoint_show( Player * plr, uint32 id, bool back /*= false*/ )
+{
+	if( Waypoint_getcount() > 0)
+	{
+		WayPoint * wp = Waypoint_getWP(id);
+		if(wp != NULL)
+		{
+			uint32 hiPart = HIGHGUID_TYPE_WAYPOINT | wp->id;
+			Creature * wp_creature = new Creature( (uint64)hiPart << 32 | m_Self->GetLowGUID() );
+			if(wp_creature)
+			{
+				Creature * owner = TO_CREATURE(m_Self);
+				wp_creature->Create(NULL,plr->GetMapId(),wp->x,wp->y,wp->z, 0);
+				wp_creature->SetCreatureInfo( owner->GetCreatureInfo() );
+				wp_creature->SetCreatureProto( owner->GetProto() );
+				wp_creature->SetEntry(1337);
+				wp_creature->SetScale(  0.5f );
+				if(back)
+				{
+					uint32 DisplayID = (wp->backwardskinid == 0)? owner->GetNativeDisplayId() : wp->backwardskinid;
+					wp_creature->SetDisplayId(DisplayID);
+					wp_creature->SetEmoteState(wp->backwardemoteid);
+				}
+				else
+				{
+					uint32 DisplayID = (wp->forwardskinid == 0)? owner->GetNativeDisplayId() : wp->forwardskinid;
+					wp_creature->SetDisplayId(DisplayID);
+					wp_creature->SetEmoteState(wp->forwardemoteid);
+				}
+				wp_creature->setLevel(wp->id);
+				wp_creature->SetUInt32Value(UNIT_NPC_FLAGS, 0);
+				wp_creature->SetFaction(plr->GetFaction());
+				wp_creature->SetHealth( 1);
+				wp_creature->SetMaxHealth( 1);
+				wp_creature->SetStat(STAT_STRENGTH, wp->flags);
+
+				//Create on client
+				ByteBuffer buf(3000);
+				uint32 count = wp_creature->BuildCreateUpdateBlockForPlayer(&buf, plr);
+				plr->PushCreationData(&buf, count);
+				//root the object
+				WorldPacket data1;
+				data1.Initialize(SMSG_FORCE_MOVE_ROOT);
+				data1 << wp_creature->GetNewGUID();
+				plr->GetSession()->SendPacket( &data1 );
+				//Cleanup
+				delete wp_creature;
+			}
+			wp->isShowing = true;
+		}
+	}
+}
+void MobAI::Waypoint_hide( Player * plr )
+{
+	if(Waypoint_getcount() > 0 && Waypoint_isShowing() )
+	{
+		for(AIWaypointStorage::iterator itr = m_waypoints.begin() ; itr != m_waypoints.end(); ++itr)
+		{
+			uint32 hiPart = HIGHGUID_TYPE_WAYPOINT | (*itr)->id;
+			plr->PushOutOfRange(WoWGuid( (uint64)hiPart << 32 | m_Self->GetLowGUID() ) );
+			(*itr)->isShowing = false;
+		}
+		Waypoint_setshowing(false);
+	}
+}
+
+void MobAI::Waypoint_hide( Player * plr, uint32 id )
+{
+	WayPoint * wp = Waypoint_getWP(id);
+	if(wp != NULL && wp->isShowing)
+	{
+		uint32 hiPart = HIGHGUID_TYPE_WAYPOINT | id;
+		plr->PushOutOfRange(WoWGuid( (uint64)hiPart << 32 | m_Self->GetLowGUID() ) );
+		wp->isShowing = false;
+	}
+}
+
+bool MobAI::Waypoint_isShowing(uint32 wpid )
+{
+	bool ret = false;
+	for(AIWaypointStorage::iterator itr = m_waypoints.begin(); itr != m_waypoints.end(); ++itr)
+	{
+		if( (*itr)->id == wpid && (*itr)->isShowing)
+		{
+			ret = true;
+			break;
+		}
+	}
+	return ret;
 }

@@ -1,4 +1,3 @@
-DROP TABLE IF EXISTS petdefaultspells;
 DROP TABLE IF EXISTS pet_talents;
 CREATE TABLE pet_talents 
 (

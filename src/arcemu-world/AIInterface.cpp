@@ -48,6 +48,7 @@ AIInterface::AIInterface(Unit * self)
 	m_ForcedTarget = 0;
 	m_soulLinker = 0;
 	m_behaviorMask = 0;
+	clearFormationData();
 }
 float AIInterface::calcAggroRange(Unit* target)
 {
@@ -236,7 +237,8 @@ void AIInterface::StopMovement(uint32 time)
 	data << getMSTime();
 	data << uint8(1);   // "DontMove = 1"
 	m_Self->SendMessageToSet( &data, false );
-	Behavior_clear(BEHAVIOR_UNITISMOVING);
+	//turn this bit on to trigger any on stopmovement code
+	Behavior_set(BEHAVIOR_UNITISMOVING);
 }
 uint32 AIInterface::calcMoveTimeToLocation(float & x, float & y, float & z)
 {
@@ -270,9 +272,9 @@ void AIInterface::MoveTo(float x, float y, float z, float o)
 		if(timeToDestination)
 		{
 			//For non mobs since they don't have waypoints, OR for mobs that aren't using their waypoints, waypoint's movement packet will be constructed specially.
-			if(!AIType_isMob(this) || (AIType_isMob(this) && TO_AIMOB(this)->Waypoint_getmovetype() == MOVEMENTTYPE_DONTMOVEWP || TO_AIMOB(this)->Waypoint_getmovetype() == MOVEMENTTYPE_NONE) )
+			//if(!AIType_isMob(this) || (AIType_isMob(this) && TO_AIMOB(this)->Waypoint_getmovetype() == MOVEMENTTYPE_DONTMOVEWP ) )
 				//Send the packet to update visual stuff.
-				SendMoveToPacket(x,y,z,o, timeToDestination, (Movement_getmovemode() == AIMOVESTATE_FLY) ? 0x2000 : 0);
+			SendMoveToPacket(x,y,z,o, timeToDestination, (Movement_getmovemode() == AIMOVESTATE_FLY) ? 0x2000 : 0);
 			//	Update our destination coords.
 			m_destVector.x = x, m_destVector.y = y, m_destVector.z = z;
 			//Used in spline move?
@@ -309,13 +311,8 @@ void AIInterface::OnStopMovement()
 	}
 	//Refresh our state
 	state = getAIState();
-	if(state == STATE_IDLE || state ==  STATE_SCRIPTIDLE)
-	{
-		if(hasWaypoints() )
-			TO_AIMOB(this)->handleWaypointMovement();
-		else if( getUnitToFollow() != NULL)
-			handleFollowUnitMovement();
-	}
+	if(state == STATE_IDLE || state ==  STATE_SCRIPTIDLE && getUnitToFollow() != NULL)
+		handleFollowUnitMovement();
 	//Handle fearmovement
 	if( (state == STATE_FLEEING || state == STATE_FEAR) && !Behavior_has(BEHAVIOR_BLOCKPANICMOVEMENT) )
 		handleFearMovement();
@@ -584,7 +581,7 @@ void AIInterface::handleWanderMovement()
 void AIInterface::handleFollowUnitMovement()
 {
 	Unit * unitToFollow = getUnitToFollow();
-	if(!Movement_canmove() ) return;
+	if(unitToFollow == NULL || !Movement_canmove() ) return;
 
 	if( unitToFollow->event_GetCurrentInstanceId() != m_Self->event_GetCurrentInstanceId() )
 		setUnitToFollow(0);

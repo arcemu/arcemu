@@ -24,6 +24,19 @@ arcemu_world_SOURCES = \
     ObjectStorage.h \
     AddonMgr.cpp \
     AddonMgr.h \
+	AIInterfaceMgr.cpp \
+	AIInterfaceMgr.h \
+	AI_AISpell.h \
+	AI_Mob.h \
+	AI_Mob.cpp \
+	AI_Critter.h \
+	AI_Critter.cpp \
+	AI_Guardian.cpp \
+ 	AI_Guardian.h \
+	AI_Pet.cpp \
+	AI_Pet.h \
+	AI_Totem.h \
+	AI_Totem.cpp \
     AIInterface.cpp \
     AIInterface.h \
     AlteracValley.cpp \

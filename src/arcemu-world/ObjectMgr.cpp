@@ -42,48 +42,55 @@ m_hiPlayerGuid( 1 )
 
 ObjectMgr::~ObjectMgr()
 {
-	Log.Notice("ObjectMgr", "Deleting Corpses...");
+	Log.NoticeNONL("ObjectMgr", "Deleting Corpses...");
 	CorpseCollectorUnload();
+	Log.Line(" Done!");
 
-	Log.Notice("ObjectMgr", "Deleting Itemsets...");
+	Log.NoticeNONL("ObjectMgr", "Deleting Itemsets...");
 	for(ItemSetContentMap::iterator i = mItemSets.begin(); i != mItemSets.end(); ++i)
 	{
 		delete i->second;
 	}
 	mItemSets.clear();
+	Log.Line(" Done!");
 
-	Log.Notice("ObjectMgr", "Deleting PlayerCreateInfo...");
+	Log.NoticeNONL("ObjectMgr", "Deleting PlayerCreateInfo...");
 	for( PlayerCreateInfoMap::iterator i = mPlayerCreateInfo.begin( ); i != mPlayerCreateInfo.end( ); ++ i ) {
 		delete i->second;
 	}
+	Log.Line(" Done!");
 	mPlayerCreateInfo.clear( );
 
-	Log.Notice("ObjectMgr", "Deleting Guilds...");
+	Log.NoticeNONL("ObjectMgr", "Deleting Guilds...");
 	for ( GuildMap::iterator i = mGuild.begin(); i != mGuild.end(); ++i ) {
 		delete i->second;
 	}
+	Log.Line(" Done!");
 
-	Log.Notice("ObjectMgr", "Deleting Vendors...");
+	Log.NoticeNONL("ObjectMgr", "Deleting Vendors...");
 	for( VendorMap::iterator i = mVendors.begin( ); i != mVendors.end( ); ++ i )
 	{
 		delete i->second;
 	}
+	Log.Line(" Done!");
 
-	Log.Notice("ObjectMgr", "Deleting Spell Override...");
+	Log.NoticeNONL("ObjectMgr", "Deleting Spell Override...");
 	for(OverrideIdMap::iterator i = mOverrideIdMap.begin(); i != mOverrideIdMap.end(); ++i)
 	{
 		delete i->second;
 	}
+	Log.Line(" Done!");
 
-	Log.Notice("ObjectMgr", "Deleting Trainers...");
+	Log.NoticeNONL("ObjectMgr", "Deleting Trainers...");
 	for( TrainerMap::iterator i = mTrainers.begin( ); i != mTrainers.end( ); ++ i) {
 		Trainer * t = i->second;
 		if(t->UIMessage && t->UIMessage != (char*)NormalTalkMessage)
 			delete [] t->UIMessage;
 		delete t;
 	}
+	Log.Line(" Done!");
 
-	Log.Notice("ObjectMgr", "Deleting Level Information...");
+	Log.NoticeNONL("ObjectMgr", "Deleting Level Information...");
 	for( LevelInfoMap::iterator i = mLevelInfo.begin(); i != mLevelInfo.end(); ++i)
 	{
 		LevelMap * l = i->second;
@@ -94,8 +101,9 @@ ObjectMgr::~ObjectMgr()
 		l->clear();
 		delete l;
 	}
+	Log.Line(" Done!");
 
-	Log.Notice("ObjectMgr", "Deleting Waypoint Cache...");
+	Log.NoticeNONL("ObjectMgr", "Deleting Waypoint Cache...");
 	for(HM_NAMESPACE::hash_map<uint32, AIWaypointStorage*>::iterator i = m_waypoints.begin(); i != m_waypoints.end(); ++i)
 	{
 		for(AIWaypointStorage::iterator i2 = i->second->begin(); i2 != i->second->end(); ++i2)
@@ -104,8 +112,9 @@ ObjectMgr::~ObjectMgr()
 
 		delete i->second;
 	}
+	Log.Line(" Done!");
 
-	Log.Notice("ObjectMgr", "Deleting timed emote Cache...");
+	Log.NoticeNONL("ObjectMgr", "Deleting timed emote Cache...");
 	for(HM_NAMESPACE::hash_map<uint32, TimedEmoteList*>::iterator i = m_timedemotes.begin(); i != m_timedemotes.end(); ++i)
 	{
 		for(TimedEmoteList::iterator i2 = i->second->begin(); i2 != i->second->end(); ++i2)
@@ -117,8 +126,9 @@ ObjectMgr::~ObjectMgr()
 
 		delete i->second;
 	}
+	Log.Line(" Done!");
 
-	Log.Notice("ObjectMgr", "Deleting NPC Say Texts...");
+	Log.NoticeNONL("ObjectMgr", "Deleting NPC Say Texts...");
 	for(uint32 i = 0 ; i < NUM_MONSTER_SAY_EVENTS ; ++i)
 	{
 		NpcMonsterSay * p;
@@ -134,8 +144,9 @@ ObjectMgr::~ObjectMgr()
 
 		mMonsterSays[i].clear();
 	}
+	Log.Line(" Done!");
 
-	Log.Notice("ObjectMgr", "Deleting Charters...");
+	Log.NoticeNONL("ObjectMgr", "Deleting Charters...");
 	for(int i = 0; i < NUM_CHARTER_TYPES; ++i)
 	{
 		for(HM_NAMESPACE::hash_map<uint32, Charter*>::iterator itr =  m_charters[i].begin(); itr != m_charters[i].end(); ++itr)
@@ -143,8 +154,9 @@ ObjectMgr::~ObjectMgr()
 			delete itr->second;
 		}
 	}
+	Log.Line(" Done!");
 
-	Log.Notice("ObjectMgr", "Deleting Reputation Tables...");
+	Log.NoticeNONL("ObjectMgr", "Deleting Reputation Tables...");
 	for(ReputationModMap::iterator itr = this->m_reputation_creature.begin(); itr != m_reputation_creature.end(); ++itr)
 	{
 		ReputationModifier * mod = itr->second;
@@ -163,9 +175,10 @@ ObjectMgr::~ObjectMgr()
 		InstanceReputationModifier * mod = itr->second;
 		mod->mods.clear();
 		delete mod;
-	}	
+	}
+	Log.Line(" Done!");
 
-	Log.Notice("ObjectMgr", "Deleting Groups...");
+	Log.NoticeNONL("ObjectMgr", "Deleting Groups...");
 	for(GroupMap::iterator itr = m_groups.begin(); itr != m_groups.end();)
 	{
 		Group* pGroup = itr->second;
@@ -184,20 +197,23 @@ ObjectMgr::~ObjectMgr()
 			delete pGroup;
 		}
 	}
+	Log.Line(" Done!");
 
-	Log.Notice("ObjectMgr", "Deleting Player Information...");
+	Log.NoticeNONL("ObjectMgr", "Deleting Player Information...");
 	for(HM_NAMESPACE::hash_map<uint32, PlayerInfo*>::iterator itr = m_playersinfo.begin(); itr != m_playersinfo.end(); ++itr)
 	{
 		itr->second->m_Group = NULL;
 		free(itr->second->name);
 		delete itr->second;
 	}
+	Log.Line(" Done!");
 
-	Log.Notice("ObjectMgr", "Deleting GM Tickets...");
+	Log.NoticeNONL("ObjectMgr", "Deleting GM Tickets...");
 	for(GmTicketList::iterator itr = GM_TicketList.begin(); itr != GM_TicketList.end(); ++itr)
 		delete (*itr);
+	Log.Line(" Done!");
 
-	Log.Notice("ObjectMgr", "Deleting Boss Information...");
+	Log.NoticeNONL("ObjectMgr", "Deleting Boss Information...");
 	for(uint32 i= 0; i<NUM_MAPS; i++)
 	{
 		if(this->m_InstanceBossInfoMap[i] != NULL)
@@ -208,31 +224,34 @@ ObjectMgr::~ObjectMgr()
 			this->m_InstanceBossInfoMap[i] = NULL;
 		}
 	}
+	Log.Line(" Done!");
 
-	Log.Notice("ObjectMgr", "Deleting Arena Teams...");
-	for(HM_NAMESPACE::hash_map<uint32, ArenaTeam*>::iterator itr = m_arenaTeams.begin(); itr != m_arenaTeams.end(); ++itr) {
+	Log.NoticeNONL("ObjectMgr", "Deleting Arena Teams...");
+	for(HM_NAMESPACE::hash_map<uint32, ArenaTeam*>::iterator itr = m_arenaTeams.begin(); itr != m_arenaTeams.end(); ++itr)
 		delete (*itr).second;
-	}
+	Log.Line(" Done!");
 	
-	Log.Notice("ObjectMgr", "Deleting Profession Discoveries...");
+	Log.NoticeNONL("ObjectMgr", "Deleting Profession Discoveries...");
 	std::set<ProfessionDiscovery*>::iterator itr = ProfessionDiscoveryTable.begin();
 	for ( ; itr != ProfessionDiscoveryTable.end(); itr++ )
 		delete (*itr);
+	Log.Line(" Done!");
 
-	Log.Notice("ObjectMgr", "Cleaning up BroadCastStorages...");
+	Log.NoticeNONL("ObjectMgr", "Cleaning up BroadCastStorages...");
 	m_BCEntryStorage.clear();
+	Log.Line(" Done!");
 
-	Log.Notice("ObjectMgr", "Cleaning up spell target constraints...");
+	Log.NoticeNONL("ObjectMgr", "Cleaning up spell target constraints...");
 	for( SpellTargetConstraintMap::iterator itr = m_spelltargetconstraints.begin(); itr != m_spelltargetconstraints.end(); ++itr )
 		delete itr->second;
-
 	m_spelltargetconstraints.clear();
+	Log.Line(" Done!");
 
-	Log.Notice("ObjectMgr", "De-allocating cached pet family spells...");
+	Log.NoticeNONL("ObjectMgr", "De-allocating cached pet family spells...");
 	for(PetSpellMap::iterator itr = m_PetAISpells.begin(); itr != m_PetAISpells.end(); ++itr)
 		delete itr->second;
 	m_PetAISpells.clear();
-
+	Log.Line(" Done!");
 }
 
 //

@@ -394,6 +394,7 @@ void Storage_FillTaskList(TaskList & tl)
 void Storage_Cleanup()
 {
 	{
+		Log.NoticeNONL("Storage_Cleanup","Cleaning up cached proto spells ");
 		StorageContainerIterator<CreatureProto> * itr = CreatureProtoStorage.MakeIterator();
 		CreatureProto * p;
 		while(!itr->AtEnd())
@@ -412,6 +413,7 @@ void Storage_Cleanup()
 				break;
 		}
 		itr->Destruct();
+		Log.Line(" Done!");
 	}
 	ItemPrototypeStorage.Cleanup();
 	ItemNameStorage.Cleanup();

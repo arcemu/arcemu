@@ -139,7 +139,7 @@ public:
 		va_start(ap, format);
 		Time();
 		fputs("N ", stdout);
-		if(*source)
+		if(source != NULL && *source)
 		{
 			Color(TWHITE);
             pdcds( SZLTR, stdout );
@@ -153,6 +153,30 @@ public:
 		putchar('\n');
 		va_end(ap);
 		Color(TNORMAL);
+		UNLOCK_LOG;
+	}
+	void NoticeNONL(const char * source, const char * format, ...)
+	{
+		/* notice is old loglevel 0/string */
+		LOCK_LOG;
+		va_list ap;
+		va_start(ap, format);
+		Time();
+		fputs("N ", stdout);
+		if(*source)
+		{
+			Color(TWHITE);
+			pdcds( SZLTR, stdout );
+			fputs(source, stdout);
+			putchar(':');
+			putchar(' ');
+			Color(TNORMAL);
+		}
+
+		vprintf(format, ap);
+		//putchar('\n');
+		va_end(ap);
+		//Color(TNORMAL);
 		UNLOCK_LOG;
 	}
 
@@ -184,6 +208,34 @@ public:
 		Color(TNORMAL);
 		UNLOCK_LOG;
 	}
+	void WarningNONL(const char * source, const char * format, ...)
+	{
+		if(log_level < 2)
+			return;
+
+		/* warning is old loglevel 2/detail */
+		LOCK_LOG;
+		va_list ap;
+		va_start(ap, format);
+		Time();
+		Color(TYELLOW);
+		fputs("W ", stdout);
+		if(*source)
+		{
+			Color(TWHITE);
+			pdcds( SZLTR, stdout );
+			fputs(source, stdout);
+			putchar(':');
+			putchar(' ');
+			Color(TYELLOW);
+		}
+
+		vprintf(format, ap);
+		//putchar('\n');
+		va_end(ap);
+		//Color(TNORMAL);
+		UNLOCK_LOG;
+	}
 
 	void Success(const char * source, const char * format, ...)
 	{
@@ -210,6 +262,33 @@ public:
 		putchar('\n');
 		va_end(ap);
 		Color(TNORMAL);
+		UNLOCK_LOG;
+	}
+	void SuccessNONL(const char * source, const char * format, ...)
+	{
+		if(log_level < 2)
+			return;
+
+		LOCK_LOG;
+		va_list ap;
+		va_start(ap, format);
+		Time();
+		Color(TGREEN);
+		fputs("S ", stdout);
+		if(*source)
+		{
+			Color(TWHITE);
+			pdcds( SZLTR, stdout );
+			fputs(source, stdout);
+			putchar(':');
+			putchar(' ');
+			Color(TGREEN);
+		}
+
+		vprintf(format, ap);
+		//putchar('\n');
+		va_end(ap);
+		//Color(TNORMAL);
 		UNLOCK_LOG;
 	}
 
@@ -240,10 +319,38 @@ public:
 		Color(TNORMAL);
 		UNLOCK_LOG;
 	}
+	void ErrorNONL(const char * source, const char * format, ...)
+	{
+		if(log_level < 1)
+			return;
 
-	void Line()
+		LOCK_LOG;
+		va_list ap;
+		va_start(ap, format);
+		Time();
+		Color(TRED);
+		fputs("E ", stdout);
+		if(*source)
+		{
+			Color(TWHITE);
+			pdcds( SZLTR, stdout );
+			fputs(source, stdout);
+			putchar(':');
+			putchar(' ');
+			Color(TRED);
+		}
+
+		vprintf(format, ap);
+		//putchar('\n');
+		va_end(ap);
+		//Color(TNORMAL);
+		UNLOCK_LOG;
+	}
+
+	void Line(const char * msg)
 	{
 		LOCK_LOG;
+		fputs(msg, stdout);
 		putchar('\n');
 		UNLOCK_LOG;
 	}
