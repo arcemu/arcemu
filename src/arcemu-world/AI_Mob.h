@@ -62,12 +62,16 @@ protected:
 	uint8 misc_attributes;
 
 	/*
-		Bit 0-2 = waypoint movement mode(ex. dontmovewp,moverandomwp,movecircle)
-		Bit 3 = move backwards
-		Bit 4 = show forward waypoints
-		Bit 5 = show backward waypoints.
+		Bit 0-3 = waypoint movement mode(ex. dontmovewp,moverandomwp,movecircle)
+		Bit 4 = move backwards
+		Bit 5 = show forward waypoints
 	*/
-	uint8 m_WaypointFlags;
+	struct WaypointFlags
+	{
+		char movetype : 4;
+		bool move_backwards : 2;
+		bool showing_waypoints : 2;
+	} m_WaypointFlags;
 
 	/*	The waypoint that we are currently at/moving to */
 	uint8 m_currentWaypoint;
@@ -313,21 +317,18 @@ public:
 	// Purpose:	Sets a new move type which causes the unit to change it's waypoint behavior.
 	// Parameter: MovementType mType - a new waypoint movement type to use.
 	//************************************
-	ARCEMU_INLINE void Waypoint_setmovetype(MovementType mType) 
+	ARCEMU_FORCEINLINE void Waypoint_setmovetype(MovementType mType) 
 	{
 		//first clear the current movetype
-		m_WaypointFlags &= ~WAYPOINT_MOVETYPEMASK;
-		//then set the new movetype.
-		m_WaypointFlags |= (mType & WAYPOINT_MOVETYPEMASK); 
+		m_WaypointFlags.movetype = mType;
 	}
 
 	//************************************
 	// Purpose:	Returns the current waypoint moving type.
 	//************************************
-	ARCEMU_INLINE uint32 Waypoint_getmovetype() 
+	ARCEMU_FORCEINLINE uint32 Waypoint_getmovetype() 
 	{
-		uint32 move_type = (m_WaypointFlags & WAYPOINT_MOVETYPEMASK);
-		return move_type;
+		return m_WaypointFlags.movetype;
 	}
 
 	//************************************
@@ -381,25 +382,12 @@ public:
 	void Waypoint_hide(Player * plr);
 	void Waypoint_hide(Player * plr, uint32 id);
 
-	/*	Returns our current waypoint flags	*/
-	uint32 Waypoint_getflags() { return uint32(m_WaypointFlags); }
-
 	/*	If we are currently showing waypoints, this functionality was removed. */
-	bool Waypoint_isShowing() { return (m_WaypointFlags & WAYPOINT_ISSHOWING) != 0; }
+	bool Waypoint_isShowing() { return m_WaypointFlags.showing_waypoints; }
 	bool Waypoint_isShowing( uint32 wpid);
-	void Waypoint_setshowing(bool show = true) { 
-		if(show)
-			m_WaypointFlags |= WAYPOINT_ISSHOWING;
-		else
-			m_WaypointFlags &= ~WAYPOINT_ISSHOWING;
-	}
-	bool Waypoint_ismovingbackward() { return (m_WaypointFlags & WAYPOINT_MOVEBACKWARD) != 0; }
-	void Waypoint_setbackwardmove(bool set = true) {
-		if(set)
-			m_WaypointFlags |= WAYPOINT_MOVEBACKWARD;
-		else
-			m_WaypointFlags &= ~WAYPOINT_MOVEBACKWARD;
-	}
+	void Waypoint_setshowing(bool show = true) { m_WaypointFlags.showing_waypoints = show; }
+	bool Waypoint_ismovingbackward() { return m_WaypointFlags.move_backwards; }
+	void Waypoint_setbackwardmove(bool set = true) { m_WaypointFlags.move_backwards = set; }
 
 	AIWaypointStorage & Waypoint_getStorage() { return m_waypoints; }
 

@@ -6,7 +6,7 @@ MobAI::MobAI(Unit * self) : AIInterface(self)
 	m_nextTarget = 0;
 	m_aiAgent = AGENT_NULL;
 	m_currentWaypoint = 1;
-	m_WaypointFlags = 0;
+	memset(&m_WaypointFlags, 0, sizeof(WaypointFlags) );
 	m_type = AITYPE_MOB;
 	timed_emotes = NULL;
 	timed_emote_expire = 0xFFFFFFFF;
@@ -1061,31 +1061,31 @@ uint32 MobAI::calcThreat(uint32 damage, SpellEntry * sp, Unit* Attacker)
 void MobAI::handleWaypointMovement()
 {
 	int32 destpoint = -1;
-	uint32 move_type = Waypoint_getmovetype();
-	if(move_type == MOVEMENTTYPE_RANDOMWP) //is random move on if so move to a random waypoint
+//	uint32 move_type = Waypoint_getmovetype();
+	if(Waypoint_getmovetype() == MOVEMENTTYPE_RANDOMWP) //is random move on if so move to a random waypoint
 	{
 		if(Waypoint_getcount() > 1)
-			destpoint = RandomUInt((uint32)Waypoint_getcount()-1);
-	}
-	else if (move_type == MOVEMENTTYPE_CIRCLEWP) //random move is not on lets follow the path in circles
-	{
-		// 1 -> 10 then 1 -> 10
-		destpoint = m_currentWaypoint;
-		m_currentWaypoint++;
-		if (m_currentWaypoint > Waypoint_getcount() )
-			destpoint = m_currentWaypoint = 1; //Happens when you delete last wp seems to continue ticking
-	}
-	else if(move_type == MOVEMENTTYPE_WANTEDWP)//Move to wanted wp
-	{
-		if(m_currentWaypoint)
 		{
-			if(Waypoint_getcount() > 0)
-				destpoint = m_currentWaypoint;
-			else
-				destpoint = -1;
+			do
+			{
+				destpoint = RandomUInt((uint32)Waypoint_getcount()-1);
+			}
+			while(m_currentWaypoint == destpoint);
 		}
 	}
-	else if(move_type == MOVEMENTTYPE_FORWARDTHENSTOP)// move to end, then stop
+	else if(Waypoint_getmovetype() == MOVEMENTTYPE_CIRCLEWP) //random move is not on lets follow the path in circles
+	{
+		// 1 -> 10 then 1 -> 10
+		if (m_currentWaypoint > Waypoint_getcount() )
+			m_currentWaypoint = 1; //Happens when you delete last wp seems to continue ticking
+		destpoint = m_currentWaypoint++;
+	}
+	else if(Waypoint_getmovetype() == MOVEMENTTYPE_WANTEDWP)//Move to wanted wp
+	{
+		if(m_currentWaypoint && Waypoint_getcount() > 0)
+			destpoint = m_currentWaypoint;
+	}
+	else if(Waypoint_getmovetype() == MOVEMENTTYPE_FORWARDTHENSTOP)// move to end, then stop
 	{
 		if(m_currentWaypoint > Waypoint_getcount())
 			destpoint = -1; //hmm maybe we should stop being path walker since we are waiting here anyway
@@ -1093,7 +1093,7 @@ void MobAI::handleWaypointMovement()
 			destpoint = m_currentWaypoint;
 		++m_currentWaypoint;
 	}
-	else if(move_type != MOVEMENTTYPE_DONTMOVEWP)//4 Unused
+	else if(Waypoint_getmovetype() == MOVEMENTTYPE_DONTMOVEWP)//4 Unused
 	{
 		// 1 -> 10 then 10 -> 1
 		if (m_currentWaypoint > Waypoint_getcount()) m_currentWaypoint = 1; //Happens when you delete last wp seems to continue ticking
@@ -1107,7 +1107,6 @@ void MobAI::handleWaypointMovement()
 			destpoint = ++m_currentWaypoint;
 			
 	}
-
 	if(destpoint != -1)
 	{
 		WayPoint* wp = Waypoint_getWP( (uint8)destpoint);
