@@ -1631,7 +1631,9 @@ void MobAI::removeThreatByGUID(uint64 guid)
 void MobAI::removeThreatByPtr(Unit* obj)
 {
 	uint64 guid = obj != NULL ? obj->GetGUID() : 0;
-	m_aiTargets.erase(m_aiTargets.find(guid));
+	TargetMap::iterator itr = m_aiTargets.find(guid);
+	if(itr != m_aiTargets.end() )
+		m_aiTargets.erase(m_aiTargets.find(guid));
 	//If we are removing our main/second tank threat, update then as well.
 	if(guid == m_mostHated || guid == m_secondHated)
 	{
