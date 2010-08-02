@@ -632,11 +632,11 @@ void Pet::InitializeMe( bool first )
 			Field * f = query->Fetch();
 			string talent_array(f[3].GetString() );
 			int delimiter = 0, lastdelimiter = 0;
-			int length = talent_array.length();
+			int length = (int)talent_array.length();
 			uint32 spell_id = 0;
 			while(delimiter < length && delimiter != string::npos)
 			{
-				delimiter = talent_array.find(',',lastdelimiter);
+				delimiter = (int)talent_array.find(',',lastdelimiter);
 				spell_id = (uint32)atoi( talent_array.substr(lastdelimiter,(delimiter != string::npos) ? delimiter : talent_array.length() ).c_str() );
 				lastdelimiter = ++delimiter;
 				if(spell_id > 0 && !Talent_has(spell_id) )
@@ -885,7 +885,7 @@ void Pet::UpdateSpellList( bool showLearnSpells )
 	if( objmgr.Pet_getAISpellSize(info->Family) > 0)
 	{
 		//get iterator to our spells using our family id from objmgr.
-		HM_NAMESPACE::hash_multimap<uint32, AI_PetSpell*>::iterator itr = objmgr.Pet_getAISpellStart(info->Family);
+		std::multimap<uint32, AI_PetSpell*>::iterator itr = objmgr.Pet_getAISpellStart(info->Family);
 		//walk the spells
 		for(; itr != objmgr.Pet_getAISpellEnd(info->Family); ++itr)
 		{

@@ -430,7 +430,7 @@ public:
 	typedef std::map<pair<uint32, uint32>, LevelMap* >                  LevelInfoMap;
     typedef std::map<uint32, std::list<ItemPrototype*>* >               ItemSetContentMap;
 	typedef std::map<uint32, uint32>                                    NpcToGossipTextMap;
-	typedef HM_NAMESPACE::hash_multimap<uint32, AI_PetSpell*>					PetSpellMap;
+	typedef std::multimap<uint32, AI_PetSpell*>							PetSpellMap;
 	typedef std::map<uint32, uint32>                                    PetSpellCooldownMap;
 	typedef std::map<uint32, SpellEntry*>                               TotemSpellMap;
 	typedef std::multimap <uint32,uint32>                               BCEntryStorage;

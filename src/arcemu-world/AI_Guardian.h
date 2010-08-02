@@ -100,7 +100,7 @@ public:
 	void Spell_setnext(AI_Spell * spell)
 	{
 		//validate if we have it and also if it's cooldown is past.
-		if(Spell_has(spell) && spell->interval == 0x0 || getMSTime() >= spell->cooldown)
+		if( (Spell_has(spell) && spell->interval == 0x0) || getMSTime() >= spell->cooldown)
 			m_spellDeck.push_back(spell);
 	}
 	/*	Adds the given spell to our spell store */
