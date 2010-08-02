@@ -28,116 +28,125 @@ bool ChatHandler::HandleWPAddCommand(const char* args, WorldSession *m_session)
 {
 	uint64 guid = m_session->GetPlayer()->GetSelection();
 	if (guid == 0)
-		SystemMessage(m_session, "No Selection");
-	else
 	{
-		Creature * pCreature = pCreature = m_session->GetPlayer()->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
-		if( pCreature == NULL )
-			SystemMessage(m_session, "You should select a creature.");
-		else
+		SystemMessage(m_session, "No Selection");
+		return true;
+	}
+	AIInterface* ai = NULL;
+	Creature * pCreature = NULL;
+	Player* p = m_session->GetPlayer();
+	if(p->waypointunit != NULL)
+	{
+		SystemMessage(m_session, "Using Previous Unit.");
+		ai = p->waypointunit;
+		if(!ai)
 		{
-			MobAI * ai = AIType_isMob(pCreature->GetAIInterface() ) ? TO_AIMOB(pCreature->GetAIInterface() ) : NULL;
-			if(ai == NULL)
-				SystemMessage(m_session," The selected creature doesn't support waypoints.");
-			else
-			{
-				char* pWaitTime = strtok((char*)args, " ");
-				uint32 WaitTime = (pWaitTime)? atoi(pWaitTime) : 0;
-				char* pFlags = strtok(NULL, " ");
-				uint32 Flags = (pFlags)? atoi(pFlags) : 0 ;
-				char* pForwardEmoteId = strtok(NULL, " ");
-				uint32 ForwardEmoteId = (pForwardEmoteId)? atoi(pForwardEmoteId) : 0;
-				char* pBackwardEmoteId = strtok(NULL, " ");
-				uint32 BackwardEmoteId = (pBackwardEmoteId)? atoi(pBackwardEmoteId) : 0;
-				char* pForwardSkinId = strtok(NULL, " ");
-				uint32 ForwardSkinId = (pForwardSkinId)? atoi(pForwardSkinId) : pCreature->GetNativeDisplayId();
-				char* pBackwardSkinId = strtok(NULL, " ");
-				uint32 BackwardSkinId = (pBackwardSkinId)? atoi(pBackwardSkinId) : pCreature->GetNativeDisplayId();
-				char* pForwardEmoteOneShot = strtok(NULL, " ");
-				uint32 ForwardEmoteOneShot = (pForwardEmoteOneShot)? atoi(pForwardEmoteOneShot) : 1;
-				char* pBackwardEmoteOneShot = strtok(NULL, " ");
-				uint32 BackwardEmoteOneShot = (pBackwardEmoteOneShot)? atoi(pBackwardEmoteOneShot) : 1;
+			SystemMessage(m_session, "Invalid Creature, please select another one.");
+			return true;
+		}
 
-				WayPoint* wp = new WayPoint;
-				wp->id = (uint8)TO_AIMOB(ai)->Waypoint_getcount()+1;
-				LocationVector loc = m_session->GetPlayer()->GetPosition();
-				wp->x = loc.x;
-				wp->y = loc.y;
-				wp->z = loc.z;
-				wp->waittime = WaitTime;
-				wp->flags = (uint16)Flags;
-				wp->forwardemoteoneshot = (ForwardEmoteOneShot>0)?true:false;
-				wp->forwardemoteid = ForwardEmoteId;
-				wp->backwardemoteoneshot = (BackwardEmoteOneShot>0)?true:false;
-				wp->backwardemoteid = BackwardEmoteId;
-				wp->forwardskinid = ForwardSkinId;
-				wp->backwardskinid = BackwardSkinId;
-				TO_AIMOB(ai)->Waypoint_add(wp);
-				//TO_AIMOB(ai)->Waypoint_saveall(); We can always save later when needed.
-				SystemMessage(m_session, "Waypoint %u added.", wp->id);
-			}
+		pCreature =TO_CREATURE(ai->GetUnit());
+		if( !pCreature || pCreature->IsPet() )
+		{
+			SystemMessage(m_session, "Invalid Creature, please select another one.");
+			return true;
 		}
 	}
+	else
+	{
+		pCreature = m_session->GetPlayer()->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
+		if( !pCreature || pCreature->IsPet() )
+		{
+			SystemMessage(m_session, "You should select a creature.");
+			return true;
+		}
+		ai = pCreature->GetAIInterface();
+	}
+
+	char* pWaitTime = strtok((char*)args, " ");
+	uint32 WaitTime = (pWaitTime)? atoi(pWaitTime) : 10000;
+	char* pFlags = strtok(NULL, " ");
+	uint32 Flags = (pFlags)? atoi(pFlags) : 0 ;
+	char* pForwardEmoteId = strtok(NULL, " ");
+	uint32 ForwardEmoteId = (pForwardEmoteId)? atoi(pForwardEmoteId) : 0;
+	char* pBackwardEmoteId = strtok(NULL, " ");
+	uint32 BackwardEmoteId = (pBackwardEmoteId)? atoi(pBackwardEmoteId) : 0;
+	char* pForwardSkinId = strtok(NULL, " ");
+	uint32 ForwardSkinId = (pForwardSkinId)? atoi(pForwardSkinId) : pCreature->GetNativeDisplayId();
+	char* pBackwardSkinId = strtok(NULL, " ");
+	uint32 BackwardSkinId = (pBackwardSkinId)? atoi(pBackwardSkinId) : pCreature->GetNativeDisplayId();
+	char* pForwardEmoteOneShot = strtok(NULL, " ");
+	uint32 ForwardEmoteOneShot = (pForwardEmoteOneShot)? atoi(pForwardEmoteOneShot) : 1;
+	char* pBackwardEmoteOneShot = strtok(NULL, " ");
+	uint32 BackwardEmoteOneShot = (pBackwardEmoteOneShot)? atoi(pBackwardEmoteOneShot) : 1;
+
+	WayPoint* wp = new WayPoint;
+	bool showing = ai->m_WayPointsShowing;
+	wp->id = (uint32)ai->GetWayPointsCount()+1;
+	wp->x = p->GetPositionX();
+	wp->y = p->GetPositionY();
+	wp->z = p->GetPositionZ();
+	wp->waittime = WaitTime;
+	wp->flags = Flags;
+	wp->forwardemoteoneshot = (ForwardEmoteOneShot>0)?true:false;
+	wp->forwardemoteid = ForwardEmoteId;
+	wp->backwardemoteoneshot = (BackwardEmoteOneShot>0)?true:false;
+	wp->backwardemoteid = BackwardEmoteId;
+	wp->forwardskinid = ForwardSkinId;
+	wp->backwardskinid = BackwardSkinId;
+
+	if(showing)
+		ai->hideWayPoints(p);
+
+	ai->addWayPoint(wp);
+	ai->saveWayPoints();
+
+	if(showing)
+		ai->showWayPoints(p,ai->m_WayPointsShowBackwards);
+
+	SystemMessage(m_session, "Waypoint %u added.", wp->id);
 	return true;
 }
 
 bool ChatHandler::HandleWPMoveTypeCommand(const char* args, WorldSession *m_session)
 {
 	if(!*args)
-		SystemMessage(m_session, "Please specify a move type option.");
-	else
+		return false;
+
+	uint32 option = atoi((char*)args);
+
+	if (option != 0 && option != 1 && option != 2)
 	{
-		uint32 option = atoi((char*)args);
-		if (option > 2)
-		{
-			std::stringstream ss;
-			ss << "Incorrect value." << endl;
-			ss << "0 is Move from WP 1 ->  10 then 10 -> 1." << endl;
-			ss << "1 is Move from WP to a random WP." << endl;
-			ss << "2 is Move from WP 1 -> 10 then 1 -> 10." << endl;
-			SendMultilineMessage(m_session, ss.str().c_str());
-		}
-		else
-		{
-			uint64 guid = m_session->GetPlayer()->GetSelection();
-			if (guid == 0)
-				SystemMessage(m_session, "No selection.");
-			else
-			{
-				Creature * pCreature = m_session->GetPlayer()->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
-				if(pCreature == NULL)
-					SystemMessage(m_session, "You should select a creature.");
-				else
-				{
-					MobAI * ai = AIType_isMob( pCreature->GetAIInterface() ) ? TO_AIMOB(pCreature->GetAIInterface() ) : NULL;
-					if(ai != NULL)
-					{
-						MovementType type(MOVEMENTTYPE_DONTMOVEWP);
-						switch(option)
-						{
-						case 0:
-							type = MOVEMENTTYPE_MISC;
-							break;
-						case 1:
-							type = MOVEMENTTYPE_RANDOMWP;
-							break;
-						case 2:
-							type = MOVEMENTTYPE_CIRCLEWP;
-							break;
-						}
-						ai->Waypoint_setmovetype(type);
-						char sql[512];
-						snprintf(sql, 512, "UPDATE creature_spawns SET movetype = '%u' WHERE id = '%u'", (uint32)type, (unsigned int)Arcemu::Util::GUID_LOPART( guid ));
-						WorldDatabase.Execute( sql );
-						SystemMessage(m_session, "Value saved to database.");
-					}
-					else
-						SystemMessage(m_session, "The selected creature does not support waypoints. ");
-				}
-			}
-		}
+		std::stringstream ss;
+		ss << "Incorrect value." << endl;
+		ss << "0 is Move from WP 1 ->  10 then 10 -> 1." << endl;
+		ss << "1 is Move from WP to a random WP." << endl;
+		ss << "2 is Move from WP 1 -> 10 then 1 -> 10." << endl;
+		SendMultilineMessage(m_session, ss.str().c_str());
+		return true;
 	}
 
+	uint64 guid = m_session->GetPlayer()->GetSelection();
+	if (guid == 0)
+	{
+		SystemMessage(m_session, "No selection.");
+		return true;
+	}
+
+	Creature * pCreature = m_session->GetPlayer()->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
+	if(!pCreature)
+	{
+		SystemMessage(m_session, "You should select a creature.");
+		return true;
+	}
+
+	char sql[512];
+	snprintf(sql, 512, "UPDATE creature_spawns SET movetype = '%u' WHERE id = '%u'", (unsigned int)option, (unsigned int)Arcemu::Util::GUID_LOPART( guid ));
+	WorldDatabase.Execute( sql );
+
+	pCreature->GetAIInterface()->setMoveType(option);
+
+	SystemMessage(m_session, "Value saved to database.");
 	return true;
 }
 
@@ -146,160 +155,58 @@ bool ChatHandler::HandleWPShowCommand(const char* args, WorldSession *m_session)
 {
 	uint64 guid = m_session->GetPlayer()->GetSelection();
 	if (guid == 0)
+	{
 		SystemMessage(m_session, "No selection.");
+		return true;
+	}
+
+	Creature * pCreature = m_session->GetPlayer()->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
+	if(!pCreature)
+	{
+		SystemMessage(m_session, "You should select a Creature.");
+		return true;
+	}
+
+	char* pBackwards = strtok((char*)args, " ");
+	bool Backwards = (pBackwards)? ((atoi(pBackwards)>0)?true:false) : false;
+
+	AIInterface* ai = pCreature->GetAIInterface();
+	Player* pPlayer = m_session->GetPlayer();
+
+
+	if(pPlayer->waypointunit != ai)
+	{
+		if(ai->m_WayPointsShowing == true) 
+		{
+			SystemMessage(m_session, "Some one else is also Viewing this Creatures WayPoints.");
+			SystemMessage(m_session, "Viewing WayPoints at the same time as some one else can cause undesireble results.");
+			return true;
+		}
+
+		if(pPlayer->waypointunit != NULL)
+		{
+			pPlayer->waypointunit->hideWayPoints(pPlayer);
+		}
+		pPlayer->waypointunit = ai;
+		ai->showWayPoints(pPlayer,Backwards);
+		ai->m_WayPointsShowBackwards = Backwards;
+	}
 	else
 	{
-		Creature * pCreature = m_session->GetPlayer()->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
-		if(pCreature == NULL)
-			SystemMessage(m_session, "You should select a Creature.");
-		else
+		if(ai->m_WayPointsShowing == true) 
 		{
-			if(AIType_isMob(pCreature->GetAIInterface() ) )
-			{
-				char* pBackwards = strtok((char*)args, " ");
-				bool Backwards = (pBackwards)? ((atoi(pBackwards)>0)?true:false) : false;
-				MobAI * ai = TO_AIMOB( pCreature->GetAIInterface() );
-				Player* pPlayer = m_session->GetPlayer();
-				if(ai->Waypoint_isShowing() )
-					SystemMessage(m_session, "Waypoints for this creature are already showing.");
-				else
-				{
-					ai->Waypoint_show(pPlayer, Backwards);
-					SystemMessage(m_session, "Showing waypoints for creature %u", pCreature->GetSQL_id());
-				}
-			}
-			else
-				SystemMessage(m_session, "The selected creature does not support waypoints. ");
+			SystemMessage(m_session, "Waypoints Already Showing.");
 		}
+		else
+			ai->showWayPoints(m_session->GetPlayer(),Backwards);
 	}
+
+	SystemMessage(m_session, "Showing waypoints for creature %u", pCreature->GetSQL_id());
 	return true;
 }
 
 bool ChatHandler::HandleWPDeleteCommand(const char* args, WorldSession *m_session)
 {
-	uint64 guid = m_session->GetPlayer()->GetSelection();
-	if (guid == 0)
-		SystemMessage(m_session, "No selection.");
-	else
-	{
-		if(GET_TYPE_FROM_GUID(guid) != HIGHGUID_TYPE_WAYPOINT)
-			SystemMessage(m_session, "Please select a waypoint.");
-		else
-		{
-			Player * plr = m_session->GetPlayer();
-			//Retrieve the packed wp id.
-			uint32 wpid = Arcemu::Util::GUID_HIPART(guid) & 0x000FFFFF;
-			//Retrieve the packed owning creature's low guid.
-			uint32 owner_creature_guid = GET_LOWGUID_PART(guid);
-			Creature * owner_creature = plr->GetMapMgr()->GetCreature(owner_creature_guid);
-			if(wpid && owner_creature != NULL)
-			{
-				MobAI * ai = AIType_isMob(owner_creature->GetAIInterface() ) ? TO_AIMOB(owner_creature->GetAIInterface() ) : NULL;
-				if(ai != NULL)
-				{
-					ai->Waypoint_delete(wpid);
-					if(ai->Waypoint_isShowing(wpid) )
-						ai->Waypoint_hide(plr, wpid);
-					SystemMessage(m_session, "Waypoint %u deleted.", wpid);
-				}
-				else
-					SystemMessage(m_session, "The selected creature doesn't support waypoints.");
-			}
-			else
-				SystemMessage(m_session, "Invalid waypoint selected.");
-		}
-	}
-	return true;
-}
-
-bool ChatHandler::HandleWPChangeNoCommand(const char* args, WorldSession *m_session)
-{
-	uint64 guid = m_session->GetPlayer()->GetSelection();
-	if (guid == 0)
-		SystemMessage(m_session, "No selection.");
-	else
-	{
-		if(GET_TYPE_FROM_GUID(guid) != HIGHGUID_TYPE_WAYPOINT)
-			SystemMessage(m_session, "You should select a Waypoint.");
-		else
-		{
-			Player * plr = m_session->GetPlayer();
-
-			//get newid
-			char* pNewID = strtok((char*)args, " ");
-			uint32 NewID = (pNewID)? atoi(pNewID) : 0;
-
-			uint32 wpid = Arcemu::Util::GUID_HIPART(guid) & 0x000FFFFF;
-			uint32 owner_creature_guid = GET_LOWGUID_PART(guid);
-			Creature * owner = plr->GetMapMgr()->GetCreature(owner_creature_guid);
-			if(owner != NULL && NewID > 0 && NewID != wpid)
-			{
-				MobAI * ai = AIType_isMob(owner->GetAIInterface() ) ? TO_AIMOB(owner->GetAIInterface() ) : NULL;
-				if(ai != NULL)
-				{
-					ai->Waypoint_getWP(wpid)->id = (uint8)NewID;
-					if(ai->Waypoint_isShowing() )
-					{
-						ai->Waypoint_hide(plr, NewID);
-						ai->Waypoint_show(plr, NewID);
-					}
-					SystemMessage(m_session, "Waypoint id %u has been changed to %u",wpid, NewID);
-				}
-				else
-					SystemMessage(m_session, "The selected creature does not support waypoints.");
-			}
-		}
-	}
-	return true;
-}
-
-bool ChatHandler::HandleWPFlagsCommand(const char* args, WorldSession *m_session)
-{
-	uint64 guid = m_session->GetPlayer()->GetSelection();
-	if (guid == 0)
-		SystemMessage(m_session, "No selection.");
-	else
-	{
-		if(GET_TYPE_FROM_GUID(guid) != HIGHGUID_TYPE_WAYPOINT)
-			SystemMessage(m_session, "You should select a Waypoint.");
-		else
-		{
-
-			Player * plr = m_session->GetPlayer();
-			//retrieve packed wpid
-			uint32 wpid = Arcemu::Util::GUID_HIPART(guid) & 0x000FFFFF;
-			//retrieve packed owning creature low guid
-			uint32 owner_creature_guid = GET_LOWGUID_PART(guid);
-			Creature * owner_creature = plr->GetMapMgr()->GetCreature(owner_creature_guid);
-			if(owner_creature != NULL && wpid)
-			{
-				MobAI * ai = AIType_isMob(owner_creature->GetAIInterface() ) ? TO_AIMOB(owner_creature->GetAIInterface() ) : NULL;
-				if(ai != NULL)
-				{
-					char* pNewFlags = strtok((char*)args, " ");
-					uint32 NewFlags = (pNewFlags)? atoi(pNewFlags) : 0;
-					WayPoint * wp = ai->Waypoint_getWP(wpid);
-					if(wp != NULL)
-					{
-						uint32 oldflags = wp->flags;
-						wp->flags = (uint16)NewFlags;
-						SystemMessage(m_session, "Waypoint %u replaced flags %u with %u",wpid, oldflags, NewFlags);
-					}
-				}
-				else
-					SystemMessage(m_session, "The selected creature does not support waypoints.");
-			}
-			else
-				SystemMessage(m_session, "Invalid waypoint selected.");
-		}
-	}
-	return true;
-}
-
-bool ChatHandler::HandleWPMoveHereCommand(const char* args, WorldSession *m_session)
-{
-	return true;
-	/*
 	uint64 guid = m_session->GetPlayer()->GetSelection();
 	if (guid == 0)
 	{
@@ -315,7 +222,166 @@ bool ChatHandler::HandleWPMoveHereCommand(const char* args, WorldSession *m_sess
 
 	Player* pPlayer = m_session->GetPlayer();
 	AIInterface* ai = pPlayer->waypointunit;
-	if(!ai || !ai->getUnit())
+	if(!ai || !ai->GetUnit())
+	{
+		SystemMessage(m_session, "Invalid Creature, please select another one.");
+		return true;
+	}
+	std::stringstream ss;
+
+	uint32 wpid = Arcemu::Util::GUID_LOPART( guid );
+	if(wpid)
+	{
+		//Refresh client
+		//Hide all
+		bool show = ai->m_WayPointsShowing;
+		if(show == true)
+			ai->hideWayPoints(pPlayer);
+
+		ai->deleteWayPoint(wpid);
+		//Show All again after delete
+		if(show == true)
+			ai->showWayPoints(pPlayer,ai->m_WayPointsShowBackwards);
+
+		SystemMessage(m_session, "Waypoint %u deleted.", wpid);
+	}
+	else
+	{
+		SystemMessage(m_session, "Invalid Waypoint.");
+		return true;
+	}
+	return true;
+}
+
+bool ChatHandler::HandleWPChangeNoCommand(const char* args, WorldSession *m_session)
+{
+	uint64 guid = m_session->GetPlayer()->GetSelection();
+	if (guid == 0)
+	{
+		SystemMessage(m_session, "No selection.");
+		return true;
+	}
+
+	if(GET_TYPE_FROM_GUID(guid) != HIGHGUID_TYPE_WAYPOINT)
+	{
+		SystemMessage(m_session, "You should select a Waypoint.");
+		return true;
+	}
+
+	Player* pPlayer = m_session->GetPlayer();
+	AIInterface* ai = pPlayer->waypointunit;
+	if(!ai || !ai->GetUnit())
+	{
+		SystemMessage(m_session, "Invalid Creature, please select another one.");
+		return true;
+	}
+	std::stringstream ss;
+
+	//get newid
+	char* pNewID = strtok((char*)args, " ");
+	uint32 NewID = (pNewID)? atoi(pNewID) : 0;
+
+	uint32 wpid = Arcemu::Util::GUID_LOPART( guid );
+	if(NewID == wpid) return false;
+	if(wpid)
+	{
+		//Refresh client
+		//Hide all
+
+		bool show = ai->m_WayPointsShowing;
+		if(show == true)
+			ai->hideWayPoints(pPlayer);
+
+		//update to new id
+		ai->changeWayPointID(wpid,NewID);
+
+		//Show All again after update
+		if(show == true)
+			ai->showWayPoints(pPlayer,ai->m_WayPointsShowBackwards);
+
+		ss << "Waypoint " << wpid << " changed to Waypoint " << NewID << ".";
+		SystemMessage(m_session, ss.str().c_str());
+	}
+	else
+	{
+		SystemMessage(m_session, "Invalid Waypoint.");
+		return true;
+	}
+	return true;
+}
+
+bool ChatHandler::HandleWPFlagsCommand(const char* args, WorldSession *m_session)
+{
+	uint64 guid = m_session->GetPlayer()->GetSelection();
+	if (guid == 0)
+	{
+		SystemMessage(m_session, "No selection.");
+		return true;
+	}
+
+	if(GET_TYPE_FROM_GUID(guid) != HIGHGUID_TYPE_WAYPOINT)
+	{
+		SystemMessage(m_session, "You should select a Waypoint.");
+		return true;
+	}
+
+	Player* pPlayer = m_session->GetPlayer();
+	AIInterface* ai = pPlayer->waypointunit;
+	if(!ai || !ai->GetUnit())
+	{
+		SystemMessage(m_session, "Invalid Creature, please select another one.");
+		return true;
+	}
+	std::stringstream ss;
+
+	uint32 wpid = Arcemu::Util::GUID_LOPART( guid );
+	if(wpid)
+	{
+		WayPoint* wp = ai->getWayPoint( wpid );
+		if( wp == NULL )
+		{
+			SystemMessage(m_session, "Invalid Waypoint.");
+			return true;
+		}
+		uint32 flags = wp->flags;
+
+		char* pNewFlags = strtok((char*)args, " ");
+		uint32 NewFlags = (pNewFlags)? atoi(pNewFlags) : 0;
+
+		wp->flags = NewFlags;
+
+		//save wp
+		ai->saveWayPoints();
+
+		ss << "Waypoint " << wpid << " flags changed from " << flags << " to " << NewFlags;
+		SystemMessage(m_session, ss.str().c_str());
+	}
+	else
+	{
+		SystemMessage(m_session, "Invalid Waypoint.");
+		return true;
+	}
+	return true;
+}
+
+bool ChatHandler::HandleWPMoveHereCommand(const char* args, WorldSession *m_session)
+{
+	uint64 guid = m_session->GetPlayer()->GetSelection();
+	if (guid == 0)
+	{
+		SystemMessage(m_session, "No selection.");
+		return true;
+	}
+
+	if(GET_TYPE_FROM_GUID(guid) != HIGHGUID_TYPE_WAYPOINT)
+	{
+		SystemMessage(m_session, "You should select a Waypoint.");
+		return true;
+	}
+
+	Player* pPlayer = m_session->GetPlayer();
+	AIInterface* ai = pPlayer->waypointunit;
+	if(!ai || !ai->GetUnit())
 	{
 		SystemMessage(m_session, "Invalid Creature, please select another one.");
 		return true;
@@ -350,12 +416,11 @@ bool ChatHandler::HandleWPMoveHereCommand(const char* args, WorldSession *m_sess
 		SystemMessage(m_session, "Invalid Waypoint.");
 		return true;
 	}
-	return true;*/
+	return true;
 }
 
 bool ChatHandler::HandleWPWaitCommand(const char* args, WorldSession *m_session)
 {
-	/*
 	uint64 guid = m_session->GetPlayer()->GetSelection();
 	if (guid == 0)
 	{
@@ -371,7 +436,7 @@ bool ChatHandler::HandleWPWaitCommand(const char* args, WorldSession *m_session)
 
 	Player* pPlayer = m_session->GetPlayer();
 	AIInterface* ai = pPlayer->waypointunit;
-	if(!ai || !ai->getUnit())
+	if(!ai || !ai->GetUnit())
 	{
 		SystemMessage(m_session, "Invalid Creature, please select another one.");
 		return true;
@@ -406,12 +471,12 @@ bool ChatHandler::HandleWPWaitCommand(const char* args, WorldSession *m_session)
 	{
 		SystemMessage(m_session, "Invalid Waypoint.");
 		return true;
-	}*/
+	}
 	return true;
 }
 
 bool ChatHandler::HandleWPEmoteCommand(const char* args, WorldSession *m_session)
-{/*
+{
 	uint64 guid = m_session->GetPlayer()->GetSelection();
 	if (guid == 0)
 	{
@@ -427,7 +492,7 @@ bool ChatHandler::HandleWPEmoteCommand(const char* args, WorldSession *m_session
 
 	Player* pPlayer = m_session->GetPlayer();
 	AIInterface* ai = pPlayer->waypointunit;
-	if(!ai || !ai->getUnit())
+	if(!ai || !ai->GetUnit())
 	{
 		SystemMessage(m_session, "Invalid Creature, please select another one.");
 		return true;
@@ -470,13 +535,13 @@ bool ChatHandler::HandleWPEmoteCommand(const char* args, WorldSession *m_session
 	{
 		SystemMessage(m_session, "Invalid Waypoint.");
 		return true;
-	}*/
+	}
 	return true;
 }
 
 bool ChatHandler::HandleWPSkinCommand(const char* args, WorldSession *m_session)
 {
-	/*uint64 guid = m_session->GetPlayer()->GetSelection();
+	uint64 guid = m_session->GetPlayer()->GetSelection();
 	if (guid == 0)
 	{
 		SystemMessage(m_session,  "No selection.");
@@ -491,7 +556,7 @@ bool ChatHandler::HandleWPSkinCommand(const char* args, WorldSession *m_session)
 
 	Player* pPlayer = m_session->GetPlayer();
 	AIInterface* ai = pPlayer->waypointunit;
-	if(!ai || !ai->getUnit())
+	if(!ai || !ai->GetUnit())
 	{
 		SystemMessage(m_session, "Invalid Creature, please select another one.");
 		return true;
@@ -529,7 +594,7 @@ bool ChatHandler::HandleWPSkinCommand(const char* args, WorldSession *m_session)
 	{
 		SystemMessage(m_session, "Invalid Waypoint.");
 		return true;
-	}*/
+	}
 	return true;
 }
 
@@ -537,47 +602,56 @@ bool ChatHandler::HandleWPInfoCommand(const char* args, WorldSession *m_session)
 {
 	uint64 guid = m_session->GetPlayer()->GetSelection();
 	if (guid == 0)
-		SystemMessage(m_session, "No selection.");
-	else
-
 	{
-		if(GET_TYPE_FROM_GUID(guid) != HIGHGUID_TYPE_WAYPOINT)
-			SystemMessage(m_session, "You should select a Waypoint.");
-		else
+		SystemMessage(m_session, "No selection.");
+		return true;
+	}
+
+	if(GET_TYPE_FROM_GUID(guid) != HIGHGUID_TYPE_WAYPOINT)
+	{
+		SystemMessage(m_session, "You should select a Waypoint.");
+		return true;
+	}
+
+	Player* pPlayer = m_session->GetPlayer();
+	AIInterface* ai = pPlayer->waypointunit;
+	if(!ai || !ai->GetUnit())
+	{
+		SystemMessage(m_session, "Invalid Creature, please select another one.");
+		return true;
+	}
+	std::stringstream ss;
+
+	uint32 wpid = Arcemu::Util::GUID_LOPART( guid );
+	if((wpid > 0) && (wpid <= ai->GetWayPointsCount()))
+	{
+		WayPoint* wp = ai->getWayPoint(wpid);
+		if(wp)
 		{
-			Player * plr = m_session->GetPlayer();
-			uint32 wpid = Arcemu::Util::GUID_HIPART( guid ) & 0x000FFFFF;
-			uint32 owner_creature_guid = GET_LOWGUID_PART(guid);
-			Creature * owner_creature = plr->GetMapMgr()->GetCreature(owner_creature_guid);
-			if(wpid > 0 && owner_creature != NULL)
-			{
-				MobAI * ai = AIType_isMob(owner_creature->GetAIInterface() ) ? TO_AIMOB(owner_creature->GetAIInterface() ) : NULL;
-				if(ai != NULL)
-				{
-					WayPoint * wp = ai->Waypoint_getWP(wpid);
-					if(wp != NULL)
-					{
-						std::stringstream ss;
-						ss << "Waypoint Id " << wp->id << ":\n";
-						ss << "WaitTime: " << wp->waittime << "\n";
-						ss << "Flags: " << wp->flags;
-						if(wp->flags == 768)
-							ss << " (Fly)\n";
-						else if(wp->flags == 256)
-							ss << " (Run)\n";
-						else
-							ss << " (Walk)\n";
-						ss << "Backwards[ emoteid:" << wp->backwardemoteid << " skinid :" << wp->backwardskinid << " oneshot : " << ((wp->backwardemoteoneshot == 1)? "Yes" : "No") << "]\n";
-						ss << "Forwards[ emoteid:" << wp->forwardemoteid << " skinid :" << wp->forwardskinid << " oneshot : " << ((wp->forwardemoteoneshot == 1)? "Yes" : "No") << "]\n";
-						SendMultilineMessage(m_session, ss.str().c_str());
-					}
-				}
-				else
-					SystemMessage(m_session, "The selected creature does not support waypoints.");
-			}
+			ss << "Waypoint Number " << wp->id << ":\n";
+			ss << "WaitTime: " << wp->waittime << "\n";
+			ss << "Flags: " << wp->flags;
+			if(wp->flags == 768)
+				ss << " (Fly)\n";
+			else if(wp->flags == 256)
+				ss << " (Run)\n";
 			else
-				SystemMessage(m_session, "Invalid waypoint selected.");
+				ss << " (Walk)\n";
+			ss << "Backwards\n";
+			ss << "   emoteid: " << wp->backwardemoteid << "\n";
+			ss << "   oneshot: " << ((wp->backwardemoteoneshot == 1)? "Yes" : "No") << "\n";
+			ss << "   skinid: " << wp->backwardskinid << "\n";
+			ss << "Forwards\n";
+			ss << "   emoteid: " << wp->forwardemoteid << "\n";
+			ss << "   oneshot: " << ((wp->forwardemoteoneshot == 1)? "Yes" : "No") << "\n";
+			ss << "   skinid: " << wp->forwardskinid << "\n";
+			SendMultilineMessage(m_session, ss.str().c_str());
 		}
+	}
+	else
+	{
+	   SystemMessage(m_session,  "Invalid Waypoint.");
+		return true;
 	}
 	return true;
 }
@@ -586,44 +660,44 @@ bool ChatHandler::HandleWPHideCommand(const char* args, WorldSession *m_session)
 {
 	uint64 guid = m_session->GetPlayer()->GetSelection();
 	if (guid == 0)
+	{
 		SystemMessage(m_session, "No selection.");
+		return true;
+	}
+
+	Creature * pCreature = m_session->GetPlayer()->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
+	if(!pCreature)
+	{
+		SystemMessage(m_session, "You should select a Creature.");
+		return true;
+	}
+
+	AIInterface* ai = pCreature->GetAIInterface();
+	Player* pPlayer = m_session->GetPlayer();
+
+
+	if(pPlayer->waypointunit == ai)
+	{
+		if(ai->m_WayPointsShowing == true)
+			pPlayer->waypointunit->hideWayPoints(pPlayer);
+			
+		pPlayer->waypointunit = NULL;
+	}
 	else
 	{
-		if(GET_TYPE_FROM_GUID(guid) == HIGHGUID_TYPE_WAYPOINT || GET_TYPE_FROM_GUID(guid) == HIGHGUID_TYPE_UNIT )
-		{
-			Creature * pCreature = m_session->GetPlayer()->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
-			if(pCreature == NULL)
-				SystemMessage(m_session, "You should select a Creature/Waypoint.");
-			else
-			{
-				if(AIType_isMob(pCreature->GetAIInterface() ) )
-				{
-					Player* plr = m_session->GetPlayer();
-					if(GET_TYPE_FROM_GUID(guid) == HIGHGUID_TYPE_WAYPOINT)
-					{
-						uint32 wp_id = Arcemu::Util::GUID_HIPART(guid) & 0x000FFFFF;
-						TO_AIMOB(pCreature->GetAIInterface() )->Waypoint_hide(plr, wp_id);
-						SystemMessage(m_session, "Hiding waypoint id %u",wp_id);
-					}
-					else if(TO_AIMOB(pCreature->GetAIInterface() )->Waypoint_isShowing() )
-					{
-						TO_AIMOB(pCreature->GetAIInterface() )->Waypoint_hide(plr);
-						SystemMessage(m_session, "Hiding waypoints for Creature %u (%s) ",pCreature->GetEntry(), pCreature->GetCreatureInfo()->Name);
-					}
-					else
-						SystemMessage(m_session, "Waypoints for this creature are already hidden.");
-				}
-				else
-					SystemMessage(m_session, "The selected creature does not support waypoints.");
-			}
-		}
+		SystemMessage(m_session, "Waypoints for that Unit are not Visible.");
+		return true;
 	}
+
+	std::stringstream ss;
+	ss << "Hiding Waypoints for " << pCreature->GetSQL_id();
+	SystemMessage(m_session, ss.str().c_str());
+
 	return true;
 }
 
 bool ChatHandler::HandleGenerateWaypoints(const char* args, WorldSession * m_session)
 {
-	/*
 	Creature * cr = 
 		m_session->GetPlayer()->GetMapMgr()->GetCreature(GET_LOWGUID_PART(m_session->GetPlayer()->GetSelection()));
 	if(!cr)
@@ -689,7 +763,7 @@ bool ChatHandler::HandleGenerateWaypoints(const char* args, WorldSession * m_ses
 		cr->GetAIInterface()->addWayPoint(wp);
 	}
 
-	if(cr->m_spawn && cr->m_spawn->movetype != 1)		/* move random 
+	if(cr->m_spawn && cr->m_spawn->movetype != 1)		/* move random */
 	{
 		cr->m_spawn->movetype = 1;
 		cr->GetAIInterface()->m_moveType = 1;
@@ -697,46 +771,54 @@ bool ChatHandler::HandleGenerateWaypoints(const char* args, WorldSession * m_ses
 	}
 	m_session->GetPlayer()->waypointunit = cr->GetAIInterface();
 	cr->GetAIInterface()->showWayPoints(m_session->GetPlayer(),cr->GetAIInterface()->m_WayPointsShowBackwards);
-	*/
+	
 	return true;
 }
 
 bool ChatHandler::HandleSaveWaypoints(const char* args, WorldSession * m_session)
 {
 	Creature * cr = m_session->GetPlayer()->GetMapMgr()->GetCreature( GET_LOWGUID_PART( m_session->GetPlayer()->GetSelection() ) );
-	if ( cr == NULL || !cr->GetSQL_id() )
+	if ( !cr || !cr->GetSQL_id() )
 		return false;
-	if(AIType_isMob(cr->GetAIInterface() ) )
-		TO_AIMOB(cr->GetAIInterface() )->Waypoint_saveall();
+
+	Player* pPlayer = m_session->GetPlayer();
+
+	if ( pPlayer->waypointunit == cr->GetAIInterface() )
+	{
+		if ( cr->GetAIInterface()->m_WayPointsShowing )
+			pPlayer->waypointunit->hideWayPoints( pPlayer );
+		pPlayer->waypointunit = NULL;
+	}
+	
+	cr->GetAIInterface()->saveWayPoints();
 	return true;
 }
 
 
 bool ChatHandler::HandleDeleteWaypoints(const char* args, WorldSession * m_session)
 {
-	Creature * cr = m_session->GetPlayer()->GetMapMgr()->GetCreature(GET_LOWGUID_PART(m_session->GetPlayer()->GetSelection()));
-	if(cr != NULL && cr->GetSQL_id() > 0 && AIType_isMob(cr->GetAIInterface() ) )
-	{
-		bool fromDB = (args != NULL);
-		MobAI * ai = TO_AIMOB(cr->GetAIInterface() );
-		if(fromDB)
-			WorldDatabase.Execute("DELETE FROM creature_waypoints WHERE spawnid=%u",cr->GetSQL_id());
-		//delete them
-		ai->Waypoint_deleteall();
-		//delete them visually
-		if(ai->Waypoint_isShowing() )
-			ai->Waypoint_hide(m_session->GetPlayer() );
-		SystemMessage(m_session, "Deleted waypoints for Creature: %s entry: %u", cr->GetCreatureInfo()->Name, cr->GetSQL_id() );
-	}
-	else
-		SystemMessage(m_session, "Invalid creature selected or that creature does not support waypoints.");
+	Creature * cr = 
+		m_session->GetPlayer()->GetMapMgr()->GetCreature(GET_LOWGUID_PART(m_session->GetPlayer()->GetSelection()));
+	if(!cr)return false;
+	if(!cr->GetSQL_id())
+		return false;
 
+	if(cr->GetAIInterface()->m_WayPointsShowing)
+	{
+		SystemMessage(m_session, "Waypoints are showing, hide them first.");
+		return true;
+	}
+	
+	WorldDatabase.Execute("DELETE FROM creature_waypoints WHERE spawnid=%u",cr->GetSQL_id());
+
+	cr->GetAIInterface()->deleteWaypoints();
+	SystemMessage(m_session, "Deleted waypoints for %u", cr->GetSQL_id());
 	return true;
 }
 
 bool ChatHandler::HandleWaypointAddFlyCommand(const char * args, WorldSession * m_session)
 {
-	/*uint64 guid = m_session->GetPlayer()->GetSelection();
+	uint64 guid = m_session->GetPlayer()->GetSelection();
 	if (guid == 0)
 	{
 		SystemMessage(m_session, "No Selection");
@@ -755,7 +837,7 @@ bool ChatHandler::HandleWaypointAddFlyCommand(const char * args, WorldSession * 
 			return true;
 		}
 
-		pCreature = (Creature*)ai->getUnit();
+		pCreature = TO_CREATURE(ai->GetUnit());
 		if ( !pCreature || pCreature->IsPet() )
 		{
 			SystemMessage(m_session, "Invalid Creature, please select another one.");
@@ -812,7 +894,7 @@ bool ChatHandler::HandleWaypointAddFlyCommand(const char * args, WorldSession * 
 	if(showing)
 		ai->showWayPoints(p,ai->m_WayPointsShowBackwards);
 
-	SystemMessage(m_session, "Waypoint %u added.", wp->id);*/
+	SystemMessage(m_session, "Waypoint %u added.", wp->id);
 	return true;
 }
 

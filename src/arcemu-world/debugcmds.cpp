@@ -108,8 +108,6 @@ bool ChatHandler::HandleDistanceCommand(const char* args, WorldSession *m_sessio
 
 bool ChatHandler::HandleMoveInfoCommand(const char* args, WorldSession *m_session)
 {
-	return true;
-	/*
 	Object *obj;
 
 	uint64 guid = m_session->GetPlayer()->GetSelection();
@@ -127,13 +125,13 @@ bool ChatHandler::HandleMoveInfoCommand(const char* args, WorldSession *m_sessio
 	uint32 attackerscount = (uint32)((Creature *)obj)->GetAIInterface()->getAITargetsCount();
 	uint32 creatureState = ((Creature *)obj)->GetAIInterface()->m_creatureState;
 	uint32 curwp = ((Creature *)obj)->GetAIInterface()->getCurrentWaypoint();
-	Unit* unitToFollow = ((Creature *)obj)->GetAIInterface()->getUnitToFollow();
+//	Unit* unitToFollow = ((Creature *)obj)->GetAIInterface()->getUnitToFollow();
 	uint32 aistate = ((Creature *)obj)->GetAIInterface()->getAIState();
 	uint32 aitype = ((Creature *)obj)->GetAIInterface()->getAIType();
-	uint32 aiagent = ((Creature *)obj)->GetAIInterface()->getAIAgent();
+	uint32 aiagent = ((Creature *)obj)->GetAIInterface()->getCurrentAgent();
 	uint32 lowfollow = 0;
 	uint32 highfollow = 0;
-	if(unitToFollow == NULL)
+	/*if(unitToFollow == NULL)
 	{
 		lowfollow = 0;
 		highfollow = 0;
@@ -142,7 +140,7 @@ bool ChatHandler::HandleMoveInfoCommand(const char* args, WorldSession *m_sessio
 	{
 		lowfollow = unitToFollow->GetGUIDLow();
 		highfollow = unitToFollow->GetGUIDHigh();;
-	}
+	}*/
 
 	std::stringstream sstext;
 	sstext << "Following Unit: Low: " << lowfollow << " High: " << highfollow << "\n";
@@ -157,7 +155,7 @@ bool ChatHandler::HandleMoveInfoCommand(const char* args, WorldSession *m_sessio
 	//FillSystemMessageData(&data, sstext.str().c_str());
 	//m_session->SendPacket( &data );
 
-	return true; */
+	return true;
 }
 
 bool ChatHandler::HandleAIMoveCommand(const char* args, WorldSession *m_session)
@@ -203,7 +201,7 @@ bool ChatHandler::HandleAIMoveCommand(const char* args, WorldSession *m_session)
 	float y = m_session->GetPlayer()->GetPositionY();
 	float z = m_session->GetPlayer()->GetPositionZ();
 	float o = m_session->GetPlayer()->GetOrientation();
-	//((Creature *)obj)->GetAIInterface()->setMoveRunFlag((Run>0?true:false));
+	((Creature *)obj)->GetAIInterface()->setMoveRunFlag((Run>0?true:false));
 	float distance = ((Creature *)obj)->CalcDistance(x,y,z);
 	if(Move == 1)
 	{
@@ -640,7 +638,7 @@ bool ChatHandler::HandleAggroRangeCommand(const char* args, WorldSession *m_sess
 		return true;
 	}
 
-	float aggroRange = obj->GetAIInterface()->calcAggroRange(m_session->GetPlayer());
+	float aggroRange = obj->GetAIInterface()->_CalcAggroRange(m_session->GetPlayer());
 	std::stringstream sstext;
 	sstext << "Aggrorange is: " << sqrtf(aggroRange) <<'\0';
 
@@ -722,7 +720,7 @@ bool ChatHandler::HandleCalcThreatCommand(const char* args, WorldSession *m_sess
 	if(!spellId)
 		return false;
 
-	uint32 threat = TO_AIMOB(target->GetAIInterface() )->calcThreat(atol(dmg), dbcSpell.LookupEntry( atoi( spellId ) ), m_session->GetPlayer());
+	uint32 threat = target->GetAIInterface()->_CalcThreat(atol(dmg), dbcSpell.LookupEntry( atoi( spellId ) ), m_session->GetPlayer());
 
 	std::stringstream sstext;
 	sstext << "generated threat is: " << threat <<'\0';
@@ -743,7 +741,7 @@ bool ChatHandler::HandleThreatListCommand(const char* args, WorldSession *m_sess
 
 	std::stringstream sstext;
 	sstext << "threatlist of creature: " << Arcemu::Util::GUID_LOPART(m_session->GetPlayer()->GetSelection()) << " " << Arcemu::Util::GUID_HIPART(m_session->GetPlayer()->GetSelection()) << '\n';
-	/*TargetMap::iterator itr;
+	TargetMap::iterator itr;
 	for(itr = target->GetAIInterface()->GetAITargets()->begin(); itr != target->GetAIInterface()->GetAITargets()->end();)
 	{
 		Unit *ai_t = target->GetMapMgr()->GetUnit( itr->first );
@@ -756,7 +754,7 @@ bool ChatHandler::HandleThreatListCommand(const char* args, WorldSession *m_sess
 		++itr;
 	}
 
-	SendMultilineMessage(m_session, sstext.str().c_str());*/
+	SendMultilineMessage(m_session, sstext.str().c_str());
 	return true;
 }
 bool ChatHandler::HandleSendItemPushResult(const char* args, WorldSession* m_session)

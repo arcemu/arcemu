@@ -887,10 +887,6 @@ public:
 	virtual void RemoveFromWorld(bool free_guid);
 	virtual void OnPushToWorld();
 
-	// Have subclasses change these to true
-	virtual bool IsCreature() { return false; }
-	bool IsNeutralGuard() { return false; }
-
     virtual bool IsPvPFlagged() = 0;
 	virtual void SetPvPFlag() = 0;
 	virtual void RemovePvPFlag() = 0;
@@ -903,17 +899,9 @@ public:
 	virtual void SetSanctuaryFlag() = 0;
 	virtual void RemoveSanctuaryFlag() = 0;
 
-	//attack timer methods
-	void delayBaseAttackTime(uint32 delay) { m_baseAttackTime += delay; }
-	void delayOffHandAttackTime(uint32 delay) { m_offHandAttackTime += delay; }
-	void delayRangedAttackTime(uint32 delay) { m_rangedAttackTime += delay; }
-	void delayAllAttackTime(uint32 delay) {
-		delayBaseAttackTime(delay);
-		delayOffHandAttackTime(delay);
-		delayRangedAttackTime(delay);
-	}
-    void setAttackTimer(int32 time = 0, bool offhand = false, bool ranged = false);
-	bool isReadyToAttack(bool offhand = false, bool ranged = false);
+
+    void setAttackTimer(int32 time, bool offhand);
+	bool isAttackReady(bool offhand);
 	
 	void SetDualWield(bool enabled);
 
@@ -1092,10 +1080,8 @@ public:
 	float spellcritperc;
 
 	// AIInterface
-	 /*	Retrieves the current aiinterface this unit use/will use */
-	ARCEMU_INLINE AIInterface *GetAIInterface() { return m_aiInterface; }
-	AIInterface * AIInterface_replace(AIInterface * newInterface = NULL);
-	void AIInterface_destroy();
+	AIInterface *GetAIInterface() { return m_aiInterface; }
+	void ReplaceAIInterface(AIInterface *new_interface) ;
 	void ClearHateList();
 	void WipeHateList();
 	void WipeTargetList();
@@ -1306,7 +1292,7 @@ public:
 	void SendChatMessageAlternateEntry(uint32 entry, uint8 type, uint32 lang, const char * msg);
 	void RegisterPeriodicChatMessage(uint32 delay, uint32 msgid, std::string message, bool sendnotify);
 
-	uint32 GetHealthPct()
+	int GetHealthPct()
 	{
 		//shitty db? pet/guardian bug?
 		if (GetUInt32Value(UNIT_FIELD_HEALTH) == 0 || GetUInt32Value(UNIT_FIELD_MAXHEALTH) == 0)
@@ -1317,7 +1303,7 @@ public:
 
     void SetHealthPct(uint32 val) { if (val>0) SetHealth(float2int32(val*0.01f*GetUInt32Value(UNIT_FIELD_MAXHEALTH))); };
 
-	uint32 GetManaPct()
+	int GetManaPct()
 	{
 		if (GetPower(0) == 0 || GetMaxPower(0) == 0) //POWER_TYPE_MANA
 			return 0;
@@ -1401,6 +1387,9 @@ public:
 	void EnableFlight();
 	void DisableFlight();
 
+	// Escort Quests
+
+	void MoveToWaypoint(uint32 wp_id);	
 	void PlaySpellVisual(uint64 target, uint32 spellVisual);
 
 	void RemoveStealth()
@@ -1771,9 +1760,8 @@ protected:
 	uint16 m_P_regenTimer;
 	uint32 m_interruptedRegenTime; //PowerInterruptedegenTimer.
 	uint32 m_state;		 // flags for keeping track of some states
-	uint32 m_baseAttackTime;   // timer for attack
-	uint32 m_offHandAttackTime;
-	uint32 m_rangedAttackTime;
+	uint32 m_attackTimer;   // timer for attack
+	uint32 m_attackTimer_1;
 	bool m_dualWield;
 
     std::list< Aura* > m_GarbageAuras;

@@ -1485,8 +1485,8 @@ bool ChatHandler::HandleModifyLevelCommand(const char* args, WorldSession* m_ses
 	plr->ApplyLevelInfo(Info, Level);
 	if( plr->getClass() == WARLOCK )
 	{
-		//std::list<Pet*> & summons = plr->GetSummons();
-		for(std::list<Pet*>::iterator itr = plr->getSummonStart(); itr != plr->getSummonEnd(); ++itr)
+		std::list<Pet*> summons = plr->GetSummons();
+		for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
 		{
 			Pet* summon = *itr;
 			if( summon->IsInWorld() && summon->isAlive() )
@@ -1677,13 +1677,11 @@ bool ChatHandler::HandleAddPetSpellCommand(const char* args, WorldSession* m_ses
 		return true;
 	}
 
-	for(std::list<Pet*>::iterator itr = plr->getSummonStart(); itr != plr->getSummonEnd(); ++itr)
+	std::list<Pet*> summons = plr->GetSummons();
+	for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
 	{
-		AI_PetSpell * pspell = objmgr.Pet_getAISpell( (*itr)->GetCreatureInfo()->Family, spell->Id);
-		if(pspell != NULL)
-			(*itr)->Spell_add(pspell, true);
+		(*itr)->AddSpell(spell, true);
 	}
-
 	GreenSystemMessage( m_session, "Added spell %u to %s's pet.", SpellId, plr->GetName() );
 	return true;
 }
@@ -1708,10 +1706,11 @@ bool ChatHandler::HandleRemovePetSpellCommand(const char* args, WorldSession* m_
 		return true;
 	}
 
-	//std::list<Pet*> & summons = plr->GetSummons();
-	for(std::list<Pet*>::iterator itr = plr->getSummonStart(); itr != plr->getSummonEnd(); ++itr)
-		(*itr)->Spell_remove(SpellId);
-
+	std::list<Pet*> summons = plr->GetSummons();
+	for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
+	{
+		(*itr)->RemoveSpell(SpellId);
+	}
 	GreenSystemMessage(m_session, "Removed spell %u from %s's pet.", SpellId, plr->GetName());
 	return true;
 }
@@ -1833,8 +1832,8 @@ bool ChatHandler::HandlePetLevelCommand(const char* args, WorldSession* m_sessio
 
 	//support for only 1 pet
 	pPet->setLevel(newLevel );
-	pPet->setPetXP( 0);
-	pPet->setPetNextLvlXP(  pPet->calcNextLvlXP(newLevel) );
+	pPet->SetUInt32Value( UNIT_FIELD_PETEXPERIENCE, 0 );
+	pPet->SetUInt32Value( UNIT_FIELD_PETNEXTLEVELEXP, pPet->GetNextLevelXP(newLevel) );
 	pPet->ApplyStatsForLevel();
 	pPet->UpdateSpellList();
 
@@ -2106,14 +2105,11 @@ bool ChatHandler::HandleNpcReturnCommand(const char* args, WorldSession* m_sessi
 	float o = creature->m_spawn->o;
 
 	// restart movement
-	AIInterface * ai = creature->GetAIInterface();
-	if(ai != NULL)
-	{
-		ai->setAIState(STATE_IDLE);
-		if(ai->getAIType() == AITYPE_MOB)
-			static_cast<MobAI*>(ai)->wipeHateList();
-		ai->MoveTo(x, y, z, o);
-	}
+	creature->GetAIInterface()->SetAIState(STATE_IDLE);
+	creature->GetAIInterface()->WipeHateList();
+	creature->GetAIInterface()->WipeTargetList();
+	creature->GetAIInterface()->MoveTo(x, y, z, o);
+
 	sGMLog.writefromsession( m_session, "returned NPC %s, sqlid %u", creature->GetCreatureInfo()->Name, creature->GetSQL_id() );
 
 	return true;
@@ -2168,20 +2164,20 @@ bool ChatHandler::HandleFormationLink2Command(const char* args, WorldSession * m
 	}
 
 	Creature * slave = getSelectedCreature(m_session, true);
-	if(slave == NULL) return true;
-	AIInterface * ai = slave->GetAIInterface();
-	if(ai == NULL) return true;
-	ai->setFollowDistance( (uint32) dist);
-	ai->setFollowAngle(ang);
-	ai->setUnitToFollow(m_session->GetPlayer()->linkTarget->GetGUID() );
-	ai->setFormationHeadSqlId(TO_CREATURE(m_session->GetPlayer()->linkTarget)->GetSQL_id() );
+	if(slave == 0) return true;
+
+	slave->GetAIInterface()->m_formationFollowDistance = dist;
+	slave->GetAIInterface()->m_formationFollowAngle = ang;
+	slave->GetAIInterface()->m_formationLinkTarget = m_session->GetPlayer()->linkTarget->GetGUID();
+	slave->GetAIInterface()->m_formationLinkSqlId = m_session->GetPlayer()->linkTarget->GetSQL_id();
+	slave->GetAIInterface()->SetUnitToFollowAngle(ang);
 
 	// add to db
 	WorldDatabase.Execute("INSERT INTO creature_formations VALUES(%u, %u, '%f', '%f')",
-		slave->GetSQL_id(), ai->getFormationHeadSqlId(), ang, dist);
+		slave->GetSQL_id(), slave->GetAIInterface()->m_formationLinkSqlId, ang, dist);
 
 	BlueSystemMessage(m_session, "%s linked up to %s with a distance of %f at %f radians.", slave->GetCreatureInfo()->Name,
-		TO_CREATURE( m_session->GetPlayer()->linkTarget )->GetCreatureInfo()->Name, dist, ang );
+		m_session->GetPlayer()->linkTarget->GetCreatureInfo()->Name, dist, ang );
 
 	return true;
 }
@@ -2191,7 +2187,7 @@ bool ChatHandler::HandleNpcFollowCommand(const char* args, WorldSession * m_sess
 	Creature * creature = getSelectedCreature(m_session, true);
 	if(!creature) return true;
 
-	creature->GetAIInterface()->setUnitToFollow(m_session->GetPlayer()->GetGUID() );
+	creature->GetAIInterface()->SetUnitToFollow(m_session->GetPlayer());
 
 	sGMLog.writefromsession( m_session, "used npc follow command on %s, sqlid %u", creature->GetCreatureInfo()->Name, creature->GetSQL_id() );
 	return true;
@@ -2200,15 +2196,15 @@ bool ChatHandler::HandleNpcFollowCommand(const char* args, WorldSession * m_sess
 bool ChatHandler::HandleFormationClearCommand(const char* args, WorldSession * m_session)
 {
 	Creature * c = getSelectedCreature(m_session, true);
-	if(c == NULL)
-		RedSystemMessage(m_session,"The selected creature was invalid or non-existant.");
-	else
-	{
-		AIInterface * ai = c->GetAIInterface();
-		Arcemu::Util::ARCEMU_ASSERT(ai != NULL);
-		ai->clearFormationData();
-		WorldDatabase.Execute("DELETE FROM creature_formations WHERE spawn_id=%u", c->GetSQL_id());
-	}
+	if(!c) return true;
+
+	c->GetAIInterface()->m_formationLinkSqlId = 0;
+	c->GetAIInterface()->m_formationLinkTarget = 0;
+	c->GetAIInterface()->m_formationFollowAngle = 0.0f;
+	c->GetAIInterface()->m_formationFollowDistance = 0.0f;
+	c->GetAIInterface()->ResetUnitToFollow();
+
+	WorldDatabase.Execute("DELETE FROM creature_formations WHERE spawn_id=%u", c->GetSQL_id());
 	return true;
 }
 
@@ -2218,8 +2214,9 @@ bool ChatHandler::HandleNullFollowCommand(const char* args, WorldSession * m_ses
 	if(!c) return true;
 
 	// restart movement
-	c->GetAIInterface()->setAIState(STATE_IDLE);
-	c->GetAIInterface()->setUnitToFollow(NULL);
+	c->GetAIInterface()->SetAIState(STATE_IDLE);
+	c->GetAIInterface()->ResetUnitToFollow();
+
 	sGMLog.writefromsession( m_session, "cancelled npc follow command on %s, sqlid %u", c->GetCreatureInfo()->Name, c->GetSQL_id() );
 	return true;
 }
@@ -2657,11 +2654,8 @@ bool ChatHandler::HandleNPCCanFlyCommand(const char * args, WorldSession * m_ses
 	Creature * pCreature = getSelectedCreature(m_session, true);
 	if(pCreature == NULL)
 		return true;
-	if(pCreature->GetAIInterface()->Movement_getmovemode() == AIMOVESTATE_FLY)
-		pCreature->GetAIInterface()->Movement_setmovemode(AIMOVESTATE_RUN);
-	else
-		pCreature->GetAIInterface()->Movement_setmovemode(AIMOVESTATE_FLY);
-	pCreature->GetAIInterface()->Behavior_clear(BEHAVIOR_SKYWALKER);
+	pCreature->GetAIInterface()->m_moveFly = !pCreature->GetAIInterface()->m_moveFly;
+	pCreature->GetAIInterface()->onGameobject = false;
 	char* sSave = strtok((char*)args, " ");
 	if (sSave)
 	{
@@ -2681,13 +2675,8 @@ bool ChatHandler::HandleNPCOnGOCommand(const char * args, WorldSession * m_sessi
 	Creature * pCreature = getSelectedCreature(m_session, true);
 	if(pCreature == NULL)
 		return true;
-	if(pCreature->GetAIInterface()->Movement_isflying() )
-		pCreature->GetAIInterface()->Movement_setmovemode(AIMOVESTATE_RUN);
-	if(pCreature->GetAIInterface()->Behavior_has(BEHAVIOR_SKYWALKER) )
-		pCreature->GetAIInterface()->Behavior_clear(BEHAVIOR_SKYWALKER);
-	else
-		pCreature->GetAIInterface()->Behavior_set(BEHAVIOR_SKYWALKER);
-
+	pCreature->GetAIInterface()->m_moveFly = false;
+	pCreature->GetAIInterface()->onGameobject = !pCreature->GetAIInterface()->onGameobject;
 	char* sSave = strtok((char*)args, " ");
 	if (sSave)
 	{
@@ -3265,26 +3254,24 @@ bool ChatHandler::HandleNpcUnPossessCommand(const char * args, WorldSession * m_
 	Creature * creature = getSelectedCreature(m_session);
  	m_session->GetPlayer()->UnPossess();
 
-	if(creature == NULL)
-		RedSystemMessage(m_session,"The selected creature is invalid or non-existant.");
-	else
+	if(creature)
 	{
-		AIInterface * ai = creature->GetAIInterface();
-		Arcemu::Util::ARCEMU_ASSERT(ai != NULL);
-		ai->setAIState(STATE_IDLE);
-		if(AIType_isMob(ai) )
-			TO_AIMOB(ai)->wipeHateList();
-		if(creature->m_spawn)
-		{
-			// return to respawn coords
-			float x = creature->m_spawn->x;
-			float y = creature->m_spawn->y;
-			float z = creature->m_spawn->z;
-			float o = creature->m_spawn->o;
-			ai->MoveTo(x, y, z, o);
-		}
-		GreenSystemMessage(m_session, "Removed any possessed targets.");
+			// restart movement
+			creature->GetAIInterface()->SetAIState(STATE_IDLE);
+			creature->GetAIInterface()->WipeHateList();
+			creature->GetAIInterface()->WipeTargetList();
+
+			if(creature->m_spawn)
+			{
+				// return to respawn coords
+				float x = creature->m_spawn->x;
+				float y = creature->m_spawn->y;
+				float z = creature->m_spawn->z;
+				float o = creature->m_spawn->o;
+				creature->GetAIInterface()->MoveTo(x, y, z, o);
+			}
 	}
+	GreenSystemMessage(m_session, "Removed any possessed targets.");
 	sGMLog.writefromsession(m_session, "used unpossess command");
 	return true;
 }
@@ -3351,19 +3338,19 @@ SpellCastTargets SetTargets(SpellEntry * sp, uint32 type, uint32 targettype, Uni
 	targets.m_destY = 0;
 	targets.m_destZ = 0;
 
-	if(targettype == TTYPE_CURRENTTARGET)
+	if(targettype == TTYPE_SINGLETARGET)
 	{
 		targets.m_targetMask = TARGET_FLAG_UNIT;
 		targets.m_unitTarget = dst->GetGUID();
 	}
-	else if(targettype == TTYPE_SELF_DESTINATION)
+	else if(targettype == TTYPE_SOURCE)
 	{
 		targets.m_targetMask = TARGET_FLAG_SOURCE_LOCATION;
 		targets.m_srcX = src->GetPositionX();
 		targets.m_srcY = src->GetPositionY();
 		targets.m_srcZ = src->GetPositionZ();
 	}
-	else if(targettype == TTYPE_CURRENTTARGET_DESTINATION)
+	else if(targettype == TTYPE_DESTINATION)
 	{
 		targets.m_targetMask = TARGET_FLAG_DEST_LOCATION;
 		targets.m_destX = dst->GetPositionX();
@@ -3397,12 +3384,12 @@ bool ChatHandler::HandleAIAgentDebugContinue(const char * args, WorldSession * m
 		Arcemu::Util::ARCEMU_ASSERT(   it != aiagent_extra.end());
 
 		SpellCastTargets targets;
-		if(it->second.type == AISPELLTYPE_BUFF)
+		if(it->second.type == STYPE_BUFF)
 			targets = SetTargets(sp, it->second.type, it->second.type, pCreature, pCreature );
 		else
 			targets = SetTargets(sp, it->second.type, it->second.type, pPlayer, pCreature );
 
-		//pCreature->GetAIInterface()->CastSpell(pCreature, sp, targets);
+		pCreature->GetAIInterface()->CastSpell(pCreature, sp, targets);
 	}
 
 	if(!aiagent_spells.size())
@@ -3872,8 +3859,8 @@ bool ChatHandler::HandleLevelUpCommand(const char* args, WorldSession *m_session
 	plr->ApplyLevelInfo(inf,levels);
 	if(plr->getClass() == WARLOCK)
 	{
-		//std::list<Pet*> & summons = plr->GetSummons();
-		for(std::list<Pet*>::iterator itr = plr->getSummonStart(); itr != plr->getSummonEnd(); ++itr)
+		std::list<Pet*> summons = plr->GetSummons();
+		for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
 		{
 			if( (*itr)->IsInWorld() && (*itr)->isAlive() )
 			{

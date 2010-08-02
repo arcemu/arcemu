@@ -293,23 +293,11 @@ public:
 	Creature(uint64 guid);
 	virtual ~Creature();
 
-	// Override superclass method that returns false
-	bool IsCreature() { return true; }
-	
-	void AIInterface_create();
-	void AIInterface_setDefault(AIInterface * dInterface) { m_defaultInterface = dInterface; }
-	AIInterface *  AIInterface_getDefault() { return m_defaultInterface; }
-
 	// For derived subclasses of Creature
 	virtual bool IsVehicle() { return false; }
 
-	bool isGuard() { return false; }
-	bool isNeutralGuard() { return false; }
-	void setIsGuard(bool) {}
-	void setIsNeutralGuard(bool) {}
-
 	bool Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info);
-	void Load(CreatureProto * proto_, float x, float y, float z, float o = 0.0f);
+	void Load(CreatureProto * proto_, float x, float y, float z, float o= 0);
 
 	void AddToWorld();
 	void AddToWorld(MapMgr * pMapMgr);
@@ -523,6 +511,9 @@ public:
 		return true;
 	}
 
+	//Make this unit face another unit
+	bool setInFront(Unit* target);
+
 	/// Looting
 	void generateLoot();
 	bool HasLootForPlayer(Player * plr);
@@ -643,7 +634,7 @@ public:
 	// scriptdev2
 	uint32 GetNpcTextId();
 
-	AIWaypointStorage * m_custom_waypoint_map;
+	WayPointMap * m_custom_waypoint_map;
 	Player * m_escorter;
 	void DestroyCustomWaypointMap();
 	bool IsInLimboState() { return m_limbostate; }
@@ -696,7 +687,6 @@ protected:
 
 	CreatureInfo *creature_info;
 	CreatureProto * proto;
-	AIInterface * m_defaultInterface;
 };
 
 #endif

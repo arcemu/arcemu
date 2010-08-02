@@ -100,9 +100,9 @@ bool isHostile(Object* objA, Object* objB)// B is hostile for A?
 	if( !(objA->m_phase & objB->m_phase) ) //What you can't see, can't be hostile!
 		return false;
 
-	if( objA->IsPlayer() && objA->HasFlag( PLAYER_FLAGS, 0x100) && objB->IsCreature() && TO_UNIT(objB)->IsNeutralGuard() )
+	if( objA->IsPlayer() && objA->HasFlag( PLAYER_FLAGS, 0x100) && objB->IsCreature() && static_cast<Unit*>(objB)->GetAIInterface()->m_isNeutralGuard )
 		return true;
-	if( objB->IsPlayer() && objB->HasFlag( PLAYER_FLAGS, 0x100) && objA->IsCreature() && TO_UNIT(objB)->IsNeutralGuard() )
+	if( objB->IsPlayer() && objB->HasFlag( PLAYER_FLAGS, 0x100) && objA->IsCreature() && static_cast<Unit*>(objA)->GetAIInterface()->m_isNeutralGuard )
 		return true;
 
     if( objB->IsUnit() && objB->HasFlag( UNIT_FIELD_FLAGS, 2 | 128 | 256 | 65536 ) )
@@ -228,14 +228,22 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
 		if(objB->HasFlag(UNIT_FIELD_FLAGS_2, 0x00000001))
 			return false;*/
 
-	// Checks for untouchable, unattackable,feign death
-	if(objA->IsUnit() )
+	// Checks for untouchable, unattackable
+	if(objA->IsUnit() && objA->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_MOUNTED_TAXI | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_DEAD))
+		return false;
+	if(objB->IsUnit())
 	{
-		if(objA->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_MOUNTED_TAXI | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_DEAD) 
-			|| objB->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_MOUNTED_TAXI | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_DEAD | UNIT_FLAG_FEIGN_DEATH)
-			|| (objB->IsUnit() && !TO_CREATURE(objA)->CanSee(TO_UNIT(objB) ) ) )
+		if(objB->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_MOUNTED_TAXI | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_DEAD))
+			return false;
+
+		/// added by Zack : 
+        /// we cannot attack shealthed units. Maybe checked in other places too ?
+		/// !! warning, this presumes that objA is attacking ObjB
+        /// Capt: Added the possibility to disregard this (regarding the spell class)
+		if(static_cast<Unit *>(objB)->IsStealth() && CheckStealth)
 			return false;
 	}
+
 	int ret = isBgEnemy(objA, objB);
 	if (ret != -1) return ret == 1;
 
@@ -476,10 +484,17 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
 
 bool isCombatSupport(Object* objA, Object* objB)// B combat supports A?
 {
-	if(!objA || !objB || !objA->IsInWorld() || !objB->IsInWorld() )
+	if(!objA || !objB)
 		return false;
-	if(!objA->IsUnit() && !objA->IsPlayer() ) return false;
-	if(!objB->IsUnit() && !objB->IsPlayer() ) return false;
+
+	if(objA->GetTypeId() == TYPEID_CORPSE )
+		return false;
+
+	if(objB->GetTypeId() == TYPEID_CORPSE)
+		return false;
+
+	if ( objA->GetTypeId()!=TYPEID_UNIT || objB->GetTypeId()!=TYPEID_UNIT ) return false; // cebernic: lowchance crashfix.
+	// also if it's not a unit, it shouldn't support combat anyways.
 
 	if( objA->IsPet() || objB->IsPet() ) // fixes an issue where horde pets would chain aggro horde guards and vice versa for alliance.
 		return false;

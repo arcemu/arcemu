@@ -338,8 +338,7 @@ public:
 
 	~Charter()
 	{
-		if( SignatureCount > 0 )
-			delete [] Signatures;
+		delete [] Signatures;
 	}
 	
 	void SaveToDB();
@@ -430,7 +429,7 @@ public:
 	typedef std::map<pair<uint32, uint32>, LevelMap* >                  LevelInfoMap;
     typedef std::map<uint32, std::list<ItemPrototype*>* >               ItemSetContentMap;
 	typedef std::map<uint32, uint32>                                    NpcToGossipTextMap;
-	typedef std::multimap<uint32, AI_PetSpell*>							PetSpellMap;
+	typedef std::map<uint32, set<SpellEntry*> >                         PetDefaultSpellMap;
 	typedef std::map<uint32, uint32>                                    PetSpellCooldownMap;
 	typedef std::map<uint32, SpellEntry*>                               TotemSpellMap;
 	typedef std::multimap <uint32,uint32>                               BCEntryStorage;
@@ -598,54 +597,11 @@ public:
 
 	LevelInfo * GetLevelInfo(uint32 Race, uint32 Class, uint32 Level);
 	void GenerateLevelUpInfo();
-
-	/*************************** PET SPELL METHODS **********************************/
-	/*	Creates ai spells for every creature family entry for future lookup by pets.
-		Used by pets when they need new spells when leveling up or after getting summoned.
-		They use their family id to access an array of spells available to them. 
-		Passive auras are stored separately as uint32s because these are cast on startup. */
-	void Pet_CreateAISpells();
-	
-	/*	Returns the number of entries with family_id as a key. */
-	size_t Pet_getAISpellSize(uint32 family_id)
-	{
-		return m_PetAISpells.count(family_id);
-	}
-	/*	Returns a multimap iterator starting the 1st element with family_id key. */
-	PetSpellMap::iterator Pet_getAISpellStart(uint32 family_id)
-	{
-		return m_PetAISpells.find(family_id);
-	}
-	/*	Returns a multimap iterator to the last element with family_id as the key. */
-	PetSpellMap::iterator Pet_getAISpellEnd(uint32 family_id)
-	{
-		return m_PetAISpells.upper_bound(family_id);
-	}
-
-	/*	Returns an AI_PetSpell* given the family_id and spell_id, otherwise returns null if it doesn't have. */
-	AI_PetSpell* Pet_getAISpell(uint32 family_id, uint32 spell_id)
-	{
-		AI_PetSpell * ret = NULL;
-		PetSpellMap::iterator itend = m_PetAISpells.upper_bound(family_id);
-		PetSpellMap::iterator itr = m_PetAISpells.find( family_id);
-		for(; itr != itend; ++itr)
-		{
-			if( itr->second->proto->Id == spell_id)
-			{
-				ret = itr->second;
-				break;
-			}
-		}
-		return ret;
-	}
-
-	/*	Returns the size of the pet ai spell multimap. */
-	size_t Pet_getAISpellMapSize() { return m_PetAISpells.size(); }
-
-
+	void LoadDefaultPetSpells();
+	set<SpellEntry*>* GetDefaultPetSpells(uint32 Entry);
 	uint32 GetPetSpellCooldown(uint32 SpellId);
 	void LoadPetSpellCooldowns();
-	AIWaypointStorage * GetWayPointMap(uint32 spawnid);
+	WayPointMap * GetWayPointMap(uint32 spawnid);
 	void LoadSpellOverride();
 
 	void ResetDailies();
@@ -814,7 +770,7 @@ protected:
 	HM_NAMESPACE::hash_map<uint32,PlayerInfo*> m_playersinfo;
 	PlayerNameStringIndexMap m_playersInfoByName;
 	
-	HM_NAMESPACE::hash_map<uint32,AIWaypointStorage*> m_waypoints;//stored by spawnid
+	HM_NAMESPACE::hash_map<uint32,WayPointMap*> m_waypoints;//stored by spawnid
 	HM_NAMESPACE::hash_map<uint32,TimedEmoteList*> m_timedemotes;//stored by spawnid
 
 
@@ -848,11 +804,8 @@ protected:
 
 	TrainerMap mTrainers;
 	LevelInfoMap mLevelInfo;
-
-	//Pet spell containers.
-	PetSpellMap m_PetAISpells;
+	PetDefaultSpellMap mDefaultPetSpells;
 	PetSpellCooldownMap mPetSpellCooldowns;
-
 	SpellTargetConstraintMap m_spelltargetconstraints;
 #ifdef ENABLE_ACHIEVEMENTS
 	AchievementCriteriaEntryList m_AchievementCriteriasByType[ACHIEVEMENT_CRITERIA_TYPE_TOTAL];

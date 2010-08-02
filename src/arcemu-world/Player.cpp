@@ -131,6 +131,9 @@ m_duelCountdownTimer(0),
 m_duelStatus(0),
 m_duelState(DUEL_STATE_FINISHED),		// finished
 
+//WayPoint
+waypointunit(NULL),
+
 //PVP
 //PvPTimeoutEnabled(false),
 
@@ -916,10 +919,10 @@ void Player::Update( uint32 p_time )
 	if(m_attacking)
 	{
 		// Check attack timer.
-		if(mstime >= m_baseAttackTime)
+		if(mstime >= m_attackTimer)
 			_EventAttack(false);
 
-		if( m_dualWield && mstime >= m_offHandAttackTime )
+		if( m_dualWield && mstime >= m_attackTimer_1 )
 			_EventAttack( true );
 	}
 
@@ -1901,27 +1904,21 @@ void Player::_SavePet(QueryBuffer * buf)
 
 		if(!summon->Summon)	   // is a pet
 		{
-			// save pet talents
-			std::set<uint32> talents = summon->Talent_getAll();
+			// save pet spellz
+			PetSpellMap::iterator itr = summon->mSpells.begin();
+			uint32 pn = summon->m_PetNumber;
 			if(buf == NULL)
-				CharacterDatabase.Execute("DELETE FROM pet_talents WHERE pet_owner=%u", GetLowGUID() );
+				CharacterDatabase.Execute("DELETE FROM playerpetspells WHERE ownerguid=%u AND petnumber=%u", GetLowGUID(), pn);
 			else
-				buf->AddQuery("DELETE FROM pet_talents WHERE pet_owner=%u", GetLowGUID() );
+				buf->AddQuery("DELETE FROM playerpetspells WHERE ownerguid=%u AND petnumber=%u", GetLowGUID(), pn);
 
-			std::stringstream talent_array;
-			uint32 size = talents.size();
-			uint32 i = 1;
-			for(std::set<uint32>::iterator itr = talents.begin(); itr != talents.end(); ++itr, ++i)
+			for(; itr != summon->mSpells.end(); ++itr)
 			{
-				talent_array << (*itr) << ',';
-				//Before appending a comma, check that this isn't the last spell id.
-				if( i < size)
-					talent_array << ',';
+				if(buf == NULL)
+					CharacterDatabase.Execute("INSERT INTO playerpetspells VALUES(%u, %u, %u, %u)", GetLowGUID(), pn, itr->first->Id, itr->second);
+				else
+					buf->AddQuery("INSERT INTO playerpetspells VALUES(%u, %u, %u, %u)", GetLowGUID(), pn, itr->first->Id, itr->second);
 			}
-			if(buf == NULL)
-				CharacterDatabase.Execute("INSERT INTO pet_talents VALUES(%u, %u, %s)", GetLowGUID(), summon->GetCreatureInfo()->Family, talent_array.str().c_str() );
-			else
-				buf->AddQuery("INSERT INTO pet_talents VALUES(%u, %u, %s)", GetLowGUID(), summon->GetCreatureInfo()->Family, talent_array.str().c_str() );
 		}
 	}
 
@@ -1960,6 +1957,69 @@ void Player::_SavePet(QueryBuffer * buf)
         else
 			buf->AddQueryStr(ss.str());
 	}
+}
+
+void Player::_SavePetSpells(QueryBuffer * buf)
+{
+	// Remove any existing
+	if(buf == NULL)
+		CharacterDatabase.Execute("DELETE FROM playersummonspells WHERE ownerguid=%u", GetLowGUID());
+	else
+		buf->AddQuery("DELETE FROM playersummonspells WHERE ownerguid=%u", GetLowGUID());
+
+	// Save summon spells
+	map<uint32, set<uint32> >::iterator itr = SummonSpells.begin();
+	for(; itr != SummonSpells.end(); ++itr)
+	{
+		set<uint32>::iterator it = itr->second.begin();
+		for(; it != itr->second.end(); ++it)
+		{
+			if(buf == NULL)
+				CharacterDatabase.Execute("INSERT INTO playersummonspells VALUES(%u, %u, %u)", GetLowGUID(), itr->first, (*it));
+			else
+				buf->AddQuery("INSERT INTO playersummonspells VALUES(%u, %u, %u)", GetLowGUID(), itr->first, (*it));
+		}
+	}
+}
+
+void Player::AddSummonSpell(uint32 Entry, uint32 SpellID)
+{
+	SpellEntry * sp = dbcSpell.LookupEntry(SpellID);
+	map<uint32, set<uint32> >::iterator itr = SummonSpells.find(Entry);
+	if(itr == SummonSpells.end())
+		SummonSpells[Entry].insert(SpellID);
+	else
+	{
+		set<uint32>::iterator it3;
+		for(set<uint32>::iterator it2 = itr->second.begin(); it2 != itr->second.end();)
+		{
+			it3 = it2++;
+			if(dbcSpell.LookupEntry(*it3)->NameHash == sp->NameHash)
+				itr->second.erase(it3);
+		}
+		itr->second.insert(SpellID);
+	}
+}
+
+void Player::RemoveSummonSpell(uint32 Entry, uint32 SpellID)
+{
+	map<uint32, set<uint32> >::iterator itr = SummonSpells.find(Entry);
+	if(itr != SummonSpells.end())
+	{
+		itr->second.erase(SpellID);
+		if(itr->second.size() == 0)
+			SummonSpells.erase(itr);
+	}
+}
+
+set<uint32>* Player::GetSummonSpells(uint32 Entry)
+{
+	map<uint32, set<uint32> >::iterator itr = SummonSpells.find(Entry);
+	if(itr != SummonSpells.end())
+	{
+		return &(itr->second);
+	}
+	return 0;
 }
 
 void Player::_LoadPet(QueryResult * result)
@@ -2064,6 +2124,26 @@ void Player::DismissActivePets()
 			summon->Dismiss();			// summons
 		else
 			summon->Remove( true, false );// hunter pets
+	}
+}
+
+void Player::_LoadPetSpells(QueryResult * result)
+{
+	std::stringstream query;
+	std::map<uint32, std::list<uint32>* >::iterator itr;
+	uint32 entry = 0;
+	uint32 spell = 0;
+
+	if(result)
+	{
+		do
+		{
+			Field *fields = result->Fetch();
+			entry = fields[1].GetUInt32();
+			spell = fields[2].GetUInt32();
+			AddSummonSpell(entry, spell);
+		}
+		while( result->NextRow() );
 	}
 }
 
@@ -2614,7 +2694,10 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 
 	// Pets
 	if(getClass() == HUNTER || getClass() == WARLOCK)
+	{
 		_SavePet(buf);
+		_SavePetSpells(buf);
+	}
 	m_nextSave = getMSTime() + sWorld.getIntRate(INTRATE_SAVE);
 
 	if(buf)
@@ -3443,6 +3526,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	case WARLOCK:
 	case HUNTER:
 		_LoadPet(results[5].result);
+        _LoadPetSpells(results[6].result);
 	break;
 	}
 
@@ -5902,10 +5986,10 @@ void Player::AddInRangeObject(Object* pObj)
 	Unit::AddInRangeObject(pObj);
 
 	//if the object is a unit send a move packet if they have a destination
-	/*if(pObj->GetTypeId() == TYPEID_UNIT)
+	if(pObj->GetTypeId() == TYPEID_UNIT)
 	{
 		static_cast< Creature* >( pObj )->GetAIInterface()->SendCurrentMove(this);
-    }*/
+    }
 }
 void Player::OnRemoveInRangeObject(Object* pObj)
 {
@@ -5935,10 +6019,11 @@ void Player::OnRemoveInRangeObject(Object* pObj)
 	}
 
     // We've just gone out of range of our pet :(
-	//std::list<Pet*> summons = GetSummons();
-	for(std::list<Pet*>::iterator itr = getSummonStart(); itr != getSummonEnd(); )
+	std::list<Pet*> summons = GetSummons();
+	for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end();)
 	{	
-		Pet* summon = *itr++;
+		Pet* summon = (*itr);
+		++itr;
 		if( pObj == summon )
 		{
 			summon->DelayedRemove(false, false, 1);//delayed otherwise Object::RemoveInRangeObject() will remove twice the Pet from inrangeset. Refer to r3199
@@ -6590,9 +6675,11 @@ void Player::CalcResistance(uint32 type)
 	SetUInt32Value(UNIT_FIELD_RESISTANCEBUFFMODSNEGATIVE+type,-neg);
 	SetResistance(type,res>0?res:0);
 
-	//std::list<Pet*> summons = GetSummons();
-	for(std::list<Pet*>::iterator itr = getSummonStart(); itr != getSummonEnd(); ++itr)
+	std::list<Pet*> summons = GetSummons();
+	for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
+	{
 		(*itr)->CalcResistance( type );//Re-calculate pet's too.
+	}
 
 	// Dynamic aura 285 application, adding bonus
 	for( uint32 x = MAX_TOTAL_AURAS_START; x < MAX_TOTAL_AURAS_END; x++ )
@@ -6953,9 +7040,11 @@ void Player::CalcStat( uint32 type )
 
 	if( type == STAT_STAMINA || type == STAT_INTELLECT )
 	{
-		//std::list<Pet*> summons = GetSummons();
-		for(std::list<Pet*>::iterator itr = getSummonStart(); itr != getSummonEnd(); ++itr)
+		std::list<Pet*> summons = GetSummons();
+		for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
+		{
 			(*itr)->CalcStat( type );//Re-calculate pet's too
+		}
 	}
 }
 
@@ -8219,13 +8308,13 @@ void Player::EndDuel(uint8 WinCondition)
 	DuelingWith->EventAttackStop();
 
 	// Call off pet
-	//std::list<Pet*> summons = GetSummons();
-	for(std::list<Pet*>::iterator itr = getSummonStart(); itr != getSummonEnd(); ++itr)
+	std::list<Pet*> summons = GetSummons();
+	for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
 	{
 		(*itr)->CombatStatus.Vanished();
-		(*itr)->GetAIInterface()->setUnitToFollow( GetGUID() );
+		(*itr)->GetAIInterface()->SetUnitToFollow( this );
 		(*itr)->GetAIInterface()->HandleEvent( EVENT_FOLLOWOWNER, *itr, 0 );
-		(*itr)->GetAIInterface()->setNextTarget(NULL);
+		(*itr)->GetAIInterface()->WipeTargetList();
 	}
 
 	// removing auras that kills players after if low HP
@@ -8424,9 +8513,9 @@ bool Player::SafeTeleport(uint32 MapID, uint32 InstanceID, const LocationVector 
 	// Checking if we have a unit whose waypoints are shown
 	// If there is such, then we "unlink" it
 	// Failing to do so leads to a crash if we try to show some other Unit's wps, after the map was shut down
-	//if( waypointunit != NULL )
-		//waypointunit->hideWayPoints( this );	
-	//waypointunit = NULL;
+	if( waypointunit != NULL )
+		waypointunit->hideWayPoints( this );	
+	waypointunit = NULL;
 
 	SpeedCheatDelay(10000);
 
@@ -9708,9 +9797,11 @@ void Player::CalcDamage()
 		SetUInt32Value( PLAYER_RATING_MODIFIER_RANGED_SKILL, cr );
 
 /////////////////////////////////RANGED end
-		//std::list<Pet*> summons = GetSummons();
-		for(std::list<Pet*>::iterator itr = getSummonStart(); itr != getSummonEnd(); ++itr)
+		std::list<Pet*> summons = GetSummons();
+		for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
+		{
 			(*itr)->CalcDamage();//Re-calculate pet's too
+		}
 }
 
 uint32 Player::GetMainMeleeDamage(uint32 AP_owerride)
@@ -9930,11 +10021,10 @@ void Player::Possess(Unit * pTarget)
 
 	if( !( pTarget->IsPet() && static_cast< Pet* >( pTarget ) == GetSummon() ) )
 	{
-		std::vector<uint32> avail_spells;
+		list<uint32> avail_spells;
 		//Steam Tonks
 		if(pTarget->GetEntry() == 15328)
 		{
-			avail_spells.reserve(4);
 			uint32 rand_spellid = TonkSpecials[RandomUInt(3)];
 			avail_spells.push_back(CANNON);
 			avail_spells.push_back(MORTAR);
@@ -9943,25 +10033,19 @@ void Player::Possess(Unit * pTarget)
 		}
 		else
 		{
-			std::vector<AI_Spell*> spells;
-			pTarget->GetAIInterface()->getSpellStore( spells);
-			avail_spells.reserve( spells.size() );
-			if(spells.size() )
+			for(list<AI_Spell*>::iterator itr = pTarget->GetAIInterface()->m_spells.begin(); itr != pTarget->GetAIInterface()->m_spells.end(); ++itr)
 			{
-				for(std::vector<AI_Spell*>::iterator itr = spells.begin(); itr != spells.end() ; ++itr)
-				{
-					if( (*itr)->spell_agent == AGENT_SPELL)
-						avail_spells.push_back( (*itr)->proto->Id );
-				}
+				if((*itr)->agent == AGENT_SPELL)
+					avail_spells.push_back((*itr)->spell->Id);
 			}
 		}
-		std::vector<uint32>::iterator itr = avail_spells.begin();
+		list<uint32>::iterator itr = avail_spells.begin();
 
-		WorldPacket data(SMSG_PET_SPELLS,  avail_spells.size() * 4 + 20);
+		WorldPacket data(SMSG_PET_SPELLS, pTarget->GetAIInterface()->m_spells.size() * 4 + 20);
 		data << pTarget->GetGUID();
-		data << uint16(0x00000000);//family id.
-		data << uint32(0x0);//expire time
-		data << uint32(0x0);//pet state, action, and enabled spell bar.
+		data << uint16(0x00000000);//unk1
+		data << uint32(0x00000101);//unk2
+		data << uint32(0x00000100);//unk3
 
 		// First spell is attack.
 		data << uint32(PET_SPELL_ATTACK);
@@ -12299,8 +12383,8 @@ void Player::SetPvPFlag()
 	}
 	
 	// flagging the pet too for PvP, if we have one
-	//std::list<Pet*> summons = GetSummons();
-	for(std::list<Pet*>::iterator itr = getSummonStart(); itr != getSummonEnd(); ++itr)
+	std::list<Pet*> summons = GetSummons();
+	for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
 	{
 		(*itr)->SetPvPFlag();
 	}
@@ -12328,8 +12412,8 @@ void Player::RemovePvPFlag()
 	}
 	
 	// If we have a pet we will remove the pvp flag from that too
-	//std::list<Pet*> summons = GetSummons();
-	for(std::list<Pet*>::iterator itr = getSummonStart(); itr != getSummonEnd(); ++itr)
+	std::list<Pet*> summons = GetSummons();
+	for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
 	{
 		(*itr)->RemovePvPFlag();
 	}
@@ -12358,8 +12442,8 @@ void Player::SetFFAPvPFlag()
 	}
 	
 	// flagging the pet too for FFAPvP, if we have one
-	//std::list<Pet*> summons = GetSummons();
-	for(std::list<Pet*>::iterator itr = getSummonStart(); itr != getSummonEnd(); ++itr)
+	std::list<Pet*> summons = GetSummons();
+	for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
 	{
 		(*itr)->SetFFAPvPFlag();
 	}
@@ -12384,8 +12468,8 @@ void Player::RemoveFFAPvPFlag()
 	}
 	
 	// If we have a pet we will remove the FFA pvp flag from that too
-	//std::list<Pet*> summons = GetSummons();
-	for(std::list<Pet*>::iterator itr = getSummonStart(); itr != getSummonEnd(); ++itr)
+	std::list<Pet*> summons = GetSummons();
+	for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
 	{
 		(*itr)->RemoveFFAPvPFlag();
 	}
@@ -12412,8 +12496,8 @@ void Player::SetSanctuaryFlag()
 	}
 	
 	// flagging the pet too for sanctuary, if we have one
-	//std::list<Pet*> summons = GetSummons();
-	for(std::list<Pet*>::iterator itr = getSummonStart(); itr != getSummonEnd(); ++itr)
+	std::list<Pet*> summons = GetSummons();
+	for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
 	{
 		(*itr)->SetSanctuaryFlag();
 	}
@@ -12436,8 +12520,8 @@ void Player::RemoveSanctuaryFlag()
 	}
 	
 	// If we have a pet we will remove the sanctuary flag from that too
-	//std::list<Pet*> summons = GetSummons();
-	for(std::list<Pet*>::iterator itr = getSummonStart(); itr != getSummonEnd() ; ++itr)
+	std::list<Pet*> summons = GetSummons();
+	for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
 	{
 		(*itr)->RemoveSanctuaryFlag();
 	}
@@ -13156,13 +13240,19 @@ void Player::TakeDamage(Unit *pAttacker, uint32 damage, uint32 spellid, bool no_
 		}
 	}
 
-	if( pAttacker != this )
-	{
+	if( pAttacker != this ){
 		
 		// Defensive pet
-		//std::list<Pet*> & summons = GetSummons();
-		for(std::list<Pet*>::iterator itr = getSummonStart(); itr != getSummonEnd(); ++itr)
-			(*itr)->GetAIInterface()->HandleEvent(EVENT_OWNERATTACKED, pAttacker, 0);
+		std::list<Pet*> summons = GetSummons();
+		
+		for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr){
+			Pet* pPet = *itr;
+			
+			if( pPet->GetPetState() != PET_STATE_PASSIVE ){
+				pPet->GetAIInterface()->AttackReaction( pAttacker, 1, 0 );
+				pPet->HandleAutoCastEvent( AUTOCAST_EVENT_OWNER_ATTACKED );
+			}
+		}
 	}
 
 	ModHealth( -1 * static_cast< int32 >( damage ) );
@@ -13356,8 +13446,8 @@ void Player::RemoveIfVisible( uint64 obj ){
 void Player::Phase( uint8 command, uint32 newphase ){
 	Unit::Phase( command, newphase );
 
-	//std::list<Pet*> & summons = GetSummons();
-	for(std::list<Pet*>::iterator itr = getSummonStart(); itr != getSummonEnd(); ++itr){
+	std::list<Pet*> summons = GetSummons();
+	for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr){
 		Pet *p = *itr;
 		p->Phase( command, newphase );
 	}

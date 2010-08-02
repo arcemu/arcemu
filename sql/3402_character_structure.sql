@@ -801,6 +801,7 @@ CREATE TABLE `playerpets` (
 /*Table structure for table `playerpetspells` */
 
 DROP TABLE IF EXISTS `playerpetspells`;
+
 CREATE TABLE `playerpetspells` (
   `ownerguid` bigint(20) NOT NULL DEFAULT '0',
   `petnumber` int(4) NOT NULL DEFAULT '0',
@@ -808,14 +809,6 @@ CREATE TABLE `playerpetspells` (
   `flags` int(4) NOT NULL DEFAULT '0',
   KEY `a` (`ownerguid`),
   KEY `b` (`petnumber`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-DROP TABLE IF EXISTS `pet_talents`;
-CREATE TABLE `pet_talents` 
-(
-	`pet_owner` INT(11) UNSIGNED NOT NULL,
-	`pet_family` TINYINT(3) NOT NULL,
-	`talent_array` VARCHAR(255)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Table structure for table `playersummons` */

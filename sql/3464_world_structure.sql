@@ -14,20 +14,22 @@ MySQL - 5.0.45-community-nt : Database - test
 /*Table structure for table `ai_agents` */
 
 DROP TABLE IF EXISTS `ai_agents`;
+
 CREATE TABLE `ai_agents` (
-  `id`	INT(6) UNSIGNED	NOT NULL AUTO_INCREMENT,
-  `entry` INT(6) UNSIGNED NOT NULL DEFAULT '0',
-  `difficulty` TINYINT(2) UNSIGNED NOT NULL DEFAULT '0',
-  `agent_type` TINYINT(2) UNSIGNED NOT NULL DEFAULT '2',
-  `creature_event` TINYINT(2) UNSIGNED NOT NULL,
-  `procChance` TINYINT(3) UNSIGNED NOT NULL DEFAULT '100',
-  `maxcount` TINYINT(3) NOT NULL DEFAULT '0',
-  `spell_id` INT(7) UNSIGNED NOT NULL,
-  `spelltype` TINYINT(2) UNSIGNED NOT NULL DEFAULT '1',
-  `targettype` TINYINT(2) UNSIGNED NOT NULL DEFAULT '3',
-  `interval` INT(11) NOT NULL,
-  `attributes` VARCHAR(255)
-) ENGINE=MYISAM DEFAULT CHARSET=latin1 COMMENT='AI System';
+  `entry` int(11) unsigned NOT NULL default '0',
+  `instance_mode` int(10) unsigned NOT NULL default '4',
+  `type` smallint(5) unsigned NOT NULL default '0',
+  `event` int(11) unsigned NOT NULL default '0',
+  `chance` int(11) unsigned NOT NULL default '0',
+  `maxcount` int(11) unsigned NOT NULL default '0',
+  `spell` int(11) unsigned NOT NULL default '0',
+  `spelltype` int(11) unsigned NOT NULL default '0',
+  `targettype_overwrite` int(11) NOT NULL default '-1',
+  `cooldown_overwrite` int(11) NOT NULL default '-1',
+  `floatMisc1` float NOT NULL default '0',
+  `Misc2` int(11) unsigned NOT NULL default '0',
+  PRIMARY KEY  (`entry`,`spell`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='AI System';
 
 /*Data for the table `ai_agents` */
 
@@ -224,7 +226,6 @@ CREATE TABLE `creature_proto` (
   `boss` int(11) unsigned NOT NULL default '0',
   `money` int(30) NOT NULL default '0',
   `invisibility_type` int(30) unsigned NOT NULL,
-  `death_state` int(30) unsigned NOT NULL,
   `walk_speed` float NOT NULL default '2.5',
   `run_speed` float NOT NULL default '8',
   `fly_speed` float NOT NULL default '14',
@@ -292,6 +293,7 @@ CREATE TABLE `creature_spawns` (
   `channel_target_sqlid` int(30) NOT NULL default '0',
   `channel_target_sqlid_creature` int(30) NOT NULL default '0',
   `standstate` int(10) NOT NULL default '0',
+  `death_state` tinyint(3) unsigned NOT NULL default '0',
   `mountdisplayid` int(10) unsigned NOT NULL default '0',
   `slot1item` int(10) unsigned NOT NULL default '0',
   `slot2item` int(10) unsigned NOT NULL default '0',
@@ -328,6 +330,7 @@ CREATE TABLE `creature_staticspawns` (
   `channel_target_sqlid` int(30) NOT NULL default '0',
   `channel_target_sqlid_creature` int(30) NOT NULL default '0',
   `standstate` int(10) NOT NULL default '0',
+  `death_state` tinyint(3) unsigned NOT NULL default '0',
   `mountdisplayid` int(10) unsigned NOT NULL default '0',
   `slot1item` int(10) unsigned NOT NULL default '0',
   `slot2item` int(10) unsigned NOT NULL default '0',
@@ -362,12 +365,11 @@ CREATE TABLE `creature_timed_emotes` (
 DROP TABLE IF EXISTS `creature_waypoints`;
 
 CREATE TABLE `creature_waypoints` (
-  `sql_id` int(10) unsigned NOT NULL default '0',
-  `waypointid` TINYINT(2) unsigned NOT NULL default '0',
+  `spawnid` int(10) unsigned NOT NULL default '0',
+  `waypointid` int(10) unsigned NOT NULL default '0',
   `position_x` float NOT NULL default '0',
   `position_y` float NOT NULL default '0',
   `position_z` float NOT NULL default '0',
-  `facing`	float	NOT NULL default '0',
   `waittime` int(10) unsigned NOT NULL default '0',
   `flags` int(10) unsigned NOT NULL default '0',
   `forwardemoteoneshot` tinyint(3) unsigned NOT NULL default '0',
@@ -1156,6 +1158,18 @@ CREATE TABLE `npc_text_localized` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Data for the table `npc_text_localized` */
+
+/*Table structure for table `petdefaultspells` */
+
+DROP TABLE IF EXISTS `petdefaultspells`;
+
+CREATE TABLE `petdefaultspells` (
+  `entry` int(11) NOT NULL default '0',
+  `spell` int(11) NOT NULL default '0'
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Pet System';
+
+/*Data for the table `petdefaultspells` */
+
 /*Table structure for table `playercreateinfo` */
 
 DROP TABLE IF EXISTS `playercreateinfo`;

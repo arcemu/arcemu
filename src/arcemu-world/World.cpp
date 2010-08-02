@@ -107,80 +107,62 @@ void World::LogoutPlayers()
 
 World::~World()
 {
-	Log.NoticeNONL("LocalizationMgr", "~LocalizationMgr()");
+	Log.Notice("LocalizationMgr", "~LocalizationMgr()");
 	sLocalizationMgr.Shutdown();
-	Log.Line(" Done!");
 
-	Log.NoticeNONL("WorldLog", "~WorldLog()");
+	Log.Notice("WorldLog", "~WorldLog()");
 	delete WorldLog::getSingletonPtr();
-	Log.Line(" Done!");
 
-	Log.NoticeNONL("ObjectMgr", "~ObjectMgr()");
+	Log.Notice("ObjectMgr", "~ObjectMgr()");
 	delete ObjectMgr::getSingletonPtr();
-	Log.Line(" Done!");
 	
-	Log.NoticeNONL("LootMgr", "~LootMgr()");
+	Log.Notice("LootMgr", "~LootMgr()");
 	delete LootMgr::getSingletonPtr();
-	Log.Line(" Done!");
 	
-	Log.NoticeNONL("LfgMgr", "~LfgMgr()");
+	Log.Notice("LfgMgr", "~LfgMgr()");
 	delete LfgMgr::getSingletonPtr();
-	Log.Line(" Done!");
 
-	Log.NoticeNONL("ChannelMgr", "~ChannelMgr()");
+	Log.Notice("ChannelMgr", "~ChannelMgr()");
 	delete ChannelMgr::getSingletonPtr();
-	Log.Line(" Done!");
 
-	Log.NoticeNONL("QuestMgr", "~QuestMgr()");
+	Log.Notice("QuestMgr", "~QuestMgr()");
 	delete QuestMgr::getSingletonPtr();
-	Log.Line(" Done!");
   
-	Log.NoticeNONL("WeatherMgr", "~WeatherMgr()");
+	Log.Notice("WeatherMgr", "~WeatherMgr()");
 	delete WeatherMgr::getSingletonPtr();
-	Log.Line(" Done!");
 
-	Log.NoticeNONL("TaxiMgr", "~TaxiMgr()");
+	Log.Notice("TaxiMgr", "~TaxiMgr()");
 	delete TaxiMgr::getSingletonPtr();
-	Log.Line(" Done!");
 	
-	Log.NoticeNONL("BattlegroundMgr", "~BattlegroundMgr()");
+	Log.Notice("BattlegroundMgr", "~BattlegroundMgr()");
 	delete CBattlegroundManager::getSingletonPtr();
-	Log.Line(" Done!");
 
-	Log.NoticeNONL("InstanceMgr", "~InstanceMgr()");
+	Log.Notice("InstanceMgr", "~InstanceMgr()");
 	sInstanceMgr.Shutdown();
-	Log.Line(" Done!");
 
 	//sLog.outString("Deleting Thread Manager..");
 	//delete ThreadMgr::getSingletonPtr();
-	Log.NoticeNONL("WordFilter", "~WordFilter() ");
+	Log.Notice("WordFilter", "~WordFilter()");
 	delete g_chatFilter;
 	delete g_characterNameFilter;
-	Log.Line(" Done!");
 
-	Log.NoticeNONL("Rnd", "~Rnd() ");
+	Log.Notice("Rnd", "~Rnd()");
 	CleanupRandomNumberGenerators();
-	Log.Line(" Done!");
 
-	Log.NoticeNONL("~World", "Cleaning up area triggers ");
 	for( AreaTriggerMap::iterator i = m_AreaTrigger.begin( ); i != m_AreaTrigger.end( ); ++ i ) 
 	{
 		delete i->second;
 	}
-	Log.Line(" Done!");
 
-	Log.NoticeNONL("SpellProcMgr", "~SpellProcMgr() ");
+	Log.Notice("SpellProcMgr", "~SpellProcMgr()");
 	delete SpellProcMgr::getSingletonPtr();
-	Log.Line(" Done!");
 
 	//eventholder = 0;
 	delete eventholder;
 
 	Storage_Cleanup();
-	Log.NoticeNONL("~World", "Cleaning up dummy spells ");
 	for(list<SpellEntry*>::iterator itr = dummyspells.begin(); itr != dummyspells.end(); ++itr)
 		delete *itr;
-	Log.Line(" Done!");
 }
 
 
@@ -301,7 +283,7 @@ void ApplyNormalFixes();
 
 bool World::SetInitialWorldSettings()
 {
-	Log.Line("");
+	Log.Line();
 	Player::InitVisibleUpdateBits();
 
 	CharacterDatabase.WaitExecute("UPDATE characters SET online = 0 WHERE online = 1");
@@ -448,7 +430,7 @@ bool World::SetInitialWorldSettings()
 	MAKE_TASK(ObjectMgr,  LoadSpellProcs);
 	MAKE_TASK(ObjectMgr,  LoadSpellEffectsOverride);
 	MAKE_TASK( ObjectMgr, LoadSpellTargetConstraints );
-	MAKE_TASK(ObjectMgr,  Pet_CreateAISpells);
+	MAKE_TASK(ObjectMgr,  LoadDefaultPetSpells);
 	MAKE_TASK(ObjectMgr,  LoadPetSpellCooldowns);
 	MAKE_TASK(ObjectMgr,  LoadGuildCharters);
 	MAKE_TASK(ObjectMgr,  LoadGMTickets);
@@ -1144,9 +1126,9 @@ void TaskList::spawn()
 	else
 		threadcount = 1;
 
-	Log.Line("");
+	Log.Line();
 	Log.Notice("World", "Beginning %s server startup with %u threads.", (threadcount == 1) ? "progressive" : "parallel", threadcount);
-	Log.Line("");
+	Log.Line();
 
 	for(uint32 x = 0; x < threadcount; ++x)
 		ThreadPool.ExecuteTask(new TaskExecutor(this));

@@ -488,12 +488,6 @@
       <Filter>Spells</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\arcemu-world\EquipmentSetMgr.cpp" />
-    <ClCompile Include="..\..\src\arcemu-world\AI_Critter.cpp" />
-    <ClCompile Include="..\..\src\arcemu-world\AI_Guardian.cpp" />
-    <ClCompile Include="..\..\src\arcemu-world\AI_Mob.cpp" />
-    <ClCompile Include="..\..\src\arcemu-world\AI_Pet.cpp" />
-    <ClCompile Include="..\..\src\arcemu-world\AI_Totem.cpp" />
-    <ClCompile Include="..\..\src\arcemu-world\AIInterfaceMgr.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\arcemu-world\Channel.h">
@@ -754,13 +748,7 @@
       <Filter>Spells</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\arcemu-world\EquipmentSetMgr.h" />
-    <ClInclude Include="..\..\src\arcemu-world\AI_AISpell.h" />
-    <ClInclude Include="..\..\src\arcemu-world\AI_Critter.h" />
-    <ClInclude Include="..\..\src\arcemu-world\AI_Guardian.h" />
-    <ClInclude Include="..\..\src\arcemu-world\AI_Mob.h" />
-    <ClInclude Include="..\..\src\arcemu-world\AI_Pet.h" />
-    <ClInclude Include="..\..\src\arcemu-world\AI_Totem.h" />
-    <ClInclude Include="..\..\src\arcemu-world\AIInterfaceMgr.h" />
+    <ClInclude Include="..\..\src\arcemu-world\PlayerCache.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\src\arcemu-world\resources.rc" />

@@ -439,6 +439,14 @@ void WorldSession::HandleCharCreateOpcode( WorldPacket & recv_data )
 	pNewChar->UnSetBanned();
 	pNewChar->addSpell(22027);	  // Remove Insignia
 
+	if(pNewChar->getClass() == WARLOCK)
+	{
+		pNewChar->AddSummonSpell(416, 3110);		// imp fireball
+		pNewChar->AddSummonSpell(417, 19505);
+		pNewChar->AddSummonSpell(1860, 3716);
+		pNewChar->AddSummonSpell(1863, 7814);
+	}
+
 	pNewChar->SaveToDB(true);	
 
 	PlayerInfo *pn=new PlayerInfo ;

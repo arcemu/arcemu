@@ -1046,6 +1046,7 @@ void Spell::cancel()
 					p_caster->delayAttackTimer(-m_timer);
 					RemoveItems();
 				}
+//				p_caster->setAttackTimer(1000, false);
 			 }
 		}
 	}
@@ -3800,11 +3801,11 @@ uint8 Spell::CanCast(bool tolerate)
 				}
 				else
 				{
-					if (target->GetAIInterface()->isSoulLinked() && u_caster && target->GetAIInterface()->getSoulLinker() != u_caster)
+					if (target->GetAIInterface()->GetIsSoulLinked() && u_caster && target->GetAIInterface()->getSoullinkedWith() != u_caster)
 						return SPELL_FAILED_BAD_TARGETS;
 				}
 
-				/* Paroxysm : Pets now auto learn their spells, this is no longer needed.
+				// pet training
 				if( GetProto()->EffectImplicitTargetA[0] == EFF_TARGET_PET &&
 					GetProto()->Effect[0] == SPELL_EFFECT_LEARN_SPELL )
 				{
@@ -3821,7 +3822,7 @@ uint8 Spell::CanCast(bool tolerate)
 					uint32 status = pPet->CanLearnSpell( trig );
 					if( status != 0 )
 						return static_cast<uint8>(status);
-				}*/
+				}
 
 				if( GetProto()->EffectApplyAuraName[0] == SPELL_AURA_MOD_POSSESS )//mind control
 				{
@@ -5064,15 +5065,11 @@ void Spell::Heal( int32 amount, bool ForceCrit )
 			if( (*itr)->GetTypeId() != TYPEID_UNIT )
 				continue;
 			
-			tmp_unit = TO_UNIT(*itr);
-			if( !tmp_unit->CombatStatus.IsInCombat() )
+			tmp_unit = static_cast< Unit* >( *itr );
+
+			if( !tmp_unit->CombatStatus.IsInCombat() || ( tmp_unit->GetAIInterface()->getThreatByPtr( u_caster ) == 0 && tmp_unit->GetAIInterface()->getThreatByPtr( unitTarget ) == 0 ) )
 				continue;
-			AIInterface * ai = tmp_unit->GetAIInterface();
-			if(ai != NULL && AIType_isMob(ai) )
-			{
-				if( TO_AIMOB(ai)->getThreatByPtr(u_caster) == 0 || TO_AIMOB(ai)->getThreatByPtr(unitTarget) == 0 )
-					continue;
-			}
+
 			if( !( u_caster->GetPhase() & (*itr)->GetPhase() ) ) //Can't see, can't be a threat
 				continue;
 
@@ -5696,7 +5693,7 @@ void Spell::HandleCastEffects( uint64 guid, uint32 i )
 			//todo: arcemu doesn't support reflected spells
 			//if (reflected)
 			//	time *= 1.25; //reflected projectiles move back 4x faster
-			sEventMgr.AddEvent(this, &Spell::HandleEffects, guid, i, EVENT_SPELL_DAMAGE_HIT, float2int32(time), 1, 0);
+			sEventMgr.AddEvent(this, &Spell::HandleEffects, guid, i, EVENT_SPELL_HIT, float2int32(time), 1, 0);
 			AddRef();
 		}
 	}
