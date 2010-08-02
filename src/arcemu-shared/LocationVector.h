@@ -165,8 +165,8 @@ public:
 
 	bool operator == (const LocationVector & eq)
 	{
-		float dx = abs((float)eq.x - x);
-		float dy = abs((float)eq.y - y);
+		float dx = fabs((float)eq.x - x);
+		float dy = fabs((float)eq.y - y);
 		float dz = abs((float)eq.z - z);
 		float e = 0.0001f;
 		bool result = false;
@@ -176,9 +176,9 @@ public:
 	}
 	bool operator != (const LocationVector & loc)
 	{
-		float dx = abs((float)loc.x - x);
-		float dy = abs((float)loc.y - y);
-		float dz = abs((float)loc.z - z);
+		float dx = fabs((float)loc.x - x);
+		float dy = fabs((float)loc.y - y);
+		float dz = fabs((float)loc.z - z);
 		float e = 0.0001f;
 		bool result = false;
 		//If the difference between either coord and their counter part is significant.
