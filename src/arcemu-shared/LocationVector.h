@@ -167,7 +167,7 @@ public:
 	{
 		float dx = fabs((float)eq.x - x);
 		float dy = fabs((float)eq.y - y);
-		float dz = abs((float)eq.z - z);
+		float dz = fabs((float)eq.z - z);
 		float e = 0.0001f;
 		bool result = false;
 		if(dx <= e && dy <= e && dz <= e)
