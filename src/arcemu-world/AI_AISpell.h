@@ -202,12 +202,11 @@ struct AI_SummonSpellDest : public AI_SummonSpell
 		type = AISPELLTYPE_SUMMON_DEST;
 		summon_count = 1;
 	}
-	~AI_SummonSpellDest() {
-		Log.Notice("AI_AISpell.h","~AI_SummonSpellDest");
+	~AI_SummonSpellDest() 
+	{
 		if(dest != NULL)
 			delete dest;
 		dest = NULL;
-		AI_Spell::~AI_Spell();
 	}
 };
 //structure holding dispel spell types

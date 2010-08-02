@@ -439,6 +439,7 @@ void Pet::LoadFromDB( Player* owner, PlayerPet * pi )
 	creature_info = CreatureNameStorage.LookupEntry( mPi->entry );
 	proto = CreatureProtoStorage.LookupEntry( mPi->entry );
 	myFamily = dbcCreatureFamily.LookupEntry( creature_info->Family );
+	m_aiInterface = AIInterface_Mgr::CreateInterface(this, AITYPE_PET, owner);
 
 	Create( pi->name.c_str(), owner->GetMapId(), owner->GetPositionX() + 2 , owner->GetPositionY() + 2, owner->GetPositionZ(), owner->GetOrientation() );
 

@@ -81,7 +81,7 @@ public:
 		uint32 now = getMSTime();
 		for(SpellStore::iterator itr = m_spells.begin(); itr != m_spells.end(); ++itr)
 		{
-			if( (*itr)->event_type != (uint8)evt || (*itr)->isQueued || now < (*itr)->cooldown || (*itr)->maxcastcount && (*itr)->currentcastcount >= (*itr)->maxcastcount)
+			if( (*itr)->event_type != (uint8)evt || (*itr)->isQueued || now < (*itr)->cooldown || ( (*itr)->maxcastcount && (*itr)->currentcastcount >= (*itr)->maxcastcount) )
 				continue;
 			m_spellQue.push_back( (*itr) );
 			(*itr)->isQueued = true;

@@ -5974,7 +5974,8 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 	else
 		pTotem->RemoveFFAPvPFlag();
 	// TO DO : Make totem load spells from their proto.
-		pTotem->PushToWorld(m_caster->GetMapMgr());
+	pTotem->AIInterface_create();
+	pTotem->PushToWorld(m_caster->GetMapMgr());
 
 	// Set up the deletion event. The totem needs to expire after a certain time, or upon its death.
 	sEventMgr.AddEvent(pTotem, &Creature::TotemExpire, uint32(0), EVENT_TOTEM_EXPIRE, GetDuration(), 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
