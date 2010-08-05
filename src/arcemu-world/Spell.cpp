@@ -4706,7 +4706,8 @@ exit:
 		SM_FIValue(u_caster->SM_FEffectBonus, &spell_flat_modifers, GetProto()->SpellGroupType);
 		SM_PIValue(u_caster->SM_PEffectBonus, &spell_pct_modifers, GetProto()->SpellGroupType);
 
-		SM_FIValue(u_caster->SM_FDamageBonus , &spell_flat_modifers , GetProto()->SpellGroupType);
+		SM_FIValue(u_caster->SM_FDamageBonus, &spell_flat_modifers, GetProto()->SpellGroupType);
+		SM_PIValue(u_caster->SM_PDamageBonus, &spell_pct_modifers , GetProto()->SpellGroupType);
 
 		switch(i)
 		{

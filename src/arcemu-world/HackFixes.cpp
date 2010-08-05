@@ -227,7 +227,7 @@ void ApplyNormalFixes()
 
 		//these mostly do not mix so we can use else
         // look for seal, etc in name
-        if( strstr( sp->Name, "Seal"))
+        if( strstr( sp->Name, "Seal of"))
             sp->BGR_one_buff_on_target |= SPELL_TYPE_SEAL;
 		else if( strstr( sp->Name, "Hand of"))
             sp->BGR_one_buff_on_target |= SPELL_TYPE_HAND;
@@ -1129,6 +1129,13 @@ void ApplyNormalFixes()
             sp->School = SCHOOL_HOLY; //Consecration is a holy redirected spell.
             sp->Spell_Dmg_Type = SPELL_DMG_TYPE_MAGIC; //Speaks for itself.
         }
+
+		if( sp->NameHash == SPELL_HASH_SEALS_OF_THE_PURE )
+		{
+			sp->EffectSpellClassMask[0][0] = 0x08000400;
+			sp->EffectSpellClassMask[0][1] = 0x20000000;
+			sp->EffectSpellClassMask[1][1] = 0x800;
+		}
 
 		//////////////////////////////////////////
 		// HUNTER								//
