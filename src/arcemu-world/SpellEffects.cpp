@@ -4871,6 +4871,9 @@ void Spell::SpellEffectHealMaxHealth(uint32 i)   // Heal Max Health
 	SendHealSpellOnPlayer( m_caster, unitTarget, dif, false, 0, pSpellId ? pSpellId : GetProto()->Id );
 
 	unitTarget->ModHealth(dif);
+
+	if( u_caster != NULL && this->GetProto()->NameHash == SPELL_HASH_LAY_ON_HANDS )
+		u_caster->CastSpell(unitTarget, 25771, true);
 }
 
 void Spell::SpellEffectInterruptCast(uint32 i) // Interrupt Cast
