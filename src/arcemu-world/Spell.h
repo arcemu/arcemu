@@ -2128,7 +2128,6 @@ public:
 
     int32 damageToHit;
     uint32 castedItemId;
-    bool judgement;
 	uint8 extra_cast_number;
     uint32 m_glyphslot;
 

@@ -324,8 +324,8 @@ const char* SpellEffectNames[TOTAL_SPELL_EFFECTS] = {
 	"KILL_CREDIT",               //    134
 	"UNKNOWN15",                 //    135
 	"UNKNOWN16",                 //    136
-	"UNKNOWN17",                 //    137
-	"KNOCKBACK2",                 //    138
+	"RESTORE_POWER_PCT",         //    137
+	"KNOCKBACK2",                //    138
 	"UNKNOWN19",                 //    139
 	"UNKNOWN20",                 //    140
 	"UNKNOWN21",                 //    141
@@ -1471,23 +1471,6 @@ out:
 			uint32 gain = (uint32) (unitTarget->GetMaxPower( POWER_TYPE_MANA )*0.06);
 			unitTarget->Energize( unitTarget, 16191, gain, POWER_TYPE_MANA );
 		}break;
-	case 20425: //Judgement of Command
-	case 20961: //Judgement of Command
-	case 20962: //Judgement of Command
-	case 20967: //Judgement of Command
-	case 20968: //Judgement of Command
-	case 27172: //Judgement of Command
-		{
-			if(unitTarget == NULL)
-				return;
-
-			uint32 SpellID = GetProto()->EffectBasePoints[i]+1;
-			Spell * spell = new Spell(m_caster,dbcSpell.LookupEntry(SpellID),true,NULL);
-			SpellCastTargets targets;
-			targets.m_unitTarget = unitTarget->GetGUID();
-			spell->prepare(&targets);
-		}break;
-
 	case 20577:// Cannibalize
 		{
 			if(!p_caster)
@@ -2269,8 +2252,7 @@ void Spell::SpellEffectHeal(uint32 i) // Heal
 		}
 
 		if( p_caster->HasSpell( 54943 ) && p_caster->HasAura( 20165 ) ) // Glyph of Seal of Light
-			damage = (int32)(damage * 1.05); 
-
+			damage = (int32)(damage * 1.05);
 	}
 
 	if(GetProto()->EffectChainTarget[i])//chain
@@ -2422,12 +2404,6 @@ void Spell::SpellEffectHeal(uint32 i) // Heal
 						spell->Heal( (int32)new_dmg );
 					}
 				}
-			}break;
-		case 20167: // Paladin: Seal of Light
-			{
-				if (!p_caster) 
-					return;
-				damage = ((uint32)ceilf(p_caster->GetAP() * 0.15f)) + ((uint32)ceilf(p_caster->GetHealingDoneMod() * 0.15f));
 			}break;
 		default:
 			Heal(damage);
@@ -3431,9 +3407,6 @@ void Spell::SpellEffectEnergize(uint32 i) // Energize
 			if( u_caster )
 				modEnergy = float2int32(0.25f * unitTarget->GetUInt32Value(UNIT_FIELD_BASE_MANA));
 		}break;
-	case 20268: //Judgement of Wisdom
-		modEnergy = uint32( 0.02f * unitTarget->GetBaseMana() );
-		break;
 	case 2687: // Improved Bloodrage, dirty fix
 		{
 			modEnergy = damage;
@@ -5352,42 +5325,6 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 			Heal((int32)damage);
 		break;
 
-		// Judgement
-	case 20271: //Light
-	case 53407: //Justice
-	case 53408: //Wisdom
-		{
-			if( !unitTarget || !p_caster )
-				return;
-
-			if( p_caster->judgespell )
-			{
-				SpellEntry *en = dbcSpell.LookupEntry( p_caster->judgespell );
-				Spell *sp = new Spell(p_caster,en,true,NULL);
-				SpellCastTargets tgt;
-				tgt.m_unitTarget = unitTarget->GetGUID();
-				tgt.m_targetMask = TARGET_FLAG_UNIT;
-				sp->judgement = true;
-				sp->prepare( &tgt );
-			}
-
-			uint32 judge_extra = 0;
-			// This is for handling specific Judgement's debuff application spells
-			switch(GetProto()->Id)
-			{
-			case 20271:
-				judge_extra = 20185;
-				break;
-			case 53407:
-				judge_extra = 20184;
-				break;
-			case 53408:
-				judge_extra = 20186;
-				break;
-			}
-			p_caster->CastSpell( unitTarget, judge_extra, false );
-		}break;
-
 		//warlock - Master Demonologist
 	case 23784:
 		{
@@ -7171,15 +7108,15 @@ void Spell::SpellEffectRestorePowerPct(uint32 i)
 	if( u_caster == NULL || unitTarget == NULL || !unitTarget->isAlive() )
 		return;
 
-	uint32 power = GetProto()->EffectMiscValue[i];
-	if( power > POWER_TYPE_HAPPINESS )
+	uint32 power_type = GetProto()->EffectMiscValue[i];
+	if( power_type > POWER_TYPE_HAPPINESS )
 	{
-		sLog.outError("Unhandled power type %u in %s, report this line to devs.", power, __FUNCTION__ );
+		sLog.outError("Unhandled power type %u in %s, report this line to devs.", power_type, __FUNCTION__ );
 		return;
 	}
 
-	uint32 amount = damage * unitTarget->GetPower( power ) / 100;
-	u_caster->Energize( unitTarget, GetProto()->Id, amount, power );
+	uint32 amount = damage * unitTarget->GetMaxPower( power_type ) / 100;
+	u_caster->Energize( unitTarget, GetProto()->Id, amount, power_type );
 }
 
 void Spell::SpellEffectTriggerSpellWithValue(uint32 i)

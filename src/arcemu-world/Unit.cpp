@@ -2113,11 +2113,6 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, bo
 						if( !IsPlayer() )
 							continue;
 						Player* c = static_cast< Player* >( this );
-						if( !c->LastSeal )
-							continue;
-						SpellEntry *spellInfo = dbcSpell.LookupEntryForced( c->LastSeal );
-						if( !spellInfo )
-							continue;
 					}break;
 				case 54172: //Paladin - Divine Storm heal effect
 					{
@@ -2268,6 +2263,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, bo
 						if( CastingSpell->NameHash != SPELL_HASH_LIFE_TAP )
 							continue;
 					}break;
+				//Tier 5 Paladin setbonus - Crystalforge Battlegear or Crystalforge Raiment
 				case 37196:
 				case 43838:
 					{
@@ -4920,6 +4916,29 @@ Aura* Unit::FindAura(uint32 spellId)
 		if(m_auras[x])
 			if(m_auras[x]->GetSpellId()==spellId)
 				return m_auras[x];
+	return NULL;
+}
+
+Aura* Unit::FindAura(uint32* spellId)
+{
+	Aura *aura;
+	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
+	{
+		aura = m_auras[x];
+
+		if( aura == NULL )
+			continue;
+
+		for(uint8 j = 0; ; j ++)
+		{
+			if( ! spellId[j] )
+				break;
+
+			if( aura->GetSpellId() == spellId[j] )
+				return aura;
+		}
+	}
+
 	return NULL;
 }
 
@@ -7937,6 +7956,25 @@ uint64 Unit::GetCurrentUnitForSingleTargetAura(SpellEntry* spell)
 		return 0;
 }
 
+uint64 Unit::GetCurrentUnitForSingleTargetAura(uint32* name_hashes, uint32* index)
+{
+	UniqueAuraTargetMap::iterator itr;
+
+	for(uint8 i = 0 ; ; i++ )
+	{
+		if( ! name_hashes[i] )
+			return 0;
+
+		itr = m_singleTargetAura.find(name_hashes[i]);
+
+		if ( itr != m_singleTargetAura.end() )
+		{
+			*index = i;
+			return itr->second;
+		}
+	}
+}
+
 void Unit::SetCurrentUnitForSingleTargetAura(SpellEntry* spell, uint64 guid)
 {
 	UniqueAuraTargetMap::iterator itr;
@@ -7954,6 +7992,16 @@ void Unit::RemoveCurrentUnitForSingleTargetAura(SpellEntry* spell)
 	UniqueAuraTargetMap::iterator itr;
 
 	itr = m_singleTargetAura.find(spell->NameHash);
+
+	if ( itr != m_singleTargetAura.end() )
+		m_singleTargetAura.erase(itr);
+}
+
+void Unit::RemoveCurrentUnitForSingleTargetAura(uint32 name_hash)
+{
+	UniqueAuraTargetMap::iterator itr;
+
+	itr = m_singleTargetAura.find(name_hash);
 
 	if ( itr != m_singleTargetAura.end() )
 		m_singleTargetAura.erase(itr);

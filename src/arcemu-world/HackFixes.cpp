@@ -849,10 +849,6 @@ void ApplyNormalFixes()
 			sp->Spell_Dmg_Type = SPELL_DMG_TYPE_MAGIC; //heh, crazy spell uses melee/ranged/magic dmg type for 1 spell. Now which one is correct ?
 		}
 
-		//Seal of Jusice - Proc Chance
-		if( sp->NameHash == SPELL_HASH_SEAL_OF_JUSTICE )
-			sp->procChance = 25;
-
 		/* Decapitate */
 		if( sp->NameHash == SPELL_HASH_DECAPITATE )
 			sp->procChance = 30;
@@ -1907,63 +1903,77 @@ void ApplyNormalFixes()
 
 		// Insert paladin spell fixes here
 
-		//Paladin - Judgements - rebuff
-		sp = dbcSpell.LookupEntryForced( 20184 );
+		//Paladin - Judgement of Command
+		sp = dbcSpell.LookupEntryForced( 20467 );
 		if( sp != NULL )
-			sp->RankNumber = 0;
+			sp->procChance = 50;
+
+		//Paladin - Judgement of Corruption
+		sp = dbcSpell.LookupEntryForced( 53733 );
+		if( sp != NULL )
+			sp->procChance = 50;
 
 		//Paladin - Judgement of Light
 		sp = dbcSpell.LookupEntryForced( 20185 );
-        if( sp != NULL )
-        {
-            sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
-			sp->EffectApplyAuraName[0] = 42;
-			sp->EffectTriggerSpell[0] = 20267;
-			sp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM;
-			sp->RankNumber = 0;
-			sp->procChance = 30;
-        }
-		sp = dbcSpell.LookupEntryForced( 20267 );
 		if( sp != NULL )
-			sp->EffectImplicitTargetA[0] = EFF_TARGET_SINGLE_ENEMY;
+			sp->procChance = 50;
+
+		//Paladin - Judgement of Justice
+		sp = dbcSpell.LookupEntryForced( 20184 );
+		if( sp != NULL )
+			sp->procChance = 50;
+
+		//Paladin - Judgement of Righteousness
+		sp = dbcSpell.LookupEntryForced( 20187 );
+		if( sp != NULL )
+			sp->procChance = 50;
+
+		//Paladin - Judgement of Vengeance
+		sp = dbcSpell.LookupEntryForced( 31804 );
+		if( sp != NULL )
+			sp->procChance = 50;
 
 		//Paladin - Judgement of Wisdom
 		sp = dbcSpell.LookupEntryForced( 20186 );
-        if( sp != NULL )
-        {
-            sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
-			sp->EffectApplyAuraName[0] = 42;
-			sp->EffectTriggerSpell[0] = 20268;
-			sp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM;
-			sp->RankNumber = 0;
-			sp->proc_interval = 4000;
-        }
-		sp = dbcSpell.LookupEntryForced( 20268 );
 		if( sp != NULL )
-			sp->EffectImplicitTargetA[0] = EFF_TARGET_SINGLE_ENEMY;
+			sp->procChance = 50;
+
+		//Paladin - Seal of Command
+		sp = dbcSpell.LookupEntryForced( 20375 );
+		if( sp != NULL )
+			sp->proc_interval = 3000;
+
+		//Paladin - Seal of Corruption
+		sp = dbcSpell.LookupEntryForced( 53736 );
+		if( sp != NULL )
+			sp->proc_interval = 3000;
 
 		//Paladin - Seal of Light
 		sp = dbcSpell.LookupEntryForced( 20165 );
 		if( sp != NULL )
-		{
-			sp->proc_interval = 4000;
-			sp->procChance = 90;
-		}
+			sp->proc_interval = 3000;
+
+		//Paladin - Seal of Justice
+		sp = dbcSpell.LookupEntryForced( 20164 );
+		if( sp != NULL )
+			sp->proc_interval = 3000;
+
+		//Paladin - Seal of Righteousness
+		sp = dbcSpell.LookupEntryForced( 21084 );
+		if( sp != NULL )
+			sp->proc_interval = 3000;
+
+		//Paladin - Seal of Vengeance
+		sp = dbcSpell.LookupEntryForced( 31801 );
+		if( sp != NULL )
+			sp->proc_interval = 3000;
 
 		//Paladin - Seal of Wisdom
 		sp = dbcSpell.LookupEntryForced( 20166 );
 		if( sp != NULL )
-			sp->proc_interval = 4000;
+			sp->proc_interval = 3000;
 
-		//Paladin - Vengeance
-		sp = dbcSpell.LookupEntryForced( 20049 ); //Rank 1
-		if( sp != NULL )
-		{
-			sp->EffectTriggerSpell[0] = 20050;
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->procFlags = PROC_ON_CRIT_ATTACK | PROC_ON_SPELL_CRIT_HIT;
-		}
-
+		// Paladin - Vengeance
 		sp = dbcSpell.LookupEntryForced( 20050 ); // Rank 1 proc
 		if( sp != NULL )
 			sp->maxstack = 3;
@@ -1991,36 +2001,10 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 			sp->maxstack = 3;
 
-		//Paladin - Seal of Command - trigger
-		sp = dbcSpell.LookupEntryForced( 20375 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_MELEE_ATTACK;
-			sp->EffectTriggerSpell[0] = 20424;
-		}
-
 		//Paladin - Seal of Command - Holy damage, but melee mechanics (crit damage, chance, etc)
 		sp = dbcSpell.LookupEntryForced( 20424 );
 		if( sp != NULL )
 			sp->is_melee_spell = true;
-
-		//Paladin - Seal of Vengeance
-		sp = dbcSpell.LookupEntryForced( 31801 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_MELEE_ATTACK;
-			sp->EffectTriggerSpell[0] = 31803;
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-		}
-
-		//Paladin - Seal of Corruption
-		sp = dbcSpell.LookupEntryForced( 53736 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_MELEE_ATTACK;
-			sp->EffectTriggerSpell[0] = 53742;
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-		}
 
 		//Paladin - Hammer of the Righteous
 		sp = dbcSpell.LookupEntryForced( 53595);
@@ -2262,11 +2246,6 @@ void ApplyNormalFixes()
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 31786;
 		}
-
-		//Paladin - Seal of Justice - Proc Chance
-		sp = dbcSpell.LookupEntryForced( 20164 );
-		if( sp != NULL )
-			sp->procChance = 25;
 
 		//Paladin - Improved Lay on Hands
 		sp = dbcSpell.LookupEntryForced( 20234 );

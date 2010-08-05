@@ -62,8 +62,6 @@ removeReagentCost(false),
 ignoreShapeShiftChecks(false),
 ignoreAuraStateCheck(false),
 m_furorChance(0),
-Seal(0),
-judgespell(0),
 m_session(0),
 TrackingSpell(0),
 m_status(0),
@@ -472,7 +470,6 @@ myCorpseLocation()
 	m_passOnLoot = false;
 	m_changingMaps = true;
 	m_outStealthDamageBonusPct = m_outStealthDamageBonusPeriod = m_outStealthDamageBonusTimer = 0;
-	LastSeal = 0;
 	m_flyhackCheckTimer = 0;
 #ifdef TRACK_IMMUNITY_BUG
 	m_immunityTime = 0;

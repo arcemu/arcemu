@@ -1032,6 +1032,7 @@ public:
 	Aura *FindAuraByNameHash(uint32 namehash);
 	Aura *FindAuraByNameHash(uint32 namehash, uint64 guid);
 	Aura* FindAura(uint32 spellId);
+	Aura* FindAura(uint32* spellId);
 	Aura* FindAura(uint32 spellId, uint64 guid);
 	std::list<Aura*> GetAllAurasWithAuraEffect(uint32 effect);
 	bool SetAurDuration(uint32 spellId,Unit* caster,uint32 duration);
@@ -1743,8 +1744,10 @@ public:
 	// Auras that can affect only one target at a time
 	//******************************************************
 	uint64 GetCurrentUnitForSingleTargetAura(SpellEntry* spell);
+	uint64 GetCurrentUnitForSingleTargetAura(uint32* name_hashes, uint32* index);
 	void SetCurrentUnitForSingleTargetAura(SpellEntry* spell, uint64 guid);
 	void RemoveCurrentUnitForSingleTargetAura(SpellEntry* spell);
+	void RemoveCurrentUnitForSingleTargetAura(uint32 name_hash);
 
 protected:
 	Unit ();

@@ -1711,9 +1711,6 @@ public:
 
 	map<uint32, WeaponModifier> damagedone;
 	map<uint32, WeaponModifier> tocritchance;
-	uint32 Seal;
-	uint32 LastSeal;//need for paladin talent. We can either make a proc before auras are removed or use this. Some proc also need effect to appear so we would need 2 procs without double procing :S
-	uint32 judgespell;
 	bool cannibalize;
 	uint8 cannibalizeCount;
 	int32 rageFromDamageDealt;

@@ -29,6 +29,8 @@ class SealOfCommandSpellProc : public SpellProc
 		// default chance of proc
 		mProcChance = 25;
 
+		mProcFlags = PROC_ON_MELEE_ATTACK;
+
 		/* The formula for SoC proc rate is: [ 7 / ( 60 / Weapon Speed ) - from wowwiki */
 		if( ! mTarget->IsPlayer() )
 			return;
@@ -91,6 +93,42 @@ class SpiritualAttunementSpellProc : public SpellProc
 	}
 };
 
+class PaladinSealsSpellProc : public SpellProc
+{
+	SPELL_PROC_FACTORY_FUNCTION(PaladinSealsSpellProc);
+
+	void Init(Object *obj)
+	{
+		this->mProcFlags = PROC_ON_MELEE_ATTACK;
+	}
+};
+
+class SealOfCorruptionSpellProc : public SpellProc
+{
+	SPELL_PROC_FACTORY_FUNCTION(SealOfCorruptionSpellProc);
+
+	bool CanProc(Unit *victim, SpellEntry *CastingSpell)
+	{
+		if( victim == NULL || victim->FindAuraCountByHash(SPELL_HASH_BLOOD_CORRUPTION) < 5 )
+			return false;
+
+		return true;
+	}
+};
+
+class SealOfVengeanceSpellProc : public SpellProc
+{
+	SPELL_PROC_FACTORY_FUNCTION(SealOfVengeanceSpellProc);
+
+	bool CanProc(Unit *victim, SpellEntry *CastingSpell)
+	{
+		if( victim == NULL || victim->FindAuraCountByHash(SPELL_HASH_HOLY_VENGEANCE) < 5 )
+			return false;
+
+		return true;
+	}
+};
+
 void SpellProcMgr::SetupPaladin()
 {
 	AddByNameHash( SPELL_HASH_SEAL_OF_COMMAND, &SealOfCommandSpellProc::Create );
@@ -100,4 +138,10 @@ void SpellProcMgr::SetupPaladin()
 	AddByNameHash( SPELL_HASH_GRACE_OF_THE_NAARU, &GraceOfTheNaaruSpellProc::Create );
 
 	AddByNameHash( SPELL_HASH_SPIRITUAL_ATTUNEMENT, &SpiritualAttunementSpellProc::Create );
+
+	AddById( 20167, &PaladinSealsSpellProc::Create );
+	AddById( 20168, &PaladinSealsSpellProc::Create );
+	AddById( 20170, &PaladinSealsSpellProc::Create );
+	AddById( 53739, &SealOfCorruptionSpellProc::Create );
+	AddById( 42463, &SealOfVengeanceSpellProc::Create );
 }
