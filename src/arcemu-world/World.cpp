@@ -840,12 +840,15 @@ void World::DeleteSessions( std::list< WorldSession* > &slist ){
 
 	for( std::list< WorldSession* >::iterator itr = slist.begin(); itr != slist.end(); ++itr ){
 		WorldSession *s = *itr;
-
 		m_sessions.erase( s->GetAccountId() );
-		delete s;
 	}
 
 	m_sessionlock.ReleaseWriteLock();
+
+	for( std::list< WorldSession* >::iterator itr = slist.begin(); itr != slist.end(); ++itr ){
+		WorldSession *s = *itr;
+		delete s;
+	}
 }
 
 uint32 World::GetNonGmSessionCount()
