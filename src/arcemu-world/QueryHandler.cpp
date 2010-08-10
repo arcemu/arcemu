@@ -332,9 +332,14 @@ void WorldSession::HandleItemNameQueryOpcode( WorldPacket & recv_data )
 				reply << li->Name;
 			else
 				reply << proto->Name1;
+
+			reply << proto->InventoryType;
 		}
-		else
+		else{
 			reply << MetaName->name;
+			reply << MetaName->slot;
+		}
+
 	}
 
 	SendPacket(&reply);	
