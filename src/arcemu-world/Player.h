@@ -1500,6 +1500,7 @@ public:
 	void UpdateChances();
 	void UpdateStats();
 	uint32 GetBlockDamageReduction();
+	void ApplyFeralAttackPower(bool apply, Item *item = NULL);
 
 	bool canCast(SpellEntry *m_spellInfo);
 	 float GetSpellCritFromSpell() { return m_spellcritfromspell; }
