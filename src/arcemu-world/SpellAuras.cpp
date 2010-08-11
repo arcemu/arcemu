@@ -9379,11 +9379,18 @@ bool Aura::DotCanCrit()
 		return false;
 
 	SpellEntry *sp = this->GetSpellProto();
+	uint32 index = MAX_TOTAL_AURAS_START;
+	Aura *aura;
 	bool found = false;
-	std::list<Aura*> auras = caster->GetAllAurasWithAuraEffect(SPELL_AURA_ALLOW_DOT_TO_CRIT);
-	for (std::list<Aura*>::iterator itr = auras.begin(); itr != auras.end(); ++itr)
+	
+	for (;;)
 	{
-		SpellEntry *aura_sp = (*itr)->GetSpellProto();
+		aura = caster->FindAuraWithAuraEffect(SPELL_AURA_ALLOW_DOT_TO_CRIT, &index);
+
+		if( aura == NULL )
+			break;
+
+		SpellEntry *aura_sp = aura->GetSpellProto();
 
 		uint32 i = 0;
 		if( aura_sp->EffectApplyAuraName[1] == SPELL_AURA_ALLOW_DOT_TO_CRIT)
@@ -9399,17 +9406,15 @@ bool Aura::DotCanCrit()
 			found = true;
 			break;
 		}
-	}
 
-	auras.clear();
+		index++;
+	}
 
 	if( found )
 		return true;
 
 	if( caster->IsPlayer() )
 	{
-		Player *pCaster = this->GetPlayerCaster();
-
 		switch( caster->getClass() )
 		{
 			case ROGUE:
