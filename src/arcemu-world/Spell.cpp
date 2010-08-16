@@ -4511,7 +4511,7 @@ exit:
 		{
 			if( i == 0 )
 			{
-				value += (uint32) ceilf( ( u_caster->GetAP() * 0.18f ) / 6 );
+				value += (uint32) ceilf( ( u_caster->GetAP() * 0.07f ) / 6 );
 			}
 		}
 
