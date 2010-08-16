@@ -4500,7 +4500,7 @@ exit:
 			if(i== 0)
 				value+=float2int32(ceilf(ap*0.01f));	// / 100
 			else if(i==1)
-				value=float2int32(ceilf((value * 3 + ceilf(ap*0.06f)) / 3.0f));
+				value += float2int32(ap * 0.06f);
 		}
 	}
 	else if( GetProto()->NameHash == SPELL_HASH_GARROTE )
