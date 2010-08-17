@@ -4514,7 +4514,6 @@ exit:
 				value += (uint32) ceilf( ( u_caster->GetAP() * 0.07f ) / 6 );
 			}
 		}
-
 	}
 	else if( GetProto()->NameHash == SPELL_HASH_RUPTURE )
 	{
@@ -4533,8 +4532,8 @@ exit:
 	}
 	else if( GetProto()->NameHash == SPELL_HASH_RIP ) //rip
 	{
-		if( u_caster != NULL )
-			value += (uint32)ceilf(u_caster->GetAP() * 0.036f);
+		if( p_caster != NULL )
+			value += float2int32(p_caster->GetAP() * 0.01f * p_caster->m_comboPoints);
 	}
 	else if( GetProto()->NameHash == SPELL_HASH_MONGOOSE_BITE ) //Mongoose Bite
 	{
