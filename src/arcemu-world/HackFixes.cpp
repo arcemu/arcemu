@@ -3218,6 +3218,14 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 			sp->DurationIndex = 29;
 
+		// Spirit of Redemption - required spells can be casted while dead
+		sp = dbcSpell.LookupEntryForced( 27795 ); // This is casted by shape shift
+		if( sp != NULL )
+			sp->AttributesExC |= CAN_PERSIST_AND_CASTED_WHILE_DEAD;
+		sp = dbcSpell.LookupEntryForced( 27792 ); // This is casted by Apply Aura: Spirit of Redemption
+		if( sp != NULL )
+			sp->AttributesExC |= CAN_PERSIST_AND_CASTED_WHILE_DEAD;
+
 		/**********************************************************
 		 *	Holy Nova
 		 **********************************************************/

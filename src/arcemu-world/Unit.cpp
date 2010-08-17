@@ -4207,10 +4207,10 @@ uint8 Unit::FindVisualSlot(uint32 SpellId,bool IsPos)
 
 void Unit::AddAura(Aura * aur)
 {
-	if ( !aur )
+	if ( aur == NULL )
 		return;
 
-    if( !isAlive() && !( aur->GetSpellProto()->AttributesExC & CAN_PERSIST_AND_CASTED_WHILE_DEAD ) )
+    if( ! (isAlive() || (aur->GetSpellProto()->AttributesExC & CAN_PERSIST_AND_CASTED_WHILE_DEAD)) )
 	{
 		delete aur;     
 		return;
@@ -4860,6 +4860,21 @@ void Unit::RemoveAllAuraFromSelfType2(uint32 auratype, uint32 butskip_hash)
 				)
 				RemoveAura(m_auras[x]->GetSpellId());//remove all morph auras containing to this spell (like wolf morph also gives speed)
 		}
+}
+
+void Unit::RemoveAllAurasByRequiredShapeShift(uint32 mask)
+{
+	Aura *aura;
+
+	for(uint32 i = MAX_REMOVABLE_AURAS_START; i < MAX_REMOVABLE_AURAS_END; ++i)
+	{
+		aura = m_auras[i];
+		if( aura == NULL || ! aura->IsPositive() )
+			continue;
+
+		if( aura->GetSpellProto()->RequiredShapeShift & mask )
+			aura->Remove();
+	}
 }
 
 bool Unit::SetAurDuration(uint32 spellId,Unit* caster,uint32 duration)
