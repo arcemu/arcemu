@@ -236,6 +236,19 @@ class BodyAndSoulSpellProc : public SpellProc
 	}
 };
 
+class MiserySpellProc : public SpellProc
+{
+	SPELL_PROC_FACTORY_FUNCTION(MiserySpellProc);
+
+	void Init(Object* obj)
+	{
+		mProcFlags = PROC_ON_CAST_SPELL;
+		mProcClassMask[0] = 0x8000;
+		mProcClassMask[1] = 0x400;
+		mProcClassMask[2] = 0x40;
+	}
+};
+
 void SpellProcMgr::SetupPriest()
 {
 	AddByNameHash( SPELL_HASH_IMPROVED_SPIRIT_TAP, &ImprovedSpiritTapSpellProc::Create );
@@ -244,6 +257,7 @@ void SpellProcMgr::SetupPriest()
 	AddByNameHash( SPELL_HASH_IMPROVED_DEVOURING_PLAGUE, &ImprovedDevouringPlagueSpellProc::Create );
 	AddByNameHash( SPELL_HASH_VAMPIRIC_EMBRACE, &VampiricEmbraceSpellProc::Create );
 	AddByNameHash( SPELL_HASH_EMPOWERED_RENEW, &EmpoweredRenewSpellProc::Create );
+	AddByNameHash( SPELL_HASH_MISERY, &MiserySpellProc::Create );
 
 	AddById( 34919, &VampiricTouchEnergizeSpellProc::Create );
 	AddById( 64085, &VampiricTouchDispelDamageSpellProc::Create );

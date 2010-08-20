@@ -1690,23 +1690,6 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, bo
 							spell->prepare( &targets );
 						}
 					}break;
-				//priest - Misery
-				case 33200:
-				case 33199:
-				case 33198:
-				case 33197:
-				case 33196:
-					{
-						if( CastingSpell == NULL )
-							continue;
-						else
-						{
-							if( CastingSpell->NameHash != SPELL_HASH_MIND_FLAY && // Mind Flay
-								CastingSpell->NameHash != SPELL_HASH_SHADOW_WORD__PAIN && //SW:P
-								CastingSpell->NameHash != SPELL_HASH_VAMPIRIC_TOUCH ) //SoC
-								continue;
-						}
-					}break;
 				//priest - Inspiration
 				case 15363:
 				case 14893:
