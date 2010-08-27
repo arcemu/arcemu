@@ -330,7 +330,7 @@ void ApplyNormalFixes()
 				if( teachspell )
 				{
 					SpellEntry *spellInfo;
-					spellInfo = dbcSpell.LookupEntryForced(teachspell);
+					spellInfo = CheckAndReturnSpellEntry(teachspell);
 					spellInfo->spellLevel = new_level;
 					sp->spellLevel = new_level;
 				}
@@ -1100,7 +1100,7 @@ void ApplyNormalFixes()
 		//////////////////////////////////////////////////////
 
 		/* Note: when applying spell hackfixes, please follow a template */
-		/* Please don't put fixes like "sp = dbcSpell.LookupEntryForced( 15270 );" inside the loop */
+		/* Please don't put fixes like "sp = CheckAndReturnSpellEntry( 15270 );" inside the loop */
 
 		//////////////////////////////////////////
 		// WARRIOR								//
@@ -1282,7 +1282,7 @@ void ApplyNormalFixes()
 		{
 			if ( sp->EffectApplyAuraName[i] == SPELL_AURA_PERIODIC_TRIGGER_SPELL )
 			{
-				spz = dbcSpell.LookupEntryForced( sp->EffectTriggerSpell[i] );
+				spz = CheckAndReturnSpellEntry( sp->EffectTriggerSpell[i] );
 				if( spz != NULL )
 				{
 					if( sp->Dspell_coef_override >= 0 )
@@ -1328,7 +1328,7 @@ void ApplyNormalFixes()
 	const static uint32 thrown_spells[] = {SPELL_RANGED_GENERAL,SPELL_RANGED_THROW,SPELL_RANGED_WAND, 26679, 29436, 37074, 41182, 41346, 0};
 	for(i = 0; thrown_spells[i] != 0; ++i)
 	{
-		sp = dbcSpell.LookupEntryForced( thrown_spells[i] );
+		sp = CheckAndReturnSpellEntry( thrown_spells[i] );
 		if( sp != NULL && sp->RecoveryTime== 0 && sp->StartRecoveryTime == 0 ){
 			if ( sp->Id == SPELL_RANGED_GENERAL ) sp->RecoveryTime = 500; // cebernic: hunter general with 0.5s
 			else sp->RecoveryTime = 1500; // 1.5cd
@@ -1338,7 +1338,7 @@ void ApplyNormalFixes()
 	/**********************************************************
 	 * Wands
 	 **********************************************************/
-	sp = dbcSpell.LookupEntryForced( SPELL_RANGED_WAND );
+	sp = CheckAndReturnSpellEntry( SPELL_RANGED_WAND );
 	if( sp != NULL )
 		sp->Spell_Dmg_Type = SPELL_DMG_TYPE_RANGED;
 
@@ -1348,12 +1348,12 @@ void ApplyNormalFixes()
 
 	// list of guardians that should inherit casters level
 	//fire elemental
-	sp = dbcSpell.LookupEntryForced( 32982 );
+	sp = CheckAndReturnSpellEntry( 32982 );
 	if( sp != NULL )
 		sp->c_is_flags |= SPELL_FLAG_IS_INHERITING_LEVEL;
 
 	//Earth elemental
-	sp = dbcSpell.LookupEntryForced( 33663 );
+	sp = CheckAndReturnSpellEntry( 33663 );
 	if( sp != NULL )
 		sp->c_is_flags |= SPELL_FLAG_IS_INHERITING_LEVEL;
 	 
@@ -1361,27 +1361,27 @@ void ApplyNormalFixes()
 	 * Scaled Mounts
 	 **********************************************************/
 	//Big Blizzard Bear
-	sp = dbcSpell.LookupEntryForced( 58983 );
+	sp = CheckAndReturnSpellEntry( 58983 );
 	if( sp != NULL )
 		sp->Effect[0] = SPELL_EFFECT_NULL; 
 	//Winged Steed of Ebon Blade
-	sp = dbcSpell.LookupEntryForced( 54729 );
+	sp = CheckAndReturnSpellEntry( 54729 );
 	if( sp != NULL )
 		sp->Effect[0] = SPELL_EFFECT_NULL; 
 	//Headless Horsemen Mount
-	sp = dbcSpell.LookupEntryForced( 48025 );
+	sp = CheckAndReturnSpellEntry( 48025 );
 	if( sp != NULL )
 		sp->Effect[0] = SPELL_EFFECT_NULL; 
 	//Magic Broom
-	sp = dbcSpell.LookupEntryForced( 47977 );
+	sp = CheckAndReturnSpellEntry( 47977 );
 	if( sp != NULL )
 		sp->Effect[0] = SPELL_EFFECT_NULL; 
 	//Magic Rooster
-	sp = dbcSpell.LookupEntryForced( 65917 );
+	sp = CheckAndReturnSpellEntry( 65917 );
 	if( sp != NULL )
 		sp->Effect[0] = SPELL_EFFECT_NULL; 
 	//Invincible
-	sp = dbcSpell.LookupEntryForced( 72286 ); 
+	sp = CheckAndReturnSpellEntry( 72286 ); 
 	if( sp != NULL )
 		sp->Effect[0] = SPELL_EFFECT_NULL; 
 
@@ -1402,12 +1402,12 @@ void ApplyNormalFixes()
 		 **********************************************************/
 
 		// Juggernaut
-		sp = dbcSpell.LookupEntryForced( 65156 );
+		sp = CheckAndReturnSpellEntry( 65156 );
 		if(sp != NULL)
 			sp->AuraInterruptFlags = AURA_INTERRUPT_ON_CAST_SPELL;
 
 		// Taste for Blood Rank 1
-		sp = dbcSpell.LookupEntryForced( 56636 );
+		sp = CheckAndReturnSpellEntry( 56636 );
 		if(sp != NULL)
 		{
 			//sp->procChance = 33;
@@ -1416,7 +1416,7 @@ void ApplyNormalFixes()
 		}
 
 		// Taste for Blood Rank 2
-		sp = dbcSpell.LookupEntryForced( 56637 );
+		sp = CheckAndReturnSpellEntry( 56637 );
 		if(sp != NULL)
 		{
 			//sp->procChance = 66;
@@ -1425,7 +1425,7 @@ void ApplyNormalFixes()
 		}
 
 		// Taste for Blood Rank 3
-		sp = dbcSpell.LookupEntryForced( 56638 );
+		sp = CheckAndReturnSpellEntry( 56638 );
 		if(sp != NULL)
 		{
 			//sp->procChance = 100;
@@ -1434,54 +1434,54 @@ void ApplyNormalFixes()
 		}
 
 		// Wrecking Crew Rank 1
-		sp = dbcSpell.LookupEntryForced( 46867 );
+		sp = CheckAndReturnSpellEntry( 46867 );
 		if(sp != NULL)
 		{
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
 		}
 
 		// Wrecking Crew Rank 2
-		sp = dbcSpell.LookupEntryForced( 56611 );
+		sp = CheckAndReturnSpellEntry( 56611 );
 		if(sp != NULL)
 		{
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
 		}
 
 		// Wrecking Crew Rank 3
-		sp = dbcSpell.LookupEntryForced( 56612 );
+		sp = CheckAndReturnSpellEntry( 56612 );
 		if(sp != NULL)
 		{
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
 		}
 
 		// Wrecking Crew Rank 4
-		sp = dbcSpell.LookupEntryForced( 56613 );
+		sp = CheckAndReturnSpellEntry( 56613 );
 		if(sp != NULL)
 		{
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
 		}
 
 		// Wrecking Crew Rank 5
-		sp = dbcSpell.LookupEntryForced( 56614 );
+		sp = CheckAndReturnSpellEntry( 56614 );
 		if(sp != NULL)
 		{
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
 		}
 
 		// Warrior - Deep Wounds
-		sp = dbcSpell.LookupEntryForced( 12834 );
+		sp = CheckAndReturnSpellEntry( 12834 );
 		if(sp != NULL)
 		{
 			sp->EffectTriggerSpell[0] = 12721;
 			sp->procFlags |= PROC_ON_SPELL_CRIT_HIT;
 		}
-		sp = dbcSpell.LookupEntryForced( 12849 );
+		sp = CheckAndReturnSpellEntry( 12849 );
 		if(sp != NULL)
 		{
 			sp->EffectTriggerSpell[0] = 12721;
 			sp->procFlags |= PROC_ON_SPELL_CRIT_HIT;
 		}
-		sp = dbcSpell.LookupEntryForced( 12867 );
+		sp = CheckAndReturnSpellEntry( 12867 );
 		if(sp != NULL)
 		{
 			sp->EffectTriggerSpell[0] = 12721;
@@ -1489,7 +1489,7 @@ void ApplyNormalFixes()
 		}
 
 		// Warrior - Improved Hamstring Rank 1
-		sp = dbcSpell.LookupEntryForced( 12289 );
+		sp = CheckAndReturnSpellEntry( 12289 );
 		if(sp != NULL)
 		{
 			sp->EffectTriggerSpell[1] = 23694;
@@ -1497,7 +1497,7 @@ void ApplyNormalFixes()
 			sp->procChance = 5;
 		}
 		// Warrior - Improved Hamstring Rank 2
-		sp = dbcSpell.LookupEntryForced( 12668 );
+		sp = CheckAndReturnSpellEntry( 12668 );
 		if(sp != NULL)
 		{
 			sp->EffectTriggerSpell[1] = 23694;
@@ -1505,7 +1505,7 @@ void ApplyNormalFixes()
 			sp->procChance = 10;
 		}
 		// Warrior - Improved Hamstring Rank 3
-		sp = dbcSpell.LookupEntryForced( 23695 );
+		sp = CheckAndReturnSpellEntry( 23695 );
 		if(sp != NULL)
 		{
 			sp->EffectTriggerSpell[1] = 23694;
@@ -1514,7 +1514,7 @@ void ApplyNormalFixes()
 		}
 
 		// Warrior - Retaliation
-		sp = dbcSpell.LookupEntryForced( 20230 );
+		sp = CheckAndReturnSpellEntry( 20230 );
 		if( sp != NULL )
 		{
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA; //aura
@@ -1524,16 +1524,16 @@ void ApplyNormalFixes()
 		}
 
 		// Warrior - Second Wind should trigger on self
-		sp = dbcSpell.LookupEntryForced( 29841 );
+		sp = CheckAndReturnSpellEntry( 29841 );
 		if( sp != NULL )
 			sp->procFlags |= PROC_TARGET_SELF;
 
-		sp = dbcSpell.LookupEntryForced( 29842 );
+		sp = CheckAndReturnSpellEntry( 29842 );
 		if( sp != NULL )
 			sp->procFlags |= PROC_TARGET_SELF;
 
 		// Warrior - Sudden Death Rank 1
-		sp = dbcSpell.LookupEntryForced( 29723 );
+		sp = CheckAndReturnSpellEntry( 29723 );
 		if(sp != NULL)
 		{
 			sp->EffectTriggerSpell[0] = 52437;
@@ -1542,7 +1542,7 @@ void ApplyNormalFixes()
 		}		
 
 		// Warrior - Sudden Death Rank 2
-		sp = dbcSpell.LookupEntryForced( 29725 );
+		sp = CheckAndReturnSpellEntry( 29725 );
 		if(sp != NULL)
 		{
 			sp->EffectTriggerSpell[0] = 52437;
@@ -1551,7 +1551,7 @@ void ApplyNormalFixes()
 		}	
 
 		// Warrior - Sudden Death Rank 3
-		sp = dbcSpell.LookupEntryForced( 29724 );
+		sp = CheckAndReturnSpellEntry( 29724 );
 		if(sp != NULL)
 		{
 			sp->EffectTriggerSpell[0] = 52437;
@@ -1560,64 +1560,64 @@ void ApplyNormalFixes()
 		}
 
 		// Warrior - Overpower Rank 1
-		sp = dbcSpell.LookupEntryForced( 7384 );
+		sp = CheckAndReturnSpellEntry( 7384 );
 		if(sp != NULL)
 			sp->Attributes |= ATTRIBUTES_CANT_BE_DPB;
 		// Warrior - Overpower Rank 2
-		sp = dbcSpell.LookupEntryForced( 7887 );
+		sp = CheckAndReturnSpellEntry( 7887 );
 		if(sp != NULL)
 			sp->Attributes |= ATTRIBUTES_CANT_BE_DPB;
 		// Warrior - Overpower Rank 3
-		sp = dbcSpell.LookupEntryForced( 11584 );
+		sp = CheckAndReturnSpellEntry( 11584 );
 		if(sp != NULL)
 			sp->Attributes |= ATTRIBUTES_CANT_BE_DPB;
 		// Warrior - Overpower Rank 4
-		sp = dbcSpell.LookupEntryForced( 11585 );
+		sp = CheckAndReturnSpellEntry( 11585 );
 		if(sp != NULL)
 			sp->Attributes |= ATTRIBUTES_CANT_BE_DPB;
 
 		// Warrior - Tactical Mastery Rank 1
-		sp = dbcSpell.LookupEntryForced( 0x00003007 );
+		sp = CheckAndReturnSpellEntry( 0x00003007 );
 		if(sp != NULL)
 			sp->RequiredShapeShift = 0x00070000;
 		// Warrior - Tactical Mastery Rank 2
-		sp = dbcSpell.LookupEntryForced( 0x00003184 );
+		sp = CheckAndReturnSpellEntry( 0x00003184 );
 		if(sp != NULL)
 			sp->RequiredShapeShift = 0x00070000;
 		// Warrior - Tactical Mastery Rank 3
-		sp = dbcSpell.LookupEntryForced( 0x00003185 );
+		sp = CheckAndReturnSpellEntry( 0x00003185 );
 		if(sp != NULL)
 			sp->RequiredShapeShift = 0x00070000;
 
 		// Warrior - Heroic Throw
-		sp = dbcSpell.LookupEntryForced( 57755 );
+		sp = CheckAndReturnSpellEntry( 57755 );
 		if( sp != NULL ){
 			sp->Effect[0] = SPELL_EFFECT_SCHOOL_DAMAGE;
 		}
 
 		// Warrior - Rend
-		sp = dbcSpell.LookupEntryForced( 772 );
+		sp = CheckAndReturnSpellEntry( 772 );
 		if( sp != NULL )
 			sp->MechanicsType = MECHANIC_BLEEDING;
-		sp = dbcSpell.LookupEntryForced( 6546 );
+		sp = CheckAndReturnSpellEntry( 6546 );
 		if( sp != NULL )
 			sp->MechanicsType = MECHANIC_BLEEDING;
-		sp = dbcSpell.LookupEntryForced( 6547 );
+		sp = CheckAndReturnSpellEntry( 6547 );
 		if( sp != NULL )
 			sp->MechanicsType = MECHANIC_BLEEDING;
-		sp = dbcSpell.LookupEntryForced( 6548 );
+		sp = CheckAndReturnSpellEntry( 6548 );
 		if( sp != NULL )
 			sp->MechanicsType = MECHANIC_BLEEDING;
-		sp = dbcSpell.LookupEntryForced( 11572 );
+		sp = CheckAndReturnSpellEntry( 11572 );
 		if( sp != NULL )
 			sp->MechanicsType = MECHANIC_BLEEDING;
-		sp = dbcSpell.LookupEntryForced( 11573 );
+		sp = CheckAndReturnSpellEntry( 11573 );
 		if( sp != NULL )
 			sp->MechanicsType = MECHANIC_BLEEDING;
-		sp = dbcSpell.LookupEntryForced( 11574 );
+		sp = CheckAndReturnSpellEntry( 11574 );
 		if( sp != NULL )
 			sp->MechanicsType = MECHANIC_BLEEDING;
-		sp = dbcSpell.LookupEntryForced( 25208 );
+		sp = CheckAndReturnSpellEntry( 25208 );
 		if( sp != NULL )
 			sp->MechanicsType = MECHANIC_BLEEDING;
 
@@ -1626,52 +1626,52 @@ void ApplyNormalFixes()
 		 **********************************************************/
 
 		// Warrior - Slam		
-		sp = dbcSpell.LookupEntryForced( 1464 );
+		sp = CheckAndReturnSpellEntry( 1464 );
 		if (sp != NULL)
 			sp->Effect[0] = SPELL_EFFECT_SCHOOL_DAMAGE;
 
-		sp = dbcSpell.LookupEntryForced( 8820 );
+		sp = CheckAndReturnSpellEntry( 8820 );
 		if (sp != NULL)
 			sp->Effect[0] = SPELL_EFFECT_SCHOOL_DAMAGE;
 
-		sp = dbcSpell.LookupEntryForced( 11604 );
+		sp = CheckAndReturnSpellEntry( 11604 );
 		if (sp != NULL)
 			sp->Effect[0] = SPELL_EFFECT_SCHOOL_DAMAGE;
 
-		sp = dbcSpell.LookupEntryForced( 11605 );
+		sp = CheckAndReturnSpellEntry( 11605 );
 		if (sp != NULL)
 			sp->Effect[0] = SPELL_EFFECT_SCHOOL_DAMAGE;
 
-		sp = dbcSpell.LookupEntryForced( 25241 );
+		sp = CheckAndReturnSpellEntry( 25241 );
 		if (sp != NULL)
 			sp->Effect[0] = SPELL_EFFECT_SCHOOL_DAMAGE;
 
-		sp = dbcSpell.LookupEntryForced( 25242 );
+		sp = CheckAndReturnSpellEntry( 25242 );
 		if (sp != NULL)
 			sp->Effect[0] = SPELL_EFFECT_SCHOOL_DAMAGE;
 
-		sp = dbcSpell.LookupEntryForced( 47474 );
+		sp = CheckAndReturnSpellEntry( 47474 );
 		if (sp != NULL)
 			sp->Effect[0] = SPELL_EFFECT_SCHOOL_DAMAGE;
 
-		sp = dbcSpell.LookupEntryForced( 47475 );
+		sp = CheckAndReturnSpellEntry( 47475 );
 		if (sp != NULL)
 			sp->Effect[0] = SPELL_EFFECT_SCHOOL_DAMAGE;
 
 		// Warrior - Bloodsurge
-		sp = dbcSpell.LookupEntryForced( 46913 );
+		sp = CheckAndReturnSpellEntry( 46913 );
 		if (sp != NULL)
 		{
 			sp->procFlags = PROC_ON_MELEE_ATTACK | PROC_ON_CAST_SPELL;
 			sp->procChance = 7;
 		}
-		sp = dbcSpell.LookupEntryForced( 46914 );
+		sp = CheckAndReturnSpellEntry( 46914 );
 		if (sp != NULL)
 		{
 			sp->procFlags = PROC_ON_MELEE_ATTACK | PROC_ON_CAST_SPELL;
 			sp->procChance = 13;
 		}
-		sp = dbcSpell.LookupEntryForced( 46915 );
+		sp = CheckAndReturnSpellEntry( 46915 );
 		if (sp != NULL)
 		{
 			sp->procFlags = PROC_ON_MELEE_ATTACK | PROC_ON_CAST_SPELL;
@@ -1679,13 +1679,13 @@ void ApplyNormalFixes()
 		}
 
 		// Warrior - Furious Attacks
-		sp = dbcSpell.LookupEntryForced( 46910 );
+		sp = CheckAndReturnSpellEntry( 46910 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_MELEE_ATTACK;
 			sp->proc_interval = 7000;
 		}
-		sp = dbcSpell.LookupEntryForced( 46911 );
+		sp = CheckAndReturnSpellEntry( 46911 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_MELEE_ATTACK;
@@ -1693,82 +1693,82 @@ void ApplyNormalFixes()
 		}
 
 		// Warrior - Enrage Procflags
-        sp = dbcSpell.LookupEntryForced( 12317 ); 
+        sp = CheckAndReturnSpellEntry( 12317 ); 
         if(sp != NULL) 
 			sp->procFlags = PROC_ON_MELEE_ATTACK_VICTIM | PROC_ON_RANGED_ATTACK_VICTIM | PROC_ON_SPELL_HIT_VICTIM;
-		sp = dbcSpell.LookupEntryForced( 13045 );
+		sp = CheckAndReturnSpellEntry( 13045 );
 		if(sp != NULL)
 			sp->procFlags = PROC_ON_MELEE_ATTACK_VICTIM | PROC_ON_RANGED_ATTACK_VICTIM | PROC_ON_SPELL_HIT_VICTIM;
- 		sp = dbcSpell.LookupEntryForced( 13046 );
+ 		sp = CheckAndReturnSpellEntry( 13046 );
  		if(sp != NULL)
 			sp->procFlags = PROC_ON_MELEE_ATTACK_VICTIM | PROC_ON_RANGED_ATTACK_VICTIM | PROC_ON_SPELL_HIT_VICTIM;
- 		sp = dbcSpell.LookupEntryForced( 13047 );
+ 		sp = CheckAndReturnSpellEntry( 13047 );
 		if(sp != NULL)
 			sp->procFlags = PROC_ON_MELEE_ATTACK_VICTIM | PROC_ON_RANGED_ATTACK_VICTIM | PROC_ON_SPELL_HIT_VICTIM;
- 		sp = dbcSpell.LookupEntryForced( 13048 );
+ 		sp = CheckAndReturnSpellEntry( 13048 );
  		if(sp != NULL)
 			sp->procFlags = PROC_ON_MELEE_ATTACK_VICTIM | PROC_ON_RANGED_ATTACK_VICTIM | PROC_ON_SPELL_HIT_VICTIM;
 
  		/* Remove the charges only on melee attacks */
-		sp = dbcSpell.LookupEntryForced( 12880 );
+		sp = CheckAndReturnSpellEntry( 12880 );
 		if(sp != NULL)
 			sp->procFlags = PROC_ON_MELEE_ATTACK;
-		sp = dbcSpell.LookupEntryForced( 14201 );
+		sp = CheckAndReturnSpellEntry( 14201 );
 		if(sp != NULL)
 			sp->procFlags = PROC_ON_MELEE_ATTACK;
-		sp = dbcSpell.LookupEntryForced( 14202 );
+		sp = CheckAndReturnSpellEntry( 14202 );
 		if(sp != NULL)
 			sp->procFlags = PROC_ON_MELEE_ATTACK;
-		sp = dbcSpell.LookupEntryForced( 14203 );
+		sp = CheckAndReturnSpellEntry( 14203 );
 		if(sp != NULL)
 			sp->procFlags = PROC_ON_MELEE_ATTACK;
-		sp = dbcSpell.LookupEntryForced( 14204 );
+		sp = CheckAndReturnSpellEntry( 14204 );
 		if(sp != NULL)
 			sp->procFlags = PROC_ON_MELEE_ATTACK;
 
 		// Warrior - Blood Craze Procflags
-		sp = dbcSpell.LookupEntryForced( 16487 );
+		sp = CheckAndReturnSpellEntry( 16487 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_RANGED_CRIT_ATTACK_VICTIM | PROC_ON_SPELL_CRIT_HIT_VICTIM;
-		sp = dbcSpell.LookupEntryForced( 16489 );
+		sp = CheckAndReturnSpellEntry( 16489 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_RANGED_CRIT_ATTACK_VICTIM | PROC_ON_SPELL_CRIT_HIT_VICTIM;
-		sp = dbcSpell.LookupEntryForced( 16492 );
+		sp = CheckAndReturnSpellEntry( 16492 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_RANGED_CRIT_ATTACK_VICTIM | PROC_ON_SPELL_CRIT_HIT_VICTIM;
 
 		// Warrior - Bloodthirst new version is ok but old version is wrong from now on :(
-		sp = dbcSpell.LookupEntryForced( 23881 );
+		sp = CheckAndReturnSpellEntry( 23881 );
 		if( sp != NULL )
 		{
 			sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL; //cast on us, it is good
 			sp->EffectTriggerSpell[1] = 23885; //evil , but this is good for us :D
 		}
-		sp = dbcSpell.LookupEntryForced( 23892 );
+		sp = CheckAndReturnSpellEntry( 23892 );
 		if( sp != NULL )
 		{
 			sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[1] = 23886; //evil , but this is good for us :D
 		}
-		sp = dbcSpell.LookupEntryForced( 23893 );
+		sp = CheckAndReturnSpellEntry( 23893 );
 		if( sp != NULL )
 		{
 			sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL; //
 			sp->EffectTriggerSpell[1] = 23887; //evil , but this is good for us :D
 		}
-		sp = dbcSpell.LookupEntryForced( 23894 );
+		sp = CheckAndReturnSpellEntry( 23894 );
 		if( sp != NULL )
 		{
 			sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL; //
 			sp->EffectTriggerSpell[1] = 23888; //evil , but this is good for us :D
 		}
-		sp = dbcSpell.LookupEntryForced( 25251 );
+		sp = CheckAndReturnSpellEntry( 25251 );
 		if( sp != NULL )
 		{
 			sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL; //aura
 			sp->EffectTriggerSpell[1] = 25252; //evil , but this is good for us :D
 		}
-		sp = dbcSpell.LookupEntryForced( 30335 );
+		sp = CheckAndReturnSpellEntry( 30335 );
 		if( sp != NULL )
 		{
 			sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL; //aura
@@ -1776,7 +1776,7 @@ void ApplyNormalFixes()
 		}
 
 		// Warrior - Berserker Rage
-		sp = dbcSpell.LookupEntryForced( 18499 );
+		sp = CheckAndReturnSpellEntry( 18499 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_DUMMY;//Forcing a dummy aura, so we can add the missing 4th effect.
@@ -1785,32 +1785,32 @@ void ApplyNormalFixes()
 		}
 
 		// Warrior - Improved Berserker Rage
-		sp = dbcSpell.LookupEntryForced( 20500 );
+		sp = CheckAndReturnSpellEntry( 20500 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_CAST_SPELL | static_cast<uint32>(PROC_TARGET_SELF);
-		sp = dbcSpell.LookupEntryForced( 20501 );
+		sp = CheckAndReturnSpellEntry( 20501 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_CAST_SPELL | static_cast<uint32>(PROC_TARGET_SELF);
 
 		// Warrior - Unbridled Wrath
-		sp = dbcSpell.LookupEntryForced( 12322 );
+		sp = CheckAndReturnSpellEntry( 12322 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_MELEE_ATTACK | static_cast<uint32>(PROC_TARGET_SELF);
-		sp = dbcSpell.LookupEntryForced( 12999 );
+		sp = CheckAndReturnSpellEntry( 12999 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_MELEE_ATTACK | static_cast<uint32>(PROC_TARGET_SELF);
-		sp = dbcSpell.LookupEntryForced( 13000 );
+		sp = CheckAndReturnSpellEntry( 13000 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_MELEE_ATTACK | static_cast<uint32>(PROC_TARGET_SELF);
-		sp = dbcSpell.LookupEntryForced( 13001 );
+		sp = CheckAndReturnSpellEntry( 13001 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_MELEE_ATTACK | static_cast<uint32>(PROC_TARGET_SELF);
-		sp = dbcSpell.LookupEntryForced( 13002 );
+		sp = CheckAndReturnSpellEntry( 13002 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_MELEE_ATTACK | static_cast<uint32>(PROC_TARGET_SELF);
 
 		// Warrior - Heroic Fury
-		sp = dbcSpell.LookupEntryForced( 60970 );
+		sp = CheckAndReturnSpellEntry( 60970 );
 		if( sp != NULL ){
 			sp->Effect[0] = SPELL_EFFECT_DUMMY;
 		}
@@ -1820,42 +1820,42 @@ void ApplyNormalFixes()
 		 **********************************************************/
 
 		// Sword and Board Rank 1
-		sp = dbcSpell.LookupEntryForced( 46951 );
+		sp = CheckAndReturnSpellEntry( 46951 );
 		if(sp != NULL)
 			sp->procFlags = PROC_ON_CAST_SPELL;
 
 		// Sword and Board Rank 2
-		sp = dbcSpell.LookupEntryForced( 46952 );
+		sp = CheckAndReturnSpellEntry( 46952 );
 		if(sp != NULL)
 			sp->procFlags = PROC_ON_CAST_SPELL;
 
 		// Sword and Board Rank 3
-		sp = dbcSpell.LookupEntryForced( 46953 );
+		sp = CheckAndReturnSpellEntry( 46953 );
 		if(sp != NULL)
 			sp->procFlags = PROC_ON_CAST_SPELL;
 
 		// Safeguard Rank 1
-		sp = dbcSpell.LookupEntryForced( 46945 );
+		sp = CheckAndReturnSpellEntry( 46945 );
 		if(sp != NULL)
 			sp->procFlags = PROC_ON_CAST_SPELL;
 
 		// Safeguard Rank 2
-		sp = dbcSpell.LookupEntryForced( 46949 );
+		sp = CheckAndReturnSpellEntry( 46949 );
 		if(sp != NULL)
 			sp->procFlags = PROC_ON_CAST_SPELL;
 
 		// Improved Defensive Stance Rank 1
-		sp = dbcSpell.LookupEntryForced( 29593 );
+		sp = CheckAndReturnSpellEntry( 29593 );
 		if(sp != NULL)
 			sp->procFlags = PROC_ON_DODGE_VICTIM | PROC_ON_BLOCK_VICTIM;
 
 		// Improved Defensive Stance Rank 2
-		sp = dbcSpell.LookupEntryForced( 29594 );
+		sp = CheckAndReturnSpellEntry( 29594 );
 		if(sp != NULL)
 			sp->procFlags = PROC_ON_DODGE_VICTIM | PROC_ON_BLOCK_VICTIM;
 
 		// Improved Revenge Rank 1
-		sp = dbcSpell.LookupEntryForced( 12797 );
+		sp = CheckAndReturnSpellEntry( 12797 );
 		if(sp != NULL)
 		{
 			sp->EffectTriggerSpell[1] = 12798;
@@ -1864,7 +1864,7 @@ void ApplyNormalFixes()
 		}
 
 		// Improved Revenge Rank 2
-		sp = dbcSpell.LookupEntryForced( 12799 );
+		sp = CheckAndReturnSpellEntry( 12799 );
 		if(sp != NULL)
 		{
 			sp->EffectTriggerSpell[1] = 12798;
@@ -1873,14 +1873,14 @@ void ApplyNormalFixes()
 		}
 
 		// Intervene  Ranger: stop attack
-		sp = dbcSpell.LookupEntryForced( 3411 );
+		sp = CheckAndReturnSpellEntry( 3411 );
 		if( sp != NULL )
 		{
 			sp->Attributes |= ATTRIBUTES_STOP_ATTACK;
 		}
 
 		// Gag Order Rank 1
-		sp = dbcSpell.LookupEntryForced( 12311 );
+		sp = CheckAndReturnSpellEntry( 12311 );
 		if(sp != NULL)
 		{
 			sp->EffectTriggerSpell[1] = 18498;
@@ -1889,7 +1889,7 @@ void ApplyNormalFixes()
 		}
 
 		// Gag Order Rank 2
-		sp = dbcSpell.LookupEntryForced( 12958 );
+		sp = CheckAndReturnSpellEntry( 12958 );
 		if(sp != NULL)
 		{
 			sp->EffectTriggerSpell[1] = 18498;
@@ -1898,7 +1898,7 @@ void ApplyNormalFixes()
 		}
 
 		// Shockwave Damage - useless?
-		sp = dbcSpell.LookupEntryForced( 46968 );
+		sp = CheckAndReturnSpellEntry( 46968 );
 		if(sp!= NULL){
 			sp->Effect[1] = SPELL_EFFECT_SCHOOL_DAMAGE;
 			sp->Effect[2] = SPELL_EFFECT_DUMMY;
@@ -1911,81 +1911,81 @@ void ApplyNormalFixes()
 		// Insert paladin spell fixes here
 
 		//Paladin - Judgement of Command
-		sp = dbcSpell.LookupEntryForced( 20467 );
+		sp = CheckAndReturnSpellEntry( 20467 );
 		if( sp != NULL )
 			sp->procChance = 50;
 
 		//Paladin - Judgement of Corruption
-		sp = dbcSpell.LookupEntryForced( 53733 );
+		sp = CheckAndReturnSpellEntry( 53733 );
 		if( sp != NULL )
 			sp->procChance = 50;
 
 		//Paladin - Judgement of Light
-		sp = dbcSpell.LookupEntryForced( 20185 );
+		sp = CheckAndReturnSpellEntry( 20185 );
 		if( sp != NULL )
 			sp->procChance = 50;
 
 		//Paladin - Judgement of Justice
-		sp = dbcSpell.LookupEntryForced( 20184 );
+		sp = CheckAndReturnSpellEntry( 20184 );
 		if( sp != NULL )
 			sp->procChance = 50;
 
 		//Paladin - Judgement of Righteousness
-		sp = dbcSpell.LookupEntryForced( 20187 );
+		sp = CheckAndReturnSpellEntry( 20187 );
 		if( sp != NULL )
 			sp->procChance = 50;
 
 		//Paladin - Judgement of Vengeance
-		sp = dbcSpell.LookupEntryForced( 31804 );
+		sp = CheckAndReturnSpellEntry( 31804 );
 		if( sp != NULL )
 			sp->procChance = 50;
 
 		//Paladin - Judgement of Wisdom
-		sp = dbcSpell.LookupEntryForced( 20186 );
+		sp = CheckAndReturnSpellEntry( 20186 );
 		if( sp != NULL )
 			sp->procChance = 50;
 
 		//Paladin - Seal of Command
-		sp = dbcSpell.LookupEntryForced( 20375 );
+		sp = CheckAndReturnSpellEntry( 20375 );
 		if( sp != NULL )
 			sp->proc_interval = 3000;
 
 		//Paladin - Seal of Corruption
-		sp = dbcSpell.LookupEntryForced( 53736 );
+		sp = CheckAndReturnSpellEntry( 53736 );
 		if( sp != NULL )
 			sp->proc_interval = 3000;
 
 		//Paladin - Seal of Light
-		sp = dbcSpell.LookupEntryForced( 20165 );
+		sp = CheckAndReturnSpellEntry( 20165 );
 		if( sp != NULL )
 			sp->proc_interval = 3000;
 
 		//Paladin - Seal of Justice
-		sp = dbcSpell.LookupEntryForced( 20164 );
+		sp = CheckAndReturnSpellEntry( 20164 );
 		if( sp != NULL )
 			sp->proc_interval = 3000;
 
 		//Paladin - Seal of Righteousness
-		sp = dbcSpell.LookupEntryForced( 21084 );
+		sp = CheckAndReturnSpellEntry( 21084 );
 		if( sp != NULL )
 			sp->proc_interval = 3000;
 
 		//Paladin - Seal of Vengeance
-		sp = dbcSpell.LookupEntryForced( 31801 );
+		sp = CheckAndReturnSpellEntry( 31801 );
 		if( sp != NULL )
 			sp->proc_interval = 3000;
 
 		//Paladin - Seal of Wisdom
-		sp = dbcSpell.LookupEntryForced( 20166 );
+		sp = CheckAndReturnSpellEntry( 20166 );
 		if( sp != NULL )
 			sp->proc_interval = 3000;
 
 		// Paladin - Vengeance
-		sp = dbcSpell.LookupEntryForced( 20050 ); // Rank 1 proc
+		sp = CheckAndReturnSpellEntry( 20050 ); // Rank 1 proc
 		if( sp != NULL )
 			sp->maxstack = 3;
 
-		sp = dbcSpell.LookupEntryForced( 20056 ); //Rank 2
+		sp = CheckAndReturnSpellEntry( 20056 ); //Rank 2
 		if( sp != NULL )
 		{
 			sp->EffectTriggerSpell[0] = 20052;
@@ -1993,34 +1993,34 @@ void ApplyNormalFixes()
 			sp->procFlags = PROC_ON_CRIT_ATTACK | PROC_ON_SPELL_CRIT_HIT;
 		}
 
-		sp = dbcSpell.LookupEntryForced( 20052 ); // Rank 2 proc
+		sp = CheckAndReturnSpellEntry( 20052 ); // Rank 2 proc
 		if( sp != NULL )
 			sp->maxstack = 3;
 
-		sp = dbcSpell.LookupEntryForced( 20057 ); //Rank 3
+		sp = CheckAndReturnSpellEntry( 20057 ); //Rank 3
 		if( sp != NULL )
 		{
 			sp->EffectTriggerSpell[0] = 20053;
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->procFlags = PROC_ON_CRIT_ATTACK | PROC_ON_SPELL_CRIT_HIT;
 		}
-		sp = dbcSpell.LookupEntryForced( 20053 ); // Rank 3 proc
+		sp = CheckAndReturnSpellEntry( 20053 ); // Rank 3 proc
 		if( sp != NULL )
 			sp->maxstack = 3;
 
 		//Paladin - Seal of Command - Holy damage, but melee mechanics (crit damage, chance, etc)
-		sp = dbcSpell.LookupEntryForced( 20424 );
+		sp = CheckAndReturnSpellEntry( 20424 );
 		if( sp != NULL )
 			sp->is_melee_spell = true;
 
 		//Paladin - Hammer of the Righteous
-		sp = dbcSpell.LookupEntryForced( 53595);
+		sp = CheckAndReturnSpellEntry( 53595);
 		if( sp != NULL )
 		{
 			sp->speed = 0;	//without, no damage is done
 		}
 
-		sp = dbcSpell.LookupEntryForced( 38008 );
+		sp = CheckAndReturnSpellEntry( 38008 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
@@ -2028,7 +2028,7 @@ void ApplyNormalFixes()
 		}
 
 		//Paladin - Seal of Martyr
-		sp = dbcSpell.LookupEntryForced( 53720 );
+		sp = CheckAndReturnSpellEntry( 53720 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
@@ -2037,7 +2037,7 @@ void ApplyNormalFixes()
 			sp->procFlags = PROC_ON_MELEE_ATTACK;
 		}
 		//Paladin - seal of blood
-		sp = dbcSpell.LookupEntryForced( 31892 );
+		sp = CheckAndReturnSpellEntry( 31892 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
@@ -2045,13 +2045,13 @@ void ApplyNormalFixes()
 			sp->School = SCHOOL_HOLY;
 			sp->procFlags = PROC_ON_MELEE_ATTACK;
 		}
-		sp = dbcSpell.LookupEntryForced( 53719 );
+		sp = CheckAndReturnSpellEntry( 53719 );
 		if( sp != NULL )
 		{
 			sp->School = SCHOOL_HOLY;
 			sp->Spell_Dmg_Type = SPELL_DMG_TYPE_MAGIC;
 		}
-		sp = dbcSpell.LookupEntryForced( 31893 );
+		sp = CheckAndReturnSpellEntry( 31893 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_PHYSICAL_ATTACK;
@@ -2060,7 +2060,7 @@ void ApplyNormalFixes()
 		}
 
 		//Paladin - Divine Storm
-		sp = dbcSpell.LookupEntryForced( 53385 );
+		sp = CheckAndReturnSpellEntry( 53385 );
 		if( sp != NULL )
 		{
 			sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL;
@@ -2073,7 +2073,7 @@ void ApplyNormalFixes()
 		}
 
 		//Paladin - Sacred Shield - bonus to flash is not working
-		sp = dbcSpell.LookupEntryForced( 53601 );
+		sp = CheckAndReturnSpellEntry( 53601 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM | static_cast<uint32>(PROC_TARGET_SELF);
@@ -2083,19 +2083,19 @@ void ApplyNormalFixes()
 		}
 
 		//Paladin - Vindication
-		sp = dbcSpell.LookupEntryForced( 26021 );
+		sp = CheckAndReturnSpellEntry( 26021 );
 		if( sp != NULL )
 		{
 			sp->procChance = 30;
 			sp->procFlags = PROC_ON_MELEE_ATTACK;
 		}
-		sp = dbcSpell.LookupEntryForced( 26016 );
+		sp = CheckAndReturnSpellEntry( 26016 );
 		if( sp != NULL )
 		{
 			sp->procChance = 30;
 			sp->procFlags = PROC_ON_MELEE_ATTACK;
 		}
-		sp = dbcSpell.LookupEntryForced( 9452 );
+		sp = CheckAndReturnSpellEntry( 9452 );
 		if( sp != NULL )
 		{
 			sp->procChance = 30;
@@ -2105,31 +2105,31 @@ void ApplyNormalFixes()
 		/**********************************************************
 		 *	Blessing of Light
 		 **********************************************************
-		sp = dbcSpell.LookupEntryForced( 19977 );
+		sp = CheckAndReturnSpellEntry( 19977 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_DUMMY;
 			sp->EffectApplyAuraName[1] = SPELL_AURA_DUMMY;
 		}
-		sp = dbcSpell.LookupEntryForced( 19978 );
+		sp = CheckAndReturnSpellEntry( 19978 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_DUMMY;
 			sp->EffectApplyAuraName[1] = SPELL_AURA_DUMMY;
 		}
-		sp = dbcSpell.LookupEntryForced( 19979 );
+		sp = CheckAndReturnSpellEntry( 19979 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_DUMMY;
 			sp->EffectApplyAuraName[1] = SPELL_AURA_DUMMY;
 		}
-		sp = dbcSpell.LookupEntryForced( 27144 );
+		sp = CheckAndReturnSpellEntry( 27144 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_DUMMY;
 			sp->EffectApplyAuraName[1] = SPELL_AURA_DUMMY;
 		}
-		sp = dbcSpell.LookupEntryForced( 32770 );
+		sp = CheckAndReturnSpellEntry( 32770 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_DUMMY;
@@ -2137,28 +2137,28 @@ void ApplyNormalFixes()
 		}*/
 
 		//Paladin - Reckoning
-		sp = dbcSpell.LookupEntryForced( 20177 );
+		sp = CheckAndReturnSpellEntry( 20177 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM | static_cast<uint32>(PROC_TARGET_SELF);
 
-		sp = dbcSpell.LookupEntryForced( 20179 );
+		sp = CheckAndReturnSpellEntry( 20179 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM | static_cast<uint32>(PROC_TARGET_SELF);
 
-		sp = dbcSpell.LookupEntryForced( 20180 );
+		sp = CheckAndReturnSpellEntry( 20180 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM | static_cast<uint32>(PROC_TARGET_SELF);
 
-		sp = dbcSpell.LookupEntryForced( 20181 );
+		sp = CheckAndReturnSpellEntry( 20181 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM | static_cast<uint32>(PROC_TARGET_SELF);
 
-		sp = dbcSpell.LookupEntryForced( 20182 );
+		sp = CheckAndReturnSpellEntry( 20182 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM | static_cast<uint32>(PROC_TARGET_SELF);
 
 		//Paladin - Reckoning Effect
-		sp = dbcSpell.LookupEntryForced( 20178 );
+		sp = CheckAndReturnSpellEntry( 20178 );
 		if( sp != NULL )
 		{
 			sp->procChance = 100;
@@ -2166,7 +2166,7 @@ void ApplyNormalFixes()
 		}
 
 		//Paladin - Judgements of the Wise
-		sp = dbcSpell.LookupEntryForced( 31930 );
+		sp = CheckAndReturnSpellEntry( 31930 );
 		if( sp != NULL )
 		{
 			sp->SpellFamilyName = 0;
@@ -2176,7 +2176,7 @@ void ApplyNormalFixes()
 			sp->RankNumber = 0;
 		}
 
-		sp = dbcSpell.LookupEntryForced( 54180 );
+		sp = CheckAndReturnSpellEntry( 54180 );
 		if( sp != NULL )
 		{
 			sp->SpellFamilyName = 0;
@@ -2187,7 +2187,7 @@ void ApplyNormalFixes()
 			sp->proc_interval = 4000;
 		}
 
-		sp = dbcSpell.LookupEntryForced( 31876 );
+		sp = CheckAndReturnSpellEntry( 31876 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
@@ -2195,7 +2195,7 @@ void ApplyNormalFixes()
 			sp->EffectTriggerSpell[0] = 54180;
 			sp->procChance = 33;
 		}
-		sp = dbcSpell.LookupEntryForced( 31877 );
+		sp = CheckAndReturnSpellEntry( 31877 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
@@ -2203,7 +2203,7 @@ void ApplyNormalFixes()
 			sp->EffectTriggerSpell[0] = 54180;
 			sp->procChance = 66;
 		}
-		sp = dbcSpell.LookupEntryForced( 31878 );
+		sp = CheckAndReturnSpellEntry( 31878 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
@@ -2213,40 +2213,40 @@ void ApplyNormalFixes()
 		}
 
 		//Paladin - Blessed Life ranks 1-3
-		sp = dbcSpell.LookupEntryForced( 31828 );
+		sp = CheckAndReturnSpellEntry( 31828 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM;
 
-		sp = dbcSpell.LookupEntryForced( 31829 );
+		sp = CheckAndReturnSpellEntry( 31829 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM;
 		
-		sp = dbcSpell.LookupEntryForced( 31830 );
+		sp = CheckAndReturnSpellEntry( 31830 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM;
 
 		//Palarin - Light's Grace
-		sp = dbcSpell.LookupEntryForced( 31833 );
+		sp = CheckAndReturnSpellEntry( 31833 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_CAST_SPELL;
 
-		sp = dbcSpell.LookupEntryForced( 31835 );
+		sp = CheckAndReturnSpellEntry( 31835 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_CAST_SPELL;
 
-		sp = dbcSpell.LookupEntryForced( 31836 );
+		sp = CheckAndReturnSpellEntry( 31836 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_CAST_SPELL;
 
 		//Paladin - Spiritual Attunement
-		sp = dbcSpell.LookupEntryForced( 31785 );
+		sp = CheckAndReturnSpellEntry( 31785 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_SPELL_LAND_VICTIM | static_cast<uint32>(PROC_TARGET_SELF) ;
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 31786;
 		}
-		sp = dbcSpell.LookupEntryForced( 33776 );
+		sp = CheckAndReturnSpellEntry( 33776 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_SPELL_LAND_VICTIM | static_cast<uint32>(PROC_TARGET_SELF);
@@ -2255,57 +2255,57 @@ void ApplyNormalFixes()
 		}
 
 		//Paladin - Improved Lay on Hands
-		sp = dbcSpell.LookupEntryForced( 20234 );
+		sp = CheckAndReturnSpellEntry( 20234 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_CAST_SPELL;
 
-		sp = dbcSpell.LookupEntryForced( 20235 );
+		sp = CheckAndReturnSpellEntry( 20235 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_CAST_SPELL;
 
 		//Paladin - Crusader Strike
-		sp = dbcSpell.LookupEntryForced( 35395 );
+		sp = CheckAndReturnSpellEntry( 35395 );
 		if( sp != NULL )
 			sp->noproc = true;
 
 		//Paladin - Forbearance - Is forced debuff
-		sp = dbcSpell.LookupEntryForced( 25771 );
+		sp = CheckAndReturnSpellEntry( 25771 );
 		if( sp != NULL )
 			sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
 
 		//Divine Protection 	
-		sp = dbcSpell.LookupEntryForced( 498 );
+		sp = CheckAndReturnSpellEntry( 498 );
 		if (sp != NULL)
 			sp->targetAuraSpellNot = 25771;
 
 		//Divine Shield 
-		sp = dbcSpell.LookupEntryForced( 642 );
+		sp = CheckAndReturnSpellEntry( 642 );
 		if (sp != NULL)
 			sp->targetAuraSpellNot = 25771;
 
 		//Hand of Protection Rank 1 
-		sp = dbcSpell.LookupEntryForced( 1022 );
+		sp = CheckAndReturnSpellEntry( 1022 );
 		if (sp != NULL)
 			sp->targetAuraSpellNot = 25771;
 
 		//Hand of Protection Rank 2
-		sp = dbcSpell.LookupEntryForced( 5599 );
+		sp = CheckAndReturnSpellEntry( 5599 );
 		if (sp != NULL)
 			sp->targetAuraSpellNot = 25771;
 
 		//Hand of Protection Rank 3
-		sp = dbcSpell.LookupEntryForced( 10278 );
+		sp = CheckAndReturnSpellEntry( 10278 );
 		if (sp != NULL)
 			sp->targetAuraSpellNot = 25771;
 
 		//Paladin - Infusion of Light
-		sp = dbcSpell.LookupEntryForced( 53569 );
+		sp = CheckAndReturnSpellEntry( 53569 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
 			sp->procChance = 100;
 		}
-		sp = dbcSpell.LookupEntryForced( 53576 );
+		sp = CheckAndReturnSpellEntry( 53576 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
@@ -2313,19 +2313,19 @@ void ApplyNormalFixes()
 		}
 
 		//Paladin - Sacred Cleansing
-		sp = dbcSpell.LookupEntryForced( 53551 );
+		sp = CheckAndReturnSpellEntry( 53551 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
 			sp->procChance = 10;
 		}
-		sp = dbcSpell.LookupEntryForced( 53552 );
+		sp = CheckAndReturnSpellEntry( 53552 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
 			sp->procChance = 20;
 		}
-		sp = dbcSpell.LookupEntryForced( 53553 );
+		sp = CheckAndReturnSpellEntry( 53553 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
@@ -2333,31 +2333,31 @@ void ApplyNormalFixes()
 		}
 
 		//Paladin - Judgements of the Pure
-		sp = dbcSpell.LookupEntryForced( 53671 );
+		sp = CheckAndReturnSpellEntry( 53671 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
 			sp->procChance = 100;
 		}
-		sp = dbcSpell.LookupEntryForced( 53673 );
+		sp = CheckAndReturnSpellEntry( 53673 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
 			sp->procChance = 100;
 		}
-		sp = dbcSpell.LookupEntryForced( 54151 );
+		sp = CheckAndReturnSpellEntry( 54151 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
 			sp->procChance = 100;
 		}
-		sp = dbcSpell.LookupEntryForced( 54154 );
+		sp = CheckAndReturnSpellEntry( 54154 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
 			sp->procChance = 100;
 		}
-		sp = dbcSpell.LookupEntryForced( 54155 );
+		sp = CheckAndReturnSpellEntry( 54155 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
@@ -2365,7 +2365,7 @@ void ApplyNormalFixes()
 		}
 
 		//Paladin -  Heart of the Crusader
-		sp = dbcSpell.LookupEntryForced( 20335 );
+		sp = CheckAndReturnSpellEntry( 20335 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
@@ -2373,7 +2373,7 @@ void ApplyNormalFixes()
 			sp->procFlags = PROC_ON_CAST_SPELL;
 			sp->procChance = 100;
 		}
-		sp = dbcSpell.LookupEntryForced( 20336 );
+		sp = CheckAndReturnSpellEntry( 20336 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
@@ -2381,7 +2381,7 @@ void ApplyNormalFixes()
 			sp->procFlags = PROC_ON_CAST_SPELL;
 			sp->procChance = 100;
 		}
-		sp = dbcSpell.LookupEntryForced( 20337 );
+		sp = CheckAndReturnSpellEntry( 20337 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
@@ -2391,7 +2391,7 @@ void ApplyNormalFixes()
 		}
 
 		//Paladin - Art of War
-		sp = dbcSpell.LookupEntryForced( 53486 );
+		sp = CheckAndReturnSpellEntry( 53486 );
 		if( sp != NULL )
 		{
 			sp->Effect[1] = SPELL_EFFECT_APPLY_AURA;
@@ -2400,11 +2400,11 @@ void ApplyNormalFixes()
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
 			sp->EffectTriggerSpell[1] = 53489;
 		}
-		sp = dbcSpell.LookupEntryForced( 53489 );
+		sp = CheckAndReturnSpellEntry( 53489 );
 		if( sp != NULL )
 			sp->AuraInterruptFlags = AURA_INTERRUPT_ON_CAST_SPELL;
 
-		sp = dbcSpell.LookupEntryForced( 53488 );
+		sp = CheckAndReturnSpellEntry( 53488 );
 		if( sp != NULL )
 		{
 			sp->Effect[1] = SPELL_EFFECT_APPLY_AURA;
@@ -2413,30 +2413,30 @@ void ApplyNormalFixes()
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
 			sp->EffectTriggerSpell[1] = 59578;
 		}
-		sp = dbcSpell.LookupEntryForced( 59578 );
+		sp = CheckAndReturnSpellEntry( 59578 );
 		if( sp != NULL )
 			sp->AuraInterruptFlags = AURA_INTERRUPT_ON_CAST_SPELL;
 
 		//Paladin - Hammer of Justice - Interrupt effect
-		sp = dbcSpell.LookupEntryForced( 853 );
+		sp = CheckAndReturnSpellEntry( 853 );
 		if( sp != NULL )
 		{
 			sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[1] = 32747;
 		}
-		sp = dbcSpell.LookupEntryForced( 5588 );
+		sp = CheckAndReturnSpellEntry( 5588 );
 		if( sp != NULL )
 		{
 			sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[1] = 32747;
 		}
-		sp = dbcSpell.LookupEntryForced( 5589 );
+		sp = CheckAndReturnSpellEntry( 5589 );
 		if( sp != NULL )
 		{
 			sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[1] = 32747;
 		}
-		sp = dbcSpell.LookupEntryForced( 10308 );
+		sp = CheckAndReturnSpellEntry( 10308 );
 		if( sp != NULL )
 		{
 			sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL;
@@ -2444,7 +2444,7 @@ void ApplyNormalFixes()
 		}
 
         // Paladin - Sheath of Light
-        sp = dbcSpell.LookupEntryForced( 53501 );
+        sp = CheckAndReturnSpellEntry( 53501 );
         if( sp != NULL )
         {
             sp->Effect[1] = SPELL_EFFECT_APPLY_AURA;
@@ -2453,7 +2453,7 @@ void ApplyNormalFixes()
 			sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
         }
 
-        sp = dbcSpell.LookupEntryForced( 53502 );
+        sp = CheckAndReturnSpellEntry( 53502 );
         if( sp != NULL )
         {
             sp->Effect[1] = SPELL_EFFECT_APPLY_AURA;
@@ -2462,7 +2462,7 @@ void ApplyNormalFixes()
 			sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
         }
 
-        sp = dbcSpell.LookupEntryForced( 53503 );
+        sp = CheckAndReturnSpellEntry( 53503 );
         if( sp != NULL )
         {
             sp->Effect[1] = SPELL_EFFECT_APPLY_AURA;
@@ -2475,7 +2475,7 @@ void ApplyNormalFixes()
 	// HUNTER								//
 	//////////////////////////////////////////
     //Wild quiver rank 1
-    sp = dbcSpell.LookupEntryForced( 53215 );
+    sp = CheckAndReturnSpellEntry( 53215 );
     if( sp != NULL )
     {
             sp->procFlags = PROC_ON_RANGED_ATTACK;
@@ -2483,7 +2483,7 @@ void ApplyNormalFixes()
             sp->EffectTriggerSpell[0] = 53254;
             sp->procChance = 4;
     }
-    sp = dbcSpell.LookupEntryForced( 53216 );
+    sp = CheckAndReturnSpellEntry( 53216 );
     if( sp != NULL )
         {
             sp->procFlags = PROC_ON_RANGED_ATTACK;
@@ -2491,7 +2491,7 @@ void ApplyNormalFixes()
             sp->EffectTriggerSpell[0] = 53254;
             sp->procChance = 7;
         }
-        sp = dbcSpell.LookupEntryForced( 53217 );
+        sp = CheckAndReturnSpellEntry( 53217 );
         if( sp != NULL )
         {
             sp->procFlags = PROC_ON_RANGED_ATTACK;
@@ -2503,19 +2503,19 @@ void ApplyNormalFixes()
 	// Insert hunter spell fixes here
 
 		// Pashtet: Lock'n'Load, only for traps. Need something more for Serpent Sting DoT.
-		sp = dbcSpell.LookupEntryForced( 56342 );
+		sp = CheckAndReturnSpellEntry( 56342 );
 		if (sp != NULL)
 		{
 			sp->procFlags |= PROC_ON_TRAP_TRIGGER;
 			sp->proc_interval = 30000;
 		}			
-		sp = dbcSpell.LookupEntryForced( 56343 );
+		sp = CheckAndReturnSpellEntry( 56343 );
 		if (sp != NULL)
 		{
 			sp->procFlags |= PROC_ON_TRAP_TRIGGER;
 			sp->proc_interval = 30000;
 		}	
-		sp = dbcSpell.LookupEntryForced( 56344 );
+		sp = CheckAndReturnSpellEntry( 56344 );
 		if (sp != NULL)
 		{
 			sp->procFlags |= PROC_ON_TRAP_TRIGGER;
@@ -2523,12 +2523,12 @@ void ApplyNormalFixes()
 		}		
 
 		//Hunter - Bestial Wrath
-		sp = dbcSpell.LookupEntryForced( 19574 );
+		sp = CheckAndReturnSpellEntry( 19574 );
 		if( sp != NULL )
 			sp->EffectApplyAuraName[2] = SPELL_AURA_DUMMY;
 
 		//Hunter - The Beast Within
-		sp = dbcSpell.LookupEntryForced( 34692 );
+		sp = CheckAndReturnSpellEntry( 34692 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
@@ -2536,38 +2536,38 @@ void ApplyNormalFixes()
 			sp->procChance = 100;
 			sp->EffectTriggerSpell[0] = 34471;
 		}
-		sp = dbcSpell.LookupEntryForced( 34471 );
+		sp = CheckAndReturnSpellEntry( 34471 );
 		if( sp != NULL )
 			sp->EffectApplyAuraName[2] = SPELL_AURA_DUMMY;
 
 		//Hunter - Go for the Throat
-		sp = dbcSpell.LookupEntryForced( 34950 );
+		sp = CheckAndReturnSpellEntry( 34950 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_RANGED_CRIT_ATTACK;
-		sp = dbcSpell.LookupEntryForced( 34954 );
+		sp = CheckAndReturnSpellEntry( 34954 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_RANGED_CRIT_ATTACK;
-		sp = dbcSpell.LookupEntryForced( 34952 );
+		sp = CheckAndReturnSpellEntry( 34952 );
 		if( sp != NULL )
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_PET;
-		sp = dbcSpell.LookupEntryForced( 34953 );
+		sp = CheckAndReturnSpellEntry( 34953 );
 		if( sp != NULL )
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_PET;
 
 		// Hunter - Improved Wing Clip
-		sp = dbcSpell.LookupEntryForced( 19228 );
+		sp = CheckAndReturnSpellEntry( 19228 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
 			sp->ProcOnNameHash[0] = SPELL_HASH_WING_CLIP;
 		}
-		sp = dbcSpell.LookupEntryForced( 19232 );
+		sp = CheckAndReturnSpellEntry( 19232 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
 			sp->ProcOnNameHash[0] = SPELL_HASH_WING_CLIP;
 		}
-		sp = dbcSpell.LookupEntryForced( 19233 );
+		sp = CheckAndReturnSpellEntry( 19233 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
@@ -2575,38 +2575,38 @@ void ApplyNormalFixes()
 		}
 
 		// Hunter - Master Tactician
-		sp = dbcSpell.LookupEntryForced( 34506 );
+		sp = CheckAndReturnSpellEntry( 34506 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_RANGED_ATTACK | static_cast<uint32>(PROC_TARGET_SELF);
-		sp = dbcSpell.LookupEntryForced( 34507 );
+		sp = CheckAndReturnSpellEntry( 34507 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_RANGED_ATTACK | static_cast<uint32>(PROC_TARGET_SELF);
-		sp = dbcSpell.LookupEntryForced( 34508 );
+		sp = CheckAndReturnSpellEntry( 34508 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_RANGED_ATTACK | static_cast<uint32>(PROC_TARGET_SELF);
-		sp = dbcSpell.LookupEntryForced( 34838 );
+		sp = CheckAndReturnSpellEntry( 34838 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_RANGED_ATTACK | static_cast<uint32>(PROC_TARGET_SELF);
-		sp = dbcSpell.LookupEntryForced( 34839 );
+		sp = CheckAndReturnSpellEntry( 34839 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_RANGED_ATTACK | static_cast<uint32>(PROC_TARGET_SELF);
 
 		// Hunter - Spirit Bond
-		sp = dbcSpell.LookupEntryForced( 19578 );
+		sp = CheckAndReturnSpellEntry( 19578 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_PET_OWNER | SPELL_FLAG_IS_EXPIREING_WITH_PET;
 			sp->Effect[0] = SPELL_EFFECT_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 19579;
 		}
-		sp = dbcSpell.LookupEntryForced( 20895 );
+		sp = CheckAndReturnSpellEntry( 20895 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_PET_OWNER | SPELL_FLAG_IS_EXPIREING_WITH_PET;
 			sp->Effect[0] = SPELL_EFFECT_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 24529;
 		}
-		sp = dbcSpell.LookupEntryForced( 19579 );
+		sp = CheckAndReturnSpellEntry( 19579 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_EXPIREING_WITH_PET;
@@ -2617,7 +2617,7 @@ void ApplyNormalFixes()
 			sp->EffectAmplitude[1] = sp->EffectAmplitude[0];
 			sp->EffectDieSides[1] = sp->EffectDieSides[0];
 		}
-		sp = dbcSpell.LookupEntryForced( 24529 );
+		sp = CheckAndReturnSpellEntry( 24529 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_EXPIREING_WITH_PET;
@@ -2630,14 +2630,14 @@ void ApplyNormalFixes()
 		}
 
 		//Hunter Silencing Shot
-		sp = dbcSpell.LookupEntryForced(34490);
+		sp = CheckAndReturnSpellEntry(34490);
 		if(sp != NULL)
 		{
 			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_SILENCE ;
 		}
 
 		// Hunter - Ferocious Inspiration
-		sp = dbcSpell.LookupEntryForced( 34455 );
+		sp = CheckAndReturnSpellEntry( 34455 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET;
@@ -2647,7 +2647,7 @@ void ApplyNormalFixes()
 			sp->procFlags = PROC_ON_CRIT_ATTACK | PROC_ON_SPELL_CRIT_HIT | static_cast<uint32>(PROC_TARGET_SELF); //maybe target master ?
 			sp->Effect[1] = SPELL_EFFECT_NULL; //remove this
 		}
-		sp = dbcSpell.LookupEntryForced( 34459 );
+		sp = CheckAndReturnSpellEntry( 34459 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET;
@@ -2657,7 +2657,7 @@ void ApplyNormalFixes()
 			sp->procFlags = PROC_ON_CRIT_ATTACK | PROC_ON_SPELL_CRIT_HIT | static_cast<uint32>(PROC_TARGET_SELF);
 			sp->Effect[1] = SPELL_EFFECT_NULL; //remove this
 		}
-		sp = dbcSpell.LookupEntryForced( 34460 );
+		sp = CheckAndReturnSpellEntry( 34460 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET;
@@ -2669,29 +2669,29 @@ void ApplyNormalFixes()
 		}
 
 		// Hunter - Focused Fire
-		sp = dbcSpell.LookupEntryForced( 35029 );
+		sp = CheckAndReturnSpellEntry( 35029 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_PET_OWNER | SPELL_FLAG_IS_EXPIREING_WITH_PET;
 			sp->Effect[0] = SPELL_EFFECT_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 35060;
 		}
-		sp = dbcSpell.LookupEntryForced( 35030 );
+		sp = CheckAndReturnSpellEntry( 35030 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_PET_OWNER | SPELL_FLAG_IS_EXPIREING_WITH_PET;
 			sp->Effect[0] = SPELL_EFFECT_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 35061;
 		}
-		sp = dbcSpell.LookupEntryForced( 35060 );
+		sp = CheckAndReturnSpellEntry( 35060 );
 		if( sp != NULL )
 			sp->c_is_flags |= SPELL_FLAG_IS_EXPIREING_WITH_PET;
-		sp = dbcSpell.LookupEntryForced( 35061 );
+		sp = CheckAndReturnSpellEntry( 35061 );
 		if( sp != NULL )
 			sp->c_is_flags |= SPELL_FLAG_IS_EXPIREING_WITH_PET;
 
 		// Hunter - Thrill of the Hunt
-		sp = dbcSpell.LookupEntryForced( 34497 );
+		sp = CheckAndReturnSpellEntry( 34497 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_SPELL_CRIT_HIT | static_cast<uint32>(PROC_TARGET_SELF);
@@ -2699,7 +2699,7 @@ void ApplyNormalFixes()
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 34720;
 		}
-		sp = dbcSpell.LookupEntryForced( 34498 );
+		sp = CheckAndReturnSpellEntry( 34498 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_SPELL_CRIT_HIT | static_cast<uint32>(PROC_TARGET_SELF);
@@ -2707,7 +2707,7 @@ void ApplyNormalFixes()
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 34720;
 		}
-		sp = dbcSpell.LookupEntryForced( 34499 );
+		sp = CheckAndReturnSpellEntry( 34499 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_SPELL_CRIT_HIT | static_cast<uint32>(PROC_TARGET_SELF);
@@ -2717,18 +2717,18 @@ void ApplyNormalFixes()
 		}
 
 		// Hunter - Expose Weakness
-		sp = dbcSpell.LookupEntryForced( 34500 );
+		sp = CheckAndReturnSpellEntry( 34500 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_RANGED_CRIT_ATTACK;
-		sp = dbcSpell.LookupEntryForced( 34502 );
+		sp = CheckAndReturnSpellEntry( 34502 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_RANGED_CRIT_ATTACK;
-		sp = dbcSpell.LookupEntryForced( 34503 );
+		sp = CheckAndReturnSpellEntry( 34503 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_RANGED_CRIT_ATTACK;
 
 		//Hunter - Frenzy
-		sp = dbcSpell.LookupEntryForced( 19621 );
+		sp = CheckAndReturnSpellEntry( 19621 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
@@ -2738,7 +2738,7 @@ void ApplyNormalFixes()
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
 			sp->c_is_flags |= SPELL_FLAG_IS_EXPIREING_WITH_PET | SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET | static_cast<uint32>(PROC_TARGET_SELF);
 		}
-		sp = dbcSpell.LookupEntryForced( 19622 );
+		sp = CheckAndReturnSpellEntry( 19622 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
@@ -2748,7 +2748,7 @@ void ApplyNormalFixes()
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
 			sp->c_is_flags |= SPELL_FLAG_IS_EXPIREING_WITH_PET | SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET | static_cast<uint32>(PROC_TARGET_SELF);
 		}
-		sp = dbcSpell.LookupEntryForced( 19623 );
+		sp = CheckAndReturnSpellEntry( 19623 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
@@ -2758,7 +2758,7 @@ void ApplyNormalFixes()
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
 			sp->c_is_flags |= SPELL_FLAG_IS_EXPIREING_WITH_PET | SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET | static_cast<uint32>(PROC_TARGET_SELF);
 		}
-		sp = dbcSpell.LookupEntryForced( 19624 );
+		sp = CheckAndReturnSpellEntry( 19624 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
@@ -2768,7 +2768,7 @@ void ApplyNormalFixes()
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
 			sp->c_is_flags |= SPELL_FLAG_IS_EXPIREING_WITH_PET | SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET | static_cast<uint32>(PROC_TARGET_SELF);
 		}
-		sp = dbcSpell.LookupEntryForced( 19625 );
+		sp = CheckAndReturnSpellEntry( 19625 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
@@ -2780,87 +2780,87 @@ void ApplyNormalFixes()
 		}
 
 		//Hunter : Pathfinding
-		sp = dbcSpell.LookupEntryForced( 19559 );
+		sp = CheckAndReturnSpellEntry( 19559 );
 		if( sp != NULL )
 		{
 			sp->EffectMiscValue[0] = SMT_MISC_EFFECT;
 		}
-		sp = dbcSpell.LookupEntryForced( 19560 );
+		sp = CheckAndReturnSpellEntry( 19560 );
 		if( sp != NULL )
 		{
 			sp->EffectMiscValue[0] = SMT_MISC_EFFECT;
 		}
 
 		//Hunter : Rapid Killing - might need to add honor trigger too here. I'm guessing you receive Xp too so I'm avoiding double proc
-		sp = dbcSpell.LookupEntryForced( 34948 );
+		sp = CheckAndReturnSpellEntry( 34948 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_GAIN_EXPIERIENCE | static_cast<uint32>(PROC_TARGET_SELF);
 		}
-		sp = dbcSpell.LookupEntryForced( 34949 );
+		sp = CheckAndReturnSpellEntry( 34949 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_GAIN_EXPIERIENCE | static_cast<uint32>(PROC_TARGET_SELF);
 		}
 
 		//Hunter : Entrapment
-		sp = dbcSpell.LookupEntryForced( 19184 );
+		sp = CheckAndReturnSpellEntry( 19184 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_TRAP_TRIGGER;
-		sp = dbcSpell.LookupEntryForced( 19387 );
+		sp = CheckAndReturnSpellEntry( 19387 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_TRAP_TRIGGER;
-		sp = dbcSpell.LookupEntryForced( 19388 );
+		sp = CheckAndReturnSpellEntry( 19388 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_TRAP_TRIGGER;
 
 		/* aspect of the pack - change to AA */
-		sp = dbcSpell.LookupEntryForced( 13159 );
+		sp = CheckAndReturnSpellEntry( 13159 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM;
 
 		/* aspect of the cheetah - add proc flags */
-		sp = dbcSpell.LookupEntryForced( 5118 );
+		sp = CheckAndReturnSpellEntry( 5118 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM;
 
 		// Feed pet
-		sp = dbcSpell.LookupEntryForced( 6991 );
+		sp = CheckAndReturnSpellEntry( 6991 );
 		if( sp != NULL )
 		{
 			sp->EffectImplicitTargetA[0] = 0;
 		}
 	/*	// !!! not sure this is good !!! have to test
 		// Hunter's mark r1
-		sp = dbcSpell.LookupEntryForced( 1130 );
+		sp = CheckAndReturnSpellEntry( 1130 );
 		if( sp != NULL )
 			sp->maxstack = (sp->EffectBasePoints[1]*3) / (sp->EffectBasePoints[1]/10);
-		sp = dbcSpell.LookupEntryForced( 14323 );
+		sp = CheckAndReturnSpellEntry( 14323 );
 		if( sp != NULL )
 			sp->maxstack = (sp->EffectBasePoints[1]*3) / (sp->EffectBasePoints[1]/10);
-		sp = dbcSpell.LookupEntryForced( 14324 );
+		sp = CheckAndReturnSpellEntry( 14324 );
 		if( sp != NULL )
 			sp->maxstack = (sp->EffectBasePoints[1]*3) / (sp->EffectBasePoints[1]/10);
-		sp = dbcSpell.LookupEntryForced( 14325 );
+		sp = CheckAndReturnSpellEntry( 14325 );
 		if( sp != NULL )
 			sp->maxstack = (sp->EffectBasePoints[1]*3) / (sp->EffectBasePoints[1]/10);
 			*/
 		// MesoX: Serendipity http://www.wowhead.com/?spell=63730
-		sp = dbcSpell.LookupEntryForced( 63730 ); // Rank 1
+		sp = CheckAndReturnSpellEntry( 63730 ); // Rank 1
 		if( sp != NULL )
 		{
 			   sp->procFlags = PROC_ON_CAST_SPELL;
 			   sp->ProcOnNameHash[0] = SPELL_HASH_BINDING_HEAL;
 			   sp->ProcOnNameHash[1] = SPELL_HASH_FLASH_HEAL;
 		}
-		sp = dbcSpell.LookupEntryForced( 63733 ); // Rank 2
+		sp = CheckAndReturnSpellEntry( 63733 ); // Rank 2
 		if( sp != NULL )
 		{
 			   sp->procFlags = PROC_ON_CAST_SPELL;
 			   sp->ProcOnNameHash[0] = SPELL_HASH_BINDING_HEAL;
 			   sp->ProcOnNameHash[1] = SPELL_HASH_FLASH_HEAL;
 		}
-		sp = dbcSpell.LookupEntryForced( 63737 ); // Rank 3
+		sp = CheckAndReturnSpellEntry( 63737 ); // Rank 3
 		if( sp != NULL )
 		{
 			   sp->procFlags = PROC_ON_CAST_SPELL;
@@ -2876,7 +2876,7 @@ void ApplyNormalFixes()
 	// Insert rogue spell fixes here
 
 		//Rogue - Blade Twisting Rank 1
-		sp = dbcSpell.LookupEntryForced(31124);
+		sp = CheckAndReturnSpellEntry(31124);
 		if(sp != NULL)
 		{
 			sp->EffectTriggerSpell[1] = 31125;
@@ -2885,7 +2885,7 @@ void ApplyNormalFixes()
 		}
 
 		//Rogue - Blade Twisting Rank 2
-		sp = dbcSpell.LookupEntryForced(31126);
+		sp = CheckAndReturnSpellEntry(31126);
 		if(sp != NULL)
 		{
 			sp->EffectTriggerSpell[1] = 51585;
@@ -2896,7 +2896,7 @@ void ApplyNormalFixes()
 		/**********************************************************
 		 *	Garrote - this is used?
 		 **********************************************************/
-		sp = dbcSpell.LookupEntryForced( 37066 );
+		sp = CheckAndReturnSpellEntry( 37066 );
 		if( sp != NULL )
 		{
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_SINGLE_ENEMY;
@@ -2904,68 +2904,68 @@ void ApplyNormalFixes()
 		}
 
 		//rogue - Camouflage.
-		sp = dbcSpell.LookupEntryForced( 13975 );
+		sp = CheckAndReturnSpellEntry( 13975 );
 		if( sp != NULL )
 		{
 			sp->EffectMiscValue[0] = SMT_MISC_EFFECT;
 		}
-		sp = dbcSpell.LookupEntryForced( 14062 );
+		sp = CheckAndReturnSpellEntry( 14062 );
 		if( sp != NULL )
 		{
 			sp->EffectMiscValue[0] = SMT_MISC_EFFECT;
 		}
-		sp = dbcSpell.LookupEntryForced( 14063 );
+		sp = CheckAndReturnSpellEntry( 14063 );
 		if( sp != NULL )
 		{
 			sp->EffectMiscValue[0] = SMT_MISC_EFFECT;
 		}
-		sp = dbcSpell.LookupEntryForced( 14064 );
+		sp = CheckAndReturnSpellEntry( 14064 );
 		if( sp != NULL )
 		{
 			sp->EffectMiscValue[0] = SMT_MISC_EFFECT;
 		}
-		sp = dbcSpell.LookupEntryForced( 14065 );
+		sp = CheckAndReturnSpellEntry( 14065 );
 		if( sp != NULL )
 		{
 			sp->EffectMiscValue[0] = SMT_MISC_EFFECT;
 		}
 
 		//rogue - Vanish : Second Trigger Spell
-		sp = dbcSpell.LookupEntryForced( 18461 );
+		sp = CheckAndReturnSpellEntry( 18461 );
 		if( sp != NULL )
 			sp->AttributesEx |= ATTRIBUTESEX_NOT_BREAK_STEALTH;
 
 		// rogue - shadowstep
-//		sp = dbcSpell.LookupEntryForced( 36554 );
+//		sp = CheckAndReturnSpellEntry( 36554 );
 //		if( sp != NULL )
 //			sp->AttributesEx |= ATTRIBUTESEX_NOT_BREAK_STEALTH;
 
 		// rogue - Blind (Make it able to miss!)
-		sp = dbcSpell.LookupEntryForced( 2094 );
+		sp = CheckAndReturnSpellEntry( 2094 );
 		if( sp != NULL )
 		{
 			sp->Spell_Dmg_Type = SPELL_DMG_TYPE_RANGED;
 			sp->is_ranged_spell = true;
 		}
 		//rogue - Mace Specialization.
-		sp = dbcSpell.LookupEntryForced( 13709 );
+		sp = CheckAndReturnSpellEntry( 13709 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_MELEE_ATTACK;
-		sp = dbcSpell.LookupEntryForced( 13800 );
+		sp = CheckAndReturnSpellEntry( 13800 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_MELEE_ATTACK;
-		sp = dbcSpell.LookupEntryForced( 13801 );
+		sp = CheckAndReturnSpellEntry( 13801 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_MELEE_ATTACK;
-		sp = dbcSpell.LookupEntryForced( 13802 );
+		sp = CheckAndReturnSpellEntry( 13802 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_MELEE_ATTACK;
-		sp = dbcSpell.LookupEntryForced( 13803 );
+		sp = CheckAndReturnSpellEntry( 13803 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_MELEE_ATTACK;
 
 		//rogue - Shadowstep
-		sp = dbcSpell.LookupEntryForced( 36563 );
+		sp = CheckAndReturnSpellEntry( 36563 );
 		if( sp != NULL )
 		{
 			sp->EffectMiscValue[2] = SMT_MISC_EFFECT;
@@ -2974,18 +2974,18 @@ void ApplyNormalFixes()
 //			sp->procFlags = PROC_ON_CAST_SPELL;
 		}
 		// Still related to shadowstep - prevent the trigger spells from breaking stealth.
-		sp = dbcSpell.LookupEntryForced( 44373 );
+		sp = CheckAndReturnSpellEntry( 44373 );
 		if( sp )
 			sp->AttributesEx |= ATTRIBUTESEX_NOT_BREAK_STEALTH;
-		sp = dbcSpell.LookupEntryForced( 36563 );
+		sp = CheckAndReturnSpellEntry( 36563 );
 		if( sp )
 			sp->AttributesEx |= ATTRIBUTESEX_NOT_BREAK_STEALTH;
-		sp = dbcSpell.LookupEntryForced( 36554 );
+		sp = CheckAndReturnSpellEntry( 36554 );
 		if( sp != NULL )
 			sp->AttributesEx |= ATTRIBUTESEX_NOT_BREAK_STEALTH;
 
 		//rogue - Seal Fate
-		sp = dbcSpell.LookupEntryForced( 14186 );
+		sp = CheckAndReturnSpellEntry( 14186 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
@@ -2993,7 +2993,7 @@ void ApplyNormalFixes()
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
 			sp->procChance = 20;
 		}
-		sp = dbcSpell.LookupEntryForced( 14190 );
+		sp = CheckAndReturnSpellEntry( 14190 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
@@ -3001,7 +3001,7 @@ void ApplyNormalFixes()
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
 			sp->procChance = 40;
 		}
-		sp = dbcSpell.LookupEntryForced( 14193 );
+		sp = CheckAndReturnSpellEntry( 14193 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
@@ -3009,7 +3009,7 @@ void ApplyNormalFixes()
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
 			sp->procChance = 60;
 		}
-		sp = dbcSpell.LookupEntryForced( 14194 );
+		sp = CheckAndReturnSpellEntry( 14194 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
@@ -3017,7 +3017,7 @@ void ApplyNormalFixes()
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
 			sp->procChance = 80;
 		}
-		sp = dbcSpell.LookupEntryForced( 14195 );
+		sp = CheckAndReturnSpellEntry( 14195 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
@@ -3026,66 +3026,66 @@ void ApplyNormalFixes()
 			sp->procChance = 100;
 		}
 		//garrot
-		sp = dbcSpell.LookupEntryForced( 703 );
+		sp = CheckAndReturnSpellEntry( 703 );
 		if( sp != NULL )
 			sp->MechanicsType = MECHANIC_BLEEDING;
-		sp = dbcSpell.LookupEntryForced( 8631 );
+		sp = CheckAndReturnSpellEntry( 8631 );
 		if( sp != NULL )
 			sp->MechanicsType = MECHANIC_BLEEDING;
-		sp = dbcSpell.LookupEntryForced( 8632 );
+		sp = CheckAndReturnSpellEntry( 8632 );
 		if( sp != NULL )
 			sp->MechanicsType = MECHANIC_BLEEDING;
-		sp = dbcSpell.LookupEntryForced( 8633 );
+		sp = CheckAndReturnSpellEntry( 8633 );
 		if( sp != NULL )
 			sp->MechanicsType = MECHANIC_BLEEDING;
-		sp = dbcSpell.LookupEntryForced( 11289 );
+		sp = CheckAndReturnSpellEntry( 11289 );
 		if( sp != NULL )
 			sp->MechanicsType = MECHANIC_BLEEDING;
-		sp = dbcSpell.LookupEntryForced( 11290 );
+		sp = CheckAndReturnSpellEntry( 11290 );
 		if( sp != NULL )
 			sp->MechanicsType = MECHANIC_BLEEDING;
-		sp = dbcSpell.LookupEntryForced( 26839 );
+		sp = CheckAndReturnSpellEntry( 26839 );
 		if( sp != NULL )
 			sp->MechanicsType = MECHANIC_BLEEDING;
-		sp = dbcSpell.LookupEntryForced( 26884 );
+		sp = CheckAndReturnSpellEntry( 26884 );
 		if( sp != NULL )
 			sp->MechanicsType = MECHANIC_BLEEDING;
 
 		//rupture
-		sp = dbcSpell.LookupEntryForced( 1943 );
+		sp = CheckAndReturnSpellEntry( 1943 );
 		if( sp != NULL )
 			sp->MechanicsType = MECHANIC_BLEEDING;
-		sp = dbcSpell.LookupEntryForced( 8639 );
+		sp = CheckAndReturnSpellEntry( 8639 );
 		if( sp != NULL )
 			sp->MechanicsType = MECHANIC_BLEEDING;
-		sp = dbcSpell.LookupEntryForced( 8640 );
+		sp = CheckAndReturnSpellEntry( 8640 );
 		if( sp != NULL )
 			sp->MechanicsType = MECHANIC_BLEEDING;
-		sp = dbcSpell.LookupEntryForced( 11273 );
+		sp = CheckAndReturnSpellEntry( 11273 );
 		if( sp != NULL )
 			sp->MechanicsType = MECHANIC_BLEEDING;
-		sp = dbcSpell.LookupEntryForced( 11274 );
+		sp = CheckAndReturnSpellEntry( 11274 );
 		if( sp != NULL )
 			sp->MechanicsType = MECHANIC_BLEEDING;
-		sp = dbcSpell.LookupEntryForced( 11275 );
+		sp = CheckAndReturnSpellEntry( 11275 );
 		if( sp != NULL )
 			sp->MechanicsType = MECHANIC_BLEEDING;
-		sp = dbcSpell.LookupEntryForced( 26867 );
+		sp = CheckAndReturnSpellEntry( 26867 );
 		if( sp != NULL )
 			sp->MechanicsType = MECHANIC_BLEEDING;
 
 	//Rogue - Killing Spree Stealth fix
-	sp = dbcSpell.LookupEntryForced( 51690 );
+	sp = CheckAndReturnSpellEntry( 51690 );
 	if( sp != NULL )
 		sp->AttributesEx |= ATTRIBUTESEX_NOT_BREAK_STEALTH;
 
 	// Rogue - Cold Blood (Interrupt Flag)
-	sp = dbcSpell.LookupEntryForced( 14177 );
+	sp = CheckAndReturnSpellEntry( 14177 );
 	if(sp != NULL)
 		sp->AuraInterruptFlags |= AURA_INTERRUPT_ON_AFTER_CAST_SPELL;
 
 	/* Rogue - Improved Expose Armor (rank 1)
-	sp = dbcSpell.LookupEntryForced( 14168 );
+	sp = CheckAndReturnSpellEntry( 14168 );
 	if(sp != NULL)
 	{
 		sp->EffectApplyAuraName[0] = */
@@ -3097,11 +3097,11 @@ void ApplyNormalFixes()
 	// Insert priest spell fixes here
 		// Prayer of mending. !very very overwritten
 		// how it is after rewriten : we simply proc on damage and prochandler will get new target + do healing
-		sp = dbcSpell.LookupEntryForced( 33076 );
+		sp = CheckAndReturnSpellEntry( 33076 );
 		if( sp != NULL )
 		{
 			//we use this heal spell when we jump to other player
-			SpellEntry *healsp = dbcSpell.LookupEntryForced( sp->EffectTriggerSpell[1] );
+			SpellEntry *healsp = CheckAndReturnSpellEntry( sp->EffectTriggerSpell[1] );
 			if( healsp )
 			{
 				healsp->Effect[0] = SPELL_EFFECT_HEAL;
@@ -3113,7 +3113,7 @@ void ApplyNormalFixes()
 				healsp->EffectImplicitTargetA[0] = EFF_TARGET_PARTY_MEMBER;
 			}
 			//this spell is just to register the proc
-			SpellEntry *procsp = dbcSpell.LookupEntryForced( sp->EffectTriggerSpell[0] );
+			SpellEntry *procsp = CheckAndReturnSpellEntry( sp->EffectTriggerSpell[0] );
 			if( procsp )
 			{
 				procsp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
@@ -3132,19 +3132,19 @@ void ApplyNormalFixes()
 		}
 
 		// Spirit Tap
-		sp = dbcSpell.LookupEntryForced( 15270 ); //rank 1
+		sp = CheckAndReturnSpellEntry( 15270 ); //rank 1
 		if( sp != NULL )
 		{
 //			sp->procFlags = PROC_ON_TARGET_DIE;
 			sp->procFlags = PROC_ON_GAIN_EXPIERIENCE;
 		}
-		sp = dbcSpell.LookupEntryForced( 15335 ); //rank 2
+		sp = CheckAndReturnSpellEntry( 15335 ); //rank 2
 		if( sp != NULL )
 		{
 //			sp->procFlags = PROC_ON_TARGET_DIE;
 			sp->procFlags = PROC_ON_GAIN_EXPIERIENCE;
 		}
-		sp = dbcSpell.LookupEntryForced( 15336 ); //rank 3
+		sp = CheckAndReturnSpellEntry( 15336 ); //rank 3
 		if( sp != NULL )
 		{
 //			sp->procFlags = PROC_ON_TARGET_DIE;
@@ -3152,7 +3152,7 @@ void ApplyNormalFixes()
 		}
 
 		// Vampiric Embrace heal spell
-		sp = dbcSpell.LookupEntryForced( 15290 );
+		sp = CheckAndReturnSpellEntry( 15290 );
 		if( sp != NULL )
 		{
 			sp->EffectBasePoints[0] = 2;
@@ -3160,35 +3160,35 @@ void ApplyNormalFixes()
 		}
 
 		// Improved Mind Blast
-		sp = dbcSpell.LookupEntryForced( 15273 ); //rank 1
+		sp = CheckAndReturnSpellEntry( 15273 ); //rank 1
 		if( sp != NULL )
 		{
 			sp->procChance = 20;
 			sp->Effect[1] = SPELL_EFFECT_APPLY_AURA;
 			sp->EffectApplyAuraName[1] = SPELL_AURA_DUMMY;
 		}
-		sp = dbcSpell.LookupEntryForced( 15312 ); //rank 2
+		sp = CheckAndReturnSpellEntry( 15312 ); //rank 2
 		if( sp != NULL )
 		{
 			sp->procChance = 40;
 			sp->Effect[1] = SPELL_EFFECT_APPLY_AURA;
 			sp->EffectApplyAuraName[1] = SPELL_AURA_DUMMY;
 		}
-		sp = dbcSpell.LookupEntryForced( 15313 ); //rank 3
+		sp = CheckAndReturnSpellEntry( 15313 ); //rank 3
 		if( sp != NULL )
 		{
 			sp->procChance = 60;
 			sp->Effect[1] = SPELL_EFFECT_APPLY_AURA;
 			sp->EffectApplyAuraName[1] = SPELL_AURA_DUMMY;
 		}
-		sp = dbcSpell.LookupEntryForced( 15314 ); //rank 4
+		sp = CheckAndReturnSpellEntry( 15314 ); //rank 4
 		if( sp != NULL )
 		{
 			sp->procChance = 80;
 			sp->Effect[1] = SPELL_EFFECT_APPLY_AURA;
 			sp->EffectApplyAuraName[1] = SPELL_AURA_DUMMY;
 		}
-		sp = dbcSpell.LookupEntryForced( 15316 ); //rank 5
+		sp = CheckAndReturnSpellEntry( 15316 ); //rank 5
 		if( sp != NULL )
 		{
 			sp->procChance = 100;
@@ -3197,83 +3197,83 @@ void ApplyNormalFixes()
 		}
 
 		// Body and soul - fix duration of cleanse poison
-		sp = dbcSpell.LookupEntryForced( 64134 );
+		sp = CheckAndReturnSpellEntry( 64134 );
 		if( sp != NULL )
 			sp->DurationIndex = 29;
 
 		// Spirit of Redemption - required spells can be casted while dead
-		sp = dbcSpell.LookupEntryForced( 27795 ); // This is casted by shape shift
+		sp = CheckAndReturnSpellEntry( 27795 ); // This is casted by shape shift
 		if( sp != NULL )
 			sp->AttributesExC |= CAN_PERSIST_AND_CASTED_WHILE_DEAD;
-		sp = dbcSpell.LookupEntryForced( 27792 ); // This is casted by Apply Aura: Spirit of Redemption
+		sp = CheckAndReturnSpellEntry( 27792 ); // This is casted by Apply Aura: Spirit of Redemption
 		if( sp != NULL )
 			sp->AttributesExC |= CAN_PERSIST_AND_CASTED_WHILE_DEAD;
 
 		/**********************************************************
 		 *	Holy Nova
 		 **********************************************************/
-		sp = dbcSpell.LookupEntryForced( 15237 );
+		sp = CheckAndReturnSpellEntry( 15237 );
 		if( sp != NULL )
 		{
 			sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[1] = 23455;
 		}
-		sp = dbcSpell.LookupEntryForced( 15430 );
+		sp = CheckAndReturnSpellEntry( 15430 );
 		if( sp != NULL )
 		{
 			sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[1] = 23458;
 		}
-		sp = dbcSpell.LookupEntryForced( 15431 );
+		sp = CheckAndReturnSpellEntry( 15431 );
 		if( sp != NULL )
 		{
 			sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[1] = 23459;
 		}
-		sp = dbcSpell.LookupEntryForced( 27799 );
+		sp = CheckAndReturnSpellEntry( 27799 );
 		if( sp != NULL )
 		{
 			sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[1] = 27803;
 		}
-		sp = dbcSpell.LookupEntryForced( 27800 );
+		sp = CheckAndReturnSpellEntry( 27800 );
 		if( sp != NULL )
 		{
 			sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[1] = 27804;
 		}
-		sp = dbcSpell.LookupEntryForced( 27801 );
+		sp = CheckAndReturnSpellEntry( 27801 );
 		if( sp != NULL )
 		{
 			sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[1] = 27805;
 		}
-		sp = dbcSpell.LookupEntryForced( 25331 );
+		sp = CheckAndReturnSpellEntry( 25331 );
 		if( sp != NULL )
 		{
 			sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[1] = 25329;
 		}
-		sp = dbcSpell.LookupEntryForced( 48077 );
+		sp = CheckAndReturnSpellEntry( 48077 );
 		if( sp != NULL )
 		{
 			sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[1] = 48075;
 		}
-		sp = dbcSpell.LookupEntryForced( 48078 );
+		sp = CheckAndReturnSpellEntry( 48078 );
 		if( sp != NULL )
 		{
 			sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[1] = 48076;
 		}
 		// Holy Nova
-      sp = dbcSpell.LookupEntryForced( 48077 );
+      sp = CheckAndReturnSpellEntry( 48077 );
 		if( sp != NULL )
 		{
 			sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[1] = 48075;
 		}
-		sp = dbcSpell.LookupEntryForced( 48078 );
+		sp = CheckAndReturnSpellEntry( 48078 );
 		if( sp != NULL )
 		{
 			sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL;
@@ -3281,38 +3281,38 @@ void ApplyNormalFixes()
 		}
 
 		//Priest: Blessed Recovery
-		sp = dbcSpell.LookupEntryForced(27811);
+		sp = CheckAndReturnSpellEntry(27811);
 		if(sp != NULL)
 		{
 			sp->EffectTriggerSpell[0] = 27813;
 			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_RANGED_CRIT_ATTACK_VICTIM;
 		}
-		sp = dbcSpell.LookupEntryForced(27815);
+		sp = CheckAndReturnSpellEntry(27815);
 		if(sp != NULL)
 		{
 			sp->EffectTriggerSpell[0] = 27817;
 			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_RANGED_CRIT_ATTACK_VICTIM;
 		}
-		sp = dbcSpell.LookupEntryForced(27816);
+		sp = CheckAndReturnSpellEntry(27816);
 		if(sp != NULL)
 		{
 			sp->EffectTriggerSpell[0] = 27818;
 			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_RANGED_CRIT_ATTACK_VICTIM;
 		}
 		//priest- Blessed Resilience
-		sp = dbcSpell.LookupEntryForced( 33142 );
+		sp = CheckAndReturnSpellEntry( 33142 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_SPELL_CRIT_HIT_VICTIM | PROC_ON_RANGED_CRIT_ATTACK_VICTIM;
 			sp->procChance = 20;
 		}
-		sp = dbcSpell.LookupEntryForced( 33145 );
+		sp = CheckAndReturnSpellEntry( 33145 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_SPELL_CRIT_HIT_VICTIM | PROC_ON_RANGED_CRIT_ATTACK_VICTIM;
 			sp->procChance = 40;
 		}
-		sp = dbcSpell.LookupEntryForced( 33146 );
+		sp = CheckAndReturnSpellEntry( 33146 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_SPELL_CRIT_HIT_VICTIM | PROC_ON_RANGED_CRIT_ATTACK_VICTIM;
@@ -3320,60 +3320,60 @@ void ApplyNormalFixes()
 		}
 
 		//priest- Focused Will
-		sp = dbcSpell.LookupEntryForced( 45234 );
+		sp = CheckAndReturnSpellEntry( 45234 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_SPELL_CRIT_HIT_VICTIM | PROC_ON_RANGED_CRIT_ATTACK_VICTIM;
-		sp = dbcSpell.LookupEntryForced( 45243 );
+		sp = CheckAndReturnSpellEntry( 45243 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_SPELL_CRIT_HIT_VICTIM | PROC_ON_RANGED_CRIT_ATTACK_VICTIM;
-		sp = dbcSpell.LookupEntryForced( 45244 );
+		sp = CheckAndReturnSpellEntry( 45244 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_SPELL_CRIT_HIT_VICTIM | PROC_ON_RANGED_CRIT_ATTACK_VICTIM;
 
 		//Priest: Shadowguard
-		sp = dbcSpell.LookupEntryForced( 18137 );
+		sp = CheckAndReturnSpellEntry( 18137 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_SPELL_HIT_VICTIM | PROC_ON_RANGED_ATTACK_VICTIM | PROC_ON_MELEE_ATTACK_VICTIM;
 			sp->proc_interval = 3000; //every 3 seconds
 			sp->EffectTriggerSpell[0] = 28377;
 		}
-		sp = dbcSpell.LookupEntryForced( 19308 );
+		sp = CheckAndReturnSpellEntry( 19308 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_SPELL_HIT_VICTIM | PROC_ON_RANGED_ATTACK_VICTIM | PROC_ON_MELEE_ATTACK_VICTIM;
 			sp->proc_interval = 3000; //every 3 seconds
 			sp->EffectTriggerSpell[0] = 28378;
 		}
-		sp = dbcSpell.LookupEntryForced( 19309 );
+		sp = CheckAndReturnSpellEntry( 19309 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_SPELL_HIT_VICTIM | PROC_ON_RANGED_ATTACK_VICTIM | PROC_ON_MELEE_ATTACK_VICTIM;
 			sp->proc_interval = 3000; //every 3 seconds
 			sp->EffectTriggerSpell[0] = 28379;
 		}
-		sp = dbcSpell.LookupEntryForced( 19310 );
+		sp = CheckAndReturnSpellEntry( 19310 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_SPELL_HIT_VICTIM | PROC_ON_RANGED_ATTACK_VICTIM | PROC_ON_MELEE_ATTACK_VICTIM;
 			sp->proc_interval = 3000; //every 3 seconds
 			sp->EffectTriggerSpell[0] = 28380;
 		}
-		sp = dbcSpell.LookupEntryForced( 19311 );
+		sp = CheckAndReturnSpellEntry( 19311 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_SPELL_HIT_VICTIM | PROC_ON_RANGED_ATTACK_VICTIM | PROC_ON_MELEE_ATTACK_VICTIM;
 			sp->proc_interval = 3000; //every 3 seconds
 			sp->EffectTriggerSpell[0] = 28381;
 		}
-		sp = dbcSpell.LookupEntryForced( 19312 );
+		sp = CheckAndReturnSpellEntry( 19312 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_SPELL_HIT_VICTIM | PROC_ON_RANGED_ATTACK_VICTIM | PROC_ON_MELEE_ATTACK_VICTIM;
 			sp->proc_interval = 3000; //every 3 seconds
 			sp->EffectTriggerSpell[0] = 28382;
 		}
-		sp = dbcSpell.LookupEntryForced( 25477 );
+		sp = CheckAndReturnSpellEntry( 25477 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_SPELL_HIT_VICTIM | PROC_ON_RANGED_ATTACK_VICTIM | PROC_ON_MELEE_ATTACK_VICTIM;
@@ -3382,31 +3382,31 @@ void ApplyNormalFixes()
 		}
 
 		//Priest - Wand Specialization
-		sp = dbcSpell.LookupEntryForced( 14524 );
+		sp = CheckAndReturnSpellEntry( 14524 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_ADD_PCT_MODIFIER;
 			sp->EffectMiscValue[0] = SMT_MISC_EFFECT;
 		}
-		sp = dbcSpell.LookupEntryForced( 14525 );
+		sp = CheckAndReturnSpellEntry( 14525 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_ADD_PCT_MODIFIER;
 			sp->EffectMiscValue[0] = SMT_MISC_EFFECT;
 		}
-		sp = dbcSpell.LookupEntryForced( 14526 );
+		sp = CheckAndReturnSpellEntry( 14526 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_ADD_PCT_MODIFIER;
 			sp->EffectMiscValue[0] = SMT_MISC_EFFECT;
 		}
-		sp = dbcSpell.LookupEntryForced( 14527 );
+		sp = CheckAndReturnSpellEntry( 14527 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_ADD_PCT_MODIFIER;
 			sp->EffectMiscValue[0] = SMT_MISC_EFFECT;
 		}
-		sp = dbcSpell.LookupEntryForced( 14528 );
+		sp = CheckAndReturnSpellEntry( 14528 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_ADD_PCT_MODIFIER;
@@ -3414,58 +3414,58 @@ void ApplyNormalFixes()
 		}
 
 		//Priest - Inspiration proc spell
-		sp = dbcSpell.LookupEntryForced( 14893 );
+		sp = CheckAndReturnSpellEntry( 14893 );
 		if( sp != NULL )
 			sp->rangeIndex = 4;
-		sp = dbcSpell.LookupEntryForced( 15357 );
+		sp = CheckAndReturnSpellEntry( 15357 );
 		if( sp != NULL )
 			sp->rangeIndex = 4;
-		sp = dbcSpell.LookupEntryForced( 15359 );
+		sp = CheckAndReturnSpellEntry( 15359 );
 		if( sp != NULL )
 			sp->rangeIndex = 4;
 
 		//priest - surge of light
-		sp = dbcSpell.LookupEntryForced( 33150 );
+		sp = CheckAndReturnSpellEntry( 33150 );
 		if( sp != NULL )
 			sp->procFlags = uint32(PROC_ON_SPELL_CRIT_HIT | static_cast<uint32>(PROC_TARGET_SELF));
-		sp = dbcSpell.LookupEntryForced( 33154 );
+		sp = CheckAndReturnSpellEntry( 33154 );
 		if( sp != NULL )
 			sp->procFlags = uint32(PROC_ON_SPELL_CRIT_HIT | static_cast<uint32>(PROC_TARGET_SELF));
-		sp = dbcSpell.LookupEntryForced( 33151 );
+		sp = CheckAndReturnSpellEntry( 33151 );
 		if( sp != NULL )
 		{
 			sp->AuraInterruptFlags = AURA_INTERRUPT_ON_CAST_SPELL;
 		}
 		// priest - Reflective Shield
-		sp = dbcSpell.LookupEntryForced( 33201 );
+		sp = CheckAndReturnSpellEntry( 33201 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_ABSORB;
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 33619; //!! WRONG spell, we will make direct dmg here
 		}
-		sp = dbcSpell.LookupEntryForced( 33202 );
+		sp = CheckAndReturnSpellEntry( 33202 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_ABSORB;
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 33619; //!! WRONG spell, we will make direct dmg here
 		}
-		sp = dbcSpell.LookupEntryForced( 33203 );
+		sp = CheckAndReturnSpellEntry( 33203 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_ABSORB;
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 33619; //!! WRONG spell, we will make direct dmg here
 		}
-		sp = dbcSpell.LookupEntryForced( 33204 );
+		sp = CheckAndReturnSpellEntry( 33204 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_ABSORB;
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 33619; //!! WRONG spell, we will make direct dmg here
 		}
-		sp = dbcSpell.LookupEntryForced( 33205 );
+		sp = CheckAndReturnSpellEntry( 33205 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_ABSORB;
@@ -3474,35 +3474,35 @@ void ApplyNormalFixes()
 		}
 
 		// Weakened Soul - Is forced debuff
-		sp = dbcSpell.LookupEntryForced( 6788 );
+		sp = CheckAndReturnSpellEntry( 6788 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags = SPELL_FLAG_IS_FORCEDDEBUFF;
 		}
 
 		// Penance
-		sp = dbcSpell.LookupEntryForced( 47540 );
+		sp = CheckAndReturnSpellEntry( 47540 );
 		if ( sp != NULL )
 		{
 			sp->DurationIndex = 566; // Change to instant cast as script will cast the real channeled spell.
 			sp->ChannelInterruptFlags = 0; // Remove channeling behavior.
 		}
 
-		sp = dbcSpell.LookupEntryForced( 53005 );
+		sp = CheckAndReturnSpellEntry( 53005 );
 		if ( sp != NULL )
 		{
 			sp->DurationIndex = 566;
 			sp->ChannelInterruptFlags = 0;
 		}
 
-		sp = dbcSpell.LookupEntryForced( 53006 );
+		sp = CheckAndReturnSpellEntry( 53006 );
 		if ( sp != NULL )
 		{
 			sp->DurationIndex = 566;
 			sp->ChannelInterruptFlags = 0;
 		}
 
-		sp = dbcSpell.LookupEntryForced( 53007 );
+		sp = CheckAndReturnSpellEntry( 53007 );
 		if ( sp != NULL )
 		{
 			sp->DurationIndex = 566;
@@ -3510,39 +3510,39 @@ void ApplyNormalFixes()
 		}
 
 		// Penance triggered healing spells have wrong targets.
-		sp = dbcSpell.LookupEntryForced( 47750 );
+		sp = CheckAndReturnSpellEntry( 47750 );
 		if ( sp != NULL )
 		{
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_SINGLE_FRIEND;
 		}
 
-		sp = dbcSpell.LookupEntryForced( 52983 );
+		sp = CheckAndReturnSpellEntry( 52983 );
 		if ( sp != NULL )
 		{
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_SINGLE_FRIEND;
 		}
 
-		sp = dbcSpell.LookupEntryForced( 52984 );
+		sp = CheckAndReturnSpellEntry( 52984 );
 		if ( sp != NULL )
 		{
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_SINGLE_FRIEND;
 		}
 
-		sp = dbcSpell.LookupEntryForced( 52985 );
+		sp = CheckAndReturnSpellEntry( 52985 );
 		if ( sp != NULL )
 		{
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_SINGLE_FRIEND;
 		}
 
 		//Grace Rank 1
-		sp = dbcSpell.LookupEntryForced(47516);
+		sp = CheckAndReturnSpellEntry(47516);
 		if(sp != NULL)
 		{
 			sp->proc_interval = 100;
 		}
 
 		//Grace Rank 2
-		sp = dbcSpell.LookupEntryForced(47517);
+		sp = CheckAndReturnSpellEntry(47517);
 		if(sp != NULL)
 		{
 			sp->proc_interval = 100;
@@ -3555,66 +3555,66 @@ void ApplyNormalFixes()
 	// Insert shaman spell fixes here
 #ifdef NEW_PROCFLAGS
 	//Shaman - Healing Focus
-	sp = dbcSpell.LookupEntryForced( 16181 );
+	sp = CheckAndReturnSpellEntry( 16181 );
 	if( sp != NULL )
 		sp->EffectSpellGroupRelation[0] =  64 | 128 | 256;
-	sp = dbcSpell.LookupEntryForced( 16230 );
+	sp = CheckAndReturnSpellEntry( 16230 );
 	if( sp != NULL )
 		sp->EffectSpellGroupRelation[0] =  64 | 128 | 256;
-	sp = dbcSpell.LookupEntryForced( 16232 );
+	sp = CheckAndReturnSpellEntry( 16232 );
 	if( sp != NULL )
 		sp->EffectSpellGroupRelation[0] =  64 | 128 | 256;
-	sp = dbcSpell.LookupEntryForced( 16233 );
+	sp = CheckAndReturnSpellEntry( 16233 );
 	if( sp != NULL )
 		sp->EffectSpellGroupRelation[0] =  64 | 128 | 256;
-	sp = dbcSpell.LookupEntryForced( 16234 );
+	sp = CheckAndReturnSpellEntry( 16234 );
 	if( sp != NULL )
 		sp->EffectSpellGroupRelation[0] =  64 | 128 | 256;
 
 
 	//shaman - Tidal focus . Add more heal spells here if i forgot any :P
-	sp = dbcSpell.LookupEntryForced( 16179 );
+	sp = CheckAndReturnSpellEntry( 16179 );
 	if( sp != NULL )
 		sp->EffectSpellGroupRelation[0] = 64 | 128 | 256;
-	sp = dbcSpell.LookupEntryForced( 16214 );
+	sp = CheckAndReturnSpellEntry( 16214 );
 	if( sp != NULL )
 		sp->EffectSpellGroupRelation[0] = 64 | 128 | 256;
-	sp = dbcSpell.LookupEntryForced( 16215 );
+	sp = CheckAndReturnSpellEntry( 16215 );
 	if( sp != NULL )
 		sp->EffectSpellGroupRelation[0] = 64 | 128 | 256;
-	sp = dbcSpell.LookupEntryForced( 16216 );
+	sp = CheckAndReturnSpellEntry( 16216 );
 	if( sp != NULL )
 		sp->EffectSpellGroupRelation[0] = 64 | 128 | 256;
-	sp = dbcSpell.LookupEntryForced( 16217 );
+	sp = CheckAndReturnSpellEntry( 16217 );
 	if( sp != NULL )
 		sp->EffectSpellGroupRelation[0] = 64 | 128 | 256;
 
 	//shaman - Earth's Grasp
-	sp = dbcSpell.LookupEntryForced( 16130 );
+	sp = CheckAndReturnSpellEntry( 16130 );
 	if( sp != NULL ){
 		sp->EffectSpellGroupRelation[0] = 0x8;
 		sp->EffectSpellGroupRelation_high[1] = 0x1;
 	}
-	sp = dbcSpell.LookupEntryForced( 16043 );
+	sp = CheckAndReturnSpellEntry( 16043 );
 	if( sp != NULL ){
 		sp->EffectSpellGroupRelation[0] = 0x8;
 		sp->EffectSpellGroupRelation_high[1] = 0x1;
 	}
 
 	//shaman - Healing Grace
-	sp = dbcSpell.LookupEntryForced( 29191 );
+	sp = CheckAndReturnSpellEntry( 29191 );
 	if( sp != NULL ){
 		sp->EffectSpellGroupRelation[0] = 64 | 128 | 256;
 		sp->EffectSpellGroupRelation[1] = 0xFFFFFFFF; // all spells
 		sp->EffectSpellGroupRelation_high[1] = 0xFFFFFFFF; // all spells
 	}
-	sp = dbcSpell.LookupEntryForced( 29189 );
+	sp = CheckAndReturnSpellEntry( 29189 );
 	if( sp != NULL ){
 		sp->EffectSpellGroupRelation[0] = 64 | 128 | 256;
 		sp->EffectSpellGroupRelation[1] = 0xFFFFFFFF; // all spells
 		sp->EffectSpellGroupRelation_high[1] = 0xFFFFFFFF; // all spells
 	}
-	sp = dbcSpell.LookupEntryForced( 29187 );
+	sp = CheckAndReturnSpellEntry( 29187 );
 	if( sp != NULL ){
 		sp->EffectSpellGroupRelation[0] = 64 | 128 | 256;
 		sp->EffectSpellGroupRelation[1] = 0xFFFFFFFF; // all spells
@@ -3622,41 +3622,41 @@ void ApplyNormalFixes()
 	}
 
 	//shaman - Tidal Mastery
-	sp = dbcSpell.LookupEntryForced( 16221 );
+	sp = CheckAndReturnSpellEntry( 16221 );
 	if( sp != NULL )
 		sp->EffectSpellGroupRelation[0] = 451;
-	sp = dbcSpell.LookupEntryForced( 16220 );
+	sp = CheckAndReturnSpellEntry( 16220 );
 	if( sp != NULL )
 		sp->EffectSpellGroupRelation[0] = 451;
-	sp = dbcSpell.LookupEntryForced( 16219 );
+	sp = CheckAndReturnSpellEntry( 16219 );
 	if( sp != NULL )
 		sp->EffectSpellGroupRelation[0] = 451;
-	sp = dbcSpell.LookupEntryForced( 16218 );
+	sp = CheckAndReturnSpellEntry( 16218 );
 	if( sp != NULL )
 		sp->EffectSpellGroupRelation[0] = 451;
-	sp = dbcSpell.LookupEntryForced( 16217 );
+	sp = CheckAndReturnSpellEntry( 16217 );
 	if( sp != NULL )
 		sp->EffectSpellGroupRelation[0] = 451;
 
 	//shaman - Improved Chain Heal
-	sp = dbcSpell.LookupEntryForced( 30873 );
+	sp = CheckAndReturnSpellEntry( 30873 );
 	if( sp != NULL ){
 		sp->EffectSpellGroupRelation[0] = 256;
 		sp->EffectDieSides[0] = 0;
 	}
-	sp = dbcSpell.LookupEntryForced( 30872 );
+	sp = CheckAndReturnSpellEntry( 30872 );
 	if( sp != NULL ){
 		sp->EffectSpellGroupRelation[0] = 256;
 		sp->EffectDieSides[0] = 0;
 	}
 	// Shaman - Call of Flame
-	sp = dbcSpell.LookupEntryForced( 16038 );
+	sp = CheckAndReturnSpellEntry( 16038 );
 	if( sp != NULL )
 		sp->EffectSpellGroupRelation[0] = 0x40000000;
-	sp = dbcSpell.LookupEntryForced( 16160 );
+	sp = CheckAndReturnSpellEntry( 16160 );
 	if( sp != NULL )
 		sp->EffectSpellGroupRelation[0] = 0x40000000;
-	sp = dbcSpell.LookupEntryForced( 16161 );
+	sp = CheckAndReturnSpellEntry( 16161 );
 	if( sp != NULL )
 		sp->EffectSpellGroupRelation[0] = 0x40000000;
 
@@ -3664,13 +3664,13 @@ void ApplyNormalFixes()
 	group_relation_shaman_mental_quickness = 0x00000008 | 0x00000010 | 0x00000200 | 0x00000400 | 0x00080000 | 0x00100000 | 0x00400000 | 0x20000000 | 0x10000000 | 0x80000000;
 
 	//shaman - Mental Quickness
-	sp = dbcSpell.LookupEntryForced( 30812 );
+	sp = CheckAndReturnSpellEntry( 30812 );
 	if( sp != NULL )
 		sp->EffectSpellGroupRelation[0] = group_relation_shaman_mental_quickness;
-	sp = dbcSpell.LookupEntryForced( 30813 );
+	sp = CheckAndReturnSpellEntry( 30813 );
 	if( sp != NULL )
 		sp->EffectSpellGroupRelation[0] = group_relation_shaman_mental_quickness;
-	sp = dbcSpell.LookupEntryForced( 30814 );
+	sp = CheckAndReturnSpellEntry( 30814 );
 	if( sp != NULL )
 		sp->EffectSpellGroupRelation[0] = group_relation_shaman_mental_quickness;
 
@@ -3678,19 +3678,19 @@ void ApplyNormalFixes()
 	group_relation_shaman_totems |= 0x00000008 | 0x00000010 | 0x00001000 | 0x00080000 | 0x20000000; //these are only selected flag since some totems contain more then 1 flag
 
 	//shaman - Totemic focus
-	sp = dbcSpell.LookupEntryForced( 16173 );
+	sp = CheckAndReturnSpellEntry( 16173 );
 	if( sp != NULL )
 		sp->EffectSpellGroupRelation[0] = group_relation_shaman_totems;
-	sp = dbcSpell.LookupEntryForced( 16222 );
+	sp = CheckAndReturnSpellEntry( 16222 );
 	if( sp != NULL )
 		sp->EffectSpellGroupRelation[0] = group_relation_shaman_totems;
-	sp = dbcSpell.LookupEntryForced( 16223 );
+	sp = CheckAndReturnSpellEntry( 16223 );
 	if( sp != NULL )
 		sp->EffectSpellGroupRelation[0] = group_relation_shaman_totems;
-	sp = dbcSpell.LookupEntryForced( 16224 );
+	sp = CheckAndReturnSpellEntry( 16224 );
 	if( sp != NULL )
 		sp->EffectSpellGroupRelation[0] = group_relation_shaman_totems;
-	sp = dbcSpell.LookupEntryForced( 16225 );
+	sp = CheckAndReturnSpellEntry( 16225 );
 	if( sp != NULL )
 		sp->EffectSpellGroupRelation[0] = group_relation_shaman_totems;
 
@@ -3698,19 +3698,19 @@ void ApplyNormalFixes()
 	group_relation_shaman_lightning = 0x00000001 | 0x00000002;
 
 	//shaman - Call of Thunder
-	sp = dbcSpell.LookupEntryForced( 16041 );
+	sp = CheckAndReturnSpellEntry( 16041 );
 	if( sp != NULL )
 		sp->EffectSpellGroupRelation[0] = group_relation_shaman_lightning;
-	sp = dbcSpell.LookupEntryForced( 16117 );
+	sp = CheckAndReturnSpellEntry( 16117 );
 	if( sp != NULL )
 		sp->EffectSpellGroupRelation[0] = group_relation_shaman_lightning;
-	sp = dbcSpell.LookupEntryForced( 16118 );
+	sp = CheckAndReturnSpellEntry( 16118 );
 	if( sp != NULL )
 		sp->EffectSpellGroupRelation[0] = group_relation_shaman_lightning;
-	sp = dbcSpell.LookupEntryForced( 16119 );
+	sp = CheckAndReturnSpellEntry( 16119 );
 	if( sp != NULL )
 		sp->EffectSpellGroupRelation[0] = group_relation_shaman_lightning;
-	sp = dbcSpell.LookupEntryForced( 16120 );
+	sp = CheckAndReturnSpellEntry( 16120 );
 	if( sp != NULL )
 		sp->EffectSpellGroupRelation[0] = group_relation_shaman_lightning;
 
@@ -3718,54 +3718,54 @@ void ApplyNormalFixes()
 	group_relation_shaman_shock = 0x00100000 | 0x10000000 | 0x80000000;
 
 	//shaman - Convection
-	sp = dbcSpell.LookupEntryForced( 16039 );
+	sp = CheckAndReturnSpellEntry( 16039 );
 	if( sp != NULL )
 		sp->EffectSpellGroupRelation[0] = group_relation_shaman_shock | group_relation_shaman_lightning;
-	sp = dbcSpell.LookupEntryForced( 16109 );
+	sp = CheckAndReturnSpellEntry( 16109 );
 	if( sp != NULL )
 		sp->EffectSpellGroupRelation[0] = group_relation_shaman_shock | group_relation_shaman_lightning;
-	sp = dbcSpell.LookupEntryForced( 16110 );
+	sp = CheckAndReturnSpellEntry( 16110 );
 	if( sp != NULL )
 		sp->EffectSpellGroupRelation[0] = group_relation_shaman_shock | group_relation_shaman_lightning;
-	sp = dbcSpell.LookupEntryForced( 16111 );
+	sp = CheckAndReturnSpellEntry( 16111 );
 	if( sp != NULL )
 		sp->EffectSpellGroupRelation[0] = group_relation_shaman_shock | group_relation_shaman_lightning;
-	sp = dbcSpell.LookupEntryForced( 16112 );
+	sp = CheckAndReturnSpellEntry( 16112 );
 	if( sp != NULL )
 		sp->EffectSpellGroupRelation[0] = group_relation_shaman_shock | group_relation_shaman_lightning;
 
     //shaman - Concussion
-    sp = dbcSpell.LookupEntryForced( 16035 );
+    sp = CheckAndReturnSpellEntry( 16035 );
     if( sp != NULL )
         sp->EffectSpellGroupRelation[0] = group_relation_shaman_shock | group_relation_shaman_lightning;
-    sp = dbcSpell.LookupEntryForced( 16105 );
+    sp = CheckAndReturnSpellEntry( 16105 );
     if( sp != NULL )
         sp->EffectSpellGroupRelation[0] = group_relation_shaman_shock | group_relation_shaman_lightning;
-    sp = dbcSpell.LookupEntryForced( 16106 );
+    sp = CheckAndReturnSpellEntry( 16106 );
     if( sp != NULL )
         sp->EffectSpellGroupRelation[0] = group_relation_shaman_shock | group_relation_shaman_lightning;
-    sp = dbcSpell.LookupEntryForced( 16107 );
+    sp = CheckAndReturnSpellEntry( 16107 );
     if( sp != NULL )
         sp->EffectSpellGroupRelation[0] = group_relation_shaman_shock | group_relation_shaman_lightning;
-    sp = dbcSpell.LookupEntryForced( 16108 );
+    sp = CheckAndReturnSpellEntry( 16108 );
     if( sp != NULL )
         sp->EffectSpellGroupRelation[0] = group_relation_shaman_shock | group_relation_shaman_lightning;
 
 	// Shaman Shock Range Bonus (Gauntlets bonus)
-	sp = dbcSpell.LookupEntryForced( 32973 );
+	sp = CheckAndReturnSpellEntry( 32973 );
 	if( sp != NULL )
 		sp->EffectSpellGroupRelation[0] = group_relation_shaman_shock;
 
 	// Shaman Shock Crit Bonus (set bonus)
-	sp = dbcSpell.LookupEntryForced( 22804 );
+	sp = CheckAndReturnSpellEntry( 22804 );
 	if( sp != NULL )
 		sp->EffectSpellGroupRelation[0] = group_relation_shaman_shock;
 
 	// Shaman - Storm Reach
-	sp = dbcSpell.LookupEntryForced( 28999 );
+	sp = CheckAndReturnSpellEntry( 28999 );
 	if( sp != NULL )
 		sp->EffectSpellGroupRelation[0] = 2 | 1;
-	sp = dbcSpell.LookupEntryForced( 29000 );
+	sp = CheckAndReturnSpellEntry( 29000 );
 	if( sp != NULL )
 		sp->EffectSpellGroupRelation[0] = 2 | 1;
 
@@ -3773,19 +3773,19 @@ void ApplyNormalFixes()
 	#endif
 	#ifndef NEW_PROCFLAGS
 	//shaman - Healing Way
-	sp = dbcSpell.LookupEntryForced( 29202 );
+	sp = CheckAndReturnSpellEntry( 29202 );
 	if( sp != NULL )
 	{
 		sp->procFlags = PROC_ON_CAST_SPELL;
 		sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 	}
-	sp = dbcSpell.LookupEntryForced( 29205 );
+	sp = CheckAndReturnSpellEntry( 29205 );
 	if( sp != NULL )
 	{
 		sp->procFlags = PROC_ON_CAST_SPELL;
 		sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 	}
-	sp = dbcSpell.LookupEntryForced( 29206 );
+	sp = CheckAndReturnSpellEntry( 29206 );
 	if( sp != NULL )
 	{
 		sp->procFlags = PROC_ON_CAST_SPELL;
@@ -3793,13 +3793,13 @@ void ApplyNormalFixes()
 	}
 #else
 	//shaman - Healing Way
-	sp = dbcSpell.LookupEntryForced( 29202 );
+	sp = CheckAndReturnSpellEntry( 29202 );
 	if( sp != NULL )
 		sp->EffectSpellGroupRelation[0] = 64;
-	sp = dbcSpell.LookupEntryForced( 29205 );
+	sp = CheckAndReturnSpellEntry( 29205 );
 	if( sp != NULL )
 		sp->EffectSpellGroupRelation[0] = 64;
-	sp = dbcSpell.LookupEntryForced( 29206 );
+	sp = CheckAndReturnSpellEntry( 29206 );
 	if( sp != NULL )
 		sp->EffectSpellGroupRelation[0] = 64;
 #endif
@@ -3807,7 +3807,7 @@ void ApplyNormalFixes()
 		/**********************************************************
 		 *	Elemental Mastery
 		 **********************************************************/
-		sp = dbcSpell.LookupEntryForced(16166);
+		sp = CheckAndReturnSpellEntry(16166);
 		if(sp != NULL) {
 			sp->EffectMiscValue[0] = SMT_CRITICAL;
 			sp->EffectMiscValue[1] = SMT_COST;
@@ -3817,32 +3817,32 @@ void ApplyNormalFixes()
 		/**********************************************************
 		 *	Shamanistic Rage
 		 **********************************************************/
-		SpellEntry*  parentsp = dbcSpell.LookupEntryForced( 30823 );
-		SpellEntry* triggersp = dbcSpell.LookupEntryForced( 30824 );
+		SpellEntry*  parentsp = CheckAndReturnSpellEntry( 30823 );
+		SpellEntry* triggersp = CheckAndReturnSpellEntry( 30824 );
 		if( parentsp != NULL && triggersp != NULL )
 			triggersp->EffectBasePoints[0] = parentsp->EffectBasePoints[0];
 
 		//summon only 1 elemental totem
-		sp = dbcSpell.LookupEntryForced( 2894 );
+		sp = CheckAndReturnSpellEntry( 2894 );
 		if( sp != NULL && sp->Id == 2894 )
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_TOTEM_FIRE; //remove this targeting. it is enough to get 1 target
 
 		//summon only 1 elemental totem
-		sp = dbcSpell.LookupEntryForced( 2062 );
+		sp = CheckAndReturnSpellEntry( 2062 );
 		if( sp != NULL && sp->Id == 2062 )
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_TOTEM_EARTH; //remove this targeting. it is enough to get 1 target
 
 		/**********************************************************
 		 *	Elemental Focus
 		 **********************************************************/
-		sp = dbcSpell.LookupEntryForced( 16164 );
+		sp = CheckAndReturnSpellEntry( 16164 );
 		if( sp != NULL && sp->Id == 16164 )
 			sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
 
 		/**********************************************************
 		 *	Stormstrike
 		 **********************************************************/
-		sp = dbcSpell.LookupEntryForced( 17364 );
+		sp = CheckAndReturnSpellEntry( 17364 );
 		if( sp != NULL && sp->Id == 17364 )
 		{
 			sp->procFlags=PROC_ON_SPELL_HIT_VICTIM ;
@@ -3852,12 +3852,12 @@ void ApplyNormalFixes()
 		 *	Bloodlust
 		 **********************************************************/
 		//Bloodlust
-		sp = dbcSpell.LookupEntryForced( 2825 );
+		sp = CheckAndReturnSpellEntry( 2825 );
 		if (sp != NULL)
 			sp->casterAuraSpellNot = 57724; //sated debuff
  
 		//Sated
-		sp = dbcSpell.LookupEntryForced( 57724 );
+		sp = CheckAndReturnSpellEntry( 57724 );
 		if (sp != NULL)
 			sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
 
@@ -3865,47 +3865,47 @@ void ApplyNormalFixes()
 		 *	Heroism
 		 **********************************************************/
 		//Heroism
-		sp = dbcSpell.LookupEntryForced( 32182 );
+		sp = CheckAndReturnSpellEntry( 32182 );
 		if (sp != NULL)
 			sp->casterAuraSpellNot = 57723; //sated debuff
  
 		//Sated
-		sp = dbcSpell.LookupEntryForced( 57723 );
+		sp = CheckAndReturnSpellEntry( 57723 );
 		if (sp != NULL)
 			sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
 
 		/**********************************************************
 		 *	Lightning Overload
 		 **********************************************************/
-		sp = dbcSpell.LookupEntryForced( 30675 );
+		sp = CheckAndReturnSpellEntry( 30675 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 39805;//proc something (we will override this)
 			sp->procFlags = PROC_ON_SPELL_HIT;
 		}
-		sp = dbcSpell.LookupEntryForced( 30678 );
+		sp = CheckAndReturnSpellEntry( 30678 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 39805;//proc something (we will override this)
 			sp->procFlags = PROC_ON_SPELL_HIT;
 		}
-		sp = dbcSpell.LookupEntryForced( 30679 );
+		sp = CheckAndReturnSpellEntry( 30679 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 39805;//proc something (we will override this)
 			sp->procFlags = PROC_ON_SPELL_HIT;
 		}
-		sp = dbcSpell.LookupEntryForced( 30680 );
+		sp = CheckAndReturnSpellEntry( 30680 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 39805;//proc something (we will override this)
 			sp->procFlags = PROC_ON_SPELL_HIT;
 		}
-		sp = dbcSpell.LookupEntryForced( 30681 );
+		sp = CheckAndReturnSpellEntry( 30681 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
@@ -3915,70 +3915,70 @@ void ApplyNormalFixes()
 		/**********************************************************
 		 *	Purge
 		 **********************************************************/
-		sp = dbcSpell.LookupEntryForced( 370 );
+		sp = CheckAndReturnSpellEntry( 370 );
 		if( sp != NULL )
 			sp->DispelType = DISPEL_MAGIC;
-		sp = dbcSpell.LookupEntryForced( 8012 );
+		sp = CheckAndReturnSpellEntry( 8012 );
 		if( sp != NULL )
 			sp->DispelType = DISPEL_MAGIC;
-		sp = dbcSpell.LookupEntryForced( 27626 );
+		sp = CheckAndReturnSpellEntry( 27626 );
 		if( sp != NULL )
 			sp->DispelType = DISPEL_MAGIC;
-		sp = dbcSpell.LookupEntryForced( 33625 );
+		sp = CheckAndReturnSpellEntry( 33625 );
 		if( sp != NULL )
 			sp->DispelType = DISPEL_MAGIC;
 
 		/**********************************************************
 		 *	Eye of the Storm
 		 **********************************************************/
-		sp = dbcSpell.LookupEntryForced( 29062 );
+		sp = CheckAndReturnSpellEntry( 29062 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM;
-		sp = dbcSpell.LookupEntryForced( 29064 );
+		sp = CheckAndReturnSpellEntry( 29064 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM;
-		sp = dbcSpell.LookupEntryForced( 29065 );
+		sp = CheckAndReturnSpellEntry( 29065 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM;
 
 		//Shaman - Shamanistic Focus
 		// needs to be fixed (doesn't need to proc, it now just reduces mana cost always by %)
-		sp = dbcSpell.LookupEntryForced( 43338 );
+		sp = CheckAndReturnSpellEntry( 43338 );
 		if( sp != NULL )
 		{
 			sp->EffectTriggerSpell[0] = 43339;
 		}
 
-		sp = dbcSpell.LookupEntryForced( 43339 );
+		sp = CheckAndReturnSpellEntry( 43339 );
 		if( sp != NULL )
 		{
 			sp->EffectMiscValue[0] = SMT_COST;
 		}
 
 		//shaman - Improved Chain Heal
-		sp = dbcSpell.LookupEntryForced( 30873 );
+		sp = CheckAndReturnSpellEntry( 30873 );
 		if( sp != NULL ){
 			sp->EffectDieSides[0] = 0;
 		}
-		sp = dbcSpell.LookupEntryForced( 30872 );
+		sp = CheckAndReturnSpellEntry( 30872 );
 		if( sp != NULL ){
 			sp->EffectDieSides[0] = 0;
 		}
 
 		// Flametongue Totem - 0% spd coefficient
-		sp = dbcSpell.LookupEntryForced( 16368 );
+		sp = CheckAndReturnSpellEntry( 16368 );
 		if( sp != NULL )
 			sp->fixed_dddhcoef = 0.0f;
 
 		//shaman - Improved Weapon Totems
-		sp = dbcSpell.LookupEntryForced( 29193 );
+		sp = CheckAndReturnSpellEntry( 29193 );
 		if( sp != NULL ){
 			sp->EffectApplyAuraName[0]=SPELL_AURA_ADD_PCT_MODIFIER;
 			sp->EffectApplyAuraName[1]=SPELL_AURA_ADD_PCT_MODIFIER;
 			sp->EffectMiscValue[0] = SMT_MISC_EFFECT;
 			sp->EffectMiscValue[1] = SMT_MISC_EFFECT;
 		}
-		sp = dbcSpell.LookupEntryForced( 29192 );
+		sp = CheckAndReturnSpellEntry( 29192 );
 		if( sp != NULL ){
 			sp->EffectApplyAuraName[0]=SPELL_AURA_ADD_PCT_MODIFIER;
 			sp->EffectApplyAuraName[1]=SPELL_AURA_ADD_PCT_MODIFIER;
@@ -3987,98 +3987,98 @@ void ApplyNormalFixes()
 		}
 
 		// Shaman - Improved Fire Totems
-		sp = dbcSpell.LookupEntryForced( 16544 );
+		sp = CheckAndReturnSpellEntry( 16544 );
 		if( sp != NULL ){
 			sp->EffectMiscValue[0] = SMT_DURATION;
 		}
-		sp = dbcSpell.LookupEntryForced( 16086 );
+		sp = CheckAndReturnSpellEntry( 16086 );
 		if( sp != NULL ){
 			sp->EffectMiscValue[0] = SMT_DURATION;
 		}
 
 		// Shaman Arena totems fix
 		// Totem of Third WInd
-		sp = dbcSpell.LookupEntryForced( 46098 );
+		sp = CheckAndReturnSpellEntry( 46098 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
 		}
-		sp = dbcSpell.LookupEntryForced( 34138 );
+		sp = CheckAndReturnSpellEntry( 34138 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
 		}
-		sp = dbcSpell.LookupEntryForced( 42370 );
+		sp = CheckAndReturnSpellEntry( 42370 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
 		}
-		sp = dbcSpell.LookupEntryForced( 43728 );
+		sp = CheckAndReturnSpellEntry( 43728 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
 		}
 
 		//shaman - Elemental Weapons
-		sp = dbcSpell.LookupEntryForced( 29080 );
+		sp = CheckAndReturnSpellEntry( 29080 );
 		if( sp != NULL ){
 			sp->EffectMiscValue[1] = SMT_DAMAGE_DONE;
 			sp->EffectMiscValue[2] = SMT_DAMAGE_DONE;
 		}
-		sp = dbcSpell.LookupEntryForced( 29079 );
+		sp = CheckAndReturnSpellEntry( 29079 );
 		if( sp != NULL ){
 			sp->EffectMiscValue[1] = SMT_DAMAGE_DONE;
 			sp->EffectMiscValue[2] = SMT_DAMAGE_DONE;
 		}
-		sp = dbcSpell.LookupEntryForced( 16266 );
+		sp = CheckAndReturnSpellEntry( 16266 );
 		if( sp != NULL ){
 			sp->EffectMiscValue[1] = SMT_DAMAGE_DONE;
 			sp->EffectMiscValue[2] = SMT_DAMAGE_DONE;
 		}
 
 		// Magma Totem - 0% spd coefficient
-		sp = dbcSpell.LookupEntryForced( 25550 );
+		sp = CheckAndReturnSpellEntry( 25550 );
 		if( sp != NULL )
 			sp->fixed_dddhcoef = 0.0f;
-		sp = dbcSpell.LookupEntryForced( 10581 );
+		sp = CheckAndReturnSpellEntry( 10581 );
 		if( sp != NULL )
 			sp->fixed_dddhcoef = 0.0f;
-		sp = dbcSpell.LookupEntryForced( 10580 );
+		sp = CheckAndReturnSpellEntry( 10580 );
 		if( sp != NULL )
 			sp->fixed_dddhcoef = 0.0f;
-		sp = dbcSpell.LookupEntryForced( 10579 );
+		sp = CheckAndReturnSpellEntry( 10579 );
 		if( sp != NULL )
 			sp->fixed_dddhcoef = 0.0f;
-		sp = dbcSpell.LookupEntryForced( 8187 );
+		sp = CheckAndReturnSpellEntry( 8187 );
 		if( sp != NULL )
 			sp->fixed_dddhcoef = 0.0f;
 
 		//Tidal Waves
-		sp = dbcSpell.LookupEntryForced( 51562 );
+		sp = CheckAndReturnSpellEntry( 51562 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
 			sp->procChance = 20;
 		}
-		sp = dbcSpell.LookupEntryForced( 51563 );
+		sp = CheckAndReturnSpellEntry( 51563 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
 			sp->procChance = 20;
 		}
-		sp = dbcSpell.LookupEntryForced( 51564 );
+		sp = CheckAndReturnSpellEntry( 51564 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
 			sp->procChance = 20;
 		}
-		sp = dbcSpell.LookupEntryForced( 51565 );
+		sp = CheckAndReturnSpellEntry( 51565 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
 			sp->procChance = 20;
 		}
-		sp = dbcSpell.LookupEntryForced( 51566 );
+		sp = CheckAndReturnSpellEntry( 51566 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
@@ -4086,37 +4086,37 @@ void ApplyNormalFixes()
 		}
 
 		//Earthliving Weapon
-		sp = dbcSpell.LookupEntryForced( 51940 );
+		sp = CheckAndReturnSpellEntry( 51940 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
 			sp->procChance = 20;
 		}
-		sp = dbcSpell.LookupEntryForced( 51989 );
+		sp = CheckAndReturnSpellEntry( 51989 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
 			sp->procChance = 20;
 		}
-		sp = dbcSpell.LookupEntryForced( 52004 );
+		sp = CheckAndReturnSpellEntry( 52004 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
 			sp->procChance = 20;
 		}
-		sp = dbcSpell.LookupEntryForced( 52005 );
+		sp = CheckAndReturnSpellEntry( 52005 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
 			sp->procChance = 20;
 		}
-		sp = dbcSpell.LookupEntryForced( 52007 );
+		sp = CheckAndReturnSpellEntry( 52007 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
 			sp->procChance = 20;
 		}
-		sp = dbcSpell.LookupEntryForced( 52008 );
+		sp = CheckAndReturnSpellEntry( 52008 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
@@ -4124,37 +4124,37 @@ void ApplyNormalFixes()
 		}
 
 		//Maelstrom Weapon
-		sp = dbcSpell.LookupEntryForced( 51528 );
+		sp = CheckAndReturnSpellEntry( 51528 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_MELEE_ATTACK;
 			sp->proc_interval = 24000;
 		}
-		sp = dbcSpell.LookupEntryForced( 51529 );
+		sp = CheckAndReturnSpellEntry( 51529 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_MELEE_ATTACK;
 			sp->proc_interval = 12000;
 		}
-		sp = dbcSpell.LookupEntryForced( 51530 );
+		sp = CheckAndReturnSpellEntry( 51530 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_MELEE_ATTACK;
 			sp->proc_interval = 8000;
 		}
-		sp = dbcSpell.LookupEntryForced( 51531 );
+		sp = CheckAndReturnSpellEntry( 51531 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_MELEE_ATTACK;
 			sp->proc_interval = 6000;
 		}
-		sp = dbcSpell.LookupEntryForced( 51532 );
+		sp = CheckAndReturnSpellEntry( 51532 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_MELEE_ATTACK;
 			sp->proc_interval = 5000;
 		}
-		sp = dbcSpell.LookupEntryForced( 53817 );
+		sp = CheckAndReturnSpellEntry( 53817 );
 		if( sp != NULL )
 			sp->procCharges = 0;
 
@@ -4163,7 +4163,7 @@ void ApplyNormalFixes()
 		 **********************************************************/
 		/*
 		Zack : disabled this to not create confusion that it is working. Burlex deleted code so it needs to be reverted in order to work
-		sp = dbcSpell.LookupEntryForced( 29202 );
+		sp = CheckAndReturnSpellEntry( 29202 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
@@ -4171,7 +4171,7 @@ void ApplyNormalFixes()
             sp->EffectImplicitTargetA[0] = EFF_TARGET_SCRIPTED_OR_SINGLE_TARGET;
 			sp->procChance = sp->EffectBasePoints[0] + 1;
 		}
-		sp = dbcSpell.LookupEntryForced( 29205 );
+		sp = CheckAndReturnSpellEntry( 29205 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
@@ -4179,7 +4179,7 @@ void ApplyNormalFixes()
             sp->EffectImplicitTargetA[0] = EFF_TARGET_SCRIPTED_OR_SINGLE_TARGET;
 			sp->procChance = sp->EffectBasePoints[0] + 1;
 		}
-		sp = dbcSpell.LookupEntryForced( 29206 );
+		sp = CheckAndReturnSpellEntry( 29206 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
@@ -4191,32 +4191,32 @@ void ApplyNormalFixes()
 		/*********************************************************
 		 * Unleashed Rage - LordLeeCH
 		 *********************************************************/
-		sp = dbcSpell.LookupEntryForced( 30802 );
+		sp = CheckAndReturnSpellEntry( 30802 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
 		}
-		sp = dbcSpell.LookupEntryForced( 30808 );
+		sp = CheckAndReturnSpellEntry( 30808 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
 		}
-		sp = dbcSpell.LookupEntryForced( 30809 );
+		sp = CheckAndReturnSpellEntry( 30809 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
 		}
-		sp = dbcSpell.LookupEntryForced( 30810 );
+		sp = CheckAndReturnSpellEntry( 30810 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
 		}
 
-		sp = dbcSpell.LookupEntryForced( 30811 );
+		sp = CheckAndReturnSpellEntry( 30811 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
@@ -4227,43 +4227,43 @@ void ApplyNormalFixes()
 		/**********************************************************
 		 *	Elemental Devastation
 		 **********************************************************/
-		sp = dbcSpell.LookupEntryForced( 29179 );
+		sp = CheckAndReturnSpellEntry( 29179 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
-		sp = dbcSpell.LookupEntryForced( 29180 );
+		sp = CheckAndReturnSpellEntry( 29180 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
-		sp = dbcSpell.LookupEntryForced( 30160 );
+		sp = CheckAndReturnSpellEntry( 30160 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
 
 		/**********************************************************
 		 *	Ancestral healing
 		 **********************************************************/
-		sp = dbcSpell.LookupEntryForced( 16176 );
+		sp = CheckAndReturnSpellEntry( 16176 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
-		sp = dbcSpell.LookupEntryForced( 16235 );
+		sp = CheckAndReturnSpellEntry( 16235 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
-		sp = dbcSpell.LookupEntryForced( 16240 );
+		sp = CheckAndReturnSpellEntry( 16240 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
 
 		/**********************************************************
 		 *	Ancestral healing proc spell
 		 **********************************************************/
-		sp = dbcSpell.LookupEntryForced( 16177 );
+		sp = CheckAndReturnSpellEntry( 16177 );
 		if( sp != NULL )
 			sp->rangeIndex = 4;
-		sp = dbcSpell.LookupEntryForced( 16236 );
+		sp = CheckAndReturnSpellEntry( 16236 );
 		if( sp != NULL )
 			sp->rangeIndex = 4;
-		sp = dbcSpell.LookupEntryForced( 16237 );
+		sp = CheckAndReturnSpellEntry( 16237 );
 		if( sp != NULL )
 			sp->rangeIndex = 4;
 
-		sp = dbcSpell.LookupEntryForced( 20608 ); //Reincarnation
+		sp = CheckAndReturnSpellEntry( 20608 ); //Reincarnation
 		if( sp != NULL )
 		{
 			for(i= 0;i<8;i++)
@@ -4279,7 +4279,7 @@ void ApplyNormalFixes()
 		//////////////////////////////////////////
 		// SHAMAN WRATH OF AIR TOTEM			//
 		//////////////////////////////////////////
-		sp = dbcSpell.LookupEntryForced( 2895 );
+		sp = CheckAndReturnSpellEntry( 2895 );
 		if( sp != NULL )
 		{
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_SELF;
@@ -4291,7 +4291,7 @@ void ApplyNormalFixes()
 		}
 
 		// Rogue - Master of Subtlety
-		sp = dbcSpell.LookupEntryForced( 31665 );
+		sp = CheckAndReturnSpellEntry( 31665 );
 		if( sp != NULL )
 			sp->AttributesEx |= ATTRIBUTESEX_NOT_BREAK_STEALTH;
 
@@ -4302,31 +4302,31 @@ void ApplyNormalFixes()
 	// Insert mage spell fixes here
 
 		//Missile Barrage
-		sp = dbcSpell.LookupEntryForced( 44404 );
+		sp = CheckAndReturnSpellEntry( 44404 );
         if( sp != NULL )
         {
 			sp->procFlags = PROC_ON_CAST_SPELL;
 			sp->procChance = 4;
         }
-		sp = dbcSpell.LookupEntryForced( 54486 );
+		sp = CheckAndReturnSpellEntry( 54486 );
         if( sp != NULL )
         {
 			sp->procFlags = PROC_ON_CAST_SPELL;
 			sp->procChance = 8;
         }
-		sp = dbcSpell.LookupEntryForced( 54488 );
+		sp = CheckAndReturnSpellEntry( 54488 );
         if( sp != NULL )
         {
 			sp->procFlags = PROC_ON_CAST_SPELL;
 			sp->procChance = 12;
         }
-		sp = dbcSpell.LookupEntryForced( 54489 );
+		sp = CheckAndReturnSpellEntry( 54489 );
         if( sp != NULL )
         {
 			sp->procFlags = PROC_ON_CAST_SPELL;
 			sp->procChance = 16;
         }
-		sp = dbcSpell.LookupEntryForced( 54490 );
+		sp = CheckAndReturnSpellEntry( 54490 );
         if( sp != NULL )
         {
 			sp->procFlags = PROC_ON_CAST_SPELL;
@@ -4334,28 +4334,28 @@ void ApplyNormalFixes()
         }
 
 		// Brain Freeze rank 1
-		sp = dbcSpell.LookupEntryForced( 44546 );
+		sp = CheckAndReturnSpellEntry( 44546 );
 		if(sp != NULL)
 			sp->EffectApplyAuraName[0] = SPELL_AURA_DUMMY;
 
 		// Brain Freeze rank 2
-		sp = dbcSpell.LookupEntryForced( 44548 );
+		sp = CheckAndReturnSpellEntry( 44548 );
 		if(sp != NULL)
 			sp->EffectApplyAuraName[0] = SPELL_AURA_DUMMY;
 
 		// Brain Freeze rank 3
-		sp = dbcSpell.LookupEntryForced( 44549 );
+		sp = CheckAndReturnSpellEntry( 44549 );
 		if(sp != NULL)
 			sp->EffectApplyAuraName[0] = SPELL_AURA_DUMMY;
 
 		// Fingers of Frost rank 1
-		sp = dbcSpell.LookupEntryForced( 44543 );
+		sp = CheckAndReturnSpellEntry( 44543 );
 		if(sp != NULL)
 			sp->EffectApplyAuraName[0] = SPELL_AURA_DUMMY;
 
 
 		// Fingers of Frost rank 2
-		sp = dbcSpell.LookupEntryForced( 44545 );
+		sp = CheckAndReturnSpellEntry( 44545 );
 		if(sp != NULL)
 			sp->EffectApplyAuraName[0] = SPELL_AURA_DUMMY;
 
@@ -4364,13 +4364,13 @@ void ApplyNormalFixes()
 		**********************************************************/
 
 		//Improved Blink - *Rank 1*
-		sp = dbcSpell.LookupEntryForced( 31569 );
+		sp = CheckAndReturnSpellEntry( 31569 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
 		}
 			//Improved Blink - *Rank 2*
-		sp = dbcSpell.LookupEntryForced( 31570 );
+		sp = CheckAndReturnSpellEntry( 31570 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
@@ -4379,24 +4379,24 @@ void ApplyNormalFixes()
 		 *	Arcane Concentration
 		 **********************************************************/
 
-		sp = dbcSpell.LookupEntryForced( 11213 );
+		sp = CheckAndReturnSpellEntry( 11213 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_SPELL_HIT | static_cast<uint32>(PROC_TARGET_SELF);
-		sp = dbcSpell.LookupEntryForced( 12574 );
+		sp = CheckAndReturnSpellEntry( 12574 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_SPELL_HIT | static_cast<uint32>(PROC_TARGET_SELF);
-		sp = dbcSpell.LookupEntryForced( 12575 );
+		sp = CheckAndReturnSpellEntry( 12575 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_SPELL_HIT | static_cast<uint32>(PROC_TARGET_SELF);
-		sp = dbcSpell.LookupEntryForced( 12576 );
+		sp = CheckAndReturnSpellEntry( 12576 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_SPELL_HIT | static_cast<uint32>(PROC_TARGET_SELF);
-		sp = dbcSpell.LookupEntryForced( 12577 );
+		sp = CheckAndReturnSpellEntry( 12577 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_SPELL_HIT | static_cast<uint32>(PROC_TARGET_SELF);
 
 		//Mage - Arcane Concentration proc
-		sp = dbcSpell.LookupEntryForced( 12536 );
+		sp = CheckAndReturnSpellEntry( 12536 );
 		if( sp != NULL )
 		{
 			sp->BGR_one_buff_on_target = 0;
@@ -4405,26 +4405,26 @@ void ApplyNormalFixes()
 		}
 
 		//Mage - Wand Specialization. Not the forst thing we messed up. Blizz uses attack as magic and wandds as weapons :S
-		sp = dbcSpell.LookupEntryForced( 6057 );
+		sp = CheckAndReturnSpellEntry( 6057 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_ADD_PCT_MODIFIER;
 			sp->EffectMiscValue[0] = SMT_MISC_EFFECT;
 		}
-		sp = dbcSpell.LookupEntryForced( 6085 );
+		sp = CheckAndReturnSpellEntry( 6085 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_ADD_PCT_MODIFIER;
 			sp->EffectMiscValue[0] = SMT_MISC_EFFECT;
 		}
 		//Mage - Spell Power
-		sp = dbcSpell.LookupEntryForced( 35578 );
+		sp = CheckAndReturnSpellEntry( 35578 );
 		if( sp != NULL )
 		{
 			sp->EffectMiscValue[0] = SMT_CRITICAL_DAMAGE;
 			sp->EffectApplyAuraName[0] = SPELL_AURA_ADD_PCT_MODIFIER;
 		}
-		sp = dbcSpell.LookupEntryForced( 35581 );
+		sp = CheckAndReturnSpellEntry( 35581 );
 		if( sp != NULL )
 		{
 			sp->EffectMiscValue[0] = SMT_CRITICAL_DAMAGE;
@@ -4432,19 +4432,19 @@ void ApplyNormalFixes()
 		}
 
 		//Mage - Elemental Precision
-		sp = dbcSpell.LookupEntryForced( 29438 );
+		sp = CheckAndReturnSpellEntry( 29438 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_ADD_PCT_MODIFIER;
 			sp->EffectMiscValue[0] = SMT_COST;
 		}
-		sp = dbcSpell.LookupEntryForced( 29439 );
+		sp = CheckAndReturnSpellEntry( 29439 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_ADD_PCT_MODIFIER;
 			sp->EffectMiscValue[0] = SMT_COST;
 		}
-		sp = dbcSpell.LookupEntryForced( 29440 );
+		sp = CheckAndReturnSpellEntry( 29440 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_ADD_PCT_MODIFIER;
@@ -4452,7 +4452,7 @@ void ApplyNormalFixes()
 		}
 
 		//Mage - Arcane Blast
-		sp = dbcSpell.LookupEntryForced( 30451 );
+		sp = CheckAndReturnSpellEntry( 30451 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[1] = SPELL_AURA_PROC_TRIGGER_SPELL;
@@ -4463,7 +4463,7 @@ void ApplyNormalFixes()
 
 		// Updated ranks by Joker
 		// Arcane Blast
-		sp = dbcSpell.LookupEntryForced( 42894 );
+		sp = CheckAndReturnSpellEntry( 42894 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[1] = SPELL_AURA_PROC_TRIGGER_SPELL;
@@ -4472,7 +4472,7 @@ void ApplyNormalFixes()
 			sp->ProcOnNameHash[1] = SPELL_HASH_ARCANE_BLAST;
 		}
 
-		sp = dbcSpell.LookupEntryForced( 42896 );
+		sp = CheckAndReturnSpellEntry( 42896 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[1] = SPELL_AURA_PROC_TRIGGER_SPELL;
@@ -4480,7 +4480,7 @@ void ApplyNormalFixes()
 			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
 		}
 
-		sp = dbcSpell.LookupEntryForced( 42897 );
+		sp = CheckAndReturnSpellEntry( 42897 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[1] = SPELL_AURA_PROC_TRIGGER_SPELL;
@@ -4489,7 +4489,7 @@ void ApplyNormalFixes()
 		}
 	
 		//mage - Arcane Blast Proc
-		sp = dbcSpell.LookupEntryForced( 36032 );
+		sp = CheckAndReturnSpellEntry( 36032 );
 		{
 			sp->procFlags = 0;
 			sp->maxstack = 4;
@@ -4499,38 +4499,38 @@ void ApplyNormalFixes()
 
 		//mage : Empowered Arcane Missiles
 		//heh B thinks he is smart by adding this to description ? If it doesn't work std then it still needs to made by hand
-		sp = dbcSpell.LookupEntryForced( 31579 );
+		sp = CheckAndReturnSpellEntry( 31579 );
 		if( sp != NULL )
 		{
 			sp->EffectBasePoints[0] = 5 * (sp->EffectBasePoints[0] + 1); 
 		}
-		sp = dbcSpell.LookupEntryForced( 31582 );
+		sp = CheckAndReturnSpellEntry( 31582 );
 		if( sp != NULL )
 		{
 			sp->EffectBasePoints[0] = 5 * (sp->EffectBasePoints[0] + 1);
 		}
-		sp = dbcSpell.LookupEntryForced( 31583 );
+		sp = CheckAndReturnSpellEntry( 31583 );
 		if( sp != NULL )
 		{
 			sp->EffectBasePoints[0] = 5 * (sp->EffectBasePoints[0] + 1);
 		}
 
 		//Mage - Improved Blizzard
-		sp = dbcSpell.LookupEntryForced( 11185 );
+		sp = CheckAndReturnSpellEntry( 11185 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 12484;
 			sp->procFlags = PROC_ON_CAST_SPELL;
 		}
-		sp = dbcSpell.LookupEntryForced( 12487 );
+		sp = CheckAndReturnSpellEntry( 12487 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 12485;
 			sp->procFlags = PROC_ON_CAST_SPELL;
 		}
-		sp = dbcSpell.LookupEntryForced( 12488 );
+		sp = CheckAndReturnSpellEntry( 12488 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
@@ -4540,7 +4540,7 @@ void ApplyNormalFixes()
 
 		// cebernic: not for self?
 		// impact
-		sp = dbcSpell.LookupEntryForced( 12355 );
+		sp = CheckAndReturnSpellEntry( 12355 );
 		if( sp != NULL )
 		{
 		  // passive rank: 11103, 12357, 12358 ,12359,12360 :D
@@ -4555,7 +4555,7 @@ void ApplyNormalFixes()
 		}
 
 		//Mage - Invisibility
-		sp = dbcSpell.LookupEntryForced( 66 );
+		sp = CheckAndReturnSpellEntry( 66 );
 		if( sp != NULL )
 		{
 			sp->AuraInterruptFlags |= AURA_INTERRUPT_ON_CAST_SPELL;
@@ -4571,14 +4571,14 @@ void ApplyNormalFixes()
 		}
 
 		 //Invisibility triggered spell, should be removed on cast
-		sp = dbcSpell.LookupEntryForced( 32612 );
+		sp = CheckAndReturnSpellEntry( 32612 );
 		if( sp != NULL )
 		{
 			sp->AuraInterruptFlags |= AURA_INTERRUPT_ON_CAST_SPELL;
 		}
 
 		//Fingers of frost proc
-		sp = dbcSpell.LookupEntryForced( 44544 );
+		sp = CheckAndReturnSpellEntry( 44544 );
 		if( sp != NULL )
 		{
 			sp->procCharges = 2;
@@ -4586,7 +4586,7 @@ void ApplyNormalFixes()
 		}
  
 		//Brain Freeze proc (Fireball!)
-		sp = dbcSpell.LookupEntryForced( 57761 );
+		sp = CheckAndReturnSpellEntry( 57761 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
@@ -4594,7 +4594,7 @@ void ApplyNormalFixes()
 		}
 
 		//Arcane Potency procs
-		sp = dbcSpell.LookupEntryForced( 57529 );
+		sp = CheckAndReturnSpellEntry( 57529 );
 		if( sp != NULL )
 		{
 			sp->procFlags = 0;
@@ -4603,7 +4603,7 @@ void ApplyNormalFixes()
 			sp->AuraInterruptFlags = 0;
 		}
 
-		sp = dbcSpell.LookupEntryForced( 57531 );
+		sp = CheckAndReturnSpellEntry( 57531 );
 		if( sp != NULL )
 		{
 			sp->procFlags = 0;
@@ -4613,37 +4613,37 @@ void ApplyNormalFixes()
 		}
 
 		//Hot Streak proc
-		sp = dbcSpell.LookupEntryForced( 48108 );
+		sp = CheckAndReturnSpellEntry( 48108 );
 		if( sp != NULL )
 		{
 			sp->AuraInterruptFlags |= AURA_INTERRUPT_ON_CAST_SPELL;
 		}
 
 		//Ice Lances
-		sp = dbcSpell.LookupEntryForced( 42914 );
+		sp = CheckAndReturnSpellEntry( 42914 );
 		if( sp != NULL )
 			sp->Dspell_coef_override = 0.1429f;
 
-		sp = dbcSpell.LookupEntryForced( 42913 );
+		sp = CheckAndReturnSpellEntry( 42913 );
 		if( sp != NULL )
 			sp->Dspell_coef_override = 0.1429f;
 
-		sp = dbcSpell.LookupEntryForced( 30455 );
+		sp = CheckAndReturnSpellEntry( 30455 );
 		if( sp != NULL )
 			sp->Dspell_coef_override = 0.1429f;
 
 		// Frostfire Bolts
-		sp = dbcSpell.LookupEntryForced( 47610 );
+		sp = CheckAndReturnSpellEntry( 47610 );
 		if( sp != NULL )
 			sp->fixed_dddhcoef = 0.8571f;
 
-		sp = dbcSpell.LookupEntryForced( 44614 );
+		sp = CheckAndReturnSpellEntry( 44614 );
 		if( sp != NULL )
 			sp->fixed_dddhcoef = 0.8571f;
 
 
 		//mage - Combustion
-		sp = dbcSpell.LookupEntryForced( 11129 );
+		sp = CheckAndReturnSpellEntry( 11129 );
 		if( sp != NULL )
 		{
 			sp->Effect[0] = SPELL_EFFECT_NULL;
@@ -4656,7 +4656,7 @@ void ApplyNormalFixes()
 		}
 
 		//mage - Master of Elements
-		sp = dbcSpell.LookupEntryForced( 29074 );
+		sp = CheckAndReturnSpellEntry( 29074 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
@@ -4664,7 +4664,7 @@ void ApplyNormalFixes()
 			sp->procFlags = uint32(PROC_ON_SPELL_CRIT_HIT|PROC_TARGET_SELF);
 			sp->procChance = 100;
 		}
-		sp = dbcSpell.LookupEntryForced( 29075 );
+		sp = CheckAndReturnSpellEntry( 29075 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
@@ -4672,7 +4672,7 @@ void ApplyNormalFixes()
 			sp->procFlags = uint32(PROC_ON_SPELL_CRIT_HIT|PROC_TARGET_SELF);
 			sp->procChance = 100;
 		}
-		sp = dbcSpell.LookupEntryForced( 29076 );
+		sp = CheckAndReturnSpellEntry( 29076 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
@@ -4682,29 +4682,29 @@ void ApplyNormalFixes()
 		}
 
 		//mage: Blazing Speed
-		sp = dbcSpell.LookupEntryForced( 31641 );
+		sp = CheckAndReturnSpellEntry( 31641 );
 		if( sp != NULL )
 			sp->EffectTriggerSpell[0] = 31643;
-		sp = dbcSpell.LookupEntryForced( 31642 );
+		sp = CheckAndReturnSpellEntry( 31642 );
 		if( sp != NULL )
 			sp->EffectTriggerSpell[0] = 31643;
 
 		//Mage - Improved Scorch
-		sp = dbcSpell.LookupEntryForced( 11095 );
+		sp = CheckAndReturnSpellEntry( 11095 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->procChance =33;
 			sp->procFlags = PROC_ON_CAST_SPELL;
 		}
-		sp = dbcSpell.LookupEntryForced( 12872 );
+		sp = CheckAndReturnSpellEntry( 12872 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->procChance =66;
 			sp->procFlags = PROC_ON_CAST_SPELL;
 		}
-		sp = dbcSpell.LookupEntryForced( 12873 );
+		sp = CheckAndReturnSpellEntry( 12873 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
@@ -4712,50 +4712,50 @@ void ApplyNormalFixes()
 			sp->procFlags = PROC_ON_CAST_SPELL;
 		}
 		// mage - Frost Warding
-		sp = dbcSpell.LookupEntryForced( 11189 );
+		sp = CheckAndReturnSpellEntry( 11189 );
 		if( sp != NULL )
 		{
 			sp->procChance = 10;
 		}
-		sp = dbcSpell.LookupEntryForced( 28332 );
+		sp = CheckAndReturnSpellEntry( 28332 );
 		if( sp != NULL )
 		{
 			sp->procChance = 20;
 		}
 
 		// mage - Conjure Refreshment Table
-		sp = dbcSpell.LookupEntryForced( 43985 );
+		sp = CheckAndReturnSpellEntry( 43985 );
 		if ( sp != NULL )
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_DYNAMIC_OBJECT;
 
 		// Hypothermia: undispellable
-		sp = dbcSpell.LookupEntryForced( 41425 );
+		sp = CheckAndReturnSpellEntry( 41425 );
 		if( sp != NULL )
 			sp->c_is_flags = SPELL_FLAG_IS_FORCEDDEBUFF;
 
 		// Mage - Permafrost Rank 1
-		sp = dbcSpell.LookupEntryForced(11175);
+		sp = CheckAndReturnSpellEntry(11175);
 		if(sp != NULL)
 		{
 			sp->EffectMiscValue[1] = SMT_MISC_EFFECT;
 		}
 
 		// Mage - Permafrost Rank 2
-		sp = dbcSpell.LookupEntryForced(12569);
+		sp = CheckAndReturnSpellEntry(12569);
 		if(sp != NULL)
 		{
 			sp->EffectMiscValue[1] = SMT_MISC_EFFECT;
 		}
 
 		// Mage - Permafrost Rank 3
-		sp = dbcSpell.LookupEntryForced(12571);
+		sp = CheckAndReturnSpellEntry(12571);
 		if(sp != NULL)
 		{
 			sp->EffectMiscValue[1] = SMT_MISC_EFFECT;
 		}
 
 		//Improved Counterspell rank 1
-		sp = dbcSpell.LookupEntryForced( 11255 );
+		sp = CheckAndReturnSpellEntry( 11255 );
 		if( sp!= NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
@@ -4765,7 +4765,7 @@ void ApplyNormalFixes()
 		}
 
 		//Improved Counterspell rank 2
-		sp = dbcSpell.LookupEntryForced( 12598 );
+		sp = CheckAndReturnSpellEntry( 12598 );
 		if( sp!= NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
@@ -4780,12 +4780,12 @@ void ApplyNormalFixes()
 	// Insert warlock spell fixes here
 		
 		//Dummy for Demonic Circle
-		sp = dbcSpell.LookupEntryForced( 48018 );
+		sp = CheckAndReturnSpellEntry( 48018 );
 		if (sp != NULL){
 			
 			sp->EffectImplicitTargetA[1] = 1;
 			CreateDummySpell( 62388 );
-			sp = dbcSpell.LookupEntryForced( 62388 );
+			sp = CheckAndReturnSpellEntry( 62388 );
 			if ( sp != NULL ){
 				sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
 				sp->EffectApplyAuraName[0] = SPELL_AURA_DUMMY;
@@ -4793,14 +4793,14 @@ void ApplyNormalFixes()
 		}
 		
 		//megai2: Immolation Aura
-		sp = dbcSpell.LookupEntryForced( 50589 );
+		sp = CheckAndReturnSpellEntry( 50589 );
 		if (sp != NULL)
 		{
 			sp->ChannelInterruptFlags = 0; // Remove channeling behaviour.
 		}
 
 		//megai2: Everlasting Affliction
-		sp = dbcSpell.LookupEntryForced( 47205 );
+		sp = CheckAndReturnSpellEntry( 47205 );
 		if (sp != NULL)
 		{
 			sp->EffectSpellClassMask[1][0] = 0x111;
@@ -4809,7 +4809,7 @@ void ApplyNormalFixes()
 			sp->procCharges = -1;
 		}
 
-		sp = dbcSpell.LookupEntryForced( 47204 );
+		sp = CheckAndReturnSpellEntry( 47204 );
 		if (sp != NULL)
 		{
 			sp->EffectSpellClassMask[1][0] = 0x111;
@@ -4818,7 +4818,7 @@ void ApplyNormalFixes()
 			sp->procCharges = -1;
 		}
 
-		sp = dbcSpell.LookupEntryForced( 47203 );
+		sp = CheckAndReturnSpellEntry( 47203 );
 		if (sp != NULL)
 		{
 			sp->EffectSpellClassMask[1][0] = 0x111;
@@ -4827,7 +4827,7 @@ void ApplyNormalFixes()
 			sp->procCharges = -1;
 		}
 
-		sp = dbcSpell.LookupEntryForced( 47202 );
+		sp = CheckAndReturnSpellEntry( 47202 );
 		if (sp != NULL)
 		{
 			sp->EffectSpellClassMask[1][0] = 0x111;
@@ -4836,7 +4836,7 @@ void ApplyNormalFixes()
 			sp->procCharges = -1;
 		}
 
-		sp = dbcSpell.LookupEntryForced( 47201 );
+		sp = CheckAndReturnSpellEntry( 47201 );
 		if (sp != NULL)
 		{
 			sp->EffectSpellClassMask[1][0] = 0x111;
@@ -4844,26 +4844,26 @@ void ApplyNormalFixes()
 		}
 
 		//Unstable Affliction
-		sp = dbcSpell.LookupEntryForced( 31117 );
+		sp = CheckAndReturnSpellEntry( 31117 );
 		if (sp != NULL)
 			sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
 
 		//warlock: Eradication
-		sp = dbcSpell.LookupEntryForced( 47195 );
+		sp = CheckAndReturnSpellEntry( 47195 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_ANY_HOSTILE_ACTION;
 			sp->procCharges = -1;
 		}
 
-		sp = dbcSpell.LookupEntryForced( 47196 );
+		sp = CheckAndReturnSpellEntry( 47196 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_ANY_HOSTILE_ACTION;
 			sp->procCharges = -1;
 		}
 
-		sp = dbcSpell.LookupEntryForced( 47197 );
+		sp = CheckAndReturnSpellEntry( 47197 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_ANY_HOSTILE_ACTION;
@@ -4871,21 +4871,21 @@ void ApplyNormalFixes()
 		}
 
 		//Warlock Molten Core
-		sp = dbcSpell.LookupEntryForced( 47245 );
+		sp = CheckAndReturnSpellEntry( 47245 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_ANY_HOSTILE_ACTION;
 			sp->procCharges = -1;
 		}
 
-		sp = dbcSpell.LookupEntryForced( 47246 );
+		sp = CheckAndReturnSpellEntry( 47246 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_ANY_HOSTILE_ACTION;
 			sp->procCharges = -1;
 		}
 
-		sp = dbcSpell.LookupEntryForced( 47247 );
+		sp = CheckAndReturnSpellEntry( 47247 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_ANY_HOSTILE_ACTION;
@@ -4895,19 +4895,19 @@ void ApplyNormalFixes()
 		/**********************************************************
 		 *	Nether Protection
 		 **********************************************************/
-		sp = dbcSpell.LookupEntryForced( 30299 );
+		sp = CheckAndReturnSpellEntry( 30299 );
 		if (sp != NULL)
 		{
 			sp->procChance = 10;
 			sp->proc_interval = 13000;
 		}
-		sp = dbcSpell.LookupEntryForced( 30301 );
+		sp = CheckAndReturnSpellEntry( 30301 );
 		if (sp != NULL)
 		{
 			sp->procChance = 20;
 			sp->proc_interval = 13000;
 		}
-		sp = dbcSpell.LookupEntryForced( 30302 );
+		sp = CheckAndReturnSpellEntry( 30302 );
 		if (sp != NULL)
 		{
 			sp->procChance = 30;
@@ -4916,25 +4916,25 @@ void ApplyNormalFixes()
 		/**********************************************************
 		 *	Backlash
 		 **********************************************************/
-		sp = dbcSpell.LookupEntryForced( 34935 );
+		sp = CheckAndReturnSpellEntry( 34935 );
 		if (sp != NULL)
 		{
 			sp->proc_interval = 8000;
 			sp->procFlags |= PROC_ON_MELEE_ATTACK_VICTIM | static_cast<uint32>(PROC_TARGET_SELF);
 		}
-		sp = dbcSpell.LookupEntryForced( 34938 );
+		sp = CheckAndReturnSpellEntry( 34938 );
 		if (sp != NULL)
 		{
 			sp->proc_interval = 8000;
 			sp->procFlags |= PROC_ON_MELEE_ATTACK_VICTIM | static_cast<uint32>(PROC_TARGET_SELF);
 		}
-		sp = dbcSpell.LookupEntryForced( 34939 );
+		sp = CheckAndReturnSpellEntry( 34939 );
 		if (sp != NULL)
 		{
 			sp->proc_interval = 8000;
 			sp->procFlags |= PROC_ON_MELEE_ATTACK_VICTIM | static_cast<uint32>(PROC_TARGET_SELF);
 		}
-		sp = dbcSpell.LookupEntryForced( 34936 );
+		sp = CheckAndReturnSpellEntry( 34936 );
 		if (sp != NULL)
 		{
 			sp->AuraInterruptFlags = AURA_INTERRUPT_ON_CAST_SPELL;
@@ -4943,7 +4943,7 @@ void ApplyNormalFixes()
 		/**********************************************************
 		 *	Demonic Knowledge
 		 **********************************************************/
-		sp = dbcSpell.LookupEntryForced( 35691 );
+		sp = CheckAndReturnSpellEntry( 35691 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_MOD_DAMAGE_DONE;
@@ -4957,7 +4957,7 @@ void ApplyNormalFixes()
 			sp->EffectImplicitTargetA[2]=EFF_TARGET_PET;
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_PET_OWNER | SPELL_FLAG_IS_EXPIREING_WITH_PET;
 		}
-		sp = dbcSpell.LookupEntryForced( 35692 );
+		sp = CheckAndReturnSpellEntry( 35692 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_MOD_DAMAGE_DONE;
@@ -4971,7 +4971,7 @@ void ApplyNormalFixes()
 			sp->EffectImplicitTargetA[2] = EFF_TARGET_PET;
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_PET_OWNER | SPELL_FLAG_IS_EXPIREING_WITH_PET;
 		}
-		sp = dbcSpell.LookupEntryForced( 35693 );
+		sp = CheckAndReturnSpellEntry( 35693 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_MOD_DAMAGE_DONE;
@@ -4985,7 +4985,7 @@ void ApplyNormalFixes()
 			sp->EffectImplicitTargetA[2] = EFF_TARGET_PET;
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_PET_OWNER | SPELL_FLAG_IS_EXPIREING_WITH_PET;
 		}
-		sp = dbcSpell.LookupEntryForced( 35696 );
+		sp = CheckAndReturnSpellEntry( 35696 );
 		if( sp != NULL )
 		{
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA; //making this only for the visible effect
@@ -4994,7 +4994,7 @@ void ApplyNormalFixes()
 		}
 
 		//warlock -  Seed of Corruption
-		sp = dbcSpell.LookupEntryForced( 27243 );
+		sp = CheckAndReturnSpellEntry( 27243 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[1] = SPELL_AURA_PROC_TRIGGER_SPELL;
@@ -5004,7 +5004,7 @@ void ApplyNormalFixes()
 		}
 
 		//warlock -  soul link
-		sp = dbcSpell.LookupEntryForced( 19028 );
+		sp = CheckAndReturnSpellEntry( 19028 );
 		if( sp != NULL )
 		{
 			//this is for the trigger effect
@@ -5022,7 +5022,7 @@ void ApplyNormalFixes()
 		}
 
 		//warlock: Nightfall
-		sp = dbcSpell.LookupEntryForced( 18094 );
+		sp = CheckAndReturnSpellEntry( 18094 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
@@ -5030,7 +5030,7 @@ void ApplyNormalFixes()
 			sp->procFlags = PROC_ON_ANY_HOSTILE_ACTION | static_cast<uint32>(PROC_TARGET_SELF);
 			sp->procChance = 2;
 		}
-		sp = dbcSpell.LookupEntryForced( 18095 );
+		sp = CheckAndReturnSpellEntry( 18095 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
@@ -5039,31 +5039,31 @@ void ApplyNormalFixes()
 			sp->procChance = 4;
 		}
 		//Shadow Trance should be removed on the first SB
-		sp = dbcSpell.LookupEntryForced( 17941 );
+		sp = CheckAndReturnSpellEntry( 17941 );
 		if( sp != NULL )
 		{
 			sp->AuraInterruptFlags = AURA_INTERRUPT_ON_CAST_SPELL;
 		}
 
 		//warlock: Empowered Corruption
-		sp = dbcSpell.LookupEntryForced( 32381 );
+		sp = CheckAndReturnSpellEntry( 32381 );
 		if( sp != NULL )
 		{
 			sp->EffectBasePoints[0] *= 6;
 		}
-		sp = dbcSpell.LookupEntryForced( 32382 );
+		sp = CheckAndReturnSpellEntry( 32382 );
 		if( sp != NULL )
 		{
 			sp->EffectBasePoints[0] *= 6;
 		}
-		sp = dbcSpell.LookupEntryForced( 32383 );
+		sp = CheckAndReturnSpellEntry( 32383 );
 		if( sp != NULL )
 		{
 			sp->EffectBasePoints[0] *= 6;
 		}
 
 		//warlock: Improved Enslave Demon
-		sp = dbcSpell.LookupEntryForced( 18821 );
+		sp = CheckAndReturnSpellEntry( 18821 );
 		if( sp != NULL )
 		{
 			sp->EffectMiscValue[0]=SMT_SPELL_VALUE_PCT;
@@ -5071,24 +5071,24 @@ void ApplyNormalFixes()
 		}
 
 		//warlock - Demonic Sacrifice
-		sp = dbcSpell.LookupEntryForced( 18789 );
+		sp = CheckAndReturnSpellEntry( 18789 );
 		if( sp != NULL )
 			sp->c_is_flags |= SPELL_FLAG_IS_EXPIREING_ON_PET;
-		sp = dbcSpell.LookupEntryForced( 18790 );
+		sp = CheckAndReturnSpellEntry( 18790 );
 		if( sp != NULL )
 			sp->c_is_flags |= SPELL_FLAG_IS_EXPIREING_ON_PET;
-		sp = dbcSpell.LookupEntryForced( 18791 );
+		sp = CheckAndReturnSpellEntry( 18791 );
 		if( sp != NULL )
 			sp->c_is_flags |= SPELL_FLAG_IS_EXPIREING_ON_PET;
-		sp = dbcSpell.LookupEntryForced( 18792 );
+		sp = CheckAndReturnSpellEntry( 18792 );
 		if( sp != NULL )
 			sp->c_is_flags |= SPELL_FLAG_IS_EXPIREING_ON_PET;
-		sp = dbcSpell.LookupEntryForced( 35701 );
+		sp = CheckAndReturnSpellEntry( 35701 );
 		if( sp != NULL )
 			sp->c_is_flags |= SPELL_FLAG_IS_EXPIREING_ON_PET;
 
 		//warlock - Demonic Tactics
-		sp = dbcSpell.LookupEntryForced( 30242 );
+		sp = CheckAndReturnSpellEntry( 30242 );
 		if( sp != NULL )
 		{
 			sp->Effect[0] = SPELL_EFFECT_NULL; //disable this. This is just blizz crap. Pure proof that they suck :P
@@ -5097,7 +5097,7 @@ void ApplyNormalFixes()
 			sp->EffectImplicitTargetB[2] = EFF_TARGET_PET;
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_PET_OWNER ;
 		}
-		sp = dbcSpell.LookupEntryForced( 30245 );
+		sp = CheckAndReturnSpellEntry( 30245 );
 		if( sp != NULL )
 		{
 			sp->Effect[0] = SPELL_EFFECT_NULL; //disable this. This is just blizz crap. Pure proof that they suck :P
@@ -5105,7 +5105,7 @@ void ApplyNormalFixes()
 			sp->EffectImplicitTargetB[2] = EFF_TARGET_PET;
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_PET_OWNER ;
 		}
-		sp = dbcSpell.LookupEntryForced( 30246 );
+		sp = CheckAndReturnSpellEntry( 30246 );
 		if( sp != NULL )
 		{
 			sp->Effect[0] = SPELL_EFFECT_NULL; //disable this. This is just blizz crap. Pure proof that they suck :P
@@ -5113,7 +5113,7 @@ void ApplyNormalFixes()
 			sp->EffectImplicitTargetB[2] = EFF_TARGET_PET;
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_PET_OWNER ;
 		}
-		sp = dbcSpell.LookupEntryForced( 30247 );
+		sp = CheckAndReturnSpellEntry( 30247 );
 		if( sp != NULL )
 		{
 			sp->Effect[0] = SPELL_EFFECT_NULL; //disable this. This is just blizz crap. Pure proof that they suck :P
@@ -5121,7 +5121,7 @@ void ApplyNormalFixes()
 			sp->EffectImplicitTargetB[2] = EFF_TARGET_PET;
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_PET_OWNER ;
 		}
-		sp = dbcSpell.LookupEntryForced( 30248 );
+		sp = CheckAndReturnSpellEntry( 30248 );
 		if( sp != NULL )
 		{
 			sp->Effect[0] = SPELL_EFFECT_NULL; //disable this. This is just blizz crap. Pure proof that they suck :P
@@ -5131,21 +5131,21 @@ void ApplyNormalFixes()
 		}
 
 		//warlock - Demonic Resilience
-		sp = dbcSpell.LookupEntryForced( 30319 );
+		sp = CheckAndReturnSpellEntry( 30319 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_DAMAGE_PERCENT_TAKEN;
 			sp->EffectImplicitTargetA[1] = EFF_TARGET_PET;
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_PET_OWNER ;
 		}
-		sp = dbcSpell.LookupEntryForced( 30320 );
+		sp = CheckAndReturnSpellEntry( 30320 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_DAMAGE_PERCENT_TAKEN;
 			sp->EffectImplicitTargetA[1] = EFF_TARGET_PET;
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_PET_OWNER ;
 		}
-		sp = dbcSpell.LookupEntryForced( 30321 );
+		sp = CheckAndReturnSpellEntry( 30321 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_DAMAGE_PERCENT_TAKEN;
@@ -5154,19 +5154,19 @@ void ApplyNormalFixes()
 		}
 
 		//warlock - Improved Imp
-		sp = dbcSpell.LookupEntryForced( 18694 );
+		sp = CheckAndReturnSpellEntry( 18694 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET ;
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_PET;
 		}
-		sp = dbcSpell.LookupEntryForced( 18695 );
+		sp = CheckAndReturnSpellEntry( 18695 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET ;
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_PET;
 		}
-		sp = dbcSpell.LookupEntryForced( 18696 );
+		sp = CheckAndReturnSpellEntry( 18696 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET ;
@@ -5174,19 +5174,19 @@ void ApplyNormalFixes()
 		}
 
 		//warlock - Improved Voidwalker
-		sp = dbcSpell.LookupEntryForced( 18705 );
+		sp = CheckAndReturnSpellEntry( 18705 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET ;
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_PET;
 		}
-		sp = dbcSpell.LookupEntryForced( 18706 );
+		sp = CheckAndReturnSpellEntry( 18706 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET ;
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_PET;
 		}
-		sp = dbcSpell.LookupEntryForced( 18707 );
+		sp = CheckAndReturnSpellEntry( 18707 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET ;
@@ -5194,21 +5194,21 @@ void ApplyNormalFixes()
 		}
 
 		//warlock - Improved Succubus
-		sp = dbcSpell.LookupEntryForced( 18754 );
+		sp = CheckAndReturnSpellEntry( 18754 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET ;
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_PET;
 			sp->EffectImplicitTargetA[1] = EFF_TARGET_PET;
 		}
-		sp = dbcSpell.LookupEntryForced( 18755 );
+		sp = CheckAndReturnSpellEntry( 18755 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET ;
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_PET;
 			sp->EffectImplicitTargetA[1] = EFF_TARGET_PET;
 		}
-		sp = dbcSpell.LookupEntryForced( 18756 );
+		sp = CheckAndReturnSpellEntry( 18756 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET ;
@@ -5217,7 +5217,7 @@ void ApplyNormalFixes()
 		}
 
 		//warlock - Fel Intellect
-		sp = dbcSpell.LookupEntryForced( 18731 );
+		sp = CheckAndReturnSpellEntry( 18731 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET ;
@@ -5225,7 +5225,7 @@ void ApplyNormalFixes()
 			sp->EffectMiscValue[0] = 3;
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_PET;
 		}
-		sp = dbcSpell.LookupEntryForced( 18743 );
+		sp = CheckAndReturnSpellEntry( 18743 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET ;
@@ -5233,7 +5233,7 @@ void ApplyNormalFixes()
 			sp->EffectMiscValue[0] = 3;
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_PET;
 		}
-		sp = dbcSpell.LookupEntryForced( 18744 );
+		sp = CheckAndReturnSpellEntry( 18744 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET ;
@@ -5243,7 +5243,7 @@ void ApplyNormalFixes()
 		}
 
 		//warlock - Fel Stamina
-		sp = dbcSpell.LookupEntryForced( 18748 );
+		sp = CheckAndReturnSpellEntry( 18748 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET ;
@@ -5251,7 +5251,7 @@ void ApplyNormalFixes()
 			sp->EffectMiscValue[0] = 2;
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_PET;
 		}
-		sp = dbcSpell.LookupEntryForced( 18749 );
+		sp = CheckAndReturnSpellEntry( 18749 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET ;
@@ -5259,7 +5259,7 @@ void ApplyNormalFixes()
 			sp->EffectMiscValue[0] = 2;
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_PET;
 		}
-		sp = dbcSpell.LookupEntryForced( 18750 );
+		sp = CheckAndReturnSpellEntry( 18750 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET ;
@@ -5269,7 +5269,7 @@ void ApplyNormalFixes()
 		}
 
 		//warlock - Demonic Tactics
-		sp = dbcSpell.LookupEntryForced( 30242 );
+		sp = CheckAndReturnSpellEntry( 30242 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET ;
@@ -5284,7 +5284,7 @@ void ApplyNormalFixes()
 		}
 
 		//warlock - Unholy Power
-		sp = dbcSpell.LookupEntryForced( 18769 );
+		sp = CheckAndReturnSpellEntry( 18769 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET ;
@@ -5297,7 +5297,7 @@ void ApplyNormalFixes()
 			sp->EffectMiscValue[1] = SCHOOL_NORMAL;
 			sp->EffectBasePoints[1] = sp->EffectBasePoints[0] ;
 		}
-		sp = dbcSpell.LookupEntryForced( 18770 );
+		sp = CheckAndReturnSpellEntry( 18770 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET ;
@@ -5310,7 +5310,7 @@ void ApplyNormalFixes()
 			sp->EffectMiscValue[1] = SCHOOL_NORMAL;
 			sp->EffectBasePoints[1] = sp->EffectBasePoints[0] ;
 		}
-		sp = dbcSpell.LookupEntryForced( 18771 );
+		sp = CheckAndReturnSpellEntry( 18771 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET ;
@@ -5323,7 +5323,7 @@ void ApplyNormalFixes()
 			sp->EffectMiscValue[1] = SCHOOL_NORMAL;
 			sp->EffectBasePoints[1] = sp->EffectBasePoints[0] ;
 		}
-		sp = dbcSpell.LookupEntryForced( 18772 );
+		sp = CheckAndReturnSpellEntry( 18772 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET ;
@@ -5336,7 +5336,7 @@ void ApplyNormalFixes()
 			sp->EffectMiscValue[1] = SCHOOL_NORMAL;
 			sp->EffectBasePoints[1] = sp->EffectBasePoints[0] ;
 		}
-		sp = dbcSpell.LookupEntryForced( 18773 );
+		sp = CheckAndReturnSpellEntry( 18773 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET ;
@@ -5351,35 +5351,35 @@ void ApplyNormalFixes()
 		}
 
 		//warlock - Master Demonologist - 25 spells here
-		sp = dbcSpell.LookupEntryForced( 23785 );
+		sp = CheckAndReturnSpellEntry( 23785 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET | SPELL_FLAG_IS_EXPIREING_WITH_PET;
 			sp->Effect[0] = SPELL_EFFECT_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 23784;
 		}
-		sp = dbcSpell.LookupEntryForced( 23822 );
+		sp = CheckAndReturnSpellEntry( 23822 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET | SPELL_FLAG_IS_EXPIREING_WITH_PET;
 			sp->Effect[0] = SPELL_EFFECT_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 23830;
 		}
-		sp = dbcSpell.LookupEntryForced( 23823 );
+		sp = CheckAndReturnSpellEntry( 23823 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET | SPELL_FLAG_IS_EXPIREING_WITH_PET;
 			sp->Effect[0] = SPELL_EFFECT_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 23831;
 		}
-		sp = dbcSpell.LookupEntryForced( 23824 );
+		sp = CheckAndReturnSpellEntry( 23824 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET | SPELL_FLAG_IS_EXPIREING_WITH_PET;
 			sp->Effect[0] = SPELL_EFFECT_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 23832;
 		}
-		sp = dbcSpell.LookupEntryForced( 23825 );
+		sp = CheckAndReturnSpellEntry( 23825 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET | SPELL_FLAG_IS_EXPIREING_WITH_PET;
@@ -5387,64 +5387,64 @@ void ApplyNormalFixes()
 			sp->EffectTriggerSpell[0] = 35708;
 		}
 		//and the rest
-		sp = dbcSpell.LookupEntryForced( 23784 );
+		sp = CheckAndReturnSpellEntry( 23784 );
 		if( sp != NULL )
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_PET;
-		sp = dbcSpell.LookupEntryForced( 23830 );
+		sp = CheckAndReturnSpellEntry( 23830 );
 		if( sp != NULL )
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_PET;
-		sp = dbcSpell.LookupEntryForced( 23831 );
+		sp = CheckAndReturnSpellEntry( 23831 );
 		if( sp != NULL )
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_PET;
-		sp = dbcSpell.LookupEntryForced( 23832 );
+		sp = CheckAndReturnSpellEntry( 23832 );
 		if( sp != NULL )
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_PET;
-		sp = dbcSpell.LookupEntryForced( 35708 );
+		sp = CheckAndReturnSpellEntry( 35708 );
 		if( sp != NULL )
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_PET;
-		sp = dbcSpell.LookupEntryForced( 23759 );
+		sp = CheckAndReturnSpellEntry( 23759 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_EXPIREING_WITH_PET;
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
 		}
-		sp = dbcSpell.LookupEntryForced( 23760 );
+		sp = CheckAndReturnSpellEntry( 23760 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_EXPIREING_WITH_PET;
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
 		}
-		sp = dbcSpell.LookupEntryForced( 23761 );
+		sp = CheckAndReturnSpellEntry( 23761 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_EXPIREING_WITH_PET;
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
 		}
-		sp = dbcSpell.LookupEntryForced( 23762 );
+		sp = CheckAndReturnSpellEntry( 23762 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_EXPIREING_WITH_PET;
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
 		}
-		sp = dbcSpell.LookupEntryForced( 23826 );
+		sp = CheckAndReturnSpellEntry( 23826 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_EXPIREING_WITH_PET;
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
 		}
-		sp = dbcSpell.LookupEntryForced( 23827 );
+		sp = CheckAndReturnSpellEntry( 23827 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_EXPIREING_WITH_PET;
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
 		}
-		sp = dbcSpell.LookupEntryForced( 23828 );
+		sp = CheckAndReturnSpellEntry( 23828 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_EXPIREING_WITH_PET;
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
 		}
-		sp = dbcSpell.LookupEntryForced( 23829 );
+		sp = CheckAndReturnSpellEntry( 23829 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_EXPIREING_WITH_PET;
@@ -5452,42 +5452,42 @@ void ApplyNormalFixes()
 		}
 		for(i=23833;i<=23844;i++)
 		{
-			sp = dbcSpell.LookupEntryForced( i );
+			sp = CheckAndReturnSpellEntry( i );
 			if( sp != NULL )
 			{
 				sp->c_is_flags |= SPELL_FLAG_IS_EXPIREING_WITH_PET;
 				sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
 			}
 		}
-		sp = dbcSpell.LookupEntryForced( 35702 );
+		sp = CheckAndReturnSpellEntry( 35702 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_EXPIREING_WITH_PET;
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
 			sp->Effect[1] = SPELL_EFFECT_NULL; //hacks, we are handling this in another way
 		}
-		sp = dbcSpell.LookupEntryForced( 35703 );
+		sp = CheckAndReturnSpellEntry( 35703 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_EXPIREING_WITH_PET;
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
 			sp->Effect[1] = SPELL_EFFECT_NULL; //hacks, we are handling this in another way
 		}
-		sp = dbcSpell.LookupEntryForced( 35704 );
+		sp = CheckAndReturnSpellEntry( 35704 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_EXPIREING_WITH_PET;
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
 			sp->Effect[1] = SPELL_EFFECT_NULL; //hacks, we are handling this in another way
 		}
-		sp = dbcSpell.LookupEntryForced( 35705 );
+		sp = CheckAndReturnSpellEntry( 35705 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_EXPIREING_WITH_PET;
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
 			sp->Effect[1] = SPELL_EFFECT_NULL; //hacks, we are handling this in another way
 		}
-		sp = dbcSpell.LookupEntryForced( 35706 );
+		sp = CheckAndReturnSpellEntry( 35706 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_EXPIREING_WITH_PET;
@@ -5496,7 +5496,7 @@ void ApplyNormalFixes()
 		}
 
 		//warlock - Improved Drain Soul
-		sp = dbcSpell.LookupEntryForced( 18213 );
+		sp = CheckAndReturnSpellEntry( 18213 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_TARGET_DIE | static_cast<uint32>(PROC_TARGET_SELF);
@@ -5507,7 +5507,7 @@ void ApplyNormalFixes()
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_SELF;
 			sp->Effect[2] = SPELL_EFFECT_NULL ; //remove this effect
 		}
-		sp = dbcSpell.LookupEntryForced( 18372 );
+		sp = CheckAndReturnSpellEntry( 18372 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_TARGET_DIE | static_cast<uint32>(PROC_TARGET_SELF);
@@ -5520,31 +5520,31 @@ void ApplyNormalFixes()
 		}
 
 		//warlock - Shadow Embrace
-		sp = dbcSpell.LookupEntryForced( 32385 );
+		sp = CheckAndReturnSpellEntry( 32385 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
 			sp->Effect[1] = SPELL_EFFECT_NULL ; //remove this effect ? Maybe remove the other one :P xD
 		}
-		sp = dbcSpell.LookupEntryForced( 32387 );
+		sp = CheckAndReturnSpellEntry( 32387 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
 			sp->Effect[1] = SPELL_EFFECT_NULL ; //remove this effect ? Maybe remove the other one :P xD
 		}
-		sp = dbcSpell.LookupEntryForced( 32392 );
+		sp = CheckAndReturnSpellEntry( 32392 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
 			sp->Effect[1] = SPELL_EFFECT_NULL ; //remove this effect ? Maybe remove the other one :P xD
 		}
-		sp = dbcSpell.LookupEntryForced( 32393 );
+		sp = CheckAndReturnSpellEntry( 32393 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
 			sp->Effect[1] = SPELL_EFFECT_NULL ; //remove this effect ? Maybe remove the other one :P xD
 		}
-		sp = dbcSpell.LookupEntryForced( 32394 );
+		sp = CheckAndReturnSpellEntry( 32394 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
@@ -5552,7 +5552,7 @@ void ApplyNormalFixes()
 		}
 
 		//warlock - soul leech
-		sp = dbcSpell.LookupEntryForced( 30293 );
+		sp = CheckAndReturnSpellEntry( 30293 );
 		if( sp != NULL )
 		{
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA; //aura
@@ -5560,7 +5560,7 @@ void ApplyNormalFixes()
 			sp->EffectTriggerSpell[0] = 30294;
 			sp->procFlags = uint32(PROC_ON_CAST_SPELL|PROC_TARGET_SELF);
 		}
-		sp = dbcSpell.LookupEntryForced( 30295 );
+		sp = CheckAndReturnSpellEntry( 30295 );
 		if( sp != NULL )
 		{
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA; //aura
@@ -5568,7 +5568,7 @@ void ApplyNormalFixes()
 			sp->EffectTriggerSpell[0] = 30294;
 			sp->procFlags = uint32(PROC_ON_CAST_SPELL|PROC_TARGET_SELF);
 		}
-		sp = dbcSpell.LookupEntryForced( 30296 );
+		sp = CheckAndReturnSpellEntry( 30296 );
 		if( sp != NULL )
 		{
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA; //aura
@@ -5578,7 +5578,7 @@ void ApplyNormalFixes()
 		}
 
 		//warlock - Pyroclasm
-		sp = dbcSpell.LookupEntryForced( 18073 );
+		sp = CheckAndReturnSpellEntry( 18073 );
 		if( sp != NULL )
 		{
 			sp->Effect[0] = SPELL_EFFECT_NULL; //delete this override effect :P
@@ -5586,7 +5586,7 @@ void ApplyNormalFixes()
 			sp->procFlags = PROC_ON_ANY_HOSTILE_ACTION;
 			sp->procChance = 13; //god, save us from fixed values !
 		}
-		sp = dbcSpell.LookupEntryForced( 18096 );
+		sp = CheckAndReturnSpellEntry( 18096 );
 		if( sp != NULL )
 		{
 			sp->Effect[0] = SPELL_EFFECT_NULL; //delete this override effect :P
@@ -5595,28 +5595,28 @@ void ApplyNormalFixes()
 			sp->procChance = 26; //god, save us from fixed values !
 		}
 		//Warlock Chaos bolt
-		sp = dbcSpell.LookupEntryForced( 50796 );
+		sp = CheckAndReturnSpellEntry( 50796 );
 		if( sp != NULL )
 		{
 			sp->Attributes |= ATTRIBUTES_IGNORE_INVULNERABILITY;
 			sp->School = 2;
 		}
 
-		sp = dbcSpell.LookupEntryForced( 59170 );
+		sp = CheckAndReturnSpellEntry( 59170 );
 		if( sp != NULL )
 		{
 			sp->Attributes |= ATTRIBUTES_IGNORE_INVULNERABILITY;
 			sp->School = 2;
 		}
 
-		sp = dbcSpell.LookupEntryForced( 59171 );
+		sp = CheckAndReturnSpellEntry( 59171 );
 		if( sp != NULL )
 		{
 			sp->Attributes |= ATTRIBUTES_IGNORE_INVULNERABILITY;
 			sp->School = 2;
 		}
 
-		sp = dbcSpell.LookupEntryForced( 59172 );
+		sp = CheckAndReturnSpellEntry( 59172 );
 		if( sp != NULL )
 		{
 			sp->Attributes |= ATTRIBUTES_IGNORE_INVULNERABILITY;
@@ -5628,7 +5628,7 @@ void ApplyNormalFixes()
 		int HealthStoneID[8]={6201,6202,5699,11729,11730,27230,47871,47878};
 		for(i= 0;i<8;i++)
 		{
-			sp = dbcSpell.LookupEntryForced( HealthStoneID[i] );
+			sp = CheckAndReturnSpellEntry( HealthStoneID[i] );
 			if( sp != NULL )
 			{
 				sp->Reagent[1] = 0;
@@ -5636,7 +5636,7 @@ void ApplyNormalFixes()
 		}
 
 		//Backdraft Rank 1 
-		sp = dbcSpell.LookupEntryForced(47258);
+		sp = CheckAndReturnSpellEntry(47258);
 		if(sp != NULL)
 		{
 			sp->procFlags = uint32( PROC_TARGET_SELF | PROC_ON_ANY_HOSTILE_ACTION );
@@ -5644,7 +5644,7 @@ void ApplyNormalFixes()
 		}	
 
 		//Backdraft Rank 2
-		sp = dbcSpell.LookupEntryForced(47259);
+		sp = CheckAndReturnSpellEntry(47259);
 		if(sp != NULL)
 		{
 			sp->procFlags = uint32( PROC_TARGET_SELF | PROC_ON_ANY_HOSTILE_ACTION );
@@ -5652,7 +5652,7 @@ void ApplyNormalFixes()
 		}
 
 		//Backdraft Rank 3
-		sp = dbcSpell.LookupEntryForced(47260);
+		sp = CheckAndReturnSpellEntry(47260);
 		if(sp != NULL)
 		{
 			sp->procFlags = uint32( PROC_TARGET_SELF | PROC_ON_ANY_HOSTILE_ACTION );
@@ -5670,66 +5670,66 @@ void ApplyNormalFixes()
 		 **********************************************************/
 
 		// Druid - Nature's Grace
-		sp = dbcSpell.LookupEntryForced( 16880 );
+		sp = CheckAndReturnSpellEntry( 16880 );
 		if(sp != NULL)
 			sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
 
-		sp = dbcSpell.LookupEntryForced( 61345 );
+		sp = CheckAndReturnSpellEntry( 61345 );
 		if(sp != NULL)
 			sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
 
-		sp = dbcSpell.LookupEntryForced( 61346 );
+		sp = CheckAndReturnSpellEntry( 61346 );
 		if(sp != NULL)
 			sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
 
 		// Druid - Earth and Moon
-		sp = dbcSpell.LookupEntryForced(48506);
+		sp = CheckAndReturnSpellEntry(48506);
 		if(sp != NULL)
 			sp->procFlags = PROC_ON_CAST_SPELL;
 
-		sp = dbcSpell.LookupEntryForced(48510);
+		sp = CheckAndReturnSpellEntry(48510);
 		if(sp != NULL)
 			sp->procFlags = PROC_ON_CAST_SPELL;
 
-		sp = dbcSpell.LookupEntryForced(48511);
+		sp = CheckAndReturnSpellEntry(48511);
 		if(sp != NULL)
 			sp->procFlags = PROC_ON_CAST_SPELL;
 
 		// Druid - Nature's Grasp //sp->AuraInterruptFlags = 0; //we remove it on proc or timeout
-		sp = dbcSpell.LookupEntryForced( 16689 );
+		sp = CheckAndReturnSpellEntry( 16689 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_MELEE_ATTACK_VICTIM | PROC_REMOVEONUSE;
 
-		sp = dbcSpell.LookupEntryForced( 16810 );
+		sp = CheckAndReturnSpellEntry( 16810 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_MELEE_ATTACK_VICTIM | PROC_REMOVEONUSE;
 
-		sp = dbcSpell.LookupEntryForced( 16811 );
+		sp = CheckAndReturnSpellEntry( 16811 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_MELEE_ATTACK_VICTIM | PROC_REMOVEONUSE;
 
-		sp = dbcSpell.LookupEntryForced( 16812 );
+		sp = CheckAndReturnSpellEntry( 16812 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_MELEE_ATTACK_VICTIM | PROC_REMOVEONUSE;
 
-		sp = dbcSpell.LookupEntryForced( 16813 );
+		sp = CheckAndReturnSpellEntry( 16813 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_MELEE_ATTACK_VICTIM | PROC_REMOVEONUSE;
 
-		sp = dbcSpell.LookupEntryForced( 17329 );
+		sp = CheckAndReturnSpellEntry( 17329 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_MELEE_ATTACK_VICTIM | PROC_REMOVEONUSE;
 
-		sp = dbcSpell.LookupEntryForced( 27009 );
+		sp = CheckAndReturnSpellEntry( 27009 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_MELEE_ATTACK_VICTIM | PROC_REMOVEONUSE;
 
-		sp = dbcSpell.LookupEntryForced( 53312 );
+		sp = CheckAndReturnSpellEntry( 53312 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_MELEE_ATTACK_VICTIM | PROC_REMOVEONUSE;
 
 		// Druid - Force of Nature
-		sp = dbcSpell.LookupEntryForced(33831);
+		sp = CheckAndReturnSpellEntry(33831);
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_INHERITING_LEVEL;
@@ -5742,20 +5742,20 @@ void ApplyNormalFixes()
 		 **********************************************************/
 
 		// Druid - Natural Reaction
-		sp = dbcSpell.LookupEntryForced( 57878 );
+		sp = CheckAndReturnSpellEntry( 57878 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_DODGE_VICTIM;
 
-		sp = dbcSpell.LookupEntryForced( 57880 );
+		sp = CheckAndReturnSpellEntry( 57880 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_DODGE_VICTIM;
 
-		sp = dbcSpell.LookupEntryForced( 57881 );
+		sp = CheckAndReturnSpellEntry( 57881 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_DODGE_VICTIM;
 
 		// Druid - Infected Wounds
-		sp = dbcSpell.LookupEntryForced( 48483 );
+		sp = CheckAndReturnSpellEntry( 48483 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
@@ -5764,7 +5764,7 @@ void ApplyNormalFixes()
 			sp->ProcOnNameHash[2] = SPELL_HASH_MANGLE;
 		}
 
-		sp = dbcSpell.LookupEntryForced( 48484 );
+		sp = CheckAndReturnSpellEntry( 48484 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
@@ -5773,7 +5773,7 @@ void ApplyNormalFixes()
 			sp->ProcOnNameHash[2] = SPELL_HASH_MANGLE;
 		}
 
-		sp = dbcSpell.LookupEntryForced( 48485 );
+		sp = CheckAndReturnSpellEntry( 48485 );
 		if( sp != NULL )
        {
           sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
@@ -5783,19 +5783,19 @@ void ApplyNormalFixes()
        }
 
 		// Druid - Bash - Interrupt effect
-		sp = dbcSpell.LookupEntryForced( 5211 );
+		sp = CheckAndReturnSpellEntry( 5211 );
 		if( sp != NULL )
 		{
 			sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL;  
 			sp->EffectTriggerSpell[1] = 32747; 
 		}
-		sp = dbcSpell.LookupEntryForced( 6798 );
+		sp = CheckAndReturnSpellEntry( 6798 );
 		if( sp != NULL )
 		{
 			sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[1] = 32747;
 		}
-		sp = dbcSpell.LookupEntryForced( 8983 );
+		sp = CheckAndReturnSpellEntry( 8983 );
 		if( sp != NULL )
 		{
 			sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL;
@@ -5803,20 +5803,20 @@ void ApplyNormalFixes()
 		}
 
 		// Druid - Maim
-		sp = dbcSpell.LookupEntryForced(22570);
+		sp = CheckAndReturnSpellEntry(22570);
 		if( sp != NULL )
 		{
 			sp->AuraInterruptFlags = AURA_INTERRUPT_ON_UNUSED2;
 			sp->is_melee_spell = true;
 		}
-		sp = dbcSpell.LookupEntryForced(49802);
+		sp = CheckAndReturnSpellEntry(49802);
 		if( sp != NULL )
 		{
 			sp->AuraInterruptFlags = AURA_INTERRUPT_ON_UNUSED2;
 			sp->is_melee_spell = true;
 		}
 
-		sp = dbcSpell.LookupEntryForced(49376); //feral charge cat
+		sp = CheckAndReturnSpellEntry(49376); //feral charge cat
 		if( sp != NULL )
 		{
 			sp->Effect[1] = SPELL_EFFECT_CHARGE; //hackfix (meant to use trigger missile which isn't implemented)
@@ -5824,18 +5824,18 @@ void ApplyNormalFixes()
 			sp->Effect[2] = SPELL_EFFECT_NULL;
 		}
 
-		sp = dbcSpell.LookupEntryForced(20719); //feline grace
+		sp = CheckAndReturnSpellEntry(20719); //feline grace
 		if( sp != NULL )
 			sp->Effect[0] = SPELL_EFFECT_NULL;
 
 		// Druid - Feral Swiftness
-		sp = dbcSpell.LookupEntryForced( 17002 );
+		sp = CheckAndReturnSpellEntry( 17002 );
 		if ( sp != NULL )
 		{
 			sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[1] = 24867;
 		}
-		sp = dbcSpell.LookupEntryForced( 24866 );
+		sp = CheckAndReturnSpellEntry( 24866 );
 		if ( sp != NULL )
 		{
 			sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL;
@@ -5843,28 +5843,28 @@ void ApplyNormalFixes()
 		}
 
 		// Druid - Frenzied Regeneration
-		sp = dbcSpell.LookupEntryForced( 22842 );
+		sp = CheckAndReturnSpellEntry( 22842 );
 		if( sp != NULL )
 		{
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 22845;
 		}
-		sp = dbcSpell.LookupEntryForced( 22895 );
+		sp = CheckAndReturnSpellEntry( 22895 );
 		if( sp != NULL )
 		{
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 22845;
 		}
-		sp = dbcSpell.LookupEntryForced( 22896 );
+		sp = CheckAndReturnSpellEntry( 22896 );
 		if( sp != NULL )
 		{
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 22845;
 		}
-		sp = dbcSpell.LookupEntryForced( 26999 );
+		sp = CheckAndReturnSpellEntry( 26999 );
 		if( sp != NULL )
 		{
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
@@ -5873,51 +5873,51 @@ void ApplyNormalFixes()
 		}
 
 		// Druid - Improved Leader of the Pack
-		sp = dbcSpell.LookupEntryForced( 34297 );
+		sp = CheckAndReturnSpellEntry( 34297 );
 		if( sp != NULL )
 			sp->proc_interval = 6000;//6 secs
 
-		sp = dbcSpell.LookupEntryForced( 34300 );
+		sp = CheckAndReturnSpellEntry( 34300 );
 		if( sp != NULL )
 			sp->proc_interval = 6000;//6 secs
 
 		// Druid - Primal Fury (talent)
-		sp = dbcSpell.LookupEntryForced( 37116 );
+		sp = CheckAndReturnSpellEntry( 37116 );
 		if( sp != NULL )
 			sp->RequiredShapeShift = 0;
 
-		sp = dbcSpell.LookupEntryForced( 37117 );
+		sp = CheckAndReturnSpellEntry( 37117 );
 		if( sp != NULL )
 			sp->RequiredShapeShift = 0;
 
 		// Druid - Blood Frenzy (proc)
-		sp = dbcSpell.LookupEntryForced( 16954 );
+		sp = CheckAndReturnSpellEntry( 16954 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
 
-		sp = dbcSpell.LookupEntryForced( 16952 );
+		sp = CheckAndReturnSpellEntry( 16952 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
 
 		// Druid - Primal Fury (proc)
-		sp = dbcSpell.LookupEntryForced( 16961 );
+		sp = CheckAndReturnSpellEntry( 16961 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
 
-		sp = dbcSpell.LookupEntryForced( 16958 );
+		sp = CheckAndReturnSpellEntry( 16958 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
 
 		// Druid - Predatory Strikes
 		uint32 mm = DecimalToMask(FORM_BEAR) | DecimalToMask(FORM_DIREBEAR) | DecimalToMask(FORM_MOONKIN) | DecimalToMask(FORM_CAT);
 
-		sp = dbcSpell.LookupEntryForced( 16972 );
+		sp = CheckAndReturnSpellEntry( 16972 );
 		if( sp != NULL )
 			sp->RequiredShapeShift = mm;
-		sp = dbcSpell.LookupEntryForced( 16974 );
+		sp = CheckAndReturnSpellEntry( 16974 );
 		if( sp != NULL )
 			sp->RequiredShapeShift = mm;
-		sp = dbcSpell.LookupEntryForced( 16975 );
+		sp = CheckAndReturnSpellEntry( 16975 );
 		if( sp != NULL )
 			sp->RequiredShapeShift = mm;
 
@@ -5926,12 +5926,12 @@ void ApplyNormalFixes()
 		 **********************************************************/
 		
 		// Druid - Tree Form Aura
-		sp = dbcSpell.LookupEntryForced( 34123 );
+		sp = CheckAndReturnSpellEntry( 34123 );
 		if( sp != NULL )
 			sp->NameHash = 0;
 
 		// Druid - Omen of Clarity
-		sp = dbcSpell.LookupEntryForced( 16864 );
+		sp = CheckAndReturnSpellEntry( 16864 );
 		if( sp != NULL )
 		{
 			sp->procChance = 6; //procchance dynamic. 3ppm
@@ -5939,37 +5939,37 @@ void ApplyNormalFixes()
 		}
 
 		// Druid - Natural Perfection
-		sp = dbcSpell.LookupEntryForced( 33881 );
+		sp = CheckAndReturnSpellEntry( 33881 );
 		if ( sp != NULL )
 			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_SPELL_CRIT_HIT_VICTIM | PROC_ON_RANGED_CRIT_ATTACK_VICTIM;
-		sp = dbcSpell.LookupEntryForced( 33882 );
+		sp = CheckAndReturnSpellEntry( 33882 );
 		if ( sp != NULL )
 			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_SPELL_CRIT_HIT_VICTIM | PROC_ON_RANGED_CRIT_ATTACK_VICTIM;
-		sp = dbcSpell.LookupEntryForced( 33883 );
+		sp = CheckAndReturnSpellEntry( 33883 );
 		if ( sp != NULL )
 			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_SPELL_CRIT_HIT_VICTIM | PROC_ON_RANGED_CRIT_ATTACK_VICTIM;
 
 		// Druid - Intensity
-		sp = dbcSpell.LookupEntryForced( 17106 );
+		sp = CheckAndReturnSpellEntry( 17106 );
 		if( sp != NULL )
 		   sp->procFlags = PROC_ON_CAST_SPELL;
 
-		sp = dbcSpell.LookupEntryForced( 17107 );
+		sp = CheckAndReturnSpellEntry( 17107 );
 		if( sp != NULL )
 			 sp->procFlags = PROC_ON_CAST_SPELL;
 
-		sp = dbcSpell.LookupEntryForced( 17108 );
+		sp = CheckAndReturnSpellEntry( 17108 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_CAST_SPELL;
 
 		// Druid - Natural Shapeshifter
-		sp = dbcSpell.LookupEntryForced( 16833 );
+		sp = CheckAndReturnSpellEntry( 16833 );
 		if( sp != NULL )
 			sp->DurationIndex = 0;
-		sp = dbcSpell.LookupEntryForced( 16834 );
+		sp = CheckAndReturnSpellEntry( 16834 );
 		if( sp != NULL )
 			sp->DurationIndex = 0;
-		sp = dbcSpell.LookupEntryForced( 16835 );
+		sp = CheckAndReturnSpellEntry( 16835 );
 		if( sp != NULL )
 			sp->DurationIndex = 0;
 
@@ -5980,28 +5980,28 @@ void ApplyNormalFixes()
 	// Insert items spell fixes here
 
 		//Compact Harvest Reaper
-		sp = dbcSpell.LookupEntryForced( 4078 );
+		sp = CheckAndReturnSpellEntry( 4078 );
 		if( sp != NULL )
 		{
 			sp->DurationIndex = 6;
 		}
 
 		//Graccu's Mince Meat Fruitcake
-		sp = dbcSpell.LookupEntryForced(25990);
+		sp = CheckAndReturnSpellEntry(25990);
 		if( sp != NULL )
 		{
 			sp->EffectAmplitude[1] = 1000;
 		}
 
 		//Extract Gas
-		sp = dbcSpell.LookupEntryForced( 30427 );
+		sp = CheckAndReturnSpellEntry( 30427 );
 		if( sp != NULL )
 		{
 			sp->Effect[0] = SPELL_EFFECT_DUMMY;
 		}
 
 		//Relic - Idol of the Unseen Moon
-		sp = dbcSpell.LookupEntryForced( 43739 );
+		sp = CheckAndReturnSpellEntry( 43739 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
@@ -6010,14 +6010,14 @@ void ApplyNormalFixes()
 		}
 
 		//Lunar Grace - Idol of the Unseen Moon proc
-		sp = dbcSpell.LookupEntryForced( 43740 );
+		sp = CheckAndReturnSpellEntry( 43740 );
 		if( sp != NULL )
 		{
 			sp->ProcOnNameHash[0] = SPELL_HASH_MOONFIRE;
 		}
 
 		//Relic - Idol of Terror
-		sp = dbcSpell.LookupEntryForced( 43737 );
+		sp = CheckAndReturnSpellEntry( 43737 );
 		if( sp != NULL )
 		{
 			sp->proc_interval = 10001; //block proc when is already active.. (Primal Instinct duration = 10 sec)
@@ -6028,7 +6028,7 @@ void ApplyNormalFixes()
 		}
 
 		//Primal Instinct - Idol of Terror proc
-		sp = dbcSpell.LookupEntryForced( 43738 );
+		sp = CheckAndReturnSpellEntry( 43738 );
 		if( sp != NULL )
 		{
 			sp->self_cast_only = true;
@@ -6037,7 +6037,7 @@ void ApplyNormalFixes()
 		}
 
 		//Tome of Fiery Redemption
-		sp = dbcSpell.LookupEntryForced( 37197 );
+		sp = CheckAndReturnSpellEntry( 37197 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
@@ -6047,7 +6047,7 @@ void ApplyNormalFixes()
 		}
 
 		//Thunderfury
-		sp = dbcSpell.LookupEntryForced( 21992 );
+		sp = CheckAndReturnSpellEntry( 21992 );
 		if( sp != NULL )
 		{
 			sp->Effect[2] = SPELL_EFFECT_TRIGGER_SPELL;
@@ -6056,24 +6056,24 @@ void ApplyNormalFixes()
 		}
 
 		//Energized
-		sp = dbcSpell.LookupEntryForced( 43750 );
+		sp = CheckAndReturnSpellEntry( 43750 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_CAST_SPELL;
 
 		//Spell Haste Trinket
-		sp = dbcSpell.LookupEntryForced( 33297 );
+		sp = CheckAndReturnSpellEntry( 33297 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_CAST_SPELL | static_cast<uint32>(PROC_TARGET_SELF);
 
 		//Enchant Weapon - Deathfrost
-		sp = dbcSpell.LookupEntryForced( 46662 );
+		sp = CheckAndReturnSpellEntry( 46662 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_MELEE_ATTACK;
 		}
 
 		// Sigil of the Unfaltering Knight
-		sp = dbcSpell.LookupEntryForced( 62147 );
+		sp = CheckAndReturnSpellEntry( 62147 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
@@ -6083,7 +6083,7 @@ void ApplyNormalFixes()
 		}
 
 		// Deadly Aggression - triggered by Deadly Gladiator's Relic/Idol/Libram/Totem
-		sp = dbcSpell.LookupEntryForced( 60549 );
+		sp = CheckAndReturnSpellEntry( 60549 );
 		if( sp != NULL )
 		{
 			// effect 1 and 2 are the same... dunno why
@@ -6091,7 +6091,7 @@ void ApplyNormalFixes()
 		}
 
 		// Furious Gladiator's Libram of Fortitude - triggered by LK Arena 4 Gladiator's Relic/Idol/Libram/Totem
-		sp = dbcSpell.LookupEntryForced( 60551 );
+		sp = CheckAndReturnSpellEntry( 60551 );
 		if( sp != NULL )
 		{
 			// effect 1 and 2 are the same... dunno why
@@ -6099,7 +6099,7 @@ void ApplyNormalFixes()
 		}
 
 		// Relentless Aggression - triggered by LK Arena 5 Gladiator's Relic/Idol/Libram/Totem
-		sp = dbcSpell.LookupEntryForced( 60553 );
+		sp = CheckAndReturnSpellEntry( 60553 );
 		if( sp != NULL )
 		{
 			// effect 1 and 2 are the same... dunno why
@@ -6107,7 +6107,7 @@ void ApplyNormalFixes()
 		}
 
 		// Savage Aggression - triggered by Savage Gladiator's Relic/Idol/Libram/Totem
-		sp = dbcSpell.LookupEntryForced( 60544 );
+		sp = CheckAndReturnSpellEntry( 60544 );
 		if( sp != NULL )
 		{
 			// effect 1 and 2 are the same... dunno why
@@ -6115,7 +6115,7 @@ void ApplyNormalFixes()
 		}
 
 		// Sigil of Haunted Dreams
-		sp = dbcSpell.LookupEntryForced( 60826 );
+		sp = CheckAndReturnSpellEntry( 60826 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
@@ -6126,7 +6126,7 @@ void ApplyNormalFixes()
 		}
 
 		// Vestige of Haldor
-		sp = dbcSpell.LookupEntryForced( 60306 );
+		sp = CheckAndReturnSpellEntry( 60306 );
 		if( sp != NULL )
 		{
 				sp->proc_interval = 45000;
@@ -6134,7 +6134,7 @@ void ApplyNormalFixes()
 		}
 
 		// Forge Ember
-		sp = dbcSpell.LookupEntryForced( 60473 );
+		sp = CheckAndReturnSpellEntry( 60473 );
 		if( sp != NULL )
 		{
 				sp->proc_interval = 45000;
@@ -6142,7 +6142,7 @@ void ApplyNormalFixes()
 		}
 
 		// Mirror of Truth
-		sp = dbcSpell.LookupEntryForced( 33648 );
+		sp = CheckAndReturnSpellEntry( 33648 );
 		if( sp != NULL )
 		{
 				sp->proc_interval = 45000;
@@ -6150,14 +6150,14 @@ void ApplyNormalFixes()
 		}
 
 		// Majestic Dragon Figurine
-		sp = dbcSpell.LookupEntryForced( 60524 );
+		sp = CheckAndReturnSpellEntry( 60524 );
 		if( sp != NULL )
 		{
 				sp->procFlags = PROC_ON_CAST_SPELL;
 		}
 
 		// Flow of Knowledge
-		sp = dbcSpell.LookupEntryForced( 62114 );
+		sp = CheckAndReturnSpellEntry( 62114 );
 		if( sp != NULL )
 		{
 				sp->proc_interval = 45000;
@@ -6165,7 +6165,7 @@ void ApplyNormalFixes()
 		}
 
 		// Embrace of the Spider
-		sp = dbcSpell.LookupEntryForced( 60490 );
+		sp = CheckAndReturnSpellEntry( 60490 );
 		if( sp != NULL )
 		{
 				sp->proc_interval = 45000;
@@ -6173,7 +6173,7 @@ void ApplyNormalFixes()
 		}
 
 		// Anvil of Titans
-		sp = dbcSpell.LookupEntryForced( 62115 );
+		sp = CheckAndReturnSpellEntry( 62115 );
 		if( sp != NULL )
 		{
 				sp->proc_interval = 45000;
@@ -6181,7 +6181,7 @@ void ApplyNormalFixes()
 		}
 
 		// Soul of the Dead
-		sp = dbcSpell.LookupEntryForced( 60537 );
+		sp = CheckAndReturnSpellEntry( 60537 );
 		if( sp != NULL )
 		{
 				sp->proc_interval = 45000;
@@ -6189,14 +6189,14 @@ void ApplyNormalFixes()
 		}
 
 		// Illustration of the Dragon Soul
-		sp = dbcSpell.LookupEntryForced( 60485 );
+		sp = CheckAndReturnSpellEntry( 60485 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
 		}
 
 		// Grim Toll
-		sp = dbcSpell.LookupEntryForced( 60436 );
+		sp = CheckAndReturnSpellEntry( 60436 );
 		if( sp != NULL )
 		{
 				sp->proc_interval = 45000;
@@ -6204,14 +6204,14 @@ void ApplyNormalFixes()
 		}
 
 		// Fury of the Five Flights
-		sp = dbcSpell.LookupEntryForced( 60313 );
+		sp = CheckAndReturnSpellEntry( 60313 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_MELEE_ATTACK | PROC_ON_RANGED_ATTACK;
 		}
 
 		// Bandit's Insignia
-		sp = dbcSpell.LookupEntryForced( 60442 );
+		sp = CheckAndReturnSpellEntry( 60442 );
 		if( sp != NULL )
 		{
 				sp->proc_interval = 45000;
@@ -6219,7 +6219,7 @@ void ApplyNormalFixes()
 		}
 
 		// Meteorite Whetstone
-		sp = dbcSpell.LookupEntryForced( 60301 );
+		sp = CheckAndReturnSpellEntry( 60301 );
 		if( sp != NULL )
 		{
 				sp->proc_interval = 45000;
@@ -6227,7 +6227,7 @@ void ApplyNormalFixes()
 		}
 
 		// Sonic Booster
-		sp = dbcSpell.LookupEntryForced( 54707 );
+		sp = CheckAndReturnSpellEntry( 54707 );
 		if( sp != NULL )
 		{
 				sp->proc_interval = 60000;
@@ -6235,30 +6235,30 @@ void ApplyNormalFixes()
 		}
 
 		//Totem of the Third Wind - bad range
-		SpellEntry * sp_healing_wave = dbcSpell.LookupEntryForced( 8004 );
-		sp = dbcSpell.LookupEntryForced( 34132 );
+		SpellEntry * sp_healing_wave = CheckAndReturnSpellEntry( 8004 );
+		sp = CheckAndReturnSpellEntry( 34132 );
 		if( sp != NULL )
 		{
 			sp->rangeIndex = sp_healing_wave->rangeIndex;
 		}
-		sp = dbcSpell.LookupEntryForced( 42371 );
+		sp = CheckAndReturnSpellEntry( 42371 );
 		if( sp != NULL )
 		{
 			sp->rangeIndex = sp_healing_wave->rangeIndex;
 		}
-		sp = dbcSpell.LookupEntryForced( 43729 );
+		sp = CheckAndReturnSpellEntry( 43729 );
 		if( sp != NULL )
 		{
 			sp->rangeIndex = sp_healing_wave->rangeIndex;
 		}
-		sp = dbcSpell.LookupEntryForced( 46099 );
+		sp = CheckAndReturnSpellEntry( 46099 );
 		if( sp != NULL )
 		{
 			sp->rangeIndex = sp_healing_wave->rangeIndex;
 		}
 
 		//Moonkin Starfire Bonus
-		sp = dbcSpell.LookupEntryForced( 46832 );
+		sp = CheckAndReturnSpellEntry( 46832 );
 		if( sp != NULL )
 		{
 			sp->procFlags = uint32( PROC_ON_CAST_SPELL | PROC_TARGET_SELF );
@@ -6270,37 +6270,37 @@ void ApplyNormalFixes()
 
 // #endif
 		//Spell Focus Trigger (Mystical Skyfire Diamond)
-		sp = dbcSpell.LookupEntryForced( 32837 );
+		sp = CheckAndReturnSpellEntry( 32837 );
 		if( sp != NULL )
 			sp->procChance = 15;
 
 		// Band of the Eternal Sage
-		sp = dbcSpell.LookupEntryForced( 35083 );
+		sp = CheckAndReturnSpellEntry( 35083 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_CAST_SPELL;
 
 		// Band of the Eternal Restorer
-		sp = dbcSpell.LookupEntryForced( 35086 );
+		sp = CheckAndReturnSpellEntry( 35086 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_CAST_SPELL;
 
 		// Ashtongue Talisman of Shadows
-		sp = dbcSpell.LookupEntryForced( 40478 );
+		sp = CheckAndReturnSpellEntry( 40478 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_CAST_SPELL;
 
 		// Ashtongue Talisman of Swiftness
-		sp = dbcSpell.LookupEntryForced( 40485 );
+		sp = CheckAndReturnSpellEntry( 40485 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_CAST_SPELL;
 
 		// Ashtongue Talisman of Valor
-		sp = dbcSpell.LookupEntryForced( 40458 );
+		sp = CheckAndReturnSpellEntry( 40458 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_CAST_SPELL;
 
 		// Memento of Tyrande
-		sp = dbcSpell.LookupEntryForced( 37655 );
+		sp = CheckAndReturnSpellEntry( 37655 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
@@ -6308,12 +6308,12 @@ void ApplyNormalFixes()
 		}
 
 		// Ashtongue Talisman of Insight
-		sp = dbcSpell.LookupEntryForced( 40482 );
+		sp = CheckAndReturnSpellEntry( 40482 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
 
 		//Ashtongue Talisman of Equilibrium
-		sp = dbcSpell.LookupEntryForced( 40442 );
+		sp = CheckAndReturnSpellEntry( 40442 );
 		if( sp != NULL )
 		{
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
@@ -6337,7 +6337,7 @@ void ApplyNormalFixes()
 		}
 
 		//Ashtongue Talisman of Acumen
-		sp = dbcSpell.LookupEntryForced( 40438 );
+		sp = CheckAndReturnSpellEntry( 40438 );
 		if( sp != NULL )
 		{
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
@@ -6354,7 +6354,7 @@ void ApplyNormalFixes()
 			sp->maxstack = 1;
 		}
 		// Drums of war targets surrounding party members instead of us
-		sp = dbcSpell.LookupEntryForced( 35475 );
+		sp = CheckAndReturnSpellEntry( 35475 );
 		if( sp != NULL )
 		{
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_ALL_PARTY;
@@ -6365,7 +6365,7 @@ void ApplyNormalFixes()
 			sp->EffectImplicitTargetB[2] = 0;
 		}
 		// Symbol of Hope targets surrounding party members instead of us
-		sp = dbcSpell.LookupEntryForced( 32548 );
+		sp = CheckAndReturnSpellEntry( 32548 );
 		if( sp != NULL )
 		{
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_ALL_PARTY;
@@ -6377,7 +6377,7 @@ void ApplyNormalFixes()
 		}
 
 		// Drums of Battle targets surrounding party members instead of us
-		sp = dbcSpell.LookupEntryForced( 35476 );
+		sp = CheckAndReturnSpellEntry( 35476 );
 		if( sp != NULL )
 		{
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_ALL_PARTY;
@@ -6389,7 +6389,7 @@ void ApplyNormalFixes()
 		}
 
 		// Drums of Panic targets surrounding creatures instead of us
-		sp = dbcSpell.LookupEntryForced( 35474 );
+		sp = CheckAndReturnSpellEntry( 35474 );
 		if( sp != NULL )
 		{
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_ALL_ENEMIES_AROUND_CASTER;
@@ -6401,7 +6401,7 @@ void ApplyNormalFixes()
 		}
 
 		// Drums of Restoration targets surrounding party members instead of us
-		sp = dbcSpell.LookupEntryForced( 35478 );
+		sp = CheckAndReturnSpellEntry( 35478 );
 		if( sp != NULL )
 		{
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_ALL_PARTY;
@@ -6412,7 +6412,7 @@ void ApplyNormalFixes()
 			sp->EffectImplicitTargetB[2] = 0;
 		}
 		// Drums of Speed targets surrounding party members instead of us
-		sp = dbcSpell.LookupEntryForced( 35477 );
+		sp = CheckAndReturnSpellEntry( 35477 );
 		if( sp != NULL )
 		{
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_ALL_PARTY;
@@ -6424,7 +6424,7 @@ void ApplyNormalFixes()
 		}
 
 		// Dragonspine Trophy
- 		sp = dbcSpell.LookupEntryForced( 34774 );
+ 		sp = CheckAndReturnSpellEntry( 34774 );
 		if( sp != NULL ){
 			sp->procChance = 6;
 			sp->procFlags  = PROC_ON_MELEE_ATTACK | PROC_ON_RANGED_ATTACK;
@@ -6432,7 +6432,7 @@ void ApplyNormalFixes()
 		}
 
 		//Serpent-Coil Braid
-		sp = dbcSpell.LookupEntryForced( 37447 );
+		sp = CheckAndReturnSpellEntry( 37447 );
 		if( sp != NULL )
 		{
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
@@ -6444,38 +6444,38 @@ void ApplyNormalFixes()
 		}
 
 		// Band of the Eternal Champion
-		sp = dbcSpell.LookupEntryForced( 35080 );
+		sp = CheckAndReturnSpellEntry( 35080 );
 		if( sp != NULL ){
 			sp->procFlags  = PROC_ON_MELEE_ATTACK | PROC_ON_RANGED_ATTACK;
 			sp->proc_interval = 60000;
 		}
 		// Band of the Eternal Sage
-		sp = dbcSpell.LookupEntryForced( 35083 );
+		sp = CheckAndReturnSpellEntry( 35083 );
 		if( sp != NULL ){
 			sp->procFlags  = PROC_ON_CAST_SPELL;
 			sp->proc_interval = 60000;
 		}
 		// Band of the Eternal Restorer
-		sp = dbcSpell.LookupEntryForced( 35086 );
+		sp = CheckAndReturnSpellEntry( 35086 );
 		if( sp != NULL ){
 			sp->procFlags  = PROC_ON_CAST_SPELL;
 			sp->proc_interval = 60000;
 		}
 		// Band of the Eternal Defender
-		sp = dbcSpell.LookupEntryForced( 35077 );
+		sp = CheckAndReturnSpellEntry( 35077 );
 		if( sp != NULL ){
 			sp->procFlags  = PROC_ON_MELEE_ATTACK_VICTIM | PROC_ON_SPELL_HIT_VICTIM | PROC_ON_RANGED_ATTACK_VICTIM;
 			sp->proc_interval = 60000;
 		}
 
 		//Item Set: Malorne Harness
-		sp = dbcSpell.LookupEntryForced( 37306 );
+		sp = CheckAndReturnSpellEntry( 37306 );
 		if( sp != NULL )
 		{
 			sp->procChance = 4;
 			sp->procFlags = PROC_ON_MELEE_ATTACK;
 		}
-		sp = dbcSpell.LookupEntryForced( 37311 );
+		sp = CheckAndReturnSpellEntry( 37311 );
 		if( sp != NULL )
 		{
 			sp->procChance = 4;
@@ -6483,7 +6483,7 @@ void ApplyNormalFixes()
 		}
 
 		//Item Set: Deathmantle
-		sp = dbcSpell.LookupEntryForced( 37170 );
+		sp = CheckAndReturnSpellEntry( 37170 );
 		if( sp != NULL )
 		{
 			sp->procChance = 4;
@@ -6491,7 +6491,7 @@ void ApplyNormalFixes()
 		}
 
 		//Item Set: Netherblade
-		sp = dbcSpell.LookupEntryForced( 37168 );
+		sp = CheckAndReturnSpellEntry( 37168 );
 		if( sp != NULL )
 		{
 			sp->procChance = 15;
@@ -6499,14 +6499,14 @@ void ApplyNormalFixes()
 		}
 
 		//Item Set: Tirisfal Regalia
-		sp = dbcSpell.LookupEntryForced( 37443 );
+		sp = CheckAndReturnSpellEntry( 37443 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
 		}
 
 		//Item Set: Avatar Regalia
-		sp = dbcSpell.LookupEntryForced( 37600 );
+		sp = CheckAndReturnSpellEntry( 37600 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
@@ -6514,14 +6514,14 @@ void ApplyNormalFixes()
 		}
 
 		//Item Set: Incarnate Raiment
-		sp = dbcSpell.LookupEntryForced( 37568 );
+		sp = CheckAndReturnSpellEntry( 37568 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
 		}
 
 		//Item Set: Voidheart Raiment
-		sp = dbcSpell.LookupEntryForced( 37377 );
+		sp = CheckAndReturnSpellEntry( 37377 );
 		if( sp != NULL )
 		{
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
@@ -6531,7 +6531,7 @@ void ApplyNormalFixes()
 			sp->proc_interval = 20;
 			sp->EffectTriggerSpell[0] = 37379;
 		}
-		sp = dbcSpell.LookupEntryForced( 39437 );
+		sp = CheckAndReturnSpellEntry( 39437 );
 		if( sp != NULL )
 		{
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
@@ -6543,7 +6543,7 @@ void ApplyNormalFixes()
 		}
 
 		//Item Set: Cataclysm Raiment
-		sp = dbcSpell.LookupEntryForced( 37227 );
+		sp = CheckAndReturnSpellEntry( 37227 );
 		if( sp != NULL )
 		{
 			sp->proc_interval = 60000;
@@ -6552,13 +6552,13 @@ void ApplyNormalFixes()
 		}
 
 		//Item Set: Cataclysm Regalia
-		sp = dbcSpell.LookupEntryForced( 37228 );
+		sp = CheckAndReturnSpellEntry( 37228 );
 		if( sp != NULL )
 		{
 			sp->procChance = 7;
 			sp->procFlags = PROC_ON_CAST_SPELL;
 		}
-		sp = dbcSpell.LookupEntryForced( 37237 );
+		sp = CheckAndReturnSpellEntry( 37237 );
 		if( sp != NULL )
 		{
 			sp->procChance = 25;
@@ -6566,7 +6566,7 @@ void ApplyNormalFixes()
 		}
 
 		//Item Set: Cataclysm Harness
-		sp = dbcSpell.LookupEntryForced( 37239 );
+		sp = CheckAndReturnSpellEntry( 37239 );
 		if( sp != NULL )
 		{
 			sp->procChance = 2;
@@ -6574,7 +6574,7 @@ void ApplyNormalFixes()
 		}
 
 		//Item Set: Cyclone Regalia
-		sp = dbcSpell.LookupEntryForced( 37213 );
+		sp = CheckAndReturnSpellEntry( 37213 );
 		if( sp != NULL )
 		{
 			sp->procChance = 11;
@@ -6582,7 +6582,7 @@ void ApplyNormalFixes()
 		}
 
 		//Item Set: Lightbringer Battlegear
-		sp = dbcSpell.LookupEntryForced( 38427 );
+		sp = CheckAndReturnSpellEntry( 38427 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_MELEE_ATTACK;
@@ -6590,7 +6590,7 @@ void ApplyNormalFixes()
 		}
 
 		//Item Set: Crystalforge Battlegear
-		sp = dbcSpell.LookupEntryForced( 37195 );
+		sp = CheckAndReturnSpellEntry( 37195 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
@@ -6598,20 +6598,20 @@ void ApplyNormalFixes()
 		}
 
 		//Item Set: Crystalforge Raiment
-		sp = dbcSpell.LookupEntryForced( 37189 );
+		sp = CheckAndReturnSpellEntry( 37189 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
 			sp->proc_interval = 60000;
 		}
-		sp = dbcSpell.LookupEntryForced( 37188 );
+		sp = CheckAndReturnSpellEntry( 37188 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
 		}
 
 		//Item Set: Destroyer Armor
-		sp = dbcSpell.LookupEntryForced( 37525 );
+		sp = CheckAndReturnSpellEntry( 37525 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_MELEE_ATTACK_VICTIM;
@@ -6619,7 +6619,7 @@ void ApplyNormalFixes()
 		}
 
 		//Item Set: Destroyer Battlegear
-		sp = dbcSpell.LookupEntryForced( 37528 );
+		sp = CheckAndReturnSpellEntry( 37528 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
@@ -6627,7 +6627,7 @@ void ApplyNormalFixes()
 		}
 
 		//Item Set: Warbringer Armor
-		sp = dbcSpell.LookupEntryForced( 37516 );
+		sp = CheckAndReturnSpellEntry( 37516 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
@@ -6635,7 +6635,7 @@ void ApplyNormalFixes()
 		}
 
 		//Item Set: Shadowcraft Armor & Darkmantle Armor
-		sp = dbcSpell.LookupEntryForced( 27787 );
+		sp = CheckAndReturnSpellEntry( 27787 );
 		if( sp != NULL)
 		{
 			sp->procFlags = PROC_ON_MELEE_ATTACK_VICTIM;
@@ -6643,7 +6643,7 @@ void ApplyNormalFixes()
 		}
 
 		// Item Set: Warlock Tier 7 Heroes' Plagueheart Garb
-		sp = dbcSpell.LookupEntryForced(60172);
+		sp = CheckAndReturnSpellEntry(60172);
 		if(sp != NULL)
 		{
 			sp->EffectTriggerSpell[0] = 61082;
@@ -6652,24 +6652,24 @@ void ApplyNormalFixes()
 		}
 
 		//all Drums
-		sp = dbcSpell.LookupEntryForced( 35474 );
+		sp = CheckAndReturnSpellEntry( 35474 );
 		if( sp != NULL )
 			sp->RequiredShapeShift = 0;
-		sp = dbcSpell.LookupEntryForced( 35475 );
+		sp = CheckAndReturnSpellEntry( 35475 );
 		if( sp != NULL )
 			sp->RequiredShapeShift = 0;
-		sp = dbcSpell.LookupEntryForced( 35476 );
+		sp = CheckAndReturnSpellEntry( 35476 );
 		if( sp != NULL )
 			sp->RequiredShapeShift = 0;
-		sp = dbcSpell.LookupEntryForced( 35477 );
+		sp = CheckAndReturnSpellEntry( 35477 );
 		if( sp != NULL )
 			sp->RequiredShapeShift = 0;
-		sp = dbcSpell.LookupEntryForced( 35478 );
+		sp = CheckAndReturnSpellEntry( 35478 );
 		if( sp != NULL )
 			sp->RequiredShapeShift = 0;
 
 		//this an on equip item spell(2824) :  ice arrow(29501)
-		sp = dbcSpell.LookupEntryForced( 29501 );
+		sp = CheckAndReturnSpellEntry( 29501 );
 		if( sp != NULL )
 		{
 			sp->procChance = 30;//some say it is triggered every now and then
@@ -6677,7 +6677,7 @@ void ApplyNormalFixes()
 		}
 
 		//Purify helboar meat
-		sp = dbcSpell.LookupEntryForced( 29200 );
+		sp = CheckAndReturnSpellEntry( 29200 );
 		if( sp != NULL )
 		{
 			sp->Reagent[1] = 0;
@@ -6689,7 +6689,7 @@ void ApplyNormalFixes()
 		// 2 pieces: You have a chance each time you parry to gain Blade Turning, absorbing 200 damage for 15 sec.
 		// SPELL ID = 37514 (http://www.wowhead.com/?spell=37514)
 
-		sp = dbcSpell.LookupEntryForced( 37514 );
+		sp = CheckAndReturnSpellEntry( 37514 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
@@ -6698,42 +6698,42 @@ void ApplyNormalFixes()
 		}
 
 		//Thorium Grenade
-		sp = dbcSpell.LookupEntryForced(19769);
+		sp = CheckAndReturnSpellEntry(19769);
 		if(sp != NULL)
 		{
 			sp->InterruptFlags |= ~(CAST_INTERRUPT_ON_MOVEMENT);
 		}
 
 		//M73 Frag Grenade
-		sp = dbcSpell.LookupEntryForced(13808);
+		sp = CheckAndReturnSpellEntry(13808);
 		if(sp != NULL)
 		{
 			sp->InterruptFlags |= ~(CAST_INTERRUPT_ON_MOVEMENT);
 		}
 
 		//Iron Grenade
-		sp = dbcSpell.LookupEntryForced(4068);
+		sp = CheckAndReturnSpellEntry(4068);
 		if(sp != NULL)
 		{
 			sp->InterruptFlags |= ~(CAST_INTERRUPT_ON_MOVEMENT);
 		}
 
 		//Frost Grenade
-		sp = dbcSpell.LookupEntryForced(39965);
+		sp = CheckAndReturnSpellEntry(39965);
 		if(sp != NULL)
 		{
 			sp->InterruptFlags |= ~(CAST_INTERRUPT_ON_MOVEMENT);
 		}
 
 		//Adamantine Grenade
-		sp = dbcSpell.LookupEntryForced(30217);
+		sp = CheckAndReturnSpellEntry(30217);
 		if(sp != NULL)
 		{
 			sp->InterruptFlags |= ~(CAST_INTERRUPT_ON_MOVEMENT);
 		}
 
 		//Swordguard Embroidery
-		sp = dbcSpell.LookupEntryForced(55776);
+		sp = CheckAndReturnSpellEntry(55776);
 		if(sp != NULL)
 		{
 			sp->EffectTriggerSpell[0] = 55775;
@@ -6743,7 +6743,7 @@ void ApplyNormalFixes()
 		}
 
 		//Lightweave Embroidery - this will work in 3.1
-		/*sp = dbcSpell.LookupEntryForced(55640);
+		/*sp = CheckAndReturnSpellEntry(55640);
 		if(sp != NULL)
 		{
 			sp->EffectTriggerSpell[0] = 55637;
@@ -6753,7 +6753,7 @@ void ApplyNormalFixes()
 		}*/
 
 		//Darkglow Embroidery
-		sp = dbcSpell.LookupEntryForced(55768);
+		sp = CheckAndReturnSpellEntry(55768);
 		if(sp != NULL)
 		{
 			sp->EffectTriggerSpell[0] = 55767;
@@ -6766,56 +6766,56 @@ void ApplyNormalFixes()
 		**************************************************************/
 
 		// Citrine Pendant of Golden Healing
-		sp = dbcSpell.LookupEntryForced( 25608 );		//	http://www.wowhead.com/?item=20976
+		sp = CheckAndReturnSpellEntry( 25608 );		//	http://www.wowhead.com/?item=20976
 		if( sp != NULL )
 		{	//Overrides any spell coefficient calculation - DBCStores.h
 			sp->Dspell_coef_override = 0;	//DD&DH
 			sp->OTspell_coef_override = 0;	//HOT&DOT
 		}
 		//Barricade of Eternity
-		sp = dbcSpell.LookupEntryForced( 40475 );		//	http://www.wowhead.com/?item=40475
+		sp = CheckAndReturnSpellEntry( 40475 );		//	http://www.wowhead.com/?item=40475
 		if( sp != NULL )
 			sp->procChance = 50;	// Sets change to proc
 
 		//Figurine - Shadowsong Panther
-		sp = dbcSpell.LookupEntryForced( 46784 );		//	http://www.wowhead.com/?item=35702
+		sp = CheckAndReturnSpellEntry( 46784 );		//	http://www.wowhead.com/?item=35702
 		if( sp != NULL )
 			sp->AttributesEx |= ATTRIBUTESEX_NOT_BREAK_STEALTH;
 
 		// Infernal Protection
-		sp = dbcSpell.LookupEntryForced(36488);			//	http://www.wowhead.com/?spell=36488
+		sp = CheckAndReturnSpellEntry(36488);			//	http://www.wowhead.com/?spell=36488
 		if( sp != NULL )
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_SINGLE_FRIEND;
 
 		// Band of the Eternal Champion: reduced proc rate
-		sp = dbcSpell.LookupEntryForced( 35080 );
+		sp = CheckAndReturnSpellEntry( 35080 );
 		if( sp != NULL )
 			sp->procChance = 5;
 
 		// Band of the Eternal Sage: reduced proc rate
-		sp = dbcSpell.LookupEntryForced( 35083 );
+		sp = CheckAndReturnSpellEntry( 35083 );
 		if( sp != NULL )
 			sp->procChance = 5;
 
 		// Band of the Eternal Defender: reduced proc rate
-		sp = dbcSpell.LookupEntryForced( 35077 );
+		sp = CheckAndReturnSpellEntry( 35077 );
 		if( sp != NULL )
 			sp->procChance = 5;
 
 		// Band of the Eternal Restorer: reduced proc rate
-		sp = dbcSpell.LookupEntryForced( 35086 );
+		sp = CheckAndReturnSpellEntry( 35086 );
 		if( sp != NULL )
 			sp->procChance = 5;
 
 		// Deadly Throw Interrupt
-		sp = dbcSpell.LookupEntryForced( 32748 );
+		sp = CheckAndReturnSpellEntry( 32748 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_RANGED_ATTACK | PROC_ON_CAST_SPELL;
 		}
 
 		//Sundial of the Exiled
-		sp = dbcSpell.LookupEntryForced(60063);
+		sp = CheckAndReturnSpellEntry(60063);
 		if(sp != NULL)
 		{
 			sp->EffectTriggerSpell[1] = 60064;
@@ -6825,7 +6825,7 @@ void ApplyNormalFixes()
 		}
 
 		//Je'Tze's Bell
-		sp = dbcSpell.LookupEntryForced(49622);
+		sp = CheckAndReturnSpellEntry(49622);
 		if(sp != NULL)
 		{
 			sp->EffectTriggerSpell[1] = 49623;
@@ -6835,7 +6835,7 @@ void ApplyNormalFixes()
 		}
 
 		//Tears of Bitter Anguish
-		sp = dbcSpell.LookupEntryForced(58901);
+		sp = CheckAndReturnSpellEntry(58901);
 		if(sp != NULL)
 		{
 			sp->EffectTriggerSpell[1]=58904;
@@ -6845,7 +6845,7 @@ void ApplyNormalFixes()
 		}
 
 		//Embrace of the Spider
-		sp = dbcSpell.LookupEntryForced(60490);
+		sp = CheckAndReturnSpellEntry(60490);
 		if(sp != NULL)
 		{
 			sp->EffectTriggerSpell[1] = 60492;
@@ -6855,7 +6855,7 @@ void ApplyNormalFixes()
 		}
 
 		//Dying Curse
-		sp = dbcSpell.LookupEntryForced(60493);
+		sp = CheckAndReturnSpellEntry(60493);
 		if(sp != NULL)
 		{
 			sp->EffectTriggerSpell[1] = 60494;
@@ -6865,7 +6865,7 @@ void ApplyNormalFixes()
 		}
 
 		//Fury of the Five Flights
-		sp = dbcSpell.LookupEntryForced(60313);
+		sp = CheckAndReturnSpellEntry(60313);
 		if(sp != NULL)
 		{
 			sp->EffectTriggerSpell[1] = 60314;
@@ -6875,12 +6875,12 @@ void ApplyNormalFixes()
 		}
 
 		//Vial of the Sunwell
-		sp = dbcSpell.LookupEntryForced( 45059 );
+		sp = CheckAndReturnSpellEntry( 45059 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_CAST_SPELL;
 
 		//Pendant of the Violet Eye
-		sp = dbcSpell.LookupEntryForced( 29601 );
+		sp = CheckAndReturnSpellEntry( 29601 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL | static_cast<uint32>(PROC_TARGET_SELF);
@@ -6888,22 +6888,22 @@ void ApplyNormalFixes()
 			sp->EffectTriggerSpell[0] = 35095;
 			sp->procChance = 100;
 		}
-		sp = dbcSpell.LookupEntryForced( 35095 );
+		sp = CheckAndReturnSpellEntry( 35095 );
 		if( sp != NULL )
 		{
 			sp->self_cast_only = true;
 			sp->procChance = 100;
 		}
 				
-		sp = dbcSpell.LookupEntryForced( 38332 );		// Ribbon of Sacrifice
+		sp = CheckAndReturnSpellEntry( 38332 );		// Ribbon of Sacrifice
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_CAST_SPELL;
 
-		sp = dbcSpell.LookupEntryForced( 40475 );		// Black temple melee trinket
+		sp = CheckAndReturnSpellEntry( 40475 );		// Black temple melee trinket
 		if( sp != NULL )
 			sp->procChance = 5;
 
-		sp = dbcSpell.LookupEntryForced( 32642 );		// Sporegarr - Petrified Lichen Guard
+		sp = CheckAndReturnSpellEntry( 32642 );		// Sporegarr - Petrified Lichen Guard
 		if( sp != NULL )
 		{	
 			sp->procFlags = PROC_ON_BLOCK_VICTIM;
@@ -6912,7 +6912,7 @@ void ApplyNormalFixes()
 		}
 
         //Flow of Knowledge
-		sp = dbcSpell.LookupEntryForced ( 62114 );
+		sp = CheckAndReturnSpellEntry ( 62114 );
         if(sp != NULL )
 		{
 			sp->EffectTriggerSpell[1] = 60064;
@@ -6922,7 +6922,7 @@ void ApplyNormalFixes()
 		}
 
 		//Majestic Dragon Figurine
-		sp = dbcSpell.LookupEntryForced(60524);
+		sp = CheckAndReturnSpellEntry(60524);
 		if(sp != NULL)
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
@@ -6930,7 +6930,7 @@ void ApplyNormalFixes()
 		}
 
 		//Illustration of the Dragon Soul
-		sp = dbcSpell.LookupEntryForced(60485);
+		sp = CheckAndReturnSpellEntry(60485);
 		if(sp != NULL)
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
@@ -6944,7 +6944,7 @@ void ApplyNormalFixes()
 		// Insert boss spell fixes here
 
 		// Major Domo - Magic Reflection
-		sp = dbcSpell.LookupEntryForced(20619);
+		sp = CheckAndReturnSpellEntry(20619);
 		if(sp != NULL)
 		{
 			for(i= 0; i<3; i++)
@@ -6957,7 +6957,7 @@ void ApplyNormalFixes()
 		}
 
 		// Major Domo - Damage Shield
-		sp = dbcSpell.LookupEntryForced(21075);
+		sp = CheckAndReturnSpellEntry(21075);
 		if(sp != NULL)
 		{
 			for(i= 0; i<3; i++)
@@ -6970,20 +6970,20 @@ void ApplyNormalFixes()
 		}
 
 		// Dark Glare
-		sp = dbcSpell.LookupEntryForced( 26029 );
+		sp = CheckAndReturnSpellEntry( 26029 );
 		if( sp != NULL )
 			sp->cone_width = 15.0f; // 15 degree cone
 
 		// Drain Power (Malacrass) // bugged - the charges fade even when refreshed with new ones. This makes them everlasting.
-		sp = dbcSpell.LookupEntryForced( 44131 );
+		sp = CheckAndReturnSpellEntry( 44131 );
  		if( sp != NULL )
 			sp->DurationIndex = 21;
-		sp = dbcSpell.LookupEntryForced( 44132 );
+		sp = CheckAndReturnSpellEntry( 44132 );
 		if( sp != NULL )
 			sp->DurationIndex = 21;
 
 		// Zul'jin spell, proc from Creeping Paralysis
-		sp = dbcSpell.LookupEntryForced( 43437 );
+		sp = CheckAndReturnSpellEntry( 43437 );
  		if( sp != NULL )
 		{
 			sp->EffectImplicitTargetA[0] = 0;
@@ -6991,14 +6991,14 @@ void ApplyNormalFixes()
 		}
 
 		//Bloodboil
-		sp = dbcSpell.LookupEntryForced( 42005 );
+		sp = CheckAndReturnSpellEntry( 42005 );
  		if( sp != NULL )
 		{
 			sp->MaxTargets = 5;
 		}
 
 		//Acidic Wound
-		sp = dbcSpell.LookupEntryForced( 40484 );
+		sp = CheckAndReturnSpellEntry( 40484 );
  		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_MELEE_ATTACK;
@@ -7006,13 +7006,13 @@ void ApplyNormalFixes()
 		}	
 
 		//Inject Poison
-		sp = dbcSpell.LookupEntryForced( 44599 );
+		sp = CheckAndReturnSpellEntry( 44599 );
  		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_MELEE_ATTACK;
 			sp->procChance = 100;
 		}
-		sp = dbcSpell.LookupEntryForced( 46046 );
+		sp = CheckAndReturnSpellEntry( 46046 );
  		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_MELEE_ATTACK;
@@ -7020,20 +7020,20 @@ void ApplyNormalFixes()
 		}
 
 		//Anthropy
-		sp = dbcSpell.LookupEntryForced( 40327 );
+		sp = CheckAndReturnSpellEntry( 40327 );
  		if( sp != NULL )
 		{
 			sp->maxstack = 10;
 		}
 
 		//Doom
-		sp = dbcSpell.LookupEntryForced( 31347 );
+		sp = CheckAndReturnSpellEntry( 31347 );
 		if( sp != NULL )
 		{	
 			sp->MaxTargets = 1;
 		}
 		//Shadow of Death
-		sp = dbcSpell.LookupEntryForced( 40251 );
+		sp = CheckAndReturnSpellEntry( 40251 );
 		if( sp != NULL )
 		{	
 			sp->EffectApplyAuraName[0] = 23;
@@ -7041,7 +7041,7 @@ void ApplyNormalFixes()
 		}
 
 		// Recently Dropped Flag
-		sp = dbcSpell.LookupEntryForced( 42792 );
+		sp = CheckAndReturnSpellEntry( 42792 );
 		if (sp != NULL)
 			sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
 
@@ -7049,19 +7049,19 @@ void ApplyNormalFixes()
 		cebernic 's fixes
 		*/
 		//resurrection sickness
-		sp = dbcSpell.LookupEntryForced( 15007 );
+		sp = CheckAndReturnSpellEntry( 15007 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
 		}
 		// ghost ,NIGHTELF ghost & sprit
-		sp = dbcSpell.LookupEntryForced( 20584 );
+		sp = CheckAndReturnSpellEntry( 20584 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
 		}
 
-		sp = dbcSpell.LookupEntryForced( 9036 );
+		sp = CheckAndReturnSpellEntry( 9036 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
@@ -7069,33 +7069,33 @@ void ApplyNormalFixes()
 			sp->EffectTriggerSpell[1] = 20584;
 		}
 
-		sp = dbcSpell.LookupEntryForced( 8326 );
+		sp = CheckAndReturnSpellEntry( 8326 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
 		}
 
-		sp = dbcSpell.LookupEntryForced( 26013 ); //bg deserter
+		sp = CheckAndReturnSpellEntry( 26013 ); //bg deserter
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
 		}
 
-		sp = dbcSpell.LookupEntryForced( 24379 ); //bg Restoration
+		sp = CheckAndReturnSpellEntry( 24379 ); //bg Restoration
 		if( sp != NULL )
 		{
 			sp->EffectTriggerSpell[0] = 23493;
 			sp->c_is_flags = SPELL_FLAG_IS_FORCEDBUFF;
 		}
 
-		sp = dbcSpell.LookupEntryForced( 23493 ); //bg Restoration
+		sp = CheckAndReturnSpellEntry( 23493 ); //bg Restoration
 		if( sp != NULL )
 		{
 			sp->EffectTriggerSpell[0] = 24379;
 			sp->c_is_flags = SPELL_FLAG_IS_FORCEDBUFF;
 		}
 
-		sp = dbcSpell.LookupEntryForced ( 5246 ); // why self?
+		sp = CheckAndReturnSpellEntry ( 5246 ); // why self?
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
@@ -7107,7 +7107,7 @@ void ApplyNormalFixes()
 
 
 		//Bandage
-		sp = dbcSpell.LookupEntryForced( 11196 );
+		sp = CheckAndReturnSpellEntry( 11196 );
 		if( sp != NULL )
 			sp->c_is_flags = SPELL_FLAG_IS_FORCEDDEBUFF;
 
@@ -7120,28 +7120,28 @@ void ApplyNormalFixes()
 		/**********************************************************
 		 *	Death and Decay - Ranks 1, 2, 3, 4
 		 **********************************************************/
-		sp = dbcSpell.LookupEntryForced( 43265 );
+		sp = CheckAndReturnSpellEntry( 43265 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;
 			sp->Effect[0] = SPELL_EFFECT_PERSISTENT_AREA_AURA;
 		}
 
-		sp = dbcSpell.LookupEntryForced( 49936 );
+		sp = CheckAndReturnSpellEntry( 49936 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;
 			sp->Effect[0] = SPELL_EFFECT_PERSISTENT_AREA_AURA;
 		}
 
-		sp = dbcSpell.LookupEntryForced( 49937 );
+		sp = CheckAndReturnSpellEntry( 49937 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;
 			sp->Effect[0] = SPELL_EFFECT_PERSISTENT_AREA_AURA;
 		}
 
-		sp = dbcSpell.LookupEntryForced( 49938 );
+		sp = CheckAndReturnSpellEntry( 49938 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;
@@ -7150,7 +7150,7 @@ void ApplyNormalFixes()
 		/**********************************************************
 		 *	Unholy Aura - Ranks 1 & 2
 		 **********************************************************/
-		sp = dbcSpell.LookupEntryForced( 50391 );
+		sp = CheckAndReturnSpellEntry( 50391 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_MOD_INCREASE_SPEED_ALWAYS;
@@ -7160,7 +7160,7 @@ void ApplyNormalFixes()
 			sp->Effect[1] = SPELL_EFFECT_APPLY_AREA_AURA;
 			sp->EffectImplicitTargetA[1] = EFF_TARGET_SELF;
 		}
-		sp = dbcSpell.LookupEntryForced( 50392 );
+		sp = CheckAndReturnSpellEntry( 50392 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_MOD_INCREASE_SPEED_ALWAYS;
@@ -7174,7 +7174,7 @@ void ApplyNormalFixes()
 		/**********************************************************
 		 *	Blood Presence
 		 **********************************************************/
-		sp = dbcSpell.LookupEntryForced( 48266 );
+		sp = CheckAndReturnSpellEntry( 48266 );
 		if( sp != NULL )
 		{
 			sp->BGR_one_buff_from_caster_on_self = SPELL_TYPE3_DEATH_KNIGHT_AURA;
@@ -7183,7 +7183,7 @@ void ApplyNormalFixes()
 		/**********************************************************
 		 *	Frost Presence
 		 **********************************************************/
-		sp = dbcSpell.LookupEntryForced( 48263 );
+		sp = CheckAndReturnSpellEntry( 48263 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_MOD_BASE_RESISTANCE_PCT;
@@ -7196,7 +7196,7 @@ void ApplyNormalFixes()
 		/**********************************************************
 		 *	Unholy Presence
 		 **********************************************************/
-		sp = dbcSpell.LookupEntryForced( 48265 );
+		sp = CheckAndReturnSpellEntry( 48265 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_MOD_HASTE;
@@ -7209,7 +7209,7 @@ void ApplyNormalFixes()
 		/**********************************************************
 		 *	Death Grip
 		 **********************************************************/
-		sp = dbcSpell.LookupEntryForced( 49576 );
+		sp = CheckAndReturnSpellEntry( 49576 );
 		if( sp != NULL )
 		{
 			sp->Effect[0] = SPELL_EFFECT_DUMMY;
@@ -7218,7 +7218,7 @@ void ApplyNormalFixes()
 		/**********************************************************
 		 *	Acherus Deatcharger
 		 **********************************************************/
-		sp = dbcSpell.LookupEntryForced( 48778 );
+		sp = CheckAndReturnSpellEntry( 48778 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_MOUNTED;
@@ -7229,7 +7229,7 @@ void ApplyNormalFixes()
 		/**********************************************************
 		 *	Path of Frost
 		 **********************************************************/
-		sp = dbcSpell.LookupEntryForced( 3714 );
+		sp = CheckAndReturnSpellEntry( 3714 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_WATER_WALK;
@@ -7237,53 +7237,53 @@ void ApplyNormalFixes()
 		}
 
 		//Shadow of Death
-		sp = dbcSpell.LookupEntryForced( 49157 );
+		sp = CheckAndReturnSpellEntry( 49157 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_DUMMY;
 		}
 
 		//Rune Strike
-		sp = dbcSpell.LookupEntryForced( 56815 );
+		sp = CheckAndReturnSpellEntry( 56815 );
 		if( sp != NULL )
 		{
 			sp->Attributes = ATTRIBUTES_CANT_BE_DPB;
 		}
 
 		//Frost Strike
-		sp = dbcSpell.LookupEntryForced( 49143 );
+		sp = CheckAndReturnSpellEntry( 49143 );
 		if( sp != NULL )
 		{
 			sp->Attributes = ATTRIBUTES_CANT_BE_DPB;
 		}
-		sp = dbcSpell.LookupEntryForced( 51416 );
+		sp = CheckAndReturnSpellEntry( 51416 );
 		if( sp != NULL )
 		{
 			sp->Attributes = ATTRIBUTES_CANT_BE_DPB;
 		}
-		sp = dbcSpell.LookupEntryForced( 51417 );
+		sp = CheckAndReturnSpellEntry( 51417 );
 		if( sp != NULL )
 		{
 			sp->Attributes = ATTRIBUTES_CANT_BE_DPB;
 		}
-		sp = dbcSpell.LookupEntryForced( 51418 );
+		sp = CheckAndReturnSpellEntry( 51418 );
 		if( sp != NULL )
 		{
 			sp->Attributes = ATTRIBUTES_CANT_BE_DPB;
 		}
-		sp = dbcSpell.LookupEntryForced( 51419 );
+		sp = CheckAndReturnSpellEntry( 51419 );
 		if( sp != NULL )
 		{
 			sp->Attributes = ATTRIBUTES_CANT_BE_DPB;
 		}
-		sp = dbcSpell.LookupEntryForced( 55268 );
+		sp = CheckAndReturnSpellEntry( 55268 );
 		if( sp != NULL )
 		{
 			sp->Attributes = ATTRIBUTES_CANT_BE_DPB;
 		}
 
 		// Unlocking Soul Prison
-       sp = dbcSpell.LookupEntryForced( 54669 );
+       sp = CheckAndReturnSpellEntry( 54669 );
        if( sp )
        {
                sp->Effect[0] = SPELL_EFFECT_DUMMY;
@@ -7294,14 +7294,14 @@ void ApplyNormalFixes()
         **********************************************************/
 
                // Bloodworms proc spell
-               sp = dbcSpell.LookupEntryForced( 50452 );
+               sp = CheckAndReturnSpellEntry( 50452 );
                if( sp != NULL )
                {
                        sp->Effect[0] = SPELL_EFFECT_DUMMY;
                }
 
                // Bloodworms Rank 1
-               sp = dbcSpell.LookupEntryForced( 49027 );
+               sp = CheckAndReturnSpellEntry( 49027 );
                if( sp != NULL )
                {
                        sp->procFlags = PROC_ON_MELEE_ATTACK;
@@ -7309,7 +7309,7 @@ void ApplyNormalFixes()
                }
 
                // Bloodworms Rank 2
-               sp = dbcSpell.LookupEntryForced( 49542 );
+               sp = CheckAndReturnSpellEntry( 49542 );
                if( sp != NULL )
                {
                        sp->procFlags = PROC_ON_MELEE_ATTACK;
@@ -7317,7 +7317,7 @@ void ApplyNormalFixes()
                }
 
                // Bloodworms Rank 3
-               sp = dbcSpell.LookupEntryForced( 49543 );
+               sp = CheckAndReturnSpellEntry( 49543 );
                if( sp != NULL )
                {
                        sp->procFlags = PROC_ON_MELEE_ATTACK;
@@ -7325,14 +7325,14 @@ void ApplyNormalFixes()
                }
 
 		// Blood Fury Healing Debuff
-		sp = dbcSpell.LookupEntryForced( 23230 );
+		sp = CheckAndReturnSpellEntry( 23230 );
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
 		}
 
 		// Noggenfogger elixir - reduce size effect
-		sp = dbcSpell.LookupEntryForced( 16595 );
+		sp = CheckAndReturnSpellEntry( 16595 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_MOD_SCALE;
@@ -7340,7 +7340,7 @@ void ApplyNormalFixes()
 			sp->maxstack = 1;
       	}
 
-		sp = dbcSpell.LookupEntryForced( 46584 );
+		sp = CheckAndReturnSpellEntry( 46584 );
 		if( sp != NULL )
 		{
 		sp->Effect[0] = SPELL_EFFECT_DUMMY;
@@ -7350,28 +7350,28 @@ void ApplyNormalFixes()
 
 		//PvP Librams of Justice 
 		//Gladiator's Libram of Justice
-		sp = dbcSpell.LookupEntryForced( 34139 );
+		sp = CheckAndReturnSpellEntry( 34139 );
 		if( sp != NULL )	
 			sp->procFlags = PROC_ON_CAST_SPELL;
 
 		//Merciless Gladiator's Libram of Justice
-		sp = dbcSpell.LookupEntryForced( 42368 );
+		sp = CheckAndReturnSpellEntry( 42368 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_CAST_SPELL;
 
 		//Vengeful Gladiator's Libram of Justice
-		sp = dbcSpell.LookupEntryForced( 43726 );
+		sp = CheckAndReturnSpellEntry( 43726 );
 		if( sp != NULL )	
 			sp->procFlags = PROC_ON_CAST_SPELL;
 
 		//Brutal Gladiator's Libram of Justice
-		sp = dbcSpell.LookupEntryForced( 46092 );
+		sp = CheckAndReturnSpellEntry( 46092 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_CAST_SPELL;
 		
 		//Other Librams 
 		//Libram of Saints Departed and Libram of Zeal
-		sp = dbcSpell.LookupEntryForced( 34262 );
+		sp = CheckAndReturnSpellEntry( 34262 );
 		if( sp != NULL )
 		{	
 			sp->procFlags = PROC_ON_CAST_SPELL | static_cast<uint32>(PROC_TARGET_SELF);
@@ -7379,7 +7379,7 @@ void ApplyNormalFixes()
 			sp->EffectTriggerSpell[0] = 34263;	
 			sp->procChance = 100;		
 		}	
-		sp = dbcSpell.LookupEntryForced( 34263 );
+		sp = CheckAndReturnSpellEntry( 34263 );
 		if( sp != NULL )
 		{	
 			sp->self_cast_only = true;
@@ -7388,7 +7388,7 @@ void ApplyNormalFixes()
 		}
 
 		//Libram of Avengement 
-		sp = dbcSpell.LookupEntryForced( 34258 );
+		sp = CheckAndReturnSpellEntry( 34258 );
 		if( sp != NULL )
 		{	
 			sp->procFlags = PROC_ON_CAST_SPELL | static_cast<uint32>(PROC_TARGET_SELF);
@@ -7396,7 +7396,7 @@ void ApplyNormalFixes()
 			sp->EffectTriggerSpell[0] = 34260;	
 			sp->procChance = 100;		
 		}	
-		sp = dbcSpell.LookupEntryForced( 34260 );
+		sp = CheckAndReturnSpellEntry( 34260 );
 		if( sp != NULL )
 		{	
 			sp->self_cast_only = true;
@@ -7405,7 +7405,7 @@ void ApplyNormalFixes()
 		}
 
 		//Libram of Mending
-		sp = dbcSpell.LookupEntryForced( 43741 );
+		sp = CheckAndReturnSpellEntry( 43741 );
 		if( sp != NULL )
 		{	
 			sp->procFlags = PROC_ON_CAST_SPELL | static_cast<uint32>(PROC_TARGET_SELF);
@@ -7413,7 +7413,7 @@ void ApplyNormalFixes()
 			sp->EffectTriggerSpell[0] = 43742;	
 			sp->procChance = 100;		
 		}	
-		sp = dbcSpell.LookupEntryForced( 43742 );
+		sp = CheckAndReturnSpellEntry( 43742 );
 		if( sp != NULL )
 		{	
 			sp->self_cast_only = true;
@@ -7422,7 +7422,7 @@ void ApplyNormalFixes()
 		}
 
 		//Libram of Divine Judgement
-		sp = dbcSpell.LookupEntryForced( 43745 );
+		sp = CheckAndReturnSpellEntry( 43745 );
 		if( sp != NULL )
 		{	
 			sp->procFlags = PROC_ON_CAST_SPELL | static_cast<uint32>(PROC_TARGET_SELF);
@@ -7430,7 +7430,7 @@ void ApplyNormalFixes()
 			sp->EffectTriggerSpell[0] = 43747;	
 			sp->procChance = 40;		
 		}	
-		sp = dbcSpell.LookupEntryForced( 43747 );
+		sp = CheckAndReturnSpellEntry( 43747 );
 		if( sp != NULL )
 		{	
 			sp->self_cast_only = true;	
@@ -7438,7 +7438,7 @@ void ApplyNormalFixes()
 		}
 
 		//Stonebreaker's Totem
-		sp = dbcSpell.LookupEntryForced( 43748 );
+		sp = CheckAndReturnSpellEntry( 43748 );
 		if( sp != NULL )
 		{	
 			sp->procFlags = PROC_ON_CAST_SPELL | static_cast<uint32>(PROC_TARGET_SELF);
@@ -7446,25 +7446,25 @@ void ApplyNormalFixes()
 			sp->EffectTriggerSpell[0] = 43749;	
 			sp->procChance = 50;		
 		}	
-		sp = dbcSpell.LookupEntryForced( 43749 ); 
+		sp = CheckAndReturnSpellEntry( 43749 ); 
 		if( sp != NULL )
 		{	
 			sp->self_cast_only = true;	
 			sp->procChance = 100;	
 		}
 
-		sp = dbcSpell.LookupEntryForced( 44856 );		// Bash'ir Phasing Device
+		sp = CheckAndReturnSpellEntry( 44856 );		// Bash'ir Phasing Device
 		if( sp != NULL )
 			sp->AuraInterruptFlags = AURA_INTERRUPT_ON_LEAVE_AREA;
 
-		sp = dbcSpell.LookupEntryForced( 27997 );		//Spellsurge
+		sp = CheckAndReturnSpellEntry( 27997 );		//Spellsurge
 		if( sp != NULL )
 		{
 			sp->proc_interval = 30000; // Wowhead Comment
 			sp->procChance = 3; //Enchantment Text
 		}
 
-		sp = dbcSpell.LookupEntryForced( 24574 );		// Zandalarian Hero Badge 24590 24575
+		sp = CheckAndReturnSpellEntry( 24574 );		// Zandalarian Hero Badge 24590 24575
 		if( sp != NULL )
 		{
 			sp->Effect[0] = SPELL_EFFECT_TRIGGER_SPELL;
@@ -7474,24 +7474,24 @@ void ApplyNormalFixes()
 		}
 
 		//Tempfix for Stone Statues
-		sp = dbcSpell.LookupEntryForced( 32253 );
+		sp = CheckAndReturnSpellEntry( 32253 );
 		if( sp != NULL )
 			sp->DurationIndex = 64;
-		sp = dbcSpell.LookupEntryForced( 32787 );
+		sp = CheckAndReturnSpellEntry( 32787 );
 		if( sp != NULL )
 			sp->DurationIndex = 64;
-		sp = dbcSpell.LookupEntryForced( 32788 );
+		sp = CheckAndReturnSpellEntry( 32788 );
 		if( sp != NULL )
 			sp->DurationIndex = 64;
-		sp = dbcSpell.LookupEntryForced( 32790 );
+		sp = CheckAndReturnSpellEntry( 32790 );
 		if( sp != NULL )
 			sp->DurationIndex = 64;
-		sp = dbcSpell.LookupEntryForced( 32791 );
+		sp = CheckAndReturnSpellEntry( 32791 );
 		if( sp != NULL )
 			sp->DurationIndex = 64;
 
        // Rune Tap
-	   sp = dbcSpell.LookupEntryForced( 48982 );
+	   sp = CheckAndReturnSpellEntry( 48982 );
        if( sp != NULL )
            sp->Effect[0] = SPELL_EFFECT_DUMMY;
 
@@ -7500,7 +7500,7 @@ void ApplyNormalFixes()
 	//////////////////////////////////////////////////////
 
 	// Blessing of Zim'Torga
-	sp = dbcSpell.LookupEntryForced( 51729 );
+	sp = CheckAndReturnSpellEntry( 51729 );
 	if( sp )
 	{
 		sp->EffectImplicitTargetA[0] = EFF_TARGET_SCRIPTED_OR_SINGLE_TARGET;
@@ -7508,7 +7508,7 @@ void ApplyNormalFixes()
 	}
 
 	// Blessing of Zim'Abwa
-	sp = dbcSpell.LookupEntryForced( 51265 );
+	sp = CheckAndReturnSpellEntry( 51265 );
 	if( sp )
 	{
 		sp->EffectImplicitTargetA[0] = EFF_TARGET_SCRIPTED_OR_SINGLE_TARGET;
@@ -7516,7 +7516,7 @@ void ApplyNormalFixes()
 	}
 
 	// Blessing of Zim'Rhuk
-	sp = dbcSpell.LookupEntryForced( 52051 );
+	sp = CheckAndReturnSpellEntry( 52051 );
 	if( sp )
 	{
 		sp->EffectImplicitTargetA[0] = EFF_TARGET_SCRIPTED_OR_SINGLE_TARGET;

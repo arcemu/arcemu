@@ -5728,3 +5728,17 @@ void Spell::HandleCastEffects( uint64 guid, uint32 i )
 		}
 	}
 }
+
+//Logs if the spell doesn't exist, using Debug loglevel.
+SpellEntry* CheckAndReturnSpellEntry(uint32 spellid)
+{
+	//Logging that spellid 0 or -1 don't exist is not needed.
+	if(spellid == 0 || spellid == uint32(-1))
+		return NULL;
+
+	SpellEntry* sp = dbcSpell.LookupEntryForced( spellid );
+	if(sp == NULL)
+		sLog.outDebug("Something tried to access nonexistent spell %u", spellid);
+
+	return sp;
+}
