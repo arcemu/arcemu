@@ -2095,7 +2095,6 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, bo
 							continue;
 						if( !IsPlayer() )
 							continue;
-						Player* c = static_cast< Player* >( this );
 					}break;
 				case 54172: //Paladin - Divine Storm heal effect
 					{

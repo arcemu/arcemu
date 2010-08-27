@@ -2903,23 +2903,6 @@ void ApplyNormalFixes()
 			sp->EffectImplicitTargetA[1] = EFF_TARGET_SINGLE_ENEMY;
 		}
 
-		//rogue - Find Weakness.
-		sp = dbcSpell.LookupEntryForced( 31233 );
-		if( sp != NULL )
-			sp->procFlags = PROC_ON_CAST_SPELL;
-		sp = dbcSpell.LookupEntryForced( 31239 );
-		if( sp != NULL )
-			sp->procFlags = PROC_ON_CAST_SPELL;
-		sp = dbcSpell.LookupEntryForced( 31240 );
-		if( sp != NULL )
-			sp->procFlags = PROC_ON_CAST_SPELL;
-		sp = dbcSpell.LookupEntryForced( 31241 );
-		if( sp != NULL )
-			sp->procFlags = PROC_ON_CAST_SPELL;
-		sp = dbcSpell.LookupEntryForced( 31242 );
-		if( sp != NULL )
-			sp->procFlags = PROC_ON_CAST_SPELL;
-
 		//rogue - Camouflage.
 		sp = dbcSpell.LookupEntryForced( 13975 );
 		if( sp != NULL )

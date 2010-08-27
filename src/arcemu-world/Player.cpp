@@ -11833,7 +11833,7 @@ void Player::Social_SendFriendList(uint32 flag)
 			data << uint8(0);
 
 		// online/offline flag
-		plr = objmgr.GetPlayer( itr->first );
+		plr = objmgr.GetPlayer((uint32)itr->first);
 		cache = objmgr.GetPlayerCache((uint32)itr->first);
 		if( plr != NULL )
 		{
