@@ -5918,8 +5918,6 @@ void Aura::SpellAuraModDamagePercDone(bool apply)
 
 	switch (GetSpellId()) //dirty or mb not fix bug with wand specializations
 	{
-	case 6057:
-	case 6085:
 	case 14524:
 	case 14525:
 	case 14526:

@@ -2083,12 +2083,6 @@ void ApplyNormalFixes()
 		}
 
 		//Paladin - Vindication
-		sp = CheckAndReturnSpellEntry( 26021 );
-		if( sp != NULL )
-		{
-			sp->procChance = 30;
-			sp->procFlags = PROC_ON_MELEE_ATTACK;
-		}
 		sp = CheckAndReturnSpellEntry( 26016 );
 		if( sp != NULL )
 		{
@@ -2554,26 +2548,6 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_PET;
 
-		// Hunter - Improved Wing Clip
-		sp = CheckAndReturnSpellEntry( 19228 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
-			sp->ProcOnNameHash[0] = SPELL_HASH_WING_CLIP;
-		}
-		sp = CheckAndReturnSpellEntry( 19232 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
-			sp->ProcOnNameHash[0] = SPELL_HASH_WING_CLIP;
-		}
-		sp = CheckAndReturnSpellEntry( 19233 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
-			sp->ProcOnNameHash[0] = SPELL_HASH_WING_CLIP;
-		}
-
 		// Hunter - Master Tactician
 		sp = CheckAndReturnSpellEntry( 34506 );
 		if( sp != NULL )
@@ -2919,16 +2893,6 @@ void ApplyNormalFixes()
 		{
 			sp->EffectMiscValue[0] = SMT_MISC_EFFECT;
 		}
-		sp = CheckAndReturnSpellEntry( 14064 );
-		if( sp != NULL )
-		{
-			sp->EffectMiscValue[0] = SMT_MISC_EFFECT;
-		}
-		sp = CheckAndReturnSpellEntry( 14065 );
-		if( sp != NULL )
-		{
-			sp->EffectMiscValue[0] = SMT_MISC_EFFECT;
-		}
 
 		//rogue - Vanish : Second Trigger Spell
 		sp = CheckAndReturnSpellEntry( 18461 );
@@ -3254,20 +3218,9 @@ void ApplyNormalFixes()
 			sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[1] = 25329;
 		}
-		sp = CheckAndReturnSpellEntry( 48077 );
-		if( sp != NULL )
-		{
-			sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[1] = 48075;
-		}
-		sp = CheckAndReturnSpellEntry( 48078 );
-		if( sp != NULL )
-		{
-			sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[1] = 48076;
-		}
+
 		// Holy Nova
-      sp = CheckAndReturnSpellEntry( 48077 );
+		sp = CheckAndReturnSpellEntry( 48077 );
 		if( sp != NULL )
 		{
 			sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL;
@@ -3329,57 +3282,6 @@ void ApplyNormalFixes()
 		sp = CheckAndReturnSpellEntry( 45244 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_SPELL_CRIT_HIT_VICTIM | PROC_ON_RANGED_CRIT_ATTACK_VICTIM;
-
-		//Priest: Shadowguard
-		sp = CheckAndReturnSpellEntry( 18137 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_SPELL_HIT_VICTIM | PROC_ON_RANGED_ATTACK_VICTIM | PROC_ON_MELEE_ATTACK_VICTIM;
-			sp->proc_interval = 3000; //every 3 seconds
-			sp->EffectTriggerSpell[0] = 28377;
-		}
-		sp = CheckAndReturnSpellEntry( 19308 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_SPELL_HIT_VICTIM | PROC_ON_RANGED_ATTACK_VICTIM | PROC_ON_MELEE_ATTACK_VICTIM;
-			sp->proc_interval = 3000; //every 3 seconds
-			sp->EffectTriggerSpell[0] = 28378;
-		}
-		sp = CheckAndReturnSpellEntry( 19309 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_SPELL_HIT_VICTIM | PROC_ON_RANGED_ATTACK_VICTIM | PROC_ON_MELEE_ATTACK_VICTIM;
-			sp->proc_interval = 3000; //every 3 seconds
-			sp->EffectTriggerSpell[0] = 28379;
-		}
-		sp = CheckAndReturnSpellEntry( 19310 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_SPELL_HIT_VICTIM | PROC_ON_RANGED_ATTACK_VICTIM | PROC_ON_MELEE_ATTACK_VICTIM;
-			sp->proc_interval = 3000; //every 3 seconds
-			sp->EffectTriggerSpell[0] = 28380;
-		}
-		sp = CheckAndReturnSpellEntry( 19311 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_SPELL_HIT_VICTIM | PROC_ON_RANGED_ATTACK_VICTIM | PROC_ON_MELEE_ATTACK_VICTIM;
-			sp->proc_interval = 3000; //every 3 seconds
-			sp->EffectTriggerSpell[0] = 28381;
-		}
-		sp = CheckAndReturnSpellEntry( 19312 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_SPELL_HIT_VICTIM | PROC_ON_RANGED_ATTACK_VICTIM | PROC_ON_MELEE_ATTACK_VICTIM;
-			sp->proc_interval = 3000; //every 3 seconds
-			sp->EffectTriggerSpell[0] = 28382;
-		}
-		sp = CheckAndReturnSpellEntry( 25477 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_SPELL_HIT_VICTIM | PROC_ON_RANGED_ATTACK_VICTIM | PROC_ON_MELEE_ATTACK_VICTIM;
-			sp->proc_interval = 3000; //every 3 seconds
-			sp->EffectTriggerSpell[0] = 28385;
-		}
 
 		//Priest - Wand Specialization
 		sp = CheckAndReturnSpellEntry( 14524 );
@@ -3451,28 +3353,6 @@ void ApplyNormalFixes()
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 33619; //!! WRONG spell, we will make direct dmg here
 		}
-		sp = CheckAndReturnSpellEntry( 33203 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_ABSORB;
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 33619; //!! WRONG spell, we will make direct dmg here
-		}
-		sp = CheckAndReturnSpellEntry( 33204 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_ABSORB;
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 33619; //!! WRONG spell, we will make direct dmg here
-		}
-		sp = CheckAndReturnSpellEntry( 33205 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_ABSORB;
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 33619; //!! WRONG spell, we will make direct dmg here
-		}
-
 		// Weakened Soul - Is forced debuff
 		sp = CheckAndReturnSpellEntry( 6788 );
 		if( sp != NULL )
@@ -3898,20 +3778,6 @@ void ApplyNormalFixes()
 			sp->EffectTriggerSpell[0] = 39805;//proc something (we will override this)
 			sp->procFlags = PROC_ON_SPELL_HIT;
 		}
-		sp = CheckAndReturnSpellEntry( 30680 );
-		if( sp != NULL )
-		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 39805;//proc something (we will override this)
-			sp->procFlags = PROC_ON_SPELL_HIT;
-		}
-		sp = CheckAndReturnSpellEntry( 30681 );
-		if( sp != NULL )
-		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 39805;//proc something (we will override this)
-			sp->procFlags = PROC_ON_SPELL_HIT;
-		}
 		/**********************************************************
 		 *	Purge
 		 **********************************************************/
@@ -3964,11 +3830,6 @@ void ApplyNormalFixes()
 		if( sp != NULL ){
 			sp->EffectDieSides[0] = 0;
 		}
-
-		// Flametongue Totem - 0% spd coefficient
-		sp = CheckAndReturnSpellEntry( 16368 );
-		if( sp != NULL )
-			sp->fixed_dddhcoef = 0.0f;
 
 		//shaman - Improved Weapon Totems
 		sp = CheckAndReturnSpellEntry( 29193 );
@@ -4209,20 +4070,6 @@ void ApplyNormalFixes()
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
 		}
-		sp = CheckAndReturnSpellEntry( 30810 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_CRIT_ATTACK;
-			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
-		}
-
-		sp = CheckAndReturnSpellEntry( 30811 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_CRIT_ATTACK;
-			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
-		}
-
 
 		/**********************************************************
 		 *	Elemental Devastation
@@ -4404,19 +4251,6 @@ void ApplyNormalFixes()
 			sp->procCharges = 2;
 		}
 
-		//Mage - Wand Specialization. Not the forst thing we messed up. Blizz uses attack as magic and wandds as weapons :S
-		sp = CheckAndReturnSpellEntry( 6057 );
-		if( sp != NULL )
-		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_ADD_PCT_MODIFIER;
-			sp->EffectMiscValue[0] = SMT_MISC_EFFECT;
-		}
-		sp = CheckAndReturnSpellEntry( 6085 );
-		if( sp != NULL )
-		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_ADD_PCT_MODIFIER;
-			sp->EffectMiscValue[0] = SMT_MISC_EFFECT;
-		}
 		//Mage - Spell Power
 		sp = CheckAndReturnSpellEntry( 35578 );
 		if( sp != NULL )
@@ -5062,14 +4896,6 @@ void ApplyNormalFixes()
 			sp->EffectBasePoints[0] *= 6;
 		}
 
-		//warlock: Improved Enslave Demon
-		sp = CheckAndReturnSpellEntry( 18821 );
-		if( sp != NULL )
-		{
-			sp->EffectMiscValue[0]=SMT_SPELL_VALUE_PCT;
-			sp->EffectBasePoints[0] = -(sp->EffectBasePoints[0]+2);
-		}
-
 		//warlock - Demonic Sacrifice
 		sp = CheckAndReturnSpellEntry( 18789 );
 		if( sp != NULL )
@@ -5239,32 +5065,6 @@ void ApplyNormalFixes()
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET ;
 			sp->EffectApplyAuraName[0] = SPELL_AURA_MOD_PERCENT_STAT;
 			sp->EffectMiscValue[0] = 3;
-			sp->EffectImplicitTargetA[0] = EFF_TARGET_PET;
-		}
-
-		//warlock - Fel Stamina
-		sp = CheckAndReturnSpellEntry( 18748 );
-		if( sp != NULL )
-		{
-			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET ;
-			sp->EffectApplyAuraName[0] = SPELL_AURA_MOD_PERCENT_STAT;
-			sp->EffectMiscValue[0] = 2;
-			sp->EffectImplicitTargetA[0] = EFF_TARGET_PET;
-		}
-		sp = CheckAndReturnSpellEntry( 18749 );
-		if( sp != NULL )
-		{
-			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET ;
-			sp->EffectApplyAuraName[0] = SPELL_AURA_MOD_PERCENT_STAT;
-			sp->EffectMiscValue[0] = 2;
-			sp->EffectImplicitTargetA[0] = EFF_TARGET_PET;
-		}
-		sp = CheckAndReturnSpellEntry( 18750 );
-		if( sp != NULL )
-		{
-			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET ;
-			sp->EffectApplyAuraName[0] = SPELL_AURA_MOD_PERCENT_STAT;
-			sp->EffectMiscValue[0] = 2;
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_PET;
 		}
 
@@ -5850,27 +5650,6 @@ void ApplyNormalFixes()
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 22845;
 		}
-		sp = CheckAndReturnSpellEntry( 22895 );
-		if( sp != NULL )
-		{
-			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 22845;
-		}
-		sp = CheckAndReturnSpellEntry( 22896 );
-		if( sp != NULL )
-		{
-			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 22845;
-		}
-		sp = CheckAndReturnSpellEntry( 26999 );
-		if( sp != NULL )
-		{
-			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 22845;
-		}
 
 		// Druid - Improved Leader of the Pack
 		sp = CheckAndReturnSpellEntry( 34297 );
@@ -6355,17 +6134,6 @@ void ApplyNormalFixes()
 		}
 		// Drums of war targets surrounding party members instead of us
 		sp = CheckAndReturnSpellEntry( 35475 );
-		if( sp != NULL )
-		{
-			sp->EffectImplicitTargetA[0] = EFF_TARGET_ALL_PARTY;
-			sp->EffectImplicitTargetA[1] = EFF_TARGET_ALL_PARTY;
-			sp->EffectImplicitTargetA[2] = 0;
-			sp->EffectImplicitTargetB[0] = 0;
-			sp->EffectImplicitTargetB[1] = 0;
-			sp->EffectImplicitTargetB[2] = 0;
-		}
-		// Symbol of Hope targets surrounding party members instead of us
-		sp = CheckAndReturnSpellEntry( 32548 );
 		if( sp != NULL )
 		{
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_ALL_PARTY;
@@ -7234,13 +7002,6 @@ void ApplyNormalFixes()
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_WATER_WALK;
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
-		}
-
-		//Shadow of Death
-		sp = CheckAndReturnSpellEntry( 49157 );
-		if( sp != NULL )
-		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_DUMMY;
 		}
 
 		//Rune Strike
