@@ -292,7 +292,6 @@ RevisionExtractor.exe
     <ClCompile Include="..\..\src\arcemu-shared\CrashHandler.cpp" />
     <ClCompile Include="..\..\src\arcemu-shared\MapFile.cpp" />
     <ClCompile Include="..\..\src\arcemu-shared\MapFileEntry.cpp" />
-    <ClCompile Include="..\..\src\arcemu-shared\MemoryLeaks.cpp" />
     <ClCompile Include="..\..\src\arcemu-shared\MersenneTwister.cpp" />
     <ClCompile Include="..\..\src\arcemu-shared\printStackTrace.cpp" />
     <ClCompile Include="..\..\src\arcemu-shared\StackTrace.cpp" />
@@ -346,7 +345,6 @@ RevisionExtractor.exe
     <ClInclude Include="..\..\src\arcemu-shared\LocationVector.h" />
     <ClInclude Include="..\..\src\arcemu-shared\MapFile.h" />
     <ClInclude Include="..\..\src\arcemu-shared\MapFileEntry.h" />
-    <ClInclude Include="..\..\src\arcemu-shared\MemoryLeaks.h" />
     <ClInclude Include="..\..\src\arcemu-shared\MersenneTwister.h" />
     <ClInclude Include="..\..\src\arcemu-logonserver\PeriodicFunctionCall_Thread.h" />
     <ClInclude Include="..\..\src\arcemu-shared\PreallocatedQueue.h" />

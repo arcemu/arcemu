@@ -114,9 +114,6 @@
     <ClCompile Include="..\..\src\arcemu-shared\MapFileEntry.cpp">
       <Filter>Util</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\arcemu-shared\MemoryLeaks.cpp">
-      <Filter>Util</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\arcemu-shared\MersenneTwister.cpp">
       <Filter>Util</Filter>
     </ClCompile>
@@ -270,9 +267,6 @@
       <Filter>Util</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\arcemu-shared\MapFileEntry.h">
-      <Filter>Util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\arcemu-shared\MemoryLeaks.h">
       <Filter>Util</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\arcemu-shared\MersenneTwister.h">

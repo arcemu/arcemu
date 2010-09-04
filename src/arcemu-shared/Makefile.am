@@ -8,7 +8,6 @@ libshared_a_SOURCES = \
     CrashHandler.h \
     CrashHandler.cpp \
     Log.cpp \
-    MemoryLeaks.cpp \
     MersenneTwister.cpp \
     MersenneTwister.h \
     PreallocatedQueue.h \
@@ -16,7 +15,6 @@ libshared_a_SOURCES = \
     Common.h \
     Errors.h \
     Log.h \
-    MemoryLeaks.h \
     printStackTrace.cpp \
     printStackTrace.h \
     Singleton.h \
