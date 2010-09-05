@@ -1577,15 +1577,15 @@ void ApplyNormalFixes()
 			sp->Attributes |= ATTRIBUTES_CANT_BE_DPB;
 
 		// Warrior - Tactical Mastery Rank 1
-		sp = CheckAndReturnSpellEntry( 0x00003007 );
+		sp = CheckAndReturnSpellEntry( 12295 );
 		if(sp != NULL)
 			sp->RequiredShapeShift = 0x00070000;
 		// Warrior - Tactical Mastery Rank 2
-		sp = CheckAndReturnSpellEntry( 0x00003184 );
+		sp = CheckAndReturnSpellEntry( 12676 );
 		if(sp != NULL)
 			sp->RequiredShapeShift = 0x00070000;
 		// Warrior - Tactical Mastery Rank 3
-		sp = CheckAndReturnSpellEntry( 0x00003185 );
+		sp = CheckAndReturnSpellEntry( 12677 );
 		if(sp != NULL)
 			sp->RequiredShapeShift = 0x00070000;
 
