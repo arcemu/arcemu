@@ -243,8 +243,8 @@ public:
 	uint32 iInstanceMode;
 
 	void UnloadCell(uint32 x,uint32 y);
-	void EventRespawnCreature(Creature * c, MapCell * p);
-	void EventRespawnGameObject(GameObject * o, MapCell * c);
+	void EventRespawnCreature(Creature * c, uint16 x, uint16 y);
+	void EventRespawnGameObject(GameObject * o, uint16 x, uint16 y);
 	void SendChatMessageToCellPlayers(Object * obj, WorldPacket * packet, uint32 cell_radius, uint32 langpos, int32 lang, WorldSession * originator);
 	void SendPvPCaptureMessage(int32 ZoneMask, uint32 ZoneId, const char * Message, ...);
 	Instance * pInstance;

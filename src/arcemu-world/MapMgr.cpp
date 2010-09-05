@@ -1655,24 +1655,34 @@ void MapMgr::UnloadCell(uint32 x,uint32 y)
 	c->Unload();
 }
 
-void MapMgr::EventRespawnCreature(Creature * c, MapCell * p)
+void MapMgr::EventRespawnCreature(Creature * c, uint16 x, uint16 y)
 {
-	ObjectSet::iterator itr = p->_respawnObjects.find((Object*)c);
-	if(itr != p->_respawnObjects.end())
+	MapCell* cell = GetCell(x,y);
+	//cell got deleted while waiting for respawn.
+	if(cell == NULL)
+		return;
+
+	ObjectSet::iterator itr = cell->_respawnObjects.find((Object*)c);
+	if(itr != cell->_respawnObjects.end())
 	{
 		c->m_respawnCell= NULL;
-		p->_respawnObjects.erase(itr);
+		cell->_respawnObjects.erase(itr);
 		c->OnRespawn(this);
 	}
 }
 
-void MapMgr::EventRespawnGameObject(GameObject * o, MapCell * c)
+void MapMgr::EventRespawnGameObject(GameObject * o, uint16 x, uint16 y)
 {
-	ObjectSet::iterator itr = c->_respawnObjects.find((Object*)o);
-	if(itr != c->_respawnObjects.end())
+	MapCell* cell = GetCell(x,y);
+	//cell got deleted while waiting for respawn.
+	if(cell == NULL)
+		return;
+
+	ObjectSet::iterator itr = cell->_respawnObjects.find((Object*)o);
+	if(itr != cell->_respawnObjects.end())
 	{
 		o->m_respawnCell= NULL;
-		c->_respawnObjects.erase(itr);
+		cell->_respawnObjects.erase(itr);
 		o->Spawn(this);
 	}
 }
