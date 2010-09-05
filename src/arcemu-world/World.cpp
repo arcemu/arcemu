@@ -1422,7 +1422,12 @@ void World::Rehash(bool load)
 	//script engine
 	m_LuaEngine = Config.MainConfig.GetBoolDefault("ScriptBackends", "LUA", true);
 
-	map_unload_time=Config.MainConfig.GetIntDefault("Server", "MapUnloadTime", 0);
+	map_unload_time=Config.MainConfig.GetIntDefault("Server", "MapUnloadTime", MAP_CELL_DEFAULT_UNLOAD_TIME);
+	if(map_unload_time == 0)
+	{
+		sLog.outError("MapUnloadTime is set to 0. This will NEVER unload MapCells!!! Overriding it to default value of %u", MAP_CELL_DEFAULT_UNLOAD_TIME);
+		map_unload_time = MAP_CELL_DEFAULT_UNLOAD_TIME;
+	}
 
 	antihack_teleport = Config.MainConfig.GetBoolDefault("AntiHack", "Teleport", true);
 	antihack_speed = Config.MainConfig.GetBoolDefault("AntiHack", "Speed", true);

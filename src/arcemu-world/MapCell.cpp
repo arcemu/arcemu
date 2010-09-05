@@ -88,7 +88,7 @@ void MapCell::SetActivity(bool state)
 				(*itr)->Deactivate(_mapmgr);
 		}
 
-		if(sWorld.map_unload_time && !_unloadpending)
+		if(!_unloadpending)
 			QueueUnloadPending();
 
 		if (sWorld.Collision) {
@@ -155,7 +155,7 @@ void MapCell::RemoveObjects()
 		}
 
 		//If MapUnloadTime is non-zero, a transport could get deleted here (when it arrives to a cell that's scheduled to be unloaded because players left from it), so don't delete it! - By: VLack aka. VLsoft
-		if( sWorld.map_unload_time && !bServerShutdown && obj->GetTypeId() == TYPEID_GAMEOBJECT && static_cast<GameObject*>(obj)->GetInfo()->Type == GAMEOBJECT_TYPE_TRANSPORT )
+		if( !bServerShutdown && obj->GetTypeId() == TYPEID_GAMEOBJECT && static_cast<GameObject*>(obj)->GetInfo()->Type == GAMEOBJECT_TYPE_TRANSPORT )
 			continue;
 
 		if( obj->IsActive() )
@@ -301,5 +301,5 @@ void MapCell::Unload()
 	}
 
 	_unloadpending=false;
-	RemoveObjects();
+	_mapmgr->Remove(_x, _y);
 }

@@ -27,6 +27,7 @@
 
 class Map;
 
+#define MAP_CELL_DEFAULT_UNLOAD_TIME 300
 #define MAKE_CELL_EVENT(x,y) ( ((x) * 1000) + 200 + y )
 #define DECODE_CELL_EVENT(dest_x, dest_y, ev) (dest_x) = ((ev-200)/1000); (dest_y) = ((ev-200)%1000);
 
