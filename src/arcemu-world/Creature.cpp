@@ -2119,6 +2119,13 @@ void Creature::PrepareForRemove()
 	if(!IsInWorld())
 		return;
 
+	if(GetCreatedByGUID() != 0)
+	{
+		Unit* summoner = GetMapMgrUnit(GetCreatedByGUID());
+		if(summoner != NULL && summoner->critterPet != NULL && summoner->critterPet->GetGUID() == GetGUID())
+			summoner->critterPet = NULL;
+	}
+
 	if(GetMapMgr() && GetMapMgr()->GetMapInfo() && GetMapMgr()->GetMapInfo()->type == INSTANCE_RAID)
 	{
 		if(GetCreatureInfo()->Rank == 3)
