@@ -226,9 +226,11 @@ public:
 	bool IsWithinLOS( LocationVector location  );
 
 	//! Only for MapMgr use
-	MapCell* GetMapCell() const { return m_mapCell; }
+	MapCell* GetMapCell() const;
+	const uint32 GetMapCellX() { return m_mapCell_x; }
+	const uint32 GetMapCellY() { return m_mapCell_y; }
 	//! Only for MapMgr use
-	void SetMapCell(MapCell* cell) { m_mapCell = cell; }
+	void SetMapCell(MapCell* cell);
 	//! Only for MapMgr use
 	MapMgr* GetMapMgr() const { return m_mapMgr; }
 
@@ -599,8 +601,8 @@ protected:
 	uint32 m_mapId;
 	//! Map manager
 	MapMgr *m_mapMgr;
-	//! Current map cell
-	MapCell *m_mapCell;
+	//! Current map cell row and column
+	uint32 m_mapCell_x, m_mapCell_y;
 
 	/* Main Function called by isInFront(); */
 	bool inArc(float Position1X, float Position1Y, float FOV, float Orientation, float Position2X, float Position2Y );

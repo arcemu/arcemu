@@ -34,7 +34,6 @@ Item::Item()//this is called when constructing as container
 	random_prop = 0;
 	random_suffix = 0;
 	m_mapMgr = 0;
-	m_mapCell = 0;
 	m_faction = NULL;
 	m_factionDBC = NULL;
 	m_instanceId = 0;
@@ -69,7 +68,6 @@ void Item::Init( uint32 high, uint32 low )
 	m_objectUpdated = false;
 
 	m_mapMgr = 0;
-	m_mapCell = 0;
 	m_faction = NULL;
 	m_factionDBC = NULL;
 	m_instanceId = 0;

@@ -550,7 +550,8 @@ void MapMgr::RemoveObject(Object *obj, bool free_guid)
 		m_corpses.erase(((Corpse*)obj));
 	}
 
-	if(!obj->GetMapCell())
+	MapCell* cell = GetCell(obj->GetMapCellX(), obj->GetMapCellY());
+	if(cell == NULL)
 	{
 		/* set the map cell correctly */
 		if(obj->GetPositionX() >= _maxX || obj->GetPositionX() <= _minY ||
@@ -560,16 +561,15 @@ void MapMgr::RemoveObject(Object *obj, bool free_guid)
 		}
 		else
 		{
-			obj->SetMapCell(this->GetCellByCoords(obj->GetPositionX(), obj->GetPositionY()));
+			cell = this->GetCellByCoords(obj->GetPositionX(), obj->GetPositionY());
+			obj->SetMapCell(cell);
 		}
 	}
 
-	if(obj->GetMapCell())
+	if(cell != NULL)
 	{
-		Arcemu::Util::ARCEMU_ASSERT(   obj->GetMapCell() != NULL );
-
 		// Remove object from cell
-		obj->GetMapCell()->RemoveObject(obj);
+		cell->RemoveObject(obj);
 
 		// Unset object's cell
 		obj->SetMapCell(NULL);
@@ -758,7 +758,7 @@ void MapMgr::ChangeObjectLocation( Object *obj )
     Arcemu::Util::ARCEMU_ASSERT(    objCell != NULL );
 
 	// If object moved cell
-	if (objCell != obj->GetMapCell())
+	if (objCell != pOldCell)
 	{
 		// THIS IS A HACK!
 		// Current code, if a creature on a long waypoint path moves from an active
@@ -768,8 +768,8 @@ void MapMgr::ChangeObjectLocation( Object *obj )
 		if(!objCell->IsActive() && !plObj && obj->IsActive())
 			obj->Deactivate(this);
 
-		if(obj->GetMapCell())
-			obj->GetMapCell()->RemoveObject(obj);
+		if(pOldCell != NULL)
+			pOldCell->RemoveObject(obj);
 
 		objCell->AddObject(obj);
 		obj->SetMapCell(objCell);

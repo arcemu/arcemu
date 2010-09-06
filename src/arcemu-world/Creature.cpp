@@ -1861,8 +1861,8 @@ void Creature::Despawn(uint32 delay, uint32 respawntime)
 	{
 		/* get the cell with our SPAWN location. if we've moved cell this might break :P */
 		MapCell * pCell = m_mapMgr->GetCellByCoords(m_spawnLocation.x, m_spawnLocation.y);
-		if(!pCell)
-			pCell = m_mapCell;
+		if(pCell == NULL)
+			pCell = GetMapCell();
 
 		Arcemu::Util::ARCEMU_ASSERT(   pCell != NULL );
 		pCell->_respawnObjects.insert((Object*)this);

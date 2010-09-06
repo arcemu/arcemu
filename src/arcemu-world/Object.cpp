@@ -63,7 +63,7 @@ Object::Object() : m_position(0,0,0,0), m_spawnLocation(0,0,0,0)
 	m_phase = 1; //Set the default phase: 00000000 00000000 00000000 00000001
 
 	m_mapMgr = 0;
-	m_mapCell = 0;
+	m_mapCell_x = m_mapCell_y = uint32(-1);
 
 	m_faction = NULL;
 	m_factionDBC = NULL;
@@ -2326,4 +2326,24 @@ Player* Object::GetPlayerOwner()
 	if (IsCreature() && (IsPet() || TO_CREATURE(this)->IsTotem()) && TO_PET(this)->GetOwner() != NULL && TO_PET(this)->GetOwner()->IsPlayer())
 		return TO_PLAYER(TO_CREATURE(this)->GetOwner());
 	return NULL;
+}
+
+MapCell* Object::GetMapCell() const
+{ 
+	Arcemu::Util::ARCEMU_ASSERT(m_mapMgr != NULL);
+	return m_mapMgr->GetCell(m_mapCell_x, m_mapCell_y); 
+}
+
+void Object::SetMapCell(MapCell* cell)
+{
+	if(cell == NULL)
+	{
+		//mapcell coordinates are uint16, so using uint32(-1) will always make GetMapCell() return NULL.
+		m_mapCell_x = m_mapCell_y = uint32(-1);
+	}
+	else
+	{
+		m_mapCell_x = cell->GetPositionX();
+		m_mapCell_y = cell->GetPositionY();
+	}
 }

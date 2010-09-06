@@ -241,7 +241,7 @@ void GameObject::Despawn(uint32 delay, uint32 respawntime)
 	if(respawntime)
 	{
 		/* Get our originating mapcell */
-		MapCell * pCell = m_mapCell;
+		MapCell * pCell = GetMapCell();
 		Arcemu::Util::ARCEMU_ASSERT(   pCell != NULL );
 		pCell->_respawnObjects.insert((Object*)this);
 		sEventMgr.RemoveEvents(this);
