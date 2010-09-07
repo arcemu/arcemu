@@ -578,14 +578,14 @@ bool LoadAdditionalTable(const char * TableName, const char * SecondName)
 		ExtraMapGameObjectTables.insert(string(SecondName));
 		return false;
 	}
-	else if(!stricmp(TableName, "items"))					// Items
+	/*else if(!stricmp(TableName, "items"))					// Items
 		ItemPrototypeStorage.LoadAdditionalData(SecondName, gItemPrototypeFormat);
 	else if(!stricmp(TableName, "creature_proto"))		// Creature Proto
 		CreatureProtoStorage.LoadAdditionalData(SecondName, gCreatureProtoFormat);
 	else if(!stricmp(TableName, "creature_names"))		// Creature Names
 		CreatureNameStorage.LoadAdditionalData(SecondName, gCreatureNameFormat);
 	else if(!stricmp(TableName, "gameobject_names"))	// GO Names
-		GameObjectNameStorage.LoadAdditionalData(SecondName, gGameObjectNameFormat);
+		GameObjectNameStorage.LoadAdditionalData(SecondName, gGameObjectNameFormat);*/
 	else if(!stricmp(TableName, "areatriggers"))		// Areatriggers
 		AreaTriggerStorage.LoadAdditionalData(SecondName, gAreaTriggerFormat);
 	else if(!stricmp(TableName, "itempages"))			// Item Pages
@@ -594,8 +594,8 @@ bool LoadAdditionalTable(const char * TableName, const char * SecondName)
 		WorldStringTableStorage.LoadAdditionalData(SecondName, gWorldStringTableFormat);
 	else if(!stricmp(TableName, "worldbroadcast"))			// Worldbroadcast
 		WorldBroadCastStorage.LoadAdditionalData(SecondName, gWorldBroadCastFormat);
-	else if(!stricmp(TableName, "quests"))				// Quests
-		QuestStorage.LoadAdditionalData(SecondName, gQuestFormat);
+	/*else if(!stricmp(TableName, "quests"))				// Quests
+		QuestStorage.LoadAdditionalData(SecondName, gQuestFormat);*/
 	else if(!stricmp(TableName, "npc_text"))			// NPC Text Storage
 		NpcTextStorage.LoadAdditionalData(SecondName, gNpcTextFormat);
 	else if(!stricmp(TableName, "fishing"))				// Fishing Zones
@@ -619,15 +619,15 @@ bool LoadAdditionalTable(const char * TableName, const char * SecondName)
 bool Storage_ReloadTable(const char * TableName)
 {
 	// bur: mah god this is ugly :P
-	if(!stricmp(TableName, "items"))					// Items
+	/*if(!stricmp(TableName, "items"))					// Items
 		ItemPrototypeStorage.Reload();
 	else if(!stricmp(TableName, "creature_proto"))		// Creature Proto
 		CreatureProtoStorage.Reload();
 	else if(!stricmp(TableName, "creature_names"))		// Creature Names
 		CreatureNameStorage.Reload();
 	else if(!stricmp(TableName, "gameobject_names"))	// GO Names
-		GameObjectNameStorage.Reload();
-	else if(!stricmp(TableName, "areatriggers"))		// Areatriggers
+		GameObjectNameStorage.Reload();*/
+	if(!stricmp(TableName, "areatriggers"))		// Areatriggers
 		AreaTriggerStorage.Reload();
 	else if(!stricmp(TableName, "itempages"))			// Item Pages
 		ItemPageStorage.Reload();
@@ -635,8 +635,8 @@ bool Storage_ReloadTable(const char * TableName)
 		WorldStringTableStorage.Reload();
 	else if(!stricmp(TableName, "worldbroadcast"))			// wb
 		WorldBroadCastStorage.Reload();
-	else if(!stricmp(TableName, "quests"))				// Quests
-		QuestStorage.Reload();
+	/*else if(!stricmp(TableName, "quests"))				// Quests
+		QuestStorage.Reload();*/
 	else if(!stricmp(TableName, "npc_text"))			// NPC Text Storage
 		NpcTextStorage.Reload();
 	else if(!stricmp(TableName, "fishing"))				// Fishing Zones
