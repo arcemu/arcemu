@@ -390,7 +390,7 @@ bool ChatHandler::HandleSaveAllCommand(const char *args, WorldSession *m_session
 	}
 	objmgr._playerslock.ReleaseReadLock();
 	char msg[100];
-	snprintf(msg, 100, "Saved all %d online players in %d msec.", (int)count, int((uint32)now() - stime));
+	snprintf(msg, 100, "Saved all %u online players in %u msec.", count, now() - stime);
 	sWorld.SendWorldText(msg);
 	sWorld.SendWorldWideScreenText(msg);
 	sGMLog.writefromsession(m_session, "saved all players");

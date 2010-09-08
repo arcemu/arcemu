@@ -102,7 +102,6 @@ void MapCell::SetActivity(bool state)
 void MapCell::RemoveObjects()
 {
 	ObjectSet::iterator itr;
-	uint32 count = 0;
 	//uint32 ltime = getMSTime();
 
 	//Zack : we are delaying cell removal so transports can see objects far away. We are waiting for the event to remove us
@@ -134,15 +133,9 @@ void MapCell::RemoveObjects()
 	//This time it's simpler! We just remove everything :)
 	for(objects_iterator = _objects.begin(); objects_iterator != _objects.end(); )
 	{
-		count++;
-
 		Object *obj = (*objects_iterator);
 
 		objects_iterator++;
-
-		//zack : we actually never set this to null. Useless check for lucky memory corruption hit.
-		if(!obj)
-			continue;
 
 		if( _unloadpending )
 		{
@@ -301,5 +294,16 @@ void MapCell::Unload()
 	}
 
 	_unloadpending=false;
+
+	//in ~MapCell RemoveObjects() can delete an Object without removing it from the MapCell.cpp
+	//Example:
+	//Creature A has guardian B. MapCell is unloaded, _mapmgr->Remove(_x, _y) is called, nullifying the reference to the cell
+	//in CellHandler. ~MapCell is called, RemoveObjects() is called and despawns A which despawns B, calling Object::RemoveFromWorld()
+	//which calls MapMgr::RemoveObject(B) which calls cell->RemoveObject(obj) ONLY if cell is not NULL, but in this case is NULL, leaving
+	//a reference to a deleted Object in MapCell::_objects, iterated in RemoveObjects(). Calling it here fixes this issue.
+	//Note: RemoveObjects() is still called in ~MapCell, due to fancy ArcEmu behaviors, like the in-game command ".mapcell delete <x> <y>
+
+	RemoveObjects();
+
 	_mapmgr->Remove(_x, _y);
 }

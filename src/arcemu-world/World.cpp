@@ -1063,7 +1063,7 @@ void World::GetStats(uint32 * GMCount, float * AverageLatency)
 	}
 	objmgr._playerslock.ReleaseReadLock();
 
-	*AverageLatency = count ? (float)((float)avg / (float)count) : 0;
+	*AverageLatency = count ? ((float)avg / (float)count) : 0;
 	*GMCount = gm;
 }
 

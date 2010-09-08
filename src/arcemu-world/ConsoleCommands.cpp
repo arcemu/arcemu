@@ -206,15 +206,11 @@ bool HandleShutDownCommand(BaseConsole * pConsole, int argc, const char * argv[]
 		if (stricmp(argv[1], "fast") == 0)
 		{
 			PlayerStorageMap::const_iterator itr;
-			uint32 count = 0;
 			objmgr._playerslock.AcquireReadLock();
 			for (itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
 			{
 				if(itr->second->GetSession())
-				{
 					itr->second->SaveToDB(false);
-					count++;
-				}
 			}
 			objmgr._playerslock.ReleaseReadLock();
 
