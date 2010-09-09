@@ -681,6 +681,12 @@ void ApplyNormalFixes()
 					if( strstr( sp->Description,"after getting a critical effect from your"))
 						pr=PROC_ON_SPELL_CRIT_HIT;
 				}//end "if procspellaura"
+
+				// Fix if it's a periodic trigger with amplitude = 0, to avoid division by zero
+				else if( (aura == SPELL_AURA_PERIODIC_TRIGGER_SPELL || aura == SPELL_AURA_PERIODIC_TRIGGER_SPELL_WITH_VALUE) && sp->EffectAmplitude[y] == 0 )
+				{
+					sp->EffectAmplitude[y] = 1000;
+				}
 			}//end "if aura"
 		}//end "for each effect"
 		sp->procFlags = pr;
