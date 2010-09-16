@@ -1,0 +1,279 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>arcInstanceScripts</ProjectName>
+    <ProjectGuid>{EE39B48B-C598-4AAF-9EF0-199402933EE5}</ProjectGuid>
+    <RootNamespace>arcInstanceScripts</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\..\bin\debug\script_bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">2003_int_debug_arcinstancescripts\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\..\bin\debug_x64\script_bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">2008_int_debug_arcinstancescripts_x64\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\..\bin\release\script_bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">2003_int_release_arcinstancescripts\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\..\bin\release_x64\script_bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">2008_int_release_arcinstancescripts_x64\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/Zm256 %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <AdditionalIncludeDirectories>..\..\arcemu-shared;..\..\arcemu-world;..\..\..\extras\arcemu-windows-libraries\VC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;SCRIPTLIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Setup.h</PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>..\..\..\bin\Debug\arcemu-world.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>../../../bin/debug/script_bin/arcInstanceScripts.dll</OutputFile>
+      <AdditionalLibraryDirectories>..\..\..\bin\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>../../../bin/debug/script_bin/arcInstanceScripts.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>$(OutDir)arcInstanceScripts.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalOptions>/Zm256 %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <AdditionalIncludeDirectories>..\..\arcemu-shared;..\..\arcemu-world;..\..\..\extras\arcemu-windows-libraries\VC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;SCRIPTLIB;X64;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Setup.h</PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>arcemu-world.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>../../../bin/debug_x64/script_bin/arcInstanceScripts.dll</OutputFile>
+      <AdditionalLibraryDirectories>..\..\..\bin\debug_x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>../../../bin/debug_x64/script_bin/arcInstanceScripts.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>$(OutDir)arcInstanceScripts.lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/Zm256 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>..\..\arcemu-shared;..\..\arcemu-world;..\..\..\extras\arcemu-windows-libraries\VC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;SCRIPTLIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Setup.h</PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>arcemu-world.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>../../../bin/release/script_bin/arcInstanceScripts.dll</OutputFile>
+      <AdditionalLibraryDirectories>..\..\..\bin\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>../../../bin/release/script_bin/arcInstanceScripts.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>$(OutDir)arcInstanceScripts.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalOptions>/Zm256 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>..\..\arcemu-shared;..\..\arcemu-world;..\..\..\extras\arcemu-windows-libraries\VC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;SCRIPTLIB;X64;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Setup.h</PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>arcemu-world.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>../../../bin/release_x64/script_bin/arcInstanceScripts.dll</OutputFile>
+      <AdditionalLibraryDirectories>..\..\..\bin\release_x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>../../../bin/release_x64/script_bin/arcInstanceScripts.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>$(OutDir)arcInstanceScripts.lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\Common\Base.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Setup.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\src\Common\Instance_Base.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Instance_Arcatraz.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Instance_AuchenaiCrypts.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Instance_AzjolNerub.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Instance_BlackfathomDeeps.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Instance_BlackMorass.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Instance_BlackrockDepths.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Instance_BlackrockSpire.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Instance_BloodFurnace.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Instance_Botanica.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Instance_CullingOfStratholme.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Instance_Deadmines.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Instance_DireMaul.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Instance_DrakTharonKeep.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Instance_Gundrak.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Instance_HallsOfLightning.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Instance_HallsOfStone.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Instance_HellfireRamparts.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Instance_MagistersTerrace.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Instance_ManaTombs.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Instance_Mauradon.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Instance_Nexus.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Instance_OldHillsbradFoothills.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Instance_RagefireChasm.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Instance_RazorfenDowns.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Instance_ScarletMonastery.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Instance_Scholomance.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Instance_SethekkHalls.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Instance_ShadowfangKeep.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Instance_ShadowLabyrinth.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Instance_TheMechanar.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Instance_TheShatteredHalls.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Instance_TheSlavePens.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Instance_TheSteamvault.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Instance_TheStockade.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Instance_TheUnderbog.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Instance_Uldaman.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Instance_UtgardeKeep.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Instance_WailingCaverns.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Instance_ZulFarrak.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Raid_BlackTemple.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Raid_BlackwingLair.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Raid_CoT_BattleOfMountHyjal.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Raid_GruulsLair.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Raid_Karazhan.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Raid_Magtheridons_Lair.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Raid_MoltenCore.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Raid_OnyxiasLair.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Raid_SerpentshrineCavern.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Raid_TheEye.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Raid_TheObsidianSanctum.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Raid_WorldBosses.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Raid_ZulAman.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Raid_ZulGurub.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Raid_Ulduar.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\Raid_Naxxramas.cpp" />
+    <ClCompile Include="..\src\InstanceScripts\SUNWELL_PLAT\Raid_SunwellPlateau.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\Common\Base.h" />
+    <ClInclude Include="..\src\InstanceScripts\Setup.h" />
+    <ClInclude Include="..\src\Common\Instance_Base.h" />
+    <ClInclude Include="..\src\InstanceScripts\Raid_Ulduar.h" />
+    <ClInclude Include="..\src\InstanceScripts\Raid_Naxxramas.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\win\VC\arcemu-world.vcxproj">
+      <Project>{1dc6c4da-a028-41f3-877d-d5400c594f88}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

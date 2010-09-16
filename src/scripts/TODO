@@ -1,0 +1,20 @@
+- Add door handling for all bosses/scripts
+- Imrpove Instance Script class(m4ksiu?)
+- Fix few crashes(No idea if any left)
+- Start some ai_agents scripts? 
+- Add spell handlers for some spells
+- Wotlk Instances:
+      * Gundrak
+      * Halls of Stone( Current script is not so good, needs rewrite )
+      * CoS( Still unfinished )
+      * Violet Hold( Finished most of event part, still need improving, also creature AI )
+      * Nexus: Oculus( This will be pain )
+      * Naxxramas(Add/Rewrite some encounters?)
+      * OS( I will finish it when i am not so bored, small work left, mostly improving the drake part/hard mode )
+      * Utgarde Keep: Utgard Pinnacle
+      * Malygos raid( Started it, no idea when will i finish it )
+- 3.1 aspire support, please
+- 3.1 Ulduar raid, i started some work on my pc, done Assembly of iron and Fyera, plans on yoggi and general, flame levi wont be hard either
+
+Recruitment is open:
+http://www.arcemu.org/ 

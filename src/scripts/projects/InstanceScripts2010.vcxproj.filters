@@ -1,0 +1,233 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Main Resources">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Main Resources\Base Class">
+      <UniqueIdentifier>{484d9da4-1428-4430-8b3b-83898dc706b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main Resources\Setup">
+      <UniqueIdentifier>{82064d03-fe0f-4d92-9e5b-a3da1de653d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main Resources\Instance Base Class">
+      <UniqueIdentifier>{93bfc5bb-922c-40d1-a19b-e53325d46bd3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Scripts\Instances">
+      <UniqueIdentifier>{32cee13b-ed93-45c2-b1e9-c6178a42fd28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Raids">
+      <UniqueIdentifier>{b0fd338b-0fc7-4c28-ae94-1d76928e3712}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Raids\Ulduar">
+      <UniqueIdentifier>{ddeca8b4-1e28-4582-a8b6-fac7c0a5a627}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Raids\Naxxramas">
+      <UniqueIdentifier>{b7c95897-e502-472e-8e37-9935e6827235}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Raids\SUNWELLPLAT">
+      <UniqueIdentifier>{54f48dbe-5ba9-4a7a-b8b7-4ebb7ec01c8c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\Common\Base.cpp">
+      <Filter>Main Resources\Base Class</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Setup.cpp">
+      <Filter>Main Resources\Setup</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Common\Instance_Base.cpp">
+      <Filter>Main Resources\Instance Base Class</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Instance_Arcatraz.cpp">
+      <Filter>Scripts\Instances</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Instance_AuchenaiCrypts.cpp">
+      <Filter>Scripts\Instances</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Instance_AzjolNerub.cpp">
+      <Filter>Scripts\Instances</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Instance_BlackfathomDeeps.cpp">
+      <Filter>Scripts\Instances</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Instance_BlackMorass.cpp">
+      <Filter>Scripts\Instances</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Instance_BlackrockDepths.cpp">
+      <Filter>Scripts\Instances</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Instance_BlackrockSpire.cpp">
+      <Filter>Scripts\Instances</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Instance_BloodFurnace.cpp">
+      <Filter>Scripts\Instances</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Instance_Botanica.cpp">
+      <Filter>Scripts\Instances</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Instance_CullingOfStratholme.cpp">
+      <Filter>Scripts\Instances</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Instance_Deadmines.cpp">
+      <Filter>Scripts\Instances</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Instance_DireMaul.cpp">
+      <Filter>Scripts\Instances</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Instance_DrakTharonKeep.cpp">
+      <Filter>Scripts\Instances</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Instance_Gundrak.cpp">
+      <Filter>Scripts\Instances</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Instance_HallsOfLightning.cpp">
+      <Filter>Scripts\Instances</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Instance_HallsOfStone.cpp">
+      <Filter>Scripts\Instances</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Instance_HellfireRamparts.cpp">
+      <Filter>Scripts\Instances</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Instance_MagistersTerrace.cpp">
+      <Filter>Scripts\Instances</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Instance_ManaTombs.cpp">
+      <Filter>Scripts\Instances</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Instance_Mauradon.cpp">
+      <Filter>Scripts\Instances</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Instance_Nexus.cpp">
+      <Filter>Scripts\Instances</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Instance_OldHillsbradFoothills.cpp">
+      <Filter>Scripts\Instances</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Instance_RagefireChasm.cpp">
+      <Filter>Scripts\Instances</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Instance_RazorfenDowns.cpp">
+      <Filter>Scripts\Instances</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Instance_ScarletMonastery.cpp">
+      <Filter>Scripts\Instances</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Instance_Scholomance.cpp">
+      <Filter>Scripts\Instances</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Instance_SethekkHalls.cpp">
+      <Filter>Scripts\Instances</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Instance_ShadowfangKeep.cpp">
+      <Filter>Scripts\Instances</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Instance_ShadowLabyrinth.cpp">
+      <Filter>Scripts\Instances</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Instance_TheMechanar.cpp">
+      <Filter>Scripts\Instances</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Instance_TheShatteredHalls.cpp">
+      <Filter>Scripts\Instances</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Instance_TheSlavePens.cpp">
+      <Filter>Scripts\Instances</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Instance_TheSteamvault.cpp">
+      <Filter>Scripts\Instances</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Instance_TheStockade.cpp">
+      <Filter>Scripts\Instances</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Instance_TheUnderbog.cpp">
+      <Filter>Scripts\Instances</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Instance_Uldaman.cpp">
+      <Filter>Scripts\Instances</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Instance_UtgardeKeep.cpp">
+      <Filter>Scripts\Instances</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Instance_WailingCaverns.cpp">
+      <Filter>Scripts\Instances</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Instance_ZulFarrak.cpp">
+      <Filter>Scripts\Instances</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Raid_BlackTemple.cpp">
+      <Filter>Scripts\Raids</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Raid_BlackwingLair.cpp">
+      <Filter>Scripts\Raids</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Raid_CoT_BattleOfMountHyjal.cpp">
+      <Filter>Scripts\Raids</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Raid_GruulsLair.cpp">
+      <Filter>Scripts\Raids</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Raid_Karazhan.cpp">
+      <Filter>Scripts\Raids</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Raid_Magtheridons_Lair.cpp">
+      <Filter>Scripts\Raids</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Raid_MoltenCore.cpp">
+      <Filter>Scripts\Raids</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Raid_OnyxiasLair.cpp">
+      <Filter>Scripts\Raids</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Raid_SerpentshrineCavern.cpp">
+      <Filter>Scripts\Raids</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Raid_TheEye.cpp">
+      <Filter>Scripts\Raids</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Raid_TheObsidianSanctum.cpp">
+      <Filter>Scripts\Raids</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Raid_WorldBosses.cpp">
+      <Filter>Scripts\Raids</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Raid_ZulAman.cpp">
+      <Filter>Scripts\Raids</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Raid_ZulGurub.cpp">
+      <Filter>Scripts\Raids</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Raid_Ulduar.cpp">
+      <Filter>Scripts\Raids\Ulduar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\Raid_Naxxramas.cpp">
+      <Filter>Scripts\Raids\Naxxramas</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstanceScripts\SUNWELL_PLAT\Raid_SunwellPlateau.cpp">
+      <Filter>Scripts\Raids\SUNWELLPLAT</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\Common\Base.h">
+      <Filter>Main Resources\Base Class</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\InstanceScripts\Setup.h">
+      <Filter>Main Resources\Setup</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Common\Instance_Base.h">
+      <Filter>Main Resources\Instance Base Class</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\InstanceScripts\Raid_Ulduar.h">
+      <Filter>Scripts\Raids\Ulduar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\InstanceScripts\Raid_Naxxramas.h">
+      <Filter>Scripts\Raids\Naxxramas</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

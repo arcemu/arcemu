@@ -1,0 +1,45 @@
+==================================
+The Darkmoon Faire Project
+Author: Nexis
+Team: Sun++ (www.sunplusplus.info)
+==================================
+
+== INTRODUCTION ==
+	The Darkmoon Faire Project is a retail inspired copy of the Darkmoon Faire
+	that visits three different locations around the world.. of warcraft. I rip
+	all data directly from retail servers. The goal here is to make almost an
+	exact replica of the official server event.
+
+== INSTALLATION ==
+	Firstly, there are two parts of this project. There are the scripts which are
+	automatically compiled when using the Sun++ scripts, and there are sql files
+	which you must execute on your server's world database.
+
+== COMPILING SCRIPTS ==
+	1. 	Compile the most recent version of Sun++ scripts with the most 
+		recent version of ArcEmu.
+	2.	You're done!
+	
+== INSTALLING SQL DATA ==
+	1.	Browse to '../sql/Events/Darkmoon Faire/' from your Sun++ directory.
+	2.	Choose a location you would like to spawn. (There are three)
+	3.	In that folder are two sql files. One is a 'SettingUp' file and the
+		other is an 'ActiveEvent' file. 
+			- 	SETTING UP = Carnies are setting up the faire prior to it's actual 
+				opening just as they do on retail.
+			-	ACTIVE EVENT = The fully spawned active version of the event.
+	4.	After you picked which location/series you want, just execute that sql on 
+		your server's world database.
+	5.	Reboot your server and you're done!
+	
+== REMOVING THE FAIRE ==
+	1.	Browse to the location in '../Events/Darkmoon Faire/' that you currently
+		have installed on your server.
+	2.	In that folder open the '/Remove/' folder and execute the sql for which
+		series you have installed on your world database. This has been designed to 
+		not affect anything else on your server. If used with the most recent 
+		revisions this should install and uninstall without any errors at all.
+	3.	You are finished.
+	
+== IF ALL ELSE FAILS ==
+	1.	Run the remove sql FIRST! (backup any data using those id if needed first)
