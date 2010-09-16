@@ -24,16 +24,18 @@ namespace Arcemu{
 	namespace Threading{
 
 
-		void AtomicCounter::SetVal( unsigned long val ){
+		unsigned long AtomicCounter::SetVal( unsigned long val ){
+			unsigned long ret = 0;
 #ifdef WIN32
-			InterlockedExchange( reinterpret_cast< volatile LONG* >( &counter ), LONG( val ) );
+			ret = InterlockedExchange( reinterpret_cast< volatile LONG* >( &counter ), LONG( val ) );
 #else
 #ifdef __GNUC__
-			__sync_val_compare_and_swap( &counter, counter, val );
+			ret = __sync_val_compare_and_swap( &counter, counter, val );
 #else
 #error Your platform (architecture and compiler) is NOT supported. Arcemu requires little endian architecture, and at least GCC 4.1
 #endif
 #endif
+			return ret;
 		}
 
 

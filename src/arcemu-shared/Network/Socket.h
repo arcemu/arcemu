@@ -70,8 +70,20 @@ public:
 	void ReadCallback(uint32 len);
 	void WriteCallback();
 
-	ARCEMU_INLINE bool IsDeleted() { return m_deleted; }
-	ARCEMU_INLINE bool IsConnected() { return m_connected; }
+	ARCEMU_INLINE bool IsDeleted()
+	{
+		if( m_deleted.GetVal() != 0 )
+			return true;
+		else
+			return false;
+	}
+	ARCEMU_INLINE bool IsConnected()
+	{
+		if( m_connected.GetVal() != 0 )
+			return true;
+		else
+			return false;
+	}
 	ARCEMU_INLINE sockaddr_in & GetRemoteStruct() { return m_client; }
 
 	void Delete();
@@ -93,15 +105,31 @@ protected:
 	Mutex m_readMutex;
 
 	// we are connected? stop from posting events.
-        bool m_connected;
+    Arcemu::Threading::AtomicCounter m_connected;
 
-        // We are deleted? Stop us from posting events.
-        bool m_deleted;
+    // We are deleted? Stop us from posting events.
+    Arcemu::Threading::AtomicCounter m_deleted;
 
 	sockaddr_in m_client;
 
     unsigned long m_BytesSent;
     unsigned long m_BytesRecieved;
+
+public:
+	// Atomic wrapper functions for increasing read/write locks
+	ARCEMU_INLINE void IncSendLock() { ++m_writeLock; }
+	ARCEMU_INLINE void DecSendLock() { --m_writeLock; }
+	ARCEMU_INLINE bool AcquireSendLock()
+	{
+		if(m_writeLock.SetVal(1) != 0)
+			return false;
+		else
+			return true;
+	}
+
+private:
+	// Write lock, stops multiple write events from being posted.
+	Arcemu::Threading::AtomicCounter m_writeLock;
 
 /* Win32 - IOCP Specific Calls */
 #ifdef CONFIG_USE_IOCP
@@ -111,28 +139,12 @@ public:
 	// Set completion port that this socket will be assigned to.
 	ARCEMU_INLINE void SetCompletionPort(HANDLE cp) { m_completionPort = cp; }
 	
-	// Atomic wrapper functions for increasing read/write locks
-	ARCEMU_INLINE void IncSendLock() { InterlockedIncrement(&m_writeLock); }
-	ARCEMU_INLINE void DecSendLock() { InterlockedDecrement(&m_writeLock); }
-	ARCEMU_INLINE bool AcquireSendLock()
-	{
-		if(m_writeLock)
-			return false;
-		else
-		{
-			IncSendLock();
-			return true;
-		}
-	}
 	OverlappedStruct m_readEvent;
 	OverlappedStruct m_writeEvent;
 
 private:
 	// Completion port socket is assigned to
 	HANDLE m_completionPort;
-	
-	// Write lock, stops multiple write events from being posted.
-	volatile long m_writeLock;
 	
 	// Assigns the socket to his completion port.
 	void AssignToCompletionPort();
@@ -145,28 +157,12 @@ public:
 	// Posts a epoll event with the specifed arguments.
 	void PostEvent(uint32 events);
 
-	// Atomic wrapper functions for increasing read/write locks
-	ARCEMU_INLINE void IncSendLock() { m_writeLockMutex.Acquire(); m_writeLock++; m_writeLockMutex.Release(); }
-	ARCEMU_INLINE void DecSendLock() { m_writeLockMutex.Acquire(); m_writeLock--; m_writeLockMutex.Release(); }
-	ARCEMU_INLINE bool HasSendLock() { bool res; m_writeLockMutex.Acquire(); res = (m_writeLock != 0); m_writeLockMutex.Release(); return res; }
-	bool AcquireSendLock()
+	ARCEMU_INLINE bool HasSendLock()
 	{
-	  bool rv;
-	  m_writeLockMutex.Acquire();
-	  if(m_writeLock != 0)
-		rv = false;
-	  else
-	  {
-		rv = true;
-	m_writeLock++;
-	  }
-	  m_writeLockMutex.Release();
-	  return rv;
+		bool res;
+		res = (m_writeLock.GetVal() != 0);
+		return res;
 	}
-
-private:
-	unsigned int m_writeLock;
-	Mutex m_writeLockMutex;
 #endif
 
 /* FreeBSD - kqueue specific calls */
@@ -174,28 +170,12 @@ private:
 public:
 	// Posts a epoll event with the specifed arguments.
 	void PostEvent(int events, bool oneshot);
-	// Atomic wrapper functions for increasing read/write locks
-	ARCEMU_INLINE void IncSendLock() { m_writeLockMutex.Acquire(); m_writeLock++; m_writeLockMutex.Release(); }
-	ARCEMU_INLINE void DecSendLock() { m_writeLockMutex.Acquire(); m_writeLock--; m_writeLockMutex.Release(); }
-	ARCEMU_INLINE bool HasSendLock() { bool res; m_writeLockMutex.Acquire(); res = (m_writeLock != 0); m_writeLockMutex.Release(); return res; }
-	bool AcquireSendLock()
+	ARCEMU_INLINE bool HasSendLock()
 	{
-		bool rv;
-		m_writeLockMutex.Acquire();
-		if(m_writeLock != 0)
-			rv = false;
-		else
-		{
-			rv = true;
-			m_writeLock++;
-		}
-		m_writeLockMutex.Release();
-		return rv;
+		bool res;
+		res = (m_writeLock.GetVal() != 0);
+		return res;
 	}
-
-private:
-	unsigned int m_writeLock;
-	Mutex m_writeLockMutex;
 #endif
 
 public:

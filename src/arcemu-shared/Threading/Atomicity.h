@@ -44,9 +44,9 @@ namespace Arcemu{
 			//  unsigned long val  -  value to be set
 			//
 			// Return values
-			//  None
+			//  Returns the initial value contained
 			///////////////////////////////////////////////////////////
-			void SetVal( unsigned long val );
+			unsigned long SetVal( unsigned long val );
 
 			///////////////////////////////////////////////////////////
 			//unsigned long GetVal()

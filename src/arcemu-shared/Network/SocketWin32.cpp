@@ -12,7 +12,7 @@
 
 void Socket::WriteCallback()
 {
-	if(m_deleted || !m_connected)
+	if(IsDeleted() || !IsConnected())
 		return;
 
 	//printf("\nSocket::Writecallback(): sendsize : %u\n", this->m_writeByteCount);
@@ -67,7 +67,7 @@ void Socket::WriteCallback()
 
 void Socket::SetupReadEvent()
 {
-	if(m_deleted || !m_connected)
+	if(IsDeleted() || !IsConnected())
 		return;
 
 	m_readMutex.Acquire();

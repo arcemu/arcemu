@@ -10,7 +10,7 @@
 
 initialiseSingleton(SocketGarbageCollector);
 
-Socket::Socket(SOCKET fd, uint32 sendbuffersize, uint32 recvbuffersize) : m_fd(fd), m_connected(false),	m_deleted(false)
+Socket::Socket(SOCKET fd, uint32 sendbuffersize, uint32 recvbuffersize) : m_fd(fd), m_connected(false),	m_deleted(false), m_writeLock(0)
 {
 	// Allocate Buffers
 	readBuffer.Allocate(recvbuffersize);
@@ -21,10 +21,7 @@ Socket::Socket(SOCKET fd, uint32 sendbuffersize, uint32 recvbuffersize) : m_fd(f
 
 	// IOCP Member Variables
 #ifdef CONFIG_USE_IOCP
-	m_writeLock = 0;
 	m_completionPort = 0;
-#else
-	m_writeLock = 0;
 #endif
 
 	// Check for needed fd allocation.
@@ -74,7 +71,7 @@ void Socket::_OnConnect()
 	SocketOps::DisableBuffering(m_fd);
 /*	SocketOps::SetRecvBufferSize(m_fd, m_writeBufferSize);
 	SocketOps::SetSendBufferSize(m_fd, m_writeBufferSize);*/
-	m_connected = true;
+	m_connected.SetVal(true);
 
 	// IOCP stuff
 #ifdef CONFIG_USE_IOCP
@@ -117,9 +114,11 @@ string Socket::GetRemoteIP()
 
 void Socket::Disconnect()
 {
-	sLog.outBasic("Socket::Disconnect on socket %u", m_fd);
+	//if returns false it means it's already disconnected
+	if(!m_connected.SetVal(false))
+		return;
 
-	m_connected = false;
+	sLog.outBasic("Socket::Disconnect on socket %u", m_fd);
 
 	// remove from mgr
 	sSocketMgr.RemoveSocket(this);
@@ -127,17 +126,19 @@ void Socket::Disconnect()
 	// Call virtual ondisconnect
 	OnDisconnect();
 
-	if(!m_deleted) Delete();
+	if(!IsDeleted()) 
+		Delete();
 }
 
 void Socket::Delete()
 {
+	//if returns true it means it's already delete
+	if(m_deleted.SetVal(true))
+		return;
+
 	sLog.outDebug("Socket::Delete() on socket %u", m_fd);
 
-	if(m_deleted) return;
-	m_deleted = true;
-
-	if(m_connected) Disconnect();
+	if(IsConnected()) Disconnect();
 
 	SocketOps::CloseSocket( m_fd );
 

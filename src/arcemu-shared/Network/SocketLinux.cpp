@@ -25,6 +25,9 @@ void Socket::PostEvent(uint32 events)
 
 void Socket::ReadCallback(uint32 len)
 {
+	if(IsDeleted() || !IsConnected())
+		return;
+
     // We have to lock here.
     m_readMutex.Acquire();
 
@@ -50,6 +53,9 @@ void Socket::ReadCallback(uint32 len)
 
 void Socket::WriteCallback()
 {
+	if(IsDeleted() || !IsConnected())
+		return;
+
     // We should already be locked at this point, so try to push everything out.
     int bytes_written = send(m_fd, writeBuffer.GetBufferStart(), writeBuffer.GetContiguiousBytes(), 0);
     if(bytes_written < 0)
