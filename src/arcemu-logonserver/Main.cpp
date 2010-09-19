@@ -488,61 +488,61 @@ void LogonServer::Run(int argc, char ** argv)
 	// Spawn interserver listener
 	bool authsockcreated = cl->IsOpen();
 	bool intersockcreated = sl->IsOpen();
+	if(authsockcreated && intersockcreated)
+	{
 #ifdef WIN32
-	if(authsockcreated)
 		ThreadPool.ExecuteTask(cl);
-	if(intersockcreated)
 		ThreadPool.ExecuteTask(sl);
 #endif
-	// hook signals
-	sLog.outString("Hooking signals...");
-	signal(SIGINT, _OnSignal);
-	signal(SIGTERM, _OnSignal);
-	signal(SIGABRT, _OnSignal);
+		// hook signals
+		sLog.outString("Hooking signals...");
+		signal(SIGINT, _OnSignal);
+		signal(SIGTERM, _OnSignal);
+		signal(SIGABRT, _OnSignal);
 #ifdef _WIN32
-	signal(SIGBREAK, _OnSignal);
+		signal(SIGBREAK, _OnSignal);
 #else
-	signal(SIGHUP, _OnSignal);
+		signal(SIGHUP, _OnSignal);
 #endif
 
 		/* write pid file */
-	FILE * fPid = fopen("logonserver.pid", "w");
-	if(fPid)
-	{
-		uint32 pid;
-#ifdef WIN32
-		pid = GetCurrentProcessId();
-#else
-		pid = getpid();
-#endif
-		fprintf(fPid, "%u", (unsigned int)pid);
-		fclose(fPid);
-	}
-	uint32 loop_counter = 0;
-	//ThreadPool.Gobble();
-	sLog.outString("Success! Ready for connections");
-	while(mrunning && authsockcreated && intersockcreated)
-	{
-		if(!(++loop_counter % 20))	 // 20 seconds
-			CheckForDeadSockets();
-
-		if(!(loop_counter%300))	// 5mins
-			ThreadPool.IntegrityCheck();
-
-		if(!(loop_counter%5))
+		FILE * fPid = fopen("logonserver.pid", "w");
+		if(fPid)
 		{
-			sInfoCore.TimeoutSockets();
-			sSocketGarbageCollector.Update();
-			CheckForDeadSockets();			  // Flood Protection
-			UNIXTIME = time(NULL);
-			g_localTime = *localtime(&UNIXTIME);
+			uint32 pid;
+	#ifdef WIN32
+			pid = GetCurrentProcessId();
+	#else
+			pid = getpid();
+	#endif
+			fprintf(fPid, "%u", (unsigned int)pid);
+			fclose(fPid);
+		}
+		uint32 loop_counter = 0;
+		//ThreadPool.Gobble();
+		sLog.outString("Success! Ready for connections");
+		while(mrunning)
+		{
+			if(!(++loop_counter % 20))	 // 20 seconds
+				CheckForDeadSockets();
+
+			if(!(loop_counter%300))	// 5mins
+				ThreadPool.IntegrityCheck();
+
+			if(!(loop_counter%5))
+			{
+				sInfoCore.TimeoutSockets();
+				sSocketGarbageCollector.Update();
+				CheckForDeadSockets();			  // Flood Protection
+				UNIXTIME = time(NULL);
+				g_localTime = *localtime(&UNIXTIME);
+			}
+
+			PatchMgr::getSingleton().UpdateJobs();
+			Sleep(1000);
 		}
 
-		PatchMgr::getSingleton().UpdateJobs();
-		Sleep(1000);
-	}
-
-	sLog.outString("Shutting down...");
+		sLog.outString("Shutting down...");
         signal(SIGINT, 0);
         signal(SIGTERM, 0);
         signal(SIGABRT, 0);
@@ -551,6 +551,11 @@ void LogonServer::Run(int argc, char ** argv)
 #else
         signal(SIGHUP, 0);
 #endif
+	}
+	else
+	{
+		sLog.outError("Error creating sockets. Shutting down...");
+	}
 
 	pfc->kill();
 
