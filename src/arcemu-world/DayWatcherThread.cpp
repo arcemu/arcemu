@@ -158,7 +158,7 @@ bool DayWatcherThread::run()
 	pthread_cond_init(&abortcond,NULL);
 #endif
 	
-	while(ThreadState != THREADSTATE_TERMINATE)
+	while(GetThreadState() != THREADSTATE_TERMINATE)
 	{
 		m_busy=true;
 		currenttime = UNIXTIME;
@@ -174,7 +174,7 @@ bool DayWatcherThread::run()
 			update_settings();
 
 		m_busy=false;
-		if(ThreadState == THREADSTATE_TERMINATE)
+		if(GetThreadState() == THREADSTATE_TERMINATE)
 			break;
 
 #ifdef WIN32

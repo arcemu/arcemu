@@ -1273,7 +1273,7 @@ bool MapMgr::Do()
 	threadid = GetCurrentThreadId();
 #endif
 	thread_running = true;
-	ThreadState = THREADSTATE_BUSY;
+	ThreadState.SetVal(THREADSTATE_BUSY);
 	SetThreadName("Map mgr - M%u|I%u",this->_mapId ,this->m_instanceID);
 	ObjectSet::iterator i;
 	uint32 last_exec=getMSTime();
@@ -1313,7 +1313,7 @@ bool MapMgr::Do()
 #ifdef WIN32
 	HANDLE hThread = GetCurrentThread();
 #endif
-	while((ThreadState != THREADSTATE_TERMINATE) && !_shutdown)
+	while((GetThreadState() != THREADSTATE_TERMINATE) && !_shutdown)
 	{
 		exec_start = getMSTime();
 

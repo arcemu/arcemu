@@ -75,14 +75,14 @@ bool CommonScheduleThread::run()
 
 	BCTimerCount = getMSTime() + ((uint32)sWorld.BCInterval*1000);
 
-	while(ThreadState != THREADSTATE_TERMINATE)
+	while(GetThreadState() != THREADSTATE_TERMINATE)
 	{
 		m_busy=true;
 		// do job -------------------
 		BroadCastExec();
 		// -----------------------
 		m_busy=false;
-		if(ThreadState == THREADSTATE_TERMINATE)
+		if(GetThreadState() == THREADSTATE_TERMINATE)
 			break;
 
 #ifdef WIN32

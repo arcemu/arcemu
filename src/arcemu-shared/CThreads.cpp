@@ -25,7 +25,7 @@
 
 CThread::CThread() : ThreadBase()
 {
-	ThreadState = THREADSTATE_AWAITING;
+	ThreadState.SetVal(THREADSTATE_AWAITING);
 	start_time  = 0;
 }
 

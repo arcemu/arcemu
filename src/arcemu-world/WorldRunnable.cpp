@@ -40,20 +40,20 @@ bool WorldRunnable::run()
 
     THREAD_TRY_EXECUTION
 
-	while(ThreadState != THREADSTATE_TERMINATE)
+	while(GetThreadState() != THREADSTATE_TERMINATE)
 	{
 		// Provision for pausing this thread.
-		if(ThreadState == THREADSTATE_PAUSED)
+		if(GetThreadState() == THREADSTATE_PAUSED)
 		{
-			while(ThreadState == THREADSTATE_PAUSED)
+			while(GetThreadState() == THREADSTATE_PAUSED)
 			{
 				Sleep(200);
 			}
 		}
-		if(ThreadState == THREADSTATE_TERMINATE)
+		if(GetThreadState() == THREADSTATE_TERMINATE)
 			break;
 
-		ThreadState = THREADSTATE_BUSY;
+		ThreadState.SetVal(THREADSTATE_BUSY);
 
 		uint32 diff;
 		//calc time passed
@@ -88,10 +88,10 @@ bool WorldRunnable::run()
 		else
 			diff = now-execution_start; //time used for updating 
 
-		if(ThreadState == THREADSTATE_TERMINATE)
+		if(GetThreadState() == THREADSTATE_TERMINATE)
 			break;
 
-		ThreadState = THREADSTATE_SLEEPING;
+		ThreadState.SetVal(THREADSTATE_SLEEPING);
 
 		/*This is execution time compensating system
 			if execution took more than default delay 

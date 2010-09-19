@@ -245,7 +245,7 @@ bool Database::run()
 			delete[] query;
 		}
 
-		if(ThreadState == THREADSTATE_TERMINATE)
+		if(GetThreadState() == THREADSTATE_TERMINATE)
 			break;
 		query = queries_queue.pop();
 
@@ -365,7 +365,7 @@ void Database::thread_proc_query()
 			delete q;
 		}
 
-		if(ThreadState == THREADSTATE_TERMINATE)
+		if(GetThreadState() == THREADSTATE_TERMINATE)
 			break;
 
 		q = query_buffer.pop( );

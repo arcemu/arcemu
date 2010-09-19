@@ -53,15 +53,27 @@ public:
 	CThread();
 	~CThread();
 
-	ARCEMU_INLINE void SetThreadState(CThreadState thread_state) { ThreadState = thread_state; }
-	ARCEMU_INLINE CThreadState GetThreadState() { return ThreadState; }
+	ARCEMU_INLINE void SetThreadState(CThreadState thread_state) { ThreadState.SetVal(thread_state); }
+	ARCEMU_INLINE CThreadState GetThreadState()
+	{
+		unsigned long val = ThreadState.GetVal();
+		return static_cast<CThreadState>(val);
+	}
 	int GetThreadId() { return ThreadId; }
 	time_t GetStartTime() { return start_time; }
 	virtual bool run();
 	virtual void OnShutdown();
 
 protected:
-	CThreadState ThreadState;
+	CThread& operator=( CThread &other )
+	{
+		this->start_time = other.start_time;
+		this->ThreadId = other.ThreadId;
+		this->ThreadState.SetVal( other.ThreadState.GetVal() );
+		return *this;
+	}
+
+	Arcemu::Threading::AtomicCounter ThreadState;
 	time_t start_time;
 	int ThreadId;
 };
