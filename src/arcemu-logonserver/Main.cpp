@@ -149,9 +149,6 @@ bool startdb()
 		return false;
 	}
 
-	sLog.SetScreenLoggingLevel(Config.MainConfig.GetIntDefault("LogLevel", "Screen", 0));
-	Log.log_level = Config.MainConfig.GetIntDefault("LogLevel", "Screen", 0);
-	sLog.SetFileLoggingLevel(Config.MainConfig.GetIntDefault("LogLevel", "File", -1), "logonserver.log");
 	sLogonSQL = Database::CreateDatabaseInterface( ltype );
 
 	// Initialize it
@@ -425,6 +422,10 @@ void LogonServer::Run(int argc, char ** argv)
 		return;
 
 	Log.Notice("ThreadMgr", "Starting...");
+	sLog.SetScreenLoggingLevel(Config.MainConfig.GetIntDefault("LogLevel", "Screen", 0));
+	Log.log_level = Config.MainConfig.GetIntDefault("LogLevel", "Screen", 0);
+	sLog.SetFileLoggingLevel(Config.MainConfig.GetIntDefault("LogLevel", "File", -1), "logonserver.log");
+
 	ThreadPool.Startup();
    
 	if(!startdb())
