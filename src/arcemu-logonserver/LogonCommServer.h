@@ -56,7 +56,7 @@ public:
 
 	void RefreshRealmsPop();
 
-	uint32 last_ping;
+	Arcemu::Threading::AtomicCounter last_ping;
 	bool removed;
 	set<uint32> server_ids;
 };

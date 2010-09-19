@@ -31,7 +31,7 @@ static void swap32( uint32* p ) { *p = ((*p >> 24 & 0xff)) | ((*p >> 8) & 0xff00
 LogonCommServerSocket::LogonCommServerSocket(SOCKET fd) : Socket(fd, 65536, 524288)
 {
 	// do nothing
-	last_ping = (uint32)UNIXTIME;
+	last_ping.SetVal((uint32)UNIXTIME);
 	remaining = opcode = 0;
 	removed = true;
 
@@ -258,7 +258,7 @@ void LogonCommServerSocket::HandlePing(WorldPacket & recvData)
 {
 	WorldPacket data(RSMSG_PONG, 4);
 	SendPacket(&data);
-	last_ping = (uint32)time(NULL);
+	last_ping.SetVal((uint32)time(NULL));
 }
 
 void LogonCommServerSocket::SendPacket(WorldPacket * data)

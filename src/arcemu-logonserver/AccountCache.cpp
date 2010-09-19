@@ -568,7 +568,8 @@ void InformationCore::TimeoutSockets()
 		LogonCommServerSocket *s = *itr;
 		++itr;
 
-		if( s->last_ping < now && ( (now - s->last_ping) > 300) ){
+		uint32 last_ping = s->last_ping.GetVal();
+		if( last_ping < now && ( (now - last_ping) > 300) ){
 			for( set< uint32 >::iterator RealmITR = s->server_ids.begin(); RealmITR != s->server_ids.end(); ++RealmITR ){
 				uint32 RealmID = *RealmITR;
 
