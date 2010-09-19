@@ -478,10 +478,11 @@ void LogonServer::Run(int argc, char ** argv)
 
 	new SocketMgr;
 	new SocketGarbageCollector;
-	sSocketMgr.SpawnWorkerThreads();
 
 	ListenSocket<AuthSocket> * cl = new ListenSocket<AuthSocket>(host.c_str(), cport);
 	ListenSocket<LogonCommServerSocket> * sl = new ListenSocket<LogonCommServerSocket>(shost.c_str(), sport);
+
+	sSocketMgr.SpawnWorkerThreads();
 
 	// Spawn auth listener
 	// Spawn interserver listener
