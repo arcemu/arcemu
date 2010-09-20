@@ -358,7 +358,7 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 				SpellCastTargets targets(recvPacket,GetPlayer()->GetGUID());
 				if(!targets.m_unitTarget)
 				{
-					sLog.outString( "Cancelling auto-shot cast because targets.m_unitTarget is null!" );
+					sLog.outDebug( "Cancelling auto-shot cast because targets.m_unitTarget is null!" );
 					return;
 				}
 				SpellEntry *sp = dbcSpell.LookupEntry(spellid);
@@ -462,7 +462,7 @@ void WorldSession::HandleCancelAutoRepeatSpellOpcode(WorldPacket& recv_data)
 {
 	CHECK_INWORLD_RETURN
 
-	sLog.outString("Received CMSG_CANCEL_AUTO_REPEAT_SPELL message.");
+	//sLog.outString("Received CMSG_CANCEL_AUTO_REPEAT_SPELL message.");
 	//on original we automatically enter combat when creature got close to us
 //	GetPlayer()->GetSession()->OutPacket(SMSG_CANCEL_COMBAT);
 	GetPlayer()->m_onAutoShot = false;
