@@ -72,17 +72,11 @@ public:
 
 	ARCEMU_INLINE bool IsDeleted()
 	{
-		if( m_deleted.GetVal() != 0 )
-			return true;
-		else
-			return false;
+		return m_deleted.GetVal();
 	}
 	ARCEMU_INLINE bool IsConnected()
 	{
-		if( m_connected.GetVal() != 0 )
-			return true;
-		else
-			return false;
+		return m_connected.GetVal();
 	}
 	ARCEMU_INLINE sockaddr_in & GetRemoteStruct() { return m_client; }
 
@@ -105,10 +99,10 @@ protected:
 	Mutex m_readMutex;
 
 	// we are connected? stop from posting events.
-    Arcemu::Threading::AtomicCounter m_connected;
+    Arcemu::Threading::AtomicBoolean m_connected;
 
     // We are deleted? Stop us from posting events.
-    Arcemu::Threading::AtomicCounter m_deleted;
+    Arcemu::Threading::AtomicBoolean m_deleted;
 
 	sockaddr_in m_client;
 
