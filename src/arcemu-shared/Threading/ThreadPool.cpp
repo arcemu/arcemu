@@ -253,6 +253,7 @@ void CThreadPool::Shutdown()
 			continue;
 		}
 
+		_mutex.Release();
 		break;
 	}
 }
