@@ -359,6 +359,7 @@ Thread * CThreadPool::StartThread(ThreadBase * ExecutionTarget)
 	t->SetupMutex.Acquire();
 	pthread_create(&target, NULL, &thread_proc, (void*)t);
 	t->ControlInterface.Setup(target);
+	pthread_detach(target);
 	t->SetupMutex.Release();
 	_mutex.Release();
 	return t;
