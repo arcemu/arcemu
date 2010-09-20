@@ -81,7 +81,6 @@
 #include "../arcemu-shared/CircularQueue.h"
 #include "../arcemu-shared/Threading/RWLock.h"
 #include "../arcemu-shared/Threading/Condition.h"
-#include "../arcemu-shared/Threading/Atomicity.h"
 #include "../arcemu-shared/arcemu_getopt.h"
 
 #ifdef WIN32

@@ -30,8 +30,12 @@ libshared_a_SOURCES = \
     FastQueue.h \
     Threading/Mutex.cpp \
     Threading/ThreadPool.cpp \
-    Threading/Atomicity.cpp  \
-    Threading/Atomicity.h   \
+    Threading/AtomicULong.h \
+    Threading/AtomicULong.cpp \
+    Threading/AtomicCounter.h \
+    Threading/AtomicCounter.cpp \
+    Threading/AtomicBoolean.h \
+    Threading/AtomicBoolean.cpp \
     Storage.h \
     arcemu_getopt.h \
     arcemu_getopt.cpp \
