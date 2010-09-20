@@ -377,6 +377,7 @@ Scripting system exports/imports
 #include "Threading/Threading.h"
 
 #include "Threading/AtomicULong.h"
+#include "Threading/AtomicFloat.h"
 #include "Threading/AtomicCounter.h"
 #include "Threading/AtomicBoolean.h"
 

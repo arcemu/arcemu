@@ -286,6 +286,7 @@ RevisionExtractor.exe
     <ClCompile Include="..\..\src\arcemu-shared\CThreads.cpp" />
     <ClCompile Include="..\..\src\arcemu-shared\Threading\AtomicBoolean.cpp" />
     <ClCompile Include="..\..\src\arcemu-shared\Threading\AtomicCounter.cpp" />
+    <ClCompile Include="..\..\src\arcemu-shared\Threading\AtomicFloat.cpp" />
     <ClCompile Include="..\..\src\arcemu-shared\Threading\AtomicULong.cpp" />
     <ClCompile Include="..\..\src\arcemu-shared\Threading\Mutex.cpp" />
     <ClCompile Include="..\..\src\arcemu-shared\Threading\ThreadPool.cpp" />
@@ -329,6 +330,7 @@ RevisionExtractor.exe
     <ClInclude Include="..\..\src\arcemu-shared\Network\SocketOps.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Threading\AtomicBoolean.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Threading\AtomicCounter.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\Threading\AtomicFloat.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Threading\AtomicULong.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Threading\Condition.h" />
     <ClInclude Include="..\..\src\arcemu-shared\CThreads.h" />

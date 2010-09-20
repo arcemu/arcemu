@@ -32,6 +32,8 @@ libshared_a_SOURCES = \
     Threading/ThreadPool.cpp \
     Threading/AtomicULong.h \
     Threading/AtomicULong.cpp \
+    Threading/AtomicFloat.h \
+    Threading/AtomicFloat.cpp \
     Threading/AtomicCounter.h \
     Threading/AtomicCounter.cpp \
     Threading/AtomicBoolean.h \

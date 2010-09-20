@@ -17,39 +17,43 @@
  *
  */
 
-#ifndef ATOMICULONG_HPP_
-#define ATOMICULONG_HPP_
+#ifndef ATOMICFLOAT_HPP__
+#define ATOMICFLOAT_HPP__
 
 namespace Arcemu{
 	namespace Threading{
 
-		/////////////////////////////////////////////////
-		//class AtomicULong
-		//  Stores an unsigned long atomically.
-		//  Base class for all Arcemu atomics.
+		////////////////////////////////////////////////
+		//class AtomicFloat
+		//  Stores a Float atomically.
+		//  Implemented using AtomicULong.
 		//
 		////////////////////////////////////////////////
-		class AtomicULong{
+		class AtomicFloat{
 		public:
-			AtomicULong(){ Value = 0; }
+			AtomicFloat() : Value( 0 ){}
 
-			AtomicULong( unsigned long InitialValue ){ Value = InitialValue; }
+			AtomicFloat( float InitialValue ){
+				unsigned long iv = *( reinterpret_cast< unsigned long* >( &InitialValue ) );
+				Value.SetVal( iv );
+			}
+
 
 			////////////////////////////////////////////////////////////
-			//unsigned long SetVal( unsigned long NewValue )
+			//float SetVal( float NewValue )
 			// lockless threadsafe set operation on the contained value
 			//
 			// Parameters
-			//  unsigned long val  -  value to be set
+			//  float val  -  value to be set
 			//
 			// Return values
 			//  Returns the initial value contained
 			///////////////////////////////////////////////////////////
-			unsigned long SetVal( unsigned long NewValue );
+			float SetVal( float NewValue );
 
 
 			///////////////////////////////////////////////////////////
-			//unsigned long GetVal()
+			//bool GetVal()
 			// non-threadsafe get operation on the contained value
 			//
 			// Parameters
@@ -58,24 +62,16 @@ namespace Arcemu{
 			// Return values
 			//  Returns the value contained
 			//////////////////////////////////////////////////////////
-			unsigned long GetVal(){ return Value; }
-
+			float GetVal();
 
 		private:
 			// Disabled copy constructor
-			AtomicULong( const AtomicULong &other ){}
+			AtomicFloat( const AtomicFloat& other ){}
 
 			// Disabled assignment operator
-			AtomicULong operator=( AtomicULong &other ){ return *this; }
+			AtomicFloat operator=( const AtomicFloat& other ){ return *this; }
 
-
-		protected:
-
-#ifdef WIN32
-			__declspec( align( 4 ) )  volatile unsigned long Value;
-#else
-			volatile unsigned long Value;
-#endif
+			AtomicULong Value;
 		};
 	}
 }

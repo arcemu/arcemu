@@ -22,15 +22,23 @@
 namespace Arcemu{
 	namespace Threading{
 
-		bool AtomicBoolean::SetVal( bool val ){
-			unsigned long oldval = 0;
+		float AtomicFloat::SetVal( float NewValue ){
+			unsigned long iv = 0;
+			float ret = 0.0f;
+			
+			iv = *( reinterpret_cast< unsigned long* >( &NewValue ) );
+			ret = *( reinterpret_cast< float* >( Value.SetVal( iv ) ));
+			
+			return ret;
+		}
 
-			if( val )
-				oldval = Value.SetVal( 1 );
-			else
-				oldval = Value.SetVal( 0 );
 
-			return ( oldval & 1 );
+		float AtomicFloat::GetVal(){
+			float val = 0.0f;
+			
+			val = *( reinterpret_cast< float* >( Value.GetVal() ) );
+			
+			return val;
 		}
 	}
 }

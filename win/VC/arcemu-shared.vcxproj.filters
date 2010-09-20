@@ -144,6 +144,9 @@
     <ClCompile Include="..\..\src\arcemu-shared\Threading\AtomicCounter.cpp">
       <Filter>Threading</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-shared\Threading\AtomicFloat.cpp">
+      <Filter>Threading</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\arcemu-shared\Database\Database.h">
@@ -329,6 +332,9 @@
       <Filter>Threading</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\arcemu-shared\Threading\AtomicCounter.h">
+      <Filter>Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\Threading\AtomicFloat.h">
       <Filter>Threading</Filter>
     </ClInclude>
   </ItemGroup>
