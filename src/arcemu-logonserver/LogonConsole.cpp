@@ -173,7 +173,7 @@ void LogonConsole::TranslateQuit(char *str)
 }
 void LogonConsole::ProcessQuit(int delay)
 {
-	mrunning = false;
+	mrunning.SetVal(false);
 }
 //------------------------------------------------------------------------------
 // help | ?

@@ -51,7 +51,7 @@ public:
 		pthread_mutex_init( &abortmutex, NULL );
 		pthread_cond_init( &abortcond, NULL );
 
-		while ( running && mrunning )
+		while ( running && mrunning.GetVal() )
 		{
 			if ( getMSTime() > next )
 			{

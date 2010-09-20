@@ -19,7 +19,7 @@
 
 #include "../arcemu-shared/Singleton.h"
 
-extern bool mrunning;
+extern Arcemu::Threading::AtomicBoolean mrunning;
 class AuthSocket;
 extern set<AuthSocket*> _authSockets;
 extern Mutex _authSocketLock;

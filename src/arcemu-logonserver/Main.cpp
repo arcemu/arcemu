@@ -34,7 +34,7 @@
 // Database impl
 Database * sLogonSQL;
 initialiseSingleton(LogonServer);
-bool mrunning = true;
+Arcemu::Threading::AtomicBoolean mrunning(true);
 Mutex _authSocketLock;
 set<AuthSocket*> _authSockets;
 
@@ -56,7 +56,7 @@ void _OnSignal(int s)
 #ifdef _WIN32
 	case SIGBREAK:
 #endif
-		mrunning = false;
+		mrunning.SetVal(false);
 		break;
 	}
 
@@ -521,7 +521,7 @@ void LogonServer::Run(int argc, char ** argv)
 		uint32 loop_counter = 0;
 		//ThreadPool.Gobble();
 		sLog.outString("Success! Ready for connections");
-		while(mrunning)
+		while(mrunning.GetVal())
 		{
 			if(!(++loop_counter % 20))	 // 20 seconds
 				CheckForDeadSockets();
