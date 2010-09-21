@@ -563,7 +563,7 @@ void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 	uint16 crap10;
 	uint32 crap11;
 	uint32 crap12, PetitionSignerCount;
-	string PetitionSignerNames[10];
+	string crap13;
 	uint32 arena_index;
 
 		
@@ -576,7 +576,7 @@ void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 	recv_data >> crap11 >> crap12 >> PetitionSignerCount;
 	for (uint32 s = 0; s < 10; ++s)
 	{
-		recv_data >> PetitionSignerNames[s];
+		recv_data >> crap13;
 	}
 	recv_data >> arena_index;
 
@@ -661,8 +661,7 @@ void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 			c->Unk2 = crap11;
 			c->Unk3 = crap12;
 			c->PetitionSignerCount = PetitionSignerCount;
-			memcpy(&Data, c->Data, sizeof(Data));
-			memcpy(&PetitionSignerNames, c->PetitionSignerNames, sizeof(PetitionSignerNames));
+			memcpy(c->Data, Data, sizeof(Data));
 
 			i->SetUInt32Value(ITEM_FIELD_STACK_COUNT, 1);
             i->SoulBind();
@@ -742,8 +741,7 @@ void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 			c->Unk2 = crap11;
 			c->Unk3 = crap12;
 			c->PetitionSignerCount = PetitionSignerCount;
-			memcpy(&Data, c->Data, sizeof(Data));
-			memcpy(&PetitionSignerNames, c->PetitionSignerNames, sizeof(PetitionSignerNames));
+			memcpy(c->Data, Data, sizeof(Data));
 
 			i->SetStackCount(  1);
             i->SoulBind();
