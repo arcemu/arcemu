@@ -26,7 +26,7 @@
 class LogonConsoleThread : public ThreadBase
 {
 public:
-	bool kill;
+	Arcemu::Threading::AtomicBoolean kill;
 	LogonConsoleThread();
 	~LogonConsoleThread();
 	bool run();

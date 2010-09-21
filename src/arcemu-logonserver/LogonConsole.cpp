@@ -32,7 +32,7 @@ void LogonConsole::TranslateRehash(char* str)
 
 void LogonConsole::Kill()
 {
-	_thread->kill=true;
+	_thread->kill.SetVal(true);
 #ifdef WIN32
 	/* write the return keydown/keyup event */
 	DWORD dwTmp;
@@ -75,7 +75,7 @@ bool LogonConsoleThread::run()
 	struct timeval tv;
 #endif
 
-	while (!kill)
+	while (!kill.GetVal())
 	{
 #ifndef WIN32
 		tv.tv_sec = 1;
@@ -84,7 +84,7 @@ bool LogonConsoleThread::run()
 		FD_SET( STDIN_FILENO, &fds );
 		if ( select( 1, &fds, NULL, NULL, &tv ) <= 0 )
 		{
-			if(!kill) // timeout
+			if(!kill.GetVal()) // timeout
 				continue;
 			else
 				break;
@@ -95,7 +95,7 @@ bool LogonConsoleThread::run()
 		// Read in single line from "stdin"
 		fgets( cmd, 80, stdin );
 
-		if ( kill )
+		if ( kill.GetVal() )
 			break;
 
 		len = strlen( cmd );
@@ -196,7 +196,7 @@ void LogonConsole::ProcessHelp(char *command)
 
 LogonConsoleThread::LogonConsoleThread()
 {
-	kill=false;
+	kill.SetVal(false);
 }
 
 LogonConsoleThread::~LogonConsoleThread()
