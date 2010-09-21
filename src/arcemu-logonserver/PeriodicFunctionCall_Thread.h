@@ -33,7 +33,7 @@ public:
 	{
 		cb = new CallbackP0<T>(callback, method);
 		interval = Interval;
-		running = true;
+		running.SetVal(true);
 	}
 
 	~PeriodicFunctionCaller()
@@ -51,7 +51,7 @@ public:
 		pthread_mutex_init( &abortmutex, NULL );
 		pthread_cond_init( &abortcond, NULL );
 
-		while ( running && mrunning.GetVal() )
+		while ( running.GetVal() && mrunning.GetVal() )
 		{
 			if ( getMSTime() > next )
 			{
@@ -73,7 +73,7 @@ public:
 			if (hEvent)
 				WaitForSingleObject( hEvent, interval );
 
-			if ( !running )
+			if ( !running.GetVal() )
 				break;	/* we got killed */
 
 			/* times up */
@@ -88,7 +88,7 @@ public:
 
 	void kill()
 	{
-		running = false;
+		running.SetVal(false);
 #ifdef WIN32
 		/* push the event */
 		SetEvent( hEvent );
@@ -107,7 +107,7 @@ public:
 private:
 	CallbackBase * cb;
 	uint32 interval;
-	bool running;
+	Arcemu::Threading::AtomicBoolean running;
 #ifdef WIN32
 	bool thread_active;
 	HANDLE hEvent;
