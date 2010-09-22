@@ -127,7 +127,6 @@ Unit::Unit()
 	m_state = 0;
 	m_special_state = 0;
 	m_deathState = ALIVE;
-	m_currentSpell = NULL;
 	m_meleespell = 0;
 	m_addDmgOnce = 0;
 	m_TotemSlots[0] = NULL;

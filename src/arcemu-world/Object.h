@@ -666,6 +666,11 @@ public:
 
 	bool m_loadedFromDB;
 
+	// Spell currently casting
+	Spell * m_currentSpell;
+	Spell * GetCurrentSpell(){return m_currentSpell;}
+	void SetCurrentSpell(Spell* cSpell) { m_currentSpell = cSpell; }
+
 	//Andy's crap
 	Player* GetPlayerOwner();
 	std::set<Spell*> m_pendingSpells;

@@ -43,7 +43,7 @@ Object::Object() : m_position(0,0,0,0), m_spawnLocation(0,0,0,0)
 	m_uint32Values = 0;
 	m_objectUpdated = false;
 
-
+	m_currentSpell = NULL;
 	m_valuesCount = 0;
 
 	//official Values
@@ -98,6 +98,12 @@ Object::~Object( )
 
 	if( m_extensions != NULL )
 		delete m_extensions;
+
+	if( m_currentSpell ) 
+	{
+		m_currentSpell->cancel();
+		m_currentSpell = NULL;
+	}
 
 	//avoid leaving traces in eventmanager. Have to work on the speed. Not all objects ever had events so list iteration can be skipped
 	sEventMgr.RemoveEvents( this );
@@ -950,10 +956,17 @@ void Object::RemoveFromWorld(bool free_guid)
 	m->RemoveObject(this, free_guid);
 
 	std::set<Spell*>::iterator itr, itr2;
+	Spell* sp;
 	for (itr = m_pendingSpells.begin(); itr != m_pendingSpells.end();)
 	{
 		itr2 = itr++;
-		delete *itr2;
+		sp = *itr2;
+		//if the spell being deleted is the same being casted, Spell::cancel will take care of deleting the spell
+		//if it's not the same removing us from world. Otherwise finish() will delete the spell once all SpellEffects are handled.
+		if(sp == m_currentSpell)
+			sp->cancel();
+		else
+			delete sp;
 	}
 	//shouldnt need to clear, spell destructor will erase
 	//m_pendingSpells.clear();

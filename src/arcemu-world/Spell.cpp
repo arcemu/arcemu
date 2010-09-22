@@ -296,8 +296,8 @@ Spell::~Spell()
 	m_caster->m_pendingSpells.erase(this);
 
     ///////////////////////////// This is from the virtual_destructor shit ///////////////
-    if( u_caster != NULL && u_caster->GetCurrentSpell() == this )
-		u_caster->SetCurrentSpell(NULL);
+    if( m_caster->GetCurrentSpell() == this )
+		m_caster->SetCurrentSpell(NULL);
 
 
 

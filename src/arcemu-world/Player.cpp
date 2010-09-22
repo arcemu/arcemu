@@ -232,9 +232,6 @@ myCorpseLocation()
 	objmgr.AddPlayerCache(guid, m_cache);
 	int i,j;
 
-	//These should really be done in the unit constructor...
-	m_currentSpell = NULL;
-
 	m_H_regenTimer = 0;
 	m_P_regenTimer = 0;
 	//////////////////////////////////////////////////////////////////////////

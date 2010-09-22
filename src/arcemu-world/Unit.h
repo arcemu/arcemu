@@ -1318,9 +1318,6 @@ public:
 	virtual void OnRemoveInRangeObject(Object* pObj);
 	void ClearInRangeSet();
 
-	Spell * GetCurrentSpell(){return m_currentSpell;}
-	void SetCurrentSpell(Spell* cSpell) { m_currentSpell = cSpell; }
-
 	uint32 m_CombatUpdateTimer;
 
 	void setcanperry(bool newstatus){can_parry=newstatus;}
@@ -1780,9 +1777,6 @@ protected:
 	uint32 m_stealthDetectBonus;	
 	
 	// DK:pet
-
-	// Spell currently casting
-	Spell * m_currentSpell;
 
 	// AI
 	AIInterface *m_aiInterface;
