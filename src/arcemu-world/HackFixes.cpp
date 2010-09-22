@@ -108,7 +108,7 @@ void ApplyNormalFixes()
 
 		// Save School as SchoolMask, and set School as an index
 		sp->SchoolMask = sp->School;
-		for (i= 0; i<8; i++)
+		for (i= 0; i<SCHOOL_COUNT; i++)
 		{
 			if (sp->School & (1<<i))
 			{
@@ -116,6 +116,8 @@ void ApplyNormalFixes()
 				break;
 			}
 		}
+
+		Arcemu::Util::ARCEMU_ASSERT(sp->School < SCHOOL_COUNT);
 
 		// correct caster/target aura states
 		if( sp->CasterAuraState > 1 )
@@ -731,12 +733,12 @@ void ApplyNormalFixes()
 		// Winter's Chill handled by frost school
 		else if( strstr( sp->Name, "Winter's Chill"))
 		{
-			sp->School = 4;
+			sp->School = SCHOOL_FROST;
 		}
 		// Blackout handled by Shadow school
 		else if( strstr( sp->Name, "Blackout"))
 		{
-			sp->School = 5;
+			sp->School = SCHOOL_SHADOW;
 		}
 		//more triggered spell ids are wrong. I think blizz is trying to outsmart us :S
 		//Chain Heal all ranks %50 heal value (49 + 1)
@@ -5405,28 +5407,28 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 		{
 			sp->Attributes |= ATTRIBUTES_IGNORE_INVULNERABILITY;
-			sp->School = 2;
+			sp->School = SCHOOL_FIRE;
 		}
 
 		sp = CheckAndReturnSpellEntry( 59170 );
 		if( sp != NULL )
 		{
 			sp->Attributes |= ATTRIBUTES_IGNORE_INVULNERABILITY;
-			sp->School = 2;
+			sp->School = SCHOOL_FIRE;
 		}
 
 		sp = CheckAndReturnSpellEntry( 59171 );
 		if( sp != NULL )
 		{
 			sp->Attributes |= ATTRIBUTES_IGNORE_INVULNERABILITY;
-			sp->School = 2;
+			sp->School = SCHOOL_FIRE;
 		}
 
 		sp = CheckAndReturnSpellEntry( 59172 );
 		if( sp != NULL )
 		{
 			sp->Attributes |= ATTRIBUTES_IGNORE_INVULNERABILITY;
-			sp->School = 2;
+			sp->School = SCHOOL_FIRE;
 		}
 		// End Warlock chaos bolt
 

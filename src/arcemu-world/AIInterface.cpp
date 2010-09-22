@@ -4101,7 +4101,7 @@ void AIInterface::Event_Summon_EE_totem( uint32 summon_duration )
 		return;
 
 	m_Unit->AddGuardianRef( ourslave );
-	ourslave->ResistanceModPct[ NATURE_DAMAGE ] = 100; //we should be immune to nature dmg. This can be also set in db
+	ourslave->ResistanceModPct[ SCHOOL_NATURE ] = 100; //we should be immune to nature dmg. This can be also set in db
 	ourslave->m_noRespawn = true;
 	ourslave->SetOwner( caster );
 	ourslave->SetUInt32Value( UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED | UNIT_FLAG_SELF_RES );
@@ -4133,7 +4133,7 @@ void AIInterface::Event_Summon_FE_totem( uint32 summon_duration )
 		return;
 
 	m_Unit->AddGuardianRef( ourslave );
-	ourslave->ResistanceModPct[ FIRE_DAMAGE ] = 100; //we should be immune to nature dmg. This can be also set in db
+	ourslave->ResistanceModPct[ SCHOOL_FIRE ] = 100; //we should be immune to nature dmg. This can be also set in db
 	ourslave->m_noRespawn = true;
 	ourslave->SetOwner( caster );
 	ourslave->SetUInt32Value( UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED | UNIT_FLAG_SELF_RES );

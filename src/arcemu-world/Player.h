@@ -1642,17 +1642,17 @@ public:
 	 void res_M_crit_set(float newvalue){m_resist_critical[0]=newvalue;}
 	 float res_R_crit_get(){return m_resist_critical[1];}
 	 void res_R_crit_set(float newvalue){m_resist_critical[1]=newvalue;}
-	uint32 FlatResistanceModifierPos[7];
-	uint32 FlatResistanceModifierNeg[7];
-	uint32 BaseResistanceModPctPos[7];
-	uint32 BaseResistanceModPctNeg[7];
-	uint32 ResistanceModPctPos[7];
-	uint32 ResistanceModPctNeg[7];
+	uint32 FlatResistanceModifierPos[SCHOOL_COUNT];
+	uint32 FlatResistanceModifierNeg[SCHOOL_COUNT];
+	uint32 BaseResistanceModPctPos[SCHOOL_COUNT];
+	uint32 BaseResistanceModPctNeg[SCHOOL_COUNT];
+	uint32 ResistanceModPctPos[SCHOOL_COUNT];
+	uint32 ResistanceModPctNeg[SCHOOL_COUNT];
 	float m_resist_critical[2];//when we are a victim we can have talents to decrease chance for critical hit. This is a negative value and it's added to critchances
 	float m_resist_hit[2];			// 0 = melee; 1= ranged;
-	int32 m_resist_hit_spell[7];	// spell resist per school
+	int32 m_resist_hit_spell[SCHOOL_COUNT];	// spell resist per school
 	float m_attack_speed[3];
-	float SpellHealDoneByAttribute[5][7];
+	float SpellHealDoneByAttribute[5][SCHOOL_COUNT];
 	uint32 m_modphyscritdmgPCT;
 	uint32 m_RootedCritChanceBonus; // Class Script Override: Shatter
 	uint32 m_IncreaseDmgSnaredSlowed;
@@ -1663,7 +1663,7 @@ public:
 	uint32 m_ModInterrMRegenPCT;
 	int32 m_ModInterrMRegen;
 	float m_RegenManaOnSpellResist;
-	uint32 m_casted_amount[7]; //Last casted spells amounts. Need for some spells. Like Ignite etc. DOesn't count HoTs and DoTs. Only directs
+	uint32 m_casted_amount[SCHOOL_COUNT]; //Last casted spells amounts. Need for some spells. Like Ignite etc. DOesn't count HoTs and DoTs. Only directs
 
 	uint32 FlatStatModPos[5];
 	uint32 FlatStatModNeg[5];

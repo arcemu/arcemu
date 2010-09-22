@@ -720,7 +720,7 @@ bool ChatHandler::HandleNpcInfoCommand(const char *args, WorldSession *m_session
 		SystemMessage(m_session, "Powertype: %s", POWERTYPE[ powertype ] );
 
 	SystemMessage(m_session, "Armor/Holy/Fire/Nature/Frost/Shadow/Arcane");
-	SystemMessage(m_session, "%d/%d/%d/%d/%d/%d/%d", crt->GetResistance(NORMAL_DAMAGE), crt->GetResistance(HOLY_DAMAGE), crt->GetResistance(FIRE_DAMAGE), crt->GetResistance(NATURE_DAMAGE), crt->GetResistance(FROST_DAMAGE), crt->GetResistance(SHADOW_DAMAGE), crt->GetResistance(ARCANE_DAMAGE));
+	SystemMessage(m_session, "%d/%d/%d/%d/%d/%d/%d", crt->GetResistance(SCHOOL_NORMAL), crt->GetResistance(SCHOOL_HOLY), crt->GetResistance(SCHOOL_FIRE), crt->GetResistance(SCHOOL_NATURE), crt->GetResistance(SCHOOL_FROST), crt->GetResistance(SCHOOL_SHADOW), crt->GetResistance(SCHOOL_ARCANE));
 	SystemMessage(m_session, "Damage (min/max): %f/%f", crt->GetMinDamage(),crt->GetMaxDamage());
 
 	ColorSystemMessage(m_session, MSG_COLOR_RED, "Entry ID: %d", crt->GetEntry() );

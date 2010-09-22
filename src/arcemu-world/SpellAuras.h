@@ -373,7 +373,7 @@ struct Modifier
     ///needed for per level effect
     int32 realamount;
 	//need this to store % values or they cannot be reverted correctly (i think :D )
-    signed int fixed_amount[7];
+    signed int fixed_amount[SCHOOL_COUNT];
 };
 
 

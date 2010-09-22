@@ -123,7 +123,7 @@ struct CreatureProto
 	float RangedMinDamage;
 	float RangedMaxDamage;
 	uint32 RespawnTime;
-	uint32 Resistances[7];
+	uint32 Resistances[SCHOOL_COUNT];
 	float CombatReach;
 	float BoundingRadius;
 	char * aura_string;
@@ -449,16 +449,16 @@ public:
 	void SetHealthFromSpell(uint32 value) { m_healthfromspell = value;}
 
 	int32 m_speedFromHaste;
-	int32 FlatResistanceMod[7];
-	int32 BaseResistanceModPct[7];
-	int32 ResistanceModPct[7];
+	int32 FlatResistanceMod[SCHOOL_COUNT];
+	int32 BaseResistanceModPct[SCHOOL_COUNT];
+	int32 ResistanceModPct[SCHOOL_COUNT];
 
 	int32 FlatStatMod[5];
 	int32 StatModPct[5];
 	int32 TotalStatModPct[5];
 
-	int32 ModDamageDone[7];
-	float ModDamageDonePct[7];
+	int32 ModDamageDone[SCHOOL_COUNT];
+	float ModDamageDonePct[SCHOOL_COUNT];
 	void CalcResistance(uint32 type);
 	void CalcStat(uint32 type);
 

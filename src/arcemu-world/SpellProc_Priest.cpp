@@ -100,7 +100,7 @@ class VampiricEmbraceSpellProc : public SpellProc
 	bool DoEffect(Unit *victim, SpellEntry *CastingSpell, uint32 flag, uint32 dmg, uint32 abs, int *dmg_overwrite, uint32 weapon_damage_type)
 	{
 		// Only proc for damaging shadow spells
-		if ( CastingSpell->School != SHADOW_DAMAGE || ! IsDamagingSpell(CastingSpell) )
+		if ( CastingSpell->School != SCHOOL_SHADOW || ! IsDamagingSpell(CastingSpell) )
 			return true;
 
 		// Only proc for single target spells

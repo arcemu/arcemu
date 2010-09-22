@@ -1826,7 +1826,7 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 		if( IsPlayer() )
 			static_cast< Player* >(this)->CombatStatusHandler_ResetPvPTimeout();
 	}
-	if( spellInfo->School == SHADOW_DAMAGE )
+	if( spellInfo->School == SCHOOL_SHADOW )
 	{
 		if( pVictim->isAlive() && this->IsUnit() )
 		{

@@ -1971,7 +1971,7 @@ void Aura::SpellAuraDummy(bool apply)
 	{
 		if(apply)
 		{
-			uint32 mod1 = m_target->GetResistance(NORMAL_DAMAGE);
+			uint32 mod1 = m_target->GetResistance(SCHOOL_NORMAL);
 			uint32 mod2 = m_spellProto->EffectBasePoints[0] + 1; //Thanks Andy for pointing out that BasePoints
 			uint32 mod3 = m_spellProto->EffectBasePoints[1] + 1; //Should always be used instead of static modifiers.
 			mod->realamount = (mod->m_amount + (mod1/mod3)*mod2 );
@@ -9292,7 +9292,7 @@ void Aura::SpellAuraModAttackPowerOfArmor( bool apply )
 		else
 			SetNegative();
 		
-		mod->fixed_amount[mod->i] = m_target->GetResistance(NORMAL_DAMAGE) / mod->m_amount;
+		mod->fixed_amount[mod->i] = m_target->GetResistance(SCHOOL_NORMAL) / mod->m_amount;
 		m_target->ModAttackPowerMods(mod->fixed_amount[mod->i] );
 	}
 	else

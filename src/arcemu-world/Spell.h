@@ -676,20 +676,20 @@ enum SpellCastFlags
     CAST_FLAG_AMMO               = 0x20 // load ammo display id (uint32) and ammo inventory type (uint32)
 };
 
-enum School
+/*enum School //moved to Unit.hack for headers dependencies.
 {
-    SCHOOL_NORMAL = 0,
-    SCHOOL_HOLY   = 1,
-    SCHOOL_FIRE   = 2,
-    SCHOOL_NATURE = 3,
-    SCHOOL_FROST  = 4,
-    SCHOOL_SHADOW = 5,
-    SCHOOL_ARCANE = 6,
+	SCHOOL_NORMAL = 0,
+	SCHOOL_HOLY   = 1,
+	SCHOOL_FIRE   = 2,
+	SCHOOL_NATURE = 3,
+	SCHOOL_FROST  = 4,
+	SCHOOL_SHADOW = 5,
+	SCHOOL_ARCANE = 6,
 	SCHOOL_COUNT
-};
+};*/
 
 // converting schools for 2.4.0 client
-static const uint32 g_spellSchoolConversionTable[SCHOOL_ARCANE+1] = {
+static const uint32 g_spellSchoolConversionTable[SCHOOL_COUNT] = {
 	1,				// SCHOOL_NORMAL
 	2,				// SCHOOL_HOLY
 	4,				// SCHOOL_FIRE

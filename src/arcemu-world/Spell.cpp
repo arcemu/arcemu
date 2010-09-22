@@ -756,7 +756,7 @@ uint8 Spell::DidHit( uint32 effindex, Unit* target )
 	/************************************************************************/
 	/* Check if the spell is resisted.                                      */
 	/************************************************************************/
-	if( GetProto()->School == 0  && GetProto()->MechanicsType == 0 )
+	if( GetProto()->School == SCHOOL_NORMAL  && GetProto()->MechanicsType == 0 )
 		return SPELL_DID_HIT_SUCCESS;
 
 	bool pvp =(p_caster && p_victim);
@@ -996,8 +996,6 @@ uint8 Spell::prepare( SpellCastTargets * targets )
 
 void Spell::cancel()
 {
-	if ( GetProto() == NULL ) return; //low chance
-
 	if (m_spellState == SPELL_STATE_FINISHED)
 		return;
 
@@ -2961,14 +2959,6 @@ bool Spell::IsSeal()
 
 uint8 Spell::CanCast(bool tolerate)
 {
-	// NULL Proto / Invalid Spell
-	if (!GetProto())
-		return SPELL_FAILED_SPELL_UNAVAILABLE;
-
-	// Invalid Spell School
-	if (GetProto()->School < NORMAL_DAMAGE || GetProto()->School > ARCANE_DAMAGE)
-		return SPELL_FAILED_SPELL_UNAVAILABLE;
-
 	uint32 i;
 
 	if( p_caster != NULL && HasCustomFlag( CUSTOM_FLAG_SPELL_REQUIRES_COMBAT ) && !p_caster->CombatStatus.IsInCombat() )
@@ -4140,7 +4130,7 @@ uint8 Spell::CanCast(bool tolerate)
 		}
 
 		// can only silence non-physical
-		if (u_caster && u_caster->m_silenced && GetProto()->School != NORMAL_DAMAGE)
+		if (u_caster && u_caster->m_silenced && GetProto()->School != SCHOOL_NORMAL)
 		{
 			switch (GetProto()->NameHash)
 			{
@@ -4178,7 +4168,7 @@ uint8 Spell::CanCast(bool tolerate)
 		}
 
 		// only affects physical damage
-		if (u_caster->IsPacified() && GetProto()->School == NORMAL_DAMAGE)
+		if (u_caster->IsPacified() && GetProto()->School == SCHOOL_NORMAL)
 		{
 			// HACK FIX
 			switch (GetProto()->NameHash)
