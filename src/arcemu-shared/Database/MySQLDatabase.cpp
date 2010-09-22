@@ -141,7 +141,7 @@ string MySQLDatabase::EscapeString(const char * esc, DatabaseConnection * con)
 
 void MySQLDatabase::Shutdown()
 {
-	// TODO
+	mysql_library_end();
 }
 
 bool MySQLDatabase::_SendQuery(DatabaseConnection *con, const char* Sql, bool Self)
