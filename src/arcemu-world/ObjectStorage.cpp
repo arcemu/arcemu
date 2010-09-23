@@ -566,7 +566,7 @@ void Storage_Cleanup()
 
 vector<pair<string,string> > additionalTables;
 
-bool LoadAdditionalTable(const char * TableName, const char * SecondName)
+bool LoadAdditionalTable(const char * TableName, const char * SecondName, bool firstLoad = false)
 {
 	if(!stricmp(TableName, "creature_spawns"))
 	{
@@ -578,14 +578,14 @@ bool LoadAdditionalTable(const char * TableName, const char * SecondName)
 		ExtraMapGameObjectTables.insert(string(SecondName));
 		return false;
 	}
-	/*else if(!stricmp(TableName, "items"))					// Items
+	else if(firstLoad && !stricmp(TableName, "items"))				// Items
 		ItemPrototypeStorage.LoadAdditionalData(SecondName, gItemPrototypeFormat);
-	else if(!stricmp(TableName, "creature_proto"))		// Creature Proto
+	else if(firstLoad && !stricmp(TableName, "creature_proto"))		// Creature Proto
 		CreatureProtoStorage.LoadAdditionalData(SecondName, gCreatureProtoFormat);
-	else if(!stricmp(TableName, "creature_names"))		// Creature Names
+	else if(firstLoad && !stricmp(TableName, "creature_names"))		// Creature Names
 		CreatureNameStorage.LoadAdditionalData(SecondName, gCreatureNameFormat);
-	else if(!stricmp(TableName, "gameobject_names"))	// GO Names
-		GameObjectNameStorage.LoadAdditionalData(SecondName, gGameObjectNameFormat);*/
+	else if(firstLoad && !stricmp(TableName, "gameobject_names"))	// GO Names
+		GameObjectNameStorage.LoadAdditionalData(SecondName, gGameObjectNameFormat);
 	else if(!stricmp(TableName, "areatriggers"))		// Areatriggers
 		AreaTriggerStorage.LoadAdditionalData(SecondName, gAreaTriggerFormat);
 	else if(!stricmp(TableName, "itempages"))			// Item Pages
@@ -594,8 +594,8 @@ bool LoadAdditionalTable(const char * TableName, const char * SecondName)
 		WorldStringTableStorage.LoadAdditionalData(SecondName, gWorldStringTableFormat);
 	else if(!stricmp(TableName, "worldbroadcast"))			// Worldbroadcast
 		WorldBroadCastStorage.LoadAdditionalData(SecondName, gWorldBroadCastFormat);
-	/*else if(!stricmp(TableName, "quests"))				// Quests
-		QuestStorage.LoadAdditionalData(SecondName, gQuestFormat);*/
+	else if(firstLoad && !stricmp(TableName, "quests"))				// Quests
+		QuestStorage.LoadAdditionalData(SecondName, gQuestFormat);
 	else if(!stricmp(TableName, "npc_text"))			// NPC Text Storage
 		NpcTextStorage.LoadAdditionalData(SecondName, gNpcTextFormat);
 	else if(!stricmp(TableName, "fishing"))				// Fishing Zones
@@ -691,7 +691,7 @@ void Storage_LoadAdditionalTables()
 		if(sscanf((*itr).c_str(), "%s %s", s1, s2) != 2)
 			continue;
 
-		if(LoadAdditionalTable(s2, s1)) {
+		if(LoadAdditionalTable(s2, s1, true)) {
 			pair<string,string> tmppair;
 			tmppair.first = string(s1);
 			tmppair.second = string(s2);
