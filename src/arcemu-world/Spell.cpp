@@ -4429,9 +4429,7 @@ exit:
 
 					if(target && target->GetHealthPct() > 75)
 					{
-						sLog.outBasic("REND: base dmg %u", value);
 						dmg = float2int32(dmg + dmg * 0.35f);
-						sLog.outBasic("REND: final dmg %u", value);
 					}
 
 					value += dmg / 5;
