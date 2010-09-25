@@ -149,63 +149,21 @@ bool ChatHandler::HandleCommandsCommand(const char* args, WorldSession *m_sessio
 bool ChatHandler::HandleStartCommand(const char* args, WorldSession *m_session)
 {
 	std::string race;
-	uint32 raceid = 0;
-
 	Player *m_plyr = getSelectedChar(m_session, false);
 
-	if (m_plyr && args && strlen(args) < 2)
-	{
-		raceid = m_plyr->getRace();
-		switch (raceid)
-		{
-		case 1:
-			race = "human";
-		break;
-		case 2:
-			race = "orc";
-		break;
-		case 3:
-			race = "dwarf";
-		break;
-		case 4:
-			race = "nightelf";
-		break;
-		case 5:
-			race = "undead";
-		break;
-		case 6:
-			race = "tauren";
-		break;
-		case 7:
-			race = "gnome";
-		break;
-		case 8:
-			race = "troll";
-		break;
-		case 10:
-			race = "bloodelf";
-		break;
-		case 11:
-			race = "draenei";
-		break;
-		default:
-			return false;
-		break;
-		}
-	}
-	else if (m_plyr && args && strlen(args) > 2)
+	uint8 raceid = 0;
+	uint8 classid = 0;
+
+	if(strlen(args) > 0)
 	{
 		race = args;
-		arcemu_TOLOWER(race);
-
-		// Teleport to specific race
 		if(race == "human")
 			raceid = 1;
 		else if(race == "orc")
 			raceid = 2;
 		else if(race == "dwarf")
 			raceid = 3;
-		else if(race == "nightelf")
+		else if(race == "nightelf" || race == "ne")
 			raceid = 4;
 		else if(race == "undead")
 			raceid = 5;
@@ -215,35 +173,38 @@ bool ChatHandler::HandleStartCommand(const char* args, WorldSession *m_session)
 			raceid = 7;
 		else if(race == "troll")
 			raceid = 8;
-		else if(race == "bloodelf")
+		else if(race == "bloodelf" || race == "be")
 			raceid = 10;
 		else if(race == "draenei")
 			raceid = 11;
+		else if(race == "deathknight" || race == "dk")
+			classid = 6;
 		else
 		{
-			RedSystemMessage(m_session, "Invalid start location! Valid locations are: human, dwarf, gnome, nightelf, draenei, orc, troll, tauren, undead, bloodelf");
+			RedSystemMessage(m_session, "Invalid start location! Valid locations are: human, dwarf, gnome, nightelf, draenei, orc, troll, tauren, undead, bloodelf, deathknight");
 			return true;
 		}
 	}
 	else
 	{
-		return false;
+		raceid = m_plyr->getRace();
+		classid = m_plyr->getClass();
+		race = "his";
 	}
-
-	// Try to find a class that works
+	// find the first matching one
 	PlayerCreateInfo *info = NULL;
-	for(uint32 i=1;i<11;i++)
+	for(uint8 i = 1; i <= 11; i++)
 	{
-		 info = objmgr.GetPlayerCreateInfo(static_cast<uint8>( raceid ), static_cast<uint8>( i ));
-		 if(info != NULL) break;
+		info = objmgr.GetPlayerCreateInfo( ( raceid ? raceid : i ), ( classid ? classid : i ) );
+		if(info != NULL)
+			break;
 	}
 
 	if(info == NULL)
 	{
-		RedSystemMessage(m_session, "Internal error: Could not find create info.");
+		RedSystemMessage(m_session, "Internal error: Could not find create info for race %u and class %u.", raceid, classid);
 		return false;
 	}
-
 
 	GreenSystemMessage(m_session, "Teleporting %s to %s starting location.", m_plyr->GetName(), race.c_str());
 
