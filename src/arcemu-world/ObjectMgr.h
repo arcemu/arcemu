@@ -455,7 +455,7 @@ public:
     Mutex _TransportLock;
 	
 	Item * CreateItem(uint32 entry,Player * owner);
-	Item * LoadItem(uint64 guid);
+	Item * LoadItem(uint32 lowguid);
   
 	// Groups
 	Group * GetGroupByLeader(Player *pPlayer);

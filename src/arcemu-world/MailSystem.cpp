@@ -164,7 +164,7 @@ bool MailMessage::AddMessageDataToPacket(WorldPacket& data)
 	{
 		for( itr = items.begin( ); itr != items.end( ); ++itr )
 		{
-			pItem = objmgr.LoadItem( *itr );
+			pItem = objmgr.LoadItem( Arcemu::Util::GUID_LOPART( *itr ) );
 			if( pItem == NULL )
 				continue;
 
@@ -526,7 +526,7 @@ void WorldSession::HandleTakeItem(WorldPacket & recv_data )
 	}
 
 	// grab the item
-	Item * item = objmgr.LoadItem( *itr );
+	Item * item = objmgr.LoadItem( Arcemu::Util::GUID_LOPART( *itr ) );
 	if(item == 0)
 	{
 		// doesn't exist

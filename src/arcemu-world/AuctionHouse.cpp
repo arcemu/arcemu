@@ -822,7 +822,7 @@ void AuctionHouse::LoadAuctions()
 		auct = new Auction;
 		auct->Id = fields[0].GetUInt32();
 
-		Item * pItem = objmgr.LoadItem(fields[2].GetUInt64());
+		Item * pItem = objmgr.LoadItem( Arcemu::Util::GUID_LOPART( fields[2].GetUInt64() ) );
 		if(!pItem)
 		{
 			CharacterDatabase.Execute("DELETE FROM auctions WHERE auctionId=%u",auct->Id);

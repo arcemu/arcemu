@@ -1562,9 +1562,9 @@ Item * ObjectMgr::CreateItem(uint32 entry,Player * owner)
 	}
 }
 
-Item * ObjectMgr::LoadItem(uint64 guid)
+Item * ObjectMgr::LoadItem( uint32 lowguid )
 {
-	QueryResult * result = CharacterDatabase.Query("SELECT * FROM playeritems WHERE guid = %u", Arcemu::Util::GUID_LOPART( guid ));
+	QueryResult * result = CharacterDatabase.Query("SELECT * FROM playeritems WHERE guid = %u",lowguid );
 	Item * pReturn = 0;
 
 	if(result)
@@ -1575,14 +1575,14 @@ Item * ObjectMgr::LoadItem(uint64 guid)
 
 		if(pProto->InventoryType == INVTYPE_BAG)
 		{
-			Container * pContainer = new Container(HIGHGUID_TYPE_CONTAINER,(uint32)guid);
+			Container * pContainer = new Container(HIGHGUID_TYPE_CONTAINER,lowguid);
 			pContainer->LoadFromDB(result->Fetch());
 			pReturn = pContainer;
 		}
 		else
 		{
 			Item * pItem = new Item;
-			pItem->Init(HIGHGUID_TYPE_ITEM,(uint32)guid);
+			pItem->Init(HIGHGUID_TYPE_ITEM,lowguid);
 			pItem->LoadFromDB(result->Fetch(), 0, false);
 			pReturn = pItem;
 		}
