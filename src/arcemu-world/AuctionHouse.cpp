@@ -28,7 +28,7 @@ void Auction::DeleteFromDB()
 
 void Auction::SaveToDB(uint32 AuctionHouseId)
 {
-	CharacterDatabase.Execute("INSERT INTO auctions VALUES(%u, %u, "I64FMTD", %u, %u, %u, %u, %u, %u, %u)",Id, AuctionHouseId, pItem->GetGUID(), Owner, StartingPrice, BuyoutPrice, ExpiryTime, HighestBidder, HighestBid, DepositAmount );
+	CharacterDatabase.Execute("INSERT INTO auctions VALUES(%u, %u, %u, %u, %u, %u, %u, %u, %u, %u)",Id, AuctionHouseId, pItem->GetLowGUID(), Owner, StartingPrice, BuyoutPrice, ExpiryTime, HighestBidder, HighestBid, DepositAmount );
 }
 
 void Auction::UpdateInDB()
@@ -822,7 +822,7 @@ void AuctionHouse::LoadAuctions()
 		auct = new Auction;
 		auct->Id = fields[0].GetUInt32();
 
-		Item * pItem = objmgr.LoadItem( Arcemu::Util::GUID_LOPART( fields[2].GetUInt64() ) );
+		Item * pItem = objmgr.LoadItem( fields[2].GetUInt32() );
 		if(!pItem)
 		{
 			CharacterDatabase.Execute("DELETE FROM auctions WHERE auctionId=%u",auct->Id);

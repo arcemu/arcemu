@@ -595,7 +595,7 @@ bool Guild::LoadFromDB(Field * f)
 			{
 				do
 				{
-					Item * pItem = objmgr.LoadItem( Arcemu::Util::GUID_LOPART( res2->Fetch()[3].GetUInt64() ));
+					Item * pItem = objmgr.LoadItem( res2->Fetch()[3].GetUInt32() );
 					if(pItem == NULL)
 					{
 						CharacterDatabase.Execute("DELETE FROM guild_bankitems WHERE itemGuid = %u AND guildId = %u AND tabId = %u", res2->Fetch()[3].GetUInt32(), m_guildId, (uint32)pTab->iTabId);

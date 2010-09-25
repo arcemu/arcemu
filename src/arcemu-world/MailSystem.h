@@ -82,7 +82,7 @@ struct MailMessage
 	string subject;
 	string body;
 	uint32 money;
-	vector<uint64> items;
+	vector<uint32> items;
 	uint32 cod;
 	uint32 stationery;
 	uint32 expire_time;

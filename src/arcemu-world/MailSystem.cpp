@@ -116,7 +116,7 @@ bool MailMessage::AddMessageDataToPacket(WorldPacket& data)
 {
 	uint8 i = 0;
 	uint32 j;
-	vector<uint64>::iterator itr;
+	vector<uint32>::iterator itr;
 	Item * pItem;
 
 	// add stuff
@@ -164,7 +164,7 @@ bool MailMessage::AddMessageDataToPacket(WorldPacket& data)
 	{
 		for( itr = items.begin( ); itr != items.end( ); ++itr )
 		{
-			pItem = objmgr.LoadItem( Arcemu::Util::GUID_LOPART( *itr ) );
+			pItem = objmgr.LoadItem( *itr );
 			if( pItem == NULL )
 				continue;
 
@@ -206,7 +206,7 @@ void MailSystem::SaveMessageToSQL(MailMessage * message)
 
     ss.rdbuf()->str("");
 
-	vector< uint64 >::iterator itr;
+	vector< uint32 >::iterator itr;
 	ss << "INSERT INTO mailbox VALUES("
 		<< message->message_id << ","
 		<< message->message_type << ","
@@ -484,7 +484,7 @@ void WorldSession::HandleTakeItem(WorldPacket & recv_data )
 	uint64 mailbox;
 	uint32 message_id;
 	uint32 lowguid;
-	vector< uint64 >::iterator itr;
+	vector< uint32 >::iterator itr;
 
 	recv_data >> mailbox >> message_id >> lowguid;
 
@@ -526,7 +526,7 @@ void WorldSession::HandleTakeItem(WorldPacket & recv_data )
 	}
 
 	// grab the item
-	Item * item = objmgr.LoadItem( Arcemu::Util::GUID_LOPART( *itr ) );
+	Item * item = objmgr.LoadItem( *itr );
 	if(item == 0)
 	{
 		// doesn't exist
