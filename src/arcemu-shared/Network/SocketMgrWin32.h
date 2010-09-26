@@ -27,6 +27,7 @@ public:
 	{
 		socketLock.Acquire();
 		_sockets.insert(s);
+		++socket_count;
 		socketLock.Release();
 	}
 
@@ -34,6 +35,7 @@ public:
 	{
 		socketLock.Acquire();
 		_sockets.erase(s);
+		--socket_count;
 		socketLock.Release();
 	}
 
@@ -44,6 +46,7 @@ private:
 	HANDLE m_completionPort;
 	set<Socket*> _sockets;
 	Mutex socketLock;
+	Arcemu::Threading::AtomicCounter socket_count;
 };
 
 #define sSocketMgr SocketMgr::getSingleton()

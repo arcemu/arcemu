@@ -46,6 +46,7 @@ void SocketMgr::AddSocket(Socket * s)
 
 	if (max_fd < s->GetFd()) max_fd = s->GetFd();
     fds[s->GetFd()] = s;
+	++socket_count;
 
     // Add epoll event based on socket activity.
     struct epoll_event ev;
@@ -82,7 +83,9 @@ void SocketMgr::RemoveSocket(Socket * s)
         return;
 	}
 
-	fds[s->GetFd()] = 0;
+	fds[s->GetFd()] = NULL;
+	--socket_count;
+
     // Remove from epoll list.
     struct epoll_event ev;
 	memset(&ev, 0, sizeof(epoll_event));
@@ -109,14 +112,7 @@ void SocketMgr::SpawnWorkerThreads()
 
 void SocketMgr::ShowStatus()
 {
-	int i, count;
-
-	for (i=0, count=0; i<=max_fd; i++)
-	{
-		if (fds[i]) count++;
-	}
-
-	sLog.outString("Sockets: %d", count);
+	sLog.outString("sockets count = %u", socket_count.GetVal());
 }
 
 bool SocketWorkerThread::run()

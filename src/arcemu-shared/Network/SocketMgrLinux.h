@@ -34,7 +34,7 @@ class SocketMgr : public Singleton<SocketMgr>
 	ListenSocketBase * listenfds[SOCKET_HOLDER_SIZE];
 
     /// socket counter
-    int socket_count;
+    Arcemu::Threading::AtomicCounter socket_count;
 
 	int max_fd;
 
@@ -75,9 +75,6 @@ public:
 
     /// returns epoll fd
     inline int GetEpollFd() { return epoll_fd; }
-
-    /// returns number of sockets in array
-    inline int Count() { return socket_count; }
 
     /// closes all sockets
     void CloseAll();

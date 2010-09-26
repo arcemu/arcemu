@@ -389,12 +389,12 @@ void HandleConsoleInput(BaseConsole * pConsole, const char * szInput)
 			"info", "None",
 			"Gives server runtime information."
 		},
-/*		{
+		{
 			&HandleNetworkStatusCommand,
 			"netstatus", "none",
 			"Shows network status."
 		},
-*/		{
+		{
 			&HandleGMsCommand,
 			"gms", "None",
 			"Shows online GMs."

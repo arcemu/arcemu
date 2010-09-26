@@ -60,7 +60,7 @@ bool HandleInfoCommand(BaseConsole * pConsole, int argc, const char * argv[])
 
 bool HandleNetworkStatusCommand(BaseConsole * pConsole, int argc, const char * argv[])
 {
-	//sSocketMgr.ShowStatus();
+	sSocketMgr.ShowStatus();
 	return true;
 }
 
