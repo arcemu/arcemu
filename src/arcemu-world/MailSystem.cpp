@@ -881,7 +881,7 @@ void Mailbox::Load(QueryResult * result)
 	uint32 i;
 	char * str;
 	char * p;
-	uint64 itemguid;
+	uint32 itemguid;
 
 	do 
 	{
