@@ -12978,20 +12978,22 @@ void Player::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 	if( pVictim->IsSpiritHealer() )
 		return;
 
-	if( this != pVictim && !GetSession()->HasPermissions() && sWorld.m_limits.enable != 0 )
-		damage = CheckDamageLimits( damage, spellId );
+	if( this != pVictim )
+	{
+		if( !GetSession()->HasPermissions() && sWorld.m_limits.enable != 0 )
+			damage = CheckDamageLimits( damage, spellId );
 
-	if( pVictim != this )
 		CombatStatus.OnDamageDealt( pVictim );
 
-	pVictim->SetStandState( STANDSTATE_STAND );
+		if( pVictim->IsPvPFlagged() ){
+			if( !IsPvPFlagged() )
+				PvPToggle();
 
-	if( pVictim->IsPvPFlagged() ){
-		if( !IsPvPFlagged() )
-			PvPToggle();
-
-		AggroPvPGuards();
+			AggroPvPGuards();
+		}
 	}
+
+	pVictim->SetStandState( STANDSTATE_STAND );
 
 	if( CombatStatus.IsInCombat()  )
 		sHookInterface.OnEnterCombat( this, this );
