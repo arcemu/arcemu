@@ -397,6 +397,10 @@ void ScriptMgr::UnloadScripts()
 	delete this->DefaultGossipScript;
 	this->DefaultGossipScript= NULL;
 
+	for(QuestScripts::iterator itr = _questscripts.begin(); itr != _questscripts.end(); ++itr)
+		delete *itr;
+	_questscripts.clear();
+
 	LibraryHandleMap::iterator itr = _handles.begin();
 	for(; itr != _handles.end(); ++itr)
 	{
