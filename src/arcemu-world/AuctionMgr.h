@@ -28,7 +28,7 @@ public:
 	AuctionMgr()
 	{
 		loopcount = 0;
-		maxId = 1;
+		maxId.SetVal( 1 );
 	}
 
 	~AuctionMgr()
@@ -43,19 +43,18 @@ public:
 
 	AuctionHouse * GetAuctionHouse(uint32 Entry);
 
-	uint32 GenerateAuctionId()
-	{ 
-		lock.Acquire();
-		uint32 id=++maxId;
-		lock.Release();
+	uint32 GenerateAuctionId(){ 
+		uint32 id = ++maxId;
+
 		return id;
 	}
 
 private:
 	HM_NAMESPACE::hash_map<uint32, AuctionHouse*> auctionHouseEntryMap;
 	vector<AuctionHouse*> auctionHouses;
-	volatile uint32 maxId;
-	Mutex lock;
+
+	Arcemu::Threading::AtomicCounter maxId;
+
 	uint32 loopcount;
 };
 

@@ -29,7 +29,7 @@ void AuctionMgr::LoadAuctionHouses()
 	QueryResult * res = CharacterDatabase.Query("SELECT MAX(auctionId) FROM auctions");
 	if(res)
 	{
-		maxId = res->Fetch()[0].GetUInt32();
+		maxId.SetVal( res->Fetch()[0].GetUInt32() );
 		delete res;
 	}
 
