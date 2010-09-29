@@ -124,11 +124,6 @@ void AuctionHouse::AddAuction(Auction * auct)
 	auctions.insert( HM_NAMESPACE::hash_map<uint32, Auction*>::value_type( auct->Id , auct ) );
 	auctionLock.ReleaseWriteLock();
 
-	// add the item
-	itemLock.AcquireWriteLock();
-	auctionedItems.insert( HM_NAMESPACE::hash_map<uint64, Item*>::value_type( auct->pItem->GetGUID(), auct->pItem ) );
-	itemLock.ReleaseWriteLock();
-
 	Log.Debug("AuctionHouse", "%u: Add auction %u, expire@ %u.", dbc->id, auct->Id, auct->ExpiryTime);
 }
 
@@ -216,14 +211,9 @@ void AuctionHouse::RemoveAuction(Auction * auct)
 
 	// Remove the auction from the hashmap.
 	auctionLock.AcquireWriteLock();
-	itemLock.AcquireWriteLock();
-
 	auctions.erase(auct->Id);
-	auctionedItems.erase(auct->pItem->GetGUID());
-
 	auctionLock.ReleaseWriteLock();
-	itemLock.ReleaseWriteLock();
-
+	
 	// Destroy the item from memory (it still remains in the db)
 	if (auct->pItem)
 		auct->pItem->DeleteMe();
