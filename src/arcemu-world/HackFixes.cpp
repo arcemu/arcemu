@@ -2919,22 +2919,6 @@ void ApplyNormalFixes()
 			sp->Spell_Dmg_Type = SPELL_DMG_TYPE_RANGED;
 			sp->is_ranged_spell = true;
 		}
-		//rogue - Mace Specialization.
-		sp = CheckAndReturnSpellEntry( 13709 );
-		if( sp != NULL )
-			sp->procFlags = PROC_ON_MELEE_ATTACK;
-		sp = CheckAndReturnSpellEntry( 13800 );
-		if( sp != NULL )
-			sp->procFlags = PROC_ON_MELEE_ATTACK;
-		sp = CheckAndReturnSpellEntry( 13801 );
-		if( sp != NULL )
-			sp->procFlags = PROC_ON_MELEE_ATTACK;
-		sp = CheckAndReturnSpellEntry( 13802 );
-		if( sp != NULL )
-			sp->procFlags = PROC_ON_MELEE_ATTACK;
-		sp = CheckAndReturnSpellEntry( 13803 );
-		if( sp != NULL )
-			sp->procFlags = PROC_ON_MELEE_ATTACK;
 
 		//rogue - Shadowstep
 		sp = CheckAndReturnSpellEntry( 36563 );
