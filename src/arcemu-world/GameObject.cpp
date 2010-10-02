@@ -369,7 +369,7 @@ void GameObject::InitAI()
         Lock *pLock = dbcLock.LookupEntryForced(GetInfo()->SpellFocus);
         if(pLock)
         {
-            for(uint32 i= 0; i < 5; i++)
+            for(uint32 i= 0; i < LOCK_NUM_CASES; i++)
             {
                 if(pLock->locktype[i])
                 {
@@ -740,11 +740,11 @@ uint32 GameObject::GetGOReqSkill()
 	//! Here we check the SpellFocus table against the dbcs
 	Lock *lock = dbcLock.LookupEntryForced( GetInfo()->SpellFocus );
 	if(!lock) return 0;
-	for(uint32 i= 0;i<5;i++)
+	for(uint32 i = 0; i < LOCK_NUM_CASES; i++)
+	{
 		if(lock->locktype[i] == 2 && lock->minlockskill[i])
-		{
 			return lock->minlockskill[i];
-		}
+	}
 	return 0;
 }
 //! Set GameObject rotational value

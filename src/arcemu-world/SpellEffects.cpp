@@ -3537,15 +3537,17 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 
 				Lock *lock = dbcLock.LookupEntryForced( itemTarget->GetProto()->LockId );
 				if(!lock) return;
-				for(int j = 0; j<5; j++)
+				for(int j = 0; j < LOCK_NUM_CASES; j++)
+				{
 					if(lock->locktype[j] == 2 && lock->minlockskill[j] && lockskill >= lock->minlockskill[j])
 					{
 						v = lock->minlockskill[j];
 						itemTarget->locked = false;
-                        itemTarget->UnLock();
+						itemTarget->UnLock();
 						DetermineSkillUp(SKILL_LOCKPICKING,v/5);
 						break;
 					}
+				}
 			}
 			else if(gameObjTarget)
 			{
@@ -3555,7 +3557,7 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 				if(lock == 0)
 					return;
 
-				for(int j= 0;j<5;j++)
+				for(int j = 0; j < LOCK_NUM_CASES; j++)
 				{
 					if(lock->locktype[j] == 2 && lock->minlockskill[j] && lockskill >= lock->minlockskill[j])
 					{

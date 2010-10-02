@@ -8652,7 +8652,7 @@ void Player::SetGuildId(uint32 guildId)
 	if(IsInWorld())
 	{
 		const uint32 field = PLAYER_GUILDID;
-		sEventMgr.AddEvent(TO_OBJECT(this), &Object::EventSetUInt32Value, field, guildId, EVENT_PLAYER_SEND_PACKET, 1,
+		sEventMgr.AddEvent(TO_OBJECT(this), &Object::SetUInt32Value, field, guildId, EVENT_PLAYER_SEND_PACKET, 1,
 			1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 	}
 	else
@@ -8666,7 +8666,7 @@ void Player::SetGuildRank(uint32 guildRank)
 	if(IsInWorld())
 	{
 		const uint32 field = PLAYER_GUILDRANK;
-		sEventMgr.AddEvent(TO_OBJECT(this), &Object::EventSetUInt32Value, field, guildRank, EVENT_PLAYER_SEND_PACKET, 1,
+		sEventMgr.AddEvent(TO_OBJECT(this), &Object::SetUInt32Value, field, guildRank, EVENT_PLAYER_SEND_PACKET, 1,
 			1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 	}
 	else

@@ -533,23 +533,15 @@ struct ItemLimitCategoryEntry
 	uint32 equippedFlag;		// 19	- equipped (bool?)
 };
 
+#define LOCK_NUM_CASES 8
+
 struct Lock
 {
 	uint32 Id;
-	uint32 locktype[5]; // 0 - no lock, 1 - item needed for lock, 2 - min lockping skill needed
-//	uint32 unk1[3];
-	uint32 lockmisc[5]; // if type is 1 here is a item to unlock, else is unknow for now
-//	uint32 unk2[3];
-	uint32 minlockskill[5]; // min skill in lockpiking to unlock.
-//	uint32 unk3[11];
-
-	/* Actually it is:
-	uint32 Id;
-	uint32 locktype[8];
-	uint32 lockindex[8];
-	uint32 minlockskill[8];
-	uint32 action[8];
-	*/
+	uint32 locktype[LOCK_NUM_CASES]; // If this is 1, then the next lockmisc is an item ID, if it's 2, then it's an iRef to LockTypes.dbc.
+	uint32 lockmisc[LOCK_NUM_CASES]; // Item to unlock or iRef to LockTypes.dbc depending on the locktype.
+	uint32 minlockskill[LOCK_NUM_CASES]; // Required skill needed for lockmisc (if locktype = 2).
+	//uint32 action[8]; // Something to do with direction / opening / closing.
 };
 
 struct emoteentry
