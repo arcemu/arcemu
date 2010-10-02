@@ -13502,3 +13502,15 @@ void Player::ApplyFeralAttackPower(bool apply, Item *item)
 	}
 	ModifyBonuses(FERAL_ATTACK_POWER, (int) FeralAP, apply);
 }
+
+void Player::SendChatMessage(uint8 type, uint32 lang, const char *msg, uint32 delay)
+{
+	if(delay)
+	{
+		sEventMgr.AddEvent(this, &Player::SendChatMessage, type, lang, msg, uint32(0), EVENT_UNIT_CHAT_MSG, delay, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+		return;
+	}
+
+	WorldPacket *data = sChatHandler.FillMessageData(type, lang, msg, GetGUID());
+	SendMessageToSet( data, true );
+}

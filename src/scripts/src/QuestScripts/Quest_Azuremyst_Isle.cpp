@@ -183,13 +183,13 @@ public:
 		Unit* Plr = TO_UNIT(mTarget);
 
 		string msg = "Ritk kin'chikx azul azure summit...";
-		sEventMgr.AddEvent(TO_UNIT(Coo), &Unit::SendChatMessage, (uint8)CHAT_MSG_MONSTER_SAY, (uint32)LANG_UNIVERSAL, msg.c_str(), EVENT_UNIT_CHAT_MSG, 6000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+		Coo->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, msg.c_str(), 6000);
 
 		if( mTarget->CalcDistance( Coo, mTarget ) <= 10 )
 			sEventMgr.AddEvent(TO_UNIT(Coo), &Unit::EventCastSpell, Plr, dbcSpell.LookupEntry(30424), EVENT_CREATURE_UPDATE, 8750, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
 
 		string msg2 = "Coo xip fly... Jump ilos river. Find Tikti.";
-		sEventMgr.AddEvent(TO_UNIT(Coo), &Unit::SendChatMessage, (uint8)CHAT_MSG_MONSTER_SAY, (uint32)LANG_UNIVERSAL, msg2.c_str(), EVENT_UNIT_CHAT_MSG, 9000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+		Coo->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, msg2.c_str(), 9000);
 
 		sEventMgr.AddEvent(TO_UNIT(Coo), &Unit::EventCastSpell, Totem, dbcSpell.LookupEntry(30473), EVENT_CREATURE_UPDATE, 12750, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
 		Coo->Despawn( 15200, 0 );
@@ -228,13 +228,13 @@ public:
 		Unit* Totem = TO_UNIT(Tikti);
 		Unit* Plr = TO_UNIT(mTarget);
 		string msg = "[Furbolg] Far you mixik tak come. Gaze upon the kitch'kal river. Follow. Ilog to Yor.";
-		sEventMgr.AddEvent(TO_UNIT(Tikti), &Unit::SendChatMessage, (uint8)CHAT_MSG_MONSTER_SAY, (uint32)LANG_UNIVERSAL, msg.c_str(), EVENT_UNIT_CHAT_MSG, 15000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+		Tikti->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, msg.c_str(), 15000);
 
 		if( mTarget->CalcDistance( Tikti, mTarget ) <= 10 )
 			sEventMgr.AddEvent(TO_UNIT(Tikti), &Unit::EventCastSpell, Plr, dbcSpell.LookupEntry(30430), EVENT_CREATURE_UPDATE, 18000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
 
 		string msg2 = "[Furbolg] Go... Search yitix'kil bottom river. South!";
-		sEventMgr.AddEvent(TO_UNIT(Tikti), &Unit::SendChatMessage, (uint8)CHAT_MSG_MONSTER_SAY, (uint32)LANG_UNIVERSAL, msg2.c_str(), EVENT_UNIT_CHAT_MSG, 20000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+		Tikti->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, msg2.c_str(), 20000);
 
 		sEventMgr.AddEvent(TO_UNIT(Tikti), &Unit::EventCastSpell, Totem, dbcSpell.LookupEntry(30431), EVENT_GMSCRIPT_EVENT, 20000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
 
@@ -279,11 +279,11 @@ public:
 		// Change to Stillpine form
 		sEventMgr.AddEvent(Totem, &Unit::EventCastSpell, Totem, dbcSpell.LookupEntry(30446), EVENT_CREATURE_UPDATE, 15500, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 		string msg2 = "[Furbolg] We go now, together. We will seek Vark.";
-		sEventMgr.AddEvent(Totem, &Unit::SendChatMessage, (uint8)CHAT_MSG_MONSTER_SAY, (uint32)LANG_UNIVERSAL, msg2.c_str(), EVENT_UNIT_CHAT_MSG, 26500, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+		Yor->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, msg2.c_str(), 26500);
 		// Change to nightsaber form
 		sEventMgr.AddEvent(Totem, &Unit::EventCastSpell, Totem, dbcSpell.LookupEntry(30448), EVENT_CREATURE_UPDATE, 30000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 		string msg3 = "[Furbolg] Follow me to Vark.";
-		sEventMgr.AddEvent(Totem, &Unit::SendChatMessage, (uint8)CHAT_MSG_MONSTER_SAY, (uint32)LANG_UNIVERSAL, msg3.c_str(), EVENT_UNIT_CHAT_MSG, 31000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+		Yor->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, msg3.c_str(), 31000);
 		if( mTarget->CalcDistance( Totem, Plr ) <= 10 )
 			sEventMgr.AddEvent(Totem, &Unit::EventCastSpell, Plr, dbcSpell.LookupEntry(30448), EVENT_CREATURE_UPDATE, 31000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 	}

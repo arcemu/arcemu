@@ -1024,86 +1024,54 @@ public:
 				Arthas->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "Glad you could make it, Uther...");
 				Arthas->PlaySoundToSet(12828);
 				//2 = 2,5s
-				sEventMgr.AddEvent(TO_UNIT(_unit), &Unit::SendChatMessage, (uint8)CHAT_MSG_MONSTER_SAY, (uint32)LANG_UNIVERSAL, 
-				"Watch your tone with me, boy. You may be the prince, but I'm still your superior as a paladin.", 
-				EVENT_UNIT_CHAT_MSG, 2500, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+				_unit->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "Watch your tone with me, boy. You may be the prince, but I'm still your superior as a paladin.", 2500);
 				sEventMgr.AddEvent(TO_OBJECT(_unit), &Object::PlaySoundToSet, (uint32)12839, EVENT_UNK, 2500, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 				//3 = 9s
-				sEventMgr.AddEvent(TO_UNIT(Arthas), &Unit::SendChatMessage, (uint8)CHAT_MSG_MONSTER_SAY, (uint32)LANG_UNIVERSAL, 
-				"As if I could forget. Listen Uther, there's something about the plague you should know.", 
-				EVENT_UNIT_CHAT_MSG, 9000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+				Arthas->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "As if I could forget. Listen Uther, there's something about the plague you should know.", 9000);
 				sEventMgr.AddEvent(TO_OBJECT(Arthas), &Object::PlaySoundToSet, (uint32)12829, EVENT_UNK, 9000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 				//4 = 14,5s
-				sEventMgr.AddEvent(TO_UNIT(Arthas), &Unit::SendChatMessage, (uint8)CHAT_MSG_MONSTER_SAY, (uint32)LANG_UNIVERSAL, 
-				"Oh no, it's already begun. These people may look fine now, but it's only a matter of time before they turn into the Undead!", 
-				EVENT_UNIT_CHAT_MSG, 14500, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+				Arthas->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "Oh no, it's already begun. These people may look fine now, but it's only a matter of time before they turn into the Undead!", 14500);
 				sEventMgr.AddEvent(TO_OBJECT(Arthas), &Object::PlaySoundToSet, (uint32)12830, EVENT_UNK, 14500, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 				//5 = 25s
-				sEventMgr.AddEvent(TO_UNIT(_unit), &Unit::SendChatMessage, (uint8)CHAT_MSG_MONSTER_SAY, (uint32)LANG_UNIVERSAL, 
-				"What?!", 
-				EVENT_UNIT_CHAT_MSG, 25000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+				_unit->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "What?!", 25000);
 				sEventMgr.AddEvent(TO_OBJECT(_unit), &Object::PlaySoundToSet, (uint32)12840, EVENT_UNK, 25000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 				//6 = 26,5s
-				sEventMgr.AddEvent(TO_UNIT(Arthas), &Unit::SendChatMessage, (uint8)CHAT_MSG_MONSTER_SAY, (uint32)LANG_UNIVERSAL, 
-				"This entire city must be purged.", 
-				EVENT_UNIT_CHAT_MSG, 26500, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+				Arthas->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "This entire city must be purged.", 26500);
 				sEventMgr.AddEvent(TO_OBJECT(Arthas), &Object::PlaySoundToSet, (uint32)12831, EVENT_UNK, 26500, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 				//7 = 29s
-				sEventMgr.AddEvent(TO_UNIT(_unit), &Unit::SendChatMessage, (uint8)CHAT_MSG_MONSTER_SAY, (uint32)LANG_UNIVERSAL, 
-				"How can you even consider that? There's *got* to be some other way.", 
-				EVENT_UNIT_CHAT_MSG, 29000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+				_unit->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "How can you even consider that? There's *got* to be some other way.", 29000);
 				sEventMgr.AddEvent(TO_OBJECT(_unit), &Object::PlaySoundToSet, (uint32)12841, EVENT_UNK, 29000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 				//8 = 33,5s
-				sEventMgr.AddEvent(TO_UNIT(Arthas), &Unit::SendChatMessage, (uint8)CHAT_MSG_MONSTER_SAY, (uint32)LANG_UNIVERSAL, 
-				"Damn it, Uther! As your future king, I order you to purge this city!", 
-				EVENT_UNIT_CHAT_MSG, 33500, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+				Arthas->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "Damn it, Uther! As your future king, I order you to purge this city!", 33500);
 				sEventMgr.AddEvent(TO_OBJECT(Arthas), &Object::PlaySoundToSet, (uint32)12832, EVENT_UNK, 33500, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 				//9 = 38s
-				sEventMgr.AddEvent(TO_UNIT(_unit), &Unit::SendChatMessage, (uint8)CHAT_MSG_MONSTER_SAY, (uint32)LANG_UNIVERSAL, 
-				"You are *not* my king yet, boy. Nor would I obey that command even if you were.", 
-				EVENT_UNIT_CHAT_MSG, 38000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+				_unit->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "You are *not* my king yet, boy. Nor would I obey that command even if you were.", 38000);
 				sEventMgr.AddEvent(TO_OBJECT(_unit), &Object::PlaySoundToSet, (uint32)12842, EVENT_UNK, 38000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 				//10 = 44,5s
-				sEventMgr.AddEvent(TO_UNIT(Arthas), &Unit::SendChatMessage, (uint8)CHAT_MSG_MONSTER_SAY, (uint32)LANG_UNIVERSAL, 
-				"Then I must consider this an act of treason.", 
-				EVENT_UNIT_CHAT_MSG, 44500, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+				Arthas->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "Then I must consider this an act of treason.", 44500);
 				sEventMgr.AddEvent(TO_OBJECT(Arthas), &Object::PlaySoundToSet, (uint32)12833, EVENT_UNK, 44500, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 				//11 = 49s
-				sEventMgr.AddEvent(TO_UNIT(_unit), &Unit::SendChatMessage, (uint8)CHAT_MSG_MONSTER_SAY, (uint32)LANG_UNIVERSAL, 
-				"Treason?! Have you lost your mind, Arthas?", 
-				EVENT_UNIT_CHAT_MSG, 49000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+				_unit->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "Treason?! Have you lost your mind, Arthas?", 49000);
 				sEventMgr.AddEvent(TO_OBJECT(_unit), &Object::PlaySoundToSet, (uint32)12843, EVENT_UNK, 49000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 				//12 = 53,5s
-				sEventMgr.AddEvent(TO_UNIT(Arthas), &Unit::SendChatMessage, (uint8)CHAT_MSG_MONSTER_SAY, (uint32)LANG_UNIVERSAL, 
-				"Have I? Lord Uther, by my right of succession and the sovereignty of my crown, I hereby relieve you of your command, and suspend your paladins from service.", 
-				EVENT_UNIT_CHAT_MSG, 53500, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+				Arthas->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "Have I? Lord Uther, by my right of succession and the sovereignty of my crown, I hereby relieve you of your command, and suspend your paladins from service.", 53500);
 				sEventMgr.AddEvent(TO_OBJECT(Arthas), &Object::PlaySoundToSet, (uint32)12834, EVENT_UNK, 53500, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 				//13 = 65s
-				sEventMgr.AddEvent(TO_UNIT(Jaina), &Unit::SendChatMessage, (uint8)CHAT_MSG_MONSTER_SAY, (uint32)LANG_UNIVERSAL, 
-				"Arthas! You can't just--", 
-				EVENT_UNIT_CHAT_MSG, 65000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+				Jaina->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "Arthas! You can't just--", 65000);
 				sEventMgr.AddEvent(TO_OBJECT(Jaina), &Object::PlaySoundToSet, (uint32)12837, EVENT_UNK, 65000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 				//14 = 67,5s
-				sEventMgr.AddEvent(TO_UNIT(Arthas), &Unit::SendChatMessage, (uint8)CHAT_MSG_MONSTER_SAY, (uint32)LANG_UNIVERSAL, 
-				"It's done! Those of you who have the will to save this land, follow me. The rest of you... get out of my sight.", 
-				EVENT_UNIT_CHAT_MSG, 67500, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+				Arthas->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "It's done! Those of you who have the will to save this land, follow me. The rest of you... get out of my sight.", 67500);
 				sEventMgr.AddEvent(TO_OBJECT(Arthas), &Object::PlaySoundToSet, (uint32)12835, EVENT_UNK, 67500, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 				//15 = 77s
 				//here few knights should leave, after speech, Uther should leave also
-				sEventMgr.AddEvent(TO_UNIT(_unit), &Unit::SendChatMessage, (uint8)CHAT_MSG_MONSTER_SAY, (uint32)LANG_UNIVERSAL, 
-				"You've just crossed a terrible threshold, Arthas.", 
-				EVENT_UNIT_CHAT_MSG, 77000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+				_unit->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "You've just crossed a terrible threshold, Arthas.", 77000);
 				sEventMgr.AddEvent(TO_OBJECT(_unit), &Object::PlaySoundToSet, (uint32)12844, EVENT_UNK, 77000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 				//16 = 80,5s
 				//Jaina begins leaving
-				sEventMgr.AddEvent(TO_UNIT(Arthas), &Unit::SendChatMessage, (uint8)CHAT_MSG_MONSTER_SAY, (uint32)LANG_UNIVERSAL, 
-				"Jaina? ", 
-				EVENT_UNIT_CHAT_MSG, 80500, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+				Arthas->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "Jaina? ", 80500);
 				sEventMgr.AddEvent(TO_OBJECT(Arthas), &Object::PlaySoundToSet, (uint32)12836, EVENT_UNK, 80500, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 				//17 = 82s
-				sEventMgr.AddEvent(TO_UNIT(Jaina), &Unit::SendChatMessage, (uint8)CHAT_MSG_MONSTER_SAY, (uint32)LANG_UNIVERSAL, 
-				"I'm sorry, Arthas. I can't watch you do this...", 
-				EVENT_UNIT_CHAT_MSG, 82000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+				Jaina->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "I'm sorry, Arthas. I can't watch you do this...", 82000);
 				sEventMgr.AddEvent(TO_OBJECT(Jaina), &Object::PlaySoundToSet, (uint32)12838, EVENT_UNK, 82000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 				//trigger Arthas actions = 86,5s
 				sEventMgr.AddEvent(Arthas, &Creature::CallScriptUpdate, EVENT_SCRIPT_UPDATE_EVENT, 86500, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
@@ -1217,9 +1185,7 @@ public:
 			}break;
 		case 1:
 			{
-				sEventMgr.AddEvent(TO_UNIT(_unit), &Unit::SendChatMessage, (uint8)CHAT_MSG_MONSTER_SAY, (uint32)LANG_UNIVERSAL, 
-				"I can only help you with a clean death.", 
-				EVENT_UNIT_CHAT_MSG, 300, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+				_unit->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "I can only help you with a clean death.", 300);
 				sEventMgr.AddEvent(TO_OBJECT(_unit), &Object::PlaySoundToSet, (uint32)14294, EVENT_UNK, 100, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 				Creature* citizen = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords( _unit->GetPositionX(), _unit->GetPositionY(), _unit->GetPositionZ(), 28167);
 				if( citizen )
@@ -1233,9 +1199,7 @@ public:
 					_unit->GetAIInterface()->MoveTo( citizen->GetPositionX(),citizen->GetPositionY(),citizen->GetPositionZ(),citizen->GetOrientation());
 					_unit->DealDamage( citizen, citizen->GetUInt32Value(UNIT_FIELD_HEALTH), 0,0,0);
 				}
-				sEventMgr.AddEvent(TO_UNIT(_unit), &Unit::SendChatMessage, (uint8)CHAT_MSG_MONSTER_SAY, (uint32)LANG_UNIVERSAL, 
-				"That was just the beginning.", 
-				EVENT_UNIT_CHAT_MSG, 1000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+				_unit->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "That was just the beginning.", 1000);
 				sEventMgr.AddEvent(TO_OBJECT(_unit), &Object::PlaySoundToSet, (uint32)14295, EVENT_UNK, 1000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 				phase++;
 				sEventMgr.AddEvent(_unit, &Creature::CallScriptUpdate, EVENT_SCRIPT_UPDATE_EVENT, 1500, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
@@ -1270,14 +1234,10 @@ public:
 					//2 = 13s
 					//change all citizens to undeads...
 					sEventMgr.AddEvent(c, &Creature::CallScriptUpdate, EVENT_SCRIPT_UPDATE_EVENT, 13000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-					sEventMgr.AddEvent(TO_UNIT(c), &Unit::SendChatMessage, (uint8)CHAT_MSG_MONSTER_SAY, (uint32)LANG_UNIVERSAL, 
-					"As you can see, your people are now mine. I will now turn this city, household by household, until the flame of life has been snuffed out forever.", 
-					EVENT_UNIT_CHAT_MSG, 13000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+					c->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "As you can see, your people are now mine. I will now turn this city, household by household, until the flame of life has been snuffed out forever.", 13000);
 					sEventMgr.AddEvent(TO_OBJECT(c), &Object::PlaySoundToSet, (uint32)14411, EVENT_UNK, 13000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 					//2 = 32s
-					sEventMgr.AddEvent(TO_UNIT(_unit), &Unit::SendChatMessage, (uint8)CHAT_MSG_MONSTER_SAY, (uint32)LANG_UNIVERSAL, 
-					"I won't allow it Mal'Ganis better than these people die by my hand than serve as your slaves in death.", 
-					EVENT_UNIT_CHAT_MSG, 32000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+					_unit->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "I won't allow it Mal'Ganis better than these people die by my hand than serve as your slaves in death.", 32000);
 					sEventMgr.AddEvent(TO_OBJECT(_unit), &Object::PlaySoundToSet, (uint32)14296, EVENT_UNK, 32000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 					c->Despawn(38500,0);
 					//3 = 37s

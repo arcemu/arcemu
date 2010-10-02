@@ -5422,7 +5422,7 @@ namespace luaUnit
 		const char* message = luaL_checkstring(L,3);
 		uint32 delay = luaL_checkint(L,4);
 		if (message != NULL && delay)
-			sEventMgr.AddEvent(ptr, &Unit::SendChatMessage, typ, lang, message, EVENT_UNIT_CHAT_MSG, delay, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+			ptr->SendChatMessage(typ, lang, message, delay);
 		return 0;
 	}
 

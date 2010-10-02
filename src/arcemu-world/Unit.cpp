@@ -5193,30 +5193,6 @@ void Unit::SendChatMessageAlternateEntry(uint32 entry, uint8 type, uint32 lang, 
 	SendMessageToSet(&data, true);
 }
 
-void Unit::SendChatMessage(uint8 type, uint32 lang, const char *msg)
-{
-	size_t UnitNameLength = 0, MessageLength = 0;
-	CreatureInfo *ci = (m_objectTypeId == TYPEID_UNIT) ? TO_CREATURE(this)->GetCreatureInfo() : NULL;
-	if(ci == NULL)
-		return;
-
-	UnitNameLength = strlen((char*)ci->Name) + 1;
-	MessageLength = strlen((char*)msg) + 1;
-
-	WorldPacket data(SMSG_MESSAGECHAT, 35 + UnitNameLength + MessageLength);
-	data << type;
-	data << lang;
-	data << GetGUID();
-	data << uint32(0);			// new in 2.1.0
-	data << uint32(UnitNameLength);
-	data << ci->Name;
-	data << uint64(0);
-	data << uint32(MessageLength);
-	data << msg;
-	data << uint8(0x00);
-	SendMessageToSet(&data, true);
-}
-
 void Unit::WipeHateList()
 {
 	GetAIInterface()->WipeHateList();

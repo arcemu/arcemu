@@ -335,12 +335,12 @@ public:
 
   void EventCreatureSay(CreaturePointer creat, string say,  uint32 time)
   {
-	  sEventMgr.AddEvent(TO_UNIT(creat), &Unit::SendChatMessage, (uint8)CHAT_MSG_MONSTER_SAY, (uint32)LANG_UNIVERSAL, say.c_str(), EVENT_UNIT_CHAT_MSG, time, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+	  creat->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, say.c_str(), time);
   }
 
   void EventCreatureYell(CreaturePointer creat, string say,  uint32 time)
   {
-	  sEventMgr.AddEvent(TO_UNIT(creat), &Unit::SendChatMessage, (uint8)CHAT_MSG_MONSTER_YELL, (uint32)LANG_UNIVERSAL, say.c_str(), EVENT_UNIT_CHAT_MSG, time, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+	  creat->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, say.c_str(), time);
   }
 
   CreaturePointer getNpcQuester(PlayerPointer plr, uint32 npcid)

@@ -953,6 +953,9 @@ public:
 	time_t GetLastUnstuckTime() { return m_unstuckCooldown; }
 	void SetLastUnstuckTime(time_t t) { m_unstuckCooldown = t; }
 
+	// Scripting
+	void SendChatMessage(uint8 type, uint32 lang, const char *msg, uint32 delay = 0);
+
 protected:
 
 	void _UpdateSkillFields();

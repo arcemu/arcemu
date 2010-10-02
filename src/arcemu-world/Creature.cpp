@@ -2340,3 +2340,28 @@ void Creature::Die( Unit *pAttacker, uint32 damage, uint32 spellid ){
 
 }
 
+void Creature::SendChatMessage(uint8 type, uint32 lang, const char *msg, uint32 delay)
+{
+	if(delay)
+	{
+		sEventMgr.AddEvent(this, &Creature::SendChatMessage, type, lang, msg, uint32(0), EVENT_UNIT_CHAT_MSG, delay, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+		return;
+	}
+
+	const char *name = GetCreatureInfo()->Name;
+	size_t CreatureNameLength = strlen((char*)name) + 1;
+	size_t MessageLength = strlen((char*)msg) + 1;
+
+	WorldPacket data(SMSG_MESSAGECHAT, 35 + CreatureNameLength + MessageLength);
+	data << type;
+	data << lang;
+	data << GetGUID();
+	data << uint32(0);			// new in 2.1.0
+	data << uint32(CreatureNameLength);
+	data << name;
+	data << uint64(0);
+	data << uint32(MessageLength);
+	data << msg;
+	data << uint8(0x00);
+	SendMessageToSet(&data, true);
+}

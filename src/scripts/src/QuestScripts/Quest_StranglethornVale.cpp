@@ -195,7 +195,7 @@ public:
 		string msg = "There, ";
 		msg += mTarget->GetName();
 		msg += ". You may now speak to the Bloodscalp chief and his witchdoctor.";
-		sEventMgr.AddEvent(TO_UNIT(Kin_weelay), &Creature::SendChatMessage, (uint8)CHAT_MSG_MONSTER_SAY, (uint32)LANG_UNIVERSAL, msg.c_str(), EVENT_UNIT_CHAT_MSG, 500, 1, 1);
+		Kin_weelay->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, msg.c_str(), 500);
 	}
 
 };

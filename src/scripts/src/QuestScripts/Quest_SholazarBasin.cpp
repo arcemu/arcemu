@@ -89,8 +89,8 @@ public:
 				pCreature->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, msg.c_str());
                 string msg2 = "That's exactly what I needed!";
                 string msg3 = "It's got my vote! That'll put hair on your chest like nothing else will.";
-                sEventMgr.AddEvent(TO_UNIT(pCreature), &Unit::SendChatMessage, (uint8)CHAT_MSG_MONSTER_SAY, (uint32)LANG_UNIVERSAL, msg2.c_str(), EVENT_UNIT_CHAT_MSG, 2000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT),
-                sEventMgr.AddEvent(TO_UNIT(pCreature), &Unit::SendChatMessage, (uint8)CHAT_MSG_MONSTER_SAY, (uint32)LANG_UNIVERSAL, msg3.c_str(), EVENT_UNIT_CHAT_MSG, 4000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+                pCreature->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, msg2.c_str(), 2000);
+                pCreature->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, msg3.c_str(), 4000);
                 QuestLogEntry *qle = plr->GetQuestLogForEntry(12645);
 				if(qle == NULL)
 					return;
@@ -137,8 +137,8 @@ public:
 				pCreature->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, msg.c_str());
                 string msg2 = "Well, so far, it tastes like something my wife would drink...";
                 string msg3 = "Now, there's the kick I've come to expect from Grimbooze's drinks! I like it!";
-                sEventMgr.AddEvent(TO_UNIT(pCreature), &Unit::SendChatMessage, (uint8)CHAT_MSG_MONSTER_SAY, (uint32)LANG_UNIVERSAL, msg2.c_str(), EVENT_UNIT_CHAT_MSG, 2000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT),
-                sEventMgr.AddEvent(TO_UNIT(pCreature), &Unit::SendChatMessage, (uint8)CHAT_MSG_MONSTER_SAY, (uint32)LANG_UNIVERSAL, msg3.c_str(), EVENT_UNIT_CHAT_MSG, 4000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+                pCreature->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, msg2.c_str(), 2000);
+                pCreature->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, msg3.c_str(), 4000);
                 QuestLogEntry *qle = plr->GetQuestLogForEntry(12645);
 				if(qle == NULL)
 					return;
@@ -184,8 +184,8 @@ public:
 				pCreature->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, msg.c_str());
                 string msg2 = "Oh my...";
                 string msg3 = "Tastes like I'm drinking... engine degreaser!";
-                sEventMgr.AddEvent(TO_UNIT(pCreature), &Unit::SendChatMessage, (uint8)CHAT_MSG_MONSTER_SAY, (uint32)LANG_UNIVERSAL, msg2.c_str(), EVENT_UNIT_CHAT_MSG, 2000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT),
-                sEventMgr.AddEvent(TO_UNIT(pCreature), &Unit::SendChatMessage, (uint8)CHAT_MSG_MONSTER_SAY, (uint32)LANG_UNIVERSAL, msg3.c_str(), EVENT_UNIT_CHAT_MSG, 4000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+                pCreature->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, msg2.c_str(), 2000);
+                pCreature->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, msg3.c_str(), 4000);
                 QuestLogEntry *qle = plr->GetQuestLogForEntry(12645);
 				if(qle == NULL)
 					return;

@@ -529,6 +529,8 @@ public:
 
 	uint32 GetOldEmote() { return m_oldEmote; }
 
+	void SendChatMessage(uint8 type, uint32 lang, const char *msg, uint32 delay = 0);
+
 	// Serialization
 	void SaveToDB();
 	void LoadAIAgents(CreatureTemplate * t);
