@@ -40,7 +40,7 @@ void WorldSession::HandleQuestgiverStatusQueryOpcode( WorldPacket & recv_data )
     {
         Creature *quest_giver = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
         if(quest_giver)
-			qst_giver = (Object*)quest_giver;
+			qst_giver = quest_giver;
 		else
 			return;
 
@@ -54,7 +54,7 @@ void WorldSession::HandleQuestgiverStatusQueryOpcode( WorldPacket & recv_data )
 	{
 		Item *quest_giver = GetPlayer()->GetItemInterface()->GetItemByGUID(guid);
 		if(quest_giver)
-			qst_giver = (Object*)quest_giver;
+			qst_giver = quest_giver;
 		else
 			return;
 	}
@@ -62,7 +62,7 @@ void WorldSession::HandleQuestgiverStatusQueryOpcode( WorldPacket & recv_data )
 	{
 		GameObject *quest_giver = _player->GetMapMgr()->GetGameObject(GET_LOWGUID_PART(guid));
 		if(quest_giver)
-			qst_giver = (Object*)quest_giver;
+			qst_giver = quest_giver;
 		else
 			return;
 	}
@@ -140,7 +140,7 @@ void WorldSession::HandleQuestGiverQueryQuestOpcode( WorldPacket & recv_data )
 	{
 		Creature *quest_giver = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
 		if(quest_giver)
-			qst_giver = (Object*)quest_giver;
+			qst_giver = quest_giver;
 		else
 			return;
 		if(quest_giver->isQuestGiver())
@@ -153,7 +153,7 @@ void WorldSession::HandleQuestGiverQueryQuestOpcode( WorldPacket & recv_data )
 	{
 		GameObject *quest_giver = _player->GetMapMgr()->GetGameObject(GET_LOWGUID_PART(guid));
 		if(quest_giver)
-			qst_giver = (Object*)quest_giver;
+			qst_giver = quest_giver;
 		else
 			return;
 		bValid = quest_giver->isQuestGiver();
@@ -179,7 +179,7 @@ void WorldSession::HandleQuestGiverQueryQuestOpcode( WorldPacket & recv_data )
 		  quest_giver->SoulBind();
 //---------------------------------------------
     if(quest_giver)
-			qst_giver = (Object*)quest_giver;
+			qst_giver = quest_giver;
 		else
 			return;
 		bValid = true;
@@ -237,7 +237,7 @@ void WorldSession::HandleQuestgiverAcceptQuestOpcode( WorldPacket & recv_data )
 	{
 		Creature *quest_giver = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
 		if(quest_giver)
-			qst_giver = (Object*)quest_giver;
+			qst_giver = quest_giver;
 		else
 			return;
 		hasquest = quest_giver->HasQuest(quest_id, 1);
@@ -251,7 +251,7 @@ void WorldSession::HandleQuestgiverAcceptQuestOpcode( WorldPacket & recv_data )
 	{
 		GameObject *quest_giver = _player->GetMapMgr()->GetGameObject(GET_LOWGUID_PART(guid));
 		if(quest_giver)
-			qst_giver = (Object*)quest_giver;
+			qst_giver = quest_giver;
 		else
 			return;
 		//bValid = quest_giver->isQuestGiver();
@@ -263,7 +263,7 @@ void WorldSession::HandleQuestgiverAcceptQuestOpcode( WorldPacket & recv_data )
 	{
 		Item *quest_giver = GetPlayer()->GetItemInterface()->GetItemByGUID(guid);
 		if(quest_giver)
-			qst_giver = (Object*)quest_giver;
+			qst_giver = quest_giver;
 		else
 			return;
 		bValid = true;
@@ -274,7 +274,7 @@ void WorldSession::HandleQuestgiverAcceptQuestOpcode( WorldPacket & recv_data )
 	{
 		Player *quest_giver = _player->GetMapMgr()->GetPlayer((uint32)guid);
 		if(quest_giver)
-			qst_giver = (Object*)quest_giver;
+			qst_giver = quest_giver;
 		else
 			return;
 		bValid = true;
@@ -491,7 +491,7 @@ void WorldSession::HandleQuestgiverRequestRewardOpcode( WorldPacket & recv_data 
 	{
 		Creature *quest_giver = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
 		if(quest_giver)
-			qst_giver = (Object*)quest_giver;
+			qst_giver = quest_giver;
 		else
 			return;
 		if(quest_giver->isQuestGiver())
@@ -515,7 +515,7 @@ void WorldSession::HandleQuestgiverRequestRewardOpcode( WorldPacket & recv_data 
 	{
 		GameObject *quest_giver = _player->GetMapMgr()->GetGameObject(GET_LOWGUID_PART(guid));
 		if(quest_giver)
-			qst_giver = (Object*)quest_giver;
+			qst_giver = quest_giver;
 		else
 			return; // oops..
 		bValid = quest_giver->isQuestGiver();
@@ -577,7 +577,7 @@ void WorldSession::HandleQuestgiverCompleteQuestOpcode( WorldPacket & recvPacket
 	{
 		Creature *quest_giver = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
 		if(quest_giver)
-			qst_giver = (Object*)quest_giver;
+			qst_giver = quest_giver;
 		else
 			return;
 		if(quest_giver->isQuestGiver())
@@ -598,7 +598,7 @@ void WorldSession::HandleQuestgiverCompleteQuestOpcode( WorldPacket & recvPacket
 	{
 		GameObject *quest_giver = _player->GetMapMgr()->GetGameObject(GET_LOWGUID_PART(guid));
 		if(quest_giver)
-			qst_giver = (Object*)quest_giver;
+			qst_giver = quest_giver;
 		else
 			return; // oops..
 		bValid = quest_giver->isQuestGiver();
@@ -672,7 +672,7 @@ void WorldSession::HandleQuestgiverChooseRewardOpcode(WorldPacket& recvPacket)
 	{
 		Creature *quest_giver = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
 		if(quest_giver)
-			qst_giver = (Object*)quest_giver;
+			qst_giver = quest_giver;
 		else
 			return;
 		if(quest_giver->isQuestGiver())
@@ -685,7 +685,7 @@ void WorldSession::HandleQuestgiverChooseRewardOpcode(WorldPacket& recvPacket)
 	{
 		GameObject *quest_giver = _player->GetMapMgr()->GetGameObject(GET_LOWGUID_PART(guid));
 		if(quest_giver)
-			qst_giver = (Object*)quest_giver;
+			qst_giver = quest_giver;
 		else
 			return;
 		//bValid = quest_giver->isQuestGiver();

@@ -1662,7 +1662,7 @@ void MapMgr::EventRespawnCreature(Creature * c, uint16 x, uint16 y)
 	if(cell == NULL)
 		return;
 
-	ObjectSet::iterator itr = cell->_respawnObjects.find((Object*)c);
+	ObjectSet::iterator itr = cell->_respawnObjects.find(c);
 	if(itr != cell->_respawnObjects.end())
 	{
 		c->m_respawnCell= NULL;
@@ -1678,7 +1678,7 @@ void MapMgr::EventRespawnGameObject(GameObject * o, uint16 x, uint16 y)
 	if(cell == NULL)
 		return;
 
-	ObjectSet::iterator itr = cell->_respawnObjects.find((Object*)o);
+	ObjectSet::iterator itr = cell->_respawnObjects.find(o);
 	if(itr != cell->_respawnObjects.end())
 	{
 		o->m_respawnCell= NULL;

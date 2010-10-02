@@ -196,7 +196,7 @@ bool ChatHandler::HandleGPSCommand(const char* args, WorldSession *m_session)
 		}
 	}
 	else
-		obj = (Object*)m_session->GetPlayer();
+		obj = m_session->GetPlayer();
 
 	char buf[328];
 	AreaTable * at = dbcArea.LookupEntryForced(obj->GetMapMgr()->GetAreaID(obj->GetPositionX(), obj->GetPositionY()));

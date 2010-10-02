@@ -401,7 +401,7 @@ bool ChatHandler::HandleQuestFinishCommand(const char * args, WorldSession * m_s
 						{
 							if(pCreature->GetEntry() == giver_id) //found creature
 							{
-								quest_giver = (Object*)pCreature;
+								quest_giver = pCreature;
                                 guid = plr->GetMapMgr()->CreatureStorage.size();
 							}
 						}
