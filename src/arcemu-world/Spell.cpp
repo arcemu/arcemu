@@ -2591,8 +2591,6 @@ void Spell::HandleEffects(uint64 guid, uint32 i)
 		return;
 	}
 
-	uint32 id;
-
 	if (guid == 0)
 	{
 		unitTarget = NULL;
@@ -2676,6 +2674,8 @@ void Spell::HandleEffects(uint64 guid, uint32 i)
 		}
 	}
 
+	uint32 id = GetProto()->Effect[i];
+
 	damage = CalculateEffect(i,unitTarget);
 
 #ifdef GM_Z_DEBUG_DIRECTLY
@@ -2686,7 +2686,6 @@ void Spell::HandleEffects(uint64 guid, uint32 i)
 	}
 #endif
 
-	id = GetProto()->Effect[i];
 	if( id<TOTAL_SPELL_EFFECTS)
 	{
 		sLog.outDebug( "WORLD: Spell effect id = %u (%s), damage = %d", id, SpellEffectNames[id], damage);
