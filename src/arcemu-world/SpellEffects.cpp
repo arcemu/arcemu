@@ -2883,21 +2883,13 @@ void Spell::SpellEffectWeapon(uint32 i)
 	case 5009:  // wands
 		{
 			skill = SKILL_WANDS;
-			spell = SPELL_RANGED_GENERAL;
 		}break;
-		//case 3386:  // spears
-		//	skill = 0;   // ??!!
-		//	break;
 	default:
 		{
 			skill = 0;
 			sLog.outDebug("WARNING: Could not determine skill for spell id %d (SPELL_EFFECT_WEAPON)", this->GetProto()->Id);
 		}break;
 	}
-
-	// Don't add skills to players logging in.
-	/*if((GetProto()->Attributes & ATTRIBUTES_PASSIVE) && playerTarget->m_TeleportState == 1)
-	return;*/
 
 	if(skill)
 	{
