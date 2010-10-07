@@ -1980,7 +1980,7 @@ public:
 												/* If anyone wants to use this function, then leave this note!										 */
 			for(set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); ++itr) 
 			{ 
-				if (((spells[i].targettype == TARGET_RANDOM_FRIEND && isFriendly(_unit, (*itr))) || (spells[i].targettype != TARGET_RANDOM_FRIEND && isHostile(_unit, (*itr)) && (*itr) != _unit)) && ((*itr)->GetTypeId()== TYPEID_UNIT || (*itr)->GetTypeId() == TYPEID_PLAYER) && (*itr)->GetInstanceID() == _unit->GetInstanceID()) // isAttackable(_unit, (*itr)) && 
+				if (((spells[i].targettype == TARGET_RANDOM_FRIEND && isFriendly(_unit, (*itr))) || (spells[i].targettype != TARGET_RANDOM_FRIEND && isHostile(_unit, (*itr)) && (*itr) != _unit)) && ((*itr)->GetTypeId()== TYPEID_UNIT || (*itr)->GetTypeId() == TYPEID_PLAYER)) // isAttackable(_unit, (*itr)) && 
 				{
 					Unit* RandomTarget = NULL;
 					RandomTarget = TO_UNIT(*itr);
@@ -2024,7 +2024,7 @@ public:
 											/* If anyone wants to use this function, then leave this note!										 */
 		for(set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); ++itr) 
 		{ 
-			if (isHostile(_unit, (*itr)) && (*itr) != _unit && ((*itr)->GetTypeId()== TYPEID_UNIT || (*itr)->GetTypeId() == TYPEID_PLAYER) && (*itr)->GetInstanceID() == _unit->GetInstanceID())
+			if (isHostile(_unit, (*itr)) && (*itr) != _unit && ((*itr)->GetTypeId()== TYPEID_UNIT || (*itr)->GetTypeId() == TYPEID_PLAYER))
 			{
 				Unit* RandomTarget = NULL;
 				RandomTarget = TO_UNIT(*itr);
@@ -2176,9 +2176,10 @@ public:
 			{
 				for(set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); ++itr) 
 				{ 
-					if ((*itr) != _unit && (*itr)->GetTypeId()== TYPEID_UNIT && (*itr)->GetInstanceID() == _unit->GetInstanceID())
+					if ((*itr) != _unit && (*itr)->GetTypeId()== TYPEID_UNIT)
 					{
 						Creature* Check = NULL;
+						Check = TO_CREATURE(*itr);
 
 						if (Check->GetEntry() != 23132)
 							continue;
