@@ -1421,11 +1421,18 @@ bool ChatHandler::HandleFlyCommand(const char* args, WorldSession* m_session)
 
 bool ChatHandler::HandleDBReloadCommand(const char* args, WorldSession* m_session)
 {
+	
+	sWorld.SendWorldText("Support for reloading tables on the fly was disabled in Arcemu revision 3621. You are seeing this message because apparently reading SVN changelog or using forums search is way over the head of some of our users.", 0 );
+	return true;
+
+	/*
+
 	char str[200];
 	int ret = 0;
-
+	
 	if(!*args || strlen(args) < 3)
 		return false;
+
 
 	uint32 mstime = getMSTime();
 	snprintf(str, 200, "%s%s initiated server-side reload of table `%s`. The server may experience some lag while this occurs.",
@@ -1454,6 +1461,9 @@ bool ChatHandler::HandleDBReloadCommand(const char* args, WorldSession* m_sessio
 	sWorld.SendWorldText(str, 0);
 	sGMLog.writefromsession(m_session, "reloaded table %s", args);
 	return true;
+
+	*/
+
 }
 
 bool ChatHandler::HandleModifyLevelCommand(const char* args, WorldSession* m_session)

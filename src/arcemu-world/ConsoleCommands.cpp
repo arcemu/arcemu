@@ -393,6 +393,10 @@ bool HandleClearConsoleCommand(BaseConsole * pConsole, int argc, const char * ar
 
 bool HandleReloadConsoleCommand(BaseConsole * pConsole, int argc, const char *argv[])
 {
+	sWorld.SendWorldText("Support for reloading tables on the fly was disabled in Arcemu revision 3621. You are seeing this message because apparently reading SVN changelog or using forums search is way over the head of some of our users.", 0 );
+	return true;
+
+	/*
 	if( argc < 2 || strlen(argv[1]) < 3 )
 		return false;
 
@@ -432,6 +436,9 @@ bool HandleReloadConsoleCommand(BaseConsole * pConsole, int argc, const char *ar
 	sWorld.SendWorldText( str, 0 );
 
 	return true;
+
+	*/
+
 }
 bool HandleScriptEngineReloadCommand(BaseConsole *, int, const char* [])
 {
