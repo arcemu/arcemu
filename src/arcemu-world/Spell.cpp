@@ -4262,24 +4262,33 @@ void Spell::RemoveItems()
 			for ( uint32 x = 0; x < 5; x++ )
 			{
 				int32 charges = static_cast< int32 >( i_caster->GetCharges( x ) );
-				if ( charges < 0 ) // if expendable item && item has no charges remaining -> delete item
-				{
-					//I bet this crashed happened due to some script. Items without owners ?
-					if( i_caster->GetOwner() )
-						i_caster->GetOwner()->GetItemInterface()->SafeFullRemoveItemByGuid( i_caster->GetGUID() );
-					i_caster = NULL;
-					break;
-				}
-				else if ( charges > 0 || charges < -1 ) // remove 1 charge
-				{
-                    if( charges < 0 )
-                        i_caster->ModCharges( x, 1 );
-                    else
-                        i_caster->ModCharges( x, -1 );
 
-					i_caster->m_isDirty = true;
-					break;
+				if( charges == 0 )
+					continue;
+
+				bool Removable = false;
+
+				// Items with negative charges are items that disappear when they reach 0 charge.
+				if( charges < 0 )
+					Removable = true;
+
+				i_caster->m_isDirty = true;
+
+				if( Removable ){
+
+					// If we have only 1 charge left, it's pointless to decrease the charge, we will have to remove the item anyways, so who cares ^^
+					if( charges == -1 ){
+						i_caster->GetOwner()->GetItemInterface()->SafeFullRemoveItemByGuid( i_caster->GetGUID() );
+						i_caster = NULL;
+					}else{
+						i_caster->ModCharges( x, 1 );
+					}
+
+				}else{
+					i_caster->ModCharges( x, -1 );
 				}
+
+				break;
 			}
 		}
 	}

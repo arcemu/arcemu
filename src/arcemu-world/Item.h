@@ -179,9 +179,9 @@ public:
     void SetDuration( uint32 durationseconds ){ SetUInt32Value( ITEM_FIELD_DURATION, durationseconds ); }
     uint32 GetDuration(){ return GetUInt32Value( ITEM_FIELD_DURATION ); }
     
-    void SetCharges( uint32 index, uint32 charges ){ SetUInt32Value( ITEM_FIELD_SPELL_CHARGES + index, charges ); }
-    void ModCharges( uint32 index, int32 val ){ ModUnsigned32Value( ITEM_FIELD_SPELL_CHARGES + index, val ); }
-    uint32 GetCharges( uint32 index ){ return GetUInt32Value( ITEM_FIELD_SPELL_CHARGES + index ); }
+	void SetCharges( uint32 index, uint32 charges ){ SetUInt32Value( ITEM_FIELD_SPELL_CHARGES + index, charges ); }
+    void ModCharges( uint32 index, int32 val ){ ModSignedInt32Value( ITEM_FIELD_SPELL_CHARGES + index, val ); }
+	uint32 GetCharges( uint32 index ){ return GetUInt32Value( ITEM_FIELD_SPELL_CHARGES + index ); }
 
     /////////////////////////////////////////////////// FLAGS ////////////////////////////////////////////////////////////
 
