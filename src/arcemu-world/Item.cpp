@@ -168,16 +168,7 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light )
 		count = m_itemProto->MaxCount;
 	SetStackCount(  count);
 
-	// Again another for that did not indent to make it do anything for more than 
-	// one iteration x == 0 was the only one executed
-	for( uint32 x = 0; x < 5; x++ )
-	{
-		if( m_itemProto->Spells[x].Id )
-		{
-            SetCharges( x, fields[ 7 ].GetUInt32() );
-			break;
-		}
-	}
+	SetChargesLeft( fields[ 7 ].GetUInt32() );
 
 	SetUInt32Value( ITEM_FIELD_FLAGS, fields[8].GetUInt32() );
 	random_prop = fields[9].GetUInt32();

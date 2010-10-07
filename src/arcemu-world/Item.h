@@ -181,7 +181,7 @@ public:
     
 	void SetCharges( uint32 index, uint32 charges ){ SetUInt32Value( ITEM_FIELD_SPELL_CHARGES + index, charges ); }
     void ModCharges( uint32 index, int32 val ){ ModSignedInt32Value( ITEM_FIELD_SPELL_CHARGES + index, val ); }
-	uint32 GetCharges( uint32 index ){ return GetUInt32Value( ITEM_FIELD_SPELL_CHARGES + index ); }
+	uint32 GetCharges( uint32 index ) const{ return GetUInt32Value( ITEM_FIELD_SPELL_CHARGES + index ); }
 
     /////////////////////////////////////////////////// FLAGS ////////////////////////////////////////////////////////////
 
@@ -258,13 +258,46 @@ public:
 	void DeleteFromDB();
 	void DeleteMe();
     bool IsEligibleForRefund();
-	
-	uint32 GetChargesLeft()
-	{
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	//uint32 GetChargesLeft()
+	//  Finds an on-use spell on the item and returns the charges left
+	//
+	//Parameters
+	//  None
+	//
+	//Return Value
+	//  Returns the charges left if an on-use spell is found.
+	//  Returns 0 if no such spell found.
+	//
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+	uint32 GetChargesLeft() const{
 		for( uint32 x = 0; x < 5; x++ )
-			if( m_itemProto->Spells[x].Id )
-				return GetCharges(x);
+			if( ( m_itemProto->Spells[ x ].Id != 0 ) && ( m_itemProto->Spells[ x ].Trigger == USE ) )
+				return GetCharges( x );
+
 		return 0;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////
+	//void SetChargesLeft( uint32 charges )
+	//  Finds an on-use spell on the item, and sets the remaining charges.
+	//  If no such spell found, nothing changes.
+	//
+	//Parameters
+	//  uint32 charges  -  Number to be set as charges left.
+	//
+	//Return Value
+	//  None
+	//
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+	void SetChargesLeft( uint32 charges ){
+		for( uint32 x = 0; x < 5; x++ ){
+			if( ( m_itemProto->Spells[ x ].Id != 0 ) && ( m_itemProto->Spells[ x ].Trigger == USE ) ){
+				SetCharges( x, charges );
+				break;
+			}
+		}
 	}
 
 	time_t GetEnchantmentApplytime( uint32 slot )
