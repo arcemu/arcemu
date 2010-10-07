@@ -78,7 +78,7 @@ public:
 
     void AIUpdate()
     {
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
     }
 
@@ -187,7 +187,7 @@ public:
 
     void AIUpdate()
     {
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
     }
 
@@ -292,7 +292,7 @@ public:
 
     void AIUpdate()
     {
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
     }
 
@@ -413,7 +413,7 @@ public:
 
     void AIUpdate()
     {
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
     }
 
@@ -574,7 +574,7 @@ public:
 			_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "Guards, rally! Cut these invaders down!");	// not sure
 			_unit->PlaySoundToSet(11078);
 		}
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -790,7 +790,7 @@ public:
 			PlantColorSeedling();
 		}
 
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -1005,7 +1005,7 @@ public:
 			_unit->CastSpell(_unit, spells[2].info, spells[2].instant);
 		}
 
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -1203,7 +1203,7 @@ public:
 			TeleportTimer = 20;
 		}
 
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -1376,7 +1376,7 @@ public:
 			SummonSound();
 		}
 
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 

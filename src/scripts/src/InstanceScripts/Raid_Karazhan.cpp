@@ -429,7 +429,7 @@ public:
 			m_threattimer = 19;
 		}
 
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
 	}
 
@@ -620,7 +620,7 @@ public:
 
 	void AIUpdate()
 	{
-	float val = (float)RandomFloat(100.0f);
+	float val = RandomFloat(100.0f);
 		SpellCast(val);
 	}
 
@@ -1713,7 +1713,7 @@ public:
 		}
 		else 
 		{
-			float val = (float)RandomFloat(100.0f);
+			float val = RandomFloat(100.0f);
 			SpellCast(val);
 		}
 	}
@@ -2182,7 +2182,7 @@ public:
 
 	void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
 
 		uint32 t = (uint32)time(NULL);
@@ -2380,7 +2380,7 @@ public:
 
 	void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
 	}
 
@@ -2969,7 +2969,7 @@ public:
 		}
 		else
 		{
-			float val = (float)RandomFloat(100.0f);
+			float val = RandomFloat(100.0f);
 			SpellCast(val);
 		}
 	}
@@ -3006,7 +3006,7 @@ public:
 		}
 		else
 		{
-			float val = (float)RandomFloat(100.0f);
+			float val = RandomFloat(100.0f);
 			SpellCast(val);
 		}
 	}
@@ -3050,7 +3050,7 @@ public:
 		}
 		else
 		{
-			float val = (float)RandomFloat(100.0f);
+			float val = RandomFloat(100.0f);
 			SpellCast(val);
 		}
 	}
@@ -3468,7 +3468,7 @@ public:
 			TargetTable.clear();
 		}
 
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
 	}
 
@@ -3830,7 +3830,7 @@ public:
 			mTailSweepTimer = 25;
 		}
 
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
 	}
 
@@ -4069,7 +4069,7 @@ public:
 	}
     void SpawnTito()	// Lacking in collision checks!
 	{
-		float xchange  = (float)RandomFloat(15.0f);
+		float xchange  = RandomFloat(15.0f);
 		float distance = 15.0f;
 
 		float ychange = sqrt(distance*distance - xchange*xchange);
@@ -4086,7 +4086,7 @@ public:
 	}
 	void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
 
 		if(titoSpawned && !tito && titoDeadSpeech)
@@ -4267,7 +4267,7 @@ public:
 
 	void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
 	}
 
@@ -4418,7 +4418,7 @@ public:
 
 	void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
 	}
 
@@ -4568,7 +4568,7 @@ public:
 
 	void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
 	}
 
@@ -4781,7 +4781,7 @@ public:
 
 	void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
 	}
 
@@ -5021,7 +5021,7 @@ public:
 
 	void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
 	}
 
@@ -5204,7 +5204,7 @@ public:
 
 	void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
 	}
 

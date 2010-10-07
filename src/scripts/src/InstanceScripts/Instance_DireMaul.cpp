@@ -44,7 +44,7 @@ public:
 		     spells[0].cooldown = 10;
 		     spells[0].targettype = TARGET_ATTACKING;
 		     spells[0].instant = true;
-		     spells[0].perctrigger = (float)RandomFloat(20.0f);
+		     spells[0].perctrigger = RandomFloat(20.0f);
 		     spells[0].attackstoptimer = 3000;
 		     m_spellcheck[0] = true;
 
@@ -53,7 +53,7 @@ public:
 		     spells[1].cooldown = 10;
 		     spells[1].targettype = TARGET_ATTACKING;
 		     spells[1].instant = true;
-		     spells[1].perctrigger = (float)RandomFloat(20.0f);
+		     spells[1].perctrigger = RandomFloat(20.0f);
 		     spells[1].attackstoptimer = 3000;
 		     m_spellcheck[1] = true;
 
@@ -62,7 +62,7 @@ public:
 		     spells[2].cooldown = 10;
 		     spells[2].targettype = TARGET_ATTACKING;
 		     spells[2].instant = true;
-		     spells[2].perctrigger = (float)RandomFloat(20.0f);
+		     spells[2].perctrigger = RandomFloat(20.0f);
 		     spells[2].attackstoptimer = 3000;
 		     m_spellcheck[2] = true;
 
@@ -100,7 +100,7 @@ public:
 
     void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -175,7 +175,7 @@ public:
 		     spells[0].cooldown = 10;
 		     spells[0].targettype = TARGET_ATTACKING;
 		     spells[0].instant = true;
-		     spells[0].perctrigger = (float)RandomFloat(20.0f);
+		     spells[0].perctrigger = RandomFloat(20.0f);
 		     spells[0].attackstoptimer = 3000;
 		     m_spellcheck[0] = true;
 
@@ -184,7 +184,7 @@ public:
 		     spells[1].cooldown = 10;
 		     spells[1].targettype = TARGET_ATTACKING;
 		     spells[1].instant = true;
-		     spells[1].perctrigger = (float)RandomFloat(20.0f);
+		     spells[1].perctrigger = RandomFloat(20.0f);
 		     spells[1].attackstoptimer = 3000;
 		     m_spellcheck[1] = true;
 
@@ -222,7 +222,7 @@ public:
 
     void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -297,7 +297,7 @@ public:
 		     spells[0].cooldown = 10;
 		     spells[0].targettype = TARGET_ATTACKING;
 		     spells[0].instant = true;
-		     spells[0].perctrigger = (float)RandomFloat(20.0f);
+		     spells[0].perctrigger = RandomFloat(20.0f);
 		     spells[0].attackstoptimer = 3000;
 		     m_spellcheck[0] = true;
 
@@ -306,7 +306,7 @@ public:
 		     spells[1].cooldown = 10;
 		     spells[1].targettype = TARGET_ATTACKING;
 		     spells[1].instant = true;
-		     spells[1].perctrigger = (float)RandomFloat(20.0f);
+		     spells[1].perctrigger = RandomFloat(20.0f);
 		     spells[1].attackstoptimer = 3000;
 		     m_spellcheck[1] = true;
 
@@ -344,7 +344,7 @@ public:
 
     void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -419,7 +419,7 @@ public:
 		     spells[0].cooldown = 10;
 		     spells[0].targettype = TARGET_ATTACKING;
 		     spells[0].instant = true;
-		     spells[0].perctrigger = (float)RandomFloat(20.0f);
+		     spells[0].perctrigger = RandomFloat(20.0f);
 		     spells[0].attackstoptimer = 3000;
 		     m_spellcheck[0] = true;
 
@@ -428,7 +428,7 @@ public:
 		     spells[1].cooldown = 10;
 		     spells[1].targettype = TARGET_ATTACKING;
 		     spells[1].instant = true;
-		     spells[1].perctrigger = (float)RandomFloat(20.0f);
+		     spells[1].perctrigger = RandomFloat(20.0f);
 		     spells[1].attackstoptimer = 3000;
 		     m_spellcheck[1] = true;
 
@@ -437,7 +437,7 @@ public:
 		     spells[2].cooldown = 10;
 		     spells[2].targettype = TARGET_ATTACKING;
 		     spells[2].instant = true;
-		     spells[2].perctrigger = (float)RandomFloat(20.0f);
+		     spells[2].perctrigger = RandomFloat(20.0f);
 		     spells[2].attackstoptimer = 3000;
 		     m_spellcheck[2] = true;
 
@@ -446,7 +446,7 @@ public:
 		     spells[3].cooldown = 10;
 		     spells[3].targettype = TARGET_ATTACKING;
 		     spells[3].instant = true;
-		     spells[3].perctrigger = (float)RandomFloat(20.0f);
+		     spells[3].perctrigger = RandomFloat(20.0f);
 		     spells[3].attackstoptimer = 3000;
 		     m_spellcheck[3] = true;
 
@@ -484,7 +484,7 @@ public:
 
     void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -559,7 +559,7 @@ public:
 		     spells[0].cooldown = 10;
 		     spells[0].targettype = TARGET_ATTACKING;
 		     spells[0].instant = true;
-		     spells[0].perctrigger = (float)RandomFloat(20.0f);
+		     spells[0].perctrigger = RandomFloat(20.0f);
 		     spells[0].attackstoptimer = 3000;
 		     m_spellcheck[0] = true;
 
@@ -568,7 +568,7 @@ public:
 		     spells[1].cooldown = 10;
 		     spells[1].targettype = TARGET_ATTACKING;
 		     spells[1].instant = true;
-		     spells[1].perctrigger = (float)RandomFloat(20.0f);
+		     spells[1].perctrigger = RandomFloat(20.0f);
 		     spells[1].attackstoptimer = 3000;
 		     m_spellcheck[1] = true;
 
@@ -577,7 +577,7 @@ public:
 		     spells[2].cooldown = 10;
 		     spells[2].targettype = TARGET_ATTACKING;
 		     spells[2].instant = true;
-		     spells[2].perctrigger = (float)RandomFloat(20.0f);
+		     spells[2].perctrigger = RandomFloat(20.0f);
 		     spells[2].attackstoptimer = 3000;
 		     m_spellcheck[2] = true;
 
@@ -615,7 +615,7 @@ public:
 
     void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -689,7 +689,7 @@ public:
 		     spells[0].cooldown = 10;
 		     spells[0].targettype = TARGET_ATTACKING;
 		     spells[0].instant = true;
-		     spells[0].perctrigger = (float)RandomFloat(20.0f);
+		     spells[0].perctrigger = RandomFloat(20.0f);
 		     spells[0].attackstoptimer = 3000;
 		     m_spellcheck[0] = true;
 
@@ -698,7 +698,7 @@ public:
 		     spells[1].cooldown = 10;
 		     spells[1].targettype = TARGET_ATTACKING;
 		     spells[1].instant = true;
-		     spells[1].perctrigger = (float)RandomFloat(20.0f);
+		     spells[1].perctrigger = RandomFloat(20.0f);
 		     spells[1].attackstoptimer = 3000;
 		     m_spellcheck[1] = true;
 
@@ -707,7 +707,7 @@ public:
 		     spells[2].cooldown = 10;
 		     spells[2].targettype = TARGET_ATTACKING;
 		     spells[2].instant = true;
-		     spells[2].perctrigger = (float)RandomFloat(20.0f);
+		     spells[2].perctrigger = RandomFloat(20.0f);
 		     spells[2].attackstoptimer = 3000;
 		     m_spellcheck[2] = true;
 
@@ -745,7 +745,7 @@ public:
 
     void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -819,7 +819,7 @@ public:
 		     spells[0].cooldown = 10;
 		     spells[0].targettype = TARGET_ATTACKING;
 		     spells[0].instant = true;
-		     spells[0].perctrigger = (float)RandomFloat(20.0f);
+		     spells[0].perctrigger = RandomFloat(20.0f);
 		     spells[0].attackstoptimer = 3000;
 		     m_spellcheck[0] = true;
 
@@ -828,7 +828,7 @@ public:
 		     spells[1].cooldown = 10;
 		     spells[1].targettype = TARGET_ATTACKING;
 		     spells[1].instant = true;
-		     spells[1].perctrigger = (float)RandomFloat(20.0f);
+		     spells[1].perctrigger = RandomFloat(20.0f);
 		     spells[1].attackstoptimer = 3000;
 		     m_spellcheck[1] = true;
 
@@ -837,7 +837,7 @@ public:
 		     spells[2].cooldown = 10;
 		     spells[2].targettype = TARGET_ATTACKING;
 		     spells[2].instant = true;
-		     spells[2].perctrigger = (float)RandomFloat(20.0f);
+		     spells[2].perctrigger = RandomFloat(20.0f);
 		     spells[2].attackstoptimer = 3000;
 		     m_spellcheck[2] = true;
 
@@ -875,7 +875,7 @@ public:
 
     void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -944,7 +944,7 @@ public:
 	     spell.cooldown = 10;
 	     spell.targettype = TARGET_ATTACKING;
 	     spell.instant = true;
-	     spell.perctrigger = (float)RandomFloat(20.0f);
+	     spell.perctrigger = RandomFloat(20.0f);
 	     spell.attackstoptimer = 3000;
 	     m_spellcheck = true;
 
@@ -981,7 +981,7 @@ public:
 
     void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -1042,7 +1042,7 @@ public:
 		     spells[0].cooldown = 10;
 		     spells[0].targettype = TARGET_ATTACKING;
 		     spells[0].instant = true;
-		     spells[0].perctrigger = (float)RandomFloat(20.0f);
+		     spells[0].perctrigger = RandomFloat(20.0f);
 		     spells[0].attackstoptimer = 3000;
 		     m_spellcheck[0] = true;
 
@@ -1051,7 +1051,7 @@ public:
 		     spells[1].cooldown = 10;
 		     spells[1].targettype = TARGET_ATTACKING;
 		     spells[1].instant = true;
-		     spells[1].perctrigger = (float)RandomFloat(20.0f);
+		     spells[1].perctrigger = RandomFloat(20.0f);
 		     spells[1].attackstoptimer = 3000;
 		     m_spellcheck[1] = true;
 
@@ -1060,7 +1060,7 @@ public:
 		     spells[2].cooldown = 10;
 		     spells[2].targettype = TARGET_ATTACKING;
 		     spells[2].instant = true;
-		     spells[2].perctrigger = (float)RandomFloat(20.0f);
+		     spells[2].perctrigger = RandomFloat(20.0f);
 		     spells[2].attackstoptimer = 3000;
 		     m_spellcheck[2] = true;
 
@@ -1069,7 +1069,7 @@ public:
 		     spells[3].cooldown = 10;
 		     spells[3].targettype = TARGET_ATTACKING;
 		     spells[3].instant = true;
-		     spells[3].perctrigger = (float)RandomFloat(20.0f);
+		     spells[3].perctrigger = RandomFloat(20.0f);
 		     spells[3].attackstoptimer = 3000;
 		     m_spellcheck[3] = true;
 
@@ -1107,7 +1107,7 @@ public:
 
     void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -1182,7 +1182,7 @@ public:
 		     spells[0].cooldown = 10;
 		     spells[0].targettype = TARGET_ATTACKING;
 		     spells[0].instant = true;
-		     spells[0].perctrigger = (float)RandomFloat(20.0f);
+		     spells[0].perctrigger = RandomFloat(20.0f);
 		     spells[0].attackstoptimer = 3000;
 		     m_spellcheck[0] = true;
 
@@ -1191,7 +1191,7 @@ public:
 		     spells[1].cooldown = 10;
 		     spells[1].targettype = TARGET_ATTACKING;
 		     spells[1].instant = true;
-		     spells[1].perctrigger = (float)RandomFloat(20.0f);
+		     spells[1].perctrigger = RandomFloat(20.0f);
 		     spells[1].attackstoptimer = 3000;
 		     m_spellcheck[1] = true;
 
@@ -1200,7 +1200,7 @@ public:
 		     spells[2].cooldown = 10;
 		     spells[2].targettype = TARGET_ATTACKING;
 		     spells[2].instant = true;
-		     spells[2].perctrigger = (float)RandomFloat(20.0f);
+		     spells[2].perctrigger = RandomFloat(20.0f);
 		     spells[2].attackstoptimer = 3000;
 		     m_spellcheck[2] = true;
 
@@ -1238,7 +1238,7 @@ public:
 
     void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -1307,7 +1307,7 @@ public:
 	     spell.cooldown = 10;
 	     spell.targettype = TARGET_ATTACKING;
 	     spell.instant = true;
-	     spell.perctrigger = (float)RandomFloat(20.0f);
+	     spell.perctrigger = RandomFloat(20.0f);
 	     spell.attackstoptimer = 3000;
 	     m_spellcheck = true;
 
@@ -1344,7 +1344,7 @@ public:
 
     void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -1404,7 +1404,7 @@ public:
 		     spells[0].cooldown = 10;
 		     spells[0].targettype = TARGET_ATTACKING;
 		     spells[0].instant = true;
-		     spells[0].perctrigger = (float)RandomFloat(20.0f);
+		     spells[0].perctrigger = RandomFloat(20.0f);
 		     spells[0].attackstoptimer = 3000;
 		     m_spellcheck[0] = true;
 
@@ -1413,7 +1413,7 @@ public:
 		     spells[1].cooldown = 10;
 		     spells[1].targettype = TARGET_ATTACKING;
 		     spells[1].instant = true;
-		     spells[1].perctrigger = (float)RandomFloat(20.0f);
+		     spells[1].perctrigger = RandomFloat(20.0f);
 		     spells[1].attackstoptimer = 3000;
 		     m_spellcheck[1] = true;
 
@@ -1451,7 +1451,7 @@ public:
 
     void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -1526,7 +1526,7 @@ public:
 		     spells[0].cooldown = 10;
 		     spells[0].targettype = TARGET_ATTACKING;
 		     spells[0].instant = true;
-		     spells[0].perctrigger = (float)RandomFloat(20.0f);
+		     spells[0].perctrigger = RandomFloat(20.0f);
 		     spells[0].attackstoptimer = 3000;
 		     m_spellcheck[0] = true;
 
@@ -1535,7 +1535,7 @@ public:
 		     spells[1].cooldown = 10;
 		     spells[1].targettype = TARGET_ATTACKING;
 		     spells[1].instant = true;
-		     spells[1].perctrigger = (float)RandomFloat(20.0f);
+		     spells[1].perctrigger = RandomFloat(20.0f);
 		     spells[1].attackstoptimer = 3000;
 		     m_spellcheck[1] = true;
 
@@ -1573,7 +1573,7 @@ public:
 
     void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -1642,7 +1642,7 @@ public:
 	     spell.cooldown = 10;
 	     spell.targettype = TARGET_ATTACKING;
 	     spell.instant = true;
-	     spell.perctrigger = (float)RandomFloat(20.0f);
+	     spell.perctrigger = RandomFloat(20.0f);
 	     spell.attackstoptimer = 3000;
 	     m_spellcheck = true;
   }
@@ -1678,7 +1678,7 @@ public:
 
     void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -1737,7 +1737,7 @@ public:
 		     spells[0].cooldown = 10;
 		     spells[0].targettype = TARGET_ATTACKING;
 		     spells[0].instant = true;
-		     spells[0].perctrigger = (float)RandomFloat(20.0f);
+		     spells[0].perctrigger = RandomFloat(20.0f);
 		     spells[0].attackstoptimer = 3000;
 		     m_spellcheck[0] = true;
 
@@ -1746,7 +1746,7 @@ public:
 		     spells[1].cooldown = 10;
 		     spells[1].targettype = TARGET_ATTACKING;
 		     spells[1].instant = true;
-		     spells[1].perctrigger = (float)RandomFloat(20.0f);
+		     spells[1].perctrigger = RandomFloat(20.0f);
 		     spells[1].attackstoptimer = 3000;
 		     m_spellcheck[1] = true;
 
@@ -1755,7 +1755,7 @@ public:
 		     spells[2].cooldown = 10;
 		     spells[2].targettype = TARGET_ATTACKING;
 		     spells[2].instant = true;
-		     spells[2].perctrigger = (float)RandomFloat(20.0f);
+		     spells[2].perctrigger = RandomFloat(20.0f);
 		     spells[2].attackstoptimer = 3000;
 		     m_spellcheck[2] = true;
 
@@ -1793,7 +1793,7 @@ public:
 
     void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -1867,7 +1867,7 @@ public:
 		     spells[0].cooldown = 10;
 		     spells[0].targettype = TARGET_ATTACKING;
 		     spells[0].instant = true;
-		     spells[0].perctrigger = (float)RandomFloat(20.0f);
+		     spells[0].perctrigger = RandomFloat(20.0f);
 		     spells[0].attackstoptimer = 3000;
 		     m_spellcheck[0] = true;
 
@@ -1876,7 +1876,7 @@ public:
 		     spells[1].cooldown = 10;
 		     spells[1].targettype = TARGET_ATTACKING;
 		     spells[1].instant = true;
-		     spells[1].perctrigger = (float)RandomFloat(20.0f);
+		     spells[1].perctrigger = RandomFloat(20.0f);
 		     spells[1].attackstoptimer = 3000;
 		     m_spellcheck[1] = true;
 
@@ -1914,7 +1914,7 @@ public:
 
     void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -1988,7 +1988,7 @@ public:
 		     spells[0].cooldown = 10;
 		     spells[0].targettype = TARGET_ATTACKING;
 		     spells[0].instant = true;
-		     spells[0].perctrigger = (float)RandomFloat(20.0f);
+		     spells[0].perctrigger = RandomFloat(20.0f);
 		     spells[0].attackstoptimer = 3000;
 		     m_spellcheck[0] = true;
 
@@ -1997,7 +1997,7 @@ public:
 		     spells[1].cooldown = 10;
 		     spells[1].targettype = TARGET_ATTACKING;
 		     spells[1].instant = true;
-		     spells[1].perctrigger = (float)RandomFloat(20.0f);
+		     spells[1].perctrigger = RandomFloat(20.0f);
 		     spells[1].attackstoptimer = 3000;
 		     m_spellcheck[1] = true;
 
@@ -2006,7 +2006,7 @@ public:
 		     spells[2].cooldown = 10;
 		     spells[2].targettype = TARGET_ATTACKING;
 		     spells[2].instant = true;
-		     spells[2].perctrigger = (float)RandomFloat(20.0f);
+		     spells[2].perctrigger = RandomFloat(20.0f);
 		     spells[2].attackstoptimer = 3000;
 		     m_spellcheck[2] = true;
 
@@ -2044,7 +2044,7 @@ public:
 
     void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -2119,7 +2119,7 @@ public:
 		     spells[0].cooldown = 10;
 		     spells[0].targettype = TARGET_ATTACKING;
 		     spells[0].instant = true;
-		     spells[0].perctrigger = (float)RandomFloat(20.0f);
+		     spells[0].perctrigger = RandomFloat(20.0f);
 		     spells[0].attackstoptimer = 3000;
 		     m_spellcheck[0] = true;
 
@@ -2128,7 +2128,7 @@ public:
 		     spells[1].cooldown = 10;
 		     spells[1].targettype = TARGET_ATTACKING;
 		     spells[1].instant = true;
-		     spells[1].perctrigger = (float)RandomFloat(20.0f);
+		     spells[1].perctrigger = RandomFloat(20.0f);
 		     spells[1].attackstoptimer = 3000;
 		     m_spellcheck[1] = true;
 
@@ -2166,7 +2166,7 @@ public:
 
     void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -2241,7 +2241,7 @@ public:
 		     spells[0].cooldown = 10;
 		     spells[0].targettype = TARGET_ATTACKING;
 		     spells[0].instant = true;
-		     spells[0].perctrigger = (float)RandomFloat(20.0f);
+		     spells[0].perctrigger = RandomFloat(20.0f);
 		     spells[0].attackstoptimer = 3000;
 		     m_spellcheck[0] = true;
 
@@ -2250,7 +2250,7 @@ public:
 		     spells[1].cooldown = 10;
 		     spells[1].targettype = TARGET_ATTACKING;
 		     spells[1].instant = true;
-		     spells[1].perctrigger = (float)RandomFloat(20.0f);
+		     spells[1].perctrigger = RandomFloat(20.0f);
 		     spells[1].attackstoptimer = 3000;
 		     m_spellcheck[1] = true;
 
@@ -2259,7 +2259,7 @@ public:
 		     spells[2].cooldown = 10;
 		     spells[2].targettype = TARGET_ATTACKING;
 		     spells[2].instant = true;
-		     spells[2].perctrigger = (float)RandomFloat(20.0f);
+		     spells[2].perctrigger = RandomFloat(20.0f);
 		     spells[2].attackstoptimer = 3000;
 		     m_spellcheck[2] = true;
 
@@ -2300,7 +2300,7 @@ public:
 
     void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -2375,7 +2375,7 @@ public:
 		     spells[0].cooldown = 10;
 		     spells[0].targettype = TARGET_ATTACKING;
 		     spells[0].instant = true;
-		     spells[0].perctrigger = (float)RandomFloat(20.0f);
+		     spells[0].perctrigger = RandomFloat(20.0f);
 		     spells[0].attackstoptimer = 3000;
 		     m_spellcheck[0] = true;
 
@@ -2384,7 +2384,7 @@ public:
 		     spells[1].cooldown = 10;
 		     spells[1].targettype = TARGET_ATTACKING;
 		     spells[1].instant = true;
-		     spells[1].perctrigger = (float)RandomFloat(20.0f);
+		     spells[1].perctrigger = RandomFloat(20.0f);
 		     spells[1].attackstoptimer = 3000;
 		     m_spellcheck[1] = true;
 
@@ -2422,7 +2422,7 @@ public:
 
     void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -2497,7 +2497,7 @@ public:
 		     spells[0].cooldown = 10;
 		     spells[0].targettype = TARGET_ATTACKING;
 		     spells[0].instant = true;
-		     spells[0].perctrigger = (float)RandomFloat(20.0f);
+		     spells[0].perctrigger = RandomFloat(20.0f);
 		     spells[0].attackstoptimer = 3000;
 		     m_spellcheck[0] = true;
 
@@ -2506,7 +2506,7 @@ public:
 		     spells[1].cooldown = 10;
 		     spells[1].targettype = TARGET_ATTACKING;
 		     spells[1].instant = true;
-		     spells[1].perctrigger = (float)RandomFloat(20.0f);
+		     spells[1].perctrigger = RandomFloat(20.0f);
 		     spells[1].attackstoptimer = 3000;
 		     m_spellcheck[1] = true;
 
@@ -2515,7 +2515,7 @@ public:
 		     spells[2].cooldown = 10;
 		     spells[2].targettype = TARGET_ATTACKING;
 		     spells[2].instant = true;
-		     spells[2].perctrigger = (float)RandomFloat(20.0f);
+		     spells[2].perctrigger = RandomFloat(20.0f);
 		     spells[2].attackstoptimer = 3000;
 		     m_spellcheck[2] = true;
 
@@ -2524,7 +2524,7 @@ public:
 		     spells[3].cooldown = 10;
 		     spells[3].targettype = TARGET_ATTACKING;
 		     spells[3].instant = true;
-		     spells[3].perctrigger = (float)RandomFloat(20.0f);
+		     spells[3].perctrigger = RandomFloat(20.0f);
 		     spells[3].attackstoptimer = 3000;
 		     m_spellcheck[3] = true;
 
@@ -2562,7 +2562,7 @@ public:
 
     void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -2637,7 +2637,7 @@ public:
 		     spells[0].cooldown = 10;
 		     spells[0].targettype = TARGET_ATTACKING;
 		     spells[0].instant = true;
-		     spells[0].perctrigger = (float)RandomFloat(20.0f);
+		     spells[0].perctrigger = RandomFloat(20.0f);
 		     spells[0].attackstoptimer = 3000;
 		     m_spellcheck[0] = true;
 
@@ -2646,7 +2646,7 @@ public:
 		     spells[1].cooldown = 10;
 		     spells[1].targettype = TARGET_ATTACKING;
 		     spells[1].instant = true;
-		     spells[1].perctrigger = (float)RandomFloat(20.0f);
+		     spells[1].perctrigger = RandomFloat(20.0f);
 		     spells[1].attackstoptimer = 3000;
 		     m_spellcheck[1] = true;
 
@@ -2684,7 +2684,7 @@ public:
 
     void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -2759,7 +2759,7 @@ public:
 		     spells[0].cooldown = 10;
 		     spells[0].targettype = TARGET_ATTACKING;
 		     spells[0].instant = true;
-		     spells[0].perctrigger = (float)RandomFloat(20.0f);
+		     spells[0].perctrigger = RandomFloat(20.0f);
 		     spells[0].attackstoptimer = 3000;
 		     m_spellcheck[0] = true;
 
@@ -2768,7 +2768,7 @@ public:
 		     spells[1].cooldown = 10;
 		     spells[1].targettype = TARGET_ATTACKING;
 		     spells[1].instant = true;
-		     spells[1].perctrigger = (float)RandomFloat(20.0f);
+		     spells[1].perctrigger = RandomFloat(20.0f);
 		     spells[1].attackstoptimer = 3000;
 		     m_spellcheck[1] = true;
 
@@ -2777,7 +2777,7 @@ public:
 		     spells[2].cooldown = 10;
 		     spells[2].targettype = TARGET_ATTACKING;
 		     spells[2].instant = true;
-		     spells[2].perctrigger = (float)RandomFloat(20.0f);
+		     spells[2].perctrigger = RandomFloat(20.0f);
 		     spells[2].attackstoptimer = 3000;
 		     m_spellcheck[2] = true;
 
@@ -2815,7 +2815,7 @@ public:
 
     void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -2890,7 +2890,7 @@ public:
 		     spells[0].cooldown = 10;
 		     spells[0].targettype = TARGET_ATTACKING;
 		     spells[0].instant = true;
-		     spells[0].perctrigger = (float)RandomFloat(20.0f);
+		     spells[0].perctrigger = RandomFloat(20.0f);
 		     spells[0].attackstoptimer = 3000;
 		     m_spellcheck[0] = true;
 
@@ -2899,7 +2899,7 @@ public:
 		     spells[1].cooldown = 10;
 		     spells[1].targettype = TARGET_ATTACKING;
 		     spells[1].instant = true;
-		     spells[1].perctrigger = (float)RandomFloat(20.0f);
+		     spells[1].perctrigger = RandomFloat(20.0f);
 		     spells[1].attackstoptimer = 3000;
 		     m_spellcheck[1] = true;
 
@@ -2937,7 +2937,7 @@ public:
 
     void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 

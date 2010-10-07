@@ -325,7 +325,7 @@ public:
 
     void AIUpdate()
     {
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
     }
 
@@ -557,7 +557,7 @@ public:
 			return;
 		}
 
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
 	}
 
@@ -780,7 +780,7 @@ public:
 		if (MarkDeto)
 			MarkCast();
 
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
     }
 
@@ -1029,7 +1029,7 @@ public:
 			return;
 		}
 
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
 	}
 
@@ -1228,7 +1228,7 @@ public:
 					float x = 0.0f;
 					float y = 0.0f;
 
-					float xchange = (float)RandomFloat(movedist);
+					float xchange = RandomFloat(movedist);
 					float ychange = sqrt(movedist*movedist - xchange*xchange);
 
 					if (RandomUInt(2) == 1)
@@ -1515,7 +1515,7 @@ public:
 			}
 		}
 */
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 

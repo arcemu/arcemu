@@ -301,7 +301,7 @@ void OnTargetDied(Unit* mTarget)
 if (_unit->GetHealthPct() > 0)    
         {
 int RandomSpeach;
-(float)RandomFloat(1000);
+RandomFloat(1000);
 RandomSpeach=rand()%2;
 switch (RandomSpeach)
 {
@@ -348,7 +348,7 @@ Timer = Timer + 1;
 
 else
 {*/
-float val = (float)RandomFloat(100.0f);
+float val = RandomFloat(100.0f);
 SpellCast(val);
 //}
 }
@@ -472,7 +472,7 @@ void OnTargetDied(Unit* mTarget)
 if (_unit->GetHealthPct() > 0)    
         {
 int RandomSpeach;
-(float)RandomFloat(1000);
+RandomFloat(1000);
 RandomSpeach=rand()%2;
 switch (RandomSpeach)
 {
@@ -550,7 +550,7 @@ void AIUpdate()
 
 	else
 	{*/
-	float val = (float)RandomFloat(100.0f);
+	float val = RandomFloat(100.0f);
 	SpellCast(val);
 	//}
 }
@@ -653,7 +653,7 @@ void OnTargetDied(Unit* mTarget)
 if (_unit->GetHealthPct() > 0)    
         {
 int RandomSpeach;
-(float)RandomFloat(1000);
+RandomFloat(1000);
 RandomSpeach=rand()%2;
 switch (RandomSpeach)
 {
@@ -693,7 +693,7 @@ if (Timer == 20000)
 
 else
 {
-float val = (float)RandomFloat(100.0f);
+float val = RandomFloat(100.0f);
 SpellCast(val);
 }
 }

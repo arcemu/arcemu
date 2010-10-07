@@ -1276,7 +1276,7 @@ public:
 
     void AIUpdate()
     {
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
     }
 
@@ -1376,7 +1376,7 @@ public:
 
     void AIUpdate()
     {
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
     }
 
@@ -1482,7 +1482,7 @@ public:
 
     void AIUpdate()
     {
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
     }
 
@@ -1595,7 +1595,7 @@ public:
 
     void AIUpdate()
     {
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
     }
 
@@ -1713,7 +1713,7 @@ public:
 
     void AIUpdate()
     {
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
     }
 
@@ -1814,7 +1814,7 @@ public:
 
     void AIUpdate()
     {
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
     }
 
@@ -1914,7 +1914,7 @@ public:
 
     void AIUpdate()
     {
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
     }
 
@@ -2037,7 +2037,7 @@ public:
 
     void AIUpdate()
     {
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
     }
 
@@ -2193,7 +2193,7 @@ public:
 			_unit->PlaySoundToSet(8902);
 		}
 
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
     }
 
@@ -2373,7 +2373,7 @@ public:
 			_unit->PlaySoundToSet(8895);
 		}
 
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
     }
 
@@ -2548,7 +2548,7 @@ public:
 			_unit->PlaySoundToSet(8916);
 		}
 
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
     }
 
@@ -3067,7 +3067,7 @@ public:
 			}
 		}
 
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
 	}
 
@@ -3999,13 +3999,13 @@ public:
 			}
 		}
 
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
 	}
 
 	void PhaseThree()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
 	}
 
@@ -4222,7 +4222,7 @@ public:
 			{
 				if (_unit->GetPositionX() == Waves[i].x && _unit->GetPositionY() == Waves[i].y && _unit->GetPositionZ() == Waves[i].z)
 				{
-					float xchange  = (float)RandomFloat(10.0f);
+					float xchange  = RandomFloat(10.0f);
 					float distance = 10.0f;
 
 					float ychange = sqrt(distance*distance - xchange*xchange);
@@ -4345,7 +4345,7 @@ public:
 			{
 				if (_unit->GetPositionX() == Waves[i].x && _unit->GetPositionY() == Waves[i].y && _unit->GetPositionZ() == Waves[i].z)
 				{
-					float xchange  = (float)RandomFloat(10.0f);
+					float xchange  = RandomFloat(10.0f);
 					float distance = 10.0f;
 
 					float ychange = sqrt(distance*distance - xchange*xchange);
@@ -4365,7 +4365,7 @@ public:
 			OnStart = true;
 		}
 
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -4507,7 +4507,7 @@ public:
 			{
 				if (_unit->GetPositionX() == Waves[i].x && _unit->GetPositionY() == Waves[i].y && _unit->GetPositionZ() == Waves[i].z)
 				{
-					float xchange  = (float)RandomFloat(10.0f);
+					float xchange  = RandomFloat(10.0f);
 					float distance = 10.0f;
 
 					float ychange = sqrt(distance*distance - xchange*xchange);
@@ -4527,7 +4527,7 @@ public:
 			OnStart = true;
 		}
 
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -4660,7 +4660,7 @@ public:
 			{
 				if (_unit->GetPositionX() == Guardians[i].x && _unit->GetPositionY() == Guardians[i].y && _unit->GetPositionZ() == Guardians[i].z)
 				{
-					float xchange  = (float)RandomFloat(10.0f);
+					float xchange  = RandomFloat(10.0f);
 					float distance = 10.0f;
 
 					float ychange = sqrt(distance*distance - xchange*xchange);

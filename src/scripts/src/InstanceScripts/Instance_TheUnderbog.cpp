@@ -103,7 +103,7 @@ public:
 
     void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -235,7 +235,7 @@ public:
 
     void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -359,7 +359,7 @@ public:
 
     void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -468,7 +468,7 @@ public:
 
     void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -588,7 +588,7 @@ public:
 
     void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -723,7 +723,7 @@ public:
 
     void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -867,7 +867,7 @@ public:
 
     void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -992,7 +992,7 @@ public:
 
     void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -1101,7 +1101,7 @@ public:
 
     void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -1229,7 +1229,7 @@ public:
 
     void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -1367,7 +1367,7 @@ public:
 
     void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -1532,7 +1532,7 @@ public:
 
     void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -1672,7 +1672,7 @@ public:
 
     void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -1796,7 +1796,7 @@ public:
 
     void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -1950,7 +1950,7 @@ public:
 
     void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -2060,7 +2060,7 @@ public:
 
     void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -2153,7 +2153,7 @@ public:
 
     void AIUpdate()
 	{
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -2424,7 +2424,7 @@ public:
 			return;
 		}
 
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -2559,7 +2559,7 @@ public:
 
     void AIUpdate()
     {
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 
@@ -2840,7 +2840,7 @@ public:
 
 			else if (_unit->GetDistance2dSq(target) < 100.0f)
 			{
-				float val = (float)RandomFloat(100.0f);
+				float val = RandomFloat(100.0f);
 				SpellCast(val);
 			}
 		}
@@ -2997,7 +2997,7 @@ public:
 			spells[3].casttime = (uint32)time(NULL) + spells[3].cooldown + rand()%6;
 		}
 
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
     }
 

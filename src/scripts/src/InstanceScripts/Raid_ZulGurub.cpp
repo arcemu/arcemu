@@ -127,7 +127,7 @@ public:
 			m_spellcheck[0] = false;
 			_unit->RemoveAura(TRANSFORM_BAT);
 		}
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
     }
 
@@ -270,7 +270,7 @@ public:
             m_spellcheck[0] = false;
 		}
 
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
     }
 

@@ -99,7 +99,7 @@ public:
 
     void AIUpdate()
     {
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
     }
 
@@ -215,7 +215,7 @@ public:
 
     void AIUpdate()
     {
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
     }
 
@@ -331,7 +331,7 @@ public:
 
     void AIUpdate()
     {
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
     }
 
@@ -465,7 +465,7 @@ public:
 			HasSummoned = true;
 		}
 		
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
     }
 
@@ -581,7 +581,7 @@ public:
 
     void AIUpdate()
     {
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
     }
 
@@ -724,7 +724,7 @@ public:
 
     void AIUpdate()
     {
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
     }
 
@@ -839,7 +839,7 @@ public:
 
     void AIUpdate()
     {
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
     }
 
@@ -975,7 +975,7 @@ public:
 
     void AIUpdate()
     {
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
     }
 
@@ -1097,7 +1097,7 @@ public:
 
     void AIUpdate()
     {
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
     }
 
@@ -1240,7 +1240,7 @@ public:
 
     void AIUpdate()
     {
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
     }
 
@@ -1355,7 +1355,7 @@ public:
 
     void AIUpdate()
     {
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
     }
 
@@ -1482,7 +1482,7 @@ public:
 			HasSummoned = true;
 		}
 
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
     }
 
@@ -1631,7 +1631,7 @@ public:
 			HasSummoned = true;	//Indicates that the spawns have been summoned
 		}
 		
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
     }
 

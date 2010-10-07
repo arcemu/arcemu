@@ -104,7 +104,7 @@ public:
 		}
 		else
 		{
-			float val = (float)RandomFloat(100.0f);
+			float val = RandomFloat(100.0f);
 			SpellCast(val);
 		}
     }
@@ -228,7 +228,7 @@ public:
 
 	void AIUpdate()
     {
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
     }
     void SpellCast(float val)
@@ -342,7 +342,7 @@ public:
 
 	void AIUpdate()
     {
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
     }
     void SpellCast(float val)
@@ -463,7 +463,7 @@ public:
 
 	void AIUpdate()
     {
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
     }
     void SpellCast(float val)
@@ -592,7 +592,7 @@ public:
 
 	void AIUpdate()
     {
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
     }
     void SpellCast(float val)
@@ -698,7 +698,7 @@ public:
 
 	void AIUpdate()
     {
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
     }
     void SpellCast(float val)
@@ -806,7 +806,7 @@ public:
 
 	void AIUpdate()
     {
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
     }
     void SpellCast(float val)
@@ -923,7 +923,7 @@ public:
 			_unit->CastSpell(_unit, spells[2].info, spells[2].instant);
 			FRENZY_LIMITER = 1;
 		}
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
     }
     void SpellCast(float val)
@@ -1032,7 +1032,7 @@ public:
 
 	void AIUpdate()
     {
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
     }
     void SpellCast(float val)
@@ -1147,7 +1147,7 @@ public:
 
 	void AIUpdate()
     {
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
     }
 
@@ -1256,7 +1256,7 @@ public:
 
 	void AIUpdate()
     {
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
     }
     void SpellCast(float val)

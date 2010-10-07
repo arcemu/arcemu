@@ -1884,7 +1884,7 @@ public:
 			return;
 		}
 
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
 	}
 
@@ -2529,7 +2529,7 @@ public:
 			}
 		}
 
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
 	}
 
@@ -3209,7 +3209,7 @@ public:
 			return;
 		}
 
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
         SpellCast(val);
 	}
 
@@ -3631,7 +3631,7 @@ public:
 			spells[3].casttime = t + spells[3].cooldown;
 		}
 
-		float val = (float)RandomFloat(100.0f);
+		float val = RandomFloat(100.0f);
 		SpellCast(val);
 	}
 
@@ -3910,7 +3910,7 @@ public:
 		}
 		else
 		{
-			float val = (float)RandomFloat(100.0f);
+			float val = RandomFloat(100.0f);
 			SpellCast(val);
 		}
 	}
@@ -6270,7 +6270,7 @@ class IllidanStormrageAI : public MoonScriptBossAI
 
 	bool SpawnMaiev()	// this doesn't have collision checks! so keep in mind that Maiev can be spawned behind walls!
 	{
-		float xchange  = (float)RandomFloat(15.0f);
+		float xchange  = RandomFloat(15.0f);
 		float distance = 15.0f;
 
 		float ychange = sqrt(distance * distance - xchange * xchange);

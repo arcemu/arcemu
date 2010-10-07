@@ -121,7 +121,7 @@ public:
 
     void AIUpdate()
    {
-      float val = (float)RandomFloat(100.0f);
+      float val = RandomFloat(100.0f);
       SpellCast(val);
     }
 
@@ -271,7 +271,7 @@ public:
 
     void AIUpdate()
    {
-      float val = (float)RandomFloat(100.0f);
+      float val = RandomFloat(100.0f);
       SpellCast(val);
     }
 
@@ -421,7 +421,7 @@ public:
 
     void AIUpdate()
    {
-      float val = (float)RandomFloat(100.0f);
+      float val = RandomFloat(100.0f);
       SpellCast(val);
     }
 

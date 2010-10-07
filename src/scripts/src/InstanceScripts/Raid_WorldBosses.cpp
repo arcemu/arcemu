@@ -163,7 +163,7 @@ public:
         }
         else
         {
-            float val = (float)RandomFloat(100.0f);
+            float val = RandomFloat(100.0f);
             SpellCast(val);
         }
     }
@@ -384,7 +384,7 @@ public:
         }
         else
         {
-            float val = (float)RandomFloat(100.0f);
+            float val = RandomFloat(100.0f);
             SpellCast(val);
         }
     }
@@ -513,7 +513,7 @@ public:
 
     void AIUpdate()
     {
-        float val = (float)RandomFloat(100.0f);
+        float val = RandomFloat(100.0f);
         SpellCast(val);
     }
     
@@ -697,7 +697,7 @@ public:
         }
         else
         {
-            float val = (float)RandomFloat(100.0f);
+            float val = RandomFloat(100.0f);
             SpellCast(val);
         }
     }
@@ -815,7 +815,7 @@ public:
 
     void AIUpdate()
     {
-        float val = (float)RandomFloat(100.0f);
+        float val = RandomFloat(100.0f);
         SpellCast(val);
     }
     
@@ -1013,7 +1013,7 @@ public:
             _unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, spells[4].speech.c_str());
         }
 
-        float val = (float)RandomFloat(100.0f);
+        float val = RandomFloat(100.0f);
         SpellCast(val);
 
     }
@@ -1330,7 +1330,7 @@ public:
         else
         {
             enrage++;
-            float val = (float)RandomFloat(100.0f);
+            float val = RandomFloat(100.0f);
             SpellCast(val);
         }
     }
@@ -1583,7 +1583,7 @@ public:
             else
             {
                 enrage++;
-                float val = (float)RandomFloat(100.0f);
+                float val = RandomFloat(100.0f);
                 SpellCast(val);
             }
         }
@@ -1760,7 +1760,7 @@ public:
         else
         {
             masstele--;
-            float val = (float)RandomFloat(100.0f);
+            float val = RandomFloat(100.0f);
             SpellCast(val);
         }
     }
@@ -1956,7 +1956,7 @@ public:
             enraged = true;
         }
         //_unit->CastSpell(_unit, AURA_OF_DEATH, true); //Repulse this every AIUpdate :) Spell is bugged atm, it also kills him methinks, not only those with Mark of Death
-        float val = (float)RandomFloat(100.0f);
+        float val = RandomFloat(100.0f);
         SpellCast(val);
     }
     
@@ -2119,7 +2119,7 @@ public:
 
     void AIUpdate()
     {
-        float val = (float)RandomFloat(100.0f);
+        float val = RandomFloat(100.0f);
         SpellCast(val);
     }
     
