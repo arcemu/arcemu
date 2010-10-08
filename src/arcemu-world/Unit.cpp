@@ -4860,7 +4860,7 @@ void Unit::RemoveAllAurasByRequiredShapeShift(uint32 mask)
 
 bool Unit::SetAurDuration(uint32 spellId,Unit* caster,uint32 duration)
 {
-	sLog.outString("setAurDuration2");
+	sLog.outDebug("setAurDuration2");
 	Aura*aur=FindAura(spellId,caster->GetGUID());
 	if(!aur)
 		return false;
@@ -4878,7 +4878,7 @@ bool Unit::SetAurDuration(uint32 spellId,uint32 duration)
 		return false;
 
 
-	sLog.outString("setAurDuration2");
+	sLog.outDebug("setAurDuration2");
 	aur->SetDuration(duration);
 	sEventMgr.ModifyEventTimeLeft(aur, EVENT_AURA_REMOVE, duration);
 
