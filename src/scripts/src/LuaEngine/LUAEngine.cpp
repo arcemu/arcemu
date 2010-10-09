@@ -2216,24 +2216,8 @@ CreatureAIScript * CreateLuaCreature(Creature * src)
 		{
 			typedef std::multimap<uint32,LuaCreature*> CRCMAP;
 			CRCMAP & cMap = sLuaMgr.getLuCreatureMap();
-			CRCMAP::iterator itr = cMap.find(id);
-			CRCMAP::iterator itend = cMap.upper_bound(id);
-			for(; itr != cMap.end() && itr != itend; ++itr)
-			{
-				//grab the 1st and initalize
-				if(itr->second == NULL)
-				{
-					script = itr->second = new LuaCreature(src);
-					break;
-				}
-				if(itr->second != NULL && itr->second->GetUnit() != NULL && itr->second->GetUnit()->GetGUID() == guid)
-					script = itr->second;
-			}
-			if(script == NULL)
-			{
-				script = new LuaCreature(src);
-				cMap.insert(make_pair(id,script));
-			}
+			script = new LuaCreature(src);
+			cMap.insert(make_pair(id,script));
 			script->m_binding = pBinding;
 		}
 	}
@@ -2253,20 +2237,9 @@ GameObjectAIScript * CreateLuaGameObject(GameObject * src)
 		{
 			typedef multimap<uint32,LuaGameObject*> GMAP;
 			GMAP & gMap = sLuaMgr.getLuGameObjectMap();
-			GMAP::iterator itr = gMap.find(id);
-			GMAP::iterator itend = gMap.upper_bound(id);
-			for(; itr != gMap.end() && itr != itend; ++itr)
-			{
-				if(itr->second != NULL && itr->second->getGO() != NULL && itr->second->getGO()->GetGUID() == guid)
-					script = itr->second;
-			}
-			if(script == NULL)
-			{
-				script = new LuaGameObject(src);
-				gMap.insert(make_pair(id,script));
-			}
+			script = new LuaGameObject(src);
+			gMap.insert(make_pair(id,script));
 			script->m_binding = pBinding;
-			
 		}
 	}
 	return script;
