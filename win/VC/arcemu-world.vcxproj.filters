@@ -748,7 +748,17 @@
       <Filter>Spells</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\arcemu-world\EquipmentSetMgr.h" />
-    <ClInclude Include="..\..\src\arcemu-world\PlayerCache.h" />
+    <ClInclude Include="..\..\src\arcemu-world\MiscHandler.h" />
+    <ClInclude Include="..\..\src\arcemu-world\Skill.h" />
+    <ClInclude Include="..\..\src\arcemu-world\SpellNameHashes.h">
+      <Filter>Spells</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-world\SpellTarget.h">
+      <Filter>Spells</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-world\PlayerCache.h">
+      <Filter>EventableObject\Object\Unit\Player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\src\arcemu-world\resources.rc" />

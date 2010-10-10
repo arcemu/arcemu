@@ -182,7 +182,6 @@
 #include "BaseConsole.h"
 #include "CConsole.h"
 #include "SpeedDetector.h"
-#include "ProcCondHandler.h"
 #include "WorldStates.h"
 #endif
 
