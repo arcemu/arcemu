@@ -186,7 +186,7 @@ void MapMgr::SetWorldState(uint32 zoneid, uint32 index, uint32 value)
 		//we got here, no state set
 		WorldStateHandler* ws=new WorldStateHandler;
 		ws->SetState(index, value);
-		m_worldStates.insert(std::make_pair<uint32, WorldStateHandler*>(zoneid, ws));
+		m_worldStates.insert(std::pair<uint32, WorldStateHandler*>(zoneid, ws));
 	}
 
 	WorldPacket data(SMSG_UPDATE_WORLD_STATE, 8);

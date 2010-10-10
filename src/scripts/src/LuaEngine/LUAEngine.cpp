@@ -837,7 +837,7 @@ static int RegisterTimedEvent(lua_State * L) //in this case, L == lu
 	EventInfoHolder * ek = new EventInfoHolder;
 	ek->funcName = funcName;
 	ek->te = te;
-	sLuaMgr.m_registeredTimedEvents.insert( make_pair<int, EventInfoHolder*>(ref, ek) );
+	sLuaMgr.m_registeredTimedEvents.insert( pair<int, EventInfoHolder*>(ref, ek) );
 	sLuaEventMgr.event_AddEvent(te);
 	lua_settop(L,0);
 	lua_pushnumber(L, ref);
@@ -2579,7 +2579,7 @@ void LuaEngine::RegisterEvent(uint8 regtype, uint32 id, uint32 evt, uint16 funct
 		case REGTYPE_DUMMYSPELL: 
 			{
 				if (id)
-					m_luaDummySpells.insert( make_pair<uint32,uint16>(id,functionRef) );
+					m_luaDummySpells.insert( pair<uint32,uint16>(id,functionRef) );
 			}break;
 		case REGTYPE_INSTANCE: 
 			{

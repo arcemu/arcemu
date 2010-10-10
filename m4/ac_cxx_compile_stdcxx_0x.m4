@@ -29,6 +29,7 @@ AC_DEFUN([AC_CXX_COMPILE_STDCXX_0X], [
   [AC_LANG_SAVE
   AC_LANG_CPLUSPLUS
   AC_TRY_COMPILE([
+  #include<utility>
   template <typename T>
     struct check
     {
@@ -42,7 +43,7 @@ AC_DEFUN([AC_CXX_COMPILE_STDCXX_0X], [
 
     typedef check<int> check_type;
     check_type c;
-    check_type&& cr = c;],,
+    check_type&& cr = std::move(c);],,
   ac_cv_cxx_compile_cxx0x_native=yes, ac_cv_cxx_compile_cxx0x_native=no)
   AC_LANG_RESTORE
   ])
@@ -54,6 +55,7 @@ AC_DEFUN([AC_CXX_COMPILE_STDCXX_0X], [
   ac_save_CXXFLAGS="$CXXFLAGS"
   CXXFLAGS="$CXXFLAGS -std=c++0x"
   AC_TRY_COMPILE([
+  #include<utility>
   template <typename T>
     struct check
     {
@@ -67,7 +69,7 @@ AC_DEFUN([AC_CXX_COMPILE_STDCXX_0X], [
 
     typedef check<int> check_type;
     check_type c;
-    check_type&& cr = c;],,
+    check_type&& cr = std::move(c);],,
   ac_cv_cxx_compile_cxx0x_cxx=yes, ac_cv_cxx_compile_cxx0x_cxx=no)
   CXXFLAGS="$ac_save_CXXFLAGS"
   AC_LANG_RESTORE
@@ -80,6 +82,7 @@ AC_DEFUN([AC_CXX_COMPILE_STDCXX_0X], [
   ac_save_CXXFLAGS="$CXXFLAGS"
   CXXFLAGS="$CXXFLAGS -std=gnu++0x"
   AC_TRY_COMPILE([
+  #include<utility>
   template <typename T>
     struct check
     {
@@ -93,7 +96,7 @@ AC_DEFUN([AC_CXX_COMPILE_STDCXX_0X], [
 
     typedef check<int> check_type;
     check_type c;
-    check_type&& cr = c;],,
+    check_type&& cr = std::move(c);],,
   ac_cv_cxx_compile_cxx0x_gxx=yes, ac_cv_cxx_compile_cxx0x_gxx=no)
   CXXFLAGS="$ac_save_CXXFLAGS"
   AC_LANG_RESTORE

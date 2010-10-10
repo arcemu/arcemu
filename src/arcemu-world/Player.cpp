@@ -3473,7 +3473,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 			uint8 rank = (uint8)atol(start);
 			start = end + 1;
 
-			m_specs[s].talents.insert(make_pair<uint32, uint8>(talentid, rank));
+			m_specs[s].talents.insert(pair<uint32, uint8>(talentid, rank));
 		}
 	}
 

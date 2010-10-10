@@ -3309,7 +3309,7 @@ void ObjectMgr::LoadSpellTargetConstraints(){
 				if( oldspellid != spellid ){
 					stc = new SpellTargetConstraint;
 
-					m_spelltargetconstraints.insert( std::make_pair< uint32, SpellTargetConstraint* >( spellid, stc ) );
+					m_spelltargetconstraints.insert( std::pair< uint32, SpellTargetConstraint* >( spellid, stc ) );
 				}
 
 				uint32 type = fields[ 1 ].GetUInt32();
