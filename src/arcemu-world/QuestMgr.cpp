@@ -776,24 +776,21 @@ void QuestMgr::_OnPlayerKill(Player* plr, uint32 entry, bool IsGroupKill)
 			if( qle != NULL )
 			{
 				qst = qle->GetQuest();
-				if(qst != NULL)
+				for( j = 0; j < 4; ++j )
 				{
-					for( j = 0; j < 4; ++j )
-					{
-						if( qst->required_mob[j] == 0 )
-							continue;
+					if( qst->required_mob[j] == 0 )
+						continue;
 
-						if( qst->required_mob[j] ==static_cast<int32>( entry ) &&
-							qst->required_mobtype[j] == QUEST_MOB_TYPE_CREATURE &&
-							qle->m_mobcount[j] < qst->required_mobcount[j] )
-						{
-							// add another kill.(auto-dirty's it)
-							qle->IncrementMobCount( j );
-							qle->SendUpdateAddKill( j );
-							CALL_QUESTSCRIPT_EVENT( qle, OnCreatureKill)( entry, plr, qle );
-							qle->UpdatePlayerFields();
-							break;
-						}
+					if( qst->required_mob[j] ==static_cast<int32>( entry ) &&
+						qst->required_mobtype[j] == QUEST_MOB_TYPE_CREATURE &&
+						qle->m_mobcount[j] < qst->required_mobcount[j] )
+					{
+						// add another kill.(auto-dirty's it)
+						qle->IncrementMobCount( j );
+						qle->SendUpdateAddKill( j );
+						CALL_QUESTSCRIPT_EVENT( qle, OnCreatureKill)( entry, plr, qle );
+						qle->UpdatePlayerFields();
+						break;
 					}
 				}
 			}
@@ -828,28 +825,25 @@ void QuestMgr::_OnPlayerKill(Player* plr, uint32 entry, bool IsGroupKill)
 								if( qle != NULL )
 								{
 									qst = qle->GetQuest();
-									if(qst != NULL)
+									for( j = 0; j < 4; ++j )
 									{
-										for( j = 0; j < 4; ++j )
+										if( qst->required_mob[j] == 0 )
+											continue;
+
+										if( qst->required_mob[j] == static_cast<int32>( entry ) &&
+											qst->required_mobtype[j] == QUEST_MOB_TYPE_CREATURE &&
+											qle->m_mobcount[j] < qst->required_mobcount[j] )
 										{
-											if( qst->required_mob[j] == 0 )
-												continue;
+											// add another kill.
+											// (auto-dirty's it)
+											qle->IncrementMobCount( j );
+											qle->SendUpdateAddKill( j );
+											CALL_QUESTSCRIPT_EVENT( qle, OnCreatureKill )( entry, plr, qle );
+											qle->UpdatePlayerFields();
 
-											if( qst->required_mob[j] == static_cast<int32>( entry ) &&
-												qst->required_mobtype[j] == QUEST_MOB_TYPE_CREATURE &&
-												qle->m_mobcount[j] < qst->required_mobcount[j] )
-											{
-												// add another kill.
-												// (auto-dirty's it)
-												qle->IncrementMobCount( j );
-												qle->SendUpdateAddKill( j );
-												CALL_QUESTSCRIPT_EVENT( qle, OnCreatureKill )( entry, plr, qle );
-												qle->UpdatePlayerFields();
-
-												if( qle->CanBeFinished() )
-													qle->SendQuestComplete();
-												break;
-											}
+											if( qle->CanBeFinished() )
+												qle->SendQuestComplete();
+											break;
 										}
 									}
 								}
