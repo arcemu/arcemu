@@ -6,7 +6,7 @@ public:
 	ADD_CREATURE_FACTORY_FUNCTION(DancingRuneWeaponAI);
 	DancingRuneWeaponAI(Creature* pCreature) : CreatureAIScript(pCreature)
 	{ 
-		Player *pOwner = TO_PLAYER( TO_AIGUARDIAN(_unit->GetAIInterface() )->getOwner() );
+		Player *pOwner = static_cast< Player* >(_unit->GetAIInterface()->GetPetOwner());
 		
 		if(pOwner)
 		{
@@ -41,7 +41,7 @@ public:
 	
 	void AIUpdate() 
 	{
-	Unit *curtarget = _unit->GetAIInterface()->getNextTarget();
+	Unit *curtarget = _unit->GetAIInterface()->GetNextTarget();
 		if(_unit->GetCurrentSpell() == NULL && curtarget)
 		{
 			switch(dpsCycle)

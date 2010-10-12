@@ -33,7 +33,7 @@
 ScriptMgr * m_scriptMgr = NULL;
 ///THREAD PLUA_INSTANCE lua_instance = NULL;
 PLUA_INSTANCE LUA_COMPILER = NULL;
-//SHAREDPTR_POOL sp_pool;
+SHAREDPTR_POOL sp_pool;
 extern "C"
 {
 	 SCRIPT_DECL uint32 _exp_get_script_type()
@@ -156,6 +156,7 @@ void lua_engine::loadScripts()
 	Log.Notice("LuaEngine","Found %u Lua scripts.", found_scripts.size() );
 	//Read our scripts and cache their data.
 	//We protect scripts while they are being modified.
+	int cnt = 0;
 	FILE * script_file = NULL;
 	for(std::set<string>::iterator itr = found_scripts.begin(); itr != found_scripts.end(); ++itr)
 	{
@@ -577,21 +578,21 @@ void lua_engine::restartThread(MapMgr * map)
 	for(li::ObjectBindingMap::iterator itr = lua_instance->m_unitGossipBinding.begin(); itr != lua_instance->m_unitGossipBinding.end(); ++itr)
 	{
 		li::GossipInterfaceMap::iterator it = lua_instance->m_unit_gossipInterfaceMap.find(itr->first),
-			itend = lua_instance->m_unit_gossipInterfaceMap.end();
+			itend = lua_instance->m_unit_gossipInterfaceMap.upper_bound(itr->first);
 		for(; it != itend; ++it)
 			it->second->m_unit_gossip_binding = itr->second;
 	}
 	for(li::ObjectBindingMap::iterator itr = lua_instance->m_goGossipBinding.begin(); itr != lua_instance->m_goGossipBinding.end(); ++itr)
 	{
 		li::GossipInterfaceMap::iterator it = lua_instance->m_go_gossipInterfaceMap.find(itr->first),
-			itend = lua_instance->m_go_gossipInterfaceMap.end();
+			itend = lua_instance->m_go_gossipInterfaceMap.upper_bound(itr->first);
 		for(; it != itend; ++it)
 			it->second->m_go_gossip_binding = itr->second;
 	}
 	for(li::ObjectBindingMap::iterator itr = lua_instance->m_itemGossipBinding.begin(); itr != lua_instance->m_itemGossipBinding.end(); ++itr)
 	{
 		li::GossipInterfaceMap::iterator it = lua_instance->m_item_gossipInterfaceMap.find(itr->first),
-			itend = lua_instance->m_item_gossipInterfaceMap.end();
+			itend = lua_instance->m_item_gossipInterfaceMap.upper_bound(itr->first);
 		for(; it != itend; ++it)
 			it->second->m_item_gossip_binding = itr->second;
 	}
@@ -633,6 +634,7 @@ namespace lua_engine
 	//	Feed cached lua scripts to the lua loader
 	void loadScripts(lua_State * lu)
 	{
+		int cnt = 0;
 		//LuaGuard guard(le::scriptLock);
 		le::LuaScriptData::iterator it,itr = le::compiled_scripts.begin();
 		for(; itr != le::compiled_scripts.end();)

@@ -354,7 +354,7 @@ void InnkeeperChicken(Player* pPlayer, Unit* pUnit)
 void OnEmote(Player* pPlayer, uint32 Emote, Unit* pUnit)
 {
 	pUnit = pPlayer->GetMapMgr()->GetUnit(pPlayer->GetSelection());
-	if (!pUnit || !pUnit->IsAlive() || pUnit->GetAIInterface()->getNextTarget())
+	if (!pUnit || !pUnit->isAlive() || pUnit->GetAIInterface()->GetNextTarget())
 		return;
 
 	switch(Emote)

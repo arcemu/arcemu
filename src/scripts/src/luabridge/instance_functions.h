@@ -142,9 +142,7 @@ namespace lua_engine
 		le::activeStates.insert(pMapMgr);
 
 		li::ObjectBindingMap::iterator itr = lua_instance->m_instanceBinding.find(id);
-		PObjectBinding bind = NULL;
-		if(itr != lua_instance->m_instanceBinding.end() )
-			bind = itr->second;
+		PObjectBinding bind = (itr != lua_instance->m_instanceBinding.end(id) ) ? itr->second : NULL;
 		pLua = new LuaInstance(pMapMgr);
 		pLua->m_binding = bind;
 		return pLua;

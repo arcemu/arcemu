@@ -1,13 +1,11 @@
 #pragma once
+#include "LUAEngine.h"
 
 class LuaGossip : public GossipScript
 {
 	uint32 id;
 public:
-	LuaGossip(uint32 _id)
-	{
-		m_go_gossip_binding = NULL, m_item_gossip_binding = NULL, m_unit_gossip_binding = NULL, id = _id;
-	}
+	LuaGossip(uint32 _id) : GossipScript(), m_go_gossip_binding(NULL),m_item_gossip_binding(NULL),m_unit_gossip_binding(NULL), id(_id) {}
 	~LuaGossip() 
 	{
 		if(this->m_go_gossip_binding != NULL)
@@ -370,7 +368,7 @@ namespace lua_engine
 			.function("GetInstanceID", &GetInstanceID)
 			//Used to retrieve object method tables.
 			.function("getregistry", &GetRegistryTable)
-#define bind(name) .function(#name, &name)
+#define bind(name) .function(#name, &##name)
 			bind(GetGameTime)
 			bind(GetPlayer)
 			.function("GetEngineName", &enginename)
@@ -409,16 +407,6 @@ namespace lua_engine
 		//now we overwrite our dbcSpell static table with dbcSpell storage object.
 		luabridge::tdstack<DBCStorage<SpellEntry>*>::push(m.L, &dbcSpell);
 		lua_setglobal(m.L, "dbcSpell");
-
-		//Expose the world database and character database.
-		m	.class_<Database>("WorldDB")
-			.method("Query", &Database::QueryNA)
-			.method("Execute", &Database::ExecuteNA);
-		
-		luabridge::tdstack<Database*>::push(m.L, Database_World);
-		lua_setglobal(m.L, "WorldDB");
-		luabridge::tdstack<Database*>::push(m.L, Database_Character);
-		lua_setglobal(m.L, "CharacterDB");
 
 	}
 }

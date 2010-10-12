@@ -66,7 +66,7 @@ bool PlantForsakenBanner(uint32 i, Spell* pSpell)
 		return true;
 	
 	Creature* target = static_cast<Creature*>(pSpell->GetUnitTarget());
-	if ( target == NULL || target->IsAlive() )
+	if ( target == NULL || target->isAlive() )
 		return true;
 
 	uint32 cit = target->GetEntry();

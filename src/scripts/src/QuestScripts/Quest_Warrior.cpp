@@ -68,7 +68,7 @@ public:
 				Creature* whirlwind = plr->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(plr->GetPositionX(), plr->GetPositionY(), plr->GetPositionZ(), 6239);
 				if(whirlwind != NULL)
 				{
-					if(!whirlwind->IsAlive())
+					if(!whirlwind->isAlive())
 					{
 						whirlwind->Delete();
 					}
@@ -116,10 +116,11 @@ public:
 	{
 		_unit->RemoveNegativeAuras();
 		_unit->SetFaction(11);
-		_unit->SetHealthPct(100);              
-		TO_AIMOB(_unit->GetAIInterface() )->wipeHateList();
+		_unit->SetHealthPct(100);      
+		_unit->GetAIInterface()->WipeTargetList();         
+		_unit->GetAIInterface()->WipeHateList();
         _unit->GetAIInterface()->HandleEvent( EVENT_LEAVECOMBAT, _unit, 0);
-        _unit->GetAIInterface()->disableMelee(true);
+        _unit->GetAIInterface()->disable_melee = true;
         _unit->GetAIInterface()->SetAllowedToEnterCombat(false);
 		_unit->SetUInt32Value(UNIT_FIELD_FLAGS, 0);
 	}
@@ -149,7 +150,7 @@ public:
 			return;
 
 		Bartleby->SetFaction(168);
-		Bartleby->GetAIInterface()->disableMelee(false);
+		Bartleby->GetAIInterface()->disable_melee = false;
 		Bartleby->GetAIInterface()->SetAllowedToEnterCombat(true);
 	}
 };

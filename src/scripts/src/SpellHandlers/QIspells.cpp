@@ -56,7 +56,7 @@ bool SummonCyclonian(uint32 i, Spell * pSpell)
 		return true;
     
 	Unit * pUnit = pSpell->u_caster;
-	Creature * pCreature = pUnit->GetMapMgr()->GetInterface()->SpawnCreature( 6239,pUnit->GetPositionX(),pUnit->GetPositionY(),pUnit->GetPositionZ(),pUnit->GetOrientation(),0);
+	Creature * pCreature = pUnit->GetMapMgr()->GetInterface()->SpawnCreature( 6239, pUnit->GetPositionX(), pUnit->GetPositionY(), pUnit->GetPositionZ(), pUnit->GetOrientation(), true, false, 0, 0 );
 	if ( pCreature != NULL )
 	{
 		pCreature->Despawn( 600000, 0 );
@@ -76,7 +76,7 @@ bool ElementalPowerExtractor(uint32 i, Spell * pSpell)
 		return true;
 
     Creature * pTarget = TO_CREATURE( pUnit );
-	if ( ( pTarget->GetEntry() == 18881 || pTarget->GetEntry() == 18865 ) && pTarget->IsAlive() )
+	if ( ( pTarget->GetEntry() == 18881 || pTarget->GetEntry() == 18865 ) && pTarget->isAlive() )
 	{
 		sEAS.AddItem( 28548, pPlayer );
 	}
@@ -106,7 +106,7 @@ bool OpeningTyraliusPrison(uint32 i, Spell * pSpell)
 	QuestLogEntry *pQuest = pPlayer->GetQuestLogForEntry( 10442 );
 	if ( pQuest != NULL )
 	{
-		sEAS.SpawnCreature( pPlayer,20787,pPlayer->GetPositionX(),pPlayer->GetPositionY(),pPlayer->GetPositionZ(),1000 );
+		sEAS.SpawnCreature( pPlayer, 20787, pPlayer->GetPositionX(), pPlayer->GetPositionY(), pPlayer->GetPositionZ(), pPlayer->GetOrientation(), 2 * 60 * 1000 );
 		pQuest->SendQuestComplete();	// not sure if it's enough
 	}
 
@@ -122,8 +122,8 @@ bool CallRexxar(uint32 i, Spell * pSpell)
 	QuestLogEntry *pQuest = pPlayer->GetQuestLogForEntry( 10742 );
 	if ( pQuest != NULL )
 	{
-		sEAS.SpawnCreature( pPlayer,21984,pPlayer->GetPositionX(),pPlayer->GetPositionY(),pPlayer->GetPositionZ(),1000);
-		sEAS.SpawnCreature( pPlayer,20555,pPlayer->GetPositionX(),pPlayer->GetPositionY(),pPlayer->GetPositionZ(),1000);
+		sEAS.SpawnCreature( pPlayer, 21984, pPlayer->GetPositionX(), pPlayer->GetPositionY(), pPlayer->GetPositionZ(), pPlayer->GetOrientation(), 2 * 60 * 1000);
+		sEAS.SpawnCreature( pPlayer, 20555, pPlayer->GetPositionX(), pPlayer->GetPositionY(), pPlayer->GetPositionZ(), pPlayer->GetOrientation(), 2 * 60 * 1000);
 	}
 
 	return true;
@@ -157,7 +157,7 @@ bool ScrapReaver(uint32 i, Spell * pSpell)
 		return true;
 
 	Player * pPlayer = TO_PLAYER( pSpell->p_caster );
-	Creature * pCreature = pPlayer->GetMapMgr()->GetInterface()->SpawnCreature( 19851,pPlayer->GetPositionX(),pPlayer->GetPositionY(),pPlayer->GetPositionZ(),pPlayer->GetOrientation(),0);
+	Creature * pCreature = pPlayer->GetMapMgr()->GetInterface()->SpawnCreature( 19851, pPlayer->GetPositionX(), pPlayer->GetPositionY(), pPlayer->GetPositionZ(), pPlayer->GetOrientation(), true, false, 0, 0 );
 	if ( pCreature != NULL )
 	{
 		pCreature->Despawn( 600000, 0 );
@@ -184,7 +184,7 @@ bool IncendiaPowder(uint32 i, Spell * pSpell)
 		}
 	}
 
-	pSpell->p_caster->GetMapMgr()->GetInterface()->SpawnCreature(10882,-5005.387695f,-2103.348145f,83.862106f,6.265121f,0);
+	pSpell->p_caster->GetMapMgr()->GetInterface()->SpawnCreature(10882, -5005.387695f, -2103.348145f, 83.862106f, 6.265121f, true, false, 0, 0);
 
 	return true;
 }
@@ -193,7 +193,7 @@ bool GemOfTheSerpent(uint32 i, Spell * pSpell)
 {
 	if(!pSpell->p_caster) return true;
 
-	pSpell->p_caster->GetMapMgr()->GetInterface()->SpawnCreature(12369,254.924606f,2967.358154f,1.382471f,0.918914f,0);
+	pSpell->p_caster->GetMapMgr()->GetInterface()->SpawnCreature(12369, 254.924606f, 2967.358154f, 1.382471f, 0.918914f, true, false, 0, 0);
 
 	return true;
 }
@@ -203,7 +203,7 @@ bool RuuanokClaw(uint32 i, Spell * pSpell)
 	if(!pSpell->p_caster)
 		return true;
 
-	pSpell->p_caster->GetMapMgr()->GetInterface()->SpawnCreature( 21767,3210.960693f,5348.308594f,144.537476f,5.450696f,0);
+	pSpell->p_caster->GetMapMgr()->GetInterface()->SpawnCreature( 21767, 3210.960693f, 5348.308594f, 144.537476f, 5.450696f, true, false, 0, 0 );
 	return true;
 }
 
@@ -216,10 +216,10 @@ bool KarangsBanner(uint32 i, Spell * pSpell)
 	// Banner Aura
 	pPlayer->CastSpell(pPlayer, dbcSpell.LookupEntry(20746), true);
 
-	pSpell->p_caster->GetMapMgr()->GetInterface()->SpawnCreature(12921,2231.710205f,-1543.603027f,90.694946f,4.700579f,0);
-	pSpell->p_caster->GetMapMgr()->GetInterface()->SpawnCreature(12921,2232.534912f,-1556.983276f,89.744415f,1.527570f,0);
+	pSpell->p_caster->GetMapMgr()->GetInterface()->SpawnCreature(12921, 2231.710205f, -1543.603027f, 90.694946f, 4.700579f, true, false, 0, 0);
+	pSpell->p_caster->GetMapMgr()->GetInterface()->SpawnCreature(12921, 2232.534912f, -1556.983276f, 89.744415f, 1.527570f, true, false, 0, 0);
 
-	pSpell->p_caster->GetMapMgr()->GetInterface()->SpawnCreature(12757,2239.357178f,-1546.649536f,89.671097f,3.530336f,0);
+	pSpell->p_caster->GetMapMgr()->GetInterface()->SpawnCreature(12757, 2239.357178f, -1546.649536f, 89.671097f, 3.530336f, true, false, 0, 0);
 
 	return true;
 }
@@ -569,7 +569,7 @@ bool UnyieldingBattleHorn(uint32 i, Spell * pSpell)
   if(pSpell->p_caster == NULL) 
     return true;
 
-  Creature * creat = pSpell->p_caster->GetMapMgr()->GetInterface()->SpawnCreature(19862,-1190.856079f,2261.246582f,46.625797f,1.705882f,0);
+  Creature * creat = pSpell->p_caster->GetMapMgr()->GetInterface()->SpawnCreature(19862, -1190.856079f, 2261.246582f, 46.625797f, 1.705882f, true, false, 0, 0);
   creat->Despawn(300000, 0); // 5 mins delay
 
   return true;
@@ -654,7 +654,7 @@ bool YennikuRelease(uint32 i, Spell * pSpell)
 		return true;
 
   	yenniku->SetFaction(29);
-  	TO_AIMOB(yenniku->GetAIInterface() )->wipeHateList();
+  	yenniku->GetAIInterface()->WipeTargetList();
   	yenniku->Despawn(30*1000, 60*1000);
 
   	return true;
@@ -678,7 +678,7 @@ bool ScrollOfMyzrael(uint32 i, Spell * pSpell)
   Creature * myzrael = pPlayer->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(MyzraelPos[0], MyzraelPos[1], MyzraelPos[2], 2755);
   if(myzrael != NULL)
   {
-    if(!myzrael->IsAlive())
+    if(!myzrael->isAlive())
       myzrael->Delete();
     else
       return true;
@@ -880,7 +880,9 @@ bool FloraoftheEcoDomes(uint32 i, Spell * pSpell)
 
 	normal->Despawn( 1, 6*60*1000 );
 	mutant->Despawn( 5*60*1000, 0 );
-	TO_AIMOB(mutant->GetAIInterface() )->setForcedTarget(pPlayer, true);
+
+	mutant->GetAIInterface()->Init( mutant, AITYPE_AGRO, MOVEMENTTYPE_NONE );
+	mutant->GetAIInterface()->taunt( pPlayer, true );
 
 	QuestLogEntry * qle = pPlayer->GetQuestLogForEntry( 10426 );
 	if ( qle == NULL )
@@ -1320,7 +1322,7 @@ bool PlagueSpray(uint32 i, Spell * pSpell)
   return true;
 
  Unit * target = pSpell->GetUnitTarget();
- if( !target || target->GetEntry() != 23652 || !target->IsAlive())
+ if( !target || target->GetEntry() != 23652 || !target->isAlive())
   return true;
  else if(!target || target->GetEntry() != 23652 || !target->HasAura(40467)) 
   return false;
@@ -1417,7 +1419,7 @@ bool CraftyBlaster(uint32 i, Spell * pSpell)
   return true;
 
  Unit * target = pSpell->GetUnitTarget();
- if (!target || ( target->GetEntry() != 25432 && target->GetEntry() != 25434 ) || !target->IsAlive())
+ if (!target || ( target->GetEntry() != 25432 && target->GetEntry() != 25434 ) || !target->isAlive())
   return true;
   
  Player * pPlayer = pSpell->p_caster;
@@ -1437,7 +1439,7 @@ bool EyesAbove(uint32 i, Spell * pSpell)
   return true;
 
  Unit * target = pSpell->GetUnitTarget();
- if( !target || target->GetEntry() != 25432 || !target->IsAlive())
+ if( !target || target->GetEntry() != 25432 || !target->isAlive())
   return true;
   
  Player * pPlayer = pSpell->p_caster;
@@ -1481,7 +1483,7 @@ bool SummonShadra(uint32 i, Spell * pSpell)
 	float SSY = pSpell->p_caster->GetPositionY();
 	float SSZ = pSpell->p_caster->GetPositionZ();
 	float SSO = pSpell->p_caster->GetOrientation();
-	pSpell->p_caster->GetMapMgr()->GetInterface()->SpawnCreature(2707,SSX,SSY,SSZ,SSO,0);
+	pSpell->p_caster->GetMapMgr()->GetInterface()->SpawnCreature(2707, SSX, SSY, SSZ, SSO, true, false, 0, 0);
 		return true;
 }
 
@@ -1495,7 +1497,7 @@ bool SummonEcheyakee(uint32 i, Spell * pSpell)
 	float SSZ = pSpell->p_caster->GetPositionZ();
 	float SSO = pSpell->p_caster->GetOrientation();
 
-	pSpell->p_caster->GetMapMgr()->GetInterface()->SpawnCreature(3475,SSX,SSY,SSZ,SSO,0);
+	pSpell->p_caster->GetMapMgr()->GetInterface()->SpawnCreature(3475, SSX, SSY, SSZ, SSO, true, false, 0, 0);
 	
 	return true;
 }
@@ -1599,7 +1601,7 @@ bool SummonAquementas(uint32 i, Spell * pSpell)
 	float SSZ = pSpell->p_caster->GetPositionZ();
 	float SSO = pSpell->p_caster->GetOrientation();
 
-	pSpell->p_caster->GetMapMgr()->GetInterface()->SpawnCreature(9453,SSX,SSY,SSZ,SSO,0);
+	pSpell->p_caster->GetMapMgr()->GetInterface()->SpawnCreature(9453, SSX, SSY, SSZ, SSO, true, false, 0, 0);
 	
 	return true;
 }

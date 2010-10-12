@@ -65,8 +65,8 @@ void ProspectorAnvilwardGossip::GossipSelectOption( Object * pObject, Player * P
 			if ( qLogEntry != NULL )
 			{
 				_unit->SendChatMessage( CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "Follow me!" );
-				//_unit->m_custom_waypoint_map = new WayPointMap;
-				//_unit->GetAIInterface()->SetWaypointMap( _unit->m_custom_waypoint_map );
+				_unit->m_custom_waypoint_map = new WayPointMap;
+				_unit->GetAIInterface()->SetWaypointMap( _unit->m_custom_waypoint_map );
 				WayPoint * wp = new WayPoint;
 				wp->id = 1;
 				wp->x = _unit->GetSpawnX();
@@ -78,8 +78,7 @@ void ProspectorAnvilwardGossip::GossipSelectOption( Object * pObject, Player * P
 				wp->backwardemoteid = wp->forwardemoteid = 0;
 				wp->backwardemoteoneshot = wp->forwardemoteoneshot = false;
 				wp->waittime = 0;
-				//_unit->m_custom_waypoint_map->push_back( wp );
-				TO_AIMOB(_unit->GetAIInterface() )->Waypoint_add(wp);
+				_unit->m_custom_waypoint_map->push_back( wp );
 				for ( uint32 i = 0; i < sizeof( ProspectorAnvilwardWaypoints ) / sizeof( LocationExtra ); i++ )
 				{
 					wp = new WayPoint;
@@ -93,7 +92,7 @@ void ProspectorAnvilwardGossip::GossipSelectOption( Object * pObject, Player * P
 					wp->backwardemoteid = wp->forwardemoteid = 0;
 					wp->backwardemoteoneshot = wp->forwardemoteoneshot = false;
 					wp->waittime = 0;
-					TO_AIMOB(_unit->GetAIInterface() )->Waypoint_add(wp);
+					_unit->m_custom_waypoint_map->push_back( wp );
 				}
 			}
 			else
@@ -117,15 +116,15 @@ class ProspectorAnvilwardAI : public CreatureAIScript
 		{
 			if ( iWaypointId == sizeof( ProspectorAnvilwardWaypoints ) / sizeof( LocationExtra ) && bForwards )
 			{
-				//_unit->GetAIInterface()->SetWaypointMap( NULL );
+				_unit->GetAIInterface()->SetWaypointMap( NULL );
 				_unit->SetFaction(14 );
 				RegisterAIUpdateEvent( 10000 );
 			}
 			else if ( iWaypointId == 2 && !bForwards )
 			{
-				//_unit->GetAIInterface()->SetWaypointMap( NULL );
-				//delete _unit->m_custom_waypoint_map;
-				//_unit->m_custom_waypoint_map = NULL;
+				_unit->GetAIInterface()->SetWaypointMap( NULL );
+				delete _unit->m_custom_waypoint_map;
+				_unit->m_custom_waypoint_map = NULL;
 				_unit->GetAIInterface()->MoveTo( _unit->GetSpawnX(), _unit->GetSpawnY(), _unit->GetSpawnZ() + 2.05f, _unit->GetSpawnO() );
 				_unit->SetFaction(35 );
 			}
@@ -136,19 +135,19 @@ class ProspectorAnvilwardAI : public CreatureAIScript
 			if ( !_unit->CombatStatus.IsInCombat() )
 			{
 				RemoveAIUpdateEvent();
-				//_unit->GetAIInterface()->SetWaypointMap( _unit->m_custom_waypoint_map );
+				_unit->GetAIInterface()->SetWaypointMap( _unit->m_custom_waypoint_map );
 			}
 		}
 
 		void OnDied( Unit * mKiller )
 		{
 			RemoveAIUpdateEvent();
-			/*_unit->GetAIInterface()->SetWaypointMap( NULL );
+			_unit->GetAIInterface()->SetWaypointMap( NULL );
 			if ( _unit->m_custom_waypoint_map != NULL )
 			{
 				delete _unit->m_custom_waypoint_map;
 				_unit->m_custom_waypoint_map = NULL;
-			}*/
+			}
 			_unit->SetFaction(35 );
 		}
 };

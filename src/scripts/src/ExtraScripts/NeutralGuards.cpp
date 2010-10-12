@@ -15,9 +15,8 @@ public:
 				float x=mTarget->GetPositionX() + RandomUInt(20) - 10;
 				float y=mTarget->GetPositionY() + RandomUInt(20) - 10;
 				float z=mTarget->GetPositionZ();
-				Creature* guard=_unit->GetMapMgr()->GetInterface()->SpawnCreature(26253, x, y, z, 0, 50);
-				guard->SetFaction(_unit->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE) );
-				
+				Creature* guard=_unit->GetMapMgr()->GetInterface()->SpawnCreature(26253, x, y, z, 0, true, false, _unit->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE), 50);
+
 				if (guard != NULL)
 				{
 					guard->SetGuardWaypoints();

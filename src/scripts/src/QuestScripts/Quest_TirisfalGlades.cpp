@@ -27,7 +27,7 @@ public:
 	{
 		if( mTarget == NULL || mTarget->GetMapMgr() == NULL || mTarget->GetMapMgr()->GetInterface() == NULL )
 			return;
-		Creature* creat = mTarget->GetMapMgr()->GetInterface()->SpawnCreature(1946, 2467.314f, 14.8471f, 23.5950f, 0, 0);
+		Creature* creat = mTarget->GetMapMgr()->GetInterface()->SpawnCreature(1946, 2467.314f, 14.8471f, 23.5950f, 0, true, false, 0, 0);
 		creat->Despawn(60000,0);
 		creat->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "You have disturbed my rest. Now face my wrath!");
 	}
@@ -68,10 +68,11 @@ public:
 		_unit->SetFaction(68);
 		_unit->SetStandState(STANDSTATE_SIT);
 		_unit->CastSpell(_unit, dbcSpell.LookupEntry(433), true);
-		sEventMgr.AddEvent(TO_UNIT(_unit), &Unit::SetStandState, (uint8)STANDSTATE_STAND, EVENT_CREATURE_UPDATE, 18000, 0, 1);        
-		TO_AIMOB(_unit->GetAIInterface() )->wipeHateList();
+		sEventMgr.AddEvent(TO_UNIT(_unit), &Unit::SetStandState, (uint8)STANDSTATE_STAND, EVENT_CREATURE_UPDATE, 18000, 0, 1);
+		_unit->GetAIInterface()->WipeTargetList();         
+		_unit->GetAIInterface()->WipeHateList();
         _unit->GetAIInterface()->HandleEvent( EVENT_LEAVECOMBAT, _unit, 0);
-        _unit->GetAIInterface()->disableMelee(true);
+        _unit->GetAIInterface()->disable_melee = true;
         _unit->GetAIInterface()->SetAllowedToEnterCombat(false);
 		_unit->SetUInt64Value(UNIT_FIELD_FLAGS, 0);
 	}
@@ -95,7 +96,7 @@ public:
 			return;
 
 		Dashel->SetFaction(28);
-		Dashel->GetAIInterface()->disableMelee(true);
+		Dashel->GetAIInterface()->disable_melee = false;
 		Dashel->GetAIInterface()->SetAllowedToEnterCombat(true);
 	}
 };
@@ -119,7 +120,7 @@ public:
 
 		Zealot->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "I. . . I. . .don't. . .feel. . .right. . .");
 		sEAS.EventCastSpell(Zealot, Zealot, 3287, 3000);
-		TO_AIMOB(Zealot->GetAIInterface() )->Waypoint_setmovetype(MOVEMENTTYPE_FORWARDTHENSTOP);
+		Zealot->GetAIInterface()->setMoveType(11);
 		Zealot->GetAIInterface()->StopMovement(3000);
 
 

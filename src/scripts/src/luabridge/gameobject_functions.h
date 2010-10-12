@@ -159,19 +159,6 @@ namespace lua_engine
 
 	void bindGameobjectMethods(luabridge::module & m )
 	{
-
-		m	.class_<GameObject>("GameObject")
-			.method("HasQuests", &GameObject::HasQuests)
-			.method("NumQuests", &GameObject::NumOfQuests)
-			.method("Close", &GameObject::EventCloseDoor)
-			.method("Despawn", &GameObject::Despawn)	
-			.method("ExpireAndDelete", &GameObject::ExpireAndDelete)
-			.method("IsQuestGiver", &GameObject::isQuestGiver)
-			.property_ro("summoner", &GameObject::m_summoner)
-			.method("RemoveFromWorld", &GameObject::RemoveFromWorld)
-			.method("RegisterAIUpdate", &GameObject::RegisterAIUpdate)
-			.method("ModifyAIUpdate", &GameObject::ModifyAIUpdate)
-			.method("RemoveAIUpdate", &GameObject::RemoveAIUpdate);
 	}
 }
 

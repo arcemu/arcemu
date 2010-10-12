@@ -447,6 +447,8 @@ namespace lua_engine
 			BIND(SendChatMessageAlternateEntry)
 			BIND(SetHealthPct)
 			BIND(GetManaPct)
+			BIND(GetCurrentSpell)
+			BIND(SetCurrentSpell)
 			BIND(RemoveStealth)
 			BIND(RemoveInvisibility)
 			BIND(create_guardian)
@@ -2990,6 +2992,16 @@ namespace luaUnit
 		if (ptr->GetCurrentSpell())
 			lua_pushnumber(L, ptr->GetCurrentSpell()->GetProto()->Id);
 		else 
+			lua_pushnil(L);
+		return 1;
+	}
+
+	int GetCurrentSpell(lua_State * L, Unit * ptr)
+	{
+		if (!ptr) return 0;
+		if(ptr->GetCurrentSpell() != 0)
+			PUSH_SPELL(L,ptr->GetCurrentSpell());
+		else
 			lua_pushnil(L);
 		return 1;
 	}

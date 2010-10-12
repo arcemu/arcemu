@@ -796,19 +796,3 @@ uint8 GameObject::GetState()
 	return GetByte(GAMEOBJECT_BYTES_1, 0);
 }
 
-void GameObject::RegisterAIUpdate( uint32 interval )
-{
-	sEventMgr.AddEvent(this, &GameObject::CallScriptUpdate, EVENT_GAMEOBJECT_UPDATE, interval, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-}
-
-void GameObject::ModifyAIUpdate( uint32 interval )
-{
-	sEventMgr.ModifyEventTime(this, EVENT_GAMEOBJECT_UPDATE, interval);
-}
-
-void GameObject::RemoveAIUpdate()
-{
-	sEventMgr.RemoveEvents(this, EVENT_GAMEOBJECT_UPDATE);
-}
-
-

@@ -219,7 +219,7 @@ bool PlantingSeaforiumDepthCharge(uint32 i, Spell * pSpell)
 	if( pSinkhole == NULL )
 		return true;
 
-	pPlayer->GetMapMgr()->GetInterface()->SpawnCreature( 25401, pPlayer->GetPositionX(), pPlayer->GetPositionY(), pPlayer->GetPositionZ(), pPlayer->GetOrientation(), 1);
+	pPlayer->GetMapMgr()->GetInterface()->SpawnCreature( 25401, pPlayer->GetPositionX(), pPlayer->GetPositionY(), pPlayer->GetPositionZ(), pPlayer->GetOrientation(), false, false, NULL, NULL, 1);
 	
 	float posX = pSinkhole->GetPositionX();
 	if(posX == 2657.13f)

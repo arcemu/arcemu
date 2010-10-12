@@ -63,7 +63,7 @@ void GuardsOnWave(Player* pPlayer, Unit* pUnit)
 
 void OnEmote(Player* pPlayer, uint32 Emote, Unit* pUnit)
 {
-	if (!pUnit || !pUnit->IsAlive() || pUnit->GetAIInterface()->getNextTarget())
+	if (!pUnit || !pUnit->isAlive() || pUnit->GetAIInterface()->GetNextTarget())
 		return;
 
 	// Switch For Emote Name (You do EmoteName to Script Name link).

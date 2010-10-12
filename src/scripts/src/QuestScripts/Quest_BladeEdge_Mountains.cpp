@@ -53,7 +53,7 @@ public:
 		Creature* qg = mTarget->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(mTarget->GetPositionX(), mTarget->GetPositionY(), 0, 22941);
 		if(qg == NULL)
 			return;
-		qg->GetMapMgr()->GetInterface()->SpawnCreature(23053, 2794.978271f, 5842.185547f, 35.911819f, 0, 0);
+		qg->GetMapMgr()->GetInterface()->SpawnCreature(23053, 2794.978271f, 5842.185547f, 35.911819f, 0, true, false, 0, 0);
 	}
 };
 
@@ -132,10 +132,10 @@ public:
 		RegisterAIUpdateEvent(5000);
 		_unit->SetUInt64Value(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_9);
 		_unit->GetAIInterface()->SetAllowedToEnterCombat(false);
-		//_unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
-		_unit->GetAIInterface()->disableMelee(true);
+		_unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
+		_unit->GetAIInterface()->disable_melee = true;
 		_unit->SetEmoteState(0);
-		_unit->GetAIInterface()->Movement_allowmovement( false);
+		_unit->GetAIInterface()->m_canMove = false;
 		i = 1;
 	}
 
@@ -276,7 +276,7 @@ public:
 			{
 				pCreature->SetFaction(14);
 				pCreature->SetFloatValue(OBJECT_FIELD_SCALE_X, 1);
-				pCreature->GetAIInterface()->setNextTarget(pPlayer);
+				pCreature->GetAIInterface()->SetNextTarget(pPlayer);
 				pCreature->GetAIInterface()->AttackReaction(pPlayer, 1);
 			}
 		}

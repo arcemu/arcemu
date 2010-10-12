@@ -18,9 +18,9 @@
  *
  */
 
-// Last edited by:	$Author: pharoxysm $
-// revision:		$Rev: 3701 $
-// date:		$Date: 2010-10-10 14:36:56 -0500 (Sun, 10 Oct 2010) $
+// Last edited by:	$Author$
+// revision:		$Rev$
+// date:		$Date$
 
 
 #include "StdAfx.h"
@@ -117,8 +117,8 @@ Unit::Unit()
 {
 	int i;
 
-	m_baseAttackTime = 0;
-	m_offHandAttackTime = 0;
+	m_attackTimer = 0;
+	m_attackTimer_1 = 0;
 	m_dualWield = false;
 
 	m_ignoreArmorPctMaceSpec = 0;
@@ -290,7 +290,8 @@ Unit::Unit()
 	//	if(GetTypeId() == TYPEID_PLAYER) //only player for now
 	//		CalculateActualArmor();
 
-	m_aiInterface = NULL;
+	m_aiInterface = new AIInterface();
+	m_aiInterface->Init(this, AITYPE_AGRO, MOVEMENTTYPE_NONE);
 
 	m_emoteState = 0;
 	m_oldEmote = 0;
@@ -640,7 +641,7 @@ Unit::~Unit()
 		SM_PThreat = NULL;
 	}
 
-	//delete m_aiInterface;
+	delete m_aiInterface;
 	m_aiInterface = NULL;
 
 
@@ -833,7 +834,7 @@ void Unit::GiveGroupXP(Unit *pVictim, Player *PlayerInGroup)
 		{
 			pGroupGuy = (*itr)->m_loggedInPlayer;
 			if( pGroupGuy &&
-				pGroupGuy->IsAlive() &&
+				pGroupGuy->isAlive() &&
 //				PlayerInGroup->GetInstanceID()==pGroupGuy->GetInstanceID() &&
 				pVictim->GetMapMgr() == pGroupGuy->GetMapMgr() &&
 				pGroupGuy->GetDistanceSq(pVictim)<100*100
@@ -1372,7 +1373,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, bo
 						if( can_proc_now == false )
 							continue;
 						Unit *new_caster = victim;
-						if( new_caster && new_caster->IsAlive() )
+						if( new_caster && new_caster->isAlive() )
 						{
 							SpellEntry *spellInfo = dbcSpell.LookupEntry( spellId ); //we already modified this spell on server loading so it must exist
 							Spell *spell = new Spell( new_caster, spellInfo ,true, NULL );
@@ -1415,7 +1416,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, bo
 							new_caster = GetMapMgr()->GetUnit( GetCharmedUnitGUID() );
 						else
 							new_caster = NULL;
-						if( new_caster != NULL && new_caster->IsAlive() )
+						if( new_caster != NULL && new_caster->isAlive() )
 						{
 							SpellEntry* spellInfo = dbcSpell.LookupEntry( 25228 ); //we already modified this spell on server loading so it must exist
 							Spell* spell = new Spell( new_caster, spellInfo, true, NULL );
@@ -1641,7 +1642,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, bo
 
 							for(itr3 = pGroup->GetGroupMembersBegin();itr3 != pGroup->GetGroupMembersEnd(); ++itr3)
 							{
-								if(!(*itr3)->m_loggedInPlayer || !(*itr3)->m_loggedInPlayer->IsAlive() )
+								if(!(*itr3)->m_loggedInPlayer || !(*itr3)->m_loggedInPlayer->isAlive() )
 									continue;
 
 								//we cannot retarget self
@@ -2576,7 +2577,7 @@ void Unit::RegenerateHealth()
 {
 	m_H_regenTimer = 2000;//set next regen time
 
-	if(!IsAlive())
+	if(!isAlive())
 		return;
 
 	// player regen
@@ -2606,7 +2607,7 @@ void Unit::RegeneratePower(bool isinterrupted)
 	else
 		m_P_regenTimer = 2000;//set next regen time
 
-	if(!IsAlive())
+	if(!isAlive())
 		return;
 
 	//druids regen every tick, which is every 100ms, at one energy, as of 3.0.2
@@ -2977,7 +2978,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 //==========================================================================================
 //==============================Unacceptable Cases Processing===============================
 //==========================================================================================
-	if( !pVictim || !pVictim->IsAlive() || !IsAlive()  || IsStunned() || IsPacified() || IsFeared() )
+	if( !pVictim || !pVictim->isAlive() || !isAlive()  || IsStunned() || IsPacified() || IsFeared() )
 		return;
 
 	if(!(ability && ability->AttributesEx & ATTRIBUTESEX_IGNORE_IN_FRONT) && !isInFront(pVictim))
@@ -3411,13 +3412,13 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 	case 0:
 		hit_status |= HITSTATUS_MISS;
 		// dirty ai agro fix
-		if(pVictim->GetTypeId() == TYPEID_UNIT && pVictim->GetAIInterface()->getNextTarget() == NULL)
+		if(pVictim->GetTypeId() == TYPEID_UNIT && pVictim->GetAIInterface()->GetNextTarget() == NULL)
 			pVictim->GetAIInterface()->AttackReaction(this, 1, 0);
 		break;
 //--------------------------------dodge-----------------------------------------------------
 	case 1:
 		// dirty ai agro fix
-		if(pVictim->GetTypeId() == TYPEID_UNIT && pVictim->GetAIInterface()->getNextTarget() == NULL)
+		if(pVictim->GetTypeId() == TYPEID_UNIT && pVictim->GetAIInterface()->GetNextTarget() == NULL)
 			pVictim->GetAIInterface()->AttackReaction(this, 1, 0);
 
 		CALL_SCRIPT_EVENT(pVictim, OnTargetDodged)(this);
@@ -3446,7 +3447,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 //--------------------------------parry-----------------------------------------------------
 	case 2:
 		// dirty ai agro fix
-		if(pVictim->GetTypeId() == TYPEID_UNIT && pVictim->GetAIInterface()->getNextTarget() == NULL)
+		if(pVictim->GetTypeId() == TYPEID_UNIT && pVictim->GetAIInterface()->GetNextTarget() == NULL)
 			pVictim->GetAIInterface()->AttackReaction(this, 1, 0);
 
 		CALL_SCRIPT_EVENT(pVictim, OnTargetParried)(this);
@@ -3758,7 +3759,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 	if(pVictim->GetTypeId() == TYPEID_UNIT)
 	{
 		if(pVictim->GetAIInterface() && (pVictim->GetAIInterface()->getAIState()== STATE_EVADE ||
-										(pVictim->GetAIInterface()->isSoulLinked() && pVictim->GetAIInterface()->getSoulLinker() != this)))
+										(pVictim->GetAIInterface()->GetIsSoulLinked() && pVictim->GetAIInterface()->getSoullinkedWith() != this)))
 		{
 			vstate = EVADE;
 			realdamage = 0;
@@ -4085,7 +4086,7 @@ void Unit::smsg_AttackStop(Unit* pVictim)
 		return;
 
 	WorldPacket data(SMSG_ATTACKSTOP, 24);
-	if( IsPlayer() )
+	if(m_objectTypeId==TYPEID_PLAYER)
 	{
 		data << pVictim->GetNewGUID();
 		data << uint8(0);
@@ -4109,11 +4110,13 @@ void Unit::smsg_AttackStop(Unit* pVictim)
 	{
 		if( !IsPlayer() || getClass() == ROGUE )
 		{
-			m_cTimer = getMSTime() + 8000;
-			sEventMgr.RemoveEvents( this, EVENT_COMBAT_TIMER );
+		m_cTimer = getMSTime() + 8000;
+		sEventMgr.RemoveEvents( this, EVENT_COMBAT_TIMER );
 			sEventMgr.AddEvent( this, &Unit::EventUpdateFlag, EVENT_COMBAT_TIMER, 8000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
 			if( pVictim->IsUnit() ) // there could be damage coming from objects/enviromental
-				sEventMgr.AddEvent( pVictim, &Unit::EventUpdateFlag, EVENT_COMBAT_TIMER, 8000, 1, 0 );		
+				sEventMgr.AddEvent( pVictim, &Unit::EventUpdateFlag, EVENT_COMBAT_TIMER, 8000, 1, 0 );		}
+		else
+		{
 		}
 	}
 }
@@ -4188,7 +4191,7 @@ void Unit::AddAura(Aura * aur)
 	if ( aur == NULL )
 		return;
 
-    if( !IsAlive() && !( aur->GetSpellProto()->AttributesExC & CAN_PERSIST_AND_CASTED_WHILE_DEAD ) )
+    if( ! (isAlive() || (aur->GetSpellProto()->AttributesExC & CAN_PERSIST_AND_CASTED_WHILE_DEAD)) )
 	{
 		delete aur;     
 		return;
@@ -4542,7 +4545,7 @@ void Unit::AddAura(Aura * aur)
 	if(!aur->IsPositive() && aur->IsCombatStateAffecting())	  // Creature
 	{
 		Unit * pCaster = aur->GetUnitCaster();
-		if( pCaster && pCaster->IsAlive() && this->IsAlive() )
+		if( pCaster && pCaster->isAlive() && this->isAlive() )
 		{
 			pCaster->CombatStatus.OnDamageDealt( this );
 
@@ -5192,16 +5195,16 @@ void Unit::SendChatMessageAlternateEntry(uint32 entry, uint8 type, uint32 lang, 
 
 void Unit::WipeHateList()
 {
-	//GetAIInterface()->WipeHateList();
+	GetAIInterface()->WipeHateList();
 }
 void Unit::ClearHateList()
 {
-	//GetAIInterface()->ClearHateList();
+	GetAIInterface()->ClearHateList();
 }
 
 void Unit::WipeTargetList()
 {
-	//GetAIInterface()->WipeTargetList();
+	GetAIInterface()->WipeTargetList();
 }
 
 void Unit::AddInRangeObject(Object* pObj)
@@ -5225,6 +5228,9 @@ void Unit::OnRemoveInRangeObject(Object* pObj)
 
 	if(pObj->GetTypeId() == TYPEID_UNIT || pObj->GetTypeId() == TYPEID_PLAYER)
 	{
+
+		Unit *pUnit = static_cast<Unit*>(pObj);
+		GetAIInterface()->CheckTarget(pUnit);
 
 		if( GetCharmedUnitGUID() == pObj->GetGUID())
 			if(m_currentSpell)
@@ -5250,6 +5256,25 @@ void Unit::EmoteExpire()
 {
 	SetEmoteState(m_oldEmote);
 	sEventMgr.RemoveEvents(this, EVENT_UNIT_EMOTE);
+}
+
+void Unit::MoveToWaypoint(uint32 wp_id)
+{
+	if(this->m_useAI && this->GetAIInterface() != NULL)
+	{
+		AIInterface *ai = GetAIInterface();
+		WayPoint *wp = ai->getWayPoint(wp_id);
+		if(!wp)
+		{
+			sLog.outString("WARNING: Invalid WP specified in MoveToWaypoint.");
+			return;
+		}
+
+		ai->m_currentWaypoint = wp_id;
+		if(wp->flags!= 0)
+			ai->m_moveRun = true;
+		ai->MoveTo(wp->x, wp->y, wp->z, 0);
+	}
 }
 
 int32 Unit::GetDamageDoneMod(uint32 school)
@@ -5703,7 +5728,7 @@ void Unit::Root()
 	}
 	else
 	{
-		m_aiInterface->Movement_allowmovement(false);
+		m_aiInterface->m_canMove = false;
 		m_aiInterface->StopMovement(1);
 	}
 
@@ -5719,7 +5744,9 @@ void Unit::Unroot()
 		static_cast< Player* >( this )->SetMovement(MOVE_UNROOT, 5);
 	}
 	else
-		m_aiInterface->Movement_allowmovement(true);
+	{
+		m_aiInterface->m_canMove = true;
+	}
 
     m_rooted = 0;
 }
@@ -5898,7 +5925,6 @@ void Unit::RemoveFromWorld(bool free_guid)
 
 	//zack: should relocate new events to new eventmanager and not to -1
 	for(uint32 x = MAX_TOTAL_AURAS_START; x < MAX_TOTAL_AURAS_END; ++x)
-	{
 		if(m_auras[x] != 0)
 		{
 			if( m_auras[x]->m_deleted )
@@ -5908,7 +5934,8 @@ void Unit::RemoveFromWorld(bool free_guid)
 			}
 			m_auras[x]->RelocateEvents();
 		}
-	}
+
+	m_aiInterface->WipeReferences();
 }
 
 void Unit::RemoveAurasByInterruptFlagButSkip(uint32 flag, uint32 skip)
@@ -6402,7 +6429,7 @@ void Unit::EventCastSpell(Unit * Target, SpellEntry * Sp)
 void Unit::SetFacing(float newo)
 {
 	SetOrientation(newo);
-	//m_aiInterface->SendMoveToPacket(m_position.x,m_position.y,m_position.z,m_position.o,1,0x1000); // MoveFlags = 0x1000 (run) Paroxysm : lmao.
+	m_aiInterface->SendMoveToPacket(m_position.x,m_position.y,m_position.z,m_position.o,1,0x1000); // MoveFlags = 0x1000 (run)
 }
 
 //guardians are temporary spawn that will inherit master faction and will follow them. Apart from that they have their own mind
@@ -6444,19 +6471,8 @@ Creature* Unit::create_guardian(uint32 guardian_entry,uint32 duration,float angl
 		y += obj->GetPositionY();
 		z += obj->GetPositionZ();
 	}
-
-	// if it's summoned by a totem owned by a player it will be owned by the player, so we can PvP check on them in dealdamage, and isattackable
-	if( IsCreature() && static_cast< Creature* >( this )->IsTotem() && static_cast< Creature* >( this )->GetOwner() != NULL )
-	{
-		Player* totem_owner = static_cast< Player* >( static_cast< Creature* >( this )->GetOwner() );
-		p->SetOwner( static_cast< Unit* >( totem_owner ) );
-	}
-	else
-	{
-		p->SetOwner( this );
-		AddGuardianRef( p );
-	}
 	p->Load( proto, x, y, z );
+
 	if( lvl != 0 )
 	{
 		/* MANA */
@@ -6476,7 +6492,25 @@ Creature* Unit::create_guardian(uint32 guardian_entry,uint32 duration,float angl
 	p->SetZoneId(GetZoneId());
 	p->SetFaction(GetFaction());
 	p->SetUInt32Value( UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED );
+
+	p->GetAIInterface()->Init(p,AITYPE_PET,MOVEMENTTYPE_NONE,this);
+	p->GetAIInterface()->SetUnitToFollow(this);
+	p->GetAIInterface()->SetUnitToFollowAngle(m_followAngle);
+	p->GetAIInterface()->SetFollowDistance(3.0f);
 	p->m_noRespawn = true;
+
+	// if it's summoned by a totem owned by a player it will be owned by the player, so we can PvP check on them in dealdamage, and isattackable
+	if( IsCreature() && static_cast< Creature* >( this )->IsTotem() && static_cast< Creature* >( this )->GetOwner() != NULL )
+	{
+		Player* totem_owner = static_cast< Player* >( static_cast< Creature* >( this )->GetOwner() );
+		p->SetOwner( static_cast< Unit* >( totem_owner ) );
+	}
+	else
+	{
+		p->SetOwner( this );
+		AddGuardianRef( p );
+	}
+
 	p->PushToWorld( GetMapMgr() );
 
 	sEventMgr.AddEvent( p, &Creature::SummonExpire, EVENT_SUMMON_EXPIRE, duration, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
@@ -6689,7 +6723,7 @@ void CombatStatusHandler::OnDamageDealt( Unit * pTarget )
 		return;
 
 	//no need to be in combat if dead
-	if( !pTarget->IsAlive() || !m_Unit->IsAlive() )
+	if( !pTarget->isAlive() || !m_Unit->isAlive() )
 		return;
 
 	AttackerMap::iterator itr = m_attackTargets.find( pTarget->GetGUID() );
@@ -6794,20 +6828,19 @@ bool CombatStatusHandler::IsInCombat()
 	{
 		case TYPEID_UNIT:
 		{
-			if(m_Unit->GetAIInterface() != NULL && m_Unit->GetAIInterface()->getAIState() == STATE_ATTACKING )
+			if (m_Unit->IsPet() && ((Pet*)m_Unit)->GetPetAction() == PET_ACTION_ATTACK)
 				return true;
 			else if (m_Unit->IsPet())
 				return m_lastStatus;
 			else
-				return false;
+				return m_Unit->GetAIInterface()->getAITargetsCount()== 0? false:true;
 		} break;
 		case TYPEID_PLAYER:
 		{
-			Player * plr = TO_PLAYER(m_Unit);
-			//std::list<Pet*> summons = TO_PLAYER(m_Unit)->GetSummons();
-			for(std::list<Pet*>::iterator itr = plr->getSummonStart(); itr != plr->getSummonEnd(); ++itr)
+			std::list<Pet*> summons = TO_PLAYER(m_Unit)->GetSummons();
+			for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
 			{
-				if( (*itr)->GetPetOwner() == plr && (*itr)->CombatStatus.IsInCombat())
+				if((*itr)->GetPetOwner() == m_Unit && (*itr)->CombatStatus.IsInCombat())
 					return true;
 			}
 
@@ -7211,9 +7244,9 @@ void CombatStatusHandler::AttackersForgetHate()
 			m_attackTargets.erase(i2);
 			continue;
 		}
-		AIInterface * ai = pt->GetAIInterface();
-		if(ai != NULL && AIType_isMob(ai) )
-			TO_AIMOB(ai)->removeThreatByPtr(m_Unit);
+
+		if(pt->GetAIInterface())
+			pt->GetAIInterface()->RemoveThreatByPtr(m_Unit);
 	}
 }
 
@@ -7326,55 +7359,33 @@ void Unit::RemoveAllMovementImpairing()
 	}
 }
 
-void Unit::setAttackTimer(int32 time, bool offhand, bool ranged)
+void Unit::setAttackTimer(int32 time, bool offhand)
 {
 	if(!time)
-	{
-		if(offhand)
-			m_offHandAttackTime = getMSTime() + GetUInt32Value(UNIT_FIELD_BASEATTACKTIME+1);
-		else if(ranged)
-			m_rangedAttackTime = getMSTime() + GetUInt32Value(UNIT_FIELD_RANGEDATTACKTIME);
-		else
-			m_baseAttackTime = getMSTime() + GetUInt32Value(UNIT_FIELD_BASEATTACKTIME);
-	}
-	else
-	{
-		//What is the point factoring in cast speed in something totally unrelated to casting...
-		//time = std::max(1000,float2int32(float(time)*GetCastSpeedMod()));
-		Arcemu::Util::ARCEMU_ASSERT(time < 300000);
+		time = offhand ? m_uint32Values[UNIT_FIELD_BASEATTACKTIME+1] : m_uint32Values[UNIT_FIELD_BASEATTACKTIME];
 
-		if(offhand)
-			m_offHandAttackTime = getMSTime() + time;
-		else if(ranged)
-			m_rangedAttackTime = getMSTime() + time;
-		else
-			m_baseAttackTime = getMSTime() + time;
-	}
-}
+	time = std::max(1000,float2int32(time * GetCastSpeedMod()));
+	if(time>300000)		// just in case.. shouldn't happen though
+		time=offhand ? m_uint32Values[UNIT_FIELD_BASEATTACKTIME+1] : m_uint32Values[UNIT_FIELD_BASEATTACKTIME];
 
-bool Unit::isReadyToAttack(bool offhand, bool ranged)
-{
-	bool result = false;
 	if(offhand)
-		result = getMSTime() >= m_offHandAttackTime;
-	else if(ranged)
-		result = getMSTime() >= m_rangedAttackTime;
+		m_attackTimer_1 = getMSTime() + time;
 	else
-		result = getMSTime() >= m_baseAttackTime;
-	return result;
+		m_attackTimer = getMSTime() + time;
 }
-/************ AIINTERFACE METHODS **********************/
-AIInterface * Unit::AIInterface_replace(AIInterface * newInterface)
+
+bool Unit::isAttackReady(bool offhand)
 {
-	AIInterface * old = m_aiInterface;
-	m_aiInterface = newInterface;
-	return old;
+	if(offhand)
+		return (getMSTime() >= m_attackTimer_1) ? true : false;
+	else
+		return (getMSTime() >= m_attackTimer) ? true : false;
 }
-void Unit::AIInterface_destroy()
+
+void Unit::ReplaceAIInterface(AIInterface *new_interface)
 {
-	Arcemu::Util::ARCEMU_ASSERT(m_aiInterface != NULL);
-	delete m_aiInterface;
-	m_aiInterface = NULL;
+	delete m_aiInterface;	//be careful when you do this. Might screw unit states !
+	m_aiInterface = new_interface;
 }
 
 void Unit::EventUpdateFlag()
@@ -7415,8 +7426,10 @@ void Unit::AggroPvPGuards()
 		if((*i)->GetTypeId() == TYPEID_UNIT)
 		{
 			tmpUnit = static_cast< Unit* >(*i);
-			if( TO_CREATURE(tmpUnit)->IsNeutralGuard() && CalcDistance(tmpUnit) <= (50.0f * 50.0f) )
+			if( tmpUnit->GetAIInterface() && tmpUnit->GetAIInterface()->m_isNeutralGuard && CalcDistance(tmpUnit) <= (50.0f * 50.0f) )
+			{
 				tmpUnit->GetAIInterface()->AttackReaction(this, 1, 0);
+			}
 		}
 	}
 }
@@ -7617,7 +7630,7 @@ void Unit::RemoveReflect( uint32 spellid, bool apply )
 				for(GroupMembersSet::iterator itr = subGroup->GetGroupMembersBegin(); itr != subGroup->GetGroupMembersEnd() && targets > 0; ++itr)
 				{
 					Player * member = (*itr)->m_loggedInPlayer;
-					if( member == NULL || member == pPlayer || !member->IsInWorld() || !member->IsAlive() || member->HasAura(59725) )
+					if( member == NULL || member == pPlayer || !member->IsInWorld() || !member->isAlive() || member->HasAura(59725) )
 						continue;
 
 					if( !IsInrange(pPlayer, member, 20) )
@@ -8151,11 +8164,4 @@ float Unit::GetCriticalHealBonusForSpell(Object *victim, SpellEntry *spell, floa
 	}
 
 	return amount;
-}
-
-MobAI * Unit::GetMobInterface()
-{
-	if(AIType_isMob(GetAIInterface() ) )
-		return TO_AIMOB(GetAIInterface() );
-	return NULL;
 }

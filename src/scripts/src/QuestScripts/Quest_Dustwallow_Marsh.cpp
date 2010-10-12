@@ -51,10 +51,11 @@ public:
 		 // set Balos Jacken friendly and start friendlyTimer cooldown
 		 _unit->RemoveNegativeAuras();
 		 _unit->SetFaction(35);   
-		 _unit->SetHealthPct(100);		 	 
-		 TO_AIMOB(_unit->GetAIInterface() )->wipeHateList();
+		 _unit->SetHealthPct(100);		 
+		 _unit->GetAIInterface()->WipeTargetList();		 
+		 _unit->GetAIInterface()->WipeHateList();
 		 _unit->GetAIInterface()->HandleEvent( EVENT_LEAVECOMBAT, _unit, 0);
-		 _unit->GetAIInterface()->disableMelee( true);
+		 _unit->GetAIInterface()->disable_melee = true;
 		 _unit->GetAIInterface()->SetAllowedToEnterCombat(false);
 		 //remove not_selectable flag:
 		 _unit->SetUInt64Value(UNIT_FIELD_FLAGS, 0);
@@ -65,7 +66,7 @@ public:
 		 {
 			// set Balos Jacken unfriendly and reset FriendlyTimer
 			_unit->SetFaction(14);
-			 _unit->GetAIInterface()->disableMelee( false);
+			_unit->GetAIInterface()->disable_melee = false;
 			_unit->GetAIInterface()->SetAllowedToEnterCombat(true);
 			friendlyTimer=BALOS_FRIENDLY_TIMER;
 			RemoveAIUpdateEvent();
@@ -104,11 +105,11 @@ public:
 		
 		creat->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "Fine, if you ready to go!");
 		
-		Creature* Demon = creat->GetMapMgr()->GetInterface()->SpawnCreature(6549, creat->GetPositionX(), creat->GetPositionY(), creat->GetPositionZ(), creat->GetOrientation(), 0);
+		Creature* Demon = creat->GetMapMgr()->GetInterface()->SpawnCreature(6549, creat->GetPositionX(), creat->GetPositionY(), creat->GetPositionZ(), creat->GetOrientation(), true, false, 0, 0);
 		sEventMgr.AddEvent(TO_CREATURE(Demon), &Creature::AddToWorld, creat->GetMapMgr(), EVENT_UNK, 12000, 0, 1);
 		sEventMgr.AddEvent(TO_CREATURE(Demon), &Creature::Despawn, (uint32)120000, (uint32)0, EVENT_CREATURE_UPDATE, 12000, 0, 1);
 		
-		TO_AIMOB(creat->GetAIInterface() )->Waypoint_setmovetype(MOVEMENTTYPE_FORWARDTHENSTOP);
+		creat->GetAIInterface()->setMoveType(11);
 		creat->GetAIInterface()->StopMovement(3000);
 		
 		sEAS.CreateCustomWaypointMap(creat);
@@ -162,10 +163,11 @@ public:
 	{
 		_unit->RemoveNegativeAuras();
 		_unit->SetFaction(29);
-		_unit->SetHealthPct(100);              
-		TO_AIMOB(_unit->GetAIInterface() )->wipeHateList();
+		_unit->SetHealthPct(100);      
+		_unit->GetAIInterface()->WipeTargetList();         
+		_unit->GetAIInterface()->WipeHateList();
         _unit->GetAIInterface()->HandleEvent( EVENT_LEAVECOMBAT, _unit, 0);
-        _unit->GetAIInterface()->disableMelee( true);
+        _unit->GetAIInterface()->disable_melee = true;
         _unit->GetAIInterface()->SetAllowedToEnterCombat(false);
 		_unit->SetUInt32Value(UNIT_FIELD_FLAGS, 0);
 	}
@@ -193,7 +195,7 @@ public:
 		say+=" wanna fight Overlord Mok'Morokk? Me beat you! Me boss here!";
 		Overlord->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, say.c_str());
 		Overlord->SetFaction(72);
-		Overlord->GetAIInterface()->disableMelee(false);
+		Overlord->GetAIInterface()->disable_melee = false;
 		Overlord->GetAIInterface()->SetAllowedToEnterCombat(true);
 	}
 };
@@ -231,10 +233,11 @@ public:
 		_unit->Emote(EMOTE_STATE_KNEEL);
 		_unit->RemoveNegativeAuras();
 		_unit->SetFaction(12);
-		_unit->SetHealthPct(100);              
-		TO_AIMOB(_unit->GetAIInterface() )->wipeHateList();
+		_unit->SetHealthPct(100);      
+		_unit->GetAIInterface()->WipeTargetList();         
+		_unit->GetAIInterface()->WipeHateList();
         _unit->GetAIInterface()->HandleEvent( EVENT_LEAVECOMBAT, _unit, 0);
-        _unit->GetAIInterface()->disableMelee(true);
+        _unit->GetAIInterface()->disable_melee = true;
         _unit->GetAIInterface()->SetAllowedToEnterCombat(false);
 		_unit->SetUInt32Value(UNIT_FIELD_FLAGS, 0);
 	}
@@ -258,7 +261,7 @@ public:
 			return;
 
 		Dashel->SetFaction(72);
-		Dashel->GetAIInterface()->disableMelee(false);
+		Dashel->GetAIInterface()->disable_melee = false;
 		Dashel->GetAIInterface()->SetAllowedToEnterCombat(true);
 	}
 };

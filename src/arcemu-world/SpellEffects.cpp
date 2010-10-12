@@ -358,7 +358,7 @@ void Spell::SpellEffectNULL(uint32 i)
 
 void Spell::SpellEffectInstantKill(uint32 i)
 {
-	if( !unitTarget || !unitTarget->IsAlive() )
+	if( !unitTarget || !unitTarget->isAlive() )
 		return;
 
 	//Sacrifice: if spell caster has "void walker" pet, pet dies and spell caster gets a
@@ -466,7 +466,7 @@ void Spell::SpellEffectInstantKill(uint32 i)
 
 void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 {
-	if(!unitTarget || !unitTarget->IsAlive())
+	if(!unitTarget || !unitTarget->isAlive())
 		return;
 
 	if(unitTarget->SchoolImmunityList[GetProto()->School])
@@ -722,7 +722,9 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 		return;
 
 	if(GetProto()->speed > 0 && m_triggeredSpell == false )
+	{
 		m_caster->SpellNonMeleeDamageLog(unitTarget,GetProto()->Id, dmg, pSpellId== 0);
+	}
 	else
 	{
 		if( GetType() == SPELL_DMG_TYPE_MAGIC )
@@ -922,7 +924,7 @@ out:
 		*/
 	case 35729:
 		{
-			if( !unitTarget || !unitTarget->IsAlive())
+			if( !unitTarget || !unitTarget->isAlive())
 				return;
 
 			Aura * pAura;
@@ -1025,16 +1027,16 @@ out:
 			{
 				i2 = itr++;
 				// don't add objects that are not units and that are dead
-				if((*i2)->GetTypeId()!= TYPEID_UNIT || !static_cast<Unit*>( (*i2) )->IsAlive())
+				if((*i2)->GetTypeId()!= TYPEID_UNIT || !static_cast<Unit*>( (*i2) )->isAlive())
 					continue;
 
 				Creature *cr= static_cast<Creature*>((*i2));
-				if(cr->GetAIInterface()->getNextTarget()==unitTarget)
+				if(cr->GetAIInterface()->GetNextTarget()==unitTarget)
 					targets[targets_got++]=cr;
 				if(targets_got==3)
 					break;
 			}
-			/*for(uint32 j= 0;j<targets_got;j++)
+			for(uint32 j= 0;j<targets_got;j++)
 			{
 				//set threat to this target so we are the msot hated
 				uint32 threat_to_him = targets[j]->GetAIInterface()->getThreatByPtr( unitTarget );
@@ -1043,8 +1045,8 @@ out:
 				if(threat_dif>0)//should nto happen
 					targets[j]->GetAIInterface()->modThreatByPtr(u_caster,threat_dif);
 				targets[j]->GetAIInterface()->AttackReaction(u_caster,1,0);
-				targets[j]->GetAIInterface()->setNextTarget(u_caster);
-			}*/
+				targets[j]->GetAIInterface()->SetNextTarget(u_caster);
+			}
 		}break;
 		/*
 		Illumination
@@ -1167,7 +1169,7 @@ out:
 		*/
 	case 25228:
 		{
-			if(!u_caster || !u_caster->IsAlive() || !unitTarget || !unitTarget->IsAlive())
+			if(!u_caster || !u_caster->isAlive() || !unitTarget || !unitTarget->isAlive())
 				return;
 			uint32 pet_dmg = this->forced_basepoints[0]*20/100;
 			if( pet_dmg )
@@ -1211,7 +1213,7 @@ out:
 		}break;
 	case 49576: //Death grip
 		{
-			if(!u_caster || !u_caster->IsAlive() || !unitTarget || !unitTarget->IsAlive())
+			if(!u_caster || !u_caster->isAlive() || !unitTarget || !unitTarget->isAlive())
 				return;
 
             // rooted units can't be death gripped
@@ -1274,13 +1276,13 @@ out:
 				unitTarget->smsg_AttackStart( unitTarget );
 				unitTarget->setAttackTimer(time, false);
 				unitTarget->setAttackTimer(time, true);
-				unitTarget->GetAIInterface()->setForcedTarget(u_caster);
+				unitTarget->GetAIInterface()->taunt(u_caster,true);
 			}
 		}break;
 		// Bloodworms
      case 50452:
                 {
-                if(!u_caster || !u_caster->IsAlive() || !unitTarget)
+                if(!u_caster || !u_caster->isAlive() || !unitTarget)
                     return;
  
                 uint32 cnt = (2 + RandomUInt(2)); // 2 - 4 worms
@@ -1299,7 +1301,7 @@ out:
 		*/
 	case 30507:
 		{
-			if( !unitTarget || !unitTarget->IsAlive())
+			if( !unitTarget || !unitTarget->isAlive())
 				return;
 
 			u_caster->CastSpell(unitTarget->GetGUID(),30501,true);
@@ -1310,7 +1312,7 @@ out:
 		*/
 	case 14537:
 		{
-			if( !unitTarget || !unitTarget->IsAlive())
+			if( !unitTarget || !unitTarget->isAlive())
 				return;
 
 			uint32 ClearSpellId[6] = { 8401,8408,930,118,1680,10159 };
@@ -1432,7 +1434,7 @@ out:
 			if( !unitTarget || !p_caster)
 				return;
 
-			if(!unitTarget->IsAlive() || unitTarget->getClass()==WARRIOR || unitTarget->getClass() == ROGUE)
+			if(!unitTarget->isAlive() || unitTarget->getClass()==WARRIOR || unitTarget->getClass() == ROGUE)
 				return;
 
 			uint32 count = 0;
@@ -1905,7 +1907,7 @@ out:
 		}break;
 	case 29858: //Soulshatter
 		{
-			if( !u_caster || !u_caster->IsAlive() || !unitTarget || !unitTarget->IsAlive() )
+			if( !u_caster || !u_caster->isAlive() || !unitTarget || !unitTarget->isAlive() )
 				return;
 
 			u_caster->CastSpell(unitTarget, 32835, false);
@@ -2141,7 +2143,7 @@ void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
 
 		m_pendingAuras.insert(std::make_pair(unitTarget->GetGUID(), pAura));
 		AddRef();
-		sEventMgr.AddEvent(this, &Spell::HandleAddAura, unitTarget->GetGUID(), EVENT_SPELL_DAMAGE_HIT, 100, 1, 0);
+		sEventMgr.AddEvent(this, &Spell::HandleAddAura, unitTarget->GetGUID(), EVENT_SPELL_HIT, 100, 1, 0);
 	}
 	else
 	{
@@ -2181,7 +2183,7 @@ void Spell::SpellEffectEnvironmentalDamage(uint32 i)
 
 void Spell::SpellEffectPowerDrain(uint32 i)  // Power Drain
 {
-	if(!unitTarget || !unitTarget->IsAlive())
+	if(!unitTarget || !unitTarget->isAlive())
 		return;
 
 	uint32 powerField = UNIT_FIELD_POWER1+GetProto()->EffectMiscValue[i];
@@ -2204,7 +2206,7 @@ void Spell::SpellEffectPowerDrain(uint32 i)  // Power Drain
 
 void Spell::SpellEffectHealthLeech(uint32 i) // Health Leech
 {
-	if(!unitTarget || !unitTarget->IsAlive())
+	if(!unitTarget || !unitTarget->isAlive())
 		return;
 
 	uint32 curHealth = unitTarget->GetHealth();
@@ -2310,7 +2312,7 @@ void Spell::SpellEffectHeal(uint32 i) // Heal
 
 		case 34299: //Druid: Improved Leader of the PAck
 			{
-				if (!unitTarget->IsPlayer() || !unitTarget->IsAlive())
+				if (!unitTarget->IsPlayer() || !unitTarget->isAlive())
 					break;
 
 				Player* mPlayer = static_cast< Player* >( unitTarget );
@@ -2326,7 +2328,7 @@ void Spell::SpellEffectHeal(uint32 i) // Heal
 			}break;
 		case 22845: // Druid: Frenzied Regeneration
 			{
-				if (!unitTarget->IsPlayer() || !unitTarget->IsAlive())
+				if (!unitTarget->IsPlayer() || !unitTarget->isAlive())
 					break;
 				Player* mPlayer = static_cast< Player* >( unitTarget );
 				if (!mPlayer->IsInFeralForm() ||
@@ -2412,7 +2414,7 @@ void Spell::SpellEffectHeal(uint32 i) // Heal
 
 void Spell::SpellEffectBind(uint32 i)
 {
-	if(!playerTarget || !playerTarget->IsAlive() || !m_caster)
+	if(!playerTarget || !playerTarget->isAlive() || !m_caster)
 		return;
 
 	WorldPacket data(45);
@@ -2500,7 +2502,7 @@ void Spell::SpellEffectResurrect(uint32 i) // Resurrect (Flat)
 		if(!playerTarget) return;
 	}
 
-	if(playerTarget->IsAlive() || !playerTarget->IsInWorld())
+	if(playerTarget->isAlive() || !playerTarget->IsInWorld())
 		return;
 
 	uint32 health = GetProto()->EffectBasePoints[i];
@@ -2952,7 +2954,7 @@ void Spell::SpellEffectPersistentAA(uint32 i) // Persistent Area Aura
 		}break;
 	case TARGET_FLAG_UNIT:
 		{
-			if(!unitTarget||!unitTarget->IsAlive())
+			if(!unitTarget||!unitTarget->isAlive())
 				break;
 			dynObj->Create( u_caster, this, unitTarget->GetPositionX(), unitTarget->GetPositionY(), unitTarget->GetPositionZ(),
 				dur, r);
@@ -2960,7 +2962,7 @@ void Spell::SpellEffectPersistentAA(uint32 i) // Persistent Area Aura
 	case TARGET_FLAG_OBJECT:
 		{
 			if(!unitTarget) break;
-			if(!unitTarget->IsAlive()) break;
+			if(!unitTarget->isAlive()) break;
 
 			dynObj->Create(u_caster, this, unitTarget->GetPositionX(), unitTarget->GetPositionY(), unitTarget->GetPositionZ(),
 				dur, r);
@@ -3060,6 +3062,11 @@ void Spell::SpellEffectSummon(uint32 i)
 				summon->DeleteMe();//CreateAsSummon() returns false if an error occurred.
 				summon = NULL;
 			}
+			else
+			{
+				summon->AddSpell( dbcSpell.LookupEntry(31707), true );
+				summon->AddSpell( dbcSpell.LookupEntry(33395), true );
+			}
 		}break;
 	case 37994:	// Water Elemental - no duration timer
 		{
@@ -3068,6 +3075,10 @@ void Spell::SpellEffectSummon(uint32 i)
 			{
 				summon->DeleteMe();//CreateAsSummon() returns false if an error occurred.
 				summon = NULL;
+			}
+			else
+			{
+				summon->AddSpell( dbcSpell.LookupEntry(31707), true );
 			}
 		}break;
 	case 29264: // Feral Spirit
@@ -3085,6 +3096,15 @@ void Spell::SpellEffectSummon(uint32 i)
 				summon->DeleteMe();//CreateAsSummon() returns false if an error occurred.
 				summon = NULL;
 			}
+			else
+			{
+			//Spells
+				summon->AddSpell(dbcSpell.LookupEntry(58877), true); // Spirit Hunt
+				summon->AddSpell(dbcSpell.LookupEntry(58875), true); // Spirit walk
+				summon->AddSpell(dbcSpell.LookupEntry(58857), true); // Twin Howl
+				summon->AddSpell(dbcSpell.LookupEntry(58861), true); // Spirit Bash
+			}
+
 			//Second wolf
 			Pet *summon2 = objmgr.CreatePet(GetProto()->EffectMiscValue[i]);
 			LocationVector* lv = new LocationVector(p_caster->GetPositionX() - 2.0f, p_caster->GetPositionY() - 2.0f, p_caster->GetPositionZ());
@@ -3094,7 +3114,15 @@ void Spell::SpellEffectSummon(uint32 i)
 				summon2 = NULL;
 			}
 			else
-				summon2->GetAIInterface()->setFollowAngle(float(-(M_PI/2)));
+			{
+				summon2->GetAIInterface()->SetUnitToFollowAngle(float(-(M_PI/2)));
+			
+				//Spells
+				summon2->AddSpell(dbcSpell.LookupEntry(58877), true); // Spirit Hunt
+				summon2->AddSpell(dbcSpell.LookupEntry(58875), true); // Spirit walk
+				summon2->AddSpell(dbcSpell.LookupEntry(58857), true); // Twin Howl
+				summon2->AddSpell(dbcSpell.LookupEntry(58861), true); // Spirit Bash
+			}
 			delete lv;
 		}break;
 	case 27893: // Dancing Rune Weapon
@@ -3123,7 +3151,7 @@ void Spell::SpellEffectSummon(uint32 i)
 				summon->SetDisplayId((uint32)15435);
 				summon->SetMinDamage((float)p_caster->GetDamageDoneMod(SCHOOL_NORMAL));
 				summon->SetMaxDamage((float)p_caster->GetDamageDoneMod(SCHOOL_NORMAL));
-				summon->GetAIInterface()->setFollowAngle(float(-(M_PI/2)));
+				summon->GetAIInterface()->SetUnitToFollowAngle(float(-(M_PI/2)));
 
 				Item * item = p_caster->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
 				if( item != NULL )
@@ -3148,6 +3176,7 @@ void Spell::SpellEffectSummon(uint32 i)
 			Arcemu::Util::ARCEMU_ASSERT(   pCreature != NULL);
 
 			pCreature->Load(cp, m_targets.m_destX, m_targets.m_destY, m_targets.m_destZ);
+			pCreature->GetAIInterface()->Init(pCreature, AITYPE_PASSIVE, MOVEMENTTYPE_NONE);
 			pCreature->setLevel(u_caster->getLevel());
 			pCreature->SetFaction(u_caster->GetFaction());
 
@@ -3162,11 +3191,10 @@ void Spell::SpellEffectSummon(uint32 i)
 			Arcemu::Util::ARCEMU_ASSERT(   pCreature != NULL);
 
 			pCreature->Load(cp, u_caster->GetPositionX(), u_caster->GetPositionY(), u_caster->GetPositionZ());
-			AIInterface * ai = pCreature->GetAIInterface();
-			Arcemu::Util::ARCEMU_ASSERT(ai != NULL);
-			ai->setUnitToFollow(u_caster->GetGUID() );
-			ai->setFollowAngle(float(-(M_PI/2)) );
-			ai->setFollowDistance( (uint32)GetRadius(i) );
+			pCreature->GetAIInterface()->Init(pCreature,AITYPE_PET,MOVEMENTTYPE_NONE,u_caster);
+			pCreature->GetAIInterface()->SetUnitToFollow(u_caster);
+			pCreature->GetAIInterface()->SetUnitToFollowAngle(float(-(M_PI/2)));
+			pCreature->GetAIInterface()->SetFollowDistance(GetRadius(i));
 			pCreature->setLevel(u_caster->getLevel());
 			pCreature->SetFaction(u_caster->GetFaction());
 
@@ -3188,7 +3216,7 @@ void Spell::SpellEffectSummon(uint32 i)
 				if( uTarget && isAttackable( p_caster, uTarget ) )
 				{
 					pCreature->GetAIInterface()->AttackReaction( uTarget, 1 );
-					pCreature->GetAIInterface()->setNextTarget( uTarget );
+					pCreature->GetAIInterface()->SetNextTarget( uTarget );
 				}
 			}
 			else if ( MiscValue == 24207 ) //Army of the dead ghoul.
@@ -3197,12 +3225,14 @@ void Spell::SpellEffectSummon(uint32 i)
 				float pi_rand = ((int32)(rand()-RAND_MAX*0.5f)%15707)/10000.0f; // should be random enough.
 				pCreature->SetMinDamage(pCreature->GetMinDamage() + parent_bonus);
 				pCreature->SetMaxDamage(pCreature->GetMaxDamage() + parent_bonus);
-				pCreature->GetAIInterface()->setFollowAngle(pi_rand);
-				pCreature->GetAIInterface()->setFollowDistance(3);
+				pCreature->GetAIInterface()->SetUnitToFollowAngle(pi_rand);
+				pCreature->GetAIInterface()->SetFollowDistance(3.0f);
 				pCreature->SetPosition(spawnx, spawny, spawnz, 0.0f,true);
 				pCreature->PushToWorld(u_caster->GetMapMgr());
 			}
 			else
+				pCreature->PushToWorld(u_caster->GetMapMgr());
+
 			sEventMgr.AddEvent(pCreature, &Creature::RemoveFromWorld, false, true, EVENT_CREATURE_REMOVE_CORPSE, GetDuration(), 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 		}break;
 	}
@@ -3333,7 +3363,7 @@ void Spell::SpellEffectLeap(uint32 i) // Leap
 
 void Spell::SpellEffectEnergize(uint32 i) // Energize
 {
-	if(!unitTarget || !unitTarget->IsAlive())
+	if(!unitTarget || !unitTarget->isAlive())
 		return;
 
 	uint32 modEnergy = 0;
@@ -3454,7 +3484,7 @@ void Spell::SpellEffectTriggerMissile(uint32 i) // Trigger Missile
 	// TODO: Following should be / is probably in SpellTarget code
 	for(std::set<Object*>::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); itr++ )
 	{
-		if(!((*itr)->IsUnit()) || !static_cast<Unit*>((*itr))->IsAlive())
+		if(!((*itr)->IsUnit()) || !static_cast<Unit*>((*itr))->isAlive())
 			continue;
 		Unit *t= static_cast<Unit*>((*itr));
 
@@ -3720,7 +3750,7 @@ void Spell::SpellEffectTransformItem(uint32 i)
 
 void Spell::SpellEffectApplyAA(uint32 i) // Apply Area Aura
 {
-	if(!unitTarget || !unitTarget->IsAlive()) return;
+	if(!unitTarget || !unitTarget->isAlive()) return;
 	if(u_caster != unitTarget) return;
 
 	Aura * pAura;
@@ -3735,7 +3765,7 @@ void Spell::SpellEffectApplyAA(uint32 i) // Apply Area Aura
 
 		m_pendingAuras.insert(std::make_pair(unitTarget->GetGUID(), pAura));
 		AddRef();
-		sEventMgr.AddEvent(this, &Spell::HandleAddAura, unitTarget->GetGUID(), EVENT_SPELL_DAMAGE_HIT, 100, 1, 0);
+		sEventMgr.AddEvent(this, &Spell::HandleAddAura, unitTarget->GetGUID(), EVENT_SPELL_HIT, 100, 1, 0);
 	}
 	else
 	{
@@ -4214,15 +4244,10 @@ void Spell::SpellEffectSpawn(uint32 i)
 			if(!u_caster || u_caster->IsPlayer())
 				return;
 
-			static float coord[3][3]= {
-				{-108.9034f,2129.5678f,144.9210f},
-				{-108.9034f,2155.5678f,155.678f},
-				{-77.9034f,2155.5678f,155.678f}
-			};
-			float o = 0.0f;
+			static float coord[3][3]= {{-108.9034f,2129.5678f,144.9210f},{-108.9034f,2155.5678f,155.678f},{-77.9034f,2155.5678f,155.678f}};
 
 			int j = rand()%3;
-			u_caster->GetAIInterface()->MoveTo( coord[j][0],coord[j][1],coord[j][2],o );
+			u_caster->GetAIInterface()->SendMoveToPacket(coord[j][0],coord[j][1],coord[j][2],0.0f,0,u_caster->GetAIInterface()->getMoveFlags());
 		}
 	}
 }
@@ -4528,25 +4553,30 @@ void Spell::SpellEffectSummonPet(uint32 i) //summon - pet
 	}
 }
 
-//Obselete spell effect
-void Spell::SpellEffectLearnPetSpell(uint32 i) {}
-/*{
+void Spell::SpellEffectLearnPetSpell(uint32 i)
+{
+	/*if(unitTarget && m_caster->GetTypeId() == TYPEID_PLAYER)
+	{
+	if(unitTarget->IsPet() && unitTarget->GetTypeId() == TYPEID_UNIT)
+	{
+	static_cast< Player* >(m_caster)->AddPetSpell(GetProto()->EffectTriggerSpell[i], unitTarget->GetEntry());
+	}
+	}*/
+
 	if(unitTarget && unitTarget->IsPet() && p_caster)
 	{
-		Pet * pPet = TO_PET(unitTarget);
-		if(pPet->IsSummon() )
+		Pet * pPet = static_cast<Pet*>( unitTarget );
+		if(pPet->IsSummon())
 			p_caster->AddSummonSpell(unitTarget->GetEntry(), GetProto()->EffectTriggerSpell[i]);
 
-		//Try to retrieve the spell from objmgr first.
-		AI_PetSpell * aispell = objmgr.Pet_getAISpell(pPet->GetCreatureInfo()->Family, GetProto()->EffectTriggerSpell[i] );
-		if(aispell == NULL)
-			//Create one if one doesn't exist.
-			aispell = AIInterface_Mgr::ConstructPetSpell( GetProto()->EffectTriggerSpell[i] );
-		//passive spells will return null but doesn't seem to be any passive spells being taught by this spell effect.
-		if(aispell != NULL )
-			pPet->AddSpell( aispell, true);
+		pPet->AddSpell( dbcSpell.LookupEntry( GetProto()->EffectTriggerSpell[i] ), true );
+
+		// Send Packet
+		/*		WorldPacket data(SMSG_SET_EXTRA_AURA_INFO_OBSOLETE, 22);
+		data << pPet->GetGUID() << uint8(0) << uint32(GetProto()->EffectTriggerSpell[i]) << uint32(-1) << uint32(0);
+		p_caster->GetSession()->SendPacket(&data);*/
 	}
-}*/
+}
 
 void Spell::SpellEffectWeapondamage( uint32 i ) // Weapon damage +
 {
@@ -4712,7 +4742,8 @@ void Spell::SpellEffectSendEvent(uint32 i) //Send Event
 
 			Creature * pCreature = p_caster->GetMapMgr()->CreateCreature(cp->Id);
 			pCreature->Load(cp, p_caster->GetPositionX(), p_caster->GetPositionY(), p_caster->GetPositionZ());
-			pCreature->GetAIInterface()->setForcedTarget(p_caster);
+			pCreature->GetAIInterface()->Init(pCreature, AITYPE_AGRO,MOVEMENTTYPE_NONE);
+			pCreature->GetAIInterface()->taunt(p_caster, true);
 			pCreature->PushToWorld(p_caster->GetMapMgr());
 			sEventMgr.AddEvent(pCreature, &Creature::RemoveFromWorld, false, true,  EVENT_CREATURE_REMOVE_CORPSE,60000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 		}break;
@@ -4729,7 +4760,8 @@ void Spell::SpellEffectSendEvent(uint32 i) //Send Event
 
 			Creature * pCreature = p_caster->GetMapMgr()->CreateCreature(cp->Id);
 			pCreature->Load(cp, p_caster->GetPositionX(), p_caster->GetPositionY(), p_caster->GetPositionZ());
-			pCreature->GetAIInterface()->setForcedTarget(p_caster);
+			pCreature->GetAIInterface()->Init(pCreature, AITYPE_AGRO,MOVEMENTTYPE_NONE);
+			pCreature->GetAIInterface()->taunt(p_caster, true);
 			pCreature->PushToWorld(p_caster->GetMapMgr());
 			sEventMgr.AddEvent(pCreature, &Creature::RemoveFromWorld, false, true,  EVENT_CREATURE_REMOVE_CORPSE,60000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 		}break;
@@ -4744,7 +4776,8 @@ void Spell::SpellEffectSendEvent(uint32 i) //Send Event
 
 			Creature * pCreature = p_caster->GetMapMgr()->CreateCreature(cp->Id);
 			pCreature->Load(cp, p_caster->GetPositionX(), p_caster->GetPositionY(), p_caster->GetPositionZ());
-			pCreature->GetAIInterface()->setForcedTarget(p_caster);
+			pCreature->GetAIInterface()->Init(pCreature, AITYPE_AGRO,MOVEMENTTYPE_NONE);
+			pCreature->GetAIInterface()->taunt(p_caster, true);
 			pCreature->PushToWorld(p_caster->GetMapMgr());
 			sEventMgr.AddEvent(pCreature, &Creature::RemoveFromWorld, false, true,  EVENT_CREATURE_REMOVE_CORPSE,60000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 		}break;
@@ -4753,7 +4786,7 @@ void Spell::SpellEffectSendEvent(uint32 i) //Send Event
 
 void Spell::SpellEffectPowerBurn(uint32 i) // power burn
 {
-	if( unitTarget == NULL || !unitTarget->IsAlive() || unitTarget->GetPowerType() != POWER_TYPE_MANA )
+	if( unitTarget == NULL || !unitTarget->isAlive() || unitTarget->GetPowerType() != POWER_TYPE_MANA )
 		return;
 
 	if( unitTarget->IsPlayer() )
@@ -4783,7 +4816,7 @@ void Spell::SpellEffectPowerBurn(uint32 i) // power burn
 
 void Spell::SpellEffectThreat(uint32 i) // Threat
 {
-	if( !unitTarget || !unitTarget->IsAlive() || !unitTarget->IsCreature() )
+	if( !unitTarget || !unitTarget->isAlive() || !unitTarget->IsCreature() )
 		return;
 
 	int32 amount = GetProto()->EffectBasePoints[i];
@@ -4791,12 +4824,9 @@ void Spell::SpellEffectThreat(uint32 i) // Threat
 		SM_FIValue(u_caster->SM_FMiscEffect,&amount,GetProto()->SpellGroupType);
 		SM_PIValue(u_caster->SM_PMiscEffect,&amount,GetProto()->SpellGroupType);
 	}
-	AIInterface * ai = unitTarget->GetAIInterface();
-	Arcemu::Util::ARCEMU_ASSERT(ai != NULL);
-	bool threat_exists = false;
-	if(AIType_isMob(ai) )
-		threat_exists = TO_AIMOB(ai)->modThreatByPtr(u_caster,amount);
-	if(!threat_exists)
+
+	bool chck = unitTarget->GetAIInterface()->modThreatByPtr(u_caster, amount);
+	if(!chck)
 		unitTarget->GetAIInterface()->AttackReaction(u_caster,1,0);
 }
 
@@ -4814,7 +4844,7 @@ void Spell::SpellEffectTriggerSpell(uint32 i) // Trigger Spell
 
 void Spell::SpellEffectPowerFunnel(uint32 i) // Power Funnel
 {
-	if(!unitTarget || !unitTarget->IsAlive() || !unitTarget->IsPet())
+	if(!unitTarget || !unitTarget->isAlive() || !unitTarget->IsPet())
 		return;
 
 	//does not exist
@@ -4822,7 +4852,7 @@ void Spell::SpellEffectPowerFunnel(uint32 i) // Power Funnel
 
 void Spell::SpellEffectHealMaxHealth(uint32 i)   // Heal Max Health
 {
-	if( !unitTarget || !unitTarget->IsAlive() )
+	if( !unitTarget || !unitTarget->isAlive() )
 		return;
 
 	uint32 dif = unitTarget->GetUInt32Value( UNIT_FIELD_MAXHEALTH ) - unitTarget->GetUInt32Value( UNIT_FIELD_HEALTH );
@@ -4842,7 +4872,7 @@ void Spell::SpellEffectHealMaxHealth(uint32 i)   // Heal Max Health
 
 void Spell::SpellEffectInterruptCast(uint32 i) // Interrupt Cast
 {
-	if(!unitTarget || !unitTarget->IsAlive())
+	if(!unitTarget || !unitTarget->isAlive())
 		return;
 
 	if(!playerTarget)
@@ -4863,7 +4893,9 @@ void Spell::SpellEffectInterruptCast(uint32 i) // Interrupt Cast
 		prevtype = unitTarget->GetCurrentSpell()->GetProto()->PreventionType;
 
 		if((GetProto()->InterruptFlags & CAST_INTERRUPT_ON_INTERRUPT_SCHOOL) && (prevtype == PREVENTION_TYPE_SILENCE))
+		{
 				school = unitTarget->GetCurrentSpell()->GetProto()->School;
+		}
  
 		unitTarget->GetCurrentSpell()->cancel();
 	}
@@ -4881,7 +4913,9 @@ void Spell::SpellEffectInterruptCast(uint32 i) // Interrupt Cast
 		unitTarget->SchoolCastPrevent[school] = duration + getMSTime();
 		
 		if(unitTarget->IsPlayer())
-			TO_PLAYER(unitTarget)->SendPreventSchoolCast(school, duration);
+		{
+				TO_PLAYER(unitTarget)->SendPreventSchoolCast(school, duration);
+		}
  	}
 	else if((GetProto()->InterruptFlags & CAST_INTERRUPT_ON_INTERRUPT_ALL) && (prevtype == PREVENTION_TYPE_SILENCE))
 	{
@@ -4910,7 +4944,7 @@ void Spell::SpellEffectInterruptCast(uint32 i) // Interrupt Cast
 void Spell::SpellEffectDistract(uint32 i) // Distract
 {
 	//spellId 1725 Distract:Throws a distraction attracting the all monsters for ten sec's
-	if(!unitTarget || !unitTarget->IsAlive())
+	if(!unitTarget || !unitTarget->isAlive())
 		return;
 
 	if(m_targets.m_destX != 0.0f || m_targets.m_destY != 0.0f || m_targets.m_destZ != 0.0f)
@@ -5652,8 +5686,8 @@ void Spell::SpellEffectSanctuary(uint32 i) // Stop all attacks made to you
 		{
 			pUnit = static_cast<Unit*>(*itr);
 
-			if( pUnit && pUnit->GetTypeId() == TYPEID_UNIT && AIType_isMob(pUnit->GetAIInterface()) )
-				TO_AIMOB(pUnit->GetAIInterface() )->removeThreatByPtr(unitTarget);
+			if( pUnit && pUnit->GetTypeId() == TYPEID_UNIT )
+				pUnit->GetAIInterface()->RemoveThreatByPtr( unitTarget );
 		}
 }
 
@@ -5684,7 +5718,7 @@ void Spell::SpellEffectCreateHouse(uint32 i) // Create House
 
 void Spell::SpellEffectDuel(uint32 i) // Duel
 {
-	if(!p_caster || !p_caster->IsAlive())
+	if(!p_caster || !p_caster->isAlive())
 		return;
 
 	if (p_caster->IsStealth())
@@ -5710,7 +5744,7 @@ void Spell::SpellEffectDuel(uint32 i) // Duel
 		SendCastResult(SPELL_FAILED_BAD_TARGETS);
 		return; // invalid Target
 	}
-	if (!playerTarget->IsAlive())
+	if (!playerTarget->isAlive())
 	{
 		SendCastResult(SPELL_FAILED_TARGETS_DEAD);
 		return; // Target not alive
@@ -5807,6 +5841,7 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 	}
 
 	uint32 entry = GetProto()->EffectMiscValue[i];
+
 	CreatureInfo* ci = CreatureNameStorage.LookupEntry(entry);
 	if(!ci )
 	{
@@ -5821,6 +5856,7 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
     }
 
 	Creature * pTotem = p_caster->GetMapMgr()->CreateCreature(entry);
+
 	// send the packet for the totem timer
 	WorldPacket data(SMSG_TOTEM_CREATED, 17);
 	data << uint8(slot);
@@ -5848,10 +5884,13 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 		pTotem->Create(ci->Name, p_caster->GetMapId(), x, y, landh, p_caster->GetOrientation());
 
 	uint32 displayID = 0;
+
 	if( p_caster->GetTeamInitial() == 0 )
 	{
 		if ( ci->Female_DisplayID != 0 )
+		{
 			displayID = ci->Female_DisplayID; //this is the nice solution provided by emsy
+		}
 		else //this is the case when you are using a blizzlike db
 		{
 			if( ci->Male_DisplayID == 4587 )
@@ -5869,7 +5908,9 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 		}
 	}
 	else
+	{
 		displayID = ci->Male_DisplayID;
+	}
 
 	// Set up the creature.
 	pTotem->SetEntry(  entry);
@@ -5895,8 +5936,6 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 	pTotem->SetCastSpeedMod(1.0f);
 	pTotem->SetCreatedBySpell(GetProto()->Id);
 	pTotem->SetUInt32Value( UNIT_DYNAMIC_FLAGS, 0 );
-	pTotem->SetFaction(p_caster->GetFaction() );
-	pTotem->UpdateOppFactionSet();
 
 	if( p_caster->IsPvPFlagged() )
 		pTotem->SetPvPFlag();
@@ -5907,9 +5946,130 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 		pTotem->SetFFAPvPFlag();
 	else
 		pTotem->RemoveFFAPvPFlag();
-	// TO DO : Make totem load spells from their proto.
-	pTotem->AIInterface_create();
-	pTotem->PushToWorld(m_caster->GetMapMgr());
+
+	// Initialize faction stuff.
+	pTotem->m_faction = p_caster->m_faction;
+	pTotem->m_factionDBC = p_caster->m_factionDBC;
+
+	if(ci->Id != 3968) //Exclude the sentry totem, it does not cast
+	{
+		// Obtain the spell we will be casting.
+		SpellEntry * TotemSpell = ObjectMgr::getSingleton().GetTotemSpell(GetProto()->Id);
+
+		if(TotemSpell == NULL)
+		{
+			sLog.outDebug("Totem %u does not have any spells to cast, exiting\n",entry);
+			return;
+		}
+
+		//added by Zack : Some shaman talents are cast on player but it should be inherited or something by totems
+		pTotem->InheritSMMods(p_caster);
+
+		// Totems get spell damage and healing bonus from the Shaman
+		for( uint8 school = 0; school < SCHOOL_COUNT; school++ )
+		{
+			pTotem->ModDamageDone[school] = (int32)(p_caster->GetPosDamageDoneMod( school ) - (int32)p_caster->GetNegDamageDoneMod( school ));
+			pTotem->HealDoneMod[school] = p_caster->HealDoneMod[school];
+		}
+		// Set up AI, depending on our spells.
+		uint32 j;
+		for( j = 0; j < 3; ++j )
+		{
+			if( TotemSpell->Effect[j] == SPELL_EFFECT_APPLY_AREA_AURA ||
+				TotemSpell->Effect[j] == SPELL_EFFECT_APPLY_AREA_AURA2 ||
+				TotemSpell->Effect[j] == SPELL_EFFECT_PERSISTENT_AREA_AURA ||
+				TotemSpell->EffectApplyAuraName[j] == SPELL_AURA_PERIODIC_TRIGGER_SPELL )
+			{
+				break;
+			}
+		}
+		// Setup complete. Add us to the world.
+		pTotem->PushToWorld(m_caster->GetMapMgr());
+
+		if(j != 3)
+		{
+			// We're an area aura. Simple. Disable AI and cast the spell.
+			pTotem->DisableAI();
+			pTotem->GetAIInterface()->totemspell = GetProto();
+
+			Spell * pSpell = new Spell(pTotem, TotemSpell, true, 0);
+
+			SpellCastTargets targets;
+			targets.m_destX = pTotem->GetPositionX();
+			targets.m_destY = pTotem->GetPositionY();
+			targets.m_destZ = pTotem->GetPositionZ();
+			targets.m_targetMask = TARGET_FLAG_DEST_LOCATION;
+
+			pSpell->prepare(&targets);
+		}
+		else
+		{
+			// We're a casting totem. Switch AI on, and tell it to cast this spell.
+			pTotem->EnableAI();
+			pTotem->GetAIInterface()->Init(pTotem, AITYPE_TOTEM, MOVEMENTTYPE_NONE, p_caster);
+			pTotem->GetAIInterface()->totemspell = TotemSpell;
+			int32 totemspelltimer = 3000, totemspelltime = 3000;	// need a proper resource for this.
+
+			switch(TotemSpell->Id)
+			{
+			case 8167: //Poison Cleansing Totem
+			case 8172: //Disease Cleansing Totem
+				{
+					if(TotemSpell->Id == 8167)
+						TotemSpell = dbcSpell.LookupEntry( 8168 );	// Better to use this spell
+					else
+						TotemSpell = dbcSpell.LookupEntry( 8171 );
+					pTotem->GetAIInterface()->totemspell = TotemSpell;
+					totemspelltime =  5000;
+					totemspelltimer = 0; //First tick done immediately
+					break;
+				}
+			case 8146: //Tremor Totem
+				{
+					totemspelltime = 1000;
+					totemspelltimer = 0; //First tick done immediately
+					break;
+				}
+			case 8178: //Grounding Totem
+			case 3600: //Earthbind Totem
+				{
+					totemspelltimer = 0; //First tick done immediately
+					break;
+				}
+			case 8349: //Fire Nova Totem 1
+			case 8502: //Fire Nova Totem 2
+			case 8503: //Fire Nova Totem 3
+			case 11306: //Fire Nova Totem 4
+			case 11307: //Fire Nova Totem 5
+			case 25535: //Fire Nova Totem 6
+			case 25537: //Fire Nova Totem 7
+			case 61650: //Fire Nova Totem 8
+			case 61654: //Fire Nova Totem 9
+				{
+					totemspelltimer =  4000;
+					// Improved Fire Totems
+					SM_FIValue(p_caster->SM_FDur, &totemspelltimer, TotemSpell->SpellGroupType);
+					totemspelltime = totemspelltimer;
+					break;
+				}
+			default:break;
+			}
+
+			pTotem->GetAIInterface()->m_totemspelltimer = totemspelltimer;
+			pTotem->GetAIInterface()->m_totemspelltime = totemspelltime;
+		}
+
+		//in case these are our elemental totems then we should set them up
+		if(GetProto()->Id==2062)
+			pTotem->GetAIInterface()->Event_Summon_EE_totem(GetDuration());
+		else if(GetProto()->Id==2894)
+			pTotem->GetAIInterface()->Event_Summon_FE_totem(GetDuration());
+	}
+	else
+	{
+		pTotem->PushToWorld(m_caster->GetMapMgr()); //Push the sentry totem...
+		//p_caster->SetFarsightTarget(pTotem->GetGUID()); //works but farsight bugs it
+	}
 
 	// Set up the deletion event. The totem needs to expire after a certain time, or upon its death.
 	sEventMgr.AddEvent(pTotem, &Creature::TotemExpire, uint32(0), EVENT_TOTEM_EXPIRE, GetDuration(), 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
@@ -5951,7 +6111,7 @@ void Spell::SpellEffectEnchantHeldItem( uint32 i )
 
 void Spell::SpellEffectSelfResurrect(uint32 i)
 {
-	if(!p_caster || !unitTarget || playerTarget->IsAlive()) return;
+	if(!p_caster || !unitTarget || playerTarget->isAlive()) return;
 
 	uint32 mana;
 	uint32 health;
@@ -6038,7 +6198,7 @@ void Spell::SpellEffectSkinning(uint32 i)
 
 void Spell::SpellEffectCharge(uint32 i)
 {
-	if(!unitTarget || !unitTarget->IsAlive()) return;
+	if(!unitTarget || !unitTarget->isAlive()) return;
 	if (u_caster->IsStunned() || u_caster->m_rooted || u_caster->IsPacified() || u_caster->IsFeared())
 		return;
 
@@ -6137,22 +6297,21 @@ void Spell::SpellEffectSummonCritter(uint32 i)
 	pCreature->SetFaction(35);
 	pCreature->setLevel(1);
 	pCreature->SetUInt32Value( UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED );
+	pCreature->GetAIInterface()->Init(pCreature,AITYPE_PET,MOVEMENTTYPE_NONE,u_caster);
 	pCreature->SetCreatedByGUID( u_caster->GetGUID() );
 	pCreature->SetCreatedBySpell(this->GetProto()->Id );
-	AIInterface * ai = pCreature->GetAIInterface();
-	ai->setUnitToFollow(u_caster->GetGUID() );
-	ai->setFollowAngle( float(-(M_PI/2)) );
-	ai->setFollowDistance( (uint32)GetRadius(i) );
-	ai->disableMelee();
-
-	pCreature->bInvincible = true; // ew?
+	pCreature->GetAIInterface()->SetUnitToFollow(u_caster);
+	pCreature->GetAIInterface()->SetUnitToFollowAngle(float(-(M_PI/2)));
+	pCreature->GetAIInterface()->SetFollowDistance( GetRadius( i ) );
+	pCreature->GetAIInterface()->disable_melee = true;
+	pCreature->bInvincible = true;
 	pCreature->PushToWorld(u_caster->GetMapMgr());
 	u_caster->critterPet = pCreature;
 }
 
 void Spell::SpellEffectKnockBack(uint32 i)
 {
-	if( playerTarget == NULL || !playerTarget->IsAlive() || m_caster == NULL )
+	if( playerTarget == NULL || !playerTarget->isAlive() || m_caster == NULL )
 		return;
 
 	playerTarget->knockback( m_caster->GetOrientation(), GetProto()->EffectBasePoints[ i ] + 1, GetProto()->EffectMiscValue[ i ] );
@@ -6160,7 +6319,7 @@ void Spell::SpellEffectKnockBack(uint32 i)
 
 void Spell::SpellEffectKnockBack2(uint32 i)
 {
-	if( playerTarget == NULL || !playerTarget->IsAlive() || m_caster == NULL )
+	if( playerTarget == NULL || !playerTarget->isAlive() || m_caster == NULL )
 		return;
 	
 	playerTarget->knockback( m_caster->GetOrientation(), GetProto()->EffectBasePoints[ i ] + 1, GetProto()->EffectMiscValue[ i ], true );
@@ -6333,7 +6492,7 @@ void Spell::SpellEffectSummonObjectSlot(uint32 i)
 
 void Spell::SpellEffectDispelMechanic(uint32 i)
 {
-	if( !unitTarget || !unitTarget->IsAlive() )
+	if( !unitTarget || !unitTarget->isAlive() )
 		return;
 	/* this was already working before...
 	uint32 sMisc = GetProto()->EffectMiscValue[i];
@@ -6513,7 +6672,7 @@ void Spell::SpellEffectResurrectNew(uint32 i)
 		if(!playerTarget) return;
 	}
 
-	if(playerTarget->IsAlive() || !playerTarget->IsInWorld())
+	if(playerTarget->isAlive() || !playerTarget->IsInWorld())
 		return;
 	//resurrect
 	playerTarget->m_resurrectMapId = p_caster->GetMapId();
@@ -6527,7 +6686,7 @@ void Spell::SpellEffectResurrectNew(uint32 i)
 
 void Spell::SpellEffectAttackMe(uint32 i)
 {
-	if(!unitTarget || !unitTarget->IsAlive())
+	if(!unitTarget || !unitTarget->isAlive())
 		return;
 
 	unitTarget->GetAIInterface()->AttackReaction(u_caster,1,0);
@@ -6719,7 +6878,7 @@ void Spell::SpellEffectDummyMelee( uint32 i ) // Normalized Weapon damage +
 
 void Spell::SpellEffectStartTaxi( uint32 i )
 {
-	if (!playerTarget || !playerTarget->IsAlive() || !u_caster)
+	if (!playerTarget || !playerTarget->isAlive() || !u_caster)
 		return;
 
 	if(playerTarget->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_LOCK_PLAYER))
@@ -6757,7 +6916,7 @@ void Spell::SpellEffectStartTaxi( uint32 i )
 
 void Spell::SpellEffectPlayerPull( uint32 i )
 {
-	if( !unitTarget || !unitTarget->IsAlive() || !unitTarget->IsPlayer() )
+	if( !unitTarget || !unitTarget->isAlive() || !unitTarget->IsPlayer() )
 		return;
 
 	Player* p_target = static_cast< Player* >( unitTarget );
@@ -6789,22 +6948,15 @@ void Spell::SpellEffectPlayerPull( uint32 i )
 
 void Spell::SpellEffectReduceThreatPercent(uint32 i)
 {
-	if (unitTarget != NULL && unitTarget->IsCreature() && u_caster != NULL )
-	{
-		AIInterface * ai = unitTarget->GetAIInterface();
-		Arcemu::Util::ARCEMU_ASSERT(ai != NULL);
-		if(AIType_isMob(ai) )
-		{
-			int32 current_threat = TO_AIMOB(ai)->getThreatByGUID(u_caster->GetGUID() );
-			int32 new_threat = current_threat * damage / 100;
-			TO_AIMOB(ai)->modThreatByGUID(u_caster->GetGUID(),new_threat );
-		}
-	}
+	if (!unitTarget || !unitTarget->IsCreature() || !u_caster || unitTarget->GetAIInterface()->getThreatByPtr(u_caster) == 0)
+		return;
+
+	unitTarget->GetAIInterface()->modThreatByPtr(u_caster, (int32)unitTarget->GetAIInterface()->getThreatByPtr(u_caster) * damage / 100);
 }
 
 void Spell::SpellEffectSpellSteal( uint32 i )
 {
-	if (!unitTarget || !u_caster || !unitTarget->IsAlive())
+	if (!unitTarget || !u_caster || !unitTarget->isAlive())
 		return;
 	if(unitTarget->IsPlayer() && p_caster && p_caster != static_cast< Player* >(unitTarget))
 	{
@@ -6950,7 +7102,7 @@ void Spell::SpellEffectKillCredit(uint32 i)
 
 void Spell::SpellEffectRestorePowerPct(uint32 i)
 {
-	if( u_caster == NULL || unitTarget == NULL || !unitTarget->IsAlive() )
+	if( u_caster == NULL || unitTarget == NULL || !unitTarget->isAlive() )
 		return;
 
 	uint32 power_type = GetProto()->EffectMiscValue[i];
@@ -7121,7 +7273,7 @@ void Spell::SpellEffectRenamePet( uint32 i )
 
 void Spell::SpellEffectRestoreHealthPct(uint32 i)
 {
-	if( unitTarget == NULL || !unitTarget->IsAlive() )
+	if( unitTarget == NULL || !unitTarget->isAlive() )
 		return;
 
 	uint32 currentHealth = unitTarget->GetHealth();

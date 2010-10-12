@@ -91,7 +91,7 @@ public:
 			return;
 
 		pAkida->m_escorter = pPlayer;   
-		//TO_AIMOB(pAkida->GetAIInterface() )->Movement_setmovemode( AIMOVESTATE_RUN );
+		pAkida->GetAIInterface()->setMoveType( RUN );
 		pAkida->GetAIInterface()->StopMovement( 1000 );
 		pAkida->GetAIInterface()->SetAllowedToEnterCombat( false );
 		pAkida->SendChatMessage( CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "Follow me I shall result you on a place!" );
@@ -168,7 +168,7 @@ public:
 		Coo->CastSpell( Coo, 25035, true); // Apparition Effect
 
 		Coo->m_escorter = mTarget;   
-		TO_AIMOB(Coo->GetAIInterface() )->Waypoint_setmovetype( MOVEMENTTYPE_FORWARDTHENSTOP);
+		Coo->GetAIInterface()->setMoveType( 11 );
 		Coo->GetAIInterface()->StopMovement( 3000 );
 		Coo->SendChatMessage( CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "Follow me!" );
 		Coo->SetUInt32Value( UNIT_NPC_FLAGS, 0 );
@@ -215,7 +215,7 @@ public:
 		mTarget->CastSpell( Tikti, 25035, true); // Apparition Effect
 
 		Tikti->m_escorter = mTarget;   
-		Tikti->GetAIInterface()->Movement_setmovemode( AIMOVESTATE_WALK );
+		Tikti->GetAIInterface()->setMoveType( WALK );
 		Tikti->GetAIInterface()->StopMovement( 3000 );
 		Tikti->SendChatMessage( CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "Follow me!" );
 		Tikti->SetUInt32Value( UNIT_NPC_FLAGS, 0 );

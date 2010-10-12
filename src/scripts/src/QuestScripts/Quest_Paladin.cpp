@@ -118,7 +118,7 @@ public:
   {
     _unit->SetStandState(7);
     _unit->setDeathState(CORPSE);
-    _unit->GetAIInterface()->Movement_allowmovement(false);
+    _unit->GetAIInterface()->m_canMove = false;
   }
 };
 
@@ -143,7 +143,7 @@ public:
 			if (Brazier)
 			{
 				Brazier->SetState(0);
-				pPlayer->GetMapMgr()->GetInterface()->SpawnCreature(17716, SSX, SSY, SSZ, SSO, 0)->Despawn(600000, 0);
+				pPlayer->GetMapMgr()->GetInterface()->SpawnCreature(17716, SSX, SSY, SSZ, SSO, true, false, 0, 0)->Despawn(600000, 0);
 			}
 		}
 		else

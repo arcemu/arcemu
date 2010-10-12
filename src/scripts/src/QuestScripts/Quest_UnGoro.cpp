@@ -64,7 +64,7 @@ public:
   {
     _unit->SetStandState(7);
     _unit->setDeathState(CORPSE);
-    _unit->GetAIInterface()->Movement_allowmovement(false);
+    _unit->GetAIInterface()->m_canMove = false;
   }
 };
 
@@ -237,7 +237,7 @@ public:
 		if(creat == NULL)
 			return;
 		creat->m_escorter = mTarget;
-		TO_AIMOB(creat->GetAIInterface() )->Waypoint_setmovetype(MOVEMENTTYPE_FORWARDTHENSTOP);
+		creat->GetAIInterface()->setMoveType(11);
 		creat->GetAIInterface()->StopMovement(3000);
 		creat->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "He-l-p Me... ts.. ts...");
 		creat->SetUInt32Value(UNIT_NPC_FLAGS, 0);

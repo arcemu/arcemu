@@ -162,13 +162,13 @@ enum CustomLuaEvenTypes
 
 //An empty type structure that is to be treated as an integer. We this type to specialize how tdstack::get/push methods handle them to lua.
 //a specialied type treated as a reference to a lua function.
-typedef struct{} lua_function_o,*lua_function;
+typedef struct{} *lua_function;
 //specialized type that is used to return a reference to a variable object type.
-typedef struct {} lua_obj_o, * lua_obj;
+typedef struct {} * lua_obj;
 //specialized type returns an index to the stack where the table is located.
-typedef struct{} lua_table_o,* lua_table;
+typedef struct{} * lua_table;
 //specialized type that returns the lua execution stack of the function that called the function that contains this as its parameter
-typedef struct{} lua_stack_o, *lua_stack;
+typedef struct{} * lua_stack;
 
 enum custom_value_types
 {
@@ -227,6 +227,9 @@ static void cleanup_varparam(variadic_parameter * param, lua_State * L)
 
 //	Used to extract a reference to a function pointed by str, returns LUA_REFNIL if it can't.
 extern int extractfRefFromCString(lua_State * L, const char* str);
+//	Stores previously allocated pointers to shared_ptrs so that we can reduce the amount of userdata's that we allocate.
+typedef HM_NAMESPACE::hash_map<const char*, std::deque<void*> > SHAREDPTR_POOL;
+extern SHAREDPTR_POOL sp_pool;
 
 #define INVALID_FUNCTION LUA_REFNIL
 typedef lua_State* lua_thread;
@@ -246,3 +249,14 @@ typedef struct
 {
 	lua_function refs[CREATURE_EVENT_COUNT];
 } ObjectBinding, *PObjectBinding;
+
+class LuaResult : public QueryResult
+{
+public:
+	Field * GetColumn(int clm)
+	{
+		if( (uint32)clm <= GetFieldCount() )
+			return &Fetch()[clm];
+		return NULL;
+	}
+};

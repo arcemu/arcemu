@@ -37,7 +37,7 @@ public:
 		if(creat == NULL)
 			return;
 		creat->m_escorter = mTarget;
-		TO_AIMOB(creat->GetAIInterface() )->Waypoint_setmovetype(MOVEMENTTYPE_FORWARDTHENSTOP);
+		creat->GetAIInterface()->setMoveType(11);
 		creat->GetAIInterface()->StopMovement(3000);
 		creat->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "I to the horror I fear wolfs, do not allow to approach them to me closely. Follow me");
 		creat->SetUInt32Value(UNIT_NPC_FLAGS, 0);
@@ -91,7 +91,7 @@ public:
 
 					   if(!_unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(1069.889404f, 1544.777558f, 28.331335f, 1983) && (rand() % 5 > 2) && mPlayer->GetQuestLogForEntry(437)) //random number I picked between 2-8
                        {
-                               _unit->GetMapMgr()->GetInterface()->SpawnCreature(1983, 1069.889404f, 1544.777558f, 28.331335f, 3.99f, 0)->Despawn(600000, 0);
+                               _unit->GetMapMgr()->GetInterface()->SpawnCreature(1983, 1069.889404f, 1544.777558f, 28.331335f, 3.99f, true, false, 0, 0)->Despawn(600000, 0);
                                _unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "Nightlash avenge us!!");//not sure this is 100% blizzlike, but looks nice
                        }
                }

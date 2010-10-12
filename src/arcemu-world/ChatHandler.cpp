@@ -547,7 +547,7 @@ void WorldSession::HandleEmoteOpcode( WorldPacket & recv_data )
 
 	CHECK_PACKET_SIZE(recv_data,4);
 
-	if(!_player->IsAlive())
+	if(!_player->isAlive())
 		return;
 
 	uint32 emote;
@@ -565,7 +565,7 @@ void WorldSession::HandleTextEmoteOpcode( WorldPacket & recv_data )
 	CHECK_INWORLD_RETURN
 
 	CHECK_PACKET_SIZE(recv_data, 16);
-	if(!_player->IsAlive())
+	if(!_player->isAlive())
 		return;
 
 	uint64 guid;

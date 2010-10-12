@@ -450,7 +450,7 @@ struct tdstack<variadic_parameter*>
 	static void push(lua_State * L, variadic_parameter * head)
 	{
 		variadic_node * current_node = head->head_node;
-		//variadic_node * next_node = NULL;
+		variadic_node * next_node = NULL;
 		for(int i = 0; i < head->count && current_node != NULL; ++i)
 		{
 			switch(current_node->type)

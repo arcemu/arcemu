@@ -574,8 +574,8 @@ void InformationCore::TimeoutSockets()
 				uint32 RealmID = *RealmITR;
 
 				RemoveRealm( RealmID );
-	}
-	
+			}
+			
 			s->removed = true;
 			m_serverSockets.erase( s );
 			s->Disconnect();

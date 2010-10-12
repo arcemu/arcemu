@@ -75,7 +75,7 @@ public:
 			{
 				creature = TO_CREATURE(obj);
 
-				if(creature->GetCreatureInfo()->Id == 21101 && creature->IsAlive())
+				if(creature->GetCreatureInfo()->Id == 21101 && creature->isAlive())
 				{
 					creature->Despawn(0, 0);
 				}
@@ -113,7 +113,7 @@ public:
 			if(!(*Itr)->IsPlayer())
 				continue;
 			RandomTarget = static_cast< Player* >(*Itr);
-			if(RandomTarget && RandomTarget->IsAlive() && isHostile(*Itr, _unit))
+			if(RandomTarget && RandomTarget->isAlive() && isHostile(*Itr, _unit))
 				TargetTable.push_back(RandomTarget);
 		}
 

@@ -202,7 +202,7 @@ public:
 	const float& GetPositionY( ) const { return m_position.y; }
 	const float& GetPositionZ( ) const { return m_position.z; }
 	const float& GetOrientation( ) const { return m_position.o; }
-	void SetOrientation( float o ) { m_position.o = o; }
+	void SetOrientation( float &o ) { m_position.o = o; }
 
 	const float& GetSpawnX( ) const { return m_spawnLocation.x; }
 	const float& GetSpawnY( ) const { return m_spawnLocation.y; }
@@ -246,16 +246,16 @@ public:
 	void SetZoneId(uint32 newZone);
 
 	const uint32 GetMapId( ) const { return m_mapId; }
-	const uint32 GetZoneId( ) const { return m_zoneId; }
+	const uint32& GetZoneId( ) const { return m_zoneId; }
 
 	//! Get uint32 property
-	const uint32 GetUInt32Value( uint32 index ) const
+	const uint32& GetUInt32Value( uint32 index ) const
 	{
 		Arcemu::Util::ARCEMU_ASSERT(    index < m_valuesCount );
 		return m_uint32Values[ index ];
 	}
 
-    const uint64 & GetUInt64Value( uint32 index ) const
+    const uint64& GetUInt64Value( uint32 index ) const
 	{
 		Arcemu::Util::ARCEMU_ASSERT(    index + uint32(1) < m_valuesCount );
 
@@ -265,7 +265,7 @@ public:
 	}
 
 	//! Get float property
-	const float GetFloatValue( uint32 index ) const
+	const float& GetFloatValue( uint32 index ) const
 	{
 		Arcemu::Util::ARCEMU_ASSERT(    index < m_valuesCount );
 		return m_floatValues[ index ];
@@ -338,7 +338,6 @@ public:
 
 	//! Use this to Check if a object is in front of another object.
 	bool isInFront(Object* target);
-	void setInFront(Object *target);
 	//! Use this to Check if a object is in back of another object.
 	bool isInBack(Object* target);
 	//! Check to see if an object is in front of a target in a specified arc (in degrees)
@@ -375,14 +374,9 @@ public:
 
 	const float GetDistance2dSq( Object* obj )
 	{
-		float distance = 40000.0f;
-		if( obj->GetMapId() == m_mapId )
-			distance = m_position.Distance2DSq( obj->m_position );
-		return distance;
-	}
-	const float GetDistance2dSq(float x, float y)
-	{
-		return m_position.Distance2DSq(x,y);
+		if( obj->GetMapId() != m_mapId )
+			return 40000.0f; //enough for out of range
+		return m_position.Distance2DSq( obj->m_position );
 	}
 
 	// In-range object management, not sure if we need it
@@ -456,7 +450,6 @@ public:
 	void UpdateSameFactionSet();
 	std::set<Object*>::iterator GetInRangeSameFactsSetBegin() { return m_sameFactsInRange.begin(); }
 	std::set<Object*>::iterator GetInRangeSameFactsSetEnd() { return m_sameFactsInRange.end(); }
-	size_t GetInRangeSameFactsSize() { return m_sameFactsInRange.size(); }
 
 	bool IsInRangeOppFactSet(Object* pObj) { return (m_oppFactsInRange.count(pObj) > 0); }
 	void UpdateOppFactionSet();

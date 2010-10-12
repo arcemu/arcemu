@@ -109,7 +109,7 @@ public:
 			if( mogor != NULL )
 				mogor->Despawn(1000,0);
 
-			mTarget->GetMapMgr()->GetInterface()->SpawnCreature(18069, -712.443115f, 7932.182129f, 59.430191f, 4.515952f, 0);
+			mTarget->GetMapMgr()->GetInterface()->SpawnCreature(18069, -712.443115f, 7932.182129f, 59.430191f, 4.515952f, true, false, 0, 0);
 		}
 };
 
@@ -132,7 +132,7 @@ public:
 				//char msg2[256];
 				//snprintf((char*)msg2, 256, "They had to ship the champion in from the Blade's Edge gladiator pits. He was training on mountain giants - three at a time.", mTarget->GetName());
 				pQgiver->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, msg2.c_str(), 4000);
-				mTarget->GetMapMgr()->GetInterface()->SpawnCreature(18402, -704.669f, 7871.08f, 45.0387f, 1.59531f, 0);
+				mTarget->GetMapMgr()->GetInterface()->SpawnCreature(18402, -704.669f, 7871.08f, 45.0387f, 1.59531f, true, false, 0, 0);
 			};
 		};
 
@@ -179,7 +179,7 @@ public:
 				//char msg2[256];
 				//snprintf((char*)msg2, 256, "From the parts unknown: Ska'gath! Can %s possibly survive the onslaught of void energies?", mTarget->GetName());
 				Qgiver->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, msg2.c_str(), 4000);
-				mTarget->GetMapMgr()->GetInterface()->SpawnCreature(18401, -704.669f, 7871.08f, 45.0387f, 1.59531f, 0);
+				mTarget->GetMapMgr()->GetInterface()->SpawnCreature(18401, -704.669f, 7871.08f, 45.0387f, 1.59531f, true, false, 0, 0);
 			};
 		};
 
@@ -224,7 +224,7 @@ public:
 			msg2 += " is in for the fight of his life.";
 			Qgiver->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, msg2.c_str(), 4000);
 
-			mTarget->GetMapMgr()->GetInterface()->SpawnCreature(18400, -704.669f, 7871.08f, 45.0387f, 1.59531f, 0);
+			mTarget->GetMapMgr()->GetInterface()->SpawnCreature(18400, -704.669f, 7871.08f, 45.0387f, 1.59531f, true, false, 0, 0);
 		};
 	};
 
@@ -268,8 +268,8 @@ public:
 			string msg2 = "The battle is about to begin! The unmerciful Murkblood twins versus ";
 			msg2 += mTarget->GetName();
 			Qgiver->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, msg2.c_str(), 4000);
-			mTarget->GetMapMgr()->GetInterface()->SpawnCreature(18399, -704.669f, 7871.08f, 45.0387f, 1.59531f, 0);
-			mTarget->GetMapMgr()->GetInterface()->SpawnCreature(18399, -708.076f, 7870.41f, 44.8457f, 1.59531f, 0);
+			mTarget->GetMapMgr()->GetInterface()->SpawnCreature(18399, -704.669f, 7871.08f, 45.0387f, 1.59531f, true, false, 0, 0);
+			mTarget->GetMapMgr()->GetInterface()->SpawnCreature(18399, -708.076f, 7870.41f, 44.8457f, 1.59531f, true, false, 0, 0);
 		};
 	};
 
@@ -312,7 +312,7 @@ public:
 			char msg[256];
 			snprintf((char*)msg, 256, "Get in the Ring of Blood, %s . The fight is about to start!", mTarget->GetName());
 			Qgiver->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, msg);
-			mTarget->GetMapMgr()->GetInterface()->SpawnCreature(18398, -704.669f, 7871.08f, 45.0387f, 1.59531f, 0)->Despawn(600000, 0);
+			mTarget->GetMapMgr()->GetInterface()->SpawnCreature(18398, -704.669f, 7871.08f, 45.0387f, 1.59531f, true, false, 0, 0)->Despawn(600000, 0);
 		};
 	};
 
@@ -385,12 +385,13 @@ public:
 	{
 		if(_unit->GetHealthPct() < 30)
 		{
-			Unit* pUnit = TO_AIMOB(_unit->GetAIInterface() )->getMostHated();
+			Unit* pUnit = _unit->GetAIInterface()->GetMostHated();
 			if ( pUnit != NULL && pUnit->IsPlayer() )
 				TO_PLAYER( pUnit )->EventAttackStop();
 
 			_unit->SetFaction(35);
-			TO_AIMOB(_unit->GetAIInterface() )->wipeHateList();
+			_unit->GetAIInterface()->WipeHateList();
+			_unit->GetAIInterface()->WipeTargetList();
 			_unit->SetStandState(STANDSTATE_SIT);
 			_unit->SetUInt32Value(UNIT_NPC_FLAGS, 1);
 
@@ -488,7 +489,7 @@ bool RuthlessCunning(uint32 i, Spell* pSpell)
 		return true;
 
 	Creature* kilsorrow = plr->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(plr->GetPositionX(), plr->GetPositionY() , plr->GetPositionZ());
-	if( kilsorrow == NULL || kilsorrow->IsAlive() )
+	if( kilsorrow == NULL || kilsorrow->isAlive() )
 		return true;
 
 	QuestLogEntry *qle = plr->GetQuestLogForEntry(9927);

@@ -103,7 +103,7 @@ public:
 		tonkConsole->SetState(0);
 
 		// Spawn Steam Tonk
-		pPlayer->GetMapMgr()->GetInterface()->SpawnCreature(19405,pPlayer->GetPositionX(),pPlayer->GetPositionY(),pPlayer->GetPositionZ(),pPlayer->GetOrientation(),0);;
+		pPlayer->GetMapMgr()->GetInterface()->SpawnCreature(19405, pPlayer->GetPositionX(), pPlayer->GetPositionY(), pPlayer->GetPositionZ(), pPlayer->GetOrientation(), true, false, 0, 0)->Despawn(310000, 0);;
 
 		// Store the tonk just spawned
 		Creature* pTonk = NULL;

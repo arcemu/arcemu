@@ -383,9 +383,9 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 				}break;
 			}
 
-			if(uThis->GetAIInterface() != NULL && uThis->GetAIInterface()->Movement_isflying())
+			if(uThis->GetAIInterface()->IsFlying())
 				flags2 |= MOVEFLAG_NO_COLLISION; //0x400 Zack : Teribus the Cursed had flag 400 instead of 800 and he is flying all the time 
-			if(uThis->GetAIInterface() != NULL && uThis->GetAIInterface()->Behavior_has(BEHAVIOR_SKYWALKER) )
+			if(uThis->GetAIInterface()->onGameobject)
 				flags2 |= MOVEFLAG_FLYING;
 			if(uThis->GetProto()->extra_a9_flags)
 			{
@@ -1449,19 +1449,6 @@ bool Object::isInFront(Object* target)
 
     return( ( angle >= left ) && ( angle <= right ) );
 }
-void Object::setInFront(Object *target)
-{
-	if(target != NULL) 
-	{
-		//angle the object has to face
-		float angle = calcRadAngle(m_position.x, m_position.y, target->GetPositionX(), target->GetPositionY() ); 
-		//Change angle slowly 2000ms to turn 180 deg around
-		if(angle > M_PI) angle += (M_PI/2);
-		else angle -= (M_2PI); //angle < 180
-		//Update Orientation Server Side
-		SetPosition(m_position.x,m_position.y,m_position.z,angle);
-	}
-}
 
 bool Object::isInBack(Object* target)
 {
@@ -1476,7 +1463,7 @@ bool Object::isInBack(Object* target)
 	// if we are a unit and have a UNIT_FIELD_TARGET then we are always facing them
 	if( m_objectTypeId == TYPEID_UNIT && TO_UNIT(this)->GetTargetGUID() != 0 )
 	{
-		Unit* pTarget = TO_UNIT(this)->GetAIInterface()->getNextTarget();
+		Unit* pTarget = TO_UNIT(this)->GetAIInterface()->GetNextTarget();
 		if( pTarget != NULL )
 			angle -= double( Object::calcRadAngle( target->m_position.x, target->m_position.y, pTarget->m_position.x, pTarget->m_position.y ) );
 		else
@@ -1620,7 +1607,7 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 //==========================================================================================
 //==============================Unacceptable Cases Processing===============================
 //==========================================================================================
-	if( pVictim == NULL || !pVictim->IsAlive() )
+	if( pVictim == NULL || !pVictim->isAlive() )
 		return;
 
 	SpellEntry *spellInfo = dbcSpell.LookupEntryForced( spellID );
@@ -1678,6 +1665,7 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 	if( res > 0 && !( spellInfo->AttributesExB & ATTRIBUTESEXB_CANT_CRIT ) )
 	{
 		critical = this->IsCriticalDamageForSpell(pVictim, spellInfo);
+
 //==========================================================================================
 //==============================Spell Critical Hit==========================================
 //==========================================================================================
@@ -1840,7 +1828,7 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 	}
 	if( spellInfo->School == SCHOOL_SHADOW )
 	{
-		if( pVictim->IsAlive() && this->IsUnit() )
+		if( pVictim->isAlive() && this->IsUnit() )
 		{
 			//Shadow Word:Death
 			if( spellID == 32379 || spellID == 32996 || spellID == 48157 || spellID == 48158 ) 

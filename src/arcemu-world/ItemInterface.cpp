@@ -18,9 +18,9 @@
  *
  */
 
-// Last edited by:	$Author: Paroxysm $
-// revision:		$Rev: 3574 $
-// date:			$Date: 2010-07-28 23:01:02 -0500 (Wed, 28 Jul 2010) $
+// Last edited by:	$Author$
+// revision:		$Rev$
+// date:			$Date$
 
 
 #include "StdAfx.h"

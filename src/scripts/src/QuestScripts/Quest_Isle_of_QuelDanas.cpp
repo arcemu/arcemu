@@ -66,7 +66,7 @@ bool ConvertingSentry(uint32 i, Spell* pSpell)
     return true;
 
   Creature* pTarget = TO_CREATURE(pSpell->GetUnitTarget());
-  if( pTarget == NULL || pTarget->GetEntry() != 24972 || pTarget->IsAlive() ) // Erratic Sentry: 24972
+  if( pTarget == NULL || pTarget->GetEntry() != 24972 || pTarget->isAlive() ) // Erratic Sentry: 24972
     return true;
 
   QuestLogEntry *qle = NULL;

@@ -85,13 +85,13 @@ bool TestingTheAntidote(uint32 i, Spell* pSpell)
 		return true;
 
 	Creature* spawned = NULL;
-	spawned = target->GetMapMgr()->GetInterface()->SpawnCreature(16992, target->GetPositionX(), target->GetPositionY(), target->GetPositionZ(), target->GetOrientation(), 0);
+	spawned = target->GetMapMgr()->GetInterface()->SpawnCreature(16992, target->GetPositionX(), target->GetPositionY(), target->GetPositionZ(), target->GetOrientation(), true, false, 0, 0);
 	if(!spawned)
 		return true;
 
 	target->Despawn(0, 300000);
 
-	spawned->GetAIInterface()->setNextTarget(pSpell->u_caster);
+	spawned->GetAIInterface()->SetNextTarget(pSpell->u_caster);
 
 	return true;
 }
@@ -637,7 +637,7 @@ public:
   	{
     	_unit->SetStandState( STANDSTATE_SIT );
     	_unit->setDeathState( CORPSE );
-    	_unit->GetAIInterface()->Movement_allowmovement(false);
+    	_unit->GetAIInterface()->m_canMove = false;
   	}
 };
 
@@ -809,7 +809,7 @@ bool ASpiritGuide(uint32 i, Spell* pSpell)
   	if ( pQuest == NULL )
     	return true;
 
-  	Creature* pSpiritWolf = pPlayer->GetMapMgr()->GetInterface()->SpawnCreature(17077, pPlayer->GetPositionX(), pPlayer->GetPositionY(), pPlayer->GetPositionZ(), pPlayer->GetOrientation(), 0);
+  	Creature* pSpiritWolf = pPlayer->GetMapMgr()->GetInterface()->SpawnCreature(17077, pPlayer->GetPositionX(), pPlayer->GetPositionY(), pPlayer->GetPositionZ(), pPlayer->GetOrientation(), true, false, NULL, NULL);
 	if ( pSpiritWolf == NULL )
 		return true;
 	
@@ -832,7 +832,7 @@ public:
 	{
 		_unit->SetStandState( 7 );
 		_unit->setDeathState( CORPSE );
-		_unit->GetAIInterface()->Movement_allowmovement(false);
+		_unit->GetAIInterface()->m_canMove = false;
 	}
 };
 
@@ -855,8 +855,8 @@ bool AnAmbitiousPlan(uint32 i, Spell* pSpell)
 	float SSz = pTarget->GetPositionZ();
 	pTarget->GetAIInterface()->SetAllowedToEnterCombat( false );
 	pTarget->GetAIInterface()->StopMovement( 0 );
-	//pTarget->GetAIInterface()->setCurrentAgent( AGENT_NULL );
-	pTarget->GetAIInterface()->setAIState( STATE_IDLE );
+	pTarget->GetAIInterface()->setCurrentAgent( AGENT_NULL );
+	pTarget->GetAIInterface()->SetAIState( STATE_IDLE );
 	pTarget->Despawn( 0, 0 );
 
 	GameObject* pGameobject = sEAS.SpawnGameobject( pPlayer, 183816, SSx, SSy, SSz, 0, 1, 0, 0, 0, 0 );

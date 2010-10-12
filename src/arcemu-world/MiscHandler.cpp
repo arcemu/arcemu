@@ -1008,7 +1008,7 @@ void WorldSession::HandleResurrectResponseOpcode(WorldPacket & recv_data)
 
 	sLog.outDetail("WORLD: Received CMSG_RESURRECT_RESPONSE");
 
-	if ( _player->IsAlive() )
+	if ( _player->isAlive() )
 		return;
 
 	uint64 guid;

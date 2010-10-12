@@ -211,7 +211,7 @@ public:
   void OnLoad()
   {
 	_unit->SetStandState(STANDSTATE_DEAD);
-	_unit->GetAIInterface()->Movement_allowmovement(false);
+	_unit->GetAIInterface()->m_canMove = false;
   }
 };
 

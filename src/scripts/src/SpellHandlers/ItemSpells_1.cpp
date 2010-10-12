@@ -238,7 +238,7 @@ bool NetherWraithBeacon(uint32 i, Spell *pSpell)
 	float SSZ = pSpell->p_caster->GetPositionZ();
 	float SSO = pSpell->p_caster->GetOrientation();
 
-	pSpell->p_caster->GetMapMgr()->GetInterface()->SpawnCreature(22408,SSX,SSY,SSZ,SSO,0);
+	pSpell->p_caster->GetMapMgr()->GetInterface()->SpawnCreature(22408, SSX, SSY, SSZ, SSO, true, false, 0, 0);
 	return true;
 }
 
@@ -414,9 +414,9 @@ bool MinionsOfGurok(uint32 i, Spell * pSpell)
 	float SSZ = target->GetPositionZ();
 	float SSO = target->GetOrientation();
 
-	pSpell->p_caster->GetMapMgr()->GetInterface()->SpawnCreature(18181,SSX+rand()%8-4,SSY+rand()%8-4,SSZ,SSO,0);
-	pSpell->p_caster->GetMapMgr()->GetInterface()->SpawnCreature(18181,SSX+rand()%8-4,SSY+rand()%8-4,SSZ,SSO,0);
-	pSpell->p_caster->GetMapMgr()->GetInterface()->SpawnCreature(18181,SSX+rand()%8-4,SSY+rand()%8-4,SSZ,SSO,0);
+	pSpell->p_caster->GetMapMgr()->GetInterface()->SpawnCreature(18181, SSX+rand()%8-4, SSY+rand()%8-4, SSZ, SSO, true, false, 0, 0);
+	pSpell->p_caster->GetMapMgr()->GetInterface()->SpawnCreature(18181, SSX+rand()%8-4, SSY+rand()%8-4, SSZ, SSO, true, false, 0, 0);
+	pSpell->p_caster->GetMapMgr()->GetInterface()->SpawnCreature(18181, SSX+rand()%8-4, SSY+rand()%8-4, SSZ, SSO, true, false, 0, 0);
 
 	return true;
 }
@@ -448,7 +448,7 @@ bool WarpRiftGenerator(uint32 i, Spell * pSpell)
 	float SSZ = pSpell->p_caster->GetPositionZ();
 	float SSO = pSpell->p_caster->GetOrientation();
 
-	pSpell->p_caster->GetMapMgr()->GetInterface()->SpawnCreature(16939,SSX,SSY,SSZ,SSO,0);
+	pSpell->p_caster->GetMapMgr()->GetInterface()->SpawnCreature(16939,SSX,SSY,SSZ,SSO,true,false,0,0);
 
 	return true;
 }

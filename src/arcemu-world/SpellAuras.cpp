@@ -1124,11 +1124,11 @@ void Aura::EventUpdateAA(float r)
 			)
 		 )
 	{
-		//std::list<Pet*> & summons = plr->GetSummons();
-		for(std::list<Pet*>::iterator itr = plr->getSummonStart(); itr != plr->getSummonEnd(); ++itr)
+		std::list<Pet*> summons = plr->GetSummons();
+		for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
 		{
 			Pet* summon = *itr;
-			if( summon->IsAlive() && summon->GetDistanceSq(u_caster) <= r && !summon->HasAura( m_spellProto->Id ))
+			if( summon->isAlive() && summon->GetDistanceSq(u_caster) <= r && !summon->HasAura( m_spellProto->Id ))
 			{
 				Aura * aura = new Aura(m_spellProto, -1, u_caster, summon, true );
 				aura->m_areaAura = true;
@@ -1153,7 +1153,7 @@ void Aura::EventUpdateAA(float r)
 			{
 				// Add the aura if they don't have it.
 				if(!(*itr)->m_loggedInPlayer->HasAura(m_spellProto->Id) &&
-					(*itr)->m_loggedInPlayer->GetInstanceID() == plr->GetInstanceID() && (*itr)->m_loggedInPlayer->IsAlive())
+					(*itr)->m_loggedInPlayer->GetInstanceID() == plr->GetInstanceID() && (*itr)->m_loggedInPlayer->isAlive())
 				{
 					Aura * aura = NULL;
 					//aura->AddMod(mod->m_type, mod->m_amount, mod->m_miscValue, mod->i);
@@ -1253,11 +1253,12 @@ void Aura::RemoveAA()
 			)
 		 )
 	{
-		//std::list<Pet*> summons = plr->GetSummons();
-		for(std::list<Pet*>::iterator itr2 = plr->getSummonStart(); itr2 != plr->getSummonEnd(); ++itr2)
+		std::list<Pet*> summons = plr->GetSummons();
+		for(std::list<Pet*>::iterator itr2 = summons.begin(); itr2 != summons.end(); ++itr2)
 		{
-			if( (*itr2)->IsAlive() )
-				(*itr2)->RemoveAura(m_spellProto->Id);
+			Pet* summon = *itr2;
+			if( summon->isAlive() )
+				summon->RemoveAura( m_spellProto->Id );
 		}
 	}
 
@@ -1384,6 +1385,13 @@ void Aura::SpellAuraModPossess(bool apply)
 			m_target->RemoveFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED_CREATURE );
 			m_target->SetFaction(m_target->GetCharmTempVal() );
 			m_target->UpdateOppFactionSet();
+		}
+		else
+		{
+			//mob woke up and realized he was controlled. He will turn to controller and also notify the other mobs he is fighting that they should attack the caster
+			//sadly i got only 3 test cases about this so i might be wrong :(
+			//zack : disabled until tested
+			m_target->GetAIInterface()->EventChangeFaction( caster );
 		}
 	}
 }
@@ -1512,7 +1520,7 @@ void Aura::SpellAuraPeriodicDamage(bool apply)
 void Aura::EventPeriodicDamage(uint32 amount)
 {
 	//DOT
-	if( ! m_target->IsAlive() )
+	if( ! m_target->isAlive() )
 		return;
 
 	if( m_target->SchoolImmunityList[GetSpellProto()->School] )
@@ -2098,7 +2106,7 @@ void Aura::SpellAuraDummy(bool apply)
 				p_target->SetSoulStone(3026);
 				p_target->SetSoulStoneReceiver((uint32)m_casterGuid);
 			}
-			else if( m_target->IsAlive() )
+			else if( m_target->isAlive() )
 			{
 				p_target->SetSoulStone(0);
 				p_target->SetSoulStoneReceiver(0);
@@ -2114,7 +2122,7 @@ void Aura::SpellAuraDummy(bool apply)
 				p_target->SoulStone = 20758;
 				p_target->SoulStoneReceiver = (uint32)m_casterGuid;
 			}
-			else if( m_target->IsAlive() )
+			else if( m_target->isAlive() )
 				p_target->SoulStone = p_target->SoulStoneReceiver = 0;
 		}break;
 	case 20763:
@@ -2126,7 +2134,7 @@ void Aura::SpellAuraDummy(bool apply)
 				p_target->SoulStone = 20759;
 				p_target->SoulStoneReceiver = (uint32)m_casterGuid;
 			}
-			else if(m_target->IsAlive())
+			else if(m_target->isAlive())
 				p_target->SoulStone = p_target->SoulStoneReceiver = 0;
 		}break;
 	case 20764:
@@ -2138,7 +2146,7 @@ void Aura::SpellAuraDummy(bool apply)
 				p_target->SoulStone = 20760;
 				p_target->SoulStoneReceiver = (uint32)m_casterGuid;
 			}
-			else if(m_target->IsAlive())
+			else if(m_target->isAlive())
 				p_target->SoulStone = p_target->SoulStoneReceiver = 0;
 		}break;
 	case 20765:
@@ -2150,7 +2158,7 @@ void Aura::SpellAuraDummy(bool apply)
 				p_target->SoulStone = 20761;
 				p_target->SoulStoneReceiver = (uint32)m_casterGuid;
 			}
-			else if(m_target->IsAlive())
+			else if(m_target->isAlive())
 				p_target->SoulStone = p_target->SoulStoneReceiver = 0;
 		}break;
 	case 27239:
@@ -2163,7 +2171,7 @@ void Aura::SpellAuraDummy(bool apply)
 				p_target->SoulStone = 27240;
 				p_target->SoulStoneReceiver = (uint32)m_casterGuid;
 			}
-			else if(m_target->IsAlive())
+			else if(m_target->isAlive())
 				p_target->SoulStone = p_target->SoulStoneReceiver = 0;
 		}break;
 	case 47883:// SoulStone rank 7
@@ -2176,7 +2184,7 @@ void Aura::SpellAuraDummy(bool apply)
 				p_target->SoulStone = 47882;
 				p_target->SoulStoneReceiver = (uint32)m_casterGuid;
 			}
-			else if(m_target->IsAlive())
+			else if(m_target->isAlive())
 				p_target->SoulStone = p_target->SoulStoneReceiver = 0;
 		}break;
 	case 570:   // far sight
@@ -2676,10 +2684,14 @@ void Aura::SpellAuraModCharm(bool apply)
 		m_target->SetCharmTempVal( m_target->GetFaction( ) );
 		m_target->SetFaction(caster->GetFaction());
 		m_target->UpdateOppFactionSet();
-		//m_target->GetAIInterface()->Init(m_target, AITYPE_PET, MOVEMENTTYPE_NONE, caster);
+		m_target->GetAIInterface()->Init(m_target, AITYPE_PET, MOVEMENTTYPE_NONE, caster);
 		m_target->SetCharmedByGUID(  caster->GetGUID());
 		caster->SetCharmedUnitGUID( target->GetGUID());
 		//damn it, the other effects of enslave demon will agro him on us anyway :S
+		m_target->GetAIInterface()->WipeHateList();
+		m_target->GetAIInterface()->WipeTargetList();
+		m_target->GetAIInterface()->SetNextTarget( TO_UNIT(NULL));
+
 		target->SetEnslaveCount(target->GetEnslaveCount() + 1);
 
 		if( caster->GetSession() ) // crashfix
@@ -2705,6 +2717,10 @@ void Aura::SpellAuraModCharm(bool apply)
 	{
 		m_target->m_special_state &= ~UNIT_STATE_CHARM;
 		m_target->SetFaction(m_target->GetCharmTempVal() );
+		m_target->GetAIInterface()->WipeHateList();
+		m_target->GetAIInterface()->WipeTargetList();
+		m_target->UpdateOppFactionSet();
+		m_target->GetAIInterface()->Init(m_target, AITYPE_AGRO, MOVEMENTTYPE_NONE);
 		m_target->SetCharmedByGUID(  0);
 
 		if( caster->GetSession() != NULL ) // crashfix
@@ -2819,7 +2835,7 @@ void Aura::SpellAuraPeriodicHeal( bool apply )
 
 void Aura::EventPeriodicHeal( uint32 amount )
 {
-	if( !m_target->IsAlive() )
+	if( !m_target->isAlive() )
 		return;
 
 	Unit* c = GetUnitCaster();
@@ -2969,14 +2985,9 @@ void Aura::EventPeriodicHeal( uint32 amount )
 		int count = 0;
 		for(std::set<Object*>::iterator itr = u_caster->GetInRangeSetBegin(); itr != u_caster->GetInRangeSetEnd(); ++itr)
 		{
-			if((*itr)->GetTypeId() != TYPEID_UNIT || !static_cast<Unit *>(*itr)->CombatStatus.IsInCombat() )
+			if((*itr)->GetTypeId() != TYPEID_UNIT || !static_cast<Unit *>(*itr)->CombatStatus.IsInCombat() || (static_cast<Unit *>(*itr)->GetAIInterface()->getThreatByPtr(u_caster) == 0 && static_cast<Unit *>(*itr)->GetAIInterface()->getThreatByPtr(m_target) == 0))
 				continue;
-			AIInterface * ai = TO_UNIT(*itr)->GetAIInterface();
-			if(ai != NULL && AIType_isMob(ai) )
-			{
-				if( TO_AIMOB(ai)->getThreatByPtr(u_caster) == 0 || TO_AIMOB(ai)->getThreatByPtr(m_target) == 0)
-					continue;
-			}
+
 			if( !(u_caster->GetPhase() & (*itr)->GetPhase()) ) //Can't see, no threat
 				continue;
 
@@ -3056,7 +3067,7 @@ void Aura::SpellAuraModThreatGenerated(bool apply)
 void Aura::SpellAuraModTaunt(bool apply)
 {
 	Unit* m_caster = GetUnitCaster();
-	if(!m_caster || !m_caster->IsAlive())
+	if(!m_caster || !m_caster->isAlive())
 		return;
 
 	SetNegative();
@@ -3064,12 +3075,14 @@ void Aura::SpellAuraModTaunt(bool apply)
 	if(apply)
 	{
 		m_target->GetAIInterface()->AttackReaction(m_caster, 1, 0);
-		m_target->GetAIInterface()->setForcedTarget(m_caster);
+		m_target->GetAIInterface()->taunt(m_caster, true);
 	}
 	else
 	{
-		if(m_target->GetAIInterface()->getForcedTarget() == m_caster)
-			m_target->GetAIInterface()->setForcedTarget(NULL);
+		if(m_target->GetAIInterface()->getTauntedBy() == m_caster)
+		{
+			m_target->GetAIInterface()->taunt(m_caster, false);
+		}
 	}
 }
 
@@ -3107,7 +3120,7 @@ void Aura::SpellAuraModStun(bool apply)
 		m_target->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_STUNNED);
 
 		if(m_target->GetTypeId() == TYPEID_UNIT)
-			m_target->GetAIInterface()->setNextTarget( NULL);
+			m_target->GetAIInterface()->SetNextTarget( TO_UNIT(NULL) );
 
 		// remove the current spell (for channalers)
 		if(m_target->m_currentSpell && m_target->GetGUID() != m_casterGuid &&
@@ -3146,8 +3159,8 @@ void Aura::SpellAuraModStun(bool apply)
 		if(m_target->GetTypeId() == TYPEID_UNIT)
 		{
 			Unit * target = GetUnitCaster();
-			if( m_target->GetAIInterface()->getNextTarget() != NULL )
-				target = m_target->GetAIInterface()->getNextTarget();
+			if( m_target->GetAIInterface()->GetNextTarget() != NULL )
+				target = m_target->GetAIInterface()->GetNextTarget();
 
 			if( target == NULL )
 				return;
@@ -3371,15 +3384,14 @@ void Aura::SpellAuraModStealth(bool apply)
 
 				Unit* _unit = static_cast< Unit* >( *iter );
 
-				if( !_unit->IsAlive() )
+				if( !_unit->isAlive() )
 					continue;
 
 				if( _unit->GetCurrentSpell() && _unit->GetCurrentSpell()->GetUnitTarget() == m_target)
 					_unit->GetCurrentSpell()->cancel();
 
-				AIInterface * ai = _unit->GetAIInterface();
-				if(ai != NULL && AIType_isMob(ai) )
-					TO_AIMOB(ai)->removeThreatByPtr(m_target);
+				if( _unit->GetAIInterface() != NULL )
+					_unit->GetAIInterface()->RemoveThreatByPtr( m_target );
 			}
 
 			for( uint32 x = MAX_POSITIVE_AURAS_EXTEDED_START; x < MAX_POSITIVE_AURAS_EXTEDED_END; x++ )
@@ -3554,7 +3566,7 @@ void Aura::SpellAuraModTotalHealthRegenPct(bool apply)
 
 void Aura::EventPeriodicHealPct(float RegenPct)
 {
-	if(!m_target->IsAlive())
+	if(!m_target->isAlive())
 		return;
 
 	uint32 add = float2int32(m_target->GetMaxHealth() * (RegenPct / 100.0f));
@@ -3588,7 +3600,7 @@ void Aura::SpellAuraModTotalManaRegenPct(bool apply)
 
 void Aura::EventPeriodicManaPct(float RegenPct)
 {
-	if(!m_target->IsAlive())
+	if(!m_target->isAlive())
 		return;
 
 	uint32 add = float2int32(m_target->GetMaxPower( POWER_TYPE_MANA ) * (RegenPct / 100.0f));
@@ -4536,7 +4548,7 @@ void Aura::SpellAuraModSchoolImmunity(bool apply)
 {
 	if( apply && ( m_spellProto->NameHash == SPELL_HASH_DIVINE_SHIELD || m_spellProto->NameHash == SPELL_HASH_ICE_BLOCK) ) // Paladin - Divine Shield
 	{
-		if(!m_target->IsAlive())
+		if(!m_target->isAlive())
 			return;
 
 		Aura * pAura;
@@ -4850,7 +4862,7 @@ void Aura::EventPeriodicLeech(uint32 amount)
 	if( m_caster == NULL )
 		return;
 
-	if( ! ( m_target->IsAlive() && m_caster->IsAlive() ) )
+	if( ! ( m_target->isAlive() && m_caster->isAlive() ) )
 		return;
 
 	SpellEntry* sp = GetSpellProto();
@@ -4978,7 +4990,7 @@ void Aura::EventPeriodicLeech(uint32 amount)
 	m_caster->m_procCounter = 0;
 
 	//some say this prevents some crashes atm
-	if( !m_target->IsAlive() )
+	if( !m_target->isAlive() )
 		return;
 
 	m_target->HandleProc( vproc, m_caster, sp, false, dmg_amount);
@@ -5301,7 +5313,7 @@ void Aura::SpellAuraIncreaseSwimSpeed(bool apply)
 {
 	if(apply)
 	{
-		if(m_target->IsAlive())  SetPositive();
+		if(m_target->isAlive())  SetPositive();
 		m_target->m_swimSpeed = 0.04722222f*(100+mod->m_amount);
 	}
 	else
@@ -5403,7 +5415,7 @@ void Aura::EventPeriodicHealthFunnel(uint32 amount)
 	Unit* m_caster = GetUnitCaster();
 	if(!m_caster)
 		return;
-	if(m_target->IsAlive() && m_caster->IsAlive())
+	if(m_target->isAlive() && m_caster->isAlive())
 	{
 
 		m_caster->DealDamage(m_target, amount, 0, 0, GetSpellId(),true);
@@ -5446,7 +5458,7 @@ void Aura::EventPeriodicManaLeech(uint32 amount)
 	Unit* m_caster = GetUnitCaster();
 	if(!m_caster)
 		return;
-	if(m_target->IsAlive() && m_caster->IsAlive())
+	if(m_target->isAlive() && m_caster->isAlive())
 	{
 
 		int32 amt = (int32)min( amount, m_target->GetPower( POWER_TYPE_MANA ) );
@@ -5505,23 +5517,19 @@ void Aura::SpellAuraFeignDeath(bool apply)
 			p_target->setDeathState(ALIVE);
 
 			//now get rid of mobs agro. pTarget->CombatStatus.AttackersForgetHate() - this works only for already attacking mobs
-			/* Paroxysm : This iteration is not even needed if creatures and players check whether the target is feigned in the 1st place.
-			Creature * obj = NULL;
 		    for(std::set<Object*>::iterator itr = p_target->GetInRangeSetBegin(); itr != p_target->GetInRangeSetEnd(); itr++ )
 			{
-				if( (*itr)->IsCreature() )
+				if( (*itr)->IsUnit() && ( static_cast< Unit* >( *itr ))->isAlive())
 				{
-					obj = TO_CREATURE(*itr);
-					if(obj->isAlive() )
-					{
-						AIInterface * ai = obj->GetAIInterface();
-						if(ai != NULL && ai->AIType_isMob() )
-							TO_AIMOB(ai)->removeThreatByPtr(p_target);
-					}
-					if( isFeignDeathResisted( p_target->getLevel(), obj->getLevel() ) ){
+					Unit *u = static_cast< Unit* >( *itr );
+
+					if( isFeignDeathResisted( p_target->getLevel(), u->getLevel() ) ){
 						sEventMgr.AddEvent( this, &Aura::Remove, EVENT_AURA_REMOVE, 1, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT | EVENT_FLAG_DELETES_OBJECT );
 						return;
 					}
+
+					if(u->IsCreature() )
+						u->GetAIInterface()->RemoveThreatByPtr( p_target );
 
 					//if this is player and targeting us then we interrupt cast
 					if( u->IsPlayer() )
@@ -5534,7 +5542,7 @@ void Aura::SpellAuraFeignDeath(bool apply)
 						plr->GetSession()->SendPacket( &data );
 					}
 				}
-			}*/
+			}
 
 			p_target->SetFlag( UNIT_FIELD_FLAGS_2, 1 );
 			p_target->SetFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_FEIGN_DEATH );
@@ -6200,7 +6208,7 @@ void Aura::EventPeriodicDrink(uint32 amount)
 
 void Aura::EventPeriodicHeal1(uint32 amount)
 {
-	if(!m_target->IsAlive())
+	if(!m_target->isAlive())
 		return;
 
 	uint32 ch = m_target->GetHealth();
@@ -6373,7 +6381,7 @@ void Aura::SpellAuraPeriodicDamagePercent(bool apply)
 void Aura::EventPeriodicDamagePercent(uint32 amount)
 {
 	//DOT
-	if(!m_target->IsAlive())
+	if(!m_target->isAlive())
 		return;
 	if(m_target->SchoolImmunityList[GetSpellProto()->School])
 		return;
@@ -7676,7 +7684,7 @@ void Aura::EventPeriodicBurn(uint32 amount, uint32 misc)
 	if(!m_caster)
 		return;
 
-	if(m_target->IsAlive() && m_caster->IsAlive())
+	if(m_target->isAlive() && m_caster->isAlive())
 	{
 		if(m_target->SchoolImmunityList[GetSpellProto()->School])
 			return;
@@ -7817,7 +7825,7 @@ void Aura::SpellAuraIncreaseCricticalTypePCT(bool apply)
 
 void Aura::SpellAuraIncreasePartySpeed(bool apply)
 {
-	if(m_target->GetTypeId() == TYPEID_PLAYER && m_target->IsAlive() && m_target->GetMount() == 0)
+	if(m_target->GetTypeId() == TYPEID_PLAYER && m_target->isAlive() && m_target->GetMount() == 0)
 	{
 		if(apply)
 		{
@@ -8981,8 +8989,8 @@ void Aura::SpellAuraModPossessPet(bool apply)
 	if( !m_target->IsPet() )
 		return;
 
-	//std::list<Pet*> summons = pCaster->GetSummons();
-	for(std::list<Pet*>::iterator itr = pCaster->getSummonStart(); itr != pCaster->getSummonEnd(); ++itr)
+	std::list<Pet*> summons = pCaster->GetSummons();
+	for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
 	{
 		if( *itr == m_target )
 		{	

@@ -79,7 +79,7 @@ public:
 	ADD_CREATURE_FACTORY_FUNCTION(ArmyofDeadGhoul);
 	ArmyofDeadGhoul(Creature* pCreature) : CreatureAIScript(pCreature)
 	{
-		_unit->GetAIInterface()->Movement_allowmovement(false);
+		_unit->GetAIInterface()->m_canMove = false;
 	}
 
 	void OnLoad()
@@ -91,7 +91,7 @@ public:
 	{
 		_unit->CastSpell(_unit->GetGUID(), 20480, false);		
 		RemoveAIUpdateEvent();
-		_unit->GetAIInterface()->Movement_allowmovement();
+		_unit->GetAIInterface()->m_canMove = true;
 	}
 
 };

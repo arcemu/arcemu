@@ -172,14 +172,22 @@ enum GAMEOBJECT_TYPES
 	GAMEOBJECT_TYPE_BARBER_CHAIR			= 32,
 	GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING	= 33,
 	GAMEOBJECT_TYPE_GUILD_BANK				= 34,
-	GAMEOBJECT_TYPE_TRAPDOOR				= 35
-};
+	GAMEOBJECT_TYPE_TRAPDOOR				= 35};
 
 #define CALL_GO_SCRIPT_EVENT(obj, func) if(obj->GetTypeId() == TYPEID_GAMEOBJECT && static_cast<GameObject*>(obj)->GetScript() != NULL) static_cast<GameObject*>(obj)->GetScript()->func
 
 class SERVER_DECL GameObject : public Object
 {
 public:
+	/************************************************************************/
+	/* LUA Stuff                                                            */
+	/************************************************************************/
+/*	typedef struct { const char *name; int(*mfunc)(lua_State*,GameObject*); } RegType;
+	static const char className[];
+	static RegType methods[];
+
+	// a lua script cannot create a unit.
+	GameObject(lua_State * L) { Arcemu::Util::ARCEMU_ASSERT(   false); }*/
 
 	GameObject(uint64 guid);
 	~GameObject( );
@@ -330,11 +338,6 @@ public:
 
 	void SetLevel( uint32 level ) { SetUInt32Value(GAMEOBJECT_LEVEL, level); }
 	uint32 GetLevel() { return GetUInt32Value(GAMEOBJECT_LEVEL); }
-	
-	//Gameobject aiupdate registration/removal
-	void RegisterAIUpdate(uint32 interval);
-	void ModifyAIUpdate(uint32 interval);
-	void RemoveAIUpdate();
 
 protected:
 

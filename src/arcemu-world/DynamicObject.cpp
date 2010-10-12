@@ -128,7 +128,7 @@ void DynamicObject::UpdateTargets()
 		{
             Object *o = *itr;
 
-			if( !o->IsUnit() || !static_cast< Unit* >( o )->IsAlive() )
+			if( !o->IsUnit() || !static_cast< Unit* >( o )->isAlive() )
 				continue;
 
 			target = static_cast< Unit* >( o );

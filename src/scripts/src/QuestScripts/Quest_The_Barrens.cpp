@@ -82,7 +82,7 @@ public:
 		if(creat == NULL)
 			return;
 		creat->m_escorter = mTarget;   
-		TO_AIMOB(creat->GetAIInterface() )->Waypoint_setmovetype(MOVEMENTTYPE_FORWARDTHENSTOP);
+		creat->GetAIInterface()->setMoveType(11);
 		creat->GetAIInterface()->SetAllowedToEnterCombat(false);
 		creat->GetAIInterface()->StopMovement(3000);
 		creat->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "Okay let's do this, you gotta protect me and stuff, I can't fight on my own!");
@@ -330,7 +330,7 @@ public:
 		if(creat == NULL)
 			return;		
 		creat->m_escorter = mTarget;   
-		TO_AIMOB(creat->GetAIInterface() )->Waypoint_setmovetype(MOVEMENTTYPE_FORWARDTHENSTOP);
+		creat->GetAIInterface()->setMoveType(11);
 		creat->GetAIInterface()->SetAllowedToEnterCombat(false);
 		creat->GetAIInterface()->StopMovement(3000);
 		creat->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "Enough talk, help me get back to Ratchet will you? Let me know when you're ready and we'll make our break!");
@@ -481,7 +481,7 @@ public:
 
 			if(kolkarskilled > 8 && mPlayer->GetQuestLogForEntry(851))
 			{
-				_unit->GetMapMgr()->GetInterface()->SpawnCreature(3395, -1209.8f, -2729.84f, 106.33f, 4.8f, 0)->Despawn(600000, 0);
+				_unit->GetMapMgr()->GetInterface()->SpawnCreature(3395, -1209.8f, -2729.84f, 106.33f, 4.8f, true, false, 0, 0)->Despawn(600000, 0);
 				kolkarskilled = 0;
 				_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "I am slain! Summon Verog!");
 			}

@@ -65,8 +65,6 @@ public:
 	ARCEMU_INLINE size_t GetNodeCount() { return m_pathNodes.size(); }
 	TaxiPathNode* GetPathNode(uint32 i);
 	ARCEMU_INLINE uint32 GetPrice() { return price; }
-	//modify the price to be able to be free?
-	ARCEMU_INLINE void SetPrice(uint32 price) { this->price = price; }
 	ARCEMU_INLINE uint32 GetSourceNode() { return from; }
 
 protected:

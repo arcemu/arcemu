@@ -49,8 +49,9 @@ namespace lua_engine
 {
 	void bindTaxiMethods(luabridge::module & m)
 	{
-#define prop(name) .property_rw(#name, &TaxiNode::name)
-		m	.class_<TaxiNode>("TaxiNode")
+#define prop(name) .property_rw(#name, &luataxinode::name)
+		m	.class_<luataxinode>("TaxiNode")
+			.constructor< void(*)(uint32,uint32,float,float,float) >()
 			prop(x)
 			prop(y)
 			prop(z)
@@ -58,9 +59,6 @@ namespace lua_engine
 			prop(mapid)
 			prop(alliance_mount)
 			prop(horde_mount);
-		m	.class_decl<luataxinode>("TaxiNode");
-		m	.class_<luataxinode>()
-			.constructor< void(*)(uint32,uint32,float,float,float) >();
 #undef prop
 		m	.class_<TaxiPath>("TaxiPath")
 			.constructor<void(*)()>()

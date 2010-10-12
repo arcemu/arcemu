@@ -102,7 +102,7 @@ public:
 		if(!cialo)
 			return;
 
-		if(!cialo->IsAlive())
+		if(!cialo->isAlive())
 			cialo->Despawn(1, 6*60*1000);
 
 		_unit->Despawn(60*1000, 0);

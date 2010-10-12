@@ -138,13 +138,13 @@
     <ClCompile Include="..\..\src\arcemu-shared\Threading\AtomicBoolean.cpp">
       <Filter>Threading</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-shared\Threading\AtomicULong.cpp">
+      <Filter>Threading</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\arcemu-shared\Threading\AtomicCounter.cpp">
       <Filter>Threading</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\arcemu-shared\Threading\AtomicFloat.cpp">
-      <Filter>Threading</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\arcemu-shared\Threading\AtomicULong.cpp">
       <Filter>Threading</Filter>
     </ClCompile>
   </ItemGroup>
@@ -328,13 +328,13 @@
     <ClInclude Include="..\..\src\arcemu-shared\Threading\AtomicBoolean.h">
       <Filter>Threading</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\Threading\AtomicULong.h">
+      <Filter>Threading</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\src\arcemu-shared\Threading\AtomicCounter.h">
       <Filter>Threading</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\arcemu-shared\Threading\AtomicFloat.h">
-      <Filter>Threading</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\arcemu-shared\Threading\AtomicULong.h">
       <Filter>Threading</Filter>
     </ClInclude>
   </ItemGroup>

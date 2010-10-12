@@ -85,7 +85,7 @@ public:
     if(pCreature == NULL)
       return;
 
-    /*if(!pCreature->m_custom_waypoint_map)
+    if(!pCreature->m_custom_waypoint_map)
 		pCreature->m_custom_waypoint_map = new WayPointMap;
 
     if(!modelid)
@@ -113,24 +113,24 @@ public:
 	if((*pCreature->m_custom_waypoint_map)[wp->id] == NULL)
 	{
 		(*pCreature->m_custom_waypoint_map)[wp->id] = wp;
-	}*/
+	}
 	
   }
 
   void EnableWaypoints(CreaturePointer creat)
   {
-	 /* if(!creat)
+	  if(!creat)
 		  return;
 	  if(!creat->m_custom_waypoint_map)
 		  return;
 	  
-	  creat->GetAIInterface()->SetWaypointMap(creat->m_custom_waypoint_map); */
+	  creat->GetAIInterface()->SetWaypointMap(creat->m_custom_waypoint_map);
   }
   
   void DeleteWaypoints(CreaturePointer creat)
   {
     PrintMessage("Function call: DeleteWaypoints()");
-    /*if(creat == NULL)
+    if(creat == NULL)
       return;
 
     if(creat->m_custom_waypoint_map == NULL)
@@ -144,7 +144,7 @@ public:
         delete (*i);
     }
 
-    creat->m_custom_waypoint_map->clear(); */
+    creat->m_custom_waypoint_map->clear();
   }
 
   CreaturePointer SpawnCreature(PlayerPointer pThis, uint32 entry, float posX, float posY, float posZ, float posO, uint32 duration = 0, uint32 phase = 1)
@@ -199,9 +199,9 @@ public:
     pCreature->Load(p, posX, posY, posZ);
     pCreature->SetMapId(pThis->GetMapId());
     pCreature->SetOrientation(posO);
-    pCreature->GetAIInterface()->disableCombat(dis_comb );
-    pCreature->GetAIInterface()->disableMelee(dis_mel);
-    pCreature->GetAIInterface()->disableTargetting(dis_target);
+    pCreature->GetAIInterface()->disable_combat = dis_comb;
+    pCreature->GetAIInterface()->disable_melee = dis_mel;
+    pCreature->GetAIInterface()->disable_targeting = dis_target;
     pCreature->SetInstanceID(pThis->GetInstanceID());
     pCreature->PushToWorld(pThis->GetMapMgr());
     pCreature->Despawn(duration, 0);
@@ -257,13 +257,13 @@ public:
   void CreateCustomWaypointMap(CreaturePointer creat)
   {
     PrintMessage("Function call: CreateCustomWaypointMap()");
-   /* if(creat == NULL)
+    if(creat == NULL)
       return;
 
 	creat->DestroyCustomWaypointMap();
     
     creat->m_custom_waypoint_map = new WayPointMap;
-    creat->GetAIInterface()->SetWaypointMap(creat->m_custom_waypoint_map); */
+    creat->GetAIInterface()->SetWaypointMap(creat->m_custom_waypoint_map);
   }
   
 	bool AddItem( uint32 pEntry, PlayerPointer pPlayer, uint32 pCount = 1 )

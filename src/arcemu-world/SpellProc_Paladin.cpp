@@ -52,7 +52,7 @@ class EyeForAnEyeSpellProc : public SpellProc
 	bool DoEffect(Unit *victim, SpellEntry *CastingSpell, uint32 flag, uint32 dmg, uint32 abs, int *dmg_overwrite, uint32 weapon_damage_type)
 	{
 		// If this player died by crit damage, don't do dmg back
-		if( ! mTarget->IsAlive() )
+		if( ! mTarget->isAlive() )
 			return true;
 
 		// Prevent proc on healing criticals

@@ -21,8 +21,8 @@
 
 bool Penance(uint32 i, Spell * pSpell)
 {
-	if( !pSpell->p_caster || !pSpell->p_caster->IsAlive() || 
-		!pSpell->GetUnitTarget() || !pSpell->GetUnitTarget()->IsAlive() )
+	if( !pSpell->p_caster || !pSpell->p_caster->isAlive() || 
+		!pSpell->GetUnitTarget() || !pSpell->GetUnitTarget()->isAlive() )
 		return true;
 
 	Unit *target = pSpell->GetUnitTarget();

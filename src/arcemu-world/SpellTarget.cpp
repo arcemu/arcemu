@@ -166,7 +166,7 @@ void Spell::AddConeTargets(uint32 i, uint32 TargetType, float r, uint32 maxtarge
 	ObjectSet::iterator itr;
 	for( itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); itr++ )
 	{
-		if(!((*itr)->IsUnit()) || !TO_UNIT((*itr))->IsAlive())
+		if(!((*itr)->IsUnit()) || !TO_UNIT((*itr))->isAlive())
 			continue;
 		//is Creature in range
 		if(m_caster->isInRange(TO_UNIT(*itr), GetRadius(i)))
@@ -229,7 +229,7 @@ void Spell::AddChainTargets(uint32 i, uint32 TargetType, float r, uint32 maxtarg
 	ObjectSet::iterator itr;
 	for( itr = firstTarget->GetInRangeSetBegin(); itr != firstTarget->GetInRangeSetEnd(); itr++ )
 	{
-		if( !(*itr)->IsUnit() || !TO_UNIT((*itr))->IsAlive())
+		if( !(*itr)->IsUnit() || !TO_UNIT((*itr))->isAlive())
 			continue;
 
 		if (RaidOnly && !pfirstTargetFrom->InRaid(TO_UNIT(*itr)))
@@ -266,7 +266,7 @@ void Spell::AddPartyTargets(uint32 i, uint32 TargetType, float r, uint32 maxtarg
 	ObjectSet::iterator itr;
 	for(itr = u->GetInRangeSetBegin(); itr != u->GetInRangeSetEnd(); itr++)
 	{
-		if (!(*itr)->IsUnit() || !TO_UNIT(*itr)->IsAlive())
+		if (!(*itr)->IsUnit() || !TO_UNIT(*itr)->isAlive())
 			continue;
 
 		//only affect players and pets
@@ -298,7 +298,7 @@ void Spell::AddRaidTargets(uint32 i, uint32 TargetType, float r, uint32 maxtarge
 	ObjectSet::iterator itr;
 	for(itr = u->GetInRangeSetBegin(); itr != u->GetInRangeSetEnd(); itr++)
 	{
-		if (!(*itr)->IsUnit() || !TO_UNIT(*itr)->IsAlive())
+		if (!(*itr)->IsUnit() || !TO_UNIT(*itr)->isAlive())
 			continue;
 
 		//only affect players and pets
@@ -388,7 +388,7 @@ bool Spell::AddTarget(uint32 i, uint32 TargetType, Object* obj)
 	}
 	if (TargetType & SPELL_TARGET_OBJECT_CURPET && !obj->IsPet())
 		return false;
-	if (TargetType & (SPELL_TARGET_AREA | SPELL_TARGET_AREA_SELF | SPELL_TARGET_AREA_CURTARGET | SPELL_TARGET_AREA_CONE | SPELL_TARGET_AREA_PARTY | SPELL_TARGET_AREA_RAID) && ((obj->IsUnit() && !TO_UNIT(obj)->IsAlive()) || (obj->IsCreature() && TO_CREATURE(obj)->IsTotem())))
+	if (TargetType & (SPELL_TARGET_AREA | SPELL_TARGET_AREA_SELF | SPELL_TARGET_AREA_CURTARGET | SPELL_TARGET_AREA_CONE | SPELL_TARGET_AREA_PARTY | SPELL_TARGET_AREA_RAID) && ((obj->IsUnit() && !TO_UNIT(obj)->isAlive()) || (obj->IsCreature() && TO_CREATURE(obj)->IsTotem())))
 		return false;
 
 	uint8 hitresult = TargetType & SPELL_TARGET_REQUIRE_ATTACKABLE && obj->IsUnit()? DidHit(i, TO_UNIT(obj)) : SPELL_DID_HIT_SUCCESS;
@@ -620,12 +620,12 @@ bool Spell::GenerateTargets(SpellCastTargets* t)
 			}
 			else
 			{
-				if (u_caster->GetAIInterface()->getNextTarget() != NULL && TargetType & SPELL_TARGET_REQUIRE_ATTACKABLE)
+				if (u_caster->GetAIInterface()->GetNextTarget() != NULL && TargetType & SPELL_TARGET_REQUIRE_ATTACKABLE)
 				{
 					t->m_targetMask |= TARGET_FLAG_DEST_LOCATION | TARGET_FLAG_UNIT;
-					t->m_destX = u_caster->GetAIInterface()->getNextTarget()->GetPositionX();
-					t->m_destY = u_caster->GetAIInterface()->getNextTarget()->GetPositionY();
-					t->m_destZ = u_caster->GetAIInterface()->getNextTarget()->GetPositionZ();
+					t->m_destX = u_caster->GetAIInterface()->GetNextTarget()->GetPositionX();
+					t->m_destY = u_caster->GetAIInterface()->GetNextTarget()->GetPositionY();
+					t->m_destZ = u_caster->GetAIInterface()->GetNextTarget()->GetPositionZ();
 					result = true;
 				}
 				else if (TargetType & SPELL_TARGET_REQUIRE_FRIENDLY)
@@ -655,10 +655,10 @@ bool Spell::GenerateTargets(SpellCastTargets* t)
 		{
 			if (TargetType & SPELL_TARGET_REQUIRE_ATTACKABLE)
 			{
-				if (u_caster->GetAIInterface()->getNextTarget() != NULL)
+				if (u_caster->GetAIInterface()->GetNextTarget() != NULL)
 				{
 					t->m_targetMask |= TARGET_FLAG_UNIT;
-					t->m_unitTarget = u_caster->GetAIInterface()->getNextTarget()->GetGUID();
+					t->m_unitTarget = u_caster->GetAIInterface()->GetNextTarget()->GetGUID();
 					result = true;
 				}
 			}
@@ -672,12 +672,12 @@ bool Spell::GenerateTargets(SpellCastTargets* t)
 		//target cone
 		if (TargetType & SPELL_TARGET_AREA_CONE)
 		{
-			if (u_caster->GetAIInterface()->getNextTarget() != NULL)
+			if (u_caster->GetAIInterface()->GetNextTarget() != NULL)
 			{
 				t->m_targetMask |= TARGET_FLAG_DEST_LOCATION;
-				t->m_destX = u_caster->GetAIInterface()->getNextTarget()->GetPositionX();
-				t->m_destY = u_caster->GetAIInterface()->getNextTarget()->GetPositionY();
-				t->m_destZ = u_caster->GetAIInterface()->getNextTarget()->GetPositionZ();
+				t->m_destX = u_caster->GetAIInterface()->GetNextTarget()->GetPositionX();
+				t->m_destY = u_caster->GetAIInterface()->GetNextTarget()->GetPositionY();
+				t->m_destZ = u_caster->GetAIInterface()->GetNextTarget()->GetPositionZ();
 				result = true;
 			}
 		}

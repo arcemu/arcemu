@@ -104,7 +104,7 @@ MoonScriptCreatureAI::~MoonScriptCreatureAI()
 
 bool MoonScriptCreatureAI::GetCanMove()
 {
-	return _unit->GetAIInterface()->Movement_canmove();
+	return _unit->GetAIInterface()->m_canMove;
 };
 
 void MoonScriptCreatureAI::SetCanMove( bool pCanMove )
@@ -123,7 +123,7 @@ void MoonScriptCreatureAI::MoveTo( MoonScriptCreatureAI* pCreature, RangeStatusP
 void MoonScriptCreatureAI::MoveTo( Unit* pUnit, RangeStatusPair pRangeStatus )
 {
 	if ( pRangeStatus.first == RangeStatus_TooClose )
-		_unit->GetAIInterface()->calcDestinationAndMove( pUnit, pRangeStatus.second );
+		_unit->GetAIInterface()->_CalcDestinationAndMove( pUnit, pRangeStatus.second );
 	else if ( pRangeStatus.first == RangeStatus_TooFar )
 		MoveTo( pUnit->GetPositionX(), pUnit->GetPositionY(), pUnit->GetPositionZ() );
 };
@@ -131,7 +131,7 @@ void MoonScriptCreatureAI::MoveTo( Unit* pUnit, RangeStatusPair pRangeStatus )
 void MoonScriptCreatureAI::MoveTo( float pX, float pY, float pZ, bool pRun )
 {
 	if ( pRun )
-		_unit->GetAIInterface()->Movement_setmovemode(AIMOVESTATE_RUN);
+		_unit->GetAIInterface()->m_moveRun = true;
 
 	_unit->GetAIInterface()->MoveTo( pX, pY, pZ, 0 );
 };
@@ -148,21 +148,21 @@ void MoonScriptCreatureAI::StopMovement()
 
 void MoonScriptCreatureAI::SetFlyMode(bool pValue)
 {
-	if( pValue && _unit->GetAIInterface()->Movement_getmovemode() != AIMOVESTATE_FLY)
+	if( pValue && !_unit->GetAIInterface()->m_moveFly )
 	{
 		WorldPacket data(SMSG_MOVE_SET_HOVER, 13);
 		data << _unit->GetNewGUID();
 		data << uint32(0);
 		_unit->SendMessageToSet(&data, false);
-		_unit->GetAIInterface()->Movement_setmovemode(AIMOVESTATE_FLY);
+		_unit->GetAIInterface()->m_moveFly = true;
 	}
-	else if( !pValue && _unit->GetAIInterface()->Movement_getmovemode() == AIMOVESTATE_FLY )
+	else if( !pValue && _unit->GetAIInterface()->m_moveFly )
 	{
 		WorldPacket data(SMSG_MOVE_UNSET_HOVER, 13);
 		data << _unit->GetNewGUID();
 		data << uint32(0);
 		_unit->SendMessageToSet(&data, false);
-		_unit->GetAIInterface()->Movement_setmovemode(AIMOVESTATE_RUN);
+		_unit->GetAIInterface()->m_moveFly = false;
 	}
 }
 
@@ -194,7 +194,7 @@ void MoonScriptCreatureAI::SetDespawnWhenInactive(bool pValue)
 
 void MoonScriptCreatureAI::SetBehavior(BehaviorType pBehavior)
 {
-	/*switch( pBehavior )
+	switch( pBehavior )
 	{
 		case Behavior_Default:		_unit->GetAIInterface()->setCurrentAgent(AGENT_NULL); break;
 		case Behavior_Melee:		_unit->GetAIInterface()->setCurrentAgent(AGENT_MELEE); break;
@@ -203,13 +203,12 @@ void MoonScriptCreatureAI::SetBehavior(BehaviorType pBehavior)
 		case Behavior_Flee:			_unit->GetAIInterface()->setCurrentAgent(AGENT_FLEE); break;
 		case Behavior_CallForHelp:	_unit->GetAIInterface()->setCurrentAgent(AGENT_CALLFORHELP); break;
 		default:					sLog.outDebug("ArcScript: MoonScriptCreatureAI::SetBehavior() : Invalid behavior type!\n"); break;
-	}*/
+	}
 }
 
 BehaviorType MoonScriptCreatureAI::GetBehavior()
 {
-	return Behavior_Default;
-	/*switch( _unit->GetAIInterface()->getCurrentAgent() )
+	switch( _unit->GetAIInterface()->getCurrentAgent() )
 	{
 		case AGENT_NULL:		return Behavior_Default;
 		case AGENT_MELEE:		return Behavior_Melee;
@@ -218,47 +217,47 @@ BehaviorType MoonScriptCreatureAI::GetBehavior()
 		case AGENT_SPELL:		return Behavior_Spell;
 		case AGENT_CALLFORHELP:	return Behavior_CallForHelp;
 		default:				sLog.outDebug("ArcScript: MoonScriptCreatureAI::SetBehavior() : Invalid behavior type!\n"); return Behavior_Default;
-	}*/
+	}
 }
 
 void MoonScriptCreatureAI::SetAllowMelee(bool pAllow)
 {
-	_unit->GetAIInterface()->disableMelee(!pAllow);
+	_unit->GetAIInterface()->disable_melee = !pAllow;
 }
 
 bool MoonScriptCreatureAI::GetAllowMelee()
 {
-	return !_unit->GetAIInterface()->getMeleeDisable();
+	return !_unit->GetAIInterface()->disable_melee;
 }
 
 void MoonScriptCreatureAI::SetAllowRanged(bool pAllow)
 {
-	_unit->GetAIInterface()->disableRanged(!pAllow);
+	_unit->GetAIInterface()->disable_ranged = !pAllow;
 }
 
 bool MoonScriptCreatureAI::GetAllowRanged()
 {
-	return !_unit->GetAIInterface()->getRangedDisable();
+	return !_unit->GetAIInterface()->disable_ranged;
 }
 
 void MoonScriptCreatureAI::SetAllowSpell(bool pAllow)
 {
-	_unit->GetAIInterface()->disableSpells(!pAllow);
+	_unit->GetAIInterface()->disable_spell = !pAllow;
 }
 
 bool MoonScriptCreatureAI::GetAllowSpell()
 {
-	return !_unit->GetAIInterface()->getSpellDisable();
+	return !_unit->GetAIInterface()->disable_spell;
 }
 
 void MoonScriptCreatureAI::SetAllowTargeting(bool pAllow)
 {
-	_unit->GetAIInterface()->disableTargetting( !pAllow);
+	_unit->GetAIInterface()->disable_targeting = !pAllow;
 }
 
 bool MoonScriptCreatureAI::GetAllowTargeting()
 {
-	return !_unit->GetAIInterface()->getTargettingDisable();
+	return !_unit->GetAIInterface()->disable_targeting;
 }
 
 void MoonScriptCreatureAI::AggroNearestUnit(int pInitialThreat)
@@ -304,13 +303,12 @@ void MoonScriptCreatureAI::AggroRandomPlayer(int pInitialThreat)
 
 void MoonScriptCreatureAI::ClearHateList()
 {
-	//_unit->GetAIInterface()->ClearHateList();	//without leaving combat
+	_unit->GetAIInterface()->ClearHateList();	//without leaving combat
 }
 
 void MoonScriptCreatureAI::WipeHateList()
 {
-	if(AIType_isMob(_unit->GetAIInterface()) )
-		TO_AIMOB(_unit->GetAIInterface() )->wipeHateList();
+	_unit->GetAIInterface()->WipeHateList();
 }
 
 int32 MoonScriptCreatureAI::GetHealthPercent()
@@ -445,7 +443,7 @@ MoonScriptCreatureAI* MoonScriptCreatureAI::SpawnCreature(uint32 pCreatureId, bo
 
 MoonScriptCreatureAI* MoonScriptCreatureAI::SpawnCreature(uint32 pCreatureId, float pX, float pY, float pZ, float pO, bool pForceSameFaction, uint32 pPhase)
 {
-	Creature* NewCreature = _unit->GetMapMgr()->GetInterface()->SpawnCreature(pCreatureId, pX, pY, pZ, pO, pPhase);
+	Creature* NewCreature = _unit->GetMapMgr()->GetInterface()->SpawnCreature(pCreatureId, pX, pY, pZ, pO, true, false, 0, 0, pPhase);
 	MoonScriptCreatureAI* CreatureScriptAI = ( NewCreature ) ? static_cast<MoonScriptCreatureAI*>(NewCreature->GetScript()) : NULL;
 	if( pForceSameFaction && NewCreature )
 	{
@@ -916,8 +914,7 @@ WayPoint* MoonScriptCreatureAI::CreateWaypoint(int pId, uint32 pWaittime, uint32
 
 void MoonScriptCreatureAI::AddWaypoint(WayPoint* pWayPoint)
 {
-	if(AIType_isMob(_unit->GetAIInterface() ) )
-		TO_AIMOB(_unit->GetAIInterface() )->Waypoint_add(pWayPoint);
+	_unit->GetAIInterface()->addWayPoint(pWayPoint);
 }
 
 void MoonScriptCreatureAI::ForceWaypointMove(uint32 pWaypointId)
@@ -928,71 +925,62 @@ void MoonScriptCreatureAI::ForceWaypointMove(uint32 pWaypointId)
 		SetCanMove(true);
 
 	StopMovement();
-	_unit->GetAIInterface()->setAIState(STATE_SCRIPTMOVE);
+	_unit->GetAIInterface()->SetAIState(STATE_SCRIPTMOVE);
 	SetMoveType(Move_WantedWP);
 	SetWaypointToMove(pWaypointId);
 }
 
 void MoonScriptCreatureAI::SetWaypointToMove(uint32 pWaypointId)
 {
-	if(AIType_isMob(_unit->GetAIInterface() ) )
-		TO_AIMOB(_unit->GetAIInterface() )->Waypoint_setnext( (uint8)pWaypointId);
+	_unit->GetAIInterface()->setWaypointToMove(pWaypointId);
 }
 
 void MoonScriptCreatureAI::StopWaypointMovement()
 {
 	SetBehavior(Behavior_Default);
-	_unit->GetAIInterface()->setAIState(STATE_SCRIPTIDLE);
+	_unit->GetAIInterface()->SetAIState(STATE_SCRIPTIDLE);
 	SetMoveType(Move_DontMoveWP);
 	SetWaypointToMove(0);
 }
 
 void MoonScriptCreatureAI::SetMoveType(MoveType pMoveType)
 {
-	if(!AIType_isMob(_unit->GetAIInterface()) )
-		return;
-
 	switch( pMoveType )
 	{
-		case Move_None:
-		case Move_Quest:
-			break;
-		case Move_RandomWP:			TO_AIMOB(_unit->GetAIInterface() )->Waypoint_setmovetype(MOVEMENTTYPE_RANDOMWP); break;
-		case Move_CircleWP:			TO_AIMOB(_unit->GetAIInterface() )->Waypoint_setmovetype(MOVEMENTTYPE_CIRCLEWP); break;
-		case Move_WantedWP:			TO_AIMOB(_unit->GetAIInterface() )->Waypoint_setmovetype(MOVEMENTTYPE_WANTEDWP); break;
-		case Move_DontMoveWP:		TO_AIMOB(_unit->GetAIInterface() )->Waypoint_setmovetype(MOVEMENTTYPE_DONTMOVEWP); break;
-		case Move_ForwardThenStop:	TO_AIMOB(_unit->GetAIInterface() )->Waypoint_setmovetype(MOVEMENTTYPE_FORWARDTHENSTOP); break;
+		case Move_None:				_unit->GetAIInterface()->setMoveType(MOVEMENTTYPE_NONE); break;
+		case Move_RandomWP:			_unit->GetAIInterface()->setMoveType(MOVEMENTTYPE_RANDOMWP); break;
+		case Move_CircleWP:			_unit->GetAIInterface()->setMoveType(MOVEMENTTYPE_CIRCLEWP); break;
+		case Move_WantedWP:			_unit->GetAIInterface()->setMoveType(MOVEMENTTYPE_WANTEDWP); break;
+		case Move_DontMoveWP:		_unit->GetAIInterface()->setMoveType(MOVEMENTTYPE_DONTMOVEWP); break;
+		case Move_Quest:			_unit->GetAIInterface()->setMoveType(MOVEMENTTYPE_QUEST); break;
+		case Move_ForwardThenStop:	_unit->GetAIInterface()->setMoveType(MOVEMENTTYPE_FORWARDTHANSTOP); break;
 		default:					sLog.outDebug("ArcScript: MoonScriptCreatureAI::SetMoveType() : Invalid move type!\n"); break;
 	}
 }
 
 MoveType MoonScriptCreatureAI::GetMoveType()
 {
-	if(!AIType_isMob(_unit->GetAIInterface() ) )
-		return Move_DontMoveWP;
-	switch( TO_AIMOB(_unit->GetAIInterface() )->Waypoint_getmovetype() ) 
+	switch( _unit->GetAIInterface()->getMoveType() )
 	{
+		case MOVEMENTTYPE_NONE:				return Move_None;
 		case MOVEMENTTYPE_RANDOMWP:			return Move_RandomWP;
 		case MOVEMENTTYPE_CIRCLEWP:			return Move_CircleWP;
 		case MOVEMENTTYPE_WANTEDWP:			return Move_WantedWP;
 		case MOVEMENTTYPE_DONTMOVEWP:		return Move_DontMoveWP;
-		case MOVEMENTTYPE_FORWARDTHENSTOP:	return Move_ForwardThenStop;
+		case MOVEMENTTYPE_QUEST:			return Move_Quest;
+		case MOVEMENTTYPE_FORWARDTHANSTOP:	return Move_ForwardThenStop;
 		default:							sLog.outDebug("ArcScript: MoonScriptCreatureAI::GetMoveType() : Invalid move type!\n"); return Move_None;
 	}
 }
 
 uint32 MoonScriptCreatureAI::GetCurrentWaypoint()
 {
-	if(AIType_isMob(_unit->GetAIInterface()) )
-		return TO_AIMOB(_unit->GetAIInterface() )->Waypoint_getcurrent();
-	return 0;
+	return _unit->GetAIInterface()->getCurrentWaypoint();
 }
 
 size_t MoonScriptCreatureAI::GetWaypointCount()
 {
-	if(AIType_isMob(_unit->GetAIInterface()) )
-		return TO_AIMOB(_unit->GetAIInterface() )->Waypoint_getcount();
-	return 0;
+	return _unit->GetAIInterface()->GetWayPointsCount();
 }
 
 bool MoonScriptCreatureAI::HasWaypoints()
@@ -1015,7 +1003,7 @@ void MoonScriptCreatureAI::OnCombatStop(Unit* pTarget)
 	RemoveAllAuras();
 	//SetCanMove( GetCanMove() );
 	SetBehavior(Behavior_Default);
-	//_unit->GetAIInterface()->setAIState(STATE_IDLE);				// Fix for stuck mobs that don't regen
+	//_unit->GetAIInterface()->SetAIState(STATE_IDLE);				// Fix for stuck mobs that don't regen
 	RemoveAIUpdateEvent();
 	if( mDespawnWhenInactive ) Despawn(DEFAULT_DESPAWN_TIMER);
 }
@@ -1285,12 +1273,10 @@ Unit* MoonScriptCreatureAI::GetTargetForSpell( SpellDesc* pSpell )
 
 		return _unit;
 	case TargetGen_SecondMostHated:
-		if(AIType_isMob(_unit->GetAIInterface() ) )
-			return TO_AIMOB(_unit->GetAIInterface() )->getSecondHated();
-		return NULL;
+		return _unit->GetAIInterface()->GetSecondHated();
 	case TargetGen_Current:
 	case TargetGen_Destination:
-		return _unit->GetAIInterface()->getNextTarget();
+		return _unit->GetAIInterface()->GetNextTarget();
 	case TargetGen_Predefined:
 		return pSpell->mPredefinedTarget;
 	case TargetGen_RandomPlayer:
@@ -1386,17 +1372,14 @@ Unit* MoonScriptCreatureAI::GetSecondMostHatedTargetInArray( UnitArray& pTargetA
 {
 	Unit*	TargetUnit = NULL;
 	Unit*	MostHatedUnit = NULL;
-	Unit*	CurrentTarget = TO_UNIT( _unit->GetAIInterface()->getNextTarget() );
+	Unit*	CurrentTarget = TO_UNIT( _unit->GetAIInterface()->GetNextTarget() );
 	uint32	Threat = 0, HighestThreat = 0;
 	for ( UnitArray::iterator UnitIter = pTargetArray.begin(); UnitIter != pTargetArray.end(); ++UnitIter )
 	{
 		TargetUnit = TO_UNIT( *UnitIter );
 		if ( TargetUnit != CurrentTarget )
 		{
-			if(AIType_isMob(_unit->GetAIInterface() ) )
-				Threat = TO_AIMOB(_unit->GetAIInterface() )->getThreatByPtr( TargetUnit );
-			else
-				Threat = 0;
+			Threat = _unit->GetAIInterface()->getThreatByPtr( TargetUnit );
 			if ( Threat > HighestThreat )
 			{
 				MostHatedUnit = TargetUnit;
@@ -1420,10 +1403,10 @@ bool MoonScriptCreatureAI::IsValidUnitTarget( Object* pObject, TargetFilter pFil
 	//Skip dead ( if required ), feign death or invisible targets
 	if ( pFilter & TargetFilter_Corpse )
 	{
-		if ( UnitTarget->IsAlive() || !UnitTarget->IsCreature() || TO_CREATURE( UnitTarget )->GetCreatureInfo()->Rank == ELITE_WORLDBOSS )
+		if ( UnitTarget->isAlive() || !UnitTarget->IsCreature() || TO_CREATURE( UnitTarget )->GetCreatureInfo()->Rank == ELITE_WORLDBOSS )
 			return false;
 	}
-	else if ( !UnitTarget->IsAlive() )
+	else if ( !UnitTarget->isAlive() )
 		return false;
 
 	if ( UnitTarget->IsPlayer() && TO_PLAYER( UnitTarget )->m_isGmInvisible )
@@ -1435,11 +1418,11 @@ bool MoonScriptCreatureAI::IsValidUnitTarget( Object* pObject, TargetFilter pFil
 	if ( pFilter != TargetFilter_None )
 	{
 		//Skip units not on threat list
-		if ( ( pFilter & TargetFilter_Aggroed ) && ( !AIType_isMob(_unit->GetAIInterface() ) || TO_AIMOB(_unit->GetAIInterface() )->getThreatByPtr( UnitTarget ) == 0 ) )
+		if ( ( pFilter & TargetFilter_Aggroed ) && _unit->GetAIInterface()->getThreatByPtr( UnitTarget ) == 0 )
 			return false;
 
 		//Skip current attacking target if requested
-		if ( ( pFilter & TargetFilter_NotCurrent ) && UnitTarget == _unit->GetAIInterface()->getNextTarget() )
+		if ( ( pFilter & TargetFilter_NotCurrent ) && UnitTarget == _unit->GetAIInterface()->GetNextTarget() )
 			return false;
 
 		//Keep only wounded targets if requested
@@ -1447,7 +1430,7 @@ bool MoonScriptCreatureAI::IsValidUnitTarget( Object* pObject, TargetFilter pFil
 			return false;
 
 		//Skip targets not in melee range if requested
-		if ( ( pFilter & TargetFilter_InMeleeRange ) && GetRangeToUnit( UnitTarget ) > _unit->GetAIInterface()->calcCombatRange( UnitTarget, false ) )
+		if ( ( pFilter & TargetFilter_InMeleeRange ) && GetRangeToUnit( UnitTarget ) > _unit->GetAIInterface()->_CalcCombatRange( UnitTarget, false ) )
 			return false;
 
 		//Skip targets not in strict range if requested
@@ -1469,7 +1452,7 @@ bool MoonScriptCreatureAI::IsValidUnitTarget( Object* pObject, TargetFilter pFil
 		{
 			if ( !UnitTarget->CombatStatus.IsInCombat() )
 				return false; //Skip not-in-combat targets if friendly
-			if ( isHostile( _unit, UnitTarget ) || TO_AIMOB(_unit->GetAIInterface() )->getThreatByPtr( UnitTarget ) > 0 )
+			if ( isHostile( _unit, UnitTarget ) || _unit->GetAIInterface()->getThreatByPtr( UnitTarget ) > 0 )
 				return false;
 		};
 	};

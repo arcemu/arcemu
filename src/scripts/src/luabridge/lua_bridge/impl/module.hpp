@@ -97,9 +97,3 @@ class__<T> module::class_ (const char *name, bool destruct)
 {
 	return class__<T>(L, name, destruct);
 }
-
-template <typename T>
-void module::class_decl(const char * name)
-{
-	classname<T>::set_name(name);
-}

@@ -729,6 +729,10 @@ struct WeaponModifier
 	uint32 subclass;
 	float value;
 };
+struct PetActionBar
+{
+	uint32 spell[10];
+};
 struct classScriptOverride
 {
 	uint32 id;
@@ -1329,10 +1333,8 @@ public:
 		else
 			return NULL;
 	}
-	std::list<Pet*> & GetSummons(void) { return m_Summons; }
-	std::list<Pet*>::iterator getSummonStart() { return m_Summons.begin(); }
-	std::list<Pet*>::iterator getSummonEnd() { return m_Summons.end(); }
-	void RemoveSummon(Pet *pet)
+	std::list<Pet*> GetSummons(void) { return m_Summons; }
+	void			RemoveSummon(Pet *pet)
 	{ 
 		for(std::list<Pet*>::iterator itr = m_Summons.begin(); itr != m_Summons.end(); ++itr)
 		{
@@ -1533,21 +1535,22 @@ public:
 	{
 		return ( (uint32)1 << (GetShapeShift() - 1) );
 	}
-	 void delayBaseTime(uint32 delay) { m_baseAttackTime += delay; }
-	 void delayOffHandTime(uint32 delay) { m_offHandAttackTime += delay; }
-	 void delayRangedTime(uint32 delay) { m_rangedAttackTime += delay; }
+
 	void delayAttackTimer(int32 delay)
 	{
 		if(!delay)
 			return;
 
-		m_baseAttackTime += delay;
-		m_offHandAttackTime += delay;
+		m_attackTimer += delay;
+		m_attackTimer_1 += delay;
 	}
 
 	void SetShapeShift(uint8 ss);
 
 	uint32 m_furorChance;
+
+    //Showing Units WayPoints
+	AIInterface* waypointunit;
 
 	uint32 m_nextSave;
 	//Tutorials
@@ -1873,6 +1876,9 @@ public:
 	void BroadcastMessage(const char* Format, ...);
 	map<uint32, set<uint32> > SummonSpells;
 	map<uint32, PetSpellMap*> PetSpells;
+	void AddSummonSpell(uint32 Entry, uint32 SpellID);
+	void RemoveSummonSpell(uint32 Entry, uint32 SpellID);
+	set<uint32>* GetSummonSpells(uint32 Entry);
 	LockedQueue<WorldPacket*> delayedPackets;
 	uint32 m_UnderwaterMaxTime;
 	uint32 m_UnderwaterLastDmg;
@@ -2229,7 +2235,9 @@ protected:
 
 	void _LoadPet(QueryResult * result);
 	void _LoadPetNo();
+	void _LoadPetSpells(QueryResult * result);
 	void _SavePet(QueryBuffer * buf);
+	void _SavePetSpells(QueryBuffer * buf);
 	void _ApplyItemMods( Item* item, int16 slot, bool apply, bool justdrokedown = false, bool skip_stat_apply = false );
 	void _EventAttack( bool offhand );
 	void _EventExploration();

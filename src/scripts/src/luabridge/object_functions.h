@@ -1,6 +1,4 @@
 #pragma once
-class luaobject;
-
 namespace lua_engine
 {
 	void bindObjectMethods(luabridge::module & m)
@@ -70,9 +68,7 @@ namespace lua_engine
 			.method("getEasyAngle", &Object::getEasyAngle)
 			.method("GetDistance2Object", (const float(Object::*)(Object*) )&Object::GetDistanceSq)
 			//.method("GetDistanceSq", (float(Object::*)(LocationVector&) )&Object::GetDistanceSq)
-			.method("GetDistance", (const float(Object::*)(float,float,float) )&Object::GetDistanceSq)
-			.method("GetCurrentSpell", &Object::GetCurrentSpell)
-			.method("SetCurrentSpell", &Object::SetCurrentSpell);
+			.method("GetDistance", (const float(Object::*)(float,float,float) )&Object::GetDistanceSq);
 
 		 //creatable and destroyable in the lua environment.
 		 m	.class_<GossipMenu>("GossipMenu", true)

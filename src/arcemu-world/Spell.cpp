@@ -353,7 +353,7 @@ void Spell::FillSpecifiedTargetsInArea(uint32 i,float srcx,float srcy,float srcz
 	for(std::set<Object*>::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); itr++ )
 	{
 		// don't add objects that are not units and that are dead
-		if( !( (*itr)->IsUnit() ) || ! static_cast< Unit* >( *itr )->IsAlive())
+		if( !( (*itr)->IsUnit() ) || ! static_cast< Unit* >( *itr )->isAlive())
 			continue;
 
 		if( GetProto()->TargetCreatureType)
@@ -423,7 +423,7 @@ void Spell::FillAllTargetsInArea(uint32 i,float srcx,float srcy,float srcz, floa
 		itr = itr2;
 		//maybe scripts can change list. Should use lock instead of this to prevent multiple changes. This protects to 1 deletion only
 		itr2++;
-		if( !( (*itr)->IsUnit() ) || ! static_cast< Unit* >( *itr )->IsAlive() )//|| ( static_cast< Creature* >( *itr )->IsTotem() && !static_cast< Unit* >( *itr )->IsPlayer() ) ) why shouldn't we fill totems?
+		if( !( (*itr)->IsUnit() ) || ! static_cast< Unit* >( *itr )->isAlive() )//|| ( static_cast< Creature* >( *itr )->IsTotem() && !static_cast< Unit* >( *itr )->IsPlayer() ) ) why shouldn't we fill totems?
 			continue;
 
 		if( u_caster && u_caster->IsPlayer() && (*itr)->IsPlayer() && static_cast< Player* >(u_caster)->GetGroup() && static_cast< Player* >( *itr )->GetGroup() && static_cast< Player* >( *itr )->GetGroup() == static_cast< Player* >(u_caster)->GetGroup() )//Don't attack party members!!
@@ -490,7 +490,7 @@ void Spell::FillAllFriendlyInArea( uint32 i, float srcx, float srcy, float srcz,
 	{
 		itr = itr2;
 		itr2++; //maybe scripts can change list. Should use lock instead of this to prevent multiple changes. This protects to 1 deletion only
-		if( !((*itr)->IsUnit()) || !static_cast< Unit* >( *itr )->IsAlive() )
+		if( !((*itr)->IsUnit()) || !static_cast< Unit* >( *itr )->isAlive() )
 			continue;
 
 		if( GetProto()->TargetCreatureType )
@@ -558,7 +558,7 @@ uint64 Spell::GetSinglePossibleEnemy(uint32 i,float prange)
 
     for( std::set<Object*>::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); itr++ )
 	{
-		if( !( (*itr)->IsUnit() ) || !static_cast< Unit* >( *itr )->IsAlive() )
+		if( !( (*itr)->IsUnit() ) || !static_cast< Unit* >( *itr )->isAlive() )
 			continue;
 
 		if( GetProto()->TargetCreatureType )
@@ -612,7 +612,7 @@ uint64 Spell::GetSinglePossibleFriend(uint32 i,float prange)
 
     for(std::set<Object*>::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); itr++ )
 	{
-		if( !( (*itr)->IsUnit() ) || !static_cast< Unit* >( *itr )->IsAlive() )
+		if( !( (*itr)->IsUnit() ) || !static_cast< Unit* >( *itr )->isAlive() )
 			continue;
 		if( GetProto()->TargetCreatureType )
 		{
@@ -1043,6 +1043,7 @@ void Spell::cancel()
 					p_caster->delayAttackTimer(-m_timer);
 					RemoveItems();
 				}
+//				p_caster->setAttackTimer(1000, false);
 			 }
 		}
 	}
@@ -2169,7 +2170,7 @@ void Spell::writeSpellMissedTargets( WorldPacket * data )
 	 * 7 = Immune
 	 */
 	SpellTargetsList::iterator i;
-	if(u_caster && u_caster->IsAlive())
+	if(u_caster && u_caster->isAlive())
 	{
 		for ( i = ModeratedTargets.begin(); i != ModeratedTargets.end(); i++ )
 		{
@@ -2177,7 +2178,7 @@ void Spell::writeSpellMissedTargets( WorldPacket * data )
 			*data << (*i).TargetModType;    // uint8
 			///handle proc on resist spell
 			Unit* target = u_caster->GetMapMgr()->GetUnit((*i).TargetGuid);
-			if(target && target->IsAlive())
+			if(target && target->isAlive())
 			{
 				u_caster->HandleProc(PROC_ON_RESIST_VICTIM,target,GetProto()/*,damage*/);		/** Damage is uninitialized at this point - burlex */
 				target->CombatStatusHandler_ResetPvPTimeout(); // aaa
@@ -3009,14 +3010,14 @@ uint8 Spell::CanCast(bool tolerate)
 		else if(GetProto()->Id == 39246)
 		{
 			Creature *cleft = m_caster->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ(), 22105);
-			if(cleft == NULL || cleft->IsAlive())
+			if(cleft == NULL || cleft->isAlive())
 				return SPELL_FAILED_NOT_HERE;
 		}
 		else if(GetProto()->Id == 30988)
 		{
 			Creature *corpse = m_caster->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ(), 17701);
 			if(corpse != NULL)
-				if (m_caster->CalcDistance(m_caster, corpse) > 5  || corpse->IsAlive())
+				if (m_caster->CalcDistance(m_caster, corpse) > 5  || corpse->isAlive())
 					return SPELL_FAILED_NOT_HERE;
 		}
 		else if(GetProto()->Id == 43723)
@@ -3024,7 +3025,7 @@ uint8 Spell::CanCast(bool tolerate)
 			Creature *abysal = p_caster->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(p_caster->GetPositionX(), p_caster->GetPositionY(), p_caster->GetPositionZ(), 19973);
 			if(abysal != NULL)
 			{
-				if(!abysal->IsAlive())
+				if(!abysal->isAlive())
 					if(!(p_caster->GetItemInterface()->GetItemCount(31672) > 1 && p_caster->GetItemInterface()->GetItemCount(31673) > 0 && p_caster->CalcDistance(p_caster, abysal) < 10))
 						return SPELL_FAILED_NOT_HERE;
 			}
@@ -3034,7 +3035,7 @@ uint8 Spell::CanCast(bool tolerate)
 		else if(GetProto()->Id == 32307)
 		{
 			Creature *kilsorrow = p_caster->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(p_caster->GetPositionX(), p_caster->GetPositionY(), p_caster->GetPositionZ());
-			if(kilsorrow == NULL || kilsorrow->IsAlive() || p_caster->CalcDistance(p_caster, kilsorrow) > 1)
+			if(kilsorrow == NULL || kilsorrow->isAlive() || p_caster->CalcDistance(p_caster, kilsorrow) > 1)
 				return SPELL_FAILED_NOT_HERE;
 			if(kilsorrow->GetEntry() != 17147 && kilsorrow->GetEntry() != 17148 && kilsorrow->GetEntry() != 18397 && kilsorrow->GetEntry() != 18658 && kilsorrow->GetEntry() != 17146)
 				return SPELL_FAILED_NOT_HERE;
@@ -3590,7 +3591,7 @@ uint8 Spell::CanCast(bool tolerate)
 					return SPELL_FAILED_NO_PET;
 
 				// check if pet lives
-				if (!pPet->IsAlive())
+				if (!pPet->isAlive())
 					return SPELL_FAILED_TARGETS_DEAD;
 
 				// check if item is food
@@ -3788,11 +3789,11 @@ uint8 Spell::CanCast(bool tolerate)
 				}
 				else
 				{
-					if (target->GetAIInterface()->isSoulLinked() && u_caster && target->GetAIInterface()->getSoulLinker() != u_caster)
+					if (target->GetAIInterface()->GetIsSoulLinked() && u_caster && target->GetAIInterface()->getSoullinkedWith() != u_caster)
 						return SPELL_FAILED_BAD_TARGETS;
 				}
 
-				/* Paroxysm : Pets now auto learn their spells, this is no longer needed.
+				// pet training
 				if( GetProto()->EffectImplicitTargetA[0] == EFF_TARGET_PET &&
 					GetProto()->Effect[0] == SPELL_EFFECT_LEARN_SPELL )
 				{
@@ -3809,7 +3810,7 @@ uint8 Spell::CanCast(bool tolerate)
 					uint32 status = pPet->CanLearnSpell( trig );
 					if( status != 0 )
 						return static_cast<uint8>(status);
-				}*/
+				}
 
 				if( GetProto()->EffectApplyAuraName[0] == SPELL_AURA_MOD_POSSESS )//mind control
 				{
@@ -3865,13 +3866,13 @@ uint8 Spell::CanCast(bool tolerate)
 
 					if ( tame == NULL )
 						result = PETTAME_INVALIDCREATURE;
-					else if( !tame->IsAlive() )
+					else if( !tame->isAlive() )
 						result = PETTAME_DEAD;
 					else if( tame->IsPet() )
 						result = PETTAME_CREATUREALREADYOWNED;
 					else if( tame->GetCreatureInfo()->Type != UNIT_TYPE_BEAST || !tame->GetCreatureInfo()->Family || !( tame->GetCreatureInfo()->Flags1 & CREATURE_FLAG1_TAMEABLE ) )
 						result = PETTAME_NOTTAMEABLE;
-					else if( !p_caster->IsAlive() || p_caster->getClass() != HUNTER )
+					else if( !p_caster->isAlive() || p_caster->getClass() != HUNTER )
 						result = PETTAME_UNITSCANTTAME;
 					else if( tame->getLevel() > p_caster->getLevel() )
 						result = PETTAME_TOOHIGHLEVEL;
@@ -4934,7 +4935,7 @@ void Spell::SendHealManaSpellOnPlayer(Object * caster, Object * target, uint32 d
 
 void Spell::Heal( int32 amount, bool ForceCrit )
 {
-	if( unitTarget == NULL || !unitTarget->IsAlive() )
+	if( unitTarget == NULL || !unitTarget->isAlive() )
 		return;
 
 	if( p_caster != NULL )
@@ -5032,7 +5033,7 @@ void Spell::Heal( int32 amount, bool ForceCrit )
 				{
 					itr = itr2;
 					itr2++;
-					if( (*itr)->IsUnit() && static_cast<Unit*>(*itr)->IsAlive() && IsInrange( u_caster, (*itr), 8 ) && ( u_caster->GetPhase() & (*itr)->GetPhase()) )
+					if( (*itr)->IsUnit() && static_cast<Unit*>(*itr)->isAlive() && IsInrange( u_caster, (*itr), 8 ) && ( u_caster->GetPhase() & (*itr)->GetPhase()) )
 					{
 						did_hit_result = DidHit( dbcSpell.LookupEntry(53385)->Effect[0], static_cast< Unit* >( *itr ) );
 						if( did_hit_result == SPELL_DID_HIT_SUCCESS )
@@ -5114,15 +5115,11 @@ void Spell::Heal( int32 amount, bool ForceCrit )
 			if( (*itr)->GetTypeId() != TYPEID_UNIT )
 				continue;
 			
-			tmp_unit = TO_UNIT(*itr);
-			if( !tmp_unit->CombatStatus.IsInCombat() )
+			tmp_unit = static_cast< Unit* >( *itr );
+
+			if( !tmp_unit->CombatStatus.IsInCombat() || ( tmp_unit->GetAIInterface()->getThreatByPtr( u_caster ) == 0 && tmp_unit->GetAIInterface()->getThreatByPtr( unitTarget ) == 0 ) )
 				continue;
-			AIInterface * ai = tmp_unit->GetAIInterface();
-			if(ai != NULL && AIType_isMob(ai) )
-			{
-				if( TO_AIMOB(ai)->getThreatByPtr(u_caster) == 0 || TO_AIMOB(ai)->getThreatByPtr(unitTarget) == 0 )
-					continue;
-			}
+
 			if( !( u_caster->GetPhase() & (*itr)->GetPhase() ) ) //Can't see, can't be a threat
 				continue;
 
@@ -5746,7 +5743,7 @@ void Spell::HandleCastEffects( uint64 guid, uint32 i )
 			//todo: arcemu doesn't support reflected spells
 			//if (reflected)
 			//	time *= 1.25; //reflected projectiles move back 4x faster
-			sEventMgr.AddEvent(this, &Spell::HandleEffects, guid, i, EVENT_SPELL_DAMAGE_HIT, float2int32(time), 1, 0);
+			sEventMgr.AddEvent(this, &Spell::HandleEffects, guid, i, EVENT_SPELL_HIT, float2int32(time), 1, 0);
 			AddRef();
 		}
 	}

@@ -64,7 +64,7 @@ bool CenarionMoondust(uint32 i, Spell* pSpell) // Body And Heart (Alliance)
   // Make sure that creature will attack player
   if( !lunaclaw->CombatStatus.IsInCombat() )
   {
-	lunaclaw->GetAIInterface()->setNextTarget(p_caster);
+	lunaclaw->GetAIInterface()->SetNextTarget(p_caster);
   }
 
   return true;
@@ -110,7 +110,7 @@ bool CenarionLunardust(uint32 i, Spell * pSpell) // Body And Heart (Horde)
   // Make sure that creature will attack player
   if( !lunaclaw->CombatStatus.IsInCombat() )
   {
-	lunaclaw->GetAIInterface()->setNextTarget(p_caster);
+	lunaclaw->GetAIInterface()->SetNextTarget(p_caster);
   }
 
   return true;

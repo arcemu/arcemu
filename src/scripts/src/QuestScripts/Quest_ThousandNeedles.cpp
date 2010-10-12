@@ -36,7 +36,7 @@ public:
 		if(creat == NULL)
 			return;
 		creat->m_escorter = mTarget;
-		TO_AIMOB(creat->GetAIInterface() )->Waypoint_setmovetype(MOVEMENTTYPE_FORWARDTHENSTOP);
+		creat->GetAIInterface()->setMoveType(11);
 		creat->GetAIInterface()->SetAllowedToEnterCombat(false);
 		creat->GetAIInterface()->StopMovement(3000);
 		creat->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "Please help me, you gotta protect me and stuff, I can't fight on my own!");

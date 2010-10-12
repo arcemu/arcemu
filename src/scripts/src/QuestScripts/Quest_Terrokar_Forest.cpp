@@ -84,8 +84,8 @@ public:
 
 	void OnLoad()
 	{
-		_unit->GetAIInterface()->Movement_allowmovement(false);
-		_unit->GetAIInterface()->disableCombat(true);
+		_unit->GetAIInterface()->m_canMove = false;
+		_unit->GetAIInterface()->disable_combat = true;
 	}
 	
 	void OnDied(Unit* mKiller)
@@ -126,7 +126,7 @@ public:
 		if(spawn != 22459)
 			return;
 
-		creat->GetAIInterface()->Movement_allowmovement(false);
+		creat->GetAIInterface()->m_canMove = false;
 		creat->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "Finally! I'm free!");
 
 		QuestLogEntry *qle = plr->GetQuestLogForEntry(10873);
@@ -154,7 +154,7 @@ public:
   {
     _unit->SetStandState(7);
     _unit->setDeathState(CORPSE);
-    _unit->GetAIInterface()->Movement_allowmovement(false);
+    _unit->GetAIInterface()->m_canMove = false;
   }
 };
 

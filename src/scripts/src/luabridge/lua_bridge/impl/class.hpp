@@ -53,7 +53,7 @@ int metaevent_tostring(lua_State * L)
 	T** obj = (T**)checkclass(L, 1, classname<T>::name() );
 	char buff[55];
 	memset(buff, 0, sizeof(char)*55);
-	sprintf(buff, "%s(0x%X)",classname<T>::name(), (unsigned int)*obj);
+	sprintf(buff, "%s(%X)",classname<T>::name(), *obj);
 	lua_pushstring(L,buff);
 	return 1;
 }

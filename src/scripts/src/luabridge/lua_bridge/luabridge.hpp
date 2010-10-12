@@ -43,10 +43,6 @@ namespace luabridge
 		// For registering a class that hasn't been registered before
 		template <typename T>
 		class__<T> class_ (const char *name, bool destruct = false);
-
-		template<typename T>
-		void class_decl(const char * name);
-
 		// For registering subclasses (the base class must also be registered)
 		template <typename T, typename Base>
 		class__<T> subclass (const char *name, bool destruct = false);
@@ -88,7 +84,11 @@ namespace luabridge
 		class__<T>& property_rw (const char *name, U T::* mp);
 
 		template <typename U>
-		class__<T>& property_rw (const char *name, U (T::*get) () const, void (T::*set) (U) );
+		class__<T>& property_rw (const char *name, U T::* mp, size_t cnt);
+
+		template <typename U>
+		class__<T>& property_rw (const char *name,
+			U (T::*get) () const, void (T::*set) (U));
 
 		// Static method registration
 		template <typename FnPtr>
@@ -102,7 +102,8 @@ namespace luabridge
 		template <typename U>
 		class__<T>& static_property_rw (const char *name, U *data);
 		template <typename U>
-		class__<T>& static_property_rw (const char *name, U (*get) (), void (*set) (U));
+		class__<T>& static_property_rw (const char *name, U (*get) (),
+		                                void (*set) (U));
 
 		// !!!UNDONE: allow inheriting Lua classes from C++ classes
 	};
@@ -123,7 +124,8 @@ namespace luabridge
 	}
 
 	// Prototypes for implementation functions implemented in luabridge.cpp
-	void *checkclass (lua_State *L, int idx, const char *tname, bool exact = false);
+	void *checkclass (lua_State *L, int idx, const char *tname,
+		bool exact = false);
 	int indexer (lua_State *L);
 	int newindexer (lua_State *L);
 	int m_newindexer (lua_State *L);

@@ -153,7 +153,7 @@ void _HandleBreathing(MovementInfo &movement_info, Player * _player, WorldSessio
 {
 
 	// no water breathing is required
-	if( !sWorld.BreathingEnabled || _player->FlyCheat || _player->m_bUnlimitedBreath || !_player->IsAlive() || _player->GodModeCheat )
+	if( !sWorld.BreathingEnabled || _player->FlyCheat || _player->m_bUnlimitedBreath || !_player->isAlive() || _player->GodModeCheat )
 	{
 		// player is flagged as in water
 		if( _player->m_UnderwaterState & UNDERWATERSTATE_SWIMMING  )
@@ -524,7 +524,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 
 			//checks that player has fallen more than 12 units, otherwise no damage will be dealt
 			//falltime check is also needed here, otherwise sudden changes in Z axis position, such as using !recall, may result in death
-			if( _player->IsAlive() && !_player->bInvincible && !_player->GodModeCheat && falldistance > 12 && ( UNIXTIME >= _player->m_fallDisabledUntil ) /*&& movement_info.FallTime > 1000*/ && !_player->m_noFallDamage )
+			if( _player->isAlive() && !_player->bInvincible && !_player->GodModeCheat && falldistance > 12 && ( UNIXTIME >= _player->m_fallDisabledUntil ) /*&& movement_info.FallTime > 1000*/ && !_player->m_noFallDamage )
 			{
 				// 1.7% damage for each unit fallen on Z axis over 13
 				uint32 health_loss = float2int32( _player->GetUInt32Value( UNIT_FIELD_MAXHEALTH ) * ( falldistance - 12 ) * 0.017f );
@@ -637,7 +637,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 		if( _player->m_CurrentTransporter == NULL ){
 			if( !_player->SetPosition(movement_info.x, movement_info.y, movement_info.z, movement_info.orientation) ){
 				//extra check to set HP to 0 only if the player is dead (KillPlayer() has already this check)
-				if ( _player->IsAlive() ){
+				if ( _player->isAlive() ){
 					_player->SetHealth(0);
 					_player->KillPlayer();
 				}

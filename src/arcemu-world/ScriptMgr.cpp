@@ -647,7 +647,7 @@ void CreatureAIScript::SetLinkedCreature(CreatureAIScript* creatureAI)
 
 bool CreatureAIScript::IsAlive()
 {
-	return _unit->IsAlive();
+	return _unit->isAlive();
 }
 
 /* GameObjectAI Stuff */
@@ -1013,9 +1013,7 @@ void InstanceScript::RemoveUpdateEvent()
 void ScriptMgr::register_hook(ServerHookEvents event, void * function_pointer)
 {
 	Arcemu::Util::ARCEMU_ASSERT(   event < NUM_SERVER_HOOKS);
-	//Avoid duplicate registering.
-	if(_hooks[event].find(function_pointer) == _hooks[event].end() )
-		_hooks[event].insert(function_pointer);
+	_hooks[event].push_back(function_pointer);
 }
 
 /* Hook Implementations */

@@ -145,7 +145,7 @@ typedef HM_NAMESPACE::hash_map<uint32, exp_handle_dummy_spell> HandleDummySpellM
 typedef HM_NAMESPACE::hash_map<uint32, exp_create_instance_ai> InstanceCreateMap;
 typedef set<GossipScript*> CustomGossipScripts;
 typedef set<QuestScript*> QuestScripts;
-typedef set<void*> ServerHookList;
+typedef list<void*> ServerHookList;
 typedef list<SCRIPT_MODULE> LibraryHandleMap;
 
 #define VISIBLE_RANGE (26.46f)

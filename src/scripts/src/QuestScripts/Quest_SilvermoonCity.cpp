@@ -78,7 +78,7 @@ public:
 		_unit->SetUInt32Value(UNIT_NPC_FLAGS, 1);
 		_unit->SetStandState(7);
 		_unit->setDeathState(CORPSE);
-		_unit->GetAIInterface()->Movement_allowmovement(false);
+		_unit->GetAIInterface()->m_canMove = false;
 	}
 };
 
