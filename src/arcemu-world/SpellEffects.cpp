@@ -63,7 +63,7 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS]={
 	&Spell::SpellEffectNULL,   				//SPELL_EFFECT_LANGUAGE - 39
 	&Spell::SpellEffectDualWield,				//SPELL_EFFECT_DUAL_WIELD - 40
 	&Spell::SpellEffectSummonWild,				//SPELL_EFFECT_SUMMON_WILD - 41
-	&Spell::SpellEffectSummonGuardian,			//SPELL_EFFECT_SUMMON_GUARDIAN - 42
+	&Spell::SpellEffectNULL,					//SPELL_EFFECT_JUMP_BEHIND_TARGET - 42
 	&Spell::SpellEffectNULL,					//SPELL_EFFECT_TELEPORT_UNITS_FACE_CASTER - 43
 	&Spell::SpellEffectSkillStep,				//SPELL_EFFECT_SKILL_STEP - 44
 	&Spell::SpellEffectAddHonor,				//SPELL_ADD_HONOR - 45
@@ -229,7 +229,7 @@ const char* SpellEffectNames[TOTAL_SPELL_EFFECTS] = {
 	"LANGUAGE",                  //    39
 	"DUAL_WIELD",                //    40
 	"SUMMON_WILD",               //    41
-	"SUMMON_GUARDIAN",           //    42
+	"JUMP_BEHIND_TARGET",        //    42
 	"TELEPORT_UNITS_FACE_CASTER",//    43
 	"SKILL_STEP",                //    44
 	"UNDEFINED_45",              //    45
@@ -4066,7 +4066,7 @@ void Spell::SpellEffectSummonWild(uint32 i)  // Summon Wild
 	CreatureInfo * info = CreatureNameStorage.LookupEntry(cr_entry);
 	if(!proto || !info)
 	{
-		sLog.outDetail("Warning : Missing summon creature template %u used by spell %u!",cr_entry,GetProto()->Id);
+		sLog.outError("Warning : Missing summon creature template %u used by spell %u!",cr_entry,GetProto()->Id);
 		return;
 	}
 	float x, y, z;

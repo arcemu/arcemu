@@ -6440,7 +6440,7 @@ Creature* Unit::create_guardian(uint32 guardian_entry,uint32 duration,float angl
 	
 	if( proto == NULL || info == NULL )
 	{
-		sLog.outDetail("Warning : Missing summon creature template %u !",guardian_entry);
+		sLog.outError("Warning : Missing summon creature template %u !",guardian_entry);
 		return NULL;
 	}
 	
