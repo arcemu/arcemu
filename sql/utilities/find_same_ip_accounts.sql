@@ -1,1 +1,0 @@
-SELECT login,lastip AS ip FROM accounts WHERE (SELECT count(*) FROM accounts WHERE lastip=ip) > 1

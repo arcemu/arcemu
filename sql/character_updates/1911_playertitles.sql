@@ -1,1 +1,0 @@
-ALTER TABLE `characters` ADD COLUMN `available_pvp_titles1` bigint(10) NOT NULL COMMENT '' AFTER `available_pvp_titles`;

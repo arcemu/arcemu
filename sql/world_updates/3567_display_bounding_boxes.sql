@@ -1,1 +1,0 @@
-alter table `display_bounding_boxes` add column `boundradius` float NOT NULL after `highz`;
