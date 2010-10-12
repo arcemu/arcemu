@@ -6,7 +6,6 @@ AM_CXXFLAGS = -DSCRIPTLIB
 lib_LTLIBRARIES = libLUAScripting.la
 
 libLUAScripting_la_SOURCES = \
-
 lua/lapi.c \
 lua/lapi.h \
 lua/lauxlib.c \
