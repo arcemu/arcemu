@@ -1,0 +1,234 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="vmaplib">
+      <UniqueIdentifier>{bc873fe2-c31f-41f3-bf18-d36277681ed3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="g3dlite">
+      <UniqueIdentifier>{11f7088b-f773-413c-a9c9-7835ebf2c605}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="vmap\AABSPTree.h">
+      <Filter>vmaplib</Filter>
+    </ClInclude>
+    <ClInclude Include="vmap\BaseModel.h">
+      <Filter>vmaplib</Filter>
+    </ClInclude>
+    <ClInclude Include="vmap\CoordModelMapping.h">
+      <Filter>vmaplib</Filter>
+    </ClInclude>
+    <ClInclude Include="vmap\DebugCmdLogger.h">
+      <Filter>vmaplib</Filter>
+    </ClInclude>
+    <ClInclude Include="vmap\IVMapManager.h">
+      <Filter>vmaplib</Filter>
+    </ClInclude>
+    <ClInclude Include="vmap\ManagedModelContainer.h">
+      <Filter>vmaplib</Filter>
+    </ClInclude>
+    <ClInclude Include="vmap\ModelContainer.h">
+      <Filter>vmaplib</Filter>
+    </ClInclude>
+    <ClInclude Include="vmap\NodeValueAccess.h">
+      <Filter>vmaplib</Filter>
+    </ClInclude>
+    <ClInclude Include="vmap\RayIntersectionIterator.h">
+      <Filter>vmaplib</Filter>
+    </ClInclude>
+    <ClInclude Include="vmap\ShortBox.h">
+      <Filter>vmaplib</Filter>
+    </ClInclude>
+    <ClInclude Include="vmap\ShortVector.h">
+      <Filter>vmaplib</Filter>
+    </ClInclude>
+    <ClInclude Include="vmap\SubModel.h">
+      <Filter>vmaplib</Filter>
+    </ClInclude>
+    <ClInclude Include="vmap\TileAssembler.h">
+      <Filter>vmaplib</Filter>
+    </ClInclude>
+    <ClInclude Include="vmap\TreeNode.h">
+      <Filter>vmaplib</Filter>
+    </ClInclude>
+    <ClInclude Include="vmap\VMapDefinitions.h">
+      <Filter>vmaplib</Filter>
+    </ClInclude>
+    <ClInclude Include="vmap\VMapFactory.h">
+      <Filter>vmaplib</Filter>
+    </ClInclude>
+    <ClInclude Include="vmap\VMapManager.h">
+      <Filter>vmaplib</Filter>
+    </ClInclude>
+    <ClInclude Include="g3dlite\G3d\AABox.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="g3dlite\G3d\Array.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="g3dlite\G3d\Box.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="g3dlite\G3d\CollisionDetection.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="g3dlite\G3d\CoordinateFrame.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="g3dlite\G3d\Crypto.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="g3dlite\G3d\debug.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="g3dlite\G3d\format.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="g3dlite\G3d\g3dmath.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="g3dlite\G3d\GCamera.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="g3dlite\G3d\Line.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="g3dlite\G3d\Matrix3.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="g3dlite\G3d\Plane.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="g3dlite\G3d\platform.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="g3dlite\G3d\Quat.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="g3dlite\G3d\Ray.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="g3dlite\G3d\RegistryUtil.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="g3dlite\G3d\Sphere.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="g3dlite\G3d\stringutils.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="g3dlite\G3d\System.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="g3dlite\G3d\Table.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="g3dlite\G3d\Triangle.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="g3dlite\G3d\Vector2.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="g3dlite\G3d\Vector2int16.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="g3dlite\G3d\Vector3.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="g3dlite\G3d\Vector3int16.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+    <ClInclude Include="g3dlite\G3d\Vector4.h">
+      <Filter>g3dlite</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="vmap\BaseModel.cpp">
+      <Filter>vmaplib</Filter>
+    </ClCompile>
+    <ClCompile Include="vmap\CoordModelMapping.cpp">
+      <Filter>vmaplib</Filter>
+    </ClCompile>
+    <ClCompile Include="vmap\DebugCmdLogger.cpp">
+      <Filter>vmaplib</Filter>
+    </ClCompile>
+    <ClCompile Include="vmap\ManagedModelContainer.cpp">
+      <Filter>vmaplib</Filter>
+    </ClCompile>
+    <ClCompile Include="vmap\ModelContainer.cpp">
+      <Filter>vmaplib</Filter>
+    </ClCompile>
+    <ClCompile Include="vmap\SubModel.cpp">
+      <Filter>vmaplib</Filter>
+    </ClCompile>
+    <ClCompile Include="vmap\TileAssembler.cpp">
+      <Filter>vmaplib</Filter>
+    </ClCompile>
+    <ClCompile Include="vmap\TreeNode.cpp">
+      <Filter>vmaplib</Filter>
+    </ClCompile>
+    <ClCompile Include="vmap\VMapFactory.cpp">
+      <Filter>vmaplib</Filter>
+    </ClCompile>
+    <ClCompile Include="vmap\VMapManager.cpp">
+      <Filter>vmaplib</Filter>
+    </ClCompile>
+    <ClCompile Include="g3dlite\AABox.cpp">
+      <Filter>g3dlite</Filter>
+    </ClCompile>
+    <ClCompile Include="g3dlite\Box.cpp">
+      <Filter>g3dlite</Filter>
+    </ClCompile>
+    <ClCompile Include="g3dlite\Crypto.cpp">
+      <Filter>g3dlite</Filter>
+    </ClCompile>
+    <ClCompile Include="g3dlite\format.cpp">
+      <Filter>g3dlite</Filter>
+    </ClCompile>
+    <ClCompile Include="g3dlite\Matrix3.cpp">
+      <Filter>g3dlite</Filter>
+    </ClCompile>
+    <ClCompile Include="g3dlite\Plane.cpp">
+      <Filter>g3dlite</Filter>
+    </ClCompile>
+    <ClCompile Include="g3dlite\System.cpp">
+      <Filter>g3dlite</Filter>
+    </ClCompile>
+    <ClCompile Include="g3dlite\Triangle.cpp">
+      <Filter>g3dlite</Filter>
+    </ClCompile>
+    <ClCompile Include="g3dlite\Vector3.cpp">
+      <Filter>g3dlite</Filter>
+    </ClCompile>
+    <ClCompile Include="g3dlite\Vector4.cpp">
+      <Filter>g3dlite</Filter>
+    </ClCompile>
+    <ClCompile Include="vmap_assembler.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="vmap\Makefile.am">
+      <Filter>vmaplib</Filter>
+    </None>
+    <None Include="g3dlite\G3d\g3dmath.inl">
+      <Filter>g3dlite</Filter>
+    </None>
+    <None Include="g3dlite\license.html">
+      <Filter>g3dlite</Filter>
+    </None>
+    <None Include="g3dlite\Makefile.am">
+      <Filter>g3dlite</Filter>
+    </None>
+    <None Include="g3dlite\G3d\Quat.inl">
+      <Filter>g3dlite</Filter>
+    </None>
+    <None Include="g3dlite\G3d\Vector2.inl">
+      <Filter>g3dlite</Filter>
+    </None>
+    <None Include="g3dlite\G3d\Vector3.inl">
+      <Filter>g3dlite</Filter>
+    </None>
+    <None Include="g3dlite\G3d\Vector4.inl">
+      <Filter>g3dlite</Filter>
+    </None>
+  </ItemGroup>
+</Project>

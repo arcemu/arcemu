@@ -1,0 +1,1 @@
+ALTER TABLE `gm_tickets` CHANGE `guid` `ticketid` INT(11) NOT NULL;

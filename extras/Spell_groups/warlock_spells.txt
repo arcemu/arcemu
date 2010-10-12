@@ -1,0 +1,195 @@
+27250 
+
+27238 
+
+28172 
+
+18288 
+
+18647 
+
+30912 
+
+27216 
+
+27230 
+
+27218 
+
+30910 
+
+18223 
+
+27226 
+
+27229 
+
+11719 
+
+30909 
+
+27228 
+
+27265 
+
+11726 
+
+126 
+
+6215 
+
+28189 
+
+18708 
+
+27259 
+
+27213 
+
+17928 
+
+27215 
+
+32231 
+
+1122 
+
+27222 
+
+27212 
+
+18540 
+
+29893 
+
+698 
+
+30459 
+
+27243 
+
+5500 
+
+27209 
+
+28610 
+
+30546 
+
+30414 
+
+30911 
+
+30545 
+
+19028 
+
+
+27223 
+
+696 
+
+18788 
+
+132 
+
+27220 
+
+30908 
+
+27217 
+
+30545 
+
+19028 
+
+29858 
+
+23161 
+
+30146 
+
+691 
+
+5784 
+
+688 
+
+712 
+
+697 
+
+5697 
+
+30405
+
+
+
+
+
+
+
+//destruction :
+Immolate 348
+Shadow Bolt 686
+Searing Pain 5676
+Rain of Fire 5740
+Shadowburn 17877
+Hellfire 1949
+Conflagrate 18930
+Soul Fire 6353
+Shadowfury 30283
+
+//affliction
+
+Corruption 172
+Curse of Weakness 702
+Life Tap 1454
+Curse of Agony 980
+Fear 5782
+Drain Soul 1120
+Curse of Recklessness 704
+Drain Life 689
+Amplify Curse 18288
+Drain Mana 5138
+Curse of Tongues 1714
+Curse of Exhaustion 18223
+Siphon Life 18879
+Dark Pact 18220
+Howl of Terror 5484
+Death Coil 6789
+Curse of Shadow 17862
+Unstable Affliction 30108
+Curse of Doom 603
+Seed of Corruption 27243
+
+// demonology
+
+Demon Skin 687
+Summon Imp 688
+Create Healthstone 6201
+Summon Voidwalker 697
+Health Funnel 755
+Unending Breath 5697
+Create Soulstone 693
+Fel Domination 18708
+Ritual of Summoning 698
+Summon Succubus 712
+Eye of Kilrogg 126
+Sense Demons 5500
+Detect Invisibility 132
+Banish 710
+Create Firestone 6366
+Demonic Sacrifice 18788
+Enslave Demon 1098
+Summon Felhunter 691
+Shadow Ward 6229
+Create Spellstone 2362
+Soul Link 19028
+Summon Felsteed 5784
+Inferno	1122
+Summon Felguard 30146
+Summon Dreadsteed 23161
+Fel Armor 28176
+Soulshatter 29858
+Ritual of Souls 29893

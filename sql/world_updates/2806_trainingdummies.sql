@@ -1,0 +1,2 @@
+alter table `creature_proto` add column `isTrainingDummy` int UNSIGNED DEFAULT '0' NOT NULL after `modImmunities`;
+update `creature_proto` set `isTrainingDummy` = '1' where `entry` in ('32542','32546','32666','31144','31146','32545','32541','32667','30527','32543','32547');

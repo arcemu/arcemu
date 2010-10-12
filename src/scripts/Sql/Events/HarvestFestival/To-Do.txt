@@ -1,0 +1,26 @@
+===============================
+Title The Harvest Festival
+Author: Nexis
+Team: Sun++ (www.sunplusplus.info)
+Duration: Sept 8th - Sept 13th
+===============================
+
+== CREATURES ==
+	1.	Wagner Hammerstrike and Javnir Nashak should both bow when you speak
+		to them.
+	2.	Wagner Hammerstrike and Javnir Nashak are missing [Midsummer Ground Flower]
+		in their vendor lists.
+	
+== GAMEOBJECTS ==
+	1.	Some of the object on the tables are the wrong ids.
+	2.	Some objects need to be tweaked into place.
+	3.	I forgot the damn carpets [180334] under each of the tables in Ironforge.
+	
+== QUESTS ==
+	1.	The quests given can be completed right away.
+	
+== ITEMS ==
+	1.	[Midsummer Ground Flower] is missing from the database.
+
+== SCRIPTS ==
+	1. [Midsummer Ground Flower] must be scripted.

@@ -1,0 +1,161 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXFileReference section */
+		529778AE0CE8195E004B2835 /* Setup.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Setup.cpp; path = ../src/InstanceScripts/Setup.cpp; sourceTree = SOURCE_ROOT; };
+		529778AF0CE8195E004B2835 /* Setup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Setup.h; path = ../src/InstanceScripts/Setup.h; sourceTree = SOURCE_ROOT; };
+		52D7D2D40CF7EB9200D9C76A /* Raid_Magtheridons_Lair.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Raid_Magtheridons_Lair.cpp; path = ../src/InstanceScripts/Raid_Magtheridons_Lair.cpp; sourceTree = SOURCE_ROOT; };
+		52E5B8210CF4D72D005A1098 /* Instance_Arcatraz.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Instance_Arcatraz.cpp; path = ../src/InstanceScripts/Instance_Arcatraz.cpp; sourceTree = SOURCE_ROOT; };
+		52E5B8220CF4D72D005A1098 /* Instance_AuchenaiCrypts.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Instance_AuchenaiCrypts.cpp; path = ../src/InstanceScripts/Instance_AuchenaiCrypts.cpp; sourceTree = SOURCE_ROOT; };
+		52E5B8230CF4D72D005A1098 /* Instance_BlackrockDepths.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Instance_BlackrockDepths.cpp; path = ../src/InstanceScripts/Instance_BlackrockDepths.cpp; sourceTree = SOURCE_ROOT; };
+		52E5B8240CF4D72D005A1098 /* Instance_BloodFurnace.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Instance_BloodFurnace.cpp; path = ../src/InstanceScripts/Instance_BloodFurnace.cpp; sourceTree = SOURCE_ROOT; };
+		52E5B8250CF4D72D005A1098 /* Instance_Botanica.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Instance_Botanica.cpp; path = ../src/InstanceScripts/Instance_Botanica.cpp; sourceTree = SOURCE_ROOT; };
+		52E5B8260CF4D72D005A1098 /* Instance_Deadmines.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Instance_Deadmines.cpp; path = ../src/InstanceScripts/Instance_Deadmines.cpp; sourceTree = SOURCE_ROOT; };
+		52E5B8270CF4D72D005A1098 /* Instance_DireMaul.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Instance_DireMaul.cpp; path = ../src/InstanceScripts/Instance_DireMaul.cpp; sourceTree = SOURCE_ROOT; };
+		52E5B8280CF4D72D005A1098 /* Instance_HellfireRamparts.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Instance_HellfireRamparts.cpp; path = ../src/InstanceScripts/Instance_HellfireRamparts.cpp; sourceTree = SOURCE_ROOT; };
+		52E5B8290CF4D72D005A1098 /* Instance_ManaTombs.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Instance_ManaTombs.cpp; path = ../src/InstanceScripts/Instance_ManaTombs.cpp; sourceTree = SOURCE_ROOT; };
+		52E5B82A0CF4D72D005A1098 /* Instance_Mauradon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Instance_Mauradon.cpp; path = ../src/InstanceScripts/Instance_Mauradon.cpp; sourceTree = SOURCE_ROOT; };
+		52E5B82B0CF4D72D005A1098 /* Instance_RazorfenDowns.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Instance_RazorfenDowns.cpp; path = ../src/InstanceScripts/Instance_RazorfenDowns.cpp; sourceTree = SOURCE_ROOT; };
+		52E5B82C0CF4D72D005A1098 /* Instance_ScarletMonastery.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Instance_ScarletMonastery.cpp; path = ../src/InstanceScripts/Instance_ScarletMonastery.cpp; sourceTree = SOURCE_ROOT; };
+		52E5B82D0CF4D72D005A1098 /* Instance_Scholomance.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Instance_Scholomance.cpp; path = ../src/InstanceScripts/Instance_Scholomance.cpp; sourceTree = SOURCE_ROOT; };
+		52E5B82E0CF4D72D005A1098 /* Instance_SethekkHalls.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Instance_SethekkHalls.cpp; path = ../src/InstanceScripts/Instance_SethekkHalls.cpp; sourceTree = SOURCE_ROOT; };
+		52E5B82F0CF4D72D005A1098 /* Instance_ShadowfangKeep.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Instance_ShadowfangKeep.cpp; path = ../src/InstanceScripts/Instance_ShadowfangKeep.cpp; sourceTree = SOURCE_ROOT; };
+		52E5B8300CF4D72D005A1098 /* Instance_ShadowLabyrinth.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Instance_ShadowLabyrinth.cpp; path = ../src/InstanceScripts/Instance_ShadowLabyrinth.cpp; sourceTree = SOURCE_ROOT; };
+		52E5B8310CF4D72D005A1098 /* Instance_TheMechanar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Instance_TheMechanar.cpp; path = ../src/InstanceScripts/Instance_TheMechanar.cpp; sourceTree = SOURCE_ROOT; };
+		52E5B8320CF4D72D005A1098 /* Instance_TheShatteredHalls.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Instance_TheShatteredHalls.cpp; path = ../src/InstanceScripts/Instance_TheShatteredHalls.cpp; sourceTree = SOURCE_ROOT; };
+		52E5B8330CF4D72D005A1098 /* Instance_TheSlavePens.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Instance_TheSlavePens.cpp; path = ../src/InstanceScripts/Instance_TheSlavePens.cpp; sourceTree = SOURCE_ROOT; };
+		52E5B8340CF4D72D005A1098 /* Instance_TheSteamvault.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Instance_TheSteamvault.cpp; path = ../src/InstanceScripts/Instance_TheSteamvault.cpp; sourceTree = SOURCE_ROOT; };
+		52E5B8350CF4D72D005A1098 /* Instance_TheUnderbog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Instance_TheUnderbog.cpp; path = ../src/InstanceScripts/Instance_TheUnderbog.cpp; sourceTree = SOURCE_ROOT; };
+		52E5B8360CF4D72D005A1098 /* Instance_Uldaman.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Instance_Uldaman.cpp; path = ../src/InstanceScripts/Instance_Uldaman.cpp; sourceTree = SOURCE_ROOT; };
+		52E5B8370CF4D72D005A1098 /* Raid_BlackTemple.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Raid_BlackTemple.cpp; path = ../src/InstanceScripts/Raid_BlackTemple.cpp; sourceTree = SOURCE_ROOT; };
+		52E5B8380CF4D72D005A1098 /* Raid_BlackwingLair.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Raid_BlackwingLair.cpp; path = ../src/InstanceScripts/Raid_BlackwingLair.cpp; sourceTree = SOURCE_ROOT; };
+		52E5B8390CF4D72D005A1098 /* Raid_CoT_BattleOfMountHyjal.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Raid_CoT_BattleOfMountHyjal.cpp; path = ../src/InstanceScripts/Raid_CoT_BattleOfMountHyjal.cpp; sourceTree = SOURCE_ROOT; };
+		52E5B83A0CF4D72D005A1098 /* Raid_GruulsLair.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Raid_GruulsLair.cpp; path = ../src/InstanceScripts/Raid_GruulsLair.cpp; sourceTree = SOURCE_ROOT; };
+		52E5B83B0CF4D72D005A1098 /* Raid_Karazhan.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Raid_Karazhan.cpp; path = ../src/InstanceScripts/Raid_Karazhan.cpp; sourceTree = SOURCE_ROOT; };
+		52E5B83C0CF4D72D005A1098 /* Raid_MoltenCore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Raid_MoltenCore.cpp; path = ../src/InstanceScripts/Raid_MoltenCore.cpp; sourceTree = SOURCE_ROOT; };
+		52E5B83D0CF4D72D005A1098 /* Raid_Naxxramas.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Raid_Naxxramas.cpp; path = ../src/InstanceScripts/Raid_Naxxramas.cpp; sourceTree = SOURCE_ROOT; };
+		52E5B83E0CF4D72D005A1098 /* Raid_OnyxiasLair.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Raid_OnyxiasLair.cpp; path = ../src/InstanceScripts/Raid_OnyxiasLair.cpp; sourceTree = SOURCE_ROOT; };
+		52E5B83F0CF4D72D005A1098 /* Raid_SerpentshrineCavern.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Raid_SerpentshrineCavern.cpp; path = ../src/InstanceScripts/Raid_SerpentshrineCavern.cpp; sourceTree = SOURCE_ROOT; };
+		52E5B8400CF4D72D005A1098 /* Raid_TheEye.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Raid_TheEye.cpp; path = ../src/InstanceScripts/Raid_TheEye.cpp; sourceTree = SOURCE_ROOT; };
+		52E5B8410CF4D72D005A1098 /* Raid_ZulGurub.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Raid_ZulGurub.cpp; path = ../src/InstanceScripts/Raid_ZulGurub.cpp; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		525EDFE90CE8121E00ACD3D9 = {
+			isa = PBXGroup;
+			children = (
+				52717B760CE812E700326405 /* InstanceScripts */,
+			);
+			sourceTree = "<group>";
+		};
+		52717B760CE812E700326405 /* InstanceScripts */ = {
+			isa = PBXGroup;
+			children = (
+				52717B790CE812FC00326405 /* Main Resources */,
+				52717B780CE812F100326405 /* Scripts */,
+			);
+			name = InstanceScripts;
+			sourceTree = "<group>";
+		};
+		52717B780CE812F100326405 /* Scripts */ = {
+			isa = PBXGroup;
+			children = (
+				52D7D2D40CF7EB9200D9C76A /* Raid_Magtheridons_Lair.cpp */,
+				52E5B8210CF4D72D005A1098 /* Instance_Arcatraz.cpp */,
+				52E5B8220CF4D72D005A1098 /* Instance_AuchenaiCrypts.cpp */,
+				52E5B8230CF4D72D005A1098 /* Instance_BlackrockDepths.cpp */,
+				52E5B8240CF4D72D005A1098 /* Instance_BloodFurnace.cpp */,
+				52E5B8250CF4D72D005A1098 /* Instance_Botanica.cpp */,
+				52E5B8260CF4D72D005A1098 /* Instance_Deadmines.cpp */,
+				52E5B8270CF4D72D005A1098 /* Instance_DireMaul.cpp */,
+				52E5B8280CF4D72D005A1098 /* Instance_HellfireRamparts.cpp */,
+				52E5B8290CF4D72D005A1098 /* Instance_ManaTombs.cpp */,
+				52E5B82A0CF4D72D005A1098 /* Instance_Mauradon.cpp */,
+				52E5B82B0CF4D72D005A1098 /* Instance_RazorfenDowns.cpp */,
+				52E5B82C0CF4D72D005A1098 /* Instance_ScarletMonastery.cpp */,
+				52E5B82D0CF4D72D005A1098 /* Instance_Scholomance.cpp */,
+				52E5B82E0CF4D72D005A1098 /* Instance_SethekkHalls.cpp */,
+				52E5B82F0CF4D72D005A1098 /* Instance_ShadowfangKeep.cpp */,
+				52E5B8300CF4D72D005A1098 /* Instance_ShadowLabyrinth.cpp */,
+				52E5B8310CF4D72D005A1098 /* Instance_TheMechanar.cpp */,
+				52E5B8320CF4D72D005A1098 /* Instance_TheShatteredHalls.cpp */,
+				52E5B8330CF4D72D005A1098 /* Instance_TheSlavePens.cpp */,
+				52E5B8340CF4D72D005A1098 /* Instance_TheSteamvault.cpp */,
+				52E5B8350CF4D72D005A1098 /* Instance_TheUnderbog.cpp */,
+				52E5B8360CF4D72D005A1098 /* Instance_Uldaman.cpp */,
+				52E5B8370CF4D72D005A1098 /* Raid_BlackTemple.cpp */,
+				52E5B8380CF4D72D005A1098 /* Raid_BlackwingLair.cpp */,
+				52E5B8390CF4D72D005A1098 /* Raid_CoT_BattleOfMountHyjal.cpp */,
+				52E5B83A0CF4D72D005A1098 /* Raid_GruulsLair.cpp */,
+				52E5B83B0CF4D72D005A1098 /* Raid_Karazhan.cpp */,
+				52E5B83C0CF4D72D005A1098 /* Raid_MoltenCore.cpp */,
+				52E5B83D0CF4D72D005A1098 /* Raid_Naxxramas.cpp */,
+				52E5B83E0CF4D72D005A1098 /* Raid_OnyxiasLair.cpp */,
+				52E5B83F0CF4D72D005A1098 /* Raid_SerpentshrineCavern.cpp */,
+				52E5B8400CF4D72D005A1098 /* Raid_TheEye.cpp */,
+				52E5B8410CF4D72D005A1098 /* Raid_ZulGurub.cpp */,
+			);
+			name = Scripts;
+			sourceTree = "<group>";
+		};
+		52717B790CE812FC00326405 /* Main Resources */ = {
+			isa = PBXGroup;
+			children = (
+				529778AE0CE8195E004B2835 /* Setup.cpp */,
+				529778AF0CE8195E004B2835 /* Setup.h */,
+			);
+			name = "Main Resources";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXProject section */
+		525EDFEB0CE8121E00ACD3D9 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 525EDFEE0CE8121E00ACD3D9 /* Build configuration list for PBXProject "Scripts" */;
+			compatibilityVersion = "Xcode 2.4";
+			hasScannedForEncodings = 0;
+			mainGroup = 525EDFE90CE8121E00ACD3D9;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+			);
+		};
+/* End PBXProject section */
+
+/* Begin XCBuildConfiguration section */
+		525EDFEC0CE8121E00ACD3D9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+			};
+			name = Debug;
+		};
+		525EDFED0CE8121E00ACD3D9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		525EDFEE0CE8121E00ACD3D9 /* Build configuration list for PBXProject "Scripts" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				525EDFEC0CE8121E00ACD3D9 /* Debug */,
+				525EDFED0CE8121E00ACD3D9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 525EDFEB0CE8121E00ACD3D9 /* Project object */;
+}

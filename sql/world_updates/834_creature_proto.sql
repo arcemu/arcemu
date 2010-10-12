@@ -1,0 +1,1 @@
+ALTER TABLE `creature_proto` ADD COLUMN `modImmunities` INT(30) UNSIGNED NOT NULL DEFAULT 0;

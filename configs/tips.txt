@@ -1,0 +1,45 @@
+::Win32 tipz::
+
+
+- The Restarter -
+There's no app restarter needed...or u want kill process on time specified unless :D
+
+BAT would be great something like:
+==================================
+:go
+arcemu-world.exe
+goto go
+==================================
+save the contents and name a file to Restarter.bat put it into same directory of arcemu-world.exe
+
+
+
+- Directory without SVN Controlled -
+==================================
+@echo On
+@Rem Directory without SVN Controlled
+@PROMPT [Com]
+
+@for /r . %%a in (.) do @if exist "%%a\.svn" rd /s /q "%%a\.svn"
+@Rem for /r . %%a in (.) do @if exist "%%a\.svn" @echo "%%a\.svn"
+
+@echo Done.
+@pause
+==================================
+save the contents to plain text as a file BAT.
+
+
+Configuration file notes:
+
+#********************************************************************************
+#* How to use this config file:                                                 *
+#* Config files are in a block->variable->setting format.                       *
+#* A < signifies the opening of a block, the block name is expected after that. * 
+#* After the block name, a space and then the settings sperated by = / ' '.     *
+#*                                                                              *
+#* e.g.                                                                         *
+#* <block setting="0" someval = "1">                                            *
+#*                                                                              *
+#* Comments can be in C format, e.g. /* some stuff */, with a // at the start   *
+#* of the line, or in shell format (#).                                         *
+#********************************************************************************/

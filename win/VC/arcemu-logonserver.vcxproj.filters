@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="WS Interface">
+      <UniqueIdentifier>{a81fda8e-5ed7-477a-bcf9-3226b4aa7c17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Client Handlers">
+      <UniqueIdentifier>{4d531f4f-e6b4-4c22-b583-a4248b82c0a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Caching">
+      <UniqueIdentifier>{1e66d8e5-fdf0-46b4-804e-e1423141783b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Console">
+      <UniqueIdentifier>{2d258fa6-dd3d-47cc-9dd9-bbfcd51bbeb2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\arcemu-logonserver\LogonCommServer.cpp">
+      <Filter>WS Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-logonserver\LogonOpcodes.cpp">
+      <Filter>WS Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-logonserver\AuthSocket.cpp">
+      <Filter>Client Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-logonserver\AutoPatcher.cpp">
+      <Filter>Client Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-logonserver\AccountCache.cpp">
+      <Filter>Caching</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-logonserver\LogonConsole.cpp">
+      <Filter>Console</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-logonserver\LogonStdAfx.cpp" />
+    <ClCompile Include="..\..\src\arcemu-logonserver\Main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\arcemu-logonserver\LogonCommServer.h">
+      <Filter>WS Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-logonserver\LogonOpcodes.h">
+      <Filter>WS Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-logonserver\AuthSocket.h">
+      <Filter>Client Handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-logonserver\AuthStructs.h">
+      <Filter>Client Handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-logonserver\AutoPatcher.h">
+      <Filter>Client Handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-logonserver\AccountCache.h">
+      <Filter>Caching</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-logonserver\LogonConsole.h">
+      <Filter>Console</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-logonserver\LogonStdAfx.h" />
+    <ClInclude Include="..\..\src\arcemu-logonserver\Main.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\src\arcemu-logonserver\resources.rc" />
+  </ItemGroup>
+</Project>

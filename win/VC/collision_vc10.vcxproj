@@ -1,0 +1,272 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>collision</ProjectName>
+    <ProjectGuid>{4A9E210A-3B0B-4076-BE06-778692E5CB93}</ProjectGuid>
+    <RootNamespace>collision</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\..\..\bin\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\collision___Win32_Debug\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\..\..\bin\Debug_x64\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\collision___Win64_Debug\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\..\..\bin\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\collision___Win32_Release\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\..\..\bin\Release_x64\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\collision___Win32_Release_x64\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/Zm256 %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\src\collision\g3dlite;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;COLLISION_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <FloatingPointModel>Precise</FloatingPointModel>
+      <FloatingPointExceptions>true</FloatingPointExceptions>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+      <DisableSpecificWarnings>4127;4100;4121;4714;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>msvcrtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\src\collision\g3dlite\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;COLLISION_EXPORTS;X64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4127;4100;4121;4714;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/MP /Zm256 %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Full</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers>true</OmitFramePointers>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <AdditionalIncludeDirectories>..\..\src\collision\vmap\;..\..\src\collision\g3dlite\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;COLLISION_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>msvcrt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>msvcrtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Full</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>..\..\src\collision\g3dlite\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;COLLISION_EXPORTS;X64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers>true</OmitFramePointers>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+    </ClCompile>
+    <Link>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\collision\Interface.cpp" />
+    <ClCompile Include="..\..\src\collision\g3dlite\AABox.cpp" />
+    <ClCompile Include="..\..\src\collision\g3dlite\Box.cpp" />
+    <ClCompile Include="..\..\src\collision\g3dlite\Crypto.cpp" />
+    <ClCompile Include="..\..\src\collision\g3dlite\format.cpp" />
+    <ClCompile Include="..\..\src\collision\g3dlite\Matrix3.cpp" />
+    <ClCompile Include="..\..\src\collision\g3dlite\Plane.cpp" />
+    <ClCompile Include="..\..\src\collision\g3dlite\System.cpp" />
+    <ClCompile Include="..\..\src\collision\g3dlite\Triangle.cpp" />
+    <ClCompile Include="..\..\src\collision\g3dlite\Vector3.cpp" />
+    <ClCompile Include="..\..\src\collision\g3dlite\Vector4.cpp" />
+    <ClCompile Include="..\..\src\collision\vmap\BaseModel.cpp" />
+    <ClCompile Include="..\..\src\collision\vmap\CoordModelMapping.cpp" />
+    <ClCompile Include="..\..\src\collision\vmap\ManagedModelContainer.cpp" />
+    <ClCompile Include="..\..\src\collision\vmap\ModelContainer.cpp" />
+    <ClCompile Include="..\..\src\collision\vmap\SubModel.cpp" />
+    <ClCompile Include="..\..\src\collision\vmap\TileAssembler.cpp" />
+    <ClCompile Include="..\..\src\collision\vmap\TreeNode.cpp" />
+    <ClCompile Include="..\..\src\collision\vmap\VMapManager.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\AABox.h" />
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\Array.h" />
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\Box.h" />
+    <ClInclude Include="..\..\src\collision\g3dlite\CollisionDetection.h" />
+    <ClInclude Include="..\..\src\collision\g3dlite\CoordinateFrame.h" />
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\Crypto.h" />
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\debug.h" />
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\format.h" />
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\g3dmath.h" />
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\GCamera.h" />
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\Line.h" />
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\Matrix3.h" />
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\Plane.h" />
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\platform.h" />
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\Quat.h" />
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\Ray.h" />
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\RegistryUtil.h" />
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\Sphere.h" />
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\stringutils.h" />
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\System.h" />
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\Table.h" />
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\Triangle.h" />
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\Vector2.h" />
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\Vector2int16.h" />
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\Vector3.h" />
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\Vector3int16.h" />
+    <ClInclude Include="..\..\src\collision\g3dlite\G3D\Vector4.h" />
+    <ClInclude Include="..\..\src\collision\vmap\AABSPTree.h" />
+    <ClInclude Include="..\..\src\collision\vmap\BaseModel.h" />
+    <ClInclude Include="..\..\src\collision\vmap\CoordModelMapping.h" />
+    <ClInclude Include="..\..\src\collision\vmap\IVMapManager.h" />
+    <ClInclude Include="..\..\src\collision\vmap\ManagedModelContainer.h" />
+    <ClInclude Include="..\..\src\collision\vmap\ModelContainer.h" />
+    <ClInclude Include="..\..\src\collision\vmap\NodeValueAccess.h" />
+    <ClInclude Include="..\..\src\collision\vmap\RayIntersectionIterator.h" />
+    <ClInclude Include="..\..\src\collision\vmap\ShortBox.h" />
+    <ClInclude Include="..\..\src\collision\vmap\ShortVector.h" />
+    <ClInclude Include="..\..\src\collision\vmap\SubModel.h" />
+    <ClInclude Include="..\..\src\collision\vmap\TileAssembler.h" />
+    <ClInclude Include="..\..\src\collision\vmap\TreeNode.h" />
+    <ClInclude Include="..\..\src\collision\vmap\VMapManager.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\src\collision\g3dlite\G3D\g3dmath.inl" />
+    <None Include="..\..\src\collision\g3dlite\G3D\Quat.inl" />
+    <None Include="..\..\src\collision\g3dlite\G3D\Vector2.inl" />
+    <None Include="..\..\src\collision\g3dlite\G3D\Vector3.inl" />
+    <None Include="..\..\src\collision\g3dlite\G3D\Vector4.inl" />
+    <None Include="..\..\src\collision\Makefile.am" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\extras\arcemu-windows-libraries\Sources\VC100-pcre.vcxproj">
+      <Project>{311f016d-f785-47ef-b032-5350397f16b6}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\extras\arcemu-windows-libraries\Sources\VC100-zlib.vcxproj">
+      <Project>{8f1dea42-6a5b-4b62-839d-c141a7bfacf2}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

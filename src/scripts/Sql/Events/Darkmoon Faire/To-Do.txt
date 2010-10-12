@@ -1,0 +1,42 @@
+==================================
+The Darkmoon Faire Project
+Author: Nexis
+Team: Sun++ (www.sunplusplus.info)
+==================================
+
+== SCRIPTS ==
+	1. 	Tonk system is far from finished, and is currently
+		commented out. Anyone want to help with this?
+	2.	Sayge doesn't cast the spell he should when awarding a
+		player with a Fortune.
+	3. 	Setup carnies and other NPCs using the same script, bark
+		all at the same time. This needs to be configured to
+		generate a random hook dependent on the NPC's guid id.
+		
+== CREATURES ==
+	1. 	The NPC text is custom because the core doesn't support 
+		multiple text enties in `npc_gossip_textid`.
+		
+== GAME OBJECTS ==
+	1. 	The cannon does not animate as it should. Any ideas anyone?
+	2. 	The Darkmoon Faire Music Doodad does not currently support
+		the functions needed to script it. Needs 'OnLoad' function
+		added to Gameobjects in the core.
+	3.	The Terokkar Forest cannon (located in Shattrath) should
+		have 'Rope Line' (GO:178764) around it. Too much of a pain
+		in the ass to spawn right now..
+		
+== QUESTS ==
+	1. 	None of the quests display correctly as the core does not
+		yet support 'QMGR_QUEST_REPEATABLE_FINISHED' listed in
+		Quest.h which is a blue question mark, insta-finish quest
+		from NPCs. They should give no quest to your quest log!
+		
+== WAYPOINTS ==
+	1.	NPCs that walk around cannot do so in a "loop" as they
+		should. This is because the `creature_spawns` table is
+		out of date using a `movetype` column while the core is
+		using `moverandom`.
+	2.	When you speak to a walking NPC, they should stop to
+		speak with you. Their 'followers' (formationlink) should
+		stop with them as well.

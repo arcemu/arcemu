@@ -1,0 +1,299 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>LuaEngine</ProjectName>
+    <ProjectGuid>{AEFCEECF-6839-4F1B-9317-70BF3EE09247}</ProjectGuid>
+    <RootNamespace>LuaEngine2008</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\..\bin\debug\script_bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">2008_int_debug_LuaEngine\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\..\bin\release\script_bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">2008_int_release_LuaEngine\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\..\bin\debug_x64\script_bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">2008_int_debug_LuaEngine_x64\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\..\bin\release_x64\script_bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">2008_int_release_LuaEngine_x64\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">LUAScripting</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">LUAScripting</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">LUAScripting</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">LUAScripting</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <AdditionalIncludeDirectories>..\..\arcemu-shared;..\..\arcemu-world;..\..\..\extras\arcemu-windows-libraries\VC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;SCRIPTLIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>arcemu-world.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>../../../bin/debug/script_bin/LUAScripting.dll</OutputFile>
+      <AdditionalLibraryDirectories>..\..\..\bin\debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>../../../bin/debug/script_bin/LUAScripting.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>$(OutDir)LUAScripting.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <PreBuildEvent>
+      <Message>Extracting SVN revision...</Message>
+      <Command>cd $(ProjectDir)\..\src\LuaEngine\
+svnrevext.exe
+</Command>
+    </PreBuildEvent>
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\..\extras\arcemu-windows-libraries\VC\include;..\..\arcemu-shared;..\..\arcemu-world;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;SCRIPTLIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>arcemu-world.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>../../../bin/release/script_bin/LUAScripting.dll</OutputFile>
+      <AdditionalLibraryDirectories>..\..\..\bin\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>../../../bin/release/script_bin/LUAScripting.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>$(OutDir)LUAScripting.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalOptions>/Zm256 /bigobj %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <AdditionalIncludeDirectories>..\..\..\extras\arcemu-windows-libraries\VC\include;..\..\arcemu-shared;..\..\arcemu-world;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;SCRIPTLIB;_CRT_SECURE_NO_WARNINGS;X64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>arcemu-world.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>../../../bin/debug_x64/script_bin/LUAScripting.dll</OutputFile>
+      <AdditionalLibraryDirectories>..\..\..\bin\debug_x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>../../../bin/debug/script_bin/LUAScripting.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>$(OutDir)LUAScripting.lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalOptions>/Zm256 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>..\..\..\extras\arcemu-windows-libraries\VC\include;..\..\arcemu-shared;..\..\arcemu-world;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;SCRIPTLIB;_CRT_SECURE_NO_WARNINGS;X64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>arcemu-world.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>../../../bin/release_x64/script_bin/LUAScripting.dll</OutputFile>
+      <AdditionalLibraryDirectories>..\..\..\bin\release_x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>../../../bin/release/script_bin/LUAScripting.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>$(OutDir)LUAScripting.lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\luabridge\LUAEngine.cpp" />
+    <ClCompile Include="..\src\luabridge\lua\lapi.c" />
+    <ClCompile Include="..\src\luabridge\lua\lauxlib.c" />
+    <ClCompile Include="..\src\luabridge\lua\lbaselib.c" />
+    <ClCompile Include="..\src\luabridge\lua\lcode.c" />
+    <ClCompile Include="..\src\luabridge\lua\ldblib.c" />
+    <ClCompile Include="..\src\luabridge\lua\ldebug.c" />
+    <ClCompile Include="..\src\luabridge\lua\ldo.c" />
+    <ClCompile Include="..\src\luabridge\lua\ldump.c" />
+    <ClCompile Include="..\src\luabridge\lua\lfunc.c" />
+    <ClCompile Include="..\src\luabridge\lua\lgc.c" />
+    <ClCompile Include="..\src\luabridge\lua\linit.c" />
+    <ClCompile Include="..\src\luabridge\lua\liolib.c" />
+    <ClCompile Include="..\src\luabridge\lua\llex.c" />
+    <ClCompile Include="..\src\luabridge\lua\lmathlib.c" />
+    <ClCompile Include="..\src\luabridge\lua\lmem.c" />
+    <ClCompile Include="..\src\luabridge\lua\loadlib.c" />
+    <ClCompile Include="..\src\luabridge\lua\lobject.c" />
+    <ClCompile Include="..\src\luabridge\lua\lopcodes.c" />
+    <ClCompile Include="..\src\luabridge\lua\loslib.c" />
+    <ClCompile Include="..\src\luabridge\lua\lparser.c" />
+    <ClCompile Include="..\src\luabridge\lua\lstate.c" />
+    <ClCompile Include="..\src\luabridge\lua\lstring.c" />
+    <ClCompile Include="..\src\luabridge\lua\lstrlib.c" />
+    <ClCompile Include="..\src\luabridge\lua\ltable.c" />
+    <ClCompile Include="..\src\luabridge\lua\ltablib.c" />
+    <ClCompile Include="..\src\luabridge\lua\ltm.c" />
+    <ClCompile Include="..\src\luabridge\lua\lua.c" />
+    <ClCompile Include="..\src\luabridge\lua\lundump.c" />
+    <ClCompile Include="..\src\luabridge\lua\lvm.c" />
+    <ClCompile Include="..\src\luabridge\lua\lzio.c" />
+    <ClCompile Include="..\src\luabridge\lua\print.c" />
+    <ClCompile Include="..\src\luabridge\lua_bridge\luabridge.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\luabridge\aura_functions.h" />
+    <ClInclude Include="..\src\luabridge\creature_functions.h" />
+    <ClInclude Include="..\src\luabridge\gameobject_functions.h" />
+    <ClInclude Include="..\src\luabridge\GlobalFunctions.h" />
+    <ClInclude Include="..\src\luabridge\global_functions.h" />
+    <ClInclude Include="..\src\luabridge\instance_functions.h" />
+    <ClInclude Include="..\src\luabridge\item_functions.h" />
+    <ClInclude Include="..\src\luabridge\LUAEngine.h" />
+    <ClInclude Include="..\src\luabridge\lua\lapi.h" />
+    <ClInclude Include="..\src\luabridge\lua\lauxlib.h" />
+    <ClInclude Include="..\src\luabridge\lua\lcode.h" />
+    <ClInclude Include="..\src\luabridge\lua\ldebug.h" />
+    <ClInclude Include="..\src\luabridge\lua\ldo.h" />
+    <ClInclude Include="..\src\luabridge\lua\lfunc.h" />
+    <ClInclude Include="..\src\luabridge\lua\lgc.h" />
+    <ClInclude Include="..\src\luabridge\lua\llex.h" />
+    <ClInclude Include="..\src\luabridge\lua\llimits.h" />
+    <ClInclude Include="..\src\luabridge\lua\lmem.h" />
+    <ClInclude Include="..\src\luabridge\lua\lobject.h" />
+    <ClInclude Include="..\src\luabridge\lua\lopcodes.h" />
+    <ClInclude Include="..\src\luabridge\lua\lparser.h" />
+    <ClInclude Include="..\src\luabridge\lua\lstate.h" />
+    <ClInclude Include="..\src\luabridge\lua\lstring.h" />
+    <ClInclude Include="..\src\luabridge\lua\ltable.h" />
+    <ClInclude Include="..\src\luabridge\lua\ltm.h" />
+    <ClInclude Include="..\src\luabridge\lua\lua.h" />
+    <ClInclude Include="..\src\luabridge\lua\luaconf.h" />
+    <ClInclude Include="..\src\luabridge\lua\lualib.h" />
+    <ClInclude Include="..\src\luabridge\lua\lundump.h" />
+    <ClInclude Include="..\src\luabridge\lua\lvm.h" />
+    <ClInclude Include="..\src\luabridge\lua\lzio.h" />
+    <ClInclude Include="..\src\luabridge\lua_bridge\impl\class.hpp" />
+    <ClInclude Include="..\src\luabridge\lua_bridge\impl\module.hpp" />
+    <ClInclude Include="..\src\luabridge\lua_bridge\impl\stack.hpp" />
+    <ClInclude Include="..\src\luabridge\lua_bridge\impl\typelist.hpp" />
+    <ClInclude Include="..\src\luabridge\lua_bridge\luabridge.hpp" />
+    <ClInclude Include="..\src\luabridge\lua_defs.h" />
+    <ClInclude Include="..\src\luabridge\lua_hooks.h" />
+    <ClInclude Include="..\src\luabridge\lua_instance.h" />
+    <ClInclude Include="..\src\luabridge\object_functions.h" />
+    <ClInclude Include="..\src\luabridge\packet_functions.h" />
+    <ClInclude Include="..\src\luabridge\player_functions.h" />
+    <ClInclude Include="..\src\luabridge\quest_functions.h" />
+    <ClInclude Include="..\src\luabridge\register_functions.h" />
+    <ClInclude Include="..\src\luabridge\spell_functions.h" />
+    <ClInclude Include="..\src\luabridge\sql_functions.h" />
+    <ClInclude Include="..\src\luabridge\taxi_functions.h" />
+    <ClInclude Include="..\src\luabridge\unit_functions.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\win\VC\arcemu-world.vcxproj">
+      <Project>{1dc6c4da-a028-41f3-877d-d5400c594f88}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

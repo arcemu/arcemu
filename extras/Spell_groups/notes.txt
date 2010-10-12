@@ -1,0 +1,1 @@
+check all efect values that are not simple $s1 ($sx) cause we simply add them in core
