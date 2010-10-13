@@ -2955,27 +2955,32 @@ void Spell::SpellEffectPersistentAA(uint32 i) // Persistent Area Aura
 	case TARGET_FLAG_UNIT:
 		{
 			if(!unitTarget||!unitTarget->isAlive())
-				break;
+			{
+				dynObj->Remove();
+				return;
+			}
+
 			dynObj->Create( u_caster, this, unitTarget->GetPositionX(), unitTarget->GetPositionY(), unitTarget->GetPositionZ(),
 				dur, r);
 		}break;
 	case TARGET_FLAG_OBJECT:
 		{
-			if(!unitTarget) break;
-			if(!unitTarget->isAlive()) break;
+			if(!unitTarget||!unitTarget->isAlive())
+			{
+				dynObj->Remove();
+				return;
+			}
 
 			dynObj->Create(u_caster, this, unitTarget->GetPositionX(), unitTarget->GetPositionY(), unitTarget->GetPositionZ(),
 				dur, r);
 		}break;
 	case TARGET_FLAG_SOURCE_LOCATION:
 		{
-			dynObj->SetInstanceID(m_caster->GetInstanceID());
 			dynObj->Create(u_caster, this, m_targets.m_srcX,
 				m_targets.m_srcY, m_targets.m_srcZ, dur,r);
 		}break;
 	case TARGET_FLAG_DEST_LOCATION:
 		{
-			dynObj->SetInstanceID(m_caster->GetInstanceID());
 			dynObj->Create( u_caster ? u_caster : g_caster->m_summoner, this,
 				m_targets.m_destX, m_targets.m_destY, m_targets.m_destZ,dur,r );
 		}break;
@@ -2990,7 +2995,8 @@ void Spell::SpellEffectPersistentAA(uint32 i) // Persistent Area Aura
 			u_caster->SetChannelSpellTargetGUID( dynObj->GetGUID());
 			u_caster->SetChannelSpellId( GetProto()->Id);
 		}
-		m_AreaAura = true;
+
+	m_AreaAura = true;
 }
 
 void Spell::SpellEffectSummon(uint32 i)
