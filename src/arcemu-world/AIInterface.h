@@ -341,7 +341,11 @@ public:
 	bool StopMovement(uint32 time);
 	uint32 getCurrentWaypoint() { return m_currentWaypoint; }
 	void changeWayPointID(uint32 oldwpid, uint32 newwpid);
-	bool addWayPoint(WayPoint* wp);
+	//Adds a WayPoint, handling possible errors occurred when adding it. Pay attention: wp may point to free'd memory after calling this,
+	//use bool addWayPoint(WayPoint* wp) instead to manually handle possible errors.
+	void addWayPoint(WayPoint* wp);
+	//returns true if the WayPoint was added, false otherwise. The caller MUST delete wp if it wasn't added.
+	bool addWayPointUnsafe(WayPoint* wp);
 	bool saveWayPoints();
 	bool showWayPoints(Player* pPlayer, bool Backwards);
 	bool hideWayPoints(Player* pPlayer);

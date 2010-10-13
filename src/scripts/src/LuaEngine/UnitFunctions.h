@@ -829,8 +829,13 @@ namespace luaUnit
 		wp->backwardemoteid = wp->forwardemoteid = 0;
 		wp->backwardemoteoneshot = wp->forwardemoteoneshot = false;
 		wp->waittime = waittime;
-		pCreature->m_custom_waypoint_map->push_back(wp);
-		pCreature->GetAIInterface()->addWayPoint(wp);
+		if(pCreature->GetAIInterface()->addWayPointUnsafe(wp))
+			pCreature->m_custom_waypoint_map->push_back(wp);
+		else
+		{
+			sLog.outDetail("WayPoint created by a Lua script for Creature ID %u wasn't added due to an error occurred in CreateWaypoint()", pCreature->GetCreatureInfo()->Id);
+			delete wp;
+		}
 		return 0;
 	}
 	int CreateCustomWaypoint(lua_State * L, Unit * ptr)

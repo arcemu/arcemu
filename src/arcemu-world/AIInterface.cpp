@@ -173,6 +173,8 @@ AIInterface::~AIInterface()
 	for(list<AI_Spell*>::iterator itr = m_spells.begin(); itr != m_spells.end(); ++itr)
 			delete (*itr);
 	m_spells.clear();
+
+	deleteWaypoints();
 }
 
 void AIInterface::Init(Unit *un, AIType at, MovementType mt, Unit *owner)
@@ -2648,13 +2650,25 @@ bool AIInterface::setInFront(Unit* target) // not the best way to do it, though
 	return m_Unit->isInFront(target);
 }
 
-bool AIInterface::addWayPoint(WayPoint* wp)
+void AIInterface::addWayPoint(WayPoint* wp)
+{
+	if(wp == NULL)
+		return;
+
+	if(!addWayPointUnsafe(wp))
+	{
+		sLog.outDetail("WayPoint ID %u wasn't added to Unit ID %x due to an error occurred in AIInterface::addWayPoint()", wp->id, GetUnit()->GetGUID());
+		delete wp;
+	}
+}
+
+bool AIInterface::addWayPointUnsafe(WayPoint* wp)
 {
 	if(!m_waypoints)
 		m_waypoints = new WayPointMap ;
 	if(!wp) 
 		return false;
-	if(wp->id <= 0)
+	if(wp->id == 0)
 		return false; //not valid id
 
 	if(m_waypoints->size() <= wp->id)
@@ -2671,7 +2685,7 @@ bool AIInterface::addWayPoint(WayPoint* wp)
 void AIInterface::changeWayPointID(uint32 oldwpid, uint32 newwpid)
 {
 	if(!m_waypoints)return;
-	if(newwpid <= 0) 
+	if(newwpid == 0) 
 		return; //not valid id
 	if(newwpid > m_waypoints->size()) 
 		return; //not valid id

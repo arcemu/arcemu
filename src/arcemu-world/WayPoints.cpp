@@ -98,13 +98,20 @@ bool ChatHandler::HandleWPAddCommand(const char* args, WorldSession *m_session)
 	if(showing)
 		ai->hideWayPoints(p);
 
-	ai->addWayPoint(wp);
-	ai->saveWayPoints();
+	if(ai->addWayPointUnsafe(wp))
+	{
+		ai->saveWayPoints();
+
+		SystemMessage(m_session, "Waypoint %u added.", wp->id);
+	}
+	else
+	{
+		SystemMessage(m_session, "An error occurred while adding the Waypoint");
+		delete wp;
+	}
 
 	if(showing)
 		ai->showWayPoints(p,ai->m_WayPointsShowBackwards);
-
-	SystemMessage(m_session, "Waypoint %u added.", wp->id);
 	return true;
 }
 
@@ -888,13 +895,20 @@ bool ChatHandler::HandleWaypointAddFlyCommand(const char * args, WorldSession * 
 	if(showing)
 		ai->hideWayPoints(p);
 
-	ai->addWayPoint(wp);
-	ai->saveWayPoints();
+	if(ai->addWayPointUnsafe(wp))
+	{
+		ai->saveWayPoints();
+		SystemMessage(m_session, "Waypoint %u added.", wp->id);
+	}
+	else
+	{
+		SystemMessage(m_session, "An error occurred while adding the Waypoint");
+		delete wp;
+	}
 
 	if(showing)
 		ai->showWayPoints(p,ai->m_WayPointsShowBackwards);
 
-	SystemMessage(m_session, "Waypoint %u added.", wp->id);
 	return true;
 }
 
