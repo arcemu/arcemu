@@ -245,15 +245,10 @@ Creature::~Creature()
 	if( IsTotem() )
 		m_owner->m_TotemSlots[totemSlot] = 0;
 
-	if(m_custom_waypoint_map != 0)
+	if(m_custom_waypoint_map != NULL)
 	{
-		for(WayPointMap::iterator itr = m_custom_waypoint_map->begin(); itr != m_custom_waypoint_map->end(); ++itr)
-		{
-			if( (*itr) )
-				delete (*itr);
-		}
-		//delete m_custom_waypoint_map;
-		m_custom_waypoint_map->clear();
+		GetAIInterface()->SetWaypointMap(NULL);
+		m_custom_waypoint_map = NULL;
 	}
 	if( m_respawnCell != NULL )
 		m_respawnCell->_respawnObjects.erase(this);
@@ -1297,7 +1292,7 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	m_position.ChangeCoords( spawn->x, spawn->y, spawn->z, spawn->o );
 	m_spawnLocation.ChangeCoords(spawn->x, spawn->y, spawn->z, spawn->o);
 	m_aiInterface->setMoveType(spawn->movetype);
-	m_aiInterface->m_waypoints = objmgr.GetWayPointMap(spawn->id);
+	m_aiInterface->LoadWaypointMapFromDB(spawn->id);
 
 	m_aiInterface->timed_emotes = objmgr.GetTimedEmoteList(spawn->id);
 
@@ -1332,7 +1327,7 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 		auctionHouse = sAuctionMgr.GetAuctionHouse(GetEntry());
 
 //NPC FLAGS
-	 m_aiInterface->m_waypoints=objmgr.GetWayPointMap(spawn->id);
+	 m_aiInterface->LoadWaypointMapFromDB(spawn->id);
 
 	//load resistances
 	for(uint32 x= 0;x<7;x++)
@@ -1889,15 +1884,8 @@ void Creature::DestroyCustomWaypointMap()
 {
 	if(m_custom_waypoint_map)
 	{
-		for(WayPointMap::iterator itr = m_custom_waypoint_map->begin(); itr != m_custom_waypoint_map->end(); ++itr)
-		{
-			if( (*itr) )
-				delete (*itr);
-		}
-		//delete m_custom_waypoint_map;
-		m_custom_waypoint_map->clear();
-		m_custom_waypoint_map = 0;
-		m_aiInterface->SetWaypointMap(0);
+		m_aiInterface->SetWaypointMap(NULL);
+		m_custom_waypoint_map = NULL;
 	}
 }
 

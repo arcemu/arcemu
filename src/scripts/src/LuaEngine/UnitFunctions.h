@@ -786,9 +786,7 @@ namespace luaUnit
 		Creature * pCreature = TO_CREATURE(ptr);
 		if(pCreature->m_custom_waypoint_map)
 		{
-			for(WayPointMap::iterator itr = pCreature->m_custom_waypoint_map->begin(); itr != pCreature->m_custom_waypoint_map->end(); ++itr)
-				delete (*itr);
-			delete pCreature->m_custom_waypoint_map;
+			pCreature->GetAIInterface()->SetWaypointMap(NULL);
 		}
 
 		pCreature->m_custom_waypoint_map = new WayPointMap;

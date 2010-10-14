@@ -116,14 +116,13 @@ class ProspectorAnvilwardAI : public CreatureAIScript
 		{
 			if ( iWaypointId == sizeof( ProspectorAnvilwardWaypoints ) / sizeof( LocationExtra ) && bForwards )
 			{
-				_unit->GetAIInterface()->SetWaypointMap( NULL );
+				_unit->GetAIInterface()->SetWaypointMap( NULL, false );
 				_unit->SetFaction(14 );
 				RegisterAIUpdateEvent( 10000 );
 			}
 			else if ( iWaypointId == 2 && !bForwards )
 			{
 				_unit->GetAIInterface()->SetWaypointMap( NULL );
-				delete _unit->m_custom_waypoint_map;
 				_unit->m_custom_waypoint_map = NULL;
 				_unit->GetAIInterface()->MoveTo( _unit->GetSpawnX(), _unit->GetSpawnY(), _unit->GetSpawnZ() + 2.05f, _unit->GetSpawnO() );
 				_unit->SetFaction(35 );
@@ -142,12 +141,16 @@ class ProspectorAnvilwardAI : public CreatureAIScript
 		void OnDied( Unit * mKiller )
 		{
 			RemoveAIUpdateEvent();
-			_unit->GetAIInterface()->SetWaypointMap( NULL );
-			if ( _unit->m_custom_waypoint_map != NULL )
+			if(_unit->GetAIInterface()->GetWaypointMap() != NULL)
+				_unit->GetAIInterface()->SetWaypointMap( NULL );
+			else if(_unit->m_custom_waypoint_map != NULL)
 			{
+				for(WayPointMap::iterator itr = _unit->m_custom_waypoint_map->begin(); itr != _unit->m_custom_waypoint_map->end(); ++itr)
+					delete (*itr);
 				delete _unit->m_custom_waypoint_map;
-				_unit->m_custom_waypoint_map = NULL;
 			}
+			_unit->m_custom_waypoint_map = NULL;
+
 			_unit->SetFaction(35 );
 		}
 };

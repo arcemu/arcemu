@@ -426,7 +426,6 @@ public:
 	uint32 m_formationLinkSqlId;
 
 	void WipeReferences();
-	WayPointMap			*m_waypoints;
 	TimedEmoteList		*timed_emotes;
 	ARCEMU_INLINE void SetPetOwner(Unit * owner) { m_PetOwner = owner; }
  
@@ -451,7 +450,10 @@ public:
 
 	void ResetProcCounts();
 
-	ARCEMU_INLINE void SetWaypointMap(WayPointMap * m) { m_waypoints = m; }
+	//deletes the old waypoint map as default. In case m_custom_waypoint_map is used, just call SetWaypointMap(NULL): this will delete m_custom_waypoint_map too.
+	void SetWaypointMap(WayPointMap * m, bool delete_old_map = true);
+	ARCEMU_INLINE WayPointMap* GetWaypointMap() { return m_waypoints; }
+	void LoadWaypointMapFromDB(uint32 spawnid);
 	bool m_isGuard;
 	bool m_isNeutralGuard;
 //	bool m_fastMove;
@@ -546,6 +548,10 @@ protected:
 	int32 m_currentHighestThreat;
 	std::list<spawn_timed_emotes*>::iterator	next_timed_emote;
 	uint32										timed_emote_expire;
+private:
+	//specifies if m_waypoints was loaded from DB, so shared between other AIInterface instances. 
+	bool m_waypointsLoadedFromDB;
+	WayPointMap *m_waypoints;
 public:
 	bool m_is_in_instance;
 	bool skip_reset_hp;

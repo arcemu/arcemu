@@ -114,6 +114,7 @@ waiting_for_cooldown(false),
 m_UnitToFollow_backup(0),
 m_isGuard(false),
 m_isNeutralGuard(false),
+m_waypointsLoadedFromDB(false),
 m_is_in_instance(false),
 skip_reset_hp(false),
 timed_emotes(NULL),
@@ -2880,15 +2881,17 @@ bool AIInterface::saveWayPoints()
 
 void AIInterface::deleteWaypoints()
 {
-	if(!m_waypoints)
+	//if m_waypoints was loaded from DB, then it's shared between other AIInterface instances and it will be deleted by ObjectMgr::~ObjectMgr()
+	if(!m_waypoints || m_waypointsLoadedFromDB)
 		return;
 
 	for(WayPointMap::iterator itr = m_waypoints->begin(); itr != m_waypoints->end(); ++itr)
 	{
-		if((*itr) != NULL)
-			delete (*itr);
+		delete (*itr);
 	}
 	m_waypoints->clear();
+	delete m_waypoints;
+	m_waypoints = NULL;
 }
 
 WayPoint* AIInterface::getWayPoint(uint32 wpid)
@@ -4276,4 +4279,23 @@ Creature * AIInterface::getFormationLinkTarget()
 	if( creature == NULL )
 		m_formationLinkTarget = 0;
 	return creature;
+}
+
+void AIInterface::LoadWaypointMapFromDB(uint32 spawnid)
+{
+	m_waypoints = objmgr.GetWayPointMap(spawnid);
+	if(m_waypoints != NULL && m_waypoints->size() != 0)
+		m_waypointsLoadedFromDB = true;
+}
+
+void AIInterface::SetWaypointMap(WayPointMap * m, bool delete_old_map)
+{
+	if(m_waypoints == m)
+		return;
+
+	if(delete_old_map)
+		deleteWaypoints();
+
+	m_waypoints = m;
+	m_waypointsLoadedFromDB = false;
 }
