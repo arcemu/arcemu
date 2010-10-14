@@ -129,7 +129,7 @@ bool MailMessage::AddMessageDataToPacket(WorldPacket& data)
 	else
 		guidsize = 4;
 
-	unsigned msize = 2 + 4 + 1 + guidsize + 7 * 4 + ( subject.size() + 1 ) + ( body.size() + 1 ) + 1 + ( items.size() * ( 1 + 2*4 + 7 * ( 3*4 ) + 6*4 + 1 ) );
+	size_t msize = 2 + 4 + 1 + guidsize + 7 * 4 + ( subject.size() + 1 ) + ( body.size() + 1 ) + 1 + ( items.size() * ( 1 + 2*4 + 7 * ( 3*4 ) + 6*4 + 1 ) );
 
 	data << uint16( msize );   // message size
 	data << uint32( message_id );

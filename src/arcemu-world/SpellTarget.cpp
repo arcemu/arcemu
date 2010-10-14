@@ -239,7 +239,7 @@ void Spell::AddChainTargets(uint32 i, uint32 TargetType, float r, uint32 maxtarg
 		if (IsHealingSpell(m_spellInfo) && TO_UNIT(*itr)->GetHealthPct() == 100)
 			continue;
 
-		uint32 oldsize;
+		size_t oldsize;
 
 		if(IsInrange(firstTarget->GetPositionX(), firstTarget->GetPositionY(), firstTarget->GetPositionZ(), (*itr), range))
 		{

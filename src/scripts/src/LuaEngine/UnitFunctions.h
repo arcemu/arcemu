@@ -4499,7 +4499,7 @@ namespace luaUnit
 		if (ctr->HasItems())
 		{
 			uint32 creatureitemids[200];
-			uint32 count = ctr->GetSellItemCount();
+			size_t count = ctr->GetSellItemCount();
 			for(std::vector<CreatureItem>::iterator itr = ctr->GetSellItemBegin(); itr != ctr->GetSellItemEnd(); ++itr)
 			{
 				creatureitemids[i] = itr->itemid;

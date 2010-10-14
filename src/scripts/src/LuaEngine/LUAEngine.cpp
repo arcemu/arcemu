@@ -113,7 +113,7 @@ void LuaEngine::ScriptLoadDir(char* Dirname, LUALoadScripts *pak)
 						fname += "\\";
 						fname += FindData.cFileName;
 
-			  		int len = strlen(fname.c_str());
+			  		size_t len = strlen(fname.c_str());
 					  int i=0;
 					  char ext[MAX_PATH];
 					  
