@@ -106,7 +106,6 @@ struct AreaAura
 typedef struct {
 	SpellEntry *spell_info;
 	uint32 charges;
-	bool deleted;
 } ExtraStrike;
 
 enum DeathState
@@ -1365,7 +1364,7 @@ public:
 	int32 m_powerRegenPCT;
 	int32 m_stunned;
 	int32 m_extraattacks;   
-	int32 m_extrastriketarget;
+	bool m_extrastriketarget;
 	int32 m_extrastriketargetc;
 	std::list<ExtraStrike*> m_extraStrikeTargets;
 	int32 m_fearmodifiers;

@@ -370,7 +370,7 @@ Unit::Unit()
 	m_interruptedRegenTime = 0;
 	m_hitfrommeleespell	 = 0;
 	m_damageSplitTarget = NULL;
-	m_extrastriketarget = 0;
+	m_extrastriketarget = false;
 	m_extrastriketargetc = 0;
 	trigger_on_stun = 0;
 	trigger_on_stun_chance = 100;
@@ -661,6 +661,14 @@ Unit::~Unit()
 	for( std::list<struct ReflectSpellSchool*>::iterator i = m_reflectSpellSchool.begin(); i != m_reflectSpellSchool.end(); i++ )
 		delete *i;
 	m_reflectSpellSchool.clear();
+
+	for( std::list<ExtraStrike*>::iterator itx = m_extraStrikeTargets.begin(); itx != m_extraStrikeTargets.end(); ++itx)
+	{
+		ExtraStrike* es = *itx;
+		sLog.outError("ExtraStrike added to Unit %u by Spell ID %u wasn't removed when removing the Aura", GetGUID(), es->spell_info->Id);
+		delete es;
+	}
+	m_extraStrikeTargets.clear();
 
 	// delete auras which did not get added to unit yet
 	for( std::map< uint32, Aura* >::iterator i = tmpAura.begin(); i != tmpAura.end(); i++ )
@@ -4038,15 +4046,15 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 		m_extraAttackCounter = false;
 	}
 
-	if(m_extrastriketargetc > 0 && m_extrastriketarget == 0)
+	if(m_extrastriketargetc > 0 && !m_extrastriketarget)
 	{
-		m_extrastriketarget = 1;
+		m_extrastriketarget = true;
 
-		for(std::list<ExtraStrike*>::iterator itx = m_extraStrikeTargets.begin();itx != m_extraStrikeTargets.end(); itx++)
+		std::list<ExtraStrike*>::iterator itx, itx2;
+		for( itx = m_extraStrikeTargets.begin();itx != m_extraStrikeTargets.end();)
 		{
-			ExtraStrike *ex = *itx;
-
-			if (ex->deleted) continue;
+			itx2 = itx++;
+			ExtraStrike *ex = *itx2;
 
 			for(set<Object*>::iterator itr = m_objectsInRange.begin(); itr != m_objectsInRange.end(); ++itr)
 			{
@@ -4070,13 +4078,14 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 				ex->charges--;
 				if (ex->charges <= 0)
 				{
-					ex->deleted = true;
 					m_extrastriketargetc--;
+					m_extraStrikeTargets.erase(itx2);
+					delete ex;
 				}
 			}
 		}
 
-		m_extrastriketarget = 0;
+		m_extrastriketarget = false;
 	}
 }
 
@@ -7518,12 +7527,16 @@ void Unit::EventChill(Unit *proc_target, bool is_victim)
 
 void Unit::RemoveExtraStrikeTarget(SpellEntry *spell_info)
 {
+	ExtraStrike* es;
 	for(std::list<ExtraStrike*>::iterator i = m_extraStrikeTargets.begin();i != m_extraStrikeTargets.end();i++)
 	{
-		if((*i)->deleted == false && spell_info == (*i)->spell_info)
+		es = *i;
+		if(spell_info == es->spell_info)
 		{
 			m_extrastriketargetc--;
-			(*i)->deleted = true;
+			m_extraStrikeTargets.erase(i);
+			delete es;
+			break;
 		}
 	}
 }
@@ -7535,11 +7548,6 @@ void Unit::AddExtraStrikeTarget(SpellEntry *spell_info, uint32 charges)
 		//a pointer check or id check ...should be the same
 		if(spell_info == (*i)->spell_info)
 		{
-			if ((*i)->deleted == true)
-			{
-				(*i)->deleted = false;
-				m_extrastriketargetc++;
-			}
 			(*i)->charges = charges;
 			return;
 		}
@@ -7549,7 +7557,6 @@ void Unit::AddExtraStrikeTarget(SpellEntry *spell_info, uint32 charges)
 
 	es->spell_info = spell_info;
 	es->charges = charges;
-	es->deleted = false;
 	m_extraStrikeTargets.push_back(es);
 	m_extrastriketargetc++;
 }
