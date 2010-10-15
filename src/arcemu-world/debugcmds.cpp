@@ -1064,7 +1064,7 @@ bool ChatHandler::HandleDebugSpawnWarCommand(const char *args, WorldSession *m_s
 	uint32 health = 0;
 
 	// takes 2 or 3 arguments: npcid, count, (health)
-	if( sscanf( args, "%u %u %u %u", &npcid, &count, &health ) != 3 )
+	if( sscanf( args, "%u %u %u", &npcid, &count, &health ) != 3 )
 		if( sscanf( args, "%u %u", &count, &npcid ) != 2 )
 			return false;
 
