@@ -185,7 +185,7 @@
 #include "WorldStates.h"
 #endif
 
-#define RECRUITING "Info: |cff00FF7FArcEmu is recruiting developers: Join us on irc.emulationnetwork.com:6667 #arcemu"
+#define RECRUITING "Info: |cff00FF7FArcEmu is recruiting developers: Join us on irc.freenode.net:6667 ##arcemu"
 #define BUGTRACKER "http://arcemu.info/trac"
 
 #ifndef WIN32
