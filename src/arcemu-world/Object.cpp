@@ -896,6 +896,7 @@ void Object::AddToWorld()
 
 	// correct incorrect instance id's
 	m_instanceId = m_mapMgr->GetInstanceID();
+	m_mapId = m_mapMgr->GetMapId();
 	mapMgr->AddObject(this);
 }
 
@@ -911,6 +912,7 @@ void Object::AddToWorld(MapMgr * pMapMgr)
 
 	// correct incorrect instance id's
 	m_instanceId = pMapMgr->GetInstanceID();
+	m_mapId = m_mapMgr->GetMapId();
 }
 
 //Unlike addtoworld it pushes it directly ignoring add pool
@@ -974,6 +976,11 @@ void Object::RemoveFromWorld(bool free_guid)
 	OnRemoveFromWorld();
 
 	m_instanceId = 0;
+	m_mapId = 0;
+	//m_inQueue is set to true when AddToWorld() is called. AddToWorld() queues the Object to be pushed, but if it's not pushed and RemoveFromWorld()
+	//is called, m_inQueue will still be true even if the Object is no more inworld, nor queued.
+	m_inQueue = false;
+
 	// update our event holder
 	event_Relocate();
 }
