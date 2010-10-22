@@ -128,7 +128,7 @@ namespace Arcemu{
 			ss << ownerGUID << "','";
 			ss << set->SetGUID << "','";
 			ss << set->SetID << "','";
-			ss << set->SetName << "','";
+			ss << CharacterDatabase.EscapeString( set->SetName ) << "','";
 			ss << set->IconName << "'";
 
 			for( uint32 j = 0; j < set->ItemGUID.size(); ++j ){
