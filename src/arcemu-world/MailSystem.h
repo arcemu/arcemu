@@ -141,7 +141,6 @@ public:
 	}
 	uint32 config_flags;
 
-	uint32 Generate_Message_Id();
 };
 
 #define sMailSystem MailSystem::getSingleton()

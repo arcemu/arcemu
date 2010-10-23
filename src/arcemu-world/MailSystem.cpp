@@ -29,7 +29,7 @@ void MailSystem::StartMailSystem()
 MailError MailSystem::DeliverMessage(uint64 recipent, MailMessage* message)
 {
 	// assign a new id
-	message->message_id = Generate_Message_Id();
+	message->message_id = objmgr.GenerateMailID();
 
 	Player * plr = objmgr.GetPlayer((uint32)recipent);
 	if(plr != NULL)
@@ -228,7 +228,7 @@ void MailSystem::SaveMessageToSQL(MailMessage * message)
 		<< message->read_flag << ","
 		<< message->deleted_flag << ");";
 	
-    CharacterDatabase.Execute(ss.str().c_str());
+    CharacterDatabase.ExecuteNA(ss.str().c_str());
 }
 
 void WorldSession::HandleSendMail(WorldPacket & recv_data )
@@ -852,23 +852,6 @@ void MailSystem::SendAutomatedMessage(uint32 type, uint64 sender, uint64 receive
 
 	// Send the message.
 	DeliverMessage(receiver, &msg);
-}
-
-uint32 MailSystem::Generate_Message_Id()
-{
-	/** I know this is horrible. But when you have external mail sources unfortunately this is the only way to do this.
-	 * - Burlex
-	 */
-
-	uint32 id = 1;
-	QueryResult * result = CharacterDatabase.Query("SELECT MAX(message_id) FROM mailbox");
-	if(result)
-	{
-		id = result->Fetch()[0].GetUInt32()+1;
-		delete result;
-	}
-
-	return id;
 }
 
 void Mailbox::Load(QueryResult * result)

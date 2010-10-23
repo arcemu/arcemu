@@ -949,6 +949,14 @@ void ObjectMgr::SetHighestGuids()
 		delete result;
 	}
 
+
+	result = CharacterDatabase.Query("SELECT MAX( message_id ) FROM mailbox");
+	if(result)
+	{
+		m_mailid.SetVal( uint32( result->Fetch()[0].GetUInt64() + 1 ) );
+		delete result;
+	}
+
 	result = CharacterDatabase.Query("SELECT MAX( setGUID ) FROM equipmentsets");
 	if( result != NULL )
 	{
@@ -966,6 +974,7 @@ void ObjectMgr::SetHighestGuids()
 	Log.Notice("ObjectMgr", "HighGuid(CHARTER) = %u", m_hiCharterId.GetVal() );
 	Log.Notice("ObjectMgr", "HighGuid(GUILD) = %u", m_hiGuildId.GetVal() );
 	Log.Notice("ObjectMgr", "HighGuid(TICKET) = %u", uint32( m_ticketid.GetVal() - 1 ) );
+	Log.Notice("ObjectMgr", "HighGuid(MAIL) = %u", uint32( m_mailid.GetVal() ) );
 	Log.Notice("ObjectMgr", "HighGuid(EQUIPMENTSET) = %u", uint32( m_setGUID.GetVal() - 1 ) );
 }
 
