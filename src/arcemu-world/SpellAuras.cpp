@@ -2389,6 +2389,7 @@ void Aura::SpellAuraDummy(bool apply)
 				Spell *spell = new Spell(pCaster, m_spellProto, true, NULL);
 				spell->SetUnitTarget( m_target );
 				spell->Heal( mod->m_amount );
+				delete spell;
 			}
 
 		}break;
@@ -2426,6 +2427,7 @@ void Aura::SpellAuraDummy(bool apply)
 				Spell *spell = new Spell(pCaster, m_spellProto, true, NULL);
 				spell->SetUnitTarget( m_target );
 				spell->Heal( mod->m_amount );
+				delete spell;
 			}
 
 		}break;
@@ -2463,6 +2465,7 @@ void Aura::SpellAuraDummy(bool apply)
 				Spell *spell = new Spell(pCaster, m_spellProto, true, NULL);
 				spell->SetUnitTarget( m_target );
 				spell->Heal( mod->m_amount );
+				delete spell;
 			}
 
 		}break;

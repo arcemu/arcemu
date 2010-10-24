@@ -2402,6 +2402,7 @@ void Spell::SpellEffectHeal(uint32 i) // Heal
 						Spell *spell = new Spell(unitTarget, spellInfo, true, NULL);
 						spell->SetUnitTarget( unitTarget );
 						spell->Heal( (int32)new_dmg );
+						delete spell;
 					}
 				}
 			}break;
