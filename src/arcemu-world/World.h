@@ -148,9 +148,43 @@ struct MapInfo
 	float update_distance;
 	uint32 checkpoint_id;
 
-	bool HasFlag(uint32 flag)
-	{
-		return (flags & flag) != 0;
+	//////////////////////////////////////////////////////////
+	//bool HasFlag( uint32 flag )
+	//  Tells if the map has this particular flag
+	//
+	//Parameters
+	//  uint32 flag  -  flag to check
+	//
+	//Return Value
+	//  Returns true if the map has the flag.
+	//  Returns false if the map doesn't have the flag.
+	//
+	/////////////////////////////////////////////////////////
+	bool HasFlag( uint32 flag ){
+		if( ( flags & flag ) != 0 )
+			return true;
+		else
+			return false;
+	}
+
+	/////////////////////////////////////////////////////////
+	//bool HasDifficulty( uint32 difficulty )
+	//  Tells if the map has a particular raid difficulty.
+	//  Valid difficulties are in the RAID_MODE enum.
+	//
+	//Parameters
+	//  uint32 difficulty  -  difficulty to check
+	//
+	//Return Value
+	//  Returns true if the map has this difficulty.
+	//  Returns false if the map doesn't have this difficulty
+	//
+	//////////////////////////////////////////////////////////
+	bool HasDifficulty( uint32 difficulty ){
+		if( difficulty > uint32( TOTAL_RAID_MODES ) )
+			return false;
+
+		return HasFlag( uint32( WMI_INSTANCE_HAS_NORMAL_10MEN ) << difficulty );
 	}
 };
 

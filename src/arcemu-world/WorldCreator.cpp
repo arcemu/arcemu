@@ -213,10 +213,9 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player * plr, uint32 instanceid)
 
 	// if it's not a normal / 10men normal then check if we even have this mode
 	if( inf->type == INSTANCE_RAID && plr->GetRaidDifficulty() != MODE_NORMAL_10MEN ){
-		uint32 typeflag = plr->GetRaidDifficulty() << 5;
 		uint32 newtype = 0;
 
-		if( !inf->HasFlag( typeflag ) ){
+		if( !inf->HasDifficulty( plr->GetRaidDifficulty() ) ){
 			// no it doesn't so we will downscale it
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -236,7 +235,7 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player * plr, uint32 instanceid)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 			// check if we have this mode
-			if( !inf->HasFlag( newtype << 5 ) ){
+			if( !inf->HasDifficulty( newtype ) ){
 				
 				//appearantly we don't so we set to 10men normal, which is the default for old raids too
 				//regardless of their playerlimit
