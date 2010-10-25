@@ -346,9 +346,9 @@ namespace luaUnit
 		Unit * pUnit = NULL;
 		for(set<Object*>::iterator itr = ptr->GetInRangeSetBegin(); itr != ptr->GetInRangeSetEnd(); ++itr)
 		{
-			Object * obj = TO_OBJECT(*itr);
-			// No Object, Object Isn't a Unit, Unit is Dead
-			if (!obj || !obj->IsUnit() || TO_UNIT(obj)->IsDead())
+			Object * obj = *itr;
+			// Object Isn't a Unit, Unit is Dead
+			if (!obj->IsUnit() || TO_UNIT(obj)->IsDead())
 			   continue;
 
 			 if (!isFriendly(obj, ptr))
@@ -358,8 +358,6 @@ namespace luaUnit
 			   continue;
 
 			 pUnit = TO_UNIT(obj);
-			if (!pUnit) // Should never happen!
-			   continue;
 
 			pUnit->GetAIInterface()->SetNextTarget(pTarget);
 			pUnit->GetAIInterface()->AttackReaction(pTarget, 1, 0);
@@ -1101,7 +1099,7 @@ namespace luaUnit
 
 		for(set<Object*>::iterator itr = ptr->GetInRangeSetBegin(); itr != ptr->GetInRangeSetEnd(); ++itr)
 		{
-			Object* obj = TO_OBJECT(*itr);
+			Object* obj = *itr;
 			if (obj->IsUnit() && isFriendly(obj,ptr))
 				allies.push_back(obj);
 		}
@@ -1121,7 +1119,7 @@ namespace luaUnit
 
 		for(set<Object*>::iterator itr = ptr->GetInRangeSetBegin(); itr != ptr->GetInRangeSetEnd(); ++itr)
 		{
-			Object* obj = TO_OBJECT(*itr);
+			Object* obj = *itr;
 			if (obj->IsUnit() && isHostile(ptr,obj) )
 				enemies.push_back(obj);
 		}

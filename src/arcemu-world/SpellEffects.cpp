@@ -6406,7 +6406,7 @@ void Spell::SpellEffectFeedPet(uint32 i)  // Feed Pet
 	damage *= 1000;
 
 	SpellEntry *spellInfo = dbcSpell.LookupEntry(GetProto()->EffectTriggerSpell[i]);
-	Spell *sp = new Spell(static_cast<Object*>(p_caster),spellInfo,true,NULL);
+	Spell *sp = new Spell(p_caster,spellInfo,true,NULL);
 	sp->forced_basepoints[0] = damage;
 	SpellCastTargets tgt;
 	tgt.m_unitTarget=pPet->GetGUID();
@@ -6630,7 +6630,7 @@ void Spell::SpellEffectSummonDemon(uint32 i)
 	{
 		SpellEntry *spellInfo = dbcSpell.LookupEntry(11726);
 
-		Spell *sp = new Spell( static_cast<Object*>(pPet), spellInfo, true, NULL );
+		Spell *sp = new Spell( pPet, spellInfo, true, NULL );
 
 		SpellCastTargets tgt;
 		tgt.m_unitTarget = pPet->GetGUID();

@@ -5288,7 +5288,7 @@ class MaievAI : public MoonScriptBossAI
 				if (pTarget != NULL)
 				{
 					CastSpellNowNoScheduling(mTeleport);
-					TO_OBJECT(_unit)->SetPosition(pTarget->GetPositionX(), pTarget->GetPositionY(), pTarget->GetPositionZ(), pTarget->GetOrientation());		// does it really work?
+					_unit->SetPosition(pTarget->GetPositionX(), pTarget->GetPositionY(), pTarget->GetPositionZ(), pTarget->GetOrientation());		// does it really work?
 					_unit->GetAIInterface()->StopMovement(2500);
 				}
 

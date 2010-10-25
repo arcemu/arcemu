@@ -110,11 +110,8 @@ void Spell::FillTargetMap(uint32 i)
 	//always add this guy :P
 	if (!(TargetType & (SPELL_TARGET_AREA | SPELL_TARGET_AREA_SELF | SPELL_TARGET_AREA_CURTARGET | SPELL_TARGET_AREA_CONE | SPELL_TARGET_OBJECT_SELF)))
 	{
-		if (m_caster->IsInWorld())
-		{
-			Object* target = m_caster->GetMapMgr()->_GetObject(m_targets.m_unitTarget);
-			AddTarget(i, TargetType, target);
-		}
+		Object* target = m_caster->GetMapMgr()->_GetObject(m_targets.m_unitTarget);
+		AddTarget(i, TargetType, target);
 	}
 
 	if (TargetType & SPELL_TARGET_OBJECT_SELF)

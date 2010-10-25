@@ -666,7 +666,7 @@ void WorldSession::FullLogin(Player * plr)
     SetPlayer(plr); 
 	m_MoverWoWGuid.Init(plr->GetGUID());
 
-	MapMgr *mgr = sInstanceMgr.GetInstance(static_cast< Object* >( plr ));  
+	MapMgr *mgr = sInstanceMgr.GetInstance(plr);  
 	if (mgr && mgr->m_battleground)
 	{
 		// Don't allow player to login into a bg that has ended or is full
