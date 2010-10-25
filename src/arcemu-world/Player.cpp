@@ -7993,7 +7993,7 @@ void Player::UpdateChannels(uint16 AreaID)
 			AreaName = pMapinfo->name;
 		}
 	}
-	m_TeleportState = 1;
+
 	for(i = m_channels.begin(); i != m_channels.end();)
 	{
 		c = *i;
@@ -8027,7 +8027,6 @@ void Player::UpdateChannels(uint16 AreaID)
 			chn->AttemptJoin(this, NULL);
 		}
 	}
-	m_TeleportState = 0;
 }
 void Player::SendTradeUpdate()
 {
