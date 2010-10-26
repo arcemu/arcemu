@@ -94,8 +94,8 @@ void InitImplicitTargetFlags()
 
 void Spell::FillTargetMap(uint32 i)
 {
-	if (!m_caster->IsInWorld())
-		return;
+	//Spell::prepare() has already a m_caster->IsInWorld() check so if now the caster is no more in world something bad happened.
+	Arcemu::Util::ARCEMU_ASSERT(m_caster->IsInWorld());
 
 	uint32 TargetType = 0;
 	TargetType |= GetTargetType(m_spellInfo->EffectImplicitTargetA[i], i);

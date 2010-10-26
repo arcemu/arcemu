@@ -845,6 +845,13 @@ uint8 Spell::DidHit( uint32 effindex, Unit* target )
 }
 uint8 Spell::prepare( SpellCastTargets * targets )
 {
+	if(!m_caster->IsInWorld())
+	{
+		sLog.outDebug("Object "I64FMT" is casting Spell ID %u while not in World", m_caster->GetGUID(), GetProto()->Id);
+		delete this;
+		return SPELL_FAILED_DONT_REPORT;
+	}
+
 	uint8 ccr;
 
 	// In case spell got cast from a script check fear/wander states
