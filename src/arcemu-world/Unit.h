@@ -1331,7 +1331,7 @@ public:
 
 	uint32 m_CombatUpdateTimer;
 
-	void setcanperry(bool newstatus){can_parry=newstatus;}
+	void setcanparry(bool newstatus){can_parry=newstatus;}
 		
 	std::map<uint32,Aura*> tmpAura;
 

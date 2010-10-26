@@ -2535,7 +2535,7 @@ void Spell::SpellEffectDodge(uint32 i)
 void Spell::SpellEffectParry(uint32 i)
 {
 	if(unitTarget)
-		unitTarget->setcanperry(true);
+		unitTarget->setcanparry(true);
 }
 
 void Spell::SpellEffectBlock(uint32 i)
