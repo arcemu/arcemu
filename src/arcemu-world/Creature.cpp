@@ -242,9 +242,6 @@ Creature::~Creature()
 		_myScriptClass = NULL;
 	}
 
-	if( IsTotem() )
-		m_owner->m_TotemSlots[totemSlot] = 0;
-
 	if(m_custom_waypoint_map != NULL)
 	{
 		GetAIInterface()->SetWaypointMap(NULL);
@@ -256,12 +253,9 @@ Creature::~Creature()
 	if (m_escorter != NULL)
 		m_escorter = NULL;
 
-	// remove our reference from owner
-	if( m_owner != NULL )
-	{
-		m_owner->RemoveGuardianRef( this );
-		m_owner = NULL;
-	}
+	// Creature::PrepareForRemove() nullifies m_owner. If m_owner is not NULL then the Creature wasn't removed from world
+	//but it got a reference to m_owner
+	Arcemu::Util::ARCEMU_ASSERT( m_owner == NULL );
 }
 
 void Creature::Update( uint32 p_time )
@@ -2097,6 +2091,9 @@ void Creature::PrepareForRemove()
 	// If we have a summons then let's remove them
 	RemoveAllGuardians();
 	
+	if( IsTotem() )
+		m_owner->m_TotemSlots[totemSlot] = NULL;
+
 	// remove our reference from owner
 	if( m_owner != NULL )
 	{
@@ -2114,7 +2111,7 @@ void Creature::PrepareForRemove()
 			summoner->critterPet = NULL;
 	}
 
-	if(GetMapMgr() && GetMapMgr()->GetMapInfo() && GetMapMgr()->GetMapInfo()->type == INSTANCE_RAID)
+	if(GetMapMgr()->GetMapInfo() && GetMapMgr()->GetMapInfo()->type == INSTANCE_RAID)
 	{
 		if(GetCreatureInfo()->Rank == 3)
 		{
