@@ -952,8 +952,21 @@ void WorldSession::HandleBugOpcode( WorldPacket & recv_data )
 	else
 		sLog.outDebug( "WORLD: Received CMSG_BUG [Suggestion]" );
 
-	sLog.outDebug( type.c_str( ) );
-	sLog.outDebug( content.c_str( ) );
+	uint64 AccountId = GetAccountId();
+	uint32 TimeStamp = uint32( UNIXTIME );
+	uint32 ReportID = objmgr.GenerateReportID();
+
+	std::stringstream ss;
+
+	ss << "INSERT INTO playerbugreports VALUES('";
+	ss << ReportID << "','";
+	ss << AccountId << "','";
+	ss << TimeStamp << "','";
+	ss << suggestion << "','";
+	ss << CharacterDatabase.EscapeString( type ) << "','";
+	ss << CharacterDatabase.EscapeString( content ) << "')";
+
+	CharacterDatabase.ExecuteNA( ss.str().c_str() );
 }
 
 void WorldSession::HandleCorpseReclaimOpcode(WorldPacket &recv_data)

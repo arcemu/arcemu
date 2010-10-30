@@ -575,6 +575,7 @@ public:
 	void SetHighestGuids();
 	uint32 GenerateLowGuid(uint32 guidhigh);
 	uint32 GenerateMailID();
+	uint32 GenerateReportID();
 	uint32 GenerateTicketID();
 	uint32 GenerateEquipmentSetID();
 	
@@ -747,6 +748,7 @@ protected:
 	Arcemu::Threading::AtomicCounter m_hiCreatureSpawnId;
 	Arcemu::Threading::AtomicCounter m_hiGameObjectSpawnId;
 	Arcemu::Threading::AtomicCounter m_mailid;
+	Arcemu::Threading::AtomicCounter m_reportID;
 	Arcemu::Threading::AtomicCounter m_ticketid;
 	Arcemu::Threading::AtomicCounter m_setGUID;
 	Arcemu::Threading::AtomicCounter m_hiCorpseGuid;
