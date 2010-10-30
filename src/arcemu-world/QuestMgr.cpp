@@ -488,14 +488,13 @@ void QuestMgr::BuildRequestItems(WorldPacket *data, Quest* qst, Object* qst_give
 	}
 	
 	*data << uint32(0);
+
 	if(status == QMGR_QUEST_NOT_FINISHED)
 		*data << qst->incompleteemote;
 	else
 		*data << qst->completeemote;
 
-	*data << uint32(0);				 // Emote delay
-	*data << uint32(1);				 // Emote type
-	
+	*data << uint32(0);	
     *data << qst->quest_flags;
     *data << qst->suggestedplayers;
 	*data << uint32( qst->reward_money < 0 ? -qst->reward_money : 0 );	   // Required Money
@@ -519,12 +518,6 @@ void QuestMgr::BuildRequestItems(WorldPacket *data, Quest* qst, Object* qst_give
  			*data << uint32(0); 
  			*data << uint32(0); 
         }
-        *data << uint32(0);
-        *data << uint32(0);
-        *data << uint32(0);
-        *data << uint32(0);
-        *data << uint32(0);
-        *data << uint32(0);
 	}
 
 	// wtf is this?
