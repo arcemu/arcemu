@@ -160,14 +160,9 @@ bool ChatHandler::HandleGMOnCommand(const char* args, WorldSession *m_session)
 
 bool ChatHandler::HandleGMOffCommand(const char* args, WorldSession *m_session)
 {
-
-	GreenSystemMessage(m_session, "Unsetting GM Flag on yourself...");
-
 	Player * _player = m_session->GetPlayer();
-	if(!_player->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_GM))
-		RedSystemMessage(m_session, "GM Flag not set. Use .gm on to enable it.");
-	else
-	{
+	if( _player->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_GM) ){
+
 		_player->RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_GM);	// <GM>
 
 		_player->SetFaction( _player->GetInitialFactionId() );
@@ -177,6 +172,23 @@ bool ChatHandler::HandleGMOffCommand(const char* args, WorldSession *m_session)
 
 		_player->UpdateVisibility();
 	}
+
+	return true;
+}
+
+bool ChatHandler::HandleDeveloperCommand( const char *args, WorldSession *m_session )
+{
+
+	HandleGMOffCommand( args, m_session );
+
+	Player * _player = m_session->GetPlayer();
+
+	if( _player->HasFlag( PLAYER_FLAGS, PLAYER_FLAG_DEVELOPER ) )
+		_player->RemoveFlag( PLAYER_FLAGS, PLAYER_FLAG_DEVELOPER );
+	else
+		_player->SetFlag( PLAYER_FLAGS, PLAYER_FLAG_DEVELOPER );
+
+	BlueSystemMessage( m_session, "Developer flag toggled." );
 
 	return true;
 }

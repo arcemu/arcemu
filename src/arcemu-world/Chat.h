@@ -262,6 +262,8 @@ protected:
 	bool HandleModifySpeedCommand(const char* args, WorldSession *m_session);
 	bool HandleModifyTPsCommand(const char* args, WorldSession *m_session);
 
+	bool HandleDeveloperCommand( const char* args, WorldSession *m_session );
+
 	// Debug Commands
 	bool HandleDebugInFrontCommand(const char* args, WorldSession *m_session);
 	bool HandleShowReactionCommand(const char* args, WorldSession *m_session);
