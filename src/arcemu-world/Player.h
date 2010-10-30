@@ -1102,6 +1102,22 @@ public:
 	bool                HasQuest(uint32 entry);
 	void                RemoveQuestMob(uint32 entry);
 
+
+	/////////////////////////////////////////////////////////////
+	//void AcceptQuest( uint64 guid, uint32 quest_id )
+	//  Checks if the quest is acceptable from that questgiver.
+	//  and accepts it.
+	//
+	//Parameters
+	//  uin64 guid      -  guid of the questgiver
+	//  uint32 quest_id -  id of the quest
+	//
+	//Return Value
+	//  None.
+	//
+	////////////////////////////////////////////////////////////
+	void AcceptQuest( uint64 guid, uint32 quest_id );
+
     //Quest related variables
     QuestLogEntry*      m_questlog[25];
     std::set<uint32>    m_removequests;

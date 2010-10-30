@@ -13510,3 +13510,174 @@ void Player::SendChatMessage(uint8 type, uint32 lang, const char *msg, uint32 de
 	WorldPacket *data = sChatHandler.FillMessageData(type, lang, msg, GetGUID());
 	SendMessageToSet( data, true );
 }
+
+
+void Player::AcceptQuest( uint64 guid, uint32 quest_id ){
+
+	bool bValid = false;
+	bool hasquest = true;
+	bool bSkipLevelCheck = false;
+	Quest *qst = NULL;
+	Object *qst_giver = NULL;
+	uint32 guidtype = GET_TYPE_FROM_GUID(guid);
+
+	if(guidtype==HIGHGUID_TYPE_UNIT)
+	{
+		Creature *quest_giver = m_mapMgr->GetCreature(GET_LOWGUID_PART(guid));
+		if(quest_giver)
+			qst_giver = quest_giver;
+		else
+			return;
+		hasquest = quest_giver->HasQuest(quest_id, 1);
+		if(quest_giver->isQuestGiver())
+		{
+			bValid = true;
+			qst = QuestStorage.LookupEntry(quest_id);
+		}
+	} 
+	else if(guidtype==HIGHGUID_TYPE_GAMEOBJECT)
+	{
+		GameObject *quest_giver = m_mapMgr->GetGameObject(GET_LOWGUID_PART(guid));
+		if(quest_giver)
+			qst_giver = quest_giver;
+		else
+			return;
+
+		bValid = true;
+		qst = QuestStorage.LookupEntry(quest_id);
+	} 
+	else if(guidtype==HIGHGUID_TYPE_ITEM)
+	{
+		Item *quest_giver = m_ItemInterface->GetItemByGUID(guid);
+		if(quest_giver)
+			qst_giver = quest_giver;
+		else
+			return;
+		bValid = true;
+		bSkipLevelCheck=true;
+		qst = QuestStorage.LookupEntry(quest_id);
+	}
+	else if(guidtype==HIGHGUID_TYPE_PLAYER)
+	{
+		Player *quest_giver = m_mapMgr->GetPlayer((uint32)guid);
+		if(quest_giver)
+			qst_giver = quest_giver;
+		else
+			return;
+		bValid = true;
+		qst = QuestStorage.LookupEntry(quest_id);
+	}
+
+	if (!qst_giver)
+	{
+		sLog.outDebug("WORLD: Invalid questgiver GUID.");
+		return;
+	}
+
+	if( !bValid || qst == NULL )
+	{
+		sLog.outDebug("WORLD: Creature is not a questgiver.");
+		return;
+	}
+
+	if( GetQuestLogForEntry( qst->id ) )
+		return;
+
+	if( qst_giver->GetTypeId() == TYPEID_UNIT && static_cast< Creature* >( qst_giver )->m_escorter != NULL )
+	{
+		m_session->SystemMessage("You cannot accept this quest at this time.");
+		return;
+	}
+
+	// Check the player hasn't already taken this quest, or
+	// it isn't available.
+	uint32 status = sQuestMgr.CalcQuestStatus(qst_giver, this, qst,3, bSkipLevelCheck);
+
+	if((!sQuestMgr.IsQuestRepeatable(qst) && HasFinishedQuest(qst->id)) || ( status != QMGR_QUEST_AVAILABLE && status != QMGR_QUEST_REPEATABLE && status != QMGR_QUEST_CHAT )
+		|| !hasquest)
+	{
+		// We've got a hacker. Disconnect them.
+		//sCheatLog.writefromsession(this, "tried to accept incompatible quest %u from %u.", qst->id, qst_giver->GetEntry());
+		//Disconnect();
+		return;
+	}
+
+	int32 log_slot = GetOpenQuestSlot();
+
+	if (log_slot == -1)
+	{
+		sQuestMgr.SendQuestLogFull( this );
+		return;
+	}
+
+	//FIX ME
+	/*if(Player Has Timed quest && qst->HasFlag(QUEST_FLAG_TIMED))
+		sQuestMgr.SendQuestInvalid(INVALID_REASON_HAVE_TIMED_QUEST);*/
+
+	if(qst->count_receiveitems || qst->srcitem)
+	{
+		uint32 slots_required = qst->count_receiveitems;
+
+		if( m_ItemInterface->CalculateFreeSlots(NULL) < slots_required)
+		{
+			m_ItemInterface->BuildInventoryChangeError(NULL, NULL, INV_ERR_BAG_FULL);
+			sQuestMgr.SendQuestFailed(FAILED_REASON_INV_FULL, qst, this );
+			return;
+		}
+	}	
+	
+	QuestLogEntry *qle = new QuestLogEntry();
+	qle->Init(qst, this, log_slot);
+	qle->UpdatePlayerFields();
+
+	// If the quest should give any items on begin, give them the items.
+	for(uint32 i = 0; i < 4; ++i)
+	{
+		if(qst->receive_items[i])
+		{
+			Item *item = objmgr.CreateItem( qst->receive_items[i], this );
+			if(item == NULL)
+				continue;
+			if( !m_ItemInterface->AddItemToFreeSlot(item))
+			{
+				item->DeleteMe();
+			}
+			else
+                SendItemPushResult( false, true, false, true, 
+				m_ItemInterface->LastSearchItemBagSlot(), m_ItemInterface->LastSearchItemSlot(),
+				1, item->GetEntry(), item->GetItemRandomSuffixFactor(), item->GetItemRandomPropertyId(), item->GetStackCount()  );
+		}
+	}
+
+	if(qst->srcitem && qst->srcitem != qst->receive_items[0])
+	{
+		Item * item = objmgr.CreateItem( qst->srcitem, this );
+		if(item)
+		{
+			item->SetStackCount(  qst->srcitemcount ? qst->srcitemcount : 1);
+			if(!m_ItemInterface->AddItemToFreeSlot(item))
+				item->DeleteMe();
+		}
+	}
+
+	// Timed quest handler.
+	if(qst->time > 0)
+	{
+		//Start Quest Timer Event Here
+		//sEventMgr.AddEvent(GetPlayer(), &Player::EventTimedQuestExpire, qst, qle, static_cast<uint32>(log_slot), EVENT_TIMED_QUEST_EXPIRE, qst->time * 1000, 1);
+		//uint32 qtime = static_cast<uint32>(time(NULL) + qst->time);
+		//GetPlayer()->SetUInt32Value(log_slot+2, qtime);
+		//GetPlayer()->SetUInt32Value(PLAYER_QUEST_LOG_1_01 + (log_slot * 3), qtime);
+		//GetPlayer()->timed_quest_slot = log_slot;
+	}
+
+	if(qst->count_required_item || qst_giver->GetTypeId() == TYPEID_GAMEOBJECT)	// gameobject quests deactivate
+		UpdateNearbyGameObjects();
+
+	//ScriptSystem->OnQuestEvent(qst, static_cast< Creature* >( qst_giver ), _player, QUEST_EVENT_ON_ACCEPT);
+
+	sQuestMgr.OnQuestAccepted(this,qst,qst_giver);
+
+	sLog.outDebug("WORLD: Added new QLE.");
+	sHookInterface.OnQuestAccept( this, qst, qst_giver );
+}
