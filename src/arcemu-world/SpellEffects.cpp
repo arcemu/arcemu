@@ -3186,6 +3186,7 @@ void Spell::SpellEffectSummon(uint32 i)
 			pCreature->GetAIInterface()->Init(pCreature, AITYPE_PASSIVE, MOVEMENTTYPE_NONE);
 			pCreature->setLevel(u_caster->getLevel());
 			pCreature->SetFaction(u_caster->GetFaction());
+			pCreature->Phase(PHASE_SET, u_caster->GetPhase());
 
 			pCreature->PushToWorld(u_caster->GetMapMgr());
 			sEventMgr.AddEvent(pCreature, &Creature::RemoveFromWorld, false, true, EVENT_CREATURE_REMOVE_CORPSE, GetDuration(), 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
@@ -3204,6 +3205,7 @@ void Spell::SpellEffectSummon(uint32 i)
 			pCreature->GetAIInterface()->SetFollowDistance(GetRadius(i));
 			pCreature->setLevel(u_caster->getLevel());
 			pCreature->SetFaction(u_caster->GetFaction());
+			pCreature->Phase(PHASE_SET, u_caster->GetPhase());
 
 			pCreature->SetSummonedByGUID( u_caster->GetGUID());
 			pCreature->SetCreatedByGUID( u_caster->GetGUID());
@@ -4318,6 +4320,7 @@ void Spell::SpellEffectSummonObject(uint32 i)
 		go->SetByte( GAMEOBJECT_BYTES_1, 0, 0 );
 		go->SetUInt64Value( OBJECT_FIELD_CREATED_BY, m_caster->GetGUID() );
         u_caster->SetChannelSpellTargetGUID( go->GetGUID() );
+		go->Phase(PHASE_SET, u_caster->GetPhase());
 
 		go->SetInstanceID( m_caster->GetInstanceID() );
 		go->PushToWorld( m_caster->GetMapMgr() );
@@ -4355,6 +4358,7 @@ void Spell::SpellEffectSummonObject(uint32 i)
 		go->CreateFromProto(entry,mapid,posx,posy,pz,orient);
 		go->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 		go->SetUInt64Value(OBJECT_FIELD_CREATED_BY,m_caster->GetGUID());
+		go->Phase(PHASE_SET, u_caster->GetPhase());
 		go->PushToWorld(m_caster->GetMapMgr());
 		sEventMgr.AddEvent(go, &GameObject::ExpireAndDelete, EVENT_GAMEOBJECT_EXPIRE, GetDuration(), 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 		if ( entry == 17032 && p_caster) // this is a portal
@@ -5061,6 +5065,7 @@ void Spell::SpellEffectSummonPossessed(uint32 i) // eye of kilrogg
 		NewSummon->SetMaxHealth( 12375);
 		NewSummon->SetFaction(p_caster->GetFaction());
 		NewSummon->SetScale( 1.0f);
+		NewSummon->Phase(PHASE_SET, m_caster->GetPhase());
 
 		if(p_caster->IsPvPFlagged())
 			NewSummon->SetByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_PVP);
@@ -5154,6 +5159,7 @@ void Spell::SpellEffectSummonObjectWild(uint32 i)
 	GoSummon->SetLevel(u_caster->getLevel());
 	GoSummon->SetUInt64Value(OBJECT_FIELD_CREATED_BY, m_caster->GetGUID());
 	GoSummon->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
+	GoSummon->Phase(PHASE_SET, u_caster->GetPhase());
 	GoSummon->PushToWorld(u_caster->GetMapMgr());
 	GoSummon->SetSummoned(u_caster);
 
@@ -5943,6 +5949,7 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 	pTotem->SetCastSpeedMod(1.0f);
 	pTotem->SetCreatedBySpell(GetProto()->Id);
 	pTotem->SetUInt32Value( UNIT_DYNAMIC_FLAGS, 0 );
+	pTotem->Phase(PHASE_SET, p_caster->GetPhase());
 
 	if( p_caster->IsPvPFlagged() )
 		pTotem->SetPvPFlag();
@@ -6479,8 +6486,8 @@ void Spell::SpellEffectSummonObjectSlot(uint32 i)
 	GoSummon->SetLevel(u_caster->getLevel());
 	GoSummon->SetUInt64Value(OBJECT_FIELD_CREATED_BY, m_caster->GetGUID());
 	GoSummon->SetInstanceID(m_caster->GetInstanceID());
-    
-    
+    GoSummon->Phase(PHASE_SET, u_caster->GetPhase());
+
     GoSummon->PushToWorld(m_caster->GetMapMgr());
 
 	if(GoSummon->GetByte(GAMEOBJECT_BYTES_1, 1) == GAMEOBJECT_TYPE_TRAP)

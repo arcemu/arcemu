@@ -80,6 +80,7 @@ void DynamicObject::Create(Unit * caster, Spell * pSpell, float x, float y, floa
 	u_caster = caster;
 	m_faction = caster->m_faction;
 	m_factionDBC = caster->m_factionDBC;
+	m_phase = caster->GetPhase();
 
 	if(pSpell->g_caster)
 		PushToWorld(pSpell->g_caster->GetMapMgr());

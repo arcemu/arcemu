@@ -6501,6 +6501,7 @@ Creature* Unit::create_guardian(uint32 guardian_entry,uint32 duration,float angl
 	p->SetZoneId(GetZoneId());
 	p->SetFaction(GetFaction());
 	p->SetUInt32Value( UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED );
+	p->Phase(PHASE_SET, GetPhase());
 
 	p->GetAIInterface()->Init(p,AITYPE_PET,MOVEMENTTYPE_NONE,this);
 	p->GetAIInterface()->SetUnitToFollow(this);
