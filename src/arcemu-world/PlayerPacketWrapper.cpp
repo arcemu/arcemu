@@ -421,7 +421,6 @@ void Player::SendLoot(uint64 guid,uint8 loot_type, uint32 mapid)
         //check for starting item quests that need questlines.
         if((itemProto->QuestId && itemProto->Bonding != ITEM_BIND_QUEST && itemProto->Bonding != ITEM_BIND_QUEST2))
         {
-            bool HasRequiredQuests = true;
             Quest * pQuest = QuestStorage.LookupEntry(itemProto->QuestId);
             if(pQuest)
             {
@@ -434,10 +433,7 @@ void Player::SendLoot(uint64 guid,uint8 loot_type, uint32 mapid)
                     {
                         if(!HasFinishedQuest(pQuest->required_quests[i]) || GetQuestLogForEntry(pQuest->required_quests[i]))
                         {
-							if (!(pQuest->quest_flags & QUEST_FLAG_ONLY_ONE_REQUIRED)) {
-								HasRequiredQuests = false;
-								break;
-							}
+
 						}
 						else
 						{
@@ -445,13 +441,6 @@ void Player::SendLoot(uint64 guid,uint8 loot_type, uint32 mapid)
 						}
                     }
                 }
-
-				if (pQuest->quest_flags & QUEST_FLAG_ONLY_ONE_REQUIRED) {
-					if (finishedCount == 0) continue;
-				} else {
-	                if(!HasRequiredQuests)
-    	                continue;
-				}
             }
         }
 
