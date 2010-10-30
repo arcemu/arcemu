@@ -204,6 +204,9 @@ void WorldSession::HandleQuestGiverQueryQuestOpcode( WorldPacket & recv_data )
 		sQuestMgr.BuildQuestDetails(&data, qst,qst_giver,1, language, _player);	 // 0 because we want goodbye to function
 		SendPacket(&data);
 		sLog.outDebug( "WORLD: Sent SMSG_QUESTGIVER_QUEST_DETAILS." );
+
+		if( qst->HasFlag( QUEST_FLAGS_AUTO_ACCEPT ) )
+			_player->AcceptQuest( qst_giver->GetGUID(), qst->id );
 	}
 
 	else if (status == QMGR_QUEST_NOT_FINISHED || status == QMGR_QUEST_FINISHED)
@@ -666,7 +669,7 @@ void WorldSession::HandlePushQuestToPartyOpcode(WorldPacket &recv_data)
 						data.clear();
 						sQuestMgr.BuildQuestDetails(&data, pQuest, _player, 1, pPlayer->GetSession()->language, pPlayer);
 						pPlayer->SetQuestSharer(pguid); //VLack: better to set this _before_ sending out the packet, so no race conditions can happen on heavily loaded servers.
-						pPlayer->GetSession()->SendPacket(&data);
+						pPlayer->GetSession()->SendPacket(&data);						
 					}
 				}
 				_player->GetGroup()->Unlock();

@@ -1681,6 +1681,9 @@ bool QuestMgr::OnActivateQuestGiver(Object *qst_giver, Player *plr)
 			sQuestMgr.BuildQuestDetails(&data, (*itr)->qst, qst_giver, 1, plr->GetSession()->language, plr);		// 1 because we have 1 quest, and we want goodbye to function
 			plr->GetSession()->SendPacket(&data);
 			sLog.outDebug( "WORLD: Sent SMSG_QUESTGIVER_QUEST_DETAILS." );
+			
+			if( (*itr)->qst->HasFlag( QUEST_FLAGS_AUTO_ACCEPT ) )
+				plr->AcceptQuest( qst_giver->GetGUID(), (*itr)->qst->id );
 		}
 		else if (status == QMGR_QUEST_FINISHED)
 		{

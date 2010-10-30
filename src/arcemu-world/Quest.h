@@ -247,6 +247,26 @@ struct Quest
 	set<uint32> remove_quest_list;
 
 	QuestScript* pQuestScript;
+
+	///////////////////////////////////////////////////////////////////
+	//bool HasFlag( uint32 flag )
+	//  Tells if the quest has a specific flag.
+	//
+	//
+	//Parameters:
+	//  uint32 flag  -  flag to check
+	//
+	//Return Value
+	//  Returns true if the quest has this flag.
+	//  Returns false if the quest doesn't have this flag.
+	//
+	///////////////////////////////////////////////////////////////////
+	bool HasFlag( uint32 flag ){
+		if( ( quest_flags & flag ) != 0 )
+			return true;
+		else
+			return false;
+	}
 };
 #pragma pack(pop)
 
