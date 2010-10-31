@@ -390,6 +390,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 				WorldPacket response(SMSG_CHAT_PLAYER_NOT_FOUND, to.length() + 1);
 				response << to;
 				SendPacket(&response);
+				playercache->DecRef();
 				break;
 			}
 
@@ -403,6 +404,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 				data = sChatHandler.FillMessageData( CHAT_MSG_WHISPER_INFORM, LANG_UNIVERSAL, Reply.c_str(), playercache->GetGUID(), 4);
 				SendPacket(data);
 				delete data;
+				playercache->DecRef();
 				break;
 			}
 
@@ -411,6 +413,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 				data = sChatHandler.FillMessageData( CHAT_MSG_IGNORED, LANG_UNIVERSAL,  msg.c_str(), playercache->GetGUID(), _player->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_GM) ? 4 : 0 );
 				SendPacket(data);
 				delete data;
+				playercache->DecRef();
 				break;
 			}
 			else
