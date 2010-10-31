@@ -919,9 +919,9 @@ void Object::AddToWorld(MapMgr * pMapMgr)
 //this can only be called from the thread of mapmgr!!!
 void Object::PushToWorld(MapMgr*mgr)
 {
-	if(!mgr/* || (m_mapMgr != NULL && m_mapCell != NULL) */)
+	if(mgr == NULL)
 	{
-		Log.Debug("Object", "Invalid push to world");
+		sLog.outError("Invalid push to world of Object "I64FMT, GetGUID());
  		return; //instance add failed
 	}
 
