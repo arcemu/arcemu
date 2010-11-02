@@ -72,9 +72,11 @@ if( !$resp->is_valid ){
 */
                     
 //////////////////////////////////////////////////////////////////////////////
-  
-include( 'dal.php' );
-$db = new Database();
+
+include( 'Config.inc' );  
+include( '../lib/MYSQLDatabase.inc' );
+
+$db = new MYSQLDatabase( $dbusername, $dbpassword, $dbhost, $dbport, $dbname );
 
 if( $db->Connect() == false ){
   $db->Close();

@@ -37,10 +37,10 @@
 <!--
 
 <?php
-require_once('recaptchalib.php');
-$publickey = "Fill in public Recaptcha key here";
-$privatekey = "Fill in private Recaptcha key here";
-$error = null;
+//require_once('recaptchalib.php');
+//$publickey = "Fill in public Recaptcha key here";
+//$privatekey = "Fill in private Recaptcha key here";
+//$error = null;
 ?>
 
 -->
@@ -66,7 +66,7 @@ $error = null;
 
 <!--
 <?php
-echo recaptcha_get_html($publickey, $error);
+//echo recaptcha_get_html($publickey, $error);
 ?>
 -->
 
