@@ -228,39 +228,16 @@ void WorldSession::HandleSpellClick(WorldPacket& recvPacket)
 	if( !target_unit )
 		return;
 
+	uint32 creature_id = target_unit->GetEntry();
 	uint32 cast_spell_id = 0;
-	if( target_unit->GetEntry()  == 28605 )
-		cast_spell_id = 52263; // steel horse
-	//32633
-	if( target_unit->GetEntry()  == 32633 )
-		cast_spell_id = 61425; // Traveler's Tundra Mammoth
-
-	if( target_unit->GetEntry()  == 29929 )
-		cast_spell_id = 55531; // Mechano-Hog
 
 	if( !_player->HasAurasWithNameHash(SPELL_HASH_LIGHTWELL_RENEW) && target_unit->RemoveAura( 59907 ) )
 	{
-		switch( target_unit->GetEntry() )
-		{
-			case 31897:
-				cast_spell_id = 7001; // Lightwell Rank 1
-				break;
-			case 31896 :
-				cast_spell_id = 27873; // Lightwell Rank 2
-				break;
-			case 31895:
-				cast_spell_id = 27874; // Lightwell Rank 3
-				break;
-			case 31894:
-				cast_spell_id = 28276; // Lightwell Rank 4
-				break;
-			case 31893:
-				cast_spell_id = 48084; // Lightwell Rank 5
-				break;
-			case 31883:
-				cast_spell_id = 48085; // Lightwell Rank 6
-				break;
-		}
+		SpellClickSpell *sp = SpellClickSpellStorage.LookupEntry( creature_id );
+		if( sp == NULL )
+			return;
+
+		cast_spell_id = sp->SpellID;
 
 		target_unit->CastSpell(_player, cast_spell_id, true);
 
@@ -269,6 +246,13 @@ void WorldSession::HandleSpellClick(WorldPacket& recvPacket)
 
 		return;
 	}
+	
+	SpellClickSpell *sp = SpellClickSpellStorage.LookupEntry( creature_id );
+	if( sp == NULL )
+		return;
+	
+	cast_spell_id = sp->SpellID;
+
 	if( cast_spell_id == 0 )
 		return;
 

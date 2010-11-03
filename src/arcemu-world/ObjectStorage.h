@@ -41,6 +41,7 @@ extern SERVER_DECL SQLStorage<UnitModelSizeEntry, HashMapStorageContainer<UnitMo
 extern SERVER_DECL SQLStorage<WorldStringTable, HashMapStorageContainer<WorldStringTable> >	WorldStringTableStorage;
 extern SERVER_DECL SQLStorage<WorldBroadCast, HashMapStorageContainer<WorldBroadCast> >	WorldBroadCastStorage;
 extern SERVER_DECL SQLStorage<BGMaster, HashMapStorageContainer<BGMaster> >						BGMasterStorage;
+extern SERVER_DECL SQLStorage< SpellClickSpell, HashMapStorageContainer< SpellClickSpell > >		SpellClickSpellStorage;
 
 void Storage_FillTaskList(TaskList & tl);
 void Storage_Cleanup();
