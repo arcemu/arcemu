@@ -2560,14 +2560,10 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 	ss << ",'" << m_TransporterX << "','" << m_TransporterY << "','" << m_TransporterZ << "'";
 	ss << ",'";
 
-	// Dump spell data to stringstream
-	SpellSet::iterator spellItr = mSpells.begin();
-	for(; spellItr != mSpells.end(); ++spellItr)
-	{
-		ss << uint32(*spellItr) << ",";
-	}
-	ss << "','";
+	SaveSpells( bNewCharacter, buf );
+
 	// Dump deleted spell data to stringstream
+	SpellSet::iterator spellItr = mSpells.begin();
 	spellItr = mDeletedSpells.begin();
 	for(; spellItr != mDeletedSpells.end(); ++spellItr)
 	{
@@ -2791,6 +2787,7 @@ bool Player::LoadFromDB(uint32 guid)
 	q->AddQuery("SELECT character_guid FROM social_friends WHERE friend_guid = %u", guid);
 	q->AddQuery("SELECT ignore_guid FROM social_ignores WHERE character_guid = %u", guid);
 	q->AddQuery("SELECT * FROM equipmentsets WHERE ownerguid = %u", guid ); // 11
+	q->AddQuery("SELECT SpellID FROM playerspells WHERE GUID = %u", guid ); // 12
 
     // queue it!
 	SetLowGUID( guid );
@@ -2820,7 +2817,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		return;
 	}
 
-	const uint32 fieldcount = 93;
+	const uint32 fieldcount = 92;
 
 	if( result->GetFieldCount() != fieldcount )
 	{
@@ -3244,42 +3241,9 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	m_TransporterY = get_next_field.GetFloat();
 	m_TransporterZ = get_next_field.GetFloat();
 
-	// Load Spells from CSV data.
-	start = (char*)get_next_field.GetString();//buff;
-	SpellEntry * spProto;
-	while(true)
-	{
-		end = strchr(start,',');
-		if(!end)break;
-		*end= 0;
-		//mSpells.insert(atol(start));
-		spProto = dbcSpell.LookupEntryForced(atol(start));
-//#define _language_fix_ 1
-#ifndef _language_fix_
-		if(spProto)
-			mSpells.insert(spProto->Id);
-#else
-		if (spProto)
-		{
-			skilllinespell * _spell = objmgr.GetSpellSkill(spProto->Id);
-			if (_spell)
-			{
-				skilllineentry * _skill = dbcSkillLine.LookupEntry(_spell->skilline);
-				if (_skill && _skill->type != SKILL_TYPE_LANGUAGE)
-				{
-					mSpells.insert(spProto->Id);
-				}
-			}
-			else
-			{
-				mSpells.insert(spProto->Id);
-			}
-		}
-#endif
-//#undef _language_fix_
+	LoadSpells( results[ 12 ].result );
 
-		start = end +1;
-	}
+	SpellEntry *spProto = NULL;
 
 	start = (char*)get_next_field.GetString();//buff;
 	while(true)
@@ -13680,4 +13644,58 @@ void Player::AcceptQuest( uint64 guid, uint32 quest_id ){
 
 	sLog.outDebug("WORLD: Added new QLE.");
 	sHookInterface.OnQuestAccept( this, qst, qst_giver );
+}
+
+bool Player::LoadSpells( QueryResult *result ){
+	if( result == NULL )
+		return false;
+
+	Field *fields = NULL;
+
+	do{
+		fields = result->Fetch();
+
+		uint32 spellid = fields[ 0 ].GetUInt32();
+
+		SpellEntry *sp = dbcSpell.LookupEntryForced( spellid );
+		if( sp != NULL )
+			mSpells.insert( spellid );
+
+	}while( result->NextRow() );
+
+	return true;
+}
+
+bool Player::SaveSpells( bool NewCharacter, QueryBuffer *buf ){
+	if( !NewCharacter && buf == NULL )
+		return false;
+
+	std::stringstream ds;
+	uint32 guid = GetLowGUID();
+
+	ds << "DELETE FROM playerspells WHERE GUID = '";
+	ds << guid;
+	ds << "';";
+
+	if( !NewCharacter )
+		buf->AddQueryStr( ds.str() );
+	else
+		CharacterDatabase.ExecuteNA( ds.str().c_str() );
+
+	for( SpellSet::iterator itr = mSpells.begin(); itr != mSpells.end(); ++itr ){
+		uint32 spellid = *itr;
+
+		std::stringstream ss;
+
+		ss << "INSERT INTO playerspells VALUES('";
+		ss << guid << "','";
+		ss << spellid << "');";
+
+		if( !NewCharacter )
+			buf->AddQueryStr( ss.str() );
+		else
+			CharacterDatabase.ExecuteNA( ss.str().c_str() );
+	}
+
+	return true;
 }

@@ -1,6 +1,6 @@
 /*
 SQLyog Community v8.5 
-MySQL - 5.1.49-1ubuntu8 : Database - dfighterchars
+MySQL - 5.1.49-1ubuntu8 : Database - wchars
 *********************************************************************
 */
 
@@ -219,7 +219,6 @@ CREATE TABLE `characters` (
   `transporter_xdiff` float NOT NULL,
   `transporter_ydiff` float NOT NULL,
   `transporter_zdiff` float NOT NULL,
-  `spells` longtext NOT NULL,
   `deleted_spells` longtext NOT NULL,
   `reputation` longtext NOT NULL,
   `actions1` longtext NOT NULL,
@@ -852,6 +851,16 @@ CREATE TABLE `playerpetspells` (
   KEY `a` (`ownerguid`),
   KEY `b` (`petnumber`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+/*Table structure for table `playerspells` */
+
+DROP TABLE IF EXISTS `playerspells`;
+
+CREATE TABLE `playerspells` (
+  `GUID` int(10) unsigned NOT NULL,
+  `SpellID` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`GUID`,`SpellID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 /*Table structure for table `playersummons` */
 
