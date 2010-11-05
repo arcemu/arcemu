@@ -1,6 +1,6 @@
 /*
 SQLyog Community v8.5 
-MySQL - 5.1.49-1ubuntu8 : Database - wchars
+MySQL - 5.1.49-1ubuntu8 : Database - wchar
 *********************************************************************
 */
 
@@ -164,7 +164,6 @@ CREATE TABLE `characters` (
   `xp` int(30) NOT NULL,
   `active_cheats` int(10) unsigned NOT NULL DEFAULT '0',
   `exploration_data` longtext NOT NULL,
-  `skills` longtext NOT NULL,
   `watched_faction_index` bigint(40) NOT NULL,
   `selected_pvp_title` int(30) NOT NULL,
   `available_pvp_titles` bigint(10) unsigned NOT NULL DEFAULT '0',
@@ -860,6 +859,18 @@ CREATE TABLE `playerpetspells` (
   KEY `a` (`ownerguid`),
   KEY `b` (`petnumber`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+/*Table structure for table `playerskills` */
+
+DROP TABLE IF EXISTS `playerskills`;
+
+CREATE TABLE `playerskills` (
+  `GUID` int(10) unsigned NOT NULL,
+  `SkillID` int(10) unsigned NOT NULL,
+  `CurrentValue` int(10) unsigned NOT NULL,
+  `MaximumValue` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`GUID`,`SkillID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 /*Table structure for table `playerspells` */
 

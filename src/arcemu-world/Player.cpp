@@ -2420,37 +2420,11 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 	for(uint32 i = 0; i < PLAYER_EXPLORED_ZONES_LENGTH; ++i)
 		ss << m_uint32Values[PLAYER_EXPLORED_ZONES_1 + i] << ",";
 
-	ss << "','";
+	ss << "',";
 
-	for(SkillMap::iterator itr = m_skills.begin(); itr != m_skills.end(); ++itr)
-	{
-		if(itr->first && itr->second.Skill->type != SKILL_TYPE_LANGUAGE)
-		{
-			ss << itr->first << ";"
-				<< itr->second.CurrentValue << ";"
-				<< itr->second.MaximumValue << ";";
-		}
-	}
+	SaveSkills( bNewCharacter, buf );
 
-	uint32 player_flags = m_uint32Values[PLAYER_FLAGS];
-	{
-		// Remove un-needed and problematic player flags from being saved :p
-		if(player_flags & PLAYER_FLAG_PARTY_LEADER)
-			player_flags &= ~PLAYER_FLAG_PARTY_LEADER;
-		if(player_flags & PLAYER_FLAG_AFK)
-			player_flags &= ~PLAYER_FLAG_AFK;
-		if(player_flags & PLAYER_FLAG_DND)
-			player_flags &= ~PLAYER_FLAG_DND;
-		if(player_flags & PLAYER_FLAG_GM)
-			player_flags &= ~PLAYER_FLAG_GM;
-		if(player_flags & PLAYER_FLAG_PVP_TOGGLE)
-			player_flags &= ~PLAYER_FLAG_PVP_TOGGLE;
-		if(player_flags & PLAYER_FLAG_FREE_FOR_ALL_PVP)
-			player_flags &= ~PLAYER_FLAG_FREE_FOR_ALL_PVP;
-	}
-
-	ss << "', "
-	<< m_uint32Values[PLAYER_FIELD_WATCHED_FACTION_INDEX] << ","
+	ss << m_uint32Values[PLAYER_FIELD_WATCHED_FACTION_INDEX] << ","
 	<< m_uint32Values[PLAYER_CHOSEN_TITLE]<< ","
 	<< GetUInt64Value(PLAYER__FIELD_KNOWN_TITLES) << ","
 	<< GetUInt64Value(PLAYER__FIELD_KNOWN_TITLES1) << ","
@@ -2466,8 +2440,30 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 	<< load_mana << ","
 	<< uint32(GetPVPRank()) << ","
 	<< m_uint32Values[PLAYER_BYTES] << ","
-	<< m_uint32Values[PLAYER_BYTES_2] << ","
-	<< player_flags << ","
+	<< m_uint32Values[PLAYER_BYTES_2] << ",";
+
+	uint32 player_flags = m_uint32Values[PLAYER_FLAGS];
+	
+	// Remove un-needed and problematic player flags from being saved :p
+	if(player_flags & PLAYER_FLAG_PARTY_LEADER)
+		player_flags &= ~PLAYER_FLAG_PARTY_LEADER;
+
+	if(player_flags & PLAYER_FLAG_AFK)
+		player_flags &= ~PLAYER_FLAG_AFK;
+
+	if(player_flags & PLAYER_FLAG_DND)
+		player_flags &= ~PLAYER_FLAG_DND;
+
+	if(player_flags & PLAYER_FLAG_GM)
+		player_flags &= ~PLAYER_FLAG_GM;
+
+	if(player_flags & PLAYER_FLAG_PVP_TOGGLE)
+		player_flags &= ~PLAYER_FLAG_PVP_TOGGLE;
+
+	if(player_flags & PLAYER_FLAG_FREE_FOR_ALL_PVP)
+		player_flags &= ~PLAYER_FLAG_FREE_FOR_ALL_PVP;
+
+	ss << player_flags << ","
 	<< m_uint32Values[PLAYER_FIELD_BYTES] << ",";
 
 	if( in_arena )
@@ -2766,24 +2762,26 @@ void Player::RemovePendingPlayer()
 bool Player::LoadFromDB(uint32 guid)
 {
 	AsyncQuery * q = new AsyncQuery( new SQLClassCallbackP0<Player>(this, &Player::LoadFromDBProc) );
-	q->AddQuery("SELECT * FROM characters WHERE guid = %u AND forced_rename_pending = 0",guid);
-	q->AddQuery("SELECT * FROM tutorials WHERE playerId = %u",guid);
-	q->AddQuery("SELECT cooldown_type, cooldown_misc, cooldown_expire_time, cooldown_spellid, cooldown_itemid FROM playercooldowns WHERE player_guid = %u", guid);
-	q->AddQuery("SELECT * FROM questlog WHERE player_guid = %u",guid);
-	q->AddQuery("SELECT * FROM playeritems WHERE ownerguid = %u ORDER BY containerslot ASC", guid);
-	q->AddQuery("SELECT * FROM playerpets WHERE ownerguid = %u ORDER BY petnumber", guid);
-	q->AddQuery("SELECT * FROM playersummonspells where ownerguid = %u ORDER BY entryid", guid);
-	q->AddQuery("SELECT * FROM mailbox WHERE player_guid = %u", guid);
+
+	q->AddQuery("SELECT * FROM characters WHERE guid = %u AND forced_rename_pending = 0",guid); // 0
+	q->AddQuery("SELECT * FROM tutorials WHERE playerId = %u",guid); // 1
+	q->AddQuery("SELECT cooldown_type, cooldown_misc, cooldown_expire_time, cooldown_spellid, cooldown_itemid FROM playercooldowns WHERE player_guid = %u", guid); // 2
+	q->AddQuery("SELECT * FROM questlog WHERE player_guid = %u",guid); // 3
+	q->AddQuery("SELECT * FROM playeritems WHERE ownerguid = %u ORDER BY containerslot ASC", guid); // 4
+	q->AddQuery("SELECT * FROM playerpets WHERE ownerguid = %u ORDER BY petnumber", guid); // 5
+	q->AddQuery("SELECT * FROM playersummonspells where ownerguid = %u ORDER BY entryid", guid); // 6
+	q->AddQuery("SELECT * FROM mailbox WHERE player_guid = %u", guid); // 7
 
 	// social
-	q->AddQuery("SELECT friend_guid, note FROM social_friends WHERE character_guid = %u", guid);
-	q->AddQuery("SELECT character_guid FROM social_friends WHERE friend_guid = %u", guid);
-	q->AddQuery("SELECT ignore_guid FROM social_ignores WHERE character_guid = %u", guid);
+	q->AddQuery("SELECT friend_guid, note FROM social_friends WHERE character_guid = %u", guid); // 8
+	q->AddQuery("SELECT character_guid FROM social_friends WHERE friend_guid = %u", guid); // 9
+	q->AddQuery("SELECT ignore_guid FROM social_ignores WHERE character_guid = %u", guid); // 10
 
 
 	q->AddQuery("SELECT * FROM equipmentsets WHERE ownerguid = %u", guid ); // 11
 	q->AddQuery("SELECT SpellID FROM playerspells WHERE GUID = %u", guid ); // 12
 	q->AddQuery("SELECT SpellID FROM playerdeletedspells WHERE GUID = %u", guid ); // 13
+	q->AddQuery("SELECT SkillID, CurrentValue, MaximumValue FROM playerskills WHERE GUID = %u", guid ); // 14
 
     // queue it!
 	SetLowGUID( guid );
@@ -2813,7 +2811,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		return;
 	}
 
-	const uint32 fieldcount = 91;
+	const uint32 fieldcount = 90;
 
 	if( result->GetFieldCount() != fieldcount )
 	{
@@ -2934,110 +2932,21 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 
 	// Process skill data.
 	uint32 Counter = 0;
-	char * start = (char*)get_next_field.GetString();//buff;
-	char * end;
+	char * start = NULL;
+	char * end = NULL;
 
 	// new format
 	const ItemProf * prof;
-	if(!strchr(start, ' ') && !strchr(start,';'))
-	{
+
+	LoadSkills( results[ 14 ].result );
+
+	if( m_skills.empty() ){
 		/* no skills - reset to defaults */
 		for(std::list<CreateInfo_SkillStruct>::iterator ss = info->skills.begin(); ss!=info->skills.end(); ss++)
 		{
 			if(ss->skillid && ss->currentval && ss->maxval && !::GetSpellForLanguage(ss->skillid))
 				_AddSkillLine(ss->skillid, ss->currentval, ss->maxval);
 		}
-	}
-	else
-	{
-		char * f = strdup(start);
-		start = f;
-		if(!strchr(start,';'))
-		{
-			/* old skill format.. :< */
-			uint32 v1,v2,v3;
-			PlayerSkill sk;
-			for(;;)
-			{
-				end = strchr(start, ' ');
-				if(!end)
-					break;
-
-				*end = 0;
-				v1 = atol(start);
-				start = end + 1;
-
-				end = strchr(start, ' ');
-				if(!end)
-					break;
-
-				*end = 0;
-				v2 = atol(start);
-				start = end + 1;
-
-				end = strchr(start, ' ');
-				if(!end)
-					break;
-
-				v3 = atol(start);
-				start = end + 1;
-				if(v1 & 0xffff)
-				{
-					sk.Reset(v1 & 0xffff);
-					sk.CurrentValue = v2 & 0xffff;
-					sk.MaximumValue = (v2 >> 16) & 0xffff;
-
-					if( !sk.CurrentValue )
-						sk.CurrentValue = 1;
-
-					m_skills.insert( make_pair(sk.Skill->id, sk) );
-				}
-			}
-		}
-		else
-		{
-			uint32 v1,v2,v3;
-			PlayerSkill sk;
-			for(;;)
-			{
-				end = strchr(start, ';');
-				if(!end)
-					break;
-
-				*end = 0;
-				v1 = atol(start);
-				start = end + 1;
-
-				end = strchr(start, ';');
-				if(!end)
-					break;
-
-				*end = 0;
-				v2 = atol(start);
-				start = end + 1;
-
-				end = strchr(start, ';');
-				if(!end)
-					break;
-
-				v3 = atol(start);
-				start = end + 1;
-
-				/* add the skill */
-				if(v1)
-				{
-					sk.Reset(v1);
-					sk.CurrentValue = v2;
-					sk.MaximumValue = v3;
-
-					if( !sk.CurrentValue )
-						sk.CurrentValue = 1;
-
-					m_skills.insert(make_pair(v1, sk));
-				}
-			}
-		}
-		free(f);
 	}
 
 	for(SkillMap::iterator itr = m_skills.begin(); itr != m_skills.end(); ++itr)
@@ -13728,6 +13637,77 @@ bool Player::SaveDeletedSpells( bool NewCharacter, QueryBuffer *buf ){
 		ss << "INSERT INTO playerdeletedspells VALUES('";
 		ss << guid << "','";
 		ss << spellid << "');";
+
+		if( !NewCharacter )
+			buf->AddQueryStr( ss.str() );
+		else
+			CharacterDatabase.ExecuteNA( ss.str().c_str() );
+	}
+
+	return true;
+}
+
+bool Player::LoadSkills( QueryResult *result ){
+	if( result == NULL )
+		return false;
+
+	Field *fields = NULL;
+
+	do{
+		fields = result->Fetch();
+
+		uint32 skillid = fields[ 0 ].GetUInt32();
+		uint32 currval = fields[ 1 ].GetUInt32();
+		uint32 maxval  = fields[ 2 ].GetUInt32();
+
+		PlayerSkill sk;
+
+		sk.Reset( skillid );
+		sk.CurrentValue = currval;
+		sk.MaximumValue = maxval;
+
+		if( sk.CurrentValue == 0 )
+			sk.CurrentValue = 1;
+
+		m_skills.insert(  std::pair< uint32, PlayerSkill >( skillid, sk ) );
+
+	}while( result->NextRow() );
+
+	return true;
+}
+
+bool Player::SaveSkills( bool NewCharacter, QueryBuffer *buf ){
+	if( !NewCharacter && buf == NULL )
+		return false;
+
+	std::stringstream ds;
+	uint32 guid = GetLowGUID();
+
+	ds << "DELETE FROM playerskills WHERE GUID = '";
+	ds << guid;
+	ds << "';";
+
+	if( !NewCharacter )
+		buf->AddQueryStr( ds.str() );
+	else
+		CharacterDatabase.ExecuteNA( ds.str().c_str() );
+
+	for( SkillMap::iterator itr = m_skills.begin(); itr != m_skills.end(); ++itr ){
+		
+		if( itr->second.Skill->type == SKILL_TYPE_LANGUAGE )
+			continue;
+
+		uint32 skillid = itr->first;
+		uint32 currval = itr->second.CurrentValue;
+		uint32 maxval  = itr->second.MaximumValue;
+
+		std::stringstream ss;
+
+		ss << "INSERT INTO playerskills VALUES('";
+		ss << guid << "','";
+		ss << skillid << "','";
+		ss << currval << "','";
+		ss << maxval << "');";
 
 		if( !NewCharacter )
 			buf->AddQueryStr( ss.str() );

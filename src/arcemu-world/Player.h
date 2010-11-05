@@ -1456,6 +1456,9 @@ public:
 	bool LoadDeletedSpells( QueryResult *result );
 	bool SaveDeletedSpells( bool NewCharacter, QueryBuffer *buf );
 
+	bool LoadSkills( QueryResult *result );
+	bool SaveSkills( bool NewCharacter, QueryBuffer *buf );
+
 	void LoadNamesFromDB(uint32 guid);
 	bool m_FirstLogin;
 
