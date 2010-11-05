@@ -219,7 +219,6 @@ CREATE TABLE `characters` (
   `transporter_xdiff` float NOT NULL,
   `transporter_ydiff` float NOT NULL,
   `transporter_zdiff` float NOT NULL,
-  `deleted_spells` longtext NOT NULL,
   `reputation` longtext NOT NULL,
   `actions1` longtext NOT NULL,
   `actions2` longtext NOT NULL,
@@ -758,6 +757,16 @@ CREATE TABLE `playercooldowns` (
   `cooldown_spellid` int(30) NOT NULL COMMENT 'spell that cast it',
   `cooldown_itemid` int(30) NOT NULL COMMENT 'item that cast it'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/*Table structure for table `playerdeletedspells` */
+
+DROP TABLE IF EXISTS `playerdeletedspells`;
+
+CREATE TABLE `playerdeletedspells` (
+  `GUID` int(10) unsigned NOT NULL,
+  `SpellID` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`GUID`,`SpellID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 /*Table structure for table `playeritems` */
 

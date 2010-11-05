@@ -1449,8 +1449,12 @@ public:
 	void SaveAuras(stringstream&);
 	bool LoadFromDB(uint32 guid);
 	void LoadFromDBProc(QueryResultVector & results);
+	
 	bool LoadSpells( QueryResult *result );
 	bool SaveSpells( bool NewCharacter, QueryBuffer *buf );
+
+	bool LoadDeletedSpells( QueryResult *result );
+	bool SaveDeletedSpells( bool NewCharacter, QueryBuffer *buf );
 
 	void LoadNamesFromDB(uint32 guid);
 	bool m_FirstLogin;
