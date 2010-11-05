@@ -41,6 +41,15 @@ bool Starfall(uint32 i, Spell* pSpell)
 	return true;
 }
 
+bool ImprovedLeaderOfThePack( uint32 i, Spell *s ){
+	if ( !s->u_caster->IsPlayer())
+		return false;
+	
+	s->u_caster->AddProcTriggerSpell(34299, 34299, s->u_caster->GetGUID(), 100, PROC_ON_CRIT_ATTACK | static_cast<uint32>(PROC_TARGET_SELF), 0, NULL, NULL);
+
+	return true;
+}
+
 void SetupDruidSpells(ScriptMgr * mgr)
 {
 	uint32 StarfallIds[] =
@@ -52,4 +61,7 @@ void SetupDruidSpells(ScriptMgr * mgr)
 		0,
 	};
 	mgr->register_dummy_spell(StarfallIds, &Starfall); 
+
+	mgr->register_dummy_spell( 34297, &ImprovedLeaderOfThePack );
+	mgr->register_dummy_spell( 34300, &ImprovedLeaderOfThePack );
 }

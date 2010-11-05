@@ -1982,6 +1982,7 @@ public:
     ARCEMU_INLINE Unit* GetUnitTarget() { return unitTarget; }
     ARCEMU_INLINE Player* GetPlayerTarget() { return playerTarget; }
     ARCEMU_INLINE GameObject* GetGameObjectTarget() { return gameObjTarget; }
+	Corpse* GetCorpseTarget(){ return corpseTarget; }
 
     uint32 chaindamage;
     // -------------------------------------------

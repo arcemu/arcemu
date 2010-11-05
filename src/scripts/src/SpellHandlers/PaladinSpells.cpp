@@ -219,6 +219,79 @@ bool JudgementOfWisdom(uint32 i, Aura *pAura, bool apply)
 	return true;	
 }
 
+bool RighteousDefense( uint32 i, Spell *s ){
+	//we will try to lure 3 enemies from our target
+
+	Unit *unitTarget = s->GetUnitTarget();
+	
+	if(!unitTarget || !s->u_caster)
+		return false;
+	
+	Unit *targets[3];
+	uint32 targets_got= 0;
+	
+	for(std::set<Object*>::iterator itr = unitTarget->GetInRangeSetBegin(), i2; itr != unitTarget->GetInRangeSetEnd(); )
+	{
+		i2 = itr++;
+		
+		// don't add objects that are not units and that are dead
+		if((*i2)->GetTypeId()!= TYPEID_UNIT || !static_cast<Unit*>( (*i2) )->isAlive())
+			continue;
+		
+		Creature *cr= static_cast<Creature*>((*i2));
+		if(cr->GetAIInterface()->GetNextTarget()==unitTarget)
+			targets[targets_got++]=cr;
+		
+		if(targets_got==3)
+			break;
+	}
+	
+	for(uint32 j= 0;j<targets_got;j++)
+	{
+		//set threat to this target so we are the msot hated
+		uint32 threat_to_him = targets[j]->GetAIInterface()->getThreatByPtr( unitTarget );
+		uint32 threat_to_us = targets[j]->GetAIInterface()->getThreatByPtr(s->u_caster);
+		int threat_dif = threat_to_him - threat_to_us;
+		if(threat_dif>0)//should nto happen
+			targets[j]->GetAIInterface()->modThreatByPtr(s->u_caster,threat_dif);
+		
+		targets[j]->GetAIInterface()->AttackReaction(s->u_caster,1,0);
+		targets[j]->GetAIInterface()->SetNextTarget(s->u_caster);
+	}
+	
+	return true;
+}
+
+bool Illumination( uint32 i, Spell *s ){
+	switch( s->m_triggeredByAura== NULL ? s->GetProto()->Id : s->m_triggeredByAura->GetSpellId() )
+	{
+	case 20210:
+	case 20212:
+	case 20213:
+	case 20214:
+	case 20215:
+		{
+			if( s->p_caster == NULL )
+				return false;
+			SpellEntry * sp = s->p_caster->last_heal_spell ? s->p_caster->last_heal_spell : s->GetProto();
+			s->p_caster->Energize( s->p_caster, 20272, 60 * s->u_caster->GetBaseMana() * sp->ManaCostPercentage / 10000, POWER_TYPE_MANA );
+		}break;
+
+
+	}
+	return true;
+}
+
+bool JudgementOfTheWise( uint32 i, Spell *s ){
+	if(!s->p_caster)
+		return false;
+	
+	s->p_caster->Energize(s->p_caster, 31930, uint32(0.15f*s->p_caster->GetBaseMana()), POWER_TYPE_MANA );
+	s->p_caster->CastSpell(s->p_caster, 57669, false);
+
+	return true;
+}
+
 void SetupPaladinSpells(ScriptMgr * mgr)
 {
 	mgr->register_dummy_aura(9799, &EyeForAnEye);
@@ -237,4 +310,9 @@ void SetupPaladinSpells(ScriptMgr * mgr)
 
 	mgr->register_dummy_aura(20185, &JudgementOfLight);
 	mgr->register_dummy_aura(20186, &JudgementOfWisdom);
+
+	mgr->register_dummy_spell( 31789, &RighteousDefense );
+	mgr->register_dummy_spell( 18350, &Illumination );
+
+	mgr->register_dummy_spell( 54180, &JudgementOfTheWise );
 }

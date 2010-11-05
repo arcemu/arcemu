@@ -19,7 +19,76 @@
 
 #include "Setup.h"
 
+bool SoulLink( uint32 i, Spell *s ){
+	Unit *unitTarget = s->GetUnitTarget();
+
+	if(!s->u_caster || !s->u_caster->isAlive() || !unitTarget || !unitTarget->isAlive())
+		return false;
+	
+	uint32 pet_dmg = s->forced_basepoints[0]*20/100;
+	if( pet_dmg )
+	{
+		unitTarget->ModHealth(pet_dmg);
+		unitTarget->DealDamage( s->u_caster,pet_dmg,0,0,25228,true);
+	}
+
+	return true;
+}
+
+bool LifeTap( uint32 i, Spell *s ){
+	Player *playerTarget = s->GetPlayerTarget();
+
+	if(!s->p_caster || !playerTarget)
+		return false;
+	
+	uint32 mod;	// spirit bonus coefficient multiplied by 2
+	if( s->GetProto()->Id == 1454) mod = 2;
+	else if(s->GetProto()->Id == 1455) mod = 3;
+	else if(s->GetProto()->Id == 1456) mod = 4;
+	else if(s->GetProto()->Id == 11687) mod = 5;
+	else mod = 6;
+	
+	uint32 damage = s->GetProto()->EffectBasePoints[i] + 1 + mod * playerTarget->GetStat(STAT_SPIRIT) / 2;
+	
+	if (damage >= playerTarget->GetHealth())
+		return false;
+	
+	s->p_caster->DealDamage(playerTarget,damage,0,0, s->GetProto()->Id);
+	damage = damage * (100 + playerTarget->m_lifetapbonus) / 100;	// Apply improved life tap
+	if(playerTarget->GetPower( POWER_TYPE_MANA ) + damage > playerTarget->GetMaxPower( POWER_TYPE_MANA ))
+		playerTarget->SetPower( POWER_TYPE_MANA,playerTarget->GetMaxPower( POWER_TYPE_MANA ));
+	else
+		playerTarget->SetPower( POWER_TYPE_MANA, playerTarget->GetPower( POWER_TYPE_MANA ) + damage);
+	s->SendHealManaSpellOnPlayer( s->p_caster, playerTarget, damage, POWER_TYPE_MANA, s->GetProto()->Id );
+
+	return true;
+}
+
+bool SoulShatter( uint32 i, Spell *s ){
+	Unit *unitTarget = s->GetUnitTarget();
+
+	if( !s->u_caster || !s->u_caster->isAlive() || !unitTarget || !unitTarget->isAlive() )
+		return false;
+	
+	s->u_caster->CastSpell(unitTarget, 32835, false);
+
+	return true;
+}
+
 void SetupWarlockSpells(ScriptMgr * mgr)
 {
-    // moo?
+	mgr->register_dummy_spell( 25228, &SoulLink );
+
+	mgr->register_dummy_spell( 1455, &LifeTap );
+	mgr->register_dummy_spell( 1456, &LifeTap );
+	mgr->register_dummy_spell( 1457, &LifeTap );
+	mgr->register_dummy_spell( 11687, &LifeTap );
+	mgr->register_dummy_spell( 11688, &LifeTap );
+	mgr->register_dummy_spell( 11689, &LifeTap );
+	mgr->register_dummy_spell( 27222, &LifeTap );
+	mgr->register_dummy_spell( 57946, &LifeTap );
+
+	mgr->register_dummy_spell( 29858, &SoulShatter );
+
+
 }

@@ -624,6 +624,82 @@ bool Invincible(uint32 i, Aura * pAura, bool apply)
 
 	return true;
 }
+
+bool Poultryizer( uint32 i, Spell *s ){
+	Unit *unitTarget = s->GetUnitTarget();
+
+	if( !unitTarget || !unitTarget->isAlive())
+		return false;
+	
+	s->u_caster->CastSpell(unitTarget->GetGUID(),30501,true);
+
+	return true;
+}
+
+bool SixDemonBag( uint32 i, Spell *s ){
+	Unit *unitTarget = s->GetUnitTarget();
+
+	if( !unitTarget || !unitTarget->isAlive())
+		return false;
+	
+	uint32 ClearSpellId[6] = { 8401,8408,930,118,1680,10159 };
+	uint32 randid = RandomUInt( 5 );
+	uint32 spelltocast = ClearSpellId[ randid ];
+
+	s->u_caster->CastSpell( unitTarget,  spelltocast, true );
+
+	return true;
+}
+
+bool ExtractGas( uint32 i, Spell *s ){
+	bool check = false;
+	uint32 cloudtype = 0;
+	Creature *creature = 0;
+	
+	if(!s->p_caster)
+		return false;
+	
+	for(Object::InRangeSet::iterator itr = s->p_caster->GetInRangeSetBegin(); itr != s->p_caster->GetInRangeSetEnd(); ++itr)
+	{
+		if((*itr)->GetTypeId() == TYPEID_UNIT)
+		{
+			creature=static_cast<Creature *>((*itr));
+			cloudtype=creature->GetEntry();
+			
+			if(cloudtype == 24222 || cloudtype == 17408 || cloudtype == 17407 || cloudtype == 17378)
+			{
+				if(s->p_caster->GetDistance2dSq((*itr)) < 400)
+				{
+					s->p_caster->SetSelection(creature->GetGUID());
+					check = true;
+					break;
+				}
+			}
+		}
+	}
+	
+	if( !check )
+		return false;
+
+	uint32 item = 0;
+	uint32 count = 0;
+	
+	count = 3+(rand()%3);
+	
+	if (cloudtype==24222) item=22572;//-air
+	if (cloudtype==17408) item=22576;//-mana
+	if (cloudtype==17407) item=22577;//-shadow
+	if (cloudtype==17378) item=22578;//-water
+	
+	if( item == 0 )
+		return false;
+	
+	s->p_caster->GetItemInterface()->AddItemById( item, count, 0 );
+	creature->Despawn(3500,creature->GetProto()->RespawnTime);
+
+	return true;
+}
+
 // ADD NEW FUNCTIONS ABOVE THIS LINE
 // *****************************************************************************
 
@@ -658,6 +734,10 @@ void SetupItemSpells_1(ScriptMgr * mgr)
 	mgr->register_dummy_aura( 65917, &MagicRoosterMount);		// Magic Rooster Mount
 	mgr->register_dummy_aura( 72286, &Invincible);				// Invincible
 
+	mgr->register_dummy_spell( 30507, &Poultryizer );
+	mgr->register_dummy_spell( 14537, &SixDemonBag );
+	mgr->register_dummy_spell( 30427, &ExtractGas );
+	
 
 // REGISTER NEW DUMMY SPELLS ABOVE THIS LINE
 // *****************************************************************************

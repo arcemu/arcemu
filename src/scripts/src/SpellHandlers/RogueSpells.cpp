@@ -179,6 +179,27 @@ bool DeadlyBrew(uint32 i, Aura *pAura, bool apply)
 	return true;
 }
 
+bool CloakOfShadows( uint32 i, Spell *s ){
+	Unit *unitTarget = s->GetUnitTarget();
+
+	if( !unitTarget || !unitTarget->isAlive())
+		return false;
+	
+	Aura * pAura;
+	for(uint32 j = MAX_NEGATIVE_AURAS_EXTEDED_START; j < MAX_NEGATIVE_AURAS_EXTEDED_END; ++j)
+	{
+		pAura = unitTarget->m_auras[j];
+		if( pAura != NULL && !pAura->IsPassive()
+			&& !pAura->IsPositive()
+			&& !(pAura->GetSpellProto()->Attributes & ATTRIBUTES_IGNORE_INVULNERABILITY)
+			&& pAura->GetSpellProto()->School != 0
+			)
+			pAura->Remove();
+	}
+
+	return true;
+}
+
 void SetupRogueSpells(ScriptMgr * mgr)
 {
 	mgr->register_dummy_spell(5938, &Shiv);
@@ -204,4 +225,6 @@ void SetupRogueSpells(ScriptMgr * mgr)
 
 	mgr->register_dummy_aura(51625, &DeadlyBrew);
 	mgr->register_dummy_aura(51626, &DeadlyBrew);
+
+	mgr->register_dummy_spell( 35729, &CloakOfShadows );
 }

@@ -439,8 +439,16 @@ void ScriptMgr::register_dummy_aura(uint32 entry, exp_handle_dummy_aura callback
 
 void ScriptMgr::register_dummy_spell(uint32 entry, exp_handle_dummy_spell callback)
 {
-	if(_spells.find(entry) != _spells.end())
+	if(_spells.find(entry) != _spells.end()){
 		sLog.outError("ScriptMgr is trying to register a script for Spell ID: %u even if there's already one for that Spell. Remove one of those scripts.", entry);
+		return;
+	}
+
+	SpellEntry *sp = dbcSpell.LookupEntryForced( entry );
+	if( sp == NULL ){
+		sLog.outError("ScriptMgr is trying to register a dummy handler for Spell ID: %u which is invalid.", entry );
+		return;
+	}
 
 	_spells.insert( HandleDummySpellMap::value_type( entry, callback ) );
 }

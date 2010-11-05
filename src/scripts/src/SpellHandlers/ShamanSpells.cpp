@@ -99,6 +99,54 @@ bool FlametongueWeaponPassive(uint32 i, Aura *pAura, bool apply)
 	return true;
 }
 
+bool SkyShatterRegalia( uint32 i, Spell *s ){
+	// Shaman - Skyshatter Regalia - Two Piece Bonus
+	// it checks for earth, air, water, fire totems and triggers Totemic Mastery spell 38437.
+	
+	if(!s->p_caster)
+		return false;
+	
+	if( s->p_caster->m_TotemSlots[0] && s->p_caster->m_TotemSlots[1] && s->p_caster->m_TotemSlots[2] && s->p_caster->m_TotemSlots[3])
+	{
+		Aura *aur = new Aura(dbcSpell.LookupEntry(38437), 5000, s->p_caster, s->p_caster, true);
+		
+		for( uint32 j= 0; j<3; j++ )
+			aur->AddMod( aur->GetSpellProto()->EffectApplyAuraName[j], aur->GetSpellProto()->EffectBasePoints[j]+1, aur->GetSpellProto()->EffectMiscValue[j], j );
+		
+		s->p_caster->AddAura(aur);
+	}
+
+	return true;
+}
+
+bool EarthShield( uint32 i, Spell* s ){
+	if( !s->pSpellId )
+		return false;
+	
+	SpellEntry *spellInfo = dbcSpell.LookupEntryForced( s->pSpellId );
+	if(!spellInfo)
+		return false;
+	
+	uint32 heal32 = s->CalculateEffect(i,s->u_caster);
+	s->SetUnitTarget( s->u_caster );
+	if(heal32)
+		s->Heal(heal32);
+
+	return true;
+}
+
+bool ManaTide( uint32 i, Spell *s ){
+	Unit *unitTarget = s->GetUnitTarget();
+	
+	if(unitTarget == NULL || unitTarget->IsDead() || unitTarget->getClass() == WARRIOR || unitTarget->getClass() == ROGUE)
+		return false;
+	
+	uint32 gain = (uint32) (unitTarget->GetMaxPower( POWER_TYPE_MANA )*0.06);
+	unitTarget->Energize( unitTarget, 16191, gain, POWER_TYPE_MANA );
+
+	return true;
+}
+
 void SetupShamanSpells(ScriptMgr * mgr)
 {
 	uint32 RockbiterWeaponIds[] = 
@@ -118,4 +166,15 @@ void SetupShamanSpells(ScriptMgr * mgr)
 
 	uint32 FlametongueWeaponPassiveIds[] = { 10400, 15567, 15568, 15569, 16311, 16312, 16313, 58784, 58791, 58792, 0 };
 	mgr->register_dummy_aura(FlametongueWeaponPassiveIds, &FlametongueWeaponPassive);
+
+	mgr->register_dummy_spell( 38443, &SkyShatterRegalia );
+
+	mgr->register_dummy_spell( 974, &EarthShield );
+	mgr->register_dummy_spell( 32593, &EarthShield );
+	mgr->register_dummy_spell( 32594, &EarthShield );
+	mgr->register_dummy_spell( 49283, &EarthShield );
+	mgr->register_dummy_spell( 49284, &EarthShield );
+
+	mgr->register_dummy_spell( 39610, &ManaTide );
+	
 }

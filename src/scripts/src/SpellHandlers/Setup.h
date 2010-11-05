@@ -24,20 +24,23 @@
 #pragma warning(disable:4244)
 #endif
 
+// Class spell handlers
 void SetupShamanSpells(ScriptMgr * mgr);
 void SetupWarlockSpells(ScriptMgr * mgr);
 void SetupWarriorSpells(ScriptMgr * mgr);
 void SetupHunterSpells(ScriptMgr * mgr);
-void SetupItemSpells_1(ScriptMgr * mgr);
-void SetupOldSpellCPPSuff(ScriptMgr * mgr);
 void SetupMageSpells(ScriptMgr * mgr);
 void SetupPaladinSpells(ScriptMgr * mgr);
 void SetupRogueSpells(ScriptMgr * mgr);
 void SetupPriestSpells(ScriptMgr * mgr);
-void SetupPetAISpells(ScriptMgr * mgr);
-void SetupQuestItems(ScriptMgr * mgr);
 void SetupDruidSpells(ScriptMgr * mgr);
 void SetupDeathKnightSpells(ScriptMgr * mgr);
+
+void SetupOldSpellCPPSuff(ScriptMgr * mgr);
+void SetupPetAISpells(ScriptMgr * mgr);
+void SetupQuestItems(ScriptMgr * mgr);
+void SetupItemSpells_1(ScriptMgr * mgr);
+void SetupMiscSpellhandlers( ScriptMgr *mgr );
 
 //Instance spells (mainly scripted targets)
 void SetupRaidBlackTempleSpells(ScriptMgr* mgr);

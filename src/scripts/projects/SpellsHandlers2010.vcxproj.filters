@@ -9,48 +9,54 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
+    <Filter Include="Scripts\Class Spells">
+      <UniqueIdentifier>{9a184b5a-542c-45fd-9b3f-f41c3b9df458}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\SpellHandlers\Setup.cpp">
       <Filter>Main Resources</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\SpellHandlers\DeathKnightSpells.cpp">
-      <Filter>Scripts</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\SpellHandlers\DruidSpells.cpp">
-      <Filter>Scripts</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\SpellHandlers\HunterSpells.cpp">
-      <Filter>Scripts</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\SpellHandlers\ItemSpells_1.cpp">
-      <Filter>Scripts</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\SpellHandlers\MageSpells.cpp">
-      <Filter>Scripts</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\SpellHandlers\PaladinSpells.cpp">
-      <Filter>Scripts</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\SpellHandlers\PetAISpells.cpp">
-      <Filter>Scripts</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\SpellHandlers\PriestSpells.cpp">
       <Filter>Scripts</Filter>
     </ClCompile>
     <ClCompile Include="..\src\SpellHandlers\QIspells.cpp">
       <Filter>Scripts</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\SpellHandlers\DeathKnightSpells.cpp">
+      <Filter>Scripts\Class Spells</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\SpellHandlers\HunterSpells.cpp">
+      <Filter>Scripts\Class Spells</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\SpellHandlers\DruidSpells.cpp">
+      <Filter>Scripts\Class Spells</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\SpellHandlers\MageSpells.cpp">
+      <Filter>Scripts\Class Spells</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\SpellHandlers\PaladinSpells.cpp">
+      <Filter>Scripts\Class Spells</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\SpellHandlers\PriestSpells.cpp">
+      <Filter>Scripts\Class Spells</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\SpellHandlers\RogueSpells.cpp">
-      <Filter>Scripts</Filter>
+      <Filter>Scripts\Class Spells</Filter>
     </ClCompile>
     <ClCompile Include="..\src\SpellHandlers\ShamanSpells.cpp">
-      <Filter>Scripts</Filter>
+      <Filter>Scripts\Class Spells</Filter>
     </ClCompile>
     <ClCompile Include="..\src\SpellHandlers\WarlockSpells.cpp">
-      <Filter>Scripts</Filter>
+      <Filter>Scripts\Class Spells</Filter>
     </ClCompile>
     <ClCompile Include="..\src\SpellHandlers\WarriorSpells.cpp">
+      <Filter>Scripts\Class Spells</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\SpellHandlers\MiscSpells.cpp">
+      <Filter>Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\SpellHandlers\PetAISpells.cpp">
       <Filter>Scripts</Filter>
     </ClCompile>
   </ItemGroup>

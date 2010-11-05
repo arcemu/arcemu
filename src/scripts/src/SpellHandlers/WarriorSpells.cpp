@@ -77,6 +77,78 @@ bool DamageShield(uint32 i, Aura *pAura, bool apply)
 	return true;
 }
 
+bool HeroicFury( uint32 i, Spell *s ){
+	Player * p_caster = s->p_caster;
+
+	if( !p_caster )
+		return false;
+	
+	if( p_caster->HasSpell(20252) )
+		p_caster->ClearCooldownForSpell(20252);
+	
+	for(uint32 x= MAX_NEGATIVE_AURAS_EXTEDED_START; x < MAX_NEGATIVE_AURAS_EXTEDED_END; ++x)
+	{
+		if(p_caster->m_auras[x])
+		{
+			for(uint32 y = 0; y < 3; ++y)
+			{
+				switch(p_caster->m_auras[x]->GetSpellProto()->EffectApplyAuraName[y])
+				{
+				case SPELL_AURA_MOD_ROOT:
+				case SPELL_AURA_MOD_DECREASE_SPEED:
+					p_caster->m_auras[x]->Remove();
+					goto out;
+					break;}
+				
+				continue;
+out:
+				break;
+			}
+		}
+	}
+
+	return true;
+}
+
+bool Charge( uint32 i, Spell *s ){
+	if(!s->u_caster)
+		return false;
+	
+	uint32 rage_to_gen = s->GetProto()->EffectBasePoints[i] + 1;
+	if( s->p_caster )
+	{
+		for(set<uint32>::iterator itr = s->p_caster->mSpells.begin(); itr != s->p_caster->mSpells.end(); ++itr)
+		{
+			if(*itr == 12697)
+				rage_to_gen += 100;
+			
+			if(*itr == 12285)
+				rage_to_gen += 50;
+		}
+	}
+	
+	// Add the rage to the caster
+	s->u_caster->ModPower( POWER_TYPE_RAGE, rage_to_gen );
+	
+	return true;
+}
+
+bool LastStand( uint32 i, Spell *s ){
+	Player *playerTarget = s->GetPlayerTarget();
+
+	if(!playerTarget)
+		return false;
+	
+	SpellCastTargets tgt;
+	tgt.m_unitTarget = playerTarget->GetGUID();
+	
+	SpellEntry * inf =dbcSpell.LookupEntry(12976);
+	Spell * spe = new Spell( s->u_caster,inf,true,NULL);
+	spe->prepare(&tgt);
+
+	return true;
+}
+
 void SetupWarriorSpells(ScriptMgr * mgr)
 {
 	uint32 ExecuteIds[] = 
@@ -97,4 +169,12 @@ void SetupWarriorSpells(ScriptMgr * mgr)
 
 	mgr->register_dummy_aura(58872, &DamageShield);
 	mgr->register_dummy_aura(58874, &DamageShield);
+
+	mgr->register_dummy_spell( 60970, &HeroicFury );
+
+	mgr->register_dummy_spell( 100, &Charge );
+	mgr->register_dummy_spell( 6178, &Charge );
+	mgr->register_dummy_spell( 11578, &Charge );
+
+	mgr->register_dummy_spell( 12975, &LastStand );
 }
