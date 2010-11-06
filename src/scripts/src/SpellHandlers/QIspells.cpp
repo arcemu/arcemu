@@ -1642,7 +1642,7 @@ void SetupQuestItems(ScriptMgr * mgr)
 	mgr->register_dummy_spell(3607, &YennikuRelease);
 	mgr->register_dummy_spell(4141, &ScrollOfMyzrael);
 	mgr->register_dummy_spell(8606, &SummonCyclonian);
-	mgr->register_dummy_spell(10226, &ElementalPowerExtractor);
+
 	mgr->register_dummy_spell(14209, &NixxsPledgeOfSecrecy);
 	mgr->register_dummy_spell(15118, &TheBaitforLarkorwi1);
   	mgr->register_dummy_spell(15119, &TheBaitforLarkorwi2);

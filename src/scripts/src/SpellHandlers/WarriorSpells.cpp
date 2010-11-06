@@ -165,7 +165,7 @@ void SetupWarriorSpells(ScriptMgr * mgr)
 		0,
 	};
     mgr->register_dummy_spell(ExecuteIds, &Execute);
-	mgr->register_dummy_spell(50725, &Vigilance);
+	mgr->register_script_effect(50725, &Vigilance);
 
 	mgr->register_dummy_aura(58872, &DamageShield);
 	mgr->register_dummy_aura(58874, &DamageShield);

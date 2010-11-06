@@ -276,65 +276,6 @@ bool ReindeerTransformation(uint32 i, Spell * pSpell)
 
 // -----------------------------------------------------------------------------
 
-bool SummonCritterDummy(uint32 i, Spell * pSpell)
-{
-	// the reason these spells have to be scripted is because they require a
-	// reagent to summon the critter pet, but don't require one to dismiss it
-
-	if(!pSpell->p_caster) return true;
-/*
-	uint32 currentCritterID = 0;
-
-	if(pSpell->p_caster->critterPet && pSpell->p_caster->critterPet->GetCreatureName())
-		currentCritterID = pSpell->p_caster->critterPet->GetCreatureName()->Id;
-
-	uint32 newspell = 0;
-
-	switch(pSpell->m_spellInfo->Id)
-	{
-		case 26469: // Snowman Kit
-		{
-			if(currentCritterID == 15710) // do we already have this critter summoned?
-				newspell = 26468; // if so, dismiss it
-			else
-				newspell = 26045; // otherwise summon it
-		}	break;
-
-		case 26528: // Jingling Bell
-		{
-			if(currentCritterID == 15706) // do we already have this critter summoned?
-				newspell = 26530; // if so, dismiss it
-			else
-				newspell = 26529; // otherwise summon it
-		}	break;
-
-		case 26532: // Green Helper Box
-		{
-			if(currentCritterID == 15698) // do we already have this critter summoned?
-				newspell = 26534; // if so, dismiss it
-			else
-				newspell = 26533; // otherwise summon it
-		}	break;
-
-		case 26541: // Red Helper Box
-		{
-			if(currentCritterID == 15705) // do we already have this critter summoned?
-				newspell = 26537; // if so, dismiss it
-			else
-				newspell = 26536; // otherwise summon it
-		}	break;
-	}
-
-	SpellEntry *spInfo = dbcSpell.LookupEntry(newspell);
-	if(!spInfo) return true;
-
-	pSpell->p_caster->CastSpell(pSpell->p_caster, spInfo, false); // these spells have to check items, so "triggeredspell" must be false
-*/
-	return true;
-}
-
-// -----------------------------------------------------------------------------
-
 bool WinterWondervolt(uint32 i, Spell * pSpell)
 {
 	Unit *  target = pSpell->GetUnitTarget();
@@ -710,20 +651,6 @@ bool BrittleArmor( uint32 i, Spell *s ){
 	return true;
 }
 
-bool WSGFlag( uint32 i, Spell *s ){
-	Player *p_caster = s->p_caster;
-
-	if( p_caster && p_caster->m_bg) {
-		if( p_caster->IsTeamHorde() )
-			p_caster->m_bg->SendChatMessage( CHAT_MSG_BG_EVENT_HORDE, p_caster->GetGUID(), "The Alliance flag was picked up by %s!", p_caster->GetName() );
-		else
-			p_caster->m_bg->SendChatMessage( CHAT_MSG_BG_EVENT_ALLIANCE, p_caster->GetGUID(), "The Horde flag was picked up by %s!", p_caster->GetName() );
-	}else
-		return false;
-
-	return true;
-}
-
 // ADD NEW FUNCTIONS ABOVE THIS LINE
 // *****************************************************************************
 
@@ -741,15 +668,15 @@ void SetupItemSpells_1(ScriptMgr * mgr)
 	mgr->register_dummy_spell(19938, &ForemansBlackjack);       // Lazy Peons Quest
 	mgr->register_dummy_spell(39105, &NetherWraithBeacon);      // Spellfire Tailor Quest
 	mgr->register_dummy_spell(30458, &NighInvulnBelt);          // Nigh Invulnerability Belt
+	
 	mgr->register_dummy_spell(25860, &ReindeerTransformation);  // Fresh Holly & Preserved Holly
-	uint32 Critters[] = { 26045 /* Snowman Kit */, 26529 /* Jingling Bell */, 26533 /* Green Helper Box */, 26541 /* Red Helper Box */, 0};
-	mgr->register_dummy_spell(Critters, &SummonCritterDummy);   // Summon Critter Spells
-	mgr->register_dummy_spell(26275, &WinterWondervolt);        // PX-238 Winter Wondervolt Trap
+	
+	mgr->register_script_effect(26275, &WinterWondervolt);        // PX-238 Winter Wondervolt Trap
 	mgr->register_dummy_aura( 26274, &WinterWondervoltAura);    // PX-238 Winter Wondervolt Transform Aura
 	mgr->register_dummy_spell(32042, &ScryingCrystal);			// Violet Scrying Crystal (Quest)
 	mgr->register_dummy_spell(32001, &MinionsOfGurok);			// Minions of gurok
 	mgr->register_dummy_spell(29200, &PurifyBoarMeat);			// Purify Boar meat spell
-	mgr->register_dummy_spell(35036, &WarpRiftGenerator);       // Summon a Warp Rift in Void Ridge
+	mgr->register_script_effect(35036, &WarpRiftGenerator);       // Summon a Warp Rift in Void Ridge
 	mgr->register_dummy_aura( 46354, &OrbOfTheSindorei);        //Orb of the Sin'dorei
 	mgr->register_dummy_aura( 58983, &BigBlizzardBear);			// Big Blizzard Bear mount
 	mgr->register_dummy_aura( 54729, &WingedSteed);				// DK flying mount
@@ -764,9 +691,6 @@ void SetupItemSpells_1(ScriptMgr * mgr)
 
 	mgr->register_script_effect( 24590, &BrittleArmor );
 
-	mgr->register_script_effect( 23333, &WSGFlag );
-	mgr->register_script_effect( 23335, &WSGFlag );
-	
 
 // REGISTER NEW DUMMY SPELLS ABOVE THIS LINE
 // *****************************************************************************

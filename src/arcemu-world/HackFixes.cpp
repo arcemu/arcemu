@@ -6442,7 +6442,6 @@ void ApplyNormalFixes()
 		{
 			sp->Reagent[1] = 0;
 			sp->ReagentCount[1] = 0;
-			sp->Effect[0] = SPELL_EFFECT_CREATE_ITEM;
 		}
 
 		// - Warrior - Warbringer Armor

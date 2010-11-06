@@ -531,7 +531,7 @@ void SetupWarlockSpells(ScriptMgr * mgr)
 
 	mgr->register_dummy_spell( 25228, &SoulLink );
 
-	mgr->register_script_effect( 1454, &LifeTap );
+	mgr->register_dummy_spell( 1454, &LifeTap );
 	mgr->register_dummy_spell( 1455, &LifeTap );
 	mgr->register_dummy_spell( 1456, &LifeTap );
 	mgr->register_dummy_spell( 11687, &LifeTap );
