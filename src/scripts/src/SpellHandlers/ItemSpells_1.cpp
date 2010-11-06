@@ -728,7 +728,7 @@ void SetupItemSpells_1(ScriptMgr * mgr)
 	mgr->register_dummy_spell(39105, &NetherWraithBeacon);      // Spellfire Tailor Quest
 	mgr->register_dummy_spell(30458, &NighInvulnBelt);          // Nigh Invulnerability Belt
 	mgr->register_dummy_spell(25860, &ReindeerTransformation);  // Fresh Holly & Preserved Holly
-	uint32 Critters[] = { 26469 /* Snowman Kit */, 26528 /* Jingling Bell */, 26532 /* Green Helper Box */, 26541 /* Red Helper Box */, 0};
+	uint32 Critters[] = { 26045 /* Snowman Kit */, 26529 /* Jingling Bell */, 26533 /* Green Helper Box */, 26541 /* Red Helper Box */, 0};
 	mgr->register_dummy_spell(Critters, &SummonCritterDummy);   // Summon Critter Spells
 	mgr->register_dummy_spell(26275, &WinterWondervolt);        // PX-238 Winter Wondervolt Trap
 	mgr->register_dummy_aura( 26274, &WinterWondervoltAura);    // PX-238 Winter Wondervolt Transform Aura

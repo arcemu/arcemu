@@ -451,7 +451,7 @@ void ScriptMgr::register_dummy_spell(uint32 entry, exp_handle_dummy_spell callba
 	}
 
 	if( !sp->HasEffect( SPELL_EFFECT_DUMMY ) )
-		sLog.outDetail("ScriptMgr has registered a dummy handler for Spell ID: %u, but spell has no dummy effect!", entry);
+		sLog.outDetail("ScriptMgr has registered a dummy handler for Spell ID: %u ( %s ), but spell has no dummy effect!", entry, sp->Name );
 
 	_spells.insert( HandleDummySpellMap::value_type( entry, callback ) );
 }
@@ -554,7 +554,7 @@ void ScriptMgr::register_script_effect( uint32 entry, exp_handle_script_effect c
 	}
 
 	if( !sp->HasEffect( SPELL_EFFECT_SCRIPT_EFFECT ) )
-		sLog.outDetail("ScriptMgr has registered a script effect handler for Spell ID: %u, but spell has no scripted effect!", entry);
+		sLog.outDetail("ScriptMgr has registered a script effect handler for Spell ID: %u ( %s ), but spell has no scripted effect!", entry, sp->Name );
 
 	SpellScriptEffects.insert( std::pair< uint32, exp_handle_script_effect >( entry, callback ) );
 }

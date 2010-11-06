@@ -155,11 +155,6 @@ void SetupShamanSpells(ScriptMgr * mgr)
 		8018,  // Rank 2
 		8019,  // Rank 3
 		10399, // Rank 4
-		16314, // Rank 5
-		16315, // Rank 6
-		16316, // Rank 7
-		25479, // Rank 8
-		25485, // Rank 9
 		0,
 	};
     mgr->register_dummy_spell(RockbiterWeaponIds, &RockbiterWeapon); // rank 1
