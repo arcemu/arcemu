@@ -39,6 +39,7 @@ extern "C" SCRIPT_DECL void _exp_script_register(ScriptMgr* mgr)
 	SetupPetAISpells(mgr);
 	SetupDruidSpells(mgr);
 	SetupDeathKnightSpells(mgr);
+	SetupMiscSpellhandlers( mgr );
 }
 
 #ifdef WIN32

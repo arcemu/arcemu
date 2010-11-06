@@ -292,6 +292,16 @@ bool JudgementOfTheWise( uint32 i, Spell *s ){
 	return true;
 }
 
+bool HolyAndFlashOfLight( uint32 i, Spell *s ){
+	
+	if( s->u_caster->HasAura( 20216 ) )
+			s->Heal((int32)s->damage, true);
+		else
+			s->Heal((int32)s->damage);
+
+	return true;
+}
+
 void SetupPaladinSpells(ScriptMgr * mgr)
 {
 	mgr->register_dummy_aura(9799, &EyeForAnEye);
@@ -315,4 +325,27 @@ void SetupPaladinSpells(ScriptMgr * mgr)
 	mgr->register_dummy_spell( 18350, &Illumination );
 
 	mgr->register_dummy_spell( 54180, &JudgementOfTheWise );
+
+	mgr->register_script_effect( 635, &HolyAndFlashOfLight );
+	mgr->register_script_effect( 639, &HolyAndFlashOfLight );	
+	mgr->register_script_effect( 647, &HolyAndFlashOfLight );
+	mgr->register_script_effect( 1026, &HolyAndFlashOfLight );
+	mgr->register_script_effect( 1042, &HolyAndFlashOfLight );
+	mgr->register_script_effect( 3472, &HolyAndFlashOfLight );
+	mgr->register_script_effect( 10328, &HolyAndFlashOfLight );
+	mgr->register_script_effect( 10329, &HolyAndFlashOfLight );
+	mgr->register_script_effect( 25292, &HolyAndFlashOfLight );
+	mgr->register_script_effect( 27135, &HolyAndFlashOfLight );
+	mgr->register_script_effect( 27136, &HolyAndFlashOfLight );
+	mgr->register_script_effect( 48781, &HolyAndFlashOfLight );
+	mgr->register_script_effect( 48782, &HolyAndFlashOfLight );
+	mgr->register_script_effect( 19750, &HolyAndFlashOfLight );
+	mgr->register_script_effect( 19939, &HolyAndFlashOfLight );
+	mgr->register_script_effect( 19940, &HolyAndFlashOfLight );
+	mgr->register_script_effect( 19941, &HolyAndFlashOfLight );
+	mgr->register_script_effect( 19942, &HolyAndFlashOfLight );
+	mgr->register_script_effect( 19943, &HolyAndFlashOfLight );
+	mgr->register_script_effect( 27137, &HolyAndFlashOfLight );
+	mgr->register_script_effect( 48784, &HolyAndFlashOfLight );
+	mgr->register_script_effect( 48785, &HolyAndFlashOfLight );
 }

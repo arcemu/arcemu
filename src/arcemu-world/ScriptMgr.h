@@ -130,6 +130,7 @@ typedef CreatureAIScript*(*exp_create_creature_ai)(Creature * pCreature);
 typedef GameObjectAIScript*(*exp_create_gameobject_ai)(GameObject * pGameObject);
 typedef InstanceScript* ( *exp_create_instance_ai )( MapMgr* pMapMgr );
 typedef bool(*exp_handle_dummy_spell)(uint32 i, Spell * pSpell);
+typedef bool(*exp_handle_script_effect)(uint32 i, Spell * pSpell);
 typedef bool(*exp_handle_dummy_aura)(uint32 i, Aura * pAura, bool apply);
 typedef void(*exp_script_register)(ScriptMgr * mgr);
 typedef void(*exp_engine_reload)();
@@ -142,6 +143,7 @@ typedef HM_NAMESPACE::hash_map<uint32, exp_create_creature_ai> CreatureCreateMap
 typedef HM_NAMESPACE::hash_map<uint32, exp_create_gameobject_ai> GameObjectCreateMap;
 typedef HM_NAMESPACE::hash_map<uint32, exp_handle_dummy_aura> HandleDummyAuraMap;
 typedef HM_NAMESPACE::hash_map<uint32, exp_handle_dummy_spell> HandleDummySpellMap;
+typedef HM_NAMESPACE::hash_map< uint32, exp_handle_script_effect > HandleScriptEffectMap;
 typedef HM_NAMESPACE::hash_map<uint32, exp_create_instance_ai> InstanceCreateMap;
 typedef set<GossipScript*> CustomGossipScripts;
 typedef set<QuestScript*> QuestScripts;
@@ -169,6 +171,7 @@ public:
 	InstanceScript* CreateScriptClassForInstance( uint32 pMapId, MapMgr* pMapMgr );
 
 	bool CallScriptedDummySpell(uint32 uSpellId, uint32 i, Spell* pSpell);
+	bool HandleScriptedSpellEffect( uint32 SpellId, uint32 i, Spell *s );
 	bool CallScriptedDummyAura( uint32 uSpellId, uint32 i, Aura* pAura, bool apply);
 	bool CallScriptedItem(Item * pItem, Player * pPlayer);
 
@@ -177,6 +180,7 @@ public:
 	void register_gameobject_script(uint32 entry, exp_create_gameobject_ai callback);
 	void register_dummy_aura(uint32 entry, exp_handle_dummy_aura callback);
 	void register_dummy_spell(uint32 entry, exp_handle_dummy_spell callback);
+	void register_script_effect( uint32 entry, exp_handle_script_effect callback );
 	void register_instance_script( uint32 pMapId, exp_create_instance_ai pCallback ); 
 	void register_gossip_script(uint32 entry, GossipScript * gs);
 	void register_go_gossip_script(uint32 entry, GossipScript * gs);
@@ -228,6 +232,7 @@ protected:
 	GameObjectCreateMap _gameobjects;
 	HandleDummyAuraMap _auras;
 	HandleDummySpellMap _spells;
+	HandleScriptEffectMap SpellScriptEffects;
 	LibraryHandleMap _handles;
 	ServerHookList _hooks[NUM_SERVER_HOOKS];
 	GossipScript * DefaultGossipScript;

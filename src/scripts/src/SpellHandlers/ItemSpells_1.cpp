@@ -700,6 +700,16 @@ bool ExtractGas( uint32 i, Spell *s ){
 	return true;
 }
 
+bool BrittleArmor( uint32 i, Spell *s ){
+	if( s->u_caster == NULL )
+		return false;
+
+	for(int j= 0;j<20;j++)
+		s->u_caster->CastSpell( s->u_caster, 24575, true);
+
+	return true;
+}
+
 // ADD NEW FUNCTIONS ABOVE THIS LINE
 // *****************************************************************************
 
@@ -737,6 +747,8 @@ void SetupItemSpells_1(ScriptMgr * mgr)
 	mgr->register_dummy_spell( 30507, &Poultryizer );
 	mgr->register_dummy_spell( 14537, &SixDemonBag );
 	mgr->register_dummy_spell( 30427, &ExtractGas );
+
+	mgr->register_script_effect( 24590, &BrittleArmor );
 	
 
 // REGISTER NEW DUMMY SPELLS ABOVE THIS LINE

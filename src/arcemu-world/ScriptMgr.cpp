@@ -450,6 +450,9 @@ void ScriptMgr::register_dummy_spell(uint32 entry, exp_handle_dummy_spell callba
 		return;
 	}
 
+	if( !sp->HasEffect( SPELL_EFFECT_DUMMY ) )
+		sLog.outDetail("ScriptMgr has registered a dummy handler for Spell ID: %u, but spell has no dummy effect!", entry);
+
 	_spells.insert( HandleDummySpellMap::value_type( entry, callback ) );
 }
 
@@ -535,6 +538,27 @@ void ScriptMgr::register_dummy_spell( uint32* entries, exp_handle_dummy_spell ca
 	}
 };
 
+void ScriptMgr::register_script_effect( uint32 entry, exp_handle_script_effect callback ){
+	
+	HandleScriptEffectMap::iterator itr = SpellScriptEffects.find( entry );
+	
+	if( itr != SpellScriptEffects.end() ){
+		sLog.outDebug("ScriptMgr tried to register more than 1 script effect handlers for Spell %u", entry );
+		return;
+	}
+
+	SpellEntry *sp = dbcSpell.LookupEntryForced( entry );
+	if( sp == NULL ){
+		sLog.outDebug("ScriptMgr tried to register a script effect handler for Spell %u, which is invalid.", entry );
+		return;
+	}
+
+	if( !sp->HasEffect( SPELL_EFFECT_SCRIPT_EFFECT ) )
+		sLog.outDetail("ScriptMgr has registered a script effect handler for Spell ID: %u, but spell has no scripted effect!", entry);
+
+	SpellScriptEffects.insert( std::pair< uint32, exp_handle_script_effect >( entry, callback ) );
+}
+
 CreatureAIScript* ScriptMgr::CreateAIScriptClassForEntry(Creature* pCreature)
 {
 	CreatureCreateMap::iterator itr = _creatures.find(pCreature->GetEntry());
@@ -572,6 +596,15 @@ bool ScriptMgr::CallScriptedDummySpell(uint32 uSpellId, uint32 i, Spell* pSpell)
 
 	exp_handle_dummy_spell function_ptr = itr->second;
 	return (function_ptr)(i, pSpell);
+}
+
+bool ScriptMgr::HandleScriptedSpellEffect( uint32 SpellId, uint32 i, Spell *s ){
+	HandleScriptEffectMap::iterator itr = SpellScriptEffects.find( SpellId );
+	if( itr == SpellScriptEffects.end() )
+		return false;
+
+	exp_handle_script_effect ptr = itr->second;
+	return (ptr)( i, s );
 }
 
 bool ScriptMgr::CallScriptedDummyAura(uint32 uSpellId, uint32 i, Aura* pAura, bool apply)

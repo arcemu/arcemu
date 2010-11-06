@@ -4849,62 +4849,10 @@ void Spell::HandleTeleportCreature( uint32 id, Unit* Target )
 void Spell::CreateItem( uint32 itemId )
 {
 	/// Creates number of items equal to a "damage" of the effect
-	if( !itemId || !p_caster )
+	if( itemId == 0 || p_caster == NULL )
         return;
 
-	Item*			newItem;
-	Item*			add;
-	SlotResult		slotresult;
-	ItemPrototype*	m_itemProto;
-
-	m_itemProto = ItemPrototypeStorage.LookupEntry( itemId );
-	if( m_itemProto == NULL )
-	    return;
-	
-	if( damage < 1 )
-		return;
-
-	uint32 addcount = (uint32)damage;
-
-	if ( p_caster->GetItemInterface()->CanReceiveItem( m_itemProto, addcount ) )
-	{
-		SendCastResult( SPELL_FAILED_TOO_MANY_OF_ITEM );
-		return;
-	}
-
-	add = p_caster->GetItemInterface()->FindItemLessMax( itemId, addcount, false );
-	if (!add )
-	{
-		slotresult = p_caster->GetItemInterface()->FindFreeInventorySlot( m_itemProto );
-		if( !slotresult.Result )
-		{
-			SendCastResult( SPELL_FAILED_TOO_MANY_OF_ITEM );
-			return;
-		}
-
-		newItem = objmgr.CreateItem( itemId, p_caster );
-		if( newItem == NULL )
-			return;
-
-		AddItemResult result = p_caster->GetItemInterface()->SafeAddItem( newItem, slotresult.ContainerSlot, slotresult.Slot );
-		if( !result )
-		{
-			newItem->DeleteMe();
-			return;
-		}
-
-        newItem->SetCreatorGUID( p_caster->GetGUID() );
-		newItem->SetStackCount(  addcount );
-
-        p_caster->SendItemPushResult( true, false, true, true, slotresult.ContainerSlot, slotresult.Slot, addcount, newItem->GetEntry(), newItem->GetItemRandomSuffixFactor(), newItem->GetItemRandomPropertyId(), newItem->GetStackCount()   );
-		newItem->m_isDirty = true;
-	}
-	else
-	{
-		add->ModStackCount(  addcount );
-        p_caster->SendItemPushResult( true, false, true, false, (uint8)p_caster->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()), 0xFFFFFFFF, addcount , add->GetEntry(), add->GetItemRandomSuffixFactor(), add->GetItemRandomPropertyId(), add->GetStackCount()   );
-		add->m_isDirty = true;
-	}
+	p_caster->GetItemInterface()->AddItemById( itemId, damage, 0 );
 }
 
 void Spell::SendHealSpellOnPlayer(Object* caster, Object* target, uint32 healed, bool critical, uint32 overhealed, uint32 spellid, uint32 absorbed)
