@@ -754,7 +754,10 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 
 void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 {
-	sScriptMgr.CallScriptedDummySpell( m_spellInfo->Id, i, this );
+	if( sScriptMgr.CallScriptedDummySpell( m_spellInfo->Id, i, this ) )
+		return;
+
+	sLog.outError("Spell ID: %u ( %s ) has a dummy effect ( %u ) but no handler for it.", m_spellInfo->Id, m_spellInfo->Name, i );
 }
 
 void Spell::SpellEffectTeleportUnits( uint32 i )  // Teleport Units
@@ -3992,7 +3995,10 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 	if(sScriptMgr.CallScriptedDummySpell( m_spellInfo->Id, i, this))
 		return;
 
-	sScriptMgr.HandleScriptedSpellEffect( m_spellInfo->Id, i, this );
+	if( sScriptMgr.HandleScriptedSpellEffect( m_spellInfo->Id, i, this ) )
+		return;
+	
+	sLog.outError("Spell ID: %u ( %s ) has a scripted effect ( %u ) but no handler for it.", m_spellInfo->Id, m_spellInfo->Name, i );
 }
 
 void Spell::SpellEffectSanctuary(uint32 i) // Stop all attacks made to you
