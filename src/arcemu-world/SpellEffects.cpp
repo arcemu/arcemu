@@ -3270,8 +3270,10 @@ void Spell::SpellEffectEnchantItem(uint32 i) // Enchant Item Permanent
 
 	EnchantEntry * Enchantment = dbcEnchant.LookupEntryForced(GetProto()->EffectMiscValue[i]);
 
-	if(!Enchantment) 
+	if(!Enchantment){
+		sLog.outError("Invalid enchantment entry %u for Spell %u", GetProto()->EffectMiscValue[ i ], GetProto()->Id );
 		return;
+	}
 
 	if(p_caster->GetSession()->GetPermissionCount() > 0)
 		sGMLog.writefromsession(p_caster->GetSession(), "enchanted item for %s", itemTarget->GetOwner()->GetName());
@@ -3295,7 +3297,10 @@ void Spell::SpellEffectEnchantItemTemporary(uint32 i)  // Enchant Item Temporary
 	if(itemTarget->GetOwner() != p_caster) return;
 
 	EnchantEntry * Enchantment = dbcEnchant.LookupEntryForced(GetProto()->EffectMiscValue[i]);
-	if(!Enchantment) return;
+	if(!Enchantment){
+		sLog.outError("Invalid enchantment entry %u for Spell %u", GetProto()->EffectMiscValue[ i ], GetProto()->Id );
+		return;
+	}
 
 	itemTarget->RemoveEnchantment(TEMP_ENCHANTMENT_SLOT);
 	int32 Slot = itemTarget->AddEnchantment(Enchantment, Duration, false, true, false, TEMP_ENCHANTMENT_SLOT);
@@ -3529,93 +3534,14 @@ void Spell::SpellEffectSendEvent(uint32 i) //Send Event
 {
 	//This is mostly used to trigger events on quests or some places
 
-	uint32 spellId = GetProto()->Id;
+	if(sScriptMgr.CallScriptedDummySpell( m_spellInfo->Id, i, this))
+		return;
 
-	// Try a dummy SpellHandler
-	if(sScriptMgr.CallScriptedDummySpell(spellId, i, this)) return;
+	if( sScriptMgr.HandleScriptedSpellEffect( m_spellInfo->Id, i, this ) )
+		return;
+	
+	sLog.outError("Spell ID: %u ( %s ) has a scripted effect ( %u ) but no handler for it.", m_spellInfo->Id, m_spellInfo->Name, i );
 
-	switch(spellId)
-	{
-
-		// WSG Flags
-	case 23333:
-	case 23335:
-		{
-			if (p_caster && p_caster->m_bg) {
-
-				if( p_caster->IsTeamHorde() )
-					p_caster->m_bg->SendChatMessage( CHAT_MSG_BG_EVENT_HORDE, p_caster->GetGUID(), "The Alliance flag was picked up by %s!", p_caster->GetName() );
-				else
-					p_caster->m_bg->SendChatMessage( CHAT_MSG_BG_EVENT_ALLIANCE, p_caster->GetGUID(), "The Horde flag was picked up by %s!", p_caster->GetName() );
-			}
-		}break;
-
-		// Place Loot
-	case 25720: // Places the Bag of Gold at the designated Drop-Off Point.
-		{
-
-		}break;
-
-		// Item - Cleansing Vial DND
-	case 29297: // Empty the vial near the Bones of Aggonar to cleanse the waters of their demonic taint.
-		{
-			QuestLogEntry *en=p_caster->GetQuestLogForEntry(9427);
-			if(!en) return;
-			en->SendQuestComplete();
-		}break;
-
-		//Warlock: Summon Succubus Quest
-	case 8674:
-	case 9223:
-	case 9224:
-		{
-			CreatureInfo * ci = CreatureNameStorage.LookupEntry(5677);
-			CreatureProto * cp = CreatureProtoStorage.LookupEntry(5677);
-			if( !ci || !cp )
-				return;
-
-			Creature * pCreature = p_caster->GetMapMgr()->CreateCreature(cp->Id);
-			pCreature->Load(cp, p_caster->GetPositionX(), p_caster->GetPositionY(), p_caster->GetPositionZ());
-			pCreature->GetAIInterface()->Init(pCreature, AITYPE_AGRO,MOVEMENTTYPE_NONE);
-			pCreature->GetAIInterface()->taunt(p_caster, true);
-			pCreature->PushToWorld(p_caster->GetMapMgr());
-			sEventMgr.AddEvent(pCreature, &Creature::RemoveFromWorld, false, true,  EVENT_CREATURE_REMOVE_CORPSE,60000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-		}break;
-
-		//Warlock: Summon Voidwalker Quest
-	case 30208:
-	case 9221:
-	case 9222:
-	case 7728:
-		{
-			CreatureInfo * ci = CreatureNameStorage.LookupEntry(5676);
-			CreatureProto * cp = CreatureProtoStorage.LookupEntry(5676);
-			if( !ci || !cp ) return;
-
-			Creature * pCreature = p_caster->GetMapMgr()->CreateCreature(cp->Id);
-			pCreature->Load(cp, p_caster->GetPositionX(), p_caster->GetPositionY(), p_caster->GetPositionZ());
-			pCreature->GetAIInterface()->Init(pCreature, AITYPE_AGRO,MOVEMENTTYPE_NONE);
-			pCreature->GetAIInterface()->taunt(p_caster, true);
-			pCreature->PushToWorld(p_caster->GetMapMgr());
-			sEventMgr.AddEvent(pCreature, &Creature::RemoveFromWorld, false, true,  EVENT_CREATURE_REMOVE_CORPSE,60000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-		}break;
-
-		//Warlock: Summon Felhunter Quest
-	case 8712:
-		{
-			CreatureInfo * ci = CreatureNameStorage.LookupEntry(6268);
-			CreatureProto * cp = CreatureProtoStorage.LookupEntry(6268);
-			if( !ci || !cp )
-				return;
-
-			Creature * pCreature = p_caster->GetMapMgr()->CreateCreature(cp->Id);
-			pCreature->Load(cp, p_caster->GetPositionX(), p_caster->GetPositionY(), p_caster->GetPositionZ());
-			pCreature->GetAIInterface()->Init(pCreature, AITYPE_AGRO,MOVEMENTTYPE_NONE);
-			pCreature->GetAIInterface()->taunt(p_caster, true);
-			pCreature->PushToWorld(p_caster->GetMapMgr());
-			sEventMgr.AddEvent(pCreature, &Creature::RemoveFromWorld, false, true,  EVENT_CREATURE_REMOVE_CORPSE,60000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-		}break;
-	}
 }
 
 void Spell::SpellEffectPowerBurn(uint32 i) // power burn
@@ -4434,8 +4360,10 @@ void Spell::SpellEffectEnchantHeldItem( uint32 i )
 	}
 	EnchantEntry * Enchantment = dbcEnchant.LookupEntryForced( GetProto()->EffectMiscValue[i] );
 
-	if( !Enchantment )
+	if( !Enchantment ){
+		sLog.outError("Invalid enchantment entry %u for Spell %u", GetProto()->EffectMiscValue[ i ], GetProto()->Id );
 		return;
+	}
 
 	/* Windfury Totem removed in 3.0.2
 	if (m_spellInfo->NameHash == SPELL_HASH_WINDFURY_TOTEM_EFFECT && item->HasEnchantmentOnSlot( 1 ) && item->GetEnchantment( 1 )->Enchantment != Enchantment) //dirty fix for Windfury totem not overwriting existing enchantments
@@ -5532,8 +5460,10 @@ void Spell::SpellEffectEnchantItemPrismatic(uint32 i)
 
 	EnchantEntry * Enchantment = dbcEnchant.LookupEntry(m_spellInfo->EffectMiscValue[i]);
 	
-	if(!Enchantment)
+	if(!Enchantment){
+		sLog.outError("Invalid enchantment entry %u for Spell %u", GetProto()->EffectMiscValue[ i ], GetProto()->Id );
 		return;
+	}
 	
 	if(p_caster->GetSession()->GetPermissionCount() > 0)
 		sGMLog.writefromsession(p_caster->GetSession(), "enchanted item for %s", itemTarget->GetOwner()->GetName());

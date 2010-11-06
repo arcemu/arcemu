@@ -710,6 +710,20 @@ bool BrittleArmor( uint32 i, Spell *s ){
 	return true;
 }
 
+bool WSGFlag( uint32 i, Spell *s ){
+	Player *p_caster = s->p_caster;
+
+	if( p_caster && p_caster->m_bg) {
+		if( p_caster->IsTeamHorde() )
+			p_caster->m_bg->SendChatMessage( CHAT_MSG_BG_EVENT_HORDE, p_caster->GetGUID(), "The Alliance flag was picked up by %s!", p_caster->GetName() );
+		else
+			p_caster->m_bg->SendChatMessage( CHAT_MSG_BG_EVENT_ALLIANCE, p_caster->GetGUID(), "The Horde flag was picked up by %s!", p_caster->GetName() );
+	}else
+		return false;
+
+	return true;
+}
+
 // ADD NEW FUNCTIONS ABOVE THIS LINE
 // *****************************************************************************
 
@@ -749,6 +763,9 @@ void SetupItemSpells_1(ScriptMgr * mgr)
 	mgr->register_dummy_spell( 30427, &ExtractGas );
 
 	mgr->register_script_effect( 24590, &BrittleArmor );
+
+	mgr->register_script_effect( 23333, &WSGFlag );
+	mgr->register_script_effect( 23335, &WSGFlag );
 	
 
 // REGISTER NEW DUMMY SPELLS ABOVE THIS LINE

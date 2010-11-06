@@ -23,66 +23,6 @@
 /* Spell Defs                                                           */
 /************************************************************************/
 
-bool RockbiterWeapon(uint32 i, Spell* pSpell)
-{
-    uint32 enchantment_entry = 0;
-    switch(pSpell->GetProto()->RankNumber)
-    {
-    case 1:
-        enchantment_entry = 3021;
-        break;
-    case 2:
-        enchantment_entry = 3024;
-        break;
-    case 3:
-        enchantment_entry = 3027;
-        break;
-    case 4:
-        enchantment_entry = 3030;
-        break;
-    case 5:
-        enchantment_entry = 3033;
-        break;
-    case 6:
-        enchantment_entry = 3036;
-        break;
-    case 7:
-        enchantment_entry = 3039;
-        break;
-    case 8:
-        enchantment_entry = 3042;
-        break;
-    case 9:
-        enchantment_entry = 3018;
-        break;
-    }
-
-    if(!enchantment_entry || !pSpell->p_caster)
-        return true;
-
-    Item * item = pSpell->p_caster->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_MAINHAND);
-    EnchantEntry * enchant = dbcEnchant.LookupEntry(enchantment_entry);
-    if(!item || !enchant)
-        return true;
-
-    int32 Slot = item->HasEnchantment(enchant->Id);
-    if(Slot >= 0)
-        item->ModifyEnchantmentTime(Slot, 1800);
-    else
-    {
-		//check if enchantment slot 1 is taken. If there was no enchantment there function will quit
-		item->RemoveEnchantment(1);
-		//this will also apply bonuses for us
-        Slot = item->AddEnchantment(enchant, 1800, false, true, false, 1);   // 5min
-        if(Slot < 0) return true;
-    }
-
-    sLog.outDebug("ShamanSpells.cpp :: Rockbiter Weapon Rank %u, enchant %u, slot %u", pSpell->GetProto()->RankNumber,
-        enchantment_entry, Slot);
-    
-    return true;
-}
-
 bool FlametongueWeaponPassive(uint32 i, Aura *pAura, bool apply)
 {
 	Unit *target = pAura->GetTarget();
@@ -149,16 +89,6 @@ bool ManaTide( uint32 i, Spell *s ){
 
 void SetupShamanSpells(ScriptMgr * mgr)
 {
-	uint32 RockbiterWeaponIds[] = 
-	{
-		8017,  // Rank 1
-		8018,  // Rank 2
-		8019,  // Rank 3
-		10399, // Rank 4
-		0,
-	};
-    mgr->register_dummy_spell(RockbiterWeaponIds, &RockbiterWeapon); // rank 1
-
 	uint32 FlametongueWeaponPassiveIds[] = { 10400, 15567, 15568, 15569, 16311, 16312, 16313, 58784, 58791, 58792, 0 };
 	mgr->register_dummy_aura(FlametongueWeaponPassiveIds, &FlametongueWeaponPassive);
 

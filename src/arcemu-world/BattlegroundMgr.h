@@ -292,7 +292,7 @@ public:
 	uint32 GetMaximumPlayers(uint32 dbcIndex);
 };
 
-class CBattleground : public EventableObject
+class SERVER_DECL CBattleground : public EventableObject
 {
 
 friend class AVNode;

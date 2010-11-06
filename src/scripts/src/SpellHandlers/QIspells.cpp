@@ -1626,6 +1626,17 @@ bool PrayerBeads(uint32 i, Spell * pSpell)
  return true;
 }
 
+bool CleansingVialDND( uint32 i, Spell *s ){
+	QuestLogEntry *en= s->p_caster->GetQuestLogForEntry(9427);
+	
+	if(!en)
+		return false;
+
+	en->SendQuestComplete();
+
+	return true;
+}
+
 void SetupQuestItems(ScriptMgr * mgr)
 {
 	mgr->register_dummy_spell(3607, &YennikuRelease);
@@ -1672,7 +1683,7 @@ void SetupQuestItems(ScriptMgr * mgr)
 	mgr->register_dummy_spell(39246, &TheBigBoneWorm);
 	mgr->register_dummy_spell(42390, &LayWreath);
 	mgr->register_dummy_spell(43723, &CookingPot);
-	mgr->register_dummy_spell(51770, &EmblazonRuneblade);
+	mgr->register_script_effect(51770, &EmblazonRuneblade);
 	mgr->register_dummy_spell(42817, &WyrmcallersHorn);
 	mgr->register_dummy_spell(60036, &RuneOfDistortion);
 	mgr->register_dummy_spell(62272, &RaeloraszSpark);
@@ -1692,4 +1703,6 @@ void SetupQuestItems(ScriptMgr * mgr)
 	mgr->register_dummy_spell(45474, &RagefistTorch);
 	mgr->register_dummy_spell(13978, &SummonAquementas);		//http://www.wowhead.com/?quest=4005
 	mgr->register_dummy_spell(39371, &PrayerBeads);				//http://www.wowhead.com/?quest=10935
+
+	mgr->register_script_effect( 29297, &CleansingVial );
 }

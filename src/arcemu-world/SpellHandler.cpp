@@ -234,8 +234,10 @@ void WorldSession::HandleSpellClick(WorldPacket& recvPacket)
 	if( !_player->HasAurasWithNameHash(SPELL_HASH_LIGHTWELL_RENEW) && target_unit->RemoveAura( 59907 ) )
 	{
 		SpellClickSpell *sp = SpellClickSpellStorage.LookupEntry( creature_id );
-		if( sp == NULL )
+		if( sp == NULL ){
+			sLog.outError("Spellclick packet received for creature %u but there is no spell associated with it.", creature_id );
 			return;
+		}
 
 		cast_spell_id = sp->SpellID;
 
@@ -248,8 +250,10 @@ void WorldSession::HandleSpellClick(WorldPacket& recvPacket)
 	}
 	
 	SpellClickSpell *sp = SpellClickSpellStorage.LookupEntry( creature_id );
-	if( sp == NULL )
+	if( sp == NULL ){
+		sLog.outError("Spellclick packet received for creature %u but there is no spell associated with it.", creature_id );
 		return;
+	}
 	
 	cast_spell_id = sp->SpellID;
 

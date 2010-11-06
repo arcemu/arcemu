@@ -553,7 +553,7 @@ void ScriptMgr::register_script_effect( uint32 entry, exp_handle_script_effect c
 		return;
 	}
 
-	if( !sp->HasEffect( SPELL_EFFECT_SCRIPT_EFFECT ) )
+	if( !sp->HasEffect( SPELL_EFFECT_SCRIPT_EFFECT ) && !sp->HasEffect( SPELL_EFFECT_SEND_EVENT ) )
 		sLog.outDetail("ScriptMgr has registered a script effect handler for Spell ID: %u ( %s ), but spell has no scripted effect!", entry, sp->Name );
 
 	SpellScriptEffects.insert( std::pair< uint32, exp_handle_script_effect >( entry, callback ) );

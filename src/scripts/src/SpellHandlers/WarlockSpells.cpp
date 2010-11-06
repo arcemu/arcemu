@@ -471,6 +471,60 @@ bool MasterDemonologist5( uint32 i, Spell *s ){
 	return true;
 }
 
+bool SummonSuccubusQuest( uint32 i, Spell *s ){
+	
+	CreatureInfo * ci = CreatureNameStorage.LookupEntry(5677);
+	CreatureProto * cp = CreatureProtoStorage.LookupEntry(5677);
+	if( !ci || !cp )
+		return false;
+	
+	Creature * pCreature = s->p_caster->GetMapMgr()->CreateCreature(cp->Id);
+	pCreature->Load(cp, s->p_caster->GetPositionX(), s->p_caster->GetPositionY(), s->p_caster->GetPositionZ());
+	pCreature->GetAIInterface()->Init(pCreature, AITYPE_AGRO,MOVEMENTTYPE_NONE);
+	pCreature->GetAIInterface()->taunt( s->p_caster, true);
+	pCreature->PushToWorld( s->p_caster->GetMapMgr());
+	sEventMgr.AddEvent(pCreature, &Creature::RemoveFromWorld, false, true,  EVENT_CREATURE_REMOVE_CORPSE,60000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+
+	return true;
+}
+
+bool SummonVoidWalkerQuest( uint32 i, Spell *s ){
+	Player *p_caster = s->p_caster;
+
+	CreatureInfo * ci = CreatureNameStorage.LookupEntry(5676);
+	CreatureProto * cp = CreatureProtoStorage.LookupEntry(5676);
+	
+	if( !ci || !cp )
+		return false;
+	
+	Creature * pCreature = p_caster->GetMapMgr()->CreateCreature(cp->Id);
+	pCreature->Load(cp, p_caster->GetPositionX(), p_caster->GetPositionY(), p_caster->GetPositionZ());
+	pCreature->GetAIInterface()->Init(pCreature, AITYPE_AGRO,MOVEMENTTYPE_NONE);
+	pCreature->GetAIInterface()->taunt(p_caster, true);
+	pCreature->PushToWorld(p_caster->GetMapMgr());
+	sEventMgr.AddEvent(pCreature, &Creature::RemoveFromWorld, false, true,  EVENT_CREATURE_REMOVE_CORPSE,60000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+
+	return true;
+}
+
+bool SummonFelHunterQuest( uint32 i, Spell *s ){
+	Player *p_caster = s->p_caster;
+
+	CreatureInfo * ci = CreatureNameStorage.LookupEntry(6268);
+	CreatureProto * cp = CreatureProtoStorage.LookupEntry(6268);
+	if( !ci || !cp )
+		return false;
+	
+	Creature * pCreature = p_caster->GetMapMgr()->CreateCreature(cp->Id);
+	pCreature->Load(cp, p_caster->GetPositionX(), p_caster->GetPositionY(), p_caster->GetPositionZ());
+	pCreature->GetAIInterface()->Init(pCreature, AITYPE_AGRO,MOVEMENTTYPE_NONE);
+	pCreature->GetAIInterface()->taunt(p_caster, true);
+	pCreature->PushToWorld(p_caster->GetMapMgr());
+	sEventMgr.AddEvent(pCreature, &Creature::RemoveFromWorld, false, true,  EVENT_CREATURE_REMOVE_CORPSE,60000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+
+	return true;
+}
+
 void SetupWarlockSpells(ScriptMgr * mgr)
 {
 	//////////////////////////////////////////////// Dummy Effect /////////////////////////////////////////////////////////
@@ -517,4 +571,14 @@ void SetupWarlockSpells(ScriptMgr * mgr)
 
 	mgr->register_script_effect( 35708, &MasterDemonologist5 );
 
+	mgr->register_script_effect( 8674, &SummonSuccubusQuest );
+	mgr->register_script_effect( 9223, &SummonSuccubusQuest );
+	mgr->register_script_effect( 9224, &SummonSuccubusQuest );
+
+	mgr->register_script_effect( 7728, &SummonVoidWalkerQuest );
+	mgr->register_script_effect( 9221, &SummonVoidWalkerQuest );
+	mgr->register_script_effect( 9222, &SummonVoidWalkerQuest );
+	mgr->register_script_effect( 30208, &SummonVoidWalkerQuest );
+
+	mgr->register_script_effect( 8712, &SummonFelHunterQuest );
 }
