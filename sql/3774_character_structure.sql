@@ -40,18 +40,6 @@ CREATE TABLE `account_forced_permissions` (
   PRIMARY KEY (`login`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-/*Table structure for table `ahbotitems` */
-
-DROP TABLE IF EXISTS `ahbotitems`;
-
-CREATE TABLE `ahbotitems` (
-  `auctionhouse` int(10) NOT NULL,
-  `itemid` bigint(30) NOT NULL,
-  `itemcount` int(10) NOT NULL,
-  PRIMARY KEY (`auctionhouse`,`itemid`),
-  KEY `ahbotitems0` (`auctionhouse`,`itemid`) USING BTREE
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
 /*Table structure for table `arenateams` */
 
 DROP TABLE IF EXISTS `arenateams`;
@@ -81,22 +69,6 @@ CREATE TABLE `arenateams` (
   `player_data10` varchar(60) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-/*Table structure for table `auction_house_statistics` */
-
-DROP TABLE IF EXISTS `auction_house_statistics`;
-
-CREATE TABLE `auction_house_statistics` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `entry` int(255) NOT NULL,
-  `stack` int(4) NOT NULL,
-  `avgPrice` int(30) NOT NULL,
-  `min` bigint(20) NOT NULL DEFAULT '0',
-  `max` bigint(20) NOT NULL DEFAULT '0',
-  `volume` bigint(20) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `entry` (`entry`)
-) ENGINE=MyISAM AUTO_INCREMENT=8022 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `auctions` */
 
