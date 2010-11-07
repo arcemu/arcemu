@@ -1,6 +1,6 @@
 /*
 SQLyog Community v8.5 
-MySQL - 5.1.49-1ubuntu8 : Database - worldstructure
+MySQL - 5.1.49-1ubuntu8 : Database - wworld
 *********************************************************************
 */
 
@@ -1865,17 +1865,18 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `spell_effects_override`;
 
 CREATE TABLE `spell_effects_override` (
-  `spellId` int(30) NOT NULL DEFAULT '0',
-  `EffectID` int(30) NOT NULL,
-  `Disable` int(30) NOT NULL,
-  `Effect` int(30) NOT NULL DEFAULT '0',
+  `spellId` int(30) unsigned NOT NULL DEFAULT '0',
+  `EffectID` int(30) unsigned NOT NULL DEFAULT '0',
+  `Disable` int(30) unsigned NOT NULL DEFAULT '0',
+  `Effect` int(30) unsigned NOT NULL DEFAULT '0',
   `BasePoints` int(30) NOT NULL DEFAULT '0',
-  `ApplyAuraName` int(30) NOT NULL DEFAULT '0',
+  `ApplyAuraName` int(30) unsigned NOT NULL DEFAULT '0',
   `SpellGroupRelation` int(30) NOT NULL DEFAULT '0',
   `MiscValue` int(30) NOT NULL DEFAULT '0',
-  `TriggerSpell` int(30) NOT NULL DEFAULT '0',
+  `TriggerSpell` int(30) unsigned NOT NULL DEFAULT '0',
   `ImplicitTargetA` int(30) NOT NULL DEFAULT '0',
   `ImplicitTargetB` int(30) NOT NULL DEFAULT '0',
+  `EffectCustomFlag` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`spellId`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 

@@ -4775,75 +4775,47 @@ exit:
 	return value;
 }
 
-void Spell::HandleTeleport(uint32 id, Unit* Target)
+void Spell::HandleTeleport( float x, float y, float z, uint32 mapid, Unit *Target )
 {
-	if( Target->GetTypeId() != TYPEID_PLAYER )
-	{
-		return;
+	if( Target->IsPlayer() ){
+		
+		Player* pTarget = static_cast< Player* >( Target );
+		pTarget->EventAttackStop();
+		pTarget->SetSelection(0);
+		
+		// We use a teleport event on this one. Reason being because of UpdateCellActivity,
+		// the game object set of the updater thread WILL Get messed up if we teleport from a gameobject
+		// caster.
+		
+		if( !sEventMgr.HasEvent(pTarget, EVENT_PLAYER_TELEPORT) ){
+			sEventMgr.AddEvent(pTarget, &Player::EventTeleport, mapid, x, y, z, EVENT_PLAYER_TELEPORT, 1, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+		}
+
+	}else{
+		if( mapid != Target->GetMapId() ){
+			sLog.outError("Tried to teleport a Creature to another map.");
+			return;
+		}
+		
+		WorldPacket data(SMSG_MONSTER_MOVE, 50);
+		
+		data << Target->GetNewGUID();
+		data << uint8(0);
+		data << Target->GetPositionX();
+		data << Target->GetPositionY();
+		data << Target->GetPositionZ();
+		data << getMSTime();
+		data << uint8(0x00);
+		data << uint32(256);
+		data << uint32(1);
+		data << uint32(1);
+		data << float( x );
+		data << float( y );
+		data << float( z );
+		
+		Target->SendMessageToSet(&data, true);
+		Target->SetPosition( x, y, z, 0.5f ); // need correct orentation
 	}
-
-	Player* pTarget = static_cast< Player* >( Target );
-
-	float x,y,z;
-	uint32 mapid;
-
-	TeleportCoords* TC = TeleportCoordStorage.LookupEntry(id);
-	if( !TC )
-	{
-		// no teleport coordinates found, default to bind position
-
-		x = pTarget->GetBindPositionX();
-		y = pTarget->GetBindPositionY();
-		z = pTarget->GetBindPositionZ();
-		mapid = pTarget->GetBindMapId();
-	}
-	else
-	{
-		x = TC->x;
-		y = TC->y;
-		z = TC->z;
-		mapid = TC->mapId;
-	}
-
-	pTarget->EventAttackStop();
-	pTarget->SetSelection(0);
-
-	// We use a teleport event on this one. Reason being because of UpdateCellActivity,
-	// the game object set of the updater thread WILL Get messed up if we teleport from a gameobject
-	// caster.
-	if( !sEventMgr.HasEvent(pTarget, EVENT_PLAYER_TELEPORT) )
-	{
-		sEventMgr.AddEvent(pTarget, &Player::EventTeleport, mapid, x, y, z, EVENT_PLAYER_TELEPORT, 1, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-	}
-}
-
-void Spell::HandleTeleportCreature( uint32 id, Unit* Target )
-{
-	if( !Target->IsCreature() )
-		return;
-
-	TeleportCoords* TC = TeleportCoordStorage.LookupEntry(id);
-	if( !TC )
-		return;
-
-	if( TC->mapId != Target->GetMapId() ) // we cannot teleport creatures to other instances
-		return;
-
-	WorldPacket data(SMSG_MONSTER_MOVE, 50);
-	data << Target->GetNewGUID();
-	data << uint8(0);
-	data << Target->GetPositionX();
-	data << Target->GetPositionY();
-	data << Target->GetPositionZ();
-	data << getMSTime();
-	data << uint8(0x00);
-	data << uint32(256);
-	data << uint32(1);
-	data << uint32(1);
-	data << TC->x << TC->y << TC->z;
-
-	Target->SendMessageToSet(&data, true);
-	Target->SetPosition( TC->x, TC->y, TC->z, 0.5f ); // need correct orentation
 }
 
 void Spell::CreateItem( uint32 itemId )

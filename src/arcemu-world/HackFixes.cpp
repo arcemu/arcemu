@@ -2907,11 +2907,6 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 			sp->AttributesEx |= ATTRIBUTESEX_NOT_BREAK_STEALTH;
 
-		// rogue - shadowstep
-//		sp = CheckAndReturnSpellEntry( 36554 );
-//		if( sp != NULL )
-//			sp->AttributesEx |= ATTRIBUTESEX_NOT_BREAK_STEALTH;
-
 		// rogue - Blind (Make it able to miss!)
 		sp = CheckAndReturnSpellEntry( 2094 );
 		if( sp != NULL )
@@ -2925,9 +2920,6 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 		{
 			sp->EffectMiscValue[2] = SMT_MISC_EFFECT;
-//			sp->EffectTriggerSpell[1] = 36554;
-//			sp->EffectTriggerSpell[2] = 44373;
-//			sp->procFlags = PROC_ON_CAST_SPELL;
 		}
 		// Still related to shadowstep - prevent the trigger spells from breaking stealth.
 		sp = CheckAndReturnSpellEntry( 44373 );

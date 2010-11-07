@@ -827,6 +827,7 @@ struct SpellEntry
 
 	uint32 SchoolMask;                      // Custom
 	uint32 CustomFlags;						// Custom
+	uint32 EffectCustomFlag[ 3 ];				// Custom
 	
 	
 	bool HasEffect( uint32 effect ){
@@ -834,6 +835,16 @@ struct SpellEntry
 			if( Effect[ i ] == effect )
 				return true;
 		return false;
+	}
+
+	bool HasCustomFlagForEffect( uint32 effect, uint32 flag ){
+		if( effect >= 3 )
+			return false;
+
+		if( ( EffectCustomFlag[ effect ] & flag ) != 0 )
+			return true;
+		else
+			return false;
 	}
 
 	bool AppliesAura( uint32 aura ){
@@ -847,6 +858,8 @@ struct SpellEntry
 
 	SpellEntry(){
 		CustomFlags = 0;
+		for( uint32 i = 0; i < 3; i++ )
+			EffectCustomFlag[ i ] = 0;
 	}
 };
 

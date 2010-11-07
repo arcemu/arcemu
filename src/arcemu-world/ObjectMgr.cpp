@@ -1516,6 +1516,7 @@ void ObjectMgr::LoadSpellEffectsOverride()
 			uint32 seo_TriggerSpell = f[8].GetUInt32();
 			uint32 seo_ImplicitTargetA = f[9].GetUInt32();
 			uint32 seo_ImplicitTargetB = f[10].GetUInt32();
+			uint32 seo_EffectCustomFlag = f[11].GetUInt32();
 
 			if( seo_SpellId )
 			{
@@ -1548,6 +1549,11 @@ void ObjectMgr::LoadSpellEffectsOverride()
 
 					if( seo_ImplicitTargetB )
 						sp->EffectImplicitTargetB[seo_EffectId] = seo_ImplicitTargetB;
+
+					if( seo_EffectCustomFlag != 0 )
+						sp->EffectCustomFlag[ seo_Effect ] = seo_EffectCustomFlag;
+				}else{
+					Log.Warning("ObjectMgr","Tried to load a spell effect override for a nonexistant spell: %u", seo_SpellId );
 				}
 			}
 

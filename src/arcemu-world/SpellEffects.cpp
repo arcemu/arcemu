@@ -767,17 +767,100 @@ void Spell::SpellEffectTeleportUnits( uint32 i )  // Teleport Units
 
 	uint32 spellId = GetProto()->Id;
 
-	// Try a dummy SpellHandler
-	if( sScriptMgr.CallScriptedDummySpell( spellId, i, this ) )
+	// [2010-11-7 18:30] <@dfighter> a.) teleport to bindpoint
+	// [2010-11-7 18:30] <@dfighter> b.) teleport to somewhere in world
+	// [2010-11-7 18:30] <@dfighter> c.) teleport behind the target
+	// [2010-11-7 18:34] <@dfighter> d.) teleport to caster's position
+		
+	if( m_spellInfo->EffectCustomFlag == 0 ){
+		sLog.outError("Spell %u ( %s ) has a teleport effect, but has no teleport flag.", spellId, m_spellInfo->Name );
 		return;
+	}
 
-	if( unitTarget->IsCreature() )
-		HandleTeleportCreature( spellId, unitTarget );
+	// Portals
+	if( m_spellInfo->HasCustomFlagForEffect( i, TELEPORT_TO_COORDINATES ) ){
+		TeleportCoords *TC = ::TeleportCoordStorage.LookupEntry( spellId );
 
-	/* TODO: Remove Player From bg */
+		if( TC == NULL ){
+			sLog.outError("Spell %u ( %s ) has a TELEPORT TO COORDINATES effect, but has no coordinates to teleport to. ", spellId, m_spellInfo->Name );
+			return;
+		}
+		
+		HandleTeleport( TC->x, TC->y, TC->z, TC->mapId, unitTarget );
+		return;
+	}
 
-	if( unitTarget->GetTypeId() == TYPEID_PLAYER )
-		HandleTeleport(spellId, unitTarget);
+	// Hearthstone and co.
+	if( m_spellInfo->HasCustomFlagForEffect( i, TELEPORT_TO_BINDPOINT ) ){
+		if( unitTarget->IsPlayer() ){
+			Player *p = TO_PLAYER( unitTarget );
+
+			HandleTeleport( p->GetBindPositionX(), p->GetBindPositionY(), p->GetBindPositionZ(), p->GetBindMapId(), p );
+		}
+		return;
+	}
+
+	// Summon
+	if( m_spellInfo->HasCustomFlagForEffect( i, TELEPORT_TO_CASTER ) ){
+		HandleTeleport( u_caster->GetPositionX(), u_caster->GetPositionY(), u_caster->GetPositionZ(), u_caster->GetMapId(), unitTarget );
+		return;
+	}
+
+	// Shadowstep for example
+	if( m_spellInfo->HasCustomFlagForEffect( i, TELEPORT_BEHIND_TARGET ) ){
+		if( !u_caster->IsPlayer() )
+			return;
+
+		///////////////////////////////////////////////// Code taken from the Shadowstep dummy script /////////////////////////////////////////////////////////////////////
+		
+		/* this is rather tricky actually. we have to calculate the orientation of the creature/player, and then calculate a little bit of distance behind that. */
+		float ang;
+		
+		if( unitTarget == m_caster )
+		{
+			/* try to get a selection */
+			unitTarget = m_caster->GetMapMgr()->GetUnit( p_caster->GetSelection());
+			if( (!unitTarget ) || !isAttackable( p_caster, unitTarget, !( GetProto()->c_is_flags & SPELL_FLAG_IS_TARGETINGSTEALTHED) ) || (unitTarget->CalcDistance( p_caster) > 28.0f))
+			{
+				return;
+			}
+		}
+		
+		if( unitTarget->GetTypeId() == TYPEID_UNIT )
+		{
+			if( unitTarget->GetTargetGUID() != 0 )
+			{
+				/* We're chasing a target. We have to calculate the angle to this target, this is our orientation. */
+				ang = m_caster->calcAngle(m_caster->GetPositionX(), m_caster->GetPositionY(), unitTarget->GetPositionX(), unitTarget->GetPositionY());
+				/* convert degree angle to radians */
+				ang = ang * float(M_PI) / 180.0f;
+			}
+			else
+			{
+				/* Our orientation has already been set. */
+				ang = unitTarget->GetOrientation();
+			}
+		}
+		else
+		{
+			/* Players orientation is sent in movement packets */
+			ang = unitTarget->GetOrientation();
+		}
+		// avoid teleporting into the model on scaled models
+		const static float shadowstep_distance = 1.6f * unitTarget->GetFloatValue(OBJECT_FIELD_SCALE_X);
+		float new_x = unitTarget->GetPositionX() - (shadowstep_distance * cosf(ang));
+		float new_y = unitTarget->GetPositionY() - (shadowstep_distance * sinf(ang));
+		/* Send a movement packet to "charge" at this target. Similar to warrior charge. */
+		p_caster->z_axisposition = 0.0f;
+		p_caster->SafeTeleport(p_caster->GetMapId(), p_caster->GetInstanceID(), LocationVector(new_x, new_y, (unitTarget->GetPositionZ() + 0.1f), ang));
+
+
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		return;
+	}
+
+	sLog.outError("Unhandled Teleport effect %u for Spell %u ( %s ).", i, m_spellInfo->Id, m_spellInfo->Name );
 }
 
 void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura

@@ -1074,6 +1074,13 @@ enum DiminishingGroup
 	DIMINISHING_GROUP_SILENCE			= 14,
 };
 
+enum TeleportEffectCustomFlags{
+	TELEPORT_TO_BINDPOINT				= 1,
+	TELEPORT_TO_COORDINATES				= 2,
+	TELEPORT_BEHIND_TARGET				= 4,
+	TELEPORT_TO_CASTER					= 8
+};
+
 ARCEMU_INLINE bool CanAgroHash(uint32 spellhashname)
 {
     if( spellhashname == SPELL_HASH_HUNTER_S_MARK ) //hunter's mark
@@ -1754,8 +1761,7 @@ public:
     // Calculates the i'th effect value
     int32 CalculateEffect(uint32, Unit *target);
     // Handles Teleport function
-    void HandleTeleport(uint32 id, Unit* Target);
-	void HandleTeleportCreature( uint32 id, Unit* Target );
+    void HandleTeleport( float x, float y, float z, uint32 mapid, Unit *Target );
     // Determines how much skill caster going to gain
     void DetermineSkillUp();
     // Increases cast time of the spell
