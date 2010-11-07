@@ -19,17 +19,6 @@
 #include "Setup.h"
 #include "../Common/EasyFunctions.h"
 
-bool NixxsPledgeOfSecrecy(uint32 i, Spell * pSpell)
-{
-	if ( pSpell == NULL || pSpell->u_caster == NULL || !pSpell->u_caster->IsPlayer() )
-		return true;
-    
-	Player * pPlayer = TO_PLAYER( pSpell->u_caster );
-    sEAS.AddItem( 11270, pPlayer );
-
-	return true;
-}
-
 bool CleansingVial(uint32 i, Spell * pSpell)
 {
 	if ( pSpell == NULL || pSpell->u_caster == NULL || !pSpell->u_caster->IsPlayer() )
@@ -498,32 +487,40 @@ bool BlessingofIncineratus(uint32 i, Spell * pSpell)
 	return true;
 }
 
-bool CatchandRelease(uint32 i, Spell * pSpell)
+bool TagMurloc( uint32 i, Aura * pAura, bool apply )
 {
-  Player * pPlayer = TO_PLAYER(pSpell->u_caster);
-  if(!pPlayer)
-	  return true;
-  if(!pSpell->u_caster->IsPlayer())
-    return true;
+	Object *Caster = pAura->GetCaster();
 
-  QuestLogEntry *qle = pPlayer->GetQuestLogForEntry(9629);
-  if(qle == NULL)
-	return true;
+	if( !Caster->IsPlayer() )
+		return false;
 
-  Creature * murloc = TO_CREATURE(pSpell->GetUnitTarget());
-  if(!murloc)
-	  return true;
+	if( !pAura->GetTarget()->IsCreature() )
+		return false;
 
-  Creature * tagged = sEAS.SpawnCreature(pPlayer, 17654, murloc->GetPositionX(), murloc->GetPositionY(), murloc->GetPositionZ(), 0);
-  murloc->Despawn(1, 6*60*1000);
-  tagged->Despawn(5*60*1000, 0);
+	if( !apply )
+		return true;
+	
+	Player * pPlayer = TO_PLAYER( Caster );
+	
+	QuestLogEntry *qle = pPlayer->GetQuestLogForEntry(9629);
+	if(qle == NULL)
+		return true;
+	
+	Creature * murloc = TO_CREATURE( pAura->GetTarget() );
+	if(!murloc)
+		return true;
+	
+	Creature * tagged = sEAS.SpawnCreature(pPlayer, 17654, murloc->GetPositionX(), murloc->GetPositionY(), murloc->GetPositionZ(), 0);
+	murloc->Despawn(1, 6*60*1000);
+	tagged->Despawn(5*60*1000, 0);
+	
+	if(qle->GetMobCount(0) < qle->GetQuest()->required_mobcount[0])
+	{
+		qle->SetMobCount(0, qle->GetMobCount(0)+1);
+		qle->SendUpdateAddKill(0);
+		qle->UpdatePlayerFields();
+	}
 
-  if(qle->GetMobCount(0) < qle->GetQuest()->required_mobcount[0])
-  {
-	  qle->SetMobCount(0, qle->GetMobCount(0)+1);
-	  qle->SendUpdateAddKill(0);
-	  qle->UpdatePlayerFields();
-  }
   return true;
 }
 
@@ -921,32 +918,41 @@ bool TheCleansingMustBeStopped(uint32 i, Spell * pSpell)
 	return true;
 }
 
-bool AdministreringtheSalve(uint32 i, Spell * pSpell)
+bool AdministreringtheSalve( uint32 i, Aura * pAura, bool apply )
 {
-  Player * pPlayer = TO_PLAYER(pSpell->u_caster);
-  if(!pPlayer)
-	  return true;
-  if(!pSpell->u_caster->IsPlayer())
-    return true;
+	Object *m_caster = pAura->GetCaster();
+	if( !m_caster->IsPlayer() )
+		return false;
 
-  QuestLogEntry *qle = pPlayer->GetQuestLogForEntry(9447);
-  if(qle == NULL)
-	return true;
+	if( !pAura->GetTarget()->IsCreature() )
+		return false;
 
-  Creature * sick = TO_CREATURE(pSpell->GetUnitTarget());
-  if(!sick)
-	  return true;
+	if( apply ){
+		Player * pPlayer = TO_PLAYER( m_caster );
+		
+		QuestLogEntry *qle = pPlayer->GetQuestLogForEntry(9447);
+		
+		if(qle == NULL)
+			return true;
 
-  Creature * healed = sEAS.SpawnCreature(pPlayer, 16846, sick->GetPositionX(), sick->GetPositionY(), sick->GetPositionZ(), 0);
-  sick->Despawn(1, 6*60*1000);
-  healed->Despawn(3*60*1000, 0);
+		Creature * sick = TO_CREATURE( pAura->GetTarget() );
+		
+		if(!sick)
+			return true;
+		
+		Creature * healed = sEAS.SpawnCreature(pPlayer, 16846, sick->GetPositionX(), sick->GetPositionY(), sick->GetPositionZ(), 0);
+		sick->Despawn(1, 6*60*1000);
+		healed->Despawn(3*60*1000, 0);
+		
+		if(qle->GetMobCount(0) < qle->GetQuest()->required_mobcount[0])
+		{
+			qle->SetMobCount(0, qle->GetMobCount(0)+1);
+			qle->SendUpdateAddKill(0);
+			qle->UpdatePlayerFields();
+		}
+	}else{
+	}
 
-  if(qle->GetMobCount(0) < qle->GetQuest()->required_mobcount[0])
-  {
-	  qle->SetMobCount(0, qle->GetMobCount(0)+1);
-	  qle->SendUpdateAddKill(0);
-	  qle->UpdatePlayerFields();
-  }
   return true;
 }
 
@@ -1643,19 +1649,20 @@ void SetupQuestItems(ScriptMgr * mgr)
 	mgr->register_dummy_spell(4141, &ScrollOfMyzrael);
 	mgr->register_dummy_spell(8606, &SummonCyclonian);
 
-	mgr->register_dummy_spell(14209, &NixxsPledgeOfSecrecy);
-	mgr->register_dummy_spell(15118, &TheBaitforLarkorwi1);
-  	mgr->register_dummy_spell(15119, &TheBaitforLarkorwi2);
+	mgr->register_script_effect(15118, &TheBaitforLarkorwi1);
+	mgr->register_script_effect(15119, &TheBaitforLarkorwi2);
 	mgr->register_dummy_spell(16996, &IncendiaPowder);
 	mgr->register_dummy_spell(17016, &AllAlongtheWatchtowers);
 	mgr->register_dummy_spell(19470, &GemOfTheSerpent);
-	mgr->register_dummy_spell(20737, &KarangsBanner);
-	mgr->register_dummy_spell(23359, &ZappedGiants);
-	mgr->register_dummy_spell(29279, &TheCleansingMustBeStopped);
-	mgr->register_dummy_spell(29297, &CleansingVial);
-	mgr->register_dummy_spell(29314, &AdministreringtheSalve);
-	mgr->register_dummy_spell(30015, &AnUnusualPatron);
-	mgr->register_dummy_spell(30877, &CatchandRelease);
+	mgr->register_script_effect(20737, &KarangsBanner);
+	mgr->register_dummy_spell(23359, &ZappedGiants);	
+	mgr->register_script_effect(29279, &TheCleansingMustBeStopped);
+	
+	mgr->register_dummy_aura( 29314, &AdministreringtheSalve );
+
+	mgr->register_script_effect(30015, &AnUnusualPatron);
+	mgr->register_dummy_aura( 30877, &TagMurloc );
+
 	mgr->register_dummy_spell(31736, &BalanceMustBePreserved);
 	mgr->register_dummy_spell(31927, &BlessingofIncineratus);
 	mgr->register_dummy_spell(32037, &ASpiritAlly);
