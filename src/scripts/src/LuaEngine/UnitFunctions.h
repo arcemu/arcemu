@@ -4460,6 +4460,7 @@ namespace luaUnit
 			QueryResult* result = WorldDatabase.Query("SELECT * FROM loot_creatures WHERE entryid = %u, itemid = %u", ptr->GetEntry(), itemid);
 			if (!result)
 				WorldDatabase.Execute("REPLACE INTO loot_creatures VALUES (%u, %u, %f, 0, 0, 0, %u, %u, %u)", ptr->GetEntry(), itemid, chance, mincount, maxcount, ffa_loot);
+			delete result;
 		}
 		lootmgr.AddLoot(&ptr->loot,itemid,mincount,maxcount,ffa_loot);
 		return 0;

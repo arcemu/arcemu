@@ -2874,7 +2874,7 @@ bool AIInterface::saveWayPoints()
 		ss << wp->backwardemoteid << ", ";
 		ss << wp->forwardskinid << ", ";
 		ss << wp->backwardskinid << ")\0";
-		WorldDatabase.Query( ss.str().c_str() );
+		WorldDatabase.Execute( ss.str().c_str() );
 	}
 	return true;
 }

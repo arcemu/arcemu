@@ -725,10 +725,11 @@ void ObjectMgr::StoreBroadCastGroupKey()
 			keyGroup.push_back( string(f[0].GetString()) );
 		}
 		while( result->NextRow() );
+		delete result;
+		result = NULL;
 	}
 	
 	if ( keyGroup.empty() ) {
-		delete result;
 		Log.Notice("ObjectMgr", "BCSystem error! worldbroadcast empty? fill it first!");
 		sWorld.BCSystemEnable = false;
 		return;
@@ -751,7 +752,7 @@ void ObjectMgr::StoreBroadCastGroupKey()
 				m_BCEntryStorage.insert(pair<uint32,uint32>( uint32(atoi(curKey.c_str())), f[0].GetUInt32()  ));
 			}
 			while( result->NextRow() );
+			delete result;
 		}
 	}
-	delete result;
 }

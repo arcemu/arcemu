@@ -116,6 +116,7 @@ bool ChatHandler::HandlePortToCreatureSpawnCommand(const char* args, WorldSessio
 	spawn_z = QR->Fetch()[5].GetFloat();
 	LocationVector vec(spawn_x, spawn_y, spawn_z);
 	m_session->GetPlayer()->SafeTeleport(spawn_map, 0, vec);
+	delete QR;
 	return true;
 }
 
@@ -145,6 +146,7 @@ bool ChatHandler::HandlePortToGameObjectSpawnCommand(const char* args, WorldSess
 	spawn_z = QR->Fetch()[5].GetFloat();
 	LocationVector vec(spawn_x, spawn_y, spawn_z);
 	m_session->GetPlayer()->SafeTeleport(spawn_map, 0, vec);
+	delete QR;
 	return true;
 }
 
