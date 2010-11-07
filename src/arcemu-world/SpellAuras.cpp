@@ -662,52 +662,6 @@ const char* SpellAuraNames[TOTAL_SPELL_AURAS] = {
 };
 
 
-/*
-ARCEMU_INLINE void ApplyFloatSM(float ** m,float v,uint32 mask, float def)
-{
-	if(*m == 0)
-	{
-		*m = new float[SPELL_GROUPS];
-
-		for(uint32 x= 0;x<SPELL_GROUPS;x++)
-		{
-			(*m)[x] = def;
-			if((1<<x) & mask)
-				(*m)[x]+=v;
-		}
-	}
-	else
-	{
-		for(uint32 x= 0;x<SPELL_GROUPS;x++)
-		{
-			if((1<<x) & mask)
-				(*m)[x]+=v;
-		}
-	}
-}*/
-/*
-ARCEMU_INLINE void ApplyFloatPSM(float ** m,int32 v,uint32 mask, float def)
-{
-	if(*m == 0)
-	{
-		*m = new float[SPELL_GROUPS];
-
-		for(uint32 x= 0;x<SPELL_GROUPS;x++)
-		{
-			(*m)[x] = def;
-			if((1<<x) & mask)
-				(*m)[x]+=((float)v)/100.0f;
-		}
-	}
-	else
-	{
-		for(uint32 x= 0;x<SPELL_GROUPS;x++)
-		{
-			if((1<<x) & mask)
-				(*m)[x]+=((float)v)/100.0f;
-		}
-	}
-}*/
 Player * Aura::GetPlayerCaster()
 {
 	//caster and target are the same

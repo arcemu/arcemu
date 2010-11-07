@@ -255,7 +255,7 @@ void SetupPriestSpells(ScriptMgr * mgr)
 	uint32 PainAndSufferingAuraIds[] = { 47580, 47581, 47582, 0 };
 	mgr->register_dummy_aura(PainAndSufferingAuraIds, &PainAndSufferingAura);
 
-	mgr->register_dummy_spell(47948, &PainAndSufferingProc);
+	mgr->register_script_effect(47948, &PainAndSufferingProc);
 
 	mgr->register_dummy_aura(64127, &BodyAndSoul);
 	mgr->register_dummy_aura(64129, &BodyAndSoul);

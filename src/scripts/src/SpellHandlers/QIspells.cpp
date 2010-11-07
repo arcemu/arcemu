@@ -369,13 +369,16 @@ bool ASpiritAlly(uint32 i, Spell * pSpell)
   return true;
 }
 
-bool BalanceMustBePreserved(uint32 i, Spell * pSpell)
+bool BalanceMustBePreserved( uint32 i, Aura * pAura, bool apply )
 {
-	Player * pPlayer = TO_PLAYER(pSpell->u_caster);
-	if(!pPlayer)
+	if( !apply )
 		return true;
 
-	if(!pSpell->u_caster->IsPlayer())
+	if( !pAura->GetCaster()->IsPlayer() )
+		return true;
+
+	Player * pPlayer = TO_PLAYER( pAura->GetCaster() );
+	if(!pPlayer)
 		return true;
 
 	QuestLogEntry *qle = pPlayer->GetQuestLogForEntry(9720);
@@ -1113,20 +1116,18 @@ bool AnUnusualPatron(uint32 i, Spell * pSpell)
 	return true;
 }
 
-bool MagnetoCollector(uint32 i, Spell * pSpell)
+bool MagnetoCollector( uint32 i, Aura * pAura, bool apply )
 {
-	Player * pPlayer = TO_PLAYER(pSpell->u_caster);
-	if(!pPlayer)
+	if( !pAura->GetCaster()->IsPlayer() )
 		return true;
 
-	if(!pSpell->u_caster->IsPlayer())
-		return true;
+	Player * pPlayer = TO_PLAYER( pAura->GetCaster() );
 
 	QuestLogEntry *qle = pPlayer->GetQuestLogForEntry(10584);
 	if(qle == NULL)
 		return true;
 
-	Creature * magneto = TO_CREATURE(pSpell->GetUnitTarget());
+	Creature * magneto = TO_CREATURE( pAura->GetTarget() );
 	if(!magneto)
 		return true;
 
@@ -1663,43 +1664,43 @@ void SetupQuestItems(ScriptMgr * mgr)
 	mgr->register_script_effect(30015, &AnUnusualPatron);
 	mgr->register_dummy_aura( 30877, &TagMurloc );
 
-	mgr->register_dummy_spell(31736, &BalanceMustBePreserved);
+	mgr->register_dummy_aura(31736, &BalanceMustBePreserved);
 	mgr->register_dummy_spell(31927, &BlessingofIncineratus);
-	mgr->register_dummy_spell(32037, &ASpiritAlly);
-	mgr->register_dummy_spell(34622, &UnyieldingBattleHorn);
-	mgr->register_dummy_spell(34630, &ScrapReaver);
+	mgr->register_script_effect(32037, &ASpiritAlly);
+	mgr->register_script_effect(34622, &UnyieldingBattleHorn);
+	mgr->register_script_effect(34630, &ScrapReaver);
 	mgr->register_dummy_spell(34646, &BuildingAPerimeter);
-	mgr->register_dummy_spell(34992, &SummonEkkorash);
+	mgr->register_script_effect(34992, &SummonEkkorash);
 	mgr->register_dummy_spell(35113, &MeasuringWarpEnergies);
-	mgr->register_dummy_spell(35413, &NaturalRemedies);
+	mgr->register_script_effect(35413, &NaturalRemedies);
 	mgr->register_dummy_spell(35460, &FuryoftheDreghoodElders);
 	mgr->register_dummy_spell(37573, &TemporalPhaseModulator);
 	mgr->register_dummy_spell(35707, &OpeningTyraliusPrison);
 	mgr->register_dummy_spell(35772, &FloraoftheEcoDomes);
-	mgr->register_dummy_spell(36310, &ADireSituation);
-	mgr->register_dummy_spell(37065, &Torgos);
-	mgr->register_dummy_spell(37136, &MagnetoCollector);
-	mgr->register_dummy_spell(37426, &RuuanokClaw);
+	mgr->register_script_effect(36310, &ADireSituation);
+	mgr->register_script_effect(37065, &Torgos);
+	mgr->register_dummy_aura(37136, &MagnetoCollector);
+	mgr->register_script_effect(37426, &RuuanokClaw);
 	mgr->register_dummy_spell(38177, &BlackwhelpNet);
-	mgr->register_dummy_spell(38336, &WelcomingtheWolfSpirit);
-	mgr->register_dummy_spell(38736, &RodofPurification);
-	mgr->register_dummy_spell(39223, &CallRexxar);
-	mgr->register_dummy_spell(39224, &Showdown);
-	mgr->register_dummy_spell(39239, &EvilDrawsNear);
+	mgr->register_script_effect(38336, &WelcomingtheWolfSpirit);
+	mgr->register_script_effect(38729, &RodofPurification);
+	mgr->register_script_effect(39223, &CallRexxar);
+	mgr->register_script_effect(39224, &Showdown);
+	mgr->register_script_effect(39239, &EvilDrawsNear);
 	mgr->register_dummy_spell(39238, &Fumping);
 	mgr->register_dummy_spell(39246, &TheBigBoneWorm);
-	mgr->register_dummy_spell(42390, &LayWreath);
+	mgr->register_script_effect(42390, &LayWreath);
 	mgr->register_dummy_spell(43723, &CookingPot);
 	mgr->register_script_effect(51770, &EmblazonRuneblade);
 	mgr->register_dummy_spell(42817, &WyrmcallersHorn);
-	mgr->register_dummy_spell(60036, &RuneOfDistortion);
+	mgr->register_script_effect(60036, &RuneOfDistortion);
 	mgr->register_dummy_spell(62272, &RaeloraszSpark);
 	mgr->register_dummy_spell( 6509, &GoreBladder);				// http://www.wowhead.com/?item=40551
-	mgr->register_dummy_spell(43381, &PlagueSpray);				// http://www.wowhead.com/?item=33621
-	mgr->register_dummy_spell(46203, &GoblinWeatherMachine);	// Goblin Weather machine
+	mgr->register_dummy_spell(43385, &PlagueSpray);				// http://www.wowhead.com/?item=33621
+	mgr->register_script_effect(46203, &GoblinWeatherMachine);	// Goblin Weather machine
 	mgr->register_dummy_spell(48549, &PurifiedAshes);			// http://www.wowhead.com/?item=37307
 	mgr->register_dummy_spell(43036, &DISMEMBER);				//http://www.wowhead.com/?item=33342
-	mgr->register_dummy_spell(51912, &CraftyBlaster);  			//http://www.wowhead.com/?item=34812
+	mgr->register_script_effect(45668, &CraftyBlaster);  			//http://www.wowhead.com/?item=34812
 	mgr->register_dummy_spell(49546, &EyesAbove);  				//http://www.wowhead.com/?item=37877
 	mgr->register_dummy_spell(51276, &IncineratingOil);			//http://www.wowhead.com/?item=38556
 	mgr->register_dummy_spell(46023, &Screwdriver);				//http://www.wowhead.com/?item=35116
@@ -1708,7 +1709,7 @@ void SetupQuestItems(ScriptMgr * mgr)
 	mgr->register_dummy_spell(12189, &SummonEcheyakee);
 	mgr->register_dummy_spell(11548, &SummonShadra);
 	mgr->register_dummy_spell(45474, &RagefistTorch);
-	mgr->register_dummy_spell(13978, &SummonAquementas);		//http://www.wowhead.com/?quest=4005
+	mgr->register_script_effect(13978, &SummonAquementas);		//http://www.wowhead.com/?quest=4005
 	mgr->register_dummy_spell(39371, &PrayerBeads);				//http://www.wowhead.com/?quest=10935
 
 	mgr->register_script_effect( 29297, &CleansingVial );

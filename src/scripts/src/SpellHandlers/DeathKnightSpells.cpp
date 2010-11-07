@@ -96,10 +96,16 @@ public:
 
 };
 
-bool Strangulate( uint32 i, Spell *s ){
-	Unit *unitTarget = s->GetUnitTarget();
+bool Strangulate( uint32 i, Aura * pAura, bool apply ){
+	if( !apply )
+		return true;
 
-	if( unitTarget && unitTarget->IsCasting() )
+	if( !pAura->GetTarget()->IsPlayer() )
+		return true;
+
+	Unit *unitTarget = pAura->GetTarget();
+
+	if( unitTarget->IsCasting() )
 		unitTarget->InterruptSpell();
 
 	return true;
@@ -274,11 +280,11 @@ void SetupDeathKnightSpells(ScriptMgr * mgr)
 	mgr->register_dummy_spell(DeathStrikeIds, &DeathStrike);
 
 	
-	mgr->register_dummy_spell( 47476, &Strangulate );
-	mgr->register_dummy_spell( 49913, &Strangulate );
-	mgr->register_dummy_spell( 49914, &Strangulate );
-	mgr->register_dummy_spell( 49915, &Strangulate );
-	mgr->register_dummy_spell( 49916, &Strangulate );
+	mgr->register_dummy_aura( 47476, &Strangulate );
+	mgr->register_dummy_aura( 49913, &Strangulate );
+	mgr->register_dummy_aura( 49914, &Strangulate );
+	mgr->register_dummy_aura( 49915, &Strangulate );
+	mgr->register_dummy_aura( 49916, &Strangulate );
 
 	mgr->register_dummy_spell( 48982, &RuneTap );
 	mgr->register_dummy_spell( 46584, &RaiseDead );

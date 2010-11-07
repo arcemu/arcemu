@@ -26,19 +26,6 @@ bool Cold_Snap(uint32 i, Spell * pSpell)
     return true;
 }
 
-bool Deep_Freeze(uint32 i, Spell *pSpell)
-{
-	Unit *pTarget = pSpell->GetUnitTarget();
-	if(!pSpell->p_caster || !pTarget) return true;
-	if(!pTarget->HasFlag(UNIT_FIELD_AURASTATE, AURASTATE_FLAG_FROZEN)){
-		// TODO: why isn't client updated with frozen state information
-		// when mobs on serverside clearly has this info.
-		// pTarget->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "lol I r frozen");
-		return true;
-	}
-	return true;
-}
-
 bool Living_Bomb(uint32 i, Aura *pAura, bool apply)
 {
 		Unit *caster = pAura->GetUnitCaster();
@@ -82,7 +69,6 @@ bool SummonWaterElemental(uint32 i, Spell *pSpell)
 void SetupMageSpells(ScriptMgr * mgr)
 {
     mgr->register_dummy_spell(11958, &Cold_Snap);
-	mgr->register_dummy_spell(44572, &Deep_Freeze);
 	mgr->register_dummy_aura(44457, &Living_Bomb);
 	mgr->register_dummy_aura(55359, &Living_Bomb);
 	mgr->register_dummy_aura(55360, &Living_Bomb);
