@@ -931,7 +931,7 @@ void SetupHellfirePeninsula(ScriptMgr * mgr)
 	mgr->register_dummy_spell(35724, &ZethGorMustBurnHorde);
 	mgr->register_dummy_spell(32979, &LayingWasteToTheUnwantedAlliance);
 	mgr->register_dummy_spell(33067, &BurnItUp);
-	mgr->register_dummy_spell(30489, &TheSeersRelic);
+	mgr->register_script_effect(30489, &TheSeersRelic);
 	mgr->register_dummy_spell(34387, &DisruptTheirReinforcements);
 	mgr->register_dummy_spell(29364, &AnAmbitiousPlan);
 	

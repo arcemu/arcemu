@@ -165,29 +165,6 @@ bool KarangsBanner(uint32 i, Spell * pSpell)
 	return true;
 }
 
-bool BlackwhelpNet(uint32 i, Spell * pSpell)
-{
-    Player * pPlayer = TO_PLAYER(pSpell->u_caster);
-	if(!pPlayer)
-		return true;
-
-    if(!pSpell->u_caster->IsPlayer())
-        return true;
-
-	QuestLogEntry *qle = pPlayer->GetQuestLogForEntry(10747);
-    if(qle == NULL)
-        return true;
-
-    Creature * whelp = TO_CREATURE(pSpell->GetUnitTarget());
-	if(!whelp)
-		return true;
-
-    whelp->Despawn(1000, 6*60*1000);
-
-	sEAS.AddItem(31130, pPlayer);
-	return true;
-}
-
 bool ADireSituation(uint32 i, Spell * pSpell)
 {
   Player * pPlayer = TO_PLAYER(pSpell->u_caster);
@@ -1544,7 +1521,6 @@ void SetupQuestItems(ScriptMgr * mgr)
 	mgr->register_script_effect(37065, &Torgos);
 	mgr->register_dummy_aura(37136, &MagnetoCollector);
 	mgr->register_script_effect(37426, &RuuanokClaw);
-	mgr->register_dummy_spell(38177, &BlackwhelpNet);
 	mgr->register_script_effect(38336, &WelcomingtheWolfSpirit);
 	mgr->register_script_effect(38729, &RodofPurification);
 	mgr->register_script_effect(39223, &CallRexxar);

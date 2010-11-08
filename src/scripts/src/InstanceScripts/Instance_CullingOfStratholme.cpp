@@ -950,12 +950,16 @@ public:
 	}
 };
 
-bool ArcaneDisruption(uint32 i, Spell* pSpell)
+bool ArcaneDisruption( uint32 i, Aura * pAura, bool apply )
 {
-	if( !pSpell->p_caster )
+	if( !apply )
+		return true;
+
+	if( pAura->GetPlayerCaster() == NULL )
 		return false;
 
-	Player* plr = pSpell->p_caster;
+	Player* plr = pAura->GetPlayerCaster();
+
 	QuestLogEntry* pQuest = plr->GetQuestLogForEntry(13149);
 	if( !pQuest )
 		return false;
@@ -1325,7 +1329,7 @@ void SetupCullingOfStratholme(ScriptMgr * mgr)
 	//UPDATE `quests` SET `ReqKillMobOrGOCount1`='5' WHERE (`entry`='13149');
 	QuestScript *Dispelling_Illusions = new Quest_Dispelling_Illusions();
 	mgr->register_quest_script(13149, Dispelling_Illusions);
-	mgr->register_dummy_spell(49590, &ArcaneDisruption);
+	mgr->register_dummy_aura(49590, &ArcaneDisruption);
 	//mgr->register_creature_script(26528, &UTHER_AI::Create);
 	//mgr->register_creature_script(26499, &ARTHAS_AI::Create);
 	//GossipScript * AG = new ArthasGossip();

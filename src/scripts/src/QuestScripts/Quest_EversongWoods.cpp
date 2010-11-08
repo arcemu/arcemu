@@ -179,7 +179,7 @@ bool PoweringOurDefenses(uint32 i, Spell* pSpell)
 
 void SetupEversongWoods(ScriptMgr * mgr)
 {
-	mgr->register_dummy_spell(28247, &PoweringOurDefenses);
+	mgr->register_dummy_spell(28247, &PoweringOurDefenses); // need to script event
 	mgr->register_gossip_script( 15420, static_cast< GossipScript * >( new ProspectorAnvilwardGossip ) );
 	mgr->register_creature_script( 15420, &ProspectorAnvilwardAI::Create ); 
 }

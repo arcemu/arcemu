@@ -441,7 +441,7 @@ void SetupIsleOfQuelDanas(ScriptMgr * mgr)
 
 	mgr->register_dummy_spell(45030, &ImpaleEmissary);
 	mgr->register_dummy_spell( 45191, &LeyLine );
-	mgr->register_dummy_spell( 44981, &ManaRemnants );
+	mgr->register_dummy_spell( 44969, &ManaRemnants );
 
 	//GOSSIP
 	GossipScript * AyrenCloudbreakerGossip = new AyrenCloudbreaker_Gossip;

@@ -215,5 +215,5 @@ void SetupPaladin(ScriptMgr * mgr)
   mgr->register_creature_script(6172, &PaladinDeadNPC::Create);
   mgr->register_gameobject_script(181956, &GildedBrazier::Create);
   mgr->register_creature_script(17716, &stillbladeQAI::Create);
-  mgr->register_dummy_spell(31497, &DouseEternalFlame);
+  mgr->register_script_effect(31497, &DouseEternalFlame);
 }

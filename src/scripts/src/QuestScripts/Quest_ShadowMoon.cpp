@@ -638,7 +638,7 @@ void SetupShadowmoon(ScriptMgr * mgr)
 	mgr->register_dummy_aura(37097, &ToLegionHold);
 	mgr->register_dummy_aura(38502, &EatenRecently);
 	
-	mgr->register_dummy_spell(39094, &CrystalOfDeepShadows);
+	mgr->register_script_effect(39094, &CrystalOfDeepShadows);
 	mgr->register_dummy_spell(38439, &Carcass);
 	mgr->register_dummy_spell(38762, &ForceofNeltharakuSpell);
 

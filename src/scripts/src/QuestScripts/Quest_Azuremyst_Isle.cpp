@@ -349,5 +349,5 @@ void SetupAzuremystIsle( ScriptMgr * mgr )
 	mgr->register_quest_script( 9541, new TotemofYor() );
 	mgr->register_quest_script( 9542, new TotemofVark() );*/
 	mgr->register_creature_script(17189, &ChieftainOomoorooQAI::Create);
-	mgr->register_dummy_spell(28700, &HealingTheLake);
+	mgr->register_script_effect(28700, &HealingTheLake);
 }

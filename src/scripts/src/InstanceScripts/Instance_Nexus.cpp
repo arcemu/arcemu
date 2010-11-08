@@ -832,8 +832,8 @@ void SetupNexus(ScriptMgr * mgr)
 	// Ormorok the Tree-Shaper Encounter
 	mgr->register_creature_script(CN_ORMOROK, &OrmorokAI::Create); 
 	mgr->register_creature_script(CN_CRYSTAL_SPIKE, &CrystalSpikeAI::Create);
-	mgr->register_dummy_spell(CRYSTAL_SPIKES, &CrystalSpikes);
-	mgr->register_dummy_spell(CRYSTAL_SPIKES_H, &CrystalSpikes);
+	mgr->register_script_effect(CRYSTAL_SPIKES, &CrystalSpikes);
+	mgr->register_script_effect(CRYSTAL_SPIKES_H, &CrystalSpikes);
 
 	// Keristrasza Encounter
 	mgr->register_creature_script(CN_KERISTRASZA, &KeristraszaAI::Create); 

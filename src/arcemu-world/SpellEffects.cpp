@@ -1057,15 +1057,6 @@ void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
 	}
 	pAura->AddMod( GetProto()->EffectApplyAuraName[i], damage, GetProto()->EffectMiscValue[i], i );
 
-	switch( GetProto()->Id )
-	{
-	case 38177: // Blackwhelp Net
-		{
-			p_caster->CastSpell( unitTarget, 38178, true );
-			static_cast<Creature*>(unitTarget)->Despawn( 1000, 360000 );
-		} break;
-	}
-
 }
 
 void Spell::SpellEffectEnvironmentalDamage(uint32 i)

@@ -429,10 +429,10 @@ void SetupDruid(ScriptMgr * mgr)
   mgr->register_quest_script(5921, Moonglade);
   mgr->register_quest_script(5922, Moonglade);
   mgr->register_creature_script(12138, &Lunaclaw::Create);
-  mgr->register_dummy_spell(19138, &CenarionLunardust);
-  mgr->register_dummy_spell(18974, &CenarionMoondust);
+  mgr->register_script_effect(19138, &CenarionLunardust);
+  mgr->register_script_effect(18974, &CenarionMoondust);
   mgr->register_dummy_spell(19512, &CurativeAnimalSalve);
-  mgr->register_dummy_spell(19719, &TrialOfTheLake);
+  mgr->register_script_effect(19719, &TrialOfTheLake);
 
   //Register gossip scripts
   mgr->register_gossip_script(12144, MoonkinGhostGossip); // Ghost of Lunaclaw

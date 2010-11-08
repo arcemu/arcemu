@@ -25,35 +25,35 @@
 // Quest 12532 - Flown the Coop!
 // Quest 12702 - Chicken Party! (by bartus
 
-bool ChickenNet( uint32 i, Spell* pSpell )
-{
-	if( !pSpell->u_caster->IsPlayer() )
-        return true;
-
-	Player* pPlayer = TO_PLAYER( pSpell->u_caster );
-
-	QuestLogEntry *qle = pPlayer->GetQuestLogForEntry( 12532 );
-	if( qle == NULL )
-	{
-		qle = pPlayer->GetQuestLogForEntry( 12702 );
-		if( qle == NULL )
-			return true;
-	}
-
+class ChickenEscapee : public CreatureAIScript{
+public:
+	ADD_CREATURE_FACTORY_FUNCTION( ChickenEscapee );
+	ChickenEscapee( Creature *c ) : CreatureAIScript( c ){}
 	
-	if( !pSpell->GetUnitTarget()->IsCreature() )
-		return true;
-
-	Creature* Chicken = TO_CREATURE( pSpell->GetUnitTarget() );
-
-	if( Chicken != NULL && Chicken->GetEntry() == 28161 )
-	{
-		Chicken->Despawn( 5000, 360000 );
-		pPlayer->CastSpell( pSpell->u_caster, dbcSpell.LookupEntry( 51037 ), true );
+	void OnLoad(){
+		RegisterAIUpdateEvent(1000);
 	}
 
-   return true;
-}
+	void AIUpdate(){
+		// Let's see if we are netted
+		Aura *a = _unit->FindAura( 51959 );
+		if( a != NULL ){
+			Unit *Caster = a->GetUnitCaster();
+			if( Caster->IsPlayer() ){
+				
+				QuestLogEntry *qle = TO_PLAYER( Caster )->GetQuestLogForEntry(12532);
+				if( qle == NULL )
+					qle = TO_PLAYER( Caster )->GetQuestLogForEntry(12702);
+
+				if( qle != NULL ){
+					// casting the spell that will create the item for the player
+					_unit->CastSpell( Caster, 51037, true );
+					_unit->Despawn( 1000, 360000 );
+				}
+			}
+		}
+	}
+};
 
 #define HEMET 27986
 #define HADRIUS 28047
@@ -205,11 +205,12 @@ public:
 // -----------------------------------------------------------------------------
 void SetupSholazarBasin( ScriptMgr * mgr )
 {
-	mgr->register_dummy_spell(51959, &ChickenNet);
 	GossipScript * gossip1 = new HemetTasteTest();
 	mgr->register_gossip_script(HEMET, gossip1);
 	GossipScript * gossip2 = new HadriusTasteTest();
 	mgr->register_gossip_script(HADRIUS, gossip2);
 	GossipScript * gossip3 = new TamaraTasteTest();
 	mgr->register_gossip_script(TAMARA, gossip3);
+
+	mgr->register_creature_script( 28161, &ChickenEscapee::Create );
 }

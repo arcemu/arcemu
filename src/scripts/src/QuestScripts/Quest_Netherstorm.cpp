@@ -182,7 +182,7 @@ bool SurveyingtheRuins(uint32 i, Spell* pSpell)
 void SetupNetherstorm(ScriptMgr* mgr)
 {
 	mgr->register_gossip_script(20162, new Veronia());
-	mgr->register_dummy_spell(34717, &FindingTheKeymaster);
+	mgr->register_script_effect(34717, &FindingTheKeymaster);
 	mgr->register_dummy_spell(35372, &TheFleshLies);
 	mgr->register_dummy_spell(35246, &SurveyingtheRuins);
 }

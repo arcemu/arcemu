@@ -21,6 +21,33 @@
 
 #include "Setup.h"
 
+class WyrmcultBlackwhelp : public CreatureAIScript{
+public:
+	ADD_CREATURE_FACTORY_FUNCTION( WyrmcultBlackwhelp );
+	WyrmcultBlackwhelp( Creature *c ) : CreatureAIScript( c ){}
+
+	void OnLoad(){
+		RegisterAIUpdateEvent(1000);
+	}
+
+	void AIUpdate(){
+		// Let's see if we are netted
+		Aura *a = _unit->FindAura( 38177 );
+		if( a != NULL ){
+			Unit *Caster = a->GetUnitCaster();
+			if( Caster->IsPlayer() ){
+				
+				QuestLogEntry *qle = TO_PLAYER( Caster )->GetQuestLogForEntry(10747);
+				if( qle != NULL ){
+					// casting the spell that will create the item for the player
+					_unit->CastSpell( Caster, 38178, true );
+					_unit->Despawn( 1000, 360000 );
+				}
+			}
+		}
+	}
+};
+
 // The Bladespire Threat Quest
 class BladespireQAI : public CreatureAIScript
 {
@@ -420,5 +447,8 @@ void SetupBladeEdgeMountains(ScriptMgr * mgr)
 	mgr->register_gameobject_script( 185193, &LegionObelisk::Create);
 	mgr->register_gameobject_script(185512, &Stasis_Chamber_Alpha::Create);
 
-	mgr->register_dummy_spell(32578, &ProtectingOurOwn);
+	mgr->register_script_effect(32578, &ProtectingOurOwn);
+
+	mgr->register_creature_script( 21387, &WyrmcultBlackwhelp::Create );
+
 }

@@ -524,6 +524,6 @@ void SetupNagrand(ScriptMgr * mgr)
 	GossipScript * LumpGossip = new LumpGossipScript;
 	mgr->register_gossip_script(18351, LumpGossip);
 	mgr->register_dummy_spell(32146, &StoppingTheSpread);
-	mgr->register_dummy_spell(32307, &RuthlessCunning);
+	mgr->register_script_effect(32307, &RuthlessCunning);
 }
 
