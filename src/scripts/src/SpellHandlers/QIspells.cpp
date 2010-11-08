@@ -86,22 +86,6 @@ bool SummonEkkorash(uint32 i, Spell * pSpell)
 	return true;
 }
 
-bool OpeningTyraliusPrison(uint32 i, Spell * pSpell)
-{
-	if ( pSpell == NULL || pSpell->u_caster == NULL || !pSpell->u_caster->IsPlayer() )
-		return true;
-    
-	Player * pPlayer = TO_PLAYER( pSpell->u_caster );
-	QuestLogEntry *pQuest = pPlayer->GetQuestLogForEntry( 10442 );
-	if ( pQuest != NULL )
-	{
-		sEAS.SpawnCreature( pPlayer, 20787, pPlayer->GetPositionX(), pPlayer->GetPositionY(), pPlayer->GetPositionZ(), pPlayer->GetOrientation(), 2 * 60 * 1000 );
-		pQuest->SendQuestComplete();	// not sure if it's enough
-	}
-
-	return true;
-}
-
 bool CallRexxar(uint32 i, Spell * pSpell)
 {
 	if ( pSpell == NULL || pSpell->u_caster == NULL || !pSpell->u_caster->IsPlayer() )
@@ -151,38 +135,6 @@ bool ScrapReaver(uint32 i, Spell * pSpell)
 	{
 		pCreature->Despawn( 600000, 0 );
 	}
-
-	return true;
-}
-
-bool IncendiaPowder(uint32 i, Spell * pSpell)
-{
-	if(!pSpell->p_caster) return true;
-
-	QuestLogEntry *en = pSpell->p_caster->GetQuestLogForEntry(5088);
-	if(pSpell->p_caster->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(pSpell->p_caster->GetPositionX(), 
-		pSpell->p_caster->GetPositionY(), pSpell->p_caster->GetPositionZ(), 175944) && en)
-	{
-		
-		if(en->GetMobCount(0) < en->GetQuest()->required_mobcount[0])
-		{
-			en->SetMobCount(0, 1);
-			en->SendUpdateAddKill(0);
-			en->UpdatePlayerFields();
-			return false;
-		}
-	}
-
-	pSpell->p_caster->GetMapMgr()->GetInterface()->SpawnCreature(10882, -5005.387695f, -2103.348145f, 83.862106f, 6.265121f, true, false, 0, 0);
-
-	return true;
-}
-
-bool GemOfTheSerpent(uint32 i, Spell * pSpell)
-{
-	if(!pSpell->p_caster) return true;
-
-	pSpell->p_caster->GetMapMgr()->GetInterface()->SpawnCreature(12369, 254.924606f, 2967.358154f, 1.382471f, 0.918914f, true, false, 0, 0);
 
 	return true;
 }
@@ -1375,26 +1327,6 @@ bool CraftyBlaster(uint32 i, Spell * pSpell)
  return true;
 }
 
-bool EyesAbove(uint32 i, Spell * pSpell)
-{
- if( !pSpell->p_caster )
-  return true;
-
- Unit * target = pSpell->GetUnitTarget();
- if( !target || target->GetEntry() != 25432 || !target->isAlive())
-  return true;
-  
- Player * pPlayer = pSpell->p_caster;
- QuestLogEntry * en = pPlayer->GetQuestLogForEntry( 12453 );
- if( en && en->GetMobCount( 0 ) < en->GetQuest()->required_mobcount[0] )
-	{
-  en->SetMobCount( 0, en->GetMobCount( 0 ) + 1 );
-  en->SendUpdateAddKill( 0 );
-  en->UpdatePlayerFields();
-	}
- return true;
-}
-
 bool RagefistTorch(uint32 i, Spell * pSpell)
 {
  if( !pSpell->p_caster )
@@ -1587,8 +1519,6 @@ void SetupQuestItems(ScriptMgr * mgr)
 
 	mgr->register_script_effect(15118, &TheBaitforLarkorwi1);
 	mgr->register_script_effect(15119, &TheBaitforLarkorwi2);
-	mgr->register_dummy_spell(16996, &IncendiaPowder);
-	mgr->register_dummy_spell(19470, &GemOfTheSerpent);
 	mgr->register_script_effect(20737, &KarangsBanner);
 	mgr->register_dummy_spell(23359, &ZappedGiants);	
 	mgr->register_script_effect(29279, &TheCleansingMustBeStopped);
@@ -1609,7 +1539,6 @@ void SetupQuestItems(ScriptMgr * mgr)
 	mgr->register_script_effect(35413, &NaturalRemedies);
 	mgr->register_dummy_spell(35460, &FuryoftheDreghoodElders);
 	mgr->register_dummy_spell(37573, &TemporalPhaseModulator);
-	mgr->register_dummy_spell(35707, &OpeningTyraliusPrison);
 	mgr->register_dummy_spell(35772, &FloraoftheEcoDomes);
 	mgr->register_script_effect(36310, &ADireSituation);
 	mgr->register_script_effect(37065, &Torgos);
@@ -1635,7 +1564,6 @@ void SetupQuestItems(ScriptMgr * mgr)
 	mgr->register_dummy_spell(48549, &PurifiedAshes);			// http://www.wowhead.com/?item=37307
 	mgr->register_dummy_spell(43036, &DISMEMBER);				//http://www.wowhead.com/?item=33342
 	mgr->register_script_effect(45668, &CraftyBlaster);  			//http://www.wowhead.com/?item=34812
-	mgr->register_dummy_spell(49546, &EyesAbove);  				//http://www.wowhead.com/?item=37877
 	mgr->register_dummy_spell(51276, &IncineratingOil);			//http://www.wowhead.com/?item=38556
 	mgr->register_dummy_spell(46023, &Screwdriver);				//http://www.wowhead.com/?item=35116
 	mgr->register_dummy_spell(55804, &TelluricPoultice);			//http://www.wowhead.com/?item=41988

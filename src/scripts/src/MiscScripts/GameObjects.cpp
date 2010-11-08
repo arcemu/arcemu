@@ -19,6 +19,18 @@
 
 #include "Setup.h"
 
+class TyraliusPrison : public GameObjectAIScript{
+public:
+	TyraliusPrison( GameObject *goinstance ) : GameObjectAIScript( goinstance ){}
+	
+	static GameObjectAIScript* Create( GameObject *GO ){ return new TyraliusPrison( GO ); }
+
+	void OnActivate( Player *p ){
+		// Spawning Captain Tyralius
+		sEAS.SpawnCreature( p, 20787, p->GetPositionX(), p->GetPositionY(), p->GetPositionZ(), p->GetOrientation(), 2 * 60 * 1000 );
+	}
+};
+
 class AndorhalTower1 : public GameObjectAIScript{
 public:
 
@@ -33,16 +45,13 @@ public:
 			qle = p->GetQuestLogForEntry(5098);
 			if(qle == NULL)
 				return;
-			
-			if(qle->GetMobCount(0) < qle->GetQuest()->required_mobcount[0]){
-				qle->SetMobCount(0, qle->GetMobCount(0)+1);
-				qle->SendUpdateAddKill(0);
-				qle->UpdatePlayerFields();
-
-			}
 		}
-
-
+		
+		if(qle->GetMobCount(0) < qle->GetQuest()->required_mobcount[0]){
+			qle->SetMobCount(0, qle->GetMobCount(0)+1);
+			qle->SendUpdateAddKill(0);
+			qle->UpdatePlayerFields();
+		}
 	}
 };
 
@@ -60,15 +69,14 @@ public:
 			qle = p->GetQuestLogForEntry(5098);
 			if(qle == NULL)
 				return;
-			
-			if(qle->GetMobCount(1) < qle->GetQuest()->required_mobcount[1]){
-				qle->SetMobCount(1, qle->GetMobCount(1)+1);
-				qle->SendUpdateAddKill(1);
-				qle->UpdatePlayerFields();
-			}
 		}
+		
+		if(qle->GetMobCount(1) < qle->GetQuest()->required_mobcount[1]){
+			qle->SetMobCount(1, qle->GetMobCount(1)+1);
+			qle->SendUpdateAddKill(1);
+			qle->UpdatePlayerFields();
 
-
+		}
 	}
 };
 
@@ -85,15 +93,13 @@ public:
 			qle = p->GetQuestLogForEntry(5098);
 			if(qle == NULL)
 				return;
-			
-			if(qle->GetMobCount(2) < qle->GetQuest()->required_mobcount[2]){
-				qle->SetMobCount(2, qle->GetMobCount(2)+1);
-				qle->SendUpdateAddKill(2);
-				qle->UpdatePlayerFields();
-			}
 		}
-
-
+		
+		if(qle->GetMobCount(2) < qle->GetQuest()->required_mobcount[2]){
+			qle->SetMobCount(2, qle->GetMobCount(2)+1);
+			qle->SendUpdateAddKill(2);
+			qle->UpdatePlayerFields();
+		}
 	}
 };
 
@@ -110,15 +116,13 @@ public:
 			qle = p->GetQuestLogForEntry(5098);
 			if(qle == NULL)
 				return;
-			
-			if(qle->GetMobCount(3) < qle->GetQuest()->required_mobcount[3]){
-				qle->SetMobCount(3, qle->GetMobCount(3)+1);
-				qle->SendUpdateAddKill(3);
-				qle->UpdatePlayerFields();
-			}
 		}
-
-
+		
+		if(qle->GetMobCount(3) < qle->GetQuest()->required_mobcount[3]){
+			qle->SetMobCount(3, qle->GetMobCount(3)+1);
+			qle->SendUpdateAddKill(3);
+			qle->UpdatePlayerFields();
+		}
 	}
 };
 
@@ -1419,8 +1423,10 @@ void SetupGoHandlers(ScriptMgr * mgr)
 	mgr->register_gameobject_script(190942, &DeathGate3::Create);
 	mgr->register_gameobject_script(175944, &SacredFireofLife::Create);
 
-	mgr->register_gameobject_script( 310030, &::AndorhalTower1::Create );
-	mgr->register_gameobject_script( 310031, &::AndorhalTower2::Create );
-	mgr->register_gameobject_script( 310032, &::AndorhalTower3::Create );
-	mgr->register_gameobject_script( 310033, &::AndorhalTower4::Create );
+	mgr->register_gameobject_script( 310030, &AndorhalTower1::Create );
+	mgr->register_gameobject_script( 310031, &AndorhalTower2::Create );
+	mgr->register_gameobject_script( 310032, &AndorhalTower3::Create );
+	mgr->register_gameobject_script( 310033, &AndorhalTower4::Create );
+
+	mgr->register_gameobject_script( 184588, &TyraliusPrison::Create );
 }

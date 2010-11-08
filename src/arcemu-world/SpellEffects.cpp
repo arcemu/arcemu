@@ -2458,8 +2458,10 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 			}
 			else if(gameObjTarget)
 			{
-				GameObjectInfo *info = GameObjectNameStorage.LookupEntry(gameObjTarget->GetEntry());
-				if(!info || gameObjTarget->GetByte(GAMEOBJECT_BYTES_1, 0) == 0) return;
+				GameObjectInfo *info = gameObjTarget->GetInfo();
+				if( gameObjTarget->GetByte(GAMEOBJECT_BYTES_1, 0) == 0)
+					return;
+
 				Lock *lock = dbcLock.LookupEntry( info->SpellFocus );
 				if(lock == 0)
 					return;
@@ -2520,16 +2522,6 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 			}
 			else
 			{
-				/*
-				if(rand()%100 <= 30)
-				{
-				//30% chance to not be able to reskin on fail
-				((Creature*)unitTarget)->Skinned = true;
-				WorldPacket *pkt=unitTarget->BuildFieldUpdatePacket(UNIT_FIELD_FLAGS,0);
-				static_cast< Player* >( m_caster )->GetSession()->SendPacket(pkt);
-				delete pkt;
-
-				}*/
 				SendCastResult(SPELL_FAILED_TRY_AGAIN);
 			}
 			//Skill up
