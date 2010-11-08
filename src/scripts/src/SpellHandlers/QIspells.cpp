@@ -259,71 +259,6 @@ bool ADireSituation(uint32 i, Spell * pSpell)
   return true;
 }
 
-bool AllAlongtheWatchtowers(uint32 i, Spell * pSpell)
-{
-	Player * pPlayer = TO_PLAYER(pSpell->u_caster);
-	if(!pPlayer)
-		return true;
-
-	if(!pSpell->u_caster->IsPlayer())
-		return true;
-
-	QuestLogEntry *qle = pPlayer->GetQuestLogForEntry(5097);
-	if(qle == NULL)
-	{
-		qle = pPlayer->GetQuestLogForEntry(5098);
-		if(qle == NULL)
-			return true;
-	}
-
-    GameObject * tower1 = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(1304, -1318, 64, 300030);
-	GameObject * tower2 = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(1311, -1589, 61, 300030);
-	GameObject * tower3 = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(1481, -1414, 67, 300030);
-	GameObject * tower4 = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(1557, -1470, 68, 300030);
-
-	if(tower1 != NULL)
-	{
-		if(pPlayer->CalcDistance(pPlayer, tower1) < 30)
-		if(qle->GetMobCount(0) < qle->GetQuest()->required_mobcount[0])
-		{
-			qle->SetMobCount(0, qle->GetMobCount(0)+1);
-			qle->SendUpdateAddKill(0);
-			qle->UpdatePlayerFields();
-		}
-	}
-	if(tower2 != NULL)
-	{
-		if(pPlayer->CalcDistance(pPlayer, tower2) < 30)
-		if(qle->GetMobCount(1) < qle->GetQuest()->required_mobcount[1])
-		{
-			qle->SetMobCount(1, qle->GetMobCount(1)+1);
-			qle->SendUpdateAddKill(1);
-			qle->UpdatePlayerFields();
-		}
-	}
-	if(tower3 != NULL)
-	{
-		if(pPlayer->CalcDistance(pPlayer, tower3) < 30)
-		if(qle->GetMobCount(2) < qle->GetQuest()->required_mobcount[2])
-		{
-			qle->SetMobCount(2, qle->GetMobCount(2)+1);
-			qle->SendUpdateAddKill(2);
-			qle->UpdatePlayerFields();
-		}
-	}
-	if(tower4 != NULL)
-	{
-		if(pPlayer->CalcDistance(pPlayer, tower4) < 30)
-		if(qle->GetMobCount(3) < qle->GetQuest()->required_mobcount[3])
-		{
-			qle->SetMobCount(3, qle->GetMobCount(3)+1);
-			qle->SendUpdateAddKill(3);
-			qle->UpdatePlayerFields();
-		}
-	}
-	return true;
-}
-
 bool FuryoftheDreghoodElders(uint32 i, Spell * pSpell)
 {
   Player * pPlayer = TO_PLAYER(pSpell->u_caster);
@@ -1653,7 +1588,6 @@ void SetupQuestItems(ScriptMgr * mgr)
 	mgr->register_script_effect(15118, &TheBaitforLarkorwi1);
 	mgr->register_script_effect(15119, &TheBaitforLarkorwi2);
 	mgr->register_dummy_spell(16996, &IncendiaPowder);
-	mgr->register_dummy_spell(17016, &AllAlongtheWatchtowers);
 	mgr->register_dummy_spell(19470, &GemOfTheSerpent);
 	mgr->register_script_effect(20737, &KarangsBanner);
 	mgr->register_dummy_spell(23359, &ZappedGiants);	

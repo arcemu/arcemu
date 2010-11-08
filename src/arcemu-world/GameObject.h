@@ -182,21 +182,12 @@ public:
 	/************************************************************************/
 	/* LUA Stuff                                                            */
 	/************************************************************************/
-/*	typedef struct { const char *name; int(*mfunc)(lua_State*,GameObject*); } RegType;
-	static const char className[];
-	static RegType methods[];
-
-	// a lua script cannot create a unit.
-	GameObject(lua_State * L) { Arcemu::Util::ARCEMU_ASSERT(   false); }*/
-
 	GameObject(uint64 guid);
 	~GameObject( );
 
 	GameObjectInfo* GetInfo() { return pInfo; }
 	void SetInfo(GameObjectInfo * goi) { pInfo = goi; }
 
-	//void Create ( uint32 display_id, uint8 state, uint32 obj_field_entry, float scale, uint16 type, uint16 faction, uint32 mapid, float x, float y, float z, float ang );
-   // void Create ( uint32 mapid, float x, float y, float z, float ang);
 	bool CreateFromProto(uint32 entry,uint32 mapid, float x, float y, float z, float ang, float r0= 0.0f, float r1= 0.0f, float r2= 0.0f, float r3= 0.0f, uint32 overrides= 0);
    
 	bool Load(GOSpawn *spawn);
@@ -246,6 +237,7 @@ public:
 	void ExpireAndDelete();
 
 	void Deactivate();
+	void Activate();
 
 	bool isQuestGiver()
 	{
@@ -312,16 +304,6 @@ public:
 
 	uint32 GetOverrides() { return m_overrides; }
 
-
-
-
-
-
-
-
-
-
-
 	//Easy Functions
 	void SetDisplayId( uint32 id ) { SetUInt32Value(GAMEOBJECT_DISPLAYID, id); }
 	uint32 GetDisplayId() { return GetUInt32Value(GAMEOBJECT_DISPLAYID); }
@@ -349,6 +331,7 @@ protected:
 	uint32 usage_remaining; //used for mining to mark times it can be mined
 
 	uint32 m_overrides; //See enum GAMEOBJECT_OVERRIDES!
+
 };
 
 #endif

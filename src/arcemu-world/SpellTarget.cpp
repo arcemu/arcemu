@@ -155,6 +155,31 @@ void Spell::FillTargetMap(uint32 i)
 	//target cone
 	if (TargetType & SPELL_TARGET_AREA_CONE)
 		AddConeTargets(i, TargetType, GetRadius(i), m_spellInfo->MaxTargets);
+
+	if( TargetType & SPELL_TARGET_OBJECT_SCRIPTED )
+		AddScriptedOrSpellFocusTargets( i, TargetType, GetRadius( i ), m_spellInfo->MaxTargets );
+}
+
+void Spell::AddScriptedOrSpellFocusTargets(uint32 i, uint32 TargetType, float r, uint32 maxtargets){
+	for( std::set< Object* >::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); ++itr ){
+		Object *o = *itr;
+
+		if( !o->IsGameObject() )
+			continue;
+
+		GameObject *go = TO_GAMEOBJECT( o );
+
+		if( go->GetInfo()->SpellFocus == m_spellInfo->RequiresSpellFocus ){
+			
+			if( !m_caster->isInRange( go, r ) )
+				continue;
+
+			bool success = AddTarget( i, TargetType, go );
+
+			if( success )
+				return;
+		}
+	}
 }
 
 void Spell::AddConeTargets(uint32 i, uint32 TargetType, float r, uint32 maxtargets)
@@ -363,7 +388,7 @@ bool Spell::AddTarget(uint32 i, uint32 TargetType, Object* obj)
 		return false;
 
 	//target go, not able to target go
-	if (obj->IsGO() && !(TargetType & SPELL_TARGET_REQUIRE_GAMEOBJECT) && !m_triggeredSpell)
+	if (obj->IsGO() && !( TargetType & SPELL_TARGET_OBJECT_SCRIPTED ) && !(TargetType & SPELL_TARGET_REQUIRE_GAMEOBJECT) && !m_triggeredSpell)
 		return false;
 	//target item, not able to target item
 	if (obj->IsItem() && !(TargetType & SPELL_TARGET_REQUIRE_ITEM) && !m_triggeredSpell)

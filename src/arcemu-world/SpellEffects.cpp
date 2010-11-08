@@ -2596,10 +2596,10 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 		break;
 	default://not profession
 		{
-			if(!gameObjTarget ) return;
+			if(!gameObjTarget )
+				return;
 
-			if( gameObjTarget->GetByte( GAMEOBJECT_BYTES_1, 1 ) == GAMEOBJECT_TYPE_GOOBER)
-				CALL_GO_SCRIPT_EVENT(gameObjTarget, OnActivate)(static_cast<Player*>(p_caster));
+			CALL_GO_SCRIPT_EVENT(gameObjTarget, OnActivate)( p_caster );
 			CALL_INSTANCE_SCRIPT_EVENT( gameObjTarget->GetMapMgr(), OnGameObjectActivate )( gameObjTarget, p_caster ); 
 
 			if(sQuestMgr.OnActivateQuestGiver(gameObjTarget, p_caster))
@@ -4134,15 +4134,18 @@ void Spell::SpellEffectSummonPlayer(uint32 i)
 
 void Spell::SpellEffectActivateObject(uint32 i) // Activate Object
 {
-	/*if(!p_caster)
-	return;
+	if(!p_caster)
+		return;
+	
+	if(!gameObjTarget){
+		sLog.outError("Spell %u ( %s ) effect %u not handled because no target was found. ", m_spellInfo->Id, m_spellInfo->Name, i );
+		return;
+	}
+	
+	CALL_GO_SCRIPT_EVENT(gameObjTarget, OnActivate)( p_caster );
+	gameObjTarget->Activate();
 
-	if(!gameObjTarget)
-	return;
-
-	gameObjTarget->SetUInt32Value(GAMEOBJECT_DYNAMIC, 1);
-
-	sEventMgr.AddEvent(gameObjTarget, &GameObject::Deactivate, EVENT_GAMEOBJECT_DEACTIVATE, GetDuration(), 1);*/
+	sEventMgr.AddEvent( gameObjTarget, &GameObject::Deactivate, 0, GetDuration(), 1, 0 );
 }
 
 void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem

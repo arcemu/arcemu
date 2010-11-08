@@ -30,14 +30,10 @@ GameObject::GameObject(uint64 guid)
 	SetGUID( guid );
 	SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 	m_wowGuid.Init(GetGUID());
-
 	SetScale(  1);//info->Size  );
 	SetByte(GAMEOBJECT_BYTES_1, 3, 100);
-
 	counter= 0;//not needed at all but to prevent errors that var was not initialized, can be removed in release
-
 	bannerslot = bannerauraslot = -1;
-
 	m_summonedGo = false;
 	invisible = false;
 	invisibilityFlag = INVIS_FLAG_NORMAL;
@@ -48,7 +44,6 @@ GameObject::GameObject(uint64 guid)
 	m_ritualtarget = 0;
 	m_ritualmembers = NULL;
 	m_ritualspell = 0;
-
 	m_quests = NULL;
 	pInfo = NULL;
 	myScript = NULL;
@@ -58,7 +53,6 @@ GameObject::GameObject(uint64 guid)
 	usage_remaining = 1;
 	m_respawnCell= NULL;
 	m_rotation = 0;
-
 	m_overrides = 0;
 }
 
@@ -119,10 +113,9 @@ bool GameObject::CreateFromProto(uint32 entry,uint32 mapid, float x, float y, fl
 	SetByte( GAMEOBJECT_BYTES_1, 0, 1 );
 	SetDisplayId(pInfo->DisplayID );
 	SetByte( GAMEOBJECT_BYTES_1, 1, static_cast<uint8>( pInfo->Type ));
-   
 	InitAI();
-
-	 return true;
+	
+	return true;
 }
 
 void GameObject::EventCastSpell(uint32 guid, uint32 sp, bool triggered)
@@ -352,12 +345,17 @@ void GameObject::InitAI()
 	}
 	else if(pInfo->Type == GAMEOBJECT_TYPE_SPELL_FOCUS)
 	{
-		// get spellid from attached gameobject - by sound2 field
-		if( pInfo->sound2 == 0 )
-			return;
-		if( GameObjectNameStorage.LookupEntry( pInfo->sound2 ) == NULL )
-			return;
-		spellid = GameObjectNameStorage.LookupEntry( pInfo->sound2 )->sound3;
+		// get spellid from attached gameobject if there is such - by sound2 field
+		if( pInfo->sound2 != 0 ){
+			
+			GameObjectInfo *gi = GameObjectNameStorage.LookupEntry( pInfo->sound2 );
+			if( gi == NULL ){
+				sLog.outError("Gamobject %u is of spellfocus type, has attachment GO data ( %u ), but attachment not found in database.", pInfo->ID, pInfo->sound2 );
+				return;
+			}
+
+			spellid = gi->sound3;
+		}
 	}
 	else if(pInfo->Type == GAMEOBJECT_TYPE_RITUAL)
 	{	
@@ -670,6 +668,11 @@ void GameObject::ExpireAndDelete()
 void GameObject::Deactivate()
 {
 	SetUInt32Value(GAMEOBJECT_DYNAMIC, 0);
+}
+
+void GameObject::Activate()
+{
+	SetUInt32Value(GAMEOBJECT_DYNAMIC, 1);
 }
 
 void GameObject::CallScriptUpdate()
