@@ -4566,18 +4566,25 @@ exit:
 		}
 		case SPELL_HASH_VAMPIRIC_EMBRACE:{
 			value = value * (GetProto()->EffectBasePoints[i] +1) / 100;
-			SM_FIValue(p_caster->SM_FMiscEffect, &value, GetProto()->SpellGroupType);
-			SM_PIValue(p_caster->SM_PMiscEffect, &value, GetProto()->SpellGroupType);
+			if( p_caster != NULL )
+			{
+				SM_FIValue(p_caster->SM_FMiscEffect, &value, GetProto()->SpellGroupType);
+				SM_PIValue(p_caster->SM_PMiscEffect, &value, GetProto()->SpellGroupType);
+			}
 			break;
 		}
 		case SPELL_HASH_SEAL_OF_LIGHT:{
-			value = (p_caster->GetAP() + p_caster->GetPosDamageDoneMod(SCHOOL_HOLY)) * 15 / 100;
+			if( p_caster != NULL )
+				value = (p_caster->GetAP() + p_caster->GetPosDamageDoneMod(SCHOOL_HOLY)) * 15 / 100;
 			break;
 		}
 		case SPELL_HASH_SEAL_OF_RIGHTEOUSNESS:{
-			Item *mit = p_caster->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_MAINHAND);
-			if( mit != NULL )
-				value = (p_caster->GetAP() * 22 + p_caster->GetPosDamageDoneMod(SCHOOL_HOLY) * 44) * mit->GetProto()->Delay / 1000000;
+			if( p_caster != NULL )
+			{
+				Item *mit = p_caster->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_MAINHAND);
+				if( mit != NULL )
+					value = (p_caster->GetAP() * 22 + p_caster->GetPosDamageDoneMod(SCHOOL_HOLY) * 44) * mit->GetProto()->Delay / 1000000;
+			}
 			break;
 		}
 		case SPELL_HASH_BLOOD_CORRUPTION:
@@ -4587,11 +4594,13 @@ exit:
 			break;
 		}
 		case SPELL_HASH_JUDGEMENT_OF_LIGHT:{
-			value = u_caster->GetMaxHealth() * 2 / 100;
+			if( u_caster != NULL )
+				value = u_caster->GetMaxHealth() * 2 / 100;
 			break;
 		}
 		case SPELL_HASH_JUDGEMENT_OF_WISDOM:{
-			value = u_caster->GetBaseMana() * 2 / 100;
+			if( u_caster != NULL )
+				value = u_caster->GetBaseMana() * 2 / 100;
 			break;
 		}
 		case SPELL_HASH_JUDGEMENT:{
@@ -4663,7 +4672,7 @@ exit:
 
 		if(!handled)
 		{
-			if( GetProto()->c_is_flags & SPELL_FLAG_IS_POISON ) // poison damage modifier
+			if( GetProto()->c_is_flags & SPELL_FLAG_IS_POISON && u_caster != NULL ) // poison damage modifier
 			{
 				switch ( GetProto()->NameHash )
 				{
