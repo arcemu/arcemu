@@ -4153,8 +4153,9 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 
 	if(slot > 3)
 	{
-		sLog.outDebug("Totem slot is : %u and max should be 3, i = %u , target = %u \n",slot,i,m_spellInfo->EffectImplicitTargetA[i]);
-		return; // Just 4 totems
+		sLog.outError("Totem slot is : %u and max should be 3, i = %u , target = %u. Using slot 0.",slot,i,m_spellInfo->EffectImplicitTargetA[i]);
+		slot = 0;
+		
 	}
 
 	uint32 entry = GetProto()->EffectMiscValue[i];
@@ -4275,11 +4276,8 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 		SpellEntry * TotemSpell = ObjectMgr::getSingleton().GetTotemSpell(GetProto()->Id);
 
 		if(TotemSpell == NULL)
-		{
-			sLog.outDebug("Totem %u does not have any spells to cast, exiting\n",entry);
-			return;
-		}
-
+			sLog.outDebug("Totem %u does not have any spells to cast",entry);
+		
 		//added by Zack : Some shaman talents are cast on player but it should be inherited or something by totems
 		pTotem->InheritSMMods(p_caster);
 
@@ -4290,35 +4288,40 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 			pTotem->HealDoneMod[school] = p_caster->HealDoneMod[school];
 		}
 		// Set up AI, depending on our spells.
-		uint32 j;
-		for( j = 0; j < 3; ++j )
-		{
-			if( TotemSpell->Effect[j] == SPELL_EFFECT_APPLY_AREA_AURA ||
-				TotemSpell->Effect[j] == SPELL_EFFECT_APPLY_AREA_AURA2 ||
-				TotemSpell->Effect[j] == SPELL_EFFECT_PERSISTENT_AREA_AURA ||
-				TotemSpell->EffectApplyAuraName[j] == SPELL_AURA_PERIODIC_TRIGGER_SPELL )
-			{
-				break;
+		uint32 j = 0;
+		if( TotemSpell != NULL ){
+			
+			for( j = 0; j < 3; ++j ){
+				
+				if( TotemSpell->Effect[j] == SPELL_EFFECT_APPLY_AREA_AURA ||
+					TotemSpell->Effect[j] == SPELL_EFFECT_APPLY_AREA_AURA2 ||
+					TotemSpell->Effect[j] == SPELL_EFFECT_PERSISTENT_AREA_AURA ||
+					TotemSpell->EffectApplyAuraName[j] == SPELL_AURA_PERIODIC_TRIGGER_SPELL )
+						break;
 			}
+
 		}
 		// Setup complete. Add us to the world.
 		pTotem->PushToWorld(m_caster->GetMapMgr());
 
 		if(j != 3)
 		{
-			// We're an area aura. Simple. Disable AI and cast the spell.
+			
+			// We're an area aura ( or don't have a spell ). Simple. Disable AI and cast the spell.
 			pTotem->DisableAI();
-			pTotem->GetAIInterface()->totemspell = GetProto();
 
-			Spell * pSpell = new Spell(pTotem, TotemSpell, true, 0);
-
-			SpellCastTargets targets;
-			targets.m_destX = pTotem->GetPositionX();
-			targets.m_destY = pTotem->GetPositionY();
-			targets.m_destZ = pTotem->GetPositionZ();
-			targets.m_targetMask = TARGET_FLAG_DEST_LOCATION;
-
-			pSpell->prepare(&targets);
+			if( TotemSpell != NULL ){
+				pTotem->GetAIInterface()->totemspell = GetProto();
+				
+				Spell * pSpell = new Spell(pTotem, TotemSpell, true, 0);
+				
+				SpellCastTargets targets;
+				targets.m_destX = pTotem->GetPositionX();
+				targets.m_destY = pTotem->GetPositionY();
+				targets.m_destZ = pTotem->GetPositionZ();
+				targets.m_targetMask = TARGET_FLAG_DEST_LOCATION;
+				pSpell->prepare(&targets);
+			}
 		}
 		else
 		{

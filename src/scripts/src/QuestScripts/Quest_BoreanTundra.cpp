@@ -192,50 +192,39 @@ class SeaforiumDepthCharge : public MoonScriptCreatureAI
 		SetCanMove( false );
 		SetCanEnterCombat( false );
 		_unit->SetFaction(21);
-		RegisterAIUpdateEvent(3000);
 	}
 
-	void AIUpdate()
-	{
-		_unit->CastSpell(_unit, 45502, true);
+	void OnLoad(){
+		Unit *summoner = _unit->GetOwner();
+
+		if( summoner != NULL && summoner->IsPlayer() ){
+			if( summoner->IsPlayer() ){
+				Player *p = TO_PLAYER( summoner );
+				if( p->HasQuest( 11608 ) ){
+					GameObject* pSinkhole = p->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords( p->GetPositionX(), p->GetPositionY(), p->GetPositionZ(), 300171);
+					if( pSinkhole != NULL ){
+						_unit->CastSpell(_unit, 45502, true);
+						
+						float posX = pSinkhole->GetPositionX();
+						if(posX == 2657.13f)
+							sEAS.KillMobForQuest( p, 11608, 0);
+						
+						if(posX == 2716.02f)
+							sEAS.KillMobForQuest( p, 11608, 1);
+						
+						if(posX == 2877.96f)
+							sEAS.KillMobForQuest( p, 11608, 2);
+						
+						if(posX == 2962.16f)
+							sEAS.KillMobForQuest( p, 11608, 3);
+
+					}
+				}
+			}
+		}
 		_unit->Despawn(500, 0);
-		ParentClass::AIUpdate();
 	}
-
 };
-
-bool PlantingSeaforiumDepthCharge(uint32 i, Spell * pSpell)
-{
-	if(pSpell == NULL || pSpell->p_caster == NULL || !pSpell->p_caster->IsInWorld())
-		return true;
-
-	
-	Player* pPlayer = pSpell->p_caster;
-	QuestLogEntry* pQuest = sEAS.GetQuest( pPlayer, 11608);
-	if( !pQuest )
-		return true;
-
-	GameObject* pSinkhole = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords( pPlayer->GetPositionX(), pPlayer->GetPositionY(), pPlayer->GetPositionZ(), 300171);
-	if( pSinkhole == NULL )
-		return true;
-
-	pPlayer->GetMapMgr()->GetInterface()->SpawnCreature( 25401, pPlayer->GetPositionX(), pPlayer->GetPositionY(), pPlayer->GetPositionZ(), pPlayer->GetOrientation(), false, false, NULL, NULL, 1);
-	
-	float posX = pSinkhole->GetPositionX();
-	if(posX == 2657.13f)
-		sEAS.KillMobForQuest( pPlayer, 11608, 0);
-
-	if(posX == 2716.02f)
-		sEAS.KillMobForQuest( pPlayer, 11608, 1);
-
-	if(posX == 2877.96f)
-		sEAS.KillMobForQuest( pPlayer, 11608, 2);
-
-	if(posX == 2962.16f)
-		sEAS.KillMobForQuest( pPlayer, 11608, 3);
-
-	return true;
-}
 
 // Hatching a Plan
 class BlueDragonEgg : public GameObjectAIScript
@@ -447,7 +436,6 @@ void SetupBoreanTundra(ScriptMgr * mgr)
 	mgr->register_dummy_spell(45835, &BixiesInhibitingPowder);
 	// Bury Those Cockroaches!
 	mgr->register_creature_script(25401, &SeaforiumDepthCharge::Create);
-	mgr->register_dummy_spell(45503, &PlantingSeaforiumDepthCharge);
 	// Hatching a Plan
 	mgr->register_gameobject_script(188133, &BlueDragonEgg::Create);
 	// Leading the Ancestors Home
