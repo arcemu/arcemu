@@ -796,28 +796,14 @@ bool FuryOfTheDreghoodElders(uint32 i, Spell* pSpell)
 
 
 /*--------------------------------------------------------------------------------------------------------*/
-// A Spirit Guide
-
-bool ASpiritGuide(uint32 i, Spell* pSpell)
-{
-	if ( pSpell == NULL || pSpell->u_caster == NULL || !pSpell->u_caster->IsPlayer() )
-		return true;
-
-	Player* pPlayer = TO_PLAYER( pSpell->u_caster );
-
-  	QuestLogEntry *pQuest = pPlayer->GetQuestLogForEntry( 9410 );
-  	if ( pQuest == NULL )
-    	return true;
-
-  	Creature* pSpiritWolf = pPlayer->GetMapMgr()->GetInterface()->SpawnCreature(17077, pPlayer->GetPositionX(), pPlayer->GetPositionY(), pPlayer->GetPositionZ(), pPlayer->GetOrientation(), true, false, NULL, NULL);
-	if ( pSpiritWolf == NULL )
-		return true;
-	
-	pSpiritWolf->Despawn( 10 * 1000, 0 );
-
-  	pPlayer->CastSpell( pPlayer, 29938, false );
-  	return true;
-}
+class AncestralSpiritWolf : public CreatureAIScript{
+public:
+	ADD_CREATURE_FACTORY_FUNCTION( AncestralSpiritWolf );
+	AncestralSpiritWolf( Creature *c ) : CreatureAIScript( c ){}
+	void OnLoad(){
+		_unit->CastSpell( _unit, 29938, false );
+	}
+};
 
 
 /*--------------------------------------------------------------------------------------------------------*/
@@ -835,39 +821,6 @@ public:
 		_unit->GetAIInterface()->m_canMove = false;
 	}
 };
-
-bool AnAmbitiousPlan(uint32 i, Spell* pSpell)
-{
-	if ( pSpell == NULL || pSpell->u_caster == NULL || !pSpell->u_caster->IsPlayer() )
-		return true;
-
-	Player* pPlayer = TO_PLAYER( pSpell->u_caster );
-	QuestLogEntry *pQuest = pPlayer->GetQuestLogForEntry( 9383 );
-	if ( pQuest == NULL )
-		return true;
-
-	Creature* pTarget = pPlayer->GetMapMgr()->GetCreature( GET_LOWGUID_PART( pPlayer->GetSelection() ) );
-	if ( pTarget == NULL || pTarget->GetEntry() != 16975 )
-		return true;
-
-	float SSx = pTarget->GetPositionX();
-	float SSy = pTarget->GetPositionY();
-	float SSz = pTarget->GetPositionZ();
-	pTarget->GetAIInterface()->SetAllowedToEnterCombat( false );
-	pTarget->GetAIInterface()->StopMovement( 0 );
-	pTarget->GetAIInterface()->setCurrentAgent( AGENT_NULL );
-	pTarget->GetAIInterface()->SetAIState( STATE_IDLE );
-	pTarget->Despawn( 0, 0 );
-
-	GameObject* pGameobject = sEAS.SpawnGameobject( pPlayer, 183816, SSx, SSy, SSz, 0, 1, 0, 0, 0, 0 );
-	if ( pGameobject != NULL )
-	{
-		sEAS.GameobjectDelete( pGameobject, 1 * 60 * 1000 );
-		pPlayer->UpdateNearbyGameObjects();
-	}
-
-	return true;
-}
 
 class DarkTidingsAlliance : public QuestScript 
 { 
@@ -933,7 +886,6 @@ void SetupHellfirePeninsula(ScriptMgr * mgr)
 	mgr->register_dummy_spell(33067, &BurnItUp);
 	mgr->register_script_effect(30489, &TheSeersRelic);
 	mgr->register_dummy_spell(34387, &DisruptTheirReinforcements);
-	mgr->register_dummy_spell(29364, &AnAmbitiousPlan);
 	
 	GossipScript *pPrisonerGossip = new PrisonerGossip();
 	mgr->register_gossip_script(20677, pPrisonerGossip);
@@ -943,7 +895,6 @@ void SetupHellfirePeninsula(ScriptMgr * mgr)
 	/*-------------------------------------------------------------------*/
 	// TODO
 	//mgr->register_dummy_spell(35460, &FuryOfTheDreghoodElders);
-	mgr->register_dummy_spell(29731, &ASpiritGuide);
 	
 	
 	/*-------------------------------------------------------------------*/
@@ -959,4 +910,6 @@ void SetupHellfirePeninsula(ScriptMgr * mgr)
 	QuestScript *DarkTidingsAllianceQuest = new DarkTidingsAlliance();
 	mgr->register_quest_script(9587, DarkTidingsAllianceQuest);
 	mgr->register_quest_script(9588, DarkTidingsHordeQuest);
+
+	mgr->register_creature_script( 17077, &AncestralSpiritWolf::Create );
 }

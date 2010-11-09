@@ -808,24 +808,6 @@ bool ChatHandler::HandleGODelete(const char *args, WorldSession *m_session)
 
 	m_session->GetPlayer()->m_GM_SelectedGO = 0;
 
-  /*  std::stringstream sstext;
-
-	GameObject *GObj = m_session->GetPlayer()->m_GM_SelectedGO;
-	if( !GObj )
-	{
-		RedSystemMessage(m_session, "No selected GameObject...");
-		return true;
-	}
-
-	GObj->GetMapMgr()->GetBaseMap()->GetTemplate()->RemoveIndex<GameObject>(GObj);	// remove index
-	GObj->Despawn(3600000);
-	GObj->DeleteFromDB();
-	sObjHolder.Delete<GameObject>(GObj);
-
-	m_session->GetPlayer()->m_GM_SelectedGO = NULL;
-
-	GreenSystemMessage(m_session, "GameObject successfully deleted from world and database !");
-*/
 	return true;
 }
 

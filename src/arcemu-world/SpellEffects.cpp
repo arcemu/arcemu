@@ -392,7 +392,6 @@ void Spell::SpellEffectInstantKill(uint32 i)
 	switch( spellId )
 	{
 	case 48743:
-	case 29364:	// encapsulate voidwalker
 		{
 			// retarget? some one test this spell.
 			return;
@@ -3023,17 +3022,7 @@ void Spell::SpellEffectSummonGuardian(uint32 i) // Summon Guardian
 
 	if( GetProto()->c_is_flags & SPELL_FLAG_IS_INHERITING_LEVEL )
 		level = u_caster->getLevel();
-	/*if ( u_caster->GetTypeId()==TYPEID_PLAYER && itemTarget )
-	{
-	if (itemTarget->GetProto() && itemTarget->GetProto()->RequiredSkill == SKILL_ENGINERING)
-	{
-	uint32 skill202 = static_cast< Player* >( m_caster )->_GetSkillLineCurrent(SKILL_ENGINERING);
-	if (skill202>0)
-	{
-	level = skill202/5;
-	}
-	}
-	}*/
+
 	if( m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION && m_targets.m_destX && m_targets.m_destY && m_targets.m_destZ )
 	{
 		vec = new LocationVector(m_targets.m_destX, m_targets.m_destY, m_targets.m_destZ);
@@ -3971,9 +3960,6 @@ void Spell::SpellEffectSummonObjectWild(uint32 i)
 	}
 
 	GoSummon->SetInstanceID(m_caster->GetInstanceID());
-	GoSummon->SetLevel(u_caster->getLevel());
-	GoSummon->SetUInt64Value(OBJECT_FIELD_CREATED_BY, m_caster->GetGUID());
-	GoSummon->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 	GoSummon->Phase(PHASE_SET, u_caster->GetPhase());
 	GoSummon->PushToWorld(u_caster->GetMapMgr());
 	GoSummon->SetSummoned(u_caster);
