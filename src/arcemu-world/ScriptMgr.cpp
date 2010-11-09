@@ -434,6 +434,17 @@ void ScriptMgr::register_dummy_aura(uint32 entry, exp_handle_dummy_aura callback
 	if(_auras.find(entry) != _auras.end())
 		sLog.outError("ScriptMgr is trying to register a script for Aura ID: %u even if there's already one for that Aura. Remove one of those scripts.", entry);
 
+	SpellEntry *sp = dbcSpell.LookupEntryForced( entry );
+	if( sp == NULL ){
+		sLog.outError("ScriptMgr is trying to register a dummy aura handler for Spell ID: %u which is invalid.", entry );
+		return;
+	}
+
+	if( !sp->AppliesAura( SPELL_AURA_DUMMY ) ){
+		sLog.outDetail("ScriptMgr has registered a dummy aura handler for Spell ID: %u ( %s ), but spell has no dummy aura!", entry, sp->Name );
+		return;
+	}
+
 	_auras.insert( HandleDummyAuraMap::value_type( entry, callback ) );
 }
 

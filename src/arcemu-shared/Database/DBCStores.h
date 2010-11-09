@@ -849,7 +849,13 @@ struct SpellEntry
 
 	bool AppliesAura( uint32 aura ){
 		for( uint32 i = 0; i < 3; ++i ){
-			if( ( Effect[ i ] == 6 || Effect[ i ] == 119 || Effect[ i ] == 128 ) && EffectApplyAuraName[ i ] == aura )
+			if( ( Effect[ i ] == 6 || // SPELL_EFFECT_APPLY_AURA
+				Effect[ i ] == 27 || // SPELL_EFFECT_PERSISTENT_AREA_AURA
+				Effect[ i ] == 35 || // SPELL_EFFECT_APPLY_AREA_AURA
+				Effect[ i ] == 65 || // SPELL_EFFECT_APPLY_AREA_AURA2
+				Effect[ i ] == 119 || // SPELL_EFFECT_APPLY_PET_AURA
+				Effect[ i ] == 128 ) && // SPELL_EFFECT_UNKNOWN7
+				EffectApplyAuraName[ i ] == aura )
 				return true;
 		}
 

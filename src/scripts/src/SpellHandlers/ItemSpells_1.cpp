@@ -280,34 +280,27 @@ bool WinterWondervolt(uint32 i, Spell * pSpell)
 {
 	Unit *  target = pSpell->GetUnitTarget();
 
-	if(!target || target->GetTypeId() != TYPEID_PLAYER) return true;
+	if( target == NULL || !target->IsPlayer() )
+		return true;
 
-	target->CastSpell(target, dbcSpell.LookupEntry(26274), true);
+	uint32 outfitspells[] = {
+		26157, // green male
+		26272, // green female
+		26273, // red male
+		26274  // red female
+	};
 
-	return true;
-}
+	uint32 team = target->GetTeam();
+	uint32 gender = target->getGender();
+	uint32 spellid = 0;
 
-// -----------------------------------------------------------------------------
-
-bool WinterWondervoltAura(uint32 i, Aura * pAura, bool apply)
-{
-	Player * u_caster = pAura->GetPlayerCaster();
-
-	if(u_caster == NULL ) return true;
-
-	if(apply)
-	{
-		uint32 displayId;
-		uint32 chance = RandomUInt(7);
-
-		if(u_caster->getGender() == 1) displayId = 15795 + chance; // female 0-7
-		else if(chance == 0)           displayId = 15687;          // male   0
-		else                           displayId = 15802 + chance; // male   1-7
-
-		u_caster->SetDisplayId(displayId);
-	}
+	if( team == TEAM_HORDE )
+		spellid = outfitspells[ 2 + gender ];
 	else
-		u_caster->SetDisplayId(u_caster->GetNativeDisplayId());
+		spellid = outfitspells[ gender ];
+
+
+	target->CastSpell( target, spellid, true );
 
 	return true;
 }
@@ -672,7 +665,7 @@ void SetupItemSpells_1(ScriptMgr * mgr)
 	mgr->register_dummy_spell(25860, &ReindeerTransformation);  // Fresh Holly & Preserved Holly
 	
 	mgr->register_script_effect(26275, &WinterWondervolt);        // PX-238 Winter Wondervolt Trap
-	mgr->register_dummy_aura( 26274, &WinterWondervoltAura);    // PX-238 Winter Wondervolt Transform Aura
+
 	mgr->register_dummy_spell(32042, &ScryingCrystal);			// Violet Scrying Crystal (Quest)
 	mgr->register_dummy_spell(32001, &MinionsOfGurok);			// Minions of gurok
 	mgr->register_dummy_spell(29200, &PurifyBoarMeat);			// Purify Boar meat spell
