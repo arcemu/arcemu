@@ -292,6 +292,10 @@ bool Master::Run(int argc, char ** argv)
 		return false;
 	}
 
+	// Checking the DB version. If it's wrong or can't be validated we exit.
+	if( !CheckDBVersion() )
+		return false;
+
 	if(do_database_clean)
 	{
 		printf( "\nEntering database maintenance mode.\n\n" );
@@ -611,6 +615,52 @@ bool Master::Run(int argc, char ** argv)
 	//CloseHandle(pH);
 
 #endif
+
+	return true;
+}
+
+bool Master::CheckDBVersion(){
+	const char *versionquery = "SELECT LastUpdate FROM arcemu_db_version;";
+
+	QueryResult *wqr = WorldDatabase.QueryNA( versionquery );
+	if( wqr == NULL ){
+		Log.Error("Database","World database is missing the table `arcemu_db_version` OR the table doesn't contain any rows. Can't validate database version. Exiting.");
+		return false;
+	}
+
+	Field *f = wqr->Fetch();
+	uint32 WorldDBVersion = f->GetUInt32();
+
+	Log.Notice("Database","World database version: %u", WorldDBVersion );
+	if( WorldDBVersion != REQUIRED_WORLD_DB_VERSION ){
+		Log.Error("Database","World database version doesn't match the required version which is %u.", REQUIRED_WORLD_DB_VERSION );
+		Log.Error("Database","You need to apply the world update queries that start with a larger number than %u. Exiting.", WorldDBVersion );
+		delete wqr;
+		return false;
+	}
+
+	delete wqr;
+
+	QueryResult *cqr = CharacterDatabase.QueryNA( versionquery);
+	if( cqr == NULL ){
+		Log.Error("Database","Character database is missing the table `arcemu_db_version` OR the table doesn't contain any rows. Can't validate database version. Exiting.");
+		return false;
+	}
+
+	f = wqr->Fetch();
+	uint32 CharDBVersion = f->GetUInt32();
+
+	Log.Notice("Database","Character database version: %u", CharDBVersion );
+	if( CharDBVersion != REQUIRED_CHAR_DB_VERSION ){
+		Log.Error("Database","Character database version doesn't match the required version which is %u.", REQUIRED_CHAR_DB_VERSION );
+		Log.Error("Database","You need to apply the character update queries that start with a larger number than %u. Exiting.", CharDBVersion );
+		delete cqr;
+		return false;
+	}
+
+	delete cqr;
+
+	Log.Success("Database","Database versions successfully validated.");
 
 	return true;
 }

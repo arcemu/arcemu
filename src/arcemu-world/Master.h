@@ -28,7 +28,7 @@
 #include "MainServerDefines.h"
 
 #ifndef _VERSION
-# define _VERSION "3.3.0"
+# define _VERSION "3.3.5a"
 #endif
 
 #if PLATFORM == PLATFORM_WIN32
@@ -42,6 +42,9 @@
 #else
 #define BUILDTYPE "Release"
 #endif
+
+#define REQUIRED_WORLD_DB_VERSION 3800
+#define REQUIRED_CHAR_DB_VERSION 3800
 
 #define DEFAULT_LOOP_TIME 0 /* 0 milliseconds - instant */
 #define DEFAULT_LOG_LEVEL 0
@@ -71,6 +74,7 @@ public:
 private:
 	bool _StartDB();
 	void _StopDB();
+	bool CheckDBVersion();
 
 	void _HookSignals();
 	void _UnhookSignals();
