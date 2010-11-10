@@ -644,6 +644,13 @@ bool BrittleArmor( uint32 i, Spell *s ){
 	return true;
 }
 
+bool RequiresNoAmmo( uint32 i, Aura *a, bool apply ){
+	
+	a->SpellAuraConsumeNoAmmo( apply );
+	
+	return true;
+}
+
 // ADD NEW FUNCTIONS ABOVE THIS LINE
 // *****************************************************************************
 
@@ -683,6 +690,8 @@ void SetupItemSpells_1(ScriptMgr * mgr)
 	mgr->register_dummy_spell( 30427, &ExtractGas );
 
 	mgr->register_script_effect( 24590, &BrittleArmor );
+
+	mgr->register_dummy_aura( 46699, &RequiresNoAmmo );
 
 
 // REGISTER NEW DUMMY SPELLS ABOVE THIS LINE

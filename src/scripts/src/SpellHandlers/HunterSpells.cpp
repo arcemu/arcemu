@@ -75,9 +75,69 @@ bool MastersCall(uint32 i, Spell *pSpell)
 	return true;
 }
 
+bool TheBeastWithin( uint32 i, Aura *a, bool apply ){
+	Unit *m_target = a->GetTarget();
+
+	uint32 mechanics[15] = { MECHANIC_CHARMED, MECHANIC_DISORIENTED,	MECHANIC_DISTRACED, MECHANIC_FLEEING,
+		MECHANIC_ROOTED, MECHANIC_ASLEEP, MECHANIC_ENSNARED, MECHANIC_STUNNED,
+		MECHANIC_FROZEN, MECHANIC_INCAPACIPATED, MECHANIC_POLYMORPHED, MECHANIC_BANISHED,
+		MECHANIC_SEDUCED, MECHANIC_HORRIFIED, MECHANIC_SAPPED };
+	
+	for( uint32 x = 0; x < 15; x++ )
+	{
+		if( apply )
+		{
+			m_target->MechanicsDispels[ mechanics[x] ]++;
+			m_target->RemoveAllAurasByMechanic( mechanics[x], (uint32)(-1), false );
+		}
+		else
+			m_target->MechanicsDispels[ mechanics[x] ]--;
+	}
+	
+	return true;
+}
+
+
+bool BestialWrath( uint32 i, Aura *a, bool apply ){
+	Unit *m_target = a->GetTarget();
+
+	uint32 mechanics[15] = { MECHANIC_CHARMED, MECHANIC_DISORIENTED,	MECHANIC_DISTRACED, MECHANIC_FLEEING,
+		MECHANIC_ROOTED, MECHANIC_ASLEEP, MECHANIC_ENSNARED, MECHANIC_STUNNED,
+		MECHANIC_FROZEN, MECHANIC_INCAPACIPATED, MECHANIC_POLYMORPHED, MECHANIC_BANISHED,
+		MECHANIC_SEDUCED, MECHANIC_HORRIFIED, MECHANIC_SAPPED };
+	
+	for( uint32 x = 0; x < 15; x++ )
+	{
+		if( apply )
+		{
+			m_target->MechanicsDispels[ mechanics[x] ]++;
+			m_target->RemoveAllAurasByMechanic( mechanics[x], (uint32)(-1), false );
+		}
+		else
+			m_target->MechanicsDispels[ mechanics[x] ]--;
+	}
+	return true;
+}
+
+bool Misdirection( uint32 i, Aura *a, bool apply ){
+	Player *caster = a->GetPlayerCaster();
+	
+	if(caster == NULL)
+		return true;
+	
+	if(!apply)
+		sEventMgr.AddEvent( caster, &Player::SetMisdirectionTarget,(uint64)0, EVENT_UNK, 250, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+		
+	return true;
+}
+
 void SetupHunterSpells(ScriptMgr * mgr)
 {
 	mgr->register_dummy_spell(24531, &Refocus);
 	mgr->register_dummy_spell(23989, &Readiness);
 	mgr->register_dummy_spell(53271, &MastersCall);
+	mgr->register_dummy_aura( 19574, &BestialWrath );
+	mgr->register_dummy_aura( 34471, &TheBeastWithin );
+	mgr->register_dummy_aura( 34477, &Misdirection );
+
 }

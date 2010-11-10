@@ -525,6 +525,110 @@ bool SummonFelHunterQuest( uint32 i, Spell *s ){
 	return true;
 }
 
+bool DemonicKnowledge( uint32 i, Aura *a, bool apply ){
+	Unit *m_target = a->GetTarget();
+
+	if ( m_target->IsPet() )
+	{
+		Player* PetOwner = static_cast< Pet* >( m_target )->GetPetOwner();
+		if( PetOwner != NULL  )
+		{
+			uint32 val1 = m_target->GetStat(STAT_STAMINA); // stamina
+			uint32 val2 = m_target->GetStat(STAT_INTELLECT); // intellect
+			uint32 val0 = val1 + val2;
+			float dmginc = (float)( val0 * a->GetModAmount( i ) ) / 100;
+			
+			int32 val;
+			
+			if( apply )
+				val = (int32)dmginc;
+			else
+				val = (int32)-dmginc;
+			
+			for (uint32 x= 0;x<7;x++)
+				PetOwner->ModPosDamageDoneMod( x, val);
+			
+			PetOwner->CalcDamage();
+		}
+	}
+
+	return true;
+}
+
+bool EyeOfKilrog( uint32 i, Aura *a, bool apply ){
+	Unit *m_target = a->GetTarget();
+
+	if(!apply)
+	{
+		if(m_target->IsPlayer())
+		{
+			Player * pCaster = TO_PLAYER(m_target);
+			Creature *summon = pCaster->m_eyeofkilrogg;
+			pCaster->UnPossess();
+
+			if(summon)
+				summon->DeleteMe();
+
+			pCaster->m_eyeofkilrogg = 0;
+			pCaster->SetFarsightTarget(0);
+		}
+	}
+
+	return true;
+}
+
+bool ImprovedLifeTap( uint32 i, Aura *a, bool apply ){
+	Unit *u_target = a->GetTarget();
+	if( !u_target->IsPlayer() )
+		return true;
+
+	Player *p_target = TO_PLAYER( u_target );
+	int32 amount = a->GetModAmount( i );
+
+
+	if(apply)
+		p_target->m_lifetapbonus = amount;
+	else
+		p_target->m_lifetapbonus= 0;
+	
+	return true;
+}
+
+bool SoulSiphon( uint32 i, Aura *a, bool apply ){
+	Unit *caster = a->GetUnitCaster();
+	int32 amount = a->GetModAmount( i );
+	
+	if(caster) {
+		if( apply )
+			caster->m_soulSiphon.amt+= amount;
+		else
+			caster->m_soulSiphon.amt-= amount;
+	}
+
+	return true;
+}
+
+bool SoulStoneResurrection( uint32 i, Aura *a, bool apply ){
+	Unit *u_target = a->GetTarget();
+	if( !u_target->IsPlayer() )
+		return true;
+
+	Player *p_target = TO_PLAYER( u_target );
+	uint32 soulstone = a->GetSpellProto()->EffectMiscValue[ 0 ];
+
+	if(apply)
+	{
+		p_target->SetSoulStone(3026);
+		p_target->SetSoulStoneReceiver((uint32)a->m_casterGuid);
+	}
+	else if( p_target->isAlive() )
+	{
+		p_target->SetSoulStone(0);
+		p_target->SetSoulStoneReceiver(0);
+	}
+	return true;
+}
+
 void SetupWarlockSpells(ScriptMgr * mgr)
 {
 	//////////////////////////////////////////////// Dummy Effect /////////////////////////////////////////////////////////
@@ -581,4 +685,36 @@ void SetupWarlockSpells(ScriptMgr * mgr)
 	mgr->register_script_effect( 30208, &SummonVoidWalkerQuest );
 
 	mgr->register_script_effect( 8712, &SummonFelHunterQuest );
+
+	mgr->register_dummy_aura( 35696, &DemonicKnowledge );
+
+	mgr->register_dummy_aura( 126, &EyeOfKilrog );
+
+	uint32 improvedlifetapids[] = {
+		18182,
+		18183,
+		0
+	};
+	mgr->register_dummy_aura( improvedlifetapids, &ImprovedLifeTap );
+
+	uint32 soulsiphonids[] = {
+		17804,
+		17805,
+		0
+	};
+	mgr->register_dummy_aura( soulsiphonids, &SoulSiphon );
+
+	uint32 soulstoneresurrectionids[] = {
+		20707,
+		20762,
+		20763,
+		20764,
+		20765,
+		27239,
+		47883,
+		0
+	};
+	mgr->register_dummy_aura( soulstoneresurrectionids, &SoulStoneResurrection );
+
+
 }

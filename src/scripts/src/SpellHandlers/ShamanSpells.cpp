@@ -87,6 +87,33 @@ bool ManaTide( uint32 i, Spell *s ){
 	return true;
 }
 
+bool EarthShieldDummyAura( uint32 i, Aura *a, bool apply ){
+	Unit *m_target = a->GetTarget();
+
+	if(apply)
+		m_target->AddProcTriggerSpell( a->GetSpellProto(), a->m_casterGuid, NULL, NULL);
+	else
+		m_target->RemoveProcTriggerSpell( a->GetSpellId(), a->m_casterGuid );
+
+	return true;
+}
+
+bool Reincarnation( uint32 i, Aura *a, bool apply ){
+	Unit *u_target = a->GetTarget();
+	
+	if( !u_target->IsPlayer() )
+		return true;
+
+	Player *p_target = TO_PLAYER( u_target );
+
+	if( apply )
+		p_target->bReincarnation = true;
+	else
+		p_target->bReincarnation = false;
+
+	return true;
+}
+
 void SetupShamanSpells(ScriptMgr * mgr)
 {
 	uint32 FlametongueWeaponPassiveIds[] = { 10400, 15567, 15568, 15569, 16311, 16312, 16313, 58784, 58791, 58792, 0 };
@@ -94,12 +121,27 @@ void SetupShamanSpells(ScriptMgr * mgr)
 
 	mgr->register_dummy_spell( 38443, &SkyShatterRegalia );
 
-	mgr->register_dummy_spell( 974, &EarthShield );
-	mgr->register_dummy_spell( 32593, &EarthShield );
-	mgr->register_dummy_spell( 32594, &EarthShield );
-	mgr->register_dummy_spell( 49283, &EarthShield );
-	mgr->register_dummy_spell( 49284, &EarthShield );
+	uint32 earthshieldids[] = {
+		974,
+		32593,
+		32594,
+		49283,
+		49284,
+		0
+	};
+	mgr->register_dummy_spell( earthshieldids, &EarthShield );
 
 	mgr->register_dummy_spell( 39610, &ManaTide );
-	
+
+	uint32 earthshielddummyauraids[] = {
+		974,
+		32593,
+		32594,
+		49284,
+		49283,
+		0
+	};
+	mgr->register_dummy_aura( earthshielddummyauraids, &EarthShieldDummyAura );
+
+	mgr->register_dummy_aura( 20608, &Reincarnation );
 }

@@ -236,6 +236,55 @@ bool NorthRendInscriptionResearch( uint32 i, Spell *s ){
 	return true;
 }
 
+bool DeadlyThrowInterrupt( uint32 i, Aura *a, bool apply ){
+
+	if( !apply )
+		return true;
+
+	Unit *m_target = a->GetTarget();
+
+	uint32 school = 0;
+
+	if( m_target->GetCurrentSpell() ){
+		school = m_target->GetCurrentSpell()->GetProto()->School;
+	}
+	
+	m_target->InterruptSpell();
+	m_target->SchoolCastPrevent[ school ]= 3000 + getMSTime();
+
+	return true;
+}
+
+bool WaitingToResurrect( uint32 i, Aura *a, bool apply ){
+	Unit *u_target = a->GetTarget();
+
+	if( !u_target->IsPlayer() )
+		return true;
+
+	Player *p_target = TO_PLAYER( u_target );
+
+	if( apply )		// already applied in opcode handler
+		return true;
+
+	uint64 crtguid = p_target->m_areaSpiritHealer_guid;
+
+	Creature* pCreature = p_target->IsInWorld() ? p_target->GetMapMgr()->GetCreature(GET_LOWGUID_PART(crtguid)) : NULL;
+
+	if( pCreature== NULL || p_target->m_bg == NULL )
+		return true;
+	
+	p_target->m_bg->RemovePlayerFromResurrect( p_target, pCreature );
+
+	return true;
+}
+
+bool NegativeCrap( uint32 i, Aura *a, bool apply ){
+	if( apply )
+		a->SetNegative();
+
+	return true;
+}
+
 
 void SetupMiscSpellhandlers( ScriptMgr *mgr ){
 	mgr->register_dummy_spell( 11189, &FrostWarding );
@@ -263,5 +312,17 @@ void SetupMiscSpellhandlers( ScriptMgr *mgr ){
 	mgr->register_script_effect( 61288, &NorthRendInscriptionResearch );
 
 	mgr->register_script_effect( 61177, &NorthRendInscriptionResearch );
+
+	mgr->register_dummy_aura( 32748, &DeadlyThrowInterrupt );
+
+	mgr->register_dummy_aura( 2584, &WaitingToResurrect );
+
+	uint32 negativecrapids[] = {
+		26013,
+		41425,
+		0
+	};
+	mgr->register_dummy_aura( negativecrapids, &NegativeCrap );
+
 }
 

@@ -1488,6 +1488,68 @@ bool CleansingVialDND( uint32 i, Spell *s ){
 	return true;
 }
 
+bool HunterTamingQuest( uint32 i, Aura *a, bool apply ){
+	uint32 TamingSpellid = 0;
+	Unit *m_target = a->GetTarget();
+	Player *p_caster = a->GetPlayerCaster();
+
+	if( p_caster == NULL )
+		return true;
+	
+	if (apply){
+		m_target->GetAIInterface()->AttackReaction( a->GetUnitCaster(), 10, 0);
+	}
+	else{
+		TamingSpellid = a->GetSpellProto()->EffectMiscValue[ 1 ];
+		
+		SpellEntry *triggerspell = dbcSpell.LookupEntry( TamingSpellid );
+
+		Quest* tamequest = QuestStorage.LookupEntry( triggerspell->EffectMiscValue[1] );
+		if ( !p_caster->GetQuestLogForEntry(tamequest->id ) || m_target->GetEntry() != static_cast<uint32>( tamequest->required_mob[0] ))
+		{
+			p_caster->SendCastResult( triggerspell->Id, SPELL_FAILED_BAD_TARGETS, 0, 0 );
+		}
+		else if( !a->GetTimeLeft() )
+		{
+			// Creates a 15 minute pet, if player has the quest that goes with the spell and if target corresponds to quest
+			if( Rand( 75.0f ) )// 75% chance on success
+			{
+				
+				if( m_target->GetTypeId() == TYPEID_UNIT )
+				{
+					Creature *tamed = TO_CREATURE(m_target);
+					tamed->GetAIInterface()->HandleEvent( EVENT_LEAVECOMBAT, p_caster, 0 );
+					
+					Pet *pPet = objmgr.CreatePet( tamed->GetEntry() );
+					if( ! pPet->CreateAsSummon( tamed->GetEntry(), tamed->GetCreatureInfo(), tamed, p_caster, triggerspell, 2, 900000 ) )
+					{
+						pPet->DeleteMe();//CreateAsSummon() returns false if an error occurred.
+						pPet = NULL;
+					}
+
+					tamed->Despawn(1,0);//we despawn the tamed creature once we are out of Aura::Remove()
+					
+					QuestLogEntry *qle = p_caster->GetQuestLogForEntry( tamequest->id );
+					if( qle != NULL )
+					{
+						qle->SetMobCount( 0, 1 );
+						qle->SendUpdateAddKill( 1 );
+						qle->UpdatePlayerFields();
+						qle->SendQuestComplete();
+					}
+				}
+			}
+			else
+			{
+				p_caster->SendCastResult( triggerspell->Id,SPELL_FAILED_TRY_AGAIN,0,0 );
+			}
+		}
+		TamingSpellid = 0;
+	}
+
+	return true;
+}
+
 void SetupQuestItems(ScriptMgr * mgr)
 {
 	mgr->register_dummy_spell(3607, &YennikuRelease);
@@ -1551,4 +1613,27 @@ void SetupQuestItems(ScriptMgr * mgr)
 	mgr->register_dummy_spell(39371, &PrayerBeads);				//http://www.wowhead.com/?quest=10935
 
 	mgr->register_script_effect( 29297, &CleansingVial );
+
+	uint32 huntertamingquestspellids[] = {
+		19548,
+		19674,
+		19687,
+		19688,
+		19689,
+		19692,
+		19693,
+		19694,
+		19696,
+		19697,
+		19699,
+		19700,
+		30099,
+		30102,
+		30105,
+		30646,
+		30653,
+		30654,
+		0
+	};
+	mgr->register_dummy_aura( huntertamingquestspellids, &HunterTamingQuest );
 }

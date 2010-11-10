@@ -66,6 +66,90 @@ bool SummonWaterElemental(uint32 i, Spell *pSpell)
 	return true;
 }
 
+bool TormentOfTheWeak( uint32 i, Aura *a, bool apply ){
+	Unit *m_target = a->GetTarget();
+
+	if(m_target->IsPlayer())
+	{
+		static_cast< Player* >( m_target )->m_IncreaseDmgSnaredSlowed += ((apply) ? 1:-1)*(uint32)(((float) a->GetModAmount( i ) )/100);
+	}
+
+	return true;
+}
+
+bool FrostBite( uint32 i, Aura *a, bool apply ){
+	Player *caster = a->GetPlayerCaster();
+	
+	if(caster == NULL)
+		return true;
+	
+	if( apply )
+		caster->SetTriggerChill( 12494, a->GetModAmount( i ), false );
+	else
+		caster->SetTriggerChill( 0, 0, false );
+
+	return true;
+}
+
+bool MageInvisibility( uint32 i, Aura *a, bool apply ){
+	Unit *u_target = a->GetTarget();
+
+	if( !u_target->IsPlayer() )
+		return true;
+
+	if( u_target != NULL )
+	{
+		u_target->m_mageInvisibility = apply;
+		u_target->UpdateVisibility();
+	}
+
+	return true;
+}
+
+bool FingersOfFrost( uint32 i, Aura *a, bool apply ){
+	Player *caster = a->GetPlayerCaster();
+	
+	if(caster == NULL)
+		return true;
+	
+	if( apply )
+		caster->SetTriggerChill( 44544, a->GetModAmount( i ), false );
+	else
+		caster->SetTriggerChill( 0, 0, false );
+
+	return true;
+}
+
+bool BrainFreeze( uint32 i, Aura *a, bool apply ){
+	Player *caster = a->GetPlayerCaster();
+	
+	if(caster == NULL)
+		return true;
+	
+	if( apply )
+		caster->SetTriggerChill( 57761, a->GetModAmount( i ), false );
+	else
+		caster->SetTriggerChill( 0, 0, false );
+
+	return true;
+}
+
+bool MagicAbsorbtion( uint32 i, Aura *a, bool apply ){
+	Unit *m_target = a->GetTarget();
+
+	if(m_target->IsPlayer())
+	{
+		Player *p_target = TO_PLAYER( m_target );
+
+		if( apply )
+			p_target->m_RegenManaOnSpellResist += ( a->GetModAmount( i ) / 100 ); 
+		else
+			p_target->m_RegenManaOnSpellResist -= ( a->GetModAmount( i ) / 100 ); 
+	}
+
+	return true;
+}
+
 void SetupMageSpells(ScriptMgr * mgr)
 {
     mgr->register_dummy_spell(11958, &Cold_Snap);
@@ -77,4 +161,46 @@ void SetupMageSpells(ScriptMgr * mgr)
 	mgr->register_dummy_aura(HotStreakIds, &HotStreak);
 
 	mgr->register_dummy_spell(31687, &SummonWaterElemental);
+
+	uint32 tormentoftheweakids[] = {
+		29447,
+		55339,
+		55340,
+		0
+	};
+	mgr->register_dummy_aura( tormentoftheweakids, &TormentOfTheWeak );
+
+	uint32 frostbiteids[] = {
+		11071,
+		12496,
+		12497,
+		0
+	};
+	mgr->register_dummy_aura( frostbiteids, &::FrostBite);
+
+	mgr->register_dummy_aura( 32612, &MageInvisibility );
+
+	uint32 fingersoffrostids[] = {
+		44543,
+		44545,
+		0
+	};
+	mgr->register_dummy_aura( fingersoffrostids, &FingersOfFrost );
+
+	uint32 brainfreezeids[] = {
+		44546,
+		44548,
+		44549,
+		0
+	};
+	mgr->register_dummy_aura( brainfreezeids, &BrainFreeze );
+
+	uint32 magicabsorbtionids[] = {
+		29441,
+		29444,
+		0
+	};
+	mgr->register_dummy_aura( magicabsorbtionids, &MagicAbsorbtion );
+
+
 }

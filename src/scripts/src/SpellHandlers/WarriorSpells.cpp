@@ -149,6 +149,93 @@ bool LastStand( uint32 i, Spell *s ){
 	return true;
 }
 
+bool BerserkerRage( uint32 i, Aura *a, bool apply ){
+	Unit *u = a->GetTarget();
+	Player *p_target = NULL;
+
+	if( u->IsPlayer() )
+		p_target = TO_PLAYER( u );
+
+	if( p_target == NULL )
+		return true;
+	
+	if( apply )
+		p_target->rageFromDamageTaken += 100;
+	else
+		p_target->rageFromDamageTaken -= 100;
+	
+	for( int32 i = 0; i < 3; i++ )
+	{
+		if( apply )
+		{
+			p_target->MechanicsDispels[ a->GetSpellProto()->EffectMiscValue[i] ]++;
+			p_target->RemoveAllAurasByMechanic( a->GetSpellProto()->EffectMiscValue[i] , static_cast<uint32>(-1) , false );
+		}
+		else
+			p_target->MechanicsDispels[ a->GetSpellProto()->EffectMiscValue[i] ]--;
+	}
+
+	return true;
+}
+
+bool SweepingStrikes( uint32 i, Aura *a, bool apply ){
+	Unit *m_target = a->GetTarget();
+
+	if(apply)
+		m_target->AddExtraStrikeTarget( a->GetSpellProto(), 10);
+	else
+		m_target->RemoveExtraStrikeTarget( a->GetSpellProto());
+
+	return true;
+}
+
+bool TacticalAndStanceMastery( uint32 i, Aura *a, bool apply ){
+	Unit *u_target = a->GetTarget();
+
+	if( !u_target->IsPlayer() )
+		return true;
+
+	Player *p_target = TO_PLAYER( u_target );
+	
+	if( p_target == NULL )
+		return true;
+
+	if(apply)
+		p_target->m_retainedrage += ( a->GetModAmount( i ) * 10 ); //don't really know if value is all value or needs to be multiplied with 10
+	else
+		p_target->m_retainedrage -= ( a->GetModAmount( i ) * 10 );
+	
+	return true;
+}
+
+bool SecondWind( uint32 i, Aura *a, bool apply ){
+	Player *caster = a->GetPlayerCaster();
+	
+	if(caster == NULL)
+		return true;
+	
+	if( apply )
+		caster->SetTriggerStunOrImmobilize( 29841, 100, true );//fixed 100% chance
+	else
+		caster->SetTriggerStunOrImmobilize( 0, 0, true );
+
+	return true;
+}
+
+bool SecondWind2( uint32 i, Aura *a, bool apply ){
+	Player *caster = a->GetPlayerCaster();
+	
+	if(caster == NULL)
+		return true;
+	
+	if( apply )
+		caster->SetTriggerStunOrImmobilize( 29842, 100, true );//fixed 100% chance
+	else
+		caster->SetTriggerStunOrImmobilize( 0, 0, true );
+
+	return true;
+}
+
 void SetupWarriorSpells(ScriptMgr * mgr)
 {
 	uint32 ExecuteIds[] = 
@@ -177,4 +264,21 @@ void SetupWarriorSpells(ScriptMgr * mgr)
 	mgr->register_dummy_spell( 11578, &Charge );
 
 	mgr->register_dummy_spell( 12975, &LastStand );
+
+	mgr->register_dummy_aura( 18499, &BerserkerRage );
+
+	mgr->register_dummy_aura( 12328, &SweepingStrikes );
+
+	uint32 tacticalandstancemasteryids[] = {
+		12295,
+		12676,
+		12677,
+		12678,
+		0
+	};
+	mgr->register_dummy_aura( tacticalandstancemasteryids, &TacticalAndStanceMastery );
+
+	mgr->register_dummy_aura( 29834, &SecondWind );
+	mgr->register_dummy_aura( 29838, &SecondWind2 );
+
 }

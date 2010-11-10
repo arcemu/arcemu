@@ -263,6 +263,26 @@ bool DeathCoil( uint32 i, Spell *s ){
 	return true;
 }
 
+bool BladedArmor( uint32 i, Aura *a, bool apply ){
+	Unit *m_target = a->GetTarget();
+
+	int32 realamount = 0;
+
+	uint32 mod1 = m_target->GetResistance(SCHOOL_NORMAL);
+	uint32 mod2 = a->m_spellProto->EffectBasePoints[0] + 1; //Thanks Andy for pointing out that BasePoints
+	uint32 mod3 = a->m_spellProto->EffectBasePoints[1] + 1; //Should always be used instead of static modifiers.
+	realamount = ( a->GetModAmount( i ) + ( mod1 / mod3 ) * mod2 );
+
+	if(apply)
+		m_target->ModAttackPowerMods( realamount );
+	else
+		m_target->ModAttackPowerMods( -realamount );
+	
+	m_target->CalcDamage();
+
+	return true;
+}
+
 
 void SetupDeathKnightSpells(ScriptMgr * mgr)
 {
@@ -297,4 +317,13 @@ void SetupDeathKnightSpells(ScriptMgr * mgr)
 	mgr->register_dummy_spell( 49894, &DeathCoil );
 	mgr->register_dummy_spell( 49895, &DeathCoil );
 
+	uint32 bladedarmorids[] = {
+		48978,
+		49390,
+		49391,
+		49392,
+		49393,
+		0
+	};
+	mgr->register_dummy_aura( bladedarmorids, &BladedArmor );
 }

@@ -139,6 +139,58 @@ bool CloakOfShadows( uint32 i, Spell *s ){
 	return true;
 }
 
+bool CheatDeath( uint32 i, Aura *a, bool apply ){
+	Unit *u_target = a->GetTarget();
+	Player *p_target = NULL;
+
+	if( u_target->IsPlayer() )
+		p_target = TO_PLAYER( u_target );
+
+	if( p_target != NULL ){
+		int32 m = (int32)( 8.0f * p_target->CalcRating(PLAYER_RATING_MODIFIER_MELEE_CRIT_RESILIENCE ) );
+		if( m > 90 )
+			m = 90;
+
+		if( apply ){
+			a->SetPositive();
+
+			for( uint32 x = 0; x < 7; x++ )
+				p_target->DamageTakenPctMod[x] -= (float) ( m / 100.0f );
+
+		}else{
+			for( uint32 x = 0; x < 7; x++ )
+				p_target->DamageTakenPctMod[x] += (float) ( m / 100.0f );
+		}
+	}
+
+	return true;
+}
+
+bool MasterOfSubtletly( uint32 i, Aura *a, bool apply ){
+	Unit *u_target = a->GetTarget();
+	Player *p_target = NULL;
+
+	if( u_target->IsPlayer() )
+		p_target = TO_PLAYER( u_target );
+
+	int32 amount = a->GetModAmount( i );
+	
+	if( apply )
+	{
+		p_target->m_outStealthDamageBonusPct += amount;
+		p_target->m_outStealthDamageBonusPeriod = 6;		// 6 seconds
+		p_target->m_outStealthDamageBonusTimer = 0;			// reset it
+	}
+	else
+	{
+		p_target->m_outStealthDamageBonusPct -= amount;
+		p_target->m_outStealthDamageBonusPeriod = 6;		// 6 seconds
+		p_target->m_outStealthDamageBonusTimer = 0;			// reset it
+	}
+
+	return true;
+}
+
 void SetupRogueSpells(ScriptMgr * mgr)
 {
 	mgr->register_dummy_spell(5938, &Shiv);
@@ -152,4 +204,15 @@ void SetupRogueSpells(ScriptMgr * mgr)
 	mgr->register_dummy_aura(51626, &DeadlyBrew);
 
 	mgr->register_dummy_spell( 35729, &CloakOfShadows );
+
+	mgr->register_dummy_aura( 45182, &CheatDeath );
+
+
+	uint32 masterofsubtletlyids[] = {
+		31223,
+		31222,
+		31221,
+		0
+	};
+	mgr->register_dummy_aura( masterofsubtletlyids, &MasterOfSubtletly );
 }
