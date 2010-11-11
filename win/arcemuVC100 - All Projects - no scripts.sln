@@ -12,6 +12,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "..\extras\arcemu-wi
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pcre", "..\extras\arcemu-windows-libraries\Sources\VC100-pcre.vcxproj", "{311F016D-F785-47EF-B032-5350397F16B6}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "arcSpellHandlers", "..\src\scripts\projects\SpellsHandlers2010.vcxproj", "{21CCA237-B55E-4882-B3E3-4A0321315CB3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -68,6 +70,14 @@ Global
 		{311F016D-F785-47EF-B032-5350397F16B6}.Release|Win32.Build.0 = Release|Win32
 		{311F016D-F785-47EF-B032-5350397F16B6}.Release|x64.ActiveCfg = Release|x64
 		{311F016D-F785-47EF-B032-5350397F16B6}.Release|x64.Build.0 = Release|x64
+		{21CCA237-B55E-4882-B3E3-4A0321315CB3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{21CCA237-B55E-4882-B3E3-4A0321315CB3}.Debug|Win32.Build.0 = Debug|Win32
+		{21CCA237-B55E-4882-B3E3-4A0321315CB3}.Debug|x64.ActiveCfg = Debug|x64
+		{21CCA237-B55E-4882-B3E3-4A0321315CB3}.Debug|x64.Build.0 = Debug|x64
+		{21CCA237-B55E-4882-B3E3-4A0321315CB3}.Release|Win32.ActiveCfg = Release|Win32
+		{21CCA237-B55E-4882-B3E3-4A0321315CB3}.Release|Win32.Build.0 = Release|Win32
+		{21CCA237-B55E-4882-B3E3-4A0321315CB3}.Release|x64.ActiveCfg = Release|x64
+		{21CCA237-B55E-4882-B3E3-4A0321315CB3}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

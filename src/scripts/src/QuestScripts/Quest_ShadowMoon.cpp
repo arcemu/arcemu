@@ -21,23 +21,7 @@
 
 #include "Setup.h"
 
-bool CrystalOfDeepShadows(uint32 i, Spell* pSpell) // Becoming a Shadoweave Tailor
-{
-  if(!pSpell->u_caster->IsPlayer())
-    return true;
 
-  Player* plr = TO_PLAYER(pSpell->u_caster);
-  QuestLogEntry *qle = plr->GetQuestLogForEntry(10833);
-  
-  if(qle == NULL)
-    return true;
-
-  qle->SetMobCount(0, 1);
-  qle->SendUpdateAddKill(0);
-  qle->UpdatePlayerFields();
-
-  return true;
-}
 // Infiltrating Dragonmaw Fortress Quest
 class InfiltratingDragonmawFortressQAI : public CreatureAIScript
 {
@@ -95,61 +79,7 @@ public:
 	}
 };
 
-bool ToLegionHold(uint32 i, Aura* pAura, bool apply)
-{
-	if( pAura == NULL )
-		return true;
 
-	Player* pPlayer = pAura->GetPlayerCaster();
-	if( pPlayer == NULL )
-		return true;
-
-	Creature* pJovaanCheck = pPlayer->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(-3310.743896f, 2951.929199f, 171.132538f, 21633);
-	if ( pJovaanCheck != NULL )
-		return true;
-
-	QuestLogEntry *pQuest = pPlayer->GetQuestLogForEntry( 10563 );
-	if ( pQuest == NULL )
-	{
-		pQuest = pPlayer->GetQuestLogForEntry( 10596 );
-		if ( pQuest == NULL )
-			return true;
-	}
-
-	if ( apply )
-	{
-
-		pPlayer->Root();
-		Creature* pJovaan = sEAS.SpawnCreature( pPlayer, 21633, -3310.743896f, 2951.929199f, 171.132538f, 5.054039f, 0 );	// Spawn Jovaan
-		if ( pJovaan != NULL )
-		{
-			pJovaan->SetUInt64Value( UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_2 );
-			if ( pJovaan->GetAIInterface() != NULL )
-			{
-				pJovaan->GetAIInterface()->SetAllowedToEnterCombat( false );
-			}
-		}
-		GameObject* pGameObject = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(pPlayer->GetPositionX(), pPlayer->GetPositionY(), pPlayer->GetPositionZ(), 184834);
-		if ( pGameObject != NULL )
-		{
-			pGameObject->Despawn(60000, 0);
-			pPlayer->UpdateNearbyGameObjects();
-		}
-	}
-	else
-	{
-		if ( pQuest->GetMobCount( 2 ) < pQuest->GetQuest()->required_mobcount[2] )
-		{
-			pQuest->SetMobCount( 2, pQuest->GetMobCount( 2 ) + 1 );
-			pQuest->SendUpdateAddKill( 2 );
-			pQuest->UpdatePlayerFields();
-		}
-	
-		pPlayer->Unroot();
-	}
-
-	return true;
-}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////// Deathbringer Jovaan
@@ -345,66 +275,8 @@ public:
 };
 
 
-bool Carcass(uint32 i, Spell* pSpell) // Becoming a Shadoweave Tailor
-{
-	if(!pSpell->u_caster->IsPlayer())
-		return true;
 
-	Player*	pPlayer = TO_PLAYER(pSpell->u_caster);
-	QuestLogEntry	*pQuest = pPlayer->GetQuestLogForEntry( 10804 );
-	Creature*	NetherDrake = pPlayer->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(pPlayer->GetPositionX(), pPlayer->GetPositionY(), pPlayer->GetPositionZ(), 21648);
-	GameObject* FlayerCarcass = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(pPlayer->GetPositionX(), pPlayer->GetPositionY(), pPlayer->GetPositionZ(), 185155);
 
-	if ( FlayerCarcass == NULL )
-	{
-		FlayerCarcass = sEAS.SpawnGameobject(pPlayer, 185155, pPlayer->GetPositionX(), pPlayer->GetPositionY(), pPlayer->GetPositionZ(), 0, 1, 0, 0, 0, 0);
-		FlayerCarcass->Despawn(60000, 0);
-	}
-	if ( NetherDrake == NULL )
-		return true;
-
-	if ( NetherDrake->HasAura(38502) )
-		return true;
-
-	if( pQuest!=NULL && pQuest->GetMobCount( 0 ) < pQuest->GetQuest()->required_mobcount[0] )
-	{
-		NetherDrake->CastSpell(NetherDrake, dbcSpell.LookupEntry( 38502 ), true);
-		NetherDrake->GetAIInterface()->m_moveFly = true;
-		NetherDrake->GetAIInterface()->MoveTo(pPlayer->GetPositionX(), pPlayer->GetPositionY()+2, pPlayer->GetPositionZ(), 0);
-		pQuest->SetMobCount( 0, pQuest->GetMobCount( 0 )+1);
-		pQuest->SendUpdateAddKill( 0 );
-		pQuest->UpdatePlayerFields();
-	}
-	return true;
-}
-
-bool EatenRecently(uint32 i, Aura* pAura, bool apply)
-{
-	if ( pAura == NULL )
-		return true;
-
-	Unit* caster = pAura->GetUnitCaster();
-	if(caster || caster->IsPlayer() )
-		return true;
-
-	Creature* NetherDrake = TO_CREATURE( caster );
-	
-	if (NetherDrake == NULL)
-		return true;
-
-	if ( apply )
-	{
-		NetherDrake->GetAIInterface()->SetAllowedToEnterCombat(false);
-		NetherDrake->Emote(EMOTE_ONESHOT_EAT);
-	}
-	else
-	{
-		NetherDrake->GetAIInterface()->SetAllowedToEnterCombat(true);
-		NetherDrake->GetAIInterface()->m_moveFly = true;
-		NetherDrake->GetAIInterface()->MoveTo(NetherDrake->GetSpawnX(), NetherDrake->GetSpawnY(), NetherDrake->GetSpawnZ(), NetherDrake->GetSpawnO());
-	}
-	return true;
-}
 
 class NeltharakusTale_Gossip : public GossipScript
 {
@@ -488,62 +360,7 @@ public:
 	}
 };
 
-bool ForceofNeltharakuSpell(uint32 i, Spell* pSpell) // Becoming a Shadoweave Tailor
-{
-	if(pSpell->u_caster->IsPlayer() == false)
-		return true;
 
-	Player*	pPlayer= TO_PLAYER(pSpell->u_caster);
-	Unit*		pUnit	= TO_UNIT(pPlayer->GetMapMgr()->GetCreature(GET_LOWGUID_PART(pPlayer->GetSelection())));
-
-	if(pUnit == NULL)
-		return true;
-
-	if(!pUnit->IsCreature())
-		return true;
-
-	Creature*		 pTarget	= TO_CREATURE(pUnit);
-	QuestLogEntry	 *pQuest	= pPlayer->GetQuestLogForEntry(10854);
-	if(pQuest == NULL)
-		return true;
-
-	if(pTarget->GetEntry() == 21722 && pPlayer->CalcDistance(pUnit)<30)
-	{
-		if ( pQuest && pQuest->GetMobCount(0) < pQuest->GetQuest()->required_mobcount[0] )
-		{
-			pTarget->CastSpell(pPlayer, dbcSpell.LookupEntry(38775), true);
-			pQuest->SetMobCount(0, pQuest->GetMobCount(0)+1);
-			pQuest->SendUpdateAddKill(0);
-			pQuest->UpdatePlayerFields();
-			if ( pTarget->GetScript() != NULL )
-			{
-				MoonScriptCreatureAI *pDrakeAI = static_cast<MoonScriptCreatureAI*>(pTarget->GetScript());
-				pDrakeAI->SetCanMove(true);
-				pDrakeAI->SetWaypointToMove(0);
-			}
-		}
-	}
-	return true;
-}
-
-bool UnlockKarynakuChains(uint32 i, Spell* pSpell) // Becoming a Shadoweave Tailor
-{
-	if(pSpell->u_caster->IsPlayer() == false)
-		return true;
-
-	Player*	pPlayer= TO_PLAYER(pSpell->u_caster);
-	QuestLogEntry	 *pQuest	= pPlayer->GetQuestLogForEntry(10872);
-	if(pQuest == NULL)
-		return true;
-
-	if ( pQuest && pQuest->GetMobCount(0) < pQuest->GetQuest()->required_mobcount[0] )
-	{
-		pQuest->SetMobCount(0, pQuest->GetMobCount(0)+1);
-		pQuest->SendUpdateAddKill(0);
-		pQuest->UpdatePlayerFields();
-	}
-	return true;
-}
 
 class KarynakuChains : public GameObjectAIScript
 {
@@ -632,13 +449,6 @@ void SetupShadowmoon(ScriptMgr * mgr)
 	mgr->register_creature_script(CN_ENSLAVED_NETHERWING_DRAKE, &EnslavedNetherwingDrakeAI::Create);
 
 	mgr->register_gameobject_script(185156, &KarynakuChains::Create);
-
-	mgr->register_dummy_aura(37097, &ToLegionHold);
-	mgr->register_dummy_aura(38502, &EatenRecently);
-	
-	mgr->register_script_effect(39094, &CrystalOfDeepShadows);
-	mgr->register_dummy_spell(38439, &Carcass);
-	mgr->register_dummy_spell(38762, &ForceofNeltharakuSpell);
 
 	GossipScript * NeltharakusTaleGossip = new NeltharakusTale_Gossip;
 	mgr->register_gossip_script(21657, NeltharakusTaleGossip);

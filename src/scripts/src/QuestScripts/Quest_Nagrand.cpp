@@ -444,65 +444,7 @@ public:
 };
 
 
-// Stopping the Spread
-bool StoppingTheSpread(uint32 i, Spell* pSpell)
-{
-	if( !pSpell->u_caster->IsPlayer() )
-		return true;
 
-	Player* plr = TO_PLAYER(pSpell->u_caster);
-	if( plr == NULL )
-		return true;
-
-	Creature* target = TO_CREATURE(plr->GetMapMgr()->GetInterface()->GetCreatureNearestCoords( plr->GetPositionX(), plr->GetPositionY() , plr->GetPositionZ(), 18240 ));
-	if( target == NULL )
-		return true;
-
-	QuestLogEntry *qle = plr->GetQuestLogForEntry(9874);
-  
-	if( qle == NULL )
-		return true;
- 
-	if( qle && qle->GetMobCount(0) < qle->GetQuest()->required_mobcount[0] )
-	{
-		qle->SetMobCount( 0, qle->GetMobCount( 0 ) + 1 );
-		qle->SendUpdateAddKill( 0 );
-		
-		GameObject* obj = sEAS.SpawnGameobject(plr, 183816, target->GetPositionX(), target->GetPositionY(), target->GetPositionZ(), target->GetOrientation(), 1, 0, 0, 0, 0);
-		sEAS.GameobjectDelete(obj, 1*30*1000);
-	};
-
-	target->Despawn( 2000, 60*1000 );
-	plr->UpdateNearbyGameObjects();
-	qle->UpdatePlayerFields();
-		return true;
-}
-
-//Ruthless Cunning
-bool RuthlessCunning(uint32 i, Spell* pSpell)
-{
-	if(!pSpell->u_caster->IsPlayer())
-		return true;
-	
-	Player* plr = TO_PLAYER(pSpell->u_caster);
-	if( plr == NULL )
-		return true;
-
-	Creature* kilsorrow = plr->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(plr->GetPositionX(), plr->GetPositionY() , plr->GetPositionZ());
-	if( kilsorrow == NULL || kilsorrow->isAlive() )
-		return true;
-
-	QuestLogEntry *qle = plr->GetQuestLogForEntry(9927);
-	if(qle && qle->GetMobCount(0) < qle->GetQuest()->required_mobcount[0])
-	{
-		kilsorrow->Despawn(0, 60000);
-		qle->SetMobCount(0, qle->GetMobCount(0)+1);
-		qle->SendUpdateAddKill(0);
-		qle->UpdatePlayerFields();
-	};
-
-	return true;
-}
 
 void SetupNagrand(ScriptMgr * mgr)
 {
@@ -523,7 +465,6 @@ void SetupNagrand(ScriptMgr * mgr)
 
 	GossipScript * LumpGossip = new LumpGossipScript;
 	mgr->register_gossip_script(18351, LumpGossip);
-	mgr->register_dummy_spell(32146, &StoppingTheSpread);
-	mgr->register_script_effect(32307, &RuthlessCunning);
+
 }
 

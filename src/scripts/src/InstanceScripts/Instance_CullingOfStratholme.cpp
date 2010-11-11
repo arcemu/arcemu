@@ -950,48 +950,7 @@ public:
 	}
 };
 
-bool ArcaneDisruption( uint32 i, Aura * pAura, bool apply )
-{
-	if( !apply )
-		return true;
 
-	if( pAura->GetPlayerCaster() == NULL )
-		return false;
-
-	Player* plr = pAura->GetPlayerCaster();
-
-	QuestLogEntry* pQuest = plr->GetQuestLogForEntry(13149);
-	if( !pQuest )
-		return false;
-	GameObject* crate = plr->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords( plr->GetPositionX(), plr->GetPositionY(), plr->GetPositionZ(), 190094);
-	if( crate )
-	{
-		GameObject* go = plr->GetMapMgr()->CreateGameObject(190095);
-		go->CreateFromProto(190095, crate->GetMapMgr()->GetMapId(), crate->GetPositionX(), crate->GetPositionY(), crate->GetPositionZ(), crate->GetOrientation(), 0.0f, 0.0f, 0.0f, 0.0f);
-		go->SetInstanceID(crate->GetMapMgr()->GetInstanceID());
-		go->PushToWorld(crate->GetMapMgr());
-		crate->Despawn(0,0);
-		pQuest->SetMobCount( 0, pQuest->GetMobCount( 0 ) + 1 );
-		pQuest->SendUpdateAddKill( 0 );
-		pQuest->UpdatePlayerFields();
-		if( pQuest->GetMobCount( 0 ) == 5 )
-		{//weee, Uther
-			CreatureProto *cp = CreatureProtoStorage.LookupEntry(26528);
-			CreatureInfo *ci = CreatureNameStorage.LookupEntry(26528);
-			Creature* c = NULL;
-			if (cp && ci)
-			{
-				c = plr->GetMapMgr()->CreateCreature( 26528 );
-				if (c) {
-					//position is guessed
-					c->Load(cp,1759.4351f, 1265.3317f, 138.052f, 0.1902f);
-					c->PushToWorld(plr->GetMapMgr());
-				}
-			}
-		}
-	}
-	return true;
-};
 
 static Location walk[] = 
 {
@@ -1329,7 +1288,6 @@ void SetupCullingOfStratholme(ScriptMgr * mgr)
 	//UPDATE `quests` SET `ReqKillMobOrGOCount1`='5' WHERE (`entry`='13149');
 	QuestScript *Dispelling_Illusions = new Quest_Dispelling_Illusions();
 	mgr->register_quest_script(13149, Dispelling_Illusions);
-	mgr->register_dummy_aura(49590, &ArcaneDisruption);
 	//mgr->register_creature_script(26528, &UTHER_AI::Create);
 	//mgr->register_creature_script(26499, &ARTHAS_AI::Create);
 	//GossipScript * AG = new ArthasGossip();

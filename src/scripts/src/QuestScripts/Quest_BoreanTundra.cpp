@@ -105,33 +105,7 @@ class PurifyingTotemAI : public MoonScriptCreatureAI
 
 };
 
-bool NeutralizingTheCauldrons(uint32 i, Spell* pSpell)
-{
-	if (pSpell == NULL || pSpell->p_caster == NULL || !pSpell->p_caster->IsInWorld())
-		return true;
 
-	Player* pPlayer = pSpell->p_caster;
-	QuestLogEntry* pQuest = sEAS.GetQuest( pPlayer, 11647);
-	if ( pQuest == NULL )
-		return true;
-
-	GameObject* pCauldron = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords( pPlayer->GetPositionX(), pPlayer->GetPositionY(), pPlayer->GetPositionZ(), 187690 );
-	if(pCauldron == NULL)
-		return true;
-
-	float posX = pCauldron->GetPositionX();
-
-	if(posX == 3747.07f)
-		sEAS.KillMobForQuest( pPlayer, pQuest, 0 );
-
-	if(posX == 4023.5f)
-		sEAS.KillMobForQuest( pPlayer, pQuest, 1 );
-
-	if(posX == 4126.12f)
-		sEAS.KillMobForQuest( pPlayer, pQuest, 2 );
-	
-	return true;
-}
 
 // Cutting Off the Source
 class NerubarEggSac : public GameObjectAIScript
@@ -153,35 +127,6 @@ public:
 
 };
 
-// Stop the Plague
-bool HighmessasCleansingSeeds(uint32 i, Spell * pSpell)
-{
-	if (pSpell == NULL || pSpell->p_caster == NULL || !pSpell->p_caster->IsInWorld())
-		return true;
-
-	Player*  pPlayer = pSpell->p_caster;
-	QuestLogEntry* pQuest = sEAS.GetQuest( pPlayer, 11677 );
-	if ( !pQuest )
-		return true;
-
-	sEAS.KillMobForQuest( pPlayer, pQuest, 0);
-	return true;
-}
-
-// There's Something Going On In Those Caves
-bool BixiesInhibitingPowder(uint32 i, Spell * pSpell)
-{
-	if (pSpell == NULL || pSpell->p_caster == NULL || !pSpell->p_caster->IsInWorld())
-		return true;
-
-	Player* pPlayer = pSpell->p_caster;
-	QuestLogEntry* pQuest = sEAS.GetQuest( pPlayer, 11694 );
-	if ( !pQuest )
-		return true;
-
-	sEAS.KillMobForQuest( pPlayer, 11694, 0);
-	return true;
-}
 
 // Bury Those Cockroaches!
 class SeaforiumDepthCharge : public MoonScriptCreatureAI
@@ -245,41 +190,7 @@ public:
 	}
 };
 
-// Leading the Ancestors Home
-bool CompleteAncestorRitual(uint32 i, Spell * pSpell)
-{
-	if(pSpell == NULL || pSpell->p_caster == NULL || !pSpell->p_caster->IsInWorld())
-		return true;
 
-	Player* pPlayer = pSpell->p_caster;
-	QuestLogEntry* pQuest = sEAS.GetQuest( pPlayer, 11610 );
-	if( !pQuest )
-		return true;
-
-	GameObject* pElderObj;
-	pElderObj = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords( pPlayer->GetPositionX(), pPlayer->GetPositionY(), pPlayer->GetPositionZ(), 191088);
-	if(pElderObj != NULL && pPlayer->GetDistance2dSq(pElderObj) < 8.0f)
-	{
-		sEAS.KillMobForQuest( pPlayer, 11610, 0);
-		return true;
-	}
-
-	pElderObj = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords( pPlayer->GetPositionX(), pPlayer->GetPositionY(), pPlayer->GetPositionZ(), 191089);
-	if(pElderObj != NULL && pPlayer->GetDistance2dSq(pElderObj) < 8.0f)
-	{
-		sEAS.KillMobForQuest( pPlayer, 11610, 1);
-		return true;
-	}
-
-	pElderObj = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords( pPlayer->GetPositionX(), pPlayer->GetPositionY(), pPlayer->GetPositionZ(), 191090);
-	if(pElderObj != NULL && pPlayer->GetDistance2dSq(pElderObj) < 8.0f)
-	{
-		sEAS.KillMobForQuest( pPlayer, 11610, 2);
-		return true;
-	}
-
-	return true;
-}
 
 
 enum eFizzcrank
@@ -425,21 +336,17 @@ void SetupBoreanTundra(ScriptMgr * mgr)
 	mgr->register_gameobject_script(188101, &ColdarraGeoMonitorSouth::Create);
 	mgr->register_gameobject_script(188102, &ColdarraGeoMonitorNorth::Create);
 	mgr->register_gameobject_script(188103, &ColdarraGeoMonitorWest::Create);
-	// Neutralizing the Cauldrons
-	mgr->register_creature_script(CN_PURIFYING_TOTEM, &PurifyingTotemAI::Create);
-	mgr->register_dummy_spell(45653, &NeutralizingTheCauldrons);
+
 	// Cutting Off the Source
 	mgr->register_gameobject_script(187655, &NerubarEggSac::Create);
-	// Stop the Plague
-	mgr->register_dummy_spell(45834, &HighmessasCleansingSeeds);
-	// There's Something Going On In Those Caves
-	mgr->register_dummy_spell(45835, &BixiesInhibitingPowder);
 	// Bury Those Cockroaches!
 	mgr->register_creature_script(25401, &SeaforiumDepthCharge::Create);
 	// Hatching a Plan
 	mgr->register_gameobject_script(188133, &BlueDragonEgg::Create);
-	// Leading the Ancestors Home
-	mgr->register_dummy_spell(45536, &CompleteAncestorRitual);
+
+	// Neutralizing the Cauldrons
+	mgr->register_creature_script(CN_PURIFYING_TOTEM, &PurifyingTotemAI::Create);
+
     // Mechagnomes
     // Fizzcrank Fullthrottle
     GossipScript * fGossip = new FizzcrankGossip;

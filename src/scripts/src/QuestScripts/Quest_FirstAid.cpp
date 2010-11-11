@@ -84,31 +84,7 @@ public:
 	}
 };
 
-bool Triage(uint32 i, Spell* pSpell)
-{
-	// Unit* target = pSpell->GetUnitTarget();
-	// if(!pSpell->p_caster || !target || target->GetTypeId() != TYPEID_UNIT) return true;
-	if(!pSpell->p_caster || pSpell->GetUnitTarget() == NULL) return true;
-		pSpell->p_caster->CastSpell(pSpell->GetUnitTarget(), dbcSpell.LookupEntry(746), true);
-		QuestLogEntry *en = pSpell->p_caster->GetQuestLogForEntry(6624);
 
-			if(en && en->GetMobCount(0) < en->GetQuest()->required_mobcount[0])
-		{
-		uint32 newcount = en->GetMobCount(0) + 1;
-		en->SetMobCount(0, newcount);
-		en->SendUpdateAddKill(0);
-		en->UpdatePlayerFields();
-		}
-	// Creature* c_target = (Creature*)target;
-	// if(!c_target) return true;
-
-	// uint32 creatureID = c_target->GetEntry();
-
-	// if(creatureID == 12937)
-		// sQuestMgr.OnPlayerKill(pSpell->p_caster, c_target);
-
-	return true;
-}
 
 void SetupFirstAid(ScriptMgr * mgr)
 {
@@ -118,5 +94,5 @@ void SetupFirstAid(ScriptMgr * mgr)
 	mgr->register_creature_script(12936, &InjuredSoldier::Create);
 	mgr->register_creature_script(12937, &InjuredSoldier::Create);
 	mgr->register_creature_script(12938, &InjuredSoldier::Create);
-	mgr->register_dummy_spell(20804, &Triage);
+	
 }

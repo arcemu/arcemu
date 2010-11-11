@@ -19,74 +19,7 @@
  
 #include "Setup.h"
 
-// War is Hell
-bool WarIsHell(uint32 i, Spell* pSpell)
-{
-	if( !pSpell->u_caster->IsPlayer() )
-		return true;
 
-	Player* plr = TO_PLAYER(pSpell->u_caster);
-	if( plr == NULL )
-		return true;
-
-	Creature* target = TO_CREATURE(plr->GetMapMgr()->GetInterface()->GetCreatureNearestCoords( plr->GetPositionX(), plr->GetPositionY() , plr->GetPositionZ(), 24008 ));
-	if( target == NULL )
-		return true;
-
-	QuestLogEntry *qle = plr->GetQuestLogForEntry(11270);
-  
-	if( qle == NULL )
-		return true;
- 
-	GameObject* obj = NULL;
-
-	sEAS.KillMobForQuest( plr, qle, 0 );
-
-	obj = sEAS.SpawnGameobject(plr, 183816, target->GetPositionX(), target->GetPositionY(), target->GetPositionZ(), target->GetOrientation(), 1, 0, 0, 0, 0);
-	sEAS.GameobjectDelete(obj, 1*30*1000);
-
-	target->Despawn( 2000, 60*1000 );
-	plr->UpdateNearbyGameObjects();
-	qle->UpdatePlayerFields();
-	return true;
-}
-
-// A Lesson in Fear
-bool PlantForsakenBanner(uint32 i, Spell* pSpell)
-{
-	if(pSpell->u_caster->IsPlayer() == false)
-		return true;
-
-	Player* pPlayer = TO_PLAYER(pSpell->u_caster);
-	if( pPlayer == NULL )
-		return true;
-
-	QuestLogEntry* pQuest = pPlayer->GetQuestLogForEntry(11282);
-	if( pQuest == NULL )
-		return true;
-	
-	Creature* target = static_cast<Creature*>(pSpell->GetUnitTarget());
-	if ( target == NULL || target->isAlive() )
-		return true;
-
-	uint32 cit = target->GetEntry();
-	switch(cit)
-	{
-	case 24161:
-		sEAS.KillMobForQuest( pPlayer, 11282, 0 );
-		target->Despawn(0, 3*60*1000);
-		break;
-	case 24016:
-		sEAS.KillMobForQuest( pPlayer, 11282, 1 );
-		target->Despawn(0, 3*60*1000);
-		break;
-	case 24162:
-		sEAS.KillMobForQuest( pPlayer, 11282, 2 );
-		target->Despawn(0, 3*60*1000);
-		break;
-	}
-	return true;
-}
 class NorthFleet : public CreatureAIScript
 {
 public:
@@ -229,8 +162,6 @@ void SetupHowlingFjord(ScriptMgr * mgr)
 	GossipScript * Plague = new Plaguethis_Gossip(); // thx  Dzjhenghiz
 	mgr->register_gossip_script(23859, Plague);
 
-	mgr->register_dummy_spell(42793, &WarIsHell);
-	mgr->register_dummy_spell(43178, &PlantForsakenBanner);
 	mgr->register_creature_script(23643, &ChillmereScourge::Create);
 	mgr->register_creature_script(23645, &ChillmereScourge::Create);
 	mgr->register_creature_script(23644, &ChillmereScourge::Create);

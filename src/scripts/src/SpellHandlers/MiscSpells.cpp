@@ -285,6 +285,162 @@ bool NegativeCrap( uint32 i, Aura *a, bool apply ){
 	return true;
 }
 
+bool DecayFlash(uint32 i, Aura* pAura, bool apply)
+{
+	if( apply && pAura->GetTarget()->IsPlayer() )
+	{
+		Player* p_target = TO_PLAYER( pAura->GetTarget() );
+		p_target->SetShapeShift( 10 );//Tharon'ja Skeleton
+		p_target->SetDisplayId(9784 );
+	}
+    return true;
+}
+
+bool ReturnFlash(uint32 i, Aura* pAura, bool apply)
+{
+    if( apply && pAura->GetTarget()->IsPlayer() )
+	{
+		Player* p_target = TO_PLAYER( pAura->GetTarget() );
+		p_target->SetDisplayId(p_target->GetNativeDisplayId() );
+		p_target->m_ShapeShifted = 0;
+		p_target->SetShapeShift( 0 );
+	}
+    return true;
+}
+
+bool EatenRecently(uint32 i, Aura* pAura, bool apply)
+{
+	if ( pAura == NULL )
+		return true;
+
+	Unit* caster = pAura->GetUnitCaster();
+	if(caster || caster->IsPlayer() )
+		return true;
+
+	Creature* NetherDrake = TO_CREATURE( caster );
+	
+	if (NetherDrake == NULL)
+		return true;
+
+	if ( apply )
+	{
+		NetherDrake->GetAIInterface()->SetAllowedToEnterCombat(false);
+		NetherDrake->Emote(EMOTE_ONESHOT_EAT);
+	}
+	else
+	{
+		NetherDrake->GetAIInterface()->SetAllowedToEnterCombat(true);
+		NetherDrake->GetAIInterface()->m_moveFly = true;
+		NetherDrake->GetAIInterface()->MoveTo(NetherDrake->GetSpawnX(), NetherDrake->GetSpawnY(), NetherDrake->GetSpawnZ(), NetherDrake->GetSpawnO());
+	}
+	return true;
+}
+
+bool Temper(uint32 i, Spell *pSpell)
+{
+	if ( pSpell == NULL || pSpell->u_caster == NULL )
+		return true;
+
+	Unit* pHated = pSpell->u_caster->GetAIInterface()->GetMostHated();
+
+	MapScriptInterface* pMap = pSpell->u_caster->GetMapMgr()->GetInterface();
+	Creature *pCreature1 = pMap->SpawnCreature( 28695, 1335.296265f, -89.237503f, 56.717800f, 1.994538f, true, true, 0, 0, 1 );
+	if ( pCreature1 )
+		pCreature1->GetAIInterface()->AttackReaction( pHated, 1 );
+
+	Creature *pCreature2 = pMap->SpawnCreature( 28695, 1340.615234f, -89.083313f, 56.717800f, 0.028982f, true, true, 0, 0, 1 );
+	if ( pCreature2 )
+		pCreature2->GetAIInterface()->AttackReaction( pHated, 1 );
+
+	return true;
+};
+
+//Chaos blast dummy effect
+bool ChaosBlast(uint32 i, Spell*  pSpell)
+{
+	/*Unit* target = NULL;
+	if(GUID_HIPART(pSpell->m_targets.m_unitTarget) == HIGHGUID_UNIT)
+		target = pSpell->u_caster->GetMapMgr()->GetCreature(pSpell->m_targets.m_unitTarget);
+	else if (GUID_HIPART(pSpell->m_targets.m_unitTarget) == HIGHGUID_PLAYER)
+		target = objmgr.GetPlayer(pSpell->m_targets.m_unitTarget);*/
+
+	// M4ksiu - not sure if it's correct way to resolve Ascent -> AspireCore changes
+	if ( pSpell == NULL || pSpell->u_caster == NULL )
+		return true;
+
+	pSpell->u_caster->CastSpell( pSpell->GetUnitTarget(), 37675, true );
+	return true;
+}
+
+bool Dummy_Solarian_WrathOfTheAstromancer(uint32 pEffectIndex, Spell* pSpell)
+{
+	Unit* Caster = pSpell->u_caster;
+	if( !Caster ) return true;
+
+	Unit* Target = Caster->GetAIInterface()->GetNextTarget();
+	if( !Target ) return true;
+
+	SpellEntry* SpellInfo = dbcSpell.LookupEntry( 42787 );
+	if( !SpellInfo ) return true;
+
+	//Explode bomb after 6sec
+	sEventMgr.AddEvent(Target, &Unit::EventCastSpell, Target, SpellInfo, EVENT_UNK, 6000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+	return true;
+}
+
+bool PreparationForBattle(uint32 i, Spell* pSpell)
+{
+	if ( pSpell == NULL || pSpell->u_caster == NULL || !pSpell->u_caster->IsPlayer() )
+	return true;
+
+	Player* pPlayer = TO_PLAYER( pSpell->u_caster );
+	QuestLogEntry *pQuest = pPlayer->GetQuestLogForEntry( 12842 );
+	if ( pQuest != NULL )
+	{
+		if ( pQuest->GetMobCount(0) < pQuest->GetQuest()->required_mobcount[0] )
+		{
+			pQuest->SetMobCount( 0, pQuest->GetMobCount( 0 ) + 1 );
+			pQuest->SendUpdateAddKill( 0 );
+			pQuest->UpdatePlayerFields();
+			pQuest->SendQuestComplete();
+		}
+	}
+	return true;
+};
+
+#define CN_CRYSTAL_SPIKE			27099
+#define CRYSTAL_SPIKES				47958
+#define CRYSTAL_SPIKES_H			57082
+
+bool CrystalSpikes(uint32 i, Spell *pSpell)
+{
+	if (pSpell == NULL || pSpell->u_caster == NULL)
+		return true;
+
+	Unit* pCaster = pSpell->u_caster;
+
+	for( int i = 1; i < 6; ++i )
+	{
+		pCaster->GetMapMgr()->GetInterface()->SpawnCreature( CN_CRYSTAL_SPIKE, pCaster->GetPositionX() + ( 3 * i ) + rand()%3 , pCaster->GetPositionY() + ( 3 * i ) + rand()%3 , pCaster->GetPositionZ(), pCaster->GetOrientation(), true, false, NULL, NULL );
+	};
+	
+	for( int i = 1; i < 6; ++i )
+	{
+		pCaster->GetMapMgr()->GetInterface()->SpawnCreature( CN_CRYSTAL_SPIKE, pCaster->GetPositionX() - ( 3 * i ) - rand()%3 , pCaster->GetPositionY() + ( 3 * i ) + rand()%3 , pCaster->GetPositionZ(), pCaster->GetOrientation(), true, false, NULL, NULL );
+	};
+	
+	for( int i = 1; i < 6; ++i )
+	{
+		pCaster->GetMapMgr()->GetInterface()->SpawnCreature( CN_CRYSTAL_SPIKE, pCaster->GetPositionX() + ( 3 * i ) + rand()%3 , pCaster->GetPositionY() - ( 3 * i ) - rand()%3 , pCaster->GetPositionZ(), pCaster->GetOrientation(), true, false, NULL, NULL );
+	};
+	
+	for( int i = 1; i < 6; ++i )
+	{
+		pCaster->GetMapMgr()->GetInterface()->SpawnCreature( CN_CRYSTAL_SPIKE, pCaster->GetPositionX() - ( 3 * i ) - rand()%3 , pCaster->GetPositionY() - ( 3 * i ) - rand()%3 , pCaster->GetPositionZ(), pCaster->GetOrientation(), true, false, NULL, NULL );
+	};
+
+	return true;
+}
 
 void SetupMiscSpellhandlers( ScriptMgr *mgr ){
 	mgr->register_dummy_spell( 11189, &FrostWarding );
@@ -323,6 +479,24 @@ void SetupMiscSpellhandlers( ScriptMgr *mgr ){
 		0
 	};
 	mgr->register_dummy_aura( negativecrapids, &NegativeCrap );
+
+	mgr->register_dummy_aura(49356, &DecayFlash);
+
+	mgr->register_dummy_aura(53463, &ReturnFlash);
+
+	mgr->register_dummy_aura(38502, &EatenRecently);
+	
+	mgr->register_dummy_spell( 52238, &Temper );
+
+	mgr->register_dummy_spell( 37674, &ChaosBlast);
+
+	mgr->register_dummy_spell( 42783, &Dummy_Solarian_WrathOfTheAstromancer);
+	
+	mgr->register_dummy_spell(53341, &PreparationForBattle);
+	mgr->register_dummy_spell(53343, &PreparationForBattle);
+
+	mgr->register_script_effect(CRYSTAL_SPIKES, &CrystalSpikes);
+	mgr->register_script_effect(CRYSTAL_SPIKES_H, &CrystalSpikes);
 
 }
 

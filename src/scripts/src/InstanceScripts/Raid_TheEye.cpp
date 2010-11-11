@@ -3416,8 +3416,7 @@ void SetupTheEye(ScriptMgr * mgr)
 	mgr->register_creature_script(CN_SOLARIUMAGENT, &SolariumAgentAI::Create);
 	mgr->register_creature_script(CN_SOLARIUMPRIEST, &SolariumPriestAI::Create);
 	mgr->register_creature_script(CN_SOLARIUM_SPOT_LIGHT, &SolariumSpotLight::Create);
-	mgr->register_dummy_spell(SOLARIAN_WRATH_OF_THE_ASTROMANCER, &Dummy_Solarian_WrathOfTheAstromancer);
-
+	
 	//Al'ar event
 	/*mgr->register_creature_script(CN_ALAR, &AlarAI::Create);
 	mgr->register_creature_script(CN_EMBEROFALAR, &EmberAlarAI::Create);

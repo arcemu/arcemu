@@ -485,35 +485,7 @@ public:
 #define SPELL_CRYSTAL_SPIKE			47944
 #define SPELL_CRYSTAL_SPIKE_H		57067
 
-bool CrystalSpikes(uint32 i, Spell *pSpell)
-{
-	if (pSpell == NULL || pSpell->u_caster == NULL)
-		return true;
 
-	Unit* pCaster = pSpell->u_caster;
-
-	for( int i = 1; i < 6; ++i )
-	{
-		pCaster->GetMapMgr()->GetInterface()->SpawnCreature( CN_CRYSTAL_SPIKE, pCaster->GetPositionX() + ( 3 * i ) + rand()%3 , pCaster->GetPositionY() + ( 3 * i ) + rand()%3 , pCaster->GetPositionZ(), pCaster->GetOrientation(), true, false, NULL, NULL );
-	};
-	
-	for( int i = 1; i < 6; ++i )
-	{
-		pCaster->GetMapMgr()->GetInterface()->SpawnCreature( CN_CRYSTAL_SPIKE, pCaster->GetPositionX() - ( 3 * i ) - rand()%3 , pCaster->GetPositionY() + ( 3 * i ) + rand()%3 , pCaster->GetPositionZ(), pCaster->GetOrientation(), true, false, NULL, NULL );
-	};
-	
-	for( int i = 1; i < 6; ++i )
-	{
-		pCaster->GetMapMgr()->GetInterface()->SpawnCreature( CN_CRYSTAL_SPIKE, pCaster->GetPositionX() + ( 3 * i ) + rand()%3 , pCaster->GetPositionY() - ( 3 * i ) - rand()%3 , pCaster->GetPositionZ(), pCaster->GetOrientation(), true, false, NULL, NULL );
-	};
-	
-	for( int i = 1; i < 6; ++i )
-	{
-		pCaster->GetMapMgr()->GetInterface()->SpawnCreature( CN_CRYSTAL_SPIKE, pCaster->GetPositionX() - ( 3 * i ) - rand()%3 , pCaster->GetPositionY() - ( 3 * i ) - rand()%3 , pCaster->GetPositionZ(), pCaster->GetOrientation(), true, false, NULL, NULL );
-	};
-
-	return true;
-}
 
 class OrmorokAI : public MoonScriptBossAI
 {
@@ -832,8 +804,7 @@ void SetupNexus(ScriptMgr * mgr)
 	// Ormorok the Tree-Shaper Encounter
 	mgr->register_creature_script(CN_ORMOROK, &OrmorokAI::Create); 
 	mgr->register_creature_script(CN_CRYSTAL_SPIKE, &CrystalSpikeAI::Create);
-	mgr->register_script_effect(CRYSTAL_SPIKES, &CrystalSpikes);
-	mgr->register_script_effect(CRYSTAL_SPIKES_H, &CrystalSpikes);
+
 
 	// Keristrasza Encounter
 	mgr->register_creature_script(CN_KERISTRASZA, &KeristraszaAI::Create); 

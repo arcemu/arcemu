@@ -22,37 +22,7 @@
 #include "Setup.h"
 
 /*--------------------------------------------------------------------------------------------------------*/
-// Lost!
 
-bool SpragglesCanteen(uint32 i, Spell* pSpell)
-{
-  if(!pSpell->u_caster->IsPlayer())
-    return true;
-
-  Player* plr = TO_PLAYER(pSpell->u_caster);
-  
-  Creature* target = plr->GetMapMgr()->GetCreature(GET_LOWGUID_PART(plr->GetSelection()));
-  if(target == NULL)
-    return true;
-
-  if(target->GetEntry() != 9999)
-    return true;
-
-  QuestLogEntry *qle = plr->GetQuestLogForEntry(4492);
-  if(qle == NULL)
-    return true;
-
-  target->SetStandState(0);
-  target->setDeathState(ALIVE);
-
-  target->Despawn(30*1000, 1*60*1000);
-
-  qle->SetMobCount(0, 1);
-  qle->SendUpdateAddKill(0);
-  qle->UpdatePlayerFields();
-
-  return true;
-}
 
 class RingoDeadNPC : public CreatureAIScript
 {
@@ -165,61 +135,6 @@ public:
 };
 
 /*--------------------------------------------------------------------------------------------------------*/
-//Finding the Source
-
-bool FindingTheSource(uint32 i, Spell* pSpell)
-{
-	Player* pPlayer = TO_PLAYER (pSpell->u_caster);
-	if(!pPlayer)
-		return true;
-
-	if(!pSpell->u_caster->IsPlayer())
-		return true;
-
-	QuestLogEntry *qle = pPlayer->GetQuestLogForEntry(974);
-	if(qle == NULL)
-		return true;
-
-	GameObject* place1 = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-7163, -1149, -264, 148503);
-	GameObject* place2 = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-7281, -1244, -248, 148503);
-	GameObject* place3 = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-7140, -1465, -242, 148503);
-	GameObject* place4 = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-7328, -1461, -242, 148503);
-	GameObject* place5 = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-7092, -1305, -187, 148503);
-
-	if(place1 != NULL)
-	{
-		if(pPlayer->CalcDistance(pPlayer, place1) < 11)
-			pPlayer->CastSpell(pPlayer, 14797, true);		
-	}
-	if(place2 != NULL)
-	{
-		if(pPlayer->CalcDistance(pPlayer, place2) < 11)
-			pPlayer->CastSpell(pPlayer, 14797, true);
-	}
-	if(place3 != NULL)
-	{
-		if(pPlayer->CalcDistance(pPlayer, place3) < 11)
-			pPlayer->CastSpell(pPlayer, 14797, true);
-	}
-	if(place4 != NULL)
-	{
-		if(pPlayer->CalcDistance(pPlayer, place4) < 11)
-			pPlayer->CastSpell(pPlayer, 14797, true);
-	}
-	if(place5 != NULL)
-	{
-		if(pPlayer->CalcDistance(pPlayer, place5) < 11)
-		{
-			if(qle->GetMobCount(0) < qle->GetQuest()->required_mobcount[0])
-			{
-				qle->SetMobCount(0, qle->GetMobCount(0)+1);
-				qle->SendUpdateAddKill(0);
-				qle->UpdatePlayerFields();
-			}
-		}
-	}
-	return true;
-}
 
 class ChasingAMe01 : public QuestScript
 {
@@ -302,12 +217,10 @@ public:
 
 void SetupUnGoro(ScriptMgr * mgr)
 {
-  	mgr->register_dummy_spell(15591, &SpragglesCanteen);
   	mgr->register_creature_script(9999, &RingoDeadNPC::Create);
   	mgr->register_gameobject_script(164955, &NorthernPylon::Create);
   	mgr->register_gameobject_script(164957, &EasternPylon::Create);
   	mgr->register_gameobject_script(164956, &WesternPylon::Create);
-	mgr->register_dummy_spell(16378, &FindingTheSource);
 	/*mgr->register_quest_script(4245, new ChasingAMe01());*/
 	mgr->register_creature_script(9623, &A_Me01::Create);
 }

@@ -155,31 +155,10 @@ class ProspectorAnvilwardAI : public CreatureAIScript
 		}
 };
 
-bool PoweringOurDefenses(uint32 i, Spell* pSpell)
-{
-	if(pSpell->u_caster->IsPlayer() == false)
-    return true;
 
-	Player * plr = TO_PLAYER(pSpell->u_caster);
-
-	QuestLogEntry *qle = plr->GetQuestLogForEntry( 8490 );
-	if( qle == NULL )
-		return true;
-
-	// Angelis : Need to script the scourge attack
-
-	if( qle && qle->GetMobCount(0) < qle->GetQuest()->required_mobcount[0] )
-	{
-		qle->SetMobCount(0, qle->GetMobCount(0)+1);
-		qle->SendUpdateAddKill(0);
-		qle->UpdatePlayerFields();
-	}
-	return true;
-}
 
 void SetupEversongWoods(ScriptMgr * mgr)
 {
-	mgr->register_dummy_spell(28247, &PoweringOurDefenses); // need to script event
-	mgr->register_gossip_script( 15420, static_cast< GossipScript * >( new ProspectorAnvilwardGossip ) );
+	mgr->register_gossip_script( 15420, new ProspectorAnvilwardGossip );
 	mgr->register_creature_script( 15420, &ProspectorAnvilwardAI::Create ); 
 }

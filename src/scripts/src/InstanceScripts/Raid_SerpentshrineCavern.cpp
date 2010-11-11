@@ -1188,22 +1188,7 @@ protected:
 	SpellEntry* info_chaos_blast;
 };
 
-//Chaos blast dummy effect
-bool ChaosBlast(uint32 i, Spell*  pSpell)
-{
-	/*Unit* target = NULL;
-	if(GUID_HIPART(pSpell->m_targets.m_unitTarget) == HIGHGUID_UNIT)
-		target = pSpell->u_caster->GetMapMgr()->GetCreature(pSpell->m_targets.m_unitTarget);
-	else if (GUID_HIPART(pSpell->m_targets.m_unitTarget) == HIGHGUID_PLAYER)
-		target = objmgr.GetPlayer(pSpell->m_targets.m_unitTarget);*/
 
-	// M4ksiu - not sure if it's correct way to resolve Ascent -> AspireCore changes
-	if ( pSpell == NULL || pSpell->u_caster == NULL )
-		return true;
-
-	pSpell->u_caster->CastSpell( pSpell->GetUnitTarget(), dbcSpell.LookupEntry( CHAOS_BLAST_EFFECT ), true );
-	return true;
-}
 
 //------------------------------------
 //	-= Fathom-Lord Karathress =-
@@ -3156,7 +3141,7 @@ void SetupSerpentshrineCavern(ScriptMgr * mgr)
 	mgr->register_creature_script(CN_LEOTHERAS_THE_BLIND, &LeotherasAI::Create);
 	mgr->register_creature_script(CN_GREYHEART_SPELLBINDER, &GreyheartSpellbinderAI::Create);
 	mgr->register_creature_script(CN_SHADOW_OF_LEOTHERAS, &ShadowofLeotherasAI::Create);
-	mgr->register_dummy_spell(CHAOS_BLAST_ANIMATION, &ChaosBlast);
+	
 
 	//Morogrim Tidewalker event
 	mgr->register_creature_script(CN_MOROGRIM_TIDEWALKER, &MorogrimAI::Create);

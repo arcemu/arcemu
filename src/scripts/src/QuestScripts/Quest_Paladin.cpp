@@ -21,92 +21,7 @@
 
 #include "Setup.h"
 
-bool SymbolOfLife(uint32 i, Spell* pSpell) // Alliance ress. quests
-{
-   Player* plr = pSpell->p_caster; 
-   if(!plr)
-    return true;
 
-  Creature* target = plr->GetMapMgr()->GetCreature(GET_LOWGUID_PART(plr->GetSelection()));
-  
-  if(target == NULL)
-    return true;
-
-  const uint32 targets[] = {17542, 6177, 6172}; 
-  const uint32 quests[] =  {9600,  1783, 1786};
-  bool questOk = false;
-  bool targetOk = false;
-
-  for(uint8 j = 0; j<3; j++)
-  {
-    if(target->GetEntry() == targets[j])
-    {
-      targetOk = true;
-      
-      break;
-    }
-  }
-  
-  if(!targetOk)
-    return true;
-  
-  QuestLogEntry *qle;
-  
-  for(uint8 j = 0; j<3; j++)
-  {
-    if(plr->GetQuestLogForEntry(quests[j]) != NULL)
-    {
-      qle = plr->GetQuestLogForEntry(quests[j]);
-      questOk = true;
-      
-      break;
-    }
-  }
-  
-  if(!questOk)
-    return true;
-
-  target->SetStandState(0);
-  target->setDeathState(ALIVE);
-
-  target->Despawn(10*1000, 1*60*1000);
-
-  qle->SetMobCount(0, 1);
-  qle->SendUpdateAddKill(0);
-  qle->UpdatePlayerFields();
-  
-  return true;
-}
-
-bool FilledShimmeringVessel(uint32 i, Spell* pSpell) // Blood Elf ress. quest
-{
-  if(!pSpell->u_caster->IsPlayer())
-    return true;
-
-  Player* plr = TO_PLAYER(pSpell->u_caster);
-  
-  Creature* target = plr->GetMapMgr()->GetCreature(GET_LOWGUID_PART(plr->GetSelection()));
-  if(target == NULL)
-    return true;
-
-  if(target->GetEntry() != 17768)
-    return true;
-
-  QuestLogEntry *qle = plr->GetQuestLogForEntry(9685);
-  if(qle == NULL)
-    return true;
-
-  target->SetStandState(0);
-  target->setDeathState(ALIVE);
-
-  target->Despawn(30*1000, 1*60*1000);
-
-  qle->SetMobCount(0, 1);
-  qle->SendUpdateAddKill(0);
-  qle->UpdatePlayerFields();
-
-  return true;
-}
 
 class PaladinDeadNPC : public CreatureAIScript
 {
@@ -176,44 +91,14 @@ public:
 	}
 };
 
-bool DouseEternalFlame(uint32 i, Spell* pSpell)
-{
-	if (pSpell->p_caster == NULL)
-		return true;
 
-	Player* plr = pSpell->p_caster;
-	QuestLogEntry *qle = plr->GetQuestLogForEntry(9737);
-	if(qle == NULL)
-		return true;
-
-	GameObject* Flame = plr->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(3678, -3640, 139, 182068);
-	if(Flame != NULL)
-	{
-		if(plr->CalcDistance(plr, Flame) < 30)
-			if(qle->GetMobCount(0) < qle->GetQuest()->required_mobcount[0])
-			{
-				qle->SetMobCount(0, qle->GetMobCount(0)+1);
-				qle->SendUpdateAddKill(0);
-				qle->UpdatePlayerFields();
-				Creature * pCreature = plr->GetMapMgr()->GetInterface()->GetCreatureNearestCoords( plr->GetPositionX(), plr->GetPositionY(), plr->GetPositionZ(), 10917 );
-				if ( pCreature != NULL )
-				{
-					pCreature->SetFaction(11 );
-				}
-			}
-	}
-	return true;
-}
 
 void SetupPaladin(ScriptMgr * mgr)
 {
-  mgr->register_dummy_spell(8593, &SymbolOfLife);
-  mgr->register_dummy_spell(31225, &FilledShimmeringVessel);
   mgr->register_creature_script(17768, &PaladinDeadNPC::Create);
   mgr->register_creature_script(17542, &PaladinDeadNPC::Create);
   mgr->register_creature_script(6177, &PaladinDeadNPC::Create);
   mgr->register_creature_script(6172, &PaladinDeadNPC::Create);
   mgr->register_gameobject_script(181956, &GildedBrazier::Create);
   mgr->register_creature_script(17716, &stillbladeQAI::Create);
-  mgr->register_script_effect(31497, &DouseEternalFlame);
 }

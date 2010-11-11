@@ -494,24 +494,7 @@ class VolkhansAnvil : public MoonScriptCreatureAI
 
 };
 
-bool Temper(uint32 i, Spell *pSpell)
-{
-	if ( pSpell == NULL || pSpell->u_caster == NULL )
-		return true;
 
-	Creature* pCreature;
-	Unit* pHated = pSpell->u_caster->GetAIInterface()->GetMostHated();
-
-	for ( int i = 0; i < 2; i++)
-	{
-		MapScriptInterface* pMap = pSpell->u_caster->GetMapMgr()->GetInterface();
-		pCreature = pMap->SpawnCreature( CN_MOLTEN_GOLEM, MoltenGolemCoords[i].x, MoltenGolemCoords[i].y, MoltenGolemCoords[i].z, MoltenGolemCoords[i].o, true, true, 0, 0, 1 );
-		if ( pCreature )
-			pCreature->GetAIInterface()->AttackReaction( pHated, 1 );
-	}
-
-	return true;
-};
 
 /////////////////////////////////////////////////////////////////////////////////
 ////// Ionar
@@ -680,7 +663,6 @@ void SetupHallsOfLightning(ScriptMgr *mgr)
 	mgr->register_creature_script( CN_MOLTEN_GOLEM, &MoltenGolem::Create );
 	mgr->register_creature_script( CN_BRITTLE_GOLEM, &BrittleGolem::Create );
 	mgr->register_creature_script( CN_VOLKHANS_ANVIL, &VolkhansAnvil::Create );
-	mgr->register_dummy_spell( SPELL_TEMPER, &Temper );
 
 	mgr->register_creature_script( CN_IONAR, &IonarAI::Create );
 

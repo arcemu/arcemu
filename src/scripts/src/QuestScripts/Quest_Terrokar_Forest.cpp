@@ -158,62 +158,7 @@ public:
   }
 };
 
-bool ShatariTorch(uint32 i, Spell* pSpell)
-{
-  if(pSpell->u_caster->IsPlayer() == false)
-    return true;
 
-  Player* plr = TO_PLAYER(pSpell->u_caster);
-  Unit* unit_target = TO_UNIT(plr->GetMapMgr()->GetCreature(GET_LOWGUID_PART(plr->GetSelection())));
-  
-  if(unit_target == NULL)
-    return true;
-	
-  if ( plr->CalcDistance( unit_target->GetPositionX(), unit_target->GetPositionY(), unit_target->GetPositionZ(), plr->GetPositionX(), plr->GetPositionY(), plr->GetPositionZ() ) > 5 )
-	return true;
-   
-  if(!unit_target->IsCreature())
-    return true;
-
-  Creature* target = TO_CREATURE(unit_target);
-
-  QuestLogEntry *qle = plr->GetQuestLogForEntry(10913);
-  if(qle == NULL)
-    return true;
-  
-  GameObject* obj = NULL;
-
-  if(target->GetEntry() == 21859)
-  {
-    if(qle->GetMobCount(0) == qle->GetQuest()->required_mobcount[0])
-      return true;
-
-    qle->SetMobCount(0, qle->GetMobCount(0)+1);
-    qle->SendUpdateAddKill(0);
-
-    obj = sEAS.SpawnGameobject(plr, 183816, target->GetPositionX(), target->GetPositionY(), target->GetPositionZ(), target->GetOrientation(), 1, 0, 0, 0, 0);
-    sEAS.GameobjectDelete(obj, 1*60*1000);
-  } 
-  else if(target->GetEntry() == 21846)
-  {
-    if(qle->GetMobCount(1) == qle->GetQuest()->required_mobcount[1])
-      return true;
-
-    qle->SetMobCount(1, qle->GetMobCount(1)+1);
-    qle->SendUpdateAddKill(1);
-
-    obj = sEAS.SpawnGameobject(plr, 183816, target->GetPositionX(), target->GetPositionY(), target->GetPositionZ(), target->GetOrientation(), 1, 0, 0, 0, 0);
-    sEAS.GameobjectDelete(obj, 1*60*1000);
-  }
-  else 
-    return true; 
-
-  target->Despawn(0, 1*60*1000);
-  qle->UpdatePlayerFields();
-  plr->UpdateNearbyGameObjects();
-
-  return true;
-}
 
 class TheMomentofTruth : public GossipScript
 {
@@ -277,7 +222,6 @@ void SetupTerrokarForest(ScriptMgr * mgr)
 	mgr->register_creature_script(21846, &AnImproperBurial::Create);
 	mgr->register_creature_script(22307, &TheInfestedProtectorsQAI::Create);
 	mgr->register_creature_script(22095, &TheInfestedProtectorsQAI::Create);
-	mgr->register_dummy_spell(39189, &ShatariTorch);
 	GossipScript * gossip1 = new TheMomentofTruth();
 	mgr->register_gossip_script(19606, gossip1);
 }

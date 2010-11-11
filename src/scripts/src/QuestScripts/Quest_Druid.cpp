@@ -24,97 +24,7 @@ Edits by : FenixGman
 **********************/
 #include "Setup.h"
 
-bool CenarionMoondust(uint32 i, Spell* pSpell) // Body And Heart (Alliance)
-{
-	if(!pSpell->p_caster)
-		return true;
 
-	if(!pSpell->p_caster->IsInWorld())
-		return true;
-
-  const float pos[] = {6335.2329f, 144.0811f, 24.0068f, 5.701f}; // x, y, z, o
-  Player * p_caster = pSpell->p_caster;
-
-  //Moonkin Stone aura
-  GameObject * Msa = sEAS.SpawnGameobject(p_caster, 177644, 6331.01, 88.245, 22.6522, 2.01455, 1.0, 0.0, 0.0, 0.0, 0.0);
-
-  // it dont delete lunaclaw if he is here
-  Creature * lunaclaw;
-  lunaclaw = sEAS.SpawnCreature(p_caster, 12138, pos[0], pos[1], pos[2], pos[3], 0);
-
-  sEAS.CreateCustomWaypointMap(lunaclaw);
-  uint32 md = lunaclaw->GetDisplayId();
-
-  //Waypoints
-  sEAS.WaypointCreate(lunaclaw, 6348.3833, 132.5197, 21.6042, 4.19, 200, 256, md);
-  //make sure that player dont cheat speed or something
-  if( lunaclaw->GetDistance2dSq(p_caster) < 200 ) // can be more? - he can speed hack or teleport hack
-  {
-	float x = p_caster->GetPositionX();
-	float y = p_caster->GetPositionY();
-	float z = p_caster->GetPositionZ();
-	float o = p_caster->GetOrientation() + 3;
-	sEAS.WaypointCreate(lunaclaw, x, y, z, o, 200, 256, md);
-  }
-  else
-  {
-	sEAS.WaypointCreate(lunaclaw, 5328.2148, 94.5505, 21.4547, 4.2489, 200, 256, md);
-  }
-
-  // Make sure that creature will attack player
-  if( !lunaclaw->CombatStatus.IsInCombat() )
-  {
-	lunaclaw->GetAIInterface()->SetNextTarget(p_caster);
-  }
-
-  return true;
-}
-
-bool CenarionLunardust(uint32 i, Spell * pSpell) // Body And Heart (Horde)
-{
-	if(!pSpell->p_caster)
-		return true;
-
-	if(!pSpell->p_caster->IsInWorld())
-		return true;
-
-  const float pos[] = {-2443.9711f, -1642.8002f, 92.5129f, 1.71}; // x, y, z, o
-  Player * p_caster = pSpell->p_caster;
-
-  //Moonkin Stone aura
-  GameObject * Msa = sEAS.SpawnGameobject(p_caster, 177644, -2499.54, -1633.03, 91.8121, 0.262894, 1.0, 0.0, 0.0, 0.0, 0.0);
-
-  Creature * lunaclaw;
-
-  lunaclaw = sEAS.SpawnCreature(p_caster, 12138, pos[0], pos[1], pos[2], pos[3], 0);
-
-  sEAS.CreateCustomWaypointMap(lunaclaw);
-  uint32 md = lunaclaw->GetDisplayId();
-
-  // Waypoints
-  sEAS.WaypointCreate(lunaclaw, -2448.2253, -1625.0148, 91.89, 1.913, 200, 256, md); //First
-  //make sure that player dont cheat speed or something
-  if( lunaclaw->GetDistance2dSq(p_caster) < 200 ) // can be more? - he can speed hack or teleport hack
-  {
-	float x = p_caster->GetPositionX();
-	float y = p_caster->GetPositionY();
-	float z = p_caster->GetPositionZ();
-	float o = p_caster->GetOrientation() + 3;
-	sEAS.WaypointCreate(lunaclaw, x, y, z, o, 200, 256, md);
-  }
-  else
-  {
-	sEAS.WaypointCreate(lunaclaw, -2504.2641, -1630.7354, 91.93, 3.2, 200, 256, md);
-  }
-
-  // Make sure that creature will attack player
-  if( !lunaclaw->CombatStatus.IsInCombat() )
-  {
-	lunaclaw->GetAIInterface()->SetNextTarget(p_caster);
-  }
-
-  return true;
-}
 
 class Lunaclaw : public CreatureAIScript
 {
@@ -350,75 +260,7 @@ public:
   }
 };
 
-bool CurativeAnimalSalve(uint32 i, Spell* pSpell) // Curing the Sick
-{
-	Player* caster = pSpell->p_caster;
-	if(caster == NULL)
-		return true;
 
-	if(!pSpell->GetUnitTarget()->IsCreature())
-		return true;
-
-	Creature* target = TO_CREATURE(pSpell->GetUnitTarget());
-	uint32 entry = target->GetEntry();
-
-	if(entry == 12296 || entry == 12298)
-	{
-		QuestLogEntry *qle = caster->GetQuestLogForEntry(6129);
-		if(qle == NULL)
-		{
-			qle = caster->GetQuestLogForEntry(6124);
-			if(qle == NULL)
-				return true;
-		}
-
-		if(qle->GetQuest()->required_mobcount[0] == qle->GetMobCount(0))
-			return true;
-
-		if(entry == 12298) // Sickly Deer
-			sEAS.SpawnCreature(caster, 12298, target->GetPositionX(), target->GetPositionY(), target->GetPositionZ(), target->GetOrientation(), 2*60*1000); // Cured Deer
-		else // Sickly Gazelle
-			sEAS.SpawnCreature(caster, 12297, target->GetPositionX(), target->GetPositionY(), target->GetPositionZ(), target->GetOrientation(), 2*60*1000); // Cured Gazelle
-
-		target->Despawn(0, 3*60*1000);
-
-		qle->SetMobCount(0, qle->GetMobCount(0)+1);
-		qle->SendUpdateAddKill(0);
-		qle->UpdatePlayerFields();
-
-		return true;
-	}
-	return true;
-}
-
-// Trial Of The Lake
-
-bool TrialOfTheLake(uint32 i, Spell* pSpell)
-{
-	if ( pSpell == NULL || pSpell->u_caster == NULL || !pSpell->u_caster->IsPlayer() )
-		return true;
-
-	Player* pPlayer = TO_PLAYER( pSpell->u_caster );
-
-	QuestLogEntry *pQuest = pPlayer->GetQuestLogForEntry( 28 );
-	if ( pQuest == NULL )
-	{
-		pQuest = pPlayer->GetQuestLogForEntry( 29 );
-		if ( pQuest == NULL )
-			return true;
-	}
-
-	if ( pQuest->GetMobCount( 0 ) < pQuest->GetQuest()->required_mobcount[0] )
-	{
-		pQuest->SetMobCount( 0, pQuest->GetMobCount( 0 ) + 1 );
-		pQuest->SendUpdateAddKill( 0 );
-		pQuest->UpdatePlayerFields();
-		
-		return true;
-	}
-	
-	return true;
-}
 
 void SetupDruid(ScriptMgr * mgr)
 {
@@ -429,10 +271,6 @@ void SetupDruid(ScriptMgr * mgr)
   mgr->register_quest_script(5921, Moonglade);
   mgr->register_quest_script(5922, Moonglade);
   mgr->register_creature_script(12138, &Lunaclaw::Create);
-  mgr->register_script_effect(19138, &CenarionLunardust);
-  mgr->register_script_effect(18974, &CenarionMoondust);
-  mgr->register_dummy_spell(19512, &CurativeAnimalSalve);
-  mgr->register_script_effect(19719, &TrialOfTheLake);
 
   //Register gossip scripts
   mgr->register_gossip_script(12144, MoonkinGhostGossip); // Ghost of Lunaclaw

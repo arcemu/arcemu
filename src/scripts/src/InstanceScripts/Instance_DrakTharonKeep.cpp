@@ -1068,28 +1068,7 @@ protected:
 	uint32 phase;
 };
 
-bool DecayFlash(uint32 i, Aura* pAura, bool apply)
-{
-	if( apply && pAura->GetTarget()->IsPlayer() )
-	{
-		Player* p_target = TO_PLAYER( pAura->GetTarget() );
-		p_target->SetShapeShift( 10 );//Tharon'ja Skeleton
-		p_target->SetDisplayId(9784 );
-	}
-    return true;
-}
 
-bool ReturnFlash(uint32 i, Aura* pAura, bool apply)
-{
-    if( apply && pAura->GetTarget()->IsPlayer() )
-	{
-		Player* p_target = TO_PLAYER( pAura->GetTarget() );
-		p_target->SetDisplayId(p_target->GetNativeDisplayId() );
-		p_target->m_ShapeShifted = 0;
-		p_target->SetShapeShift( 0 );
-	}
-    return true;
-}
 
 void SetupDrakTharonKeep(ScriptMgr * mgr)
 {
@@ -1106,6 +1085,5 @@ void SetupDrakTharonKeep(ScriptMgr * mgr)
 	mgr->register_creature_script(KING_DRED_ENTRY, &KING_DRED_AI::Create);
 
 	mgr->register_creature_script(THE_PROPHET_THARONJA_ENTRY, &THE_PROPHET_THARONJA::Create);
-	mgr->register_dummy_aura(49356, &DecayFlash);
-	mgr->register_dummy_aura(53463, &ReturnFlash);
+
 }

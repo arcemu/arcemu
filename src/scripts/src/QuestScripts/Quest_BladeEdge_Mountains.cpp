@@ -314,28 +314,7 @@ public:
 	}
 };
 
-// Protecting Our Own
-bool ProtectingOurOwn(uint32 i, Spell* pSpell)
-{
-   if(pSpell->u_caster == NULL || !pSpell->u_caster->IsPlayer())
-      return true;
 
-   Player* plr = TO_PLAYER(pSpell->u_caster);
-   QuestLogEntry *qle = plr->GetQuestLogForEntry(10488);
-   
-   if(qle == NULL)
-      return true;
-
-   if ( qle->GetMobCount( 0 ) < qle->GetQuest()->required_mobcount[0] )
-   {
-      uint32 NewCount = qle->GetMobCount( 0 ) + 1;
-      qle->SetMobCount( 0, NewCount );
-      qle->SendUpdateAddKill( 0 );
-      qle->UpdatePlayerFields();
-   }
-
-   return true;
-}
 
 //////////////////////////////////////////////////////////////////////////
 /////// Bladespire Brute/Shaman/Cook
@@ -446,8 +425,6 @@ void SetupBladeEdgeMountains(ScriptMgr * mgr)
 	mgr->register_gameobject_script( 185195, &LegionObelisk::Create);
 	mgr->register_gameobject_script( 185193, &LegionObelisk::Create);
 	mgr->register_gameobject_script(185512, &Stasis_Chamber_Alpha::Create);
-
-	mgr->register_script_effect(32578, &ProtectingOurOwn);
 
 	mgr->register_creature_script( 21387, &WyrmcultBlackwhelp::Create );
 
