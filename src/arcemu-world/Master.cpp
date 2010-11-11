@@ -647,7 +647,7 @@ bool Master::CheckDBVersion(){
 		return false;
 	}
 
-	f = wqr->Fetch();
+	f = cqr->Fetch();
 	uint32 CharDBVersion = f->GetUInt32();
 
 	Log.Notice("Database","Character database version: %u", CharDBVersion );
