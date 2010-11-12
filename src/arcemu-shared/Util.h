@@ -58,4 +58,10 @@ volatile long Sync_Sub(volatile long* value);
 
 #endif
 
+	namespace Arcemu{
+		float round( float f );
+		double round( double d );
+		long double round( long double ld );
+	}
+
 #endif

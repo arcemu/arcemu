@@ -84,6 +84,7 @@ SERVER_DECL DBCStorage<gtFloat> dbcMeleeCritBase;
 SERVER_DECL DBCStorage<gtFloat> dbcSpellCrit;
 SERVER_DECL DBCStorage<gtFloat> dbcSpellCritBase;
 SERVER_DECL DBCStorage<SpellShapeshiftForm> dbcSpellShapeshiftForm;
+SERVER_DECL DBCStorage< QuestXP > dbcQuestXP;
 
 const char* WorldMapOverlayStoreFormat="nxiiiixxxxxxxxxxx";
 const char* BarberShopStyleEntryFormat="nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxi";
@@ -329,6 +330,7 @@ const char* scalingstatdistributionformat = "uiiiiiiiiiiuuuuuuuuuuu";
 const char* scalingstatvaluesformat = "uuuuuuuuuuuuuuuuuuxxxxxx";
 const char* itemlimitcategoryformat = "usxxxxxxxxxxxxxxxxuu";
 const char* spellshapeshiftformformat = "uxxxxxxxxxxxxxxxxxxuuxuuuxxuuuuuuuu";
+const char* questxpformat = "uxuuuuuuuux";
 
 template<class T>
 bool loader_stub(const char * filename, const char * format, bool ind, T& l, bool loadstrs)
@@ -404,5 +406,6 @@ bool LoadDBCs()
 	LOAD_DBC("DBC/ScalingStatDistribution.dbc",scalingstatdistributionformat,true,dbcScalingStatDistribution, false);
 	LOAD_DBC("DBC/ScalingStatValues.dbc",scalingstatvaluesformat,true,dbcScalingStatValues, false);
 	LOAD_DBC("DBC/ItemLimitCategory.dbc", itemlimitcategoryformat, true, dbcItemLimitCategory, true);
+	LOAD_DBC("DBC/QuestXP.dbc", questxpformat, true, dbcQuestXP, false );
 	return true;
 }

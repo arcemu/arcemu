@@ -12,17 +12,7 @@ MySQL - 5.1.49-1ubuntu8 : Database - wworld
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-/*Table structure for table `SpellClickSpells` */
-
-DROP TABLE IF EXISTS `arcemu_db_version`;
-
-CREATE TABLE `arcemu_db_version` (
-  `LastUpdate` int(10) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`LastUpdate`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-insert  into `arcemu_db_version`(`LastUpdate`) values (3800);
-
+/*Table structure for table `SpellClickSpells` */
 
 DROP TABLE IF EXISTS `SpellClickSpells`;
 
@@ -99,6 +89,23 @@ CREATE TABLE `ai_threattospellid` (
 /*Data for the table `ai_threattospellid` */
 
 LOCK TABLES `ai_threattospellid` WRITE;
+
+UNLOCK TABLES;
+
+/*Table structure for table `arcemu_db_version` */
+
+DROP TABLE IF EXISTS `arcemu_db_version`;
+
+CREATE TABLE `arcemu_db_version` (
+  `LastUpdate` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`LastUpdate`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+/*Data for the table `arcemu_db_version` */
+
+LOCK TABLES `arcemu_db_version` WRITE;
+
+insert  into `arcemu_db_version`(`LastUpdate`) values (3807);
 
 UNLOCK TABLES;
 
@@ -1704,6 +1711,7 @@ CREATE TABLE `quests` (
   `completeemote` int(10) unsigned NOT NULL DEFAULT '0',
   `incompleteemote` int(10) unsigned NOT NULL DEFAULT '0',
   `iscompletedbyspelleffect` int(10) unsigned NOT NULL DEFAULT '0',
+  `RewXPId` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`entry`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Quests System';
 

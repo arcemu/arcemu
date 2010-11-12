@@ -1322,6 +1322,12 @@ struct ScalingStatValuesEntry{
 	uint32 multiplier[16];
 };
 
+struct QuestXP{
+    uint32      questLevel;                                 // 0
+    uint32      xpIndex[8];                                 // 1-9
+    //unk                                                   // 10
+};
+
 #pragma pack(pop)
 
 ARCEMU_INLINE float GetRadius(SpellRadius *radius)
@@ -1698,6 +1704,7 @@ extern SERVER_DECL DBCStorage<AreaTriggerEntry> dbcAreaTrigger;
 extern SERVER_DECL DBCStorage<ScalingStatDistributionEntry> dbcScalingStatDistribution;
 extern SERVER_DECL DBCStorage<ScalingStatValuesEntry> dbcScalingStatValues;
 extern SERVER_DECL DBCStorage<ItemLimitCategoryEntry> dbcItemLimitCategory;
+extern SERVER_DECL DBCStorage< QuestXP > dbcQuestXP;
 
 bool LoadDBCs();
 
