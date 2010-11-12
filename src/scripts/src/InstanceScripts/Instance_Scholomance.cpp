@@ -111,7 +111,7 @@ public:
 
     void SpellCast(float val)
     {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -121,10 +121,10 @@ public:
 				
 				if(m_spellcheck[i])
 				{
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
-						target = _unit->GetAIInterface()->GetNextTarget();
+						target = _unit->GetAIInterface()->getNextTarget();
 						case TARGET_SELF:
 						case TARGET_VARIOUS:
 							_unit->CastSpell(_unit, spells[i].info, spells[i].instant); 
@@ -233,7 +233,7 @@ public:
     }
     void SpellCast(float val)
     {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -243,10 +243,10 @@ public:
 				
 				if(m_spellcheck[i])
 				{
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
-						target = _unit->GetAIInterface()->GetNextTarget();
+						target = _unit->GetAIInterface()->getNextTarget();
 						case TARGET_SELF:
 						case TARGET_VARIOUS:
 							_unit->CastSpell(_unit, spells[i].info, spells[i].instant); 
@@ -347,7 +347,7 @@ public:
     }
     void SpellCast(float val)
     {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -357,10 +357,10 @@ public:
 				
 				if(m_spellcheck[i])
 				{
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
-						target = _unit->GetAIInterface()->GetNextTarget();
+						target = _unit->GetAIInterface()->getNextTarget();
 						case TARGET_SELF:
 						case TARGET_VARIOUS:
 							_unit->CastSpell(_unit, spells[i].info, spells[i].instant); 
@@ -468,7 +468,7 @@ public:
     }
     void SpellCast(float val)
     {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -478,10 +478,10 @@ public:
 				
 				if(m_spellcheck[i])
 				{
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
-						target = _unit->GetAIInterface()->GetNextTarget();
+						target = _unit->GetAIInterface()->getNextTarget();
 						case TARGET_SELF:
 						case TARGET_VARIOUS:
 							_unit->CastSpell(_unit, spells[i].info, spells[i].instant); 
@@ -597,7 +597,7 @@ public:
     }
     void SpellCast(float val)
     {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -607,10 +607,10 @@ public:
 				
 				if(m_spellcheck[i])
 				{
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
-						target = _unit->GetAIInterface()->GetNextTarget();
+						target = _unit->GetAIInterface()->getNextTarget();
 						case TARGET_SELF:
 						case TARGET_VARIOUS:
 							_unit->CastSpell(_unit, spells[i].info, spells[i].instant); 
@@ -703,7 +703,7 @@ public:
     }
     void SpellCast(float val)
     {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -713,10 +713,10 @@ public:
 				
 				if(m_spellcheck[i])
 				{
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
-						target = _unit->GetAIInterface()->GetNextTarget();
+						target = _unit->GetAIInterface()->getNextTarget();
 						case TARGET_SELF:
 						case TARGET_VARIOUS:
 							_unit->CastSpell(_unit, spells[i].info, spells[i].instant); 
@@ -811,7 +811,7 @@ public:
     }
     void SpellCast(float val)
     {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -821,10 +821,10 @@ public:
 				
 				if(m_spellcheck[i])
 				{
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
-						target = _unit->GetAIInterface()->GetNextTarget();
+						target = _unit->GetAIInterface()->getNextTarget();
 						case TARGET_SELF:
 						case TARGET_VARIOUS:
 							_unit->CastSpell(_unit, spells[i].info, spells[i].instant); 
@@ -928,7 +928,7 @@ public:
     }
     void SpellCast(float val)
     {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -938,10 +938,10 @@ public:
 				
 				if(m_spellcheck[i])
 				{
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
-						target = _unit->GetAIInterface()->GetNextTarget();
+						target = _unit->GetAIInterface()->getNextTarget();
 						case TARGET_SELF:
 						case TARGET_VARIOUS:
 							_unit->CastSpell(_unit, spells[i].info, spells[i].instant); 
@@ -1037,7 +1037,7 @@ public:
     }
     void SpellCast(float val)
     {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -1047,10 +1047,10 @@ public:
 				
 				if(m_spellcheck[i])
 				{
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
-						target = _unit->GetAIInterface()->GetNextTarget();
+						target = _unit->GetAIInterface()->getNextTarget();
 						case TARGET_SELF:
 						case TARGET_VARIOUS:
 							_unit->CastSpell(_unit, spells[i].info, spells[i].instant); 
@@ -1153,7 +1153,7 @@ public:
 
     void SpellCast(float val)
     {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -1163,10 +1163,10 @@ public:
 				
 				if(m_spellcheck[i])
 				{
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
-						target = _unit->GetAIInterface()->GetNextTarget();
+						target = _unit->GetAIInterface()->getNextTarget();
 						case TARGET_SELF:
 						case TARGET_VARIOUS:
 							_unit->CastSpell(_unit, spells[i].info, spells[i].instant); 
@@ -1261,7 +1261,7 @@ public:
     }
     void SpellCast(float val)
     {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -1271,10 +1271,10 @@ public:
 				
 				if(m_spellcheck[i])
 				{
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
-						target = _unit->GetAIInterface()->GetNextTarget();
+						target = _unit->GetAIInterface()->getNextTarget();
 						case TARGET_SELF:
 						case TARGET_VARIOUS:
 							_unit->CastSpell(_unit, spells[i].info, spells[i].instant); 

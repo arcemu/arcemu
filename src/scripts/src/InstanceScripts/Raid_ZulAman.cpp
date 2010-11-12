@@ -295,7 +295,7 @@ class HalazziAI : public MoonScriptBossAI
 		mLynx = GetUnit()->GetMapMgr()->GetInterface()->SpawnCreature( CN_LYNX_SPIRIT, GetUnit()->GetPositionX(), GetUnit()->GetPositionY(), GetUnit()->GetPositionZ(), GetUnit()->GetOrientation(), true, false, 0, 0);
 		if( mLynx )
 		{
-			mLynx->GetAIInterface()->AttackReaction(GetUnit()->GetAIInterface()->GetNextTarget(), 1);
+			mLynx->GetAIInterface()->AttackReaction(GetUnit()->GetAIInterface()->getNextTarget(), 1);
 			mLynx->m_noRespawn = true;
 		}
 

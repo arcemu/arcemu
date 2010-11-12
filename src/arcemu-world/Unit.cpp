@@ -3420,13 +3420,13 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 	case 0:
 		hit_status |= HITSTATUS_MISS;
 		// dirty ai agro fix
-		if(pVictim->GetTypeId() == TYPEID_UNIT && pVictim->GetAIInterface()->GetNextTarget() == NULL)
+		if(pVictim->GetTypeId() == TYPEID_UNIT && pVictim->GetAIInterface()->getNextTarget() == NULL)
 			pVictim->GetAIInterface()->AttackReaction(this, 1, 0);
 		break;
 //--------------------------------dodge-----------------------------------------------------
 	case 1:
 		// dirty ai agro fix
-		if(pVictim->GetTypeId() == TYPEID_UNIT && pVictim->GetAIInterface()->GetNextTarget() == NULL)
+		if(pVictim->GetTypeId() == TYPEID_UNIT && pVictim->GetAIInterface()->getNextTarget() == NULL)
 			pVictim->GetAIInterface()->AttackReaction(this, 1, 0);
 
 		CALL_SCRIPT_EVENT(pVictim, OnTargetDodged)(this);
@@ -3455,7 +3455,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 //--------------------------------parry-----------------------------------------------------
 	case 2:
 		// dirty ai agro fix
-		if(pVictim->GetTypeId() == TYPEID_UNIT && pVictim->GetAIInterface()->GetNextTarget() == NULL)
+		if(pVictim->GetTypeId() == TYPEID_UNIT && pVictim->GetAIInterface()->getNextTarget() == NULL)
 			pVictim->GetAIInterface()->AttackReaction(this, 1, 0);
 
 		CALL_SCRIPT_EVENT(pVictim, OnTargetParried)(this);

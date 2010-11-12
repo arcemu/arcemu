@@ -339,7 +339,7 @@ namespace luaUnit
 		if (!ptr->CombatStatus.IsInCombat())
 		  return 0;
 
-		Unit * pTarget = ptr->GetAIInterface()->GetNextTarget();
+		Unit * pTarget = ptr->GetAIInterface()->getNextTarget();
 		if (!pTarget)
 		  return 0;
 
@@ -359,7 +359,7 @@ namespace luaUnit
 
 			 pUnit = TO_UNIT(obj);
 
-			pUnit->GetAIInterface()->SetNextTarget(pTarget);
+			pUnit->GetAIInterface()->setNextTarget(pTarget);
 			pUnit->GetAIInterface()->AttackReaction(pTarget, 1, 0);
 		}
 		return 0;
@@ -1547,7 +1547,7 @@ namespace luaUnit
 		if (!target || !isHostile(ptr,target) || ptr == target)
 			return 0;
 		else
-			ptr->GetAIInterface()->SetNextTarget(target);
+			ptr->GetAIInterface()->setNextTarget(target);
 		return 0;
 	}
 
@@ -2827,14 +2827,14 @@ namespace luaUnit
 	{
 		Unit * target = CHECK_UNIT(L, 1);
 		if (ptr && target)
-			ptr->GetAIInterface()->SetNextTarget(target);
+			ptr->GetAIInterface()->setNextTarget(target);
 		return 0;
 	}
 
 	int GetNextTarget(lua_State * L, Unit * ptr)
 	{
 		TEST_UNIT()
-		PUSH_UNIT(L, ptr->GetAIInterface()->GetNextTarget());
+		PUSH_UNIT(L, ptr->GetAIInterface()->getNextTarget());
 		return 1;
 	}
 

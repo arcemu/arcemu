@@ -841,7 +841,7 @@ CREATE TABLE `playerpetspells` (
   KEY `a` (`ownerguid`),
   KEY `b` (`petnumber`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
+/* AIRewrite pet_talents structureDROP TABLE IF EXISTS `pet_talents`;CREATE TABLE `pet_talents` (	`pet_owner` INT(11) UNSIGNED NOT NULL,	`pet_family` TINYINT(3) NOT NULL,	`talent_array` VARCHAR(255)) ENGINE=InnoDB DEFAULT CHARSET=latin1; */
 /*Table structure for table `playerskills` */
 
 DROP TABLE IF EXISTS `playerskills`;

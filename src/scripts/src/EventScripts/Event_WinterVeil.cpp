@@ -90,7 +90,7 @@ void WinterReveler(Player* pPlayer, Unit* pUnit )
 void WinterVeilEmote(Player* pPlayer, uint32 Emote, Unit* pUnit)
 {
 	pUnit = pPlayer->GetMapMgr()->GetUnit(pPlayer->GetSelection());
-	if (!pUnit || !pUnit->isAlive() || pUnit->GetAIInterface()->GetNextTarget())
+	if (!pUnit || !pUnit->isAlive() || pUnit->GetAIInterface()->getNextTarget())
 		return;
 
 	if( Emote == EMOTE_ONESHOT_KISS )

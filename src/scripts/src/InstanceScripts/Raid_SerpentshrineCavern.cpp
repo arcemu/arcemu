@@ -355,7 +355,7 @@ public:
 
 	void SpellCast(float val)
 	{
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
 		{
 			float comulativeperc = 0;
 			Unit* target = NULL;
@@ -363,7 +363,7 @@ public:
 			{		
 				if(m_spellcheck[i])
 				{
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 					case TARGET_SELF:
@@ -539,7 +539,7 @@ public:
 
 	void SpellCast(float val)
 	{
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
 		{
 			float comulativeperc = 0;
 			Unit* target = NULL;
@@ -549,7 +549,7 @@ public:
 				
 				if(m_spellcheck[i])
 				{
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 					case TARGET_SELF:
@@ -876,21 +876,21 @@ public:
 		else if(Phase == 1) //demon form
 		{
 			//Chaos Blast
-			if(_unit->GetAIInterface()->GetNextTarget())
+			if(_unit->GetAIInterface()->getNextTarget())
 			{
 				if(_unit->GetCurrentSpell() == NULL)
 				{
 					if(rand()%2)
 					{
-						_unit->CastSpell(_unit->GetAIInterface()->GetNextTarget(), info_chaos_blast, false);
+						_unit->CastSpell(_unit->GetAIInterface()->getNextTarget(), info_chaos_blast, false);
 					}
 				}
 
 				//move if needed
-				if(_unit->GetAIInterface()->GetNextTarget()->GetDistance2dSq(_unit) >= 400) //20 yards
+				if(_unit->GetAIInterface()->getNextTarget()->GetDistance2dSq(_unit) >= 400) //20 yards
 				{
 					_unit->GetAIInterface()->m_moveRun = true;
-					_unit->GetAIInterface()->_CalcDestinationAndMove(_unit->GetAIInterface()->GetNextTarget(), 5.0f);
+					_unit->GetAIInterface()->_CalcDestinationAndMove(_unit->GetAIInterface()->getNextTarget(), 5.0f);
 				}
 			}
 
@@ -910,7 +910,7 @@ public:
 
 	void SpellCast(float val)
 	{
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
 		{
 			float comulativeperc = 0;
 			Unit* target = NULL;
@@ -920,7 +920,7 @@ public:
 				
 				if(m_spellcheck[i])
 				{
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 					case TARGET_SELF:
@@ -1054,7 +1054,7 @@ public:
 
     void SpellCast(float val)
     {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -1064,7 +1064,7 @@ public:
 				
 				if(m_spellcheck[i])
 				{
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 						case TARGET_SELF:
@@ -1165,21 +1165,21 @@ public:
 	void AIUpdate()
 	{
 		//Chaos Blast
-		if(_unit->GetAIInterface()->GetNextTarget())
+		if(_unit->GetAIInterface()->getNextTarget())
 		{
 			if(_unit->GetCurrentSpell() == NULL)
 			{
 				if(rand()%2)
 				{
-					_unit->CastSpell(_unit->GetAIInterface()->GetNextTarget(), info_chaos_blast, false);
+					_unit->CastSpell(_unit->GetAIInterface()->getNextTarget(), info_chaos_blast, false);
 				}
 			}
 
 			//move if needed
-			if(_unit->GetAIInterface()->GetNextTarget()->GetDistance2dSq(_unit) >= 400) //20 yards
+			if(_unit->GetAIInterface()->getNextTarget()->GetDistance2dSq(_unit) >= 400) //20 yards
 			{
 				_unit->GetAIInterface()->m_moveRun = true;
-				_unit->GetAIInterface()->_CalcDestinationAndMove(_unit->GetAIInterface()->GetNextTarget(), 5.0f);
+				_unit->GetAIInterface()->_CalcDestinationAndMove(_unit->GetAIInterface()->getNextTarget(), 5.0f);
 			}
 		}
 	}
@@ -1596,11 +1596,11 @@ public:
 
 	void AIUpdate()
 	{
-		if (_unit->GetAIInterface()->GetNextTarget() != NULL && _unit->GetCurrentSpell() == NULL)
+		if (_unit->GetAIInterface()->getNextTarget() != NULL && _unit->GetCurrentSpell() == NULL)
 		{
 			Unit* target = NULL;
 			uint32 t = (uint32)time(NULL);
-			target = _unit->GetAIInterface()->GetNextTarget();
+			target = _unit->GetAIInterface()->getNextTarget();
 			if (t > spells[2].casttime)
 			{
 				_unit->SendChatMessageAlternateEntry(CN_MOROGRIM_TIDEWALKER, CHAT_MSG_MONSTER_EMOTE, LANG_UNIVERSAL, " sends his enemies to their watery graves!");
@@ -2092,7 +2092,7 @@ public:
 		}
 		if(!InRange)
 		{
-			Shoot(_unit->GetAIInterface()->GetNextTarget());
+			Shoot(_unit->GetAIInterface()->getNextTarget());
 		}
 
 		float val = RandomFloat(100.0f);
@@ -2291,7 +2291,7 @@ public:
 
 	void SpellCast(float val)
 	{
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
 		{
 			float comulativeperc = 0;
 			Unit* target = NULL;
@@ -2301,7 +2301,7 @@ public:
 					
 				if(m_spellcheck[i])
 				{
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 					case TARGET_SELF:
@@ -2689,7 +2689,7 @@ public:
 		
 	void SpellCast(float val)
 	{
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
 		{
 			float comulativeperc = 0;
 			Unit* target = NULL;
@@ -2700,7 +2700,7 @@ public:
 				if (m_spellcheck[i])
 				{				
 				spells[i].casttime = spells[i].cooldown;
-				target = _unit->GetAIInterface()->GetNextTarget();
+				target = _unit->GetAIInterface()->getNextTarget();
 				switch(spells[i].targettype)
 				{
 					case TARGET_SELF:

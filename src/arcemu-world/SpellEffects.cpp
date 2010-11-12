@@ -2121,7 +2121,7 @@ void Spell::SpellEffectSummon(uint32 i)
 				if( uTarget && isAttackable( p_caster, uTarget ) )
 				{
 					pCreature->GetAIInterface()->AttackReaction( uTarget, 1 );
-					pCreature->GetAIInterface()->SetNextTarget( uTarget );
+					pCreature->GetAIInterface()->setNextTarget( uTarget );
 				}
 			}
 			else if ( MiscValue == 24207 ) //Army of the dead ghoul.

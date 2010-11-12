@@ -67,7 +67,7 @@ public:
 
     void SpellCast(uint32 val)
     {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())//_unit->getAttackTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())//_unit->getAttackTarget())
         {
 			//Unit* target = _unit->GetAIInterface()->GetNextTarget();
             if(m_mangle)
@@ -137,7 +137,7 @@ public:
 
     void SpellCast(uint32 val)
     {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())//_unit->getAttackTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())//_unit->getAttackTarget())
         {
 			//Unit* target = _unit->GetAIInterface()->GetNextTarget();
                       
@@ -265,9 +265,9 @@ public:
 
     void SpellCast(uint32 val)
     {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())//_unit->getAttackTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())//_unit->getAttackTarget())
         {
-			Unit* target = _unit->GetAIInterface()->GetNextTarget();
+			Unit* target = _unit->GetAIInterface()->getNextTarget();
 			                      
             if(m_elementalfire)
             {

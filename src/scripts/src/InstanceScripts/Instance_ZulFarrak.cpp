@@ -77,11 +77,11 @@ public:
 	{
 		plaguecount++;
 		randomplague = 16 + RandomUInt(3);
-		if(plaguecount >= randomplague && _unit->GetAIInterface()->GetNextTarget())
+		if(plaguecount >= randomplague && _unit->GetAIInterface()->getNextTarget())
 		{
 			plaguecount = 0;
 			Unit* target = NULL;
-			target = _unit->GetAIInterface()->GetNextTarget();
+			target = _unit->GetAIInterface()->getNextTarget();
 			_unit->CastSpell(target, plague, true);
 		}
 		else if(_unit->GetHealthPct() <= 30 && morphcheck)
@@ -232,8 +232,8 @@ public:
 		if(attack)
 		{
 			Unit* Target = NULL;
-			Target = _unit->GetAIInterface()->GetNextTarget();
-			if (_unit->GetAIInterface()->GetNextTarget())
+			Target = _unit->GetAIInterface()->getNextTarget();
+			if (_unit->GetAIInterface()->getNextTarget())
 			{
 				if(add1 && Target)
 				{

@@ -178,7 +178,7 @@ public:
 			}break;
 		case SPELL_TARGET_CURRENT_ENEMY:
 			{
-				spelltarget = _unit->GetAIInterface()->GetNextTarget();
+				spelltarget = _unit->GetAIInterface()->getNextTarget();
 			}break;
 		case SPELL_TARGET_RANDOM_PLAYER:
 			{
@@ -419,7 +419,7 @@ public:
 			}break;
 		case SPELL_TARGET_CURRENT_ENEMY:
 			{
-				spelltarget = _unit->GetAIInterface()->GetNextTarget();
+				spelltarget = _unit->GetAIInterface()->getNextTarget();
 			}break;
 		case SPELL_TARGET_RANDOM_PLAYER:
 			{
@@ -664,7 +664,7 @@ public:
 			}break;
 		case SPELL_TARGET_CURRENT_ENEMY:
 			{
-				spelltarget = _unit->GetAIInterface()->GetNextTarget();
+				spelltarget = _unit->GetAIInterface()->getNextTarget();
 			}break;
 		case SPELL_TARGET_RANDOM_PLAYER:
 			{
@@ -817,7 +817,7 @@ public:
 			}break;
 		case SPELL_TARGET_CURRENT_ENEMY:
 			{
-				spelltarget = _unit->GetAIInterface()->GetNextTarget();
+				spelltarget = _unit->GetAIInterface()->getNextTarget();
 			}break;
 		case SPELL_TARGET_RANDOM_PLAYER:
 			{
@@ -1036,7 +1036,7 @@ public:
 			}break;
 		case SPELL_TARGET_CURRENT_ENEMY:
 			{
-				spelltarget = _unit->GetAIInterface()->GetNextTarget();
+				spelltarget = _unit->GetAIInterface()->getNextTarget();
 			}break;
 		case SPELL_TARGET_RANDOM_PLAYER:
 			{

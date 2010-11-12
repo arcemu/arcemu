@@ -303,7 +303,7 @@ public:
 			{
 				pCreature->SetFaction(14);
 				pCreature->SetFloatValue(OBJECT_FIELD_SCALE_X, 1);
-				pCreature->GetAIInterface()->SetNextTarget(pPlayer);
+				pCreature->GetAIInterface()->setNextTarget(pPlayer);
 				pCreature->GetAIInterface()->AttackReaction(pPlayer, 1);
 			}
 		}

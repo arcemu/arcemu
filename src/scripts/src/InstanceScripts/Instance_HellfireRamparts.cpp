@@ -160,7 +160,7 @@ public:
 			pShield->mEnabled = true;
 		}
 
-		Unit* pTarget = _unit->GetAIInterface()->GetNextTarget();
+		Unit* pTarget = _unit->GetAIInterface()->getNextTarget();
 		if (pTarget != NULL)
 		{
 			if (GetRangeToUnit(pTarget) > 10.0f)
@@ -176,7 +176,7 @@ public:
 					{
 						ClearHateList();
 						_unit->GetAIInterface()->AttackReaction(pTarget, 500);
-						_unit->GetAIInterface()->SetNextTarget(pTarget);
+						_unit->GetAIInterface()->setNextTarget(pTarget);
 					}
 				}
 				else

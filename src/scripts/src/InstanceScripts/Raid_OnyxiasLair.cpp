@@ -295,9 +295,9 @@ public:
         if(_unit->GetAIInterface()->getMoveType() == MOVEMENTTYPE_WANTEDWP)
             return;
         m_eFlamesCooldown--;
-        if(!m_eFlamesCooldown && _unit->GetAIInterface()->GetNextTarget())//_unit->getAttackTarget())
+        if(!m_eFlamesCooldown && _unit->GetAIInterface()->getNextTarget())//_unit->getAttackTarget())
         {
-            _unit->CastSpell(_unit->GetAIInterface()->GetNextTarget(), infoSFireball, false);//(_unit->getAttackTarget(),
+            _unit->CastSpell(_unit->GetAIInterface()->getNextTarget(), infoSFireball, false);//(_unit->getAttackTarget(),
             m_eFlamesCooldown = 4;
             m_fCastCount--;
         }
@@ -456,7 +456,7 @@ public:
 
     void SpellCast(uint32 val)
     {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())//_unit->getAttackTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())//_unit->getAttackTarget())
         {
             if(m_fBreath)
             {
@@ -466,7 +466,7 @@ public:
             }
             else if(m_kAway)
             {
-                _unit->CastSpell(_unit->GetAIInterface()->GetNextTarget(), infoKAway, false);
+                _unit->CastSpell(_unit->GetAIInterface()->getNextTarget(), infoKAway, false);
                 m_kAway = false;
                 return;
             }
@@ -478,7 +478,7 @@ public:
             }
             else if(m_Cleave)
             {
-                _unit->CastSpell(_unit->GetAIInterface()->GetNextTarget(), infoCleave, false);
+                _unit->CastSpell(_unit->GetAIInterface()->getNextTarget(), infoCleave, false);
                 m_Cleave = false;
                 return;
             }

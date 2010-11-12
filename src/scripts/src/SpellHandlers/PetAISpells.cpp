@@ -41,7 +41,7 @@ public:
 	
 	void AIUpdate() 
 	{
-	Unit *curtarget = _unit->GetAIInterface()->GetNextTarget();
+	Unit *curtarget = _unit->GetAIInterface()->getNextTarget();
 		if(_unit->GetCurrentSpell() == NULL && curtarget)
 		{
 			switch(dpsCycle)

@@ -103,7 +103,7 @@ public:
 
 	void SpellCast(float val)
     {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -113,7 +113,7 @@ public:
 				
 				if(m_spellcheck[i])
 				{
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 						case TARGET_SELF:
@@ -149,7 +149,7 @@ public:
 		if (!maxdist2cast) maxdist2cast = 100.0f;
 		if (!maxhp2cast) maxhp2cast = 100;
 
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			std::vector<Unit*> TargetTable;		/* From M4ksiu - Big THX to Capt who helped me with std stuff to make it simple and fully working <3 */
 												/* If anyone wants to use this function, then leave this note!										 */
@@ -263,7 +263,7 @@ public:
 
 	void SpellCast(float val)
     {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -273,7 +273,7 @@ public:
 				
 				if(m_spellcheck[i])
 				{
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 						case TARGET_SELF:
@@ -309,7 +309,7 @@ public:
 		if (!maxdist2cast) maxdist2cast = 100.0f;
 		if (!maxhp2cast) maxhp2cast = 100;
 
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			std::vector<Unit*> TargetTable;		/* From M4ksiu - Big THX to Capt who helped me with std stuff to make it simple and fully working <3 */
 												/* If anyone wants to use this function, then leave this note!										 */
@@ -489,7 +489,7 @@ public:
 
 	void SpellCast(float val)
     {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -499,7 +499,7 @@ public:
 				
 				if(m_spellcheck[i])
 				{
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 						case TARGET_SELF:
@@ -535,7 +535,7 @@ public:
 		if (!maxdist2cast) maxdist2cast = 100.0f;
 		if (!maxhp2cast) maxhp2cast = 100;
 
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			std::vector<Unit*> TargetTable;		/* From M4ksiu - Big THX to Capt who helped me with std stuff to make it simple and fully working <3 */
 												/* If anyone wants to use this function, then leave this note!										 */
@@ -657,7 +657,7 @@ public:
 
 	void SpellCast(float val)
     {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -667,7 +667,7 @@ public:
 				
 				if(m_spellcheck[i])
 				{
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 						case TARGET_SELF:
@@ -703,7 +703,7 @@ public:
 		if (!maxdist2cast) maxdist2cast = 100.0f;
 		if (!maxhp2cast) maxhp2cast = 100;
 
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			std::vector<Unit*> TargetTable;		/* From M4ksiu - Big THX to Capt who helped me with std stuff to make it simple and fully working <3 */
 												/* If anyone wants to use this function, then leave this note!										 */
@@ -825,7 +825,7 @@ public:
 
 	void SpellCast(float val)
     {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -835,7 +835,7 @@ public:
 				
 				if(m_spellcheck[i])
 				{
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 						case TARGET_SELF:
@@ -871,7 +871,7 @@ public:
 		if (!maxdist2cast) maxdist2cast = 100.0f;
 		if (!maxhp2cast) maxhp2cast = 100;
 
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			std::vector<Unit*> TargetTable;		/* From M4ksiu - Big THX to Capt who helped me with std stuff to make it simple and fully working <3 */
 												/* If anyone wants to use this function, then leave this note!										 */
@@ -993,7 +993,7 @@ public:
 
 	void SpellCast(float val)
     {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -1003,7 +1003,7 @@ public:
 				
 				if(m_spellcheck[i])
 				{
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 						case TARGET_SELF:
@@ -1039,7 +1039,7 @@ public:
 		if (!maxdist2cast) maxdist2cast = 100.0f;
 		if (!maxhp2cast) maxhp2cast = 100;
 
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			std::vector<Unit*> TargetTable;		/* From M4ksiu - Big THX to Capt who helped me with std stuff to make it simple and fully working <3 */
 												/* If anyone wants to use this function, then leave this note!										 */
@@ -1163,7 +1163,7 @@ public:
 
 	void SpellCast(float val)
     {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -1173,7 +1173,7 @@ public:
 				
 				if(m_spellcheck[i])
 				{
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 						case TARGET_SELF:
@@ -1209,7 +1209,7 @@ public:
 		if (!maxdist2cast) maxdist2cast = 100.0f;
 		if (!maxhp2cast) maxhp2cast = 100;
 
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			std::vector<Unit*> TargetTable;		/* From M4ksiu - Big THX to Capt who helped me with std stuff to make it simple and fully working <3 */
 												/* If anyone wants to use this function, then leave this note!										 */
@@ -1331,7 +1331,7 @@ public:
 
 	void SpellCast(float val)
     {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -1341,7 +1341,7 @@ public:
 				
 				if(m_spellcheck[i])
 				{
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 						case TARGET_SELF:
@@ -1377,7 +1377,7 @@ public:
 		if (!maxdist2cast) maxdist2cast = 100.0f;
 		if (!maxhp2cast) maxhp2cast = 100;
 
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			std::vector<Unit*> TargetTable;		/* From M4ksiu - Big THX to Capt who helped me with std stuff to make it simple and fully working <3 */
 												/* If anyone wants to use this function, then leave this note!										 */
@@ -1492,7 +1492,7 @@ public:
 
 	void SpellCast(float val)
     {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -1502,7 +1502,7 @@ public:
 				
 				if(m_spellcheck[i])
 				{
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 						case TARGET_SELF:
@@ -1538,7 +1538,7 @@ public:
 		if (!maxdist2cast) maxdist2cast = 100.0f;
 		if (!maxhp2cast) maxhp2cast = 100;
 
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			std::vector<Unit*> TargetTable;		/* From M4ksiu - Big THX to Capt who helped me with std stuff to make it simple and fully working <3 */
 												/* If anyone wants to use this function, then leave this note!										 */
@@ -1772,7 +1772,7 @@ bool Dummy_Solarian_WrathOfTheAstromancer(uint32 pEffectIndex, Spell* pSpell)
 	Unit* Caster = pSpell->u_caster;
 	if( !Caster ) return true;
 
-	Unit* Target = Caster->GetAIInterface()->GetNextTarget();
+	Unit* Target = Caster->GetAIInterface()->getNextTarget();
 	if( !Target ) return true;
 
 	SpellEntry* SpellInfo = dbcSpell.LookupEntry(SOLARIAN_WRATH_OF_THE_ASTROMANCER_BOMB);
@@ -2162,7 +2162,7 @@ public:
 			_unit->GetAIInterface()->setWaypointToMove(NextWP);
 			// ugly code, trows compile error if left just null, this should do it ~ azolex
 			uint32 nullfix = 0;
-			_unit->GetAIInterface()->SetNextTarget( nullfix );
+			_unit->GetAIInterface()->setNextTarget( nullfix );
 			Flying=true;
 		}
     }
@@ -2214,7 +2214,7 @@ public:
 		if (_unit->GetCurrentSpell() != NULL) return;
 		
 		Unit* target = NULL;
-		target = _unit->GetAIInterface()->GetNextTarget();
+		target = _unit->GetAIInterface()->getNextTarget();
 		switch(spells[id].targettype)
 		{
 			case TARGET_SELF:
@@ -2578,7 +2578,7 @@ public:
 	bool SwitchTarget()
 	{
 		mCurrentTarget = GetBestPlayerTarget();
-		if (mCurrentTarget == _unit->GetAIInterface()->GetNextTarget())
+		if (mCurrentTarget == _unit->GetAIInterface()->getNextTarget())
 			return true;
 
 		if (mCurrentTarget != NULL)
@@ -2684,7 +2684,7 @@ public:
 			CastSpellNowNoScheduling(mArcaneBurst);
 		}
 
-		Unit* pTarget = _unit->GetAIInterface()->GetNextTarget();
+		Unit* pTarget = _unit->GetAIInterface()->getNextTarget();
 		if (pTarget != NULL && GetRangeToUnit(pTarget) <= 30.0f)
 		{
 			ParentClass::AIUpdate();
@@ -3359,10 +3359,10 @@ void SpellFunc_KaelThasArcaneDisruption(SpellDesc* pThis, MoonScriptCreatureAI* 
 	if (KaelThas != NULL)
 	{
 		KaelThas->CastSpellNowNoScheduling(KaelThas->mArcaneDisruption);
-		Unit* pMainTarget = KaelThas->GetUnit()->GetAIInterface()->GetNextTarget();
+		Unit* pMainTarget = KaelThas->GetUnit()->GetAIInterface()->getNextTarget();
 		if (pTarget != NULL && pMainTarget != NULL)
 		{
-			KaelThas->GetUnit()->GetAIInterface()->SetNextTarget(pTarget);
+			KaelThas->GetUnit()->GetAIInterface()->setNextTarget(pTarget);
 			KaelThas->GetUnit()->GetAIInterface()->AttackReaction(pTarget, 1000);
 			KaelThas->GetUnit()->GetAIInterface()->RemoveThreatByPtr(pMainTarget);
 		}

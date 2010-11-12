@@ -73,7 +73,7 @@ public:
 			{
 			pPlayer->SendChatMessage(CHAT_MSG_SAY, LANG_UNIVERSAL, "I give you the key to your salvation");
             pCreature->SetUInt64Value(UNIT_FIELD_FLAGS, 0);
-            pCreature->GetAIInterface()->SetNextTarget(pPlayer);
+            pCreature->GetAIInterface()->setNextTarget(pPlayer);
             pCreature->GetAIInterface()->AttackReaction(pPlayer, 1, 0);
             pCreature->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "You have committed a big mistake, demon");
 			

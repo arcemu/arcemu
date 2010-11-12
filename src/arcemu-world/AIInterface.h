@@ -406,9 +406,9 @@ public:
 	uint32 m_totalMoveTime;
 	ARCEMU_INLINE void AddStopTime(uint32 Time) { m_moveTimer += Time; }
 	ARCEMU_INLINE void SetNextSpell(AI_Spell * sp) { m_nextSpell = sp; }
-	Unit* GetNextTarget();
-	void SetNextTarget (Unit *nextTarget);
-	void SetNextTarget (uint64 nextTarget); 
+	Unit* getNextTarget();
+	void setNextTarget (Unit *nextTarget);
+	void setNextTarget (uint64 nextTarget); 
 
 	/*ARCEMU_INLINE void ResetProcCounts()
 	{
@@ -557,5 +557,6 @@ public:
 	bool skip_reset_hp;
 
 	void WipeCurrentTarget();
+	//Unit * getNextTarget();
 };
 #endif

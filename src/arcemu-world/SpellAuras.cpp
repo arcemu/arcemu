@@ -1708,7 +1708,7 @@ void Aura::SpellAuraModCharm(bool apply)
 		//damn it, the other effects of enslave demon will agro him on us anyway :S
 		m_target->GetAIInterface()->WipeHateList();
 		m_target->GetAIInterface()->WipeTargetList();
-		m_target->GetAIInterface()->SetNextTarget( TO_UNIT(NULL));
+		m_target->GetAIInterface()->setNextTarget( TO_UNIT(NULL));
 
 		target->SetEnslaveCount(target->GetEnslaveCount() + 1);
 
@@ -2138,7 +2138,7 @@ void Aura::SpellAuraModStun(bool apply)
 		m_target->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_STUNNED);
 
 		if(m_target->GetTypeId() == TYPEID_UNIT)
-			m_target->GetAIInterface()->SetNextTarget( TO_UNIT(NULL) );
+			m_target->GetAIInterface()->setNextTarget( TO_UNIT(NULL) );
 
 		// remove the current spell (for channalers)
 		if(m_target->m_currentSpell && m_target->GetGUID() != m_casterGuid &&
@@ -2177,8 +2177,8 @@ void Aura::SpellAuraModStun(bool apply)
 		if(m_target->GetTypeId() == TYPEID_UNIT)
 		{
 			Unit * target = GetUnitCaster();
-			if( m_target->GetAIInterface()->GetNextTarget() != NULL )
-				target = m_target->GetAIInterface()->GetNextTarget();
+			if( m_target->GetAIInterface()->getNextTarget() != NULL )
+				target = m_target->GetAIInterface()->getNextTarget();
 
 			if( target == NULL )
 				return;

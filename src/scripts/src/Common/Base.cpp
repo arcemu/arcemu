@@ -1276,7 +1276,7 @@ Unit* MoonScriptCreatureAI::GetTargetForSpell( SpellDesc* pSpell )
 		return _unit->GetAIInterface()->GetSecondHated();
 	case TargetGen_Current:
 	case TargetGen_Destination:
-		return _unit->GetAIInterface()->GetNextTarget();
+		return _unit->GetAIInterface()->getNextTarget();
 	case TargetGen_Predefined:
 		return pSpell->mPredefinedTarget;
 	case TargetGen_RandomPlayer:
@@ -1372,7 +1372,7 @@ Unit* MoonScriptCreatureAI::GetSecondMostHatedTargetInArray( UnitArray& pTargetA
 {
 	Unit*	TargetUnit = NULL;
 	Unit*	MostHatedUnit = NULL;
-	Unit*	CurrentTarget = TO_UNIT( _unit->GetAIInterface()->GetNextTarget() );
+	Unit*	CurrentTarget = TO_UNIT( _unit->GetAIInterface()->getNextTarget() );
 	uint32	Threat = 0, HighestThreat = 0;
 	for ( UnitArray::iterator UnitIter = pTargetArray.begin(); UnitIter != pTargetArray.end(); ++UnitIter )
 	{
@@ -1422,7 +1422,7 @@ bool MoonScriptCreatureAI::IsValidUnitTarget( Object* pObject, TargetFilter pFil
 			return false;
 
 		//Skip current attacking target if requested
-		if ( ( pFilter & TargetFilter_NotCurrent ) && UnitTarget == _unit->GetAIInterface()->GetNextTarget() )
+		if ( ( pFilter & TargetFilter_NotCurrent ) && UnitTarget == _unit->GetAIInterface()->getNextTarget() )
 			return false;
 
 		//Keep only wounded targets if requested

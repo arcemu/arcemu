@@ -51,11 +51,11 @@ void SpellFunc_LairBrute_Charge(SpellDesc* pThis, MoonScriptCreatureAI* pCreatur
 	LairBruteAI *pBruteAI = (pCreatureAI != NULL) ? (LairBruteAI*)pCreatureAI : NULL;
 	if (pBruteAI != NULL)
 	{
-		Unit* pCurrentTarget = pBruteAI->GetUnit()->GetAIInterface()->GetNextTarget();
+		Unit* pCurrentTarget = pBruteAI->GetUnit()->GetAIInterface()->getNextTarget();
 		if (pCurrentTarget != NULL && pCurrentTarget != pTarget)
 		{
 			pBruteAI->GetUnit()->GetAIInterface()->AttackReaction(pTarget, 500);
-			pBruteAI->GetUnit()->GetAIInterface()->SetNextTarget(pTarget);
+			pBruteAI->GetUnit()->GetAIInterface()->setNextTarget(pTarget);
 			pBruteAI->GetUnit()->GetAIInterface()->RemoveThreatByPtr(pCurrentTarget);
 		}
 
@@ -267,7 +267,7 @@ class KigglerTheCrazedAI : public MoonScriptCreatureAI
 	{
 		ParentClass::AIUpdate();
 
-		Unit* pTarget = _unit->GetAIInterface()->GetNextTarget();
+		Unit* pTarget = _unit->GetAIInterface()->getNextTarget();
 		if (pTarget != NULL)
 		{
 			if (GetRangeToUnit(pTarget) <= 40.0f)
@@ -524,7 +524,7 @@ class GruulTheDragonkillerAI : public MoonScriptCreatureAI
 			}
 			else if (IsTimerFinished(mHurtfulTimer))
 			{
-				Unit* pCurrentTarget = _unit->GetAIInterface()->GetNextTarget();
+				Unit* pCurrentTarget = _unit->GetAIInterface()->getNextTarget();
 				if (pCurrentTarget != NULL)
 				{
 					Unit* pTarget = pCurrentTarget;

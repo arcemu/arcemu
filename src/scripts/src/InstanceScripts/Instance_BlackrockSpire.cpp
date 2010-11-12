@@ -105,7 +105,7 @@ public:
 
     void SpellCast(float val)
     {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -118,7 +118,7 @@ public:
 					if (!spells[i].instant)
 						_unit->GetAIInterface()->StopMovement(1);
 
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 						case TARGET_SELF:
@@ -221,7 +221,7 @@ public:
 
     void SpellCast(float val)
     {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -234,7 +234,7 @@ public:
 					if (!spells[i].instant)
 						_unit->GetAIInterface()->StopMovement(1);
 
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 						case TARGET_SELF:
@@ -337,7 +337,7 @@ public:
 
     void SpellCast(float val)
     {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -350,7 +350,7 @@ public:
 					if (!spells[i].instant)
 						_unit->GetAIInterface()->StopMovement(1);
 
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 						case TARGET_SELF:
@@ -456,9 +456,9 @@ public:
 			Warchief =_unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_REND_BLACKHAND, 157.366516f, -419.779358f, 110.472336f, 3.056772f, true, false, 0, 0);
 			if (Warchief != NULL)
 			{
-				if (_unit->GetAIInterface()->GetNextTarget() != NULL)
+				if (_unit->GetAIInterface()->getNextTarget() != NULL)
 				{
-					Warchief->GetAIInterface()->AttackReaction(_unit->GetAIInterface()->GetNextTarget(), 1, 0);
+					Warchief->GetAIInterface()->AttackReaction(_unit->GetAIInterface()->getNextTarget(), 1, 0);
 				}
 			}
 
@@ -471,7 +471,7 @@ public:
 
     void SpellCast(float val)
     {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -484,7 +484,7 @@ public:
 					if (!spells[i].instant)
 						_unit->GetAIInterface()->StopMovement(1);
 
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 						case TARGET_SELF:
@@ -587,7 +587,7 @@ public:
 
     void SpellCast(float val)
     {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -600,7 +600,7 @@ public:
 					if (!spells[i].instant)
 						_unit->GetAIInterface()->StopMovement(1);
 
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 						case TARGET_SELF:
@@ -730,7 +730,7 @@ public:
 
     void SpellCast(float val)
     {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -743,7 +743,7 @@ public:
 					if (!spells[i].instant)
 						_unit->GetAIInterface()->StopMovement(1);
 
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 						case TARGET_SELF:
@@ -845,7 +845,7 @@ public:
 
     void SpellCast(float val)
     {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -858,7 +858,7 @@ public:
 					if (!spells[i].instant)
 						_unit->GetAIInterface()->StopMovement(1);
 
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 						case TARGET_SELF:
@@ -981,7 +981,7 @@ public:
 
     void SpellCast(float val)
     {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -994,7 +994,7 @@ public:
 					if (!spells[i].instant)
 						_unit->GetAIInterface()->StopMovement(1);
 
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 						case TARGET_SELF:
@@ -1103,7 +1103,7 @@ public:
 
     void SpellCast(float val)
     {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -1116,7 +1116,7 @@ public:
 					if (!spells[i].instant)
 						_unit->GetAIInterface()->StopMovement(1);
 
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 						case TARGET_SELF:
@@ -1246,7 +1246,7 @@ public:
 
     void SpellCast(float val)
     {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -1259,7 +1259,7 @@ public:
 					if (!spells[i].instant)
 						_unit->GetAIInterface()->StopMovement(1);
 
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 						case TARGET_SELF:
@@ -1361,7 +1361,7 @@ public:
 
     void SpellCast(float val)
     {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -1374,7 +1374,7 @@ public:
 					if (!spells[i].instant)
 						_unit->GetAIInterface()->StopMovement(1);
 
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 						case TARGET_SELF:
@@ -1473,9 +1473,9 @@ public:
 			cGizrul =_unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_GIZRUL, -195.100006f, -321.970001f, 65.424400f, 0.016500f, true, false, 0, 0);
 			if (cGizrul != NULL)
 			{
-				if (_unit->GetAIInterface()->GetNextTarget() != NULL)
+				if (_unit->GetAIInterface()->getNextTarget() != NULL)
 				{
-					cGizrul->GetAIInterface()->AttackReaction(_unit->GetAIInterface()->GetNextTarget(), 1, 0);
+					cGizrul->GetAIInterface()->AttackReaction(_unit->GetAIInterface()->getNextTarget(), 1, 0);
 				}
 			}
 
@@ -1488,7 +1488,7 @@ public:
 
     void SpellCast(float val)
     {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -1501,7 +1501,7 @@ public:
 					if (!spells[i].instant)
 						_unit->GetAIInterface()->StopMovement(1);
 
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 						case TARGET_SELF:
@@ -1616,15 +1616,15 @@ public:
 			Unit* Warlord2 = NULL;
 			Warlord1 =_unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_SPIRESTONE_WARLORD, -30.675352f, -493.231750f, 90.610725f, 3.123542f, true, false, 0, 0);//This line makes the unit spawn a creature
 			Warlord2 =_unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_SPIRESTONE_WARLORD, -30.433489f, -479.833923f, 90.535606f, 3.123542f, true, false, 0, 0);//This line makes the unit spawn a creature
-			if (_unit->GetAIInterface()->GetNextTarget() != NULL)
+			if (_unit->GetAIInterface()->getNextTarget() != NULL)
 			{
 				if (Warlord1 != NULL)
 				{
-					Warlord1->GetAIInterface()->AttackReaction(_unit->GetAIInterface()->GetNextTarget(), 1, 0);
+					Warlord1->GetAIInterface()->AttackReaction(_unit->GetAIInterface()->getNextTarget(), 1, 0);
 				}
 				if (Warlord2 != NULL)
 				{
-					Warlord2->GetAIInterface()->AttackReaction(_unit->GetAIInterface()->GetNextTarget(), 1, 0);
+					Warlord2->GetAIInterface()->AttackReaction(_unit->GetAIInterface()->getNextTarget(), 1, 0);
 				}
 			}
 
@@ -1637,7 +1637,7 @@ public:
 
     void SpellCast(float val)
     {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -1650,7 +1650,7 @@ public:
 					if (!spells[i].instant)
 						_unit->GetAIInterface()->StopMovement(1);
 
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 						case TARGET_SELF:

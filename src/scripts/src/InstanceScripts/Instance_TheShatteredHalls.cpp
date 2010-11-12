@@ -88,7 +88,7 @@ public:
 
 	void SpellCast(float val)
 	{
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -99,7 +99,7 @@ public:
 				if (m_spellcheck[i])
 				{					
 					spells[i].casttime = spells[i].cooldown;
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 						case TARGET_SELF:
@@ -208,7 +208,7 @@ public:
 
 	void SpellCast(float val)
 	{
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -219,7 +219,7 @@ public:
 				if (m_spellcheck[i])
 				{					
 					spells[i].casttime = spells[i].cooldown;
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 						case TARGET_SELF:
@@ -335,7 +335,7 @@ public:
 
 	void SpellCast(float val)
 	{
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -346,7 +346,7 @@ public:
 				if (m_spellcheck[i])
 				{					
 					spells[i].casttime = spells[i].cooldown;
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 						case TARGET_SELF:
@@ -463,7 +463,7 @@ public:
 
 	void SpellCast(float val)
 	{
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -474,7 +474,7 @@ public:
 				if (m_spellcheck[i])
 				{					
 					spells[i].casttime = spells[i].cooldown;
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 						case TARGET_SELF:
@@ -613,7 +613,7 @@ public:
 
 	void SpellCast(float val)
 	{
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -624,7 +624,7 @@ public:
 				if (m_spellcheck[i])
 				{					
 					spells[i].casttime = spells[i].cooldown;
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 						case TARGET_SELF:
@@ -746,7 +746,7 @@ public:
 
 	void SpellCast(float val)
 	{
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -757,7 +757,7 @@ public:
 				if (m_spellcheck[i])
 				{					
 					spells[i].casttime = spells[i].cooldown;
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 						case TARGET_SELF:
@@ -858,7 +858,7 @@ public:
 
 	void SpellCast(float val)
 	{
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -869,7 +869,7 @@ public:
 				if (m_spellcheck[i])
 				{					
 					spells[i].casttime = spells[i].cooldown;
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 						case TARGET_SELF:
@@ -970,7 +970,7 @@ public:
 
 	void SpellCast(float val)
 	{
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -981,7 +981,7 @@ public:
 				if (m_spellcheck[i])
 				{					
 					spells[i].casttime = spells[i].cooldown;
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 						case TARGET_SELF:
@@ -1100,7 +1100,7 @@ public:
 
 	void SpellCast(float val)
 	{
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -1111,7 +1111,7 @@ public:
 				if (m_spellcheck[i])
 				{					
 					spells[i].casttime = spells[i].cooldown;
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 						case TARGET_SELF:
@@ -1213,10 +1213,10 @@ public:
 
     void AIUpdate()
 	{
-		if (_unit->GetAIInterface()->GetNextTarget() && _unit->GetCurrentSpell())
+		if (_unit->GetAIInterface()->getNextTarget() && _unit->GetCurrentSpell())
 		{
 			Unit* target = NULL;
-			target = _unit->GetAIInterface()->GetNextTarget();
+			target = _unit->GetAIInterface()->getNextTarget();
 			if (_unit->GetDistance2dSq(target) > 225.0f && RandomUInt(4) == 1)
 			{
 				_unit->CastSpell(target, spells[1].info, spells[1].instant);
@@ -1230,7 +1230,7 @@ public:
 
 	void SpellCast(float val)
 	{
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -1241,7 +1241,7 @@ public:
 				if (m_spellcheck[i])
 				{					
 					spells[i].casttime = spells[i].cooldown;
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 						case TARGET_SELF:
@@ -1351,7 +1351,7 @@ public:
     void AIUpdate()
 	{
 		_unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
-		if (_unit->GetAIInterface()->GetNextTarget() && _unit->GetDistance2dSq(_unit->GetAIInterface()->GetNextTarget()) <= 900.0f)
+		if (_unit->GetAIInterface()->getNextTarget() && _unit->GetDistance2dSq(_unit->GetAIInterface()->getNextTarget()) <= 900.0f)
 		{
 			_unit->GetAIInterface()->setCurrentAgent(AGENT_SPELL);
 			if (_unit->GetCurrentSpell() == NULL)
@@ -1359,22 +1359,22 @@ public:
 				uint32 Chance = RandomUInt(100);
 				if (Chance <= 70)
 				{
-					_unit->CastSpell(_unit->GetAIInterface()->GetNextTarget(), spells[2].info, spells[2].instant);
+					_unit->CastSpell(_unit->GetAIInterface()->getNextTarget(), spells[2].info, spells[2].instant);
 				}
 
 				else if (Chance > 70 && Chance <= 78)
 				{
-					_unit->CastSpell(_unit->GetAIInterface()->GetNextTarget(), spells[1].info, spells[1].instant);
+					_unit->CastSpell(_unit->GetAIInterface()->getNextTarget(), spells[1].info, spells[1].instant);
 				}
 
 				else if (Chance > 78 && Chance <= 82)
 				{
-					_unit->CastSpell(_unit->GetAIInterface()->GetNextTarget(), spells[3].info, spells[3].instant);
+					_unit->CastSpell(_unit->GetAIInterface()->getNextTarget(), spells[3].info, spells[3].instant);
 				}
 
 				else if (Chance > 82 && Chance <= 86)
 				{
-					_unit->CastSpell(_unit->GetAIInterface()->GetNextTarget(), spells[0].info, spells[0].instant);
+					_unit->CastSpell(_unit->GetAIInterface()->getNextTarget(), spells[0].info, spells[0].instant);
 				}
 			}
 		}
@@ -1464,7 +1464,7 @@ public:
 
 	void SpellCast(float val)
 	{
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -1475,7 +1475,7 @@ public:
 				if (m_spellcheck[i])
 				{					
 					spells[i].casttime = spells[i].cooldown;
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 						case TARGET_SELF:
@@ -1780,7 +1780,7 @@ public:
 
 		uint32 t = (uint32)time(NULL);
 		// not sure if this should work like that
-		if (t > spells[2].casttime && _unit->GetHealthPct() <= 20 && _unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+		if (t > spells[2].casttime && _unit->GetHealthPct() <= 20 && _unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
 		{
 			_unit->setAttackTimer(2500, false);
 
@@ -1799,7 +1799,7 @@ public:
 
 	void SpellCast(float val)
     {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -1809,7 +1809,7 @@ public:
 				
 				if(m_spellcheck[i])
 				{
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 						case TARGET_SELF:
@@ -1846,7 +1846,7 @@ public:
 		if (!maxdist2cast) maxdist2cast = 100.0f;
 		if (!maxhp2cast) maxhp2cast = 100;
 
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			std::vector<Unit*> TargetTable;		/* From M4ksiu - Big THX to Capt who helped me with std stuff to make it simple and fully working <3 */
 												/* If anyone wants to use this function, then leave this note!										 */
@@ -1995,7 +1995,7 @@ public:
 
 	void SpellCast(float val)
     {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -2005,7 +2005,7 @@ public:
 				
 				if(m_spellcheck[i])
 				{
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 						case TARGET_SELF:
@@ -2219,7 +2219,7 @@ public:
 		if ( pTarget != NULL )
 		{
 			ClearHateList();
-			_unit->GetAIInterface()->SetNextTarget( pTarget );
+			_unit->GetAIInterface()->setNextTarget( pTarget );
 			_unit->GetAIInterface()->modThreatByPtr( pTarget, 1000 );
 
 			if ( mLeftHead == NULL || mRightHead == NULL || mSpeechTimer != INVALIDATE_TIMER )
@@ -2405,11 +2405,11 @@ public:
     void AIUpdate()
 	{
 		uint32 t = (uint32)time(NULL);
-		if (t > spells[0].casttime && _unit->GetAIInterface()->GetNextTarget() && _unit->GetCurrentSpell() == NULL)
+		if (t > spells[0].casttime && _unit->GetAIInterface()->getNextTarget() && _unit->GetCurrentSpell() == NULL)
 		{
 			_unit->setAttackTimer(1500, false);
 
-			_unit->CastSpell(_unit->GetAIInterface()->GetNextTarget(), spells[0].info, spells[0].instant);
+			_unit->CastSpell(_unit->GetAIInterface()->getNextTarget(), spells[0].info, spells[0].instant);
 
 			spells[0].casttime = t + spells[0].cooldown;
 		}

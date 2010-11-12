@@ -377,7 +377,7 @@ bool Dummy_Solarian_WrathOfTheAstromancer(uint32 pEffectIndex, Spell* pSpell)
 	Unit* Caster = pSpell->u_caster;
 	if( !Caster ) return true;
 
-	Unit* Target = Caster->GetAIInterface()->GetNextTarget();
+	Unit* Target = Caster->GetAIInterface()->getNextTarget();
 	if( !Target ) return true;
 
 	SpellEntry* SpellInfo = dbcSpell.LookupEntry( 42787 );

@@ -191,7 +191,7 @@ public:
 				// If Magtheridon is spawned we tell channeler to cast spell on Pit Lord
 				Unit* Magtheridon = NULL;
 				Magtheridon = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(-22.657900f, 2.159050f, -0.345542f, 17257);
-				if (Magtheridon && Channeler->isAlive() && !Channeler->GetAIInterface()->GetNextTarget())
+				if (Magtheridon && Channeler->isAlive() && !Channeler->GetAIInterface()->getNextTarget())
 				{
 					Channeler->SetChannelSpellTargetGUID(Magtheridon->GetGUID());
 					Channeler->SetChannelSpellId(SHADOW_GRASP);
@@ -287,12 +287,12 @@ public:
 				}
 
 				// If dead or channeler In Combat is found we check if we have already copied target
-				if (Channeler && Channeler->isAlive() && Channeler->GetAIInterface()->GetNextTarget())
+				if (Channeler && Channeler->isAlive() && Channeler->GetAIInterface()->getNextTarget())
 				{
 					// If channeler is In Combat and we haven't copied any target yet we copy it
-					if (Channeler->GetAIInterface()->GetNextTarget() && !UnitTarget)
+					if (Channeler->GetAIInterface()->getNextTarget() && !UnitTarget)
 					{
-						UnitTarget = Channeler->GetAIInterface()->GetNextTarget();
+						UnitTarget = Channeler->GetAIInterface()->getNextTarget();
 					}
 					// We switch phase and mark event as started
 					EventStarted = true;
@@ -315,7 +315,7 @@ public:
 					}
 
 					// If channeler is not In Combat we force him to attack target we copied before
-					if (Channeler && !Channeler->GetAIInterface()->GetNextTarget() && UnitTarget)
+					if (Channeler && !Channeler->GetAIInterface()->getNextTarget() && UnitTarget)
 					{
 						Channeler->GetAIInterface()->SetAllowedToEnterCombat(true);
 						Channeler->GetAIInterface()->AttackReaction(UnitTarget, 1, 0);
@@ -408,7 +408,7 @@ public:
 					if (Channeler && Channeler->isAlive())
 					{
 						AliveChannelers.push_back(Channeler);
-						if (Channeler->GetAIInterface()->GetNextTarget())
+						if (Channeler->GetAIInterface()->getNextTarget())
 							AliveInCombat++;
 					}
 				}
@@ -476,7 +476,7 @@ public:
 			return;
 
 		// We check if Magtheridon is in world, is alive, has correct flag and so on
-		if (!Magtheridon->isAlive() || !Magtheridon->GetAIInterface()->GetNextTarget())
+		if (!Magtheridon->isAlive() || !Magtheridon->GetAIInterface()->getNextTarget())
 			return;
 
 		// If we haven't "filled" pointer already we do that now
@@ -564,7 +564,7 @@ public:
 		}
 
 		// We check if Magtheridon is spawned, is in world and so on
-		if (!Magtheridon || (Magtheridon && (!Magtheridon->isAlive() || !Magtheridon->IsInWorld() || !Magtheridon->GetAIInterface()->GetNextTarget())))
+		if (!Magtheridon || (Magtheridon && (!Magtheridon->isAlive() || !Magtheridon->IsInWorld() || !Magtheridon->GetAIInterface()->getNextTarget())))
 		{
 			CubeTrigger->SetChannelSpellTargetGUID(0);
 			CubeTrigger->SetChannelSpellId(0);
@@ -767,7 +767,7 @@ public:
 
     void SpellCast(float val)
     {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -777,7 +777,7 @@ public:
 				
 				if(m_spellcheck[i])
 				{
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 						case TARGET_SELF:
@@ -813,7 +813,7 @@ public:
 		if (!maxdist2cast) maxdist2cast = 100.0f;
 		if (!maxhp2cast) maxhp2cast = 100;
 
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			std::vector<Unit*> TargetTable;		/* From M4ksiu - Big THX to Capt who helped me with std stuff to make it simple and fully working <3 */
 												/* If anyone wants to use this function, then leave this note!										 */
@@ -987,7 +987,7 @@ public:
 	
 	void SpellCast(float val)
 	{
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
 		{
 			float comulativeperc = 0;
 			Unit* target = NULL;
@@ -997,7 +997,7 @@ public:
 				
 				if(m_spellcheck[i])
 				{
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 						case TARGET_SELF:
@@ -1036,7 +1036,7 @@ public:
 		if (!maxdist2cast) maxdist2cast = 100.0f;
 		if (!maxhp2cast) maxhp2cast = 100;
 
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			std::vector<Unit*> TargetTable;		/* From M4ksiu - Big THX to Capt who helped me with std stuff to make it simple and fully working <3 */
 												/* If anyone wants to use this function, then leave this note!										 */
@@ -1149,7 +1149,7 @@ public:
 
     void SpellCast(float val)
     {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -1159,7 +1159,7 @@ public:
 				
 				if(m_spellcheck[i])
 				{
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 						case TARGET_SELF:
@@ -1195,7 +1195,7 @@ public:
 		if (!maxdist2cast) maxdist2cast = 100.0f;
 		if (!maxhp2cast) maxhp2cast = 100;
 
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			std::vector<Unit*> TargetTable;		/* From M4ksiu - Big THX to Capt who helped me with std stuff to make it simple and fully working <3 */
 												/* If anyone wants to use this function, then leave this note!										 */
@@ -1560,7 +1560,7 @@ public:
 	
 	void SpellCast(float val)
     {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			float comulativeperc = 0;
 		    Unit* target = NULL;
@@ -1570,7 +1570,7 @@ public:
 				
 				if(m_spellcheck[i])
 				{
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 						case TARGET_SELF:
@@ -1606,7 +1606,7 @@ public:
 		if (!maxdist2cast) maxdist2cast = 100.0f;
 		if (!maxhp2cast) maxhp2cast = 100;
 
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			std::vector<Unit*> TargetTable;		/* From M4ksiu - Big THX to Capt who helped me with std stuff to make it simple and fully working <3 */
 												/* If anyone wants to use this function, then leave this note!										 */

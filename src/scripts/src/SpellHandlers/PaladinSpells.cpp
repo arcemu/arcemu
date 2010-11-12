@@ -239,7 +239,7 @@ bool RighteousDefense( uint32 i, Spell *s ){
 			continue;
 		
 		Creature *cr= static_cast<Creature*>((*i2));
-		if(cr->GetAIInterface()->GetNextTarget()==unitTarget)
+		if(cr->GetAIInterface()->getNextTarget()==unitTarget)
 			targets[targets_got++]=cr;
 		
 		if(targets_got==3)
@@ -256,7 +256,7 @@ bool RighteousDefense( uint32 i, Spell *s ){
 			targets[j]->GetAIInterface()->modThreatByPtr(s->u_caster,threat_dif);
 		
 		targets[j]->GetAIInterface()->AttackReaction(s->u_caster,1,0);
-		targets[j]->GetAIInterface()->SetNextTarget(s->u_caster);
+		targets[j]->GetAIInterface()->setNextTarget(s->u_caster);
 	}
 	
 	return true;

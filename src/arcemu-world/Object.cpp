@@ -1470,7 +1470,7 @@ bool Object::isInBack(Object* target)
 	// if we are a unit and have a UNIT_FIELD_TARGET then we are always facing them
 	if( m_objectTypeId == TYPEID_UNIT && TO_UNIT(this)->GetTargetGUID() != 0 )
 	{
-		Unit* pTarget = TO_UNIT(this)->GetAIInterface()->GetNextTarget();
+		Unit* pTarget = TO_UNIT(this)->GetAIInterface()->getNextTarget();
 		if( pTarget != NULL )
 			angle -= double( Object::calcRadAngle( target->m_position.x, target->m_position.y, pTarget->m_position.x, pTarget->m_position.y ) );
 		else

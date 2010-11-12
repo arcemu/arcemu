@@ -552,11 +552,11 @@ void SpellFunc_NaxxramasFollowerCharge( SpellDesc* pThis, MoonScriptCreatureAI* 
 	NaxxramasFollowerAI *NaxxramasFollower = ( pCreatureAI != NULL ) ? static_cast< NaxxramasFollowerAI* >( pCreatureAI ) : NULL;
 	if ( NaxxramasFollower != NULL )
 	{
-		Unit* CurrentTarget = NaxxramasFollower->GetUnit()->GetAIInterface()->GetNextTarget();
+		Unit* CurrentTarget = NaxxramasFollower->GetUnit()->GetAIInterface()->getNextTarget();
 		if ( CurrentTarget != NULL && CurrentTarget != pTarget )
 		{
 			NaxxramasFollower->GetUnit()->GetAIInterface()->AttackReaction( pTarget, 500 );
-			NaxxramasFollower->GetUnit()->GetAIInterface()->SetNextTarget( pTarget );
+			NaxxramasFollower->GetUnit()->GetAIInterface()->setNextTarget( pTarget );
 			//NaxxramasFollower->GetUnit()->GetAIInterface()->RemoveThreatByPtr( CurrentTarget );
 		};
 
@@ -1212,7 +1212,7 @@ void EyeStalkerAI::OnCombatStart( Unit* pTarget )
 
 void EyeStalkerAI::AIUpdate()
 {
-	Unit* CurrentTarget = _unit->GetAIInterface()->GetNextTarget();
+	Unit* CurrentTarget = _unit->GetAIInterface()->getNextTarget();
 	if ( !IsCasting() && CurrentTarget != NULL )
 	{
 		float MaxRange = 45.0f;
@@ -1224,7 +1224,7 @@ void EyeStalkerAI::AIUpdate()
 			Unit* NewTarget = GetBestUnitTarget( TargetFilter_Closest );
 			if ( NewTarget != NULL && GetRangeToUnit( NewTarget ) <= MaxRange )
 			{
-				_unit->GetAIInterface()->SetNextTarget( NewTarget );
+				_unit->GetAIInterface()->setNextTarget( NewTarget );
 				_unit->GetAIInterface()->AttackReaction( NewTarget, 200 );
 			};
 
@@ -1570,7 +1570,7 @@ void SpellFunc_NothFromBalconyPhaseSwitch( SpellDesc* pThis, MoonScriptCreatureA
 		if ( pTarget != NULL )
 			Noth->GetUnit()->GetAIInterface()->AttackReaction( pTarget, 200 );
 
-		Noth->GetUnit()->GetAIInterface()->SetNextTarget( pTarget );
+		Noth->GetUnit()->GetAIInterface()->setNextTarget( pTarget );
 	};
 };
 
@@ -1599,7 +1599,7 @@ void SpellFunc_NothBlink( SpellDesc* pThis, MoonScriptCreatureAI* pCreatureAI, U
 		if ( pTarget != NULL )
 			Noth->GetUnit()->GetAIInterface()->AttackReaction( pTarget, 500 );
 
-		Noth->GetUnit()->GetAIInterface()->SetNextTarget( pTarget );
+		Noth->GetUnit()->GetAIInterface()->setNextTarget( pTarget );
 	};
 };
 
@@ -2249,7 +2249,7 @@ void PortalOfShadowsAI::OnCombatStop( Unit* pTarget )
 
 void PortalOfShadowsAI::AIUpdate()
 {
-	if ( mShadeAI != NULL && mShadeAI->GetUnit()->GetAIInterface()->GetNextTarget() != NULL )
+	if ( mShadeAI != NULL && mShadeAI->GetUnit()->GetAIInterface()->getNextTarget() != NULL )
 	{
 		if ( IsTimerFinished( mSpawnTimer ) )
 		{
@@ -2311,7 +2311,7 @@ void SpellFunc_NecroKnightBlink( SpellDesc* pThis, MoonScriptCreatureAI* pCreatu
 		NecroKnight->ApplyAura( NECRO_KNIGHT_BLINK );
 		NecroKnight->GetUnit()->SetPosition( pTarget->GetPositionX(), pTarget->GetPositionY(), pTarget->GetPositionZ(), NecroKnight->GetUnit()->GetOrientation() );
 		NecroKnight->GetUnit()->GetAIInterface()->AttackReaction( pTarget, 500 );
-		NecroKnight->GetUnit()->GetAIInterface()->SetNextTarget( pTarget );
+		NecroKnight->GetUnit()->GetAIInterface()->setNextTarget( pTarget );
 	};
 };
 
@@ -2442,11 +2442,11 @@ void SpellFunc_DeathchargerSteedCharge( SpellDesc* pThis, MoonScriptCreatureAI* 
 	DeathchargerSteedAI *Deathcharger = ( pCreatureAI != NULL ) ? static_cast< DeathchargerSteedAI* >( pCreatureAI ) : NULL;
 	if ( Deathcharger != NULL )
 	{
-		Unit* CurrentTarget = Deathcharger->GetUnit()->GetAIInterface()->GetNextTarget();
+		Unit* CurrentTarget = Deathcharger->GetUnit()->GetAIInterface()->getNextTarget();
 		if ( CurrentTarget != NULL && CurrentTarget != pTarget )
 		{
 			Deathcharger->GetUnit()->GetAIInterface()->AttackReaction( pTarget, 500 );
-			Deathcharger->GetUnit()->GetAIInterface()->SetNextTarget( pTarget );
+			Deathcharger->GetUnit()->GetAIInterface()->setNextTarget( pTarget );
 			//Deathcharger->GetUnit()->GetAIInterface()->RemoveThreatByPtr( CurrentTarget );
 		};
 

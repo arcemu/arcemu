@@ -435,7 +435,7 @@ public:
 
 	void SpellCast(float val)
 	{
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
 		{
 			float comulativeperc = 0;
 			Unit* target = NULL;
@@ -445,7 +445,7 @@ public:
 		
 				if (m_spellcheck[i])
 				{
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 					case TARGET_SELF:
@@ -632,7 +632,7 @@ public:
 
 	void SpellCast(float val)
 	{
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
 		{
 		float comulativeperc = 0;
 		Unit* target = NULL;
@@ -643,7 +643,7 @@ public:
 		if (m_spellcheck[i])
 		{
 			spells[i].casttime = spells[i].cooldown;
-			target = _unit->GetAIInterface()->GetNextTarget();
+			target = _unit->GetAIInterface()->getNextTarget();
 			switch(spells[i].targettype)
 			{
 				case TARGET_SELF:
@@ -1260,14 +1260,14 @@ public:
 	void Trigger()
 	{
 		uint32 t = (uint32)time(NULL);
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget() && t > spells[0].casttime)
+		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget() && t > spells[0].casttime)
 		{
 			Unit* target = _unit->GetAIInterface()->GetSecondHated();
 			_unit->CastSpell(target, spells[0].info, spells[0].instant);
 			target = NULL;
 			spells[0].casttime = t + spells[0].cooldown;
 		}
-		else if(_unit->GetAIInterface()->GetNextTarget() && !enrage && !evocation && t > Timer && 
+		else if(_unit->GetAIInterface()->getNextTarget() && !enrage && !evocation && t > Timer && 
 			_unit->GetMaxPower(POWER_TYPE_MANA) != 0)
 		{
 			AstralSpawn();
@@ -1853,7 +1853,7 @@ public:
 
 	void SpellCast(float val)
 	{
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
 		{
 			float comulativeperc = 0;
 			Unit* target = NULL;
@@ -1864,7 +1864,7 @@ public:
 				if (m_spellcheck[i])
 				{
 					spells[i].casttime = spells[i].cooldown;
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 					case TARGET_SELF:
@@ -1904,7 +1904,7 @@ public:
 		if (!maxdist2cast) maxdist2cast = 100.0f;
 		if (!maxhp2cast) maxhp2cast = 100;
 
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
 		{
 			std::vector<Player* > TargetTable;
 			for(set< Object* >::iterator itr = _unit->GetInRangePlayerSetBegin(); itr != _unit->GetInRangePlayerSetEnd(); ++itr) 
@@ -2003,7 +2003,7 @@ public:
 		if(!WaterBolt)
 		{
 			_unit->setAttackTimer(2000, false);
-			Unit* target = _unit->GetAIInterface()->GetNextTarget();
+			Unit* target = _unit->GetAIInterface()->getNextTarget();
 			if(target)
 				_unit->CastSpell(target, WATERBOLT, true);
 		}
@@ -2047,7 +2047,7 @@ public:
 		ShadowPyro--;
 		if(!ShadowPyro)
 		{
-			Unit* target = _unit->GetAIInterface()->GetNextTarget();
+			Unit* target = _unit->GetAIInterface()->getNextTarget();
 			if(target != NULL)
 				_unit->CastSpell(target, SHADOWPYRO, true);
 		}
@@ -2186,7 +2186,7 @@ public:
 		SpellCast(val);
 
 		uint32 t = (uint32)time(NULL);
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
 		{
 			if(t > ImpTimer)
 			{
@@ -2279,7 +2279,7 @@ public:
 
 	void SpellCast(float val)
 	{
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
 		{
 			float comulativeperc = 0;
 			Unit* target = NULL;
@@ -2289,7 +2289,7 @@ public:
 
 				if (m_spellcheck[i])
 				{
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 					case TARGET_SELF:
@@ -2385,7 +2385,7 @@ public:
 
 	void SpellCast(float val)
 	{
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
 		{
 			float comulativeperc = 0;
 			Unit* target = NULL;
@@ -2395,7 +2395,7 @@ public:
 
 				if (m_spellcheck[i])
 				{
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 					case TARGET_SELF:
@@ -2432,7 +2432,7 @@ public:
 		if (!maxdist2cast) maxdist2cast = 100.0f;
 		if (!maxhp2cast) maxhp2cast = 100;
 
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
 		{
 			std::vector<Unit* > TargetTable;
 			for(set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); ++itr) 
@@ -2536,7 +2536,7 @@ public:
 	void AIUpdate()
 	{
 		_unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
-		if (_unit->GetAIInterface()->GetNextTarget() && _unit->GetDistance2dSq(_unit->GetAIInterface()->GetNextTarget()) <= 1225.0f)
+		if (_unit->GetAIInterface()->getNextTarget() && _unit->GetDistance2dSq(_unit->GetAIInterface()->getNextTarget()) <= 1225.0f)
 		{
 			_unit->GetAIInterface()->setCurrentAgent(AGENT_SPELL);
 			if (_unit->GetCurrentSpell() == NULL && RandomUInt(10) > 2)
@@ -2544,7 +2544,7 @@ public:
 				_unit->setAttackTimer(spells[0].attackstoptimer, false);
 
 				Unit* target = NULL;
-				target = _unit->GetAIInterface()->GetNextTarget();
+				target = _unit->GetAIInterface()->getNextTarget();
 				
 				_unit->CastSpell(target, spells[0].info, spells[0].instant);
 				return;
@@ -2557,7 +2557,7 @@ public:
 
 	void SpellCast(float val)
 	{
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
 		{
 			float comulativeperc = 0;
 			Unit* target = NULL;
@@ -2567,7 +2567,7 @@ public:
 
 				if(m_spellcheck[i])
 				{
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					if (!spells[i].instant)
 						_unit->GetAIInterface()->StopMovement(1);
 
@@ -2935,19 +2935,19 @@ public:
 			break;
 		}
 		uint32 t = (uint32)time(NULL);
-		if(t > spells[1].casttime && _unit->GetAIInterface()->GetNextTarget() && _unit->GetCurrentSpell() == NULL)
+		if(t > spells[1].casttime && _unit->GetAIInterface()->getNextTarget() && _unit->GetCurrentSpell() == NULL)
 		{
 			Enfeebler();
 			spells[1].casttime = t + spells[1].cooldown;
 			spells[5].casttime = t + spells[5].cooldown;
 		}
-		else if(t > m_spawn_infernal && m_infernal == true && _unit->GetAIInterface()->GetNextTarget())
+		else if(t > m_spawn_infernal && m_infernal == true && _unit->GetAIInterface()->getNextTarget())
 		{
 			_unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_INFERNAL, ranX, ranY, 276.0f, 0, true, false, 0, 0);
 			m_spawn_infernal = 0;
 			m_infernal = false;
 		}
-		else if(t > spells[5].casttime && _unit->GetAIInterface()->GetNextTarget() && _unit->GetCurrentSpell() == NULL)
+		else if(t > spells[5].casttime && _unit->GetAIInterface()->getNextTarget() && _unit->GetCurrentSpell() == NULL)
 		{
 			spells[5].casttime = -1;
 			_unit->CastSpell(_unit, spells[5].info, spells[5].instant);
@@ -3129,7 +3129,7 @@ public:
 
 	void SpellCast(float val)
 	{
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
 		{
 			float comulativeperc = 0;
 			Unit* target = NULL;
@@ -3139,7 +3139,7 @@ public:
 				
 				if(m_spellcheck[i])
 				{
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 						case TARGET_SELF:
@@ -3175,7 +3175,7 @@ public:
 		if (!maxdist2cast) maxdist2cast = 100.0f;
 		if (!maxhp2cast) maxhp2cast = 100;
 
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
 		{
 			std::vector<Player* > TargetTable;
 			for(set< Object* >::iterator itr = _unit->GetInRangePlayerSetBegin(); itr != _unit->GetInRangePlayerSetEnd(); ++itr) 
@@ -3438,7 +3438,7 @@ public:
 	void AIUpdate()
 	{
 		uint32 t = (uint32)time(NULL);
-		if(t > VoidTimer && _unit->GetAIInterface()->GetNextTarget())
+		if(t > VoidTimer && _unit->GetAIInterface()->getNextTarget())
 		{
 			VoidTimer = t + 20;
 			std::vector<Unit* > TargetTable;
@@ -3473,7 +3473,7 @@ public:
 
 	void SpellCast(float val)
 	{
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
 		{
 			float comulativeperc = 0;
 			Unit* target = NULL;
@@ -3483,7 +3483,7 @@ public:
 				
 				if(m_spellcheck[i])
 				{
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 						case TARGET_SELF:
@@ -3763,9 +3763,9 @@ public:
 		}
 
 		//Shoots powerful Smoking Blast every second for approximately 15 seconds.
-		if (_unit->GetAIInterface()->GetNextTarget() != NULL)
+		if (_unit->GetAIInterface()->getNextTarget() != NULL)
 		{
-			target = _unit->GetAIInterface()->GetNextTarget();
+			target = _unit->GetAIInterface()->getNextTarget();
 			_unit->CastSpell(target, dbcSpell.LookupEntry(SMOKING_BLAST), true);
 		}
 
@@ -3884,7 +3884,7 @@ public:
 
 	void SpellCast(float val)
 	{
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
 		{
 			float comulativeperc = 0;
 			Unit* target = NULL;
@@ -3895,7 +3895,7 @@ public:
 				if (m_spellcheck[i])
 				{
 					spells[i].casttime = spells[i].cooldown;
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 						case TARGET_SELF:
@@ -3927,7 +3927,7 @@ public:
 	{
 		if (!maxdist2cast) maxdist2cast = 100.0f;
 
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			std::vector<Unit*> TargetTable;		/* From M4ksiu - Big THX to Capt who helped me with std stuff to make it simple and fully working <3 */
 												/* If anyone wants to use this function, then leave this note!										 */
@@ -4118,7 +4118,7 @@ public:
 		if (!maxdist2cast) maxdist2cast = 100.0f;
 		if (!maxhp2cast) maxhp2cast = 100;
 
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
         {
 			std::vector<Unit*> TargetTable;		
 			for(set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); ++itr) 
@@ -4157,7 +4157,7 @@ public:
 	
 	void SpellCast(float val)
 	{
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
 		{
 			float comulativeperc = 0;
 			Unit* target = NULL;
@@ -4168,7 +4168,7 @@ public:
 				if (m_spellcheck[i])
 				{
 					spells[i].casttime = spells[i].cooldown;
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 					case TARGET_SELF:
@@ -4278,7 +4278,7 @@ public:
 
 	void SpellCast(float val)
 	{
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
 		{
 			float comulativeperc = 0;
 			Unit* target = NULL;
@@ -4289,7 +4289,7 @@ public:
 				if (m_spellcheck[i])
 				{
 					spells[i].casttime = spells[i].cooldown;
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 					case TARGET_SELF:
@@ -4429,7 +4429,7 @@ public:
 
 	void SpellCast(float val)
 	{
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
 		{
 			float comulativeperc = 0;
 			Unit* target = NULL;
@@ -4440,7 +4440,7 @@ public:
 				if (m_spellcheck[i])
 				{
 					spells[i].casttime = spells[i].cooldown;
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 					case TARGET_SELF:
@@ -4579,7 +4579,7 @@ public:
 
 	void SpellCast(float val)
 	{
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
 		{
 			float comulativeperc = 0;
 			Unit* target = NULL;
@@ -4590,7 +4590,7 @@ public:
 				if (m_spellcheck[i])
 				{
 					spells[i].casttime = spells[i].cooldown;
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 					case TARGET_SELF:
@@ -4792,7 +4792,7 @@ public:
 
 	void SpellCast(float val)
 	{
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
 		{
 			float comulativeperc = 0;
 			Unit* target = NULL;
@@ -4803,7 +4803,7 @@ public:
 				if (m_spellcheck[i])
 				{
 					spells[i].casttime = spells[i].cooldown;
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 					case TARGET_SELF:
@@ -5032,7 +5032,7 @@ public:
 
 	void SpellCast(float val)
 	{
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
 		{
 			float comulativeperc = 0;
 			Unit* target = NULL;
@@ -5043,7 +5043,7 @@ public:
 				if (m_spellcheck[i])
 				{
 					spells[i].casttime = spells[i].cooldown;
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 					case TARGET_SELF:
@@ -5215,7 +5215,7 @@ public:
 
 	void SpellCast(float val)
 	{
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
 		{
 			float comulativeperc = 0;
 			Unit* target = NULL;
@@ -5226,7 +5226,7 @@ public:
 				if (m_spellcheck[i])
 				{
 					spells[i].casttime = spells[i].cooldown;
-					target = _unit->GetAIInterface()->GetNextTarget();
+					target = _unit->GetAIInterface()->getNextTarget();
 					switch(spells[i].targettype)
 					{
 					case TARGET_SELF:
