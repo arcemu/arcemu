@@ -19,7 +19,7 @@
 
 #include "CoordModelMapping.h"
 
-#include <string.h>
+#include <cstring>
 
 namespace VMAP
 {

@@ -49,8 +49,8 @@ Mutex m_crashLock;
 */
 #  pragma warning( disable : 4311 )
 
-#include <stdio.h>
-#include <time.h>
+#include <cstdio>
+#include <ctime>
 #include "Log.h"
 #include <tchar.h>
 

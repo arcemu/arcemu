@@ -12,7 +12,7 @@
  */
  
 #include "MapFileEntry.h"
-#include <string.h>
+#include <cstring>
 
 MapFileEntry::MapFileEntry()
 {

@@ -21,7 +21,7 @@
 #include "Config/ConfigEnv.h"
 #include "Log.h"
 #include "NGLog.h"
-#include <stdarg.h>
+#include <cstdarg>
 
 string FormatOutputString(const char * Prefix, const char * Description, bool useTimeStamp)
 {

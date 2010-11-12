@@ -29,9 +29,9 @@
 #include "SubModel.h"
 #include "ModelContainer.h"
 
-#include <string.h>
+#include <cstring>
 
-#include <limits.h>
+#include <climits>
 
 namespace VMAP
 {

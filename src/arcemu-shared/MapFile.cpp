@@ -16,8 +16,8 @@
 #include "TextFile.h"
 #include "Array.h"
 #include <algorithm>
-#include <string.h>
-#include <ctype.h>
+#include <cstring>
+#include <cctype>
 #ifdef WIN32
 #include <windows.h>
 #endif

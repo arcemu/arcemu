@@ -20,7 +20,7 @@
 #ifndef _AUTH_SHA1_H
 #define _AUTH_SHA1_H
 
-#include <stdlib.h>
+#include <cstdlib>
 #include "Common.h"
 #include <openssl/sha.h>
 #include "Auth/BigNumber.h"

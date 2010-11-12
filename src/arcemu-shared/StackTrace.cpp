@@ -14,8 +14,8 @@
 #include "StackTrace.h"
 #include "MapFile.h"
 #include "MapFileEntry.h"
-#include <string.h>
-#include <stdio.h>
+#include <cstring>
+#include <cstdio>
 
 //-----------------------------------------------------------------------------
 

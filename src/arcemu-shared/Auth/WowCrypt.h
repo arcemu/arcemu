@@ -20,7 +20,7 @@
 #ifndef _WOWCRYPT_H
 #define _WOWCRYPT_H
 
-#include <stdlib.h>
+#include <cstdlib>
 #include "../Common.h"
 #include "BigNumber.h"
 #include <vector>

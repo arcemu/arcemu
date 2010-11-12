@@ -20,7 +20,7 @@
 #include <iostream>
 #include <fstream>
 
-#include <string.h>
+#include <cstring>
 
 #include "ModelContainer.h"
 

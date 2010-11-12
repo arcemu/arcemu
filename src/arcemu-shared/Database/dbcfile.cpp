@@ -11,7 +11,7 @@
 */
 
 #include "dbcfile.h"
-#include <stdio.h>
+#include <cstdio>
 //#include "../Common.h"
 DBCFile::DBCFile()
 {

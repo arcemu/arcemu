@@ -19,9 +19,9 @@
 
 #include "vmap/IVMapManager.h"
 #include "vmap/VMapManager.h"
-#include <math.h>
-#include <stdio.h>
-#include <stdarg.h>
+#include <cmath>
+#include <cstdio>
+#include <cstdarg>
 #include "LocationVector.h"
 
 #ifdef WIN32

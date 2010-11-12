@@ -806,8 +806,8 @@ bool ChatHandler::HandleModifyGoldCommand(const char* args, WorldSession *m_sess
 	// gold = total / 10000;
 	// silver = (total / 100) % 100;
 	// copper = total % 100;
-	uint32 gold   = (uint32) floor( (float)int32abs( total ) / 10000.0f );
-	uint32 silver = (uint32) floor( ((float)int32abs( total ) / 100.0f) ) % 100;
+	uint32 gold   = (uint32) std::floor( (float)int32abs( total ) / 10000.0f );
+	uint32 silver = (uint32) std::floor( ((float)int32abs( total ) / 100.0f) ) % 100;
 	uint32 copper = int32abs2uint32( total ) % 100;
 	
 	sGMLog.writefromsession( m_session, "used modify gold on %s, gold: %d", chr->GetName(), total );

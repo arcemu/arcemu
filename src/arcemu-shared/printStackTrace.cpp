@@ -15,8 +15,8 @@
 #include "printStackTrace.h"
 #include "StackTrace.h"
 #include "MapFile.h"
-#include <stdio.h>
-#include <string.h>
+#include <cstdio>
+#include <cstring>
 
 /**
  * Prints stack trace to user defined buffer.

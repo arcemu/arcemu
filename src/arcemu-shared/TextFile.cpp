@@ -12,8 +12,8 @@
  */
  
 #include "TextFile.h"
-#include <stdio.h>
-#include <ctype.h>
+#include <cstdio>
+#include <cctype>
 
 class TextFile::TextFileImpl
 {

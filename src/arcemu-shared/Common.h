@@ -66,12 +66,12 @@ enum MsTimeVariables
 #include "arcemuConfig.h"
 
 #include <cstdlib>
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdarg.h>
-#include <time.h>
+#include <cstdio>
+
+#include <cstdarg>
+#include <ctime>
 #include <cmath>
-#include <errno.h>
+#include <cerrno>
 
 #if defined( __WIN32__ ) || defined( WIN32 ) || defined( _WIN32 )
 #  define WIN32_LEAN_AND_MEAN
@@ -79,7 +79,7 @@ enum MsTimeVariables
 #  define NOMINMAX
 #  include <windows.h>
 #else
-#  include <string.h>
+#  include <cstring>
 #  define MAX_PATH 1024
 #endif
 
@@ -373,7 +373,7 @@ Scripting system exports/imports
 #endif
 
 // Include all threading files
-#include <assert.h>
+#include <cassert>
 #include "Threading/Threading.h"
 
 #include "Threading/AtomicULong.h"

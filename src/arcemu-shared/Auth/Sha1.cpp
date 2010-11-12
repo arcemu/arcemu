@@ -18,7 +18,7 @@
  */
 
 #include "Sha1.h"
-#include <stdarg.h>
+#include <cstdarg>
 
 Sha1Hash::Sha1Hash()
 {
