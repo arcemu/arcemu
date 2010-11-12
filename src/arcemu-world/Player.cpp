@@ -3638,7 +3638,7 @@ void Player::_LoadQuestLogEntry(QueryResult * result)
 
 QuestLogEntry* Player::GetQuestLogForEntry(uint32 quest)
 {
-	for(int i = 0; i < 25; ++i)
+	for(int i = 0; i < MAX_QUEST_LOG_SIZE; ++i)
 	{
 		if(m_questlog[i] != NULL)
 		{
@@ -3647,14 +3647,6 @@ QuestLogEntry* Player::GetQuestLogForEntry(uint32 quest)
 		}
 	}
 	return NULL;
-	/*uint32 x = PLAYER_QUEST_LOG_1_1;
-	uint32 y = 0;
-	for(; x < PLAYER_VISIBLE_ITEM_1_CREATOR && y < 25; x += 3, y++)
-	{
-		if(m_uint32Values[x] == quest)
-			return m_questlog[y];
-	}
-	return NULL;*/
 }
 
 void Player::SetQuestLogSlot(QuestLogEntry *entry, uint32 slot)

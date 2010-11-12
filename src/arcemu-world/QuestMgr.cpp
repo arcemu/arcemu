@@ -1563,8 +1563,6 @@ uint32 QuestMgr::GenerateQuestXP(Player *plr, Quest *qst)
         }
         return realXP;
     }
-
-	return 0;
 }
 
 uint32 QuestMgr::GenerateRewardMoney( Player * plr, Quest * qst )
@@ -2035,7 +2033,7 @@ void QuestMgr::LoadExtraQuestStuff()
 			qst = QuestStorage.LookupEntry(quest);
 			if(!qst)
 			{
-				//printf("Tried to add starter to npc %d for non-existent quest %d.\n", creature, quest);
+				Log.Warning("ObjectMgr","Tried to add starter to npc %d for non-existent quest %d.\n", creature, quest);
 			}
 			else 
 			{
@@ -2059,7 +2057,7 @@ void QuestMgr::LoadExtraQuestStuff()
 			qst = QuestStorage.LookupEntry(quest);
 			if(!qst)
 			{
-				//printf("Tried to add finisher to npc %d for non-existent quest %d.\n", creature, quest);
+				Log.Warning("ObjectMgr","Tried to add finisher to npc %d for non-existent quest %d.\n", creature, quest);
 			} 
 			else 
 			{
@@ -2083,7 +2081,7 @@ void QuestMgr::LoadExtraQuestStuff()
 			qst = QuestStorage.LookupEntry(quest);
 			if(!qst)
 			{
-				//printf("Tried to add starter to go %d for non-existent quest %d.\n", creature, quest);
+				Log.Warning("ObjectMgr","Tried to add starter to go %d for non-existent quest %d.\n", creature, quest);
 			} 
 			else
 			{
@@ -2107,7 +2105,7 @@ void QuestMgr::LoadExtraQuestStuff()
 			qst = QuestStorage.LookupEntry(quest);
 			if(!qst)
 			{
-				//printf("Tried to add finisher to go %d for non-existent quest %d.\n", creature, quest);
+				Log.Warning("ObjectMgr","Tried to add finisher to go %d for non-existent quest %d.\n", creature, quest);
 			} 
 			else 
 			{
@@ -2137,7 +2135,7 @@ void QuestMgr::LoadExtraQuestStuff()
 			qst = QuestStorage.LookupEntry(quest);
 			if(!qst)
 			{
-				//printf("Tried to add association to item %d for non-existent quest %d.\n", item, quest);
+				Log.Warning("ObjectMgr","Tried to add association to item %d for non-existent quest %d.\n", item, quest);
 			} 
 			else 
 			{
@@ -2145,6 +2143,76 @@ void QuestMgr::LoadExtraQuestStuff()
 			}
 		} while( pResult->NextRow() );
 		delete pResult;
+	}
+
+    m_QuestPOIMap.clear();
+
+    QueryResult *result = WorldDatabase.Query("SELECT questId, poiId, objIndex, mapId, mapAreaId, floorId, unk3, unk4 FROM quest_poi");
+    if( result != NULL ){
+		uint32 count = 0;
+
+		do{
+
+			Field *fields = result->Fetch();
+
+			uint32 questId          = fields[ 0 ].GetUInt32();
+			uint32 poiId            = fields[ 1 ].GetUInt32();
+			int32  objIndex         = fields[ 2 ].GetInt32();
+			uint32 mapId            = fields[ 3 ].GetUInt32();
+			uint32 mapAreaId        = fields[ 4 ].GetUInt32();
+			uint32 floorId          = fields[ 5 ].GetUInt32();
+			uint32 unk3             = fields[ 6 ].GetUInt32();
+			uint32 unk4             = fields[ 7 ].GetUInt32();
+
+			QuestPOI POI( poiId, objIndex, mapId, mapAreaId, floorId, unk3, unk4 );
+
+			m_QuestPOIMap[ questId ].push_back( POI );
+
+			count++;
+
+		}while( result->NextRow() );
+
+		delete result;
+
+		Log.Notice( "QuestMgr", "Point Of Interest (POI) data loaded for %u quests.", count );
+
+		
+
+		QueryResult *points = WorldDatabase.Query("SELECT questId, poiId, x, y FROM quest_poi_points");
+		if( points != NULL ){
+			count = 0;
+
+			do{
+
+				Field *pointFields  = points->Fetch();
+
+				uint32 questId      = pointFields[ 0 ].GetUInt32();
+				uint32 poiId        = pointFields[ 1 ].GetUInt32();
+				int32  x            = pointFields[ 2 ].GetInt32();
+				int32  y            = pointFields[ 3 ].GetInt32();
+
+				QuestPOIVector& vect = m_QuestPOIMap[ questId ];
+
+				for( QuestPOIVector::iterator itr = vect.begin(); itr != vect.end(); ++itr ){
+
+					if( itr->PoiId != poiId )
+						continue;
+
+					QuestPOIPoint point( x, y );
+
+					itr->points.push_back( point );
+
+					break;
+				}
+
+				count++;
+
+			}while( points->NextRow() );
+
+			delete points;
+			Log.Notice( "QuestMgr","%u quest Point Of Interest points loaded.", count );
+		}
+
 	}
 }
 
@@ -2263,5 +2331,50 @@ void QuestMgr::OnPlayerEmote(Player* plr, uint32 emoteid, uint64& victimguid)
 				}
 			}
 		}
+	}
+}
+
+void QuestMgr::BuildQuestPOIResponse( WorldPacket &data, uint32 questid ){
+	Quest *q = QuestStorage.LookupEntry( questid );
+
+	if( q != NULL ){
+		QuestPOIVector const *POI = NULL;
+		
+		QuestPOIMap::iterator itr = m_QuestPOIMap.find( questid );
+
+		if( itr != m_QuestPOIMap.end() )
+			POI = &( itr->second );
+
+		if( POI != NULL ){
+
+			data << uint32( questid );
+			data << uint32( POI->size() );
+			
+			for( QuestPOIVector::const_iterator itr = POI->begin(); itr != POI->end(); ++itr ){
+
+				data << uint32( itr->PoiId );
+				data << int32( itr->ObjectiveIndex );
+				data << uint32( itr->MapId );
+				data << uint32( itr->MapAreaId );
+				data << uint32( itr->FloorId );
+				data << uint32( itr->Unk3 );
+				data << uint32( itr->Unk4 );
+				data << uint32( itr->points.size() );
+				
+				for( std::vector< QuestPOIPoint >::const_iterator itr2 = itr->points.begin(); itr2 != itr->points.end(); ++itr2 ){
+
+					data << int32(itr2->x);
+					data << int32(itr2->y);
+				}
+			}
+		
+		}else{
+			data << uint32( questid );
+			data << uint32( 0 );
+		}
+
+	}else{
+		data << uint32( questid );
+		data << uint32( 0 );
 	}
 }

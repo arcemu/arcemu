@@ -1120,7 +1120,7 @@ public:
 	void AcceptQuest( uint64 guid, uint32 quest_id );
 
     //Quest related variables
-    QuestLogEntry*      m_questlog[25];
+    QuestLogEntry*      m_questlog[ MAX_QUEST_LOG_SIZE ];
     std::set<uint32>    m_removequests;
     std::set<uint32>    m_finishedQuests;
 	Mutex				DailyMutex;

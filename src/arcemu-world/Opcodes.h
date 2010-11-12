@@ -509,8 +509,8 @@ enum Opcodes {
     CMSG_SETSHEATHED                                = 0x1E0,	// implemented
     SMSG_COOLDOWN_CHEAT                             = 0x1E1,	/// TODO: implement
     SMSG_SPELL_DELAYED                              = 0x1E2,	// implemented
-    CMSG_PLAYER_MACRO_OBSOLETE                      = 0x1E3,	// not used in client
-    SMSG_PLAYER_MACRO_OBSOLETE                      = 0x1E4,	// not used in client
+    CMSG_QUEST_POI_QUERY                            = 0x1E3,
+    SMSG_QUEST_POI_QUERY_RESPONSE                   = 0x1E4,
     CMSG_GHOST                                      = 0x1E5,	// GM client only
     CMSG_GM_INVIS                                   = 0x1E6,	// GM client only
     SMSG_INVALID_PROMOTION_CODE                     = 0x1E7,	/// TODO: implement

@@ -33,6 +33,44 @@ struct QuestAssociation
 	uint8 item_count;
 };
 
+struct QuestPOIPoint
+{
+    int32 x;
+    int32 y;
+
+    QuestPOIPoint() : x( 0 ), y( 0 ) {}
+    
+	QuestPOIPoint( int32 px, int32 py ) :
+	x( px ),
+	y( py ){}
+};
+
+struct QuestPOI{
+	uint32 PoiId;
+    int32  ObjectiveIndex;
+    uint32 MapId;
+    uint32 MapAreaId;
+    uint32 FloorId;
+    uint32 Unk3;
+    uint32 Unk4;
+
+    std::vector< QuestPOIPoint > points;
+
+    QuestPOI() : PoiId( 0 ), ObjectiveIndex( 0 ), MapId( 0 ), MapAreaId( 0 ), FloorId( 0 ), Unk3( 0 ), Unk4( 0 ){}
+    
+	QuestPOI( uint32 poiId, int32 objIndex, uint32 mapId, uint32 mapAreaId, uint32 floorId, uint32 unk3, uint32 unk4 ) :
+	PoiId( poiId ),
+	ObjectiveIndex( objIndex ),
+	MapId( mapId ),
+	MapAreaId( mapAreaId ),
+	FloorId( floorId ),
+	Unk3( unk3 ),
+	Unk4( unk4 ){}
+};
+
+typedef std::vector< QuestPOI > QuestPOIVector;
+typedef HM_NAMESPACE::hash_map< uint32, QuestPOIVector > QuestPOIMap;
+
 class Item;
 
 typedef std::list<QuestRelation *> QuestRelationList;
@@ -65,6 +103,7 @@ public:
 	void BuildQuestUpdateAddItem(WorldPacket* data, uint32 itemid, uint32 count);
 	void BuildQuestUpdateComplete(WorldPacket* data, Quest* qst);
 	void BuildQuestFailed(WorldPacket* data, uint32 questid);
+	void BuildQuestPOIResponse( WorldPacket &data, uint32 questid );
 	void SendPushToPartyResponse(Player *plr, Player* pTarget, uint8 response);
 
 	bool OnGameObjectActivate(Player *plr, GameObject *go);
@@ -135,6 +174,7 @@ private:
 	HM_NAMESPACE::hash_map<uint32, list<QuestRelation *>* > m_npc_quests;
 	HM_NAMESPACE::hash_map<uint32, list<QuestRelation *>* > m_obj_quests;
 	HM_NAMESPACE::hash_map<uint32, list<QuestRelation *>* > m_itm_quests;
+	QuestPOIMap m_QuestPOIMap;
 
 	HM_NAMESPACE::hash_map<uint32, list<QuestAssociation *>* > m_quest_associations;
 	ARCEMU_INLINE HM_NAMESPACE::hash_map<uint32, list<QuestAssociation *>* >& GetQuestAssociationList()

@@ -280,6 +280,8 @@ enum QUEST_MOB_TYPES
 class QuestScript;
 #define CALL_QUESTSCRIPT_EVENT(obj, func) if(static_cast<QuestLogEntry*>(obj)->GetQuest()->pQuestScript != NULL) static_cast<QuestLogEntry*>(obj)->GetQuest()->pQuestScript->func
 
+#define MAX_QUEST_LOG_SIZE 25
+
 class SERVER_DECL QuestLogEntry : public EventableObject
 {
 	friend class QuestMgr;

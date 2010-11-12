@@ -784,6 +784,7 @@ void WorldSession::InitPacketHandlerTable()
 	WorldPacketHandlers[CMSG_RESURRECT_RESPONSE].handler						= &WorldSession::HandleResurrectResponseOpcode;
 	WorldPacketHandlers[CMSG_PUSHQUESTTOPARTY].handler						  = &WorldSession::HandlePushQuestToPartyOpcode;
 	WorldPacketHandlers[MSG_QUEST_PUSH_RESULT].handler						  = &WorldSession::HandleQuestPushResult;
+	WorldPacketHandlers[CMSG_QUEST_POI_QUERY].handler						= &WorldSession::HandleQuestPOIQueryOpcode;
 	
 	// Auction System
 	WorldPacketHandlers[CMSG_AUCTION_LIST_ITEMS].handler						= &WorldSession::HandleAuctionListItems;
@@ -1421,3 +1422,35 @@ void WorldSession::HandleEquipmentSetDelete( WorldPacket &data ){
 	}
 
 }
+
+void WorldSession::HandleQuestPOIQueryOpcode(WorldPacket& recv_data){
+	CHECK_INWORLD_RETURN
+
+	sLog.outDebug("Received CMSG_QUEST_POI_QUERY");
+
+    uint32 count = 0;
+    recv_data >> count;
+
+    if(count > MAX_QUEST_LOG_SIZE){
+		sLog.outDebug("Client sent Quest POI query for more than MAX_QUEST_LOG_SIZE quests.");
+
+		count = MAX_QUEST_LOG_SIZE;
+	}
+
+    WorldPacket data(SMSG_QUEST_POI_QUERY_RESPONSE, 4 + ( 4 + 4 ) * count );
+
+    data << uint32( count );
+
+    for( uint32 i = 0; i < count; i++ ){
+        uint32 questId;
+        
+		recv_data >> questId;
+
+		sQuestMgr.BuildQuestPOIResponse( data, questId );
+    }
+
+    SendPacket(&data);
+
+	sLog.outDebug("Sent SMSG_QUEST_POI_QUERY_RESPONSE");
+}
+
