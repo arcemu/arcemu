@@ -70,7 +70,7 @@ enum MsTimeVariables
 #include <stdlib.h>
 #include <stdarg.h>
 #include <time.h>
-#include <math.h>
+#include <cmath>
 #include <errno.h>
 
 #if defined( __WIN32__ ) || defined( WIN32 ) || defined( _WIN32 )

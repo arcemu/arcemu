@@ -19,7 +19,7 @@
 
 #include "DBC.h"
 #include "../NGLog.h"
-#include <math.h>
+#include <cmath>
 
 class DBC;
 
