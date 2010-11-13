@@ -651,6 +651,29 @@ bool RequiresNoAmmo( uint32 i, Aura *a, bool apply ){
 	return true;
 }
 
+/////////////////////////////////////////////////////////////////////////
+//Nitro Boosts dummy effect handler
+//
+//Precondition(s)
+//  Casted by Player.
+//  Engineering skill of at least 400 points.
+//
+//Effect(s)
+//  Casts another spell that increases run speed for 5 seconds
+//
+////////////////////////////////////////////////////////////////////////
+bool NitroBoosts( uint32 i, Spell *s ){
+	if( s->p_caster == NULL )
+		return true;
+
+	uint32 engineeringskill = s->p_caster->_GetSkillLineCurrent( SKILL_ENGINEERING );
+
+	if( engineeringskill >= 400 )
+		s->p_caster->CastSpell( s->p_caster, 54861, true );
+
+	return true;
+}
+
 // ADD NEW FUNCTIONS ABOVE THIS LINE
 // *****************************************************************************
 
@@ -692,6 +715,8 @@ void SetupItemSpells_1(ScriptMgr * mgr)
 	mgr->register_script_effect( 24590, &BrittleArmor );
 
 	mgr->register_dummy_aura( 46699, &RequiresNoAmmo );
+
+	mgr->register_dummy_spell( 55004, &NitroBoosts );
 
 
 // REGISTER NEW DUMMY SPELLS ABOVE THIS LINE
