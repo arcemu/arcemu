@@ -5677,14 +5677,21 @@ void Aura::SpellAuraHover( bool apply )
 {
 	SetPositive();
 
-	//TODO: FIX ME: Find true flag for this
-	if( p_target != NULL)
-	{
-		WorldPacket data( apply ? uint16( SMSG_MOVE_SET_HOVER ) : uint16( SMSG_MOVE_UNSET_HOVER ), 13 );
-		data << p_target->GetNewGUID();
-		data << uint32( 0 );
-		p_target->GetSession()->SendPacket( &data );
+	WorldPacket data;
+
+	if( apply ){
+		data.Initialize( SMSG_MOVE_SET_HOVER );
+		m_target->SetFloatValue( UNIT_FIELD_HOVERHEIGHT, ( float( mod->m_amount ) / 2 ) );
+	}else{
+		data.Initialize( SMSG_MOVE_UNSET_HOVER );
+		m_target->SetFloatValue( UNIT_FIELD_HOVERHEIGHT, 0.0f );
 	}
+
+	data << WoWGuid( m_target->GetNewGUID() );
+	data << uint32( 0 );
+
+	m_target->SendMessageToSet( &data, true );
+
 }
 
 void Aura::SpellAuraAddPctMod( bool apply )
