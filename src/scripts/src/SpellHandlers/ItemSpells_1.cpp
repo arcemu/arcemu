@@ -674,6 +674,102 @@ bool NitroBoosts( uint32 i, Spell *s ){
 	return true;
 }
 
+
+///////////////////////////////////////////////////////////////////////
+//Gnomish Shrink Ray dummy effect handler
+//
+//Preconditions
+//  Casted by Player
+//
+//Effect
+//  Normally casts spell 13010 on the targeted unit. Shrinking it, and
+//  making it weaker
+//
+//  On malfunction it either shrinks, or enlarges, the the caster,
+//  the caster's party, all enemies, or enlarges the target
+//
+//
+//////////////////////////////////////////////////////////////////////
+bool ShrinkRay( uint32 i, Spell *s ){
+	if( s->p_caster == NULL )
+		return true;
+
+	uint32 spellids[] = {
+		13004, // grow
+		13010  // shrink
+	};
+
+	uint32 chance =  RandomUInt( 5 );
+	bool malfunction = false;
+
+	if( chance == 5 )
+		malfunction = true;
+
+	if( !malfunction  ){
+		
+		s->p_caster->CastSpell( s->GetUnitTarget(), spellids[ 1 ], true );
+
+	}else{
+		uint32 spellindex = RandomUInt( 1 );
+		uint32 who = RandomUInt( 3 );
+	
+		switch( who ){
+
+		case 0:{ // us
+			
+			s->p_caster->CastSpell( s->p_caster, spellids[ spellindex ], true );
+			   
+			   }break;
+
+		case 1:{ // them
+			
+			// if it's a malfunction it will only grow the target, since shrinking is normal
+			s->p_caster->CastSpell( s->GetUnitTarget(), spellids[ 0 ], true );
+
+			   }break;
+
+		case 2:{ // our party
+
+			for( std::set< Object* >::iterator itr = s->p_caster->GetInRangePlayerSetBegin(); itr != s->p_caster->GetInRangePlayerSetEnd(); ++itr ){
+				Player *p = TO_PLAYER( *itr );
+
+				if( ( p->GetPhase() & s->p_caster->GetPhase() ) == 0 )
+					continue;
+
+				if( p->GetGroup()->GetID() != s->p_caster->GetGroup()->GetID() )
+					continue;
+
+				s->p_caster->CastSpell( p, spellids[ spellindex ], true );
+			}
+
+			   }break;
+
+		case 3:{ // every attacking enemy
+			
+			for( std::set< Object* >::iterator itr = s->p_caster->GetInRangeOppFactsSetBegin(); itr != s->p_caster->GetInRangeOppFactsSetEnd(); ++itr ){
+				Object *o = *itr;
+
+				if( ( o->GetPhase() & s->p_caster->GetPhase() ) == 0 )
+					continue;
+
+				Unit *u = TO_UNIT( o );
+
+				if( u->GetTargetGUID() != s->p_caster->GetGUID() )
+					continue;
+
+				if( !isAttackable( s->p_caster, u ) )
+					continue;
+
+				s->p_caster->CastSpell( u, spellids[ spellindex ], true );
+			}
+
+			   }break;
+		}
+	}
+
+	return true;
+}
+
 // ADD NEW FUNCTIONS ABOVE THIS LINE
 // *****************************************************************************
 
@@ -717,6 +813,8 @@ void SetupItemSpells_1(ScriptMgr * mgr)
 	mgr->register_dummy_aura( 46699, &RequiresNoAmmo );
 
 	mgr->register_dummy_spell( 55004, &NitroBoosts );
+
+	mgr->register_dummy_spell( 13006, &ShrinkRay );
 
 
 // REGISTER NEW DUMMY SPELLS ABOVE THIS LINE
