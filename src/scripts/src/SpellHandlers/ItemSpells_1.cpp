@@ -752,6 +752,9 @@ bool ShrinkRay( uint32 i, Spell *s ){
 				if( ( o->GetPhase() & s->p_caster->GetPhase() ) == 0 )
 					continue;
 
+				if( !o->IsCreature() )
+					continue;
+
 				Unit *u = TO_UNIT( o );
 
 				if( u->GetTargetGUID() != s->p_caster->GetGUID() )
