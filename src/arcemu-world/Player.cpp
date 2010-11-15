@@ -508,6 +508,8 @@ myCorpseLocation()
 		m_cooldownMap[i].clear();
 	}
 //	m_achievement_points = 0;
+
+	ChampioningFactionID = 0;
 }
 
 void Player::OnLogin()

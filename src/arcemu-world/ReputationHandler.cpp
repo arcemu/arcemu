@@ -233,6 +233,17 @@ void Player::ModStanding( uint32 Faction, int32 Value )
 	const int32 minReputation = -42000;      //   0/36000 Hated
 	const int32 exaltedReputation = 42000;   //   0/1000  Exalted
 	const int32 maxReputation = 42999;       // 999/1000  Exalted
+
+	// WE ARE THE CHAMPIONS MY FRIENDS! WE KEEP ON FIGHTING 'TILL THE END!
+	//
+	// If we are in a lvl80 instance or heroic, or raid and we have a championing tabard on,
+	// we get reputation after the faction determined by the worn tabard.
+	if( ( GetMapMgr()->GetMapInfo()->minlevel == 80 ||
+		( GetMapMgr()->iInstanceMode == MODE_HEROIC &&
+		GetMapMgr()->GetMapInfo()->minlevel_heroic == 80 ) ) &&
+		ChampioningFactionID != 0 )
+			Faction = ChampioningFactionID;
+
 	FactionDBC * f = dbcFaction.LookupEntryForced( Faction );
 	int32 newValue = Value;
 	if ( f == NULL || f->RepListId < 0 )

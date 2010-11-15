@@ -2441,8 +2441,10 @@ private:
 
     void RemoveGarbageItems();
 
-public:
+	uint32 ChampioningFactionID;
 
+public:
+	void SetChampioningFaction( uint32 f ){ ChampioningFactionID = f; }
     void AddGarbageItem( Item *it );
 	uint32 CheckDamageLimits( uint32 dmg, uint32 spellid );
 

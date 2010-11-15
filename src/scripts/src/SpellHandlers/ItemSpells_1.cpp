@@ -773,6 +773,34 @@ bool ShrinkRay( uint32 i, Spell *s ){
 	return true;
 }
 
+
+////////////////////////////////////////////////////////////////////////
+//Championing Tabards' dummy aura handler
+//
+//Precondition(s)
+//  Casted by Player.
+//
+//Effect
+//  We will get reputation for the faction the tabard represents,
+//  in lvl80 dungeons, heroics and raids.
+//
+////////////////////////////////////////////////////////////////////////
+bool ChampioningTabards( uint32 i, Aura *a, bool apply ){
+	Player *p_caster = a->GetPlayerCaster();
+
+	if( p_caster == NULL )
+		return true;
+
+	uint32 Faction = a->GetSpellProto()->EffectMiscValue[ 0 ];
+
+	if( apply )
+		p_caster->SetChampioningFaction( Faction );
+	else
+		p_caster->SetChampioningFaction( 0 );
+
+	return true;
+}
+
 // ADD NEW FUNCTIONS ABOVE THIS LINE
 // *****************************************************************************
 
@@ -818,6 +846,15 @@ void SetupItemSpells_1(ScriptMgr * mgr)
 	mgr->register_dummy_spell( 55004, &NitroBoosts );
 
 	mgr->register_dummy_spell( 13006, &ShrinkRay );
+
+	uint32 championingspellids[] = {
+		57819,
+		57820,
+		57821,
+		57822
+	};
+
+	mgr->register_dummy_aura( championingspellids, &ChampioningTabards );
 
 
 // REGISTER NEW DUMMY SPELLS ABOVE THIS LINE
