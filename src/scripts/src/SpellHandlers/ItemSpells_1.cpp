@@ -801,6 +801,39 @@ bool ChampioningTabards( uint32 i, Aura *a, bool apply ){
 	return true;
 }
 
+
+///////////////////////////////////////////////////////////////
+//Spinning dummy effect handler
+//
+//Precondition(s)
+//  Casted by Player
+//
+//Effect(s)
+//  Spins the target around, setting a random orientation
+//
+//
+///////////////////////////////////////////////////////////////
+bool Spinning( uint32 i, Spell *s ){
+	Player *p_caster = s->p_caster;
+
+	if( p_caster == NULL )
+		return true;
+
+	uint32 orientations[] = { 0,1,2,3,4,5,6 };
+	uint32 index = RandomUInt( 6 );
+	float neworientation = orientations[ index ];
+
+	float X = p_caster->GetPositionX();
+	float Y = p_caster->GetPositionY();
+	float Z = p_caster->GetPositionZ();
+	uint32 mapid = p_caster->GetMapId();
+	uint32 instanceid = p_caster->GetInstanceID();
+
+	p_caster->SafeTeleport( mapid, instanceid, X, Y, Z, neworientation );
+	
+	return true;
+}
+
 // ADD NEW FUNCTIONS ABOVE THIS LINE
 // *****************************************************************************
 
@@ -855,6 +888,8 @@ void SetupItemSpells_1(ScriptMgr * mgr)
 	};
 
 	mgr->register_dummy_aura( championingspellids, &ChampioningTabards );
+
+	mgr->register_dummy_spell( 64385, &Spinning );
 
 
 // REGISTER NEW DUMMY SPELLS ABOVE THIS LINE
