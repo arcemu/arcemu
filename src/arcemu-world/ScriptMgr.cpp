@@ -413,6 +413,72 @@ void ScriptMgr::UnloadScripts()
 	_handles.clear();
 }
 
+void ScriptMgr::DumpUnimplementedSpells(){
+	std::ofstream of;
+
+	sLog.outBasic("Dumping IDs for spells with unimplemented dummy/script effect(s)");
+	uint32 count = 0;
+
+	of.open( "unimplemented1.txt" );
+
+	for( DBCStorage< SpellEntry >::iterator itr = dbcSpell.begin(); itr != dbcSpell.end(); ++itr ){
+		SpellEntry *sp = *itr;
+
+		if( !sp->HasEffect( SPELL_EFFECT_DUMMY ) && !sp->HasEffect( SPELL_EFFECT_SCRIPT_EFFECT ) && !sp->HasEffect( SPELL_EFFECT_SEND_EVENT ) )
+			continue;
+
+		HandleDummySpellMap::iterator sitr = _spells.find( sp->Id );
+		if( sitr != _spells.end() )
+			continue;
+
+		HandleScriptEffectMap::iterator seitr = SpellScriptEffects.find( sp->Id );
+		if( seitr != SpellScriptEffects.end() )
+			continue;
+		
+		std::stringstream ss;
+		ss << sp->Id;
+		ss << std::endl;
+
+		of.write( ss.str().c_str(), ss.str().length() );
+
+		count++;
+	}
+
+	of.close();
+
+	sLog.outBasic("Dumped %u IDs.", count );
+
+	sLog.outBasic("Dumping IDs for spells with unimplemented dummy aura effect.");
+
+	std::ofstream of2;
+	of2.open( "unimplemented2.txt" );
+
+	count = 0;
+
+	for( DBCStorage< SpellEntry >::iterator itr = dbcSpell.begin(); itr != dbcSpell.end(); ++itr ){
+		SpellEntry *sp = *itr;
+
+		if( !sp->AppliesAura( SPELL_AURA_DUMMY ) )
+			continue;
+
+		HandleDummyAuraMap::iterator ditr = _auras.find( sp->Id );
+		if( ditr != _auras.end() )
+			continue;
+
+		std::stringstream ss;
+		ss << sp->Id;
+		ss << std::endl;
+
+		of2.write( ss.str().c_str(), ss.str().length() );
+
+		count++;
+	}
+
+	of2.close();
+
+	sLog.outBasic("Dumped %u IDs.", count );
+}
+
 void ScriptMgr::register_creature_script(uint32 entry, exp_create_creature_ai callback)
 {
 	if(_creatures.find(entry) != _creatures.end())

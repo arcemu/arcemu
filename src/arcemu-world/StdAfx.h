@@ -47,6 +47,7 @@
 #include <map>
 #include <sstream>
 #include <string>
+#include <fstream>
 
 #ifdef WIN32
 #include <array>

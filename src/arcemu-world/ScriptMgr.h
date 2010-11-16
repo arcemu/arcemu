@@ -166,6 +166,21 @@ public:
 	void LoadScripts();
 	void UnloadScripts();
 
+	/////////////////////////////////////////////////////////////////////////
+	//void DumpUnimplementedSpells()
+	//  Dumps the IDs of the spells with dummy/script effects or dummy aura
+	//  that are not yet implemented.
+	//
+	//Parameters
+	//  None.
+	//
+	//Return Value
+	//  None.
+	//
+	//
+	/////////////////////////////////////////////////////////////////////////
+	void DumpUnimplementedSpells();
+
 	CreatureAIScript * CreateAIScriptClassForEntry(Creature* pCreature);
 	GameObjectAIScript * CreateAIScriptClassForGameObject(uint32 uEntryId, GameObject* pGameObject);
 	InstanceScript* CreateScriptClassForInstance( uint32 pMapId, MapMgr* pMapMgr );

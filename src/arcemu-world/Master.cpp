@@ -379,6 +379,9 @@ bool Master::Run(int argc, char ** argv)
 
 	sScriptMgr.LoadScripts();
 
+	if( Config.MainConfig.GetBoolDefault("Startup", "EnableSpellIDDump", false) )
+		sScriptMgr.DumpUnimplementedSpells();
+
 	LoadingTime = getMSTime() - LoadingTime;
 	Log.Notice( "Server","Ready for connections. Startup time: %ums\n", LoadingTime );
 
