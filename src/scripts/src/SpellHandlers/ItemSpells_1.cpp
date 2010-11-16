@@ -884,7 +884,8 @@ void SetupItemSpells_1(ScriptMgr * mgr)
 		57819,
 		57820,
 		57821,
-		57822
+		57822,
+		0
 	};
 
 	mgr->register_dummy_aura( championingspellids, &ChampioningTabards );
