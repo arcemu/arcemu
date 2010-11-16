@@ -3345,25 +3345,41 @@ void Spell::SpellEffectEnchantItem(uint32 i) // Enchant Item Permanent
 
 void Spell::SpellEffectEnchantItemTemporary(uint32 i)  // Enchant Item Temporary
 {
-	if(!itemTarget || !p_caster) return;
-	uint32 Duration = damage > 1 ? damage : 3600;
+	if( ( itemTarget == NULL ) || ( p_caster == NULL ) )
+		return;
+
+	uint32 Duration = m_spellInfo->EffectBasePoints[ i ];
+	uint32 EnchantmentID = m_spellInfo->EffectMiscValue[ i ];
 
 	// don't allow temporary enchants unless we're the owner of the item
-	if(itemTarget->GetOwner() != p_caster) return;
+	if( itemTarget->GetOwner() != p_caster )
+		return;
 
-	EnchantEntry * Enchantment = dbcEnchant.LookupEntryForced(GetProto()->EffectMiscValue[i]);
-	if(!Enchantment){
-		sLog.outError("Invalid enchantment entry %u for Spell %u", GetProto()->EffectMiscValue[ i ], GetProto()->Id );
+	if( Duration == 0 ){
+		sLog.outError("Spell %u ( %s ) has no enchantment duration. Spell needs to be fixed!", m_spellInfo->Id, m_spellInfo->Name );
 		return;
 	}
 
-	itemTarget->RemoveEnchantment(TEMP_ENCHANTMENT_SLOT);
-	int32 Slot = itemTarget->AddEnchantment(Enchantment, Duration, false, true, false, TEMP_ENCHANTMENT_SLOT);
-	if(Slot < 0) return; // Apply failed
+	if( EnchantmentID == 0 ){
+		sLog.outError("Spell %u ( %s ) has no enchantment ID. Spell needs to be fixed!", m_spellInfo->Id, m_spellInfo->Name );
+		return;
+	}
 
-	skilllinespell* skill = objmgr.GetSpellSkill(GetProto()->Id);
-	if(skill)
-		DetermineSkillUp(skill->skilline,itemTarget->GetProto()->ItemLevel);
+	EnchantEntry * Enchantment = dbcEnchant.LookupEntryForced( EnchantmentID );
+	if( Enchantment == NULL ){
+		sLog.outError("Invalid enchantment entry %u for Spell %u", EnchantmentID, GetProto()->Id );
+		return;
+	}
+
+	itemTarget->RemoveEnchantment( TEMP_ENCHANTMENT_SLOT );
+
+	int32 Slot = itemTarget->AddEnchantment( Enchantment, Duration, false, true, false, TEMP_ENCHANTMENT_SLOT );
+	if( Slot < 0 )
+		return; // Apply failed
+
+	skilllinespell* skill = objmgr.GetSpellSkill( GetProto()->Id );
+	if( skill != NULL )
+		DetermineSkillUp( skill->skilline, itemTarget->GetProto()->ItemLevel );
 }
 
 void Spell::SpellEffectTameCreature(uint32 i)
