@@ -267,6 +267,7 @@ enum MOD_TYPES
     SPELL_AURA_INCREASE_CASTING_TIME_PCT = 216,
     SPELL_AURA_REGEN_MANA_STAT_PCT=219,
     SPELL_AURA_HEALING_STAT_PCT=220,
+	SPELL_AURA_PERIODIC_TRIGGER_DUMMY=226,
 	SPELL_AURA_PERIODIC_TRIGGER_SPELL_WITH_VALUE=227, // Used by Mind Flay etc
 	SPELL_AURA_REDUCE_AOE_DAMAGE_TAKEN = 229,
     SPELL_AURA_INCREASE_MAX_HEALTH=230,//Used by Commanding Shout
@@ -689,7 +690,7 @@ public:
 	void SpellAuraAllowFlight(bool apply);
 	void SpellAuraFinishingMovesCannotBeDodged(bool apply);
 	void SpellAuraExpertise(bool apply);
-	void SpellAuraDrinkNew(bool apply);
+	void SpellAuraPeriodicTriggerDummy(bool apply);
 	void SpellAuraModPossessPet(bool apply);
 	void SpellAuraModHealingByAP(bool apply);
 	void SpellAuraModSpellDamageByAP(bool apply);

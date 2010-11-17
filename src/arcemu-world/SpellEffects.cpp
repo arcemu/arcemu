@@ -5426,7 +5426,7 @@ void Spell::SpellEffectPlayMusic( uint32 i ){
 	uint32 soundid = m_spellInfo->EffectMiscValue[ i ];
 
 	if( soundid == 0 ){
-		sLog.outDebug("Spell %u ( %s ) has no sound ID to play. Spell needs fixing!", m_spellInfo->Id, m_spellInfo->Name );
+		sLog.outError("Spell %u ( %s ) has no sound ID to play. Spell needs fixing!", m_spellInfo->Id, m_spellInfo->Name );
 		return;
 	}
 

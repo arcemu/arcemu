@@ -629,6 +629,29 @@ bool SoulStoneResurrection( uint32 i, Aura *a, bool apply ){
 	return true;
 }
 
+bool DemonicCircleSummon( uint32 i, Aura *a, bool apply ){
+	Unit *m_target = a->GetTarget();
+
+	if( m_target->GetMapMgr() == NULL )
+		return true;
+
+	if( apply ){
+		
+		GameObject * circle = m_target->GetMapMgr()->GetGameObject( a->GetTarget()->m_ObjectSlots[ 0 ] );
+		SpellEntry* sp = dbcSpell.LookupEntryForced( 48020 );
+		
+		if( circle != NULL && sp != NULL && m_target->CalcDistance( circle ) <= GetMaxRange( dbcSpellRange.LookupEntry( sp->rangeIndex ) )){
+			if( !m_target->HasAura( 62388 ) )
+				m_target->CastSpell( m_target, 62388, true );
+		}else
+			m_target->RemoveAura( 62388 );
+	}else{
+		m_target->RemoveAllAuraById(62388);
+	}
+
+	return true;
+}
+
 void SetupWarlockSpells(ScriptMgr * mgr)
 {
 	//////////////////////////////////////////////// Dummy Effect /////////////////////////////////////////////////////////
@@ -716,5 +739,5 @@ void SetupWarlockSpells(ScriptMgr * mgr)
 	};
 	mgr->register_dummy_aura( soulstoneresurrectionids, &SoulStoneResurrection );
 
-
+	mgr->register_dummy_aura( 48018, &DemonicCircleSummon );
 }

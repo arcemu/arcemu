@@ -247,7 +247,7 @@ pSpellAura SpellAuraHandler[TOTAL_SPELL_AURAS]={
 		&Aura::SpellAuraNULL,//223 // used in one spell, cold stare 43593
 		&Aura::SpellAuraNULL,//224 // not used
 		&Aura::SpellAuraNULL,//225 // Prayer of Mending "Places a spell on the target that heals them for $s1 the next time they take damage.  When the heal occurs, Prayer of Mending jumps to a raid member within $a1 yards.  Jumps up to $n times and lasts $d after each jump.  This spell can only be placed on one target at a time."
-		&Aura::SpellAuraDrinkNew,//226 // used in brewfest spells, headless horseman, Aspect of the Viper
+		&Aura::SpellAuraPeriodicTriggerDummy,//226 // used in brewfest spells, headless horseman, Aspect of the Viper
 		&Aura::SpellAuraPeriodicTriggerSpellWithValue,//227 // Used by Mind Flay, Siege Turrets 'Machine gun' and a few other spells.
 		&Aura::SpellAuraModStealthDetection,//228 Stealth Detection. http://www.thottbot.com/s34709
 		&Aura::SpellAuraReduceAOEDamageTaken,//229 Apply Aura:Reduces the damage your pet takes from area of effect attacks http://www.thottbot.com/s35694
@@ -568,7 +568,7 @@ const char* SpellAuraNames[TOTAL_SPELL_AURAS] = {
 	"",													// 223
 	"",													// 224
 	"",													// 225
-	"",													// 226
+	"PERIODIC_TRIGGER_DUMMY",							// 226
 	"TRIGGER_SPELL_WITH_VALUE",							// 227 Used by Mind Flay and some other spells.
 	"",													// 228
 	"SPELL_AURA_REDUCE_AOE_DAMAGE_TAKEN",				// 229
@@ -2641,22 +2641,8 @@ void Aura::EventPeriodicManaPct(float RegenPct)
 
 void Aura::EventPeriodicTriggerDummy(){
 	
-	switch( GetSpellProto()->Id ){
-	case 48018:{
-		if( m_target->GetMapMgr() == NULL )
-			return;
-
-		GameObject * circle = m_target->GetMapMgr()->GetGameObject( m_target->m_ObjectSlots[ 0 ] );
-		SpellEntry* sp = dbcSpell.LookupEntryForced( 48020 );
-		
-		if( circle != NULL && sp != NULL && m_target->CalcDistance( circle ) <= GetMaxRange( dbcSpellRange.LookupEntry( sp->rangeIndex ) )){
-			if( !m_target->HasAura( 62388 ) )
-				m_target->CastSpell( m_target, 62388, true );
-		}else
-			m_target->RemoveAura( 62388 );
-
-			   break; }
-	}
+	if( !sScriptMgr.CallScriptedDummyAura( m_spellProto->Id, mod->i, this, true ) )
+		sLog.outError("Spell %u ( %s ) has an apply periodic trigger dummy aura effect, but no handler for it.", m_spellProto->Id, m_spellProto->Name );
 }
 
 void Aura::SpellAuraModResistance(bool apply)
@@ -5093,21 +5079,10 @@ void Aura::SpellAuraModRegen(bool apply)
 	}
 }
 
-void Aura::SpellAuraDrinkNew(bool apply)
+void Aura::SpellAuraPeriodicTriggerDummy(bool apply)
 {
 	switch( m_spellProto->NameHash )
 	{
-		// Demonic Circle
-		case SPELL_HASH_DEMONIC_CIRCLE__SUMMON:{
-			if (apply)
-				sEventMgr.AddEvent( this, &Aura::EventPeriodicTriggerDummy, EVENT_AURA_PERIODIC_TRIGGERSPELL, GetSpellProto()->EffectAmplitude[mod->i],360,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
-			else{
-				sEventMgr.RemoveEvents( this );
-				m_target->RemoveAllAuraById(62388);
-				}
-
-				break;}
-
 		case SPELL_HASH_ASPECT_OF_THE_VIPER:
 			if( p_target )
 			{
@@ -5119,7 +5094,9 @@ void Aura::SpellAuraDrinkNew(bool apply)
 
 				}
 			}
+			return;
 		break;
+
 		case SPELL_HASH_PREY_ON_THE_WEAK:
 			if( apply )
 			{
@@ -5127,7 +5104,9 @@ void Aura::SpellAuraDrinkNew(bool apply)
 				sEventMgr.AddEvent(this, &Aura::EventPeriodicTrigger, (uint32)mod->m_amount, (uint32)mod->m_miscValue,
 				EVENT_AURA_PERIODIC_TRIGGERSPELL, GetSpellProto()->EffectAmplitude[mod->i], 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 			}
+			return;
 			break;
+
 	case SPELL_HASH_EXPLOSIVE_SHOT:
 		{
 			if( apply )
@@ -5142,17 +5121,19 @@ void Aura::SpellAuraDrinkNew(bool apply)
 			{
 				sEventMgr.RemoveEvents( this, EVENT_AURA_PERIODIC_DAMAGE );
 			}
+			return;
 		}break;
+	}
 
-	default:
-		{
-			if( apply )
-			{
-				SetPositive();
-				sEventMgr.AddEvent(this, &Aura::EventPeriodicDrink, static_cast<uint32>(mod->m_amount / 5),
-				EVENT_AURA_PERIODIC_REGEN, 1000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-			}
-		}
+
+	if( apply ){
+
+		sEventMgr.AddEvent( this, &Aura::EventPeriodicTriggerDummy, EVENT_AURA_PERIODIC_DUMMY, m_spellProto->EffectAmplitude[ mod->i ], 0, 0 );
+	
+	}else{
+		if( !sScriptMgr.CallScriptedDummyAura( m_spellProto->Id, mod->i, this, false ) )
+			sLog.outError("Spell %u ( %s ) has an apply periodic trigger dummy aura effect, but no handler for it.", m_spellProto->Id, m_spellProto->Name );
+
 	}
 }
 
