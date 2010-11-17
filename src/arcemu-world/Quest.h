@@ -153,7 +153,7 @@ struct Quest
 	uint32 quest_sort;
 	uint32 quest_flags;
 	uint32 min_level;
-	uint32 max_level;
+	int32 questlevel;
 	uint32 type;
 	uint32 required_races;
 	uint32 required_class;

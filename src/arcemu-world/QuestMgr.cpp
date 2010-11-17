@@ -116,7 +116,7 @@ uint32 QuestMgr::PlayerMeetsReqs(Player* plr, Quest* qst, bool skiplevelcheck)
 	}
 
 	// check quest level
-	if( plr->getLevel() >= ( qst->max_level + 5 ) && ( status != QMGR_QUEST_REPEATABLE ) )
+	if( static_cast< int32 >( plr->getLevel() ) >= ( qst->questlevel + 5 ) && ( status != QMGR_QUEST_REPEATABLE ) )
 		return QMGR_QUEST_CHAT;
 
 	return status;
@@ -652,7 +652,7 @@ void QuestMgr::BuildQuestList(WorldPacket *data, Object* qst_giver, Player *plr,
 				default:
 					*data << status;
 				}
-                *data << (*it)->qst->max_level;
+                *data << int32( (*it)->qst->questlevel );
 				*data << uint32( (*it)->qst->quest_flags );
 				*data << uint8( 0 ); // According to MANGOS: "changes icon: blue question or yellow exclamation"
 
@@ -1469,24 +1469,24 @@ uint32 QuestMgr::GenerateQuestXP(Player *plr, Quest *qst)
 	if( qst->reward_xp != 0 ){
 		float modifier = 0.0f;
 		uint32 playerlevel = plr->getLevel();
-		uint32 questlevel = qst->max_level;
+		int32 questlevel = qst->questlevel;
 
-		if( playerlevel < questlevel + 6 )
+		if( static_cast< int32 >( playerlevel ) < ( questlevel + 6 ) )
 			return qst->reward_xp;
 
-		if( playerlevel > questlevel +  9 )
+		if( static_cast< int32 >( playerlevel ) > ( questlevel +  9 ) )
 			return 0;
 
-		if( playerlevel == questlevel +  6 )
+		if( static_cast< int32 >( playerlevel ) == ( questlevel +  6 ) )
 			modifier = 0.8f;
 
-		if( playerlevel == questlevel +  7 )
+		if( static_cast< int32 >( playerlevel ) == ( questlevel +  7 ) )
 			modifier = 0.6f;
 
-		if( playerlevel == questlevel +  8 )
+		if( static_cast< int32 >( playerlevel ) == ( questlevel +  8 ) )
 			modifier = 0.4f;
 
-		if( playerlevel == questlevel +  9 )
+		if( static_cast< int32 >( playerlevel ) == ( questlevel +  9 ) )
 			modifier = 0.2f;
 
 
@@ -1499,7 +1499,7 @@ uint32 QuestMgr::GenerateQuestXP(Player *plr, Quest *qst)
         uint32 xpMultiplier = 0;
         int32 baseLevel = 0;
         int32 playerLevel = plr->getLevel();
-		uint32 QuestLevel = qst->max_level;
+		int32 QuestLevel = qst->questlevel;
 
         if (QuestLevel != -1)
             baseLevel = QuestLevel;

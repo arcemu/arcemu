@@ -34,7 +34,7 @@ WorldPacket* WorldSession::BuildQuestQueryResponse(Quest *qst)
    
 	*data << uint32(qst->id);						// Quest ID
 	*data << uint32(2);								// Unknown, always seems to be 2
-	*data << uint32(qst->max_level);				// Quest level
+	*data << int32(qst->questlevel);				// Quest level
 	*data << uint32(qst->min_level);				// Quest required level
 
 	if(qst->quest_sort > 0)
