@@ -44,7 +44,7 @@ class ProspectorAnvilwardGossip : public GossipScript
 void ProspectorAnvilwardGossip::GossipHello( Object * pObject, Player * Plr, bool AutoSend )
 {
 	GossipMenu * Menu;
-	objmgr.CreateGossipMenuForPlayer( &Menu, pObject->GetGUID(), 0, Plr );
+	objmgr.CreateGossipMenuForPlayer( &Menu, pObject->GetGUID(), 2, Plr );
 
 	Menu->AddItem( 0, "Show me...", 1 );
 
