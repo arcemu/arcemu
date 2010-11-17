@@ -131,6 +131,21 @@ bool Misdirection( uint32 i, Aura *a, bool apply ){
 	return true;
 }
 
+bool ExplosiveShot( uint32 i, Aura *a, bool apply ){
+	if( !apply )
+		return true;
+
+	Unit *m_target = a->GetTarget();
+	
+	a->SetNegative();
+	int32 dmg	= a->GetModAmount( i );
+	dmg += float2int32( m_target->GetRangedAttackPower() * 0.16f );
+
+	a->EventPeriodicDamage( dmg );
+
+	return true;
+}
+
 void SetupHunterSpells(ScriptMgr * mgr)
 {
 	mgr->register_dummy_spell(24531, &Refocus);
@@ -140,4 +155,12 @@ void SetupHunterSpells(ScriptMgr * mgr)
 	mgr->register_dummy_aura( 34471, &TheBeastWithin );
 	mgr->register_dummy_aura( 34477, &Misdirection );
 
+	uint32 explosiveshotids[] = {
+		53301,
+		60051,
+		60052,
+		60053,
+		0
+	};
+	mgr->register_dummy_aura( explosiveshotids, &ExplosiveShot );
 }

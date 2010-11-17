@@ -191,6 +191,32 @@ bool MasterOfSubtletly( uint32 i, Aura *a, bool apply ){
 	return true;
 }
 
+bool PreyOnTheWeakPeriodicDummy( uint32 i, Aura *a, bool apply ){
+	Unit *m_target = a->GetTarget();
+	Player *p_target = NULL;
+
+	if( !apply )
+		return true;
+
+	if( m_target->IsPlayer() )
+		p_target = TO_PLAYER( m_target );
+
+	if( p_target != NULL && p_target->getClass() == ROGUE ){
+		
+		Unit* target = p_target->GetMapMgr()->GetUnit( p_target->GetTarget() );
+		if( target == NULL )
+			return true;
+		
+		uint32 plrHP = p_target->GetHealth();
+		uint32 targetHP = target->GetHealth();
+		
+		if( plrHP > targetHP )
+			p_target->CastSpell( p_target, 58670, true );
+	}
+	
+	return true;
+}
+
 void SetupRogueSpells(ScriptMgr * mgr)
 {
 	mgr->register_dummy_spell(5938, &Shiv);
@@ -215,4 +241,14 @@ void SetupRogueSpells(ScriptMgr * mgr)
 		0
 	};
 	mgr->register_dummy_aura( masterofsubtletlyids, &MasterOfSubtletly );
+
+	uint32 preyontheweakids[] = {
+		51685,
+		51686,
+		51687,
+		51688,
+		51689,
+		0
+	};
+	mgr->register_dummy_aura( preyontheweakids, &PreyOnTheWeakPeriodicDummy );
 }

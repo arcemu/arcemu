@@ -5081,51 +5081,6 @@ void Aura::SpellAuraModRegen(bool apply)
 
 void Aura::SpellAuraPeriodicTriggerDummy(bool apply)
 {
-	switch( m_spellProto->NameHash )
-	{
-		case SPELL_HASH_ASPECT_OF_THE_VIPER:
-			if( p_target )
-			{
-				if( apply )
-				{
-					SetPositive();
-					sEventMgr.AddEvent(this, &Aura::EventPeriodicEnergizeVariable,(uint32)mod->m_amount,(uint32)mod->m_miscValue,
-			EVENT_AURA_PERIODIC_ENERGIZE_VARIABLE, GetSpellProto()->EffectAmplitude[mod->i],0,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-
-				}
-			}
-			return;
-		break;
-
-		case SPELL_HASH_PREY_ON_THE_WEAK:
-			if( apply )
-			{
-				SetPositive();
-				sEventMgr.AddEvent(this, &Aura::EventPeriodicTrigger, (uint32)mod->m_amount, (uint32)mod->m_miscValue,
-				EVENT_AURA_PERIODIC_TRIGGERSPELL, GetSpellProto()->EffectAmplitude[mod->i], 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-			}
-			return;
-			break;
-
-	case SPELL_HASH_EXPLOSIVE_SHOT:
-		{
-			if( apply )
-			{
-				SetNegative();
-				int32 dmg	= mod->m_amount;
-				dmg += float2int32( m_target->GetRangedAttackPower() * 0.16f );
-				sEventMgr.AddEvent(this, &Aura::EventPeriodicDamage,(uint32)dmg,
-					EVENT_AURA_PERIODIC_DAMAGE,GetSpellProto()->EffectAmplitude[mod->i],0,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-			}
-			else
-			{
-				sEventMgr.RemoveEvents( this, EVENT_AURA_PERIODIC_DAMAGE );
-			}
-			return;
-		}break;
-	}
-
-
 	if( apply ){
 
 		sEventMgr.AddEvent( this, &Aura::EventPeriodicTriggerDummy, EVENT_AURA_PERIODIC_DUMMY, m_spellProto->EffectAmplitude[ mod->i ], 0, 0 );
@@ -5139,23 +5094,7 @@ void Aura::SpellAuraPeriodicTriggerDummy(bool apply)
 
 void Aura::EventPeriodicTrigger( uint32 amount, uint32 type )
 {
-	switch( type )
-	{
-	case 127:
-		if( p_target != NULL && p_target->getClass() == ROGUE )
-		{
-			Unit* target = p_target->GetMapMgr()->GetUnit( p_target->GetTarget() );
-			if( !target )
-				return;
 
-			uint32 plrHP = p_target->GetUInt32Value( UNIT_FIELD_HEALTH );
-			uint32 targetHP = target->GetUInt32Value( UNIT_FIELD_HEALTH );
-
-			if( plrHP > targetHP )
-				p_target->CastSpell( p_target, 58670, true );
-		}
-		break;
-	}
 }
 
 void Aura::EventPeriodicEnergizeVariable( uint32 amount, uint32 type )
@@ -5163,33 +5102,7 @@ void Aura::EventPeriodicEnergizeVariable( uint32 amount, uint32 type )
 	uint32 POWER_TYPE = UNIT_FIELD_POWER1 + type;
 
 	Arcemu::Util::ARCEMU_ASSERT(   POWER_TYPE<=UNIT_FIELD_POWER5);
-	uint32 curEnergy = m_target->GetUInt32Value( POWER_TYPE );
-	uint32 maxEnergy = m_target->GetUInt32Value( POWER_TYPE + 6 );
 
-	switch( m_spellProto->NameHash )
-	{
-		case SPELL_HASH_ASPECT_OF_THE_VIPER:
-			float regen, manaPct;
-			// http://www.wowwiki.com/Aspect_of_the_Viper
-			// MP5Viper = Intellect  22/35  ( 0.9 - Manacurrent / Manamax ) + Intellect  0.11 -- by wowwiki
-			// MP5Viper = Intellect  ( 0.55 - 22/35  ( Manacurrent / Manamax - 0.2 ) -- by emsy... 55 is stored in DBC, maybe blizz changes it in future
-			// We're including also the Effect[1]:Dummy (35% of player's level) from the AotV in this
-			//   it's missing some values in dbc plus it saves one event this way
-
-			manaPct = (float)curEnergy / (float)maxEnergy;
-			if( manaPct < 0.2f )
-				manaPct = 0.2f;
-			if( manaPct > 0.9f )
-				manaPct = 0.9f;
-
-			regen = ( (float)amount / 100 - 22.0f / 35.0f * (manaPct - 0.2f) ) * (float)p_target->GetStat(STAT_INTELLECT) + (float)p_target->getLevel()*m_spellProto->EffectBasePoints[1]/100;
-			amount = (int)regen;
-		break;
-		default:
-			//something
-			;
-	}
-	
 	Unit* ucaster = GetUnitCaster();
 	if( ucaster != NULL )
 		ucaster->Energize( m_target, m_spellProto->Id, amount, type );
