@@ -937,7 +937,7 @@ enum SpellEffects
 //	SPELL_EFFECT_UNKNOWN9,                  //    129
 	SPELL_EFFECT_UNKNOWN10,                 //    130
 	SPELL_EFFECT_UNKNOWN11,                 //    131
-	SPELL_EFFECT_UNKNOWN12,                 //    132
+	SPELL_EFFECT_PLAY_MUSIC,                 //    132
 	SPELL_EFFECT_FORGET_SPECIALIZATION,     //    133
 	SPELL_EFFECT_KILL_CREDIT,               //    134
 	SPELL_EFFECT_UNKNOWN15,                 //    135
@@ -1906,6 +1906,7 @@ public:
 	void SpellEffectProspecting(uint32 i);
 	void SpellEffectApplyAura128(uint32 i);
 	void SpellEffectRedirectThreat(uint32 i);
+	void SpellEffectPlayMusic( uint32 i );
 	void SpellEffectForgetSpecialization(uint32 i);
 	void SpellEffectKillCredit(uint32 i);
 	void SpellEffectRestorePowerPct(uint32 i);

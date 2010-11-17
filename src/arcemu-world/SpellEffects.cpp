@@ -153,7 +153,7 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS]={
 	&Spell::SpellEffectNULL,					// unknown - 129 // Mod Dmg % (Spells)
 	&Spell::SpellEffectRedirectThreat,			// unknown - 130 // http://www.thottbot.com/s34477
 	&Spell::SpellEffectNULL,					// unknown - 131 // test spell
-	&Spell::SpellEffectNULL,					// Play Music - 132 // http://www.thottbot.com/s46852
+	&Spell::SpellEffectPlayMusic,				// Play Music - 132 // http://www.thottbot.com/s46852
 	&Spell::SpellEffectForgetSpecialization,	//SPELL_EFFECT_FORGET_SPECIALIZATION - 133 // http://www.thottbot.com/s36441 // I think this is a gm/npc spell
 	&Spell::SpellEffectKillCredit,				// Quest Credit (Player only, not party) - 134 // related to summoning objects and removing them, http://www.thottbot.com/s39161
 	&Spell::SpellEffectNULL,					// Summon Pet: http://www.thottbot.com/s23498 - 135
@@ -319,7 +319,7 @@ const char* SpellEffectNames[TOTAL_SPELL_EFFECTS] = {
 	"UNKNOWN9",                  //    129
 	"UNKNOWN10",                 //    130
 	"UNKNOWN11",                 //    131
-	"UNKNOWN12",                 //    132
+	"PLAY_MUSIC",                 //    132
 	"FORGET_SPECIALIZATION",     //    133
 	"KILL_CREDIT",               //    134
 	"UNKNOWN15",                 //    135
@@ -5420,6 +5420,17 @@ void Spell::SpellEffectRedirectThreat(uint32 i)
 		return;
 
 	p_caster->SetMisdirectionTarget(unitTarget->GetGUID());
+}
+
+void Spell::SpellEffectPlayMusic( uint32 i ){
+	uint32 soundid = m_spellInfo->EffectMiscValue[ i ];
+
+	if( soundid == 0 ){
+		sLog.outDebug("Spell %u ( %s ) has no sound ID to play. Spell needs fixing!", m_spellInfo->Id, m_spellInfo->Name );
+		return;
+	}
+
+	m_caster->PlaySoundToSet( soundid );
 }
 
 void Spell::SpellEffectForgetSpecialization(uint32 i)
