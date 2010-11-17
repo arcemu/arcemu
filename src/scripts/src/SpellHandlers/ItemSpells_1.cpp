@@ -834,6 +834,36 @@ bool Spinning( uint32 i, Spell *s ){
 	return true;
 }
 
+//////////////////////////////////////////////////////////////////
+//Listening to Music periodically triggered dummy aura
+//( SpellId 50493 )
+//
+//Precondition(s)
+//  Casted by Player
+//
+//Effect(s)
+//  Makes the player dance
+//
+//
+/////////////////////////////////////////////////////////////////
+bool ListeningToMusic( uint32 i, Aura *a, bool apply ){
+	Unit *m_target = a->GetTarget();
+	Player *p_target = NULL;
+
+	if( m_target->IsPlayer() )
+		p_target = TO_PLAYER( m_target );
+	else
+		return true;
+
+	if( apply ){
+		p_target->SetEmoteState( EMOTE_STATE_DANCE );
+	}else{
+		p_target->SetEmoteState( EMOTE_STATE_NONE );
+	}
+
+	return true;
+}
+
 // ADD NEW FUNCTIONS ABOVE THIS LINE
 // *****************************************************************************
 
@@ -891,6 +921,8 @@ void SetupItemSpells_1(ScriptMgr * mgr)
 	mgr->register_dummy_aura( championingspellids, &ChampioningTabards );
 
 	mgr->register_dummy_spell( 64385, &Spinning );
+
+	mgr->register_dummy_aura( 50493, &ListeningToMusic );
 
 
 // REGISTER NEW DUMMY SPELLS ABOVE THIS LINE

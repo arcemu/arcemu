@@ -290,6 +290,28 @@ public:
 	};
 };
 
+///////////////////////////////////////////////////////////
+//D.I.S.C.O AI Script ( entry 27989 )
+//"Dancer's Integrated Sonic Celebration Oscillator"
+//
+//Behavior
+//  On spawn it casts 2 spells, which
+//  - summon the dancefloor
+//  - applies a periodic aura that plays the music
+//
+//
+//////////////////////////////////////////////////////////
+class DISCO : public CreatureAIScript{
+public:
+	ADD_CREATURE_FACTORY_FUNCTION( DISCO );
+	DISCO( Creature *c ) : CreatureAIScript( c ){}
+
+	void OnLoad(){
+		_unit->CastSpell( _unit, 50487, false ); // summon disco dancefloor
+		_unit->CastSpell( _unit, 50314, false ); // play the music
+	}
+};
+
 void SetupMiscCreatures(ScriptMgr *mgr)
 {
 	mgr->register_creature_script(11120, &CrimsonHammersmith::Create);
@@ -400,4 +422,6 @@ void SetupMiscCreatures(ScriptMgr *mgr)
 	mgr->register_creature_script(10181, &LadySylvanasWindrunner::Create);
 
 	mgr->register_creature_script( 23090, &TrollRoofStalker::Create);
+
+	mgr->register_creature_script( 27989, &DISCO::Create );
 }

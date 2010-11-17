@@ -442,6 +442,28 @@ bool CrystalSpikes(uint32 i, Spell *pSpell)
 	return true;
 }
 
+
+////////////////////////////////////////////////////////////////
+//Listening To Music scripted spell effect
+//( SpellId 50499 )
+//
+//Precondition(s)
+//  Casted by Player
+//
+//Effect(s)
+//  Makes the player cast "Listening to Music"
+//
+//
+////////////////////////////////////////////////////////////////
+bool ListeningToMusicParent( uint32 i, Spell *s ){
+	if( s->p_caster == NULL )
+		return true;
+
+	s->p_caster->CastSpell( s->p_caster, 50493, true );
+
+	return true;
+}
+
 void SetupMiscSpellhandlers( ScriptMgr *mgr ){
 	mgr->register_dummy_spell( 11189, &FrostWarding );
 	mgr->register_dummy_spell( 28332, &FrostWarding );
@@ -497,6 +519,8 @@ void SetupMiscSpellhandlers( ScriptMgr *mgr ){
 
 	mgr->register_script_effect(CRYSTAL_SPIKES, &CrystalSpikes);
 	mgr->register_script_effect(CRYSTAL_SPIKES_H, &CrystalSpikes);
+
+	mgr->register_script_effect( 50499, &ListeningToMusicParent );
 
 }
 
