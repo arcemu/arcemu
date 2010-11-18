@@ -308,7 +308,7 @@ AddItemResult ItemInterface::m_AddItem(Item *item, int8 ContainerSlot, int16 slo
 		int VisibleBase = GetOwner()->GetVisibleBase(slot);
 		if( VisibleBase > PLAYER_VISIBLE_ITEM_19_ENTRYID )
 		{
-			printf("Slot warning: slot: %d\n", slot);
+			sLog.outDebug("Slot warning: slot: %d", slot);
 		}
 		else
 		{
@@ -2924,7 +2924,7 @@ void ItemInterface::AddBuyBackItem(Item *it,uint32 price)
 	{
 		if((m_pOwner->GetUInt32Value(PLAYER_FIELD_VENDORBUYBACK_SLOT_1 + i) == 0) || (m_pBuyBack[i/2] == NULL))
 		{
-			sLog.outDetail("setting buybackslot %u\n",i/2);
+			sLog.outDetail("setting buybackslot %u",i/2);
 			m_pBuyBack[i >> 1] = it;
 
 			m_pOwner->SetUInt64Value(PLAYER_FIELD_VENDORBUYBACK_SLOT_1 + i,m_pBuyBack[i >> 1]->GetGUID());
@@ -2953,12 +2953,9 @@ void ItemInterface::RemoveBuyBackItem(uint32 index)
 			}
 			else
 			{
-				if( m_pBuyBack[j] != NULL )
-				{
-						m_pBuyBack[j] = NULL;
-				}
+				m_pBuyBack[j] = NULL;
 
-				sLog.outDetail( "nulling %u\n", j );
+				sLog.outDetail( "nulling %u", j );
 			}
 		}
 		else
@@ -4249,7 +4246,7 @@ bool ItemInterface::SwapItems( int8 DstInvSlot, int8 DstSlot, int8 SrcInvSlot, i
 			AddItemResult result = SafeAddItem(SrcItem,DstInvSlot,DstSlot);
 			if(!result)
 			{
-				printf("HandleSwapItem: Error while adding item to dstslot\n");
+				sLog.outError("HandleSwapItem: Error while adding item to dstslot");
 				SrcItem->DeleteFromDB();
 				SrcItem->DeleteMe();
 				SrcItem = NULL;
@@ -4262,7 +4259,7 @@ bool ItemInterface::SwapItems( int8 DstInvSlot, int8 DstSlot, int8 SrcInvSlot, i
 			AddItemResult result = SafeAddItem(DstItem,SrcInvSlot,SrcSlot);
 			if(!result)
 			{
-				printf("HandleSwapItem: Error while adding item to srcslot\n");
+				sLog.outError("HandleSwapItem: Error while adding item to srcslot");
 				DstItem->DeleteFromDB();
 				DstItem->DeleteMe();
 				DstItem = NULL;

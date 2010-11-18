@@ -82,7 +82,7 @@ bool ChatHandler::HandleRenameAllCharacter(const char * args, WorldSession * m_s
 
 			if( VerifyName(pName, szLen) != E_CHAR_NAME_SUCCESS )
 			{
-				printf("renaming character %s, %u\n", pName,uGuid);
+				sLog.outDebug("renaming character %s, %u", pName,uGuid);
                 Player * pPlayer = objmgr.GetPlayer(uGuid);
 				if( pPlayer != NULL )
 				{

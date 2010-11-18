@@ -317,9 +317,6 @@
     <ClInclude Include="..\..\src\arcemu-shared\Log.h">
       <Filter>Util\Log</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\arcemu-shared\NGLog.h">
-      <Filter>Util\Log</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\arcemu-shared\arcemuConfig.h" />
     <ClInclude Include="..\..\src\arcemu-shared\AuthCodes.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Common.h" />

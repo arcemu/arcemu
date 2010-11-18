@@ -118,7 +118,7 @@ void Socket::Disconnect()
 	if(!m_connected.SetVal(false))
 		return;
 
-	sLog.outBasic("Socket::Disconnect on socket %u", m_fd);
+	sLog.outDetail("Socket::Disconnect on socket %u", m_fd);
 
 	// remove from mgr
 	sSocketMgr.RemoveSocket(this);

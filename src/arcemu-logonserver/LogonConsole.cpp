@@ -19,7 +19,6 @@
 
 #include "LogonStdAfx.h"
 #include "LogonConsole.h"
-#include "Log.h"
 
 initialiseSingleton(LogonConsole);
 bool Rehash();
@@ -53,12 +52,12 @@ void LogonConsole::Kill()
 	ir[1].Event.KeyEvent.wVirtualScanCode = 28;
 	WriteConsoleInput (GetStdHandle(STD_INPUT_HANDLE), ir, 2, & dwTmp);
 #endif
-	printf("Waiting for console thread to terminate....\n");
+	sLog.outBasic("Waiting for console thread to terminate....");
 	while(_thread != NULL)
 	{
 		Sleep(100);
 	}
-	printf("Console shut down.\n");
+	sLog.outBasic("Console shut down.");
 }
 
 bool LogonConsoleThread::run()
@@ -185,11 +184,11 @@ void LogonConsole::ProcessHelp(char *command)
 {
 	if (command == NULL)
 	{
-		sLog.outString("Console:--------help--------");
-		sLog.outString("	Help, ?: Prints this help text.");
-		sLog.outString("	Reload: Reloads accounts.");
-		sLog.outString("	Netstatus: Shows network status.");
-		sLog.outString("	Shutdown, exit: Closes the logonserver.");
+		printf("Console:--------help--------\n");
+		printf("	Help, ?: Prints this help text.\n");
+		printf("	Reload: Reloads accounts.\n");
+		printf("	Netstatus: Shows network status.\n");;
+		printf("	Shutdown, exit: Closes the logonserver.\n");
 	}
 }
 //------------------------------------------------------------------------------

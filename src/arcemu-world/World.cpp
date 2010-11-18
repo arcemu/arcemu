@@ -283,7 +283,6 @@ void ApplyNormalFixes();
 
 bool World::SetInitialWorldSettings()
 {
-	Log.Line();
 	Player::InitVisibleUpdateBits();
 
 	CharacterDatabase.WaitExecute("UPDATE characters SET online = 0 WHERE online = 1");
@@ -342,10 +341,10 @@ bool World::SetInitialWorldSettings()
 
 	uint32 start_time = getMSTime();
 
-	Log.Notice( "World", "Loading DBC files..." );
+	Log.Success( "World", "Loading DBC files..." );
 	if( !LoadDBCs() )
 	{
-		Log.LargeErrorMessage(LARGERRORMESSAGE_ERROR, "One or more of the DBC files are missing.", "These are absolutely necessary for the server to function.", "The server will not start without them.", NULL);
+		Log.LargeErrorMessage("One or more of the DBC files are missing.", "These are absolutely necessary for the server to function.", "The server will not start without them.", NULL);
 		return false;
 	}
 
@@ -391,13 +390,6 @@ bool World::SetInitialWorldSettings()
 	new WorldLog;
 	new ChatHandler;
 	new SpellProcMgr;
-
-	// grep: this only has to be done once between version updates
-	// to re-fill the table.
-
-	/*sLog.outString("Filling spell replacements table...");
-	FillSpellReplacementsTable();
-	sLog.outString("");*/
 
 	ApplyNormalFixes();
 
@@ -456,18 +448,16 @@ bool World::SetInitialWorldSettings()
 	sLocalizationMgr.Reload(false);
 
 	CommandTableStorage::getSingleton().Load();
-	Log.Notice("WordFilter", "Loading...");
+	Log.Success("WordFilter", "Loading...");
 	
 	g_characterNameFilter = new WordFilter();
 	g_chatFilter = new WordFilter();
 	g_characterNameFilter->Load("wordfilter_character_names");
 	g_chatFilter->Load("wordfilter_chat");
 
-	Log.Notice("WordFilter", "Done.");
+	Log.Success("WordFilter", "Done.");
 
-	sLog.outString("");
-	Log.Notice("World", "Database loaded in %ums.", getMSTime() - start_time);
-	sLog.outString("");
+	Log.Success("World", "Database loaded in %ums.", getMSTime() - start_time);
 
 	if (Collision) {
 		CollideInterface.Init();
@@ -482,7 +472,6 @@ bool World::SetInitialWorldSettings()
 	// wait for them to exit, now.
 	tl.kill();
 	tl.waitForThreadsToExit();
-	sLog.outString("");
 	LoadNameGenData();
 
 	Log.Notice("World", "Object size: %u bytes", sizeof(Object));
@@ -493,18 +482,18 @@ bool World::SetInitialWorldSettings()
 
 // ------------------------------------------------------------------------------------------------
 
-	Log.Notice("World","Starting Transport System...");
+	Log.Success("World","Starting Transport System...");
 	objmgr.LoadTransporters();
 
 	//Start the Achievement system :D
 #ifdef ENABLE_ACHIEVEMENTS
-	Log.Notice("World","Starting Achievement System..");
+	Log.Success("World","Starting Achievement System..");
 	objmgr.LoadAchievementCriteriaList();
 #endif
 	// start mail system
 	MailSystem::getSingleton().StartMailSystem();
 
-	Log.Notice("World", "Starting Auction System...");
+	Log.Success("World", "Starting Auction System...");
 	new AuctionMgr;
 	sAuctionMgr.LoadAuctionHouses();
 
@@ -524,7 +513,7 @@ bool World::SetInitialWorldSettings()
 	}
 
 	Channel::LoadConfSettings();
-	Log.Notice("BattlegroundManager", "Starting...");
+	Log.Success("BattlegroundManager", "Starting...");
 	new CBattlegroundManager;
 
 	dw = new DayWatcherThread();
@@ -1003,7 +992,7 @@ void World::SaveAllPlayers()
 			{
 				mt = getMSTime();
 				itr->second->SaveToDB(false);
-				sLog.outString("Saved player `%s` (level %u) in %ums.", itr->second->GetName(), itr->second->getLevel(), getMSTime() - mt);
+				sLog.outDetail("Saved player `%s` (level %u) in %ums.", itr->second->GetName(), itr->second->getLevel(), getMSTime() - mt);
 				++count;
 			}
 		}
@@ -1129,9 +1118,7 @@ void TaskList::spawn()
 	else
 		threadcount = 1;
 
-	Log.Line();
-	Log.Notice("World", "Beginning %s server startup with %u threads.", (threadcount == 1) ? "progressive" : "parallel", threadcount);
-	Log.Line();
+	Log.Success("World", "Beginning %s server startup with %u threads.", (threadcount == 1) ? "progressive" : "parallel", threadcount);
 
 	for(uint32 x = 0; x < threadcount; ++x)
 		ThreadPool.ExecuteTask(new TaskExecutor(this));
@@ -1266,9 +1253,7 @@ void World::Rehash(bool load)
 	SetMotd(Config.MainConfig.GetStringDefault("Server", "Motd", "Arcemu Default MOTD").c_str());
 	mQueueUpdateInterval = Config.MainConfig.GetIntDefault("Server", "QueueUpdateInterval", 5000);
 	SetKickAFKPlayerTime(Config.MainConfig.GetIntDefault("Server", "KickAFKPlayers", 0));
-	sLog.SetScreenLoggingLevel(Config.MainConfig.GetIntDefault("LogLevel", "Screen", 1));
-	sLog.SetFileLoggingLevel(Config.MainConfig.GetIntDefault("LogLevel", "File", -1), "file.log");
-	Log.log_level = Config.MainConfig.GetIntDefault("LogLevel", "Screen", 1);
+	sLog.SetFileLoggingLevel(Config.MainConfig.GetIntDefault("LogLevel", "File", 0));
 	gm_skip_attunement = Config.MainConfig.GetBoolDefault("Server", "SkipAttunementsForGM", true);
 	Collision = Config.MainConfig.GetBoolDefault("Server", "Collision", 0);
 	DisableFearMovement = Config.MainConfig.GetBoolDefault("Server", "DisableFearMovement", 0);
@@ -1664,7 +1649,7 @@ void World::AnnounceColorChooser(int tagcolor, int gmtagcolor, int namecolor, in
 			ann_msgcolor = "|cffffff00"; //yellow
 			break;
 	}
-	printf("\nAnnounce colors initialized.\n");
+	sLog.outBasic("Announce colors initialized.");
 }
 
 void World::LoadAccountDataProc(QueryResultVector& results, uint32 AccountId)

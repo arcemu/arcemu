@@ -173,7 +173,7 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 				spe = dbcSpell.LookupEntryForced(fields[6].GetUInt32());
 				if( spe == NULL )
 				{
-					Log.Warning("AIAgent", "For %u has nonexistent spell %u.", fields[0].GetUInt32(), fields[6].GetUInt32());
+					Log.Error("AIAgent", "For %u has nonexistent spell %u.", fields[0].GetUInt32(), fields[6].GetUInt32());
 					continue;
 				}
 				if(!cn)
@@ -203,7 +203,7 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 				{
 					if(!sp->spell)
 					{
-						sLog.outDebug("SpellId %u in ai_agent for %u is invalid.\n", (unsigned int)fields[6].GetUInt32(), (unsigned int)sp->entryId);
+						sLog.outDebug("SpellId %u in ai_agent for %u is invalid.", (unsigned int)fields[6].GetUInt32(), (unsigned int)sp->entryId);
 						delete sp;
 						sp = NULL;
 						continue;
@@ -212,7 +212,7 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 					if(sp->spell->Effect[0] == SPELL_EFFECT_LEARN_SPELL || sp->spell->Effect[1] == SPELL_EFFECT_LEARN_SPELL ||
 						sp->spell->Effect[2] == SPELL_EFFECT_LEARN_SPELL)
 					{
-						sLog.outDebug("Teaching spell %u in ai_agent for %u\n", (unsigned int)fields[6].GetUInt32(), (unsigned int)sp->entryId);
+						sLog.outDebug("Teaching spell %u in ai_agent for %u", (unsigned int)fields[6].GetUInt32(), (unsigned int)sp->entryId);
 						delete sp;
 						sp = NULL;
 						continue;

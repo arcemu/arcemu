@@ -535,7 +535,7 @@ public:
 	 */
 	virtual void Cleanup()
 	{
-		printf("Deleting database cache of `%s`...\n", _indexName);
+		sLog.outDetail("Deleting database cache of `%s`...", _indexName);
         StorageContainerIterator<T> * itr = _storage.MakeIterator();
 		while(!itr->AtEnd())
 		{
@@ -639,7 +639,7 @@ public:
 				break;
 
 			default:	// unknown
-				printf("Unknown field type in string: `%c`\n", *p);
+				sLog.outDebug("Unknown field type in string: `%c`", *p);
 				break;
 			}
 		}
@@ -682,11 +682,11 @@ public:
 		{
 			if(result->GetFieldCount() > cols)
 			{
-				Log.Warning("Storage", "Invalid format in %s (%u/%u), loading anyway because we have enough data\n", IndexName, (unsigned int)cols, (unsigned int)result->GetFieldCount());
+				Log.Error("Storage", "Invalid format in %s (%u/%u), loading anyway because we have enough data", IndexName, (unsigned int)cols, (unsigned int)result->GetFieldCount());
 			}
 			else
 			{
-				Log.Error("Storage", "Invalid format in %s (%u/%u), not enough data to proceed.\n", IndexName, (unsigned int)cols, (unsigned int)result->GetFieldCount());
+				Log.Error("Storage", "Invalid format in %s (%u/%u), not enough data to proceed.", IndexName, (unsigned int)cols, (unsigned int)result->GetFieldCount());
 				delete result;
 				return;
 			}
@@ -706,7 +706,7 @@ public:
 
 			LoadBlock(fields, Allocated);
 		} while(result->NextRow());
-		Log.Notice("Storage", "%u entries loaded from table %s.", result->GetRowCount(), IndexName);
+		Log.Success("Storage", "%u entries loaded from table %s.", result->GetRowCount(), IndexName);
 		delete result;
 
 		//Log.Success("Storage", "Loaded database cache from `%s`.", IndexName);
@@ -746,11 +746,11 @@ public:
 		{
 			if(result->GetFieldCount() > cols)
 			{
-				Log.Warning("Storage", "Invalid format in %s (%u/%u), loading anyway because we have enough data\n", IndexName, (unsigned int)cols, (unsigned int)result->GetFieldCount());
+				Log.Warning("Storage", "Invalid format in %s (%u/%u), loading anyway because we have enough data", IndexName, (unsigned int)cols, (unsigned int)result->GetFieldCount());
 			}
 			else
 			{
-				Log.Error("Storage", "Invalid format in %s (%u/%u), not enough data to proceed.\n", IndexName, (unsigned int)cols, (unsigned int)result->GetFieldCount());
+				Log.Error("Storage", "Invalid format in %s (%u/%u), not enough data to proceed.", IndexName, (unsigned int)cols, (unsigned int)result->GetFieldCount());
 				delete result;
 				return;
 			}
@@ -767,7 +767,7 @@ public:
 
 			LoadBlock(fields, Allocated);
 		} while(result->NextRow());
-		Log.Notice("Storage", "%u entries loaded from table %s.", result->GetRowCount(), IndexName);
+		Log.Success("Storage", "%u entries loaded from table %s.", result->GetRowCount(), IndexName);
 		delete result;
 	}
 
@@ -775,7 +775,7 @@ public:
 	 */
 	void Reload()
 	{
-		Log.Notice("Storage", "Reloading database cache from `%s`...\n", Storage<T, StorageType>::_indexName);
+		Log.Notice("Storage", "Reloading database cache from `%s`...", Storage<T, StorageType>::_indexName);
 		QueryResult * result = WorldDatabase.Query("SELECT MAX(entry) FROM %s", Storage<T, StorageType>::_indexName);
 		if(result == 0)
 			return;

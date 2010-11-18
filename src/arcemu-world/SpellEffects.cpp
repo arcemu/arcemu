@@ -353,7 +353,7 @@ const char* SpellEffectNames[TOTAL_SPELL_EFFECTS] = {
 
 void Spell::SpellEffectNULL(uint32 i)
 {
-	sLog.outDebug("Unhandled spell effect %u in spell %u.\n",GetProto()->Effect[i],GetProto()->Id);
+	sLog.outDebug("Unhandled spell effect %u in spell %u.",GetProto()->Effect[i],GetProto()->Id);
 }
 
 void Spell::SpellEffectInstantKill(uint32 i)
@@ -4192,13 +4192,13 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 	CreatureInfo* ci = CreatureNameStorage.LookupEntry(entry);
 	if(!ci )
 	{
-		sLog.outDebug("Missing totem creature entry : %u \n",entry);
+		sLog.outDebug("Missing totem creature entry : %u",entry);
 		return;
 	}
 
     CreatureProto *cp = CreatureProtoStorage.LookupEntry( entry );
     if( !cp ){
-        sLog.outDebug("Missing totem proto entry: %u\n", entry );
+        sLog.outDebug("Missing totem proto entry: %u", entry );
         return;
     }
 

@@ -26,35 +26,77 @@
 class WorldPacket;
 class WorldSession;
 
+#define SZLTR "\xe5\xcf\xfe\xed\xf3\xfb\x03\xeb"
+#define SZLTR_LENGTH 9
+#define TIME_FORMAT "[%H:%M]"
+#define TIME_FORMAT_LENGTH 8
+
+enum LogType
+{
+	WORLD_LOG,
+	LOGON_LOG
+};
+
+extern SERVER_DECL time_t UNIXTIME;		/* update this every loop to avoid the time() syscall! */
+extern SERVER_DECL tm g_localTime;
+
 std::string FormatOutputString(const char * Prefix, const char * Description, bool useTimeStamp);
 
 class SERVER_DECL oLog : public Singleton< oLog > {
 public:
+  //log level 0
   void outString( const char * str, ... );
   void outError( const char * err, ... );
   void outBasic( const char * str, ... );
+  //log level 1
   void outDetail( const char * str, ... );
+  //log level 2
   void outDebug( const char * str, ... );
-  void outMenu( const char * str, ... );
-  void outTime( );
 
-  void fLogText(const char *text);
+  //old NGLog.h methods
+  //log level 0
+  void Success( const char * source, const char * format, ... );
+  void Error( const char * source, const char * format, ... );
+  void LargeErrorMessage( const char * str, ... );
+  //log level 1
+  void Notice( const char * source, const char * format, ... );
+  void Warning( const char * source, const char * format, ... );
+  //log level 2
+  void Debug( const char * source, const char * format, ... );
+
   void SetLogging(bool enabled);
   
-  void Init(int32 fileLogLevel, int32 screenLogLevel);
-  void SetFileLoggingLevel(int32 level, const char *filename);
-  void SetScreenLoggingLevel(int32 level);
+  void Init(int32 fileLogLevel, LogType logType);
+  void SetFileLoggingLevel(int32 level);
 
-  void outColor(uint8 colorcode, const char * str, ...);
   void Close();
 
-#ifdef WIN32
-  HANDLE stdout_handle, stderr_handle;
-#endif
   int32 m_fileLogLevel;
-  int32 m_screenLogLevel;
   
-  FILE *m_file;
+private:
+  FILE *m_normalFile, *m_errorFile;
+  void outFile(FILE *file, char *msg, const char *source = NULL);
+  void Time(char *buffer);
+  ARCEMU_INLINE char dcd( char in ){
+	  char out = in;
+	  out -= 13;
+	  out ^= 131;
+	  return out;
+  } 
+
+  void dcds( char *str ){
+	  unsigned long i = 0;
+	  size_t len = strlen( str );
+
+	  for(i = 0; i < len; ++i )
+		  str[i] = dcd( str[i] );
+
+  }
+
+  void pdcds( const char *str, char *buf ){
+	  strcpy(buf, str);
+	  dcds( buf );
+  }
 };
 
 class SessionLogWriter
@@ -77,6 +119,7 @@ extern SessionLogWriter * GMCommand_Log;
 extern SessionLogWriter * Player_Log;
 
 #define sLog oLog::getSingleton()
+#define Log sLog
 #define sCheatLog (*Anticheat_Log)
 #define sGMLog (*GMCommand_Log)
 #define sPlrLog (*Player_Log)

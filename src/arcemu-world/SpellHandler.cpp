@@ -116,7 +116,7 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 	
 	SpellEntry *spellInfo = dbcSpell.LookupEntryForced( spellId );
 	if ( spellInfo == NULL ){
-		sLog.outError("WORLD: unknown spell id %i\n", spellId);
+		sLog.outError("WORLD: unknown spell id %i", spellId);
 		return;
 	}
 	
@@ -281,7 +281,7 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 
 	if(!spellInfo)
 	{
-		sLog.outError("WORLD: unknown spell id %i\n", spellId);
+		sLog.outError("WORLD: unknown spell id %i", spellId);
 		return;
 	}
 

@@ -154,7 +154,7 @@ void LogonCommHandler::Startup()
 
 void LogonCommHandler::ConnectAll()
 {
-	Log.Notice("LogonCommClient", "Attempting to connect to logon server...");
+	Log.Success("LogonCommClient", "Attempting to connect to logon server...");
 	for(set<LogonServer*>::iterator itr = servers.begin(); itr != servers.end(); ++itr)
 		Connect(*itr);
 }
@@ -179,17 +179,17 @@ void LogonCommHandler::Connect(LogonServer * server)
 	logons[server] = conn;
 	if(conn == 0)
 	{
-		Log.Notice("LogonCommClient", "Connection failed. Will try again in 10 seconds.");
+		Log.Error("LogonCommClient", "Connection failed. Will try again in 10 seconds.");
 		return;
 	}
-	Log.Notice("LogonCommClient", "Authenticating...");
+	Log.Success("LogonCommClient", "Authenticating...");
 	uint32 tt = (uint32)UNIXTIME + 10;
 	conn->SendChallenge();
 	while(!conn->authenticated)
 	{
 		if((uint32)UNIXTIME >= tt)
 		{
-			Log.Notice("LogonCommClient", "Authentication timed out.");
+			Log.Error("LogonCommClient", "Authentication timed out.");
 			conn->Disconnect();
 			logons[server]= NULL;
 			return;
@@ -200,13 +200,13 @@ void LogonCommHandler::Connect(LogonServer * server)
 
 	if(conn->authenticated != 1)
 	{
-		Log.Notice("LogonCommClient","Authentication failed.");
+		Log.Error("LogonCommClient","Authentication failed.");
 		logons[server] = 0;
 		conn->Disconnect();
 		return;
 	}
 
-	Log.Notice("LogonCommClient","Authentication OK.");
+	Log.Success("LogonCommClient","Authentication OK.");
   Log.Notice("LogonCommClient", "Logonserver was connected on [%s:%u].", server->Address.c_str(), server->Port );
 
 	// Send the initial ping
@@ -225,7 +225,7 @@ void LogonCommHandler::Connect(LogonServer * server)
 		// Don't wait more than.. like 10 seconds for a registration
 		if((uint32)UNIXTIME >= st)
 		{
-			Log.Notice("LogonCommClient", "Realm registration timed out.");
+			Log.Error("LogonCommClient", "Realm registration timed out.");
 			logons[server] = 0;
 			conn->Disconnect();
 			break;
@@ -239,7 +239,7 @@ void LogonCommHandler::Connect(LogonServer * server)
 	// Wait for all realms to register
 	Sleep(200);
 
-	Log.Notice("LogonCommClient", "Logonserver latency is %ums.", conn->latency);
+	Log.Success("LogonCommClient", "Logonserver latency is %ums.", conn->latency);
 }
 
 void LogonCommHandler::AdditionAck(uint32 ID, uint32 ServID)
@@ -280,7 +280,7 @@ void LogonCommHandler::UpdateSockets()
 			if(cs->last_pong < t && ((t - cs->last_pong) > 60))
 			{
 				// no pong for 60 seconds -> remove the socket
-				printf(" >> realm id %u connection dropped due to pong timeout.\n", (unsigned int)itr->first->ID);
+				sLog.outDetail(" >> realm id %u connection dropped due to pong timeout.", (unsigned int)itr->first->ID);
 				cs->_id = 0;
 				cs->Disconnect();
 				itr->second = 0;
@@ -313,8 +313,7 @@ void LogonCommHandler::ConnectionDropped(uint32 ID)
 	{
 		if(itr->first->ID == ID && itr->second != 0)
 		{
-			sLog.outColor(TNORMAL, " >> realm id %u connection was dropped unexpectedly. reconnecting next loop.", ID);
-			sLog.outColor(TNORMAL, "\n");
+			sLog.outError(" >> realm id %u connection was dropped unexpectedly. reconnecting next loop.", ID);
 			itr->second = 0;
 			break;
 		}
@@ -328,7 +327,6 @@ uint32 LogonCommHandler::ClientConnected(string AccountName, WorldSocket * Socke
 	size_t i = 0;
 	const char * acct = AccountName.c_str();
 	sLog.outDebug ( " >> sending request for account information: `%s` (request %u).", AccountName.c_str(), request_id);
-	//  sLog.outColor(TNORMAL, "\n");
 
 	// Send request packet to server.
 	map<LogonServer*, LogonCommClientSocket*>::iterator itr = logons.begin();
@@ -385,7 +383,7 @@ void LogonCommHandler::LoadRealmConfiguration()
 	uint32 realmcount = Config.RealmConfig.GetIntDefault("LogonServer", "RealmCount", 1);
 	if(realmcount == 0)
 	{
-		sLog.outColor(TRED, "\n   >> no realms found. this server will not be online anywhere!\n");
+		sLog.outError("   >> no realms found. this server will not be online anywhere!");
 	}
 	else
 	{

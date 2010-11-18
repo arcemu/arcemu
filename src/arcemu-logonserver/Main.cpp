@@ -46,7 +46,7 @@ void _OnSignal(int s)
 #ifndef WIN32
 	case SIGHUP:
 	   {
-		   sLog.outString("Received SIGHUP signal, reloading accounts.");
+		   sLog.outDetail("Received SIGHUP signal, reloading accounts.");
 		   AccountMgr::getSingleton().ReloadAccounts(true);
 	   }break;
 #endif
@@ -145,7 +145,7 @@ bool startdb()
 			if( !existsType     ){ errorMessage += "    Type\r\n"; }
 		}
 
-		sLog.outString( errorMessage.c_str());
+		sLog.outError( errorMessage.c_str());
 		return false;
 	}
 
@@ -209,7 +209,7 @@ bool Rehash()
 #endif
 	if(!Config.MainConfig.SetSource(config_file))
 	{
-		printf("Config file could not be rehashed.\n");
+		sLog.outError("Config file could not be rehashed.");
 		return false;
 	}
 
@@ -229,7 +229,7 @@ bool Rehash()
 		string::size_type i = itr->find("/");
 		if( i == string::npos )
 		{
-			printf("IP: %s could not be parsed. Ignoring\n", itr->c_str());
+			sLog.outError("IP: %s could not be parsed. Ignoring", itr->c_str());
 			continue;
 		}
 
@@ -240,7 +240,7 @@ bool Rehash()
 		unsigned char ipmask = (char)atoi(smask.c_str());
 		if( ipraw == 0 || ipmask == 0 )
 		{
-			printf("IP: %s could not be parsed. Ignoring\n", itr->c_str());
+			sLog.outError("IP: %s could not be parsed. Ignoring", itr->c_str());
 			continue;
 		}
 
@@ -255,7 +255,7 @@ bool Rehash()
 		string::size_type i = itr->find("/");
 		if( i == string::npos )
 		{
-			printf("IP: %s could not be parsed. Ignoring\n", itr->c_str());
+			sLog.outError("IP: %s could not be parsed. Ignoring", itr->c_str());
 			continue;
 		}
 
@@ -266,7 +266,7 @@ bool Rehash()
 		unsigned char ipmask = (char)atoi(smask.c_str());
 		if( ipraw == 0 || ipmask == 0 )
 		{
-			printf("IP: %s could not be parsed. Ignoring\n", itr->c_str());
+			sLog.outError("IP: %s could not be parsed. Ignoring", itr->c_str());
 			continue;
 		}
 
@@ -322,128 +322,76 @@ void LogonServer::Run(int argc, char ** argv)
 		case 0:
 			break;
 		default:
-			sLog.m_fileLogLevel = -1;
-			sLog.m_screenLogLevel = 3;
-			printf("Usage: %s [--checkconf] [--screenloglevel <level>] [--fileloglevel <level>] [--conf <filename>] [--version]\n", argv[0]);
+			sLog.Init(0, LOGON_LOG);
+			sLog.outBasic("Usage: %s [--checkconf] [--fileloglevel <level>] [--conf <filename>] [--version]", argv[0]);
 			return;
 		}
 	}
 
-	// Startup banner
-	if(!do_version && !do_check_conf)
-	{
-		sLog.Init(-1, 3);
-	}
-	else
-	{
-		sLog.m_fileLogLevel = -1;
-		sLog.m_screenLogLevel = 3;
-	}
+	sLog.Init(0, LOGON_LOG);
 	
-	sLog.outString(BANNER, BUILD_TAG, BUILD_REVISION, CONFIG, PLATFORM_TEXT, ARCH);
-	Log.Color(TBLUE);
-	printf("\nCopyright (C) 2008-2010 ArcEmu. http://www.arcemu.org/\n");
-	printf("This program is free software: you can redistribute it and/or modify\n");
-	printf("it under the terms of the GNU Affero General Public License as published by\n");
-	printf("the Free Software Foundation, either version 3 of the License, or\n");
-	printf("any later version.\n");
-	printf("This program is distributed in the hope that it will be useful,\n");
-	printf("but WITHOUT ANY WARRANTY; without even the implied warranty of\n");
-	printf("MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n");
-	printf("GNU Affero General Public License for more details.\n");
-	printf("                                                \n");
-	printf("                     ``````                     \n");
-	printf("    ArcEmu!        `/o/::-:/-                   \n"); 
-	printf("                   oho/-.-:yN-                  \n"); 
-	printf("                    os+/-.:::                   \n"); 
-	printf("                    :ysyoo+:`                   \n"); 
-	printf("					`ohdys/.                    \n"); 
-	printf("                     oyho/-`   ``               \n"); 
-	printf("                   `shyo+:./ssmdsyo:`           \n"); 
-	printf("                    .shss+:yNMMNNMNmms.         \n"); 
-	printf("                    :ysss+:mNMMMMNNmmds.        \n"); 
-	printf("                `-//sssoo/:NMNMMMNMNNdy-        \n"); 
-	printf("    -`/`       `omhyyhyyyshNMMNNNMMMNmy:        \n"); 
-	printf("    :/::-`     `sdmdmmNMNMMMMMMNMNNNNms-        \n"); 
-	printf("     /+++/-.....shdmmNMMNMMMMMMMMMNNNd+         \n");
-	printf("     ./+oshyhhhddmhdmNMMMMMMMMMMMMNNds.         \n"); 
-	printf("       `:/:.`````.:+ymmNMMNMMMNMMNNd/           \n"); 
-	printf("                     -+shmNNMMMNmhy/            \n"); 
-	printf("                          `..-ods:.             \n");
-	printf("                               o:.`             \n");
-	printf("                               :-.              \n");
-	printf("                              `/-...            \n"); 
-	printf("    Introducing the emu!     --``-/:`           \n"); 
-	printf("                           .:/+:-.-::.          \n"); 
-	printf("                          `.-///:-.`            \n");
-	printf(" Website: http://www.ArcEmu.org	     			\n");
-	printf(" Forums: http://www.ArcEmu.org/forums/          \n");
-	printf(" Credits: http://www.ArcEmu.org/credits         \n");
-	printf(" SVN: http://arcemu.info/svn/                   \n");
-	printf(" Have fun!                                      \n");
-	Log.Line();
-#ifdef REPACK
-	sLog.outString("Repack: %s | Author: %s | %s\n", REPACK, REPACK_AUTHOR, REPACK_WEBSITE);
-#endif
-	sLog.outString("==============================================================================");
-	sLog.outString("");
+	sLog.outBasic(BANNER, BUILD_TAG, BUILD_REVISION, CONFIG, PLATFORM_TEXT, ARCH);
+	sLog.outError(BANNER, BUILD_TAG, BUILD_REVISION, CONFIG, PLATFORM_TEXT, ARCH);
+	
 	if(do_version)
+	{
+		sLog.Close();
 		return;
+	}
 
 	if(do_check_conf)
 	{
-		printf("Checking config file: %s\n", config_file);
+		sLog.outBasic("Checking config file: %s", config_file);
 		if(Config.MainConfig.SetSource(config_file, true))
-			printf("  Passed without errors.\n");
+			sLog.outBasic("  Passed without errors.");
 		else
-			printf("  Encountered one or more errors.\n");
+			sLog.outBasic("  Encountered one or more errors.");
 		/* Remved useless die directive */
 		/*
 		string die;
 		if(Config.MainConfig.GetString("die", "msg", &die) || Config.MainConfig.GetString("die2", "msg", &die))
 			printf("Die directive received: %s", die.c_str());
 		*/
+		sLog.Close();
 		return;
 	}
 
 	/* set new log levels */
-	if( screen_log_level != (int)DEF_VALUE_NOT_SET )
-		sLog.SetScreenLoggingLevel(screen_log_level);
-	
 	if( file_log_level != (int)DEF_VALUE_NOT_SET )
-		sLog.SetFileLoggingLevel(file_log_level, "logonserver.log");
+		sLog.SetFileLoggingLevel(file_log_level);
 
-	sLog.outString("The key combination <Ctrl-C> will safely shut down the server at any time.");
-	sLog.outString("");
-	Log.Notice("System","Initializing Random Number Generators...");
+	printf("The key combination <Ctrl-C> will safely shut down the server at any time.");
+	Log.Success("System","Initializing Random Number Generators...");
 
-	Log.Notice("Config", "Loading Config Files...");
+	Log.Success("Config", "Loading Config Files...");
 	if(!Rehash())
+	{
+		sLog.Close();
 		return;
+	}
 
-	Log.Notice("ThreadMgr", "Starting...");
-	sLog.SetScreenLoggingLevel(Config.MainConfig.GetIntDefault("LogLevel", "Screen", 0));
-	Log.log_level = Config.MainConfig.GetIntDefault("LogLevel", "Screen", 0);
-	sLog.SetFileLoggingLevel(Config.MainConfig.GetIntDefault("LogLevel", "File", -1), "logonserver.log");
+	Log.Success("ThreadMgr", "Starting...");
+	sLog.SetFileLoggingLevel(Config.MainConfig.GetIntDefault("LogLevel", "File", 0));
 
 	ThreadPool.Startup();
    
 	if(!startdb())
+	{
+		sLog.Close();
 		return;
+	}
 
-	Log.Notice("AccountMgr", "Starting...");
+	Log.Success("AccountMgr", "Starting...");
 	new AccountMgr;
 	new IPBanner;
 
-	Log.Notice("InfoCore", "Starting...");
+	Log.Success("InfoCore", "Starting...");
 	new InformationCore;
 
 	new PatchMgr;
 	Log.Notice("AccountMgr", "Precaching accounts...");
 	sAccountMgr.ReloadAccounts(true);
-	Log.Notice("AccountMgr", "%u accounts are loaded and ready.", sAccountMgr.GetCount());
-	Log.Line();
-
+	Log.Success("AccountMgr", "%u accounts are loaded and ready.", sAccountMgr.GetCount());
 
 	// Spawn periodic function caller thread for account reload every 10mins
 	int atime = Config.MainConfig.GetIntDefault("Rates", "AccountRefresh",600);
@@ -588,7 +536,8 @@ void LogonServer::Run(int argc, char ** argv)
 	delete pfc;
 	delete cl;
 	delete sl;
-	printf("Shutdown complete.\n");
+	sLog.outBasic("Shutdown complete.");
+	sLog.Close();
 }
 
 void OnCrash(bool Terminate)

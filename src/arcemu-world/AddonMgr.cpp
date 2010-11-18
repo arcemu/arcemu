@@ -253,7 +253,7 @@ void AddonMgr::LoadFromDB()
 	QueryResult *result = WorldDatabase.Query("SELECT * FROM clientaddons");
 	if(!result)
 	{
-		sLog.outString("Query failed: SELECT * FROM clientaddons");
+		sLog.outError("Query failed: SELECT * FROM clientaddons");
 		return;
 	}
 
@@ -283,7 +283,7 @@ void AddonMgr::LoadFromDB()
 
 void AddonMgr::SaveToDB()
 {
-	sLog.outString("AddonMgr: Saving any new addons discovered in this session to database.");
+	sLog.outDetail("AddonMgr: Saving any new addons discovered in this session to database.");
 
 	KnownAddonsItr itr;
 

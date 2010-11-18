@@ -11,7 +11,6 @@
 #define NETWORK_H_
 
 #include "../Log.h"
-#include "../NGLog.h"
 #include "CircularBuffer.h"
 #include "SocketDefines.h"
 #include "SocketOps.h"

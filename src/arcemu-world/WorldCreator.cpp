@@ -60,7 +60,7 @@ void InstanceMgr::Load(TaskList * l)
 
 			if( result->Fetch()[0].GetUInt32() >= NUM_MAPS )
 			{
-				Log.Warning("InstanceMgr", "One or more of your creature_spawns rows specifies an invalid map: %u", result->Fetch()[0].GetUInt32() );
+				Log.Error("InstanceMgr", "One or more of your creature_spawns rows specifies an invalid map: %u", result->Fetch()[0].GetUInt32() );
 				continue;
 			}
 
@@ -78,7 +78,7 @@ void InstanceMgr::Load(TaskList * l)
 	{
 		if( itr->Get()->mapid >= NUM_MAPS )
 		{
-			Log.Warning("InstanceMgr", "One or more of your worldmap_info rows specifies an invalid map: %u", itr->Get()->mapid );
+			Log.Error("InstanceMgr", "One or more of your worldmap_info rows specifies an invalid map: %u", itr->Get()->mapid );
 			continue;
 		}
 
@@ -786,13 +786,13 @@ void InstanceMgr::_LoadInstances()
 	QueryResult * result;
 
 	// clear any instances that have expired.
-	Log.Notice("InstanceMgr", "Deleting Expired Instances...");
+	Log.Success("InstanceMgr", "Deleting Expired Instances...");
 	CharacterDatabase.WaitExecute("DELETE FROM instances WHERE expiration > 0 AND expiration <= %u", UNIXTIME);
 	CharacterDatabase.Execute("DELETE FROM instanceids WHERE instanceid NOT IN ( SELECT id FROM instances )");
 	
 	// load saved instances
 	result = CharacterDatabase.Query("SELECT id, mapid, creation, expiration, killed_npc_guids, difficulty, creator_group, creator_guid, persistent FROM instances");
-	Log.Notice("InstanceMgr", "Loading %u saved instances." , result ? result->GetRowCount() : 0);
+	Log.Success("InstanceMgr", "Loading %u saved instances." , result ? result->GetRowCount() : 0);
 
 	if(result)
 	{
@@ -1301,7 +1301,7 @@ void InstanceMgr::DeleteBattlegroundInstance(uint32 mapid, uint32 instanceid)
 	InstanceMap::iterator itr = m_instances[mapid]->find( instanceid );
 	if( itr == m_instances[mapid]->end() )
 	{
-		sLog.outError("Could not delete battleground instance!\n");
+		sLog.outError("Could not delete battleground instance!");
 		m_mapLock.Release();
 		return;
 	}

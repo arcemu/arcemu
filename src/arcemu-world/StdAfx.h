@@ -59,7 +59,6 @@
 #include "../arcemu-shared/MersenneTwister.h"
 #include "../arcemu-shared/WorldPacket.h"
 #include "../arcemu-shared/Log.h"
-#include "../arcemu-shared/NGLog.h"
 #include "../arcemu-shared/ByteBuffer.h"
 #include "../arcemu-shared/StackBuffer.h"
 #include "../arcemu-shared/Config/ConfigEnv.h"

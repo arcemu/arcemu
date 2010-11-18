@@ -3706,7 +3706,7 @@ uint8 Spell::CanCast(bool tolerate)
 		SM_FFValue(u_caster->SM_FRange,&spell_flat_modifers,GetProto()->SpellGroupType);
 		SM_FFValue(u_caster->SM_PRange,&spell_pct_modifers,GetProto()->SpellGroupType);
 		if(spell_flat_modifers!= 0 || spell_pct_modifers!= 0)
-			printf("!!!!!spell range bonus mod flat %f , spell range bonus pct %f , spell range %f, spell group %u\n",spell_flat_modifers,spell_pct_modifers,maxRange,GetProto()->SpellGroupType);
+			sLog.outDebug("!!!!!spell range bonus mod flat %f , spell range bonus pct %f , spell range %f, spell group %u",spell_flat_modifers,spell_pct_modifers,maxRange,GetProto()->SpellGroupType);
 #endif
 	}
 

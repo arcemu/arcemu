@@ -93,7 +93,7 @@ bool ChatHandler::HandleGMAnnounceCommand(const char* args, WorldSession *m_sess
 {
 	if(!*args)
 	{
-		printf("HandleGMAnnounceCommand !args = failed\n");
+		sLog.outError("HandleGMAnnounceCommand !args = failed");
 		return false;
 	}
 

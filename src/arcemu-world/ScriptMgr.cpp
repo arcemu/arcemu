@@ -174,8 +174,7 @@ void ScriptMgr::LoadScripts()
 	if(!HookInterface::getSingletonPtr())
 		new HookInterface;
 
-	Log.Notice("Server","Loading External Script Libraries...");
-	sLog.outString("");
+	Log.Success("Server","Loading External Script Libraries...");
 
 	string start_path = Config.MainConfig.GetStringDefault( "Script", "BinaryLocation", "script_bin" ) + "\\";
 	string search_path = start_path + "*.";
@@ -197,10 +196,12 @@ void ScriptMgr::LoadScripts()
 		{
 			string full_path = start_path + data.cFileName;
 			HMODULE mod = LoadLibrary( full_path.c_str() );
-			printf( "  %s : 0x%p : ", data.cFileName, reinterpret_cast< uint32* >( mod ));
+			stringstream sstext;
+			sstext << "  " << data.cFileName << " : 0x" << hex << reinterpret_cast< uint32* >( mod ) << dec << " : ";
 			if( mod == 0 )
 			{
-				printf( "error!\n" );
+				sstext << "error!";
+				sLog.outError(sstext.str().c_str());
 			}
 			else
 			{
@@ -210,7 +211,8 @@ void ScriptMgr::LoadScripts()
 				exp_get_script_type scall = (exp_get_script_type)GetProcAddress(mod, "_exp_get_script_type");
 				if(vcall == 0 || rcall == 0 || scall == 0)
 				{
-					printf("version functions not found!\n");
+					sstext << "version functions not found!";
+					sLog.outError(sstext.str().c_str());
 					FreeLibrary(mod);
 				}
 				else
@@ -221,8 +223,9 @@ void ScriptMgr::LoadScripts()
 					{
 						if( stype & SCRIPT_TYPE_SCRIPT_ENGINE )
 						{
-							printf("v%u.%u : ", SCRIPTLIB_HIPART(version), SCRIPTLIB_LOPART(version));
-							printf("delayed load.\n");
+							sstext << "v"<< SCRIPTLIB_HIPART(version) << "." << SCRIPTLIB_LOPART(version) << " : ";
+							sstext << "delayed load.";
+							sLog.outBasic(sstext.str().c_str());
 
 							ScriptingEngine se;
 							se.Handle = mod;
@@ -234,9 +237,10 @@ void ScriptMgr::LoadScripts()
 						else
 						{
 							_handles.push_back(((SCRIPT_MODULE)mod));
-							printf("v%u.%u : ", SCRIPTLIB_HIPART(version), SCRIPTLIB_LOPART(version));
+							sstext << "v"<< SCRIPTLIB_HIPART(version) << "." << SCRIPTLIB_LOPART(version) << " : ";
 							rcall(this);
-							printf("loaded.\n");						
+							sstext << "loaded.";
+							sLog.outBasic(sstext.str().c_str());
 						}
 
 						++count;
@@ -244,18 +248,17 @@ void ScriptMgr::LoadScripts()
 					else
 					{
 						FreeLibrary(mod);
-						printf("version mismatch!\n");						
+						sstext << "version mismatch!";
+						sLog.outError(sstext.str().c_str());
 					}
 				}
 			}
 		}
 		while(FindNextFile(find_handle, &data));
 		FindClose(find_handle);
-		sLog.outString("");
-		Log.Notice("Server","Loaded %u external libraries.", count);
-		sLog.outString("");
+		Log.Success("Server","Loaded %u external libraries.", count);
 
-		Log.Notice("Server","Loading optional scripting engines...");
+		Log.Success("Server","Loading optional scripting engines...");
 		for(vector<ScriptingEngine>::iterator itr = ScriptEngines.begin(); itr != ScriptEngines.end(); ++itr)
 		{
 			if( itr->Type & SCRIPT_TYPE_SCRIPT_ENGINE_LUA )
@@ -263,7 +266,7 @@ void ScriptMgr::LoadScripts()
 				// lua :O
 				if( sWorld.m_LuaEngine )
 				{
-					Log.Notice("Server","Initializing LUA script engine...");
+					Log.Success("Server","Initializing LUA script engine...");
 					itr->InitializeCall(this);
 					_handles.push_back( (SCRIPT_MODULE)itr->Handle );
 				}
@@ -278,7 +281,7 @@ void ScriptMgr::LoadScripts()
 				FreeLibrary( itr->Handle );
 			}
 		}
-		Log.Notice("Server","Done loading script engines...");
+		Log.Success("Server","Done loading script engines...");
 	}
 #else
 	/* Loading system for *nix */
@@ -301,9 +304,13 @@ char *ext;
 #endif
 				string full_path = "../lib/" + string(list[filecount]->d_name);
 				SCRIPT_MODULE mod = dlopen(full_path.c_str(), RTLD_NOW);
-				printf("  %s : 0x%p : ", list[filecount]->d_name, mod);
+				stringstream sstext;
+				sstext << "  " << list[filecount]->d_name << " : 0x" << hex << mod << dec << " : ";
 				if(mod == 0)
-					printf("error! [%s]\n", dlerror());
+				{
+					sstext << "error! " << dlerror();
+					sLog.outError(sstext.str().c_str());
+				}
 				else
 				{
 					// find version import
@@ -312,7 +319,8 @@ char *ext;
 					exp_get_script_type scall = (exp_get_script_type)dlsym(mod, "_exp_get_script_type");
 					if(vcall == 0 || rcall == 0 || scall == 0)
 					{
-						printf("version functions not found!\n");
+						sstext << "version functions not found!";
+						sLog.outError(sstext.str().c_str());
 						dlclose(mod);
 					}
 					else
@@ -323,8 +331,9 @@ char *ext;
 						{
 							if( stype & SCRIPT_TYPE_SCRIPT_ENGINE )
 							{
-								printf("v%u.%u : ", SCRIPTLIB_HIPART(version), SCRIPTLIB_LOPART(version));
-								printf("delayed load.\n");
+								sstext << "v"<< SCRIPTLIB_HIPART(version) << "." << SCRIPTLIB_LOPART(version) << " : ";
+								sstext << "delayed load.";
+								sLog.outBasic(sstext.str().c_str());
 
 								ScriptingEngine se;
 								se.Handle = mod;
@@ -336,9 +345,10 @@ char *ext;
 							else
 							{
 								_handles.push_back(((SCRIPT_MODULE)mod));
-								printf("v%u.%u : ", SCRIPTLIB_HIPART(version), SCRIPTLIB_LOPART(version));
+								sstext << "v"<< SCRIPTLIB_HIPART(version) << "." << SCRIPTLIB_LOPART(version) << " : ";
 								rcall(this);
-								printf("loaded.\n");						
+								sstext << "loaded.";
+								sLog.outBasic(sstext.str().c_str());						
 							}
 
 							++count;
@@ -346,7 +356,8 @@ char *ext;
 						else
 						{
 							dlclose(mod);
-							printf("version mismatch!\n");						
+							sstext << "version mismatch!";
+							sLog.outError(sstext.str().c_str());					
 						}
 					}
 				}
@@ -354,9 +365,7 @@ char *ext;
 			free(list[filecount]);
 		}
 		free(list);
-		sLog.outString("");
 		sLog.outString("Loaded %u external libraries.", count);
-		sLog.outString("");
 
 		sLog.outString("Loading optional scripting engines...");
 		for(vector<ScriptingEngine>::iterator itr = ScriptEngines.begin(); itr != ScriptEngines.end(); ++itr)
@@ -377,7 +386,7 @@ char *ext;
 			}
 			else
 			{
-				sLog.outString("  Unknown script engine type: 0x%.2X, please contact developers.", (*itr).Type );
+				sLog.outError("  Unknown script engine type: 0x%.2X, please contact developers.", (*itr).Type );
 				dlclose( itr->Handle );
 			}
 		}
@@ -508,7 +517,7 @@ void ScriptMgr::register_dummy_aura(uint32 entry, exp_handle_dummy_aura callback
 	}
 
 	if( !sp->AppliesAura( SPELL_AURA_DUMMY ) && !sp->AppliesAura( SPELL_AURA_PERIODIC_TRIGGER_DUMMY ) )
-		sLog.outDetail("ScriptMgr has registered a dummy aura handler for Spell ID: %u ( %s ), but spell has no dummy aura!", entry, sp->Name );
+		sLog.outError("ScriptMgr has registered a dummy aura handler for Spell ID: %u ( %s ), but spell has no dummy aura!", entry, sp->Name );
 
 	_auras.insert( HandleDummyAuraMap::value_type( entry, callback ) );
 }
@@ -527,7 +536,7 @@ void ScriptMgr::register_dummy_spell(uint32 entry, exp_handle_dummy_spell callba
 	}
 
 	if( !sp->HasEffect( SPELL_EFFECT_DUMMY ) )
-		sLog.outDetail("ScriptMgr has registered a dummy handler for Spell ID: %u ( %s ), but spell has no dummy effect!", entry, sp->Name );
+		sLog.outError("ScriptMgr has registered a dummy handler for Spell ID: %u ( %s ), but spell has no dummy effect!", entry, sp->Name );
 
 	_spells.insert( HandleDummySpellMap::value_type( entry, callback ) );
 }
@@ -619,18 +628,18 @@ void ScriptMgr::register_script_effect( uint32 entry, exp_handle_script_effect c
 	HandleScriptEffectMap::iterator itr = SpellScriptEffects.find( entry );
 	
 	if( itr != SpellScriptEffects.end() ){
-		sLog.outDebug("ScriptMgr tried to register more than 1 script effect handlers for Spell %u", entry );
+		sLog.outError("ScriptMgr tried to register more than 1 script effect handlers for Spell %u", entry );
 		return;
 	}
 
 	SpellEntry *sp = dbcSpell.LookupEntryForced( entry );
 	if( sp == NULL ){
-		sLog.outDebug("ScriptMgr tried to register a script effect handler for Spell %u, which is invalid.", entry );
+		sLog.outError("ScriptMgr tried to register a script effect handler for Spell %u, which is invalid.", entry );
 		return;
 	}
 
 	if( !sp->HasEffect( SPELL_EFFECT_SCRIPT_EFFECT ) && !sp->HasEffect( SPELL_EFFECT_SEND_EVENT ) )
-		sLog.outDetail("ScriptMgr has registered a script effect handler for Spell ID: %u ( %s ), but spell has no scripted effect!", entry, sp->Name );
+		sLog.outError("ScriptMgr has registered a script effect handler for Spell ID: %u ( %s ), but spell has no scripted effect!", entry, sp->Name );
 
 	SpellScriptEffects.insert( std::pair< uint32, exp_handle_script_effect >( entry, callback ) );
 }

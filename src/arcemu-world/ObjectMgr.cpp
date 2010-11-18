@@ -364,7 +364,7 @@ void ObjectMgr::LoadSpellSkills()
 			mSpellSkills[sp->spell] = sp;
 		}
 	}
-	Log.Notice("ObjectMgr", "%u spell skills loaded.", mSpellSkills.size());
+	Log.Success("ObjectMgr", "%u spell skills loaded.", mSpellSkills.size());
 }
 
 skilllinespell* ObjectMgr::GetSpellSkill(uint32 id)
@@ -481,7 +481,7 @@ void ObjectMgr::LoadPlayersInfo()
 
 		delete result;
 	}
-	Log.Notice("ObjectMgr", "%u players loaded.", m_playersinfo.size());
+	Log.Success("ObjectMgr", "%u players loaded.", m_playersinfo.size());
 	LoadGuilds();
 }
 
@@ -643,7 +643,7 @@ void ObjectMgr::LoadPlayerCreateInfo()
 
 	delete result;
 
-	Log.Notice("ObjectMgr", "%u player create infos loaded.", mPlayerCreateInfo.size());
+	Log.Success("ObjectMgr", "%u player create infos loaded.", mPlayerCreateInfo.size());
 	GenerateLevelUpInfo();
 }
 
@@ -671,7 +671,7 @@ void ObjectMgr::LoadGuilds()
 		} while(result->NextRow());
 		delete result;
 	}
-	Log.Notice("ObjectMgr", "%u guilds loaded.", mGuild.size());
+	Log.Success("ObjectMgr", "%u guilds loaded.", mGuild.size());
 }
 
 Corpse* ObjectMgr::LoadCorpse(uint32 guid)
@@ -781,7 +781,7 @@ void ObjectMgr::LoadGMTickets()
 
 	} while( result->NextRow() );
 
-	Log.Notice("ObjectMgr", "%u active GM Tickets loaded.", result->GetRowCount());
+	Log.Success("ObjectMgr", "%u active GM Tickets loaded.", result->GetRowCount());
 	delete result;
 }
 
@@ -838,7 +838,7 @@ void ObjectMgr::LoadInstanceBossInfos()
 	} while(result->NextRow());
 	
 	delete result;
-	Log.Notice("ObjectMgr", "%u boss information loaded.", cnt);
+	Log.Success("ObjectMgr", "%u boss information loaded.", cnt);
 }
 
 void ObjectMgr::SaveGMTicket(GM_Ticket* ticket, QueryBuffer * buf)
@@ -1077,7 +1077,7 @@ void ObjectMgr::ProcessGameobjectQuests()
 		} while(result->NextRow());
 		delete result;
 	}
-	Log.Notice("ObjectMgr", "%u NPC Gossip TextIds loaded.", mNpcToGossipText.size());
+	Log.Success("ObjectMgr", "%u NPC Gossip TextIds loaded.", mNpcToGossipText.size());
 }
 
 Player* ObjectMgr::GetPlayer(const char* name, bool caseSensitive)
@@ -1321,13 +1321,13 @@ void ObjectMgr::LoadVendors()
 	{
 		if( result->GetFieldCount() < 6 )
 		{
-			Log.Notice("ObjectMgr", "Invalid format in vendors (%u/6) columns, not enough data to proceed.\n", result->GetFieldCount() );
+			Log.Notice("ObjectMgr", "Invalid format in vendors (%u/6) columns, not enough data to proceed.", result->GetFieldCount() );
 			delete result;
 			return;
 		}
 		else if( result->GetFieldCount() > 6 )
 		{
-			Log.Notice("ObjectMgr", "Invalid format in vendors (%u/6) columns, loading anyway because we have enough data\n", result->GetFieldCount() );
+			Log.Notice("ObjectMgr", "Invalid format in vendors (%u/6) columns, loading anyway because we have enough data", result->GetFieldCount() );
 		}
 
 		ItemExtendedCostEntry * ec = NULL;
@@ -1356,7 +1356,7 @@ void ObjectMgr::LoadVendors()
 			{
 				ec = dbcItemExtendedCost.LookupEntryForced( fields[5].GetUInt32() );
 				if ( ec == NULL )
-					Log.Warning("LoadVendors", "Extendedcost for item %u references nonexistent EC %u", fields[1].GetUInt32(), fields[5].GetUInt32() );
+					Log.Error("LoadVendors", "Extendedcost for item %u references nonexistent EC %u", fields[1].GetUInt32(), fields[5].GetUInt32() );
 			}
 			else
 				ec = NULL;
@@ -1367,7 +1367,7 @@ void ObjectMgr::LoadVendors()
 
 		delete result;
 	}
-	Log.Notice("ObjectMgr", "%u vendors loaded.", mVendors.size());
+	Log.Success("ObjectMgr", "%u vendors loaded.", mVendors.size());
 }
 
 void ObjectMgr::ReloadVendors()
@@ -1406,7 +1406,7 @@ void ObjectMgr::LoadTotemSpells()
 	} while( result->NextRow() );
 
 	delete result;
-	Log.Notice("ObjectMgr", "%u totem spells loaded.", m_totemSpells.size());
+	Log.Success("ObjectMgr", "%u totem spells loaded.", m_totemSpells.size());
 }
 
 SpellEntry* ObjectMgr::GetTotemSpell(uint32 spellId)
@@ -1435,7 +1435,7 @@ void ObjectMgr::LoadAIThreatToSpellId()
 			sp->ThreatForSpellCoef = fields[2].GetFloat();
 		}
 		else
-			Log.Warning("AIThreatSpell", "Cannot apply to spell %u; spell is nonexistent.", fields[0].GetUInt32());
+			Log.Error("AIThreatSpell", "Cannot apply to spell %u; spell is nonexistent.", fields[0].GetUInt32());
 
 	} while( result->NextRow() );
 
@@ -1553,7 +1553,7 @@ void ObjectMgr::LoadSpellEffectsOverride()
 					if( seo_EffectCustomFlag != 0 )
 						sp->EffectCustomFlag[ seo_Effect ] = seo_EffectCustomFlag;
 				}else{
-					Log.Warning("ObjectMgr","Tried to load a spell effect override for a nonexistant spell: %u", seo_SpellId );
+					Log.Error("ObjectMgr","Tried to load a spell effect override for a nonexistant spell: %u", seo_SpellId );
 				}
 			}
 
@@ -1878,7 +1878,7 @@ void ObjectMgr::LoadTrainers()
 		}
 		if(result2->GetFieldCount() != 10)
 		{
-			Log.LargeErrorMessage(LARGERRORMESSAGE_WARNING, "Trainers table format is invalid. Please update your database.", NULL);
+			Log.LargeErrorMessage("Trainers table format is invalid. Please update your database.", NULL);
 			delete tr;
 			delete result;
 			delete result2;
@@ -1910,7 +1910,7 @@ void ObjectMgr::LoadTrainers()
 								ts.pCastRealSpell = dbcSpell.LookupEntryForced(ts.pCastSpell->EffectTriggerSpell[k]);
 								if( ts.pCastRealSpell == NULL )
 								{
-									Log.Warning("Trainers", "Trainer %u contains cast spell %u that is non-teaching\n", entry, CastSpellID);
+									Log.Error("Trainers", "Trainer %u contains cast spell %u that is non-teaching", entry, CastSpellID);
 									abrt = true;
 								}
 								break;
@@ -1929,7 +1929,7 @@ void ObjectMgr::LoadTrainers()
 
 				if( ts.pCastSpell == NULL && ts.pLearnSpell == NULL )
 				{
-					Log.Warning("LoadTrainers", "Trainer %u without valid spells (%u/%u).", entry, CastSpellID, LearnSpellID);
+					Log.Error("LoadTrainers", "Trainer %u without valid spells (%u/%u).", entry, CastSpellID, LearnSpellID);
 					continue; //omg a bad spell !
 				}
 
@@ -1964,7 +1964,7 @@ void ObjectMgr::LoadTrainers()
 
 	} while(result->NextRow());
 	delete result;
-	Log.Notice("ObjectMgr", "%u trainers loaded.", mTrainers.size());
+	Log.Success("ObjectMgr", "%u trainers loaded.", mTrainers.size());
 }
 
 Trainer* ObjectMgr::GetTrainer(uint32 Entry)
@@ -2344,7 +2344,7 @@ void ObjectMgr::LoadSpellOverride()
 			mOverrideIdMap.insert( OverrideIdMap::value_type( fields[0].GetUInt32(), list ));
 	} while( result->NextRow() );
 	delete result;
-	Log.Notice("ObjectMgr", "%u spell overrides loaded.", mOverrideIdMap.size());
+	Log.Success("ObjectMgr", "%u spell overrides loaded.", mOverrideIdMap.size());
 }
 
 void ObjectMgr::SetVendorList(uint32 Entry, std::vector<CreatureItem>* list_)
@@ -2579,7 +2579,7 @@ void ObjectMgr::LoadGuildCharters()
 			m_hiCharterId.SetVal( c->GetID() );
 	} while(result->NextRow());
 	delete result;
-	Log.Notice("ObjectMgr", "%u charters loaded.", m_charters[0].size());
+	Log.Success("ObjectMgr", "%u charters loaded.", m_charters[0].size());
 }
 
 Charter * ObjectMgr::GetCharter(uint32 CharterId, CharterTypes Type)
@@ -2911,7 +2911,7 @@ void ObjectMgr::LoadMonsterSay()
 		mMonsterSays[Event].insert( make_pair( Entry, ms ) );
 
 	} while(result->NextRow());
-	Log.Notice("ObjectMgr", "%u monster say events loaded.", result->GetRowCount());
+	Log.Success("ObjectMgr", "%u monster say events loaded.", result->GetRowCount());
 	delete result;
 }
 
@@ -3043,7 +3043,7 @@ void ObjectMgr::LoadInstanceReputationModifiers()
 
 	} while(result->NextRow());
 	delete result;
-	Log.Notice("ObjectMgr", "%u instance reputation modifiers loaded.", m_reputation_instance.size());
+	Log.Success("ObjectMgr", "%u instance reputation modifiers loaded.", m_reputation_instance.size());
 }
 
 bool ObjectMgr::HandleInstanceReputationModifiers(Player * pPlayer, Unit * pVictim)
@@ -3120,7 +3120,7 @@ void ObjectMgr::LoadGroups()
 	{
 		if(result->GetFieldCount() != 52)
 		{
-			Log.LargeErrorMessage(LARGERRORMESSAGE_WARNING, "groups table format is invalid. Please update your database.", NULL);
+			Log.LargeErrorMessage("groups table format is invalid. Please update your database.", NULL);
 			return;
 		}
 		do
@@ -3131,7 +3131,7 @@ void ObjectMgr::LoadGroups()
 		delete result;
 	}
 
-	Log.Notice("ObjectMgr", "%u groups loaded.", this->m_groups.size());
+	Log.Success("ObjectMgr", "%u groups loaded.", this->m_groups.size());
 }
 
 void ObjectMgr::LoadArenaTeams()
@@ -3141,7 +3141,7 @@ void ObjectMgr::LoadArenaTeams()
 	{
 		if(result->GetFieldCount() != 22)
 		{
-			Log.LargeErrorMessage(LARGERRORMESSAGE_WARNING, "arenateams table format is invalid. Please update your database.", NULL);
+			Log.LargeErrorMessage("arenateams table format is invalid. Please update your database.", NULL);
 			return;
 		}
 		do

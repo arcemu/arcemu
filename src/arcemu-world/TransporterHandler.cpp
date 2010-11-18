@@ -38,7 +38,7 @@ bool Transporter::CreateAsTransporter(uint32 EntryID, const char* Name, int32 Ti
 	if( pInfo )
 		pInfo->Type = GAMEOBJECT_TYPE_TRANSPORT;
 	else
-		sLog.outString("Transporter id[%i] name[%s] - can't set GAMEOBJECT_TYPE - it will behave badly!",EntryID,Name);
+		sLog.outError("Transporter id[%i] name[%s] - can't set GAMEOBJECT_TYPE - it will behave badly!",EntryID,Name);
 
 	m_overrides = GAMEOBJECT_INFVIS | GAMEOBJECT_ONMOVEWIDE; //Make it forever visible on the same map
 
@@ -461,7 +461,7 @@ Transporter::~Transporter()
 
 void ObjectMgr::LoadTransporters()
 {
-	Log.Notice("ObjectMgr", "Loading Transports...");
+	Log.Success("ObjectMgr", "Loading Transports...");
 	QueryResult * QR = WorldDatabase.Query("SELECT * FROM transport_data");
 	if(!QR) return;
 

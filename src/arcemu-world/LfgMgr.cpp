@@ -35,13 +35,13 @@ LfgMgr::LfgMgr()
 			uint32 typ = r.getUInt(20);
 
 			if(id >= MAX_DUNGEONS)
-				printf("!! warning: LFGDungeons contains an out of range dungeon id %u.\n", id);
+				sLog.outError("!! warning: LFGDungeons contains an out of range dungeon id %u.", id);
 			else
 				LfgDungeonTypes[id] = typ;
 		}
 	}
 	else
-		printf("!! LFGDungeons.dbc not found, LFG tool will not function correctly.\n");
+		sLog.outError("!! LFGDungeons.dbc not found, LFG tool will not function correctly.");
 }
 
 LfgMgr::~LfgMgr()

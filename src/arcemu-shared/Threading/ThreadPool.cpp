@@ -18,7 +18,7 @@
  */
 
 #include "ThreadPool.h"
-#include "../NGLog.h"
+#include "../Log.h"
 
 #ifdef WIN32
 
@@ -74,7 +74,7 @@ bool CThreadPool::ThreadExit(Thread * t)
 
 	if(itr != m_freeThreads.end())
 	{
-		printf("Thread %u duplicated with thread %u\n", (*itr)->ControlInterface.GetId(), t->ControlInterface.GetId());
+		sLog.outError("Thread %u duplicated with thread %u", (*itr)->ControlInterface.GetId(), t->ControlInterface.GetId());
 	}
 	m_freeThreads.insert(t);
 	

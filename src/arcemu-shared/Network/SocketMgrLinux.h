@@ -49,7 +49,7 @@ public:
         epoll_fd = epoll_create(SOCKET_HOLDER_SIZE);
         if(epoll_fd == -1)
         {
-            printf("Could not create epoll fd (/dev/epoll).");
+            sLog.outError("Could not create epoll fd (/dev/epoll).");
             exit(-1);
         }
 

@@ -719,7 +719,7 @@ void Item::ApplyEnchantmentBonus( uint32 Slot, bool Apply )
 	if ( VisibleBase <= PLAYER_VISIBLE_ITEM_19_ENCHANTMENT )
 		m_owner->SetUInt32Value( VisibleBase, Apply ? Entry->Id : 0 ); //On 3.1 we can't add a Slot to the base now, as we no longer have multiple fields for storing them. This in some cases will try to write for example 3 visuals into one place, but now every item has only one field for this, and as we can't choose which visual to have, we'll accept the last one.
 	else
-		sLog.outError( "Item::ApplyEnchantmentBonus visual out of range!\n    Tried to address UInt32 field %i !!!\n", VisibleBase );
+		sLog.outError( "Item::ApplyEnchantmentBonus visual out of range! Tried to address UInt32 field %i !!!", VisibleBase );
 
 	// Another one of those for loop that where not indented properly god knows what will break
 	// but i made it actually affect the code below it

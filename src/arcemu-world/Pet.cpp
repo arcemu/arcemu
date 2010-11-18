@@ -1471,7 +1471,7 @@ void Pet::ApplySummonLevelAbilities()
 	double mana = has_mana ? (pet_int * pet_int_to_mana) : 0.0;
 	if( health == 0 )
 	{
-		sLog.outError("Pet with entry %u has 0 health !! \n", GetEntry() );
+		sLog.outError("Pet with entry %u has 0 health !!", GetEntry() );
 		health = 100;
 	}
 	SetBaseHealth((uint32)(health));
@@ -1653,7 +1653,7 @@ AI_Spell * Pet::HandleAutoCastEvent()
 		else
 		{
 			// bad pointers somehow end up here :S
-			sLog.outError("Bad AI_Spell detected in AutoCastEvent!\n");
+			sLog.outError("Bad AI_Spell detected in AutoCastEvent!");
 			m_autoCastSpells[AUTOCAST_EVENT_ATTACK].erase(itr);
 		}
 	}

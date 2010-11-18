@@ -47,7 +47,7 @@ public:
         kq = kqueue();
         if(kq == -1)
         {
-            printf("Could not create a kqueue fd.");
+            sLog.outError("Could not create a kqueue fd.");
             exit(-1);
         }
 

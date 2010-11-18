@@ -17,10 +17,8 @@
  *
  */
 
-#include "Common.h"
 #include "Config/ConfigEnv.h"
 #include "Log.h"
-#include "NGLog.h"
 #include <cstdarg>
 
 string FormatOutputString(const char * Prefix, const char * Description, bool useTimeStamp)
@@ -45,31 +43,44 @@ string FormatOutputString(const char * Prefix, const char * Description, bool us
 }
 
 createFileSingleton( oLog );
-createFileSingleton(CLog);
 initialiseSingleton( WorldLog );
 
 SERVER_DECL time_t UNIXTIME;
 SERVER_DECL tm g_localTime;
 
-void oLog::outTime()
+void oLog::outFile(FILE *file, char *msg, const char *source)
+{
+	char time_buffer[TIME_FORMAT_LENGTH];
+	char szltr_buffer[SZLTR_LENGTH];
+	Time(time_buffer);
+	pdcds(SZLTR, szltr_buffer);
+	if(source != NULL)
+		fprintf(file, "%s%s%s: %s\n", time_buffer, szltr_buffer, source, msg);
+	else
+		fprintf(file, "%s%s%s\n", time_buffer, szltr_buffer, msg);
+}
+
+void oLog::Time(char *buffer)
 {
 	time_t now;
 	struct tm * timeinfo = NULL;
-	char buffer[10];
 	
 	time( &now );
 	timeinfo = localtime( &now );
 
 	if( timeinfo != NULL )
 	{
-		strftime(buffer,10,"[%H:%M]",timeinfo);
-		fprintf( m_file, buffer );
+		strftime(buffer,TIME_FORMAT_LENGTH,TIME_FORMAT,timeinfo);
+	}
+	else
+	{
+		buffer[0] = '\0';
 	}
 }
 
 void oLog::outString( const char * str, ... )
 {
-	if(m_fileLogLevel < 0 && m_screenLogLevel < 0)
+	if(m_normalFile == NULL)
 		return;
 
 	char buf[32768];
@@ -79,22 +90,12 @@ void oLog::outString( const char * str, ... )
 	vsnprintf(buf, 32768, str, ap);
 	va_end(ap);
 
-	if(m_screenLogLevel >= 0)
-	{
-		printf(buf);
-		putc('\n', stdout);
-	}
-	if(m_fileLogLevel >= 0 && m_file)
-	{
-		outTime();
-		fprintf(m_file, buf);
-		putc('\n', m_file);
-	}
+	outFile(m_normalFile, buf);
 }
 
 void oLog::outError( const char * err, ... )
 {
-	if(m_fileLogLevel < 1 && m_screenLogLevel < 1)
+	if(m_errorFile == NULL)
 		return;
 
 	char buf[32768];
@@ -104,32 +105,12 @@ void oLog::outError( const char * err, ... )
 	vsnprintf(buf, 32768, err, ap);
 	va_end(ap);
 
-	if(m_screenLogLevel >= 1)
-	{
-#ifdef WIN32
-		SetConsoleTextAttribute(stderr_handle, TRED);
-#else
-		puts(colorstrings[TRED]);
-#endif
-		fprintf(stderr, buf);
-		putc('\n', stderr);
-#ifdef WIN32
-		SetConsoleTextAttribute(stderr_handle, TNORMAL);
-#else
-		puts(colorstrings[TNORMAL]);
-#endif
-	}
-	if(m_fileLogLevel >= 1 && m_file)
-	{
-		outTime();
-		fprintf(m_file, buf);
-		putc('\n', m_file);
-	}
+	outFile(m_errorFile, buf);
 }
 
 void oLog::outBasic( const char * str, ... )
 {
-	if(m_fileLogLevel < 1 && m_screenLogLevel < 1)
+	if(m_normalFile == NULL)
 		return;
 
 	char buf[32768];
@@ -139,21 +120,12 @@ void oLog::outBasic( const char * str, ... )
 	vsnprintf(buf, 32768, str, ap);
 	va_end(ap);
 
-	if(m_screenLogLevel >= 1)
-	{
-		printf(buf);
-		putc('\n', stdout);
-	}
-	if(m_fileLogLevel >= 1 && m_file)
-	{
-		fprintf(m_file, buf);
-		putc('\n', m_file);
-	}
+	outFile(m_normalFile, buf);
 }
 
 void oLog::outDetail( const char * str, ... )
 {
-	if(m_fileLogLevel < 2 && m_screenLogLevel < 2)
+	if(m_fileLogLevel < 1 || m_normalFile == NULL)
 		return;
 
 	char buf[32768];
@@ -163,22 +135,12 @@ void oLog::outDetail( const char * str, ... )
 	vsnprintf(buf, 32768, str, ap);
 	va_end(ap);
 
-	if(m_screenLogLevel >= 2)
-	{
-		printf(buf);
-		putc('\n', stdout);
-	}
-	if(m_fileLogLevel >= 2 && m_file)
-	{
-		outTime();
-		fprintf(m_file, buf);
-		putc('\n', m_file);
-	}
+	outFile(m_normalFile, buf);
 }
 
 void oLog::outDebug( const char * str, ... )
 {
-	if(m_fileLogLevel < 3 && m_screenLogLevel < 3)
+	if(m_fileLogLevel < 2 || m_errorFile == NULL)
 		return;
 
 	char buf[32768];
@@ -188,65 +150,187 @@ void oLog::outDebug( const char * str, ... )
 	vsnprintf(buf, 32768, str, ap);
 	va_end(ap);
 
-	if(m_screenLogLevel >= 3)
-	{
-		printf(buf);
-		putc('\n', stdout);
-	}
-	if(m_fileLogLevel >= 3 && m_file)
-	{
-		outTime();
-		fprintf(m_file, buf);
-		putc('\n', m_file);
-	}
+	outFile(m_errorFile, buf);
 }
 
-void oLog::outMenu( const char * str, ... )
+//old NGLog.h methods
+void oLog::Notice(const char * source, const char * format, ...)
 {
+	if(m_fileLogLevel < 1 || m_normalFile == NULL)
+		return;
+
+	char buf[32768];
 	va_list ap;
-	va_start(ap, str);
-	vprintf( str, ap );
+
+	va_start(ap, format);
+	vsnprintf(buf, 32768, format, ap);
 	va_end(ap);
-	fflush(stdout);
+
+	outFile(m_normalFile, buf, source);
 }
 
-void oLog::Init(int32 fileLogLevel, int32 screenLogLevel)
+void oLog::Warning(const char * source, const char * format, ...)
 {
-	m_screenLogLevel = screenLogLevel;
-	m_fileLogLevel = fileLogLevel;
+	if(m_fileLogLevel < 1 || m_normalFile == NULL)
+		return;
 
-	// get error handle
-#ifdef WIN32
-	stderr_handle = GetStdHandle(STD_ERROR_HANDLE);
-	stdout_handle = GetStdHandle(STD_OUTPUT_HANDLE);
-#endif
+	char buf[32768];
+	va_list ap;
+
+	va_start(ap, format);
+	vsnprintf(buf, 32768, format, ap);
+	va_end(ap);
+
+	outFile(m_normalFile, buf, source);
+}
+
+void oLog::Success(const char * source, const char * format, ...)
+{
+	if(m_normalFile == NULL)
+		return;
+
+	char buf[32768];
+	va_list ap;
+
+	va_start(ap, format);
+	vsnprintf(buf, 32768, format, ap);
+	va_end(ap);
+
+	outFile(m_normalFile, buf, source);
+}
+
+void oLog::Error(const char * source, const char * format, ...)
+{
+	if(m_errorFile == NULL)
+		return;
+
+	char buf[32768];
+	va_list ap;
+
+	va_start(ap, format);
+	vsnprintf(buf, 32768, format, ap);
+	va_end(ap);
+
+	outFile(m_errorFile, buf, source);
+}
+
+void oLog::Debug(const char * source, const char * format, ...)
+{
+	if(m_fileLogLevel < 2 || m_errorFile == NULL)
+		return;
+
+	char buf[32768];
+	va_list ap;
+
+	va_start(ap, format);
+	vsnprintf(buf, 32768, format, ap);
+	va_end(ap);
+
+	outFile(m_errorFile, buf, source);
+}
+
+void oLog::LargeErrorMessage(const char * source, ...)
+{
+	std::vector<char*> lines;
+	char * pointer;
+	va_list ap;
+	va_start(ap, source);
+
+	pointer = const_cast<char*>(source);
+	lines.push_back(pointer);
+
+	size_t i,j,k;
+	pointer = va_arg(ap, char*);
+	while( pointer != NULL )
+	{
+		lines.push_back( pointer );
+		pointer = va_arg(ap, char*);
+	}
+	
+	outError("*********************************************************************");
+	outError("*                        MAJOR ERROR/WARNING                        *");
+	outError("*                        ===================                        *");
+
+	for(std::vector<char*>::iterator itr = lines.begin(); itr != lines.end(); ++itr)
+	{
+		stringstream sstext;
+		i = strlen(*itr);
+		j = (i<=65) ? 65 - i : 0;
+		sstext << "* " << *itr;
+		for( k = 0; k < j; ++k )
+		{
+			sstext << " ";
+		}
+
+		sstext << " *";
+		outError(sstext.str().c_str());
+	}
+
+	outError("*********************************************************************");
+}
+
+void oLog::Init(int32 fileLogLevel, LogType logType)
+{
+	SetFileLoggingLevel(fileLogLevel);
+
+	const char *logNormalFilename = NULL, *logErrorFilename = NULL;
+	switch(logType)
+	{
+		case LOGON_LOG:
+			{
+				logNormalFilename = "logon-normal.log";
+				logErrorFilename = "logon-error.log";
+				break;
+			}
+		case WORLD_LOG:
+			{
+				logNormalFilename = "world-normal.log";
+				logErrorFilename = "world-error.log";
+				break;
+			}
+	}
+
+	m_normalFile = fopen(logNormalFilename, "a");
+	if (m_normalFile == NULL)
+		fprintf(stderr, "%s: Error opening '%s': %s\n", __FUNCTION__, logNormalFilename, strerror(errno));
+	else
+	{
+		tm* aTm = localtime(&UNIXTIME);
+		outBasic("[%-4d-%02d-%02d %02d:%02d:%02d] ",aTm->tm_year+1900,aTm->tm_mon+1,aTm->tm_mday,aTm->tm_hour,aTm->tm_min,aTm->tm_sec);
+	}
+
+	m_errorFile = fopen(logErrorFilename, "a");
+	if (m_errorFile == NULL)
+		fprintf(stderr, "%s: Error opening '%s': %s\n", __FUNCTION__, logErrorFilename, strerror(errno));
+	else
+	{
+		tm* aTm = localtime(&UNIXTIME);
+		outError("[%-4d-%02d-%02d %02d:%02d:%02d] ",aTm->tm_year+1900,aTm->tm_mon+1,aTm->tm_mday,aTm->tm_hour,aTm->tm_min,aTm->tm_sec);
+	}
 }
 
 void oLog::Close()
 {
-	if(!m_file) return;
-	fflush(m_file);
-	fclose(m_file);
-	m_file= NULL;
-}
-
-void oLog::SetScreenLoggingLevel(int32 level)
-{
-	m_screenLogLevel = level;
-}
-
-void oLog::SetFileLoggingLevel(int32 level, const char *filename)
-{
-	m_fileLogLevel = level;
-
-	if (m_fileLogLevel >= 0)
+	if(m_normalFile != NULL)
 	{
-		m_file = fopen(filename, "a");
-		if (m_file == NULL)
-		{
-			fprintf(stderr, "%s: Error opening '%s': %s\n", __FUNCTION__, filename, strerror(errno));
-		}
+		fflush(m_normalFile);
+		fclose(m_normalFile);
+		m_normalFile = NULL;
 	}
+
+	if(m_errorFile != NULL)
+	{
+		fflush(m_errorFile);
+		fclose(m_errorFile);
+		m_errorFile = NULL;
+	}
+}
+
+void oLog::SetFileLoggingLevel(int32 level)
+{
+	//log level -1 is no more allowed
+	if(level >= 0)
+		m_fileLogLevel = level;
 }
 
 void SessionLogWriter::write(const char* format, ...)
@@ -316,22 +400,6 @@ if (m_file)
 		fclose(m_file);
 		m_file = NULL;
 	}
-}
-
-void oLog::outColor(uint8 colorcode, const char * str, ...)
-{
-	if( !str ) return;
-
-	va_list ap;
-	va_start(ap, str);
-#ifdef WIN32
-	SetConsoleTextAttribute(stdout_handle, colorcode);
-#else
-	printf(colorstrings[colorcode]);
-#endif
-	vprintf( str, ap );
-	fflush(stdout);
-	va_end(ap);
 }
 
 void SessionLogWriter::Open()

@@ -141,13 +141,13 @@ PatchMgr::PatchMgr()
 		read_fd = open(Buffer3, O_RDONLY);
 		if(read_fd <= 0)
 		{
-			printf("Cannot open %s\n", Buffer3);
+			sLog.outError("Cannot open %s", Buffer3);
 			continue;
 		}
 
 		if(fstat(read_fd, &sb) < 0)
 		{
-			printf("Cannot stat %s\n", Buffer3);
+			sLog.outError("Cannot stat %s", Buffer3);
 			continue;
 		}
 

@@ -165,7 +165,7 @@ void AccountMgr::AddAccount(Field* field)
 		}
 		else
 		{
-			printf("Account `%s` has incorrect number of bytes in encrypted password! Disabling.\n", Username.c_str());
+			sLog.outError("Account `%s` has incorrect number of bytes in encrypted password! Disabling.", Username.c_str());
 			memset(acct->SrpHash, 0, 20);
 		}
 	}
@@ -191,9 +191,7 @@ void AccountMgr::UpdateAccount(Account * acct, Field * field)
 
 	if(id != acct->AccountId)
 	{
-		//printf("Account %u `%s` is a duplicate.\n", id, acct->Username.c_str());
-		sLog.outColor(TYELLOW, " >> deleting duplicate account %u [%s]...", id, Username.c_str());
-		sLog.outColor(TNORMAL, "\n");
+		sLog.outError(" >> deleting duplicate account %u [%s]...", id, Username.c_str());
 		sLogonSQL->Execute("DELETE FROM accounts WHERE acct=%u", id);
 		return;
 	}
@@ -253,7 +251,7 @@ void AccountMgr::UpdateAccount(Account * acct, Field * field)
 		}
 		else
 		{
-			printf("Account `%s` has incorrect number of bytes in encrypted password! Disabling.\n", Username.c_str());
+			sLog.outError("Account `%s` has incorrect number of bytes in encrypted password! Disabling.", Username.c_str());
 			memset(acct->SrpHash, 0, 20);
 		}
 	}
@@ -369,7 +367,7 @@ void IPBanner::Reload()
 			string stmp = ip.substr(0, i);
 			if( i == string::npos )
 			{
-				printf("IP ban \"%s\" netmask not specified. assuming /32 \n", ip.c_str());
+				sLog.outDetail("IP ban \"%s\" netmask not specified. assuming /32", ip.c_str());
 			}
 			else
 				smask = ip.substr(i+1);
@@ -378,7 +376,7 @@ void IPBanner::Reload()
 			unsigned int ipmask = atoi(smask.c_str());
 			if( ipraw == 0 || ipmask == 0 )
 			{
-				printf("IP ban \"%s\" could not be parsed. Ignoring\n", ip.c_str());
+				sLog.outError("IP ban \"%s\" could not be parsed. Ignoring", ip.c_str());
 				continue;
 			}
 
@@ -599,7 +597,7 @@ void InformationCore::CheckServers()
 
 		if(!IsServerAllowed(s->GetRemoteAddress().s_addr))
 		{
-			printf("Disconnecting socket: %s due to it no longer being on an allowed IP.\n", s->GetRemoteIP().c_str());
+			sLog.outDetail("Disconnecting socket: %s due to it no longer being on an allowed IP.", s->GetRemoteIP().c_str());
 			s->Disconnect();
 		}
 	}

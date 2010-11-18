@@ -2033,7 +2033,7 @@ void QuestMgr::LoadExtraQuestStuff()
 			qst = QuestStorage.LookupEntry(quest);
 			if(!qst)
 			{
-				Log.Warning("ObjectMgr","Tried to add starter to npc %d for non-existent quest %d.\n", creature, quest);
+				Log.Error("ObjectMgr","Tried to add starter to npc %d for non-existent quest %d.", creature, quest);
 			}
 			else 
 			{
@@ -2057,7 +2057,7 @@ void QuestMgr::LoadExtraQuestStuff()
 			qst = QuestStorage.LookupEntry(quest);
 			if(!qst)
 			{
-				Log.Warning("ObjectMgr","Tried to add finisher to npc %d for non-existent quest %d.\n", creature, quest);
+				Log.Error("ObjectMgr","Tried to add finisher to npc %d for non-existent quest %d.", creature, quest);
 			} 
 			else 
 			{
@@ -2081,7 +2081,7 @@ void QuestMgr::LoadExtraQuestStuff()
 			qst = QuestStorage.LookupEntry(quest);
 			if(!qst)
 			{
-				Log.Warning("ObjectMgr","Tried to add starter to go %d for non-existent quest %d.\n", creature, quest);
+				Log.Error("ObjectMgr","Tried to add starter to go %d for non-existent quest %d.", creature, quest);
 			} 
 			else
 			{
@@ -2105,7 +2105,7 @@ void QuestMgr::LoadExtraQuestStuff()
 			qst = QuestStorage.LookupEntry(quest);
 			if(!qst)
 			{
-				Log.Warning("ObjectMgr","Tried to add finisher to go %d for non-existent quest %d.\n", creature, quest);
+				Log.Error("ObjectMgr","Tried to add finisher to go %d for non-existent quest %d.", creature, quest);
 			} 
 			else 
 			{
@@ -2135,7 +2135,7 @@ void QuestMgr::LoadExtraQuestStuff()
 			qst = QuestStorage.LookupEntry(quest);
 			if(!qst)
 			{
-				Log.Warning("ObjectMgr","Tried to add association to item %d for non-existent quest %d.\n", item, quest);
+				Log.Error("ObjectMgr","Tried to add association to item %d for non-existent quest %d.", item, quest);
 			} 
 			else 
 			{
@@ -2210,7 +2210,7 @@ void QuestMgr::LoadExtraQuestStuff()
 			}while( points->NextRow() );
 
 			delete points;
-			Log.Notice( "QuestMgr","%u quest Point Of Interest points loaded.", count );
+			Log.Success( "QuestMgr","%u quest Point Of Interest points loaded.", count );
 		}
 
 	}

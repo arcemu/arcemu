@@ -111,7 +111,7 @@ void WorldSocket::OutPacket(uint16 opcode, size_t len, const void* data)
 	OUTPACKET_RESULT res;
 	if( (len + 10) > WORLDSOCKET_SENDBUF_SIZE )
 	{
-		printf("WARNING: Tried to send a packet of %u bytes (which is too large) to a socket. Opcode was: %u (0x%03X)\n", (unsigned int)len, (unsigned int)opcode, (unsigned int)opcode);
+		sLog.outError("WARNING: Tried to send a packet of %u bytes (which is too large) to a socket. Opcode was: %u (0x%03X)", (unsigned int)len, (unsigned int)opcode, (unsigned int)opcode);
 		return;
 	}
 
@@ -304,7 +304,6 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 		GMFlags.assign(ForcedPermissions->c_str());
 
 	sLog.outDebug( " >> got information packet from logon: `%s` ID %u (request %u)", AccountName.c_str(), AccountID, mRequestID);
-//	sLog.outColor(TNORMAL, "\n");
 
 	mRequestID = 0;
 	// Pull the session key.
@@ -487,7 +486,7 @@ void WorldSocket::_HandlePing(WorldPacket* recvPacket)
 	uint32 ping;
 	if(recvPacket->size() < 4)
 	{
-		sLog.outString("Socket closed due to incomplete ping packet.");
+		sLog.outError("Socket closed due to incomplete ping packet.");
 		Disconnect();
 		return;
 	}

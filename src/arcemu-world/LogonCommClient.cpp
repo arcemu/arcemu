@@ -118,7 +118,7 @@ void LogonCommClientSocket::HandlePacket(WorldPacket & recvData)
 
 	if(recvData.GetOpcode() >= RMSG_COUNT || Handlers[recvData.GetOpcode()] == 0)
 	{
-		printf("Got unknown packet from logoncomm: %u\n", recvData.GetOpcode());
+		sLog.outError("Got unknown packet from logoncomm: %u", recvData.GetOpcode());
 		return;
 	}
 
@@ -133,9 +133,9 @@ void LogonCommClientSocket::HandleRegister(WorldPacket & recvData)
 	recvData >> error >> realmlid >> realmname;
 
 #ifdef WIN32
-	Log.Notice("LogonCommClient", "Realm `%s` (UNICODE) registered as realm %u.", _StringToANSI(realmname.c_str()), realmlid);
+	Log.Success("LogonCommClient", "Realm `%s` (UNICODE) registered as realm %u.", _StringToANSI(realmname.c_str()), realmlid);
 #else
-	Log.Notice("LogonCommClient", "Realm `%s` registered as realm %u.", realmname.c_str(), realmlid);
+	Log.Success("LogonCommClient", "Realm `%s` registered as realm %u.", realmname.c_str(), realmlid);
 #endif	
 
 	LogonCommHandler::getSingleton().AdditionAck(_id, realmlid);
@@ -216,7 +216,7 @@ void LogonCommClientSocket::OnDisconnect()
 {
 	if(_id != 0)
 	{
-		printf("Calling ConnectionDropped() due to OnDisconnect().\n");
+		sLog.outDetail("Calling ConnectionDropped() due to OnDisconnect().");
 		sLogonCommHandler.ConnectionDropped(_id);	
 	}
 }

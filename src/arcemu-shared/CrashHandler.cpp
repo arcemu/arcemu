@@ -17,7 +17,6 @@
  *
  */
 
-#include "Common.h"
 #include "svn_revision.h"
 
 #include "CrashHandler.h"
@@ -51,7 +50,6 @@ Mutex m_crashLock;
 
 #include <cstdio>
 #include <ctime>
-#include "Log.h"
 #include <tchar.h>
 
 bool ON_CRASH_BREAK_DEBUGGER;
@@ -255,7 +253,7 @@ void CStackWalker::OnOutput(LPCSTR szText)
 	FILE * m_file = fopen(s.c_str(), "a");
 	if(!m_file) return;
 
-	printf("   %s", szText);
+	sLog.outError("   %s", szText);
 	fprintf(m_file, "   %s", szText);
 	fclose(m_file);
 }
@@ -326,12 +324,11 @@ int __cdecl HandleCrash(PEXCEPTION_POINTERS pExceptPtrs)
 			FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH, 0);
 	}
 
-    printf("\nServer has crashed.\n");
-	printf("\nCreating crash dump file %s\n", filename);
+	sLog.outError("Server has crashed. Creating crash dump file %s", filename);
 	
 	if(hDump == INVALID_HANDLE_VALUE)
 	{
-		MessageBox(0, "Could not open crash dump file.", "Crash dump error.", MB_OK);
+		sLog.outError("Could not open crash dump file.");
 	}
 	else
 	{
@@ -351,6 +348,7 @@ int __cdecl HandleCrash(PEXCEPTION_POINTERS pExceptPtrs)
 	SetPriorityClass(GetCurrentProcess(), BELOW_NORMAL_PRIORITY_CLASS);
 	OnCrash(!ON_CRASH_BREAK_DEBUGGER);	  
 
+	sLog.Close();
 	return EXCEPTION_CONTINUE_SEARCH;
 }
 #endif

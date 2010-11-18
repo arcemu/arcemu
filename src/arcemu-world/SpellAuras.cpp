@@ -939,7 +939,7 @@ void Aura::AddMod( uint32 t, int32 a, uint32 miscValue, uint32 i )
 
 	if( m_modcount >= 3 )
 	{
-		sLog.outString("Tried to add >3 (%u) mods to spellid %u [%u:%u, %u:%u, %u:%u]", m_modcount+1, this->m_spellProto->Id, m_modList[0].m_type, m_modList[0].m_amount, m_modList[1].m_type, m_modList[1].m_amount, m_modList[2].m_type, m_modList[2].m_amount);
+		sLog.outError("Tried to add >3 (%u) mods to spellid %u [%u:%u, %u:%u, %u:%u]", m_modcount+1, this->m_spellProto->Id, m_modList[0].m_type, m_modList[0].m_amount, m_modList[1].m_type, m_modList[1].m_amount, m_modList[2].m_type, m_modList[2].m_amount);
 		return;
 	}
 	m_modList[m_modcount].m_type = t;
@@ -1907,7 +1907,7 @@ void Aura::EventPeriodicHeal( uint32 amount )
 		SM_FIValue(c->SM_FPenalty,&spell_flat_modifers,GetSpellProto()->SpellGroupType);
 		SM_FIValue(c->SM_PPenalty,&spell_pct_modifers,GetSpellProto()->SpellGroupType);
 		if(spell_flat_modifers!= 0 || spell_pct_modifers!= 0)
-			printf("!!!!!HEAL : spell dmg bonus(p=24) mod flat %d , spell dmg bonus(p=24) pct %d , spell dmg bonus %d, spell group %u\n",spell_flat_modifers,spell_pct_modifers,bonus,GetSpellProto()->SpellGroupType);
+			sLog.outDebug("!!!!!HEAL : spell dmg bonus(p=24) mod flat %d , spell dmg bonus(p=24) pct %d , spell dmg bonus %d, spell group %u",spell_flat_modifers,spell_pct_modifers,bonus,GetSpellProto()->SpellGroupType);
 #endif
 	}
 
@@ -3663,7 +3663,7 @@ void Aura::SpellAuraProcTriggerSpell(bool apply)
 
 		m_target->AddProcTriggerSpell(spellId, GetSpellProto()->Id, m_casterGuid, GetSpellProto()->procChance, GetSpellProto()->procFlags, charges, groupRelation, NULL);
 
-		sLog.outDebug("%u is registering %u chance %u flags %u charges %u triggeronself %u interval %u\n",GetSpellProto()->Id,spellId,GetSpellProto()->procChance,GetSpellProto()->procFlags & ~PROC_TARGET_SELF,charges,GetSpellProto()->procFlags & PROC_TARGET_SELF,GetSpellProto()->proc_interval);
+		sLog.outDebug("%u is registering %u chance %u flags %u charges %u triggeronself %u interval %u",GetSpellProto()->Id,spellId,GetSpellProto()->procChance,GetSpellProto()->procFlags & ~PROC_TARGET_SELF,charges,GetSpellProto()->procFlags & PROC_TARGET_SELF,GetSpellProto()->proc_interval);
 	}
 	else
 	{
@@ -3690,7 +3690,7 @@ void Aura::SpellAuraProcTriggerDamage(bool apply)
 		ds.m_flags = m_spellProto->procFlags;
 		ds.owner = (void*)this;
 		m_target->m_damageShields.push_back(ds);
-		sLog.outDebug("registering dmg proc %u, school %u, flags %u, charges at least %u \n",ds.m_spellId,ds.m_school,ds.m_flags,m_spellProto->procCharges);
+		sLog.outDebug("registering dmg proc %u, school %u, flags %u, charges at least %u",ds.m_spellId,ds.m_school,ds.m_flags,m_spellProto->procCharges);
 	}
 	else
 	{
@@ -5694,7 +5694,7 @@ void Aura::SpellAuraAddPctMod( bool apply )
 
 	default://Unknown modifier type
 		sLog.outError( 
-			"Unknown spell modifier type %u in spell %u.<<--report this line to the developer\n", 
+			"Unknown spell modifier type %u in spell %u.<<--report this line to the developer", 
 			mod->m_miscValue, GetSpellId() );
 		break;
 	}
@@ -5824,7 +5824,7 @@ void Aura::SpellAuraAddClassTargetTrigger(bool apply)
 
 		m_target->AddProcTriggerSpell(sp->Id, GetSpellProto()->Id, m_casterGuid, GetSpellProto()->EffectBasePoints[mod->i] +1, PROC_ON_CAST_SPELL, charges, groupRelation, procClassMask);
 
-		sLog.outDebug("%u is registering %u chance %u flags %u charges %u triggeronself %u interval %u\n",GetSpellProto()->Id,sp->Id,GetSpellProto()->procChance,PROC_ON_CAST_SPELL,charges,GetSpellProto()->procFlags & PROC_TARGET_SELF,GetSpellProto()->proc_interval);
+		sLog.outDebug("%u is registering %u chance %u flags %u charges %u triggeronself %u interval %u",GetSpellProto()->Id,sp->Id,GetSpellProto()->procChance,PROC_ON_CAST_SPELL,charges,GetSpellProto()->procFlags & PROC_TARGET_SELF,GetSpellProto()->proc_interval);
 	}
 	else
 	{

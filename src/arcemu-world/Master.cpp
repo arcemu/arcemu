@@ -154,9 +154,9 @@ bool Master::Run(int argc, char ** argv)
 		case 0:
 			break;
 		default:
-			sLog.m_fileLogLevel = -1;
-			sLog.m_screenLogLevel = 3;
-			printf("Usage: %s [--checkconf] [--screenloglevel <level>] [--fileloglevel <level>] [--conf <filename>] [--realmconf <filename>] [--version] [--databasecleanup] [--cheatercheck]\n", argv[0]);
+			sLog.Init(0, WORLD_LOG);
+			printf("Usage: %s [--checkconf] [--fileloglevel <level>] [--conf <filename>] [--realmconf <filename>] [--version] [--databasecleanup] [--cheatercheck]\n", argv[0]);
+			sLog.Close();
 			return true;
 		}
 	}
@@ -165,51 +165,16 @@ bool Master::Run(int argc, char ** argv)
 	UNIXTIME = time(NULL);
 	g_localTime = *localtime(&UNIXTIME);
 
-	if(!do_version && !do_check_conf)
-	{
-		sLog.Init(-1, 3);
-	}
-	else
-	{
-		sLog.m_fileLogLevel = -1;
-		sLog.m_screenLogLevel = 1;
-	}
+	sLog.Init(0, WORLD_LOG);
 
-	printf(BANNER, BUILD_TAG, BUILD_REVISION, CONFIG, PLATFORM_TEXT, ARCH);
-#ifdef REPACK
-	printf("\nRepack: %s | Author: %s | %s\n", REPACK, REPACK_AUTHOR, REPACK_WEBSITE);
-#endif
-	Log.Color(TBLUE);
-	printf("\nCopyright (C) 2008-2010 ArcEmu. http://www.arcemu.org/\n");
-	printf("This program is free software: you can redistribute it and/or modify\n");
-	printf("it under the terms of the GNU Affero General Public License as published by\n");
-	printf("the Free Software Foundation, either version 3 of the License, or\n");
-	printf("any later version.\n");
-	printf("This program is distributed in the hope that it will be useful,\n");
-	printf("but WITHOUT ANY WARRANTY; without even the implied warranty of\n");
-	printf("MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n");
-	printf("GNU Affero General Public License for more details.\n");
-	printf("\x20\x20\x20\x20\x3a\x3a\x3a\x20\x20\x20\x20\x20\x3a\x3a\x3a\x3a\x3a\x3a\x3a\x3a\x3a\x20\x20\x20\x3a\x3a\x3a\x3a\x3a\x3a\x3a\x3a\x20\x20\x3a\x3a\x3a\x3a\x3a\x3a\x3a\x3a\x3a\x3a\x20\x3a\x3a\x3a\x3a\x20\x20\x20\x20\x3a\x3a\x3a\x3a\x20\x20\x3a\x3a\x3a\x20\x20\x20\x20\x3a\x3a\x3a\x20\xd\xa\x20\x20\x3a\x2b\x3a\x20\x3a\x2b\x3a\x20\x20\x20\x3a\x2b\x3a\x20\x20\x20\x20\x3a\x2b\x3a\x20\x3a\x2b\x3a\x20\x20\x20\x20\x3a\x2b\x3a\x20\x3a\x2b\x3a\x20\x20\x20\x20\x20\x20\x20\x20\x2b\x3a\x2b\x3a\x2b\x3a\x20\x3a\x2b\x3a\x2b\x3a\x2b\x20\x3a\x2b\x3a\x20\x20\x20\x20\x3a\x2b\x3a\x20\xd\xa\x20\x2b\x3a\x2b\x20\x20\x20\x2b\x3a\x2b\x20\x20\x2b\x3a\x2b\x20\x20\x20\x20\x2b\x3a\x2b\x20\x2b\x3a\x2b\x20\x20\x20\x20\x20\x20\x20\x20\x2b\x3a\x2b\x20\x20\x20\x20\x20\x20\x20\x20\x2b\x3a\x2b\x20\x2b\x3a\x2b\x3a\x2b\x20\x2b\x3a\x2b\x20\x2b\x3a\x2b\x20\x20\x20\x20\x2b\x3a\x2b\x20\xd\xa\x2b\x23\x2b\x2b\x3a\x2b\x2b\x23\x2b\x2b\x3a\x20\x2b\x23\x2b\x2b\x3a\x2b\x2b\x23\x3a\x20\x20\x2b\x23\x2b\x20\x20\x20\x20\x20\x20\x20\x20\x2b\x23\x2b\x2b\x3a\x2b\x2b\x23\x20\x20\x20\x2b\x23\x2b\x20\x20\x2b\x3a\x2b\x20\x20\x2b\x23\x2b\x20\x2b\x23\x2b\x20\x20\x20\x20\x2b\x3a\x2b\x20\xd\xa\x2b\x23\x2b\x20\x20\x20\x20\x20\x2b\x23\x2b\x20\x2b\x23\x2b\x20\x20\x20\x20\x2b\x23\x2b\x20\x2b\x23\x2b\x20\x20\x20\x20\x20\x20\x20\x20\x2b\x23\x2b\x20\x20\x20\x20\x20\x20\x20\x20\x2b\x23\x2b\x20\x20\x20\x20\x20\x20\x20\x2b\x23\x2b\x20\x2b\x23\x2b\x20\x20\x20\x20\x2b\x23\x2b\x20\xd\xa\x23\x2b\x23\x20\x20\x20\x20\x20\x23\x2b\x23\x20\x23\x2b\x23\x20\x20\x20\x20\x23\x2b\x23\x20\x23\x2b\x23\x20\x20\x20\x20\x23\x2b\x23\x20\x23\x2b\x23\x20\x20\x20\x20\x20\x20\x20\x20\x23\x2b\x23\x20\x20\x20\x20\x20\x20\x20\x23\x2b\x23\x20\x23\x2b\x23\x20\x20\x20\x20\x23\x2b\x23\x20\xd\xa\x23\x23\x23\x20\x20\x20\x20\x20\x23\x23\x23\x20\x23\x23\x23\x20\x20\x20\x20\x23\x23\x23\x20\x20\x23\x23\x23\x23\x23\x23\x23\x23\x20\x20\x23\x23\x23\x23\x23\x23\x23\x23\x23\x23\x20\x23\x23\x23\x20\x20\x20\x20\x20\x20\x20\x23\x23\x23\x20\x20\x23\x23\x23\x23\x23\x23\x23\x23\x20\x20");
-	printf("\n");
-	printf(" Website: http://www.ArcEmu.org	     			\n");
-	printf(" Forums: http://www.ArcEmu.org/forums/          \n");
-	printf(" Credits: http://www.ArcEmu.org/credits         \n");
-	printf(" SVN: http://arcemu.info/svn/                   \n");
-	printf(" Have fun!                                      \n");
-	Log.Line();
-#ifdef REPACK
-	Log.Color(TRED);
-	printf("Warning: Using repacks is potentially dangerous. You should always compile\n");
-	printf("from the source yourself at www.arcemu.org.\n");
-	printf("By using this repack, you agree to not visit the arcemu website and ask\nfor support.\n");
-	printf("For all support, you should visit the repacker's website at %s\n", REPACK_WEBSITE);
-	Log.Color(TNORMAL);
-	Log.Line();
-#endif
-	Log.log_level = 3;
+	sLog.outBasic(BANNER, BUILD_TAG, BUILD_REVISION, CONFIG, PLATFORM_TEXT, ARCH);
+	sLog.outError(BANNER, BUILD_TAG, BUILD_REVISION, CONFIG, PLATFORM_TEXT, ARCH);
 
 	if(do_version)
+	{
+		sLog.Close();
 		return true;
+	}
 
 	if( do_check_conf )
 	{
@@ -217,60 +182,63 @@ bool Master::Run(int argc, char ** argv)
 		if( Config.MainConfig.SetSource(config_file, true ) )
 			Log.Success( "Config", "Passed without errors." );
 		else
-			Log.Warning( "Config", "Encountered one or more errors." );
+			Log.Error( "Config", "Encountered one or more errors." );
 
-		Log.Notice( "Config", "Checking config file: %s\n", realm_config_file );
+		Log.Notice( "Config", "Checking config file: %s", realm_config_file );
 		if( Config.RealmConfig.SetSource( realm_config_file, true ) )
-			Log.Success( "Config", "Passed without errors.\n" );
+			Log.Success( "Config", "Passed without errors." );
 		else
-			Log.Warning( "Config", "Encountered one or more errors.\n" );
+			Log.Error( "Config", "Encountered one or more errors." );
 
-		Log.Notice( "Config", "Checking config file:: %s\n", optional_config_file);
+		Log.Notice( "Config", "Checking config file:: %s", optional_config_file);
 		if(Config.OptionalConfig.SetSource(optional_config_file, true) )
-			Log.Success( "Config", "Passed without errors.\n");
+			Log.Success( "Config", "Passed without errors.");
 		else
-			Log.Warning( "Config", "Encountered one or more errors.\n");
+			Log.Error( "Config", "Encountered one or more errors.");
 
+		sLog.Close();
 		return true;
 	}
 
-	printf( "The key combination <Ctrl-C> will safely shut down the server at any time.\n" );
-	Log.Line();
+	printf( "The key combination <Ctrl-C> will safely shut down the server at any time." );
     
 #ifndef WIN32
 	if(geteuid() == 0 || getegid() == 0)
-		Log.LargeErrorMessage( LARGERRORMESSAGE_WARNING, "You are running ArcEmu as root.", "This is not needed, and may be a possible security risk.", "It is advised to hit CTRL+C now and", "start as a non-privileged user.", NULL);
+		Log.LargeErrorMessage("You are running ArcEmu as root.", "This is not needed, and may be a possible security risk.", "It is advised to hit CTRL+C now and", "start as a non-privileged user.", NULL);
 #endif
 
 	InitImplicitTargetFlags();
 	InitRandomNumberGenerators();
-	Log.Success( "Rnd", "Initialized Random Number Generators." );
+	Log.Notice( "Rnd", "Initialized Random Number Generators." );
 
 	ThreadPool.Startup();
 	uint32 LoadingTime = getMSTime();
 
-	Log.Notice( "Config", "Loading Config Files...\n" );
+	Log.Success( "Config", "Loading Config Files..." );
 	if( Config.MainConfig.SetSource( config_file ) )
-		Log.Success( "Config", ">> configs/world.conf" );
+		Log.Notice( "Config", ">> configs/world.conf loaded" );
 	else
 	{
-		sLog.outError( "Config", ">> configs/world.conf" );
+		sLog.Error( "Config", ">> error occurred loading configs/world.conf" );
+		sLog.Close();
 		return false;
 	}
 
 	if(Config.OptionalConfig.SetSource(optional_config_file))
-		Log.Success( "Config", ">> configs/optional.conf");
+		Log.Notice( "Config", ">> configs/optional.conf loaded");
 	else
 	{
-		sLog.outError("Config", ">> configs/optional.conf");
+		sLog.Error( "Config", ">> error occurred loading configs/optional.conf");
+		sLog.Close();
 		return false;
 	}
 
 	if(Config.RealmConfig.SetSource(realm_config_file))
-		Log.Success( "Config", ">> configs/realms.conf" );
+		Log.Notice( "Config", ">> configs/realms.conf loaded" );
 	else
 	{
-		Log.Error( "Config", ">> configs/realms.conf" );
+		sLog.Error( "Config", ">> error occurred loading configs/realms.conf" );
+		sLog.Close();
 		return false;
 	}
 
@@ -289,29 +257,25 @@ bool Master::Run(int argc, char ** argv)
 	if( !_StartDB() )
 	{
 		Database::CleanupLibs();
+		sLog.Close();
 		return false;
 	}
 
 	// Checking the DB version. If it's wrong or can't be validated we exit.
 	if( !CheckDBVersion() )
+	{
+		sLog.Close();
 		return false;
+	}
 
 	if(do_database_clean)
 	{
-		printf( "\nEntering database maintenance mode.\n\n" );
+		sLog.outDebug( "Entering database maintenance mode." );
 		new DatabaseCleaner;
 		DatabaseCleaner::getSingleton().Run();
 		delete DatabaseCleaner::getSingletonPtr();
-		Log.Color(TYELLOW);
-		printf( "\nMaintenance finished. Take a moment to review the output.\n" );
-		Log.Color(TNORMAL);
-		fflush(stdout);
-		system("PAUSE");
+		sLog.outDebug( "Maintenance finished." );
 	}
-
-	Log.Line();
-	sLog.outString( "" );
-
 
 	new EventMgr;
 	new World;
@@ -328,11 +292,8 @@ bool Master::Run(int argc, char ** argv)
 	sWorld.Rehash(false);
 
 	/* set new log levels */
-	if( screen_log_level != (int)DEF_VALUE_NOT_SET )
-		sLog.SetScreenLoggingLevel(screen_log_level);
-	
 	if( file_log_level != (int)DEF_VALUE_NOT_SET )
-		sLog.SetFileLoggingLevel(file_log_level, "file.log");
+		sLog.SetFileLoggingLevel(file_log_level);
 
 	// Initialize Opcode Table
 	WorldSession::InitPacketHandlerTable();
@@ -345,6 +306,7 @@ bool Master::Run(int argc, char ** argv)
 	if( !sWorld.SetInitialWorldSettings() )
 	{
 		Log.Error( "Server", "SetInitialWorldSettings() failed. Something went wrong? Exiting." );
+		sLog.Close();
 		return false;
 	}
 
@@ -372,7 +334,7 @@ bool Master::Run(int argc, char ** argv)
 	uint32 next_printout = getMSTime(), next_send = getMSTime();
 
 	// Start Network Subsystem
-	Log.Notice( "Network","Starting subsystem..." );
+	Log.Success( "Network","Starting subsystem..." );
 	new SocketMgr;
 	new SocketGarbageCollector;
 	sSocketMgr.SpawnWorkerThreads();
@@ -383,7 +345,7 @@ bool Master::Run(int argc, char ** argv)
 		sScriptMgr.DumpUnimplementedSpells();
 
 	LoadingTime = getMSTime() - LoadingTime;
-	Log.Notice( "Server","Ready for connections. Startup time: %ums\n", LoadingTime );
+	Log.Success( "Server","Ready for connections. Startup time: %ums", LoadingTime );
 
 	Log.Notice("RemoteConsole", "Starting...");
 	if( StartConsoleListener() )
@@ -530,7 +492,7 @@ bool Master::Run(int argc, char ** argv)
 	delete console;
 
 	// begin server shutdown
-	Log.Notice( "Shutdown", "Initiated at %s", ConvertTimeStampToDataTime( (uint32)UNIXTIME).c_str() );
+	Log.Success( "Shutdown", "Initiated at %s", ConvertTimeStampToDataTime( (uint32)UNIXTIME).c_str() );
 
 	if( lootmgr.is_loading )
 	{
@@ -571,7 +533,6 @@ bool Master::Run(int argc, char ** argv)
 	delete ls;
 
 	sWorld.LogoutPlayers();
-	sLog.outString( "" );
 
 	delete LogonCommHandler::getSingletonPtr();
 
@@ -607,7 +568,8 @@ bool Master::Run(int argc, char ** argv)
 	// remove pid
 	remove( "arcemu.pid" );
 
-	Log.Notice( "Shutdown", "Shutdown complete." );
+	Log.Success( "Shutdown", "Shutdown complete." );
+	Log.Close();
 
 #ifdef WIN32
 	WSACleanup();
@@ -781,7 +743,7 @@ void OnCrash( bool Terminate )
 			Log.Notice( "sql","Waiting for all database queries to finish..." );
 			WorldDatabase.EndThreads();
 			CharacterDatabase.EndThreads();
-			Log.Notice( "sql","All pending database operations cleared.\n" );
+			Log.Notice( "sql","All pending database operations cleared." );
 			sWorld.SaveAllPlayers();
 			Log.Notice( "sql","Data saved." );
 		}

@@ -364,7 +364,6 @@ RevisionExtractor.exe
     <ClInclude Include="..\..\src\arcemu-shared\Util.h" />
     <ClInclude Include="..\..\src\arcemu-shared\WoWGuid.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Log.h" />
-    <ClInclude Include="..\..\src\arcemu-shared\NGLog.h" />
     <ClInclude Include="..\..\src\arcemu-shared\arcemuConfig.h" />
     <ClInclude Include="..\..\src\arcemu-shared\AuthCodes.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Common.h" />

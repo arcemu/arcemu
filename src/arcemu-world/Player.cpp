@@ -526,7 +526,7 @@ Player::~Player ( )
 
 	if(!ok_to_remove)
 	{
-		printf("Player deleted from non-logoutplayer!\n");
+		sLog.outError("Player deleted from non-logoutplayer!");
 		printStackTrace(); // Win32 Debug
 
 		objmgr.RemovePlayer(this);
@@ -1074,7 +1074,7 @@ void Player::Update( uint32 p_time )
 		}
 
 		if ((mstime - m_immunityTime) > 15000) {
-			sLog.outString("plr guid=%d has been immune for > 15sec: %u %u %u %u %u %u %u, resetting states", GetLowGUID(),
+			sLog.outDetail("plr guid=%d has been immune for > 15sec: %u %u %u %u %u %u %u, resetting states", GetLowGUID(),
 				SchoolImmunityList[0], SchoolImmunityList[1], SchoolImmunityList[2], SchoolImmunityList[3],
 				SchoolImmunityList[4], SchoolImmunityList[5], SchoolImmunityList[6]);
 			for(uint32 i = 0; i < 7; i++)
@@ -1149,7 +1149,7 @@ void Player::_EventAttack( bool offhand )
 	//Can't find victim, stop attacking
 	if (!pVictim)
 	{
-		sLog.outDetail("Player::Update:  No valid current selection to attack, stopping attack\n");
+		sLog.outDetail("Player::Update:  No valid current selection to attack, stopping attack");
 		setHRegenTimer(5000); //prevent clicking off creature for a quick heal
 		EventAttackStop();
 		return;
@@ -1241,7 +1241,7 @@ void Player::_EventCharmAttack()
 	if (!pVictim)
 	{
 		sLog.outError( "WORLD: "I64FMT" doesn't exist.",m_curSelection);
-		sLog.outDetail("Player::Update:  No valid current selection to attack, stopping attack\n");
+		sLog.outDetail("Player::Update:  No valid current selection to attack, stopping attack");
 		this->setHRegenTimer(5000); //prevent clicking off creature for a quick heal
 		clearStateFlag(UF_ATTACKING);
 		EventAttackStop();
@@ -2858,7 +2858,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	if(!myClass || !myRace)
 	{
 		// bad character
-		printf("guid %u failed to login, no race or class dbc found. (race %u class %u)\n", (unsigned int)GetLowGUID(), (unsigned int)getRace(), (unsigned int)getClass());
+		sLog.outError("guid %u failed to login, no race or class dbc found. (race %u class %u)", (unsigned int)GetLowGUID(), (unsigned int)getRace(), (unsigned int)getClass());
 		RemovePendingPlayer();
 		return;
 	}
@@ -2882,7 +2882,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	info = objmgr.GetPlayerCreateInfo(getRace(), getClass());
 	if(!info)
 	{
- 		sLog.outError("player guid %u has no playerCreateInfo!\n", (unsigned int)GetLowGUID());
+ 		sLog.outError("player guid %u has no playerCreateInfo!", (unsigned int)GetLowGUID());
 		RemovePendingPlayer();
 		return;
 	}
@@ -2895,7 +2895,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 
 	if(!lvlinfo)
 	{
-		printf("guid %u level %u class %u race %u levelinfo not found!\n", (unsigned int)GetLowGUID(), (unsigned int)getLevel(), (unsigned int)getClass(), (unsigned int)getRace());
+		sLog.outError("guid %u level %u class %u race %u levelinfo not found!", (unsigned int)GetLowGUID(), (unsigned int)getLevel(), (unsigned int)getClass(), (unsigned int)getRace());
 		RemovePendingPlayer();
 		return;
 	}
@@ -4025,7 +4025,7 @@ void Player::_ApplyItemMods(Item* item, int16 slot, bool apply, bool justdrokedo
 		ItemSetEntry* set = dbcItemSet.LookupEntryForced( setid );
 		if( set == NULL)
 		{
-			sLog.outError("Item %u has wrong ItemSet %u\n", proto->ItemId, setid);
+			sLog.outError("Item %u has wrong ItemSet %u", proto->ItemId, setid);
 		}
 		else
 		{
@@ -11760,7 +11760,7 @@ uint32 Player::GetMaxPersonalRating()
 			}
 			else
 			{
-				sLog.outError("%s: GetMemberByGuid returned NULL for player guid = %u\n", __FUNCTION__, m_playerInfo->guid);
+				sLog.outError("%s: GetMemberByGuid returned NULL for player guid = %u", __FUNCTION__, m_playerInfo->guid);
 			}
 		}
 	}

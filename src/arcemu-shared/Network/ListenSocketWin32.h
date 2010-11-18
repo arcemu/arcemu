@@ -41,14 +41,14 @@ public:
 		int ret = bind(m_socket, (const sockaddr*)&m_address, sizeof(m_address));
 		if(ret != 0)
 		{
-			printf("Bind unsuccessful on port %u.", Port);
+			sLog.outError("Bind unsuccessful on port %u.", Port);
 			return;
 		}
 
 		ret = listen(m_socket, 5);
 		if(ret != 0) 
 		{
-			printf("Unable to listen on port %u.", Port);
+			sLog.outError("Unable to listen on port %u.", Port);
 			return;
 		}
 

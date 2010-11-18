@@ -2658,7 +2658,7 @@ void AIInterface::addWayPoint(WayPoint* wp)
 
 	if(!addWayPointUnsafe(wp))
 	{
-		sLog.outDetail("WayPoint ID %u wasn't added to Unit ID %x due to an error occurred in AIInterface::addWayPoint()", wp->id, GetUnit()->GetGUID());
+		sLog.outError("WayPoint ID %u wasn't added to Unit ID %x due to an error occurred in AIInterface::addWayPoint()", wp->id, GetUnit()->GetGUID());
 		delete wp;
 	}
 }
@@ -3396,7 +3396,7 @@ void AIInterface::CastSpell(Unit* caster, SpellEntry *spellInfo, SpellCastTarget
 	// Stop movement while casting.
 	m_AIState = STATE_CASTING;
 #ifdef _AI_DEBUG
-	sLog.outString("AI DEBUG: Unit %u casting spell %s on target "I64FMT, caster->GetEntry(), 
+	sLog.outDebug("AI DEBUG: Unit %u casting spell %s on target "I64FMT, caster->GetEntry(), 
 		sSpellStore.LookupString(spellInfo->Name), targets.m_unitTarget);
 #endif
 
@@ -3411,7 +3411,7 @@ SpellEntry *AIInterface::getSpellEntry(uint32 spellId)
 
 	if(!spellInfo)
 	{
-		sLog.outError("WORLD: unknown spell id %i\n", spellId);
+		sLog.outError("WORLD: unknown spell id %i", spellId);
 		return NULL;
 	}
 
@@ -3582,7 +3582,7 @@ AI_Spell *AIInterface::getSpell()
 	}
 
 #ifdef _AI_DEBUG
-	sLog.outString("AI DEBUG: Returning no spell for unit %u", m_Unit->GetEntry());
+	sLog.outDebug("AI DEBUG: Returning no spell for unit %u", m_Unit->GetEntry());
 #endif
 	return 0;
 }

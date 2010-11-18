@@ -572,12 +572,11 @@ bool Guild::LoadFromDB(Field * f)
 		{
 			if((sid++) != result->Fetch()[1].GetUInt32())
 			{
+				sLog.outError("Guild bank tabs are out of order!");
 #ifdef WIN32
-				MessageBox(0, "Guild bank tabs are out of order!", "Internal error", MB_OK);
 				TerminateProcess(GetCurrentProcess(), 0);
 				return false;
 #else
-				printf("Guild bank tabs are out of order!\n");
 				exit(0);
 #endif
 			}

@@ -244,7 +244,6 @@ StrandOfTheAncient::StrandOfTheAncient(MapMgr * mgr, uint32 id, uint32 lgroup, u
 {
 	int i;
 
-	printf("\nStack Trace:\n");
 	printStackTrace();
 
 	// Lets start using exception handling rather than relying on
@@ -302,7 +301,7 @@ StrandOfTheAncient::StrandOfTheAncient(MapMgr * mgr, uint32 id, uint32 lgroup, u
 	}
 	catch (...) // Exception handling
 	{	
-		printf("Exception: StrandOfTheAncient constructor\n");
+		sLog.outError("Exception: StrandOfTheAncient constructor");
 		printStackTrace();
 		throw;
 	} 
@@ -481,7 +480,7 @@ void StrandOfTheAncient::SpawnBuff(uint32 x)
 
 void StrandOfTheAncient::OnCreate()
 {
-	sLog.outDebug("OnCreate: SOTA Battleground\n");
+	sLog.outDebug("OnCreate: SOTA Battleground");
 
 	SetWorldState(WORLDSTATE_SOTA_CAPTURE_BAR_DISPLAY, 0);
 	SetWorldState(WORLDSTATE_SOTA_CAPTURE_BAR_VALUE, 0);
@@ -494,7 +493,7 @@ void StrandOfTheAncient::OnCreate()
 
 void StrandOfTheAncient::OnStart()
 {
-	sLog.outDebug("OnStart: SOTA Battleground\n");
+	sLog.outDebug("OnStart: SOTA Battleground");
 
 	LocationVector dest;
 	m_started = true;

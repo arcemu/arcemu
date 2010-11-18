@@ -17,9 +17,9 @@
  *
  */
 
+#include "Log.h"
 #include "DBCStores.h"
 #include "DataStore.h"
-#include "NGLog.h"
 #ifdef ENABLE_ACHIEVEMENTS
 SERVER_DECL DBCStorage<AchievementEntry> dbcAchievementStore;
 SERVER_DECL DBCStorage<AchievementCriteriaEntry> dbcAchievementCriteriaStore;

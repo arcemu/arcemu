@@ -46,13 +46,13 @@ void ApplyNormalFixes()
 {
 	//Updating spell.dbc
 
-	Log.Notice("World", "Processing %u spells...", dbcSpell.GetNumRows());
+	Log.Success("World", "Processing %u spells...", dbcSpell.GetNumRows());
 
 	//checking if the DBCs have been extracted from an english client, based on namehash of spell 4, the first with a different name in non-english DBCs
 	SpellEntry * sp = dbcSpell.LookupEntry(4);
 	if( crc32((const unsigned char*)sp->Name, (unsigned int)strlen(sp->Name)) != SPELL_HASH_WORD_OF_RECALL_OTHER )
 	{
-		Log.LargeErrorMessage(LARGERRORMESSAGE_ERROR,"You are using DBCs extracted from an unsupported client.", "ArcEmu supports only enUS and enGB!!!", NULL);
+		Log.LargeErrorMessage("You are using DBCs extracted from an unsupported client.", "ArcEmu supports only enUS and enGB!!!", NULL);
 		abort();
 	}
 
@@ -1273,7 +1273,7 @@ void ApplyNormalFixes()
 				sp->OTspell_coef_override = f[3].GetFloat();
 			}
 			else
-				Log.Warning("SpellCoefOverride", "Has nonexistent spell %u.", f[0].GetUInt32());
+				Log.Error("SpellCoefOverride", "Has nonexistent spell %u.", f[0].GetUInt32());
 		} while( resultx->NextRow() );
 		delete resultx;
 	}

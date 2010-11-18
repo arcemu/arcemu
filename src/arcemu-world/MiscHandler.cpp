@@ -1060,7 +1060,7 @@ void WorldSession::HandleUpdateAccountData(WorldPacket &recv_data)
 	if(uiID > 8)
 	{
 		// Shit..
-		sLog.outString("WARNING: Accountdata > 8 (%d) was requested to be updated by %s of account %d!", uiID, GetPlayer()->GetName(), this->GetAccountId());
+		sLog.outError("WARNING: Accountdata > 8 (%d) was requested to be updated by %s of account %d!", uiID, GetPlayer()->GetName(), this->GetAccountId());
 		return;
 	}
 
@@ -1118,13 +1118,13 @@ void WorldSession::HandleUpdateAccountData(WorldPacket &recv_data)
 		case Z_VERSION_ERROR:	   //-6
 		{
 			delete [] data;
-			sLog.outString("WORLD WARNING: Decompression of account data %d for %s FAILED.", uiID, GetPlayer()->GetName());
+			sLog.outError("WORLD WARNING: Decompression of account data %d for %s FAILED.", uiID, GetPlayer()->GetName());
 			break;
 		}
 
 		default:
 			delete [] data;
-			sLog.outString("WORLD WARNING: Decompression gave a unknown error: %x, of account data %d for %s FAILED.", ZlibResult, uiID, GetPlayer()->GetName());
+			sLog.outError("WORLD WARNING: Decompression gave a unknown error: %x, of account data %d for %s FAILED.", ZlibResult, uiID, GetPlayer()->GetName());
 			break;
 		}
 	}
@@ -1151,7 +1151,7 @@ void WorldSession::HandleRequestAccountData(WorldPacket& recv_data)
 	if(id > 8)
 	{
 		// Shit..
-		sLog.outString("WARNING: Accountdata > 8 (%d) was requested by %s of account %d!", id, GetPlayer()->GetName(), this->GetAccountId());
+		sLog.outError("WARNING: Accountdata > 8 (%d) was requested by %s of account %d!", id, GetPlayer()->GetName(), this->GetAccountId());
 		return;
 	}
 

@@ -173,7 +173,7 @@ void AuthSocket::HandleChallenge()
 	string::size_type i = AccountName.rfind("#");
 	if( i != string::npos )
 	{
-		printf("# ACCOUNTNAME!\n");
+		sLog.outError("# ACCOUNTNAME!");
 		return;
 		//AccountName.erase( i );
 	}

@@ -413,26 +413,26 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 	/* Dump movement flags - Wheee!                                         */
 	/************************************************************************/
 #if 0
-	printf("=========================================================\n");
-	printf("Full movement flags: 0x%.8X\n", movement_info.flags);
+	sLog.outDebug("=========================================================");
+	sLog.outDebug("Full movement flags: 0x%.8X", movement_info.flags);
 	uint32 z, b;
 	for(z = 1, b = 1; b < 32;)
 	{
 		if(movement_info.flags & z)
-			printf("   Bit %u (0x%.8X or %u) is set!\n", b, z, z);
+			sLog.outDebug("   Bit %u (0x%.8X or %u) is set!", b, z, z);
 
 		z <<= 1;
 		b+=1;
 	}
-	printf("=========================================================\n");
+	sLog.outDebug("=========================================================");
 #endif
 
 	/************************************************************************/
 	/* Orientation dumping                                                  */
 	/************************************************************************/
 #if 0
-	printf("Packet: 0x%03X (%s)\n", recv_data.GetOpcode(), LookupName( recv_data.GetOpcode(), g_worldOpcodeNames ) );
-	printf("Orientation: %.10f\n", movement_info.orientation);
+	sLog.outDebug("Packet: 0x%03X (%s)", recv_data.GetOpcode(), LookupName( recv_data.GetOpcode(), g_worldOpcodeNames ) );
+	sLog.outDebug("Orientation: %.10f", movement_info.orientation);
 #endif
 
 	/************************************************************************/

@@ -1499,14 +1499,14 @@ public:
 		uint32 val;
 		size_t len = strlen(format);
 		if(len!= cols)
-			printf("!!! possible invalid format in file %s (us: %u, them: %u)\n", filename, len, cols);
+			sLog.outError("!!! possible invalid format in file %s (us: %u, them: %u)", filename, len, cols);
 
 		while(*t != 0)
 		{
 			if((++c) > cols)
 			{
 				++t;
-				printf("!!! Read buffer overflow in DBC reading of file %s\n", filename);
+				sLog.outError("!!! Read buffer overflow in DBC reading of file %s", filename);
 				continue;
 			}
 

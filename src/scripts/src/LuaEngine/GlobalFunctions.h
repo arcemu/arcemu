@@ -191,8 +191,7 @@ namespace luaGlobalFunctions
 
 	static int logcol(lua_State * L)
 	{
-		int color = luaL_checkint(L,1);
-		Log.Color(color);
+		luaL_checkint(L,1);
 		return 0;
 	}
 	

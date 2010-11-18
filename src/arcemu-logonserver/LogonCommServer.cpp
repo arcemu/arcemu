@@ -38,7 +38,7 @@ LogonCommServerSocket::LogonCommServerSocket(SOCKET fd) : Socket(fd, 65536, 5242
 	use_crypto = false;
 	authenticated = 0;
 
-	sLog.outBasic("Created LogonCommServerSocket %u", m_fd);
+	sLog.outDetail("Created LogonCommServerSocket %u", m_fd);
 }
 
 LogonCommServerSocket::~LogonCommServerSocket()
@@ -48,7 +48,7 @@ LogonCommServerSocket::~LogonCommServerSocket()
 
 void LogonCommServerSocket::OnDisconnect()
 {
-	sLog.outBasic("LogonCommServerSocket::Ondisconnect event.");
+	sLog.outDetail("LogonCommServerSocket::Ondisconnect event.");
 
 	// if we're registered -> Set offline
 	if(!removed)
@@ -66,7 +66,7 @@ void LogonCommServerSocket::OnConnect()
 {
 	if( !IsServerAllowed(GetRemoteAddress().s_addr) )
 	{
-		printf("Server connection from %s:%u DENIED, not an allowed IP.\n", GetRemoteIP().c_str(), GetRemotePort());
+		sLog.outError("Server connection from %s:%u DENIED, not an allowed IP.", GetRemoteIP().c_str(), GetRemotePort());
 		Disconnect();
 		return;
 	}
@@ -157,7 +157,7 @@ void LogonCommServerSocket::HandlePacket(WorldPacket & recvData)
 
 	if(recvData.GetOpcode() >= RMSG_COUNT || Handlers[recvData.GetOpcode()] == 0)
 	{
-		printf("Got unknwon packet from logoncomm: %u\n", recvData.GetOpcode());
+		sLog.outError("Got unknwon packet from logoncomm: %u", recvData.GetOpcode());
 		return;
 	}
 
@@ -294,12 +294,12 @@ void LogonCommServerSocket::HandleSQLExecute(WorldPacket & recvData)
 	/*string Query;
 	recvData >> Query;
 	sLogonSQL->Execute(Query.c_str());*/
-	printf("!! WORLD SERVER IS REQUESTING US TO EXECUTE SQL. THIS IS DEPRECATED AND IS BEING IGNORED. THE SERVER WAS: %s, PLEASE UPDATE IT.\n", GetRemoteIP().c_str());
+	sLog.outError("!! WORLD SERVER IS REQUESTING US TO EXECUTE SQL. THIS IS DEPRECATED AND IS BEING IGNORED. THE SERVER WAS: %s, PLEASE UPDATE IT.", GetRemoteIP().c_str());
 }
 
 void LogonCommServerSocket::HandleReloadAccounts(WorldPacket & recvData)
 {
-	printf("!! WORLD SERVER IS REQUESTING US TO RELOAD ACCOUNTS. THIS IS DEPRECATED AND IS BEING IGNORED. THE SERVER WAS: %s, PLEASE UPDATE IT.\n", GetRemoteIP().c_str());
+	sLog.outError("!! WORLD SERVER IS REQUESTING US TO RELOAD ACCOUNTS. THIS IS DEPRECATED AND IS BEING IGNORED. THE SERVER WAS: %s, PLEASE UPDATE IT.", GetRemoteIP().c_str());
 	//sAccountMgr.ReloadAccounts(true);
 }
 
@@ -315,10 +315,15 @@ void LogonCommServerSocket::HandleAuthChallenge(WorldPacket & recvData)
 
 	sLog.outString("Authentication request from %s, result %s.", GetRemoteIP().c_str(), result ? "OK" : "FAIL");
 
-	printf("Key: ");
+	std::stringstream sstext;
+	sstext << "Key: ";
+	char buf[3];
 	for(int i = 0; i < 20; ++i)
-		printf("%.2X", key[i]);
-	printf("\n");
+	{
+		snprintf(buf, 3, "%.2X", key[i]);
+		sstext << buf;
+	}
+	sLog.outDetail(sstext.str().c_str());
 
 	recvCrypto.Setup(key, 20);
 	sendCrypto.Setup(key, 20);
@@ -348,7 +353,7 @@ void LogonCommServerSocket::HandleMappingReply(WorldPacket & recvData)
 
 	if(uncompress((uint8*)buf.contents(), &rsize, recvData.contents() + 4, (u_long)recvData.size() - 4) != Z_OK)
 	{
-		printf("Uncompress of mapping failed.\n");
+		sLog.outError("Uncompress of mapping failed.");
 		return;
 	}
 
@@ -365,7 +370,7 @@ void LogonCommServerSocket::HandleMappingReply(WorldPacket & recvData)
 
 	HM_NAMESPACE::hash_map<uint32, uint8>::iterator itr;
 	buf >> count;
-	printf("Got mapping packet for realm %u, total of %u entries.\n", (unsigned int)realm_id, (unsigned int)count);
+	sLog.outBasic("Got mapping packet for realm %u, total of %u entries.", (unsigned int)realm_id, (unsigned int)count);
 	for(uint32 i = 0; i < count; ++i)
 	{
 		buf >> account_id >> number_of_characters;

@@ -857,7 +857,7 @@ void WorldSession::HandleBuyBackOpcode( WorldPacket & recv_data )
 			result = _player->GetItemInterface()->AddItemToFreeSlot(it);
 			if(!result)
 			{
-				printf("HandleBuyBack: Error while adding item to free slot");
+				sLog.outError("HandleBuyBack: Error while adding item to free slot");
 				it->DeleteMe();
 			}
 		}
@@ -1490,7 +1490,7 @@ void WorldSession::HandleAutoStoreBagItemOpcode( WorldPacket & recv_data )
 					result = _player->GetItemInterface()->SafeAddItem(srcitem, INVENTORY_SLOT_NOT_SET, NewSlot);
 					if(!result)
 					{
-						printf("HandleAutoStoreBagItem: Error while adding item to newslot");
+						sLog.outError("HandleAutoStoreBagItem: Error while adding item to newslot");
 						srcitem->DeleteMe();
 						return;
 					}
@@ -1529,7 +1529,7 @@ void WorldSession::HandleAutoStoreBagItemOpcode( WorldPacket & recv_data )
 							result = _player->GetItemInterface()->SafeAddItem(srcitem, DstInv, NewSlot);
 							if(!result)
 							{
-								printf("HandleBuyItemInSlot: Error while adding item to newslot");
+								sLog.outError("HandleBuyItemInSlot: Error while adding item to newslot");
 								srcitem->DeleteMe();
 								return;
 							}		
@@ -1773,7 +1773,7 @@ void WorldSession::HandleAutoBankItemOpcode(WorldPacket &recvPacket)
 
 		if(!_player->GetItemInterface()->SafeAddItem(eitem, slotresult.ContainerSlot, slotresult.Slot))
 		{
-			sLog.outDebug("[ERROR]AutoBankItem: Error while adding item to bank bag!\n");
+			sLog.outDebug("[ERROR]AutoBankItem: Error while adding item to bank bag!");
 			if( !_player->GetItemInterface()->SafeAddItem(eitem, SrcInvSlot, SrcSlot) )
 				eitem->DeleteMe();
 		}
@@ -1817,7 +1817,7 @@ void WorldSession::HandleAutoStoreBankItemOpcode(WorldPacket &recvPacket)
 			return;
 		if (!_player->GetItemInterface()->AddItemToFreeSlot(eitem))
 		{
-			sLog.outDebug("[ERROR]AutoStoreBankItem: Error while adding item from one of the bank bags to the player bag!\n");
+			sLog.outDebug("[ERROR]AutoStoreBankItem: Error while adding item from one of the bank bags to the player bag!");
 			if( !_player->GetItemInterface()->SafeAddItem(eitem, SrcInvSlot, SrcSlot) )
 				eitem->DeleteMe();
 		}

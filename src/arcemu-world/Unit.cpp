@@ -2946,7 +2946,7 @@ uint32 Unit::GetSpellDidHitResult( Unit* pVictim, uint32 weapon_damage_type, Spe
 		float spell_flat_modifers= 0;
 		SM_FFValue(SM_FHitchance,&spell_flat_modifers,ability->SpellGroupType);
 		if(spell_flat_modifers!= 0 )
-			printf("!!!!!spell resist mod flat %f,  spell resist bonus %f, spell group %u\n",spell_flat_modifers,hitchance,ability->SpellGroupType);
+			sLog.outDebug("!!!!!spell resist mod flat %f,  spell resist bonus %f, spell group %u",spell_flat_modifers,hitchance,ability->SpellGroupType);
 #endif
 	}
 
@@ -5275,7 +5275,7 @@ void Unit::MoveToWaypoint(uint32 wp_id)
 		WayPoint *wp = ai->getWayPoint(wp_id);
 		if(!wp)
 		{
-			sLog.outString("WARNING: Invalid WP specified in MoveToWaypoint.");
+			sLog.outError("WARNING: Invalid WP specified in MoveToWaypoint.");
 			return;
 		}
 
@@ -5296,7 +5296,7 @@ int32 Unit::GetDamageDoneMod(uint32 school)
 		   return static_cast< Creature* >( this )->ModDamageDone[school];
 	}
 	else
-		sLog.outDebug("[NOTICE] You have bad DB, spell school = %u\n",school);
+		sLog.outDebug("[NOTICE] You have bad DB, spell school = %u",school);
 	return 0;
 }
 
@@ -5310,7 +5310,7 @@ float Unit::GetDamageDonePctMod(uint32 school)
 		   return TO_CREATURE(this)->ModDamageDonePct[school];
 	}
 	else
-		sLog.outDebug("[NOTICE] You have bad DB, spell school = %u\n",school);
+		sLog.outDebug("[NOTICE] You have bad DB, spell school = %u",school);
 	return 0;
 }
 

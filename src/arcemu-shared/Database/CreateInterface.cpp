@@ -18,7 +18,7 @@
  */
 
 #include "DatabaseEnv.h"
-#include "../NGLog.h"
+#include "../Log.h"
 
 #if defined(ENABLE_DATABASE_MYSQL)
 #include "MySQLDatabase.h"
@@ -63,7 +63,7 @@ Database * Database::CreateDatabaseInterface(uint32 uType)
 #endif
 	}
 
-	Log.LargeErrorMessage(LARGERRORMESSAGE_ERROR, "You have attempted to connect to a database that is unsupported or nonexistant.\nCheck your config and try again.", NULL);
+	Log.LargeErrorMessage("You have attempted to connect to a database that is unsupported or nonexistant. Check your config and try again.", NULL);
 	abort();
 	return NULL;
 }

@@ -179,7 +179,7 @@ void CBattlegroundManager::HandleBattlegroundJoin(WorldSession * m_session, Worl
 	/* Queue him! */
 	m_queueLock.Acquire();
 	m_queuedPlayers[bgtype][lgroup].push_back(pguid);
-	Log.Success("BattlegroundManager", "Player %u is now in battleground queue for instance %u", m_session->GetPlayer()->GetLowGUID(), (instance + 1) );
+	Log.Notice("BattlegroundManager", "Player %u is now in battleground queue for instance %u", m_session->GetPlayer()->GetLowGUID(), (instance + 1) );
 
 	/* send the battleground status packet */
 	SendBattlefieldStatus( m_session->GetPlayer(), BGSTATUS_INQUEUE, bgtype, instance, 0, BGMapIds[bgtype], 0 );
@@ -421,7 +421,7 @@ int CBattlegroundManager::CreateArenaType(int type, Group * group1, Group * grou
 	Arena * ar = ((Arena*)CreateInstance(type, LEVEL_GROUP_70));
 	if (ar == NULL)
 	{
-		sLog.outError("BattlegroundMgr", "%s (%u): Couldn't create Arena Instance", __FILE__, __LINE__);
+		sLog.Error("BattlegroundMgr", "%s (%u): Couldn't create Arena Instance", __FILE__, __LINE__);
 		m_queueLock.Release();
 		m_instanceLock.Release();
 		return -1;
@@ -600,7 +600,7 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 					arena = ((Arena*)CreateInstance(i, j));
 					if ( arena == NULL )
 					{
-						sLog.outError("BattlegroundMgr", "%s (%u): Couldn't create Arena Instance", __FILE__, __LINE__);
+						sLog.Error("BattlegroundMgr", "%s (%u): Couldn't create Arena Instance", __FILE__, __LINE__);
 						m_queueLock.Release();
 						m_instanceLock.Release();
  						return;
@@ -691,7 +691,7 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 
 			if(itz == m_queuedGroups[i].end())
 			{
-				sLog.outError("BattlegroundMgr", "Internal error at %s:%u", __FILE__, __LINE__);
+				sLog.Error("BattlegroundMgr", "Internal error at %s:%u", __FILE__, __LINE__);
 				m_queueLock.Release();
 				m_instanceLock.Release();
 				return;
@@ -738,7 +738,7 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 
 				if(itz == possibleGroups.end())
 				{
-					sLog.outError("BattlegroundMgr", "Internal error at %s:%u", __FILE__, __LINE__);
+					sLog.Error("BattlegroundMgr", "Internal error at %s:%u", __FILE__, __LINE__);
 					m_queueLock.Release();
 					m_instanceLock.Release();
 					return;
@@ -1244,7 +1244,7 @@ CBattleground * CBattlegroundManager::CreateInstance(uint32 Type, uint32 LevelGr
 		mgr = sInstanceMgr.CreateBattlegroundInstance(mapid);
 		if(mgr == NULL)
 		{
-			sLog.outError("BattlegroundManager", "Arena CreateInstance() call failed for map %u, type %u, level group %u", mapid, Type, LevelGroup);
+			sLog.Error("BattlegroundManager", "Arena CreateInstance() call failed for map %u, type %u, level group %u", mapid, Type, LevelGroup);
 			return NULL;      // Shouldn't happen
 		}
 
@@ -1269,7 +1269,7 @@ CBattleground * CBattlegroundManager::CreateInstance(uint32 Type, uint32 LevelGr
 		iid = ++m_maxBattlegroundId[Type];
 		bg = new Arena(mgr, iid, LevelGroup, Type, players_per_side);
 		mgr->m_battleground = bg;
-		Log.Success("BattlegroundManager", "Created arena battleground type %u for level group %u on map %u.", Type, LevelGroup, mapid);
+		Log.Notice("BattlegroundManager", "Created arena battleground type %u for level group %u on map %u.", Type, LevelGroup, mapid);
 		sEventMgr.AddEvent(bg, &CBattleground::EventCreate, EVENT_BATTLEGROUND_QUEUE_UPDATE, 1, 1,0);
 		m_instanceLock.Acquire();
 		m_instances[Type].insert( make_pair(iid, bg) );
@@ -1279,7 +1279,7 @@ CBattleground * CBattlegroundManager::CreateInstance(uint32 Type, uint32 LevelGr
 
 	if(cfunc == NULL)
 	{
-		sLog.outError("BattlegroundManager", "Could not find CreateBattlegroundFunc pointer for type %u level group %u", Type, LevelGroup);
+		sLog.Error("BattlegroundManager", "Could not find CreateBattlegroundFunc pointer for type %u level group %u", Type, LevelGroup);
 		return NULL;
 	}
 
@@ -1310,7 +1310,7 @@ CBattleground * CBattlegroundManager::CreateInstance(uint32 Type, uint32 LevelGr
 	mgr = sInstanceMgr.CreateBattlegroundInstance(BGMapIds[Type]);
 	if(mgr == NULL)
 	{
-		sLog.outError("BattlegroundManager", "CreateInstance() call failed for map %u, type %u, level group %u", BGMapIds[Type], Type, LevelGroup);
+		sLog.Error("BattlegroundManager", "CreateInstance() call failed for map %u, type %u, level group %u", BGMapIds[Type], Type, LevelGroup);
 		return NULL;      // Shouldn't happen
 	}
 
@@ -1320,7 +1320,7 @@ CBattleground * CBattlegroundManager::CreateInstance(uint32 Type, uint32 LevelGr
 	bg->SetIsWeekend(isWeekend);
 	mgr->m_battleground = bg;
 	sEventMgr.AddEvent(bg, &CBattleground::EventCreate, EVENT_BATTLEGROUND_QUEUE_UPDATE, 1, 1,0);
-	Log.Success("BattlegroundManager", "Created battleground type %u for level group %u.", Type, LevelGroup);
+	Log.Notice("BattlegroundManager", "Created battleground type %u for level group %u.", Type, LevelGroup);
 
 	m_instanceLock.Acquire();
 	m_instances[Type].insert( make_pair(iid, bg) );
@@ -1371,7 +1371,7 @@ void CBattlegroundManager::DeleteBattleground(CBattleground * bg)
 	}
 	catch (...) // for Win32 Debug
 	{	
-		printf("Exception: CBattlegroundManager::DeleteBattleground\n");
+		sLog.outError("Exception: CBattlegroundManager::DeleteBattleground");
 		printStackTrace();
 		throw;
 	} 
@@ -2007,7 +2007,7 @@ void CBattlegroundManager::HandleArenaJoin(WorldSession * m_session, uint32 Batt
 			m_queueLock.Acquire();
 			m_queuedGroups[BattlegroundType].push_back(pGroup->GetID());
 			m_queueLock.Release();
-			Log.Success("BattlegroundMgr", "Group %u is now in battleground queue for arena type %u", pGroup->GetID(), BattlegroundType);
+			Log.Notice("BattlegroundMgr", "Group %u is now in battleground queue for arena type %u", pGroup->GetID(), BattlegroundType);
 
 			/* send the battleground status packet */
 
@@ -2019,7 +2019,7 @@ void CBattlegroundManager::HandleArenaJoin(WorldSession * m_session, uint32 Batt
 	/* Queue him! */
 	m_queueLock.Acquire();
 	m_queuedPlayers[BattlegroundType][lgroup].push_back(pguid);
-	Log.Success("BattlegroundMgr", "Player %u is now in battleground queue for {Arena %u}", m_session->GetPlayer()->GetLowGUID(), BattlegroundType );
+	Log.Notice("BattlegroundMgr", "Player %u is now in battleground queue for {Arena %u}", m_session->GetPlayer()->GetLowGUID(), BattlegroundType );
 
 	/* send the battleground status packet */
 	SendBattlefieldStatus( m_session->GetPlayer(), BGSTATUS_INQUEUE, BattlegroundType, 0 , 0, 0, 0 );

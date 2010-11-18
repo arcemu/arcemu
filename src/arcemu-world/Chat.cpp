@@ -137,7 +137,7 @@ void CommandTableStorage::Override(const char * command, const char * level)
 			{
 				// no subcommand, we can change it.
 				p->CommandGroup = level[0];
-				printf("Changing command level of command `%s` to %c.\n", p->Name, level[0]);
+				sLog.outDetail("Changing command level of command `%s` to %c.", p->Name, level[0]);
 			}
 			else
 			{
@@ -145,7 +145,7 @@ void CommandTableStorage::Override(const char * command, const char * level)
 				ChatCommand * p2 = p->ChildCommands;
 				if(!p2)
 				{
-					printf("Invalid command specified for override: %s\n", command_name);
+					sLog.outError("Invalid command specified for override: %s", command_name);
 				}
 				else
 				{
@@ -154,13 +154,13 @@ void CommandTableStorage::Override(const char * command, const char * level)
 						if(!strnicmp("*",subcommand_name,1))
 						{
 								p2->CommandGroup = level[0];
-								printf("Changing command level of command (wildcard) `%s`:`%s` to %c.\n", p->Name, p2->Name, level[0]);
+								sLog.outDetail("Changing command level of command (wildcard) `%s`:`%s` to %c.", p->Name, p2->Name, level[0]);
 						}else{
 							if(!strnicmp(p2->Name, subcommand_name, len2))
 							{
 								// change the level
 								p2->CommandGroup = level[0];
-								printf("Changing command level of command `%s`:`%s` to %c.\n", p->Name, p2->Name, level[0]);
+								sLog.outDetail("Changing command level of command `%s`:`%s` to %c.", p->Name, p2->Name, level[0]);
 								break;
 							}
 						}
@@ -170,7 +170,7 @@ void CommandTableStorage::Override(const char * command, const char * level)
 					{
 						if(strnicmp("*",subcommand_name,1)) //Hacky.. meh.. -DGM
 						{
-							printf("Invalid subcommand referenced: `%s` under `%s`.\n", subcommand_name, p->Name);
+							sLog.outError("Invalid subcommand referenced: `%s` under `%s`.", subcommand_name, p->Name);
 						}
 						break;
 					}
@@ -183,7 +183,7 @@ void CommandTableStorage::Override(const char * command, const char * level)
 
 	if(p->Name == 0)
 	{
-		printf("Invalid command referenced: `%s`\n", command_name);
+		sLog.outError("Invalid command referenced: `%s`", command_name);
 	}
 
 	free(cmd);

@@ -85,7 +85,7 @@ void report(lua_State * L)
 void LuaEngine::ScriptLoadDir(char* Dirname, LUALoadScripts *pak)
 {
 	#ifdef WIN32
-		Log.Success("LuaEngine", "Scanning Directory %s", Dirname);
+		Log.Notice("LuaEngine", "Scanning Directory %s", Dirname);
 		HANDLE hFile;
 		WIN32_FIND_DATA FindData;
 		memset(&FindData,0,sizeof(FindData));
@@ -140,14 +140,14 @@ void LuaEngine::ScriptLoadDir(char* Dirname, LUALoadScripts *pak)
 
 		struct stat attributes;
 		bool err;
-		Log.Success("LuaEngine", "Scanning Directory %s", Dirname);
+		Log.Notice("LuaEngine", "Scanning Directory %s", Dirname);
 		while(filecount--)
 		{
 			char dottedrelpath[200];
 			sprintf(dottedrelpath, "%s/%s", Dirname, list[filecount]->d_name);
 			if(stat(dottedrelpath, &attributes) == -1) {
 				err=true;
-				Log.Error("LuaEngine","Error opening %s: %s\n", dottedrelpath, strerror(errno));
+				Log.Error("LuaEngine","Error opening %s: %s", dottedrelpath, strerror(errno));
 			} else err=false;
 
 			if (!err && S_ISDIR(attributes.st_mode))
@@ -186,39 +186,15 @@ void LuaEngine::LoadScripts()
 		strcpy(filename, itr->c_str());
 		if(luaL_loadfile(lu, filename) != 0)
 		{
-#ifdef WIN32
 			Log.Error("LuaEngine", "loading %s failed.(could not load)", itr->c_str());
-			SetConsoleTextAttribute(stdout_handle, (WORD)TRED);
-#else
-			Log.Notice("LuaEngine", "\033[22;31m loading %s failed.(could not load)", itr->c_str());
-			printf("\033[22;31m");
-#endif
 			report(lu);
-#ifdef WIN32
-			SetConsoleTextAttribute(stdout_handle, (WORD)TWHITE);
-#else
-			printf("\033[01;37m");
-#endif
 		}
 		else
 		{
 			if(lua_pcall(lu, 0, 0, 0) != 0)
 			{
-#ifdef WIN32
 				Log.Error("LuaEngine", "%s failed.(could not run)", itr->c_str());
-				SetConsoleTextAttribute(stdout_handle, (WORD)TRED);
-#else
-				Log.Notice("LuaEngine", "\033[22;31m %s failed.(could not run)", itr->c_str());
-				printf("\033[22;31m");
-
-#endif
-
 				report(lu);
-#ifdef WIN32
-				SetConsoleTextAttribute(stdout_handle, (WORD)TWHITE);
-#else
-				printf("\033[01;37m");
-#endif
 			}
 			else
 					Log.Debug("LuaEngine", "loaded %s.", itr->c_str());
@@ -647,9 +623,7 @@ static int RegisterDummySpell(lua_State * L)
 
 	if (m_luaDummySpells.find(entry) != m_luaDummySpells.end())
 	{
-		Log.Color(TRED);
 		luaL_error(L,"LuaEngineMgr : RegisterDummySpell failed! Spell %d already has a registered Lua function!",entry);
-		Log.Color(TWHITE);
 	}
 	if(!strcmp(typeName,"function"))
 		functionRef = (uint16)lua_ref(L,true);
@@ -2378,33 +2352,8 @@ GossipScript * CreateLuaGOGossipScript(uint32 id)
 void LuaEngine::Startup()
 {
 	Log.Notice("LuaEngineMgr", "Spawning Lua Engine...");
-	#ifdef WIN32
-	Log.Color(TGREEN);
-	printf(" \_\_                        \_\_  \_\_                  \_\_\_\_\_\_                 \n");
-	Log.Color(TGREEN);
-	printf("/\\ \\                      /\\ \\/\\ \\                /\\  \_  \\                 \n");
-	Log.Color(TGREEN);
-	printf("\\ \\ \\      \_\_  \_\_     \_\_  \\ \\ \\\_\\ \\  \_\_  \_\_  \_\_\_\_\_\\ \\ \\\_\\ \\  \_\_\_\_\_  \_\_\_    \n");
-	Log.Color(TGREEN);
-	printf(" \\ \\ \\  \_\_/\\ \\/\\ \\  /'\_\_`\\ \\ \\  \_  \\/\\ \\/\\ \\/\\  \_\_`\\ \\  \_\_ \\/\\  \_\_\\/'\_\_\_\\  \n");
-	Log.Color(TGREEN);
-	printf("  \\ \\ \\\_\\ \\ \\ \\\_\\ \\/\\ \\\_\\.\\\_\\ \\ \\ \\ \\ \\ \\\_\\ \\ \\ \\\_\\ \\ \\ \\/\\ \\ \\ \\//\\ \\\_\_/  \n");
-	Log.Color(TGREEN);
-	printf("   \\ \\\_\_\_\_/\\ \\\_\_\_\_/\\ \\\_\_/ \\\_\\\\ \\\_\\ \\\_\\/`\_\_\_\_ \\ \\  \_\_/\\ \\\_\\ \\\_\\ \\\_\\\\ \\\_\_\_\_\\ \n");
-	Log.Color(TGREEN);
-	printf("    \\/\_\_\_/  \\/\_\_\_/  \\/\_\_/\\/\_/ \\/\_/\\/\_/`/\_\_\_// \\ \\ \\/  \\/\_/\\/\_/\\/\_/ \\/\_\_\_\_/ \n");
-	Log.Color(TGREEN);
-	printf("                                         /\\\_\_\_/\\ \\\_\\                       \n");
-	Log.Color(TGREEN);
-	printf("                                         \\/\_\_/  \\/\_/                      \n");
-	#else
-	Log.Color(TGREEN);
-	printf("~~~LuaHypArc~~~");
-	#endif
-	Log.Line();
+	Log.Notice("LuaEngineMgr", "~~~LuaHypArc~~~");
 	Log.Notice("LuaEngineMgr", "LuaHypArc Lua Engine %s: Loaded", ARCH);
-	Log.Color(TNORMAL);
-	Log.Line();
 	//Create a new global state that will server as the lua universe.
 	lu = lua_open();
 

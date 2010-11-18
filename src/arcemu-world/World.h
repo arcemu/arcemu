@@ -613,7 +613,6 @@ protected:
 
 		return m_gameTime;
 	}
-	void FillSpellReplacementsTable();
 
 private:
 	EventableObjectHolder * eventholder;

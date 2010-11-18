@@ -19,7 +19,6 @@
  */
 
 #include "DatabaseEnv.h"
-#include "../NGLog.h"
 
 #if defined(ENABLE_DATABASE_POSTGRES)
 

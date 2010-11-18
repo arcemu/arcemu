@@ -205,7 +205,7 @@ void WorldSession::HandlePetAction(WorldPacket & recv_data)
 			}break;
 		default:
 			{
-				printf("WARNING: Unknown pet action received. Action = %.4X, Misc = %.4X\n", action, misc);
+				sLog.outDebug("WARNING: Unknown pet action received. Action = %.4X, Misc = %.4X", action, misc);
 			}break;
 		}
 

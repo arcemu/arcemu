@@ -92,13 +92,13 @@ public:
 #ifdef WIN32
 		/* push the event */
 		SetEvent( hEvent );
-		printf( "Waiting for PFC thread to exit..." );
+		sLog.outDetail( "Waiting for PFC thread to exit..." );
 		/* wait for the thread to exit */
 		while( thread_active )
 		{
 			Sleep( 100 );
 		}
-		printf( " done.\n" );
+		sLog.outDetail( "PFC thread exited." );
 #else
 		pthread_cond_signal( &abortcond );
 #endif
