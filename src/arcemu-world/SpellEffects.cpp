@@ -149,8 +149,8 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS]={
 	&Spell::SpellEffectReduceThreatPercent,     //SPELL_EFFECT_REDUCE_THREAT_PERCENT - 125 // Reduce Threat by % //http://www.thottbot.com/?sp=32835
 	&Spell::SpellEffectSpellSteal,				//SPELL_EFFECT_SPELL_STEAL - 126 // Steal Beneficial Buff (Magic) //http://www.thottbot.com/?sp=30449
 	&Spell::SpellEffectProspecting,				// unknown - 127 // Search 5 ore of a base metal for precious gems.  This will destroy the ore in the process.
-	&Spell::SpellEffectApplyAura128,			// unknown - 128 // Adjust a stats by %: Mod Stat // ITS FLAT
-	&Spell::SpellEffectNULL,					// unknown - 129 // Mod Dmg % (Spells)
+	&Spell::SpellEffectApplyAura128,			// Apply Aura
+	&Spell::SpellEffectApplyAura129,			// Apply Aura
 	&Spell::SpellEffectRedirectThreat,			// unknown - 130 // http://www.thottbot.com/s34477
 	&Spell::SpellEffectNULL,					// unknown - 131 // test spell
 	&Spell::SpellEffectPlayMusic,				// Play Music - 132 // http://www.thottbot.com/s46852
@@ -315,18 +315,18 @@ const char* SpellEffectNames[TOTAL_SPELL_EFFECTS] = {
 	"UNKNOWN4",                  //    125
 	"UNKNOWN5",                  //    126
 	"PROSPECTING",               //    127
-	"UNKNOWN7",                  //    128
-	"UNKNOWN9",                  //    129
+	"APPLY_AURA_128",            //    128
+	"APPLY_AURA_129",            //    129
 	"UNKNOWN10",                 //    130
 	"UNKNOWN11",                 //    131
-	"PLAY_MUSIC",                 //    132
+	"PLAY_MUSIC",                //    132
 	"FORGET_SPECIALIZATION",     //    133
 	"KILL_CREDIT",               //    134
 	"UNKNOWN15",                 //    135
 	"UNKNOWN16",                 //    136
 	"RESTORE_POWER_PCT",         //    137
 	"KNOCKBACK2",                //    138
-	"CLEAR_QUEST",                 //    139
+	"CLEAR_QUEST",               //    139
 	"UNKNOWN20",                 //    140
 	"UNKNOWN21",                 //    141
 	"TRIGGER_SPELL_WITH_VALUE",  //    142
@@ -5418,10 +5418,12 @@ void Spell::SpellEffectProspecting(uint32 i)
 	}
 }
 
-void Spell::SpellEffectApplyAura128(uint32 i)
-{
-	if(GetProto()->EffectApplyAuraName[i] != 0)
-		SpellEffectApplyAura(i);
+void Spell::SpellEffectApplyAura128(uint32 i){
+	SpellEffectApplyAura(i);
+}
+
+void Spell::SpellEffectApplyAura129(uint32 i){
+	SpellEffectApplyAura(i);
 }
 
 void Spell::SpellEffectRedirectThreat(uint32 i)

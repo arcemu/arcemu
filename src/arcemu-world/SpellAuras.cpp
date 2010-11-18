@@ -2526,7 +2526,7 @@ void Aura::SpellAuraModDetect(bool apply)
 void Aura::SpellAuraModInvisibility(bool apply)
 {
 	SetPositive();
-	if(m_spellProto->Effect[mod->i] == SPELL_EFFECT_UNKNOWN7)
+	if(m_spellProto->Effect[mod->i] == SPELL_EFFECT_APPLY_AURA_128 ) // WTF is this crap? TODO clean this
 		return;
 
 	if(apply)
