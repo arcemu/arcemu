@@ -5035,6 +5035,11 @@ bool Player::HasFinishedQuest(uint32 quest_id)
 	return (m_finishedQuests.find(quest_id) != m_finishedQuests.end());
 }
 
+void Player::ClearQuest( uint32 id ){
+	m_finishedQuests.erase( id );
+	m_finishedDailies.erase( id );
+}
+
 
 bool Player::GetQuestRewardStatus(uint32 quest_id)
 {

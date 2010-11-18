@@ -1094,6 +1094,20 @@ public:
 	void				AreaExploredOrEventHappens( uint32 questId ); // scriptdev2
 
 	bool                HasFinishedQuest(uint32 quest_id);
+	
+	/////////////////////////////////////////////////////
+	//void ClearQuest( uint32 id )
+	//  Clears the finished status of a quest
+	//
+	//Parameters
+	//  uint32 id  -  Identifier of the quest
+	//
+	//Return Value
+	//  None
+	//
+	/////////////////////////////////////////////////////
+	void ClearQuest( uint32 id );
+
 	bool				GetQuestRewardStatus(uint32 quest_id);
 	bool                HasQuestForItem(uint32 itemid);
     bool                CanFinishQuest(Quest* qst);

@@ -944,7 +944,7 @@ enum SpellEffects
 	SPELL_EFFECT_UNKNOWN16,                 //    136
 	SPELL_EFFECT_UNKNOWN17,                 //    137
 	SPELL_EFFECT_UNKNOWN18,                 //    138
-	SPELL_EFFECT_UNKNOWN19,                 //    139
+	SPELL_EFFECT_CLEAR_QUEST,               //    139
 	SPELL_EFFECT_UNKNOWN20,                 //    140
 	SPELL_EFFECT_UNKNOWN21,                 //    141
 	SPELL_EFFECT_TRIGGER_SPELL_WITH_VALUE,  //    142
@@ -1854,6 +1854,7 @@ public:
 	void SpellEffectSendEvent(uint32 i);
 	void SpellEffectPowerBurn(uint32 i);
 	void SpellEffectThreat(uint32 i);
+	void SpellEffectClearQuest( uint32 i );
 	void SpellEffectTriggerSpell(uint32 i);
 	void SpellEffectPowerFunnel(uint32 i);
 	void SpellEffectHealMaxHealth(uint32 i);

@@ -326,7 +326,7 @@ const char* SpellEffectNames[TOTAL_SPELL_EFFECTS] = {
 	"UNKNOWN16",                 //    136
 	"RESTORE_POWER_PCT",         //    137
 	"KNOCKBACK2",                //    138
-	"UNKNOWN19",                 //    139
+	"CLEAR_QUEST",                 //    139
 	"UNKNOWN20",                 //    140
 	"UNKNOWN21",                 //    141
 	"TRIGGER_SPELL_WITH_VALUE",  //    142
@@ -3659,6 +3659,19 @@ void Spell::SpellEffectThreat(uint32 i) // Threat
 	bool chck = unitTarget->GetAIInterface()->modThreatByPtr(u_caster, amount);
 	if(!chck)
 		unitTarget->GetAIInterface()->AttackReaction(u_caster,1,0);
+}
+
+void Spell::SpellEffectClearQuest( uint32 i ){
+	if( playerTarget == NULL ){
+		sLog.outError("Spell %u ( %s ) was not casted on Player, but Spell requires Player to be a target.", m_spellInfo->Id, m_spellInfo->Name );
+		return;
+	}
+
+	uint32 questid1 = m_spellInfo->EffectBasePoints[ i ];
+	uint32 questid2 = m_spellInfo->EffectMiscValue[ i ];
+
+	playerTarget->ClearQuest( questid1 );
+	playerTarget->ClearQuest( questid2 );
 }
 
 void Spell::SpellEffectTriggerSpell(uint32 i) // Trigger Spell
