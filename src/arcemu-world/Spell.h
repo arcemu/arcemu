@@ -854,7 +854,6 @@ enum SpellEffects
 	SPELL_EFFECT_STEALTH,                   //    48
 	SPELL_EFFECT_DETECT,                    //    49
 	SPELL_EFFECT_SUMMON_OBJECT,             //    50
-	SPELL_EFFECT_TRANS_DOOR,                //    50
 	SPELL_EFFECT_FORCE_CRITICAL_HIT,        //    51
 	SPELL_EFFECT_GUARANTEE_HIT,             //    52
 	SPELL_EFFECT_ENCHANT_ITEM,              //    53
