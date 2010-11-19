@@ -838,7 +838,7 @@ enum SpellEffects
 	SPELL_EFFECT_TRIGGER_MISSILE,           //    32
 	SPELL_EFFECT_OPEN_LOCK,                 //    33
 	SPELL_EFFECT_TRANSFORM_ITEM,            //    34
-	SPELL_EFFECT_APPLY_AREA_AURA,           //    35
+	SPELL_EFFECT_APPLY_GROUP_AREA_AURA,     //    35
 	SPELL_EFFECT_LEARN_SPELL,               //    36
 	SPELL_EFFECT_SPELL_DEFENSE,             //    37
 	SPELL_EFFECT_DISPEL,                    //    38
@@ -854,7 +854,7 @@ enum SpellEffects
 	SPELL_EFFECT_STEALTH,                   //    48
 	SPELL_EFFECT_DETECT,                    //    49
 	SPELL_EFFECT_SUMMON_OBJECT,             //    50
-	//SPELL_EFFECT_TRANS_DOOR,              //    50
+	SPELL_EFFECT_TRANS_DOOR,                //    50
 	SPELL_EFFECT_FORCE_CRITICAL_HIT,        //    51
 	SPELL_EFFECT_GUARANTEE_HIT,             //    52
 	SPELL_EFFECT_ENCHANT_ITEM,              //    53
@@ -869,7 +869,7 @@ enum SpellEffects
 	SPELL_EFFECT_POWER_BURN,                //    62
 	SPELL_EFFECT_THREAT,                    //    63
 	SPELL_EFFECT_TRIGGER_SPELL,             //    64
-	SPELL_EFFECT_APPLY_AREA_AURA2,			//    65
+	SPELL_EFFECT_APPLY_RAID_AREA_AURA,      //    65
 	SPELL_EFFECT_POWER_FUNNEL,              //    66
 	SPELL_EFFECT_HEAL_MAX_HEALTH,           //    67
 	SPELL_EFFECT_INTERRUPT_CAST,            //    68
@@ -923,7 +923,7 @@ enum SpellEffects
 	SPELL_EFFECT_SKIN_PLAYER_CORPSE,        //    116
 	SPELL_EFFECT_SPIRIT_HEAL,               //    117
 	SPELL_EFFECT_SKILL,                     //    118
-	SPELL_EFFECT_APPLY_PET_AURA,            //    119
+	SPELL_EFFECT_APPLY_PET_AREA_AURA,       //    119
 	SPELL_EFFECT_TELEPORT_GRAVEYARD,        //    120
 	SPELL_EFFECT_DUMMYMELEE,                //    121
 	SPELL_EFFECT_UNKNOWN1,                  //    122
@@ -932,11 +932,11 @@ enum SpellEffects
 	SPELL_EFFECT_UNKNOWN4,                  //    125
 	SPELL_EFFECT_UNKNOWN5,                  //    126
 	SPELL_EFFECT_PROSPECTING,               //    127
-	SPELL_EFFECT_APPLY_AURA_128,            //    128
-	SPELL_EFFECT_APPLY_AURA_129,            //    129
+	SPELL_EFFECT_APPLY_FRIEND_AREA_AURA,    //    128
+	SPELL_EFFECT_APPLY_ENEMY_AREA_AURA,     //    129
 	SPELL_EFFECT_UNKNOWN10,                 //    130
 	SPELL_EFFECT_UNKNOWN11,                 //    131
-	SPELL_EFFECT_PLAY_MUSIC,                 //    132
+	SPELL_EFFECT_PLAY_MUSIC,                //    132
 	SPELL_EFFECT_FORGET_SPECIALIZATION,     //    133
 	SPELL_EFFECT_KILL_CREDIT,               //    134
 	SPELL_EFFECT_UNKNOWN15,                 //    135
@@ -947,7 +947,7 @@ enum SpellEffects
 	SPELL_EFFECT_UNKNOWN20,                 //    140
 	SPELL_EFFECT_UNKNOWN21,                 //    141
 	SPELL_EFFECT_TRIGGER_SPELL_WITH_VALUE,  //    142
-	SPELL_EFFECT_UNKNOWN22,                 //    143
+	SPELL_EFFECT_APPLY_OWNER_AREA_AURA,     //    143
 	SPELL_EFFECT_UNKNOWN23,                 //    144
 	SPELL_EFFECT_UNKNOWN24,                 //    145
 	SPELL_EFFECT_UNKNOWN25,                 //    146
@@ -1088,88 +1088,19 @@ ARCEMU_INLINE bool CanAgroHash(uint32 spellhashname)
         return true;
 }
 
-/************************************************************************/
-/* IsDamagingSpell, this function seems slow, its only used rarely      */
-/************************************************************************/
-ARCEMU_INLINE bool IsDamagingSpell(SpellEntry *sp)
-{
-    switch (sp->Effect[0])
-    {
-        case SPELL_EFFECT_SCHOOL_DAMAGE:
-        case SPELL_EFFECT_ENVIRONMENTAL_DAMAGE:
-        case SPELL_EFFECT_HEALTH_LEECH:
-        case SPELL_EFFECT_WEAPON_DAMAGE_NOSCHOOL:
-        case SPELL_EFFECT_ADD_EXTRA_ATTACKS:
-        case SPELL_EFFECT_WEAPON_PERCENT_DAMAGE:
-        case SPELL_EFFECT_POWER_BURN:
-        case SPELL_EFFECT_ATTACK:
-            return true;
-    }
-    switch (sp->Effect[1])
-    {
-        case SPELL_EFFECT_SCHOOL_DAMAGE:
-        case SPELL_EFFECT_ENVIRONMENTAL_DAMAGE:
-        case SPELL_EFFECT_HEALTH_LEECH:
-        case SPELL_EFFECT_WEAPON_DAMAGE_NOSCHOOL:
-        case SPELL_EFFECT_ADD_EXTRA_ATTACKS:
-        case SPELL_EFFECT_WEAPON_PERCENT_DAMAGE:
-        case SPELL_EFFECT_POWER_BURN:
-        case SPELL_EFFECT_ATTACK:
-            return true;
-    }
-    switch (sp->Effect[2])
-    {
-        case SPELL_EFFECT_SCHOOL_DAMAGE:
-        case SPELL_EFFECT_ENVIRONMENTAL_DAMAGE:
-        case SPELL_EFFECT_HEALTH_LEECH:
-        case SPELL_EFFECT_WEAPON_DAMAGE_NOSCHOOL:
-        case SPELL_EFFECT_ADD_EXTRA_ATTACKS:
-        case SPELL_EFFECT_WEAPON_PERCENT_DAMAGE:
-        case SPELL_EFFECT_POWER_BURN:
-        case SPELL_EFFECT_ATTACK:
-            return true;
-    }
-    if( sp->Effect[0]==SPELL_EFFECT_APPLY_AURA ||
-		sp->Effect[0]==SPELL_EFFECT_APPLY_AREA_AURA ||
-		sp->Effect[0]==SPELL_EFFECT_APPLY_AREA_AURA2 )
-    {
-        switch (sp->EffectApplyAuraName[0])
-        {
-            case 3://SPELL_AURA_PERIODIC_DAMAGE:
-            case 43://SPELL_AURA_PROC_TRIGGER_DAMAGE:
-            case 89://SPELL_AURA_PERIODIC_DAMAGE_PERCENT:
-            case 162://SPELL_AURA_POWER_BURN:
-                return true;
-        }
-    }
-    if( sp->Effect[1]==SPELL_EFFECT_APPLY_AURA ||
-        sp->Effect[1]==SPELL_EFFECT_APPLY_AREA_AURA ||
-		sp->Effect[1]==SPELL_EFFECT_APPLY_AREA_AURA2 )
-    {
-        switch (sp->EffectApplyAuraName[1])
-        {
-            case 3://SPELL_AURA_PERIODIC_DAMAGE:
-            case 43://SPELL_AURA_PROC_TRIGGER_DAMAGE:
-            case 89://SPELL_AURA_PERIODIC_DAMAGE_PERCENT:
-            case 162://SPELL_AURA_POWER_BURN:
-                return true;
-        }
-    }
-    if( sp->Effect[2]==SPELL_EFFECT_APPLY_AURA ||
-        sp->Effect[2]==SPELL_EFFECT_APPLY_AREA_AURA ||
-		sp->Effect[2]==SPELL_EFFECT_APPLY_AREA_AURA2 )
-    {
-        switch (sp->EffectApplyAuraName[2])
-        {
-            case 3://SPELL_AURA_PERIODIC_DAMAGE:
-            case 43://SPELL_AURA_PROC_TRIGGER_DAMAGE:
-            case 89://SPELL_AURA_PERIODIC_DAMAGE_PERCENT:
-            case 162://SPELL_AURA_POWER_BURN:
-                return true;
-        }
-    }
-    return false;
-}
+/////////////////////////////////////////////////////////////////////////////////
+//bool IsDamagingSpell( SpellEntry *sp )
+//  Tells if a Spell is damaging
+//
+//Parameters
+//  SpellEntry *sp  -  Pointer to a SpellEntry structure
+//
+//Return Value
+//  Returns true if the Spell is damaging
+//  Returns false otherwise.
+//
+////////////////////////////////////////////////////////////////////////////////
+bool IsDamagingSpell( SpellEntry *sp );
 
 ARCEMU_INLINE uint32 IsHealingSpell(SpellEntry *sp)
 {
@@ -1198,8 +1129,8 @@ ARCEMU_INLINE uint32 IsHealingSpell(SpellEntry *sp)
 		default: break;
     }
     if( sp->Effect[0] == SPELL_EFFECT_APPLY_AURA ||
-		sp->Effect[0] == SPELL_EFFECT_APPLY_AREA_AURA ||
-		sp->Effect[0] == SPELL_EFFECT_APPLY_AREA_AURA2 )
+		sp->Effect[0] == SPELL_EFFECT_APPLY_GROUP_AREA_AURA ||
+		sp->Effect[0] == SPELL_EFFECT_APPLY_RAID_AREA_AURA )
     {
         switch( sp->EffectApplyAuraName[0] )
         {
@@ -1210,8 +1141,8 @@ ARCEMU_INLINE uint32 IsHealingSpell(SpellEntry *sp)
         }
     }
     if( sp->Effect[1] == SPELL_EFFECT_APPLY_AURA ||
-        sp->Effect[1] == SPELL_EFFECT_APPLY_AREA_AURA ||
-		sp->Effect[1] == SPELL_EFFECT_APPLY_AREA_AURA2 )
+        sp->Effect[1] == SPELL_EFFECT_APPLY_GROUP_AREA_AURA ||
+		sp->Effect[1] == SPELL_EFFECT_APPLY_RAID_AREA_AURA )
     {
         switch (sp->EffectApplyAuraName[1])
         {
@@ -1222,8 +1153,8 @@ ARCEMU_INLINE uint32 IsHealingSpell(SpellEntry *sp)
         }
     }
     if( sp->Effect[2] == SPELL_EFFECT_APPLY_AURA ||
-        sp->Effect[2] == SPELL_EFFECT_APPLY_AREA_AURA ||
-		sp->Effect[2] == SPELL_EFFECT_APPLY_AREA_AURA2 )
+        sp->Effect[2] == SPELL_EFFECT_APPLY_GROUP_AREA_AURA ||
+		sp->Effect[2] == SPELL_EFFECT_APPLY_RAID_AREA_AURA )
     {
         switch( sp->EffectApplyAuraName[2] )
         {
@@ -1800,6 +1731,8 @@ public:
 
     void CreateItem(uint32 itemId);
 
+	void ApplyAA(uint32 i, bool applyonself = true );
+
 	// Effect Handlers
 	void SpellEffectNULL(uint32 i);
 	void SpellEffectInstantKill(uint32 i);
@@ -1830,7 +1763,7 @@ public:
 	void SpellEffectTriggerMissile(uint32 i);
 	void SpellEffectOpenLock(uint32 i);
 	void SpellEffectTransformItem(uint32 i);
-	void SpellEffectApplyAA(uint32 i);
+	void SpellEffectApplyGroupAA( uint32 i );
 	void SpellEffectLearnSpell(uint32 i);
 	void SpellEffectSpellDefense(uint32 i);
 	void SpellEffectDispel(uint32 i);
@@ -1855,6 +1788,7 @@ public:
 	void SpellEffectThreat(uint32 i);
 	void SpellEffectClearQuest( uint32 i );
 	void SpellEffectTriggerSpell(uint32 i);
+	void SpellEffectApplyRaidAA( uint32 i );
 	void SpellEffectPowerFunnel(uint32 i);
 	void SpellEffectHealMaxHealth(uint32 i);
 	void SpellEffectInterruptCast(uint32 i);
@@ -1897,21 +1831,22 @@ public:
 	void SpellEffectAttackMe(uint32 i);
 	void SpellEffectSkinPlayerCorpse(uint32 i);
 	void SpellEffectSkill(uint32 i);
-	void SpellEffectApplyPetAura(uint32 i);
+	void SpellEffectApplyPetAA( uint32 i );
 	void SpellEffectDummyMelee( uint32 i );
 	void SpellEffectStartTaxi( uint32 i );
 	void SpellEffectPlayerPull( uint32 i );
 	void SpellEffectReduceThreatPercent(uint32 i);
 	void SpellEffectSpellSteal( uint32 i );
 	void SpellEffectProspecting(uint32 i);
-	void SpellEffectApplyAura128(uint32 i);
-	void SpellEffectApplyAura129(uint32 i);
+	void SpellEffectApplyFriendAA( uint32 i );
+	void SpellEffectApplyEnemyAA( uint32 i );
 	void SpellEffectRedirectThreat(uint32 i);
 	void SpellEffectPlayMusic( uint32 i );
 	void SpellEffectForgetSpecialization(uint32 i);
 	void SpellEffectKillCredit(uint32 i);
 	void SpellEffectRestorePowerPct(uint32 i);
 	void SpellEffectTriggerSpellWithValue(uint32 i);
+	void SpellEffectApplyOwnerAA( uint32 i );
 	void SpellEffectCreatePet(uint32 i);
 	void SpellEffectTeachTaxiPath(uint32 i);
 	void SpellEffectDualWield2H(uint32 i);

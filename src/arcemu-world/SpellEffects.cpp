@@ -56,11 +56,11 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS]={
 	&Spell::SpellEffectTriggerMissile,			//SPELL_EFFECT_TRIGGER_MISSILE - 32
 	&Spell::SpellEffectOpenLock,				//SPELL_EFFECT_OPEN_LOCK - 33
 	&Spell::SpellEffectTransformItem,			//SPELL_EFFECT_TRANSFORM_ITEM - 34
-	&Spell::SpellEffectApplyAA,					//SPELL_EFFECT_APPLY_AREA_AURA - 35
+	&Spell::SpellEffectApplyGroupAA,			//SPELL_EFFECT_APPLY_GROUP_AREA_AURA - 35
 	&Spell::SpellEffectLearnSpell,				//SPELL_EFFECT_LEARN_SPELL - 36
 	&Spell::SpellEffectSpellDefense,			//SPELL_EFFECT_SPELL_DEFENSE - 37
 	&Spell::SpellEffectDispel,					//SPELL_EFFECT_DISPEL - 38
-	&Spell::SpellEffectNULL,   				//SPELL_EFFECT_LANGUAGE - 39
+	&Spell::SpellEffectNULL,                    //SPELL_EFFECT_LANGUAGE - 39
 	&Spell::SpellEffectDualWield,				//SPELL_EFFECT_DUAL_WIELD - 40
 	&Spell::SpellEffectSummonWild,				//SPELL_EFFECT_SUMMON_WILD - 41
 	&Spell::SpellEffectNULL,					//SPELL_EFFECT_JUMP_BEHIND_TARGET - 42
@@ -86,7 +86,7 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS]={
 	&Spell::SpellEffectPowerBurn,				//SPELL_EFFECT_POWER_BURN - 62
 	&Spell::SpellEffectThreat,					//SPELL_EFFECT_THREAT - 63
 	&Spell::SpellEffectTriggerSpell,			//SPELL_EFFECT_TRIGGER_SPELL - 64
-	&Spell::SpellEffectApplyAA,					//SPELL_EFFECT_APPLY_AREA_AURA2 - 65
+	&Spell::SpellEffectApplyRaidAA,				//SPELL_EFFECT_APPLY_RAID_AREA_AURA - 65
 	&Spell::SpellEffectPowerFunnel,				//SPELL_EFFECT_POWER_FUNNEL - 66
 	&Spell::SpellEffectHealMaxHealth,			//SPELL_EFFECT_HEAL_MAX_HEALTH - 67
 	&Spell::SpellEffectInterruptCast,			//SPELL_EFFECT_INTERRUPT_CAST - 68
@@ -140,7 +140,7 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS]={
 	&Spell::SpellEffectSkinPlayerCorpse,		//SPELL_EFFECT_SKIN_PLAYER_CORPSE - 116
 	&Spell::SpellEffectNULL,					//SPELL_EFFECT_SPIRIT_HEAL - 117//Not used
 	&Spell::SpellEffectSkill,					//SPELL_EFFECT_SKILL - 118
-	&Spell::SpellEffectApplyPetAura,			//SPELL_EFFECT_APPLY_PET_AURA - 119
+	&Spell::SpellEffectApplyPetAA,				//SPELL_EFFECT_APPLY_PET_AURA - 119
 	&Spell::SpellEffectNULL,					//SPELL_EFFECT_TELEPORT_GRAVEYARD - 120//Not used
 	&Spell::SpellEffectDummyMelee,				//SPELL_EFFECT_DUMMYMELEE	- 121
 	&Spell::SpellEffectNULL,					// unknown - 122 //not used
@@ -149,8 +149,8 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS]={
 	&Spell::SpellEffectReduceThreatPercent,     //SPELL_EFFECT_REDUCE_THREAT_PERCENT - 125 // Reduce Threat by % //http://www.thottbot.com/?sp=32835
 	&Spell::SpellEffectSpellSteal,				//SPELL_EFFECT_SPELL_STEAL - 126 // Steal Beneficial Buff (Magic) //http://www.thottbot.com/?sp=30449
 	&Spell::SpellEffectProspecting,				// unknown - 127 // Search 5 ore of a base metal for precious gems.  This will destroy the ore in the process.
-	&Spell::SpellEffectApplyAura128,			// Apply Aura
-	&Spell::SpellEffectApplyAura129,			// Apply Aura
+	&Spell::SpellEffectApplyFriendAA,			// Apply Aura friendly
+	&Spell::SpellEffectApplyEnemyAA,			// Apply Aura enemy
 	&Spell::SpellEffectRedirectThreat,			// unknown - 130 // http://www.thottbot.com/s34477
 	&Spell::SpellEffectNULL,					// unknown - 131 // test spell
 	&Spell::SpellEffectPlayMusic,				// Play Music - 132 // http://www.thottbot.com/s46852
@@ -164,7 +164,7 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS]={
 	&Spell::SpellEffectTriggerSpell,			// triggers a spell from target back to caster - used at Malacrass f.e.
 	&Spell::SpellEffectNULL,					// unknown - 141 // triggers spell, magic one,  (Mother spell) http://www.thottbot.com/s41065
 	&Spell::SpellEffectTriggerSpellWithValue,	//SPELL_EFFECT_TRIGGER_SPELL_WITH_VALUE - 142 // triggers some kind of "Put spell on target" thing... (dono for sure) http://www.thottbot.com/s40872 and http://www.thottbot.com/s33076
-	&Spell::SpellEffectNULL,					// Apply Aura on summon owner - 143 // Master -> demon effecting spell, http://www.thottbot.com/s25228 and http://www.thottbot.com/s35696
+	&Spell::SpellEffectApplyOwnerAA,			// Apply Aura on summon owner - 143 // Master -> demon effecting spell, http://www.thottbot.com/s25228 and http://www.thottbot.com/s35696
 	&Spell::SpellEffectNULL,					// unknown - 144
 	&Spell::SpellEffectNULL,					// unknown - 145
 	&Spell::SpellEffectNULL,					// Activate Rune - 146
@@ -214,7 +214,7 @@ const char* SpellEffectNames[TOTAL_SPELL_EFFECTS] = {
 	"CREATE_ITEM",               //    24
 	"WEAPON",                    //    25
 	"DEFENSE",                   //    26
-	"PERSISTENT_AREA_AURA",      //    27
+	"PERSISTENT_AREA_AURA_GROUP",//    27
 	"SUMMON",                    //    28
 	"LEAP",                      //    29
 	"ENERGIZE",                  //    30
@@ -222,7 +222,7 @@ const char* SpellEffectNames[TOTAL_SPELL_EFFECTS] = {
 	"TRIGGER_MISSILE",           //    32
 	"OPEN_LOCK",                 //    33
 	"TRANSFORM_ITEM",            //    34
-	"APPLY_AREA_AURA",           //    35
+	"APPLY_GROUP_AREA_AURA",     //    35
 	"LEARN_SPELL",               //    36
 	"SPELL_DEFENSE",             //    37
 	"DISPEL",                    //    38
@@ -252,7 +252,7 @@ const char* SpellEffectNames[TOTAL_SPELL_EFFECTS] = {
 	"POWER_BURN",                //    62
 	"THREAT",                    //    63
 	"TRIGGER_SPELL",             //    64
-	"HEALTH_FUNNEL",             //    65
+	"APPLY_RAID_AREA_AURA",      //    65
 	"POWER_FUNNEL",              //    66
 	"HEAL_MAX_HEALTH",           //    67
 	"INTERRUPT_CAST",            //    68
@@ -306,7 +306,7 @@ const char* SpellEffectNames[TOTAL_SPELL_EFFECTS] = {
 	"SKIN_PLAYER_CORPSE",        //    116
 	"SPIRIT_HEAL",               //    117
 	"SKILL",                     //    118
-	"APPLY_PET_AURA",            //    119
+	"APPLY_PET_AREA_AURA",       //    119
 	"TELEPORT_GRAVEYARD",        //    120
 	"DUMMYMELEE",                //    121
 	"UNKNOWN1",                  //    122
@@ -315,8 +315,8 @@ const char* SpellEffectNames[TOTAL_SPELL_EFFECTS] = {
 	"UNKNOWN4",                  //    125
 	"UNKNOWN5",                  //    126
 	"PROSPECTING",               //    127
-	"APPLY_AURA_128",            //    128
-	"APPLY_AURA_129",            //    129
+	"APPLY_FRIEND_AREA_AURA",    //    128
+	"APPLY_RAID_AREA_AURA",      //    129
 	"UNKNOWN10",                 //    130
 	"UNKNOWN11",                 //    131
 	"PLAY_MUSIC",                //    132
@@ -330,7 +330,7 @@ const char* SpellEffectNames[TOTAL_SPELL_EFFECTS] = {
 	"UNKNOWN20",                 //    140
 	"UNKNOWN21",                 //    141
 	"TRIGGER_SPELL_WITH_VALUE",  //    142
-	"UNKNOWN22",                 //    143
+	"APPLY_OWNER_AREA_AURA",     //    143
 	"UNKNOWN23",                 //    144
 	"UNKNOWN24",                 //    145
 	"UNKNOWN25",                 //    146
@@ -350,6 +350,37 @@ const char* SpellEffectNames[TOTAL_SPELL_EFFECTS] = {
 	"UNKNOWN36",                 //    160
 	"UNKNOWN37"                  //    161 //used by spell 63624(dual talents)
 };
+
+void Spell::ApplyAA( uint32 i , bool applyonself ) // Apply Area Aura
+{
+	if(!unitTarget || !unitTarget->isAlive()) return;
+	if(u_caster != unitTarget) return;
+
+	Aura * pAura;
+	std::map<uint64, Aura*>::iterator itr = m_pendingAuras.find(unitTarget->GetGUID());
+	if(itr == m_pendingAuras.end())
+	{
+		pAura = new Aura(GetProto(),GetDuration(),m_caster,unitTarget);
+
+		float r = GetRadius(i);
+		if(!sEventMgr.HasEvent(pAura, EVENT_AREAAURA_UPDATE))		/* only add it once */
+			sEventMgr.AddEvent(pAura, &Aura::EventUpdateAA, r*r, EVENT_AREAAURA_UPDATE, 1000, 0,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+
+		m_pendingAuras.insert(std::make_pair(unitTarget->GetGUID(), pAura));
+		AddRef();
+		sEventMgr.AddEvent(this, &Spell::HandleAddAura, unitTarget->GetGUID(), EVENT_SPELL_HIT, 100, 1, 0);
+	}
+	else
+	{
+		pAura = itr->second;
+	}
+
+	if( applyonself )
+		pAura->AddMod(GetProto()->EffectApplyAuraName[i],damage,GetProto()->EffectMiscValue[i],i);
+	else
+		pAura->AddMod(GetProto()->EffectApplyAuraName[i],damage, 0,i);
+}
+
 
 void Spell::SpellEffectNULL(uint32 i)
 {
@@ -2645,31 +2676,8 @@ void Spell::SpellEffectTransformItem(uint32 i)
 	}
 }
 
-void Spell::SpellEffectApplyAA(uint32 i) // Apply Area Aura
-{
-	if(!unitTarget || !unitTarget->isAlive()) return;
-	if(u_caster != unitTarget) return;
-
-	Aura * pAura;
-	std::map<uint64, Aura*>::iterator itr = m_pendingAuras.find(unitTarget->GetGUID());
-	if(itr == m_pendingAuras.end())
-	{
-		pAura = new Aura(GetProto(),GetDuration(),m_caster,unitTarget);
-
-		float r = GetRadius(i);
-		if(!sEventMgr.HasEvent(pAura, EVENT_AREAAURA_UPDATE))		/* only add it once */
-			sEventMgr.AddEvent(pAura, &Aura::EventUpdateAA, r*r, EVENT_AREAAURA_UPDATE, 1000, 0,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-
-		m_pendingAuras.insert(std::make_pair(unitTarget->GetGUID(), pAura));
-		AddRef();
-		sEventMgr.AddEvent(this, &Spell::HandleAddAura, unitTarget->GetGUID(), EVENT_SPELL_HIT, 100, 1, 0);
-	}
-	else
-	{
-		pAura = itr->second;
-	}
-
-	pAura->AddMod(GetProto()->EffectApplyAuraName[i],damage,GetProto()->EffectMiscValue[i],i);
+void Spell::SpellEffectApplyGroupAA( uint32 i ){
+	ApplyAA( i, true );
 }
 
 void Spell::SpellEffectLearnSpell(uint32 i) // Learn Spell
@@ -3686,6 +3694,10 @@ void Spell::SpellEffectTriggerSpell(uint32 i) // Trigger Spell
 	sp->prepare( &targets );
 }
 
+void Spell::SpellEffectApplyRaidAA( uint32 i ){
+	ApplyAA( i, true );
+}
+
 void Spell::SpellEffectPowerFunnel(uint32 i) // Power Funnel
 {
 	if(!unitTarget || !unitTarget->isAlive() || !unitTarget->IsPet())
@@ -4322,8 +4334,8 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 			
 			for( j = 0; j < 3; ++j ){
 				
-				if( TotemSpell->Effect[j] == SPELL_EFFECT_APPLY_AREA_AURA ||
-					TotemSpell->Effect[j] == SPELL_EFFECT_APPLY_AREA_AURA2 ||
+				if( TotemSpell->Effect[j] == SPELL_EFFECT_APPLY_GROUP_AREA_AURA ||
+					TotemSpell->Effect[j] == SPELL_EFFECT_APPLY_RAID_AREA_AURA ||
 					TotemSpell->Effect[j] == SPELL_EFFECT_PERSISTENT_AREA_AURA ||
 					TotemSpell->EffectApplyAuraName[j] == SPELL_AURA_PERIODIC_TRIGGER_SPELL )
 						break;
@@ -5130,9 +5142,8 @@ void Spell::SpellEffectSkill(uint32 i)
 		p_caster->_AddSkillLine( GetProto()->EffectMiscValue[i], 1, uint32( damage * 75 ) );
 }
 
-void Spell::SpellEffectApplyPetAura(uint32 i)
-{
-	SpellEffectApplyAura(i);
+void Spell::SpellEffectApplyPetAA( uint32 i ){
+	ApplyAA( i, true );
 }
 
 void Spell::SpellEffectDummyMelee( uint32 i ) // Normalized Weapon damage +
@@ -5418,12 +5429,12 @@ void Spell::SpellEffectProspecting(uint32 i)
 	}
 }
 
-void Spell::SpellEffectApplyAura128(uint32 i){
-	SpellEffectApplyAura(i);
+void Spell::SpellEffectApplyFriendAA( uint32 i ){
+	ApplyAA( i, true );
 }
 
-void Spell::SpellEffectApplyAura129(uint32 i){
-	SpellEffectApplyAura(i);
+void Spell::SpellEffectApplyEnemyAA( uint32 i ){
+	ApplyAA( i, false );
 }
 
 void Spell::SpellEffectRedirectThreat(uint32 i)
@@ -5502,6 +5513,10 @@ void Spell::SpellEffectTriggerSpellWithValue(uint32 i)
 
 	SpellCastTargets tgt(unitTarget->GetGUID());
 	sp->prepare(&tgt);
+}
+
+void Spell::SpellEffectApplyOwnerAA( uint32 i ){
+	ApplyAA( i, true );
 }
 
 void Spell::SpellEffectCreatePet(uint32 i)

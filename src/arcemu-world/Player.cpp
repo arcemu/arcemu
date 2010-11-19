@@ -9329,7 +9329,7 @@ void Player::SaveAuras(stringstream &ss)
 			Aura * aur = m_auras[x];
 			for ( uint32 i = 0; i < 3; ++i )
 			{
-				if(aur->m_spellProto->Effect[i] == SPELL_EFFECT_APPLY_AREA_AURA || aur->m_spellProto->Effect[i] == SPELL_EFFECT_APPLY_AREA_AURA2 || aur->m_spellProto->Effect[i] == SPELL_EFFECT_ADD_FARSIGHT)
+				if(aur->m_spellProto->Effect[i] == SPELL_EFFECT_APPLY_GROUP_AREA_AURA || aur->m_spellProto->Effect[i] == SPELL_EFFECT_APPLY_RAID_AREA_AURA || aur->m_spellProto->Effect[i] == SPELL_EFFECT_ADD_FARSIGHT)
 				{
 					continue;
 					break;
@@ -10703,8 +10703,8 @@ void Player::save_Auras()
 			bool skip = false;
 			for(uint32 i = 0; i < 3; ++i)
 			{
-				if(aur->m_spellProto->Effect[i] == SPELL_EFFECT_APPLY_AREA_AURA ||
-					aur->m_spellProto->Effect[i] == SPELL_EFFECT_APPLY_AREA_AURA2 ||
+				if(aur->m_spellProto->Effect[i] == SPELL_EFFECT_APPLY_GROUP_AREA_AURA ||
+					aur->m_spellProto->Effect[i] == SPELL_EFFECT_APPLY_RAID_AREA_AURA ||
 					aur->m_spellProto->Effect[i] == SPELL_EFFECT_ADD_FARSIGHT)
 				{
 					skip = true;

@@ -825,7 +825,7 @@ void Aura::Remove()
 			if ( dbcSpell.LookupEntryForced( GetSpellProto()->EffectTriggerSpell[x] )->DurationIndex < m_spellProto->DurationIndex )
 				m_target->RemoveAura(GetSpellProto()->EffectTriggerSpell[x]);
 		}
-		else if( ( m_spellProto->Effect[x] == SPELL_EFFECT_APPLY_AREA_AURA || m_spellProto->Effect[x] == SPELL_EFFECT_APPLY_AREA_AURA2 )
+		else if( ( m_spellProto->Effect[x] == SPELL_EFFECT_APPLY_GROUP_AREA_AURA || m_spellProto->Effect[x] == SPELL_EFFECT_APPLY_RAID_AREA_AURA )
 			&& m_casterGuid == m_target->GetGUID() )
 		{
 			RemoveAA();
@@ -1002,6 +1002,24 @@ void Aura::UpdateModifiers( )
 	}
 }
 
+void Aura::EventUpdateGroupAA( float r ){
+}
+
+void Aura::EventUpdateRaidAA( float r ){
+}
+
+void Aura::EventUpdatePetAA( float r ){
+}
+
+void Aura::EventUpdateFriendAA( float r ){
+}
+
+void Aura::EventUpdateEnemyAA( float r ){
+}
+
+void Aura::EventUpdateOwnerAA( float r ){
+}
+
 void Aura::EventUpdateAA(float r)
 {
 	uint32 i;
@@ -1049,8 +1067,8 @@ void Aura::EventUpdateAA(float r)
 			for(i = 0; i < m_modcount; ++i)
 			{
 				/* is this an area aura modifier? */
-				if( m_spellProto->Effect[m_modList[i].i] == SPELL_EFFECT_APPLY_AREA_AURA ||
-					m_spellProto->Effect[m_modList[i].i] == SPELL_EFFECT_APPLY_AREA_AURA2 )
+				if( m_spellProto->Effect[m_modList[i].i] == SPELL_EFFECT_APPLY_GROUP_AREA_AURA ||
+					m_spellProto->Effect[m_modList[i].i] == SPELL_EFFECT_APPLY_RAID_AREA_AURA )
 				{
 					if(!aura)
 					{
@@ -1114,8 +1132,8 @@ void Aura::EventUpdateAA(float r)
 					for(i = 0; i < m_modcount; ++i)
 					{
 						/* is this an area aura modifier? */
-						if( m_spellProto->Effect[m_modList[i].i] == SPELL_EFFECT_APPLY_AREA_AURA ||
-							m_spellProto->Effect[m_modList[i].i] == SPELL_EFFECT_APPLY_AREA_AURA2 )
+						if( m_spellProto->Effect[m_modList[i].i] == SPELL_EFFECT_APPLY_GROUP_AREA_AURA ||
+							m_spellProto->Effect[m_modList[i].i] == SPELL_EFFECT_APPLY_RAID_AREA_AURA )
 						{
 							if(!aura)
 							{
@@ -2526,7 +2544,7 @@ void Aura::SpellAuraModDetect(bool apply)
 void Aura::SpellAuraModInvisibility(bool apply)
 {
 	SetPositive();
-	if(m_spellProto->Effect[mod->i] == SPELL_EFFECT_APPLY_AURA_128 ) // WTF is this crap? TODO clean this
+	if(m_spellProto->Effect[mod->i] == SPELL_EFFECT_APPLY_FRIEND_AREA_AURA ) // WTF is this crap? TODO clean this
 		return;
 
 	if(apply)
@@ -8336,5 +8354,19 @@ bool Aura::DotCanCrit()
 		}
 	}
 
+	return false;
+}
+
+
+bool Aura::IsCombatStateAffecting(){
+	SpellEntry *sp = m_spellProto;
+
+	if( sp->AppliesAura( SPELL_AURA_PERIODIC_DAMAGE ) ||
+		sp->AppliesAura( SPELL_AURA_PERIODIC_DAMAGE_PERCENT ) ||
+		sp->AppliesAura( SPELL_AURA_PERIODIC_TRIGGER_SPELL ) ||
+		sp->AppliesAura( SPELL_AURA_PERIODIC_LEECH ) ||
+		sp->AppliesAura( SPELL_AURA_PERIODIC_MANA_LEECH ) )
+		return true;
+	
 	return false;
 }

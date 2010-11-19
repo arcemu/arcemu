@@ -474,7 +474,13 @@ public:
 	Aura* StrongerThat(Aura *aur);
 	void ApplyModifiers(bool apply);
 	void UpdateModifiers();
-	void EventUpdateAA(float r);
+	void EventUpdateAA( float r );
+	void EventUpdateGroupAA( float r );
+	void EventUpdateRaidAA( float r );
+	void EventUpdatePetAA( float r );
+	void EventUpdateFriendAA( float r );
+	void EventUpdateEnemyAA( float r );
+	void EventUpdateOwnerAA( float r );
 	void RemoveAA();
 
 	bool DotCanCrit();
@@ -759,21 +765,7 @@ public:
 	uint32 pSpellId; 
 
 	// This stuff can be cached in spellproto.
-	ARCEMU_INLINE bool IsCombatStateAffecting()
-	{
-		for(uint32 x = 0; x < 3; ++x) {
-			if(m_spellProto->EffectApplyAuraName[x] == SPELL_AURA_PERIODIC_DAMAGE ||
-				m_spellProto->EffectApplyAuraName[x] == SPELL_AURA_PERIODIC_DAMAGE_PERCENT ||
-				m_spellProto->EffectApplyAuraName[x] == SPELL_AURA_PERIODIC_TRIGGER_SPELL ||
-				m_spellProto->EffectApplyAuraName[x] == SPELL_AURA_PERIODIC_LEECH ||
-				m_spellProto->EffectApplyAuraName[x] == SPELL_AURA_PERIODIC_MANA_LEECH)
-			{
-				return true;
-			}
-		}
-
-		return false;
-	}
+	bool IsCombatStateAffecting();
 
 	bool m_castInDuel;
 	inline bool TargetWasImuneToMods()

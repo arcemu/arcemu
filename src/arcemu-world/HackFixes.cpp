@@ -4040,19 +4040,19 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
-			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+			sp->Effect[0] = SPELL_EFFECT_APPLY_GROUP_AREA_AURA;
 		}
 		sp = CheckAndReturnSpellEntry( 30808 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
-			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+			sp->Effect[0] = SPELL_EFFECT_APPLY_GROUP_AREA_AURA;
 		}
 		sp = CheckAndReturnSpellEntry( 30809 );
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
-			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+			sp->Effect[0] = SPELL_EFFECT_APPLY_GROUP_AREA_AURA;
 		}
 
 		/**********************************************************
@@ -6905,20 +6905,20 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_MOD_INCREASE_SPEED_ALWAYS;
-			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+			sp->Effect[0] = SPELL_EFFECT_APPLY_GROUP_AREA_AURA;
 			sp->EffectApplyAuraName[1] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[1] = 50392;
-			sp->Effect[1] = SPELL_EFFECT_APPLY_AREA_AURA;
+			sp->Effect[1] = SPELL_EFFECT_APPLY_GROUP_AREA_AURA;
 			sp->EffectImplicitTargetA[1] = EFF_TARGET_SELF;
 		}
 		sp = CheckAndReturnSpellEntry( 50392 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_MOD_INCREASE_SPEED_ALWAYS;
-			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+			sp->Effect[0] = SPELL_EFFECT_APPLY_GROUP_AREA_AURA;
 			sp->EffectApplyAuraName[1] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[1] = 50392;
-			sp->Effect[1] = SPELL_EFFECT_APPLY_AREA_AURA;
+			sp->Effect[1] = SPELL_EFFECT_APPLY_GROUP_AREA_AURA;
 			sp->EffectImplicitTargetA[1] = EFF_TARGET_SELF;
 		}
 

@@ -3122,8 +3122,8 @@ uint8 Spell::CanCast(bool tolerate)
 		{
 			for(i = 0; i < 3; ++i)
 			{
-				if (GetProto()->Effect[i] && GetProto()->Effect[i] != SPELL_EFFECT_APPLY_AURA && GetProto()->Effect[i] != SPELL_EFFECT_APPLY_PET_AURA
-					&& GetProto()->Effect[i] != SPELL_EFFECT_APPLY_AREA_AURA && GetProto()->Effect[i] != SPELL_EFFECT_APPLY_AREA_AURA2 )
+				if (GetProto()->Effect[i] && GetProto()->Effect[i] != SPELL_EFFECT_APPLY_AURA && GetProto()->Effect[i] != SPELL_EFFECT_APPLY_PET_AREA_AURA
+					&& GetProto()->Effect[i] != SPELL_EFFECT_APPLY_GROUP_AREA_AURA && GetProto()->Effect[i] != SPELL_EFFECT_APPLY_RAID_AREA_AURA )
 				{
 					return SPELL_FAILED_TARGET_DUELING;
 				}
@@ -5697,4 +5697,26 @@ SpellEntry* CheckAndReturnSpellEntry(uint32 spellid)
 		sLog.outDebug("Something tried to access nonexistent spell %u", spellid);
 
 	return sp;
+}
+
+
+bool IsDamagingSpell( SpellEntry *sp ){
+	
+	if( sp->HasEffect( SPELL_EFFECT_SCHOOL_DAMAGE )          ||
+		sp->HasEffect( SPELL_EFFECT_ENVIRONMENTAL_DAMAGE )   ||
+		sp->HasEffect( SPELL_EFFECT_HEALTH_LEECH )           ||
+		sp->HasEffect( SPELL_EFFECT_WEAPON_DAMAGE_NOSCHOOL ) ||
+		sp->HasEffect( SPELL_EFFECT_ADD_EXTRA_ATTACKS )      ||
+		sp->HasEffect( SPELL_EFFECT_WEAPON_PERCENT_DAMAGE )  ||
+		sp->HasEffect( SPELL_EFFECT_POWER_BURN )             ||
+		sp->HasEffect( SPELL_EFFECT_ATTACK ) )
+		return true;
+	
+	if( sp->AppliesAura( SPELL_AURA_PERIODIC_DAMAGE )        ||
+		sp->AppliesAura( SPELL_AURA_PROC_TRIGGER_DAMAGE )    ||
+		sp->AppliesAura( SPELL_AURA_PERIODIC_DAMAGE_PERCENT )||
+		sp->AppliesAura( SPELL_AURA_POWER_BURN ) )
+		return true;
+	
+	return false;
 }

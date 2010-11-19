@@ -653,24 +653,7 @@ struct skilllineentry //SkillLine.dbc
 //	uint32 spellIconID;
 };
 
-/*struct SkillRaceClassInfoEntry
-{
-	m_ID;
-	m_skillID;
-	m_raceMask;
-	m_classMask;
-	m_flags;
-	m_minLevel;
-	m_skillTierID;
-	m_skillCostIndex;
-}
-
-struct SkillTiersEntry
-{
-	m_ID;
-	m_cost[16];
-	m_value[16];
-}*/
+#define MAX_SPELL_EFFECTS 3
 
 // Struct for the entry in Spell.dbc
 struct SpellEntry
@@ -731,23 +714,23 @@ struct SpellEntry
 	int32  EquippedItemClass;               //69
 	uint32 EquippedItemSubClass;            //70
 	uint32 RequiredItemFlags;               //71
-	uint32 Effect[3];                       //72 - 74
-	uint32 EffectDieSides[3];               //75 - 77
-	float  EffectRealPointsPerLevel[3];     //84 - 86
-	int32  EffectBasePoints[3];             //87 - 89
-	int32  EffectMechanic[3];               //90 - 92       Related to SpellMechanic.dbc
-	uint32 EffectImplicitTargetA[3];        //93 - 95
-	uint32 EffectImplicitTargetB[3];        //96 - 98
-	uint32 EffectRadiusIndex[3];            //99 - 101
-	uint32 EffectApplyAuraName[3];          //102 - 104
-	uint32 EffectAmplitude[3];              //105 - 107
-	float  EffectMultipleValue[3];          //108 - 110     This value is the $ value from description
-	uint32 EffectChainTarget[3];            //111 - 113
-	uint32 EffectItemType[3];               //114 - 116     Not sure maybe we should rename it. its the relation to field: SpellGroupType
-	uint32 EffectMiscValue[3];              //117 - 119
-	uint32 EffectMiscValueB[3];             //120 - 122  2.4.3
-	uint32 EffectTriggerSpell[3];           //123 - 125
-	float  EffectPointsPerComboPoint[3];    //126 - 128
+	uint32 Effect[ MAX_SPELL_EFFECTS ];                       //72 - 74
+	uint32 EffectDieSides[ MAX_SPELL_EFFECTS ];               //75 - 77
+	float  EffectRealPointsPerLevel[ MAX_SPELL_EFFECTS ];     //84 - 86
+	int32  EffectBasePoints[ MAX_SPELL_EFFECTS ];             //87 - 89
+	int32  EffectMechanic[ MAX_SPELL_EFFECTS ];               //90 - 92       Related to SpellMechanic.dbc
+	uint32 EffectImplicitTargetA[ MAX_SPELL_EFFECTS ];        //93 - 95
+	uint32 EffectImplicitTargetB[ MAX_SPELL_EFFECTS ];        //96 - 98
+	uint32 EffectRadiusIndex[ MAX_SPELL_EFFECTS ];            //99 - 101
+	uint32 EffectApplyAuraName[ MAX_SPELL_EFFECTS ];          //102 - 104
+	uint32 EffectAmplitude[ MAX_SPELL_EFFECTS ];              //105 - 107
+	float  EffectMultipleValue[ MAX_SPELL_EFFECTS ];          //108 - 110     This value is the $ value from description
+	uint32 EffectChainTarget[ MAX_SPELL_EFFECTS ];            //111 - 113
+	uint32 EffectItemType[ MAX_SPELL_EFFECTS ];               //114 - 116     Not sure maybe we should rename it. its the relation to field: SpellGroupType
+	uint32 EffectMiscValue[ MAX_SPELL_EFFECTS ];              //117 - 119
+	uint32 EffectMiscValueB[ MAX_SPELL_EFFECTS ];             //120 - 122  2.4.3
+	uint32 EffectTriggerSpell[ MAX_SPELL_EFFECTS ];           //123 - 125
+	float  EffectPointsPerComboPoint[ MAX_SPELL_EFFECTS ];    //126 - 128
 	uint32 EffectSpellClassMask[3][3];      //129 - 137
 	uint32 SpellVisual;                     //138
 	uint32 field114;                        //139
@@ -771,12 +754,12 @@ struct SpellEntry
 	uint32 StartRecoveryTime;		//213
 	uint32 MaxTargetLevel;                  //214
 	uint32 SpellFamilyName;                 //215
-	uint32 SpellGroupType[3];               //216-218
+	uint32 SpellGroupType[ MAX_SPELL_EFFECTS ];               //216-218
 	uint32 MaxTargets;                      //219
 	uint32 Spell_Dmg_Type;                  //220   dmg_class Integer      0=None, 1=Magic, 2=Melee, 3=Ranged
 	uint32 PreventionType;                  //221   0,1,2 related to Spell_Dmg_Type I think
 	int32  StanceBarOrder;                  //222   related to paladin aura's
-	float  dmg_multiplier[3];               //223 - 225   if the name is correct I dono
+	float  dmg_multiplier[ MAX_SPELL_EFFECTS ];               //223 - 225   if the name is correct I dono
 	uint32 MinFactionID;                    //226   only one spellid:6994 has this value = 369 UNUSED
 	uint32 MinReputation;                   //227   only one spellid:6994 has this value = 4 UNUSED
 	uint32 RequiredAuraVision;              //228  3 spells 1 or 2
@@ -801,10 +784,10 @@ struct SpellEntry
 	uint32 NameHash;                        //!!! CUSTOM, related to custom spells, summon spell quest related spells
 	uint32 talent_tree;                     //!!! CUSTOM,
 	uint32 in_front_status;                 //!!! CUSTOM,
-	uint32 EffectSpellGroupRelation_high[3];     //!!! this is not contained in client dbc but server must have it
+	uint32 EffectSpellGroupRelation_high[ MAX_SPELL_EFFECTS ];     //!!! this is not contained in client dbc but server must have it
 	uint32 ThreatForSpell;
 	float  ThreatForSpellCoef;
-	uint32 ProcOnNameHash[3];
+	uint32 ProcOnNameHash[ MAX_SPELL_EFFECTS ];
 	uint32 spell_coef_flags;                //!!! CUSTOM, store flags for spell coefficient calculations
 
 	float  base_range_or_radius_sqr;        //!!! CUSTOM, needed for aoe spells most of the time
@@ -827,18 +810,43 @@ struct SpellEntry
 
 	uint32 SchoolMask;                      // Custom
 	uint32 CustomFlags;						// Custom
-	uint32 EffectCustomFlag[ 3 ];				// Custom
+	uint32 EffectCustomFlag[ MAX_SPELL_EFFECTS ];				// Custom
 	
-	
+	////////////////////////////////////////////////////////////////////////////////
+	//bool HasEffect( uint32 effect )
+	//  Tells if the Spell has a certain effect
+	//
+	//Parameters
+	//  uint32 effect  -  Effect Identifier
+	//
+	//Return Value
+	//  Returns true if Spell has this effect.
+	//  Returns false if Spell has not this effect.
+	//
+	///////////////////////////////////////////////////////////////////////////////
 	bool HasEffect( uint32 effect ){
-		for( uint32 i = 0; i < 3; ++i )
+		for( uint32 i = 0; i < MAX_SPELL_EFFECTS; ++i )
 			if( Effect[ i ] == effect )
 				return true;
+
 		return false;
 	}
 
+	///////////////////////////////////////////////////////////////////////////////
+	//bool HasCustomFlagForEffect( uint32 effect, uint32 flag )
+	//  Tells if the Spell has this flag for this effect
+	//
+	//Parameters
+	//  uint32 effect  -  The effect index
+	//  uint32 flag    -  Flag that we are checking
+	//
+	//Return Value
+	//  Returns true if we have the flag.
+	//  Returns false if we don't.
+	//
+	///////////////////////////////////////////////////////////////////////////////
 	bool HasCustomFlagForEffect( uint32 effect, uint32 flag ){
-		if( effect >= 3 )
+		if( effect >= MAX_SPELL_EFFECTS )
 			return false;
 
 		if( ( EffectCustomFlag[ effect ] & flag ) != 0 )
@@ -847,14 +855,30 @@ struct SpellEntry
 			return false;
 	}
 
+	//////////////////////////////////////////////////////////////////////////////
+	//bool AppliesAura( uint32 aura )
+	//  Tells if the Spell applies this Aura
+	//
+	//Parameters
+	//  uint32 aura - Aura id
+	//
+	//Return Value
+	//  Returns true if the Spell applies this Aura.
+	//  Returns false otherwise.
+	//
+	//////////////////////////////////////////////////////////////////////////////
 	bool AppliesAura( uint32 aura ){
-		for( uint32 i = 0; i < 3; ++i ){
-			if( ( Effect[ i ] == 6 || // SPELL_EFFECT_APPLY_AURA
+
+		for( uint32 i = 0; i < MAX_SPELL_EFFECTS; ++i ){
+			
+			if( ( Effect[ i ] == 6 || // SPELL_EFFECT_APPLY_GROUP_AREA_AURA
 				Effect[ i ] == 27 || // SPELL_EFFECT_PERSISTENT_AREA_AURA
-				Effect[ i ] == 35 || // SPELL_EFFECT_APPLY_AREA_AURA
-				Effect[ i ] == 65 || // SPELL_EFFECT_APPLY_AREA_AURA2
-				Effect[ i ] == 119 || // SPELL_EFFECT_APPLY_PET_AURA
-				Effect[ i ] == 128 ) && // SPELL_EFFECT_UNKNOWN7
+				Effect[ i ] == 35 || // SPELL_EFFECT_APPLY_GROUP_AREA_AURA
+				Effect[ i ] == 65 || // SPELL_EFFECT_APPLY_RAID_AREA_AURA
+				Effect[ i ] == 119 || // SPELL_EFFECT_APPLY_PET_AREA_AURA
+				Effect[ i ] == 128 || // SPELL_EFFECT_APPLY_FRIEND_AREA_AURA
+				Effect[ i ] == 129 || // SPELL_EFFECT_APPLY_ENEMY_AREA_AURA
+				Effect[ i ] == 143 ) && // SPELL_EFFECT_APPLY_OWNER_AREA_AURA
 				EffectApplyAuraName[ i ] == aura )
 				return true;
 		}
@@ -864,8 +888,10 @@ struct SpellEntry
 
 	SpellEntry(){
 		CustomFlags = 0;
-		for( uint32 i = 0; i < 3; i++ )
+
+		for( uint32 i = 0; i < MAX_SPELL_EFFECTS; i++ )
 			EffectCustomFlag[ i ] = 0;
+
 	}
 };
 
