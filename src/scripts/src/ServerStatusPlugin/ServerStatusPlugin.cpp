@@ -337,8 +337,11 @@ void StatDumper::DumpStats()
     if( Filename[0] == '\0' )
         return;
     FILE* f = fopen( Filename, "w" );
-    if( !f )
-        return;
+	if( f == NULL )
+	{
+		Log.Error( "StatDumper", "Error opening %s : %s", Filename, strerror(errno) );
+		return;
+	}
 
 	Log.Debug( "StatDumper", "Writing %s", Filename );
 
