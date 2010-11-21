@@ -823,7 +823,7 @@ public:
 		if(qle == NULL)
 			  return;
 
-		Creature* naga = sEAS.SpawnCreature(pPlayer, 12369, 246.741, 2953.3, 5.8631, 1.078, 0);
+		Creature* naga = sEAS.SpawnCreature(pPlayer, 12369, 246.741f, 2953.3f, 5.8631f, 1.078f, 0);
 		if ( naga != NULL )
 			naga->Despawn(6*60*1000, 0);
 	}
@@ -915,7 +915,7 @@ public:
 		if(qle == NULL)
 			return;
 
-		Creature* demon = sEAS.SpawnCreature(pPlayer, 11876, -348.231, 1763.85, 138.371, 4.42728, 0);
+		Creature* demon = sEAS.SpawnCreature(pPlayer, 11876, -348.231f, 1763.85f, 138.371f, 4.42728f, 0);
 		if ( demon != NULL )
 			demon->Despawn(6*60*1000, 0);
 	}
@@ -997,7 +997,7 @@ public:
 		if(qle == NULL)
 			return;
 
-		Creature* razormaw = sEAS.SpawnCreature(pPlayer, 17592, -1203.8, -12424.7, 95.36, 4.7, 0);
+		Creature* razormaw = sEAS.SpawnCreature(pPlayer, 17592, -1203.8f, -12424.7f, 95.36f, 4.7f, 0);
 		if ( razormaw != NULL )
 			razormaw->Despawn(6*60*1000, 0);
 	}
@@ -1074,7 +1074,7 @@ public:
 		if(qle == NULL)
 			return;
 
-		Creature* exarch = sEAS.SpawnCreature(pPlayer, 22452, -3365.9, 5143.19, -9.00132, 3.05, 0);
+		Creature* exarch = sEAS.SpawnCreature(pPlayer, 22452, -3365.9f, 5143.19f, -9.00132f, 3.05f, 0);
 		if ( exarch != NULL )
 			exarch->Despawn(6*60*1000, 0);
 	}
@@ -1152,7 +1152,7 @@ public:
 
 		gobj->Despawn(6*60*1000, 0);
 
-		Creature* spike = sEAS.SpawnCreature(pPlayer, 21319, 1315.54, 6688.33, -18, 0.001, 0);
+		Creature* spike = sEAS.SpawnCreature(pPlayer, 21319, 1315.54f, 6688.33f, -18, 0.001f, 0);
 		spike->Despawn(5*60*1000, 0);
 	}
 };
@@ -1261,7 +1261,7 @@ public:
 	void OnActivate(Player* pPlayer)
 	{
 		if ( pPlayer->GetMapMgr()->iInstanceMode == MODE_HEROIC )
-			sEAS.SpawnCreature(pPlayer, 23035, -87.3546, 288.006, 26.4832, 0, 0);
+			sEAS.SpawnCreature(pPlayer, 23035, -87.3546f, 288.006f, 26.4832f, 0, 0);
 	}
 };
 
@@ -1286,7 +1286,7 @@ public:
 
 		if( _gameobject->CalcDistance( _gameobject, plr ) <= 1.5f && plr->GetMapId() == 609)
 		{
-			plr->SafeTeleport( 609, 4298, 2390.18, -5640.28, 420.84, 0.57 );
+			plr->SafeTeleport( 609, 4298, 2390.18f, -5640.28f, 420.84f, 0.57f );
 		}
 
 		else if( _gameobject->CalcDistance( _gameobject, plr ) <= 1.5f && plr->GetMapId() == 0)
@@ -1317,7 +1317,7 @@ public:
 
 		if( _gameobject->CalcDistance( _gameobject, plr ) <= 1.5f && plr->GetMapId() == 609)
 		{
-			plr->SafeTeleport( 609, 4298, 2397.57, -5636.03, 377.05, 0.57 );
+			plr->SafeTeleport( 609, 4298, 2397.57f, -5636.03f, 377.05f, 0.57f );
 		}
 
 		else if( _gameobject->CalcDistance( _gameobject, plr ) <= 1.5f && plr->GetMapId() == 0)

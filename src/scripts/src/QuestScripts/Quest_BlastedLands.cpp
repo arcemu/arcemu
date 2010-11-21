@@ -35,7 +35,7 @@ public:
 
 	if(!spawncheckcr)
 	{
-		Creature* general = sEAS.SpawnCreature(mTarget, 7750, -10619, -2997, 28.8, 4, 0);
+		Creature* general = sEAS.SpawnCreature(mTarget, 7750, -10619, -2997, 28.8f, 4, 0);
 		general->Despawn(3*60*1000, 0);
 	}
 
@@ -43,7 +43,7 @@ public:
 
 	if(!spawncheckgobj)
 	{
-		GameObject* generalsbox = sEAS.SpawnGameobject(mTarget, 141980, -10622, -2994, 28.6, 4, 4, 0, 0, 0, 0);
+		GameObject* generalsbox = sEAS.SpawnGameobject(mTarget, 141980, -10622, -2994, 28.6f, 4, 4, 0, 0, 0, 0);
 		sEAS.GameobjectDelete(generalsbox, 3*60*1000);
 	}
   }
@@ -93,7 +93,7 @@ public:
 
 				if(!spawncheckcr)
 				{
-					general = sEAS.SpawnCreature(plr, 7750, -10619, -2997, 28.8, 4, 0);
+					general = sEAS.SpawnCreature(plr, 7750, -10619, -2997, 28.8f, 4, 0);
 					general->Despawn(3*60*1000, 0);
 				}
 
@@ -101,7 +101,7 @@ public:
 
 				if(!spawncheckgobj)
 				{
-					GameObject* generalsbox = sEAS.SpawnGameobject(plr, 141980, -10622, -2994, 28.6, 4, 4, 0, 0, 0, 0);
+					GameObject* generalsbox = sEAS.SpawnGameobject(plr, 141980, -10622, -2994, 28.6f, 4, 4, 0, 0, 0, 0);
 					sEAS.GameobjectDelete(generalsbox, 3*60*1000);
 				}
 			}

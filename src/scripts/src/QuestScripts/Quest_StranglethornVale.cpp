@@ -66,8 +66,8 @@ public:
 				doctor->CastSpell(doctor, dbcSpell.LookupEntry(12380), true);
 				if( !plr || !plr->GetMapMgr() || !plr->GetMapMgr()->GetInterface() )
 					return;
-				Creature* firstenemy = sEAS.SpawnCreature(plr, 1511, -13770.5, -6.79, 42.8, 5.7 , 0);
-				firstenemy->GetAIInterface()->MoveTo(-13727.8, -26.2, 46.15, 4.07);
+				Creature* firstenemy = sEAS.SpawnCreature(plr, 1511, -13770.5f, -6.79f, 42.8f, 5.7f , 0);
+				firstenemy->GetAIInterface()->MoveTo(-13727.8f, -26.2f, 46.15f, 4.07f);
 				firstenemy->Despawn(10*60*1000, 0);
 			}break;
 		}
@@ -88,8 +88,8 @@ public:
 			Player* mPlayer = TO_PLAYER(mKiller);
 			if(mPlayer->GetMapMgr() == NULL || mPlayer->GetMapMgr()->GetInterface() == NULL)
 				return;
-			Creature*  beka1 = sEAS.SpawnCreature(mPlayer, 1516, -13770.5, -6.79, 42.8, 5.7 , 0);
-			beka1->GetAIInterface()->MoveTo(-13727.8, -26.2, 46.15, 4.07);
+			Creature*  beka1 = sEAS.SpawnCreature(mPlayer, 1516, -13770.5f, -6.79f, 42.8f, 5.7f , 0);
+			beka1->GetAIInterface()->MoveTo(-13727.8f, -26.2f, 46.15f, 4.07f);
 			beka1->Despawn(10*60*1000, 0);
 		}
 		else
@@ -99,8 +99,8 @@ public:
 			{
 				if(mPlayer == NULL || mPlayer->GetMapMgr() == NULL || mPlayer->GetMapMgr()->GetInterface() == NULL)
 					return;
-				Creature*  beka1 = sEAS.SpawnCreature(mPlayer, 1516, -13770.5, -6.79, 42.8, 5.7 , 0);
-				beka1->GetAIInterface()->MoveTo(-13727.8, -26.2, 46.15, 4.07);
+				Creature*  beka1 = sEAS.SpawnCreature(mPlayer, 1516, -13770.5f, -6.79f, 42.8f, 5.7f , 0);
+				beka1->GetAIInterface()->MoveTo(-13727.8f, -26.2f, 46.15f, 4.07f);
 				beka1->Despawn(10*60*1000, 0);
 			}
 		}
@@ -120,8 +120,8 @@ public:
 			Player* mPlayer = TO_PLAYER(mKiller);
 			if(mPlayer->GetMapMgr() == NULL || mPlayer->GetMapMgr()->GetInterface() == NULL)
 				return;
-			Creature* beka1 = sEAS.SpawnCreature(mPlayer, 1514, -13770.5, -6.79, 42.8, 5.7, 0);
-			beka1->GetAIInterface()->MoveTo(-13727.8, -26.2, 46.15, 4.07);
+			Creature* beka1 = sEAS.SpawnCreature(mPlayer, 1514, -13770.5f, -6.79f, 42.8f, 5.7f, 0);
+			beka1->GetAIInterface()->MoveTo(-13727.8f, -26.2f, 46.15f, 4.07f);
 			beka1->Despawn(10*60*1000, 0);
 		}
 		else
@@ -131,8 +131,8 @@ public:
 			{
 				if(mPlayer == NULL || mPlayer->GetMapMgr() == NULL || mPlayer->GetMapMgr()->GetInterface() == NULL)
 					return;
-				Creature* beka1 = sEAS.SpawnCreature(mPlayer, 1514, -13770.5, -6.79, 42.8, 5.7, 0);
-				beka1->GetAIInterface()->MoveTo(-13727.8, -26.2, 46.15, 4.07);
+				Creature* beka1 = sEAS.SpawnCreature(mPlayer, 1514, -13770.5f, -6.79f, 42.8f, 5.7f, 0);
+				beka1->GetAIInterface()->MoveTo(-13727.8f, -26.2f, 46.15f, 4.07f);
 				beka1->Despawn(10*60*1000, 0);
 			}
 		}
@@ -303,8 +303,8 @@ class FacingNegolash : public QuestScript
 			sEAS.GameobjectDelete(obj, 2*60*1000);
 		}	
      	
-		Creature* Negolash = sEAS.SpawnCreature(pPlayer, 1494, -14657.400391, 155.115997, 4.081050, 0.353429);
-		Negolash->GetAIInterface()->MoveTo(-14647.526367, 143.710052, 1.164550, 1.909);
+		Creature* Negolash = sEAS.SpawnCreature(pPlayer, 1494, -14657.400391f, 155.115997f, 4.081050f, 0.353429f);
+		Negolash->GetAIInterface()->MoveTo(-14647.526367f, 143.710052f, 1.164550f, 1.909f);
 	}
 };
 

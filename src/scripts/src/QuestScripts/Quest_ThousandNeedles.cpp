@@ -78,7 +78,7 @@ public:
 		sEAS.WaypointCreate(creat,-4875.03f, -1144.52f, -50.5812f, 3.098398f, 0, 256, 9900);
 		sEAS.WaypointCreate(creat,-4868.65f, -1152.74f, -50.9722f, 3.098398f, 0, 256, 9900);
 		sEAS.WaypointCreate(creat,-4860.4f, -1160.88f, -50.6212f, 3.098398f, 0, 256, 9900);
-		sEAS.WaypointCreate(creat,-4854.03f, -1167.17f, -49.6659, 3.098398f, 0, 256, 9900);
+		sEAS.WaypointCreate(creat,-4854.03f, -1167.17f, -49.6659f, 3.098398f, 0, 256, 9900);
 		sEAS.WaypointCreate(creat,-4849.72f, -1171.42f, -48.9519f, 3.098398f, 0, 256, 9900);
 		sEAS.WaypointCreate(creat,-4844.17f, -1176.9f, -48.3381f, 3.098398f, 0, 256, 9900);
 		sEAS.WaypointCreate(creat,-4841.19f, -1182.11f, -48.7754f, 3.098398f, 0, 256, 9900);

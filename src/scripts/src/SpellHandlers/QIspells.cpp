@@ -228,7 +228,7 @@ bool ASpiritAlly(uint32 i, Spell * pSpell)
   if(qle == NULL)
     return true;
 
-  Creature * allyspirit = sEAS.SpawnCreature(pPlayer, 18185, -353, 7255, 49.36, 6.28, 0);
+  Creature * allyspirit = sEAS.SpawnCreature(pPlayer, 18185, -353, 7255, 49.36f, 6.28f, 0);
   allyspirit->Despawn(6*60*1000, 0);
   return true;
 }
@@ -537,7 +537,7 @@ bool ScrollOfMyzrael(uint32 i, Spell * pSpell)
   if(qle == NULL)
     return true;
 
-  const float MyzraelPos[] = {-940.7374, -3111.1953, 48.9566, 3.327};
+  const float MyzraelPos[] = {-940.7374f, -3111.1953f, 48.9566f, 3.327f};
 
   Creature * myzrael = pPlayer->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(MyzraelPos[0], MyzraelPos[1], MyzraelPos[2], 2755);
   if(myzrael != NULL)
@@ -1661,7 +1661,7 @@ bool CenarionMoondust(uint32 i, Spell* pSpell) // Body And Heart (Alliance)
   Player * p_caster = pSpell->p_caster;
 
   //Moonkin Stone aura
-  GameObject * Msa = sEAS.SpawnGameobject(p_caster, 177644, 6331.01, 88.245, 22.6522, 2.01455, 1.0, 0.0, 0.0, 0.0, 0.0);
+  GameObject * Msa = sEAS.SpawnGameobject(p_caster, 177644, 6331.01f, 88.245f, 22.6522f, 2.01455f, 1.0, 0.0, 0.0, 0.0, 0.0);
 
   // it dont delete lunaclaw if he is here
   Creature * lunaclaw;
@@ -1671,7 +1671,7 @@ bool CenarionMoondust(uint32 i, Spell* pSpell) // Body And Heart (Alliance)
   uint32 md = lunaclaw->GetDisplayId();
 
   //Waypoints
-  sEAS.WaypointCreate(lunaclaw, 6348.3833, 132.5197, 21.6042, 4.19, 200, 256, md);
+  sEAS.WaypointCreate(lunaclaw, 6348.3833f, 132.5197f, 21.6042f, 4.19f, 200, 256, md);
   //make sure that player dont cheat speed or something
   if( lunaclaw->GetDistance2dSq(p_caster) < 200 ) // can be more? - he can speed hack or teleport hack
   {
@@ -1683,7 +1683,7 @@ bool CenarionMoondust(uint32 i, Spell* pSpell) // Body And Heart (Alliance)
   }
   else
   {
-	sEAS.WaypointCreate(lunaclaw, 5328.2148, 94.5505, 21.4547, 4.2489, 200, 256, md);
+	sEAS.WaypointCreate(lunaclaw, 5328.2148f, 94.5505f, 21.4547f, 4.2489f, 200, 256, md);
   }
 
   // Make sure that creature will attack player
@@ -1703,11 +1703,11 @@ bool CenarionLunardust(uint32 i, Spell * pSpell) // Body And Heart (Horde)
 	if(!pSpell->p_caster->IsInWorld())
 		return true;
 
-  const float pos[] = {-2443.9711f, -1642.8002f, 92.5129f, 1.71}; // x, y, z, o
+  const float pos[] = {-2443.9711f, -1642.8002f, 92.5129f, 1.71f}; // x, y, z, o
   Player * p_caster = pSpell->p_caster;
 
   //Moonkin Stone aura
-  GameObject * Msa = sEAS.SpawnGameobject(p_caster, 177644, -2499.54, -1633.03, 91.8121, 0.262894, 1.0, 0.0, 0.0, 0.0, 0.0);
+  GameObject * Msa = sEAS.SpawnGameobject(p_caster, 177644, -2499.54f, -1633.03f, 91.8121f, 0.262894f, 1.0, 0.0, 0.0, 0.0, 0.0);
 
   Creature * lunaclaw;
 
@@ -1717,7 +1717,7 @@ bool CenarionLunardust(uint32 i, Spell * pSpell) // Body And Heart (Horde)
   uint32 md = lunaclaw->GetDisplayId();
 
   // Waypoints
-  sEAS.WaypointCreate(lunaclaw, -2448.2253, -1625.0148, 91.89, 1.913, 200, 256, md); //First
+  sEAS.WaypointCreate(lunaclaw, -2448.2253f, -1625.0148f, 91.89f, 1.913f, 200, 256, md); //First
   //make sure that player dont cheat speed or something
   if( lunaclaw->GetDistance2dSq(p_caster) < 200 ) // can be more? - he can speed hack or teleport hack
   {
@@ -1729,7 +1729,7 @@ bool CenarionLunardust(uint32 i, Spell * pSpell) // Body And Heart (Horde)
   }
   else
   {
-	sEAS.WaypointCreate(lunaclaw, -2504.2641, -1630.7354, 91.93, 3.2, 200, 256, md);
+	sEAS.WaypointCreate(lunaclaw, -2504.2641f, -1630.7354f, 91.93f, 3.2f, 200, 256, md);
   }
 
   // Make sure that creature will attack player
@@ -2706,9 +2706,9 @@ bool ShipBombing(uint32 i, Spell* pSpell)
 		}
 	}
 	
-	GameObject* pSinloren = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(13200.232422, -7049.176270, 3.838517, 550000);
-	GameObject* pBloodoath = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(13319.419922, -6988.779785, 4.002993, 550000);
-	GameObject* pDawnchaser = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(13274.51625, -7145.434570, 4.770292, 550000);
+	GameObject* pSinloren = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(13200.232422f, -7049.176270f, 3.838517f, 550000);
+	GameObject* pBloodoath = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(13319.419922f, -6988.779785f, 4.002993f, 550000);
+	GameObject* pDawnchaser = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(13274.51625f, -7145.434570f, 4.770292f, 550000);
 	
 	GameObject* obj = NULL;
 

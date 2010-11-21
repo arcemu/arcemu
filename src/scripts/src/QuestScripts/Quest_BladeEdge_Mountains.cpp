@@ -202,17 +202,17 @@ public:
 		if( pPlayer == NULL || pPlayer->GetMapMgr() == NULL || pPlayer->GetMapMgr()->GetInterface() == NULL )
 				return;
 
-		GameObject* obelisk1 = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(2898.92, 4759.29, 277.408, 185198);
-		GameObject* obelisk2 = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(2942.3, 4752.28, 285.553, 185197);
-		GameObject* obelisk3 = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(2834.39, 4856.67, 277.632, 185196);
-		GameObject* obelisk4 = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(2923.37, 4840.36, 278.45, 185195);
-		GameObject* obelisk5 = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(2965.75, 4835.25, 277.949, 185193);
+		GameObject* obelisk1 = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(2898.92f, 4759.29f, 277.408f, 185198);
+		GameObject* obelisk2 = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(2942.3f, 4752.28f, 285.553f, 185197);
+		GameObject* obelisk3 = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(2834.39f, 4856.67f, 277.632f, 185196);
+		GameObject* obelisk4 = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(2923.37f, 4840.36f, 278.45f, 185195);
+		GameObject* obelisk5 = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(2965.75f, 4835.25f, 277.949f, 185193);
 		
 		if( obelisk1 && obelisk2 && obelisk3 && obelisk4 && obelisk5 )
 		{
 			if(obelisk1->GetState() == 0 && obelisk2->GetState() == 0 && obelisk3->GetState() == 0 && obelisk4->GetState() == 0 && obelisk5->GetState() == 0)
 			{
-				sEAS.SpawnCreature(pPlayer, 19963, 2943.59, 4779.05, 284.49, 1.89, 60*5*1000 );
+				sEAS.SpawnCreature(pPlayer, 19963, 2943.59f, 4779.05f, 284.49f, 1.89f, 60*5*1000 );
 			}
 		}
 
