@@ -21,11 +21,11 @@
     <Filter Include="Scripts\Zone">
       <UniqueIdentifier>{6fd7cfeb-1e16-4dd7-92af-f4bf6210dfb5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Main Resources\Setup">
+      <UniqueIdentifier>{253e6feb-d419-4bb5-b36c-6d86592996ae}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\QuestScripts\Setup.cpp">
-      <Filter>Main Resources</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\Common\Base.cpp">
       <Filter>Main Resources\Base Class</Filter>
     </ClCompile>
@@ -188,12 +188,24 @@
     <ClCompile Include="..\src\QuestScripts\Quest_Zangarmarsh.cpp">
       <Filter>Scripts\Zone</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\QuestScripts\Setup.cpp">
+      <Filter>Main Resources\Setup</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Common\Instance_Base.cpp">
+      <Filter>Main Resources\Base Class</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\QuestScripts\Setup.h">
-      <Filter>Main Resources</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\Common\Base.h">
+      <Filter>Main Resources\Base Class</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\QuestScripts\Setup.h">
+      <Filter>Main Resources\Setup</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Common\EasyFunctions.h">
+      <Filter>Main Resources\Base Class</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Common\Instance_Base.h">
       <Filter>Main Resources\Base Class</Filter>
     </ClInclude>
   </ItemGroup>

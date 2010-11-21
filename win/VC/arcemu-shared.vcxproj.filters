@@ -147,6 +147,24 @@
     <ClCompile Include="..\..\src\arcemu-shared\Threading\AtomicFloat.cpp">
       <Filter>Threading</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-shared\Network\SocketFreeBSD.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-shared\Network\SocketLinux.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-shared\Network\SocketMgrFreeBSD.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-shared\Network\SocketMgrLinux.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-shared\Network\SocketOpsFreeBSD.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-shared\Network\SocketOpsLinux.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\arcemu-shared\Database\Database.h">
@@ -333,6 +351,18 @@
     </ClInclude>
     <ClInclude Include="..\..\src\arcemu-shared\Threading\AtomicFloat.h">
       <Filter>Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\Network\ListenSocketFreeBSD.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\Network\ListenSocketLinux.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\Network\SocketMgrFreeBSD.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\Network\SocketMgrLinux.h">
+      <Filter>Network</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

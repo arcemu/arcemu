@@ -12,11 +12,11 @@
     <Filter Include="Scripts\Class Spells">
       <UniqueIdentifier>{9a184b5a-542c-45fd-9b3f-f41c3b9df458}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Main Resources\Setup">
+      <UniqueIdentifier>{008d92b1-c111-4c10-a4fd-bd3e68b5d98e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\SpellHandlers\Setup.cpp">
-      <Filter>Main Resources</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\SpellHandlers\ItemSpells_1.cpp">
       <Filter>Scripts</Filter>
     </ClCompile>
@@ -59,10 +59,13 @@
     <ClCompile Include="..\src\SpellHandlers\PetAISpells.cpp">
       <Filter>Scripts</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\SpellHandlers\Setup.cpp">
+      <Filter>Main Resources\Setup</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\SpellHandlers\Setup.h">
-      <Filter>Main Resources</Filter>
+      <Filter>Main Resources\Setup</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

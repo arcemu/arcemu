@@ -195,6 +195,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\Common\Instance_Base.cpp" />
     <ClCompile Include="..\src\QuestScripts\Setup.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -257,6 +258,8 @@
     <ClCompile Include="..\src\QuestScripts\Quest_Zangarmarsh.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\Common\EasyFunctions.h" />
+    <ClInclude Include="..\src\Common\Instance_Base.h" />
     <ClInclude Include="..\src\QuestScripts\Setup.h" />
     <ClInclude Include="..\src\Common\Base.h" />
   </ItemGroup>

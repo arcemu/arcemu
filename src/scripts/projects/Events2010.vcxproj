@@ -195,6 +195,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\Common\Instance_Base.cpp" />
     <ClCompile Include="..\src\EventScripts\Event_Halloween.cpp" />
     <ClCompile Include="..\src\EventScripts\Event_WinterVeil.cpp" />
     <ClCompile Include="..\src\Common\Base.cpp" />
@@ -207,6 +208,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Common\Base.h" />
+    <ClInclude Include="..\src\Common\EasyFunctions.h" />
+    <ClInclude Include="..\src\Common\Instance_Base.h" />
     <ClInclude Include="..\src\EventScripts\Setup.h" />
   </ItemGroup>
   <ItemGroup>

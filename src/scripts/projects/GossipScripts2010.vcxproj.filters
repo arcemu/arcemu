@@ -9,11 +9,11 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
+    <Filter Include="Main Resources\Setup">
+      <UniqueIdentifier>{247696b8-3c2c-49fa-bb93-5f1ced337491}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\GossipScripts\Setup.cpp">
-      <Filter>Main Resources</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\GossipScripts\Gossip_Battlemaster.cpp">
       <Filter>Scripts</Filter>
     </ClCompile>
@@ -59,10 +59,13 @@
     <ClCompile Include="..\src\GossipScripts\Gossip_XpEliminator.cpp">
       <Filter>Scripts</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\GossipScripts\Setup.cpp">
+      <Filter>Main Resources\Setup</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\GossipScripts\Setup.h">
-      <Filter>Main Resources</Filter>
+      <Filter>Main Resources\Setup</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

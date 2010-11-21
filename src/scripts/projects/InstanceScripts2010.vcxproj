@@ -262,6 +262,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Common\Base.h" />
+    <ClInclude Include="..\src\Common\EasyFunctions.h" />
     <ClInclude Include="..\src\InstanceScripts\Setup.h" />
     <ClInclude Include="..\src\Common\Instance_Base.h" />
     <ClInclude Include="..\src\InstanceScripts\Raid_Ulduar.h" />

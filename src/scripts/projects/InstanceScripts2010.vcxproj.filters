@@ -5,14 +5,8 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Main Resources\Base Class">
-      <UniqueIdentifier>{484d9da4-1428-4430-8b3b-83898dc706b2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Main Resources\Setup">
       <UniqueIdentifier>{82064d03-fe0f-4d92-9e5b-a3da1de653d0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Main Resources\Instance Base Class">
-      <UniqueIdentifier>{93bfc5bb-922c-40d1-a19b-e53325d46bd3}</UniqueIdentifier>
     </Filter>
     <Filter Include="Scripts">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
@@ -33,16 +27,16 @@
     <Filter Include="Scripts\Raids\SUNWELLPLAT">
       <UniqueIdentifier>{54f48dbe-5ba9-4a7a-b8b7-4ebb7ec01c8c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Main Resources\Base Classes">
+      <UniqueIdentifier>{484d9da4-1428-4430-8b3b-83898dc706b2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Common\Base.cpp">
-      <Filter>Main Resources\Base Class</Filter>
+      <Filter>Main Resources\Base Classes</Filter>
     </ClCompile>
     <ClCompile Include="..\src\InstanceScripts\Setup.cpp">
       <Filter>Main Resources\Setup</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Common\Instance_Base.cpp">
-      <Filter>Main Resources\Instance Base Class</Filter>
     </ClCompile>
     <ClCompile Include="..\src\InstanceScripts\Instance_Arcatraz.cpp">
       <Filter>Scripts\Instances</Filter>
@@ -212,22 +206,28 @@
     <ClCompile Include="..\src\InstanceScripts\SUNWELL_PLAT\Raid_SunwellPlateau.cpp">
       <Filter>Scripts\Raids\SUNWELLPLAT</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\Common\Instance_Base.cpp">
+      <Filter>Main Resources\Base Classes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Common\Base.h">
-      <Filter>Main Resources\Base Class</Filter>
+      <Filter>Main Resources\Base Classes</Filter>
     </ClInclude>
     <ClInclude Include="..\src\InstanceScripts\Setup.h">
       <Filter>Main Resources\Setup</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Common\Instance_Base.h">
-      <Filter>Main Resources\Instance Base Class</Filter>
     </ClInclude>
     <ClInclude Include="..\src\InstanceScripts\Raid_Ulduar.h">
       <Filter>Scripts\Raids\Ulduar</Filter>
     </ClInclude>
     <ClInclude Include="..\src\InstanceScripts\Raid_Naxxramas.h">
       <Filter>Scripts\Raids\Naxxramas</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Common\Instance_Base.h">
+      <Filter>Main Resources\Base Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Common\EasyFunctions.h">
+      <Filter>Main Resources\Base Classes</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

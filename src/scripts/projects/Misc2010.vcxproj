@@ -209,6 +209,7 @@
     <ClCompile Include="..\src\MiscScripts\RandomScripts.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\Common\EasyFunctions.h" />
     <ClInclude Include="..\src\MiscScripts\Setup.h" />
   </ItemGroup>
   <ItemGroup>
