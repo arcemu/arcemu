@@ -310,11 +310,11 @@ private:
 /////////////////////////////////////////////////////////////////////////////////
 ////// Volkhan Script
 
-static Location MoltenGolemCoords[]= 
+/*static Location MoltenGolemCoords[]= 
 {
 	{ 1335.296265f, -89.237503f, 56.717800f, 1.994538f },
 	{ 1340.615234f, -89.083313f, 56.717800f, 0.028982f },
-};
+};*/
 
 #define CN_MOLTEN_GOLEM				28695
 #define CN_BRITTLE_GOLEM			28681

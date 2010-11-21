@@ -193,9 +193,6 @@ public:
 	void write(WorldPacket & data);
 };
 
-void EncodeHex(const char* source, char* dest, uint32 size);
-void DecodeHex(const char* source, char* dest, uint32 size);
-
 extern OpcodeHandler WorldPacketHandlers[NUM_MSG_TYPES];
 void CapitalizeString(string& arg);
 

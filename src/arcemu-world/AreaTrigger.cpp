@@ -177,7 +177,7 @@ void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
 							if(pItem)
 								snprintf(msg,200,GetPlayer()->GetSession()->LocalizedWorldSrv(35),pItem->Name1);
 							else
-								snprintf(msg,200,GetPlayer()->GetSession()->LocalizedWorldSrv(36));
+								snprintf(msg,200,"%s",GetPlayer()->GetSession()->LocalizedWorldSrv(36));
 
 							data << msg;
 						}break;
@@ -188,7 +188,7 @@ void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
 							if(pQuest)
 								snprintf(msg,200,GetPlayer()->GetSession()->LocalizedWorldSrv(35),pQuest->title);
 							else
-								snprintf(msg,200,GetPlayer()->GetSession()->LocalizedWorldSrv(36));
+								snprintf(msg,200,"%s",GetPlayer()->GetSession()->LocalizedWorldSrv(36));
 
 							data << msg;
 						}break;

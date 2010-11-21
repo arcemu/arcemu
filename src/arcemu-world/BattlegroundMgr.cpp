@@ -1511,6 +1511,8 @@ void CBattlegroundManager::SendBattlefieldStatus( Player * plr, BattleGroundStat
 			else
 				data << uint8(1);
 			break;
+		case BGSTATUS_NOFLAGS:
+			break;
 		}
 	}
 

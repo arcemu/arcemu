@@ -2339,28 +2339,6 @@ void WorldSession::HandleResetInstanceOpcode(WorldPacket& recv_data)
 	sInstanceMgr.ResetSavedInstances(_player);
 }
 
-void EncodeHex(const char* source, char* dest, uint32 size)
-{
-	char temp[5];
-	for(uint32 i = 0; i < size; ++i)
-	{
-		snprintf(temp, 5, "%02X", source[i]);
-		strcat(dest, temp);
-	}
-}
-
-void DecodeHex(const char* source, char* dest, uint32 size)
-{
-	char temp = 0;
-	char* acc = const_cast<char*>(source);
-	for(uint32 i = 0; i < size; ++i)
-	{
-		sscanf("%02X", &temp);
-		acc = ((char*)&source[2]);
-		strcat(dest, &temp);
-	}
-}
-
 void WorldSession::HandleToggleCloakOpcode(WorldPacket &recv_data)
 {
 	CHECK_INWORLD_RETURN

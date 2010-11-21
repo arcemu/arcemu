@@ -778,10 +778,10 @@ bool TheCleansingMustBeStopped(uint32 i, Spell * pSpell)
 	draenei1->Despawn(6*60*1000, 0);
 
 	Creature * draenei2 = sEAS.SpawnCreature(pPlayer, 16994, pPlayer->GetPositionX()-RandomFloat(5.0f), pPlayer->GetPositionY()+RandomFloat(5.0f), pPlayer->GetPositionZ(), pPlayer->GetOrientation(), 0);
-	draenei1->Despawn(6*60*1000, 0);
+	draenei2->Despawn(6*60*1000, 0);
 
 	Creature * draenei3 = sEAS.SpawnCreature(pPlayer, 16994, pPlayer->GetPositionX()+RandomFloat(5.0f), pPlayer->GetPositionY()-RandomFloat(5.0f), pPlayer->GetPositionZ(), pPlayer->GetOrientation(), 0);
-	draenei1->Despawn(6*60*1000, 0);
+	draenei3->Despawn(6*60*1000, 0);
 	return true;
 }
 
@@ -1661,7 +1661,7 @@ bool CenarionMoondust(uint32 i, Spell* pSpell) // Body And Heart (Alliance)
   Player * p_caster = pSpell->p_caster;
 
   //Moonkin Stone aura
-  GameObject * Msa = sEAS.SpawnGameobject(p_caster, 177644, 6331.01f, 88.245f, 22.6522f, 2.01455f, 1.0, 0.0, 0.0, 0.0, 0.0);
+  sEAS.SpawnGameobject(p_caster, 177644, 6331.01f, 88.245f, 22.6522f, 2.01455f, 1.0, 0.0, 0.0, 0.0, 0.0);
 
   // it dont delete lunaclaw if he is here
   Creature * lunaclaw;
@@ -1707,7 +1707,7 @@ bool CenarionLunardust(uint32 i, Spell * pSpell) // Body And Heart (Horde)
   Player * p_caster = pSpell->p_caster;
 
   //Moonkin Stone aura
-  GameObject * Msa = sEAS.SpawnGameobject(p_caster, 177644, -2499.54f, -1633.03f, 91.8121f, 0.262894f, 1.0, 0.0, 0.0, 0.0, 0.0);
+  sEAS.SpawnGameobject(p_caster, 177644, -2499.54f, -1633.03f, 91.8121f, 0.262894f, 1.0, 0.0, 0.0, 0.0, 0.0);
 
   Creature * lunaclaw;
 

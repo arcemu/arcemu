@@ -333,15 +333,6 @@ void RemoteConsole::Write(const char * Format, ...)
 	m_pSocket->Send((const uint8*)obuf, (uint32)strlen(obuf));
 }
 
-void RemoteConsole::WriteNA(const char * Format)
-{
-	if( *Format == '\0' )
-		return;
-
-	m_pSocket->Send((const uint8*)Format, (uint32)strlen(Format));
-}
-
-
 struct ConsoleCommand
 {
 	bool(*CommandPointer)(BaseConsole*, int, const char*[]);
@@ -568,9 +559,4 @@ void LocalConsole::Write(const char * Format, ...)
 	va_list ap;
 	va_start(ap, Format);
 	vprintf(Format, ap);
-}
-
-void LocalConsole::WriteNA(const char * Format)
-{
-	printf(Format);
 }
