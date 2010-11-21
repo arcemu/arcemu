@@ -4821,24 +4821,6 @@ void ApplyNormalFixes()
 			sp->procChance = 100;
 		}
 
-		//warlock -  soul link
-		sp = CheckAndReturnSpellEntry( 19028 );
-		if( sp != NULL )
-		{
-			//this is for the trigger effect
-			sp->Effect[0]=SPELL_EFFECT_APPLY_AURA;
-			sp->EffectApplyAuraName[0] = SPELL_AURA_SPLIT_DAMAGE;
-			sp->EffectMiscValue[0]=20;
-			//sp->EffectImplicitTargetA[0] = EFF_TARGET_PET;
-			//this is for the extra 5% dmg for caster and pet
-			sp->Effect[1] = SPELL_EFFECT_APPLY_AURA;
-			sp->EffectApplyAuraName[1] = 79;
-			sp->EffectBasePoints[1] = 4; //4+1=5
-			sp->EffectImplicitTargetA[1] = EFF_TARGET_SELF;
-			sp->EffectImplicitTargetB[1] = EFF_TARGET_PET;
-			sp->c_is_flags |= SPELL_FLAG_IS_EXPIREING_WITH_PET;
-		}
-
 		//warlock: Nightfall
 		sp = CheckAndReturnSpellEntry( 18094 );
 		if( sp != NULL )

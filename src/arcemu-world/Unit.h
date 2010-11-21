@@ -1019,7 +1019,21 @@ public:
 	bool RemoveAuraByItemGUID(uint32 spellId,uint64 guid);
 	bool RemoveAuraByNameHash(uint32 namehash);//required to remove weaker instances of a spell
 	bool RemoveAuras(uint32 * SpellIds);
-	bool RemoveAurasByHeal();	
+	bool RemoveAurasByHeal();
+
+	//////////////////////////////////////////////////////////////////
+	//void RemoveAllAreaAuraByOther()
+	//  Removes all Area Auras that are from other Units.
+	//
+	//Parameters
+	//  None
+	//
+	//Return Value
+	//  None
+	//
+	//
+	/////////////////////////////////////////////////////////////////
+	void RemoveAllAreaAuraByOther();
 
 	void EventRemoveAura(uint32 SpellId)
 	{

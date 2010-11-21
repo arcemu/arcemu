@@ -351,20 +351,44 @@ const char* SpellEffectNames[TOTAL_SPELL_EFFECTS] = {
 	"UNKNOWN37"                  //    161 //used by spell 63624(dual talents)
 };
 
-void Spell::ApplyAA( uint32 i , bool applyonself ) // Apply Area Aura
+void Spell::ApplyAA( uint32 i ) // Apply Area Aura
 {
 	if(!unitTarget || !unitTarget->isAlive()) return;
 	if(u_caster != unitTarget) return;
 
-	Aura * pAura;
+	Aura * pAura = NULL;
 	std::map<uint64, Aura*>::iterator itr = m_pendingAuras.find(unitTarget->GetGUID());
 	if(itr == m_pendingAuras.end())
 	{
 		pAura = new Aura(GetProto(),GetDuration(),m_caster,unitTarget);
 
 		float r = GetRadius(i);
-		if(!sEventMgr.HasEvent(pAura, EVENT_AREAAURA_UPDATE))		/* only add it once */
-			sEventMgr.AddEvent(pAura, &Aura::EventUpdateAA, r*r, EVENT_AREAAURA_UPDATE, 1000, 0,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+
+		uint32 eventtype = 0;
+
+		switch( m_spellInfo->Effect[ i ] ){
+		case SPELL_EFFECT_APPLY_GROUP_AREA_AURA:
+			eventtype = EVENT_GROUP_AREA_AURA_UPDATE;
+			break;
+		case SPELL_EFFECT_APPLY_RAID_AREA_AURA:
+			eventtype = EVENT_RAID_AREA_AURA_UPDATE;
+			break;
+		case SPELL_EFFECT_APPLY_PET_AREA_AURA:
+			eventtype = EVENT_PET_AREA_AURA_UPDATE;
+			break;
+		case SPELL_EFFECT_APPLY_FRIEND_AREA_AURA:
+			eventtype = EVENT_FRIEND_AREA_AURA_UPDATE;
+			break;
+		case SPELL_EFFECT_APPLY_ENEMY_AREA_AURA:
+			eventtype = EVENT_ENEMY_AREA_AURA_UPDATE;
+			break;
+		case SPELL_EFFECT_APPLY_OWNER_AREA_AURA:
+			eventtype = EVENT_ENEMY_AREA_AURA_UPDATE;
+			break;
+		}
+
+		if( !sEventMgr.HasEvent( pAura, eventtype ) )		/* only add it once */
+			sEventMgr.AddEvent(pAura, &Aura::EventUpdateAA, r*r, eventtype, 1000, 0,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 
 		m_pendingAuras.insert(std::make_pair(unitTarget->GetGUID(), pAura));
 		AddRef();
@@ -374,11 +398,8 @@ void Spell::ApplyAA( uint32 i , bool applyonself ) // Apply Area Aura
 	{
 		pAura = itr->second;
 	}
-
-	if( applyonself )
-		pAura->AddMod(GetProto()->EffectApplyAuraName[i],damage,GetProto()->EffectMiscValue[i],i);
-	else
-		pAura->AddMod(GetProto()->EffectApplyAuraName[i],damage, 0,i);
+	
+	pAura->AddMod(GetProto()->EffectApplyAuraName[i],damage,GetProto()->EffectMiscValue[i],i);
 }
 
 
@@ -2677,7 +2698,7 @@ void Spell::SpellEffectTransformItem(uint32 i)
 }
 
 void Spell::SpellEffectApplyGroupAA( uint32 i ){
-	ApplyAA( i, true );
+	ApplyAA( i );
 }
 
 void Spell::SpellEffectLearnSpell(uint32 i) // Learn Spell
@@ -3695,7 +3716,7 @@ void Spell::SpellEffectTriggerSpell(uint32 i) // Trigger Spell
 }
 
 void Spell::SpellEffectApplyRaidAA( uint32 i ){
-	ApplyAA( i, true );
+	ApplyAA( i );
 }
 
 void Spell::SpellEffectPowerFunnel(uint32 i) // Power Funnel
@@ -5143,7 +5164,7 @@ void Spell::SpellEffectSkill(uint32 i)
 }
 
 void Spell::SpellEffectApplyPetAA( uint32 i ){
-	ApplyAA( i, true );
+	ApplyAA( i );
 }
 
 void Spell::SpellEffectDummyMelee( uint32 i ) // Normalized Weapon damage +
@@ -5430,11 +5451,11 @@ void Spell::SpellEffectProspecting(uint32 i)
 }
 
 void Spell::SpellEffectApplyFriendAA( uint32 i ){
-	ApplyAA( i, true );
+	ApplyAA( i );
 }
 
 void Spell::SpellEffectApplyEnemyAA( uint32 i ){
-	ApplyAA( i, false );
+	ApplyAA( i );
 }
 
 void Spell::SpellEffectRedirectThreat(uint32 i)
@@ -5516,7 +5537,7 @@ void Spell::SpellEffectTriggerSpellWithValue(uint32 i)
 }
 
 void Spell::SpellEffectApplyOwnerAA( uint32 i ){
-	ApplyAA( i, true );
+	ApplyAA( i );
 }
 
 void Spell::SpellEffectCreatePet(uint32 i)

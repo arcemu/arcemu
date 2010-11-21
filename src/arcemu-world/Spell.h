@@ -1730,7 +1730,7 @@ public:
 
     void CreateItem(uint32 itemId);
 
-	void ApplyAA(uint32 i, bool applyonself = true );
+	void ApplyAA( uint32 i );
 
 	// Effect Handlers
 	void SpellEffectNULL(uint32 i);

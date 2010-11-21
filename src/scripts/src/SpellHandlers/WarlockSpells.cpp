@@ -19,18 +19,28 @@
 
 #include "Setup.h"
 
-bool SoulLink( uint32 i, Spell *s ){
-	Unit *unitTarget = s->GetUnitTarget();
+//////////////////////////////////////////////////////////////
+//bool SoulLinkParent( uint32 i, Spell *s )
+//
+//Precondition(s)
+//  Caster is a Player.
+//  Target is a Unit, a warlock pet
+//
+//Effect(s)
+//  Makes the warlock pet cast the Soul Link owner aree aura
+//
+//
+/////////////////////////////////////////////////////////////
+bool SoulLinkParent( uint32 i, Spell *s ){
+	if( s->p_caster == NULL )
+		return true;
 
-	if(!s->u_caster || !s->u_caster->isAlive() || !unitTarget || !unitTarget->isAlive())
-		return false;
-	
-	uint32 pet_dmg = s->forced_basepoints[0]*20/100;
-	if( pet_dmg )
-	{
-		unitTarget->ModHealth(pet_dmg);
-		unitTarget->DealDamage( s->u_caster,pet_dmg,0,0,25228,true);
-	}
+	Unit *u = s->GetUnitTarget();
+
+	if( u == NULL )
+		return true;
+
+	u->CastSpell( u, 25228, true );
 
 	return true;
 }
@@ -618,7 +628,7 @@ bool SoulStoneResurrection( uint32 i, Aura *a, bool apply ){
 
 	if(apply)
 	{
-		p_target->SetSoulStone(3026);
+		p_target->SetSoulStone( soulstone );
 		p_target->SetSoulStoneReceiver((uint32)a->m_casterGuid);
 	}
 	else if( p_target->isAlive() )
@@ -656,7 +666,7 @@ void SetupWarlockSpells(ScriptMgr * mgr)
 {
 	//////////////////////////////////////////////// Dummy Effect /////////////////////////////////////////////////////////
 
-	mgr->register_dummy_spell( 25228, &SoulLink );
+	mgr->register_dummy_spell( 19028, &SoulLinkParent );
 
 	mgr->register_dummy_spell( 1454, &LifeTap );
 	mgr->register_dummy_spell( 1455, &LifeTap );

@@ -481,6 +481,8 @@ public:
 	void EventUpdateFriendAA( float r );
 	void EventUpdateEnemyAA( float r );
 	void EventUpdateOwnerAA( float r );
+
+
 	void RemoveAA();
 
 	bool DotCanCrit();

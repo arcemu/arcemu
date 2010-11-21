@@ -1411,30 +1411,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, bo
 						//null check was made before like 2 times already :P
 						dmg_overwrite[0] = ( ospinfo->EffectBasePoints[0] + 1 ) * 9;
 					}break;
-				//warlock soul link
-				case 25228:
-					{
-						//we need a pet for this, else we do not trigger it at all
-						if( IsPlayer() )
-							continue;
-						Unit* new_caster;
-						if( static_cast< Player* >( this )->GetSummon() )
-							new_caster = static_cast< Player* >( this )->GetSummon();
-						else if( GetCharmedUnitGUID() )
-							new_caster = GetMapMgr()->GetUnit( GetCharmedUnitGUID() );
-						else
-							new_caster = NULL;
-						if( new_caster != NULL && new_caster->isAlive() )
-						{
-							SpellEntry* spellInfo = dbcSpell.LookupEntry( 25228 ); //we already modified this spell on server loading so it must exist
-							Spell* spell = new Spell( new_caster, spellInfo, true, NULL );
-							spell->forced_basepoints[0] = dmg;
-							SpellCastTargets targets;
-							targets.m_unitTarget = GetGUID();
-							spell->prepare( &targets );
-						}
-						continue;
-					}break;
+
 				//warlock - Nighfall
 				case 17941:
 					{
@@ -4694,6 +4671,23 @@ bool Unit::RemoveAurasByHeal()
 	return res;
 }
 
+void Unit::RemoveAllAreaAuraByOther(){
+	for( uint32 x = MAX_TOTAL_AURAS_START; x < MAX_TOTAL_AURAS_END; x++ ){
+		Aura *a = m_auras[ x ];
+		
+		if( a == NULL ) // empty slot
+			continue;
+
+		if( !a->m_areaAura ) // not area aura
+			continue;
+
+		if( a->GetCaster()->GetGUID() == GetGUID() ) // this originates from us
+			continue;
+
+		a->Remove();
+	}
+}
+
 bool Unit::RemoveAura(uint32 spellId, uint64 guid)
 {
 	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
@@ -5931,6 +5925,8 @@ void Unit::RemoveFromWorld(bool free_guid)
 	}
 
 	Object::RemoveFromWorld(free_guid);
+
+	RemoveAllAreaAuraByOther();
 
 	//zack: should relocate new events to new eventmanager and not to -1
 	for(uint32 x = MAX_TOTAL_AURAS_START; x < MAX_TOTAL_AURAS_END; ++x)
