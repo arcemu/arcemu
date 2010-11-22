@@ -1342,7 +1342,7 @@ bool ChatHandler::HandleNPCEquipOneCommand(const char * args, WorldSession * m_s
 		return true;
 	}
 
-	m_session->SystemMessage("Creature: %s (%u) SpawnID: %u - Item1: %u.", SelectedCreature->GetCreatureInfo()->Name, SelectedCreature->GetProto()->Id, SelectedCreature->spawnid, SelectedCreature->m_spawn->Item1SlotDisplay);
+	m_session->SystemMessage("Creature: %s (%u) SpawnID: %u - Item1: %u.", SelectedCreature->GetCreatureInfo()->Name, SelectedCreature->GetProto()->Id, SelectedCreature->spawnid, SelectedCreature->GetEquippedItem(MELEE));
 
 	if(ItemID == 0)
 	{
@@ -1358,7 +1358,7 @@ bool ChatHandler::HandleNPCEquipOneCommand(const char * args, WorldSession * m_s
 		m_session->SystemMessage("Item ID: %u does not exist.", ItemID);
 		return true;
 	}
-	SelectedCreature->SetEquippedItem(MELEE,ItemProvided->ItemId);
+	SelectedCreature->SetEquippedItem(MELEE,ItemID);
 	SelectedCreature->SaveToDB();
 	return true;
 }
@@ -1376,7 +1376,7 @@ bool ChatHandler::HandleNPCEquipTwoCommand(const char * args, WorldSession * m_s
 		return true;
 	}
 
-	m_session->SystemMessage("Creature: %s (%u) SpawnID: %u - Item2: %u.", SelectedCreature->GetCreatureInfo()->Name, SelectedCreature->GetProto()->Id, SelectedCreature->spawnid, SelectedCreature->m_spawn->Item2SlotDisplay);
+	m_session->SystemMessage("Creature: %s (%u) SpawnID: %u - Item2: %u.", SelectedCreature->GetCreatureInfo()->Name, SelectedCreature->GetProto()->Id, SelectedCreature->spawnid, SelectedCreature->GetEquippedItem(OFFHAND));
 
 	if(ItemID == 0)
 	{
@@ -1392,7 +1392,7 @@ bool ChatHandler::HandleNPCEquipTwoCommand(const char * args, WorldSession * m_s
 		m_session->SystemMessage("Item ID: %u does not exist.", ItemID);
 		return true;
 	}
-	SelectedCreature->SetEquippedItem(OFFHAND,ItemProvided->ItemId);
+	SelectedCreature->SetEquippedItem(OFFHAND,ItemID);
 	SelectedCreature->SaveToDB();
 	return true;
 }
@@ -1410,7 +1410,7 @@ bool ChatHandler::HandleNPCEquipThreeCommand(const char * args, WorldSession * m
 		return true;
 	}
 
-	m_session->SystemMessage("Creature: %s (%u) SpawnID: %u - Item3: %u.", SelectedCreature->GetCreatureInfo()->Name, SelectedCreature->GetProto()->Id, SelectedCreature->spawnid, SelectedCreature->m_spawn->Item3SlotDisplay);
+	m_session->SystemMessage("Creature: %s (%u) SpawnID: %u - Item3: %u.", SelectedCreature->GetCreatureInfo()->Name, SelectedCreature->GetProto()->Id, SelectedCreature->spawnid, SelectedCreature->GetEquippedItem(RANGED));
 
 	if(ItemID == 0)
 	{
@@ -1426,7 +1426,7 @@ bool ChatHandler::HandleNPCEquipThreeCommand(const char * args, WorldSession * m
 		m_session->SystemMessage("Item ID: %u does not exist.", ItemID);
 		return true;
 	}
-	SelectedCreature->SetEquippedItem(RANGED,ItemProvided->ItemId);
+	SelectedCreature->SetEquippedItem(RANGED,ItemID);
 	SelectedCreature->SaveToDB();
 	return true;
 }
