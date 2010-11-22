@@ -28,6 +28,23 @@ SERVER_DECL bool isAttackable(Object* objA, Object* objB, bool CheckStealth = tr
 SERVER_DECL bool isCombatSupport(Object* objA, Object* objB); // B combat supports A?;
 SERVER_DECL bool isAlliance(Object* objA); // A is alliance?
 
+
+//////////////////////////////////////////////////////////////////
+//bool isNeutral( Object *a, Object *b )
+//  Tells if 2 Objects are neutral to each others based on
+//  their faction.
+//
+//Parameters
+//  Object *a  -  Pointer to an Object
+//  Object *b  -  Pointer to an Object
+//
+//Return Value
+//  Returns true if they are neutral.
+//  Returns false otherwise.
+//
+/////////////////////////////////////////////////////////////////
+SERVER_DECL bool isNeutral( Object *a, Object *b );
+
 Player* GetPlayerOwner( Object *A );
 
 ARCEMU_INLINE bool isFriendly(Object* objA, Object* objB)// B is friendly to A if its not hostile

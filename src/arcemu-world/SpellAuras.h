@@ -431,7 +431,7 @@ struct SpellCharge
     uint32 procdiff;
 };
 
-typedef set<uint32> AreaAuraList;
+typedef set< uint64 > AreaAuraList;
 
 class SERVER_DECL Aura : public EventableObject
 {
@@ -486,6 +486,20 @@ public:
 	void RemoveAA();
 
 	bool DotCanCrit();
+
+	////////////////////////////////////////////////////////
+	//bool IsAreaAura()
+	//  Tells if the Aura is an area Aura.
+	//
+	//Parameters
+	//  None
+	//
+	//Return Value
+	//  Returns true if it is.
+	//  Returns false otherwise.
+	//
+	///////////////////////////////////////////////////////
+	bool IsAreaAura();
 
 	//! GetTimeLeft() milliseconds
 	ARCEMU_INLINE uint32 GetTimeLeft() 

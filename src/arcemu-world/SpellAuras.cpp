@@ -826,16 +826,8 @@ void Aura::Remove()
 				m_target->RemoveAura(GetSpellProto()->EffectTriggerSpell[x]);
 		}
 		else
-		if( ( m_spellProto->Effect[x] == SPELL_EFFECT_APPLY_GROUP_AREA_AURA ||
-			  m_spellProto->Effect[x] == SPELL_EFFECT_APPLY_RAID_AREA_AURA ||
-			  m_spellProto->Effect[x] == SPELL_EFFECT_APPLY_PET_AREA_AURA ||
-			  m_spellProto->Effect[x] == SPELL_EFFECT_APPLY_FRIEND_AREA_AURA ||
-			  m_spellProto->Effect[x] == SPELL_EFFECT_APPLY_ENEMY_AREA_AURA ||
-			  m_spellProto->Effect[x] == SPELL_EFFECT_APPLY_OWNER_AREA_AURA ) &&
-			  m_casterGuid == m_target->GetGUID() )
-		{
-			RemoveAA();
-		}
+			if( IsAreaAura() && m_casterGuid == m_target->GetGUID() )
+				RemoveAA();
 	}
 
 	if( m_spellProto->procCharges > 0 && m_spellProto->proc_interval == 0 )
@@ -1053,14 +1045,14 @@ void Aura::EventUpdateGroupAA( float r ){
 		if( op->HasAura( m_spellProto->Id ) )
 			continue;
 		
-		targets.insert( op->GetLowGUID() );
+		targets.insert( op->GetGUID() );
 	}
 	
 	// Check for targets that should be no longer affected
 	for( AreaAuraList::iterator itr = targets.begin(); itr != targets.end();  ){
 		AreaAuraList::iterator itr2 = itr;
 		++itr;
-		Player *tp = p->GetMapMgr()->GetPlayer( *itr2 );
+		Player *tp = p->GetMapMgr()->GetPlayer( Arcemu::Util::GUID_LOPART( *itr2 ) );
 		bool removable = false;
 		
 		if( tp == NULL ){
@@ -1074,7 +1066,7 @@ void Aura::EventUpdateGroupAA( float r ){
 		if( ( p->GetPhase() & tp->GetPhase() ) == 0 )
 			removable = true;
 		
-		if( !g->HasMember( *itr2 ) )
+		if( !g->HasMember( Arcemu::Util::GUID_LOPART( *itr2 ) ) )
 			removable = true;
 		
 		if( removable ){
@@ -1132,7 +1124,7 @@ void Aura::EventUpdateRaidAA( float r ){
 			if( op->HasAura( m_spellProto->Id ) )
 				continue;
 			
-			targets.insert( op->GetLowGUID() );
+			targets.insert( op->GetGUID() );
 		}
 	}
 	g->Unlock();
@@ -1142,7 +1134,7 @@ void Aura::EventUpdateRaidAA( float r ){
 		AreaAuraList::iterator itr2 = itr;
 		++itr;
 
-		Player *tp = p->GetMapMgr()->GetPlayer( *itr2 );
+		Player *tp = p->GetMapMgr()->GetPlayer( Arcemu::Util::GUID_LOPART( *itr2 ) );
 		bool removable = false;
 
 		if( tp == NULL ){
@@ -1211,114 +1203,127 @@ void Aura::EventUpdatePetAA( float r ){
 }
 
 void Aura::EventUpdateFriendAA( float r ){
-	Player *p = NULL;
-	
-	if( m_target->IsPlayer() )
-		p = TO_PLAYER( m_target );
-	else
+	Unit *u = m_target;
+	if( u == NULL )
 		return;
 
-	for( std::set< Object* >::iterator itr = p->GetInRangePlayerSetBegin(); itr != p->GetInRangePlayerSetEnd(); ++itr ){
-		Player *op = TO_PLAYER( *itr );
+	for( std::set< Object* >::iterator itr = u->GetInRangeSetBegin(); itr != u->GetInRangeSetEnd(); ++itr ){
+		Object *o = *itr;
 
-		if( p->GetDistanceSq( op ) > r )
+		if( !o->IsUnit() )
 			continue;
 
-		if( ( p->GetPhase() & op->GetPhase() ) == 0 )
+		Unit *ou = TO_UNIT( o );
+
+		if( u->GetDistanceSq( ou ) > r )
 			continue;
 
-		if( !op->isAlive() )
+		if( ( u->GetPhase() & ou->GetPhase() ) == 0 )
 			continue;
 
-		if( isHostile( p, op ) )
+		if( !ou->isAlive() )
 			continue;
 
-		if( op->HasAura( m_spellProto->Id ) )
+		if( isHostile( u, ou ) )
 			continue;
 
-		targets.insert( op->GetLowGUID() );
+		if( isNeutral( u, ou ) )
+			continue;
+
+		if( ou->HasAura( m_spellProto->Id ) )
+			continue;
+
+		targets.insert( ou->GetGUID() );
 	}
 
 	for( AreaAuraList::iterator itr = targets.begin(); itr != targets.end(); ){
 		AreaAuraList::iterator itr2 = itr;
 		++itr;
 
-		Player *tp = p->GetMapMgr()->GetPlayer( *itr2 );
+		Unit *tu = u->GetMapMgr()->GetUnit( *itr2 );
 		bool removable = false;
 
-		if( tp == NULL ){
+		if( tu == NULL ){
 			targets.erase( itr2 );
 			continue;
 		}
 
-		if( p->GetDistanceSq( tp ) > r )
+		if( u->GetDistanceSq( tu ) > r )
 			removable = true;
 
-		if( isHostile( p, tp ) )
+		if( isHostile( u, tu ) )
 			removable = true;
 
-		if( ( p->GetPhase() & tp->GetPhase() ) == 0 )
+		if( isNeutral( u, tu ) )
+			removable = true;
+
+		if( ( u->GetPhase() & tu->GetPhase() ) == 0 )
 			removable = true;
 
 		if( removable ){
-			tp->RemoveAura( m_spellProto->Id );
+			tu->RemoveAura( m_spellProto->Id );
 			targets.erase( itr2 );
 		}
 	}
 }
 
 void Aura::EventUpdateEnemyAA( float r ){
-	Player *p = NULL;
-	
-	if( m_target->IsPlayer() )
-		p = TO_PLAYER( m_target );
-	else
+	Unit *u = m_target;
+	if( u == NULL )
 		return;
+	
+	for( std::set< Object* >::iterator itr = u->GetInRangeSetBegin(); itr != u->GetInRangeSetEnd(); ++itr ){
+		Object *o = *itr;
 
-	for( std::set< Object* >::iterator itr = p->GetInRangePlayerSetBegin(); itr != p->GetInRangePlayerSetEnd(); ++itr ){
-		Player *op = TO_PLAYER( *itr );
-
-		if( p->GetDistanceSq( op ) > r )
+		if( !o->IsUnit() )
 			continue;
 
-		if( ( p->GetPhase() & op->GetPhase() ) == 0 )
+		Unit *ou = TO_UNIT( o );
+
+		if( u->GetDistanceSq( ou ) > r )
 			continue;
 
-		if( !op->isAlive() )
+		if( ( u->GetPhase() & ou->GetPhase() ) == 0 )
 			continue;
 
-		if( !isHostile( p, op ) )
+		if( !ou->isAlive() )
 			continue;
 
-		if( op->HasAura( m_spellProto->Id ) )
+		if( !isHostile( u, ou ) )
 			continue;
 
-		targets.insert( op->GetLowGUID() );
+		if( ou->HasAura( m_spellProto->Id ) )
+			continue;
+
+		targets.insert( ou->GetGUID() );
 	}
 
 	for( AreaAuraList::iterator itr = targets.begin(); itr != targets.end(); ){
 		AreaAuraList::iterator itr2 = itr;
 		++itr;
 
-		Player *tp = p->GetMapMgr()->GetPlayer( *itr2 );
+		Unit *tu = u->GetMapMgr()->GetUnit( *itr2 );
 		bool removable = false;
 
-		if( tp == NULL ){
+		if( tu == NULL ){
 			targets.erase( itr2 );
 			continue;
 		}
 
-		if( p->GetDistanceSq( tp ) > r )
+		if( u->GetDistanceSq( tu ) > r )
 			removable = true;
 
-		if( !isHostile( p, tp ) )
+		if( !isHostile( u, tu ) )
 			removable = true;
 
-		if( ( p->GetPhase() & tp->GetPhase() ) == 0 )
+		if( isNeutral( u, tu ) )
+			removable = true;
+
+		if( ( u->GetPhase() & tu->GetPhase() ) == 0 )
 			removable = true;
 
 		if( removable ){
-			tp->RemoveAura( m_spellProto->Id );
+			tu->RemoveAura( m_spellProto->Id );
 			targets.erase( itr2 );
 		}
 	}
@@ -1338,8 +1343,7 @@ void Aura::EventUpdateOwnerAA( float r ){
 			return;
 	}
 	
-	if( ou->IsPlayer()&&
-		ou->isAlive() &&
+	if( ou->isAlive() &&
 		!ou->HasAura( m_spellProto->Id ) &&
 		( c->GetDistanceSq( ou ) <= r ) ){
 
@@ -1354,7 +1358,7 @@ void Aura::EventUpdateOwnerAA( float r ){
 		ou->RemoveAura( m_spellProto->Id );		
 }
 
-void Aura::EventUpdateAA(float r)
+void Aura::EventUpdateAA( float r )
 {
 	/* burlex: cheap hack to get this to execute in the correct context always */
 	if(event_GetCurrentInstanceId() == -1)
@@ -1366,7 +1370,7 @@ void Aura::EventUpdateAA(float r)
 	Unit * u_caster = GetUnitCaster();
 
 	// if the caster is no longer valid->remove the aura
-	if( u_caster == NULL || ( !u_caster->IsPlayer() && !u_caster->IsPet() ) )
+	if( u_caster == NULL  )
 	{
 		Remove();
 		//since we lost the caster we cannot do anything more
@@ -1407,59 +1411,44 @@ void Aura::EventUpdateAA(float r)
 
 
 	for( AreaAuraList::iterator itr = targets.begin(); itr != targets.end(); ++itr ){
-		Player *p = m_target->GetMapMgr()->GetPlayer( *itr );
+		Unit *u = m_target->GetMapMgr()->GetUnit( *itr );
 
-		if( p->HasAura( m_spellProto->Id ) )
+		if( u->HasAura( m_spellProto->Id ) )
 			continue;
 		
-		Aura *a = new Aura( m_spellProto, GetDuration(), m_target, p, true );
+		Aura *a = new Aura( m_spellProto, GetDuration(), m_target, u, true );
 		a->m_areaAura = true;
 		a->AddMod( mod->m_type, mod->m_amount , mod->m_miscValue, mod->i );
-		p->AddAura( a );
+		u->AddAura( a );
 	}
 }
 
-void Aura::RemoveAA()
-{
-	AreaAuraList::iterator itr;
-	Unit * caster = GetUnitCaster();
+void Aura::RemoveAA(){
+	uint32 spellid = m_spellProto->Id;
 
-	//report say that aura should also affect pet
-	Player *plr = NULL;
-	if( caster && caster->IsPlayer() )
-		plr = static_cast<Player*>( caster );
-	if( plr &&
-		(
-			GetSpellProto()->NameHash == SPELL_HASH_TRUESHOT_AURA ||
-			GetSpellProto()->NameHash == SPELL_HASH_ASPECT_OF_THE_PACK ||
-			GetSpellProto()->NameHash == SPELL_HASH_ASPECT_OF_THE_WILD
-			)
-		 )
-	{
-		std::list<Pet*> summons = plr->GetSummons();
-		for(std::list<Pet*>::iterator itr2 = summons.begin(); itr2 != summons.end(); ++itr2)
-		{
-			Pet* summon = *itr2;
-			if( summon->isAlive() )
-				summon->RemoveAura( m_spellProto->Id );
+	for( AreaAuraList::iterator itr = targets.begin(); itr != targets.end(); ++itr ){
+		Unit *tu = m_target->GetMapMgr()->GetUnit( *itr );
+
+		tu->RemoveAura( spellid );
+	}
+	targets.clear();
+
+	if( m_target->IsPlayer() && m_spellProto->HasEffect( SPELL_EFFECT_APPLY_PET_AREA_AURA ) ){
+		Player *p = TO_PLAYER( m_target );
+
+		std::list< Pet* > pl = p->GetSummons();
+		for( std::list< Pet* >::iterator itr = pl.begin(); itr != pl.end(); ++itr ){
+			Pet *pet = *itr;
+
+			pet->RemoveAura( spellid );
 		}
 	}
 
-	for(itr = targets.begin(); itr != targets.end(); ++itr)
-	{
-		// Check if the target is 'valid'.
-		Player * iplr;
-		if(m_target->IsInWorld())
-			iplr = m_target->GetMapMgr()->GetPlayer((uint32)*itr);
-		else
-			iplr = objmgr.GetPlayer((uint32)*itr);
+	if( m_spellProto->HasEffect( SPELL_EFFECT_APPLY_OWNER_AREA_AURA ) ){
+		Unit *u = m_target->GetMapMgr()->GetUnit( m_target->GetCreatedByGUID() );
 
-		if(!iplr || iplr == caster)
-			continue;
-
-		iplr->RemoveAura(m_spellProto->Id);
+		u->RemoveAura( spellid );
 	}
-	targets.clear();
 }
 
 //------------------------- Aura Effects -----------------------------
@@ -8600,5 +8589,19 @@ bool Aura::IsCombatStateAffecting(){
 		sp->AppliesAura( SPELL_AURA_PERIODIC_MANA_LEECH ) )
 		return true;
 	
+	return false;
+}
+
+bool Aura::IsAreaAura(){
+	SpellEntry *sp = m_spellProto;
+
+	if( sp->HasEffect( SPELL_EFFECT_APPLY_GROUP_AREA_AURA ) ||
+		sp->HasEffect( SPELL_EFFECT_APPLY_RAID_AREA_AURA ) ||
+		sp->HasEffect( SPELL_EFFECT_APPLY_PET_AREA_AURA ) ||
+		sp->HasEffect( SPELL_EFFECT_APPLY_FRIEND_AREA_AURA ) ||
+		sp->HasEffect( SPELL_EFFECT_APPLY_ENEMY_AREA_AURA ) ||
+		sp->HasEffect( SPELL_EFFECT_APPLY_OWNER_AREA_AURA ) )
+		return true;
+
 	return false;
 }

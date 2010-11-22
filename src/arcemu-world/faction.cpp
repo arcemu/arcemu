@@ -79,6 +79,14 @@ int isBgEnemy(Object* objA, Object* objB)
 	return -1;
 }
 
+bool isNeutral( Object *a,  Object *b ){
+	if( ( a->m_faction->HostileMask & b->m_faction->Mask ) == 0 &&
+		( a->m_faction->FriendlyMask & b->m_faction->Mask ) == 0 )
+		return true;
+
+	return false;
+}
+
 bool isHostile(Object* objA, Object* objB)// B is hostile for A?
 {
 	if(!objA || !objB)

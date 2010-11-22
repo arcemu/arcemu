@@ -4671,6 +4671,18 @@ bool Unit::RemoveAurasByHeal()
 	return res;
 }
 
+void Unit::RemoveAllAreaAuras(){
+	for( uint32 x = MAX_TOTAL_AURAS_START; x < MAX_TOTAL_AURAS_END; x++ ){
+		Aura *a = m_auras[ x ];
+		
+		if( a == NULL )
+			continue;
+
+		if( a->IsAreaAura() )
+			a->RemoveAA();
+	}
+}
+
 void Unit::RemoveAllAreaAuraByOther(){
 	for( uint32 x = MAX_TOTAL_AURAS_START; x < MAX_TOTAL_AURAS_END; x++ ){
 		Aura *a = m_auras[ x ];
@@ -5923,10 +5935,11 @@ void Unit::RemoveFromWorld(bool free_guid)
 			m_ObjectSlots[i] = 0;
 		}
 	}
+	
+	RemoveAllAreaAuras();
+	RemoveAllAreaAuraByOther();
 
 	Object::RemoveFromWorld(free_guid);
-
-	RemoveAllAreaAuraByOther();
 
 	//zack: should relocate new events to new eventmanager and not to -1
 	for(uint32 x = MAX_TOTAL_AURAS_START; x < MAX_TOTAL_AURAS_END; ++x)
