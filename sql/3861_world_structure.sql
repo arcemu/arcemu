@@ -87,7 +87,7 @@ CREATE TABLE `arcemu_db_version` (
 
 /*Data for the table `arcemu_db_version` */
 
-insert  into `arcemu_db_version`(`LastUpdate`) values (3812);
+insert  into `arcemu_db_version`(`LastUpdate`) values (3860);
 
 /*Table structure for table `areatriggers` */
 

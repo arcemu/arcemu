@@ -511,9 +511,9 @@ void GameObject::UseFishingNode(Player *player)
 	{
 		
 		if( school->GetMapMgr() != NULL )
-			lootmgr.FillGOLoot( &school->loot, school->GetEntry(), school->GetMapMgr()->iInstanceMode );
+			lootmgr.FillGOLoot( &school->loot, school->GetInfo()->sound1, school->GetMapMgr()->iInstanceMode );
 		else
-			lootmgr.FillGOLoot( &school->loot, school->GetEntry(), 0 );
+			lootmgr.FillGOLoot( &school->loot, school->GetInfo()->sound1, 0 );
 		
 		player->SendLoot( school->GetGUID(), LOOT_FISHING, school->GetMapId() );
 		EndFishing( player, false );

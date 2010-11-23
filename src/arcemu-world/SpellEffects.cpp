@@ -2519,9 +2519,9 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 						if(gameObjTarget->loot.items.size() == 0)
 						{
 							if( gameObjTarget->GetMapMgr() != NULL )
-								lootmgr.FillGOLoot(&gameObjTarget->loot,gameObjTarget->GetEntry(),  gameObjTarget->GetMapMgr()->iInstanceMode );
+								lootmgr.FillGOLoot(&gameObjTarget->loot,gameObjTarget->GetInfo()->sound1,  gameObjTarget->GetMapMgr()->iInstanceMode );
 							else
-								lootmgr.FillGOLoot(&gameObjTarget->loot,gameObjTarget->GetEntry(),  0 );
+								lootmgr.FillGOLoot(&gameObjTarget->loot,gameObjTarget->GetInfo()->sound1,  0 );
 							
 							
 							DetermineSkillUp(SKILL_LOCKPICKING,v/5); //to prevent free skill up
@@ -2553,9 +2553,9 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 					if( gameObjTarget->loot.items.size() == 0 )
 					{
 						if( gameObjTarget->GetMapMgr() != NULL )
-							lootmgr.FillGOLoot(&gameObjTarget->loot,gameObjTarget->GetEntry(),  gameObjTarget->GetMapMgr()->iInstanceMode );
+							lootmgr.FillGOLoot(&gameObjTarget->loot,gameObjTarget->GetInfo()->sound1,  gameObjTarget->GetMapMgr()->iInstanceMode );
 						else
-							lootmgr.FillGOLoot(&gameObjTarget->loot,gameObjTarget->GetEntry(),  0 );
+							lootmgr.FillGOLoot(&gameObjTarget->loot,gameObjTarget->GetInfo()->sound1,  0 );
 					}
 					else
 						bAlreadyUsed = true;
@@ -2588,9 +2588,9 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 				else if( gameObjTarget->loot.items.size() == 0 )
 				{
 					if( gameObjTarget->GetMapMgr() != NULL )
-						lootmgr.FillGOLoot(&gameObjTarget->loot,gameObjTarget->GetEntry(),  gameObjTarget->GetMapMgr()->iInstanceMode );
+						lootmgr.FillGOLoot(&gameObjTarget->loot,gameObjTarget->GetInfo()->sound1,  gameObjTarget->GetMapMgr()->iInstanceMode );
 					else
-						lootmgr.FillGOLoot(&gameObjTarget->loot,gameObjTarget->GetEntry(),  0 );
+						lootmgr.FillGOLoot(&gameObjTarget->loot,gameObjTarget->GetInfo()->sound1,  0 );
 				}
 				else
 					bAlreadyUsed = true;
@@ -2648,9 +2648,9 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 			if(gameObjTarget->loot.items.size() == 0)
 			{
 				if( gameObjTarget->GetMapMgr() != NULL )
-					lootmgr.FillGOLoot(&gameObjTarget->loot,gameObjTarget->GetEntry(),  gameObjTarget->GetMapMgr()->iInstanceMode );
+					lootmgr.FillGOLoot(&gameObjTarget->loot,gameObjTarget->GetInfo()->sound1,  gameObjTarget->GetMapMgr()->iInstanceMode );
 				else
-					lootmgr.FillGOLoot(&gameObjTarget->loot,gameObjTarget->GetEntry(),  0 );
+					lootmgr.FillGOLoot(&gameObjTarget->loot,gameObjTarget->GetInfo()->sound1,  0 );
 			}
 			loottype= LOOT_CORPSE ;
 		}
@@ -3578,9 +3578,9 @@ void Spell::SpellEffectOpenLockItem(uint32 i)
 	{
 
 		if( gameObjTarget->GetMapMgr() != NULL )
-			lootmgr.FillGOLoot(&gameObjTarget->loot,gameObjTarget->GetEntry(),  gameObjTarget->GetMapMgr()->iInstanceMode );
+			lootmgr.FillGOLoot(&gameObjTarget->loot,gameObjTarget->GetInfo()->sound1,  gameObjTarget->GetMapMgr()->iInstanceMode );
 		else
-			lootmgr.FillGOLoot(&gameObjTarget->loot,gameObjTarget->GetEntry(),  0 );
+			lootmgr.FillGOLoot(&gameObjTarget->loot,gameObjTarget->GetInfo()->sound1,  0 );
 		
 		if(gameObjTarget->loot.items.size() > 0)
 		{
