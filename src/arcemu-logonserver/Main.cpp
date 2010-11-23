@@ -99,7 +99,6 @@ bool startdb()
 {
 	string lhostname, lusername, lpassword, ldatabase;
 	int lport = 0;
-	int ltype = 1;
 	// Configure Main Database
 
 	bool result;
@@ -112,12 +111,11 @@ bool startdb()
 	bool existsHostname = Config.MainConfig.GetString("LogonDatabase", "Hostname", &lhostname);
 	bool existsName     = Config.MainConfig.GetString("LogonDatabase", "Name",     &ldatabase);
 	bool existsPort     = Config.MainConfig.GetInt(   "LogonDatabase", "Port",     &lport    );
-	bool existsType     = Config.MainConfig.GetInt(   "LogonDatabase", "Type",     &ltype    );
 
 	// Configure Logon Database...
 
 	// logical AND every parameter to ensure we catch any error
-	result = existsUsername && existsPassword && existsHostname && existsName && existsPort && existsType;
+	result = existsUsername && existsPassword && existsHostname && existsName && existsPort;
 
 	if( !result )
 	{
@@ -129,7 +127,7 @@ bool startdb()
 
 		string errorMessage = "sql: Certain <LogonDatabase> parameters not found in configs\\logon.conf \r\n";
 		if( !(existsHostname || existsUsername || existsPassword  ||  
-			  existsName     || existsPort     || existsType) )
+			  existsName     || existsPort ) )
 		{
 			errorMessage += "  Double check that you have remembered the entire <LogonDatabase> tag.\r\n";
 			errorMessage += "  All parameters missing. It is possible you forgot the first '<' character.\r\n";
@@ -142,14 +140,13 @@ bool startdb()
 			if( !existsPassword ){ errorMessage += "    Password\r\n" ; }
 			if( !existsName     ){ errorMessage += "    Name\r\n"; }
 			if( !existsPort     ){ errorMessage += "    Port\r\n"; }
-			if( !existsType     ){ errorMessage += "    Type\r\n"; }
 		}
 
 		sLog.outError( errorMessage.c_str());
 		return false;
 	}
 
-	sLogonSQL = Database::CreateDatabaseInterface( ltype );
+	sLogonSQL = Database::CreateDatabaseInterface();
 
 	// Initialize it
 	if(!sLogonSQL->Initialize(lhostname.c_str(), (unsigned int)lport, lusername.c_str(),

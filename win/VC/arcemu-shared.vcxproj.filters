@@ -51,12 +51,6 @@
     <ClCompile Include="..\..\src\arcemu-shared\Database\MySQLDatabase.cpp">
       <Filter>Database\Database Wrappers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\arcemu-shared\Database\PostgresDatabase.cpp">
-      <Filter>Database\Database Wrappers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\arcemu-shared\Database\SQLiteDatabase.cpp">
-      <Filter>Database\Database Wrappers</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\arcemu-shared\Config\Config.cpp">
       <Filter>Config</Filter>
     </ClCompile>
@@ -189,12 +183,6 @@
       <Filter>Database\DataStores</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\arcemu-shared\Database\MySQLDatabase.h">
-      <Filter>Database\Database Wrappers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\arcemu-shared\Database\PostgresDatabase.h">
-      <Filter>Database\Database Wrappers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\arcemu-shared\Database\SQLiteDatabase.h">
       <Filter>Database\Database Wrappers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\arcemu-shared\Config\Config.h">

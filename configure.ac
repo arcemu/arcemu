@@ -32,8 +32,6 @@ AH_TEMPLATE([USING_LITTLE_ENDIAN], Define this if you are on a non-big-endian sy
 AH_TEMPLATE([X64], Define this if you are under an X64-based operating system.)
 AH_TEMPLATE([X86], Define this if you are under an X86-based 32bit operating system.)
 AH_TEMPLATE([NO_DBLAYER_MYSQL], Define this if you want to disable mysql support.)
-AH_TEMPLATE([ENABLE_DATABASE_POSTGRES], Define this if you want postgres support.)
-AH_TEMPLATE([ENABLE_DATABASE_SQLITE], Define this if you want sqlite support.)
 
 # Reset 
 CFLAGS=""
@@ -200,23 +198,6 @@ AC_ARG_ENABLE(mysql,
 	],
 )
 
-AC_ARG_ENABLE(postgres,
-	AC_HELP_STRING([--enable-postgres],enables postgres backend),
-	[ if test "x$enable_postgres" = "xyes" ; then
-		AC_DEFINE(ENABLE_DATABASE_POSTGRES)
-		AX_LIB_POSTGRESQL
-		fi
-	],
-)
-
-AC_ARG_ENABLE(sqlite,
-	AC_HELP_STRING([--enable-sqlite],enables sqlite backend),
-	[ if test "x$enable_sqlite" = "xyes" ; then
-		AC_DEFINE(ENABLE_DATABASE_SQLITE)
-		fi
-	],
-)
-
 # Check for networking stuff
 AC_MSG_CHECKING([detecting network socket engine])
 if test "x$OSNAME" = "xLinux" ; then
@@ -333,12 +314,6 @@ echo "   architecture: ${ARCH}"
 echo 
 echo " Database modules:"
 echo "        mysql: ${MYSQL_VERSION}"
-if test "x$enable_postgres" = "xyes" ; then
-  echo "   postgresql: ${POSTGRESQL_VERSION}"
-fi		
-if test "x$enable_sqlite" = "xyes" ; then
-  echo "       sqlite: ${SQLITE_VERSION}"
-fi
 
 echo
 echo " Networking:" 

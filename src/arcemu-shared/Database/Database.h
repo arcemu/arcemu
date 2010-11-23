@@ -117,7 +117,7 @@ public:
 	void PerformQueryBuffer(QueryBuffer * b, DatabaseConnection * ccon);
 	void AddQueryBuffer(QueryBuffer * b);
 
-	static Database * CreateDatabaseInterface(uint32 uType);
+	static Database * CreateDatabaseInterface();
 	static void CleanupLibs();
 
 	virtual bool SupportsReplaceInto() = 0;

@@ -270,8 +270,6 @@ RevisionExtractor.exe
     <ClCompile Include="..\..\src\arcemu-shared\Database\DBC.cpp" />
     <ClCompile Include="..\..\src\arcemu-shared\Database\DBCStores.cpp" />
     <ClCompile Include="..\..\src\arcemu-shared\Database\MySQLDatabase.cpp" />
-    <ClCompile Include="..\..\src\arcemu-shared\Database\PostgresDatabase.cpp" />
-    <ClCompile Include="..\..\src\arcemu-shared\Database\SQLiteDatabase.cpp" />
     <ClCompile Include="..\..\src\arcemu-shared\Config\Config.cpp" />
     <ClCompile Include="..\..\src\arcemu-shared\Auth\BigNumber.cpp" />
     <ClCompile Include="..\..\src\arcemu-shared\crc32.cpp" />
@@ -348,8 +346,6 @@ RevisionExtractor.exe
     <ClInclude Include="..\..\src\arcemu-shared\Database\DBC.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Database\DBCStores.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Database\MySQLDatabase.h" />
-    <ClInclude Include="..\..\src\arcemu-shared\Database\PostgresDatabase.h" />
-    <ClInclude Include="..\..\src\arcemu-shared\Database\SQLiteDatabase.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Config\Config.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Config\ConfigEnv.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Auth\BigNumber.h" />

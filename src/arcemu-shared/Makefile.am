@@ -65,10 +65,6 @@ libshared_a_SOURCES = \
     Database/dbcfile.h \
     Database/MySQLDatabase.cpp \
     Database/MySQLDatabase.h \
-    Database/PostgresDatabase.cpp \
-    Database/PostgresDatabase.h \
-    Database/SQLiteDatabase.cpp \
-    Database/SQLiteDatabase.h \
     Database/CreateInterface.cpp \
     Network/CircularBuffer.h \
     Network/CircularBuffer.cpp \

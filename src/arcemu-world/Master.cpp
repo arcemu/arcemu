@@ -647,8 +647,8 @@ bool Master::_StartDB()
 	result = !result ? result : Config.MainConfig.GetString( "WorldDatabase", "Hostname", &hostname );
 	result = !result ? result : Config.MainConfig.GetString( "WorldDatabase", "Name", &database );
 	result = !result ? result : Config.MainConfig.GetInt( "WorldDatabase", "Port", &port );
-	result = !result ? result : Config.MainConfig.GetInt( "WorldDatabase", "Type", &type );
-	Database_World = Database::CreateDatabaseInterface(type);
+	
+	Database_World = Database::CreateDatabaseInterface();
 
 	if(result == false)
 	{
@@ -669,8 +669,8 @@ bool Master::_StartDB()
 	result = !result ? result : Config.MainConfig.GetString( "CharacterDatabase", "Hostname", &hostname );
 	result = !result ? result : Config.MainConfig.GetString( "CharacterDatabase", "Name", &database );
 	result = !result ? result : Config.MainConfig.GetInt( "CharacterDatabase", "Port", &port );
-	result = !result ? result : Config.MainConfig.GetInt( "CharacterDatabase", "Type", &type );
-	Database_Character = Database::CreateDatabaseInterface(type);
+	
+	Database_Character = Database::CreateDatabaseInterface();
 
 	if(result == false)
 	{
