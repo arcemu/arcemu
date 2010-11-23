@@ -259,7 +259,7 @@ void LootMgr::LoadLootTables(const char * szTableName,LootStore * LootTable)
 	do 
 	{	 
 		Field *fields = result->Fetch();
-		entry_id = fields[1].GetUInt32();
+		entry_id = fields[ 0 ].GetUInt32();
 		if(entry_id < last_entry)
 		{
 			sLog.Error("LootMgr", "WARNING: Out of order loot table being loaded.");
@@ -272,16 +272,16 @@ void LootMgr::LoadLootTables(const char * szTableName,LootStore * LootTable)
 			ttab.clear();
 		}
 
-		t.itemid = fields[2].GetUInt32();
-		t.chance = fields[3].GetFloat();
-		t.chance_2 = fields[4].GetFloat();
+		t.itemid = fields[ 1 ].GetUInt32();
+		t.chance = fields[ 2 ].GetFloat();
+		t.chance_2 = fields[ 3 ].GetFloat();
 
-		t.chance3 = fields[5].GetFloat();
-		t.chance4 = fields[6].GetFloat();
+		t.chance3 = fields[ 4 ].GetFloat();
+		t.chance4 = fields[ 5 ].GetFloat();
 
-		t.mincount = fields[7].GetUInt32();
-		t.maxcount = fields[8].GetUInt32();
-		t.ffa_loot = fields[9].GetUInt32();
+		t.mincount = fields[ 6 ].GetUInt32();
+		t.maxcount = fields[ 7 ].GetUInt32();
+		t.ffa_loot = fields[ 8 ].GetUInt32();
 
 		ttab.push_back( t );
 
