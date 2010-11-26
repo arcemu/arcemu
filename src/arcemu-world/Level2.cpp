@@ -1082,8 +1082,8 @@ bool ChatHandler::HandleGOScale(const char* args, WorldSession* m_session)
 	uint32 NewGuid = m_session->GetPlayer()->GetMapMgr()->GenerateGameobjectGuid();
 	go->RemoveFromWorld(true);
 	go->SetNewGuid(NewGuid);
-	go->SaveToDB();
 	go->PushToWorld(m_session->GetPlayer()->GetMapMgr());
+	go->SaveToDB();
 	//lets reselect the object that can be really annoying...
 	m_session->GetPlayer()->m_GM_SelectedGO = NewGuid;
 	return true;
