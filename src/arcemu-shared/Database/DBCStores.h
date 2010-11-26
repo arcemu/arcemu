@@ -886,6 +886,35 @@ struct SpellEntry
 		return false;
 	}
 
+	/////////////////////////////////////////////////////////////////////////////////
+	//uint32 GetAAEffectId()
+	//  Returns the Effect Id of the Area Aura effect if the spell has one.
+	//
+	//Parameters
+	//  None
+	//
+	//Return Value
+	//  Returns the Effect Id of the Area Aura effect if the spell has one.
+	//  Returns 0 otherwise.
+	//
+	//
+	/////////////////////////////////////////////////////////////////////////////////
+	uint32 GetAAEffectId(){
+
+		for( uint32 i = 0; i < MAX_SPELL_EFFECTS; i++ ){
+
+			if( Effect[ i ] == 35 || // SPELL_EFFECT_APPLY_GROUP_AREA_AURA
+				Effect[ i ] == 65 || // SPELL_EFFECT_APPLY_RAID_AREA_AURA
+				Effect[ i ] == 119 || // SPELL_EFFECT_APPLY_PET_AREA_AURA
+				Effect[ i ] == 128 || // SPELL_EFFECT_APPLY_FRIEND_AREA_AURA
+				Effect[ i ] == 129 || // SPELL_EFFECT_APPLY_ENEMY_AREA_AURA
+				Effect[ i ] == 143 ) // SPELL_EFFECT_APPLY_OWNER_AREA_AURA
+				return Effect[ i ];
+		}
+
+		return 0;
+	}
+
 	SpellEntry(){
 		CustomFlags = 0;
 

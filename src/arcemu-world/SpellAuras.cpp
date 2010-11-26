@@ -1377,8 +1377,13 @@ void Aura::EventUpdateAA( float r )
 		return;
 	}
 
-	// This looks horrible, but better than duplicating code tbh
-	switch( m_spellProto->Effect[ mod->i ] ){
+	uint32 AAEffectId = m_spellProto->GetAAEffectId();
+	if( AAEffectId == 0 ){
+		sLog.outError("Spell %u ( %s ) has tried to update Area Aura targets but Spell has no Area Aura effect.", m_spellProto->Id, m_spellProto->Name );
+		Arcemu::Util::ARCEMU_ASSERT( false );
+	}
+
+	switch( AAEffectId ){
 
 	case SPELL_EFFECT_APPLY_GROUP_AREA_AURA:
 		EventUpdateGroupAA( r );
