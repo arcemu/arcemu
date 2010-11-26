@@ -1568,7 +1568,6 @@ bool ArcaneDisruption( uint32 i, Aura * pAura, bool apply )
 	{
 		GameObject* go = plr->GetMapMgr()->CreateGameObject(190095);
 		go->CreateFromProto(190095, crate->GetMapMgr()->GetMapId(), crate->GetPositionX(), crate->GetPositionY(), crate->GetPositionZ(), crate->GetOrientation(), 0.0f, 0.0f, 0.0f, 0.0f);
-		go->SetInstanceID(crate->GetMapMgr()->GetInstanceID());
 		go->PushToWorld(crate->GetMapMgr());
 		crate->Despawn(0,0);
 		pQuest->SetMobCount( 0, pQuest->GetMobCount( 0 ) + 1 );

@@ -1765,7 +1765,6 @@ Creature * CBattleground::SpawnSpiritGuide(float x, float y, float z, float o, u
 
 	pCreature->Create(pInfo->Name, m_mapMgr->GetMapId(), x, y, z, o);
 
-	pCreature->SetInstanceID(m_mapMgr->GetInstanceID());
 	pCreature->SetEntry(  13116 + horde);
 	pCreature->SetScale(  1.0f);
 

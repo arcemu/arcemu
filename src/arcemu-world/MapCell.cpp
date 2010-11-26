@@ -30,7 +30,7 @@ MapCell::~MapCell()
 	RemoveObjects();
 }
 
-void MapCell::Init(uint32 x, uint32 y, uint32 mapid, MapMgr *mapmgr)
+void MapCell::Init(uint32 x, uint32 y, MapMgr *mapmgr)
 {
 	_mapmgr = mapmgr;
 	_active = false;
@@ -222,8 +222,6 @@ void MapCell::LoadObjects(CellSpawns * sp)
 
 			Creature * c=_mapmgr->CreateCreature((*i)->entry);
 
-			c->SetMapId(_mapmgr->GetMapId());
-			c->SetInstanceID(_mapmgr->GetInstanceID());
 			c->m_loadedFromDB = true;
 			if(respawnTimeOverride > 0)
 				c->m_respawnTimeOverride = respawnTimeOverride;
@@ -233,7 +231,11 @@ void MapCell::LoadObjects(CellSpawns * sp)
 				c->PushToWorld(_mapmgr);
 			}
 			else
+			{
+				CreatureSpawn* spawn = (*i);
+				Log.Error("MapCell", "Failed spawning Creature %u with spawnId %u MapId %u", spawn->entry, spawn->id, _mapmgr->GetMapId());
 				delete c;//missing proto or something of that kind
+			}
 		}
 	}
 
@@ -242,7 +244,6 @@ void MapCell::LoadObjects(CellSpawns * sp)
 		for(GOSpawnList::iterator i=sp->GOSpawns.begin();i!=sp->GOSpawns.end();i++)
 		{
 			GameObject * go=_mapmgr->CreateGameObject((*i)->entry);
-			go->SetInstanceID(_mapmgr->GetInstanceID());
 			if(go->Load(*i))
 			{
 				//uint32 state = go->GetByte(GAMEOBJECT_BYTES_1, 0);
@@ -258,7 +259,11 @@ void MapCell::LoadObjects(CellSpawns * sp)
 				go->PushToWorld(_mapmgr);
 			}
 			else
+			{
+				GOSpawn* spawn = (*i);
+				Log.Error("MapCell", "Failed spawning GameObject %u with spawnId %u MapId %u", spawn->entry, spawn->id, _mapmgr->GetMapId());
 				delete go;//missing proto or something of that kind
+			}
 		}
 	}
 }

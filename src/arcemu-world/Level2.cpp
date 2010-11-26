@@ -838,19 +838,19 @@ bool ChatHandler::HandleGOSpawn(const char *args, WorldSession *m_session)
 	sstext << "Spawning GameObject By Entry '" << EntryID << "'" << '\0';
 	SystemMessage(m_session, sstext.str().c_str());
 
-	GameObject *go = m_session->GetPlayer()->GetMapMgr()->CreateGameObject(EntryID);
-
 	Player *chr = m_session->GetPlayer();
+
+	GameObject *go = chr->GetMapMgr()->CreateGameObject(EntryID);
+
 	uint32 mapid = chr->GetMapId();
 	float x = chr->GetPositionX();
 	float y = chr->GetPositionY();
 	float z = chr->GetPositionZ();
 	float o = chr->GetOrientation();
 
-	go->SetInstanceID(chr->GetInstanceID());
 	go->CreateFromProto(EntryID,mapid,x,y,z,o);
-	go->PushToWorld(m_session->GetPlayer()->GetMapMgr());
-	go->Phase(PHASE_SET, m_session->GetPlayer()->GetPhase());
+	go->PushToWorld(chr->GetMapMgr());
+	go->Phase(PHASE_SET, chr->GetPhase());
 	// Create spawn instance
 	GOSpawn * gs = new GOSpawn;
 	gs->entry = go->GetEntry();
@@ -870,13 +870,13 @@ bool ChatHandler::HandleGOSpawn(const char *args, WorldSession *m_session)
 	//gs->stateNpcLink = 0;
 	gs->phase = go->GetPhase();
 
-	uint32 cx = m_session->GetPlayer()->GetMapMgr()->GetPosX(m_session->GetPlayer()->GetPositionX());
-	uint32 cy = m_session->GetPlayer()->GetMapMgr()->GetPosY(m_session->GetPlayer()->GetPositionY());
+	uint32 cx = chr->GetMapMgr()->GetPosX(chr->GetPositionX());
+	uint32 cy = chr->GetMapMgr()->GetPosY(chr->GetPositionY());
 
-	m_session->GetPlayer()->GetMapMgr()->GetBaseMap()->GetSpawnsListAndCreate(cx,cy)->GOSpawns.push_back(gs);
+	chr->GetMapMgr()->GetBaseMap()->GetSpawnsListAndCreate(cx,cy)->GOSpawns.push_back(gs);
 	go->m_spawn = gs;
 
-	MapCell * mCell = m_session->GetPlayer()->GetMapMgr()->GetCell( cx, cy );
+	MapCell * mCell = chr->GetMapMgr()->GetCell( cx, cy );
 
 	if( mCell != NULL )
 		mCell->SetLoaded();
@@ -887,7 +887,7 @@ bool ChatHandler::HandleGOSpawn(const char *args, WorldSession *m_session)
 		go->SaveToDB();
 		go->m_loadedFromDB = true;
 	}
-	sGMLog.writefromsession( m_session, "spawned gameobject %s, entry %u at %u %f %f %f%s", GameObjectNameStorage.LookupEntry(gs->entry)->Name, gs->entry, m_session->GetPlayer()->GetMapId(), gs->x, gs->y, gs->z, Save ? ", saved in DB" : "" );
+	sGMLog.writefromsession( m_session, "spawned gameobject %s, entry %u at %u %f %f %f%s", GameObjectNameStorage.LookupEntry(gs->entry)->Name, gs->entry, chr->GetMapId(), gs->x, gs->y, gs->z, Save ? ", saved in DB" : "" );
 	return true;
 }
 

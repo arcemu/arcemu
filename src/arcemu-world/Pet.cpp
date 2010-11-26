@@ -733,7 +733,6 @@ void Pet::InitializeMe( bool first )
 
 	myFamily = dbcCreatureFamily.LookupEntry( GetCreatureInfo()->Family );
 
-	SetInstanceID( m_Owner->GetInstanceID() );
 	SetPetDiet();
 	_setFaction();
 

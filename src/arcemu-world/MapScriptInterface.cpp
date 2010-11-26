@@ -85,7 +85,6 @@ GameObject* MapScriptInterface::SpawnGameObject(uint32 Entry, float cX, float cY
 		delete pGameObject;
 		return NULL;
 	}
-	pGameObject->SetInstanceID(mapMgr.GetInstanceID());
 	pGameObject->m_phase = phase;
 
 	if(AddToWorld)
@@ -100,7 +99,6 @@ GameObject * MapScriptInterface::SpawnGameObject(GOSpawn * gs, bool AddToWorld)
 		return NULL;
 
 	GameObject *pGameObject = mapMgr.CreateGameObject(gs->entry);
-	pGameObject->SetInstanceID(mapMgr.GetInstanceID());
 	if(!pGameObject->Load(gs))
 	{
 		delete pGameObject;

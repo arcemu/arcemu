@@ -472,7 +472,7 @@ void MoonInstanceScript::SetCellForcedStates( float pMinX, float pMaxX, float pM
 			{
 				CurrentCell = mInstance->CreateByCoords( pMinX, pMinY );
 				if ( CurrentCell != NULL )
-					CurrentCell->Init( mInstance->GetPosX( pMinX ), mInstance->GetPosY( pMinY ), mInstance->GetMapId(), mInstance );
+					CurrentCell->Init( mInstance->GetPosX( pMinX ), mInstance->GetPosY( pMinY ), mInstance );
 			};
 
 			if ( CurrentCell != NULL )

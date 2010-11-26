@@ -1444,7 +1444,6 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	this->m_position.y = spawn->y;
 	this->m_position.z = spawn->z;
 	this->m_position.o = spawn->o;
-	this->m_mapId = spawn->id;
 	return true;
 }
 

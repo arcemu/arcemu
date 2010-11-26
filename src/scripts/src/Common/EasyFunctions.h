@@ -138,10 +138,8 @@ public:
     Creature* pCreature = pThis->GetMapMgr()->CreateCreature(entry);
     pCreature->m_spawn = 0;
     pCreature->Load(p, posX, posY, posZ);
-    pCreature->SetMapId(pThis->GetMapId());
     pCreature->SetOrientation(posO);
     pCreature->Despawn(duration, 0);
-    pCreature->SetInstanceID(pThis->GetInstanceID());
     pCreature->PushToWorld(pThis->GetMapMgr());
 	pCreature->Phase( PHASE_SET, phase );
 
@@ -174,12 +172,10 @@ public:
     Creature* pCreature  = pThis->GetMapMgr()->CreateCreature(entry);
     pCreature->m_spawn = 0;
     pCreature->Load(p, posX, posY, posZ);
-    pCreature->SetMapId(pThis->GetMapId());
     pCreature->SetOrientation(posO);
     pCreature->GetAIInterface()->disable_combat = dis_comb;
     pCreature->GetAIInterface()->disable_melee = dis_mel;
     pCreature->GetAIInterface()->disable_targeting = dis_target;
-    pCreature->SetInstanceID(pThis->GetInstanceID());
     pCreature->PushToWorld(pThis->GetMapMgr());
     pCreature->Despawn(duration, 0);
     pCreature->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, faction);
@@ -212,8 +208,6 @@ public:
     pC->m_spawn=0;
     pC->CreateFromProto(entry_id, plr->GetMapId(), (float)x, (float)y, (float)z, (float)o, float(orientation1), float(orientation2), float(orientation3), float(orientation4));
     pC->SetFloatValue(OBJECT_FIELD_SCALE_X, (float)scale);
-    pC->SetMapId(plr->GetMapId());
-    pC->SetInstanceID(plr->GetInstanceID());
     pC->PushToWorld(plr->GetMapMgr());
 
     return pC;

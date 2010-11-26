@@ -295,8 +295,6 @@ namespace luaGameObject
 		pCreature->Load(sp, (uint32)NULL, NULL);
 		pCreature->m_loadedFromDB = true;
 		pCreature->SetFaction(faction);
-		pCreature->SetInstanceID(ptr->GetInstanceID());
-		pCreature->SetMapId(ptr->GetMapId());
 		pCreature->SetEquippedItem(MELEE,equip1);
 		pCreature->SetEquippedItem(OFFHAND,equip2);
 		pCreature->SetEquippedItem(RANGED,equip3);
@@ -327,7 +325,6 @@ namespace luaGameObject
 
 		GameObject *go = ptr->GetMapMgr()->CreateGameObject(entry_id);
 		uint32 mapid = ptr->GetMapId();
-		go->SetInstanceID(ptr->GetInstanceID());
 		go->CreateFromProto(entry_id,mapid,x,y,z,o);
 		go->Phase(PHASE_SET, phase);
 		go->SetScale(scale);

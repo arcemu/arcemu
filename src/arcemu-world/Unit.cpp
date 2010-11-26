@@ -6468,7 +6468,6 @@ Creature* Unit::create_guardian(uint32 guardian_entry,uint32 duration,float angl
 	float z = 0;
 
 	Creature* p = GetMapMgr()->CreateCreature( guardian_entry );
-	p->SetInstanceID( GetMapMgr()->GetInstanceID() );
 
 	if( Vec )
 	{

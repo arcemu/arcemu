@@ -238,7 +238,7 @@ public:
 
 		sEventMgr.AddEvent(TO_UNIT(Tikti), &Unit::EventCastSpell, Totem, dbcSpell.LookupEntry(30431), EVENT_GMSCRIPT_EVENT, 20000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
 
-		sEventMgr.AddEvent(Tikti, &Creature::Despawn, uint32(0), uint32(0), EVENT_GMSCRIPT_EVENT, 24000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+		Tikti->Despawn(24000, 0);
 	}
 
 private:

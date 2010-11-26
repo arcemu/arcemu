@@ -41,7 +41,7 @@ public:
 	typedef std::set<Object*> ObjectSet;
 
 	//Init
-	void Init(uint32 x, uint32 y, uint32 mapid, MapMgr *mapmgr);
+	void Init(uint32 x, uint32 y, MapMgr *mapmgr);
 	
 	//Object Managing
 	void AddObject(Object *obj); 

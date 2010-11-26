@@ -92,8 +92,12 @@ GameObject::~GameObject()
 
 bool GameObject::CreateFromProto(uint32 entry,uint32 mapid, float x, float y, float z, float ang, float r0, float r1, float r2, float r3, uint32 overrides)
 {
-	pInfo= GameObjectNameStorage.LookupEntry(entry);
-	if(!pInfo)return false;
+	pInfo = GameObjectNameStorage.LookupEntry(entry);
+	if(pInfo == NULL)
+	{
+		sLog.outError("Something tried to create a GameObject with invalid entry %u", entry);
+		return false;
+	}
 
 	Object::_Create( mapid, x, y, z, ang );
 	SetEntry(  entry );

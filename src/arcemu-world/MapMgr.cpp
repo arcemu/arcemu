@@ -322,7 +322,7 @@ void MapMgr::PushObject(Object *obj)
 	if ( objCell == NULL )
 	{
 		objCell = Create(x,y);
-		objCell->Init(x, y, _mapId, this);
+		objCell->Init(x, y, this);
 	}
     Arcemu::Util::ARCEMU_ASSERT(    objCell != NULL );
 
@@ -452,6 +452,9 @@ void MapMgr::PushObject(Object *obj)
 void MapMgr::PushStaticObject(Object *obj)
 {
 	_mapWideStaticObjects.insert(obj);
+
+	obj->SetInstanceID(GetInstanceID());
+	obj->SetMapId(GetMapId());
 
 	switch(obj->GetTypeFromGUID())
 	{
@@ -752,7 +755,7 @@ void MapMgr::ChangeObjectLocation( Object *obj )
 	if ( objCell == NULL )
 	{
 		objCell = Create(cellX,cellY);
-		objCell->Init(cellX, cellY, _mapId, this);
+		objCell->Init(cellX, cellY, this);
 	}
 
     Arcemu::Util::ARCEMU_ASSERT(    objCell != NULL );
@@ -1053,7 +1056,7 @@ void MapMgr::LoadAllCells()
 				// Cell doesn't exist, create it.
 				// There is no spoon. Err... cell.
 				cellInfo = Create( x , y );
-				cellInfo->Init( x , y , _mapId , this );
+				cellInfo->Init( x , y , this );
 				sLog.outDetail( "Created cell [%u,%u] on map %u (instance %u)." , x , y , _mapId , m_instanceID );
 				cellInfo->SetActivity( true );
 				_map->CellGoneActive( x , y );
@@ -1108,7 +1111,7 @@ void MapMgr::UpdateCellActivity(uint32 x, uint32 y, int radius)
 				if (_CellActive(posX, posY))
 				{
 					objCell = Create(posX, posY);
-					objCell->Init(posX, posY, _mapId, this);
+					objCell->Init(posX, posY, this);
 
 					sLog.outDetail("Cell [%u,%u] on map %u (instance %u) is now active.",
 						posX, posY, this->_mapId, m_instanceID);
@@ -1286,7 +1289,7 @@ bool MapMgr::Do()
 	{
 		GameObject * obj = CreateGameObject((*itr)->entry);
 		obj->Load((*itr));
-		_mapWideStaticObjects.insert(obj);
+		PushStaticObject(obj);
 	}
 
 	// Call script OnLoad virtual procedure 
@@ -1296,12 +1299,8 @@ bool MapMgr::Do()
 	{
 		Creature * obj = CreateCreature((*itr)->entry);
 		obj->Load(*itr, 0, pMapInfo);
-		_mapWideStaticObjects.insert(obj);
+		PushStaticObject(obj);
 	}
-
-	/* add static objects */
-	for(set<Object*>::iterator itr = _mapWideStaticObjects.begin(); itr != _mapWideStaticObjects.end(); ++itr)
-		PushStaticObject(*itr);
 
 	/* load corpses */
 	objmgr.LoadCorpses(this);
@@ -1781,7 +1780,6 @@ GameObject * MapMgr::CreateAndSpawnGameObject(uint32 entryID, float x, float y, 
 	//Player *chr = m_session->GetPlayer();
 	uint32 mapid = GetMapId();
 	// Setup game object
-	go->SetInstanceID(GetInstanceID());
 	go->CreateFromProto(entryID,mapid,x,y,z,o);
 	go->SetScale(  scale);
 	go->InitAI();

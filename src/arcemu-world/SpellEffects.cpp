@@ -3229,7 +3229,6 @@ void Spell::SpellEffectSummonObject(uint32 i)
         u_caster->SetChannelSpellTargetGUID( go->GetGUID() );
 		go->Phase(PHASE_SET, u_caster->GetPhase());
 
-		go->SetInstanceID( m_caster->GetInstanceID() );
 		go->PushToWorld( m_caster->GetMapMgr() );
 
 		if( lootmgr.IsFishable( zone ) ) // Only set a 'splash' if there is any loot in this area / zone
@@ -3261,7 +3260,6 @@ void Spell::SpellEffectSummonObject(uint32 i)
 		}
 		GameObject *go=m_caster->GetMapMgr()->CreateGameObject(entry);
 
-		go->SetInstanceID(m_caster->GetInstanceID());
 		go->CreateFromProto(entry,mapid,posx,posy,pz,orient);
 		go->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 		go->SetUInt64Value(OBJECT_FIELD_CREATED_BY,m_caster->GetGUID());
@@ -3915,7 +3913,6 @@ void Spell::SpellEffectSummonPossessed(uint32 i) // eye of kilrogg
 	{
 		Creature* NewSummon = m_caster->GetMapMgr()->CreateCreature(GetProto()->EffectMiscValue[i]);
 		// Create
-		NewSummon->SetInstanceID(m_caster->GetInstanceID());
 		NewSummon->Create( "Eye of Kilrogg", m_caster->GetMapId(), m_caster->GetPositionX()+(3*(cos((float(M_PI)/2)+m_caster->GetOrientation()))), m_caster->GetPositionY()+(3*(cos((float(M_PI)/2)+m_caster->GetOrientation()))), m_caster->GetPositionZ(), m_caster->GetOrientation());
 
 		// Fields
@@ -4021,7 +4018,6 @@ void Spell::SpellEffectSummonObjectWild(uint32 i)
 		return;
 	}
 
-	GoSummon->SetInstanceID(m_caster->GetInstanceID());
 	GoSummon->Phase(PHASE_SET, u_caster->GetPhase());
 	GoSummon->PushToWorld(u_caster->GetMapMgr());
 	GoSummon->SetSummoned(u_caster);
@@ -4677,7 +4673,6 @@ void Spell::SpellEffectSummonCritter(uint32 i)
 	if(!ci || !cp) return;
 
 	Creature * pCreature = u_caster->GetMapMgr()->CreateCreature(SummonCritterID);
-	pCreature->SetInstanceID(u_caster->GetMapMgr()->GetInstanceID());
 	pCreature->Load(cp, m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ());
 	pCreature->SetFaction(35);
 	pCreature->setLevel(1);
@@ -4856,7 +4851,6 @@ void Spell::SpellEffectSummonObjectSlot(uint32 i)
 
 	GoSummon->SetLevel(u_caster->getLevel());
 	GoSummon->SetUInt64Value(OBJECT_FIELD_CREATED_BY, m_caster->GetGUID());
-	GoSummon->SetInstanceID(m_caster->GetInstanceID());
     GoSummon->Phase(PHASE_SET, u_caster->GetPhase());
 
     GoSummon->PushToWorld(m_caster->GetMapMgr());

@@ -92,8 +92,6 @@ namespace luaGlobalFunctions
 				pCreature->Load(sp, (uint32)NULL, NULL);
 				pCreature->m_loadedFromDB = true;
 				pCreature->SetFaction(faction);
-				pCreature->SetInstanceID(instanceid);
-				pCreature->SetMapId(map);
 				pCreature->SetEquippedItem(MELEE,equip1);
 				pCreature->SetEquippedItem(OFFHAND,equip2);
 				pCreature->SetEquippedItem(RANGED,equip3);
@@ -113,10 +111,8 @@ namespace luaGlobalFunctions
 				MapMgr *mapMgr = sInstanceMgr.GetMapMgr(map);
 				if (!mapMgr)
 					return 0;
-				int32 instanceid = luaL_optint(L, 13, mapMgr->GetInstanceID());
 
 				GameObject *go = mapMgr->CreateGameObject(entry);
-				go->SetInstanceID(instanceid);
 				go->CreateFromProto(entry,map,x,y,z,o);
 				go->Phase(PHASE_SET, 1);
 				go->SetScale( ((float)faction) / 100.0f );

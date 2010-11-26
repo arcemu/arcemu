@@ -855,8 +855,11 @@ void Object::_SetCreateBits(UpdateMask *updateMask, Player *target) const
 void Object::AddToWorld()
 {
 	MapMgr *mapMgr = sInstanceMgr.GetInstance(this);
-	if(!mapMgr)
+	if(mapMgr == NULL)
+	{
+		sLog.outError("AddToWorld() failed for Object with GUID "I64FMT" MapId %u InstanceId %u", GetGUID(), GetMapId(), GetInstanceID());
 		return;
+	}
 
 	if( IsPlayer() )
 	{
@@ -926,6 +929,7 @@ void Object::PushToWorld(MapMgr*mgr)
 	}
 
 	m_mapId=mgr->GetMapId();
+	//note: there's no need to set the InstanceId before calling PushToWorld() because it's already set here.
 	m_instanceId = mgr->GetInstanceID();
 
 	if (IsPlayer())

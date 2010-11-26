@@ -764,7 +764,6 @@ public:
 			//spawn a chest and go
 			GameObject* go = _unit->GetMapMgr()->CreateGameObject(190663);
 			go->CreateFromProto(190663, _unit->GetMapMgr()->GetMapId(), _unit->GetPositionX(), _unit->GetPositionY(), _unit->GetPositionZ(), _unit->GetOrientation(), 0.0f, 0.0f, 0.0f, 0.0f);
-			go->SetInstanceID(_unit->GetMapMgr()->GetInstanceID());
 			go->PushToWorld(_unit->GetMapMgr());
 			_unit->Despawn(1,0);
 		}
@@ -945,7 +944,6 @@ public:
 			crate->Despawn(0,0);
 		GameObject* go = pMapMgr->CreateGameObject(entry);
 		go->CreateFromProto(entry, pMapMgr->GetMapId(), x, y, z, o, 0.0f, 0.0f, 0.0f, 0.0f);
-		go->SetInstanceID(pMapMgr->GetInstanceID());
 		go->PushToWorld(pMapMgr);
 	}
 };
