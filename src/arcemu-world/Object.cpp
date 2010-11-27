@@ -37,7 +37,7 @@ void Object::SetRotation( uint64 guid )
 
 Object::Object() : m_position(0,0,0,0), m_spawnLocation(0,0,0,0)
 {
-	m_mapId = 0;
+	m_mapId = MAPID_NOT_IN_WORLD;
 	m_zoneId = 0;
 
 	m_uint32Values = 0;
@@ -68,7 +68,7 @@ Object::Object() : m_position(0,0,0,0), m_spawnLocation(0,0,0,0)
 	m_faction = NULL;
 	m_factionDBC = NULL;
 
-	m_instanceId = 0;
+	m_instanceId = INSTANCEID_NOT_IN_WORLD;
 	Active = false;
 	m_inQueue = false;
 	m_extensions = NULL;
@@ -93,7 +93,7 @@ Object::~Object( )
 	Arcemu::Util::ARCEMU_ASSERT( !IsInWorld() );
 
 	// for linux
-	m_instanceId = 0;
+	m_instanceId = INSTANCEID_NOT_IN_WORLD;
 	m_objectTypeId=TYPEID_UNUSED;
 
 	if( m_extensions != NULL )
@@ -979,8 +979,8 @@ void Object::RemoveFromWorld(bool free_guid)
 
 	OnRemoveFromWorld();
 
-	m_instanceId = 0;
-	m_mapId = 0;
+	m_instanceId = INSTANCEID_NOT_IN_WORLD;
+	m_mapId = MAPID_NOT_IN_WORLD;
 	//m_inQueue is set to true when AddToWorld() is called. AddToWorld() queues the Object to be pushed, but if it's not pushed and RemoveFromWorld()
 	//is called, m_inQueue will still be true even if the Object is no more inworld, nor queued.
 	m_inQueue = false;

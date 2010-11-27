@@ -36,7 +36,7 @@ Item::Item()//this is called when constructing as container
 	m_mapMgr = 0;
 	m_faction = NULL;
 	m_factionDBC = NULL;
-	m_instanceId = 0;
+	m_instanceId = INSTANCEID_NOT_IN_WORLD;
 	m_inQueue = false;
 	m_extensions = NULL;
 	m_loadedFromDB = false;
@@ -63,14 +63,14 @@ void Item::Init( uint32 high, uint32 low )
 	random_suffix = 0;
 	wrapped_item_id = 0;
 
-	m_mapId = 0;
+	m_mapId = MAPID_NOT_IN_WORLD;
 	m_zoneId = 0;
 	m_objectUpdated = false;
 
 	m_mapMgr = 0;
 	m_faction = NULL;
 	m_factionDBC = NULL;
-	m_instanceId = 0;
+	m_instanceId = INSTANCEID_NOT_IN_WORLD;
 	m_inQueue = false;
 	m_extensions = NULL;
 	m_loadedFromDB = false;

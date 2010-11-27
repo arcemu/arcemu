@@ -32,6 +32,10 @@
 #define GO_GUID_RECYCLE_INTERVAL	2048	//client will cache GO positions. Using same guid for same client will make GO appear at wrong possition so we try to avoid assigning same guid
 
 #define ZONE_MASK_ALL -1
+//MapId -1 doesn't exist (0 is Eastern Kingdoms)
+#define MAPID_NOT_IN_WORLD 0xFFFFFFFF
+//Instance Id 0 doesn't exist (-1 is World Instance)
+#define INSTANCEID_NOT_IN_WORLD 0
 
 class MapCell;
 class Map;
