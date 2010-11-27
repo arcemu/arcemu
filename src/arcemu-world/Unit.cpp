@@ -4678,6 +4678,9 @@ void Unit::RemoveAllAreaAuras(){
 		if( a == NULL )
 			continue;
 
+		if( a->m_areaAura ) // This was not casted by us, so no removal
+			continue;
+
 		if( a->IsAreaAura() )
 			a->RemoveAA();
 	}
@@ -4690,10 +4693,7 @@ void Unit::RemoveAllAreaAuraByOther(){
 		if( a == NULL ) // empty slot
 			continue;
 
-		if( !a->m_areaAura ) // not area aura
-			continue;
-
-		if( a->GetCaster()->GetGUID() == GetGUID() ) // this originates from us
+		if( !a->m_areaAura ) // not area aura, or we casted it
 			continue;
 
 		a->Remove();
