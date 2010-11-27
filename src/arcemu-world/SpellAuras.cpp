@@ -827,7 +827,7 @@ void Aura::Remove()
 		}
 		else
 			if( IsAreaAura() && m_casterGuid == m_target->GetGUID() )
-				RemoveAA();
+				ClearAATargets();
 	}
 
 	if( m_spellProto->procCharges > 0 && m_spellProto->proc_interval == 0 )
@@ -1428,7 +1428,7 @@ void Aura::EventUpdateAA( float r )
 	}
 }
 
-void Aura::RemoveAA(){
+void Aura::ClearAATargets(){
 	uint32 spellid = m_spellProto->Id;
 
 	for( AreaAuraList::iterator itr = targets.begin(); itr != targets.end(); ++itr ){

@@ -474,7 +474,13 @@ public:
 	Aura* StrongerThat(Aura *aur);
 	void ApplyModifiers(bool apply);
 	void UpdateModifiers();
+
+
+//////////////////////////////////////////////////////////// Area Auras //////////////////////////////////////////////////////
+
+
 	void EventUpdateAA( float r );
+
 	void EventUpdateGroupAA( float r );
 	void EventUpdateRaidAA( float r );
 	void EventUpdatePetAA( float r );
@@ -482,10 +488,20 @@ public:
 	void EventUpdateEnemyAA( float r );
 	void EventUpdateOwnerAA( float r );
 
-
-	void RemoveAA();
-
-	bool DotCanCrit();
+	/////////////////////////////////////////////////////////
+	//void ClearAATargets()
+	//  Removes the Area Aura from all targets and clears
+	//  the target set.
+	//
+	//Parameters
+	//  None
+	//
+	//Return Value
+	//  None
+	//
+	//
+	////////////////////////////////////////////////////////
+	void ClearAATargets();
 
 	////////////////////////////////////////////////////////
 	//bool IsAreaAura()
@@ -501,8 +517,12 @@ public:
 	///////////////////////////////////////////////////////
 	bool IsAreaAura();
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	bool DotCanCrit();
+
 	//! GetTimeLeft() milliseconds
-	ARCEMU_INLINE uint32 GetTimeLeft() 
+	uint32 GetTimeLeft() 
 	{
 		if(m_duration==-1)return (uint32)-1;
 		int32 n=int32((UNIXTIME-time_t(timeleft))*1000);

@@ -1021,6 +1021,22 @@ public:
 	bool RemoveAuras(uint32 * SpellIds);
 	bool RemoveAurasByHeal();
 
+
+	////////////////////////////////////////////////////////////////
+	//void ClearAllAreaAuraTargets()
+	//  Removes all area auras casted by us from the targets, and
+	//  clears the target sets.
+	//
+	//Parameters
+	//  None
+	//
+	//Return Value
+	//  None
+	//
+	//
+	////////////////////////////////////////////////////////////////
+	void ClearAllAreaAuraTargets();
+
 	//////////////////////////////////////////////////////////////////
 	//void RemoveAllAreaAuraByOther()
 	//  Removes all Area Auras that are from other Units.
@@ -1035,19 +1051,6 @@ public:
 	/////////////////////////////////////////////////////////////////
 	void RemoveAllAreaAuraByOther();
 
-	////////////////////////////////////////////////////////////////
-	//void RemoveAllAreaAuras()
-	//  Removes all area auras from the Unit
-	//
-	//Parameters
-	//  None
-	//
-	//Return Value
-	//  None
-	//
-	//
-	////////////////////////////////////////////////////////////////
-	void RemoveAllAreaAuras();
 
 	void EventRemoveAura(uint32 SpellId)
 	{

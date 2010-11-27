@@ -636,11 +636,6 @@ bool Master::_StartDB()
 	Database_Character= NULL;
 	string hostname, username, password, database;
 	int port = 0;
-	int type = 1;
-	//string lhostname, lusername, lpassword, ldatabase;
-	//int lport = 0;
-	//int ltype = 1;
-	// Configure Main Database
 	
 	bool result = Config.MainConfig.GetString( "WorldDatabase", "Username", &username );
 	Config.MainConfig.GetString( "WorldDatabase", "Password", &password );

@@ -4671,7 +4671,7 @@ bool Unit::RemoveAurasByHeal()
 	return res;
 }
 
-void Unit::RemoveAllAreaAuras(){
+void Unit::ClearAllAreaAuraTargets(){
 	for( uint32 x = MAX_TOTAL_AURAS_START; x < MAX_TOTAL_AURAS_END; x++ ){
 		Aura *a = m_auras[ x ];
 		
@@ -4682,7 +4682,7 @@ void Unit::RemoveAllAreaAuras(){
 			continue;
 
 		if( a->IsAreaAura() )
-			a->RemoveAA();
+			a->ClearAATargets();
 	}
 }
 
@@ -5936,7 +5936,7 @@ void Unit::RemoveFromWorld(bool free_guid)
 		}
 	}
 	
-	RemoveAllAreaAuras();
+	ClearAllAreaAuraTargets();
 	RemoveAllAreaAuraByOther();
 
 	Object::RemoveFromWorld(free_guid);
