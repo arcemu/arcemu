@@ -783,6 +783,8 @@ void QuestMgr::_OnPlayerKill(Player* plr, uint32 entry, bool IsGroupKill)
 						qle->SendUpdateAddKill( j );
 						CALL_QUESTSCRIPT_EVENT( qle, OnCreatureKill)( entry, plr, qle );
 						qle->UpdatePlayerFields();
+						if( qle->CanBeFinished() )
+							qle->SendQuestComplete();
 						break;
 					}
 				}

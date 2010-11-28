@@ -13366,7 +13366,6 @@ void Player::SendChatMessage(uint8 type, uint32 lang, const char *msg, uint32 de
 	SendMessageToSet( data, true );
 }
 
-
 void Player::AcceptQuest( uint64 guid, uint32 quest_id ){
 
 	bool bValid = false;
@@ -13714,4 +13713,29 @@ bool Player::SaveSkills( bool NewCharacter, QueryBuffer *buf ){
 	}
 
 	return true;
+}
+
+void Player::AddQuestKill(uint32 questid, uint8 reqid, uint32 delay)
+{
+	if(!HasQuest(questid))
+		return;
+
+	if(delay)
+	{
+		sEventMgr.AddEvent(this, &Player::AddQuestKill, questid, reqid, uint32(0), EVENT_PLAYER_UPDATE, delay, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+		return;
+	}
+
+	QuestLogEntry *qle = GetQuestLogForEntry(questid);
+	Quest *qst = qle->GetQuest();
+
+	if(qle->GetMobCount(reqid) >= qst->required_mobcount[reqid])
+		return;
+
+	qle->IncrementMobCount(reqid);
+	qle->SendUpdateAddKill(reqid);
+	qle->UpdatePlayerFields();
+
+	if(qle->CanBeFinished())
+		qle->SendQuestComplete();
 }
