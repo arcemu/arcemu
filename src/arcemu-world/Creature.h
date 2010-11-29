@@ -577,8 +577,6 @@ public:
 
 	void CallScriptUpdate();
 
-	uint32 m_TaxiNode;
-
 	ARCEMU_INLINE CreatureInfo *GetCreatureInfo() { return creature_info; }
 	ARCEMU_INLINE void SetCreatureInfo(CreatureInfo *ci) { creature_info = ci; }
     void SetCreatureProto( CreatureProto *cp ){ proto = cp; }

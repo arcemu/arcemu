@@ -198,7 +198,6 @@ Creature::Creature(uint64 guid)
 	m_PickPocketed = false;
 	m_SellItems = NULL;
 	_myScriptClass = NULL;
-	m_TaxiNode = 0;
 	myFamily = 0;
 
 	loot.gold = 0;
@@ -1311,9 +1310,6 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	if ( isQuestGiver() )
 		_LoadQuests();
 
-	if ( isTaxi() )
-		m_TaxiNode = sTaxiMgr.GetNearestTaxiNode( m_position.x, m_position.y, m_position.z, GetMapId() );
-
 	if ( isTrainer() | isProf() )
 		mTrainer = objmgr.GetTrainer(GetEntry());
 
@@ -1536,9 +1532,6 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 
 	if ( isQuestGiver() )
 		_LoadQuests();
-
-	if ( isTaxi() )
-		m_TaxiNode = sTaxiMgr.GetNearestTaxiNode( m_position.x, m_position.y, m_position.z, GetMapId() );
 
 	if ( isTrainer() | isProf() )
 		mTrainer = objmgr.GetTrainer(GetEntry());
