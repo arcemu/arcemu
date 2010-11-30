@@ -122,7 +122,7 @@ void DynamicObject::UpdateTargets()
 		Unit * target;
 		Aura * pAura;
 
-		float radius = m_floatValues[DYNAMICOBJECT_RADIUS];
+		float radius = m_floatValues[ DYNAMICOBJECT_RADIUS ] * m_floatValues[ DYNAMICOBJECT_RADIUS ];
 
         // Looking for targets in the Object set
         for( std::set< Object* >::iterator itr = m_objectsInRange.begin(); itr != m_objectsInRange.end(); ++itr )
