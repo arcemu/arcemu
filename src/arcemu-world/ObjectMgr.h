@@ -661,7 +661,7 @@ public:
 
 	std::set<ProfessionDiscovery*> ProfessionDiscoveryTable;
 
-	// cebernic: This is an perfect Broadcast system,multi-lang supported also.
+	// cebernic: This is a perfect Broadcast system,multi-lang supported also.
 	ARCEMU_INLINE uint32 GetBCGroupCountByKey(uint32 Key) { return (uint32)m_BCEntryStorage.count(Key); }
 	ARCEMU_INLINE bool IsBCEntryStorageEmpty() { return m_BCEntryStorage.empty(); }
 	ARCEMU_INLINE BCEntryStorage::iterator GetBCTotalItemBegin() { return m_BCEntryStorage.begin(); }

@@ -625,8 +625,7 @@ public:
 	void TriggerScriptEvent(int);
 
 	AuctionHouse * auctionHouse;
-	bool has_waypoint_text;
-	bool has_combat_text;
+	bool has_text[6];//NUM_MONSTER_SAY_EVENTS
 
 	void DeleteMe();
 	bool CanAddToWorld();

@@ -118,7 +118,7 @@ uint32 CalculateXpToGive(Unit *pVictim, Unit *pAttacker)
 	float g = 5;
 
 	// get zero diff
-	if(AttackerLvl >= PLAYER_LEVEL_CAP_70)
+	if(AttackerLvl >= PLAYER_LEVEL_CAP)
 	{
 		g = 15;
 		zd = 19;

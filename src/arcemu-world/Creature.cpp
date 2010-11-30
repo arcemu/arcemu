@@ -207,7 +207,8 @@ Creature::Creature(uint64 guid)
 	m_spawn = 0;
 	spawnid = 0;
 	auctionHouse = 0;
-	has_waypoint_text = has_combat_text = false;
+	for(int i = 0; i < NUM_MONSTER_SAY_EVENTS; i++)
+		has_text[i] = false;
 	SetAttackPowerMultiplier(0.0f);
 	SetRangedAttackPowerMultiplier(0.0f);
 	m_custom_waypoint_map = 0;
@@ -1402,8 +1403,8 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	else
 		SetPowerType(0);
 
-	has_combat_text = objmgr.HasMonsterSay(GetEntry(), MONSTER_SAY_EVENT_ENTER_COMBAT);
-	has_waypoint_text = objmgr.HasMonsterSay(GetEntry(), MONSTER_SAY_EVENT_RANDOM_WAYPOINT);
+	for(int i = 0; i < NUM_MONSTER_SAY_EVENTS; i++)
+		has_text[i] = objmgr.HasMonsterSay(GetEntry(), MONSTER_SAY_EVENTS(i));
 
     if( proto->guardtype == GUARDTYPE_CITY )
         m_aiInterface->m_isGuard = true;
@@ -1594,8 +1595,8 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 
 	SetPowerType( POWER_TYPE_MANA );
 
-	has_combat_text = objmgr.HasMonsterSay(GetEntry(), MONSTER_SAY_EVENT_ENTER_COMBAT);
-	has_waypoint_text = objmgr.HasMonsterSay(GetEntry(), MONSTER_SAY_EVENT_RANDOM_WAYPOINT);
+	for(int i = 0; i < NUM_MONSTER_SAY_EVENTS; i++)
+		has_text[i] = objmgr.HasMonsterSay(GetEntry(), MONSTER_SAY_EVENTS(i));
 	
     if( proto->guardtype == GUARDTYPE_CITY )
         m_aiInterface->m_isGuard = true;

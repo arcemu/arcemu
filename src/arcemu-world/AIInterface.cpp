@@ -224,7 +224,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				/* send the message */
 				if( m_Unit->GetTypeId() == TYPEID_UNIT )
 				{
-					if( static_cast< Creature* >( m_Unit )->has_combat_text )
+					if( static_cast< Creature* >( m_Unit )->has_text[MONSTER_SAY_EVENT_ENTER_COMBAT] )
 						objmgr.HandleMonsterSayEvent( static_cast< Creature* >( m_Unit ), MONSTER_SAY_EVENT_ENTER_COMBAT );
 
 					CALL_SCRIPT_EVENT(m_Unit, OnCombatStart)(pUnit);
@@ -326,7 +326,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				// restart emote
 				if(m_Unit->GetTypeId() == TYPEID_UNIT)
 				{
-					if( static_cast< Creature* >( m_Unit )->has_combat_text )
+					if( static_cast< Creature* >( m_Unit )->has_text[MONSTER_SAY_EVENT_ON_COMBAT_STOP] )
 						objmgr.HandleMonsterSayEvent( static_cast< Creature* >( m_Unit ), MONSTER_SAY_EVENT_ON_COMBAT_STOP );
 
 					if( static_cast< Creature* >( m_Unit )->original_emotestate )
@@ -428,7 +428,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 			{
 				if( pUnit == NULL ) return;
 
-				if( static_cast< Creature* >( m_Unit )->has_combat_text )
+				if( static_cast< Creature* >( m_Unit )->has_text[MONSTER_SAY_EVENT_ON_DAMAGE_TAKEN] )
 					objmgr.HandleMonsterSayEvent( static_cast< Creature* >( m_Unit ), MONSTER_SAY_EVENT_ON_DAMAGE_TAKEN );
 
 				pUnit->RemoveAura( 24575 );
@@ -555,7 +555,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 		{
 			if( pUnit == NULL ) return;
 
-			if( static_cast< Creature* >( m_Unit )->has_combat_text )
+			if( static_cast< Creature* >( m_Unit )->has_text[MONSTER_SAY_EVENT_ON_DIED] )
 				objmgr.HandleMonsterSayEvent( static_cast< Creature* >( m_Unit ), MONSTER_SAY_EVENT_ON_DIED );
 
 			CALL_SCRIPT_EVENT(m_Unit, OnDied)(pUnit);
@@ -2958,7 +2958,7 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 					if(wp)
 					{
 						CALL_SCRIPT_EVENT(m_Unit, OnReachWP)(wp->id, !m_moveBackward);
-						if(TO_CREATURE(m_Unit)->has_waypoint_text)
+						if(TO_CREATURE(m_Unit)->has_text[MONSTER_SAY_EVENT_RANDOM_WAYPOINT])
 							objmgr.HandleMonsterSayEvent(TO_CREATURE(m_Unit), MONSTER_SAY_EVENT_RANDOM_WAYPOINT);
 
 						//Lets face to correct orientation

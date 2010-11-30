@@ -54,7 +54,6 @@ class SpeedCheatDetector;
 #define MAX_SPEC_COUNT 2
 #define GLYPHS_COUNT 6
 
-#define PLAYER_LEVEL_CAP_70     80
 #define PLAYER_LEVEL_CAP                80
 #define PLAYER_ARENA_MIN_LEVEL  70
 
