@@ -2915,102 +2915,13 @@ void ObjectMgr::LoadMonsterSay()
 	delete result;
 }
 
-void ObjectMgr::HandleMonsterSayEvent(Creature * pCreature, MONSTER_SAY_EVENTS Event)
-{
-	MonsterSayMap::iterator itr = mMonsterSays[Event].find(pCreature->GetEntry());
-	if(itr == mMonsterSays[Event].end())
-		return;
-
-	NpcMonsterSay * ms = itr->second;
-	if(Rand(ms->Chance))
-	{
-		// chance successful.
-		int choice = (ms->TextCount == 1) ? 0 : RandomUInt(ms->TextCount - 1);
-		const char * text = ms->Texts[choice];
-		// check for special variables $N=name $C=class $R=race $G=gender
-		// $G is followed by male_string:female_string;
-		string newText = text;
-		static const char* races[12] = {"None","Human","Orc","Dwarf","Night Elf","Undead","Tauren","Gnome","Troll","None","Blood Elf","Draenei"};
-		static const char* classes[12] = {"None","Warrior", "Paladin", "Hunter", "Rogue", "Priest", "Death Knight", "Shaman", "Mage", "Warlock", "None", "Druid"};
-		char* test=strstr((char*)text,"$R");
-		if(test== NULL)
-			test = strstr((char*)text,"$r");
-		if(test != NULL)
-		{
-            uint64 targetGUID = pCreature->GetTargetGUID();
-			Unit* CurrentTarget = pCreature->GetMapMgr()->GetUnit(targetGUID);
-			if(CurrentTarget)
-			{
-				ptrdiff_t testOfs = test-text;
-				newText.replace(testOfs, 2, races[CurrentTarget->getRace()]);
-			}
-		}
-		test = strstr((char*)text,"$N");
-		if(test== NULL)
-			test = strstr((char*)text,"$n");
-		if(test != NULL)
-		{
-			uint64 targetGUID = pCreature->GetTargetGUID();
-			Unit* CurrentTarget = pCreature->GetMapMgr()->GetUnit(targetGUID);
-			if(CurrentTarget && CurrentTarget->IsPlayer())
-			{
-				ptrdiff_t testOfs = test-text;
-				newText.replace(testOfs, 2, TO_PLAYER(CurrentTarget)->GetName());
-			}
-		}
-		test = strstr((char*)text,"$C");
-		if(test== NULL)
-			test = strstr((char*)text,"$c");
-		if(test != NULL)
-		{
-			uint64 targetGUID = pCreature->GetTargetGUID();
-			Unit* CurrentTarget = pCreature->GetMapMgr()->GetUnit(targetGUID);
-			if(CurrentTarget)
-			{
-				ptrdiff_t testOfs = test-text;
-				newText.replace(testOfs, 2, classes[CurrentTarget->getClass()]);
-			}
-		}
-		test = strstr((char*)text,"$G");
-		if(test== NULL)
-			test = strstr((char*)text,"$g");
-		if(test != NULL)
-		{
-			uint64 targetGUID = pCreature->GetTargetGUID();
-			Unit* CurrentTarget = pCreature->GetMapMgr()->GetUnit(targetGUID);
-			if(CurrentTarget)
-			{
-				char* g0 = test+2;
-				char* g1 = strchr(g0,':');
-				if(g1)
-				{
-					char* gEnd = strchr(g1,';');
-					if(gEnd)
-					{
-						*g1 = 0x00;
-						++g1;
-						*gEnd = 0x00;
-						++gEnd;
-						*test = 0x00;
-						newText = text;
-						newText += (CurrentTarget->getGender()== 0) ? g0 : g1;
-						newText += gEnd;
-					}
-				}
-			}
-		}
-
-		pCreature->SendChatMessage(static_cast<uint8>( ms->Type ), ms->Language, newText.c_str());
-	}
-}
-
-bool ObjectMgr::HasMonsterSay(uint32 Entry, MONSTER_SAY_EVENTS Event)
+NpcMonsterSay * ObjectMgr::HasMonsterSay(uint32 Entry, MONSTER_SAY_EVENTS Event)
 {
 	MonsterSayMap::iterator itr = mMonsterSays[Event].find(Entry);
 	if(itr == mMonsterSays[Event].end())
-		return false;
+		return NULL;
 
-	return true;
+	return itr->second;
 }
 
 void ObjectMgr::LoadInstanceReputationModifiers()

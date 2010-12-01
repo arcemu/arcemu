@@ -102,24 +102,24 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 		while(!itr->AtEnd())
 		{
 			cn = itr->Get();
-			if(itr->Get()->aura_string)
+			if(cn->aura_string)
 			{
-				string auras = string(itr->Get()->aura_string);
+				string auras = string(cn->aura_string);
 				vector<string> aurs = StrSplit(auras, " ");
 				for(vector<string>::iterator it = aurs.begin(); it != aurs.end(); ++it)
 				{
 					uint32 id = atol((*it).c_str());
 					if(id)
-						itr->Get()->start_auras.insert( id );
+						cn->start_auras.insert( id );
 				}
 			}
 
-			if(!itr->Get()->MinHealth)
-				itr->Get()->MinHealth = 1;
-			if(!itr->Get()->MaxHealth)
-				itr->Get()->MaxHealth = 1;
-			if (itr->Get()->AttackType > SCHOOL_ARCANE)
-				itr->Get()->AttackType = SCHOOL_NORMAL;
+			if(!cn->MinHealth)
+				cn->MinHealth = 1;
+			if(!cn->MaxHealth)
+				cn->MaxHealth = 1;
+			if (cn->AttackType > SCHOOL_ARCANE)
+				cn->AttackType = SCHOOL_NORMAL;
 
 			cn->m_canFlee = cn->m_canRangedAttack = cn->m_canCallForHelp = false;
 			cn->m_fleeHealth = 0.0f;
@@ -146,6 +146,9 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 				ci->lowercase_name[j] = static_cast<char>( tolower(ci->lowercase_name[j]) ); // Darvaleo 2008/08/15 - Copied lowercase conversion logic from ItemPrototype task
 
 			ci->gossip_script = sScriptMgr.GetDefaultGossipScript();
+
+			for(int i = 0; i < NUM_MONSTER_SAY_EVENTS; i++)
+				ci->MonsterSay[i] = objmgr.HasMonsterSay(ci->Id, MONSTER_SAY_EVENTS(i));
 
 			if(!itr->Inc())
 				break;

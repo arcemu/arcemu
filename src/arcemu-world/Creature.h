@@ -54,6 +54,28 @@ enum CreatureAISpellFlags
 	CREATURE_AI_FLAG_PLAYERGCD			= 0x04
 };
 
+struct NpcMonsterSay
+{
+	float Chance;
+	uint32 Language;
+	uint32 Type;
+	const char * MonsterName;
+
+	uint32 TextCount;
+	const char ** Texts;
+};
+
+enum MONSTER_SAY_EVENTS
+{
+	MONSTER_SAY_EVENT_ENTER_COMBAT		= 0,
+	MONSTER_SAY_EVENT_RANDOM_WAYPOINT	= 1,
+	MONSTER_SAY_EVENT_CALL_HELP			= 2,
+	MONSTER_SAY_EVENT_ON_COMBAT_STOP	= 3,
+	MONSTER_SAY_EVENT_ON_DAMAGE_TAKEN	= 4,
+	MONSTER_SAY_EVENT_ON_DIED			= 5,
+	NUM_MONSTER_SAY_EVENTS,
+};
+
 SERVER_DECL bool Rand(float chance);
 SERVER_DECL bool Rand(uint32 chance);
 SERVER_DECL bool Rand(int32 chance);
@@ -81,6 +103,8 @@ struct CreatureInfo
 
 	std::string lowercase_name;
 	GossipScript * gossip_script;
+	NpcMonsterSay* MonsterSay[NUM_MONSTER_SAY_EVENTS];
+
 	uint8 GenerateModelId(uint32 * des)
 	{
 		uint32 models[] = { Male_DisplayID, Male_DisplayID2, Female_DisplayID, Female_DisplayID2 };
@@ -625,7 +649,6 @@ public:
 	void TriggerScriptEvent(int);
 
 	AuctionHouse * auctionHouse;
-	bool has_text[6];//NUM_MONSTER_SAY_EVENTS
 
 	void DeleteMe();
 	bool CanAddToWorld();
@@ -655,6 +678,8 @@ public:
 	void DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32 unitEvent, uint32 spellId, bool no_remove_auras = false);
 	void TakeDamage(Unit *pAttacker, uint32 damage, uint32 spellid, bool no_remove_auras = false );
 	void Die( Unit *pAttacker, uint32 damage, uint32 spellid );
+
+	void HandleMonsterSayEvent(MONSTER_SAY_EVENTS Event);
 
 protected:
 	CreatureAIScript *_myScriptClass;

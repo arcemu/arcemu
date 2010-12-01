@@ -217,19 +217,19 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				if( pUnit == NULL || pUnit->IsDead() || m_Unit->IsDead() ) return;
 
 				// set the target first
-				if(pUnit && pUnit->GetInstanceID() == m_Unit->GetInstanceID())
+				if(pUnit->GetInstanceID() == m_Unit->GetInstanceID())
 				{
                     m_Unit->SetTargetGUID( pUnit->GetGUID());
 				}
 				/* send the message */
 				if( m_Unit->GetTypeId() == TYPEID_UNIT )
 				{
-					if( static_cast< Creature* >( m_Unit )->has_text[MONSTER_SAY_EVENT_ENTER_COMBAT] )
-						objmgr.HandleMonsterSayEvent( static_cast< Creature* >( m_Unit ), MONSTER_SAY_EVENT_ENTER_COMBAT );
+					Creature* creature = TO_CREATURE( m_Unit);
+					creature->HandleMonsterSayEvent(MONSTER_SAY_EVENT_ENTER_COMBAT );
 
 					CALL_SCRIPT_EVENT(m_Unit, OnCombatStart)(pUnit);
 
-					if( static_cast< Creature* >( m_Unit )->m_spawn && ( static_cast< Creature* >( m_Unit )->m_spawn->channel_target_go || static_cast< Creature* >( m_Unit )->m_spawn->channel_target_creature))
+					if( creature->m_spawn && ( creature->m_spawn->channel_target_go || creature->m_spawn->channel_target_creature))
 					{
                         m_Unit->SetChannelSpellId( 0 );
                         m_Unit->SetChannelSpellTargetGUID( 0 );
@@ -326,21 +326,21 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				// restart emote
 				if(m_Unit->GetTypeId() == TYPEID_UNIT)
 				{
-					if( static_cast< Creature* >( m_Unit )->has_text[MONSTER_SAY_EVENT_ON_COMBAT_STOP] )
-						objmgr.HandleMonsterSayEvent( static_cast< Creature* >( m_Unit ), MONSTER_SAY_EVENT_ON_COMBAT_STOP );
+					Creature* creature = TO_CREATURE( m_Unit);
+					creature->HandleMonsterSayEvent( MONSTER_SAY_EVENT_ON_COMBAT_STOP );
 
-					if( static_cast< Creature* >( m_Unit )->original_emotestate )
-						m_Unit->SetEmoteState(static_cast< Creature* >( m_Unit )->original_emotestate );
+					if( creature->original_emotestate )
+						m_Unit->SetEmoteState(creature->original_emotestate );
 					else
 						m_Unit->SetEmoteState(0 );
 
-					if(static_cast<Creature*>(m_Unit)->m_spawn && (static_cast< Creature* >( m_Unit )->m_spawn->channel_target_go || static_cast< Creature* >( m_Unit )->m_spawn->channel_target_creature ) )
+					if(creature->m_spawn && (creature->m_spawn->channel_target_go || creature->m_spawn->channel_target_creature ) )
 					{
-						if(static_cast<Creature*>(m_Unit)->m_spawn->channel_target_go)
-							sEventMgr.AddEvent( static_cast< Creature* >( m_Unit ), &Creature::ChannelLinkUpGO, static_cast< Creature* >( m_Unit )->m_spawn->channel_target_go, EVENT_CREATURE_CHANNEL_LINKUP, 1000, 5, 0 );
+						if(creature->m_spawn->channel_target_go)
+							sEventMgr.AddEvent( creature, &Creature::ChannelLinkUpGO, creature->m_spawn->channel_target_go, EVENT_CREATURE_CHANNEL_LINKUP, 1000, 5, 0 );
 
-						if(static_cast<Creature*>(m_Unit)->m_spawn->channel_target_creature)
-							sEventMgr.AddEvent( static_cast< Creature* >( m_Unit ), &Creature::ChannelLinkUpCreature, static_cast< Creature* >( m_Unit )->m_spawn->channel_target_creature, EVENT_CREATURE_CHANNEL_LINKUP, 1000, 5, 0 );
+						if(creature->m_spawn->channel_target_creature)
+							sEventMgr.AddEvent( creature, &Creature::ChannelLinkUpCreature, creature->m_spawn->channel_target_creature, EVENT_CREATURE_CHANNEL_LINKUP, 1000, 5, 0 );
 					}
 				}
 
@@ -428,8 +428,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 			{
 				if( pUnit == NULL ) return;
 
-				if( static_cast< Creature* >( m_Unit )->has_text[MONSTER_SAY_EVENT_ON_DAMAGE_TAKEN] )
-					objmgr.HandleMonsterSayEvent( static_cast< Creature* >( m_Unit ), MONSTER_SAY_EVENT_ON_DAMAGE_TAKEN );
+				static_cast< Creature* >( m_Unit )->HandleMonsterSayEvent( MONSTER_SAY_EVENT_ON_DAMAGE_TAKEN );
 
 				pUnit->RemoveAura( 24575 );
 
@@ -555,8 +554,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 		{
 			if( pUnit == NULL ) return;
 
-			if( static_cast< Creature* >( m_Unit )->has_text[MONSTER_SAY_EVENT_ON_DIED] )
-				objmgr.HandleMonsterSayEvent( static_cast< Creature* >( m_Unit ), MONSTER_SAY_EVENT_ON_DIED );
+			static_cast< Creature* >( m_Unit )->HandleMonsterSayEvent( MONSTER_SAY_EVENT_ON_DIED );
 
 			CALL_SCRIPT_EVENT(m_Unit, OnDied)(pUnit);
 			if ( m_Unit->IsCreature() )
@@ -1493,7 +1491,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 				FindFriends( 64.0f /*8.0f*/ );
 				m_hasCalledForHelp = true; // We only want to call for Help once in a Fight.
 				if( m_Unit->GetTypeId() == TYPEID_UNIT )
-						objmgr.HandleMonsterSayEvent( static_cast< Creature* >( m_Unit ), MONSTER_SAY_EVENT_CALL_HELP );
+						static_cast< Creature* >( m_Unit )->HandleMonsterSayEvent( MONSTER_SAY_EVENT_CALL_HELP );
 				CALL_SCRIPT_EVENT( m_Unit, OnCallForHelp )();
 			}break;
 		}
@@ -2958,8 +2956,7 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 					if(wp)
 					{
 						CALL_SCRIPT_EVENT(m_Unit, OnReachWP)(wp->id, !m_moveBackward);
-						if(TO_CREATURE(m_Unit)->has_text[MONSTER_SAY_EVENT_RANDOM_WAYPOINT])
-							objmgr.HandleMonsterSayEvent(TO_CREATURE(m_Unit), MONSTER_SAY_EVENT_RANDOM_WAYPOINT);
+						TO_CREATURE(m_Unit)->HandleMonsterSayEvent(MONSTER_SAY_EVENT_RANDOM_WAYPOINT);
 
 						//Lets face to correct orientation
 						wayO = wp->o;

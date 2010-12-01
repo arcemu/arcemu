@@ -432,6 +432,8 @@ bool World::SetInitialWorldSettings()
 	MAKE_TASK(ObjectMgr,  LoadMonsterSay);
 	MAKE_TASK(WeatherMgr, LoadFromDB);
 	MAKE_TASK(ObjectMgr,  LoadGroups);
+	//LoadMonsterSay() must have finished before calling LoadExtraCreatureProtoStuff()
+	tl.wait();
 
 	MAKE_TASK(ObjectMgr, LoadExtraCreatureProtoStuff);
 	MAKE_TASK(ObjectMgr, LoadExtraItemStuff);

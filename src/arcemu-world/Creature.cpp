@@ -207,8 +207,6 @@ Creature::Creature(uint64 guid)
 	m_spawn = 0;
 	spawnid = 0;
 	auctionHouse = 0;
-	for(int i = 0; i < NUM_MONSTER_SAY_EVENTS; i++)
-		has_text[i] = false;
 	SetAttackPowerMultiplier(0.0f);
 	SetRangedAttackPowerMultiplier(0.0f);
 	m_custom_waypoint_map = 0;
@@ -1403,9 +1401,6 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	else
 		SetPowerType(0);
 
-	for(int i = 0; i < NUM_MONSTER_SAY_EVENTS; i++)
-		has_text[i] = objmgr.HasMonsterSay(GetEntry(), MONSTER_SAY_EVENTS(i));
-
     if( proto->guardtype == GUARDTYPE_CITY )
         m_aiInterface->m_isGuard = true;
     else
@@ -1595,9 +1590,6 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 
 	SetPowerType( POWER_TYPE_MANA );
 
-	for(int i = 0; i < NUM_MONSTER_SAY_EVENTS; i++)
-		has_text[i] = objmgr.HasMonsterSay(GetEntry(), MONSTER_SAY_EVENTS(i));
-	
     if( proto->guardtype == GUARDTYPE_CITY )
         m_aiInterface->m_isGuard = true;
     else
@@ -2342,4 +2334,92 @@ void Creature::SendChatMessage(uint8 type, uint32 lang, const char *msg, uint32 
 	data << msg;
 	data << uint8(0x00);
 	SendMessageToSet(&data, true);
+}
+
+void Creature::HandleMonsterSayEvent(MONSTER_SAY_EVENTS Event)
+{
+	NpcMonsterSay * ms = creature_info->MonsterSay[Event];
+	if(ms == NULL)
+		return;
+
+	if(Rand(ms->Chance))
+	{
+		// chance successful.
+		int choice = (ms->TextCount == 1) ? 0 : RandomUInt(ms->TextCount - 1);
+		const char * text = ms->Texts[choice];
+		// check for special variables $N=name $C=class $R=race $G=gender
+		// $G is followed by male_string:female_string;
+		string newText = text;
+		static const char* races[12] = {"None","Human","Orc","Dwarf","Night Elf","Undead","Tauren","Gnome","Troll","None","Blood Elf","Draenei"};
+		static const char* classes[12] = {"None","Warrior", "Paladin", "Hunter", "Rogue", "Priest", "Death Knight", "Shaman", "Mage", "Warlock", "None", "Druid"};
+		char* test=strstr((char*)text,"$R");
+		if(test== NULL)
+			test = strstr((char*)text,"$r");
+		if(test != NULL)
+		{
+			uint64 targetGUID = GetTargetGUID();
+			Unit* CurrentTarget = GetMapMgr()->GetUnit(targetGUID);
+			if(CurrentTarget)
+			{
+				ptrdiff_t testOfs = test-text;
+				newText.replace(testOfs, 2, races[CurrentTarget->getRace()]);
+			}
+		}
+		test = strstr((char*)text,"$N");
+		if(test== NULL)
+			test = strstr((char*)text,"$n");
+		if(test != NULL)
+		{
+			uint64 targetGUID = GetTargetGUID();
+			Unit* CurrentTarget = GetMapMgr()->GetUnit(targetGUID);
+			if(CurrentTarget && CurrentTarget->IsPlayer())
+			{
+				ptrdiff_t testOfs = test-text;
+				newText.replace(testOfs, 2, TO_PLAYER(CurrentTarget)->GetName());
+			}
+		}
+		test = strstr((char*)text,"$C");
+		if(test== NULL)
+			test = strstr((char*)text,"$c");
+		if(test != NULL)
+		{
+			uint64 targetGUID = GetTargetGUID();
+			Unit* CurrentTarget = GetMapMgr()->GetUnit(targetGUID);
+			if(CurrentTarget)
+			{
+				ptrdiff_t testOfs = test-text;
+				newText.replace(testOfs, 2, classes[CurrentTarget->getClass()]);
+			}
+		}
+		test = strstr((char*)text,"$G");
+		if(test== NULL)
+			test = strstr((char*)text,"$g");
+		if(test != NULL)
+		{
+			uint64 targetGUID = GetTargetGUID();
+			Unit* CurrentTarget = GetMapMgr()->GetUnit(targetGUID);
+			if(CurrentTarget)
+			{
+				char* g0 = test+2;
+				char* g1 = strchr(g0,':');
+				if(g1)
+				{
+					char* gEnd = strchr(g1,';');
+					if(gEnd)
+					{
+						*g1 = 0x00;
+						++g1;
+						*gEnd = 0x00;
+						++gEnd;
+						*test = 0x00;
+						newText = text;
+						newText += (CurrentTarget->getGender()== 0) ? g0 : g1;
+						newText += gEnd;
+					}
+				}
+			}
+		}
+
+		SendChatMessage(static_cast<uint8>( ms->Type ), ms->Language, newText.c_str());
+	}
 }
