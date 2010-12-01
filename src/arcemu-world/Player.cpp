@@ -6945,12 +6945,20 @@ void Player::RegenerateHealth( bool inCombat )
 
 	gtFloat* HPRegenBase = dbcHPRegenBase.LookupEntry(getLevel()-1 + (getClass()-1)*100);
 	gtFloat* HPRegen =  dbcHPRegen.LookupEntry(getLevel()-1 + (getClass()-1)*100);
-	float amt = (m_uint32Values[UNIT_FIELD_STAT4]*HPRegen->val+HPRegenBase->val*100);
+
+	uint32 basespirit = m_uint32Values[ UNIT_FIELD_SPIRIT ];
+	uint32 extraspirit = 0;
+
+	if( basespirit > 50 ){
+		extraspirit = basespirit - 50;
+		basespirit = 50;
+	}
+
+	float amt = basespirit * HPRegen->val + extraspirit * HPRegenBase->val;
 
 	if (PctRegenModifier)
 		amt+= (amt * PctRegenModifier) / 100;
 
-	amt *= 2.0f;
 	amt *= sWorld.getRate(RATE_HEALTH);//Apply conf file rate
 	//Near values from official
 	// wowwiki: Health Regeneration is increased by 33% while sitting.
