@@ -152,7 +152,7 @@ void ArathiBasin::SpawnBuff(uint32 x)
 		m_buffs[x]->SetParentRotation(2, BuffRotations[x][0]);
 		m_buffs[x]->SetParentRotation(3, BuffRotations[x][1]);
 		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 1, 6);
+		m_buffs[x]->SetType(GAMEOBJECT_TYPE_TRAP);
 		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 		m_buffs[x]->PushToWorld(m_mapMgr);
 	}
@@ -190,7 +190,7 @@ void ArathiBasin::SpawnControlPoint(uint32 Id, uint32 Type)
 		m_controlPoints[Id]->SetParentRotation(2, ControlPointRotations[Id][0]);
 		m_controlPoints[Id]->SetParentRotation(3, ControlPointRotations[Id][1]);
 		m_controlPoints[Id]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-		m_controlPoints[Id]->SetByte(GAMEOBJECT_BYTES_1, 1, static_cast<uint8>( gi->Type ));
+		m_controlPoints[Id]->SetType(static_cast<uint8>( gi->Type ));
 		m_controlPoints[Id]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 		m_controlPoints[Id]->SetUInt32Value(GAMEOBJECT_DYNAMIC, 1);
 		m_controlPoints[Id]->SetDisplayId(gi->DisplayID);
@@ -224,7 +224,7 @@ void ArathiBasin::SpawnControlPoint(uint32 Id, uint32 Type)
 		m_controlPoints[Id]->SetNewGuid(m_mapMgr->GenerateGameobjectGuid());
 		m_controlPoints[Id]->SetEntry(  gi->ID);
 		m_controlPoints[Id]->SetDisplayId(gi->DisplayID);
-		m_controlPoints[Id]->SetByte(GAMEOBJECT_BYTES_1, 1, static_cast<uint8>( gi->Type ));
+		m_controlPoints[Id]->SetType(static_cast<uint8>( gi->Type ));
 
 		switch(Type)
 		{
@@ -264,7 +264,7 @@ void ArathiBasin::SpawnControlPoint(uint32 Id, uint32 Type)
 		m_controlPointAuras[Id]->SetParentRotation(2, ControlPointRotations[Id][0]);
 		m_controlPointAuras[Id]->SetParentRotation(3, ControlPointRotations[Id][1]);
 		m_controlPointAuras[Id]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-		m_controlPointAuras[Id]->SetByte(GAMEOBJECT_BYTES_1, 1, 6);
+		m_controlPointAuras[Id]->SetType(GAMEOBJECT_TYPE_TRAP);
 		m_controlPointAuras[Id]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 		m_controlPointAuras[Id]->bannerauraslot = static_cast<uint8>( Id );
 		m_controlPointAuras[Id]->PushToWorld(m_mapMgr);

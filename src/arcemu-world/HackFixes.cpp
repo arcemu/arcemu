@@ -7007,13 +7007,6 @@ void ApplyNormalFixes()
 		{
 			sp->Attributes = ATTRIBUTES_CANT_BE_DPB;
 		}
-
-		// Unlocking Soul Prison
-       sp = CheckAndReturnSpellEntry( 54669 );
-       if( sp )
-       {
-               sp->Effect[0] = SPELL_EFFECT_DUMMY;
-       }
 		         
 		/**********************************************************
         *      Bloodworms - handled in dummy code

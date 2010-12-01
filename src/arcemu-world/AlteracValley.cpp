@@ -1088,7 +1088,7 @@ void AlteracValley::AVNode::Spawn()
 				m_flag->SetNewGuid(m_bg->GetMapMgr()->GenerateGameobjectGuid());
 				m_flag->SetInfo(goi);
 				m_flag->SetDisplayId(goi->DisplayID);
-				m_flag->SetByte(GAMEOBJECT_BYTES_1, 1, static_cast<uint8>( goi->Type ));
+				m_flag->SetType(static_cast<uint8>( goi->Type ));
 				m_flag->SetFaction(g_gameObjectFactions[m_state]);
 				m_flag->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 				m_flag->SetUInt32Value(GAMEOBJECT_DYNAMIC, 1);
@@ -1134,7 +1134,7 @@ void AlteracValley::AVNode::Spawn()
 				m_aura->SetNewGuid(m_bg->GetMapMgr()->GenerateGameobjectGuid());
 				m_aura->SetInfo(goi);
 				m_aura->SetDisplayId(goi->DisplayID);
-				m_aura->SetByte(GAMEOBJECT_BYTES_1, 1, static_cast<uint8>( goi->Type ));
+				m_aura->SetType(static_cast<uint8>( goi->Type ));
 				m_aura->SetFaction(g_gameObjectFactions[m_state]);
 				m_aura->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 				m_aura->SetUInt32Value(GAMEOBJECT_FLAGS, 1);
@@ -1185,7 +1185,7 @@ void AlteracValley::AVNode::Spawn()
 				m_glow->SetNewGuid(m_bg->GetMapMgr()->GenerateGameobjectGuid());
 				m_glow->SetInfo(goi);
 				m_glow->SetDisplayId(goi->DisplayID);
-				m_glow->SetByte(GAMEOBJECT_BYTES_1, 1, static_cast<uint8>( goi->Type ));
+				m_glow->SetType(static_cast<uint8>( goi->Type ));
 				m_glow->SetFaction(g_gameObjectFactions[m_state]);
 				m_glow->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 				m_glow->SetUInt32Value(GAMEOBJECT_FLAGS, 1);

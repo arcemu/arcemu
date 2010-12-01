@@ -241,8 +241,8 @@ public:
 
 	bool isQuestGiver()
 	{
-		//from GameObject::CreateFromProto - SetByte( GAMEOBJECT_BYTES_1, 1, pInfo->Type );
-		if(GetByte(GAMEOBJECT_BYTES_1, 1) == 2) 
+		//from GameObject::CreateFromProto - SetType( pInfo->Type );
+		if(GetType() == GAMEOBJECT_TYPE_QUESTGIVER) 
 			return true;
 		else
 			return false;
@@ -320,6 +320,9 @@ public:
 
 	void SetLevel( uint32 level ) { SetUInt32Value(GAMEOBJECT_LEVEL, level); }
 	uint32 GetLevel() { return GetUInt32Value(GAMEOBJECT_LEVEL); }
+
+	void SetType( uint8 type ) { SetByte( GAMEOBJECT_BYTES_1, 1, type ); }
+	uint8 GetType() { return GetByte( GAMEOBJECT_BYTES_1, 1 ); }
 
 protected:
 

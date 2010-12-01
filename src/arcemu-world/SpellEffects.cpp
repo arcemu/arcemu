@@ -2656,7 +2656,7 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 		}
 		break;
 	};
-	if( gameObjTarget && gameObjTarget->GetByte( GAMEOBJECT_BYTES_1, 1 ) == GAMEOBJECT_TYPE_CHEST)
+	if( gameObjTarget && gameObjTarget->GetType() == GAMEOBJECT_TYPE_CHEST)
 		static_cast< Player* >( m_caster )->SendLoot( gameObjTarget->GetGUID(), loottype, gameObjTarget->GetMapId() );
 }
 
@@ -3572,7 +3572,7 @@ void Spell::SpellEffectOpenLockItem(uint32 i)
 		return;
 	}
 
-	if( gameObjTarget->GetByte( GAMEOBJECT_BYTES_1, 1 ) == GAMEOBJECT_TYPE_CHEST)
+	if( gameObjTarget->GetType() == GAMEOBJECT_TYPE_CHEST)
 	{
 
 		if( gameObjTarget->GetMapMgr() != NULL )
@@ -3587,8 +3587,8 @@ void Spell::SpellEffectOpenLockItem(uint32 i)
 	}
 
 	// cebernic: atm doors works fine.
-	if( gameObjTarget->GetByte( GAMEOBJECT_BYTES_1, 1 ) == GAMEOBJECT_TYPE_DOOR
-		|| gameObjTarget->GetByte( GAMEOBJECT_BYTES_1, 1 ) == GAMEOBJECT_TYPE_GOOBER )
+	if( gameObjTarget->GetType() == GAMEOBJECT_TYPE_DOOR
+		|| gameObjTarget->GetType() == GAMEOBJECT_TYPE_GOOBER )
 		gameObjTarget->SetUInt32Value(GAMEOBJECT_FLAGS, gameObjTarget->GetUInt32Value( GAMEOBJECT_FLAGS ) | 1);
 
 	if(gameObjTarget->GetMapMgr()->GetMapInfo()->type==INSTANCE_NULL)//don't close doors for instances
@@ -4855,7 +4855,7 @@ void Spell::SpellEffectSummonObjectSlot(uint32 i)
 
     GoSummon->PushToWorld(m_caster->GetMapMgr());
 
-	if(GoSummon->GetByte(GAMEOBJECT_BYTES_1, 1) == GAMEOBJECT_TYPE_TRAP)
+	if(GoSummon->GetType() == GAMEOBJECT_TYPE_TRAP)
 	{
 		GoSummon->invisible = true;
 		GoSummon->invisibilityFlag = INVIS_FLAG_TRAP;

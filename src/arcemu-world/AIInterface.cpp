@@ -245,7 +245,8 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				m_moveRun = true; //run to the target
 
 				// dismount if mounted
-				m_Unit->SetMount(0);
+				if( m_Unit->GetTypeId() == TYPEID_UNIT && !(TO_CREATURE( m_Unit )->GetCreatureInfo()->Flags1 & CREATURE_FLAG1_FIGHT_MOUNTED))
+					m_Unit->SetMount(0);
 
 				if(m_AIState != STATE_ATTACKING)
 					StopMovement(0);
@@ -576,6 +577,10 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 			m_nextSpell = NULL;
 
 			setNextTarget( TO_UNIT(NULL) );
+
+			// dismount if we are mounted
+			m_Unit->SetMount(0);
+
 			//reset ProcCount
 			//ResetProcCounts();
 		

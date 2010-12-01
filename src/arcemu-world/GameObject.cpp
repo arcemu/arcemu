@@ -116,7 +116,7 @@ bool GameObject::CreateFromProto(uint32 entry,uint32 mapid, float x, float y, fl
     SetByte( GAMEOBJECT_BYTES_1, 3, 0 );
 	SetByte( GAMEOBJECT_BYTES_1, 0, 1 );
 	SetDisplayId(pInfo->DisplayID );
-	SetByte( GAMEOBJECT_BYTES_1, 1, static_cast<uint8>( pInfo->Type ));
+	SetType(static_cast<uint8>( pInfo->Type ));
 	InitAI();
 	
 	return true;
@@ -499,7 +499,7 @@ void GameObject::UseFishingNode(Player *player)
 	GameObject * school = NULL;
 	for ( InRangeSet::iterator it = GetInRangeSetBegin(); it != GetInRangeSetEnd(); ++it )
 	{
-		if ( (*it) == NULL || (*it)->GetTypeId() != TYPEID_GAMEOBJECT || (*it)->GetByte(GAMEOBJECT_BYTES_1, 1) != GAMEOBJECT_TYPE_FISHINGHOLE)
+		if ( (*it) == NULL || (*it)->GetTypeId() != TYPEID_GAMEOBJECT || TO_GAMEOBJECT( *it )->GetType() != GAMEOBJECT_TYPE_FISHINGHOLE)
 			continue;
 		school = static_cast<GameObject *>( *it );
 		if ( !isInRange( school, (float)school->GetInfo()->sound1 ) )

@@ -3352,7 +3352,7 @@ uint8 Spell::CanCast(bool tolerate)
 				if ((*itr)->GetTypeId() != TYPEID_GAMEOBJECT)
 					continue;
 
-				if ((*itr)->GetByte(GAMEOBJECT_BYTES_1, 1) != GAMEOBJECT_TYPE_SPELL_FOCUS)
+				if ((TO_GAMEOBJECT(*itr))->GetType() != GAMEOBJECT_TYPE_SPELL_FOCUS)
 					continue;
 
 				if ( !(p_caster->GetPhase() & (*itr)->GetPhase()) ) //We can't see this, can't be the focus, skip further checks

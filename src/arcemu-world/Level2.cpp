@@ -963,7 +963,7 @@ bool ChatHandler::HandleGOInfo(const char *args, WorldSession *m_session)
 	SystemMessage(m_session, "%s phase:%s%u",	MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE, GObj->GetPhase() );
 
 	char gotypetxt[50];
-	switch( GObj->GetByte(GAMEOBJECT_BYTES_1, 1) )
+	switch( GObj->GetType() )
 	{
 	case GAMEOBJECT_TYPE_DOOR:			strcpy(gotypetxt,"Door");	break;
 	case GAMEOBJECT_TYPE_BUTTON:		strcpy(gotypetxt,"Button");	break;
@@ -994,7 +994,7 @@ bool ChatHandler::HandleGOInfo(const char *args, WorldSession *m_session)
 	case GAMEOBJECT_TYPE_FLAGDROP:		strcpy(gotypetxt,"Flag Drop");	break;
 	default:							strcpy(gotypetxt,"Unknown.");	break;
 	}
-	SystemMessage(m_session, "%s Type:%s%u -- %s",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetByte(GAMEOBJECT_BYTES_1, 1),gotypetxt);
+	SystemMessage(m_session, "%s Type:%s%u -- %s",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetType(),gotypetxt);
 
 	SystemMessage(m_session, "%s Distance:%s%f",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->CalcDistance(m_session->GetPlayer()));
 

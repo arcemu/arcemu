@@ -43,13 +43,13 @@ WarsongGulch::WarsongGulch(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t) : C
 	// warsong flag - horde base
 	m_homeFlags[0] = SpawnGameObject(179831, 489, 915.367f, 1433.78f, 346.089f, 3.17301f, 0, 210, 2.5f);
 	m_homeFlags[0]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-	m_homeFlags[0]->SetByte(GAMEOBJECT_BYTES_1, 1, 24);
+	m_homeFlags[0]->SetType(GAMEOBJECT_TYPE_FLAGSTAND);
 	m_homeFlags[0]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 
 	// silverwing flag - alliance base
 	m_homeFlags[1] = SpawnGameObject(179830, 489, 1540.29f, 1481.34f, 352.64f, 3.17301f, 0,1314, 2.5f);
 	m_homeFlags[1]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-	m_homeFlags[1]->SetByte(GAMEOBJECT_BYTES_1, 1, 24);
+	m_homeFlags[1]->SetType(GAMEOBJECT_TYPE_FLAGSTAND);
 	m_homeFlags[1]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 
 	// dropped flags
@@ -483,7 +483,7 @@ void WarsongGulch::SpawnBuff(uint32 x)
 		m_buffs[x]->SetParentRotation(2, 0.73135370016098f);
 		m_buffs[x]->SetParentRotation(3, -0.681998312473297f);
 		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 1, 6);
+		m_buffs[x]->SetType(GAMEOBJECT_TYPE_TRAP);
 		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 		break;
 	case 1:
@@ -491,7 +491,7 @@ void WarsongGulch::SpawnBuff(uint32 x)
 		m_buffs[x]->SetParentRotation(2, 0.73135370016098f);
 		m_buffs[x]->SetParentRotation(3, 0.681998372077942f);
 		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 1, 6);
+		m_buffs[x]->SetType(GAMEOBJECT_TYPE_TRAP);
 		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 		break;
 	case 2:
@@ -499,7 +499,7 @@ void WarsongGulch::SpawnBuff(uint32 x)
 		m_buffs[x]->SetParentRotation(2, 0.130526319146156f);
 		m_buffs[x]->SetParentRotation(3, -0.991444826126099f);
 		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 1, 6);
+		m_buffs[x]->SetType(GAMEOBJECT_TYPE_TRAP);
 		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 		break;
 	case 3:
@@ -507,7 +507,7 @@ void WarsongGulch::SpawnBuff(uint32 x)
 		m_buffs[x]->SetParentRotation(2, 0.333806991577148f);
 		m_buffs[x]->SetParentRotation(3, -0.94264143705368f);
 		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 1, 6);
+		m_buffs[x]->SetType(GAMEOBJECT_TYPE_TRAP);
 		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 		break;
 	case 4:
@@ -515,7 +515,7 @@ void WarsongGulch::SpawnBuff(uint32 x)
 		m_buffs[x]->SetParentRotation(2, 0.559192895889282f);
 		m_buffs[x]->SetParentRotation(3, 0.829037606716156f);
 		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 1, 6);
+		m_buffs[x]->SetType(GAMEOBJECT_TYPE_TRAP);
 		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 		break;
 	case 5:
@@ -523,7 +523,7 @@ void WarsongGulch::SpawnBuff(uint32 x)
 		m_buffs[x]->SetParentRotation(2, 0.939692616462708f);
 		m_buffs[x]->SetParentRotation(3, -0.342020124197006f);
 		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 1, 6);
+		m_buffs[x]->SetType(GAMEOBJECT_TYPE_TRAP);
 		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 		break;
 	}

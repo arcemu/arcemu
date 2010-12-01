@@ -462,7 +462,7 @@ void WorldSession::HandleLootReleaseOpcode( WorldPacket & recv_data )
 		if ( pGO == NULL )
 			return;
 
-		switch( pGO->GetByte( GAMEOBJECT_BYTES_1, 1 ) )
+		switch( pGO->GetType() )
 		{
 		case GAMEOBJECT_TYPE_FISHINGNODE:
 			{
@@ -1421,7 +1421,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 	_player->RemoveStealth(); // cebernic:RemoveStealth due to GO was using. Blizzlike
 
 
-	uint32 type = obj->GetByte(GAMEOBJECT_BYTES_1, 1);
+	uint32 type = obj->GetType();
 	switch (type)
 	{
 	case GAMEOBJECT_TYPE_CHAIR:

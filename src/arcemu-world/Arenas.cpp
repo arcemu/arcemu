@@ -313,7 +313,7 @@ void Arena::HookOnShadowSight()
 		m_buffs[0]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 		m_buffs[0]->SetParentRotation(2, 0.904455f);
 		m_buffs[0]->SetParentRotation(3, -0.426569f);
-		m_buffs[0]->SetByte(GAMEOBJECT_BYTES_1, 1, 6);
+		m_buffs[0]->SetType(GAMEOBJECT_TYPE_TRAP);
 		m_buffs[0]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 		m_buffs[0]->PushToWorld(m_mapMgr);
 
@@ -321,7 +321,7 @@ void Arena::HookOnShadowSight()
 		m_buffs[1]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 		m_buffs[1]->SetParentRotation(2, 0.90445f);
 		m_buffs[1]->SetParentRotation(3, -0.426569f);
-		m_buffs[1]->SetByte(GAMEOBJECT_BYTES_1, 1, 6);
+		m_buffs[1]->SetType(GAMEOBJECT_TYPE_TRAP);
 		m_buffs[1]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 		m_buffs[1]->PushToWorld(m_mapMgr);
 		break;
@@ -332,7 +332,7 @@ void Arena::HookOnShadowSight()
 		m_buffs[0]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 		m_buffs[0]->SetParentRotation(2, 0.904455f);
 		m_buffs[0]->SetParentRotation(3, -0.426569f);
-		m_buffs[0]->SetByte(GAMEOBJECT_BYTES_1, 1, 6);
+		m_buffs[0]->SetType(GAMEOBJECT_TYPE_TRAP);
 		m_buffs[0]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 		m_buffs[0]->PushToWorld(m_mapMgr);
 
@@ -340,7 +340,7 @@ void Arena::HookOnShadowSight()
 		m_buffs[1]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 		m_buffs[1]->SetParentRotation(2, 0.90445f);
 		m_buffs[1]->SetParentRotation(3, -0.426569f);
-		m_buffs[1]->SetByte(GAMEOBJECT_BYTES_1, 1, 6);
+		m_buffs[1]->SetType(GAMEOBJECT_TYPE_TRAP);
 		m_buffs[1]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 		m_buffs[1]->PushToWorld(m_mapMgr);
 		break;
@@ -351,7 +351,7 @@ void Arena::HookOnShadowSight()
 		m_buffs[0]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 		m_buffs[0]->SetParentRotation(2, 0.904455f);
 		m_buffs[0]->SetParentRotation(3, -0.426569f);
-		m_buffs[0]->SetByte(GAMEOBJECT_BYTES_1, 1, 6);
+		m_buffs[0]->SetType(GAMEOBJECT_TYPE_TRAP);
 		m_buffs[0]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 		m_buffs[0]->PushToWorld(m_mapMgr);
 
@@ -359,7 +359,7 @@ void Arena::HookOnShadowSight()
 		m_buffs[1]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 		m_buffs[1]->SetParentRotation(2, 0.90445f);
 		m_buffs[1]->SetParentRotation(3, -0.426569f);
-		m_buffs[1]->SetByte(GAMEOBJECT_BYTES_1, 1, 6);
+		m_buffs[1]->SetType(GAMEOBJECT_TYPE_TRAP);
 		m_buffs[1]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 		m_buffs[1]->PushToWorld(m_mapMgr);
 		break;
