@@ -3953,12 +3953,6 @@ std::pair< time_t, uint32 > ItemInterface::LookupRefundable(uint64 GUID){
     return RefundableEntry;
 }
 
-/////////////////////////////////////////////////////////////////////////////
-//
-//  Adds an item to the Player by itemid
-//  refactored from Level1.cpp
-//
-/////////////////////////////////////////////////////////////////////////////
 bool ItemInterface::AddItemById( uint32 itemid, uint32 count, int32 randomprop )
 {
 	if( count == 0 )
@@ -4005,6 +3999,34 @@ bool ItemInterface::AddItemById( uint32 itemid, uint32 count, int32 randomprop )
 			else
 				item->SoulBind();
 		}
+
+		// Let's try to autogenerate randomprop / randomsuffix
+		if( randomprop == 0 ){
+
+			if( ( it->RandomPropId != 0 ) && ( it->RandomSuffixId != 0 ) ){
+				sLog.outError("Item %u ( %s ) has both RandomPropId and RandomSuffixId.", itemid, it->Name1 );
+			}
+
+			if( it->RandomPropId != 0 ){
+				RandomProps *rp = lootmgr.GetRandomProperties( it );
+
+				if( rp != NULL ){
+					randomprop = rp->ID;
+				}else{
+					sLog.outError( "Item %u ( %s ) has unknown RandomPropId %u", itemid, it->Name1, it->RandomPropId );
+				}
+			}
+
+			if( it->RandomSuffixId != 0 ){
+				ItemRandomSuffixEntry *rs = lootmgr.GetRandomSuffix( it );
+
+				if( rs != NULL ){
+					randomprop = -1 * rs->id;
+				}else{
+					sLog.outError( "Item %u ( %s ) has unknown RandomSuffixId %u", itemid, it->Name1, it->RandomSuffixId );
+				}
+			}
+		}
 		
 		if( randomprop != 0 )
 		{
@@ -4015,7 +4037,7 @@ bool ItemInterface::AddItemById( uint32 itemid, uint32 count, int32 randomprop )
 
 			item->ApplyRandomProperties( false );
 		}
-		
+
 		toadd = count > maxStack ? maxStack : count;
 
 		item->SetStackCount(  toadd );

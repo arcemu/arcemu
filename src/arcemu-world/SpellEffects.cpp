@@ -1494,263 +1494,206 @@ void Spell::SpellEffectBlock(uint32 i)
 	//		unitTarget->SetFloatValue(PLAYER_BLOCK_PERCENTAGE,damage);
 }
 
-void Spell::SpellEffectCreateItem(uint32 i) // Create item
-{
-	if(playerTarget == NULL) return;
+void Spell::SpellEffectCreateItem( uint32 i ){
+	uint32 spellid = m_spellInfo->Id;
 
-	Item* newItem;
-	Item *add;
-	uint8 slot;
-	SlotResult slotresult;
+	if( playerTarget == NULL ){
+		sLog.outError("Spell %u ( %s ) has a create item effect but no player target!", spellid, m_spellInfo->Name );
+		return;
+	}
 
-	skilllinespell* skill = objmgr.GetSpellSkill(GetProto()->Id);
-	if( GetProto()->EffectItemType[i] == 0 )
+
+	uint32 itemid = m_spellInfo->EffectItemType[ i ];
+	uint32 count = 0;
+	uint32 basecount = m_spellInfo->EffectDieSides[ i ];
+	uint32 difference = m_spellInfo->EffectBasePoints[ i ];
+
+	if( itemid == 0 ){
+		sLog.outError("Spell %u ( %s ) has a create item effect but no itemid to add, Spell needs to be fixed!", spellid, m_spellInfo->Name );
+		return;
+	}
+
+	ItemPrototype *m_itemProto = ItemPrototypeStorage.LookupEntry( itemid );
+	if(  m_itemProto == NULL ){
+		sLog.outError("Spell %u ( %s ) has a create item effect but the itemid is invalid!", spellid, m_spellInfo->Name );
+		return;
+	}
+
+	if( difference > basecount ){
+		uint32 maxcount = basecount + difference;
+		count = RandomUInt( maxcount );
+
+	}else{
+		uint32 mincount = basecount - difference;
+		uint32 maxcount = basecount + difference;
+		uint32 variablecount  = maxcount - mincount;
+		uint32 randcount = RandomUInt( variablecount );
+
+		count = mincount + randcount;
+	}
+
+	uint32 countperlevel = static_cast< uint32 >( Arcemu::round( m_spellInfo->EffectRealPointsPerLevel[ i ] ) );
+	
+	if( countperlevel != 0 ){
+		uint32 leveldiff = m_spellInfo->maxLevel - m_spellInfo->baseLevel;
+		uint32 countforlevel = leveldiff * countperlevel;
+
+		count += countforlevel;
+	}
+
+	
+	if( count <= 0 ){
+		sLog.outError("Spell %u ( %s ) has a create item effect but no item count to add, Spell needs to be fixed! Count overriden to 1.", spellid, m_spellInfo->Name );
+		count = 1;
+	}
+
+	bool success = false;
+
+	success = playerTarget->GetItemInterface()->AddItemById( itemid, count, 0 );
+
+	if( !success ) //Movie Film not success, Borat will be execute
 		return;
 
-	ItemPrototype *m_itemProto;
-	m_itemProto = ItemPrototypeStorage.LookupEntry( GetProto()->EffectItemType[i] );
-	if (!m_itemProto)
-		return;
-
-	uint32 item_count = damage;
-
-	if (p_caster)
-	{
+	if( p_caster != NULL ){
+		
+		skilllinespell* skill = objmgr.GetSpellSkill( spellid );
+		
 		// potions learned by discovery variables
 		uint32 cast_chance = 5;
 		uint32 learn_spell = 0;
-
+		
 		// tailoring specializations get +1 cloth bonus
-		switch(GetProto()->Id)
-		{
+		switch( spellid ){
+		
 		case 36686: //Shadowcloth
-			if(p_caster->HasSpell(26801)) item_count += 1;
+			if( p_caster->HasSpell( 26801 ) ) count++;
 			break;
+		
 		case 26751: // Primal Mooncloth
-			if(p_caster->HasSpell(26798)) item_count += 1;
+			if( p_caster->HasSpell( 26798 ) ) count++;
 			break;
+		
 		case 31373: //Spellcloth
-			if(p_caster->HasSpell(26797)) item_count += 1;
+			if( p_caster->HasSpell( 26797 ) ) count++;
 			break;
 		}
-
-		if (skill && skill->skilline == SKILL_ALCHEMY)
-		{
+		
+		if( ( skill != NULL ) && ( skill->skilline == SKILL_ALCHEMY ) ){
 			//Potion Master
-			if (strstr(m_itemProto->Name1, "Potion"))
-			{
-				if(p_caster->HasSpell(28675))
-					while (Rand(20) && item_count<5) item_count++;
+			if( strstr( m_itemProto->Name1, "Potion" ) ){
+				if( p_caster->HasSpell( 28675 ) )
+					while( Rand( 20 ) && ( count < 5 ) )
+						count++;
 
 				// Super Rejuvenation Potion
 				cast_chance = 2;
 				learn_spell = 28586;
 			}
+			
 			//Elixir Master
-			if (strstr(m_itemProto->Name1, "Elixir") || strstr(m_itemProto->Name1, "Flask"))
-			{
-				if(p_caster->HasSpell(28677))
-					while (Rand(20) && item_count<5) item_count++;
-
-				uint32 spList[] = {28590,28587,28588,28591,28589};
+			if( strstr( m_itemProto->Name1, "Elixir" ) || strstr( m_itemProto->Name1, "Flask" ) ){
+				if( p_caster->HasSpell( 28677 ) )
+					while( Rand(20) && ( count < 5 ) )
+						count++;
+				
+				uint32 spList[] = { 28590, 28587, 28588, 28591, 28589 };
 				cast_chance = 2;
-				learn_spell = spList[RandomUInt(4)];
+				learn_spell = spList[ RandomUInt( 4 ) ];
 			}
+			
 			//Transmutation Master
-			if (m_spellInfo->Category == 310)
-			{
-				if (m_spellInfo->Id == 29688) //rate for primal might is lower than for anything else
-				{
-					if(p_caster->HasSpell(28672))
-						while (Rand(40) && item_count<5) item_count++;
-				}
-				else
-				{
-					if(p_caster->HasSpell(28672))
-						while (Rand(20) && item_count<5) item_count++;
-				}
+			if( m_spellInfo->Category == 310 ){
 
-				uint32 spList[] = {28581,28585,28585,28584,28582,28580};
+				//rate for primal might is lower than for anything else
+				if( m_spellInfo->Id == 29688 ){
+					if( p_caster->HasSpell( 28672 ) )
+						while( Rand( 40 ) && ( count < 5 ) )
+							count++;
+				}else{
+					if( p_caster->HasSpell( 28672 ) )
+						while( Rand( 20 ) && ( count < 5 ) )
+							count++;
+				}
+				
+				uint32 spList[] = { 28581, 28585, 28585, 28584, 28582, 28580 };
 				cast_chance = 5;
-				learn_spell = spList[RandomUInt(5)];
+				learn_spell = spList[ RandomUInt( 5 ) ];
 			}
-		}
-
-		//random discovery by crafter item id
-		switch ( m_itemProto->ItemId )
-		{
-		case 22845: //Major Arcane Protection Potion
-			{
+			
+			//random discovery by crafter item id
+			switch( itemid ){
+			
+			case 22845: //Major Arcane Protection Potion
 				cast_chance = 20;
 				learn_spell = 41458;
-			}break;
-		case 22841: //Major Fire Protection Potion
-			{
+				break;
+			
+			case 22841: //Major Fire Protection Potion
 				cast_chance = 20;
 				learn_spell = 41500;
-			}break;
-		case 22842: //Major Frost Protection Potion
-			{
+				break;
+			
+			case 22842: //Major Frost Protection Potion
 				cast_chance = 20;
 				learn_spell = 41501;
-			}break;
-		case 22847: //Major Holy Protection Potion
-			{
+				break;
+			
+			case 22847: //Major Holy Protection Potion
 				// there is none
-			}break;
-		case 22844: //Major Nature Protection Potion
-			{
+				break;
+			
+			case 22844: //Major Nature Protection Potion
 				cast_chance = 20;
 				learn_spell = 41502;
-			}break;
-		case 22846: //Major Shadow Protection Potion
-			{
+				break;
+			
+			case 22846: //Major Shadow Protection Potion
 				cast_chance = 20;
 				learn_spell = 41503;
-			}break;
-		}
-
-		if ( learn_spell && p_caster->getLevel() > 60 && !p_caster->HasSpell( learn_spell ) && Rand( cast_chance ) )
-		{
-			SpellEntry* _spellproto = dbcSpell.LookupEntryForced( learn_spell );
-			if( _spellproto )
-			{
-				p_caster->BroadcastMessage( "%sDISCOVERY! You discovered the %s !|r", MSG_COLOR_YELLOW, _spellproto->Name );
-				p_caster->addSpell( learn_spell );
-			}
-		}
-	}
-
-	// item count cannot be more than allowed in a single stack
-	uint32 itemMaxStack = (playerTarget->ItemStackCheat) ? 0x7fffffff : m_itemProto->MaxCount;
-	if( item_count > itemMaxStack )
-		item_count = itemMaxStack;
-
-	// item count cannot be more than item unique value
-	if (m_itemProto->Unique && item_count > m_itemProto->Unique)
-		item_count = m_itemProto->Unique;
-
-	if(playerTarget->GetItemInterface()->CanReceiveItem(m_itemProto, item_count)) //reversed since it sends >1 as invalid and 0 as valid
-	{
-		SendCastResult(SPELL_FAILED_TOO_MANY_OF_ITEM);
-		return;
-	}
-
-	slot = 0;
-	add = playerTarget->GetItemInterface()->FindItemLessMax(GetProto()->EffectItemType[i],1, false);
-	if (!add)
-	{
-		slotresult = playerTarget->GetItemInterface()->FindFreeInventorySlot(m_itemProto);
-		if(!slotresult.Result)
-		{
-			SendCastResult(SPELL_FAILED_TOO_MANY_OF_ITEM);
-			return;
-		}
-
-		newItem =objmgr.CreateItem(GetProto()->EffectItemType[i],playerTarget);
-		if (!newItem)
-			return;
-
-        newItem->SetCreatorGUID( m_caster->GetGUID() );
-		newItem->SetStackCount(  item_count);
-
-		if (m_itemProto->RandomPropId)
-		{
-			RandomProps * iRandomProperty = lootmgr.GetRandomProperties(m_itemProto);
-			if( !iRandomProperty )
-				sLog.outError( "DB Error: Item %u has unknown RandomPropId %u", m_itemProto->ItemId, m_itemProto->RandomPropId );
-			else
-			{
-				newItem->SetItemRandomPropertyId(iRandomProperty->ID);
-				newItem->ApplyRandomProperties(false);
-			}
-		}
-		if (m_itemProto->RandomSuffixId)
-		{
-			ItemRandomSuffixEntry * iRandomSuffix = lootmgr.GetRandomSuffix(m_itemProto);
-			if( !iRandomSuffix)
-				sLog.outError( "DB Error: Item %u has unknown RandomSuffixId %u", m_itemProto->ItemId, m_itemProto->RandomSuffixId );
-			else
-			{
-				newItem->SetRandomSuffix(iRandomSuffix->id);
-				newItem->ApplyRandomProperties(false);
-			}
-		}
-
-		if(playerTarget->GetItemInterface()->SafeAddItem(newItem,slotresult.ContainerSlot, slotresult.Slot))
-		{
-            playerTarget->SendItemPushResult( true,false,true,true,slotresult.ContainerSlot,slotresult.Slot,item_count , newItem->GetEntry(), newItem->GetItemRandomSuffixFactor(), newItem->GetItemRandomPropertyId(), newItem->GetStackCount()  );
-		} else {
-			newItem->DeleteMe();
-		}
-	}
-	else
-	{
-		// scale item_count down if total stack will be more than Max Stack
-		if( (add->GetStackCount() + item_count > itemMaxStack) && !playerTarget->ItemStackCheat )
-		{
-			uint32 item_count_filled;
-			item_count_filled = itemMaxStack - add->GetStackCount();
-			add->SetStackCount( itemMaxStack);
-			add->m_isDirty = true;
-
-			slotresult = playerTarget->GetItemInterface()->FindFreeInventorySlot(m_itemProto);
-			if(!slotresult.Result)
-				item_count = item_count_filled;
-			else
-			{
-				newItem =objmgr.CreateItem(GetProto()->EffectItemType[i], playerTarget);
-				if (!newItem)
-					return;
-
-                newItem->SetCreatorGUID( m_caster->GetGUID() );
-				newItem->SetStackCount(  item_count - item_count_filled);
-				if(!playerTarget->GetItemInterface()->SafeAddItem(newItem,slotresult.ContainerSlot, slotresult.Slot))
-				{
-					newItem->DeleteMe();
-					item_count = item_count_filled;
-				}
-				else
-                    playerTarget->SendItemPushResult( true, false, true, true, slotresult.ContainerSlot, slotresult.Slot, item_count , newItem->GetEntry(), newItem->GetItemRandomSuffixFactor(), newItem->GetItemRandomPropertyId(), newItem->GetStackCount()  );
-			}
-		}
-		else
-		{
-			add->SetStackCount( add->GetStackCount() + item_count);
-			add->m_isDirty = true;
-            playerTarget->SendItemPushResult( true, false, true, false, (uint8)playerTarget->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()), 0xFFFFFFFF, item_count , add->GetEntry(), add->GetItemRandomSuffixFactor(), add->GetItemRandomPropertyId(), add->GetStackCount()  );
-		}
-	}
-	if (p_caster && skill)
-	{
-		// skill up
-		DetermineSkillUp( skill->skilline );
-
-		// profession discoveries
-		uint32 discovered_recipe = 0;
-		std::set<ProfessionDiscovery*>::iterator itr = objmgr.ProfessionDiscoveryTable.begin();
-		for ( ; itr != objmgr.ProfessionDiscoveryTable.end(); itr++ )
-		{
-			ProfessionDiscovery * pf = ( *itr );
-			if ( pf && GetProto()->Id == pf->SpellId && p_caster->_GetSkillLineCurrent( skill->skilline ) >= pf->SkillValue && !p_caster->HasSpell( pf->SpellToDiscover ) && Rand( pf->Chance ) )
-			{
-				discovered_recipe = pf->SpellToDiscover;
 				break;
 			}
+			
+			if( ( learn_spell != 0 ) && ( p_caster->getLevel() > 60 ) && !p_caster->HasSpell( learn_spell ) && Rand( cast_chance ) ){
+				SpellEntry* dspellproto = dbcSpell.LookupEntryForced( learn_spell );
+				
+				if( dspellproto != NULL ){
+					p_caster->BroadcastMessage( "%sDISCOVERY! You discovered the %s !|r", MSG_COLOR_YELLOW, dspellproto->Name );
+					p_caster->addSpell( learn_spell );
+				}else{
+					sLog.outError("Spell %u ( %s ) Effect %u tried to teach a non-existing Spell %u in %s:%u", spellid, m_spellInfo->Name, i, learn_spell, __FILE__, __LINE__ );
+				}
+			}
 		}
-		// if something discovered learn p_caster that recipe and broadcast message
-		if ( discovered_recipe != 0 )
-		{
-			SpellEntry * se = dbcSpell.LookupEntryForced( discovered_recipe );
-			if ( se )
-			{
-				p_caster->addSpell( discovered_recipe );
-				WorldPacket * data;
-				char msg[256];
-				sprintf( msg, "%sDISCOVERY! %s has discovered how to create %s.|r", MSG_COLOR_GOLD, p_caster->GetName(), se->Name );
-				data = sChatHandler.FillMessageData( CHAT_MSG_SYSTEM, LANG_UNIVERSAL,  msg, p_caster->GetGUID(), 0 );
-				p_caster->GetMapMgr()->SendChatMessageToCellPlayers( p_caster, data, 2, 1, LANG_UNIVERSAL, p_caster->GetSession() );
-				delete data;
+		
+		if( skill != 0 ){
+			DetermineSkillUp( skill->skilline );
+			
+			uint32 discovered_recipe = 0;
+			
+			for( std::set<ProfessionDiscovery*>::iterator itr = objmgr.ProfessionDiscoveryTable.begin(); itr != objmgr.ProfessionDiscoveryTable.end(); itr++ ){
+				ProfessionDiscovery *pf = *itr;
+				if( spellid == pf->SpellId && p_caster->_GetSkillLineCurrent( skill->skilline ) >= pf->SkillValue && !p_caster->HasSpell( pf->SpellToDiscover ) && Rand( pf->Chance ) ){
+					discovered_recipe = pf->SpellToDiscover;
+					break;
+				}
+			}
+			
+			// if something was discovered teach player that recipe and broadcast message
+			if( discovered_recipe != 0 ){
+				SpellEntry * se = dbcSpell.LookupEntryForced( discovered_recipe );
+				
+				if( se != NULL ){
+					p_caster->addSpell( discovered_recipe );
+					
+					WorldPacket * data;
+					char msg[256];
+					sprintf( msg, "%sDISCOVERY! %s has discovered how to create %s.|r", MSG_COLOR_GOLD, p_caster->GetName(), se->Name );
+					data = sChatHandler.FillMessageData( CHAT_MSG_SYSTEM, LANG_UNIVERSAL,  msg, p_caster->GetGUID(), 0 );
+					p_caster->GetMapMgr()->SendChatMessageToCellPlayers( p_caster, data, 2, 1, LANG_UNIVERSAL, p_caster->GetSession() );
+					delete data;
+				}else{
+					sLog.outError("Spell %u ( %s ) Effect %u tried to teach a non-existing Spell %u in %s:%u", spellid, m_spellInfo->Name, i, learn_spell, __FILE__, __LINE__ );
+				}
 			}
 		}
 	}
