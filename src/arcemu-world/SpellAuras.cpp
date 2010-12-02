@@ -1434,6 +1434,9 @@ void Aura::ClearAATargets(){
 	for( AreaAuraList::iterator itr = targets.begin(); itr != targets.end(); ++itr ){
 		Unit *tu = m_target->GetMapMgr()->GetUnit( *itr );
 
+		if( tu == NULL )
+			continue;
+
 		tu->RemoveAura( spellid );
 	}
 	targets.clear();
