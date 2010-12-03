@@ -55,10 +55,13 @@ void oLog::outFile(FILE *file, char *msg, const char *source)
 	Time(time_buffer);
 	pdcds(SZLTR, szltr_buffer);
 
-	if(source != NULL)
+	if(source != NULL){
 		fprintf(file, "%s%s%s: %s\n", time_buffer, szltr_buffer, source, msg);
-	else
+		printf( "%s%s%s: %s\n", time_buffer, szltr_buffer, source, msg);
+	}else{
 		fprintf(file, "%s%s%s\n", time_buffer, szltr_buffer, msg);
+		printf( "%s%s%s\n", time_buffer, szltr_buffer, msg);
+	}
 }
 
 void oLog::Time(char *buffer)
