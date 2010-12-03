@@ -2080,7 +2080,7 @@ void Spell::SpellEffectSummon(uint32 i)
 			pCreature->Phase(PHASE_SET, u_caster->GetPhase());
 
 			pCreature->PushToWorld(u_caster->GetMapMgr());
-			sEventMgr.AddEvent(pCreature, &Creature::RemoveFromWorld, false, true, EVENT_CREATURE_REMOVE_CORPSE, GetDuration(), 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+			pCreature->Despawn(GetDuration(), 0);
 			
 			pCreature->CastSpell(pCreature, 59907, true);
 		}break;
@@ -2133,7 +2133,7 @@ void Spell::SpellEffectSummon(uint32 i)
 			else
 				pCreature->PushToWorld(u_caster->GetMapMgr());
 
-			sEventMgr.AddEvent(pCreature, &Creature::RemoveFromWorld, false, true, EVENT_CREATURE_REMOVE_CORPSE, GetDuration(), 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+			pCreature->Despawn(GetDuration(), 0);
 		}break;
 	}
 }

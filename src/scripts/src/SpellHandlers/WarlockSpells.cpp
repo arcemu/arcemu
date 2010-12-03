@@ -493,7 +493,7 @@ bool SummonSuccubusQuest( uint32 i, Spell *s ){
 	pCreature->GetAIInterface()->Init(pCreature, AITYPE_AGRO,MOVEMENTTYPE_NONE);
 	pCreature->GetAIInterface()->taunt( s->p_caster, true);
 	pCreature->PushToWorld( s->p_caster->GetMapMgr());
-	sEventMgr.AddEvent(pCreature, &Creature::RemoveFromWorld, false, true,  EVENT_CREATURE_REMOVE_CORPSE,60000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+	pCreature->Despawn(60000, 0);
 
 	return true;
 }
@@ -512,7 +512,7 @@ bool SummonVoidWalkerQuest( uint32 i, Spell *s ){
 	pCreature->GetAIInterface()->Init(pCreature, AITYPE_AGRO,MOVEMENTTYPE_NONE);
 	pCreature->GetAIInterface()->taunt(p_caster, true);
 	pCreature->PushToWorld(p_caster->GetMapMgr());
-	sEventMgr.AddEvent(pCreature, &Creature::RemoveFromWorld, false, true,  EVENT_CREATURE_REMOVE_CORPSE,60000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+	pCreature->Despawn(60000, 0);
 
 	return true;
 }
@@ -530,7 +530,7 @@ bool SummonFelHunterQuest( uint32 i, Spell *s ){
 	pCreature->GetAIInterface()->Init(pCreature, AITYPE_AGRO,MOVEMENTTYPE_NONE);
 	pCreature->GetAIInterface()->taunt(p_caster, true);
 	pCreature->PushToWorld(p_caster->GetMapMgr());
-	sEventMgr.AddEvent(pCreature, &Creature::RemoveFromWorld, false, true,  EVENT_CREATURE_REMOVE_CORPSE,60000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+	pCreature->Despawn(60000, 0);
 
 	return true;
 }
