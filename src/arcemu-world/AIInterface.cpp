@@ -429,7 +429,8 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 			{
 				if( pUnit == NULL ) return;
 
-				static_cast< Creature* >( m_Unit )->HandleMonsterSayEvent( MONSTER_SAY_EVENT_ON_DAMAGE_TAKEN );
+				if( m_Unit->IsCreature() )
+					static_cast< Creature* >( m_Unit )->HandleMonsterSayEvent( MONSTER_SAY_EVENT_ON_DAMAGE_TAKEN );
 
 				pUnit->RemoveAura( 24575 );
 
@@ -555,7 +556,8 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 		{
 			if( pUnit == NULL ) return;
 
-			static_cast< Creature* >( m_Unit )->HandleMonsterSayEvent( MONSTER_SAY_EVENT_ON_DIED );
+			if( m_Unit->IsCreature() )
+				static_cast< Creature* >( m_Unit )->HandleMonsterSayEvent( MONSTER_SAY_EVENT_ON_DIED );
 
 			CALL_SCRIPT_EVENT(m_Unit, OnDied)(pUnit);
 			if ( m_Unit->IsCreature() )
@@ -1496,7 +1498,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 				FindFriends( 64.0f /*8.0f*/ );
 				m_hasCalledForHelp = true; // We only want to call for Help once in a Fight.
 				if( m_Unit->GetTypeId() == TYPEID_UNIT )
-						static_cast< Creature* >( m_Unit )->HandleMonsterSayEvent( MONSTER_SAY_EVENT_CALL_HELP );
+					static_cast< Creature* >( m_Unit )->HandleMonsterSayEvent( MONSTER_SAY_EVENT_CALL_HELP );
 				CALL_SCRIPT_EVENT( m_Unit, OnCallForHelp )();
 			}break;
 		}
