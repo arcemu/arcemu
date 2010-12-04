@@ -3486,58 +3486,11 @@ void Spell::SpellEffectWeapondamage( uint32 i ) // Weapon damage +
 	u_caster->Strike( unitTarget, _type, GetProto(), damage, 0, 0, false, true );
 }
 
-void Spell::SpellEffectOpenLockItem(uint32 i)
-{
-	Unit* caster = u_caster;
-	if( caster == NULL && i_caster != NULL )
-		caster = i_caster->GetOwner();
-
-	if( caster == NULL || !caster->IsPlayer() )
+void Spell::SpellEffectOpenLockItem( uint32 i ){
+	if( p_caster == NULL || i_caster == NULL )
 		return;
 
-	if( p_caster != NULL && i_caster != NULL ){
-			p_caster->HandleSpellLoot( i_caster->GetProto()->ItemId );
-	}
-
-	if( gameObjTarget == NULL || !gameObjTarget->IsInWorld() )
-		return;
-
-	if( sQuestMgr.OnGameObjectActivate( (static_cast<Player*>(caster)), gameObjTarget ) )
-		static_cast<Player*>(caster)->UpdateNearbyGameObjects();
-
-	CALL_GO_SCRIPT_EVENT(gameObjTarget, OnActivate)(static_cast<Player*>(caster));
-	CALL_INSTANCE_SCRIPT_EVENT( gameObjTarget->GetMapMgr(), OnGameObjectActivate )( gameObjTarget, TO_PLAYER( caster ) ); 
-	gameObjTarget->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
-
-	if( gameObjTarget->GetEntry() == 183146 )
-	{
-		gameObjTarget->Despawn(0, 1);
-		return;
-	}
-
-	if( gameObjTarget->GetType() == GAMEOBJECT_TYPE_CHEST)
-	{
-
-		if( gameObjTarget->GetMapMgr() != NULL )
-			lootmgr.FillGOLoot(&gameObjTarget->loot,gameObjTarget->GetInfo()->sound1,  gameObjTarget->GetMapMgr()->iInstanceMode );
-		else
-			lootmgr.FillGOLoot(&gameObjTarget->loot,gameObjTarget->GetInfo()->sound1,  0 );
-		
-		if(gameObjTarget->loot.items.size() > 0)
-		{
-			static_cast<Player*>(caster)->SendLoot(gameObjTarget->GetGUID(),LOOT_CORPSE, gameObjTarget->GetMapId() );
-		}
-	}
-
-	// cebernic: atm doors works fine.
-	if( gameObjTarget->GetType() == GAMEOBJECT_TYPE_DOOR
-		|| gameObjTarget->GetType() == GAMEOBJECT_TYPE_GOOBER )
-		gameObjTarget->SetUInt32Value(GAMEOBJECT_FLAGS, gameObjTarget->GetUInt32Value( GAMEOBJECT_FLAGS ) | 1);
-
-	if(gameObjTarget->GetMapMgr()->GetMapInfo()->type==INSTANCE_NULL)//don't close doors for instances
-		sEventMgr.AddEvent(gameObjTarget,&GameObject::EventCloseDoor, EVENT_GAMEOBJECT_DOOR_CLOSE,10000,1,0);
-
-	sEventMgr.AddEvent(gameObjTarget, &GameObject::Despawn, (uint32)0, (uint32)1, EVENT_GAMEOBJECT_ITEM_SPAWN, 6*60*1000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+	p_caster->HandleSpellLoot( i_caster->GetProto()->ItemId );
 }
 
 void Spell::SpellEffectProficiency(uint32 i)
