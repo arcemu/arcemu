@@ -864,6 +864,31 @@ bool ListeningToMusic( uint32 i, Aura *a, bool apply ){
 	return true;
 }
 
+
+///////////////////////////////////////////////////////////////////
+//Periodic Drink Dummy Aura handler
+//
+//
+//Precondition(s)
+//  None
+//
+//Effect(s)
+//  Restores x Mana Points every second
+//
+//
+//////////////////////////////////////////////////////////////////
+bool DrinkDummyAura( uint32 i, Aura *a, bool apply ){
+	if( !apply )
+		return true;
+
+	float famount = 2.2f * ( a->GetSpellProto()->EffectBasePoints[ 1 ] / 5 );
+	int32 amount = static_cast< int32 >( Arcemu::round( famount ) );
+
+	a->EventPeriodicDrink( amount );
+
+	return true;
+}
+
 // ADD NEW FUNCTIONS ABOVE THIS LINE
 // *****************************************************************************
 
@@ -923,6 +948,27 @@ void SetupItemSpells_1(ScriptMgr * mgr)
 	mgr->register_dummy_spell( 64385, &Spinning );
 
 	mgr->register_dummy_aura( 50493, &ListeningToMusic );
+
+	uint32 DrinkDummySpellIDs[] = {
+		430,
+		431,
+		432,
+		1133,
+		1135,
+		1137,
+		10250,
+		22734,
+		27089,
+		34291,
+		43182,
+		43183,
+		46755,
+		57073,
+		61830,
+		72623,
+		0
+	};
+	mgr->register_dummy_aura( DrinkDummySpellIDs, &::DrinkDummyAura );
 
 
 // REGISTER NEW DUMMY SPELLS ABOVE THIS LINE
