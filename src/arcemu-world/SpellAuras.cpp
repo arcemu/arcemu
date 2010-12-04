@@ -1455,7 +1455,9 @@ void Aura::ClearAATargets(){
 	if( m_spellProto->HasEffect( SPELL_EFFECT_APPLY_OWNER_AREA_AURA ) ){
 		Unit *u = m_target->GetMapMgr()->GetUnit( m_target->GetCreatedByGUID() );
 
-		u->RemoveAura( spellid );
+		if( u != NULL )
+			u->RemoveAura( spellid );
+
 	}
 }
 
