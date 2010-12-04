@@ -5693,9 +5693,9 @@ bool Player::CanSee(Object* obj) // * Invisibility & Stealth Detection - Partha 
 		if(m_deathVision) // if we have arena death-vision we can see everything
 			return true;
 
-		if(object_type == TYPEID_UNIT)
+		if(obj->IsCreature())
 		{
-			Unit *uObj = static_cast<Unit *>(obj);
+			Creature *uObj = TO_CREATURE(obj);
 
 			return uObj->IsSpiritHealer(); // we can't see any NPCs except spirit-healers
 		}
@@ -5840,7 +5840,7 @@ void Player::AddInRangeObject(Object* pObj)
 	Unit::AddInRangeObject(pObj);
 
 	//if the object is a unit send a move packet if they have a destination
-	if(pObj->GetTypeId() == TYPEID_UNIT)
+	if(pObj->IsCreature())
 	{
 		static_cast< Creature* >( pObj )->GetAIInterface()->SendCurrentMove(this);
     }
@@ -5868,7 +5868,7 @@ void Player::OnRemoveInRangeObject(Object* pObj)
 			m_currentSpell->cancel();	   // cancel the spell
 		m_CurrentCharm= 0;
 
-		if( p->m_temp_summon && p->GetTypeId() == TYPEID_UNIT )
+		if( p->m_temp_summon && p->IsCreature() )
 			static_cast< Creature* >( p )->DeleteMe();
 	}
 
@@ -9860,7 +9860,7 @@ void Player::Possess(Unit * pTarget)
 		return;
 
 	m_CurrentCharm = pTarget->GetGUID();
-	if(pTarget->GetTypeId() == TYPEID_UNIT)
+	if(pTarget->IsCreature())
 	{
 		// unit-only stuff.
 		pTarget->setAItoUse(false);
@@ -9958,7 +9958,7 @@ void Player::UnPossess()
 
 	SpeedCheatReset();
 
-	if(pTarget->GetTypeId() == TYPEID_UNIT)
+	if(pTarget->IsCreature())
 	{
 		// unit-only stuff.
 		pTarget->setAItoUse(true);
@@ -13445,7 +13445,7 @@ void Player::AcceptQuest( uint64 guid, uint32 quest_id ){
 	if( GetQuestLogForEntry( qst->id ) )
 		return;
 
-	if( qst_giver->GetTypeId() == TYPEID_UNIT && static_cast< Creature* >( qst_giver )->m_escorter != NULL )
+	if( qst_giver->IsCreature() && static_cast< Creature* >( qst_giver )->m_escorter != NULL )
 	{
 		m_session->SystemMessage("You cannot accept this quest at this time.");
 		return;

@@ -1842,7 +1842,7 @@ public:
 	void GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 	{
 		GET_LOCK
-		if(pObject->GetTypeId() == TYPEID_UNIT)
+		if(pObject->IsCreature())
         {
 			if(m_unit_gossip_binding == NULL) { RELEASE_LOCK; return; }
 
@@ -1881,7 +1881,7 @@ public:
 	void GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, uint32 IntId, const char * EnteredCode)
 	{
 		GET_LOCK
-		if(pObject->GetTypeId() == TYPEID_UNIT)
+		if(pObject->IsCreature())
         {
 			if(m_unit_gossip_binding == NULL) { RELEASE_LOCK; return; }
 
@@ -1924,7 +1924,7 @@ public:
 	void GossipEnd(Object* pObject, Player* Plr)
 	{
 		GET_LOCK
-		if(pObject->GetTypeId() == TYPEID_UNIT)
+		if(pObject->IsCreature())
         {
 			if(m_unit_gossip_binding == NULL) { RELEASE_LOCK; return; }
 			sLuaMgr.BeginCall(m_unit_gossip_binding->m_functionReferences[GOSSIP_EVENT_ON_END]);
@@ -2940,14 +2940,14 @@ void LuaEngine::ResumeLuaThread(int ref) {
 /* SCRIPT FUNCTION IMPLEMENTATION                                       */
 /************************************************************************/
 
-#define TEST_UNIT() if(ptr == NULL || !ptr->IsInWorld() || ptr->GetTypeId() != TYPEID_UNIT) { return 0; }
-#define TEST_UNIT_RET() if(ptr == NULL || !ptr->IsInWorld() || ptr->GetTypeId() != TYPEID_UNIT) { lua_pushboolean(L,0); return 1; }
+#define TEST_UNIT() if(ptr == NULL || !ptr->IsInWorld() || !ptr->IsCreature()) { return 0; }
+#define TEST_UNIT_RET() if(ptr == NULL || !ptr->IsInWorld() || !ptr->IsCreature()) { lua_pushboolean(L,0); return 1; }
 
 #define TEST_PLAYER() if(ptr == NULL || !ptr->IsInWorld() || ptr->GetTypeId() != TYPEID_PLAYER) { return 0; }
 #define TEST_PLAYER_RET() if(ptr == NULL || !ptr->IsInWorld() || ptr->GetTypeId() != TYPEID_PLAYER) { lua_pushboolean(L,0); return 1; }
 
-#define TEST_UNITPLAYER() if(ptr == NULL || !ptr->IsInWorld() || ( ptr->GetTypeId() != TYPEID_PLAYER && ptr->GetTypeId() != TYPEID_UNIT)) { return 0; }
-#define TEST_UNITPLAYER_RET() if(ptr == NULL || !ptr->IsInWorld() || ( ptr->GetTypeId() != TYPEID_PLAYER && ptr->GetTypeId() != TYPEID_UNIT)) { lua_pushboolean(L,0); return 1; }
+#define TEST_UNITPLAYER() if(ptr == NULL || !ptr->IsInWorld() || !ptr->IsUnit()) { return 0; }
+#define TEST_UNITPLAYER_RET() if(ptr == NULL || !ptr->IsInWorld() || !ptr->IsUnit()) { lua_pushboolean(L,0); return 1; }
 
 #define TEST_GO() if(ptr == NULL || !ptr->IsInWorld() || ptr->GetTypeId() != TYPEID_GAMEOBJECT) { return 0; }
 #define TEST_GO_RET() if(ptr == NULL || !ptr->IsInWorld() || ptr->GetTypeId() != TYPEID_GAMEOBJECT) { lua_pushboolean(L,0); return 1; }

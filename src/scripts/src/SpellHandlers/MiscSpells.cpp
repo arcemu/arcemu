@@ -99,7 +99,7 @@ bool Cannibalize( uint32 i, Spell *s ){
 	
 	for(Object::InRangeSet::iterator itr = s->p_caster->GetInRangeSetBegin(); itr != s->p_caster->GetInRangeSetEnd(); ++itr)
 	{
-		if((*itr)->GetTypeId() == TYPEID_UNIT)
+		if((*itr)->IsCreature())
 		{
 			if(static_cast<Creature *>((*itr))->getDeathState() == CORPSE)
 			{

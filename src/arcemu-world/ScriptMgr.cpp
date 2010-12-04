@@ -819,9 +819,9 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 {
 	GossipMenu *Menu;
 	uint32 TextID = 2;
-	Creature * pCreature = (pObject->GetTypeId()==TYPEID_UNIT)?static_cast< Creature* >( pObject ):NULL;
-	if(!pCreature)
+	if( !pObject->IsCreature() )
 		return;
+	Creature * pCreature = TO_CREATURE( pObject );
 
 	uint32 Text = objmgr.GetGossipTextForNpc(pCreature->GetEntry());
 	if(Text != 0)
@@ -995,7 +995,7 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 
 void GossipScript::GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, uint32 IntId, const char * EnteredCode)
 {
-	if( pObject->GetTypeId() != TYPEID_UNIT )
+	if( !pObject->IsCreature() )
 		return;
 
 	Creature* pCreature = static_cast< Creature* >( pObject );

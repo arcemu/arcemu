@@ -294,7 +294,7 @@ public:
 
     void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
     {
-		if(pObject->GetTypeId()!=TYPEID_UNIT)
+		if(!pObject->IsCreature())
 			return;
 		
         switch(IntId)
@@ -404,7 +404,7 @@ void FlanisSwiftwing_Gossip::GossipHello(Object* pObject, Player * plr, bool Aut
 
 void FlanisSwiftwing_Gossip::GossipSelectOption(Object* pObject, Player * plr, uint32 Id, uint32 IntId, const char * Code)
 {
-	Creature * pCreature = (pObject->GetTypeId()==TYPEID_UNIT)?TO_CREATURE(pObject):NULL;
+	Creature * pCreature = (pObject->IsCreature())?TO_CREATURE(pObject):NULL;
 	if( pCreature == NULL )
 		return;
 	if(IntId == 1)

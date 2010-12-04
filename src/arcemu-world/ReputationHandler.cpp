@@ -346,7 +346,7 @@ void Player::UpdateInrangeSetsBasedOnReputation()
 	bool enemy_current;
 	for( itr = m_objectsInRange.begin(); itr != m_objectsInRange.end(); itr++ )
 	{
-		if( (*itr)->GetTypeId() != TYPEID_UNIT )
+		if( !(*itr)->IsUnit() )
 			continue;
 
 		pUnit = static_cast< Unit* >( *itr );
@@ -367,7 +367,7 @@ void Player::Reputation_OnKilledUnit( Unit * pUnit, bool InnerLoop )
 {
 
 	// add rep for on kill
-	if ( pUnit->GetTypeId() != TYPEID_UNIT || pUnit->IsPet() )
+	if ( !pUnit->IsCreature() || pUnit->IsPet() )
 		return;
 
 	Group * m_Group = GetGroup();

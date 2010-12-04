@@ -339,7 +339,7 @@ bool ScryingCrystal(uint32 i, Spell * pSpell)
 bool MinionsOfGurok(uint32 i, Spell * pSpell)
 {
 	Unit *  target = pSpell->GetUnitTarget();
-	if(!pSpell->p_caster || !target || target->GetTypeId() != TYPEID_UNIT || target->GetEntry() != 17157) return true;
+	if(!pSpell->p_caster || !target || !target->IsCreature() || target->GetEntry() != 17157) return true;
 
 	TO_CREATURE(target)->Despawn(500, 360000);
 
@@ -595,7 +595,7 @@ bool ExtractGas( uint32 i, Spell *s ){
 	
 	for(Object::InRangeSet::iterator itr = s->p_caster->GetInRangeSetBegin(); itr != s->p_caster->GetInRangeSetEnd(); ++itr)
 	{
-		if((*itr)->GetTypeId() == TYPEID_UNIT)
+		if((*itr)->IsCreature())
 		{
 			creature=static_cast<Creature *>((*itr));
 			cloudtype=creature->GetEntry();

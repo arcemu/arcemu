@@ -211,7 +211,7 @@ bool DeathGrip( uint32 i, Spell *s ){
 		data << uint32(1);
 		data << posX << posY << posZ;
 		
-		if(unitTarget->GetTypeId() == TYPEID_UNIT)
+		if(unitTarget->IsCreature())
 			unitTarget->GetAIInterface()->StopMovement(2000);
 		
 		unitTarget->SendMessageToSet(&data, true);

@@ -1515,7 +1515,7 @@ bool HunterTamingQuest( uint32 i, Aura *a, bool apply ){
 			if( Rand( 75.0f ) )// 75% chance on success
 			{
 				
-				if( m_target->GetTypeId() == TYPEID_UNIT )
+				if( m_target->IsCreature() )
 				{
 					Creature *tamed = TO_CREATURE(m_target);
 					tamed->GetAIInterface()->HandleEvent( EVENT_LEAVECOMBAT, p_caster, 0 );
@@ -2073,7 +2073,7 @@ bool PoweringOurDefenses(uint32 i, Spell* pSpell)
 
 bool TestingTheAntidote(uint32 i, Spell* pSpell)
 {
-	if(!pSpell->GetUnitTarget() || pSpell->GetUnitTarget()->GetTypeId() != TYPEID_UNIT)
+	if(!pSpell->GetUnitTarget() || !pSpell->GetUnitTarget()->IsCreature())
 		return true;
 
 	Creature* target = NULL;

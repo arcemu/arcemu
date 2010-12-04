@@ -196,7 +196,7 @@ uint32 QuestMgr::CalcStatus(Object* quest_giver, Player* plr)
 			q_end = static_cast<GameObject*>(quest_giver)->QuestsEnd();
 		}
 	} 
-	else if( quest_giver->GetTypeId() == TYPEID_UNIT )
+	else if( quest_giver->IsCreature() )
 	{
 		bValid = static_cast< Creature* >( quest_giver )->HasQuests();
 		if(bValid)
@@ -265,7 +265,7 @@ uint32 QuestMgr::ActiveQuestsCount(Object* quest_giver, Player* plr)
 			
 		}
 	} 
-	else if(quest_giver->GetTypeId() == TYPEID_UNIT)
+	else if(quest_giver->IsCreature())
 	{
 		bValid = static_cast<Creature*>(quest_giver)->HasQuests();
 		if(bValid)
@@ -603,7 +603,7 @@ void QuestMgr::BuildQuestList(WorldPacket *data, Object* qst_giver, Player *plr,
 			ed = static_cast<GameObject*>(qst_giver)->QuestsEnd();
 		}
 	} 
-	else if(qst_giver->GetTypeId() == TYPEID_UNIT)
+	else if(qst_giver->IsCreature())
 	{
 		bValid = static_cast<Creature*>(qst_giver)->HasQuests();
 		if(bValid)
@@ -1009,7 +1009,7 @@ void QuestMgr::GiveQuestRewardReputation(Player* plr, Quest* qst, Object *qst_gi
 				break;
 
 			// Let's do this properly. Determine the faction of the creature, and give reputation to his faction.
-			if( qst_giver->GetTypeId() == TYPEID_UNIT )
+			if( qst_giver->IsCreature() )
 				if( static_cast<Creature*>(qst_giver)->m_factionDBC != NULL )
 					fact = static_cast<Creature*>(qst_giver)->m_factionDBC->ID;
 			if( qst_giver->GetTypeId() == TYPEID_GAMEOBJECT )
@@ -1073,7 +1073,7 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint3
 	qle->Finish();
 	
 	
-	if(qst_giver->GetTypeId() == TYPEID_UNIT)
+	if(qst_giver->IsCreature())
 	{
 		if(!static_cast<Creature*>(qst_giver)->HasQuest(qst->id, 2))
 		{
@@ -1728,7 +1728,7 @@ bool QuestMgr::OnActivateQuestGiver(Object *qst_giver, Player *plr)
 				q_end   = static_cast<GameObject*>(qst_giver)->QuestsEnd();
 			}
 		} 
-		else if(qst_giver->GetTypeId() == TYPEID_UNIT)
+		else if(qst_giver->IsCreature())
 		{
 			bValid = static_cast<Creature*>(qst_giver)->HasQuests();
 			if(bValid)

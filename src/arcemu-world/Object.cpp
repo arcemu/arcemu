@@ -359,7 +359,7 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 		}
 	}
 	Creature * uThis = NULL;
-	if (GetTypeId() == TYPEID_UNIT)
+	if (IsCreature())
 		uThis = static_cast<Creature*>(this);
 
 	if (flags & UPDATEFLAG_LIVING) //0x20
@@ -571,42 +571,45 @@ void Object::_BuildValuesUpdate(ByteBuffer * data, UpdateMask *updateMask, Playe
 
 	if(updateMask->GetBit(OBJECT_FIELD_GUID) && target)	   // We're creating.
 	{
-		Creature * pThis = static_cast<Creature*>(this);
-		if(GetTypeId() == TYPEID_UNIT && pThis->IsTagged() && (pThis->loot.gold || pThis->loot.items.size()))
+		if(IsCreature())
 		{
-			// Let's see if we're the tagger or not.
-			oldflags = m_uint32Values[UNIT_DYNAMIC_FLAGS];
-			uint32 Flags = m_uint32Values[UNIT_DYNAMIC_FLAGS];
-			uint32 oldFlags = 0;
-
-			if(pThis->GetTaggerGUID() == target->GetGUID())
+			Creature * pThis = static_cast<Creature*>(this);
+			if(pThis->IsTagged() && (pThis->loot.gold || pThis->loot.items.size()))
 			{
-				// Our target is our tagger.
-				oldFlags = U_DYN_FLAG_TAGGED_BY_OTHER;
+				// Let's see if we're the tagger or not.
+				oldflags = m_uint32Values[UNIT_DYNAMIC_FLAGS];
+				uint32 Flags = m_uint32Values[UNIT_DYNAMIC_FLAGS];
+				uint32 oldFlags = 0;
 
-				if(Flags & U_DYN_FLAG_TAGGED_BY_OTHER)
-					Flags &= ~oldFlags;
+				if(pThis->GetTaggerGUID() == target->GetGUID())
+				{
+					// Our target is our tagger.
+					oldFlags = U_DYN_FLAG_TAGGED_BY_OTHER;
 
-				if( !(Flags & U_DYN_FLAG_LOOTABLE) && pThis->HasLootForPlayer( target ) )
-					Flags |= U_DYN_FLAG_LOOTABLE;
+					if(Flags & U_DYN_FLAG_TAGGED_BY_OTHER)
+						Flags &= ~oldFlags;
+
+					if( !(Flags & U_DYN_FLAG_LOOTABLE) && pThis->HasLootForPlayer( target ) )
+						Flags |= U_DYN_FLAG_LOOTABLE;
+				}
+				else
+				{
+					// Target is not the tagger.
+					oldFlags = U_DYN_FLAG_LOOTABLE;
+
+					if(!(Flags & U_DYN_FLAG_TAGGED_BY_OTHER))
+						Flags |= U_DYN_FLAG_TAGGED_BY_OTHER;
+
+					if(Flags & U_DYN_FLAG_LOOTABLE)
+						Flags &= ~oldFlags;
+				}
+
+				m_uint32Values[UNIT_DYNAMIC_FLAGS] = Flags;
+
+				updateMask->SetBit(UNIT_DYNAMIC_FLAGS);
+
+				reset = true;
 			}
-			else
-			{
-				// Target is not the tagger.
-				oldFlags = U_DYN_FLAG_LOOTABLE;
-
-				if(!(Flags & U_DYN_FLAG_TAGGED_BY_OTHER))
-					Flags |= U_DYN_FLAG_TAGGED_BY_OTHER;
-
-				if(Flags & U_DYN_FLAG_LOOTABLE)
-					Flags &= ~oldFlags;
-			}
-
-			m_uint32Values[UNIT_DYNAMIC_FLAGS] = Flags;
-
-			updateMask->SetBit(UNIT_DYNAMIC_FLAGS);
-
-			reset = true;
 		}
 
 		if( target && GetTypeId() == TYPEID_GAMEOBJECT )
@@ -1049,7 +1052,7 @@ void Object::SetUInt32Value( const uint32 index, const uint32 value )
 				break;
 		}
 	}
-	else if(m_objectTypeId == TYPEID_UNIT)
+	else if(IsCreature())
 	{
 		switch(index)
 		{
@@ -1058,7 +1061,7 @@ void Object::SetUInt32Value( const uint32 index, const uint32 value )
 			case UNIT_FIELD_POWER3:
 			case UNIT_FIELD_POWER4:
 			case UNIT_FIELD_POWER7:
-				static_cast< Unit* >( this )->SendPowerUpdate(false);
+				TO_CREATURE( this )->SendPowerUpdate(false);
 				break;
 			default:
 				break;
@@ -1122,7 +1125,7 @@ void Object::ModUnsigned32Value(uint32 index, int32 mod)
 				break;
 		}
 	}
-	else if(m_objectTypeId == TYPEID_UNIT)
+	else if(IsCreature())
 	{
 		switch(index)
 		{
@@ -1131,7 +1134,7 @@ void Object::ModUnsigned32Value(uint32 index, int32 mod)
 			case UNIT_FIELD_POWER3:
 			case UNIT_FIELD_POWER4:
 			case UNIT_FIELD_POWER7:
-				static_cast< Unit* >( this )->SendPowerUpdate(false);
+				TO_CREATURE( this )->SendPowerUpdate(false);
 				break;
 			default:
 				break;
@@ -1471,10 +1474,10 @@ bool Object::isInBack(Object* target)
     double angle = atan2( y, x );
     angle = ( angle >= 0.0 ) ? angle : 2.0 * M_PI + angle;
 
-	// if we are a unit and have a UNIT_FIELD_TARGET then we are always facing them
-	if( m_objectTypeId == TYPEID_UNIT && TO_UNIT(this)->GetTargetGUID() != 0 )
+	// if we are a creature and have a UNIT_FIELD_TARGET then we are always facing them
+	if( IsCreature() && TO_CREATURE(this)->GetTargetGUID() != 0 )
 	{
-		Unit* pTarget = TO_UNIT(this)->GetAIInterface()->getNextTarget();
+		Unit* pTarget = TO_CREATURE(this)->GetAIInterface()->getNextTarget();
 		if( pTarget != NULL )
 			angle -= double( Object::calcRadAngle( target->m_position.x, target->m_position.y, pTarget->m_position.x, pTarget->m_position.y ) );
 		else
@@ -1517,7 +1520,7 @@ void Object::_setFaction()
 {
 	FactionTemplateDBC* factT = NULL;
 
-	if(GetTypeId() == TYPEID_UNIT || GetTypeId() == TYPEID_PLAYER)
+	if(IsUnit())
 	{
 		factT = dbcFactionTemplate.LookupEntryForced(TO_UNIT(this)->GetFaction());
 		if( !factT )

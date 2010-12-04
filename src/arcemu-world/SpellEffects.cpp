@@ -877,7 +877,7 @@ void Spell::SpellEffectTeleportUnits( uint32 i )  // Teleport Units
 			}
 		}
 		
-		if( unitTarget->GetTypeId() == TYPEID_UNIT )
+		if( unitTarget->IsCreature() )
 		{
 			if( unitTarget->GetTargetGUID() != 0 )
 			{
@@ -1419,7 +1419,7 @@ void Spell::SpellEffectResurrect(uint32 i) // Resurrect (Flat)
 			// unit resurrection handler
 			if(unitTarget)
 			{
-				if(unitTarget->GetTypeId()==TYPEID_UNIT && unitTarget->IsPet() && unitTarget->IsDead())
+				if(unitTarget->IsCreature() && unitTarget->IsPet() && unitTarget->IsDead())
 				{
 					uint32 hlth = ((uint32)GetProto()->EffectBasePoints[i] > unitTarget->GetMaxHealth()) ? unitTarget->GetMaxHealth() : (uint32)GetProto()->EffectBasePoints[i];
 					uint32 mana = ((uint32)GetProto()->EffectBasePoints[i] > unitTarget->GetMaxPower( POWER_TYPE_MANA )) ? unitTarget->GetMaxPower( POWER_TYPE_MANA ) : (uint32)GetProto()->EffectBasePoints[i];
@@ -3737,7 +3737,7 @@ void Spell::SpellEffectDistract(uint32 i) // Distract
 void Spell::SpellEffectPickpocket(uint32 i) // pickpocket
 {
 	//Show random loot based on roll,
-	if(!unitTarget || !p_caster || unitTarget->GetTypeId() != TYPEID_UNIT)
+	if(!unitTarget || !p_caster || !unitTarget->IsCreature())
 		return;
 
 	Creature *target = static_cast<Creature*>( unitTarget );
@@ -3895,10 +3895,10 @@ void Spell::SpellEffectUseGlyph(uint32 i)
 
 void Spell::SpellEffectHealMechanical(uint32 i)
 {
-	if(!unitTarget || unitTarget->GetTypeId() != TYPEID_UNIT || static_cast<Creature*>(unitTarget)->GetCreatureInfo()->Type != UNIT_TYPE_MECHANICAL)
+	if(!unitTarget || !unitTarget->IsCreature() || static_cast<Creature*>(unitTarget)->GetCreatureInfo()->Type != UNIT_TYPE_MECHANICAL)
 		return;
 
-	Heal((int32)damage);
+	Heal(damage);
 }
 
 void Spell::SpellEffectSummonObjectWild(uint32 i)
@@ -3944,19 +3944,15 @@ void Spell::SpellEffectSanctuary(uint32 i) // Stop all attacks made to you
 	//use these instead
 	Object::InRangeSet::iterator itr = u_caster->GetInRangeSetBegin();
 	Object::InRangeSet::iterator itr_end = u_caster->GetInRangeSetEnd();
-	Unit * pUnit;
 
 	if(u_caster->IsPlayer())
 		static_cast<Player*>(u_caster)->RemoveAllAuraType( SPELL_AURA_MOD_ROOT );
 
 	for( ; itr != itr_end; ++itr )
-		if( (*itr)->IsUnit() )
-		{
-			pUnit = static_cast<Unit*>(*itr);
-
-			if( pUnit && pUnit->GetTypeId() == TYPEID_UNIT )
-				pUnit->GetAIInterface()->RemoveThreatByPtr( unitTarget );
-		}
+	{
+		if( (*itr)->IsCreature() )
+			TO_CREATURE(*itr)->GetAIInterface()->RemoveThreatByPtr( unitTarget );
+	}
 }
 
 void Spell::SpellEffectAddComboPoints(uint32 i) // Add Combo Points
@@ -4513,7 +4509,7 @@ void Spell::SpellEffectCharge(uint32 i)
 	data << time;
 	data << uint32(1);
 	data << x << y << z;
-	if(unitTarget->GetTypeId() == TYPEID_UNIT)
+	if(unitTarget->IsCreature())
 		unitTarget->GetAIInterface()->StopMovement(2000);
 
 	u_caster->SendMessageToSet(&data, true);
@@ -4916,7 +4912,7 @@ void Spell::SpellEffectResurrectNew(uint32 i)
 			// unit resurrection handler
 			if(unitTarget)
 			{
-				if(unitTarget->GetTypeId()==TYPEID_UNIT && unitTarget->IsPet() && unitTarget->IsDead())
+				if(unitTarget->IsCreature() && unitTarget->IsPet() && unitTarget->IsDead())
 				{
 					uint32 hlth = ((uint32)GetProto()->EffectBasePoints[i] > unitTarget->GetMaxHealth()) ? unitTarget->GetMaxHealth() : (uint32)GetProto()->EffectBasePoints[i];
 					uint32 mana = ((uint32)GetProto()->EffectBasePoints[i] > unitTarget->GetMaxPower( POWER_TYPE_MANA )) ? unitTarget->GetMaxPower( POWER_TYPE_MANA ) : (uint32)GetProto()->EffectBasePoints[i];
@@ -5353,7 +5349,7 @@ void Spell::SpellEffectRedirectThreat(uint32 i)
 	if (!p_caster || !unitTarget)
 		return;
 
-	if ((unitTarget->GetTypeId() == TYPEID_PLAYER && p_caster->GetGroup() != static_cast<Player *>(unitTarget)->GetGroup()) || (unitTarget->GetTypeId() == TYPEID_UNIT && !unitTarget->IsPet()))
+	if ((unitTarget->GetTypeId() == TYPEID_PLAYER && p_caster->GetGroup() != static_cast<Player *>(unitTarget)->GetGroup()) || (unitTarget->IsCreature() && !unitTarget->IsPet()))
 		return;
 
 	p_caster->SetMisdirectionTarget(unitTarget->GetGUID());

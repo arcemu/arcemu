@@ -234,8 +234,8 @@ bool RighteousDefense( uint32 i, Spell *s ){
 	{
 		i2 = itr++;
 		
-		// don't add objects that are not units and that are dead
-		if((*i2)->GetTypeId()!= TYPEID_UNIT || !static_cast<Unit*>( (*i2) )->isAlive())
+		// don't add objects that are not creatures and that are dead
+		if(!(*i2)->IsCreature() || !static_cast<Creature*>( (*i2) )->isAlive())
 			continue;
 		
 		Creature *cr= static_cast<Creature*>((*i2));

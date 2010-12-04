@@ -2961,7 +2961,7 @@ bool ObjectMgr::HandleInstanceReputationModifiers(Player * pPlayer, Unit * pVict
 {
 	uint32 team = pPlayer->GetTeam();
 	bool is_boss;
-	if(pVictim->GetTypeId() != TYPEID_UNIT)
+	if(!pVictim->IsCreature())
 		return false;
 
 	HM_NAMESPACE::hash_map<uint32, InstanceReputationModifier*>::iterator itr = m_reputation_instance.find(pVictim->GetMapId());

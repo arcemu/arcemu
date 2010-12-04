@@ -405,7 +405,7 @@ public:
 												/* If anyone wants to use this function, then leave this note!										 */
 		for(set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); ++itr) 
 		{ 
-			if (isHostile(_unit, (*itr)) && ((*itr)->GetTypeId()== TYPEID_UNIT || (*itr)->GetTypeId() == TYPEID_PLAYER))
+			if (isHostile(_unit, (*itr)) && (*itr)->IsUnit())
 			{
 				RandomTarget = TO_UNIT(*itr);
 
@@ -638,7 +638,7 @@ public:
 		Creature* creature = NULL;
 		for(set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); ++itr) 
 		{
-			if((*itr)->GetTypeId() == TYPEID_UNIT)
+			if((*itr)->IsCreature())
 			{
 				creature = TO_CREATURE((*itr));
 
@@ -1101,7 +1101,7 @@ public:
 												/* If anyone wants to use this function, then leave this note!										 */
 		for(set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); ++itr) 
 		{ 
-			if (isHostile(_unit, (*itr)) && ((*itr)->GetTypeId()== TYPEID_UNIT || (*itr)->GetTypeId() == TYPEID_PLAYER) && isAttackable(_unit, (*itr)))
+			if (isHostile(_unit, (*itr)) && (*itr)->IsUnit() && isAttackable(_unit, (*itr)))
 			{
 				RandomTarget = TO_UNIT(*itr);
 
@@ -1283,7 +1283,7 @@ public:
 		std::vector<Unit*> TargetTable;
 		for(set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); ++itr) 
 		{ 
-			if (isHostile(_unit, (*itr)) && ((*itr)->GetTypeId()== TYPEID_UNIT || (*itr)->GetTypeId() == TYPEID_PLAYER))
+			if (isHostile(_unit, (*itr)) && (*itr)->IsUnit())
 			{
 				RandomTarget = TO_UNIT(*itr);
 
@@ -1710,7 +1710,7 @@ public:
 
 		for (set<Object*>::iterator itr = _unit->GetInRangeOppFactsSetBegin(); itr != _unit->GetInRangeOppFactsSetEnd(); itr++)
 		{
-			if((*itr)->GetTypeId() != TYPEID_UNIT && (*itr)->GetTypeId() != TYPEID_PLAYER)
+			if(!(*itr)->IsUnit())
 				continue;
 
 			pUnit = TO_UNIT((*itr));
@@ -1987,7 +1987,7 @@ public:
 		Creature* creature = NULL;
 		for(set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); ++itr) 
 		{
-			if((*itr)->GetTypeId() == TYPEID_UNIT)
+			if((*itr)->IsCreature())
 			{
 				creature = TO_CREATURE((*itr));
 	
@@ -2168,7 +2168,7 @@ public:
 				float nearestdist = 0;
 				for(set<Object*>::iterator itr = summoned->GetInRangeSetBegin(); itr != summoned->GetInRangeSetEnd(); ++itr) 
 				{
-					if(((*itr)->GetTypeId() == TYPEID_PLAYER || (*itr)->GetTypeId() == TYPEID_UNIT) && isHostile(summoned, (*itr)) && (summoned->GetDistance2dSq((*itr)) < nearestdist || !nearestdist) )
+					if((*itr)->IsUnit() && isHostile(summoned, (*itr)) && (summoned->GetDistance2dSq((*itr)) < nearestdist || !nearestdist) )
 					{
 						nearestdist = summoned->GetDistance2dSq((*itr));
 						nearest = TO_UNIT((*itr));
@@ -2192,7 +2192,7 @@ public:
 				float nearestdist = 0;
 				for(set<Object*>::iterator itr = summoned->GetInRangeSetBegin(); itr != summoned->GetInRangeSetEnd(); ++itr) 
 				{
-					if(((*itr)->GetTypeId() == TYPEID_PLAYER || (*itr)->GetTypeId() == TYPEID_UNIT) && isHostile(summoned, (*itr)) && (summoned->GetDistance2dSq((*itr)) < nearestdist || !nearestdist) )
+					if((*itr)->IsUnit() && isHostile(summoned, (*itr)) && (summoned->GetDistance2dSq((*itr)) < nearestdist || !nearestdist) )
 					{
 						nearestdist = summoned->GetDistance2dSq((*itr));
 						nearest = TO_UNIT((*itr));
@@ -2217,7 +2217,7 @@ public:
 			Creature* creature = NULL;
 			for(set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); ++itr) 
 			{
-				if((*itr)->GetTypeId() == TYPEID_UNIT)
+				if((*itr)->IsCreature())
 				{
 					creature = TO_CREATURE((*itr));
 
@@ -2343,7 +2343,7 @@ public:
 												/* If anyone wants to use this function, then leave this note!										 */
 		for(set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); ++itr) 
 		{ 
-			if (isHostile(_unit, (*itr)) && ((*itr)->GetTypeId()== TYPEID_UNIT || (*itr)->GetTypeId() == TYPEID_PLAYER))
+			if (isHostile(_unit, (*itr)) && (*itr)->IsUnit())
 			{
 				RandomTarget = TO_UNIT(*itr);
 

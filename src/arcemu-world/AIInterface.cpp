@@ -222,7 +222,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
                     m_Unit->SetTargetGUID( pUnit->GetGUID());
 				}
 				/* send the message */
-				if( m_Unit->GetTypeId() == TYPEID_UNIT )
+				if( m_Unit->IsCreature() )
 				{
 					Creature* creature = TO_CREATURE( m_Unit);
 					creature->HandleMonsterSayEvent(MONSTER_SAY_EVENT_ENTER_COMBAT );
@@ -245,7 +245,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				m_moveRun = true; //run to the target
 
 				// dismount if mounted
-				if( m_Unit->GetTypeId() == TYPEID_UNIT && !(TO_CREATURE( m_Unit )->GetCreatureInfo()->Flags1 & CREATURE_FLAG1_FIGHT_MOUNTED))
+				if( m_Unit->IsCreature() && !(TO_CREATURE( m_Unit )->GetCreatureInfo()->Flags1 & CREATURE_FLAG1_FIGHT_MOUNTED))
 					m_Unit->SetMount(0);
 
 				if(m_AIState != STATE_ATTACKING)
@@ -254,7 +254,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				m_AIState = STATE_ATTACKING;
 				if(m_Unit->GetMapMgr() && m_Unit->GetMapMgr()->GetMapInfo() && m_Unit->GetMapMgr()->GetMapInfo()->type == INSTANCE_RAID)
 				{
-					if(m_Unit->GetTypeId() == TYPEID_UNIT)
+					if(m_Unit->IsCreature())
 					{
 						if(static_cast<Creature*>(m_Unit)->GetCreatureInfo()->Rank == 3)
 						{
@@ -325,7 +325,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				//cancel spells that we are casting. Should remove bug where creatures cast a spell after they died
 //				CancelSpellCast();
 				// restart emote
-				if(m_Unit->GetTypeId() == TYPEID_UNIT)
+				if(m_Unit->IsCreature())
 				{
 					Creature* creature = TO_CREATURE( m_Unit);
 					creature->HandleMonsterSayEvent( MONSTER_SAY_EVENT_ON_COMBAT_STOP );
@@ -405,7 +405,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 
 				if(m_Unit->GetMapMgr() && m_Unit->GetMapMgr()->GetMapInfo() && m_Unit->GetMapMgr()->GetMapInfo()->type == INSTANCE_RAID)
 				{
-					if(m_Unit->GetTypeId() == TYPEID_UNIT)
+					if(m_Unit->IsCreature())
 					{
 						if(static_cast<Creature*>(m_Unit)->GetCreatureInfo()->Rank == 3)
 						{
@@ -415,7 +415,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				}
 
 				// Remount if mounted
-				if(m_Unit->GetTypeId() == TYPEID_UNIT)
+				if(m_Unit->IsCreature())
 				{
 					Creature *creature = static_cast< Creature* >( m_Unit );
 					if( creature->m_spawn )
@@ -605,7 +605,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				pInstance = m_Unit->GetMapMgr()->pInstance;
 
 			if(m_Unit->GetMapMgr()
-				&& m_Unit->GetTypeId() == TYPEID_UNIT 
+				&& m_Unit->IsCreature() 
 				&& !m_Unit->IsPet() 
 				&& pInstance 
 				&& (pInstance->m_mapInfo->type == INSTANCE_RAID 
@@ -652,7 +652,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 			}
 			if(m_Unit->GetMapMgr() && m_Unit->GetMapMgr()->GetMapInfo() && m_Unit->GetMapMgr()->GetMapInfo()->type == INSTANCE_RAID)
 			{
-				if(m_Unit->GetTypeId() == TYPEID_UNIT)
+				if(m_Unit->IsCreature())
 				{
 					if(static_cast<Creature*>(m_Unit)->GetCreatureInfo()->Rank == 3)
 					{
@@ -1122,7 +1122,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 		}
 	}
 
-	if ( getNextTarget() != NULL && getNextTarget()->GetTypeId() == TYPEID_UNIT && m_AIState == STATE_EVADE)
+	if ( getNextTarget() != NULL && getNextTarget()->IsCreature() && m_AIState == STATE_EVADE)
 		HandleEvent( EVENT_LEAVECOMBAT, m_Unit, 0);
 
 	bool cansee = false;
@@ -1130,7 +1130,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 	{
 		if(getNextTarget()->event_GetCurrentInstanceId() == m_Unit->event_GetCurrentInstanceId())
 		{
-			if( m_Unit->GetTypeId() == TYPEID_UNIT )
+			if( m_Unit->IsCreature() )
 				cansee = static_cast< Creature* >( m_Unit )->CanSee( getNextTarget() );
 			else
 				cansee = static_cast< Player* >( m_Unit )->CanSee( getNextTarget() );
@@ -1497,7 +1497,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 			{
 				FindFriends( 64.0f /*8.0f*/ );
 				m_hasCalledForHelp = true; // We only want to call for Help once in a Fight.
-				if( m_Unit->GetTypeId() == TYPEID_UNIT )
+				if( m_Unit->IsCreature() )
 					static_cast< Creature* >( m_Unit )->HandleMonsterSayEvent( MONSTER_SAY_EVENT_CALL_HELP );
 				CALL_SCRIPT_EVENT( m_Unit, OnCallForHelp )();
 			}break;
@@ -1648,7 +1648,7 @@ void AIInterface::HealReaction(Unit* caster, Unit* victim, SpellEntry* sp, uint3
 
 void AIInterface::OnDeath(Object* pKiller)
 {
-	if(pKiller->GetTypeId() == TYPEID_PLAYER || pKiller->GetTypeId() == TYPEID_UNIT)
+	if(pKiller->IsUnit())
 		HandleEvent(EVENT_UNITDIED, static_cast<Unit*>(pKiller), 0);
 	else
 		HandleEvent(EVENT_UNITDIED, m_Unit, 0);
@@ -1721,14 +1721,7 @@ Unit* AIInterface::FindTarget()
         printf("I'm a pet and I'm looking for targets, RAWR!\n");
     }
     */
-
-    
 	
-	/* Commented due to no use
-	bool pvp=true;
-	if(m_Unit->GetTypeId()==TYPEID_UNIT&&((Creature*)m_Unit)->GetCreatureInfo()&&((Creature*)m_Unit)->GetCreatureInfo()->Civilian)
-		pvp=false;*/
-
 	//target is immune to all form of attacks, cant attack either.
 	// not attackable creatures sometimes fight enemies in scripted fights though
 	if(m_Unit->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NOT_ATTACKABLE_2))
@@ -2211,7 +2204,7 @@ void AIInterface::_CalcDestinationAndMove(Unit *target, float dist)
 		return;
 	}
 	
-	if( target && ( target->GetTypeId() == TYPEID_UNIT || target->GetTypeId() == TYPEID_PLAYER) )
+	if( target && target->IsUnit() )
 	{
 #ifdef HACKY_SERVER_CLIENT_POS_SYNC
 		moved_for_attack = true;
@@ -2317,7 +2310,7 @@ float AIInterface::_CalcDistanceFromHome()
 	{
 		return m_Unit->GetDistanceSq(m_PetOwner);
 	}
-	else if(m_Unit->GetTypeId() == TYPEID_UNIT)
+	else if(m_Unit->IsCreature())
 	{
 
 		if(m_returnX != 0.0f && m_returnY != 0.0f)
@@ -2558,7 +2551,7 @@ void AIInterface::UpdateMove()
 
 	m_totalMoveTime = moveTime;
 
-	if(m_Unit->GetTypeId() == TYPEID_UNIT)
+	if(m_Unit->IsCreature())
 	{
 		Creature *creature = static_cast<Creature*>(m_Unit);
 		// check if we're returning to our respawn location. if so, reset back to default
@@ -2846,7 +2839,7 @@ bool AIInterface::saveWayPoints()
 	if(!m_waypoints)return false;
 
 	if(!GetUnit()) return false;
-	if(GetUnit()->GetTypeId() != TYPEID_UNIT) return false;
+	if( !GetUnit()->IsCreature() ) return false;
 
 	WorldDatabase.Execute("DELETE FROM creature_waypoints WHERE spawnid = %u", TO_CREATURE(GetUnit())->GetSQL_id());
 	WayPointMap::const_iterator itr;
@@ -4013,7 +4006,7 @@ void AIInterface::CheckTarget(Unit* target)
 
 	LockAITargets(false);
 
-	if( target->GetTypeId() == TYPEID_UNIT )
+	if( target->IsCreature() )
 	{
 		it2 = target->GetAIInterface()->m_aiTargets.find( m_Unit->GetGUID() );
 		if( it2 != target->GetAIInterface()->m_aiTargets.end() )

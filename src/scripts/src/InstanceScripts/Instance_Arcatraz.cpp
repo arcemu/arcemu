@@ -71,7 +71,7 @@ public:
 		{
 			Object* obj = *itr;
 			++itr;
-			if(obj->GetTypeId() == TYPEID_UNIT)
+			if(obj->IsCreature())
 			{
 				creature = TO_CREATURE(obj);
 

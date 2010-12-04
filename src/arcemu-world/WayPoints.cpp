@@ -921,7 +921,7 @@ bool ChatHandler::HandleNpcSelectCommand(const char * args, WorldSession * m_ses
 	set<Object*>::iterator itr;
 	for(itr = plr->GetInRangeSetBegin(); itr != plr->GetInRangeSetEnd(); ++itr)
 	{
-		if( (dist2 = plr->GetDistance2dSq(*itr)) < dist && (*itr)->GetTypeId() == TYPEID_UNIT )
+		if( (dist2 = plr->GetDistance2dSq(*itr)) < dist && (*itr)->IsCreature() )
 		{
 			un = TO_CREATURE(*itr);
 			dist = dist2;

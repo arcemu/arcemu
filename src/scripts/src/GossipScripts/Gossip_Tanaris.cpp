@@ -34,7 +34,7 @@ public:
 
     void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
     {
-		if(pObject->GetTypeId()!=TYPEID_UNIT)
+		if(!pObject->IsCreature())
 			return;
 		
 		GossipMenu * Menu;
@@ -70,7 +70,7 @@ public:
 
     void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
     {
-		if(pObject->GetTypeId()!=TYPEID_UNIT)
+		if(!pObject->IsCreature())
 			return;
 		
 		GossipMenu * Menu;

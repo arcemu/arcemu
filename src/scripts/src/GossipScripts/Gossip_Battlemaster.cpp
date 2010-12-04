@@ -51,7 +51,7 @@ public:
     void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
     {
         // Send battleground list.
-		if(pObject->GetTypeId()!=TYPEID_UNIT)
+		if(!pObject->IsCreature())
 			return;
 
         plr->GetSession()->SendBattlegroundList((TO_CREATURE(pObject)), 2);  // WSG = 2
@@ -91,7 +91,7 @@ public:
     void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
     {
 		// Send battleground list.
-		if(pObject->GetTypeId()!=TYPEID_UNIT)
+		if(!pObject->IsCreature())
 			return;
 
 		plr->GetSession()->SendBattlegroundList((TO_CREATURE(pObject)), 3);  // AB = 3
@@ -131,7 +131,7 @@ public:
     void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
     {
 		// Send battleground list.
-		if(pObject->GetTypeId()!=TYPEID_UNIT)
+		if(!pObject->IsCreature())
 			return;
 
 		plr->GetSession()->SendBattlegroundList((TO_CREATURE(pObject)), 1);  // AV = 1
@@ -171,7 +171,7 @@ public:
     void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
     {
         // Send battleground list.
-		if(pObject->GetTypeId()!=TYPEID_UNIT)
+		if(!pObject->IsCreature())
 			return;
 
         plr->GetSession()->SendBattlegroundList((TO_CREATURE(pObject)), 7);  // EOTS = 7

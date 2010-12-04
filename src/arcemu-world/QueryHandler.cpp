@@ -362,9 +362,10 @@ void WorldSession::HandleInrangeQuestgiverQuery(WorldPacket & recv_data)
 
 	for( itr = _player->m_objectsInRange.begin(); itr != _player->m_objectsInRange.end(); ++itr )
 	{
-		pCreature = static_cast<Creature*>(*itr);
-		if( pCreature->GetTypeId() != TYPEID_UNIT )
+		if( !(*itr)->IsCreature() )
 			continue;
+
+		pCreature = TO_CREATURE(*itr);
 
 		if( pCreature->isQuestGiver() )
 		{

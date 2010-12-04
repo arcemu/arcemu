@@ -123,7 +123,7 @@ namespace luaUnit
 			return 1;
 		}
 
-		if(ptr->GetTypeId()==TYPEID_UNIT)
+		if(ptr->IsCreature())
 			lua_pushboolean(L, 1);
 		else
 			lua_pushboolean(L, 0);
@@ -2295,7 +2295,7 @@ namespace luaUnit
 
 	int IsCreatureMoving(lua_State * L, Unit * ptr)
 	{
-		if(ptr && ptr->GetTypeId() == TYPEID_UNIT)
+		if(ptr && ptr->IsCreature())
 		{
 			if(ptr->GetAIInterface()->m_creatureState == MOVING)
 				lua_pushboolean(L, 1);

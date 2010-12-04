@@ -34,7 +34,7 @@ class WoodlandWalkerGossip : public GossipScript
 public:
 	void GossipHello(Object* pObject, Player* plr, bool AutoSend)
 	{
-		Creature*  pCreature = (pObject->GetTypeId()==TYPEID_UNIT)?(TO_CREATURE(pObject)):NULL;
+		Creature*  pCreature = (pObject->IsCreature())?(TO_CREATURE(pObject)):NULL;
 		if( pCreature == NULL )
 			return;
 

@@ -47,7 +47,7 @@ public:
 
     void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
     {
-		if(pObject->GetTypeId()!=TYPEID_UNIT)
+		if(!pObject->IsCreature())
 			return;
 		
 		switch(IntId)
@@ -138,7 +138,7 @@ public:
 
     void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
     {
-		if(pObject->GetTypeId()!=TYPEID_UNIT)
+		if(!pObject->IsCreature())
 			return;
 		
 		switch(IntId)
@@ -241,7 +241,7 @@ public:
 
     void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
     {
-		if(pObject->GetTypeId()!=TYPEID_UNIT)
+		if(!pObject->IsCreature())
 			return;
 		
         switch(IntId)
@@ -325,7 +325,7 @@ public:
 
     void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
     {
-		if(pObject->GetTypeId()!=TYPEID_UNIT)
+		if(!pObject->IsCreature())
 			return;
 		
         switch(IntId)
@@ -445,7 +445,7 @@ public:
 
     void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
     {		
-		if(pObject->GetTypeId()!=TYPEID_UNIT)
+		if(!pObject->IsCreature())
 			return;
 		
 		GossipMenu *Menu;
@@ -529,8 +529,8 @@ public:
     void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
     {
 		GossipMenu *Menu;
-		Creature* pCreature = (pObject->GetTypeId()==TYPEID_UNIT)?(TO_CREATURE(pObject)):NULL;
-		if(pObject->GetTypeId()!=TYPEID_UNIT)
+		Creature* pCreature = (pObject->IsCreature())?(TO_CREATURE(pObject)):NULL;
+		if(!pObject->IsCreature())
 			return;
 		
 		switch(IntId)
@@ -668,8 +668,8 @@ public:
     void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
     {
 		GossipMenu *Menu;
-		Creature* pCreature = (pObject->GetTypeId()==TYPEID_UNIT)?(TO_CREATURE(pObject)):NULL;
-		if(pObject->GetTypeId()!=TYPEID_UNIT)
+		Creature* pCreature = (pObject->IsCreature())?(TO_CREATURE(pObject)):NULL;
+		if(!pObject->IsCreature())
 			return;
 		
 		switch(IntId)
@@ -917,8 +917,8 @@ public:
     void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
     {
 		GossipMenu * Menu;
-		Creature* pCreature = (pObject->GetTypeId()==TYPEID_UNIT)?(TO_CREATURE(pObject)):NULL;
-		if(pObject->GetTypeId()!=TYPEID_UNIT)
+		Creature* pCreature = (pObject->IsCreature())?(TO_CREATURE(pObject)):NULL;
+		if(!pObject->IsCreature())
 			return;
 		
         switch(IntId)
@@ -991,8 +991,8 @@ public:
     void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
     {
 		GossipMenu * Menu;
-		Creature* pCreature = (pObject->GetTypeId()==TYPEID_UNIT)?(TO_CREATURE(pObject)):NULL;
-		if(pObject->GetTypeId()!=TYPEID_UNIT)
+		Creature* pCreature = (pObject->IsCreature())?(TO_CREATURE(pObject)):NULL;
+		if(!pObject->IsCreature())
 			return;
 		
 		switch(IntId)

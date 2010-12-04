@@ -2437,7 +2437,7 @@ public:
 			std::vector<Unit* > TargetTable;
 			for(set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); ++itr) 
 			{ 
-				if((*itr) != _unit && isHostile(_unit, (*itr)) && ((*itr)->GetTypeId() == TYPEID_UNIT || (*itr)->GetTypeId() == TYPEID_PLAYER))
+				if((*itr) != _unit && isHostile(_unit, (*itr)) && (*itr)->IsUnit())
 				{
 					Unit* RandomTarget = NULL;
 					RandomTarget = TO_UNIT(*itr);
@@ -2607,7 +2607,7 @@ public:
 
 		for (set<Object*>::iterator itr = _unit->GetInRangeOppFactsSetBegin(); itr != _unit->GetInRangeOppFactsSetEnd(); itr++)
 		{
-			if((*itr)->GetTypeId() != TYPEID_UNIT && (*itr)->GetTypeId() != TYPEID_PLAYER)
+			if(!(*itr)->IsUnit())
 				continue;
 
 			pUnit = TO_UNIT((*itr));
@@ -3933,7 +3933,7 @@ public:
 												/* If anyone wants to use this function, then leave this note!										 */
 			for(set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); ++itr) 
 			{
-				if (((*itr)->GetTypeId()== TYPEID_UNIT || (*itr)->GetTypeId() == TYPEID_PLAYER))
+				if ((*itr)->IsUnit())
 				{
 					Unit* RandomTarget = NULL;
 					RandomTarget = TO_UNIT(*itr);
@@ -4123,7 +4123,7 @@ public:
 			std::vector<Unit*> TargetTable;		
 			for(set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); ++itr) 
 			{ 
-				if (((spells[i].targettype == TARGET_RANDOM_FRIEND && isFriendly(_unit, (*itr))) || (spells[i].targettype != TARGET_RANDOM_FRIEND && isHostile(_unit, (*itr)) && (*itr) != _unit)) && ((*itr)->GetTypeId()== TYPEID_UNIT || (*itr)->GetTypeId() == TYPEID_PLAYER)) // isAttackable(_unit, (*itr)) && 
+				if (((spells[i].targettype == TARGET_RANDOM_FRIEND && isFriendly(_unit, (*itr))) || (spells[i].targettype != TARGET_RANDOM_FRIEND && isHostile(_unit, (*itr)) && (*itr) != _unit)) && (*itr)->IsUnit()) // isAttackable(_unit, (*itr)) && 
 				{
 					Unit* RandomTarget = NULL;
 					RandomTarget = TO_UNIT(*itr);

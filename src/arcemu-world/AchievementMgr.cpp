@@ -1107,11 +1107,10 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 					Unit* pUnit = GetPlayer()->GetMapMgr()->GetUnit(crGUID);
 					if( pUnit )
 					{
-						uint8 crTypeId = pUnit->GetTypeId();
 						uint32 crType = UNIT_TYPE_NONE;
 						bool crTotem = false;
 						bool yieldXP = CalculateXpToGive( pUnit, GetPlayer() )  > 0;
-						if( crTypeId == TYPEID_UNIT )
+						if( pUnit->IsCreature() )
 						{
 							crTotem = TO_CREATURE(pUnit)->IsTotem();
 							crType = TO_CREATURE(pUnit)->GetCreatureInfo()->Type;

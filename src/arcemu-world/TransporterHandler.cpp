@@ -452,7 +452,7 @@ Transporter::~Transporter()
 	sEventMgr.RemoveEvents(this);
 	for(TransportNPCMap::iterator itr = m_npcs.begin(); itr != m_npcs.end(); ++itr)
 	{
-		if(itr->second->GetTypeId()==TYPEID_UNIT)
+		if(itr->second->IsCreature())
 			delete static_cast< Creature* >( itr->second )->m_transportPosition;
 
 		delete itr->second;
@@ -530,7 +530,7 @@ Creature * Transporter::GetCreature(uint32 Guid)
 	TransportNPCMap::iterator itr = m_npcs.find(Guid);
 	if(itr==m_npcs.end())
 		return NULL;
-	if(itr->second->GetTypeId()==TYPEID_UNIT)
+	if(itr->second->IsCreature())
 		return static_cast< Creature* >( itr->second );
 	else
 		return NULL;
