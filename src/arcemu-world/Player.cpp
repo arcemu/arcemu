@@ -584,8 +584,6 @@ Player::~Player ( )
 		delete itr->second;
 	m_reputation.clear();
 
-	m_objectTypeId = TYPEID_UNUSED;
-
 	if(m_playerInfo)
 		m_playerInfo->m_loggedInPlayer= NULL;
 
@@ -3886,20 +3884,15 @@ void Player::RemoveFromWorld()
 		if(m_SummonedObject->GetInstanceID() != GetInstanceID())
 		{
 			sEventMgr.AddEvent(m_SummonedObject, &Object::Delete, EVENT_GAMEOBJECT_EXPIRE, 100, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT | EVENT_FLAG_DELETES_OBJECT);
-		}else
+		}
+		else
 		{
-			if(m_SummonedObject->IsPlayer())
+			if(m_SummonedObject->IsInWorld())
 			{
-
+				m_SummonedObject->RemoveFromWorld(true);
 			}
-			else
-			{
-				if(m_SummonedObject->IsInWorld())
-				{
-					m_SummonedObject->RemoveFromWorld(true);
-				}
-				delete m_SummonedObject;
-			}
+			Arcemu::Util::ARCEMU_ASSERT(m_SummonedObject->IsGameObject());
+			delete m_SummonedObject;
 		}
 		m_SummonedObject = NULL;
 	}
@@ -12921,7 +12914,8 @@ void Player::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 
 		if( pVictim->IsPlayer() ){
 
-			sHookInterface.OnKillPlayer( this, static_cast< Player* >( pVictim ) );
+			Player* playerVictim = TO_PLAYER(pVictim);
+			sHookInterface.OnKillPlayer( this, playerVictim );
 			
 			bool setAurastateFlag = false;
 			
@@ -12931,7 +12925,7 @@ void Player::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 				GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_HONORABLE_KILL_AT_AREA, GetAreaID(), 1, 0);
 				GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_EARN_HONORABLE_KILL, 1, 0, 0);
 #endif
-				HonorHandler::OnPlayerKilledUnit( this, pVictim );
+				HonorHandler::OnPlayerKilled( this, playerVictim );
 				setAurastateFlag = true;
 
 				}

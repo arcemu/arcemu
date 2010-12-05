@@ -542,7 +542,7 @@ void MapMgr::RemoveObject(Object *obj, bool free_guid)
 	}
 
 	// That object types are not map objects. TODO: add AI groups here?
-	if(obj->IsItem() || obj->IsContainer() || obj->GetTypeId()==10)
+	if(obj->IsItem() || obj->IsContainer())
 	{
 		return;
 	}

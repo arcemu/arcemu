@@ -27,7 +27,7 @@ public:
 	static int32 CalculateHonorPointsForKill( uint32 playerLevel, uint32 victimLevel );
 	static void RecalculateHonorFields(Player *pPlayer);
 	static void AddHonorPointsToPlayer(Player *pPlayer, uint32 uAmount);
-	static void OnPlayerKilledUnit(Player *pPlayer, Unit* pVictim);	
+	static void OnPlayerKilled(Player *pPlayer, Player* pVictim);
 };
 
 

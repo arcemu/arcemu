@@ -179,7 +179,6 @@ public:
 	void OnRemoveFromWorld();
 	void DelayedRemove(bool bTime, bool dismiss = false, uint32 delay = PET_DELAYED_REMOVAL_TIME);
 	void Despawn(uint32 delay, uint32 respawntime);
-	void SafeDelete();
 
 	ARCEMU_INLINE Player* GetPetOwner() { return m_Owner; }
 	ARCEMU_INLINE void ClearPetOwner() { m_Owner = NULL; }
@@ -285,6 +284,7 @@ protected:
 	HappinessState GetHappinessState();
 	void SetNameForEntry( uint32 entry );
 	uint32 GetAutoCastTypeForSpell( SpellEntry * ent );
+	void SafeDelete();
 
 	list<AI_Spell*> m_autoCastSpells[AUTOCAST_EVENT_COUNT];
 };

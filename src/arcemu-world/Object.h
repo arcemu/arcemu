@@ -71,7 +71,6 @@ enum TYPEID {
 	TYPEID_CORPSE		= 7,
 	TYPEID_AIGROUP	   = 8,
 	TYPEID_AREATRIGGER   = 9,
-	TYPEID_UNUSED			= 10,//Used to signal invalid reference (object deallocated but someone is still using it)
 };
 
 enum OBJECT_UPDATE_TYPE {

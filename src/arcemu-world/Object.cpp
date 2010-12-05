@@ -94,7 +94,6 @@ Object::~Object( )
 
 	// for linux
 	m_instanceId = INSTANCEID_NOT_IN_WORLD;
-	m_objectTypeId=TYPEID_UNUSED;
 
 	if( m_extensions != NULL )
 		delete m_extensions;
