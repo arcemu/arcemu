@@ -1833,6 +1833,10 @@ void Pet::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32 un
 	}
 
 	if( pVictim->GetHealth() <= damage ){
+		if( pVictim->isTrainingDummy() ){
+			pVictim->SetHealth( 1 );
+			return;
+		}
 
 		if( m_Owner->m_bg != NULL ){
 			m_Owner->m_bg->HookOnUnitKill( m_Owner, pVictim );

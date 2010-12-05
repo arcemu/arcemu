@@ -2148,10 +2148,16 @@ void Creature::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint
 		}
 	}
 
-	if( pVictim->GetHealth() <= damage )
+	if( pVictim->GetHealth() <= damage ){
+		if( pVictim->isTrainingDummy() ){
+			pVictim->SetHealth( 1 );
+			return;
+		}
+
 		pVictim->Die( this, damage, spellId );
-	else
+	}else{
 		pVictim->TakeDamage( this, damage, spellId, no_remove_auras );
+	}
 }
 
 
@@ -2180,13 +2186,6 @@ void Creature::TakeDamage(Unit *pAttacker, uint32 damage, uint32 spellid, bool n
 }
 
 void Creature::Die( Unit *pAttacker, uint32 damage, uint32 spellid ){
-	
-	// If it's a training dummy then we simply set the HP to 1 instead of killing the unit
-	if( isTrainingDummy() ){
-			SetHealth( 1 );
-			return;
-	}
-
 	// We've just killed a totem
 	if( IsTotem() ){
 		// If we have summons then let's remove them first
