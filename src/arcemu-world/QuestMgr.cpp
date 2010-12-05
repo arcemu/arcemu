@@ -211,7 +211,7 @@ uint32 QuestMgr::CalcStatus(Object* quest_giver, Player* plr)
             bValid = true;
     }
 	//This will be handled at quest share so nothing important as status
-	else if(quest_giver->GetTypeId() == TYPEID_PLAYER)
+	else if(quest_giver->IsPlayer())
 	{
 		status = QMGR_QUEST_AVAILABLE;
 	}

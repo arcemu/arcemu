@@ -1461,7 +1461,7 @@ public:
 					QuestLogEntry *pQuest	= NULL;
 					for(set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); ++itr) 
 					{
-						if((*itr)->GetTypeId() == TYPEID_PLAYER)
+						if((*itr)->IsPlayer())
 						{
 							pPlayer = TO_PLAYER((*itr));
 							if (pPlayer != NULL)

@@ -409,7 +409,7 @@ bool OrbOfTheSindorei(uint32 i, Aura * pAura, bool apply)
 
 bool BigBlizzardBear(uint32 i, Aura * pAura, bool apply)
 {
-	if( pAura->GetTarget()->GetTypeId() != TYPEID_PLAYER )
+	if( !pAura->GetTarget()->IsPlayer() )
 		return true;
 
 	if( apply )
@@ -430,7 +430,7 @@ bool BigBlizzardBear(uint32 i, Aura * pAura, bool apply)
 
 bool WingedSteed(uint32 i, Aura * pAura, bool apply)
 {
-	if( pAura->GetTarget()->GetTypeId() != TYPEID_PLAYER )
+	if( !pAura->GetTarget()->IsPlayer() )
 		return true;
 
 	if( apply )
@@ -451,7 +451,7 @@ bool WingedSteed(uint32 i, Aura * pAura, bool apply)
 
 bool HeadlessHorsemanMount(uint32 i, Aura * pAura, bool apply)
 {
-	if( pAura->GetTarget()->GetTypeId() != TYPEID_PLAYER )
+	if( !pAura->GetTarget()->IsPlayer() )
 		return true;
 
 	if( apply )
@@ -482,7 +482,7 @@ bool HeadlessHorsemanMount(uint32 i, Aura * pAura, bool apply)
 
 bool MagicBroomMount(uint32 i, Aura * pAura, bool apply)
 {
-	if( pAura->GetTarget()->GetTypeId() != TYPEID_PLAYER )
+	if( !pAura->GetTarget()->IsPlayer() )
 		return true;
 
 	if( apply )
@@ -513,7 +513,7 @@ bool MagicBroomMount(uint32 i, Aura * pAura, bool apply)
 
 bool MagicRoosterMount(uint32 i, Aura * pAura, bool apply)
 {
-	if( pAura->GetTarget()->GetTypeId() != TYPEID_PLAYER )
+	if( !pAura->GetTarget()->IsPlayer() )
 		return true;
 
 	if( apply )
@@ -526,7 +526,7 @@ bool MagicRoosterMount(uint32 i, Aura * pAura, bool apply)
 
 bool Invincible(uint32 i, Aura * pAura, bool apply)
 {
-	if( pAura->GetTarget()->GetTypeId() != TYPEID_PLAYER )
+	if( !pAura->GetTarget()->IsPlayer() )
 		return true;
 
 	if( apply )

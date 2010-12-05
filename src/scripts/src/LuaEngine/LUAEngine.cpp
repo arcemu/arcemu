@@ -2943,8 +2943,8 @@ void LuaEngine::ResumeLuaThread(int ref) {
 #define TEST_UNIT() if(ptr == NULL || !ptr->IsInWorld() || !ptr->IsCreature()) { return 0; }
 #define TEST_UNIT_RET() if(ptr == NULL || !ptr->IsInWorld() || !ptr->IsCreature()) { lua_pushboolean(L,0); return 1; }
 
-#define TEST_PLAYER() if(ptr == NULL || !ptr->IsInWorld() || ptr->GetTypeId() != TYPEID_PLAYER) { return 0; }
-#define TEST_PLAYER_RET() if(ptr == NULL || !ptr->IsInWorld() || ptr->GetTypeId() != TYPEID_PLAYER) { lua_pushboolean(L,0); return 1; }
+#define TEST_PLAYER() if(ptr == NULL || !ptr->IsInWorld() || !ptr->IsPlayer()) { return 0; }
+#define TEST_PLAYER_RET() if(ptr == NULL || !ptr->IsInWorld() || !ptr->IsPlayer()) { lua_pushboolean(L,0); return 1; }
 
 #define TEST_UNITPLAYER() if(ptr == NULL || !ptr->IsInWorld() || !ptr->IsUnit()) { return 0; }
 #define TEST_UNITPLAYER_RET() if(ptr == NULL || !ptr->IsInWorld() || !ptr->IsUnit()) { lua_pushboolean(L,0); return 1; }

@@ -77,33 +77,27 @@ void HonorHandler::OnPlayerKilledUnit( Player *pPlayer, Unit* pVictim )
 	if( pVictim == NULL || pPlayer == NULL )
 		return;
 
-	if( pPlayer->GetTypeId() != TYPEID_PLAYER || !pVictim->IsUnit() )
-		return;
-
 	if( !pVictim->IsPlayer() || static_cast< Player* >( pVictim )->m_honorless )
 		return;
 
-    if( pVictim->IsPlayer() )
+	if( pPlayer->m_bg )
 	{
-		if( pPlayer->m_bg )
-		{
-			if( static_cast< Player* >( pVictim )->m_bgTeam == pPlayer->m_bgTeam )
-				return;
+		if( static_cast< Player* >( pVictim )->m_bgTeam == pPlayer->m_bgTeam )
+			return;
 
-			// patch 2.4, players killed >50 times in battlegrounds won't be worth honor for the rest of that bg
-			if( static_cast<Player*>(pVictim)->m_bgScore.Deaths >= 50 )
-				return;
-		}
-		else
-		{
-			if( pPlayer->GetTeam() == static_cast< Player* >( pVictim )->GetTeam() )
-				return;
-		}
+		// patch 2.4, players killed >50 times in battlegrounds won't be worth honor for the rest of that bg
+		if( static_cast<Player*>(pVictim)->m_bgScore.Deaths >= 50 )
+			return;
+	}
+	else
+	{
+		if( pPlayer->GetTeam() == static_cast< Player* >( pVictim )->GetTeam() )
+			return;
 	}
 
 	// Calculate points
 	int32 Points = 0;
-	if(pVictim->IsPlayer() && pPlayer != pVictim)
+	if(pPlayer != pVictim)
 		Points = CalculateHonorPointsForKill( pPlayer->getLevel(), pVictim->getLevel() );
 
 	if( Points > 0 )

@@ -1491,7 +1491,7 @@ public:
 	{
 		//Atiesh check
 		bool HasAtiesh = false;
-		if(mTarget->GetTypeId() == TYPEID_PLAYER)
+		if(mTarget->IsPlayer())
 		{
 			for(set< Object* >::iterator itr = _unit->GetInRangePlayerSetBegin(); itr != _unit->GetInRangePlayerSetEnd(); ++itr)
 			{
@@ -3773,7 +3773,7 @@ public:
 		//fireball barrage check
 		for(set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); ++itr) 
 		{
-			if ((*itr)->GetTypeId() == TYPEID_PLAYER)
+			if ((*itr)->IsPlayer())
 			{
 				target = TO_UNIT(*itr);
 
@@ -3817,7 +3817,7 @@ public:
 			Unit* target = NULL;
 			for(set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); ++itr) 
 			{
-				if ((*itr)->GetTypeId() == TYPEID_PLAYER)
+				if ((*itr)->IsPlayer())
 				{
 					target = TO_UNIT(*itr);
 

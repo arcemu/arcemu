@@ -654,7 +654,7 @@ uint8 Spell::DidHit( uint32 effindex, Unit* target )
 	if( u_victim == NULL )
 		return SPELL_DID_HIT_MISS;
 	
-	Player* p_victim = ( target->GetTypeId() == TYPEID_PLAYER ) ? static_cast< Player* >( target ) : NULL;
+	Player* p_victim = target->IsPlayer() ? static_cast< Player* >( target ) : NULL;
 
 	float baseresist[3] = { 4.0f, 5.0f, 6.0f };
 	int32 lvldiff;
@@ -5307,7 +5307,7 @@ void ApplyDiminishingReturnTimer(uint32 * Duration, Unit * Target, SpellEntry * 
 		return;
 
 	// Check if we don't apply to pve
-	if(!PvE && Target->GetTypeId() != TYPEID_PLAYER && !Target->IsPet())
+	if(!PvE && !Target->IsPlayer() && !Target->IsPet())
 		return;
 
 	// TODO: check for spells that should do this
@@ -5352,7 +5352,7 @@ void UnapplyDiminishingReturnTimer(Unit * Target, SpellEntry * spell)
 	if(Grp == 0xFFFF) return;
 
 	// Check if we don't apply to pve
-	if(!PvE && Target->GetTypeId() != TYPEID_PLAYER && !Target->IsPet())
+	if(!PvE && !Target->IsPlayer() && !Target->IsPet())
 		return;
 
 	//Target->m_diminishAuraCount[Grp]--;

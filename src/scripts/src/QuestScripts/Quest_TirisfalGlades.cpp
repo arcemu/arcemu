@@ -49,7 +49,7 @@ public:
 	{
 		if(_unit->GetHealthPct() < 10)
 		{
-			if(mAttacker->GetTypeId() == TYPEID_PLAYER)
+			if(mAttacker->IsPlayer())
 			{
 				_unit->SetUInt64Value(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
 				RegisterAIUpdateEvent(1000);

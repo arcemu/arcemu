@@ -1439,7 +1439,7 @@ public:
 			}
 
 			uint32 t = (uint32)time(NULL);
-			if(mTarget->GetTypeId() == TYPEID_PLAYER && _unit->isAlive() && !_unit->GetCurrentSpell() && t > spells[6].casttime)
+			if(mTarget->IsPlayer() && _unit->isAlive() && !_unit->GetCurrentSpell() && t > spells[6].casttime)
 			{
 				uint32 SpellID = 0;
 				if (mTarget->getClass() == WARRIOR || mTarget->getClass() == ROGUE || mTarget->getClass() == MAGE)

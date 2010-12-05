@@ -3888,7 +3888,7 @@ void Player::RemoveFromWorld()
 			sEventMgr.AddEvent(m_SummonedObject, &Object::Delete, EVENT_GAMEOBJECT_EXPIRE, 100, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT | EVENT_FLAG_DELETES_OBJECT);
 		}else
 		{
-			if(m_SummonedObject->GetTypeId() == TYPEID_PLAYER)
+			if(m_SummonedObject->IsPlayer())
 			{
 
 			}
@@ -5668,7 +5668,7 @@ bool Player::CanSee(Object* obj) // * Invisibility & Stealth Detection - Partha 
 
 	if(getDeathState() == CORPSE) // we are dead and we have released our spirit
 	{
-		if(object_type == TYPEID_PLAYER)
+		if(obj->IsPlayer())
 		{
 			Player *pObj = static_cast< Player* >(obj);
 
@@ -5827,7 +5827,7 @@ bool Player::CanSee(Object* obj) // * Invisibility & Stealth Detection - Partha 
 void Player::AddInRangeObject(Object* pObj)
 {
 	//Send taxi move if we're on a taxi
-	if (m_CurrentTaxiPath && (pObj->GetTypeId() == TYPEID_PLAYER))
+	if (m_CurrentTaxiPath && pObj->IsPlayer())
 	{
 		uint32 ntime = getMSTime();
 

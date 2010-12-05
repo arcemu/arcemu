@@ -1105,7 +1105,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 
 				if (fabs(getNextTarget()->GetPositionZ() - target_land_z) > _CalcCombatRange(getNextTarget(), false))
 				{
-					if ( getNextTarget()->GetTypeId() != TYPEID_PLAYER )
+					if ( !getNextTarget()->IsPlayer() )
 					{
 						if ( target_land_z > m_Unit->GetMapMgr()->GetWaterHeight(getNextTarget()->GetPositionX(), getNextTarget()->GetPositionY()) )
 							HandleEvent( EVENT_LEAVECOMBAT, m_Unit, 0); //bugged npcs, probably db fault
@@ -1184,7 +1184,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 			if(m_canRangedAttack)
 			{
 				agent = AGENT_MELEE;
-				if(getNextTarget()->GetTypeId() == TYPEID_PLAYER)
+				if(getNextTarget()->IsPlayer())
 				{
 					float dist = m_Unit->GetDistanceSq(getNextTarget());
 					if( static_cast< Player* >( getNextTarget() )->m_currentMovement == MOVE_ROOT || dist >= 64.0f )
@@ -1563,7 +1563,7 @@ void AIInterface::AttackReaction(Unit* pUnit, uint32 damage_dealt, uint32 spellI
 
 				if (fabs(pUnit->GetPositionZ() - target_land_z) > _CalcCombatRange(pUnit, false) )
 				{
-					if ( pUnit->GetTypeId()!=TYPEID_PLAYER && target_land_z > m_Unit->GetMapMgr()->GetWaterHeight(pUnit->GetPositionX(), pUnit->GetPositionY()) )
+					if ( !pUnit->IsPlayer() && target_land_z > m_Unit->GetMapMgr()->GetWaterHeight(pUnit->GetPositionX(), pUnit->GetPositionY()) )
 						return;
 					else if( static_cast<Player*>(pUnit)->GetSession() != NULL )
 					{
@@ -1577,7 +1577,7 @@ void AIInterface::AttackReaction(Unit* pUnit, uint32 damage_dealt, uint32 spellI
 		}
 	}
 
-	if (pUnit->GetTypeId() == TYPEID_PLAYER && static_cast<Player *>(pUnit)->GetMisdirectionTarget() != 0)
+	if (pUnit->IsPlayer() && static_cast<Player *>(pUnit)->GetMisdirectionTarget() != 0)
 	{
 		Unit *mTarget = m_Unit->GetMapMgr()->GetUnit(static_cast<Player *>(pUnit)->GetMisdirectionTarget());
 		if (mTarget != NULL && mTarget->isAlive())
@@ -1633,7 +1633,7 @@ void AIInterface::HealReaction(Unit* caster, Unit* victim, SpellEntry* sp, uint3
 	{
 		modThreatByPtr(caster, threat);
 		// both are players so they might be in the same group
-		if( caster->GetTypeId() == TYPEID_PLAYER && victim->GetTypeId() == TYPEID_PLAYER )
+		if( caster->IsPlayer() && victim->IsPlayer() )
 		{
 			if( static_cast< Player* >( caster )->GetGroup() == static_cast< Player* >( victim )->GetGroup() )
 			{
@@ -2226,7 +2226,7 @@ void AIInterface::_CalcDestinationAndMove(Unit *target, float dist)
 		float x = dist * cosf(angle);
 		float y = dist * sinf(angle);
 
-		if(target->GetTypeId() == TYPEID_PLAYER && static_cast< Player* >( target )->m_isMoving )
+		if(target->IsPlayer() && static_cast< Player* >( target )->m_isMoving )
 		{
 			// cater for moving player vector based on orientation
 			x -= cosf(target->GetOrientation());
@@ -2380,12 +2380,12 @@ void AIInterface::SendMoveToPacket(float toX, float toY, float toZ, float toO, u
 
 #ifndef ENABLE_COMPRESSED_MOVEMENT_FOR_CREATURES
 	
-    bool self = m_Unit->GetTypeId() == TYPEID_PLAYER;
+    bool self = m_Unit->IsPlayer();
 
 	m_Unit->SendMessageToSet( &data, self );
 
 #else
-	if( m_Unit->GetTypeId() == TYPEID_PLAYER )
+	if( m_Unit->IsPlayer() )
 		static_cast<Player*>(m_Unit)->GetSession()->SendPacket(&data);
 
 	for(set<Player*>::iterator itr = m_Unit->GetInRangePlayerSetBegin(); itr != m_Unit->GetInRangePlayerSetEnd(); ++itr)
@@ -2472,7 +2472,7 @@ bool AIInterface::IsFlying()
 		}
 	}
 	return false;*/
-	if( m_Unit->GetTypeId() == TYPEID_PLAYER )
+	if( m_Unit->IsPlayer() )
 		return static_cast< Player* >( m_Unit )->FlyCheat;
 
 	return false;

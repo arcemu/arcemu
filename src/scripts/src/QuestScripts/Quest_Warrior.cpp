@@ -100,7 +100,7 @@ public:
 	{
 		if(_unit->GetUInt32Value(UNIT_FIELD_HEALTH)- fAmount<=_unit->GetUInt32Value(UNIT_FIELD_MAXHEALTH)*0.37f)
 		{
-			if(mAttacker->GetTypeId() == TYPEID_PLAYER)
+			if(mAttacker->IsPlayer())
 			{
 				_unit->SetUInt64Value(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
 				RegisterAIUpdateEvent(1000);

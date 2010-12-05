@@ -1097,7 +1097,7 @@ bool ChatHandler::HandleParalyzeCommand(const char* args, WorldSession *m_sessio
 	//Player *plr = getSelectedChar(m_session, true);
 	//if(!plr) return false;
 	Unit *plr = m_session->GetPlayer()->GetMapMgr()->GetUnit(m_session->GetPlayer()->GetSelection());
-	if(!plr || plr->GetTypeId() != TYPEID_PLAYER)
+	if(!plr || !plr->IsPlayer())
 	{
 		RedSystemMessage(m_session, "Invalid target.");
 		return true;
@@ -1120,7 +1120,7 @@ bool ChatHandler::HandleUnParalyzeCommand(const char* args, WorldSession *m_sess
 	//Player *plr = getSelectedChar(m_session, true);
 	//if(!plr) return false;
 	Unit *plr = m_session->GetPlayer()->GetMapMgr()->GetUnit(m_session->GetPlayer()->GetSelection());
-	if(!plr || plr->GetTypeId() != TYPEID_PLAYER)
+	if(!plr || !plr->IsPlayer())
 	{
 		RedSystemMessage(m_session, "Invalid target.");
 		return true;

@@ -497,7 +497,6 @@ void MapMgr::RemoveObject(Object *obj, bool free_guid)
 
 	_updates.erase( obj );
 	obj->ClearUpdateMask();
-	Player* plObj = (obj->GetTypeId() == TYPEID_PLAYER) ? static_cast< Player* >( obj ) : 0;
 
 	///////////////////////////////////////
 	// Remove object from all needed places
@@ -578,11 +577,13 @@ void MapMgr::RemoveObject(Object *obj, bool free_guid)
 		obj->SetMapCell(NULL);
 	}
 
+	Player* plObj = NULL;
 	// Clear any updates pending
-	if(obj->GetTypeId() == TYPEID_PLAYER)
+	if(obj->IsPlayer())
 	{
-		_processQueue.erase( static_cast< Player* >( obj ) );
-		static_cast< Player* >( obj )->ClearAllPendingUpdates();
+		plObj = TO_PLAYER( obj );
+		_processQueue.erase( plObj );
+		plObj->ClearAllPendingUpdates();
 	}
 
     obj->RemoveSelfFromInrangeSets();
@@ -591,7 +592,7 @@ void MapMgr::RemoveObject(Object *obj, bool free_guid)
 	obj->ClearInRangeSet();
 
 	// If it's a player - update his nearby cells
-	if(!_shutdown && obj->GetTypeId() == TYPEID_PLAYER)
+	if(!_shutdown && obj->IsPlayer())
 	{
 		// get x/y
 		if(obj->GetPositionX() >= _maxX || obj->GetPositionX() <= _minY ||
@@ -609,7 +610,7 @@ void MapMgr::RemoveObject(Object *obj, bool free_guid)
 	}
 
 	// Remove the session from our set if it is a player.
-	if(plObj)
+	if(obj->IsPlayer())
 	{
 		for(set<Object*>::iterator itr = _mapWideStaticObjects.begin(); itr != _mapWideStaticObjects.end(); ++itr)
 		{
@@ -780,7 +781,7 @@ void MapMgr::ChangeObjectLocation( Object *obj )
 		// if player we need to update cell activity
 		// radius = 2 is used in order to update both
 		// old and new cells
-		if(obj->GetTypeId() == TYPEID_PLAYER)
+		if(obj->IsPlayer())
 		{
 			// have to unlock/lock here to avoid a deadlock situation.
 			UpdateCellActivity(cellX, cellY, 2);
@@ -988,7 +989,7 @@ void MapMgr::_UpdateObjects()
 			if( pObj->IsInWorld() )
 			{
 				// players have to receive their own updates ;)
-				if( pObj->GetTypeId() == TYPEID_PLAYER )
+				if( pObj->IsPlayer() )
 				{
 					// need to be different! ;)
 					count = pObj->BuildValuesUpdateBlockForPlayer( &update, static_cast< Player* >( pObj ) );
@@ -1015,7 +1016,7 @@ void MapMgr::_UpdateObjects()
 						lplr = static_cast< Player* >( *itr );
 						++itr;
 						// Make sure that the target player can see us.
-						if( lplr->GetTypeId() == TYPEID_PLAYER && lplr->IsVisible( pObj->GetGUID() ) )
+						if( lplr->IsVisible( pObj->GetGUID() ) )
 							lplr->PushUpdateData( &update, count );
 					}
 					update.clear();

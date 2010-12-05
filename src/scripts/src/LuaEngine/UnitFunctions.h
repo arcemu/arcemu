@@ -1849,7 +1849,7 @@ namespace luaUnit
 
 	int GetPlayerClass(lua_State * L, Unit * ptr)
 	{
-	   if(!ptr || ptr->GetTypeId() != TYPEID_PLAYER) 
+	   if(!ptr || !ptr->IsPlayer()) 
 	   {
 		  lua_pushstring(L, "Unknown");
 		  return 1;
@@ -3038,7 +3038,7 @@ namespace luaUnit
 		lua_newtable(L);
 		for(std::set< Object* >::iterator itr = ptr->GetInRangePlayerSetBegin(); itr != ptr->GetInRangePlayerSetEnd(); itr++)
 		{
-			if( (*itr) ->GetTypeId() == TYPEID_PLAYER)
+			if( (*itr)->IsPlayer() )
 			{
 				count++,
 				lua_pushinteger(L,count);
@@ -3087,7 +3087,7 @@ namespace luaUnit
 		MODE_HEROIC_10MEN	=	2,
 		MODE_HEROIC_25MEN	=	3
 		*/
-		if (ptr->GetTypeId() == TYPEID_PLAYER)
+		if (ptr->IsPlayer())
 		{
 			Player * plr = TO_PLAYER(ptr);
 			if (plr->GetGroup())

@@ -713,7 +713,7 @@ Aura::Aura( SpellEntry* proto, int32 duration, Object* caster, Unit* target, boo
 	Arcemu::Util::ARCEMU_ASSERT( target != NULL );
 	m_target = target;
 
-	if( m_target->GetTypeId() == TYPEID_PLAYER )
+	if( m_target->IsPlayer() )
 		p_target = static_cast< Player* >( m_target );
 	else
 		p_target = NULL;
@@ -1488,7 +1488,7 @@ void Aura::SpellAuraModBaseResistancePerc(bool apply)
 	{
 		if(Flag & (((uint32)1)<< x))
 		{
-			if(m_target->GetTypeId() == TYPEID_PLAYER)
+			if(m_target->IsPlayer())
 			{
 				if(mod->m_amount>0)
 				{
@@ -2266,7 +2266,7 @@ void Aura::SpellAuraModAttackSpeed( bool apply )
 	else
 		SetPositive();
 
-	if ( m_target->GetTypeId() == TYPEID_PLAYER )
+	if ( m_target->IsPlayer() )
 	{
 		if(apply)
 		{
@@ -2624,7 +2624,7 @@ void Aura::SpellAuraModStealth(bool apply)
 		m_target->m_stealthLevel += mod->m_amount;
 
 		// hack fix for vanish stuff
-		if( m_spellProto->NameHash == SPELL_HASH_VANISH && m_target->GetTypeId() == TYPEID_PLAYER )	 // Vanish
+		if( m_spellProto->NameHash == SPELL_HASH_VANISH && m_target->IsPlayer() )	 // Vanish
 		{
 
 			for( Object::InRangeSet::iterator iter = m_target->GetInRangeSetBegin();iter != m_target->GetInRangeSetEnd(); ++iter )
@@ -2765,7 +2765,7 @@ void Aura::SpellAuraModInvisibility(bool apply)
 	{
 		m_target->SetInvisibility(GetSpellId());
 		m_target->m_invisFlag = static_cast<uint8>( mod->m_miscValue );
-		if( m_target->GetTypeId() == TYPEID_PLAYER )
+		if( m_target->IsPlayer() )
 		{
 			if( GetSpellId() == 32612 )
 				static_cast<Player*>(m_target)->SetFlag( PLAYER_FIELD_BYTES2, 0x4000 ); //Mage Invis self visual
@@ -2776,7 +2776,7 @@ void Aura::SpellAuraModInvisibility(bool apply)
 	else
 	{
 		m_target->m_invisFlag = INVIS_FLAG_NORMAL;
-		if( m_target->GetTypeId() == TYPEID_PLAYER )
+		if( m_target->IsPlayer() )
 		{
 			if( GetSpellId() == 32612 )
 				static_cast<Player*>(m_target)->RemoveFlag( PLAYER_FIELD_BYTES2, 0x4000 );
@@ -2910,7 +2910,7 @@ void Aura::SpellAuraModResistance(bool apply)
 			amt = (int32)(amt * 1.17);
 	}
 
-	if( m_target->GetTypeId() == TYPEID_PLAYER )
+	if( m_target->IsPlayer() )
 	{
 		for( uint32 x = 0; x < 7; x++ )
 		{
@@ -3239,7 +3239,7 @@ void Aura::SpellAuraModStat( bool apply )
 
 void Aura::SpellAuraModSkill(bool apply)
 {
-	if (m_target->GetTypeId() == TYPEID_PLAYER)
+	if (m_target->IsPlayer())
 	{
 		if(apply)
 		{
@@ -3454,7 +3454,7 @@ void Aura::SpellAuraModIncreaseEnergy(bool apply)
 	m_target->ModMaxPower(mod->m_miscValue, amount);
 	m_target->ModPower(mod->m_miscValue, amount);
 
-	if(mod->m_miscValue == 0 && m_target->GetTypeId() == TYPEID_PLAYER)
+	if(mod->m_miscValue == 0 && m_target->IsPlayer())
 	{
 		static_cast< Player* >( m_target )->SetManaFromSpell(static_cast< Player* >( m_target )->GetManaFromSpell() + amount);
 	}
@@ -5020,7 +5020,7 @@ void Aura::SpellAuraAddFarSight(bool apply)
 {
 	if(apply)
 	{
-		if(m_target->GetTypeId() != TYPEID_PLAYER)
+		if(!m_target->IsPlayer())
 			return;
 
 		//FIXME:grep aka Nublex will fix this
@@ -6947,7 +6947,7 @@ void Aura::SpellAuraModRangedAttackPowerPct(bool apply)
 
 void Aura::SpellAuraIncreaseDamageTypePCT(bool apply)
 {
-	if(m_target->GetTypeId() == TYPEID_PLAYER)
+	if(m_target->IsPlayer())
 	{
 		if(apply)
 		{
@@ -6972,7 +6972,7 @@ void Aura::SpellAuraIncreaseDamageTypePCT(bool apply)
 
 void Aura::SpellAuraIncreaseCricticalTypePCT(bool apply)
 {
-	if(m_target->GetTypeId() == TYPEID_PLAYER)
+	if(m_target->IsPlayer())
 	{
 		if(apply)
 		{
@@ -6997,7 +6997,7 @@ void Aura::SpellAuraIncreaseCricticalTypePCT(bool apply)
 
 void Aura::SpellAuraIncreasePartySpeed(bool apply)
 {
-	if(m_target->GetTypeId() == TYPEID_PLAYER && m_target->isAlive() && m_target->GetMount() == 0)
+	if(m_target->IsPlayer() && m_target->isAlive() && m_target->GetMount() == 0)
 	{
 		if(apply)
 		{
@@ -7685,7 +7685,7 @@ void Aura::SpellAuraModAttackerCritChance(bool apply)
 
 void Aura::SpellAuraIncreaseAllWeaponSkill(bool apply)
 {
-	if (m_target->GetTypeId() == TYPEID_PLAYER)
+	if (m_target->IsPlayer())
 	{
 		if(apply)
 		{

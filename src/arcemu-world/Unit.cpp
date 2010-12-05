@@ -3752,7 +3752,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 			dmg.resisted_damage = 0;
 		}
 	}
-	if(pVictim->GetTypeId() == TYPEID_PLAYER && static_cast< Player* >(pVictim)->GodModeCheat == true)
+	if(pVictim->IsPlayer() && static_cast< Player* >(pVictim)->GodModeCheat == true)
 	{
 		dmg.resisted_damage = dmg.full_damage; //godmode
 	}
@@ -4072,7 +4072,7 @@ void Unit::smsg_AttackStop(Unit* pVictim)
 		return;
 
 	WorldPacket data(SMSG_ATTACKSTOP, 24);
-	if(m_objectTypeId==TYPEID_PLAYER)
+	if(IsPlayer())
 	{
 		data << pVictim->GetNewGUID();
 		data << uint8(0);
@@ -4129,7 +4129,7 @@ void Unit::smsg_AttackStart(Unit* pVictim)
     // FLAGS changed so other players see attack animation
     //    addUnitFlag(UNIT_FLAG_COMBAT);
     //    setUpdateMaskBit(UNIT_FIELD_FLAGS );
-    if(GetTypeId() == TYPEID_PLAYER)
+    if(IsPlayer())
     {
         Player* pThis = static_cast< Player* >( this );
         if( pThis->cannibalize)
@@ -5532,7 +5532,7 @@ void Unit::SetStandState(uint8 standstate)
 	if( standstate == STANDSTATE_STAND )//standup
 		RemoveAurasByInterruptFlag(AURA_INTERRUPT_ON_STAND_UP);
 
-	if( m_objectTypeId == TYPEID_PLAYER )
+	if( IsPlayer() )
 		static_cast< Player* >( this )->GetSession()->OutPacket( SMSG_STANDSTATE_UPDATE, 1, &standstate );
 }
 
@@ -5737,7 +5737,7 @@ void Unit::Root()
 {
 	this->m_special_state |= UNIT_STATE_ROOT;
 
-	if(m_objectTypeId == TYPEID_PLAYER)
+	if(IsPlayer())
 	{
 		static_cast< Player* >( this )->SetMovement(MOVE_ROOT, 1);
 	}
@@ -5754,7 +5754,7 @@ void Unit::Unroot()
 {
 	this->m_special_state &= ~UNIT_STATE_ROOT;
 
-	if(m_objectTypeId == TYPEID_PLAYER)
+	if(IsPlayer())
 	{
 		static_cast< Player* >( this )->SetMovement(MOVE_UNROOT, 5);
 	}
@@ -6216,17 +6216,12 @@ void Unit::RemoveAurasOfSchool(uint32 School, bool Positive, bool Immune)
 
 void Unit::EnableFlight()
 {
-	if(m_objectTypeId != TYPEID_PLAYER || TO_PLAYER(this)->m_changingMaps)
+	if(!IsPlayer() || TO_PLAYER(this)->m_changingMaps)
 	{
 		WorldPacket data(SMSG_MOVE_SET_CAN_FLY, 13);
 		data << GetNewGUID();
 		data << uint32(2);
 		SendMessageToSet(&data, true);
-
-		if( IsPlayer() )
-		{
-			static_cast< Player* >( this )->m_setflycheat = true;
-		}
 	}
 	else
 	{
@@ -6242,15 +6237,12 @@ void Unit::EnableFlight()
 
 void Unit::DisableFlight()
 {
-	if(m_objectTypeId != TYPEID_PLAYER || TO_PLAYER(this)->m_changingMaps)
+	if(!IsPlayer() || TO_PLAYER(this)->m_changingMaps)
 	{
 		WorldPacket data(SMSG_MOVE_UNSET_CAN_FLY, 13);
 		data << GetNewGUID();
 		data << uint32(5);
 		SendMessageToSet(&data, true);
-
-		if( IsPlayer() )
-			static_cast< Player* >( this )->m_setflycheat = false;
 	}
 	else
 	{
@@ -6292,7 +6284,7 @@ void Unit::UpdateVisibility()
 	Object * pObj;
 	Player * plr;
 
-	if( m_objectTypeId == TYPEID_PLAYER )
+	if( IsPlayer() )
 	{
 		plr = static_cast< Player* >( this );
 		for( Object::InRangeSet::iterator itr2 = m_objectsInRange.begin(); itr2 != m_objectsInRange.end();)
@@ -6321,7 +6313,7 @@ void Unit::UpdateVisibility()
 				}
 			}
 
-			if( pObj->GetTypeId() == TYPEID_PLAYER )
+			if( pObj->IsPlayer() )
 			{
 				pl = static_cast< Player* >( pObj );
 				can_see = pl->CanSee( plr );
@@ -6572,7 +6564,7 @@ void CombatStatusHandler::ClearMyHealers()
 
 void CombatStatusHandler::WeHealed(Unit * pHealTarget)
 {
-	if(pHealTarget->GetTypeId() != TYPEID_PLAYER || m_Unit->GetTypeId() != TYPEID_PLAYER || pHealTarget == m_Unit)
+	if(!pHealTarget->IsPlayer() || !m_Unit->IsPlayer() || pHealTarget == m_Unit)
 		return;
 
 	if(pHealTarget->CombatStatus.IsInCombat())
@@ -6611,7 +6603,7 @@ void CombatStatusHandler::UpdateFlag()
 			// remove any of our healers from combat too, if they are able to be.
 			ClearMyHealers();
 
-			if( m_Unit->GetTypeId() == TYPEID_PLAYER )
+			if( m_Unit->IsPlayer() )
 				TO_PLAYER(m_Unit)->UpdatePotionCooldown();
 		}
 	}
@@ -6644,7 +6636,7 @@ void CombatStatusHandler::AddAttackTarget(const uint64& guid)
 
 	m_attackTargets.insert(guid);
 	//printf("Adding attack target "I64FMT" to "I64FMT"\n", guid, m_Unit->GetGUID());
-	if(m_Unit->GetTypeId() == TYPEID_PLAYER &&
+	if(m_Unit->IsPlayer() &&
 		m_primaryAttackTarget != guid)			// players can only have one attack target.
 	{
 		if(m_primaryAttackTarget)

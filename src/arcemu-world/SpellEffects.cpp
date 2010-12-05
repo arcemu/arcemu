@@ -3027,7 +3027,7 @@ void Spell::SpellEffectSummonGuardian(uint32 i) // Summon Guardian
 void Spell::SpellEffectSkillStep(uint32 i) // Skill Step
 {
 	Player*target;
-	if(m_caster->GetTypeId() != TYPEID_PLAYER)
+	if(!m_caster->IsPlayer())
 	{
 		// Check targets
 		if( m_targets.m_unitTarget )
@@ -5374,7 +5374,7 @@ void Spell::SpellEffectRedirectThreat(uint32 i)
 	if (!p_caster || !unitTarget)
 		return;
 
-	if ((unitTarget->GetTypeId() == TYPEID_PLAYER && p_caster->GetGroup() != static_cast<Player *>(unitTarget)->GetGroup()) || (unitTarget->IsCreature() && !unitTarget->IsPet()))
+	if ((unitTarget->IsPlayer() && p_caster->GetGroup() != static_cast<Player *>(unitTarget)->GetGroup()) || (unitTarget->IsCreature() && !unitTarget->IsPet()))
 		return;
 
 	p_caster->SetMisdirectionTarget(unitTarget->GetGUID());
@@ -5663,7 +5663,7 @@ void Spell::SpellEffectActivateSpec(uint32 i)
 
 void Spell::SpellEffectDurabilityDamage(uint32 i)
 {
-	if(!unitTarget || unitTarget->GetTypeId() != TYPEID_PLAYER)
+	if(!unitTarget || !unitTarget->IsPlayer())
 		return;
  
 	int16 slot = int16(GetProto()->EffectMiscValue[i]);
@@ -5756,7 +5756,7 @@ void Spell::SpellEffectDurabilityDamage(uint32 i)
 
 void Spell::SpellEffectDurabilityDamagePCT(uint32 i)
 {
-	if(!unitTarget || unitTarget->GetTypeId() != TYPEID_PLAYER)
+	if(!unitTarget || !unitTarget->IsPlayer())
 		return;
 
 	int16 slot = int16(GetProto()->EffectMiscValue[i]);

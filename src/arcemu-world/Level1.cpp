@@ -636,7 +636,7 @@ bool ChatHandler::HandleLearnSkillCommand(const char *args, WorldSession *m_sess
 
 	Player *plr = getSelectedChar(m_session, true);
 	if(!plr) return false;
-	if(plr->GetTypeId() != TYPEID_PLAYER) return false;
+	if(!plr->IsPlayer()) return false;
 	sGMLog.writefromsession(m_session, "used add skill of %u %u %u on %s", skill, min, max, plr->GetName());
 
 	plr->_AddSkillLine(skill, min, max);   

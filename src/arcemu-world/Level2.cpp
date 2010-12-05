@@ -651,7 +651,7 @@ bool ChatHandler::HandleMonsterSayCommand(const char* args, WorldSession *m_sess
 		RedSystemMessage(m_session, "Please select a creature or player before using this command.");
 		return true;
 	}
-	if(crt->GetTypeId() == TYPEID_PLAYER)
+	if(crt->IsPlayer())
 	{
 		WorldPacket * data = this->FillMessageData(CHAT_MSG_SAY, LANG_UNIVERSAL, args, crt->GetGUID(), 0);
 		crt->SendMessageToSet(data, true);
@@ -676,7 +676,7 @@ bool ChatHandler::HandleMonsterYellCommand(const char* args, WorldSession *m_ses
 		RedSystemMessage(m_session, "Please select a creature or player before using this command.");
 		return true;
 	}
-	if(crt->GetTypeId() == TYPEID_PLAYER)
+	if(crt->IsPlayer())
 	{
 		WorldPacket * data = this->FillMessageData(CHAT_MSG_YELL, LANG_UNIVERSAL, args, crt->GetGUID(), 0);
 		crt->SendMessageToSet(data, true);

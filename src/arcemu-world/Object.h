@@ -435,7 +435,7 @@ public:
 	bool RemoveIfInRange( Object * obj )
 	{
 		InRangeSet::iterator itr = m_objectsInRange.find(obj);
-		if( obj->GetTypeId() == TYPEID_PLAYER )
+		if( obj->IsPlayer() )
 			m_inRangePlayers.erase( obj );
 
 		if( itr == m_objectsInRange.end() )

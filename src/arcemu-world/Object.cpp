@@ -347,7 +347,7 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 
 	Player * pThis = NULL;
 	MovementInfo* moveinfo = NULL;
-	if(GetTypeId() == TYPEID_PLAYER)
+	if(IsPlayer())
 	{
 		pThis = static_cast< Player* >( this );
 		if(pThis->GetSession())
@@ -807,7 +807,7 @@ bool Object::SetPosition( float newX, float newY, float newZ, float newOrientati
 		m_lastMapUpdatePosition.ChangeCoords(newX,newY,newZ,newOrientation);
 		m_mapMgr->ChangeObjectLocation(this);
 
-		if( m_objectTypeId == TYPEID_PLAYER && static_cast< Player* >( this )->GetGroup() && static_cast< Player* >( this )->m_last_group_position.Distance2DSq(m_position) > 25.0f ) // distance of 5.0
+		if( IsPlayer() && static_cast< Player* >( this )->GetGroup() && static_cast< Player* >( this )->m_last_group_position.Distance2DSq(m_position) > 25.0f ) // distance of 5.0
 		{
             static_cast< Player* >( this )->GetGroup()->HandlePartialChange( PARTY_UPDATE_FLAG_POSITION, static_cast< Player* >( this ) );
 		}
@@ -1016,7 +1016,7 @@ void Object::SetUInt32Value( const uint32 index, const uint32 value )
 	}
 
 	//! Group update handling
-	if(m_objectTypeId == TYPEID_PLAYER)
+	if(IsPlayer())
 	{
 		TO_PLAYER(this)->HandleUpdateFieldChanged(index);
 		if(IsInWorld())
@@ -1097,7 +1097,7 @@ void Object::ModUnsigned32Value(uint32 index, int32 mod)
 		}
 	}
 
-	if(m_objectTypeId == TYPEID_PLAYER)
+	if(IsPlayer())
 	{
 #ifdef OPTIMIZED_PLAYER_SAVING
 		switch(index)
@@ -1160,7 +1160,7 @@ void Object::ModSignedInt32Value(uint32 index, int32 value )
 		}
 	}
 
-	if(m_objectTypeId == TYPEID_PLAYER)
+	if(IsPlayer())
 	{
 #ifdef OPTIMIZED_PLAYER_SAVING
 		switch(index)
@@ -1778,7 +1778,7 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 			res = float( dmg.full_damage - dmg.resisted_damage );
 	}
 	//------------------------------special states----------------------------------------------
-	if(pVictim->GetTypeId() == TYPEID_PLAYER && static_cast< Player* >(pVictim)->GodModeCheat == true)
+	if(pVictim->IsPlayer() && static_cast< Player* >(pVictim)->GodModeCheat == true)
 	{
 		res = float(dmg.full_damage);
 		dmg.resisted_damage = dmg.full_damage;
