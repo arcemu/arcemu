@@ -5683,7 +5683,7 @@ bool Player::CanSee(Object* obj) // * Invisibility & Stealth Detection - Partha 
 
 		if(myCorpseInstanceId == GetInstanceID())
 		{
-			if(obj->GetTypeId() == TYPEID_CORPSE && static_cast<Corpse*>(obj)->GetOwner() == GetGUID())
+			if(obj->IsCorpse() && static_cast<Corpse*>(obj)->GetOwner() == GetGUID())
 				return true;
 
 			if(obj->GetDistanceSq(myCorpseLocation) <= CORPSE_VIEW_DISTANCE)
@@ -6553,7 +6553,7 @@ void Player::UpdateNearbyGameObjects()
     for (Object::InRangeSet::iterator itr = m_objectsInRange.begin(); itr != m_objectsInRange.end(); ++itr)
 	{
 		Object * obj = (*itr);
-		if(obj->GetTypeId() == TYPEID_GAMEOBJECT)
+		if(obj->IsGameObject())
 		{
 			bool activate_quest_object = false;
 			GameObject *go = TO_GAMEOBJECT(obj);
@@ -13533,7 +13533,7 @@ void Player::AcceptQuest( uint64 guid, uint32 quest_id ){
 		//GetPlayer()->timed_quest_slot = log_slot;
 	}
 
-	if(qst->count_required_item || qst_giver->GetTypeId() == TYPEID_GAMEOBJECT)	// gameobject quests deactivate
+	if(qst->count_required_item || qst_giver->IsGameObject())	// gameobject quests deactivate
 		UpdateNearbyGameObjects();
 
 	//ScriptSystem->OnQuestEvent(qst, static_cast< Creature* >( qst_giver ), _player, QUEST_EVENT_ON_ACCEPT);

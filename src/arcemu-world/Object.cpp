@@ -124,7 +124,7 @@ uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player *target)
 	uint32 flags2 = 0;
 
 	uint8 updatetype = UPDATETYPE_CREATE_OBJECT;
-	if(m_objectTypeId == TYPEID_CORPSE)
+	if(IsCorpse())
 	{
 		if(static_cast<Corpse*>(this)->GetDisplayId() == 0)
 			return 0;
@@ -173,7 +173,7 @@ uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player *target)
 	}
 
 	// gameobject stuff
-	if(m_objectTypeId == TYPEID_GAMEOBJECT)
+	if(IsGameObject())
 	{
 //		switch( GetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_TYPEID) )
 		switch(m_uint32Values[GAMEOBJECT_BYTES_1])
@@ -200,7 +200,7 @@ uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player *target)
 				}break;
 		}
 		//The above 3 checks FAIL to identify transports, thus their flags remain 0x58, and this is BAAAAAAD! Later they don't get position x,y,z,o updates, so they appear randomly by a client-calculated path, they always face north, etc... By: VLack
-		if( flags != 0x0352 && GetTypeId() == TYPEID_GAMEOBJECT && static_cast<GameObject*>(this)->GetInfo()->Type == GAMEOBJECT_TYPE_TRANSPORT && !(static_cast<GameObject*>(this)->GetOverrides() & GAMEOBJECT_OVERRIDE_PARENTROT) )
+		if( flags != 0x0352 && IsGameObject() && static_cast<GameObject*>(this)->GetInfo()->Type == GAMEOBJECT_TYPE_TRANSPORT && !(static_cast<GameObject*>(this)->GetOverrides() & GAMEOBJECT_OVERRIDE_PARENTROT) )
 			flags = 0x0352;
 	}
 
@@ -220,7 +220,7 @@ uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player *target)
 	updateMask.SetCount( m_valuesCount );
 	_SetCreateBits( &updateMask, target );
 
-	if(GetTypeId() == TYPEID_GAMEOBJECT && (static_cast<GameObject*>(this)->GetOverrides() & GAMEOBJECT_OVERRIDE_PARENTROT) )
+	if(IsGameObject() && (static_cast<GameObject*>(this)->GetOverrides() & GAMEOBJECT_OVERRIDE_PARENTROT) )
 	{
 		updateMask.SetBit(GAMEOBJECT_PARENTROTATION_02);
 		updateMask.SetBit(GAMEOBJECT_PARENTROTATION_03);
@@ -500,7 +500,7 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 			*data << (float)m_position.z;
 			*data << (float)m_position.o;
 
-			if (m_objectTypeId == TYPEID_CORPSE)
+			if (IsCorpse())
 				*data << (float)m_position.o; //VLack: repeat the orientation!
 			else
 				*data << (float)0;
@@ -612,7 +612,7 @@ void Object::_BuildValuesUpdate(ByteBuffer * data, UpdateMask *updateMask, Playe
 			}
 		}
 
-		if( target && GetTypeId() == TYPEID_GAMEOBJECT )
+		if( target && IsGameObject() )
 		{
 			GameObject *go = TO_GAMEOBJECT(this);
 			QuestLogEntry *qle;
@@ -784,7 +784,7 @@ bool Object::SetPosition( float newX, float newY, float newZ, float newOrientati
 	bool updateMap = false, result = true;
 
 	//It's a good idea to push through EVERY transport position change, no matter how small they are. By: VLack aka. VLsoft
-	if( GetTypeId() == TYPEID_GAMEOBJECT && static_cast<GameObject*>(this)->GetInfo()->Type == GAMEOBJECT_TYPE_TRANSPORT )
+	if( IsGameObject() && static_cast<GameObject*>(this)->GetInfo()->Type == GAMEOBJECT_TYPE_TRANSPORT )
 		updateMap = true;
 
 	//if (m_position.x != newX || m_position.y != newY)
@@ -1527,7 +1527,7 @@ void Object::_setFaction()
 			sLog.outError("Unit does not have a valid faction. It will make him act stupid in world. Don't blame us, blame yourself for not checking :P, faction %u set to entry %u",TO_UNIT(this)->GetFaction(),GetEntry() );
 	}
 	else
-	if(GetTypeId() == TYPEID_GAMEOBJECT)
+	if(IsGameObject())
 	{
 		factT = dbcFactionTemplate.LookupEntryForced(static_cast<GameObject*>(this)->GetFaction());
 		if( !factT )
@@ -1554,7 +1554,7 @@ void Object::UpdateOppFactionSet()
 	{
         Object *i = *itr;
 
-        if( ( i->IsUnit() ) || ( i->GetTypeId() == TYPEID_GAMEOBJECT ) )
+        if( i->IsUnit() || i->IsGameObject() )
 		{
 			if(isHostile( this, i) )
 			{
@@ -1584,7 +1584,7 @@ void Object::UpdateSameFactionSet()
 	{
         Object *i = *itr;
 
-        if( ( i->IsUnit() ) || ( i->GetTypeId() == TYPEID_GAMEOBJECT) )
+        if( i->IsUnit() || i->IsGameObject() )
 		{
 			if( isFriendly( this, i ) )
 			{

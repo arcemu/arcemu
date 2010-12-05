@@ -248,7 +248,7 @@ void MapMgr::PushObject(Object *obj)
 		return;
 	}
 
-	if(obj->GetTypeId() == TYPEID_CORPSE)
+	if(obj->IsCorpse())
 	{
 		m_corpses.insert(((Corpse*)obj));
 	}
@@ -547,7 +547,7 @@ void MapMgr::RemoveObject(Object *obj, bool free_guid)
 		return;
 	}
 
-	if(obj->GetTypeId() == TYPEID_CORPSE)
+	if(obj->IsCorpse())
 	{
 		m_corpses.erase(((Corpse*)obj));
 	}
@@ -680,10 +680,10 @@ void MapMgr::ChangeObjectLocation( Object *obj )
 			else if( curObj->GetTypeFromGUID() == HIGHGUID_TYPE_TRANSPORTER )
 				fRange = 0.0f; // unlimited distance for transporters (only up to 2 cells +/- anyway.)
 			//If the object announcing its position is a transport, or other special object, then deleting it from visible objects should be avoided. - By: VLack
-			else if( obj->GetTypeId() == TYPEID_GAMEOBJECT && (static_cast<GameObject*>(obj)->GetOverrides() & GAMEOBJECT_INFVIS) && obj->GetMapId() == curObj->GetMapId() )
+			else if( obj->IsGameObject() && (static_cast<GameObject*>(obj)->GetOverrides() & GAMEOBJECT_INFVIS) && obj->GetMapId() == curObj->GetMapId() )
 				fRange = 0.0f;
 			//If the object we're checking for possible removal is a transport or other special object, and we are players on the same map, don't remove it...
-			else if( plObj && curObj->GetTypeId() == TYPEID_GAMEOBJECT && (static_cast<GameObject*>(curObj)->GetOverrides() & GAMEOBJECT_INFVIS) && obj->GetMapId() == curObj->GetMapId() )
+			else if( plObj && curObj->IsGameObject() && (static_cast<GameObject*>(curObj)->GetOverrides() & GAMEOBJECT_INFVIS) && obj->GetMapId() == curObj->GetMapId() )
 				fRange = 0.0f;
 			else if( curObj->IsPlayer() && static_cast< Player* >( curObj )->GetFarsightTarget() == obj->GetGUID())
 				fRange = 0.0f;//Mind Vision, Eye of Kilrogg
@@ -810,7 +810,7 @@ void MapMgr::ChangeObjectLocation( Object *obj )
 	MapCell *cell;
 
 	//If the object announcing it's position is a special one, then it should do so in a much wider area - like the distance between the two transport towers in Orgrimmar, or more. - By: VLack
-	if( obj->GetTypeId() == TYPEID_GAMEOBJECT && (static_cast<GameObject*>(obj)->GetOverrides() & GAMEOBJECT_ONMOVEWIDE) ) {
+	if( obj->IsGameObject() && (static_cast<GameObject*>(obj)->GetOverrides() & GAMEOBJECT_ONMOVEWIDE) ) {
 		endX = cellX + 5 <= _sizeX ? cellX + 6 : ( _sizeX - 1 );
 		endY = cellY + 5 <= _sizeY ? cellY + 6 : ( _sizeY - 1 );
 		startX = cellX - 5 > 0 ? cellX - 6 : 0;
@@ -859,10 +859,10 @@ void MapMgr::UpdateInRangeSet( Object *obj, Player *plObj, MapCell* cell, ByteBu
 			fRange = 0.0f; // unlimited distance for transporters (only up to 2 cells +/- anyway.)
 
 		//If the object announcing its position is a transport, or other special object, then deleting it from visible objects should be avoided. - By: VLack
-		else if( obj->GetTypeId() == TYPEID_GAMEOBJECT && (static_cast<GameObject*>(obj)->GetOverrides() & GAMEOBJECT_INFVIS) && obj->GetMapId() == curObj->GetMapId() )
+		else if( obj->IsGameObject() && (static_cast<GameObject*>(obj)->GetOverrides() & GAMEOBJECT_INFVIS) && obj->GetMapId() == curObj->GetMapId() )
 			fRange = 0.0f;
 		//If the object we're checking for possible removal is a transport or other special object, and we are players on the same map, don't remove it, and add it whenever possible...
-		else if( plObj && curObj->GetTypeId() == TYPEID_GAMEOBJECT && (static_cast<GameObject*>(curObj)->GetOverrides() & GAMEOBJECT_INFVIS) && obj->GetMapId() == curObj->GetMapId() )
+		else if( plObj && curObj->IsGameObject() && (static_cast<GameObject*>(curObj)->GetOverrides() & GAMEOBJECT_INFVIS) && obj->GetMapId() == curObj->GetMapId() )
 			fRange = 0.0f;
 		else
 			fRange = m_UpdateDistance; // normal distance

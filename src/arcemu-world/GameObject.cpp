@@ -499,7 +499,7 @@ void GameObject::UseFishingNode(Player *player)
 	GameObject * school = NULL;
 	for ( InRangeSet::iterator it = GetInRangeSetBegin(); it != GetInRangeSetEnd(); ++it )
 	{
-		if ( (*it) == NULL || (*it)->GetTypeId() != TYPEID_GAMEOBJECT || TO_GAMEOBJECT( *it )->GetType() != GAMEOBJECT_TYPE_FISHINGHOLE)
+		if ( (*it) == NULL || !(*it)->IsGameObject() || TO_GAMEOBJECT( *it )->GetType() != GAMEOBJECT_TYPE_FISHINGHOLE)
 			continue;
 		school = static_cast<GameObject *>( *it );
 		if ( !isInRange( school, (float)school->GetInfo()->sound1 ) )

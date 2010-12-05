@@ -1040,7 +1040,7 @@ void Spell::cancel()
 					if(p_caster->GetSummonedObject()->IsInWorld())
 						p_caster->GetSummonedObject()->RemoveFromWorld(true);
 					// for now..
-					Arcemu::Util::ARCEMU_ASSERT(   p_caster->GetSummonedObject()->GetTypeId() == TYPEID_GAMEOBJECT);
+					Arcemu::Util::ARCEMU_ASSERT(p_caster->GetSummonedObject()->IsGameObject());
 					delete p_caster->GetSummonedObject();
 					p_caster->SetSummonedObject(NULL);
 				}
@@ -2289,7 +2289,7 @@ void Spell::SendChannelUpdate(uint32 time)
 
 void Spell::SendChannelStart(uint32 duration)
 {
-	if (m_caster->GetTypeId() != TYPEID_GAMEOBJECT)
+	if (!m_caster->IsGameObject())
 	{
 		// Send Channel Start
 		WorldPacket data(MSG_CHANNEL_START, 22);
@@ -3349,7 +3349,7 @@ uint8 Spell::CanCast(bool tolerate)
 
 			for(std::set<Object*>::iterator itr = p_caster->GetInRangeSetBegin(); itr != p_caster->GetInRangeSetEnd(); itr++ )
 			{
-				if ((*itr)->GetTypeId() != TYPEID_GAMEOBJECT)
+				if (!(*itr)->IsGameObject())
 					continue;
 
 				if ((TO_GAMEOBJECT(*itr))->GetType() != GAMEOBJECT_TYPE_SPELL_FOCUS)

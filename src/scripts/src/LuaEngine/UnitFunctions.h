@@ -3223,7 +3223,7 @@ namespace luaUnit
 		uint32 count = 0;
 		for (std::set<Object*>::iterator itr = ptr->GetInRangeSetBegin();itr!= ptr->GetInRangeSetEnd();itr++)
 		{
-			if( (*itr) ->GetTypeId() == TYPEID_GAMEOBJECT)
+			if( (*itr)->IsGameObject() )
 			{
 				count++,
 				lua_pushinteger(L,count);

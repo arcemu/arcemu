@@ -1777,7 +1777,7 @@ void HeiganTheUncleanAI::OnCombatStart( Unit* pTarget )
 			PlagueFissureGO* FissureGO = NULL;
 			for ( set< Object* >::iterator Iter = _unit->GetInRangeSetBegin(); Iter != _unit->GetInRangeSetEnd(); ++Iter )
 			{
-				if ( ( *Iter ) == NULL || ( *Iter )->GetTypeId() != TYPEID_GAMEOBJECT )
+				if ( ( *Iter ) == NULL || !( *Iter )->IsGameObject() )
 					continue;
 
 				Fissure = static_cast< GameObject* >( *Iter );

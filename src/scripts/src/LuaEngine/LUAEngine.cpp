@@ -1864,7 +1864,7 @@ public:
 			sLuaMgr.PUSH_BOOL(AutoSend);
 			sLuaMgr.ExecuteCall(4);
         }
-		else if(pObject->GetTypeId() == TYPEID_GAMEOBJECT)
+		else if(pObject->IsGameObject())
         {
 			if(m_go_gossip_binding == NULL) { RELEASE_LOCK; return; }
 
@@ -1906,7 +1906,7 @@ public:
 			sLuaMgr.PUSH_STRING(EnteredCode);
 			sLuaMgr.ExecuteCall(6);
         }
-        else if(pObject->GetTypeId() == TYPEID_GAMEOBJECT)
+        else if(pObject->IsGameObject())
         {
 			if(m_go_gossip_binding == NULL) { RELEASE_LOCK; return; }
             sLuaMgr.BeginCall(m_go_gossip_binding->m_functionReferences[GOSSIP_EVENT_ON_SELECT_OPTION]);
@@ -1942,7 +1942,7 @@ public:
 			sLuaMgr.PUSH_UNIT(Plr);
 			sLuaMgr.ExecuteCall(3);
         }
-        else if(pObject->GetTypeId() == TYPEID_GAMEOBJECT)
+        else if(pObject->IsGameObject())
         {
 			if(m_go_gossip_binding == NULL) { RELEASE_LOCK; return; }
             sLuaMgr.BeginCall(m_go_gossip_binding->m_functionReferences[GOSSIP_EVENT_ON_END]);
@@ -2949,8 +2949,8 @@ void LuaEngine::ResumeLuaThread(int ref) {
 #define TEST_UNITPLAYER() if(ptr == NULL || !ptr->IsInWorld() || !ptr->IsUnit()) { return 0; }
 #define TEST_UNITPLAYER_RET() if(ptr == NULL || !ptr->IsInWorld() || !ptr->IsUnit()) { lua_pushboolean(L,0); return 1; }
 
-#define TEST_GO() if(ptr == NULL || !ptr->IsInWorld() || ptr->GetTypeId() != TYPEID_GAMEOBJECT) { return 0; }
-#define TEST_GO_RET() if(ptr == NULL || !ptr->IsInWorld() || ptr->GetTypeId() != TYPEID_GAMEOBJECT) { lua_pushboolean(L,0); return 1; }
+#define TEST_GO() if(ptr == NULL || !ptr->IsInWorld() || !ptr->IsGameObject()) { return 0; }
+#define TEST_GO_RET() if(ptr == NULL || !ptr->IsInWorld() || !ptr->IsGameObject()) { lua_pushboolean(L,0); return 1; }
 
 #define RET_NIL( ){ lua_pushnil(L); return 1; }
 #define RET_BOOL(exp) { (exp) ? lua_pushboolean(L,1) : lua_pushboolean(L,0); return 1; }

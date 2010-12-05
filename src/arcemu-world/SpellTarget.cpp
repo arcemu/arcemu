@@ -384,11 +384,11 @@ bool Spell::AddTarget(uint32 i, uint32 TargetType, Object* obj)
 		return false;
 
 	//GO target, not item
-	if ((TargetType & SPELL_TARGET_REQUIRE_GAMEOBJECT) && !(TargetType & SPELL_TARGET_REQUIRE_ITEM) && !obj->IsGO())
+	if ((TargetType & SPELL_TARGET_REQUIRE_GAMEOBJECT) && !(TargetType & SPELL_TARGET_REQUIRE_ITEM) && !obj->IsGameObject())
 		return false;
 
 	//target go, not able to target go
-	if (obj->IsGO() && !( TargetType & SPELL_TARGET_OBJECT_SCRIPTED ) && !(TargetType & SPELL_TARGET_REQUIRE_GAMEOBJECT) && !m_triggeredSpell)
+	if (obj->IsGameObject() && !( TargetType & SPELL_TARGET_OBJECT_SCRIPTED ) && !(TargetType & SPELL_TARGET_REQUIRE_GAMEOBJECT) && !m_triggeredSpell)
 		return false;
 	//target item, not able to target item
 	if (obj->IsItem() && !(TargetType & SPELL_TARGET_REQUIRE_ITEM) && !m_triggeredSpell)
@@ -519,7 +519,7 @@ bool Spell::GenerateTargets(SpellCastTargets* t)
 							t->m_unitTarget = target->GetGUID();
 							result = true;
 						}
-						else if (target->IsGO())
+						else if (target->IsGameObject())
 						{
 							t->m_targetMask |= TARGET_FLAG_OBJECT;
 							t->m_unitTarget = target->GetGUID();
@@ -544,7 +544,7 @@ bool Spell::GenerateTargets(SpellCastTargets* t)
 							t->m_unitTarget = target->GetGUID();
 							result = true;
 						}
-						else if (target->IsGO())
+						else if (target->IsGameObject())
 						{
 							t->m_targetMask |= TARGET_FLAG_OBJECT;
 							t->m_unitTarget = target->GetGUID();
@@ -564,7 +564,7 @@ bool Spell::GenerateTargets(SpellCastTargets* t)
 							t->m_unitTarget = target->GetGUID();
 							result = true;
 						}
-						else if (target->IsGO())
+						else if (target->IsGameObject())
 						{
 							t->m_targetMask |= TARGET_FLAG_OBJECT;
 							t->m_unitTarget = target->GetGUID();

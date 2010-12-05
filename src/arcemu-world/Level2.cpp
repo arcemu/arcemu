@@ -716,7 +716,7 @@ bool ChatHandler::HandleGOSelect(const char *args, WorldSession *m_session)
 				else if(Itr == Itr2)
 					break;
 
-				if((*Itr)->GetTypeId() == TYPEID_GAMEOBJECT)
+				if((*Itr)->IsGameObject())
 				{
 					// Find the current go, move to the next one
 					if(bUseNext)
@@ -739,7 +739,7 @@ bool ChatHandler::HandleGOSelect(const char *args, WorldSession *m_session)
 	{
 		for( ; Itr != Itr2; Itr++ )
 		{
-			if( (*Itr)->GetTypeId() == TYPEID_GAMEOBJECT )
+			if( (*Itr)->IsGameObject() )
 			{
 				if( (nDist = m_session->GetPlayer()->CalcDistance( *Itr )) < cDist )
 				{

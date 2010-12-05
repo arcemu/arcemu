@@ -141,14 +141,14 @@ void MapCell::RemoveObjects()
 		{
 			if(obj->GetTypeFromGUID() == HIGHGUID_TYPE_TRANSPORTER)
 				continue;
-			if(obj->GetTypeId()==TYPEID_CORPSE && GET_LOWGUID_PART(static_cast<Corpse*>(obj)->GetOwner()) != 0)
+			if(obj->IsCorpse() && GET_LOWGUID_PART(static_cast<Corpse*>(obj)->GetOwner()) != 0)
 				continue;
 			if(!obj->m_loadedFromDB)
 				continue;
 		}
 
 		//If MapUnloadTime is non-zero, a transport could get deleted here (when it arrives to a cell that's scheduled to be unloaded because players left from it), so don't delete it! - By: VLack aka. VLsoft
-		if( !bServerShutdown && obj->GetTypeId() == TYPEID_GAMEOBJECT && static_cast<GameObject*>(obj)->GetInfo()->Type == GAMEOBJECT_TYPE_TRANSPORT )
+		if( !bServerShutdown && obj->IsGameObject() && static_cast<GameObject*>(obj)->GetInfo()->Type == GAMEOBJECT_TYPE_TRANSPORT )
 			continue;
 
 		if( obj->IsActive() )

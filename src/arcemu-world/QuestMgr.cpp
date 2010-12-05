@@ -187,7 +187,7 @@ uint32 QuestMgr::CalcStatus(Object* quest_giver, Player* plr)
 	std::list<QuestRelation *>::const_iterator q_end;
 	bool bValid = false;
 
-	if( quest_giver->GetTypeId() == TYPEID_GAMEOBJECT )
+	if( quest_giver->IsGameObject() )
 	{
         bValid = static_cast<GameObject*>(quest_giver)->HasQuests();
         if(bValid)
@@ -255,7 +255,7 @@ uint32 QuestMgr::ActiveQuestsCount(Object* quest_giver, Player* plr)
 	std::list<QuestRelation *>::const_iterator q_end;
 	bool bValid = false;
 
-	if(quest_giver->GetTypeId() == TYPEID_GAMEOBJECT)
+	if(quest_giver->IsGameObject())
 	{
         bValid = static_cast<GameObject*>(quest_giver)->HasQuests();
 		if(bValid)
@@ -594,7 +594,7 @@ void QuestMgr::BuildQuestList(WorldPacket *data, Object* qst_giver, Player *plr,
 	*data << uint32(1);//Emote
 
 	bool bValid = false;
-	if(qst_giver->GetTypeId() == TYPEID_GAMEOBJECT)
+	if(qst_giver->IsGameObject())
 	{
 		bValid = static_cast<GameObject*>(qst_giver)->HasQuests();
 		if(bValid)
@@ -1012,7 +1012,7 @@ void QuestMgr::GiveQuestRewardReputation(Player* plr, Quest* qst, Object *qst_gi
 			if( qst_giver->IsCreature() )
 				if( static_cast<Creature*>(qst_giver)->m_factionDBC != NULL )
 					fact = static_cast<Creature*>(qst_giver)->m_factionDBC->ID;
-			if( qst_giver->GetTypeId() == TYPEID_GAMEOBJECT )
+			if( qst_giver->IsGameObject() )
 				fact = static_cast<GameObject*>(qst_giver)->GetFaction();
 		}
 		else
@@ -1700,7 +1700,7 @@ void QuestMgr::BuildQuestFailed(WorldPacket* data, uint32 questid)
 
 bool QuestMgr::OnActivateQuestGiver(Object *qst_giver, Player *plr)
 {
-	if(qst_giver->GetTypeId() == TYPEID_GAMEOBJECT && !static_cast<GameObject*>(qst_giver)->HasQuests())
+	if(qst_giver->IsGameObject() && !static_cast<GameObject*>(qst_giver)->HasQuests())
 		return false;
 
 	uint32 questCount = sQuestMgr.ActiveQuestsCount(qst_giver, plr);
@@ -1719,7 +1719,7 @@ bool QuestMgr::OnActivateQuestGiver(Object *qst_giver, Player *plr)
 
 		bool bValid = false;
 
-		if(qst_giver->GetTypeId() == TYPEID_GAMEOBJECT)
+		if(qst_giver->IsGameObject())
 		{
             bValid = static_cast<GameObject*>(qst_giver)->HasQuests();
             if(bValid)
