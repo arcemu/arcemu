@@ -2371,13 +2371,24 @@ void Spell::SpellEffectTriggerMissile(uint32 i) // Trigger Missile
 {
 	//Used by mortar team
 	//Triggers area effect spell at destinatiom
-	if(!m_caster) return;
 
 	uint32 spellid = GetProto()->EffectTriggerSpell[i];
-	if(!spellid) return;
+	if( spellid == 0 ){
+		sLog.outError("Spell %u ( %s ) has a trigger missle effect ( %u ) but no trigger spell ID. Spell needs fixing.", m_spellInfo->Id, m_spellInfo->Name, i );
+		return;
+	}
 
 	SpellEntry *spInfo = dbcSpell.LookupEntryForced(spellid);
-	if(!spInfo) return;
+	if( spInfo == NULL ){
+		sLog.outError("Spell %u ( %s ) has a trigger missle effect ( %u ) but has an invalid trigger spell ID. Spell needs fixing.", m_spellInfo->Id, m_spellInfo->Name, i );
+		return;
+	}
+	
+	// Cast the triggered spell on the destination location, spells like Freezing Arrow use it
+	if( ( u_caster != NULL ) && ( m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION ) ){
+		u_caster->CastSpellAoF( m_targets.m_destX, m_targets.m_destY, m_targets.m_destZ, spInfo, true );
+		return;
+	}
 
 	float spellRadius = GetRadius(i);
 
@@ -4734,8 +4745,22 @@ void Spell::SpellEffectSummonObjectSlot(uint32 i)
 
 	// spawn a new one
 	GoSummon = u_caster->GetMapMgr()->CreateGameObject(GetProto()->EffectMiscValue[i]);
+
+	float dx = 0.0f;
+	float dy = 0.0f;
+	float dz = 0.0f;
+
+	if( m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION ){
+		dx = m_targets.m_destX;
+		dy = m_targets.m_destY;
+		dz = m_targets.m_destZ;
+	}else{
+		dx = m_caster->GetPositionX();
+		dy = m_caster->GetPositionY();
+		dz = m_caster->GetPositionZ();
+	}
 	
-	if( !GoSummon->CreateFromProto(GetProto()->EffectMiscValue[i], m_caster->GetMapId(), m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ(), m_caster->GetOrientation() ))
+	if( !GoSummon->CreateFromProto(GetProto()->EffectMiscValue[i], m_caster->GetMapId(), dx, dy, dz, m_caster->GetOrientation() ))
 	{
 		delete GoSummon;
 		return;
