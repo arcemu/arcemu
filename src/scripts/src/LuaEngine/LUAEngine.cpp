@@ -280,7 +280,7 @@ void LuaEngine::PUSH_GO(Object *go, lua_State *L)
 void LuaEngine::PUSH_ITEM(Object * item, lua_State *L)
 {
 	Item * pItem = NULL;
-	if(item != NULL && (item->GetTypeId() == TYPEID_ITEM || item->GetTypeId() == TYPEID_CONTAINER))
+	if(item != NULL && (item->IsItem() || item->IsContainer()))
 		pItem = static_cast<Item*>(item);
 	if(L == NULL)
 		ArcLuna<Item>::push(lu,pItem);
@@ -1049,7 +1049,7 @@ void LuaHookOnQuestAccept(Player * pPlayer, Quest * pQuest, Object * pQuestGiver
 			sLuaMgr.PUSH_UNIT(pQuestGiver);
 		else if(pQuestGiver->IsGameObject() )
 			sLuaMgr.PUSH_GO(pQuestGiver);
-		else if(pQuestGiver->GetTypeId() == TYPEID_ITEM)
+		else if(pQuestGiver->IsItem())
 			sLuaMgr.PUSH_ITEM(pQuestGiver);
 		else
 			sLuaMgr.PUSH_NIL();
@@ -1182,7 +1182,7 @@ void LuaHookOnQuestFinished(Player * pPlayer, Quest * pQuest, Object * pQuestGiv
 			sLuaMgr.PUSH_UNIT(pQuestGiver);
 		else if(pQuestGiver->IsGameObject() )
 			sLuaMgr.PUSH_GO(pQuestGiver);
-		else if(pQuestGiver->GetTypeId() == TYPEID_ITEM)
+		else if(pQuestGiver->IsItem())
 			sLuaMgr.PUSH_ITEM(pQuestGiver);
 		else
 			sLuaMgr.PUSH_NIL();
@@ -1853,7 +1853,7 @@ public:
 			sLuaMgr.PUSH_BOOL(AutoSend);
 			sLuaMgr.ExecuteCall(4);
         }
-        else if(pObject->GetTypeId() == TYPEID_ITEM)
+        else if(pObject->IsItem())
         {
 			if(m_item_gossip_binding == NULL) { RELEASE_LOCK; return; }
 
@@ -1894,7 +1894,7 @@ public:
 			sLuaMgr.PUSH_STRING(EnteredCode);
 			sLuaMgr.ExecuteCall(6);
         }
-        else if(pObject->GetTypeId() == TYPEID_ITEM)
+        else if(pObject->IsItem())
         {
 			if(m_item_gossip_binding == NULL) { RELEASE_LOCK; return; }
 			sLuaMgr.BeginCall(m_item_gossip_binding->m_functionReferences[GOSSIP_EVENT_ON_SELECT_OPTION]);
@@ -1933,7 +1933,7 @@ public:
 			sLuaMgr.PUSH_UNIT(Plr);
 			sLuaMgr.ExecuteCall(3);
         }
-        else if(pObject->GetTypeId() == TYPEID_ITEM)
+        else if(pObject->IsItem())
         {
 			if(m_item_gossip_binding == NULL) { RELEASE_LOCK; return; }
 			sLuaMgr.BeginCall(m_item_gossip_binding->m_functionReferences[GOSSIP_EVENT_ON_END]);

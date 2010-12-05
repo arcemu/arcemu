@@ -242,7 +242,7 @@ void MapMgr::PushObject(Object *obj)
 	Arcemu::Util::ARCEMU_ASSERT(    obj != NULL  );
 
 	// That object types are not map objects. TODO: add AI groups here?
-	if(obj->GetTypeId() == TYPEID_ITEM || obj->GetTypeId() == TYPEID_CONTAINER)
+	if(obj->IsItem() || obj->IsContainer())
 	{
 		// mark object as updatable and exit
 		return;
@@ -542,7 +542,7 @@ void MapMgr::RemoveObject(Object *obj, bool free_guid)
 	}
 
 	// That object types are not map objects. TODO: add AI groups here?
-	if(obj->GetTypeId() == TYPEID_ITEM || obj->GetTypeId() == TYPEID_CONTAINER || obj->GetTypeId()==10)
+	if(obj->IsItem() || obj->IsContainer() || obj->GetTypeId()==10)
 	{
 		return;
 	}
@@ -648,7 +648,7 @@ void MapMgr::ChangeObjectLocation( Object *obj )
     Arcemu::Util::ARCEMU_ASSERT(    obj != NULL );
 
     // Items and containers are of no interest for us
-	if( obj->GetTypeId() == TYPEID_ITEM || obj->GetTypeId() == TYPEID_CONTAINER || obj->GetMapMgr() != this )
+	if( obj->IsItem() || obj->IsContainer() || obj->GetMapMgr() != this )
 	{
 		return;
 	}
@@ -969,7 +969,7 @@ void MapMgr::_UpdateObjects()
 		++iter;
 		if(!pObj) continue;
 
-		if(pObj->GetTypeId() == TYPEID_ITEM || pObj->GetTypeId() == TYPEID_CONTAINER)
+		if(pObj->IsItem() || pObj->IsContainer())
 		{
 			// our update is only sent to the owner here.
 			pOwner = static_cast< Item* >(pObj)->GetOwner();

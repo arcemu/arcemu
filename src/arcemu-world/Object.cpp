@@ -87,7 +87,7 @@ Object::Object() : m_position(0,0,0,0), m_spawnLocation(0,0,0,0)
 
 Object::~Object( )
 {
-	if(m_objectTypeId != TYPEID_ITEM)
+	if(!IsItem())
 		Arcemu::Util::ARCEMU_ASSERT(   !m_inQueue);
 
 	Arcemu::Util::ARCEMU_ASSERT( !IsInWorld() );

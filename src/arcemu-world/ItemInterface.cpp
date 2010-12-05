@@ -394,7 +394,7 @@ Item *ItemInterface::SafeRemoveAndRetreiveItemFromSlot(int8 ContainerSlot, int16
 
 		if (pItem == NULL) { return NULL; }
 
-		if(pItem->GetProto()->ContainerSlots > 0 && pItem->GetTypeId() == TYPEID_CONTAINER && ((Container*)pItem)->HasItems())
+		if(pItem->GetProto()->ContainerSlots > 0 && pItem->IsContainer() && ((Container*)pItem)->HasItems())
 		{
 			/* sounds weird? no. this will trigger a callstack display due to my other debug code. */
 			pItem->DeleteFromDB();
@@ -563,7 +563,7 @@ bool ItemInterface::SafeFullRemoveItemFromSlot(int8 ContainerSlot, int16 slot)
 
 		if (pItem == NULL) { return false; }
 
-		if(pItem->GetProto()->ContainerSlots > 0 && pItem->GetTypeId() == TYPEID_CONTAINER && ((Container*)pItem)->HasItems())
+		if(pItem->GetProto()->ContainerSlots > 0 && pItem->IsContainer() && ((Container*)pItem)->HasItems())
 		{
 			/* sounds weird? no. this will trigger a callstack display due to my other debug code. */
 			pItem->DeleteFromDB();
@@ -1602,7 +1602,7 @@ int16 ItemInterface::GetBagSlotByGuid(uint64 guid)
 
 	for(uint16 i=INVENTORY_SLOT_BAG_START; i<INVENTORY_SLOT_BAG_END; ++i)
 	{
-		if(m_pItems[i]&&m_pItems[i]->GetTypeId()==TYPEID_CONTAINER)
+		if(m_pItems[i]&&m_pItems[i]->IsContainer())
 		{
 			for(uint32 j = 0; j < m_pItems[i]->GetProto()->ContainerSlots; ++j)
 			{

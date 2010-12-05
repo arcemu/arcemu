@@ -179,6 +179,7 @@ public:
 	virtual bool IsPet() { return false; }
 	bool IsGameObject() { return m_objectTypeId == TYPEID_GAMEOBJECT; }
 	bool IsCorpse() { return m_objectTypeId == TYPEID_CORPSE; }
+	bool IsContainer() { return m_objectTypeId == TYPEID_CONTAINER; }
 
 	//! This includes any nested objects we have, inventory for example.
 	virtual uint32  BuildCreateUpdateBlockForPlayer( ByteBuffer *data, Player *target );

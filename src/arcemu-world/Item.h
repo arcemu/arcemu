@@ -249,8 +249,6 @@ public:
     void SetCreationTime( uint32 time ){ SetUInt32Value( ITEM_FIELD_CREATE_PLAYED_TIME, time ); }
     uint32 GetCreationTime(){ return GetUInt32Value( ITEM_FIELD_CREATE_PLAYED_TIME ); }
 
-	bool IsContainer(){ return ( m_objectTypeId == TYPEID_CONTAINER ) ? true : false; }
-	
 	//! DB Serialization
 	void LoadFromDB( Field *fields, Player* plr, bool light );
 	void SaveToDB( int8 containerslot, int8 slot, bool firstsave, QueryBuffer* buf );

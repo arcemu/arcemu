@@ -205,7 +205,7 @@ uint32 QuestMgr::CalcStatus(Object* quest_giver, Player* plr)
 			q_end = static_cast<Creature*>(quest_giver)->QuestsEnd();
 		}
 	}
-    else if( quest_giver->GetTypeId() == TYPEID_ITEM )
+    else if( quest_giver->IsItem() )
     {
         if( static_cast< Item* >( quest_giver )->GetProto()->QuestId )
             bValid = true;
@@ -223,7 +223,7 @@ uint32 QuestMgr::CalcStatus(Object* quest_giver, Player* plr)
 		return status;
 	}
 
-    if(quest_giver->GetTypeId() == TYPEID_ITEM)
+    if(quest_giver->IsItem())
     {
         Quest *pQuest = QuestStorage.LookupEntry( static_cast<Item*>(quest_giver)->GetProto()->QuestId );
         QuestRelation qr;

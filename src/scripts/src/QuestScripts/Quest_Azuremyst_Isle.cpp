@@ -28,7 +28,7 @@ class DraeneiFishingNet : public GossipScript
 public:
 	void GossipHello( Object* pObject, Player* pPlayer, bool AutoSend )
 	{
-		if ( pObject == NULL || pObject->GetTypeId() != TYPEID_ITEM || pPlayer == NULL )
+		if ( pObject == NULL || !pObject->IsItem() || pPlayer == NULL )
 			return;
 
 		QuestLogEntry* QuestEntry = pPlayer->GetQuestLogForEntry( 9452 );

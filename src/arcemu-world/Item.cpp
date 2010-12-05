@@ -439,7 +439,7 @@ void Item::SaveToDB( int8 containerslot, int8 slot, bool firstsave, QueryBuffer*
 
 void Item::DeleteFromDB()
 {
-	if( m_itemProto->ContainerSlots>0 && GetTypeId() == TYPEID_CONTAINER )
+	if( m_itemProto->ContainerSlots>0 && IsContainer() )
 	{
 		/* deleting a container */
 		for( uint32 i = 0; i < m_itemProto->ContainerSlots; ++i )
@@ -463,11 +463,7 @@ void Item::DeleteMe()
     if( this->m_owner != NULL )
         this->m_owner->GetItemInterface()->RemoveRefundable( this->GetGUID() );
 
-	if( IsContainer() ) {
-		delete static_cast<Container*>(this);
-	} else {
-		delete this;
-	}
+	delete this;
 }
 
 uint32 GetSkillByProto( uint32 Class, uint32 SubClass )
@@ -1054,7 +1050,7 @@ bool Item::IsGemRelated( EnchantEntry* Enchantment )
 
 uint32 Item::GetSocketsCount()
 {
-	if(this->GetTypeId() == TYPEID_CONTAINER) // no sockets on containers.
+	if(IsContainer()) // no sockets on containers.
 		return 0;
 
 	uint32 c = 0;

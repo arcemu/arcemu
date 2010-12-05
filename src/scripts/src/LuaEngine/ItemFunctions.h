@@ -351,7 +351,7 @@ namespace luaItem
 
 	int Remove(lua_State * L, Item * ptr)
 	{
-		if(ptr == NULL || !ptr->IsInWorld() || ptr->GetTypeId() != TYPEID_ITEM)
+		if(ptr == NULL || !ptr->IsInWorld() || !ptr->IsItem())
 		{
 			return 0;
 		}
