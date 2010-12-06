@@ -1489,7 +1489,6 @@ bool CleansingVialDND( uint32 i, Spell *s ){
 }
 
 bool HunterTamingQuest( uint32 i, Aura *a, bool apply ){
-	uint32 TamingSpellid = 0;
 	Unit *m_target = a->GetTarget();
 	Player *p_caster = a->GetPlayerCaster();
 
@@ -1500,11 +1499,22 @@ bool HunterTamingQuest( uint32 i, Aura *a, bool apply ){
 		m_target->GetAIInterface()->AttackReaction( a->GetUnitCaster(), 10, 0);
 	}
 	else{
-		TamingSpellid = a->GetSpellProto()->EffectMiscValue[ 1 ];
+		uint32 TamingSpellid = a->GetSpellProto()->EffectMiscValue[ 1 ];
 		
-		SpellEntry *triggerspell = dbcSpell.LookupEntry( TamingSpellid );
+		SpellEntry *triggerspell = dbcSpell.LookupEntryForced( TamingSpellid );
+		if(triggerspell == NULL)
+		{
+			sLog.outError("An Aura with spellid %u is calling HunterTamingQuest() with an invalid TamingSpellid: %u", a->GetSpellId(), TamingSpellid);
+			return true;
+		}
 
 		Quest* tamequest = QuestStorage.LookupEntry( triggerspell->EffectMiscValue[1] );
+		if(tamequest == NULL)
+		{
+			sLog.outError("An Aura with spellid %u is calling HunterTamingQuest() with an invalid tamequest id: %u", a->GetSpellId(), triggerspell->EffectMiscValue[1]);
+			return true;
+		}
+
 		if ( !p_caster->GetQuestLogForEntry(tamequest->id ) || m_target->GetEntry() != static_cast<uint32>( tamequest->required_mob[0] ))
 		{
 			p_caster->SendCastResult( triggerspell->Id, SPELL_FAILED_BAD_TARGETS, 0, 0 );
@@ -1544,7 +1554,6 @@ bool HunterTamingQuest( uint32 i, Aura *a, bool apply ){
 				p_caster->SendCastResult( triggerspell->Id,SPELL_FAILED_TRY_AGAIN,0,0 );
 			}
 		}
-		TamingSpellid = 0;
 	}
 
 	return true;
