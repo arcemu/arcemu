@@ -338,7 +338,7 @@ bool EatenRecently(uint32 i, Aura* pAura, bool apply)
 
 bool Temper(uint32 i, Spell *pSpell)
 {
-	if ( pSpell == NULL || pSpell->u_caster == NULL )
+	if ( pSpell->u_caster == NULL )
 		return true;
 
 	Unit* pHated = pSpell->u_caster->GetAIInterface()->GetMostHated();
@@ -358,14 +358,7 @@ bool Temper(uint32 i, Spell *pSpell)
 //Chaos blast dummy effect
 bool ChaosBlast(uint32 i, Spell*  pSpell)
 {
-	/*Unit* target = NULL;
-	if(GUID_HIPART(pSpell->m_targets.m_unitTarget) == HIGHGUID_UNIT)
-		target = pSpell->u_caster->GetMapMgr()->GetCreature(pSpell->m_targets.m_unitTarget);
-	else if (GUID_HIPART(pSpell->m_targets.m_unitTarget) == HIGHGUID_PLAYER)
-		target = objmgr.GetPlayer(pSpell->m_targets.m_unitTarget);*/
-
-	// M4ksiu - not sure if it's correct way to resolve Ascent -> AspireCore changes
-	if ( pSpell == NULL || pSpell->u_caster == NULL )
+	if ( pSpell->u_caster == NULL )
 		return true;
 
 	pSpell->u_caster->CastSpell( pSpell->GetUnitTarget(), 37675, true );
@@ -390,10 +383,10 @@ bool Dummy_Solarian_WrathOfTheAstromancer(uint32 pEffectIndex, Spell* pSpell)
 
 bool PreparationForBattle(uint32 i, Spell* pSpell)
 {
-	if ( pSpell == NULL || pSpell->u_caster == NULL || !pSpell->u_caster->IsPlayer() )
+	if ( pSpell->p_caster == NULL )
 	return true;
 
-	Player* pPlayer = TO_PLAYER( pSpell->u_caster );
+	Player* pPlayer = pSpell->p_caster;
 	QuestLogEntry *pQuest = pPlayer->GetQuestLogForEntry( 12842 );
 	if ( pQuest != NULL )
 	{
@@ -414,7 +407,7 @@ bool PreparationForBattle(uint32 i, Spell* pSpell)
 
 bool CrystalSpikes(uint32 i, Spell *pSpell)
 {
-	if (pSpell == NULL || pSpell->u_caster == NULL)
+	if ( pSpell->u_caster == NULL)
 		return true;
 
 	Unit* pCaster = pSpell->u_caster;

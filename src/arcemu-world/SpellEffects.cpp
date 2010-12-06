@@ -859,7 +859,7 @@ void Spell::SpellEffectTeleportUnits( uint32 i )  // Teleport Units
 
 	// Shadowstep for example
 	if( m_spellInfo->HasCustomFlagForEffect( i, TELEPORT_BEHIND_TARGET ) ){
-		if( !u_caster->IsPlayer() )
+		if( p_caster == NULL )
 			return;
 
 		///////////////////////////////////////////////// Code taken from the Shadowstep dummy script /////////////////////////////////////////////////////////////////////
@@ -3027,7 +3027,7 @@ void Spell::SpellEffectSummonGuardian(uint32 i) // Summon Guardian
 void Spell::SpellEffectSkillStep(uint32 i) // Skill Step
 {
 	Player*target;
-	if(!m_caster->IsPlayer())
+	if(p_caster == NULL)
 	{
 		// Check targets
 		if( m_targets.m_unitTarget )
@@ -3039,7 +3039,7 @@ void Spell::SpellEffectSkillStep(uint32 i) // Skill Step
 	}
 	else
 	{
-		target = static_cast< Player* >( m_caster );
+		target = p_caster;
 	}
 
 	uint32 skill = GetProto()->EffectMiscValue[i];
@@ -3111,7 +3111,8 @@ void Spell::SpellEffectSpawn(uint32 i)
 	{
 	case 10418: // Arugal spawn-in spell , teleports it to 3 locations randomly sneaking players (bastard ;P)
 		{
-			if(!u_caster || u_caster->IsPlayer())
+			//only Creature can cast this spell
+			if(u_caster == NULL || p_caster != NULL)
 				return;
 
 			static float coord[3][3]= {{-108.9034f,2129.5678f,144.9210f},{-108.9034f,2155.5678f,155.678f},{-77.9034f,2155.5678f,155.678f}};
@@ -3474,8 +3475,8 @@ void Spell::SpellEffectWeapondamage( uint32 i ) // Weapon damage +
 	if( !unitTarget || !u_caster ) return;
 
 	//Hackfix for Mangle
-	if( GetProto()->NameHash == SPELL_HASH_MANGLE__CAT_ && u_caster->IsPlayer() )
-		static_cast< Player* >( u_caster )->AddComboPoints( unitTarget->GetGUID(), 1 );
+	if( GetProto()->NameHash == SPELL_HASH_MANGLE__CAT_ && p_caster != NULL )
+		p_caster->AddComboPoints( unitTarget->GetGUID(), 1 );
 
 	// Hacky fix for druid spells where it would "double attack".
 	if( GetProto()->Effect[2] == SPELL_EFFECT_WEAPON_PERCENT_DAMAGE || GetProto()->Effect[1] == SPELL_EFFECT_WEAPON_PERCENT_DAMAGE )
@@ -3956,8 +3957,8 @@ void Spell::SpellEffectSanctuary(uint32 i) // Stop all attacks made to you
 	Object::InRangeSet::iterator itr = u_caster->GetInRangeSetBegin();
 	Object::InRangeSet::iterator itr_end = u_caster->GetInRangeSetEnd();
 
-	if(u_caster->IsPlayer())
-		static_cast<Player*>(u_caster)->RemoveAllAuraType( SPELL_AURA_MOD_ROOT );
+	if(p_caster != NULL)
+		p_caster->RemoveAllAuraType( SPELL_AURA_MOD_ROOT );
 
 	for( ; itr != itr_end; ++itr )
 	{
@@ -5001,7 +5002,7 @@ void Spell::SpellEffectSkinPlayerCorpse(uint32 i)
 		corpse = objmgr.GetCorpse(playerTarget->GetLowGUID());
 	}
 
-	if(!m_caster->IsPlayer())
+	if(p_caster == NULL)
 		return;
 
 	if(playerTarget && !corpse)

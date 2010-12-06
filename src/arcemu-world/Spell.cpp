@@ -426,10 +426,10 @@ void Spell::FillAllTargetsInArea(uint32 i,float srcx,float srcy,float srcz, floa
 		if( !( (*itr)->IsUnit() ) || ! static_cast< Unit* >( *itr )->isAlive() )//|| ( static_cast< Creature* >( *itr )->IsTotem() && !static_cast< Unit* >( *itr )->IsPlayer() ) ) why shouldn't we fill totems?
 			continue;
 
-		if( u_caster && u_caster->IsPlayer() && (*itr)->IsPlayer() && static_cast< Player* >(u_caster)->GetGroup() && static_cast< Player* >( *itr )->GetGroup() && static_cast< Player* >( *itr )->GetGroup() == static_cast< Player* >(u_caster)->GetGroup() )//Don't attack party members!!
+		if( p_caster && (*itr)->IsPlayer() && p_caster->GetGroup() && static_cast< Player* >( *itr )->GetGroup() && static_cast< Player* >( *itr )->GetGroup() == p_caster->GetGroup() )//Don't attack party members!!
 		{
 			//Dueling - AoE's should still hit the target party member if you're dueling with him
-			if( !static_cast< Player* >(u_caster)->DuelingWith || static_cast< Player* >(u_caster)->DuelingWith != static_cast< Player* >( *itr ) )
+			if( !p_caster->DuelingWith || p_caster->DuelingWith != static_cast< Player* >( *itr ) )
 				continue;
 		}
 		if( GetProto()->TargetCreatureType )
@@ -1525,14 +1525,14 @@ void Spell::cast(bool check)
 
 void Spell::AddTime(uint32 type)
 {
-	if(u_caster && u_caster->IsPlayer())
+	if(u_caster != NULL)
 	{
 		if( GetProto()->InterruptFlags & CAST_INTERRUPT_ON_DAMAGE_TAKEN)
 		{
 			cancel();
 			return;
 		}
-		if( GetProto()->SpellGroupType && u_caster)
+		if( GetProto()->SpellGroupType)
 		{
 			float ch= 0;
 			SM_FFValue( u_caster->SM_PNonInterrupt, &ch, GetProto()->SpellGroupType );
@@ -1567,10 +1567,10 @@ void Spell::AddTime(uint32 type)
 			data << uint32(delay);
 			u_caster->SendMessageToSet(&data, true);
 
-			if(!p_caster)
+			if(p_caster == NULL)
 			{
-				if(m_caster->IsCreature())
-					u_caster->GetAIInterface()->AddStopTime(delay);
+				//then it's a Creature
+				u_caster->GetAIInterface()->AddStopTime(delay);
 			}
 			//in case cast is delayed, make sure we do not exit combat
 			else
@@ -1587,7 +1587,7 @@ void Spell::AddTime(uint32 type)
 			m_timer-=delay;
 			if(m_timer<0)
 				m_timer= 0;
-			else
+			else if(p_caster != NULL)
 				p_caster->delayAttackTimer(-delay);
 
 			m_Delayed = true;

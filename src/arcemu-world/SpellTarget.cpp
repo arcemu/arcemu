@@ -138,14 +138,14 @@ void Spell::FillTargetMap(uint32 i)
 	//targets party, not raid
 	if ((TargetType & SPELL_TARGET_AREA_PARTY) && !(TargetType & SPELL_TARGET_AREA_RAID))
 	{
-		if (!m_caster->IsPlayer() && !m_caster->IsPet() && (!m_caster->IsCreature() || !TO_CREATURE(m_caster)->IsTotem()))
+		if (p_caster == NULL && !m_caster->IsPet() && (!m_caster->IsCreature() || !TO_CREATURE(m_caster)->IsTotem()))
 			AddAOETargets(i, TargetType, GetRadius(i), m_spellInfo->MaxTargets); //npcs
 		else
 			AddPartyTargets(i, TargetType, GetRadius(i), m_spellInfo->MaxTargets); //players/pets/totems
 	}
 	if (TargetType & SPELL_TARGET_AREA_RAID)
 	{
-		if (!m_caster->IsPlayer() && !m_caster->IsPet() && (!m_caster->IsCreature() || !TO_CREATURE(m_caster)->IsTotem()))
+		if (p_caster == NULL && !m_caster->IsPet() && (!m_caster->IsCreature() || !TO_CREATURE(m_caster)->IsTotem()))
 			AddAOETargets(i, TargetType, GetRadius(i), m_spellInfo->MaxTargets); //npcs
 		else
 			AddRaidTargets(i, TargetType, GetRadius(i), m_spellInfo->MaxTargets, (TargetType & SPELL_TARGET_AREA_PARTY)? true: false); //players/pets/totems
@@ -342,7 +342,7 @@ void Spell::AddAOETargets(uint32 i, uint32 TargetType, float r, uint32 maxtarget
 	LocationVector source;
 
 	//cant do raid/party stuff here, seperate functions for it
-	if (TargetType & (SPELL_TARGET_AREA_PARTY | SPELL_TARGET_AREA_RAID) && !(!m_caster->IsPlayer() && !m_caster->IsPet() && (!m_caster->IsCreature() || !TO_CREATURE(m_caster)->IsTotem())))
+	if (TargetType & (SPELL_TARGET_AREA_PARTY | SPELL_TARGET_AREA_RAID) && !(p_caster == NULL && !m_caster->IsPet() && (!m_caster->IsCreature() || !TO_CREATURE(m_caster)->IsTotem())))
 		return;
 
 	Object* tarobj = m_caster->GetMapMgr()->_GetObject(m_targets.m_unitTarget);
@@ -394,7 +394,7 @@ bool Spell::AddTarget(uint32 i, uint32 TargetType, Object* obj)
 	if (obj->IsItem() && !(TargetType & SPELL_TARGET_REQUIRE_ITEM) && !m_triggeredSpell)
 		return false;
 
-	if (u_caster != NULL && u_caster->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_9) && ((obj->IsPlayer() || obj->IsPet()) || (m_caster->IsPlayer() || m_caster->IsPet())))
+	if (u_caster != NULL && u_caster->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_9) && ((obj->IsPlayer() || obj->IsPet()) || (p_caster != NULL || m_caster->IsPet())))
 		return false;
 
 	if (TargetType & SPELL_TARGET_REQUIRE_FRIENDLY && !isFriendly(m_caster, obj))
