@@ -279,7 +279,7 @@ AC_OUTPUT
 echo "#!/bin/bash" > make_precompiled_header.sh
 echo "echo precompiling StdAfx.h for arcemu-world" >> make_precompiled_header.sh
 echo "cd src/arcemu-world" >> make_precompiled_header.sh
-echo "g++ -DHAVE_CONFIG_H -I. -I../.. -I../arcemu-shared ${CXXFLAGS} -MD -MP -c StdAfx.h -o StdAfx.h.gch" >> make_precompiled_header.sh
+echo "${CXX} -DHAVE_CONFIG_H -I. -I../.. -I../arcemu-shared ${CXXFLAGS} -MD -MP -c StdAfx.h -o StdAfx.h.gch" >> make_precompiled_header.sh
 echo "echo done" >> make_precompiled_header.sh
 
 
@@ -287,19 +287,19 @@ echo "#!/bin/bash" > make_precompiled_header_scripts.sh
 echo "CXXFLAGS=\"-DHAVE_CONFIG_H -DSCRIPTLIB -I. -I../../../.. -I../../../../src/arcemu-logonserver -I../../../../src/arcemu-realmserver -I../../../../src/arcemu-shared -I../../../../src/arcemu-voicechat -I../../../../src/arcemu-world -I. -I./../../../../dep/include -I./../../../../dep/src -I./../../../../src -I../Common -I./../../../arcemu-shared/g3dlite -I./../../../arcemu-shared/vmap ${CXXFLAGS} -MD -MP\"" >> make_precompiled_header_scripts.sh
 echo "" >> make_precompiled_header_scripts.sh
 echo "cd src/scripts/src/EventScripts" >> make_precompiled_header_scripts.sh
-echo "g++ \$CXXFLAGS -c Setup.h -o Setup.h.gch" >> make_precompiled_header_scripts.sh
+echo "${CXX} \$CXXFLAGS -c Setup.h -o Setup.h.gch" >> make_precompiled_header_scripts.sh
 echo "cd ../ExtraScripts" >> make_precompiled_header_scripts.sh
-echo "g++ \$CXXFLAGS -c Setup.h -o Setup.h.gch" >> make_precompiled_header_scripts.sh
+echo "${CXX} \$CXXFLAGS -c Setup.h -o Setup.h.gch" >> make_precompiled_header_scripts.sh
 echo "cd ../GossipScripts" >> make_precompiled_header_scripts.sh
-echo "g++ \$CXXFLAGS -c Setup.h -o Setup.h.gch" >> make_precompiled_header_scripts.sh
+echo "${CXX} \$CXXFLAGS -c Setup.h -o Setup.h.gch" >> make_precompiled_header_scripts.sh
 echo "cd ../InstanceScripts" >> make_precompiled_header_scripts.sh
-echo "g++ \$CXXFLAGS -c Setup.h -o Setup.h.gch" >> make_precompiled_header_scripts.sh
+echo "${CXX} \$CXXFLAGS -c Setup.h -o Setup.h.gch" >> make_precompiled_header_scripts.sh
 echo "cd ../MiscScripts" >> make_precompiled_header_scripts.sh
-echo "g++ \$CXXFLAGS -c Setup.h -o Setup.h.gch" >> make_precompiled_header_scripts.sh
+echo "${CXX} \$CXXFLAGS -c Setup.h -o Setup.h.gch" >> make_precompiled_header_scripts.sh
 echo "cd ../QuestScripts" >> make_precompiled_header_scripts.sh
-echo "g++ \$CXXFLAGS -c Setup.h -o Setup.h.gch" >> make_precompiled_header_scripts.sh
+echo "${CXX} \$CXXFLAGS -c Setup.h -o Setup.h.gch" >> make_precompiled_header_scripts.sh
 echo "cd ../SpellHandlers" >> make_precompiled_header_scripts.sh
-echo "g++ \$CXXFLAGS -c Setup.h -o Setup.h.gch" >> make_precompiled_header_scripts.sh
+echo "${CXX} \$CXXFLAGS -c Setup.h -o Setup.h.gch" >> make_precompiled_header_scripts.sh
 echo "echo done" >> make_precompiled_header_scripts.sh
 
 
