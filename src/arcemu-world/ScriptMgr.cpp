@@ -623,6 +623,14 @@ void ScriptMgr::register_dummy_spell( uint32* entries, exp_handle_dummy_spell ca
 	}
 };
 
+void ScriptMgr::register_script_effect( uint32* entries, exp_handle_script_effect callback ) 
+{
+	for( uint32 y = 0; entries[y] != 0; y++)
+	{
+		register_script_effect(entries[y], callback);
+	}
+};
+
 void ScriptMgr::register_script_effect( uint32 entry, exp_handle_script_effect callback ){
 	
 	HandleScriptEffectMap::iterator itr = SpellScriptEffects.find( entry );

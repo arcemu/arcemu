@@ -208,6 +208,7 @@ public:
 	void register_gameobject_script(uint32* entries, exp_create_gameobject_ai callback);
 	void register_dummy_aura(uint32* entries, exp_handle_dummy_aura callback);
 	void register_dummy_spell(uint32* entries, exp_handle_dummy_spell callback);
+	void register_script_effect(uint32* entries, exp_handle_script_effect callback);
 
 	void ReloadScriptEngines() {
 		//for all scripting engines that allow reloading, assuming there will be new scripting engines.

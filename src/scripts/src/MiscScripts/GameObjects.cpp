@@ -151,132 +151,6 @@ public:
 
 /*--------------------------------------------------------------------------------------------------------*/
 
-class OrbOfTransLocUC : public GameObjectAIScript
-{
-public:
-	OrbOfTransLocUC(GameObject* goinstance) : GameObjectAIScript(goinstance) {}
-	static GameObjectAIScript *Create(GameObject* GO) { return new OrbOfTransLocUC(GO); }
-
-	void OnActivate(Player* pPlayer)
-	{
-		if(pPlayer->getRace() == RACE_TAUREN || pPlayer->getRace() == RACE_TROLL || pPlayer->getRace() == RACE_ORC || pPlayer->getRace() == RACE_UNDEAD || pPlayer->getRace() == RACE_BLOODELF )
-		{
-			pPlayer->SafeTeleport(530, 0, 10021.254883f, -7014.893066f, 49.717690f, 4.00532f);		 // teleports to Silvermoon
-		}
-		else
-		{
-			pPlayer->BroadcastMessage("You are not alowed to use this orb");
-		}
-	}
-};
-
-/*--------------------------------------------------------------------------------------------------------*/
-
-class OrbOfTransLocSILVM : public GameObjectAIScript
-{
-public:
-	OrbOfTransLocSILVM(GameObject* goinstance) : GameObjectAIScript(goinstance) {}
-	static GameObjectAIScript *Create(GameObject* GO) { return new OrbOfTransLocSILVM(GO); }
-
-	void OnActivate(Player* pPlayer)
-	{
-		if( pPlayer->getRace() == RACE_TAUREN || pPlayer->getRace() == RACE_TROLL || pPlayer->getRace() == RACE_ORC || pPlayer->getRace() == RACE_UNDEAD || pPlayer->getRace() == RACE_BLOODELF )
-		{
-			pPlayer->SafeTeleport(0, 0, 1805.823975f, 334.009796f, 70.397469f, 4.724170f);		 // teleports to UC
-		}
-		else
-		{
-			pPlayer->BroadcastMessage("You are not alowed to use this orb");
-		}
-	}
-};
-
-/*--------------------------------------------------------------------------------------------------------*/
-
-class FalconTowerUpper : public GameObjectAIScript
-{
-public:
-	FalconTowerUpper(GameObject* goinstance) : GameObjectAIScript(goinstance) {}
-	static GameObjectAIScript *Create(GameObject* GO) { return new FalconTowerUpper(GO); }
-
-	void OnActivate(Player* pPlayer)
-	{
-		pPlayer->SafeTeleport(530, 0, -588.9f, 4070.8f, 93.8f, 4.724170f);
-	}
-};
-
-/*--------------------------------------------------------------------------------------------------------*/
-
-class FalconTowerLower : public GameObjectAIScript
-{
-public:
-	FalconTowerLower(GameObject* goinstance) : GameObjectAIScript(goinstance) {}
-	static GameObjectAIScript *Create(GameObject* GO) { return new FalconTowerLower(GO); }
-
-	void OnActivate(Player* pPlayer)
-	{
-		pPlayer->SafeTeleport(530, 0, -592.2f, 4070.2f, 143.3f, 4.724170f);
-	}
-};
-
-/*--------------------------------------------------------------------------------------------------------*/
-
-class FirewingPointOrb1 : public GameObjectAIScript
-{
-public:
-	FirewingPointOrb1(GameObject* goinstance) : GameObjectAIScript(goinstance) {}
-	static GameObjectAIScript *Create(GameObject* GO) { return new FirewingPointOrb1(GO); }
-
-	void OnActivate(Player* pPlayer)
-	{
-		pPlayer->SafeTeleport(530, 0, -2260.6f, 3186.5f, 23.6f, 4.724170f);
-	}
-};
-
-/*--------------------------------------------------------------------------------------------------------*/
-
-class FirewingPointOrb2 : public GameObjectAIScript
-{
-public:
-	FirewingPointOrb2(GameObject* goinstance) : GameObjectAIScript(goinstance) {}
-	static GameObjectAIScript *Create(GameObject* GO) { return new FirewingPointOrb2(GO); }
-
-	void OnActivate(Player* pPlayer)
-	{
-		pPlayer->SafeTeleport(530, 0, -2250.4f, 3120.7f, 27.3f, 4.724170f);
-	}
-};
-
-/*--------------------------------------------------------------------------------------------------------*/
-
-class duskwitherspirebottom : public GameObjectAIScript
-{
-public:
-	duskwitherspirebottom(GameObject* goinstance) : GameObjectAIScript(goinstance) {}
-	static GameObjectAIScript *Create(GameObject* GO) { return new duskwitherspirebottom(GO); }
-
-	void OnActivate(Player* pPlayer)
-	{
-		pPlayer->SafeTeleport(530, 0, 9334.352f, -7880.743f, 74.910f, 4.724170f);
-	}
-};
-
-/*--------------------------------------------------------------------------------------------------------*/
-
-class duskwitherspiretop : public GameObjectAIScript
-{
-public:
-	duskwitherspiretop(GameObject* goinstance) : GameObjectAIScript(goinstance) {}
-	static GameObjectAIScript *Create(GameObject* GO) { return new duskwitherspiretop(GO); }
-
-	void OnActivate(Player* pPlayer)
-	{
-		pPlayer->SafeTeleport(530, 0, 9291.155f, -7913.556f, 176.130f, 4.724170f);
-	}
-};
-
-/*--------------------------------------------------------------------------------------------------------*/
-
 class Blacksmithing_Plans_Use : public GameObjectAIScript
 {
 public:
@@ -762,34 +636,6 @@ public:
 
 /*--------------------------------------------------------------------------------------------------------*/
 
-class FirewingPointUpper : public GameObjectAIScript
-{
-public:
-	FirewingPointUpper(GameObject* goinstance) : GameObjectAIScript(goinstance) {}
-	static GameObjectAIScript *Create(GameObject* GO) { return new FirewingPointUpper(GO); }
-
-	void OnActivate(Player* pPlayer)
-	{
-		pPlayer->SafeTeleport(530, 0, -2260, 3223.16f, 5.534f, 1.60f);
-	}
-};
-
-/*--------------------------------------------------------------------------------------------------------*/
-
-class FirewingPointLower : public GameObjectAIScript
-{
-public:
-	FirewingPointLower(GameObject* goinstance) : GameObjectAIScript(goinstance) {}
-	static GameObjectAIScript *Create(GameObject* GO) { return new FirewingPointLower(GO); }
-
-	void OnActivate(Player* pPlayer)
-	{
-		pPlayer->SafeTeleport(530, 0, -2263, 3111.45f, 136.35f, 3.65f);
-	}
-};
-
-/*--------------------------------------------------------------------------------------------------------*/
-
 class APlagueUponThee : public GameObjectAIScript
 {
 public:
@@ -1206,50 +1052,6 @@ public:
 	}
 };
 
-/*--------------------------------------------------------------------------------------------------------*/
-
-class OrbOfTransLocQuelLower : public GameObjectAIScript
-{
-public:
-	OrbOfTransLocQuelLower(GameObject* goinstance) : GameObjectAIScript(goinstance) {}
-	static GameObjectAIScript *Create(GameObject* GO) { return new OrbOfTransLocQuelLower(GO); }
-
-	void OnActivate(Player* pPlayer)
-	{
-		pPlayer->SafeTeleport(530, 4080, 12791.350586f, -6891.479004f, 31.322657f, 5.336779f);		 // teleports to the upper level
-	}
-};
-
-
-/*********************************************************************************************************************/
-
-class OrbOfTransLocQuelTop : public GameObjectAIScript
-{
-public:
-	OrbOfTransLocQuelTop(GameObject* goinstance) : GameObjectAIScript(goinstance) {}
-	static GameObjectAIScript *Create(GameObject* GO) { return new OrbOfTransLocQuelTop(GO); }
-
-	void OnActivate(Player* pPlayer)
-	{
-		pPlayer->SafeTeleport(530, 4080, 12782.415039f, -6879.196289f, 23.106073f, 2.222675f);		 // teleports to the lower level
-	}
-};
-
-
-/**********************************************************************************************************************/
-
-class OrbSunwell : public GameObjectAIScript
-{
-public:
-	OrbSunwell(GameObject* goinstance) : GameObjectAIScript(goinstance) {}
-	static GameObjectAIScript *Create(GameObject* GO) { return new OrbSunwell(GO); }
-
-	void OnActivate(Player* pPlayer)
-	{
-		pPlayer->SafeTeleport(530, 4080, 12558.393555f, -6774.535645f, 15.027822f, 0.035100f);		 // Sunwell quit portal
-	}
-};
-
 /**********************************************************************************************************************/
 
 class TheRavensClaw : public GameObjectAIScript
@@ -1369,14 +1171,6 @@ public:
 void SetupGoHandlers(ScriptMgr * mgr)
 {
 	mgr->register_gameobject_script(179879, &OrbOfCommand::Create);
-	mgr->register_gameobject_script(184503, &OrbOfTransLocUC::Create);
-	mgr->register_gameobject_script(184502, &OrbOfTransLocSILVM::Create);
-	mgr->register_gameobject_script(184500, &FalconTowerUpper::Create);
-	mgr->register_gameobject_script(184501, &FalconTowerLower::Create);
-	mgr->register_gameobject_script(182543, &FirewingPointOrb1::Create);
-	mgr->register_gameobject_script(182548, &FirewingPointOrb2::Create);
-	mgr->register_gameobject_script(180912, &duskwitherspirebottom::Create);
-	mgr->register_gameobject_script(180911, &duskwitherspiretop::Create);
 	mgr->register_gameobject_script(173232, &Blacksmithing_Plans_Use::Create);
 	mgr->register_gameobject_script(180526, &GongOfBethekk::Create);
 	mgr->register_gameobject_script(185928, &TerokksDownfall::Create);
@@ -1390,14 +1184,11 @@ void SetupGoHandlers(ScriptMgr * mgr)
 	mgr->register_gameobject_script(181699, &Telathion_the_Impure_Object::Create);
 	mgr->register_gameobject_script(104593, &UlagTheCleaver::Create);
 	mgr->register_gameobject_script(1571, &DustySpellbooks::Create);
-
 	mgr->register_gameobject_script(13873, &CatFigurine::Create);
 	mgr->register_gameobject_script(184383, &EthereumTransponderZeta::Create);
 	mgr->register_gameobject_script(183146, &BringMetheEgg::Create);
 	mgr->register_gameobject_script(183147, &MysteriousEgg::Create);
 	mgr->register_gameobject_script(180516, &ShrineOfDathRemar::Create);
-	mgr->register_gameobject_script(182546, &FirewingPointUpper::Create);
-	mgr->register_gameobject_script(182547, &FirewingPointLower::Create);
 	mgr->register_gameobject_script(177490, &APlagueUponThee::Create);
 	mgr->register_gameobject_script(177673, &SerpentStatue::Create);
 	mgr->register_gameobject_script(142189, &CuregosGold::Create);
@@ -1413,9 +1204,6 @@ void SetupGoHandlers(ScriptMgr * mgr)
 	mgr->register_gameobject_script(180672, &TheRootofAllEvil::Create);
 	mgr->register_gameobject_script(184729, &TheThunderspike::Create);
 	mgr->register_gameobject_script(181849, &StrengthofOne::Create);
-	mgr->register_gameobject_script(187428, &OrbOfTransLocQuelLower::Create);
-	mgr->register_gameobject_script(187431, &OrbOfTransLocQuelTop::Create);
-	mgr->register_gameobject_script(188173, &OrbSunwell::Create);
 	mgr->register_gameobject_script(181433, &HealingTheLake::Create);
 	mgr->register_gameobject_script(185554, &TheRavensClaw::Create);
 	mgr->register_gameobject_script(191538, &DeathGate1::Create);

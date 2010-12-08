@@ -205,7 +205,6 @@
     <ClCompile Include="..\src\MiscScripts\DarkmoonFaireObjects.cpp" />
     <ClCompile Include="..\src\MiscScripts\GameObjects.cpp" />
     <ClCompile Include="..\src\MiscScripts\GameObjectTeleportTable.cpp" />
-    <ClCompile Include="..\src\MiscScripts\QuelDanasPortal.cpp" />
     <ClCompile Include="..\src\MiscScripts\RandomScripts.cpp" />
   </ItemGroup>
   <ItemGroup>

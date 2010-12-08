@@ -1630,7 +1630,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 		}break;
 	case GAMEOBJECT_TYPE_GOOBER:
 		{
-			//Quest related mostly
+			plyr->CastSpell( guid, goinfo->Unknown1, false );
 
 			// show page
 			if(goinfo->sound7)
@@ -1639,17 +1639,12 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 				data << obj->GetGUID();
 				plyr->GetSession()->SendPacket(&data);
 			}
-		}
+		}break;
 	case GAMEOBJECT_TYPE_CAMERA://eye of azora
 		{
 			/*WorldPacket pkt(SMSG_TRIGGER_CINEMATIC,4);
 			pkt << (uint32)1;//i ve found only on such item,id =1
 			SendPacket(&pkt);*/
-
-			/* these are usually scripted effects. but in the case of some, (e.g. orb of translocation) the spellid is located in unknown1 */
-			/*SpellEntry * sp = dbcSpell.LookupEntryForced(goinfo->Unknown1);
-			if(sp != NULL)
-				_player->CastSpell(_player,sp,true);  -   WTF?  Cast spell 1 ?*/
 
 			if(goinfo->Unknown1)
 			{

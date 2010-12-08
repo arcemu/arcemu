@@ -12,6 +12,5 @@ libArcMiscScripts_la_SOURCES = Creatures.cpp \
 DarkmoonFaireObjects.cpp \
 GameObjects.cpp \
 GameObjectTeleportTable.cpp \
-QuelDanasPortal.cpp \
 RandomScripts.cpp \
 Setup.cpp

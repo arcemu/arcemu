@@ -29,9 +29,6 @@
     <ClCompile Include="..\src\MiscScripts\GameObjectTeleportTable.cpp">
       <Filter>Scripts</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\MiscScripts\QuelDanasPortal.cpp">
-      <Filter>Scripts</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\MiscScripts\RandomScripts.cpp">
       <Filter>Scripts</Filter>
     </ClCompile>
