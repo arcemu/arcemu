@@ -3188,10 +3188,11 @@ void Spell::SpellEffectSummonObject(uint32 i)
 
 		if( lootmgr.IsFishable( zone ) ) // Only set a 'splash' if there is any loot in this area / zone
 		{
-			uint32 seconds = RandomUInt(17) + 2;
-			sEventMgr.AddEvent( go, &GameObject::FishHooked, static_cast< Player* >( m_caster ), EVENT_GAMEOBJECT_FISH_HOOKED, seconds * 1000, 1, 0 );
+			uint32 seconds[] = { 0, 4, 10, 14 };
+			uint32 rnd = RandomUInt( 3 );
+			sEventMgr.AddEvent( go, &GameObject::FishHooked, static_cast< Player* >( m_caster ), EVENT_GAMEOBJECT_FISH_HOOKED, seconds[ rnd ] * 1000, 1, 0 );
 		}
-		sEventMgr.AddEvent( go, &GameObject::EndFishing, static_cast< Player* >( m_caster ),false, EVENT_GAMEOBJECT_END_FISHING, 20000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
+		sEventMgr.AddEvent( go, &GameObject::EndFishing, static_cast< Player* >( m_caster ),false, EVENT_GAMEOBJECT_END_FISHING, 17 * 1000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
 		p_caster->SetSummonedObject( go );
 	}
 	else
