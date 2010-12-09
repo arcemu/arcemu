@@ -2090,7 +2090,7 @@ void Pet::Die( Unit *pAttacker, uint32 damage, uint32 spellid ){
 		// dying pet looses 1 happiness level (not in BG)
 		if( !pPet->IsSummon() && !pPet->IsInBg() )
 		{
-			pPet->ModPower( POWER_TYPE_HAPPINESS, PET_HAPPINESS_UPDATE_VALUE );
+			pPet->ModPower( POWER_TYPE_HAPPINESS, -PET_HAPPINESS_UPDATE_VALUE );
 		}
 		pPet->DelayedRemove( false );
 	}/* ----------------------------- PET DEATH HANDLING END -------------- */
