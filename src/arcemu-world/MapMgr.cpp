@@ -1149,10 +1149,11 @@ void MapMgr::UpdateCellActivity(uint32 x, uint32 y, int radius)
 				//Cell is no longer active
 				else if (!_CellActive(posX, posY) && objCell->IsActive())
 				{
-					sLog.outDetail("Cell [%u,%u] on map %u (instance %u) is now idle.",
-						posX, posY, this->_mapId, m_instanceID);
-					_map->CellGoneIdle(posX, posY);
-					objCell->SetActivity(false);
+					if( m_battleground == NULL ){
+						sLog.outDetail("Cell [%u,%u] on map %u (instance %u) is now idle.",posX, posY, _mapId, m_instanceID);
+						_map->CellGoneIdle(posX, posY);
+						objCell->SetActivity(false);
+					}
 				}
 			}
 		}
