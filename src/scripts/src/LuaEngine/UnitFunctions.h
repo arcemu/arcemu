@@ -1062,7 +1062,6 @@ namespace luaUnit
 			break;
 		case RANDOM_NOT_MAINTANK:
 			{
-				uint32 count = 0;
 				Unit* mt = ptr->GetAIInterface()->GetMostHated();
 				if (mt == NULL || !mt->IsPlayer())
 					return 0;
@@ -1090,8 +1089,6 @@ namespace luaUnit
 	{
 		TEST_UNITPLAYER();
 
-		Unit * ret=NULL;
-		uint32 count = 0;
 		vector<Object*> allies;
 
 		for(set<Object*>::iterator itr = ptr->GetInRangeSetBegin(); itr != ptr->GetInRangeSetEnd(); ++itr)
@@ -1110,8 +1107,6 @@ namespace luaUnit
 	{
 		TEST_UNITPLAYER();
 
-		Unit * ret=NULL;
-		uint32 count = 0;
 		vector<Object*> enemies;
 
 		for(set<Object*>::iterator itr = ptr->GetInRangeSetBegin(); itr != ptr->GetInRangeSetEnd(); ++itr)

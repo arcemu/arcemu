@@ -2184,7 +2184,6 @@ CreatureAIScript * CreateLuaCreature(Creature * src)
 	if(src != NULL)
 	{
 		uint32 id = src->GetEntry();
-		uint64 guid = src->GetGUID();
 		LuaObjectBinding * pBinding = sLuaMgr.getUnitBinding(id);
 		if( pBinding != NULL)
 		{
@@ -2204,7 +2203,6 @@ GameObjectAIScript * CreateLuaGameObject(GameObject * src)
 	if(src != NULL) 
 	{
 		uint32 id = src->GetInfo()->ID;
-		uint64 guid = src->GetGUID();
 		LuaObjectBinding * pBinding = NULL;
 		pBinding = sLuaMgr.getGameObjectBinding(id);
 		if( pBinding != NULL) 

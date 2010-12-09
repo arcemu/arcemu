@@ -354,7 +354,7 @@ void EventableObjectHolder::Update(time_t time_difference)
 		// Event Update Procedure
 		ev = *it2;
 
-		if((uint32)ev->currTime <= time_difference)
+		if(ev->currTime <= time_difference)
 		{
 			// execute the callback
 			if(ev->eventFlag & EVENT_FLAG_DELETES_OBJECT)
