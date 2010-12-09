@@ -462,16 +462,16 @@ void GameObject::DeleteFromDB()
 
 void GameObject::EventCloseDoor()
 {
-// gameobject_flags +1 closedoor animate restore the pointer flag.
-// by cebernic
-	SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-  SetUInt32Value(GAMEOBJECT_FLAGS, GetUInt32Value( GAMEOBJECT_FLAGS ) & ~1);
+	// gameobject_flags +1 closedoor animate restore the pointer flag.
+	// by cebernic
+	SetByte( GAMEOBJECT_BYTES_1, 0, 1 );
+	RemoveFlag( GAMEOBJECT_FLAGS, 1 );
 }
 
 void GameObject::UseFishingNode(Player *player)
 {
 	sEventMgr.RemoveEvents( this );
-	if( GetUInt32Value( GAMEOBJECT_FLAGS ) != 32 ) // Clicking on the bobber before something is hooked
+	if( !HasFlag( GAMEOBJECT_FLAGS, 32 ) ) // Clicking on the bobber before something is hooked
 	{
 		player->GetSession()->OutPacket( SMSG_FISH_NOT_HOOKED );
 		EndFishing( player, true );

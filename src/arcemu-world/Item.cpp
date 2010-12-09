@@ -961,7 +961,7 @@ void Item::SendEnchantTimeUpdate( uint32 Slot, uint32 Duration )
 	-------------------------------------------------------------------
 
 	uint64 item_guid
-	uint32 count?
+	uint32 slot
 	uint32 time_in_seconds
 	uint64 player_guid
 	*/

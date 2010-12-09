@@ -1472,9 +1472,9 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 				obj->EventCloseDoor();
 			else
 			{
-				obj->SetUInt32Value(GAMEOBJECT_FLAGS, obj->GetUInt32Value( GAMEOBJECT_FLAGS ) | 1); // lock door
-				obj->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
-				sEventMgr.AddEvent(obj,&GameObject::EventCloseDoor,EVENT_GAMEOBJECT_DOOR_CLOSE,20000,1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+				obj->SetFlag( GAMEOBJECT_FLAGS, 1 ); // lock door
+				obj->SetByte( GAMEOBJECT_BYTES_1, 0, 0 );
+				sEventMgr.AddEvent( obj, &GameObject::EventCloseDoor, EVENT_GAMEOBJECT_DOOR_CLOSE, 20000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
 			}
 		}break;
 	case GAMEOBJECT_TYPE_FLAGSTAND:
