@@ -54,6 +54,12 @@ enum CreatureAISpellFlags
 	CREATURE_AI_FLAG_PLAYERGCD			= 0x04
 };
 
+enum VendorRestrictionFlag
+{
+	RESTRICTION_CHECK_ALL				= 0x00, // this checks for all possible values in table
+	RESTRICTION_CHECK_MOUNT_VENDOR		= 0x01  // this one check for race, if race dont match checks for reputation
+};
+
 struct NpcMonsterSay
 {
 	float Chance;
@@ -181,10 +187,12 @@ struct VendorRestrictionEntry
 {
 	uint32 entry;
 	int32 racemask;
+	int32 classmask;
 	uint32 reqrepfaction;
 	uint32 reqrepvalue;
 	uint32 canbuyattextid;
 	uint32 cannotbuyattextid;
+	uint32 flags;
 };
 
 #pragma pack(pop)

@@ -2506,6 +2506,8 @@ public:
     void SendTeleportAckMsg( const LocationVector &v );
 	void SendUpdateDataToSet( ByteBuffer *groupbuf, ByteBuffer *nongroupbuf, bool sendtoself );
 
+	bool CanBuyAt(VendorRestrictionEntry *vendor);
+
 };
 
 class SkillIterator

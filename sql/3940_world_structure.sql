@@ -87,7 +87,7 @@ CREATE TABLE `arcemu_db_version` (
 
 /*Data for the table `arcemu_db_version` */
 
-insert  into `arcemu_db_version`(`LastUpdate`) values (3860);
+insert  into `arcemu_db_version`(`LastUpdate`) values (3940);
 
 /*Table structure for table `areatriggers` */
 
@@ -1819,15 +1819,7 @@ insert  into `unit_display_sizes`(`DisplayID`,`halfsize`,`modelid`) values (1624
 
 DROP TABLE IF EXISTS `vendor_restrictions`;
 
-CREATE TABLE `vendor_restrictions` (
-  `entry` int(10) unsigned NOT NULL,
-  `racemask` int(11) NOT NULL DEFAULT '-1',
-  `reqrepfaction` int(10) unsigned NOT NULL DEFAULT '0',
-  `reqrepfactionvalue` int(10) unsigned NOT NULL DEFAULT '0',
-  `canbuyattextid` int(10) unsigned NOT NULL DEFAULT '0',
-  `cannotbuyattextid` int(10) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`entry`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+CREATE TABLE `vendor_restrictions` (  `entry` int(10) unsigned NOT NULL,  `racemask` int(11) NOT NULL DEFAULT '-1',  `classmask` int(11) NOT NULL DEFAULT '-1',  `reqrepfaction` int(10) unsigned NOT NULL DEFAULT '0',  `reqrepfactionvalue` int(10) unsigned NOT NULL DEFAULT '0',  `canbuyattextid` int(10) unsigned NOT NULL DEFAULT '0',  `cannotbuyattextid` int(10) unsigned NOT NULL DEFAULT '0',  `flags` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '0 - check for all values, 1 - classic mount vendor',  PRIMARY KEY (`entry`)) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 /*Data for the table `vendor_restrictions` */
 

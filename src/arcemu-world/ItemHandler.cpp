@@ -20,18 +20,6 @@
 
 #include "StdAfx.h"
 
-bool CanBuyAt(Player *plr, VendorRestrictionEntry *vendor)
-{
-	uint8 plracemask = static_cast<uint8>( plr->getRaceMask() );
-	uint32 plrep = plr->GetStanding(vendor->reqrepfaction);
-
-	/* if either the player has the right race or has the right reputation, he/she can buy at the vendor */
-	if ( (plracemask & vendor->racemask) || (plrep >= vendor->reqrepvalue) )
-		return true;
-
-	return false;
-}
-
 void WorldSession::HandleSplitOpcode(WorldPacket& recv_data)
 {
 	CHECK_INWORLD_RETURN;
@@ -1042,7 +1030,6 @@ void WorldSession::HandleBuyItemInSlotOpcode( WorldPacket & recv_data ) // drag 
 	uint32 itemMaxStack = (_player->ItemStackCheat) ? 0x7fffffff : it->MaxCount;
 	if( itemMaxStack > 0 && ci.amount*amount > itemMaxStack )
 	{
-//		sLog.outDebug( "SUPADBG can't carry #1 (%u>%u)" , ci.amount*amount , it->MaxCount );
 		_player->GetItemInterface()->BuildInventoryChangeError( 0, 0, INV_ERR_CANT_CARRY_MORE_OF_THIS );
 		return;
 	}
@@ -1052,7 +1039,7 @@ void WorldSession::HandleBuyItemInSlotOpcode( WorldPacket & recv_data ) // drag 
 	// if slot is different than -1, check for validation, else continue for auto storing.
 	if(slot != INVENTORY_SLOT_NOT_SET)
 	{
-		if(!(bagguid>>32))//buy to backpack
+		if( !(bagguid>>32) )//buy to backpack
 		{
 			if(slot > INVENTORY_SLOT_ITEM_END || slot < INVENTORY_SLOT_ITEM_START)
 			{
@@ -1063,8 +1050,9 @@ void WorldSession::HandleBuyItemInSlotOpcode( WorldPacket & recv_data ) // drag 
 		}
 		else
 		{
-			c=(Container*)_player->GetItemInterface()->GetItemByGUID(bagguid);
-			if(!c)return;
+			c = (Container*)_player->GetItemInterface()->GetItemByGUID(bagguid);
+			if (!c)
+				return;
 			bagslot = (int8)_player->GetItemInterface()->GetBagSlotByGuid(bagguid);
 
 			if(bagslot == INVENTORY_SLOT_NOT_SET || ((uint32)slot > c->GetProto()->ContainerSlots))
@@ -1100,7 +1088,7 @@ void WorldSession::HandleBuyItemInSlotOpcode( WorldPacket & recv_data ) // drag 
 
 	if((error = _player->GetItemInterface()->CanAffordItem(it,amount,unit)) != 0)
 	{
-		SendBuyFailed(srcguid, ci.itemid, error);
+		_player->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, error);
 		return;
 	}
 
@@ -1255,7 +1243,7 @@ void WorldSession::HandleBuyItemOpcode( WorldPacket & recv_data ) // right-click
 
 	if( (error = _player->GetItemInterface()->CanAffordItem(it, amount, unit)) != 0 )
 	{
-		SendBuyFailed(srcguid, itemid, error);
+		_player->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, error);
 		return;
 	}
 
@@ -1367,7 +1355,7 @@ void WorldSession::HandleListInventoryOpcode( WorldPacket & recv_data )
 
 	_player->Reputation_OnTalk(unit->m_factionDBC);
 	
-	if (!vendor || CanBuyAt(_player,vendor))
+	if (_player->CanBuyAt(vendor))
 		SendInventoryList(unit);
 	else
 	{
@@ -1433,12 +1421,6 @@ void WorldSession::SendInventoryList(Creature* unit)
 	SendPacket( &data );
 	sLog.outDetail( "WORLD: Sent SMSG_LIST_INVENTORY" );
 }
-
-void WorldSession::SendListInventory(Creature* unit)
-{
-	SendInventoryList(unit);
-}
-
 
 void WorldSession::HandleAutoStoreBagItemOpcode( WorldPacket & recv_data )
 {

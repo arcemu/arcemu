@@ -2469,7 +2469,7 @@ int8 ItemInterface::CanReceiveItem(ItemPrototype * item, uint32 amount)
 {
 	if(!item)
 	{
-		return 0;
+		return INV_ERR_OK;
 	}
 
 	if(item->Unique)
@@ -2480,6 +2480,7 @@ int8 ItemInterface::CanReceiveItem(ItemPrototype * item, uint32 amount)
 			return INV_ERR_CANT_CARRY_MORE_OF_THIS;
 		}
 	}
+
 	if( item->ItemLimitCategory > 0 )
 	{
 		ItemLimitCategoryEntry * ile = dbcItemLimitCategory.LookupEntryForced( item->ItemLimitCategory );
@@ -2487,10 +2488,11 @@ int8 ItemInterface::CanReceiveItem(ItemPrototype * item, uint32 amount)
 		{
 			uint32 count = GetItemCountByLimitId( ile->Id, false );
 			if( count >= ile->maxAmount || ( ( count + amount) > ile->maxAmount ) )
-				return INV_ERR_CANT_CARRY_MORE_OF_THIS;
+				return INV_ERR_ITEM_MAX_LIMIT_CATEGORY_COUNT_EXCEEDED;
 		}
 	}
-	return 0;
+
+	return INV_ERR_OK;
 }
 
 void ItemInterface::BuyItem(ItemPrototype *item, uint32 total_amount, Creature * pVendor)
@@ -2525,29 +2527,17 @@ void ItemInterface::BuyItem(ItemPrototype *item, uint32 total_amount, Creature *
 	}
 }
 
-enum CanAffordItem
-{
-	CAN_AFFORD_ITEM_ERROR_NOT_FOUND				= 0,
-	CAN_AFFORD_ITEM_ERROR_SOLD_OUT				= 1,
-	CAN_AFFORD_ITEM_ERROR_NOT_ENOUGH_MONEY		= 2,
-	CAN_AFFORD_ITEM_ERROR_DOESNT_LIKE_YOU		= 4,
-	CAN_AFFORD_ITEM_ERROR_TOO_FAR_AWAY			= 5,
-	CAN_AFFORD_ITEM_ERROR_CANT_CARRY_ANY_MORE	= 8,
-	CAN_AFFORD_ITEM_ERROR_NOT_REQUIRED_RANK		= 11,
-	CAN_AFFORD_ITEM_ERROR_REPUTATION			= 12,
-};
-
 int8 ItemInterface::CanAffordItem(ItemPrototype * item,uint32 amount, Creature * pVendor)
 {
 	ItemExtendedCostEntry * ex = pVendor->GetItemExtendedCostByItemId( item->ItemId );
 	if( ex != NULL )
 	{
-		for(int i = 0;i<5;i++)
+		for(int i = 0; i < 5; i++)
 		{
 			if(ex->item[i])
 			{
 				if(m_pOwner->GetItemInterface()->GetItemCount(ex->item[i], false) < (ex->count[i]*amount))
-					return INV_ERR_ITEM_NOT_FOUND;
+					return INV_ERR_VENDOR_MISSING_TURNINS;
 			}
 		}
 
@@ -2556,7 +2546,7 @@ int8 ItemInterface::CanAffordItem(ItemPrototype * item,uint32 amount, Creature *
 		if(m_pOwner->GetArenaCurrency() < (ex->arena*amount))
 			return INV_ERR_NOT_ENOUGH_ARENA_POINTS;
  		if(m_pOwner->GetMaxPersonalRating() < ex->personalrating)
-			return CAN_AFFORD_ITEM_ERROR_NOT_REQUIRED_RANK;
+			return INV_ERR_PERSONAL_ARENA_RATING_TOO_LOW;
 	}
 
 	if(item->BuyPrice)
@@ -2564,21 +2554,22 @@ int8 ItemInterface::CanAffordItem(ItemPrototype * item,uint32 amount, Creature *
 		int32 price = GetBuyPriceForItem(item, amount, m_pOwner, pVendor) * amount;
 		if( !m_pOwner->HasGold(price) )
 		{
-			return CAN_AFFORD_ITEM_ERROR_NOT_ENOUGH_MONEY;
+			return INV_ERR_NOT_ENOUGH_MONEY;
 		}
 	}
+	
 	if(item->RequiredFaction)
 	{
 		FactionDBC *factdbc = dbcFaction.LookupEntryForced(item->RequiredFaction);
 		if(!factdbc || factdbc->RepListId < 0)
-			return (int8)NULL;
+			return INV_ERR_OK;
 		
 		if( m_pOwner->GetReputationRankFromStanding( m_pOwner->GetStanding( item->RequiredFaction )) < (int32)item->RequiredFactionStanding )
 		{
-			return CAN_AFFORD_ITEM_ERROR_REPUTATION;
+			return INV_ERR_ITEM_REPUTATION_NOT_ENOUGH;
 		}
 	}
-	return 0;
+	return INV_ERR_OK;
 }
 
 //-------------------------------------------------------------------//

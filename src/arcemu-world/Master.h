@@ -43,7 +43,7 @@
 #define BUILDTYPE "Release"
 #endif
 
-#define REQUIRED_WORLD_DB_VERSION 3861
+#define REQUIRED_WORLD_DB_VERSION 3940
 #define REQUIRED_CHAR_DB_VERSION 3800
 
 #define DEFAULT_LOOP_TIME 0 /* 0 milliseconds - instant */

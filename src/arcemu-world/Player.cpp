@@ -13740,3 +13740,43 @@ void Player::AddQuestKill(uint32 questid, uint8 reqid, uint32 delay)
 	if(qle->CanBeFinished())
 		qle->SendQuestComplete();
 }
+
+bool Player::CanBuyAt(VendorRestrictionEntry *vendor)
+{
+	if(vendor == NULL)
+		return true;
+
+	if( vendor->flags == RESTRICTION_CHECK_ALL )
+	{
+		// check for race mask
+		if( ( vendor->racemask > 0 ) && !( getRaceMask() & vendor->racemask ) )
+			return false;
+
+		// check for class mask
+		if( ( vendor->classmask > 0 ) && !( getClassMask() & vendor->classmask ) )
+			return false;
+
+		// check for required reputation
+		if( vendor->reqrepfaction )
+		{
+			uint32 plrep = GetStanding( vendor->reqrepfaction );
+			if( plrep < vendor->reqrepvalue )
+				return false;
+		}
+	}
+	else if( vendor->flags == RESTRICTION_CHECK_MOUNT_VENDOR )
+	{
+		if( ( vendor->racemask > 0 ) && ( vendor->reqrepfaction ) )
+		{
+			uint32 plrep = GetStanding( vendor->reqrepfaction );
+			if( !( getRaceMask() & vendor->racemask ) && ( plrep < vendor->reqrepvalue ) )
+				return false;
+		}
+		else
+		{
+			sLog.outError("VendorRestrictions: Mount vendor specified, but not enough info for creature %u", vendor->entry);
+		}
+	}
+
+	return true;
+}

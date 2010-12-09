@@ -848,7 +848,13 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 	objmgr.CreateGossipMenuForPlayer(&Menu, pCreature->GetGUID(), TextID, Plr);
 	
 	if (pCreature->isVendor())
-		Menu->AddItem(1, Plr->GetSession()->LocalizedWorldSrv(1), 1);
+	{
+		VendorRestrictionEntry * vendor = VendorRestrictionEntryStorage.LookupEntry(pCreature->GetProto()->Id);
+		if( Plr->CanBuyAt(vendor) )
+			Menu->AddItem(1, Plr->GetSession()->LocalizedWorldSrv(1), 1);
+		else
+			Menu->SetTextID(vendor->cannotbuyattextid);
+	}
 	
 	if( pCreature->isTrainer() || pCreature->isProf() || pCreature->isClass() )
 	{
