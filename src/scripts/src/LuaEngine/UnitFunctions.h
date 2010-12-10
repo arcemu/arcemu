@@ -327,7 +327,7 @@ namespace luaUnit
 		plr->GetSession()->SendChatPacket(data, 1, lang, plr->GetSession());
 		for(set< Object* >::iterator itr = plr->GetInRangePlayerSetBegin(); itr != plr->GetInRangePlayerSetEnd(); ++itr)
 		{
-			(static_cast< Player* >(*itr))->GetSession()->SendChatPacket(data, 1, lang, plr->GetSession());
+			(TO< Player* >(*itr))->GetSession()->SendChatPacket(data, 1, lang, plr->GetSession());
 		}
 		return 0;
 	}

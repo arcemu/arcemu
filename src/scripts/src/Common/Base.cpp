@@ -404,7 +404,7 @@ void MoonScriptCreatureAI::CastOnAllInrangePlayers( uint32 pSpellId, bool pTrigg
 {
 	for( set< Object* >::iterator PlayerIter = _unit->GetInRangePlayerSetBegin(); PlayerIter != _unit->GetInRangePlayerSetEnd(); ++PlayerIter ) 
 	{
-		_unit->CastSpell( static_cast< Player* >(*PlayerIter), pSpellId, pTriggered );
+		_unit->CastSpell( TO< Player* >(*PlayerIter), pSpellId, pTriggered );
 	};
 };
 
@@ -415,7 +415,7 @@ void MoonScriptCreatureAI::CastOnInrangePlayers( float pDistanceMin, float pDist
 		float PlayerDistance = (*PlayerIter)->GetDistance2dSq( this->GetUnit() );
 		if ( PlayerDistance >= pDistanceMin && PlayerDistance <= pDistanceMax )
 		{
-			_unit->CastSpell( static_cast< Player* >(*PlayerIter), pSpellId, pTriggered );
+			_unit->CastSpell( TO< Player* >(*PlayerIter), pSpellId, pTriggered );
 		};
 	};
 };
@@ -592,7 +592,7 @@ void MoonScriptCreatureAI::RemoveAuraOnPlayers(uint32 pSpellId)
 {
 	for( std::set< Object* >::iterator PlayerIter = _unit->GetInRangePlayerSetBegin(); PlayerIter != _unit->GetInRangePlayerSetEnd(); ++PlayerIter ) 
 	{// need testing
-		(static_cast< Player* >(*PlayerIter))->RemoveAura(pSpellId);
+		(TO< Player* >(*PlayerIter))->RemoveAura(pSpellId);
 	}
 }
 

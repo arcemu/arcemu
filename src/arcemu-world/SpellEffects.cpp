@@ -1058,8 +1058,8 @@ void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
 
 #ifdef GM_Z_DEBUG_DIRECTLY
 	else {
-		if( unitTarget->IsPlayer() && unitTarget->IsInWorld() && static_cast< Player* >( unitTarget )->GetSession() && static_cast< Player* >( unitTarget )->GetSession()->CanUseCommand('z')  ) {
-			sChatHandler.BlueSystemMessage( static_cast< Player* >( unitTarget  )->GetSession(), "[%sSystem%s] |rSpell::SpellEffectApplyAura: %s EffectApplyAuraName [%u] .", MSG_COLOR_WHITE, MSG_COLOR_LIGHTBLUE, MSG_COLOR_SUBWHITE,
+		if( unitTarget->IsPlayer() && unitTarget->IsInWorld() && TO< Player* >( unitTarget )->GetSession() && TO< Player* >( unitTarget )->GetSession()->CanUseCommand('z')  ) {
+			sChatHandler.BlueSystemMessage( TO< Player* >( unitTarget  )->GetSession(), "[%sSystem%s] |rSpell::SpellEffectApplyAura: %s EffectApplyAuraName [%u] .", MSG_COLOR_WHITE, MSG_COLOR_LIGHTBLUE, MSG_COLOR_SUBWHITE,
 				i );
 		}
 	}
@@ -1138,12 +1138,12 @@ void Spell::SpellEffectPowerDrain(uint32 i)  // Power Drain
 	uint32 curPower = unitTarget->GetUInt32Value(powerField);
 	if( powerField == UNIT_FIELD_POWER1 && unitTarget->IsPlayer() )
 	{
-		Player* mPlayer = static_cast< Player* >( unitTarget );
+		Player* mPlayer = TO< Player* >( unitTarget );
 		if( mPlayer->IsInFeralForm() )
 			return;
 
 		// Resilience - reduces the effect of mana drains by (CalcRating*2)%.
-		damage = float2int32( damage * (1 - ( ( static_cast<Player*>(unitTarget)->CalcRating( PLAYER_RATING_MODIFIER_SPELL_CRIT_RESILIENCE ) * 2 ) / 100.0f ) ) );
+		damage = float2int32( damage * (1 - ( ( TO< Player* >(unitTarget)->CalcRating( PLAYER_RATING_MODIFIER_SPELL_CRIT_RESILIENCE ) * 2 ) / 100.0f ) ) );
 	}
 	uint32 amt = damage + ( ( u_caster->GetDamageDoneMod( GetProto()->School ) * 80 ) / 100 );
 	if(amt>curPower)
@@ -1263,7 +1263,7 @@ void Spell::SpellEffectHeal(uint32 i) // Heal
 				if (!unitTarget->IsPlayer() || !unitTarget->isAlive())
 					break;
 
-				Player* mPlayer = static_cast< Player* >( unitTarget );
+				Player* mPlayer = TO< Player* >( unitTarget );
 				if( !mPlayer->IsInFeralForm() || (
 					mPlayer->GetShapeShift() != FORM_CAT &&
 					mPlayer->GetShapeShift() != FORM_BEAR &&
@@ -1278,7 +1278,7 @@ void Spell::SpellEffectHeal(uint32 i) // Heal
 			{
 				if (!unitTarget->IsPlayer() || !unitTarget->isAlive())
 					break;
-				Player* mPlayer = static_cast< Player* >( unitTarget );
+				Player* mPlayer = TO< Player* >( unitTarget );
 				if (!mPlayer->IsInFeralForm() ||
 					(mPlayer->GetShapeShift() != FORM_BEAR &&
 					mPlayer->GetShapeShift() != FORM_DIREBEAR))
@@ -2497,7 +2497,7 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 
 			if(Rand(100.0f)) // 3% chance to fail//why?
 			{
-				if( static_cast< Player* >( m_caster )->_GetSkillLineCurrent( SKILL_HERBALISM ) < v )
+				if( TO< Player* >( m_caster )->_GetSkillLineCurrent( SKILL_HERBALISM ) < v )
 				{
 					//SendCastResult(SPELL_FAILED_LOW_CASTLEVEL);
 					return;
@@ -2534,7 +2534,7 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 
 			if( Rand( 100.0f ) ) // 3% chance to fail//why?
 			{
-				if( static_cast< Player* >( m_caster )->_GetSkillLineCurrent( SKILL_MINING ) < v )
+				if( TO< Player* >( m_caster )->_GetSkillLineCurrent( SKILL_MINING ) < v )
 				{
 					//SendCastResult(SPELL_FAILED_LOW_CASTLEVEL);
 					return;
@@ -2611,7 +2611,7 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 		break;
 	};
 	if( gameObjTarget && gameObjTarget->GetType() == GAMEOBJECT_TYPE_CHEST)
-		static_cast< Player* >( m_caster )->SendLoot( gameObjTarget->GetGUID(), loottype, gameObjTarget->GetMapId() );
+		TO< Player* >( m_caster )->SendLoot( gameObjTarget->GetGUID(), loottype, gameObjTarget->GetMapId() );
 }
 
 void Spell::SpellEffectTransformItem(uint32 i)
@@ -3190,9 +3190,9 @@ void Spell::SpellEffectSummonObject(uint32 i)
 		{
 			uint32 seconds[] = { 0, 4, 10, 14 };
 			uint32 rnd = RandomUInt( 3 );
-			sEventMgr.AddEvent( go, &GameObject::FishHooked, static_cast< Player* >( m_caster ), EVENT_GAMEOBJECT_FISH_HOOKED, seconds[ rnd ] * 1000, 1, 0 );
+			sEventMgr.AddEvent( go, &GameObject::FishHooked, TO< Player* >( m_caster ), EVENT_GAMEOBJECT_FISH_HOOKED, seconds[ rnd ] * 1000, 1, 0 );
 		}
-		sEventMgr.AddEvent( go, &GameObject::EndFishing, static_cast< Player* >( m_caster ),false, EVENT_GAMEOBJECT_END_FISHING, 17 * 1000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
+		sEventMgr.AddEvent( go, &GameObject::EndFishing, TO< Player* >( m_caster ),false, EVENT_GAMEOBJECT_END_FISHING, 17 * 1000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
 		p_caster->SetSummonedObject( go );
 	}
 	else
@@ -3420,7 +3420,7 @@ void Spell::SpellEffectSummonPet(uint32 i) //summon - pet
 	//felhunter:	 Devour Magic,Paranoia,Spell Lock,	Tainted Blood
 
 	// remove old pet
-	Pet *old = static_cast< Player* >(m_caster)->GetSummon();
+	Pet *old = TO< Player* >(m_caster)->GetSummon();
 	if(old)
 		old->Dismiss();
 
@@ -3452,7 +3452,7 @@ void Spell::SpellEffectLearnPetSpell(uint32 i)
 	{
 	if(unitTarget->IsPet() && unitTarget->GetTypeId() == TYPEID_UNIT)
 	{
-	static_cast< Player* >(m_caster)->AddPetSpell(GetProto()->EffectTriggerSpell[i], unitTarget->GetEntry());
+	TO< Player* >(m_caster)->AddPetSpell(GetProto()->EffectTriggerSpell[i], unitTarget->GetEntry());
 	}
 	}*/
 
@@ -3558,12 +3558,12 @@ void Spell::SpellEffectPowerBurn(uint32 i) // power burn
 
 	if( unitTarget->IsPlayer() )
 	{
-		Player* mPlayer = static_cast< Player* >( unitTarget );
+		Player* mPlayer = TO< Player* >( unitTarget );
 		if( mPlayer->IsInFeralForm() )
 			return;
 
 		// Resilience - reduces the effect of mana drains by (CalcRating*2)%.
-		damage = float2int32( damage * (1 - ( ( static_cast<Player*>(unitTarget)->CalcRating( PLAYER_RATING_MODIFIER_SPELL_CRIT_RESILIENCE ) * 2 ) / 100.0f ) ) );
+		damage = float2int32( damage * (1 - ( ( TO< Player* >(unitTarget)->CalcRating( PLAYER_RATING_MODIFIER_SPELL_CRIT_RESILIENCE ) * 2 ) / 100.0f ) ) );
 	}
 	int32 mult = damage;
 	damage = mult * unitTarget->GetMaxPower( POWER_TYPE_MANA ) / 100;
@@ -3689,7 +3689,7 @@ void Spell::SpellEffectInterruptCast(uint32 i) // Interrupt Cast
 		int32 duration = GetDuration();
 		if(unitTarget->IsPlayer())
 		{
-			int32 DurationModifier = static_cast< Player* >( unitTarget )->MechanicDurationPctMod[MECHANIC_INTERRUPTED];
+			int32 DurationModifier = TO< Player* >( unitTarget )->MechanicDurationPctMod[MECHANIC_INTERRUPTED];
 			if(DurationModifier >= - 100)
 				duration = (duration * (100 + DurationModifier)) / 100;
 		}
@@ -3708,7 +3708,7 @@ void Spell::SpellEffectInterruptCast(uint32 i) // Interrupt Cast
 		if(unitTarget->IsPlayer())
 		{               
 			// Check for interruption reducing talents
-			int32 DurationModifier = static_cast< Player* >( unitTarget )->MechanicDurationPctMod[MECHANIC_INTERRUPTED];
+			int32 DurationModifier = TO< Player* >( unitTarget )->MechanicDurationPctMod[MECHANIC_INTERRUPTED];
 
 			if(DurationModifier >= - 100)
 				duration = (duration * (100 + DurationModifier)) / 100;
@@ -5216,7 +5216,7 @@ void Spell::SpellEffectPlayerPull( uint32 i )
 	if( !unitTarget || !unitTarget->isAlive() || !unitTarget->IsPlayer() )
 		return;
 
-	Player* p_target = static_cast< Player* >( unitTarget );
+	Player* p_target = TO< Player* >( unitTarget );
 
 	// calculate destination
 	float pullD = p_target->CalcDistance( m_caster ) - p_target->GetBoundingRadius() - (u_caster ? u_caster->GetBoundingRadius() : 0) - 1.0f;
@@ -5255,12 +5255,12 @@ void Spell::SpellEffectSpellSteal( uint32 i )
 {
 	if (!unitTarget || !u_caster || !unitTarget->isAlive())
 		return;
-	if(unitTarget->IsPlayer() && p_caster && p_caster != static_cast< Player* >(unitTarget))
+	if(unitTarget->IsPlayer() && p_caster && p_caster != TO< Player* >(unitTarget))
 	{
-		if(static_cast< Player* >(unitTarget)->IsPvPFlagged())
+		if(TO< Player* >(unitTarget)->IsPvPFlagged())
 		{
 			if(p_caster->IsPlayer())
-				static_cast< Player* >( p_caster )->PvPToggle();
+				TO< Player* >( p_caster )->PvPToggle();
 			else
 				p_caster->SetPvPFlag();
 		}
@@ -5376,7 +5376,7 @@ void Spell::SpellEffectRedirectThreat(uint32 i)
 	if (!p_caster || !unitTarget)
 		return;
 
-	if ((unitTarget->IsPlayer() && p_caster->GetGroup() != static_cast<Player *>(unitTarget)->GetGroup()) || (unitTarget->IsCreature() && !unitTarget->IsPet()))
+	if ((unitTarget->IsPlayer() && p_caster->GetGroup() != TO< Player* >(unitTarget)->GetGroup()) || (unitTarget->IsCreature() && !unitTarget->IsPet()))
 		return;
 
 	p_caster->SetMisdirectionTarget(unitTarget->GetGUID());

@@ -694,7 +694,7 @@ void EyeOfTheStorm::UpdateCPs()
 
 		for( ; itr != itrend; ++itr )
 		{
-			plr = static_cast< Player* >( *itr );
+			plr = TO< Player* >( *itr );
 			if( plr->isAlive() && !(plr->IsStealth()) && !(plr->m_invisible) && !(plr->SchoolImmunityList[0]) && plr->GetDistance2dSq( go ) <= EOTS_CAPTURE_DISTANCE )
 			{
 				playercounts[plr->GetTeam()]++;

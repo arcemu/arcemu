@@ -1182,11 +1182,11 @@ void Player::_EventAttack( bool offhand )
 		//pvp timeout reset
 		if(pVictim->IsPlayer())
 		{
-			if (static_cast< Player* >(pVictim)->cannibalize)
+			if (TO< Player* >(pVictim)->cannibalize)
 			{
 				sEventMgr.RemoveEvents(pVictim, EVENT_CANNIBALIZE);
 				pVictim->SetEmoteState(0);
-				static_cast< Player* >(pVictim)->cannibalize = false;
+				TO< Player* >(pVictim)->cannibalize = false;
 			}
 		}
 
@@ -1280,8 +1280,8 @@ void Player::_EventCharmAttack()
 			//pvp timeout reset
 			/*if(pVictim->IsPlayer())
 			{
-				if( static_cast< Player* >( pVictim )->DuelingWith == NULL)//Dueling doesn't trigger PVP
-					static_cast< Player* >( pVictim )->PvPTimeoutUpdate(false); //update targets timer
+				if( TO< Player* >( pVictim )->DuelingWith == NULL)//Dueling doesn't trigger PVP
+					TO< Player* >( pVictim )->PvPTimeoutUpdate(false); //update targets timer
 
 				if(DuelingWith == NULL)//Dueling doesn't trigger PVP
 					PvPTimeoutUpdate(false); //update casters timer
@@ -5663,7 +5663,7 @@ bool Player::CanSee(Object* obj) // * Invisibility & Stealth Detection - Partha 
 	{
 		if(obj->IsPlayer())
 		{
-			Player *pObj = static_cast< Player* >(obj);
+			Player *pObj = TO< Player* >(obj);
 
 			if(myCorpseInstanceId == GetInstanceID() && obj->GetDistanceSq(myCorpseLocation) <= CORPSE_VIEW_DISTANCE)
 				return !pObj->m_isGmInvisible; // we can see all players within range of our corpse except invisible GMs
@@ -5704,7 +5704,7 @@ bool Player::CanSee(Object* obj) // * Invisibility & Stealth Detection - Partha 
 	{
 		case TYPEID_PLAYER:
 			{
-				Player *pObj = static_cast< Player* >(obj);
+				Player *pObj = TO< Player* >(obj);
 
 				if(pObj->m_invisible) // Invisibility - Detection of Players
 				{
@@ -5825,9 +5825,9 @@ void Player::AddInRangeObject(Object* pObj)
 		uint32 ntime = getMSTime();
 
 		if (ntime > m_taxi_ride_time)
-			m_CurrentTaxiPath->SendMoveForTime( this, static_cast< Player* >( pObj ), ntime - m_taxi_ride_time);
+			m_CurrentTaxiPath->SendMoveForTime( this, TO< Player* >( pObj ), ntime - m_taxi_ride_time);
 		/*else
-			m_CurrentTaxiPath->SendMoveForTime( this, static_cast< Player* >( pObj ), m_taxi_ride_time - ntime);*/
+			m_CurrentTaxiPath->SendMoveForTime( this, TO< Player* >( pObj ), m_taxi_ride_time - ntime);*/
 	}
 
 	Unit::AddInRangeObject(pObj);
@@ -6873,8 +6873,8 @@ void Player::CalcStat( uint32 type )
 	res = pos + (int32)BaseStats[type] - neg;
 	if( res <= 0 )
 		res = 1;
-	pos += ( res * (int32) static_cast< Player* >( this )->TotalStatModPctPos[type] ) / 100;
-	neg += ( res * (int32) static_cast< Player* >( this )->TotalStatModPctNeg[type] ) / 100;
+	pos += ( res * (int32) TO< Player* >( this )->TotalStatModPctPos[type] ) / 100;
+	neg += ( res * (int32) TO< Player* >( this )->TotalStatModPctNeg[type] ) / 100;
 	res = pos + BaseStats[type] - neg;
 	if( res <= 0 )
 		res = 1;
@@ -8666,10 +8666,10 @@ void Player::BuildFlagUpdateForNonGroupSet(uint32 index, uint32 flag)
 		iter++;
         if(curObj->IsPlayer())
         {
-            Group* pGroup = static_cast< Player* >( curObj )->GetGroup();
+            Group* pGroup = TO< Player* >( curObj )->GetGroup();
             if( !pGroup && pGroup != GetGroup())
             {
-                BuildFieldUpdatePacket( static_cast< Player* >( curObj ), index, flag );
+                BuildFieldUpdatePacket( TO< Player* >( curObj ), index, flag );
             }
         }
     }
@@ -9560,7 +9560,7 @@ void Player::CalcDamage()
 		uint32 cr = 0;
 		if( it )
 		{
-			if( static_cast< Player* >( this )->m_wratings.size() )
+			if( TO< Player* >( this )->m_wratings.size() )
 			{
 				std::map<uint32, uint32>::iterator itr = m_wratings.find( it->GetProto()->SubClass );
 				if( itr != m_wratings.end() )
@@ -9572,7 +9572,7 @@ void Player::CalcDamage()
 
 		/////////////// OFF HAND START
 		cr = 0;
-		it = static_cast< Player* >( this )->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_OFFHAND);
+		it = TO< Player* >( this )->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_OFFHAND);
 		if(it)
 		{
 			if(!disarmed)
@@ -12703,7 +12703,7 @@ void Player::OutPacketToSet(uint16 Opcode, uint16 Len, const void * Data, bool s
 
 	for( std::set< Object* >::iterator itr = m_inRangePlayers.begin(); itr != m_inRangePlayers.end(); ++itr )
 	{
-        Player *p = static_cast< Player* >( *itr );
+        Player *p = TO< Player* >( *itr );
         
         if( gm ){
             if( p->GetSession()->GetPermissionCount() > 0 )
@@ -12737,7 +12737,7 @@ void Player::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
 		{
             for( std::set< Object* >::iterator itr = m_inRangePlayers.begin(); itr != m_inRangePlayers.end(); ++itr )
 			{
-                Player *p = static_cast< Player* >( *itr );
+                Player *p = TO< Player* >( *itr );
 
 				if( p->GetSession() && p->GetSession()->GetPermissionCount() > 0 && p->GetTeam() == myteam)
 					p->SendPacket(data);
@@ -12747,7 +12747,7 @@ void Player::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
 		{
 			for( std::set< Object* >::iterator itr = m_inRangePlayers.begin(); itr != m_inRangePlayers.end(); ++itr )
 			{
-                Player *p = static_cast< Player* >( *itr );
+                Player *p = TO< Player* >( *itr );
 
 				if( p->GetSession() && p->GetTeam() == myteam && !p->Social_IsIgnoring( GetLowGUID() ))
 					p->SendPacket(data);
@@ -12760,7 +12760,7 @@ void Player::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
 		{
 			for( std::set< Object* >::iterator itr = m_inRangePlayers.begin(); itr != m_inRangePlayers.end(); ++itr )
 			{
-                Player *p = static_cast< Player* >( *itr );
+                Player *p = TO< Player* >( *itr );
 
 				if( p->GetSession() && p->GetSession()->GetPermissionCount() > 0)
 					p->SendPacket(data);
@@ -12770,7 +12770,7 @@ void Player::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
 		{
 			for( std::set< Object* >::iterator itr = m_inRangePlayers.begin(); itr != m_inRangePlayers.end(); ++itr )
 			{
-                Player *p = static_cast< Player* >( *itr );
+                Player *p = TO< Player* >( *itr );
 
 				if( p->GetSession() &&  !( p->Social_IsIgnoring( GetLowGUID() )) )
 					p->SendPacket(data);
@@ -12822,7 +12822,7 @@ uint32 Player::CheckDamageLimits( uint32 dmg, uint32 spellid )
 void Player::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32 unitEvent, uint32 spellId, bool no_remove_auras ){
 	if( !pVictim || !pVictim->isAlive() || !pVictim->IsInWorld() || !IsInWorld() )
 		return;
-	if( pVictim->IsPlayer() && static_cast< Player* >( pVictim )->GodModeCheat == true )
+	if( pVictim->IsPlayer() && TO< Player* >( pVictim )->GodModeCheat == true )
 		return;
 	if( pVictim->bInvincible )
 		return;
@@ -12908,7 +12908,7 @@ void Player::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 			m_bg->HookOnUnitKill( this, pVictim );
 
 			if( pVictim->IsPlayer() )
-				m_bg->HookOnPlayerKill( this, static_cast< Player* >( pVictim ) );
+				m_bg->HookOnPlayerKill( this, TO< Player* >( pVictim ) );
 		}
 
 		if( pVictim->IsPlayer() ){

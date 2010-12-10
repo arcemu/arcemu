@@ -25,7 +25,7 @@ Player* GetPlayerOwner( Object *A ){
     Player *pAttacker = NULL;
 
     if( A->IsPlayer() ){
-        pAttacker = static_cast< Player* >( A );
+        pAttacker = TO< Player* >( A );
 	}
     else
 	if( A->IsPet() ){
@@ -36,7 +36,7 @@ Player* GetPlayerOwner( Object *A ){
 	}
     else // Player totem
     if( A->IsCreature() && static_cast< Creature* >( A )->IsTotem() ){
-		pAttacker = static_cast< Player* >( static_cast< Creature* >( A )->GetOwner() );
+		pAttacker = TO< Player* >( static_cast< Creature* >( A )->GetOwner() );
 
         // Totem must have an owner
         Arcemu::Util::ARCEMU_ASSERT(    pAttacker != NULL );
@@ -44,7 +44,7 @@ Player* GetPlayerOwner( Object *A ){
     }
     else // Player summon
     if( A->IsCreature() && static_cast< Creature* >( A )->GetOwner() != NULL && static_cast< Creature* >( A )->GetOwner()->IsPlayer() ){
-        pAttacker = static_cast< Player* >( static_cast< Player*>( static_cast< Creature* >( A )->GetOwner() ) );
+        pAttacker = TO< Player* >( static_cast< Creature* >( A )->GetOwner() );
     }
 
     return pAttacker;
@@ -140,10 +140,10 @@ bool isHostile(Object* objA, Object* objB)// B is hostile for A?
 	AreaTable *atB = NULL;
 
 	if( objA->IsPlayer() )
-		atA = dbcArea.LookupEntry( static_cast< Player* >( objA )->GetAreaID() );
+		atA = dbcArea.LookupEntry( TO< Player* >( objA )->GetAreaID() );
 
 	if( objB->IsPlayer() )
-		atB = dbcArea.LookupEntry( static_cast< Player* >( objB )->GetAreaID() );
+		atB = dbcArea.LookupEntry( TO< Player* >( objB )->GetAreaID() );
 
 	if( ( atA && atA->AreaFlags & 0x800) || (atB && atB->AreaFlags & 0x800) ) // cebernic: fix older logic error
 		return false;
@@ -187,18 +187,18 @@ bool isHostile(Object* objA, Object* objB)// B is hostile for A?
 	if(objA->IsPlayer() && !objB->IsPlayer())	   // PvE
 	{
 		if(objB->m_factionDBC->RepListId >= 0)
-			hostile = static_cast< Player* >( objA )->IsHostileBasedOnReputation( objB->m_factionDBC );
+			hostile = TO< Player* >( objA )->IsHostileBasedOnReputation( objB->m_factionDBC );
 	}
 	
 	if(objB->IsPlayer() && !objA->IsPlayer())	   // PvE
 	{
 		if(objA->m_factionDBC->RepListId >= 0)
-			hostile = static_cast< Player* >( objB )->IsHostileBasedOnReputation( objA->m_factionDBC );
+			hostile = TO< Player* >( objB )->IsHostileBasedOnReputation( objA->m_factionDBC );
 	}
 
-	if( objA->IsPlayer() && objB->IsPlayer() && static_cast<Player*>(objA)->m_bg != NULL )
+	if( objA->IsPlayer() && objB->IsPlayer() && TO< Player* >(objA)->m_bg != NULL )
 	{
-		if( static_cast<Player*>(objA)->m_bgTeam != static_cast<Player*>(objB)->m_bgTeam )
+		if( TO< Player* >(objA)->m_bgTeam != TO< Player* >(objB)->m_bgTeam )
 			return true;
 	}
 
@@ -258,23 +258,23 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
 	if(objA->IsPlayer() && objB->IsPlayer())
 	{
 		if(
-			static_cast< Player* >( objA )->DuelingWith == static_cast< Player* >(objB) && 
-			static_cast< Player* >( objA )->GetDuelState() == DUEL_STATE_STARTED
+			TO< Player* >( objA )->DuelingWith == TO< Player* >(objB) && 
+			TO< Player* >( objA )->GetDuelState() == DUEL_STATE_STARTED
 			)
 		return true;
 
 		//players in same group should not attack each other. Required for arenas with mixed groups
-		if( static_cast< Player* >( objA )->GetGroup() && static_cast< Player* >( objA )->GetGroup() == static_cast< Player* >( objB )->GetGroup() )
+		if( TO< Player* >( objA )->GetGroup() && TO< Player* >( objA )->GetGroup() == TO< Player* >( objB )->GetGroup() )
 			return false;
 
 		if(objA->HasFlag(PLAYER_FLAGS,PLAYER_FLAG_FREE_FOR_ALL_PVP) && objB->HasFlag(PLAYER_FLAGS,PLAYER_FLAG_FREE_FOR_ALL_PVP))
 		{
-			if(static_cast< Player* >( objA )->m_bg != NULL && static_cast< Player* >( objB )->m_bg != NULL)
-				if(static_cast< Player* >( objA )->m_bgTeam == static_cast< Player* >( objB )->m_bgTeam)
+			if(TO< Player* >( objA )->m_bg != NULL && TO< Player* >( objB )->m_bg != NULL)
+				if(TO< Player* >( objA )->m_bgTeam == TO< Player* >( objB )->m_bgTeam)
 					return false;
 
-			if( static_cast< Player* >( objA )->m_bg != NULL )
-				if( static_cast< Player* >( objA )->GetGroup() == static_cast< Player* >( objB )->GetGroup() )
+			if( TO< Player* >( objA )->m_bg != NULL )
+				if( TO< Player* >( objA )->GetGroup() == TO< Player* >( objB )->GetGroup() )
 					return false;
 
 			return true;		// can hurt each other in FFA pvp
@@ -289,15 +289,15 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
 			if(
 				static_cast<Pet *>(objA)->GetPetOwner() )
 			{
-				if(	static_cast<Pet *>(objA)->GetPetOwner()->DuelingWith == static_cast< Player* >(objB) && 
+				if(	static_cast<Pet *>(objA)->GetPetOwner()->DuelingWith == TO< Player* >(objB) && 
 					static_cast<Pet *>(objA)->GetPetOwner()->GetDuelState() == DUEL_STATE_STARTED )
 					return true;
 				if(	static_cast<Pet *>(objA)->GetPetOwner()->m_bg &&
-					static_cast<Pet *>(objA)->GetPetOwner()->m_bgTeam != static_cast< Player* >(objB)->m_bgTeam	)
+					static_cast<Pet *>(objA)->GetPetOwner()->m_bgTeam != TO< Player* >(objB)->m_bgTeam	)
 					return true;
 				//players in same group should not attack each other. Required for arenas with mixed groups
-				if( static_cast<Player *>(objB)->GetGroup() && 
-					static_cast<Pet *>(objA)->GetGroup() == static_cast< Player* >( objB )->GetGroup() )
+				if( TO< Player* >(objB)->GetGroup() && 
+					static_cast<Pet *>(objA)->GetGroup() == TO< Player* >( objB )->GetGroup() )
 					return false;
 			}
 		}
@@ -325,12 +325,12 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
 		{
 			if( static_cast<Pet*>(objB)->GetPetOwner() )
 			{
-				if(	static_cast<Pet *>(objB)->GetPetOwner()->DuelingWith == static_cast< Player* >(objA) && 
+				if(	static_cast<Pet *>(objB)->GetPetOwner()->DuelingWith == TO< Player* >(objA) && 
 					static_cast<Pet *>(objB)->GetPetOwner()->GetDuelState() == DUEL_STATE_STARTED )
 				return true;
 				//players in same group should not attack each other. Required for arenas with mixed groups
-				if( static_cast<Player *>(objA)->GetGroup() && 
-					static_cast<Pet *>(objB)->GetGroup() == static_cast< Player* >( objA )->GetGroup() )
+				if( TO< Player* >(objA)->GetGroup() && 
+					static_cast<Pet *>(objB)->GetGroup() == TO< Player* >( objA )->GetGroup() )
 					return false;
 			}
 		}
@@ -352,8 +352,8 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
 		if(objB->IsPlayer())
 		{
 
-			Player *pb = static_cast< Player* >(objB);
-			Player *pa = static_cast< Player* >( static_cast<Creature *>(objA)->GetOwner() );
+			Player *pb = TO< Player* >(objB);
+			Player *pa = TO< Player* >( static_cast<Creature *>(objA)->GetOwner() );
 
 			if( pa &&
 				pa->DuelingWith  == pb && 
@@ -375,7 +375,7 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
 			{
 
 				Player *pb = static_cast<Pet *>(objB)->GetPetOwner();
-				Player *pa = static_cast< Player* >( static_cast<Creature *>(objA)->GetOwner());
+				Player *pa = TO< Player* >( static_cast<Creature *>(objA)->GetOwner());
 
 				if(	pa->DuelingWith == pb && pa->GetDuelState() == DUEL_STATE_STARTED )
 					return true;
@@ -387,8 +387,8 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
 			}
 			else if( objB->IsCreature() && static_cast<Creature *>(objB)->IsTotem() )
 			{
-				if(	static_cast< Player* >( static_cast<Creature *>(objA)->GetOwner())->DuelingWith == static_cast<Creature *>(objB)->GetOwner() && 
-					static_cast< Player* >( static_cast<Creature *>(objA)->GetOwner())->GetDuelState() == DUEL_STATE_STARTED
+				if(	TO< Player* >( static_cast<Creature *>(objA)->GetOwner())->DuelingWith == static_cast<Creature *>(objB)->GetOwner() && 
+					TO< Player* >( static_cast<Creature *>(objA)->GetOwner())->GetDuelState() == DUEL_STATE_STARTED
 					)
 					return true;
 				//players in same group should not attack each other. Required for arenas with mixed groups
@@ -403,19 +403,19 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
 	{
 		if(objA->IsPlayer() && static_cast<Creature *>(objB)->GetOwner())
 		{
-			if( static_cast< Player* >( static_cast<Creature *>(objB)->GetOwner() )->DuelingWith == static_cast< Player* >(objA) && 
-				static_cast< Player* >( static_cast<Creature *>(objB)->GetOwner() )->GetDuelState() == DUEL_STATE_STARTED )
+			if( TO< Player* >( static_cast<Creature *>(objB)->GetOwner() )->DuelingWith == TO< Player* >(objA) && 
+				TO< Player* >( static_cast<Creature *>(objB)->GetOwner() )->GetDuelState() == DUEL_STATE_STARTED )
 				return true;
 			//players in same group should not attack each other. Required for arenas with mixed groups
-			if( static_cast<Player *>(objA)->GetGroup() && 
-				static_cast<Creature *>(objB)->GetGroup() == static_cast< Player* >( objA )->GetGroup() )
+			if( TO< Player* >(objA)->GetGroup() && 
+				static_cast<Creature *>(objB)->GetGroup() == TO< Player* >( objA )->GetGroup() )
 				return false;
 		}
 		if(objA->IsPet() && static_cast<Creature *>(objB)->GetOwner() )
 		{
 
 			Player *pa = static_cast< Pet* >( objA )->GetPetOwner();
-			Player *pb = static_cast< Player* >( static_cast< Creature* >( objB )->GetOwner() );
+			Player *pb = TO< Player* >( static_cast< Creature* >( objB )->GetOwner() );
 
 			if( pb->DuelingWith == pa && pb->GetDuelState() == DUEL_STATE_STARTED )
 				return true;
@@ -437,7 +437,7 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
 	if ( objA->IsCreature() )
 	{
 		if( static_cast<Creature *>(objA)->IsTotem() && static_cast< Creature* >( objA )->GetOwner() )
-			atA = dbcArea.LookupEntry( static_cast< Player* >( static_cast< Creature* >( objA )->GetOwner() )->GetAreaID() );
+			atA = dbcArea.LookupEntry( TO< Player* >( static_cast< Creature* >( objA )->GetOwner() )->GetAreaID() );
 		else
 		if( objA->IsPet() && static_cast< Pet* >( objA )->GetPetOwner() )
 			atA = dbcArea.LookupEntry( static_cast< Pet* >( objA )->GetPetOwner()->GetAreaID() );
@@ -446,17 +446,17 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
 	if ( objB->IsCreature() )
 	{
 		if( static_cast<Creature *>(objB)->IsTotem() && static_cast< Creature* >( objB )->GetOwner() )
-			atB = dbcArea.LookupEntry( static_cast< Player* >( static_cast< Creature* >( objB )->GetOwner())->GetAreaID() );
+			atB = dbcArea.LookupEntry( TO< Player* >( static_cast< Creature* >( objB )->GetOwner())->GetAreaID() );
 		else if( objB->IsPet() && static_cast< Pet* >( objB )->GetPetOwner() )
 			atB = dbcArea.LookupEntry( static_cast< Pet* >( objB )->GetPetOwner()->GetAreaID() );
 
 	}			
 		
 	if( objA->IsPlayer() )
-		atA = dbcArea.LookupEntry( static_cast< Player* >( objA )->GetAreaID() );
+		atA = dbcArea.LookupEntry( TO< Player* >( objA )->GetAreaID() );
 
 	if( objB->IsPlayer() )
-		atB = dbcArea.LookupEntry( static_cast< Player* >( objB )->GetAreaID() );
+		atB = dbcArea.LookupEntry( TO< Player* >( objB )->GetAreaID() );
 
 	// We have the area codes
 	// We know they aren't dueling

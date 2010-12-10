@@ -6,7 +6,7 @@ public:
 	ADD_CREATURE_FACTORY_FUNCTION(DancingRuneWeaponAI);
 	DancingRuneWeaponAI(Creature* pCreature) : CreatureAIScript(pCreature)
 	{ 
-		Player *pOwner = static_cast< Player* >(_unit->GetAIInterface()->GetPetOwner());
+		Player *pOwner = TO< Player* >(_unit->GetAIInterface()->GetPetOwner());
 		
 		if(pOwner)
 		{

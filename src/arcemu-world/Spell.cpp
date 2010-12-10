@@ -182,7 +182,7 @@ Spell::Spell(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 			g_caster = NULL;
 			i_caster = NULL;
 			u_caster = static_cast< Unit* >( Caster );
-			p_caster = static_cast< Player* >( Caster );
+			p_caster = TO< Player* >( Caster );
 			if( p_caster->GetDuelState() == DUEL_STATE_STARTED )
 				duelSpell = true;
 
@@ -426,10 +426,10 @@ void Spell::FillAllTargetsInArea(uint32 i,float srcx,float srcy,float srcz, floa
 		if( !( (*itr)->IsUnit() ) || ! static_cast< Unit* >( *itr )->isAlive() )//|| ( static_cast< Creature* >( *itr )->IsTotem() && !static_cast< Unit* >( *itr )->IsPlayer() ) ) why shouldn't we fill totems?
 			continue;
 
-		if( p_caster && (*itr)->IsPlayer() && p_caster->GetGroup() && static_cast< Player* >( *itr )->GetGroup() && static_cast< Player* >( *itr )->GetGroup() == p_caster->GetGroup() )//Don't attack party members!!
+		if( p_caster && (*itr)->IsPlayer() && p_caster->GetGroup() && TO< Player* >( *itr )->GetGroup() && TO< Player* >( *itr )->GetGroup() == p_caster->GetGroup() )//Don't attack party members!!
 		{
 			//Dueling - AoE's should still hit the target party member if you're dueling with him
-			if( !p_caster->DuelingWith || p_caster->DuelingWith != static_cast< Player* >( *itr ) )
+			if( !p_caster->DuelingWith || p_caster->DuelingWith != TO< Player* >( *itr ) )
 				continue;
 		}
 		if( GetProto()->TargetCreatureType )
@@ -654,7 +654,7 @@ uint8 Spell::DidHit( uint32 effindex, Unit* target )
 	if( u_victim == NULL )
 		return SPELL_DID_HIT_MISS;
 	
-	Player* p_victim = target->IsPlayer() ? static_cast< Player* >( target ) : NULL;
+	Player* p_victim = target->IsPlayer() ? TO< Player* >( target ) : NULL;
 
 	float baseresist[3] = { 4.0f, 5.0f, 6.0f };
 	int32 lvldiff;
@@ -2305,9 +2305,9 @@ void Spell::SendChannelStart(uint32 duration)
 		u_caster->SetChannelSpellId( GetProto()->Id);
 
 	/*
-	Unit* target = objmgr.GetCreature( static_cast< Player* >( m_caster )->GetSelection());
+	Unit* target = objmgr.GetCreature( TO< Player* >( m_caster )->GetSelection());
 	if(!target)
-		target = objmgr.GetObject<Player>( static_cast< Player* >( m_caster )->GetSelection());
+		target = objmgr.GetObject<Player>( TO< Player* >( m_caster )->GetSelection());
 	if(!target)
 		return;
 
@@ -2660,7 +2660,7 @@ void Spell::HandleEffects(uint64 guid, uint32 i)
 			case HIGHGUID_TYPE_PLAYER:
 				{
 					unitTarget =  m_caster->GetMapMgr()->GetPlayer( GET_LOWGUID_PART( guid ) );
-					playerTarget = static_cast< Player* >(unitTarget);
+					playerTarget = TO< Player* >(unitTarget);
 				}break;
 			case HIGHGUID_TYPE_ITEM:
 				if( p_caster != NULL )
@@ -2744,12 +2744,12 @@ void Spell::HandleAddAura(uint64 guid)
 
 	// Applying an aura to a flagged target will cause you to get flagged.
 	// self casting doesn't flag himself.
-	if(Target->IsPlayer() && p_caster && p_caster != static_cast< Player* >(Target))
+	if(Target->IsPlayer() && p_caster && p_caster != TO< Player* >(Target))
 	{
-        if(static_cast< Player* >(Target)->IsPvPFlagged() )
+        if(TO< Player* >(Target)->IsPvPFlagged() )
 		{
             if( p_caster->IsPlayer() && !p_caster->IsPvPFlagged() )
-                static_cast< Player* >( p_caster )->PvPToggle();
+                TO< Player* >( p_caster )->PvPToggle();
 			else
                 p_caster->SetPvPFlag();
 		}
@@ -2770,8 +2770,8 @@ void Spell::HandleAddAura(uint64 guid)
 
 		if( Target->IsPlayer() )
 		{
-			sEventMgr.AddEvent(static_cast<Player*>(Target), &Player::AvengingWrath, EVENT_PLAYER_AVENGING_WRATH, 30000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);	
-			static_cast<Player*>(Target)->mAvengingWrath = false;
+			sEventMgr.AddEvent(TO< Player* >(Target), &Player::AvengingWrath, EVENT_PLAYER_AVENGING_WRATH, 30000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);	
+			TO< Player* >(Target)->mAvengingWrath = false;
 		}
 	}
 	else if( GetProto()->MechanicsType == 16 && GetProto()->Id != 11196) // Cast spell Recently Bandaged
@@ -2983,7 +2983,7 @@ uint8 Spell::CanCast(bool tolerate)
 		if( target )
 		{
 			// GM Flagged Players should be immune to other players' casts, but not their own.
-			if ((target != m_caster) && target->IsPlayer() && static_cast<Player*>(target)->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_GM))
+			if ((target != m_caster) && target->IsPlayer() && TO< Player* >(target)->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_GM))
 				return SPELL_FAILED_BM_OR_INVISGOD;
 
 			//you can't mind control someone already mind controlled
@@ -3680,10 +3680,10 @@ uint8 Spell::CanCast(bool tolerate)
 	{
 		Unit * utarget = m_caster->GetMapMgr()->GetUnit( m_targets.m_unitTarget );
 
-		if (utarget && utarget->IsPlayer() && static_cast< Player* >( utarget )->m_isMoving)
+		if (utarget && utarget->IsPlayer() && TO< Player* >( utarget )->m_isMoving)
 		{
 			// this only applies to PvP.
-			uint32 lat = static_cast< Player* >( utarget )->GetSession() ? static_cast< Player* >( utarget )->GetSession()->GetLatency() : 0;
+			uint32 lat = TO< Player* >( utarget )->GetSession() ? TO< Player* >( utarget )->GetSession()->GetLatency() : 0;
 
 			// if we're over 500 get fucked anyway.. your gonna lag! and this stops cheaters too
 			lat = ( lat > 500 ) ? 500 : lat;
@@ -3789,7 +3789,7 @@ uint8 Spell::CanCast(bool tolerate)
 					if( p_caster->DuelingWith != target && !isFriendly( p_caster, target ) )
 					{
 						AreaTable* atCaster = dbcArea.LookupEntry( p_caster->GetAreaID() );
-						AreaTable* atTarget = dbcArea.LookupEntry( static_cast< Player* >( target )->GetAreaID() );
+						AreaTable* atTarget = dbcArea.LookupEntry( TO< Player* >( target )->GetAreaID() );
 						if( atCaster->AreaFlags & 0x800 || atTarget->AreaFlags & 0x800 )
 							return SPELL_FAILED_NOT_HERE;
 					}
@@ -3979,7 +3979,7 @@ uint8 Spell::CanCast(bool tolerate)
 				GetProto()->EffectImplicitTargetA[1] == EFF_TARGET_AREAEFFECT_PARTY_AND_CLASS ||
 				GetProto()->EffectImplicitTargetA[2] == EFF_TARGET_AREAEFFECT_PARTY_AND_CLASS )
 			{
-				if( target->IsPlayer() && !static_cast< Player* >( target )->InGroup() )
+				if( target->IsPlayer() && !TO< Player* >( target )->InGroup() )
 					return SPELL_FAILED_TARGET_NOT_IN_PARTY;
 			}
 
@@ -4788,7 +4788,7 @@ void Spell::HandleTeleport( float x, float y, float z, uint32 mapid, Unit *Targe
 {
 	if( Target->IsPlayer() ){
 		
-		Player* pTarget = static_cast< Player* >( Target );
+		Player* pTarget = TO< Player* >( Target );
 		pTarget->EventAttackStop();
 		pTarget->SetSelection(0);
 		

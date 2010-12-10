@@ -1100,7 +1100,7 @@ void Creature::TotemExpire(uint32 delayedDespawn)
 			m_owner->RemoveAura(6495);
 		m_owner->m_TotemSlots[totemSlot] = 0;
 		if( m_owner->IsPlayer() )
-			static_cast< Player* >( m_owner )->SendDestroyObject( GetGUID() ); //make sure the client knows it's gone...
+			TO< Player* >( m_owner )->SendDestroyObject( GetGUID() ); //make sure the client knows it's gone...
 		m_owner = NULL;
     }
 
@@ -1940,14 +1940,14 @@ Group *Creature::GetGroup()
 	if ( IsPet() )
 		static_cast<Pet *>(this)->GetGroup();
 	else if( IsTotem() && m_owner != NULL )
-		return static_cast< Player* >( m_owner )->GetGroup();
+		return TO< Player* >( m_owner )->GetGroup();
 	else if( GetCreatedByGUID() && GetMapMgr() )
 	{
 		Unit *tu = GetMapMgr()->GetUnit( GetCreatedByGUID() );
 		if( tu )
 		{
 			if( tu->IsPlayer() )
-				static_cast<Player *>(tu)->GetGroup();
+				TO< Player* >(tu)->GetGroup();
 			else if( tu->IsCreature() )
 				static_cast<Creature *>(tu)->GetGroup();
 		}
@@ -2115,7 +2115,7 @@ bool Creature::isCritter(){
 void Creature::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32 unitEvent, uint32 spellId, bool no_remove_auras ){
 	if( !pVictim || !pVictim->isAlive() || !pVictim->IsInWorld() || !IsInWorld() )
 		return;
-	if( pVictim->IsPlayer() && static_cast< Player* >( pVictim )->GodModeCheat == true )
+	if( pVictim->IsPlayer() && TO< Player* >( pVictim )->GodModeCheat == true )
 		return;
 	if( pVictim->bInvincible )
 		return;
@@ -2128,7 +2128,7 @@ void Creature::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint
 	pVictim->SetStandState( STANDSTATE_STAND );
 
 	if( pVictim->IsPvPFlagged() && m_owner != NULL && m_owner->IsPlayer() ){
-		Player *p = static_cast< Player* >( m_owner );
+		Player *p = TO< Player* >( m_owner );
 
 		if( !p->IsPvPFlagged() )
 			p->PvPToggle();
@@ -2139,7 +2139,7 @@ void Creature::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint
 	// Bg dmg counter
 	if( pVictim != this ){
 		if( m_owner != NULL && m_owner->IsPlayer() ){
-			Player *p = static_cast< Player* >( m_owner );
+			Player *p = TO< Player* >( m_owner );
 
 			if( p != NULL && p->m_bg != NULL && GetMapMgr() == pVictim->GetMapMgr() ){
 				p->m_bgScore.DamageDone += damage;

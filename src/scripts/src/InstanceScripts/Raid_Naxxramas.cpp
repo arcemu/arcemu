@@ -970,7 +970,7 @@ void SpellFunc_AnubRekhanCorpseScarabsPlayer( SpellDesc* pThis, MoonScriptCreatu
 			if ( ( *Iter ) == NULL )
 				continue;
 
-			PlayerPtr = static_cast< Player* >(*Iter);
+			PlayerPtr = TO< Player* >(*Iter);
 			set< uint32 >::iterator PlayerIter = AnubRekhan->mUsedCorpseGuids.find( static_cast<uint32>(PlayerPtr->GetGUID()) );
 			if ( PlayerIter != AnubRekhan->mUsedCorpseGuids.end() )
 			{
@@ -2040,7 +2040,7 @@ void LoathebAI::AIUpdate()
 					if ( ( *Iter ) == NULL )
 						continue;
 
-					PlayerPtr = static_cast< Player* >(*Iter);
+					PlayerPtr = TO< Player* >(*Iter);
 					if ( !PlayerPtr->isAlive() )
 						continue;
 
@@ -2726,11 +2726,11 @@ void SpellFunc_PatchwerkHatefulStrike( SpellDesc* pThis, MoonScriptCreatureAI* p
 	for(set< Object* >::iterator PlayerIter = pCreatureAI->GetUnit()->GetInRangePlayerSetBegin(); 
 		PlayerIter != pCreatureAI->GetUnit()->GetInRangePlayerSetEnd(); ++PlayerIter )
 	{
-		if( (*PlayerIter) && (static_cast< Player* >(*PlayerIter))->isAlive() && (*PlayerIter)->GetDistance2dSq( pCreatureAI->GetUnit() ) <= 5.0f
+		if( (*PlayerIter) && (TO< Player* >(*PlayerIter))->isAlive() && (*PlayerIter)->GetDistance2dSq( pCreatureAI->GetUnit() ) <= 5.0f
 			&& (*PlayerIter)->GetUInt32Value( UNIT_FIELD_HEALTH ) > _mostHP )
 		{
 			_mostHP = (*PlayerIter)->GetUInt32Value( UNIT_FIELD_HEALTH );
-			pBestTarget = static_cast< Player* >(*PlayerIter);
+			pBestTarget = TO< Player* >(*PlayerIter);
 		};
 	};
 

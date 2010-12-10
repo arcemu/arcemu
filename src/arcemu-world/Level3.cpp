@@ -1104,8 +1104,8 @@ bool ChatHandler::HandleParalyzeCommand(const char* args, WorldSession *m_sessio
 	}
 
 	BlueSystemMessage(m_session, "Rooting target.");
-	BlueSystemMessageToPlr( static_cast< Player* >( plr ), "You have been rooted by %s.", m_session->GetPlayer()->GetName() );
-	sGMLog.writefromsession( m_session, "rooted player %s", static_cast< Player* >( plr )->GetName() );
+	BlueSystemMessageToPlr( TO< Player* >( plr ), "You have been rooted by %s.", m_session->GetPlayer()->GetName() );
+	sGMLog.writefromsession( m_session, "rooted player %s", TO< Player* >( plr )->GetName() );
 	WorldPacket data;
 	data.Initialize(SMSG_FORCE_MOVE_ROOT);
 	data << plr->GetNewGUID();
@@ -1127,8 +1127,8 @@ bool ChatHandler::HandleUnParalyzeCommand(const char* args, WorldSession *m_sess
 	}
 
 	BlueSystemMessage(m_session, "Unrooting target.");
-	BlueSystemMessageToPlr( static_cast< Player* >( plr ), "You have been unrooted by %s.", m_session->GetPlayer()->GetName() );
-	sGMLog.writefromsession( m_session, "unrooted player %s", static_cast< Player* >( plr )->GetName() );
+	BlueSystemMessageToPlr( TO< Player* >( plr ), "You have been unrooted by %s.", m_session->GetPlayer()->GetName() );
+	sGMLog.writefromsession( m_session, "unrooted player %s", TO< Player* >( plr )->GetName() );
 	WorldPacket data;
 	data.Initialize(SMSG_FORCE_MOVE_UNROOT);
 	data << plr->GetNewGUID();
@@ -3254,7 +3254,7 @@ bool ChatHandler::HandleNpcPossessCommand(const char * args, WorldSession * m_se
 	switch( pTarget->GetTypeId() )
 	{
 		case TYPEID_PLAYER:
-			sGMLog.writefromsession( m_session, "used possess command on PLAYER %s", static_cast< Player* >( pTarget )->GetName() );
+			sGMLog.writefromsession( m_session, "used possess command on PLAYER %s", TO< Player* >( pTarget )->GetName() );
 			break;
 		case TYPEID_UNIT:
 			sGMLog.writefromsession( m_session, "used possess command on CREATURE %s, sqlid %u", static_cast< Creature* >( pTarget )->GetCreatureInfo()->Name, static_cast< Creature* >( pTarget )->GetSQL_id() );

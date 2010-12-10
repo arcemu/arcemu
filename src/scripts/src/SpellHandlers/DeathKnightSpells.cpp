@@ -163,7 +163,7 @@ bool DeathGrip( uint32 i, Spell *s ){
 	
 	if(unitTarget->IsPlayer())
 	{
-		Player *playerTarget = static_cast<Player*>(unitTarget);
+		Player *playerTarget = TO< Player* >(unitTarget);
 		
 		if(playerTarget->m_CurrentTransporter) // Blizzard screwed this up, so we won't.
 			return false;

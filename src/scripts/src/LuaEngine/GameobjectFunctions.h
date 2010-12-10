@@ -182,11 +182,11 @@ namespace luaGameObject
 
 		for (set<Object*>::iterator itr = ptr->GetInRangePlayerSetBegin(); itr != ptr->GetInRangePlayerSetEnd();)
 		{
-			d2 = (static_cast<Player*>(*itr))->GetDistanceSq(ptr);
+			d2 = (TO< Player* >(*itr))->GetDistanceSq(ptr);
 			if (!ret||d2<dist)
 			{
 				dist=d2;
-				ret=static_cast< Player* >(*itr);
+				ret=TO< Player* >(*itr);
 			}
 		}
 		if (ret == NULL)

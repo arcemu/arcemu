@@ -122,7 +122,7 @@ public:
 		vector< uint32 > possible_targets;
 		for( set< Object* >::iterator iter = _unit->GetInRangePlayerSetBegin(); iter != _unit->GetInRangePlayerSetEnd(); ++iter ) 
 		{ 
-            Player *p = static_cast< Player* >( *iter );
+            Player *p = TO< Player* >( *iter );
 			if( p->isAlive() )
                 possible_targets.push_back( p->GetLowGUID() );
 		}
@@ -301,7 +301,7 @@ public:
 		vector< uint32 > possible_targets;
 		for( set< Object* >::iterator iter = _unit->GetInRangePlayerSetBegin(); iter != _unit->GetInRangePlayerSetEnd(); ++iter ) 
 		{ 
-            Player *p = static_cast< Player* >( *iter );
+            Player *p = TO< Player* >( *iter );
 
 			if( p->isAlive() )
                 possible_targets.push_back( p->GetLowGUID() );
@@ -476,7 +476,7 @@ public:
 		vector< uint32 > possible_targets;
 		for( set< Object* >::iterator iter = _unit->GetInRangePlayerSetBegin(); iter != _unit->GetInRangePlayerSetEnd(); ++iter ) 
 		{ 
-            Player *p = static_cast< Player* >( *iter );
+            Player *p = TO< Player* >( *iter );
 			if( p->isAlive() )
                 possible_targets.push_back( p->GetLowGUID() );
 		}
@@ -607,7 +607,7 @@ public:
 		vector< uint32 > possible_targets;
 		for( set< Object* >::iterator iter = _unit->GetInRangePlayerSetBegin(); iter != _unit->GetInRangePlayerSetEnd(); ++iter ) 
 		{ 
-            Player *p = static_cast< Player* >( *iter );
+            Player *p = TO< Player* >( *iter );
 			if( p->isAlive() )
                 possible_targets.push_back( p->GetLowGUID() );
 		}
@@ -826,7 +826,7 @@ public:
 		vector< uint32 > possible_targets;
 		for( set< Object* >::iterator iter = _unit->GetInRangePlayerSetBegin(); iter != _unit->GetInRangePlayerSetEnd(); ++iter ) 
 		{ 
-            Player *p = static_cast< Player* >( *iter );
+            Player *p = TO< Player* >( *iter );
 			if( p->isAlive() )
                 possible_targets.push_back( p->GetLowGUID() );
 		}

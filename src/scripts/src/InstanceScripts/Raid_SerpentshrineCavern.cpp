@@ -1042,7 +1042,7 @@ public:
 					if(isHostile(_unit, (*itr)) && ((*itr)->GetDistance2dSq(_unit) < NearestDist || !NearestDist))
 					{
 						NearestDist = (*itr)->GetDistance2dSq(_unit);
-						NearestPlayer = static_cast< Player* >(*itr);
+						NearestPlayer = TO< Player* >(*itr);
 					}
 				}
 

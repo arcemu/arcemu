@@ -112,7 +112,7 @@ public:
 			Player *RandomTarget = NULL;
 			if(!(*Itr)->IsPlayer())
 				continue;
-			RandomTarget = static_cast< Player* >(*Itr);
+			RandomTarget = TO< Player* >(*Itr);
 			if(RandomTarget && RandomTarget->isAlive() && isHostile(*Itr, _unit))
 				TargetTable.push_back(RandomTarget);
 		}

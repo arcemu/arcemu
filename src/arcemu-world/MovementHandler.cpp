@@ -459,7 +459,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 		for(set<Object*>::iterator itr = _player->m_inRangePlayers.begin(); itr != _player->m_inRangePlayers.end(); ++itr)
 		{
 
-            Player *p = static_cast< Player* >( (*itr) );
+            Player *p = TO< Player* >( (*itr) );
 
 			*(uint32*)&movement_packet[pos+6] = uint32(move_time + p->GetSession()->m_moveDelayTime);
 

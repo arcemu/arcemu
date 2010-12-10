@@ -1790,7 +1790,7 @@ Group *Pet::GetGroup()
 void Pet::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32 unitEvent, uint32 spellId, bool no_remove_auras ){
 	if( !pVictim || !pVictim->isAlive() || !pVictim->IsInWorld() || !IsInWorld() )
 		return;
-	if( pVictim->IsPlayer() && static_cast< Player* >( pVictim )->GodModeCheat == true )
+	if( pVictim->IsPlayer() && TO< Player* >( pVictim )->GodModeCheat == true )
 		return;
 	if( pVictim->bInvincible )
 		return;
@@ -1842,7 +1842,7 @@ void Pet::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32 un
 			m_Owner->m_bg->HookOnUnitKill( m_Owner, pVictim );
 
 			if( pVictim->IsPlayer() )
-				m_Owner->m_bg->HookOnPlayerKill( m_Owner, static_cast< Player* >( pVictim ) );
+				m_Owner->m_bg->HookOnPlayerKill( m_Owner, TO< Player* >( pVictim ) );
 		}
 
 		if( pVictim->IsPlayer() ){

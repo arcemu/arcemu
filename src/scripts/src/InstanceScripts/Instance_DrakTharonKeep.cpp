@@ -150,7 +150,7 @@ public:
 		vector< uint32 > possible_targets;
 		for( set< Object* >::iterator iter = _unit->GetInRangePlayerSetBegin(); iter != _unit->GetInRangePlayerSetEnd(); ++iter ) 
 		{ 
-			if( (*iter) && (static_cast< Player* >(*iter))->isAlive() )
+			if( (*iter) && (TO< Player* >(*iter))->isAlive() )
 				possible_targets.push_back( (uint32)(*iter)->GetGUID() );
 		}
 		if( possible_targets.size() > 0 )
@@ -391,7 +391,7 @@ public:
 		vector< uint32 > possible_targets;
 		for( set< Object* >::iterator iter = _unit->GetInRangePlayerSetBegin(); iter != _unit->GetInRangePlayerSetEnd(); ++iter ) 
 		{ 
-			if( (*iter) && (static_cast< Player* >(*iter))->isAlive() )
+			if( (*iter) && (TO< Player* >(*iter))->isAlive() )
 				possible_targets.push_back( (uint32)(*iter)->GetGUID() );
 		}
 		if( possible_targets.size() > 0 )
@@ -635,7 +635,7 @@ public:
 		vector< uint32 > possible_targets;
 		for( set< Object* >::iterator iter = _unit->GetInRangePlayerSetBegin(); iter != _unit->GetInRangePlayerSetEnd(); ++iter ) 
 		{ 
-			if( (*iter) && (static_cast< Player* >(*iter))->isAlive() )
+			if( (*iter) && (TO< Player* >(*iter))->isAlive() )
 				possible_targets.push_back( (uint32)(*iter)->GetGUID() );
 		}
 		if( possible_targets.size() > 0 )
@@ -788,7 +788,7 @@ public:
 		vector< uint32 > possible_targets;
 		for( set< Object* >::iterator iter = _unit->GetInRangePlayerSetBegin(); iter != _unit->GetInRangePlayerSetEnd(); ++iter ) 
 		{ 
-			if( (*iter) && (static_cast< Player* >(*iter))->isAlive() )
+			if( (*iter) && (TO< Player* >(*iter))->isAlive() )
 				possible_targets.push_back( (uint32)(*iter)->GetGUID() );
 		}
 		if( possible_targets.size() > 0 )
@@ -1007,7 +1007,7 @@ public:
 		vector< uint32 > possible_targets;
 		for( set< Object* >::iterator iter = _unit->GetInRangePlayerSetBegin(); iter != _unit->GetInRangePlayerSetEnd(); ++iter ) 
 		{ 
-			if( (*iter) && (static_cast< Player* >(*iter))->isAlive() )
+			if( (*iter) && (TO< Player* >(*iter))->isAlive() )
 				possible_targets.push_back( (uint32)(*iter)->GetGUID() );
 		}
 		if( possible_targets.size() > 0 )

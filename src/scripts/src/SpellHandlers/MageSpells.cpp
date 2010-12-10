@@ -71,7 +71,7 @@ bool TormentOfTheWeak( uint32 i, Aura *a, bool apply ){
 
 	if(m_target->IsPlayer())
 	{
-		static_cast< Player* >( m_target )->m_IncreaseDmgSnaredSlowed += ((apply) ? 1:-1)*(uint32)(((float) a->GetModAmount( i ) )/100);
+		TO< Player* >( m_target )->m_IncreaseDmgSnaredSlowed += ((apply) ? 1:-1)*(uint32)(((float) a->GetModAmount( i ) )/100);
 	}
 
 	return true;

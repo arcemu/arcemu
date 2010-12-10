@@ -530,7 +530,7 @@ class GruulTheDragonkillerAI : public MoonScriptCreatureAI
 					Unit* pTarget = pCurrentTarget;
 					for (set< Object* >::iterator itr = _unit->GetInRangePlayerSetBegin(); itr != _unit->GetInRangePlayerSetEnd(); ++itr) 
 					{
-						Player *pPlayer = static_cast< Player* >(*itr);
+						Player *pPlayer = TO< Player* >(*itr);
 						if (!pPlayer->isAlive())
 							continue;
 //						if (pPlayer->m_auracount[SPELL_AURA_MOD_INVISIBILITY])

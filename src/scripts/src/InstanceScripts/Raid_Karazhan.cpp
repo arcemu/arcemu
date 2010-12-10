@@ -463,7 +463,7 @@ public:
 								itr != _unit->GetInRangePlayerSetEnd(); ++itr)
 							{
 								Player *RandomTarget = NULL;
-								RandomTarget = static_cast< Player* >(*itr);
+								RandomTarget = TO< Player* >(*itr);
 								if(RandomTarget && RandomTarget->isAlive())
 									TargetTable.push_back(RandomTarget);
 								RandomTarget = NULL;
@@ -1282,7 +1282,7 @@ public:
 			itr != _unit->GetInRangePlayerSetEnd(); ++itr)
 		{
 			Player *RandomTarget = NULL;
-			RandomTarget = static_cast< Player* >(*itr);
+			RandomTarget = TO< Player* >(*itr);
 			if(RandomTarget && RandomTarget->isAlive() && isHostile(_unit, (*itr)))
 				Target_List.push_back(RandomTarget);
 			RandomTarget = NULL;
@@ -1497,7 +1497,7 @@ public:
 			{
 				if(*itr)
 				{
-					Player *plr = static_cast< Player* >(*itr);
+					Player *plr = TO< Player* >(*itr);
 					if(plr->GetItemInterface()->GetItemCount(22589) > 0 ||
 					plr->GetItemInterface()->GetItemCount(22630) > 0 || 
 					plr->GetItemInterface()->GetItemCount(22631) > 0 || 
@@ -1743,7 +1743,7 @@ public:
 		for(; hostileItr != _unit->GetInRangePlayerSetEnd(); ++hostileItr) 
 		{ 
 			Player *RandomTarget = NULL;
-			RandomTarget = static_cast< Player* >(*hostileItr);
+			RandomTarget = TO< Player* >(*hostileItr);
 
 			if (RandomTarget && RandomTarget->isAlive() && _unit->GetAIInterface()->getThreatByPtr(RandomTarget) > 0)
 				Targets.push_back(RandomTarget);
@@ -1910,7 +1910,7 @@ public:
 			for(set< Object* >::iterator itr = _unit->GetInRangePlayerSetBegin(); itr != _unit->GetInRangePlayerSetEnd(); ++itr) 
 			{ 
 				Player *RandomTarget = NULL;
-				RandomTarget = static_cast< Player* >(*itr);
+				RandomTarget = TO< Player* >(*itr);
 
 				if ( ( RandomTarget->isAlive() && _unit->GetDistance2dSq(RandomTarget) >= mindist2cast*mindist2cast && _unit->GetDistance2dSq(RandomTarget) <= maxdist2cast*maxdist2cast ) || (_unit->GetAIInterface()->getThreatByPtr(RandomTarget) > 0 && isHostile(_unit, RandomTarget)))
 					TargetTable.push_back(RandomTarget);
@@ -2254,7 +2254,7 @@ public:
 			if(isHostile(_unit, (*itr)))
 			{
 				Player *RandomTarget = NULL;
-				RandomTarget = static_cast< Player* >(*itr);
+				RandomTarget = TO< Player* >(*itr);
 				if (RandomTarget && RandomTarget->isAlive() && isHostile(_unit, RandomTarget))
 					TargetTable.push_back(RandomTarget);
 			}
@@ -3181,7 +3181,7 @@ public:
 			for(set< Object* >::iterator itr = _unit->GetInRangePlayerSetBegin(); itr != _unit->GetInRangePlayerSetEnd(); ++itr) 
 			{ 
 				Player *RandomTarget = NULL;
-				RandomTarget = static_cast< Player* >(*itr);
+				RandomTarget = TO< Player* >(*itr);
 
 				if (RandomTarget && RandomTarget->isAlive() && _unit->GetDistance2dSq(RandomTarget) >= mindist2cast*mindist2cast && _unit->GetDistance2dSq(RandomTarget) <= maxdist2cast*maxdist2cast)
 					TargetTable.push_back(RandomTarget);
@@ -3303,7 +3303,7 @@ public:
 		std::vector<Unit* > TargetTable;
 		for(set< Object* >::iterator itr = _unit->GetInRangePlayerSetBegin(); itr != _unit->GetInRangePlayerSetEnd(); ++itr) 
 		{
-			if(isHostile(_unit, (*itr)) && (static_cast< Player* >(*itr))->isAlive())
+			if(isHostile(_unit, (*itr)) && (TO< Player* >(*itr))->isAlive())
 			{
 				Player *RandomTarget = NULL;
 				RandomTarget = TO_PLAYER(*itr);

@@ -348,7 +348,7 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 	MovementInfo* moveinfo = NULL;
 	if(IsPlayer())
 	{
-		pThis = static_cast< Player* >( this );
+		pThis = TO< Player* >( this );
 		if(pThis->GetSession())
 			moveinfo = pThis->GetSession()->GetMovementInfo();
 		if(target == this)
@@ -806,9 +806,9 @@ bool Object::SetPosition( float newX, float newY, float newZ, float newOrientati
 		m_lastMapUpdatePosition.ChangeCoords(newX,newY,newZ,newOrientation);
 		m_mapMgr->ChangeObjectLocation(this);
 
-		if( IsPlayer() && static_cast< Player* >( this )->GetGroup() && static_cast< Player* >( this )->m_last_group_position.Distance2DSq(m_position) > 25.0f ) // distance of 5.0
+		if( IsPlayer() && TO< Player* >( this )->GetGroup() && TO< Player* >( this )->m_last_group_position.Distance2DSq(m_position) > 25.0f ) // distance of 5.0
 		{
-            static_cast< Player* >( this )->GetGroup()->HandlePartialChange( PARTY_UPDATE_FLAG_POSITION, static_cast< Player* >( this ) );
+            TO< Player* >( this )->GetGroup()->HandlePartialChange( PARTY_UPDATE_FLAG_POSITION, TO< Player* >( this ) );
 		}
 	}
 
@@ -865,7 +865,7 @@ void Object::AddToWorld()
 
 	if( IsPlayer() )
 	{
-		Player *plr = static_cast< Player* >( this );
+		Player *plr = TO< Player* >( this );
 		if(mapMgr->pInstance != NULL && !plr->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_GM))
 		{
 			// Player limit?
@@ -1020,9 +1020,9 @@ void Object::SetUInt32Value( const uint32 index, const uint32 value )
 		TO_PLAYER(this)->HandleUpdateFieldChanged(index);
 		if(IsInWorld())
 		{
-			Group* pGroup = static_cast< Player* >( this )->GetGroup();
+			Group* pGroup = TO< Player* >( this )->GetGroup();
 			if( pGroup != NULL )
-				pGroup->HandleUpdateFieldChange( index, static_cast< Player* >( this ) );
+				pGroup->HandleUpdateFieldChange( index, TO< Player* >( this ) );
 		}
 
 #ifdef OPTIMIZED_PLAYER_SAVING
@@ -1030,11 +1030,11 @@ void Object::SetUInt32Value( const uint32 index, const uint32 value )
 		{
 		case UNIT_FIELD_LEVEL:
 		case PLAYER_XP:
-			static_cast< Player* >( this )->save_LevelXP();
+			TO< Player* >( this )->save_LevelXP();
 			break;
 
 		case PLAYER_FIELD_COINAGE:
-			static_cast< Player* >( this )->save_Gold();
+			TO< Player* >( this )->save_Gold();
 			break;
 		}
 #endif
@@ -1103,11 +1103,11 @@ void Object::ModUnsigned32Value(uint32 index, int32 mod)
 		{
 		case UNIT_FIELD_LEVEL:
 		case PLAYER_XP:
-			static_cast< Player* >( this )->save_LevelXP();
+			TO< Player* >( this )->save_LevelXP();
 			break;
 
 		case PLAYER_FIELD_COINAGE:
-			static_cast< Player* >( this )->save_Gold();
+			TO< Player* >( this )->save_Gold();
 			break;
 		}
 #endif
@@ -1166,11 +1166,11 @@ void Object::ModSignedInt32Value(uint32 index, int32 value )
 		{
 		case UNIT_FIELD_LEVEL:
 		case PLAYER_XP:
-			static_cast< Player* >( this )->save_LevelXP();
+			TO< Player* >( this )->save_LevelXP();
 			break;
 
 		case PLAYER_FIELD_COINAGE:
-			static_cast< Player* >( this )->save_Gold();
+			TO< Player* >( this )->save_Gold();
 			break;
 		}
 #endif
@@ -1731,7 +1731,7 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 	if( pVictim->IsPlayer() && pVictim->HasAurasWithNameHash( SPELL_HASH_INCANTER_S_ABSORPTION ) )
 	{
 		float pctmod = 0.0f;
-		Player* pl = static_cast< Player* >( pVictim );
+		Player* pl = TO< Player* >( pVictim );
 		if( pl->HasAura( 44394 ) )
 			pctmod = 0.05f;
 		else if( pl->HasAura( 44395 ) )
@@ -1777,7 +1777,7 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 			res = float( dmg.full_damage - dmg.resisted_damage );
 	}
 	//------------------------------special states----------------------------------------------
-	if(pVictim->IsPlayer() && static_cast< Player* >(pVictim)->GodModeCheat == true)
+	if(pVictim->IsPlayer() && TO< Player* >(pVictim)->GodModeCheat == true)
 	{
 		res = float(dmg.full_damage);
 		dmg.resisted_damage = dmg.full_damage;
@@ -1806,7 +1806,7 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 	}
 	if( this->IsPlayer() )
 	{
-			static_cast< Player* >( this )->m_casted_amount[spellInfo->School] = ( uint32 )res;
+			TO< Player* >( this )->m_casted_amount[spellInfo->School] = ( uint32 )res;
 	}
 
 	if( !(dmg.full_damage == 0 && abs_dmg) )
@@ -1824,9 +1824,9 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 		//Magic Absorption
 		if( pVictim->IsPlayer() )
 		{
-			if( static_cast< Player* >( pVictim )->m_RegenManaOnSpellResist )
+			if( TO< Player* >( pVictim )->m_RegenManaOnSpellResist )
 			{
-				Player* pl = static_cast< Player* >( pVictim );
+				Player* pl = TO< Player* >( pVictim );
 
 				uint32 maxmana = pl->GetMaxPower( POWER_TYPE_MANA );
 				uint32 amount = uint32( maxmana * pl->m_RegenManaOnSpellResist );
@@ -1834,10 +1834,10 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 				pVictim->Energize( pVictim, 29442, amount, POWER_TYPE_MANA );
 			}
 			// we still stay in combat dude
-			static_cast< Player* >(pVictim)->CombatStatusHandler_ResetPvPTimeout();
+			TO< Player* >(pVictim)->CombatStatusHandler_ResetPvPTimeout();
 		}
 		if( IsPlayer() )
-			static_cast< Player* >(this)->CombatStatusHandler_ResetPvPTimeout();
+			TO< Player* >(this)->CombatStatusHandler_ResetPvPTimeout();
 	}
 	if( spellInfo->School == SCHOOL_SHADOW )
 	{
@@ -2172,7 +2172,7 @@ uint32 Object::GetTeam()
 {
 	if (IsPlayer())
 	{
-		return static_cast< Player* >( this )->GetTeam();
+		return TO< Player* >( this )->GetTeam();
 	}
 	if (IsPet())
 	{

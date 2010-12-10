@@ -231,7 +231,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 				for(set<Object*>::iterator itr = _player->m_inRangePlayers.begin(); itr != _player->m_inRangePlayers.end(); ++itr)
 				{
 
-                    Player *p = static_cast< Player* >( (*itr) );
+                    Player *p = TO< Player* >( (*itr) );
 
 					if ( _player->GetPhase() & (*itr)->GetPhase() )
 						p->GetSession()->SendChatPacket(data, 1, lang, this);
@@ -606,7 +606,7 @@ void WorldSession::HandleTextEmoteOpcode( WorldPacket & recv_data )
 	{
 		if( pUnit->IsPlayer() )
 		{
-			name = static_cast< Player* >( pUnit )->GetName();
+			name = TO< Player* >( pUnit )->GetName();
 			namelen = (uint32)strlen(name) + 1;
 		}
 		else if ( pUnit->IsPet() )

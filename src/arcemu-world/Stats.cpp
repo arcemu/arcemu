@@ -495,7 +495,7 @@ if(ability && ability->NameHash == SPELL_HASH_FLAMETONGUE_WEAPON)
 	if(pAttacker->disarmed && pAttacker->IsPlayer())
 	{
 		offset=UNIT_FIELD_MINDAMAGE;
-		it = static_cast< Player* >(pAttacker)->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_MAINHAND);
+		it = TO< Player* >(pAttacker)->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_MAINHAND);
 	}
 	else if( weapon_damage_type == MELEE )
 		offset = UNIT_FIELD_MINDAMAGE;
@@ -529,8 +529,8 @@ if(ability && ability->NameHash == SPELL_HASH_FLAMETONGUE_WEAPON)
 
 			if(pAttacker->IsPlayer())
 			{
-				min_damage = (min_damage + static_cast< Player* >(pAttacker)->IncreaseDamageByType[creatType]) * (1 + static_cast< Player* >(pAttacker)->IncreaseDamageByTypePCT[creatType]);
-				max_damage = (max_damage + static_cast< Player* >(pAttacker)->IncreaseDamageByType[creatType]) * (1 + static_cast< Player* >(pAttacker)->IncreaseDamageByTypePCT[creatType]);
+				min_damage = (min_damage + TO< Player* >(pAttacker)->IncreaseDamageByType[creatType]) * (1 + TO< Player* >(pAttacker)->IncreaseDamageByTypePCT[creatType]);
+				max_damage = (max_damage + TO< Player* >(pAttacker)->IncreaseDamageByType[creatType]) * (1 + TO< Player* >(pAttacker)->IncreaseDamageByTypePCT[creatType]);
 			}
 		}
 
@@ -538,7 +538,7 @@ if(ability && ability->NameHash == SPELL_HASH_FLAMETONGUE_WEAPON)
 		{
 			if(!pAttacker->disarmed)
 			{
-				it = static_cast< Player* >(pAttacker)->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_RANGED);
+				it = TO< Player* >(pAttacker)->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_RANGED);
 				if(it)
 					wspeed = (float)it->GetProto()->Delay;
 				else
@@ -564,9 +564,9 @@ if(ability && ability->NameHash == SPELL_HASH_FLAMETONGUE_WEAPON)
 		//Weapon speed constant in feral forms
 		if(pAttacker->IsPlayer())
 		{
-			if(static_cast< Player* >(pAttacker)->IsInFeralForm())
+			if(TO< Player* >(pAttacker)->IsInFeralForm())
 			{
-				uint8 ss = static_cast< Player* >(pAttacker)->GetShapeShift();
+				uint8 ss = TO< Player* >(pAttacker)->GetShapeShift();
 
 				if(ss == FORM_CAT)
 					wspeed = 1000.0;
@@ -593,8 +593,8 @@ if(ability && ability->NameHash == SPELL_HASH_FLAMETONGUE_WEAPON)
 
 			if(pAttacker->IsPlayer())
 			{
-				min_damage = (min_damage + static_cast< Player* >(pAttacker)->IncreaseDamageByType[creatType]) * (1 + static_cast< Player* >(pAttacker)->IncreaseDamageByTypePCT[creatType]);
-				max_damage = (max_damage + static_cast< Player* >(pAttacker)->IncreaseDamageByType[creatType]) * (1 + static_cast< Player* >(pAttacker)->IncreaseDamageByTypePCT[creatType]);
+				min_damage = (min_damage + TO< Player* >(pAttacker)->IncreaseDamageByType[creatType]) * (1 + TO< Player* >(pAttacker)->IncreaseDamageByTypePCT[creatType]);
+				max_damage = (max_damage + TO< Player* >(pAttacker)->IncreaseDamageByType[creatType]) * (1 + TO< Player* >(pAttacker)->IncreaseDamageByTypePCT[creatType]);
 			}
 		}
 
@@ -602,7 +602,7 @@ if(ability && ability->NameHash == SPELL_HASH_FLAMETONGUE_WEAPON)
 		{
 			if(!pAttacker->disarmed)
 			{
-				it = static_cast< Player* >(pAttacker)->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_MAINHAND);
+				it = TO< Player* >(pAttacker)->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_MAINHAND);
 
 				if(it)
 					wspeed = (float)it->GetProto()->Delay;
@@ -622,7 +622,7 @@ if(ability && ability->NameHash == SPELL_HASH_FLAMETONGUE_WEAPON)
 		{
 			if(ability->Effect[0] == SPELL_EFFECT_DUMMYMELEE || ability->Effect[1] == SPELL_EFFECT_DUMMYMELEE || ability->Effect[2] == SPELL_EFFECT_DUMMYMELEE)
 			{
-				it = static_cast< Player* >(pAttacker)->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_MAINHAND);
+				it = TO< Player* >(pAttacker)->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_MAINHAND);
 
 				if(it)
 				{
@@ -639,9 +639,9 @@ if(ability && ability->NameHash == SPELL_HASH_FLAMETONGUE_WEAPON)
 		//Weapon speed constant in feral forms
 		if(pAttacker->IsPlayer())
 		{
-			if(static_cast< Player* >(pAttacker)->IsInFeralForm())
+			if(TO< Player* >(pAttacker)->IsInFeralForm())
 			{
-				uint8 ss = static_cast< Player* >(pAttacker)->GetShapeShift();
+				uint8 ss = TO< Player* >(pAttacker)->GetShapeShift();
 
 				if(ss == FORM_CAT)
 					wspeed = 1000.0;

@@ -58,7 +58,7 @@ void DynamicObject::Create(Unit * caster, Spell * pSpell, float x, float y, floa
 	{
 		// try to find player caster here
 		if( caster->IsPlayer() )
-			p_caster = static_cast<Player*>( caster );
+			p_caster = TO< Player* >( caster );
 	}
 	else
 		p_caster = pSpell->p_caster;

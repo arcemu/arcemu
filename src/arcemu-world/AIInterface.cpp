@@ -262,10 +262,10 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 						}
 					}
 				}
-				if (pUnit->IsPlayer() && static_cast<Player*>(pUnit)->InGroup())
+				if (pUnit->IsPlayer() && TO< Player* >(pUnit)->InGroup())
 				{
 					m_Unit->GetAIInterface()->modThreatByPtr(pUnit, 1);
-					Group *pGroup = static_cast<Player*>(pUnit)->GetGroup();
+					Group *pGroup = TO< Player* >(pUnit)->GetGroup();
 
 					Player *pGroupGuy;
 					GroupMembersSet::iterator itr;
@@ -1110,7 +1110,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 						if ( target_land_z > m_Unit->GetMapMgr()->GetWaterHeight(getNextTarget()->GetPositionX(), getNextTarget()->GetPositionY()) )
 							HandleEvent( EVENT_LEAVECOMBAT, m_Unit, 0); //bugged npcs, probably db fault
 					}
-					else if (static_cast<Player*>(getNextTarget())->GetSession() != NULL)
+					else if (TO< Player* >(getNextTarget())->GetSession() != NULL)
 					{
 						MovementInfo* mi = TO_PLAYER(getNextTarget())->GetSession()->GetMovementInfo();
 
@@ -1133,7 +1133,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 			if( m_Unit->IsCreature() )
 				cansee = static_cast< Creature* >( m_Unit )->CanSee( getNextTarget() );
 			else
-				cansee = static_cast< Player* >( m_Unit )->CanSee( getNextTarget() );
+				cansee = TO< Player* >( m_Unit )->CanSee( getNextTarget() );
 		}
 		else 
 		{
@@ -1187,7 +1187,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 				if(getNextTarget()->IsPlayer())
 				{
 					float dist = m_Unit->GetDistanceSq(getNextTarget());
-					if( static_cast< Player* >( getNextTarget() )->m_currentMovement == MOVE_ROOT || dist >= 64.0f )
+					if( TO< Player* >( getNextTarget() )->m_currentMovement == MOVE_ROOT || dist >= 64.0f )
 					{
 						agent =  AGENT_RANGED;
 					}
@@ -1524,9 +1524,9 @@ void AIInterface::DismissPet()
 		return;
 
 	if(m_Unit->GetCreatedBySpell() == 0)
-		static_cast< Player* >( m_PetOwner )->SetFreePetNo(false, (int)m_Unit->GetUInt32Value(UNIT_FIELD_PETNUMBER));
-	static_cast< Player* >( m_PetOwner )->SetPet(NULL);
-	static_cast< Player* >( m_PetOwner )->SetPetName("");
+		TO< Player* >( m_PetOwner )->SetFreePetNo(false, (int)m_Unit->GetUInt32Value(UNIT_FIELD_PETNUMBER));
+	TO< Player* >( m_PetOwner )->SetPet(NULL);
+	TO< Player* >( m_PetOwner )->SetPetName("");
 	
 	//FIXME:Check hunter pet or not
 	//FIXME:Check enslaved creature
@@ -1535,7 +1535,7 @@ void AIInterface::DismissPet()
 	WorldPacket data;
 	data.Initialize(SMSG_PET_SPELLS);
 	data << (uint64)0;
-	static_cast< Player* >( m_PetOwner )->GetSession()->SendPacket(&data);
+	TO< Player* >( m_PetOwner )->GetSession()->SendPacket(&data);
 	
 	sEventMgr.RemoveEvents(((Creature*)m_Unit));
 	if(m_Unit->IsInWorld())
@@ -1565,9 +1565,9 @@ void AIInterface::AttackReaction(Unit* pUnit, uint32 damage_dealt, uint32 spellI
 				{
 					if ( !pUnit->IsPlayer() && target_land_z > m_Unit->GetMapMgr()->GetWaterHeight(pUnit->GetPositionX(), pUnit->GetPositionY()) )
 						return;
-					else if( static_cast<Player*>(pUnit)->GetSession() != NULL )
+					else if( TO< Player* >(pUnit)->GetSession() != NULL )
 					{
-						MovementInfo* mi=static_cast<Player*>(pUnit)->GetSession()->GetMovementInfo();
+						MovementInfo* mi=TO< Player* >(pUnit)->GetSession()->GetMovementInfo();
 
 						if ( mi != NULL && !(mi->flags & MOVEFLAG_FALLING) && !(mi->flags & MOVEFLAG_SWIMMING) && !(mi->flags & MOVEFLAG_LEVITATE))
 							return;
@@ -1577,9 +1577,9 @@ void AIInterface::AttackReaction(Unit* pUnit, uint32 damage_dealt, uint32 spellI
 		}
 	}
 
-	if (pUnit->IsPlayer() && static_cast<Player *>(pUnit)->GetMisdirectionTarget() != 0)
+	if (pUnit->IsPlayer() && TO< Player* >(pUnit)->GetMisdirectionTarget() != 0)
 	{
-		Unit *mTarget = m_Unit->GetMapMgr()->GetUnit(static_cast<Player *>(pUnit)->GetMisdirectionTarget());
+		Unit *mTarget = m_Unit->GetMapMgr()->GetUnit(TO< Player* >(pUnit)->GetMisdirectionTarget());
 		if (mTarget != NULL && mTarget->isAlive())
 			pUnit = mTarget;
 	}
@@ -1635,7 +1635,7 @@ void AIInterface::HealReaction(Unit* caster, Unit* victim, SpellEntry* sp, uint3
 		// both are players so they might be in the same group
 		if( caster->IsPlayer() && victim->IsPlayer() )
 		{
-			if( static_cast< Player* >( caster )->GetGroup() == static_cast< Player* >( victim )->GetGroup() )
+			if( TO< Player* >( caster )->GetGroup() == TO< Player* >( victim )->GetGroup() )
 			{
 				// get victim into combat since they are both
 				// in the same party
@@ -1735,7 +1735,7 @@ Unit* AIInterface::FindTarget()
 		Player *tmpPlr;
 		for (std::set< Object*>::iterator itrPlr = m_Unit->GetInRangePlayerSetBegin(); itrPlr != m_Unit->GetInRangePlayerSetEnd(); ++itrPlr)
 		{
-			tmpPlr = static_cast< Player* >( *itrPlr );
+			tmpPlr = TO< Player* >( *itrPlr );
 
 			if (tmpPlr == NULL)
 				continue;
@@ -1779,7 +1779,7 @@ Unit* AIInterface::FindTarget()
 
 			WorldPacket data(SMSG_AI_REACTION, 12);
 			data << m_Unit->GetGUID() << uint32(2);		// Aggro sound
-			static_cast< Player* >( target )->GetSession()->SendPacket( &data );
+			TO< Player* >( target )->GetSession()->SendPacket( &data );
 
 			return target;
 		}
@@ -1794,7 +1794,7 @@ Unit* AIInterface::FindTarget()
 		pitr = pitr2;
 		++pitr2;
 
-		pUnit = static_cast< Player* >( *pitr );
+		pUnit = TO< Player* >( *pitr );
         
         if( UnsafeCanOwnerAttackUnit( pUnit ) == false )
 			continue;
@@ -1885,7 +1885,7 @@ Unit* AIInterface::FindTarget()
 		{
 			WorldPacket data(SMSG_AI_REACTION, 12);
 			data << m_Unit->GetGUID() << uint32(2);		// Aggro sound
-			static_cast< Player* >( target )->GetSession()->SendPacket( &data );
+			TO< Player* >( target )->GetSession()->SendPacket( &data );
 		}
 		if(target->GetCreatedByGUID() != 0)
 		{
@@ -2066,7 +2066,7 @@ bool AIInterface::FindFriends(float dist)
 		for(; hostileItr != m_Unit->GetInRangePlayerSetEnd(); hostileItr++)
 		{
 
-            Player *p = static_cast< Player* >( *hostileItr );
+            Player *p = TO< Player* >( *hostileItr );
 
 			if(spawned >= 3)
 				break;
@@ -2180,7 +2180,7 @@ float AIInterface::_CalcAggroRange(Unit* target)
 	AggroRange += modDetectRange;
 	if (target->IsPlayer())
 	{
-		AggroRange += static_cast< Player* >(target)->DetectedRange;
+		AggroRange += TO< Player* >(target)->DetectedRange;
 	}
 
 	// Re-check if aggro range exceeds Minimum/Maximum caps
@@ -2226,7 +2226,7 @@ void AIInterface::_CalcDestinationAndMove(Unit *target, float dist)
 		float x = dist * cosf(angle);
 		float y = dist * sinf(angle);
 
-		if(target->IsPlayer() && static_cast< Player* >( target )->m_isMoving )
+		if(target->IsPlayer() && TO< Player* >( target )->m_isMoving )
 		{
 			// cater for moving player vector based on orientation
 			x -= cosf(target->GetOrientation());
@@ -2386,7 +2386,7 @@ void AIInterface::SendMoveToPacket(float toX, float toY, float toZ, float toO, u
 
 #else
 	if( m_Unit->IsPlayer() )
-		static_cast<Player*>(m_Unit)->GetSession()->SendPacket(&data);
+		TO< Player* >(m_Unit)->GetSession()->SendPacket(&data);
 
 	for(set<Player*>::iterator itr = m_Unit->GetInRangePlayerSetBegin(); itr != m_Unit->GetInRangePlayerSetEnd(); ++itr)
 	{
@@ -2473,7 +2473,7 @@ bool AIInterface::IsFlying()
 	}
 	return false;*/
 	if( m_Unit->IsPlayer() )
-		return static_cast< Player* >( m_Unit )->FlyCheat;
+		return TO< Player* >( m_Unit )->FlyCheat;
 
 	return false;
 }

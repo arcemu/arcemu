@@ -448,7 +448,7 @@ void AchievementMgr::SendAchievementEarned(AchievementEntry const* achievement)
 		for(; inRangeItr != inRangeItrLast; ++inRangeItr)
 		{
 
-            Player *p = static_cast< Player* >( (*inRangeItr) );
+            Player *p = TO< Player* >( (*inRangeItr) );
 
 			if( p && p->GetSession() &&  !p->Social_IsIgnoring( GetPlayer()->GetLowGUID() ) )
 			{
