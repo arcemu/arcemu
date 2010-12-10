@@ -29,13 +29,14 @@
 #undef max
 #endif
 
-#define TO_CREATURE(ptr) static_cast<Creature*>(ptr) 
-#define TO_PLAYER(ptr) static_cast<Player*>(ptr)
-#define TO_OBJECT(ptr) static_cast<Object*>(ptr)
-#define TO_UNIT(ptr) static_cast<Unit*>(ptr)
-#define TO_PET(ptr) static_cast<Pet*>(ptr)
-#define TO_ITEM(ptr) static_cast<Item*>(ptr)
-#define TO_GAMEOBJECT(ptr) static_cast<GameObject*>(ptr)
+template< class T, class U > T TO( U u ){ return static_cast< T >( u ); }
+#define TO_CREATURE(ptr) TO<Creature*>(ptr) 
+#define TO_PLAYER(ptr) TO<Player*>(ptr)
+#define TO_OBJECT(ptr) TO<Object*>(ptr)
+#define TO_UNIT(ptr) TO<Unit*>(ptr)
+#define TO_PET(ptr) TO<Pet*>(ptr)
+#define TO_ITEM(ptr) TO<Item*>(ptr)
+#define TO_GAMEOBJECT(ptr) TO<GameObject*>(ptr)
 
 
 #include "Definitions.h"

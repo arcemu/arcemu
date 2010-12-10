@@ -409,6 +409,7 @@ public:
 	Unit* getNextTarget();
 	void setNextTarget (Unit *nextTarget);
 	void setNextTarget (uint64 nextTarget); 
+	void resetNextTarget();
 
 	/*ARCEMU_INLINE void ResetProcCounts()
 	{

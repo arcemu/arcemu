@@ -1936,7 +1936,7 @@ void Aura::SpellAuraModCharm(bool apply)
 		//damn it, the other effects of enslave demon will agro him on us anyway :S
 		m_target->GetAIInterface()->WipeHateList();
 		m_target->GetAIInterface()->WipeTargetList();
-		m_target->GetAIInterface()->setNextTarget( TO_UNIT(NULL));
+		m_target->GetAIInterface()->resetNextTarget();
 
 		target->SetEnslaveCount(target->GetEnslaveCount() + 1);
 
@@ -2370,7 +2370,7 @@ void Aura::SpellAuraModStun(bool apply)
 		m_target->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_STUNNED);
 
 		if(m_target->IsCreature())
-			m_target->GetAIInterface()->setNextTarget( TO_UNIT(NULL) );
+			m_target->GetAIInterface()->resetNextTarget();
 
 		// remove the current spell (for channalers)
 		if(m_target->m_currentSpell && m_target->GetGUID() != m_casterGuid &&

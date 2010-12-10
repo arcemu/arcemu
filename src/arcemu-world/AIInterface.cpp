@@ -355,7 +355,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				m_hasFleed = false;
 				m_hasCalledForHelp = false;
 				m_nextSpell = NULL;
-				setNextTarget( TO_UNIT(NULL) );
+				resetNextTarget();
 				m_Unit->CombatStatus.Vanished();
 
 				if(m_AIType == AITYPE_PET)
@@ -457,7 +457,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				m_hasFleed = false;
 				m_hasCalledForHelp = false;
 				m_nextSpell = NULL;
-				setNextTarget( TO_UNIT(NULL) );
+				resetNextTarget();
 				m_moveRun = true;
 			}break;
 
@@ -490,7 +490,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				getMoveFlags();
 
 				SetNextSpell( NULL );
-				setNextTarget( TO_UNIT(NULL) );
+				resetNextTarget();
 			}break;
 
 		case EVENT_UNFEAR:
@@ -531,7 +531,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				getMoveFlags();
 
 				SetNextSpell(NULL);
-				setNextTarget( TO_UNIT(NULL) );
+				resetNextTarget();
 			}break;
 
 		case EVENT_UNWANDER:
@@ -578,7 +578,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 			m_hasCalledForHelp = false;
 			m_nextSpell = NULL;
 
-			setNextTarget( TO_UNIT(NULL) );
+			resetNextTarget();
 
 			// dismount if we are mounted
 			m_Unit->SetMount(0);
@@ -689,7 +689,7 @@ void AIInterface::Update(uint32 p_time)
 				)
 			{
 				//we set no target and see if we managed to fid a new one
-				setNextTarget( TO_UNIT(NULL) );
+				resetNextTarget();
 				//something happened to our target, pick another one
 				SpellCastTargets targets(0);
 				pSpell->GenerateTargets(&targets);
@@ -1137,7 +1137,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 		}
 		else 
 		{
-			setNextTarget( TO_UNIT(NULL) );
+			resetNextTarget();
 		}
 	}
 
@@ -1473,7 +1473,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 				//removed by Zack : somehow creature starts to attack self. Just making sure it is not this one
 //				m_nextTarget = m_Unit;
 //				m_Unit->SetUInt64Value(UNIT_FIELD_TARGET, 0);
-				setNextTarget( TO_UNIT(NULL) );
+				resetNextTarget();
 
 				WorldPacket data( SMSG_MESSAGECHAT, 100 );
 				string msg = "%s attempts to run away in fear!";
@@ -1505,7 +1505,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 	}
 	else if( !getNextTarget() || getNextTarget()->GetInstanceID() != m_Unit->GetInstanceID() || !getNextTarget()->isAlive() || !cansee )
 	{
-		setNextTarget( TO_UNIT(NULL) );
+		resetNextTarget();
 		// no more target
 		//m_Unit->setAttackTarget(NULL);
 	}
@@ -3656,7 +3656,7 @@ Unit *AIInterface::GetMostHated()
 		if( !ai_t || ai_t->GetInstanceID() != m_Unit->GetInstanceID() || !ai_t->isAlive() || !isAttackable( m_Unit, ai_t ) )
 		{
 			if( getNextTarget() == ai_t )
-				setNextTarget( TO_UNIT(NULL) );
+				resetNextTarget();
 
 			m_aiTargets.erase(itr);
 			continue;
@@ -3853,7 +3853,7 @@ void AIInterface::ClearHateList() //without leaving combat
 
 void AIInterface::WipeTargetList()
 {
-	setNextTarget( TO_UNIT(NULL) );
+	resetNextTarget();
 
 	m_nextSpell = NULL;
 	m_currentHighestThreat = 0;
@@ -3996,7 +3996,7 @@ void AIInterface::CheckTarget(Unit* target)
 
 		if (target == getNextTarget())	 // no need to cast on these.. mem addresses are still the same
 		{
-			setNextTarget( TO_UNIT(NULL) );
+			resetNextTarget();
 			m_nextSpell = NULL;
 
 			// find the one with the next highest threat
@@ -4018,7 +4018,7 @@ void AIInterface::CheckTarget(Unit* target)
         
 		if( target->GetAIInterface()->getNextTarget() == m_Unit )
 		{
-			target->GetAIInterface()->setNextTarget( TO_UNIT(NULL) );
+			target->GetAIInterface()->resetNextTarget();
 			target->GetAIInterface()->m_nextSpell = NULL;
 			target->GetAIInterface()->GetMostHated();
 		}
@@ -4081,7 +4081,7 @@ void AIInterface::WipeReferences()
 	LockAITargets(true);
 	m_aiTargets.clear();
 	LockAITargets(false);
-	setNextTarget( TO_UNIT(NULL) );
+	resetNextTarget();
 	m_UnitToFear = 0;
 	m_UnitToFollow = 0;
 	tauntedBy = 0;
@@ -4180,7 +4180,7 @@ void AIInterface::EventChangeFaction( Unit *ForceAttackersToHateThisInstead )
             if( (*itr)->IsUnit() && static_cast<Unit*>(*itr)->GetAIInterface() )
 				static_cast<Unit*>(*itr)->GetAIInterface()->RemoveThreatByPtr( m_Unit );
 
-        setNextTarget( TO_UNIT(NULL) );
+        resetNextTarget();
 	}
 	else
 	{
@@ -4215,7 +4215,7 @@ void AIInterface::WipeCurrentTarget()
 			m_UnitToFollow_backup = 0;
 	}
 	
-	setNextTarget( TO_UNIT(NULL) );
+	resetNextTarget();
 }
 
 Unit* AIInterface::getNextTarget()
@@ -4228,13 +4228,19 @@ void AIInterface::setNextTarget (Unit *nextTarget) {
 	if (nextTarget)
 		setNextTarget(nextTarget->GetGUID());
 	else
-		setNextTarget((uint64)NULL);
+		resetNextTarget();
 }
 
 void AIInterface::setNextTarget (uint64 nextTarget) 
 {
 	m_nextTarget = nextTarget; 
 	m_Unit->SetTargetGUID(  m_nextTarget);
+}
+
+void AIInterface::resetNextTarget() 
+{
+	m_nextTarget = 0; 
+	m_Unit->SetTargetGUID(0);
 }
 
 Unit * AIInterface::getUnitToFollow()

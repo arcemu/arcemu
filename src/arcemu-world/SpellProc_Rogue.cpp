@@ -136,7 +136,7 @@ class DeadlyBrewSpellProc : public SpellProc
 
 	bool DoEffect(Unit *victim, SpellEntry *CastingSpell, uint32 flag, uint32 dmg, uint32 abs, int *dmg_overwrite, uint32 weapon_damage_type)
 	{
-		mTarget->CastSpell( TO_UNIT( NULL ), 3409, true );//Spell Id 3409: Crippling Poison
+		mTarget->CastSpell( static_cast<Unit*>( NULL ), 3409, true );//Spell Id 3409: Crippling Poison
 
 		return true;
 	}
