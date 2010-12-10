@@ -882,7 +882,7 @@ void Creature::CalcStat(uint32 type)
 
 	if( IsPet() )
 	{
-		Player* owner = static_cast< Pet* >( this )->GetPetOwner();
+		Player* owner = TO< Pet* >( this )->GetPetOwner();
 		if( type == STAT_STAMINA && owner )
 			pos += int32( 0.45f * owner->GetStat(STAT_STAMINA) );
 		else if( type == STAT_INTELLECT && owner && GetCreatedBySpell() )
@@ -1938,7 +1938,7 @@ float Creature::GetBaseParry()
 Group *Creature::GetGroup()
 {
 	if ( IsPet() )
-		static_cast<Pet *>(this)->GetGroup();
+		TO< Pet* >(this)->GetGroup();
 	else if( IsTotem() && m_owner != NULL )
 		return TO< Player* >( m_owner )->GetGroup();
 	else if( GetCreatedByGUID() && GetMapMgr() )
@@ -2257,7 +2257,7 @@ void Creature::Die( Unit *pAttacker, uint32 damage, uint32 spellid ){
 
 	/* Stop players from casting */
 	for( std::set< Object* >::iterator itr = GetInRangePlayerSetBegin() ; itr != GetInRangePlayerSetEnd() ; itr ++ ){
-		Unit *attacker = static_cast< Unit* >( *itr );
+		Unit *attacker = TO< Unit* >( *itr );
 		
 		if( attacker->GetCurrentSpell() != NULL){
 			if ( attacker->GetCurrentSpell()->m_targets.m_unitTarget == GetGUID())

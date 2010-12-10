@@ -5133,7 +5133,7 @@ class AkamaAI : public MoonScriptBossAI
 
 		for (set< Object* >::iterator itr = _unit->GetInRangePlayerSetBegin(); itr != _unit->GetInRangePlayerSetEnd(); ++itr)
 		{
-			pUnit = static_cast< Unit* >(*itr);
+			pUnit = TO< Unit* >(*itr);
 
 			if(pUnit->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_FEIGN_DEATH))
 				continue;
@@ -6542,7 +6542,7 @@ class IllidanStormrageAI : public MoonScriptBossAI
 					CastSpellNowNoScheduling(mFlameBurst);
 					for (set< Object* >::iterator itr = _unit->GetInRangePlayerSetBegin(); itr != _unit->GetInRangePlayerSetEnd(); ++itr) 
 					{
-						Unit *pUnit = static_cast< Unit* >(*itr);
+						Unit *pUnit = TO< Unit* >(*itr);
 						MoonScriptCreatureAI *pAI = SpawnCreature(CN_FLAME_BURST, (*itr)->GetPositionX(), (*itr)->GetPositionY(), (*itr)->GetPositionZ(), 0, true);
 						_unit->CastSpell(pUnit, ILLIDAN_FLAME_BURST2, true);
 						if (pAI != NULL)
@@ -7027,7 +7027,7 @@ class FlameOfAzzinothAI : public MoonScriptCreatureAI
 			{	// && or || ? - not sure about details too
 				if ((*itr)->CalcDistance(pBlade1) > 40.0f || (*itr)->CalcDistance(pBlade2) > 40.0f)
 				{
-					Unit *pUnit = static_cast< Unit* >(*itr);
+					Unit *pUnit = TO< Unit* >(*itr);
 					ClearHateList();
 					_unit->GetAIInterface()->setNextTarget(pUnit);
 					_unit->GetAIInterface()->AttackReaction(pUnit, 10000);

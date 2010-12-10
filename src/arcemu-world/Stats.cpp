@@ -87,10 +87,10 @@ uint32 CalculateXpToGive(Unit *pVictim, Unit *pAttacker)
 	uint32 VictimLvl = pVictim->getLevel();
 	uint32 AttackerLvl = pAttacker->getLevel();
 
-	if( pAttacker->IsPet() && static_cast< Pet* >( pAttacker )->GetPetOwner() )
+	if( pAttacker->IsPet() && TO< Pet* >( pAttacker )->GetPetOwner() )
 	{
 		// based on: http://www.wowwiki.com/Talk:Formulas:Mob_XP#Hunter.27s_pet_XP (2008/01/12)
-		uint32 ownerLvl = static_cast< Pet* >( pAttacker )->GetPetOwner()->getLevel();
+		uint32 ownerLvl = TO< Pet* >( pAttacker )->GetPetOwner()->getLevel();
 		VictimLvl += ownerLvl - AttackerLvl;
 		AttackerLvl = ownerLvl;
 	}
@@ -104,7 +104,7 @@ uint32 CalculateXpToGive(Unit *pVictim, Unit *pAttacker)
 	if(pAttacker->IsPlayer())
 	max_level = pAttacker->GetUInt32Value(PLAYER_FIELD_MAX_LEVEL);
 	else if(pAttacker->IsPet())
-	max_level = static_cast< Pet* >( pAttacker )->GetPetOwner()->GetUInt32Value(PLAYER_FIELD_MAX_LEVEL);
+	max_level = TO< Pet* >( pAttacker )->GetPetOwner()->GetUInt32Value(PLAYER_FIELD_MAX_LEVEL);
 
 	if(pAttacker->getLevel() >= max_level)
 	return 0;

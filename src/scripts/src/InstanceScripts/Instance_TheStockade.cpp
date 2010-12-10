@@ -299,7 +299,7 @@ public:
 				std::vector<Unit* > target_list;
 				for (set< Object* >::iterator itr = _unit->GetInRangePlayerSetBegin(); itr != _unit->GetInRangePlayerSetEnd(); ++itr)
 				{
-					target = static_cast< Unit* >(*itr);
+					target = TO< Unit* >(*itr);
 					if(target)
 						target_list.push_back(target);
 

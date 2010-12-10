@@ -3527,8 +3527,8 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 				dmg.full_damage += float2int32( dmg.full_damage *  pVictim->ModDamageTakenByMechPCT[MECHANIC_BLEEDING] );
 
 			//pet happiness state dmg modifier
-			if( IsPet() && !static_cast<Pet*>(this)->IsSummon() )
-				dmg.full_damage = ( dmg.full_damage <= 0 ) ? 0 : float2int32( dmg.full_damage * static_cast< Pet* >( this )->GetHappinessDmgMod() );
+			if( IsPet() && !TO< Pet* >(this)->IsSummon() )
+				dmg.full_damage = ( dmg.full_damage <= 0 ) ? 0 : float2int32( dmg.full_damage * TO< Pet* >( this )->GetHappinessDmgMod() );
 
 			if(dmg.full_damage < 0)
 				dmg.full_damage = 0;
@@ -4043,8 +4043,8 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 					// Sweeping Strikes hits cannot be dodged, missed or parried (from wowhead)
 					bool skip_hit_check2 = ex->spell_info->Id == 12328 ? true : false;
 					//zack : should we use the spell id the registered this extra strike when striking ? It would solve a few proc on proc problems if so ;)
-//					Strike( static_cast< Unit* >( *itr ), weapon_damage_type, ability, add_damage, pct_dmg_mod, exclusive_damage, false, skip_hit_check );
-					Strike( static_cast< Unit* >( *itr ), weapon_damage_type, ex->spell_info, add_damage, pct_dmg_mod, exclusive_damage, false, skip_hit_check2 );
+//					Strike( TO< Unit* >( *itr ), weapon_damage_type, ability, add_damage, pct_dmg_mod, exclusive_damage, false, skip_hit_check );
+					Strike( TO< Unit* >( *itr ), weapon_damage_type, ex->spell_info, add_damage, pct_dmg_mod, exclusive_damage, false, skip_hit_check2 );
 					break;
 				}
 			}
@@ -5244,7 +5244,7 @@ void Unit::OnRemoveInRangeObject(Object* pObj)
 	if(pObj->IsUnit())
 	{
 
-		Unit *pUnit = static_cast<Unit*>(pObj);
+		Unit *pUnit = TO< Unit* >(pObj);
 		GetAIInterface()->CheckTarget(pUnit);
 
 		if( GetCharmedUnitGUID() == pObj->GetGUID())
@@ -5327,7 +5327,7 @@ void Unit::CalcDamage()
 	else
 	{
 		if( IsPet() )
-			static_cast< Pet * >(this)->UpdateAP();
+			TO< Pet* >(this)->UpdateAP();
 		float r;
 		float delta;
 		float mult;
@@ -6513,7 +6513,7 @@ Creature* Unit::create_guardian(uint32 guardian_entry,uint32 duration,float angl
 	if( IsCreature() && TO< Creature* >( this )->IsTotem() && TO< Creature* >( this )->GetOwner() != NULL )
 	{
 		Player* totem_owner = TO< Player* >( TO< Creature* >( this )->GetOwner() );
-		p->SetOwner( static_cast< Unit* >( totem_owner ) );
+		p->SetOwner( TO< Unit* >( totem_owner ) );
 	}
 	else
 	{
@@ -7435,7 +7435,7 @@ void Unit::AggroPvPGuards()
 	{
 		if((*i)->IsCreature())
 		{
-			tmpUnit = static_cast< Unit* >(*i);
+			tmpUnit = TO< Unit* >(*i);
 			if( tmpUnit->GetAIInterface() && tmpUnit->GetAIInterface()->m_isNeutralGuard && CalcDistance(tmpUnit) <= (50.0f * 50.0f) )
 			{
 				tmpUnit->GetAIInterface()->AttackReaction(this, 1, 0);
@@ -7917,7 +7917,7 @@ void Unit::Phase(uint8 command, uint32 newphase ){
 
 	for( std::set<Object*>::iterator itr=m_objectsInRange.begin(); itr!=m_objectsInRange.end(); ++itr ){
 		if ( (*itr)->IsUnit() )
-			static_cast< Unit* >( *itr )->UpdateVisibility();
+			TO< Unit* >( *itr )->UpdateVisibility();
 	}
 	
 	UpdateVisibility();

@@ -1867,7 +1867,7 @@ void Pet::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32 un
 				SetFlag(UNIT_FIELD_AURASTATE,AURASTATE_FLAG_LASTKILLWITHHONOR);
 				
 				if( !sEventMgr.HasEvent( m_Owner,EVENT_LASTKILLWITHHONOR_FLAG_EXPIRE ) )
-					sEventMgr.AddEvent( static_cast< Unit* >( m_Owner ), &Unit::EventAurastateExpire, static_cast< uint32 >( AURASTATE_FLAG_LASTKILLWITHHONOR ),EVENT_LASTKILLWITHHONOR_FLAG_EXPIRE,20000,1,0);
+					sEventMgr.AddEvent( TO< Unit* >( m_Owner ), &Unit::EventAurastateExpire, static_cast< uint32 >( AURASTATE_FLAG_LASTKILLWITHHONOR ),EVENT_LASTKILLWITHHONOR_FLAG_EXPIRE,20000,1,0);
 				else
 					sEventMgr.ModifyEventTimeLeft( m_Owner,EVENT_LASTKILLWITHHONOR_FLAG_EXPIRE,20000);
 
@@ -2062,7 +2062,7 @@ void Pet::Die( Unit *pAttacker, uint32 damage, uint32 spellid ){
 
 	/* Stop players from casting */
 	for( std::set< Object* >::iterator itr = GetInRangePlayerSetBegin() ; itr != GetInRangePlayerSetEnd() ; itr ++ ){
-		Unit *attacker = static_cast< Unit* >( *itr );
+		Unit *attacker = TO< Unit* >( *itr );
 		
 		if( attacker->GetCurrentSpell() != NULL){
 			if ( attacker->GetCurrentSpell()->m_targets.m_unitTarget == GetGUID())

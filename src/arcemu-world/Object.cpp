@@ -125,7 +125,7 @@ uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player *target)
 	uint8 updatetype = UPDATETYPE_CREATE_OBJECT;
 	if(IsCorpse())
 	{
-		if(static_cast<Corpse*>(this)->GetDisplayId() == 0)
+		if(TO< Corpse* >(this)->GetDisplayId() == 0)
 			return 0;
 		updatetype = UPDATETYPE_CREATE_YOURSELF;
 	}
@@ -151,7 +151,7 @@ uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player *target)
 		// gameobject/dynamicobject
 	case TYPEID_GAMEOBJECT:
 		flags = 0x0350;
-		if( static_cast<GameObject*>(this)->GetDisplayId()==3831 ) flags= 0x0252; //Deeprun Tram proper flags as of 3.2.0.
+		if( TO< GameObject* >(this)->GetDisplayId()==3831 ) flags= 0x0252; //Deeprun Tram proper flags as of 3.2.0.
 		break;
 
 	case TYPEID_DYNAMICOBJECT:
@@ -199,7 +199,7 @@ uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player *target)
 				}break;
 		}
 		//The above 3 checks FAIL to identify transports, thus their flags remain 0x58, and this is BAAAAAAD! Later they don't get position x,y,z,o updates, so they appear randomly by a client-calculated path, they always face north, etc... By: VLack
-		if( flags != 0x0352 && IsGameObject() && static_cast<GameObject*>(this)->GetInfo()->Type == GAMEOBJECT_TYPE_TRANSPORT && !(static_cast<GameObject*>(this)->GetOverrides() & GAMEOBJECT_OVERRIDE_PARENTROT) )
+		if( flags != 0x0352 && IsGameObject() && TO< GameObject* >(this)->GetInfo()->Type == GAMEOBJECT_TYPE_TRANSPORT && !(TO< GameObject* >(this)->GetOverrides() & GAMEOBJECT_OVERRIDE_PARENTROT) )
 			flags = 0x0352;
 	}
 
@@ -219,7 +219,7 @@ uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player *target)
 	updateMask.SetCount( m_valuesCount );
 	_SetCreateBits( &updateMask, target );
 
-	if(IsGameObject() && (static_cast<GameObject*>(this)->GetOverrides() & GAMEOBJECT_OVERRIDE_PARENTROT) )
+	if(IsGameObject() && (TO< GameObject* >(this)->GetOverrides() & GAMEOBJECT_OVERRIDE_PARENTROT) )
 	{
 		updateMask.SetBit(GAMEOBJECT_PARENTROTATION_02);
 		updateMask.SetBit(GAMEOBJECT_PARENTROTATION_03);
@@ -551,7 +551,7 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 	if( flags & UPDATEFLAG_ROTATION ) //0x0200
 	{
 		if( IsGameObject() )
-			*data << static_cast< GameObject* >( this )->m_rotation;
+			*data << TO< GameObject* >( this )->m_rotation;
 		else
 			*data << uint64( 0 ); //?
 	}
@@ -783,7 +783,7 @@ bool Object::SetPosition( float newX, float newY, float newZ, float newOrientati
 	bool updateMap = false, result = true;
 
 	//It's a good idea to push through EVERY transport position change, no matter how small they are. By: VLack aka. VLsoft
-	if( IsGameObject() && static_cast<GameObject*>(this)->GetInfo()->Type == GAMEOBJECT_TYPE_TRANSPORT )
+	if( IsGameObject() && TO< GameObject* >(this)->GetInfo()->Type == GAMEOBJECT_TYPE_TRANSPORT )
 		updateMap = true;
 
 	//if (m_position.x != newX || m_position.y != newY)
@@ -1045,7 +1045,7 @@ void Object::SetUInt32Value( const uint32 index, const uint32 value )
 			case UNIT_FIELD_POWER2:
 			case UNIT_FIELD_POWER4:
 			case UNIT_FIELD_POWER7:
-				static_cast< Unit* >( this )->SendPowerUpdate(true);
+				TO< Unit* >( this )->SendPowerUpdate(true);
 				break;
 			default:
 				break;
@@ -1118,7 +1118,7 @@ void Object::ModUnsigned32Value(uint32 index, int32 mod)
 			case UNIT_FIELD_POWER2:
 			case UNIT_FIELD_POWER4:
 			case UNIT_FIELD_POWER7:
-				static_cast< Unit* >( this )->SendPowerUpdate(true);
+				TO< Unit* >( this )->SendPowerUpdate(true);
 				break;
 			default:
 				break;
@@ -1528,9 +1528,9 @@ void Object::_setFaction()
 	else
 	if(IsGameObject())
 	{
-		factT = dbcFactionTemplate.LookupEntryForced(static_cast<GameObject*>(this)->GetFaction());
+		factT = dbcFactionTemplate.LookupEntryForced(TO< GameObject* >(this)->GetFaction());
 		if( !factT )
-			sLog.outError("Game Object does not have a valid faction. It will make him act stupid in world. Don't blame us, blame yourself for not checking :P, faction %u set to entry %u",static_cast<GameObject*>(this)->GetFaction(),GetEntry() );
+			sLog.outError("Game Object does not have a valid faction. It will make him act stupid in world. Don't blame us, blame yourself for not checking :P, faction %u set to entry %u",TO< GameObject* >(this)->GetFaction(),GetEntry() );
 	}
 
 	if(!factT)
@@ -1770,7 +1770,7 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 	//------------------------------resistance reducing-----------------------------------------
 	if(res > 0 && this->IsUnit())
 	{
-		static_cast<Unit*>(this)->CalculateResistanceReduction( pVictim, &dmg, spellInfo, 0 );
+		TO< Unit* >(this)->CalculateResistanceReduction( pVictim, &dmg, spellInfo, 0 );
 		if( (int32)dmg.resisted_damage > dmg.full_damage )
 			res = 0;
 		else
@@ -1799,10 +1799,10 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 	{
 		int32 dmg2 = float2int32(res);
 
-		pVictim->HandleProc( vproc, static_cast< Unit* >( this ), spellInfo, !allowProc, dmg2, abs_dmg);
+		pVictim->HandleProc( vproc, TO< Unit* >( this ), spellInfo, !allowProc, dmg2, abs_dmg);
 		pVictim->m_procCounter = 0;
-		static_cast< Unit* >( this )->HandleProc( aproc, pVictim, spellInfo, !allowProc, dmg2, abs_dmg);
-		static_cast< Unit* >( this )->m_procCounter = 0;
+		TO< Unit* >( this )->HandleProc( aproc, pVictim, spellInfo, !allowProc, dmg2, abs_dmg);
+		TO< Unit* >( this )->m_procCounter = 0;
 	}
 	if( this->IsPlayer() )
 	{
@@ -1847,8 +1847,8 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 			if( spellID == 32379 || spellID == 32996 || spellID == 48157 || spellID == 48158 ) 
 			{
 				uint32 damage2 = uint32( res + abs_dmg );
-				uint32 absorbed = static_cast< Unit* >( this )->AbsorbDamage( spellInfo->School, &damage2 );
-				DealDamage( static_cast< Unit* >( this ), damage2, 2, 0, spellID );
+				uint32 absorbed = TO< Unit* >( this )->AbsorbDamage( spellInfo->School, &damage2 );
+				DealDamage( TO< Unit* >( this ), damage2, 2, 0, spellID );
 				SendSpellNonMeleeDamageLog( this, this, spellID, damage2, static_cast<uint8>( spellInfo->School ), absorbed, 0, false, 0, false, IsPlayer() );
 			}
 		}
@@ -2176,9 +2176,9 @@ uint32 Object::GetTeam()
 	}
 	if (IsPet())
 	{
-		if (static_cast< Pet* >( this )->GetPetOwner() != NULL)
+		if (TO< Pet* >( this )->GetPetOwner() != NULL)
 		{
-			return static_cast< Pet* >( this )->GetPetOwner()->GetTeam();
+			return TO< Pet* >( this )->GetPetOwner()->GetTeam();
 		}
 	}
 	if (IsUnit() && !IsPlayer() && TO< Creature* >( this )->IsTotem() )

@@ -317,7 +317,7 @@ namespace luaItem
 	{
 		uint32 itemid = CHECK_ULONG(L,1);
 		if (!ptr->IsContainer() || !itemid) return 0;
-		Container * pCont = static_cast<Container*>(ptr);
+		Container * pCont = TO< Container* >(ptr);
 		int16 TotalSlots = static_cast<int16>(pCont->GetNumSlots());
 		int cnt = 0;
 		for (int16 i = 0; i < TotalSlots; i++)

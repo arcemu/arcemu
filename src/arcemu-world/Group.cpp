@@ -1207,7 +1207,7 @@ void Group::SendLootUpdates( Object *o ){
 			pLooter = GetLeader()->m_loggedInPlayer;
 		
 		if( pLooter->IsVisible( o->GetGUID() ) ){
-			Unit *victim = static_cast< Unit* >( o );
+			Unit *victim = TO< Unit* >( o );
 
 			victim->Tag( pLooter->GetGUID() );
 			pLooter->PushUpdateData( &buf, 1 );

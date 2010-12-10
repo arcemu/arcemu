@@ -271,7 +271,7 @@ void LuaEngine::PUSH_GO(Object *go, lua_State *L)
 {
 	GameObject * pGo = NULL;
 	if(go != NULL && go->IsGameObject() )
-		pGo = static_cast<GameObject*>(go);
+		pGo = TO< GameObject* >(go);
 	if(L == NULL)
 		ArcLuna<GameObject>::push(lu,pGo);
 	else
@@ -281,7 +281,7 @@ void LuaEngine::PUSH_ITEM(Object * item, lua_State *L)
 {
 	Item * pItem = NULL;
 	if(item != NULL && (item->IsItem() || item->IsContainer()))
-		pItem = static_cast<Item*>(item);
+		pItem = TO< Item* >(item);
 	if(L == NULL)
 		ArcLuna<Item>::push(lu,pItem);
 	else
@@ -2978,9 +2978,9 @@ void LuaEngine::ResumeLuaThread(int ref) {
 #define CHECK_BOOL(L,narg) (lua_toboolean((L),(narg)) > 0) ? true : false
 
 #define PUSH_UNIT(L, unit) sLuaMgr.PUSH_UNIT(TO_UNIT(unit),L)
-#define PUSH_GO(L, go) sLuaMgr.PUSH_GO(static_cast<GameObject*>(go),L)
+#define PUSH_GO(L, go) sLuaMgr.PUSH_GO(TO< GameObject* >(go),L)
 #define PUSH_PACKET(L,pack) sLuaMgr.PUSH_PACKET(pack,L)
-#define PUSH_ITEM(L,item) sLuaMgr.PUSH_ITEM(static_cast<Item*>(item),L)
+#define PUSH_ITEM(L,item) sLuaMgr.PUSH_ITEM(TO< Item* >(item),L)
 #define PUSH_GUID(L, obj) sLuaMgr.PUSH_GUID(obj,L)
 #define PUSH_TAXIPATH(L, tp) sLuaMgr.PUSH_TAXIPATH(tp,L)
 #define PUSH_SPELL(L, sp) sLuaMgr.PUSH_SPELL(sp,L)

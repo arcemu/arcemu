@@ -565,7 +565,7 @@ class GruulTheDragonkillerAI : public MoonScriptCreatureAI
 		{ 
 			if (IsValidUnitTarget(*itr, TargetFilter_None))
 			{
-				TargetArray.push_back(static_cast< Unit* >(*itr));
+				TargetArray.push_back(TO< Unit* >(*itr));
 			}
 		}
 

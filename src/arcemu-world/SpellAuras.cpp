@@ -756,7 +756,7 @@ Aura::Aura( SpellEntry* proto, int32 duration, Object* caster, Unit* target, boo
 	if( caster->IsUnit() )
 	{
 		if( m_spellProto->BGR_one_buff_from_caster_on_self != 0 )
-			static_cast<Unit*>(caster)->RemoveAllAuraFromSelfType2( m_spellProto->BGR_one_buff_from_caster_on_self, m_spellProto->NameHash );
+			TO< Unit* >(caster)->RemoveAllAuraFromSelfType2( m_spellProto->BGR_one_buff_from_caster_on_self, m_spellProto->NameHash );
 
 		if( isAttackable( caster, target ) )
 		{
@@ -2251,7 +2251,7 @@ void Aura::EventPeriodicHeal( uint32 amount )
 
 		for(std::vector<Unit*>::iterator itr = target_threat.begin(); itr != target_threat.end(); ++itr)
 		{
-			static_cast<Unit *>(*itr)->GetAIInterface()->HealReaction(u_caster, m_target, m_spellProto, add);
+			TO< Unit* >(*itr)->GetAIInterface()->HealReaction(u_caster, m_target, m_spellProto, add);
 		}
 
 		if(m_target->IsInWorld() && u_caster->IsInWorld())
@@ -2632,7 +2632,7 @@ void Aura::SpellAuraModStealth(bool apply)
 				if ((*iter) == NULL || !(*iter)->IsUnit())
 					continue;
 
-				Unit* _unit = static_cast< Unit* >( *iter );
+				Unit* _unit = TO< Unit* >( *iter );
 
 				if( !_unit->isAlive() )
 					continue;
@@ -3346,9 +3346,9 @@ void Aura::SpellAuraModDecreaseSpeed(bool apply)
 			//yes we are freezing the bastard, so can we proc anything on this ?
 			Unit *caster = GetUnitCaster();
 			if( caster != NULL && caster->IsPlayer() )
-				static_cast<Unit*>(caster)->EventChill( m_target );
+				TO< Unit* >(caster)->EventChill( m_target );
 			if( m_target->IsPlayer() && caster )
-				static_cast<Unit*>(m_target)->EventChill( caster, true );
+				TO< Unit* >(m_target)->EventChill( caster, true );
 		}
 		m_target->speedReductionMap.insert(make_pair(m_spellProto->Id, mod->m_amount));
 		//m_target->m_slowdown=this;
@@ -3380,9 +3380,9 @@ void Aura::UpdateAuraModDecreaseSpeed()
 		//yes we are freezing the bastard, so can we proc anything on this ?
 		Unit *caster = GetUnitCaster();
 		if( caster && caster->IsPlayer() )
-			static_cast<Unit*>(caster)->EventChill( m_target );
+			TO< Unit* >(caster)->EventChill( m_target );
 		if( m_target->IsPlayer() && caster )
-			static_cast<Unit*>(m_target)->EventChill( caster, true );
+			TO< Unit* >(m_target)->EventChill( caster, true );
 	}
 }
 
@@ -4259,7 +4259,7 @@ void Aura::SpellAuraModHitChance(bool apply)
 
 	if (apply)
 	{
-		static_cast< Unit* >( m_target )->SetHitFromMeleeSpell( static_cast< Unit* >( m_target )->GetHitFromMeleeSpell() + val);
+		TO< Unit* >( m_target )->SetHitFromMeleeSpell( TO< Unit* >( m_target )->GetHitFromMeleeSpell() + val);
 		if(val<0)
 			SetNegative();
 		else
@@ -4267,10 +4267,10 @@ void Aura::SpellAuraModHitChance(bool apply)
 	}
 	else
 	{
-		static_cast< Unit* >( m_target )->SetHitFromMeleeSpell( static_cast< Unit* >( m_target )->GetHitFromMeleeSpell() - val);
-		if( static_cast< Unit* >( m_target )->GetHitFromMeleeSpell() < 0 )
+		TO< Unit* >( m_target )->SetHitFromMeleeSpell( TO< Unit* >( m_target )->GetHitFromMeleeSpell() - val);
+		if( TO< Unit* >( m_target )->GetHitFromMeleeSpell() < 0 )
 		{
-			static_cast< Unit* >( m_target )->SetHitFromMeleeSpell( 0 );
+			TO< Unit* >( m_target )->SetHitFromMeleeSpell( 0 );
 		}
 	}
 }
@@ -4755,9 +4755,9 @@ void Aura::SpellAuraFeignDeath(bool apply)
 			//now get rid of mobs agro. pTarget->CombatStatus.AttackersForgetHate() - this works only for already attacking mobs
 		    for(std::set<Object*>::iterator itr = p_target->GetInRangeSetBegin(); itr != p_target->GetInRangeSetEnd(); itr++ )
 			{
-				if( (*itr)->IsUnit() && ( static_cast< Unit* >( *itr ))->isAlive())
+				if( (*itr)->IsUnit() && ( TO< Unit* >( *itr ))->isAlive())
 				{
-					Unit *u = static_cast< Unit* >( *itr );
+					Unit *u = TO< Unit* >( *itr );
 
 					if( isFeignDeathResisted( p_target->getLevel(), u->getLevel() ) ){
 						sEventMgr.AddEvent( this, &Aura::Remove, EVENT_AURA_REMOVE, 1, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT | EVENT_FLAG_DELETES_OBJECT );
@@ -6429,7 +6429,7 @@ void Aura::SpellAuraModIncreaseHealthPerc( bool apply )
 		if( p_target != NULL )
 			p_target->SetHealthFromSpell( p_target->GetHealthFromSpell() + mod->fixed_amount[mod->i] );
 //		else if( m_target->IsPet() )
-//			static_cast< Pet* >( m_target )->SetHealthFromSpell( ( ( Pet* )m_target )->GetHealthFromSpell() + mod->fixed_amount[mod->i] );
+//			TO< Pet* >( m_target )->SetHealthFromSpell( ( ( Pet* )m_target )->GetHealthFromSpell() + mod->fixed_amount[mod->i] );
 	}
 	else
 	{
@@ -6439,7 +6439,7 @@ void Aura::SpellAuraModIncreaseHealthPerc( bool apply )
 		if( p_target != NULL )
 			p_target->SetHealthFromSpell( TO_PLAYER(m_target)->GetHealthFromSpell() - mod->fixed_amount[mod->i] );
 //		else if( m_target->IsPet() )
-//			static_cast< Pet* >( m_target )->SetHealthFromSpell( ( ( Pet* )m_target )->GetHealthFromSpell() - mod->fixed_amount[mod->i] );
+//			TO< Pet* >( m_target )->SetHealthFromSpell( ( ( Pet* )m_target )->GetHealthFromSpell() - mod->fixed_amount[mod->i] );
 	}
 }
 

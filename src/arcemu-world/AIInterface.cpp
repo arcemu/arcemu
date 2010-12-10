@@ -366,10 +366,10 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 					m_lastFollowX = m_lastFollowY = 0;
 					if( m_Unit->IsPet() )
 					{
-						static_cast< Pet* >( m_Unit )->SetPetAction( PET_ACTION_FOLLOW );
+						TO< Pet* >( m_Unit )->SetPetAction( PET_ACTION_FOLLOW );
 						if( m_Unit->isAlive() && m_Unit->IsInWorld() )
 						{
-							static_cast< Pet* >( m_Unit )->HandleAutoCastEvent( AUTOCAST_EVENT_LEAVE_COMBAT );
+							TO< Pet* >( m_Unit )->HandleAutoCastEvent( AUTOCAST_EVENT_LEAVE_COMBAT );
 						}
 					}
 					HandleEvent(EVENT_FOLLOWOWNER, 0, 0);
@@ -733,7 +733,7 @@ void AIInterface::Update(uint32 p_time)
 		{
 			if(!m_Unit->bInvincible && m_Unit->IsPet()) 
 			{
-				Pet * pPet = static_cast<Pet*>(m_Unit);
+				Pet * pPet = TO< Pet* >(m_Unit);
 	
 				if(pPet->GetPetAction() == PET_ACTION_ATTACK || pPet->GetPetState() != PET_STATE_PASSIVE)
 				{
@@ -1005,7 +1005,7 @@ void AIInterface::_UpdateTargets()
 					AttackReaction(target, 1, 0);
 			}
 		}
-		else if( m_aiTargets.size() == 0 && ( ( m_AIType == AITYPE_PET && (m_Unit->IsPet() && static_cast<Pet*>(m_Unit)->GetPetState() == PET_STATE_AGGRESSIVE) ) || (!m_Unit->IsPet() && disable_melee == false ) ) )
+		else if( m_aiTargets.size() == 0 && ( ( m_AIType == AITYPE_PET && (m_Unit->IsPet() && TO< Pet* >(m_Unit)->GetPetState() == PET_STATE_AGGRESSIVE) ) || (!m_Unit->IsPet() && disable_melee == false ) ) )
 		{
 			 Unit* target = FindTarget();
 			 if( target )
@@ -1649,7 +1649,7 @@ void AIInterface::HealReaction(Unit* caster, Unit* victim, SpellEntry* sp, uint3
 void AIInterface::OnDeath(Object* pKiller)
 {
 	if(pKiller->IsUnit())
-		HandleEvent(EVENT_UNITDIED, static_cast<Unit*>(pKiller), 0);
+		HandleEvent(EVENT_UNITDIED, TO< Unit* >(pKiller), 0);
 	else
 		HandleEvent(EVENT_UNITDIED, m_Unit, 0);
 }
@@ -1764,11 +1764,11 @@ Unit* AIInterface::FindTarget()
 					if( CollideInterface.CheckLOS( m_Unit->GetMapId(), m_Unit->GetPositionNC(), tmpPlr->GetPositionNC() ) )
 					{
 						distance = dist;
-						target = static_cast<Unit*>(tmpPlr);
+						target = TO< Unit* >(tmpPlr);
 					}
 				} else {
 					distance = dist;
-					target = static_cast<Unit*>(tmpPlr);
+					target = TO< Unit* >(tmpPlr);
 				}
 			}
 		}
@@ -1833,7 +1833,7 @@ Unit* AIInterface::FindTarget()
 			if( !(*itr)->IsUnit() )
 				continue;
 
-			pUnit = static_cast< Unit* >( *itr );
+			pUnit = TO< Unit* >( *itr );
 
 			if( UnsafeCanOwnerAttackUnit( pUnit ) == false )
 				continue;
@@ -1963,7 +1963,7 @@ bool AIInterface::FindFriends(float dist)
         if( !(*itr)->IsUnit() )
 			continue;
 
-		pUnit = static_cast<Unit*>( *itr );
+		pUnit = TO< Unit* >( *itr );
 		if(!pUnit->isAlive())
 			continue;
 
@@ -4088,8 +4088,8 @@ void AIInterface::WipeReferences()
 
 	//Clear targettable
 	for(set<Object*>::iterator itr = m_Unit->GetInRangeSetBegin(); itr != m_Unit->GetInRangeSetEnd(); ++itr)
-        if( (*itr)->IsUnit() && static_cast<Unit*>(*itr)->GetAIInterface())
-			static_cast<Unit*>(*itr)->GetAIInterface()->RemoveThreatByPtr( m_Unit );
+        if( (*itr)->IsUnit() && TO< Unit* >(*itr)->GetAIInterface())
+			TO< Unit* >(*itr)->GetAIInterface()->RemoveThreatByPtr( m_Unit );
 }
 
 void AIInterface::ResetProcCounts()
@@ -4177,19 +4177,19 @@ void AIInterface::EventChangeFaction( Unit *ForceAttackersToHateThisInstead )
 	if( ForceAttackersToHateThisInstead == NULL )
 	{
 		for(set<Object*>::iterator itr = m_Unit->GetInRangeSetBegin(); itr != m_Unit->GetInRangeSetEnd(); ++itr)
-            if( (*itr)->IsUnit() && static_cast<Unit*>(*itr)->GetAIInterface() )
-				static_cast<Unit*>(*itr)->GetAIInterface()->RemoveThreatByPtr( m_Unit );
+            if( (*itr)->IsUnit() && TO< Unit* >(*itr)->GetAIInterface() )
+				TO< Unit* >(*itr)->GetAIInterface()->RemoveThreatByPtr( m_Unit );
 
         resetNextTarget();
 	}
 	else
 	{
 		for(set<Object*>::iterator itr = m_Unit->GetInRangeSetBegin(); itr != m_Unit->GetInRangeSetEnd(); ++itr)
-            if( (*itr)->IsUnit() && static_cast<Unit*>(*itr)->GetAIInterface() 
-				&& static_cast<Unit*>(*itr)->GetAIInterface()->getThreatByPtr( m_Unit ) )//this guy will join me in fight since I'm telling him "sorry i was controlled"
+            if( (*itr)->IsUnit() && TO< Unit* >(*itr)->GetAIInterface() 
+				&& TO< Unit* >(*itr)->GetAIInterface()->getThreatByPtr( m_Unit ) )//this guy will join me in fight since I'm telling him "sorry i was controlled"
 			{
-				static_cast<Unit*>(*itr)->GetAIInterface()->modThreatByPtr( ForceAttackersToHateThisInstead, 10 ); //just aping to be bale to hate him in case we got nothing else
-				static_cast<Unit*>(*itr)->GetAIInterface()->RemoveThreatByPtr( m_Unit );
+				TO< Unit* >(*itr)->GetAIInterface()->modThreatByPtr( ForceAttackersToHateThisInstead, 10 ); //just aping to be bale to hate him in case we got nothing else
+				TO< Unit* >(*itr)->GetAIInterface()->RemoveThreatByPtr( m_Unit );
 			}
 
         modThreatByPtr( ForceAttackersToHateThisInstead, 1 );

@@ -5676,7 +5676,7 @@ bool Player::CanSee(Object* obj) // * Invisibility & Stealth Detection - Partha 
 
 		if(myCorpseInstanceId == GetInstanceID())
 		{
-			if(obj->IsCorpse() && static_cast<Corpse*>(obj)->GetOwner() == GetGUID())
+			if(obj->IsCorpse() && TO< Corpse* >(obj)->GetOwner() == GetGUID())
 				return true;
 
 			if(obj->GetDistanceSq(myCorpseLocation) <= CORPSE_VIEW_DISTANCE)
@@ -5766,7 +5766,7 @@ bool Player::CanSee(Object* obj) // * Invisibility & Stealth Detection - Partha 
 
 		case TYPEID_UNIT:
 			{
-				Unit *uObj = static_cast<Unit *>(obj);
+				Unit *uObj = TO< Unit* >(obj);
 
 				if( uObj->IsSpiritHealer()) // can't see spirit-healers when alive
 					return false;
@@ -5788,7 +5788,7 @@ bool Player::CanSee(Object* obj) // * Invisibility & Stealth Detection - Partha 
 
 		case TYPEID_GAMEOBJECT:
 			{
-				GameObject *gObj = static_cast<GameObject *>(obj);
+				GameObject *gObj = TO< GameObject* >(obj);
 
 				if(gObj->invisible) // Invisibility - Detection of GameObjects
 				{
@@ -7130,7 +7130,7 @@ void Player::AddItemsToWorld()
 			{
 				for(uint32 e= 0; e < pItem->GetProto()->ContainerSlots; e++)
 				{
-					Item *item = (static_cast<Container*>( pItem ))->GetItem(static_cast<int16>( e ));
+					Item *item = (TO< Container* >( pItem ))->GetItem(static_cast<int16>( e ));
 					if(item)
 					{
 						item->PushToWorld(m_mapMgr);
@@ -7167,7 +7167,7 @@ void Player::RemoveItemsFromWorld()
 			{
 				for(uint32 e= 0; e < pItem->GetProto()->ContainerSlots; e++)
 				{
-					Item *item = (static_cast<Container*>( pItem ))->GetItem( static_cast<int16>( e ));
+					Item *item = (TO< Container* >( pItem ))->GetItem( static_cast<int16>( e ));
 					if(item && item->IsInWorld())
 					{
 						item->RemoveFromWorld();
@@ -9059,7 +9059,7 @@ void Player::CompleteLoading()
 		CastSpell(this, glyph->SpellID, true);
 	}
 	//sEventMgr.AddEvent(this,&Player::SendAllAchievementData,EVENT_SEND_ACHIEVEMNTS_TO_PLAYER,ACHIEVEMENT_SEND_DELAY,1,0);
-	sEventMgr.AddEvent(static_cast< Unit* >(this),&Unit::UpdatePowerAmm,EVENT_SEND_PACKET_TO_PLAYER_AFTER_LOGIN,LOGIN_CIENT_SEND_DELAY,1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+	sEventMgr.AddEvent(TO< Unit* >(this),&Unit::UpdatePowerAmm,EVENT_SEND_PACKET_TO_PLAYER_AFTER_LOGIN,LOGIN_CIENT_SEND_DELAY,1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 }
 
 void Player::OnWorldPortAck()
@@ -9884,7 +9884,7 @@ void Player::Possess(Unit * pTarget)
 	if(pTarget->m_temp_summon)
 		return;
 
-	if( !( pTarget->IsPet() && static_cast< Pet* >( pTarget ) == GetSummon() ) )
+	if( !( pTarget->IsPet() && TO< Pet* >( pTarget ) == GetSummon() ) )
 	{
 		list<uint32> avail_spells;
 		//Steam Tonks
@@ -9975,7 +9975,7 @@ void Player::UnPossess()
 	if(pTarget->m_temp_summon)
 		return;
 
-	if( !( pTarget->IsPet() && static_cast< Pet* >( pTarget ) == GetSummon() ) )
+	if( !( pTarget->IsPet() && TO< Pet* >( pTarget ) == GetSummon() ) )
 	{
 		data.Initialize( SMSG_PET_SPELLS );
 		data << uint64(0);
@@ -11806,7 +11806,7 @@ void Player::RemoveTempEnchantsOnArena()
 		{
 			if( it->IsContainer() )
 			{
-				Container *bag = static_cast<Container*>( it );
+				Container *bag = TO< Container* >( it );
 				for( uint32 ci = 0; ci < bag->GetProto()->ContainerSlots; ++ci )
 				{
 					it = bag->GetItem( static_cast<int16>( ci ));
@@ -13188,7 +13188,7 @@ void Player::Die( Unit *pAttacker, uint32 damage, uint32 spellid ){
 
 	/* Stop players from casting */
 	for( std::set< Object* >::iterator itr = GetInRangePlayerSetBegin() ; itr != GetInRangePlayerSetEnd() ; itr ++ ){
-		Unit *attacker = static_cast< Unit* >( *itr );
+		Unit *attacker = TO< Unit* >( *itr );
 		
 		if( attacker->GetCurrentSpell() != NULL){
 			if ( attacker->GetCurrentSpell()->m_targets.m_unitTarget == GetGUID())

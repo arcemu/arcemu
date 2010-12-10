@@ -501,7 +501,7 @@ void GameObject::UseFishingNode(Player *player)
 	{
 		if ( (*it) == NULL || !(*it)->IsGameObject() || TO_GAMEOBJECT( *it )->GetType() != GAMEOBJECT_TYPE_FISHINGHOLE)
 			continue;
-		school = static_cast<GameObject *>( *it );
+		school = TO< GameObject* >( *it );
 		if ( !isInRange( school, (float)school->GetInfo()->sound1 ) )
 		{
 			school = NULL;

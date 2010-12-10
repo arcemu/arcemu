@@ -1780,7 +1780,7 @@ void HeiganTheUncleanAI::OnCombatStart( Unit* pTarget )
 				if ( ( *Iter ) == NULL || !( *Iter )->IsGameObject() )
 					continue;
 
-				Fissure = static_cast< GameObject* >( *Iter );
+				Fissure = TO< GameObject* >( *Iter );
 
 				if ( Fissure->GetInfo() == NULL )
 					continue;

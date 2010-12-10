@@ -40,7 +40,7 @@ bool Pestilence(uint32 i, Spell* pSpell)
 		{
 			if(!(*itr)->IsUnit())
 				continue;
-			Unit* Target = static_cast<Unit*>((*itr));
+			Unit* Target = TO< Unit* >((*itr));
 			if(Main->GetGUID() == Target->GetGUID() && !u_caster->HasAura(63334))
 				continue;
 			if(isAttackable(Target, u_caster) && u_caster->CalcDistance((*itr)) <= (pSpell->GetRadius(i) + inc))

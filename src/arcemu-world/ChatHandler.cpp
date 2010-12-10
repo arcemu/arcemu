@@ -611,7 +611,7 @@ void WorldSession::HandleTextEmoteOpcode( WorldPacket & recv_data )
 		}
 		else if ( pUnit->IsPet() )
 		{
-			name = static_cast< Pet* >( pUnit )->GetName().c_str();
+			name = TO< Pet* >( pUnit )->GetName().c_str();
 			namelen = (uint32)strlen(name) + 1;
 		}
 		else

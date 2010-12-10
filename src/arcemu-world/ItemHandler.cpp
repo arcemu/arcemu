@@ -1447,7 +1447,7 @@ void WorldSession::HandleAutoStoreBagItemOpcode( WorldPacket & recv_data )
 	if(srcitem)
 	{
 		//src containers cant be moved if they have items inside
-		if(srcitem->IsContainer() && static_cast<Container*>(srcitem)->HasItems())
+		if(srcitem->IsContainer() && TO< Container* >(srcitem)->HasItems())
 		{
 			_player->GetItemInterface()->BuildInventoryChangeError(srcitem, 0, INV_ERR_NONEMPTY_BAG_OVER_OTHER_BAG);
 			return;
@@ -1497,7 +1497,7 @@ void WorldSession::HandleAutoStoreBagItemOpcode( WorldPacket & recv_data )
 				//dstitem exists, detect if its a container
 				if(dstitem->IsContainer())
 				{
-					NewSlot = static_cast<Container*>(dstitem)->FindFreeSlot();
+					NewSlot = TO< Container* >(dstitem)->FindFreeSlot();
 					if(NewSlot == ITEM_NO_SLOT_AVAILABLE)
 					{
 						_player->GetItemInterface()->BuildInventoryChangeError(srcitem, 0, INV_ERR_BAG_FULL);
@@ -1620,7 +1620,7 @@ void WorldSession::HandleRepairItemOpcode(WorldPacket &recvPacket)
 			{
 				if( pItem->IsContainer() )
 				{
-					pContainer = static_cast<Container*>( pItem );
+					pContainer = TO< Container* >( pItem );
 					for( j = 0; j < pContainer->GetProto()->ContainerSlots; ++j )
 					{
 						pItem = pContainer->GetItem( static_cast<int16>( j ) );

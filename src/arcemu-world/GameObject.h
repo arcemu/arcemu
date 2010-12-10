@@ -174,7 +174,7 @@ enum GAMEOBJECT_TYPES
 	GAMEOBJECT_TYPE_GUILD_BANK				= 34,
 	GAMEOBJECT_TYPE_TRAPDOOR				= 35};
 
-#define CALL_GO_SCRIPT_EVENT(obj, func) if(obj->IsGameObject() && static_cast<GameObject*>(obj)->GetScript() != NULL) static_cast<GameObject*>(obj)->GetScript()->func
+#define CALL_GO_SCRIPT_EVENT(obj, func) if(obj->IsGameObject() && TO< GameObject* >(obj)->GetScript() != NULL) TO< GameObject* >(obj)->GetScript()->func
 
 class SERVER_DECL GameObject : public Object
 {

@@ -471,7 +471,7 @@ Unit* MoonScriptCreatureAI::ForceCreatureFind( uint32 pCreatureId, float pX, flo
 		UnitArray Array;
 		for( std::vector< Creature* >::iterator UnitIter = Mgr->CreatureStorage.begin(); UnitIter != Mgr->CreatureStorage.end(); ++UnitIter )
 		{
-			UnitPtr = static_cast< Unit* >(*UnitIter);
+			UnitPtr = TO< Unit* >(*UnitIter);
 			if ( UnitPtr != NULL )
 			{ 
 				if ( UnitPtr->GetEntry() == pCreatureId && UnitPtr != _unit )

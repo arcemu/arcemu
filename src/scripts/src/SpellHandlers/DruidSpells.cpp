@@ -29,7 +29,7 @@ bool Starfall(uint32 i, Spell* pSpell)
 	{
 		if(!(*itr)->IsUnit())
 			continue;
-		Unit* Target = static_cast<Unit*>((*itr));
+		Unit* Target = TO< Unit* >((*itr));
 		if(isAttackable(Target, m_caster) && m_caster->CalcDistance((*itr)) <= pSpell->GetRadius(i))
 		{
 			m_caster->CastSpell(Target, pSpell->CalculateEffect(i, Target), true);

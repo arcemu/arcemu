@@ -3445,7 +3445,7 @@ public:
 			for(set< Object* >::iterator itr = _unit->GetInRangePlayerSetBegin(); itr != _unit->GetInRangePlayerSetEnd(); ++itr) 
 			{ 
 				Unit *RandomTarget = NULL;
-				RandomTarget = static_cast< Unit* >(*itr);
+				RandomTarget = TO< Unit* >(*itr);
 
 				if (RandomTarget && RandomTarget->isAlive() && isHostile(_unit, (*itr)))
 					TargetTable.push_back(RandomTarget);

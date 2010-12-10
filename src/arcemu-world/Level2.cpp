@@ -722,7 +722,7 @@ bool ChatHandler::HandleGOSelect(const char *args, WorldSession *m_session)
 					if(bUseNext)
 					{
 						// Select the first.
-						GObj = static_cast<GameObject*>(*Itr);
+						GObj = TO< GameObject* >(*Itr);
 						break;
 					} else {
 						if(((*Itr) == GObjs))
@@ -1454,7 +1454,7 @@ bool ChatHandler::HandleRepairItemsCommand(const char *args, WorldSession *m_ses
 		{
 			if( pItem->IsContainer() )
 			{
-				pContainer = static_cast<Container*>( pItem );
+				pContainer = TO< Container* >( pItem );
 				for( j = 0; j < pContainer->GetProto()->ContainerSlots; ++j )
 				{
 					pItem = pContainer->GetItem( static_cast<uint16>( j ) );

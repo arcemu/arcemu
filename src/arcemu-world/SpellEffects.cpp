@@ -473,14 +473,14 @@ void Spell::SpellEffectInstantKill(uint32 i)
 			if( !u_caster || !u_caster->IsPet() )
 				return;
 
-			//static_cast<Pet*>(u_caster)->Dismiss( true );
+			//TO< Pet* >(u_caster)->Dismiss( true );
 
 			SpellEntry * se = dbcSpell.LookupEntry(5);
-			if( static_cast< Pet* >( u_caster )->GetPetOwner() == NULL )
+			if( TO< Pet* >( u_caster )->GetPetOwner() == NULL )
 				return;
 
 			SpellCastTargets targets( u_caster->GetGUID() );
-			Spell * sp = new Spell( static_cast< Pet* >( u_caster )->GetPetOwner(), se, true, 0 );
+			Spell * sp = new Spell( TO< Pet* >( u_caster )->GetPetOwner(), se, true, 0 );
 			sp->prepare( &targets );
 			return;
 		}break;
@@ -489,7 +489,7 @@ void Spell::SpellEffectInstantKill(uint32 i)
 			if( !p_caster || !p_caster->IsPlayer() || !unitTarget || !unitTarget->IsPet() )
 				return;
 
-			//static_cast<Pet*>(unitTarget)->Dismiss( true );
+			//TO< Pet* >(unitTarget)->Dismiss( true );
 
 			SpellEntry * se = dbcSpell.LookupEntry(5);
 
@@ -2395,9 +2395,9 @@ void Spell::SpellEffectTriggerMissile(uint32 i) // Trigger Missile
 	// TODO: Following should be / is probably in SpellTarget code
 	for(std::set<Object*>::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); itr++ )
 	{
-		if(!((*itr)->IsUnit()) || !static_cast<Unit*>((*itr))->isAlive())
+		if(!((*itr)->IsUnit()) || !TO< Unit* >((*itr))->isAlive())
 			continue;
-		Unit *t= static_cast<Unit*>((*itr));
+		Unit *t= TO< Unit* >((*itr));
 
 		float r;
 		float d=m_targets.m_destX-t->GetPositionX();
@@ -3458,7 +3458,7 @@ void Spell::SpellEffectLearnPetSpell(uint32 i)
 
 	if(unitTarget && unitTarget->IsPet() && p_caster)
 	{
-		Pet * pPet = static_cast<Pet*>( unitTarget );
+		Pet * pPet = TO< Pet* >( unitTarget );
 		if(pPet->IsSummon())
 			p_caster->AddSummonSpell(unitTarget->GetEntry(), GetProto()->EffectTriggerSpell[i]);
 
@@ -3569,7 +3569,7 @@ void Spell::SpellEffectPowerBurn(uint32 i) // power burn
 	damage = mult * unitTarget->GetMaxPower( POWER_TYPE_MANA ) / 100;
 	if( m_caster->IsUnit() )//Spell ctor has ASSERT( m_caster != NULL ) so there's no need to add NULL checks, even if static analysis reports them.
 	{
-		Unit* caster = static_cast<Unit*>( m_caster );
+		Unit* caster = TO< Unit* >( m_caster );
 		if ( (uint32) damage > caster->GetMaxPower( POWER_TYPE_MANA ) * (mult*2) / 100 ) 
 			damage = caster->GetMaxPower( POWER_TYPE_MANA ) * (mult*2) / 100;
 	}
@@ -5581,7 +5581,7 @@ void Spell::SpellEffectMilling(uint32 i)
 void Spell::SpellEffectRenamePet( uint32 i )
 {
 	if( !unitTarget || !unitTarget->IsPet() || 
-		!static_cast<Pet*>(unitTarget)->GetPetOwner() || static_cast<Pet*>(unitTarget)->GetPetOwner()->getClass() != HUNTER )
+		!TO< Pet* >(unitTarget)->GetPetOwner() || TO< Pet* >(unitTarget)->GetPetOwner()->getClass() != HUNTER )
 		return;
 
 	unitTarget->SetByte( UNIT_FIELD_BYTES_2, 2, PET_RENAME_ALLOWED );
@@ -5685,7 +5685,7 @@ void Spell::SpellEffectDurabilityDamage(uint32 i)
 			{
 				if( pItem->IsContainer() )
 				{
-					pContainer = static_cast<Container*>( pItem );
+					pContainer = TO< Container* >( pItem );
 					for( j = 0; j < pContainer->GetProto()->ContainerSlots; ++j )
 					{
 						pItem = pContainer->GetItem( static_cast<uint16>( j ) );
@@ -5778,7 +5778,7 @@ void Spell::SpellEffectDurabilityDamagePCT(uint32 i)
 			{
 				if( pItem->IsContainer() )
 				{
-					pContainer = static_cast<Container*>( pItem );
+					pContainer = TO< Container* >( pItem );
 					for( j = 0; j < pContainer->GetProto()->ContainerSlots; ++j )
 					{
 						pItem = pContainer->GetItem( static_cast<uint16>( j ) );

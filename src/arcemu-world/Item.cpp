@@ -444,7 +444,7 @@ void Item::DeleteFromDB()
 		/* deleting a container */
 		for( uint32 i = 0; i < m_itemProto->ContainerSlots; ++i )
 		{
-			if( static_cast< Container* >( this )->GetItem( static_cast<int16>( i ) ) != NULL )
+			if( TO< Container* >( this )->GetItem( static_cast<int16>( i ) ) != NULL )
 			{
 				/* abort the delete */
 				return;

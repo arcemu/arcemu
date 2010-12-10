@@ -129,10 +129,10 @@ void DynamicObject::UpdateTargets()
 		{
             Object *o = *itr;
 
-			if( !o->IsUnit() || !static_cast< Unit* >( o )->isAlive() )
+			if( !o->IsUnit() || !TO< Unit* >( o )->isAlive() )
 				continue;
 
-			target = static_cast< Unit* >( o );
+			target = TO< Unit* >( o );
 
 			if( !isAttackable( u_caster, target, !(m_spellProto->c_is_flags & SPELL_FLAG_IS_TARGETINGSTEALTHED) ) )
 				continue;

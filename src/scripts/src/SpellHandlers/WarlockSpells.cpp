@@ -540,7 +540,7 @@ bool DemonicKnowledge( uint32 i, Aura *a, bool apply ){
 
 	if ( m_target->IsPet() )
 	{
-		Player* PetOwner = static_cast< Pet* >( m_target )->GetPetOwner();
+		Player* PetOwner = TO< Pet* >( m_target )->GetPetOwner();
 		if( PetOwner != NULL  )
 		{
 			uint32 val1 = m_target->GetStat(STAT_STAMINA); // stamina
