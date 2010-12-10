@@ -1153,10 +1153,8 @@ uint32 ItemInterface::RemoveItemAmt_ProtectPointer(uint32 id, uint32 amt, Item**
 
 					// bool result = true;
 
-					/*
-					if( pointer != NULL && *pointer != NULL && *pointer == item )
+					if( pointer != NULL && *pointer == item )
 						*pointer = NULL;
-					*/
 
 					if(result)
 					{
@@ -1172,7 +1170,7 @@ uint32 ItemInterface::RemoveItemAmt_ProtectPointer(uint32 id, uint32 amt, Item**
 					amt -= item->GetStackCount();
 					SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, static_cast<int16>( i ));
 
-					if( pointer != NULL && *pointer != NULL && *pointer == item )
+					if( pointer != NULL && *pointer == item )
 						*pointer = NULL;
 				}
 			}
@@ -1200,7 +1198,7 @@ uint32 ItemInterface::RemoveItemAmt_ProtectPointer(uint32 id, uint32 amt, Item**
 						else if (item2->GetStackCount()== amt)
 						{
 							bool result = SafeFullRemoveItemFromSlot(static_cast<int8>( i ), static_cast<int16>( j ));
-							if( pointer != NULL && *pointer != NULL && *pointer == item2 )
+							if( pointer != NULL && *pointer == item2 )
 								*pointer = NULL;
 
 							if(result)
@@ -1217,7 +1215,7 @@ uint32 ItemInterface::RemoveItemAmt_ProtectPointer(uint32 id, uint32 amt, Item**
 							amt -= item2->GetStackCount();
 							SafeFullRemoveItemFromSlot(static_cast<int8>( i ), static_cast<int16>( j ));
 
-							if( pointer != NULL && *pointer != NULL && *pointer == item2 )
+							if( pointer != NULL && *pointer == item2 )
 								*pointer = NULL;
 						}
 					}
@@ -1242,7 +1240,7 @@ uint32 ItemInterface::RemoveItemAmt_ProtectPointer(uint32 id, uint32 amt, Item**
 				else if (item->GetStackCount()== amt)
 				{
 					bool result = SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, static_cast<int16>( i ));
-					if( pointer != NULL && *pointer != NULL && *pointer == item )
+					if( pointer != NULL && *pointer == item )
 						*pointer = NULL;
 
 					if(result)
@@ -1259,7 +1257,7 @@ uint32 ItemInterface::RemoveItemAmt_ProtectPointer(uint32 id, uint32 amt, Item**
 					amt -= item->GetStackCount();
 					SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, static_cast<int16>( i ));
 
-					if( pointer != NULL && *pointer != NULL && *pointer == item )
+					if( pointer != NULL && *pointer == item )
 						*pointer = NULL;
 				}
 			}
@@ -1282,7 +1280,7 @@ uint32 ItemInterface::RemoveItemAmt_ProtectPointer(uint32 id, uint32 amt, Item**
 				else if (item->GetStackCount()== amt)
 				{
 					bool result = SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, static_cast<int16>( i ));
-					if( pointer != NULL && *pointer != NULL && *pointer == item )
+					if( pointer != NULL && *pointer == item )
 						*pointer = NULL;
 
 					if(result)
@@ -1299,7 +1297,7 @@ uint32 ItemInterface::RemoveItemAmt_ProtectPointer(uint32 id, uint32 amt, Item**
 					amt -= item->GetStackCount();
 					SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, static_cast<int16>( i ));
 
-					if( pointer != NULL && *pointer != NULL && *pointer == item )
+					if( pointer != NULL && *pointer == item )
 						*pointer = NULL;
 				}
 			}
