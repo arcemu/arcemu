@@ -388,7 +388,7 @@ void MapMgr::PushObject(Object *obj)
 		case HIGHGUID_TYPE_UNIT:
 			{
 				Arcemu::Util::ARCEMU_ASSERT(    obj->GetUIdFromGUID() <= m_CreatureHighGuid );
-				CreatureStorage[ obj->GetUIdFromGUID() ] = static_cast< Creature* >( obj );
+				CreatureStorage[ obj->GetUIdFromGUID() ] = TO< Creature* >( obj );
 				if(TO_CREATURE(obj)->m_spawn != NULL)
 				{
 					_sqlids_creatures.insert(make_pair( TO_CREATURE(obj)->m_spawn->id, TO_CREATURE(obj) ) );
@@ -459,7 +459,7 @@ void MapMgr::PushStaticObject(Object *obj)
 	switch(obj->GetTypeFromGUID())
 	{
 		case HIGHGUID_TYPE_UNIT:
-			CreatureStorage[ obj->GetUIdFromGUID() ] = static_cast< Creature* >( obj );
+			CreatureStorage[ obj->GetUIdFromGUID() ] = TO< Creature* >( obj );
 			break;
 
 		case HIGHGUID_TYPE_GAMEOBJECT:

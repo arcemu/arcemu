@@ -256,7 +256,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				{
 					if(m_Unit->IsCreature())
 					{
-						if(static_cast<Creature*>(m_Unit)->GetCreatureInfo()->Rank == 3)
+						if(TO< Creature* >(m_Unit)->GetCreatureInfo()->Rank == 3)
 						{
 							 m_Unit->GetMapMgr()->AddCombatInProgress(m_Unit->GetGUID());
 						}
@@ -395,7 +395,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 							m_returnZ=m_Unit->GetSpawnZ();
 						}
 
-						Creature *aiowner = static_cast<Creature*>(m_Unit);
+						Creature *aiowner = TO< Creature* >(m_Unit);
 						//clear tagger.
 						aiowner->UnTag();
 						aiowner->SetUInt32Value(UNIT_DYNAMIC_FLAGS,aiowner->GetUInt32Value(UNIT_DYNAMIC_FLAGS) & ~(U_DYN_FLAG_TAGGED_BY_OTHER |U_DYN_FLAG_LOOTABLE));
@@ -407,7 +407,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				{
 					if(m_Unit->IsCreature())
 					{
-						if(static_cast<Creature*>(m_Unit)->GetCreatureInfo()->Rank == 3)
+						if(TO< Creature* >(m_Unit)->GetCreatureInfo()->Rank == 3)
 						{
 							  m_Unit->GetMapMgr()->RemoveCombatInProgress(m_Unit->GetGUID());
 						}
@@ -417,10 +417,10 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				// Remount if mounted
 				if(m_Unit->IsCreature())
 				{
-					Creature *creature = static_cast< Creature* >( m_Unit );
+					Creature *creature = TO< Creature* >( m_Unit );
 					if( creature->m_spawn )
 						m_Unit->SetMount(creature->m_spawn->MountedDisplayID );
-						//m_Unit->SetMount(static_cast< Creature* >( m_Unit )->GetSpawnO->MountedDisplayID );
+						//m_Unit->SetMount(TO< Creature* >( m_Unit )->GetSpawnO->MountedDisplayID );
 				}
 				//Zack : not sure we need to send this. Did not see it in the dumps since mob died eventually but it seems logical to make this
 				m_Unit->smsg_AttackStop( pUnit );
@@ -430,7 +430,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				if( pUnit == NULL ) return;
 
 				if( m_Unit->IsCreature() )
-					static_cast< Creature* >( m_Unit )->HandleMonsterSayEvent( MONSTER_SAY_EVENT_ON_DAMAGE_TAKEN );
+					TO< Creature* >( m_Unit )->HandleMonsterSayEvent( MONSTER_SAY_EVENT_ON_DAMAGE_TAKEN );
 
 				pUnit->RemoveAura( 24575 );
 
@@ -557,7 +557,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 			if( pUnit == NULL ) return;
 
 			if( m_Unit->IsCreature() )
-				static_cast< Creature* >( m_Unit )->HandleMonsterSayEvent( MONSTER_SAY_EVENT_ON_DIED );
+				TO< Creature* >( m_Unit )->HandleMonsterSayEvent( MONSTER_SAY_EVENT_ON_DIED );
 
 			CALL_SCRIPT_EVENT(m_Unit, OnDied)(pUnit);
 			if ( m_Unit->IsCreature() )
@@ -613,7 +613,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				|| pInstance->m_mapInfo->type == INSTANCE_MULTIMODE ))
 			{
 				InstanceBossInfoMap *bossInfoMap = objmgr.m_InstanceBossInfoMap[m_Unit->GetMapMgr()->GetMapId()];
-				Creature *pCreature = static_cast< Creature* >( m_Unit );
+				Creature *pCreature = TO< Creature* >( m_Unit );
 				bool found = false;
 
 				if(IS_PERSISTENT_INSTANCE(pInstance) && bossInfoMap != NULL)
@@ -654,7 +654,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 			{
 				if(m_Unit->IsCreature())
 				{
-					if(static_cast<Creature*>(m_Unit)->GetCreatureInfo()->Rank == 3)
+					if(TO< Creature* >(m_Unit)->GetCreatureInfo()->Rank == 3)
 					{
 						m_Unit->GetMapMgr()->RemoveCombatInProgress(m_Unit->GetGUID());
 					}
@@ -1131,7 +1131,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 		if(getNextTarget()->event_GetCurrentInstanceId() == m_Unit->event_GetCurrentInstanceId())
 		{
 			if( m_Unit->IsCreature() )
-				cansee = static_cast< Creature* >( m_Unit )->CanSee( getNextTarget() );
+				cansee = TO< Creature* >( m_Unit )->CanSee( getNextTarget() );
 			else
 				cansee = TO< Player* >( m_Unit )->CanSee( getNextTarget() );
 		}
@@ -1425,7 +1425,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 							break;
 						}
 					default:
-						sLog.outError("AI Agents: Targettype of AI agent spell %u for creature %u not set", spellInfo->Id, static_cast< Creature* >( m_Unit )->GetCreatureInfo()->Id );
+						sLog.outError("AI Agents: Targettype of AI agent spell %u for creature %u not set", spellInfo->Id, TO< Creature* >( m_Unit )->GetCreatureInfo()->Id );
 					}
 					// CastSpell(m_Unit, spellInfo, targets);
 					if(m_nextSpell&&m_nextSpell->cooldown)
@@ -1479,8 +1479,8 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 				string msg = "%s attempts to run away in fear!";
 				data << (uint8)CHAT_MSG_CHANNEL;
 				data << (uint32)LANG_UNIVERSAL;
-				data << (uint32)( strlen( static_cast< Creature* >( m_Unit )->GetCreatureInfo()->Name ) + 1 );
-				data << static_cast< Creature* >( m_Unit )->GetCreatureInfo()->Name;
+				data << (uint32)( strlen( TO< Creature* >( m_Unit )->GetCreatureInfo()->Name ) + 1 );
+				data << TO< Creature* >( m_Unit )->GetCreatureInfo()->Name;
 				data << (uint64)0;
 				data << (uint32)(msg.size() + 1);
 				data << msg;
@@ -1498,7 +1498,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 				FindFriends( 64.0f /*8.0f*/ );
 				m_hasCalledForHelp = true; // We only want to call for Help once in a Fight.
 				if( m_Unit->IsCreature() )
-					static_cast< Creature* >( m_Unit )->HandleMonsterSayEvent( MONSTER_SAY_EVENT_CALL_HELP );
+					TO< Creature* >( m_Unit )->HandleMonsterSayEvent( MONSTER_SAY_EVENT_CALL_HELP );
 				CALL_SCRIPT_EVENT( m_Unit, OnCallForHelp )();
 			}break;
 		}
@@ -2005,7 +2005,7 @@ bool AIInterface::FindFriends(float dist)
 
 	uint32 family = TO_CREATURE(m_Unit)->GetCreatureInfo()->Type;
 	
-	CreatureProto *pt = static_cast< Creature* >( m_Unit )->GetProto();
+	CreatureProto *pt = TO< Creature* >( m_Unit )->GetProto();
 
 	uint32 summonguard = 0;
 
@@ -2553,7 +2553,7 @@ void AIInterface::UpdateMove()
 
 	if(m_Unit->IsCreature())
 	{
-		Creature *creature = static_cast<Creature*>(m_Unit);
+		Creature *creature = TO< Creature* >(m_Unit);
 		// check if we're returning to our respawn location. if so, reset back to default
 		// orientation
 		if(creature->GetSpawnX() == m_destinationX &&
@@ -3041,7 +3041,7 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 			if(m_formationLinkTarget == 0)
 			{
 				// haven't found our target yet
-				Creature * c = static_cast<Creature*>(m_Unit);
+				Creature * c = TO< Creature* >(m_Unit);
 				if(!c->haslinkupevent)
 				{
 					// register linkup event

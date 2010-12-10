@@ -572,7 +572,7 @@ void WorldSession::HandleQuestgiverChooseRewardOpcode(WorldPacket& recvPacket)
 
 	
 	sQuestMgr.OnQuestFinished(GetPlayer(), qst, qst_giver, reward_slot);
-	//if(qst_giver->GetTypeId() == TYPEID_UNIT) qst->LUA_SendEvent(static_cast< Creature* >( qst_giver ),GetPlayer(),ON_QUEST_COMPLETEQUEST);
+	//if(qst_giver->GetTypeId() == TYPEID_UNIT) qst->LUA_SendEvent(TO< Creature* >( qst_giver ),GetPlayer(),ON_QUEST_COMPLETEQUEST);
 
 	if(qst->next_quest_id)
 	{

@@ -437,7 +437,7 @@ class Volkhan : public MoonScriptCreatureAI
 		{
 			if ( (*itr) && (*itr)->IsCreature() && (*itr)->GetEntry() == CN_BRITTLE_GOLEM )
 			{
-				Creature* pCreature = static_cast<Creature*>((*itr));
+				Creature* pCreature = TO< Creature* >((*itr));
 				pCreature->CastSpell(pCreature, SPELL_SHATTER, true);
 				
 				pCreature->Despawn(1000, 0);

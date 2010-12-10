@@ -2580,7 +2580,7 @@ void Unit::RegenerateHealth()
 	{
 		// Only regen health out of combat
 		if(!CombatStatus.IsInCombat())
-			static_cast<Creature*>(this)->RegenerateHealth();
+			TO< Creature* >(this)->RegenerateHealth();
 	}
 }
 
@@ -2680,10 +2680,10 @@ void Unit::RegeneratePower(bool isinterrupted)
 		switch(powertype)
 		{
 		case POWER_TYPE_MANA:
-			static_cast<Creature*>(this)->RegenerateMana();
+			TO< Creature* >(this)->RegenerateMana();
 			break;
 		case POWER_TYPE_FOCUS:
-			static_cast<Creature*>(this)->RegenerateFocus();
+			TO< Creature* >(this)->RegenerateFocus();
 			m_P_regenTimer = 4000;
 			break;
 		}
@@ -3015,7 +3015,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 	else
 	{
 		if (IsCreature())
-			dmg.school_type = static_cast< Creature* >( this )->BaseAttackType;
+			dmg.school_type = TO< Creature* >( this )->BaseAttackType;
 		else
 			dmg.school_type = SCHOOL_NORMAL;
 	}
@@ -3066,7 +3066,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 	else
 	{
 		// not a player, must be a creature
-		Creature* c = static_cast< Creature* >( pVictim );
+		Creature* c = TO< Creature* >( pVictim );
 
 		// mobs can dodge attacks from behind
 		if ( weapon_damage_type != RANGED && pVictim->m_stunned <= 0 )
@@ -3650,7 +3650,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 						//sLog.outString( "DEBUG: After Resilience check: %u" , dmg.full_damage );
 					}
 
-					if (pVictim->IsCreature() && static_cast<Creature*>(pVictim)->GetCreatureInfo()->Rank != ELITE_WORLDBOSS)
+					if (pVictim->IsCreature() && TO< Creature* >(pVictim)->GetCreatureInfo()->Rank != ELITE_WORLDBOSS)
 						pVictim->Emote( EMOTE_ONESHOT_WOUNDCRITICAL );
 
 					vproc |= PROC_ON_CRIT_HIT_VICTIM;
@@ -5299,7 +5299,7 @@ int32 Unit::GetDamageDoneMod(uint32 school)
 		if( this->IsPlayer() )
 		   return (int32)TO_PLAYER(this)->GetPosDamageDoneMod( school ) - (int32)TO_PLAYER(this)->GetNegDamageDoneMod( school );
 		else
-		   return static_cast< Creature* >( this )->ModDamageDone[school];
+		   return TO< Creature* >( this )->ModDamageDone[school];
 	}
 	else
 		sLog.outDebug("[NOTICE] You have bad DB, spell school = %u",school);
@@ -5334,7 +5334,7 @@ void Unit::CalcDamage()
 
 		float ap_bonus = GetAP() / 14000.0f;
 
-		float bonus = ap_bonus * ( GetBaseAttackTime(MELEE) + static_cast< Creature* >( this )->m_speedFromHaste );
+		float bonus = ap_bonus * ( GetBaseAttackTime(MELEE) + TO< Creature* >( this )->m_speedFromHaste );
 
 		delta = float(TO_CREATURE(this)->ModDamageDone[0]);
 		mult = float(TO_CREATURE(this)->ModDamageDonePct[0]);
@@ -6510,9 +6510,9 @@ Creature* Unit::create_guardian(uint32 guardian_entry,uint32 duration,float angl
 	p->m_noRespawn = true;
 
 	// if it's summoned by a totem owned by a player it will be owned by the player, so we can PvP check on them in dealdamage, and isattackable
-	if( IsCreature() && static_cast< Creature* >( this )->IsTotem() && static_cast< Creature* >( this )->GetOwner() != NULL )
+	if( IsCreature() && TO< Creature* >( this )->IsTotem() && TO< Creature* >( this )->GetOwner() != NULL )
 	{
-		Player* totem_owner = TO< Player* >( static_cast< Creature* >( this )->GetOwner() );
+		Player* totem_owner = TO< Player* >( TO< Creature* >( this )->GetOwner() );
 		p->SetOwner( static_cast< Unit* >( totem_owner ) );
 	}
 	else
@@ -7419,7 +7419,7 @@ void Unit::RemoveFieldSummon()
 	uint64 guid = GetSummonedUnitGUID();
 	if(guid && GetMapMgr())
 	{
-		Creature *summon = static_cast< Creature* >( GetMapMgr()->GetUnit(guid) );
+		Creature *summon = TO< Creature* >( GetMapMgr()->GetUnit(guid) );
 		if (summon)
 		{
 			summon->RemoveFromWorld(false,true);

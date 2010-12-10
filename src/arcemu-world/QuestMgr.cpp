@@ -198,11 +198,11 @@ uint32 QuestMgr::CalcStatus(Object* quest_giver, Player* plr)
 	} 
 	else if( quest_giver->IsCreature() )
 	{
-		bValid = static_cast< Creature* >( quest_giver )->HasQuests();
+		bValid = TO< Creature* >( quest_giver )->HasQuests();
 		if(bValid)
 		{
-			q_begin = static_cast<Creature*>(quest_giver)->QuestsBegin();
-			q_end = static_cast<Creature*>(quest_giver)->QuestsEnd();
+			q_begin = TO< Creature* >(quest_giver)->QuestsBegin();
+			q_end = TO< Creature* >(quest_giver)->QuestsEnd();
 		}
 	}
     else if( quest_giver->IsItem() )
@@ -267,11 +267,11 @@ uint32 QuestMgr::ActiveQuestsCount(Object* quest_giver, Player* plr)
 	} 
 	else if(quest_giver->IsCreature())
 	{
-		bValid = static_cast<Creature*>(quest_giver)->HasQuests();
+		bValid = TO< Creature* >(quest_giver)->HasQuests();
 		if(bValid)
 		{
-			q_begin = static_cast<Creature*>(quest_giver)->QuestsBegin();
-			q_end   = static_cast<Creature*>(quest_giver)->QuestsEnd();
+			q_begin = TO< Creature* >(quest_giver)->QuestsBegin();
+			q_end   = TO< Creature* >(quest_giver)->QuestsEnd();
 		}
 	}
 
@@ -605,11 +605,11 @@ void QuestMgr::BuildQuestList(WorldPacket *data, Object* qst_giver, Player *plr,
 	} 
 	else if(qst_giver->IsCreature())
 	{
-		bValid = static_cast<Creature*>(qst_giver)->HasQuests();
+		bValid = TO< Creature* >(qst_giver)->HasQuests();
 		if(bValid)
 		{
-			st = static_cast<Creature*>(qst_giver)->QuestsBegin();
-			ed = static_cast<Creature*>(qst_giver)->QuestsEnd();
+			st = TO< Creature* >(qst_giver)->QuestsBegin();
+			ed = TO< Creature* >(qst_giver)->QuestsEnd();
 		}
 	}
 
@@ -1010,8 +1010,8 @@ void QuestMgr::GiveQuestRewardReputation(Player* plr, Quest* qst, Object *qst_gi
 
 			// Let's do this properly. Determine the faction of the creature, and give reputation to his faction.
 			if( qst_giver->IsCreature() )
-				if( static_cast<Creature*>(qst_giver)->m_factionDBC != NULL )
-					fact = static_cast<Creature*>(qst_giver)->m_factionDBC->ID;
+				if( TO< Creature* >(qst_giver)->m_factionDBC != NULL )
+					fact = TO< Creature* >(qst_giver)->m_factionDBC->ID;
 			if( qst_giver->IsGameObject() )
 				fact = static_cast<GameObject*>(qst_giver)->GetFaction();
 		}
@@ -1075,7 +1075,7 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint3
 	
 	if(qst_giver->IsCreature())
 	{
-		if(!static_cast<Creature*>(qst_giver)->HasQuest(qst->id, 2))
+		if(!TO< Creature* >(qst_giver)->HasQuest(qst->id, 2))
 		{
 			//sCheatLog.writefromsession(plr->GetSession(), "tried to finish quest from invalid npc.");
 			plr->GetSession()->Disconnect();
@@ -1730,11 +1730,11 @@ bool QuestMgr::OnActivateQuestGiver(Object *qst_giver, Player *plr)
 		} 
 		else if(qst_giver->IsCreature())
 		{
-			bValid = static_cast<Creature*>(qst_giver)->HasQuests();
+			bValid = TO< Creature* >(qst_giver)->HasQuests();
 			if(bValid)
 			{
-				q_begin = static_cast<Creature*>(qst_giver)->QuestsBegin();
-				q_end   = static_cast<Creature*>(qst_giver)->QuestsEnd();
+				q_begin = TO< Creature* >(qst_giver)->QuestsBegin();
+				q_end   = TO< Creature* >(qst_giver)->QuestsEnd();
 			}
 		}
 

@@ -923,7 +923,7 @@ void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
 	{
 		if( u_caster != NULL && ( u_caster != unitTarget ) )
 		{
-			Creature * c = static_cast< Creature * >( unitTarget );
+			Creature * c = TO< Creature* >( unitTarget );
 			/*
 			Charm (Mind Control, enslave demon): 1
 			Confuse (Blind etc): 2
@@ -1437,11 +1437,11 @@ void Spell::SpellEffectResurrect(uint32 i) // Resurrect (Flat)
 					unitTarget->SetPower( POWER_TYPE_MANA, mana);
 					unitTarget->SetUInt32Value(UNIT_DYNAMIC_FLAGS, 0);
 					unitTarget->setDeathState(ALIVE);
-					static_cast<Creature*>(unitTarget)->UnTag();
-					static_cast<Creature*>(unitTarget)->loot.gold= 0;
-					static_cast<Creature*>(unitTarget)->loot.looters.clear();
-					static_cast<Creature*>(unitTarget)->loot.items.clear();
-					static_cast<Creature*>(unitTarget)->SetLimboState(false); // we can regenerate health now
+					TO< Creature* >(unitTarget)->UnTag();
+					TO< Creature* >(unitTarget)->loot.gold= 0;
+					TO< Creature* >(unitTarget)->loot.looters.clear();
+					TO< Creature* >(unitTarget)->loot.items.clear();
+					TO< Creature* >(unitTarget)->SetLimboState(false); // we can regenerate health now
 				}
 			}
 
@@ -3664,7 +3664,7 @@ void Spell::SpellEffectInterruptCast(uint32 i) // Interrupt Cast
 		if (u_caster && (u_caster != unitTarget))
 		{
 			unitTarget->GetAIInterface()->AttackReaction(u_caster, 1, m_spellInfo->Id);
-			Creature *c = static_cast<Creature*>( unitTarget );
+			Creature *c = TO< Creature* >( unitTarget );
 			if (c->GetProto()->modImmunities & 32768)
 				return;
 		}
@@ -3753,16 +3753,16 @@ void Spell::SpellEffectPickpocket(uint32 i) // pickpocket
 	if(!unitTarget || !p_caster || !unitTarget->IsCreature())
 		return;
 
-	Creature *target = static_cast<Creature*>( unitTarget );
+	Creature *target = TO< Creature* >( unitTarget );
 	if(target->IsPickPocketed() || (target->GetCreatureInfo()->Type != UNIT_TYPE_HUMANOID))
 	{
 		SendCastResult(SPELL_FAILED_TARGET_NO_POCKETS);
 		return;
 	}
 
-	lootmgr.FillPickpocketingLoot(&static_cast<Creature*>(unitTarget)->loot,unitTarget->GetEntry());
+	lootmgr.FillPickpocketingLoot(&TO< Creature* >(unitTarget)->loot,unitTarget->GetEntry());
 
-	uint32 _rank = static_cast<Creature*>(unitTarget)->GetCreatureInfo()->Rank;
+	uint32 _rank = TO< Creature* >(unitTarget)->GetCreatureInfo()->Rank;
 	unitTarget->loot.gold = float2int32((_rank+1) * unitTarget->getLevel() * (RandomUInt(5) + 1) * sWorld.getRate(RATE_MONEY));
 
 	p_caster->SendLoot(unitTarget->GetGUID(), LOOT_PICKPOCKETING, unitTarget->GetMapId() );
@@ -3908,7 +3908,7 @@ void Spell::SpellEffectUseGlyph(uint32 i)
 
 void Spell::SpellEffectHealMechanical(uint32 i)
 {
-	if(!unitTarget || !unitTarget->IsCreature() || static_cast<Creature*>(unitTarget)->GetCreatureInfo()->Type != UNIT_TYPE_MECHANICAL)
+	if(!unitTarget || !unitTarget->IsCreature() || TO< Creature* >(unitTarget)->GetCreatureInfo()->Type != UNIT_TYPE_MECHANICAL)
 		return;
 
 	Heal(damage);
@@ -4957,10 +4957,10 @@ void Spell::SpellEffectResurrectNew(uint32 i)
 					unitTarget->SetPower( POWER_TYPE_MANA, mana);
 					unitTarget->SetUInt32Value(UNIT_DYNAMIC_FLAGS, 0);
 					unitTarget->setDeathState(ALIVE);
-					static_cast<Creature*>(unitTarget)->UnTag();
-					static_cast<Creature*>(unitTarget)->loot.gold= 0;
-					static_cast<Creature*>(unitTarget)->loot.looters.clear();
-					static_cast<Creature*>(unitTarget)->loot.items.clear();
+					TO< Creature* >(unitTarget)->UnTag();
+					TO< Creature* >(unitTarget)->loot.gold= 0;
+					TO< Creature* >(unitTarget)->loot.looters.clear();
+					TO< Creature* >(unitTarget)->loot.items.clear();
 				}
 			}
 

@@ -423,7 +423,7 @@ void Spell::FillAllTargetsInArea(uint32 i,float srcx,float srcy,float srcz, floa
 		itr = itr2;
 		//maybe scripts can change list. Should use lock instead of this to prevent multiple changes. This protects to 1 deletion only
 		itr2++;
-		if( !( (*itr)->IsUnit() ) || ! static_cast< Unit* >( *itr )->isAlive() )//|| ( static_cast< Creature* >( *itr )->IsTotem() && !static_cast< Unit* >( *itr )->IsPlayer() ) ) why shouldn't we fill totems?
+		if( !( (*itr)->IsUnit() ) || ! static_cast< Unit* >( *itr )->isAlive() )//|| ( TO< Creature* >( *itr )->IsTotem() && !static_cast< Unit* >( *itr )->IsPlayer() ) ) why shouldn't we fill totems?
 			continue;
 
 		if( p_caster && (*itr)->IsPlayer() && p_caster->GetGroup() && TO< Player* >( *itr )->GetGroup() && TO< Player* >( *itr )->GetGroup() == p_caster->GetGroup() )//Don't attack party members!!
@@ -1177,7 +1177,7 @@ void Spell::cast(bool check)
 			m_magnetTarget = 0;
 			if ( MagnetTarget && MagnetTarget->IsCreature())
 			{
-				Creature *MagnetCreature = static_cast< Creature* >( MagnetTarget );
+				Creature *MagnetCreature = TO< Creature* >( MagnetTarget );
 				if(MagnetCreature->IsTotem())
 				{
 					sEventMgr.ModifyEventTimeLeft(MagnetCreature, EVENT_TOTEM_EXPIRE, 0);
@@ -2995,7 +2995,7 @@ uint8 Spell::CanCast(bool tolerate)
 
 			// Check if we can attack this creature type
 			if( target->IsCreature() ){
-				Creature *cp = static_cast< Creature* >( target );
+				Creature *cp = TO< Creature* >( target );
 				uint32 type = cp->GetCreatureInfo()->Type;
 				uint32 targettype = GetProto()->TargetCreatureType;
 

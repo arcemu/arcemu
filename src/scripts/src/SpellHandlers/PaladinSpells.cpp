@@ -235,10 +235,10 @@ bool RighteousDefense( uint32 i, Spell *s ){
 		i2 = itr++;
 		
 		// don't add objects that are not creatures and that are dead
-		if(!(*i2)->IsCreature() || !static_cast<Creature*>( (*i2) )->isAlive())
+		if(!(*i2)->IsCreature() || !TO< Creature* >( (*i2) )->isAlive())
 			continue;
 		
-		Creature *cr= static_cast<Creature*>((*i2));
+		Creature *cr= TO< Creature* >((*i2));
 		if(cr->GetAIInterface()->getNextTarget()==unitTarget)
 			targets[targets_got++]=cr;
 		

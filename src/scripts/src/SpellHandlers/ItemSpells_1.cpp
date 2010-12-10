@@ -597,7 +597,7 @@ bool ExtractGas( uint32 i, Spell *s ){
 	{
 		if((*itr)->IsCreature())
 		{
-			creature=static_cast<Creature *>((*itr));
+			creature=TO< Creature* >((*itr));
 			cloudtype=creature->GetEntry();
 			
 			if(cloudtype == 24222 || cloudtype == 17408 || cloudtype == 17407 || cloudtype == 17378)

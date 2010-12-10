@@ -1949,7 +1949,7 @@ Group *Creature::GetGroup()
 			if( tu->IsPlayer() )
 				TO< Player* >(tu)->GetGroup();
 			else if( tu->IsCreature() )
-				static_cast<Creature *>(tu)->GetGroup();
+				TO< Creature* >(tu)->GetGroup();
 		}
 		else return NULL;
 	}
@@ -2203,7 +2203,7 @@ void Creature::Die( Unit *pAttacker, uint32 damage, uint32 spellid ){
 		Unit *pSummoner = GetMapMgr()->GetUnit( GetCreatedByGUID() );
 		
 		if( pSummoner && pSummoner->IsInWorld() && pSummoner->IsCreature() ){
-			Creature *pSummonerC = static_cast< Creature* >( pSummoner );
+			Creature *pSummonerC = TO< Creature* >( pSummoner );
 			
 			// We've killed a summon summoned by a totem
 			if( pSummonerC->IsTotem() )

@@ -284,7 +284,7 @@ bool ChatHandler::HandleQuestStartCommand(const char * args, WorldSession * m_se
 
 					//if(qst->count_required_item || qst_giver->GetTypeId() == TYPEID_GAMEOBJECT)	// gameobject quests deactivate
 					//	plr->UpdateNearbyGameObjects();
-					//ScriptSystem->OnQuestEvent(qst, static_cast< Creature* >( qst_giver ), _player, QUEST_EVENT_ON_ACCEPT);
+					//ScriptSystem->OnQuestEvent(qst, TO< Creature* >( qst_giver ), _player, QUEST_EVENT_ON_ACCEPT);
 				
 					sHookInterface.OnQuestAccept( plr, qst, NULL );
 

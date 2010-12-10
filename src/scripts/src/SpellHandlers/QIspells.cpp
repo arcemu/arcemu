@@ -2525,7 +2525,7 @@ bool PlantForsakenBanner(uint32 i, Spell* pSpell)
 	if( pQuest == NULL )
 		return true;
 	
-	Creature* target = static_cast<Creature*>(pSpell->GetUnitTarget());
+	Creature* target = TO< Creature* >(pSpell->GetUnitTarget());
 	if ( target == NULL || target->isAlive() )
 		return true;
 
@@ -3272,7 +3272,7 @@ bool ReleaseUmisYeti( uint32 i, Spell * pSpell )
 	if ( qLogEntry == NULL )
 		return true;
 
-	Creature * target = static_cast< Creature * >( pSpell->GetUnitTarget() );
+	Creature * target = TO< Creature* >( pSpell->GetUnitTarget() );
 	static const uint32 friends[] = { 10978, 7583, 10977 };
 	for ( uint32 j = 0; j < sizeof( friends ) / sizeof( uint32 ); j++ )
 	{

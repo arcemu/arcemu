@@ -255,7 +255,7 @@ bool DeathCoil( uint32 i, Spell *s ){
 		s->u_caster->SpellNonMeleeDamageLog( unitTarget, s->GetProto()->Id, s->damage, true );
 	else if( unitTarget->IsCreature() )
 	{
-		CreatureInfo * ci = static_cast< Creature* >( unitTarget )->GetCreatureInfo();
+		CreatureInfo * ci = TO< Creature* >( unitTarget )->GetCreatureInfo();
 		if( ci->Type == UNIT_TYPE_UNDEAD )
 			s->u_caster->Heal( unitTarget, s->GetProto()->Id, float2int32( s->damage * 1.5f ) );
 	}

@@ -3257,7 +3257,7 @@ bool ChatHandler::HandleNpcPossessCommand(const char * args, WorldSession * m_se
 			sGMLog.writefromsession( m_session, "used possess command on PLAYER %s", TO< Player* >( pTarget )->GetName() );
 			break;
 		case TYPEID_UNIT:
-			sGMLog.writefromsession( m_session, "used possess command on CREATURE %s, sqlid %u", static_cast< Creature* >( pTarget )->GetCreatureInfo()->Name, static_cast< Creature* >( pTarget )->GetSQL_id() );
+			sGMLog.writefromsession( m_session, "used possess command on CREATURE %s, sqlid %u", TO< Creature* >( pTarget )->GetCreatureInfo()->Name, TO< Creature* >( pTarget )->GetSQL_id() );
 			break;
 	}
 	return true;

@@ -1503,8 +1503,8 @@ void Aura::SpellAuraModBaseResistancePerc(bool apply)
 			}
 			else if(m_target->IsCreature())
 			{
-				static_cast<Creature*>(m_target)->BaseResistanceModPct[x]+=amt;
-				static_cast<Creature*>(m_target)->CalcResistance(x);
+				TO< Creature* >(m_target)->BaseResistanceModPct[x]+=amt;
+				TO< Creature* >(m_target)->CalcResistance(x);
 			}
 		}
 	}
@@ -1839,7 +1839,7 @@ void Aura::SpellAuraModConfuse(bool apply)
 {
 	Unit* u_caster = GetUnitCaster();
 
-	if( m_target->IsCreature() && static_cast<Creature*>(m_target)->IsTotem() )
+	if( m_target->IsCreature() && TO< Creature* >(m_target)->IsTotem() )
 		return;
 
 	if(apply)
@@ -1907,7 +1907,7 @@ void Aura::SpellAuraModCharm(bool apply)
 	if( !m_target->IsCreature() )
 		return;
 
-	Creature* target = static_cast< Creature* >( m_target );
+	Creature* target = TO< Creature* >( m_target );
 
 	if( target->IsTotem() )
 		return;
@@ -1985,7 +1985,7 @@ void Aura::SpellAuraModFear(bool apply)
 	Unit* u_caster = GetUnitCaster();
 
 	if( m_target->IsCreature() && 
-        ( static_cast<Creature*>(m_target)->IsTotem() || static_cast< Creature* >( m_target )->isRooted() ) )
+        ( TO< Creature* >(m_target)->IsTotem() || TO< Creature* >( m_target )->isRooted() ) )
 		return;
 
 	if(apply)
@@ -2540,7 +2540,7 @@ void Aura::SpellAuraModDamageDone(bool apply)
 		{
 			if( mod->m_miscValue & ( ( (uint32)1 ) << x ) )
 			{
-				static_cast< Creature* >( m_target )->ModDamageDone[x] += val;
+				TO< Creature* >( m_target )->ModDamageDone[x] += val;
 			}
 		}
 	}
@@ -2930,8 +2930,8 @@ void Aura::SpellAuraModResistance(bool apply)
 		{
 			if(Flag & (((uint32)1)<<x))
 			{
-				static_cast<Creature*>(m_target)->FlatResistanceMod[x]+=amt;
-				static_cast<Creature*>(m_target)->CalcResistance(x);
+				TO< Creature* >(m_target)->FlatResistanceMod[x]+=amt;
+				TO< Creature* >(m_target)->CalcResistance(x);
 			}
 		}
 	}
@@ -3209,8 +3209,8 @@ void Aura::SpellAuraModStat( bool apply )
 		{
 			for( uint8 x = 0; x < 5; x++ )
 			{
-				static_cast< Creature* >( m_target )->FlatStatMod[x] += val;
-				static_cast< Creature* >( m_target )->CalcStat(x);
+				TO< Creature* >( m_target )->FlatStatMod[x] += val;
+				TO< Creature* >( m_target )->CalcStat(x);
 			}
 		}
 	}
@@ -3231,8 +3231,8 @@ void Aura::SpellAuraModStat( bool apply )
 		}
 		else if( m_target->IsCreature() )
 		{
-			static_cast< Creature* >( m_target )->FlatStatMod[ mod->m_miscValue ] += val;
-			static_cast< Creature* >( m_target )->CalcStat( mod->m_miscValue );
+			TO< Creature* >( m_target )->FlatStatMod[ mod->m_miscValue ] += val;
+			TO< Creature* >( m_target )->CalcStat( mod->m_miscValue );
 		}
 	}
 }
@@ -5206,7 +5206,7 @@ void Aura::SpellAuraModDamagePercDone(bool apply)
 		{
 			if( mod->m_miscValue & ( (uint32)1 << x ) )
 			{
-				static_cast< Creature* >( m_target )->ModDamageDonePct[x] += val;
+				TO< Creature* >( m_target )->ModDamageDonePct[x] += val;
 			}
 		}
 	}
@@ -5248,8 +5248,8 @@ void Aura::SpellAuraModPercStat(bool apply)
 		{
 			for( uint8 x = 0; x < 5; x++ )
 			{
-				static_cast< Creature* >( m_target )->StatModPct[x] += val;
-				static_cast< Creature* >( m_target )->CalcStat(x);
+				TO< Creature* >( m_target )->StatModPct[x] += val;
+				TO< Creature* >( m_target )->CalcStat(x);
 			}
 		}
 	}
@@ -5270,8 +5270,8 @@ void Aura::SpellAuraModPercStat(bool apply)
 		}
 		else if( m_target->IsCreature() )
 		{
-			static_cast< Creature* >( m_target )->StatModPct[ mod->m_miscValue ] += val;
-			static_cast< Creature* >( m_target )->CalcStat( mod->m_miscValue );
+			TO< Creature* >( m_target )->StatModPct[ mod->m_miscValue ] += val;
+			TO< Creature* >( m_target )->CalcStat( mod->m_miscValue );
 		}
 	}
 }
@@ -5726,8 +5726,8 @@ void Aura::SpellAuraModResistancePCT(bool apply)
 			}
 			else if( m_target->IsCreature() )
 			{
-				static_cast< Creature*>( m_target )->ResistanceModPct[x] += amt;
-				static_cast< Creature*>( m_target )->CalcResistance(x);
+				TO< Creature* >( m_target )->ResistanceModPct[x] += amt;
+				TO< Creature* >( m_target )->CalcResistance(x);
 			}
 		}
 	}
@@ -6486,8 +6486,8 @@ void Aura::SpellAuraModTotalStatPerc(bool apply)
 		{
 			for(uint8 x = 0; x < 5; x++ )
 			{
-				static_cast< Creature* >( m_target )->TotalStatModPct[x] += val;
-				static_cast< Creature* >( m_target )->CalcStat(x);
+				TO< Creature* >( m_target )->TotalStatModPct[x] += val;
+				TO< Creature* >( m_target )->CalcStat(x);
 			}
 		}
 	}
@@ -6521,8 +6521,8 @@ void Aura::SpellAuraModTotalStatPerc(bool apply)
 		}
 		else if( m_target->IsCreature() )
 		{
-			static_cast< Creature* >( m_target )->TotalStatModPct[ mod->m_miscValue ] += val;
-			static_cast< Creature* >( m_target )->CalcStat( mod->m_miscValue );
+			TO< Creature* >( m_target )->TotalStatModPct[ mod->m_miscValue ] += val;
+			TO< Creature* >( m_target )->CalcStat( mod->m_miscValue );
 		}
 	}
 }
@@ -6572,7 +6572,7 @@ void Aura::SpellAuraModHaste( bool apply )
 			m_target->ModBaseAttackTime(OFFHAND,-mod->fixed_amount[mod->i*2] );
 
 			if ( m_target->IsCreature() )
-				static_cast< Creature* >( m_target )->m_speedFromHaste += mod->fixed_amount[mod->i];
+				TO< Creature* >( m_target )->m_speedFromHaste += mod->fixed_amount[mod->i];
 		}
 		else
 		{
@@ -6580,7 +6580,7 @@ void Aura::SpellAuraModHaste( bool apply )
 			m_target->ModBaseAttackTime(OFFHAND,mod->fixed_amount[mod->i*2] );
 
 			if ( m_target->IsCreature() )
-				static_cast< Creature* >( m_target )->m_speedFromHaste -= mod->fixed_amount[mod->i];
+				TO< Creature* >( m_target )->m_speedFromHaste -= mod->fixed_amount[mod->i];
 		}
 	}
 }
@@ -7498,8 +7498,8 @@ void Aura::SpellAuraIncreaseArmorByPctInt(bool apply)
 			}
 			else if(m_target->IsCreature())
 			{
-				static_cast<Creature*>(m_target)->FlatResistanceMod[x] += amt;
-				static_cast<Creature*>(m_target)->CalcResistance(x);
+				TO< Creature* >(m_target)->FlatResistanceMod[x] += amt;
+				TO< Creature* >(m_target)->CalcResistance(x);
 			}
 		}
 	}

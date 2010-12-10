@@ -262,7 +262,7 @@ void WorldSession::LogoutPlayer(bool Save)
 				switch( obj->GetTypeId() )
 				{
 				case TYPEID_UNIT:
-					static_cast< Creature* >( obj )->loot.looters.erase( _player->GetLowGUID() );
+					TO< Creature* >( obj )->loot.looters.erase( _player->GetLowGUID() );
 					break;
 				case TYPEID_GAMEOBJECT:
 					static_cast< GameObject* >( obj )->loot.looters.erase( _player->GetLowGUID() );

@@ -5835,7 +5835,7 @@ void Player::AddInRangeObject(Object* pObj)
 	//if the object is a unit send a move packet if they have a destination
 	if(pObj->IsCreature())
 	{
-		static_cast< Creature* >( pObj )->GetAIInterface()->SendCurrentMove(this);
+		TO< Creature* >( pObj )->GetAIInterface()->SendCurrentMove(this);
     }
 }
 void Player::OnRemoveInRangeObject(Object* pObj)
@@ -5862,7 +5862,7 @@ void Player::OnRemoveInRangeObject(Object* pObj)
 		m_CurrentCharm= 0;
 
 		if( p->m_temp_summon && p->IsCreature() )
-			static_cast< Creature* >( p )->DeleteMe();
+			TO< Creature* >( p )->DeleteMe();
 	}
 
     // We've just gone out of range of our pet :(
@@ -13438,7 +13438,7 @@ void Player::AcceptQuest( uint64 guid, uint32 quest_id ){
 	if( GetQuestLogForEntry( qst->id ) )
 		return;
 
-	if( qst_giver->IsCreature() && static_cast< Creature* >( qst_giver )->m_escorter != NULL )
+	if( qst_giver->IsCreature() && TO< Creature* >( qst_giver )->m_escorter != NULL )
 	{
 		m_session->SystemMessage("You cannot accept this quest at this time.");
 		return;
@@ -13529,7 +13529,7 @@ void Player::AcceptQuest( uint64 guid, uint32 quest_id ){
 	if(qst->count_required_item || qst_giver->IsGameObject())	// gameobject quests deactivate
 		UpdateNearbyGameObjects();
 
-	//ScriptSystem->OnQuestEvent(qst, static_cast< Creature* >( qst_giver ), _player, QUEST_EVENT_ON_ACCEPT);
+	//ScriptSystem->OnQuestEvent(qst, TO< Creature* >( qst_giver ), _player, QUEST_EVENT_ON_ACCEPT);
 
 	sQuestMgr.OnQuestAccepted(this,qst,qst_giver);
 

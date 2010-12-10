@@ -311,7 +311,7 @@ class CreatureAIScript;
 class GossipScript;
 class AuctionHouse;
 struct Trainer;
-#define CALL_SCRIPT_EVENT(obj, func) if(obj->IsInWorld() && obj->IsCreature() && static_cast<Creature*>(obj)->GetScript() != NULL) static_cast<Creature*>(obj)->GetScript()->func
+#define CALL_SCRIPT_EVENT(obj, func) if(obj->IsInWorld() && obj->IsCreature() && TO< Creature* >(obj)->GetScript() != NULL) TO< Creature* >(obj)->GetScript()->func
 
 
 uint8 get_byte(uint32 buffer, uint32 index);

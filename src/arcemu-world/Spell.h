@@ -1208,7 +1208,7 @@ ARCEMU_INLINE bool TargetTypeCheck(Object *obj,uint32 ReqCreatureTypeMask)
 
 	if( obj->IsCreature() )
 	{
-		CreatureInfo* inf = static_cast< Creature* >( obj )->GetCreatureInfo();
+		CreatureInfo* inf = TO< Creature* >( obj )->GetCreatureInfo();
 		if( !( 1 << ( inf->Type - 1 ) & ReqCreatureTypeMask ) )
 			return false;
 	}

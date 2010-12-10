@@ -1012,7 +1012,7 @@ void GossipScript::GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, u
 	if( !pObject->IsCreature() )
 		return;
 
-	Creature* pCreature = static_cast< Creature* >( pObject );
+	Creature* pCreature = TO< Creature* >( pObject );
 
 	sLog.outDebug("GossipSelectOption: Id = %u, IntId = %u", Id, IntId);
 

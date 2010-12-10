@@ -359,7 +359,7 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 	}
 	Creature * uThis = NULL;
 	if (IsCreature())
-		uThis = static_cast<Creature*>(this);
+		uThis = TO< Creature* >(this);
 
 	if (flags & UPDATEFLAG_LIVING) //0x20
 	{
@@ -572,7 +572,7 @@ void Object::_BuildValuesUpdate(ByteBuffer * data, UpdateMask *updateMask, Playe
 	{
 		if(IsCreature())
 		{
-			Creature * pThis = static_cast<Creature*>(this);
+			Creature * pThis = TO< Creature* >(this);
 			if(pThis->IsTagged() && (pThis->loot.gold || pThis->loot.items.size()))
 			{
 				// Let's see if we're the tagger or not.
@@ -2181,11 +2181,11 @@ uint32 Object::GetTeam()
 			return static_cast< Pet* >( this )->GetPetOwner()->GetTeam();
 		}
 	}
-	if (IsUnit() && !IsPlayer() && static_cast< Creature* >( this )->IsTotem() )
+	if (IsUnit() && !IsPlayer() && TO< Creature* >( this )->IsTotem() )
 	{
-		if (static_cast< Creature* >( this )->GetOwner() != NULL)
+		if (TO< Creature* >( this )->GetOwner() != NULL)
 		{
-			return static_cast< Creature* >( this )->GetOwner()->GetTeam();
+			return TO< Creature* >( this )->GetOwner()->GetTeam();
 		}
 	}
 
