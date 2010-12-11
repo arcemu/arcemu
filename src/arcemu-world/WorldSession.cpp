@@ -28,30 +28,29 @@ OpcodeHandler WorldPacketHandlers[NUM_MSG_TYPES];
 
 WorldSession::WorldSession(uint32 id, string Name, WorldSocket *sock)
 :
-_player(0),
+m_loggingInPlayer(NULL),
+m_currMsTime(getMSTime()),
+bDeleted(false),
+m_moveDelayTime(0),
+m_clientTimeDelay(0),
+m_bIsWLevelSet(false),
+_player(NULL),
 _socket(sock),
 _accountId(id),
 _accountName(Name),
+has_level_55_char(false),
+_side(-1),
 _logoutTime(0),
 permissions(NULL),
 permissioncount(0),
 _loggingOut(false),
 LoggingOut(false),
 instanceId(0),
-
-m_currMsTime(getMSTime()),
-bDeleted(false),
-m_bIsWLevelSet(false),
+_updatecount(0),
 floodLines(0),
 floodTime(UNIXTIME),
-_updatecount(0),
-m_moveDelayTime(0),
-m_clientTimeDelay(0),
-m_loggingInPlayer(NULL),
 language(0),
-m_muted(0),
-_side(-1),
-has_level_55_char(false)
+m_muted(0)
 
 {
 	memset(movement_packet, 0, sizeof(movement_packet));

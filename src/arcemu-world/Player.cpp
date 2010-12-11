@@ -44,145 +44,41 @@ static const uint8 glyphMask[81] = {
 
 Player::Player( uint32 guid )
 :
-m_mailBox(guid),
-#ifdef ENABLE_ACHIEVEMENTS
-m_achievementMgr(this),
-#endif
-m_finishingmovesdodge(false),
 disableAppear(false),
 disableSummon(false),
-SpellHasteRatingBonus(1.0f),
-m_lifetapbonus(0),
-info(NULL), // Playercreate info
-SoulStone(0),
-SoulStoneReceiver(0),
-misdirectionTarget(0),
-bReincarnation(false),
-removeReagentCost(false),
-ignoreShapeShiftChecks(false),
-ignoreAuraStateCheck(false),
-m_furorChance(0),
-m_session(0),
-TrackingSpell(0),
-m_status(0),
-offhand_dmg_mod(0.5),
-m_isMoving(false),
-strafing(false),
-jumping(false),
-moving(false),
-m_ShapeShifted(0),
-m_curTarget(0),
-m_curSelection(0),
-m_lootGuid(0),
-m_Summons(),
-
-m_PetNumberMax(0),
-
-m_onTaxi(false),
-
+taxi_model_id(0),
+lastNode(0),
+m_taxi_ride_time(0),
 m_taxi_pos_x(0),
 m_taxi_pos_y(0),
 m_taxi_pos_z(0),
-m_taxi_ride_time(0),
-taxi_model_id(0),
-lastNode(0),
-
-// Attack related variables
-m_blockfromspellPCT(0),
-m_critfromspell(0),
-m_spellcritfromspell(0),
-m_hitfromspell(0),
-
-m_healthfromspell(0),
-m_manafromspell(0),
-m_healthfromitems(0),
-m_manafromitems(0),
-
-m_talentresettimes(0),
-
-m_nextSave(getMSTime() + sWorld.getIntRate(INTRATE_SAVE)),
-
-m_resurrectMana(0),
-m_resurrectHealth(0),
-
-m_GroupInviter(0),
-
-Lfgcomment(""),
-
-m_Autojoin(false),
-m_AutoAddMem(false),
-LfmDungeonId(0),
-LfmType(0),
-
-m_currentMovement(MOVE_UNROOT),
-m_isGmInvisible(false),
-
-//DK
-m_invitersGuid(0),
-
-//Trade
-mTradeTarget(0),
-
-//Duel
+m_onTaxi(false),
+m_questSharer(0),
+timed_quest_slot(0),
+pctReputationMod(0),
 DuelingWith(NULL),
-m_duelCountdownTimer(0),
-m_duelStatus(0),
-m_duelState(DUEL_STATE_FINISHED),		// finished
-
+m_eyeofkilrogg(NULL),
+m_lootGuid(0),
+m_currentLoot(0),
+bShouldHaveLootableOnCorpse(false),
+offhand_dmg_mod(0.5),
+m_currentMovement(MOVE_UNROOT),
+m_isMoving(false),
+moving(false),
+strafing(false),
+jumping(false),
+m_isGmInvisible(false),
+SpellHasteRatingBonus(1.0f),
+m_furorChance(0),
 //WayPoint
 waypointunit(NULL),
-
-//PVP
-//PvPTimeoutEnabled(false),
-
-m_banned(false),
-
-//Bind position
-m_bind_pos_x(0),
-m_bind_pos_y(0),
-m_bind_pos_z(0),
-m_bind_mapid(0),
-m_bind_zoneid(0),
-
-// Rest
-m_timeLogoff(0),
-m_isResting(0),
-m_restState(0),
-m_restAmount(0),
-m_AllowAreaTriggerPort(true),
-
-// Battleground
-m_bgEntryPointMap(0),
-m_bgEntryPointX(0),
-m_bgEntryPointY(0),
-m_bgEntryPointZ(0),
-m_bgEntryPointO(0),
-m_bgQueueType(0),
-m_bgQueueInstanceId(0),
-m_bgIsQueued(false),
-m_bg(NULL),
-m_bgHasFlag(false),
-m_bgEntryPointInstance(0),
-
-// gm stuff
-//m_invincible(false),
-CooldownCheat(false),
-CastTimeCheat(false),
-PowerCheat(false),
-GodModeCheat(false),
-FlyCheat(false),
-
-//FIX for professions
-weapon_proficiency(0x4000), //2^14
-//FIX for shit like shirt etc
-armor_proficiency(1),
-
+m_nextSave(getMSTime() + sWorld.getIntRate(INTRATE_SAVE)),
+m_lifetapbonus(0),
+PlayerTalkClass(NULL),
 m_bUnlimitedBreath(false),
-m_UnderwaterState(0),
 m_UnderwaterTime(180000),
-m_UnderwaterMaxTime(180000),
-m_UnderwaterLastDmg(getMSTime()),
-
+m_UnderwaterState(0),
+m_lockTransportVariables(false),
 //transport shit
 m_TransporterGUID(0),
 m_TransporterX(0.0f),
@@ -190,42 +86,116 @@ m_TransporterY(0.0f),
 m_TransporterZ(0.0f),
 m_TransporterO(0.0f),
 m_TransporterUnk(0.0f),
-m_lockTransportVariables(false),
-
+m_AllowAreaTriggerPort(true),
+// Battleground
+m_bg(NULL),
+m_bgEntryPointMap(0),
+m_bgEntryPointX(0),
+m_bgEntryPointY(0),
+m_bgEntryPointZ(0),
+m_bgEntryPointO(0),
+m_bgEntryPointInstance(0),
+m_bgHasFlag(false),
+m_bgIsQueued(false),
+m_bgQueueType(0),
+m_bgQueueInstanceId(0),
 // Autoshot variables
-m_AutoShotTarget(0),
-m_onAutoShot(false),
 m_AutoShotDuration(0),
 m_AutoShotAttackTimer(0),
+m_onAutoShot(false),
+m_AutoShotTarget(0),
 m_AutoShotSpell(NULL),
-
-m_AttackMsgTimer(0),
-
-timed_quest_slot(0),
-m_GM_SelectedGO(0),
-
+DetectedRange(0),
 PctIgnoreRegenModifier(0.0f),
 m_retainedrage(0),
-DetectedRange(0),
-m_eyeofkilrogg(0),
-
-m_targetIcon(0),
-bShouldHaveLootableOnCorpse(false),
+SoulStone(0),
+SoulStoneReceiver(0),
+misdirectionTarget(0),
+bReincarnation(false),
+removeReagentCost(false),
+ignoreShapeShiftChecks(false),
+ignoreAuraStateCheck(false),
+m_GM_SelectedGO(0),
+m_ShapeShifted(0),
 m_MountSpellId(0),
 bHasBindDialogOpen(false),
+TrackingSpell(0),
 m_CurrentCharm(0),
 m_CurrentTransporter(NULL),
-m_SummonedObject(NULL),
-m_currentLoot(0),
-pctReputationMod(0),
+// gm stuff
+//m_invincible(false),
+CooldownCheat(false),
+CastTimeCheat(false),
+GodModeCheat(false),
+PowerCheat(false),
+FlyCheat(false),
+Lfgcomment(""),
+LfmDungeonId(0),
+LfmType(0),
+m_Autojoin(false),
+m_AutoAddMem(false),
+m_UnderwaterMaxTime(180000),
+m_UnderwaterLastDmg(getMSTime()),
+m_resurrectHealth(0),
+m_resurrectMana(0),
+m_resurrectInstanceID(0),
+m_resurrectMapId(0),
+m_mailBox(guid),
+m_finishingmovesdodge(false),
 mUpdateCount(0),
 mCreationCount(0),
 mOutOfRangeIdCount(0),
-m_questSharer(0),
-PlayerTalkClass(NULL),
-m_resurrectMapId(0),
-m_resurrectInstanceID(0),
+//Trade
+mTradeTarget(0),
+info(NULL), // Playercreate info
+m_AttackMsgTimer(0),
+//PVP
+//PvPTimeoutEnabled(false),
+m_banned(false),
+m_Summons(),
+m_PetNumberMax(0),
+//DK
+m_invitersGuid(0),
+//Bind position
+m_bind_pos_x(0),
+m_bind_pos_y(0),
+m_bind_pos_z(0),
+m_bind_mapid(0),
+m_bind_zoneid(0),
+//Duel
+m_duelCountdownTimer(0),
+m_duelStatus(0),
+m_duelState(DUEL_STATE_FINISHED),		// finished
+// Rest
+m_timeLogoff(0),
+m_isResting(0),
+m_restState(0),
+m_restAmount(0),
+// Attack related variables
+m_blockfromspellPCT(0),
+m_critfromspell(0),
+m_spellcritfromspell(0),
+m_hitfromspell(0),
+m_healthfromspell(0),
+m_manafromspell(0),
+m_healthfromitems(0),
+m_manafromitems(0),
+//FIX for shit like shirt etc
+armor_proficiency(1),
+//FIX for professions
+weapon_proficiency(0x4000), //2^14
+m_talentresettimes(0),
+m_status(0),
+m_curTarget(0),
+m_curSelection(0),
+m_targetIcon(0),
+m_session(NULL),
+m_GroupInviter(0),
+m_SummonedObject(NULL),
 myCorpseLocation()
+#ifdef ENABLE_ACHIEVEMENTS
+, m_achievementMgr(this)
+#endif
 {
 	m_cache = new PlayerCache;
 	m_cache->SetUInt32Value(CACHE_PLAYER_LOWGUID, guid);

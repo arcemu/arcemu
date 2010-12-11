@@ -44,15 +44,15 @@ WorldSocket::WorldSocket(SOCKET fd)
 :
 Socket(fd, sWorld.SocketSendBufSize, sWorld.SocketRecvBufSize),
 Authed(false),
-mSize(0),
 mOpcode(0),
 mRemaining(0),
-_latency(0),
-mSession(NULL),
+mSize(0),
 mSeed(RandomUInt()),
-pAuthenticationPacket(NULL),
-mQueued(false),
 mRequestID(0),
+mSession(NULL),
+pAuthenticationPacket(NULL),
+_latency(0),
+mQueued(false),
 m_nagleEanbled(false),
 m_fullAccountName(NULL)
 {

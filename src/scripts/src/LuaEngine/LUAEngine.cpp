@@ -1798,7 +1798,7 @@ public:
 class LuaGossip : public GossipScript
 {
 public:
-	LuaGossip() : GossipScript(), m_go_gossip_binding(NULL),m_item_gossip_binding(NULL),m_unit_gossip_binding(NULL) {}
+	LuaGossip() : GossipScript(), m_unit_gossip_binding(NULL),m_item_gossip_binding(NULL),m_go_gossip_binding(NULL) {}
 	~LuaGossip() {
 		typedef HM_NAMESPACE::hash_map<uint32, LuaGossip*> MapType;
 		MapType gMap;
