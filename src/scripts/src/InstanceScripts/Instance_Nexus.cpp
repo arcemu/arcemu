@@ -779,7 +779,7 @@ public:
             if( pKeristrasza == NULL )
                 return;
 
-            KeristraszaAI* pKeristraszaAI = static_cast< KeristraszaAI* >( pKeristrasza->GetScript() );
+            KeristraszaAI* pKeristraszaAI = TO< KeristraszaAI* >( pKeristrasza->GetScript() );
             if( pKeristraszaAI == NULL )
                 return;
 

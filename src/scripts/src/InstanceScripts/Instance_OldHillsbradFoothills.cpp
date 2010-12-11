@@ -372,7 +372,7 @@ public:
 		switch (IntId)
 		{
 			case 1:
-                ThrallAI* pThrall = static_cast< ThrallAI* >( TO_CREATURE( pObject )->GetScript() );
+                ThrallAI* pThrall = TO< ThrallAI* >( TO_CREATURE( pObject )->GetScript() );
                 if( pThrall )
                     pThrall->StartEscort( Plr );
                 break;

@@ -299,7 +299,7 @@ public:
 				if(m_target->m_pItems[m_slot]->IsContainer())
 				{
 					// we are a container :O lets look inside the box!
-					m_container = ((Container*)m_target->m_pItems[m_slot]);
+					m_container = TO< Container* >(m_target->m_pItems[m_slot]);
 					m_containerSlot = 0;
 
 					// clear the pointer up. so we can tell if we found an item or not

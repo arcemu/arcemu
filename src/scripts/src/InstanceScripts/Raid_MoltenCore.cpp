@@ -676,7 +676,7 @@ class FireswornAI : public MoonScriptCreatureAI
 
 	void OnCombatStart(Unit* pTarget)
 	{
-		mGarr = (MoonScriptBossAI*)GetNearestCreature(CN_GARR);
+		mGarr = TO< MoonScriptBossAI* >(GetNearestCreature(CN_GARR));
 		ParentClass::OnCombatStart(pTarget);
 	}
 
@@ -749,7 +749,7 @@ class ShazzrahAI : public MoonScriptBossAI
 
 void SpellFunc_ShazzrahBlinkArcaneExplosions(SpellDesc* pThis, MoonScriptCreatureAI* pCreatureAI, Unit* pTarget, TargetType pType)
 {
-	ShazzrahAI* Shazzrah = ( pCreatureAI ) ? (ShazzrahAI*)pCreatureAI : NULL;
+	ShazzrahAI* Shazzrah = ( pCreatureAI ) ? TO< ShazzrahAI* >(pCreatureAI) : NULL;
 	if( Shazzrah )
 	{
 		//Teleport blink, then cast 4 arcane explosions

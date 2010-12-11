@@ -237,7 +237,7 @@ void WorldSession::HandleSwapInvItemOpcode( WorldPacket & recv_data )
 	if(srcitem->IsContainer())
 	{
 		//source has items and dst is a backpack or bank
-		if(((Container*)srcitem)->HasItems())
+		if(TO< Container* >(srcitem)->HasItems())
 			if(!_player->GetItemInterface()->IsBagSlot(dstslot))
 			{
 				_player->GetItemInterface()->BuildInventoryChangeError(srcitem,dstitem, INV_ERR_NONEMPTY_BAG_OVER_OTHER_BAG);
@@ -249,7 +249,7 @@ void WorldSession::HandleSwapInvItemOpcode( WorldPacket & recv_data )
 			//source is a bag and dst slot is a bag inventory and has items
 			if(dstitem->IsContainer())
 			{
-				if(((Container*)dstitem)->HasItems() && !_player->GetItemInterface()->IsBagSlot(srcslot))
+				if(TO< Container* >(dstitem)->HasItems() && !_player->GetItemInterface()->IsBagSlot(srcslot))
 				{
 					_player->GetItemInterface()->BuildInventoryChangeError(srcitem,dstitem, INV_ERR_NONEMPTY_BAG_OVER_OTHER_BAG);
 					return;
@@ -327,7 +327,7 @@ void WorldSession::HandleDestroyItemOpcode( WorldPacket & recv_data )
 	{
 		if(it->IsContainer())
 		{
-			if(((Container*)it)->HasItems())
+			if(TO< Container* >(it)->HasItems())
 			{
 				_player->GetItemInterface()->BuildInventoryChangeError(
 				it, NULL, INV_ERR_CAN_ONLY_DO_WITH_EMPTY_BAGS);
@@ -912,7 +912,7 @@ void WorldSession::HandleSellItemOpcode( WorldPacket & recv_data )
 
 	ItemPrototype *it = item->GetProto();
 
-	if(item->IsContainer() && ((Container*)item)->HasItems())
+	if(item->IsContainer() && TO< Container* >(item)->HasItems())
 	{
 		SendSellItem(vendorguid, itemguid, 6);
 		return;
@@ -1050,7 +1050,7 @@ void WorldSession::HandleBuyItemInSlotOpcode( WorldPacket & recv_data ) // drag 
 		}
 		else
 		{
-			c = (Container*)_player->GetItemInterface()->GetItemByGUID(bagguid);
+			c = TO< Container* >(_player->GetItemInterface()->GetItemByGUID(bagguid));
 			if (!c)
 				return;
 			bagslot = (int8)_player->GetItemInterface()->GetBagSlotByGuid(bagguid);
@@ -1066,7 +1066,7 @@ void WorldSession::HandleBuyItemInSlotOpcode( WorldPacket & recv_data ) // drag 
 	{
 		if((bagguid>>32))
 		{
-			c=(Container*)_player->GetItemInterface()->GetItemByGUID(bagguid);
+			c = TO< Container* >(_player->GetItemInterface()->GetItemByGUID(bagguid));
 			if(!c)
 			{
 				_player->GetItemInterface()->BuildInventoryChangeError(0, 0, INV_ERR_ITEM_NOT_FOUND);
@@ -1290,7 +1290,7 @@ void WorldSession::HandleBuyItemOpcode( WorldPacket & recv_data ) // right-click
 		{
 			if(Item *bag = _player->GetItemInterface()->GetInventoryItem(slotresult.ContainerSlot))
 			{
-				if( !((Container*)bag)->AddItem(slotresult.Slot, itm) )
+				if( !TO< Container* >(bag)->AddItem(slotresult.Slot, itm) )
 					itm->DeleteMe();
                 else{
                     if( itm->IsEligibleForRefund() && ex != NULL ){

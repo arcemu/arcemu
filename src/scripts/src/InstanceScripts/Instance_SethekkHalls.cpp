@@ -1669,7 +1669,7 @@ public:
 
 		if ( mLakka != NULL && mLakka->GetScript() )
 		{
-			MoonScriptCreatureAI *pLakkaAI = static_cast<MoonScriptCreatureAI*>(mLakka->GetScript());
+			MoonScriptCreatureAI *pLakkaAI = TO< MoonScriptCreatureAI* >(mLakka->GetScript());
 			mLakka->GetAIInterface()->SetAIState(STATE_SCRIPTMOVE);
 			pLakkaAI->SetMoveType(Move_WantedWP);
 			pLakkaAI->SetWaypointToMove(1);

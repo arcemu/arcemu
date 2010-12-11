@@ -184,10 +184,10 @@ void WorldSession::HandleBattlegroundPlayerPositionsOpcode(WorldPacket &recv_dat
         uint32 count1 = 0;
 		uint32 count2 = 0;
 
-        Player *ap = objmgr.GetPlayer(((WarsongGulch*)bg)->GetAllianceFlagHolderGUID());
+        Player *ap = objmgr.GetPlayer(TO< WarsongGulch* >(bg)->GetAllianceFlagHolderGUID());
         if(ap) ++count2;
 
-        Player *hp = objmgr.GetPlayer(((WarsongGulch*)bg)->GetHordeFlagHolderGUID());
+        Player *hp = objmgr.GetPlayer(TO< WarsongGulch* >(bg)->GetHordeFlagHolderGUID());
         if(hp) ++count2;
 
         WorldPacket data(MSG_BATTLEGROUND_PLAYER_POSITIONS, (4+4+16*count1+16*count2));
@@ -213,7 +213,7 @@ void WorldSession::HandleBattlegroundPlayerPositionsOpcode(WorldPacket &recv_dat
 		uint32 count1 = 0;
 		uint32 count2 = 0;
 
-		Player *ap = objmgr.GetPlayer(((EyeOfTheStorm*)bg)->GetFlagHolderGUID());
+		Player *ap = objmgr.GetPlayer(TO< EyeOfTheStorm* >(bg)->GetFlagHolderGUID());
 		if(ap) ++count2;
 
 		WorldPacket data(MSG_BATTLEGROUND_PLAYER_POSITIONS, (4+4+16*count1+16*count2));

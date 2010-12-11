@@ -65,16 +65,16 @@ uint32 ItemInterface::m_CreateForPlayer(ByteBuffer *data)
 		{
 			if(m_pItems[i]->IsContainer())
 			{
-				count += ((Container*)(m_pItems[i]))->BuildCreateUpdateBlockForPlayer(data, m_pOwner);
+				count += TO< Container* >(m_pItems[i])->BuildCreateUpdateBlockForPlayer(data, m_pOwner);
 
 				for(uint32 e= 0; e < m_pItems[i]->GetProto()->ContainerSlots; e++)
 				{
-					Item *pItem = ((Container*)(m_pItems[i]))->GetItem(static_cast<int16>( e ));
+					Item *pItem = TO< Container* >(m_pItems[i])->GetItem(static_cast<int16>( e ));
 					if(pItem)
 					{
 						if(pItem->IsContainer())
 						{
-							count += ((Container*)(pItem))->BuildCreateUpdateBlockForPlayer( data, m_pOwner );
+							count += TO< Container* >(pItem)->BuildCreateUpdateBlockForPlayer( data, m_pOwner );
 						}
 						else
 						{
@@ -105,7 +105,7 @@ void ItemInterface::m_DestroyForPlayer()
 			{
 				for(uint32 e= 0; e < m_pItems[i]->GetProto()->ContainerSlots; e++)
 				{
-					Item *pItem = ((Container*)(m_pItems[i]))->GetItem( static_cast<int16>( e ));
+					Item *pItem = TO< Container* >(m_pItems[i])->GetItem( static_cast<int16>( e ));
 					if(pItem)
 					{
 						if(pItem->IsContainer())
@@ -248,10 +248,7 @@ AddItemResult ItemInterface::m_AddItem(Item *item, int8 ContainerSlot, int16 slo
 			else
 			{
 				// don't leak memory!
-				/*if(item->IsContainer())
-					delete ((Container*)item);
-				else
-					delete item;*/
+				/*delete item;*/
 
 				return ADD_ITEM_RESULT_ERROR;
 			}
@@ -394,7 +391,7 @@ Item *ItemInterface::SafeRemoveAndRetreiveItemFromSlot(int8 ContainerSlot, int16
 
 		if (pItem == NULL) { return NULL; }
 
-		if(pItem->GetProto()->ContainerSlots > 0 && pItem->IsContainer() && ((Container*)pItem)->HasItems())
+		if(pItem->GetProto()->ContainerSlots > 0 && pItem->IsContainer() && TO< Container* >(pItem)->HasItems())
 		{
 			/* sounds weird? no. this will trigger a callstack display due to my other debug code. */
 			pItem->DeleteFromDB();
@@ -503,10 +500,10 @@ Item *ItemInterface::SafeRemoveAndRetreiveItemByGuid(uint64 guid, bool destroy)
 			{
 				for (uint32 j = 0; j < item->GetProto()->ContainerSlots; j++)
 				{
-					Item *item2 = ((Container*)item)->GetItem(static_cast<int16>( j ));
+					Item *item2 = TO< Container* >(item)->GetItem(static_cast<int16>( j ));
 					if (item2 && item2->GetGUID() == guid)
 					{
-						return ((Container*)item)->SafeRemoveAndRetreiveItemFromSlot(static_cast<int16>( j ), destroy);
+						return TO< Container* >(item)->SafeRemoveAndRetreiveItemFromSlot(static_cast<int16>( j ), destroy);
 					}
 				}
 			}
@@ -535,10 +532,10 @@ Item *ItemInterface::SafeRemoveAndRetreiveItemByGuid(uint64 guid, bool destroy)
 			{
 				for (uint32 j = 0; j < item->GetProto()->ContainerSlots; j++)
 				{
-					Item *item2 = ((Container*)item)->GetItem(static_cast<int16>( j ));
+					Item *item2 = TO< Container* >(item)->GetItem(static_cast<int16>( j ));
 					if (item2 && item2->GetGUID() == guid)
 					{
-						return ((Container*)item)->SafeRemoveAndRetreiveItemFromSlot(static_cast<int16>( j ), destroy);
+						return TO< Container* >(item)->SafeRemoveAndRetreiveItemFromSlot(static_cast<int16>( j ), destroy);
 					}
 				}
 			}
@@ -563,7 +560,7 @@ bool ItemInterface::SafeFullRemoveItemFromSlot(int8 ContainerSlot, int16 slot)
 
 		if (pItem == NULL) { return false; }
 
-		if(pItem->GetProto()->ContainerSlots > 0 && pItem->IsContainer() && ((Container*)pItem)->HasItems())
+		if(pItem->GetProto()->ContainerSlots > 0 && pItem->IsContainer() && TO< Container* >(pItem)->HasItems())
 		{
 			/* sounds weird? no. this will trigger a callstack display due to my other debug code. */
 			pItem->DeleteFromDB();
@@ -673,10 +670,10 @@ bool ItemInterface::SafeFullRemoveItemByGuid(uint64 guid)
 			{
 				for (uint32 j = 0; j < item->GetProto()->ContainerSlots; j++)
 				{
-					Item *item2 = ((Container*)item)->GetItem(static_cast<int16>( j ));
+					Item *item2 = TO< Container* >(item)->GetItem(static_cast<int16>( j ));
 					if (item2 && item2->GetGUID() == guid)
 					{
-						return ((Container*)item)->SafeFullRemoveItemFromSlot(static_cast<int16>( j ));
+						return TO< Container* >(item)->SafeFullRemoveItemFromSlot(static_cast<int16>( j ));
 					}
 				}
 			}
@@ -706,10 +703,10 @@ bool ItemInterface::SafeFullRemoveItemByGuid(uint64 guid)
 			{
 				for (uint32 j = 0; j < item->GetProto()->ContainerSlots; j++)
 				{
-					Item *item2 = ((Container*)item)->GetItem(static_cast<int16>( j ));
+					Item *item2 = TO< Container* >(item)->GetItem(static_cast<int16>( j ));
 					if (item2 && item2->GetGUID() == guid)
 					{
-						return ((Container*)item)->SafeFullRemoveItemFromSlot(static_cast<int16>( j ));
+						return TO< Container* >(item)->SafeFullRemoveItemFromSlot(static_cast<int16>( j ));
 					}
 				}
 			}
@@ -780,7 +777,7 @@ Item* ItemInterface::FindItemLessMax(uint32 itemid, uint32 cnt, bool IncBank)
 		{
 			  for (uint32 j = 0; j < item->GetProto()->ContainerSlots; j++)
 				{
-					Item *item2 = ((Container*)item)->GetItem(static_cast<int16>( j ));
+					Item *item2 = TO< Container* >(item)->GetItem(static_cast<int16>( j ));
 					if (item2)
 					{
 						uint32 itemMaxStack = (item2->GetOwner()->ItemStackCheat) ? 0x7fffffff : item2->GetProto()->MaxCount;
@@ -830,7 +827,7 @@ Item* ItemInterface::FindItemLessMax(uint32 itemid, uint32 cnt, bool IncBank)
 
 					for (uint32 j = 0; j < item->GetProto()->ContainerSlots; j++)
 					{
-						Item *item2 = ((Container*)item)->GetItem(static_cast<int16>( j ));
+						Item *item2 = TO< Container* >(item)->GetItem(static_cast<int16>( j ));
 						if (item2)
 						{
 							uint32 itemMaxStack = (item2->GetOwner()->ItemStackCheat) ? 0x7fffffff : item2->GetProto()->MaxCount;
@@ -875,7 +872,7 @@ uint32 ItemInterface::GetItemCount(uint32 itemid, bool IncBank)
 		{
 				for (uint32 j = 0; j < item->GetProto()->ContainerSlots;j++)
 				{
-					Item *item2 = ((Container*)item)->GetItem(static_cast<int16>( j ));
+					Item *item2 = TO< Container* >(item)->GetItem(static_cast<int16>( j ));
 					if (item2)
 					{
 						if (item2->GetEntry() == itemid && item->wrapped_item_id== 0)
@@ -937,7 +934,7 @@ uint32 ItemInterface::GetItemCount(uint32 itemid, bool IncBank)
 				{
 					for (uint32 j = 0; j < item->GetProto()->ContainerSlots; j++)
 					{
-						Item *item2 = ((Container*)item)->GetItem(static_cast<int16>( j ));
+						Item *item2 = TO< Container* >(item)->GetItem(static_cast<int16>( j ));
 						if (item2)
 						{
 							if(item2->GetProto()->ItemId == itemid && item->wrapped_item_id== 0)
@@ -1184,7 +1181,7 @@ uint32 ItemInterface::RemoveItemAmt_ProtectPointer(uint32 id, uint32 amt, Item**
 		{
 			for (uint32 j = 0; j < item->GetProto()->ContainerSlots;j++)
 			{
-				Item *item2 = ((Container*)item)->GetItem(static_cast<int16>( j ));
+				Item *item2 = TO< Container* >(item)->GetItem(static_cast<int16>( j ));
 				if (item2)
 				{
 					if (item2->GetProto()->ItemId == id && item->wrapped_item_id== 0)
@@ -1318,7 +1315,7 @@ uint32 ItemInterface::RemoveItemAmtByGuid(uint64 guid, uint32 amt)
 		{
 			if(item->GetGUID() == guid && item->wrapped_item_id== 0)
 			{
-				if(item->GetProto()->ContainerSlots > 0 && item->IsContainer() && ((Container*)item)->HasItems())
+				if(item->GetProto()->ContainerSlots > 0 && item->IsContainer() && TO< Container* >(item)->HasItems())
 				{
 					/* sounds weird? no. this will trigger a callstack display due to my other debug code. */
 					item->DeleteFromDB();
@@ -1360,7 +1357,7 @@ uint32 ItemInterface::RemoveItemAmtByGuid(uint64 guid, uint32 amt)
 		{
 			for (uint32 j = 0; j < item->GetProto()->ContainerSlots;j++)
 			{
-				Item *item2 = ((Container*)item)->GetItem( static_cast<int16>( j ));
+				Item *item2 = TO< Container* >(item)->GetItem( static_cast<int16>( j ));
 				if (item2)
 				{
 					if (item2->GetGUID() == guid && item->wrapped_item_id== 0)
@@ -1811,7 +1808,7 @@ uint32 ItemInterface::CalculateFreeSlots(ItemPrototype *proto)
 					{
 						if (m_pItems[i]->GetProto()->BagFamily & proto->BagFamily)
 						{
-							int8 slot = ((Container*)m_pItems[i])->FindFreeSlot();
+							int8 slot = TO< Container* >(m_pItems[i])->FindFreeSlot();
 							if(slot != ITEM_NO_SLOT_AVAILABLE) 
 							{
 								count++;
@@ -3666,7 +3663,7 @@ void ItemInterface::CheckAreaItems()
 		{
 			if( IsBagSlot(static_cast<int16>( x )) && m_pItems[x]->IsContainer() )
 			{
-				Container* bag = (Container*)m_pItems[x];
+				Container* bag = TO< Container* >(m_pItems[x]);
  
 				for( uint32 i = 0; i < bag->GetProto()->ContainerSlots; i++ )
 				{
@@ -4082,7 +4079,7 @@ bool ItemInterface::SwapItems( int8 DstInvSlot, int8 DstSlot, int8 SrcInvSlot, i
 		{
 			if( DstItem->IsContainer() )
 			{
-				if(((Container*)DstItem)->HasItems())
+				if(TO< Container* >(DstItem)->HasItems())
 				{
 					if(SrcSlot < INVENTORY_SLOT_BAG_START || SrcSlot >= INVENTORY_SLOT_BAG_END || SrcSlot < BANK_SLOT_BAG_START || SrcSlot >= BANK_SLOT_BAG_END)
 					{
@@ -4105,7 +4102,7 @@ bool ItemInterface::SwapItems( int8 DstInvSlot, int8 DstSlot, int8 SrcInvSlot, i
 		{
 			if(DstItem->IsContainer())
 			{
-				if(((Container*)DstItem)->HasItems())
+				if(TO< Container* >(DstItem)->HasItems())
 				{
 					BuildInventoryChangeError(SrcItem, DstItem, INV_ERR_NONEMPTY_BAG_OVER_OTHER_BAG);
 					return false;
@@ -4126,7 +4123,7 @@ bool ItemInterface::SwapItems( int8 DstInvSlot, int8 DstSlot, int8 SrcInvSlot, i
 		{
 			if(SrcItem->IsContainer())
 			{
-				if(((Container*)SrcItem)->HasItems())
+				if(TO< Container* >(SrcItem)->HasItems())
 				{
 					if(DstSlot < INVENTORY_SLOT_BAG_START || DstSlot >= INVENTORY_SLOT_BAG_END || DstSlot < BANK_SLOT_BAG_START || DstSlot >= BANK_SLOT_BAG_END)
 					{
@@ -4149,7 +4146,7 @@ bool ItemInterface::SwapItems( int8 DstInvSlot, int8 DstSlot, int8 SrcInvSlot, i
 		{
 			if(SrcItem->IsContainer())
 			{
-				if(((Container*)SrcItem)->HasItems())
+				if(TO< Container* >(SrcItem)->HasItems())
 				{
 					BuildInventoryChangeError(SrcItem, DstItem, INV_ERR_NONEMPTY_BAG_OVER_OTHER_BAG);
 					return false;

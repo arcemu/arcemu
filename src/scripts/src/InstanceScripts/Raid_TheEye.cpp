@@ -1785,7 +1785,7 @@ bool Dummy_Solarian_WrathOfTheAstromancer(uint32 pEffectIndex, Spell* pSpell)
 
 void SpellFunc_Solarian_Disappear(SpellDesc* pThis, MoonScriptCreatureAI* pCreatureAI, Unit* pTarget, TargetType pType)
 {
-	HighAstromancerSolarianAI* Solarian = ( pCreatureAI ) ? (HighAstromancerSolarianAI*)pCreatureAI : NULL;
+	HighAstromancerSolarianAI* Solarian = ( pCreatureAI ) ? TO< HighAstromancerSolarianAI* >(pCreatureAI) : NULL;
 	if( Solarian )
 	{
 		SpellFunc_Disappear(pThis, pCreatureAI, pTarget, pType);
@@ -1802,7 +1802,7 @@ void SpellFunc_Solarian_Disappear(SpellDesc* pThis, MoonScriptCreatureAI* pCreat
 
 void SpellFunc_Solarian_Reappear(SpellDesc* pThis, MoonScriptCreatureAI* pCreatureAI, Unit* pTarget, TargetType pType)
 {
-	HighAstromancerSolarianAI* Solarian = ( pCreatureAI ) ? (HighAstromancerSolarianAI*)pCreatureAI : NULL;
+	HighAstromancerSolarianAI* Solarian = ( pCreatureAI ) ? TO< HighAstromancerSolarianAI* >(pCreatureAI) : NULL;
 	if( Solarian )
 	{
 		//Spawn two priest friend to help Solarian
@@ -3252,7 +3252,7 @@ public:
 						pCreature->SetUInt64Value(UNIT_FIELD_FLAGS, 0);
 						if (pCreature->GetScript() != NULL)
 						{
-							static_cast<MoonScriptCreatureAI*>(pCreature->GetScript())->AggroNearestUnit(200);
+							TO< MoonScriptCreatureAI* >(pCreature->GetScript())->AggroNearestUnit(200);
 						}
 					}
 				}
@@ -3355,7 +3355,7 @@ public:
 
 void SpellFunc_KaelThasArcaneDisruption(SpellDesc* pThis, MoonScriptCreatureAI* pCreatureAI, Unit* pTarget, TargetType pType)
 {
-	KaelThasAI *KaelThas = (pCreatureAI) ? (KaelThasAI*)pCreatureAI : NULL;
+	KaelThasAI *KaelThas = (pCreatureAI) ? TO< KaelThasAI* >(pCreatureAI) : NULL;
 	if (KaelThas != NULL)
 	{
 		KaelThas->CastSpellNowNoScheduling(KaelThas->mArcaneDisruption);
@@ -3371,7 +3371,7 @@ void SpellFunc_KaelThasArcaneDisruption(SpellDesc* pThis, MoonScriptCreatureAI* 
 
 void SpellFunc_KaelThasFlameStrike(SpellDesc* pThis, MoonScriptCreatureAI* pCreatureAI, Unit* pTarget, TargetType pType)
 {
-	KaelThasAI *KaelThas = (pCreatureAI) ? (KaelThasAI*)pCreatureAI : NULL;
+	KaelThasAI *KaelThas = (pCreatureAI) ? TO< KaelThasAI* >(pCreatureAI) : NULL;
 	if (KaelThas != NULL)
 	{ 
 		if (pTarget != NULL)

@@ -1775,7 +1775,7 @@ bool ChatHandler::HandleDismissPetCommand(const char* args, WorldSession* m_sess
 		}
 		if(pCrt->IsPet())
 		{
-			pPet = (Pet*)pCrt;
+			pPet = TO< Pet* >(pCrt);
 		}
 		if(!pPet)
 		{
@@ -1826,7 +1826,7 @@ bool ChatHandler::HandlePetLevelCommand(const char* args, WorldSession* m_sessio
 		}
 		if(pCrt->IsPet())
 		{
-			pPet = (Pet*)pCrt;
+			pPet = TO< Pet* >(pCrt);
 		}
 		if(!pPet)
 		{

@@ -2271,7 +2271,7 @@ public:
 
 void SpellFunc_Warbringer_BurningMaul(SpellDesc* pThis, MoonScriptCreatureAI* pCreatureAI, Unit* pTarget, TargetType pType)
 {
-	WarbringerOmroggAI *Warbringer = (pCreatureAI) ? (WarbringerOmroggAI*)pCreatureAI : NULL;
+	WarbringerOmroggAI *Warbringer = (pCreatureAI) ? TO< WarbringerOmroggAI* >(pCreatureAI) : NULL;
 	if ( Warbringer != NULL )
 	{
 		Warbringer->CastSpell( Warbringer->mBlastWave );
@@ -2303,7 +2303,7 @@ class HeadAI : public MoonScriptCreatureAI
 		Unit* pUnit = ForceCreatureFind( CN_WARBRINGER_OMROGG );
 		if ( pUnit != NULL && TO_CREATURE(pUnit)->GetScript() != NULL )
 		{
-			WarbringerOmroggAI *pAI = static_cast< WarbringerOmroggAI* >( TO_CREATURE(pUnit)->GetScript() );
+			WarbringerOmroggAI *pAI = TO< WarbringerOmroggAI* >( TO_CREATURE(pUnit)->GetScript() );
 			if ( pAI->mLeftHead == ( MoonScriptCreatureAI* )( this ) )
 				pAI->mLeftHead = NULL;
 			if ( pAI->mRightHead == ( MoonScriptCreatureAI* )( this ) )

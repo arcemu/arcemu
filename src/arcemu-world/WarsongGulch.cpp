@@ -206,7 +206,7 @@ void WarsongGulch::HookOnAreaTrigger(Player * plr, uint32 id)
 			m_nextPvPUpdateTime = 0;
 
 			sEventMgr.RemoveEvents(this, EVENT_BATTLEGROUND_CLOSE);
-			sEventMgr.AddEvent(((CBattleground*)this), &CBattleground::Close, EVENT_BATTLEGROUND_CLOSE, 120000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+			sEventMgr.AddEvent(TO< CBattleground* >(this), &CBattleground::Close, EVENT_BATTLEGROUND_CLOSE, 120000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 			/* add the marks of honor to all players */
 			SpellEntry * winner_spell = dbcSpell.LookupEntry(24951);
 			SpellEntry * loser_spell = dbcSpell.LookupEntry(24950);

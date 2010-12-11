@@ -445,7 +445,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 			{
 				m_AIState = STATE_FOLLOWING;
 				if(m_Unit->IsPet())
-					((Pet*)m_Unit)->SetPetAction(PET_ACTION_FOLLOW);
+					TO< Pet* >(m_Unit)->SetPetAction(PET_ACTION_FOLLOW);
 				SetUnitToFollow(m_PetOwner);
 				m_lastFollowX = m_lastFollowY = 0;
 				FollowDistance = 4.0f;
@@ -3475,7 +3475,7 @@ AI_Spell *AIInterface::getSpell()
 
 	if(m_Unit->IsPet())
 	{
-		sp = def_spell = ((Pet*)m_Unit)->HandleAutoCastEvent();
+		sp = def_spell = TO< Pet* >(m_Unit)->HandleAutoCastEvent();
 	}
 	else
 	{

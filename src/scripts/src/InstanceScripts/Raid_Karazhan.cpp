@@ -115,7 +115,7 @@ class AttumenTheHuntsmanAI : public MoonScriptBossAI
 				SetAllowMelee(false);
 				SetAllowSpell(false);
 				Emote("Come Midnight, let's disperse this petty rabble!", Text_Yell, 9168);
-				MoonScriptBossAI* midnight = static_cast< MoonScriptBossAI* >( GetLinkedCreature() );
+				MoonScriptBossAI* midnight = TO< MoonScriptBossAI* >( GetLinkedCreature() );
 				midnight->SetPhase(2);
 				midnight->MoveTo(this);
 				midnight->SetAllowMelee(false);
@@ -143,7 +143,7 @@ class MidnightAI : public MoonScriptBossAI
 	{
 		if(GetLinkedCreature() && GetLinkedCreature()->IsAlive() )
 		{
-			static_cast< MoonScriptCreatureAI* >( GetLinkedCreature() )->Emote("Well done Midnight!", Text_Yell, 9173);
+			TO< MoonScriptCreatureAI* >( GetLinkedCreature() )->Emote("Well done Midnight!", Text_Yell, 9173);
 		}
 		ParentClass::OnTargetDied(pTarget);
 	}
@@ -165,7 +165,7 @@ class MidnightAI : public MoonScriptBossAI
 			else if( GetLinkedCreature() && GetLinkedCreature()->IsAlive() && GetHealthPercent() <= 25 && !IsCasting() )
 			{
 				SetPhase(2);
-				MoonScriptBossAI* attumen = static_cast< MoonScriptBossAI* >( GetLinkedCreature() );
+				MoonScriptBossAI* attumen = TO< MoonScriptBossAI* >( GetLinkedCreature() );
 				MoveTo( attumen );
 				SetAllowMelee(false);
 				attumen->SetPhase(2);
@@ -178,7 +178,7 @@ class MidnightAI : public MoonScriptBossAI
 		{
 			if( GetLinkedCreature() && GetLinkedCreature()->IsAlive() )
 			{
-				MoonScriptBossAI* attumen = static_cast< MoonScriptBossAI* >( GetLinkedCreature() );
+				MoonScriptBossAI* attumen = TO< MoonScriptBossAI* >( GetLinkedCreature() );
 				if( GetRange(attumen) <= 15 )
 				{
 					attumen->Regenerate();

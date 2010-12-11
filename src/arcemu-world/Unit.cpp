@@ -6838,7 +6838,7 @@ bool CombatStatusHandler::IsInCombat()
 	{
 		case TYPEID_UNIT:
 		{
-			if (m_Unit->IsPet() && ((Pet*)m_Unit)->GetPetAction() == PET_ACTION_ATTACK)
+			if (m_Unit->IsPet() && TO< Pet* >(m_Unit)->GetPetAction() == PET_ACTION_ATTACK)
 				return true;
 			else if (m_Unit->IsPet())
 				return m_lastStatus;

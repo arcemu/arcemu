@@ -167,7 +167,7 @@ class ShadowmoonRidingHoundAI : public MoonScriptCreatureAI
 
 void SpellFunc_Charge(SpellDesc* pThis, MoonScriptCreatureAI* pCreatureAI, Unit* pTarget, TargetType pType)
 {
-	ShadowmoonRidingHoundAI *pHoundAI = (pCreatureAI != NULL) ? (ShadowmoonRidingHoundAI*)pCreatureAI : NULL;
+	ShadowmoonRidingHoundAI *pHoundAI = (pCreatureAI != NULL) ? TO< ShadowmoonRidingHoundAI* >(pCreatureAI) : NULL;
 	if (pHoundAI != NULL)
 	{
 		Unit* pCurrentTarget = pHoundAI->GetUnit()->GetAIInterface()->getNextTarget();
@@ -317,7 +317,7 @@ class IllidariHeartseekerAI : public MoonScriptCreatureAI
 
 void SpellFunc_RapidShot(SpellDesc *pThis, MoonScriptCreatureAI *pCreatureAI, Unit* pTarget, TargetType pType)
 {
-	IllidariHeartseekerAI *pHeartseeker = (pCreatureAI != NULL) ? (IllidariHeartseekerAI*)pCreatureAI : NULL;
+	IllidariHeartseekerAI *pHeartseeker = (pCreatureAI != NULL) ? TO< IllidariHeartseekerAI* >(pCreatureAI) : NULL;
 	if (pHeartseeker != NULL)
 	{
 		pHeartseeker->CastSpell(pHeartseeker->mRapidShot);
@@ -395,7 +395,7 @@ class IllidariBoneslicerAI : public MoonScriptCreatureAI
 
 void SpellFunc_Gouge(SpellDesc* pThis, MoonScriptCreatureAI* pCreatureAI, Unit* pTarget, TargetType pType)
 {
-	IllidariBoneslicerAI *pBoneslicer = (pCreatureAI != NULL) ? (IllidariBoneslicerAI*)pCreatureAI : NULL;
+	IllidariBoneslicerAI *pBoneslicer = (pCreatureAI != NULL) ? TO< IllidariBoneslicerAI* >(pCreatureAI) : NULL;
 	if (pBoneslicer != NULL)
 	{
 		pBoneslicer->CastSpell(pBoneslicer->mGouge);
@@ -1184,7 +1184,7 @@ class ImageOfDementiaAI : public MoonScriptCreatureAI
 
 void SpellFunc_Whirlwind(SpellDesc *pThis, MoonScriptCreatureAI *pCreatureAI, Unit* pTarget, TargetType pType)
 {
-	ImageOfDementiaAI *Dementia = (pCreatureAI != NULL) ? (ImageOfDementiaAI*)pCreatureAI : NULL;
+	ImageOfDementiaAI *Dementia = (pCreatureAI != NULL) ? TO< ImageOfDementiaAI* >(pCreatureAI) : NULL;
 	if (Dementia != NULL)
 	{
 		Dementia->CastSpell(Dementia->mWhirlwind);
@@ -1272,7 +1272,7 @@ class ShadowmoonDeathshaperAI : public MoonScriptCreatureAI
 
 void SpellFunc_RaiseDead(SpellDesc *pThis, MoonScriptCreatureAI *pCreatureAI, Unit* pTarget, TargetType pType)
 {
-	ShadowmoonDeathshaperAI *pDeathshaper = (pCreatureAI != NULL) ? (ShadowmoonDeathshaperAI*)pCreatureAI : NULL;
+	ShadowmoonDeathshaperAI *pDeathshaper = (pCreatureAI != NULL) ? TO< ShadowmoonDeathshaperAI* >(pCreatureAI) : NULL;
 	if (pDeathshaper != NULL)
 	{
 		pDeathshaper->CastSpellNowNoScheduling(pDeathshaper->mRaiseDead);
@@ -1441,7 +1441,7 @@ class ShadowmoonWeaponMasterAI : public MoonScriptBossAI
 
 void SpellFunc_DefensiveStance(SpellDesc *pThis, MoonScriptCreatureAI *pCreatureAI, Unit* pTarget, TargetType pType)
 {
-	ShadowmoonWeaponMasterAI *pWeaponMaster = (pCreatureAI != NULL) ? (ShadowmoonWeaponMasterAI*)pCreatureAI : NULL;
+	ShadowmoonWeaponMasterAI *pWeaponMaster = (pCreatureAI != NULL) ? TO< ShadowmoonWeaponMasterAI* >(pCreatureAI) : NULL;
 	if (pWeaponMaster != NULL)
 	{
 		pWeaponMaster->RemoveAura(SHADOWMOON_WEAPON_MASTER_BATTLE_AURA);
@@ -1453,7 +1453,7 @@ void SpellFunc_DefensiveStance(SpellDesc *pThis, MoonScriptCreatureAI *pCreature
 
 void SpellFunc_BerserkerStance(SpellDesc *pThis, MoonScriptCreatureAI *pCreatureAI, Unit* pTarget, TargetType pType)
 {
-	ShadowmoonWeaponMasterAI *pWeaponMaster = (pCreatureAI != NULL) ? (ShadowmoonWeaponMasterAI*)pCreatureAI : NULL;
+	ShadowmoonWeaponMasterAI *pWeaponMaster = (pCreatureAI != NULL) ? TO< ShadowmoonWeaponMasterAI* >(pCreatureAI) : NULL;
 	if (pWeaponMaster != NULL)
 	{
 		pWeaponMaster->RemoveAura(SHADOWMOON_WEAPON_MASTER_DEFENSIVE_AURA);
@@ -1524,7 +1524,7 @@ class StormFuryAI : public MoonScriptCreatureAI
 
 void SpellFunc_StormBlink(SpellDesc* pThis, MoonScriptCreatureAI* pCreatureAI, Unit* pTarget, TargetType pType)
 {
-	StormFuryAI *pStormFuryAI = (pCreatureAI != NULL) ? (StormFuryAI*)pCreatureAI : NULL;
+	StormFuryAI *pStormFuryAI = (pCreatureAI != NULL) ? TO< StormFuryAI* >(pCreatureAI) : NULL;
 	if (pStormFuryAI != NULL)
 	{
 		Unit* pCurrentTarget = pStormFuryAI->GetUnit()->GetAIInterface()->getNextTarget();
@@ -1587,7 +1587,7 @@ class AqueousLordAI : public MoonScriptCreatureAI
 
 void SpellFunc_SpawnAqueousSpawn(SpellDesc* pThis, MoonScriptCreatureAI* pCreatureAI, Unit* pTarget, TargetType pType)
 {
-	AqueousLordAI *pAqueousLordAI = (pCreatureAI != NULL) ? (AqueousLordAI*)pCreatureAI : NULL;
+	AqueousLordAI *pAqueousLordAI = (pCreatureAI != NULL) ? TO< AqueousLordAI* >(pCreatureAI) : NULL;
 	if (pAqueousLordAI != NULL)
 	{
 		MoonScriptCreatureAI *pSpawnAI = pAqueousLordAI->SpawnCreature(CN_AQUEOUS_SPAWN);
@@ -3411,7 +3411,7 @@ public:
 		AddEmote( Event_OnDied, "You got lucky!", Text_Yell, 11527 );
 		AddEmote( Event_OnCombatStart, "You wish to test me?", Text_Yell, 11524 );
     
-		pGethois = static_cast<GathiosAI*>( GetNearestCreature( CN_GATHIOS_THE_SHATTERER ) );
+		pGethois = TO< GathiosAI* >( GetNearestCreature( CN_GATHIOS_THE_SHATTERER ) );
 		if( pGethois != NULL )
 			pGethois->AddEncounterCreature( _unit );
     };
@@ -3450,7 +3450,7 @@ public:
 		AddEmote( Event_OnCombatStart, "Common... such a crude language. Bandal!", Text_Yell, 11440);
 		AddEmote( Event_OnTargetDied, "Shorel'aran.", Text_Yell, 11441);
 
-		pGethois = static_cast<GathiosAI*>( GetNearestCreature( CN_GATHIOS_THE_SHATTERER ) );
+		pGethois = TO< GathiosAI* >( GetNearestCreature( CN_GATHIOS_THE_SHATTERER ) );
 		if( pGethois != NULL )
 			pGethois->AddEncounterCreature( _unit );
     };
@@ -3488,7 +3488,7 @@ public:
 		AddEmote( Event_OnDied, "Destiny... awaits!", Text_Yell, 11485);
 		AddEmote( Event_OnTargetDied, "My work is done.", Text_Yell, 11483);
 
-		pGethois = static_cast<GathiosAI*>( GetNearestCreature( CN_GATHIOS_THE_SHATTERER ) );
+		pGethois = TO< GathiosAI* >( GetNearestCreature( CN_GATHIOS_THE_SHATTERER ) );
 		if( pGethois != NULL )
 			pGethois->AddEncounterCreature( _unit );
     };
@@ -4523,7 +4523,7 @@ class ParasiticShadowfiendAI : public MoonScriptCreatureAI
 
 void SpellFunc_Parasitic(SpellDesc* pThis, MoonScriptCreatureAI* pCreatureAI, Unit* pTarget, TargetType pType)
 {
-	ParasiticShadowfiendAI *Parasitic = (pCreatureAI != NULL) ? (ParasiticShadowfiendAI*)pCreatureAI : NULL;
+	ParasiticShadowfiendAI *Parasitic = (pCreatureAI != NULL) ? TO< ParasiticShadowfiendAI* >(pCreatureAI) : NULL;
 	if (Parasitic != NULL)
 	{
 		Parasitic->CastSpell(Parasitic->mParasiticDmg);
@@ -4549,7 +4549,7 @@ public:
 		if (pAIOwner->GetScript() == NULL)
 			return;
 
-		MoonScriptCreatureAI *pAI = static_cast<MoonScriptCreatureAI*>(pAIOwner->GetScript());
+		MoonScriptCreatureAI *pAI = TO< MoonScriptCreatureAI* >(pAIOwner->GetScript());
         GossipMenu *Menu;
 		if (pAI->GetCurrentWaypoint() >= 10)
 		{
@@ -4572,7 +4572,7 @@ public:
 		if (pAIOwner->GetScript() == NULL)
 			return;
 
-		MoonScriptCreatureAI *pAI = static_cast<MoonScriptCreatureAI*>(pAIOwner->GetScript());
+		MoonScriptCreatureAI *pAI = TO< MoonScriptCreatureAI* >(pAIOwner->GetScript());
 		switch (IntId)
 		{
 		case 0:
@@ -4815,7 +4815,7 @@ class AkamaAI : public MoonScriptBossAI
 			Creature* pIllidan = TO_CREATURE(ForceCreatureFind(22917, 704.539001f, 305.282013f, 353.919006f));
 			if (pIllidan != NULL && pIllidan->GetScript() != NULL)
 			{
-				mIllidanAI = (MoonScriptCreatureAI*)(pIllidan->GetScript());
+				mIllidanAI = TO< MoonScriptCreatureAI* >(pIllidan->GetScript());
 			}
 		}
 
@@ -5442,7 +5442,7 @@ class MaievAI : public MoonScriptBossAI
 				Creature* pAkama = TO_CREATURE(ForceCreatureFind(CN_AKAMA, ToIllidan[19].x, ToIllidan[19].y, ToIllidan[19].z));
 				if (pAkama != NULL)
 				{
-					AkamaAI *pAkamaAI = (AkamaAI*)(static_cast<MoonScriptCreatureAI*>(pAkama->GetScript()));
+					AkamaAI *pAkamaAI = TO< AkamaAI* >(pAkama->GetScript());
 					//pAkama->m_auracount[SPELL_AURA_MOD_INVISIBILITY] = true;						// Arc's
 					pAkama->UpdateVisibility();
 					if (!pAkamaAI->GetCanMove())
@@ -5870,7 +5870,7 @@ class IllidanStormrageAI : public MoonScriptBossAI
 			Creature* pAkama = TO_CREATURE(ForceCreatureFind(CN_AKAMA));
 			if (pAkama != NULL && pAkama->GetScript() != NULL)
 			{
-				AkamaAI *pAkamaAI = static_cast<AkamaAI*>(pAkama->GetScript());
+				AkamaAI *pAkamaAI = TO< AkamaAI* >(pAkama->GetScript());
 				if (pAkamaAI->mScenePart <= 2 && pAkamaAI->GetCanEnterCombat())
 				{
 					pAkamaAI->SetCanEnterCombat(false);
@@ -6122,7 +6122,7 @@ class IllidanStormrageAI : public MoonScriptBossAI
 
 						float Distance = pTrigger->CalcDistance(EyeBeamPaths[7 - FireWall].x, EyeBeamPaths[7 - FireWall].y, EyeBeamPaths[7 - FireWall].z);
 						uint32 TimeToReach = (uint32)(Distance * 1000 / pTrigger->m_walkSpeed);
-						EyeBeamTriggerAI *pEyeBeamTriggerAI = (EyeBeamTriggerAI*)(static_cast<MoonScriptCreatureAI*>(TO_CREATURE((pTrigger))->GetScript()));
+						EyeBeamTriggerAI *pEyeBeamTriggerAI = TO< EyeBeamTriggerAI* >(pTrigger->GetScript());
 						pEyeBeamTriggerAI->mPosition = FireWall;
 						pEyeBeamTriggerAI->Despawn(TimeToReach + 1500, 0);
 						mFireWallTimer = TimeToReach + 1000;
@@ -6318,7 +6318,7 @@ class IllidanStormrageAI : public MoonScriptBossAI
 			Creature* pMaiev = TO_CREATURE(ForceCreatureFind(CN_MAIEV));
 			if (pMaiev != NULL && pMaiev->GetScript() != NULL)
 			{
-				pMaievAI = (MaievAI*)(static_cast<MoonScriptCreatureAI*>(pMaiev->GetScript()));
+				pMaievAI = TO< MaievAI* >(pMaiev->GetScript());
 			}
 			else
 			{
@@ -6660,10 +6660,10 @@ class IllidanStormrageAI : public MoonScriptBossAI
 		Creature* pAkama = TO_CREATURE(ForceCreatureFind(CN_AKAMA));
 		if (pAkama != NULL && pAkama->GetScript() != NULL)
 		{
-			AkamaAI *pAI = (AkamaAI*)(pAkama->GetScript());
+			AkamaAI *pAI = TO< AkamaAI* >(pAkama->GetScript());
 			if (pAI != NULL)
 			{
-				if (pAI->mIllidanAI == (MoonScriptCreatureAI*)(this))
+				if (pAI->mIllidanAI == this)
 					pAI->mIllidanAI = NULL;
 			}
 		}
@@ -6671,10 +6671,10 @@ class IllidanStormrageAI : public MoonScriptBossAI
 		Creature* pMaiev = TO_CREATURE(ForceCreatureFind(CN_MAIEV));
 		if (pMaiev != NULL && pMaiev->GetScript() != NULL)
 		{
-			MaievAI *pAI = (MaievAI*)(pMaiev->GetScript());
+			MaievAI *pAI = TO< MaievAI* >(pMaiev->GetScript());
 			if (pAI != NULL)
 			{
-				if (pAI->mIllidanAI == (MoonScriptCreatureAI*)(this))
+				if (pAI->mIllidanAI == this)
 					pAI->mIllidanAI = NULL;
 			}
 		}
@@ -6738,7 +6738,7 @@ class IllidanStormrageAI : public MoonScriptBossAI
 
 void SpellFunc_Illidan_Parasitic(SpellDesc* pThis, MoonScriptCreatureAI* pCreatureAI, Unit* pTarget, TargetType pType)
 {
-	IllidanStormrageAI *Illidan = (pCreatureAI != NULL) ? (IllidanStormrageAI*)pCreatureAI : NULL;
+	IllidanStormrageAI *Illidan = (pCreatureAI != NULL) ? TO< IllidanStormrageAI* >(pCreatureAI) : NULL;
 	if (Illidan != NULL)
 	{
 		Illidan->CastSpell(Illidan->mParasiticDmg);
@@ -6804,7 +6804,7 @@ class CageTrapTriggerAI : public MoonScriptCreatureAI
 		Unit* pIllidan = ForceCreatureFind(22917);
 		if (pIllidan != NULL)
 		{
-			IllidanStormrageAI *pAI = (IllidanStormrageAI*)(static_cast<MoonScriptCreatureAI*>(TO_CREATURE(pIllidan)->GetScript()));
+			IllidanStormrageAI *pAI = TO< IllidanStormrageAI* >(TO_CREATURE(pIllidan)->GetScript());
 			if (pAI->mMiscEventPart != 0 && mTriggerAIList.size() == 0)
 			{
 				GameObject* pGameObject = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(_unit->GetPositionX(), _unit->GetPositionY(), _unit->GetPositionZ(), GO_CAGE_TRAP);
@@ -6936,7 +6936,7 @@ public:
 		Creature* pTrigger = _gameobject->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(_gameobject->GetPositionX(), _gameobject->GetPositionY(), _gameobject->GetPositionZ(), CN_CAGE_TRAP_DISTURB_TRIGGER);
 		if (pTrigger != NULL && pTrigger->GetScript() != NULL)
 		{
-			CageTrapTriggerAI *pTriggerAI = static_cast<CageTrapTriggerAI*>(pTrigger->GetScript());
+			CageTrapTriggerAI *pTriggerAI = TO< CageTrapTriggerAI* >(pTrigger->GetScript());
 			pTriggerAI->mIsActivated = true;
 		}
 	}
@@ -6963,12 +6963,12 @@ class DranaeiSpiritAI : public MoonScriptCreatureAI
 		Creature* pAkama = TO_CREATURE(ForceCreatureFind(22990));
 		if (pAkama != NULL && pAkama->GetScript() != NULL)
 		{
-			AkamaAI *pAI = (AkamaAI*)(pAkama->GetScript());
+			AkamaAI *pAI = TO< AkamaAI* >(pAkama->GetScript());
 			if (pAI != NULL)
 			{
-				if (pAI->mUdaloAI == (MoonScriptCreatureAI*)(this))
+				if (pAI->mUdaloAI == this)
 					pAI->mUdaloAI = NULL;
-				else if (pAI->mOlumAI == (MoonScriptCreatureAI*)(this))
+				else if (pAI->mOlumAI == this)
 					pAI->mOlumAI = NULL;
 			}
 		}
@@ -7045,12 +7045,12 @@ class FlameOfAzzinothAI : public MoonScriptCreatureAI
 		Creature* pIllidan = TO_CREATURE(ForceCreatureFind(22917));
 		if (pIllidan != NULL && pIllidan->GetScript() != NULL)
 		{
-			IllidanStormrageAI *pAI = (IllidanStormrageAI*)(pIllidan->GetScript());
+			IllidanStormrageAI *pAI = TO< IllidanStormrageAI* >(pIllidan->GetScript());
 			if (pAI != NULL)
 			{
-				if (pAI->mFoA1 == (MoonScriptCreatureAI*)(this))
+				if (pAI->mFoA1 == this)
 					pAI->mFoA1 = NULL;
-				else if (pAI->mFoA2 == (MoonScriptCreatureAI*)(this))
+				else if (pAI->mFoA2 == this)
 					pAI->mFoA2 = NULL;
 			}
 		}
@@ -7070,7 +7070,7 @@ class FlameOfAzzinothAI : public MoonScriptCreatureAI
 
 void SpellFunc_FlameOfAzzinothFlameBlast(SpellDesc* pThis, MoonScriptCreatureAI* pCreatureAI, Unit* pTarget, TargetType pType)
 {
-	FlameOfAzzinothAI* FlameOfAzzinoth = ( pCreatureAI ) ? (FlameOfAzzinothAI*)pCreatureAI : NULL;
+	FlameOfAzzinothAI* FlameOfAzzinoth = ( pCreatureAI ) ? TO< FlameOfAzzinothAI* >(pCreatureAI) : NULL;
 	if( FlameOfAzzinoth )
 	{
 		FlameOfAzzinoth->CastSpell(FlameOfAzzinoth->mFlameBlast);
@@ -7080,7 +7080,7 @@ void SpellFunc_FlameOfAzzinothFlameBlast(SpellDesc* pThis, MoonScriptCreatureAI*
 
 void SpellFunc_FlameOfAzzinothCharge(SpellDesc* pThis, MoonScriptCreatureAI* pCreatureAI, Unit* pTarget, TargetType pType)
 {
-	FlameOfAzzinothAI* FlameOfAzzinoth = ( pCreatureAI ) ? (FlameOfAzzinothAI*)pCreatureAI : NULL;
+	FlameOfAzzinothAI* FlameOfAzzinoth = ( pCreatureAI ) ? TO< FlameOfAzzinothAI* >(pCreatureAI) : NULL;
 	if( FlameOfAzzinoth )
 	{
 		FlameOfAzzinoth->CastSpell(FlameOfAzzinoth->mCharge);

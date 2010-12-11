@@ -4206,7 +4206,7 @@ public:
 		else if (Kelthuzad->GetScript())
 		{
 			CreatureAIScript *pScript = Kelthuzad->GetScript();
-			if (static_cast<KelthuzadAI*>(pScript)->GetDespawnTrash())
+			if (TO< KelthuzadAI* >(pScript)->GetDespawnTrash())
 			{
 				_unit->Despawn(0,0);
 				return;
@@ -4329,7 +4329,7 @@ public:
 		else if (Kelthuzad->GetScript())
 		{
 			CreatureAIScript *pScript = Kelthuzad->GetScript();
-			if (static_cast<KelthuzadAI*>(pScript)->GetDespawnTrash())
+			if (TO< KelthuzadAI* >(pScript)->GetDespawnTrash())
 			{
 				_unit->Despawn(0,0);
 				return;
@@ -4491,7 +4491,7 @@ public:
 		else if (Kelthuzad->GetScript())
 		{
 			CreatureAIScript *pScript = Kelthuzad->GetScript();
-			if (static_cast<KelthuzadAI*>(pScript)->GetDespawnTrash())
+			if (TO< KelthuzadAI* >(pScript)->GetDespawnTrash())
 			{
 				_unit->Despawn(0,0);
 				return;

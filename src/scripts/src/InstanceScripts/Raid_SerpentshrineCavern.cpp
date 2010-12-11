@@ -1371,8 +1371,8 @@ public:
 			FLK->CastSpell(FLK, dbcSpell.LookupEntry(38455), true); //Power of Sharkkis
 			FLK->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "I am more powerful than ever!");
 			FLK->PlaySoundToSet(11280);
-			if(static_cast<KarathressAI*>(FLK->GetScript())->AdvisorsLeft > 0)
-				static_cast<KarathressAI*>(FLK->GetScript())->AdvisorsLeft--;
+			if(TO< KarathressAI* >(FLK->GetScript())->AdvisorsLeft > 0)
+				TO< KarathressAI* >(FLK->GetScript())->AdvisorsLeft--;
 			FLK->RemoveAura (BLESSING_OF_THE_TIDES);
 		}
 
@@ -1440,8 +1440,8 @@ public:
 			FLK->CastSpell(FLK, dbcSpell.LookupEntry(38452), true); //Power of Tidalvess
 			FLK->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "Go on, kill them! I'll be the better for it!");
 			FLK->PlaySoundToSet(11279);
-			if(static_cast<KarathressAI*>(FLK->GetScript())->AdvisorsLeft > 0)
-				static_cast<KarathressAI*>(FLK->GetScript())->AdvisorsLeft--;
+			if(TO< KarathressAI* >(FLK->GetScript())->AdvisorsLeft > 0)
+				TO< KarathressAI* >(FLK->GetScript())->AdvisorsLeft--;
 			FLK->RemoveAura (BLESSING_OF_THE_TIDES);
 		}
 		
@@ -1497,8 +1497,8 @@ public:
 			FLK->CastSpell(FLK, dbcSpell.LookupEntry(38451), true); //Power of Caribdis
 			FLK->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "More knowledge, more power!");
 			FLK->PlaySoundToSet(11281);
-			if(static_cast<KarathressAI*>(FLK->GetScript())->AdvisorsLeft > 0)
-				static_cast<KarathressAI*>(FLK->GetScript())->AdvisorsLeft--;
+			if(TO< KarathressAI* >(FLK->GetScript())->AdvisorsLeft > 0)
+				TO< KarathressAI* >(FLK->GetScript())->AdvisorsLeft--;
 			FLK->RemoveAura (BLESSING_OF_THE_TIDES);
 		}
 		MoonScriptCreatureAI::OnDied(pKiller);
@@ -2425,8 +2425,8 @@ public:
 		Vashj = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(_unit->GetPositionX(), _unit->GetPositionY(), _unit->GetPositionZ(), CN_LADY_VASHJ);
 		if(Vashj)
 		{
-			if(static_cast<VashjAI*>(Vashj->GetScript())->TaintedElementalTimer > 50)
-				static_cast<VashjAI*>(Vashj->GetScript())->TaintedElementalTimer = 50;
+			if(TO< VashjAI* >(Vashj->GetScript())->TaintedElementalTimer > 50)
+				TO< VashjAI* >(Vashj->GetScript())->TaintedElementalTimer = 50;
 		}
 	}
 
@@ -2465,7 +2465,7 @@ public:
 	{
 		Creature* Vashj = NULL;
 		Vashj = pPlayer->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(29.798161f, -923.358276f, 42.900517f, CN_LADY_VASHJ);
-		if( Vashj != NULL && static_cast<VashjAI*>(Vashj->GetScript())->Phase == 2 )
+		if( Vashj != NULL && TO< VashjAI* >(Vashj->GetScript())->Phase == 2 )
 		{
 			Vashj->ModHealth(-((Vashj->GetUInt32Value(UNIT_FIELD_MAXHEALTH)/100)*5) );
 			Creature* channel = NULL;

@@ -2141,7 +2141,7 @@ void Aura::EventPeriodicHeal( uint32 amount )
 
 	int amp = m_spellProto->EffectAmplitude[mod->i];
 	if( !amp )
-		amp = static_cast< EventableObject* >( this )->event_GetEventPeriod( EVENT_AURA_PERIODIC_HEAL );
+		amp = event_GetEventPeriod( EVENT_AURA_PERIODIC_HEAL );
 //	if(m_spellProto->NameHash != SPELL_HASH_HEALING_STREAM)// Healing Stream is not a HOT
 	{
 		int32 dur = GetDuration();
@@ -2601,11 +2601,11 @@ void Aura::SpellAuraModStealth(bool apply)
 		{
 			if(p_target->m_bg && p_target->m_bg->GetType() == BATTLEGROUND_WARSONG_GULCH)
 			{
-				((WarsongGulch*)p_target->m_bg)->HookOnFlagDrop(p_target);
+				TO< WarsongGulch* >(p_target->m_bg)->HookOnFlagDrop(p_target);
 			}
 			if(p_target->m_bg && p_target->m_bg->GetType() == BATTLEGROUND_EYE_OF_THE_STORM)
 			{
-				((EyeOfTheStorm*)p_target->m_bg)->HookOnFlagDrop(p_target);
+				TO< EyeOfTheStorm* >(p_target->m_bg)->HookOnFlagDrop(p_target);
 			}
 	     }
 
@@ -2689,11 +2689,11 @@ void Aura::SpellAuraModStealth(bool apply)
 				{
 					if( p_target->m_bg->GetType() == BATTLEGROUND_WARSONG_GULCH )
 					{
-						((WarsongGulch*)p_target->m_bg)->HookOnFlagDrop( p_target );
+						TO< WarsongGulch* >(p_target->m_bg)->HookOnFlagDrop( p_target );
 					}
 					if( p_target->m_bg->GetType() == BATTLEGROUND_EYE_OF_THE_STORM)
 					{
-						((EyeOfTheStorm*)p_target->m_bg)->HookOnFlagDrop( p_target );
+						TO< EyeOfTheStorm* >(p_target->m_bg)->HookOnFlagDrop( p_target );
 					}
 				}
 			}

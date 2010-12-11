@@ -40,7 +40,7 @@ public:
 	ARCEMU_INLINE size_t Size(void) const { return i_nodes.size(); }
 	ARCEMU_INLINE void Resize(unsigned int sz) { i_nodes.resize(sz); }
 	ARCEMU_INLINE void Clear(void) { i_nodes.clear(); }
-	ARCEMU_INLINE PathNode* GetNodes(void) { return static_cast<PathNode *>(&i_nodes[0]); }
+	ARCEMU_INLINE PathNode* GetNodes(void) { return TO< PathNode* >(&i_nodes[0]); }
 	float GetTotalLength(void)
 	{
 		float len = 0, xd, yd, zd;

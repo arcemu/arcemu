@@ -3279,9 +3279,9 @@ uint8 Spell::CanCast(bool tolerate)
 				{
 					// thank Cruders for this :P
 					if(p_caster->m_bg && p_caster->m_bg->GetType() == BATTLEGROUND_WARSONG_GULCH)
-						((WarsongGulch*)p_caster->m_bg)->HookOnFlagDrop( p_caster );
+						TO< WarsongGulch* >(p_caster->m_bg)->HookOnFlagDrop( p_caster );
 					else if(p_caster->m_bg && p_caster->m_bg->GetType() == BATTLEGROUND_EYE_OF_THE_STORM)
-						((EyeOfTheStorm*)p_caster->m_bg)->HookOnFlagDrop( p_caster );
+						TO< EyeOfTheStorm* >(p_caster->m_bg)->HookOnFlagDrop( p_caster );
 					break;
 				}
 			}

@@ -680,7 +680,7 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 							30 times the player's level and caps the maximum damage benefit from shield
 							block value at 34.5 times the player's level. 
 						*/
-						int32 max_blockable_damage = static_cast< int >( p_caster->getLevel() )  * float2int32(34.5f);
+						int32 max_blockable_damage = static_cast< int32 >( p_caster->getLevel() * 34.5f);
 						if ( blockable_damage > max_blockable_damage )
 						{
 							blockable_damage = max_blockable_damage;

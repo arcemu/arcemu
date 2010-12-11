@@ -1745,7 +1745,7 @@ void AlteracValley::Finish(uint32 losingTeam)
 	m_ended = true;
 	m_winningteam = (losingTeam == 0) ? 1 : 0;
 	sEventMgr.RemoveEvents(this);
-	sEventMgr.AddEvent(((CBattleground*)this), &CBattleground::Close, EVENT_BATTLEGROUND_CLOSE, 120000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+	sEventMgr.AddEvent(TO< CBattleground* >(this), &CBattleground::Close, EVENT_BATTLEGROUND_CLOSE, 120000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 
 	/* add the marks of honor to all players */
 	SpellEntry * winner_spell = dbcSpell.LookupEntry(24955);
@@ -1823,7 +1823,7 @@ void AlteracValley::HookGenerateLoot(Player *plr, Object *pCorpse)
 					li.roll = NULL;
 
 					// push to vector
-					static_cast < Corpse*>(pCorpse)->loot.items.push_back(li);
+					TO< Corpse* >(pCorpse)->loot.items.push_back(li);
 				}
 			}
 		}
@@ -1836,7 +1836,7 @@ void AlteracValley::HookGenerateLoot(Player *plr, Object *pCorpse)
 	gold *= sWorld.getRate(RATE_MONEY);
 
 	// set it
-	static_cast < Corpse*>(pCorpse)->loot.gold = float2int32(gold);
+	TO< Corpse* >(pCorpse)->loot.gold = float2int32(gold);
 }
 
 void AlteracValley::EventUpdateResources()

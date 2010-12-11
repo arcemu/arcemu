@@ -418,7 +418,7 @@ void CBattlegroundManager::AddGroupToArena(CBattleground * bg, Group * group, in
 
 int CBattlegroundManager::CreateArenaType(int type, Group * group1, Group * group2)
 {
-	Arena * ar = ((Arena*)CreateInstance(type, LEVEL_GROUP_70));
+	Arena * ar = TO< Arena* >(CreateInstance(type, LEVEL_GROUP_70));
 	if (ar == NULL)
 	{
 		sLog.Error("BattlegroundMgr", "%s (%u): Couldn't create Arena Instance", __FILE__, __LINE__);
@@ -548,7 +548,7 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 
 				if(IS_ARENA(i))
 				{
-					arena = ((Arena*)iitr->second);
+					arena = TO< Arena* >(iitr->second);
 					if(arena->Rated())
 						continue;
 
@@ -597,7 +597,7 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 
 				if(CanCreateInstance(i,j))
 				{
-					arena = ((Arena*)CreateInstance(i, j));
+					arena = TO< Arena* >(CreateInstance(i, j));
 					if ( arena == NULL )
 					{
 						sLog.Error("BattlegroundMgr", "%s (%u): Couldn't create Arena Instance", __FILE__, __LINE__);
@@ -1012,7 +1012,7 @@ void CBattleground::BuildPvPUpdateDataPacket(WorldPacket * data)
 		else
 		{
 			/* Grab some arena teams */
-			ArenaTeam **teams = ((Arena*)this)->GetTeams();
+			ArenaTeam **teams = TO< Arena* >(this)->GetTeams();
 
 			if(teams[0]) {
 				*data << uint32(0) << uint32(3000+m_deltaRating[0]) << uint32(0) << uint8(0);
