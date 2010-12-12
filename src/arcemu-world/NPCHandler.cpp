@@ -303,7 +303,7 @@ uint8 WorldSession::TrainerGetSpellStatus(TrainerSpell* pSpell)
 		|| (pSpell->RequiredSpell && !_player->HasSpell(pSpell->RequiredSpell))
 		|| (pSpell->Cost && !_player->HasGold(pSpell->Cost))
 		|| (pSpell->RequiredSkillLine && _player->_GetSkillLineCurrent(pSpell->RequiredSkillLine,true) < pSpell->RequiredSkillLineValue)
-		|| (pSpell->IsProfession && pSpell->RequiredSkillLine== 0 && _player->GetTalentPoints(SPEC_SECONDARY) == 0)//check level 1 professions if we can learn a new profession
+		|| (pSpell->IsProfession && _player->GetTalentPoints(SPEC_SECONDARY) == 0)//check level 1 professions if we can learn a new profession
 		)
 		return TRAINER_STATUS_NOT_LEARNABLE;
 	return TRAINER_STATUS_LEARNABLE;

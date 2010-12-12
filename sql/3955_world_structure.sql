@@ -87,7 +87,7 @@ CREATE TABLE `arcemu_db_version` (
 
 /*Data for the table `arcemu_db_version` */
 
-insert  into `arcemu_db_version`(`LastUpdate`) values (3940);
+insert  into `arcemu_db_version`(`LastUpdate`) values (3955);
 
 /*Table structure for table `areatriggers` */
 
@@ -1743,7 +1743,6 @@ CREATE TABLE `trainer_spells` (
   `reqskillvalue` int(11) unsigned NOT NULL DEFAULT '0',
   `reqlevel` int(11) unsigned NOT NULL DEFAULT '0',
   `deletespell` int(11) unsigned NOT NULL DEFAULT '0',
-  `is_prof` tinyint(1) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`entry`,`cast_spell`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Trainer System';
 

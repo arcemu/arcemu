@@ -1876,7 +1876,7 @@ void ObjectMgr::LoadTrainers()
 			delete tr;
 			continue;
 		}
-		if(result2->GetFieldCount() != 10)
+		if(result2->GetFieldCount() != 9)
 		{
 			Log.LargeErrorMessage("Trainers table format is invalid. Please update your database.", NULL);
 			delete tr;
@@ -1942,7 +1942,20 @@ void ObjectMgr::LoadTrainers()
 				ts.RequiredSkillLineValue = fields2[6].GetUInt32();
 				ts.RequiredLevel = fields2[7].GetUInt32();
 				ts.DeleteSpell = fields2[8].GetUInt32();
-				ts.IsProfession = (fields2[9].GetUInt32() != 0) ? true : false;
+				//IsProfession is true if the TrainerSpell will teach a primary profession
+				if(ts.RequiredSkillLine == 0 && ts.pCastRealSpell != NULL && ts.pCastRealSpell->Effect[1] == SPELL_EFFECT_SKILL)
+				{
+					uint32 skill = ts.pCastRealSpell->EffectMiscValue[1];
+					skilllineentry* sk = dbcSkillLine.LookupEntryForced(skill);
+					Arcemu::Util::ARCEMU_ASSERT( sk != NULL );
+					if(sk->type == SKILL_TYPE_PROFESSION)
+						ts.IsProfession = true;
+					else
+						ts.IsProfession = false;
+				}
+				else
+					ts.IsProfession = false;
+
 				tr->Spells.push_back(ts);
 			}
 			while(result2->NextRow());
