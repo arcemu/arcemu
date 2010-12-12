@@ -538,7 +538,7 @@ void QuestMgr::BuildRequestItems(WorldPacket *data, Quest* qst, Object* qst_give
 void QuestMgr::BuildQuestComplete(Player*plr, Quest* qst)
 {
 	uint32 xp ;
-	uint32 currtalentpoints = plr->GetTalentPoints(SPEC_PRIMARY);
+	uint32 currtalentpoints = plr->GetTalentPoints();
 	uint32 rewardtalents = qst->rewardtalents;
 	uint32 playerlevel = plr->getLevel();
 	

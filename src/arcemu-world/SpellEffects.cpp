@@ -3076,7 +3076,7 @@ void Spell::SpellEffectSkillStep(uint32 i) // Skill Step
 		return;*/
 
 		if( sk->type == SKILL_TYPE_PROFESSION )
-			target->ModTalentPoints(SPEC_SECONDARY, -1 );
+			target->ModPrimaryProfessionPoints( -1 );
 
 		if( skill == SKILL_RIDING )
 			target->_AddSkillLine( skill, max, max );

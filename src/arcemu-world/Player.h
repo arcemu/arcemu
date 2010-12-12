@@ -2018,9 +2018,13 @@ public:
 	 uint32 GetXp() { return GetUInt32Value(PLAYER_XP); }
 	 void SetNextLevelXp( uint32 xp ) { SetUInt32Value(PLAYER_NEXT_LEVEL_XP, xp); }
 
-	 void SetTalentPoints( uint8 spec, uint32 amt ) { SetUInt32Value(PLAYER_CHARACTER_POINTS1+spec, amt); }
-	 void ModTalentPoints( uint8 spec, int32 amt ) { ModUnsigned32Value(PLAYER_CHARACTER_POINTS1+spec, amt); }
-	 uint32 GetTalentPoints( uint8 spec ) { return GetUInt32Value(PLAYER_CHARACTER_POINTS1+spec); }
+	 void SetTalentPoints( uint32 amt ) { SetUInt32Value(PLAYER_CHARACTER_POINTS1, amt); }
+	 void ModTalentPoints( int32 amt ) { ModUnsigned32Value(PLAYER_CHARACTER_POINTS1, amt); }
+	 uint32 GetTalentPoints() { return GetUInt32Value(PLAYER_CHARACTER_POINTS1); }
+
+	 void SetPrimaryProfessionPoints( uint32 amt ) { SetUInt32Value(PLAYER_CHARACTER_POINTS2, amt); }
+	 void ModPrimaryProfessionPoints( int32 amt ) { ModUnsigned32Value(PLAYER_CHARACTER_POINTS2, amt); }
+	 uint32 GetPrimaryProfessionPoints() { return GetUInt32Value(PLAYER_CHARACTER_POINTS2); }
 
 	 void ModPosDamageDoneMod( uint32 school, uint32 value ) { ModUnsigned32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS+school, value); }
 	 uint32 GetPosDamageDoneMod( uint32 school ) { return GetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS+school); }

@@ -741,14 +741,14 @@ bool Player::Create(WorldPacket& data )
 	SetFaction(info->factiontemplate );
 
 	if(class_ == DEATHKNIGHT)
-		SetTalentPoints(SPEC_PRIMARY, sWorld.DKStartTalentPoints); // Default is 0 in case you do not want to modify it
+		SetTalentPoints(sWorld.DKStartTalentPoints); // Default is 0 in case you do not want to modify it
 	else
-		SetTalentPoints(SPEC_PRIMARY, 0);
+		SetTalentPoints(0);
 	if(class_ != DEATHKNIGHT || sWorld.StartingLevel > 55)
 	{
 		setLevel(sWorld.StartingLevel );
 		if(sWorld.StartingLevel >= 10 && class_ != DEATHKNIGHT )
-		SetTalentPoints(SPEC_PRIMARY, sWorld.StartingLevel - 9);
+		SetTalentPoints(sWorld.StartingLevel - 9);
 	}
 	else
 	{
@@ -757,7 +757,7 @@ bool Player::Create(WorldPacket& data )
 	}
 	UpdateGlyphs();
 
-	SetTalentPoints(SPEC_SECONDARY, sWorld.MaxProfs);
+	SetPrimaryProfessionPoints(sWorld.MaxProfs);
 
     setRace( race );
     setClass( class_ );
@@ -1522,9 +1522,9 @@ void Player::EventDeath()
 
 /*  Gives numtps talent points to the player  */
 void Player::GiveTalent(uint32 numtps){
-    uint32 currtps = GetTalentPoints(SPEC_PRIMARY);
+    uint32 currtps = GetTalentPoints();
 	
-    SetTalentPoints(SPEC_PRIMARY, currtps+numtps);
+    SetTalentPoints(currtps+numtps);
 
 	}
  
@@ -1571,7 +1571,7 @@ void Player::GiveXP(uint32 xp, const uint64 &guid, bool allowbonus)
 		levelup = true;
 
 		if(level > 9)
-			ModTalentPoints(SPEC_PRIMARY, 1);
+			ModTalentPoints(1);
 
 		if(level >= GetMaxLevel() )
 			break;
@@ -2146,7 +2146,7 @@ void Player::addSpell(uint32 spell_id)
 		{
 			case SKILL_TYPE_PROFESSION:
 				max=75*((spell->RankNumber)+1);
-				ModTalentPoints(SPEC_SECONDARY, -1 ); // we are learning a profession, so subtract a point.
+				ModPrimaryProfessionPoints( -1 ); // we are learning a profession, so subtract a point.
 				break;
 			case SKILL_TYPE_SECONDARY:
 				max=75*((spell->RankNumber)+1);
@@ -2324,8 +2324,8 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 	if( m_bg != NULL && IS_ARENA( m_bg->GetType() ) )
 		in_arena = true;
 
-	if( m_uint32Values[PLAYER_CHARACTER_POINTS2] > sWorld.MaxProfs )
-		m_uint32Values[PLAYER_CHARACTER_POINTS2] = sWorld.MaxProfs;
+	if( GetPrimaryProfessionPoints() > sWorld.MaxProfs )
+		SetPrimaryProfessionPoints( sWorld.MaxProfs );
 
 	//Calc played times
 	uint32 playedt = (uint32)UNIXTIME - m_playedtime[2];
@@ -2404,7 +2404,7 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 		ss << (uint32)0 << ","; // make sure ammo slot is 0 for these classes, otherwise it can mess up wand shoot
 	else
 		ss << m_uint32Values[PLAYER_AMMO_ID] << ",";
-	ss << m_uint32Values[PLAYER_CHARACTER_POINTS2] << ",";
+	ss << GetPrimaryProfessionPoints() << ",";
 
 	ss << load_health << ","
 	<< load_mana << ","
@@ -6440,11 +6440,11 @@ void Player::Reset_Talents()
 	uint32 l = getLevel();
 	if( l > 9 )
 	{
-		SetTalentPoints(SPEC_PRIMARY, l - 9);
+		SetTalentPoints(l - 9);
 	}
 	else
 	{
-		SetTalentPoints(SPEC_PRIMARY, 0);
+		SetTalentPoints(0);
 	}
 
 	if( DualWield2H )
@@ -8221,7 +8221,7 @@ void Player::ApplyLevelInfo(LevelInfo* Info, uint32 Level)
 	SetPower( POWER_TYPE_MANA, Info->Mana );
 
 	// Calculate talentpoints
-	uint32 TalentPoints = GetTalentPoints(SPEC_PRIMARY);
+	uint32 TalentPoints = GetTalentPoints();
 
 	if (Level >= PreviousLevel) {
 		// Level is increased - talent points are only added, so no reset
@@ -8232,7 +8232,7 @@ void Player::ApplyLevelInfo(LevelInfo* Info, uint32 Level)
 			// Only add talent points for new levels above 9
 			TalentPoints += Level - 9;
 		}
-		SetTalentPoints(SPEC_PRIMARY, TalentPoints);
+		SetTalentPoints(TalentPoints);
 	} else {
 		uint32 removed = 0;
 		if (Level >= 10) {
@@ -8248,7 +8248,7 @@ void Player::ApplyLevelInfo(LevelInfo* Info, uint32 Level)
 		} else {
 			// Remove calculated amount of free talent points
 			TalentPoints -= removed;
-			SetTalentPoints(SPEC_PRIMARY, TalentPoints);
+			SetTalentPoints(TalentPoints);
 		}
 	}
 
@@ -12545,7 +12545,7 @@ void Player::LearnTalent(uint32 talentid, uint32 rank, bool isPreviewed ){
 				}
 			}
 
-			SetTalentPoints(SPEC_PRIMARY, CurTalentPoints-1);
+			SetTalentPoints(CurTalentPoints-1);
 			m_specs[m_talentActiveSpec].AddTalent(talentid, uint8(rank));
 			smsg_TalentsInfo(false);
 		}
