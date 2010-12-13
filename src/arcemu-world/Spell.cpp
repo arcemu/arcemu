@@ -756,7 +756,7 @@ uint8 Spell::DidHit( uint32 effindex, Unit* target )
 	/************************************************************************/
 	/* Check if the spell is resisted.                                      */
 	/************************************************************************/
-	if( GetProto()->School == SCHOOL_NORMAL  && GetProto()->MechanicsType == 0 )
+	if( GetProto()->School == SCHOOL_NORMAL  && GetProto()->MechanicsType == MECHANIC_NONE )
 		return SPELL_DID_HIT_SUCCESS;
 
 	bool pvp =(p_caster && p_victim);
@@ -2765,7 +2765,7 @@ void Spell::HandleAddAura(uint64 guid)
 
 	uint32 spellid = 0;
 
-	if( ( GetProto()->MechanicsType == 25 && GetProto()->Id != 25771 ) || GetProto()->Id == 31884 ) // Cast spell Forbearance
+	if( ( GetProto()->MechanicsType == MECHANIC_INVULNARABLE && GetProto()->Id != 25771 ) || GetProto()->Id == 31884 ) // Cast spell Forbearance
 	{
 		if( GetProto()->Id != 31884 )
 			spellid = 25771;
@@ -2776,9 +2776,9 @@ void Spell::HandleAddAura(uint64 guid)
 			TO< Player* >(Target)->mAvengingWrath = false;
 		}
 	}
-	else if( GetProto()->MechanicsType == 16 && GetProto()->Id != 11196) // Cast spell Recently Bandaged
+	else if( GetProto()->MechanicsType == MECHANIC_HEALING && GetProto()->Id != 11196) // Cast spell Recently Bandaged
 		spellid = 11196;
-	else if( GetProto()->MechanicsType == 19 && GetProto()->Id != 6788) // Cast spell Weakened Soul
+	else if( GetProto()->MechanicsType == MECHANIC_SHIELDED && GetProto()->Id != 6788) // Cast spell Weakened Soul
 		spellid = 6788;
 	else if( GetProto()->Id == 45438) // Cast spell Hypothermia
 		spellid = 41425;
@@ -4265,6 +4265,7 @@ void Spell::RemoveItems()
 		{
 			i_caster->ModStackCount(  -1 );
 			i_caster->m_isDirty = true;
+			i_caster = NULL;
 		}
 		else
 		{
@@ -4288,7 +4289,6 @@ void Spell::RemoveItems()
 					// If we have only 1 charge left, it's pointless to decrease the charge, we will have to remove the item anyways, so who cares ^^
 					if( charges == -1 ){
 						i_caster->GetOwner()->GetItemInterface()->SafeFullRemoveItemByGuid( i_caster->GetGUID() );
-						i_caster = NULL;
 					}else{
 						i_caster->ModCharges( x, 1 );
 					}
@@ -4297,6 +4297,7 @@ void Spell::RemoveItems()
 					i_caster->ModCharges( x, -1 );
 				}
 
+				i_caster = NULL;
 				break;
 			}
 		}
