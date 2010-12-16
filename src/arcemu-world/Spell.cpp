@@ -848,7 +848,7 @@ uint8 Spell::prepare( SpellCastTargets * targets )
 	if(!m_caster->IsInWorld())
 	{
 		sLog.outDebug("Object "I64FMT" is casting Spell ID %u while not in World", m_caster->GetGUID(), GetProto()->Id);
-		delete this;
+		DecRef();
 		return SPELL_FAILED_DONT_REPORT;
 	}
 
@@ -859,7 +859,10 @@ uint8 Spell::prepare( SpellCastTargets * targets )
 	{
 		AIInterface *ai = u_caster->GetAIInterface();
 		if (ai->getAIState() == STATE_FEAR || ai->getAIState() == STATE_WANDER)
+		{
+			DecRef();
 			return SPELL_FAILED_NOT_READY;
+		}
 	}
 
 	chaindamage = 0;
@@ -888,7 +891,10 @@ uint8 Spell::prepare( SpellCastTargets * targets )
 	{
 		// HookInterface events
 		if (!sHookInterface.OnCastSpell(p_caster, GetProto(), this))
+		{
+			DecRef();
 			return SPELL_FAILED_UNKNOWN;
+		}
 
 		if( p_caster->cannibalize )
 		{
