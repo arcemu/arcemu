@@ -2648,12 +2648,12 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 		_SavePetSpells(buf);
 	}
 	m_nextSave = getMSTime() + sWorld.getIntRate(INTRATE_SAVE);
+#ifdef ENABLE_ACHIEVEMENTS
+	m_achievementMgr.SaveToDB(buf);
+#endif
 
 	if(buf)
 		CharacterDatabase.AddQueryBuffer(buf);
-#ifdef ENABLE_ACHIEVEMENTS
-	m_achievementMgr.SaveToDB();
-#endif
 }
 
 void Player::_SaveQuestLogEntry(QueryBuffer * buf)
@@ -2752,6 +2752,10 @@ bool Player::LoadFromDB(uint32 guid)
 	q->AddQuery("SELECT SpellID FROM playerspells WHERE GUID = %u", guid ); // 12
 	q->AddQuery("SELECT SpellID FROM playerdeletedspells WHERE GUID = %u", guid ); // 13
 	q->AddQuery("SELECT SkillID, CurrentValue, MaximumValue FROM playerskills WHERE GUID = %u", guid ); // 14
+
+	//Achievements
+	q->AddQuery("SELECT achievement, date FROM character_achievement WHERE guid = '%u'", guid); // 15
+	q->AddQuery("SELECT criteria, counter, date FROM character_achievement_progress WHERE guid = '%u'", guid); // 16
 
     // queue it!
 	SetLowGUID( guid );
@@ -2870,7 +2874,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 
 	// load achievements before anything else otherwise skills would complete achievements already in the DB, leading to duplicate achievements and criterias(like achievement=126).
 #ifdef ENABLE_ACHIEVEMENTS
-	m_achievementMgr.LoadFromDB(CharacterDatabase.Query("SELECT achievement, date FROM character_achievement WHERE guid = '%u'", GetLowGUID() ),CharacterDatabase.Query("SELECT criteria, counter, date FROM character_achievement_progress WHERE guid = '%u'", GetLowGUID() ));
+	m_achievementMgr.LoadFromDB(results[15].result, results[16].result);
 #endif
 
 	CalculateBaseStats();

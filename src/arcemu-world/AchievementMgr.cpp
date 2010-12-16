@@ -202,7 +202,7 @@ AchievementMgr::~AchievementMgr()
 	Save Achievement data to database
 	Saves all completed achievements to database.  Saves all achievement progresses that have been started, and that aren't calculated on login, to database.
 */
-void AchievementMgr::SaveToDB()
+void AchievementMgr::SaveToDB(QueryBuffer *buf)
 {
 	if( !m_completedAchievements.empty() )
 	{
@@ -212,7 +212,10 @@ void AchievementMgr::SaveToDB()
         ss << m_player->GetLowGUID();
         ss << ";";
 
-        CharacterDatabase.ExecuteNA( ss.str().c_str() );
+		if(buf == NULL)
+			CharacterDatabase.ExecuteNA( ss.str().c_str() );
+		else
+			buf->AddQueryNA( ss.str().c_str() );
 
         ss.rdbuf()->str("");
 
@@ -223,7 +226,10 @@ void AchievementMgr::SaveToDB()
 			if( ss.str().length() >= 16000 )
 			{
 				// SQL query length is limited to 16384 characters
-				CharacterDatabase.ExecuteNA( ss.str().c_str() );
+				if(buf == NULL)
+					CharacterDatabase.ExecuteNA( ss.str().c_str() );
+				else
+					buf->AddQueryNA( ss.str().c_str() );
 				ss.str("");
 				ss << "INSERT INTO character_achievement VALUES ";
 				first = true;
@@ -239,7 +245,10 @@ void AchievementMgr::SaveToDB()
 			}
             ss << "(" << m_player->GetLowGUID() << ", " << iter->first << ", " << iter->second << ")";
 		}
-		CharacterDatabase.ExecuteNA( ss.str().c_str() );
+		if(buf == NULL)
+			CharacterDatabase.ExecuteNA( ss.str().c_str() );
+		else
+			buf->AddQueryNA( ss.str().c_str() );
 	}
 
 	if( !m_criteriaProgress.empty() )
@@ -250,7 +259,10 @@ void AchievementMgr::SaveToDB()
         ss << m_player->GetLowGUID();
         ss << ";";
 
-        CharacterDatabase.ExecuteNA( ss.str().c_str() );
+		if(buf == NULL)
+			CharacterDatabase.ExecuteNA( ss.str().c_str() );
+		else
+			buf->AddQueryNA( ss.str().c_str() );
 
         ss.rdbuf()->str("");
 
@@ -264,7 +276,10 @@ void AchievementMgr::SaveToDB()
 				if( ss.str().length() >= 16000 )
 				{
 					// SQL query length is limited to 16384 characters
-					CharacterDatabase.ExecuteNA( ss.str().c_str() );
+					if(buf == NULL)
+						CharacterDatabase.ExecuteNA( ss.str().c_str() );
+					else
+						buf->AddQueryNA( ss.str().c_str() );
 					ss.str("");
 					ss << "INSERT INTO character_achievement_progress VALUES ";
 					first = true;
@@ -283,7 +298,10 @@ void AchievementMgr::SaveToDB()
 		if( !first )
 		{
 			// don't execute query if there's no entries to save
-			CharacterDatabase.ExecuteNA( ss.str().c_str() );
+			if(buf == NULL)
+				CharacterDatabase.ExecuteNA( ss.str().c_str() );
+			else
+				buf->AddQueryNA( ss.str().c_str() );
 		}
 	}
 }
@@ -305,7 +323,6 @@ void AchievementMgr::LoadFromDB(QueryResult *achievementResult, QueryResult *cri
 			else 
 				sLog.outError("Duplicate completed achievement %u for player %u, skipping", id, (uint32)m_player->GetGUID() );
 		} while(achievementResult->NextRow());
-		delete achievementResult;
 	}
 
 	if( criteriaResult )
@@ -323,7 +340,6 @@ void AchievementMgr::LoadFromDB(QueryResult *achievementResult, QueryResult *cri
 				sLog.outError( "Duplicate criteria progress %u for player %u, skipping", progress_id, (uint32) m_player->GetGUID() );
 
 		}while( criteriaResult->NextRow() );
-		delete criteriaResult;
 	}
 }
 
