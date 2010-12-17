@@ -4661,11 +4661,6 @@ exit:
 					value = float2int32( value * 1.06f );
 				break;
 			}
-			case 34501:{ //Hunter - Expose Weakness
-				if (u_caster != NULL && ( i == 0 || i == 1))
-					value = u_caster->GetStat(STAT_AGILITY) >> 2;
-				break;
-			}
 			case 57669: //Replenishment
 			case 61782:{
 				if( p_caster != NULL && i== 0 && target != NULL )
