@@ -548,9 +548,9 @@ const char* SpellAuraNames[TOTAL_SPELL_AURAS] = {
     "REDUCE_ATTACKER_CRICTICAL_HIT_DAMAGE_MELEE_PCT",	// 203
     "REDUCE_ATTACKER_CRICTICAL_HIT_DAMAGE_RANGED_PCT",	// 204
 	"",													// 205
-	"",													// 206
-	"",													// 207
-	"",													// 208
+	"SPELL_AURA_ENABLE_FLIGHT",							// 206
+	"SPELL_AURA_ENABLE_FLIGHT2",						// 207
+	"SPELL_AURA_ENABLE_FLIGHT_WITH_UNMOUNTED_SPEED",	// 208
 	"",													// 209
 	"",													// 210
 	"",													// 211

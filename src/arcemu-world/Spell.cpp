@@ -323,7 +323,7 @@ Spell::~Spell()
 bool Spell::IsStealthSpell()
 {
 	//check if aura name is some stealth aura
-	if( GetProto()->EffectApplyAuraName[0] == 16 || GetProto()->EffectApplyAuraName[1] == 16 || GetProto()->EffectApplyAuraName[2] == 16 )
+	if( GetProto()->EffectApplyAuraName[0] == SPELL_AURA_MOD_STEALTH || GetProto()->EffectApplyAuraName[1] == SPELL_AURA_MOD_STEALTH || GetProto()->EffectApplyAuraName[2] == SPELL_AURA_MOD_STEALTH )
 		return true;
 	return false;
 }
@@ -332,7 +332,7 @@ bool Spell::IsStealthSpell()
 bool Spell::IsInvisibilitySpell()
 {
 	//check if aura name is some invisibility aura
-	if( GetProto()->EffectApplyAuraName[0] == 18 || GetProto()->EffectApplyAuraName[1] == 18 || GetProto()->EffectApplyAuraName[2] == 18 )
+	if( GetProto()->EffectApplyAuraName[0] == SPELL_AURA_MOD_INVISIBILITY || GetProto()->EffectApplyAuraName[1] == SPELL_AURA_MOD_INVISIBILITY || GetProto()->EffectApplyAuraName[2] == SPELL_AURA_MOD_INVISIBILITY )
 		return true;
 	return false;
 }

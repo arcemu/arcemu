@@ -4188,7 +4188,7 @@ void Unit::AddAura(Aura * aur)
 	{
 		for( uint32 i = 0; i < 3; ++i )
 		{
-			if( aur->GetSpellProto()->EffectApplyAuraName[i] == 208 || aur->GetSpellProto()->EffectApplyAuraName[i] == 207 )
+			if( aur->GetSpellProto()->EffectApplyAuraName[i] == SPELL_AURA_ENABLE_FLIGHT_WITH_UNMOUNTED_SPEED || aur->GetSpellProto()->EffectApplyAuraName[i] == SPELL_AURA_ENABLE_FLIGHT2 )
 			{
 				delete aur;
 				return;

@@ -716,7 +716,7 @@ void ApplyNormalFixes()
 			sp->proc_interval = 3000; //few seconds
 		}
 		//mage ignite talent should proc only on some chances
-		else if( strstr( sp->Name, "Ignite") && sp->Id>=11119 && sp->Id<=12848 && sp->EffectApplyAuraName[0] == 4 )
+		else if( strstr( sp->Name, "Ignite") && sp->Id>=11119 && sp->Id<=12848 && sp->EffectApplyAuraName[0] == SPELL_AURA_DUMMY )
 		{
 			//check if we can find in the description
 			const char *startofid=strstr(sp->Description, "an additional ");
@@ -726,7 +726,7 @@ void ApplyNormalFixes()
 				sp->EffectBasePoints[0]=atoi(startofid); //get new value. This is actually level*8 ;)
 			}
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA; //aura
-			sp->EffectApplyAuraName[0] = 42; //force him to use procspell effect
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL; //force him to use procspell effect
 			sp->EffectTriggerSpell[0] = 12654; //evil , but this is good for us :D
 			sp->procFlags = PROC_ON_SPELL_CRIT_HIT; //add procflag here since this was not processed with the others !
 		}
@@ -767,7 +767,7 @@ void ApplyNormalFixes()
 			{
 				startofid += strlen("to deal $");
 				sp->EffectTriggerSpell[0] = atoi(startofid);
-				sp->EffectApplyAuraName[0] = 42;
+				sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 				sp->procFlags = PROC_ON_MELEE_ATTACK;
 				sp->procChance = 50;
 			}
@@ -822,21 +822,21 @@ void ApplyNormalFixes()
 		if( !sp->MechanicsType )
 		{
 			//Set Silencing spells mechanic.
-			if( sp->EffectApplyAuraName[0] == 27 ||
-				sp->EffectApplyAuraName[1] == 27 ||
-				sp->EffectApplyAuraName[2] == 27 )
+			if( sp->EffectApplyAuraName[0] == SPELL_AURA_MOD_SILENCE ||
+				sp->EffectApplyAuraName[1] == SPELL_AURA_MOD_SILENCE ||
+				sp->EffectApplyAuraName[2] == SPELL_AURA_MOD_SILENCE )
 				sp->MechanicsType = MECHANIC_SILENCED;
 
 			//Set Stunning spells mechanic.
-			if( sp->EffectApplyAuraName[0] == 12 ||
-				sp->EffectApplyAuraName[1] == 12 ||
-				sp->EffectApplyAuraName[2] == 12 )
+			if( sp->EffectApplyAuraName[0] == SPELL_AURA_MOD_STUN ||
+				sp->EffectApplyAuraName[1] == SPELL_AURA_MOD_STUN ||
+				sp->EffectApplyAuraName[2] == SPELL_AURA_MOD_STUN )
 				sp->MechanicsType = MECHANIC_STUNNED;
 
 			//Set Fearing spells mechanic
-			if( sp->EffectApplyAuraName[0] == 7 ||
-				sp->EffectApplyAuraName[1] == 7 ||
-				sp->EffectApplyAuraName[2] == 7 )
+			if( sp->EffectApplyAuraName[0] == SPELL_AURA_MOD_FEAR ||
+				sp->EffectApplyAuraName[1] == SPELL_AURA_MOD_FEAR ||
+				sp->EffectApplyAuraName[2] == SPELL_AURA_MOD_FEAR )
 				sp->MechanicsType = MECHANIC_FLEEING;
 
 			//Set Interrupted spells mech
@@ -2450,7 +2450,7 @@ void ApplyNormalFixes()
         if( sp != NULL )
         {
             sp->Effect[1] = SPELL_EFFECT_APPLY_AURA;
-			sp->EffectApplyAuraName[1] = 42;
+			sp->EffectApplyAuraName[1] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[1] = 54203;
 			sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
         }
@@ -2459,7 +2459,7 @@ void ApplyNormalFixes()
         if( sp != NULL )
         {
             sp->Effect[1] = SPELL_EFFECT_APPLY_AURA;
-			sp->EffectApplyAuraName[1] = 42;
+			sp->EffectApplyAuraName[1] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[1] = 54203;
 			sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
         }
@@ -2468,7 +2468,7 @@ void ApplyNormalFixes()
         if( sp != NULL )
         {
             sp->Effect[1] = SPELL_EFFECT_APPLY_AURA;
-			sp->EffectApplyAuraName[1] = 42;
+			sp->EffectApplyAuraName[1] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[1] = 54203;
 			sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
         }
@@ -6769,7 +6769,7 @@ void ApplyNormalFixes()
 		sp = CheckAndReturnSpellEntry( 40251 );
 		if( sp != NULL )
 		{	
-			sp->EffectApplyAuraName[0] = 23;
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 0;
 		}
 
