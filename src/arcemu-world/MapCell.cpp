@@ -36,6 +36,7 @@ void MapCell::Init(uint32 x, uint32 y, MapMgr *mapmgr)
 	_active = false;
 	_loaded = false;
 	_playerCount = 0;
+	_corpses.clear();
 	_x= static_cast<uint16>( x );
 	_y= static_cast<uint16>( y );
 	_unloadpending=false;
@@ -47,6 +48,12 @@ void MapCell::AddObject(Object *obj)
 {
 	if(obj->IsPlayer())
 		++_playerCount;
+	else if(obj->IsCorpse())
+	{
+		_corpses.push_back( obj );
+		if(_unloadpending)
+			CancelPendingUnload();
+	}
 
 	_objects.insert(obj);
 }
@@ -55,6 +62,8 @@ void MapCell::RemoveObject(Object *obj)
 {
 	if(obj->IsPlayer())
 		--_playerCount;
+	else if(obj->IsCorpse())
+		_corpses.remove( obj );
 
 	if(objects_iterator != _objects.end() && (*objects_iterator) == obj)  
 		++objects_iterator;
@@ -88,7 +97,7 @@ void MapCell::SetActivity(bool state)
 				(*itr)->Deactivate(_mapmgr);
 		}
 
-		if(!_unloadpending)
+		if(!_unloadpending && CanUnload())
 			QueueUnloadPending();
 
 		if (sWorld.Collision) {
@@ -137,16 +146,6 @@ void MapCell::RemoveObjects()
 
 		objects_iterator++;
 
-		if( _unloadpending )
-		{
-			if(obj->GetTypeFromGUID() == HIGHGUID_TYPE_TRANSPORTER)
-				continue;
-			if(obj->IsCorpse() && GET_LOWGUID_PART(TO< Corpse* >(obj)->GetOwner()) != 0)
-				continue;
-			if(!obj->m_loadedFromDB)
-				continue;
-		}
-
 		//If MapUnloadTime is non-zero, a transport could get deleted here (when it arrives to a cell that's scheduled to be unloaded because players left from it), so don't delete it! - By: VLack aka. VLsoft
 		if( !bServerShutdown && obj->IsGameObject() && TO< GameObject* >(obj)->GetInfo()->Type == GAMEOBJECT_TYPE_TRANSPORT )
 			continue;
@@ -160,6 +159,7 @@ void MapCell::RemoveObjects()
 		delete obj;
 	}
 	_objects.clear();
+	_corpses.clear();
 	_playerCount = 0;
 	_loaded = false;
 }
@@ -286,6 +286,7 @@ void MapCell::CancelPendingUnload()
 		return;
 
 	sEventMgr.RemoveEvents(_mapmgr,MAKE_CELL_EVENT(_x,_y));
+	_unloadpending = false;
 }
 
 void MapCell::Unload()
@@ -311,4 +312,24 @@ void MapCell::Unload()
 	RemoveObjects();
 
 	_mapmgr->Remove(_x, _y);
+}
+
+void MapCell::CorpseGoneIdle(Object* corpse)
+{
+	_corpses.remove( corpse );
+	CheckUnload();
+}
+
+void MapCell::CheckUnload()
+{
+	if( !_active && !_unloadpending && CanUnload() )
+		QueueUnloadPending();
+}
+
+bool MapCell::CanUnload()
+{
+	if( _corpses.size() == 0 && _mapmgr->m_battleground == NULL )
+		return true;
+	else
+		return false;
 }

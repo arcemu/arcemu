@@ -135,3 +135,15 @@ void Corpse::Delink()
 	SetCorpseState(CORPSE_STATE_BONES);
 	DeleteFromDB();
 }
+
+void Corpse::SetOwner( uint64 guid )
+{
+	SetUInt64Value(CORPSE_FIELD_OWNER, guid);
+	if( guid == 0 )
+	{
+		//notify the MapCell that the Corpse has no more an owner so the MapCell can go idle (if there's nothing else)
+		MapCell* cell = GetMapCell();
+		if( cell != NULL )
+			cell->CorpseGoneIdle( this );
+	}
+}

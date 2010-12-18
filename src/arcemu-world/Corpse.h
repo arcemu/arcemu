@@ -71,7 +71,7 @@ public:
 	time_t GetDeathClock(){ return m_time; }
 
 	//Easy functions
-	void SetOwner( uint64 guid ) { SetUInt64Value(CORPSE_FIELD_OWNER, guid); }
+	void SetOwner( uint64 guid );
 	uint64 GetOwner() { return GetUInt64Value(CORPSE_FIELD_OWNER); }
 	
 	void SetDisplayId( uint32 id ) { SetUInt32Value(CORPSE_FIELD_DISPLAY_ID, id); }

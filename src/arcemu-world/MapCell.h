@@ -75,6 +75,10 @@ public:
 	ObjectSet _respawnObjects;
 	ObjectSet::iterator objects_iterator;//required by MapCell::RemoveObjects() removing Creatures which will remove their guardians and corrupt itr.
 
+	//the corpse has no more an owner (like if he resurrected) so it can be despawned and
+	//the MapCell can be unloaded(if CanUnload() returns true)
+	void CorpseGoneIdle(Object* corpse);
+
 private:
 	uint16 _x,_y;
 	ObjectSet _objects;
@@ -82,6 +86,16 @@ private:
 	bool _unloadpending;
 
 	uint16 _playerCount;
+
+	//checks if the MapCell can be unloaded, based on _corpses and if it's in a battleground
+	bool CanUnload();
+	//checks if the MapCell can be unloaded and if so it queues it for unload.
+	//this MUST be called when a corpse goes idle
+	void CheckUnload();
+
+	//keep track of active corpses so we don't unload a MapCell with an active corpse (otherwise players will not be able to resurrect)
+	std::list< Object* > _corpses;
+
 	MapMgr* _mapmgr;
 
 	Mutex m_objectlock;

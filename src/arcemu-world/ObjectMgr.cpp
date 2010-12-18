@@ -1681,16 +1681,6 @@ void ObjectMgr::CorpseAddEventDespawn(Corpse *pCorpse)
 		sEventMgr.AddEvent(pCorpse->GetMapMgr(), &MapMgr::EventCorpseDespawn, pCorpse->GetGUID(), EVENT_CORPSE_DESPAWN, 600000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 }
 
-void ObjectMgr::DespawnCorpse(uint64 Guid)
-{
-	Corpse * pCorpse = objmgr.GetCorpse((uint32)Guid);
-	if(pCorpse == NULL)	// Already Deleted
-		return;
-
-	pCorpse->Despawn();
-	delete pCorpse;
-}
-
 void ObjectMgr::CorpseCollectorUnload()
 {
 	CorpseMap::const_iterator itr;
