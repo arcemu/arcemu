@@ -16,7 +16,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <string>
-#include "../Log.h"
+//#include "../Log.h"
 
 class DBCFile
 {

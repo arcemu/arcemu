@@ -13,7 +13,6 @@ project status : not finished yet..not tested
 #include <stdlib.h>
 #include <assert.h>
 #include <conio.h>
-#include <windows.h>
 
 #include "../../../src/arcemu-shared/Database/dbcfile.h"
 

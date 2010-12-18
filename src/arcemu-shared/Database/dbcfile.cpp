@@ -12,7 +12,7 @@
 
 #include "dbcfile.h"
 #include <cstdio>
-//#include "../Common.h"
+
 DBCFile::DBCFile()
 {
 	data = NULL;
@@ -107,7 +107,7 @@ int DBCFile::AddRecord() //simply add an empty record to the end of the data sec
 	else 
 	{
 		//the dbc file is not yet opened
-		sLog.outError(" Warning : adding record to an empty or unooened DBC file");
+		printf(" Warning : adding record to an empty or unopened DBC file");
 		data = (unsigned char *)malloc( recordSize );
 		recordCount = 1;
 	}
@@ -115,7 +115,7 @@ int DBCFile::AddRecord() //simply add an empty record to the end of the data sec
 	//seems like an error ocured
 	if ( !data )
 	{
-		sLog.outError(" Error : Could not resize DBC data partition");
+		printf(" Error : Could not resize DBC data partition");
 		recordCount = 0;
 		return -1;
 	}
@@ -136,7 +136,7 @@ int DBCFile::AddString(const char *new_string) //simply add an empty record to t
 	else 
 	{
 		//the dbc file is not yet opened
-		sLog.outError(" Warning : adding string to an empty or unopened DBC file");
+		printf(" Warning : adding string to an empty or unopened DBC file");
 		stringTable = (unsigned char *)malloc( new_str_len );
 		stringSize = (unsigned int)new_str_len;
 	}
@@ -144,7 +144,7 @@ int DBCFile::AddString(const char *new_string) //simply add an empty record to t
 	//seems like an error ocured
 	if ( !stringTable )
 	{
-		sLog.outError(" Error : Could not resize DBC string partition");
+		printf(" Error : Could not resize DBC string partition");
 		stringSize = 0;
 		return -1;
 	}
