@@ -1726,8 +1726,16 @@ AddItemResult ItemInterface::AddItemToFreeSlot(Item *item)
 				m_pItems[i]->GetStackCount() + item->GetStackCount() <= itemMaxStack )
 			{
 				m_pItems[i]->SetStackCount( m_pItems[i]->GetStackCount() + item->GetStackCount() );
+				m_pItems[i]->m_isDirty = true;
 				result.Slot = static_cast<int8>( i );
 				result.Result=true;
+
+				// delete the item because we added the stacks to another one
+				item->DeleteFromDB();
+				// We make it a garbage item, so if it's used after calling this method, it gets deleted in the next Player update
+				// otherwise we get a nice crash
+				m_pOwner->AddGarbageItem( item );
+
 				return ADD_ITEM_RESULT_OK;
 			}
 	}
@@ -1758,8 +1766,16 @@ AddItemResult ItemInterface::AddItemToFreeSlot(Item *item)
 					item2->GetStackCount() + item->GetStackCount() <= itemMaxStack )
 				{
 					item2->SetStackCount( item2->GetStackCount() + item->GetStackCount() );
+					item2->m_isDirty = true;
 					result.Slot = static_cast<int8>( i );
 					result.Result=true;
+
+					// delete the item because we added the stacks to another one
+					item->DeleteFromDB();
+					// We make it a garbage item, so if it's used after calling this method, it gets deleted in the next Player update
+					// otherwise we get a nice crash
+					m_pOwner->AddGarbageItem( item );
+
 					return ADD_ITEM_RESULT_OK;
 				}
 			}

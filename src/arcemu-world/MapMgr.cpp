@@ -250,7 +250,7 @@ void MapMgr::PushObject(Object *obj)
 
 	if(obj->IsCorpse())
 	{
-		m_corpses.insert(((Corpse*)obj));
+		m_corpses.insert( TO< Corpse* >(obj) );
 	}
 
 	obj->ClearInRangeSet();
@@ -549,7 +549,7 @@ void MapMgr::RemoveObject(Object *obj, bool free_guid)
 
 	if(obj->IsCorpse())
 	{
-		m_corpses.erase(((Corpse*)obj));
+		m_corpses.erase( TO< Corpse* >(obj) );
 	}
 
 	MapCell* cell = GetCell(obj->GetMapCellX(), obj->GetMapCellY());

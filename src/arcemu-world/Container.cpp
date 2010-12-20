@@ -327,7 +327,7 @@ bool Container::AddItemToFreeSlot(Item *pItem, uint32 * r_slot)
 
 void Container::SaveBagToDB(int8 slot, bool first, QueryBuffer * buf)
 {
-	((Item*)this)->SaveToDB(INVENTORY_SLOT_NOT_SET, slot, first, buf);
+	SaveToDB(INVENTORY_SLOT_NOT_SET, slot, first, buf);
 
 	for(uint32 i = 0; i < m_itemProto->ContainerSlots; i++)
 	{
