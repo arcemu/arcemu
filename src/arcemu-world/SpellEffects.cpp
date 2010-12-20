@@ -813,7 +813,7 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 
 void Spell::SpellEffectTeleportUnits( uint32 i )  // Teleport Units
 {
-	if( !unitTarget || !u_caster )
+	if( unitTarget == NULL || m_caster == NULL )
 		return;
 
 	uint32 spellId = GetProto()->Id;
@@ -853,7 +853,10 @@ void Spell::SpellEffectTeleportUnits( uint32 i )  // Teleport Units
 
 	// Summon
 	if( m_spellInfo->HasCustomFlagForEffect( i, TELEPORT_TO_CASTER ) ){
-		HandleTeleport( u_caster->GetPositionX(), u_caster->GetPositionY(), u_caster->GetPositionZ(), u_caster->GetMapId(), unitTarget );
+		if( u_caster == NULL )
+			return;
+
+		HandleTeleport( m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ(), m_caster->GetMapId(), unitTarget );
 		return;
 	}
 
