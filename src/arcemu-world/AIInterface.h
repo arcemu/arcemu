@@ -558,6 +558,5 @@ public:
 	bool skip_reset_hp;
 
 	void WipeCurrentTarget();
-	//Unit * getNextTarget();
 };
 #endif

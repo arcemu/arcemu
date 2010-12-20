@@ -71,6 +71,7 @@ public:
 	{
 		other.Acquire();
 	}
+	void operator =(LuaGuard &);
 	~LuaGuard() {
 		lock.Release();
 	}
