@@ -185,6 +185,8 @@ bool MailMessage::AddMessageDataToPacket(WorldPacket& data)
             data << uint32( pItem->GetDurabilityMax() );
             data << uint32( pItem->GetDurability() );
 			data << uint8( 0 ); // unknown
+
+			delete pItem;
 		}
 
 	}
