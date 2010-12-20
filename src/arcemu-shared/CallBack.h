@@ -37,6 +37,72 @@ public:
 	CallbackFP* Create();
 };
 
+class CallBackFunctionP0 : public CallbackBase
+{
+	typedef void(*cbfunction)();
+	cbfunction cb;
+public:
+	CallBackFunctionP0(cbfunction fn) : cb(fn) {}
+	void operator()() { return (cb)(); }
+	void execute() { return operator()(); }
+};
+
+template<typename P1>
+class CallBackFunctionP1 : public CallbackBase
+{
+	typedef void(*cbfunction)(P1);
+	cbfunction cb;
+	P1 _p1;
+public:
+	CallBackFunctionP1(cbfunction fn, P1 p1)
+	{
+		cb = fn;
+		_p1 = p1;
+	}
+	void operator()() { return (cb)(_p1); }
+	void execute() { return operator()(); }
+};
+
+template<typename P1, typename P2>
+class CallBackFunctionP2 : public CallbackBase
+{
+	typedef void(*cbfunction)(P1,P2);
+	cbfunction cb;
+	P1 _p1;
+	P2 _p2;
+public:
+	CallBackFunctionP2(cbfunction fn, P1 p1, P2 p2) : cb(fn), _p1(p1), _p2(p2) {}
+	void operator()() { return (cb)(_p1,_p2); }
+	void execute() { return operator()(); }
+};
+template<typename P1, typename P2, typename P3>
+class CallBackFunctionP3 : public CallbackBase
+{
+	typedef void(*cbfunction)(P1,P2, P3);
+	cbfunction cb;
+	P1 _p1;
+	P2 _p2;
+	P3 _p3;
+public:
+	CallBackFunctionP3(cbfunction fn, P1 p1, P2 p2, P3 p3) : cb(fn), _p1(p1), _p2(p2), _p3(p3) {};
+	void operator()() { return (cb)(_p1,_p2,_p3); }
+	void execute() { return operator()(); }
+};
+template<typename P1, typename P2, typename P3, typename P4>
+class CallBackFunctionP4 : public CallbackBase
+{
+	typedef void(*cbfunction)(P1,P2, P3, P4);
+	cbfunction cb;
+	P1 _p1;
+	P2 _p2;
+	P3 _p3;
+	P4 _p4;
+public:
+	CallBackFunctionP4(cbfunction fn, P1 p1, P2 p2, P3 p3, P4 p4) : cb(fn), _p1(p1), _p2(p2), _p3(p3), _p4(p4) {};
+	void operator()() { return (cb)(_p1, _p2, _p3, _p4); }
+	void execute() { return operator()(); }
+};
+
 template < class Class >
 class CallbackP0 : public CallbackBase
 {

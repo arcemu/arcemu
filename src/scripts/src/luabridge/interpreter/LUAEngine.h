@@ -30,13 +30,13 @@ GossipMenu * Menu;
 #include "StdAfx.h"
 #include "lua_instance.h"
 #include "lua_defs.h"
-#include "lua_bridge/luabridge.hpp"
+#include "../luabridge_src/luabridge.hpp"
 
 extern "C" 
 {		// we're C++, and LUA is C, so the compiler needs to know to use C function names.
-#include "lua/lua.h"
-#include "lua/lauxlib.h"
-#include "lua/lualib.h"
+#include "../lua/lua.h"
+#include "../lua/lauxlib.h"
+#include "../lua/lualib.h"
 };
 
 #if defined WIN32
@@ -169,22 +169,22 @@ namespace lua_engine
 //	We can no longer insert double pointers so we are safe here.
 #define RegisterHook(evt, _func) m_scriptMgr->register_hook( (ServerHookEvents)(evt), (_func) );
 
-#include "register_functions.h"
-#include "gameobject_functions.h"
-#include "unit_functions.h"
-#include "item_functions.h"
-#include "packet_functions.h"
-#include "taxi_functions.h"
-#include "spell_functions.h"
-#include "global_functions.h"
-#include "sql_functions.h"
-#include "aura_functions.h"
-#include "lua_hooks.h"
-#include "instance_functions.h"
-#include "quest_functions.h"
-#include "object_functions.h"
-#include "player_functions.h"
-#include "creature_functions.h"
+#include "../object_functions/register_functions.h"
+#include "../object_functions/gameobject_functions.h"
+#include "../object_functions/unit_functions.h"
+#include "../object_functions/item_functions.h"
+#include "../object_functions/packet_functions.h"
+#include "../object_functions/taxi_functions.h"
+#include "../object_functions/spell_functions.h"
+#include "../object_functions/global_functions.h"
+#include "../object_functions/sql_functions.h"
+#include "../object_functions/aura_functions.h"
+#include "../object_functions/lua_hooks.h"
+#include "../object_functions/instance_functions.h"
+#include "../object_functions/quest_functions.h"
+#include "../object_functions/object_functions.h"
+#include "../object_functions/player_functions.h"
+#include "../object_functions/creature_functions.h"
 
 
  

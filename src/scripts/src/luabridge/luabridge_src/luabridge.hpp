@@ -13,7 +13,7 @@ extern "C"
 #include "../lua/lauxlib.h"
 #include "../lua/lualib.h"
 };
-#include "../lua_defs.h"
+#include "../interpreter/lua_defs.h"
 
 /*#ifndef USE_OTHER_SHARED_PTR
 #	include "shared_ptr.hpp"

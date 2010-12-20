@@ -374,8 +374,8 @@ namespace lua_engine
 	void bindUnitMethods(luabridge::module & m)
 	{
 		m.	subclass<Unit, Object>("Unit")
-			//.method("GetAIInterface", &Unit::GetAIInterface)
-			.method("GetMobInterface", &Unit::GetMobInterface)
+			.method("GetAIInterface", &Unit::GetAIInterface)
+			//.method("GetMobInterface", &Unit::GetMobInterface)
 			.method("IsPVPFlagged", &Unit::IsPvPFlagged)
 			.method("SetPvPFlag", &Unit::SetPvPFlag)
 			.method("RemovePvPFlag", &Unit::RemovePvPFlag)
@@ -385,12 +385,12 @@ namespace lua_engine
 			.method("IsSanctuaryFlagged", &Unit::IsSanctuaryFlagged)
 			.method("SetSanctuaryFlag", &Unit::SetSanctuaryFlag)
 			.method("RemoveSanctuaryFlag", &Unit::RemoveSanctuaryFlag)
-			.method("delayBaseAttackTime", &Unit::delayBaseAttackTime)
+			/*.method("delayBaseAttackTime", &Unit::delayBaseAttackTime)
 			.method("delayRangedAttackTime", &Unit::delayRangedAttackTime)
 			.method("delayOffHandAttackTime", &Unit::delayOffHandAttackTime)
-			.method("delayAllAttackTime", &Unit::delayAllAttackTime)
+			.method("delayAllAttackTime", &Unit::delayAllAttackTime)*/
 			.method("setAttackTimer", &Unit::setAttackTimer)
-			.method("isReadyToAttack", &Unit::isReadyToAttack)
+			.method("isAttackReady", &Unit::isAttackReady)
 			.method("getLevel", &Unit::getLevel)
 			.method("setLevel", &Unit::setLevel)
 			.method("modLevel", &Unit::modLevel)
@@ -419,14 +419,14 @@ namespace lua_engine
 			.method("RemoveAura", (bool(Unit::*)(uint32) )&Unit::RemoveAura)
 			.method("RemoveAllAuras", (void(Unit::*)() )&Unit::RemoveAllAuras)
 #define BIND(name) .method(#name,&Unit::name)
-			BIND(IsAlive)
+			BIND(isAlive)
 			BIND(IsDead)
-			BIND(setDeathState)
-			BIND(getDeathState)
-			BIND(RemoveAllMovementImpairing)
+			//BIND(setDeathState)
+			//BIND(getDeathState)
+			//BIND(RemoveAllMovementImpairing)
 			BIND(RemoveNegativeAuras)
 			BIND(RemoveAllNonPersistentAuras)
-			BIND(InterruptSpell)
+			//BIND(InterruptSpell)
 			BIND(setAItoUse)
 			BIND(GetThreatModifyer)
 			BIND(ModThreatModifyer)
@@ -507,21 +507,23 @@ namespace lua_engine
 #undef BIND
 #define BIND(name) .method(#name, &AIInterface::name)
 			m.	class_<AIInterface>("AIInterface")
-				BIND(getUnit)
+				/*BIND(getUnit)
 				BIND(findClosestTarget)
 				BIND(findRandomTarget)
-				BIND(isMoving)
-				BIND(getOwner)
-				BIND(setOwner)
-				BIND(setUnitToFollow)
+				BIND(isMoving)*/
+				BIND(GetPetOwner)
+				BIND(SetPetOwner)
+				.method("SetUnitToFollow", (void(AIInterface::*)(Unit*))&AIInterface::SetUnitToFollow)
+				//BIND(SetUnitToFollow)
 				BIND(getUnitToFollow)
-				BIND(setFollowDistance)
-				BIND(getFollowDistance)
-				BIND(setFollowAngle)
-				BIND(getFollowAngle)
+				BIND(SetFollowDistance)
+				//BIND(getFollowDistance)
+				BIND(SetUnitToFollowAngle)
+				//BIND(getFollowAngle)
 				BIND(getUnitToFear)
-				BIND(setUnitToFear)
-				BIND(setForcedTarget)
+				//BIND(SetUnitToFear)
+				.method("SetUnitToFear", (void(AIInterface::*)(Unit*))&AIInterface::SetUnitToFear)
+				/*BIND(setForcedTarget)
 				BIND(getForcedTarget)
 				BIND(hasForcedTarget)
 				BIND(getPanicHp)
@@ -541,31 +543,34 @@ namespace lua_engine
 				BIND(getRangedDisable)
 				BIND(disableRanged)
 				BIND(getTargettingDisable)
-				BIND(disableTargetting)
-				BIND(getSoulLinker)
-				BIND(isSoulLinked)
-				BIND(setSoulLinker)
+				BIND(disableTargetting)*/
+				BIND(getSoullinkedWith)
+				BIND(GetIsSoulLinked)
+				BIND(SetSoulLinkedWith)
 				BIND(getAIState)
-				BIND(setAIState)
-				BIND(Spell_add)
-				BIND(Spell_remove)
-				BIND(Spell_getnext)
-				BIND(Spell_setnext)
+				//BIND(SetAIState)
+				BIND(addSpellToList)
+				//BIND(Spell_remove)
+				//BIND(Spell_getnext)
+				BIND(SetNextSpell)
 				BIND(MoveTo)
 				//BIND(calcMoveTimeToLocation)
 				BIND(StopMovement)
 				BIND(hasWaypoints)
-				BIND(Movement_allowmovement)
-				BIND(Movement_canmove)
-				BIND(Movement_isflying)
-				BIND(calcAggroRange)
-				BIND(calcCombatRange)
+				//BIND(Movement_allowmovement)
+				.property_rw("m_canmove", &AIInterface::m_canMove)
+				.property_rw("m_moveRun", &AIInterface::m_moveRun)
+				.property_rw("m_moveFly", &AIInterface::m_moveFly)
+				//BIND(Movement_canmove)
+				//BIND(Movement_isflying)
+				//BIND(calcAggroRange)
+				//BIND(calcCombatRange)
 				BIND(getNextTarget)
-				BIND(setNextTarget)
+				.method("setNextTarget", (void(AIInterface::*)(Unit*) )&AIInterface::setNextTarget)
 				BIND(AttackReaction)
 				BIND(HealReaction);
 #undef BIND
-#define BIND(name) .method(#name, &MobAI::name)
+/*#define BIND(name) .method(#name, &MobAI::name)
 			m	.subclass<MobAI,AIInterface>("MobAI")
 				BIND(addNewTarget)
 				BIND(getThreatByGUID)
@@ -613,7 +618,7 @@ namespace lua_engine
 				BIND(setCallHelpAgent)
 				BIND(getShootSpell)
 				BIND(setShootSpell);
-#undef BIND
+#undef BIND*/
 
 	}
 }
@@ -909,18 +914,6 @@ namespace luaUnit
 			pUnit->GetAIInterface()->setNextTarget(pTarget);
 			pUnit->GetAIInterface()->AttackReaction(pTarget, 1, 0);
 		}
-		return 0;
-	}
-
-	int MoveTo(lua_State * L, Unit * ptr)
-	{
-		TEST_UNIT()
-		float x = CHECK_FLOAT(L, 1);
-		float y = CHECK_FLOAT(L, 2);
-		float z = CHECK_FLOAT(L, 3);
-		float o = CHECK_FLOAT(L, 4);
-
-		ptr->GetAIInterface()->MoveTo(x, y, z, o );
 		return 0;
 	}
 
@@ -1972,23 +1965,6 @@ namespace luaUnit
 			}
 		}
 		return 1;
-	}
-
-	int GetHealthPct(lua_State * L, Unit * ptr)
-	{
-		if(!ptr)
-			lua_pushinteger(L,0);
-		else
-			lua_pushinteger(L, ptr->GetHealthPct());
-		return 1;
-	}
-
-	int SetHealthPct(lua_State * L, Unit * ptr)
-	{
-		int val = luaL_checkint(L,1);
-		if (val && ptr)
-			ptr->SetHealthPct(val);
-		return 0;
 	}
 
 	int GetItemCount(lua_State * L, Unit * ptr)
@@ -3160,53 +3136,6 @@ namespace luaUnit
 		return 0;
 	}
 
-	int Heal(lua_State * L, Unit * ptr)
-	{
-		Unit * target = CHECK_UNIT(L, 1);
-		uint32 spellid = CHECK_ULONG(L, 2);
-		uint32 amount = CHECK_ULONG(L, 3);
-		if (!target || !spellid || !amount || !ptr)
-			return 0;
-		ptr->Heal(target,spellid,amount);
-		return 0;
-	}
-
-	int Energize(lua_State * L, Unit * ptr)
-	{
-		Unit * target = CHECK_UNIT(L, 1);
-		uint32 spellid = CHECK_ULONG(L, 2);
-		uint32 amount = CHECK_ULONG(L, 3);
-		uint32 type = CHECK_ULONG(L, 4);
-		if(!target || !spellid|| !amount|| !type|| !ptr)
-			return 0;
-		ptr->Energize(target,spellid,amount,type);
-		return 0;
-	}
-
-	int SendChatMessageAlternateEntry(lua_State * L, Unit * ptr)
-	{
-		uint32 entry = CHECK_ULONG(L, 1);
-		uint8 type = CHECK_ULONG(L, 2);
-		uint32 lang = CHECK_ULONG(L, 3);
-		const char * msg = luaL_checkstring(L, 4);
-		if(!entry || !lang || !msg)
-			return 0;
-		ptr->SendChatMessageAlternateEntry(entry,type,lang,msg);
-		return 0;
-	}
-
-	int SendChatMessageToPlayer(lua_State * L, Unit * ptr)
-	{
-		uint8 type = CHECK_ULONG(L, 1);
-		uint32 lang = CHECK_ULONG(L, 2);
-		const char *msg = luaL_checkstring(L,3);
-		Player *plr = CHECK_PLAYER(L,4);
-		if (!plr || !msg || !ptr)
-			return 0;
-		ptr->SendChatMessageToPlayer(type,lang,msg,plr);
-		return 0;
-	}
-
 	int GetManaPct(lua_State * L, Unit * ptr)
 	{
 		if(!ptr) 
@@ -3481,13 +3410,6 @@ namespace luaUnit
 		return 1;
 	}
 
-	int IsPacified(lua_State * L, Unit * ptr)
-	{
-		if(ptr)
-			lua_pushboolean(L,(ptr->IsPacified()) ? 1 : 0);
-		return 1;
-	}
-
 	int SetPacified(lua_State * L, Unit * ptr)
 	{
 		bool pacified = CHECK_BOOL(L, 1);
@@ -3499,20 +3421,6 @@ namespace luaUnit
 		else
 			ptr->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED | UNIT_FLAG_SILENCED);
 		return 0;
-	}
-
-	int IsFeared(lua_State * L, Unit * ptr)
-	{
-		if (ptr)
-			lua_pushboolean(L,(ptr->IsFeared()) ? 1 : 0);
-		return 1;
-	}
-
-	int IsStunned(lua_State * L, Unit * ptr)
-	{
-		if(ptr)
-			lua_pushboolean(L,(ptr->IsStunned()) ? 1 : 0);
-		return 1;
 	}
 
 	int CreateGuardian(lua_State * L, Unit * ptr)
@@ -4005,13 +3913,6 @@ namespace luaUnit
 		if (ptr)
 			ptr->RemoveFromWorld(true);
 		return 0;
-	}
-
-	int GetFaction(lua_State * L, Unit * ptr)
-	{
-		if(ptr)
-			lua_pushnumber(L,ptr->GetFaction());
-		return 1;
 	}
 
 	int SpellNonMeleeDamageLog(lua_State * L, Unit * ptr)

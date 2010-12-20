@@ -246,7 +246,7 @@ void lua_engine::EndLuaFunctionCall(int res)
 void lua_engine::startupEngine()
 {
 	Log.Notice("LuaEngineMgr", "Spawning Lua Engine...");
-#ifdef WIN32
+/*#ifdef WIN32
 	Log.Color(TGREEN);
 	printf(" \_\_                        \_\_  \_\_                  \_\_\_\_\_\_                 \n");
 	//Log.Color(TGREEN);
@@ -268,12 +268,13 @@ void lua_engine::startupEngine()
 	Log.Color(TNORMAL);
 	#else
 	Log.Color(TGREEN);
-	printf("~~~LuaHypArc~~~");
+	
 	#endif
 	Log.Line("");
-	Log.Notice("LuaEngineMgr", "LuaHypArc Lua Engine %s: Loaded", ARCH);
 	Log.Color(TNORMAL);
-	Log.Line("");
+	Log.Line("");*/
+	Log.Notice("LuaEngineMgr","~~~LuaHypArc~~~");
+	Log.Notice("LuaEngineMgr", "LuaHypArc Lua Engine %s: Loaded", ARCH);
 
 	//Initialize our compiler.
 	LUA_COMPILER = new LUA_INSTANCE;

@@ -66,8 +66,8 @@ namespace lua_engine
 			.method("AddPathNode", &TaxiPath::AddPathNode)
 			.method("GetNodeCount", &TaxiPath::GetNodeCount)
 			//.method("GetPathNode", &TaxiPath::GetPathNode)
-			.method("GetPrice", &TaxiPath::GetPrice)
-			.method("SetPrice", &TaxiPath::SetPrice);
+			.method("GetPrice", &TaxiPath::GetPrice);
+			//.method("SetPrice", &TaxiPath::SetPrice);
 
 		m	.class_<TaxiMgr>("sTaxiMgr")
 			.method("GetTaxiNode", &TaxiMgr::GetTaxiNode)

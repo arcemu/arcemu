@@ -26,8 +26,8 @@ namespace lua_engine
 			.method("GetPositionZ", &Object::GetPositionZ)
 			.method("GetOrientation", &Object::GetOrientation)
 			.method("GetO", &Object::GetOrientation)
-			.method("SetO", &Object::SetOrientation)
-			.method("SetOrientation", &Object::SetOrientation)		
+			//.method("SetO", &Object::SetOrientation)
+//			.method("SetOrientation", &Object::SetOrientation)		
 			.method("GetSpawnX", &Object::GetSpawnX)
 			.method("GetSpawnY", &Object::GetSpawnY)
 			.method("GetSpawnZ", &Object::GetSpawnZ)
@@ -60,7 +60,7 @@ namespace lua_engine
 			.method("HasFlag", &Object::HasFlag)
 			.method("IsInRange", &Object::isInRange)
 			.method("IsInFront", &Object::isInFront)
-			.method("SetInFront", &Object::setInFront)
+			//.method("SetInFront", &Object::setInFront)
 			.method("IsBehind", &Object::isInBack)
 			.method("IsInArc", &Object::isInArc)
 			.method("calcAngle", &Object::calcAngle)
@@ -72,11 +72,11 @@ namespace lua_engine
 
 		 //creatable and destroyable in the lua environment.
 		 m	.class_<GossipMenu>("GossipMenu", true)
-			.constructor< void(*)(Creature *, uint32) > ()
+			.constructor< void(*)(uint64, uint32) > ()
 			.method("AddItem", ( void(GossipMenu::*)(uint8,const char*, int32, int8) )&GossipMenu::AddItem)
 			.method("AddMenuItem", &GossipMenu::AddMenuItem)
 			.method("SendToPlr", &GossipMenu::SendTo)
-			.method("SendToAllPlayers", &GossipMenu::SendToAllPlayers)
+			//.method("SendToAllPlayers", &GossipMenu::SendToAllPlayers)
 			.method("SetTextID", &GossipMenu::SetTextID);
 	}
 }

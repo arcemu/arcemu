@@ -3,9 +3,9 @@
 #include "lua_defs.h"
 extern "C" 
 {		// we're C++, and LUA is C, so the compiler needs to know to use C function names.
-#include "lua/lua.h"
-#include "lua/lauxlib.h"
-#include "lua/lualib.h"
+#include "../lua/lua.h"
+#include "../lua/lauxlib.h"
+#include "../lua/lualib.h"
 };
 
 typedef struct _LUA_INSTANCE

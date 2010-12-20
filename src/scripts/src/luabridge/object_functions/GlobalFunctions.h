@@ -173,7 +173,7 @@ ARCEMU_FORCEINLINE static int engineversion()
 
 ARCEMU_FORCEINLINE static void logcolor(int color)
 {
-	Log.Color(color);
+	//Log.Color(color);
 }
 ARCEMU_FORCEINLINE static QueryResult* WorldDBQuery(const char * query)
 {
