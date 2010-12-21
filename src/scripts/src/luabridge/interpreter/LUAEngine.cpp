@@ -65,26 +65,26 @@ void lua_engine::report(lua_State * L)
 void lua_engine::scriptload_searchdir(char * Dirname, std::set<string>& store)
 {
 #ifdef WIN32 
-	Log.Success("LuaEngine", "Scanning Directory %s", Dirname);
+	Log.Success("LuaEngine", "Scanning Directory \"%s\"", Dirname);
 	HANDLE hFile;
 	WIN32_FIND_DATAA FindData;
-	memset(&FindData,0,sizeof(FindData));
+	memset(&FindData,0,sizeof(WIN32_FIND_DATAA));
 
 	char SearchName[MAX_PATH];
 	        
 	strcpy(SearchName,Dirname);
-	strcpy(SearchName, "\\*.*" );
+	strcat(SearchName, "\\*.*" );
 
 	hFile = FindFirstFileA(SearchName,&FindData);
 	FindNextFileA(hFile, &FindData);
 	    
 	while( FindNextFileA(hFile, &FindData) )
 	{
-		if( FindData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ) //Credits for this 'if' go to Cebernic from ArcScripts Team. Thanks, you saved me some work ;-)
+		if( (FindData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)  && !(FindData.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) ) //Credits for this 'if' go to Cebernic from ArcScripts Team. Thanks, you saved me some work ;-)
 		{
 			strcpy(SearchName,Dirname);
-			strcpy(SearchName, "\\" );
-			strcpy(SearchName,FindData.cFileName);
+			strcat(SearchName, "\\" );
+			strcat(SearchName,FindData.cFileName);
 			scriptload_searchdir(SearchName, store);
 		}
 		else
@@ -152,7 +152,7 @@ void lua_engine::loadScripts()
 {
 	std::set<string> found_scripts;
 	Log.Notice("LuaEngine", "Scanning Script-Directories...");
-	char script_dir[] = "scripts";
+	char * script_dir = "scripts";
 	scriptload_searchdir( script_dir, found_scripts);
 	Log.Notice("LuaEngine","Found %u Lua scripts.", found_scripts.size() );
 	//Read our scripts and cache their data.
@@ -190,7 +190,7 @@ void lua_engine::loadScripts()
 		else
 			Log.Success("LuaEngine","loaded %s",it->first.c_str() );
 	}
-	Log.Success("LuaEngine", "Successfully loaded %u scripts.");
+	Log.Success("LuaEngine", "Successfully loaded %u scripts.", cnt);
 }
 
 void lua_engine::BeginLuaFunctionCall(lua_function ref)
