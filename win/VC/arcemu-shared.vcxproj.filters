@@ -352,5 +352,8 @@
     <ClInclude Include="..\..\src\arcemu-shared\Network\SocketMgrLinux.h">
       <Filter>Network</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\CRefcounter.h">
+      <Filter>Util</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -338,6 +338,7 @@ RevisionExtractor.exe
     <ClCompile Include="..\..\src\arcemu-shared\Log.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\src\arcemu-shared\CRefcounter.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Database\Database.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Database\DatabaseEnv.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Database\dbcfile.h" />

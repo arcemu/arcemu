@@ -381,6 +381,8 @@ Scripting system exports/imports
 #include "Threading/AtomicCounter.h"
 #include "Threading/AtomicBoolean.h"
 
+#include "CRefcounter.h"
+
 #include "MersenneTwister.h"
 
 #if COMPILER == COMPILER_MICROSOFT

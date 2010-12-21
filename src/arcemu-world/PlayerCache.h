@@ -38,14 +38,13 @@ union CacheField
 typedef std::map<uint64, void*> PlayerCacheMap;
 
 class Player;
-class PlayerCache
+class PlayerCache : public Arcemu::Shared::CRefCounter
 {
 public:
 	PlayerCache()
 	{
 		for (uint32 i = 0; i < NUM_FOURBYTE_CACHE_FIELDS; ++i)
 			m_fields[i].u = 0;
-		_refs = 1;
 
 		//default values
 		SetInt32Value(CACHE_MAPID, -1);
@@ -127,11 +126,6 @@ public:
 	uint64 GetGUID() { return (uint64(HIGHGUID_TYPE_PLAYER) << 32) | GetUInt32Value(CACHE_PLAYER_LOWGUID); }
 
 	//END OF WRAPPERS
-
-	//ref counters (this lets us exist in multiple threads without holding locks)
-	volatile long _refs;
-	void AddRef() { Sync_Add(&_refs); }
-	void DecRef() { if (Sync_Sub(&_refs) == 0) delete this; }
 };
 
 #endif
