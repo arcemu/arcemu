@@ -30,8 +30,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ServerStatusPlugin", "..\sr
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "arcSpellHandlers", "..\src\scripts\projects\SpellsHandlers2010.vcxproj", "{21CCA237-B55E-4882-B3E3-4A0321315CB3}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "luabridge", "..\src\scripts\projects\luabridge.vcxproj", "{2E21151F-2650-4D5D-9BDF-DEF8E26DEDAE}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -160,14 +158,6 @@ Global
 		{21CCA237-B55E-4882-B3E3-4A0321315CB3}.Release|Win32.Build.0 = Release|Win32
 		{21CCA237-B55E-4882-B3E3-4A0321315CB3}.Release|x64.ActiveCfg = Release|x64
 		{21CCA237-B55E-4882-B3E3-4A0321315CB3}.Release|x64.Build.0 = Release|x64
-		{2E21151F-2650-4D5D-9BDF-DEF8E26DEDAE}.Debug|Win32.ActiveCfg = Debug|Win32
-		{2E21151F-2650-4D5D-9BDF-DEF8E26DEDAE}.Debug|Win32.Build.0 = Debug|Win32
-		{2E21151F-2650-4D5D-9BDF-DEF8E26DEDAE}.Debug|x64.ActiveCfg = Debug|x64
-		{2E21151F-2650-4D5D-9BDF-DEF8E26DEDAE}.Debug|x64.Build.0 = Debug|x64
-		{2E21151F-2650-4D5D-9BDF-DEF8E26DEDAE}.Release|Win32.ActiveCfg = Release|Win32
-		{2E21151F-2650-4D5D-9BDF-DEF8E26DEDAE}.Release|Win32.Build.0 = Release|Win32
-		{2E21151F-2650-4D5D-9BDF-DEF8E26DEDAE}.Release|x64.ActiveCfg = Release|x64
-		{2E21151F-2650-4D5D-9BDF-DEF8E26DEDAE}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
