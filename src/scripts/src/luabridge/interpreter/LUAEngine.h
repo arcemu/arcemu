@@ -95,7 +95,7 @@ namespace lua_engine
 	static void startupEngine();
 	static void loadScripts(lua_State *);
 	static void loadScripts();
-	static void scriptload_searchdir(char* Dirname, std::set<string>&);
+	static void scriptload_searchdir(char *Dirname, std::set<string>&);
 	static void restartEngine();
 	static void shutdownEngine();
 	static void restartThread(MapMgr *);

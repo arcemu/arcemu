@@ -286,10 +286,10 @@ using stdext::hash_set;
 #define vsnprintf _vsnprintf
 //#define strlen lstrlen
 
-#ifdef WIN32
+/*#ifdef WIN32
 typedef char TCHAR;
 #define __T(x) x
-#endif
+#endif*/
 
 // cebernic added it
 #define __utf8(x) _StringToUTF8(x)

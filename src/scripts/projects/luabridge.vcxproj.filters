@@ -1,0 +1,276 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="lua_src">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="luabridge_src">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="interpreter">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="luabridge_src\impl">
+      <UniqueIdentifier>{f22bebfb-6141-47d9-aca9-fcd26c24fbcf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="methods">
+      <UniqueIdentifier>{2f5a0dd3-0400-44e3-b437-095269cfa56e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\luabridge\lua\lapi.c">
+      <Filter>lua_src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\luabridge\lua\lauxlib.c">
+      <Filter>lua_src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\luabridge\lua\lbaselib.c">
+      <Filter>lua_src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\luabridge\lua\lcode.c">
+      <Filter>lua_src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\luabridge\lua\ldblib.c">
+      <Filter>lua_src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\luabridge\lua\ldebug.c">
+      <Filter>lua_src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\luabridge\lua\ldo.c">
+      <Filter>lua_src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\luabridge\lua\ldump.c">
+      <Filter>lua_src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\luabridge\lua\lfunc.c">
+      <Filter>lua_src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\luabridge\lua\lgc.c">
+      <Filter>lua_src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\luabridge\lua\linit.c">
+      <Filter>lua_src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\luabridge\lua\liolib.c">
+      <Filter>lua_src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\luabridge\lua\llex.c">
+      <Filter>lua_src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\luabridge\lua\lmathlib.c">
+      <Filter>lua_src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\luabridge\lua\lmem.c">
+      <Filter>lua_src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\luabridge\lua\loadlib.c">
+      <Filter>lua_src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\luabridge\lua\lobject.c">
+      <Filter>lua_src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\luabridge\lua\lopcodes.c">
+      <Filter>lua_src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\luabridge\lua\loslib.c">
+      <Filter>lua_src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\luabridge\lua\lparser.c">
+      <Filter>lua_src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\luabridge\lua\lstate.c">
+      <Filter>lua_src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\luabridge\lua\lstring.c">
+      <Filter>lua_src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\luabridge\lua\lstrlib.c">
+      <Filter>lua_src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\luabridge\lua\ltable.c">
+      <Filter>lua_src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\luabridge\lua\ltablib.c">
+      <Filter>lua_src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\luabridge\lua\ltm.c">
+      <Filter>lua_src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\luabridge\lua\lua.c">
+      <Filter>lua_src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\luabridge\lua\lundump.c">
+      <Filter>lua_src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\luabridge\lua\lvm.c">
+      <Filter>lua_src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\luabridge\lua\lzio.c">
+      <Filter>lua_src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\luabridge\lua\print.c">
+      <Filter>lua_src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\luabridge\luabridge_src\luabridge.cpp">
+      <Filter>luabridge_src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\luabridge\interpreter\LUAEngine.cpp">
+      <Filter>interpreter</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\luabridge\lua\lapi.h">
+      <Filter>lua_src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\lua\lauxlib.h">
+      <Filter>lua_src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\lua\lcode.h">
+      <Filter>lua_src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\lua\ldebug.h">
+      <Filter>lua_src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\lua\ldo.h">
+      <Filter>lua_src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\lua\lfunc.h">
+      <Filter>lua_src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\lua\lgc.h">
+      <Filter>lua_src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\lua\llex.h">
+      <Filter>lua_src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\lua\llimits.h">
+      <Filter>lua_src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\lua\lmem.h">
+      <Filter>lua_src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\lua\lobject.h">
+      <Filter>lua_src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\lua\lopcodes.h">
+      <Filter>lua_src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\lua\lparser.h">
+      <Filter>lua_src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\lua\lstate.h">
+      <Filter>lua_src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\lua\lstring.h">
+      <Filter>lua_src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\lua\ltable.h">
+      <Filter>lua_src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\lua\ltm.h">
+      <Filter>lua_src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\lua\lua.h">
+      <Filter>lua_src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\lua\luaconf.h">
+      <Filter>lua_src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\lua\lualib.h">
+      <Filter>lua_src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\lua\lundump.h">
+      <Filter>lua_src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\lua\lvm.h">
+      <Filter>lua_src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\lua\lzio.h">
+      <Filter>lua_src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\luabridge_src\luabridge.hpp">
+      <Filter>luabridge_src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\luabridge_src\impl\class.hpp">
+      <Filter>luabridge_src\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\luabridge_src\impl\module.hpp">
+      <Filter>luabridge_src\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\luabridge_src\impl\shared_ptr.hpp">
+      <Filter>luabridge_src\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\luabridge_src\impl\stack.hpp">
+      <Filter>luabridge_src\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\luabridge_src\impl\typelist.hpp">
+      <Filter>luabridge_src\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\interpreter\lua_defs.h">
+      <Filter>interpreter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\interpreter\lua_instance.h">
+      <Filter>interpreter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\interpreter\LUAEngine.h">
+      <Filter>interpreter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\object_functions\aura_functions.h">
+      <Filter>methods</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\object_functions\AuraFunctions.h">
+      <Filter>methods</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\object_functions\creature_functions.h">
+      <Filter>methods</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\object_functions\gameobject_functions.h">
+      <Filter>methods</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\object_functions\global_functions.h">
+      <Filter>methods</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\object_functions\GlobalFunctions.h">
+      <Filter>methods</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\object_functions\instance_functions.h">
+      <Filter>methods</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\object_functions\item_functions.h">
+      <Filter>methods</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\object_functions\lua_hooks.h">
+      <Filter>methods</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\object_functions\object_functions.h">
+      <Filter>methods</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\object_functions\packet_functions.h">
+      <Filter>methods</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\object_functions\player_functions.h">
+      <Filter>methods</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\object_functions\quest_functions.h">
+      <Filter>methods</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\object_functions\register_functions.h">
+      <Filter>methods</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\object_functions\spell_functions.h">
+      <Filter>methods</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\object_functions\sql_functions.h">
+      <Filter>methods</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\object_functions\taxi_functions.h">
+      <Filter>methods</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\object_functions\unit_functions.h">
+      <Filter>methods</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

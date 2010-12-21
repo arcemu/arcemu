@@ -62,29 +62,29 @@ void lua_engine::report(lua_State * L)
 	}
 }
 
-void lua_engine::scriptload_searchdir(char* Dirname, std::set<string>& store)
+void lua_engine::scriptload_searchdir(char * Dirname, std::set<string>& store)
 {
-#ifdef WIN32
+#ifdef WIN32 
 	Log.Success("LuaEngine", "Scanning Directory %s", Dirname);
 	HANDLE hFile;
-	WIN32_FIND_DATA FindData;
+	WIN32_FIND_DATAA FindData;
 	memset(&FindData,0,sizeof(FindData));
 
 	char SearchName[MAX_PATH];
 	        
 	strcpy(SearchName,Dirname);
-	strcat(SearchName,"\\*.*");
+	strcpy(SearchName, "\\*.*" );
 
-	hFile = FindFirstFile(SearchName,&FindData);
-	FindNextFile(hFile, &FindData);
+	hFile = FindFirstFileA(SearchName,&FindData);
+	FindNextFileA(hFile, &FindData);
 	    
-	while( FindNextFile(hFile, &FindData) )
+	while( FindNextFileA(hFile, &FindData) )
 	{
 		if( FindData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ) //Credits for this 'if' go to Cebernic from ArcScripts Team. Thanks, you saved me some work ;-)
 		{
 			strcpy(SearchName,Dirname);
-			strcat(SearchName,"\\");
-			strcat(SearchName,FindData.cFileName);
+			strcpy(SearchName, "\\" );
+			strcpy(SearchName,FindData.cFileName);
 			scriptload_searchdir(SearchName, store);
 		}
 		else
@@ -93,18 +93,18 @@ void lua_engine::scriptload_searchdir(char* Dirname, std::set<string>& store)
 			fname += "\\";
 			fname += FindData.cFileName;
 
-			int len = strlen(fname.c_str());
+			int len = fname.length();
 			int i=0;
 			char ext[MAX_PATH];
 					  
 			while(len > 0)
 			{  
 				ext[i++] = fname[--len];
-				if(fname[len] == '.')
+				if(fname[len] == '.' )
 		  			break;
 	  		}
 	  		ext[i++] = '\0';
-	  		if ( !_stricmp(ext,"aul.") )
+	  		if ( !_stricmp(ext,"aul." ) )
 				store.insert(fname);
 		}
 	}
@@ -152,7 +152,8 @@ void lua_engine::loadScripts()
 {
 	std::set<string> found_scripts;
 	Log.Notice("LuaEngine", "Scanning Script-Directories...");
-	scriptload_searchdir( (char*)"scripts", found_scripts);
+	char script_dir[] = "scripts";
+	scriptload_searchdir( script_dir, found_scripts);
 	Log.Notice("LuaEngine","Found %u Lua scripts.", found_scripts.size() );
 	//Read our scripts and cache their data.
 	//We protect scripts while they are being modified.
