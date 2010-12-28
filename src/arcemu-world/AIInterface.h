@@ -21,12 +21,6 @@
 #ifndef WOWSERVER_AIINTERFACE_H
 #define WOWSERVER_AIINTERFACE_H
 
-/* platforms that already define M_PI in math.h */
-#ifdef M_PI
-#undef M_PI
-#endif
-
-#define M_PI	   3.14159265358979323846
 #define UNIT_MOVEMENT_INTERPOLATE_INTERVAL 400/*750*/ // ms smoother server/client side moving vs less cpu/ less b/w
 #define TARGET_UPDATE_INTERVAL_ON_PLAYER 1000 // we most likely will have to kill players and only then check mobs
 #define TARGET_UPDATE_INTERVAL 5000 // this is a multiple of PLAYER_TARGET_UPDATE_INTERVAL
@@ -35,7 +29,7 @@
 #define ENABLE_CREATURE_DAZE
 #ifdef ENABLE_CREATURE_DAZE
 	#define CREATURE_SPELL_TO_DAZE 1604
-	#define CREATURE_DAZE_TRIGGER_ANGLE M_PI/2 //for the beginners this means 45 degrees 
+	#define CREATURE_DAZE_TRIGGER_ANGLE M_H_PI //for the beginners this means 45 degrees 
 	#define CREATURE_DAZE_MIN_LEVEL 6	// minimal level of the target player to daze, from 3.3.0
 #endif
 

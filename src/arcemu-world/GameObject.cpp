@@ -757,10 +757,10 @@ uint32 GameObject::GetGOReqSkill()
 //! Set GameObject rotational value
 void GameObject::SetRotation(float rad)
 {
-	if (rad > (float)M_PI)
-		rad -= 2*(float)M_PI;
-	else if (rad < -(float)M_PI)
-		rad += 2*(float)M_PI;
+	if (rad > M_PI_FLOAT)
+		rad -= 2*M_PI_FLOAT;
+	else if (rad < -M_PI_FLOAT)
+		rad += 2*M_PI_FLOAT;
 	float sin = sinf(rad/2.f);
 
 	if(sin >= 0)	

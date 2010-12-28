@@ -20,10 +20,6 @@
 #ifndef SPELL_SCRIPTS_SETUP_H
 #define SPELL_SCRIPTS_SETUP_H
 
-#ifdef WIN32
-#pragma warning(disable:4244)
-#endif
-
 // Class spell handlers
 void SetupShamanSpells(ScriptMgr * mgr);
 void SetupWarlockSpells(ScriptMgr * mgr);

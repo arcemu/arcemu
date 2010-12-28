@@ -79,7 +79,7 @@ const float EOTSStartLocations[2][4] = {
 };
 
 const float EOTSBubbleLocations[2][5] = {
-	{ 184719, 1803.21f, 1539.49f, 1261.09f, 3.14159f },
+	{ 184719, 1803.21f, 1539.49f, 1261.09f, M_PI_FLOAT },
 	{ 184720, 2527.6f, 1596.91f, 1262.13f, -3.12414f },
 };
 

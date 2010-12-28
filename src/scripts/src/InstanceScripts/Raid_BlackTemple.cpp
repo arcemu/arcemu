@@ -5455,7 +5455,7 @@ class MaievAI : public MoonScriptBossAI
 					float IllidanZ = mIllidanAI->GetUnit()->GetPositionZ();
 					float IllidanO = mIllidanAI->GetUnit()->GetOrientation();
 
-					float Angle = _unit->calcAngle(pAkama->GetPositionX(), pAkama->GetPositionY(), IllidanX, IllidanY) * float(M_PI) / 180.0f;
+					float Angle = _unit->calcAngle(pAkama->GetPositionX(), pAkama->GetPositionY(), IllidanX, IllidanY) * M_PI_FLOAT / 180.0f;
 					float X = 12.0f * cosf(Angle);
 					float Y = 12.0f * sinf(Angle);
 

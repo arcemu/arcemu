@@ -23,9 +23,6 @@
 using namespace std;
 
 //#define DEG2RAD (M_PI/180.0)
-#define M_PI		3.14159265358979323846
-#define M_H_PI		1.57079632679489661923
-#define M_Q_PI		0.785398163397448309615
 
 void Object::SetRotation( uint64 guid )
 {
@@ -58,7 +55,7 @@ Object::Object() : m_position(0,0,0,0), m_spawnLocation(0,0,0,0)
 	m_backWalkSpeed = 4.5f;	// this should really be named m_backRunSpeed
 	m_swimSpeed = 4.722222f;
 	m_backSwimSpeed = 2.5f;
-	m_turnRate = 3.141593f;
+	m_turnRate = M_PI_FLOAT;
 
 	m_phase = 1; //Set the default phase: 00000000 00000000 00000000 00000001
 

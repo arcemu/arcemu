@@ -506,7 +506,7 @@ public:
 				x = -392.416f;
 				y = -724.865f;
 				z = 29.4156f;
-				o = 3.14159f;
+				o = M_PI_FLOAT;
 			}break;
 		case 1:
 			{
@@ -514,7 +514,7 @@ public:
 				x = -365.279f;
 				y = -751.087f;
 				z = 29.4156f;
-				o = 3.14159f;
+				o = M_PI_FLOAT;
 			}break;
 		case 2:
 			{
@@ -522,7 +522,7 @@ public:
 				x = -365.41f;
 				y = -724.865f;
 				z = 29.4156f;
-				o = 3.1415f;
+				o = M_PI_FLOAT;
 			}break;
 		case 3:
 			{
@@ -530,7 +530,7 @@ public:
 				x = -392.286f;
 				y = -751.087f;
 				z = 29.4156f;
-				o = 3.14159f;
+				o = M_PI_FLOAT;
 			}break;
 		}
 		GameObject* go = _unit->GetMapMgr()->CreateGameObject(entry);

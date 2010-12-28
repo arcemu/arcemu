@@ -614,7 +614,7 @@ bool Spell::GenerateTargets(SpellCastTargets* t)
 					return false;
 
 				float r = RandomFloat(GetRadius(0));
-				float ang = RandomFloat(float(M_PI) * 2);
+				float ang = RandomFloat(M_PI_FLOAT * 2);
 				t->m_destX = m_caster->GetPositionX() + (cosf(ang) * r);
 				t->m_destY = m_caster->GetPositionY() + (sinf(ang) * r);
 				t->m_destZ = sWorld.Collision? CollideInterface.GetHeight(m_caster->GetMapId(), t->m_destX, t->m_destY, m_caster->GetPositionZ() + 2.0f) : NO_WMO_HEIGHT;

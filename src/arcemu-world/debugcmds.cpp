@@ -317,7 +317,7 @@ bool ChatHandler::HandleFaceCommand(const char* args, WorldSession *m_session)
 		Orentation  = atoi(pOrentation);
 
 	/* Convert to Blizzards Format */
-	float theOrientation = Orentation/(180.0f/float(M_PI));
+	float theOrientation = Orentation/(180.0f/M_PI_FLOAT);
 
 	obj->SetPosition(obj->GetPositionX(), obj->GetPositionY(), obj->GetPositionZ(), theOrientation, false);
 

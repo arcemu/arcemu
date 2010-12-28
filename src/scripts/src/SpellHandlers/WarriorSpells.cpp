@@ -29,7 +29,7 @@ bool Execute(uint32 i, Spell* pSpell)
 	if(Caster->HasAura(58367)) // Glyph of Execution: Your Execute ability deals damage as if you had 10 additional rage.
 		rage += 10; 
 	uint32 toadd = 0;
-	int32 dmg = 0.0f;
+	int32 dmg = 0;
 	uint32 multiple[] = 
 	{
 		0,
@@ -49,7 +49,7 @@ bool Execute(uint32 i, Spell* pSpell)
 		toadd = (multiple[pSpell->GetProto()->RankNumber] * rage);
 
 	dmg = pSpell->CalculateEffect(i, pSpell->GetUnitTarget());
-	dmg += (Caster->GetAttackPower() * 0.2f);
+	dmg += Caster->GetAttackPower() / 5;
 	dmg += toadd;
 
 	Caster->Strike(Target, 0, pSpell->GetProto(), 0, 0, dmg, false, false);

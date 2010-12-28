@@ -819,9 +819,7 @@ bool Spinning( uint32 i, Spell *s ){
 	if( p_caster == NULL )
 		return true;
 
-	uint32 orientations[] = { 0,1,2,3,4,5,6 };
-	uint32 index = RandomUInt( 6 );
-	float neworientation = orientations[ index ];
+	float neworientation = RandomFloat(M_PI_FLOAT * 2);
 
 	float X = p_caster->GetPositionX();
 	float Y = p_caster->GetPositionY();

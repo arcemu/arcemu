@@ -76,7 +76,7 @@ m_outOfCombatRange(2500), // Where did u get this value?
 m_Unit(NULL),
 m_PetOwner(NULL),
 FollowDistance(0.0f),
-m_fallowAngle(float(M_PI/2)),
+m_fallowAngle(M_PI_FLOAT/2),
 m_AIState(STATE_IDLE),
 m_aiCurrentAgent(AGENT_NULL),
 tauntedBy(NULL),
@@ -2213,7 +2213,7 @@ void AIInterface::_CalcDestinationAndMove(Unit *target, float dist)
 
 		float ResZ = target->GetPositionZ();
 
-		float angle = m_Unit->calcAngle(m_Unit->GetPositionX(), m_Unit->GetPositionY(), ResX, ResY) * float(M_PI) / 180.0f;
+		float angle = m_Unit->calcAngle(m_Unit->GetPositionX(), m_Unit->GetPositionY(), ResX, ResY) * M_PI_FLOAT / 180.0f;
 		float x = dist * cosf(angle);
 		float y = dist * sinf(angle);
 
@@ -2632,7 +2632,7 @@ bool AIInterface::setInFront(Unit* target) // not the best way to do it, though
 	else angle -= 90; //angle < 180
 	m_Unit->getEasyAngle(angle);
 	//Convert from degrees to radians (180 deg = PI rad)
-	float orientation = angle / float(180 / M_PI);
+	float orientation = angle / (180 / M_PI_FLOAT);
 	//Update Orientation Server Side
 	m_Unit->SetPosition(m_Unit->GetPositionX(), m_Unit->GetPositionY(), m_Unit->GetPositionZ(), orientation);
 	
@@ -3181,8 +3181,7 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 			}
 			// Calculate new angle to target.
 			float Fo = m_Unit->calcRadAngle(unitToFear->GetPositionX(), unitToFear->GetPositionY(), m_Unit->GetPositionX(), m_Unit->GetPositionY());
-			double fAngleAdd = RandomDouble(((M_PI/2) * 2)) - (M_PI/2);
-			Fo += (float)fAngleAdd;
+			Fo += RandomFloat(M_PI_FLOAT/2);
 			
 			float dist = m_Unit->CalcDistance(unitToFear);
 			if(dist > 30.0f || (Rand(25) && dist > 10.0f))	// not too far or too close
@@ -4100,7 +4099,7 @@ void AIInterface::Event_Summon_EE_totem( uint32 summon_duration )
 	m_totemspelltimer = 0xEFFFFFFF;
 	//some say it should inherit the level of the caster
 	//creatures do not support PETs and the spell uses that effect so we force a summon guardian thing
-	Creature *ourslave = m_Unit->create_guardian( 15352, 0xFFFFFFFF, float(-M_PI * 2), caster->getLevel() );//since the totem is the only one allowed to despawn this, we set its despawn time to infinite.
+	Creature *ourslave = m_Unit->create_guardian( 15352, 0xFFFFFFFF, -M_PI_FLOAT * 2, caster->getLevel() );//since the totem is the only one allowed to despawn this, we set its despawn time to infinite.
     if( ourslave == NULL )
 		return;
 
@@ -4132,7 +4131,7 @@ void AIInterface::Event_Summon_FE_totem( uint32 summon_duration )
 	m_totemspelltimer = 0xEFFFFFFF;
 	//some say it should inherit the level of the caster
 	//creatures do not support PETs and the spell uses that effect so we force a summon guardian thing
-	Creature *ourslave = m_Unit->create_guardian( 15438, 0xFFFFFFFF, float(-M_PI * 2), caster->getLevel() );//since the totem is the only one allowed to despawn this, we set its despawn time to infinite.
+	Creature *ourslave = m_Unit->create_guardian( 15438, 0xFFFFFFFF, -M_PI_FLOAT * 2, caster->getLevel() );//since the totem is the only one allowed to despawn this, we set its despawn time to infinite.
     if( ourslave == NULL )
 		return;
 

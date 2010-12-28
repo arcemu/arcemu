@@ -486,7 +486,7 @@ void Spell::SpellEffectInstantKill(uint32 i)
 		}break;
 	case SPELL_HASH_DEMONIC_SACRIFICE:
 		{
-			if( !p_caster || !p_caster->IsPlayer() || !unitTarget || !unitTarget->IsPet() )
+			if( !p_caster || !unitTarget || !unitTarget->IsPet() )
 				return;
 
 			//TO< Pet* >(unitTarget)->Dismiss( true );
@@ -887,7 +887,7 @@ void Spell::SpellEffectTeleportUnits( uint32 i )  // Teleport Units
 				/* We're chasing a target. We have to calculate the angle to this target, this is our orientation. */
 				ang = m_caster->calcAngle(m_caster->GetPositionX(), m_caster->GetPositionY(), unitTarget->GetPositionX(), unitTarget->GetPositionY());
 				/* convert degree angle to radians */
-				ang = ang * float(M_PI) / 180.0f;
+				ang = ang * M_PI_FLOAT / 180.0f;
 			}
 			else
 			{
@@ -2016,7 +2016,7 @@ void Spell::SpellEffectSummon(uint32 i)
 			}
 			else
 			{
-				summon2->GetAIInterface()->SetUnitToFollowAngle(float(-(M_PI/2)));
+				summon2->GetAIInterface()->SetUnitToFollowAngle(-M_PI_FLOAT/2);
 			
 				//Spells
 				summon2->AddSpell(dbcSpell.LookupEntry(58877), true); // Spirit Hunt
@@ -2052,7 +2052,7 @@ void Spell::SpellEffectSummon(uint32 i)
 				summon->SetDisplayId((uint32)15435);
 				summon->SetMinDamage((float)p_caster->GetDamageDoneMod(SCHOOL_NORMAL));
 				summon->SetMaxDamage((float)p_caster->GetDamageDoneMod(SCHOOL_NORMAL));
-				summon->GetAIInterface()->SetUnitToFollowAngle(float(-(M_PI/2)));
+				summon->GetAIInterface()->SetUnitToFollowAngle(-M_PI_FLOAT/2);
 
 				Item * item = p_caster->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
 				if( item != NULL )
@@ -2095,7 +2095,7 @@ void Spell::SpellEffectSummon(uint32 i)
 			pCreature->Load(cp, u_caster->GetPositionX(), u_caster->GetPositionY(), u_caster->GetPositionZ());
 			pCreature->GetAIInterface()->Init(pCreature,AITYPE_PET,MOVEMENTTYPE_NONE,u_caster);
 			pCreature->GetAIInterface()->SetUnitToFollow(u_caster);
-			pCreature->GetAIInterface()->SetUnitToFollowAngle(float(-(M_PI/2)));
+			pCreature->GetAIInterface()->SetUnitToFollowAngle(-M_PI_FLOAT/2);
 			pCreature->GetAIInterface()->SetFollowDistance(GetRadius(i));
 			pCreature->setLevel(u_caster->getLevel());
 			pCreature->SetFaction(u_caster->GetFaction());
@@ -2967,7 +2967,7 @@ void Spell::SpellEffectSummonWild(uint32 i)  // Summon Wild
 	}
 	for(int j= 0;j<damage;j++)
 	{
-		float m_fallowAngle=-((float(M_PI)/2)*j);
+		float m_fallowAngle=-(M_PI_FLOAT/2*j);
 		float tempx = x + (GetRadius(i)*(cosf(m_fallowAngle+u_caster->GetOrientation())));
 		float tempy = y + (GetRadius(i)*(sinf(m_fallowAngle+u_caster->GetOrientation())));
 		Creature * p = u_caster->GetMapMgr()->CreateCreature(cr_entry);
@@ -3017,7 +3017,7 @@ void Spell::SpellEffectSummonGuardian(uint32 i) // Summon Guardian
 	if(GetProto()->Id == 29731)
 		damage = 1;
 
-	float angle_for_each_spawn = -float(M_PI) * 2 / damage;
+	float angle_for_each_spawn = -M_PI_FLOAT * 2 / damage;
 	for( int j = 0; j < damage; j++ )
 	{
 		float m_fallowAngle = angle_for_each_spawn * j;
@@ -3825,7 +3825,7 @@ void Spell::SpellEffectSummonPossessed(uint32 i) // eye of kilrogg
 	{
 		Creature* NewSummon = m_caster->GetMapMgr()->CreateCreature(GetProto()->EffectMiscValue[i]);
 		// Create
-		NewSummon->Create( "Eye of Kilrogg", m_caster->GetMapId(), m_caster->GetPositionX()+(3*(cos((float(M_PI)/2)+m_caster->GetOrientation()))), m_caster->GetPositionY()+(3*(cos((float(M_PI)/2)+m_caster->GetOrientation()))), m_caster->GetPositionZ(), m_caster->GetOrientation());
+		NewSummon->Create( "Eye of Kilrogg", m_caster->GetMapId(), m_caster->GetPositionX()+(3*(cos((M_PI_FLOAT/2)+m_caster->GetOrientation()))), m_caster->GetPositionY()+(3*(cos((M_PI_FLOAT/2)+m_caster->GetOrientation()))), m_caster->GetPositionZ(), m_caster->GetOrientation());
 
 		// Fields
 		NewSummon->SetCreatureInfo( CreatureNameStorage.LookupEntry( GetProto()->EffectMiscValue[i] ) );
@@ -4505,7 +4505,7 @@ void Spell::SpellEffectCharge(uint32 i)
 	float d = sqrt(dx*dx+dy*dy)-unitTarget->GetBoundingRadius()-u_caster->GetBoundingRadius();
 	float alpha = atanf(dy/dx);
 	if(dx<0)
-		alpha += float(M_PI);
+		alpha += M_PI_FLOAT;
 
 	x = d * cosf(alpha) + m_caster->GetPositionX();
 	y = d * sinf(alpha) + m_caster->GetPositionY();
@@ -4589,7 +4589,7 @@ void Spell::SpellEffectSummonCritter(uint32 i)
 	pCreature->SetCreatedByGUID( u_caster->GetGUID() );
 	pCreature->SetCreatedBySpell(this->GetProto()->Id );
 	pCreature->GetAIInterface()->SetUnitToFollow(u_caster);
-	pCreature->GetAIInterface()->SetUnitToFollowAngle(float(-(M_PI/2)));
+	pCreature->GetAIInterface()->SetUnitToFollowAngle(-M_PI_FLOAT/2);
 	pCreature->GetAIInterface()->SetFollowDistance( GetRadius( i ) );
 	pCreature->GetAIInterface()->disable_melee = true;
 	pCreature->bInvincible = true;

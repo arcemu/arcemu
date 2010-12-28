@@ -144,7 +144,7 @@ bool RaiseDead( uint32 i, Spell *s ){
 		
 		}else{
 			LocationVector vec( x, y, z );
-			Creature *c = s->p_caster->create_guardian( 26125, 3*60*1000, float( M_PI ), s->p_caster->getLevel(), NULL, &vec );
+			Creature *c = s->p_caster->create_guardian( 26125, 3*60*1000, M_PI_FLOAT, s->p_caster->getLevel(), NULL, &vec );
 			c->CastSpell( c->GetGUID(), 50142, true ); // emerge
 		}
 
@@ -190,7 +190,7 @@ bool DeathGrip( uint32 i, Spell *s ){
 		float alpha = atanf(deltaY/deltaX);
 		
 		if(deltaX<0)
-			alpha += float(M_PI);
+			alpha += M_PI_FLOAT;
 		
 		posX = d*cosf(alpha)+unitTarget->GetPositionX();
 		posY = d*sinf(alpha)+unitTarget->GetPositionY();

@@ -440,9 +440,9 @@ void WarsongGulch::OnRemovePlayer(Player * plr)
 LocationVector WarsongGulch::GetStartingCoords(uint32 Team)
 {
 	if(Team)		// Horde
-		return LocationVector(933.989685f, 1430.735840f, 345.537140f, 3.141593f);
+		return LocationVector(933.989685f, 1430.735840f, 345.537140f, M_PI_FLOAT);
 	else			// Alliance
-		return LocationVector(1519.530273f, 1481.868408f, 352.023743f, 3.141593f);
+		return LocationVector(1519.530273f, 1481.868408f, 352.023743f, M_PI_FLOAT);
 }
 
 void WarsongGulch::HookOnPlayerDeath(Player * plr)
