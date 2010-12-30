@@ -94,6 +94,7 @@ public:
 	MOONSCRIPT_INSTANCE_FACTORY_FUNCTION( ObsidianSanctumScript, MoonInstanceScript );
 	ObsidianSanctumScript( MapMgr* pMapMgr ) : MoonInstanceScript( pMapMgr )
 	{
+		memset(m_creatureGuid, 0, sizeof(m_creatureGuid));
     };
 
     void OnCreaturePushToWorld( Creature* pCreature )
