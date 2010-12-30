@@ -108,7 +108,7 @@ void Spell::FillTargetMap(uint32 i)
 		return;
 
 	//always add this guy :P
-	if (!(TargetType & (SPELL_TARGET_AREA | SPELL_TARGET_AREA_SELF | SPELL_TARGET_AREA_CURTARGET | SPELL_TARGET_AREA_CONE | SPELL_TARGET_OBJECT_SELF)))
+	if (!(TargetType & (SPELL_TARGET_AREA | SPELL_TARGET_AREA_SELF | SPELL_TARGET_AREA_CURTARGET | SPELL_TARGET_AREA_CONE | SPELL_TARGET_OBJECT_SELF | SPELL_TARGET_OBJECT_PETOWNER)))
 	{
 		Object* target = m_caster->GetMapMgr()->_GetObject(m_targets.m_unitTarget);
 		AddTarget(i, TargetType, target);
@@ -132,7 +132,7 @@ void Spell::FillTargetMap(uint32 i)
 			Pet* p = m_caster->GetMapMgr()->GetPet(GET_LOWGUID_PART(guid));
 
 			if (p != NULL)
-				AddTarget(i, TargetType, p->GetOwner());
+				AddTarget(i, TargetType, p->GetPetOwner());
 		}
 	}
 	//targets party, not raid
