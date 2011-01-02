@@ -457,6 +457,37 @@ bool ListeningToMusicParent( uint32 i, Spell *s ){
 	return true;
 }
 
+////////////////////////////////////////////////////////////////
+//TeleportToCoordinates scripted spell effect
+//Default handler for spells:
+//SELECT id, NAME, Effect_1 FROM dbc_spell WHERE Effect_1 = 77 AND
+//(NAME LIKE "%Translocate%" OR NAME LIKE "%Portal to%" OR NAME LIKE 
+//"%Portal Effect%" OR NAME LIKE "%Teleport%") AND EffectBasePoints_1 = 0;
+//
+//Precondition(s)
+//  Casted by Player
+//
+//Effect(s)
+//  Teleports the caster to the location stored in the teleport_coords table of the Database
+//
+//
+////////////////////////////////////////////////////////////////
+bool TeleportToCoordinates( uint32 i, Spell *s )
+{
+	if( s->p_caster == NULL )
+		return true;
+
+	TeleportCoords *TC = ::TeleportCoordStorage.LookupEntry( s->GetProto()->Id );
+	if( TC == NULL )
+	{
+		sLog.outError("Spell %u ( %s ) has a TeleportToCoordinates scripted effect, but has no coordinates to teleport to. ", s->GetProto()->Id, s->GetProto()->Name );
+		return true;
+	}
+
+	s->HandleTeleport(TC->x, TC->y, TC->z, TC->mapId, s->p_caster);
+	return true;
+}
+
 void SetupMiscSpellhandlers( ScriptMgr *mgr ){
 	mgr->register_dummy_spell( 11189, &FrostWarding );
 	mgr->register_dummy_spell( 28332, &FrostWarding );
@@ -515,5 +546,20 @@ void SetupMiscSpellhandlers( ScriptMgr *mgr ){
 
 	mgr->register_script_effect( 50499, &ListeningToMusicParent );
 
+	uint32 teleportToCoordinates[] = {
+		25140,
+		25143,
+		25650,
+		25652,
+		29128,
+		29129,
+		35376,
+		35727,
+		54620,
+		58622,
+		0
+	};
+
+	mgr->register_script_effect( teleportToCoordinates, &TeleportToCoordinates);
 }
 
