@@ -361,7 +361,7 @@ enum Opcodes {
     SMSG_DAMAGE_DONE_OBSOLETE                       = 0x14C,	// not used in client
     SMSG_DAMAGE_TAKEN_OBSOLETE                      = 0x14D,	// not used in client
     SMSG_CANCEL_COMBAT                              = 0x14E,	// implemented
-    SMSG_SPELLBREAKLOG                              = 0x14F,	/// TODO: implement
+    SMSG_SPELLBREAKLOG                              = 0x14F,	/// TODO: implement, same struct as SMSG_SPELLDISMISSLOG
     SMSG_SPELLHEALLOG                               = 0x150,	// implemented
     SMSG_SPELLENERGIZELOG                           = 0x151,	// implemented
     SMSG_BREAK_TARGET                               = 0x152,	/// TODO: implement. was CMSG_SHEATHE_OBSOLETE in your enum.
@@ -845,7 +845,7 @@ enum Opcodes {
     SMSG_SPELL_UPDATE_CHAIN_TARGETS                 = 0x330,	/// TODO: implement
     CMSG_CHAT_FILTERED                              = 0x331,	/// TODO: implement
     SMSG_EXPECTED_SPAM_RECORDS                      = 0x332,	/// TODO: implement
-    SMSG_SPELLSTEALLOG                              = 0x333,	/// TODO: implement
+    SMSG_SPELLSTEALLOG                              = 0x333,	/// implemented, same struct as SMSG_SPELLDISPELLOG
     CMSG_LOTTERY_QUERY_OBSOLETE                     = 0x334,	// not used in client
     SMSG_LOTTERY_QUERY_RESULT_OBSOLETE              = 0x335,	// not used in client
     CMSG_BUY_LOTTERY_TICKET_OBSOLETE                = 0x336,	// not used in client

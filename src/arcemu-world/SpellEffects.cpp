@@ -2803,16 +2803,16 @@ void Spell::SpellEffectSpellDefense(uint32 i)
 
 void Spell::SpellEffectDispel(uint32 i) // Dispel
 {
-	if(!u_caster || !unitTarget) return;
+	if( u_caster == NULL || unitTarget == NULL )
+		return;
 
-	Aura *aur;
 	uint32 start, end;
-	SpellEntry *sp = NULL;
-	if(isAttackable(u_caster,unitTarget) || GetProto()->EffectMiscValue[i] == DISPEL_STEALTH ) // IsAttackable returns false for stealthed
+	
+	if( isAttackable( u_caster,unitTarget ) || GetProto()->EffectMiscValue[i] == DISPEL_STEALTH ) // IsAttackable returns false for stealthed
 	{
 		start = MAX_POSITIVE_AURAS_EXTEDED_START;
 		end = MAX_POSITIVE_AURAS_EXTEDED_END;
-		if (unitTarget->SchoolImmunityList[GetProto()->School])
+		if( unitTarget->SchoolImmunityList[GetProto()->School] )
 			return;
 	}
 	else
@@ -2821,65 +2821,58 @@ void Spell::SpellEffectDispel(uint32 i) // Dispel
 		end = MAX_NEGATIVE_AURAS_EXTEDED_END;
 	}
 
-	WorldPacket data(SMSG_SPELLDISPELLOG, 16);
-
+	Aura *aur; 
+	SpellEntry *aursp;
+	std::list< uint32 > dispelledSpells;
 	bool finish = false;
 
-	for(uint32 x = start; x<end; x++)
-		if(unitTarget->m_auras[x])
+	for( uint32 x = start; x < end; x++ )
+		if( unitTarget->m_auras[x] != NULL )
 		{
 			bool AuraRemoved = false;
 			aur = unitTarget->m_auras[x];
-			//Nothing can dispel resurrection sickness;
-			if(!aur->IsPassive() && !(aur->GetSpellProto()->Attributes & ATTRIBUTES_IGNORE_INVULNERABILITY))
-			{
-				if(GetProto()->DispelType == DISPEL_ALL)
-				{
-					unitTarget->HandleProc( PROC_ON_PRE_DISPELL_AURA_VICTIM , u_caster , GetProto(), m_triggeredSpell, aur->GetSpellId() );
+			aursp = aur->GetSpellProto();
 
-					data.clear();
-					data << m_caster->GetNewGUID();
-					data << unitTarget->GetNewGUID();
-					data << (uint32)1;//probably dispel type
-					data << aur->GetSpellId();
-					m_caster->SendMessageToSet( &data, true );
-					sp = aur->GetSpellProto();
+			//Nothing can dispel resurrection sickness;
+			if( !aur->IsPassive() && !( aursp->Attributes & ATTRIBUTES_IGNORE_INVULNERABILITY ) )
+			{
+				if( GetProto()->DispelType == DISPEL_ALL )
+				{
+					unitTarget->HandleProc( PROC_ON_PRE_DISPELL_AURA_VICTIM, u_caster , GetProto(), m_triggeredSpell, aursp->Id );
+					
+					dispelledSpells.push_back( aursp->Id  );
+
 					unitTarget->RemoveAura( aur );
 					AuraRemoved = true;
 
-					if(!--damage)
+					if( --damage <= 0 )
 						finish = true;
 				}
-				else if(aur->GetSpellProto()->DispelType == GetProto()->EffectMiscValue[i])
+				else if( aursp->DispelType == GetProto()->EffectMiscValue[i] )
 				{
-					unitTarget->HandleProc( PROC_ON_PRE_DISPELL_AURA_VICTIM , u_caster , GetProto(), m_triggeredSpell, aur->GetSpellId() );
+					unitTarget->HandleProc( PROC_ON_PRE_DISPELL_AURA_VICTIM, u_caster , GetProto(), m_triggeredSpell, aursp->Id );
+					
+					dispelledSpells.push_back( aursp->Id  );
 
-					data.clear();
-					data << m_caster->GetNewGUID();
-					data << unitTarget->GetNewGUID();
-					data << (uint32)1;
-					data << aur->GetSpellId();
-					m_caster->SendMessageToSet(&data,true);
-					sp = aur->GetSpellProto();
-					unitTarget->RemoveAllAuras(aur->GetSpellProto()->Id,aur->GetCasterGUID());
+					unitTarget->RemoveAllAuras( aursp->Id, aur->GetCasterGUID() );
 					AuraRemoved = true;
 
-					if(!--damage)
+					if( --damage <= 0 )
 						finish = true;
 				}
 
-				if ( AuraRemoved && sp != NULL )
+				if ( AuraRemoved )
 				{
-					if( sp->NameHash == SPELL_HASH_UNSTABLE_AFFLICTION )
+					if( aursp->NameHash == SPELL_HASH_UNSTABLE_AFFLICTION )
 					{
 						SpellEntry *spellInfo = dbcSpell.LookupEntry(31117);
-						Spell *spell = new Spell(u_caster, spellInfo, true, NULL);
-						spell->forced_basepoints[0] = (sp->EffectBasePoints[0]+1)*9; //damage effect
+						Spell *spell = new Spell( u_caster, spellInfo, true, NULL );
+						spell->forced_basepoints[0] = ( aursp->EffectBasePoints[0] + 1 ) * 9; //damage effect
 						spell->ProcedOnSpell = GetProto();
-						spell->pSpellId = sp->Id;
+						spell->pSpellId = aursp->Id;
 						SpellCastTargets targets;
 						targets.m_unitTarget = u_caster->GetGUID();
-						spell->prepare(&targets);
+						spell->prepare( &targets );
 					}
 					/*else if ( aur->GetSpellProto()->NameHash == SPELL_HASH_LIFEBLOOM )
 					{
@@ -2888,11 +2881,28 @@ void Spell::SpellEffectDispel(uint32 i) // Dispel
 					spell->Heal( aur->mod->m_amount );
 					}*/
 				}
-
 			}
-			if (finish)
-				return;
+			if( finish )
+				break;
 		}
+	
+	// send spell dispell log packet
+	if( !dispelledSpells.empty() )
+	{
+		WorldPacket data( SMSG_SPELLDISPELLOG, 25 + dispelledSpells.size() * 5 );
+		data << m_caster->GetNewGUID();
+		data << unitTarget->GetNewGUID();
+		data << GetProto()->Id;
+		data << uint8( 0 );				// unused
+		data << uint32( dispelledSpells.size() );
+		for( std::list< uint32 >::iterator itr = dispelledSpells.begin(); itr != dispelledSpells.end(); itr++ )
+		{
+			data << uint32( *itr );		// dispelled spell id
+			data << uint8( 0 );			// 0 = dispelled, else cleansed
+		}
+
+		m_caster->SendMessageToSet( &data, true );
+	}
 }
 
 void Spell::SpellEffectLanguage(uint32 i)
@@ -3494,7 +3504,7 @@ void Spell::SpellEffectWeapondamage( uint32 i ) // Weapon damage +
 		_type = RANGED;
 	else
 	{
-		if (GetProto()->AttributesExC & 0x1000000)
+		if( hasAttributeExC( FLAGS4_TYPE_OFFHAND ) )
 			_type =  OFFHAND;
 		else
 			_type = MELEE;
@@ -5256,83 +5266,94 @@ void Spell::SpellEffectReduceThreatPercent(uint32 i)
 
 void Spell::SpellEffectSpellSteal( uint32 i )
 {
-	if (!unitTarget || !u_caster || !unitTarget->isAlive())
+	if( unitTarget == NULL || u_caster == NULL || !unitTarget->isAlive() )
 		return;
-	if(unitTarget->IsPlayer() && p_caster && p_caster != TO< Player* >(unitTarget))
+	
+	if( playerTarget != NULL && p_caster != NULL && p_caster != playerTarget )
 	{
-		if(TO< Player* >(unitTarget)->IsPvPFlagged())
-		{
-			if(p_caster->IsPlayer())
-				TO< Player* >( p_caster )->PvPToggle();
-			else
-				p_caster->SetPvPFlag();
-		}
+		if( playerTarget->IsPvPFlagged() )
+			p_caster->PvPToggle();
 	}
 
-	Aura *aur;
 	uint32 start, end;
-	if(isAttackable(u_caster,unitTarget))
+	if( isAttackable( u_caster, unitTarget ) )
 	{
-		start=MAX_POSITIVE_AURAS_EXTEDED_START;
-		end=MAX_POSITIVE_AURAS_EXTEDED_END;
+		start = MAX_POSITIVE_AURAS_EXTEDED_START;
+		end = MAX_POSITIVE_AURAS_EXTEDED_END;
 	}
 	else
 		return;
 
-	WorldPacket data(SMSG_SPELLDISPELLOG, 16);
+	Aura *aur;
+	SpellEntry * aursp;
+	std::list< uint32 > stealedSpells;
 
-	for(uint32 x=start;x<end;x++)
+	for( uint32 x = start; x < end; x++ )
 	{
-		if (unitTarget->m_auras[x])
+		if( unitTarget->m_auras[x] != NULL )
 		{
 			aur = unitTarget->m_auras[x];
-			if(aur->GetSpellId() != 15007 && !aur->IsPassive()
+			aursp = aur->GetSpellProto();
+
+			if( aursp->Id != 15007 && !aur->IsPassive()
 				//				&& aur->IsPositive()	// Zack : We are only checking positive auras. There is no meaning to check again
 				) //Nothing can dispel resurrection sickness
 			{
-				if(aur->GetSpellProto()->DispelType == DISPEL_MAGIC)
+				if( aursp->DispelType == DISPEL_MAGIC )
 				{
-					data.clear();
-					data << m_caster->GetNewGUID();
-					data << unitTarget->GetNewGUID();
-					data << (uint32)1;
-					data << aur->GetSpellId();
-					m_caster->SendMessageToSet(&data,true);
+					stealedSpells.push_back( aursp->Id  );
 
-					uint32 aurdur = ( aur->GetDuration()>120000 ? 120000 : aur->GetDuration() );
-					Aura *aura = new Aura(aur->GetSpellProto(), aurdur, u_caster, u_caster );
-					uint32 aur_removed = unitTarget->RemoveAllAuraByNameHash( aur->GetSpellProto()->NameHash );
-					for ( uint32 j = 0; j < 3; j++ )
+					uint32 aurdur = ( aur->GetDuration() > 120000 ? 120000 : aur->GetDuration() );
+					Aura *aura = new Aura( aursp, aurdur, u_caster, u_caster );
+					uint32 aur_removed = unitTarget->RemoveAllAuraByNameHash( aursp->NameHash );
+					for( uint8 j = 0; j < 3; j++ )
 					{
 						if ( aura->GetSpellProto()->Effect[j] )
 						{
 							aura->AddMod( aura->GetSpellProto()->EffectApplyAuraName[j], aura->GetSpellProto()->EffectBasePoints[j]+1, aura->GetSpellProto()->EffectMiscValue[j], j );
 						}
 					}
-					if( aura->GetSpellProto()->procCharges>0 )
+					if( aura->GetSpellProto()->procCharges > 0 )
 					{
 						Aura *aur2;
 						for(uint32 j = 0; j<aur_removed-1; j++)
 						{
-							aur2 = new Aura(aura->GetSpellProto(), aurdur, u_caster, u_caster);
+							aur2 = new Aura( aura->GetSpellProto(), aurdur, u_caster, u_caster );
 							u_caster->AddAura(aur2);
 						}
-						if(!(aura->GetSpellProto()->procFlags & PROC_REMOVEONUSE))
+						if( !( aura->GetSpellProto()->procFlags & PROC_REMOVEONUSE ) )
 						{
 							SpellCharge charge;
-							charge.count=aur_removed;
-							charge.spellId=aura->GetSpellId();
-							charge.ProcFlag=aura->GetSpellProto()->procFlags;
+							charge.count = aur_removed;
+							charge.spellId = aura->GetSpellId();
+							charge.ProcFlag = aura->GetSpellProto()->procFlags;
 							charge.lastproc = 0;
 							charge.procdiff = 0;
-							u_caster->m_chargeSpells.insert(make_pair(aura->GetSpellId(),charge));
+							u_caster->m_chargeSpells.insert( make_pair (aura->GetSpellId(), charge ) );
 						}
 					}
-					u_caster->AddAura(aura);
+					u_caster->AddAura( aura );
 					break;
 				}
 			}
 		}
+	}
+	
+	if( !stealedSpells.empty() )
+	{
+		WorldPacket data( SMSG_SPELLSTEALLOG, 25 + stealedSpells.size() * 5 );
+		data << m_caster->GetNewGUID();
+		data << unitTarget->GetNewGUID();
+		data << GetProto()->Id;
+		data << uint8( 0 );				// unused
+		data << uint32( stealedSpells.size() );
+		for( std::list< uint32 >::iterator itr = stealedSpells.begin(); itr != stealedSpells.end(); itr++ )
+		{
+			data << uint32( *itr );		// stealed spell id
+			data << uint8( 1 );			// 0 = dispelled, else cleansed
+		}
+
+		m_caster->SendMessageToSet( &data, true );
 	}
 }
 
