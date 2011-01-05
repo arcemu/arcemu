@@ -713,17 +713,28 @@ enum UnitFieldFlags // UNIT_FIELD_FLAGS #46 - these are client flags
 
 enum UnitFieldFlags2
 {
-	UNIT_FLAG2_ENABLE_POWER_REGEN				= 0x800,
+	UNIT_FLAG2_FEIGN_DEATH			= 0x0000001,
+	UNIT_FLAG2_UNK1					= 0x0000002,	// Hides body and body armor. Weapons, shoulder and head armors still visible
+	UNIT_FLAG2_UNK2					= 0x0000004,
+	UNIT_FLAG2_COMPREHEND_LANG		= 0x0000008,	// Allows target to understand itself while talking in different language
+	UNIT_FLAG2_UNK4					= 0x0000010,
+	UNIT_FLAG2_UNK5					= 0x0000020,
+	UNIT_FLAG2_FORCE_MOVE			= 0x0000040,	// Makes target to run forward
+	UNIT_FLAG2_DISARM_OFFHAND		= 0x0000080,
+	UNIT_FLAG2_UNK8					= 0x0000100,
+	UNIT_FLAG2_UNK9					= 0x0000200,
+	UNIT_FLAG2_DISARM_RANGED		= 0x0000400,
+	UNIT_FLAG2_ENABLE_POWER_REGEN	= 0x0000800,
 };
 
 enum UnitDynamicFlags
 {
-	U_DYN_FLAG_LOOTABLE				 = 0x01,
-	U_DYN_FLAG_UNIT_TRACKABLE		   = 0x02,
-	U_DYN_FLAG_TAGGED_BY_OTHER		  = 0x04,
-	U_DYN_FLAG_TAPPED_BY_PLAYER		 = 0x08,
-	U_DYN_FLAG_PLAYER_INFO			  = 0x10,
-	U_DYN_FLAG_DEAD					 = 0x20,
+	U_DYN_FLAG_LOOTABLE				= 0x01,
+	U_DYN_FLAG_UNIT_TRACKABLE		= 0x02,
+	U_DYN_FLAG_TAGGED_BY_OTHER		= 0x04,
+	U_DYN_FLAG_TAPPED_BY_PLAYER		= 0x08,
+	U_DYN_FLAG_PLAYER_INFO			= 0x10,
+	U_DYN_FLAG_DEAD					= 0x20,
 };
 
 enum DamageFlags
@@ -1471,7 +1482,7 @@ public:
 	//guardians are temporary spawn that will inherit master faction and will follow them. Apart from that they have their own mind	
 	std::set<Creature*> m_Guardians;
 	Creature* create_guardian( uint32 guardian_entry, uint32 duration, float angle, uint32 lvl = 0, GameObject * obj = NULL, LocationVector * Vec = NULL, uint32 spellid = 0 ); 
-	void AddGuardianRef( Creature* guard ){ Arcemu::Util::ARCEMU_ASSERT(    guard != NULL );  m_Guardians.insert( guard );	}
+	void AddGuardianRef( Creature* guard ){ Arcemu::Util::ARCEMU_ASSERT( guard != NULL );  m_Guardians.insert( guard );	}
 	void RemoveGuardianRef( Creature* g );
 	void RemoveAllGuardians( bool remove_from_world = true );
 
@@ -1767,8 +1778,7 @@ public:
     
     void SetMaxPower( uint32 index, uint32 value ){ SetUInt32Value( UNIT_FIELD_MAXPOWER1 + index, value ); }
     
-    void ModMaxPower( uint32 index, int32 value ){ ModUnsigned32Value(UNIT_FIELD_MAXPOWER1 + index, value);
-    }
+    void ModMaxPower( uint32 index, int32 value ){ ModUnsigned32Value(UNIT_FIELD_MAXPOWER1 + index, value); }
 
     uint32 GetMaxPower( uint32 index ){ return GetUInt32Value( UNIT_FIELD_MAXPOWER1 + index ); }
 

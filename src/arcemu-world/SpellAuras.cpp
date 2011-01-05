@@ -262,10 +262,10 @@ pSpellAura SpellAuraHandler[TOTAL_SPELL_AURAS]={
 		&Aura::SpellAuraModSpellDamageByAP,//238	//increase spell dmg by X pct from attack power
 		&Aura::SpellAuraModScale,//239
 		&Aura::SpellAuraExpertise,// SPELL_AURA_EXPERTISE = 240 
-		&Aura::SpellAuraNULL,//241
+		&Aura::SpellAuraForceMoveForward,//241 makes target to run forward
 		&Aura::SpellAuraNULL,//242
 		&Aura::SpellAuraNULL,//243
-		&Aura::SpellAuraNULL,//244
+		&Aura::SpellAuraComprehendLang,//244 allows target to understand itself while talking in different language
 		&Aura::SpellAuraNULL,//245
 		&Aura::SpellAuraNULL,//246
 		&Aura::SpellAuraNULL,//247
@@ -4780,7 +4780,7 @@ void Aura::SpellAuraFeignDeath(bool apply)
 				}
 			}
 
-			p_target->SetFlag( UNIT_FIELD_FLAGS_2, 1 );
+			p_target->SetFlag( UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH );
 			p_target->SetFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_FEIGN_DEATH );
 			p_target->SetFlag( UNIT_DYNAMIC_FLAGS, U_DYN_FLAG_DEAD );
 
@@ -4808,7 +4808,7 @@ void Aura::SpellAuraFeignDeath(bool apply)
 		}
 		else
 		{
-			p_target->RemoveFlag(UNIT_FIELD_FLAGS_2, 1);
+			p_target->RemoveFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH);
 			p_target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_FEIGN_DEATH);
 			p_target->RemoveFlag(UNIT_DYNAMIC_FLAGS, U_DYN_FLAG_DEAD);
 			data.SetOpcode(SMSG_STOP_MIRROR_TIMER);
@@ -8146,10 +8146,26 @@ void Aura::SendChannelUpdate(uint32 time, Object * m_caster)
 
 void Aura::SpellAuraExpertise(bool apply)
 {
-	if( !m_target->IsPlayer() )
+	if( p_target == NULL )
 		return;
 
-	TO< Player* >( m_target )->CalcExpertise();
+	p_target->CalcExpertise();
+}
+
+void Aura::SpellAuraForceMoveForward(bool apply)
+{
+	if( apply )
+		m_target->SetFlag( UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FORCE_MOVE );
+	else
+		m_target->RemoveFlag( UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FORCE_MOVE );
+}
+
+void Aura::SpellAuraComprehendLang(bool apply)
+{
+	if( apply )
+		m_target->SetFlag( UNIT_FIELD_FLAGS_2, UNIT_FLAG2_COMPREHEND_LANG );
+	else
+		m_target->RemoveFlag( UNIT_FIELD_FLAGS_2, UNIT_FLAG2_COMPREHEND_LANG );
 }
 
 void Aura::SpellAuraModPossessPet(bool apply)

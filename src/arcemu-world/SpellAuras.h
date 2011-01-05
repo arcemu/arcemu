@@ -278,10 +278,10 @@ enum MOD_TYPES
 	SPELL_AURA_MOD_HEALING_BY_AP=237,
 	SPELL_AURA_MOD_SPELL_DAMAGE_BY_AP=238,
 	SPELL_AURA_EXPERTISE = 240,
-	SPELL_AURA_241 = 241,
+	SPELL_AURA_FORCE_MOVE_FORWARD = 241,
     SPELL_AURA_MOD_SPELL_DAMAGE_FROM_HEALING = 242,
     SPELL_AURA_243 = 243,
-    SPELL_AURA_244 = 244,
+    SPELL_AURA_COMPREHEND_LANG = 244,
     SPELL_AURA_MOD_DURATION_OF_MAGIC_EFFECTS = 245,
     SPELL_AURA_246 = 246,
     SPELL_AURA_247 = 247,
@@ -735,6 +735,8 @@ public:
 	void SpellAuraAllowFlight(bool apply);
 	void SpellAuraFinishingMovesCannotBeDodged(bool apply);
 	void SpellAuraExpertise(bool apply);
+	void SpellAuraForceMoveForward(bool apply);
+	void SpellAuraComprehendLang(bool apply);
 	void SpellAuraPeriodicTriggerDummy(bool apply);
 	void SpellAuraModPossessPet(bool apply);
 	void SpellAuraModHealingByAP(bool apply);
