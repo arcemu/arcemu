@@ -236,14 +236,14 @@ bool registerInstanceEvent(uint32 entry, uint32 evt, lua_function ref)
 bool registerDummySpell(uint32 entry, lua_function ref, variadic_parameter * params)
 {
 	bool found = true;
-	if( (int)ref != LUA_REFNIL )
+	if( (ptrdiff_t)ref != LUA_REFNIL )
 	{
 		li::SpellFRefMap::iterator itr = lua_instance->m_dummySpells.find(entry);
 		if(itr == lua_instance->m_dummySpells.end() )
 		{
 			found = false;
 			PSpellMapEntry pentry = new SpellMapEntry;
-			pentry->ref = (int)ref;
+			pentry->ref = (ptrdiff_t)ref;
 			pentry->params = params;
 			lua_instance->m_dummySpells.insert( make_pair(entry, pentry) );
 		}
@@ -256,11 +256,11 @@ void removeTimedEvents()
 	//lua_instance->eventMgr.RemoveEvents();
 }
 
-int extractfRefFromCString(lua_State * L,const char * functionName)
+ptrdiff_t extractfRefFromCString(lua_State * L,const char * functionName)
 {
-	int functionRef = LUA_REFNIL;
+	ptrdiff_t functionRef = LUA_REFNIL;
 	//lua_State * L = lua_state;
-	int top = lua_gettop(L);
+	ptrdiff_t top = lua_gettop(L);
 	if(functionName != NULL)
 	{
 		char copy[256];
@@ -304,21 +304,30 @@ int extractfRefFromCString(lua_State * L,const char * functionName)
 
 int suspendluathread(lua_thread thread, int wait_time, variadic_parameter * params)
 {
-	if(thread != NULL && wait_time > 0)
+	if(lua_instance->map != NULL && thread != NULL && wait_time > 0)
 	{
 		TimedEvent * evt = TimedEvent::Allocate(NULL,new CallBackFunctionP1<lua_thread>(resumeluathread,thread),0,wait_time,1);
-		sWorld.event_AddEvent(evt);
+		//add the event to the current mapmgr.
+		lua_instance->map->event_AddEvent(evt);
 		//All that remains now are the extra arguments passed to this function.
 		if(params != NULL)
 			luabridge::tdstack<variadic_parameter*>::push(thread, params);
-		int pcnt = params->count;
+		ptrdiff_t pcnt = params->count;
 		//clear up references held by variadic since they are now on the thread.
 		cleanup_varparam(params, lua_state);
+		lua_instance->coroutines_.insert( thread);
 		return lua_yield(thread, pcnt);
 	}
 	return 0;
 }
 void resumeluathread(lua_thread thread)
 {
-	lua_resume(thread, lua_gettop(thread) );
+	//Make sure we still have the thread
+	LUA_INSTANCE::Coroutines::iterator itr = lua_instance->coroutines_.find(thread);
+	if( itr != lua_instance->coroutines_.end() )
+	{
+		lua_resume(thread, lua_gettop(thread) );
+		//Stop keeping track of it
+		lua_instance->coroutines_.erase( itr);
+	}
 }

@@ -53,8 +53,14 @@ int metaevent_tostring(lua_State * L)
 	T** obj = (T**)checkclass(L, 1, classname<T>::name() );
 	char buff[55];
 	memset(buff, 0, sizeof(char)*55);
-	sprintf(buff, "%s(%X)",classname<T>::name(), *obj);
+	sprintf(buff, "%s (%p)", classname<T>::name(), *obj );
 	lua_pushstring(L,buff);
+	return 1;
+}
+template<typename T>
+int metaevent_gettypename(lua_State * L)
+{
+	lua_pushstring(L, classname<T>::name() );
 	return 1;
 }
 
@@ -100,9 +106,12 @@ void create_metatable (lua_State *L, const char *name, bool destruct)
 		lua_pushcclosure(L, &destructor_dispatch<T>, 1);
 		rawsetfield(L, -2, "__gc");
 	}
-	// Set the __type metafield to the name of the class
+	/*// Set the __name metafield to the name of the class
 	lua_pushstring(L, name);
-	rawsetfield(L, -2, "__type");
+	rawsetfield(L, -2, "__name");*/
+
+	lua_pushcfunction(L, &metaevent_gettypename<T> );
+	rawsetfield(L, -2, "type");
 	// Create the __propget and __propset metafields as empty tables
 	lua_newtable(L);
 	rawsetfield(L, -2, "__propget");
@@ -126,8 +135,12 @@ void create_const_metatable (lua_State *L, const char *name, bool destruct)
 		lua_pushcclosure(L, &destructor_dispatch<T>, 1);
 		rawsetfield(L, -2, "__gc");
 	}
-	lua_pushstring(L, constname.c_str());
-	rawsetfield(L, -2, "__type");
+	/*lua_pushstring(L, constname.c_str());
+	rawsetfield(L, -2, "__name");*/
+
+	lua_pushcfunction(L, &metaevent_gettypename<T> );
+	rawsetfield(L, -2, "type");
+
 	lua_newtable(L);
 	rawsetfield(L, -2, "__propget");
 }
@@ -145,6 +158,12 @@ void create_static_table (lua_State *L, const char *name)
 	// Set newindexer as the __newindex metamethod
 	lua_pushcfunction(L, &newindexer);
 	rawsetfield(L, -2, "__newindex");
+	//Set the name field to point to our object name
+	/*lua_pushstring(L, name);
+	rawsetfield(L, -2, "__name");*/
+	lua_pushcfunction(L, &metaevent_gettypename<T> );
+	rawsetfield(L, -2, "type");
+
 	// Create the __propget and __propset metafields as empty tables
 	lua_newtable(L);
 	rawsetfield(L, -2, "__propget");

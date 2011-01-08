@@ -64,99 +64,101 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\..\..\bin\$(Configuration)_$(PROCESSOR_ARCHITECTURE)\script_bin\</OutDir>
-    <IntDir>$(PlatformToolsetVersion)_$(Configuration)_$(PROCESSOR_ARCHITECTURE)_$(ProjectName)\</IntDir>
+    <OutDir>..\..\..\bin\$(Configuration)_$(PlatformArchitecture)\script_bin\</OutDir>
+    <IntDir>$(PlatformToolsetVersion)_$(Configuration)_$(PlatformArchitecture)_$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\..\..\bin\$(Configuration)_$(PROCESSOR_ARCHITECTURE)\script_bin\</OutDir>
-    <IntDir>$(PlatformToolsetVersion)_$(Configuration)_$(PROCESSOR_ARCHITECTURE)_$(ProjectName)\</IntDir>
+    <OutDir>..\..\..\bin\$(Configuration)_$(PlatformArchitecture)\script_bin\</OutDir>
+    <IntDir>$(PlatformToolsetVersion)_$(Configuration)_$(PlatformArchitecture)_$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\..\..\bin\$(Configuration)_$(PROCESSOR_ARCHITECTURE)\script_bin\</OutDir>
-    <IntDir>$(PlatformToolsetVersion)_$(Configuration)_$(PROCESSOR_ARCHITECTURE)_$(ProjectName)\</IntDir>
+    <OutDir>..\..\..\bin\$(Configuration)_$(PlatformArchitecture)\script_bin\</OutDir>
+    <IntDir>$(PlatformToolsetVersion)_$(Configuration)_$(PlatformArchitecture)_$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\..\..\bin\$(Configuration)_$(PROCESSOR_ARCHITECTURE)\script_bin\</OutDir>
-    <IntDir>$(PlatformToolsetVersion)_$(Configuration)_$(PROCESSOR_ARCHITECTURE)_$(ProjectName)\</IntDir>
+    <OutDir>..\..\..\bin\$(Configuration)_$(PlatformArchitecture)\script_bin\</OutDir>
+    <IntDir>$(PlatformToolsetVersion)_$(Configuration)_$(PlatformArchitecture)_$(ProjectName)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;SCRIPTLIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\arcemu-shared;..\..\arcemu-world;..\..\..\extras\arcemu-windows-libraries\VC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile>LUAEngine.h</PrecompiledHeaderFile>
+      <AssemblerOutput>NoListing</AssemblerOutput>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <OutputFile>..\..\..\bin\$(Configuration)_$(PROCESSOR_ARCHITECTURE)\script_bin\$(TargetFileName)</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\bin\debug;..\..\..\bin\$(Configuration)_$(PROCESSOR_ARCHITECTURE)</AdditionalLibraryDirectories>
+      <OutputFile>$(OutDir)$(TargetFileName)</OutputFile>
+      <AdditionalLibraryDirectories>$(OutDir)..\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>arcemu-world.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;X64;_DEBUG;_WINDOWS;_USRDLL;SCRIPTLIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\arcemu-shared;..\..\arcemu-world;..\..\..\extras\arcemu-windows-libraries\VC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerOutput>NoListing</AssemblerOutput>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <OutputFile>..\..\..\bin\$(Configuration)_$(PROCESSOR_ARCHITECTURE)\script_bin\$(TargetFileName)</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\bin\Debug;..\..\..\bin\$(Configuration)_$(PROCESSOR_ARCHITECTURE)\</AdditionalLibraryDirectories>
+      <OutputFile>$(OutDir)$(TargetFileName)</OutputFile>
+      <AdditionalLibraryDirectories>$(OutDir)..\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>arcemu-world.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;SCRIPTLIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\arcemu-shared;..\..\arcemu-world;..\..\..\extras\arcemu-windows-libraries\VC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerOutput>NoListing</AssemblerOutput>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <OutputFile>..\..\..\bin\$(Configuration)_$(PROCESSOR_ARCHITECTURE)\script_bin\$(TargetFileName)</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\bin\release;..\..\..\bin\$(Configuration)_$(PROCESSOR_ARCHITECTURE)\</AdditionalLibraryDirectories>
+      <OutputFile>$(OutDir)$(TargetFileName)</OutputFile>
+      <AdditionalLibraryDirectories>$(OutDir)..\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>arcemu-world.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;X64;NDEBUG;_WINDOWS;_USRDLL;SCRIPTLIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\arcemu-shared;..\..\arcemu-world;..\..\..\extras\arcemu-windows-libraries\VC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerOutput>NoListing</AssemblerOutput>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <OutputFile>..\..\..\bin\$(Configuration)_$(PROCESSOR_ARCHITECTURE)\script_bin\$(TargetFileName)</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\bin\$(Configuration)_$(PROCESSOR_ARCHITECTURE)\</AdditionalLibraryDirectories>
+      <OutputFile>$(OutDir)$(TargetFileName)</OutputFile>
+      <AdditionalLibraryDirectories>$(OutDir)..\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>arcemu-world.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -235,6 +237,8 @@
     <ClInclude Include="..\src\luabridge\object_functions\global_functions.h" />
     <ClInclude Include="..\src\luabridge\object_functions\instance_functions.h" />
     <ClInclude Include="..\src\luabridge\object_functions\item_functions.h" />
+    <ClInclude Include="..\src\luabridge\object_functions\lua_creature.h" />
+    <ClInclude Include="..\src\luabridge\object_functions\lua_gameobject.h" />
     <ClInclude Include="..\src\luabridge\object_functions\lua_hooks.h" />
     <ClInclude Include="..\src\luabridge\object_functions\object_functions.h" />
     <ClInclude Include="..\src\luabridge\object_functions\packet_functions.h" />

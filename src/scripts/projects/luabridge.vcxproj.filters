@@ -272,5 +272,11 @@
     <ClInclude Include="..\src\luabridge\object_functions\unit_functions.h">
       <Filter>methods</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\luabridge\object_functions\lua_creature.h">
+      <Filter>methods</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\luabridge\object_functions\lua_gameobject.h">
+      <Filter>methods</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

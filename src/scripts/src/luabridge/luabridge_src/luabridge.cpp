@@ -123,9 +123,35 @@ int luabridge::indexer (lua_State *L)
 		// Did we get a non-nil result?  If so, return it
 		if (!lua_isnil(L, -1) )
 			return 1;
-
+		///pop the nil
 		lua_pop(L, 1);
-
+		//search the metatable of the object's metatable.
+		if( lua_getmetatable(L, -1) && !lua_isnil(L, -1) )
+		{
+			//to prevent calling this indexer method again, make sure the found metatable is not equal to the table's metatable.
+			if( !lua_rawequal(L, -1, -2) )
+			{
+				//store our current argument cnt so we can determine if any arguments were pushed
+				ptrdiff_t base = lua_gettop(L), top;
+				//push the method name being called
+				lua_pushvalue(L,2);
+				//try to retrieve the key and allow any events to be called.
+				lua_gettable(L,-2);
+				//if there were any arguments, return those.
+				top = lua_gettop(L);
+				//check for multiple arguments.
+				if( top > (base+1) )
+					return (top - base);
+				//check if the returned object is nil
+				else if(top == (base+1) && !lua_isnil(L, -1) )
+					return 1;
+				else if(top == (base+1) && lua_isnil(L, -1 ))
+					lua_pop(L,1);
+				//otherwise, proceed w/ other checks.
+			}
+			//pop the metatable's metatable.
+			lua_pop(L, 1);
+		}
 		// Look for the key in the __propget metafield
 		rawgetfield(L, -1, "__propget");
 		if (!lua_isnil(L, -1))
@@ -155,31 +181,6 @@ int luabridge::indexer (lua_State *L)
 			lua_pop(L, 1);
 		}
 		lua_pop(L, 1);
-
-		//support for adding extra methods to this object's metatable. 
-		rawgetfield(L, -1, "__override");
-		if(!lua_isnil(L, -1) )
-		{
-			lua_pushvalue(L, 2);
-			lua_rawget(L, -2);
-			if (!lua_isnil(L, -1))
-			{
-				if(lua_isfunction(L, -1) )
-				{
-					//get args top-1 coz our function is on the stack.
-					int top = lua_gettop(L)-1;
-					lua_pushvalue(L, 1);
-					lua_call(L,1, LUA_MULTRET);
-					//we return the arguments we got from that function.
-					return lua_gettop(L) - top;
-				}
-				//otherwise we simply return 1 argument pointed to the by the key.
-				else
-					return 1;
-			}
-			lua_pop(L, 1);
-		}
-		lua_pop(L,1);
 		
 		// Look for a __parent metafield; if it doesn't exist, return nil;
 		// otherwise, repeat the lookup on it.

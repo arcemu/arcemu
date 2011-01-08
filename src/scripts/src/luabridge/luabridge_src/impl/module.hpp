@@ -18,9 +18,9 @@ struct function_proxy
 	typedef typename fnptr<FnPtr>::params params;
 	static int f (lua_State *L)
 	{
-		int top = lua_gettop(L);
 		FnPtr fp = (FnPtr)lua_touserdata(L, lua_upvalueindex(1));
 		arglist<params> args(L);
+		int top = lua_gettop(L);
 		tdstack<Ret>::push(L, fnptr<FnPtr>::apply(fp, args));
 		return (lua_gettop(L) - top);
 	}
@@ -32,9 +32,9 @@ struct function_proxy <FnPtr, void>
 	typedef typename fnptr<FnPtr>::params params;
 	static int f (lua_State *L)
 	{
-		int top = lua_gettop(L);
 		FnPtr fp = (FnPtr)lua_touserdata(L, lua_upvalueindex(1));
 		arglist<params> args(L);
+		int top = lua_gettop(L);
 		fnptr<FnPtr>::apply(fp, args);
 		return (lua_gettop(L) - top);
 	}
@@ -96,4 +96,10 @@ template <typename T>
 class__<T> module::class_ (const char *name, bool destruct)
 {
 	return class__<T>(L, name, destruct);
+}
+
+template <typename T>
+void module::class_decl(const char * name)
+{
+	classname<T>::set_name(name);
 }

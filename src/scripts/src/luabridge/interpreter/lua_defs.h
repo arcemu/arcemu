@@ -162,41 +162,55 @@ enum CustomLuaEvenTypes
 
 //An empty type structure that is to be treated as an integer. We this type to specialize how tdstack::get/push methods handle them to lua.
 //a specialied type treated as a reference to a lua function.
-typedef struct{} *lua_function;
+typedef struct lua_function_o{} *lua_function;
 //specialized type that is used to return a reference to a variable object type.
-typedef struct {} * lua_obj;
+typedef struct lua_obj_o {} * lua_obj;
 //specialized type returns an index to the stack where the table is located.
-typedef struct{} * lua_table;
+typedef struct lua_table_o {} * lua_table;
 //specialized type that returns the lua execution stack of the function that called the function that contains this as its parameter
-typedef struct{} * lua_stack;
+typedef struct lua_stack_o {} * lua_stack;
 
 enum custom_value_types
 {
 	CUSTOM_TYPE_START = LUA_TTHREAD,
 	CUSTOM_TYPE_REPEATS_ARG
 };
-struct variadic_node
+
+class variadic_node
 {
-	int type;
+public:
+	ptrdiff_t type;
 	union 
 	{
-		float lua_number;
+		lua_Number lua_number;
 		const char * lua_str;
 		lua_State * thread;
 		//for ud objects and functions, we store a reference to that.
-		int obj_ref;
+		ptrdiff_t obj_ref;
 		void * l_ud;
-		int bewl;
+		ptrdiff_t bewl;
 	} val;
 	//node to the next parameter
-	struct variadic_node * next;
+	variadic_node * next;
+	variadic_node()
+	{
+		type = LUA_TNONE;
+		next = NULL;
+		val.lua_number = 0;
+	}
 };
-struct variadic_parameter
+class variadic_parameter
 {
+public:
 	//how many parameters exist.
-	int count;
+	ptrdiff_t count;
 	//node type, represents any obtainable object.
 	variadic_node * head_node;
+	variadic_parameter()
+	{
+		count = 0;
+		head_node = NULL;
+	}
 };
 
 //easy clean up function for var params
@@ -206,13 +220,14 @@ static void cleanup_varparam(variadic_parameter * param, lua_State * L)
 	{
 		variadic_node * current_node = param->head_node;
 		variadic_node * next_node = NULL;
-		for(int i = 0; i < param->count && current_node != NULL; ++i)
+		for(; current_node != NULL; )
 		{
 			next_node = current_node->next;
 			//For ud,function objects, since we store them as references, we have to unref them when we are done with them.
 			switch(current_node->type)
 			{
 			case LUA_TUSERDATA:
+			case LUA_TTABLE:
 			case LUA_TFUNCTION:
 				lua_unref(L, current_node->val.obj_ref);
 				break;
@@ -226,10 +241,40 @@ static void cleanup_varparam(variadic_parameter * param, lua_State * L)
 }
 
 //	Used to extract a reference to a function pointed by str, returns LUA_REFNIL if it can't.
-extern int extractfRefFromCString(lua_State * L, const char* str);
+extern ptrdiff_t extractfRefFromCString(lua_State * L, const char* str);
+static void dumpStackInfo(lua_State * L)
+{
+	if(L != NULL)
+	{
+		ptrdiff_t top = lua_gettop(L);
+		for(int i = 1; i <= top; ++i)
+		{
+			printf("\t%d. %s", i, luaL_typename(L, i) );
+			switch(lua_type(L,i) )
+			{
+			case LUA_TNONE:
+			case LUA_TNIL:
+				break;
+			case LUA_TNUMBER:
+				printf("(%f)", lua_tonumber(L, i));
+				break;
+			case LUA_TSTRING:
+				printf("(\"%s\")", lua_tostring(L,i) );
+				break;
+			case LUA_TLIGHTUSERDATA:
+			case LUA_TTABLE:
+			case LUA_TUSERDATA:
+			case LUA_TFUNCTION:
+				printf("(%p)", lua_topointer(L,i) );
+				break;
+			}
+			printf("\n");
+		}
+	}
+}
 //	Stores previously allocated pointers to shared_ptrs so that we can reduce the amount of userdata's that we allocate.
 typedef HM_NAMESPACE::hash_map<const char*, std::deque<void*> > SHAREDPTR_POOL;
-extern SHAREDPTR_POOL sp_pool;
+//extern SHAREDPTR_POOL sp_pool;
 
 #define INVALID_FUNCTION LUA_REFNIL
 typedef lua_State* lua_thread;
@@ -242,21 +287,10 @@ class LuaQuest;
 
 typedef struct
 {
-	int ref;
+	ptrdiff_t ref;
 	variadic_parameter * params;
 } SpellMapEntry, *PSpellMapEntry;
 typedef struct
 {
 	lua_function refs[CREATURE_EVENT_COUNT];
 } ObjectBinding, *PObjectBinding;
-
-class LuaResult : public QueryResult
-{
-public:
-	Field * GetColumn(int clm)
-	{
-		if( (uint32)clm <= GetFieldCount() )
-			return &Fetch()[clm];
-		return NULL;
-	}
-};

@@ -29,7 +29,7 @@ GossipMenu * Menu;
 #pragma once
 #include "StdAfx.h"
 #include "lua_instance.h"
-#include "lua_defs.h"
+#include "../interpreter/lua_defs.h"
 #include "../luabridge_src/luabridge.hpp"
 
 extern "C" 
@@ -155,7 +155,7 @@ namespace lua_engine
 #define push_aura(obj) push_obj(Aura, (obj) )
 #define push_bool(bewl) luabridge::tdstack<bool>::push(lua_state, (bewl) )
 #define push_int(integer) luabridge::tdstack<int>::push(lua_state, (integer) )
-#define push_nil() luabridge::tdstack<void>::push(lua_state,NULL)
+#define push_nil() luabridge::tdstack<void>::push(lua_state)
 #define push_str(cstr) luabridge::tdstack<const char*>::push(lua_state, (cstr) )
 #define push_float(flewt) luabridge::tdstack<float>::push(lua_state, (flewt) )
 #define push_double(doublee) luabridge::tdstack<double>::push(lua_state, (doublee))

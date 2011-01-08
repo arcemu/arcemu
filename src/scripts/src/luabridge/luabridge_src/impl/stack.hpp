@@ -30,11 +30,16 @@ struct tdstack<T*>
 {
 	static void push (lua_State *L, T * data)
 	{
-		//created a shared ptr from ud block.
-		T ** ud_ptr = (T**)lua_newuserdata(L, sizeof(T**) );
-		luaL_getmetatable(L, classname<T>::name());
-		lua_setmetatable(L, -2);
-		*ud_ptr = data;
+		if(data != NULL)
+		{
+			//created a shared ptr from ud block.
+			T ** ud_ptr = (T**)lua_newuserdata(L, sizeof(T**) );
+			luaL_getmetatable(L, classname<T>::name());
+			lua_setmetatable(L, -2);
+			*ud_ptr = data;
+		}
+		else	//otherwise push a nil object
+			lua_pushnil(L);
 	}
 	static T * get (lua_State *L, int index)
 	{
@@ -54,11 +59,16 @@ struct tdstack <const T *>
 {
 	static void push (lua_State *L, const T *data)
 	{
-		const T** ud_ptr = (const T**)lua_newuserdata(L, sizeof(const T**) );
-		std::string constname = std::string("const ") + classname<T>::name();
-		luaL_getmetatable(L, constname.c_str());
-		lua_setmetatable(L, -2);
-		*ud_ptr = data;
+		if(data != NULL)
+		{
+			const T** ud_ptr = (const T**)lua_newuserdata(L, sizeof(const T**) );
+			std::string constname = std::string("const ") + classname<T>::name();
+			luaL_getmetatable(L, constname.c_str());
+			lua_setmetatable(L, -2);
+			*ud_ptr = data;
+		}
+		else
+			lua_pushnil(L);
 	}
 	static const T* get (lua_State *L, int index)
 	{
@@ -72,10 +82,15 @@ struct tdstack <T* const>
 {
 	static void push (lua_State *L, T * const data)
 	{
-		const T ** ud = lua_newuserdata(L, sizeof(const T**) );
-		luaL_getmetatable(L, classname<T>::name() );
-		lua_setmetatable(L,-2);
-		*ud = data;
+		if(data != NULL)
+		{
+			const T ** ud = lua_newuserdata(L, sizeof(const T**) );
+			luaL_getmetatable(L, classname<T>::name() );
+			lua_setmetatable(L,-2);
+			*ud = data;
+		}
+		else
+			lua_pushnil(L);
 	}
 	static T* const get (lua_State *L, int index)
 	{
@@ -88,11 +103,16 @@ struct tdstack <const T* const>
 {
 	static void push (lua_State *L, const T * const data)
 	{
-		const T ** ud = lua_newuserdata(L, sizeof(const T**) );
-		std::string constname = std::string("const ") + classname<T>::name();
-		luaL_getmetatable(L, constname.c_str());
-		lua_setmetatable(L, -2);
-		*ud = (const T*)data;
+		if(data != NULL)
+		{
+			const T ** ud = lua_newuserdata(L, sizeof(const T**) );
+			std::string constname = std::string("const ") + classname<T>::name();
+			luaL_getmetatable(L, constname.c_str());
+			lua_setmetatable(L, -2);
+			*ud = (const T*)data;
+		}
+		else
+			lua_pushnil(L);
 	}
 	static const T* const get (lua_State *L, int index)
 	{
@@ -140,7 +160,7 @@ struct tdstack <const T&>
 template <>
 struct tdstack <void>
 {
-	static void push (lua_State *L, void *)
+	static void push (lua_State *L)
 	{
 		lua_pushnil(L);
 	}
@@ -341,6 +361,19 @@ struct tdstack <const char *>
 };
 
 template <>
+struct tdstack <char *>
+{
+	static void push (lua_State *L, char *data)
+	{
+		lua_pushstring(L, (const char*)data);
+	}
+	static char *get (lua_State *L, int index)
+	{
+		return (char*)luaL_checkstring(L, index);
+	}
+};
+
+template <>
 struct tdstack <std::string>
 {
 	static void push (lua_State *L, const std::string &data)
@@ -372,12 +405,12 @@ struct tdstack<lua_function>
 {
 	static void push(lua_State * l, lua_function ref)
 	{
-		lua_getref(l, (int)ref);
+		lua_getref(l, (ptrdiff_t)ref);
 	}
 	static lua_function get(lua_State *L, int index)
 	{
-		int fref = LUA_REFNIL;
-		int type = lua_type(L,index);
+		ptrdiff_t fref = LUA_REFNIL;
+		ptrdiff_t type = lua_type(L,index);
 		if( type == LUA_TFUNCTION)
 		{
 			lua_pushvalue(L,index);
@@ -395,11 +428,11 @@ struct tdstack<lua_obj>
 {
 	static void push(lua_State * l, lua_obj ref)
 	{
-		lua_getref(l, (int)ref);
+		lua_getref(l, (ptrdiff_t)ref);
 	}
 	static lua_obj get(lua_State *L, int index)
 	{
-		int ref = LUA_REFNIL;
+		ptrdiff_t ref = LUA_REFNIL;
 		switch(lua_type(L, index) )
 		{
 		case LUA_TFUNCTION:
@@ -417,7 +450,7 @@ struct tdstack<lua_obj>
 template<>
 struct tdstack<lua_thread>
 {
-	static void push(lua_State * L, lua_thread thread)
+	static void push(lua_State *, lua_thread thread)
 	{
 		lua_pushthread(thread);
 	}
@@ -433,11 +466,11 @@ template<>
 struct tdstack<lua_stack>
 {
 	//nothing since we've already pushed an object on the stack.
-	static void push(lua_State * L, lua_stack)
+	static void push(lua_State *, lua_stack)
 	{
 
 	}
-	static lua_stack get(lua_State *L, int index)
+	static lua_stack get(lua_State *L, int)
 	{
 		//always return the execution stack.
 		return (lua_stack)L;
@@ -450,7 +483,7 @@ struct tdstack<variadic_parameter*>
 	static void push(lua_State * L, variadic_parameter * head)
 	{
 		variadic_node * current_node = head->head_node;
-		variadic_node * next_node = NULL;
+		//variadic_node * next_node = NULL;
 		for(int i = 0; i < head->count && current_node != NULL; ++i)
 		{
 			switch(current_node->type)
@@ -465,13 +498,17 @@ struct tdstack<variadic_parameter*>
 			case LUA_TUSERDATA:
 			case LUA_TFUNCTION:
 			case LUA_TTABLE:
-				tdstack<int>::push(L, current_node->val.obj_ref);
+				//simply unref the ref and our object is automatically pushed to the stack.
+				if(current_node->val.obj_ref > LUA_REFNIL)
+					lua_getref(L, current_node->val.obj_ref);
+				else
+					tdstack<void>::push(L);
 				break;
 			case LUA_TSTRING:
 				tdstack<const char*>::push(L, current_node->val.lua_str);
 				break;
 			case LUA_TNIL:
-				tdstack<void>::push(L,NULL);
+				tdstack<void>::push(L);
 				break;
 			case LUA_TLIGHTUSERDATA:
 				lua_pushlightuserdata(L, current_node->val.l_ud);
@@ -482,26 +519,34 @@ struct tdstack<variadic_parameter*>
 			}
 			current_node = current_node->next;
 		}
-		//cleanup_varparam(head,L);
 	}
 	static variadic_parameter * get(lua_State *L, int index)
 	{
 		//get number of args we have.
 		int max_args = lua_gettop(L);
-		if(max_args <= index)
+		if(max_args < index)
 			return NULL;
 		variadic_parameter * param = new variadic_parameter;
-		param->count = (max_args - index);
-		variadic_node * head,  *current_node;
-		head = current_node = new variadic_node;
+		param->count = (max_args - index) +1;
+		variadic_node * head,  *current_node, *previous_node;
+		head = previous_node = current_node = new variadic_node;
 		for(int i = index; i <= max_args; ++i)
 		{
+			if(current_node == NULL)
+			{
+				current_node = new variadic_node;
+				previous_node->next = current_node;
+			}
+
 			current_node->type = lua_type(L,i);
 			switch(current_node->type)
 			{
 			case LUA_TNIL:
 			case LUA_TNONE:
 				current_node->val.l_ud = NULL;
+				break;
+			case LUA_TSTRING:
+				current_node->val.lua_str = strdup( tdstack<const char*>::get(L, i) );
 				break;
 			case LUA_TNUMBER:
 				current_node->val.lua_number = (float)luaL_checknumber(L, i);
@@ -510,24 +555,24 @@ struct tdstack<variadic_parameter*>
 				current_node->val.thread = lua_tothread(L, i);
 				break;
 			case LUA_TBOOLEAN:
-				current_node->val.bewl = luaL_checkint(L,i);
+			 	current_node->val.bewl = luaL_checkint(L,i);
 				break;
 			case LUA_TLIGHTUSERDATA:
+				current_node->val.l_ud = lua_touserdata(L, i);
+				break;
 			case LUA_TFUNCTION:
 			case LUA_TUSERDATA:
+			case LUA_TTABLE:
 				//create a reference to the object.
 				lua_pushvalue(L, i);
+				if(lua_type(L, i) != current_node->type)
+					printf("\tExpected type (%d) instead got type (%d) \n", current_node->type, lua_type(L,i) );
 				current_node->val.obj_ref = lua_ref(L, true);
 				break;
-			case LUA_TSTRING:
-				current_node->val.lua_str = luaL_checkstring(L,i);
-				break;
 			}
-			current_node->next = new variadic_node;
+			previous_node = current_node;
 			current_node = current_node->next;
 		}
-		//assign a null last node.
-		current_node->next = NULL;
 		//assign our head node which links to the others.
 		param->head_node = head;
 		return param;
@@ -539,17 +584,18 @@ struct tdstack<lua_table>
 {
 	static void push(lua_State * l, lua_table ref)
 	{
-		if( (int)ref != 0)
+		ptrdiff_t tRef = (ptrdiff_t)ref;
+		if( tRef > LUA_REFNIL)
 		{
-			lua_getref(l, (int)ref);
-			lua_unref(l, (int)ref);
+			lua_getref(l, tRef);
+			lua_unref(l, tRef);
 		}
 		else
 			lua_pushnil(l);
 	}
 	static lua_table get(lua_State *L, int index)
 	{
-		int ref = LUA_REFNIL;
+		ptrdiff_t ref = LUA_REFNIL;
 		if(lua_type(L, index) == LUA_TTABLE)
 		{
 			lua_pushvalue(L, index);

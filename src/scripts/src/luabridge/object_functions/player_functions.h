@@ -203,7 +203,9 @@ namespace lua_engine
 
 			BIND(IsAttacking)
 			BIND(PlaySound)
-			BIND(GetItemInterface);
+			BIND(GetItemInterface)
+			BINDE("Resurrect", &Player::RemoteRevive)
+			BINDE("ResurrectPlayer", &Player::RemoteRevive);
 #undef BIND
 #undef BINDE
 	}

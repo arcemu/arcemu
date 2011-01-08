@@ -148,9 +148,9 @@
 	return 1;
 }*/
 	
-ARCEMU_FORCEINLINE static int GetGameTime()
+ARCEMU_FORCEINLINE static ptrdiff_t GetGameTime()
 {
-	return (int)sWorld.GetGameTime();
+	return (ptrdiff_t)sWorld.GetGameTime();
 }
 
 static Player * GetPlayer(const char * name)
@@ -166,12 +166,12 @@ ARCEMU_FORCEINLINE static const char * enginename() //also mapped to GetLuaEngin
 	return ENGINE_NAME;
 }
 
-ARCEMU_FORCEINLINE static int engineversion()
+ARCEMU_FORCEINLINE static ptrdiff_t engineversion()
 {
 	return ENGINE_VERSION;
 }
 
-ARCEMU_FORCEINLINE static void logcolor(int color)
+ARCEMU_FORCEINLINE static void logcolor(ptrdiff_t color)
 {
 	//Log.Color(color);
 }
@@ -260,7 +260,7 @@ static void ReloadLuaEngine()
 
 static void GetPlayersInWorld(lua_stack stack)
 {
-	uint32 count = 1;
+	ptrdiff_t count = 1;
 	//push a new table.
 	lua_newtable( (lua_thread)stack);
 	objmgr._playerslock.AcquireReadLock();
@@ -280,7 +280,7 @@ static void Rehash()
 	sWorld.Rehash(true);
 }
 
-static int GetArcemuRevision()
+static ptrdiff_t GetArcemuRevision()
 {
 	return BUILD_REVISION;
 }
@@ -320,9 +320,9 @@ static int SendPvPCaptureMessage(lua_State * L)
 	return 1;
 }
 */
-static void GetPlayersInMap(lua_stack stack, int map_id)
+static void GetPlayersInMap(lua_stack stack, ptrdiff_t map_id)
 {
-	int count = 1;
+	ptrdiff_t count = 1;
 	lua_newtable( (lua_thread)stack);
 	MapMgr * mgr = sInstanceMgr.GetMapMgr( (uint32)map_id);
 	if(mgr != NULL)
@@ -337,15 +337,15 @@ static void GetPlayersInMap(lua_stack stack, int map_id)
 	}
 }
 
-static void GetPlayersInZone(lua_stack stack, int zone_id)
+static void GetPlayersInZone(lua_stack stack, ptrdiff_t zone_id)
 {
-	int count = 1;
+	ptrdiff_t count = 1;
 	lua_newtable( (lua_thread)stack);
 	objmgr._playerslock.AcquireReadLock();
 	HM_NAMESPACE::hash_map<uint32, Player*>::const_iterator itr;
     for(itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
 	{
-		if(itr->second->GetZoneId() == zone_id)
+		if(itr->second->GetZoneId() == (uint32)zone_id)
 		{
 			lua_pushinteger( (lua_thread)stack,count);
 			luabridge::tdstack<Player*>::push( (lua_thread)stack, itr->second);
@@ -371,12 +371,12 @@ static void GetPlayersInZone(lua_stack stack, int zone_id)
 	return 0;
 }*/
 
-int luabit_and(int left, lua_stack stack)
+ptrdiff_t luabit_and(ptrdiff_t left, lua_stack stack)
 {
-	int top = lua_gettop( (lua_thread)stack);
+	ptrdiff_t top = lua_gettop( (lua_thread)stack);
 	if(top > 1)
 	{
-		for(int i = 2; i <= top; ++i)
+		for(ptrdiff_t i = 2; i <= top; ++i)
 		{
 			if(lua_isnumber( (lua_thread)stack,i) )
 				left &= luaL_checkint( (lua_thread)stack, i);
@@ -384,12 +384,12 @@ int luabit_and(int left, lua_stack stack)
 	}
 	return left;
 }
-int luabit_or(int left, lua_stack stack)
+ptrdiff_t luabit_or(ptrdiff_t left, lua_stack stack)
 {
-	int top = lua_gettop( (lua_thread)stack);
+	ptrdiff_t top = lua_gettop( (lua_thread)stack);
 	if(top > 1)
 	{
-		for(int i = 2; i <= top; ++i)
+		for(ptrdiff_t i = 2; i <= top; ++i)
 		{
 			if(lua_isnumber( (lua_thread)stack, i) )
 				left |= luaL_checkint( (lua_thread)stack, i);
@@ -397,7 +397,7 @@ int luabit_or(int left, lua_stack stack)
 	}
 	return left;
 }
-int luabit_xor( int left, lua_stack stack)
+ptrdiff_t luabit_xor( int left, lua_stack stack)
 {
 	int top = lua_gettop( (lua_thread)stack);
 	if(top > 1)
@@ -434,13 +434,13 @@ ARCEMU_FORCEINLINE const char * GetPlatform()
 	PUSH_GUID(L,num);
 	return 1;
 }*/
-void SendPacketToZone(WorldPacket * dat, int zone_id)
+void SendPacketToZone(WorldPacket * dat, size_t zone_id)
 {
 	if (dat != NULL && zone_id)
 		sWorld.SendZoneMessage(dat,zone_id);
 }
 
-void SendPacketToInstance(WorldPacket * pack, int instance)
+void SendPacketToInstance(WorldPacket * pack, size_t instance)
 {
 	if(pack != NULL && instance)
 		sWorld.SendInstanceMessage(pack,instance);
@@ -462,7 +462,7 @@ void SendPacketToChannel(WorldPacket * pack, const char * cname, int team)
 	}
 }
 
-Creature * GetInstanceCreature(int map, int instance, lua_stack stack)
+Creature * GetInstanceCreature(size_t map, size_t instance, lua_stack stack)
 {
 	uint64 guid = 0;
 	uint32 spawnId = 0;
@@ -482,7 +482,7 @@ Creature * GetInstanceCreature(int map, int instance, lua_stack stack)
 	return NULL;
 }
 
-int GetInstancePlayerCount(int map, int instance)
+size_t GetInstancePlayerCount(size_t map, size_t instance)
 {
 	Instance * pInstance = sInstanceMgr.GetInstanceByIds(map, instance);
 	if(pInstance != NULL)
@@ -490,7 +490,7 @@ int GetInstancePlayerCount(int map, int instance)
 	return 0;
 }
 
-void GetPlayersInInstance(int map, int instance, lua_stack stack)
+void GetPlayersInInstance(size_t map, size_t instance, lua_stack stack)
 {
 	Instance * pInstance = sInstanceMgr.GetInstanceByIds(map, instance);
 	if(pInstance != NULL && pInstance->m_mapMgr != NULL)

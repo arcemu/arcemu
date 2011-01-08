@@ -20,12 +20,25 @@
 #pragma once
 
 //Quick class wrapper method that pushes field objects to lua.
+class LuaResult : public QueryResult
+{
+public:
+	LuaResult() : QueryResult(0,0) {}
+	LuaResult(const LuaResult & other) : QueryResult(other.GetFieldCount(),other.GetRowCount() ) {}
+	Field * GetColumn(int clm)
+	{
+		if( (uint32)clm <= GetFieldCount() )
+			return &Fetch()[clm];
+		return NULL;
+	}
+};
 
 namespace lua_engine
 {
 	void bindSQLMethods(luabridge::module & m)
 	{
-		m	.class_<LuaResult>("SQL_Result")
+		m	.class_decl<QueryResult>("QueryResult");
+		m	.class_<LuaResult>("QueryResult")
 			.method("NextRow", &QueryResult::NextRow)
 			.method("GetFieldCount", &QueryResult::GetFieldCount)
 			.method("GetColumn", &LuaResult::GetColumn)
@@ -33,6 +46,7 @@ namespace lua_engine
 
 		m	.class_<Field>("SQL_Field")
 			.method("GetString", &Field::GetString)
+			.method("GetStr", &Field::GetString)
 			.method("GetByte", &Field::GetInt8)
 			.method("GetInt8", &Field::GetInt8)
 			.method("GetUByte", &Field::GetUInt8)

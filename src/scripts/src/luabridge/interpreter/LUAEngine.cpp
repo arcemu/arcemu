@@ -33,7 +33,7 @@
 ScriptMgr * m_scriptMgr = NULL;
 ///THREAD PLUA_INSTANCE lua_instance = NULL;
 PLUA_INSTANCE LUA_COMPILER = NULL;
-SHAREDPTR_POOL sp_pool;
+//SHAREDPTR_POOL sp_pool;
 extern "C"
 {
 	 SCRIPT_DECL uint32 _exp_get_script_type()
@@ -65,7 +65,7 @@ void lua_engine::report(lua_State * L)
 void lua_engine::scriptload_searchdir(char * Dirname, std::set<string>& store)
 {
 #ifdef WIN32 
-	Log.Success("LuaEngine", "Scanning Directory \"%s\"", Dirname);
+	Log.Success("LuaEngine", "Scanning Directory (%s)", Dirname);
 	HANDLE hFile;
 	WIN32_FIND_DATAA FindData;
 	memset(&FindData,0,sizeof(WIN32_FIND_DATAA));
@@ -93,8 +93,8 @@ void lua_engine::scriptload_searchdir(char * Dirname, std::set<string>& store)
 			fname += "\\";
 			fname += FindData.cFileName;
 
-			int len = fname.length();
-			int i=0;
+			size_t len = fname.length();
+			size_t i=0;
 			char ext[MAX_PATH];
 					  
 			while(len > 0)
@@ -151,13 +151,11 @@ void lua_engine::scriptload_searchdir(char * Dirname, std::set<string>& store)
 void lua_engine::loadScripts()
 {
 	std::set<string> found_scripts;
-	Log.Notice("LuaEngine", "Scanning Script-Directories...");
-	char * script_dir = "scripts";
-	scriptload_searchdir( script_dir, found_scripts);
-	Log.Notice("LuaEngine","Found %u Lua scripts.", found_scripts.size() );
+	scriptload_searchdir( "scripts", found_scripts);
 	//Read our scripts and cache their data.
 	//We protect scripts while they are being modified.
-	int cnt = 0;
+	ptrdiff_t countofvalidscripts = 0, countofscripts = found_scripts.size();
+	//Log.Success("LuaEngine","Found %u Lua scripts.", countofscripts);
 	FILE * script_file = NULL;
 	for(std::set<string>::iterator itr = found_scripts.begin(); itr != found_scripts.end(); ++itr)
 	{
@@ -188,9 +186,9 @@ void lua_engine::loadScripts()
 			le::compiled_scripts.erase(it);
 		}
 		else
-			Log.Success("LuaEngine","loaded %s",it->first.c_str() );
+			++countofvalidscripts;
 	}
-	Log.Success("LuaEngine", "Successfully loaded %u scripts.", cnt);
+	Log.Success("LuaEngine", "Successfully loaded [%u/%u] scripts.", countofvalidscripts, countofscripts);
 }
 
 void lua_engine::BeginLuaFunctionCall(lua_function ref)
@@ -246,7 +244,6 @@ void lua_engine::EndLuaFunctionCall(int res)
 
 void lua_engine::startupEngine()
 {
-	Log.Notice("LuaEngineMgr", "Spawning Lua Engine...");
 /*#ifdef WIN32
 	Log.Color(TGREEN);
 	printf(" \_\_                        \_\_  \_\_                  \_\_\_\_\_\_                 \n");
@@ -274,8 +271,7 @@ void lua_engine::startupEngine()
 	Log.Line("");
 	Log.Color(TNORMAL);
 	Log.Line("");*/
-	Log.Notice("LuaEngineMgr","~~~LuaHypArc~~~");
-	Log.Notice("LuaEngineMgr", "LuaHypArc Lua Engine %s: Loaded", ARCH);
+	Log.Success("LuaEngineMgr", "LuaHypArc Lua Engine %s: Loaded", ARCH);
 
 	//Initialize our compiler.
 	LUA_COMPILER = new LUA_INSTANCE;
@@ -462,9 +458,7 @@ void lua_engine::unload_resources()
 		cleanup_varparam( (*it), lua_state);
 	lu->m_globalFRefs.clear();
 
-	for(li::References::iterator it = lu->pendingThreads.begin(); it != lu->pendingThreads.end(); ++it)
-		cleanup_varparam( (*it), lua_state);
-	lu->pendingThreads.clear();
+	lu->coroutines_.clear();
 
 	for(li::SpellFRefMap::iterator it = lu->m_dummySpells.begin(); it != lu->m_dummySpells.end(); ++it)
 	{
@@ -547,7 +541,8 @@ void lua_engine::restartThread(MapMgr * map)
 	//clean up our frefs and binding maps.
 	le::unload_resources();
 	//close down the lua state, clearing up resources that were being used by the previously loaded scripts.
-	lua_close(lua_state);
+	if(lua_state != NULL)
+		lua_close(lua_state);
 	//open a brand new state.
 	lua_state = lua_open();
 	//re-expose our wow objects and functions

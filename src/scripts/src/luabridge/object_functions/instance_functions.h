@@ -5,8 +5,7 @@ class LuaInstance : public InstanceScript
 {
 public:
 	LuaInstance( MapMgr* pMapMgr ) : InstanceScript( pMapMgr ), m_instanceId( pMapMgr->GetInstanceID() ) 
-	{
-	}
+	{}
 	~LuaInstance() 
 	{
 		if(lua_instance != NULL)
@@ -112,12 +111,15 @@ public:
 
 	void Destroy() 
 	{
-		NULL_BINDING_CHECK
-		lua_engine::BeginLuaFunctionCall(m_binding->refs[INSTANCE_EVENT_DESTROY]);
-		push_int(m_instanceId);
-		lua_engine::ExecuteLuaFunction(1);
-		RELEASE_LOCK
-			delete this;
+		if(m_binding != NULL)
+		{
+			GET_LOCK;
+			lua_engine::BeginLuaFunctionCall(m_binding->refs[INSTANCE_EVENT_DESTROY]);
+			push_int(m_instanceId);
+			lua_engine::ExecuteLuaFunction(1);
+			RELEASE_LOCK
+		}
+		delete this;
 	};
 
 	uint32 m_instanceId;
@@ -130,26 +132,82 @@ namespace lua_engine
 	InstanceScript * createluainstance(MapMgr* pMapMgr)
 	{
 		LuaInstance * pLua = NULL;
-		uint32 id = pMapMgr->GetMapId();
-		//Log.Notice("LuaEngine", "Spawning new lua state for map (%u) instance id (%u).",pMapMgr->GetMapId(), pMapMgr->GetInstanceID() );
+		//always allocate a new one.
 		lua_instance = new LUA_INSTANCE;
-		lua_state = lua_open();
+		lua_state = NULL;
 		lua_instance->map = pMapMgr;
-		le::loadState(lua_instance);
-		LuaGuard guard(le::scriptLock);
-		le::loadScripts(lua_state);
-		LuaGuard guard_(le::activestates_lock);
+		//have it load the scripts
+		le::restartThread(pMapMgr);
+		//store it so we can keep track of it.
+		le::activestates_lock.Acquire();
 		le::activeStates.insert(pMapMgr);
+		le::activestates_lock.Release();
 
-		li::ObjectBindingMap::iterator itr = lua_instance->m_instanceBinding.find(id);
-		PObjectBinding bind = (itr != lua_instance->m_instanceBinding.end(id) ) ? itr->second : NULL;
+		//locate this instance's binding.
+		li::ObjectBindingMap::iterator itr = lua_instance->m_instanceBinding.find( pMapMgr->GetMapId() );
+		PObjectBinding bind = NULL;
+		if(itr != lua_instance->m_instanceBinding.end() )
+			bind = itr->second;
 		pLua = new LuaInstance(pMapMgr);
 		pLua->m_binding = bind;
+		//Our scripts are loaded and bindings are set.
 		return pLua;
 	}
 
 	void bindMapMethods(luabridge::module & m)
 	{
+		m	.class_<MapMgr>("MapMgr")
+			.method("GetMapID", &MapMgr::GetMapId)
+#define method(name) .method(#name, &MapMgr::name)
+			method(CreateGameObject)
+			method(CreateAndSpawnGameObject)
+			method(GetGameObject)
+			method(GetCreature)
+			method(GetMapInfo)
+			method(CreateCreature)
+			method(CreateDynamicObject)
+			method(GetDynamicObject)
+			method(GetPlayer)
+			method(GetInstanceID)
+			method(GetInterface)
+			method(HasPlayers)
+			method(GetPlayerCount)
+			method(SetWorldState)
+			method(GetSqlIdCreature)
+			method(GetSqlIdGameObject);
+#undef method
+#define meth(name) .method(#name, &MapScriptInterface::name)
+		m	.class_<MapScriptInterface>("MapScriptInterface")
+			meth(GetGameObjectNearestCoords)
+			meth(GetCreatureNearestCoords)
+			meth(GetPlayerNearestCoords)
+			.method("SpawnCreature", (Creature *(MapScriptInterface::*)(uint32,float,float,float,float,bool,bool,uint32,uint32,uint32) )&MapScriptInterface::SpawnCreature)
+			.method("SpawnGameObject", (GameObject*(MapScriptInterface::*)(uint32,float,float,float,float, bool, uint32, uint32, uint32) )&MapScriptInterface::SpawnGameObject);
+#undef meth
+#define prop(name) .property_ro(#name, &MapInfo::name)
+		m	.class_<MapInfo>("MapInfo")
+			prop(mapid)
+			prop(screenid)
+			prop(type)
+			prop(playerlimit)
+			prop(minlevel)
+			prop(minlevel_heroic)
+			prop(repopx)
+			prop(repopy)
+			prop(repopz)
+			prop(repopmapid)
+			prop(name)
+			prop(flags)
+			prop(cooldown)
+			prop(required_quest)
+			prop(required_item)
+			prop(heroic_key_1)
+			prop(heroic_key_2)
+			.method("HasFlag", &MapInfo::HasFlag);
+#undef prop
 
+		luabridge::tdstack<MapMgr*>::push(lua_instance->lu, lua_instance->map);
+		//set _G[MapMgr] = lua_instance->map, so we can auto grab a mapmgr pointer as long as we execute lua code from a valid mapmgr thread.
+		lua_setglobal(lua_instance->lu, "MapMgr");
 	}
 }

@@ -1,4 +1,6 @@
 #pragma once
+class luaobject;
+
 namespace lua_engine
 {
 	void bindObjectMethods(luabridge::module & m)
@@ -27,7 +29,7 @@ namespace lua_engine
 			.method("GetOrientation", &Object::GetOrientation)
 			.method("GetO", &Object::GetOrientation)
 			//.method("SetO", &Object::SetOrientation)
-//			.method("SetOrientation", &Object::SetOrientation)		
+			//.method("SetOrientation", &Object::SetOrientation)		
 			.method("GetSpawnX", &Object::GetSpawnX)
 			.method("GetSpawnY", &Object::GetSpawnY)
 			.method("GetSpawnZ", &Object::GetSpawnZ)
@@ -68,7 +70,9 @@ namespace lua_engine
 			.method("getEasyAngle", &Object::getEasyAngle)
 			.method("GetDistance2Object", (const float(Object::*)(Object*) )&Object::GetDistanceSq)
 			//.method("GetDistanceSq", (float(Object::*)(LocationVector&) )&Object::GetDistanceSq)
-			.method("GetDistance", (const float(Object::*)(float,float,float) )&Object::GetDistanceSq);
+			.method("GetDistance", (const float(Object::*)(float,float,float) )&Object::GetDistanceSq)
+			.method("GetCurrentSpell", &Object::GetCurrentSpell)
+			.method("SetCurrentSpell", &Object::SetCurrentSpell);
 
 		 //creatable and destroyable in the lua environment.
 		 m	.class_<GossipMenu>("GossipMenu", true)
@@ -78,5 +82,13 @@ namespace lua_engine
 			.method("SendToPlr", &GossipMenu::SendTo)
 			//.method("SendToAllPlayers", &GossipMenu::SendToAllPlayers)
 			.method("SetTextID", &GossipMenu::SetTextID);
+		 
+		 m	.subclass<DynamicObject, Object>("DynamicObject")
+			.constructor< void(*)(uint32,uint32) >()
+#define BIND(name) .method(#name, &DynamicObject::name)
+			 BIND(Create)
+			 BIND(Remove);
+#undef BIND
+
 	}
 }

@@ -26,12 +26,13 @@ typedef struct _LUA_INSTANCE
 	typedef InterfaceMap<uint32, LuaQuest*> QuestInterfaceMap;
 	typedef InterfaceMap<uint32, lua_function> HookFRefMap;
 	typedef HM_NAMESPACE::hash_map<uint32, LuaGossip*> GossipInterfaceMap;
-	//typedef HM_NAMESPACE::hash_map<int, EventInfoHolder*> RegisteredTimedEvents;
 	typedef HM_NAMESPACE::hash_map<uint32, PSpellMapEntry> SpellFRefMap;
 	typedef std::set<variadic_parameter*> References;
+	typedef std::set<lua_thread> Coroutines;
 	typedef HM_NAMESPACE::hash_map<uint32, PObjectBinding> ObjectBindingMap;
 
-	//Reference storing maps;
+	/*	Reference storing maps that store references to functions and their parameters that object allocate.
+		They are required in order to validate them when they are executed at a later time. */
 	ObjectFRefMap m_creatureFRefs;
 	ObjectFRefMap m_goFRefs;
 	ObjectFRefMap m_questFRefs;
@@ -41,7 +42,12 @@ typedef struct _LUA_INSTANCE
 	ObjectFRefMap m_goGossipFRefs;
 	SpellFRefMap m_dummySpells;
 	HookFRefMap m_hooks;
-	References pendingThreads;	//Stores coroutines that are still waiting to be executed(still yielded for a certain ms).
+	/*	Stores coroutines that are still waiting to be resumed.
+		Since the engine can be restarted during the waiting time, it will invalidate all previously created coroutines.
+		The callbacks will then try to resume an invalid coroutine pointer and crash, so we keep track of these coroutines
+		and clear them when the lua instance restarts. That way, when resuming a certain coroutine, we make sure it's contained
+		in this set before trying to execute it. */
+	Coroutines coroutines_;
 	References m_globalFRefs;	//All globally registered functions get stored here as references.
 
 	/*	We store all previously created interfaces here because of the reload feature, if we change the functions that an interface uses,
