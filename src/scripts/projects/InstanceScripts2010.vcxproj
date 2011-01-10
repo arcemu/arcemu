@@ -96,7 +96,7 @@
       <OutputFile>$(OutDir)$(TargetFileName)</OutputFile>
       <AdditionalLibraryDirectories>$(OutDir)..\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>../../../bin/debug/script_bin/arcInstanceScripts.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
@@ -129,7 +129,7 @@
       <OutputFile>$(OutDir)$(TargetFileName)</OutputFile>
       <AdditionalLibraryDirectories>$(OutDir)..\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>../../../bin/debug_x64/script_bin/arcInstanceScripts.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
@@ -155,7 +155,7 @@
       <OutputFile>$(OutDir)$(TargetFileName)</OutputFile>
       <AdditionalLibraryDirectories>$(OutDir)..\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>../../../bin/release/script_bin/arcInstanceScripts.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -186,7 +186,7 @@
       <OutputFile>$(OutDir)$(TargetFileName)</OutputFile>
       <AdditionalLibraryDirectories>$(OutDir)..\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>../../../bin/release_x64/script_bin/arcInstanceScripts.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>

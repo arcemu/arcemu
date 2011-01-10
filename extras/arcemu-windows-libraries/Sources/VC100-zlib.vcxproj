@@ -83,7 +83,7 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <PrecompiledHeaderOutputFile>.\zlib___Win32_Debug/zlib.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
@@ -108,7 +108,7 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <PrecompiledHeaderOutputFile>.\zlib___Win32_Debug/zlib.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
@@ -138,7 +138,7 @@
       <FloatingPointModel>Fast</FloatingPointModel>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <PrecompiledHeaderOutputFile>.\zlib___Win32_Release/zlib.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>
       </DebugInformationFormat>
@@ -168,7 +168,7 @@
       <FloatingPointModel>Precise</FloatingPointModel>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <PrecompiledHeaderOutputFile>.\zlib___Win32_Release/zlib.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>
       </DebugInformationFormat>
