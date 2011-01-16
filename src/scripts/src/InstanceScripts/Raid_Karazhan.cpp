@@ -2248,7 +2248,7 @@ public:
 
 		std::vector<Player* > TargetTable;
 		set< Object* >::iterator itr = _unit->GetInRangePlayerSetBegin();
-		std::advance(itr, 1);
+
 		for(; itr != _unit->GetInRangePlayerSetEnd(); ++itr) 
 		{
 			if(isHostile(_unit, (*itr)))
@@ -2734,6 +2734,9 @@ public:
 		m_phase = 1;
 		nrspells = 5;
 
+		memset(Enfeeble_Targets, 0, sizeof(Enfeeble_Targets));
+		memset(Enfeeble_Health, 0, sizeof(Enfeeble_Health));
+
 		for(int i=0;i<nrspells;i++)
 		{
 			m_spellcheck[i] = false;
@@ -3085,13 +3088,12 @@ public:
 	{
 		std::vector<Player*> Targets;
 		set< Object* >::iterator Itr = _unit->GetInRangePlayerSetBegin();
-		std::advance(Itr, 1);
+
 		for( ; Itr != _unit->GetInRangePlayerSetEnd(); ++Itr)
 		{
 			if(isHostile(_unit, (*Itr)))
 			{
-				Player *RandomTarget = NULL;
-				RandomTarget = TO_PLAYER(*Itr);
+				Player *RandomTarget = TO_PLAYER(*Itr);
 
 				if(RandomTarget->isAlive())
 					Targets.push_back(RandomTarget);
@@ -3104,13 +3106,14 @@ public:
 		int i = 0;
 		for(std::vector<Player*>::iterator E_Itr = Targets.begin(); E_Itr != Targets.end(); ++E_Itr)
 		{
-			if(*E_Itr && (*E_Itr)->GetGUID() != _unit->GetAIInterface()->GetMostHated()->GetGUID())
+			if((*E_Itr)->GetGUID() != _unit->GetAIInterface()->GetMostHated()->GetGUID())
 			{
 				Enfeeble_Targets[i] = (*E_Itr)->GetGUID();
 				Enfeeble_Health[i] = (*E_Itr)->GetUInt32Value(UNIT_FIELD_HEALTH);
 
 				_unit->CastSpell((*E_Itr), spells[1].info, spells[1].instant);
 				(*E_Itr)->SetHealth(1);
+				i++;
 			}
 		}
 	}
