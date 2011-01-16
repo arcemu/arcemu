@@ -2116,6 +2116,7 @@ void World::DisconnectUsersWithPlayerName(const char * plr, WorldSession * m_ses
 
 		if(!stricmp(plr, session->GetPlayer()->GetName()))
 		{
+			FoundUser = true;
 			m_session->SystemMessage("Disconnecting user with account `%s` IP `%s` Player `%s`.", session->GetAccountNameS(), 
 				session->GetSocket() ? session->GetSocket()->GetRemoteIP().c_str() : "noip", session->GetPlayer() ? session->GetPlayer()->GetName() : "noplayer");
 
