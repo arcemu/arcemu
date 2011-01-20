@@ -1,4 +1,8 @@
 #pragma once
+//Check for vista and up.
+#if defined WIN32 && (WINVER < _WIN32_WINNT_VISTA)
+#error luabridge is only compatible with Windows Vista/Server 2008 and up!
+#endif
 #include "StdAfx.h"
 extern "C" 
 {		// we're C++, and LUA is C, so the compiler needs to know to use C function names.
@@ -160,8 +164,8 @@ enum CustomLuaEvenTypes
 #define REGTYPE_ITEM_GOSSIP (REGTYPE_ITEM | REGTYPE_GOSSIP)
 
 
-//An empty type structure that is to be treated as an integer. We this type to specialize how tdstack::get/push methods handle them to lua.
-//a specialied type treated as a reference to a lua function.
+//An incomplete structure that is to be treated as an size_t. We this type to specialize how tdstack::get/push methods handle them to lua.
+//a specialized type treated as a reference to a lua function.
 typedef struct lua_function_o{} *lua_function;
 //specialized type that is used to return a reference to a variable object type.
 typedef struct lua_obj_o {} * lua_obj;

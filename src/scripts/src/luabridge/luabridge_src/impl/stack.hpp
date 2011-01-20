@@ -613,7 +613,6 @@ struct tdstack<uint64>
 {
 	static void push(lua_State * L, uint64 guid)
 	{
-		//This is scary, can possible create a mem leak if we don't collect this through a getter method.
 		uint64 * ud = (uint64*)lua_newuserdata(L, sizeof(uint64) );
 		if(ud != NULL)
 			*ud = guid;
@@ -634,16 +633,15 @@ struct tdstack<uint64 &>
 	
 	static void push(lua_State * L, uint64 & guid)
 	{
-		//This is scary, can possible create a mem leak if we don't collect this through a getter method.
 		lua_pushlightuserdata(L, &guid);
 	}
 	
-	static uint64 get(lua_State *L, int index)
+	static uint64 & get(lua_State *L, int index)
 	{
 		if(lua_type(L, index) == LUA_TLIGHTUSERDATA)
 			return *(uint64*)lua_touserdata(L,index);
 		luaL_error(L,"expected lightuserdata got %s",luaL_typename(L,index) );
-		return 0;
+		return *(uint64*)NULL;
 	}
 };
 
@@ -652,7 +650,6 @@ struct tdstack<const uint64>
 {
 	static void push(lua_State * L, const uint64 guid)
 	{
-		//This is scary, can possible create a mem leak if we don't collect this through a getter method.
 		uint64 * ud = (uint64*)lua_newuserdata(L, sizeof(uint64) );
 		if(ud != NULL)
 			*ud = guid;
@@ -677,7 +674,7 @@ struct tdstack<const uint64 &>
 		if(lua_type(L, index) == LUA_TLIGHTUSERDATA)
 			return *(uint64*)lua_touserdata(L,index);
 		luaL_error(L, "expected light userdata got %s", luaL_typename(L,index) );
-		return *(uint64*)0x0;
+		return *(uint64*)NULL;
 	}
 };
 

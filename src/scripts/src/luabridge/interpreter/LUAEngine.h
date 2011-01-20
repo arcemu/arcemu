@@ -16,7 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+#pragma once
 
+#include "../interpreter/lua_defs.h"
 
 #ifdef DEBUG
 #define LUA_USE_APICHECK
@@ -26,10 +28,8 @@
 GossipMenu * Menu;
 
 //std::vector<uint32> OnLoadInfo;
-#pragma once
 #include "StdAfx.h"
 #include "lua_instance.h"
-#include "../interpreter/lua_defs.h"
 #include "../luabridge_src/luabridge.hpp"
 
 extern "C" 

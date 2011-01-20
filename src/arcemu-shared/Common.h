@@ -75,7 +75,7 @@ enum MsTimeVariables
 
 #if defined( __WIN32__ ) || defined( WIN32 ) || defined( _WIN32 )
 #  define WIN32_LEAN_AND_MEAN
-#  define _WIN32_WINNT 0x0500
+//#  define _WIN32_WINNT 0x0500
 #  define NOMINMAX
 #  include <windows.h>
 #else
