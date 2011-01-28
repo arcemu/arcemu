@@ -247,6 +247,12 @@ void Group::Update()
 				else
 					data << uint8(0);
 
+				if( m_GroupType & GROUP_TYPE_LFD )
+				{
+					data << uint8(0);	// unk
+					data << uint32(0);	// unk
+				}
+
 				data << uint64(0x500000000004BC0CULL);
 				data << uint32(0);		// 3.3 - increments every time a group list update is being sent to client
 				data << uint32(m_MemberCount-1);	// we don't include self

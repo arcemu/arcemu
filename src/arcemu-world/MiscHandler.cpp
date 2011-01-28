@@ -2416,11 +2416,10 @@ void WorldSession::HandleSummonResponseOpcode(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_RETURN
 
-	uint32 unk;
-	uint32 SummonerGUID;
+	uint64 SummonerGUID;
 	uint8 IsClickOk;
 
-	recv_data >> SummonerGUID >> unk >> IsClickOk;
+	recv_data >> SummonerGUID >> IsClickOk;
 
 	if(!IsClickOk)
 		return;

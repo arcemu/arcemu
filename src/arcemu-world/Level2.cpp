@@ -1049,12 +1049,12 @@ bool ChatHandler::HandleGOActivate(const char* args, WorldSession *m_session)
 	{
 		// Close/Deactivate
 		GObj->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
-		GObj->SetUInt32Value(GAMEOBJECT_FLAGS, (GObj->GetUInt32Value(GAMEOBJECT_FLAGS)-1));
+		GObj->RemoveFlag( GAMEOBJECT_FLAGS, 1 );
 		BlueSystemMessage(m_session, "Gameobject closed.");
 	} else {
 		// Open/Activate
 		GObj->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-		GObj->SetUInt32Value(GAMEOBJECT_FLAGS, (GObj->GetUInt32Value(GAMEOBJECT_FLAGS)+1));
+		GObj->SetFlag( GAMEOBJECT_FLAGS, 1 );
 		BlueSystemMessage(m_session, "Gameobject opened.");
 	}
 	sGMLog.writefromsession( m_session, "opened/closed gameobject %s, entry %u", GameObjectNameStorage.LookupEntry( GObj->GetEntry() )->Name, GObj->GetEntry() );

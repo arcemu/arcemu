@@ -1069,7 +1069,7 @@ void CBattleground::BuildPvPUpdateDataPacket(WorldPacket * data)
 				Arcemu::Util::ARCEMU_ASSERT(    *itr != NULL  );
 				if( (*itr)->m_isGmInvisible )
 					continue;
-				*data << (*itr)->GetGUID(); // apparently there is a crash here
+				*data << (*itr)->GetGUID();
 				bs = &(*itr)->m_bgScore;
 
 				*data << bs->KillingBlows;
@@ -1454,7 +1454,7 @@ void CBattlegroundManager::SendBattlefieldStatus( Player * plr, BattleGroundStat
 {
 	WorldPacket data(SMSG_BATTLEFIELD_STATUS, 30);
 	if(Status == 0)
-		data << uint64(0) << uint32(0);
+		data << uint32(0) << uint64(0);
 	else
 	{
 		if( IS_ARENA( Type ) )
@@ -1545,7 +1545,7 @@ void CBattleground::RemovePlayer(Player * plr, bool logout)
 	memset(&plr->m_bgScore, 0, sizeof(BGScore));
 
 	/* are we in the group? */
-	if(plr->GetGroup() == m_groups[plr->m_bgTeam])
+	if( plr->GetGroup() == m_groups[plr->m_bgTeam] )
 		plr->GetGroup()->RemovePlayer( plr->getPlayerInfo() );
 
 	// reset team

@@ -1316,9 +1316,9 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	 m_aiInterface->LoadWaypointMapFromDB(spawn->id);
 
 	//load resistances
-	for(uint32 x= 0;x<7;x++)
+	for( uint8 x = 0; x < 7; x++ )
 		BaseResistance[x]=GetResistance(x);
-	for(uint32 x= 0;x<5;x++)
+	for( uint8 x = 0; x < 5; x++ )
 		BaseStats[x]=GetStat(x);
 
 	BaseDamage[0]=GetMinDamage();
