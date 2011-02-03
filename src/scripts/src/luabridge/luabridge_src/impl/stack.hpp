@@ -562,7 +562,7 @@ struct tdstack<variadic_parameter*>
 				//create a reference to the object.
 				lua_pushvalue(L, i);
 				if(lua_type(L, i) != current_node->type)
-					printf("\tExpected type (%I) instead got type (%I) \n", current_node->type, lua_type(L,i) );
+					printf("\tExpected type (%i) instead got type (%i) \n", current_node->type, lua_type(L,i) );
 				current_node->val.obj_ref = lua_ref(L, true);
 				break;
 			}

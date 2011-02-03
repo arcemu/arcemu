@@ -247,7 +247,7 @@ static void cleanup_varparam(variadic_parameter * param, lua_State * L)
 //	Used to extract a reference to a function pointed by str, returns LUA_REFNIL if it can't.
 extern ptrdiff_t extractfRefFromCString(lua_State * L, const char* str);
 
-static void dumpStackInfo(lua_State * L)
+/*static void dumpStackInfo(lua_State * L)
 {
 	if(L != NULL)
 	{
@@ -276,7 +276,7 @@ static void dumpStackInfo(lua_State * L)
 			printf("\n");
 		}
 	}
-}
+}*/
 
 #define INVALID_FUNCTION LUA_REFNIL
 typedef lua_State* lua_thread;

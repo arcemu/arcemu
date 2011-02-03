@@ -151,7 +151,7 @@ void lua_engine::scriptload_searchdir(char * Dirname, std::set<string>& store)
 void lua_engine::loadScripts()
 {
 	std::set<string> found_scripts;
-	scriptload_searchdir( "scripts", found_scripts);
+	scriptload_searchdir( (char*)"scripts", found_scripts);
 	//Read our scripts and cache their data.
 	//We protect scripts while they are being modified.
 	ptrdiff_t countofvalidscripts = 0, countofscripts = found_scripts.size();
@@ -373,7 +373,7 @@ void lua_engine::startupEngine()
 	RegisterHook(SERVER_HOOK_RESURRECT,(void*)LuaHookOnResurrect)
 }
 
-void lua_engine::shutdownEngine()
+/*void lua_engine::shutdownEngine()
 {
 	Log.Notice("LuaEngine", "LuaEngine is shutting down.");
 	delete LUA_COMPILER;
@@ -388,7 +388,7 @@ void lua_engine::shutdownEngine()
 	while(activeStates.size() )
 		Sleep(100);
 	Log.Success("LuaEngine", "All lua states have successfully shutdown.");
-}
+}*/
 
 void lua_engine::unload_resources()
 {
@@ -631,7 +631,6 @@ namespace lua_engine
 	//	Feed cached lua scripts to the lua loader
 	void loadScripts(lua_State * lu)
 	{
-		int cnt = 0;
 		//LuaGuard guard(le::scriptLock);
 		le::LuaScriptData::iterator it,itr = le::compiled_scripts.begin();
 		for(; itr != le::compiled_scripts.end();)
@@ -663,9 +662,10 @@ namespace lua_engine
 		}
 		return ret;
 	}
-	int dumpScript(lua_State * L, const void * data, size_t data_size, void* chunk)
+
+	/*int dumpScript(lua_State * L, const void * data, size_t data_size, void* chunk)
 	{
-		/*if(data_size > 0)
+		if(data_size > 0)
 		{
 			PLUA_BINARYCHUNK bin_chunk = (PLUA_BINARYCHUNK)chunk;
 			LUA_DUMPNODE * prev_node = NULL, * dump_node = bin_chunk->head_chunk;
@@ -684,12 +684,12 @@ namespace lua_engine
 			else
 				prev_node->next_chunk = dump_node;
 			bin_chunk->chunk_cnt++;
-		}*/
+		}
 		return 0;
 	}
 	void dumpScripts2HDD()
 	{
-		/*std::string fullpath;
+		std::string fullpath;
 		Log.Notice("LuaEngine","Dumping compiled scripts to HDD.");
 		for(LuaScriptData::iterator itr = compiled_scripts.begin(); itr != compiled_scripts.end(); ++itr)
 		{
@@ -701,8 +701,8 @@ namespace lua_engine
 				fclose(outfile);
 			}
 		}
-		Log.Notice("LuaEngine","Done dumping compile scripts.");*/
-	}
+		Log.Notice("LuaEngine","Done dumping compile scripts.");
+	}*/
 }
 
 

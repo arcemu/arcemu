@@ -97,7 +97,7 @@ namespace lua_engine
 	static void loadScripts();
 	static void scriptload_searchdir(char *Dirname, std::set<string>&);
 	static void restartEngine();
-	static void shutdownEngine();
+	//static void shutdownEngine();
 	static void restartThread(MapMgr *);
 	static void shutdownThread(MapMgr*);
 	
@@ -108,9 +108,9 @@ namespace lua_engine
 	//a lua reader that simply passes lua script data.
 	static const char * readScript(lua_State *, void *, size_t *);
 	//a lua writer that dumps scripts in binary form
-	static int dumpScript(lua_State *, const void *, size_t, void*);
+	//static int dumpScript(lua_State *, const void *, size_t, void*);
 
-	static void dumpScripts2HDD();
+	//static void dumpScripts2HDD();
 	
 	//c to lua and lua to c methods
 	static void BeginLuaFunctionCall(lua_function ref);

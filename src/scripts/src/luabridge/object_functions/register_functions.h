@@ -28,7 +28,7 @@ static bool registerItemGossipEvent(uint32, uint32, lua_function);
 static bool registerGOGossipEvent(uint32, uint32, lua_function);
 static int suspendluathread(lua_thread, int wait_time, variadic_parameter *);
 static void resumeluathread(lua_thread);
-static bool registerTimedEvent(variadic_parameter *);
+//static bool registerTimedEvent(variadic_parameter *);
 static void removeTimedEvents();
 static bool registerDummySpell(uint32, lua_function, variadic_parameter*);
 static bool registerInstanceEvent(uint32, uint32, lua_function);
