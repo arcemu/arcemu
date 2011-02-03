@@ -3962,13 +3962,18 @@ bool ItemInterface::AddItemById( uint32 itemid, uint32 count, int32 randomprop )
 
     Player *chr = GetOwner();
 
-    // checking if the iteminterface has owner, impossible to not have one
-    if( chr == NULL )
-        return false;
+	Arcemu::Util::ARCEMU_ASSERT( chr != NULL );
 
 	ItemPrototype* it = ItemPrototypeStorage.LookupEntry(itemid);
 	if(it == NULL )
 		return false;
+
+	if( it->ItemLimitCategory != 0 ){
+		if( !CanAddMoreItemsWithLimitCategoryID( it->ItemLimitCategory ) ){
+			chr->GetSession()->SendNotification("You can't carry any more of those items.");
+			return false;
+		}
+	}
 
 	uint32 maxStack = chr->ItemStackCheat ? 0x7fffffff : it->MaxCount;
 	uint32 toadd;
@@ -4043,7 +4048,9 @@ bool ItemInterface::AddItemById( uint32 itemid, uint32 count, int32 randomprop )
 		toadd = count > maxStack ? maxStack : count;
 
 		item->SetStackCount(  toadd );
-		if( AddItemToFreeSlot( item ) )
+		
+		AddItemResult res = AddItemToFreeSlot( item );		
+		if( res != ADD_ITEM_RESULT_ERROR )
 		{
 			SlotResult *lr = LastSearchResult();
             
@@ -4299,4 +4306,80 @@ bool ItemInterface::SwapItems( int8 DstInvSlot, int8 DstSlot, int8 SrcInvSlot, i
 		return false;
 	else
 		return true;
+}
+
+
+bool ItemInterface::CanAddMoreItemsWithLimitCategoryID( uint32 LimitCategoryID ){
+	uint32 count = 0;
+	uint32 MaxCount = 0;
+
+	ItemLimitCategoryEntry *ilc = dbcItemLimitCategory.LookupEntry( LimitCategoryID );
+	if( ilc == NULL ){
+		sLog.outError( "Unknown item limit category %u encountered. Check your items table!", LimitCategoryID );
+		return false;
+	}
+
+	// If this category only limits the amount we can wear, ofc we can still add more
+	if( ( ilc->equippedFlag & ILFLAG_EQUIP_ONLY ) != 0 )
+		return true;
+
+	MaxCount = ilc->maxAmount;
+
+	for( int16 slot = EQUIPMENT_SLOT_START; slot < EQUIPMENT_SLOT_END; slot++ ){
+		Item *item = GetInventoryItem( slot );
+		
+		if( item != NULL ){
+			count += item->CountGemsWithLimitId( LimitCategoryID );
+
+			if( item->GetProto()->ItemLimitCategory == LimitCategoryID )
+				count++;
+		}
+	}
+
+	if( count >= MaxCount )
+		return false;
+	
+	for( int16 slot = INVENTORY_SLOT_BAG_START; slot < INVENTORY_SLOT_BAG_END; slot++ ){
+		Item *item = GetInventoryItem( slot );
+		
+		if( item != NULL ){
+			Arcemu::Util::ARCEMU_ASSERT( item->IsContainer() );
+
+			if( item->GetProto()->ItemLimitCategory == LimitCategoryID )
+				count++;
+
+			Container *bag = static_cast< Container* >( item );
+
+			int16 MaxSlots = static_cast< int16 >( bag->GetProto()->ContainerSlots );
+			for( int16 bagslot = 0; bagslot < MaxSlots; bagslot++ ){
+				Item *bagitem = bag->GetItem( bagslot );
+				
+				if( bagitem != NULL ){
+					count += bagitem->CountGemsWithLimitId( LimitCategoryID );
+
+					if( bagitem->GetProto()->ItemLimitCategory == LimitCategoryID )
+						count++;
+				}
+			}
+		}
+	}
+
+	if( count >= MaxCount )
+		return false;
+
+	for( int16 slot = INVENTORY_SLOT_ITEM_START; slot < INVENTORY_SLOT_ITEM_END; slot++ ){
+		Item *item = GetInventoryItem( slot );
+
+		if( item != NULL ){
+			count += item->CountGemsWithLimitId( LimitCategoryID );
+
+			if( item->GetProto()->ItemLimitCategory == LimitCategoryID )
+				count++;
+		}
+	}
+
+	if( count >= MaxCount )
+		return false;
+
+	return true;
 }

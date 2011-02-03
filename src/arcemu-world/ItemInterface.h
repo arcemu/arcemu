@@ -138,6 +138,22 @@ public:
 	int8 GetItemSlotByType(uint32 type);
 	Item* GetItemByGUID(uint64 itemGuid);
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+	//bool CanAddMoreItemsWithLimitCategoryID( uint32 LimitCategoryID )
+	//  Checks if the Player has reached the limit of the amount of items they can carry from this category
+	//
+	//Parameters
+	//  uint32 LimitCategoryID  -  The limit category identified ( index of ItemLimitCategory.dbc )
+	//
+	//
+	//Return Value
+	//  Returns true if the limit has NOT been reached.
+	//  Returns false if the limit has been reached.
+	//
+	//
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+	bool CanAddMoreItemsWithLimitCategoryID( uint32 LimitCategoryID );
+
 
 	void BuildInventoryChangeError(Item *SrcItem, Item *DstItem, uint8 Error);
 	void SwapItemSlots(int8 srcslot, int8 dstslot);
