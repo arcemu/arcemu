@@ -55,7 +55,7 @@ using namespace lua_engine;
 bool registerServerHook(uint32 hook, lua_function ref)
 {
 	bool found = false;
-	if(hook < SERVER_HOOK_COUNT && (int)ref != LUA_REFNIL)
+	if(hook < SERVER_HOOK_COUNT && (ptrdiff_t)ref != LUA_REFNIL)
 	{
 		li::HookFRefMap::iterator itr = lua_instance->m_hooks.find(hook);
 		for(; itr != lua_instance->m_hooks.upper_bound(hook); ++itr)
@@ -74,14 +74,14 @@ bool registerServerHook(uint32 hook, lua_function ref)
 bool registerUnitEvent(uint32 entry, uint32 evt, lua_function ref)
 {
 	bool found = false;
-	if(evt < CREATURE_EVENT_COUNT && (int)ref != LUA_REFNIL)
+	if(evt < CREATURE_EVENT_COUNT && (ptrdiff_t)ref != LUA_REFNIL)
 	{
 		li::ObjectBindingMap::iterator itr = lua_instance->m_unitBinding.find(entry);
 		if(itr != lua_instance->m_unitBinding.end() )
 		{
 			found = true;
 			if(itr->second->refs[evt] != NULL)
-				lua_unref(lua_state, (int)itr->second->refs[evt]);
+				lua_unref(lua_state, (ptrdiff_t)itr->second->refs[evt]);
 			itr->second->refs[evt] = ref;
 		}
 		else
@@ -97,14 +97,14 @@ bool registerUnitEvent(uint32 entry, uint32 evt, lua_function ref)
 bool registerQuestEvent(uint32 entry, uint32 evt, lua_function ref)
 {
 	bool found = false;
-	if(evt < QUEST_EVENT_COUNT && (int)ref != LUA_REFNIL)
+	if(evt < QUEST_EVENT_COUNT && (ptrdiff_t)ref != LUA_REFNIL)
 	{
 		li::ObjectBindingMap::iterator itr = lua_instance->m_questBinding.find(entry);
 		if(itr != lua_instance->m_questBinding.end() )
 		{
 			found = true;
 			if(itr->second->refs[evt] != NULL)
-				lua_unref(lua_state, (int)itr->second->refs[evt]);
+				lua_unref(lua_state, (ptrdiff_t)itr->second->refs[evt]);
 			itr->second->refs[evt] = ref;
 		}
 		else
@@ -120,14 +120,14 @@ bool registerQuestEvent(uint32 entry, uint32 evt, lua_function ref)
 bool registerGameObjectEvent(uint32 entry, uint32 evt, lua_function ref)
 {
 	bool found = false;
-	if(evt < GAMEOBJECT_EVENT_COUNT && (int)ref != LUA_REFNIL)
+	if(evt < GAMEOBJECT_EVENT_COUNT && (ptrdiff_t)ref != LUA_REFNIL)
 	{
 		li::ObjectBindingMap::iterator itr = lua_instance->m_goBinding.find(entry);
 		if(itr != lua_instance->m_goBinding.end() )
 		{
 			found = true;
 			if(itr->second->refs[evt] != NULL)
-				lua_unref(lua_state, (int)itr->second->refs[evt]);
+				lua_unref(lua_state, (ptrdiff_t)itr->second->refs[evt]);
 			itr->second->refs[evt] = ref;
 		}
 		else
@@ -143,14 +143,14 @@ bool registerGameObjectEvent(uint32 entry, uint32 evt, lua_function ref)
 bool registerUnitGossipEvent(uint32 entry, uint32 evt, lua_function ref)
 {
 	bool found = false;
-	if(evt < GOSSIP_EVENT_COUNT && (int)ref != LUA_REFNIL)
+	if(evt < GOSSIP_EVENT_COUNT && (ptrdiff_t)ref != LUA_REFNIL)
 	{
 		li::ObjectBindingMap::iterator itr = lua_instance->m_unitGossipBinding.find(entry);
 		if(itr != lua_instance->m_unitGossipBinding.end() )
 		{
 			found = true;
 			if(itr->second->refs[evt] != NULL)
-				lua_unref(lua_state, (int)itr->second->refs[evt]);
+				lua_unref(lua_state, (ptrdiff_t)itr->second->refs[evt]);
 			itr->second->refs[evt] = ref;
 		}
 		else
@@ -166,14 +166,14 @@ bool registerUnitGossipEvent(uint32 entry, uint32 evt, lua_function ref)
 bool registerItemGossipEvent(uint32 entry, uint32 evt, lua_function ref)
 {
 	bool found = false;
-	if(evt < GOSSIP_EVENT_COUNT && (int)ref != LUA_REFNIL)
+	if(evt < GOSSIP_EVENT_COUNT && (ptrdiff_t)ref != LUA_REFNIL)
 	{
 		li::ObjectBindingMap::iterator itr = lua_instance->m_itemGossipBinding.find(entry);
 		if(itr != lua_instance->m_itemGossipBinding.end() )
 		{
 			found = true;
 			if(itr->second->refs[evt] != NULL)
-				lua_unref(lua_state, (int)itr->second->refs[evt]);
+				lua_unref(lua_state, (ptrdiff_t)itr->second->refs[evt]);
 			itr->second->refs[evt] = ref;
 		}
 		else
@@ -189,14 +189,14 @@ bool registerItemGossipEvent(uint32 entry, uint32 evt, lua_function ref)
 bool registerGOGossipEvent(uint32 entry, uint32 evt, lua_function ref)
 {
 	bool found = false;
-	if(evt < GOSSIP_EVENT_COUNT && (int)ref != LUA_REFNIL)
+	if(evt < GOSSIP_EVENT_COUNT && (ptrdiff_t)ref != LUA_REFNIL)
 	{
 		li::ObjectBindingMap::iterator itr = lua_instance->m_goGossipBinding.find(entry);
 		if(itr != lua_instance->m_goGossipBinding.end() )
 		{
 			found = true;
 			if(itr->second->refs[evt] != NULL)
-				lua_unref(lua_state, (int)itr->second->refs[evt]);
+				lua_unref(lua_state, (ptrdiff_t)itr->second->refs[evt]);
 			itr->second->refs[evt] = ref;
 		}
 		else
@@ -212,14 +212,14 @@ bool registerGOGossipEvent(uint32 entry, uint32 evt, lua_function ref)
 bool registerInstanceEvent(uint32 entry, uint32 evt, lua_function ref)
 {
 	bool found = false;
-	if(evt < INSTANCE_EVENT_COUNT && (int)ref != LUA_REFNIL)
+	if(evt < INSTANCE_EVENT_COUNT && (ptrdiff_t)ref != LUA_REFNIL)
 	{
 		li::ObjectBindingMap::iterator itr = lua_instance->m_instanceBinding.find(entry);
 		if(itr != lua_instance->m_instanceBinding.end() )
 		{
 			found = true;
 			if(itr->second->refs[evt] != NULL)
-				lua_unref(lua_state, (int)itr->second->refs[evt]);
+				lua_unref(lua_state, (ptrdiff_t)itr->second->refs[evt]);
 			itr->second->refs[evt] = ref;
 		}
 		else

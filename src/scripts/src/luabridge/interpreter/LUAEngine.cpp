@@ -195,7 +195,7 @@ void lua_engine::BeginLuaFunctionCall(lua_function ref)
 {
 	//lua_settop(lu, 0);
 	
-	lua_getref(lua_state,(int)ref);
+	lua_getref(lua_state,(ptrdiff_t)ref);
 }
 bool lua_engine::ExecuteLuaFunction(int params, int res, variadic_parameter * results, bool getparams)
 {
