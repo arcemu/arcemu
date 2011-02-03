@@ -1,6 +1,6 @@
 #pragma  once
 //#include "StdAfx.h"
-#include "LUAEngine.h"
+#include "../interpreter/LUAEngine.h"
 
 class LuaQuest : public QuestScript
 {

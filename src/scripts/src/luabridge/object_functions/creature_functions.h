@@ -1,6 +1,6 @@
 #pragma once
 #include "StdAfx.h"
-#include "LUAEngine.h"
+#include "../interpreter/LUAEngine.h"
 #include "lua_creature.h"
 
 class LuaCreature : public CreatureAIScript
@@ -421,9 +421,9 @@ namespace lua_engine
 			bind(isAuctioner)
 			bind(isStableMaster)
 			bind(isArmorer)
-			.property_rw("canregeneratehp", &Creature::m_canRegenerateHP)
+			.property_rw("canregeneratehp", (bool(lua_creature::*) )&Creature::m_canRegenerateHP)
 			bind(CanSee)
-			.property_ro("isSkinned", &Creature::Skinned)
+			.property_ro("isSkinned", (bool(lua_creature::*) )&Creature::Skinned)
 			bind(GetSQL_id)
 			bind(GetTotemSlot)
 			bind(GetGroup)
@@ -435,8 +435,8 @@ namespace lua_engine
 			.method("IsCritter", &Creature::isCritter)
 			.method("IsTrainingDummy", &Creature::isTrainingDummy)
 			.method("Despawn", &Creature::Despawn)	
-			.property_rw("norespawn", &Creature::m_noRespawn)
-			.property_ro("escorter", &Creature::m_escorter)
+			.property_rw("norespawn", (bool(lua_creature::*) )&Creature::m_noRespawn)
+			.property_ro("escorter", (Player*(lua_creature::*) )&Creature::m_escorter)
 			.method("RegisterEvent", &lua_creature::RegisterScriptEngineFunction)
 			.method("RemoveEvents", &lua_creature::RemoveScriptEngineEvents);
 #undef bind

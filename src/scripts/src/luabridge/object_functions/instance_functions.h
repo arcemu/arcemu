@@ -1,5 +1,5 @@
 #pragma once
-#include "LUAEngine.h"
+#include "../interpreter/LUAEngine.h"
 
 class LuaInstance : public InstanceScript
 {

@@ -20,7 +20,7 @@
 #pragma once
 
 #include "StdAfx.h"
-#include "LUAEngine.h"
+#include "../interpreter/LUAEngine.h"
 
 class luataxinode : public TaxiNode
 {
@@ -49,17 +49,16 @@ namespace lua_engine
 {
 	void bindTaxiMethods(luabridge::module & m)
 	{
-#define prop(name) .property_rw(#name, &TaxiNode::name)
 		m	.class_<TaxiNode, luataxinode>("TaxiNode")
 			.constructor< void(*)(uint32,uint32,float,float,float) >()
-			prop(x)
-			prop(y)
-			prop(z)
-			prop(id)
-			prop(mapid)
-			prop(alliance_mount)
-			prop(horde_mount);
-#undef prop
+			.property_rw("x", (float(luataxinode::*)) &TaxiNode::x)
+			.property_rw("y", (float(luataxinode::*)) &TaxiNode::y)
+			.property_rw("z", (float(luataxinode::*)) &TaxiNode::z)
+			.property_rw("id", (uint32(luataxinode::*)) &TaxiNode::id)
+			.property_rw("mapid", (uint32(luataxinode::*)) &TaxiNode::mapid)
+			.property_rw("alliance_mount", (uint32(luataxinode::*)) &TaxiNode::alliance_mount)
+			.property_rw("horde_mount", (uint32(luataxinode::*)) &TaxiNode::horde_mount);
+
 		m	.class_<TaxiPath, TaxiPath>("TaxiPath")
 			.constructor<void(*)()>()
 			.method("GetID", &TaxiPath::GetID)

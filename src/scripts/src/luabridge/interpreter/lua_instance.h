@@ -25,7 +25,7 @@ typedef struct _LUA_INSTANCE
 	typedef InterfaceMap<uint32, LuaGameObject*> GOInterfaceMap;
 	typedef InterfaceMap<uint32, LuaQuest*> QuestInterfaceMap;
 	typedef InterfaceMap<uint32, lua_function> HookFRefMap;
-	typedef HM_NAMESPACE::hash_map<uint32, LuaGossip*> GossipInterfaceMap;
+	typedef InterfaceMap<uint32, LuaGossip*> GossipInterfaceMap;
 	typedef HM_NAMESPACE::hash_map<uint32, PSpellMapEntry> SpellFRefMap;
 	typedef std::set<variadic_parameter*> References;
 	typedef std::set<lua_thread> Coroutines;

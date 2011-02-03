@@ -1,5 +1,5 @@
 #pragma once
-#include "LUAEngine.h"
+#include "../interpreter/LUAEngine.h"
 //all of these run similarly, they execute OnServerHook for all the functions in their respective event's list.
 bool LuaHookOnNewCharacter(uint32 Race, uint32 Class, WorldSession * Session, const char * Name)
 {

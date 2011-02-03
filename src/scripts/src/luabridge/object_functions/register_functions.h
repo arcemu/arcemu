@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #pragma once
-#include "LUAEngine.h"
+#include "../interpreter/LUAEngine.h"
 
 static bool registerServerHook(uint32 hook, lua_function);
 static bool registerUnitEvent(uint32 , uint32 , lua_function);
