@@ -1549,13 +1549,6 @@ void Spell::SpellEffectCreateItem( uint32 i ){
 		count = 1;
 	}
 
-	bool success = false;
-
-	success = playerTarget->GetItemInterface()->AddItemById( itemid, count, 0 );
-
-	if( !success ) //Movie Film not success, Borat will be execute
-		return;
-
 	if( p_caster != NULL ){
 		
 		skilllinespell* skill = objmgr.GetSpellSkill( spellid );
@@ -1621,7 +1614,15 @@ void Spell::SpellEffectCreateItem( uint32 i ){
 				cast_chance = 5;
 				learn_spell = spList[ RandomUInt( 5 ) ];
 			}
-			
+		}
+
+		if( !playerTarget->GetItemInterface()->AddItemById( itemid, count, 0 ) ){
+			SendCastResult( SPELL_FAILED_TOO_MANY_OF_ITEM );
+			return;
+		}
+
+		if( p_caster != NULL ){
+
 			//random discovery by crafter item id
 			switch( itemid ){
 			

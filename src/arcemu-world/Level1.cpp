@@ -340,7 +340,9 @@ bool ChatHandler::HandleAddInvItemCommand(const char *args, WorldSession *m_sess
             snprintf(messagetext, 512, "%s added item %s, quantity %u, to your inventory.", m_session->GetPlayer()->GetName(), GetItemLinkByProto(it, chr->GetSession()->language).c_str(), numadded);
             
             SystemMessageToPlr(chr,  messagetext);
-        }
+        }else{
+			SystemMessageToPlr( chr, "Failed to add item." );
+		}
         return true;
     
     } else{
