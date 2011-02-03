@@ -37,14 +37,13 @@ namespace lua_engine
 {
 	void bindSQLMethods(luabridge::module & m)
 	{
-		m	.class_decl<QueryResult>("QueryResult");
-		m	.class_<LuaResult>("QueryResult")
+		m	.class_<QueryResult, LuaResult>("QueryResult")
 			.method("NextRow", &QueryResult::NextRow)
 			.method("GetFieldCount", &QueryResult::GetFieldCount)
 			.method("GetColumn", &LuaResult::GetColumn)
 			.method("GetRowCount", &QueryResult::GetRowCount);
 
-		m	.class_<Field>("SQL_Field")
+		m	.class_<Field, Field>("SQL_Field")
 			.method("GetString", &Field::GetString)
 			.method("GetStr", &Field::GetString)
 			.method("GetByte", &Field::GetInt8)

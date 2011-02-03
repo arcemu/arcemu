@@ -9,20 +9,16 @@
  * types to and from Lua.  Following are specializations of this structure
  * that allow specific types to be handled in specific ways.
  */
-//Paroxysm : modified to expect pointer types.
 template <typename T>
 struct tdstack
 {
 	static void push (lua_State *L, T data)
 	{
-		if(sizeof(T) <= 4)
-			lua_pushinteger(L, (int)data);
-		else
-			lua_pushnil(L);
+		lua_pushinteger(L, static_cast<lua_Integer>(data) );
 	}
 	static T get (lua_State *L, int index)
 	{
-		return (T)luaL_checkint(L,index);
+		return static_cast<T>(luaL_checkint(L, index) );
 	}
 };
 template <typename T>

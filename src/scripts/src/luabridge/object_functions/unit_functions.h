@@ -24,7 +24,7 @@ namespace lua_engine
 {
 	void bindUnitMethods(luabridge::module & m)
 	{
-		m.	subclass<Unit, Object>("Unit")
+		m.	subclass<Unit, Unit, Object>("Unit")
 			.method("GetAIInterface", &Unit::GetAIInterface)
 			//.method("GetMobInterface", &Unit::GetMobInterface)
 			.method("IsPVPFlagged", &Unit::IsPvPFlagged)

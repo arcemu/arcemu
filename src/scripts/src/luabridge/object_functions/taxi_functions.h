@@ -49,8 +49,8 @@ namespace lua_engine
 {
 	void bindTaxiMethods(luabridge::module & m)
 	{
-#define prop(name) .property_rw(#name, &luataxinode::name)
-		m	.class_<luataxinode>("TaxiNode")
+#define prop(name) .property_rw(#name, &TaxiNode::name)
+		m	.class_<TaxiNode, luataxinode>("TaxiNode")
 			.constructor< void(*)(uint32,uint32,float,float,float) >()
 			prop(x)
 			prop(y)
@@ -60,7 +60,7 @@ namespace lua_engine
 			prop(alliance_mount)
 			prop(horde_mount);
 #undef prop
-		m	.class_<TaxiPath>("TaxiPath")
+		m	.class_<TaxiPath, TaxiPath>("TaxiPath")
 			.constructor<void(*)()>()
 			.method("GetID", &TaxiPath::GetID)
 			.method("AddPathNode", &TaxiPath::AddPathNode)
@@ -69,7 +69,7 @@ namespace lua_engine
 			.method("GetPrice", &TaxiPath::GetPrice);
 			//.method("SetPrice", &TaxiPath::SetPrice);
 
-		m	.class_<TaxiMgr>("sTaxiMgr")
+		m	.class_<TaxiMgr, TaxiMgr>("sTaxiMgr")
 			.method("GetTaxiNode", &TaxiMgr::GetTaxiNode)
 			.method("GetTaxiPath", (TaxiPath*(TaxiMgr::*)(uint32) )&TaxiMgr::GetTaxiPath)
 			.method("GetTaxiPathFT", (TaxiPath*(TaxiMgr::*)(uint32, uint32) )&TaxiMgr::GetTaxiPath)

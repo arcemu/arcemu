@@ -22,7 +22,7 @@ extern "C"
 
 namespace luabridge
 {
-	template <typename T> class class__;
+	template <typename T, typename A = T> class class__;
 
 	// module performs registration tasks in a given Lua state
 	class module
@@ -42,24 +42,24 @@ namespace luabridge
 		// Class registration
 
 		// For registering a class that hasn't been registered before
-		template <typename T>
-		class__<T> class_ (const char *name, bool destruct = false);
+		template <typename T, typename A>
+		class__<T, A> class_ (const char *name, bool destruct = false);
 
 		template<typename T>
 		void class_decl(const char * name);
 
 		// For registering subclasses (the base class must also be registered)
-		template <typename T, typename Base>
-		class__<T> subclass (const char *name, bool destruct = false);
+		template <typename T, typename A, typename Base>
+		class__<T, A> subclass (const char *name, bool destruct = false);
 		// For adding new methods to a previously registered class, if desired
-		template <typename T>
-		class__<T> class_ ();
+		template <typename T, typename A>
+		class__<T, A> class_ ();
 
 		// !!!UNDONE: support namespaces
 	};
 
 	// class__ performs registration for members of a class
-	template <typename T>
+	template <typename T, typename A>
 	class class__
 	{
 		lua_State *L;
@@ -72,38 +72,38 @@ namespace luabridge
 		// a function pointer type; only the argument list will be used (since
 		// you can't take the address of a ctor).
 		template <typename FnPtr>
-		class__<T>& constructor ();
+		class__<T, A>& constructor ();
 
 		// Method registration
 		template <typename FnPtr>
-		class__<T>& method (const char *name, FnPtr fp);
+		class__<T, A>& method (const char *name, FnPtr fp);
 
 		// Property registration.  Properties can be read/write (rw)
 		// or read-only (ro).  Varieties that access member pointers directly
 		// and varieties that access through function calls are provided.
 		template <typename U>
-		class__<T>& property_ro (const char *name, U T::* mp);
+		class__<T, A>& property_ro (const char *name, U A::* mp);
 		template <typename U>
-		class__<T>& property_ro (const char *name, U (T::*get) () const);
+		class__<T, A>& property_ro (const char *name, U (A::*get) () const);
 		template <typename U>
-		class__<T>& property_rw (const char *name, U T::* mp);
+		class__<T, A>& property_rw (const char *name, U A::* mp);
 
 		template <typename U>
-		class__<T>& property_rw (const char *name, U (T::*get) () const, void (T::*set) (U) );
+		class__<T, A>& property_rw (const char *name, U (A::*get) () const, void (A::*set) (U) );
 
 		// Static method registration
 		template <typename FnPtr>
-		class__<T>& static_method (const char *name, FnPtr fp);
+		class__<T, A>& static_method (const char *name, FnPtr fp);
 
 		// Static property registration
 		template <typename U>
-		class__<T>& static_property_ro (const char *name, U *data);
+		class__<T,A>& static_property_ro (const char *name, U *data);
 		template <typename U>
-		class__<T>& static_property_ro (const char *name, U (*get) ());
+		class__<T, A>& static_property_ro (const char *name, U (*get) ());
 		template <typename U>
-		class__<T>& static_property_rw (const char *name, U *data);
+		class__<T, A>& static_property_rw (const char *name, U *data);
 		template <typename U>
-		class__<T>& static_property_rw (const char *name, U (*get) (), void (*set) (U));
+		class__<T, A>& static_property_rw (const char *name, U (*get) (), void (*set) (U));
 
 		// !!!UNDONE: allow inheriting Lua classes from C++ classes
 	};
@@ -130,7 +130,7 @@ namespace luabridge
 	int m_newindexer (lua_State *L);
 
 	// Predeclare classname struct since several implementation files use it
-	template <typename T>
+	template <typename T, typename A = T>
 	struct classname;
 	extern const char *classname_unknown;
 

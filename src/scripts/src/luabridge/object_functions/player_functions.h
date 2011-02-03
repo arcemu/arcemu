@@ -7,7 +7,7 @@ namespace lua_engine
 	{
 #define BIND(name) .method(#name, &Player::name)
 #define BINDE(name, functor) .method(name, (functor) )
-		m	.subclass<Player,Unit>("Player")
+		m	.subclass<Player, Player, Unit>("Player")
 			BIND(Gossip_Complete)
 			BIND(Gossip_SendPOI)
 			BINDE("AdvanceSkillLine", &Player::_AddSkillLine)

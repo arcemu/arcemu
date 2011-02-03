@@ -5,7 +5,7 @@ namespace lua_engine
 {
 	void bindObjectMethods(luabridge::module & m)
 	{
-		 m	.class_<Object>("Object")
+		 m	.class_<Object, Object>("Object")
 			.method("GetGUID", &Object::GetGUID)
 			.method("GetHighGUID", &Object::GetHighGUID)
 			.method("GetLowGUID", &Object::GetLowGUID)
@@ -75,7 +75,7 @@ namespace lua_engine
 			.method("SetCurrentSpell", &Object::SetCurrentSpell);
 
 		 //creatable and destroyable in the lua environment.
-		 m	.class_<GossipMenu>("GossipMenu", true)
+		 m	.class_<GossipMenu, GossipMenu>("GossipMenu", true)
 			.constructor< void(*)(uint64, uint32) > ()
 			.method("AddItem", ( void(GossipMenu::*)(uint8,const char*, int32, int8) )&GossipMenu::AddItem)
 			.method("AddMenuItem", &GossipMenu::AddMenuItem)
@@ -83,7 +83,7 @@ namespace lua_engine
 			//.method("SendToAllPlayers", &GossipMenu::SendToAllPlayers)
 			.method("SetTextID", &GossipMenu::SetTextID);
 		 
-		 m	.subclass<DynamicObject, Object>("DynamicObject")
+		 m	.subclass<DynamicObject, DynamicObject, Object>("DynamicObject")
 			.constructor< void(*)(uint32,uint32) >()
 #define BIND(name) .method(#name, &DynamicObject::name)
 			 BIND(Create)

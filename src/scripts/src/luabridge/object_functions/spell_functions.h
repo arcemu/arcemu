@@ -38,8 +38,7 @@ namespace lua_engine
 	{
 #define prop(name) .property_rw(#name, &SpellEntry::name)
 		//Make lspellentry and SpellEntry share a common name so that objects derived from the two share the same metatable and thus all the methods associated w/ that metatable.
-		m	.class_decl<SpellEntry>("SpellEntry");
-		m	.class_<lspellentry>("SpellEntry")
+		m	.class_<SpellEntry, lspellentry>("SpellEntry")
 			prop(Id)
 			prop(DispelType)
 			prop(MechanicsType)
@@ -110,7 +109,7 @@ namespace lua_engine
 			.property_rw("EffectTriggerSpell2", &lspellentry::vargetEffectTriggerSpell<1>, &lspellentry::varsetEffectTriggerSpell<1>)
 			.property_rw("EffectTriggerSpell3", &lspellentry::vargetEffectTriggerSpell<2>, &lspellentry::varsetEffectTriggerSpell<2>);
 #undef prop
-		m	.class_<Spell>("Spell")	
+		m	.class_<Spell, Spell>("Spell")	
 			.property_ro("u_caster", &Spell::u_caster)
 			.property_ro("g_caster", &Spell::g_caster)
 			.property_ro("m_caster", &Spell::m_caster)

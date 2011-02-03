@@ -79,23 +79,23 @@ int propset_proxy (lua_State *L)
  * Perform class registration in a module.
  */
 
-template <typename T>
-class__<T> module::class_ ()
+template <typename T, typename A>
+class__<T,A> module::class_ ()
 {
-	return class__<T>(L);
+	return class__<T,A>(L);
 }
 
-template <typename T, typename Base>
-class__<T> module::subclass (const char *name, bool destruct)
+template <typename T, typename A, typename Base>
+class__<T, A> module::subclass (const char *name, bool destruct)
 {
 	assert(classname<Base>::name() != classname_unknown);
-	return class__<T>(L, name, classname<Base>::name(), destruct);
+	return class__<T, A>(L, name, classname<Base>::name(), destruct);
 }
 
-template <typename T>
-class__<T> module::class_ (const char *name, bool destruct)
+template <typename T, typename A>
+class__<T,A> module::class_ (const char *name, bool destruct)
 {
-	return class__<T>(L, name, destruct);
+	return class__<T,A>(L, name, destruct);
 }
 
 template <typename T>

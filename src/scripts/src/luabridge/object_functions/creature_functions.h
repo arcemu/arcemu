@@ -356,7 +356,7 @@ namespace lua_engine
 	void bindCreatureMethods(luabridge::module & m )
 	{
 #define prop(name) .property_ro(#name, &CreatureProto::name)
-		m	.class_<CreatureProto>("CreatureProto")
+		m	.class_<CreatureProto, CreatureProto>("CreatureProto")
 			prop(Id)
 			prop(MinLevel)
 			prop(MaxLevel)
@@ -376,7 +376,7 @@ namespace lua_engine
 			prop(summonguard);
 #undef prop
 #define prop(name) .property_ro(#name, &CreatureInfo::name)
-		m	.class_<CreatureInfo>("CreatureInfo")
+		m	.class_<CreatureInfo, CreatureInfo>("CreatureInfo")
 			prop(Id)
 			prop(Name)
 			prop(SubName)
@@ -386,8 +386,7 @@ namespace lua_engine
 #undef prop
 
 #define bind(name) .method(#name, &Creature::name)
-		m	.class_decl<Creature>("Creature");
-		m	.subclass<lua_creature, Unit>("Creature")
+		m	.subclass<Creature, lua_creature, Unit>("Creature")
 			bind(IsVehicle)
 			//bind(isGuard)
 			//bind(isNeutralGuard)
@@ -442,7 +441,7 @@ namespace lua_engine
 			.method("RemoveEvents", &lua_creature::RemoveScriptEngineEvents);
 #undef bind
 #define BIND(name) .method(#name, &AIInterface::name)
-			m.	class_<AIInterface>("AIInterface")
+			m.	class_<AIInterface, AIInterface>("AIInterface")
 				/*BIND(getUnit)
 				BIND(findClosestTarget)
 				BIND(findRandomTarget)

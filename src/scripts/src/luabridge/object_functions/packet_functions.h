@@ -22,7 +22,7 @@
 class luapacket : public WorldPacket
 {
 public:
-	luapacket(int16 op, size_t size) : WorldPacket(op, size) {}
+	luapacket(uint16 op, size_t size) : WorldPacket(op, size) {}
 #define define_method(type) void write##type(type val) { *this << val; }
 	define_method(int8)
 	define_method(uint8)
@@ -45,8 +45,8 @@ namespace lua_engine
 
 	void bindPacketMethods(luabridge::module & m)
 	{
-		m	.class_<luapacket>("LuaPacket",true)
-			.constructor<void (*)(int16,size_t res)>()
+		m	.class_<WorldPacket, luapacket>("LuaPacket",true)
+			.constructor<void (*)(uint16,size_t res)>()
 			.method("opcode", &WorldPacket::GetOpcode)
 			.method("clear", &WorldPacket::clear)
 			.method("WriteInt8", &luapacket::writeint8)
