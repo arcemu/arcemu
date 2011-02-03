@@ -1523,8 +1523,7 @@ void Spell::SpellEffectCreateItem( uint32 i ){
 	}
 
 	if( difference > basecount ){
-		uint32 maxcount = basecount + difference;
-		count = RandomUInt( maxcount );
+		count = basecount + difference;
 
 	}else{
 		uint32 mincount = basecount - difference;
