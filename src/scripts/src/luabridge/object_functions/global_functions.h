@@ -229,7 +229,7 @@ namespace lua_engine
 int CreateLuaEvent(lua_function fref, int delay, int repeats, variadic_parameter* params)
 {
 	int ref = LUA_REFNIL;
-	if(delay > 0 && (ptrdiff_t)fref != LUA_REFNIL && params != NULL)
+	if(lua_instance != NULL && delay > 0 && (ptrdiff_t)fref != LUA_REFNIL && params != NULL)
 	{
 		//embed the function ref and repeats as part of our parameters.
 		variadic_node * func_node = new variadic_node;
@@ -244,9 +244,9 @@ int CreateLuaEvent(lua_function fref, int delay, int repeats, variadic_parameter
 		params->head_node = func_node;
 		//update args count
 		params->count +=2;
-		TimedEvent * ev = TimedEvent::Allocate(World::getSingletonPtr(),new CallBackFunctionP1<variadic_parameter*>(&lua_engine::ExecuteLuaFunction,params),0,delay,repeats);
+		TimedEvent * ev = TimedEvent::Allocate(lua_instance->map,new CallBackFunctionP1<variadic_parameter*>(&lua_engine::ExecuteLuaFunction,params),0,delay,repeats);
 		ev->eventType  = LUA_EVENTS_END+(ptrdiff_t)fref; //Create custom reference by adding the ref number to the max lua event type to get a unique reference for every function.
-		sWorld.event_AddEvent(ev);
+		lua_instance->map->event_AddEvent(ev);
 		lua_instance->m_globalFRefs.insert(params);
 	}
 	return ref;
@@ -298,22 +298,26 @@ void lua_engine::ExecuteLuaFunction(variadic_parameter * params)
 }
 void ModifyLuaEventInterval(lua_function ref, int newInterval)
 {
+	if(lua_instance != NULL)
 	//Easy interval modification.
-	sEventMgr.ModifyEventTime(World::getSingletonPtr(),(size_t)ref+LUA_EVENTS_END, newInterval);
+		sEventMgr.ModifyEventTime(lua_instance->map,(size_t)ref+LUA_EVENTS_END, newInterval);
 }
 static void DestroyLuaEvent(lua_function ref)
 {
-	//Simply remove the reference, CallFunctionByReference will find the reference has been freed and skip any processing.
-	lua_unref(lua_state,(ptrdiff_t)ref);
-	for(li::References::iterator itr = lua_instance->m_globalFRefs.begin(); itr != lua_instance->m_globalFRefs.end(); ++itr)
+	if(lua_instance != NULL)
 	{
-		if( (*itr) != NULL && (*itr)->head_node->type == LUA_TFUNCTION && (*itr)->head_node->val.obj_ref == (ptrdiff_t)ref)
+		//Simply remove the reference, CallFunctionByReference will find the reference has been freed and skip any processing.
+		lua_unref(lua_state,(ptrdiff_t)ref);
+		for(li::References::iterator itr = lua_instance->m_globalFRefs.begin(); itr != lua_instance->m_globalFRefs.end(); ++itr)
 		{
-			lua_instance->m_globalFRefs.erase(itr);
-			break;
+			if( (*itr) != NULL && (*itr)->head_node->type == LUA_TFUNCTION && (*itr)->head_node->val.obj_ref == (ptrdiff_t)ref)
+			{
+				lua_instance->m_globalFRefs.erase(itr);
+				break;
+			}
 		}
+		sEventMgr.RemoveEvents( lua_instance->map ,(size_t)ref+LUA_EVENTS_END);
 	}
-	sEventMgr.RemoveEvents(World::getSingletonPtr(),(size_t)ref+LUA_EVENTS_END);
 }
 
 //Used to clean up any pending events when restarting.
