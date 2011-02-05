@@ -63,6 +63,12 @@ interpreter/lua_defs.h \
 interpreter/lua_instance.h \
 interpreter/LUAEngine.cpp \
 interpreter/LUAEngine.h \
+luabridge_src/luabridge.hpp \
+luabridge_src/luabridge.hpp \ 
+luabridge_src/impl/class.hpp \
+luabridge_src/impl/module.hpp \
+luabridge_src/impl/stack.hpp \
+luabridge_src/impl/typelist.hpp \
 object_functions/aura_functions.h \
 object_functions/gameobject_functions.h \
 object_functions/global_functions.h \
