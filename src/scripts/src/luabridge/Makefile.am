@@ -64,7 +64,7 @@ interpreter/lua_instance.h \
 interpreter/LUAEngine.cpp \
 interpreter/LUAEngine.h \
 luabridge_src/luabridge.hpp \
-luabridge_src/luabridge.hpp \ 
+luabridge_src/luabridge.cpp \
 luabridge_src/impl/class.hpp \
 luabridge_src/impl/module.hpp \
 luabridge_src/impl/stack.hpp \
