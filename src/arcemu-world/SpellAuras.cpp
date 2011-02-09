@@ -1001,163 +1001,187 @@ void Aura::UpdateModifiers( )
 }
 
 void Aura::EventUpdateGroupAA( float r ){
+	Player *owner = NULL;
 
-	Player *p = NULL;
-	
 	if( m_target->IsPlayer() )
-		p = TO_PLAYER( m_target );
+		owner = TO< Player* >( m_target );
 	else
-		return;
+		owner = m_target->GetPlayerOwner();
 
-
-	if( !p->InGroup() ){
+	if( owner == NULL ){
 		targets.clear();
 		return;
-	}	
-	
-	p->GetGroup()->Lock();
-	
-	SubGroup *g = p->GetGroup()->GetSubGroup( p->GetSubGroup() );
-	
-	// Let's check for new targets
-	for( GroupMembersSet::iterator itr = g->GetGroupMembersBegin(); itr != g->GetGroupMembersEnd(); ++itr ){
-		PlayerInfo *pi = *itr;
-		Player *op = pi->m_loggedInPlayer;
-		
-		if( op == NULL )
-			continue;
-		
-		if( op->GetGUID() == p->GetGUID() )
-			continue;
-		
-		if( op->GetInstanceID() != p->GetInstanceID() )
-			continue;
-		
-		if( p->GetDistanceSq( op ) > r )
-			continue;
-		
-		if( ( p->GetPhase() & op->GetPhase() ) == 0 )
-			continue;
-		
-		if( !op->isAlive() )
-			continue;
-		
-		if( op->HasAura( m_spellProto->Id ) )
-			continue;
-		
-		targets.insert( op->GetGUID() );
+	}
+
+	if( !owner->InGroup() ){
+		if( m_target->GetGUID() != owner->GetGUID() ){
+			if( ( m_target->GetDistanceSq( owner ) <= r ) ){
+				if( !owner->HasAura( m_spellProto->Id ) )
+					targets.insert( owner->GetGUID() );
+			}else{
+				if( owner->HasAura( m_spellProto->Id ) ){
+					targets.erase( owner->GetLowGUID() );
+					owner->RemoveAura( m_spellProto->Id );
+				}
+			}
+		}
+	}else{
+		owner->GetGroup()->Lock();
+
+		SubGroup *sg = owner->GetGroup()->GetSubGroup( owner->GetSubGroup() );
+		for( GroupMembersSet::iterator itr = sg->GetGroupMembersBegin(); itr != sg->GetGroupMembersEnd(); ++itr ){
+			Player *op = (*itr)->m_loggedInPlayer;
+
+			if( op == NULL )
+				continue;
+
+			if( m_target->GetDistanceSq( op ) > r )
+				continue;
+
+			if( m_target->GetInstanceID() != op->GetInstanceID() )
+				continue;
+
+			if( ( m_target->GetPhase() & op->GetPhase() ) == 0 )
+				continue;
+
+			if( !op->isAlive() )
+				continue;
+
+			if( op->HasAura( m_spellProto->Id ) )
+				continue;
+
+			targets.insert( op->GetGUID() );
+		}
+
+		owner->GetGroup()->Unlock();
 	}
 	
-	// Check for targets that should be no longer affected
-	for( AreaAuraList::iterator itr = targets.begin(); itr != targets.end();  ){
+	for( AreaAuraList::iterator itr = targets.begin(); itr != targets.end(); ){
 		AreaAuraList::iterator itr2 = itr;
 		++itr;
-		Player *tp = p->GetMapMgr()->GetPlayer( Arcemu::Util::GUID_LOPART( *itr2 ) );
-		bool removable = false;
 		
+		Player *tp = m_target->GetMapMgr()->GetPlayer( Arcemu::Util::GUID_LOPART( *itr2 ) );
+		
+		bool removable = false;
 		if( tp == NULL ){
-			targets.erase( *itr2 );
+			targets.erase( itr2 );
 			continue;
 		}
 		
-		if( p->GetDistanceSq( tp ) > r )
+		if( m_target->GetDistanceSq( tp ) > r )
 			removable = true;
 		
-		if( ( p->GetPhase() & tp->GetPhase() ) == 0 )
+		if( ( m_target->GetPhase() & tp->GetPhase() ) == 0 )
 			removable = true;
 		
-		if( !g->HasMember( Arcemu::Util::GUID_LOPART( *itr2 ) ) )
+		if( ( tp->GetGUID() != owner->GetGUID() ) && !tp->InGroup() )
 			removable = true;
+		else{
+			if( owner->GetGroup()->GetID() != tp->GetGroup()->GetID() )
+				removable = true;
+			
+			if( owner->GetSubGroup() != tp->GetSubGroup() )
+				removable = true;
+		}
 		
 		if( removable ){
 			targets.erase( itr2 );
 			tp->RemoveAura( m_spellProto->Id );
 		}
 	}
-	p->GetGroup()->Unlock();
 }
 
 void Aura::EventUpdateRaidAA( float r ){
-	Player *p = NULL;
-	
-	if( m_target->IsPlayer() )
-		p = TO_PLAYER( m_target );
-	else
-		return;
+	Player *owner = NULL;
 
-	if( !p->InGroup() ){
+	if( m_target->IsPlayer() )
+		owner = TO< Player* >( m_target );
+	else
+		owner = m_target->GetPlayerOwner();
+
+	if( owner == NULL ){
 		targets.clear();
 		return;
 	}
-	
-	Group *g = p->GetGroup();
-	
-	g->Lock();
-	
-	uint32 subgroups = g->GetSubGroupCount();
-	
-	for( uint32 i = 0; i < subgroups; i++ ){
-		SubGroup *sg = g->GetSubGroup( i );
-		
-		for( GroupMembersSet::iterator itr = sg->GetGroupMembersBegin(); itr != sg->GetGroupMembersEnd(); ++itr ){
-			PlayerInfo *pi = *itr;
-			Player *op = pi->m_loggedInPlayer;
-			
-			if( op == NULL )
-				continue;
-			
-			if( op->GetGUID() == p->GetGUID() )
-				continue;
-			
-			if( op->GetInstanceID() != p->GetInstanceID() )
-				continue;
-			
-			if( p->GetDistanceSq( op ) > r )
-				continue;
-			
-			if( ( p->GetPhase() & op->GetPhase() ) == 0 )
-				continue;
-			
-			if( !op->isAlive() )
-				continue;
-			
-			if( op->HasAura( m_spellProto->Id ) )
-				continue;
-			
-			targets.insert( op->GetGUID() );
-		}
-	}
-	g->Unlock();
 
+	if( !owner->InGroup() ){
+		if( m_target->GetGUID() != owner->GetGUID() ){
+			if( ( m_target->GetDistanceSq( owner ) <= r ) ){
+				if( !owner->HasAura( m_spellProto->Id ) )
+					targets.insert( owner->GetGUID() );
+			}else{
+				if( owner->HasAura( m_spellProto->Id ) ){
+					targets.erase( owner->GetLowGUID() );
+					owner->RemoveAura( m_spellProto->Id );
+				}
+			}
+		}
+	
+	}else{
+		Group *g = owner->GetGroup();
+		
+		g->Lock();
+		uint32 subgroups = g->GetSubGroupCount();
+		
+		for( uint32 i = 0; i < subgroups; i++ ){
+			SubGroup *sg = g->GetSubGroup( i );
+			
+			for( GroupMembersSet::iterator itr = sg->GetGroupMembersBegin(); itr != sg->GetGroupMembersEnd(); ++itr ){
+				PlayerInfo *pi = *itr;
+				Player *op = pi->m_loggedInPlayer;
+				
+				if( op == NULL )
+					continue;
+				
+				if( op->GetInstanceID() != m_target->GetInstanceID() )
+					continue;
+				
+				if( m_target->GetDistanceSq( op ) > r )
+					continue;
+				
+				if( ( m_target->GetPhase() & op->GetPhase() ) == 0 )
+					continue;
+				
+				if( !op->isAlive() )
+					continue;
+				
+				if( op->HasAura( m_spellProto->Id ) )
+					continue;
+				
+				targets.insert( op->GetGUID() );
+			}
+		}
+		
+		g->Unlock();
+	}
+	
 	// Check for targets that should be no longer affected
 	for( AreaAuraList::iterator itr = targets.begin(); itr != targets.end();  ){
 		AreaAuraList::iterator itr2 = itr;
 		++itr;
-
-		Player *tp = p->GetMapMgr()->GetPlayer( Arcemu::Util::GUID_LOPART( *itr2 ) );
+		
+		Player *tp = m_target->GetMapMgr()->GetPlayer( Arcemu::Util::GUID_LOPART( *itr2 ) );
 		bool removable = false;
-
+		
 		if( tp == NULL ){
 			targets.erase( itr2 );
 			continue;
 		}
-
-		if( p->GetDistanceSq( tp ) > r )
+		
+		if( m_target->GetDistanceSq( tp ) > r )
+			removable = true;
+		
+		if( ( m_target->GetPhase() & tp->GetPhase() ) == 0 )
 			removable = true;
 
-		if( ( p->GetPhase() & tp->GetPhase() ) == 0 )
+		if( ( tp->GetGUID() != owner->GetGUID() ) && !tp->InGroup() )
 			removable = true;
-
-		if( !tp->InGroup() )
-			removable = true;
-
+		
 		if( removable ){
 			targets.erase( itr2 );
 			tp->RemoveAura( m_spellProto->Id );
 		}
-
 	}
-
 }
 
 void Aura::EventUpdatePetAA( float r ){
