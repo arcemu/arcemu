@@ -43,9 +43,11 @@ local GAMEOBJECT_END = OBJECT_END + 0x000C
 local DYNAMICOBJECT_END = OBJECT_END + 0x0006
 local CORPSE_END = OBJECT_END + 0x001E
 LCF = {
+		ObjectMethods = {},
 		CreatureMethods = {},
 		GOMethods = {},
-		PlayerMethods = {}
+		PlayerMethods = {},
+		UnitMethods = {}
 	}
 LCF.vars  = {
 		OBJECT_FIELD_GUID = 0x0000,
@@ -758,51 +760,31 @@ LCF.vars.EMOTE_FIELDS = {
 		EMOTE_ZZOLD_STATE_KNEEL_NO_INTERRUPT= 470
 	}
 function LCF.__index(obj,key)
-	if(type(obj) == "table") then
-		return LCF.vars[key]
-	elseif(type(obj) == "userdata") then
-		local objtype = obj:GetObjectType()
-		assert(objtype)
-		if(objtype == "Unit") then
-			return LCF.CreatureMethods[key]
-		elseif(objtype == "Player") then
-			return LCF.PlayerMethods[key]
-		elseif(objtype == "GameObject") then
-			return LCF.GOMethods[key]
-		end
-	end
-	return nil
+	local val = LCF.vars[key]
+	--print("LCF::indexer returning value : "..tostring(val) )
+	return val
 end
 function LCF.vars.__index(tbl,key)
-	if(LCF.vars.UNIT_FIELDS[key] ~= nil) then
-		return LCF.vars.UNIT_FIELDS[key]
-	elseif(LCF.vars.PLAYER_FIELDS[key] ~= nil) then
-		return LCF.vars.PLAYER_FIELDS[key]
-	elseif(LCF.vars.MSG_FIELDS[key] ~= nil) then
-		return LCF.vars.MSG_FIELDS[key]
-	elseif(LCF.vars.GAMEOBJECT_FIELDS[key] ~= nil) then
-		return LCF.vars.GAMEOBJECT_FIELDS[key]
-	elseif(LCF.vars.ITEM_FIELDS[key] ~= nil) then
-		return LCF.vars.ITEM_FIELDS[key]
-	elseif(LCF.vars.COLOR_FIELDS[key] ~= nil) then
-		return LCF.vars.COLOR_FIELDS[key]
-	elseif(LCF.vars.UNIT_FLAGS[key] ~= nil) then
-		return LCF.vars.UNIT_FLAGS[key]
-	elseif(LCF.vars.EMOTE_FIELDS[key] ~= nil) then
-		return LCF.vars.EMOTE_FIELDS[key]
-	elseif(LCF.vars.CONTAINER_FIELDS[key] ~= nil) then
-		return LCF.vars.CONTAINER_FIELDS[key]
-	elseif(LCF.vars.CORPSE_FIELDS[key] ~= nil) then
-		return LCF.vars.CORPSE_FIELDS[key]
-	elseif(LCF.vars.DYNOBJ_FIELDS[key] ~= nil) then
-		return LCF.vars.DYNOBJ_FIELDS[key]
-	end
-	return nil
+	return 
+	LCF.vars.UNIT_FIELDS[key] or 
+	LCF.vars.PLAYER_FIELDS[key] or
+	LCF.vars.MSG_FIELDS[key] or
+	LCF.vars.GAMEOBJECT_FIELDS[key] or
+	LCF.vars.ITEM_FIELDS[key] or
+	LCF.vars.COLOR_FIELDS[key] or
+	LCF.vars.UNIT_FLAGS[key] or
+	LCF.vars.EMOTE_FIELDS[key] or
+	LCF.vars.CONTAINER_FIELDS[key] or
+	LCF.vars.CORPSE_FIELDS[key] or
+	LCF.vars.DYNOBJ_FIELDS[key]
 end
+
 -- Now we set the metatables of our wow objects.
 setmetatable( getregistry("Creature"),LCF.CreatureMethods)
---print("LCF.CreatureMethods is ("..tostring(LCF.CreatureMethods)..") Creature's metatable is ("..tostring( getmetatable(getregistry("Creature") ) ) ..")" )
 setmetatable( getregistry("GameObject"),LCF.GOMethods)
+setmetatable( getregistry("Player"), LCF.PlayerMethods)
+setmetatable( getregistry("Object"), LCF.ObjectMethods)
+setmetatable( getregistry("Unit"), LCF.UnitMethods )
 setmetatable(LCF,LCF)
 setmetatable(LCF.vars,LCF.vars)
 --Might expand these to the other wow objects if they really do need wrappers
@@ -821,7 +803,6 @@ local startpos,endpos = string.find(src,file_sep),string.len(src)
 if(string.find(src,"@") ~= nil) then endpos = endpos -1 end
 
 local directory = string.reverse(string.sub(src,startpos,endpos))
-local impl_files = { directory.."LCF_Creature.impl", directory.."LCF_Player.impl", directory.."LCF_Gameobject.impl", directory.."LCF_Extra.impl" }
+local impl_files = { directory.."LCF_Creature.impl", directory.."LCF_Player.impl", directory.."LCF_Gameobject.impl", directory.."LCF_Extra.impl" , directory.."LCF_Object.impl", directory.."LCF_Unit.impl" }
 for k,v in pairs(impl_files) do dofile(v) end
-
 	

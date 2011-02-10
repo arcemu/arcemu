@@ -12,7 +12,7 @@
 #	else
 #		define snprintf _snprintf
 #	endif
-#endif/*
+#endif */
 
 /*
  * Default name for unknown types

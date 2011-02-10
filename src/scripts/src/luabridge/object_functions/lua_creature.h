@@ -95,4 +95,154 @@ public:
 	     lua_instance->m_creatureFRefs.erase( this->GetLowGUID() );
 
    }
+
+   Unit * GetRandomEnemy(lua_stack s)
+   {
+	   lua_State * stack = (lua_State*)s;
+	   std::vector< Unit*> enemies;
+	   enemies.reserve( this->GetInRangeOppFactsSize() );
+	   for( std::set< Object*>::iterator itr = this->GetInRangeOppFactsSetBegin(); itr != this->GetInRangeOppFactsSetEnd(); ++itr)
+	   {
+		   if( (*itr)->IsUnit() )
+			   enemies.push_back( TO_UNIT( *itr) );
+	   }
+	   Unit * result = NULL;
+	   if( enemies.size() )
+		   result = enemies[RandomUInt( enemies.size()- 1) ];
+	   return result;
+   }
+
+   Unit * GetRandomFriend()
+   {
+	   std::vector< Unit*> allies;
+	   for( std::set< Object*>::iterator itr = this->GetInRangeSameFactsSetBegin(); itr != this->GetInRangeSameFactsSetEnd(); ++itr)
+	   {
+		   if( (*itr)->IsUnit() )
+			   allies.push_back( TO_UNIT( *itr) );
+	   }
+	   Unit * result = NULL;
+	   if( allies.size() )
+		   result = allies[RandomUInt( allies.size()- 1) ];
+	   return result;
+   }
+
+   Player * GetRandomPlayer(int flag)
+   {
+	   const unsigned SHORT_DISTANCE = 8;
+	   const unsigned LONG_DISTANCE = 30;
+	   std::vector< Player*> players;
+	   int dist;
+	   Unit * maintank;
+	   std::set< Object*>::iterator itr = this->GetInRangePlayerSetBegin();
+	   std::set< Object*>::iterator itend = this->GetInRangePlayerSetEnd();
+	   switch(flag)
+	   {
+	   case RANDOM_ANY:
+		   for(; itr != itend; ++itr)
+			   players.push_back( TO_PLAYER( *itr) );
+		   break;
+	   case RANDOM_IN_SHORTRANGE:
+		   for(; itr != itend; ++itr)
+			   if( float2int32( this->CalcDistance(*itr) ) <= SHORT_DISTANCE)
+				   players.push_back( TO_PLAYER(*itr) );
+		   break;
+	   case RANDOM_IN_MIDRANGE:
+		   for(; itr != itend; ++itr)
+		   {
+			   dist = float2int32( this->CalcDistance( *itr) );
+			   if(dist > SHORT_DISTANCE && dist < LONG_DISTANCE)
+				   players.push_back( TO_PLAYER(*itr) );
+		   }
+		   break;
+	   case RANDOM_IN_LONGRANGE:
+		   for(; itr != itend; ++itr)
+			   if( float2int32( this->CalcDistance(*itr) ) >= LONG_DISTANCE)
+				   players.push_back( TO_PLAYER(*itr) );
+		   break;
+	   case RANDOM_WITH_MANA:
+		   for(; itr != itend; ++itr)
+			   if( TO_PLAYER( (*itr) )->GetPowerType() == POWER_TYPE_MANA )
+				   players.push_back( TO_PLAYER( (*itr) ) );
+		   break;
+	   case RANDOM_WITH_RAGE:
+		   for(; itr != itend; ++itr)
+			   if( TO_PLAYER( (*itr) )->GetPowerType() == POWER_TYPE_RAGE)
+				   players.push_back( TO_PLAYER( (*itr) ) );
+		   break;
+	   case RANDOM_WITH_ENERGY:
+		   for(; itr != itend; ++itr)
+			   if( TO_PLAYER( (*itr) )->GetPowerType() == POWER_TYPE_ENERGY)
+				   players.push_back( TO_PLAYER( (*itr) ) );
+		   break;
+	   case RANDOM_NOT_MAINTANK:
+		   maintank = this->GetAIInterface()->GetMostHated();
+		   if(maintank != NULL)
+		   {
+			   for(; itr != itend; ++itr)
+				   if( (*itr) != maintank )
+					   players.push_back( TO_PLAYER( (*itr) ) );
+		   }
+		   break;
+	   default:
+		   break;
+	   }
+
+	   Player * result = NULL;
+	   if( players.size() )
+		   result = players[ RandomUInt( players.size()-1 ) ];
+
+	   return result;
+   }
+
+   Unit * GetClosestFriend()
+   {
+	   float closest_distance = 9999.99f;
+	   float current_distance;
+	   Object * closest_friend = NULL;
+	   for( std::set<Object*>::iterator itr = this->GetInRangeSameFactsSetBegin(); itr != this->GetInRangeSameFactsSetEnd(); ++itr)
+	   {
+		   current_distance = this->CalcDistance( *itr);
+		   if(current_distance <= closest_distance )
+		   {
+			   closest_friend = *itr;
+			   closest_distance = current_distance;
+		   }
+	   }
+	   return TO_UNIT(closest_friend);
+   }
+
+   Unit * GetClosestEnemy()
+   {
+	   float closest_distance = 9999.99f;
+	   float current_distance;
+	   Object * closest_enemy = NULL;
+	   for( std::set<Object*>::iterator itr = this->GetInRangeOppFactsSetBegin(); itr != this->GetInRangeOppFactsSetEnd(); ++itr)
+	   {
+		   current_distance = this->CalcDistance( *itr);
+		   if(current_distance <= closest_distance)
+		   {
+			   closest_enemy = *itr;
+			   closest_distance = current_distance;
+		   }
+	   }
+	   return TO_UNIT(closest_enemy);
+   }
+
+   Player * GetClosestPlayer()
+   {
+	   float closest_distance = 9999.99f;
+	   float current_distance;
+	   Object * closest_player = NULL;
+	   for( std::set<Object*>::iterator itr = this->GetInRangePlayerSetBegin(); itr != this->GetInRangePlayerSetEnd(); ++itr)
+	   {
+		   current_distance = this->CalcDistance( *itr);
+		   if(current_distance <= closest_distance)
+		   {
+			   closest_player = *itr;
+			   closest_distance = current_distance;
+		   }
+	   }
+	   return TO_PLAYER(closest_player);
+   }
+
 };

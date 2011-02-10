@@ -46,6 +46,8 @@ namespace lua_engine
 			.method("SetMapID", &Object::SetMapId)
 			.method("GetUInt32Value", &Object::GetUInt32Value)
 			.method("GetUInt64Value", &Object::GetUInt64Value)
+			.method("SetUInt32Value", &Object::SetUInt32Value)
+			.method("SetUInt64Value", &Object::SetUInt64Value)
 			.method("GetFloatValue", &Object::GetFloatValue)
 			.method("ModFloatValue", &Object::ModFloatValue)
 			.method("ModFloatValueByPCT", &Object::ModFloatValueByPCT)

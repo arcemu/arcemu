@@ -194,28 +194,28 @@ struct tdstack <float&>
 	{
 		lua_pushnumber(L, data);
 	}
-	static float & get (lua_State *L, int index)
-	{
+	static float & get (lua_State *L, int index);
+	/*{
 		if(lua_type(L, index) == LUA_TLIGHTUSERDATA)
 			return *(float*)lua_touserdata(L,index);
 		luaL_error(L, "expected light userdata, got %",luaL_typename(L,index) );
 		return *(float*)NULL;
-	}
+	}*/
 };
 template <>
 struct tdstack <const float&>
 {
 	static void push (lua_State *L, const float & data)
 	{
-		lua_pushlightuserdata(L, (void*)&data);
+		lua_pushnumber(L, data);
 	}
-	static const float & get (lua_State *L, int index)
-	{
+	static const float & get (lua_State *L, int index);
+	/*{
 		if(lua_type(L, index) == LUA_TLIGHTUSERDATA)
 			return *(const float*)lua_touserdata(L,index);
 		luaL_error(L, "expected light userdata, got %",luaL_typename(L,index) );
 		return *(const float*)NULL;
-	}
+	}*/
 };
 
 
@@ -629,14 +629,17 @@ struct tdstack<uint64 &>
 	
 	static void push(lua_State * L, uint64 & guid)
 	{
-		lua_pushlightuserdata(L, &guid);
+		uint64 * ud = (uint64*)lua_newuserdata(L, sizeof(uint64) );
+		if(ud != NULL)
+			*ud = guid;
 	}
 	
 	static uint64 & get(lua_State *L, int index)
 	{
-		if(lua_type(L, index) == LUA_TLIGHTUSERDATA)
+		if(lua_type(L, index) == LUA_TUSERDATA)
 			return *(uint64*)lua_touserdata(L,index);
-		luaL_error(L,"expected lightuserdata got %s",luaL_typename(L,index) );
+
+		luaL_error(L,"expected userdata got %s",luaL_typename(L,index) );
 		return *(uint64*)NULL;
 	}
 };
@@ -652,10 +655,11 @@ struct tdstack<const uint64>
 	}
 	static const uint64 get(lua_State *L, int index)
 	{
-		uint64 guid = 0;
 		if(lua_type(L, index) == LUA_TUSERDATA)
-			guid = *(uint64*)lua_touserdata(L,index);
-		return guid;
+			return *(uint64*)lua_touserdata(L,index);
+
+		luaL_error(L,"expected userdata got %s",luaL_typename(L,index) );
+		return *(uint64*)NULL;
 	}
 };
 template<>
@@ -663,13 +667,16 @@ struct tdstack<const uint64 &>
 {
 	static void push(lua_State * L, const uint64 & guid)
 	{
-		lua_pushlightuserdata(L, (void*)&guid);
+		uint64 * ud = (uint64*)lua_newuserdata(L, sizeof(uint64) );
+		if(ud != NULL)
+			*ud = guid;
 	}
 	static const uint64 & get(lua_State *L, int index)
 	{
-		if(lua_type(L, index) == LUA_TLIGHTUSERDATA)
+		if(lua_type(L, index) == LUA_TUSERDATA)
 			return *(uint64*)lua_touserdata(L,index);
-		luaL_error(L, "expected light userdata got %s", luaL_typename(L,index) );
+
+		luaL_error(L,"expected userdata got %s",luaL_typename(L,index) );
 		return *(uint64*)NULL;
 	}
 };

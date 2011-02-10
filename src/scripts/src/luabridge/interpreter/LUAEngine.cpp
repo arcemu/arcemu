@@ -285,92 +285,108 @@ void lua_engine::startupEngine()
 	le::scriptLock.Acquire();
 	loadScripts();
 	le::scriptLock.Release();
-	//dumpScripts2HDD();
+
 	// stuff is registered, so lets go ahead and make our emulated C++ scripted lua classes.
-	for(li::ObjectBindingMap::iterator itr = LUA_COMPILER->m_unitBinding.begin(); itr != LUA_COMPILER->m_unitBinding.end(); ++itr)
-		m_scriptMgr->register_creature_script( itr->first, createluacreature );
-
-	for(li::ObjectBindingMap::iterator itr = LUA_COMPILER->m_goBinding.begin(); itr != LUA_COMPILER->m_goBinding.end(); ++itr)
-		m_scriptMgr->register_gameobject_script( itr->first, createluagameobject );
-
-	for(li::ObjectBindingMap::iterator itr = LUA_COMPILER->m_questBinding.begin(); itr != LUA_COMPILER->m_questBinding.end(); ++itr)
-	{
-		QuestScript * qs = createluaquest( itr->first );
-		if( qs != NULL )
-			m_scriptMgr->register_quest_script( itr->first, qs );
-	}
-	//Lua Instances are what make thread based lua engines work, since map threads are the ones that try to execute lua code, we can keep track of them 
-	//By making register a lua instance. Through this instance, we can be able to control that map's lua state.
 	for(uint32 i = 0; i < NUM_MAPS; ++i)
 	{
-		MapMgr * mgr = sInstanceMgr.GetMapMgr(i);
-		if(mgr != NULL)
+		//check if the 'i' points to a valid map id.
+		if( sInstanceMgr.GetMap(i) != NULL && !m_scriptMgr->has_instance_script(i) )
 		{
+			//register that.
 			m_scriptMgr->register_instance_script(i, createluainstance );
-			//make the mapmgr load the script on it's own thread.
-			if(mgr->GetScript() == NULL)
+			//Since this dll is loaded after alot of mapmgr's have already been created, we to tell all those existing mgrs to re-instantiate their instance script.
+			MapMgr * mgr = sInstanceMgr.GetMapMgr(i);
+			if(mgr != NULL && mgr->GetScript() == NULL)
+				//make the mapmgr load the script on it's own thread.
 				sEventMgr.AddEvent(mgr, &MapMgr::LoadInstanceScript, EVENT_MAPMGR_UPDATEOBJECTS, 1, 1, 0);
 		}
 	}
+	// stuff is registered, so lets go ahead and make our emulated C++ scripted lua classes.
+	for(li::ObjectBindingMap::iterator itr = LUA_COMPILER->m_unitBinding.begin(); itr != LUA_COMPILER->m_unitBinding.end(); ++itr)
+		if(!m_scriptMgr->has_creature_script(itr->first) )
+			m_scriptMgr->register_creature_script( itr->first, createluacreature );
 
-    for(li::ObjectBindingMap::iterator itr = LUA_COMPILER->m_unitGossipBinding.begin(); itr != LUA_COMPILER->m_unitGossipBinding.end(); ++itr)
- 	{
-		GossipScript * gs = createunitgossipInterface( itr->first );
- 		if( gs != NULL )
-			m_scriptMgr->register_gossip_script( itr->first, gs );
+	for(li::ObjectBindingMap::iterator itr = LUA_COMPILER->m_goBinding.begin(); itr != LUA_COMPILER->m_goBinding.end(); ++itr)
+		if(!m_scriptMgr->has_gameobject_script(itr->first) )
+			m_scriptMgr->register_gameobject_script( itr->first, createluagameobject );
+
+	for(li::ObjectBindingMap::iterator itr = LUA_COMPILER->m_questBinding.begin(); itr != LUA_COMPILER->m_questBinding.end(); ++itr)
+	{
+		if(!m_scriptMgr->has_quest_script(itr->first) )
+		{
+			QuestScript * qs = createluaquest( itr->first );
+			if( qs != NULL )
+				m_scriptMgr->register_quest_script( itr->first, qs );
+		}
+	}
+	for(li::ObjectBindingMap::iterator itr = LUA_COMPILER->m_unitGossipBinding.begin(); itr != LUA_COMPILER->m_unitGossipBinding.end(); ++itr)
+	{
+		if(!m_scriptMgr->has_creature_gossip_script(itr->first) )
+		{
+			GossipScript * gs = createunitgossipInterface( itr->first );
+			if( gs != NULL )
+				m_scriptMgr->register_gossip_script( itr->first, gs );
+		}
 	}
 
 	for(li::ObjectBindingMap::iterator itr = LUA_COMPILER->m_itemGossipBinding.begin(); itr != LUA_COMPILER->m_itemGossipBinding.end(); ++itr)
 	{
-		GossipScript * gs = createitemgossipInterface( itr->first );
-		if( gs != NULL )
-			m_scriptMgr->register_item_gossip_script( itr->first, gs );
+		if(!m_scriptMgr->has_item_gossip_script(itr->first) )
+		{
+			GossipScript * gs = createitemgossipInterface( itr->first );
+			if( gs != NULL )
+				m_scriptMgr->register_item_gossip_script( itr->first, gs );
+		}
 	}
 
 	for(li::ObjectBindingMap::iterator itr = LUA_COMPILER->m_goGossipBinding.begin(); itr != LUA_COMPILER->m_goGossipBinding.end(); ++itr)
 	{
-		GossipScript * gs = creategogossipInterface( itr->first );
-		if( gs != NULL )
-			m_scriptMgr->register_go_gossip_script( itr->first, gs );
+		if(!m_scriptMgr->has_gameobject_script(itr->first) )
+		{
+			GossipScript * gs = creategogossipInterface( itr->first );
+			if( gs != NULL )
+				m_scriptMgr->register_go_gossip_script( itr->first, gs );
+		}
 	}
 	for(li::SpellFRefMap::iterator itr = LUA_COMPILER->m_dummySpells.begin(); itr != LUA_COMPILER->m_dummySpells.end(); ++itr)
 	{
-		m_scriptMgr->register_dummy_spell(itr->first, &LuaOnDummySpell);
-		le::_hooked_dummies.insert(itr->first);
+		if(!m_scriptMgr->has_dummy_spell_script(itr->first) )
+			m_scriptMgr->register_dummy_spell(itr->first, &LuaOnDummySpell);
 	}
+
 	//big server hook chunk. it only hooks if there are functions present to save on unnecessary processing.
-	RegisterHook(SERVER_HOOK_NEW_CHARACTER,(void*)LuaHookOnNewCharacter)
-	RegisterHook(SERVER_HOOK_KILL_PLAYER,(void*)LuaHookOnKillPlayer)
-	RegisterHook(SERVER_HOOK_FIRST_ENTER_WORLD,(void*)LuaHookOnFirstEnterWorld)
-	RegisterHook(SERVER_HOOK_ENTER_WORLD,(void*)LuaHookOnEnterWorld)
-	RegisterHook(SERVER_HOOK_GUILD_JOIN,(void*)LuaHookOnGuildJoin)
-	RegisterHook(SERVER_HOOK_DEATH,(void*)LuaHookOnDeath)
-	RegisterHook(SERVER_HOOK_REPOP,(void*)LuaHookOnRepop)
-	RegisterHook(SERVER_HOOK_EMOTE,(void*)LuaHookOnEmote)
-	RegisterHook(SERVER_HOOK_ENTER_COMBAT,(void*)LuaHookOnEnterCombat)
-	RegisterHook(SERVER_HOOK_CAST_SPELL,(void*)LuaHookOnCastSpell)
-	RegisterHook(SERVER_HOOK_TICK,(void*)LuaHookOnTick)
-	RegisterHook(SERVER_HOOK_LOGOUT_REQUEST,(void*)LuaHookOnLogoutRequest)
-	RegisterHook(SERVER_HOOK_LOGOUT,(void*)LuaHookOnLogout)
-	RegisterHook(SERVER_HOOK_QUEST_ACCEPT,(void*)LuaHookOnQuestAccept)
-	RegisterHook(SERVER_HOOK_ZONE,(void*)LuaHookOnZone)
-	RegisterHook(SERVER_HOOK_CHAT,(void*)LuaHookOnChat)
-	RegisterHook(SERVER_HOOK_LOOT,(void*)LuaHookOnLoot)
-	RegisterHook(SERVER_HOOK_GUILD_CREATE,(void*)LuaHookOnGuildCreate)
-	RegisterHook(SERVER_HOOK_ENTER_WORLD_2,(void*)LuaHookOnEnterWorld2)
-	RegisterHook(SERVER_HOOK_CHARACTER_CREATE,(void*)LuaHookOnCharacterCreate)
-	RegisterHook(SERVER_HOOK_QUEST_CANCELLED,(void*)LuaHookOnQuestCancelled)
-	RegisterHook(SERVER_HOOK_QUEST_FINISHED,(void*)LuaHookOnQuestFinished)
-	RegisterHook(SERVER_HOOK_HONORABLE_KILL,(void*)LuaHookOnHonorableKill)
-	RegisterHook(SERVER_HOOK_ARENA_FINISH,(void*)LuaHookOnArenaFinish)
-	RegisterHook(SERVER_HOOK_OBJECTLOOT,(void*)LuaHookOnObjectLoot)
-	RegisterHook(SERVER_HOOK_AREATRIGGER,(void*)LuaHookOnAreaTrigger)
-	RegisterHook(SERVER_HOOK_POST_LEVELUP,(void*)LuaHookOnPostLevelUp)
-	RegisterHook(SERVER_HOOK_PRE_DIE,(void*)LuaHookOnPreUnitDie)
-	RegisterHook(SERVER_HOOK_ADVANCE_SKILLLINE,(void*)LuaHookOnAdvanceSkillLine)
-	RegisterHook(SERVER_HOOK_DUEL_FINISHED,(void*)LuaHookOnDuelFinished)
-	RegisterHook(SERVER_HOOK_AURA_REMOVE,(void*)LuaHookOnAuraRemove)
-	RegisterHook(SERVER_HOOK_RESURRECT,(void*)LuaHookOnResurrect)
+	RegisterHook(SERVER_HOOK_EVENT_ON_NEW_CHARACTER,(void*)LuaHookOnNewCharacter)
+	RegisterHook(SERVER_HOOK_EVENT_ON_KILL_PLAYER,(void*)LuaHookOnKillPlayer)
+	RegisterHook(SERVER_HOOK_EVENT_ON_FIRST_ENTER_WORLD,(void*)LuaHookOnFirstEnterWorld)
+	RegisterHook(SERVER_HOOK_EVENT_ON_ENTER_WORLD,(void*)LuaHookOnEnterWorld)
+	RegisterHook(SERVER_HOOK_EVENT_ON_GUILD_JOIN,(void*)LuaHookOnGuildJoin)
+	RegisterHook(SERVER_HOOK_EVENT_ON_DEATH,(void*)LuaHookOnDeath)
+	RegisterHook(SERVER_HOOK_EVENT_ON_REPOP,(void*)LuaHookOnRepop)
+	RegisterHook(SERVER_HOOK_EVENT_ON_EMOTE,(void*)LuaHookOnEmote)
+	RegisterHook(SERVER_HOOK_EVENT_ON_ENTER_COMBAT,(void*)LuaHookOnEnterCombat)
+	RegisterHook(SERVER_HOOK_EVENT_ON_CAST_SPELL,(void*)LuaHookOnCastSpell)
+	RegisterHook(SERVER_HOOK_EVENT_ON_TICK,(void*)LuaHookOnTick)
+	RegisterHook(SERVER_HOOK_EVENT_ON_LOGOUT_REQUEST,(void*)LuaHookOnLogoutRequest)
+	RegisterHook(SERVER_HOOK_EVENT_ON_LOGOUT,(void*)LuaHookOnLogout)
+	RegisterHook(SERVER_HOOK_EVENT_ON_QUEST_ACCEPT,(void*)LuaHookOnQuestAccept)
+	RegisterHook(SERVER_HOOK_EVENT_ON_ZONE,(void*)LuaHookOnZone)
+	RegisterHook(SERVER_HOOK_EVENT_ON_CHAT,(void*)LuaHookOnChat)
+	RegisterHook(SERVER_HOOK_EVENT_ON_LOOT,(void*)LuaHookOnLoot)
+	RegisterHook(SERVER_HOOK_EVENT_ON_GUILD_CREATE,(void*)LuaHookOnGuildCreate)
+	//RegisterHook(SERVER_HOOK_EVENT_ON_ENTER_WORLD_2,(void*)LuaHookOnEnterWorld2)
+	RegisterHook(SERVER_HOOK_EVENT_ON_CHARACTER_CREATE,(void*)LuaHookOnCharacterCreate)
+	RegisterHook(SERVER_HOOK_EVENT_ON_QUEST_CANCELLED,(void*)LuaHookOnQuestCancelled)
+	RegisterHook(SERVER_HOOK_EVENT_ON_QUEST_FINISHED,(void*)LuaHookOnQuestFinished)
+	RegisterHook(SERVER_HOOK_EVENT_ON_HONORABLE_KILL,(void*)LuaHookOnHonorableKill)
+	RegisterHook(SERVER_HOOK_EVENT_ON_ARENA_FINISH,(void*)LuaHookOnArenaFinish)
+	RegisterHook(SERVER_HOOK_EVENT_ON_OBJECTLOOT,(void*)LuaHookOnObjectLoot)
+	RegisterHook(SERVER_HOOK_EVENT_ON_AREATRIGGER,(void*)LuaHookOnAreaTrigger)
+	RegisterHook(SERVER_HOOK_EVENT_ON_POST_LEVELUP,(void*)LuaHookOnPostLevelUp)
+	RegisterHook(SERVER_HOOK_EVENT_ON_PRE_DIE,(void*)LuaHookOnPreUnitDie)
+	RegisterHook(SERVER_HOOK_EVENT_ON_ADVANCE_SKILLLINE,(void*)LuaHookOnAdvanceSkillLine)
+	RegisterHook(SERVER_HOOK_EVENT_ON_DUEL_FINISHED,(void*)LuaHookOnDuelFinished)
+	RegisterHook(SERVER_HOOK_EVENT_ON_AURA_REMOVE,(void*)LuaHookOnAuraRemove)
+	RegisterHook(SERVER_HOOK_EVENT_ON_RESURRECT,(void*)LuaHookOnResurrect)
 }
 
 /*void lua_engine::shutdownEngine()
@@ -473,10 +489,7 @@ void lua_engine::restartEngine()
 	Log.Notice("LuaEngine", "LuaEngine is restarting. ");
 	le::scriptLock.Acquire();
 	for(le::LuaScriptData::iterator itr = le::compiled_scripts.begin(); itr != le::compiled_scripts.end(); ++itr)
-	{
-		free( (void*)itr->second->dump_data);
 		delete itr->second;
-	}
 	le::compiled_scripts.clear();
 	LUA_COMPILER->lu = lua_open();
 	lua_instance = LUA_COMPILER;
@@ -486,45 +499,55 @@ void lua_engine::restartEngine()
 	le::scriptLock.Release();
 	//register any new bindings.
 	for(li::ObjectBindingMap::iterator itr = LUA_COMPILER->m_unitBinding.begin(); itr != LUA_COMPILER->m_unitBinding.end(); ++itr)
-		m_scriptMgr->register_creature_script( itr->first, createluacreature );
+		if(!m_scriptMgr->has_creature_script(itr->first) )
+			m_scriptMgr->register_creature_script( itr->first, createluacreature );
 
 	for(li::ObjectBindingMap::iterator itr = LUA_COMPILER->m_goBinding.begin(); itr != LUA_COMPILER->m_goBinding.end(); ++itr)
-		m_scriptMgr->register_gameobject_script( itr->first, createluagameobject );
+		if(!m_scriptMgr->has_gameobject_script(itr->first) )
+			m_scriptMgr->register_gameobject_script( itr->first, createluagameobject );
 
 	for(li::ObjectBindingMap::iterator itr = LUA_COMPILER->m_questBinding.begin(); itr != LUA_COMPILER->m_questBinding.end(); ++itr)
 	{
-		QuestScript * qs = createluaquest( itr->first );
-		if( qs != NULL )
-			m_scriptMgr->register_quest_script( itr->first, qs );
+		if(!m_scriptMgr->has_quest_script(itr->first) )
+		{
+			QuestScript * qs = createluaquest( itr->first );
+			if( qs != NULL )
+				m_scriptMgr->register_quest_script( itr->first, qs );
+		}
 	}
 	for(li::ObjectBindingMap::iterator itr = LUA_COMPILER->m_unitGossipBinding.begin(); itr != LUA_COMPILER->m_unitGossipBinding.end(); ++itr)
 	{
-		GossipScript * gs = createunitgossipInterface( itr->first );
-		if( gs != NULL )
-			m_scriptMgr->register_gossip_script( itr->first, gs );
+		if(!m_scriptMgr->has_creature_gossip_script(itr->first) )
+		{
+			GossipScript * gs = createunitgossipInterface( itr->first );
+			if( gs != NULL )
+				m_scriptMgr->register_gossip_script( itr->first, gs );
+		}
 	}
 
 	for(li::ObjectBindingMap::iterator itr = LUA_COMPILER->m_itemGossipBinding.begin(); itr != LUA_COMPILER->m_itemGossipBinding.end(); ++itr)
 	{
-		GossipScript * gs = createitemgossipInterface( itr->first );
-		if( gs != NULL )
-			m_scriptMgr->register_item_gossip_script( itr->first, gs );
+		if(!m_scriptMgr->has_item_gossip_script(itr->first) )
+		{
+			GossipScript * gs = createitemgossipInterface( itr->first );
+			if( gs != NULL )
+				m_scriptMgr->register_item_gossip_script( itr->first, gs );
+		}
 	}
 
 	for(li::ObjectBindingMap::iterator itr = LUA_COMPILER->m_goGossipBinding.begin(); itr != LUA_COMPILER->m_goGossipBinding.end(); ++itr)
 	{
-		GossipScript * gs = creategogossipInterface( itr->first );
-		if( gs != NULL )
-			m_scriptMgr->register_go_gossip_script( itr->first, gs );
+		if(!m_scriptMgr->has_gameobject_script(itr->first) )
+		{
+			GossipScript * gs = creategogossipInterface( itr->first );
+			if( gs != NULL )
+				m_scriptMgr->register_go_gossip_script( itr->first, gs );
+		}
 	}
-
 	for(li::SpellFRefMap::iterator itr = LUA_COMPILER->m_dummySpells.begin(); itr != LUA_COMPILER->m_dummySpells.end(); ++itr)
 	{
-		if(le::_hooked_dummies.find(itr->first) == le::_hooked_dummies.end() )
-		{
+		if(!m_scriptMgr->has_dummy_spell_script(itr->first) )
 			m_scriptMgr->register_dummy_spell(itr->first, &LuaOnDummySpell);
-			le::_hooked_dummies.insert(itr->first);
-		}
 	}
 
 	//Tell all our active states to restart.
@@ -550,48 +573,126 @@ void lua_engine::restartThread(MapMgr * map)
 	//now we reload the scripts
 	le::loadScripts(lua_state);
 	//since we may have new bindings, update our contained interfaces to use the new bindings so that script changes may take effect
+
+	//since we may have new bindings, lets register them w/ ScriptMgr.
 	for(li::ObjectBindingMap::iterator itr = lua_instance->m_unitBinding.begin(); itr != lua_instance->m_unitBinding.end(); ++itr)
-	{
-		li::CreatureInterfaceMap::iterator it = lua_instance->m_creatureInterfaceMap.find(itr->first),
-			itend = lua_instance->m_creatureInterfaceMap.upper_bound(itr->first);
-		//assign the new binding.
-		for(; it != itend; ++it)
-			it->second->m_binding = itr->second;
-	}
+		if(!m_scriptMgr->has_creature_script(itr->first) )
+			m_scriptMgr->register_creature_script( itr->first, createluacreature );
+
 	for(li::ObjectBindingMap::iterator itr = lua_instance->m_goBinding.begin(); itr != lua_instance->m_goBinding.end(); ++itr)
-	{
-		li::GOInterfaceMap::iterator it = lua_instance->m_goInterfaceMap.find(itr->first),
-			itend = lua_instance->m_goInterfaceMap.upper_bound(itr->first);
-		for(; it != itend; ++it)
-			it->second->m_binding = itr->second;
-	}
+		if(!m_scriptMgr->has_gameobject_script(itr->first) )
+			m_scriptMgr->register_gameobject_script( itr->first, createluagameobject );
+
 	for(li::ObjectBindingMap::iterator itr = lua_instance->m_questBinding.begin(); itr != lua_instance->m_questBinding.end(); ++itr)
 	{
-		li::QuestInterfaceMap::iterator it = lua_instance->m_questInterfaceMap.find(itr->first),
-			itend = lua_instance->m_questInterfaceMap.upper_bound(itr->first);
-		for(; it != itend; ++it)
-			it->second->m_binding = itr->second;
+		if(!m_scriptMgr->has_quest_script(itr->first) )
+		{
+			QuestScript * qs = createluaquest( itr->first );
+			if( qs != NULL )
+				m_scriptMgr->register_quest_script( itr->first, qs );
+		}
 	}
 	for(li::ObjectBindingMap::iterator itr = lua_instance->m_unitGossipBinding.begin(); itr != lua_instance->m_unitGossipBinding.end(); ++itr)
 	{
-		li::GossipInterfaceMap::iterator it = lua_instance->m_unit_gossipInterfaceMap.find(itr->first),
-			itend = lua_instance->m_unit_gossipInterfaceMap.upper_bound(itr->first);
-		for(; it != itend; ++it)
-			it->second->m_unit_gossip_binding = itr->second;
+		if(!m_scriptMgr->has_creature_gossip_script(itr->first) )
+		{
+			GossipScript * gs = createunitgossipInterface( itr->first );
+			if( gs != NULL )
+				m_scriptMgr->register_gossip_script( itr->first, gs );
+		}
 	}
-	for(li::ObjectBindingMap::iterator itr = lua_instance->m_goGossipBinding.begin(); itr != lua_instance->m_goGossipBinding.end(); ++itr)
-	{
-		li::GossipInterfaceMap::iterator it = lua_instance->m_go_gossipInterfaceMap.find(itr->first),
-			itend = lua_instance->m_go_gossipInterfaceMap.upper_bound(itr->first);
-		for(; it != itend; ++it)
-			it->second->m_go_gossip_binding = itr->second;
-	}
+
 	for(li::ObjectBindingMap::iterator itr = lua_instance->m_itemGossipBinding.begin(); itr != lua_instance->m_itemGossipBinding.end(); ++itr)
 	{
-		li::GossipInterfaceMap::iterator it = lua_instance->m_item_gossipInterfaceMap.find(itr->first),
-			itend = lua_instance->m_item_gossipInterfaceMap.upper_bound(itr->first);
-		for(; it != itend; ++it)
-			it->second->m_item_gossip_binding = itr->second;
+		if(!m_scriptMgr->has_item_gossip_script(itr->first) )
+		{
+			GossipScript * gs = createitemgossipInterface( itr->first );
+			if( gs != NULL )
+				m_scriptMgr->register_item_gossip_script( itr->first, gs );
+		}
+	}
+
+	for(li::ObjectBindingMap::iterator itr = lua_instance->m_goGossipBinding.begin(); itr != lua_instance->m_goGossipBinding.end(); ++itr)
+	{
+		if(!m_scriptMgr->has_gameobject_script(itr->first) )
+		{
+			GossipScript * gs = creategogossipInterface( itr->first );
+			if( gs != NULL )
+				m_scriptMgr->register_go_gossip_script( itr->first, gs );
+		}
+	}
+	for(li::SpellFRefMap::iterator itr = lua_instance->m_dummySpells.begin(); itr != lua_instance->m_dummySpells.end(); ++itr)
+	{
+		if(!m_scriptMgr->has_dummy_spell_script(itr->first) )
+			m_scriptMgr->register_dummy_spell(itr->first, &LuaOnDummySpell);
+	}
+
+	//since we may have new bindings, update our contained interfaces to use the new bindings so that script changes may take effect
+	if(lua_instance->m_creatureInterfaceMap.size() )
+	{
+		for(li::ObjectBindingMap::iterator itr = lua_instance->m_unitBinding.begin(); itr != lua_instance->m_unitBinding.end(); ++itr)
+		{
+			li::CreatureInterfaceMap::iterator it = lua_instance->m_creatureInterfaceMap.find(itr->first),
+				itend = lua_instance->m_creatureInterfaceMap.upper_bound(itr->first);
+			//assign the new binding.
+			for(; it != itend; ++it)
+				it->second->m_binding = itr->second;
+		}
+	}
+
+	if(lua_instance->m_goInterfaceMap.size() )
+	{
+		for(li::ObjectBindingMap::iterator itr = lua_instance->m_goBinding.begin(); itr != lua_instance->m_goBinding.end(); ++itr)
+		{
+			li::GOInterfaceMap::iterator it = lua_instance->m_goInterfaceMap.find(itr->first),
+				itend = lua_instance->m_goInterfaceMap.upper_bound(itr->first);
+			for(; it != itend; ++it)
+				it->second->m_binding = itr->second;
+		}
+	}
+
+	if(lua_instance->m_questInterfaceMap.size() )
+	{
+		for(li::ObjectBindingMap::iterator itr = lua_instance->m_questBinding.begin(); itr != lua_instance->m_questBinding.end(); ++itr)
+		{
+			li::QuestInterfaceMap::iterator it = lua_instance->m_questInterfaceMap.find(itr->first),
+				itend = lua_instance->m_questInterfaceMap.upper_bound(itr->first);
+			for(; it != itend; ++it)
+				it->second->m_binding = itr->second;
+		}
+	}
+
+	if(lua_instance->m_unit_gossipInterfaceMap.size() )
+	{
+		for(li::ObjectBindingMap::iterator itr = lua_instance->m_unitGossipBinding.begin(); itr != lua_instance->m_unitGossipBinding.end(); ++itr)
+		{
+			li::GossipInterfaceMap::iterator it = lua_instance->m_unit_gossipInterfaceMap.find(itr->first),
+				itend = lua_instance->m_unit_gossipInterfaceMap.end();
+			if(it != itend)
+				it->second->m_unit_gossip_binding = itr->second;
+		}
+	}
+
+	if(lua_instance->m_go_gossipInterfaceMap.size() )
+	{
+		for(li::ObjectBindingMap::iterator itr = lua_instance->m_goGossipBinding.begin(); itr != lua_instance->m_goGossipBinding.end(); ++itr)
+		{
+			li::GossipInterfaceMap::iterator it = lua_instance->m_go_gossipInterfaceMap.find(itr->first),
+				itend = lua_instance->m_go_gossipInterfaceMap.end();
+			if(it != itend)
+				it->second->m_go_gossip_binding = itr->second;
+		}
+	}
+
+	if(lua_instance->m_item_gossipInterfaceMap.size() )
+	{
+		for(li::ObjectBindingMap::iterator itr = lua_instance->m_itemGossipBinding.begin(); itr != lua_instance->m_itemGossipBinding.end(); ++itr)
+		{
+			li::GossipInterfaceMap::iterator it = lua_instance->m_item_gossipInterfaceMap.find(itr->first),
+				itend = lua_instance->m_item_gossipInterfaceMap.end();
+			if(it != itend)
+				it->second->m_item_gossip_binding = itr->second;
+		}
 	}
 }
 void lua_engine::shutdownThread(MapMgr* map)

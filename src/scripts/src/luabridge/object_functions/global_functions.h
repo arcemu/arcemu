@@ -155,21 +155,20 @@ namespace lua_engine
 	GossipScript * createunitgossipInterface(uint32 id)
 	{
 		LuaGossip * pLua = NULL;
+		//First check if we have registered a binding.
 		li::ObjectBindingMap::iterator itr = lua_instance->m_unitGossipBinding.find(id);
 		PObjectBinding pBinding = (itr != lua_instance->m_unitGossipBinding.end() ) ? itr->second : NULL;
+		//Don't bother creating an interface if we don't have a binding.
 		if( pBinding != NULL )
 		{
+			//Check if we had already created an interface, if so, we just update its binding to point to the newly registered one.
 			li::GossipInterfaceMap::iterator itr = lua_instance->m_unit_gossipInterfaceMap.find(id);
 			if(itr != lua_instance->m_unit_gossipInterfaceMap.end() )
-			{
-				if(itr->second == NULL)
-					pLua = itr->second = new LuaGossip(id);
-				else
-					pLua = itr->second;
-			}
+				pLua = itr->second;
 			else
 			{
 				pLua = new LuaGossip(id);
+				//All units w/ the same id will share this interface.
 				lua_instance->m_unit_gossipInterfaceMap.insert(make_pair(id,pLua));
 			}
 			pLua->m_unit_gossip_binding = pBinding;
@@ -184,13 +183,9 @@ namespace lua_engine
 		if( pBinding != NULL )
 		{
 			li::GossipInterfaceMap::iterator itr = lua_instance->m_item_gossipInterfaceMap.find(id);
+
 			if(itr != lua_instance->m_item_gossipInterfaceMap.end() )
-			{
-				if(itr->second == NULL)
-					pLua = itr->second = new LuaGossip(id);
-				else
-					pLua = itr->second;
-			}
+				pLua = itr->second;
 			else
 			{
 				pLua = new LuaGossip(id);
@@ -209,12 +204,7 @@ namespace lua_engine
 		{
 			li::GossipInterfaceMap::iterator itr = lua_instance->m_go_gossipInterfaceMap.find(id);
 			if(itr != lua_instance->m_go_gossipInterfaceMap.end() )
-			{
-				if(itr->second == NULL)
-					pLua = itr->second = new LuaGossip(id);
-				else
-					pLua = itr->second;
-			}
+				pLua = itr->second;
 			else
 			{
 				pLua = new LuaGossip(id);

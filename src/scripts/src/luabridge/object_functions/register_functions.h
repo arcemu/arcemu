@@ -55,7 +55,7 @@ using namespace lua_engine;
 bool registerServerHook(uint32 hook, lua_function ref)
 {
 	bool found = false;
-	if(hook < SERVER_HOOK_COUNT && (ptrdiff_t)ref != LUA_REFNIL)
+	if(hook < NUM_SERVER_HOOKS && (ptrdiff_t)ref != LUA_REFNIL)
 	{
 		li::HookFRefMap::iterator itr = lua_instance->m_hooks.find(hook);
 		for(; itr != lua_instance->m_hooks.upper_bound(hook); ++itr)

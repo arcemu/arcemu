@@ -200,9 +200,6 @@
     <ClInclude Include="..\src\luabridge\luabridge_src\impl\module.hpp">
       <Filter>luabridge_src\impl</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\luabridge\luabridge_src\impl\shared_ptr.hpp">
-      <Filter>luabridge_src\impl</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\luabridge\luabridge_src\impl\stack.hpp">
       <Filter>luabridge_src\impl</Filter>
     </ClInclude>

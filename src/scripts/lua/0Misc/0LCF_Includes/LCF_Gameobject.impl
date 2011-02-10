@@ -40,9 +40,9 @@ function GAMEOBJECT:IsClickable()
 	end
 	return false
 end
-function GAMEOBJECT:Respawn()
+--[[function GAMEOBJECT:Respawn()
 	self:SetPosition(self:GetX(),self:GetY(),self:GetZ(),self:GetO())
-end
+end]]
 function GAMEOBJECT:Close()
 	self:SetByte(LCF.GAMEOBJECT_BYTES_1,0,1)
 end
@@ -55,35 +55,18 @@ end
 function GAMEOBJECT:Open()
 	self:SetByte(LCF.GAMEOBJECT_BYTES_1,0,0)
 end
-function GAMEOBJECT:RegisterLuaEvent(func,delay,repeats,...)
-	self:RegisterEvent(LCF:CreateClosure(func,self,unpack(arg)),delay,repeats)
+function GAMEOBJECT:RegisterAIUpdateEvent( interval)
+	self:GetScript():RegisterAIUpdateEvent(interval)
 end
-function GAMEOBJECT:SetCreator(creator)
-	local guid = creator:GetGUID()
-	self:SetUInt64Value(LCF.OBJECT_FIELD_CREATED_BY,guid)
+function GAMEOBJECT:ModifyAIUpdateEvent( nInterval)
+	self:GetScript():ModifyAIUpdateEvent(nInterval)
 end
-function GAMEOBJECT:GetLocalCreature(entry)
-	local x,y,z = self:GetLocation()
-	local crc = self:GetCreatureNearestCoords(x,y,z,entry)
-	return crc
+function GAMEOBJECT:RemoveAIUpdateEvent()
+	self:GetScript():RemoveAIUpdateEvent()
 end
-function GAMEOBJECT:GetLocalGameObject(entry)
-	local x,y,z = self:GetLocation()
-	local go = self:GetGameObjectNearestCoords(x,y,z,entry)
-	return go
+function GAMEOBJECT:Name()
+	return self:GetInfo().Name
 end
-function GAMEOBJECT:SpawnLocalCreature(entry,faction,duration)
-	local x,y,z,o = self:GetLocation()
-	self:SpawnCreature(entry,x,y,z,o,faction,duration)
-end
-function GAMEOBJECT:SpawnLocalGameObject(entry,duration)
-	local x,y,z,o = self:GetLocation()
-	self:SpawnGameObject(entry,x,y,z,o,duration)
-end
-function GAMEOBJECT:GetCreator()
-	local creator_guid = self:GetUInt64Value(LCF.UNIT_FIELD_CREATEDBY)
-	if(creator_guid == nil) then
-		creator_guid = self:GetUInt64Value(LCF.UNIT_FIELD_SUMMONEDBY)
-	end
-	return self:GetObject(creator_guid)
+function GAMEOBJECT:Type()
+	return self:GetInfo().Type
 end

@@ -1,0 +1,81 @@
+--[[
+/*
+ * ArcEmu MMORPG Server
+ * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
+ * Copyright (C) 2008-2010 <http://www.ArcEmu.org/>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+ ]]
+ 
+local UNIT = LCF.UnitMethods
+assert(UNIT)
+
+function UNIT:FullCastSpell( id)
+	self:CastSpell(self, id, false)
+end
+function UNIT:FullCastSpellOnTarget( target, id)
+	self:CastSpell( target, id, false)
+end
+function UNIT:CastSpell(id)
+	self:CastSpell(self, id, true)
+end
+function UNIT:CastSpellOnTarget(target, id)
+	self:CastSpell(target, id, true)
+end
+function UNIT:SetChannelTarget(target)
+	local guid = nil
+	if(target) then	
+		guid = target:GetGUID()
+	end
+	self:SetUInt64Value(LCF.UNIT_FIELD_CHANNEL_OBJECT,guid)
+end
+function UNIT:SetChannelSpell( spell)
+	self:SetUInt32Value(LCF.UNIT_CHANNEL_SPELL, spell)
+end
+
+function UNIT:GetChannelTarget()
+	local guid = self:GetUInt64Value(LCF.UNIT_FIELD_CHANNEL_OBJECT)
+	print( tostring(guid) )
+	if(guid) then
+		return MapMgr:GetObject(guid)
+	end
+	return nil
+end
+function UNIT:GetChannelSpell()
+	return self:GetUInt32Value( LCF.UNIT_CHANNEL_SPELL )
+end
+function UNIT:ChannelSpell( spell, target)
+	self:SetChannelTarget( target)
+	self:SetChannelSpell( spell)
+end
+function UNIT:StopChannel()
+	self:SetChannelTarget( nil)
+	self:SetChannelSpell( 0 )
+end
+function UNIT:SetCreatedBy(creator)
+	self:SetUInt64Value(LCF.UNIT_FIELD_CREATEDBY, creator:GetGUID() )
+end
+function UNIT:SetSummonedBy( summoner)
+	self:SetUInt64Value( LCF.UNIT_FIELD_SUMMONEDBY, summoner:GetGUID() )
+end
+function UNIT:GetCreator()
+	return self:GetObject( self:GetUInt64Value(LCF.UNIT_FIELD_CREATEDBY) )
+end
+function UNIT:GetSummonedBy()
+	return self:GetObject( self:GetUInt64Value(LCF.UNIT_FIELD_SUMMONEDBY) )
+end
+ 
+ 

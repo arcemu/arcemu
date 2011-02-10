@@ -322,7 +322,14 @@ namespace __gnu_cxx
 	{
 		size_t operator()(T * const &__x) const { return (size_t)__x; }
 	};
-
+	//support for std::strings as keys to hash maps
+	template<> struct hash< ::std::string>
+	{
+		size_t operator()(const ::std::string & keyval) const
+		{ 
+			return hash<const char*>()( keyval.c_str() ); 
+		}
+	};
 };
 
 #else

@@ -205,7 +205,10 @@ namespace lua_engine
 			BIND(PlaySound)
 			BIND(GetItemInterface)
 			BINDE("Resurrect", &Player::RemoteRevive)
-			BINDE("ResurrectPlayer", &Player::RemoteRevive);
+			BINDE("ResurrectPlayer", &Player::RemoteRevive)
+
+			//For assigning gossip menus to players, similar to objmgr.CreateMenuForPlayer
+			.property_rw("m_currentgossipmenu", &Player::CurrentGossipMenu );
 #undef BIND
 #undef BINDE
 	}

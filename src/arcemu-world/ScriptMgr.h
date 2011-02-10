@@ -147,7 +147,7 @@ typedef HM_NAMESPACE::hash_map< uint32, exp_handle_script_effect > HandleScriptE
 typedef HM_NAMESPACE::hash_map<uint32, exp_create_instance_ai> InstanceCreateMap;
 typedef set<GossipScript*> CustomGossipScripts;
 typedef set<QuestScript*> QuestScripts;
-typedef list<void*> ServerHookList;
+typedef set<void*> ServerHookList;
 typedef list<SCRIPT_MODULE> LibraryHandleMap;
 
 #define VISIBLE_RANGE (26.46f)
@@ -241,6 +241,73 @@ public:
 	}
 
 	ARCEMU_INLINE GossipScript * GetDefaultGossipScript() { return DefaultGossipScript; }
+
+	//************************************
+	// Purpose :	Returns true if ScriptMgr has already registered the specified creature id.
+	// Parameter:	uint32 - the id of the creature to search for.
+	//************************************
+	bool has_creature_script(uint32) const;
+
+	//************************************
+	// Purpose :	Returns true if ScriptMgr has already registered the specified gameobject id.
+	// Parameter:	uint32 - the id of the gameobject to search for
+	//************************************
+	bool has_gameobject_script(uint32) const;
+
+	//************************************
+	// Purpose :	Returns true if ScriptMgr has already registered the specified aura id.
+	// Parameter:	uint32 - the aura id to search for
+	//************************************
+	bool has_dummy_aura_script(uint32 ) const;
+
+	//************************************
+	// Purpose :	Returns true if ScriptMgr has already registered the specified dummy spell id.
+	// Parameter:	uint32 - the spell id to search for
+	//************************************
+	bool has_dummy_spell_script(uint32) const;
+
+	//************************************
+	// Purpose :	Returns true if ScriptMgr has already registered the specified spell id.
+	// Parameter:	uint32 - the spell id to search for
+	//************************************
+	bool has_script_effect(uint32) const;
+
+	//************************************
+	// Purpose :	Returns true if ScriptMgr has already registered the specified map id.
+	// Parameter:	uint32 - the map id to search for
+	//************************************
+	bool has_instance_script(uint32) const;
+
+	//************************************
+	// Purpose :	Returns true if ScriptMgr has already registered the specified creature id
+	// Parameter:	uint32 - the creature id to search for
+	//************************************
+	bool has_creature_gossip_script(uint32) const;
+
+	//************************************
+	// Purpose :	Returns true if ScriptMgr has already registered the specified gameobject id.
+	// Parameter:	uint32 - the gameobject id to search for
+	//************************************
+	bool has_go_gossip_script(uint32) const;
+
+	//************************************
+	// Purpose :	Returns true if ScriptMgr has registered the specified function ptr to the specified event.
+	// Parameter:	ServerHookEvents - the event number
+	// Parameter:	void * - the function pointer to search for.
+	//************************************
+	bool has_hook(ServerHookEvents, void*) const;
+
+	//************************************
+	// Purpose :	Returns true if ScriptMgr has already registered the specified item id.
+	// Parameter:	uint32 - the item id to search for
+	//************************************
+	bool has_item_gossip_script(uint32) const;
+
+	//************************************
+	// Purpose :	Returns true if ScriptMgr has already registered the specified quest id.
+	// Parameter:	uint32 - the quest id to search for
+	//************************************
+	bool has_quest_script(uint32) const;
 
 protected:
 	InstanceCreateMap mInstances; 

@@ -1153,7 +1153,60 @@ void InstanceScript::RemoveUpdateEvent()
 void ScriptMgr::register_hook(ServerHookEvents event, void * function_pointer)
 {
 	Arcemu::Util::ARCEMU_ASSERT(   event < NUM_SERVER_HOOKS);
-	_hooks[event].push_back(function_pointer);
+	_hooks[event].insert(function_pointer);
+}
+
+bool ScriptMgr::has_creature_script( uint32 entry ) const
+{
+	return (_creatures.find(entry) != _creatures.end() );
+}
+
+bool ScriptMgr::has_gameobject_script( uint32 entry) const
+{
+	return (_gameobjects.find(entry) != _gameobjects.end() );
+}
+
+bool ScriptMgr::has_dummy_aura_script( uint32 entry ) const
+{
+	return (_auras.find(entry) != _auras.end() );
+}
+
+bool ScriptMgr::has_dummy_spell_script( uint32 entry) const
+{
+	return (_spells.find(entry) != _spells.end() );
+}
+
+bool ScriptMgr::has_script_effect( uint32 entry) const
+{
+	return (SpellScriptEffects.find(entry) != SpellScriptEffects.end() );
+}
+
+bool ScriptMgr::has_instance_script( uint32 id) const
+{
+	return (mInstances.find(id) != mInstances.end() );
+}
+
+bool ScriptMgr::has_creature_gossip_script( uint32 entry) const
+{
+	CreatureInfo * info = CreatureNameStorage.LookupEntry(entry);
+	return (info == NULL || info->gossip_script != NULL);
+}
+
+bool ScriptMgr::has_item_gossip_script( uint32 entry) const
+{
+	ItemPrototype * proto = ItemPrototypeStorage.LookupEntry(entry);
+	return (proto == NULL || proto->gossip_script != NULL);
+}
+
+bool ScriptMgr::has_hook( ServerHookEvents evt, void* ptr) const
+{
+	return (_hooks[evt].size() == 0 || _hooks[evt].find(ptr) == _hooks[evt].end() );
+}
+
+bool ScriptMgr::has_quest_script( uint32 entry) const
+{
+	Quest * q = QuestStorage.LookupEntry(entry);
+	return (q == NULL || q->pQuestScript != NULL);
 }
 
 /* Hook Implementations */

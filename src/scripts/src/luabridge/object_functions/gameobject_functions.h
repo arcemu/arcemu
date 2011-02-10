@@ -165,7 +165,7 @@ namespace lua_engine
 		m	.subclass<GameObject, lua_go, Object>("GameObject")
 			.method("HasQuests", &GameObject::HasQuests)
 			.method("NumQuests", &GameObject::NumOfQuests)
-			.method("Close", &GameObject::EventCloseDoor)
+			//.method("Close", &GameObject::EventCloseDoor)
 			.method("Despawn", &GameObject::Despawn)	
 			.method("ExpireAndDelete", &GameObject::ExpireAndDelete)
 			.method("IsQuestGiver", &GameObject::isQuestGiver)
@@ -186,7 +186,7 @@ namespace lua_engine
 			.property_ro("ID", &GameObjectInfo::ID)
 			.property_ro("Type", &GameObjectInfo::Type)
 			.property_ro("DisplayID", &GameObjectInfo::DisplayID)
-			.property_ro("name", &GameObjectInfo::Name)
+			.property_ro("Name", &GameObjectInfo::Name)
 			.property_ro("SpellFocus", &GameObjectInfo::SpellFocus);
 	}
 }

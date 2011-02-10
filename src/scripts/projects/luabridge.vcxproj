@@ -202,7 +202,6 @@
     <ClInclude Include="..\src\luabridge\interpreter\lua_instance.h" />
     <ClInclude Include="..\src\luabridge\luabridge_src\impl\class.hpp" />
     <ClInclude Include="..\src\luabridge\luabridge_src\impl\module.hpp" />
-    <ClInclude Include="..\src\luabridge\luabridge_src\impl\shared_ptr.hpp" />
     <ClInclude Include="..\src\luabridge\luabridge_src\impl\stack.hpp" />
     <ClInclude Include="..\src\luabridge\luabridge_src\impl\typelist.hpp" />
     <ClInclude Include="..\src\luabridge\luabridge_src\luabridge.hpp" />

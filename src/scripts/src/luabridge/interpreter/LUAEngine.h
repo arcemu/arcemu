@@ -167,7 +167,7 @@ namespace lua_engine
 #define li LUA_INSTANCE
 
 //	We can no longer insert double pointers so we are safe here.
-#define RegisterHook(evt, _func) m_scriptMgr->register_hook( (ServerHookEvents)(evt), (_func) );
+#define RegisterHook(evt, _func) { if(!m_scriptMgr->has_hook(evt, _func) ) m_scriptMgr->register_hook( (ServerHookEvents)(evt), (_func) ); }
 
 #include "../object_functions/register_functions.h"
 #include "../object_functions/gameobject_functions.h"

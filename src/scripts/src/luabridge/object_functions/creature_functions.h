@@ -40,8 +40,8 @@ public:
 	{
 		NULL_BINDING_CHECK
 
-			lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_TARGET_DIED]);
-		push_unit(_unit);
+		lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_TARGET_DIED]);
+		push_creature(_unit);
 		push_int(CREATURE_EVENT_ON_TARGET_DIED);
 		push_unit(mTarget);
 		lua_engine::ExecuteLuaFunction(3);
@@ -53,8 +53,8 @@ public:
 	{
 		NULL_BINDING_CHECK
 
-			lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_DIED]);
-		push_unit(_unit);
+		lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_DIED]);
+		push_creature(_unit);
 		push_int(CREATURE_EVENT_ON_DIED);
 		push_unit(mKiller);
 		lua_engine::ExecuteLuaFunction(3);
@@ -65,8 +65,8 @@ public:
 	{
 		NULL_BINDING_CHECK
 
-			lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_TARGET_PARRIED]);
-		push_unit(_unit);
+		lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_TARGET_PARRIED]);
+		push_creature(_unit);
 		push_int(CREATURE_EVENT_ON_TARGET_PARRIED);
 		push_unit(mTarget);
 		lua_engine::ExecuteLuaFunction(3);
@@ -77,8 +77,8 @@ public:
 	{
 		NULL_BINDING_CHECK
 
-			lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_TARGET_DODGED]);
-		push_unit(_unit);
+		lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_TARGET_DODGED]);
+		push_creature(_unit);
 		push_int(CREATURE_EVENT_ON_TARGET_DODGED);
 		push_unit(mTarget);
 		lua_engine::ExecuteLuaFunction(3);
@@ -89,8 +89,8 @@ public:
 	{
 		NULL_BINDING_CHECK
 
-			lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_TARGET_BLOCKED]);
-		push_unit(_unit);
+		lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_TARGET_BLOCKED]);
+		push_creature(_unit);
 		push_int(CREATURE_EVENT_ON_TARGET_BLOCKED);
 		push_unit(mTarget);
 		push_int(iAmount);
@@ -102,8 +102,8 @@ public:
 	{
 		NULL_BINDING_CHECK
 
-			lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_TARGET_CRIT_HIT]);
-		push_unit(_unit);
+		lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_TARGET_CRIT_HIT]);
+		push_creature(_unit);
 		push_int(CREATURE_EVENT_ON_TARGET_CRIT_HIT);
 		push_unit(mTarget);
 		push_int(fAmount);
@@ -114,8 +114,8 @@ public:
 	{
 		NULL_BINDING_CHECK
 
-			lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_PARRY]);
-		push_unit(_unit);
+		lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_PARRY]);
+		push_creature(_unit);
 		push_int(CREATURE_EVENT_ON_PARRY);
 		push_unit(mTarget);
 		lua_engine::ExecuteLuaFunction(3);
@@ -126,8 +126,8 @@ public:
 	{
 		NULL_BINDING_CHECK
 
-			lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_DODGED]);
-		push_unit(_unit);
+		lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_DODGED]);
+		push_creature(_unit);
 		push_int(CREATURE_EVENT_ON_DODGED);
 		push_unit(mTarget);
 		lua_engine::ExecuteLuaFunction(3);
@@ -137,8 +137,8 @@ public:
 	{
 		NULL_BINDING_CHECK
 
-			lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_BLOCKED]);
-		push_unit(_unit);
+		lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_BLOCKED]);
+		push_creature(_unit);
 		push_int(CREATURE_EVENT_ON_BLOCKED);
 		push_unit(mTarget);
 		push_int(iAmount);
@@ -149,8 +149,8 @@ public:
 	{
 		NULL_BINDING_CHECK
 
-			lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_CRIT_HIT]);
-		push_unit(_unit);
+		lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_CRIT_HIT]);
+		push_creature(_unit);
 		push_int(CREATURE_EVENT_ON_CRIT_HIT);
 		push_unit(mTarget);
 		push_int(fAmount);
@@ -161,8 +161,8 @@ public:
 	{
 		NULL_BINDING_CHECK
 
-			lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_HIT]);
-		push_unit(_unit);
+		lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_HIT]);
+		push_creature(_unit);
 		push_int(CREATURE_EVENT_ON_HIT);
 		push_unit(mTarget);
 		push_float(fAmount);
@@ -175,8 +175,8 @@ public:
 
 		NULL_BINDING_CHECK
 
-			lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_ASSIST_TARGET_DIED]);
-		push_unit(_unit);
+		lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_ASSIST_TARGET_DIED]);
+		push_creature(_unit);
 		push_int(CREATURE_EVENT_ON_ASSIST_TARGET_DIED);
 		push_unit(mAssistTarget);
 		lua_engine::ExecuteLuaFunction(3);
@@ -187,8 +187,8 @@ public:
 	{
 		NULL_BINDING_CHECK
 
-			lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_FEAR]);
-		push_unit(_unit);
+		lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_FEAR]);
+		push_creature(_unit);
 		push_int(CREATURE_EVENT_ON_FEAR);
 		push_unit(mFeared);
 		push_int(iSpellId);
@@ -200,8 +200,8 @@ public:
 	{
 		NULL_BINDING_CHECK
 
-			lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_FLEE]);
-		push_unit(_unit);
+		lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_FLEE]);
+		push_creature(_unit);
 		push_int(CREATURE_EVENT_ON_FLEE);
 		push_unit(mFlee);
 		lua_engine::ExecuteLuaFunction(3);
@@ -212,8 +212,8 @@ public:
 	{
 		NULL_BINDING_CHECK
 
-			lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_CALL_FOR_HELP]);
-		push_unit(_unit);
+		lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_CALL_FOR_HELP]);
+		push_creature(_unit);
 		push_int(CREATURE_EVENT_ON_CALL_FOR_HELP);
 		lua_engine::ExecuteLuaFunction(2);
 
@@ -223,16 +223,16 @@ public:
 	{
 		NULL_BINDING_CHECK
 
-			lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_LOAD]);
-		push_unit(_unit);
+		lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_LOAD]);
+		push_creature(_unit);
 		push_int(CREATURE_EVENT_ON_LOAD);
 		lua_engine::ExecuteLuaFunction(2);
 
 		RELEASE_LOCK
-			uint32 iid = _unit->GetInstanceID();
+		/*uint32 iid = _unit->GetInstanceID();
 		if (_unit->GetMapMgr() == NULL || _unit->GetMapMgr()->GetMapInfo()->type == INSTANCE_NULL)
 			iid = 0;
-		/*OnLoadInfo.push_back(_unit->GetMapId());
+		OnLoadInfo.push_back(_unit->GetMapId());
 		OnLoadInfo.push_back(iid);
 		OnLoadInfo.push_back(GET_LOWGUID_PART(_unit->GetGUID()));*/
 	}
@@ -240,8 +240,8 @@ public:
 	{
 		NULL_BINDING_CHECK
 
-			lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_REACH_WP]);
-		push_unit(_unit);
+		lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_REACH_WP]);
+		push_creature(_unit);
 		push_int(CREATURE_EVENT_ON_REACH_WP);
 		push_int(iWaypointId);
 		push_bool(bForwards);
@@ -253,8 +253,8 @@ public:
 	{
 		NULL_BINDING_CHECK
 
-			lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_LOOT_TAKEN]);
-		push_unit(_unit);
+		lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_LOOT_TAKEN]);
+		push_creature(_unit);
 		push_int(CREATURE_EVENT_ON_LOOT_TAKEN);
 		push_unit(pPlayer);
 		push_int(pItemPrototype->ItemId);
@@ -265,8 +265,8 @@ public:
 	{
 		NULL_BINDING_CHECK
 
-			lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_AIUPDATE]);
-		push_unit(_unit);
+		lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_AIUPDATE]);
+		push_creature(_unit);
 		push_int(CREATURE_EVENT_ON_AIUPDATE);
 		lua_engine::ExecuteLuaFunction(2);
 
@@ -276,8 +276,8 @@ public:
 	{
 		NULL_BINDING_CHECK
 
-			lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_EMOTE]);
-		push_unit(_unit);
+		lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_EMOTE]);
+		push_creature(_unit);
 		push_int(CREATURE_EVENT_ON_EMOTE);
 		push_unit(pPlayer);
 		push_int( (int)Emote);
@@ -289,8 +289,8 @@ public:
 	{
 		NULL_BINDING_CHECK
 
-			lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_DAMAGE_TAKEN]);
-		push_unit(_unit);
+		lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_DAMAGE_TAKEN]);
+		push_creature(_unit);
 		push_int(CREATURE_EVENT_ON_DAMAGE_TAKEN);
 		push_unit(mAttacker);
 		push_int(fAmount);
@@ -302,7 +302,7 @@ public:
 
 		NULL_BINDING_CHECK
 		lua_engine::BeginLuaFunctionCall( (lua_function)fRef);
-		push_unit(_unit);
+		push_creature(_unit);
 		lua_engine::ExecuteLuaFunction(1);
 		RELEASE_LOCK
 	}
@@ -384,6 +384,10 @@ namespace lua_engine
 			prop(Family)
 			prop(Rank);
 #undef prop
+		m	.class_<CreatureAIScript, CreatureAIScript>("CreatureAIScript")
+			.method("RegisterAIUpdateEvent", &CreatureAIScript::RegisterAIUpdateEvent)
+			.method("ModifyAIUpdateEvent", &CreatureAIScript::ModifyAIUpdateEvent)
+			.method("RemoveAIUpdateEvent", &CreatureAIScript::RemoveAIUpdateEvent);
 
 #define bind(name) .method(#name, &Creature::name)
 		m	.subclass<Creature, lua_creature, Unit>("Creature")
@@ -432,61 +436,37 @@ namespace lua_engine
 			bind(SetCreatureProto)
 			bind(IsTotem)
 			bind(IsExotic)
+			bind(GetScript)
 			.method("IsCritter", &Creature::isCritter)
 			.method("IsTrainingDummy", &Creature::isTrainingDummy)
 			.method("Despawn", &Creature::Despawn)	
-			.property_rw("norespawn", (bool(lua_creature::*) )&Creature::m_noRespawn)
-			.property_ro("escorter", (Player*(lua_creature::*) )&Creature::m_escorter)
+			.property_rw("m_noRespawn", (bool(lua_creature::*) )&Creature::m_noRespawn)
+			.property_ro("m_escorter", (Player*(lua_creature::*) )&Creature::m_escorter)
 			.method("RegisterEvent", &lua_creature::RegisterScriptEngineFunction)
-			.method("RemoveEvents", &lua_creature::RemoveScriptEngineEvents);
+			.method("RemoveEvents", &lua_creature::RemoveScriptEngineEvents)
+			.method("GetRandomEnemy", &lua_creature::GetRandomEnemy)
+			.method("GetRandomFriend", &lua_creature::GetRandomFriend)
+			.method("GetRandomPlayer", &lua_creature::GetRandomPlayer)
+			.method("GetClosestFriend", &lua_creature::GetClosestFriend)
+			.method("GetClosestEnemy", &lua_creature::GetClosestEnemy)
+			.method("GetClosestPlayer", &lua_creature::GetClosestPlayer);
 #undef bind
 #define BIND(name) .method(#name, &AIInterface::name)
 			m.	class_<AIInterface, AIInterface>("AIInterface")
-				/*BIND(getUnit)
-				BIND(findClosestTarget)
-				BIND(findRandomTarget)
-				BIND(isMoving)*/
 				BIND(GetPetOwner)
 				BIND(SetPetOwner)
 				.method("SetUnitToFollow", (void(AIInterface::*)(Unit*))&AIInterface::SetUnitToFollow)
-				//BIND(SetUnitToFollow)
 				BIND(getUnitToFollow)
 				BIND(SetFollowDistance)
-				//BIND(getFollowDistance)
 				BIND(SetUnitToFollowAngle)
-				//BIND(getFollowAngle)
 				BIND(getUnitToFear)
-				//BIND(SetUnitToFear)
 				.method("SetUnitToFear", (void(AIInterface::*)(Unit*))&AIInterface::SetUnitToFear)
-				/*BIND(setForcedTarget)
-				BIND(getForcedTarget)
-				BIND(hasForcedTarget)
-				BIND(getPanicHp)
-				BIND(setPanicHp)
-				BIND(getPanicDuration)
-				BIND(setPanicDuration)
-				BIND(hasPanicked)
-				BIND(getCallHelpHp)
-				BIND(setCallHelpHp)
-				BIND(hasCalledHelp)
-				BIND(getCombatDisable)
-				BIND(disableCombat)
-				BIND(getMeleeDisable)
-				BIND(disableMelee)
-				BIND(getSpellDisable)
-				BIND(disableSpells)
-				BIND(getRangedDisable)
-				BIND(disableRanged)
-				BIND(getTargettingDisable)
-				BIND(disableTargetting)*/
 				BIND(getSoullinkedWith)
 				BIND(GetIsSoulLinked)
 				BIND(SetSoulLinkedWith)
 				BIND(getAIState)
-				//BIND(SetAIState)
+				BIND(SetAIState)
 				BIND(addSpellToList)
-				//BIND(Spell_remove)
-				//BIND(Spell_getnext)
 				BIND(SetNextSpell)
 				BIND(MoveTo)
 				//BIND(calcMoveTimeToLocation)
@@ -503,7 +483,62 @@ namespace lua_engine
 				BIND(getNextTarget)
 				.method("setNextTarget", (void(AIInterface::*)(Unit*) )&AIInterface::setNextTarget)
 				BIND(AttackReaction)
-				BIND(HealReaction);
+				BIND(HealReaction)
+				.property_rw("disable_combat", &AIInterface::disable_combat)
+				.property_rw("disable_melee", &AIInterface::disable_melee)
+				.property_rw("disable_spell", &AIInterface::disable_spell)
+				.property_rw("disable_targeting", &AIInterface::disable_targeting)
+				.property_rw("m_canRangedAttack", &AIInterface::m_canRangedAttack)
+				.property_rw("m_canCallForHelp", &AIInterface::m_canCallForHelp)
+				.property_rw("m_CallForHelpHealth", &AIInterface::m_CallForHelpHealth)
+				.property_rw("m_canFlee", &AIInterface::m_canFlee)
+				.property_rw("m_FleeHealth", &AIInterface::m_FleeHealth)
+				.property_rw("m_FleeDuration", &AIInterface::m_FleeDuration)
+				BIND(ClearHateList)
+				BIND(WipeHateList)
+				BIND(WipeTargetList)
+				BIND(RemoveThreatByPtr)
+				BIND(modThreatByPtr)
+				BIND(getThreatByPtr)
+				BIND(GetMostHated)
+				BIND(GetSecondHated)
+				BIND(taunt)
+				BIND(getTauntedBy)
+				BIND(GetIsTaunted)
+				BIND(getSoullinkedWith)
+				BIND(SetSoulLinkedWith)
+				BIND(GetIsSoulLinked)
+				BIND(getOutOfCombatRange)
+				BIND(setOutOfCombatRange)
+				BIND(MoveTo)
+				BIND(getCurrentWaypoint)
+				BIND(changeWayPointID)
+				BIND(getWayPoint)
+				BIND(deleteWayPoint)
+				BIND(deleteWaypoints)
+				BIND(setMoveType)
+				BIND(getMoveType)
+				BIND(setMoveRunFlag)
+				BIND(getMoveRunFlag)
+				BIND(setWaypointToMove)
+				BIND(IsFlying)
+				BIND(getCurrentAgent)
+				BIND(setCurrentAgent)
+				BIND(SetAllowedToEnterCombat)
+				BIND(GetAllowedToEnterCombat)
+				.method("GetAITargetsCount", &AIInterface::getAITargetsCount);
 #undef BIND
+
+			//waypoint struct
+			m	.class_<WayPoint,WayPoint>("WayPoint")
+				.constructor<void (*)() >()
+				.property_rw("id", &WayPoint::id)
+				.property_rw("x", &WayPoint::x)
+				.property_rw("y", &WayPoint::y)
+				.property_rw("z", &WayPoint::z)
+				.property_rw("o", &WayPoint::o)
+				.property_rw("waittime", &WayPoint::waittime)
+				.property_rw("flags", &WayPoint::flags);
+				
 	}
 }

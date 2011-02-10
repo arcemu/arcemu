@@ -158,6 +158,7 @@ namespace lua_engine
 	{
 		m	.class_<MapMgr, MapMgr>("MapMgr")
 			.method("GetMapID", &MapMgr::GetMapId)
+			.method("GetObject", &MapMgr::_GetObject)
 #define method(name) .method(#name, &MapMgr::name)
 			method(CreateGameObject)
 			method(CreateAndSpawnGameObject)
@@ -175,6 +176,7 @@ namespace lua_engine
 			method(SetWorldState)
 			method(GetSqlIdCreature)
 			method(GetSqlIdGameObject);
+		
 #undef method
 #define meth(name) .method(#name, &MapScriptInterface::name)
 		m	.class_<MapScriptInterface, MapScriptInterface>("MapScriptInterface")
@@ -206,8 +208,8 @@ namespace lua_engine
 			.method("HasFlag", &MapInfo::HasFlag);
 #undef prop
 
-		luabridge::tdstack<MapMgr*>::push(lua_instance->lu, lua_instance->map);
+		luabridge::tdstack<MapMgr*>::push(m.L, lua_instance->map);
 		//set _G[MapMgr] = lua_instance->map, so we can auto grab a mapmgr pointer as long as we execute lua code from a valid mapmgr thread.
-		lua_setglobal(lua_instance->lu, "MapMgr");
+		lua_setglobal(m.L, "MapMgr");
 	}
 }

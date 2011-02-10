@@ -52,34 +52,38 @@ function PLAYER:IsHeroic()
 	end
 	return false
 end
-function PLAYER:SpawnLocalCreature(crc_entry,faction,duration)
+function PLAYER:SpawnLocalCreature(entry,faction,phase, duration)
 	local x,y,z,o = self:GetLocation()
-	return self:SpawnCreature(crc_entry,x,y,z,o,faction,duration)
+	local crc = MapMgr:GetInterface():SpawnCreature(entry, x,y,z,o, true, true, 0, 0, phase)
+	if(faction > 0) then
+		crc:SetFaction(faction)
+	end
+	if(duration) then
+		crc:Despawn(duration, 0)
+	end
 end
-function PLAYER:SpawnLocalGameObject(go_entry,duration)
+function PLAYER:SpawnLocalGameObject(go_entry, phase, duration)
 	local x,y,z,o = self:GetLocation()
-	return self:SpawnGameObject(go_entry,x,y,z,o,duration)
+	local go = MapMgr:GetInterface():SpawnGameObject(entry, x, y, z, o, true, 0, 0, phase)
+	if(duration) then
+		go:Despawn(duration ,0)
+	end
 end
 function PLAYER:MoveToUnit(target)
 	local x,y,z = target:GetLocation()
 	self:MoveTo(x,y,z,self:GetO())
 end
-function PLAYER:RegisterLuaEvent(func,delay,repeats,...)
-	self:CreateLuaEvent(LCF:CreateClosure(func,self,unpack(arg)),delay,repeats)
-end
-function PLAYER:RemoveLuaEvent(func)
-	LCF:RemoveLuaEvent(tostring(self),func)
-end
+
 function PLAYER:IsCasting()
 	return player:GetCurrentSpell() ~= nil
 end
 function PLAYER:GetLocalCreature(entry)
 	local x,y,z = self:GetLocation()
-	local crc = self:GetCreatureNearestCoords(x,y,z,entry)
+	local crc = MapMgr:GetInterface():GetCreatureNearestCoords(x,y,z,entry)
 	return crc
 end
 function PLAYER:GetLocalGameObject(entry)
 	local x,y,z = self:GetLocation()
-	local go = self:GetGameObjectNearestCoords(x,y,z,entry)
+	local go = MapMgr:GetInterface():GetGameObjectNearestCoords(x,y,z,entry)
 	return go
 end
