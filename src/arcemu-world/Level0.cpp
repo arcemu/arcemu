@@ -150,6 +150,8 @@ bool ChatHandler::HandleStartCommand(const char* args, WorldSession *m_session)
 {
 	std::string race;
 	Player *m_plyr = getSelectedChar(m_session, false);
+	if(m_plyr == NULL)
+		return false;
 
 	uint8 raceid = 0;
 	uint8 classid = 0;
@@ -302,10 +304,10 @@ bool ChatHandler::HandleDismountCommand(const char* args, WorldSession *m_sessio
 bool ChatHandler::HandleSaveCommand(const char* args, WorldSession *m_session)
 {
 	Player *p_target = getSelectedChar(m_session, false);
-	if(!p_target || !p_target->IsPlayer())
+	if(p_target == NULL)
 		return false;
 
-	if(p_target && p_target->m_nextSave < 300000 ) //5min out of 10 left so 5 min since last save
+	if(p_target->m_nextSave < 300000 ) //5min out of 10 left so 5 min since last save
 	{
 		p_target->SaveToDB(false);
 		GreenSystemMessage(m_session, "Player %s saved to DB", p_target->GetName());
@@ -541,7 +543,7 @@ bool ChatHandler::HandleAuraUpdateRemove( const char *args, WorldSession *m_sess
 bool ChatHandler::HandlePhaseCommand( const char *args , WorldSession *m_session )
 {
 	Player *p_target = getSelectedChar(m_session, false);
-	if(!p_target || !p_target->IsPlayer())
+	if(p_target == NULL)
 		return false;
 
 	if(strlen(args)<1) {

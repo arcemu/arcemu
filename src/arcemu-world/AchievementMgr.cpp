@@ -962,7 +962,7 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 						case 247: // Make Love, Not Warcraft
 							{
 								Player* pTarget = objmgr.GetPlayer((uint32)selectedGUID);
-								if( pTarget && pTarget->IsPlayer() && pTarget->IsDead() && isHostile(pTarget, GetPlayer()) )
+								if( pTarget && pTarget->IsDead() && isHostile(pTarget, GetPlayer()) )
 								{
 									UpdateCriteriaProgress(achievementCriteria, 1);
 								}
