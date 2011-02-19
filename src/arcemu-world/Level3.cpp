@@ -2748,6 +2748,53 @@ bool ChatHandler::HandleRemoveItemCommand(const char * args, WorldSession * m_se
 	return true;
 }
 
+bool ChatHandler::HandleRemoveItemSlotCommand(const char * args, WorldSession * m_session)
+{
+	int container = 0;
+	int slot = 0;
+
+	sscanf(args, "%d%d", (int*)&container, (int*)&slot);
+
+	Player * plr = getSelectedChar(m_session, true);
+
+	plr->GetItemInterface()->SafeFullRemoveItemFromSlot( int8 (container), int16 (slot));
+	BlueSystemMessage(plr->GetSession(), "Items have been removed from your inventory.");
+
+	return true;
+}
+
+bool ChatHandler::HandleClearInventoryCommand(const char * args, WorldSession * m_session)
+{
+   std::string choice = args;
+   Player * plr = getSelectedChar(m_session, true);
+	
+	if(plr == NULL) return false;
+
+	if((plr->GetGUID() == m_session->GetPlayer()->GetGUID()) && (choice != "yes"))//cannot clear your own inventory nless you type yes after command- prevents mistakes
+	{		
+		RedSystemMessage(m_session, "Select a player other than yourself.");
+		return true;
+	}
+	else
+	{
+		ItemIterator itr(plr->GetItemInterface());
+		itr.BeginSearch();
+		for(; !itr.End(); itr.Increment())
+		{
+			if((*itr) == NULL)
+				return false;
+
+			uint64 contentGUID = itr.Grab()->GetGUID();
+			plr->GetItemInterface()->SafeFullRemoveItemByGuid( contentGUID );
+		}
+		itr.EndSearch();
+		
+		BlueSystemMessage(plr->GetSession(), "All items have been removed from your inventory.");
+
+		return true;
+	}
+}
+
 bool ChatHandler::HandleForceRenameCommand(const char * args, WorldSession * m_session)
 {
 	// prevent buffer overflow
@@ -2833,43 +2880,29 @@ void ChatHandler::SendHighlightedName(WorldSession * m_session, const char* pref
 	SystemMessage(m_session, message);
 }
 
-void ChatHandler::SendItemLinkToPlayer(ItemPrototype * iProto, WorldSession * pSession, bool ItemCount, Player * owner, uint32 language )
+void ChatHandler::SendItemLinkToPlayer(ItemPrototype * iProto, WorldSession * pSession, bool ItemCount, Player * owner, uint64 contentGUID, uint32 language )
 {
 	if(!iProto || !pSession)
 		return;
 	if(ItemCount && owner == NULL)
 		return;
+	if(ItemCount )//.character showitems
+	{
+		int8 container = owner->GetItemInterface()->GetContainerByGuid(contentGUID);
+		int16 slot = owner->GetItemInterface()->GetSlotInContainerByGuid(contentGUID);
+		uint32 itemcount = owner->GetItemInterface()->GetInventoryItem(container, slot)->GetStackCount();
 
- 	if(ItemCount)
-	{
-		int8 count = static_cast<int8>(owner->GetItemInterface()->GetItemCount(iProto->ItemId, true));
-		//int8 slot = owner->GetItemInterface()->GetInventorySlotById(iProto->ItemId); //DISABLED due to being a retarded concept
-		if( iProto->ContainerSlots > 0 )
-		{
-			SystemMessage(pSession,"Item %u %s Count %u ContainerSlots %u", iProto->ItemId, GetItemLinkByProto(iProto, language).c_str(), count, iProto->ContainerSlots);
+		SystemMessage(pSession,"Link:%s Item:%u Count:%u Container:%d Slot:%d", GetItemLinkByProto(iProto, language).c_str(), iProto->ItemId, itemcount, container, slot);
 		}
-		else
-		{
-			SystemMessage(pSession,"Item %u %s Count %u", iProto->ItemId, GetItemLinkByProto(iProto, language).c_str(), count);
-		}
-	}
- 	else
-	{
-		if( iProto->ContainerSlots > 0 )
-		{
-			SystemMessage(pSession,"Item %u %s ContainerSlots %u", iProto->ItemId, GetItemLinkByProto(iProto, language).c_str(), iProto->ContainerSlots);
-		}
-		else
+	else //.lookup item
 		{
 			SystemMessage(pSession,"Item %u %s", iProto->ItemId, GetItemLinkByProto(iProto, language).c_str());
 		}
 	}
-}
-
 
 bool ChatHandler::HandleLookupItemCommand(const char * args, WorldSession * m_session)
 {
-	if(!*args) return false;
+	if(*args == NULL) return false;
 
 	string x = string(args);
 	arcemu_TOLOWER(x);
@@ -2883,10 +2916,11 @@ bool ChatHandler::HandleLookupItemCommand(const char * args, WorldSession * m_se
 	uint32 t = getMSTime();
 	ItemPrototype * it;
 	uint32 count = 0;
+	uint64 contentGUID = 0;
 
 	StorageContainerIterator<ItemPrototype> * itr = ItemPrototypeStorage.MakeIterator();
 
-	while(!itr->AtEnd())
+	while(itr->AtEnd() == NULL)
 	{
 		it = itr->Get();
 		LocalizedItem *lit	= (m_session->language>0) ? sLocalizationMgr.GetLocalizedItem(it->ItemId, m_session->language) : NULL;
@@ -2901,9 +2935,7 @@ bool ChatHandler::HandleLookupItemCommand(const char * args, WorldSession * m_se
 
 		if(FindXinYString(x, it->lowercase_name) || localizedFound)
 		{
-			// Print out the name in a cool highlighted fashion
-			//SendHighlightedName(m_session, it->Name1, it->lowercase_name, x, it->ItemId, true);
-			SendItemLinkToPlayer(it, m_session, false, 0, localizedFound ? m_session->language : 0);
+			SendItemLinkToPlayer(it, m_session, false, 0, contentGUID, localizedFound ? m_session->language : 0);
 			++count;
 			if(count == 25)
 			{
@@ -2911,8 +2943,7 @@ bool ChatHandler::HandleLookupItemCommand(const char * args, WorldSession * m_se
 				break;
 			}
 		}
-
-		if(!itr->Inc())
+		if(itr->Inc() == NULL)
 			break;
 	}
 	itr->Destruct();
@@ -3715,17 +3746,19 @@ bool ChatHandler::HandleShowItems(const char * args, WorldSession * m_session)
 {
 	string q;
 	Player * plr = getSelectedChar(m_session, true);
-	if(!plr) return true;
+	if(plr == NULL) return true;
 	BlueSystemMessage(m_session, "Listing items for player %s",plr->GetName());
 	int itemcount= 0;
 	ItemIterator itr(plr->GetItemInterface());
 	itr.BeginSearch();
 	for(; !itr.End(); itr.Increment())
 	{
-		if(!(*itr))
-			return false;
+		if((*itr) == NULL)return false;
+
+		uint64 contentGUID = itr.Grab()->GetGUID();	
 		itemcount++;
-		SendItemLinkToPlayer((*itr)->GetProto(), m_session, true, plr, m_session->language);
+
+		SendItemLinkToPlayer((*itr)->GetProto(), m_session, true, plr, contentGUID, m_session->language);
 	}
 	itr.EndSearch();
 	BlueSystemMessage(m_session, "Listed %d items for player %s",itemcount,plr->GetName());

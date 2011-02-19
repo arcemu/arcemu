@@ -1611,6 +1611,137 @@ int16 ItemInterface::GetBagSlotByGuid(uint64 guid)
 	return ITEM_NO_SLOT_AVAILABLE; //was changed from 0 cuz 0 is the slot for head
 }
 
+//-------------------------------------------------------------------//
+//Description: Gets slot number by item guid, banks included
+//returns values that match playeritems table
+//-------------------------------------------------------------------//
+int16 ItemInterface::GetSlotInContainerByGuid(uint64 guid)
+{
+	//player's equipment 0-18
+	for(uint16 i=EQUIPMENT_SLOT_START ;i<EQUIPMENT_SLOT_END;i++)
+	{
+		if(m_pItems[i])
+		{
+			if(m_pItems[i]->GetGUID() == guid)
+			{
+				return i;
+			}
+		}
+	}
+	//backback and player bank 23-66
+	for(uint16 i=INVENTORY_SLOT_ITEM_START ;i<BANK_SLOT_ITEM_END;i++)
+	{
+		if(m_pItems[i])
+		{
+			if(m_pItems[i]->GetGUID() == guid)
+			{
+				return i;
+			}
+		}
+	}
+	//keyring and currency 86-149
+	for(uint16 i=INVENTORY_KEYRING_START; i<CURRENCYTOKEN_SLOT_END; i++)
+	{
+		if(m_pItems[i])
+		{
+			if(m_pItems[i]->GetGUID() == guid)
+			{
+				return i;
+			}
+		}
+	}
+	//player's bags 19-22
+	for(uint16 i=INVENTORY_SLOT_BAG_START; i<INVENTORY_SLOT_BAG_END; ++i)
+	{
+		if(m_pItems[i]&&m_pItems[i]->GetTypeId()==TYPEID_CONTAINER)
+		{
+			for(uint32 j = 0; j < m_pItems[i]->GetProto()->ContainerSlots; ++j)
+			{
+				Item * inneritem = ( static_cast<Container*>( m_pItems[i] ))->GetItem(static_cast<int16>( j ));
+				if(inneritem && inneritem->GetGUID()==guid)
+					return static_cast<int16>( j );
+			}
+		}
+	}
+	//bank bags 67-74
+	for(uint16 i=BANK_SLOT_BAG_START; i<BANK_SLOT_BAG_END; ++i)
+	{
+		if(m_pItems[i]&&m_pItems[i]->GetTypeId()==TYPEID_CONTAINER)
+		{
+			for(uint32 j = 0; j < m_pItems[i]->GetProto()->ContainerSlots; ++j)
+			{
+				Item * inneritem = ( static_cast<Container*>( m_pItems[i] ))->GetItem(static_cast<int16>( j ));
+				if(inneritem && inneritem->GetGUID()==guid)
+					return static_cast<int16>( j );
+			}
+		}
+	}
+	return ITEM_NO_SLOT_AVAILABLE; //was changed from 0 cuz 0 is the slot for head
+}
+
+int8 ItemInterface::GetContainerByGuid(uint64 guid)
+{
+	//player's equipment 0-18
+	for(uint8 i=EQUIPMENT_SLOT_START ;i<EQUIPMENT_SLOT_END;i++)
+	{
+		if(m_pItems[i])
+		{
+			if(m_pItems[i]->GetGUID() == guid)
+			{
+				return -1;
+			}
+		}
+	}
+	//backback and player bank 23-66
+	for(uint8 i=INVENTORY_SLOT_ITEM_START ;i<BANK_SLOT_ITEM_END;i++)
+	{
+		if(m_pItems[i])
+		{
+			if(m_pItems[i]->GetGUID() == guid)
+			{
+				return -1;
+			}
+		}
+	}
+	//keyring and currency 86-149
+	for(uint8 i=INVENTORY_KEYRING_START; i<CURRENCYTOKEN_SLOT_END; i++)
+	{
+		if(m_pItems[i])
+		{
+			if(m_pItems[i]->GetGUID() == guid)
+			{
+				return -1;
+			}
+		}
+	}
+	//player's bags 19-22
+	for(uint8 i=INVENTORY_SLOT_BAG_START; i<INVENTORY_SLOT_BAG_END; ++i)
+	{
+		if(m_pItems[i]&&m_pItems[i]->GetTypeId()==TYPEID_CONTAINER)
+		{
+			for(uint32 j = 0; j < m_pItems[i]->GetProto()->ContainerSlots; ++j)
+			{
+				Item * inneritem = ( static_cast<Container*>( m_pItems[i] ))->GetItem(static_cast<int16>( j ));
+				if(inneritem && inneritem->GetGUID()==guid)
+					return i;
+			}
+		}
+	}
+	//bank bags 67-74
+	for(uint8 i=BANK_SLOT_BAG_START; i<BANK_SLOT_BAG_END; ++i)
+	{
+		if(m_pItems[i]&&m_pItems[i]->GetTypeId()==TYPEID_CONTAINER)
+		{
+			for(uint32 j = 0; j < m_pItems[i]->GetProto()->ContainerSlots; ++j)
+			{
+				Item * inneritem = ( static_cast<Container*>( m_pItems[i] ))->GetItem(static_cast<int16>( j ));
+				if(inneritem && inneritem->GetGUID()==guid)
+					return i;
+			}
+		}
+	}
+	return ITEM_NO_SLOT_AVAILABLE; //was changed from 0 cuz 0 is the slot for head
+}
 
 //-------------------------------------------------------------------//
 //Description: Adds a Item to a free slot
