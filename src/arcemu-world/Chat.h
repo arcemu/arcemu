@@ -221,10 +221,12 @@ protected:
 
 	bool hasStringAbbr(const char* s1, const char* s2);
 	void SendMultilineMessage(WorldSession *m_session, const char *str);
+
 	bool ExecuteCommandInTable(ChatCommand *table, const char* text, WorldSession *m_session);
 	bool ShowHelpForCommand(WorldSession *m_session, ChatCommand *table, const char* cmd);
 	void SendHighlightedName(WorldSession * m_session, const char* prefix, const char* full_name, string& lowercase_name, string& highlight, uint32 id);
-	void SendItemLinkToPlayer(ItemPrototype * iProto, WorldSession * pSession, bool ItemCount, Player * owner, uint64 contentGUID, uint32 language = NULL);
+	void SendItemLinkToPlayer(ItemPrototype * iProto, WorldSession * pSession, bool ItemCount, Player * owner, uint32 language = NULL);
+
 	ChatCommand* getCommandTable();
 
 	// Level 0 commands
@@ -525,8 +527,6 @@ protected:
 	bool HandleIPUnBanCommand(const char * args, WorldSession * m_session);
 	bool HandleAccountUnbanCommand(const char * args, WorldSession * m_session);
 
-	bool HandleRemoveItemSlotCommand(const char * args, WorldSession * m_session);	
-	bool HandleClearInventoryCommand(const char * args, WorldSession * m_session);
 	// Item removal
 	bool HandleRemoveItemCommand(const char * args, WorldSession * m_session);
 
@@ -574,9 +574,7 @@ protected:
 	bool HandleQuestFinisherSpawnCommand(const char * args, WorldSession * m_session);
 	bool HandleQuestStartCommand(const char * args, WorldSession * m_session);
 	bool HandleQuestStatusCommand(const char * args, WorldSession * m_session);
-	bool HandleQuestShowLogCommand(const char * args, WorldSession * m_session);
-	bool HandleQuestRequirementCommand(const char * args, WorldSession * m_session);
-	
+
 	/** AI AGENT DEBUG COMMANDS */
 	bool HandleAIAgentDebugBegin(const char * args, WorldSession * m_session);
 	bool HandleAIAgentDebugContinue(const char * args, WorldSession * m_session);
