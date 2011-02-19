@@ -583,7 +583,7 @@ void CommandTableStorage::Init()
 		{ "additemset",          'm', &ChatHandler::HandleAddItemSetCommand,       "Adds item set to inv.",                                                                                             NULL, 0, 0, 0 },
 		{ "advanceallskills",    'm', &ChatHandler::HandleAdvanceAllSkillsCommand, "Advances all skills <x> points.",                                                                                   NULL, 0, 0, 0 },
 		{ "getstanding",         'm', &ChatHandler::HandleGetStandingCommand,      "Gets standing of faction x.",                                                                                       NULL, 0, 0, 0 },
-		{ "setstanding",         'm', &ChatHandler::HandleSetStandingCommand,      "Sets stanging of faction x.",                                                                                       NULL, 0, 0, 0 },
+		{ "setstanding",         'm', &ChatHandler::HandleSetStandingCommand,      "Sets standing of faction x.",                                                                                       NULL, 0, 0, 0 },
 		{ "showitems",           'm', &ChatHandler::HandleShowItems,               "Shows items of selected Player",                                                                                    NULL, 0, 0, 0 },
 		{ "showskills",          'm', &ChatHandler::HandleShowSkills,              "Shows skills of selected Player",                                                                                   NULL, 0, 0, 0 },
 		{ "showinstances",       'z', &ChatHandler::HandleShowInstancesCommand,    "Shows persistent instances of selected Player",                                                                     NULL, 0, 0, 0 },
