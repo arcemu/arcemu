@@ -294,7 +294,7 @@ void lua_engine::startupEngine()
 		{
 			//register that.
 			m_scriptMgr->register_instance_script(i, createluainstance );
-			//Since this dll is loaded after alot of mapmgr's have already been created, we to tell all those existing mgrs to re-instantiate their instance script.
+			//Since this dll is loaded after alot of mapmgr's have already been created, we need to tell all those existing mgrs to re-instantiate their instance script.
 			MapMgr * mgr = sInstanceMgr.GetMapMgr(i);
 			if(mgr != NULL && mgr->GetScript() == NULL)
 				//make the mapmgr load the script on it's own thread.
@@ -564,14 +564,16 @@ void lua_engine::restartThread(MapMgr * map)
 	//clean up our frefs and binding maps.
 	le::unload_resources();
 	//close down the lua state, clearing up resources that were being used by the previously loaded scripts.
-	if(lua_state != NULL)
-		lua_close(lua_state);
+	lua_State * L = lua_state;
+	if(L != NULL)
+		lua_close(L);
 	//open a brand new state.
-	lua_state = lua_open();
+	L = lua_open();
+	lua_state = L;
 	//re-expose our wow objects and functions
 	le::loadState(lua_instance);
 	//now we reload the scripts
-	le::loadScripts(lua_state);
+	le::loadScripts(L);
 	//since we may have new bindings, update our contained interfaces to use the new bindings so that script changes may take effect
 
 	//since we may have new bindings, lets register them w/ ScriptMgr.

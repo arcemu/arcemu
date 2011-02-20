@@ -1189,7 +1189,7 @@ bool ScriptMgr::has_instance_script( uint32 id) const
 bool ScriptMgr::has_creature_gossip_script( uint32 entry) const
 {
 	CreatureInfo * info = CreatureNameStorage.LookupEntry(entry);
-	return (info == NULL || info->gossip_script != NULL);
+	return (info == NULL || info->gossip_script != DefaultGossipScript);
 }
 
 bool ScriptMgr::has_item_gossip_script( uint32 entry) const
@@ -1200,7 +1200,7 @@ bool ScriptMgr::has_item_gossip_script( uint32 entry) const
 
 bool ScriptMgr::has_hook( ServerHookEvents evt, void* ptr) const
 {
-	return (_hooks[evt].size() == 0 || _hooks[evt].find(ptr) == _hooks[evt].end() );
+	return (_hooks[evt].size() != 0 && _hooks[evt].find(ptr) != _hooks[evt].end() );
 }
 
 bool ScriptMgr::has_quest_script( uint32 entry) const

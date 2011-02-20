@@ -206,6 +206,7 @@ namespace lua_engine
 			BIND(GetItemInterface)
 			BINDE("Resurrect", &Player::RemoteRevive)
 			BINDE("ResurrectPlayer", &Player::RemoteRevive)
+			BIND(GetName)
 
 			//For assigning gossip menus to players, similar to objmgr.CreateMenuForPlayer
 			.property_rw("m_currentgossipmenu", &Player::CurrentGossipMenu );

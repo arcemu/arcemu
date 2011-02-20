@@ -132,10 +132,11 @@ namespace lua_engine
 	InstanceScript * createluainstance(MapMgr* pMapMgr)
 	{
 		LuaInstance * pLua = NULL;
-		//always allocate a new one.
-		lua_instance = new LUA_INSTANCE;
-		lua_state = NULL;
-		lua_instance->map = pMapMgr;
+		PLUA_INSTANCE pstackInstance = new LUA_INSTANCE;
+		pstackInstance->lu = NULL;
+		pstackInstance->map = pMapMgr;
+
+		lua_instance = pstackInstance;
 		//have it load the scripts
 		le::restartThread(pMapMgr);
 		//store it so we can keep track of it.

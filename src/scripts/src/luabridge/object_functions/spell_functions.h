@@ -30,6 +30,7 @@ public:
 	DEFINEVARMETHODS(EffectMiscValue, uint32)
 	DEFINEVARMETHODS(EffectMiscValueB, uint32)
 	DEFINEVARMETHODS(EffectTriggerSpell, uint32)
+	DEFINEVARMETHODS(EffectApplyAuraName, uint32)
 };
 
 namespace lua_engine

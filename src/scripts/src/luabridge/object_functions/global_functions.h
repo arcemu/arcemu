@@ -40,7 +40,7 @@ public:
 			lua_engine::BeginLuaFunctionCall(m_unit_gossip_binding->refs[GOSSIP_EVENT_ON_TALK]);
 			push_unit(TO_UNIT(pObject) );
 			push_int(GOSSIP_EVENT_ON_TALK);
-			push_unit(Plr);
+			push_player(Plr);
 			push_bool(AutoSend);
 			lua_engine::ExecuteLuaFunction(4);
 		}
@@ -51,7 +51,7 @@ public:
 			lua_engine::BeginLuaFunctionCall(m_item_gossip_binding->refs[GOSSIP_EVENT_ON_TALK]);
 			push_item( TO_ITEM(pObject) );
 			push_int(GOSSIP_EVENT_ON_TALK);
-			push_unit(Plr);
+			push_player(Plr);
 			push_bool(AutoSend);
 			lua_engine::ExecuteLuaFunction(4);
 		}
@@ -62,7 +62,7 @@ public:
 			lua_engine::BeginLuaFunctionCall(m_go_gossip_binding->refs[GOSSIP_EVENT_ON_TALK]);
 			push_go(TO_GAMEOBJECT(pObject));
 			push_int(GOSSIP_EVENT_ON_TALK);
-			push_unit(Plr);
+			push_player(Plr);
 			push_bool(AutoSend);
 			lua_engine::ExecuteLuaFunction(4);
 		}
@@ -79,7 +79,7 @@ public:
 			lua_engine::BeginLuaFunctionCall(m_unit_gossip_binding->refs[GOSSIP_EVENT_ON_SELECT_OPTION]);
 			push_unit(TO_UNIT(pObject));
 			push_int(GOSSIP_EVENT_ON_SELECT_OPTION);
-			push_unit(Plr);
+			push_player(Plr);
 			push_int(Id);
 			push_int(IntId);
 			push_str(EnteredCode);
@@ -91,7 +91,7 @@ public:
 			lua_engine::BeginLuaFunctionCall(m_item_gossip_binding->refs[GOSSIP_EVENT_ON_SELECT_OPTION]);
 			push_item(TO_ITEM(pObject));
 			push_int(GOSSIP_EVENT_ON_SELECT_OPTION);
-			push_unit(Plr);
+			push_player(Plr);
 			push_int(Id);
 			push_int(IntId);
 			push_str(EnteredCode);
@@ -103,7 +103,7 @@ public:
 			lua_engine::BeginLuaFunctionCall(m_go_gossip_binding->refs[GOSSIP_EVENT_ON_SELECT_OPTION]);
 			push_go(TO_GAMEOBJECT(pObject));
 			push_int(GOSSIP_EVENT_ON_SELECT_OPTION);
-			push_unit(Plr);
+			push_player(Plr);
 			push_int(Id);
 			push_int(IntId);
 			push_str(EnteredCode);
@@ -121,7 +121,7 @@ public:
 			lua_engine::BeginLuaFunctionCall(m_unit_gossip_binding->refs[GOSSIP_EVENT_ON_END]);
 			push_unit(TO_UNIT(pObject));
 			push_int(GOSSIP_EVENT_ON_END);
-			push_unit(Plr);
+			push_player(Plr);
 			lua_engine::ExecuteLuaFunction(3);
 		}
 		else if(pObject->GetTypeId() == TYPEID_ITEM)
@@ -130,7 +130,7 @@ public:
 			lua_engine::BeginLuaFunctionCall(m_item_gossip_binding->refs[GOSSIP_EVENT_ON_END]);
 			push_item(TO_ITEM(pObject));
 			push_int(GOSSIP_EVENT_ON_END);
-			push_unit(Plr);
+			push_player(Plr);
 			lua_engine::ExecuteLuaFunction(3);
 		}
 		else if(pObject->GetTypeId() == TYPEID_GAMEOBJECT)
@@ -139,7 +139,7 @@ public:
 			lua_engine::BeginLuaFunctionCall(m_go_gossip_binding->refs[GOSSIP_EVENT_ON_END]);
 			push_go(TO_GAMEOBJECT(pObject));
 			push_int(GOSSIP_EVENT_ON_END);
-			push_unit(Plr);
+			push_player(Plr);
 			lua_engine::ExecuteLuaFunction(3);
 		}
 		RELEASE_LOCK

@@ -31,7 +31,7 @@ class LuaQuest : public QuestScript
 
 			NULL_BINDING_CHECK
 			lua_engine::BeginLuaFunctionCall(m_binding->refs[QUEST_EVENT_ON_ACCEPT]);
-			push_unit(mTarget);
+			push_player(mTarget);
 			push_int(qLogEntry->GetQuest()->id);
 			lua_engine::ExecuteLuaFunction(2);
 			RELEASE_LOCK
@@ -42,7 +42,7 @@ class LuaQuest : public QuestScript
 
 			NULL_BINDING_CHECK
 				lua_engine::BeginLuaFunctionCall(m_binding->refs[QUEST_EVENT_ON_COMPLETE]);
-			push_unit(mTarget);
+			push_player(mTarget);
 			push_int(qLogEntry->GetQuest()->id);
 			lua_engine::ExecuteLuaFunction(2);
 			RELEASE_LOCK
@@ -50,17 +50,17 @@ class LuaQuest : public QuestScript
 		void OnQuestCancel(Player* mTarget)
 		{
 			NULL_BINDING_CHECK
-				lua_engine::BeginLuaFunctionCall(m_binding->refs[QUEST_EVENT_ON_CANCEL]);
-			push_unit(mTarget);
+			lua_engine::BeginLuaFunctionCall(m_binding->refs[QUEST_EVENT_ON_CANCEL]);
+			push_player(mTarget);
 			lua_engine::ExecuteLuaFunction(1);
 			RELEASE_LOCK
 		}
 		void OnGameObjectActivate(uint32 entry, Player* mTarget, QuestLogEntry *qLogEntry)
 		{
 			NULL_BINDING_CHECK
-				lua_engine::BeginLuaFunctionCall(m_binding->refs[QUEST_EVENT_GAMEOBJECT_ACTIVATE]);
+			lua_engine::BeginLuaFunctionCall(m_binding->refs[QUEST_EVENT_GAMEOBJECT_ACTIVATE]);
 			push_int(entry);
-			push_unit(mTarget);
+			push_player(mTarget);
 			push_int(qLogEntry->GetQuest()->id);
 			lua_engine::ExecuteLuaFunction(3);
 			RELEASE_LOCK
@@ -68,9 +68,9 @@ class LuaQuest : public QuestScript
 		void OnCreatureKill(uint32 entry, Player* mTarget, QuestLogEntry *qLogEntry)
 		{
 			NULL_BINDING_CHECK
-				lua_engine::BeginLuaFunctionCall(m_binding->refs[QUEST_EVENT_ON_CREATURE_KILL]);
+			lua_engine::BeginLuaFunctionCall(m_binding->refs[QUEST_EVENT_ON_CREATURE_KILL]);
 			push_int(entry);
-			push_unit(mTarget);
+			push_player(mTarget);
 			push_int(qLogEntry->GetQuest()->id);
 			lua_engine::ExecuteLuaFunction(3);
 			RELEASE_LOCK
@@ -78,9 +78,9 @@ class LuaQuest : public QuestScript
 		void OnExploreArea(uint32 areaId, Player* mTarget, QuestLogEntry *qLogEntry)
 		{
 			NULL_BINDING_CHECK
-				lua_engine::BeginLuaFunctionCall(m_binding->refs[QUEST_EVENT_ON_EXPLORE_AREA]);
+			lua_engine::BeginLuaFunctionCall(m_binding->refs[QUEST_EVENT_ON_EXPLORE_AREA]);
 			push_int(areaId);
-			push_unit(mTarget);
+			push_player(mTarget);
 			push_int(qLogEntry->GetQuest()->id);
 			lua_engine::ExecuteLuaFunction(3);
 			RELEASE_LOCK
@@ -91,7 +91,7 @@ class LuaQuest : public QuestScript
 			lua_engine::BeginLuaFunctionCall(m_binding->refs[QUEST_EVENT_ON_PLAYER_ITEMPICKUP]);
 			push_int(itemId);
 			push_int(totalCount);
-			push_unit(mTarget);
+			push_player(mTarget);
 			push_int(qLogEntry->GetQuest()->id);
 			lua_engine::ExecuteLuaFunction(4);
 			RELEASE_LOCK

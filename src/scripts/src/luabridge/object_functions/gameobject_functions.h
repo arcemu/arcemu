@@ -67,7 +67,7 @@ public:
 		lua_engine::BeginLuaFunctionCall(m_binding->refs[GAMEOBJECT_EVENT_ON_LOOT_TAKEN]);
 		push_go(_gameobject);
 		push_int(GAMEOBJECT_EVENT_ON_LOOT_TAKEN);
-		push_unit(pLooter);
+		push_player(pLooter);
 		push_int(pItemInfo->ItemId);
 		lua_engine::ExecuteLuaFunction(4);
 		RELEASE_LOCK
@@ -79,7 +79,7 @@ public:
 		lua_engine::BeginLuaFunctionCall(m_binding->refs[GAMEOBJECT_EVENT_ON_USE]);
 		push_go(_gameobject);
 		push_int(GAMEOBJECT_EVENT_ON_USE);
-		push_unit(pPlayer);
+		push_player(pPlayer);
 		lua_engine::ExecuteLuaFunction(3);
 		RELEASE_LOCK
 	}
@@ -134,25 +134,8 @@ namespace lua_engine
 			PObjectBinding pBinding = (itr != lua_instance->m_goBinding.end() ) ? itr->second : NULL;
 			if( pBinding != NULL) 
 			{
-				li::GOInterfaceMap::iterator itr = lua_instance->m_goInterfaceMap.find(id), itend = lua_instance->m_goInterfaceMap.upper_bound(id);
-				for(;itr != itend; ++itr)
-				{
-					if(itr->second == NULL)
-					{
-						script = itr->second = new LuaGameObject(src);
-						break;
-					}
-					if(itr->second != NULL && itr->second->getGO() != NULL && itr->second->getGO()->GetLowGUID() == low_guid)
-					{
-						script = itr->second;
-						break;
-					}
-				}
-				if(script == NULL)
-				{
-					script = new LuaGameObject(src);
-					lua_instance->m_goInterfaceMap.insert(make_pair(id,script));
-				}
+				script = new LuaGameObject(src);
+				lua_instance->m_goInterfaceMap.insert( make_pair(id,script));
 				script->m_binding = pBinding;
 			}
 		}

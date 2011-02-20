@@ -256,7 +256,7 @@ public:
 		lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_LOOT_TAKEN]);
 		push_creature(_unit);
 		push_int(CREATURE_EVENT_ON_LOOT_TAKEN);
-		push_unit(pPlayer);
+		push_player(pPlayer);
 		push_int(pItemPrototype->ItemId);
 		lua_engine::ExecuteLuaFunction(4);
 		RELEASE_LOCK
@@ -279,7 +279,7 @@ public:
 		lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_EMOTE]);
 		push_creature(_unit);
 		push_int(CREATURE_EVENT_ON_EMOTE);
-		push_unit(pPlayer);
+		push_player(pPlayer);
 		push_int( (int)Emote);
 		lua_engine::ExecuteLuaFunction(4);
 
