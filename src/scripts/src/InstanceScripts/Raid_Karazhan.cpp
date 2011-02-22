@@ -2812,9 +2812,6 @@ public:
 			SetLinkedCreature( infernalDummy );
 			infernalDummy->SetLinkedCreature( this );
 		}
-
-		// Door initialization
-		MDoor = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-11018.5f, -1967.92f, 276.652f, 185134);
 	}
 
 	void OnCombatStart(Unit*  mTarget)
@@ -2834,6 +2831,7 @@ public:
 		_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "Madness has brought you here to me. I shall be your undoing.");
 		RegisterAIUpdateEvent(1000);
 
+		GameObject* MDoor = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-11018.5f, -1967.92f, 276.652f, 185134);
 		if(MDoor != NULL)
 		{
 			MDoor->SetState(1);
@@ -2866,6 +2864,7 @@ public:
 		if(GetLinkedCreature() != NULL)
 			GetLinkedCreature()->GetUnit()->Despawn(10000, 0);
 
+		GameObject* MDoor = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-11018.5f, -1967.92f, 276.652f, 185134);
 		// Open door
 		if(MDoor != NULL)
 			MDoor->SetState(0);
@@ -2891,6 +2890,7 @@ public:
 		if(MAxes)
 			MAxes->Despawn(1000, 0);
 
+		GameObject* MDoor = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-11018.5f, -1967.92f, 276.652f, 185134);
 		// Open door
 		if(MDoor)
 			MDoor->SetState(0);
@@ -3222,7 +3222,6 @@ protected:
 	uint32 m_spawn_infernal;
 	uint64 Enfeeble_Targets[5];
 	uint64 Enfeeble_Health[5];
-	GameObject* MDoor;
 };
 
 class NetherInfernalAI : public MoonScriptBossAI
@@ -3396,8 +3395,6 @@ public:
 		spells[2].info = dbcSpell.LookupEntry(NETHERBURN);
 		spells[2].targettype = TARGET_SELF;
 		spells[2].instant = true;
-
-		NDoor = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-11186.2f, -1665.14f, 281.398f, 185521);
 	}
 
 	void OnCombatStart(Unit* mTarget)
@@ -3411,6 +3408,7 @@ public:
 
 		RegisterAIUpdateEvent(1000);
 
+		GameObject* NDoor = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-11186.2f, -1665.14f, 281.398f, 185521);
 		if(NDoor)
 		{
 			NDoor->SetState(1);
@@ -3426,6 +3424,7 @@ public:
 		_unit->GetAIInterface()->SetAIState(STATE_IDLE);
 		RemoveAIUpdateEvent();
 
+		GameObject* NDoor = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-11186.2f, -1665.14f, 281.398f, 185521);
 		if(NDoor)
 			NDoor->SetState(0);
 	}
@@ -3434,6 +3433,7 @@ public:
 	{
 		RemoveAIUpdateEvent();
 
+		GameObject* NDoor = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-11186.2f, -1665.14f, 281.398f, 185521);
 		if(NDoor)
 			NDoor->SetState(0);
 	}
@@ -3516,7 +3516,6 @@ public:
 protected:
 	int nrspells;
 	uint32 VoidTimer;
-	GameObject* NDoor;
 };
 
 class VoidZoneAI : public CreatureAIScript

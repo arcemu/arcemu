@@ -113,10 +113,6 @@ public:
 		_unit->SetUInt64Value(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
 		_unit->GetAIInterface()->SetAllowedToEnterCombat(false);
 		RegisterAIUpdateEvent(1000);
-		// We set Gate (if exists) as opened
-		GameObject*  Gate = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-72.5866f, 1.559f, 0.0f, 183847);
-		if (Gate)
-			Gate->SetState(0);
 	}
 
 	void AIUpdate()

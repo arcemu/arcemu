@@ -613,10 +613,6 @@ GrandWidowFaerlinaAI::GrandWidowFaerlinaAI( Creature* pCreature ) : MoonScriptBo
 	mFrenzy->AddEmote( "Kneel before me, worm!", Text_Yell, 8796 );
 	mFrenzy->AddEmote( "Run while you still can!", Text_Yell, 8797 );
 	mPoisonVolleyBoltTimer = mFrenzyTimer = INVALIDATE_TIMER;
-
-	GameObject* WebGate = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords( 3318.65f, -3695.85f, 259.094f, 181235 );
-	if ( WebGate != NULL )
-		WebGate->SetState( 0 );
 };
 
 void GrandWidowFaerlinaAI::OnCombatStart( Unit* pTarget )
@@ -1262,17 +1258,6 @@ NothThePlaguebringerAI::NothThePlaguebringerAI( Creature* pCreature ) : MoonScri
 	mBlinkTimer = mSkeletonTimer = mPhaseSwitchTimer = INVALIDATE_TIMER;
 	mPhaseCounter = 0;
 
-	if ( _unit->GetMapMgr() != NULL && _unit->GetMapMgr()->GetInterface() != NULL )
-	{
-		GameObject* Gate = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords( 2740.689209f, -3489.697266f, 262.117767f, 181200 );
-		if ( Gate != NULL )
-			Gate->SetState( 0 );
-
-		Gate = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords( 2683.670654f, -3556.429688f, 261.823334f, 181201 );
-		if ( Gate != NULL )
-			Gate->SetState( 0 );
-	};
-	
 	AddEmote( Event_OnCombatStart, "Glory to the master!", Text_Yell, 8845 );
 	AddEmote( Event_OnCombatStart, "Your life is forfeit.", Text_Yell, 8846 );
 	AddEmote( Event_OnCombatStart, "Die, trespasser!", Text_Yell, 8847 );
@@ -1697,17 +1682,6 @@ HeiganTheUncleanAI::HeiganTheUncleanAI( Creature* pCreature ) : MoonScriptBossAI
 	mPhaseSwitchTimer = mEruptionTimer = INVALIDATE_TIMER;
 	mEruptionPhase = 3;
 	mClockWiseEruption = true;
-
-	if ( _unit->GetMapMgr() != NULL && _unit->GetMapMgr()->GetInterface() != NULL )
-	{
-		GameObject* Gate = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords( 2790.709961f, -3708.669922f, 276.584991f, 181202 );
-		if ( Gate != NULL )
-			Gate->SetState( 0 );
-
-		Gate = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords( 2771.718506f, -3739.965820f, 273.616211f, 181203 );
-		if ( Gate != NULL )
-			Gate->SetState( 0 );
-	};
 };
 
 uint32 HeiganTheUncleanAI::CalculateTriggerArea(float pPosX, float pPosY )

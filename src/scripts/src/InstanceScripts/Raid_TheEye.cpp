@@ -3053,14 +3053,6 @@ public:
 
 			SpawnCreature(Advisors[i].addition, Advisors[i].x, Advisors[i].y, Advisors[i].z, Advisors[i].o);
 		}
-		for (int i = 0; i < 2; ++i)
-		{
-			GameObject* pGameobject = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(Gates[i].x, Gates[i].y, Gates[i].z, Gates[i].addition);
-			if (pGameobject != NULL && pGameobject->GetState() == 1)
-			{
-				pGameobject->SetState(0);
-			}
-		}
 	}
 
     void OnCombatStart(Unit*  mTarget)
