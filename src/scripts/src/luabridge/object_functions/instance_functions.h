@@ -8,8 +8,9 @@ public:
 	{}
 	~LuaInstance() 
 	{
-		if(lua_instance != NULL)
-			le::shutdownThread(GetInstance() );
+		PLUA_INSTANCE ref = lua_instance;
+		assert(ref != NULL && ref->lu != NULL);
+		le::shutdownThread(GetInstance() );
 	}
 
 	// Player
@@ -145,9 +146,9 @@ namespace lua_engine
 		le::activestates_lock.Release();
 
 		//locate this instance's binding.
-		li::ObjectBindingMap::iterator itr = lua_instance->m_instanceBinding.find( pMapMgr->GetMapId() );
+		li::ObjectBindingMap::iterator itr = pstackInstance->m_instanceBinding.find( pMapMgr->GetMapId() );
 		PObjectBinding bind = NULL;
-		if(itr != lua_instance->m_instanceBinding.end() )
+		if(itr != pstackInstance->m_instanceBinding.end() )
 			bind = itr->second;
 		pLua = new LuaInstance(pMapMgr);
 		pLua->m_binding = bind;

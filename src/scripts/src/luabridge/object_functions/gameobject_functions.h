@@ -94,27 +94,28 @@ public:
 	}
 	void Destroy ()
 	{
+		PLUA_INSTANCE ref = lua_instance;
 		{
 			li::GOInterfaceMap::iterator it;
-			li::GOInterfaceMap::iterator itr = lua_instance->m_goInterfaceMap.find(_gameobject->GetEntry() );
-			li::GOInterfaceMap::iterator itend = lua_instance->m_goInterfaceMap.upper_bound(_gameobject->GetEntry() );
+			li::GOInterfaceMap::iterator itr = ref->m_goInterfaceMap.find(_gameobject->GetEntry() );
+			li::GOInterfaceMap::iterator itend = ref->m_goInterfaceMap.upper_bound(_gameobject->GetEntry() );
 			while(itr != itend)
 			{
 				it = itr++;
 				if(it->second != NULL && it->second == this)
-					lua_instance->m_goInterfaceMap.erase(it);
+					ref->m_goInterfaceMap.erase(it);
 			}
 		}
 		//clean up any refs being used by this go.
 		{
-			li::ObjectFRefMap::iterator itr = lua_instance->m_goFRefs.find(_gameobject->GetLowGUID() );
-			li::ObjectFRefMap::iterator itend = lua_instance->m_goFRefs.upper_bound(_gameobject->GetLowGUID() );
+			li::ObjectFRefMap::iterator itr = ref->m_goFRefs.find(_gameobject->GetLowGUID() );
+			li::ObjectFRefMap::iterator itend = ref->m_goFRefs.upper_bound(_gameobject->GetLowGUID() );
 			li::ObjectFRefMap::iterator it;
 			while(itr != itend)
 			{
 				it = itr++;
-				cleanup_varparam(it->second,lua_state);
-				lua_instance->m_goFRefs.erase(it);
+				cleanup_varparam(it->second,ref->lu);
+				ref->m_goFRefs.erase(it);
 			}
 		}
 		delete this;
@@ -126,16 +127,17 @@ namespace lua_engine
 	GameObjectAIScript * createluagameobject(GameObject * src)
 	{
 		LuaGameObject * script = NULL;
+		PLUA_INSTANCE ref = lua_instance;
 		if(src != NULL) 
 		{
 			uint32 id = src->GetInfo()->ID;
 			uint32 low_guid = src->GetLowGUID();
-			li::ObjectBindingMap::iterator itr = lua_instance->m_goBinding.find(id);
-			PObjectBinding pBinding = (itr != lua_instance->m_goBinding.end() ) ? itr->second : NULL;
+			li::ObjectBindingMap::iterator itr = ref->m_goBinding.find(id);
+			PObjectBinding pBinding = (itr != ref->m_goBinding.end() ) ? itr->second : NULL;
 			if( pBinding != NULL) 
 			{
 				script = new LuaGameObject(src);
-				lua_instance->m_goInterfaceMap.insert( make_pair(id,script));
+				ref->m_goInterfaceMap.insert( make_pair(id,script));
 				script->m_binding = pBinding;
 			}
 		}

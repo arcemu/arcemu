@@ -12,10 +12,11 @@ public:
 	//************************************
    void CallScriptEngineFunction(variadic_parameter * parameters)
    {
+	   PLUA_INSTANCE li_ = lua_instance;
 	   //locate the reference and clean up
 	   LUA_INSTANCE::ObjectFRefMap::iterator
-		   itr = lua_instance->m_goFRefs.find( GetLowGUID() ),
-		   itend = lua_instance->m_goFRefs.upper_bound( GetLowGUID() );
+		   itr = li_->m_goFRefs.find( GetLowGUID() ),
+		   itend = li_->m_goFRefs.upper_bound( GetLowGUID() );
 	   for(; itr != itend; ++itr)
 		   if(itr->second == parameters)
 			   break;
@@ -23,23 +24,23 @@ public:
 	   //Do nothing if we don't have a reference to this event's parameters.
 	   if(itr != itend)
 	   {
-		   ptrdiff_t base = lua_gettop(lua_state)+2;
+		   ptrdiff_t base = lua_gettop(li_->lu)+2;
 		   //push the function and it's parameters
-		   luabridge::tdstack<variadic_parameter*>::push(lua_state, parameters);
+		   luabridge::tdstack<variadic_parameter*>::push(li_->lu, parameters);
 		   //push the self object
-		   luabridge::tdstack<lua_go*>::push(lua_state, this);
+		   luabridge::tdstack<lua_go*>::push(li_->lu, this);
 		   //move the self object to this index right after the pushed function
-		   if(lua_gettop(lua_state) > base)
-			   lua_insert(lua_state, base);
+		   if(lua_gettop(li_->lu) > base)
+			   lua_insert(li_->lu, base);
 		   //call the lua function.
-		   if(lua_pcall(lua_state, (parameters->count), 0, 0) )
-			   report(lua_state);
+		   if(lua_pcall(li_->lu, (parameters->count), 0, 0) )
+			   report(li_->lu);
 		   //erase it since we no longer need to keep track of it
-		   lua_instance->m_goFRefs.erase(itr);
+		   li_->m_goFRefs.erase(itr);
 
 		   //release resources
 		   if(parameters != NULL)
-			   cleanup_varparam(parameters, lua_state);
+			   cleanup_varparam(parameters, li_->lu);
 	   }
    }
 
@@ -84,16 +85,17 @@ public:
    //************************************
    void RemoveScriptEngineEvents()
    {
+	   PLUA_INSTANCE li_ = lua_instance;
 	   sEventMgr.RemoveEvents(this, EVENT_LUA_GAMEOBJ_EVENTS);
 	   //Remove any stored references
 	   LUA_INSTANCE::ObjectFRefMap::iterator 
-		   itr = lua_instance->m_goFRefs.find(this->GetLowGUID() ) , 
-		   itend = lua_instance->m_goFRefs.upper_bound(this->GetLowGUID() );
+		   itr = li_->m_goFRefs.find(this->GetLowGUID() ) , 
+		   itend = li_->m_goFRefs.upper_bound(this->GetLowGUID() );
 	   //release those resources first.
 	   for(; itr != itend; ++itr)
-		   cleanup_varparam( itr->second, lua_state);
+		   cleanup_varparam( itr->second, li_->lu);
 
-	   lua_instance->m_goFRefs.erase( this->GetLowGUID() );
+	   li_->m_goFRefs.erase( this->GetLowGUID() );
    }
 
    const char * GetName()

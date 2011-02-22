@@ -406,9 +406,9 @@ void lua_engine::startupEngine()
 	Log.Success("LuaEngine", "All lua states have successfully shutdown.");
 }*/
 
-void lua_engine::unload_resources()
+void lua_engine::unload_resources( PLUA_INSTANCE _li)
 {
-	PLUA_INSTANCE lu = lua_instance;
+	PLUA_INSTANCE lu = _li;
 	DestroyAllLuaEvents(lu);
 
 	//Clean up the bindings, no need to unref them because we are going to close down the lua state anyway.
@@ -441,44 +441,44 @@ void lua_engine::unload_resources()
 	lu->m_itemGossipBinding.clear();
 
 	for(li::ObjectFRefMap::iterator it = lu->m_creatureFRefs.begin(); it != lu->m_creatureFRefs.end(); ++it)
-		cleanup_varparam(it->second, lua_state);
+		cleanup_varparam(it->second, lu->lu);
 	lu->m_creatureFRefs.clear();
 
 	for(li::ObjectFRefMap::iterator it = lu->m_goFRefs.begin(); it != lu->m_goFRefs.end(); ++it)
-		cleanup_varparam(it->second, lua_state);
+		cleanup_varparam(it->second, lu->lu);
 	lu->m_goFRefs.clear();
 
 	for(li::ObjectFRefMap::iterator it = lu->m_questFRefs.begin(); it != lu->m_questFRefs.end(); ++it)
-		cleanup_varparam(it->second, lua_state);
+		cleanup_varparam(it->second, lu->lu);
 	lu->m_questFRefs.clear();
 
 	for(li::ObjectFRefMap::iterator it = lu->m_instanceFRefs.begin(); it != lu->m_instanceFRefs.end(); ++it)
-		cleanup_varparam(it->second, lua_state);
+		cleanup_varparam(it->second, lu->lu);
 	lu->m_instanceFRefs.clear();
 
 	for(li::ObjectFRefMap::iterator it = lu->m_unitGossipFRefs.begin(); it != lu->m_unitGossipFRefs.end(); ++it)
-		cleanup_varparam(it->second, lua_state);
+		cleanup_varparam(it->second, lu->lu);
 	lu->m_unitGossipFRefs.clear();
 
 	for(li::ObjectFRefMap::iterator it = lu->m_itemGossipFRefs.begin(); it != lu->m_itemGossipFRefs.end(); ++it)
-		cleanup_varparam(it->second, lua_state);
+		cleanup_varparam(it->second, lu->lu);
 	lu->m_itemGossipFRefs.clear();
 
 	for(li::ObjectFRefMap::iterator it = lu->m_goGossipFRefs.begin(); it != lu->m_goGossipFRefs.end(); ++it)
-		cleanup_varparam(it->second, lua_state);
+		cleanup_varparam(it->second, lu->lu);
 	lu->m_goGossipFRefs.clear();
 
 	lu->m_hooks.clear();
 
 	for(li::References::iterator it = lu->m_globalFRefs.begin(); it != lu->m_globalFRefs.end(); ++it)
-		cleanup_varparam( (*it), lua_state);
+		cleanup_varparam( (*it), lu->lu);
 	lu->m_globalFRefs.clear();
 
 	lu->coroutines_.clear();
 
 	for(li::SpellFRefMap::iterator it = lu->m_dummySpells.begin(); it != lu->m_dummySpells.end(); ++it)
 	{
-		cleanup_varparam( it->second->params, lua_state);
+		cleanup_varparam( it->second->params, lu->lu);
 		delete it->second;
 	}
 	lu->m_dummySpells.clear();
@@ -491,6 +491,9 @@ void lua_engine::restartEngine()
 	for(le::LuaScriptData::iterator itr = le::compiled_scripts.begin(); itr != le::compiled_scripts.end(); ++itr)
 		delete itr->second;
 	le::compiled_scripts.clear();
+
+	assert(LUA_COMPILER->lu != NULL);
+	lua_close(LUA_COMPILER->lu);
 	LUA_COMPILER->lu = lua_open();
 	lua_instance = LUA_COMPILER;
 	loadState(LUA_COMPILER);
@@ -562,30 +565,29 @@ void lua_engine::restartThread(MapMgr * map)
 	//first grab the script lock.
 	LuaGuard guard(le::scriptLock);
 	//clean up our frefs and binding maps.
-	le::unload_resources();
+	PLUA_INSTANCE _li = lua_instance;
+	le::unload_resources(_li);
 	//close down the lua state, clearing up resources that were being used by the previously loaded scripts.
-	lua_State * L = lua_state;
-	if(L != NULL)
-		lua_close(L);
+	if( _li->lu != NULL)
+		lua_close( _li->lu);
 	//open a brand new state.
-	L = lua_open();
-	lua_state = L;
+	_li->lu = lua_open();
 	//re-expose our wow objects and functions
-	le::loadState(lua_instance);
+	le::loadState(_li);
 	//now we reload the scripts
-	le::loadScripts(L);
+	le::loadScripts( _li->lu);
 	//since we may have new bindings, update our contained interfaces to use the new bindings so that script changes may take effect
 
 	//since we may have new bindings, lets register them w/ ScriptMgr.
-	for(li::ObjectBindingMap::iterator itr = lua_instance->m_unitBinding.begin(); itr != lua_instance->m_unitBinding.end(); ++itr)
+	for(li::ObjectBindingMap::iterator itr = _li->m_unitBinding.begin(); itr != _li->m_unitBinding.end(); ++itr)
 		if(!m_scriptMgr->has_creature_script(itr->first) )
 			m_scriptMgr->register_creature_script( itr->first, createluacreature );
 
-	for(li::ObjectBindingMap::iterator itr = lua_instance->m_goBinding.begin(); itr != lua_instance->m_goBinding.end(); ++itr)
+	for(li::ObjectBindingMap::iterator itr = _li->m_goBinding.begin(); itr != _li->m_goBinding.end(); ++itr)
 		if(!m_scriptMgr->has_gameobject_script(itr->first) )
 			m_scriptMgr->register_gameobject_script( itr->first, createluagameobject );
 
-	for(li::ObjectBindingMap::iterator itr = lua_instance->m_questBinding.begin(); itr != lua_instance->m_questBinding.end(); ++itr)
+	for(li::ObjectBindingMap::iterator itr = _li->m_questBinding.begin(); itr != _li->m_questBinding.end(); ++itr)
 	{
 		if(!m_scriptMgr->has_quest_script(itr->first) )
 		{
@@ -594,7 +596,7 @@ void lua_engine::restartThread(MapMgr * map)
 				m_scriptMgr->register_quest_script( itr->first, qs );
 		}
 	}
-	for(li::ObjectBindingMap::iterator itr = lua_instance->m_unitGossipBinding.begin(); itr != lua_instance->m_unitGossipBinding.end(); ++itr)
+	for(li::ObjectBindingMap::iterator itr = _li->m_unitGossipBinding.begin(); itr != _li->m_unitGossipBinding.end(); ++itr)
 	{
 		if(!m_scriptMgr->has_creature_gossip_script(itr->first) )
 		{
@@ -604,7 +606,7 @@ void lua_engine::restartThread(MapMgr * map)
 		}
 	}
 
-	for(li::ObjectBindingMap::iterator itr = lua_instance->m_itemGossipBinding.begin(); itr != lua_instance->m_itemGossipBinding.end(); ++itr)
+	for(li::ObjectBindingMap::iterator itr = _li->m_itemGossipBinding.begin(); itr != _li->m_itemGossipBinding.end(); ++itr)
 	{
 		if(!m_scriptMgr->has_item_gossip_script(itr->first) )
 		{
@@ -614,7 +616,7 @@ void lua_engine::restartThread(MapMgr * map)
 		}
 	}
 
-	for(li::ObjectBindingMap::iterator itr = lua_instance->m_goGossipBinding.begin(); itr != lua_instance->m_goGossipBinding.end(); ++itr)
+	for(li::ObjectBindingMap::iterator itr = _li->m_goGossipBinding.begin(); itr != _li->m_goGossipBinding.end(); ++itr)
 	{
 		if(!m_scriptMgr->has_gameobject_script(itr->first) )
 		{
@@ -623,75 +625,75 @@ void lua_engine::restartThread(MapMgr * map)
 				m_scriptMgr->register_go_gossip_script( itr->first, gs );
 		}
 	}
-	for(li::SpellFRefMap::iterator itr = lua_instance->m_dummySpells.begin(); itr != lua_instance->m_dummySpells.end(); ++itr)
+	for(li::SpellFRefMap::iterator itr = _li->m_dummySpells.begin(); itr != _li->m_dummySpells.end(); ++itr)
 	{
 		if(!m_scriptMgr->has_dummy_spell_script(itr->first) )
 			m_scriptMgr->register_dummy_spell(itr->first, &LuaOnDummySpell);
 	}
 
 	//since we may have new bindings, update our contained interfaces to use the new bindings so that script changes may take effect
-	if(lua_instance->m_creatureInterfaceMap.size() )
+	if(_li->m_creatureInterfaceMap.size() )
 	{
-		for(li::ObjectBindingMap::iterator itr = lua_instance->m_unitBinding.begin(); itr != lua_instance->m_unitBinding.end(); ++itr)
+		for(li::ObjectBindingMap::iterator itr = _li->m_unitBinding.begin(); itr != _li->m_unitBinding.end(); ++itr)
 		{
-			li::CreatureInterfaceMap::iterator it = lua_instance->m_creatureInterfaceMap.find(itr->first),
-				itend = lua_instance->m_creatureInterfaceMap.upper_bound(itr->first);
+			li::CreatureInterfaceMap::iterator it = _li->m_creatureInterfaceMap.find(itr->first),
+				itend = _li->m_creatureInterfaceMap.upper_bound(itr->first);
 			//assign the new binding.
 			for(; it != itend; ++it)
 				it->second->m_binding = itr->second;
 		}
 	}
 
-	if(lua_instance->m_goInterfaceMap.size() )
+	if(_li->m_goInterfaceMap.size() )
 	{
-		for(li::ObjectBindingMap::iterator itr = lua_instance->m_goBinding.begin(); itr != lua_instance->m_goBinding.end(); ++itr)
+		for(li::ObjectBindingMap::iterator itr = _li->m_goBinding.begin(); itr != _li->m_goBinding.end(); ++itr)
 		{
-			li::GOInterfaceMap::iterator it = lua_instance->m_goInterfaceMap.find(itr->first),
-				itend = lua_instance->m_goInterfaceMap.upper_bound(itr->first);
+			li::GOInterfaceMap::iterator it = _li->m_goInterfaceMap.find(itr->first),
+				itend = _li->m_goInterfaceMap.upper_bound(itr->first);
 			for(; it != itend; ++it)
 				it->second->m_binding = itr->second;
 		}
 	}
 
-	if(lua_instance->m_questInterfaceMap.size() )
+	if(_li->m_questInterfaceMap.size() )
 	{
-		for(li::ObjectBindingMap::iterator itr = lua_instance->m_questBinding.begin(); itr != lua_instance->m_questBinding.end(); ++itr)
+		for(li::ObjectBindingMap::iterator itr = _li->m_questBinding.begin(); itr != _li->m_questBinding.end(); ++itr)
 		{
-			li::QuestInterfaceMap::iterator it = lua_instance->m_questInterfaceMap.find(itr->first),
-				itend = lua_instance->m_questInterfaceMap.upper_bound(itr->first);
+			li::QuestInterfaceMap::iterator it = _li->m_questInterfaceMap.find(itr->first),
+				itend = _li->m_questInterfaceMap.upper_bound(itr->first);
 			for(; it != itend; ++it)
 				it->second->m_binding = itr->second;
 		}
 	}
 
-	if(lua_instance->m_unit_gossipInterfaceMap.size() )
+	if(_li->m_unit_gossipInterfaceMap.size() )
 	{
-		for(li::ObjectBindingMap::iterator itr = lua_instance->m_unitGossipBinding.begin(); itr != lua_instance->m_unitGossipBinding.end(); ++itr)
+		for(li::ObjectBindingMap::iterator itr = _li->m_unitGossipBinding.begin(); itr != _li->m_unitGossipBinding.end(); ++itr)
 		{
-			li::GossipInterfaceMap::iterator it = lua_instance->m_unit_gossipInterfaceMap.find(itr->first),
-				itend = lua_instance->m_unit_gossipInterfaceMap.end();
+			li::GossipInterfaceMap::iterator it = _li->m_unit_gossipInterfaceMap.find(itr->first),
+				itend = _li->m_unit_gossipInterfaceMap.end();
 			if(it != itend)
 				it->second->m_unit_gossip_binding = itr->second;
 		}
 	}
 
-	if(lua_instance->m_go_gossipInterfaceMap.size() )
+	if(_li->m_go_gossipInterfaceMap.size() )
 	{
-		for(li::ObjectBindingMap::iterator itr = lua_instance->m_goGossipBinding.begin(); itr != lua_instance->m_goGossipBinding.end(); ++itr)
+		for(li::ObjectBindingMap::iterator itr = _li->m_goGossipBinding.begin(); itr != _li->m_goGossipBinding.end(); ++itr)
 		{
-			li::GossipInterfaceMap::iterator it = lua_instance->m_go_gossipInterfaceMap.find(itr->first),
-				itend = lua_instance->m_go_gossipInterfaceMap.end();
+			li::GossipInterfaceMap::iterator it = _li->m_go_gossipInterfaceMap.find(itr->first),
+				itend = _li->m_go_gossipInterfaceMap.end();
 			if(it != itend)
 				it->second->m_go_gossip_binding = itr->second;
 		}
 	}
 
-	if(lua_instance->m_item_gossipInterfaceMap.size() )
+	if(_li->m_item_gossipInterfaceMap.size() )
 	{
-		for(li::ObjectBindingMap::iterator itr = lua_instance->m_itemGossipBinding.begin(); itr != lua_instance->m_itemGossipBinding.end(); ++itr)
+		for(li::ObjectBindingMap::iterator itr = _li->m_itemGossipBinding.begin(); itr != _li->m_itemGossipBinding.end(); ++itr)
 		{
-			li::GossipInterfaceMap::iterator it = lua_instance->m_item_gossipInterfaceMap.find(itr->first),
-				itend = lua_instance->m_item_gossipInterfaceMap.end();
+			li::GossipInterfaceMap::iterator it = _li->m_item_gossipInterfaceMap.find(itr->first),
+				itend = _li->m_item_gossipInterfaceMap.end();
 			if(it != itend)
 				it->second->m_item_gossip_binding = itr->second;
 		}
@@ -700,9 +702,10 @@ void lua_engine::restartThread(MapMgr * map)
 void lua_engine::shutdownThread(MapMgr* map)
 {
 	GET_LOCK;
-	unload_resources();
-	lua_close(lua_state);
-	delete lua_instance;
+	PLUA_INSTANCE ref = lua_instance;
+	unload_resources( ref);
+	lua_close( ref->lu);
+	delete ref;
 	lua_instance = NULL;
 	LuaGuard guard(le::activestates_lock);
 	le::ActiveStates::iterator itr = le::activeStates.find(map);

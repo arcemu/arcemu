@@ -10,23 +10,24 @@ public:
 	}
 	~LuaGossip() 
 	{
+		PLUA_INSTANCE ref = lua_instance;
 		if(this->m_go_gossip_binding != NULL)
 		{
-			li::GossipInterfaceMap::iterator itr = lua_instance->m_go_gossipInterfaceMap.find(id);
-			if(itr != lua_instance->m_go_gossipInterfaceMap.end() )
-				lua_instance->m_go_gossipInterfaceMap.erase(itr);
+			li::GossipInterfaceMap::iterator itr = ref->m_go_gossipInterfaceMap.find(id);
+			if(itr != ref->m_go_gossipInterfaceMap.end() )
+				ref->m_go_gossipInterfaceMap.erase(itr);
 		}
 		else if(this->m_unit_gossip_binding != NULL)
 		{
-			li::GossipInterfaceMap::iterator itr = lua_instance->m_unit_gossipInterfaceMap.find(id);
-			if(itr != lua_instance->m_unit_gossipInterfaceMap.end() )
-				lua_instance->m_unit_gossipInterfaceMap.erase(itr);
+			li::GossipInterfaceMap::iterator itr = ref->m_unit_gossipInterfaceMap.find(id);
+			if(itr != ref->m_unit_gossipInterfaceMap.end() )
+				ref->m_unit_gossipInterfaceMap.erase(itr);
 		}
 		else if(this->m_item_gossip_binding != NULL)
 		{
-			li::GossipInterfaceMap::iterator itr = lua_instance->m_item_gossipInterfaceMap.find(id);
-			if(itr != lua_instance->m_item_gossipInterfaceMap.end( ) )
-				lua_instance->m_item_gossipInterfaceMap.erase(itr);
+			li::GossipInterfaceMap::iterator itr = ref->m_item_gossipInterfaceMap.find(id);
+			if(itr != ref->m_item_gossipInterfaceMap.end( ) )
+				ref->m_item_gossipInterfaceMap.erase(itr);
 		}
 	}
 
@@ -155,21 +156,22 @@ namespace lua_engine
 	GossipScript * createunitgossipInterface(uint32 id)
 	{
 		LuaGossip * pLua = NULL;
+		PLUA_INSTANCE ref = lua_instance;
 		//First check if we have registered a binding.
-		li::ObjectBindingMap::iterator itr = lua_instance->m_unitGossipBinding.find(id);
-		PObjectBinding pBinding = (itr != lua_instance->m_unitGossipBinding.end() ) ? itr->second : NULL;
+		li::ObjectBindingMap::iterator itr = ref->m_unitGossipBinding.find(id);
+		PObjectBinding pBinding = (itr != ref->m_unitGossipBinding.end() ) ? itr->second : NULL;
 		//Don't bother creating an interface if we don't have a binding.
 		if( pBinding != NULL )
 		{
 			//Check if we had already created an interface, if so, we just update its binding to point to the newly registered one.
-			li::GossipInterfaceMap::iterator itr = lua_instance->m_unit_gossipInterfaceMap.find(id);
-			if(itr != lua_instance->m_unit_gossipInterfaceMap.end() )
+			li::GossipInterfaceMap::iterator itr = ref->m_unit_gossipInterfaceMap.find(id);
+			if(itr != ref->m_unit_gossipInterfaceMap.end() )
 				pLua = itr->second;
 			else
 			{
 				pLua = new LuaGossip(id);
 				//All units w/ the same id will share this interface.
-				lua_instance->m_unit_gossipInterfaceMap.insert(make_pair(id,pLua));
+				ref->m_unit_gossipInterfaceMap.insert(make_pair(id,pLua));
 			}
 			pLua->m_unit_gossip_binding = pBinding;
 		}
@@ -178,18 +180,19 @@ namespace lua_engine
 	GossipScript * createitemgossipInterface(uint32 id)
 	{
 		LuaGossip * pLua = NULL;
-		li::ObjectBindingMap::iterator itr = lua_instance->m_itemGossipBinding.find(id);
-		PObjectBinding pBinding = (itr != lua_instance->m_itemGossipBinding.end() ) ? itr->second : NULL;
+		PLUA_INSTANCE ref = lua_instance;
+		li::ObjectBindingMap::iterator itr = ref->m_itemGossipBinding.find(id);
+		PObjectBinding pBinding = (itr != ref->m_itemGossipBinding.end() ) ? itr->second : NULL;
 		if( pBinding != NULL )
 		{
-			li::GossipInterfaceMap::iterator itr = lua_instance->m_item_gossipInterfaceMap.find(id);
+			li::GossipInterfaceMap::iterator itr = ref->m_item_gossipInterfaceMap.find(id);
 
-			if(itr != lua_instance->m_item_gossipInterfaceMap.end() )
+			if(itr != ref->m_item_gossipInterfaceMap.end() )
 				pLua = itr->second;
 			else
 			{
 				pLua = new LuaGossip(id);
-				lua_instance->m_item_gossipInterfaceMap.insert(make_pair(id,pLua));
+				ref->m_item_gossipInterfaceMap.insert(make_pair(id,pLua));
 			}
 			pLua->m_item_gossip_binding = pBinding;
 		}
@@ -198,17 +201,18 @@ namespace lua_engine
 	GossipScript * creategogossipInterface(uint32 id)
 	{
 		LuaGossip * pLua = NULL;
-		li::ObjectBindingMap::iterator itr = lua_instance->m_goGossipBinding.find(id);
-		PObjectBinding pBinding = (itr != lua_instance->m_goGossipBinding.end() ) ? itr->second : NULL;
+		PLUA_INSTANCE ref = lua_instance;
+		li::ObjectBindingMap::iterator itr = ref->m_goGossipBinding.find(id);
+		PObjectBinding pBinding = (itr != ref->m_goGossipBinding.end() ) ? itr->second : NULL;
 		if( pBinding != NULL )
 		{
-			li::GossipInterfaceMap::iterator itr = lua_instance->m_go_gossipInterfaceMap.find(id);
-			if(itr != lua_instance->m_go_gossipInterfaceMap.end() )
+			li::GossipInterfaceMap::iterator itr = ref->m_go_gossipInterfaceMap.find(id);
+			if(itr != ref->m_go_gossipInterfaceMap.end() )
 				pLua = itr->second;
 			else
 			{
 				pLua = new LuaGossip(id);
-				lua_instance->m_go_gossipInterfaceMap.insert(make_pair(id,pLua));
+				ref->m_go_gossipInterfaceMap.insert(make_pair(id,pLua));
 			}
 			pLua->m_go_gossip_binding = pBinding;
 		}
@@ -219,7 +223,8 @@ namespace lua_engine
 int CreateLuaEvent(lua_function fref, int delay, int repeats, variadic_parameter* params)
 {
 	int ref = LUA_REFNIL;
-	if(lua_instance != NULL && delay > 0 && (ptrdiff_t)fref != LUA_REFNIL && params != NULL)
+	PLUA_INSTANCE li_ = lua_instance;
+	if(ref != NULL && delay > 0 && (ptrdiff_t)fref != LUA_REFNIL && params != NULL)
 	{
 		//embed the function ref and repeats as part of our parameters.
 		variadic_node * func_node = new variadic_node;
@@ -234,10 +239,10 @@ int CreateLuaEvent(lua_function fref, int delay, int repeats, variadic_parameter
 		params->head_node = func_node;
 		//update args count
 		params->count +=2;
-		TimedEvent * ev = TimedEvent::Allocate(lua_instance->map,new CallBackFunctionP1<variadic_parameter*>(&lua_engine::ExecuteLuaFunction,params),0,delay,repeats);
+		TimedEvent * ev = TimedEvent::Allocate(li_->map,new CallBackFunctionP1<variadic_parameter*>(&lua_engine::ExecuteLuaFunction,params),0,delay,repeats);
 		ev->eventType  = LUA_EVENTS_END+(ptrdiff_t)fref; //Create custom reference by adding the ref number to the max lua event type to get a unique reference for every function.
-		lua_instance->map->event_AddEvent(ev);
-		lua_instance->m_globalFRefs.insert(params);
+		li_->map->event_AddEvent(ev);
+		li_->m_globalFRefs.insert(params);
 	}
 	return ref;
 }
@@ -245,7 +250,8 @@ void lua_engine::ExecuteLuaFunction(variadic_parameter * params)
 {
 	if(params != NULL )
 	{
-		lua_State * lu = lua_state;
+		PLUA_INSTANCE li_ = lua_instance;
+		lua_State * lu = li_->lu;
 		//place the function on the stack.
 		lua_getref(lu,params->head_node->val.obj_ref);
 		int arg_cnt = params->count - 2;
@@ -277,7 +283,7 @@ void lua_engine::ExecuteLuaFunction(variadic_parameter * params)
 				//de-allocate repeats node
 				delete repeats_node;
 				//remove this function from storage.
-				lua_instance->m_globalFRefs.erase(params);
+				li_->m_globalFRefs.erase(params);
 				//since we've put the function node back.
 				params->count++;
 				//clean up the rest of the args
@@ -288,25 +294,27 @@ void lua_engine::ExecuteLuaFunction(variadic_parameter * params)
 }
 void ModifyLuaEventInterval(lua_function ref, int newInterval)
 {
-	if(lua_instance != NULL)
+	PLUA_INSTANCE li_ = lua_instance;
+	if(li_ != NULL)
 	//Easy interval modification.
-		sEventMgr.ModifyEventTime(lua_instance->map,(size_t)ref+LUA_EVENTS_END, newInterval);
+		sEventMgr.ModifyEventTime(li_->map,(size_t)ref+LUA_EVENTS_END, newInterval);
 }
 static void DestroyLuaEvent(lua_function ref)
 {
-	if(lua_instance != NULL)
+	PLUA_INSTANCE li_ = lua_instance;
+	if(li_ != NULL)
 	{
 		//Simply remove the reference, CallFunctionByReference will find the reference has been freed and skip any processing.
-		lua_unref(lua_state,(ptrdiff_t)ref);
-		for(li::References::iterator itr = lua_instance->m_globalFRefs.begin(); itr != lua_instance->m_globalFRefs.end(); ++itr)
+		lua_unref( li_->lu,(ptrdiff_t)ref);
+		for(li::References::iterator itr = li_->m_globalFRefs.begin(); itr != li_->m_globalFRefs.end(); ++itr)
 		{
 			if( (*itr) != NULL && (*itr)->head_node->type == LUA_TFUNCTION && (*itr)->head_node->val.obj_ref == (ptrdiff_t)ref)
 			{
-				lua_instance->m_globalFRefs.erase(itr);
+				li_->m_globalFRefs.erase(itr);
 				break;
 			}
 		}
-		sEventMgr.RemoveEvents( lua_instance->map ,(size_t)ref+LUA_EVENTS_END);
+		sEventMgr.RemoveEvents( li_->map ,(size_t)ref+LUA_EVENTS_END);
 	}
 }
 
@@ -323,10 +331,10 @@ void DestroyAllLuaEvents(PLUA_INSTANCE instance)
 		{
 			ref = (*itr)->head_node->val.obj_ref;
 			sEventMgr.RemoveEvents(World::getSingletonPtr(),ref+LUA_EVENTS_END);
-			cleanup_varparam( (*itr), lua_state);
+			cleanup_varparam( (*itr), instance->lu );
 		}
 	}
-	lua_instance->m_globalFRefs.clear();
+	instance->m_globalFRefs.clear();
 }
 static void GetRegistryTable(const char * name, lua_stack stack)
 {

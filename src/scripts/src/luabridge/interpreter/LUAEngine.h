@@ -101,7 +101,7 @@ namespace lua_engine
 	static void restartThread(MapMgr *);
 	static void shutdownThread(MapMgr*);
 	
-	static void unload_resources();
+	static void unload_resources( PLUA_INSTANCE);
 	static void report(lua_State*);
 	//static void loadCompiler(PLUA_INSTANCE);
 	static void loadState(PLUA_INSTANCE);

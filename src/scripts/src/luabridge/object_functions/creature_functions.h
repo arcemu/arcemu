@@ -308,25 +308,26 @@ public:
 	}
 	void Destroy()
 	{
+		PLUA_INSTANCE li_ = lua_instance;
 		{
 			li::CreatureInterfaceMap::iterator it;
-			li::CreatureInterfaceMap::iterator itr = lua_instance->m_creatureInterfaceMap.find(_unit->GetEntry() ), itend = lua_instance->m_creatureInterfaceMap.upper_bound(_unit->GetEntry() );
+			li::CreatureInterfaceMap::iterator itr = li_->m_creatureInterfaceMap.find(_unit->GetEntry() ), itend = li_->m_creatureInterfaceMap.upper_bound(_unit->GetEntry() );
 			for(;itr != itend;)
 			{
 				it = itr++;
 				if(it->second != NULL && it->second == this)
-					lua_instance->m_creatureInterfaceMap.erase(it);
+					li_->m_creatureInterfaceMap.erase(it);
 			}
 		}
 		{
 			//Function Ref clean up
-			li::ObjectFRefMap::iterator it, itr = lua_instance->m_creatureFRefs.find(_unit->GetLowGUID() );
-			li::ObjectFRefMap::iterator itend = lua_instance->m_creatureFRefs.upper_bound(_unit->GetLowGUID() );
+			li::ObjectFRefMap::iterator it, itr = li_->m_creatureFRefs.find(_unit->GetLowGUID() );
+			li::ObjectFRefMap::iterator itend = li_->m_creatureFRefs.upper_bound(_unit->GetLowGUID() );
 			while(itr != itend)
 			{
 				it = itr++;
 				sEventMgr.RemoveEvents(_unit, itr->second->head_node->val.obj_ref+EVENT_LUA_CREATURE_EVENTS);
-				cleanup_varparam(it->second, lua_state);
+				cleanup_varparam(it->second, li_->lu );
 					
 			}
 		}
@@ -339,16 +340,17 @@ namespace lua_engine
 	CreatureAIScript * createluacreature(Creature * src)
 	{
 		LuaCreature * script = NULL;
+		PLUA_INSTANCE ref = lua_instance;
 		if(src != NULL)
 		{
 			uint32 id = src->GetEntry();
-			li::ObjectBindingMap::iterator itr = lua_instance->m_unitBinding.find(id);
-			PObjectBinding bind = (itr != lua_instance->m_unitBinding.end() ) ? itr->second : NULL;
+			li::ObjectBindingMap::iterator itr = ref->m_unitBinding.find(id);
+			PObjectBinding bind = (itr != ref->m_unitBinding.end() ) ? itr->second : NULL;
 			if( bind != NULL)
 			{
 				script = new LuaCreature(src);
 				script->m_binding = bind;
-				lua_instance->m_creatureInterfaceMap.insert( make_pair(id, script) );
+				ref->m_creatureInterfaceMap.insert( make_pair(id, script) );
 			}
 		}
 		return script;

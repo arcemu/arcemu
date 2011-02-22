@@ -10,19 +10,20 @@ class LuaQuest : public QuestScript
 		LuaQuest(uint32 id) : QuestScript(), entry(id) {}
 		~LuaQuest()
 		{
-			for(li::QuestInterfaceMap::iterator itr = lua_instance->m_questInterfaceMap.find(entry); itr != lua_instance->m_questInterfaceMap.upper_bound(entry); ++itr)
+			PLUA_INSTANCE li_ = lua_instance;
+			for(li::QuestInterfaceMap::iterator itr = li_->m_questInterfaceMap.find(entry); itr != li_->m_questInterfaceMap.upper_bound(entry); ++itr)
 			{
 				if(itr->second == this)
 				{
-					lua_instance->m_questInterfaceMap.erase(itr);
+					li_->m_questInterfaceMap.erase(itr);
 					break;
 				}
 			}
-			for(li::ObjectFRefMap::iterator it,itr = lua_instance->m_questFRefs.find(entry); itr != lua_instance->m_questFRefs.upper_bound(entry); )
+			for(li::ObjectFRefMap::iterator it,itr = li_->m_questFRefs.find(entry); itr != li_->m_questFRefs.upper_bound(entry); )
 			{
 				it = itr++;
-				cleanup_varparam(it->second, lua_state);
-				lua_instance->m_questFRefs.erase(it);
+				cleanup_varparam(it->second, li_->lu);
+				li_->m_questFRefs.erase(it);
 			}
 		}
 

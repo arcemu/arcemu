@@ -55,10 +55,11 @@ using namespace lua_engine;
 bool registerServerHook(uint32 hook, lua_function ref)
 {
 	bool found = false;
+	PLUA_INSTANCE li_ = lua_instance;
 	if(hook < NUM_SERVER_HOOKS && (ptrdiff_t)ref != LUA_REFNIL)
 	{
-		li::HookFRefMap::iterator itr = lua_instance->m_hooks.find(hook);
-		for(; itr != lua_instance->m_hooks.upper_bound(hook); ++itr)
+		li::HookFRefMap::iterator itr = li_->m_hooks.find(hook);
+		for(; itr != li_->m_hooks.upper_bound(hook); ++itr)
 		{
 			if(itr->second == ref)
 			{
@@ -67,21 +68,22 @@ bool registerServerHook(uint32 hook, lua_function ref)
 			}
 		}
 		if(!found)
-			lua_instance->m_hooks.insert(make_pair(hook,ref) );
+			li_->m_hooks.insert(make_pair(hook,ref) );
 	}
 	return !found;
 }
 bool registerUnitEvent(uint32 entry, uint32 evt, lua_function ref)
 {
 	bool found = false;
+	PLUA_INSTANCE li_ = lua_instance;
 	if(evt < CREATURE_EVENT_COUNT && (ptrdiff_t)ref != LUA_REFNIL)
 	{
-		li::ObjectBindingMap::iterator itr = lua_instance->m_unitBinding.find(entry);
-		if(itr != lua_instance->m_unitBinding.end() )
+		li::ObjectBindingMap::iterator itr = li_->m_unitBinding.find(entry);
+		if(itr != li_->m_unitBinding.end() )
 		{
 			found = true;
 			if(itr->second->refs[evt] != NULL)
-				lua_unref(lua_state, (ptrdiff_t)itr->second->refs[evt]);
+				lua_unref(li_->lu, (ptrdiff_t)itr->second->refs[evt]);
 			itr->second->refs[evt] = ref;
 		}
 		else
@@ -89,7 +91,7 @@ bool registerUnitEvent(uint32 entry, uint32 evt, lua_function ref)
 			PObjectBinding bind = new ObjectBinding;
 			memset(bind, 0, sizeof(ObjectBinding) );
 			bind->refs[evt] = ref;
-			lua_instance->m_unitBinding.insert(make_pair(entry,bind) );
+			li_->m_unitBinding.insert(make_pair(entry,bind) );
 		}
 	}
 	return found;
@@ -97,14 +99,15 @@ bool registerUnitEvent(uint32 entry, uint32 evt, lua_function ref)
 bool registerQuestEvent(uint32 entry, uint32 evt, lua_function ref)
 {
 	bool found = false;
+	PLUA_INSTANCE li_ = lua_instance;
 	if(evt < QUEST_EVENT_COUNT && (ptrdiff_t)ref != LUA_REFNIL)
 	{
-		li::ObjectBindingMap::iterator itr = lua_instance->m_questBinding.find(entry);
-		if(itr != lua_instance->m_questBinding.end() )
+		li::ObjectBindingMap::iterator itr = li_->m_questBinding.find(entry);
+		if(itr != li_->m_questBinding.end() )
 		{
 			found = true;
 			if(itr->second->refs[evt] != NULL)
-				lua_unref(lua_state, (ptrdiff_t)itr->second->refs[evt]);
+				lua_unref( li_->lu, (ptrdiff_t)itr->second->refs[evt]);
 			itr->second->refs[evt] = ref;
 		}
 		else
@@ -112,7 +115,7 @@ bool registerQuestEvent(uint32 entry, uint32 evt, lua_function ref)
 			PObjectBinding bind = new ObjectBinding;
 			memset(bind, 0, sizeof(ObjectBinding) );
 			bind->refs[evt] = ref;
-			lua_instance->m_questBinding.insert(make_pair(entry,bind) );
+			li_->m_questBinding.insert(make_pair(entry,bind) );
 		}
 	}
 	return found;
@@ -120,14 +123,15 @@ bool registerQuestEvent(uint32 entry, uint32 evt, lua_function ref)
 bool registerGameObjectEvent(uint32 entry, uint32 evt, lua_function ref)
 {
 	bool found = false;
+	PLUA_INSTANCE li_ = lua_instance;
 	if(evt < GAMEOBJECT_EVENT_COUNT && (ptrdiff_t)ref != LUA_REFNIL)
 	{
-		li::ObjectBindingMap::iterator itr = lua_instance->m_goBinding.find(entry);
-		if(itr != lua_instance->m_goBinding.end() )
+		li::ObjectBindingMap::iterator itr = li_->m_goBinding.find(entry);
+		if(itr != li_->m_goBinding.end() )
 		{
 			found = true;
 			if(itr->second->refs[evt] != NULL)
-				lua_unref(lua_state, (ptrdiff_t)itr->second->refs[evt]);
+				lua_unref( li_->lu , (ptrdiff_t)itr->second->refs[evt]);
 			itr->second->refs[evt] = ref;
 		}
 		else
@@ -135,7 +139,7 @@ bool registerGameObjectEvent(uint32 entry, uint32 evt, lua_function ref)
 			PObjectBinding bind = new ObjectBinding;
 			memset(bind, 0, sizeof(ObjectBinding) );
 			bind->refs[evt] = ref;
-			lua_instance->m_goBinding.insert(make_pair(entry,bind) );
+			li_->m_goBinding.insert(make_pair(entry,bind) );
 		}
 	}
 	return found;
@@ -143,14 +147,15 @@ bool registerGameObjectEvent(uint32 entry, uint32 evt, lua_function ref)
 bool registerUnitGossipEvent(uint32 entry, uint32 evt, lua_function ref)
 {
 	bool found = false;
+	PLUA_INSTANCE li_ = lua_instance;
 	if(evt < GOSSIP_EVENT_COUNT && (ptrdiff_t)ref != LUA_REFNIL)
 	{
-		li::ObjectBindingMap::iterator itr = lua_instance->m_unitGossipBinding.find(entry);
-		if(itr != lua_instance->m_unitGossipBinding.end() )
+		li::ObjectBindingMap::iterator itr = li_->m_unitGossipBinding.find(entry);
+		if(itr != li_->m_unitGossipBinding.end() )
 		{
 			found = true;
 			if(itr->second->refs[evt] != NULL)
-				lua_unref(lua_state, (ptrdiff_t)itr->second->refs[evt]);
+				lua_unref( li_->lu, (ptrdiff_t)itr->second->refs[evt]);
 			itr->second->refs[evt] = ref;
 		}
 		else
@@ -158,7 +163,7 @@ bool registerUnitGossipEvent(uint32 entry, uint32 evt, lua_function ref)
 			PObjectBinding bind = new ObjectBinding;
 			memset(bind, 0, sizeof(ObjectBinding) );
 			bind->refs[evt] = ref;
-			lua_instance->m_unitGossipBinding.insert(make_pair(entry,bind) );
+			li_->m_unitGossipBinding.insert(make_pair(entry,bind) );
 		}
 	}
 	return found;
@@ -166,14 +171,15 @@ bool registerUnitGossipEvent(uint32 entry, uint32 evt, lua_function ref)
 bool registerItemGossipEvent(uint32 entry, uint32 evt, lua_function ref)
 {
 	bool found = false;
+	PLUA_INSTANCE li_ = lua_instance;
 	if(evt < GOSSIP_EVENT_COUNT && (ptrdiff_t)ref != LUA_REFNIL)
 	{
-		li::ObjectBindingMap::iterator itr = lua_instance->m_itemGossipBinding.find(entry);
-		if(itr != lua_instance->m_itemGossipBinding.end() )
+		li::ObjectBindingMap::iterator itr = li_->m_itemGossipBinding.find(entry);
+		if(itr != li_->m_itemGossipBinding.end() )
 		{
 			found = true;
 			if(itr->second->refs[evt] != NULL)
-				lua_unref(lua_state, (ptrdiff_t)itr->second->refs[evt]);
+				lua_unref( li_->lu, (ptrdiff_t)itr->second->refs[evt]);
 			itr->second->refs[evt] = ref;
 		}
 		else
@@ -181,7 +187,7 @@ bool registerItemGossipEvent(uint32 entry, uint32 evt, lua_function ref)
 			PObjectBinding bind = new ObjectBinding;
 			memset(bind, 0, sizeof(ObjectBinding) );
 			bind->refs[evt] = ref;
-			lua_instance->m_itemGossipBinding.insert( make_pair(entry, bind) );
+			li_->m_itemGossipBinding.insert( make_pair(entry, bind) );
 		}
 	}
 	return found;
@@ -189,14 +195,15 @@ bool registerItemGossipEvent(uint32 entry, uint32 evt, lua_function ref)
 bool registerGOGossipEvent(uint32 entry, uint32 evt, lua_function ref)
 {
 	bool found = false;
+	PLUA_INSTANCE li_ = lua_instance;
 	if(evt < GOSSIP_EVENT_COUNT && (ptrdiff_t)ref != LUA_REFNIL)
 	{
-		li::ObjectBindingMap::iterator itr = lua_instance->m_goGossipBinding.find(entry);
-		if(itr != lua_instance->m_goGossipBinding.end() )
+		li::ObjectBindingMap::iterator itr = li_->m_goGossipBinding.find(entry);
+		if(itr != li_->m_goGossipBinding.end() )
 		{
 			found = true;
 			if(itr->second->refs[evt] != NULL)
-				lua_unref(lua_state, (ptrdiff_t)itr->second->refs[evt]);
+				lua_unref( li_->lu , (ptrdiff_t)itr->second->refs[evt]);
 			itr->second->refs[evt] = ref;
 		}
 		else
@@ -204,7 +211,7 @@ bool registerGOGossipEvent(uint32 entry, uint32 evt, lua_function ref)
 			PObjectBinding bind = new ObjectBinding;
 			memset(bind, 0, sizeof(ObjectBinding) );
 			bind->refs[evt] = ref;
-			lua_instance->m_goGossipBinding.insert(make_pair(entry, bind) );
+			li_->m_goGossipBinding.insert(make_pair(entry, bind) );
 		}
 	}
 	return found;
@@ -212,14 +219,15 @@ bool registerGOGossipEvent(uint32 entry, uint32 evt, lua_function ref)
 bool registerInstanceEvent(uint32 entry, uint32 evt, lua_function ref)
 {
 	bool found = false;
+	PLUA_INSTANCE li_ = lua_instance;
 	if(evt < INSTANCE_EVENT_COUNT && (ptrdiff_t)ref != LUA_REFNIL)
 	{
-		li::ObjectBindingMap::iterator itr = lua_instance->m_instanceBinding.find(entry);
-		if(itr != lua_instance->m_instanceBinding.end() )
+		li::ObjectBindingMap::iterator itr = li_->m_instanceBinding.find(entry);
+		if(itr != li_->m_instanceBinding.end() )
 		{
 			found = true;
 			if(itr->second->refs[evt] != NULL)
-				lua_unref(lua_state, (ptrdiff_t)itr->second->refs[evt]);
+				lua_unref( li_->lu, (ptrdiff_t)itr->second->refs[evt]);
 			itr->second->refs[evt] = ref;
 		}
 		else
@@ -227,7 +235,7 @@ bool registerInstanceEvent(uint32 entry, uint32 evt, lua_function ref)
 			PObjectBinding bind = new ObjectBinding;
 			memset(bind, 0, sizeof(ObjectBinding) );
 			bind->refs[evt] = ref;
-			lua_instance->m_instanceBinding.insert(make_pair(entry,bind) );
+			li_->m_instanceBinding.insert(make_pair(entry,bind) );
 		}
 
 	}
@@ -236,16 +244,17 @@ bool registerInstanceEvent(uint32 entry, uint32 evt, lua_function ref)
 bool registerDummySpell(uint32 entry, lua_function ref, variadic_parameter * params)
 {
 	bool found = true;
+	PLUA_INSTANCE li_ = lua_instance;
 	if( (ptrdiff_t)ref != LUA_REFNIL )
 	{
-		li::SpellFRefMap::iterator itr = lua_instance->m_dummySpells.find(entry);
-		if(itr == lua_instance->m_dummySpells.end() )
+		li::SpellFRefMap::iterator itr = li_->m_dummySpells.find(entry);
+		if(itr == li_->m_dummySpells.end() )
 		{
 			found = false;
 			PSpellMapEntry pentry = new SpellMapEntry;
 			pentry->ref = (ptrdiff_t)ref;
 			pentry->params = params;
-			lua_instance->m_dummySpells.insert( make_pair(entry, pentry) );
+			li_->m_dummySpells.insert( make_pair(entry, pentry) );
 		}
 	}
 	return !found;
@@ -304,18 +313,19 @@ ptrdiff_t extractfRefFromCString(lua_State * L,const char * functionName)
 
 int suspendluathread(lua_thread thread, int wait_time, variadic_parameter * params)
 {
-	if(lua_instance->map != NULL && thread != NULL && wait_time > 0)
+	PLUA_INSTANCE li_ = lua_instance;
+	if(li_->map != NULL && thread != NULL && wait_time > 0)
 	{
 		TimedEvent * evt = TimedEvent::Allocate(NULL,new CallBackFunctionP1<lua_thread>(resumeluathread,thread),0,wait_time,1);
 		//add the event to the current mapmgr.
-		lua_instance->map->event_AddEvent(evt);
+		li_->map->event_AddEvent(evt);
 		//All that remains now are the extra arguments passed to this function.
 		if(params != NULL)
 			luabridge::tdstack<variadic_parameter*>::push(thread, params);
 		ptrdiff_t pcnt = params->count;
 		//clear up references held by variadic since they are now on the thread.
-		cleanup_varparam(params, lua_state);
-		lua_instance->coroutines_.insert( thread);
+		cleanup_varparam(params, li_->lu);
+		li_->coroutines_.insert( thread);
 		return lua_yield(thread, pcnt);
 	}
 	return 0;
@@ -323,11 +333,12 @@ int suspendluathread(lua_thread thread, int wait_time, variadic_parameter * para
 void resumeluathread(lua_thread thread)
 {
 	//Make sure we still have the thread
-	LUA_INSTANCE::Coroutines::iterator itr = lua_instance->coroutines_.find(thread);
-	if( itr != lua_instance->coroutines_.end() )
+	PLUA_INSTANCE li_ = lua_instance;
+	LUA_INSTANCE::Coroutines::iterator itr = li_->coroutines_.find(thread);
+	if( itr != li_->coroutines_.end() )
 	{
 		lua_resume(thread, lua_gettop(thread) );
 		//Stop keeping track of it
-		lua_instance->coroutines_.erase( itr);
+		li_->coroutines_.erase( itr);
 	}
 }
