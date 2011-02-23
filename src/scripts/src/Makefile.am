@@ -1,2 +1,2 @@
-SUBDIRS = luabridge ServerStatusPlugin GossipScripts  MiscScripts QuestScripts \
+SUBDIRS = LuaEngine ServerStatusPlugin GossipScripts  MiscScripts QuestScripts \
 SpellHandlers  ExtraScripts EventScripts InstanceScripts

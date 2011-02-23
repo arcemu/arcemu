@@ -268,7 +268,7 @@ AC_CONFIG_FILES([
    src/scripts/src/InstanceScripts/Makefile
    src/scripts/src/ServerStatusPlugin/Makefile
    src/scripts/src/SpellHandlers/Makefile
-   src/scripts/src/luabridge/Makefile
+   src/scripts/src/LuaEngine/Makefile
    src/scripts/src/QuestScripts/Makefile
    src/scripts/src/EventScripts/Makefile
    src/collision/Makefile
