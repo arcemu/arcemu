@@ -232,9 +232,8 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light )
     refundentry.first = fields[17].GetUInt32();
     refundentry.second = fields[18].GetUInt32();
 
-    uint32 *played = this->GetOwner()->GetPlayedtime();
-
-    if( refundentry.first != 0 && refundentry.second != 0 ){
+    if( refundentry.first != 0 && refundentry.second != 0 && GetOwner() != NULL){
+		uint32 *played = GetOwner()->GetPlayedtime();
         if( played[1] < ( refundentry.first + 60*60*2 ) )
             m_owner->GetItemInterface()->AddRefundable( this, refundentry.second, refundentry.first );
     }

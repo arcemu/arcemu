@@ -1611,7 +1611,7 @@ Item * ObjectMgr::LoadItem( uint32 lowguid )
 		{
 			Item * pItem = new Item;
 			pItem->Init(HIGHGUID_TYPE_ITEM,lowguid);
-			pItem->LoadFromDB(result->Fetch(), 0, false);
+			pItem->LoadFromDB(result->Fetch(), NULL, false);
 			pReturn = pItem;
 		}
 		delete result;
