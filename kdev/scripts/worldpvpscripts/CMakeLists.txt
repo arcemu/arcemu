@@ -1,3 +1,8 @@
+if(NOT BUILD_WORLDPVPSCRIPTS )
+  message("\tWorldPVPScripts was skipped because BUILD_WORLDPVPSCRIPTS is unchecked.")
+  return()
+endif(NOT BUILD_WORLDPVPSCRIPTS)
+
 PROJECT( WorldPvPScripts )
 
 SET( prefix ${SCRIPTS_PATH}/${PROJECT_NAME} )

@@ -1,3 +1,8 @@
+if(NOT BUILD_SPELLHANDLERS )
+  message("\tSpellHandlers was skipped because BUILD_SPELLHANDLERS is unchecked.")
+  return()
+endif(NOT BUILD_SPELLHANDLERS)
+
 PROJECT(SpellHandlers)
 
 SET( prefix ${SCRIPTS_PATH}/${PROJECT_NAME} )

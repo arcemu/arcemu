@@ -1,3 +1,8 @@
+if(NOT BUILD_INSTANCESCRIPTS )
+  message("\tInstanceScripts was skipped because BUILD_INSTANCESCRIPTS is unchecked.")
+  return()
+endif(NOT BUILD_INSTANCESCRIPTS)
+
 PROJECT(InstanceScripts)
 
 SET( prefix ${SCRIPTS_PATH}/InstanceScripts )

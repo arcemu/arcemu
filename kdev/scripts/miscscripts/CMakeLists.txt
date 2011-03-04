@@ -1,3 +1,8 @@
+if(NOT BUILD_MISCSCRIPTS )
+  message("\tMiscScripts was skipped because BUILD_MISCSCRIPTS is unchecked.")
+  return()
+endif(NOT BUILD_MISCSCRIPTS)
+
 PROJECT(MiscScripts)
 
 SET( prefix ${SCRIPTS_PATH}/${PROJECT_NAME} )

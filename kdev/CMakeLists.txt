@@ -8,7 +8,7 @@ SET( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ROOT_PATH}/cmake_modules )
 #Our configurable variables.
 SET(ARCEMU_CONFIGSFILE_PATH etc CACHE STRING "Path where the arcemu config files are.")
 SET(ARCEMU_SCRIPTLIB_PATH ".." CACHE STRING "The directory which contains the 'lib' directory that has the script libraries." )
-SET(BUILD_SCRIPTS FALSE CACHE BOOL "Set to true to build script libraries." )
+SET(BUILD_ARCEMUSCRIPTS FALSE CACHE BOOL "Set to true to build script libraries." )
 
 #Make sure our revision header is up to date.
 execute_process(WORKING_DIRECTORY ${ROOT_PATH} COMMAND sh extract_svn_revision.sh )
@@ -21,10 +21,4 @@ add_subdirectory(shared)
 add_subdirectory(logon)
 add_subdirectory(world)
 add_subdirectory(crashreport)
-
-#Check if our user wants to build scripts,
-if( BUILD_SCRIPTS )
-  add_subdirectory(scripts)
-else(  BUILD_SCRIPTS )
-  message(WARNING "BUILD_SCRIPTS option is set to false. Script libraries will not be built.")
-endif( BUILD_SCRIPTS )
+add_subdirectory(scripts)

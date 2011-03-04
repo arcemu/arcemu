@@ -1,3 +1,8 @@
+if(NOT BUILD_EXTRASCRIPTS )
+  message("\tExtraScripts was skipped because BUILD_EXTRASCRIPTS is unchecked.")
+  return()
+endif(NOT BUILD_EXTRASCRIPTS)
+
 project(ExtraScripts)
 
 SET( prefix ${SCRIPTS_PATH}/${PROJECT_NAME} )

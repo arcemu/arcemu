@@ -1,3 +1,8 @@
+if(NOT BUILD_LUABRIDGE )
+  message("\tluabridge was skipped because BUILD_LUABRIDGE is unchecked.")
+  return()
+endif(NOT BUILD_LUABRIDGE)
+
 project(luabridge)
 
 #prefix variable - points to the folder which contains the source files.

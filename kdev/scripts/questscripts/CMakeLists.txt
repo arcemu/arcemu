@@ -1,3 +1,8 @@
+if(NOT BUILD_QUESTSCRIPTS )
+  message("\tQuestScripts was skipped because BUILD_QUESTSCRIPTS is unchecked.")
+  return()
+endif(NOT BUILD_QUESTSCRIPTS)
+
 PROJECT(QuestScripts)
 
 SET( prefix ${SCRIPTS_PATH}/QuestScripts )

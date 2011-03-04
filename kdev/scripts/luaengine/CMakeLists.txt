@@ -1,3 +1,8 @@
+if(NOT BUILD_LUAENGINE )
+  message("\tLuaEngine was skipped because BUILD_LUAENGINE is unchecked.")
+  return()
+endif(NOT BUILD_LUAENGINE)
+
 project(LuaEngine)
 
 #prefix variable - points to the folder which contains the source files.

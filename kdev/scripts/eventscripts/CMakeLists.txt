@@ -1,3 +1,9 @@
+
+if(NOT BUILD_EVENTSCRIPTS )
+  message("\tEventScripts was skipped because BUILD_EVENTSCRIPTS is unchecked.")
+  return()
+endif(NOT BUILD_EVENTSCRIPTS)
+
 PROJECT(EventScripts)
 
 SET( prefix ${SCRIPTS_PATH}/${PROJECT_NAME} )
