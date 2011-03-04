@@ -22,6 +22,7 @@
 
 #include <G3D/Table.h>
 #include <G3D/Array.h>
+#include <cstdio>
 
 using namespace G3D;
 
