@@ -260,22 +260,15 @@ class LadySacrolashAI : public MoonScriptBossAI
 		AddEmote(Event_OnDied, "I... fade.", Text_Yell, 0); // Wasn't able to find sound for this text
 	}
 
-	void OnCombatStart(Unit* pTarget)
-	{
-		mGrandWarlockAlythess = GetNearestCreature(CN_GRAND_WARLOCK_ALYTHESS);
-		ParentClass::OnCombatStart(pTarget);
-	}
-
 	void OnDied(Unit* pKiller)
 	{
-		if( mGrandWarlockAlythess && mGrandWarlockAlythess->IsAlive() )
+		MoonScriptCreatureAI* mGrandWarlockAlythess = GetNearestCreature(CN_GRAND_WARLOCK_ALYTHESS);
+		if( mGrandWarlockAlythess != NULL && mGrandWarlockAlythess->IsAlive() )
 		{
 			mGrandWarlockAlythess->Emote("Sacrolash!", Text_Yell, 12492);
 		}
 		ParentClass::OnDied(pKiller);
 	}
-
-	MoonScriptCreatureAI* mGrandWarlockAlythess;
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -304,22 +297,15 @@ class GrandWarlockAlythessAI : public MoonScriptBossAI
 		AddEmote(Event_OnDied, "I... fade.", Text_Yell, 0); // Wasn't able to find sound for this text
 	}
 
-	void OnCombatStart(Unit* pTarget)
-	{
-		mLadySacrolash = GetNearestCreature(CN_LADY_SACROLASH);
-		ParentClass::OnCombatStart(pTarget);
-	}
-
 	void OnDied(Unit* pKiller)
 	{
-		if( mLadySacrolash && mLadySacrolash->IsAlive() )
+		MoonScriptCreatureAI* mLadySacrolash = GetNearestCreature(CN_LADY_SACROLASH);
+		if( mLadySacrolash != NULL && mLadySacrolash->IsAlive() )
 		{
 			mLadySacrolash->Emote("Alythess! Your fire burns within me!", Text_Yell, 12488);
 		}
 		ParentClass::OnDied(pKiller);
 	}
-
-	MoonScriptCreatureAI* mLadySacrolash;
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
