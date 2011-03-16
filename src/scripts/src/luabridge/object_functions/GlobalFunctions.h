@@ -20,7 +20,7 @@
 #pragma once
 #include "svn_revision.h"
 
-#define ENGINE_NAME "LuaHypArc" //You should check in your scripts that GetLuaEngine() == "LuaHypArc"
+#define ENGINE_NAME "LuaBridge" //You should check in your scripts that GetLuaEngine() == "LuaBridge"
 #ifdef LUA_SVN_REVISION_H
 #define ENGINE_VERSION LUA_REVISION //If you need a specific version for your script to work, check GetLuaEngineVersion() >= number
 #else
