@@ -274,7 +274,7 @@ public:
 	
 	AccountDataEntry* GetAccountData(uint32 index)
 	{
-		Arcemu::Util::ARCEMU_ASSERT(   index < 8);
+		Arcemu::Util::ARCEMU_ASSERT(index < 8);
 		return &sAccountData[index];
 	}
 

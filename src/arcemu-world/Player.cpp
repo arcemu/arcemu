@@ -2996,10 +2996,10 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	if(getClass() == WARRIOR)
 		SetShapeShift(FORM_BATTLESTANCE);
 
-	SetUInt32Value(UNIT_FIELD_BYTES_2, (0x28 << 8) );
+	SetUInt32Value(UNIT_FIELD_BYTES_2, (0x28 << 8));
 	SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED);
-	SetBoundingRadius(0.388999998569489f );
-	SetCombatReach(1.5f   );
+	SetBoundingRadius(0.388999998569489f);
+	SetCombatReach(1.5f);
 
 	if( getRace() != RACE_BLOODELF )
 	{
