@@ -255,7 +255,10 @@ public:
 	{
 		m_lock[tx][ty].Acquire();
 		if (m_tiles[tx][ty] == NULL)
+		{
+			m_lock[tx][ty].Release();
 			return;
+		}
 		m_lock[tx][ty].Release();
 
 		if (--m_tilerefs[tx][ty] == 0)
