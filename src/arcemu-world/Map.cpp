@@ -37,14 +37,6 @@ Map::Map(uint32 mapid, MapInfo * inf)
 	//new stuff Load Spawns
 	LoadSpawns(false);
 
-	// Setup terrain
-	_terrain = new TerrainMgr(sWorld.MapPath, _mapId, !(inf->type==INSTANCE_NULL));
-	if(!_terrain->LoadTerrainHeader())
-	{
-		delete _terrain;
-		_terrain = NULL;
-	}
-
 	// get our name
 	me = dbcMap.LookupEntry(_mapId);
 	if(_mapInfo)
@@ -56,7 +48,6 @@ Map::Map(uint32 mapid, MapInfo * inf)
 Map::~Map()
 {
 	Log.Notice("Map", "~Map %u", this->_mapId);
-	delete _terrain;
 
 	for(uint32 x= 0;x<_sizeX;x++)
 	{

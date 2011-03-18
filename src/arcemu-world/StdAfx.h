@@ -150,6 +150,7 @@ template< class T, class U > T TO( U u ){ return static_cast< T >( u ); }
 #include "MailSystem.h"
 #include "Map.h"
 #include "MapCell.h"
+#include "Terrain.h"
 #include "TerrainMgr.h"
 #include "MiscHandler.h"
 #include "NameTables.h"

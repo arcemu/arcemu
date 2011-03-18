@@ -212,12 +212,11 @@ public:
 	void UpdateCellActivity(uint32 x, uint32 y, int radius);
 
 	// Terrain Functions
-	float  GetLandHeight(float x, float y) { return GetBaseMap()->GetLandHeight(x, y); }
-	bool   IsUnderground(float x, float y,float z) { return GetBaseMap()->GetLandHeight(x, y) > (z+0.5f); }
-	float  GetWaterHeight(float x, float y) { return GetBaseMap()->GetWaterHeight(x, y); }
-	uint8  GetWaterType(float x, float y) { return GetBaseMap()->GetWaterType(x, y); }
-	uint8  GetWalkableState(float x, float y) { return GetBaseMap()->GetWalkableState(x, y); }
-	uint16 GetAreaID(float x, float y) { return GetBaseMap()->GetAreaID(x, y); }
+	float  GetLandHeight(float x, float y) { return _terrain->GetLandHeight(x, y); }
+	bool   IsUnderground(float x, float y,float z) { return GetLandHeight(x, y) > (z+0.5f); }
+	float  GetLiquidHeight(float x, float y) { return _terrain->GetLiquidHeight(x, y); }
+	uint8  GetLiquidType(float x, float y) { return _terrain->GetLiquidType(x, y); }
+	uint16 GetAreaID(float x, float y) { return _terrain->GetArea(x, y); }
 
 	uint32 GetMapId() { return _mapId; }
 
@@ -315,6 +314,8 @@ private:
 	uint32 m_instanceID;
 
 	MapScriptInterface * ScriptInterface;
+
+	TerrainHolder* _terrain;
 
 public:
 #ifdef WIN32

@@ -751,7 +751,7 @@ bool ChatHandler::HandleGenerateWaypoints(const char* args, WorldSession * m_ses
 
 		float x = cr->GetPositionX()+ran*sin(ang);
 		float y = cr->GetPositionY()+ran*cos(ang);
-		float z = cr->GetMapMgr()->GetBaseMap()->GetLandHeight(x,y);
+		float z = cr->GetMapMgr()->GetLandHeight(x, y);
 		 
 		WayPoint* wp = new WayPoint;
 		wp->id = (uint32)cr->GetAIInterface()->GetWayPointsCount()+1;

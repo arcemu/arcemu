@@ -145,85 +145,16 @@ public:
 	uint32 CreatureSpawnCount;
 	uint32 GameObjectSpawnCount;
 
-	ARCEMU_INLINE float  GetLandHeight(float x, float y)
-	{ 
-		if(_terrain)
-		{
-			return _terrain->GetLandHeight(x, y);
-		}
-		else
-		{
-			return 999999.0f;
-		}
-	}
-
-	ARCEMU_INLINE float  GetWaterHeight(float x, float y) 
-	{ 
-		if(_terrain)
-		{ 
-			return _terrain->GetWaterHeight(x, y); 
-		}
-		else
-		{ 
-			return 999999.0f; 
-		}
-	}
-
-	ARCEMU_INLINE uint8  GetWaterType(float x, float y)
-	{
-		if(_terrain)
-		{ 
-			return _terrain->GetWaterType(x, y);
-		}
-		else
-		{ 
-			return 0;
-		}
-	}
-
-	ARCEMU_INLINE uint8  GetWalkableState(float x, float y)
-	{
-		if(_terrain)
-		{ 
-			return _terrain->GetWalkableState(x, y);
-		}
-		else
-		{ 
-			return 1; 
-		}
-	}
-
-	ARCEMU_INLINE uint16 GetAreaID(float x, float y)
-	{
-		if(_terrain)
-		{ 
-			return _terrain->GetAreaID(x, y);
-		}
-		else
-		{ 
-			return 0xFFFF;
-		}
-	}
-
 	ARCEMU_INLINE void CellGoneActive(uint32 x, uint32 y)
-	{ 
-		if(_terrain)
-		{ 
-			_terrain->CellGoneActive(x,y);
-		}
+	{
 	}
 
 	ARCEMU_INLINE void CellGoneIdle(uint32 x,uint32 y)
-	{ 
-		if(_terrain)
-		{ 
-			_terrain->CellGoneIdle(x,y);
-		}
+	{
 	}
 
 private:
 	MapInfo *	   _mapInfo;
-	TerrainMgr*	 _terrain;
 	uint32 _mapId;
 	string name;
 	MapEntry * me;

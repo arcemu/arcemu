@@ -292,6 +292,7 @@
     <ClCompile Include="..\..\src\arcemu-world\SpellProc_Shaman.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\SpellProc_Warlock.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\SpellProc_Warrior.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Terrain.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\WayPoints.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\WordFilter.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\AIInterface.cpp" />
@@ -433,6 +434,7 @@
     <ClInclude Include="..\..\src\arcemu-world\SpellNameHashes.h" />
     <ClInclude Include="..\..\src\arcemu-world\SpellProc.h" />
     <ClInclude Include="..\..\src\arcemu-world\SpellTarget.h" />
+    <ClInclude Include="..\..\src\arcemu-world\Terrain.h" />
     <ClInclude Include="..\..\src\arcemu-world\WordFilter.h" />
     <ClInclude Include="..\..\src\arcemu-world\AIInterface.h" />
     <ClInclude Include="..\..\src\arcemu-world\DatabaseCleaner.h" />

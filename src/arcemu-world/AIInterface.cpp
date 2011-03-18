@@ -1098,7 +1098,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 				{
 					if ( !getNextTarget()->IsPlayer() )
 					{
-						if ( target_land_z > m_Unit->GetMapMgr()->GetWaterHeight(getNextTarget()->GetPositionX(), getNextTarget()->GetPositionY()) )
+						if ( target_land_z > m_Unit->GetMapMgr()->GetLiquidHeight(getNextTarget()->GetPositionX(), getNextTarget()->GetPositionY()) )
 							HandleEvent( EVENT_LEAVECOMBAT, m_Unit, 0); //bugged npcs, probably db fault
 					}
 					else if (TO< Player* >(getNextTarget())->GetSession() != NULL)
@@ -1554,7 +1554,7 @@ void AIInterface::AttackReaction(Unit* pUnit, uint32 damage_dealt, uint32 spellI
 
 				if (fabs(pUnit->GetPositionZ() - target_land_z) > _CalcCombatRange(pUnit, false) )
 				{
-					if ( !pUnit->IsPlayer() && target_land_z > m_Unit->GetMapMgr()->GetWaterHeight(pUnit->GetPositionX(), pUnit->GetPositionY()) )
+					if ( !pUnit->IsPlayer() && target_land_z > m_Unit->GetMapMgr()->GetLiquidHeight(pUnit->GetPositionX(), pUnit->GetPositionY()) )
 						return;
 					else if( TO< Player* >(pUnit)->GetSession() != NULL )
 					{
@@ -3203,7 +3203,7 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 				Fy = m_Unit->GetPositionY() + (RandomFloat(20.f)+5.0f)*sinf(Fo);
 			}
 			// Check if this point is in water.
-			float wl = m_Unit->GetMapMgr()->GetWaterHeight(Fx, Fy);
+			float wl = m_Unit->GetMapMgr()->GetLiquidHeight(Fx, Fy);
 //			uint8 wt = m_Unit->GetMapMgr()->GetWaterType(Fx, Fy);
 
 			if (sWorld.Collision) {

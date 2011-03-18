@@ -488,6 +488,7 @@
       <Filter>Spells</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\arcemu-world\EquipmentSetMgr.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Terrain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\arcemu-world\Channel.h">
@@ -759,6 +760,7 @@
     <ClInclude Include="..\..\src\arcemu-world\PlayerCache.h">
       <Filter>EventableObject\Object\Unit\Player</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-world\Terrain.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\src\arcemu-world\resources.rc" />

@@ -4025,7 +4025,7 @@ uint8 Spell::CanCast(bool tolerate)
 						posy = py + r * si;
 						/*if(!(map->GetWaterType(posx,posy) & 1))//water
 							continue;*/
-						posz = map->GetWaterHeight(posx,posy);
+						posz = map->GetLiquidHeight(posx,posy);
 						if(posz > map->GetLandHeight(posx,posy))//water
 							break;
 					}

@@ -37,6 +37,7 @@ extern bool bServerShutdown;
 
 MapMgr::MapMgr(Map *map, uint32 mapId, uint32 instanceid) : CellHandler<MapCell>(map), _mapId(mapId), eventHolder(instanceid)
 {
+	_terrain = new TerrainHolder(mapId);
 	_shutdown = false;
 	m_instanceID = instanceid;
 	pMapInfo = WorldMapInfoStorage.LookupEntry(mapId);
@@ -100,6 +101,8 @@ MapMgr::~MapMgr()
 		delete ScriptInterface;
 		ScriptInterface = NULL;
 	}
+
+	delete _terrain;
 
 	// Remove objects
 	if(_cells)
@@ -1120,6 +1123,7 @@ void MapMgr::UpdateCellActivity(uint32 x, uint32 y, int radius)
 						posX, posY, this->_mapId, m_instanceID);
 					objCell->SetActivity(true);
 					_map->CellGoneActive(posX, posY);
+					_terrain->LoadTile((int32)posX / 8, (int32)posY / 8);
 
 					Arcemu::Util::ARCEMU_ASSERT(   !objCell->IsLoaded());
 
@@ -1138,6 +1142,7 @@ void MapMgr::UpdateCellActivity(uint32 x, uint32 y, int radius)
 					sLog.outDetail("Cell [%u,%u] on map %u (instance %u) is now active.",
 						posX, posY, this->_mapId, m_instanceID);
 					_map->CellGoneActive(posX, posY);
+					_terrain->LoadTile((int32)posX / 8, (int32)posY / 8);
 					objCell->SetActivity(true);
 
 					if (!objCell->IsLoaded())
@@ -1154,6 +1159,7 @@ void MapMgr::UpdateCellActivity(uint32 x, uint32 y, int radius)
 					sLog.outDetail("Cell [%u,%u] on map %u (instance %u) is now idle.",posX, posY, _mapId, m_instanceID);
 					_map->CellGoneIdle(posX, posY);
 					objCell->SetActivity(false);
+					_terrain->UnloadTile((int32)posX / 8, (int32)posY / 8);
 				}
 			}
 		}
