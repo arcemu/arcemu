@@ -1915,3 +1915,14 @@ void MapMgr::CallScriptUpdate()
 	Arcemu::Util::ARCEMU_ASSERT(    mInstanceScript  != NULL );
 	mInstanceScript->UpdateEvent();
 };
+
+uint16 MapMgr::GetAreaID( float x, float y )
+{
+	uint32 exploreFlag = _terrain->GetAreaFlag(x, y);
+
+	std::map<uint32, AreaTable*>::iterator itr = sWorld.mAreaIDToTable.find(exploreFlag);
+
+	if (itr == sWorld.mAreaIDToTable.end())
+		return 0;
+	return itr->second->AreaId;
+}

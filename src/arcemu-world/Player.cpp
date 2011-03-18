@@ -1336,6 +1336,7 @@ void Player::_EventExploration()
 		return;
 
 	uint16 AreaId = GetMapMgr()->GetAreaID(GetPositionX(),GetPositionY());
+	sLog.Debug("Area", "%u", AreaId);
 
 	if(!AreaId || AreaId == 0xFFFF)
 		return;

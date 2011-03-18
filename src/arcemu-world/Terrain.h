@@ -201,10 +201,17 @@ public:
 
 	TerrainHolder(uint32 mapid)
 	{
-		for (uint32 i = 0; i < TERRAIN_NUM_TILES; ++i)
-			for (uint32 j = 0; j < TERRAIN_NUM_TILES; ++j)
+		for (int32 i = 0; i < TERRAIN_NUM_TILES; ++i)
+			for (int32 j = 0; j < TERRAIN_NUM_TILES; ++j)
 				m_tiles[i][j] = NULL;
 		m_mapid = mapid;
+	}
+
+	~TerrainHolder()
+	{
+		for (int32 i = 0; i < TERRAIN_NUM_TILES; ++i)
+			for (int32 j = 0; j < TERRAIN_NUM_TILES; ++j)
+				UnloadTile(i, j);
 	}
 
 	TerrainTile* GetTile(float x, float y);
@@ -234,7 +241,6 @@ public:
 		{
 			m_tiles[tx][ty] = new TerrainTile(this, m_mapid, tx, ty);
 			m_tiles[tx][ty]->Load();
-			m_tiles[tx][ty]->AddRef();
 		}
 		m_lock[tx][ty].Release();
 	}
@@ -247,6 +253,11 @@ public:
 
 	void UnloadTile(int32 tx, int32 ty)
 	{
+		m_lock[tx][ty].Acquire();
+		if (m_tiles[tx][ty] == NULL)
+			return;
+		m_lock[tx][ty].Release();
+
 		if (--m_tilerefs[tx][ty] == 0)
 		{
 			m_lock[tx][ty].Acquire();
@@ -291,7 +302,7 @@ public:
 		return rv;
 	}
 
-	uint32 GetArea(float x, float y)
+	uint32 GetAreaFlag(float x, float y)
 	{
 		TerrainTile* tile = GetTile(x, y);
 
