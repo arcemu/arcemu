@@ -25,6 +25,8 @@
 #include "StdAfx.h"
 #include "CrashHandler.h"
 
+THREAD_LOCAL MapMgr* t_currentMapContext = NULL;
+
 #define MAP_MGR_UPDATE_PERIOD 100
 #define MAPMGR_INACTIVE_MOVE_TIME 30
 
@@ -1275,6 +1277,9 @@ bool MapMgr::Do()
 #ifdef WIN32
 	threadid = GetCurrentThreadId();
 #endif
+
+	t_currentMapContext = this;
+
 	thread_running = true;
 	ThreadState.SetVal(THREADSTATE_BUSY);
 	SetThreadName("Map mgr - M%u|I%u",this->_mapId ,this->m_instanceID);

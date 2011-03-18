@@ -38,6 +38,12 @@ template< class T, class U > T TO( U u ){ return static_cast< T >( u ); }
 #define TO_ITEM(ptr) TO<Item*>(ptr)
 #define TO_GAMEOBJECT(ptr) TO<GameObject*>(ptr)
 
+#ifdef WIN32
+#define THREAD_LOCAL __declspec(thread)
+#else
+#define THREAD_LOCAL __thread
+#endif
+
 
 #include "Definitions.h"
 

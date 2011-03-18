@@ -919,8 +919,10 @@ void Object::AddToWorld(MapMgr * pMapMgr)
 
 //Unlike addtoworld it pushes it directly ignoring add pool
 //this can only be called from the thread of mapmgr!!!
-void Object::PushToWorld(MapMgr*mgr)
+void Object::PushToWorld(MapMgr* mgr)
 {
+	Arcemu::Util::ARCEMU_ASSERT(t_currentMapContext == mgr);
+
 	if(mgr == NULL)
 	{
 		sLog.outError("Invalid push to world of Object "I64FMT, GetGUID());
