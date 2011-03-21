@@ -540,9 +540,6 @@
     <ResourceCompile Include="..\..\src\arcemu-world\resources.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\extras\arcemu-windows-libraries\Sources\VC100-pcre.vcxproj">
-      <Project>{311f016d-f785-47ef-b032-5350397f16b6}</Project>
-    </ProjectReference>
     <ProjectReference Include="arcemu-shared.vcxproj">
       <Project>{90297c34-f231-4df4-848e-a74bcc0e40ed}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>

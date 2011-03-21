@@ -6,13 +6,13 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "arcemu-shared", "VC\arcemu-
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "arcemu-logonserver", "VC\arcemu-logonserver.vcxproj", "{6E15F06D-5546-474D-BB42-39848DEF77E0}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pcre", "..\extras\arcemu-windows-libraries\Sources\VC100-pcre.vcxproj", "{311F016D-F785-47EF-B032-5350397F16B6}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "arcSpellHandlers", "..\src\scripts\projects\SpellsHandlers2010.vcxproj", "{21CCA237-B55E-4882-B3E3-4A0321315CB3}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "g3dlite", "g3dlite\g3dlite.vcxproj", "{638CABD1-E01B-4CCC-8BD6-B4FAF2B365DE}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "zlib\zlib.vcxproj", "{7D4F4F73-259D-45BF-8539-9CCE247AAE43}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pcre", "pcre\pcre.vcxproj", "{A4867968-E686-405A-AB27-4FC93F5506E2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -46,14 +46,6 @@ Global
 		{6E15F06D-5546-474D-BB42-39848DEF77E0}.Release|Win32.Build.0 = Release|Win32
 		{6E15F06D-5546-474D-BB42-39848DEF77E0}.Release|x64.ActiveCfg = Release|x64
 		{6E15F06D-5546-474D-BB42-39848DEF77E0}.Release|x64.Build.0 = Release|x64
-		{311F016D-F785-47EF-B032-5350397F16B6}.Debug|Win32.ActiveCfg = Debug|Win32
-		{311F016D-F785-47EF-B032-5350397F16B6}.Debug|Win32.Build.0 = Debug|Win32
-		{311F016D-F785-47EF-B032-5350397F16B6}.Debug|x64.ActiveCfg = Debug|x64
-		{311F016D-F785-47EF-B032-5350397F16B6}.Debug|x64.Build.0 = Debug|x64
-		{311F016D-F785-47EF-B032-5350397F16B6}.Release|Win32.ActiveCfg = Release|Win32
-		{311F016D-F785-47EF-B032-5350397F16B6}.Release|Win32.Build.0 = Release|Win32
-		{311F016D-F785-47EF-B032-5350397F16B6}.Release|x64.ActiveCfg = Release|x64
-		{311F016D-F785-47EF-B032-5350397F16B6}.Release|x64.Build.0 = Release|x64
 		{21CCA237-B55E-4882-B3E3-4A0321315CB3}.Debug|Win32.ActiveCfg = Debug|Win32
 		{21CCA237-B55E-4882-B3E3-4A0321315CB3}.Debug|Win32.Build.0 = Debug|Win32
 		{21CCA237-B55E-4882-B3E3-4A0321315CB3}.Debug|x64.ActiveCfg = Debug|x64
@@ -62,8 +54,8 @@ Global
 		{21CCA237-B55E-4882-B3E3-4A0321315CB3}.Release|Win32.Build.0 = Release|Win32
 		{21CCA237-B55E-4882-B3E3-4A0321315CB3}.Release|x64.ActiveCfg = Release|x64
 		{21CCA237-B55E-4882-B3E3-4A0321315CB3}.Release|x64.Build.0 = Release|x64
-		{638CABD1-E01B-4CCC-8BD6-B4FAF2B365DE}.Debug|Win32.ActiveCfg = Debug|Win32
-		{638CABD1-E01B-4CCC-8BD6-B4FAF2B365DE}.Debug|Win32.Build.0 = Debug|Win32
+		{638CABD1-E01B-4CCC-8BD6-B4FAF2B365DE}.Debug|Win32.ActiveCfg = Debug|x64
+		{638CABD1-E01B-4CCC-8BD6-B4FAF2B365DE}.Debug|Win32.Build.0 = Debug|x64
 		{638CABD1-E01B-4CCC-8BD6-B4FAF2B365DE}.Debug|x64.ActiveCfg = Debug|Win32
 		{638CABD1-E01B-4CCC-8BD6-B4FAF2B365DE}.Release|Win32.ActiveCfg = Release|Win32
 		{638CABD1-E01B-4CCC-8BD6-B4FAF2B365DE}.Release|Win32.Build.0 = Release|Win32
@@ -74,6 +66,12 @@ Global
 		{7D4F4F73-259D-45BF-8539-9CCE247AAE43}.Release|Win32.ActiveCfg = Release|Win32
 		{7D4F4F73-259D-45BF-8539-9CCE247AAE43}.Release|Win32.Build.0 = Release|Win32
 		{7D4F4F73-259D-45BF-8539-9CCE247AAE43}.Release|x64.ActiveCfg = Release|Win32
+		{A4867968-E686-405A-AB27-4FC93F5506E2}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A4867968-E686-405A-AB27-4FC93F5506E2}.Debug|Win32.Build.0 = Debug|Win32
+		{A4867968-E686-405A-AB27-4FC93F5506E2}.Debug|x64.ActiveCfg = Debug|Win32
+		{A4867968-E686-405A-AB27-4FC93F5506E2}.Release|Win32.ActiveCfg = Release|Win32
+		{A4867968-E686-405A-AB27-4FC93F5506E2}.Release|Win32.Build.0 = Release|Win32
+		{A4867968-E686-405A-AB27-4FC93F5506E2}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

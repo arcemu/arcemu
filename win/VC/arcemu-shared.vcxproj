@@ -427,12 +427,6 @@ RevisionExtractor.exe
     <ClInclude Include="..\..\src\arcemu-shared\FastQueue.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Storage.h" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\extras\arcemu-windows-libraries\Sources\VC100-pcre.vcxproj">
-      <Project>{311f016d-f785-47ef-b032-5350397f16b6}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
