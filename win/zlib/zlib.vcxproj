@@ -11,8 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{638CABD1-E01B-4CCC-8BD6-B4FAF2B365DE}</ProjectGuid>
-    <RootNamespace>g3dlite</RootNamespace>
+    <ProjectGuid>{7D4F4F73-259D-45BF-8539-9CCE247AAE43}</ProjectGuid>
+    <RootNamespace>zlib</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -21,7 +21,7 @@
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
@@ -43,9 +43,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\dep\include\g3dlite; ..\..\dep\include\zlib;</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>
-      </PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\dep\include\zlib;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -57,7 +55,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>..\..\dep\include\g3dlite; ..\..\dep\include\zlib;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\dep\include\zlib;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -66,38 +64,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\dep\src\g3dlite\AABox.cpp" />
-    <ClCompile Include="..\..\dep\src\g3dlite\Any.cpp" />
-    <ClCompile Include="..\..\dep\src\g3dlite\BinaryFormat.cpp" />
-    <ClCompile Include="..\..\dep\src\g3dlite\BinaryInput.cpp" />
-    <ClCompile Include="..\..\dep\src\g3dlite\BinaryOutput.cpp" />
-    <ClCompile Include="..\..\dep\src\g3dlite\Capsule.cpp" />
-    <ClCompile Include="..\..\dep\src\g3dlite\CollisionDetection.cpp" />
-    <ClCompile Include="..\..\dep\src\g3dlite\CoordinateFrame.cpp" />
-    <ClCompile Include="..\..\dep\src\g3dlite\Cylinder.cpp" />
-    <ClCompile Include="..\..\dep\src\g3dlite\debugAssert.cpp" />
-    <ClCompile Include="..\..\dep\src\g3dlite\fileutils.cpp" />
-    <ClCompile Include="..\..\dep\src\g3dlite\g3dfnmatch.cpp" />
-    <ClCompile Include="..\..\dep\src\g3dlite\g3dmath.cpp" />
-    <ClCompile Include="..\..\dep\src\g3dlite\Line.cpp" />
-    <ClCompile Include="..\..\dep\src\g3dlite\LineSegment.cpp" />
-    <ClCompile Include="..\..\dep\src\g3dlite\Log.cpp" />
-    <ClCompile Include="..\..\dep\src\g3dlite\Matrix.cpp" />
-    <ClCompile Include="..\..\dep\src\g3dlite\Matrix3.cpp" />
-    <ClCompile Include="..\..\dep\src\g3dlite\Matrix4.cpp" />
-    <ClCompile Include="..\..\dep\src\g3dlite\MemoryManager.cpp" />
-    <ClCompile Include="..\..\dep\src\g3dlite\prompt.cpp" />
-    <ClCompile Include="..\..\dep\src\g3dlite\Quat.cpp" />
-    <ClCompile Include="..\..\dep\src\g3dlite\Random.cpp" />
-    <ClCompile Include="..\..\dep\src\g3dlite\Ray.cpp" />
-    <ClCompile Include="..\..\dep\src\g3dlite\ReferenceCount.cpp" />
-    <ClCompile Include="..\..\dep\src\g3dlite\RegistryUtil.cpp" />
-    <ClCompile Include="..\..\dep\src\g3dlite\Sphere.cpp" />
-    <ClCompile Include="..\..\dep\src\g3dlite\stringutils.cpp" />
-    <ClCompile Include="..\..\dep\src\g3dlite\TextInput.cpp" />
-    <ClCompile Include="..\..\dep\src\g3dlite\TextOutput.cpp" />
-    <ClCompile Include="..\..\dep\src\g3dlite\UprightFrame.cpp" />
-    <ClCompile Include="..\..\dep\src\g3dlite\Vector2.cpp" />
+    <ClCompile Include="..\..\dep\src\zlib\adler32.c" />
+    <ClCompile Include="..\..\dep\src\zlib\compress.c" />
+    <ClCompile Include="..\..\dep\src\zlib\crc32.c" />
+    <ClCompile Include="..\..\dep\src\zlib\deflate.c" />
+    <ClCompile Include="..\..\dep\src\zlib\example.c" />
+    <ClCompile Include="..\..\dep\src\zlib\gzio.c" />
+    <ClCompile Include="..\..\dep\src\zlib\infback.c" />
+    <ClCompile Include="..\..\dep\src\zlib\inffast.c" />
+    <ClCompile Include="..\..\dep\src\zlib\inflate.c" />
+    <ClCompile Include="..\..\dep\src\zlib\inftrees.c" />
+    <ClCompile Include="..\..\dep\src\zlib\trees.c" />
+    <ClCompile Include="..\..\dep\src\zlib\uncompr.c" />
+    <ClCompile Include="..\..\dep\src\zlib\zutil.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

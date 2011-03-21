@@ -543,9 +543,6 @@
     <ProjectReference Include="..\..\extras\arcemu-windows-libraries\Sources\VC100-pcre.vcxproj">
       <Project>{311f016d-f785-47ef-b032-5350397f16b6}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\..\extras\arcemu-windows-libraries\Sources\VC100-zlib.vcxproj">
-      <Project>{8f1dea42-6a5b-4b62-839d-c141a7bfacf2}</Project>
-    </ProjectReference>
     <ProjectReference Include="arcemu-shared.vcxproj">
       <Project>{90297c34-f231-4df4-848e-a74bcc0e40ed}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
