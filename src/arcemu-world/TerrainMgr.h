@@ -290,6 +290,8 @@ public:
 		VMAP::IVMapManager* vmgr = VMAP::VMapFactory::createOrGetVMapManager();
 		float vmapheight = vmgr->getHeight(m_mapid, x, y, z + 0.5f, 10000.0f);
 
+		if (adtheight > z)
+			return vmapheight; //underground
 		return std::max(vmapheight, adtheight);
 	}
 

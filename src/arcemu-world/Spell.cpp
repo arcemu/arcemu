@@ -3765,8 +3765,9 @@ uint8 Spell::CanCast(bool tolerate)
 						return SPELL_FAILED_NO_AMMO;
 				}
 
-				if (sWorld.Collision) {
-					if (p_caster->GetMapId() == target->GetMapId() && !CollideInterface.CheckLOS(p_caster->GetMapId(),p_caster->GetPositionNC(),target->GetPositionNC()))
+				if (sWorld.Collision)
+				{
+					if (p_caster->GetMapId() == target->GetMapId() && !p_caster->GetMapMgr()->InLineOfSight(m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ() + 2, target->GetPositionX(), target->GetPositionY(), target->GetPositionZ() + 2))
 						return SPELL_FAILED_LINE_OF_SIGHT;
 				}
 
@@ -4027,7 +4028,7 @@ uint8 Spell::CanCast(bool tolerate)
 						map->GetLiquidInfo(posx, posy, pz + 2, posz, liquidtype);
 						if(!(liquidtype & 1))//water
 							continue;
-						if (!map->InLineOfSight(GetPositionX(), GetPositionY(), GetPositionZ() + 0.5f, posx, posy, posz))
+						if (!map->InLineOfSight(px, py, pz + 0.5f, posx, posy, posz))
 							continue;
 						if(posz > map->GetLandHeight(posx, posy, pz + 2))
 							break;

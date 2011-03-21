@@ -22,7 +22,7 @@
 #define _COLLIDEINTERFACE_H
 
 /* imports */
-#define NO_WMO_HEIGHT -100000.0f
+#define NO_WMO_HEIGHT -200000
 
 //#define COLLISION_DEBUG 1
 
@@ -117,7 +117,7 @@ public:
 
 	ARCEMU_INLINE bool CheckLOS(uint32 mapId, LocationVector & pos1, LocationVector & pos2)
 	{
-		return CheckLOS(mapId, pos1.x, pos1.y, pos1.z, pos2.x, pos2.y, pos2.z);
+		return CheckLOS(mapId, pos1.x, pos1.y, pos1.z + 2, pos2.x, pos2.y, pos2.z + 2);
 	}
 
 	ARCEMU_INLINE bool GetFirstPoint(uint32 mapId, LocationVector & pos1, LocationVector & pos2, LocationVector & outvec, float distmod)

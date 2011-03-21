@@ -7622,7 +7622,7 @@ QuestStatus Player::GetQuestStatus( uint32 quest_id )
 
 bool Player::IsInCity()
 {
-	AreaTable * at = GetMapMgr()->GetArea(GetPositionX(), GetPositionY(), GetPositionZ())
+	AreaTable * at = GetMapMgr()->GetArea(GetPositionX(), GetPositionY(), GetPositionZ());
 	AreaTable * zt = NULL;
 	if( at->ZoneId )
 		zt = dbcArea.LookupEntry( at->ZoneId );
@@ -7757,7 +7757,7 @@ void Player::UpdateChannels(uint16 AreaID)
 	else if( GetMapId() == 449 )
 		AreaID = 2918;
 
-	AreaTable * at2 = GetMapMgr()->GetArea(GetPositionX(), GetPositionY(), GetPositionZ());
+	AreaTable * at2 = dbcArea.LookupEntryForced(AreaID);
 
 	//Check for instances?
 	if(!AreaID || AreaID == 0xFFFF)
