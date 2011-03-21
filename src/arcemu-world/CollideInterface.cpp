@@ -192,7 +192,7 @@ bool CCollideInterface::GetFirstPoint(uint32 mapId, float x1, float y1, float z1
 void CCollideInterface::Init()
 {
 	Log.Notice("CollideInterface", "Init");
-	CollisionMgr = ((IVMapManager*)collision_init());
+	//CollisionMgr = ((IVMapManager*)collision_init());
 }
 
 void CCollideInterface::ActivateTile(uint32 mapId, uint32 tileX, uint32 tileY)
@@ -217,7 +217,7 @@ void CCollideInterface::DeactivateTile(uint32 mapId, uint32 tileX, uint32 tileY)
 void CCollideInterface::DeInit()
 {
 	Log.Notice("CollideInterface", "DeInit");
-	collision_shutdown();
+	//collision_shutdown();
 }
 
 #endif		// COLLISION_DEBUG
