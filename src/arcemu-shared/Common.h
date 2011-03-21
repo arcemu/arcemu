@@ -78,6 +78,7 @@ enum MsTimeVariables
 //#  define _WIN32_WINNT 0x0500
 #  define NOMINMAX
 #  include <windows.h>
+#  undef NOMINMAX
 #else
 #  include <cstring>
 #  define MAX_PATH 1024

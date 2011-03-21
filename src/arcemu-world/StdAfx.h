@@ -44,6 +44,8 @@ template< class T, class U > T TO( U u ){ return static_cast< T >( u ); }
 #define THREAD_LOCAL __thread
 #endif
 
+#define DEBUG_LOG(...) sLog.Debug("DEBUG_LOG", __VA_ARGS__)
+
 
 #include "Definitions.h"
 
@@ -200,6 +202,15 @@ template< class T, class U > T TO( U u ){ return static_cast< T >( u ); }
 #include "CConsole.h"
 #include "SpeedDetector.h"
 #include "WorldStates.h"
+
+
+//VMAP
+#include "vmap/ModelInstance.h"
+#include "vmap/WorldModel.h"
+#include "vmap/MapTree.h"
+#include "vmap/BIH.h"
+#include "vmap/VMapDefinitions.h"
+
 #endif
 
 #define RECRUITING "Info: |cff00FF7FArcEmu is recruiting developers: Join us on irc.freenode.net:6667 ##arcemu"
