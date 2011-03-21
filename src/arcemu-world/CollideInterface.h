@@ -69,9 +69,6 @@ public:
 	virtual std::string getDirFileName(unsigned int pMapId, int x, int y) const = 0;
 };
 
-COLLISION_IMPORT void * collision_init();
-COLLISION_IMPORT void collision_shutdown();
-
 SERVER_DECL extern IVMapManager * CollisionMgr;
 
 class CCollideInterface

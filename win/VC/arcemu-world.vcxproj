@@ -79,7 +79,7 @@
       <AdditionalOptions>/Zm256 /bigobj %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\..\src\arcemu-shared;..\..\src\arcemu-world\Collision\vmap;..\..\src\arcemu-world\Collision\g3dlite;..\..\extras\arcemu-windows-libraries\VC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\dep\include\pcre;..\..\dep\include\zlib;..\..\dep\include\g3dlite;..\..\dep\include;..\..\src\arcemu-shared;..\..\src\arcemu-world\Collision\vmap;..\..\src\arcemu-world\Collision\g3dlite;..\..\extras\arcemu-windows-libraries\VC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <ExceptionHandling>Async</ExceptionHandling>
@@ -107,8 +107,8 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>msvcrtd.lib;ws2_32.lib;libmysql_debug_win32.lib;libeay32_win32.lib;dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\..\extras\arcemu-windows-libraries\vc\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>g3dlite.lib;pcre.lib;zlib.lib;msvcrtd.lib;ws2_32.lib;libmysql_debug_win32.lib;libeay32_win32.lib;dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\dep\lib;..\..\extras\arcemu-windows-libraries\vc\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <IgnoreSpecificDefaultLibraries>msvcrt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>

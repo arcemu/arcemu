@@ -34,7 +34,7 @@
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
@@ -78,12 +78,15 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\..\dep\include\g3dlite; ..\..\dep\include\zlib;</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>
-      </PreprocessorDefinitions>
+      <PreprocessorDefinitions>_ITERATOR_DEBUG_LEVEL = 2;</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Lib>
+      <IgnoreAllDefaultLibraries>
+      </IgnoreAllDefaultLibraries>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -131,12 +134,15 @@
     <ClCompile Include="..\..\dep\src\g3dlite\BinaryFormat.cpp" />
     <ClCompile Include="..\..\dep\src\g3dlite\BinaryInput.cpp" />
     <ClCompile Include="..\..\dep\src\g3dlite\BinaryOutput.cpp" />
+    <ClCompile Include="..\..\dep\src\g3dlite\Box.cpp" />
     <ClCompile Include="..\..\dep\src\g3dlite\Capsule.cpp" />
     <ClCompile Include="..\..\dep\src\g3dlite\CollisionDetection.cpp" />
     <ClCompile Include="..\..\dep\src\g3dlite\CoordinateFrame.cpp" />
+    <ClCompile Include="..\..\dep\src\g3dlite\Crypto.cpp" />
     <ClCompile Include="..\..\dep\src\g3dlite\Cylinder.cpp" />
     <ClCompile Include="..\..\dep\src\g3dlite\debugAssert.cpp" />
     <ClCompile Include="..\..\dep\src\g3dlite\fileutils.cpp" />
+    <ClCompile Include="..\..\dep\src\g3dlite\format.cpp" />
     <ClCompile Include="..\..\dep\src\g3dlite\g3dfnmatch.cpp" />
     <ClCompile Include="..\..\dep\src\g3dlite\g3dmath.cpp" />
     <ClCompile Include="..\..\dep\src\g3dlite\Line.cpp" />
@@ -146,6 +152,7 @@
     <ClCompile Include="..\..\dep\src\g3dlite\Matrix3.cpp" />
     <ClCompile Include="..\..\dep\src\g3dlite\Matrix4.cpp" />
     <ClCompile Include="..\..\dep\src\g3dlite\MemoryManager.cpp" />
+    <ClCompile Include="..\..\dep\src\g3dlite\Plane.cpp" />
     <ClCompile Include="..\..\dep\src\g3dlite\prompt.cpp" />
     <ClCompile Include="..\..\dep\src\g3dlite\Quat.cpp" />
     <ClCompile Include="..\..\dep\src\g3dlite\Random.cpp" />
@@ -154,10 +161,14 @@
     <ClCompile Include="..\..\dep\src\g3dlite\RegistryUtil.cpp" />
     <ClCompile Include="..\..\dep\src\g3dlite\Sphere.cpp" />
     <ClCompile Include="..\..\dep\src\g3dlite\stringutils.cpp" />
+    <ClCompile Include="..\..\dep\src\g3dlite\System.cpp" />
     <ClCompile Include="..\..\dep\src\g3dlite\TextInput.cpp" />
     <ClCompile Include="..\..\dep\src\g3dlite\TextOutput.cpp" />
+    <ClCompile Include="..\..\dep\src\g3dlite\Triangle.cpp" />
     <ClCompile Include="..\..\dep\src\g3dlite\UprightFrame.cpp" />
     <ClCompile Include="..\..\dep\src\g3dlite\Vector2.cpp" />
+    <ClCompile Include="..\..\dep\src\g3dlite\Vector3.cpp" />
+    <ClCompile Include="..\..\dep\src\g3dlite\Vector4.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

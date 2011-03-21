@@ -91,7 +91,7 @@ RevisionExtractor.exe
       <OmitFramePointers>true</OmitFramePointers>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>..\..\src\arcemu-shared;..\..\extras\arcemu-windows-libraries\VC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\dep\include;..\..\src\arcemu-shared;..\..\extras\arcemu-windows-libraries\VC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <MinimalRebuild>false</MinimalRebuild>
@@ -135,7 +135,7 @@ RevisionExtractor.exe
       <AdditionalOptions>/Zm256 /bigobj %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\..\src\arcemu-shared;..\..\extras\arcemu-windows-libraries\VC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\dep\include;..\..\src\arcemu-shared;..\..\extras\arcemu-windows-libraries\VC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <ExceptionHandling>Async</ExceptionHandling>
@@ -181,7 +181,7 @@ RevisionExtractor.exe
       <Optimization>Full</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>..\..\src\arcemu-shared;..\..\extras\arcemu-windows-libraries\VC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\dep\include;..\..\src\arcemu-shared;..\..\extras\arcemu-windows-libraries\VC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_HAS_ITERATOR_DEBUGGING=0;WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;X64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <MinimalRebuild>true</MinimalRebuild>
@@ -233,7 +233,7 @@ RevisionExtractor.exe
       <AdditionalOptions>/Zm256 /bigobj %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\..\src\arcemu-shared;..\..\extras\arcemu-windows-libraries\VC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\dep\include;..\..\src\arcemu-shared;..\..\extras\arcemu-windows-libraries\VC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;X64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>

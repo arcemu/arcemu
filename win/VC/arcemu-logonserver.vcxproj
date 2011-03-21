@@ -77,7 +77,7 @@
       <AdditionalOptions>/Zm256 /bigobj %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\..\src\arcemu-shared;..\..\extras\arcemu-windows-libraries\VC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\dep\include\zlib;..\..\dep\include;..\..\src\arcemu-shared;..\..\extras\arcemu-windows-libraries\VC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <ExceptionHandling>Async</ExceptionHandling>
@@ -96,9 +96,9 @@
       <DisableSpecificWarnings>4127;4100;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ws2_32.lib;libmysql_debug_win32.lib;libeay32_win32.lib;dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>zlib.lib;ws2_32.lib;libmysql_debug_win32.lib;libeay32_win32.lib;dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetFileName)</OutputFile>
-      <AdditionalLibraryDirectories>..\..\extras\arcemu-windows-libraries\VC\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\dep\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>msvcrt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>
@@ -123,7 +123,7 @@
       <AdditionalOptions>/Zm256 /bigobj %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\..\src\arcemu-shared;..\..\extras\arcemu-windows-libraries\VC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\dep\include\zlib;..\..\dep\include;..\..\src\arcemu-shared;..\..\extras\arcemu-windows-libraries\VC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;X64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -140,9 +140,9 @@
       <DisableSpecificWarnings>4127;4100;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ws2_32.lib;libmysql_debug_x64.lib;libeay32_win64.lib;dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>zlib.lib;ws2_32.lib;libmysql_debug_x64.lib;libeay32_win64.lib;dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetFileName)</OutputFile>
-      <AdditionalLibraryDirectories>..\..\extras\arcemu-windows-libraries\VC\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\dep\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>
       </ProgramDatabaseFile>
@@ -168,7 +168,7 @@
       <OmitFramePointers>true</OmitFramePointers>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>..\..\src\arcemu-shared;..\..\extras\arcemu-windows-libraries\VC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\dep\include\zlib;..\..\dep\include;..\..\src\arcemu-shared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_HAS_ITERATOR_DEBUGGING=0;WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <MinimalRebuild>false</MinimalRebuild>
@@ -188,9 +188,9 @@
       <CompileAs>Default</CompileAs>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ws2_32.lib;msvcrt.lib;libmysql_release_win32.lib;libeay32_win32.lib;dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>zlib.lib;ws2_32.lib;msvcrt.lib;libmysql_release_win32.lib;libeay32_win32.lib;dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetFileName)</OutputFile>
-      <AdditionalLibraryDirectories>..\..\extras\arcemu-windows-libraries\VC\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\dep\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>msvcrtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>
@@ -216,7 +216,7 @@
       <AdditionalOptions>/MP /Zm256 %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Full</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\..\src\arcemu-shared;..\..\extras\arcemu-windows-libraries\VC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\dep\include\zlib;..\..\dep\include;..\..\src\arcemu-shared;..\..\extras\arcemu-windows-libraries\VC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_HAS_ITERATOR_DEBUGGING=0;WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;X64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <MinimalRebuild>false</MinimalRebuild>
@@ -240,9 +240,9 @@
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ws2_32.lib;libmysql_release_x64.lib;libeay32_win64.lib;dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>zlib.lib;ws2_32.lib;libmysql_release_x64.lib;libeay32_win64.lib;dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetFileName)</OutputFile>
-      <AdditionalLibraryDirectories>..\..\extras\arcemu-windows-libraries\VC\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\dep\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>
       </ProgramDatabaseFile>

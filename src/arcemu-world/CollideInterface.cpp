@@ -52,9 +52,6 @@ uint32 c_GetNanoSeconds(uint64 t1, uint64 t2)
 #endif	// COLLISION_DEBUG
 #endif	// WIN32
 
-#ifdef WIN32
-#pragma comment(lib, "collision.lib")
-#endif
 
 // Debug functions
 #ifdef COLLISION_DEBUG
