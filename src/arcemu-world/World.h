@@ -275,6 +275,23 @@ public:
 	bool run();
 };
 
+struct WMOAreaTableTripple
+{
+	WMOAreaTableTripple(int32 r, int32 a, int32 g) : groupId(g), rootId(r), adtId(a)
+	{
+	}
+
+	bool operator <(const WMOAreaTableTripple& b) const
+	{
+		return memcmp(this, &b, sizeof(WMOAreaTableTripple))<0;
+	}
+
+	// ordered by entropy; that way memcmp will have a minimal medium runtime
+	int32 groupId;
+	int32 rootId;
+	int32 adtId;
+};
+
 class WorldSocket;
 
 // Slow for remove in middle, oh well, wont get done much.
@@ -457,6 +474,27 @@ public:
 	};
 	vector<NameGenData> _namegendata[3];
 	void LoadNameGenData();
+
+	void LoadWMOAreaData()
+	{
+		for (DBCStorage<WMOAreaTableEntry>::iterator itr = dbcWMOAreaTable.begin(); itr != dbcWMOAreaTable.end(); ++itr)
+		{
+			WMOAreaTableTripple tmp((*itr)->rootId, (*itr)->adtId, (*itr)->groupId);
+			
+			m_WMOAreaTableTripples.insert(std::make_pair(tmp, (*itr)));
+		}
+	}
+
+	WMOAreaTableEntry* GetWMOAreaData(int32 rootid, int32 adtid, int32 groupid)
+	{
+		WMOAreaTableTripple tmp(rootid, adtid, groupid);
+		std::map<WMOAreaTableTripple, WMOAreaTableEntry*>::iterator itr = m_WMOAreaTableTripples.find(tmp);
+
+		if (itr != m_WMOAreaTableTripples.end())
+			return itr->second;
+		return NULL;
+	}
+
 	std::string GenerateName(uint32 type = 0);
 
 	std::map<uint32, AreaTable*> mAreaIDToTable;
@@ -658,6 +696,7 @@ public:
 	bool m_limitedNames;
 	bool m_useAccountData;
 	bool m_AdditionalFun;
+	std::map<WMOAreaTableTripple, WMOAreaTableEntry*> m_WMOAreaTableTripples;
 
 	// Gold Cap
 	bool GoldCapEnabled;

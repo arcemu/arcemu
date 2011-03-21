@@ -217,6 +217,7 @@ public:
 	float  GetLiquidHeight(float x, float y) { return _terrain->GetLiquidHeight(x, y); }
 	uint8  GetLiquidType(float x, float y) { return _terrain->GetLiquidType(x, y); }
 	uint16 GetAreaID(float x, float y);
+	AreaTable* GetArea(float x, float y, float z) { return _terrain->GetArea(x, y, z); }
 
 	uint32 GetMapId() { return _mapId; }
 

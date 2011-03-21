@@ -133,11 +133,11 @@
       <AdditionalOptions>/Zm256 /bigobj %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\..\src\boost;..\..\src\arcemu-shared;..\..\extras\arcemu-windows-libraries\VC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\dep\include\pcre;..\..\dep\include\zlib;..\..\dep\include\g3dlite;..\..\dep\include;..\..\src\boost;..\..\src\arcemu-shared;..\..\extras\arcemu-windows-libraries\VC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;X64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -158,14 +158,15 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>ws2_32.lib;libmysql_debug_x64.lib;libeay32_win64.lib;dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\..\extras\arcemu-windows-libraries\vc\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>g3dlite.lib;pcre.lib;zlib.lib;ws2_32.lib;libmysql_debug_x64.lib;libeay32_win64.lib;dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\dep\lib;..\..\extras\arcemu-windows-libraries\vc\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <TargetMachine>MachineX64</TargetMachine>
       <OutputFile>$(OutDir)$(TargetFileName)</OutputFile>
+      <IgnoreSpecificDefaultLibraries>msvcrt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -181,7 +182,7 @@
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>..\..\src\boost;..\..\src\arcemu-shared;..\..\src\arcemu-world\Collision\vmap;..\..\src\arcemu-world\Collision\g3dlite;..\..\extras\arcemu-windows-libraries\VC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\dep\include\pcre;..\..\dep\include\zlib;..\..\dep\include\g3dlite;..\..\dep\include;..\..\src\boost;..\..\src\arcemu-shared;..\..\src\arcemu-world\Collision\vmap;..\..\src\arcemu-world\Collision\g3dlite;..\..\extras\arcemu-windows-libraries\VC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_HAS_ITERATOR_DEBUGGING=0;WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <MinimalRebuild>false</MinimalRebuild>
@@ -205,8 +206,8 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>ws2_32.lib;msvcrt.lib;libmysql_release_win32.lib;libeay32_win32.lib;dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\..\extras\arcemu-windows-libraries\vc\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>g3dlite.lib;pcre.lib;zlib.lib;ws2_32.lib;msvcrt.lib;libmysql_release_win32.lib;libeay32_win32.lib;dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\dep\lib;..\..\extras\arcemu-windows-libraries\vc\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>msvcrtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <GenerateMapFile>false</GenerateMapFile>
@@ -234,7 +235,7 @@
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>..\..\src\arcemu-shared;..\..\src\arcemu-world\Collision\vmap;..\..\src\arcemu-world\Collision\g3dlite;..\..\extras\arcemu-windows-libraries\VC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\dep\include\pcre;..\..\dep\include\zlib;..\..\dep\include\g3dlite;..\..\dep\include;..\..\src\arcemu-shared;..\..\src\arcemu-world\Collision\vmap;..\..\src\arcemu-world\Collision\g3dlite;..\..\extras\arcemu-windows-libraries\VC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_HAS_ITERATOR_DEBUGGING=0;WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;X64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <MinimalRebuild>false</MinimalRebuild>
@@ -261,8 +262,8 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>ws2_32.lib;libmysql_release_x64.lib;libeay32_win64.lib;dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\..\extras\arcemu-windows-libraries\vc\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>g3dlite.lib;pcre.lib;zlib.lib;ws2_32.lib;libmysql_release_x64.lib;libeay32_win64.lib;dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\dep\lib;..\..\extras\arcemu-windows-libraries\vc\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>

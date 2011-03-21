@@ -107,6 +107,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <AdditionalIncludeDirectories>..\..\dep\include\g3dlite; ..\..\dep\include\zlib;</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_ITERATOR_DEBUG_LEVEL = 0;</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

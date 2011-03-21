@@ -315,6 +315,8 @@ public:
 		tile->DecRef();
 		return rv;
 	}
+
+	AreaTable* GetArea(float x, float y, float z);
 };
 
 #endif

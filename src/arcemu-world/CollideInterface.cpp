@@ -23,7 +23,6 @@
 #define MAX_MAP 800
 
 CCollideInterface CollideInterface;
-IVMapManager * CollisionMgr;
 Mutex m_loadLock;
 uint32 m_tilesLoaded[MAX_MAP][64][64];
 
@@ -197,9 +196,10 @@ void CCollideInterface::Init()
 
 void CCollideInterface::ActivateTile(uint32 mapId, uint32 tileX, uint32 tileY)
 {
+	VMAP::IVMapManager* mgr = VMAP::VMapFactory::createOrGetVMapManager();
 	m_loadLock.Acquire();
 	if(m_tilesLoaded[mapId][tileX][tileY] == 0)
-		CollisionMgr->loadMap(sWorld.vMapPath.c_str(), mapId, tileY, tileX);
+		mgr->loadMap(sWorld.vMapPath.c_str(), mapId, tileX, tileY);
 
 	++m_tilesLoaded[mapId][tileX][tileY];
 	m_loadLock.Release();
@@ -207,9 +207,10 @@ void CCollideInterface::ActivateTile(uint32 mapId, uint32 tileX, uint32 tileY)
 
 void CCollideInterface::DeactivateTile(uint32 mapId, uint32 tileX, uint32 tileY)
 {
+	VMAP::IVMapManager* mgr = VMAP::VMapFactory::createOrGetVMapManager();
 	m_loadLock.Acquire();
 	if(!(--m_tilesLoaded[mapId][tileX][tileY]))
-		CollisionMgr->unloadMap(mapId, tileY, tileX);
+		mgr->unloadMap(mapId, tileX, tileY);
 
 	m_loadLock.Release();
 }

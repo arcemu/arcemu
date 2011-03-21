@@ -32,45 +32,6 @@
 #define COLLISION_IMPORT 
 #endif
 
-/* The class the dll sends back. */
-class IVMapManager
-{
-public:
-	IVMapManager() {}
-
-	virtual ~IVMapManager(void) {}
-
-	virtual int loadMap(const char* pBasePath, unsigned int pMapId, int x, int y) = 0;
-
-	virtual void unloadMap(unsigned int pMapId, int x, int y) = 0;
-	virtual void unloadMap(unsigned int pMapId) = 0;
-
-	// LOS
-	virtual bool isInLineOfSight(unsigned int pMapId, float x1, float y1, float z1, float x2, float y2, float z2) = 0;
-	virtual bool isInLineOfSight(unsigned int pMapId, LocationVector & v1, LocationVector & v2) = 0;
-
-	// Height
-	virtual float getHeight(unsigned int pMapId, float x, float y, float z) = 0;
-	virtual float getHeight(unsigned int mapid, LocationVector & vec) = 0;
-
-	// Indoors
-	virtual bool isInDoors(unsigned int mapid, float x, float y, float z) = 0;
-	virtual bool isInDoors(unsigned int mapid, LocationVector & vec) = 0;
-
-	// Outdoors
-	virtual bool isOutDoors(unsigned int mapid, float x, float y, float z) = 0;
-	virtual bool isOutDoors(unsigned int mapid, LocationVector & vec) = 0;
-
-	// Closest Point
-	virtual bool getObjectHitPos(unsigned int pMapId, float x1, float y1, float z1, float x2, float y2, float z2, float& rx, float &ry, float& rz, float pModifyDist) = 0;
-	virtual bool getObjectHitPos(unsigned int pMapId, LocationVector & v1, LocationVector & v2, LocationVector & vout, float pModifyDist) = 0;
-
-
-	virtual std::string getDirFileName(unsigned int pMapId, int x, int y) const = 0;
-};
-
-SERVER_DECL extern IVMapManager * CollisionMgr;
-
 class CCollideInterface
 {
 public:
@@ -98,52 +59,85 @@ public:
 
 	ARCEMU_INLINE bool CheckLOS(uint32 mapId, float x1, float y1, float z1, float x2, float y2, float z2)
 	{
-		return CollisionMgr->isInLineOfSight( mapId, x1, y1, z1, x2, y2, z2 );
+		VMAP::IVMapManager* mgr = VMAP::VMapFactory::createOrGetVMapManager();
+		return mgr->isInLineOfSight( mapId, x1, y1, z1, x2, y2, z2 );
 	}
 
 	ARCEMU_INLINE bool GetFirstPoint(uint32 mapId, float x1, float y1, float z1, float x2, float y2, float z2, float & outx, float & outy, float & outz, float distmod)
 	{
-		return CollisionMgr->getObjectHitPos( mapId, x1, y1, z1, x2, y2, z2, outx, outy, outz, distmod );
+		VMAP::IVMapManager* mgr = VMAP::VMapFactory::createOrGetVMapManager();
+		return mgr->getObjectHitPos( mapId, x1, y1, z1, x2, y2, z2, outx, outy, outz, distmod );
 	}
 	
 	ARCEMU_INLINE bool IsIndoor(uint32 mapId, float x, float y, float z)
 	{
-		return CollisionMgr->isInDoors( mapId, x, y, z );
+		return !IsOutdoor(mapId, x, y, z);
 	}
 
 	ARCEMU_INLINE bool IsOutdoor(uint32 mapId, float x, float y, float z)
 	{
-		return CollisionMgr->isOutDoors( mapId, x, y, z );
+		VMAP::IVMapManager* mgr = VMAP::VMapFactory::createOrGetVMapManager();
+
+		uint32 flags;
+		int32 adtid, rootid, groupid;
+
+		if (!mgr->getAreaInfo(mapId, x, y, z, flags, adtid, rootid, groupid))
+			return true;
+
+		bool outdoor = flags & 0x08;
+
+		WMOAreaTableEntry* wmoArea = sWorld.GetWMOAreaData(rootid, adtid, groupid);
+		AreaTable* area = NULL;
+
+		if (wmoArea != NULL)
+		{
+			area = dbcArea.LookupEntryForced(wmoArea->areaId);
+
+			if (area != NULL)
+			{
+				if (area->AreaFlags & 0x04000000) //outdoor
+					return true;
+				if (area->AreaFlags & 0x02000000) //indoor
+					return false;
+			}
+
+			if (wmoArea->flags & 4) //outdoor
+				return true;
+			if (wmoArea->flags & 2)
+				return false;
+		}
+		return outdoor;
 	}
 
 	ARCEMU_INLINE float GetHeight(uint32 mapId, float x, float y, float z)
 	{
-		return CollisionMgr->getHeight( mapId, x, y, z );
+		VMAP::IVMapManager* mgr = VMAP::VMapFactory::createOrGetVMapManager();
+		return mgr->getHeight(mapId, x, y, z, 10000.0f);
 	}
 
 	ARCEMU_INLINE bool CheckLOS(uint32 mapId, LocationVector & pos1, LocationVector & pos2)
 	{
-		return CollisionMgr->isInLineOfSight( mapId, pos1, pos2 );
+		return CheckLOS(mapId, pos1.x, pos1.y, pos1.z, pos2.x, pos2.y, pos2.z);
 	}
 
 	ARCEMU_INLINE bool GetFirstPoint(uint32 mapId, LocationVector & pos1, LocationVector & pos2, LocationVector & outvec, float distmod)
 	{
-		return CollisionMgr->getObjectHitPos( mapId, pos1, pos2, outvec, distmod );
+		return GetFirstPoint(mapId, pos1.x, pos1.y, pos1.z, pos2.x, pos2.y, pos2.z, outvec.x, outvec.y, outvec.z, distmod);
 	}
 
 	ARCEMU_INLINE bool IsIndoor(uint32 mapId, LocationVector & pos)
 	{
-		return CollisionMgr->isInDoors( mapId, pos );
+		return !IsOutdoor(mapId, pos);
 	}
 
 	ARCEMU_INLINE bool IsOutdoor(uint32 mapId, LocationVector & pos)
 	{
-		return CollisionMgr->isOutDoors( mapId, pos );
+		return IsOutdoor(mapId, pos.x, pos.y, pos.z);
 	}
 
 	ARCEMU_INLINE float GetHeight(uint32 mapId, LocationVector & pos)
 	{
-		return CollisionMgr->getHeight( mapId, pos );
+		return GetHeight(mapId, pos.x, pos.y, pos.z);
 	}
 
 #endif

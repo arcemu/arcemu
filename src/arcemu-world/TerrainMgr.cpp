@@ -28,6 +28,29 @@ TerrainTile* TerrainHolder::GetTile( float x, float y )
 	return GetTile(tx, ty);
 }
 
+AreaTable* TerrainHolder::GetArea( float x, float y, float z )
+{
+	VMAP::IVMapManager* vmgr = VMAP::VMapFactory::createOrGetVMapManager();
+
+	uint32 flags;
+	int32 adtid, rootid, groupid;
+
+	if (vmgr->getAreaInfo(m_mapid, x, y, z, flags, adtid, rootid, groupid))
+	{
+		WMOAreaTableEntry* wmoArea = sWorld.GetWMOAreaData(rootid, adtid, groupid);
+		if (wmoArea != NULL)
+			return dbcArea.LookupEntryForced(wmoArea->areaId);
+	}
+
+	uint32 exploreFlag = GetAreaFlag(x, y);
+
+	std::map<uint32, AreaTable*>::iterator itr = sWorld.mAreaIDToTable.find(exploreFlag);
+
+	if (itr == sWorld.mAreaIDToTable.end())
+		return NULL;
+	return dbcArea.LookupEntryForced(itr->second->AreaId);
+}
+
 TerrainTile::~TerrainTile()
 {
 	m_parent->m_tiles[m_tx][m_ty] = NULL;

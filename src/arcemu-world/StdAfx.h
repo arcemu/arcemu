@@ -124,6 +124,15 @@ template< class T, class U > T TO( U u ){ return static_cast< T >( u ); }
 #define M_Q_PI     0.785398163397448309615
 #define M_PI_FLOAT 3.14159f
 
+//VMAP
+#include "vmap/ModelInstance.h"
+#include "vmap/WorldModel.h"
+#include "vmap/MapTree.h"
+#include "vmap/BIH.h"
+#include "vmap/VMapFactory.h"
+#include "vmap/VMapManager2.h"
+#include "vmap/VMapDefinitions.h"
+
 #include "AddonMgr.h"
 #include "AIInterface.h"
 #include "AreaTrigger.h"
@@ -202,14 +211,6 @@ template< class T, class U > T TO( U u ){ return static_cast< T >( u ); }
 #include "CConsole.h"
 #include "SpeedDetector.h"
 #include "WorldStates.h"
-
-
-//VMAP
-#include "vmap/ModelInstance.h"
-#include "vmap/WorldModel.h"
-#include "vmap/MapTree.h"
-#include "vmap/BIH.h"
-#include "vmap/VMapDefinitions.h"
 
 #endif
 

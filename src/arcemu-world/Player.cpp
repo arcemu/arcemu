@@ -1335,61 +1335,13 @@ void Player::_EventExploration()
 	if(GetMapMgr()->GetCellByCoords(GetPositionX(),GetPositionY()) == NULL)
 		return;
 
-	uint16 AreaId = GetMapMgr()->GetAreaID(GetPositionX(),GetPositionY());
-	sLog.Debug("Area", "%u", AreaId);
-
-	if(!AreaId || AreaId == 0xFFFF)
+	AreaTable* at = GetMapMgr()->GetArea(GetPositionX(), GetPositionY(), GetPositionZ());
+	if (at == NULL)
 		return;
 
-	// AreaId fix for undercity and ironforge.  This will now enable rest for these 2 cities.
-	// since they're both on the same map, only 1 map id check
-	if (GetMapId() == 0)
-	{
-		// get position
-		float ss_x = m_position.x;
-		float ss_y = m_position.y;
-		float ss_z = m_position.z;
+	sLog.Debug("Area", "Test %u %s", at->AreaId, at->name);
 
-		// Check for Undercity, Tirisfal Glades, and Ruins of Lordaeron, if neither, skip
-		if (AreaId == 153 || AreaId == 85 || m_AreaID == 1497)
-		{
-			// ruins check
-			if (ss_z < 74)
-			{
-				// box with coord 1536,174 -> 1858,353; and z < 62.5 for reachable areas
-				if (ss_y > 174 && ss_y < 353 && ss_x > 1536 && ss_x < 1858)
-				{
-					AreaId = 1497;
-				}
-			}
-			// inner city check
-			if (ss_z < 38)
-			{
-				// box with coord 1238, 11 -> 1823, 640; and z < 38 for underground
-				if (ss_y > 11 && ss_y < 640 && ss_x > 1238 && ss_x < 1823)
-				{
-					AreaId = 1497;
-				}
-			}
-			// todo bat tunnel, only goes part way, but should be fine for now
-		}
-		// Check for Ironforge, and Gates of IronForge.. if neither skip
-		if (AreaId == 809 || m_AreaID == 1537) {
-			// height check
-			if (ss_z > 480)
-			{
-				// box with coord -5097.3, -828 -> -4570, -1349.3; and z > 480.
-				if (ss_y > -1349.3 && ss_y < -828 && ss_x > -5097.3 && ss_x < -4570)
-				{
-					AreaId = 1537;
-				}
-			}
-		}
-	}
-
-	AreaTable * at = dbcArea.LookupEntryForced(AreaId);
-	if(at == NULL)
-		return;
+	uint32 AreaId = at->AreaId;
 
 	/*char areaname[200];
 	if(at)

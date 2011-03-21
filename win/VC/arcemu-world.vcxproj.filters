@@ -109,9 +109,6 @@
     <Filter Include="vmaps">
       <UniqueIdentifier>{23133c6b-b498-407f-8870-2c078f8e5b38}</UniqueIdentifier>
     </Filter>
-    <Filter Include="vmaps\G3D">
-      <UniqueIdentifier>{fdb74f8c-ddb3-484c-96e2-7bef60c01584}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\arcemu-world\Channel.cpp">

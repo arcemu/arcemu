@@ -1389,6 +1389,23 @@ struct QuestXP{
     //unk                                                   // 10
 };
 
+struct WMOAreaTableEntry
+{
+	uint32 id; // 0
+	uint32 rootId; // 1
+	int32 adtId; // 2
+	int32 groupId; // 3
+	//uint32 field4;
+	//uint32 field5;
+	//uint32 field6;
+	//uint32 field7;
+	//uint32 field8;
+	uint32 flags; // 9
+	uint32 areaId; // 10  ref -> AreaTableEntry
+	//char Name[16];
+	//uint32 nameflags;
+};
+
 #pragma pack(pop)
 
 ARCEMU_INLINE float GetRadius(SpellRadius *radius)
@@ -1766,6 +1783,7 @@ extern SERVER_DECL DBCStorage<ScalingStatDistributionEntry> dbcScalingStatDistri
 extern SERVER_DECL DBCStorage<ScalingStatValuesEntry> dbcScalingStatValues;
 extern SERVER_DECL DBCStorage<ItemLimitCategoryEntry> dbcItemLimitCategory;
 extern SERVER_DECL DBCStorage< QuestXP > dbcQuestXP;
+extern SERVER_DECL DBCStorage<WMOAreaTableEntry> dbcWMOAreaTable;
 
 bool LoadDBCs();
 
