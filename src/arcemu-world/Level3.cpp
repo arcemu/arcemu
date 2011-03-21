@@ -3832,7 +3832,7 @@ bool ChatHandler::HandleCollisionGetHeight(const char * args, WorldSession * m_s
 		float z = CollideInterface.GetHeight(plr->GetMapId(), posX, posY, posZ + 2.0f);
 		float z2 = CollideInterface.GetHeight(plr->GetMapId(), posX, posY, posZ + 5.0f);
 		float z3 = CollideInterface.GetHeight(plr->GetMapId(), posX, posY, posZ);
-		float z4 = plr->GetMapMgr()->GetLandHeight(plr->GetPositionX(),plr->GetPositionY());
+		float z4 = plr->GetMapMgr()->GetADTLandHeight(plr->GetPositionX(), plr->GetPositionY());
 		bool fp = CollideInterface.GetFirstPoint( plr->GetMapId(), src, dest, dest, -1.5f );
 
 		SystemMessage(m_session, "Results were: %f(offset2.0f) | %f(offset5.0f) | %f(org) | landheight:%f | target radius5 FP:%d", z, z2, z3,z4,fp);

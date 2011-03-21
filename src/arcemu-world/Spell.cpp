@@ -4009,11 +4009,11 @@ uint8 Spell::CanCast(bool tolerate)
 				if(entry == GO_FISHING_BOBBER)
 				{
 					//uint32 mapid = p_caster->GetMapId();
-					float px=u_caster->GetPositionX();
-					float py=u_caster->GetPositionY();
-					//float pz=u_caster->GetPositionZ();
+					float px = u_caster->GetPositionX();
+					float py = u_caster->GetPositionY();
+					float pz = u_caster->GetPositionZ();
 					float orient = m_caster->GetOrientation();
-					float posx = 0,posy = 0,posz = 0;
+					float posx = 0, posy = 0,posz = 0;
 					float co = cos(orient);
 					float si = sin(orient);
 					MapMgr * map = m_caster->GetMapMgr();
@@ -4025,8 +4025,8 @@ uint8 Spell::CanCast(bool tolerate)
 						posy = py + r * si;
 						/*if(!(map->GetWaterType(posx,posy) & 1))//water
 							continue;*/
-						posz = map->GetLiquidHeight(posx,posy);
-						if(posz > map->GetLandHeight(posx,posy))//water
+						posz = map->GetLiquidHeight(posx, posy);
+						if(posz > map->GetLandHeight(posx, posy, pz + 5))//water
 							break;
 					}
 					if(r<=10)

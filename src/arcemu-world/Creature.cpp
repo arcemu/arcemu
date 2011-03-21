@@ -1895,17 +1895,8 @@ void Creature::SetGuardWaypoints()
 		wp->waittime = 800;  /* these guards are antsy :P */
 		wp->x = GetSpawnX()+ran*sin(ang);
 		wp->y = GetSpawnY()+ran*cos(ang);
+		wp->z = m_mapMgr->GetLandHeight(wp->x, wp->y, m_spawnLocation.z + 2);
 
-		if (sWorld.Collision) {
-			wp->z = CollideInterface.GetHeight(m_mapId, wp->x, wp->y, m_spawnLocation.z + 2.0f);
-			if( wp->z == NO_WMO_HEIGHT )
-				wp->z = m_mapMgr->GetLandHeight(wp->x, wp->y);
-
-			if( fabs( wp->z - m_spawnLocation.z ) > 10.0f )
-				wp->z = m_spawnLocation.z;
-		} else {
-			wp->z = GetMapMgr()->GetLandHeight(wp->x, wp->y);
-		}
 
 		wp->o = 0;
 		wp->backwardemoteid = 0;

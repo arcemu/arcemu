@@ -1225,17 +1225,8 @@ void AlteracValley::AVNode::Spawn()
 			{
 				float x = RandomUInt(10) * cos(RandomFloat(6.28f)) + m_template->m_flagLocation.x;
 				float y = RandomUInt(10) * cos(RandomFloat(6.28f)) + m_template->m_flagLocation.y;
-				float z;
-/*#ifdef COLLISION
-				z = CollideInterface.GetHeight(30, x, y, m_template->m_flagLocation.y + 2.0f);
-				if( z == NO_WMO_HEIGHT )
-					z = m_bg.GetMapMgr()->GetLandHeight(x, y);
-#else
-				z = m_bg.GetMapMgr()->GetLandHeight(x, y);
-#endif*/
-				z = m_bg->GetMapMgr()->GetLandHeight(x, y);
-				if( z != 0.0f )
-					m_guards.push_back(m_bg->SpawnCreature(m_template->m_guardId[t], x, y, z, 0.0f));
+				float z = m_bg->GetMapMgr()->GetADTLandHeight(x, y);
+				m_guards.push_back(m_bg->SpawnCreature(m_template->m_guardId[t], x, y, z, 0.0f));
 			}
 		}
 	}

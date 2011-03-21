@@ -272,7 +272,7 @@ public:
 	}
 
 	//test
-	float GetLandHeight(float x, float y)
+	float GetADTLandHeight(float x, float y)
 	{
 		TerrainTile* tile = GetTile(x, y);
 
@@ -281,6 +281,16 @@ public:
 		float rv = tile->m_map.GetHeight(x, y);
 		tile->DecRef();
 		return rv;
+	}
+
+	float GetLandHeight(float x, float y, float z)
+	{
+		float adtheight = GetADTLandHeight(x, y);
+
+		VMAP::IVMapManager* vmgr = VMAP::VMapFactory::createOrGetVMapManager();
+		float vmapheight = vmgr->getHeight(m_mapid, x, y, z + 0.5f, 10000.0f);
+
+		return std::max(vmapheight, adtheight);
 	}
 
 	float GetLiquidHeight(float x, float y)

@@ -212,8 +212,9 @@ public:
 	void UpdateCellActivity(uint32 x, uint32 y, int radius);
 
 	// Terrain Functions
-	float  GetLandHeight(float x, float y) { return _terrain->GetLandHeight(x, y); }
-	bool   IsUnderground(float x, float y,float z) { return GetLandHeight(x, y) > (z+0.5f); }
+	float  GetLandHeight(float x, float y, float z) { return _terrain->GetLandHeight(x, y, z); }
+	float  GetADTLandHeight(float x, float y) { return _terrain->GetADTLandHeight(x, y); }
+	bool   IsUnderground(float x, float y,float z) { return GetADTLandHeight(x, y) > (z+0.5f); }
 	float  GetLiquidHeight(float x, float y) { return _terrain->GetLiquidHeight(x, y); }
 	uint8  GetLiquidType(float x, float y) { return _terrain->GetLiquidType(x, y); }
 	uint16 GetAreaID(float x, float y);

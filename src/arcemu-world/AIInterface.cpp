@@ -1090,9 +1090,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 		{
 			if (!m_moveFly)
 			{
-				float target_land_z = CollideInterface.GetHeight(m_Unit->GetMapId(), getNextTarget()->GetPositionX(), getNextTarget()->GetPositionY(), getNextTarget()->GetPositionZ() + 2.0f);
-				if ( target_land_z == NO_WMO_HEIGHT )
-					target_land_z = m_Unit->GetMapMgr()->GetLandHeight(getNextTarget()->GetPositionX(), getNextTarget()->GetPositionY());
+				float target_land_z = m_Unit->GetMapMgr()->GetLandHeight(getNextTarget()->GetPositionX(), getNextTarget()->GetPositionY(), getNextTarget()->GetPositionZ());
 
 				if (fabs(getNextTarget()->GetPositionZ() - target_land_z) > _CalcCombatRange(getNextTarget(), false))
 				{
@@ -1548,9 +1546,7 @@ void AIInterface::AttackReaction(Unit* pUnit, uint32 damage_dealt, uint32 spellI
 		{
 			if (!m_moveFly)
 			{
-				float target_land_z = CollideInterface.GetHeight(m_Unit->GetMapId(), pUnit->GetPositionX(), pUnit->GetPositionY(), pUnit->GetPositionZ() + 2.0f);
-				if ( target_land_z == NO_WMO_HEIGHT )
-					target_land_z = m_Unit->GetMapMgr()->GetLandHeight(pUnit->GetPositionX(), pUnit->GetPositionY());
+				float target_land_z = m_Unit->GetMapMgr()->GetLandHeight(pUnit->GetPositionX(), pUnit->GetPositionY(), pUnit->GetPositionZ());
 
 				if (fabs(pUnit->GetPositionZ() - target_land_z) > _CalcCombatRange(pUnit, false) )
 				{
@@ -2032,21 +2028,11 @@ bool AIInterface::FindFriends(float dist)
 
 		float x = m_Unit->GetPositionX() + (float)( (float)(rand() % 150 + 100) / 1000.0f );
 		float y = m_Unit->GetPositionY() + (float)( (float)(rand() % 150 + 100) / 1000.0f );
-		float z;
+		float z = m_Unit->GetMapMgr()->GetLandHeight(x, y, m_Unit->GetPositionZ() + 2);
 
-		if (sWorld.Collision) {
-			z = CollideInterface.GetHeight(m_Unit->GetMapId(), x, y, m_Unit->GetPositionZ() + 2.0f);
-			if( z == NO_WMO_HEIGHT )
-				z = m_Unit->GetMapMgr()->GetLandHeight(x, y);
-
-			if( fabs( z - m_Unit->GetPositionZ() ) > 10.0f )
-				z = m_Unit->GetPositionZ();
-		} else {
+		if( fabs( z - m_Unit->GetPositionZ() ) > 10.0f )
 			z = m_Unit->GetPositionZ();
-			float adt_z = m_Unit->GetMapMgr()->GetLandHeight(x, y);
-			if(fabs(z - adt_z) < 3)
-				z = adt_z;
-		}
+		
 
 		CreatureProto * cp = CreatureProtoStorage.LookupEntry(guardid);
 		if(!cp) return result;
@@ -3206,10 +3192,11 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 			float wl = m_Unit->GetMapMgr()->GetLiquidHeight(Fx, Fy);
 //			uint8 wt = m_Unit->GetMapMgr()->GetWaterType(Fx, Fy);
 
-			if (sWorld.Collision) {
+			if (sWorld.Collision)
+			{
 				Fz = CollideInterface.GetHeight(m_Unit->GetMapId(), Fx, Fy, m_Unit->GetPositionZ() + 2.0f);
 				if( Fz == NO_WMO_HEIGHT )
-	                Fz = m_Unit->GetMapMgr()->GetLandHeight(Fx, Fy);
+	                Fz = m_Unit->GetMapMgr()->GetADTLandHeight(Fx, Fy);
 				else
 				{
 					if( CollideInterface.GetFirstPoint(m_Unit->GetMapId(), m_Unit->GetPositionX(), m_Unit->GetPositionY(), m_Unit->GetPositionZ() + 2.0f,
@@ -3234,7 +3221,7 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 					StopMovement(0);
 				}
 			} else {
-				Fz = m_Unit->GetMapMgr()->GetLandHeight(Fx, Fy);
+				Fz = m_Unit->GetMapMgr()->GetADTLandHeight(Fx, Fy);
 				if(fabs(m_Unit->GetPositionZ()-Fz) > 4 || (Fz != 0.0f && Fz < (wl-2.0f)))
 					m_FearTimer=getMSTime()+100;
 				else
@@ -3257,57 +3244,11 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 		float wanderO = RandomFloat(6.283f);
 		float wanderX = m_Unit->GetPositionX() + wanderD * cosf(wanderO);
 		float wanderY = m_Unit->GetPositionY() + wanderD * sinf(wanderO);
+		float wanderZ = m_Unit->GetMapMgr()->GetLandHeight(wanderX, wanderY, m_Unit->GetPositionZ() + 2);
 
-		if (sWorld.Collision) {
-			float wanderZ = CollideInterface.GetHeight(m_Unit->GetMapId(), wanderX, wanderY, m_Unit->GetPositionZ() + 2.0f);
-			float wanderZ2 = wanderZ;
-			if( wanderZ == NO_WMO_HEIGHT )
-				wanderZ = m_Unit->GetMapMgr()->GetLandHeight(wanderX, wanderY);
-			else
-			{
-				if( CollideInterface.GetFirstPoint(m_Unit->GetMapId(), m_Unit->GetPositionX(), m_Unit->GetPositionY(), m_Unit->GetPositionZ() + 2.0f,
-					wanderX, wanderY, wanderZ + 2.0f, wanderX, wanderY, wanderZ, -1.0f) )
-				{
-					//wanderZ = CollideInterface.GetHeight(m_Unit->GetMapId(), wanderX, wanderY, m_Unit->GetPositionZ() + 2.0f);
-				}
-				else
-					wanderZ = wanderZ2;
-			}
-
-			if( fabs( m_Unit->GetPositionZ() - wanderZ ) > 10.0f )
-			{
-				m_WanderTimer=getMSTime() + 1000;
-			}
-			else if(CollideInterface.CheckLOS(m_Unit->GetMapId(), m_Unit->GetPositionX(), m_Unit->GetPositionY(), m_Unit->GetPositionZ() + 2.0f, wanderX, wanderY, wanderZ))
-			{
-				m_Unit->SetOrientation(wanderO);
-				MoveTo(wanderX, wanderY, wanderZ, wanderO);
-				m_WanderTimer = getMSTime() + m_totalMoveTime + 300; // time till next move (+ pause)
-			}
-			else
-			{
-				StopMovement(0);
-			}
-		} else {
-			float wanderZ = m_Unit->GetMapMgr()->GetLandHeight(wanderX, wanderY);
-
-			// without these next checks we could fall through the "ground" (WMO) and get stuck
-			// wander won't work correctly in cities until we get some way to fix this and remove these checks
-			float currentZ = m_Unit->GetPositionZ();
-			float landZ = m_Unit->GetMapMgr()->GetLandHeight(m_Unit->GetPositionX(), m_Unit->GetPositionY());
-
-			if( currentZ > landZ + 1.0f // are we more than 1yd above ground? (possible WMO)
-			 || wanderZ < currentZ - 5.0f // is our destination land height too low? (possible WMO)
-			 || wanderZ > currentZ + wanderD) // is our destination too high to climb?
-			{
-				m_WanderTimer = getMSTime() + 1000; // wait 1 second before we try again
-				return;
-			}
-
-			m_Unit->SetOrientation(wanderO);
-			MoveTo(wanderX, wanderY, wanderZ, wanderO);
-			m_WanderTimer = getMSTime() + m_totalMoveTime + 300; // time till next move (+ pause)
-		}
+		CollideInterface.GetFirstPoint(m_Unit->GetMapId(), m_Unit->GetPositionX(), m_Unit->GetPositionY(), m_Unit->GetPositionZ() + 2, wanderX, wanderY, wanderZ, wanderX, wanderY, wanderZ, -1);
+		MoveTo(wanderX, wanderY, wanderZ, wanderO);
+		m_WanderTimer = getMSTime() + m_totalMoveTime + 300; // time till next move (+ pause)
 	}
 
 	//Unit Follow Code

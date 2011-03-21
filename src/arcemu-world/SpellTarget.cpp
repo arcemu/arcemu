@@ -619,7 +619,7 @@ bool Spell::GenerateTargets(SpellCastTargets* t)
 				t->m_destY = m_caster->GetPositionY() + (sinf(ang) * r);
 				t->m_destZ = sWorld.Collision? CollideInterface.GetHeight(m_caster->GetMapId(), t->m_destX, t->m_destY, m_caster->GetPositionZ() + 2.0f) : NO_WMO_HEIGHT;
 				if (t->m_destZ == NO_WMO_HEIGHT)
-					t->m_destZ = m_caster->GetMapMgr()->GetLandHeight(t->m_destX, t->m_destY);
+					t->m_destZ = m_caster->GetMapMgr()->GetADTLandHeight(t->m_destX, t->m_destY);
 				t->m_targetMask = TARGET_FLAG_DEST_LOCATION;
 			}
 			while (sWorld.Collision && !CollideInterface.CheckLOS(m_caster->GetMapId(), m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ(), t->m_destX, t->m_destY, t->m_destZ));

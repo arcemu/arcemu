@@ -2194,7 +2194,7 @@ void Spell::SpellEffectLeap(uint32 i) // Leap
 					break;
 				}
 			}else {
-				newposZ = m_caster->GetMapMgr()->GetLandHeight(newposX,newposY);
+				newposZ = m_caster->GetMapMgr()->GetADTLandHeight(newposX,newposY);
 			}
 
 			if ( fabs( ( newposZ - finaldest.z ) / radius_steps ) > 1.0f ) {flag |= _POS_BREAK; break;} // too high
@@ -2227,7 +2227,7 @@ void Spell::SpellEffectLeap(uint32 i) // Leap
 
 		if ( !(flag & _UNDERGROUND) )
 		{
-			newposZ = m_caster->GetMapMgr()->GetLandHeight( finaldest.x,finaldest.y );
+			newposZ = m_caster->GetMapMgr()->GetADTLandHeight( finaldest.x,finaldest.y );
 			if ( newposZ > finaldest.z ) finaldest.z = newposZ;
 		}
 
@@ -2236,7 +2236,7 @@ void Spell::SpellEffectLeap(uint32 i) // Leap
 			// so it makes you on falling.
 			newposX = posX + ( ((j * radius_steps)+0.5f) * cosf( m_caster->GetOrientation() ) );
 			newposY = posY + ( ((j * radius_steps)+0.5f) * sinf( m_caster->GetOrientation() ) );
-			newposZ = m_caster->GetMapMgr()->GetLandHeight(newposX,newposY);
+			newposZ = m_caster->GetMapMgr()->GetADTLandHeight(newposX,newposY);
 			if ( newposZ > finaldest.z ) finaldest.z = finaldest.z+4.0f; // taking big Z
 		}
 
@@ -3164,7 +3164,7 @@ void Spell::SpellEffectSummonObject(uint32 i)
 			if( !(map->GetLiquidType( posx, posy ) & 1) )//water
 				continue;
 			posz = map->GetLiquidHeight( posx, posy );
-			if( posz > map->GetLandHeight( posx, posy ) )//water
+			if( posz > map->GetLandHeight( posx, posy, pz + 5 ) )//water
 				break;
 		}
 
@@ -4169,7 +4169,7 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
     pTotem->SetCreatureInfo( ci );
     pTotem->SetCreatureProto( cp );
 
-	float landh = p_caster->GetMapMgr()->GetLandHeight(x,y);
+	float landh = p_caster->GetMapMgr()->GetLandHeight(x,y, p_caster->GetPositionZ() + 2);
 	float landdiff = landh - p_caster->GetPositionZ();
 
 	if (fabs(landdiff)>15)
