@@ -4023,10 +4023,13 @@ uint8 Spell::CanCast(bool tolerate)
 					{
 						posx = px + r * co;
 						posy = py + r * si;
-						/*if(!(map->GetWaterType(posx,posy) & 1))//water
-							continue;*/
-						posz = map->GetLiquidHeight(posx, posy);
-						if(posz > map->GetLandHeight(posx, posy, pz + 5))//water
+						uint32 liquidtype;
+						map->GetLiquidInfo(posx, posy, pz + 2, posz, liquidtype);
+						if(!(liquidtype & 1))//water
+							continue;
+						if (!map->InLineOfSight(GetPositionX(), GetPositionY(), GetPositionZ() + 0.5f, posx, posy, posz))
+							continue;
+						if(posz > map->GetLandHeight(posx, posy, pz + 2))
 							break;
 					}
 					if(r<=10)

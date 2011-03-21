@@ -3161,10 +3161,11 @@ void Spell::SpellEffectSummonObject(uint32 i)
 		{
 			posx = px + r * co;
 			posy = py + r * si;
-			if( !(map->GetLiquidType( posx, posy ) & 1) )//water
+			uint32 liquidtype;
+			map->GetLiquidInfo(posx, posy, pz + 2, posz, liquidtype);
+			if(!(liquidtype & 1))//water
 				continue;
-			posz = map->GetLiquidHeight( posx, posy );
-			if( posz > map->GetLandHeight( posx, posy, pz + 5 ) )//water
+			if(posz > map->GetLandHeight( posx, posy, pz + 2 ))//water
 				break;
 		}
 

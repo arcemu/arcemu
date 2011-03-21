@@ -215,10 +215,12 @@ public:
 	float  GetLandHeight(float x, float y, float z) { return _terrain->GetLandHeight(x, y, z); }
 	float  GetADTLandHeight(float x, float y) { return _terrain->GetADTLandHeight(x, y); }
 	bool   IsUnderground(float x, float y,float z) { return GetADTLandHeight(x, y) > (z+0.5f); }
+	bool GetLiquidInfo(float x, float y, float z, float & liquidlevel, uint32 & liquidtype) { return _terrain->GetLiquidInfo(x, y, z, liquidlevel, liquidtype); }
 	float  GetLiquidHeight(float x, float y) { return _terrain->GetLiquidHeight(x, y); }
 	uint8  GetLiquidType(float x, float y) { return _terrain->GetLiquidType(x, y); }
 	uint16 GetAreaID(float x, float y);
 	AreaTable* GetArea(float x, float y, float z) { return _terrain->GetArea(x, y, z); }
+	bool InLineOfSight(float x, float y, float z, float x2, float y2, float z2) { return _terrain->InLineOfSight(x, y, z, x2, y2, z2); }
 
 	uint32 GetMapId() { return _mapId; }
 

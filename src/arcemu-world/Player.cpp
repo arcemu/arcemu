@@ -7622,7 +7622,7 @@ QuestStatus Player::GetQuestStatus( uint32 quest_id )
 
 bool Player::IsInCity()
 {
-	AreaTable * at = dbcArea.LookupEntry(GetAreaID());
+	AreaTable * at = GetMapMgr()->GetArea(GetPositionX(), GetPositionY(), GetPositionZ())
 	AreaTable * zt = NULL;
 	if( at->ZoneId )
 		zt = dbcArea.LookupEntry( at->ZoneId );
@@ -7657,7 +7657,7 @@ void Player::ZoneUpdate(uint32 ZoneId)
 	sHookInterface.OnZone(this, ZoneId, oldzone);
 	CALL_INSTANCE_SCRIPT_EVENT( m_mapMgr, OnZoneChange )( this, ZoneId, oldzone );
 
-	AreaTable * at = dbcArea.LookupEntryForced(GetAreaID());
+	AreaTable * at = GetMapMgr()->GetArea(GetPositionX(), GetPositionY(), GetPositionZ());
 	if(at && ( at->category == AREAC_SANCTUARY || at->AreaFlags & AREA_SANCTUARY ) )
 	{
 		Unit * pUnit = (GetSelection() == 0) ? 0 : (m_mapMgr ? m_mapMgr->GetUnit(GetSelection()) : 0);
@@ -7757,7 +7757,7 @@ void Player::UpdateChannels(uint16 AreaID)
 	else if( GetMapId() == 449 )
 		AreaID = 2918;
 
-	AreaTable * at2 = dbcArea.LookupEntry(GetZoneId());
+	AreaTable * at2 = GetMapMgr()->GetArea(GetPositionX(), GetPositionY(), GetPositionZ());
 
 	//Check for instances?
 	if(!AreaID || AreaID == 0xFFFF)
