@@ -2071,7 +2071,7 @@ namespace luaUnit
 		float y = CHECK_FLOAT(L,2);
 		if (!ptr || !x || !y) 
 			return 0;
-		float lH = ptr->GetMapMgr()->GetLandHeight(x,y);
+		float lH = ptr->GetMapMgr()->GetADTLandHeight(x,y);
 		lua_pushnumber(L, lH);
 		return 1;
 	}

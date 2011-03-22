@@ -676,7 +676,7 @@ namespace luaGameObject
 			lua_pushnil(L);
 		else 
 		{
-			float lH = ptr->GetMapMgr()->GetLandHeight(x,y);
+			float lH = ptr->GetMapMgr()->GetADTLandHeight(x,y);
 			lua_pushnumber(L, lH);
 		}
 		return 1;
