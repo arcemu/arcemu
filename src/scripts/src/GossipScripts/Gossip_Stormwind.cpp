@@ -18,36 +18,26 @@
 
 #include "Setup.h"
 
-class ArchmageMalin_Gossip : public GossipScript
+class ArchmageMalin_Gossip : public Arcemu::Gossip::Script
 {
 public:
-    void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+    void OnHello(Object* pObject, Player* plr )
     {
-        GossipMenu *Menu;
-        objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 11469, plr);
+		Arcemu::Gossip::Menu menu(pObject->GetGUID(), 11469);
 
 		if(plr->GetQuestLogForEntry(11223))
-        Menu->AddItem( 0, "Can you send me to Theramore? I have an urgent message for Lady Jaina from Highlord Bolvar.", 1);
-        
-        if(AutoSend)
-            Menu->SendTo(plr);
+			menu.AddItem( Arcemu::Gossip::ICON_CHAT, "Can you send me to Theramore? I have an urgent message for Lady Jaina from Highlord Bolvar.", 1);
+
+		menu.Send(plr);
     }
 
-    void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
+    void OnSelectOption(Object* pObject, Player* plr, uint32 Id, const char * Code)
     {
-		Creature* pCreature = (pObject->IsCreature())?(TO_CREATURE(pObject)):NULL;
-		if(!pObject->IsCreature())
-			return;
-		
-		switch(IntId)
-        {
-        case 1:
-			{
-				plr->Gossip_Complete();
-				pCreature->CastSpell(plr, dbcSpell.LookupEntry(42711), true);
-            }break;
-		}
+		TO_CREATURE(pObject)->CastSpell(plr, dbcSpell.LookupEntry(42711), true);
+		Arcemu::Gossip::Menu::Complete(plr);
     }
+
+	void Destroy() { delete this; }
 
 };
 
@@ -56,52 +46,30 @@ public:
 **********************************************/
 
 //This is when you talk to Thargold Ironwing...He will fly you through Stormwind Harbor to check it out.
-class SCRIPT_DECL SWHarborFlyAround : public GossipScript
+class SWHarborFlyAround : public Arcemu::Gossip::Script
 {
 public:
-    void GossipHello(Object * pObject, Player* Plr, bool AutoSend);
-    void GossipSelectOption(Object * pObject, Player* Plr, uint32 Id, uint32 IntId, const char * Code);
-    void GossipEnd(Object * pObject, Player* Plr);
+    void OnHello(Object * pObject, Player* Plr)
+	{
+
+		Arcemu::Gossip::Menu menu(pObject->GetGUID(), 13454);
+		menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Yes, please.", 1 );
+		menu.AddItem(Arcemu::Gossip::ICON_CHAT, "No, thank you.", 2 );
+
+		menu.Send(Plr);
+	}
+    void OnSelectOption(Object * pObject, Player* Plr, uint32 Id, const char * Code)
+	{
+		Arcemu::Gossip::Menu::Complete(Plr);
+		if(1 == Id)
+			Plr->TaxiStart(sTaxiMgr.GetTaxiPath(1041), 25679, 0);
+	}
+
+	void Destroy() { delete this; }
 };
-
-void SWHarborFlyAround::GossipHello(Object * pObject, Player* Plr, bool AutoSend)
-{
-    GossipMenu *Menu;
-	objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 13454, Plr);
-	Menu->AddItem( 0, "Yes, please.", 1 );
-	Menu->AddItem( 0, "No, thank you.", 2 );
-	if(AutoSend)
-    Menu->SendTo(Plr);
-}
-
-void SWHarborFlyAround::GossipSelectOption(Object * pObject, Player* Plr, uint32 Id, uint32 IntId, const char * Code)
-{
-	Creature * pCreature = (pObject->IsCreature())?TO_CREATURE(pObject):NULL;
-	if(pCreature==NULL)
-		return;
-
-    switch(IntId)
-    {
-    case 1:{
-	TaxiPath * taxipath = sTaxiMgr.GetTaxiPath(1041);
-	Plr->TaxiStart(taxipath, 25679, 0);
-	}break;
-	
-	case 2:
-	{Plr->Gossip_Complete();}
-	break;
-    }
-}
-
-void SWHarborFlyAround::GossipEnd(Object * pObject, Player* Plr)
-{
-    GossipScript::GossipEnd(pObject, Plr);
-}
 
 void SetupStormwindGossip(ScriptMgr * mgr)
 {
-	GossipScript * ArchmageMalinGossip = new ArchmageMalin_Gossip;
-	mgr->register_gossip_script(2708, ArchmageMalinGossip); // Archmage Malin
-	GossipScript * SWHARFLY = new SWHarborFlyAround();
-	mgr->register_gossip_script(29154, SWHARFLY);
+	mgr->register_creature_gossip(2708, new ArchmageMalin_Gossip); // Archmage Malin
+	mgr->register_creature_gossip(29154, new SWHarborFlyAround);
 }

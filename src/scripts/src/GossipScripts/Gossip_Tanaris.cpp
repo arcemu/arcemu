@@ -18,79 +18,49 @@
 
 #include "Setup.h"
 
-class CurgleCranklehop_Gossip : public GossipScript
+class CurgleCranklehop_Gossip : public Arcemu::Gossip::Script
 {
 public:
-    void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+    void OnHello(Object* pObject, Player* plr)
     {
-        GossipMenu *Menu;
-        objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 1519, plr);
-        Menu->AddItem( 0, "Please tell me more about the hippogryphs.", 1);
-		Menu->AddItem( 0, "Please tell me more about the Gordunni ogres.", 2);
-        
-        if(AutoSend)
-            Menu->SendTo(plr);
+		Arcemu::Gossip::Menu menu(pObject->GetGUID(), 1519);
+		menu.AddItem( Arcemu::Gossip::ICON_CHAT, "Please tell me more about the hippogryphs.", 1 );
+		menu.AddItem( Arcemu::Gossip::ICON_CHAT, "Please tell me more about the Gordunni ogres.", 2);
+		menu.Send(plr);
     }
 
-    void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
+    void OnSelectOption(Object* pObject, Player* plr, uint32 Id, const char * Code)
     {
-		if(!pObject->IsCreature())
-			return;
-		
-		GossipMenu * Menu;
-        switch(IntId)
-        {
-        case 1:
-			{
-				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 1521, plr);
-				Menu->SendTo(plr);
-            }break;
-		case 2:
-			{
-				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 1646, plr);
-				Menu->SendTo(plr);
-            }break;
-		}
+		Arcemu::Gossip::Menu menu(pObject->GetGUID(), 0);
+		if(1 == Id)
+			menu.setTextID(1521);
+		else
+			menu.setTextID(1646);
+		menu.Send(plr);
     }
+
+	void Destroy() { delete this; }
 
 }; 
 
-class TrentonLighthammer_Gossip : public GossipScript
+class TrentonLighthammer_Gossip : public Arcemu::Gossip::Script
 {
 public:
-    void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+     void OnHello(Object* pObject, Player* plr)
     {
-        GossipMenu *Menu;
-        objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 1758, plr);
-        Menu->AddItem( 0, "Tell me more, Trenton.", 1);
-        
-        if(AutoSend)
-            Menu->SendTo(plr);
+		Arcemu::Gossip::Menu::SendQuickMenu(pObject->GetGUID(), 1758, plr, 1, Arcemu::Gossip::ICON_CHAT, "Tell me more, Trenton.");
     }
 
-    void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
+    void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, const char * Code)
     {
-		if(!pObject->IsCreature())
-			return;
-		
-		GossipMenu * Menu;
-        switch(IntId)
-        {
-        case 1:
-			{
-				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 1759, plr);
-				Menu->SendTo(plr);
-            }break;
-		}
+		Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 1759, plr);
     }
 
+	void Destroy() { delete this; }
 };
 
 void SetupTanarisGossip(ScriptMgr * mgr)
 {
-	GossipScript * CurgleCranklehopGossip = new CurgleCranklehop_Gossip;
-	GossipScript * TrentonLighthammerGossip = new TrentonLighthammer_Gossip;
-
-	mgr->register_gossip_script(7763, CurgleCranklehopGossip);		// Curgle Cranklehop
-	mgr->register_gossip_script(7804, TrentonLighthammerGossip);	// Trenton Lighthammer
+	mgr->register_creature_gossip(7763, new CurgleCranklehop_Gossip);		// Curgle Cranklehop
+	mgr->register_creature_gossip(7804, new TrentonLighthammer_Gossip);	// Trenton Lighthammer
 }

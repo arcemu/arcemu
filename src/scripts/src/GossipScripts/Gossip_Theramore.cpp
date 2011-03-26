@@ -18,76 +18,50 @@
 
 #include "Setup.h"
 
-class CassaCrimsonwing_Gossip : public GossipScript
+class CassaCrimsonwing_Gossip : public Arcemu::Gossip::Script
 {
 public:
-    void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+    void OnHello(Object* pObject, Player* plr)
     {
         GossipMenu *Menu;
 		objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 11224, plr);
-        if(plr->GetQuestLogForEntry(11142) != NULL){
-			Menu->AddItem( 0, "Lady Jaina told me to speak to you about using a gryphon to survey Alcaz Island.", 1);
-		};
-        if(AutoSend)
-            Menu->SendTo(plr);
+
+		Arcemu::Gossip::Menu menu(pObject->GetGUID(), 11224);
+        if(plr->GetQuestLogForEntry(11142) != NULL)
+			menu.AddItem( Arcemu::Gossip::ICON_CHAT, "Lady Jaina told me to speak to you about using a gryphon to survey Alcaz Island.", 1);
+
+		menu.Send(plr);
     }
 
-    void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
+    void OnSelectOption(Object* pObject, Player* plr, uint32 Id, const char * Code)
     {
-		Creature* pCreature = (pObject->IsCreature())?(TO_CREATURE(pObject)):NULL;
-		if(pCreature==NULL)
-			return;
-
-        switch(IntId)
-        {
-        case 1:
-			{
-				plr->GetQuestLogForEntry(11142)->SendQuestComplete();
-				TaxiPath * path = sTaxiMgr.GetTaxiPath( 724 ); // Flight Path
-				plr->TaxiStart( path, 1147, 0 ); // Gryph
-            }break;
-		}
+		plr->GetQuestLogForEntry(11142)->SendQuestComplete();
+		plr->TaxiStart( sTaxiMgr.GetTaxiPath( 724 ), 1147, 0 ); // Gryph
     }
+
+	void Destroy() { delete this; }
 
 };
 
-class CaptainGarranVimes_Gossip : public GossipScript
+class CaptainGarranVimes_Gossip : public Arcemu::Gossip::Script
 {
 public:
-    void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+    void OnHello(Object* pObject, Player* plr)
     {
-        GossipMenu *Menu;
-		objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 1793, plr);
-			
-			Menu->AddItem( 0, "What have you heard of the Shady Rest Inn?", 1);
-
-        if(AutoSend)
-            Menu->SendTo(plr);
+		Arcemu::Gossip::Menu::SendQuickMenu(pObject->GetGUID(), 1793, plr, 1, Arcemu::Gossip::ICON_CHAT, "What have you heard of the Shady Rest Inn?");
     }
 
     void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
     {
-		if(!pObject->IsCreature())
-			return;
-
-		GossipMenu * Menu;
-        switch(IntId)
-        {
-        case 1:
-			{
-				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 1794, plr);
-				Menu->SendTo(plr);
-            }break;
-		}
+		Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 1794, plr);
     }
+
+	void Destroy() { delete this; }
 
 };
 
 void SetupTheramoreGossip(ScriptMgr * mgr)
 {
-	GossipScript * CassaCrimsonwingGossip = new CassaCrimsonwing_Gossip;
-	GossipScript * CaptainGarranVimesGossip = new CaptainGarranVimes_Gossip;
-	
-	mgr->register_gossip_script(23704, CassaCrimsonwingGossip); // Cassa Crimsonwing
-	mgr->register_gossip_script(4944, CaptainGarranVimesGossip); // Captain Garran Vimes
+	mgr->register_creature_gossip(23704, new CassaCrimsonwing_Gossip); // Cassa Crimsonwing
+	mgr->register_creature_gossip(4944, new CaptainGarranVimes_Gossip); // Captain Garran Vimes
 }

@@ -18,40 +18,25 @@
 
 #include "Setup.h"
 
-class SkornWhitecloud_Gossip : public GossipScript
+class SkornWhitecloud_Gossip : public Arcemu::Gossip::Script
 {
 public:
-    void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+    void OnHello(Object* pObject, Player* plr)
     {
-        GossipMenu *Menu;
-        objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 522, plr);
-        Menu->AddItem( 0, "Tell me a story, Skorn.", 1);
-        
-        if(AutoSend)
-            Menu->SendTo(plr);
+		Arcemu::Gossip::Menu::SendQuickMenu(pObject->GetGUID(), 522, plr, 1, Arcemu::Gossip::ICON_CHAT, "Tell me a story, Skorn.");
     }
 
-    void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
+    void OnSelectOption(Object* pObject, Player* plr, uint32 Id, const char * Code)
     {
 		if(!pObject->IsCreature())
 			return;
-		
-		GossipMenu * Menu;
-        switch(IntId)
-        {
-        case 1:
-			{
-				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 523, plr);
-				Menu->SendTo(plr);
-            }break;
-		}
+		Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 523, plr);
     }
 
+	void Destroy() { delete this; }
 };
 
 void SetupMulgoreGossip(ScriptMgr * mgr)
 {
-	GossipScript * SkornWhitecloudGossip = new SkornWhitecloud_Gossip;
-	mgr->register_gossip_script(3052, SkornWhitecloudGossip); // Skorn Whitecloud
-
+	mgr->register_creature_gossip(3052, new SkornWhitecloud_Gossip); // Skorn Whitecloud
 }

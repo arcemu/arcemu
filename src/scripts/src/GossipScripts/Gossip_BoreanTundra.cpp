@@ -1,27 +1,23 @@
 #include "Setup.h"
 
-class TiareGossipScript : public GossipScript
+class TiareGossipScript : public Arcemu::Gossip::Script
 {
 public:
-	void GossipHello(Object* pObject, Player* Plr, bool AutoSend)
+	void OnHello(Object* pObject, Player* Plr)
 	{
-		GossipMenu *Menu;
-		objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 1, Plr);
-		Menu->AddItem(0, "Teleport me to Amber Ledge!", 1); 
-		Menu->SendTo(Plr);
+		Arcemu::Gossip::Menu::SendQuickMenu(pObject->GetGUID(), 1, Plr, 1, 0, "Teleport me to Amber Ledge!");
 	}
 
-	void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * EnteredCode)
+	void OnSelectOption(Object* pObject, Player* plr, uint32 Id, const char * EnteredCode)
     {
-		Creature* Tiare = TO_CREATURE((pObject));		
-		plr->Gossip_Complete();
-		Tiare->CastSpell(plr, dbcSpell.LookupEntry(50135), true);
-	}			
+		Arcemu::Gossip::Menu::Complete(plr);
+		TO_CREATURE( pObject )->CastSpell(plr, dbcSpell.LookupEntry(50135), true);
+	}
+	void Destroy() { delete this; }
 
 };
 
 void SetupBoreanTundraGossip(ScriptMgr * mgr)
 {
-	GossipScript * TiareGossip = new TiareGossipScript;
-	mgr->register_gossip_script(30051, TiareGossip);		// Tiare
+	mgr->register_creature_gossip(30051, new TiareGossipScript);		// Tiare
 }

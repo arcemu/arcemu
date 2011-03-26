@@ -106,7 +106,6 @@ entry	text
 82  Deathknight
 */
 
-
 #include "StdAfx.h"
 #ifndef WIN32
     #include <dlfcn.h>
@@ -528,7 +527,6 @@ void ScriptMgr::register_dummy_spell(uint32 entry, exp_handle_dummy_spell callba
 
 void ScriptMgr::register_gossip_script(uint32 entry, GossipScript * gs)
 {
-	sLog.outError("%s no longer works.", __FUNCTION__  );
 	/*CreatureInfo * ci = CreatureNameStorage.LookupEntry(entry);
 	if(ci)
 	{
@@ -543,7 +541,6 @@ void ScriptMgr::register_gossip_script(uint32 entry, GossipScript * gs)
 
 void ScriptMgr::register_go_gossip_script(uint32 entry, GossipScript * gs)
 {
-	sLog.outError("%s no longer works.", __FUNCTION__  );
 	/*GameObjectInfo * gi = GameObjectNameStorage.LookupEntry(entry);
 	if(gi)
 	{
@@ -710,7 +707,6 @@ bool ScriptMgr::CallScriptedItem(Item * pItem, Player * pPlayer)
 
 void ScriptMgr::register_item_gossip_script(uint32 entry, GossipScript * gs)
 {
-	sLog.outError("%s no longer works.", __FUNCTION__  );
 	/*ItemPrototype * proto = ItemPrototypeStorage.LookupEntry(entry);
 	if(proto)
 	{

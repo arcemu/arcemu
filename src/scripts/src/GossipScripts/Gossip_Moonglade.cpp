@@ -18,84 +18,71 @@
 
 #include "Setup.h"
 
-class SilvaFilnaveth_Gossip : public GossipScript
+class SilvaFilnaveth_Gossip : public Arcemu::Gossip::Script
 {
 public:
-    void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+    void OnHello(Object* pObject, Player* plr)
     {
-        GossipMenu *Menu;
-        if(plr->getClass() == DRUID && plr->getRace() == RACE_NIGHTELF){
-			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4914, plr);
-			Menu->AddItem( 0, "I'd like to fly to Rut'theran Village.", 1);
-		}else if(plr->getClass() == DRUID && plr->getRace() == RACE_TAUREN){
-			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4915, plr);
-		}else{
-			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4913, plr);
-        };
-        if(AutoSend)
-            Menu->SendTo(plr);
+        Arcemu::Gossip::Menu menu(pObject->GetGUID(), 0);
+        if(plr->getClass() == DRUID && plr->getRace() == RACE_NIGHTELF)
+		{
+			menu.setTextID(4914);
+			menu.AddItem(Arcemu::Gossip::ICON_CHAT, "I'd like to fly to Rut'theran Village.", 1);
+		}
+		else if(plr->getClass() == DRUID && plr->getRace() == RACE_TAUREN)
+			menu.setTextID(4915);
+		else
+			menu.setTextID(4913);
+
+		menu.Send(plr);
     }
 
-    void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
+    void OnSelectOption(Object* pObject, Player* plr, uint32 Id, const char * Code)
     {
 		Creature* pCreature = (pObject->IsCreature())?(TO_CREATURE(pObject)):NULL;
 		if(pCreature==NULL)
 			return;
-
-        switch(IntId)
-        {
-        case 1:
-			{
-				TaxiPath * path = sTaxiMgr.GetTaxiPath( 315 ); // Flight Path
-				plr->TaxiStart( path, 479, 0 ); // Hippogryph
-            }break;
-		}
+		plr->TaxiStart( sTaxiMgr.GetTaxiPath( 315 ), 479, 0 ); // Hippogryph
     }
+
+	void Destroy() { delete this; }
 
 };
 
-class BunthenPlainswind_Gossip : public GossipScript
+class BunthenPlainswind_Gossip : public Arcemu::Gossip::Script
 {
 public:
-    void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+    void OnHello(Object* pObject, Player* plr)
     {
-        GossipMenu *Menu;
-		if(plr->getClass() == DRUID && plr->getRace() == RACE_TAUREN){
-			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4918, plr);
-			Menu->AddItem( 0, "I'd like to fly to Thunder Bluff.", 1);
-		}else if(plr->getClass() == DRUID && plr->getRace() == RACE_NIGHTELF){
-			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4917, plr);
-		}else{
-			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4916, plr);
-        };
-        if(AutoSend)
-            Menu->SendTo(plr);
+        Arcemu::Gossip::Menu menu(pObject->GetGUID(), 0);
+		if(plr->getClass() == DRUID && plr->getRace() == RACE_TAUREN)
+		{
+			menu.setTextID(4918);
+			menu.AddItem(Arcemu::Gossip::ICON_CHAT, "I'd like to fly to Thunder Bluff.", 1);
+		}
+		else if(plr->getClass() == DRUID && plr->getRace() == RACE_NIGHTELF)
+			menu.setTextID(4917);
+		else
+			menu.setTextID(4916);
+
+		menu.Send(plr);
     }
 
-    void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
+    void OnSelectOption(Object* pObject, Player* plr, uint32 Id, const char * Code)
     {
 		Creature* pCreature = (pObject->IsCreature())?(TO_CREATURE(pObject)):NULL;
 		if(pCreature==NULL)
 			return;
+		plr->TaxiStart( sTaxiMgr.GetTaxiPath( 316 ), 295, 0 ); // Wyvern
+	}
 
-        switch(IntId)
-        {
-        case 1:
-			{
-				TaxiPath * path = sTaxiMgr.GetTaxiPath( 316 ); // Flight Path
-				plr->TaxiStart( path, 295, 0 ); // Wyvern
-            }break;
-		}
-    }
+	void Destroy() { delete this; }
 
 };
 
 void SetupMoongladeGossip(ScriptMgr * mgr)
 {
-	GossipScript * SilvaFilnavethGossip = new SilvaFilnaveth_Gossip;
-	GossipScript * BunthenPlainswindGossip = new BunthenPlainswind_Gossip;
-
-	mgr->register_gossip_script(11800, SilvaFilnavethGossip); // Silva Fil'naveth
-	mgr->register_gossip_script(11798, BunthenPlainswindGossip); // Bunthen Plainswind
+	mgr->register_creature_gossip(11800, new SilvaFilnaveth_Gossip); // Silva Fil'naveth
+	mgr->register_creature_gossip(11798, new BunthenPlainswind_Gossip); // Bunthen Plainswind
 
 }

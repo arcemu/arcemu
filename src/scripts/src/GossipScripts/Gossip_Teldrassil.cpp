@@ -18,41 +18,23 @@
 
 #include "Setup.h"
 
-class ErelasAmbersky_Gossip : public GossipScript
+class ErelasAmbersky_Gossip : public Arcemu::Gossip::Script
 {
 public:
-    void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+    void OnHello(Object* pObject, Player* plr)
     {
-        GossipMenu *Menu;
-		objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 2153, plr);
-			
-			Menu->AddItem( 0, "Tell me more about these hippogryphs.", 1);
-
-        if(AutoSend)
-            Menu->SendTo(plr);
+		Arcemu::Gossip::Menu::SendQuickMenu(pObject->GetGUID(), 2153, plr, 1, Arcemu::Gossip::ICON_CHAT, "Tell me more about these hippogryphs.");
     }
 
-    void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
+    void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, const char * Code)
     {
-		if(!pObject->IsCreature())
-			return;
-
-		GossipMenu * Menu;
-        switch(IntId)
-        {
-        case 1:
-			{
-				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 2154, plr);
-				Menu->SendTo(plr);
-            }break;
-		}
+		Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 2154, plr);
     }
 
+	void Destroy() { delete this; }
 };
 
 void SetupTeldrassilGossip(ScriptMgr * mgr)
 {
-	GossipScript * ErelasAmberskyGossip = new ErelasAmbersky_Gossip;
-	
-	mgr->register_gossip_script(7916, ErelasAmberskyGossip); // Erelas Ambersky
+	mgr->register_creature_gossip(7916, new ErelasAmbersky_Gossip); // Erelas Ambersky
 }

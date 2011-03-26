@@ -22,77 +22,62 @@
 #define GOSSIP_BOTTOM_TO_MIDDLE "Can you spare a drake to take me to Lord Afrasastrasz in the middle of the temple?"
 #define NPCTEXT_BOTTOM 12713
 
-class SCRIPT_DECL WyrmrestTemple_FlightGossip : public GossipScript
+class SCRIPT_DECL WyrmrestTemple_FlightGossip : public Arcemu::Gossip::Script
 {
 public:
-    void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+    void OnHello(Object* pObject, Player* plr)
     {
-        GossipMenu *Menu;
-		
-		switch(pObject->GetEntry())
+		Arcemu::Gossip::Menu menu(pObject->GetGUID(), 0);
+		switch(pObject->GetEntry() )
         {
 		case CN_TOP:
 			{
-				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), NPCTEXT_TOP, plr);
-				Menu->AddItem( 0, GOSSIP_TOP_TO_BOTTOM, 1);
-				Menu->AddItem( 0, GOSSIP_TOP_TO_MIDDLE, 2);
+				menu.setTextID(NPCTEXT_TOP);
+				menu.AddItem( Arcemu::Gossip::ICON_CHAT, GOSSIP_TOP_TO_BOTTOM, 1);
+				menu.AddItem( Arcemu::Gossip::ICON_CHAT, GOSSIP_TOP_TO_MIDDLE, 2);
             }break;
 		case CN_MIDDLE:
 			{
-				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), NPCTEXT_MIDDLE, plr);
-				Menu->AddItem( 0, GOSSIP_MIDDLE_TO_TOP, 3);
-				Menu->AddItem( 0, GOSSIP_MIDDLE_TO_BOTTOM, 4);
+				menu.setTextID(NPCTEXT_MIDDLE);
+				menu.AddItem( Arcemu::Gossip::ICON_CHAT, GOSSIP_MIDDLE_TO_TOP, 3);
+				menu.AddItem( Arcemu::Gossip::ICON_CHAT, GOSSIP_MIDDLE_TO_BOTTOM, 4);
             }break;
 		case CN_BOTTOM:
 			{
-				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), NPCTEXT_BOTTOM, plr);
-				Menu->AddItem( 0, GOSSIP_BOTTOM_TO_TOP, 5);
-				Menu->AddItem( 0, GOSSIP_BOTTOM_TO_MIDDLE, 6);
+				menu.setTextID(NPCTEXT_BOTTOM);
+				menu.AddItem( Arcemu::Gossip::ICON_CHAT, GOSSIP_BOTTOM_TO_TOP, 5);
+				menu.AddItem( Arcemu::Gossip::ICON_CHAT, GOSSIP_BOTTOM_TO_MIDDLE, 6);
             }break;
 		}
 
-        if(AutoSend)
-            Menu->SendTo(plr);
+		menu.Send(plr);
     }
 
-    void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
+    void OnSelectOption(Object* pObject, Player* plr, uint32 Id, const char * Code)
     {
-		Creature* pCreature = (pObject->IsCreature())?(TO_CREATURE(pObject)):NULL;
-		if(pCreature==NULL)
-			return;
-
-        switch(IntId)
+		Arcemu::Gossip::Menu::Complete(plr);
+        switch(Id)
         {
 		case 1:
-			{
-				TaxiPath * path = sTaxiMgr.GetTaxiPath( 879 ); // Flight Path
-				plr->TaxiStart( path, 6371, 0 ); // Drake
-            }break;
+			plr->TaxiStart( sTaxiMgr.GetTaxiPath( 879 ), 6371, 0 ); // Drake
+			break;
 		case 2:
-			{
-				TaxiPath * path = sTaxiMgr.GetTaxiPath( 880 ); // Flight Path
-				plr->TaxiStart( path, 6371, 0 ); // Drake
-            }break;
+			plr->TaxiStart( sTaxiMgr.GetTaxiPath( 880 ), 6371, 0 ); // Drake
+			break;
 		case 3:
-			{
-				TaxiPath * path = sTaxiMgr.GetTaxiPath( 881 ); // Flight Path
-				plr->TaxiStart( path, 6371, 0 ); // Drake
-            }break;
+			plr->TaxiStart( sTaxiMgr.GetTaxiPath( 881 ), 6371, 0 ); // Drake
+			break;
 		case 4:
-			{
-				TaxiPath * path = sTaxiMgr.GetTaxiPath( 882 ); // Flight Path
-				plr->TaxiStart( path, 6371, 0 ); // Drake
-            }break;
+			plr->TaxiStart( sTaxiMgr.GetTaxiPath( 882 ), 6371, 0 ); // Drake
+			break;
 		case 5:
-			{
-				TaxiPath * path = sTaxiMgr.GetTaxiPath( 878 ); // Flight Path
-				plr->TaxiStart( path, 6371, 0 ); // Drake
-            }break;
+			plr->TaxiStart( sTaxiMgr.GetTaxiPath( 878 ), 6371, 0 ); // Drake
+			break;
 		case 6:
-			{
-				TaxiPath * path = sTaxiMgr.GetTaxiPath( 883 ); // Flight Path
-				plr->TaxiStart( path, 6371, 0 ); // Drake
-            }break;
+			plr->TaxiStart( sTaxiMgr.GetTaxiPath( 883 ), 6371, 0 ); // Drake
+            break;
+		default:
+			break;
 		}
     }
 
@@ -100,9 +85,9 @@ public:
 
 void SetupWyrmrestTempleGossip(ScriptMgr * mgr)
 {
-	GossipScript * WyrmrestTempleFlightGossip = new WyrmrestTemple_FlightGossip;
+	Arcemu::Gossip::Script * WyrmrestTempleFlightGossip = new WyrmrestTemple_FlightGossip;
 
-	mgr->register_gossip_script(CN_TOP, WyrmrestTempleFlightGossip);	// Torastrasza <Majordomo to the Ruling Council>
-	mgr->register_gossip_script(CN_MIDDLE, WyrmrestTempleFlightGossip);	// Lord Afrasastrasz <Commander of Wyrmrest Temple Defenses>
-	mgr->register_gossip_script(CN_BOTTOM, WyrmrestTempleFlightGossip);	// Tariolstrasz <Steward of Wyrmrest Temple>
+	mgr->register_creature_gossip(CN_TOP, WyrmrestTempleFlightGossip);	// Torastrasza <Majordomo to the Ruling Council>
+	mgr->register_creature_gossip(CN_MIDDLE, WyrmrestTempleFlightGossip);	// Lord Afrasastrasz <Commander of Wyrmrest Temple Defenses>
+	mgr->register_creature_gossip(CN_BOTTOM, WyrmrestTempleFlightGossip);	// Tariolstrasz <Steward of Wyrmrest Temple>
 }

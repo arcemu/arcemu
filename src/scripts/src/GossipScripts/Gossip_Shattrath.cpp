@@ -25,102 +25,68 @@
 
 //#define USE_THE_STATUS	// Decoment this is for the status
 
-class ExarchNasuun_Gossip : public GossipScript
+class ExarchNasuun_Gossip : public Arcemu::Gossip::Script
 {
 public:
-    void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+    void OnHello(Object* pObject, Player* plr)
     {
-        GossipMenu *Menu;
-        objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 12227, plr);
-		
+		Arcemu::Gossip::Menu menu(pObject->GetGUID(), 12227);
 		#ifdef USE_THE_STATUS
-			Menu->AddItem( 0, GOSSIP_EXARCH_NASUUN_1, 1);  // this is the status
-			Menu->AddItem( 0, GOSSIP_EXARCH_NASUUN_2, 2);
+			menu.AddItem( Arcemu::Gossip::ICON_CHAT, GOSSIP_EXARCH_NASUUN_1, 1);  // this is the status
+			menu.AddItem( Arcemu::Gossip::ICON_CHAT, GOSSIP_EXARCH_NASUUN_2, 2);
 		#else
-			Menu->AddItem( 0, GOSSIP_EXARCH_NASUUN_2, 3);
+			menu.AddItem( Arcemu::Gossip::ICON_CHAT, GOSSIP_EXARCH_NASUUN_2, 3);
         #endif
-        if(AutoSend)
-            Menu->SendTo(plr);
+		menu.Send(plr);
     }
 
-    void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
+    void OnSelectOption(Object* pObject, Player* plr, uint32 Id, const char * Code)
     {
-		if(!pObject->IsCreature())
-			return;
-		
-		GossipMenu * Menu;
-        switch(IntId)
+        switch(Id)
         {
 		case 0:
-			GossipHello(pObject, plr, true);
+			OnHello(pObject, plr);
 			break;
-
         case 1:
-			{
-				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 12303, plr); // Text of status [The Alchemy lab is not quite yet ready, $N. Mar'nah says she is (percentual) percent done with its assembly.$Bhowever.$B$BIf you wold like to help her with that, you will find her inside the inn at the Sun's Reach Harbor.]
-				Menu->AddItem( 0, GOSSIP_EXARCH_NASUUN_3, 0);
-				Menu->SendTo(plr);
-            }break;
+			Arcemu::Gossip::Menu::SendQuickMenu(pObject->GetGUID(), 12303, plr, 0, Arcemu::Gossip::ICON_CHAT, GOSSIP_EXARCH_NASUUN_3);
+			break;
 		case 2:
-			{
-				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 12305, plr);
-				Menu->AddItem( 0, GOSSIP_EXARCH_NASUUN_3, 0);
-				Menu->SendTo(plr);
-            }break;
+			Arcemu::Gossip::Menu::SendQuickMenu(pObject->GetGUID(), 12305, plr, 0, Arcemu::Gossip::ICON_CHAT, GOSSIP_EXARCH_NASUUN_3);
+			break;
 		case 3:
-			{
-				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 12623, plr);
-				Menu->AddItem( 0, GOSSIP_EXARCH_NASUUN_3, 0);
-				Menu->SendTo(plr);
-            }break;
+			Arcemu::Gossip::Menu::SendQuickMenu(pObject->GetGUID(), 12623, plr, 0, Arcemu::Gossip::ICON_CHAT, GOSSIP_EXARCH_NASUUN_3);
+			break;
+		default:
+			break;
 		}
     }
 
 };
 
-class ZephyrGossipScript : public GossipScript
+class ZephyrGossipScript : public Arcemu::Gossip::Script
 {
 public:
-	void GossipHello(Object* pObject, Player* Plr, bool AutoSend)
+	void OnHello(Object* pObject, Player* Plr )
 	{
-		GossipMenu *Menu;
-		objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 1, Plr);
-		Menu->AddItem(0, "Bring me to Caverns of Time!", 1); 
-		Menu->SendTo(Plr);
+		Arcemu::Gossip::Menu::SendQuickMenu(pObject->GetGUID(), 1, Plr, 1, Arcemu::Gossip::ICON_CHAT, "Bring me to Caverns of Time!");
 	}
 
-	void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * EnteredCode)
+	void OnSelectOption(Object* pObject, Player* plr, uint32 Id, const char * EnteredCode)
     {
-		Creature* Zephyr = TO_CREATURE((pObject));
-		if (Zephyr == NULL)
-			return;
-
-		switch (IntId)
-		{
-		case 0:
-			GossipHello(pObject, plr, true);
-			break;
-		case 1:
-			if(plr->GetStanding(989) >=21000)
-			{
-				//plr->SafeTeleport( 1, 0, -8170.441406f, -4751.321777f, 33.457771f, 5.136f);
-				plr->Gossip_Complete();
-				Zephyr->CastSpell(plr, dbcSpell.LookupEntry(37778), true);
-			}else{
-				plr->Gossip_Complete();
-				plr->BroadcastMessage("You need to be Revered with the faction Keepers of Time!"); // Dunno what the correct text is ^^
-			}
-			break;
-		}
+		if(plr->GetStanding(989) >=21000)
+			//plr->SafeTeleport( 1, 0, -8170.441406f, -4751.321777f, 33.457771f, 5.136f);
+			TO_CREATURE(pObject)->CastSpell(plr, dbcSpell.LookupEntry(37778), true);
+		else
+			plr->BroadcastMessage("You need to be Revered with the faction Keepers of Time!"); // Dunno what the correct text is ^^
+		Arcemu::Gossip::Menu::Complete(plr);
 	}
+	void Destroy() { delete this; }
  
 };
 
 void SetupShattrathGossip(ScriptMgr * mgr)
 {
-	GossipScript * ZephyrGossip = new ZephyrGossipScript;
-	mgr->register_gossip_script(25967, ZephyrGossip);		// Zephyr
-	GossipScript * ExarchNasuunGossip = new ExarchNasuun_Gossip;
-	mgr->register_gossip_script(24932, ExarchNasuunGossip); // Exarch Nasuun
+	mgr->register_creature_gossip(25967, new ZephyrGossipScript);		// Zephyr
+	mgr->register_creature_gossip(24932, new ExarchNasuun_Gossip); // Exarch Nasuun
 
 }
