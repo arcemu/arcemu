@@ -519,7 +519,6 @@ void WorldSession::HandleGossipSelectOptionOpcode( WorldPacket & recv_data )
 	uint32 option;
 	uint32 unk24;
 	uint64 guid;
-	int8 extra= 0;
 
 	recv_data >> guid >> unk24 >> option;
 

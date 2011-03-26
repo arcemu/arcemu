@@ -8,7 +8,7 @@ endif(NOT BUILD_ARCEMUSCRIPTS)
 message("Configuring scripts :")
 SET( SCRIPTS_PATH ${ROOT_PATH}/src/scripts/src )
 #common include directories that script libraries might include.
-SET( include_dirs ${ROOT_PATH}/src/arcemu-world ${ROOT_PATH}/src/arcemu-shared)
+SET( include_dirs ${ROOT_PATH}/src/arcemu-world ${ROOT_PATH}/src/arcemu-shared ${ROOT_PATH}/dep/include/g3dlite )
 
 #All script libraries have SCRIPTLIB defined.
 add_definitions(-DSCRIPTLIB)
@@ -20,6 +20,7 @@ SET( BUILD_QUESTSCRIPTS TRUE CACHE BOOL "Build arcQuestScripts.")
 SET( BUILD_MISCSCRIPTS TRUE CACHE BOOL "Build arcMiscScripts." )
 SET( BUILD_SPELLHANDLERS TRUE CACHE BOOL "Build arcSpellHandlers.")
 SET( BUILD_WORLDPVPSCRIPTS TRUE CACHE BOOL "Build WorldPVPScripts.")
+SET( BUILD_SERVERSTATUSPLUGIN TRUE CACHE BOOL "Build ServerStatusPlugin.")
 SET( BUILD_LUAENGINE FALSE CACHE BOOL "Build LuaEngine.")
 SET( BUILD_LUABRIDGE FALSE CACHE BOOL "Build luabridge.")
 
@@ -33,6 +34,7 @@ add_subdirectory( questscripts )
 add_subdirectory( miscscripts )
 add_subdirectory( spellhandlers )
 add_subdirectory( worldpvpscripts )
+add_subdirectory(serverstatusplugin)
 
 unset(SCRIPTS_PATH)
 unset(include_dirs)

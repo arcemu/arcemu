@@ -75,7 +75,7 @@ foreach(src IN ITEMS ${sources} )
   SET( SRCS ${SRCS} ${prefix}/${src} )
 endforeach(src)
 
-include_directories( ${include_dirs} )
+include_directories( ${include_dirs} ${prefix} )
 add_definitions(-Wno-deprecated)
 add_library( ${PROJECT_NAME} SHARED ${SRCS} )
 add_dependencies( ${PROJECT_NAME} ${dependancies} )

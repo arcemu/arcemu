@@ -13,7 +13,6 @@ SET( linkages arcemu-world )
 #SRCS - contains the source files that compose this project.
 
 set( sources
-Gossip_Battlemaster.cpp
 Gossip_Innkeepers.cpp
 Gossip_Guard.cpp
 Gossip_Trainer.cpp

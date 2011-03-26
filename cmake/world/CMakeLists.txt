@@ -250,7 +250,7 @@ ${ROOT_PATH}/dep/include/g3dlite )
 
 include(PCHSupport)
 include_directories( ${include_dirs} )
-add_definitions(-Wno-deprecated -DENABLE_SHITTY_STL_HACKS)
+add_definitions(-Wno-deprecated)
 find_package(PCRE REQUIRED)
 add_executable( ${PROJECT_NAME} ${SRCS} )
 #ADD_PRECOMPILED_HEADER(${PROJECT_NAME} StdAfx.h )
