@@ -123,6 +123,7 @@ public:
 		m_tileHeight = 0;
 		m_heightMapFlags = 0;
 		m_heightMap8F = NULL;
+		m_heightMap9F = NULL;
 		m_heightMapMult = 1;
 
 		m_liquidType = NULL;
