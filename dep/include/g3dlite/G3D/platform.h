@@ -39,6 +39,7 @@
 
 #ifndef _MSC_VER
 /// Fast call is a register-based optimized calling convention supported only by Visual C++
+#undef __fastcall
 #define __fastcall
 
 #endif
