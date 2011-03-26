@@ -512,6 +512,7 @@
     <ClCompile Include="..\..\src\arcemu-world\vmap\WorldModel.cpp">
       <Filter>vmaps</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-world\Gossip.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\arcemu-world\Channel.h">
@@ -813,6 +814,7 @@
     <ClInclude Include="..\..\src\arcemu-world\vmap\WorldModel.h">
       <Filter>vmaps</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-world\Gossip.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\src\arcemu-world\resources.rc" />

@@ -109,6 +109,7 @@ template< class T, class U > T TO( U u ){ return static_cast< T >( u ); }
 #include "LootMgr.h"
 #include "SpellProc.h"
 #include "Unit.h"
+#include "Gossip.h"
 
 #ifdef ENABLE_ACHIEVEMENTS
 #include "AchievementMgr.h"

@@ -40,18 +40,7 @@ trainertype trainer_types[TRAINER_TYPE_MAX] =
 {	"Weapon Master",		 0 },
 };
 
-bool CanTrainAt(Player * plr, Trainer * trn)
-{
-	if ( (trn->RequiredClass && plr->getClass() != trn->RequiredClass) ||
-		 ( (trn->RequiredRace && plr->getRace() != trn->RequiredRace) && ((trn->RequiredRepFaction && trn->RequiredRepValue) && plr->GetStanding(trn->RequiredRepFaction) != static_cast<int32>( trn->RequiredRepValue ))) ||
-		 (trn->RequiredSkill && !plr->_HasSkillLine(trn->RequiredSkill)) ||
-		 (trn->RequiredSkillLine && plr->_GetSkillLineCurrent(trn->RequiredSkill) < trn->RequiredSkillLine) )
-	{
-		return false;
-	}
-	
-	return true;
-}
+
 
 //////////////////////////////////////////////////////////////
 /// This function handles MSG_TABARDVENDOR_ACTIVATE:
@@ -129,7 +118,7 @@ void WorldSession::SendTrainerList(Creature* pCreature)
 	if(pTrainer == 0)
 		return;
 
-	if(!CanTrainAt(_player,pTrainer))
+	if( _player->CanTrainAt(pTrainer) )
 	{
 		GossipMenu * pMenu;
 		objmgr.CreateGossipMenuForPlayer(&pMenu,pCreature->GetGUID(),pTrainer->Cannot_Train_GossipTextId,_player);
@@ -423,28 +412,31 @@ void WorldSession::HandleGossipHelloOpcode( WorldPacket & recv_data )
 	CHECK_INWORLD_RETURN
 
 	uint64 guid;
-	list<QuestRelation *>::iterator it;
-	std::set<uint32> ql;
 
 	recv_data >> guid;
 	Creature *qst_giver = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
-	if(!qst_giver) 
-		return;
 
-	//stop when talked to
-	if(qst_giver->GetAIInterface())
-		qst_giver->GetAIInterface()->StopMovement(30000);
+	if(qst_giver != NULL)
+	{
+		//stop when talked to
+		if(qst_giver->GetAIInterface())
+			qst_giver->GetAIInterface()->StopMovement(30000);
 
-	// unstealth meh
-	if( _player->IsStealth() )
-		_player->RemoveAllAuraType( SPELL_AURA_MOD_STEALTH );
+		// unstealth meh
+		if( _player->IsStealth() )
+			_player->RemoveAllAuraType( SPELL_AURA_MOD_STEALTH );
 
-	// reputation
-	_player->Reputation_OnTalk(qst_giver->m_factionDBC);
+		// reputation
+		_player->Reputation_OnTalk(qst_giver->m_factionDBC);
 
-	sLog.outDebug( "WORLD: Received CMSG_GOSSIP_HELLO from %u",Arcemu::Util::GUID_LOPART( guid ) );
+		sLog.outDebug( "WORLD: Received CMSG_GOSSIP_HELLO from %u",Arcemu::Util::GUID_LOPART( guid ) );
 
-	GossipScript * Script = qst_giver->GetCreatureInfo()->gossip_script;
+		Arcemu::Gossip::Script * script = Arcemu::Gossip::Script::GetInterface( qst_giver );
+		if(script != NULL)
+			script->OnHello(qst_giver, GetPlayer() );
+	}
+
+	/*GossipScript * Script = qst_giver->GetCreatureInfo()->gossip_script;
 	if(!Script)
 		return;
 
@@ -514,7 +506,7 @@ void WorldSession::HandleGossipHelloOpcode( WorldPacket & recv_data )
 	else
 	{
 		Script->GossipHello(qst_giver, _player, true);
-	}
+	}*/
 }
 
 //////////////////////////////////////////////////////////////
@@ -532,59 +524,30 @@ void WorldSession::HandleGossipSelectOptionOpcode( WorldPacket & recv_data )
 	recv_data >> guid >> unk24 >> option;
 
 	sLog.outDetail("WORLD: CMSG_GOSSIP_SELECT_OPTION Option %i Guid %.8X", option, guid );
-	GossipScript * Script= NULL;
-	Object * qst_giver= NULL;
+	Arcemu::Gossip::Script * script = NULL;
 	uint32 guidtype = GET_TYPE_FROM_GUID(guid);
 
-	if(guidtype==HIGHGUID_TYPE_UNIT)
+	Object * qst_giver = GetPlayer()->GetMapMgr()->_GetObject(guid);
+	if(qst_giver != NULL)
 	{
-		Creature *crt = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
-		if(!crt)
-			return;
-
-		qst_giver=crt;
-		Script=crt->GetCreatureInfo()->gossip_script;
-	}
-	else if(guidtype==HIGHGUID_TYPE_ITEM)
-	{
-		Item * pitem = _player->GetItemInterface()->GetItemByGUID(guid);
-		if(pitem== NULL)
-			return;
-
-		qst_giver=pitem;
-		Script=pitem->GetProto()->gossip_script;
-	}
-	else if(guidtype==HIGHGUID_TYPE_GAMEOBJECT)
-	{
-        GameObject *gobj = _player->GetMapMgr()->GetGameObject(GET_LOWGUID_PART(guid));
-		if(!gobj)
-			return;
-        
-		qst_giver=gobj;
-        Script=gobj->GetInfo()->gossip_script;
-    }
-
-	if(!Script||!qst_giver)
-		return;
-
-	uint32 IntId = 1;
-	if(_player->CurrentGossipMenu)
-	{
-		GossipMenuItem item = _player->CurrentGossipMenu->GetItem(option);
-		IntId = item.IntId;
-		extra = item.Extra;
+		if(guidtype==HIGHGUID_TYPE_UNIT)
+			script = Arcemu::Gossip::Script::GetInterface( TO_CREATURE(qst_giver) );
+		else if(guidtype==HIGHGUID_TYPE_ITEM)
+			script = Arcemu::Gossip::Script::GetInterface( TO_ITEM(qst_giver) );
+		else if(guidtype==HIGHGUID_TYPE_GAMEOBJECT)
+			script = Arcemu::Gossip::Script::GetInterface( TO_GAMEOBJECT(qst_giver) );
 	}
 
-	if(extra)
+	if(script != NULL)
 	{
 		string str;
-		if(recv_data.rpos()!=recv_data.wpos())
+		if(recv_data.rpos()!=recv_data.wpos() )
 			recv_data >> str;
-
-		Script->GossipSelectOption(qst_giver, _player, option, IntId, str.c_str());
+		if(str.length() > 0  )
+			script->OnSelectOption(qst_giver, GetPlayer() , option, str.c_str() );
+		else
+			script->OnSelectOption(qst_giver, GetPlayer() , option, NULL );
 	}
-	else
-		Script->GossipSelectOption(qst_giver, _player, option, IntId, NULL);
 }
 
 //////////////////////////////////////////////////////////////

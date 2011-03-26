@@ -72,7 +72,6 @@ typedef std::vector< QuestPOI > QuestPOIVector;
 typedef HM_NAMESPACE::hash_map< uint32, QuestPOIVector > QuestPOIMap;
 
 class Item;
-
 typedef std::list<QuestRelation *> QuestRelationList;
 typedef std::list<QuestAssociation *> QuestAssociationList;
 
@@ -168,6 +167,15 @@ public:
 		return -1;
 	}
 	void LoadExtraQuestStuff();
+
+	//************************************
+	// Purpose : Fills the packet with the quests that the quest giver which the player qualifies for.
+	// Parameter:	Creature * quest giver
+	// Parameter:	Player * player for whom quests are qualified
+	// Parameter:	Arcemu::Gossip::Menu& - menu to fill with quests.
+	// Return : void
+	//************************************
+	void FillQuestMenu(Creature *, Player *, Arcemu::Gossip::Menu&);
 
 private:
 

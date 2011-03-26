@@ -2511,7 +2511,7 @@ public:
 	void SendUpdateDataToSet( ByteBuffer *groupbuf, ByteBuffer *nongroupbuf, bool sendtoself );
 
 	bool CanBuyAt(VendorRestrictionEntry *vendor);
-
+	bool CanTrainAt(Trainer *);
 };
 
 class SkillIterator

@@ -16,7 +16,7 @@ execute_process(WORKING_DIRECTORY ${ROOT_PATH} COMMAND sh extract_svn_revision.s
 #Pass our configurable variables to the C++ preprocessor.
 add_definitions(-DCONFDIR=\"${ARCEMU_CONFIGSFILE_PATH}\" -DPREFIX=\"${ARCEMU_SCRIPTLIB_PATH}\" )
 
-add_subdirectory(collision)
+#add_subdirectory(collision)
 add_subdirectory(shared)
 add_subdirectory(logon)
 add_subdirectory(world)

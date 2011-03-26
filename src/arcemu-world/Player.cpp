@@ -13707,3 +13707,16 @@ bool Player::CanBuyAt(VendorRestrictionEntry *vendor)
 
 	return true;
 }
+
+bool Player::CanTrainAt(Trainer * trn)
+{
+	if ( (trn->RequiredClass && this->getClass() != trn->RequiredClass) ||
+		( (trn->RequiredRace && this->getRace() != trn->RequiredRace) && ((trn->RequiredRepFaction && trn->RequiredRepValue) && this->GetStanding(trn->RequiredRepFaction) != static_cast<int32>( trn->RequiredRepValue ))) ||
+		(trn->RequiredSkill && !this->_HasSkillLine(trn->RequiredSkill)) ||
+		(trn->RequiredSkillLine && this->_GetSkillLineCurrent(trn->RequiredSkill) < trn->RequiredSkillLine) )
+	{
+		return false;
+	}
+
+	return true;
+}

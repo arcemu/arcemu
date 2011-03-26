@@ -2371,3 +2371,38 @@ void QuestMgr::BuildQuestPOIResponse( WorldPacket &data, uint32 questid ){
 		data << uint32( 0 );
 	}
 }
+
+void QuestMgr::FillQuestMenu( Creature * giver, Player * plr, Arcemu::Gossip::Menu& menu)
+{
+	uint32 status;
+	uint8 icon;
+	if(giver->isQuestGiver() && giver->HasQuests() )
+	{
+		for(std::list<QuestRelation*>::iterator itr = giver->QuestsBegin(); itr != giver->QuestsEnd(); ++itr)
+		{
+			status = sQuestMgr.CalcQuestStatus(giver, plr, *itr);
+			if( status >= QMGR_QUEST_CHAT)
+			{
+				switch(status)
+				{
+				case QMGR_QUEST_NOT_FINISHED:
+					icon = QMGR_QUEST_REPEATABLE_LOWLEVEL;
+					break;
+
+				case QMGR_QUEST_FINISHED:
+					icon = QMGR_QUEST_REPEATABLE_LOWLEVEL;
+					break;
+
+				case QMGR_QUEST_CHAT:
+					icon = QMGR_QUEST_AVAILABLE;
+					break;
+
+				default:
+					icon = (uint8)status;
+					break;
+				}
+				menu.AddQuest( (*itr)->qst, icon);
+			}
+		}
+	}
+}

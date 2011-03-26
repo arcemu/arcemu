@@ -350,8 +350,6 @@ void ObjectMgr::LoadExtraItemStuff()
 		if(iter != foodItems.end())
 			ft = iter->second;
 		pItemPrototype->FoodType = ft ;
-	
-		pItemPrototype->gossip_script= NULL;
 
 		// forced pet entries
 		switch( pItemPrototype->ItemId )
@@ -489,7 +487,6 @@ void ObjectMgr::LoadExtraGameObjectStuff()
 	while(!itr->AtEnd())
 	{
 		goi = itr->Get();
-		goi->gossip_script = NULL;
 
 		if( !itr->Inc() )
 		break;

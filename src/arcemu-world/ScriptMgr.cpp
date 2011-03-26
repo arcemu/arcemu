@@ -125,22 +125,7 @@ entry	text
 #define SCRIPTLIB_VERSION_MAJOR (BUILD_REVISION / 1000)
 
 namespace worldstring{
-    enum ws{
-        BROWSEGOODS = 1,
-        ISEEK       = 2,
-        MAGE        = 3,
-        SHAMAN      = 4,
-        WARRIOR     = 5,
-        PALADIN     = 6,
-        WARLOCK     = 7,
-        HUNTER      = 8,
-        ROGUE       = 9,
-        DRUID       = 10,
-        PRIEST      = 11,
-        TRAINING    = 12,
-        BEASTTRAINING = 13
-
-    };
+    
 }
 
 
@@ -543,7 +528,8 @@ void ScriptMgr::register_dummy_spell(uint32 entry, exp_handle_dummy_spell callba
 
 void ScriptMgr::register_gossip_script(uint32 entry, GossipScript * gs)
 {
-	CreatureInfo * ci = CreatureNameStorage.LookupEntry(entry);
+	sLog.outError("%s no longer works.", __FUNCTION__  );
+	/*CreatureInfo * ci = CreatureNameStorage.LookupEntry(entry);
 	if(ci)
 	{
 		if(ci->gossip_script != DefaultGossipScript)
@@ -552,12 +538,13 @@ void ScriptMgr::register_gossip_script(uint32 entry, GossipScript * gs)
 		ci->gossip_script = gs;
 	}
 
-	_customgossipscripts.insert(gs);
+	_customgossipscripts.insert(gs);*/
 }
 
 void ScriptMgr::register_go_gossip_script(uint32 entry, GossipScript * gs)
 {
-	GameObjectInfo * gi = GameObjectNameStorage.LookupEntry(entry);
+	sLog.outError("%s no longer works.", __FUNCTION__  );
+	/*GameObjectInfo * gi = GameObjectNameStorage.LookupEntry(entry);
 	if(gi)
 	{
 		if(gi->gossip_script != NULL)
@@ -566,7 +553,7 @@ void ScriptMgr::register_go_gossip_script(uint32 entry, GossipScript * gs)
 		gi->gossip_script = gs;
 	}
 
-	_customgossipscripts.insert(gs);
+	_customgossipscripts.insert(gs);*/
 }
 
 void ScriptMgr::register_quest_script(uint32 entry, QuestScript * qs)
@@ -712,18 +699,19 @@ bool ScriptMgr::CallScriptedDummyAura(uint32 uSpellId, uint32 i, Aura* pAura, bo
 
 bool ScriptMgr::CallScriptedItem(Item * pItem, Player * pPlayer)
 {
-	if(pItem->GetProto()->gossip_script)
+	Arcemu::Gossip::Script * script = this->get_item_gossip(pItem->GetEntry() );
+	if(script != NULL)
 	{
-		pItem->GetProto()->gossip_script->GossipHello(pItem,pPlayer,true);
+		script->OnHello(pItem, pPlayer);
 		return true;
 	}
-	
 	return false;
 }
 
 void ScriptMgr::register_item_gossip_script(uint32 entry, GossipScript * gs)
 {
-	ItemPrototype * proto = ItemPrototypeStorage.LookupEntry(entry);
+	sLog.outError("%s no longer works.", __FUNCTION__  );
+	/*ItemPrototype * proto = ItemPrototypeStorage.LookupEntry(entry);
 	if(proto)
 	{
 		if(proto->gossip_script != NULL)
@@ -732,7 +720,7 @@ void ScriptMgr::register_item_gossip_script(uint32 entry, GossipScript * gs)
 		proto->gossip_script = gs;
 	}
 
-	_customgossipscripts.insert(gs);
+	_customgossipscripts.insert(gs);*/
 }
 
 /* CreatureAI Stuff */
@@ -822,7 +810,6 @@ void GossipScript::GossipEnd(Object* pObject, Player* Plr)
 	Plr->CleanupGossipMenu();
 }
 
-bool CanTrainAt(Player * plr, Trainer * trn);
 void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 {
 	GossipMenu *Menu;
@@ -871,7 +858,7 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 		if(pos != string::npos)
 			name = name.substr(0, pos);
 
-		if(CanTrainAt(Plr, pTrainer))
+		if( Plr->CanTrainAt( pTrainer) )
 			Menu->SetTextID(pTrainer->Can_Train_Gossip_TextId);
 		else
 			Menu->SetTextID(pTrainer->Cannot_Train_GossipTextId);
@@ -1188,14 +1175,14 @@ bool ScriptMgr::has_instance_script( uint32 id) const
 
 bool ScriptMgr::has_creature_gossip_script( uint32 entry) const
 {
-	CreatureInfo * info = CreatureNameStorage.LookupEntry(entry);
-	return (info == NULL || info->gossip_script != DefaultGossipScript);
+	return true;
+	//return (info == NULL || info->gossip_script != DefaultGossipScript);
 }
 
 bool ScriptMgr::has_item_gossip_script( uint32 entry) const
 {
-	ItemPrototype * proto = ItemPrototypeStorage.LookupEntry(entry);
-	return (proto == NULL || proto->gossip_script != NULL);
+	return true;
+	//return (proto == NULL || proto->gossip_script != NULL);
 }
 
 bool ScriptMgr::has_hook( ServerHookEvents evt, void* ptr) const
@@ -1207,6 +1194,97 @@ bool ScriptMgr::has_quest_script( uint32 entry) const
 {
 	Quest * q = QuestStorage.LookupEntry(entry);
 	return (q == NULL || q->pQuestScript != NULL);
+}
+
+void ScriptMgr::register_creature_gossip( uint32 entry, Arcemu::Gossip::Script * script)
+{
+	GossipMap::iterator itr = creaturegossip_.find(entry);
+	if(itr == creaturegossip_.end() )
+		creaturegossip_.insert( make_pair(entry, script) );
+}
+
+bool ScriptMgr::has_creature_gossip( uint32 entry) const
+{
+	return creaturegossip_.find(entry) != creaturegossip_.end();
+}
+
+Arcemu::Gossip::Script * ScriptMgr::get_creature_gossip( uint32 entry) const
+{
+	GossipMap::const_iterator itr = creaturegossip_.find(entry);
+	if(itr != creaturegossip_.end() )
+		return itr->second;
+	return NULL;
+}
+
+void ScriptMgr::register_item_gossip( uint32 entry, Arcemu::Gossip::Script* script)
+{
+	GossipMap::iterator itr = itemgossip_.find(entry);
+	if(itr == itemgossip_.end() )
+		itemgossip_.insert( make_pair(entry, script) );
+}
+
+void ScriptMgr::register_go_gossip( uint32 entry, Arcemu::Gossip::Script* script)
+{
+	GossipMap::iterator itr = gogossip_.find(entry);
+	if(itr == gogossip_.end() )
+		gogossip_.insert( make_pair(entry, script) );
+}
+
+bool ScriptMgr::has_item_gossip( uint32 entry) const
+{
+	return itemgossip_.find(entry) != itemgossip_.end();
+}
+
+bool ScriptMgr::has_go_gossip( uint32 entry) const
+{
+	return gogossip_.find(entry) != gogossip_.end();
+}
+
+Arcemu::Gossip::Script * ScriptMgr::get_go_gossip( uint32 entry) const
+{
+	GossipMap::const_iterator itr = gogossip_.find(entry);
+	if(itr != gogossip_.end() )
+		return itr->second;
+	return NULL;
+}
+
+Arcemu::Gossip::Script * ScriptMgr::get_item_gossip( uint32 entry) const
+{
+	GossipMap::const_iterator itr = itemgossip_.find(entry);
+	if(itr != itemgossip_.end() )
+		return itr->second;
+	return NULL;
+}
+
+void ScriptMgr::ReloadScriptEngines()
+{
+	//for all scripting engines that allow reloading, assuming there will be new scripting engines.
+	exp_get_script_type version_function;
+	exp_engine_reload engine_reloadfunc;
+	for(LibraryHandleMap::iterator itr = _handles.begin(); itr != _handles.end(); ++itr)
+	{
+#ifdef WIN32
+		version_function = (exp_get_script_type)GetProcAddress( (HMODULE)(*itr),"_exp_get_script_type");
+		if(version_function == 0)
+			continue;
+		if(version_function() & SCRIPT_TYPE_SCRIPT_ENGINE)
+		{
+			engine_reloadfunc = (exp_engine_reload)GetProcAddress( (HMODULE)(*itr),"_export_engine_reload");
+			if(engine_reloadfunc != 0)
+				engine_reloadfunc();
+		}
+#else
+		version_function = (exp_get_script_type)dlsym( (SCRIPT_MODULE)(*itr),"_exp_get_script_type");
+		if(version_function == 0)
+			continue;
+		if(version_function() & SCRIPT_TYPE_SCRIPT_ENGINE)
+		{
+			engine_reloadfunc = (exp_engine_reload)dlsym( (SCRIPT_MODULE)(*itr),"_export_engine_reload");
+			if(engine_reloadfunc != 0)
+				engine_reloadfunc();
+		}
+#endif
+	}
 }
 
 /* Hook Implementations */

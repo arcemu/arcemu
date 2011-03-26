@@ -1,6 +1,24 @@
 PROJECT(arcemu-world)
 SET( prefix ${ROOT_PATH}/src/${PROJECT_NAME} )
 SET(sources
+  #vmap
+  vmap/BIH.cpp
+  vmap/BIH.h
+  vmap/IVMapManager.h
+  vmap/MapTree.cpp
+  vmap/MapTree.h
+  vmap/ModelInstance.cpp
+  vmap/ModelInstance.h
+  vmap/TileAssembler.h
+  vmap/TileAssembler.cpp
+  vmap/VMapDefinitions.h
+  vmap/VMapFactory.h
+  vmap/VMapFactory.cpp
+  vmap/VMapManager2.cpp
+  vmap/VMapManager2.h
+  vmap/VMapTools.h
+  vmap/WorldModel.cpp
+  vmap/WorldModel.h
 	AchievementMgr.cpp 
 	AchievementMgr.h 
 	CollideInterface.cpp 
@@ -71,7 +89,9 @@ SET(sources
 	GameObject.cpp 
 	GameObject.h 
 	GMTicket.cpp 
-	GMTicketCommands.cpp 
+	GMTicketCommands.cpp
+	Gossip.h
+	Gossip.cpp
 	Group.cpp 
 	Group.h 
 	GroupHandler.cpp 
@@ -160,7 +180,7 @@ SET(sources
 	StdAfx.h 
 	TaxiHandler.cpp 
 	TaxiMgr.cpp 
-	TaxiMgr.h 
+	TaxiMgr.h
 	TerrainMgr.cpp 
 	TerrainMgr.h 
 	TradeHandler.cpp 
@@ -225,14 +245,15 @@ endforeach(src)
 
 SET( include_dirs 
 ${ROOT_PATH}/src/arcemu-shared
-${ROOT_PATH}/src/arcemu-world )
+${ROOT_PATH}/src/arcemu-world
+${ROOT_PATH}/dep/include/g3dlite )
 
 include(PCHSupport)
 include_directories( ${include_dirs} )
-add_definitions(-Wno-deprecated)
+add_definitions(-Wno-deprecated -DENABLE_SHITTY_STL_HACKS)
 find_package(PCRE REQUIRED)
 add_executable( ${PROJECT_NAME} ${SRCS} )
 #ADD_PRECOMPILED_HEADER(${PROJECT_NAME} StdAfx.h )
 add_dependencies( ${PROJECT_NAME} arcemu-shared collision)
-target_link_libraries( ${PROJECT_NAME} arcemu-shared collision ${PCRE_LIBRARIES} )
+target_link_libraries( ${PROJECT_NAME} arcemu-shared ${PCRE_LIBRARIES} )
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin )

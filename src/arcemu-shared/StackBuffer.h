@@ -177,6 +177,13 @@ public:
 		}
 		return *this;
 	}
+	StackBuffer<Size>& operator << (const std::string & value) 
+	{ 
+		EnsureBufferSize(value.length() + 1); 
+		memcpy(&m_bufferPointer[m_writePos], value.c_str(), value.length()+1); 
+		m_writePos += (value.length() + 1); 
+		return *this; 
+	}
 
 	/** WoWGuid read/write operators
 	 */

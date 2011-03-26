@@ -33,6 +33,7 @@
 class Channel;
 class Guild;
 struct Quest;
+
 enum ServerHookEvents
 {
 	SERVER_HOOK_EVENT_ON_NEW_CHARACTER		= 1,
@@ -146,6 +147,7 @@ typedef HM_NAMESPACE::hash_map<uint32, exp_handle_dummy_spell> HandleDummySpellM
 typedef HM_NAMESPACE::hash_map< uint32, exp_handle_script_effect > HandleScriptEffectMap;
 typedef HM_NAMESPACE::hash_map<uint32, exp_create_instance_ai> InstanceCreateMap;
 typedef set<GossipScript*> CustomGossipScripts;
+typedef HM_NAMESPACE::hash_map<uint32, Arcemu::Gossip::Script*> GossipMap;
 typedef set<QuestScript*> QuestScripts;
 typedef set<void*> ServerHookList;
 typedef list<SCRIPT_MODULE> LibraryHandleMap;
@@ -203,6 +205,11 @@ public:
 	void register_item_gossip_script(uint32 entry, GossipScript * gs);
 	void register_quest_script(uint32 entry, QuestScript * qs);
 
+	/*	GOSSIP INTERFACE REGISTRATION */
+	void register_creature_gossip(uint32, Arcemu::Gossip::Script*);
+	void register_item_gossip(uint32, Arcemu::Gossip::Script*);
+	void register_go_gossip(uint32, Arcemu::Gossip::Script*);
+
 	//Mutliple Entry Registers
 	void register_creature_script(uint32* entries, exp_create_creature_ai callback);
 	void register_gameobject_script(uint32* entries, exp_create_gameobject_ai callback);
@@ -210,35 +217,7 @@ public:
 	void register_dummy_spell(uint32* entries, exp_handle_dummy_spell callback);
 	void register_script_effect(uint32* entries, exp_handle_script_effect callback);
 
-	void ReloadScriptEngines() {
-		//for all scripting engines that allow reloading, assuming there will be new scripting engines.
-		exp_get_script_type version_function;
-		exp_engine_reload engine_reloadfunc;
-		for(LibraryHandleMap::iterator itr = _handles.begin(); itr != _handles.end(); ++itr)
-		{
-#ifdef WIN32
-			version_function = (exp_get_script_type)GetProcAddress( (HMODULE)(*itr),"_exp_get_script_type");
-			if(version_function == 0)
-				continue;
-			if(version_function() & SCRIPT_TYPE_SCRIPT_ENGINE)
-			{
-				engine_reloadfunc = (exp_engine_reload)GetProcAddress( (HMODULE)(*itr),"_export_engine_reload");
-				if(engine_reloadfunc != 0)
-					engine_reloadfunc();
-			}
-#else
-			version_function = (exp_get_script_type)dlsym( (SCRIPT_MODULE)(*itr),"_exp_get_script_type");
-			if(version_function == 0)
-				continue;
-			if(version_function() & SCRIPT_TYPE_SCRIPT_ENGINE)
-			{
-				engine_reloadfunc = (exp_engine_reload)dlsym( (SCRIPT_MODULE)(*itr),"_export_engine_reload");
-				if(engine_reloadfunc != 0)
-					engine_reloadfunc();
-			}
-#endif
-		}
-	}
+	void ReloadScriptEngines();
 
 	ARCEMU_INLINE GossipScript * GetDefaultGossipScript() { return DefaultGossipScript; }
 
@@ -309,6 +288,31 @@ public:
 	//************************************
 	bool has_quest_script(uint32) const;
 
+	bool has_creature_gossip(uint32) const;
+	bool has_item_gossip(uint32) const;
+	bool has_go_gossip(uint32) const;
+
+	Arcemu::Gossip::Script * get_creature_gossip(uint32) const;
+	Arcemu::Gossip::Script * get_go_gossip(uint32) const;
+	Arcemu::Gossip::Script * get_item_gossip(uint32) const;
+
+	/*
+		Default Gossip Script Interfaces */
+	Arcemu::Gossip::Trainer trainerScript_;
+	Arcemu::Gossip::SpiritHealer spirithealerScript_;
+	Arcemu::Gossip::Banker bankerScript_;
+	Arcemu::Gossip::Vendor vendorScript_;
+	Arcemu::Gossip::ClassTrainer classtrainerScript_;
+	Arcemu::Gossip::PetTrainer pettrainerScript_;
+	Arcemu::Gossip::FlightMaster flightmasterScript_;
+	Arcemu::Gossip::Auctioneer auctioneerScript_;
+	Arcemu::Gossip::InnKeeper innkeeperScript_;
+	Arcemu::Gossip::BattleMaster battlemasterScript_;
+	Arcemu::Gossip::CharterGiver chartergiverScript_;
+	Arcemu::Gossip::TabardDesigner tabardScript_;
+	Arcemu::Gossip::StableMaster stablemasterScript_;
+	Arcemu::Gossip::Generic genericScript_;
+
 protected:
 	InstanceCreateMap mInstances; 
 	CreatureCreateMap _creatures;
@@ -321,6 +325,7 @@ protected:
 	GossipScript * DefaultGossipScript;
 	CustomGossipScripts _customgossipscripts;
 	QuestScripts _questscripts;
+	GossipMap creaturegossip_, gogossip_, itemgossip_;
 };
 
 class SERVER_DECL CreatureAIScript
