@@ -5,7 +5,7 @@ endif(NOT BUILD_QUESTSCRIPTS)
 
 PROJECT(QuestScripts)
 
-SET( prefix ${SCRIPTS_PATH}/QuestScripts )
+SET( prefix ${SCRIPTS_PATH}/${PROJECT_NAME} )
 #dependancies that must be built before this project.
 SET( dependancies arcemu-world )
 #libraries/archives that must be linked to this project.
