@@ -662,11 +662,11 @@ void Arcemu::Gossip::ClassTrainer::OnHello( Object* pObject, Player* Plr )
 		menu.AddItem(Gossip::ICON_TRAINER, itemname.c_str(), 1);
 
 		//talent reset option.
-		if(trainer->getLevel() > TRAINER_TALENTRESET_LVLIMIT && Plr->getLevel() > PLAYER_TALENTRESET_LVLIMIT && trainer->GetTrainer()->RequiredClass == playerclass )
+		if(trainer->getLevel() > Gossip::TRAINER_TALENTRESET_LVLIMIT && Plr->getLevel() > Gossip::PLAYER_TALENTRESET_LVLIMIT && trainer->GetTrainer()->RequiredClass == playerclass )
 		{
 			menu.AddItem(Gossip::ICON_CHAT, Plr->GetSession()->LocalizedWorldSrv(Gossip::CLASSTRAINER_TALENTRESET), 2);
 			//dual speciliazation option.
-			if(Plr->getLevel() >= PLAYER_DUALTALENT_LVLLIMIT && Plr->m_talentSpecsCount < 2)
+			if(Plr->getLevel() >= Gossip::PLAYER_DUALTALENT_LVLIMIT && Plr->m_talentSpecsCount < 2)
 				menu.AddItem(Gossip::ICON_CHAT, "Learn about Dual Talent Specialization.", 4);
 		}
 	}
