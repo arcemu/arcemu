@@ -224,7 +224,7 @@ int CreateLuaEvent(lua_function fref, int delay, int repeats, variadic_parameter
 {
 	int ref = LUA_REFNIL;
 	PLUA_INSTANCE li_ = lua_instance;
-	if(ref != NULL && delay > 0 && (ptrdiff_t)fref != LUA_REFNIL && params != NULL)
+	if(delay > 0 && (ptrdiff_t)fref != LUA_REFNIL && params != NULL)
 	{
 		//embed the function ref and repeats as part of our parameters.
 		variadic_node * func_node = new variadic_node;

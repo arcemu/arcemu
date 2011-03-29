@@ -197,6 +197,11 @@ static void cleanup_varparam(variadic_parameter * param, lua_State * L)
 			case LUA_TFUNCTION:
 				lua_unref(L, current_node->val.obj_ref);
 				break;
+			case LUA_TSTRING:
+			  free( (void*)current_node->val.lua_str);
+			  break;
+			default:
+			  break;
 			}
 			//now we can delete the node
 			delete current_node;

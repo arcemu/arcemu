@@ -31,9 +31,9 @@
 #endif
 
 ScriptMgr * m_scriptMgr = NULL;
-///THREAD PLUA_INSTANCE lua_instance = NULL;
+THREAD PLUA_INSTANCE lua_instance = NULL;
 PLUA_INSTANCE LUA_COMPILER = NULL;
-//SHAREDPTR_POOL sp_pool;
+
 extern "C"
 {
 	 SCRIPT_DECL uint32 _exp_get_script_type()

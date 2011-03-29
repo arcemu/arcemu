@@ -1,16 +1,18 @@
 #pragma once
 #include "../interpreter/LUAEngine.h"
+#include "../../LuaEngine/lua/lobject.h"
 
 class LuaInstance : public InstanceScript
 {
 public:
-	LuaInstance( MapMgr* pMapMgr ) : InstanceScript( pMapMgr ), m_instanceId( pMapMgr->GetInstanceID() ) 
+	LuaInstance( MapMgr* pMapMgr ) : InstanceScript( pMapMgr ), m_instanceId( pMapMgr->GetInstanceID() ) , mgr_(pMapMgr)
 	{}
 	~LuaInstance() 
 	{
 		PLUA_INSTANCE ref = lua_instance;
-		assert(ref != NULL && ref->lu != NULL);
-		le::shutdownThread(GetInstance() );
+		//assert(ref != NULL && ref->lu != NULL);
+		if(ref != NULL)
+		  le::shutdownThread(GetInstance() );
 	}
 
 	// Player
@@ -124,6 +126,7 @@ public:
 	};
 
 	uint32 m_instanceId;
+	MapMgr * mgr_;
 	PObjectBinding m_binding;
 };
 
@@ -133,17 +136,27 @@ namespace lua_engine
 	InstanceScript * createluainstance(MapMgr* pMapMgr)
 	{
 		LuaInstance * pLua = NULL;
-		PLUA_INSTANCE pstackInstance = new LUA_INSTANCE;
-		pstackInstance->lu = NULL;
-		pstackInstance->map = pMapMgr;
+		
+		
+		PLUA_INSTANCE pstackInstance = lua_instance;
+		/*if(pstackInstance != NULL && pstackInstance->map != NULL)
+		  printf("pstackInstance != NULL Map(%p)(%p) %s Id %u. \n", pstackInstance->map, pstackInstance, pstackInstance->map->GetMapInfo()->name, pstackInstance->map->GetInstanceID() );
+		else
+		   printf("pstackInstance == NULL Map(%p) %s Id %u. \n", pMapMgr, pMapMgr->GetMapInfo()->name, pMapMgr->GetInstanceID() );*/
+		if(pstackInstance == NULL)
+		{
+		  pstackInstance = new LUA_INSTANCE;
+		  pstackInstance->lu = NULL;
+		  pstackInstance->map = pMapMgr;
 
-		lua_instance = pstackInstance;
-		//have it load the scripts
-		le::restartThread(pMapMgr);
-		//store it so we can keep track of it.
-		le::activestates_lock.Acquire();
-		le::activeStates.insert(pMapMgr);
-		le::activestates_lock.Release();
+		  lua_instance = pstackInstance;
+		  //have it load the scripts
+		  le::restartThread(pMapMgr);
+		  //store it so we can keep track of it.
+		  le::activestates_lock.Acquire();
+		  le::activeStates.insert(pMapMgr);
+		  le::activestates_lock.Release();
+		}
 
 		//locate this instance's binding.
 		li::ObjectBindingMap::iterator itr = pstackInstance->m_instanceBinding.find( pMapMgr->GetMapId() );

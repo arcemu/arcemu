@@ -27,7 +27,6 @@
 #include <sys/types.h>
 GossipMenu * Menu;
 
-//std::vector<uint32> OnLoadInfo;
 #include "StdAfx.h"
 #include "lua_instance.h"
 #include "../luabridge_src/luabridge.hpp"
@@ -48,7 +47,7 @@ extern "C"
 #endif
 
 /*	A thread local storage lua_instance that will only get initialized for maps that attempt to run lua scripts. */
-extern THREAD PLUA_INSTANCE lua_instance = NULL;
+extern THREAD PLUA_INSTANCE lua_instance;
 /*	A lua_State that acts like a compiler for lua scripts, it loads scripts during engine startup to detect and report any errors */
 extern PLUA_INSTANCE LUA_COMPILER;
 #define lua_state lua_instance->lu
