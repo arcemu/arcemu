@@ -77,13 +77,15 @@ namespace lua_engine
 			.method("SetCurrentSpell", &Object::SetCurrentSpell);
 
 		 //creatable and destroyable in the lua environment.
-		 m	.class_<GossipMenu, GossipMenu>("GossipMenu", true)
-			.constructor< void(*)(uint64, uint32) > ()
-			.method("AddItem", ( void(GossipMenu::*)(uint8,const char*, int32, int8) )&GossipMenu::AddItem)
-			.method("AddMenuItem", &GossipMenu::AddMenuItem)
-			.method("SendToPlr", &GossipMenu::SendTo)
-			//.method("SendToAllPlayers", &GossipMenu::SendToAllPlayers)
-			.method("SetTextID", &GossipMenu::SetTextID);
+		 m	.class_<Arcemu::Gossip::Menu, Arcemu::Gossip::Menu>("GossipMenu", true)
+			.constructor< void(*)(Object*, uint32, uint32) > ()
+			.method("AddItem", ( void(Arcemu::Gossip::Menu::*)(uint8,const char*, uint32, bool) )&Arcemu::Gossip::Menu::AddItem)
+			.method("AddMenuItem", ( void(Arcemu::Gossip::Menu::*)(uint8, const char *, uint32, uint32, const char*, bool) )&Arcemu::Gossip::Menu::AddItem)
+			.method("Send", &Arcemu::Gossip::Menu::Send)
+			.method("getLanguage", &Arcemu::Gossip::Menu::getLanguage)
+			.method("setLanguage", &Arcemu::Gossip::Menu::setLanguage)
+			.method("setTextID", &Arcemu::Gossip::Menu::setTextID)
+			.method("getTextID", &Arcemu::Gossip::Menu::getTextID);
 		 
 		 m	.subclass<DynamicObject, DynamicObject, Object>("DynamicObject")
 			.constructor< void(*)(uint32,uint32) >()

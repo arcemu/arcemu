@@ -40,10 +40,8 @@ extern "C"
 
 #if defined WIN32
 #define THREAD __declspec(thread)
-#elif defined UNIX
-#define THREAD __thread
 #else
-#define THREAD
+#define THREAD __thread
 #endif
 
 /*	A thread local storage lua_instance that will only get initialized for maps that attempt to run lua scripts. */
@@ -63,9 +61,9 @@ namespace lua_engine
 	extern CreatureAIScript * createluacreature(Creature*);
 	extern GameObjectAIScript * createluagameobject(GameObject*);
 	extern QuestScript * createluaquest(uint32);
-	extern GossipScript * createunitgossipInterface(uint32 id);
-	extern GossipScript * createitemgossipInterface(uint32 id);
-	extern GossipScript * creategogossipInterface(uint32 id);
+	extern Arcemu::Gossip::Script * createunitgossipInterface(uint32 id);
+	extern Arcemu::Gossip::Script * createitemgossipInterface(uint32 id);
+	extern Arcemu::Gossip::Script * creategogossipInterface(uint32 id);
 	extern InstanceScript * createluainstance(MapMgr*);
 
 	typedef struct

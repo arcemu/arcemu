@@ -1,6 +1,6 @@
 #pragma once
 
-class LuaGossip : public GossipScript
+class LuaGossip : public Arcemu::Gossip::Script
 {
 	uint32 id;
 public:
@@ -31,7 +31,7 @@ public:
 		}
 	}
 
-	void GossipHello(Object* pObject, Player* Plr, bool AutoSend)
+	void OnHello(Object* pObject, Player* Plr)
 	{
 		GET_LOCK;
 		if(pObject->GetTypeId() == TYPEID_UNIT)
@@ -42,8 +42,7 @@ public:
 			push_unit(TO_UNIT(pObject) );
 			push_int(GOSSIP_EVENT_ON_TALK);
 			push_player(Plr);
-			push_bool(AutoSend);
-			lua_engine::ExecuteLuaFunction(4);
+			lua_engine::ExecuteLuaFunction(3);
 		}
 		else if(pObject->GetTypeId() == TYPEID_ITEM)
 		{
@@ -53,8 +52,7 @@ public:
 			push_item( TO_ITEM(pObject) );
 			push_int(GOSSIP_EVENT_ON_TALK);
 			push_player(Plr);
-			push_bool(AutoSend);
-			lua_engine::ExecuteLuaFunction(4);
+			lua_engine::ExecuteLuaFunction(3);
 		}
 		else if(pObject->GetTypeId() == TYPEID_GAMEOBJECT)
 		{
@@ -64,13 +62,12 @@ public:
 			push_go(TO_GAMEOBJECT(pObject));
 			push_int(GOSSIP_EVENT_ON_TALK);
 			push_player(Plr);
-			push_bool(AutoSend);
-			lua_engine::ExecuteLuaFunction(4);
+			lua_engine::ExecuteLuaFunction(3);
 		}
 		RELEASE_LOCK
 	}
 
-	void GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, uint32 IntId, const char * EnteredCode)
+	void OnSelectOption(Object* pObject, Player* Plr, uint32 Id, const char * EnteredCode)
 	{
 		GET_LOCK;
 		if(pObject->GetTypeId() == TYPEID_UNIT)
@@ -82,9 +79,8 @@ public:
 			push_int(GOSSIP_EVENT_ON_SELECT_OPTION);
 			push_player(Plr);
 			push_int(Id);
-			push_int(IntId);
 			push_str(EnteredCode);
-			lua_engine::ExecuteLuaFunction(6);
+			lua_engine::ExecuteLuaFunction(5);
 		}
 		else if(pObject->GetTypeId() == TYPEID_ITEM)
 		{
@@ -94,9 +90,8 @@ public:
 			push_int(GOSSIP_EVENT_ON_SELECT_OPTION);
 			push_player(Plr);
 			push_int(Id);
-			push_int(IntId);
 			push_str(EnteredCode);
-			lua_engine::ExecuteLuaFunction(6);
+			lua_engine::ExecuteLuaFunction(5);
 		}
 		else if(pObject->GetTypeId() == TYPEID_GAMEOBJECT)
 		{
@@ -106,46 +101,16 @@ public:
 			push_int(GOSSIP_EVENT_ON_SELECT_OPTION);
 			push_player(Plr);
 			push_int(Id);
-			push_int(IntId);
 			push_str(EnteredCode);
-			lua_engine::ExecuteLuaFunction(6);
+			lua_engine::ExecuteLuaFunction(5);
 		}
 		RELEASE_LOCK
 	}
 
-	void GossipEnd(Object* pObject, Player* Plr)
+	void Destroy() 
 	{
-		GET_LOCK;
-		if(pObject->GetTypeId() == TYPEID_UNIT)
-		{
-			if(m_unit_gossip_binding == NULL) { RELEASE_LOCK; return; }
-			lua_engine::BeginLuaFunctionCall(m_unit_gossip_binding->refs[GOSSIP_EVENT_ON_END]);
-			push_unit(TO_UNIT(pObject));
-			push_int(GOSSIP_EVENT_ON_END);
-			push_player(Plr);
-			lua_engine::ExecuteLuaFunction(3);
-		}
-		else if(pObject->GetTypeId() == TYPEID_ITEM)
-		{
-			if(m_item_gossip_binding == NULL) { RELEASE_LOCK; return; }
-			lua_engine::BeginLuaFunctionCall(m_item_gossip_binding->refs[GOSSIP_EVENT_ON_END]);
-			push_item(TO_ITEM(pObject));
-			push_int(GOSSIP_EVENT_ON_END);
-			push_player(Plr);
-			lua_engine::ExecuteLuaFunction(3);
-		}
-		else if(pObject->GetTypeId() == TYPEID_GAMEOBJECT)
-		{
-			if(m_go_gossip_binding == NULL) { RELEASE_LOCK; return; }
-			lua_engine::BeginLuaFunctionCall(m_go_gossip_binding->refs[GOSSIP_EVENT_ON_END]);
-			push_go(TO_GAMEOBJECT(pObject));
-			push_int(GOSSIP_EVENT_ON_END);
-			push_player(Plr);
-			lua_engine::ExecuteLuaFunction(3);
-		}
-		RELEASE_LOCK
+		delete this;
 	}
-
 	PObjectBinding m_unit_gossip_binding;
 	PObjectBinding m_item_gossip_binding;
 	PObjectBinding m_go_gossip_binding;
@@ -153,7 +118,7 @@ public:
 
 namespace lua_engine
 {
-	GossipScript * createunitgossipInterface(uint32 id)
+	Arcemu::Gossip::Script * createunitgossipInterface(uint32 id)
 	{
 		LuaGossip * pLua = NULL;
 		PLUA_INSTANCE ref = lua_instance;
@@ -177,7 +142,7 @@ namespace lua_engine
 		}
 		return pLua;
 	}
-	GossipScript * createitemgossipInterface(uint32 id)
+	Arcemu::Gossip::Script * createitemgossipInterface(uint32 id)
 	{
 		LuaGossip * pLua = NULL;
 		PLUA_INSTANCE ref = lua_instance;
@@ -198,7 +163,7 @@ namespace lua_engine
 		}
 		return pLua;
 	}
-	GossipScript * creategogossipInterface(uint32 id)
+	Arcemu::Gossip::Script * creategogossipInterface(uint32 id)
 	{
 		LuaGossip * pLua = NULL;
 		PLUA_INSTANCE ref = lua_instance;

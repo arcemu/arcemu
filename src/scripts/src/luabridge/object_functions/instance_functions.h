@@ -139,10 +139,6 @@ namespace lua_engine
 		
 		
 		PLUA_INSTANCE pstackInstance = lua_instance;
-		/*if(pstackInstance != NULL && pstackInstance->map != NULL)
-		  printf("pstackInstance != NULL Map(%p)(%p) %s Id %u. \n", pstackInstance->map, pstackInstance, pstackInstance->map->GetMapInfo()->name, pstackInstance->map->GetInstanceID() );
-		else
-		   printf("pstackInstance == NULL Map(%p) %s Id %u. \n", pMapMgr, pMapMgr->GetMapInfo()->name, pMapMgr->GetInstanceID() );*/
 		if(pstackInstance == NULL)
 		{
 		  pstackInstance = new LUA_INSTANCE;

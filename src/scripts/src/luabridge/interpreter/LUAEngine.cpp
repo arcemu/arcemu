@@ -321,32 +321,23 @@ void lua_engine::startupEngine()
 	}
 	for(li::ObjectBindingMap::iterator itr = LUA_COMPILER->m_unitGossipBinding.begin(); itr != LUA_COMPILER->m_unitGossipBinding.end(); ++itr)
 	{
-		if(!m_scriptMgr->has_creature_gossip_script(itr->first) )
-		{
-			GossipScript * gs = createunitgossipInterface( itr->first );
-			if( gs != NULL )
-				m_scriptMgr->register_gossip_script( itr->first, gs );
-		}
+		Arcemu::Gossip::Script * gs = createunitgossipInterface( itr->first );
+		if( gs != NULL )
+			m_scriptMgr->register_creature_gossip( itr->first, gs );
 	}
 
 	for(li::ObjectBindingMap::iterator itr = LUA_COMPILER->m_itemGossipBinding.begin(); itr != LUA_COMPILER->m_itemGossipBinding.end(); ++itr)
 	{
-		if(!m_scriptMgr->has_item_gossip_script(itr->first) )
-		{
-			GossipScript * gs = createitemgossipInterface( itr->first );
-			if( gs != NULL )
-				m_scriptMgr->register_item_gossip_script( itr->first, gs );
-		}
+		Arcemu::Gossip::Script * gs = createitemgossipInterface( itr->first );
+		if( gs != NULL )
+			m_scriptMgr->register_item_gossip( itr->first, gs );
 	}
 
 	for(li::ObjectBindingMap::iterator itr = LUA_COMPILER->m_goGossipBinding.begin(); itr != LUA_COMPILER->m_goGossipBinding.end(); ++itr)
 	{
-		if(!m_scriptMgr->has_gameobject_script(itr->first) )
-		{
-			GossipScript * gs = creategogossipInterface( itr->first );
-			if( gs != NULL )
-				m_scriptMgr->register_go_gossip_script( itr->first, gs );
-		}
+		Arcemu::Gossip::Script * gs = creategogossipInterface( itr->first );
+		if( gs != NULL )
+			m_scriptMgr->register_go_gossip( itr->first, gs );
 	}
 	for(li::SpellFRefMap::iterator itr = LUA_COMPILER->m_dummySpells.begin(); itr != LUA_COMPILER->m_dummySpells.end(); ++itr)
 	{
@@ -520,32 +511,23 @@ void lua_engine::restartEngine()
 	}
 	for(li::ObjectBindingMap::iterator itr = LUA_COMPILER->m_unitGossipBinding.begin(); itr != LUA_COMPILER->m_unitGossipBinding.end(); ++itr)
 	{
-		if(!m_scriptMgr->has_creature_gossip_script(itr->first) )
-		{
-			GossipScript * gs = createunitgossipInterface( itr->first );
-			if( gs != NULL )
-				m_scriptMgr->register_gossip_script( itr->first, gs );
-		}
+		Arcemu::Gossip::Script * gs = createunitgossipInterface( itr->first );
+		if( gs != NULL )
+			m_scriptMgr->register_creature_gossip( itr->first, gs );
 	}
 
 	for(li::ObjectBindingMap::iterator itr = LUA_COMPILER->m_itemGossipBinding.begin(); itr != LUA_COMPILER->m_itemGossipBinding.end(); ++itr)
 	{
-		if(!m_scriptMgr->has_item_gossip_script(itr->first) )
-		{
-			GossipScript * gs = createitemgossipInterface( itr->first );
-			if( gs != NULL )
-				m_scriptMgr->register_item_gossip_script( itr->first, gs );
-		}
+		Arcemu::Gossip::Script * gs = createunitgossipInterface( itr->first );
+		if( gs != NULL )
+			m_scriptMgr->register_item_gossip( itr->first, gs );
 	}
 
 	for(li::ObjectBindingMap::iterator itr = LUA_COMPILER->m_goGossipBinding.begin(); itr != LUA_COMPILER->m_goGossipBinding.end(); ++itr)
 	{
-		if(!m_scriptMgr->has_gameobject_script(itr->first) )
-		{
-			GossipScript * gs = creategogossipInterface( itr->first );
-			if( gs != NULL )
-				m_scriptMgr->register_go_gossip_script( itr->first, gs );
-		}
+		Arcemu::Gossip::Script * gs = createunitgossipInterface( itr->first );
+		if( gs != NULL )
+			m_scriptMgr->register_go_gossip( itr->first, gs );
 	}
 	for(li::SpellFRefMap::iterator itr = LUA_COMPILER->m_dummySpells.begin(); itr != LUA_COMPILER->m_dummySpells.end(); ++itr)
 	{
@@ -598,32 +580,23 @@ void lua_engine::restartThread(MapMgr * map)
 	}
 	for(li::ObjectBindingMap::iterator itr = _li->m_unitGossipBinding.begin(); itr != _li->m_unitGossipBinding.end(); ++itr)
 	{
-		if(!m_scriptMgr->has_creature_gossip_script(itr->first) )
-		{
-			GossipScript * gs = createunitgossipInterface( itr->first );
-			if( gs != NULL )
-				m_scriptMgr->register_gossip_script( itr->first, gs );
-		}
+		Arcemu::Gossip::Script * gs = createunitgossipInterface( itr->first );
+		if( gs != NULL )
+			m_scriptMgr->register_creature_gossip( itr->first, gs );
 	}
 
 	for(li::ObjectBindingMap::iterator itr = _li->m_itemGossipBinding.begin(); itr != _li->m_itemGossipBinding.end(); ++itr)
 	{
-		if(!m_scriptMgr->has_item_gossip_script(itr->first) )
-		{
-			GossipScript * gs = createitemgossipInterface( itr->first );
-			if( gs != NULL )
-				m_scriptMgr->register_item_gossip_script( itr->first, gs );
-		}
+		Arcemu::Gossip::Script * gs = createitemgossipInterface( itr->first );
+		if( gs != NULL )
+			m_scriptMgr->register_item_gossip( itr->first, gs );
 	}
 
 	for(li::ObjectBindingMap::iterator itr = _li->m_goGossipBinding.begin(); itr != _li->m_goGossipBinding.end(); ++itr)
 	{
-		if(!m_scriptMgr->has_gameobject_script(itr->first) )
-		{
-			GossipScript * gs = creategogossipInterface( itr->first );
-			if( gs != NULL )
-				m_scriptMgr->register_go_gossip_script( itr->first, gs );
-		}
+		Arcemu::Gossip::Script * gs = creategogossipInterface( itr->first );
+		if( gs != NULL )
+			m_scriptMgr->register_go_gossip( itr->first, gs );
 	}
 	for(li::SpellFRefMap::iterator itr = _li->m_dummySpells.begin(); itr != _li->m_dummySpells.end(); ++itr)
 	{
