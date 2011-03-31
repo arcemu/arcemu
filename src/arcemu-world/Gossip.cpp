@@ -560,7 +560,7 @@ void Arcemu::Gossip::StableMaster::OnHello( Object* pObject, Player* Plr )
 	uint32 Text = objmgr.GetGossipTextForNpc(stablemaster->GetEntry());
 	if(NpcTextStorage.LookupEntry(Text) == NULL)
 		Text = Gossip::DEFAULT_TXTINDEX;
-	if(Plr->getClass() == HUNTER)
+	if(Plr->getClass() == ::HUNTER)
 		Gossip::Menu::SendQuickMenu(pObject->GetGUID(), Text, Plr, 1, Gossip::ICON_CHAT, "I'd like to stable my pet here." );
 	else
 		Gossip::Menu::SendSimpleMenu( pObject->GetGUID(), Text, Plr);
@@ -584,7 +584,7 @@ void Arcemu::Gossip::PetTrainer::OnHello( Object* pObject, Player* Plr )
 
 	Gossip::Menu menu(pObject->GetGUID(), Text, Plr->GetSession()->language);
 	menu.AddItem(Gossip::ICON_TRAINER, Plr->GetSession()->LocalizedWorldSrv(Gossip::BEASTTRAINING), 1);
-	if(Plr->getClass() == HUNTER && Plr->GetSummon() != NULL)
+	if(Plr->getClass() == ::HUNTER && Plr->GetSummon() != NULL)
 		menu.AddItem(Gossip::ICON_CHAT, Plr->GetSession()->LocalizedWorldSrv(Gossip::PETTRAINER_TALENTRESET), 2);
 	sQuestMgr.FillQuestMenu( petrain, Plr, menu);
 
