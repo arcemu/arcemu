@@ -15,10 +15,10 @@ Gossip::Item::Item( size_t itemid, uint8 icon, const char * text, bool coded/*= 
 {
 	id_ = (uint16)itemid;
 	icon_ = icon;
-	text_ = text;
+	text_ = (text != NULL) ? text : "";
 	coded_ = coded;
 	boxmoney_ = boxmoney;
-	boxmessage_ = boxmessage;
+	boxmessage_ = (boxmessage != NULL) ? boxmessage : "";
 }
 
 WorldPacket& Gossip::operator<<(WorldPacket& packet, const Gossip::Item& item)
@@ -49,7 +49,7 @@ Gossip::Menu::Menu(Object* obj,uint32 textid, uint32 language)
 void Gossip::Menu::AddItem( uint8 icon, const char * itemtext, uint32 itemid, bool coded/*=false*/ )
 {
 	Gossip::Item item(itemid, icon);
-	item.text_ = itemtext;
+	item.text_ = (itemtext != NULL) ? itemtext : "";
 	item.coded_ = coded;
 	this->itemlist_.push_back(item);
 }
@@ -97,7 +97,7 @@ WorldPacket& Gossip::operator<<(WorldPacket& packet, const Gossip::Menu& menu)
 	{
 		for(Gossip::QuestList::const_iterator itr = menu.questlist_.begin(); itr != menu.questlist_.end(); ++itr)
 		{
-			packet << itr->first->id << itr->second << itr->first->min_level << itr->first->quest_flags << uint8(0);
+			packet << itr->first->id << uint32(itr->second) << itr->first->min_level << itr->first->quest_flags << uint8(0);
 			LocalizedQuest * lq = sLocalizationMgr.GetLocalizedQuest(itr->first->id, menu.language_);
 			if(lq != NULL)
 				packet << lq->Title;
@@ -124,7 +124,7 @@ StackBuffer<size>& Gossip::operator<<(StackBuffer<size> & packet, const Gossip::
 		string title;
 		for(Gossip::QuestList::const_iterator itr = menu.questlist_.begin(); itr != menu.questlist_.end(); ++itr)
 		{
-			packet << itr->first->id << itr->second << itr->first->min_level << itr->first->quest_flags << uint8(0);
+			packet << itr->first->id << uint32(itr->second) << itr->first->min_level << itr->first->quest_flags << uint8(0);
 			LocalizedQuest * lq = sLocalizationMgr.GetLocalizedQuest(itr->first->id, menu.language_);
 			if(lq != NULL)
 				title = lq->Title;
@@ -170,7 +170,8 @@ void Gossip::Menu::SendSimpleMenu( uint64 guid, size_t txt_id, Player * plr)
 void Gossip::Menu::SendQuickMenu( uint64 guid, size_t textid, Player * Plr, size_t itemid, uint8 itemicon, const char * itemtext, size_t requiredmoney/*=0*/, const char * moneytext/*=NULL*/, uint8 extra/*=0*/ )
 {
 	StackWorldPacket<64> packet(SMSG_GOSSIP_MESSAGE);
-	string itemtexts(itemtext), moneytexts(moneytext);
+	string itemtexts = (itemtext != NULL) ? itemtext : "";
+	string moneytexts = (moneytext != NULL) ? moneytext : "";
 	packet << guid << uint32(0) << uint32(textid) << uint32(1) << uint32(itemid) << itemicon << extra << uint32(requiredmoney) << itemtexts;
 	if(moneytext != NULL)
 		packet << moneytexts;
@@ -282,8 +283,10 @@ Gossip::Script * Gossip::Script::GetInterface(Creature* creature)
 
 	if( creature->isSpiritHealer() )
 		return &sScriptMgr.spirithealerScript_;
-	else if( creature->isVendor() )
-		return &sScriptMgr.vendorScript_;
+	else if( creature->isInnkeeper() )
+		return &sScriptMgr.innkeeperScript_;
+	else if( creature->isBanker() )
+		return &sScriptMgr.bankerScript_;
 	else if( creature->isClass() )
 		return &sScriptMgr.classtrainerScript_;
 	else if( creature->isTrainer() )
@@ -300,16 +303,14 @@ Gossip::Script * Gossip::Script::GetInterface(Creature* creature)
 		return &sScriptMgr.flightmasterScript_;
 	else if( creature->isStableMaster() )
 		return &sScriptMgr.stablemasterScript_;
-	else if( creature->isBanker() )
-		return &sScriptMgr.bankerScript_;
 	else if( creature->isBattleMaster() )
 		return &sScriptMgr.battlemasterScript_;
-	else if( creature->isInnkeeper() )
-		return &sScriptMgr.innkeeperScript_;
 	else if( creature->isAuctioner() )
 		return &sScriptMgr.auctioneerScript_;
 	else if( creature->isCharterGiver() )
 		return &sScriptMgr.chartergiverScript_;
+	else if( creature->isVendor() )
+		return &sScriptMgr.vendorScript_;
 
 	return &sScriptMgr.genericScript_;
 }
@@ -348,10 +349,7 @@ void Arcemu::Gossip::Vendor::OnHello( Object* pObject, Player* Plr )
 		if( !Plr->CanBuyAt(vendor) )
 			menu.setTextID( vendor->cannotbuyattextid );
 		else
-		{
-			menu.setTextID( vendor->canbuyattextid );
 			menu.AddItem(Gossip::ICON_VENDOR, Plr->GetSession()->LocalizedWorldSrv(Gossip::VENDOR), 1, false);
-		}
 	}
 
 	sQuestMgr.FillQuestMenu(creature, Plr, menu); //add any quests we have.
@@ -389,11 +387,14 @@ void Arcemu::Gossip::Trainer::OnHello( Object* pObject, Player* Plr )
 			menu.setTextID( trainerinfo->Cannot_Train_GossipTextId );
 		else
 		{
-			menu.setTextID( trainerinfo->Can_Train_Gossip_TextId );
 			// I seek
-			string msg = string(Plr->GetSession()->LocalizedWorldSrv(Gossip::ISEEK) ) + " ";
+			string msg = string(Plr->GetSession()->LocalizedWorldSrv(Gossip::ISEEK) );
 			msg += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::TRAINING) ) + ", " + name + ".";
 			menu.AddItem(Gossip::ICON_TRAINER, msg.c_str(), 1);
+
+			VendorRestrictionEntry * vendor = VendorRestrictionEntryStorage.LookupEntry( creature->GetProto()->Id);
+			if(vendor != NULL && Plr->CanBuyAt(vendor) )
+				menu.AddItem(Gossip::ICON_VENDOR, Plr->GetSession()->LocalizedWorldSrv(Gossip::VENDOR), 2);
 		}
 	}
 	sQuestMgr.FillQuestMenu(trainer, Plr, menu);
@@ -402,7 +403,10 @@ void Arcemu::Gossip::Trainer::OnHello( Object* pObject, Player* Plr )
 
 void Arcemu::Gossip::Trainer::OnSelectOption( Object* pObject, Player* Plr, uint32 Id, const char * EnteredCode )
 {
-	Plr->GetSession()->SendTrainerList( TO_CREATURE(pObject) );
+	if(1 == Id)
+		Plr->GetSession()->SendTrainerList( TO_CREATURE(pObject) );
+	else
+		Plr->GetSession()->SendInventoryList( TO_CREATURE(pObject) );
 }
 
 /*
@@ -457,13 +461,20 @@ void Arcemu::Gossip::InnKeeper::OnHello( Object* pObject, Player* Plr )
 		Text = Gossip::DEFAULT_TXTINDEX;
 	Gossip::Menu menu(pObject->GetGUID(), Text, Plr->GetSession()->language );
 	menu.AddItem(Gossip::ICON_CHAT, Plr->GetSession()->LocalizedWorldSrv(Gossip::INNKEEPER), 1);
+	//inn keepers can sell stuff
+	VendorRestrictionEntry * vendor = VendorRestrictionEntryStorage.LookupEntry( innkeeper->GetProto()->Id);
+	if(vendor != NULL && Plr->CanBuyAt(vendor) )
+		menu.AddItem(Gossip::ICON_VENDOR, Plr->GetSession()->LocalizedWorldSrv(Gossip::VENDOR), 2);
 	sQuestMgr.FillQuestMenu( innkeeper, Plr, menu);
 	menu.StackSend<256>(Plr);
 }
 
 void Arcemu::Gossip::InnKeeper::OnSelectOption( Object* pObject, Player* Plr, uint32 Id, const char * EnteredCode )
 {
-	Plr->GetSession()->SendInnkeeperBind( TO_CREATURE(pObject) );
+	if(1 == Id)
+		Plr->GetSession()->SendInnkeeperBind( TO_CREATURE(pObject) );
+	else
+		Plr->GetSession()->SendInventoryList( TO_CREATURE(pObject) );
 }
 
 /*
@@ -585,7 +596,7 @@ void Arcemu::Gossip::PetTrainer::OnSelectOption( Object* pObject, Player* Plr, u
 	if(1 == Id)
 		Plr->GetSession()->SendTrainerList( TO_CREATURE(pObject) );
 	else if(2 == Id)
-		Gossip::Menu::SendQuickMenu(pObject->GetGUID(), TO_CREATURE(pObject)->GetTrainer()->Can_Train_Gossip_TextId, Plr, 3, Gossip::ICON_CHAT, Plr->GetSession()->LocalizedWorldSrv(Gossip::PETTRAINER_TALENTRESET) );
+		Gossip::Menu::SendQuickMenu(pObject->GetGUID(), TXTID_PETUNTRAIN, Plr, 3, Gossip::ICON_CHAT, Plr->GetSession()->LocalizedWorldSrv(Gossip::PETTRAINER_TALENTRESET) );
 	else
 	{
 		Gossip::Menu::Complete(Plr);
@@ -620,37 +631,37 @@ void Arcemu::Gossip::ClassTrainer::OnHello( Object* pObject, Player* Plr )
 
 		if(pos != string::npos)
 			name = name.substr(0, pos);
-		itemname+= " ";
+
 		switch( playerclass )
 		{
-		case MAGE:
+		case ::MAGE:
 			itemname += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::MAGE) );
 			break;
-		case SHAMAN:
+		case ::SHAMAN:
 			itemname += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::SHAMAN) );
 			break;
-		case WARRIOR:
+		case ::WARRIOR:
 			itemname += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::WARRIOR) );
 			break;
-		case PALADIN:
+		case ::PALADIN:
 			itemname += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::PALADIN) );
 			break;
-		case WARLOCK:
+		case ::WARLOCK:
 			itemname += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::WARLOCK) );
 			break;
-		case HUNTER:
+		case ::HUNTER:
 			itemname += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::HUNTER) );
 			break;
-		case ROGUE:
+		case ::ROGUE:
 			itemname += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::ROGUE) );
 			break;
-		case DRUID:
+		case ::DRUID:
 			itemname += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::DRUID) );
 			break;
-		case PRIEST:
+		case ::PRIEST:
 			itemname += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::PRIEST) );
 			break;
-		case DEATHKNIGHT:
+		case ::DEATHKNIGHT:
 			itemname += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::DEATHKNIGHT));
 			break;
 		default:
@@ -683,7 +694,7 @@ void Arcemu::Gossip::ClassTrainer::OnSelectOption( Object* pObject, Player* Plr,
 		Plr->GetSession()->SendTrainerList( TO_CREATURE(pObject) );
 		break;
 	case 2:
-		Gossip::Menu::SendQuickMenu(pObject->GetGUID(), 0, Plr, 3, Gossip::ICON_CHAT, Plr->GetSession()->LocalizedWorldSrv(Gossip::CLASSTRAINER_TALENTCONFIRM), 3);
+		Gossip::Menu::SendQuickMenu(pObject->GetGUID(), TXTID_TALENTRESET, Plr, 3, Gossip::ICON_CHAT, Plr->GetSession()->LocalizedWorldSrv(Gossip::CLASSTRAINER_TALENTCONFIRM), 3);
 		break;
 	case 3:
 		Gossip::Menu::Complete(Plr);
@@ -691,7 +702,7 @@ void Arcemu::Gossip::ClassTrainer::OnSelectOption( Object* pObject, Player* Plr,
 		break;
 	case 4:
 		purchaseconfirm = "Are you sure you would like to purchase your second talent specialization?";
-		Gossip::Menu::SendQuickMenu(pObject->GetGUID(), 0, Plr, 5, Gossip::ICON_CHAT, "Purchase a Dual Talent Specialization.", 10000000, purchaseconfirm);
+		Gossip::Menu::SendQuickMenu(pObject->GetGUID(), TXTID_DUALSPECPURCHASE, Plr, 5, Gossip::ICON_CHAT, "Purchase a Dual Talent Specialization.", 10000000, purchaseconfirm);
 		break;
 	case 5:
 		if( !Plr->HasGold(10000000) )

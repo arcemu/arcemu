@@ -115,59 +115,56 @@ void WorldSession::SendTrainerList(Creature* pCreature)
 {
 	Trainer * pTrainer = pCreature->GetTrainer();
 	//if(pTrainer == 0 || !CanTrainAt(_player, pTrainer)) return;
-	if(pTrainer == 0)
+	if(pTrainer == NULL)
 		return;
 
-	if( _player->CanTrainAt(pTrainer) )
-	{
-		GossipMenu * pMenu;
-		objmgr.CreateGossipMenuForPlayer(&pMenu,pCreature->GetGUID(),pTrainer->Cannot_Train_GossipTextId,_player);
-		pMenu->SendTo(_player);
-		return;
-	}
-
-	WorldPacket data(SMSG_TRAINER_LIST, 5000);
-	TrainerSpell * pSpell;
-	uint32 Spacer = 0;
-	uint32 Count= 0;
-	uint8 Status;
-	string Text;
-
-	data << pCreature->GetGUID();
-	data << pTrainer->TrainerType;
-
-	data << uint32(0);
-	for(vector<TrainerSpell>::iterator itr = pTrainer->Spells.begin(); itr != pTrainer->Spells.end(); ++itr)
-	{
-		pSpell = &(*itr);
-		Status = TrainerGetSpellStatus(pSpell);
-		if( pSpell->pCastRealSpell != NULL )
-			data << pSpell->pCastSpell->Id;
-		else if( pSpell->pLearnSpell )
-			data << pSpell->pLearnSpell->Id;
-		else
-			continue;
-
-		data << Status;
-		data << pSpell->Cost;
-		data << Spacer;
-		data << uint32(pSpell->IsProfession);
-		data << uint8(pSpell->RequiredLevel);
-		data << pSpell->RequiredSkillLine;
-		data << pSpell->RequiredSkillLineValue;
-		data << pSpell->RequiredSpell;
-		data << Spacer;	//this is like a spell override or something, ex : (id=34568 or id=34547) or (id=36270 or id=34546) or (id=36271 or id=34548)
-		data << Spacer;
-		++Count;
-	}
-
-	*(uint32*)&data.contents()[12] = Count;
-
-	if ( stricmp(pTrainer->UIMessage,"DMSG") == 0 )
-		data << _player->GetSession()->LocalizedWorldSrv(37);
+	if(! _player->CanTrainAt(pTrainer) )
+		Arcemu::Gossip::Menu::SendSimpleMenu(pCreature->GetGUID(), pTrainer->Cannot_Train_GossipTextId, GetPlayer() );
 	else
-		data << pTrainer->UIMessage;
-	SendPacket(&data);
+	{
+		WorldPacket data(SMSG_TRAINER_LIST, 5000);
+		TrainerSpell * pSpell;
+		uint32 Spacer = 0;
+		uint32 Count= 0;
+		uint8 Status;
+		string Text;
+
+		data << pCreature->GetGUID();
+		data << pTrainer->TrainerType;
+
+		data << uint32(0);
+		for(vector<TrainerSpell>::iterator itr = pTrainer->Spells.begin(); itr != pTrainer->Spells.end(); ++itr)
+		{
+			pSpell = &(*itr);
+			Status = TrainerGetSpellStatus(pSpell);
+			if( pSpell->pCastRealSpell != NULL )
+				data << pSpell->pCastSpell->Id;
+			else if( pSpell->pLearnSpell )
+				data << pSpell->pLearnSpell->Id;
+			else
+				continue;
+
+			data << Status;
+			data << pSpell->Cost;
+			data << Spacer;
+			data << uint32(pSpell->IsProfession);
+			data << uint8(pSpell->RequiredLevel);
+			data << pSpell->RequiredSkillLine;
+			data << pSpell->RequiredSkillLineValue;
+			data << pSpell->RequiredSpell;
+			data << Spacer;	//this is like a spell override or something, ex : (id=34568 or id=34547) or (id=36270 or id=34546) or (id=36271 or id=34548)
+			data << Spacer;
+			++Count;
+		}
+
+		*(uint32*)&data.contents()[12] = Count;
+
+		if ( stricmp(pTrainer->UIMessage,"DMSG") == 0 )
+			data << _player->GetSession()->LocalizedWorldSrv(37);
+		else
+			data << pTrainer->UIMessage;
+		SendPacket(&data);
+	}
 }
 
 

@@ -1,5 +1,5 @@
 if(NOT BUILD_SERVERSTATUSPLUGIN )
-  message("\tQuestScripts was skipped because BUILD_QUESTSCRIPTS is unchecked.")
+  message("\tServerStatusPlugin was skipped because BUILD_SERVERSTATUSPLUGIN is unchecked.")
   return()
 endif(NOT BUILD_SERVERSTATUSPLUGIN)
 
