@@ -392,7 +392,7 @@ void Arcemu::Gossip::Trainer::OnHello( Object* pObject, Player* Plr )
 			msg += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::TRAINING) ) + ", " + name + ".";
 			menu.AddItem(Gossip::ICON_TRAINER, msg.c_str(), 1);
 
-			VendorRestrictionEntry * vendor = VendorRestrictionEntryStorage.LookupEntry( creature->GetProto()->Id);
+			VendorRestrictionEntry * vendor = VendorRestrictionEntryStorage.LookupEntry( trainer->GetProto()->Id);
 			if(vendor != NULL && Plr->CanBuyAt(vendor) )
 				menu.AddItem(Gossip::ICON_VENDOR, Plr->GetSession()->LocalizedWorldSrv(Gossip::VENDOR), 2);
 		}
