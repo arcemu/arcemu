@@ -1392,7 +1392,7 @@ struct QuestXP{
 struct WMOAreaTableEntry
 {
 	uint32 id; // 0
-	uint32 rootId; // 1
+	int32 rootId; // 1
 	int32 adtId; // 2
 	int32 groupId; // 3
 	//uint32 field4;

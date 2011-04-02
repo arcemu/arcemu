@@ -332,7 +332,7 @@ const char* scalingstatvaluesformat = "uuuuuuuuuuuuuuuuuuxxxxxx";
 const char* itemlimitcategoryformat = "usxxxxxxxxxxxxxxxxuu";
 const char* spellshapeshiftformformat = "uxxxxxxxxxxxxxxxxxxuuxuuuxxuuuuuuuu";
 const char* questxpformat = "uxuuuuuuuux";
-const char* wmoareaformat = "uiiixxxxxuuxxxxxxxxxxxxxxxxu";
+const char* wmoareaformat = "uiiixxxxxuuxxxxxxxxxxxxxxxxx";
 
 template<class T>
 bool loader_stub(const char * filename, const char * format, bool ind, T& l, bool loadstrs)
