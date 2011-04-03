@@ -88,12 +88,12 @@ WorldPacket& Gossip::operator<<(WorldPacket& packet, const Gossip::Menu& menu)
 	packet << menu.guid_;
 	packet << uint32(0);
 	packet << menu.textid_;
-	packet << menu.itemlist_.size();
+	packet << uint32(menu.itemlist_.size());
 	{
 		for(Gossip::ItemList::const_iterator itr = menu.itemlist_.begin(); itr != menu.itemlist_.end(); ++itr)
 			packet << *itr;
 	}
-	packet << menu.questlist_.size();
+	packet << uint32(menu.questlist_.size());
 	{
 		for(Gossip::QuestList::const_iterator itr = menu.questlist_.begin(); itr != menu.questlist_.end(); ++itr)
 		{
@@ -114,12 +114,12 @@ StackBuffer<size>& Gossip::operator<<(StackBuffer<size> & packet, const Gossip::
 	packet << menu.guid_;
 	packet << uint32(0);
 	packet << menu.textid_;
-	packet << menu.itemlist_.size();
+	packet << uint32(menu.itemlist_.size());
 	{
 		for(Gossip::ItemList::const_iterator itr = menu.itemlist_.begin(); itr != menu.itemlist_.end(); ++itr)
 			packet << *itr;
 	}
-	packet << menu.questlist_.size();
+	packet << uint32(menu.questlist_.size());
 	{
 		string title;
 		for(Gossip::QuestList::const_iterator itr = menu.questlist_.begin(); itr != menu.questlist_.end(); ++itr)
