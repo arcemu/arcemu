@@ -33,7 +33,7 @@ public:
 	uint32 get_size()
 	{
 		lock.Acquire();
-		uint32 retval = size;
+		::uint32 retval = size;
 		lock.Release();
 		return retval;
 	}

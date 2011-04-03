@@ -1,5 +1,5 @@
-PROJECT(arcemu-world)
-SET( prefix ${ROOT_PATH}/src/${PROJECT_NAME} )
+PROJECT(world)
+SET( prefix ${ROOT_PATH}/src/arcemu-world )
 SET(sources
   #vmap
   vmap/BIH.cpp
@@ -246,14 +246,13 @@ endforeach(src)
 SET( include_dirs 
 ${ROOT_PATH}/src/arcemu-shared
 ${ROOT_PATH}/src/arcemu-world
-${ROOT_PATH}/dep/include/g3dlite )
+${ROOT_PATH}/dep/include/g3dlite 
+${DEPENDENCY_INCLUDE_ROOT}/pcre )
 
 include(PCHSupport)
 include_directories( ${include_dirs} )
-add_definitions(-Wno-deprecated)
-find_package(PCRE REQUIRED)
 add_executable( ${PROJECT_NAME} ${SRCS} )
-#ADD_PRECOMPILED_HEADER(${PROJECT_NAME} StdAfx.h )
-add_dependencies( ${PROJECT_NAME} arcemu-shared g3dlite)
-target_link_libraries( ${PROJECT_NAME} arcemu-shared  g3dlite ${PCRE_LIBRARIES} )
+#ADD_PRECOMPILED_HEADER(${PROJECT_NAME} ${prefix}/StdAfx.h )
+add_dependencies( ${PROJECT_NAME} shared g3dlite)
+target_link_libraries( ${PROJECT_NAME} shared  g3dlite ${PCRE_LIBRARIES} )
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin )

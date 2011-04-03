@@ -348,13 +348,11 @@ void Arcemu::Gossip::Vendor::OnHello( Object* pObject, Player* Plr )
 	VendorRestrictionEntry * vendor = VendorRestrictionEntryStorage.LookupEntry( creature->GetProto()->Id);
 
 	Gossip::Menu menu(creature->GetGUID(), Text, Plr->GetSession()->language);
-	if(vendor != NULL)
-	{
-		if( !Plr->CanBuyAt(vendor) )
-			menu.setTextID( vendor->cannotbuyattextid );
-		else
-			menu.AddItem(Gossip::ICON_VENDOR, Plr->GetSession()->LocalizedWorldSrv(Gossip::VENDOR), 1, false);
-	}
+
+	if( !Plr->CanBuyAt(vendor) )
+		menu.setTextID( vendor->cannotbuyattextid );
+	else
+		menu.AddItem(Gossip::ICON_VENDOR, Plr->GetSession()->LocalizedWorldSrv(Gossip::VENDOR), 1, false);
 
 	sQuestMgr.FillQuestMenu(creature, Plr, menu); //add any quests we have.
 
@@ -397,7 +395,7 @@ void Arcemu::Gossip::Trainer::OnHello( Object* pObject, Player* Plr )
 			menu.AddItem(Gossip::ICON_TRAINER, msg.c_str(), 1);
 
 			VendorRestrictionEntry * vendor = VendorRestrictionEntryStorage.LookupEntry( trainer->GetProto()->Id);
-			if(vendor != NULL && Plr->CanBuyAt(vendor) )
+			if(Plr->CanBuyAt(vendor) )
 				menu.AddItem(Gossip::ICON_VENDOR, Plr->GetSession()->LocalizedWorldSrv(Gossip::VENDOR), 2);
 		}
 	}
@@ -467,7 +465,7 @@ void Arcemu::Gossip::InnKeeper::OnHello( Object* pObject, Player* Plr )
 	menu.AddItem(Gossip::ICON_CHAT, Plr->GetSession()->LocalizedWorldSrv(Gossip::INNKEEPER), 1);
 	//inn keepers can sell stuff
 	VendorRestrictionEntry * vendor = VendorRestrictionEntryStorage.LookupEntry( innkeeper->GetProto()->Id);
-	if(vendor != NULL && Plr->CanBuyAt(vendor) )
+	if(Plr->CanBuyAt(vendor) )
 		menu.AddItem(Gossip::ICON_VENDOR, Plr->GetSession()->LocalizedWorldSrv(Gossip::VENDOR), 2);
 	sQuestMgr.FillQuestMenu( innkeeper, Plr, menu);
 	menu.StackSend<256>(Plr);

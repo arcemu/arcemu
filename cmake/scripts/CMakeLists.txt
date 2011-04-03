@@ -8,7 +8,7 @@ endif(NOT BUILD_ARCEMUSCRIPTS)
 message("Configuring scripts :")
 SET( SCRIPTS_PATH ${ROOT_PATH}/src/scripts/src )
 #common include directories that script libraries might include.
-SET( include_dirs ${ROOT_PATH}/src/arcemu-world ${ROOT_PATH}/src/arcemu-shared ${ROOT_PATH}/dep/include/g3dlite )
+SET( include_dirs ${GLOBAL_INCLUDE_DIRS} )
 
 #All script libraries have SCRIPTLIB defined.
 add_definitions(-DSCRIPTLIB)

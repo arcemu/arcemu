@@ -1,6 +1,6 @@
 PROJECT(g3dlite)
 
-set(prefix ${ROOT_PATH}/dep/src/${PROJECT_NAME} )
+set(prefix ${DEPENDENCY_SOURCES}/${PROJECT_NAME} )
 
 set(sources
   AABox.cpp
