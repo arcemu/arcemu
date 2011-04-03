@@ -292,10 +292,14 @@ Gossip::Script * Gossip::Script::GetInterface(Creature* creature)
 	else if( creature->isTrainer() )
 	{
 		::Trainer * traininfo = creature->GetTrainer();
-		if( traininfo->TrainerType == TRAINER_TYPE_PET)
-			return &sScriptMgr.pettrainerScript_;
-		else
-			return &sScriptMgr.trainerScript_;
+
+		if(traininfo != NULL)	//Seems to happen.
+		{
+			if(traininfo->TrainerType == TRAINER_TYPE_PET)
+				return &sScriptMgr.pettrainerScript_;
+			else
+				return &sScriptMgr.trainerScript_;
+		}
 	}
 	else if( creature->isTabardDesigner() )
 		return &sScriptMgr.tabardScript_;
@@ -619,66 +623,69 @@ void Arcemu::Gossip::ClassTrainer::OnHello( Object* pObject, Player* Plr )
 	uint8 playerclass = Plr->getClass();
 	::Trainer * traininfo = trainer->GetTrainer();
 
-	if(traininfo->RequiredClass != playerclass)
-		menu.setTextID( traininfo->Cannot_Train_GossipTextId );
-	else
+	if(traininfo != NULL)	//Seems to happen
 	{
-		menu.setTextID(traininfo->Can_Train_Gossip_TextId );
-		string itemname = Plr->GetSession()->LocalizedWorldSrv(Gossip::ISEEK);
-		string name = trainer->GetCreatureInfo()->Name;
-
-		string::size_type pos = name.find(" ");	  // only take first name
-
-		if(pos != string::npos)
-			name = name.substr(0, pos);
-
-		switch( playerclass )
+		if(traininfo->RequiredClass != playerclass)
+			menu.setTextID( traininfo->Cannot_Train_GossipTextId );
+		else
 		{
-		case ::MAGE:
-			itemname += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::MAGE) );
-			break;
-		case ::SHAMAN:
-			itemname += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::SHAMAN) );
-			break;
-		case ::WARRIOR:
-			itemname += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::WARRIOR) );
-			break;
-		case ::PALADIN:
-			itemname += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::PALADIN) );
-			break;
-		case ::WARLOCK:
-			itemname += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::WARLOCK) );
-			break;
-		case ::HUNTER:
-			itemname += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::HUNTER) );
-			break;
-		case ::ROGUE:
-			itemname += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::ROGUE) );
-			break;
-		case ::DRUID:
-			itemname += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::DRUID) );
-			break;
-		case ::PRIEST:
-			itemname += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::PRIEST) );
-			break;
-		case ::DEATHKNIGHT:
-			itemname += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::DEATHKNIGHT));
-			break;
-		default:
-			break;
-		}
-		itemname += " ";
-		itemname += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::TRAINING) ) +", " + name + ".";
+			menu.setTextID(traininfo->Can_Train_Gossip_TextId );
+			string itemname = Plr->GetSession()->LocalizedWorldSrv(Gossip::ISEEK);
+			string name = trainer->GetCreatureInfo()->Name;
 
-		menu.AddItem(Gossip::ICON_TRAINER, itemname.c_str(), 1);
+			string::size_type pos = name.find(" ");	  // only take first name
 
-		//talent reset option.
-		if(trainer->getLevel() > Gossip::TRAINER_TALENTRESET_LVLIMIT && Plr->getLevel() > Gossip::PLAYER_TALENTRESET_LVLIMIT && trainer->GetTrainer()->RequiredClass == playerclass )
-		{
-			menu.AddItem(Gossip::ICON_CHAT, Plr->GetSession()->LocalizedWorldSrv(Gossip::CLASSTRAINER_TALENTRESET), 2);
-			//dual speciliazation option.
-			if(Plr->getLevel() >= Gossip::PLAYER_DUALTALENT_LVLIMIT && Plr->m_talentSpecsCount < 2)
-				menu.AddItem(Gossip::ICON_CHAT, "Learn about Dual Talent Specialization.", 4);
+			if(pos != string::npos)
+				name = name.substr(0, pos);
+
+			switch( playerclass )
+			{
+			case ::MAGE:
+				itemname += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::MAGE) );
+				break;
+			case ::SHAMAN:
+				itemname += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::SHAMAN) );
+				break;
+			case ::WARRIOR:
+				itemname += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::WARRIOR) );
+				break;
+			case ::PALADIN:
+				itemname += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::PALADIN) );
+				break;
+			case ::WARLOCK:
+				itemname += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::WARLOCK) );
+				break;
+			case ::HUNTER:
+				itemname += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::HUNTER) );
+				break;
+			case ::ROGUE:
+				itemname += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::ROGUE) );
+				break;
+			case ::DRUID:
+				itemname += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::DRUID) );
+				break;
+			case ::PRIEST:
+				itemname += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::PRIEST) );
+				break;
+			case ::DEATHKNIGHT:
+				itemname += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::DEATHKNIGHT));
+				break;
+			default:
+				break;
+			}
+			itemname += " ";
+			itemname += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::TRAINING) ) +", " + name + ".";
+
+			menu.AddItem(Gossip::ICON_TRAINER, itemname.c_str(), 1);
+
+			//talent reset option.
+			if(trainer->getLevel() > Gossip::TRAINER_TALENTRESET_LVLIMIT && Plr->getLevel() > Gossip::PLAYER_TALENTRESET_LVLIMIT && trainer->GetTrainer()->RequiredClass == playerclass )
+			{
+				menu.AddItem(Gossip::ICON_CHAT, Plr->GetSession()->LocalizedWorldSrv(Gossip::CLASSTRAINER_TALENTRESET), 2);
+				//dual speciliazation option.
+				if(Plr->getLevel() >= Gossip::PLAYER_DUALTALENT_LVLIMIT && Plr->m_talentSpecsCount < 2)
+					menu.AddItem(Gossip::ICON_CHAT, "Learn about Dual Talent Specialization.", 4);
+			}
 		}
 	}
 	sQuestMgr.FillQuestMenu(trainer, Plr, menu);
