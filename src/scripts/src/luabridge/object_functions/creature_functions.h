@@ -451,7 +451,8 @@ namespace lua_engine
 			.method("GetRandomPlayer", &lua_creature::GetRandomPlayer)
 			.method("GetClosestFriend", &lua_creature::GetClosestFriend)
 			.method("GetClosestEnemy", &lua_creature::GetClosestEnemy)
-			.method("GetClosestPlayer", &lua_creature::GetClosestPlayer);
+			.method("GetClosestPlayer", &lua_creature::GetClosestPlayer)
+			.method("GetSpawnId", &Creature::GetSQL_id);
 #undef bind
 #define BIND(name) .method(#name, &AIInterface::name)
 			m.	class_<AIInterface, AIInterface>("AIInterface")

@@ -208,9 +208,17 @@ namespace lua_engine
 			BINDE("ResurrectPlayer", &Player::RemoteRevive)
 			BIND(GetName)
 
-			//For assigning gossip menus to players, similar to objmgr.CreateMenuForPlayer
-			.property_rw("m_currentgossipmenu", &Player::CurrentGossipMenu );
+			BIND(GetSession);
 #undef BIND
 #undef BINDE
+
+			m	.class_<WorldSession, WorldSession>("WorldSession")
+			.method("GetAccountName", &WorldSession::GetAccountNameS)
+			.method("GetPermissions", &WorldSession::GetPermissions)
+			.method("IsGM", &WorldSession::HasGMPermissions)
+			.method("GetMovementInfo", &WorldSession::GetMovementInfo);
+
+			m	.class_<MovementInfo, MovementInfo>("MovementInfo")
+				.property_ro("flags", &MovementInfo::flags);
 	}
 }

@@ -33,6 +33,7 @@ namespace lua_engine
 			.method("GetSpawnX", &Object::GetSpawnX)
 			.method("GetSpawnY", &Object::GetSpawnY)
 			.method("GetSpawnZ", &Object::GetSpawnZ)
+			.method("GetSpawnO", &Object::GetSpawnO)
 			//.method("GetPosition", &Object::GetPosition)
 			.method("CalcDistance2Object", ( float(Object::*)(Object*) )&Object::CalcDistance)
 			.method("CalcDistance2Location", ( float(Object::*)(float,float,float) )&Object::CalcDistance)

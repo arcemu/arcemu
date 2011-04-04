@@ -46,7 +46,7 @@ foreach(src IN ITEMS ${sources} )
   SET( SRCS ${SRCS} ${prefix}/${src} )
 endforeach(src)
 
-include_directories( ${GLOBAL_INCLUDE_DIRS} )
+include_directories( ${GLOBAL_INCLUDE_DIRS} ${MYSQL_INCLUDE_DIR} )
 IF( IS_64BIT )
 	link_directories( ${DEPENDENCY_DLLS64} )
 ELSE()
@@ -55,5 +55,5 @@ ENDIF()
 
 ADD_LIBRARY( ${PROJECT_NAME} STATIC ${SRCS} )
 
-target_link_libraries( ${PROJECT_NAME} ${ZLIB_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${MYSQL_LIBRARIES} ${OPENSSL_LIBRARIES} ${EXTRA_LIBS} )
+target_link_libraries( ${PROJECT_NAME} ${ZLIB_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${MYSQL_LIBRARY} ${OPENSSL_LIBRARIES} ${EXTRA_LIBS} )
 
