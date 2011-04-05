@@ -921,7 +921,7 @@ void Object::AddToWorld(MapMgr * pMapMgr)
 //this can only be called from the thread of mapmgr!!!
 void Object::PushToWorld(MapMgr* mgr)
 {
-	Arcemu::Util::ARCEMU_ASSERT(t_currentMapContext == mgr);
+	Arcemu::Util::ARCEMU_ASSERT(t_currentMapContext.get() == mgr);
 
 	if(mgr == NULL)
 	{

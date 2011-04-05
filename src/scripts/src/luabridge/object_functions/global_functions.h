@@ -10,7 +10,7 @@ public:
 	}
 	~LuaGossip() 
 	{
-		PLUA_INSTANCE ref = lua_instance;
+		PLUA_INSTANCE ref = lua_instance.get();
 		if(this->m_go_gossip_binding != NULL)
 		{
 			li::GossipInterfaceMap::iterator itr = ref->m_go_gossipInterfaceMap.find(id);
@@ -121,7 +121,7 @@ namespace lua_engine
 	Arcemu::Gossip::Script * createunitgossipInterface(uint32 id)
 	{
 		LuaGossip * pLua = NULL;
-		PLUA_INSTANCE ref = lua_instance;
+		PLUA_INSTANCE ref = lua_instance.get();
 		//First check if we have registered a binding.
 		li::ObjectBindingMap::iterator itr = ref->m_unitGossipBinding.find(id);
 		PObjectBinding pBinding = (itr != ref->m_unitGossipBinding.end() ) ? itr->second : NULL;
@@ -145,7 +145,7 @@ namespace lua_engine
 	Arcemu::Gossip::Script * createitemgossipInterface(uint32 id)
 	{
 		LuaGossip * pLua = NULL;
-		PLUA_INSTANCE ref = lua_instance;
+		PLUA_INSTANCE ref = lua_instance.get();
 		li::ObjectBindingMap::iterator itr = ref->m_itemGossipBinding.find(id);
 		PObjectBinding pBinding = (itr != ref->m_itemGossipBinding.end() ) ? itr->second : NULL;
 		if( pBinding != NULL )
@@ -166,7 +166,7 @@ namespace lua_engine
 	Arcemu::Gossip::Script * creategogossipInterface(uint32 id)
 	{
 		LuaGossip * pLua = NULL;
-		PLUA_INSTANCE ref = lua_instance;
+		PLUA_INSTANCE ref = lua_instance.get();
 		li::ObjectBindingMap::iterator itr = ref->m_goGossipBinding.find(id);
 		PObjectBinding pBinding = (itr != ref->m_goGossipBinding.end() ) ? itr->second : NULL;
 		if( pBinding != NULL )
@@ -188,7 +188,7 @@ namespace lua_engine
 int CreateLuaEvent(lua_function fref, int delay, int repeats, variadic_parameter* params)
 {
 	int ref = LUA_REFNIL;
-	PLUA_INSTANCE li_ = lua_instance;
+	PLUA_INSTANCE li_ = lua_instance.get();
 	if(delay > 0 && (ptrdiff_t)fref != LUA_REFNIL && params != NULL)
 	{
 		//embed the function ref and repeats as part of our parameters.
@@ -215,7 +215,7 @@ void lua_engine::ExecuteLuaFunction(variadic_parameter * params)
 {
 	if(params != NULL )
 	{
-		PLUA_INSTANCE li_ = lua_instance;
+		PLUA_INSTANCE li_ = lua_instance.get();
 		lua_State * lu = li_->lu;
 		//place the function on the stack.
 		lua_getref(lu,params->head_node->val.obj_ref);
@@ -259,14 +259,14 @@ void lua_engine::ExecuteLuaFunction(variadic_parameter * params)
 }
 void ModifyLuaEventInterval(lua_function ref, int newInterval)
 {
-	PLUA_INSTANCE li_ = lua_instance;
+	PLUA_INSTANCE li_ = lua_instance.get();
 	if(li_ != NULL)
 	//Easy interval modification.
 		sEventMgr.ModifyEventTime(li_->map,(size_t)ref+LUA_EVENTS_END, newInterval);
 }
 static void DestroyLuaEvent(lua_function ref)
 {
-	PLUA_INSTANCE li_ = lua_instance;
+	PLUA_INSTANCE li_ = lua_instance.get();
 	if(li_ != NULL)
 	{
 		//Simply remove the reference, CallFunctionByReference will find the reference has been freed and skip any processing.

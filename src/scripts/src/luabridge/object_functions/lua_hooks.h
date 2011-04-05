@@ -4,10 +4,11 @@
 bool LuaHookOnNewCharacter(uint32 Race, uint32 Class, WorldSession *, const char * Name)
 {
 	//Disabled hook.
-	if(lua_instance == NULL) return true;
+	PLUA_INSTANCE ref = lua_instance.get();
+	if(ref == NULL) return true;
 	GET_LOCK;
 	bool result = true;
-	li::HookFRefMap::iterator itr = lua_instance->m_hooks.find(SERVER_HOOK_EVENT_ON_NEW_CHARACTER), itend = lua_instance->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_NEW_CHARACTER);
+	li::HookFRefMap::iterator itr = ref->m_hooks.find(SERVER_HOOK_EVENT_ON_NEW_CHARACTER), itend = ref->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_NEW_CHARACTER);
 	for(; itr != itend; ++itr)
 	{
 		lua_engine::BeginLuaFunctionCall(itr->second);
@@ -21,7 +22,7 @@ bool LuaHookOnNewCharacter(uint32 Race, uint32 Class, WorldSession *, const char
 			//find a boolean return argument that is explicitly false.
 			if(params != NULL && params->head_node->type == LUA_TBOOLEAN && params->head_node->val.bewl == 0)
 				result = false;
-			cleanup_varparam(params, lua_state);
+			cleanup_varparam(params, ref->lu);
 			lua_engine::EndLuaFunctionCall(1);
 		}
 	}
@@ -31,8 +32,9 @@ bool LuaHookOnNewCharacter(uint32 Race, uint32 Class, WorldSession *, const char
 void LuaHookOnKillPlayer(Player * pPlayer, Player * pVictim)
 {
 	CHECKVALIDSTATE
+	PLUA_INSTANCE ref = lua_instance.get();
 	GET_LOCK;
-		li::HookFRefMap::iterator itr = lua_instance->m_hooks.find(SERVER_HOOK_EVENT_ON_KILL_PLAYER), itend = lua_instance->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_KILL_PLAYER);
+		li::HookFRefMap::iterator itr = ref->m_hooks.find(SERVER_HOOK_EVENT_ON_KILL_PLAYER), itend = ref->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_KILL_PLAYER);
 		for(; itr != itend; ++itr)
 		{
 			lua_engine::BeginLuaFunctionCall(itr->second);
@@ -47,8 +49,9 @@ void LuaHookOnKillPlayer(Player * pPlayer, Player * pVictim)
 void LuaHookOnFirstEnterWorld(Player * pPlayer)
 {
 	CHECKVALIDSTATE
+	PLUA_INSTANCE ref = lua_instance.get();
 	GET_LOCK;
-	li::HookFRefMap::iterator itr = lua_instance->m_hooks.find(SERVER_HOOK_EVENT_ON_FIRST_ENTER_WORLD), itend = lua_instance->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_FIRST_ENTER_WORLD);
+	li::HookFRefMap::iterator itr = ref->m_hooks.find(SERVER_HOOK_EVENT_ON_FIRST_ENTER_WORLD), itend = ref->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_FIRST_ENTER_WORLD);
 	for(; itr != itend; ++itr)
 	{
 		lua_engine::BeginLuaFunctionCall(itr->second);
@@ -62,8 +65,9 @@ void LuaHookOnFirstEnterWorld(Player * pPlayer)
 void LuaHookOnEnterWorld(Player * pPlayer)
 {
 	CHECKVALIDSTATE
+	PLUA_INSTANCE ref = lua_instance.get();
 	GET_LOCK;
-	li::HookFRefMap::iterator itr = lua_instance->m_hooks.find(SERVER_HOOK_EVENT_ON_ENTER_WORLD), itend = lua_instance->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_ENTER_WORLD);
+	li::HookFRefMap::iterator itr = ref->m_hooks.find(SERVER_HOOK_EVENT_ON_ENTER_WORLD), itend = ref->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_ENTER_WORLD);
 	for(; itr != itend; ++itr)
 	{
 		lua_engine::BeginLuaFunctionCall(itr->second);
@@ -77,8 +81,9 @@ void LuaHookOnEnterWorld(Player * pPlayer)
 void LuaHookOnGuildJoin(Player * pPlayer, Guild * pGuild)
 {
 	CHECKVALIDSTATE
+	PLUA_INSTANCE ref = lua_instance.get();
 	GET_LOCK;
-	li::HookFRefMap::iterator itr = lua_instance->m_hooks.find(SERVER_HOOK_EVENT_ON_GUILD_JOIN), itend = lua_instance->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_GUILD_JOIN);
+	li::HookFRefMap::iterator itr = ref->m_hooks.find(SERVER_HOOK_EVENT_ON_GUILD_JOIN), itend = ref->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_GUILD_JOIN);
 	for(; itr != itend; ++itr)
 	{
 		lua_engine::BeginLuaFunctionCall(itr->second);
@@ -93,8 +98,9 @@ void LuaHookOnGuildJoin(Player * pPlayer, Guild * pGuild)
 void LuaHookOnDeath(Player * pPlayer)
 {
 	CHECKVALIDSTATE
+	PLUA_INSTANCE ref = lua_instance.get();
 	GET_LOCK;
-	li::HookFRefMap::iterator itr = lua_instance->m_hooks.find(SERVER_HOOK_EVENT_ON_DEATH), itend = lua_instance->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_DEATH);
+	li::HookFRefMap::iterator itr = ref->m_hooks.find(SERVER_HOOK_EVENT_ON_DEATH), itend = ref->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_DEATH);
 	for(; itr != itend; ++itr)
 	{
 		lua_engine::BeginLuaFunctionCall(itr->second);
@@ -110,7 +116,8 @@ bool LuaHookOnRepop(Player * pPlayer)
 	if(lua_instance == NULL) return true;
 	GET_LOCK;
 	bool result = true;
-	li::HookFRefMap::iterator itr = lua_instance->m_hooks.find(SERVER_HOOK_EVENT_ON_REPOP), itend = lua_instance->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_REPOP);
+	PLUA_INSTANCE ref = lua_instance.get();
+	li::HookFRefMap::iterator itr = ref->m_hooks.find(SERVER_HOOK_EVENT_ON_REPOP), itend = ref->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_REPOP);
 	for(; itr != itend; ++itr)
 	{
 		lua_engine::BeginLuaFunctionCall(itr->second);
@@ -121,7 +128,7 @@ bool LuaHookOnRepop(Player * pPlayer)
 		{
 			if(params != NULL && params->head_node->type == LUA_TBOOLEAN && params->head_node->val.bewl == 0)
 				result = false;
-			cleanup_varparam(params, lua_state);
+			cleanup_varparam(params, ref->lu);
 			lua_engine::EndLuaFunctionCall(1);
 		}
 	}
@@ -133,7 +140,8 @@ void LuaHookOnEmote(Player * pPlayer, uint32 Emote, Unit * pUnit)
 {
 	CHECKVALIDSTATE
 	GET_LOCK;
-	li::HookFRefMap::iterator itr = lua_instance->m_hooks.find(SERVER_HOOK_EVENT_ON_EMOTE), itend = lua_instance->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_EMOTE);
+	PLUA_INSTANCE ref = lua_instance.get();
+	li::HookFRefMap::iterator itr = ref->m_hooks.find(SERVER_HOOK_EVENT_ON_EMOTE), itend = ref->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_EMOTE);
 	for(; itr != itend; ++itr)
 	{
 		lua_engine::BeginLuaFunctionCall(itr->second);
@@ -150,7 +158,8 @@ void LuaHookOnEnterCombat(Player * pPlayer, Unit * pTarget)
 {
 	CHECKVALIDSTATE
 	GET_LOCK;
-	li::HookFRefMap::iterator itr = lua_instance->m_hooks.find(SERVER_HOOK_EVENT_ON_ENTER_COMBAT), itend = lua_instance->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_ENTER_COMBAT);
+	PLUA_INSTANCE ref = lua_instance.get();
+	li::HookFRefMap::iterator itr = ref->m_hooks.find(SERVER_HOOK_EVENT_ON_ENTER_COMBAT), itend = ref->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_ENTER_COMBAT);
 	for(; itr != itend; ++itr)
 	{
 		lua_engine::BeginLuaFunctionCall(itr->second);
@@ -166,8 +175,9 @@ bool LuaHookOnCastSpell(Player * pPlayer, SpellEntry* pSpell, Spell* spell)
 {
 	if(lua_instance == NULL) return true;
 	GET_LOCK;
+	PLUA_INSTANCE ref = lua_instance.get();
 	bool result = true;
-	li::HookFRefMap::iterator itr = lua_instance->m_hooks.find(SERVER_HOOK_EVENT_ON_CAST_SPELL), itend = lua_instance->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_CAST_SPELL);
+	li::HookFRefMap::iterator itr = ref->m_hooks.find(SERVER_HOOK_EVENT_ON_CAST_SPELL), itend = ref->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_CAST_SPELL);
 	for(; itr != itend; ++itr)
 	{
 		lua_engine::BeginLuaFunctionCall(itr->second);
@@ -180,7 +190,7 @@ bool LuaHookOnCastSpell(Player * pPlayer, SpellEntry* pSpell, Spell* spell)
 		{
 			if(params != NULL && params->head_node->type == LUA_TBOOLEAN && params->head_node->val.bewl == 0)
 				result = false;
-			cleanup_varparam(params, lua_state);
+			cleanup_varparam(params, ref->lu);
 			lua_engine::EndLuaFunctionCall(1);
 		}
 	}
@@ -192,7 +202,8 @@ void LuaHookOnTick()
 {
 	CHECKVALIDSTATE
 	GET_LOCK;
-	li::HookFRefMap::iterator itr = lua_instance->m_hooks.find(SERVER_HOOK_EVENT_ON_TICK), itend = lua_instance->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_TICK);
+	PLUA_INSTANCE ref = lua_instance.get();
+	li::HookFRefMap::iterator itr = ref->m_hooks.find(SERVER_HOOK_EVENT_ON_TICK), itend = ref->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_TICK);
 	for(; itr != itend; ++itr)
 	{
 		lua_engine::BeginLuaFunctionCall(itr->second);
@@ -205,7 +216,8 @@ bool LuaHookOnLogoutRequest(Player * pPlayer)
 	if(lua_instance == NULL) return true;
 	GET_LOCK;
 	bool result = true;
-	li::HookFRefMap::iterator itr = lua_instance->m_hooks.find(SERVER_HOOK_EVENT_ON_LOGOUT_REQUEST), itend = lua_instance->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_LOGOUT_REQUEST);
+	PLUA_INSTANCE ref = lua_instance.get();
+	li::HookFRefMap::iterator itr = ref->m_hooks.find(SERVER_HOOK_EVENT_ON_LOGOUT_REQUEST), itend = ref->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_LOGOUT_REQUEST);
 	for(; itr != itend; ++itr)
 	{
 		lua_engine::BeginLuaFunctionCall(itr->second);
@@ -216,7 +228,7 @@ bool LuaHookOnLogoutRequest(Player * pPlayer)
 		{
 			if(params != NULL && params->head_node->type == LUA_TBOOLEAN && params->head_node->val.bewl == 0)
 				result = false;
-			cleanup_varparam(params, lua_state);
+			cleanup_varparam(params, ref->lu);
 			lua_engine::EndLuaFunctionCall(1);
 		}
 	}
@@ -228,7 +240,8 @@ void LuaHookOnLogout(Player * pPlayer)
 {
 	CHECKVALIDSTATE
 	GET_LOCK;
-	li::HookFRefMap::iterator itr = lua_instance->m_hooks.find(SERVER_HOOK_EVENT_ON_LOGOUT), itend = lua_instance->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_LOGOUT);
+	PLUA_INSTANCE ref = lua_instance.get();
+	li::HookFRefMap::iterator itr = ref->m_hooks.find(SERVER_HOOK_EVENT_ON_LOGOUT), itend = ref->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_LOGOUT);
 	for(; itr != itend; ++itr)
 	{
 		lua_engine::BeginLuaFunctionCall(itr->second);
@@ -243,7 +256,8 @@ void LuaHookOnQuestAccept(Player * pPlayer, Quest * pQuest, Object * pQuestGiver
 {
 	CHECKVALIDSTATE
 	GET_LOCK;
-	li::HookFRefMap::iterator itr = lua_instance->m_hooks.find(SERVER_HOOK_EVENT_ON_QUEST_ACCEPT), itend = lua_instance->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_QUEST_ACCEPT);
+	PLUA_INSTANCE ref = lua_instance.get();
+	li::HookFRefMap::iterator itr = ref->m_hooks.find(SERVER_HOOK_EVENT_ON_QUEST_ACCEPT), itend = ref->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_QUEST_ACCEPT);
 	for(; itr != itend; ++itr)
 	{
 		lua_engine::BeginLuaFunctionCall(itr->second);
@@ -269,7 +283,8 @@ void LuaHookOnZone(Player * pPlayer, uint32 Zone, uint32 oldZone)
 {
 	CHECKVALIDSTATE
 	GET_LOCK;
-	li::HookFRefMap::iterator itr = lua_instance->m_hooks.find(SERVER_HOOK_EVENT_ON_ZONE), itend = lua_instance->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_ZONE);
+	PLUA_INSTANCE ref = lua_instance.get();
+	li::HookFRefMap::iterator itr = ref->m_hooks.find(SERVER_HOOK_EVENT_ON_ZONE), itend = ref->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_ZONE);
 	for(; itr != itend; ++itr)
 	{
 		lua_engine::BeginLuaFunctionCall(itr->second);
@@ -286,8 +301,9 @@ bool LuaHookOnChat(Player * pPlayer, uint32 Type, uint32 Lang, const char * Mess
 {
 	if(lua_instance == NULL) return true;
 	GET_LOCK;
+	PLUA_INSTANCE ref = lua_instance.get();
 	bool result = true;
-	li::HookFRefMap::iterator itr = lua_instance->m_hooks.find(SERVER_HOOK_EVENT_ON_CHAT), itend = lua_instance->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_CHAT);
+	li::HookFRefMap::iterator itr = ref->m_hooks.find(SERVER_HOOK_EVENT_ON_CHAT), itend = ref->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_CHAT);
 	for(; itr != itend; ++itr)
 	{
 		lua_engine::BeginLuaFunctionCall(itr->second);
@@ -302,7 +318,7 @@ bool LuaHookOnChat(Player * pPlayer, uint32 Type, uint32 Lang, const char * Mess
 		{
 			if(params != NULL && params->head_node->type == LUA_TBOOLEAN && params->head_node->val.bewl == 0)
 				result = false;
-			cleanup_varparam(params, lua_state);
+			cleanup_varparam(params, ref->lu);
 			lua_engine::EndLuaFunctionCall(1);
 		}
 	}
@@ -314,7 +330,8 @@ void LuaHookOnLoot(Player * pPlayer, Unit * pTarget, uint32 Money, uint32 ItemId
 {
 	CHECKVALIDSTATE
 	GET_LOCK;
-	li::HookFRefMap::iterator itr = lua_instance->m_hooks.find(SERVER_HOOK_EVENT_ON_LOOT), itend = lua_instance->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_LOOT);
+	PLUA_INSTANCE ref = lua_instance.get();
+	li::HookFRefMap::iterator itr = ref->m_hooks.find(SERVER_HOOK_EVENT_ON_LOOT), itend = ref->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_LOOT);
 	for(; itr != itend; ++itr)
 	{
 		lua_engine::BeginLuaFunctionCall(itr->second);
@@ -332,7 +349,8 @@ void LuaHookOnGuildCreate(Player * pLeader, Guild * pGuild)
 {
 	CHECKVALIDSTATE
 	GET_LOCK;
-	li::HookFRefMap::iterator itr = lua_instance->m_hooks.find(SERVER_HOOK_EVENT_ON_GUILD_CREATE), itend = lua_instance->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_GUILD_CREATE);
+	PLUA_INSTANCE ref = lua_instance.get();
+	li::HookFRefMap::iterator itr = ref->m_hooks.find(SERVER_HOOK_EVENT_ON_GUILD_CREATE), itend = ref->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_GUILD_CREATE);
 	for(; itr != itend; ++itr)
 	{
 		lua_engine::BeginLuaFunctionCall(itr->second);
@@ -363,7 +381,8 @@ void LuaHookOnCharacterCreate(Player * pPlayer)
 {
 	CHECKVALIDSTATE
 	GET_LOCK;
-	li::HookFRefMap::iterator itr = lua_instance->m_hooks.find(SERVER_HOOK_EVENT_ON_CHARACTER_CREATE), itend = lua_instance->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_CHARACTER_CREATE);
+	PLUA_INSTANCE ref = lua_instance.get();
+	li::HookFRefMap::iterator itr = ref->m_hooks.find(SERVER_HOOK_EVENT_ON_CHARACTER_CREATE), itend = ref->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_CHARACTER_CREATE);
 	for(; itr != itend; ++itr)
 	{
 		lua_engine::BeginLuaFunctionCall(itr->second);
@@ -378,7 +397,8 @@ void LuaHookOnQuestCancelled(Player * pPlayer, Quest * pQuest)
 {
 	CHECKVALIDSTATE
 	GET_LOCK;
-	li::HookFRefMap::iterator itr = lua_instance->m_hooks.find(SERVER_HOOK_EVENT_ON_QUEST_CANCELLED), itend = lua_instance->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_QUEST_CANCELLED);
+	PLUA_INSTANCE ref = lua_instance.get();
+	li::HookFRefMap::iterator itr = ref->m_hooks.find(SERVER_HOOK_EVENT_ON_QUEST_CANCELLED), itend = ref->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_QUEST_CANCELLED);
 	for(; itr != itend; ++itr)
 	{
 		lua_engine::BeginLuaFunctionCall(itr->second);
@@ -394,7 +414,8 @@ void LuaHookOnQuestFinished(Player * pPlayer, Quest * pQuest, Object * pQuestGiv
 {
 	CHECKVALIDSTATE
 	GET_LOCK;
-	li::HookFRefMap::iterator itr = lua_instance->m_hooks.find(SERVER_HOOK_EVENT_ON_QUEST_FINISHED), itend = lua_instance->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_QUEST_FINISHED);
+	PLUA_INSTANCE ref = lua_instance.get();
+	li::HookFRefMap::iterator itr = ref->m_hooks.find(SERVER_HOOK_EVENT_ON_QUEST_FINISHED), itend = ref->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_QUEST_FINISHED);
 	for(; itr != itend; ++itr)
 	{
 		lua_engine::BeginLuaFunctionCall(itr->second);
@@ -420,7 +441,8 @@ void LuaHookOnHonorableKill(Player * pPlayer, Player * pKilled)
 {
 	CHECKVALIDSTATE
 	GET_LOCK;
-	li::HookFRefMap::iterator itr = lua_instance->m_hooks.find(SERVER_HOOK_EVENT_ON_HONORABLE_KILL), itend = lua_instance->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_HONORABLE_KILL);
+	PLUA_INSTANCE ref = lua_instance.get();
+	li::HookFRefMap::iterator itr = ref->m_hooks.find(SERVER_HOOK_EVENT_ON_HONORABLE_KILL), itend = ref->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_HONORABLE_KILL);
 	for(; itr != itend; ++itr)
 	{
 		lua_engine::BeginLuaFunctionCall(itr->second);
@@ -435,7 +457,8 @@ void LuaHookOnArenaFinish(Player * pPlayer, ArenaTeam* pTeam, bool victory, bool
 {
 	CHECKVALIDSTATE
 	GET_LOCK;
-	li::HookFRefMap::iterator itr = lua_instance->m_hooks.find(SERVER_HOOK_EVENT_ON_ARENA_FINISH), itend = lua_instance->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_ARENA_FINISH);
+	PLUA_INSTANCE ref = lua_instance.get();
+	li::HookFRefMap::iterator itr = ref->m_hooks.find(SERVER_HOOK_EVENT_ON_ARENA_FINISH), itend = ref->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_ARENA_FINISH);
 	for(; itr != itend; ++itr)
 	{
 		lua_engine::BeginLuaFunctionCall(itr->second);
@@ -452,7 +475,8 @@ void LuaHookOnObjectLoot(Player * pPlayer, Object * pTarget, uint32 Money, uint3
 {
 	CHECKVALIDSTATE
 	GET_LOCK;
-	li::HookFRefMap::iterator itr = lua_instance->m_hooks.find(SERVER_HOOK_EVENT_ON_OBJECTLOOT), itend = lua_instance->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_OBJECTLOOT);
+	PLUA_INSTANCE ref = lua_instance.get();
+	li::HookFRefMap::iterator itr = ref->m_hooks.find(SERVER_HOOK_EVENT_ON_OBJECTLOOT), itend = ref->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_OBJECTLOOT);
 	for(; itr != itend; ++itr)
 	{
 		lua_engine::BeginLuaFunctionCall(itr->second);
@@ -470,7 +494,8 @@ void LuaHookOnAreaTrigger(Player * pPlayer, uint32 areaTrigger)
 {
 	CHECKVALIDSTATE
 	GET_LOCK;
-	li::HookFRefMap::iterator itr = lua_instance->m_hooks.find(SERVER_HOOK_EVENT_ON_AREATRIGGER), itend = lua_instance->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_AREATRIGGER);
+	PLUA_INSTANCE ref = lua_instance.get();
+	li::HookFRefMap::iterator itr = ref->m_hooks.find(SERVER_HOOK_EVENT_ON_AREATRIGGER), itend = ref->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_AREATRIGGER);
 	for(; itr != itend; ++itr)
 	{
 		lua_engine::BeginLuaFunctionCall(itr->second);
@@ -486,7 +511,8 @@ void LuaHookOnPostLevelUp(Player * pPlayer)
 {
 	CHECKVALIDSTATE
 	GET_LOCK;
-	li::HookFRefMap::iterator itr = lua_instance->m_hooks.find(SERVER_HOOK_EVENT_ON_POST_LEVELUP), itend = lua_instance->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_POST_LEVELUP);
+	PLUA_INSTANCE ref = lua_instance.get();
+	li::HookFRefMap::iterator itr = ref->m_hooks.find(SERVER_HOOK_EVENT_ON_POST_LEVELUP), itend = ref->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_POST_LEVELUP);
 	for(; itr != itend; ++itr)
 	{
 		lua_engine::BeginLuaFunctionCall(itr->second);
@@ -502,7 +528,8 @@ bool LuaHookOnPreUnitDie(Unit *Killer, Unit *Victim)
 	if(lua_instance == NULL) return true;
 	GET_LOCK;
 	bool result = true;
-	li::HookFRefMap::iterator itr = lua_instance->m_hooks.find(SERVER_HOOK_EVENT_ON_PRE_DIE), itend = lua_instance->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_PRE_DIE);
+	PLUA_INSTANCE ref = lua_instance.get();
+	li::HookFRefMap::iterator itr = ref->m_hooks.find(SERVER_HOOK_EVENT_ON_PRE_DIE), itend = ref->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_PRE_DIE);
 	for(; itr != itend; ++itr)
 	{
 		lua_engine::BeginLuaFunctionCall(itr->second);
@@ -513,7 +540,7 @@ bool LuaHookOnPreUnitDie(Unit *Killer, Unit *Victim)
 		if( lua_engine::ExecuteLuaFunction(3,1, params, true)) {
 			if(params != NULL && params->head_node->type == LUA_TBOOLEAN && params->head_node->val.bewl == 0)
 				result = false;
-			cleanup_varparam(params, lua_state);
+			cleanup_varparam(params, ref->lu);
 			lua_engine::EndLuaFunctionCall(1);
 		}
 	}
@@ -525,7 +552,8 @@ void LuaHookOnAdvanceSkillLine(Player * pPlayer, uint32 SkillLine, uint32 Curren
 {
 	CHECKVALIDSTATE
 	GET_LOCK;
-	li::HookFRefMap::iterator itr = lua_instance->m_hooks.find(SERVER_HOOK_EVENT_ON_ADVANCE_SKILLLINE), itend = lua_instance->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_ADVANCE_SKILLLINE);
+	PLUA_INSTANCE ref = lua_instance.get();
+	li::HookFRefMap::iterator itr = ref->m_hooks.find(SERVER_HOOK_EVENT_ON_ADVANCE_SKILLLINE), itend = ref->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_ADVANCE_SKILLLINE);
 	for(; itr != itend; ++itr)
 	{
 		lua_engine::BeginLuaFunctionCall(itr->second);
@@ -542,7 +570,8 @@ void LuaHookOnDuelFinished(Player * pWinner, Player * pLoser)
 {
 	CHECKVALIDSTATE
 	GET_LOCK;
-	li::HookFRefMap::iterator itr = lua_instance->m_hooks.find(SERVER_HOOK_EVENT_ON_DUEL_FINISHED), itend = lua_instance->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_DUEL_FINISHED);
+	PLUA_INSTANCE ref = lua_instance.get();
+	li::HookFRefMap::iterator itr = ref->m_hooks.find(SERVER_HOOK_EVENT_ON_DUEL_FINISHED), itend = ref->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_DUEL_FINISHED);
 	for(; itr != itend; ++itr)
 	{
 		lua_engine::BeginLuaFunctionCall(itr->second);
@@ -558,7 +587,8 @@ void LuaHookOnAuraRemove(Aura * aura)
 {
 	CHECKVALIDSTATE
 	GET_LOCK;
-	li::HookFRefMap::iterator itr = lua_instance->m_hooks.find(SERVER_HOOK_EVENT_ON_AURA_REMOVE), itend = lua_instance->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_AURA_REMOVE);
+	PLUA_INSTANCE ref = lua_instance.get();
+	li::HookFRefMap::iterator itr = ref->m_hooks.find(SERVER_HOOK_EVENT_ON_AURA_REMOVE), itend = ref->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_AURA_REMOVE);
 	for(; itr != itend; ++itr){
 		lua_engine::BeginLuaFunctionCall(itr->second);
 		push_int(SERVER_HOOK_EVENT_ON_AURA_REMOVE);
@@ -573,7 +603,8 @@ bool LuaHookOnResurrect(Player * pPlayer)
 	if(lua_instance == NULL) return true;
 	GET_LOCK;
 	bool result = true;
-	li::HookFRefMap::iterator itr = lua_instance->m_hooks.find(SERVER_HOOK_EVENT_ON_RESURRECT),itend = lua_instance->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_RESURRECT);
+	PLUA_INSTANCE ref = lua_instance.get();
+	li::HookFRefMap::iterator itr = ref->m_hooks.find(SERVER_HOOK_EVENT_ON_RESURRECT),itend = ref->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_RESURRECT);
 	for(; itr != itend; ++itr)
 	{
 		lua_engine::BeginLuaFunctionCall(itr->second);
@@ -584,7 +615,7 @@ bool LuaHookOnResurrect(Player * pPlayer)
 		{
 			if(params != NULL && params->head_node->type == LUA_TBOOLEAN && params->head_node->val.bewl == 0)
 				result = false;
-			cleanup_varparam(params, lua_state);
+			cleanup_varparam(params, ref->lu);
 			lua_engine::EndLuaFunctionCall(1);
 		}
 	}
@@ -596,8 +627,9 @@ bool LuaOnDummySpell(uint32 effectIndex, Spell * pSpell)
 {
 	if(lua_instance == NULL) return true;
 	GET_LOCK;
-	li::SpellFRefMap::iterator itr = lua_instance->m_dummySpells.find(pSpell->GetProto()->Id);
-	if(itr != lua_instance->m_dummySpells.end() )
+	PLUA_INSTANCE ref = lua_instance.get();
+	li::SpellFRefMap::iterator itr = ref->m_dummySpells.find(pSpell->GetProto()->Id);
+	if(itr != ref->m_dummySpells.end() )
 	{
 		lua_engine::BeginLuaFunctionCall( (lua_function)itr->second->ref);
 		push_int(effectIndex);

@@ -355,5 +355,8 @@
     <ClInclude Include="..\..\src\arcemu-shared\CRefcounter.h">
       <Filter>Util</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\TLSObject.h">
+      <Filter>Util</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

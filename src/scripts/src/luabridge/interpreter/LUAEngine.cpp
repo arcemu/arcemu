@@ -31,7 +31,7 @@
 #endif
 
 ScriptMgr * m_scriptMgr = NULL;
-THREAD PLUA_INSTANCE lua_instance = NULL;
+Arcemu::Utility::TLSObject<PLUA_INSTANCE> lua_instance;
 PLUA_INSTANCE LUA_COMPILER = NULL;
 
 extern "C"
@@ -547,7 +547,7 @@ void lua_engine::restartThread(MapMgr * map)
 	//first grab the script lock.
 	LuaGuard guard(le::scriptLock);
 	//clean up our frefs and binding maps.
-	PLUA_INSTANCE _li = lua_instance;
+	PLUA_INSTANCE _li = lua_instance.get();
 	le::unload_resources(_li);
 	//close down the lua state, clearing up resources that were being used by the previously loaded scripts.
 	if( _li->lu != NULL)
@@ -675,7 +675,7 @@ void lua_engine::restartThread(MapMgr * map)
 void lua_engine::shutdownThread(MapMgr* map)
 {
 	GET_LOCK;
-	PLUA_INSTANCE ref = lua_instance;
+	PLUA_INSTANCE ref = lua_instance.get();
 	unload_resources( ref);
 	lua_close( ref->lu);
 	delete ref;

@@ -94,7 +94,7 @@ public:
 	}
 	void Destroy ()
 	{
-		PLUA_INSTANCE ref = lua_instance;
+		PLUA_INSTANCE ref = lua_instance.get();
 		{
 			li::GOInterfaceMap::iterator it;
 			li::GOInterfaceMap::iterator itr = ref->m_goInterfaceMap.find(_gameobject->GetEntry() );
@@ -127,7 +127,7 @@ namespace lua_engine
 	GameObjectAIScript * createluagameobject(GameObject * src)
 	{
 		LuaGameObject * script = NULL;
-		PLUA_INSTANCE ref = lua_instance;
+		PLUA_INSTANCE ref = lua_instance.get();
 		if(src != NULL) 
 		{
 			uint32 id = src->GetInfo()->ID;

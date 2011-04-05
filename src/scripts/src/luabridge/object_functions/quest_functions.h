@@ -10,7 +10,7 @@ class LuaQuest : public QuestScript
 		LuaQuest(uint32 id) : QuestScript(), entry(id) {}
 		~LuaQuest()
 		{
-			PLUA_INSTANCE li_ = lua_instance;
+			PLUA_INSTANCE li_ = lua_instance.get();
 			for(li::QuestInterfaceMap::iterator itr = li_->m_questInterfaceMap.find(entry); itr != li_->m_questInterfaceMap.upper_bound(entry); ++itr)
 			{
 				if(itr->second == this)
@@ -104,13 +104,14 @@ namespace lua_engine
 	QuestScript * createluaquest(uint32 id)
 	{
 		LuaQuest * pLua = NULL;
-		li::ObjectBindingMap::iterator itr = lua_instance->m_questBinding.find(id);
-		PObjectBinding pBinding = (itr != lua_instance->m_questBinding.end() ) ? itr->second : NULL;
+		PLUA_INSTANCE ref = lua_instance.get();
+		li::ObjectBindingMap::iterator itr = ref->m_questBinding.find(id);
+		PObjectBinding pBinding = (itr != ref->m_questBinding.end() ) ? itr->second : NULL;
 		if(pBinding != NULL)
 		{
 			pLua = new LuaQuest(id);
 			pLua->m_binding = pBinding;
-			lua_instance->m_questInterfaceMap.insert( make_pair(id, pLua) );
+			ref->m_questInterfaceMap.insert( make_pair(id, pLua) );
 		}
 		return pLua;
 	}

@@ -38,12 +38,6 @@ template< class T, class U > T TO( U u ){ return static_cast< T >( u ); }
 #define TO_ITEM(ptr) TO<Item*>(ptr)
 #define TO_GAMEOBJECT(ptr) TO<GameObject*>(ptr)
 
-#ifdef WIN32
-#define THREAD_LOCAL __declspec(thread)
-#else
-#define THREAD_LOCAL __thread
-#endif
-
 #define DEBUG_LOG(...) sLog.Debug("DEBUG_LOG", __VA_ARGS__)
 
 
@@ -91,6 +85,7 @@ template< class T, class U > T TO( U u ){ return static_cast< T >( u ); }
 #include "../arcemu-shared/Threading/RWLock.h"
 #include "../arcemu-shared/Threading/Condition.h"
 #include "../arcemu-shared/arcemu_getopt.h"
+#include "../arcemu-shared/TLSObject.h"
 
 #ifdef WIN32
 #include "printStackTrace.h"

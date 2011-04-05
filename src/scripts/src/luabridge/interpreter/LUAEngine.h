@@ -38,17 +38,11 @@ extern "C"
 #include "../lua/lualib.h"
 };
 
-#if defined WIN32
-#define THREAD __declspec(thread)
-#else
-#define THREAD __thread
-#endif
-
 /*	A thread local storage lua_instance that will only get initialized for maps that attempt to run lua scripts. */
-extern THREAD PLUA_INSTANCE lua_instance;
+extern Arcemu::Utility::TLSObject<PLUA_INSTANCE> lua_instance;
 /*	A lua_State that acts like a compiler for lua scripts, it loads scripts during engine startup to detect and report any errors */
 extern PLUA_INSTANCE LUA_COMPILER;
-#define lua_state lua_instance->lu
+#define lua_state (lua_instance.get() )->lu
 
 #define GET_LOCK
 #define RELEASE_LOCK 

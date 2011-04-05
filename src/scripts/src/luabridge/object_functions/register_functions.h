@@ -55,7 +55,7 @@ using namespace lua_engine;
 bool registerServerHook(uint32 hook, lua_function ref)
 {
 	bool found = false;
-	PLUA_INSTANCE li_ = lua_instance;
+	PLUA_INSTANCE li_ = lua_instance.get();
 	if(hook < NUM_SERVER_HOOKS && (ptrdiff_t)ref != LUA_REFNIL)
 	{
 		li::HookFRefMap::iterator itr = li_->m_hooks.find(hook);
@@ -75,7 +75,7 @@ bool registerServerHook(uint32 hook, lua_function ref)
 bool registerUnitEvent(uint32 entry, uint32 evt, lua_function ref)
 {
 	bool found = false;
-	PLUA_INSTANCE li_ = lua_instance;
+	PLUA_INSTANCE li_ = lua_instance.get();
 	if(evt < CREATURE_EVENT_COUNT && (ptrdiff_t)ref != LUA_REFNIL)
 	{
 		li::ObjectBindingMap::iterator itr = li_->m_unitBinding.find(entry);
@@ -99,7 +99,7 @@ bool registerUnitEvent(uint32 entry, uint32 evt, lua_function ref)
 bool registerQuestEvent(uint32 entry, uint32 evt, lua_function ref)
 {
 	bool found = false;
-	PLUA_INSTANCE li_ = lua_instance;
+	PLUA_INSTANCE li_ = lua_instance.get();
 	if(evt < QUEST_EVENT_COUNT && (ptrdiff_t)ref != LUA_REFNIL)
 	{
 		li::ObjectBindingMap::iterator itr = li_->m_questBinding.find(entry);
@@ -123,7 +123,7 @@ bool registerQuestEvent(uint32 entry, uint32 evt, lua_function ref)
 bool registerGameObjectEvent(uint32 entry, uint32 evt, lua_function ref)
 {
 	bool found = false;
-	PLUA_INSTANCE li_ = lua_instance;
+	PLUA_INSTANCE li_ = lua_instance.get();
 	if(evt < GAMEOBJECT_EVENT_COUNT && (ptrdiff_t)ref != LUA_REFNIL)
 	{
 		li::ObjectBindingMap::iterator itr = li_->m_goBinding.find(entry);
@@ -147,7 +147,7 @@ bool registerGameObjectEvent(uint32 entry, uint32 evt, lua_function ref)
 bool registerUnitGossipEvent(uint32 entry, uint32 evt, lua_function ref)
 {
 	bool found = false;
-	PLUA_INSTANCE li_ = lua_instance;
+	PLUA_INSTANCE li_ = lua_instance.get();
 	if(evt < GOSSIP_EVENT_COUNT && (ptrdiff_t)ref != LUA_REFNIL)
 	{
 		li::ObjectBindingMap::iterator itr = li_->m_unitGossipBinding.find(entry);
@@ -171,7 +171,7 @@ bool registerUnitGossipEvent(uint32 entry, uint32 evt, lua_function ref)
 bool registerItemGossipEvent(uint32 entry, uint32 evt, lua_function ref)
 {
 	bool found = false;
-	PLUA_INSTANCE li_ = lua_instance;
+	PLUA_INSTANCE li_ = lua_instance.get();
 	if(evt < GOSSIP_EVENT_COUNT && (ptrdiff_t)ref != LUA_REFNIL)
 	{
 		li::ObjectBindingMap::iterator itr = li_->m_itemGossipBinding.find(entry);
@@ -195,7 +195,7 @@ bool registerItemGossipEvent(uint32 entry, uint32 evt, lua_function ref)
 bool registerGOGossipEvent(uint32 entry, uint32 evt, lua_function ref)
 {
 	bool found = false;
-	PLUA_INSTANCE li_ = lua_instance;
+	PLUA_INSTANCE li_ = lua_instance.get();
 	if(evt < GOSSIP_EVENT_COUNT && (ptrdiff_t)ref != LUA_REFNIL)
 	{
 		li::ObjectBindingMap::iterator itr = li_->m_goGossipBinding.find(entry);
@@ -219,7 +219,7 @@ bool registerGOGossipEvent(uint32 entry, uint32 evt, lua_function ref)
 bool registerInstanceEvent(uint32 entry, uint32 evt, lua_function ref)
 {
 	bool found = false;
-	PLUA_INSTANCE li_ = lua_instance;
+	PLUA_INSTANCE li_ = lua_instance.get();
 	if(evt < INSTANCE_EVENT_COUNT && (ptrdiff_t)ref != LUA_REFNIL)
 	{
 		li::ObjectBindingMap::iterator itr = li_->m_instanceBinding.find(entry);
@@ -244,7 +244,7 @@ bool registerInstanceEvent(uint32 entry, uint32 evt, lua_function ref)
 bool registerDummySpell(uint32 entry, lua_function ref, variadic_parameter * params)
 {
 	bool found = true;
-	PLUA_INSTANCE li_ = lua_instance;
+	PLUA_INSTANCE li_ = lua_instance.get();
 	if( (ptrdiff_t)ref != LUA_REFNIL )
 	{
 		li::SpellFRefMap::iterator itr = li_->m_dummySpells.find(entry);
@@ -313,7 +313,7 @@ ptrdiff_t extractfRefFromCString(lua_State * L,const char * functionName)
 
 int suspendluathread(lua_thread thread, int wait_time, variadic_parameter * params)
 {
-	PLUA_INSTANCE li_ = lua_instance;
+	PLUA_INSTANCE li_ = lua_instance.get();
 	if(li_->map != NULL && thread != NULL && wait_time > 0)
 	{
 		TimedEvent * evt = TimedEvent::Allocate(NULL,new CallBackFunctionP1<lua_thread>(resumeluathread,thread),0,wait_time,1);
@@ -333,7 +333,7 @@ int suspendluathread(lua_thread thread, int wait_time, variadic_parameter * para
 void resumeluathread(lua_thread thread)
 {
 	//Make sure we still have the thread
-	PLUA_INSTANCE li_ = lua_instance;
+	PLUA_INSTANCE li_ = lua_instance.get();
 	LUA_INSTANCE::Coroutines::iterator itr = li_->coroutines_.find(thread);
 	if( itr != li_->coroutines_.end() )
 	{

@@ -25,7 +25,7 @@
 #include "StdAfx.h"
 #include "CrashHandler.h"
 
-THREAD_LOCAL MapMgr* t_currentMapContext = NULL;
+Arcemu::Utility::TLSObject<MapMgr*> t_currentMapContext;
 
 #define MAP_MGR_UPDATE_PERIOD 100
 #define MAPMGR_INACTIVE_MOVE_TIME 30
@@ -1284,7 +1284,7 @@ bool MapMgr::Do()
 	threadid = GetCurrentThreadId();
 #endif
 
-	t_currentMapContext = this;
+	t_currentMapContext.set(this);
 
 	thread_running = true;
 	ThreadState.SetVal(THREADSTATE_BUSY);

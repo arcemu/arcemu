@@ -156,9 +156,9 @@ namespace lua_engine
 			BIND(GetNativeDisplayId)
 			BIND(SetNativeDisplayId)
 			//.property_ro("CombatStatus", &Unit::CombatStatus)
-			.property_rw("runspeed", &Unit::m_runSpeed)
-			.property_rw("walkspeed", &Unit::m_walkSpeed)
-			.property_rw("flyspeed", &Unit::m_flySpeed);
+			.property_rw("runspeed", (float Unit::*)(&Unit::m_runSpeed) )
+			.property_rw("walkspeed", (float Unit::*)(&Unit::m_walkSpeed) )
+			.property_rw("flyspeed", (float Unit::*)(&Unit::m_flySpeed) );
 #undef BIND
 			m	.class_<CombatStatusHandler,CombatStatusHandler>("CombatStatus")
 				.method("IsInCombat", &CombatStatusHandler::IsInCombat);

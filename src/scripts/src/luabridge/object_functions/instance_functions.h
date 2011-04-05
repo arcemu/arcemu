@@ -9,7 +9,7 @@ public:
 	{}
 	~LuaInstance() 
 	{
-		PLUA_INSTANCE ref = lua_instance;
+		PLUA_INSTANCE ref = lua_instance.get();
 		//assert(ref != NULL && ref->lu != NULL);
 		if(ref != NULL)
 		  le::shutdownThread(GetInstance() );
@@ -138,7 +138,7 @@ namespace lua_engine
 		LuaInstance * pLua = NULL;
 		
 		
-		PLUA_INSTANCE pstackInstance = lua_instance;
+		PLUA_INSTANCE pstackInstance = lua_instance.get();
 		if(pstackInstance == NULL)
 		{
 		  pstackInstance = new LUA_INSTANCE;
@@ -219,7 +219,7 @@ namespace lua_engine
 			.method("HasFlag", &MapInfo::HasFlag);
 #undef prop
 
-		luabridge::tdstack<MapMgr*>::push(m.L, lua_instance->map);
+		luabridge::tdstack<MapMgr*>::push(m.L, lua_instance.get()->map);
 		//set _G[MapMgr] = lua_instance->map, so we can auto grab a mapmgr pointer as long as we execute lua code from a valid mapmgr thread.
 		lua_setglobal(m.L, "MapMgr");
 	}

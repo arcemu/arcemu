@@ -12,7 +12,7 @@ public:
 	//************************************
    void CallScriptEngineFunction(variadic_parameter * parameters)
    {
-	   PLUA_INSTANCE li_ = lua_instance;
+	   PLUA_INSTANCE li_ = lua_instance.get();
 	   //locate the reference and clean up
 	   LUA_INSTANCE::ObjectFRefMap::iterator
 		   itr = li_->m_goFRefs.find( GetLowGUID() ),
@@ -74,7 +74,7 @@ public:
 		   parameters->head_node = frefnode;
 		   sEventMgr.AddEvent(this, &lua_go::CallScriptEngineFunction, parameters, EVENT_LUA_GAMEOBJ_EVENTS, interval, repeats, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 		   //keep a reference to the allocated block so we can free it.
-		   lua_instance->m_goFRefs.insert( make_pair( this->GetLowGUID(), parameters) );
+		   lua_instance.get()->m_goFRefs.insert( make_pair( this->GetLowGUID(), parameters) );
 	   }
 	   else
 		   luaL_error((lua_State*)stack, "expecting valid function.");
@@ -85,7 +85,7 @@ public:
    //************************************
    void RemoveScriptEngineEvents()
    {
-	   PLUA_INSTANCE li_ = lua_instance;
+	   PLUA_INSTANCE li_ = lua_instance.get();
 	   sEventMgr.RemoveEvents(this, EVENT_LUA_GAMEOBJ_EVENTS);
 	   //Remove any stored references
 	   LUA_INSTANCE::ObjectFRefMap::iterator 

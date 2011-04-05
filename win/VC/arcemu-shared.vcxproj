@@ -143,8 +143,7 @@ RevisionExtractor.exe
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <FloatingPointExceptions>true</FloatingPointExceptions>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)</ObjectFileName>
@@ -422,6 +421,7 @@ RevisionExtractor.exe
     <ClInclude Include="..\..\src\arcemu-shared\StackWalker.h" />
     <ClInclude Include="..\..\src\arcemu-shared\TextFile.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Timer.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\TLSObject.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Util.h" />
     <ClInclude Include="..\..\src\arcemu-shared\WoWGuid.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Log.h" />

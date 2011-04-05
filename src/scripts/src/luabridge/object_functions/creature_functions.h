@@ -308,7 +308,7 @@ public:
 	}
 	void Destroy()
 	{
-		PLUA_INSTANCE li_ = lua_instance;
+		PLUA_INSTANCE li_ = lua_instance.get();
 		{
 			li::CreatureInterfaceMap::iterator it;
 			li::CreatureInterfaceMap::iterator itr = li_->m_creatureInterfaceMap.find(_unit->GetEntry() ), itend = li_->m_creatureInterfaceMap.upper_bound(_unit->GetEntry() );
@@ -340,7 +340,7 @@ namespace lua_engine
 	CreatureAIScript * createluacreature(Creature * src)
 	{
 		LuaCreature * script = NULL;
-		PLUA_INSTANCE ref = lua_instance;
+		PLUA_INSTANCE ref = lua_instance.get();
 		if(src != NULL)
 		{
 			uint32 id = src->GetEntry();
