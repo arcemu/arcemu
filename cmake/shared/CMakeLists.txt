@@ -36,7 +36,7 @@ SET( sources
 
 IF(WIN32)
 	SET( sources ${sources} Network/SocketMgrWin32.cpp  Network/SocketOpsWin32.cpp  Network/SocketWin32.cpp StackWalker.cpp StackTrace.cpp )
-ELSEIF(IS_FREEBSD)
+ELSEIF(IS_FREEBSD OR APPLE)
 	SET( sources ${sources}  Network/SocketMgrFreeBSD.cpp  Network/SocketFreeBSD.cpp  Network/SocketOpsFreeBSD.cpp )
 ELSE(WIN32)
 	SET( sources ${sources}  Network/SocketMgrLinux.cpp  Network/SocketLinux.cpp  Network/SocketOpsLinux.cpp )

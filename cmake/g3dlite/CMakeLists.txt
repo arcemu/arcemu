@@ -11,7 +11,7 @@ set(sources
   Box.cpp
   Capsule.cpp
   CollisionDetection.cpp
-  CoordinateFrame
+  CoordinateFrame.cpp
   Crypto.cpp
   Cylinder.cpp
   debugAssert.cpp

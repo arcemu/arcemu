@@ -12,7 +12,7 @@ ENDIF()
 
 #mac osx
 IF( APPLE )
-	SET( GLOBAL_DEFINES ${GLOBAL_DEFINES} -DHAVE_DARWIN -DUSE_KQUEUE)
+	SET( GLOBAL_DEFINES ${GLOBAL_DEFINES} -DHAVE_DARWIN)
 	SET( IS_MAC TRUE)
 ELSEIF(UNIX)
 	#mac has unix defined too but if 'if(APPLE)' fails, then it's not apple.
@@ -81,10 +81,8 @@ ENDIF()
 
 #Find our needed libs
 IF( NOT WIN32 )
-	IF( IS_LINUX OR IS_FREEBSD )
-		find_package(ZLIB REQUIRED)
-		find_package(PCRE REQUIRED)
-	ENDIF()
+	find_package(ZLIB REQUIRED)
+	find_package(PCRE REQUIRED)
 	find_package(OpenSSL REQUIRED)
 	find_package(Threads REQUIRED)
 	find_package(MySQL REQUIRED)
@@ -114,6 +112,8 @@ if(WIN32)
 	endif()
 	#Needed for socket stuff and crash handler
 	SET(EXTRA_LIBS ${EXTRA_LIBS} ws2_32.lib dbghelp.lib )
+elseif(APPLE)
+	SET( EXTRA_LIBS ${EXTRA_LIBS} "-framework Carbon" )
 endif()
 
 add_subdirectory(shared)
