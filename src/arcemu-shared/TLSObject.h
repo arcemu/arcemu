@@ -45,7 +45,7 @@ namespace Arcemu
 #if PLATFORM == PLATFORM_APPLE || PLATFORM == PLATFORM_UNIX
 				pthread_setspecific(key_, static_cast<const void*>(val) );
 #elif PLATFORM == PLATFORM_WIN32
-				TlsSetValue(key_, static_cast<LPVOID>(val);
+				TlsSetValue(key_, static_cast<LPVOID>(val) );
 #endif
 			}
 
