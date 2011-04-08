@@ -422,6 +422,7 @@ RevisionExtractor.exe
     <ClInclude Include="..\..\src\arcemu-shared\TextFile.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Timer.h" />
     <ClInclude Include="..\..\src\arcemu-shared\TLSObject.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\Tokenizer.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Util.h" />
     <ClInclude Include="..\..\src\arcemu-shared\WoWGuid.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Log.h" />

@@ -25,7 +25,6 @@
 #endif
 #include <sys/stat.h>
 #include <sys/types.h>
-GossipMenu * Menu;
 
 #include "StdAfx.h"
 #include "lua_instance.h"
@@ -44,6 +43,11 @@ extern Arcemu::Utility::TLSObject<PLUA_INSTANCE> lua_instance;
 extern PLUA_INSTANCE LUA_COMPILER;
 #define lua_state (lua_instance.get() )->lu
 
+//Used for checking headers in scripts.
+#define ARCLUA_PREFIX "--?!"	//begins with a comment syntax so that Lua will ignore our header.
+#define ARCLUA_PREFIX_SIZE 4
+#define ARCLUA_SUFFIX '\x0A'	//line feed char
+#define ARCLUA_SUFFIX_SIZE 1
 #define GET_LOCK
 #define RELEASE_LOCK 
 #define NULL_BINDING_CHECK GET_LOCK; if(m_binding == NULL) return;
@@ -59,13 +63,6 @@ namespace lua_engine
 	extern Arcemu::Gossip::Script * createitemgossipInterface(uint32 id);
 	extern Arcemu::Gossip::Script * creategogossipInterface(uint32 id);
 	extern InstanceScript * createluainstance(MapMgr*);
-
-	typedef struct
-	{
-		size_t dump_size;
-		const void * dump_data;
-		size_t read_pos;
-	} LUA_SCRIPT, *PLUA_SCRIPT;
 
 	typedef HM_NAMESPACE::hash_map<std::string, PLUA_SCRIPT> LuaScriptData;
 	typedef std::set<uint32> hooked_dummySpells;
@@ -84,8 +81,7 @@ namespace lua_engine
 
 	
 	static void startupEngine();
-	static void loadScripts(lua_State *);
-	static void loadScripts();
+	static void loadScripts(PLUA_INSTANCE);	static void loadScripts();
 	static void scriptload_searchdir(char *Dirname, std::set<string>&);
 	static void restartEngine();
 	//static void shutdownEngine();
@@ -102,7 +98,8 @@ namespace lua_engine
 	//static int dumpScript(lua_State *, const void *, size_t, void*);
 
 	//static void dumpScripts2HDD();
-	
+	//special header parsing	
+	static void parseHeader(PLUA_SCRIPT);	
 	//c to lua and lua to c methods
 	static void BeginLuaFunctionCall(lua_function ref);
 	static bool ExecuteLuaFunction(int param_cnt = 0, int res_cnt = 0, variadic_parameter * results = NULL, bool getparams = false);

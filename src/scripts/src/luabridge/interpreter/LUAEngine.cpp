@@ -110,19 +110,20 @@ void lua_engine::scriptload_searchdir(char * Dirname, std::set<string>& store)
 	}
 	FindClose(hFile);
 #else
-	char *pch=strrchr(Dirname,'/');
-	if (strcmp(Dirname, "..")==0 || strcmp(Dirname, ".")==0) return; //Against Endless-Loop
-	if (pch != NULL && (strcmp(pch, "/..")==0 || strcmp(pch, "/.")==0 || strcmp(pch, "/.svn")==0)) return;
+	char *pch = strrchr(Dirname,'/');
+	if( strcmp(Dirname, "..") == 0 || strcmp(Dirname, ".") == 0 ) return; //Against Endless-Loop
+	if( pch != NULL && (strcmp(pch, "/..") == 0 || strcmp(pch, "/.") == 0 || strcmp(pch, "/.svn") == 0 || strcmp(pch, "/.git") == 0 ) )
+		return;
 	struct dirent ** list;
 	int filecount = scandir(Dirname, &list, 0, 0);
 
-	if(filecount <= 0 || !list)
+	if( filecount <= 0 || !list )
 		return;
 
 	struct stat attributes;
 	bool err;
 	Log.Success("LuaEngine", "Scanning Directory %s", Dirname);
-	while(filecount--)
+	while( filecount-- )
 	{
 		char dottedrelpath[200];
 		sprintf(dottedrelpath, "%s/%s", Dirname, list[filecount]->d_name);
@@ -163,15 +164,15 @@ void lua_engine::loadScripts()
 		if(script_file != NULL)
 		{
 			PLUA_SCRIPT script = new LUA_SCRIPT;
-			script->read_pos = 0;
 			int file_length = 0;
 			fseek(script_file, 0, SEEK_END);
 			file_length = ftell(script_file);
 			rewind(script_file);
-			script->dump_data = (const void*)malloc(file_length);
-			memset( (void*)script->dump_data, 0, file_length);
-			script->dump_size = fread( (void*)script->dump_data, 1, file_length, script_file);
+			script->data_ = (const void*)malloc(file_length);
+			memset( (void*)script->data_, 0, file_length);
+			script->datasize_ = fread( (void*)script->data_, 1, file_length, script_file);
 			fclose(script_file);
+			parseHeader( script );
 			le::compiled_scripts.insert( make_pair( (*itr), script) );
 		}
 	}
@@ -181,7 +182,6 @@ void lua_engine::loadScripts()
 		if(lua_load(LUA_COMPILER->lu, le::readScript, it->second, it->first.c_str() ) || lua_pcall(LUA_COMPILER->lu, 0, 0, 0 ) )
 		{
 			report(LUA_COMPILER->lu);
-			free( (void*)it->second->dump_data);
 			delete it->second;
 			le::compiled_scripts.erase(it);
 		}
@@ -557,7 +557,7 @@ void lua_engine::restartThread(MapMgr * map)
 	//re-expose our wow objects and functions
 	le::loadState(_li);
 	//now we reload the scripts
-	le::loadScripts( _li->lu);
+	le::loadScripts( _li);
 	//since we may have new bindings, update our contained interfaces to use the new bindings so that script changes may take effect
 
 	//since we may have new bindings, lets register them w/ ScriptMgr.
@@ -708,17 +708,20 @@ namespace lua_engine
 	}
 
 	//	Feed cached lua scripts to the lua loader
-	void loadScripts(lua_State * lu)
+	void loadScripts(PLUA_INSTANCE instance)
 	{
+		lua_State * lu = instance->lu;
 		//LuaGuard guard(le::scriptLock);
 		le::LuaScriptData::iterator it,itr = le::compiled_scripts.begin();
 		for(; itr != le::compiled_scripts.end();)
 		{
 			it = itr++;
+			//check if our map id matches that of our script.
+			if(it->second->maps_.size() && it->second->maps_.find( (int32)instance->map->GetMapId() ) == it->second->maps_.end() )
+				continue;
 			if(lua_load(lu, le::readScript, it->second, it->first.c_str() ) || lua_pcall(lu, 0, 0, 0 ) )
 			{
 				report(lu);
-				free( (void*)it->second->dump_data);
 				delete it->second;
 				le::compiled_scripts.erase(it);
 			}
@@ -728,19 +731,51 @@ namespace lua_engine
 	{
 		PLUA_SCRIPT script = (PLUA_SCRIPT)ud;
 		const char * ret = NULL;
-		if(script->read_pos >= script->dump_size)
+		if(script->readpos_ >= script->datasize_)
 		{
 			*size = 0;
-			script->read_pos = 0;
+			script->readpos_ = 0;
 		}
 		else
 		{
-			ret = (const char*)script->dump_data;
-			*size = script->dump_size;
-			script->read_pos = script->dump_size;
+			ret = (const char*)(script->data_);
+			*size = script->datasize_;
+			script->readpos_ = script->datasize_;
 		}
 		return ret;
 	}
+
+	void parseHeader( PLUA_SCRIPT script)
+	{
+		if(script != NULL && script->datasize_ )
+		{
+			std::string stringdata( (const char*)script->data_);
+			//locate header.
+			size_t prefix = stringdata.find(ARCLUA_PREFIX);
+			size_t suffix;
+			if(prefix != string::npos)
+			{
+				suffix = stringdata.find(ARCLUA_SUFFIX, prefix);
+				if(suffix != string::npos)
+				{
+					std::string header = stringdata.substr(prefix+ARCLUA_PREFIX_SIZE, (suffix-(prefix+ARCLUA_PREFIX_SIZE) ) );
+					//search for 'map=' or 'MAP='
+					size_t start = header.find("map=");
+					if(start == string::npos)
+						start = header.find("MAP=");
+					if(start != string::npos)
+					{
+						//tokenize
+						Arcemu::Utility::CTokenizer tokens( header.substr(start+4, (header.length() - (start+4) ) ), ",");
+						Arcemu::Utility::CTokenizer::iterator itr = tokens.start();
+						for(; itr != tokens.end(); ++itr)
+							script->maps_.insert( atoi( (*itr).c_str() ) );
+					}
+				}
+			}
+		}
+	}
+
 
 	/*int dumpScript(lua_State * L, const void * data, size_t data_size, void* chunk)
 	{

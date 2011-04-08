@@ -86,6 +86,7 @@ template< class T, class U > T TO( U u ){ return static_cast< T >( u ); }
 #include "../arcemu-shared/Threading/Condition.h"
 #include "../arcemu-shared/arcemu_getopt.h"
 #include "../arcemu-shared/TLSObject.h"
+#include "../arcemu-shared/Tokenizer.h"
 
 #ifdef WIN32
 #include "printStackTrace.h"

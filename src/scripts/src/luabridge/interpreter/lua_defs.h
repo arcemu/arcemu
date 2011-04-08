@@ -263,3 +263,25 @@ typedef struct
 {
 	lua_function refs[CREATURE_EVENT_COUNT];
 } ObjectBinding, *PObjectBinding;
+
+class LUA_SCRIPT
+{
+public:
+	const void * data_;
+	size_t datasize_;
+	uint32 readpos_;
+	std::set<int32> maps_;
+	LUA_SCRIPT()
+	{
+		data_ = NULL;
+		datasize_ = 0;
+		readpos_ = 0;
+		maps_.clear();
+	}
+	~LUA_SCRIPT()
+	{
+		if(data_ != NULL)
+			free( (void*)data_);
+	}
+};
+typedef LUA_SCRIPT* PLUA_SCRIPT;
