@@ -7,7 +7,7 @@ namespace lua_engine
 	{
 #define BIND(name) .method(#name, &Player::name)
 #define BINDE(name, functor) .method(name, (functor) )
-		m	.subclass<Player, Player, Unit>("Player")
+		m	.subclass<Player, Unit>("Player")
 			BIND(Gossip_Complete)
 			BIND(Gossip_SendPOI)
 			BINDE("AdvanceSkillLine", &Player::_AddSkillLine)
@@ -212,13 +212,13 @@ namespace lua_engine
 #undef BIND
 #undef BINDE
 
-			m	.class_<WorldSession, WorldSession>("WorldSession")
+			m	.class_<WorldSession>("WorldSession")
 			.method("GetAccountName", &WorldSession::GetAccountNameS)
 			.method("GetPermissions", &WorldSession::GetPermissions)
 			.method("IsGM", &WorldSession::HasGMPermissions)
 			.method("GetMovementInfo", &WorldSession::GetMovementInfo);
 
-			m	.class_<MovementInfo, MovementInfo>("MovementInfo")
+			m	.class_<MovementInfo>("MovementInfo")
 				.property_ro("flags", &MovementInfo::flags);
 	}
 }

@@ -146,8 +146,7 @@ namespace lua_engine
 
 	void bindGameobjectMethods(luabridge::module & m )
 	{
-		m	.class_decl<GameObject>("GameObject");
-		m	.subclass<GameObject, lua_go, Object>("GameObject")
+		m	.subclass<GameObject, Object>("GameObject")
 			.method("HasQuests", &GameObject::HasQuests)
 			.method("NumQuests", &GameObject::NumOfQuests)
 			//.method("Close", &GameObject::EventCloseDoor)
@@ -162,12 +161,12 @@ namespace lua_engine
 			.method("GetInfo", &GameObject::GetInfo);
 
 		//Gameobject ai script, used for registering ai update.
-		m	.class_<GameObjectAIScript, GameObjectAIScript>("GameObjectAIScript")
+		m	.class_<GameObjectAIScript>("GameObjectAIScript")
 			.method("RegisterAIUpdate", &GameObjectAIScript::RegisterAIUpdateEvent)
 			.method("ModifyAIUpdate", &GameObjectAIScript::ModifyAIUpdateEvent)
 			.method("RemoveAIUpdate", &GameObjectAIScript::RemoveAIUpdateEvent);
 
-		m	.class_<GameObjectInfo, GameObjectInfo>("GameObjectInfo")
+		m	.class_<GameObjectInfo>("GameObjectInfo")
 			.property_ro("ID", &GameObjectInfo::ID)
 			.property_ro("Type", &GameObjectInfo::Type)
 			.property_ro("DisplayID", &GameObjectInfo::DisplayID)

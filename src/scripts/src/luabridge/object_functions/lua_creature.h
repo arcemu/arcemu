@@ -98,9 +98,8 @@ public:
 
    }
 
-   Unit * GetRandomEnemy(lua_stack s)
+   Unit * GetRandomEnemy()
    {
-	   lua_State * stack = (lua_State*)s;
 	   std::vector< Unit*> enemies;
 	   enemies.reserve( this->GetInRangeOppFactsSize() );
 	   for( std::set< Object*>::iterator itr = this->GetInRangeOppFactsSetBegin(); itr != this->GetInRangeOppFactsSetEnd(); ++itr)

@@ -167,7 +167,7 @@ namespace lua_engine
 
 	void bindMapMethods(luabridge::module & m)
 	{
-		m	.class_<MapMgr, MapMgr>("MapMgr")
+		m	.class_<MapMgr>("MapMgr")
 			.method("GetMapID", &MapMgr::GetMapId)
 			.method("GetObject", &MapMgr::_GetObject)
 #define method(name) .method(#name, &MapMgr::name)
@@ -190,7 +190,7 @@ namespace lua_engine
 		
 #undef method
 #define meth(name) .method(#name, &MapScriptInterface::name)
-		m	.class_<MapScriptInterface, MapScriptInterface>("MapScriptInterface")
+		m	.class_<MapScriptInterface>("MapScriptInterface")
 			meth(GetGameObjectNearestCoords)
 			meth(GetCreatureNearestCoords)
 			meth(GetPlayerNearestCoords)
@@ -198,7 +198,7 @@ namespace lua_engine
 			.method("SpawnGameObject", (GameObject*(MapScriptInterface::*)(uint32,float,float,float,float, bool, uint32, uint32, uint32) )&MapScriptInterface::SpawnGameObject);
 #undef meth
 #define prop(name) .property_ro(#name, &MapInfo::name)
-		m	.class_<MapInfo, MapInfo>("MapInfo")
+		m	.class_<MapInfo>("MapInfo")
 			prop(mapid)
 			prop(screenid)
 			prop(type)

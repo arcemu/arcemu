@@ -398,7 +398,7 @@ namespace lua_engine
 			bind(GetPlayersInInstance);
 #undef bind
 
-		m	.class_<DBCStorage<SpellEntry>, DBCStorage<SpellEntry> >("dbcSpell")
+		m	.class_<DBCStorage<SpellEntry> >("dbcSpell")
 			.method("LookupEntry", &DBCStorage<SpellEntry>::LookupEntry)
 			.method("GetNumRows", &DBCStorage<SpellEntry>::GetNumRows)
 			.method("LookupEntryForced", &DBCStorage<SpellEntry>::LookupEntryForced);
@@ -407,7 +407,7 @@ namespace lua_engine
 		lua_setglobal(m.L, "dbcSpell");
 
 		//Expose the world database and character database.
-		m	.class_<Database, Database>("WoW_Database")
+		m	.class_<Database>("WoW_Database")
 			.method("Query", &Database::QueryNA)
 			.method("Execute", &Database::ExecuteNA);
 		

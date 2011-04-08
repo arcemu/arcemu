@@ -28,7 +28,7 @@ namespace lua_engine
 	{
 #define BIND(name) .method(#name, &ItemInterface::name)
 #define BINDE(name, functor) .method(name, functor)
-		m	.class_<ItemInterface, ItemInterface>("ItemInterface")
+		m	.class_<ItemInterface>("ItemInterface")
 			BIND(GetOwner)
 			BIND(IsBagSlot)
 			BINDE("GetInventoryItem", (Item *(ItemInterface::*)(int8,int16) )&ItemInterface::GetInventoryItem)
@@ -52,7 +52,7 @@ namespace lua_engine
 #undef BINDE
 #define BIND(name) .method(#name, &Item::name)
 #define BINDE(name, functor) .method(name, functor)
-		m	.subclass<Item,Item, Object>("Item")
+		m	.subclass<Item, Object>("Item")
 			BIND(GetProto)
 			BIND(GetOwner)
 			BIND(SetOwner)
@@ -109,7 +109,7 @@ namespace lua_engine
 #undef BINDE
 
 #define BIND(name) .property_ro(#name, &ItemPrototype::name)
-		m	.class_<ItemPrototype, ItemPrototype>("ItemPrototype")
+		m	.class_<ItemPrototype>("ItemPrototype")
 			BIND(ItemId)
 			BIND(Name1)
 			BIND(DisplayInfoID)

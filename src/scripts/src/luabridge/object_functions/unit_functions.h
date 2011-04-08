@@ -24,7 +24,7 @@ namespace lua_engine
 {
 	void bindUnitMethods(luabridge::module & m)
 	{
-		m.	subclass<Unit, Unit, Object>("Unit")
+		m.	subclass<Unit, Object>("Unit")
 			.method("GetAIInterface", &Unit::GetAIInterface)
 			//.method("GetMobInterface", &Unit::GetMobInterface)
 			.method("IsPVPFlagged", &Unit::IsPvPFlagged)
@@ -160,7 +160,7 @@ namespace lua_engine
 			.property_rw("walkspeed", (float Unit::*)(&Unit::m_walkSpeed) )
 			.property_rw("flyspeed", (float Unit::*)(&Unit::m_flySpeed) );
 #undef BIND
-			m	.class_<CombatStatusHandler,CombatStatusHandler>("CombatStatus")
+			m	.class_<CombatStatusHandler>("CombatStatus")
 				.method("IsInCombat", &CombatStatusHandler::IsInCombat);
 /*#define BIND(name) .method(#name, &MobAI::name)
 			m	.subclass<MobAI,AIInterface>("MobAI")

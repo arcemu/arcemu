@@ -49,17 +49,18 @@ namespace lua_engine
 {
 	void bindTaxiMethods(luabridge::module & m)
 	{
-		m	.class_<TaxiNode, luataxinode>("TaxiNode")
+		m	.class_decl<TaxiNode>("TaxiNode");
+		m	.class_<luataxinode>("TaxiNode")
 			.constructor< void(*)(uint32,uint32,float,float,float) >()
-			.property_rw("x", (float(luataxinode::*)) &TaxiNode::x)
-			.property_rw("y", (float(luataxinode::*)) &TaxiNode::y)
-			.property_rw("z", (float(luataxinode::*)) &TaxiNode::z)
-			.property_rw("id", (uint32(luataxinode::*)) &TaxiNode::id)
-			.property_rw("mapid", (uint32(luataxinode::*)) &TaxiNode::mapid)
-			.property_rw("alliance_mount", (uint32(luataxinode::*)) &TaxiNode::alliance_mount)
-			.property_rw("horde_mount", (uint32(luataxinode::*)) &TaxiNode::horde_mount);
+			.property_rw("x", (float (luataxinode::*) )&TaxiNode::x)
+			.property_rw("y", (float (luataxinode::*) )&TaxiNode::y)
+			.property_rw("z", (float (luataxinode::*) )&TaxiNode::z)
+			.property_rw("id", (float (luataxinode::*) )&TaxiNode::id)
+			.property_rw("mapid", (uint32 (luataxinode::*) )&TaxiNode::mapid)
+			.property_rw("alliance_mount", (uint32 (luataxinode::*) )&TaxiNode::alliance_mount)
+			.property_rw("horde_mount", (uint32 (luataxinode::*) )&TaxiNode::horde_mount);
 
-		m	.class_<TaxiPath, TaxiPath>("TaxiPath")
+		m	.class_<TaxiPath>("TaxiPath")
 			.constructor<void(*)()>()
 			.method("GetID", &TaxiPath::GetID)
 			.method("AddPathNode", &TaxiPath::AddPathNode)
@@ -68,7 +69,7 @@ namespace lua_engine
 			.method("GetPrice", &TaxiPath::GetPrice);
 			//.method("SetPrice", &TaxiPath::SetPrice);
 
-		m	.class_<TaxiMgr, TaxiMgr>("sTaxiMgr")
+		m	.class_<TaxiMgr>("sTaxiMgr")
 			.method("GetTaxiNode", &TaxiMgr::GetTaxiNode)
 			.method("GetTaxiPath", (TaxiPath*(TaxiMgr::*)(uint32) )&TaxiMgr::GetTaxiPath)
 			.method("GetTaxiPathFT", (TaxiPath*(TaxiMgr::*)(uint32, uint32) )&TaxiMgr::GetTaxiPath)

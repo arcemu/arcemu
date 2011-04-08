@@ -358,7 +358,7 @@ namespace lua_engine
 	void bindCreatureMethods(luabridge::module & m )
 	{
 #define prop(name) .property_ro(#name, &CreatureProto::name)
-		m	.class_<CreatureProto, CreatureProto>("CreatureProto")
+		m	.class_<CreatureProto>("CreatureProto")
 			prop(Id)
 			prop(MinLevel)
 			prop(MaxLevel)
@@ -378,7 +378,7 @@ namespace lua_engine
 			prop(summonguard);
 #undef prop
 #define prop(name) .property_ro(#name, &CreatureInfo::name)
-		m	.class_<CreatureInfo, CreatureInfo>("CreatureInfo")
+		m	.class_<CreatureInfo>("CreatureInfo")
 			prop(Id)
 			prop(Name)
 			prop(SubName)
@@ -386,13 +386,13 @@ namespace lua_engine
 			prop(Family)
 			prop(Rank);
 #undef prop
-		m	.class_<CreatureAIScript, CreatureAIScript>("CreatureAIScript")
+		m	.class_<CreatureAIScript>("CreatureAIScript")
 			.method("RegisterAIUpdateEvent", &CreatureAIScript::RegisterAIUpdateEvent)
 			.method("ModifyAIUpdateEvent", &CreatureAIScript::ModifyAIUpdateEvent)
 			.method("RemoveAIUpdateEvent", &CreatureAIScript::RemoveAIUpdateEvent);
 
 #define bind(name) .method(#name, &Creature::name)
-		m	.subclass<Creature, lua_creature, Unit>("Creature")
+		m	.subclass<Creature, Unit>("Creature")
 			bind(IsVehicle)
 			//bind(isGuard)
 			//bind(isNeutralGuard)
@@ -427,9 +427,9 @@ namespace lua_engine
 			bind(isAuctioner)
 			bind(isStableMaster)
 			bind(isArmorer)
-			.property_rw("canregeneratehp", (bool(lua_creature::*) )&Creature::m_canRegenerateHP)
+			.property_rw("canregeneratehp", &Creature::m_canRegenerateHP)
 			bind(CanSee)
-			.property_ro("isSkinned", (bool(lua_creature::*) )&Creature::Skinned)
+			.property_ro("isSkinned", &Creature::Skinned)
 			bind(GetSQL_id)
 			bind(GetTotemSlot)
 			bind(GetGroup)
@@ -442,20 +442,20 @@ namespace lua_engine
 			.method("IsCritter", &Creature::isCritter)
 			.method("IsTrainingDummy", &Creature::isTrainingDummy)
 			.method("Despawn", &Creature::Despawn)	
-			.property_rw("m_noRespawn", (bool(lua_creature::*) )&Creature::m_noRespawn)
-			.property_ro("m_escorter", (Player*(lua_creature::*) )&Creature::m_escorter)
-			.method("RegisterEvent", &lua_creature::RegisterScriptEngineFunction)
-			.method("RemoveEvents", &lua_creature::RemoveScriptEngineEvents)
-			.method("GetRandomEnemy", &lua_creature::GetRandomEnemy)
-			.method("GetRandomFriend", &lua_creature::GetRandomFriend)
-			.method("GetRandomPlayer", &lua_creature::GetRandomPlayer)
-			.method("GetClosestFriend", &lua_creature::GetClosestFriend)
-			.method("GetClosestEnemy", &lua_creature::GetClosestEnemy)
-			.method("GetClosestPlayer", &lua_creature::GetClosestPlayer)
+			.property_rw("m_noRespawn", &Creature::m_noRespawn)
+			.property_ro("m_escorter", &Creature::m_escorter)
+			.method("RegisterEvent", (void (Creature::*)(lua_function,uint32,uint32,variadic_parameter*,lua_stack) )&lua_creature::RegisterScriptEngineFunction)
+			.method("RemoveEvents", (void (Creature::*)() )&lua_creature::RemoveScriptEngineEvents)
+			.method("GetRandomEnemy", (Unit* (Creature::*)() )&lua_creature::GetRandomEnemy)
+			.method("GetRandomFriend", (Unit*(Creature::*)() )&lua_creature::GetRandomFriend)
+			.method("GetRandomPlayer", (Player* (Creature::*)(int) )&lua_creature::GetRandomPlayer)
+			.method("GetClosestFriend", (Unit*(Creature::*)() )&lua_creature::GetClosestFriend)
+			.method("GetClosestEnemy", (Unit* (Creature::*)() )&lua_creature::GetClosestEnemy)
+			.method("GetClosestPlayer", (Unit* (Creature::*)() )&lua_creature::GetClosestPlayer)
 			.method("GetSpawnId", &Creature::GetSQL_id);
 #undef bind
 #define BIND(name) .method(#name, &AIInterface::name)
-			m.	class_<AIInterface, AIInterface>("AIInterface")
+			m.	class_<AIInterface>("AIInterface")
 				BIND(GetPetOwner)
 				BIND(SetPetOwner)
 				.method("SetUnitToFollow", (void(AIInterface::*)(Unit*))&AIInterface::SetUnitToFollow)
@@ -533,7 +533,7 @@ namespace lua_engine
 #undef BIND
 
 			//waypoint struct
-			m	.class_<WayPoint,WayPoint>("WayPoint")
+			m	.class_<WayPoint>("WayPoint")
 				.constructor<void (*)() >()
 				.property_rw("id", &WayPoint::id)
 				.property_rw("x", &WayPoint::x)

@@ -5,7 +5,7 @@ namespace lua_engine
 {
 	void bindObjectMethods(luabridge::module & m)
 	{
-		 m	.class_<Object, Object>("Object")
+		 m	.class_<Object>("Object")
 			.method("GetGUID", &Object::GetGUID)
 			.method("GetHighGUID", &Object::GetHighGUID)
 			.method("GetLowGUID", &Object::GetLowGUID)
@@ -78,7 +78,7 @@ namespace lua_engine
 			.method("SetCurrentSpell", &Object::SetCurrentSpell);
 
 		 //creatable and destroyable in the lua environment.
-		 m	.class_<Arcemu::Gossip::Menu, Arcemu::Gossip::Menu>("GossipMenu", true)
+		 m	.class_<Arcemu::Gossip::Menu>("GossipMenu", true)
 			.constructor< void(*)(Object*, uint32, uint32) > ()
 			.method("AddItem", ( void(Arcemu::Gossip::Menu::*)(uint8,const char*, uint32, bool) )&Arcemu::Gossip::Menu::AddItem)
 			.method("AddMenuItem", ( void(Arcemu::Gossip::Menu::*)(uint8, const char *, uint32, uint32, const char*, bool) )&Arcemu::Gossip::Menu::AddItem)
@@ -88,7 +88,7 @@ namespace lua_engine
 			.method("setTextID", &Arcemu::Gossip::Menu::setTextID)
 			.method("getTextID", &Arcemu::Gossip::Menu::getTextID);
 		 
-		 m	.subclass<DynamicObject, DynamicObject, Object>("DynamicObject")
+		 m	.subclass<DynamicObject, Object>("DynamicObject")
 			.constructor< void(*)(uint32,uint32) >()
 #define BIND(name) .method(#name, &DynamicObject::name)
 			 BIND(Create)

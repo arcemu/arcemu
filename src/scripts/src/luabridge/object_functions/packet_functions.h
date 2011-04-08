@@ -45,7 +45,7 @@ namespace lua_engine
 
 	void bindPacketMethods(luabridge::module & m)
 	{
-		m	.class_<WorldPacket, luapacket>("LuaPacket",true)
+		m	.class_<WorldPacket>("LuaPacket",true)
 			.constructor<void (*)(uint16,size_t res)>()
 			.method("opcode", &WorldPacket::GetOpcode)
 			.method("clear", &WorldPacket::clear)
