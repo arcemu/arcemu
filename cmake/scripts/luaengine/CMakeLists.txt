@@ -8,9 +8,9 @@ project(LuaEngine)
 #prefix variable - points to the folder which contains the source files.
 SET( prefix ${SCRIPTS_PATH}/${PROJECT_NAME} )
 #dependancies that must be built before this project.
-SET( dependancies arcemu-world )
+SET( dependancies world )
 #libraries/archives that must be linked to this project.
-SET( linkages arcemu-world )
+SET( linkages world )
 #SRCS - contains the source files that compose this project.
 SET( SRCS
 ${prefix}/lua/lapi.c 
@@ -85,7 +85,7 @@ include_directories( ${include_dirs} )
 add_definitions(-Wno-deprecated)
 add_library(${PROJECT_NAME} SHARED ${SRCS} )
 add_dependencies( ${PROJECT_NAME} ${dependancies} )
-#target_link_libraries( ${PROJECT_NAME} ${linkages} )
+target_link_libraries( ${PROJECT_NAME} ${linkages} )
 install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION lib)
 
 #Cleap up our variables(Not required.)

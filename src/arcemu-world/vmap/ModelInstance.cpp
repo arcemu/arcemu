@@ -167,7 +167,7 @@ namespace VMAP
         check += fread(&spawn.iPos, sizeof(float), 3, rf);
         check += fread(&spawn.iRot, sizeof(float), 3, rf);
         check += fread(&spawn.iScale, sizeof(float), 1, rf);
-        bool has_bound = (spawn.flags & MOD_HAS_BOUND);
+        bool has_bound = ((spawn.flags & MOD_HAS_BOUND) != 0);
         if (has_bound) // only WMOs have bound in MPQ, only available after computation
         {
             Vector3 bLow, bHigh;
@@ -176,7 +176,7 @@ namespace VMAP
             spawn.iBound = G3D::AABox(bLow, bHigh);
         }
         check += fread(&nameLen, sizeof(uint32), 1, rf);
-        if(check != (has_bound ? 17 : 11))
+        if(check != (has_bound ? 17U : 11U))
         {
             ERROR_LOG("Error reading ModelSpawn!");
             return false;
@@ -206,7 +206,7 @@ namespace VMAP
         check += fwrite(&spawn.iPos, sizeof(float), 3, wf);
         check += fwrite(&spawn.iRot, sizeof(float), 3, wf);
         check += fwrite(&spawn.iScale, sizeof(float), 1, wf);
-        bool has_bound = (spawn.flags & MOD_HAS_BOUND);
+        bool has_bound = ((spawn.flags & MOD_HAS_BOUND) != 0);
         if(has_bound) // only WMOs have bound in MPQ, only available after computation
         {
             check += fwrite(&spawn.iBound.low(), sizeof(float), 3, wf);
@@ -214,7 +214,7 @@ namespace VMAP
         }
         uint32 nameLen = spawn.name.length();
         check += fwrite(&nameLen, sizeof(uint32), 1, wf);
-        if(check != (has_bound ? 17 : 11)) return false;
+        if(check != (has_bound ? 17U : 11U)) return false;
         check = fwrite(spawn.name.c_str(), sizeof(char), nameLen, wf);
         if(check != nameLen) return false;
         return true;

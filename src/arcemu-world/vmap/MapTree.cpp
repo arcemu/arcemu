@@ -285,7 +285,7 @@ namespace VMAP
             if (!readChunk(rf, chunk, VMAP_MAGIC, 8)) success = false;
             char tiled;
             if (success && fread(&tiled, sizeof(char), 1, rf) != 1) success = false;
-            iIsTiled = bool(tiled);
+            iIsTiled = (tiled != 0);
             // Nodes
             if (success && !readChunk(rf, chunk, "NODE", 4)) success = false;
             if (success) success = iTree.readFromFile(rf);
