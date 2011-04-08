@@ -66,6 +66,7 @@ set(GLOBAL_INCLUDE_DIRS
 ${ROOT_PATH}/src/arcemu-shared
 ${ROOT_PATH}/src/arcemu-world
 ${ROOT_PATH}/src/arcemu-logonserver
+${DEPENDENCY_INCLUDE_ROOT}
 ${DEPENDENCY_INCLUDE_ROOT}/g3dlite
 ${DEPENDENCY_INCLUDE_ROOT}/pcre
 ${DEPENDENCY_INCLUDE_ROOT}/zlib )

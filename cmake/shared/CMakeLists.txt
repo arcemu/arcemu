@@ -46,13 +46,13 @@ foreach(src IN ITEMS ${sources} )
   SET( SRCS ${SRCS} ${prefix}/${src} )
 endforeach(src)
 
-include_directories( ${GLOBAL_INCLUDE_DIRS} ${MYSQL_INCLUDE_DIR} )
+include_directories( ${GLOBAL_INCLUDE_DIRS} )
 IF( IS_64BIT )
 	link_directories( ${DEPENDENCY_DLLS64} )
 ELSE()
 	link_directories( ${DEPENDENCY_DLLS} )
 ENDIF()
-
+link_directories( ${DEPENDENCY_LIBS} )
 ADD_LIBRARY( ${PROJECT_NAME} STATIC ${SRCS} )
 
 target_link_libraries( ${PROJECT_NAME} ${ZLIB_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${MYSQL_LIBRARY} ${OPENSSL_LIBRARIES} ${EXTRA_LIBS} )

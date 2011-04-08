@@ -243,14 +243,9 @@ foreach(src IN ITEMS ${sources} )
   SET( SRCS ${SRCS} ${prefix}/${src} )
 endforeach(src)
 
-SET( include_dirs 
-${ROOT_PATH}/src/arcemu-shared
-${ROOT_PATH}/src/arcemu-world
-${ROOT_PATH}/dep/include/g3dlite 
-${DEPENDENCY_INCLUDE_ROOT}/pcre )
-
-include(PCHSupport)
-include_directories( ${include_dirs} )
+#include(PCHSupport)
+include_directories( ${GLOBAL_INCLUDE_DIRS} )
+#link_directories( ${DEPEDENCY_LIBS} )
 add_executable( ${PROJECT_NAME} ${SRCS} )
 set_target_properties(${PROJECT_NAME} PROPERTIES ENABLE_EXPORTS TRUE)
 #ADD_PRECOMPILED_HEADER(${PROJECT_NAME} ${prefix}/StdAfx.h )

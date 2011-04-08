@@ -26,7 +26,6 @@ foreach(src IN ITEMS ${sources} )
 endforeach(src)
 
 
-#include(PCHSupport)
 include_directories( ${GLOBAL_INCLUDE_DIRS} )
 link_directories( ${EXTRA_LIBS_PATH} )
 IF( IS_64BIT )
@@ -36,7 +35,7 @@ ELSE()
 ENDIF()
 
 ADD_EXECUTABLE( ${PROJECT_NAME} ${SRCS})
-#ADD_PRECOMPILED_HEADER( ${PROJECT_NAME} LogonStdAfx.h )
+
 #Link our shared lib.
 target_link_libraries( ${PROJECT_NAME} shared ${ZLIB_LIBRARIES} ${PCRE_LIBRARIES} )
 #Provide make install rules.

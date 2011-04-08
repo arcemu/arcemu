@@ -7,10 +7,6 @@ endif(NOT BUILD_EVENTSCRIPTS)
 PROJECT(EventScripts)
 
 SET( prefix ${SCRIPTS_PATH}/${PROJECT_NAME} )
-#dependancies that must be built before this project.
-SET( dependancies world )
-#libraries/archives that must be linked to this project.
-SET( linkages world )
 
 #sources -contains source files for our library.
 SET( sources
@@ -28,7 +24,7 @@ ADD_DEFINITIONS(-Wno-deprecated)
 ADD_LIBRARY( ${PROJECT_NAME} SHARED ${SRCS} )
 ADD_DEPENDENCIES( ${PROJECT_NAME} ${dependancies} )
 target_link_libraries( ${PROJECT_NAME} ${linkages} )
-install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION lib)
+install(TARGETS ${PROJECT_NAME} DESTINATION lib)
 #Cleap up our variables(Not required.)
 unset( prefix)
 unset( SRCS )

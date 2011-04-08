@@ -9,6 +9,8 @@ message("Configuring scripts :")
 SET( SCRIPTS_PATH ${ROOT_PATH}/src/scripts/src )
 #common include directories that script libraries might include.
 SET( include_dirs ${GLOBAL_INCLUDE_DIRS} )
+SET( dependancies world )
+SET( linkages world)
 
 #All script libraries have SCRIPTLIB defined.
 add_definitions(-DSCRIPTLIB)

@@ -47,7 +47,7 @@ foreach(src IN ITEMS ${sources} )
   SET( SRCS ${SRCS} ${prefix}/${src} )
 endforeach(src)
 
-include_directories( ${ROOT_PATH}/dep/include/g3dlite )
+include_directories( ${GLOBAL_INCLUDE_DIRS} )
 add_library(${PROJECT_NAME} STATIC ${SRCS} )
 
 unset(sources)
