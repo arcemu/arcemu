@@ -35,6 +35,8 @@ void *luabridge::checkclass (lua_State *L, int idx, const char *tname,
 	if (idx < 0)
 		idx += lua_gettop(L) + 1;
 
+	int top = lua_gettop(L);
+
 	// Check that the thing on the stack is indeed a userdata
 	if (!lua_isuserdata(L, idx))
 		luaL_typerror(L, idx, tname);
@@ -102,6 +104,7 @@ void *luabridge::checkclass (lua_State *L, int idx, const char *tname,
 		lua_remove(L, -2);
 	}
 	
+	lua_settop(L, top);
 	// Found a matching metatable; return the userdata
 	return lua_touserdata(L, idx);
 }

@@ -518,14 +518,14 @@ void lua_engine::restartEngine()
 
 	for(li::ObjectBindingMap::iterator itr = LUA_COMPILER->m_itemGossipBinding.begin(); itr != LUA_COMPILER->m_itemGossipBinding.end(); ++itr)
 	{
-		Arcemu::Gossip::Script * gs = createunitgossipInterface( itr->first );
+		Arcemu::Gossip::Script * gs = createitemgossipInterface( itr->first );
 		if( gs != NULL )
 			m_scriptMgr->register_item_gossip( itr->first, gs );
 	}
 
 	for(li::ObjectBindingMap::iterator itr = LUA_COMPILER->m_goGossipBinding.begin(); itr != LUA_COMPILER->m_goGossipBinding.end(); ++itr)
 	{
-		Arcemu::Gossip::Script * gs = createunitgossipInterface( itr->first );
+		Arcemu::Gossip::Script * gs = creategogossipInterface( itr->first );
 		if( gs != NULL )
 			m_scriptMgr->register_go_gossip( itr->first, gs );
 	}
