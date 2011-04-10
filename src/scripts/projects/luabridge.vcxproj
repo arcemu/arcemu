@@ -212,7 +212,9 @@
     <ClInclude Include="..\src\luabridge\object_functions\GlobalFunctions.h" />
     <ClInclude Include="..\src\luabridge\object_functions\lua_creature.h" />
     <ClInclude Include="..\src\luabridge\object_functions\lua_gameobject.h" />
-    <ClInclude Include="..\src\luabridge\object_functions\lua_hooks.h" />
+    <ClCompile Include="..\src\luabridge\object_functions\lua_hooks.cpp">
+      <FileType>CppHeader</FileType>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\win\VC\arcemu-world.vcxproj">

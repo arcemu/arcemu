@@ -25,6 +25,8 @@ SET( BUILD_SERVERSTATUSPLUGIN TRUE CACHE BOOL "Build ServerStatusPlugin.")
 SET( BUILD_LUAENGINE FALSE CACHE BOOL "Build LuaEngine.")
 SET( BUILD_LUABRIDGE FALSE CACHE BOOL "Build luabridge.")
 
+
+add_subdirectory( lualib ) #Used by luabridge and luaengine modules.
 add_subdirectory( luabridge ) 
 add_subdirectory( luaengine )
 add_subdirectory( eventscripts)

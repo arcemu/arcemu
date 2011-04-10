@@ -74,8 +74,8 @@ namespace lua_engine
 	//static Object binding maps.
 	//static InstanceInterfaceMap m_instanceInterfaceMap;
 	//All scripts are read and stored here, then when new states are created, they load the script data contained here.
-	LuaScriptData compiled_scripts;
-	hooked_dummySpells _hooked_dummies;
+	static LuaScriptData compiled_scripts;
+	static hooked_dummySpells _hooked_dummies;
 	//Store thread ids and whether they need to restart.
 	static ActiveStates activeStates;
 	static FastMutex activestates_lock;
@@ -160,7 +160,40 @@ namespace lua_engine
 //	We can no longer insert double pointers so we are safe here.
 #define RegisterHook(evt, _func) { if(!m_scriptMgr->has_hook(evt, _func) ) m_scriptMgr->register_hook( (ServerHookEvents)(evt), (_func) ); }
 
-#include "../object_functions/lua_hooks.h"
+extern void DestroyAllLuaEvents(PLUA_INSTANCE instance);
+extern bool LuaHookOnNewCharacter(uint32 Race, uint32 Class, WorldSession *, const char * Name);
+extern void LuaHookOnKillPlayer(Player * pPlayer, Player * pVictim);
+extern void LuaHookOnFirstEnterWorld(Player * pPlayer);
+extern void LuaHookOnEnterWorld(Player * pPlayer);
+extern void LuaHookOnGuildJoin(Player * pPlayer, Guild * pGuild);
+extern void LuaHookOnDeath(Player * pPlayer);
+extern bool LuaHookOnRepop(Player * pPlayer);
+extern void LuaHookOnEmote(Player * pPlayer, uint32 Emote, Unit * pUnit);
+extern void LuaHookOnEnterCombat(Player * pPlayer, Unit * pTarget);
+extern bool LuaHookOnCastSpell(Player * pPlayer, SpellEntry* pSpell, Spell* spell);
+extern void LuaHookOnTick();
+extern bool LuaHookOnLogoutRequest(Player * pPlayer);
+extern void LuaHookOnLogout(Player * pPlayer);
+extern void LuaHookOnQuestAccept(Player * pPlayer, Quest * pQuest, Object * pQuestGiver);
+extern void LuaHookOnZone(Player * pPlayer, uint32 Zone, uint32 oldZone);
+extern bool LuaHookOnChat(Player * pPlayer, uint32 Type, uint32 Lang, const char * Message, const char * Misc);
+extern void LuaHookOnLoot(Player * pPlayer, Unit * pTarget, uint32 Money, uint32 ItemId);
+extern void LuaHookOnGuildCreate(Player * pLeader, Guild * pGuild);
+extern void LuaHookOnEnterWorld2(Player * pPlayer);
+extern void LuaHookOnCharacterCreate(Player * pPlayer);
+extern void LuaHookOnQuestCancelled(Player * pPlayer, Quest * pQuest);
+extern void LuaHookOnQuestFinished(Player * pPlayer, Quest * pQuest, Object * pQuestGiver);
+extern void LuaHookOnHonorableKill(Player * pPlayer, Player * pKilled);
+extern void LuaHookOnArenaFinish(Player * pPlayer, ArenaTeam* pTeam, bool victory, bool rated);
+extern void LuaHookOnObjectLoot(Player * pPlayer, Object * pTarget, uint32 Money, uint32 ItemId);
+extern void LuaHookOnAreaTrigger(Player * pPlayer, uint32 areaTrigger);
+extern void LuaHookOnPostLevelUp(Player * pPlayer);
+extern bool LuaHookOnPreUnitDie(Unit *Killer, Unit *Victim);
+extern void LuaHookOnAdvanceSkillLine(Player * pPlayer, uint32 SkillLine, uint32 Current);
+extern void LuaHookOnDuelFinished(Player * pWinner, Player * pLoser);
+extern void LuaHookOnAuraRemove(Aura * aura);
+extern bool LuaHookOnResurrect(Player * pPlayer);
+extern bool LuaOnDummySpell(uint32 effectIndex, Spell * pSpell);
 
-void DestroyAllLuaEvents(PLUA_INSTANCE instance);
+
  
