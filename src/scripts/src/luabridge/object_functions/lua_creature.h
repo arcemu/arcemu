@@ -34,7 +34,7 @@ public:
 			   lua_insert(li_->lu, base);
 		   //call the lua function.
 		   if(lua_pcall(li_->lu, (parameters->count), 0, 0) )
-			   report(li_->lu);
+			   lua_engine::report(li_->lu);
 		   //erase it since we no longer need to keep track of it
 		   li_->m_creatureFRefs.erase(itr);
 		   //release resources

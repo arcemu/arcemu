@@ -86,13 +86,14 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;SCRIPTLIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\..\dep\include\;..\..\..\dep\include\zlib;..\..\..\dep\include\g3dlite;..\..\..\dep\include\pcre;..\..\..\dep\include\openssl;..\..\arcemu-shared;..\..\arcemu-world;..\..\..\extras\arcemu-windows-libraries\VC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>LUAEngine.h</PrecompiledHeaderFile>
       <AssemblerOutput>NoListing</AssemblerOutput>
+      <AdditionalOptions>/Zm157 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -104,12 +105,14 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;X64;_DEBUG;_WINDOWS;_USRDLL;SCRIPTLIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\..\dep\include\;..\..\..\dep\include\zlib;..\..\..\dep\include\g3dlite;..\..\..\dep\include\pcre;..\..\..\dep\include\openssl;..\..\arcemu-shared;..\..\arcemu-world;..\..\..\extras\arcemu-windows-libraries\VC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerOutput>NoListing</AssemblerOutput>
+      <PrecompiledHeaderFile>LUAEngine.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zm157 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -122,13 +125,15 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;SCRIPTLIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\..\dep\include\;..\..\..\dep\include\zlib;..\..\..\dep\include\g3dlite;..\..\..\dep\include\pcre;..\..\..\dep\include\openssl;..\..\arcemu-shared;..\..\arcemu-world;..\..\..\extras\arcemu-windows-libraries\VC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerOutput>NoListing</AssemblerOutput>
+      <PrecompiledHeaderFile>LUAEngine.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zm157 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -143,7 +148,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -151,6 +156,8 @@
       <AdditionalIncludeDirectories>..\..\..\dep\include\;..\..\..\dep\include\zlib;..\..\..\dep\include\g3dlite;..\..\..\dep\include\pcre;..\..\..\dep\include\openssl;..\..\arcemu-shared;..\..\arcemu-world;..\..\..\extras\arcemu-windows-libraries\VC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerOutput>NoListing</AssemblerOutput>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeaderFile>LUAEngine.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zm157 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -163,41 +170,36 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\luabridge\interpreter\LUAEngine.cpp" />
-    <ClCompile Include="..\src\luabridge\luabridge_src\luabridge.cpp" />
-    <ClCompile Include="..\src\luabridge\lua\lapi.c" />
-    <ClCompile Include="..\src\luabridge\lua\lauxlib.c" />
-    <ClCompile Include="..\src\luabridge\lua\lbaselib.c" />
-    <ClCompile Include="..\src\luabridge\lua\lcode.c" />
-    <ClCompile Include="..\src\luabridge\lua\ldblib.c" />
-    <ClCompile Include="..\src\luabridge\lua\ldebug.c" />
-    <ClCompile Include="..\src\luabridge\lua\ldo.c" />
-    <ClCompile Include="..\src\luabridge\lua\ldump.c" />
-    <ClCompile Include="..\src\luabridge\lua\lfunc.c" />
-    <ClCompile Include="..\src\luabridge\lua\lgc.c" />
-    <ClCompile Include="..\src\luabridge\lua\linit.c" />
-    <ClCompile Include="..\src\luabridge\lua\liolib.c" />
-    <ClCompile Include="..\src\luabridge\lua\llex.c" />
-    <ClCompile Include="..\src\luabridge\lua\lmathlib.c" />
-    <ClCompile Include="..\src\luabridge\lua\lmem.c" />
-    <ClCompile Include="..\src\luabridge\lua\loadlib.c" />
-    <ClCompile Include="..\src\luabridge\lua\lobject.c" />
-    <ClCompile Include="..\src\luabridge\lua\lopcodes.c" />
-    <ClCompile Include="..\src\luabridge\lua\loslib.c" />
-    <ClCompile Include="..\src\luabridge\lua\lparser.c" />
-    <ClCompile Include="..\src\luabridge\lua\lstate.c" />
-    <ClCompile Include="..\src\luabridge\lua\lstring.c" />
-    <ClCompile Include="..\src\luabridge\lua\lstrlib.c" />
-    <ClCompile Include="..\src\luabridge\lua\ltable.c" />
-    <ClCompile Include="..\src\luabridge\lua\ltablib.c" />
-    <ClCompile Include="..\src\luabridge\lua\ltm.c" />
-    <ClCompile Include="..\src\luabridge\lua\lua.c" />
-    <ClCompile Include="..\src\luabridge\lua\lundump.c" />
-    <ClCompile Include="..\src\luabridge\lua\lvm.c" />
-    <ClCompile Include="..\src\luabridge\lua\lzio.c" />
-    <ClCompile Include="..\src\luabridge\lua\print.c" />
+    <ClCompile Include="..\src\luabridge\interpreter\LUAEngine.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\src\luabridge\luabridge_src\luabridge.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\src\luabridge\object_functions\aura_functions.cpp" />
+    <ClCompile Include="..\src\luabridge\object_functions\creature_functions.cpp" />
+    <ClCompile Include="..\src\luabridge\object_functions\gameobject_functions.cpp" />
+    <ClCompile Include="..\src\luabridge\object_functions\global_functions.cpp" />
+    <ClCompile Include="..\src\luabridge\object_functions\instance_functions.cpp" />
+    <ClCompile Include="..\src\luabridge\object_functions\item_functions.cpp" />
+    <ClCompile Include="..\src\luabridge\object_functions\object_functions.cpp" />
+    <ClCompile Include="..\src\luabridge\object_functions\packet_functions.cpp" />
+    <ClCompile Include="..\src\luabridge\object_functions\player_functions.cpp" />
+    <ClCompile Include="..\src\luabridge\object_functions\quest_functions.cpp" />
+    <ClCompile Include="..\src\luabridge\object_functions\register_functions.cpp" />
+    <ClCompile Include="..\src\luabridge\object_functions\spell_functions.cpp" />
+    <ClCompile Include="..\src\luabridge\object_functions\sql_functions.cpp" />
+    <ClCompile Include="..\src\luabridge\object_functions\taxi_functions.cpp" />
+    <ClCompile Include="..\src\luabridge\object_functions\unit_functions.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\luabridge\interpreter\class_decls.h" />
     <ClInclude Include="..\src\luabridge\interpreter\LUAEngine.h" />
     <ClInclude Include="..\src\luabridge\interpreter\lua_defs.h" />
     <ClInclude Include="..\src\luabridge\interpreter\lua_instance.h" />
@@ -206,49 +208,19 @@
     <ClInclude Include="..\src\luabridge\luabridge_src\impl\stack.hpp" />
     <ClInclude Include="..\src\luabridge\luabridge_src\impl\typelist.hpp" />
     <ClInclude Include="..\src\luabridge\luabridge_src\luabridge.hpp" />
-    <ClInclude Include="..\src\luabridge\lua\lapi.h" />
-    <ClInclude Include="..\src\luabridge\lua\lauxlib.h" />
-    <ClInclude Include="..\src\luabridge\lua\lcode.h" />
-    <ClInclude Include="..\src\luabridge\lua\ldebug.h" />
-    <ClInclude Include="..\src\luabridge\lua\ldo.h" />
-    <ClInclude Include="..\src\luabridge\lua\lfunc.h" />
-    <ClInclude Include="..\src\luabridge\lua\lgc.h" />
-    <ClInclude Include="..\src\luabridge\lua\llex.h" />
-    <ClInclude Include="..\src\luabridge\lua\llimits.h" />
-    <ClInclude Include="..\src\luabridge\lua\lmem.h" />
-    <ClInclude Include="..\src\luabridge\lua\lobject.h" />
-    <ClInclude Include="..\src\luabridge\lua\lopcodes.h" />
-    <ClInclude Include="..\src\luabridge\lua\lparser.h" />
-    <ClInclude Include="..\src\luabridge\lua\lstate.h" />
-    <ClInclude Include="..\src\luabridge\lua\lstring.h" />
-    <ClInclude Include="..\src\luabridge\lua\ltable.h" />
-    <ClInclude Include="..\src\luabridge\lua\ltm.h" />
-    <ClInclude Include="..\src\luabridge\lua\lua.h" />
-    <ClInclude Include="..\src\luabridge\lua\luaconf.h" />
-    <ClInclude Include="..\src\luabridge\lua\lualib.h" />
-    <ClInclude Include="..\src\luabridge\lua\lundump.h" />
-    <ClInclude Include="..\src\luabridge\lua\lvm.h" />
-    <ClInclude Include="..\src\luabridge\lua\lzio.h" />
     <ClInclude Include="..\src\luabridge\object_functions\AuraFunctions.h" />
-    <ClInclude Include="..\src\luabridge\object_functions\aura_functions.h" />
-    <ClInclude Include="..\src\luabridge\object_functions\creature_functions.h" />
-    <ClInclude Include="..\src\luabridge\object_functions\gameobject_functions.h" />
     <ClInclude Include="..\src\luabridge\object_functions\GlobalFunctions.h" />
-    <ClInclude Include="..\src\luabridge\object_functions\global_functions.h" />
-    <ClInclude Include="..\src\luabridge\object_functions\instance_functions.h" />
-    <ClInclude Include="..\src\luabridge\object_functions\item_functions.h" />
     <ClInclude Include="..\src\luabridge\object_functions\lua_creature.h" />
     <ClInclude Include="..\src\luabridge\object_functions\lua_gameobject.h" />
     <ClInclude Include="..\src\luabridge\object_functions\lua_hooks.h" />
-    <ClInclude Include="..\src\luabridge\object_functions\object_functions.h" />
-    <ClInclude Include="..\src\luabridge\object_functions\packet_functions.h" />
-    <ClInclude Include="..\src\luabridge\object_functions\player_functions.h" />
-    <ClInclude Include="..\src\luabridge\object_functions\quest_functions.h" />
-    <ClInclude Include="..\src\luabridge\object_functions\register_functions.h" />
-    <ClInclude Include="..\src\luabridge\object_functions\spell_functions.h" />
-    <ClInclude Include="..\src\luabridge\object_functions\sql_functions.h" />
-    <ClInclude Include="..\src\luabridge\object_functions\taxi_functions.h" />
-    <ClInclude Include="..\src\luabridge\object_functions\unit_functions.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\win\VC\arcemu-world.vcxproj">
+      <Project>{1dc6c4da-a028-41f3-877d-d5400c594f88}</Project>
+    </ProjectReference>
+    <ProjectReference Include="lualib.vcxproj">
+      <Project>{797ef2c4-f273-4e44-8a84-c77a1a79c6da}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

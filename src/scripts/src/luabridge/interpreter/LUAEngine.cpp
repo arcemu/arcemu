@@ -17,7 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "StdAfx.h"
 #include "LUAEngine.h"
 #include <ScriptSetup.h>
 
@@ -228,6 +227,7 @@ bool lua_engine::ExecuteLuaFunction(int params, int res, variadic_parameter * re
 	}
 	return ret;
 }
+
 void lua_engine::EndLuaFunctionCall(int res) 
 {
 	lua_State * lu = lua_state;

@@ -207,63 +207,9 @@ svnrevext.exe
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\LuaEngine\lua\lapi.c" />
-    <ClCompile Include="..\src\LuaEngine\lua\lauxlib.c" />
-    <ClCompile Include="..\src\LuaEngine\lua\lbaselib.c" />
-    <ClCompile Include="..\src\LuaEngine\lua\lcode.c" />
-    <ClCompile Include="..\src\LuaEngine\lua\ldblib.c" />
-    <ClCompile Include="..\src\LuaEngine\lua\ldebug.c" />
-    <ClCompile Include="..\src\LuaEngine\lua\ldo.c" />
-    <ClCompile Include="..\src\LuaEngine\lua\ldump.c" />
-    <ClCompile Include="..\src\LuaEngine\lua\lfunc.c" />
-    <ClCompile Include="..\src\LuaEngine\lua\lgc.c" />
-    <ClCompile Include="..\src\LuaEngine\lua\linit.c" />
-    <ClCompile Include="..\src\LuaEngine\lua\liolib.c" />
-    <ClCompile Include="..\src\LuaEngine\lua\llex.c" />
-    <ClCompile Include="..\src\LuaEngine\lua\lmathlib.c" />
-    <ClCompile Include="..\src\LuaEngine\lua\lmem.c" />
-    <ClCompile Include="..\src\LuaEngine\lua\loadlib.c" />
-    <ClCompile Include="..\src\LuaEngine\lua\lobject.c" />
-    <ClCompile Include="..\src\LuaEngine\lua\lopcodes.c" />
-    <ClCompile Include="..\src\LuaEngine\lua\loslib.c" />
-    <ClCompile Include="..\src\LuaEngine\lua\lparser.c" />
-    <ClCompile Include="..\src\LuaEngine\lua\lstate.c" />
-    <ClCompile Include="..\src\LuaEngine\lua\lstring.c" />
-    <ClCompile Include="..\src\LuaEngine\lua\lstrlib.c" />
-    <ClCompile Include="..\src\LuaEngine\lua\ltable.c" />
-    <ClCompile Include="..\src\LuaEngine\lua\ltablib.c" />
-    <ClCompile Include="..\src\LuaEngine\lua\ltm.c" />
-    <ClCompile Include="..\src\LuaEngine\lua\lua.c" />
-    <ClCompile Include="..\src\LuaEngine\lua\lundump.c" />
-    <ClCompile Include="..\src\LuaEngine\lua\lvm.c" />
-    <ClCompile Include="..\src\LuaEngine\lua\lzio.c" />
-    <ClCompile Include="..\src\LuaEngine\lua\print.c" />
     <ClCompile Include="..\src\LuaEngine\LUAEngine.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\LuaEngine\lua\lapi.h" />
-    <ClInclude Include="..\src\LuaEngine\lua\lauxlib.h" />
-    <ClInclude Include="..\src\LuaEngine\lua\lcode.h" />
-    <ClInclude Include="..\src\LuaEngine\lua\ldebug.h" />
-    <ClInclude Include="..\src\LuaEngine\lua\ldo.h" />
-    <ClInclude Include="..\src\LuaEngine\lua\lfunc.h" />
-    <ClInclude Include="..\src\LuaEngine\lua\lgc.h" />
-    <ClInclude Include="..\src\LuaEngine\lua\llex.h" />
-    <ClInclude Include="..\src\LuaEngine\lua\llimits.h" />
-    <ClInclude Include="..\src\LuaEngine\lua\lmem.h" />
-    <ClInclude Include="..\src\LuaEngine\lua\lobject.h" />
-    <ClInclude Include="..\src\LuaEngine\lua\lopcodes.h" />
-    <ClInclude Include="..\src\LuaEngine\lua\lparser.h" />
-    <ClInclude Include="..\src\LuaEngine\lua\lstate.h" />
-    <ClInclude Include="..\src\LuaEngine\lua\lstring.h" />
-    <ClInclude Include="..\src\LuaEngine\lua\ltable.h" />
-    <ClInclude Include="..\src\LuaEngine\lua\ltm.h" />
-    <ClInclude Include="..\src\LuaEngine\lua\lua.h" />
-    <ClInclude Include="..\src\LuaEngine\lua\luaconf.h" />
-    <ClInclude Include="..\src\LuaEngine\lua\lualib.h" />
-    <ClInclude Include="..\src\LuaEngine\lua\lundump.h" />
-    <ClInclude Include="..\src\LuaEngine\lua\lvm.h" />
-    <ClInclude Include="..\src\LuaEngine\lua\lzio.h" />
     <ClInclude Include="..\src\LuaEngine\FunctionTables.h" />
     <ClInclude Include="..\src\LuaEngine\GameobjectFunctions.h" />
     <ClInclude Include="..\src\LuaEngine\GlobalFunctions.h" />
@@ -280,6 +226,9 @@ svnrevext.exe
     <ProjectReference Include="..\..\..\win\VC\arcemu-world.vcxproj">
       <Project>{1dc6c4da-a028-41f3-877d-d5400c594f88}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="lualib.vcxproj">
+      <Project>{797ef2c4-f273-4e44-8a84-c77a1a79c6da}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -7,14 +7,12 @@
 #ifndef LUABRIDGE_HPP
 #define LUABRIDGE_HPP
 
-#include "../interpreter/lua_defs.h"
-
-extern "C" 
+/*extern "C" 
 {		// we're C++, and LUA is C, so the compiler needs to know to use C function names.
-#include "../lua/lua.h"
-#include "../lua/lauxlib.h"
-#include "../lua/lualib.h"
-};
+#include "../../lualib/lua.h"
+#include "../../lualib/lauxlib.h"
+#include "../../lualib/lualib.h"
+};*/
 
 /*#ifndef USE_OTHER_SHARED_PTR
 #	include "shared_ptr.hpp"

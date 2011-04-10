@@ -45,6 +45,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pcre", "pcre\pcre.vcxproj",
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "zlib\zlib.vcxproj", "{7D4F4F73-259D-45BF-8539-9CCE247AAE43}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lualib", "..\src\scripts\projects\lualib.vcxproj", "{797EF2C4-F273-4E44-8A84-C77A1A79C6DA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -177,6 +179,14 @@ Global
 		{7D4F4F73-259D-45BF-8539-9CCE247AAE43}.Release|Win32.Build.0 = Release|Win32
 		{7D4F4F73-259D-45BF-8539-9CCE247AAE43}.Release|x64.ActiveCfg = Release|x64
 		{7D4F4F73-259D-45BF-8539-9CCE247AAE43}.Release|x64.Build.0 = Release|x64
+		{797EF2C4-F273-4E44-8A84-C77A1A79C6DA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{797EF2C4-F273-4E44-8A84-C77A1A79C6DA}.Debug|Win32.Build.0 = Debug|Win32
+		{797EF2C4-F273-4E44-8A84-C77A1A79C6DA}.Debug|x64.ActiveCfg = Debug|x64
+		{797EF2C4-F273-4E44-8A84-C77A1A79C6DA}.Debug|x64.Build.0 = Debug|x64
+		{797EF2C4-F273-4E44-8A84-C77A1A79C6DA}.Release|Win32.ActiveCfg = Release|Win32
+		{797EF2C4-F273-4E44-8A84-C77A1A79C6DA}.Release|Win32.Build.0 = Release|Win32
+		{797EF2C4-F273-4E44-8A84-C77A1A79C6DA}.Release|x64.ActiveCfg = Release|x64
+		{797EF2C4-F273-4E44-8A84-C77A1A79C6DA}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -18,7 +18,17 @@
  */
 #pragma once
 
-#include "../interpreter/lua_defs.h"
+extern "C" 
+{		// we're C++, and LUA is C, so the compiler needs to know to use C function names.
+#include "../../lualib/lua.h"
+#include "../../lualib/lauxlib.h"
+#include "../../lualib/lualib.h"
+};
+
+#include "StdAfx.h"
+#include "lua_defs.h"
+#include "class_decls.h"
+#include "lua_instance.h"
 
 #ifdef DEBUG
 #define LUA_USE_APICHECK
@@ -26,16 +36,9 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#include "StdAfx.h"
-#include "lua_instance.h"
-#include "../luabridge_src/luabridge.hpp"
 
-extern "C" 
-{		// we're C++, and LUA is C, so the compiler needs to know to use C function names.
-#include "../lua/lua.h"
-#include "../lua/lauxlib.h"
-#include "../lua/lualib.h"
-};
+
+#include "../luabridge_src/luabridge.hpp"
 
 /*	A thread local storage lua_instance that will only get initialized for maps that attempt to run lua scripts. */
 extern Arcemu::Utility::TLSObject<PLUA_INSTANCE> lua_instance;
@@ -74,22 +77,22 @@ namespace lua_engine
 	LuaScriptData compiled_scripts;
 	hooked_dummySpells _hooked_dummies;
 	//Store thread ids and whether they need to restart.
-	ActiveStates activeStates;
-	FastMutex activestates_lock;
+	static ActiveStates activeStates;
+	static FastMutex activestates_lock;
 	//Locked when we are accessing cached script data
-	FastMutex scriptLock;
+	static FastMutex scriptLock;
 
 	
 	static void startupEngine();
 	static void loadScripts(PLUA_INSTANCE);	static void loadScripts();
 	static void scriptload_searchdir(char *Dirname, std::set<string>&);
-	static void restartEngine();
+	extern void restartEngine();
 	//static void shutdownEngine();
-	static void restartThread(MapMgr *);
-	static void shutdownThread(MapMgr*);
+	extern void restartThread(MapMgr *);
+	extern void shutdownThread(MapMgr*);
 	
 	static void unload_resources( PLUA_INSTANCE);
-	static void report(lua_State*);
+	extern void report(lua_State*);
 	//static void loadCompiler(PLUA_INSTANCE);
 	static void loadState(PLUA_INSTANCE);
 	//a lua reader that simply passes lua script data.
@@ -101,10 +104,10 @@ namespace lua_engine
 	//special header parsing	
 	static void parseHeader(PLUA_SCRIPT);	
 	//c to lua and lua to c methods
-	static void BeginLuaFunctionCall(lua_function ref);
-	static bool ExecuteLuaFunction(int param_cnt = 0, int res_cnt = 0, variadic_parameter * results = NULL, bool getparams = false);
-	static void ExecuteLuaFunction(variadic_parameter* );
-	static void EndLuaFunctionCall(int results = 0);
+	extern void BeginLuaFunctionCall(lua_function ref);
+	extern bool ExecuteLuaFunction(int = 0, int = 0, variadic_parameter * = NULL, bool= false);
+	extern void ExecuteLuaFunction(variadic_parameter* );
+	extern void EndLuaFunctionCall(int results = 0);
 
 
 	//Binding methods, implemented in other files to keep things neat.
@@ -157,22 +160,7 @@ namespace lua_engine
 //	We can no longer insert double pointers so we are safe here.
 #define RegisterHook(evt, _func) { if(!m_scriptMgr->has_hook(evt, _func) ) m_scriptMgr->register_hook( (ServerHookEvents)(evt), (_func) ); }
 
-#include "../object_functions/register_functions.h"
-#include "../object_functions/gameobject_functions.h"
-#include "../object_functions/unit_functions.h"
-#include "../object_functions/item_functions.h"
-#include "../object_functions/packet_functions.h"
-#include "../object_functions/taxi_functions.h"
-#include "../object_functions/spell_functions.h"
-#include "../object_functions/global_functions.h"
-#include "../object_functions/sql_functions.h"
-#include "../object_functions/aura_functions.h"
 #include "../object_functions/lua_hooks.h"
-#include "../object_functions/instance_functions.h"
-#include "../object_functions/quest_functions.h"
-#include "../object_functions/object_functions.h"
-#include "../object_functions/player_functions.h"
-#include "../object_functions/creature_functions.h"
 
-
+void DestroyAllLuaEvents(PLUA_INSTANCE instance);
  

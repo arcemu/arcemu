@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\lualib\lapi.c" />
+    <ClCompile Include="..\src\lualib\lauxlib.c" />
+    <ClCompile Include="..\src\lualib\lbaselib.c" />
+    <ClCompile Include="..\src\lualib\lcode.c" />
+    <ClCompile Include="..\src\lualib\ldblib.c" />
+    <ClCompile Include="..\src\lualib\ldebug.c" />
+    <ClCompile Include="..\src\lualib\ldo.c" />
+    <ClCompile Include="..\src\lualib\ldump.c" />
+    <ClCompile Include="..\src\lualib\lfunc.c" />
+    <ClCompile Include="..\src\lualib\lgc.c" />
+    <ClCompile Include="..\src\lualib\linit.c" />
+    <ClCompile Include="..\src\lualib\liolib.c" />
+    <ClCompile Include="..\src\lualib\llex.c" />
+    <ClCompile Include="..\src\lualib\lmathlib.c" />
+    <ClCompile Include="..\src\lualib\lmem.c" />
+    <ClCompile Include="..\src\lualib\loadlib.c" />
+    <ClCompile Include="..\src\lualib\lobject.c" />
+    <ClCompile Include="..\src\lualib\lopcodes.c" />
+    <ClCompile Include="..\src\lualib\loslib.c" />
+    <ClCompile Include="..\src\lualib\lparser.c" />
+    <ClCompile Include="..\src\lualib\lstate.c" />
+    <ClCompile Include="..\src\lualib\lstring.c" />
+    <ClCompile Include="..\src\lualib\lstrlib.c" />
+    <ClCompile Include="..\src\lualib\ltable.c" />
+    <ClCompile Include="..\src\lualib\ltablib.c" />
+    <ClCompile Include="..\src\lualib\ltm.c" />
+    <ClCompile Include="..\src\lualib\lua.c" />
+    <ClCompile Include="..\src\lualib\lundump.c" />
+    <ClCompile Include="..\src\lualib\lvm.c" />
+    <ClCompile Include="..\src\lualib\lzio.c" />
+    <ClCompile Include="..\src\lualib\print.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\lualib\lapi.h" />
+    <ClInclude Include="..\src\lualib\lauxlib.h" />
+    <ClInclude Include="..\src\lualib\lcode.h" />
+    <ClInclude Include="..\src\lualib\ldebug.h" />
+    <ClInclude Include="..\src\lualib\ldo.h" />
+    <ClInclude Include="..\src\lualib\lfunc.h" />
+    <ClInclude Include="..\src\lualib\lgc.h" />
+    <ClInclude Include="..\src\lualib\llex.h" />
+    <ClInclude Include="..\src\lualib\llimits.h" />
+    <ClInclude Include="..\src\lualib\lmem.h" />
+    <ClInclude Include="..\src\lualib\lobject.h" />
+    <ClInclude Include="..\src\lualib\lopcodes.h" />
+    <ClInclude Include="..\src\lualib\lparser.h" />
+    <ClInclude Include="..\src\lualib\lstate.h" />
+    <ClInclude Include="..\src\lualib\lstring.h" />
+    <ClInclude Include="..\src\lualib\ltable.h" />
+    <ClInclude Include="..\src\lualib\ltm.h" />
+    <ClInclude Include="..\src\lualib\lua.h" />
+    <ClInclude Include="..\src\lualib\luaconf.h" />
+    <ClInclude Include="..\src\lualib\lualib.h" />
+    <ClInclude Include="..\src\lualib\lundump.h" />
+    <ClInclude Include="..\src\lualib\lvm.h" />
+    <ClInclude Include="..\src\lualib\lzio.h" />
+  </ItemGroup>
+</Project>

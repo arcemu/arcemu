@@ -1,15 +1,4 @@
 #pragma once
-//Check for vista and up.
-#if defined WIN32 && (WINVER < _WIN32_WINNT_VISTA)
-#error luabridge is only compatible with Windows Vista/Server 2008 and up!
-#endif
-#include "StdAfx.h"
-extern "C" 
-{		// we're C++, and LUA is C, so the compiler needs to know to use C function names.
-#include "../lua/lua.h"
-#include "../lua/lauxlib.h"
-#include "../lua/lualib.h"
-};
 
 enum QuestEvents
 {
