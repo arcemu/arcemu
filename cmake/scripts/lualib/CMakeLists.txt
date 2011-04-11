@@ -30,6 +30,7 @@ lstate.c
 lstring.c
 lstrlib.c
 ltable.c
+ltablib.c
 ltm.c
 lua.c
 lundump.c

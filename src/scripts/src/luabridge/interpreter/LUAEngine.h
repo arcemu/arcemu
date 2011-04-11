@@ -47,7 +47,7 @@ extern PLUA_INSTANCE LUA_COMPILER;
 #define lua_state (lua_instance.get() )->lu
 
 //Used for checking headers in scripts.
-#define ARCLUA_PREFIX "--?!"	//begins with a comment syntax so that Lua will ignore our header.
+#define ARCLUA_PREFIX "--?!"	//begins with a comment notation so that Lua will ignore our header.
 #define ARCLUA_PREFIX_SIZE 4
 #define ARCLUA_SUFFIX '\x0A'	//line feed char
 #define ARCLUA_SUFFIX_SIZE 1

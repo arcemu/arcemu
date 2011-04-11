@@ -14,7 +14,9 @@ ${prefix}/LUAEngine.cpp
 )
 
 include_directories( ${include_dirs} ${prefix} )
-add_definitions(-Wno-deprecated)
+IF( IS_LINUX )
+	add_definitions(-Wno-deprecated)
+ENDIF()
 add_library(${PROJECT_NAME} SHARED ${SRCS} )
 add_dependencies( ${PROJECT_NAME} ${dependancies} lualib)
 target_link_libraries( ${PROJECT_NAME} ${linkages} lualib)
