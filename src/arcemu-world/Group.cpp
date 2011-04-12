@@ -1226,6 +1226,49 @@ void Group::SendLootUpdates( Object *o ){
 	Unlock();
 }
 
+Player* Group::GetRandomPlayerInRangeButSkip(Player* plr, float range, Player* plr_skip)
+{
+	std::vector<Player*> players;
+
+	// We must iterate through all subgroups
+	for( uint8 i = 0; i < 8; ++i )
+	{
+		SubGroup* s_grp = GetSubGroup(i);
+
+		if( s_grp == NULL )
+			continue;
+
+		for( GroupMembersSet::iterator itr = s_grp->GetGroupMembersBegin(); itr != s_grp->GetGroupMembersEnd(); ++itr )
+		{
+			// Skip NULLs and not alive players
+			if( ! ((*itr)->m_loggedInPlayer != NULL && (*itr)->m_loggedInPlayer->isAlive()) )
+				continue;
+
+			// Skip desired player
+			if( (*itr)->m_loggedInPlayer == plr_skip )
+				continue;
+
+			// Skip player not in range
+			if( ! (*itr)->m_loggedInPlayer->isInRange(plr, range) )
+				continue;
+
+			players.push_back((*itr)->m_loggedInPlayer);
+		}
+	}
+
+	Player* new_plr = NULL;
+
+	if( players.size() > 0 )
+	{
+		// Get a random player in members subset
+		uint32 i = RandomUInt( (uint32) players.size() -1 );
+		new_plr = players[i];
+		players.clear();
+	}
+
+	return new_plr;
+}
+
 
 #ifdef ENABLE_ACHIEVEMENTS
 

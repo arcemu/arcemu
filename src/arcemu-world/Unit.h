@@ -963,6 +963,10 @@ public:
 	uint8 CastSpell(Unit* Target, SpellEntry* Sp, bool triggered);
 	uint8 CastSpell(uint64 targetGuid, uint32 SpellID, bool triggered);
 	uint8 CastSpell(uint64 targetGuid, SpellEntry* Sp, bool triggered);
+	uint8 CastSpell(Unit* Target, uint32 SpellID, uint32 forced_basepoints, bool triggered);
+	uint8 CastSpell(Unit* Target, SpellEntry* Sp, uint32 forced_basepoints, bool triggered);
+	uint8 CastSpell(Unit* Target, uint32 SpellID, uint32 forced_basepoints, int32 charges, bool triggered);
+	uint8 CastSpell(Unit* Target, SpellEntry* Sp, uint32 forced_basepoints, int32 charges, bool triggered);
 	void CastSpellAoF(float x,float y,float z,SpellEntry* Sp, bool triggered);
 	void EventCastSpell(Unit * Target, SpellEntry * Sp);
 
@@ -1118,9 +1122,10 @@ public:
 	/*   ProcTrigger                                        */
 	/********************************************************/
 	std::list<SpellProc*> m_procSpells;
-	void AddProcTriggerSpell(uint32 spell_id, uint32 orig_spell_id, uint64 caster, uint32 procChance, uint32 procFlags, uint32 procCharges, uint32 *groupRelation, uint32 *procClassMask = NULL, Object *obj = NULL);
-	void AddProcTriggerSpell(SpellEntry *spell, SpellEntry *orig_spell, uint64 caster, uint32 procChance, uint32 procFlags, uint32 procCharges, uint32 *groupRelation, uint32 *procClassMask = NULL, Object *obj = NULL);
-	void AddProcTriggerSpell(SpellEntry *sp, uint64 caster, uint32 *groupRelation, uint32 *procClassMask = NULL, Object *obj = NULL);
+	SpellProc* AddProcTriggerSpell(uint32 spell_id, uint32 orig_spell_id, uint64 caster, uint32 procChance, uint32 procFlags, uint32 procCharges, uint32 *groupRelation, uint32 *procClassMask = NULL, Object *obj = NULL);
+	SpellProc* AddProcTriggerSpell(SpellEntry *spell, SpellEntry *orig_spell, uint64 caster, uint32 procChance, uint32 procFlags, uint32 procCharges, uint32 *groupRelation, uint32 *procClassMask = NULL, Object *obj = NULL);
+	SpellProc* AddProcTriggerSpell(SpellEntry *sp, uint64 caster, uint32 *groupRelation, uint32 *procClassMask = NULL, Object *obj = NULL);
+	SpellProc* GetProcTriggerSpell(uint32 spellId, uint64 casterGuid = 0);
 	void RemoveProcTriggerSpell(uint32 spellId, uint64 casterGuid = 0, uint64 misc = 0);
 	std::map<uint32,struct SpellCharge> m_chargeSpells;
 	deque<uint32> m_chargeSpellRemoveQueue;

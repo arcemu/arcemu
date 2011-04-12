@@ -270,6 +270,7 @@ Spell::Spell(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 	m_reflectedParent = NULL;
 	m_isCasting = false;
     m_glyphslot = 0;
+	m_charges = info->procCharges;
 
 	UniqueTargets.clear();
 	ModeratedTargets.clear();
@@ -2869,9 +2870,9 @@ void Spell::HandleAddAura(uint64 guid)
 		return;
 	}
 
-	if(aur->GetSpellProto()->procCharges > 0)
-	{
-		int charges = aur->GetSpellProto()->procCharges;
+	int32 charges = m_charges;
+	if(charges > 0)
+	{		
 		if(u_caster != NULL)
 		{
 			SM_FIValue( u_caster->SM_FCharges, &charges, aur->GetSpellProto()->SpellGroupType );
@@ -2880,6 +2881,7 @@ void Spell::HandleAddAura(uint64 guid)
 		for(int i= 0; i < (charges - 1); ++i)
 		{
 			Aura* staur = new Aura(aur->GetSpellProto(), aur->GetDuration(), aur->GetCaster(), aur->GetTarget(), m_triggeredSpell, i_caster);
+			staur->AssignModifiers(aur);
 			Target->AddAura(staur);
 		}
 		if(!(aur->GetSpellProto()->procFlags & PROC_REMOVEONUSE))

@@ -223,6 +223,22 @@ bool BodyAndSoul(uint32 i, Aura *pAura, bool apply)
 	return true;
 }
 
+bool PrayerOfMendingAura(uint32 i, Aura *pAura, bool apply)
+{
+	Unit *target = pAura->GetTarget();
+
+	if( apply )
+		target->AddProcTriggerSpell(pAura->GetSpellProto(), pAura->GetSpellProto(), pAura->m_casterGuid, pAura->GetSpellProto()->procChance, PROC_ON_ANY_DAMAGE_VICTIM, pAura->GetSpellProto()->procCharges, NULL, NULL);
+	else
+	{
+		int32 count = target->GetAuraStackCount(pAura->GetSpellId());
+		if( count == 1 )
+			target->RemoveProcTriggerSpell(pAura->GetSpellId(), pAura->m_casterGuid);
+	}
+
+	return true;
+}
+
 void SetupPriestSpells(ScriptMgr * mgr)
 {
 	uint32 PenanceIds[] =
@@ -259,4 +275,7 @@ void SetupPriestSpells(ScriptMgr * mgr)
 
 	mgr->register_dummy_aura(64127, &BodyAndSoul);
 	mgr->register_dummy_aura(64129, &BodyAndSoul);
+
+	uint32 PrayerOfMendingAuraIds[] = { 41635, 48110, 48111, 0 };
+	mgr->register_dummy_aura(PrayerOfMendingAuraIds, &PrayerOfMendingAura);
 }

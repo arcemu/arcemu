@@ -3043,41 +3043,32 @@ void ApplyNormalFixes()
 	//////////////////////////////////////////
 
 	// Insert priest spell fixes here
-		// Prayer of mending. !very very overwritten
-		// how it is after rewriten : we simply proc on damage and prochandler will get new target + do healing
-		sp = CheckAndReturnSpellEntry( 33076 );
-		if( sp != NULL )
-		{
-			//we use this heal spell when we jump to other player
-			SpellEntry *healsp = CheckAndReturnSpellEntry( sp->EffectTriggerSpell[1] );
-			if( healsp )
-			{
-				healsp->Effect[0] = SPELL_EFFECT_HEAL;
-				healsp->Effect[1] = healsp->Effect[2] = SPELL_EFFECT_NULL;
-				healsp->EffectBasePoints[0] = sp->EffectBasePoints[0];
-				//healsp->EffectBaseDice[0] = sp->EffectBaseDice[0];
-				//healsp->EffectDicePerLevel[0] = sp->EffectDicePerLevel[0];
-				healsp->EffectDieSides[0] = sp->EffectDieSides[0];
-				healsp->EffectImplicitTargetA[0] = EFF_TARGET_PARTY_MEMBER;
-			}
-			//this spell is just to register the proc
-			SpellEntry *procsp = CheckAndReturnSpellEntry( sp->EffectTriggerSpell[0] );
-			if( procsp )
-			{
-				procsp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
-				healsp->Effect[1] = healsp->Effect[2] = SPELL_EFFECT_NULL;
-				procsp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-				procsp->EffectBasePoints[0] = sp->procCharges - 1; //we loose 1 charge each time we cast so we need this value mobile
-				procsp->EffectImplicitTargetA[0] = EFF_TARGET_PARTY_MEMBER; //we jump on an injured party member
-				procsp->EffectTriggerSpell[0] = sp->EffectTriggerSpell[1]; //!we proc self but our system does not allow proc loops !
-				procsp->procCharges = 1;
-				procsp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM | static_cast<uint32>(PROC_TARGET_SELF);
-			}
-			//simplify old system with a simple cast spell
-			sp->Effect[0] = SPELL_EFFECT_TRIGGER_SPELL;
-			sp->Effect[1] = SPELL_EFFECT_NULL;
-			sp->Effect[2] = SPELL_EFFECT_NULL;
-		}
+		
+	// Prayer of mending
+	sp = CheckAndReturnSpellEntry( 41635 );
+	if( sp != NULL )
+	{
+		sp->EffectApplyAuraName[0] = SPELL_AURA_DUMMY;
+		sp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM;
+		sp->EffectImplicitTargetA[0] = EFF_TARGET_SINGLE_FRIEND;
+	}
+	sp = CheckAndReturnSpellEntry( 48110 );
+	if( sp != NULL )
+	{
+		sp->EffectApplyAuraName[0] = SPELL_AURA_DUMMY;
+		sp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM;
+		sp->EffectImplicitTargetA[0] = EFF_TARGET_SINGLE_FRIEND;
+	}
+	sp = CheckAndReturnSpellEntry( 48111 );
+	if( sp != NULL )
+	{
+		sp->EffectApplyAuraName[0] = SPELL_AURA_DUMMY;
+		sp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM;
+		sp->EffectImplicitTargetA[0] = EFF_TARGET_SINGLE_FRIEND;
+	}
+	sp = CheckAndReturnSpellEntry( 33110 );
+	if( sp != NULL )
+		sp->EffectImplicitTargetA[0] = EFF_TARGET_SINGLE_FRIEND;
 
 		// Spirit Tap
 		sp = CheckAndReturnSpellEntry( 15270 ); //rank 1

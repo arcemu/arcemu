@@ -231,6 +231,23 @@ public:
 	void SetRaidDifficulty( uint32 diff );
 	void SendLootUpdates( Object *o );
 
+	///////////////////////////////////////////////////////////////////
+	//Player* GetRandomPlayerInRangeButSkip(Player* plr, float range, Player* plr_skip)
+	//  Return a random player in player's group that's in his range, skipping a desired player from result
+	//
+	//
+	//Parameters:
+	//  Player* plr - desired player
+	//  float range - max. range 
+	//  Player* plr_skip - player to skip from result
+	//
+	//Return Value
+	//  Returns NULL if there is not a member in range
+	//  Returns reference to a Player otherwise.
+	//
+	///////////////////////////////////////////////////////////////////
+	Player* GetRandomPlayerInRangeButSkip(Player* plr, float range, Player* plr_skip);
+
 #ifdef ENABLE_ACHIEVEMENTS
 	void UpdateAchievementCriteriaForInrange( Object *o, AchievementCriteriaTypes type, int32 miscvalue1, int32 miscvalue2, uint32 time );
 #endif

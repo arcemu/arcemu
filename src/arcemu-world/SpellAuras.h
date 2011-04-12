@@ -817,6 +817,7 @@ public:
 	int32 GetModAmount( uint32 i ) { if(i<3) return m_modList[i].m_amount; return 0; }
 	int32 GetModAmountByMod() { return mod->m_amount; };
 	uint32 GetAuraFlags() { return m_flags; }
+	void AssignModifiers(Aura *aura);
 
 private:
 	uint32 GetCasterFaction() { return m_casterfaction; }

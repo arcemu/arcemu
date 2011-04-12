@@ -2076,6 +2076,7 @@ public:
     float m_castPositionX;
     float m_castPositionY;
     float m_castPositionZ;
+	int32 m_charges;
 
     int32 damageToHit;
     uint32 castedItemId;

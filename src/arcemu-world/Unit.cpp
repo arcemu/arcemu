@@ -1591,89 +1591,6 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, bo
 							continue;						
 					}break;
 
-				//priest - prayer of mending
-				case 41637: //the heal spell
-					{
-						//victim got a hit in the face so we jump on next injured target
-						//find aura on self and get it's value
-						Aura *pa = this->FindAura( origId );
-						if( !pa || !this->GetMapMgr() )
-							return 0; //omg we have this proc on us and on second check we don't ? Return instead of continue since this seems to be a corrupted object
-
-						//check if we jumped proctimes
-						if( pa->GetModAmount( 0 ) == 1 )
-							break;
-
-						//we use same caster as firts caster to be able to get heal bonuses !
-						Unit *oricaster = this->GetMapMgr()->GetUnit( pa->GetCasterGUID() );
-						if( !oricaster || !oricaster->IsPlayer() )
-							break;
-
-						//the nasty part : get a new target ^^
-						Player *p_caster = TO_PLAYER(oricaster);
-						Player *First_new_target,*Next_new_target,*First_whatever;
-						First_new_target = Next_new_target = First_whatever = NULL;
-						bool passed_prev_target = false;
-						GroupMembersSet::iterator itr3;
-						SubGroup * pGroup = p_caster->GetGroup() ?
-							p_caster->GetGroup()->GetSubGroup(p_caster->GetSubGroup()) : 0;
-
-						if(pGroup)
-						{
-							p_caster->GetGroup()->Lock();
-
-							float range=GetMaxRange(dbcSpellRange.LookupEntry(ospinfo->rangeIndex));
-							range*=range;
-
-							for(itr3 = pGroup->GetGroupMembersBegin();itr3 != pGroup->GetGroupMembersEnd(); ++itr3)
-							{
-								if(!(*itr3)->m_loggedInPlayer || !(*itr3)->m_loggedInPlayer->isAlive() )
-									continue;
-
-								//we cannot retarget self
-								if( (*itr3)->m_loggedInPlayer == this )
-								{
-									passed_prev_target = true;
-									continue;
-								}
-
-								if( IsInrange(p_caster,(*itr3)->m_loggedInPlayer, range) )
-								{
-
-									if( !First_whatever )
-										First_whatever = (*itr3)->m_loggedInPlayer;
-
-									//we target stuff that has no full health. No idea if we must fill target list or not :(
-									if( First_whatever && (*itr3)->m_loggedInPlayer->GetUInt32Value( UNIT_FIELD_HEALTH ) == (*itr3)->m_loggedInPlayer->GetUInt32Value( UNIT_FIELD_MAXHEALTH ) )
-										continue;
-
-									//first targatable player in group (like make circular buffer from normal list)
-									if( !First_new_target )
-										First_new_target = (*itr3)->m_loggedInPlayer;
-
-									if( passed_prev_target )
-									{
-										Next_new_target = (*itr3)->m_loggedInPlayer;
-										break;
-									}
-								}
-							}
-							p_caster->GetGroup()->Unlock();
-						}
-						if( First_new_target && !Next_new_target )
-							Next_new_target = First_new_target; //we passed end of the list and it is time to restart it
-
-						if( !Next_new_target )
-							Next_new_target = First_whatever; //we passed end of the list and it is time to restart it
-
-						if( Next_new_target )
-						{
-							Spell *spell = new Spell(p_caster, ospinfo ,true, NULL);
-							spell->forced_basepoints[0] = pa->GetModAmount( 0 ) - 1 ;
-							SpellCastTargets targets( Next_new_target->GetGUID() ); //no target so spelltargeting will get an injured party member
-							spell->prepare( &targets );
-						}
-					}break;
 				//priest - Inspiration
 				case 15363:
 				case 14893:
@@ -4207,15 +4124,17 @@ void Unit::AddAura(Aura * aur)
 	{
 		// remove aura from the previous applied target
 		Unit* caster = aur->GetUnitCaster();
+		uint64 prev_target_guid = 0;
+
 		if( caster != NULL )
 		{
-			uint64 prev_target_guid = caster->GetCurrentUnitForSingleTargetAura( aur->GetSpellProto() );
+			prev_target_guid = caster->GetCurrentUnitForSingleTargetAura( aur->GetSpellProto() );
 
-			if( prev_target_guid )
+			if( prev_target_guid && prev_target_guid != aur->GetTarget()->GetGUID() )
 			{
 				Unit* prev_target = this->GetMapMgr()->GetUnit(prev_target_guid);
 				if( prev_target != NULL )
-					prev_target->RemoveAuraByNameHash( aur->GetSpellProto()->NameHash );
+					prev_target->RemoveAllAuraByNameHash( aur->GetSpellProto()->NameHash );
 			}
 		}
 
@@ -4225,7 +4144,8 @@ void Unit::AddAura(Aura * aur)
 		//  2) attacker B cast on target B
 		//  3) attacker A cast on target B, and aura is removed from target A 
 		//  4) attacker B cast on target A, and aura is not removed from target B, because caster A is now the one that casted on target B
-		RemoveAuraByNameHash( aur->GetSpellProto()->NameHash );
+		if( prev_target_guid && prev_target_guid != aur->GetTarget()->GetGUID() )
+			RemoveAllAuraByNameHash( aur->GetSpellProto()->NameHash );
 	}
 
 	uint16 AuraSlot = 0xFFFF;
@@ -5712,6 +5632,60 @@ uint8 Unit::CastSpell(uint64 targetGuid, uint32 SpellID, bool triggered)
 
 	return CastSpell(targetGuid, ent, triggered);
 }
+
+uint8 Unit::CastSpell(Unit* Target, uint32 SpellID, uint32 forced_basepoints, bool triggered)
+{
+	return CastSpell(Target, dbcSpell.LookupEntryForced(SpellID), forced_basepoints, triggered);
+}
+
+uint8 Unit::CastSpell(Unit* Target, SpellEntry* Sp, uint32 forced_basepoints, bool triggered)
+{
+	if( Sp == NULL )
+		return SPELL_FAILED_UNKNOWN;
+
+	Spell *newSpell = new Spell(this, Sp, triggered, 0);
+	newSpell->forced_basepoints[0] = forced_basepoints;
+	SpellCastTargets targets(0);
+	if( Target != NULL )
+	{
+		targets.m_targetMask |= TARGET_FLAG_UNIT;
+		targets.m_unitTarget = Target->GetGUID();
+	}
+	else
+	{
+		newSpell->GenerateTargets(&targets);
+	}
+
+	return newSpell->prepare(&targets);
+}
+
+uint8 Unit::CastSpell(Unit* Target, uint32 SpellID, uint32 forced_basepoints, int32 charges, bool triggered)
+{
+	return CastSpell(Target, dbcSpell.LookupEntryForced(SpellID), forced_basepoints, charges, triggered);
+}
+
+uint8 Unit::CastSpell(Unit* Target, SpellEntry* Sp, uint32 forced_basepoints, int32 charges, bool triggered)
+{
+	if( Sp == NULL )
+		return SPELL_FAILED_UNKNOWN;
+
+	Spell *newSpell = new Spell(this, Sp, triggered, 0);
+	newSpell->forced_basepoints[0] = forced_basepoints;
+	newSpell->m_charges = charges;
+	SpellCastTargets targets(0);
+	if( Target != NULL )
+	{
+		targets.m_targetMask |= TARGET_FLAG_UNIT;
+		targets.m_unitTarget = Target->GetGUID();
+	}
+	else
+	{
+		newSpell->GenerateTargets(&targets);
+	}
+
+	return newSpell->prepare(&targets);
+}
+
 void Unit::CastSpellAoF(float x,float y,float z,SpellEntry* Sp, bool triggered)
 {
 	if( Sp == NULL )
@@ -7834,28 +7808,46 @@ bool Unit::isLootable(){
 		return false;
 }
 
-void Unit::AddProcTriggerSpell(uint32 spell_id, uint32 orig_spell_id, uint64 caster, uint32 procChance, uint32 procFlags, uint32 procCharges, uint32 *groupRelation, uint32 *procClassMask, Object *obj)
+SpellProc* Unit::AddProcTriggerSpell(SpellEntry *spell, SpellEntry *orig_spell, uint64 caster, uint32 procChance, uint32 procFlags, uint32 procCharges, uint32 *groupRelation, uint32 *procClassMask, Object *obj)
 {
-	AddProcTriggerSpell(dbcSpell.LookupEntryForced(spell_id), dbcSpell.LookupEntryForced(orig_spell_id), caster, procChance, procFlags, procCharges, groupRelation, procClassMask, obj);
-}
+	SpellProc *sp = GetProcTriggerSpell(spell->Id, caster);
+	if( sp != NULL && ! sp->mDeleted )
+		return sp;
 
-void Unit::AddProcTriggerSpell(SpellEntry *spell, SpellEntry *orig_spell, uint64 caster, uint32 procChance, uint32 procFlags, uint32 procCharges, uint32 *groupRelation, uint32 *procClassMask, Object *obj)
-{
-	SpellProc *sp = sSpellProcMgr.NewSpellProc(this, spell, orig_spell, caster, procChance, procFlags, procCharges, groupRelation, procClassMask, obj);
+	sp = sSpellProcMgr.NewSpellProc(this, spell, orig_spell, caster, procChance, procFlags, procCharges, groupRelation, procClassMask, obj);
 	if( sp == NULL )
 	{
 		if( orig_spell != NULL )
 			sLog.outError("Spell id %u tried to add a non-existent spell to Unit %p as SpellProc", orig_spell->Id, this);
 		else
 			sLog.outError("Something tried to add a non-existent spell to Unit %p as SpellProc", this);
-		return;
+		return NULL;
 	}
 	m_procSpells.push_back(sp);
+
+	return sp;
 }
 
-void Unit::AddProcTriggerSpell(SpellEntry *sp, uint64 caster, uint32 *groupRelation, uint32 *procClassMask, Object *obj)
+SpellProc* Unit::AddProcTriggerSpell(uint32 spell_id, uint32 orig_spell_id, uint64 caster, uint32 procChance, uint32 procFlags, uint32 procCharges, uint32 *groupRelation, uint32 *procClassMask, Object *obj)
 {
-	AddProcTriggerSpell(sp, sp, caster, sp->procChance, sp->procFlags, sp->procCharges, groupRelation, procClassMask, obj);
+	return AddProcTriggerSpell(dbcSpell.LookupEntryForced(spell_id), dbcSpell.LookupEntryForced(orig_spell_id), caster, procChance, procFlags, procCharges, groupRelation, procClassMask, obj);
+}
+
+SpellProc* Unit::AddProcTriggerSpell(SpellEntry *sp, uint64 caster, uint32 *groupRelation, uint32 *procClassMask, Object *obj)
+{
+	return AddProcTriggerSpell(sp, sp, caster, sp->procChance, sp->procFlags, sp->procCharges, groupRelation, procClassMask, obj);
+}
+
+SpellProc* Unit::GetProcTriggerSpell(uint32 spellId, uint64 casterGuid)
+{
+	for(std::list<SpellProc*>::iterator itr = m_procSpells.begin(); itr != m_procSpells.end(); ++itr)
+	{
+		SpellProc* sp = *itr;
+		if( sp->mSpell->Id == spellId && (casterGuid == 0 || sp->mCaster == casterGuid) )
+			return sp;
+	}
+
+	return NULL;
 }
 
 void Unit::RemoveProcTriggerSpell(uint32 spellId, uint64 casterGuid, uint64 misc)

@@ -898,7 +898,7 @@ void Aura::Remove()
 	}
 
 	// If this aura can affect one target at a time, remove this target from the caster map
-	if( caster != NULL && GetSpellProto()->AttributesExE & FLAGS6_SINGLE_TARGET_AURA )
+	if( caster != NULL && GetSpellProto()->AttributesExE & FLAGS6_SINGLE_TARGET_AURA && m_target->GetAuraStackCount(GetSpellId()) == 1 )
 		caster->RemoveCurrentUnitForSingleTargetAura( GetSpellProto() );
 
 	/* Remove aurastates */
@@ -8658,4 +8658,10 @@ bool Aura::IsAreaAura(){
 		return true;
 
 	return false;
+}
+
+void Aura::AssignModifiers(Aura *aura)
+{
+	for( uint8 x = 0; x < aura->m_modcount; ++x )
+		AddMod(aura->m_modList[x].m_type, aura->m_modList[x].m_amount, aura->m_modList[x].m_miscValue, x);
 }

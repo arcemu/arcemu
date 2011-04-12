@@ -159,7 +159,7 @@ class VampiricTouchDispelDamageSpellProc : public SpellProc
 		dmg_overwrite[0] = mDispelDmg;
 
 		return false;
-}
+	}
 
 private:
 	int32 mDispelDmg;
@@ -249,6 +249,49 @@ class MiserySpellProc : public SpellProc
 	}
 };
 
+class PrayerOfMendingProc : public SpellProc
+{
+	SPELL_PROC_FACTORY_FUNCTION(PrayerOfMendingProc);
+
+	bool DoEffect(Unit *victim, SpellEntry *CastingSpell, uint32 flag, uint32 dmg, uint32 abs, int *dmg_overwrite, uint32 weapon_damage_type)
+	{
+		Aura* aura = mTarget->FindAura(mSpell->Id);
+		if( aura == NULL )
+			return true;
+
+		Unit* caster = TO_PLAYER(aura->GetCaster());
+		if( caster == NULL )
+		{
+			mTarget->RemoveAuraByNameHash(mSpell->NameHash);
+			return true;
+		}
+
+		int32 value = aura->GetModAmount(0);
+
+		caster->CastSpell(mTarget, 33110, value, true);
+
+		int32 count = mTarget->GetAuraStackCount(mSpell->Id);
+
+		if( count <= 1 )
+			return true;
+
+		Player* plr = TO_PLAYER(mTarget);
+		Group* grp = plr->GetGroup();
+
+		if( grp == NULL )
+			return true;
+
+		Player* new_plr = grp->GetRandomPlayerInRangeButSkip(plr, 40.0f, plr);
+
+		mTarget->RemoveAllAuraByNameHash(mSpell->NameHash);
+
+		if( new_plr != NULL )
+			caster->CastSpell(new_plr, mSpell, value, count -1, true);
+
+		return true;
+	}
+};
+
 void SpellProcMgr::SetupPriest()
 {
 	AddByNameHash( SPELL_HASH_IMPROVED_SPIRIT_TAP, &ImprovedSpiritTapSpellProc::Create );
@@ -258,6 +301,7 @@ void SpellProcMgr::SetupPriest()
 	AddByNameHash( SPELL_HASH_VAMPIRIC_EMBRACE, &VampiricEmbraceSpellProc::Create );
 	AddByNameHash( SPELL_HASH_EMPOWERED_RENEW, &EmpoweredRenewSpellProc::Create );
 	AddByNameHash( SPELL_HASH_MISERY, &MiserySpellProc::Create );
+	AddByNameHash( SPELL_HASH_PRAYER_OF_MENDING, &PrayerOfMendingProc::Create );
 
 	AddById( 34919, &VampiricTouchEnergizeSpellProc::Create );
 	AddById( 64085, &VampiricTouchDispelDamageSpellProc::Create );
