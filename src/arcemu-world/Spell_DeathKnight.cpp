@@ -20,6 +20,20 @@
 
 #include "StdAfx.h"
 
+class BloodPlagueSpell : public Spell
+{
+	SPELL_FACTORY_FUNCTION(BloodPlagueSpell);
+
+	int32 DoCalculateEffect(uint32 i, Unit *target, int32 value)
+	{
+		if( p_caster != NULL && i == 0 )
+			value += (uint32)( p_caster->GetAP() * 0.055 * 1.15 );
+
+		return value;
+	}
+};
+
 void SpellFactoryMgr::SetupDeathKnight()
 {
+	AddById( 55078, &BloodPlagueSpell::Create );
 }
