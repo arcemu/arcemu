@@ -59,9 +59,35 @@ class FrostFeverSpell : public Spell
 	}
 };
 
+class BloodBoilSpell : public Spell
+{
+	SPELL_FACTORY_FUNCTION(BloodBoilSpell);
+
+	int32 DoCalculateEffect(uint32 i, Unit *target, int32 value)
+	{
+		if( p_caster != NULL && i == 0 )
+		{
+			int32 ap = p_caster->GetAP();
+
+			value += (uint32)( ap * 0.08 );
+
+			// Does additional damage if target has diseases (http://www.tankspot.com/forums/f14/48814-3-1-blood-boil-mechanics-tested.html)
+			if( target != NULL && ( target->HasAura(55078) || target->HasAura(55095) ) )
+				value += (uint32)( ap * 0.015 + 95 );
+		}
+
+		return value;
+	}
+};
+
 void SpellFactoryMgr::SetupDeathKnight()
 {
 	AddById( 55078, &BloodPlagueSpell::Create );
 	AddById( 45477, &IcyTouchSpell::Create );
 	AddById( 55095, &FrostFeverSpell::Create );
+
+	AddById( 48721, &BloodBoilSpell::Create ); // Rank 1
+	AddById( 49939, &BloodBoilSpell::Create ); // Rank 2
+	AddById( 49940, &BloodBoilSpell::Create ); // Rank 3
+	AddById( 49941, &BloodBoilSpell::Create ); // Rank 4
 }
