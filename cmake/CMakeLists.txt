@@ -90,6 +90,7 @@ IF( NOT WIN32 )
 ELSE()
 	add_subdirectory(zlib)
 	add_subdirectory(pcre)
+	SET(MYSQL_LIBRARY "")
 ENDIF()
 
 #For windows, link to libeay and libmysql

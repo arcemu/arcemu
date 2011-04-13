@@ -34,8 +34,9 @@ ELSE()
 	link_directories( ${DEPENDENCY_DLLS} )
 ENDIF()
 
+include(PCHSupport)
 ADD_EXECUTABLE( ${PROJECT_NAME} ${SRCS})
-
+ADD_PRECOMPILED_HEADER(${PROJECT_NAME} ../../src/arcemu-logonserver/LogonStdAfx.h)
 #Link our shared lib.
 target_link_libraries( ${PROJECT_NAME} shared ${ZLIB_LIBRARIES} ${PCRE_LIBRARIES} )
 #Provide make install rules.

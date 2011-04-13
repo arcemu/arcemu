@@ -3,229 +3,133 @@ SET( prefix ${ROOT_PATH}/src/arcemu-world )
 SET(sources
   #vmap
   vmap/BIH.cpp
-  vmap/BIH.h
-  vmap/IVMapManager.h
   vmap/MapTree.cpp
-  vmap/MapTree.h
   vmap/ModelInstance.cpp
-  vmap/ModelInstance.h
-  vmap/TileAssembler.h
   vmap/TileAssembler.cpp
-  vmap/VMapDefinitions.h
-  vmap/VMapFactory.h
   vmap/VMapFactory.cpp
   vmap/VMapManager2.cpp
-  vmap/VMapManager2.h
-  vmap/VMapTools.h
   vmap/WorldModel.cpp
-  vmap/WorldModel.h
 	AchievementMgr.cpp 
-	AchievementMgr.h 
-	CollideInterface.cpp 
-	CollideInterface.h 
+	CollideInterface.cpp  
 	VoiceChatHandler.cpp 
 	DayWatcherThread.cpp 
-	DayWatcherThread.h 
 	CommonScheduleThread.cpp 
-	CommonScheduleThread.h 
 	ArenaTeam.cpp 
-	ArenaTeam.h 
 	DatabaseCleaner.cpp 
-	DatabaseCleaner.h 
-	ObjectStorage.cpp 
-	ObjectStorage.h 
+	ObjectStorage.cpp  
 	AddonMgr.cpp 
-	AddonMgr.h 
 	AIInterface.cpp 
-	AIInterface.h 
 	AlteracValley.cpp 
-	AlteracValley.h 
 	ArathiBasin.cpp 
-	ArathiBasin.h 
 	AreaTrigger.cpp 
-	AreaTrigger.h 
 	Arenas.cpp 
-	Arenas.h 
 	AuctionHouse.cpp 
-	AuctionHouse.h 
 	AuctionMgr.cpp 
-	AuctionMgr.h 
 	BattlegroundCommands.cpp 
 	BattlegroundHandler.cpp 
 	BattlegroundMgr.cpp 
-	BattlegroundMgr.h 
+
 	StrandOfTheAncient.h 
 	StrandOfTheAncient.cpp 
-	CellHandler.h 
+
 	Channel.cpp 
-	Channel.h 
 	ChannelHandler.cpp 
 	ChannelMgr.h 
 	CharacterHandler.cpp 
 	Chat.cpp 
-	Chat.h 
 	ChatHandler.cpp 
 	CombatHandler.cpp 
 	Container.cpp 
-	Container.h 
 	Corpse.cpp 
-	Corpse.h 
 	Creature.cpp 
-	Creature.h 
 	debugcmds.cpp 
 	DuelHandler.cpp 
 	DynamicObject.cpp 
-	DynamicObject.h 
-	EquipmentSetMgr.cpp 
-	EquipmentSetMgr.h 
+	EquipmentSetMgr.cpp
 	EventableObject.cpp 
 	EyeOfTheStorm.cpp 
-	EyeOfTheStorm.h 
-	EventableObject.h 
 	EventMgr.cpp 
-	EventMgr.h 
-	faction.h 
 	faction.cpp 
 	GameObject.cpp 
-	GameObject.h 
 	GMTicket.cpp 
 	GMTicketCommands.cpp
-	Gossip.h
 	Gossip.cpp
 	Group.cpp 
-	Group.h 
 	GroupHandler.cpp 
 	Guild.cpp 
-	Guild.h 
 	GuildHandler.cpp 
 	HonorHandler.cpp 
-	HonorHandler.h 
 	InstanceCommands.cpp 
 	Item.cpp 
-	Item.h 
 	ItemHandler.cpp 
 	ItemInterface.cpp 
-	ItemInterface.h 
-	ItemPrototype.h 
 	Level0.cpp 
 	Level1.cpp 
 	Level2.cpp 
 	Level3.cpp 
 	LfgHandler.cpp 
 	LfgMgr.cpp 
-	LfgMgr.h 
 	LootMgr.cpp 
-	LootMgr.h 
 	LocalizationMgr.cpp 
-	LocalizationMgr.h 
 	LogonCommClient.cpp 
-	LogonCommHandler.h 
-	LogonCommClient.h 
 	LogonCommHandler.cpp 
 	MailSystem.cpp 
-	MailSystem.h 
 	MapCell.cpp 
-	MapCell.h 
 	Map.cpp 
-	Map.h 
 	MapScriptInterface.cpp 
-	MapScriptInterface.h 
 	MapMgr.cpp 
-	MapMgr.h 
 	MiscHandler.cpp 
-	MiscHandler.h 
 	MovementHandler.cpp 
-	NameTables.h 
 	NPCHandler.cpp 
-	NPCHandler.h 
 	Object.cpp 
-	Object.h 
 	ObjectMgr.cpp 
-	ObjectMgr.h 
 	Opcodes.cpp 
-	Opcodes.h 
 	Pet.cpp 
-	Pet.h 
 	PetHandler.cpp 
 	Player.cpp 
-	Player.h 
 	PlayerPacketWrapper.cpp 
 	QueryHandler.cpp 
 	Quest.cpp 
-	Quest.h 
 	QuestHandler.cpp 
 	QuestMgr.cpp 
-	QuestMgr.h 
 	QuestCommands.cpp 
 	RaidHandler.cpp 
 	RecallCommands.cpp 
 	ReputationHandler.cpp 
 	ScriptMgr.cpp 
-	ScriptMgr.h 
-	Skill.h 
 	SocialHandler.cpp 
 	SpeedDetector.cpp 
-	SpeedDetector.h 
 	SpellAuras.cpp 
-	SpellAuras.h 
 	SpellTarget.cpp 
 	Spell.cpp 
-	Spell.h 
 	SpellEffects.cpp 
 	SpellHandler.cpp 
 	HackFixes.cpp 
-	Stats.h 
 	Stats.cpp 
-	StdAfx.cpp 
-	StdAfx.h 
 	TaxiHandler.cpp 
 	TaxiMgr.cpp 
-	TaxiMgr.h
 	TerrainMgr.cpp 
-	TerrainMgr.h 
 	TradeHandler.cpp 
 	TransporterHandler.cpp 
-	TransporterHandler.h 
 	Unit.cpp 
-	Unit.h 
 	UnixMetric.cpp 
-	UnixMetric.h 
-	UpdateFields.h 
-	UpdateMask.h 
 	Vehicle.cpp 
-	Vehicle.h 
 	WarsongGulch.cpp 
-	WarsongGulch.h 
 	WayPoints.cpp 
 	WeatherMgr.cpp 
-	WeatherMgr.h 
 	World.cpp 
-	World.h 
 	WorldCreator.cpp 
-	WorldCreator.h 
 	WorldSession.cpp 
-	WorldSession.h 
 	WorldSocket.cpp 
-	WorldSocket.h 
 	WorldState.cpp 
-	WorldState.h 
-	WorldStates.h 
-	WorldRunnable.h 
 	WorldRunnable.cpp 
-	WordFilter.h 
 	WordFilter.cpp 
 	Main.cpp 
 	Master.cpp 
-	Master.h 
 	CConsole.cpp 
-	CConsole.h 
-	BaseConsole.h 
 	ConsoleCommands.cpp 
-	ConsoleCommands.h 
 	ConsoleListener.cpp 
-	WUtil.h 
 	WUtil.cpp 
-	SpellProc.h
 	SpellProc.cpp
 	SpellProc_DeathKnight.cpp
 	SpellProc_Druid.cpp
@@ -243,12 +147,18 @@ foreach(src IN ITEMS ${sources} )
   SET( SRCS ${SRCS} ${prefix}/${src} )
 endforeach(src)
 
-#include(PCHSupport)
+include(PCHSupport)
 include_directories( ${GLOBAL_INCLUDE_DIRS} )
 #link_directories( ${DEPEDENCY_LIBS} )
 add_executable( ${PROJECT_NAME} ${SRCS} )
+ADD_PRECOMPILED_HEADER(${PROJECT_NAME} ../../src/arcemu-world/StdAfx.h )
 set_target_properties(${PROJECT_NAME} PROPERTIES ENABLE_EXPORTS TRUE)
-#ADD_PRECOMPILED_HEADER(${PROJECT_NAME} ${prefix}/StdAfx.h )
+
 add_dependencies( ${PROJECT_NAME} shared g3dlite)
 target_link_libraries( ${PROJECT_NAME} shared  g3dlite ${PCRE_LIBRARIES} )
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin )
+
+
+
+
+

@@ -29,6 +29,8 @@
 
 #define STORAGE_ARRAY_MAX 200000
 
+using G3D::uint32;
+
 #ifdef STORAGE_ALLOCATION_POOLS
 template<class T>
 class SERVER_DECL StorageAllocationPool

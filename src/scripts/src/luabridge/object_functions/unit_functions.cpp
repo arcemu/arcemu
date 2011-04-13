@@ -157,7 +157,8 @@ namespace lua_engine
 			//.property_ro("CombatStatus", &Unit::CombatStatus)
 			.property_rw("runspeed", (float Unit::*)(&Unit::m_runSpeed) )
 			.property_rw("walkspeed", (float Unit::*)(&Unit::m_walkSpeed) )
-			.property_rw("flyspeed", (float Unit::*)(&Unit::m_flySpeed) );
+			.property_rw("flyspeed", (float Unit::*)(&Unit::m_flySpeed) )
+			.property_ro("CombatStatus", &Unit::getcombatstatus);
 #undef BIND
 			m	.class_<CombatStatusHandler>("CombatStatus")
 				.method("IsInCombat", &CombatStatusHandler::IsInCombat);
