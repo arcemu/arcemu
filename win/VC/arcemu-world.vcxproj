@@ -283,6 +283,16 @@
     <ClCompile Include="..\..\src\arcemu-world\Chat.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\EquipmentSetMgr.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\Gossip.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Spell_Druid.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Spell_Hunter.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Spell_Mage.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Spell_Paladin.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Spell_Priest.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Spell_Rogue.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Spell_Shaman.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Spell_Warlock.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Spell_Warrior.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\SpellMgr.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\SpellProc.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\SpellProc_DeathKnight.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\SpellProc_Druid.cpp" />
@@ -295,6 +305,7 @@
     <ClCompile Include="..\..\src\arcemu-world\SpellProc_Shaman.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\SpellProc_Warlock.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\SpellProc_Warrior.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Spell_DeathKnight.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\vmap\BIH.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\vmap\MapTree.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\vmap\ModelInstance.cpp" />
@@ -441,6 +452,7 @@
     <ClInclude Include="..\..\src\arcemu-world\MiscHandler.h" />
     <ClInclude Include="..\..\src\arcemu-world\PlayerCache.h" />
     <ClInclude Include="..\..\src\arcemu-world\Skill.h" />
+    <ClInclude Include="..\..\src\arcemu-world\SpellMgr.h" />
     <ClInclude Include="..\..\src\arcemu-world\SpellNameHashes.h" />
     <ClInclude Include="..\..\src\arcemu-world\SpellProc.h" />
     <ClInclude Include="..\..\src\arcemu-world\SpellTarget.h" />

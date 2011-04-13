@@ -817,7 +817,11 @@ struct SpellEntry
 	uint32 SchoolMask;                      // Custom
 	uint32 CustomFlags;						// Custom
 	uint32 EffectCustomFlag[ MAX_SPELL_EFFECTS ];				// Custom
-	
+
+	// Pointer to static method of a Spell subclass to create a new instance. If this is NULL, the generic Spell class will be created
+	// Its type is void because class Spell is not visible here, so it'll be casted accordingly when necessary
+	void *(*SpellFactoryFunc);
+
 	////////////////////////////////////////////////////////////////////////////////
 	//bool HasEffect( uint32 effect )
 	//  Tells if the Spell has a certain effect
@@ -927,6 +931,7 @@ struct SpellEntry
 		for( uint32 i = 0; i < MAX_SPELL_EFFECTS; i++ )
 			EffectCustomFlag[ i ] = 0;
 
+		SpellFactoryFunc = NULL;
 	}
 };
 

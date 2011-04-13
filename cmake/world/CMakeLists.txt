@@ -141,7 +141,18 @@ SET(sources
 	SpellProc_Rogue.cpp
 	SpellProc_Shaman.cpp
 	SpellProc_Warlock.cpp
-	SpellProc_Warrior.cpp )
+	SpellProc_Warrior.cpp
+	SpellMgr.cpp
+	Spell_DeathKnight.cpp
+	Spell_Druid.cpp
+	Spell_Hunter.cpp
+	Spell_Mage.cpp
+	Spell_Paladin.cpp
+	Spell_Priest.cpp
+	Spell_Rogue.cpp
+	Spell_Shaman.cpp
+	Spell_Warlock.cpp
+	Spell_Warrior.cpp )
 
 foreach(src IN ITEMS ${sources} )
   SET( SRCS ${SRCS} ${prefix}/${src} )

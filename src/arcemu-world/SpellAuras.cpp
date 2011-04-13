@@ -1641,7 +1641,7 @@ void Aura::SpellAuraPeriodicDamage(bool apply)
 				{
 					if (!dmg)
 						return;
-					Spell *spell = new Spell( c, parentsp, false, NULL );
+					Spell *spell = sSpellFactoryMgr.NewSpell( c, parentsp, false, NULL );
 					SpellCastTargets targets(m_target->GetGUID());
 
 					//this is so not good, maybe parent spell has more then dmg effect and we use it to calc our new dmg :(
@@ -3041,7 +3041,7 @@ void Aura::SpellAuraPeriodicTriggerSpell(bool apply)
 
 void Aura::EventPeriodicTriggerSpell(SpellEntry* spellInfo, bool overridevalues, int32 overridevalue)
 {
-	Spell* spell = new Spell(m_target, spellInfo, true, this);
+	Spell* spell = sSpellFactoryMgr.NewSpell(m_target, spellInfo, true, this);
 	if (overridevalues)
 	{
 		spell->m_overrideBasePoints = true;
@@ -3564,7 +3564,7 @@ void Aura::SpellAuraModShapeshift(bool apply)
 				//some say there is a second effect
 				SpellEntry* spellInfo = dbcSpell.LookupEntry( 21178 );
 
-				Spell *sp = new Spell(m_target, spellInfo, true, NULL);
+				Spell *sp = sSpellFactoryMgr.NewSpell(m_target, spellInfo, true, NULL);
 				SpellCastTargets tgt;
 				tgt.m_unitTarget = m_target->GetGUID();
 				sp->prepare( &tgt );
@@ -3684,7 +3684,7 @@ void Aura::SpellAuraModShapeshift(bool apply)
 				{
 					SpellEntry *spellInfo = dbcSpell.LookupEntry( furorSpell );
 
-					Spell *sp = new Spell(m_target, spellInfo, true, NULL);
+					Spell *sp = sSpellFactoryMgr.NewSpell(m_target, spellInfo, true, NULL);
 					SpellCastTargets tgt;
 					tgt.m_unitTarget = m_target->GetGUID();
 					sp->prepare(&tgt);
@@ -3714,7 +3714,7 @@ void Aura::SpellAuraModShapeshift(bool apply)
 
 		SpellEntry* spellInfo = dbcSpell.LookupEntry(spellId );
 
-		Spell *sp = new Spell(m_target, spellInfo, true, NULL);
+		Spell *sp = sSpellFactoryMgr.NewSpell(m_target, spellInfo, true, NULL);
 		SpellCastTargets tgt;
 		tgt.m_unitTarget = m_target->GetGUID();
 		sp->prepare( &tgt );
@@ -3722,7 +3722,7 @@ void Aura::SpellAuraModShapeshift(bool apply)
 		if( spellId2 != 0 )
 		{
 			spellInfo = dbcSpell.LookupEntry(spellId2);
-			sp = new Spell(m_target, spellInfo, true, NULL);
+			sp = sSpellFactoryMgr.NewSpell(m_target, spellInfo, true, NULL);
 			sp->prepare(&tgt);
 		}
 
@@ -8042,7 +8042,7 @@ void Aura::SpellAuraSpiritOfRedemption(bool apply)
 		m_target->SetScale(  0.5);
 		m_target->SetHealth( 1);
 		SpellEntry * sorInfo = dbcSpell.LookupEntry(27792);
-		Spell * sor = new Spell(m_target, sorInfo, true, NULL);
+		Spell * sor = sSpellFactoryMgr.NewSpell(m_target, sorInfo, true, NULL);
 		SpellCastTargets targets;
 		targets.m_unitTarget = m_target->GetGUID();
 		sor->prepare(&targets);

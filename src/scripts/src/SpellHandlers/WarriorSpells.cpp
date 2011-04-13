@@ -143,7 +143,7 @@ bool LastStand( uint32 i, Spell *s ){
 	tgt.m_unitTarget = playerTarget->GetGUID();
 	
 	SpellEntry * inf =dbcSpell.LookupEntry(12976);
-	Spell * spe = new Spell( s->u_caster,inf,true,NULL);
+	Spell * spe = sSpellFactoryMgr.NewSpell( s->u_caster,inf,true,NULL);
 	spe->prepare(&tgt);
 
 	return true;

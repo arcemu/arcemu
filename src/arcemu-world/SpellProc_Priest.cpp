@@ -188,7 +188,7 @@ class EmpoweredRenewSpellProc : public SpellProc
 		SpellCastTargets targets;
 		targets.m_unitTarget = victim->GetGUID();
 
-		Spell *spell = new Spell(mTarget, mSpell, true, NULL);
+		Spell *spell = sSpellFactoryMgr.NewSpell(mTarget, mSpell, true, NULL);
 		spell->forced_basepoints[0] = dmg_overwrite[0];
 		spell->forced_basepoints[1] = dmg_overwrite[1];
 		spell->forced_basepoints[2] = dmg_overwrite[2];

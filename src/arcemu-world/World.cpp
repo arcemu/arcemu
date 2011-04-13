@@ -157,6 +157,9 @@ World::~World()
 	Log.Notice("SpellProcMgr", "~SpellProcMgr()");
 	delete SpellProcMgr::getSingletonPtr();
 
+	Log.Notice("SpellFactoryMgr", "~SpellFactoryMgr()");
+	delete SpellFactoryMgr::getSingletonPtr();
+
 	//eventholder = 0;
 	delete eventholder;
 
@@ -390,6 +393,7 @@ bool World::SetInitialWorldSettings()
 	new WorldLog;
 	new ChatHandler;
 	new SpellProcMgr;
+	new SpellFactoryMgr;
 
 	ApplyNormalFixes();
 

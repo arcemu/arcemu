@@ -2165,6 +2165,8 @@ protected:
 
 	SpellTargetConstraint *m_target_constraint;
 
+	virtual int32 DoCalculateEffect(uint32 i, Unit *target, int32 value);
+
 public: //Modified by LUAppArc private->public
 	TargetsList m_targetUnits[3];
     void SafeAddTarget(TargetsList* tgt,uint64 guid);

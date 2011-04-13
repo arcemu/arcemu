@@ -513,6 +513,17 @@
       <Filter>vmaps</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\arcemu-world\Gossip.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\SpellMgr.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Spell_DeathKnight.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Spell_Druid.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Spell_Mage.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Spell_Priest.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Spell_Warrior.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Spell_Warlock.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Spell_Hunter.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Spell_Shaman.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Spell_Rogue.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Spell_Paladin.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\arcemu-world\Channel.h">
@@ -815,6 +826,7 @@
       <Filter>vmaps</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\arcemu-world\Gossip.h" />
+    <ClInclude Include="..\..\src\arcemu-world\SpellMgr.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\src\arcemu-world\resources.rc" />

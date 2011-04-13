@@ -648,7 +648,7 @@ namespace luaGameObject
 		uint32 sp = CHECK_ULONG(L,1);
 		if(sp)
 		{
-			Spell * tSpell = new Spell(ptr,dbcSpell.LookupEntry(sp),true,NULL);
+			Spell * tSpell = sSpellFactoryMgr.NewSpell(ptr,dbcSpell.LookupEntry(sp),true,NULL);
 			SpellCastTargets tar(ptr->GetGUID());
 			tSpell->prepare(&tar);
 		}
@@ -661,7 +661,7 @@ namespace luaGameObject
 		Object * target = CHECK_OBJECT(L,2);
 		if(sp && target != NULL)
 		{
-			Spell * tSpell = new Spell(ptr,dbcSpell.LookupEntry(sp),true,NULL);
+			Spell * tSpell = sSpellFactoryMgr.NewSpell(ptr,dbcSpell.LookupEntry(sp),true,NULL);
 			SpellCastTargets sp(target->GetGUID());
 			tSpell->prepare(&sp);
 		}
@@ -1038,7 +1038,7 @@ namespace luaGameObject
 		Object * target = CHECK_OBJECT(L,2);
 		if(sp && target != NULL)
 		{
-			Spell * tSpell = new Spell(ptr,dbcSpell.LookupEntry(sp),false,NULL);
+			Spell * tSpell = sSpellFactoryMgr.NewSpell(ptr,dbcSpell.LookupEntry(sp),false,NULL);
 			SpellCastTargets sct(target->GetGUID());
 			tSpell->prepare(&sct);
 		}
@@ -1050,7 +1050,7 @@ namespace luaGameObject
 		uint32 sp = CHECK_ULONG(L,1);
 		if(sp)
 		{
-			Spell * tSpell = new Spell(ptr,dbcSpell.LookupEntry(sp),false,NULL);
+			Spell * tSpell = sSpellFactoryMgr.NewSpell(ptr,dbcSpell.LookupEntry(sp),false,NULL);
 			SpellCastTargets sct(ptr->GetGUID());
 			tSpell->prepare(&sct);
 		}

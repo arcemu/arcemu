@@ -156,7 +156,7 @@ bool GiftOfLife( uint32 i, Spell *s ){
 	SpellCastTargets tgt;
 	tgt.m_unitTarget = playerTarget->GetGUID();
 	SpellEntry * inf = dbcSpell.LookupEntry(23782);
-	Spell * spe = new Spell( s->u_caster,inf,true,NULL);
+	Spell * spe = sSpellFactoryMgr.NewSpell( s->u_caster,inf,true,NULL);
 	spe->prepare(&tgt);
 
 	return true;

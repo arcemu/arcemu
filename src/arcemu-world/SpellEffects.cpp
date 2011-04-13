@@ -480,7 +480,7 @@ void Spell::SpellEffectInstantKill(uint32 i)
 				return;
 
 			SpellCastTargets targets( u_caster->GetGUID() );
-			Spell * sp = new Spell( TO< Pet* >( u_caster )->GetPetOwner(), se, true, 0 );
+			Spell * sp = sSpellFactoryMgr.NewSpell( TO< Pet* >( u_caster )->GetPetOwner(), se, true, 0 );
 			sp->prepare( &targets );
 			return;
 		}break;
@@ -494,7 +494,7 @@ void Spell::SpellEffectInstantKill(uint32 i)
 			SpellEntry * se = dbcSpell.LookupEntry(5);
 
 			SpellCastTargets targets( unitTarget->GetGUID() );
-			Spell * sp = new Spell(p_caster, se, true, 0);
+			Spell * sp = sSpellFactoryMgr.NewSpell(p_caster, se, true, 0);
 			sp->prepare( &targets );
 			return;
 		}break;
@@ -1310,7 +1310,7 @@ void Spell::SpellEffectHeal(uint32 i) // Heal
 							amplitude = 3;
 
 						//our hapiness is that we did not store the aura mod amount so we have to recalc it
-						Spell *spell = new Spell(m_caster, taura->GetSpellProto(), false, NULL);
+						Spell *spell = sSpellFactoryMgr.NewSpell(m_caster, taura->GetSpellProto(), false, NULL);
 						uint32 healamount = spell->CalculateEffect( 1, unitTarget );
 						delete spell;
 						spell = NULL;
@@ -1334,7 +1334,7 @@ void Spell::SpellEffectHeal(uint32 i) // Heal
 							if( !amplitude ) amplitude = 3;
 
 							//our happiness is that we did not store the aura mod amount so we have to recalc it
-							Spell *spell = new Spell( m_caster, taura->GetSpellProto(), false, NULL );
+							Spell *spell = sSpellFactoryMgr.NewSpell( m_caster, taura->GetSpellProto(), false, NULL );
 							uint32 healamount = spell->CalculateEffect( 0, unitTarget );
 							delete spell;
 							spell = NULL;
@@ -1350,7 +1350,7 @@ void Spell::SpellEffectHeal(uint32 i) // Heal
 					if( new_dmg > 0 )
 					{
 						SpellEntry *spellInfo = dbcSpell.LookupEntry(18562);
-						Spell *spell = new Spell(unitTarget, spellInfo, true, NULL);
+						Spell *spell = sSpellFactoryMgr.NewSpell(unitTarget, spellInfo, true, NULL);
 						spell->SetUnitTarget( unitTarget );
 						spell->Heal( (int32)new_dmg );
 						delete spell;
@@ -2415,7 +2415,7 @@ void Spell::SpellEffectTriggerMissile(uint32 i) // Trigger Missile
 		if(!isAttackable(m_caster, *itr))//Fix Me: only enemy targets?
 			continue;
 
-		Spell * sp = new Spell(m_caster,spInfo,true,NULL);
+		Spell * sp = sSpellFactoryMgr.NewSpell(m_caster,spInfo,true,NULL);
 		SpellCastTargets tgt;
 		tgt.m_unitTarget=(*itr)->GetGUID();
 		sp->prepare(&tgt);
@@ -2572,7 +2572,7 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 
 			uint32 spellid = !gameObjTarget->GetInfo()->Unknown1 ? 23932 : gameObjTarget->GetInfo()->Unknown1;
 			SpellEntry *en = dbcSpell.LookupEntry(spellid);
-			Spell *sp = new Spell(p_caster,en,true,NULL);
+			Spell *sp = sSpellFactoryMgr.NewSpell(p_caster,en,true,NULL);
 			SpellCastTargets tgt;
 			tgt.m_unitTarget=gameObjTarget->GetGUID();
 			sp->prepare(&tgt);
@@ -2782,7 +2782,7 @@ void Spell::SpellEffectLearnSpell(uint32 i) // Learn Spell
 				spellinfo->Effect[j] == SPELL_EFFECT_PROFICIENCY ||
 				spellinfo->Effect[j] == SPELL_EFFECT_DUAL_WIELD )
 			{
-				Spell *sp = new Spell(unitTarget, spellinfo, true, NULL);
+				Spell *sp = sSpellFactoryMgr.NewSpell(unitTarget, spellinfo, true, NULL);
 				SpellCastTargets targets;
 				targets.m_unitTarget = unitTarget->GetGUID();
 				targets.m_targetMask = TARGET_FLAG_UNIT;
@@ -2866,7 +2866,7 @@ void Spell::SpellEffectDispel(uint32 i) // Dispel
 					if( aursp->NameHash == SPELL_HASH_UNSTABLE_AFFLICTION )
 					{
 						SpellEntry *spellInfo = dbcSpell.LookupEntry(31117);
-						Spell *spell = new Spell( u_caster, spellInfo, true, NULL );
+						Spell *spell = sSpellFactoryMgr.NewSpell( u_caster, spellInfo, true, NULL );
 						spell->forced_basepoints[0] = ( aursp->EffectBasePoints[0] + 1 ) * 9; //damage effect
 						spell->ProcedOnSpell = GetProto();
 						spell->pSpellId = aursp->Id;
@@ -2876,7 +2876,7 @@ void Spell::SpellEffectDispel(uint32 i) // Dispel
 					}
 					/*else if ( aur->GetSpellProto()->NameHash == SPELL_HASH_LIFEBLOOM )
 					{
-					Spell* spell= new Spell(aur->GetCaster(), aur->GetSpellProto(), true, NULL);
+					Spell* spell= sSpellFactoryMgr.NewSpell(aur->GetCaster(), aur->GetSpellProto(), true, NULL);
 					spell->SetUnitTarget( unitTarget );
 					spell->Heal( aur->mod->m_amount );
 					}*/
@@ -3631,7 +3631,7 @@ void Spell::SpellEffectTriggerSpell(uint32 i) // Trigger Spell
 		return;
 
 	SpellCastTargets targets = m_targets;
-	Spell *sp = new Spell( m_caster, entry, m_triggeredSpell, NULL );
+	Spell *sp = sSpellFactoryMgr.NewSpell( m_caster, entry, m_triggeredSpell, NULL );
 	sp->ProcedOnSpell = GetProto();
 	sp->prepare( &targets );
 }
@@ -4290,7 +4290,7 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 			if( TotemSpell != NULL ){
 				pTotem->GetAIInterface()->totemspell = GetProto();
 				
-				Spell * pSpell = new Spell(pTotem, TotemSpell, true, 0);
+				Spell * pSpell = sSpellFactoryMgr.NewSpell(pTotem, TotemSpell, true, 0);
 				
 				SpellCastTargets targets;
 				targets.m_destX = pTotem->GetPositionX();
@@ -4698,7 +4698,7 @@ void Spell::SpellEffectFeedPet(uint32 i)  // Feed Pet
 	damage *= 1000;
 
 	SpellEntry *spellInfo = dbcSpell.LookupEntry(GetProto()->EffectTriggerSpell[i]);
-	Spell *sp = new Spell(p_caster,spellInfo,true,NULL);
+	Spell *sp = sSpellFactoryMgr.NewSpell(p_caster,spellInfo,true,NULL);
 	sp->forced_basepoints[0] = damage;
 	SpellCastTargets tgt;
 	tgt.m_unitTarget=pPet->GetGUID();
@@ -4935,7 +4935,7 @@ void Spell::SpellEffectSummonDemon(uint32 i)
 	{
 		SpellEntry *spellInfo = dbcSpell.LookupEntry(11726);
 
-		Spell *sp = new Spell( pPet, spellInfo, true, NULL );
+		Spell *sp = sSpellFactoryMgr.NewSpell( pPet, spellInfo, true, NULL );
 
 		SpellCastTargets tgt;
 		tgt.m_unitTarget = pPet->GetGUID();
@@ -5119,7 +5119,7 @@ void Spell::SpellEffectDummyMelee( uint32 i ) // Normalized Weapon damage +
 			if( spellInfo == NULL )
 				return; //omg how did this happen ?
 			//we should also cast sunder armor effect on target with or without dmg
-			Spell *spell = new Spell(u_caster, spellInfo ,true, NULL);
+			Spell *spell = sSpellFactoryMgr.NewSpell(u_caster, spellInfo ,true, NULL);
 			spell->ProcedOnSpell = GetProto();
 			spell->pSpellId=GetProto()->Id;
 			SpellCastTargets targets(unitTarget->GetGUID());
@@ -5459,7 +5459,7 @@ void Spell::SpellEffectTriggerSpellWithValue(uint32 i)
 	if( TriggeredSpell == NULL )
 		return;
 
-	Spell *sp = new Spell(m_caster, TriggeredSpell, true, NULL);
+	Spell *sp = sSpellFactoryMgr.NewSpell(m_caster, TriggeredSpell, true, NULL);
 
 	for(uint32 x = 0; x<3; x++)
 	{

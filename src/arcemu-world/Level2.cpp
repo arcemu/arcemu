@@ -461,14 +461,14 @@ bool ChatHandler::HandleKillCommand(const char *args, WorldSession *m_session)
 		if(se == NULL) return false;
 
 		SpellCastTargets targets(target->GetGUID());
-		Spell * sp = new Spell(m_session->GetPlayer(), se, true, 0);
+		Spell * sp = sSpellFactoryMgr.NewSpell(m_session->GetPlayer(), se, true, 0);
 		sp->prepare(&targets);
 
 /*		SpellEntry * se = dbcSpell.LookupEntry(20479);
 		if(se == 0) return false;
 
 		SpellCastTargets targets(target->GetGUID());
-		Spell * sp = new Spell(target, se, true, 0);
+		Spell * sp = sSpellFactoryMgr.NewSpell(target, se, true, 0);
 		sp->prepare(&targets);*/
 	}
 
@@ -518,7 +518,7 @@ bool ChatHandler::HandleCastSpellCommand(const char* args, WorldSession *m_sessi
 		return false;
 	}
 
-	Spell *sp = new Spell(caster, spellentry, false, NULL);
+	Spell *sp = sSpellFactoryMgr.NewSpell(caster, spellentry, false, NULL);
 	
 	BlueSystemMessage(m_session, "Casting spell %d on target.", spellid);
 	SpellCastTargets targets;
@@ -619,7 +619,7 @@ bool ChatHandler::HandleCastSelfCommand(const char* args, WorldSession *m_sessio
 		return false;
 	}
 
-	Spell *sp = new Spell(target, spellentry, false, NULL);
+	Spell *sp = sSpellFactoryMgr.NewSpell(target, spellentry, false, NULL);
 	
 	BlueSystemMessage(m_session, "Target is casting spell %d on himself.", spellid);
 	SpellCastTargets targets;

@@ -124,7 +124,7 @@ bool GameObject::CreateFromProto(uint32 entry,uint32 mapid, float x, float y, fl
 
 void GameObject::EventCastSpell(uint32 guid, uint32 sp, bool triggered)
 {
-	Spell * spp = new Spell(this,dbcSpell.LookupEntry(sp),false,NULL);
+	Spell * spp = sSpellFactoryMgr.NewSpell(this,dbcSpell.LookupEntry(sp),false,NULL);
 	SpellCastTargets tars(guid);
 	spp->prepare(&tars);
 }
@@ -178,7 +178,7 @@ void GameObject::Update(uint32 p_time)
                         continue;
 				}
 				
-				Spell * sp = new Spell( this, spell, true, NULL );
+				Spell * sp = sSpellFactoryMgr.NewSpell( this, spell, true, NULL );
 				SpellCastTargets tgt( o->GetGUID() );
 				tgt.m_destX = GetPositionX();
 				tgt.m_destY = GetPositionY();

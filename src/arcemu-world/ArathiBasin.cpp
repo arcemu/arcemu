@@ -705,7 +705,7 @@ void ArathiBasin::HookOnAreaTrigger(Player * plr, uint32 id)
 		SpellEntry * sp = dbcSpell.LookupEntryForced(spellid);
 		if(sp)
 		{
-			Spell * pSpell = new Spell(plr, sp, true, NULL);
+			Spell * pSpell = sSpellFactoryMgr.NewSpell(plr, sp, true, NULL);
 			SpellCastTargets targets(plr->GetGUID());
 			pSpell->prepare(&targets);
 		}

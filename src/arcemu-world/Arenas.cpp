@@ -676,7 +676,7 @@ void Arena::HookOnAreaTrigger(Player * plr, uint32 id)
 			SpellEntry * sp = dbcSpell.LookupEntryForced(m_buffs[buffslot]->GetInfo()->sound3);
 			Arcemu::Util::ARCEMU_ASSERT(   sp != NULL);
 
-			Spell * s = new Spell(plr, sp, true, 0);
+			Spell * s = sSpellFactoryMgr.NewSpell(plr, sp, true, 0);
 			SpellCastTargets targets(plr->GetGUID());
 			s->prepare(&targets);
 

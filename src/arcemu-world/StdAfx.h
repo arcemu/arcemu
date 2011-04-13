@@ -173,6 +173,7 @@ template< class T, class U > T TO( U u ){ return static_cast< T >( u ); }
 #include "SkillNameMgr.h"
 #include "SpellNameHashes.h"
 #include "Spell.h"
+#include "SpellMgr.h"
 #include "SpellAuras.h"
 #include "TaxiMgr.h"
 #include "TransporterHandler.h"

@@ -568,7 +568,7 @@ void WorldSession::HandleSpiritHealerActivateOpcode( WorldPacket & recv_data )
 			SpellEntry *spellInfo = dbcSpell.LookupEntry( 15007 );//resurrection sickness
 			SpellCastTargets targets;
 			targets.m_unitTarget = GetPlayer()->GetGUID();
-			Spell * sp = new Spell(_player,spellInfo,true,NULL);
+			Spell * sp = sSpellFactoryMgr.NewSpell(_player,spellInfo,true,NULL);
 			sp->prepare(&targets);
 		}
 

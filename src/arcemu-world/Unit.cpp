@@ -1384,7 +1384,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, bo
 						if( new_caster && new_caster->isAlive() )
 						{
 							SpellEntry *spellInfo = dbcSpell.LookupEntry( spellId ); //we already modified this spell on server loading so it must exist
-							Spell *spell = new Spell( new_caster, spellInfo ,true, NULL );
+							Spell *spell = sSpellFactoryMgr.NewSpell( new_caster, spellInfo ,true, NULL );
 							SpellCastTargets targets;
 							targets.m_destX = GetPositionX();
 							targets.m_destY = GetPositionY();
@@ -1492,7 +1492,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, bo
 						if(!amount)
 							continue;
 						SpellEntry *spellInfo = dbcSpell.LookupEntry(spellId );
-						Spell *spell = new Spell(this, spellInfo ,true, NULL);
+						Spell *spell = sSpellFactoryMgr.NewSpell(this, spellInfo ,true, NULL);
 						spell->SetUnitTarget(this);
 						spell->Heal(amount*(ospinfo->EffectBasePoints[0]+1)/100);
 						delete spell;
@@ -1613,7 +1613,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, bo
 						if (!parentproc || !spellInfo)
 							continue;
 						int32 val = parentproc->EffectBasePoints[0] + 1;
-                        Spell *spell = new Spell(this, spellInfo ,true, NULL);
+                        Spell *spell = sSpellFactoryMgr.NewSpell(this, spellInfo ,true, NULL);
 						spell->forced_basepoints[0] = (val*dmg)/300; //per tick
                         SpellCastTargets targets;
                         targets.m_unitTarget = GetGUID();
@@ -3724,12 +3724,12 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 					}
 
 					// Cast.
-					cspell = new Spell(this, itr->first, true, NULL);
+					cspell = sSpellFactoryMgr.NewSpell(this, itr->first, true, NULL);
 					cspell->prepare(&targets);
 				}
 				else
 				{
-					cspell = new Spell(this, itr->first, true, NULL);
+					cspell = sSpellFactoryMgr.NewSpell(this, itr->first, true, NULL);
 					cspell->prepare(&targets);
 				}
 			}
@@ -5592,7 +5592,7 @@ uint8 Unit::CastSpell(Unit* Target, SpellEntry* Sp, bool triggered)
 	if( Sp == NULL )
 		return SPELL_FAILED_UNKNOWN;
 
-	Spell *newSpell = new Spell(this, Sp, triggered, 0);
+	Spell *newSpell = sSpellFactoryMgr.NewSpell(this, Sp, triggered, 0);
 	SpellCastTargets targets(0);
 	if(Target)
 	{
@@ -5621,7 +5621,7 @@ uint8 Unit::CastSpell(uint64 targetGuid, SpellEntry* Sp, bool triggered)
 		return SPELL_FAILED_UNKNOWN;
 
 	SpellCastTargets targets(targetGuid);
-	Spell *newSpell = new Spell(this, Sp, triggered, 0);
+	Spell *newSpell = sSpellFactoryMgr.NewSpell(this, Sp, triggered, 0);
 	return newSpell->prepare(&targets);
 }
 
@@ -5643,7 +5643,7 @@ uint8 Unit::CastSpell(Unit* Target, SpellEntry* Sp, uint32 forced_basepoints, bo
 	if( Sp == NULL )
 		return SPELL_FAILED_UNKNOWN;
 
-	Spell *newSpell = new Spell(this, Sp, triggered, 0);
+	Spell *newSpell = sSpellFactoryMgr.NewSpell(this, Sp, triggered, 0);
 	newSpell->forced_basepoints[0] = forced_basepoints;
 	SpellCastTargets targets(0);
 	if( Target != NULL )
@@ -5669,7 +5669,7 @@ uint8 Unit::CastSpell(Unit* Target, SpellEntry* Sp, uint32 forced_basepoints, in
 	if( Sp == NULL )
 		return SPELL_FAILED_UNKNOWN;
 
-	Spell *newSpell = new Spell(this, Sp, triggered, 0);
+	Spell *newSpell = sSpellFactoryMgr.NewSpell(this, Sp, triggered, 0);
 	newSpell->forced_basepoints[0] = forced_basepoints;
 	newSpell->m_charges = charges;
 	SpellCastTargets targets(0);
@@ -5696,7 +5696,7 @@ void Unit::CastSpellAoF(float x,float y,float z,SpellEntry* Sp, bool triggered)
 	targets.m_destY = y;
 	targets.m_destZ = z;
 	targets.m_targetMask=TARGET_FLAG_DEST_LOCATION;
-	Spell *newSpell = new Spell(this, Sp, triggered, 0);
+	Spell *newSpell = sSpellFactoryMgr.NewSpell(this, Sp, triggered, 0);
 	newSpell->prepare(&targets);
 }
 
@@ -6405,7 +6405,7 @@ bool Unit::GetSpeedDecrease()
 void Unit::EventCastSpell(Unit * Target, SpellEntry * Sp)
 {
 	Arcemu::Util::ARCEMU_ASSERT(   Sp != NULL);
-	Spell * pSpell = new Spell(Target, Sp, true, NULL);
+	Spell * pSpell = sSpellFactoryMgr.NewSpell(Target, Sp, true, NULL);
 	SpellCastTargets targets(Target->GetGUID());
 	pSpell->prepare(&targets);
 }
@@ -7446,7 +7446,7 @@ void Unit::EventStunOrImmobilize(Unit *proc_target, bool is_victim)
 		if(!spellInfo)
 			return;
 
-		Spell *spell = new Spell(this, spellInfo ,true, NULL);
+		Spell *spell = sSpellFactoryMgr.NewSpell(this, spellInfo ,true, NULL);
 		SpellCastTargets targets;
 
 		if ( spellInfo->procFlags & PROC_TARGET_SELF )
@@ -7487,7 +7487,7 @@ void Unit::EventChill(Unit *proc_target, bool is_victim)
 		if(!spellInfo)
 			return;
 
-		Spell *spell = new Spell(this, spellInfo ,true, NULL);
+		Spell *spell = sSpellFactoryMgr.NewSpell(this, spellInfo ,true, NULL);
 		SpellCastTargets targets;
 
 		if ( spellInfo->procFlags & PROC_TARGET_SELF )

@@ -2817,7 +2817,7 @@ void Spell::HandleAddAura(uint64 guid)
 			return;
 		}
 
-		Spell *spell = new Spell(p_caster, spellInfo ,true, NULL);
+		Spell *spell = sSpellFactoryMgr.NewSpell(p_caster, spellInfo ,true, NULL);
 		spell->forced_basepoints[0] = p_caster->FindAuraByNameHash(SPELL_HASH_KING_OF_THE_JUNGLE)->m_spellProto->RankNumber * 5;
 		SpellCastTargets targets(p_caster->GetGUID());
 		spell->prepare(&targets);
@@ -2853,7 +2853,7 @@ void Spell::HandleAddAura(uint64 guid)
 			return;
 		}
 
-		Spell *spell = new Spell( u_caster, spellInfo ,true, NULL );
+		Spell *spell = sSpellFactoryMgr.NewSpell( u_caster, spellInfo ,true, NULL );
 
 		if( spellid == 31665 && Target->HasAurasWithNameHash(SPELL_HASH_MASTER_OF_SUBTLETY) )
 			spell->forced_basepoints[0] = Target->FindAuraByNameHash(SPELL_HASH_MASTER_OF_SUBTLETY)->m_spellProto->EffectBasePoints[0];
@@ -2915,7 +2915,7 @@ void Spell::TriggerSpell()
 			return;
 		}
 
-		Spell *spell = new Spell(m_caster, spellInfo,false, NULL);
+		Spell *spell = sSpellFactoryMgr.NewSpell(m_caster, spellInfo,false, NULL);
 		WPArcemu::Util::ARCEMU_ASSERT(   spell);
 
 		SpellCastTargets targets;
@@ -4349,23 +4349,10 @@ int32 Spell::CalculateEffect(uint32 i,Unit *target)
 */
 	int32 value = 0;
 
-	float basePointsPerLevel    = GetProto()->EffectRealPointsPerLevel[i];
-	//float randomPointsPerLevel  = GetProto()->EffectDicePerLevel[i];
-	int32 basePoints;
-	if (m_overrideBasePoints)
-		basePoints = m_overridenBasePoints[i];
-	else
-		basePoints = GetProto()->EffectBasePoints[i] + 1;
-	int32 randomPoints = GetProto()->EffectDieSides[i];
-
-	//added by Zack : some talents inherit their basepoints from the previously cast spell: see mage - Master of Elements
-	if(forced_basepoints[i])
-		basePoints = forced_basepoints[i];
-
 	/* Random suffix value calculation */
-    if(i_caster && (int32(i_caster->GetItemRandomPropertyId() ) < 0))
+	if(i_caster && (int32(i_caster->GetItemRandomPropertyId() ) < 0))
 	{
-        ItemRandomSuffixEntry * si = dbcItemRandomSuffix.LookupEntry( abs( int( i_caster->GetItemRandomPropertyId() ) ) );
+		ItemRandomSuffixEntry * si = dbcItemRandomSuffix.LookupEntry( abs( int( i_caster->GetItemRandomPropertyId() ) ) );
 		EnchantEntry * ent;
 		uint32 j,k;
 
@@ -4394,6 +4381,19 @@ int32 Spell::CalculateEffect(uint32 i,Unit *target)
 	}
 exit:
 
+	float basePointsPerLevel    = GetProto()->EffectRealPointsPerLevel[i];
+	//float randomPointsPerLevel  = GetProto()->EffectDicePerLevel[i];
+	int32 basePoints;
+	if (m_overrideBasePoints)
+		basePoints = m_overridenBasePoints[i];
+	else
+		basePoints = GetProto()->EffectBasePoints[i] + 1;
+	int32 randomPoints = GetProto()->EffectDieSides[i];
+
+	//added by Zack : some talents inherit their basepoints from the previously cast spell: see mage - Master of Elements
+	if(forced_basepoints[i])
+		basePoints = forced_basepoints[i];
+
 	if( u_caster != NULL )
 	{
 		int32 diff = -(int32)GetProto()->baseLevel;
@@ -4421,6 +4421,80 @@ exit:
 		p_caster->m_spellcomboPoints = 0;
 	}
 
+	value = DoCalculateEffect(i, target, value);
+
+	if( p_caster != NULL )
+	{
+		SpellOverrideMap::iterator itr = p_caster->mSpellOverrideMap.find(GetProto()->Id);
+		if(itr != p_caster->mSpellOverrideMap.end())
+		{
+			ScriptOverrideList::iterator itrSO;
+			for(itrSO = itr->second->begin(); itrSO != itr->second->end(); ++itrSO)
+			{
+				value += RandomUInt((*itrSO)->damage);
+			}
+		}
+	 }
+
+	// TODO: INHERIT ITEM MODS FROM REAL ITEM OWNER - BURLEX BUT DO IT PROPERLY
+
+	if( u_caster != NULL )
+	{
+		int32 spell_flat_modifers= 0;
+		int32 spell_pct_modifers= 0;
+
+		SM_FIValue(u_caster->SM_FMiscEffect, &spell_flat_modifers, GetProto()->SpellGroupType);
+		SM_PIValue(u_caster->SM_PMiscEffect, &spell_pct_modifers, GetProto()->SpellGroupType);
+
+		SM_FIValue(u_caster->SM_FEffectBonus, &spell_flat_modifers, GetProto()->SpellGroupType);
+		SM_PIValue(u_caster->SM_PEffectBonus, &spell_pct_modifers, GetProto()->SpellGroupType);
+
+		SM_FIValue(u_caster->SM_FDamageBonus, &spell_flat_modifers, GetProto()->SpellGroupType);
+		SM_PIValue(u_caster->SM_PDamageBonus, &spell_pct_modifers , GetProto()->SpellGroupType);
+
+		switch(i)
+		{
+		case 0:
+			SM_FIValue(u_caster->SM_FEffect1_Bonus, &spell_flat_modifers, GetProto()->SpellGroupType);
+			SM_PIValue(u_caster->SM_PEffect1_Bonus, &spell_pct_modifers, GetProto()->SpellGroupType);
+			break;
+		case 1:
+			SM_FIValue(u_caster->SM_FEffect2_Bonus, &spell_flat_modifers, GetProto()->SpellGroupType);
+			SM_PIValue(u_caster->SM_PEffect2_Bonus, &spell_pct_modifers, GetProto()->SpellGroupType);
+			break;
+		case 2:
+			SM_FIValue(u_caster->SM_FEffect3_Bonus, &spell_flat_modifers, GetProto()->SpellGroupType);
+			SM_PIValue(u_caster->SM_PEffect3_Bonus, &spell_pct_modifers, GetProto()->SpellGroupType);
+			break;
+		}
+
+		value += float2int32(value*(float)(spell_pct_modifers/100.0f)) + spell_flat_modifers;
+	}
+	else if( i_caster != NULL && target != NULL )
+	{
+		//we should inherit the modifiers from the conjured food caster
+        Unit *item_creator = target->GetMapMgr()->GetUnit( i_caster->GetCreatorGUID() );
+
+		if( item_creator != NULL )
+		{
+			int32 spell_flat_modifers= 0;
+			int32 spell_pct_modifers= 0;
+
+			SM_FIValue(item_creator->SM_FMiscEffect ,&spell_flat_modifers, GetProto()->SpellGroupType);
+			SM_PIValue(item_creator->SM_PMiscEffect, &spell_pct_modifers, GetProto()->SpellGroupType);
+
+			SM_FIValue(item_creator->SM_FEffectBonus, &spell_flat_modifers, GetProto()->SpellGroupType);
+			SM_PIValue(item_creator->SM_PEffectBonus, &spell_pct_modifers, GetProto()->SpellGroupType);
+
+			value += float2int32(value*(float)(spell_pct_modifers/100.0f)) + spell_flat_modifers;
+		}
+	}
+
+	return value;
+}
+
+int32 Spell::DoCalculateEffect(uint32 i, Unit *target, int32 value)
+{
 	//2 switch: the first checking namehash, the second checking spell id. If the spell is still not handled in these 2 blocks of code,
 	//3rd block of checks is reached. bool handled is initialized as true and set to false in the default: case of each switch.
 	bool handled = true;
@@ -4725,72 +4799,6 @@ exit:
 		}
 	}
 
-	if( p_caster != NULL )
-	{
-		SpellOverrideMap::iterator itr = p_caster->mSpellOverrideMap.find(GetProto()->Id);
-		if(itr != p_caster->mSpellOverrideMap.end())
-		{
-			ScriptOverrideList::iterator itrSO;
-			for(itrSO = itr->second->begin(); itrSO != itr->second->end(); ++itrSO)
-			{
-				value += RandomUInt((*itrSO)->damage);
-			}
-		}
-	 }
-
-	// TODO: INHERIT ITEM MODS FROM REAL ITEM OWNER - BURLEX BUT DO IT PROPERLY
-
-	if( u_caster != NULL )
-	{
-		int32 spell_flat_modifers= 0;
-		int32 spell_pct_modifers= 0;
-
-		SM_FIValue(u_caster->SM_FMiscEffect, &spell_flat_modifers, GetProto()->SpellGroupType);
-		SM_PIValue(u_caster->SM_PMiscEffect, &spell_pct_modifers, GetProto()->SpellGroupType);
-
-		SM_FIValue(u_caster->SM_FEffectBonus, &spell_flat_modifers, GetProto()->SpellGroupType);
-		SM_PIValue(u_caster->SM_PEffectBonus, &spell_pct_modifers, GetProto()->SpellGroupType);
-
-		SM_FIValue(u_caster->SM_FDamageBonus, &spell_flat_modifers, GetProto()->SpellGroupType);
-		SM_PIValue(u_caster->SM_PDamageBonus, &spell_pct_modifers , GetProto()->SpellGroupType);
-
-		switch(i)
-		{
-		case 0:
-			SM_FIValue(u_caster->SM_FEffect1_Bonus, &spell_flat_modifers, GetProto()->SpellGroupType);
-			SM_PIValue(u_caster->SM_PEffect1_Bonus, &spell_pct_modifers, GetProto()->SpellGroupType);
-			break;
-		case 1:
-			SM_FIValue(u_caster->SM_FEffect2_Bonus, &spell_flat_modifers, GetProto()->SpellGroupType);
-			SM_PIValue(u_caster->SM_PEffect2_Bonus, &spell_pct_modifers, GetProto()->SpellGroupType);
-			break;
-		case 2:
-			SM_FIValue(u_caster->SM_FEffect3_Bonus, &spell_flat_modifers, GetProto()->SpellGroupType);
-			SM_PIValue(u_caster->SM_PEffect3_Bonus, &spell_pct_modifers, GetProto()->SpellGroupType);
-			break;
-		}
-
-		value += float2int32(value*(float)(spell_pct_modifers/100.0f)) + spell_flat_modifers;
-	}
-	else if( i_caster != NULL && target != NULL )
-	{
-		//we should inherit the modifiers from the conjured food caster
-        Unit *item_creator = target->GetMapMgr()->GetUnit( i_caster->GetCreatorGUID() );
-
-		if( item_creator != NULL )
-		{
-			int32 spell_flat_modifers= 0;
-			int32 spell_pct_modifers= 0;
-
-			SM_FIValue(item_creator->SM_FMiscEffect ,&spell_flat_modifers, GetProto()->SpellGroupType);
-			SM_PIValue(item_creator->SM_PMiscEffect, &spell_pct_modifers, GetProto()->SpellGroupType);
-
-			SM_FIValue(item_creator->SM_FEffectBonus, &spell_flat_modifers, GetProto()->SpellGroupType);
-			SM_PIValue(item_creator->SM_PEffectBonus, &spell_pct_modifers, GetProto()->SpellGroupType);
-
-			value += float2int32(value*(float)(spell_pct_modifers/100.0f)) + spell_flat_modifers;
-		}
-	}
 	return value;
 }
 
@@ -5297,7 +5305,7 @@ bool Spell::Reflect(Unit *refunit)
 	if( !refspell || !canreflect ) 
 		return false;
 
-	Spell *spell = new Spell( refunit, refspell, true, NULL );
+	Spell *spell = sSpellFactoryMgr.NewSpell( refunit, refspell, true, NULL );
 	spell->SetReflected();
 	SpellCastTargets targets;
 	targets.m_unitTarget = m_caster->GetGUID();
