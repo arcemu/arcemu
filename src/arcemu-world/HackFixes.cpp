@@ -6842,36 +6842,6 @@ void ApplyNormalFixes()
 		// Insert Death Knight spells here ---- Made by Alice
 
 		/**********************************************************
-		 *	Death and Decay - Ranks 1, 2, 3, 4
-		 **********************************************************/
-		sp = CheckAndReturnSpellEntry( 43265 );
-		if( sp != NULL )
-		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;
-			sp->Effect[0] = SPELL_EFFECT_PERSISTENT_AREA_AURA;
-		}
-
-		sp = CheckAndReturnSpellEntry( 49936 );
-		if( sp != NULL )
-		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;
-			sp->Effect[0] = SPELL_EFFECT_PERSISTENT_AREA_AURA;
-		}
-
-		sp = CheckAndReturnSpellEntry( 49937 );
-		if( sp != NULL )
-		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;
-			sp->Effect[0] = SPELL_EFFECT_PERSISTENT_AREA_AURA;
-		}
-
-		sp = CheckAndReturnSpellEntry( 49938 );
-		if( sp != NULL )
-		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;
-			sp->Effect[0] = SPELL_EFFECT_PERSISTENT_AREA_AURA;
-		}
-		/**********************************************************
 		 *	Unholy Aura - Ranks 1 & 2
 		 **********************************************************/
 		sp = CheckAndReturnSpellEntry( 50391 );

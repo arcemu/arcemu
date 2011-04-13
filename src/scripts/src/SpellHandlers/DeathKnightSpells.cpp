@@ -263,15 +263,16 @@ bool DeathCoil( uint32 i, Spell *s ){
 	return true;
 }
 
-bool BladedArmor( uint32 i, Aura *a, bool apply ){
-	Unit *m_target = a->GetTarget();
+bool BladedArmor( uint32 i, Aura *pAura, bool apply )
+{
+	Unit *m_target = pAura->GetTarget();
 
 	int32 realamount = 0;
 
 	uint32 mod1 = m_target->GetResistance(SCHOOL_NORMAL);
-	uint32 mod2 = a->m_spellProto->EffectBasePoints[0] + 1; //Thanks Andy for pointing out that BasePoints
-	uint32 mod3 = a->m_spellProto->EffectBasePoints[1] + 1; //Should always be used instead of static modifiers.
-	realamount = ( a->GetModAmount( i ) + ( mod1 / mod3 ) * mod2 );
+	uint32 mod2 = pAura->m_spellProto->EffectBasePoints[0] + 1; //Thanks Andy for pointing out that BasePoints
+	uint32 mod3 = pAura->m_spellProto->EffectBasePoints[1] + 1; //Should always be used instead of static modifiers.
+	realamount = ( pAura->GetModAmount( i ) + ( mod1 / mod3 ) * mod2 );
 
 	if(apply)
 		m_target->ModAttackPowerMods( realamount );
@@ -283,6 +284,21 @@ bool BladedArmor( uint32 i, Aura *a, bool apply ){
 	return true;
 }
 
+bool DeathAndDecay( uint32 i, Aura *pAura, bool apply )
+{
+	if( apply )
+	{
+		Player *caster = pAura->GetPlayerCaster();
+		if( caster == NULL )
+			return true;
+
+		int32 value = pAura->GetModAmount(i) + (int32) caster->GetAP() * 0.064;
+
+		caster->CastSpell(pAura->GetTarget(), 52212, value, true);
+	}
+
+	return true;
+}
 
 void SetupDeathKnightSpells(ScriptMgr * mgr)
 {
@@ -326,4 +342,9 @@ void SetupDeathKnightSpells(ScriptMgr * mgr)
 		0
 	};
 	mgr->register_dummy_aura( bladedarmorids, &BladedArmor );
+
+	mgr->register_dummy_aura( 43265, &DeathAndDecay );
+	mgr->register_dummy_aura( 49936, &DeathAndDecay );
+	mgr->register_dummy_aura( 49937, &DeathAndDecay );
+	mgr->register_dummy_aura( 49938, &DeathAndDecay );
 }

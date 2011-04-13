@@ -2895,8 +2895,8 @@ void Aura::EventPeriodicManaPct(float RegenPct)
 	}
 }
 
-void Aura::EventPeriodicTriggerDummy(){
-	
+void Aura::EventPeriodicTriggerDummy()
+{	
 	if( !sScriptMgr.CallScriptedDummyAura( m_spellProto->Id, mod->i, this, true ) )
 		sLog.outError("Spell %u ( %s ) has an apply periodic trigger dummy aura effect, but no handler for it.", m_spellProto->Id, m_spellProto->Name );
 }
@@ -5358,14 +5358,14 @@ void Aura::SpellAuraModRegen(bool apply)
 
 void Aura::SpellAuraPeriodicTriggerDummy(bool apply)
 {
-	if( apply ){
-
-		sEventMgr.AddEvent( this, &Aura::EventPeriodicTriggerDummy, EVENT_AURA_PERIODIC_DUMMY, m_spellProto->EffectAmplitude[ mod->i ], 0, 0 );
-	
-	}else{
+	if( apply )
+	{
+		sEventMgr.AddEvent( this, &Aura::EventPeriodicTriggerDummy, EVENT_AURA_PERIODIC_DUMMY, m_spellProto->EffectAmplitude[ mod->i ], 0, 0 );	
+	}
+	else
+	{
 		if( !sScriptMgr.CallScriptedDummyAura( m_spellProto->Id, mod->i, this, false ) )
 			sLog.outError("Spell %u ( %s ) has an apply periodic trigger dummy aura effect, but no handler for it.", m_spellProto->Id, m_spellProto->Name );
-
 	}
 }
 
