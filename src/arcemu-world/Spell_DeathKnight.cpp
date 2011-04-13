@@ -33,7 +33,21 @@ class BloodPlagueSpell : public Spell
 	}
 };
 
+class IcyTouchSpell : public Spell
+{
+	SPELL_FACTORY_FUNCTION(IcyTouchSpell);
+
+	int32 DoCalculateEffect(uint32 i, Unit *target, int32 value)
+	{
+		if( p_caster != NULL && i == 0 )
+			value += (uint32)( p_caster->GetAP() * 0.1 );
+
+		return value;
+	}
+};
+
 void SpellFactoryMgr::SetupDeathKnight()
 {
 	AddById( 55078, &BloodPlagueSpell::Create );
+	AddById( 45477, &IcyTouchSpell::Create );
 }
