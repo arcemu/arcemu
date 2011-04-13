@@ -80,6 +80,23 @@ class BloodBoilSpell : public Spell
 	}
 };
 
+class BloodStrikeSpell : public Spell
+{
+	SPELL_FACTORY_FUNCTION(BloodStrikeSpell);
+
+	int32 DoCalculateEffect(uint32 i, Unit *target, int32 value)
+	{
+		if( target != NULL )
+		{
+			uint32 count = target->GetAuraCountWithDispelType( DISPEL_DISEASE, m_caster->GetGUID() );
+			if( count )
+				value += value * count * (GetProto()->EffectBasePoints[2] +1) / 200;
+		}
+
+		return value;
+	}
+};
+
 void SpellFactoryMgr::SetupDeathKnight()
 {
 	AddById( 55078, &BloodPlagueSpell::Create );
@@ -90,4 +107,11 @@ void SpellFactoryMgr::SetupDeathKnight()
 	AddById( 49939, &BloodBoilSpell::Create ); // Rank 2
 	AddById( 49940, &BloodBoilSpell::Create ); // Rank 3
 	AddById( 49941, &BloodBoilSpell::Create ); // Rank 4
+
+	AddById( 45902, &BloodStrikeSpell::Create ); // Rank 1
+	AddById( 49926, &BloodStrikeSpell::Create ); // Rank 2
+	AddById( 49927, &BloodStrikeSpell::Create ); // Rank 3
+	AddById( 49928, &BloodStrikeSpell::Create ); // Rank 4
+	AddById( 49929, &BloodStrikeSpell::Create ); // Rank 5
+	AddById( 49930, &BloodStrikeSpell::Create ); // Rank 6
 }

@@ -8165,3 +8165,19 @@ float Unit::GetCriticalHealBonusForSpell(Object *victim, SpellEntry *spell, floa
 
 	return amount;
 }
+
+uint32 Unit::GetAuraCountWithDispelType(uint32 dispel_type, uint64 guid)
+{
+	uint32 result = 0;
+
+	for( uint32 x = MAX_TOTAL_AURAS_START; x < MAX_TOTAL_AURAS_END; ++x )
+	{
+		if( m_auras[x] == NULL )
+			continue;
+		
+		if( m_auras[x]->GetSpellProto()->DispelType == dispel_type && ( guid == 0 || m_auras[x]->GetCasterGUID() == guid) )
+			result++;
+	}
+
+	return result;
+}

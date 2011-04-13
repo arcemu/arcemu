@@ -1003,6 +1003,10 @@ public:
 	uint8 m_invisFlag;
 	int32 m_invisDetect[INVIS_FLAG_TOTAL];
 
+	//************************************************************************************************************************
+	// AURAS
+	//************************************************************************************************************************
+
 	bool HasAura(uint32 spellid); //this checks passive auras too
 	uint16 GetAuraStackCount(uint32 spellid);
 	bool HasAuraVisual(uint32 visualid);//not spell id!!!
@@ -1010,24 +1014,14 @@ public:
 	bool HasBuff(uint32 spelllid, uint64 guid);//this does not check passive auras & it was visible auras
 	bool HasVisialPosAurasOfNameHashWithCaster(uint32 namehash, Unit * caster);
 	bool HasAuraWithMechanics(uint32 mechanic); //this checks passive auras too
-
+	bool HasAurasOfBuffType(uint32 buff_type, const uint64 &guid,uint32 skip);
+	int	 HasAurasWithNameHash(uint32 name_hash);
+	bool HasAuraWithName( uint32 name );
+	uint32 GetAuraCountWithName( uint32 name );
 	uint32 FindAuraCountByHash(uint32 HashName, uint32 maxcount = 0);
-	
-	void GiveGroupXP(Unit *pVictim, Player *PlayerInGroup);
+	uint32 GetAuraCountWithDispelType(uint32 dispel_type, uint64 guid);
 
-	/// Combat / Death Status
-	bool isAlive() { return m_deathState == ALIVE; };
-	bool IsDead() { return  m_deathState !=ALIVE; };
-	virtual void setDeathState(DeathState s) {
-		m_deathState = s;
-		if ( m_deathState==JUST_DIED ) DropAurasOnDeath();
-	};
-	DeathState getDeathState() { return m_deathState; }
-	void OnDamageTaken();
-
-	//! Add Aura to unit
 	void AddAura(Aura *aur);
-	//! Remove aura from unit
 	bool RemoveAura(Aura *aur);
 	bool RemoveAura(uint32 spellId);
 	bool RemoveAura(uint32 spellId,uint64 guid);
@@ -1035,7 +1029,10 @@ public:
 	bool RemoveAuraByNameHash(uint32 namehash);//required to remove weaker instances of a spell
 	bool RemoveAuras(uint32 * SpellIds);
 	bool RemoveAurasByHeal();
-
+	void RemoveAurasByInterruptFlag(uint32 flag);
+	void RemoveAurasByInterruptFlagButSkip(uint32 flag, uint32 skip);
+	void RemoveAurasByBuffType(uint32 buff_type, const uint64 &guid,uint32 skip);
+	void RemoveAurasOfSchool(uint32 School, bool Positive, bool Immune);
 
 	////////////////////////////////////////////////////////////////
 	//void ClearAllAreaAuraTargets()
@@ -1067,17 +1064,14 @@ public:
 	void RemoveAllAreaAuraByOther();
 
 
-	void EventRemoveAura(uint32 SpellId)
-	{
-		RemoveAura(SpellId);
-	}
+	void EventRemoveAura(uint32 SpellId) { RemoveAura(SpellId); }
 
 	//! Remove all auras
 	void RemoveAllAuras();
-    void RemoveAllNonPersistentAuras();
+	void RemoveAllNonPersistentAuras();
 	bool RemoveAllAuras(uint32 spellId,uint64 guid); //remove stacked auras but only if they come from the same caster. Shaman purge If GUID = 0 then removes all auras with this spellid
-    void RemoveAllAuraType(uint32 auratype);//ex:to remove morph spells
-    void RemoveAllAuraFromSelfType2(uint32 auratype, uint32 butskip_hash);//ex:to remove morph spells
+	void RemoveAllAuraType(uint32 auratype);//ex:to remove morph spells
+	void RemoveAllAuraFromSelfType2(uint32 auratype, uint32 butskip_hash);//ex:to remove morph spells
 	uint32 RemoveAllAuraByNameHash(uint32 namehash);//required to remove weaker instances of a spell
 	uint32 RemoveAllAuraById(uint32 Id); // DuKJIoHuyC: Remove an aura by it's id
 	bool RemoveAllAurasByMechanic( uint32 MechanicType , uint32 MaxDispel , bool HostileOnly ); // Removes all (de)buffs on unit of a specific mechanic type.
@@ -1086,7 +1080,7 @@ public:
 
 	void RemoveNegativeAuras();
 	// Temporary remove all auras
-	   // Find auras
+	// Find auras
 	Aura *FindAuraByNameHash(uint32 namehash);
 	Aura *FindAuraByNameHash(uint32 namehash, uint64 guid);
 	Aura* FindAura(uint32 spellId);
@@ -1096,7 +1090,41 @@ public:
 	bool SetAurDuration(uint32 spellId,Unit* caster,uint32 duration);
 	bool SetAurDuration(uint32 spellId,uint32 duration);
 	void DropAurasOnDeath();
-	   
+
+	//******************************************************
+	// Auras that can affect only one target at a time
+	//******************************************************
+	uint64 GetCurrentUnitForSingleTargetAura(SpellEntry* spell);
+	uint64 GetCurrentUnitForSingleTargetAura(uint32* name_hashes, uint32* index);
+	void SetCurrentUnitForSingleTargetAura(SpellEntry* spell, uint64 guid);
+	void RemoveCurrentUnitForSingleTargetAura(SpellEntry* spell);
+	void RemoveCurrentUnitForSingleTargetAura(uint32 name_hash);
+
+
+	/********************************************************/
+	/*   ProcTrigger                                        */
+	/********************************************************/
+	std::list<SpellProc*> m_procSpells;
+	SpellProc* AddProcTriggerSpell(uint32 spell_id, uint32 orig_spell_id, uint64 caster, uint32 procChance, uint32 procFlags, uint32 procCharges, uint32 *groupRelation, uint32 *procClassMask = NULL, Object *obj = NULL);
+	SpellProc* AddProcTriggerSpell(SpellEntry *spell, SpellEntry *orig_spell, uint64 caster, uint32 procChance, uint32 procFlags, uint32 procCharges, uint32 *groupRelation, uint32 *procClassMask = NULL, Object *obj = NULL);
+	SpellProc* AddProcTriggerSpell(SpellEntry *sp, uint64 caster, uint32 *groupRelation, uint32 *procClassMask = NULL, Object *obj = NULL);
+	SpellProc* GetProcTriggerSpell(uint32 spellId, uint64 casterGuid = 0);
+	void RemoveProcTriggerSpell(uint32 spellId, uint64 casterGuid = 0, uint64 misc = 0);
+
+	bool IsPoisoned();
+
+	void GiveGroupXP(Unit *pVictim, Player *PlayerInGroup);
+
+	/// Combat / Death Status
+	bool isAlive() { return m_deathState == ALIVE; };
+	bool IsDead() { return  m_deathState !=ALIVE; };
+	virtual void setDeathState(DeathState s) {
+		m_deathState = s;
+		if ( m_deathState==JUST_DIED ) DropAurasOnDeath();
+	};
+	DeathState getDeathState() { return m_deathState; }
+	void OnDamageTaken();
+  
 	void castSpell(Spell * pSpell);
 	void InterruptSpell();
 
@@ -1118,15 +1146,6 @@ public:
 	void RemoveReflect( uint32 spellid , bool apply);
 	struct DamageSplitTarget *m_damageSplitTarget;
  
-	/********************************************************/
-	/*   ProcTrigger                                        */
-	/********************************************************/
-	std::list<SpellProc*> m_procSpells;
-	SpellProc* AddProcTriggerSpell(uint32 spell_id, uint32 orig_spell_id, uint64 caster, uint32 procChance, uint32 procFlags, uint32 procCharges, uint32 *groupRelation, uint32 *procClassMask = NULL, Object *obj = NULL);
-	SpellProc* AddProcTriggerSpell(SpellEntry *spell, SpellEntry *orig_spell, uint64 caster, uint32 procChance, uint32 procFlags, uint32 procCharges, uint32 *groupRelation, uint32 *procClassMask = NULL, Object *obj = NULL);
-	SpellProc* AddProcTriggerSpell(SpellEntry *sp, uint64 caster, uint32 *groupRelation, uint32 *procClassMask = NULL, Object *obj = NULL);
-	SpellProc* GetProcTriggerSpell(uint32 spellId, uint64 casterGuid = 0);
-	void RemoveProcTriggerSpell(uint32 spellId, uint64 casterGuid = 0, uint64 misc = 0);
 	std::map<uint32,struct SpellCharge> m_chargeSpells;
 	deque<uint32> m_chargeSpellRemoveQueue;
 	bool m_chargeSpellsInUse;
@@ -1402,8 +1421,6 @@ public:
 	
 	void UpdatePowerAmm();
 
-	void RemoveAurasByInterruptFlag(uint32 flag);
-	void RemoveAurasByInterruptFlagButSkip(uint32 flag, uint32 skip);
 	// Auras Modifiers
 	int32 m_pacified;
 	int32 m_interruptRegen;
@@ -1542,13 +1559,6 @@ public:
 
 	void SetFacing(float newo);//only working if creature is idle
 
-	void RemoveAurasByBuffType(uint32 buff_type, const uint64 &guid,uint32 skip);
-	bool HasAurasOfBuffType(uint32 buff_type, const uint64 &guid,uint32 skip);
-	int	 HasAurasWithNameHash(uint32 name_hash);
-	bool HasAuraWithName( uint32 name );
-	uint32 GetAuraCountWithName( uint32 name );
-	bool IsPoisoned();
-
 	AuraCheckResponse AuraCheck(SpellEntry *proto, Object *caster= NULL);
 	AuraCheckResponse AuraCheck(SpellEntry *proto, Aura* aur, Object *caster= NULL);
 
@@ -1573,7 +1583,6 @@ public:
 	uint8 FindVisualSlot(uint32 SpellId,bool IsPos);
 	uint32 m_auravisuals[MAX_NEGATIVE_VISUAL_AURAS_END];
 
-	void RemoveAurasOfSchool(uint32 School, bool Positive, bool Immune);
 	SpellEntry * pLastSpell;
 	bool bProcInUse;
 	bool bInvincible;
@@ -1794,15 +1803,6 @@ public:
 	virtual bool isCritter(){ return false; }
 
 	void AddGarbagePet( Pet *pet );
-
-	//******************************************************
-	// Auras that can affect only one target at a time
-	//******************************************************
-	uint64 GetCurrentUnitForSingleTargetAura(SpellEntry* spell);
-	uint64 GetCurrentUnitForSingleTargetAura(uint32* name_hashes, uint32* index);
-	void SetCurrentUnitForSingleTargetAura(SpellEntry* spell, uint64 guid);
-	void RemoveCurrentUnitForSingleTargetAura(SpellEntry* spell);
-	void RemoveCurrentUnitForSingleTargetAura(uint32 name_hash);
 
 protected:
 	Unit ();
