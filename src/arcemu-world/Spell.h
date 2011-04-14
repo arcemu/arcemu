@@ -1653,7 +1653,7 @@ public:
     //void TriggerSpell();
     
 	// Checks the caster is ready for cast
-    uint8 CanCast(bool);
+    virtual uint8 CanCast(bool);
 
 	bool HasCustomFlag( uint32 flag ){
 		if( ( GetProto()->CustomFlags & flag ) != 0 )

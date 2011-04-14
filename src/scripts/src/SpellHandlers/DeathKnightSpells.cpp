@@ -242,22 +242,23 @@ bool BloodWorms( uint32 i, Spell *s ){
 	return true;
 }
 
-bool DeathCoil( uint32 i, Spell *s ){
+bool DeathCoil( uint32 i, Spell *s )
+{
 	Unit *unitTarget = s->GetUnitTarget();
 
-	if( s->u_caster == NULL || unitTarget == NULL )
+	if( s->p_caster == NULL || unitTarget == NULL )
 		return false;
+
+	int32 dmg = s->damage;
 	
-	if( s->GetProto()->Id == 52375 )
-		s->damage = s->damage * 2 / 5;
-	
-	if( isAttackable( s->u_caster, unitTarget, false ) )
-		s->u_caster->SpellNonMeleeDamageLog( unitTarget, s->GetProto()->Id, s->damage, true );
-	else if( unitTarget->IsCreature() )
+	if( isAttackable( s->p_caster, unitTarget, false ) )
 	{
-		CreatureInfo * ci = TO< Creature* >( unitTarget )->GetCreatureInfo();
-		if( ci->Type == UNIT_TYPE_UNDEAD )
-			s->u_caster->Heal( unitTarget, s->GetProto()->Id, float2int32( s->damage * 1.5f ) );
+		s->p_caster->CastSpell( unitTarget, 47632, dmg, true);
+	}
+	else if( unitTarget->IsPlayer() && unitTarget->getRace() == RACE_UNDEAD )
+	{
+		dmg *= 1.5;
+		s->p_caster->CastSpell( unitTarget, 47633, dmg, true );
 	}
 
 	return true;
@@ -327,11 +328,11 @@ void SetupDeathKnightSpells(ScriptMgr * mgr)
 	mgr->register_dummy_spell( 49576, &DeathGrip );
 	mgr->register_dummy_spell( 50452, &BloodWorms );
 
-	mgr->register_dummy_spell( 52375, &DeathCoil );
-	mgr->register_dummy_spell( 49892, &DeathCoil );
-	mgr->register_dummy_spell( 49893, &DeathCoil );
-	mgr->register_dummy_spell( 49894, &DeathCoil );
-	mgr->register_dummy_spell( 49895, &DeathCoil );
+	mgr->register_dummy_spell( 47541, &DeathCoil ); // Rank 1
+	mgr->register_dummy_spell( 49892, &DeathCoil ); // Rank 2
+	mgr->register_dummy_spell( 49893, &DeathCoil ); // Rank 3
+	mgr->register_dummy_spell( 49894, &DeathCoil ); // Rank 4
+	mgr->register_dummy_spell( 49895, &DeathCoil ); // Rank 5
 
 	uint32 bladedarmorids[] = {
 		48978,

@@ -97,6 +97,29 @@ class BloodStrikeSpell : public Spell
 	}
 };
 
+class DeathCoilSpell : public Spell
+{
+	SPELL_FACTORY_FUNCTION(DeathCoilSpell);
+
+	uint8 CanCast(bool tolerate)
+	{
+		uint8 result = Spell::CanCast(tolerate);
+
+		if( result == SPELL_CANCAST_OK )
+		{
+			if( m_caster != NULL && m_caster->IsInWorld() )
+			{
+				Unit *target = m_caster->GetMapMgr()->GetUnit( m_targets.m_unitTarget );
+
+				if( target == NULL || ! ( isAttackable(m_caster, target, false) || target->getRace() == RACE_UNDEAD ) )
+					result = SPELL_FAILED_BAD_TARGETS;
+			}
+		}
+
+		return result;
+	}
+};
+
 void SpellFactoryMgr::SetupDeathKnight()
 {
 	AddById( 55078, &BloodPlagueSpell::Create );
@@ -114,4 +137,10 @@ void SpellFactoryMgr::SetupDeathKnight()
 	AddById( 49928, &BloodStrikeSpell::Create ); // Rank 4
 	AddById( 49929, &BloodStrikeSpell::Create ); // Rank 5
 	AddById( 49930, &BloodStrikeSpell::Create ); // Rank 6
+
+	AddById( 47541, &DeathCoilSpell::Create ); // Rank 1
+	AddById( 49892, &DeathCoilSpell::Create ); // Rank 2
+	AddById( 49893, &DeathCoilSpell::Create ); // Rank 3
+	AddById( 49894, &DeathCoilSpell::Create ); // Rank 4
+	AddById( 49895, &DeathCoilSpell::Create ); // Rank 5
 }
