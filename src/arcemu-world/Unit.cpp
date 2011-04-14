@@ -3339,8 +3339,11 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 			else
 				sEventMgr.ModifyEventTimeLeft( TO< Player* >( this ), EVENT_COMBO_POINT_CLEAR_FOR_TARGET, 5000 ,0 );
 		}
-		if(this->IsPlayer() && this->getClass() == DEATHKNIGHT)
-			CastSpell(GetGUID(), 56817, true);
+
+		// Rune strike
+		if( pVictim->IsPlayer() && pVictim->getClass() == DEATHKNIGHT ) // omg! dirty hack!
+			pVictim->CastSpell(pVictim, 56817, true);
+
 		pVictim->SetFlag(UNIT_FIELD_AURASTATE,AURASTATE_FLAG_DODGE_BLOCK);
 		if(!sEventMgr.HasEvent(pVictim,EVENT_DODGE_BLOCK_FLAG_EXPIRE))
 			sEventMgr.AddEvent(pVictim,&Unit::EventAurastateExpire,(uint32)AURASTATE_FLAG_DODGE_BLOCK,EVENT_DODGE_BLOCK_FLAG_EXPIRE,5000,1,0);
@@ -3359,6 +3362,10 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 		pVictim->Emote(EMOTE_ONESHOT_PARRYUNARMED);			// Animation
 		if(pVictim->IsPlayer())
 		{
+			// Rune strike
+			if( pVictim->getClass() == DEATHKNIGHT ) // omg! dirty hack!
+				pVictim->CastSpell(pVictim, 56817, true);
+
 			pVictim->SetFlag( UNIT_FIELD_AURASTATE,AURASTATE_FLAG_PARRY );	//SB@L: Enables spells requiring parry
 			if(!sEventMgr.HasEvent( pVictim, EVENT_PARRY_FLAG_EXPIRE ) )
 				sEventMgr.AddEvent( pVictim, &Unit::EventAurastateExpire, (uint32)AURASTATE_FLAG_PARRY,EVENT_PARRY_FLAG_EXPIRE, 5000, 1, 0 );

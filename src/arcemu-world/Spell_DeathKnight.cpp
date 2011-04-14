@@ -120,6 +120,19 @@ class DeathCoilSpell : public Spell
 	}
 };
 
+class RuneStrileSpell : public Spell
+{
+	SPELL_FACTORY_FUNCTION(RuneStrileSpell);
+
+	void HandleEffects(uint64 guid, uint32 i)
+	{
+		Spell::HandleEffects(guid, i);
+
+		if( u_caster != NULL )
+			u_caster->RemoveAura( 56817 );
+	}
+};
+
 void SpellFactoryMgr::SetupDeathKnight()
 {
 	AddById( 55078, &BloodPlagueSpell::Create );
@@ -143,4 +156,6 @@ void SpellFactoryMgr::SetupDeathKnight()
 	AddById( 49893, &DeathCoilSpell::Create ); // Rank 3
 	AddById( 49894, &DeathCoilSpell::Create ); // Rank 4
 	AddById( 49895, &DeathCoilSpell::Create ); // Rank 5
+
+	AddById( 56815, &RuneStrileSpell::Create );
 }

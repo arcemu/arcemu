@@ -1643,7 +1643,7 @@ public:
     // Finishes the casted spell
     void finish(bool successful = true);
     // Handle the Effects of the Spell
-    void HandleEffects(uint64 guid,uint32 i);
+    virtual void HandleEffects(uint64 guid,uint32 i);
 	void HandleCastEffects(uint64 guid, uint32 i);
     // Take Power from the caster based on spell power usage
     bool TakePower();

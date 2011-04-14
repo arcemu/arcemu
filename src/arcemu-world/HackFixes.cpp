@@ -6930,11 +6930,20 @@ void ApplyNormalFixes()
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
 		}
 
-		//Rune Strike
+		// Rune Strike
 		sp = CheckAndReturnSpellEntry( 56815 );
 		if( sp != NULL )
 		{
-			sp->Attributes = ATTRIBUTES_CANT_BE_DPB;
+			sp->Attributes |= ATTRIBUTES_CANT_BE_DPB;
+		}
+
+		CreateDummySpell( 56817 );
+		sp = CheckAndReturnSpellEntry( 56817 );
+		if( sp != NULL )
+		{
+			sp->DurationIndex = 28;
+			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
+			sp->EffectApplyAuraName[0] = SPELL_AURA_DUMMY;
 		}
 
 		//Frost Strike
