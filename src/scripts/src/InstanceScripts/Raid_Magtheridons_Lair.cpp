@@ -237,7 +237,7 @@ public:
 						if (BuffedChanneler && BuffedChanneler != Channeler && BuffedChanneler->isAlive())
 						{
 							// We apply Soul Transfer Aura to channeler who should be buffed
-							Aura* aura = new Aura( dbcSpell.LookupEntry(SOUL_TRANSFER), (uint32)-1, BuffedChanneler, BuffedChanneler );
+							Aura* aura = sSpellFactoryMgr.NewAura( dbcSpell.LookupEntry(SOUL_TRANSFER), (uint32)-1, BuffedChanneler, BuffedChanneler );
 							BuffedChanneler->AddAura(aura);
 						}
 					}
@@ -596,7 +596,7 @@ public:
 				Magtheridon->GetCurrentSpell()->cancel();
 
 			// We add channeling player aura that does not allow that go to be used again in 1.3 min
-			Aura* aura = new Aura( dbcSpell.LookupEntry(MIND_EXHAUSTION),(uint32)78000, Magtheridon, Channeler );
+			Aura* aura = sSpellFactoryMgr.NewAura( dbcSpell.LookupEntry(MIND_EXHAUSTION),(uint32)78000, Magtheridon, Channeler );
 			Channeler->AddAura(aura);
 
 			MagYell = true;
@@ -1310,7 +1310,7 @@ public:
 
 		_unit->SetUInt64Value(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_9);
 
-		Aura* aura = new Aura( dbcSpell.LookupEntry(BANISHMENT), (uint32)-1, _unit, _unit );
+		Aura* aura = sSpellFactoryMgr.NewAura( dbcSpell.LookupEntry(BANISHMENT), (uint32)-1, _unit, _unit );
 		_unit->AddAura(aura);
 
 		_unit->CastSpell(_unit, dbcSpell.LookupEntry(BANISH), true);

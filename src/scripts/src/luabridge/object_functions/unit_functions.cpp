@@ -3843,7 +3843,7 @@ namespace luaUnit
 		bool temp = CHECK_BOOL(L,3);
 		if(ptr && spellid)
 		{
-			Aura * aura = new Aura(dbcSpell.LookupEntry(spellid), duration, ptr, ptr,temp);
+			Aura * aura = sSpellFactoryMgr.NewAura(dbcSpell.LookupEntry(spellid), duration, ptr, ptr,temp);
 			ptr->AddAura(aura);
 			lua_pushboolean(L, 1);
 		}

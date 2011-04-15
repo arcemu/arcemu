@@ -822,6 +822,9 @@ struct SpellEntry
 	// Its type is void because class Spell is not visible here, so it'll be casted accordingly when necessary
 	void *(*SpellFactoryFunc);
 
+	// Same for Auras
+	void *(*AuraFactoryFunc);
+
 	////////////////////////////////////////////////////////////////////////////////
 	//bool HasEffect( uint32 effect )
 	//  Tells if the Spell has a certain effect
@@ -932,6 +935,7 @@ struct SpellEntry
 			EffectCustomFlag[ i ] = 0;
 
 		SpellFactoryFunc = NULL;
+		AuraFactoryFunc = NULL;
 	}
 };
 

@@ -139,28 +139,35 @@ bool CloakOfShadows( uint32 i, Spell *s ){
 	return true;
 }
 
-bool CheatDeath( uint32 i, Aura *a, bool apply ){
+bool CheatDeath( uint32 i, Aura *a, bool apply )
+{
 	Unit *u_target = a->GetTarget();
 	Player *p_target = NULL;
 
 	if( u_target->IsPlayer() )
 		p_target = TO_PLAYER( u_target );
 
-	if( p_target != NULL ){
-		int32 m = (int32)( 8.0f * p_target->CalcRating(PLAYER_RATING_MODIFIER_MELEE_CRIT_RESILIENCE ) );
+	if( p_target != NULL )
+	{
+		int32 m = (int32)( 8.0f * p_target->CalcRating( PLAYER_RATING_MODIFIER_MELEE_CRIT_RESILIENCE ) );
 		if( m > 90 )
 			m = 90;
 
-		if( apply ){
+		float val;
+
+		if( apply )
+		{
 			a->SetPositive();
 
-			for( uint32 x = 0; x < 7; x++ )
-				p_target->DamageTakenPctMod[x] -= (float) ( m / 100.0f );
-
-		}else{
-			for( uint32 x = 0; x < 7; x++ )
-				p_target->DamageTakenPctMod[x] += (float) ( m / 100.0f );
+			val = - m / 100.0f;
 		}
+		else
+		{
+			val = m / 100.0f;
+		}
+
+		for( uint32 x = 0; x < 7; x++ )
+			p_target->DamageTakenPctMod[x] += val;
 	}
 
 	return true;

@@ -48,7 +48,7 @@ bool SkyShatterRegalia( uint32 i, Spell *s ){
 	
 	if( s->p_caster->m_TotemSlots[0] && s->p_caster->m_TotemSlots[1] && s->p_caster->m_TotemSlots[2] && s->p_caster->m_TotemSlots[3])
 	{
-		Aura *aur = new Aura(dbcSpell.LookupEntry(38437), 5000, s->p_caster, s->p_caster, true);
+		Aura *aur = sSpellFactoryMgr.NewAura(dbcSpell.LookupEntry(38437), 5000, s->p_caster, s->p_caster, true);
 		
 		for( uint32 j= 0; j<3; j++ )
 			aur->AddMod( aur->GetSpellProto()->EffectApplyAuraName[j], aur->GetSpellProto()->EffectBasePoints[j]+1, aur->GetSpellProto()->EffectMiscValue[j], j );

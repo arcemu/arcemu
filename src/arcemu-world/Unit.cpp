@@ -396,9 +396,6 @@ Unit::Unit()
 	m_chargeSpellRemoveQueue.clear();
 	tmpAura.clear();
 	m_extraStrikeTargets.clear();
-	for (i= 0; i<7; i++) {
-		Absorbs[i].clear();
-	}
 
 	asc_frozen = 0;
 	asc_enraged = 0;
@@ -5311,93 +5308,24 @@ uint32 Unit::AbsorbDamage( uint32 School, uint32* dmg )
 	if( School > 6 )
 		return 0;
 
-	SchoolAbsorb::iterator i, j;
-	uint32 abs = 0;
-	for( i = Absorbs[School].begin(); i != Absorbs[School].end(); )
+	uint32 dmg_absorbed = 0;
+	for( uint32 x=MAX_TOTAL_AURAS_START; x<MAX_TOTAL_AURAS_END; x++ )
 	{
-		if(IsPlayer()){
-			SpellEntry *aSpell = dbcSpell.LookupEntryForced((*i)->spellid);
-			//Cheat death
-			if( aSpell != NULL && aSpell->SpellFamilyName == 8 && aSpell->spellIconID == 2109 )
-			{
-				++i;
-				SpellEntry *dSpell = dbcSpell.LookupEntry(31231);
-				//checking for 1 min cooldown
-				if(!(TO< Player* >( this )->Cooldown_CanCast(dSpell)))
-					continue;
+		if( m_auras[x] == NULL || ! m_auras[x]->IsAbsorb() )
+			continue;
 
-				uint32 ch=this->GetHealth();
-				uint32 mh=this->GetMaxHealth();
+		AbsorbAura* aur = TO< AbsorbAura* > (m_auras[x]);
 
-				//check for proc chance
-				if (RandomFloat(100.0f) > aSpell->procChance)
-					continue;
-				if((*dmg) >= ch)
-				{
-					/*
-						looks like the following lines are not so good, we check and cast on spell id 31231_
-						and adding the cooldown to it, but it looks like this spell is useless(all it's doing is_
-						casting 45182, so we can do all this stuff on 45182 at first place), BUT_
-						as long as proceeding cheat death is not so height (how many rogue at the same time_
-						gonna get to this point?) so it's better to use it because we wont lose anything!!
-					*/
-					TO< Player* >( this )->CastSpell(this->GetGUID(), dSpell, true);
-					// set dummy effect,
-					// this spell is used to procced the post effect of cheat death later.
-					// Move next line to SPELL::SpellEffectDummy ?!! well it's better in case of dbc changing!!
-					TO< Player* >( this )->CastSpell(this->GetGUID(), 45182, true);
-					//Better to add custom cooldown procedure then fucking with entry, or not!!
-					dSpell->RecoveryTime = 60000;
-					TO< Player* >( this )->Cooldown_Add(dSpell, NULL);
-					uint32 realdamage;
-					//calc abs and applying it
-					realdamage = this->GetHealthPct() > 10 ? ch - (mh / 10) : 0;
-					abs += (*dmg) - realdamage;
-					(*dmg) = realdamage;
-				}
-
-				if(!*dmg)
-					break;
-
-				continue;
-			}//end of cheat death
-		}
-		if( (int32)(*dmg) >= (*i)->amt)//remove this absorb
-		{
-			(*dmg) -= (*i)->amt;
-			abs += (*i)->amt;
-			j = i++;
-
-			if( i != Absorbs[School].end() )
-			{
-				while( (*i)->spellid == (*j)->spellid )
-				{
-					++i;
-					if( i == Absorbs[School].end() )
-						break;
-				}
-			}
-
-			this->RemoveAura((*j)->spellid); //,(*j)->caster);
-			if(!*dmg)//absorbed all dmg
-				break;
-		}
-		else //absorb full dmg
-		{
-			abs += *dmg;
-			(*i)->amt -= *dmg;
-			*dmg= 0;
-			break;
-		}
+		dmg_absorbed += aur->AbsorbDamage( School, dmg );
 	}
 
 	if(IsPlayer() && TO_PLAYER(this)->GodModeCheat)
 	{
-		abs += *dmg;
+		dmg_absorbed += *dmg;
 		*dmg = 0;
 	}
 
-	return abs;
+	return dmg_absorbed;
 }
 
 bool Unit::setDetectRangeMod(uint64 guid, int32 amount)

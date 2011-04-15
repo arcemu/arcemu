@@ -422,7 +422,7 @@ void NaxxramasWorshipperAI::OnDied( Unit* pKiller )
 			// Should be applied on Grand Widow, but is on the enemies - to script ?
 			//ApplyAura( NAXXRAMAS_WORSHIPPER_WIDOW_EMBRACE );
 			// I don't like the way we apply it
-			Aura* WidowEmbrace = new Aura( dbcSpell.LookupEntry( NAXXRAMAS_WORSHIPPER_WIDOW_EMBRACE ), 30000, _unit, mGrandWidow->GetUnit() );
+			Aura* WidowEmbrace = sSpellFactoryMgr.NewAura( dbcSpell.LookupEntry( NAXXRAMAS_WORSHIPPER_WIDOW_EMBRACE ), 30000, _unit, mGrandWidow->GetUnit() );
 			_unit->AddAura( WidowEmbrace );
 
 			// Not sure about new Frenzy Timer

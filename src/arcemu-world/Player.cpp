@@ -8867,7 +8867,7 @@ void Player::CompleteLoading()
 		if ( sp->c_is_flags & SPELL_FLAG_IS_EXPIREING_WITH_PET )
 			continue; //do not load auras that only exist while pet exist. We should recast these when pet is created anyway
 
-		Aura * aura = new Aura(sp,(*i).dur,this,this, false);
+		Aura * aura = sSpellFactoryMgr.NewAura(sp,(*i).dur,this,this, false);
 		//if ( !(*i).positive ) // do we need this? - vojta
 		//	aura->SetNegative();
 
@@ -8883,7 +8883,7 @@ void Player::CompleteLoading()
 		{
 			for ( uint32 x = 0; x < (*i).charges - 1; x++ )
 			{
-				Aura * a = new Aura( sp, (*i).dur, this, this, false );
+				Aura * a = sSpellFactoryMgr.NewAura( sp, (*i).dur, this, this, false );
 				this->AddAura( a );
 			}
 			if ( m_chargeSpells.find( sp->Id ) == m_chargeSpells.end() && !( sp->procFlags & PROC_REMOVEONUSE ) )

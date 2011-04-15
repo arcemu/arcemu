@@ -575,7 +575,7 @@ public:
 				{
 					if (i == 1)
 					{
-						Aura* aura = new Aura( spells[1].info, (uint32)5000, _unit, _unit );
+						Aura* aura = sSpellFactoryMgr.NewAura( spells[1].info, (uint32)5000, _unit, _unit );
 						_unit->AddAura(aura);
 					}
 
@@ -1114,7 +1114,7 @@ public:
 
 			if (i == 3)
 			{
-				Aura* aura = new Aura( spells[3].info, (uint32)20000, _unit, RTarget );
+				Aura* aura = sSpellFactoryMgr.NewAura( spells[3].info, (uint32)20000, _unit, RTarget );
 				RTarget->AddAura(aura);
 
 				TargetTable.clear();

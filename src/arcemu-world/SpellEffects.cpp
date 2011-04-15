@@ -360,7 +360,7 @@ void Spell::ApplyAA( uint32 i ) // Apply Area Aura
 	std::map<uint64, Aura*>::iterator itr = m_pendingAuras.find(unitTarget->GetGUID());
 	if(itr == m_pendingAuras.end())
 	{
-		pAura = new Aura(GetProto(),GetDuration(),m_caster,unitTarget);
+		pAura = sSpellFactoryMgr.NewAura(GetProto(),GetDuration(),m_caster,unitTarget);
 
 		float r = GetRadius(i);
 
@@ -1095,9 +1095,9 @@ void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
 		}
 
 		if( g_caster && g_caster->GetUInt32Value(OBJECT_FIELD_CREATED_BY) && g_caster->m_summoner )
-			pAura = new Aura( GetProto(), Duration, g_caster->m_summoner, unitTarget, m_triggeredSpell, i_caster );
+			pAura = sSpellFactoryMgr.NewAura( GetProto(), Duration, g_caster->m_summoner, unitTarget, m_triggeredSpell, i_caster );
 		else
-			pAura = new Aura( GetProto(), Duration, m_caster, unitTarget, m_triggeredSpell, i_caster );
+			pAura = sSpellFactoryMgr.NewAura( GetProto(), Duration, m_caster, unitTarget, m_triggeredSpell, i_caster );
 
 		pAura->pSpellId = pSpellId; //this is required for triggered spells
 
@@ -5305,7 +5305,7 @@ void Spell::SpellEffectSpellSteal( uint32 i )
 					stealedSpells.push_back( aursp->Id  );
 
 					uint32 aurdur = ( aur->GetDuration() > 120000 ? 120000 : aur->GetDuration() );
-					Aura *aura = new Aura( aursp, aurdur, u_caster, u_caster );
+					Aura *aura = sSpellFactoryMgr.NewAura( aursp, aurdur, u_caster, u_caster );
 					uint32 aur_removed = unitTarget->RemoveAllAuraByNameHash( aursp->NameHash );
 					for( uint8 j = 0; j < 3; j++ )
 					{
@@ -5319,7 +5319,7 @@ void Spell::SpellEffectSpellSteal( uint32 i )
 						Aura *aur2;
 						for(uint32 j = 0; j<aur_removed-1; j++)
 						{
-							aur2 = new Aura( aura->GetSpellProto(), aurdur, u_caster, u_caster );
+							aur2 = sSpellFactoryMgr.NewAura( aura->GetSpellProto(), aurdur, u_caster, u_caster );
 							u_caster->AddAura(aur2);
 						}
 						if( !( aura->GetSpellProto()->procFlags & PROC_REMOVEONUSE ) )

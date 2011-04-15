@@ -689,6 +689,8 @@ void ApplyNormalFixes()
 				{
 					sp->EffectAmplitude[y] = 1000;
 				}
+				else if( aura == SPELL_AURA_SCHOOL_ABSORB && sp->AuraFactoryFunc == NULL )
+					sp->AuraFactoryFunc = (void*(*)) &AbsorbAura::Create;
 			}//end "if aura"
 		}//end "for each effect"
 		sp->procFlags = pr;

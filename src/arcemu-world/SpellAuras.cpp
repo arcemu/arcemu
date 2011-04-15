@@ -288,7 +288,7 @@ pSpellAura SpellAuraHandler[TOTAL_SPELL_AURAS]={
 		&Aura::SpellAuraNULL,//264
 		&Aura::SpellAuraNULL,//265
 		&Aura::SpellAuraNULL,//266
-		&Aura::SpellAuraNULL,//267 Prevent the application of harmful magical effects
+		&Aura::SpellAuraNULL,//267 Prevent the application of harmful magical effects. used only by Dk's Anti Magic Shell
 		&Aura::SpellAuraIncreaseAPbyStatPct, //268 Increase attack power by % of stat
 		&Aura::SpellAuraNULL,//269 Damage reduction effects ignored. (?) - http://thottbot.com/s57318
 		&Aura::SpellAuraNULL,//270 Ignore target resist
@@ -781,7 +781,6 @@ Aura::Aura( SpellEntry* proto, int32 duration, Object* caster, Unit* target, boo
 
 	m_visualSlot = 0xFF;
 	pSpellId = 0;
-	periodic_target = 0;
 	//sLog.outDetail("Aura::Constructor %u (%s) from %u.", m_spellProto->Id, m_spellProto->Name, m_target->GetLowGUID());
 	m_auraSlot = 0xffff;
 	m_interrupted = -1;
@@ -1206,7 +1205,7 @@ void Aura::EventUpdatePetAA( float r ){
 			continue;
 
 		{
-			Aura *a = new Aura( m_spellProto, GetDuration(), p, pet, true );
+			Aura *a = sSpellFactoryMgr.NewAura( m_spellProto, GetDuration(), p, pet, true );
 			a->m_areaAura = true;
 			a->AddMod( mod->m_type, mod->m_amount, mod->m_miscValue, mod->i );
 			pet->AddAura( a );
@@ -1371,7 +1370,7 @@ void Aura::EventUpdateOwnerAA( float r ){
 		!ou->HasAura( m_spellProto->Id ) &&
 		( c->GetDistanceSq( ou ) <= r ) ){
 
-			Aura *a = new Aura( m_spellProto, GetDuration(), c, ou, true );
+			Aura *a = sSpellFactoryMgr.NewAura( m_spellProto, GetDuration(), c, ou, true );
 			a->m_areaAura = true;
 			a->AddMod( mod->m_type, mod->m_amount, mod->m_miscValue, mod->i );
 			ou->AddAura( a );
@@ -1445,7 +1444,7 @@ void Aura::EventUpdateAA( float r )
 		if( u->HasAura( m_spellProto->Id ) )
 			continue;
 		
-		Aura *a = new Aura( m_spellProto, GetDuration(), m_target, u, true );
+		Aura *a = sSpellFactoryMgr.NewAura( m_spellProto, GetDuration(), m_target, u, true );
 		a->m_areaAura = true;
 		a->AddMod( mod->m_type, mod->m_amount , mod->m_miscValue, mod->i );
 		u->AddAura( a );
@@ -4877,73 +4876,7 @@ void Aura::SpellAuraModStalked(bool apply)
 
 void Aura::SpellAuraSchoolAbsorb(bool apply)
 {
-	if(apply)
-	{
-		SetPositive();
-
-		int32 val = mod->m_amount;
-
-		Unit* caster = GetUnitCaster();
-
-		if( caster != NULL )
-		{
-			if (GetSpellProto()->SpellGroupType) 
-			{
-				SM_FIValue(caster->SM_FMiscEffect,&val,GetSpellProto()->SpellGroupType);
-				SM_PIValue(caster->SM_PMiscEffect,&val,GetSpellProto()->SpellGroupType);
-			}
-
-			//This will fix talents that affects damage absorbed.
-			int flat = 0;
-			SM_FIValue( caster->SM_FMiscEffect, &flat, GetSpellProto()->SpellGroupType );
-			val += val * flat / 100;
-
-			//For spells Affected by Bonus Healing we use Dspell_coef_override.
-			if( GetSpellProto()->Dspell_coef_override >= 0 )
-				val += float2int32( caster->HealDoneMod[GetSpellProto()->School] * GetSpellProto()->Dspell_coef_override );
-			//For spells Affected by Bonus Damage we use OTspell_coef_override.
-			else if( GetSpellProto()->OTspell_coef_override >= 0 )
-				val += float2int32( caster->GetDamageDoneMod( GetSpellProto()->School ) * GetSpellProto()->OTspell_coef_override );
-		}
-
-		Absorb *ab = new Absorb;
-		ab->amt = val;
-		ab->spellid = GetSpellId();
-		ab->caster = m_casterGuid;
-		for( uint8 x = 0; x < SCHOOL_COUNT; x++ )
-			if( mod->m_miscValue & (((uint32)1) << x ) )
-				m_target->Absorbs[x].push_back( ab );
-	}
-	else
-	{
-		Absorb *ab = NULL;
-        std::set< Absorb* > aset;
-        aset.clear();
-
-        //this crap here tends to double delete so we collect the pointers into a set instead of deleting
-        //and then when we are done we delete
-		for( uint8 x = 0; x < SCHOOL_COUNT; x++ )
-		{
-			if( mod->m_miscValue & (((uint32)1) << x ) )
-			{
-				for(SchoolAbsorb::iterator i = m_target->Absorbs[x].begin(); i != m_target->Absorbs[x].end(); i++)
-				{
-					if((*i)->spellid == GetSpellId() && (*i)->caster==m_casterGuid )
-					{
-						ab = (*i);
-						m_target->Absorbs[x].erase(i);
-                        aset.insert( ab );
-						break;
-					}
-				}
-			}
-		}
-        
-        for( std::set< Absorb* >::iterator itr = aset.begin(); itr != aset.end(); ++itr )
-            delete *itr;
-        
-        aset.clear();
-	}
+	// See AbsorbAura::SpellAuraSchoolAbsorb
 }
 
 void Aura::SpellAuraModSpellCritChanceSchool(bool apply)
@@ -8664,4 +8597,69 @@ void Aura::AssignModifiers(Aura *aura)
 {
 	for( uint8 x = 0; x < aura->m_modcount; ++x )
 		AddMod(aura->m_modList[x].m_type, aura->m_modList[x].m_amount, aura->m_modList[x].m_miscValue, x);
+}
+
+void AbsorbAura::SpellAuraSchoolAbsorb(bool apply)
+{
+	if( ! apply )
+		return;
+
+	SetPositive();
+
+	int32 val = CalcAbsorbAmount();
+
+	Unit* caster = GetUnitCaster();
+	if( caster != NULL )
+	{
+		if (GetSpellProto()->SpellGroupType) 
+		{
+			SM_FIValue(caster->SM_FMiscEffect, &val, GetSpellProto()->SpellGroupType);
+			SM_PIValue(caster->SM_PMiscEffect, &val, GetSpellProto()->SpellGroupType);
+		}
+
+		//This will fix talents that affects damage absorbed.
+		int flat = 0;
+		SM_FIValue( caster->SM_FMiscEffect, &flat, GetSpellProto()->SpellGroupType );
+		val += val * flat / 100;
+
+		//For spells Affected by Bonus Healing we use Dspell_coef_override.
+		if( GetSpellProto()->Dspell_coef_override >= 0 )
+			val += float2int32( caster->HealDoneMod[GetSpellProto()->School] * GetSpellProto()->Dspell_coef_override );
+		//For spells Affected by Bonus Damage we use OTspell_coef_override.
+		else if( GetSpellProto()->OTspell_coef_override >= 0 )
+			val += float2int32( caster->GetDamageDoneMod( GetSpellProto()->School ) * GetSpellProto()->OTspell_coef_override );
+	}
+
+	m_total_amount = val;
+	m_amount = val;
+	m_pct_damage = CalcPctDamage();
+}
+
+uint32 AbsorbAura::AbsorbDamage( uint32 School, uint32* dmg )
+{
+	uint32 mask = GetSchoolMask();
+	if( ! (mask & g_spellSchoolConversionTable[School]) )
+		return 0;
+
+	uint32 dmg_absorbed = 0;
+	int32 dmg_to_absorb = *dmg;
+
+	if( m_pct_damage < 100 )
+		dmg_to_absorb = dmg_to_absorb * m_pct_damage / 100;
+
+	if( dmg_to_absorb >= m_amount )
+	{
+		*dmg -= m_amount;
+		dmg_absorbed += m_amount;
+
+		m_target->RemoveAura( GetSpellId() );
+	}
+	else
+	{
+		dmg_absorbed += dmg_to_absorb;
+		m_amount -= dmg_to_absorb;
+		*dmg -= dmg_to_absorb;
+	}
+
+	return dmg_absorbed;
 }

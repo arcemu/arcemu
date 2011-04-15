@@ -139,7 +139,7 @@ class MutantWarHoundAI : public MoonScriptCreatureAI
 	{
 		ParentClass::OnDied(pKiller);
 
-		Aura* pAura = new Aura( dbcSpell.LookupEntry(MUTANT_WAR_HOUND_CLOUD_OF_DISEASE),(uint32)20000, _unit, _unit );
+		Aura* pAura = sSpellFactoryMgr.NewAura( dbcSpell.LookupEntry(MUTANT_WAR_HOUND_CLOUD_OF_DISEASE),(uint32)20000, _unit, _unit );
 		_unit->AddAura(pAura);
 	}
 };
@@ -3189,7 +3189,7 @@ public:
 			}
 
 			//_unit->CastSpell(_unit, SpellId, true);
-			Aura* aura = new Aura( dbcSpell.LookupEntry(SpellId),(uint32)15000, _unit, _unit );
+			Aura* aura = sSpellFactoryMgr.NewAura( dbcSpell.LookupEntry(SpellId),(uint32)15000, _unit, _unit );
 			_unit->AddAura(aura);
 
 			AuraChange = t + 15;

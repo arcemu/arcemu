@@ -438,7 +438,6 @@ typedef set< uint64 > AreaAuraList;
 
 class SERVER_DECL Aura : public EventableObject
 {
-	uint64 periodic_target;
 public:
     Aura( SpellEntry *proto, int32 duration,Object* caster, Unit *target, bool temporary = false, Item* i_caster = NULL );
 	~Aura();
@@ -606,7 +605,7 @@ public:
 	void SpellAuraFeignDeath(bool apply);
 	void SpellAuraModDisarm(bool apply);
 	void SpellAuraModStalked(bool apply);
-	void SpellAuraSchoolAbsorb(bool apply);
+	virtual void SpellAuraSchoolAbsorb(bool apply);
 	void SpellAuraModSpellCritChanceSchool(bool apply);
 	void SpellAuraModPowerCost(bool apply);
 	void SpellAuraModPowerCostSchool(bool apply);
@@ -790,25 +789,9 @@ public:
 	int32 event_GetInstanceID();
 	bool WasCastInDuel() { return m_castInDuel; }
 
-	SpellEntry * m_spellProto;
-	// This is only used for AA
-	AreaAuraList targets;
-	uint64 m_casterGuid;
-
-	uint16 m_auraSlot;
-
-	uint32 m_castedItemId;
-	uint64 itemCasterGUID;
-	// Area aura stuff -> never passive.
-	bool m_areaAura;		
-	uint8 m_visualSlot;
-	// This represents the triggering spell id
-	uint32 pSpellId; 
-
 	// This stuff can be cached in spellproto.
 	bool IsCombatStateAffecting();
 
-	bool m_castInDuel;
 	inline bool TargetWasImuneToMods()
 	{
 		return (m_modcount && ((( m_flags & MOD_0_RESISTED)+( m_flags & MOD_1_RESISTED)+( m_flags & MOD_2_RESISTED)) == m_modcount) );
@@ -818,6 +801,19 @@ public:
 	int32 GetModAmountByMod() { return mod->m_amount; };
 	uint32 GetAuraFlags() { return m_flags; }
 	void AssignModifiers(Aura *aura);
+
+	virtual bool IsAbsorb() { return false; }
+
+	SpellEntry * m_spellProto;
+	AreaAuraList targets; // This is only used for AA
+	uint64 m_casterGuid;
+	uint16 m_auraSlot;
+	uint32 m_castedItemId;
+	uint64 itemCasterGUID;	
+	bool m_areaAura; // Area aura stuff -> never passive.
+	uint8 m_visualSlot;	
+	uint32 pSpellId; // This represents the triggering spell id
+	bool m_castInDuel;
 
 private:
 	uint32 GetCasterFaction() { return m_casterfaction; }
@@ -836,23 +832,19 @@ private:
 		return ( r<=square_r);
 	}
 
+protected:
+	uint32 m_casterfaction;
 	Unit* m_target;
 	Player * p_target;
 	uint32 timeleft;
-	// In Milliseconds
-	int32 m_duration;
-//	bool m_positive;
+	int32 m_duration; // In Milliseconds
+	//	bool m_positive;
 	signed char m_positive;
-
+	uint32	m_dynamicValue;
+	uint32	m_flags;
 	uint32 m_modcount;
 	Modifier m_modList[3];
 	Modifier * mod;
-
-	uint32	m_dynamicValue;
-	uint32	m_flags;
-
-protected:
-	uint32 m_casterfaction;
 
 	void SendInterrupted(uint8 result, Object * m_caster);
 	void SendChannelUpdate(uint32 time, Object * m_caster);
@@ -865,6 +857,40 @@ public:
 	bool m_ignoreunapply; // \\\"special\\\" case, for unapply
 
 	ARCEMU_INLINE bool IsInterrupted() { return ( m_interrupted >= 0 ); }
+};
+
+class AbsorbAura : public Aura
+{
+public:
+	AURA_FACTORY_FUNCTION(AbsorbAura);
+
+	virtual uint32 AbsorbDamage( uint32 School, uint32* dmg );
+
+	void SpellAuraSchoolAbsorb(bool apply);
+
+	bool IsAbsorb() { return true; }
+
+protected:
+	
+	uint32 GetSchoolMask()
+	{
+		for( uint8 x = 0; x < 3; ++x )
+			if( GetSpellProto()->Effect[x] == SPELL_EFFECT_APPLY_AURA && GetSpellProto()->EffectApplyAuraName[x] == SPELL_AURA_SCHOOL_ABSORB )
+				return m_modList[x].m_miscValue;
+		return 0;
+	}
+
+	virtual int32 CalcAbsorbAmount() { return mod->m_amount; }
+	virtual int32 CalcPctDamage() { return 100; }
+
+	// Total amount to be absorbed
+	int32 m_total_amount;
+
+	// Amount left to be absorbed
+	int32 m_amount;
+
+	// Pct of damage to absorb
+	int32 m_pct_damage;
 };
 
 typedef void(Aura::*pSpellAura)(bool apply);

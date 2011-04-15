@@ -2880,7 +2880,7 @@ void Spell::HandleAddAura(uint64 guid)
 		}
 		for(int i= 0; i < (charges - 1); ++i)
 		{
-			Aura* staur = new Aura(aur->GetSpellProto(), aur->GetDuration(), aur->GetCaster(), aur->GetTarget(), m_triggeredSpell, i_caster);
+			Aura* staur = sSpellFactoryMgr.NewAura(aur->GetSpellProto(), aur->GetDuration(), aur->GetCaster(), aur->GetTarget(), m_triggeredSpell, i_caster);
 			staur->AssignModifiers(aur);
 			Target->AddAura(staur);
 		}

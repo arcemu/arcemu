@@ -81,15 +81,6 @@ struct ReflectSpellSchool
 	bool infront;
 };
 
-typedef struct
-{
-	uint32 spellid;
-	uint64 caster;//not yet in use
-	int32 amt;
-}Absorb;
-
-typedef std::list<Absorb*> SchoolAbsorb;
-
 typedef struct 
 {
 	uint32 spellid;
@@ -1205,7 +1196,6 @@ public:
 	float BaseDamage[2];
 	float BaseOffhandDamage[2];
 	float BaseRangedDamage[2];
-	SchoolAbsorb Absorbs[SCHOOL_COUNT];
 	uint32 AbsorbDamage(uint32 School,uint32 * dmg);//returns amt of absorbed dmg, decreases dmg by absorbed value
 	int32 RAPvModifier;
 	int32 APvModifier;

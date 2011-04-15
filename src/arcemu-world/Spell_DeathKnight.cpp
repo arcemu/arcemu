@@ -133,29 +133,54 @@ class RuneStrileSpell : public Spell
 	}
 };
 
+class AntiMagicShellAura : public AbsorbAura
+{
+public:
+	static Aura* Create(SpellEntry *proto, int32 duration, Object* caster, Unit *target, bool temporary = false, Item* i_caster = NULL) { return new AntiMagicShellAura(proto, duration, caster, target, temporary, i_caster); }
+
+	AntiMagicShellAura( SpellEntry *proto, int32 duration, Object* caster, Unit *target, bool temporary = false, Item* i_caster = NULL )
+		: AbsorbAura(proto, duration, caster, target, temporary, i_caster) {}
+
+	int32 CalcAbsorbAmount()
+	{
+		Player* caster = GetPlayerCaster();
+		if( caster != NULL )
+			return caster->GetMaxHealth() * (GetSpellProto()->EffectBasePoints[1] +1) / 100;
+		else
+			return mod->m_amount;
+	}
+
+	int32 CalcPctDamage()
+	{
+		return GetSpellProto()->EffectBasePoints[0] +1;
+	}
+};
+
 void SpellFactoryMgr::SetupDeathKnight()
 {
-	AddById( 55078, &BloodPlagueSpell::Create );
-	AddById( 45477, &IcyTouchSpell::Create );
-	AddById( 55095, &FrostFeverSpell::Create );
+	AddSpellById( 55078, &BloodPlagueSpell::Create );
+	AddSpellById( 45477, &IcyTouchSpell::Create );
+	AddSpellById( 55095, &FrostFeverSpell::Create );
 
-	AddById( 48721, &BloodBoilSpell::Create ); // Rank 1
-	AddById( 49939, &BloodBoilSpell::Create ); // Rank 2
-	AddById( 49940, &BloodBoilSpell::Create ); // Rank 3
-	AddById( 49941, &BloodBoilSpell::Create ); // Rank 4
+	AddSpellById( 48721, &BloodBoilSpell::Create ); // Rank 1
+	AddSpellById( 49939, &BloodBoilSpell::Create ); // Rank 2
+	AddSpellById( 49940, &BloodBoilSpell::Create ); // Rank 3
+	AddSpellById( 49941, &BloodBoilSpell::Create ); // Rank 4
 
-	AddById( 45902, &BloodStrikeSpell::Create ); // Rank 1
-	AddById( 49926, &BloodStrikeSpell::Create ); // Rank 2
-	AddById( 49927, &BloodStrikeSpell::Create ); // Rank 3
-	AddById( 49928, &BloodStrikeSpell::Create ); // Rank 4
-	AddById( 49929, &BloodStrikeSpell::Create ); // Rank 5
-	AddById( 49930, &BloodStrikeSpell::Create ); // Rank 6
+	AddSpellById( 45902, &BloodStrikeSpell::Create ); // Rank 1
+	AddSpellById( 49926, &BloodStrikeSpell::Create ); // Rank 2
+	AddSpellById( 49927, &BloodStrikeSpell::Create ); // Rank 3
+	AddSpellById( 49928, &BloodStrikeSpell::Create ); // Rank 4
+	AddSpellById( 49929, &BloodStrikeSpell::Create ); // Rank 5
+	AddSpellById( 49930, &BloodStrikeSpell::Create ); // Rank 6
 
-	AddById( 47541, &DeathCoilSpell::Create ); // Rank 1
-	AddById( 49892, &DeathCoilSpell::Create ); // Rank 2
-	AddById( 49893, &DeathCoilSpell::Create ); // Rank 3
-	AddById( 49894, &DeathCoilSpell::Create ); // Rank 4
-	AddById( 49895, &DeathCoilSpell::Create ); // Rank 5
+	AddSpellById( 47541, &DeathCoilSpell::Create ); // Rank 1
+	AddSpellById( 49892, &DeathCoilSpell::Create ); // Rank 2
+	AddSpellById( 49893, &DeathCoilSpell::Create ); // Rank 3
+	AddSpellById( 49894, &DeathCoilSpell::Create ); // Rank 4
+	AddSpellById( 49895, &DeathCoilSpell::Create ); // Rank 5
 
-	AddById( 56815, &RuneStrileSpell::Create );
+	AddSpellById( 56815, &RuneStrileSpell::Create );
+
+	AddAuraById( 48707, &AntiMagicShellAura::Create );
 }
