@@ -2138,9 +2138,6 @@ protected:
 	uint8		m_rune_avail_before;
     //void _DamageRangeUpdate();
 
-	// If we can call SendSpellGO on destructor
-	bool m_can_send_spell_go;
-
 	ARCEMU_INLINE bool HasTarget(const uint64& guid, TargetsList* tmpMap)
 	{
 		for(TargetsList::iterator itr=tmpMap->begin(); itr!=tmpMap->end(); ++itr)

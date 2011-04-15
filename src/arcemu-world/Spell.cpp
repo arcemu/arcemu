@@ -284,13 +284,13 @@ Spell::Spell(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 		m_rune_avail_before = TO_DK(p_caster)->GetRuneFlags();
 
 	m_target_constraint = objmgr.GetSpellTargetConstraintForSpell( info->Id );
-
-	m_can_send_spell_go = false;
 }
 
 Spell::~Spell()
 {
-	if( m_can_send_spell_go )
+	// If this spell deals with rune power, send spell_go to update client
+	// For instance, when Dk cast Empower Rune Weapon, if we don't send spell_go, the client won't update 
+	if( GetProto()->RuneCostID && GetProto()->powerType == POWER_TYPE_RUNES )
 		SendSpellGo();
 
 	m_caster->m_pendingSpells.erase(this);
@@ -1322,6 +1322,8 @@ void Spell::cast(bool check)
 
 		if( !(hasAttribute(ATTRIBUTE_ON_NEXT_ATTACK) && !m_triggeredSpell) )//on next attack
 		{
+			SendSpellGo();
+
 			//******************** SHOOT SPELLS ***********************
 			//* Flags are now 1,4,19,22 (4718610) //0x480012
 
@@ -1479,8 +1481,6 @@ void Spell::cast(bool check)
 					}
 				}
 			}
-
-			m_can_send_spell_go = true;
 
 			m_isCasting = false;
 
@@ -5664,13 +5664,15 @@ void Spell::HandleCastEffects( uint64 guid, uint32 i )
 	}
 	else
 	{
-		float destx, desty, destz;
+		float destx, desty, destz, dist = 0;
 
 		if (m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION)
 		{
 			destx = m_targets.m_destX;
 			desty = m_targets.m_destY;
 			destz = m_targets.m_destZ;
+
+			dist = m_caster->CalcDistance(destx, desty, destz);
 		}
 		else if (guid == 0)
 		{
@@ -5680,19 +5682,24 @@ void Spell::HandleCastEffects( uint64 guid, uint32 i )
 		{
 			if (!m_caster->IsInWorld())
 				return;
-			Object* obj = m_caster->GetMapMgr()->_GetObject(guid);
-			if (obj == NULL)
-				return;
-			destx = obj->GetPositionX();
-			desty = obj->GetPositionY();
-			//todo: this should be destz = obj->GetPositionZ() + (obj->GetModelHighBoundZ() / 2 * obj->GetUInt32Value(OBJECT_FIELD_SCALE_X))
-			if (obj->IsUnit())
-				destz = obj->GetPositionZ() + TO_UNIT(obj)->GetModelHalfSize();
-			else
-				destz = obj->GetPositionZ();
-		}
 
-		float dist = m_caster->CalcDistance(destx, desty, destz);
+			if( m_caster->GetGUID() != guid )
+			{
+				Object* obj = m_caster->GetMapMgr()->_GetObject(guid);
+				if (obj == NULL)
+					return;
+
+				destx = obj->GetPositionX();
+				desty = obj->GetPositionY();
+				//todo: this should be destz = obj->GetPositionZ() + (obj->GetModelHighBoundZ() / 2 * obj->GetUInt32Value(OBJECT_FIELD_SCALE_X))
+				if (obj->IsUnit())
+					destz = obj->GetPositionZ() + TO_UNIT(obj)->GetModelHalfSize();
+				else
+					destz = obj->GetPositionZ();
+
+				dist = m_caster->CalcDistance(destx, desty, destz);
+			}
+		}
 
 		if (dist == 0.0f)
 		{
