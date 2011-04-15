@@ -20,6 +20,19 @@
 
 #include "StdAfx.h"
 
+class ButcherySpellProc : public SpellProc
+{
+	SPELL_PROC_FACTORY_FUNCTION(ButcherySpellProc);
+
+	bool DoEffect(Unit *victim, SpellEntry *CastingSpell, uint32 flag, uint32 dmg, uint32 abs, int *dmg_overwrite, uint32 weapon_damage_type)
+	{
+		dmg_overwrite[0] = mOrigSpell->EffectBasePoints[0] +1;
+
+		return false;
+	}
+};
+
 void SpellProcMgr::SetupDeathKnight()
 {
+	AddById( 50163, &ButcherySpellProc::Create );
 }
