@@ -524,6 +524,16 @@
     <ClCompile Include="..\..\src\arcemu-world\Spell_Shaman.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\Spell_Rogue.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\Spell_Paladin.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\DeathKnight.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Druid.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Hunter.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Mage.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Paladin.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Priest.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Rogue.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Shaman.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Warlock.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Warrior.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\arcemu-world\Channel.h">
@@ -827,6 +837,16 @@
     </ClInclude>
     <ClInclude Include="..\..\src\arcemu-world\Gossip.h" />
     <ClInclude Include="..\..\src\arcemu-world\SpellMgr.h" />
+    <ClInclude Include="..\..\src\arcemu-world\DeathKnight.h" />
+    <ClInclude Include="..\..\src\arcemu-world\Druid.h" />
+    <ClInclude Include="..\..\src\arcemu-world\Hunter.h" />
+    <ClInclude Include="..\..\src\arcemu-world\Mage.h" />
+    <ClInclude Include="..\..\src\arcemu-world\Paladin.h" />
+    <ClInclude Include="..\..\src\arcemu-world\Priest.h" />
+    <ClInclude Include="..\..\src\arcemu-world\Rogue.h" />
+    <ClInclude Include="..\..\src\arcemu-world\Shaman.h" />
+    <ClInclude Include="..\..\src\arcemu-world\Warlock.h" />
+    <ClInclude Include="..\..\src\arcemu-world\Warrior.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\src\arcemu-world\resources.rc" />

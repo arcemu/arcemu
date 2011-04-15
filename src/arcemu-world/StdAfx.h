@@ -37,6 +37,7 @@ template< class T, class U > T TO( U u ){ return static_cast< T >( u ); }
 #define TO_PET(ptr) TO<Pet*>(ptr)
 #define TO_ITEM(ptr) TO<Item*>(ptr)
 #define TO_GAMEOBJECT(ptr) TO<GameObject*>(ptr)
+#define TO_DK(ptr) TO<DeathKnight*>(ptr)
 
 #define DEBUG_LOG(...) sLog.Debug("DEBUG_LOG", __VA_ARGS__)
 
@@ -209,6 +210,16 @@ template< class T, class U > T TO( U u ){ return static_cast< T >( u ); }
 #include "CConsole.h"
 #include "SpeedDetector.h"
 #include "WorldStates.h"
+#include "DeathKnight.h"
+#include "Rogue.h"
+#include "Druid.h"
+#include "Priest.h"
+#include "Paladin.h"
+#include "Warrior.h"
+#include "Warlock.h"
+#include "Mage.h"
+#include "Hunter.h"
+#include "Shaman.h"
 
 #endif
 

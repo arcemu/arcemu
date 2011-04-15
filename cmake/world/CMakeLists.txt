@@ -152,7 +152,17 @@ SET(sources
 	Spell_Rogue.cpp
 	Spell_Shaman.cpp
 	Spell_Warlock.cpp
-	Spell_Warrior.cpp )
+	Spell_Warrior.cpp
+	DeathKnight
+	Druid
+	Hunter
+	Mage
+	Paladin
+	Priest
+	Rogue
+	Shaman
+	Warlock
+	Warrior )
 
 foreach(src IN ITEMS ${sources} )
   SET( SRCS ${SRCS} ${prefix}/${src} )

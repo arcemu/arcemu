@@ -280,8 +280,8 @@ Spell::Spell(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 	}
 
 	//create rune avail snapshot
-	if( p_caster && p_caster->getClass() == DEATHKNIGHT )
-		m_rune_avail_before = p_caster->GetRuneFlags();
+	if( p_caster && p_caster->IsDeathKnight() )
+		m_rune_avail_before = TO_DK(p_caster)->GetRuneFlags();
 
 	m_target_constraint = objmgr.GetSpellTargetConstraintForSpell( info->Id );
 
@@ -2073,12 +2073,12 @@ void Spell::SendSpellGo()
 
 	//experiments with rune updates
 	uint8 cur_have_runes = 0;
-	if (p_caster && p_caster->getClass() == DEATHKNIGHT) //send our rune updates ^^
+	if( p_caster && p_caster->IsDeathKnight() ) //send our rune updates ^^
 	{
 		if( GetProto()->RuneCostID && GetProto()->powerType == POWER_TYPE_RUNES )
 			flags |= SPELL_GO_FLAGS_ITEM_CASTER | SPELL_GO_FLAGS_RUNE_UPDATE | SPELL_GO_FLAGS_UNK40000;
 		//see what we will have after cast
-		cur_have_runes = p_caster->GetRuneFlags();
+		cur_have_runes = TO_DK(p_caster)->GetRuneFlags();
 		if( cur_have_runes != m_rune_avail_before )
 			flags |= SPELL_GO_FLAGS_RUNE_UPDATE | SPELL_GO_FLAGS_UNK40000;
 	}
@@ -2390,10 +2390,11 @@ bool Spell::HasPower()
 				if(GetProto()->RuneCostID && p_caster)
 				{
 					SpellRuneCostEntry * runecost = dbcSpellRuneCost.LookupEntry(GetProto()->RuneCostID);
-					uint32 credit = p_caster->HasRunes(RUNE_BLOOD, runecost->bloodRuneCost) +
-						p_caster->HasRunes(RUNE_FROST, runecost->frostRuneCost) +
-						p_caster->HasRunes(RUNE_UNHOLY, runecost->unholyRuneCost);
-					if(credit > 0 && p_caster->HasRunes(3, credit) > 0)
+					DeathKnight* dk = TO_DK(p_caster);
+					uint32 credit = dk->HasRunes(RUNE_BLOOD, runecost->bloodRuneCost) +
+									dk->HasRunes(RUNE_FROST, runecost->frostRuneCost) +
+									dk->HasRunes(RUNE_UNHOLY, runecost->unholyRuneCost);
+					if(credit > 0 && dk->HasRunes( RUNE_DEATH, credit ) > 0)
 						return false;
 				}
 				return true;
@@ -2514,10 +2515,11 @@ bool Spell::TakePower()
 				if(GetProto()->RuneCostID && p_caster)
 				{
 					SpellRuneCostEntry * runecost = dbcSpellRuneCost.LookupEntry(GetProto()->RuneCostID);
-					uint32 credit = p_caster->TakeRunes(RUNE_BLOOD, runecost->bloodRuneCost) +
-						p_caster->TakeRunes(RUNE_FROST, runecost->frostRuneCost) +
-						p_caster->TakeRunes(RUNE_UNHOLY, runecost->unholyRuneCost);
-					if(credit > 0 && p_caster->TakeRunes( RUNE_DEATH, credit ) > 0)
+					DeathKnight* dk = TO_DK(p_caster);
+					uint32 credit = dk->TakeRunes(RUNE_BLOOD, runecost->bloodRuneCost) +
+									dk->TakeRunes(RUNE_FROST, runecost->frostRuneCost) +
+									dk->TakeRunes(RUNE_UNHOLY, runecost->unholyRuneCost);
+					if(credit > 0 && dk->TakeRunes( RUNE_DEATH, credit ) > 0)
 						return false;
 					if(runecost->runePowerGain)
 						u_caster->SetPower( POWER_TYPE_RUNIC_POWER, runecost->runePowerGain + u_caster->GetPower( POWER_TYPE_RUNIC_POWER ) );

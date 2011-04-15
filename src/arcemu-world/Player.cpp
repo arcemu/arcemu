@@ -29,7 +29,6 @@ UpdateMask Player::m_visibleUpdateMask;
 #define DROPMINE 25024
 #define SHIELD 27759
 static uint32 TonkSpecials[4] = {FLAMETHROWER,MACHINEGUN,DROPMINE,SHIELD};
-static const uint8 baseRunes[MAX_RUNES] = {RUNE_BLOOD,RUNE_BLOOD,RUNE_FROST,RUNE_FROST,RUNE_UNHOLY,RUNE_UNHOLY};
 
 //	 0x3F = 0x01 | 0x02 | 0x04 | 0x08 | 0x10 | 0x20 for 80 level
 //			minor|Major |minor |Major |minor |Major
@@ -332,10 +331,6 @@ myCorpseLocation()
 		m_charters[i]= NULL;
 	for(i = 0; i < NUM_ARENA_TEAM_TYPES; ++i)
 		m_arenaTeams[i]= NULL;
-	for(i = 0; i < MAX_RUNES; ++i)
-	{
-		m_runes[i] = baseRunes[i];
-	}
 	flying_aura = 0;
 	resend_speed = false;
 	rename_pending = false;
@@ -11822,69 +11817,6 @@ void Player::SendAchievmentEarned( uint32 archiId, uint32 at_stamp )
 	GetSession()->SendPacket(&data);
 }*/
 
-
-//wtf does this do ? How can i check the effect of this anyway ? Made this before SMSG_ACHIEVEMENT_EARNED :P
-void Player::ConvertRune(uint8 index, uint8 value)
-{
-	Arcemu::Util::ARCEMU_ASSERT( index < MAX_RUNES );
-	m_runes[index] = value;
-	if( value >= RUNE_RECHARGE || GetSession() == NULL )
-		return;
-
-	WorldPacket data(SMSG_CONVERT_RUNE, 2);
-	data << (uint8)index;
-	data << (uint8)value;
-	GetSession()->SendPacket(&data);
-
-// @Egari:	Rune updates should only be sent to the DK himself, sending it to set will cause graphical glitches on the UI of other DKs.
-//	SendMessageToSet(&data, true); 
-}
-
-uint32 Player::HasRunes(uint8 type, uint32 count)
-{
-	uint32 found = 0;
-	for( uint8 i = 0; i < MAX_RUNES && count != found; ++i )
-	{
-		if( m_runes[i] == type )
-			found++;
-	}
-	return (count - found);
-}
-
-uint32 Player::TakeRunes(uint8 type, uint32 count)
-{
-	uint8 found = 0;
-	for( uint8 i= 0; i < MAX_RUNES && count != found; ++i )
-	{
-		if( m_runes[i] == type )
-		{
-			ConvertRune(i, RUNE_RECHARGE);
-			sEventMgr.AddEvent( this, &Player::ConvertRune, i, baseRunes[i], EVENT_PLAYER_RUNE_REGEN + i, 10000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
-			found++;
-		}
-	}
-	return (count - found);
-}
-
-void Player::ResetRune(uint8 index)
-{
-	ConvertRune( index, baseRunes[index] );
-	sEventMgr.RemoveEvents( this, EVENT_PLAYER_RUNE_REGEN + index );
-}
-
-uint8 Player::GetBaseRune(uint8 index)
-{
-	return baseRunes[index];
-}
-
-uint8 Player::GetRuneFlags()
-{
-	uint8 result = 0;
-	for( uint8 k= 0; k < MAX_RUNES; k++ )
-		if( m_runes[k] < RUNE_RECHARGE )
-			result |= (1 << k);
-	return result;
-}
 
 void Player::SendAchievmentStatus( uint32 criteriaid, uint32 new_value, uint32 at_stamp )
 {

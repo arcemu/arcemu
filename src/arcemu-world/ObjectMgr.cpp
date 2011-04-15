@@ -2478,13 +2478,29 @@ Pet * ObjectMgr::CreatePet( uint32 entry )
 	return new Pet( Arcemu::Util::MAKE_PET_GUID( entry, guid ) );
 }
 
-Player * ObjectMgr::CreatePlayer()
+Player * ObjectMgr::CreatePlayer(uint8 _class)
 {
 	uint32 guid;
 
 	guid = ++m_hiPlayerGuid;
 
-	return new Player(guid);
+	Player* result;
+
+	switch( _class )
+	{
+		case WARRIOR: result = new Warrior(guid); break;
+		case PALADIN: result = new Paladin(guid); break;
+		case HUNTER: result = new Hunter(guid); break;
+		case ROGUE: result = new Rogue(guid); break;
+		case PRIEST: result = new Priest(guid); break;
+		case DEATHKNIGHT: result = new DeathKnight(guid); break;
+		case SHAMAN: result = new Shaman(guid); break;
+		case MAGE: result = new Mage(guid); break;
+		case WARLOCK: result = new Warlock(guid); break;
+		case DRUID: result = new Druid(guid); break;
+	}
+
+	return result;
 }
 
 void ObjectMgr::AddPlayer(Player * p)//add it to global storage

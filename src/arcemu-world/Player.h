@@ -63,12 +63,6 @@ class SpeedCheatDetector;
 #endif
 #define LOGIN_CIENT_SEND_DELAY 1000 //we have this delay of sending auras to other players so client will have time to create object first
 
-#define TOTAL_NORMAL_RUNE_TYPES 3
-#define TOTAL_USED_RUNES (TOTAL_NORMAL_RUNE_TYPES*2)
-#define MAX_RUNES 6
-#define TOTAL_RUNE_TYPES 4
-#define MAX_RUNE_VALUE 1
-
 #define TEAM_ALLIANCE 0
 #define TEAM_HORDE 1
 
@@ -906,6 +900,17 @@ public:
 	~Player ( );
 
 	PlayerCache* m_cache;
+
+	virtual bool IsMage() { return false; }
+	virtual bool IsDeathKnight() { return false; }
+	virtual bool IsPriest() { return false; }
+	virtual bool IsRogue() { return false; }
+	virtual bool IsShaman() { return false; }
+	virtual bool IsHunter() { return false; }
+	virtual bool IsWarlock() { return false; }
+	virtual bool IsWarrior() { return false; }
+	virtual bool IsPaladin() { return false; }
+	virtual bool IsDruid() { return false; }
 
 	void HandleUpdateFieldChanged(uint32 index)
 	{
@@ -2460,8 +2465,6 @@ private:
 
 	uint32 ChampioningFactionID;
 
-	uint8 m_runes[MAX_RUNES];
-
 public:
 	void SetChampioningFaction( uint32 f ){ ChampioningFactionID = f; }
     void AddGarbageItem( Item *it );
@@ -2471,18 +2474,6 @@ public:
 
 	void LoadFieldsFromString(const char * string, uint32 firstField, uint32 fieldsNum);
 	void UpdateGlyphs();
-
-	//*************************************************************************************
-	// RUNES
-	//*************************************************************************************
-
-	uint8 GetRune(uint8 index) { Arcemu::Util::ARCEMU_ASSERT( index < MAX_RUNES ); return m_runes[index]; }
-	void ConvertRune(uint8 index, uint8 value);
-	uint32 TakeRunes(uint8 type, uint32 count);
-	uint32 HasRunes(uint8 type, uint32 count);
-	void ResetRune(uint8 index);
-	uint8 GetBaseRune(uint8 index);
-	uint8 GetRuneFlags();
 
 	// Avenging Wrath
 	bool mAvengingWrath;

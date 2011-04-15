@@ -286,7 +286,7 @@ enum MOD_TYPES
     SPELL_AURA_246 = 246,
     SPELL_AURA_247 = 247,
     SPELL_AURA_MOD_COMBAT_RESULT_CHANCE = 248,
-    SPELL_AURA_249 = 249,
+    SPELL_AURA_CONVERT_RUNE = 249,
     SPELL_AURA_MOD_INCREASE_HEALTH_2 = 250,
     SPELL_AURA_MOD_ENEMY_DODGE = 251,
 	SPELL_AURA_252 = 252,
@@ -762,6 +762,7 @@ public:
 	void SpellAuraModAttackPowerOfArmor(bool apply);
 	void SpellAuraReflectSpellsInfront(bool apply);
 	void SpellAuraCallStabledPet(bool apply);
+	void SpellAuraConvertRune(bool apply);
 	void UpdateAuraModDecreaseSpeed();
 
 	void SendModifierLog(int32 ** m,int32 v,uint32* mask,uint8 type,bool pct = false);

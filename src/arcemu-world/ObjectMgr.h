@@ -516,7 +516,7 @@ public:
 	
 	uint32 GenerateArenaTeamId();
 
-	Player * CreatePlayer();
+	Player * CreatePlayer(uint8 _class);
 	PlayerStorageMap _players;
 	RWLock _playerslock;
 	

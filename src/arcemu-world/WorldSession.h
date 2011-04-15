@@ -777,6 +777,9 @@ private:
 	friend class Player;
 	Player *_player;
 	WorldSocket *_socket;
+
+	// Used to know race on login
+	void LoadPlayerFromDBProc(QueryResultVector & results);
 		
 	/* Preallocated buffers for movement handlers */
 	MovementInfo movement_info;

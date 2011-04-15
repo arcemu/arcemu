@@ -281,8 +281,16 @@
   <ItemGroup>
     <ClCompile Include="..\..\src\arcemu-world\Channel.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\Chat.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\DeathKnight.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Druid.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\EquipmentSetMgr.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\Gossip.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Hunter.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Mage.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Paladin.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Priest.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Rogue.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Shaman.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\Spell_Druid.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\Spell_Hunter.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\Spell_Mage.cpp" />
@@ -313,6 +321,8 @@
     <ClCompile Include="..\..\src\arcemu-world\vmap\VMapFactory.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\vmap\VMapManager2.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\vmap\WorldModel.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Warlock.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Warrior.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\WayPoints.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\WordFilter.cpp" />
     <ClCompile Include="..\..\src\arcemu-world\AIInterface.cpp" />
@@ -447,10 +457,18 @@
     <ClInclude Include="..\..\src\arcemu-world\Channel.h" />
     <ClInclude Include="..\..\src\arcemu-world\ChannelMgr.h" />
     <ClInclude Include="..\..\src\arcemu-world\Chat.h" />
+    <ClInclude Include="..\..\src\arcemu-world\DeathKnight.h" />
+    <ClInclude Include="..\..\src\arcemu-world\Druid.h" />
     <ClInclude Include="..\..\src\arcemu-world\EquipmentSetMgr.h" />
     <ClInclude Include="..\..\src\arcemu-world\Gossip.h" />
+    <ClInclude Include="..\..\src\arcemu-world\Hunter.h" />
+    <ClInclude Include="..\..\src\arcemu-world\Mage.h" />
     <ClInclude Include="..\..\src\arcemu-world\MiscHandler.h" />
+    <ClInclude Include="..\..\src\arcemu-world\Paladin.h" />
     <ClInclude Include="..\..\src\arcemu-world\PlayerCache.h" />
+    <ClInclude Include="..\..\src\arcemu-world\Priest.h" />
+    <ClInclude Include="..\..\src\arcemu-world\Rogue.h" />
+    <ClInclude Include="..\..\src\arcemu-world\Shaman.h" />
     <ClInclude Include="..\..\src\arcemu-world\Skill.h" />
     <ClInclude Include="..\..\src\arcemu-world\SpellMgr.h" />
     <ClInclude Include="..\..\src\arcemu-world\SpellNameHashes.h" />
@@ -466,6 +484,8 @@
     <ClInclude Include="..\..\src\arcemu-world\vmap\VMapManager2.h" />
     <ClInclude Include="..\..\src\arcemu-world\vmap\VMapTools.h" />
     <ClInclude Include="..\..\src\arcemu-world\vmap\WorldModel.h" />
+    <ClInclude Include="..\..\src\arcemu-world\Warlock.h" />
+    <ClInclude Include="..\..\src\arcemu-world\Warrior.h" />
     <ClInclude Include="..\..\src\arcemu-world\WordFilter.h" />
     <ClInclude Include="..\..\src\arcemu-world\AIInterface.h" />
     <ClInclude Include="..\..\src\arcemu-world\DatabaseCleaner.h" />

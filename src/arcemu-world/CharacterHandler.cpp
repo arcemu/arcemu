@@ -395,7 +395,7 @@ void WorldSession::HandleCharCreateOpcode( WorldPacket & recv_data )
 		delete result;
 	}
 
-	Player * pNewChar = objmgr.CreatePlayer();
+	Player * pNewChar = objmgr.CreatePlayer( class_ );
 	pNewChar->SetSession(this);
 	if(!pNewChar->Create( recv_data ))
 	{
@@ -651,16 +651,66 @@ void WorldSession::HandlePlayerLoginOpcode( WorldPacket & recv_data )
 		return;
 	}
 
-	Player* plr = new Player((uint32)playerGuid);
-	Arcemu::Util::ARCEMU_ASSERT(plr != NULL);
+	AsyncQuery * q = new AsyncQuery( new SQLClassCallbackP0<WorldSession>(this, &WorldSession::LoadPlayerFromDBProc) );
+	q->AddQuery("SELECT guid,class FROM characters WHERE guid = %u AND forced_rename_pending = 0", playerGuid); // 0
+	CharacterDatabase.QueueAsyncQuery(q);
+}
+
+void WorldSession::LoadPlayerFromDBProc(QueryResultVector & results)
+{
+	if( results.size() < 1 )
+	{
+		uint8 respons = E_CHAR_LOGIN_NO_CHARACTER;
+		OutPacket(SMSG_CHARACTER_LOGIN_FAILED, 1, &respons);
+		return;
+	}
+
+	QueryResult *result = results[0].result;
+	if( ! result )
+	{
+		Log.Error ("WorldSession::LoadPlayerFromDBProc", "Player login query failed!");
+		uint8 respons = E_CHAR_LOGIN_NO_CHARACTER;
+		OutPacket(SMSG_CHARACTER_LOGIN_FAILED, 1, &respons);
+		return;
+	}
+
+	Field *fields = result->Fetch();
+
+	uint64 playerGuid = fields[0].GetUInt64();
+	uint8 _class = fields[1].GetUInt8();
+
+	Player* plr = NULL;
+
+	switch( _class )
+	{
+		case WARRIOR: plr = new Warrior(playerGuid); break;
+		case PALADIN: plr = new Paladin(playerGuid); break;
+		case HUNTER: plr = new Hunter(playerGuid); break;
+		case ROGUE: plr = new Rogue(playerGuid); break;
+		case PRIEST: plr = new Priest(playerGuid); break;
+		case DEATHKNIGHT: plr = new DeathKnight(playerGuid); break;
+		case SHAMAN: plr = new Shaman(playerGuid); break;
+		case MAGE: plr = new Mage(playerGuid); break;
+		case WARLOCK: plr = new Warlock(playerGuid); break;
+		case DRUID: plr = new Druid(playerGuid); break;
+	}
+
+	if( plr == NULL )
+	{
+		Log.Error( "WorldSession::LoadPlayerFromDBProc", "Class %u unknown!", _class );
+		uint8 respons = E_CHAR_LOGIN_NO_CHARACTER;
+		OutPacket(SMSG_CHARACTER_LOGIN_FAILED, 1, &respons);
+		return;
+	}
+
 	plr->SetSession(this);
+
 	m_bIsWLevelSet = false;
-	
+
 	Log.Debug("WorldSession", "Async loading player %u", (uint32)playerGuid);
 	m_loggingInPlayer = plr;
 	plr->LoadFromDB((uint32)playerGuid);
 }
-
 
 void WorldSession::FullLogin(Player * plr)
 {

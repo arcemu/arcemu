@@ -270,7 +270,7 @@ pSpellAura SpellAuraHandler[TOTAL_SPELL_AURAS]={
 		&Aura::SpellAuraNULL,//246
 		&Aura::SpellAuraNULL,//247
 		&Aura::SpellAuraModCombatResultChance,//248 SPELL_AURA_MOD_COMBAT_RESULT_CHANCE
-		&Aura::SpellAuraNULL,//249 - SpellAuraConvertRune
+		&Aura::SpellAuraConvertRune,//249 SPELL_AURA_CONVERT_RUNE
 		&Aura::SpellAuraAddHealth,//250
 		&Aura::SpellAuraNULL,//251  Mod Enemy Dodge
 		&Aura::SpellAuraNULL,//252 Reduces the target's ranged, melee attack, and casting speed by X pct for Y sec.
@@ -591,7 +591,7 @@ const char* SpellAuraNames[TOTAL_SPELL_AURAS] = {
     "246",												// 246
     "247",												// 247
     "MOD_COMBAT_RESULT_CHANCE",							// 248
-    "249",												// 249
+    "CONVERT_RUNE",										// 249 Convert rune
     "MOD_INCREASE_HEALTH_2",							// 250
     "MOD_ENEMY_DODGE",									// 251
 	"",													// 252
@@ -8662,4 +8662,33 @@ uint32 AbsorbAura::AbsorbDamage( uint32 School, uint32* dmg )
 	}
 
 	return dmg_absorbed;
+}
+
+void Aura::SpellAuraConvertRune(bool apply)
+{
+	if( p_target == NULL || ! p_target->IsDeathKnight() )
+		return;
+
+	DeathKnight* dk = TO_DK(p_target);
+
+	if( apply )
+	{
+		uint8 count = mod->m_amount;
+		for( uint8 i = 0; i < MAX_RUNES && count; ++i )
+			if( dk->GetRuneType(i) == mod->m_miscValue && ! dk->GetRuneIsUsed(i) )
+			{
+				dk->ConvertRune( i, GetSpellProto()->EffectMiscValueB[mod->i] );
+				--count;
+			}
+	}
+	else
+	{
+		uint8 count = mod->m_amount;
+		for( uint8 i = 0; i < MAX_RUNES && count; ++i )
+			if( dk->GetRuneType(i) == GetSpellProto()->EffectMiscValueB[mod->i] )
+			{
+				dk->ConvertRune( i, dk->GetBaseRuneType(i) );
+				--count;
+			}
+	}
 }

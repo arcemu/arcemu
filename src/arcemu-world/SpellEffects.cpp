@@ -5879,18 +5879,20 @@ void Spell::SpellEffectDurabilityDamagePCT(uint32 i)
 
 void Spell::SpellEffectActivateRunes(uint32 i)
 {
-	if( p_caster == NULL )
+	if( p_caster == NULL || ! p_caster->IsDeathKnight() )
 		return;
+
+	DeathKnight* dk = TO_DK(p_caster);
 
 	uint32 count = damage;
 	if( ! count )
 		count = 1;
 
-	for( uint8 x = 0; x < MAX_RUNES && count > 0; ++x )
+	for( uint8 x = 0; x < MAX_RUNES && count; ++x )
 	{
-		if( p_caster->GetBaseRune(x) == SPELL_RUNE_TYPES(GetProto()->EffectMiscValue[i]) && p_caster->GetBaseRune(x) != p_caster->GetRune(x) )
+		if( dk->GetRuneType(x) == GetProto()->EffectMiscValue[i] && dk->GetRuneIsUsed(x) )
 		{
-			p_caster->ResetRune(x);
+			dk->ResetRune(x);
 			--count;
 		}
 	}

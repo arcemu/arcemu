@@ -229,15 +229,6 @@ enum SPELL_DMG_TYPE // SPELL_ENTRY_Spell_Dmg_Type
 	SPELL_DMG_TYPE_RANGED = 3
 };
 
-enum SPELL_RUNE_TYPES
-{
-	RUNE_BLOOD		= 0,
-	RUNE_FROST		= 1,
-	RUNE_UNHOLY		= 2,
-	RUNE_DEATH		= 3,
-	RUNE_RECHARGE	= 4
-};
-
 // value's for SendSpellLog
 enum SPELL_LOG
 {
