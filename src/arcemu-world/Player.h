@@ -65,6 +65,7 @@ class SpeedCheatDetector;
 
 #define TOTAL_NORMAL_RUNE_TYPES 3
 #define TOTAL_USED_RUNES (TOTAL_NORMAL_RUNE_TYPES*2)
+#define MAX_RUNES 6
 #define TOTAL_RUNE_TYPES 4
 #define MAX_RUNE_VALUE 1
 
@@ -2437,8 +2438,6 @@ public:
 	void Social_TellFriendsOnline();
 	void Social_TellFriendsOffline();
 
-	uint8 m_runes[6];
-
 	/************************************************************************/
 	/* end social                                                           */
 	/************************************************************************/
@@ -2461,25 +2460,29 @@ private:
 
 	uint32 ChampioningFactionID;
 
+	uint8 m_runes[MAX_RUNES];
+
 public:
 	void SetChampioningFaction( uint32 f ){ ChampioningFactionID = f; }
     void AddGarbageItem( Item *it );
 	uint32 CheckDamageLimits( uint32 dmg, uint32 spellid );
 
-	 PlayerInfo * getPlayerInfo() const { return m_playerInfo; }
+	PlayerInfo * getPlayerInfo() const { return m_playerInfo; }
 
 	void LoadFieldsFromString(const char * string, uint32 firstField, uint32 fieldsNum);
 	void UpdateGlyphs();
 
-	 uint8 GetRune(uint32 index)
-	{
-		Arcemu::Util::ARCEMU_ASSERT(   index < 6);
-		return m_runes[index];
-	}
+	//*************************************************************************************
+	// RUNES
+	//*************************************************************************************
+
+	uint8 GetRune(uint8 index) { Arcemu::Util::ARCEMU_ASSERT( index < MAX_RUNES ); return m_runes[index]; }
 	void ConvertRune(uint8 index, uint8 value);
 	uint32 TakeRunes(uint8 type, uint32 count);
 	uint32 HasRunes(uint8 type, uint32 count);
-	uint32 m_runetimer[6];
+	void ResetRune(uint8 index);
+	uint8 GetBaseRune(uint8 index);
+	uint8 GetRuneFlags();
 
 	// Avenging Wrath
 	bool mAvengingWrath;

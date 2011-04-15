@@ -949,7 +949,7 @@ enum SpellEffects
 	SPELL_EFFECT_APPLY_OWNER_AREA_AURA,     //    143
 	SPELL_EFFECT_UNKNOWN23,                 //    144
 	SPELL_EFFECT_UNKNOWN24,                 //    145
-	SPELL_EFFECT_UNKNOWN25,                 //    146
+	SPELL_EFFECT_ACTIVATE_RUNES,            //    146
 	SPELL_EFFECT_UNKNOWN26,                 //    147
 	SPELL_EFFECT_UNKNOWN27,                 //    148
 	SPELL_EFFECT_QUEST_FAIL,                //    149
@@ -1857,7 +1857,7 @@ public:
 	void SpellEffectRestoreHealthPct(uint32 i);
 	void SpellEffectLearnSpec(uint32 i);
 	void SpellEffectActivateSpec(uint32 i);
-//	void SpellEffectActivateRune(uint32 i);
+	void SpellEffectActivateRunes(uint32 i);
 
     // Spell Targets Handlers
     void SpellTargetNULL(uint32 i, uint32 j);
@@ -2145,8 +2145,10 @@ protected:
 	bool        m_cancelled;
 	bool		m_isCasting;
 	uint8		m_rune_avail_before;
-	uint8		m_runes_to_update; //we need to store the values for these later :P
     //void _DamageRangeUpdate();
+
+	// If we can call SendSpellGO on destructor
+	bool m_can_send_spell_go;
 
 	ARCEMU_INLINE bool HasTarget(const uint64& guid, TargetsList* tmpMap)
 	{

@@ -6877,6 +6877,17 @@ void ApplyNormalFixes()
 		}
 
 		/**********************************************************
+		 *	Empower Rune Weapon
+		 **********************************************************/
+		sp = CheckAndReturnSpellEntry( 47568 );
+		if( sp != NULL )
+		{
+			sp->Effect[2] = SPELL_EFFECT_ACTIVATE_RUNES;
+			sp->EffectBasePoints[2] = 1;
+			sp->EffectMiscValue[2] = RUNE_UNHOLY;
+		}
+
+		/**********************************************************
 		 *	Frost Presence
 		 **********************************************************/
 		sp = CheckAndReturnSpellEntry( 48263 );

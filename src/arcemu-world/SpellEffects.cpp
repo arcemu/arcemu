@@ -167,7 +167,7 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS]={
 	&Spell::SpellEffectApplyOwnerAA,			// Apply Aura on summon owner - 143 // Master -> demon effecting spell, http://www.thottbot.com/s25228 and http://www.thottbot.com/s35696
 	&Spell::SpellEffectNULL,					// unknown - 144
 	&Spell::SpellEffectNULL,					// unknown - 145
-	&Spell::SpellEffectNULL,					// Activate Rune - 146
+	&Spell::SpellEffectActivateRunes,			// Activate Rune - 146
 	&Spell::SpellEffectNULL,					// Quest Fail - 147
 	&Spell::SpellEffectNULL,					// unknown - 148
 	&Spell::SpellEffectNULL,					// unknown - 149
@@ -333,7 +333,7 @@ const char* SpellEffectNames[TOTAL_SPELL_EFFECTS] = {
 	"APPLY_OWNER_AREA_AURA",     //    143
 	"UNKNOWN23",                 //    144
 	"UNKNOWN24",                 //    145
-	"UNKNOWN25",                 //    146
+	"ACTIVATE_RUNES",            //    146
 	"QUEST_FAIL",                //    147
 	"UNKNOWN26",                 //    148
 	"UNKNOWN27",                 //    149
@@ -5874,5 +5874,24 @@ void Spell::SpellEffectDurabilityDamagePCT(uint32 i)
 			p_caster->ApplyItemMods( pItem, slot, false );
 		else if( newdur > 0 && olddur == 0 )
 				p_caster->ApplyItemMods( pItem, slot, true );
+	}
+}
+
+void Spell::SpellEffectActivateRunes(uint32 i)
+{
+	if( p_caster == NULL )
+		return;
+
+	uint32 count = damage;
+	if( ! count )
+		count = 1;
+
+	for( uint8 x = 0; x < MAX_RUNES && count > 0; ++x )
+	{
+		if( p_caster->GetBaseRune(x) == SPELL_RUNE_TYPES(GetProto()->EffectMiscValue[i]) && p_caster->GetBaseRune(x) != p_caster->GetRune(x) )
+		{
+			p_caster->ResetRune(x);
+			--count;
+		}
 	}
 }
