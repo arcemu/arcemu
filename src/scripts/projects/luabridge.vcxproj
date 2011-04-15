@@ -208,7 +208,6 @@
     <ClInclude Include="..\src\luabridge\luabridge_src\impl\stack.hpp" />
     <ClInclude Include="..\src\luabridge\luabridge_src\impl\typelist.hpp" />
     <ClInclude Include="..\src\luabridge\luabridge_src\luabridge.hpp" />
-    <ClInclude Include="..\src\luabridge\object_functions\AuraFunctions.h" />
     <ClInclude Include="..\src\luabridge\object_functions\GlobalFunctions.h" />
     <ClInclude Include="..\src\luabridge\object_functions\lua_creature.h" />
     <ClInclude Include="..\src\luabridge\object_functions\lua_gameobject.h" />

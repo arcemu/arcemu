@@ -97,9 +97,6 @@
     <ClInclude Include="..\src\luabridge\interpreter\LUAEngine.h">
       <Filter>interpreter</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\luabridge\object_functions\AuraFunctions.h">
-      <Filter>methods</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\luabridge\object_functions\GlobalFunctions.h">
       <Filter>methods</Filter>
     </ClInclude>
