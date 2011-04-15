@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 2.6)
 SET( GLOBAL_DEFINES -DHAVE_CONFIG_H)
 
 #check platform version.
-IF( CMAKE_SYSTEM_PROCESSOR STREQUAL "x64" OR CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" OR CMAKE_SYSTEM_PROCESSOR STREQUAL "amd64" )
+IF( CMAKE_SYSTEM_PROCESSOR STREQUAL "x64" OR CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" OR CMAKE_SYSTEM_PROCESSOR STREQUAL "amd64" OR CMAKE_SYSTEM_PROCESSOR STREQUAL "i386" )
 	#define for 64bit
 	SET( GLOBAL_DEFINES -DX64)
 	SET( IS_64BIT TRUE)
@@ -49,7 +49,7 @@ if( UNIX )
 	execute_process(WORKING_DIRECTORY ${ROOT_PATH} COMMAND sh extract_svn_revision.sh )
 ELSEIF( WIN32 )
 	execute_process(WORKING_DIRECTORY ${ROOT_PATH}/src/arcemu-shared COMMAND RevisionExtractor)
-	add_definitions(-D_CRT_SECURE_NO_WARNINGS )
+	add_definitions(-D_CRT_SECURE_NO_WARNINGS -Wno-deprecated)
 ENDIF()
 
 #Pass our configurable variables to the C++ preprocessor.
@@ -71,15 +71,6 @@ ${DEPENDENCY_INCLUDE_ROOT}/g3dlite
 ${DEPENDENCY_INCLUDE_ROOT}/pcre
 ${DEPENDENCY_INCLUDE_ROOT}/zlib )
 
-IF(WIN32)	#On windows, we have to specify the includes for libeay and mysql libs.
-	SET( GLOBAL_INCLUDE_DIRS ${GLOBAL_INCLUDE_DIRS} 
-	${DEPENDENCY_INCLUDE_ROOT}/openssl
-	${DEPENDENCY_INCLUDE_ROOT}/mysql )
-ELSE()	#On apple n linux, mysql.h should have been found.
-	SET( GLOBAL_INCLUDE_DIRS ${GLOBAL_INCLUDE_DIRS}
-	${MYSQL_INCLUDE_DIR} )
-ENDIF()
-
 #Find our needed libs
 IF( NOT WIN32 )
 	find_package(ZLIB REQUIRED)
@@ -91,6 +82,15 @@ ELSE()
 	add_subdirectory(zlib)
 	add_subdirectory(pcre)
 	SET(MYSQL_LIBRARY "")
+ENDIF()
+
+IF(WIN32)	#On windows, we have to specify the includes for libeay and mysql libs.
+	SET( GLOBAL_INCLUDE_DIRS ${GLOBAL_INCLUDE_DIRS} 
+	${DEPENDENCY_INCLUDE_ROOT}/openssl
+	${DEPENDENCY_INCLUDE_ROOT}/mysql )
+ELSE()	#On apple n linux, mysql.h should have been found.
+	SET( GLOBAL_INCLUDE_DIRS ${GLOBAL_INCLUDE_DIRS}
+	${MYSQL_INCLUDE_DIR} )
 ENDIF()
 
 #For windows, link to libeay and libmysql

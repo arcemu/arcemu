@@ -31,9 +31,7 @@ SET( SRCS
   ${prefix}/object_functions/lua_hooks.cpp  )
 
 include_directories( ${include_dirs} ${prefix}/interpreter )
-IF(IS_LINUX)
-	add_definitions(-Wno-deprecated)
-ENDIF()
+
 add_library(${PROJECT_NAME} SHARED ${SRCS} )
 add_dependencies( ${PROJECT_NAME} ${dependancies} lualib )
 target_link_libraries( ${PROJECT_NAME} ${linkages} lualib )
@@ -41,5 +39,3 @@ install(TARGETS ${PROJECT_NAME} DESTINATION lib)
 #Cleap up our variables(Not required.)
 unset( prefix)
 unset( SRCS )
-unset( dependancies )
-unset( linkages)
