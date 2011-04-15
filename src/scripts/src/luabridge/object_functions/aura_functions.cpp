@@ -16,7 +16,7 @@ namespace lua_engine
 			/*	Aura Duration */
 			.method( &Aura::GetDuration, "GetDuration", "getDuration", "getduration", NULL)
 			.method(&Aura::SetDuration, "setDuration", "SetDuration", "setduration", NULL)
-			.method(&Aura::ResetDuration, "resetduration", "ResetDuration", "resetDuration")
+			.method(&Aura::ResetDuration, "resetduration", "ResetDuration", "resetDuration", NULL)
 
 			/*	Aura Slot */
 			.method( &Aura::GetAuraSlot, "GetAuraSlot","getAuraSlot", "getslot", "getSlot", NULL)
@@ -24,7 +24,7 @@ namespace lua_engine
 			
 			/*	Object Caster */
 			.method(&Aura::GetCaster, "getcaster", "getCaster", "GetCaster", "getObject", NULL)
-			.method(&Aura::GetCasterGUID, "getcasterguid", "getCasterGUID", "GetCasterGUID")
+			.method(&Aura::GetCasterGUID, "getcasterguid", "getCasterGUID", "GetCasterGUID", NULL)
 
 			/*	Unit Caster */
 			.method(&Aura::GetUnitCaster, "getUnitCaster", "GetUnitCaster", "getunitcaster", "getunit", "getUnit", NULL)

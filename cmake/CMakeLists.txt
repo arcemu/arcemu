@@ -49,7 +49,7 @@ if( UNIX )
 	execute_process(WORKING_DIRECTORY ${ROOT_PATH} COMMAND sh extract_svn_revision.sh )
 ELSEIF( WIN32 )
 	execute_process(WORKING_DIRECTORY ${ROOT_PATH}/src/arcemu-shared COMMAND RevisionExtractor)
-	add_definitions(-D_CRT_SECURE_NO_WARNINGS -Wno-deprecated)
+	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 ENDIF()
 
 #Pass our configurable variables to the C++ preprocessor.
