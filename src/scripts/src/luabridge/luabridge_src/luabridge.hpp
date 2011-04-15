@@ -76,6 +76,9 @@ namespace luabridge
 		template <typename FnPtr>
 		class__<T>& method (const char *name, FnPtr fp);
 
+		template <typename FnPtr>
+		class__<T>& method(  FnPtr, const char *, ...);
+
 		// Property registration.  Properties can be read/write (rw)
 		// or read-only (ro).  Varieties that access member pointers directly
 		// and varieties that access through function calls are provided.

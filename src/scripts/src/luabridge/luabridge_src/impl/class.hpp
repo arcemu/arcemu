@@ -357,6 +357,22 @@ class__<T>& class__<T>::method (const char *name, FnPtr fp)
 	return *this;
 }
 
+template <typename T>
+template <typename FnPtr>
+class__<T>& class__<T>::method (FnPtr fp, const char * firstname, ...)
+{
+	va_list arglist;
+	va_start(arglist, firstname);
+	const char * methodname = firstname;
+	while(methodname != NULL)
+	{
+		method( methodname, fp);
+		methodname = va_arg(arglist, const char*);
+	}
+	va_end(arglist);
+	return *this;
+}
+
 /*
  * Lua-registerable C function templates for getting and setting the value of
  * an object member through a member pointer; similiar to the global property
