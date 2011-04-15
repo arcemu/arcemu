@@ -76,6 +76,7 @@ public:
 	uint32 TakeRunes(uint8 type, uint32 count);
 	void ResetRune(uint8 slot);
 	uint8 GetRuneFlags();
+	bool IsAllRunesOfTypeInUse(uint8 type);
 };
 
 #endif

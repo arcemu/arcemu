@@ -32,7 +32,35 @@ class ButcherySpellProc : public SpellProc
 	}
 };
 
+class BladeBarrierSpellProc : public SpellProc
+{
+	SPELL_PROC_FACTORY_FUNCTION(BladeBarrierSpellProc);
+
+	void Init(Object *obj)
+	{
+		mProcFlags = PROC_ON_CAST_SPELL;
+
+		mProcClassMask[0] = mOrigSpell->EffectSpellClassMask[0][0];
+		mProcClassMask[1] = mOrigSpell->EffectSpellClassMask[0][1];
+		mProcClassMask[2] = mOrigSpell->EffectSpellClassMask[0][2];
+
+		dk = TO_DK(mTarget);
+	}
+
+	bool CanProc(Unit *victim, SpellEntry *CastingSpell)
+	{
+		if( dk->IsAllRunesOfTypeInUse(RUNE_BLOOD) )
+			return true;
+		return false;
+	}
+
+private:
+	DeathKnight* dk;
+};
+
 void SpellProcMgr::SetupDeathKnight()
 {
 	AddById( 50163, &ButcherySpellProc::Create );
+
+	AddByNameHash( SPELL_HASH_BLADE_BARRIER, &BladeBarrierSpellProc::Create );
 }

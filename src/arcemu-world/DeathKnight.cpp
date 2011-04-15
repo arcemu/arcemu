@@ -88,3 +88,11 @@ uint8 DeathKnight::GetRuneFlags()
 			result |= (1 << k);
 	return result;
 }
+
+bool DeathKnight::IsAllRunesOfTypeInUse(uint8 type)
+{
+	for( uint8 i = 0; i < MAX_RUNES; ++i )
+		if( m_runes[i].type == type && ! m_runes[i].is_used )
+			return false;
+	return true;
+}
