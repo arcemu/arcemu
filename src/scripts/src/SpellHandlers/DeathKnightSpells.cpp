@@ -111,15 +111,6 @@ bool Strangulate( uint32 i, Aura * pAura, bool apply ){
 	return true;
 }
 
-bool RuneTap( uint32 i, Spell *s ){
-	if( s->p_caster == NULL )
-		return false;
-	
-	s->p_caster->SetHealth(( uint32 )(( s->p_caster->GetHealth())+( s->p_caster->GetMaxHealth()) / 10 ));
-
-	return true;
-}
-
 bool RaiseDead( uint32 i, Spell *s ){
 	if( s->p_caster == NULL )
 		return false;
@@ -350,7 +341,6 @@ void SetupDeathKnightSpells(ScriptMgr * mgr)
 	mgr->register_dummy_aura( 49915, &Strangulate );
 	mgr->register_dummy_aura( 49916, &Strangulate );
 
-	mgr->register_dummy_spell( 48982, &RuneTap );
 	mgr->register_dummy_spell( 46584, &RaiseDead );
 	mgr->register_dummy_spell( 49576, &DeathGrip );
 	mgr->register_dummy_spell( 50452, &BloodWorms );

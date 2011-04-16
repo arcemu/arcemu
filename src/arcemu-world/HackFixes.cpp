@@ -7192,11 +7192,6 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 			sp->DurationIndex = 64;
 
-       // Rune Tap
-	   sp = CheckAndReturnSpellEntry( 48982 );
-       if( sp != NULL )
-           sp->Effect[0] = SPELL_EFFECT_DUMMY;
-
 	//////////////////////////////////////////////////////
 	// GAME-OBJECT SPELL FIXES                          //
 	//////////////////////////////////////////////////////

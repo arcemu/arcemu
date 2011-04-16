@@ -4449,7 +4449,7 @@ exit:
 	if( u_caster != NULL )
 	{
 		int32 spell_flat_modifers= 0;
-		int32 spell_pct_modifers= 0;
+		int32 spell_pct_modifers= 100;
 
 		SM_FIValue(u_caster->SM_FMiscEffect, &spell_flat_modifers, GetProto()->SpellGroupType);
 		SM_PIValue(u_caster->SM_PMiscEffect, &spell_pct_modifers, GetProto()->SpellGroupType);
@@ -4476,7 +4476,7 @@ exit:
 			break;
 		}
 
-		value += float2int32(value*(float)(spell_pct_modifers/100.0f)) + spell_flat_modifers;
+		value = float2int32(value*(float)(spell_pct_modifers/100.0f)) + spell_flat_modifers;
 	}
 	else if( i_caster != NULL && target != NULL )
 	{
@@ -4486,7 +4486,7 @@ exit:
 		if( item_creator != NULL )
 		{
 			int32 spell_flat_modifers= 0;
-			int32 spell_pct_modifers= 0;
+			int32 spell_pct_modifers= 100;
 
 			SM_FIValue(item_creator->SM_FMiscEffect ,&spell_flat_modifers, GetProto()->SpellGroupType);
 			SM_PIValue(item_creator->SM_PMiscEffect, &spell_pct_modifers, GetProto()->SpellGroupType);
@@ -4494,7 +4494,7 @@ exit:
 			SM_FIValue(item_creator->SM_FEffectBonus, &spell_flat_modifers, GetProto()->SpellGroupType);
 			SM_PIValue(item_creator->SM_PEffectBonus, &spell_pct_modifers, GetProto()->SpellGroupType);
 
-			value += float2int32(value*(float)(spell_pct_modifers/100.0f)) + spell_flat_modifers;
+			value = float2int32(value*(float)(spell_pct_modifers/100.0f)) + spell_flat_modifers;
 		}
 	}
 

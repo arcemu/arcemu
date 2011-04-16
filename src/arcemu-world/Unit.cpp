@@ -3415,16 +3415,17 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 
 			dmg.full_damage += add_damage;
 
-			if(ability && ability->SpellGroupType)
-			{
-				SM_FIValue( TO_UNIT(this)->SM_FDamageBonus, &dmg.full_damage, ability->SpellGroupType );
-				SM_PIValue( TO_UNIT(this)->SM_PDamageBonus, &dmg.full_damage, ability->SpellGroupType );
-			} 
-			else 
-			{
+			// Don't really know why it was here. It should be calculated on Spel::CalculateEffect. Maybe it was bugged there...
+//			if(ability && ability->SpellGroupType)
+//			{
+//				SM_FIValue( TO_UNIT(this)->SM_FDamageBonus, &dmg.full_damage, ability->SpellGroupType );
+//				SM_PIValue( TO_UNIT(this)->SM_PDamageBonus, &dmg.full_damage, ability->SpellGroupType );
+//			} 
+//			else 
+//			{
 //				SM_FIValue(((Unit*)this)->SM_FMiscEffect,&dmg.full_damage,(uint64)1<<63);
 //				SM_PIValue(((Unit*)this)->SM_PMiscEffect,&dmg.full_damage,(uint64)1<<63);
-			}
+//			}
 
 			dmg.full_damage += pVictim->DamageTakenMod[dmg.school_type];
 			if( weapon_damage_type == RANGED )
