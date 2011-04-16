@@ -313,6 +313,21 @@ bool Butchery( uint32 i, Aura *pAura, bool apply )
 	return true;
 }
 
+bool DeathRuneMastery(uint32 i, Aura *pAura, bool apply)
+{
+	Unit *target = pAura->GetTarget();
+
+	if( apply )
+	{
+		static uint32 classMask[3] = { 0x10, 0x20000, 0 };
+		target->AddProcTriggerSpell(50806, pAura->GetSpellId(), pAura->m_casterGuid, pAura->GetSpellProto()->procChance, PROC_ON_CAST_SPELL | PROC_TARGET_SELF, 0, NULL, classMask);
+	}
+	else
+		target->RemoveProcTriggerSpell(50806, pAura->m_casterGuid);
+
+	return true;
+}
+
 void SetupDeathKnightSpells(ScriptMgr * mgr)
 {
 	mgr->register_creature_script(24207, &ArmyofDeadGhoul::Create);
@@ -363,4 +378,8 @@ void SetupDeathKnightSpells(ScriptMgr * mgr)
 
 	mgr->register_dummy_aura( 48979, &Butchery ); // Rank 1
 	mgr->register_dummy_aura( 49483, &Butchery ); // Rank 2
+
+	mgr->register_dummy_aura( 49467, &DeathRuneMastery ); // Rank 1
+	mgr->register_dummy_aura( 50033, &DeathRuneMastery ); // Rank 2
+	mgr->register_dummy_aura( 50034, &DeathRuneMastery ); // Rank 3
 }

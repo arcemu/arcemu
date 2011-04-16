@@ -68,6 +68,7 @@ uint32 DeathKnight::TakeRunes(uint8 type, uint32 count)
 		if( m_runes[i].type == type && ! m_runes[i].is_used )
 		{
 			m_runes[i].is_used = true;
+			m_last_used_rune_slot = i;
 			sEventMgr.AddEvent( this, &DeathKnight::ResetRune, i, EVENT_PLAYER_RUNE_REGEN + i, 10000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
 			found++;
 		}

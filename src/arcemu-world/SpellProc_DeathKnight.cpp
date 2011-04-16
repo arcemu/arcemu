@@ -58,9 +58,33 @@ private:
 	DeathKnight* dk;
 };
 
+class DeathRuneMasterySpellProc : public SpellProc
+{
+	SPELL_PROC_FACTORY_FUNCTION(DeathRuneMasterySpellProc);
+
+	bool DoEffect(Unit *victim, SpellEntry *CastingSpell, uint32 flag, uint32 dmg, uint32 abs, int *dmg_overwrite, uint32 weapon_damage_type)
+	{
+		DeathKnight* dk = TO_DK(mTarget);
+
+		if( dk->GetRuneType( dk->GetLastUsedUnitSlot() ) == RUNE_DEATH )
+			return true;
+
+		uint8 count = 2;
+		for( uint8 x = 0; x < MAX_RUNES && count; ++x )
+			if( (dk->GetRuneType(x) == RUNE_FROST || dk->GetRuneType(x) == RUNE_UNHOLY) && ! dk->GetRuneIsUsed(x) )
+			{
+				dk->ConvertRune(x, RUNE_DEATH);
+				--count;
+			}
+
+		return true;
+	}
+};
+
 void SpellProcMgr::SetupDeathKnight()
 {
 	AddById( 50163, &ButcherySpellProc::Create );
+	AddById( 50806, &DeathRuneMasterySpellProc::Create );
 
 	AddByNameHash( SPELL_HASH_BLADE_BARRIER, &BladeBarrierSpellProc::Create );
 }

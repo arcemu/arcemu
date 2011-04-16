@@ -48,6 +48,9 @@ class DeathKnight : public Player
 {
 	Rune m_runes[MAX_RUNES];
 
+	// Holds last slot used
+	uint8 m_last_used_rune_slot;
+
 protected:
 
 	void SendRuneUpdate(uint8 slot);
@@ -55,6 +58,7 @@ protected:
 public:
 	DeathKnight ( uint32 guid ) : Player(guid)
 	{
+		m_last_used_rune_slot = 0;
 		for( uint8 i = 0; i < MAX_RUNES; ++i )
 		{
 			m_runes[i].type = base_runes[i];
@@ -77,6 +81,7 @@ public:
 	void ResetRune(uint8 slot);
 	uint8 GetRuneFlags();
 	bool IsAllRunesOfTypeInUse(uint8 type);
+	uint8 GetLastUsedUnitSlot() { return m_last_used_rune_slot; }
 };
 
 #endif
