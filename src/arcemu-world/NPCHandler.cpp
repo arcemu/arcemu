@@ -523,17 +523,22 @@ void WorldSession::HandleGossipSelectOptionOpcode( WorldPacket & recv_data )
 	Arcemu::Gossip::Script * script = NULL;
 	uint32 guidtype = GET_TYPE_FROM_GUID(guid);
 
-	Object * qst_giver = GetPlayer()->GetMapMgr()->_GetObject(guid);
+	Object * qst_giver;
+	if(guidtype == HIGHGUID_TYPE_ITEM )	//Item objects are retrieved differently.
+	{
+		qst_giver = GetPlayer()->GetItemInterface()->GetItemByGUID( guid );
+		if(qst_giver != NULL)
+			script = Arcemu::Gossip::Script::GetInterface( TO_ITEM(qst_giver) );
+	}
+	else
+		qst_giver = GetPlayer()->GetMapMgr()->_GetObject(guid);
 	if(qst_giver != NULL)
 	{
 		if(guidtype==HIGHGUID_TYPE_UNIT)
 			script = Arcemu::Gossip::Script::GetInterface( TO_CREATURE(qst_giver) );
-		else if(guidtype==HIGHGUID_TYPE_ITEM)
-			script = Arcemu::Gossip::Script::GetInterface( TO_ITEM(qst_giver) );
 		else if(guidtype==HIGHGUID_TYPE_GAMEOBJECT)
 			script = Arcemu::Gossip::Script::GetInterface( TO_GAMEOBJECT(qst_giver) );
 	}
-
 	if(script != NULL)
 	{
 		string str;
