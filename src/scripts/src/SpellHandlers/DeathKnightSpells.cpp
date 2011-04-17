@@ -319,6 +319,18 @@ bool DeathRuneMastery(uint32 i, Aura *pAura, bool apply)
 	return true;
 }
 
+bool MarkOfBlood(uint32 i, Aura *pAura, bool apply)
+{
+	Unit *target = pAura->GetTarget();
+
+	if( apply )
+		target->AddProcTriggerSpell( 61607, pAura->GetSpellId(), pAura->m_casterGuid, pAura->GetSpellProto()->procChance, pAura->GetSpellProto()->procFlags, pAura->GetSpellProto()->procCharges, NULL, NULL );
+	else if( target->GetAuraStackCount( 49005 ) <= 1 )
+		target->RemoveProcTriggerSpell( 61607, pAura->m_casterGuid );
+
+	return true;
+}
+
 void SetupDeathKnightSpells(ScriptMgr * mgr)
 {
 	mgr->register_creature_script(24207, &ArmyofDeadGhoul::Create);
@@ -372,4 +384,6 @@ void SetupDeathKnightSpells(ScriptMgr * mgr)
 	mgr->register_dummy_aura( 49467, &DeathRuneMastery ); // Rank 1
 	mgr->register_dummy_aura( 50033, &DeathRuneMastery ); // Rank 2
 	mgr->register_dummy_aura( 50034, &DeathRuneMastery ); // Rank 3
+
+	mgr->register_dummy_aura( 49005 , &MarkOfBlood );
 }

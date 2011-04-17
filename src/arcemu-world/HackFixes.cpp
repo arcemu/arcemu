@@ -6843,6 +6843,12 @@ void ApplyNormalFixes()
 
 		// Insert Death Knight spells here ---- Made by Alice
 
+		// Mark of Blood
+		// Necessary to proper create entry on m_chargeSpells
+		sp = CheckAndReturnSpellEntry( 49005 );
+		if( sp != NULL )
+			sp->procFlags = PROC_ON_MELEE_ATTACK | PROC_ON_RANGED_ATTACK | PROC_ON_SPELL_HIT;
+
 		/**********************************************************
 		 *	Unholy Aura - Ranks 1 & 2
 		 **********************************************************/
