@@ -156,6 +156,34 @@ public:
 	}
 };
 
+class SpellDeflectionAura : public AbsorbAura
+{
+public:
+	static Aura* Create(SpellEntry *proto, int32 duration, Object* caster, Unit *target, bool temporary = false, Item* i_caster = NULL) { return new SpellDeflectionAura(proto, duration, caster, target, temporary, i_caster); }
+
+	SpellDeflectionAura( SpellEntry *proto, int32 duration, Object* caster, Unit *target, bool temporary = false, Item* i_caster = NULL )
+		: AbsorbAura(proto, duration, caster, target, temporary, i_caster) {}
+
+	uint32 AbsorbDamage( uint32 School, uint32* dmg )
+	{
+		uint32 mask = GetSchoolMask();
+		if( ! (mask & g_spellSchoolConversionTable[School]) )
+			return 0;
+
+		Player* caster = GetPlayerCaster();
+		if( caster == NULL )
+			return 0;
+
+		if( ! Rand(caster->GetParryChance()) )
+			return 0;
+
+		uint32 dmg_absorbed = *dmg * GetModAmount(0) / 100;
+		*dmg -= dmg_absorbed;
+
+		return dmg_absorbed;
+	}
+};
+
 void SpellFactoryMgr::SetupDeathKnight()
 {
 	AddSpellById( 55078, &BloodPlagueSpell::Create );
@@ -183,4 +211,8 @@ void SpellFactoryMgr::SetupDeathKnight()
 	AddSpellById( 56815, &RuneStrileSpell::Create );
 
 	AddAuraById( 48707, &AntiMagicShellAura::Create );
+
+	AddAuraById( 49145, &SpellDeflectionAura::Create ); // Rank 1
+	AddAuraById( 49495, &SpellDeflectionAura::Create ); // Rank 2
+	AddAuraById( 49497, &SpellDeflectionAura::Create ); // Rank 3
 }
