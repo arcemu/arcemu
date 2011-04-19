@@ -299,6 +299,12 @@ enum CREATURE_DEATH_STATE
 	CREATURE_STATE_DEAD = 2				// these creatures are dead
 };
 
+enum CREATURE_TYPE
+{
+	CREATURE_TYPE_NONE = 0,
+	CREATURE_TYPE_GUARDIAN = 1
+};
+
 struct PetSpellCooldown
 {
 	uint32 spellId;
@@ -690,6 +696,9 @@ public:
 
 	void HandleMonsterSayEvent(MONSTER_SAY_EVENTS Event);
 
+	uint32 GetType() { return m_Creature_type; }
+	void SetType(uint32 t) { m_Creature_type = t; }
+
 protected:
 	CreatureAIScript *_myScriptClass;
 	bool m_limbostate;
@@ -720,6 +729,9 @@ protected:
 
 	CreatureInfo *creature_info;
 	CreatureProto * proto;
+
+private:
+	uint32 m_Creature_type;
 };
 
 #endif

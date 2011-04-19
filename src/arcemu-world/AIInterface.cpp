@@ -875,7 +875,7 @@ void AIInterface::_UpdateTargets()
 {
 	if( m_Unit->IsPlayer() || (m_AIType != AITYPE_PET && disable_targeting ))
 		return;
-	if( TO_CREATURE(m_Unit)->GetCreatureInfo()->Type == UNIT_TYPE_CRITTER )
+	if( TO_CREATURE(m_Unit)->GetCreatureInfo()->Type == UNIT_TYPE_CRITTER && TO_CREATURE(m_Unit)->GetType() != CREATURE_TYPE_GUARDIAN )
 		return;
 
 	if(  m_Unit->GetMapMgr() == NULL )

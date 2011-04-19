@@ -217,22 +217,6 @@ bool DeathGrip( uint32 i, Spell *s ){
 	return true;
 }
 
-bool BloodWorms( uint32 i, Spell *s ){
-	
-	Unit *unitTarget = s->GetUnitTarget();
-
-	if( !s->u_caster || !s->u_caster->isAlive() || !unitTarget )
-		return false;
-	
-	uint32 cnt = (2 + RandomUInt(2)); // 2 - 4 worms
-	for(uint8 j = 0; j < cnt; j++)
-	{
-		s->SpellEffectSummon(i);
-	}
-	
-	return true;
-}
-
 bool DeathCoil( uint32 i, Spell *s )
 {
 	Unit *unitTarget = s->GetUnitTarget();
@@ -355,7 +339,6 @@ void SetupDeathKnightSpells(ScriptMgr * mgr)
 
 	mgr->register_dummy_spell( 46584, &RaiseDead );
 	mgr->register_dummy_spell( 49576, &DeathGrip );
-	mgr->register_dummy_spell( 50452, &BloodWorms );
 
 	mgr->register_dummy_spell( 47541, &DeathCoil ); // Rank 1
 	mgr->register_dummy_spell( 49892, &DeathCoil ); // Rank 2

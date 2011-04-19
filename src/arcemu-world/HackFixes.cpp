@@ -7001,19 +7001,13 @@ void ApplyNormalFixes()
         *      Bloodworms - handled in dummy code
         **********************************************************/
 
-               // Bloodworms proc spell
-               sp = CheckAndReturnSpellEntry( 50452 );
-               if( sp != NULL )
-               {
-                       sp->Effect[0] = SPELL_EFFECT_DUMMY;
-               }
-
                // Bloodworms Rank 1
                sp = CheckAndReturnSpellEntry( 49027 );
                if( sp != NULL )
                {
                        sp->procFlags = PROC_ON_MELEE_ATTACK;
                        sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+					   sp->EffectTriggerSpell[0] = 50452;
                }
 
                // Bloodworms Rank 2
@@ -7022,6 +7016,7 @@ void ApplyNormalFixes()
                {
                        sp->procFlags = PROC_ON_MELEE_ATTACK;
                        sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+					   sp->EffectTriggerSpell[0] = 50452;
                }
 
                // Bloodworms Rank 3
@@ -7030,6 +7025,7 @@ void ApplyNormalFixes()
                {
                        sp->procFlags = PROC_ON_MELEE_ATTACK;
                        sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+					   sp->EffectTriggerSpell[0] = 50452;
                }
 
 		// Blood Fury Healing Debuff

@@ -6405,6 +6405,7 @@ Creature* Unit::create_guardian(uint32 guardian_entry,uint32 duration,float angl
 		p->setLevel(lvl);
 	}
 
+	p->SetType( CREATURE_TYPE_GUARDIAN );
 	p->SetSummonedByGUID( GetGUID());
 	p->SetCreatedByGUID( GetGUID());
 	p->SetCreatedBySpell( spellid );

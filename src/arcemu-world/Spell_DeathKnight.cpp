@@ -184,6 +184,16 @@ public:
 	}
 };
 
+class BloodwormSpell : public Spell
+{
+	SPELL_FACTORY_FUNCTION(BloodwormSpell);
+
+	int32 DoCalculateEffect(uint32 i, Unit *target, int32 value)
+	{
+		return 2 + RandomUInt(2);
+	}
+};
+
 void SpellFactoryMgr::SetupDeathKnight()
 {
 	AddSpellById( 55078, &BloodPlagueSpell::Create );
@@ -215,4 +225,6 @@ void SpellFactoryMgr::SetupDeathKnight()
 	AddAuraById( 49145, &SpellDeflectionAura::Create ); // Rank 1
 	AddAuraById( 49495, &SpellDeflectionAura::Create ); // Rank 2
 	AddAuraById( 49497, &SpellDeflectionAura::Create ); // Rank 3
+
+	AddSpellById( 50452, &BloodwormSpell::Create );
 }

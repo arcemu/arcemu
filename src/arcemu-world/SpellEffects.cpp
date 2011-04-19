@@ -1926,6 +1926,12 @@ void Spell::SpellEffectSummon(uint32 i)
 	case 669:
 	case 881:	
 	case 2301:	SpellEffectSummonGuardian(i);	return;
+	case 713: // Bloodworm
+		{
+			for( uint8 x = 0; x < damage; ++x )
+				SpellEffectSummonGuardian(i);
+			return;
+		}
 	case 64:	SpellEffectSummonWild(i);		return;
 	case 65:
 	case 428:	SpellEffectSummonPossessed(i);	return;

@@ -224,6 +224,8 @@ Creature::Creature(uint64 guid)
 	m_healthfromspell = 0;
 	m_speedFromHaste = 0;
 	memset(AISpellsCooldown,0,sizeof(int32)*4);
+
+	m_Creature_type = 0;
 }
 
 
@@ -256,6 +258,7 @@ Creature::~Creature()
 void Creature::Update( uint32 p_time )
 {
 	Unit::Update( p_time );
+
 	if(IsTotem() && IsDead())
 	{
         DeleteMe();
