@@ -228,7 +228,7 @@ bool DeathCoil( uint32 i, Spell *s )
 	
 	if( isAttackable( s->p_caster, unitTarget, false ) )
 	{
-		s->p_caster->CastSpell( unitTarget, 47632, dmg, true);
+		s->p_caster->CastSpell( unitTarget, 47632, dmg, true );
 	}
 	else if( unitTarget->IsPlayer() && unitTarget->getRace() == RACE_UNDEAD )
 	{
@@ -315,6 +315,19 @@ bool MarkOfBlood(uint32 i, Aura *pAura, bool apply)
 	return true;
 }
 
+bool Hysteria(uint32 i, Aura *pAura, bool apply)
+{
+	if( ! apply )
+		return true;
+
+	Unit *target = pAura->GetTarget();
+
+	uint32 dmg = (uint32) target->GetMaxHealth() * (pAura->GetSpellProto()->EffectBasePoints[i] +1) / 100;
+	target->DealDamage(target, dmg, 0, 0, 0);
+
+	return true;
+}
+
 void SetupDeathKnightSpells(ScriptMgr * mgr)
 {
 	mgr->register_creature_script(24207, &ArmyofDeadGhoul::Create);
@@ -369,4 +382,6 @@ void SetupDeathKnightSpells(ScriptMgr * mgr)
 	mgr->register_dummy_aura( 50034, &DeathRuneMastery ); // Rank 3
 
 	mgr->register_dummy_aura( 49005 , &MarkOfBlood );
+
+	mgr->register_dummy_aura( 49016 , &Hysteria );
 }
