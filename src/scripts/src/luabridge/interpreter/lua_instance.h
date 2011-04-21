@@ -1,7 +1,88 @@
 #pragma once
 
+class ScriptManager
+{
+public:
+	static const char * mt;
+	lua_State * state;
+	ScriptManager() : state(NULL) {}
+	~ScriptManager() {}
+
+	void initialize()
+	{
+		lua_newtable(state);
+		lua_setfield(state, LUA_REGISTRYINDEX, mt); //perform registry["LOADED_SCRIPTS"] = {}
+	}
+	void unload()
+	{
+		lua_pushnil(state);
+		lua_setfield(state, LUA_REGISTRYINDEX, mt); // registry["LOADED_SCRIPTS"] = nil
+	}
+
+	void add(const std::string file)
+	{
+		std::string filename;
+		extractFileName(file, filename);
+		lua_State * L = state;
+		luaL_getmetatable(L, mt);
+		lua_pushstring(L, filename.c_str() );
+		lua_pushvalue(L, -1);
+		lua_gettable(L, -2);
+		if(lua_isnil(L, -1) )
+		{
+			lua_pop(L, 1);
+			lua_pushboolean(L, 1);
+			lua_settable(L, -3); // LOADED_SCRIPTS[file] = true
+		}
+		lua_pop(L,1); // pop our table
+	}
+
+	void remove(const std::string file)
+	{
+		std::string filename;
+		extractFileName(file, filename);
+		lua_pushnil(state);
+		lua_setfield(state, LUA_REGISTRYINDEX, filename.c_str() );
+	}
+
+	bool isLoaded(const std::string file) const
+	{
+		std::string filename;
+		extractFileName(file, filename);
+		lua_State * L = state;
+		luaL_getmetatable(L, mt);
+		lua_getfield(L, -1, filename.c_str() );
+		bool loaded = (lua_isnil(L,-1) != true);
+		lua_pop(L,2);
+		return loaded;
+	}
+
+	/*void getloadedby(const std::string file, std::string & out) const
+	{
+		std::string filename;
+		extractFileName(file, filename);
+		luaL_getmetatable(stack, mt);
+		lua_getfield(state, -2, filename.c_str() );
+		if(lua_type(state, -1) == LUA_TSTRING)
+			out = lua_tostring(state, -1);
+		lua_pop(state, 2); //pop table and result.
+
+	}*/
+
+	static void extractFileName(const std::string & in, std::string & out)
+	{
+		out.clear();
+		size_t start = in.rfind("\\");
+		if(start == std::string::npos)
+			start = in.rfind("/");
+		if(start != std::string::npos)
+			out = in.substr(start+1, (in.length() - (start+1) ) );
+	}
+};
+
 typedef struct _LUA_INSTANCE
 {
+public:
 	//the lua state that lua code uses.
 	lua_State * lu;
 	//FastMutex restart_Lock;
@@ -58,6 +139,7 @@ typedef struct _LUA_INSTANCE
 	ObjectBindingMap m_unitGossipBinding;
 	ObjectBindingMap m_itemGossipBinding;
 	ObjectBindingMap m_goGossipBinding;
+	ScriptManager scripts_;
 
 } LUA_INSTANCE, *PLUA_INSTANCE;
 

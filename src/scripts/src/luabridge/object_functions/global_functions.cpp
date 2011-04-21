@@ -342,6 +342,21 @@ static Creature * lua_tocreature(Object * obj)
 	return ptr;
 }
 
+static bool include(const char * filename, bool once)
+{
+	PLUA_INSTANCE ref = lua_instance.get();
+	if( !ref->scripts_.isLoaded(filename) )
+	{
+		if(lua_engine::loadScript(filename) )
+			ref->scripts_.add(filename);
+		else
+			return false;
+	}
+	else if(once)
+		luaL_error(ref->lu, "%s has already been loaded!", filename);
+	return true;
+}
+
 #include "GlobalFunctions.h"
 
 namespace lua_engine
@@ -389,7 +404,8 @@ namespace lua_engine
 			bind(SendPacketToChannel)
 			bind(GetInstanceCreature)
 			bind(GetInstancePlayerCount)
-			bind(GetPlayersInInstance);
+			bind(GetPlayersInInstance)
+			bind(include);
 #undef bind
 
 		m	.class_<DBCStorage<SpellEntry> >("dbcSpell")
@@ -409,6 +425,5 @@ namespace lua_engine
 		lua_setglobal(m.L, "WorldDB");
 		luabridge::tdstack<Database*>::push(m.L, Database_Character);
 		lua_setglobal(m.L, "CharacterDB");
-
 	}
 }

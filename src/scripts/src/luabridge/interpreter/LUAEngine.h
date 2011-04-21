@@ -84,8 +84,10 @@ namespace lua_engine
 
 	
 	static void startupEngine();
-	static void loadScripts(PLUA_INSTANCE);	static void loadScripts();
-	static void scriptload_searchdir(char *Dirname, std::set<string>&);
+	static void loadScripts(PLUA_INSTANCE);	
+	extern bool loadScript(const char*);
+	static void loadScripts();
+	static void scriptload_searchdir(char *Dirname, deque<string>& );
 	extern void restartEngine();
 	//static void shutdownEngine();
 	extern void restartThread(MapMgr *);

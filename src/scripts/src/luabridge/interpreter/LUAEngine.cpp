@@ -32,6 +32,7 @@
 ScriptMgr * m_scriptMgr = NULL;
 Arcemu::Utility::TLSObject<PLUA_INSTANCE> lua_instance;
 PLUA_INSTANCE LUA_COMPILER = NULL;
+const char * ScriptManager::mt = "LOADED_SCRIPTS";
 
 extern "C"
 {
@@ -61,30 +62,65 @@ void lua_engine::report(lua_State * L)
 	}
 }
 
-void lua_engine::scriptload_searchdir(char * Dirname, std::set<string>& store)
+void lua_engine::scriptload_searchdir(char * Dirname, deque<string>& store)
 {
 #ifdef WIN32 
 	Log.Success("LuaEngine", "Scanning Directory (%s)", Dirname);
-	HANDLE hFile;
+	HANDLE hFile = NULL;
 	WIN32_FIND_DATAA FindData;
 	memset(&FindData,0,sizeof(WIN32_FIND_DATAA));
+	deque< std::string > directories;
+	//char SearchName[MAX_PATH];
+	/*strcpy(SearchName,Dirname);
+	strcat(SearchName, "\\*.*" );*/
+	directories.push_back( Dirname);
+	//std::string current_directory, current_file, pattern;
+	while( directories.size() )
+	{
+		std::string current_directory = directories.front();
+		std::string pattern = current_directory;
+		pattern+= "\\*.*";
+		directories.pop_front();
 
-	char SearchName[MAX_PATH];
-	        
-	strcpy(SearchName,Dirname);
-	strcat(SearchName, "\\*.*" );
+		if(hFile != NULL)	//First let's close previous handles.
+			FindClose(hFile);
+		hFile = FindFirstFileA( pattern.c_str() ,&FindData);
+		if(hFile == INVALID_HANDLE_VALUE)
+			continue;
+		do 
+		{
+			if( (FindData.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN ) != 0) //ignore hidden files.
+				continue;
+			if( !strcmp(FindData.cFileName, ".." ) || !strcmp(FindData.cFileName, "." ) )
+				continue;
 
-	hFile = FindFirstFileA(SearchName,&FindData);
-	FindNextFileA(hFile, &FindData);
-	    
-	while( FindNextFileA(hFile, &FindData) )
+			string item = current_directory;
+			item+="\\";
+			item+= FindData.cFileName;
+			if( (FindData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ) //store directories for later parsing.
+				directories.push_back( item );
+			else
+			{
+				size_t start = item.rfind("."); //find the '.' designating the extension
+				if(start != string::npos)
+				{
+					string ext = item.substr(start+1, (item.length() - (start+1) ) );
+					if( !ext.compare("lua") )
+						store.push_back( item );
+				}
+			}
+
+		} while( FindNextFileA(hFile, &FindData) );
+	}
+	
+	/*while( FindNextFileA(hFile, &FindData) )
 	{
 		if( (FindData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)  && !(FindData.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) ) //Credits for this 'if' go to Cebernic from ArcScripts Team. Thanks, you saved me some work ;-)
 		{
 			strcpy(SearchName,Dirname);
 			strcat(SearchName, "\\" );
 			strcat(SearchName,FindData.cFileName);
-			scriptload_searchdir(SearchName, store);
+			directories.push_back(SearchName);
 		}
 		else
 		{
@@ -107,7 +143,7 @@ void lua_engine::scriptload_searchdir(char * Dirname, std::set<string>& store)
 				store.insert(fname);
 		}
 	}
-	FindClose(hFile);
+	FindClose(hFile);*/
 #else
 	char *pch = strrchr(Dirname,'/');
 	if( strcmp(Dirname, "..") == 0 || strcmp(Dirname, ".") == 0 ) return; //Against Endless-Loop
@@ -140,7 +176,7 @@ void lua_engine::scriptload_searchdir(char * Dirname, std::set<string>& store)
 		{
 			char* ext = strrchr(list[filecount]->d_name, '.');
 			if(ext != NULL && !strcmp(ext, ".lua"))
-				store.insert(dottedrelpath);
+				store.push_back(dottedrelpath);
 		}
 		free(list[filecount]);
 	}
@@ -150,14 +186,14 @@ void lua_engine::scriptload_searchdir(char * Dirname, std::set<string>& store)
 
 void lua_engine::loadScripts()
 {
-	std::set<string> found_scripts;
+	deque<string> found_scripts;
 	scriptload_searchdir( (char*)"scripts", found_scripts);
 	//Read our scripts and cache their data.
 	//We protect scripts while they are being modified.
 	ptrdiff_t countofvalidscripts = 0, countofscripts = found_scripts.size();
 	//Log.Success("LuaEngine","Found %u Lua scripts.", countofscripts);
 	FILE * script_file = NULL;
-	for(std::set<string>::iterator itr = found_scripts.begin(); itr != found_scripts.end(); ++itr)
+	for(std::deque<string>::iterator itr = found_scripts.begin(); itr != found_scripts.end(); ++itr)
 	{
 		script_file = fopen( (*itr).c_str(), "rb");
 		if(script_file != NULL)
@@ -178,6 +214,12 @@ void lua_engine::loadScripts()
 	for(le::LuaScriptData::iterator it, itr = le::compiled_scripts.begin(); itr != le::compiled_scripts.end(); )
 	{
 		it = itr++;
+		//check if file has been loaded using the 'include' function
+		if(LUA_COMPILER->scripts_.isLoaded(it->first) )
+		{
+			++countofvalidscripts;
+			continue;
+		}
 		if(lua_load(LUA_COMPILER->lu, le::readScript, it->second, it->first.c_str() ) || lua_pcall(LUA_COMPILER->lu, 0, 0, 0 ) )
 		{
 			report(LUA_COMPILER->lu);
@@ -188,6 +230,51 @@ void lua_engine::loadScripts()
 			++countofvalidscripts;
 	}
 	Log.Success("LuaEngine", "Successfully loaded [%u/%u] scripts.", countofvalidscripts, countofscripts);
+}
+
+bool lua_engine::loadScript(const char* filename)
+{
+	PLUA_INSTANCE context = lua_instance.get();
+	bool success = false;
+	if(NULL == context)
+		context = LUA_COMPILER;
+	if(NULL != context && NULL != filename)
+	{
+		assert( context->lu != NULL);
+		//get the current file directory and pre-pend it to the file name
+		lua_Debug ar;
+		std::string fullpath;
+		if(lua_getstack(context->lu, 1, &ar) == 1 && lua_getinfo(context->lu, "S", &ar) )
+		{
+			fullpath+= ar.source;
+			size_t start = fullpath.find('@'); //remove @ prefix if any.
+			if(start != string::npos)
+				fullpath = fullpath.substr( start+1, (fullpath.length() - (start+1) ) );
+#if WIN32
+			start = fullpath.rfind('\\'); //extract the directory
+#else
+			start = fullpath.rfind('/');
+#endif
+			if(start != string::npos)
+				fullpath = fullpath.substr(0, start+1);
+		}
+		fullpath+= filename;
+		FILE * _file = fopen(fullpath.c_str(), "rb");
+		if(NULL != _file)
+		{
+			LUA_SCRIPT cached;
+			size_t file_length = 0;
+			fseek(_file, 0, SEEK_END);
+			file_length = ftell(_file);
+			rewind(_file);
+			cached.data_ = (const void*)malloc(file_length);
+			cached.datasize_ = fread( (void*)cached.data_, 1, file_length, _file);
+			fclose(_file);
+			success = (0 == lua_load(context->lu, readScript, (void*)&cached , filename));
+			lua_pcall(context->lu, 0, 0, 0);
+		}
+	}
+	return success;
 }
 
 void lua_engine::BeginLuaFunctionCall(lua_function ref)
@@ -277,6 +364,8 @@ void lua_engine::startupEngine()
 	LUA_COMPILER = new LUA_INSTANCE;
 	LUA_COMPILER->lu = lua_open();
 	LUA_COMPILER->map = NULL;
+	LUA_COMPILER->scripts_.state = LUA_COMPILER->lu;
+	LUA_COMPILER->scripts_.initialize();
 	//Since our objects load into "lua_instance" object.
 	lua_instance = LUA_COMPILER;
 	//Expose our wow object and functions to the compiler.
@@ -486,6 +575,8 @@ void lua_engine::restartEngine()
 	assert(LUA_COMPILER->lu != NULL);
 	lua_close(LUA_COMPILER->lu);
 	LUA_COMPILER->lu = lua_open();
+	LUA_COMPILER->scripts_.state = LUA_COMPILER->lu;
+	LUA_COMPILER->scripts_.initialize();
 	lua_instance = LUA_COMPILER;
 	loadState(LUA_COMPILER);
 	//re-compile the scripts.
@@ -554,6 +645,8 @@ void lua_engine::restartThread(MapMgr * map)
 		lua_close( _li->lu);
 	//open a brand new state.
 	_li->lu = lua_open();
+	_li->scripts_.state = _li->lu;
+	_li->scripts_.initialize();
 	//re-expose our wow objects and functions
 	le::loadState(_li);
 	//now we reload the scripts
@@ -716,6 +809,8 @@ namespace lua_engine
 		for(; itr != le::compiled_scripts.end();)
 		{
 			it = itr++;
+			if( instance->scripts_.isLoaded(it->first) )
+				continue;
 			//check if our map id matches that of our script.
 			if(it->second->maps_.size() && it->second->maps_.find( (int32)instance->map->GetMapId() ) == it->second->maps_.end() )
 				continue;
