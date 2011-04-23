@@ -58,18 +58,31 @@ bool Pestilence(uint32 i, Spell* pSpell)
 
 bool DeathStrike(uint32 i, Spell* pSpell)
 {
-	if(!pSpell->u_caster || !pSpell->GetUnitTarget())
+	if( pSpell->p_caster == NULL || pSpell->GetUnitTarget() == NULL )
 		return true;
 
 	Unit* Target = pSpell->GetUnitTarget();
+
 	int count = 0;
-	if(Target->HasAura(BLOOD_PLAGUE))
+	if( Target->HasAura(BLOOD_PLAGUE) )
 		count++;
-	if(Target->HasAura(FROST_FEVER))
+	if( Target->HasAura(FROST_FEVER) )
 		count++;
-	float pct = (pSpell->u_caster->GetMaxHealth() * 0.05f);
-	if(count > 0)
-		pSpell->u_caster->Heal(pSpell->u_caster, pSpell->GetProto()->Id, float2int32(pct*count));
+
+	if( count )
+	{
+		float pct = pSpell->p_caster->GetMaxHealth() * 0.05f;
+
+		uint32 val = float2int32(pct*count);
+
+		Aura* aur = pSpell->p_caster->FindAuraByNameHash( SPELL_HASH_IMPROVED_DEATH_STRIKE );
+		if( aur != NULL )
+			val += val * (aur->GetSpellProto()->EffectBasePoints[2] +1) / 100;
+
+		if(val > 0)
+			pSpell->u_caster->Heal(pSpell->u_caster, pSpell->GetProto()->Id, val);
+	}
+
 	return true;
 }
 
