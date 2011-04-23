@@ -194,6 +194,38 @@ class BloodwormSpell : public Spell
 	}
 };
 
+class WillOfTheNecropolisAura : public AbsorbAura
+{
+public:
+	static Aura* Create(SpellEntry *proto, int32 duration, Object* caster, Unit *target, bool temporary = false, Item* i_caster = NULL) { return new WillOfTheNecropolisAura(proto, duration, caster, target, temporary, i_caster); }
+
+	WillOfTheNecropolisAura( SpellEntry *proto, int32 duration, Object* caster, Unit *target, bool temporary = false, Item* i_caster = NULL )
+		: AbsorbAura(proto, duration, caster, target, temporary, i_caster) {}
+
+	uint32 AbsorbDamage( uint32 School, uint32* dmg )
+	{
+		Unit* caster = GetUnitCaster();
+		if( caster == NULL )
+			return 0;
+
+		int health_pct = caster->GetHealthPct();
+		uint32 cur_health = caster->GetHealth();
+		uint32 max_health = caster->GetMaxHealth();
+		uint32 new_health_pct = (cur_health - *dmg) * 100 / max_health;
+
+		// "Damage that would take you below $s1% health or taken while you are at $s1% health is reduced by $52284s1%."
+		if( (health_pct > 35 && new_health_pct < 35) || health_pct == 35 )
+		{
+			uint32 dmg_absorbed = *dmg * (GetSpellProto()->EffectBasePoints[0] +1) / 100;
+			*dmg -= dmg_absorbed;
+
+			return dmg_absorbed;
+		}
+		else
+			return 0;
+	}
+};
+
 void SpellFactoryMgr::SetupDeathKnight()
 {
 	AddSpellById( 55078, &BloodPlagueSpell::Create );
@@ -227,4 +259,8 @@ void SpellFactoryMgr::SetupDeathKnight()
 	AddAuraById( 49497, &SpellDeflectionAura::Create ); // Rank 3
 
 	AddSpellById( 50452, &BloodwormSpell::Create );
+
+	AddAuraById( 52284, &WillOfTheNecropolisAura::Create ); // Rank 1
+	AddAuraById( 52285, &WillOfTheNecropolisAura::Create ); // Rank 1
+	AddAuraById( 52286, &WillOfTheNecropolisAura::Create ); // Rank 1
 }

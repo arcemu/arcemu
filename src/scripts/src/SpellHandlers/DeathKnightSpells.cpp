@@ -328,6 +328,37 @@ bool Hysteria(uint32 i, Aura *pAura, bool apply)
 	return true;
 }
 
+bool WillOfTheNecropolis( uint32 i, Spell *spell )
+{
+	if( i != 0 )
+		return true;
+
+	Player* plr = spell->p_caster;
+
+	if( plr == NULL )
+		return true;
+
+	switch( spell->GetProto()->Id )
+	{
+		case 49189:
+			plr->removeSpell( 52285, false, false, 0);
+			plr->removeSpell( 52286, false, false, 0);
+			break;
+
+		case 50149:
+			plr->removeSpell( 52284, false, false, 0);
+			plr->removeSpell( 52286, false, false, 0);
+			break;
+
+		case 50150:
+			plr->removeSpell( 52284, false, false, 0);
+			plr->removeSpell( 52285, false, false, 0);
+			break;
+	}
+
+	return true;
+}
+
 void SetupDeathKnightSpells(ScriptMgr * mgr)
 {
 	mgr->register_creature_script(24207, &ArmyofDeadGhoul::Create);
@@ -384,4 +415,8 @@ void SetupDeathKnightSpells(ScriptMgr * mgr)
 	mgr->register_dummy_aura( 49005 , &MarkOfBlood );
 
 	mgr->register_dummy_aura( 49016 , &Hysteria );
+
+	mgr->register_dummy_spell( 49189, &WillOfTheNecropolis ); // Rank 1
+	mgr->register_dummy_spell( 50149, &WillOfTheNecropolis ); // Rank 2
+	mgr->register_dummy_spell( 50150, &WillOfTheNecropolis ); // Rank 3
 }
