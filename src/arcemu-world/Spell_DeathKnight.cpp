@@ -226,6 +226,19 @@ public:
 	}
 };
 
+class VampiricBloodSpell : public Spell
+{
+	SPELL_FACTORY_FUNCTION( VampiricBloodSpell );
+
+	int32 DoCalculateEffect(uint32 i, Unit *target, int32 value)
+	{
+		if( i == 1 && p_caster != NULL )
+			value = p_caster->GetMaxHealth() * (GetProto()->EffectBasePoints[i] +1) / 100;
+
+		return value;
+	}
+};
+
 void SpellFactoryMgr::SetupDeathKnight()
 {
 	AddSpellById( 55078, &BloodPlagueSpell::Create );
@@ -263,4 +276,6 @@ void SpellFactoryMgr::SetupDeathKnight()
 	AddAuraById( 52284, &WillOfTheNecropolisAura::Create ); // Rank 1
 	AddAuraById( 52285, &WillOfTheNecropolisAura::Create ); // Rank 1
 	AddAuraById( 52286, &WillOfTheNecropolisAura::Create ); // Rank 1
+
+	AddSpellById( 55233, &VampiricBloodSpell::Create );
 }
