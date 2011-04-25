@@ -95,6 +95,22 @@ class BloodStrikeSpell : public Spell
 
 		return value;
 	}
+
+	void DoAfterHandleEffect(Unit *target, uint32 i)
+	{
+		if( p_caster == NULL || i != 1 )
+			return;
+
+		Aura* aur = p_caster->FindAuraByNameHash( SPELL_HASH_SUDDEN_DOOM );
+
+		if( aur == NULL )
+			return;
+
+		if( ! Rand(aur->GetSpellProto()->procChance) )
+			return;
+
+		p_caster->CastSpell( target, 47632, false );
+	}
 };
 
 class DeathCoilSpell : public Spell
@@ -239,6 +255,27 @@ class VampiricBloodSpell : public Spell
 	}
 };
 
+class HeartStrikeSpell : public Spell
+{
+	SPELL_FACTORY_FUNCTION(HeartStrikeSpell);
+
+	void DoAfterHandleEffect(Unit *target, uint32 i)
+	{
+		if( p_caster == NULL || i != 1 )
+			return;
+
+		Aura* aur = p_caster->FindAuraByNameHash( SPELL_HASH_SUDDEN_DOOM );
+
+		if( aur == NULL )
+			return;
+
+		if( ! Rand(aur->GetSpellProto()->procChance) )
+			return;
+
+		p_caster->CastSpell( target, 47632, false );
+	}
+};
+
 void SpellFactoryMgr::SetupDeathKnight()
 {
 	AddSpellById( 55078, &BloodPlagueSpell::Create );
@@ -278,4 +315,11 @@ void SpellFactoryMgr::SetupDeathKnight()
 	AddAuraById( 52286, &WillOfTheNecropolisAura::Create ); // Rank 1
 
 	AddSpellById( 55233, &VampiricBloodSpell::Create );
+
+	AddSpellById( 55050, &HeartStrikeSpell::Create ); // Rank 1
+	AddSpellById( 55258, &HeartStrikeSpell::Create ); // Rank 2
+	AddSpellById( 55259, &HeartStrikeSpell::Create ); // Rank 3
+	AddSpellById( 55260, &HeartStrikeSpell::Create ); // Rank 4
+	AddSpellById( 55261, &HeartStrikeSpell::Create ); // Rank 5
+	AddSpellById( 55262, &HeartStrikeSpell::Create ); // Rank 6
 }

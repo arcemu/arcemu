@@ -2156,6 +2156,7 @@ protected:
 	SpellTargetConstraint *m_target_constraint;
 
 	virtual int32 DoCalculateEffect(uint32 i, Unit *target, int32 value);
+	virtual void DoAfterHandleEffect(Unit *target, uint32 i) {}
 
 public: //Modified by LUAppArc private->public
 	TargetsList m_targetUnits[3];

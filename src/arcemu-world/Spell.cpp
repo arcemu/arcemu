@@ -2722,6 +2722,8 @@ void Spell::HandleEffects(uint64 guid, uint32 i)
 	else
 		sLog.outError("SPELL: unknown effect %u spellid %u", id, GetProto()->Id);
 
+	DoAfterHandleEffect(unitTarget, i);
+
 	DecRef();
 }
 
