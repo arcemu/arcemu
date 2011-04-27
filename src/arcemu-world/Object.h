@@ -458,7 +458,17 @@ public:
 	std::set<Object*>::iterator GetInRangeOppFactsSetEnd() { return m_oppFactsInRange.end(); }
 	std::set<Object*>::iterator GetInRangePlayerSetBegin() { return m_inRangePlayers.begin(); }
 	std::set<Object*>::iterator GetInRangePlayerSetEnd() { return m_inRangePlayers.end(); }
-	std::set<Object*> * GetInRangePlayerSet() { return &m_inRangePlayers; };
+	std::set<Object*> * GetInRangePlayerSet() { return &m_inRangePlayers; }
+
+	std::set<Object*> & GetInRangePlayers() { return m_inRangePlayers; }
+
+	std::set<Object*> & GetInRangeOpposingFactions() { return m_oppFactsInRange; }
+
+	std::set<Object*> & GetInRangeSameFactions() { return m_sameFactsInRange; }
+
+	std::set<Object*> & GetInRangeObjects() { return m_objectsInRange; }
+
+
 
     ///////////////////////////////////////////////////////////////////////////
     //void OutPacket( uint16 opcode, uint16 len, const void *data )

@@ -37,6 +37,17 @@ struct tdstack<T*>
 		else	//otherwise push a nil object
 			lua_pushnil(L);
 	}
+
+	static void push(lua_State *L, pair< typename std::set<T*>::iterator, typename std::set<T*>::iterator > itr)
+	{
+		lua_newtable(L);
+		ptrdiff_t index = 1;
+		for(; itr.first != itr.second; ++itr.first)
+		{
+			tdstack<T*>::push(L, (*itr.first) );
+			lua_rawseti(L, -2, index++);
+		}
+	}
 	static T * get (lua_State *L, int index)
 	{
 		return *(T**)checkclass(L, index, classname<T>::name());
@@ -88,6 +99,7 @@ struct tdstack <T* const>
 		else
 			lua_pushnil(L);
 	}
+
 	static T* const get (lua_State *L, int index)
 	{
 		return *(T**)checkclass(L, index, classname<T>::name() );
@@ -678,29 +690,19 @@ struct tdstack<const uint64 &>
 };
 
 template<typename T>
-struct tdstack< std::vector<T> >
+struct tdstack< std::set<T> >
 {
-	static void push(lua_State * L, const std::vector<T> & vect)
+	static void push(lua_State * L, std::set<T> & tree)
 	{
-		typedef typename std::vector<T>::iterator Iterator;
-		for( Iterator itr = vect.begin(); itr != vect.end(); ++itr  )
+		lua_newtable(L);
+		ptrdiff_t index = 1;
+		typedef typename std::set<T>::iterator iterator;
+		for(iterator itr = tree.begin(); itr != tree.end(); ++itr)
+		{
 			tdstack<T>::push(L, (*itr) );
+			lua_rawseti(L, -2, index++);
+		}
 	}
-
-	static std::vector<T> get(lua_State *, int);
-};
-
-template<typename T>
-struct tdstack< std::list<T> >
-{
-	static void push(lua_State * L, const std::list<T> & llist)
-	{
-		typedef typename std::list<T>::iterator Iterator;
-		for(Iterator itr = llist.begin(); itr != llist.end(); ++itr  )
-			tdstack<T>::push(L, (*itr) );
-	}
-
-	static std::list<T> get(lua_State *, int);
 };
 
 

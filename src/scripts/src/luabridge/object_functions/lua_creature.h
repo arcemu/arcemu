@@ -245,5 +245,4 @@ public:
 	   }
 	   return TO_PLAYER(closest_player);
    }
-
 };
