@@ -459,7 +459,8 @@ namespace lua_engine
 			.method( (Unit*(Creature::*)() )&lua_creature::GetClosestFriend, "GetClosestFriend", "getClosestFriend", "getclosestfriend", NULL)
 			.method( (Unit* (Creature::*)() )&lua_creature::GetClosestEnemy, "GetClosestEnemy", "getClosestEnemy", "getclosestenemy", NULL)
 			.method( (Unit* (Creature::*)() )&lua_creature::GetClosestPlayer, "GetClosestPlayer", "getClosestPlayer", "getclosestplayer", NULL)
-			.method( &Creature::GetSQL_id, "GetSpawnId", "GetSpawnID", "getSpawnId", "getSpawnID", "getspawnid", NULL);
+			.method( &Creature::GetSQL_id, "GetSpawnId", "GetSpawnID", "getSpawnId", "getSpawnID", "getspawnid", NULL)
+			.method( &Creature::SaveToDB, "SaveToDB", "saveToDB", "savetodb", NULL);
 #undef bind
 #define BIND(name) .method(#name, &AIInterface::name)
 			m.	class_<AIInterface>("AIInterface")
@@ -532,7 +533,8 @@ namespace lua_engine
 				.method( &AIInterface::setCurrentAgent, "setcurrentagent", "setCurrentAgent", "SetCurrentAgent", NULL)
 				.method( &AIInterface::SetAllowedToEnterCombat, "setAllowedToEnterCombat", "SetAllowedToEnterCombat", "setallowedtoentercombat", NULL)
 				.method( &AIInterface::GetAllowedToEnterCombat, "getAllowedToEnterCombat", "GetAllowedToEnterCombat", "getallowedtoentercombat", NULL)
-				.method( &AIInterface::getAITargetsCount, "getAITargetsCount", "getaitargetscount", "GetAITargetsCount", NULL);
+				.method( &AIInterface::getAITargetsCount, "getAITargetsCount", "getaitargetscount", "GetAITargetsCount", NULL)
+				.method( &AIInterface::addWayPoint, "addWayPoint", "AddWayPoint", "addwaypoint", NULL);
 #undef BIND
 
 			//waypoint struct
@@ -544,7 +546,9 @@ namespace lua_engine
 				.property_rw("z", &WayPoint::z)
 				.property_rw("o", &WayPoint::o)
 				.property_rw("waittime", &WayPoint::waittime)
-				.property_rw("flags", &WayPoint::flags);
+				.property_rw("flags", &WayPoint::flags)
+				.property_rw("backwardskinid", &WayPoint::backwardskinid)
+				.property_rw("forwardskinid", &WayPoint::forwardskinid);
 				
 	}
 }

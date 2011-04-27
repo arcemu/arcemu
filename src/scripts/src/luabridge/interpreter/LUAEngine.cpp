@@ -309,34 +309,7 @@ void lua_engine::EndLuaFunctionCall(int res)
 
 void lua_engine::startupEngine()
 {
-/*#ifdef WIN32
-	Log.Color(TGREEN);
-	printf(" \_\_                        \_\_  \_\_                  \_\_\_\_\_\_                 \n");
-	//Log.Color(TGREEN);
-	printf("/\\ \\                      /\\ \\/\\ \\                /\\  \_  \\                 \n");
-	//Log.Color(TGREEN);
-	printf("\\ \\ \\      \_\_  \_\_     \_\_  \\ \\ \\\_\\ \\  \_\_  \_\_  \_\_\_\_\_\\ \\ \\\_\\ \\  \_\_\_\_\_  \_\_\_    \n");
-	//Log.Color(TGREEN);
-	printf(" \\ \\ \\  \_\_/\\ \\/\\ \\  /'\_\_`\\ \\ \\  \_  \\/\\ \\/\\ \\/\\  \_\_`\\ \\  \_\_ \\/\\  \_\_\\/'\_\_\_\\  \n");
-	//Log.Color(TGREEN);
-	printf("  \\ \\ \\\_\\ \\ \\ \\\_\\ \\/\\ \\\_\\.\\\_\\ \\ \\ \\ \\ \\ \\\_\\ \\ \\ \\\_\\ \\ \\ \\/\\ \\ \\ \\//\\ \\\_\_/  \n");
-	//Log.Color(TGREEN);
-	printf("   \\ \\\_\_\_\_/\\ \\\_\_\_\_/\\ \\\_\_/ \\\_\\\\ \\\_\\ \\\_\\/`\_\_\_\_ \\ \\  \_\_/\\ \\\_\\ \\\_\\ \\\_\\\\ \\\_\_\_\_\\ \n");
-	//Log.Color(TGREEN);
-	printf("    \\/\_\_\_/  \\/\_\_\_/  \\/\_\_/\\/\_/ \\/\_/\\/\_/`/\_\_\_// \\ \\ \\/  \\/\_/\\/\_/\\/\_/ \\/\_\_\_\_/ \n");
-	//Log.Color(TGREEN);
-	printf("                                         /\\\_\_\_/\\ \\\_\\                       \n");
-	//Log.Color(TGREEN);
-	printf("                                         \\/\_\_/  \\/\_/                      \n");
-	Log.Color(TNORMAL);
-	#else
-	Log.Color(TGREEN);
-	
-	#endif
-	Log.Line("");
-	Log.Color(TNORMAL);
-	Log.Line("");*/
-	Log.Success("LuaEngineMgr", "LuaHypArc Lua Engine %s: Loaded", ARCH);
+	Log.Success("LuaEngineMgr", "LuaBridge interpreter %s: Loaded", ARCH);
 
 	//Initialize our compiler.
 	LUA_COMPILER = new LUA_INSTANCE;

@@ -205,7 +205,8 @@ namespace lua_engine
 			.method( &Player::RemoteRevive, "Resurrect", "resurrect", "ResurrectPlayer", "resurrectPlayer", "resurrectplayer", NULL)
 			.method(&Player::GetName, "GetName", "getName", "getname", NULL)
 
-			.method(&Player::GetSession, "GetSession", "getSession", "getsession", NULL);
+			.method(&Player::GetSession, "GetSession", "getSession", "getsession", NULL)
+			.method( &Player::SaveToDB, "SaveToDB", "saveToDB", "savetodb", NULL);
 
 			m	.class_<WorldSession>("WorldSession")
 			.method(&WorldSession::GetAccountNameS, "GetAccountName", "getAccountName", "getaccountname", NULL)
@@ -215,5 +216,12 @@ namespace lua_engine
 
 			m	.class_<MovementInfo>("MovementInfo")
 				.property_ro("flags", &MovementInfo::flags);
+
+			m	.class_<ChatHandler>("sChatHandler")
+				.method(&ChatHandler::FillMessageData, "FillMessageData", "fillMessageData", "fillmessagedata", NULL)
+				.method(&ChatHandler::FillSystemMessageData, "FillSystemMessageData", "fillSystemMessageData", "fillsystemmessagedata", NULL);
+
+			luabridge::tdstack<ChatHandler*>::push(m.L, ChatHandler::getSingletonPtr() );
+			lua_setglobal(m.L, "sChatHandler");
 	}
 }

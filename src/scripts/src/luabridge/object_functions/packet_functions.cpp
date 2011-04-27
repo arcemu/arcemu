@@ -30,6 +30,10 @@ public:
 	define_method(uint16)
 	define_method(int32)
 	define_method(uint32)
+	define_method(float)
+	define_method(double)
+	define_method(uint64)
+#undef define_method
 	void writestring(const char * str)
 	{
 		*this << string(str);
@@ -45,6 +49,7 @@ namespace lua_engine
 
 	void bindPacketMethods(luabridge::module & m)
 	{
+		m	.class_decl<luapacket>("LuaPacket");
 		m	.class_<WorldPacket>("LuaPacket",true)
 			.constructor<void (*)(uint16,size_t res)>()
 			.method( &WorldPacket::GetOpcode, "GetOpcode", "getOpcode", "getopcode", "opcode", "Opcode", NULL)
@@ -57,7 +62,10 @@ namespace lua_engine
 			.method(  &luapacket::writeuint32, "WriteUint32", "writeuint32", "writeulong", "WriteULong", NULL)
 			.method( &luapacket::writewowguid, "WriteWowGUID", "writewowguid", "writeWoWGUID", NULL)
 			.method( &luapacket::size, "Size", "size", NULL)
-			.method( &luapacket::writestring, "WriteString", "writestring", NULL);
+			.method( &luapacket::writestring, "WriteString", "writestring", NULL)
+			.method( &luapacket::writefloat, "WriteFloat", "writeFloat", "writefloat", NULL)
+			.method( &luapacket::writedouble, "WriteDouble", "writeDouble", "writedouble", NULL)
+			.method( &luapacket::writeuint64, "WriteGUID", "writeGUID", "writeguid", NULL);
 	}
 }
 

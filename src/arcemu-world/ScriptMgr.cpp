@@ -519,8 +519,8 @@ void ScriptMgr::register_dummy_spell(uint32 entry, exp_handle_dummy_spell callba
 		return;
 	}
 
-	if( !sp->HasEffect( SPELL_EFFECT_DUMMY ) )
-		sLog.outError("ScriptMgr has registered a dummy handler for Spell ID: %u ( %s ), but spell has no dummy effect!", entry, sp->Name );
+	if( !sp->HasEffect( SPELL_EFFECT_DUMMY ) && !sp->HasEffect( SPELL_EFFECT_SCRIPT_EFFECT) && !sp->HasEffect(SPELL_EFFECT_SEND_EVENT) )
+		sLog.outError("ScriptMgr has registered a dummy handler for Spell ID: %u ( %s ), but spell has no dummy/script/send event effect!", entry, sp->Name );
 
 	_spells.insert( HandleDummySpellMap::value_type( entry, callback ) );
 }

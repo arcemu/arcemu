@@ -105,7 +105,6 @@ namespace lua_engine
 			.method( &Unit::DisableAI, "DisableAI", "disableAI", "disableai", NULL)
 			.method( &Unit::EnableAI, "EnableAI", "enableAI", "enableai", NULL)
 			.method( &Unit::IsSpiritHealer, "IsSpiritHealer", "isSpiritHealer", "isspirithealer", NULL)
-			.method( &Unit::Phase, "Phase", "phase", NULL)
 			//.method( &Unit::SetFacing)
 			.method( &Unit::SetMinDamage, "SetMinDamage", "setMinDamage", "setmindamage", NULL)
 			.method( &Unit::GetMinDamage, "GetMinDamage", "getMinDamage", "getmindamage", NULL)
@@ -158,7 +157,8 @@ namespace lua_engine
 			.property_rw("runspeed", (float Unit::*)(&Unit::m_runSpeed) )
 			.property_rw("walkspeed", (float Unit::*)(&Unit::m_walkSpeed) )
 			.property_rw("flyspeed", (float Unit::*)(&Unit::m_flySpeed) )
-			.property_ro("CombatStatus", &Unit::getcombatstatus);
+			.property_ro("CombatStatus", &Unit::getcombatstatus)
+			.method(&Unit::EventAddEmote, "EventAddEmote", "eventAddEmote", "eventaddemote", NULL);
 #undef BIND
 			m	.class_<CombatStatusHandler>("CombatStatus")
 				.method( &CombatStatusHandler::IsInCombat, "IsInCombat", "isInCombat", "isincombat", NULL);

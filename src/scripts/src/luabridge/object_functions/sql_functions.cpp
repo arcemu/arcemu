@@ -51,6 +51,8 @@ namespace lua_engine
 			.method( &Field::GetInt16, "GetInt16", "getint16", "GetShort", "getShort", NULL)
 			.method( &Field::GetUInt16, "GetUInt16", "getUInt16", "getuint16", "getushort", "GetUShort", "getUShort", NULL)
 			.method( &Field::GetInt32, "GetInt32", "getInt32", "getint32", "getlong", "GetLong", "getLong", NULL)
-			.method( &Field::GetUInt32, "GetUInt32", "getUInt32", "getuint32", "GetULong", "getULong", "getulong", NULL);
+			.method( &Field::GetUInt32, "GetUInt32", "getUInt32", "getuint32", "GetULong", "getULong", "getulong", NULL)
+			.method( &Field::GetFloat, "GetFloat", "getFloat", "getfloat", NULL)
+			.method( &Field::GetUInt64, "GetGUID", "getGUID", "getguid", "GetUInt64", "getUInt64", "getuint64", NULL);
 	}
 }

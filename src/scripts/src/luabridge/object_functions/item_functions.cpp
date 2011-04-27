@@ -101,7 +101,8 @@ namespace lua_engine
 			.method( &Item::RemoveAllEnchantments, "RemoveAllEnchantments", "removeAllEnchantments", "removeallenchantments", NULL)
 			.method( &Item::IsAmmoBag, "IsAmmoBag", "isAmmoBag", "isammobag", NULL)
 			.method( &Item::RemoveFromWorld, "RemoveFromWorld", "removeFromWorld", "removefromworld", NULL)
-			.method( &Item::HasEnchantments, "HasEnchantments", "hasEnchantments", "hasenchantments", NULL);
+			.method( &Item::HasEnchantments, "HasEnchantments", "hasEnchantments", "hasenchantments", NULL)
+			.method( &Item::SaveToDB, "SaveToDB", "saveToDB", "savetodb",  NULL);
 #undef BIND
 #undef BINDE
 

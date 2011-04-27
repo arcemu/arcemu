@@ -78,7 +78,11 @@ namespace lua_engine
 			.method( &Object::GetInRangePlayers, "GetInRangePlayers", "getInRangePlayers", "getinrangeplayers", NULL)
 			.method( &Object::GetInRangeOpposingFactions, "GetInRangeOpposingFactions", "getInRangeOpposingFactions", "getinrangeopposingfactions", NULL)
 			.method( &Object::GetInRangeSameFactions, "GetInRangeSameFactions", "getInRangeSameFactions", "getinrangesamefactions", NULL)
-			.method( &Object::GetInRangeObjects, "GetInRangeObjects", "getInRangeObjects", "getinrangeobjects", NULL);
+			.method( &Object::GetInRangeObjects, "GetInRangeObjects", "getInRangeObjects", "getinrangeobjects", NULL)
+			.method( (void (Object::*)(WorldPacket*,bool,bool) ) &Object::SendMessageToSet, "SendMessageToSet", "sendMessageToSet", "sendmessagetoset", NULL)
+			.method( &Object::Phase, "Phase", "phase", NULL)
+			.method( &Object::GetPhase, "GetPhase", "getPhase", "getphase", NULL)
+			.method( &Object::IsInWorld, "IsInWorld", "isInWorld", "isinworld", NULL);
 
 		 //creatable and destroyable in the lua environment.
 		 m	.class_<Arcemu::Gossip::Menu>("GossipMenu", true)
