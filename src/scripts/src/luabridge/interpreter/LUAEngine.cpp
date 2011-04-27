@@ -70,11 +70,7 @@ void lua_engine::scriptload_searchdir(char * Dirname, deque<string>& store)
 	WIN32_FIND_DATAA FindData;
 	memset(&FindData,0,sizeof(WIN32_FIND_DATAA));
 	deque< std::string > directories;
-	//char SearchName[MAX_PATH];
-	/*strcpy(SearchName,Dirname);
-	strcat(SearchName, "\\*.*" );*/
 	directories.push_back( Dirname);
-	//std::string current_directory, current_file, pattern;
 	while( directories.size() )
 	{
 		std::string current_directory = directories.front();
@@ -112,38 +108,6 @@ void lua_engine::scriptload_searchdir(char * Dirname, deque<string>& store)
 
 		} while( FindNextFileA(hFile, &FindData) );
 	}
-	
-	/*while( FindNextFileA(hFile, &FindData) )
-	{
-		if( (FindData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)  && !(FindData.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) ) //Credits for this 'if' go to Cebernic from ArcScripts Team. Thanks, you saved me some work ;-)
-		{
-			strcpy(SearchName,Dirname);
-			strcat(SearchName, "\\" );
-			strcat(SearchName,FindData.cFileName);
-			directories.push_back(SearchName);
-		}
-		else
-		{
-			string fname = Dirname;
-			fname += "\\";
-			fname += FindData.cFileName;
-
-			size_t len = fname.length();
-			size_t i=0;
-			char ext[MAX_PATH];
-					  
-			while(len > 0)
-			{  
-				ext[i++] = fname[--len];
-				if(fname[len] == '.' )
-		  			break;
-	  		}
-	  		ext[i++] = '\0';
-	  		if ( !_stricmp(ext,"aul." ) )
-				store.insert(fname);
-		}
-	}
-	FindClose(hFile);*/
 #else
 	char *pch = strrchr(Dirname,'/');
 	if( strcmp(Dirname, "..") == 0 || strcmp(Dirname, ".") == 0 ) return; //Against Endless-Loop
@@ -227,7 +191,10 @@ void lua_engine::loadScripts()
 			le::compiled_scripts.erase(it);
 		}
 		else
+		{
 			++countofvalidscripts;
+			LUA_COMPILER->scripts_.add(it->first);
+		}
 	}
 	Log.Success("LuaEngine", "Successfully loaded [%u/%u] scripts.", countofvalidscripts, countofscripts);
 }
@@ -249,14 +216,14 @@ bool lua_engine::loadScript(const char* filename)
 			fullpath+= ar.source;
 			size_t start = fullpath.find('@'); //remove @ prefix if any.
 			if(start != string::npos)
-				fullpath = fullpath.substr( start+1, (fullpath.length() - (start+1) ) );
+				fullpath = fullpath.substr( ++start, (fullpath.length() - start) );
 #if WIN32
 			start = fullpath.rfind('\\'); //extract the directory
 #else
 			start = fullpath.rfind('/');
 #endif
 			if(start != string::npos)
-				fullpath = fullpath.substr(0, start+1);
+				fullpath = fullpath.substr(0, ++start);
 		}
 		fullpath+= filename;
 		FILE * _file = fopen(fullpath.c_str(), "rb");
@@ -270,8 +237,8 @@ bool lua_engine::loadScript(const char* filename)
 			cached.data_ = (const void*)malloc(file_length);
 			cached.datasize_ = fread( (void*)cached.data_, 1, file_length, _file);
 			fclose(_file);
-			success = (0 == lua_load(context->lu, readScript, (void*)&cached , filename));
-			lua_pcall(context->lu, 0, 0, 0);
+			success = (0 == lua_load(context->lu, readScript, (void*)&cached , filename) ) && (0 == lua_pcall(context->lu, 0, 0, 0) );
+			
 		}
 	}
 	return success;
@@ -820,6 +787,8 @@ namespace lua_engine
 				delete it->second;
 				le::compiled_scripts.erase(it);
 			}
+			else
+				instance->scripts_.add( it->first);
 		}
 	}
 	const char * readScript(lua_State * L, void * ud, size_t * size)

@@ -76,7 +76,9 @@ public:
 		if(start == std::string::npos)
 			start = in.rfind("/");
 		if(start != std::string::npos)
-			out = in.substr(start+1, (in.length() - (start+1) ) );
+			out = in.substr(++start, (in.length() - start  ) );
+		else
+			out = in;
 	}
 };
 
