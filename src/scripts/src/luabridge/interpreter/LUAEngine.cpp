@@ -32,7 +32,10 @@
 ScriptMgr * m_scriptMgr = NULL;
 Arcemu::Utility::TLSObject<PLUA_INSTANCE> lua_instance;
 PLUA_INSTANCE LUA_COMPILER = NULL;
+
+//static data initialization for our classes
 const char * ScriptManager::mt = "LOADED_SCRIPTS";
+const char * ReferenceHandler::refTable = "OBJECT_REFERENCES";
 
 extern "C"
 {
@@ -249,6 +252,7 @@ void lua_engine::BeginLuaFunctionCall(lua_function ref)
 	//lua_settop(lu, 0);
 	
 	lua_getref(lua_state,(ptrdiff_t)ref);
+	ReferenceHandler::getReference(lua_state, (ptrdiff_t)ref);
 }
 bool lua_engine::ExecuteLuaFunction(int params, int res, variadic_parameter * results, bool getparams)
 {

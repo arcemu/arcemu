@@ -1,5 +1,4 @@
 #pragma once
-
 enum QuestEvents
 {
 	QUEST_EVENT_ON_ACCEPT = 1,
@@ -168,6 +167,46 @@ public:
 	}
 };
 
+class ReferenceHandler
+{
+	static const char * refTable;
+public:
+	static ptrdiff_t addReference(lua_State * L, ptrdiff_t index)
+	{
+		ptrdiff_t key = LUA_REFNIL;
+		if(!lua_isnoneornil(L, index) )
+		{
+			lua_getfield(L, LUA_REGISTRYINDEX, refTable);
+			if(lua_isnil(L, -1) )
+			{
+				lua_pop(L,1);
+				lua_newtable(L);
+				lua_pushvalue(L, -1);
+				lua_setfield(L, LUA_REGISTRYINDEX, refTable); // registry[refTable] = {}
+			}
+			assert( lua_type(L,-1) == LUA_TTABLE);
+			lua_pushvalue(L, index);
+			key = luaL_ref(L, -2);
+			lua_pop(L, 1); //pop refTable from stack.
+		}
+		return key;
+	}
+	static void removeReference(lua_State * L, ptrdiff_t key)
+	{
+		lua_getfield(L, LUA_REGISTRYINDEX, refTable);
+		assert( lua_type(L,-1) == LUA_TTABLE);
+		luaL_unref(L, -1, key);
+		lua_pop(L,1); // pop refTable
+	}
+	static void getReference(lua_State * L, ptrdiff_t key)
+	{
+		lua_getfield(L, LUA_REGISTRYINDEX, refTable);
+		assert( lua_type(L,-1) == LUA_TTABLE);
+		lua_rawgeti(L, -1, key); //push to the stack the value at refTable[key]
+		lua_remove(L, -2); // do stack[refTable] = refTable[key]
+	}
+};
+
 //easy clean up function for var params
 static void cleanup_varparam(variadic_parameter * param, lua_State * L)
 {
@@ -184,7 +223,7 @@ static void cleanup_varparam(variadic_parameter * param, lua_State * L)
 			case LUA_TUSERDATA:
 			case LUA_TTABLE:
 			case LUA_TFUNCTION:
-				lua_unref(L, current_node->val.obj_ref);
+				ReferenceHandler::removeReference(L, current_node->val.obj_ref);
 				break;
 			case LUA_TSTRING:
 			  free( (void*)current_node->val.lua_str);

@@ -82,8 +82,8 @@ bool registerUnitEvent(uint32 entry, uint32 evt, lua_function ref)
 		if(itr != li_->m_unitBinding.end() )
 		{
 			found = true;
-			if(itr->second->refs[evt] != NULL)
-				lua_unref(li_->lu, (ptrdiff_t)itr->second->refs[evt]);
+			if(itr->second->refs[evt] != NULL && itr->second->refs[evt] != ref)
+				ReferenceHandler::removeReference(li_->lu, (ptrdiff_t)itr->second->refs[evt]);
 			itr->second->refs[evt] = ref;
 		}
 		else
@@ -106,8 +106,8 @@ bool registerQuestEvent(uint32 entry, uint32 evt, lua_function ref)
 		if(itr != li_->m_questBinding.end() )
 		{
 			found = true;
-			if(itr->second->refs[evt] != NULL)
-				lua_unref( li_->lu, (ptrdiff_t)itr->second->refs[evt]);
+			if(itr->second->refs[evt] != NULL && itr->second->refs[evt] != ref)
+				ReferenceHandler::removeReference(li_->lu, (ptrdiff_t)itr->second->refs[evt]);
 			itr->second->refs[evt] = ref;
 		}
 		else
@@ -130,8 +130,8 @@ bool registerGameObjectEvent(uint32 entry, uint32 evt, lua_function ref)
 		if(itr != li_->m_goBinding.end() )
 		{
 			found = true;
-			if(itr->second->refs[evt] != NULL)
-				lua_unref( li_->lu , (ptrdiff_t)itr->second->refs[evt]);
+			if(itr->second->refs[evt] != NULL && itr->second->refs[evt] != ref)
+				ReferenceHandler::removeReference(li_->lu, (ptrdiff_t)itr->second->refs[evt]);
 			itr->second->refs[evt] = ref;
 		}
 		else
@@ -154,8 +154,8 @@ bool registerUnitGossipEvent(uint32 entry, uint32 evt, lua_function ref)
 		if(itr != li_->m_unitGossipBinding.end() )
 		{
 			found = true;
-			if(itr->second->refs[evt] != NULL)
-				lua_unref( li_->lu, (ptrdiff_t)itr->second->refs[evt]);
+			if(itr->second->refs[evt] != NULL && itr->second->refs[evt] != ref)
+				ReferenceHandler::removeReference(li_->lu, (ptrdiff_t)itr->second->refs[evt]);
 			itr->second->refs[evt] = ref;
 		}
 		else
@@ -178,8 +178,8 @@ bool registerItemGossipEvent(uint32 entry, uint32 evt, lua_function ref)
 		if(itr != li_->m_itemGossipBinding.end() )
 		{
 			found = true;
-			if(itr->second->refs[evt] != NULL)
-				lua_unref( li_->lu, (ptrdiff_t)itr->second->refs[evt]);
+			if(itr->second->refs[evt] != NULL && itr->second->refs[evt] != ref)
+				ReferenceHandler::removeReference(li_->lu, (ptrdiff_t)itr->second->refs[evt]);
 			itr->second->refs[evt] = ref;
 		}
 		else
@@ -202,8 +202,8 @@ bool registerGOGossipEvent(uint32 entry, uint32 evt, lua_function ref)
 		if(itr != li_->m_goGossipBinding.end() )
 		{
 			found = true;
-			if(itr->second->refs[evt] != NULL)
-				lua_unref( li_->lu , (ptrdiff_t)itr->second->refs[evt]);
+			if(itr->second->refs[evt] != NULL && itr->second->refs[evt] != ref)
+				ReferenceHandler::removeReference(li_->lu, (ptrdiff_t)itr->second->refs[evt]);
 			itr->second->refs[evt] = ref;
 		}
 		else
@@ -226,8 +226,8 @@ bool registerInstanceEvent(uint32 entry, uint32 evt, lua_function ref)
 		if(itr != li_->m_instanceBinding.end() )
 		{
 			found = true;
-			if(itr->second->refs[evt] != NULL)
-				lua_unref( li_->lu, (ptrdiff_t)itr->second->refs[evt]);
+			if(itr->second->refs[evt] != NULL && itr->second->refs[evt] != ref)
+				ReferenceHandler::removeReference(li_->lu, (ptrdiff_t)itr->second->refs[evt]);
 			itr->second->refs[evt] = ref;
 		}
 		else
@@ -278,8 +278,11 @@ ptrdiff_t extractfRefFromCString(lua_State * L,const char * functionName)
 		if(strpbrk(functionName,".:") == NULL)
 		{
 			lua_getglobal(L,functionName);
-			if (lua_isfunction(L,-1) && !lua_iscfunction(L,-1))
-				functionRef = lua_ref(L,true);
+			if (lua_isfunction(L,-1) && !lua_iscfunction(L,-1) )
+			{
+				functionRef = ReferenceHandler::addReference(L, -1);
+				lua_pop(L,1);//pop the function
+			}
 			else
 				luaL_error(L,"Reference creation failed! (%s) is not a valid Lua function. \n",functionName);
 		}
@@ -291,8 +294,8 @@ ptrdiff_t extractfRefFromCString(lua_State * L,const char * functionName)
 				lua_getfield(L,-1,token);
 				if(lua_isfunction(L,-1) && !lua_iscfunction(L,-1) )
 				{
-					functionRef = lua_ref(L,true);
-					break;
+					functionRef = ReferenceHandler::addReference(L, -1);
+					lua_pop(L,1);//pop the function
 				}
 				else if (lua_istable(L,-1) )
 				{

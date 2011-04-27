@@ -348,6 +348,8 @@ struct tdstack <const char *>
 	}
 	static const char *get (lua_State *L, int index)
 	{
+		if(lua_isnoneornil(L, index) )
+			return NULL;
 		return luaL_checkstring(L, index);
 	}
 };
@@ -361,6 +363,8 @@ struct tdstack <char *>
 	}
 	static char *get (lua_State *L, int index)
 	{
+		if(lua_isnoneornil(L, index) )
+			return NULL;
 		return (char*)luaL_checkstring(L, index);
 	}
 };
@@ -374,6 +378,8 @@ struct tdstack <std::string>
 	}
 	static std::string get (lua_State *L, int index)
 	{
+		if(lua_isnoneornil(L, index) )
+			return std::string("");
 		return std::string(luaL_checkstring(L, index));
 	}
 };
@@ -387,6 +393,8 @@ struct tdstack <const std::string &>
 	}
 	static std::string get (lua_State *L, int index)
 	{
+		if(lua_isnoneornil(L, index) )
+			return std::string("");
 		return std::string(luaL_checkstring(L, index));
 	}
 };
@@ -397,17 +405,14 @@ struct tdstack<lua_function>
 {
 	static void push(lua_State * l, lua_function ref)
 	{
-		lua_getref(l, (ptrdiff_t)ref);
+		ReferenceHandler::getReference(l, (ptrdiff_t)ref);
 	}
 	static lua_function get(lua_State *L, int index)
 	{
 		ptrdiff_t fref = LUA_REFNIL;
 		ptrdiff_t type = lua_type(L,index);
 		if( type == LUA_TFUNCTION)
-		{
-			lua_pushvalue(L,index);
-			fref = lua_ref(L,true);
-		}
+			fref = ReferenceHandler::addReference(L, index);
 		else if(type == LUA_TSTRING)
 			fref = extractfRefFromCString(L, luaL_checkstring(L, index) );
 		//return the reference as a lua_function type.
@@ -420,7 +425,7 @@ struct tdstack<lua_obj>
 {
 	static void push(lua_State * l, lua_obj ref)
 	{
-		lua_getref(l, (ptrdiff_t)ref);
+		ReferenceHandler::getReference(l, (ptrdiff_t)ref);
 	}
 	static lua_obj get(lua_State *L, int index)
 	{
@@ -430,8 +435,7 @@ struct tdstack<lua_obj>
 		case LUA_TFUNCTION:
 		case LUA_TUSERDATA:
 		case LUA_TLIGHTUSERDATA:
-			lua_pushvalue(L,index);
-			ref = lua_ref(L,true);
+			ref = ReferenceHandler::addReference(L, index);
 			break;
 		}
 		//return the reference as a lua_function type.
@@ -492,7 +496,7 @@ struct tdstack<variadic_parameter*>
 			case LUA_TTABLE:
 				//simply unref the ref and our object is automatically pushed to the stack.
 				if(current_node->val.obj_ref > LUA_REFNIL)
-					lua_getref(L, current_node->val.obj_ref);
+					ReferenceHandler::getReference(L, current_node->val.obj_ref);
 				else
 					tdstack<void>::push(L);
 				break;
@@ -556,10 +560,9 @@ struct tdstack<variadic_parameter*>
 			case LUA_TUSERDATA:
 			case LUA_TTABLE:
 				//create a reference to the object.
-				lua_pushvalue(L, i);
-				if(lua_type(L, i) != current_node->type)
-					printf("\tExpected type (%i) instead got type (%i) \n", current_node->type, lua_type(L,i) );
-				current_node->val.obj_ref = lua_ref(L, true);
+				if(lua_type(L, index) != current_node->type)
+					printf("\tExpected type (%i) instead got type (%i) \n", current_node->type, lua_type(L,index) );
+				current_node->val.obj_ref = ReferenceHandler::addReference(L, index);
 				break;
 			}
 			previous_node = current_node;
@@ -579,8 +582,8 @@ struct tdstack<lua_table>
 		ptrdiff_t tRef = (ptrdiff_t)ref;
 		if( tRef > LUA_REFNIL)
 		{
-			lua_getref(l, tRef);
-			lua_unref(l, tRef);
+			ReferenceHandler::getReference(l, (ptrdiff_t)ref);
+			ReferenceHandler::removeReference(l, (ptrdiff_t)ref);
 		}
 		else
 			lua_pushnil(l);
@@ -589,10 +592,7 @@ struct tdstack<lua_table>
 	{
 		ptrdiff_t ref = LUA_REFNIL;
 		if(lua_type(L, index) == LUA_TTABLE)
-		{
-			lua_pushvalue(L, index);
-			ref = lua_ref(L,true);
-		}
+			ref = ReferenceHandler::addReference(L, index);
 		return (lua_table)ref;
 	}
 };
