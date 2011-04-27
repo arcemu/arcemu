@@ -38,6 +38,23 @@ struct tdstack<T*>
 			lua_pushnil(L);
 	}
 
+	
+	//************************************
+	// Purpose : Takes the userdata the at given idx and reassigns its metatable and pushes it to the top of the stack.
+	// Parameter:	lua_State * L
+	// Parameter:	int idx
+	// Return : void
+	//************************************
+	static void reassignto(lua_State*L, int idx)
+	{
+		if( lua_type(L, idx) == LUA_TUSERDATA)
+		{
+			lua_pushvalue(L, idx); //make sure it's at the top
+			luaL_getmetatable(L, classname<T>::name() );
+			lua_setmetatable(L, -2);
+		}
+	}
+
 	static void push(lua_State *L, pair< typename std::set<T*>::iterator, typename std::set<T*>::iterator > itr)
 	{
 		lua_newtable(L);
@@ -563,7 +580,7 @@ struct tdstack<variadic_parameter*>
 				current_node->val.thread = lua_tothread(L, i);
 				break;
 			case LUA_TBOOLEAN:
-			 	current_node->val.bewl = luaL_checkint(L,i);
+			 	current_node->val.bewl = lua_toboolean(L, i);
 				break;
 			case LUA_TLIGHTUSERDATA:
 				current_node->val.l_ud = lua_touserdata(L, i);
@@ -690,7 +707,7 @@ struct tdstack<const uint64 &>
 };
 
 template<typename T>
-struct tdstack< std::set<T> >
+struct tdstack< std::set<T> & >
 {
 	static void push(lua_State * L, std::set<T> & tree)
 	{

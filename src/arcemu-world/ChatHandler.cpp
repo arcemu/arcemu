@@ -67,7 +67,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 	CHECK_INWORLD_RETURN
 
 	CHECK_PACKET_SIZE(recv_data, 9);
-	WorldPacket *data;
+	WorldPacket *data = NULL;
 
 	uint32 type;
 	int32 lang;
@@ -355,7 +355,11 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 				data = sChatHandler.FillMessageData( CHAT_MSG_YELL, (CanUseCommand('0') && lang != -1) ? LANG_UNIVERSAL : lang,  msg.c_str(), _player->GetGUID(), _player->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_GM) ? 4 : 0 );
 
 			else if(lang== 0 && !CanUseCommand('c'))
+			{
+				if(data != NULL)
+					delete data;
 				return;
+			}
 
 			else if(GetPlayer()->m_modlanguage >= 0)
 				data = sChatHandler.FillMessageData( CHAT_MSG_YELL, GetPlayer()->m_modlanguage,  msg.c_str(), _player->GetGUID(), _player->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_GM) ? 4 : 0 );
@@ -420,6 +424,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 			{
 				data = sChatHandler.FillMessageData( CHAT_MSG_WHISPER, lang,  msg.c_str(), _player->GetGUID(), _player->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_GM) ? 4 : 0 );
 				playercache->SendPacket(data);
+				delete data;
 			}
 
 
@@ -721,4 +726,5 @@ void WorldSession::HandleChatIgnoredOpcode(WorldPacket & recvPacket )
 
 	WorldPacket * data = sChatHandler.FillMessageData(CHAT_MSG_IGNORED, LANG_UNIVERSAL, _player->GetName(), _player->GetGUID());
 	player->GetSession()->SendPacket(data);
+	delete data;
 }

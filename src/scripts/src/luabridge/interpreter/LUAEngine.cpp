@@ -261,7 +261,7 @@ void lua_engine::BeginLuaFunctionCall(lua_function ref)
 	lua_getref(lua_state,(ptrdiff_t)ref);
 	ReferenceHandler::getReference(lua_state, (ptrdiff_t)ref);
 }
-bool lua_engine::ExecuteLuaFunction(int params, int res, variadic_parameter * results, bool getparams)
+bool lua_engine::ExecuteLuaFunction(int params, int res, variadic_parameter ** results, bool getparams)
 {
 	bool ret = true;
 	lua_State * lu = lua_state;
@@ -288,7 +288,7 @@ bool lua_engine::ExecuteLuaFunction(int params, int res, variadic_parameter * re
 		}
 		//Get result arguments from lua.
 		else if(getparams)
-			results = luabridge::tdstack<variadic_parameter*>::get(lu,1);
+			*results = luabridge::tdstack<variadic_parameter*>::get(lu, (top-params) );
 	}
 	return ret;
 }

@@ -312,40 +312,40 @@ static void GetRegistryTable(const char * name, lua_stack stack)
 }
 
 //Lua object casting methods
-static Player * lua_toplayer(Object * obj)
+static void lua_toplayer(Object * obj, lua_stack s)
 {
-	Player * plr = NULL;
 	if(obj != NULL && obj->IsPlayer() )
-		plr = TO_PLAYER(obj);
-	return plr;
+		luabridge::tdstack<Player*>::reassignto( (lua_thread)s, 1);
+	else
+		luabridge::tdstack<void>::push( (lua_thread)s);
 }
-static GameObject * lua_togo(Object * obj)
+static void lua_togo(Object * obj, lua_stack s)
 {
-	GameObject * ptr = NULL;
 	if(obj != NULL && obj->IsGameObject() )
-		ptr = TO_GAMEOBJECT(obj);
-	return ptr;
+		luabridge::tdstack<GameObject*>::reassignto( (lua_thread)s, 1);
+	else
+		luabridge::tdstack<void>::push( (lua_thread)s);
 }
-static Item * lua_toitem(Object * obj)
+static void lua_toitem(Object * obj, lua_stack s)
 {
-	Item * ptr = NULL;
 	if(obj != NULL && obj->IsItem() )
-		ptr = TO_ITEM(obj);
-	return ptr;
+		luabridge::tdstack<Item*>::reassignto( (lua_thread)s, 1);
+	else
+		luabridge::tdstack<void>::push( (lua_thread)s);
 }
-static Unit * lua_tounit(Object * obj)
+static void lua_tounit(Object * obj, lua_stack s)
 {
-	Unit * ptr = NULL;
 	if(obj != NULL && obj->IsUnit() )
-		ptr = TO_UNIT(obj);
-	return ptr;
+		luabridge::tdstack<Unit*>::reassignto( (lua_thread)s, 1);
+	else
+		luabridge::tdstack<void>::push( (lua_thread)s);
 }
-static Creature * lua_tocreature(Object * obj)
+static void lua_tocreature(Object * obj, lua_stack s)
 {
-	Creature * ptr = NULL;
 	if(obj != NULL && obj->IsCreature() )
-		ptr = TO_CREATURE(obj);
-	return ptr;
+		luabridge::tdstack<Creature*>::reassignto( (lua_thread)s, 1);
+	else
+		luabridge::tdstack<void>::push( (lua_thread)s);
 }
 
 static bool include(const char * filename, bool once)

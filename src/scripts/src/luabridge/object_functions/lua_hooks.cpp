@@ -17,7 +17,7 @@ bool LuaHookOnNewCharacter(uint32 Race, uint32 Class, WorldSession *, const char
 		push_int(Race);
 		push_int(Class);
 		variadic_parameter * params = NULL;
-		if(lua_engine::ExecuteLuaFunction(4,1, params, true) )
+		if(lua_engine::ExecuteLuaFunction(4,1, &params, true) )
 		{
 			//find a boolean return argument that is explicitly false.
 			if(params != NULL && params->head_node->type == LUA_TBOOLEAN && params->head_node->val.bewl == 0)
@@ -124,7 +124,7 @@ bool LuaHookOnRepop(Player * pPlayer)
 		push_int(SERVER_HOOK_EVENT_ON_REPOP);
 		push_unit(pPlayer);
 		variadic_parameter * params = NULL;
-		if (lua_engine::ExecuteLuaFunction(2,1, params, true)) 
+		if (lua_engine::ExecuteLuaFunction(2,1, &params, true)) 
 		{
 			if(params != NULL && params->head_node->type == LUA_TBOOLEAN && params->head_node->val.bewl == 0)
 				result = false;
@@ -186,7 +186,7 @@ bool LuaHookOnCastSpell(Player * pPlayer, SpellEntry* pSpell, Spell* spell)
 		push_int(pSpell->Id);
 		push_spell(spell);
 		variadic_parameter * params = NULL;
-		if( lua_engine::ExecuteLuaFunction(4,1, params, true) ) 
+		if( lua_engine::ExecuteLuaFunction(4,1, &params, true) ) 
 		{
 			if(params != NULL && params->head_node->type == LUA_TBOOLEAN && params->head_node->val.bewl == 0)
 				result = false;
@@ -224,7 +224,7 @@ bool LuaHookOnLogoutRequest(Player * pPlayer)
 		push_int(SERVER_HOOK_EVENT_ON_LOGOUT_REQUEST);
 		push_unit(pPlayer);
 		variadic_parameter * params = NULL;
-		if(lua_engine::ExecuteLuaFunction(2,1, params, true) )
+		if(lua_engine::ExecuteLuaFunction(2,1, &params, true) )
 		{
 			if(params != NULL && params->head_node->type == LUA_TBOOLEAN && params->head_node->val.bewl == 0)
 				result = false;
@@ -314,7 +314,7 @@ bool LuaHookOnChat(Player * pPlayer, uint32 Type, uint32 Lang, const char * Mess
 		push_int(Lang);
 		push_str(Misc);
 		variadic_parameter * params = NULL;
-		if( lua_engine::ExecuteLuaFunction(6,1, params, true)) 
+		if( lua_engine::ExecuteLuaFunction(6,1, &params, true)) 
 		{
 			if(params != NULL && params->head_node->type == LUA_TBOOLEAN && params->head_node->val.bewl == 0)
 				result = false;
@@ -537,7 +537,7 @@ bool LuaHookOnPreUnitDie(Unit *Killer, Unit *Victim)
 		push_unit(Killer);
 		push_unit(Victim);
 		variadic_parameter * params = NULL;
-		if( lua_engine::ExecuteLuaFunction(3,1, params, true)) {
+		if( lua_engine::ExecuteLuaFunction(3,1, &params, true)) {
 			if(params != NULL && params->head_node->type == LUA_TBOOLEAN && params->head_node->val.bewl == 0)
 				result = false;
 			cleanup_varparam(params, ref->lu);
@@ -611,7 +611,7 @@ bool LuaHookOnResurrect(Player * pPlayer)
 		push_int(SERVER_HOOK_EVENT_ON_RESURRECT);
 		push_unit(pPlayer);
 		variadic_parameter * params = NULL;
-		if (lua_engine::ExecuteLuaFunction(2,1, params, true)) 
+		if (lua_engine::ExecuteLuaFunction(2,1, &params, true)) 
 		{
 			if(params != NULL && params->head_node->type == LUA_TBOOLEAN && params->head_node->val.bewl == 0)
 				result = false;

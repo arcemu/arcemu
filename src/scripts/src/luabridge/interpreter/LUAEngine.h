@@ -55,7 +55,7 @@ extern PLUA_INSTANCE LUA_COMPILER;
 #define RELEASE_LOCK 
 #define NULL_BINDING_CHECK GET_LOCK; if(m_binding == NULL) return;
 //don't execute lua code from invalid lua states, might prevent some server hooks from firing lua code.
-#define CHECKVALIDSTATE { if(lua_instance == NULL) return; }
+#define CHECKVALIDSTATE { if(lua_instance.get() == NULL) return; }
 
 namespace lua_engine
 {
@@ -107,7 +107,7 @@ namespace lua_engine
 	static void parseHeader(PLUA_SCRIPT);	
 	//c to lua and lua to c methods
 	extern void BeginLuaFunctionCall(lua_function ref);
-	extern bool ExecuteLuaFunction(int = 0, int = 0, variadic_parameter * = NULL, bool= false);
+	extern bool ExecuteLuaFunction(int = 0, int = 0, variadic_parameter ** = NULL, bool= false);
 	extern void ExecuteLuaFunction(variadic_parameter* );
 	extern void EndLuaFunctionCall(int results = 0);
 

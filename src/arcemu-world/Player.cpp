@@ -13243,6 +13243,7 @@ void Player::SendChatMessage(uint8 type, uint32 lang, const char *msg, uint32 de
 
 	WorldPacket *data = sChatHandler.FillMessageData(type, lang, msg, GetGUID());
 	SendMessageToSet( data, true );
+	delete data;
 }
 
 void Player::AcceptQuest( uint64 guid, uint32 quest_id ){
