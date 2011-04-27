@@ -18,6 +18,16 @@
  *]]
 local CREATURE = LCF.CreatureMethods
 assert(CREATURE)
+local function alias(LHAname, LBname)
+   CREATURE[LHAname] = function(self, ...)
+      return self[LBname](self, ...);
+   end
+end
+local function aialias(LHAname, LBname)
+   CREATURE[LHAname] = function(self, ...)
+      return self:GetAIInterface()[LBname](self:GetAIInterface(), ...);
+   end
+end
 
 -- Some shorcuts to getting the ai interface.
 CREATURE.AI = function(self) return self:GetAIInterface() end
@@ -85,7 +95,7 @@ function CREATURE:RemoveAIUpdateEvent()
 	self:GetScript():RemoveAIUpdateEvent()
 end
 
-CREATURE.GetName = function(self) return self:GetCreatureInfo().Name end, CREATURE.Name
+CREATURE.GetName = function(self) return self:GetCreatureInfo().Name end
 CREATURE.Name = CREATURE.GetName
 CREATURE.name = CREATURE.Name
 
@@ -120,7 +130,7 @@ end
 function CREATURE:SetCombatMeleeCapable( bewl)
 	self:GetAIInterface().disable_melee = not bewl
 end
-function CREATURE:SetCombatSpellsCapable( bewl)
+function CREATURE:SetCombatSpellCapable( bewl)
 	self:GetAIInterface().disable_spell = not bewl
 end
 function CREATURE:SetCombatTargetingCapable( bewl)
@@ -149,7 +159,7 @@ function CREATURE:WipeCurrentTarget()
 	end
 	self:GetAIInterface():setNextTarget( nil)
 end
-function CREATURE:GetNextTarget() return self:GetAIInterface():getNextTarget() end
+aialias("GetNextTarget", "getNextTarget")
 function CREATURE:SetNextTarget(target) self:GetAIInterface():setNextTarget( target) end
 
 CREATURE.GetMostHated = function(self) return self:GetAIInterface():GetMostHated() end
@@ -159,3 +169,106 @@ CREATURE.GetSecondHated = function(self) return self:GetAIInterface():GetSecondH
 CREATURE.GetAddTank = CREATURE.GetSecondHated
 
 function CREATURE:MoveTo(...) self:GetAIInterface():MoveTo(...) end
+
+function CREATURE:SetEquippedItem(slot, id)
+   self:SetUInt32Value(LCF.UNIT_VIRTUAL_ITEM_SLOT_ID+slot, id)
+end
+
+function CREATURE:Attack(target)
+   self:GetAIInterface():WipeTargetList()
+   self:GetAIInterface():taunt(target, true)
+   return true
+end
+
+aialias("ChangeTarget", "setNextTarget")
+
+aialias("ClearThreatList", "ClearHateList")
+
+function CREATURE:CreateWaypoint(x,y,z,o,waittime,flags,model)
+   model = model or 0
+   local way = Waypoint()
+   way.x = x; way.y = y; way.z = z; way.o = o; way.waittime = waittime; way.flags = flags;
+   --todo: implement these
+   --way.backwardskinid = model; way.forwardskinid = model;
+   --self:GetAIInterface():addWayPoint(way);
+   return way;
+end
+
+alias("CreateCustomWaypoint", "CreateWaypoint")
+
+
+
+function CREATURE:CreatureHasQuest(id) return self:HasQuest(id, 0xFFFFFFFF); end
+
+aialias("DeleteWaypoint", "deleteWaypoint")
+
+aialias("DeleteWaypoints", "deleteWaypoints")
+
+function CREATURE:EventCastSpell(tar, id, delay, repeats)
+   self:RegisterEvent(function() self:CastSpell(tar, id, true); end, delay, repeats);
+end
+
+aialias("GetAIState", "getAIState")
+
+aialias("GetAITargetsCount", "GetAITargetsCount")
+
+aialias("GetCurrentWaypoint", "getCurrentWaypoint")
+
+aialias("GetMoveType", "getMoveType")
+
+aialias("GetSoulLinkedWith", "getSoullinkedWith")
+
+alias("GetSpawnId", "GetSQL_id")
+
+aialias("GetTauntedBy", "getTauntedBy")
+
+aialias("GetThreat", "getThreatByPtr")
+
+aialias("GetUnitToFollow", "getUnitToFollow")
+
+aialias("IsFlying", "IsFlying")
+
+aialias("ModThreat", "modThreatByPtr")
+
+function CREATURE:ModifyFlySpeed(value) self.flyspeed = value; end
+
+function CREATURE:ModifyRunSpeed(value) self.runspeed = value; end
+
+function CREATURE:ModifyWalkSpeed(value) self.walkspeed = value; end
+
+function CREATURE:MoveToWaypoint(id)
+   self:GetAIInterface():setMoveType(3);
+   self:GetAIInterface():setWaypointToMove(id)
+end
+
+aialias("RemoveThreatByPtr", "RemoveThreatByPtr")
+
+function CREATURE:ReturnToSpawnPoint()
+   local x,y,z,o = self:GetSpawnLocation()
+   self:MoveTo(x,y,z,o)
+end
+
+aialias("SetAIState", "SetAIState")
+
+aialias("SetMoveRunFlag", "setMoveRunFlag")
+
+aialias("SetMovementType", "setMoveType")
+
+aialias("SetOutOfCombatRange", "setOutOfCombatRange")
+
+aialias("SetPetOwner", "SetPetOwner")
+
+aialias("SetSoulLinkedWith", "SetSoulLinkedWith")
+
+aialias("SetTauntedBy", "taunt")
+
+function CREATURE:SetUnitToFollow(unit, dist)
+   self:GetAIInterface():SetUnitToFollow(unit)
+   self:GetAIInterface():SetFollowDistance(value)
+end
+
+aialias("StopMovement", "StopMovement")
+
+aialias("WipeThreatList", "WipeHateList")
+
+function CREATURE:GetObjectType() return "Unit"; end

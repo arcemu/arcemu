@@ -47,7 +47,13 @@ LCF = {
 		CreatureMethods = {},
 		GOMethods = {},
 		PlayerMethods = {},
-		UnitMethods = {}
+		UnitMethods = {},
+		ItemMethods = {},
+      SpellMethods = {},
+      AuraMethods = {},
+      TaxiMethods = {},
+      PacketMethods = {},
+      QResultMethods = {}
 	}
 LCF.vars  = {
 		OBJECT_FIELD_GUID = 0x0000,
@@ -785,6 +791,12 @@ setmetatable( getregistry("GameObject"),LCF.GOMethods)
 setmetatable( getregistry("Player"), LCF.PlayerMethods)
 setmetatable( getregistry("Object"), LCF.ObjectMethods)
 setmetatable( getregistry("Unit"), LCF.UnitMethods )
+setmetatable( getregistry("Item"), LCF.ItemMethods )
+setmetatable( getregistry("Spell"), LCF.SpellMethods ) --spell.impl contains Spell and Aura
+setmetatable( getregistry("Aura"), LCF.AuraMethods )
+setmetatable( getregistry("TaxiPath"), LCF.TaxiMethods ) --taxi, packet, qresult in one file
+setmetatable( getregistry("LuaPacket"), LCF.PacketMethods )
+setmetatable( getregistry("QueryResult"), LCF.QResultMethods )
 setmetatable(LCF,LCF)
 setmetatable(LCF.vars,LCF.vars)
 --Might expand these to the other wow objects if they really do need wrappers
@@ -803,6 +815,6 @@ local startpos,endpos = string.find(src,file_sep),string.len(src)
 if(string.find(src,"@") ~= nil) then endpos = endpos -1 end
 
 local directory = string.reverse(string.sub(src,startpos,endpos))
-local impl_files = { directory.."LCF_Creature.impl", directory.."LCF_Player.impl", directory.."LCF_Gameobject.impl", directory.."LCF_Extra.impl" , directory.."LCF_Object.impl", directory.."LCF_Unit.impl" }
-for k,v in pairs(impl_files) do dofile(v) end
+local impl_files = { "LCF_Object.impl", "LCF_Creature.impl", "LCF_Global.impl", "LCF_Player.impl", "LCF_Gameobject.impl", "LCF_Extra.impl", "LCF_Unit.impl", "LCF_Item.impl", "LCF_Spell.impl", "LCF_Taxi_Packet_etc.impl" }
+for k,v in pairs(impl_files) do dofile(directory..v) end
 	

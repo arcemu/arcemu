@@ -22,6 +22,11 @@
  
 local UNIT = LCF.UnitMethods
 assert(UNIT)
+local function alias(LHAname, LBname)
+   UNIT[LHAname] = function(self, ...)
+      return self[LBname](self, ...);
+   end
+end
 
 function UNIT:FullCastSpell( id)
 	self:CastSpell(self, id, false)
@@ -77,5 +82,85 @@ end
 function UNIT:GetSummonedBy()
 	return self:GetObject( self:GetUInt64Value(LCF.UNIT_FIELD_SUMMONEDBY) )
 end
- 
- 
+
+function UNIT:CastSpellAoFID(x,y,z,id)
+   self:CastSpellAoF(x, y, z, dbcSpell.LookupEntry(id), true)
+end
+
+alias("CastSpellAoE", "CastSpellAoF")
+
+function UNIT:QuickChannel(id, tar)
+   self:CastSpell(tar, id, true)
+   self:ChannelSpell(id, tar)
+end
+
+alias("DeMorph", "Demorph")
+
+alias("EventChat", "SendChatMessage")
+
+function UNIT:FullCastSpellAoF(x,y,z,id) self:CastSpellAoF(x, y, z, dbcSpell.LookupEntry(id), false); end
+
+alias("FullCastSpellAoE", "FullCastSpellAoF")
+
+function UNIT:GetCreatureNearestCoords(x,y,z,e) return MapMgr:GetInterface():GetCreatureNearestCoords(x,y,z,e); end
+
+function UNIT:GetGameObjectNearestCoords(x,y,z,e) return MapMgr:GetInterface():GetGameObjectNearestCoords(x,y,z,e); end
+
+alias("GetDisplay", "GetDisplayId")
+
+alias("GetGender", "getGender")
+
+alias("GetLevel", "getLevel")
+
+function UNIT:GetMana() return self:GetPower(0); end
+
+function UNIT:GetMaxMana() return self:GetMaxPower(0); end
+
+alias("GetNativeDisplay", "GetNativeDisplayId")
+
+function UNIT:GetPowerPct(idx) return (self:GetPower(idx) / self:GetMaxPower(idx)) * 100; end
+
+alias("IsAlive", "isAlive")
+
+function UNIT:IsInCombat() return self.CombatStatus:IsInCombat(); end
+
+--does not currently work
+function UNIT:PlaySoundToSet(sound_entry)
+   local data = LuaPacket(722, 4);
+	data:WriteUInt32(sound_entry);
+	
+   --todo: implement this
+   --self:SendMessageToSet(data, true);
+end
+
+alias("SetAttackTimer", "setAttackTimer")
+
+alias("SetGender", "setGender")
+
+alias("SetLevel", "setLevel")
+
+function UNIT:SetMana(value) self:SetPower(0, value); end
+
+function UNIT:SetMaxMana(value) self:SetMaxPower(0, value); end
+
+alias("SetModel", "SetDisplayId")
+
+function UNIT:SetNPCFlags(value) self:SetUInt32Value(LCF.UNIT_NPC_FLAGS, value); end
+
+function UNIT:SetPowerPct(pct, _type)
+   self:SetPower(_type, (pct / 100) * self:GetMaxPower(_type));
+end
+
+function UNIT:SetZoneWeather(zoneid, _type, density) return SetWeather("zone", zoneid, _type, density); end
+
+function UNIT:SpawnCreature(entry, x, y, z, o, fac, duration, e1, e2, e3, phase, save)
+   return EasySpawn(1, entry, x, y, z, o, fac, duration, e1, e2, e3, save, phase)
+end
+
+function UNIT:SpawnGameObject(entry, x, y, z, o, duration, scale, phase, save)
+   return EasySpawn(2, entry, x, y, z, o, scale, duration, nil, nil, nil, save, phase)
+end
+
+function UNIT:CreateGuardian(entry, duration, angle, lvl)
+   return self:create_guardian(entry, duration, angle, lvl, 0)
+end

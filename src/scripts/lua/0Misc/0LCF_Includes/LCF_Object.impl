@@ -22,6 +22,11 @@
  
  local OBJ = LCF.ObjectMethods
  assert(OBJ)
+ local function alias(LHAname, LBname)
+   OBJ[LHAname] = function(self, ...)
+      return self[LBname](self, ...);
+   end
+end
  
  function OBJ:GetX() return self:GetPositionX() end
  function OBJ:GetY() return self:GetPositionY() end
@@ -74,4 +79,36 @@ function OBJ:SpawnLocalGameObject(entry,duration)
 		go:Despawn(duration ,0)
 	end
 end
+
+function OBJ:RemoveFlag(index, oldflag)
+   self:SetUInt32Value(index, bit_and(self:GetUInt32Value(index), bit_not(oldFlag)));
+end
+
+alias("GetByteValue", "GetByte")
+
+alias("SetByteValue", "SetByte")
+
+alias("CalcRadAngle", "calcRadAngle")
+
+alias("CalcAngle", "calcAngle")
+
+alias("CalcToDistance", "CalcDistance2Location")
+
+alias("GetDistanceYards", "CalcDistance2Object")
+
+function OBJ:GetInstanceID() return MapMgr:GetInstanceID(); end
+
+function OBJ:GetObject(guid) return MapMgr:GetObject(guid); end
+
+function OBJ:GetUnitByGUID(guid) return MapMgr:GetObject(guid); end
+
+function OBJ:GetUnitBySqlId(id) return MapMgr:GetSqlIdCreature(id); end
+
+alias("GetZoneId", "GetZoneID")
+
+function OBJ:IsInDungeon() return (MapMgr:GetMapInfo().type == 4); end
+
+function OBJ:IsInRaid() return (MapMgr:GetMapInfo().type == 1); end
+
+alias("ModUInt32Value", "ModSignedUInt32Value")
  

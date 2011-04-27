@@ -19,6 +19,11 @@
 
 local GAMEOBJECT = LCF.GOMethods
 assert(GAMEOBJECT)
+local function alias(LHAname, LBname)
+   GAMEOBJECT[LHAname] = function(self, ...)
+      return self[LBname](self, ...);
+   end
+end
 
 function GAMEOBJECT:SetUnclickable()
 	self:SetUInt32Value(LCF.GAMEOBJECT_FLAGS,0x1)
@@ -64,9 +69,59 @@ end
 function GAMEOBJECT:RemoveAIUpdateEvent()
 	self:GetScript():RemoveAIUpdateEvent()
 end
-function GAMEOBJECT:Name()
+function GAMEOBJECT:GetName()
 	return self:GetInfo().Name
 end
 function GAMEOBJECT:Type()
 	return self:GetInfo().Type
+end
+
+function GAMEOBJECT:Activate()
+   if (self:IsOpen()) then self:Close(); else self:Open(); end
+end
+
+function GAMEOBJECT:ChangeScale(scale, now)
+   self:SetScale(scale)
+   if (now) then
+      self:Despawn(1, 1)
+   end
+   return true
+end
+
+function GAMEOBJECT:CreateLuaEvent(func, delay, repeats)
+   --Not associated with the game object, but this is the most compatible method.
+   CreateLuaEvent(func, delay, repeats)
+end
+
+function GAMEOBJECT:GetCreatureNearestCoords(x,y,z,e) return MapMgr:GetInterface():GetCreatureNearestCoords(x,y,z,e); end
+
+function GAMEOBJECT:GetGameObjectNearestCoords(x,y,z,e) return MapMgr:GetInterface():GetGameObjectNearestCoords(x,y,z,e); end
+
+function GAMEOBJECT:GetObjectType() return "GameObject"; end
+
+alias("IsActive", "IsClosed")
+
+alias("IsInBack", "IsBehind")
+
+--does not currently work
+function GAMEOBJECT:PlaySoundToSet(sound_entry)
+   local data = LuaPacket(722, 4);
+	data:WriteUInt32(sound_entry);
+	
+   --todo: implement this
+   --self:SendMessageToSet(data, true);
+end
+
+function GAMEOBJECT:SetZoneWeather(zoneid, _type, density) return SetWeather("zone", zoneid, _type, density); end
+
+function GAMEOBJECT:SpawnCreature(entry, x, y, z, o, fac, duration, e1, e2, e3, phase, save)
+   return EasySpawn(1, entry, x, y, z, o, fac, duration, e1, e2, e3, save, phase)
+end
+
+function GAMEOBJECT:SpawnGameObject(entry, x, y, z, o, duration, scale, phase, save)
+   return EasySpawn(2, entry, x, y, z, o, scale, duration, nil, nil, nil, save, phase)
+end
+
+function GAMEOBJECT:Update()
+   self:Despawn(1, 1)
 end
