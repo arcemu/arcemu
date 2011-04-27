@@ -37,26 +37,20 @@ namespace lua_engine
 {
 	void bindSQLMethods(luabridge::module & m)
 	{
+		m	.class_decl<QueryResult>("QueryResult");
 		m	.class_<QueryResult>("QueryResult")
-			.method("NextRow", &QueryResult::NextRow)
-			.method("GetFieldCount", &QueryResult::GetFieldCount)
-			.method("GetColumn", (Field* (LuaResult::*)(int) )&LuaResult::GetColumn)
-			.method("GetRowCount", &QueryResult::GetRowCount);
+			.method( &QueryResult::NextRow, "NextRow", "nextRow", "nextrow", NULL)
+			.method( &QueryResult::GetFieldCount, "GetFieldCount", "getFieldCount", "getfieldcount", NULL)
+			.method( (Field* (LuaResult::*)(int) )&LuaResult::GetColumn, "GetColumn", "getColumn" , "getcolumn", NULL)
+			.method( &QueryResult::GetRowCount, "GetRowCount", "getRowCount", "getrowcount", NULL);
 
 		m	.class_<Field>("SQL_Field")
-			.method("GetString", &Field::GetString)
-			.method("GetStr", &Field::GetString)
-			.method("GetByte", &Field::GetInt8)
-			.method("GetInt8", &Field::GetInt8)
-			.method("GetUByte", &Field::GetUInt8)
-			.method("GetUInt8", &Field::GetUInt8)
-			.method("GetShort", &Field::GetInt16)
-			.method("GetUInt16", &Field::GetUInt16)
-			.method("GetInt16", &Field::GetInt16)
-			.method("GetUShort", &Field::GetUInt16)
-			.method("GetLong", &Field::GetInt32)
-			.method("GetInt32", &Field::GetInt32)
-			.method("GetULong", &Field::GetUInt32)
-			.method("GetUInt32", &Field::GetUInt32);
+			.method( &Field::GetString, "GetString", "getString", "getstring", NULL)
+			.method( &Field::GetInt8, "GetByte", "getbyte", "GetInt8", "getInt8", "getint8", NULL)
+			.method( &Field::GetUInt8, "GetUInt8", "getuint8", "GetUByte", "getubyte", "getUByte", NULL)
+			.method( &Field::GetInt16, "GetInt16", "getint16", "GetShort", "getShort", NULL)
+			.method( &Field::GetUInt16, "GetUInt16", "getUInt16", "getuint16", "getushort", "GetUShort", "getUShort", NULL)
+			.method( &Field::GetInt32, "GetInt32", "getInt32", "getint32", "getlong", "GetLong", "getLong", NULL)
+			.method( &Field::GetUInt32, "GetUInt32", "getUInt32", "getuint32", "GetULong", "getULong", "getulong", NULL);
 	}
 }

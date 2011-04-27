@@ -45,11 +45,21 @@ struct function_proxy <FnPtr, void>
  */
 
 template <typename FnPtr>
-module& module::function (const char *name, FnPtr fp)
+module& module::function (FnPtr fp, const char * start, ...)
 {
+	va_list arglist;
+	va_start(arglist, start);
+	const char * name = start;
 	lua_pushlightuserdata(L, (void *)fp);
 	lua_pushcclosure(L, &function_proxy<FnPtr>::f, 1);
-	lua_setglobal(L, name);
+	while(name != NULL)
+	{
+		lua_pushvalue(L, -1);
+		lua_setglobal(L, name);
+		name = va_arg(arglist, const char*);
+	}
+	va_end(arglist);
+	lua_pop(L, 1);
 	return *this;
 }
 

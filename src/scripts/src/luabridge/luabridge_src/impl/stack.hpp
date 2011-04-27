@@ -677,6 +677,29 @@ struct tdstack<const uint64 &>
 	}
 };
 
+template<typename T>
+struct tdstack< std::vector<T> &>
+{
+	static void push(lua_State * L, const std::vector<T> & array)
+	{
+		for(vector<T>::const_iterator itr = array.begin(); itr != array.end()  )
+			tdstack<T>::push(L, (*itr) );
+	}
+
+	static std::vector<T> get(lua_State *, int);
+};
+template<typename T>
+struct tdstack< std::list<T> &>
+{
+	static void push(lua_State * L, const std::list<T> & list)
+	{
+		for(list<T>::const_iterator itr = list.begin(); itr != list.end()  )
+			tdstack<T>::push(L, (*itr) );
+	}
+
+	static std::list<T> get(lua_State *, int);
+};
+
 
 /*
  * Subclass of a type/value list, constructable from the Lua stack.

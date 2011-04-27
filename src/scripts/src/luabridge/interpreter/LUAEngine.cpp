@@ -37,6 +37,13 @@ PLUA_INSTANCE LUA_COMPILER = NULL;
 const char * ScriptManager::mt = "LOADED_SCRIPTS";
 const char * ReferenceHandler::refTable = "OBJECT_REFERENCES";
 
+lua_engine::LuaScriptData lua_engine::compiled_scripts;
+lua_engine::hooked_dummySpells lua_engine::_hooked_dummies;
+lua_engine::ActiveStates lua_engine::activeStates;
+FastMutex lua_engine::activestates_lock;
+FastMutex lua_engine::scriptLock;
+
+
 extern "C"
 {
 	 SCRIPT_DECL uint32 _exp_get_script_type()

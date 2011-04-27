@@ -37,18 +37,18 @@ namespace lua_engine
 {
 	void bindRegisterMethods(luabridge::module & m)
 	{
-		m	.function("RegisterServerHook",&registerServerHook)
-			.function("RegisterUnitEvent", &registerUnitEvent)
-			.function("RegisterQuestEvent", &registerQuestEvent)
-			.function("RegisterGameObjectEvent", &registerGameObjectEvent)
-			.function("RegisterUnitGossipEvent", &registerUnitGossipEvent)
-			.function("RegisterItemGossipEvent", &registerItemGossipEvent)
-			.function("RegisterGOGossipEvent", &registerGOGossipEvent)
+		m	.function( &registerServerHook, "RegisterServerHook", "registerServerHook", "registerHook", NULL)
+			.function( &registerUnitEvent, "RegisterUnitEvent", "registerUnitEvent", "registerunitevent", "registerCreatureEvent", "registercreatureevent", "registercreaturevent", NULL)
+			.function( &registerQuestEvent, "RegisterQuestEvent", "registerQuestEvent", "registerquestevent", NULL)
+			.function( &registerGameObjectEvent, "RegisterGameObjectEvent", "registerGameObjectEvent", "registergameobjectevent", NULL)
+			.function( &registerUnitGossipEvent, "RegisterUnitGossipEvent", "registerUnitGossipEvent", "registerunitgossipevent", "registercreaturegossip", "registerCreatureGossip", NULL)
+			.function( &registerItemGossipEvent, "RegisterItemGossipEvent", "registerItemGossipEvent", "registeritemgossipevent", "registeritemgossip", "registerItemGossip", NULL)
+			.function( &registerGOGossipEvent, "RegisterGOGossipEvent", "registergogossipevent", "registerGOGossipEvent", "registerGoGossip", "registergogossip", NULL)
 			//.function("RegisterTimedEvent", &registerTimedEvent)
-			.function("RegisterDummySpell", &registerDummySpell)
-			.function("RegisterInstanceEvent", &registerInstanceEvent)
-			.function("RemoveTimedEvents", &removeTimedEvents)
-			.function("SuspendLuaThread", &suspendluathread);
+			.function( &registerDummySpell, "RegisterDummySpell", "registerDummySpell", "registerdummyspell", "RegisterDummySpell", NULL)
+			.function( &registerInstanceEvent, "RegisterInstanceEvent", "registerInstanceEvent", "registerinstanceevent", "registerinstancevent", NULL)
+			.function( &removeTimedEvents, "RemoveTimedEvents", "removeTimedEvents", "removetimedevents", NULL)
+			.function( &suspendluathread, "SuspendLuaThread", "suspendluathread", "suspendLuaThread", NULL);
 	}
 }
 using namespace lua_engine;

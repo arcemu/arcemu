@@ -361,14 +361,28 @@ template <typename T>
 template <typename FnPtr>
 class__<T>& class__<T>::method (FnPtr fp, const char * firstname, ...)
 {
+	assert(fnptr<FnPtr>::mfp);
+	std::string metatable_name = classname<T>::name();
+	if (fnptr<FnPtr>::const_mfp)
+		metatable_name = "const " + metatable_name;
+	luaL_getmetatable(L, metatable_name.c_str());
+	ptrdiff_t mtindex = lua_gettop(L);
+	lua_pushstring(L, metatable_name.c_str());
+	void *v = lua_newuserdata(L, sizeof(FnPtr));
+	memcpy(v, &fp, sizeof(FnPtr));
+	lua_pushcclosure(L, &method_proxy<FnPtr>::f, 2);
+
 	va_list arglist;
 	va_start(arglist, firstname);
 	const char * methodname = firstname;
 	while(methodname != NULL)
 	{
-		method( methodname, fp);
+		lua_pushvalue(L, -1); //clone the closure sitting at the top of our stack.
+		rawsetfield(L, mtindex, methodname);
 		methodname = va_arg(arglist, const char*);
 	}
+	//we now have the 1st closure at the top, then our metatable below top.
+	lua_pop(L,2);
 	va_end(arglist);
 	return *this;
 }

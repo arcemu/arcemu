@@ -203,7 +203,7 @@ public:
 		lua_getfield(L, LUA_REGISTRYINDEX, refTable);
 		assert( lua_type(L,-1) == LUA_TTABLE);
 		lua_rawgeti(L, -1, key); //push to the stack the value at refTable[key]
-		lua_remove(L, -2); // do stack[refTable] = refTable[key]
+		lua_replace(L, -2); // do stack[refTable] = refTable[key]
 	}
 };
 

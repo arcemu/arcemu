@@ -33,7 +33,7 @@ namespace luabridge
 		// Function registration
 
 		template <typename FnPtr>
-		module& function (const char *name, FnPtr fp);
+		module& function (FnPtr, const char*, ...);
 
 		// !!!UNDONE: support variables (global properties)
 

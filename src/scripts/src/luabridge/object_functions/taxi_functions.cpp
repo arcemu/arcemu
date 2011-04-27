@@ -61,18 +61,18 @@ namespace lua_engine
 
 		m	.class_<TaxiPath>("TaxiPath")
 			.constructor<void(*)()>()
-			.method("GetID", &TaxiPath::GetID)
-			.method("AddPathNode", &TaxiPath::AddPathNode)
-			.method("GetNodeCount", &TaxiPath::GetNodeCount)
+			.method( &TaxiPath::GetID, "GetID", "getID", "getid", NULL)
+			.method( &TaxiPath::AddPathNode, "AddPathNode", "addPathNode", "addpathnode", NULL)
+			.method( &TaxiPath::GetNodeCount, "GetNodeCount", "getNodeCount", "getnodecount", NULL)
 			//.method("GetPathNode", &TaxiPath::GetPathNode)
-			.method("GetPrice", &TaxiPath::GetPrice);
+			.method( &TaxiPath::GetPrice, "getPrice", "GetPrice", "getprice", NULL);
 			//.method("SetPrice", &TaxiPath::SetPrice);
 
 		m	.class_<TaxiMgr>("sTaxiMgr")
-			.method("GetTaxiNode", &TaxiMgr::GetTaxiNode)
-			.method("GetTaxiPath", (TaxiPath*(TaxiMgr::*)(uint32) )&TaxiMgr::GetTaxiPath)
-			.method("GetTaxiPathFT", (TaxiPath*(TaxiMgr::*)(uint32, uint32) )&TaxiMgr::GetTaxiPath)
-			.method("GetNearestTaxiNode", &TaxiMgr::GetNearestTaxiNode);
+			.method( &TaxiMgr::GetTaxiNode, "GetTaxiNode", "getTaxiNode", "gettaxinode", NULL)
+			.method( (TaxiPath*(TaxiMgr::*)(uint32) )&TaxiMgr::GetTaxiPath, "GetTaxiPath", "getTaxiPath", "gettaxipath", NULL)
+			.method( (TaxiPath*(TaxiMgr::*)(uint32, uint32) )&TaxiMgr::GetTaxiPath, "GetTaxiPathFT", "getTaxiPathFT", "gettaxipathft", NULL)
+			.method( &TaxiMgr::GetNearestTaxiNode, "GetNearestTaxiNode", "getNearestTaxiNode", "getnearesttaxinode", NULL);
 		//overrite sTaxiMgr static table w/ the object.
 		TaxiMgr * tmgr = TaxiMgr::getSingletonPtr();
 		luabridge::tdstack<TaxiMgr*>::push(m.L, tmgr);

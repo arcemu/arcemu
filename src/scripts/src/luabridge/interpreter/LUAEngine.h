@@ -74,13 +74,13 @@ namespace lua_engine
 	//static Object binding maps.
 	//static InstanceInterfaceMap m_instanceInterfaceMap;
 	//All scripts are read and stored here, then when new states are created, they load the script data contained here.
-	static LuaScriptData compiled_scripts;
-	static hooked_dummySpells _hooked_dummies;
+	extern LuaScriptData compiled_scripts;
+	extern hooked_dummySpells _hooked_dummies;
 	//Store thread ids and whether they need to restart.
-	static ActiveStates activeStates;
-	static FastMutex activestates_lock;
+	extern ActiveStates activeStates;
+	extern FastMutex activestates_lock;
 	//Locked when we are accessing cached script data
-	static FastMutex scriptLock;
+	extern FastMutex scriptLock;
 
 	
 	static void startupEngine();

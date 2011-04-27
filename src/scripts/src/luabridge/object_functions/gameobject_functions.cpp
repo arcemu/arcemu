@@ -144,25 +144,26 @@ namespace lua_engine
 
 	void bindGameobjectMethods(luabridge::module & m )
 	{
+		m	.class_decl<lua_go>("GameObject");
 		m	.subclass<GameObject, Object>("GameObject")
-			.method("HasQuests", &GameObject::HasQuests)
-			.method("NumQuests", &GameObject::NumOfQuests)
+			.method( &GameObject::HasQuests, "HasQuests", "hasQuests", "hasquests", NULL)
+			.method( &GameObject::NumOfQuests, "NumQuests", "numofquests", "NumOfQuests", NULL)
 			//.method("Close", &GameObject::EventCloseDoor)
-			.method("Despawn", &GameObject::Despawn)	
-			.method("ExpireAndDelete", &GameObject::ExpireAndDelete)
-			.method("IsQuestGiver", &GameObject::isQuestGiver)
+			.method( &GameObject::Despawn, "Despawn", "despawn", NULL)
+			.method( &GameObject::ExpireAndDelete, "ExpireAndDelete", "expireanddelete", "expirendelete",  NULL)
+			.method( &GameObject::isQuestGiver, "IsQuestGiver", "isQuestGiver", "isquestgiver", NULL)
 			//.property_ro("summoner", &lua_go::m_summoner)
-			.method("RemoveFromWorld", &GameObject::RemoveFromWorld)
-			.method("GetScript", &GameObject::GetScript)
-			.method("RegisterEvent", &lua_go::RegisterScriptEngineFunction)
-			.method("RemoveEvents", &lua_go::RemoveScriptEngineEvents)
-			.method("GetInfo", &GameObject::GetInfo);
+			.method( &GameObject::RemoveFromWorld, "RemoveFromWorld", "removeFromWorld", "removefromworld", NULL)
+			.method( &GameObject::GetScript, "GetScript", "getScript", "getscript", NULL)
+			.method( &lua_go::RegisterScriptEngineFunction, "RegisterEvent", "registerEvent", "registerevent", NULL)
+			.method( &lua_go::RemoveScriptEngineEvents, "RemoveEvents", "removeEvents", "removeevents", "removevents", NULL)
+			.method( &GameObject::GetInfo, "GetInfo", "getInfo", "getinfo", NULL);
 
 		//Gameobject ai script, used for registering ai update.
 		m	.class_<GameObjectAIScript>("GameObjectAIScript")
-			.method("RegisterAIUpdate", &GameObjectAIScript::RegisterAIUpdateEvent)
-			.method("ModifyAIUpdate", &GameObjectAIScript::ModifyAIUpdateEvent)
-			.method("RemoveAIUpdate", &GameObjectAIScript::RemoveAIUpdateEvent);
+			.method( &GameObjectAIScript::RegisterAIUpdateEvent, "RegisterAIUpdateEvent", "registerAIUpdate", "registeraiupdate", NULL)
+			.method(&GameObjectAIScript::ModifyAIUpdateEvent, "ModifyAIUpdateEvent", "ModifyAIUpdate", "modifyAIUpdate", "modifyaiupdate", NULL)
+			.method( &GameObjectAIScript::RemoveAIUpdateEvent, "RemoveAIUpdateEvent", "RemoveAIUpdate", "removeAIUpdate", "removeaiupdate", NULL);
 
 		m	.class_<GameObjectInfo>("GameObjectInfo")
 			.property_ro("ID", &GameObjectInfo::ID)

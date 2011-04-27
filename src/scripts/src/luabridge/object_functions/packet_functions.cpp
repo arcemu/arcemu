@@ -47,16 +47,17 @@ namespace lua_engine
 	{
 		m	.class_<WorldPacket>("LuaPacket",true)
 			.constructor<void (*)(uint16,size_t res)>()
-			.method("opcode", &WorldPacket::GetOpcode)
-			.method("clear", &WorldPacket::clear)
-			.method("WriteInt8", &luapacket::writeint8)
-			.method("WriteUInt8", &luapacket::writeuint8)
-			.method("WriteInt16", &luapacket::writeint16)
-			.method("WriteUInt16", &luapacket::writeuint16)
-			.method("WriteInt32", &luapacket::writeint32)
-			.method("WriteUInt32", &luapacket::writeuint32)
-			.method("WriteWoWGuid", &luapacket::writewowguid)
-			.method("size", &luapacket::size);
+			.method( &WorldPacket::GetOpcode, "GetOpcode", "getOpcode", "getopcode", "opcode", "Opcode", NULL)
+			.method( &WorldPacket::clear, "Clear", "clear", "Reset", NULL)
+			.method( &luapacket::writeint8, "WriteInt8", "writeint8", "writebyte", "WriteByte", NULL)
+			.method( &luapacket::writeuint8, "WriteUInt8", "writeuint8", "writeubyte", "WriteUByte", NULL)
+			.method( &luapacket::writeint16, "WriteInt16", "writeint16", "WriteShort", "writeshort", NULL)
+			.method(  &luapacket::writeuint16, "WriteUInt16", "writeuint16", "writeushort", "WriteUShort", NULL)
+			.method( &luapacket::writeint32, "WriteInt32", "writeint32", "writelong", "WriteLong", NULL)
+			.method(  &luapacket::writeuint32, "WriteUint32", "writeuint32", "writeulong", "WriteULong", NULL)
+			.method( &luapacket::writewowguid, "WriteWowGUID", "writewowguid", "writeWoWGUID", NULL)
+			.method( &luapacket::size, "Size", "size", NULL)
+			.method( &luapacket::writestring, "WriteString", "writestring", NULL);
 	}
 }
 
