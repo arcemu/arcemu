@@ -111,4 +111,18 @@ function OBJ:IsInDungeon() return (MapMgr:GetMapInfo().type == 4); end
 function OBJ:IsInRaid() return (MapMgr:GetMapInfo().type == 1); end
 
 alias("ModUInt32Value", "ModSignedUInt32Value")
+
+function OBJ:PhaseAdd(p) self:Phase(1, p); end
+
+function OBJ:PhaseDelete(p) self:Phase(2, p); end
+
+function OBJ:PhaseSet(p) self:Phase(0, p); end
+
+alias("AddToPhase", "PhaseAdd")
+
+alias("DeletePhase", "PhaseDelete")
+
+alias("SetPhase", "PhaseSet")
+
+function OBJ:IsInPhase(p) return (bit_and(self:GetPhase(), p) > 0); end
  

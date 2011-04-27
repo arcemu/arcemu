@@ -188,9 +188,8 @@ function CREATURE:CreateWaypoint(x,y,z,o,waittime,flags,model)
    model = model or 0
    local way = Waypoint()
    way.x = x; way.y = y; way.z = z; way.o = o; way.waittime = waittime; way.flags = flags;
-   --todo: implement these
-   --way.backwardskinid = model; way.forwardskinid = model;
-   --self:GetAIInterface():addWayPoint(way);
+   way.backwardskinid = model; way.forwardskinid = model;
+   self:GetAIInterface():addWayPoint(way);
    return way;
 end
 

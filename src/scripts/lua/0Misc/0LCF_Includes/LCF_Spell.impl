@@ -74,6 +74,8 @@ function SPELL:SetVar(var, subindex, value)
    self:getproto()[prop] = value
 end
 
+function SPELL:GetObjectType() return "Spell"; end
+
 function AURA:GetSpellId() return self:GetSpellID(); end
 
 function AURA:GetVar(var, subindex)
@@ -87,3 +89,5 @@ function AURA:SetVar(var, subindex, value)
    if (value ~= nil) then prop = prop..subindex; else value = subindex; end
    self:getproto()[prop] = value
 end
+
+function AURA:GetObjectType() return "Aura"; end

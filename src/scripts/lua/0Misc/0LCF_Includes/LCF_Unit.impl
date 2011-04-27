@@ -124,13 +124,11 @@ alias("IsAlive", "isAlive")
 
 function UNIT:IsInCombat() return self.CombatStatus:IsInCombat(); end
 
---does not currently work
 function UNIT:PlaySoundToSet(sound_entry)
    local data = LuaPacket(722, 4);
 	data:WriteUInt32(sound_entry);
 	
-   --todo: implement this
-   --self:SendMessageToSet(data, true);
+   self:SendMessageToSet(data, true);
 end
 
 alias("SetAttackTimer", "setAttackTimer")
@@ -164,3 +162,5 @@ end
 function UNIT:CreateGuardian(entry, duration, angle, lvl)
    return self:create_guardian(entry, duration, angle, lvl, 0)
 end
+
+alias("Emote", "EventAddEmote")

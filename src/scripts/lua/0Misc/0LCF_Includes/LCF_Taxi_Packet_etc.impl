@@ -48,6 +48,8 @@ alias("WriteUShort", "WriteUInt16")
 
 function LCF.PacketMethods.WriteUnitWoWGuid(unit) self:WriteWoWGuid(unit:GetNewGuid()); end
 
+function LCF.PacketMethods.WriteUnitGuid(unit) self:WriteGUID(unit:GetGUID()); end
+
 function LCF.PacketMethods.GetObjectType() return "Packet"; end
 
 -----QRESULT------

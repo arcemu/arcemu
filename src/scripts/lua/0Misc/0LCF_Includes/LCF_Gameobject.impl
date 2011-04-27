@@ -103,13 +103,11 @@ alias("IsActive", "IsClosed")
 
 alias("IsInBack", "IsBehind")
 
---does not currently work
 function GAMEOBJECT:PlaySoundToSet(sound_entry)
    local data = LuaPacket(722, 4);
 	data:WriteUInt32(sound_entry);
 	
-   --todo: implement this
-   --self:SendMessageToSet(data, true);
+   self:SendMessageToSet(data, true);
 end
 
 function GAMEOBJECT:SetZoneWeather(zoneid, _type, density) return SetWeather("zone", zoneid, _type, density); end
@@ -125,3 +123,5 @@ end
 function GAMEOBJECT:Update()
    self:Despawn(1, 1)
 end
+
+alias("GetSpawnId", "GetSQL_id")

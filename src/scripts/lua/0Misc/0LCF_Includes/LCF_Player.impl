@@ -264,3 +264,16 @@ alias("UnlearnSpell", "removeSpell")
 function PLAYER:UnsetKnownTitle(id) return self:SetKnownTitle(id, false); end
 
 function PLAYER:GetObjectType() return "Player"; end
+
+alias("SavePlayer", "SaveToDB")
+
+function PLAYER:SendBroadcastMessage(message) 
+   local packet = sChatHandler.FillSystemMessageData(message)
+   self:SendPacket(packet)
+end
+
+function PLAYER:SendAreaTriggerMessage(message) 
+   local data = LuaPacket(696, 6 + string.len(message))
+   data:WriteUInt32(0); data:WriteString(msg); data:WriteUInt8(0);
+   self:SendPacket(data);
+end

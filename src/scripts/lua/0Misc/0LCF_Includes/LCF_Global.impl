@@ -54,16 +54,14 @@ function PerformIngameSpawn(spawntype, entry, _, x, y, z, o, facOrScale, duratio
       spawn:Despawn(duration, 0)
    end
    if (save) then
-      --todo: implement this
-      --spawn:SaveToDB()
+      spawn:SaveToDB()
    end
    return spawn
 end
 
 function EasySpawn(spawntype, entry, x, y, z, o, facOrScale, duration, e1, e2, e3, save, phase)
    local u = PerformIngameSpawn(spawntype, entry, nil, x, y, z, o, facOrScale, duration, e1, e2, e3, nil, save)
-   --todo: implement this
-   --u:SetPhase(phase)
+   u:SetPhase(phase)
    return u;
 end
 
@@ -73,7 +71,6 @@ function SetDBCSpellVar(entry, var, subindex, value)
    dbcSpell:LookupEntry(entry)[prop] = value
 end
 
---does not work currently
 function SetWeather(forWhat, forWhatExtra, _type, Density)
    local sound = 0;
 	if (_type == 2 or _type == 4) then                                             
@@ -104,20 +101,18 @@ function SetWeather(forWhat, forWhatExtra, _type, Density)
    local data = LuaPacket(756, 9);
    data:WriteUInt32(_type)
    if (_type == 0 or _type == 1) then
-      --todo: implement this
-      --data:WriteFloat(0);
+      data:WriteFloat(0);
       data:WriteUInt32(0);
       data:WriteUInt8(0);		
    else
-      --todo: implement this
-      --data:WriteFloat(Density);
+      data:WriteFloat(Density);
       data:WriteUInt32(sound);
       data:WriteUInt8(0);
    end
 
    if (forWhat == "zone") then
-      --SendPacketToZone(data, forWhatExtra);
+      SendPacketToZone(data, forWhatExtra);
    elseif (forWhat == "object") then
-      --forWhatExtra:SendPacket(data);
+      forWhatExtra:SendPacket(data);
    end
 end
