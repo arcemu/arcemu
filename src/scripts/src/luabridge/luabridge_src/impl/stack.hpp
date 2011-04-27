@@ -678,22 +678,25 @@ struct tdstack<const uint64 &>
 };
 
 template<typename T>
-struct tdstack< std::vector<T> &>
+struct tdstack< std::vector<T> >
 {
-	static void push(lua_State * L, const std::vector<T> & array)
+	static void push(lua_State * L, const std::vector<T> & vect)
 	{
-		for(vector<T>::const_iterator itr = array.begin(); itr != array.end()  )
+		typedef typename std::vector<T>::iterator Iterator;
+		for( Iterator itr = vect.begin(); itr != vect.end(); ++itr  )
 			tdstack<T>::push(L, (*itr) );
 	}
 
 	static std::vector<T> get(lua_State *, int);
 };
+
 template<typename T>
-struct tdstack< std::list<T> &>
+struct tdstack< std::list<T> >
 {
-	static void push(lua_State * L, const std::list<T> & list)
+	static void push(lua_State * L, const std::list<T> & llist)
 	{
-		for(list<T>::const_iterator itr = list.begin(); itr != list.end()  )
+		typedef typename std::list<T>::iterator Iterator;
+		for(Iterator itr = llist.begin(); itr != llist.end(); ++itr  )
 			tdstack<T>::push(L, (*itr) );
 	}
 
