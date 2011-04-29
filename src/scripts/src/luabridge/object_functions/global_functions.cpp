@@ -37,7 +37,7 @@ void LuaGossip::OnHello(Object* pObject, Player* Plr)
 		if(m_unit_gossip_binding == NULL) { RELEASE_LOCK; return; }
 
 		lua_engine::BeginLuaFunctionCall(m_unit_gossip_binding->refs[GOSSIP_EVENT_ON_TALK]);
-		push_unit(TO_UNIT(pObject) );
+		push_creature(TO_CREATURE(pObject) );
 		push_int(GOSSIP_EVENT_ON_TALK);
 		push_player(Plr);
 		lua_engine::ExecuteLuaFunction(3);
@@ -73,7 +73,7 @@ void LuaGossip::OnSelectOption(Object* pObject, Player* Plr, uint32 Id, const ch
 		if(m_unit_gossip_binding == NULL) { RELEASE_LOCK; return; }
 
 		lua_engine::BeginLuaFunctionCall(m_unit_gossip_binding->refs[GOSSIP_EVENT_ON_SELECT_OPTION]);
-		push_unit(TO_UNIT(pObject));
+		push_creature(TO_CREATURE(pObject));
 		push_int(GOSSIP_EVENT_ON_SELECT_OPTION);
 		push_player(Plr);
 		push_int(Id);
