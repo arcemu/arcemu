@@ -12599,11 +12599,13 @@ void Player::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
 
     bool gminvis = false;
 
-    if( bToSelf ){
+    if( bToSelf )
+	{
         SendPacket(data);
     }
 
     gminvis = m_isGmInvisible;
+	uint32 myphase = GetPhase();
 
 	//Zehamster: Splitting into if/else allows us to avoid testing "gminvis==true" at each loop...
 	//		   saving cpu cycles. Chat messages will be sent to everybody even if player is invisible.
@@ -12617,7 +12619,7 @@ void Player::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
 			{
                 Player *p = TO< Player* >( *itr );
 
-				if( p->GetSession() && p->GetSession()->GetPermissionCount() > 0 && p->GetTeam() == myteam)
+				if( p->GetSession() && p->GetSession()->GetPermissionCount() > 0 && p->GetTeam() == myteam && (p->GetPhase() & myphase) != 0 )
 					p->SendPacket(data);
 			}
 		}
@@ -12627,7 +12629,7 @@ void Player::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
 			{
                 Player *p = TO< Player* >( *itr );
 
-				if( p->GetSession() && p->GetTeam() == myteam && !p->Social_IsIgnoring( GetLowGUID() ))
+				if( p->GetSession() && p->GetTeam() == myteam && ! p->Social_IsIgnoring( GetLowGUID() ) && (p->GetPhase() & myphase) != 0 )
 					p->SendPacket(data);
 			}
 		}
@@ -12640,7 +12642,7 @@ void Player::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
 			{
                 Player *p = TO< Player* >( *itr );
 
-				if( p->GetSession() && p->GetSession()->GetPermissionCount() > 0)
+				if( p->GetSession() && p->GetSession()->GetPermissionCount() > 0 && (p->GetPhase() & myphase) != 0 )
 					p->SendPacket(data);
 			}
 		}
@@ -12650,7 +12652,7 @@ void Player::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
 			{
                 Player *p = TO< Player* >( *itr );
 
-				if( p->GetSession() &&  !( p->Social_IsIgnoring( GetLowGUID() )) )
+				if( p->GetSession() &&  ! p->Social_IsIgnoring( GetLowGUID() ) && (p->GetPhase() & myphase) != 0 )
 					p->SendPacket(data);
 			}
 		}

@@ -2244,14 +2244,16 @@ void Object::OutPacketToSet(uint16 Opcode, uint16 Len, const void * Data, bool s
 
 void Object::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
 {
-    if(!IsInWorld())
-        return;
+	if( ! IsInWorld() )
+		return;
 
-    for( std::set< Object* >::iterator itr = m_inRangePlayers.begin(); itr != m_inRangePlayers.end(); ++itr ){
-        Object *o = *itr;
-
-        o->SendPacket( data );
-    }
+	uint32 myphase = GetPhase();
+	for( std::set< Object* >::iterator itr = m_inRangePlayers.begin(); itr != m_inRangePlayers.end(); ++itr )
+	{
+		Object *o = *itr;
+		if( (o->GetPhase() & myphase) != 0 )
+			o->SendPacket( data );
+	}
 }
 
 void Object::RemoveInRangeObject( Object *pObj ){
