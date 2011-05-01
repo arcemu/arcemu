@@ -12629,7 +12629,7 @@ void Player::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
 			{
                 Player *p = TO< Player* >( *itr );
 
-				if( p->GetSession() && p->GetTeam() == myteam && ! p->Social_IsIgnoring( GetLowGUID() ) && (p->GetPhase() & myphase) != 0 )
+				if( p->GetSession() && p->GetTeam() == myteam && ! p->Social_IsIgnoring( GetLowGUID() ) && (p->GetPhase() & myphase) != 0 && p->m_invisible == m_invisible )
 					p->SendPacket(data);
 			}
 		}
@@ -12652,7 +12652,7 @@ void Player::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
 			{
                 Player *p = TO< Player* >( *itr );
 
-				if( p->GetSession() &&  ! p->Social_IsIgnoring( GetLowGUID() ) && (p->GetPhase() & myphase) != 0 )
+				if( p->GetSession() &&  ! p->Social_IsIgnoring( GetLowGUID() ) && (p->GetPhase() & myphase) != 0 && p->m_invisible == m_invisible )
 					p->SendPacket(data);
 			}
 		}
