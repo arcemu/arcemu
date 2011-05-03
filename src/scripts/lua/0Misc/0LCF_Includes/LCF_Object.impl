@@ -51,7 +51,7 @@ function OBJ:GPS()
 	return string.format("Map %u Instance %u x: %f y: %f z: %f facing: %f", MapMgr:GetMapID(), MapMgr:GetInstanceID(), self:GetPositionX(), self:GetPositionY(), self:GetPositionZ(), self:GetO() )
 end
 
-function OBJ:CalcDistance(target) return self:CalcDistance2Object( target) end
+function OBJ:CalcDistance(target) return self:CalcDistanceToObject( target) end
 
 function OBJ:findLocalCreature(entry)
 	local x,y,z = self:GetLocation()
@@ -92,9 +92,9 @@ alias("CalcRadAngle", "calcRadAngle")
 
 alias("CalcAngle", "calcAngle")
 
-alias("CalcToDistance", "CalcDistance2Location")
+alias("CalcToDistance", "CalcDistanceToLocation")
 
-alias("GetDistanceYards", "CalcDistance2Object")
+alias("GetDistanceYards", "CalcDistanceToObject")
 
 function OBJ:GetInstanceID() return MapMgr:GetInstanceID(); end
 

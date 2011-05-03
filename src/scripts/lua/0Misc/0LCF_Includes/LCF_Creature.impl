@@ -217,8 +217,6 @@ aialias("GetMoveType", "getMoveType")
 
 aialias("GetSoulLinkedWith", "getSoullinkedWith")
 
-alias("GetSpawnId", "GetSQL_id")
-
 aialias("GetTauntedBy", "getTauntedBy")
 
 aialias("GetThreat", "getThreatByPtr")
@@ -257,7 +255,7 @@ aialias("SetOutOfCombatRange", "setOutOfCombatRange")
 
 aialias("SetPetOwner", "SetPetOwner")
 
-aialias("SetSoulLinkedWith", "SetSoulLinkedWith")
+aialias("SetSoulLinkedWith", "SetSoullinkedWith")
 
 aialias("SetTauntedBy", "taunt")
 

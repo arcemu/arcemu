@@ -104,7 +104,7 @@ alias("FullCastSpellAoE", "FullCastSpellAoF")
 
 function UNIT:GetCreatureNearestCoords(x,y,z,e) return MapMgr:GetInterface():GetCreatureNearestCoords(x,y,z,e); end
 
-function UNIT:GetGameObjectNearestCoords(x,y,z,e) return MapMgr:GetInterface():GetGameObjectNearestCoords(x,y,z,e); end
+function UNIT:GetGameObjectNearestCoords(x,y,z,e) return MapMgr:GetInterface():getGameObjectNearestCoords(x,y,z,e); end
 
 alias("GetDisplay", "GetDisplayId")
 

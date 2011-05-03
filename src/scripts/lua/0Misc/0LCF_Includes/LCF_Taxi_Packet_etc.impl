@@ -39,14 +39,7 @@ alias("GetOpcode", "opcode")
 
 alias("GetSize", "size")
 
-alias("WriteByte", "WriteInt8")
-alias("WriteLong", "WriteInt32")
-alias("WriteShort", "WriteInt16")
-alias("WriteUByte", "WriteUInt8")
-alias("WriteULong", "WriteUInt32")
-alias("WriteUShort", "WriteUInt16")
-
-function LCF.PacketMethods.WriteUnitWoWGuid(unit) self:WriteWoWGuid(unit:GetNewGuid()); end
+function LCF.PacketMethods.WriteUnitWoWGuid(unit) self:writeWoWGuid(unit:GetNewGuid()); end
 
 function LCF.PacketMethods.WriteUnitGuid(unit) self:WriteGUID(unit:GetGUID()); end
 

@@ -95,7 +95,7 @@ end
 
 function GAMEOBJECT:GetCreatureNearestCoords(x,y,z,e) return MapMgr:GetInterface():GetCreatureNearestCoords(x,y,z,e); end
 
-function GAMEOBJECT:GetGameObjectNearestCoords(x,y,z,e) return MapMgr:GetInterface():GetGameObjectNearestCoords(x,y,z,e); end
+function GAMEOBJECT:GetGameObjectNearestCoords(x,y,z,e) return MapMgr:GetInterface():getGameObjectNearestCoords(x,y,z,e); end
 
 function GAMEOBJECT:GetObjectType() return "GameObject"; end
 

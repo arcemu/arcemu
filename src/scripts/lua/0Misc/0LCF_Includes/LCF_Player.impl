@@ -110,7 +110,7 @@ alias("DealGoldMerit", "GiveGold")
 
 alias("FlagFFA", "SetFFAPvPFlag")
 
-alias("FlagPvP", "SetPvPFlag")
+alias("FlagPvP", "SetPVPFlag")
 
 function PLAYER:GetAccountName() return self:GetSession():GetAccountName(); end
 
@@ -175,8 +175,6 @@ function PLAYER:GetPlayerMovementFlags() return self:GetSession():GetMovementInf
 
 alias("GetPlayerRace", "getRace")
 
-alias("GetSelectedGO", "GetSelectedGo")
-
 function PLAYER:GetUnitSelection() return MapMgr:GetObject(self:GetSelection()); end
 
 alias("GetTaxi", "GetTaxiPath")
@@ -192,8 +190,6 @@ alias("IsFFAFlagged", "IsFFAPvPFlagged")
 function PLAYER:IsGm() return self:GetSession():IsGM(); end
 
 alias("IsGroupedWith", "IsGroupMember")
-
-alias("IsInGroup", "InGroup")
 
 alias("IsOnTaxi", "GetTaxiState")
 
@@ -218,13 +214,11 @@ alias("PlaySoundToPlayer", "PlaySound")
 
 alias("PlayerSendChatMessage", "SendChatMessage")
 
-function PLAYER:RemoveItem(...) return self:GetItemInterface():RemoveItemAmt(...); end
+function PLAYER:RemoveItem(...) return self:GetItemInterface():removeItemAmount(...); end
 
 alias("RemoveSkill", "RemoveSkillLine")
 
-alias("ResetAllTalents", "Reset_Talents")
-
-alias("ResetTalents", "Reset_Talents")
+alias("ResetAllTalents", "ResetTalents")
 
 alias("SendPacketToPlayer", "SendPacket")
 
@@ -253,11 +247,7 @@ end
 
 function PLAYER:SetPlayerWeather(_type, density) SetWeather("object", self, _type, density); end
 
-alias("SetSelectedGO", "SetSelectedGo")
-
 function PLAYER:QuickStartTaxi(taxipath, mountid) self:StartTaxi(taxipath, mountid, 0); end
-
-function PLAYER:Teleport(mapid, x, y, z) self:SafeTeleport(mapid, 0, x, y, z); end
 
 alias("UnlearnSpell", "removeSpell")
 
@@ -268,7 +258,7 @@ function PLAYER:GetObjectType() return "Player"; end
 alias("SavePlayer", "SaveToDB")
 
 function PLAYER:SendBroadcastMessage(message) 
-   local packet = sChatHandler.FillSystemMessageData(message)
+   local packet = sChatHandler:FillSystemMessageData(message)
    self:SendPacket(packet)
 end
 
@@ -277,3 +267,5 @@ function PLAYER:SendAreaTriggerMessage(message)
    data:WriteUInt32(0); data:WriteString(msg); data:WriteUInt8(0);
    self:SendPacket(data);
 end
+
+alias("RemovePvPFlag", "RemovePVPFlag")

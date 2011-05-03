@@ -176,7 +176,7 @@ namespace lua_engine
 			.method( &MapMgr::GetSqlIdGameObject, "GetSqlIdGameObject", "getsqlidgameobject", "getSqlIdGameObject", NULL);
 
 		m	.class_<MapScriptInterface>("MapScriptInterface")
-			.method(&MapScriptInterface::GetGameObjectNearestCoords, "GetGameObjectNearestCoors", "getGameObjectNearestCoords", "getgameobjectnearestcoords", NULL)
+			.method(&MapScriptInterface::GetGameObjectNearestCoords, "GetGameObjectNearestCoords", "getGameObjectNearestCoords", "getgameobjectnearestcoords", NULL)
 			.method(&MapScriptInterface::GetCreatureNearestCoords, "GetCreatureNearestCoords", "getCreatureNearestCoords", "getcreaturenearestcoords", NULL)
 			.method(&MapScriptInterface::GetPlayerNearestCoords, "getPlayerNearestCoords", "GetPlayerNearestCoords", "getplayernearestcoords", NULL)
 			.method( (Creature *(MapScriptInterface::*)(uint32,float,float,float,float,bool,bool,uint32,uint32,uint32) )&MapScriptInterface::SpawnCreature, "SpawnCreature", "spawnCreature", "spawncreature", NULL)
