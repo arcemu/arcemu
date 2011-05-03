@@ -28,8 +28,6 @@ namespace lua_engine
 			.method(&Player::Cooldown_Add, "Cooldown_Add", "cooldown_add", NULL)
 			.method(&Player::Cooldown_AddItem, "Cooldown_AddItem", "cooldown_additem", NULL)
 			.method( (bool (Player::*)(SpellEntry*) )&Player::Cooldown_CanCast, "Cooldown_CanCast", "cooldown_cancast", NULL)
-			.method(&Player::SendPacket, "SendPacket", "sendPacket", "sendpacket", NULL)
-			.method(&Player::SendMessageToSet, "SendMessageToSet", "sendMessageToSet", "sendmessagetoset", NULL)
 
 			.method(&Player::GetTaxiPath, "GetTaxiPath", "getTaxiPath", "gettaxipath", NULL)
 			.method(&Player::GetTaxiState, "GetTaxiState", "getTaxiState", "gettaxistate", NULL)
