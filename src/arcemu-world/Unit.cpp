@@ -7747,7 +7747,9 @@ bool Unit::isLootable(){
 
 SpellProc* Unit::AddProcTriggerSpell(SpellEntry *spell, SpellEntry *orig_spell, uint64 caster, uint32 procChance, uint32 procFlags, uint32 procCharges, uint32 *groupRelation, uint32 *procClassMask, Object *obj)
 {
-	SpellProc *sp = GetProcTriggerSpell(spell->Id, caster);
+	SpellProc *sp = NULL;
+	if( spell != NULL )
+		sp = GetProcTriggerSpell(spell->Id, caster);
 	if( sp != NULL && ! sp->mDeleted )
 		return sp;
 
