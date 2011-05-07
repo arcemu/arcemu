@@ -269,8 +269,7 @@ bool lua_engine::ExecuteLuaFunction(int params, int res, variadic_parameter ** r
 	if(lua_type(lu, top-params) != LUA_TFUNCTION)
 	{
 		ret = false;
-		//Paroxysm : Stack Cleaning here, not sure what causes that crash in luaH_getstr, maybe due to lack of stack space. Anyway, experimental.
-		if(params > 0)
+		if(params++ > 0)
 		{
 			for(int i = top; i >= (top-params); i--)
 			{

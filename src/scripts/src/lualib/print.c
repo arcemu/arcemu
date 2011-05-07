@@ -10,7 +10,6 @@
 #define luac_c
 #define LUA_CORE
 
-#include "lua.h"
 #include "ldebug.h"
 #include "lobject.h"
 #include "lopcodes.h"

@@ -264,7 +264,7 @@ void LuaCreature::OnLootTaken(Player* pPlayer, ItemPrototype *pItemPrototype)
 {
 	NULL_BINDING_CHECK
 
-		lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_LOOT_TAKEN]);
+	lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_LOOT_TAKEN]);
 	push_creature(_unit);
 	push_int(CREATURE_EVENT_ON_LOOT_TAKEN);
 	push_player(pPlayer);

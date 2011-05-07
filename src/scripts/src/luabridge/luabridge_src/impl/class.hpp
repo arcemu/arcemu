@@ -302,14 +302,14 @@ struct method_proxy
 	static int f (lua_State *L)
 	{
 		//modify it to be able to return multiple arguments.
-		
+
 		classtype ** obj = (classtype**)checkclass(L, 1,
 			lua_tostring(L, lua_upvalueindex(1)) );
 		FnPtr fp = *(FnPtr *)lua_touserdata(L, lua_upvalueindex(2));
 		arglist<params, 2> args(L);
 		int top = lua_gettop(L);
 		tdstack<Ret>::push(L, fnptr<FnPtr>::apply(*obj, fp, args));
-		//If the function called pushes multiple objects, we should be able to return those objects.
+		//If the function called pushes multiple objects, we should be able to return those objects
 		return lua_gettop(L) - top;
 	}
 };

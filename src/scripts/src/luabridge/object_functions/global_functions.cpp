@@ -183,9 +183,10 @@ int CreateLuaEvent(lua_function fref, int delay, int repeats, variadic_parameter
 {
 	int ref = LUA_REFNIL;
 	PLUA_INSTANCE li_ = lua_instance.get();
-	if(delay > 0 && (ptrdiff_t)fref != LUA_REFNIL && params != NULL)
+	if( li_->map != NULL && delay > 0 && (ptrdiff_t)fref != LUA_REFNIL )
 	{
 		//embed the function ref and repeats as part of our parameters.
+		params = (params == NULL) ? new variadic_parameter : params;
 		variadic_node * func_node = new variadic_node;
 		variadic_node * repeats_node = new variadic_node;
 		repeats_node->type = CUSTOM_TYPE_REPEATS_ARG;
@@ -218,7 +219,7 @@ void lua_engine::ExecuteLuaFunction(variadic_parameter * params)
 		{
 			//retrieve the repeats.
 			variadic_node * function_node = params->head_node;
-			uint16 repeats = (uint16)params->head_node->next->val.bewl;
+			ptrdiff_t repeats = params->head_node->next->val.bewl;
 			/*	Prepare to push arguments, 1st assign the head node to the actual arguments registered to this function */
 			params->head_node = function_node->next->next;
 			//subtract the function n repeat node from arg count.
