@@ -954,6 +954,8 @@ void WorldSession::InitPacketHandlerTable()
 	WorldPacketHandlers[CMSG_QUESTGIVER_STATUS_MULTIPLE_QUERY].handler = &WorldSession::HandleInrangeQuestgiverQuery;
 	WorldPacketHandlers[CMSG_REMOVE_GLYPH].handler = &WorldSession::HandleRemoveGlyph;
 	WorldPacketHandlers[CMSG_ALTER_APPEARANCE].handler = &WorldSession::HandleBarberShopResult;
+
+	WorldPacketHandlers[CMSG_GET_MIRRORIMAGE_DATA].handler = &WorldSession::HandleMirrorImageOpcode;
 }
 
 void SessionLogWriter::writefromsession(WorldSession* session, const char* format, ...)
@@ -1453,3 +1455,81 @@ void WorldSession::HandleQuestPOIQueryOpcode(WorldPacket& recv_data){
 	sLog.outDebug("Sent SMSG_QUEST_POI_QUERY_RESPONSE");
 }
 
+void WorldSession::HandleMirrorImageOpcode( WorldPacket &recv_data )
+{
+	if( !_player->IsInWorld() )
+		return;
+	
+	sLog.outDebug("Received CMG_GET_MIRRORIMAGE_DATA");
+	
+	uint64 GUID;
+	
+	recv_data >> GUID;	
+	
+	Unit *Image = _player->GetMapMgr()->GetUnit( GUID );
+	if( Image == NULL )
+		return; // ups no unit found with that GUID on the map. Spoofed packet?
+	
+	if( static_cast< Creature* >( Image )->GetOwner() == NULL )
+		return;
+	
+	uint64 CasterGUID = static_cast< Creature* >( Image )->GetOwner()->GetGUID();
+	Unit *Caster = _player->GetMapMgr()->GetUnit( CasterGUID );
+	if( Caster == NULL )
+		return; // apperantly this mirror image mirrors nothing, poor lonely soul :(
+				// Maybe it's the Caster's ghost called Casper
+	
+	WorldPacket data( SMSG_MIRRORIMAGE_DATA, 68 );
+	
+	data << uint64( GUID );
+	data << uint32( Caster->GetDisplayId() );
+	data << uint8( Caster->getRace() );
+	
+	if( Caster->IsPlayer() )
+	{
+		Player *pcaster = static_cast< Player* >( Caster );
+		
+		data << uint8( pcaster->getGender() );
+		data << uint8( pcaster->getClass() );
+		               
+		// facial features, like big nose, piercings, bonehead, etc
+		data << uint8( pcaster->GetByte( PLAYER_BYTES, 0 ) ); // skin color
+		data << uint8( pcaster->GetByte( PLAYER_BYTES, 1 ) ); // face
+		data << uint8( pcaster->GetByte( PLAYER_BYTES, 2 ) ); // hair style 
+		data << uint8( pcaster->GetByte( PLAYER_BYTES, 3 ) ); // hair color             
+		data << uint8( pcaster->GetByte( PLAYER_BYTES_2, 0 ) ); // facial hair
+		
+		if( pcaster->IsInGuild() )
+			data << uint32( pcaster->GetGuildId() );
+		else
+			data << uint32( 0 );
+		
+		static const uint32 imageitemslots[] = {
+			EQUIPMENT_SLOT_HEAD,
+			EQUIPMENT_SLOT_SHOULDERS,
+			EQUIPMENT_SLOT_BODY,
+			EQUIPMENT_SLOT_CHEST,
+			EQUIPMENT_SLOT_WAIST,
+			EQUIPMENT_SLOT_LEGS,
+			EQUIPMENT_SLOT_FEET,
+			EQUIPMENT_SLOT_WRISTS,
+			EQUIPMENT_SLOT_HANDS,
+			EQUIPMENT_SLOT_BACK,
+			EQUIPMENT_SLOT_TABARD
+		};
+					
+		for( uint32 i = 0; i < 11; ++i )
+		{
+			Item *item = pcaster->GetItemInterface()->GetInventoryItem( static_cast< int16 >( imageitemslots[ i ] ) );
+					
+			if( item != NULL )
+				data << uint32( item->GetProto()->DisplayInfoID );
+			else
+				data << uint32( 0 );
+		}
+	}
+
+    SendPacket( &data );
+
+    sLog.outDebug("Sent: SMSG_MIRRORIMAGE_DATA");
+}

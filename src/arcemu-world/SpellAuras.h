@@ -744,6 +744,7 @@ public:
 	void SpellAuraReduceEffectDuration(bool apply);
 	void HandleAuraControlVehicle(bool apply);
 	void EventPeriodicDrink(uint32 amount);
+	void SpellAuraMirrorImage(bool apply);
 	void SpellAuraModCombatResultChance(bool apply);
 	void SpellAuraAddHealth(bool apply);
 	void SpellAuraRemoveReagentCost(bool apply);
@@ -757,6 +758,7 @@ public:
 	void SpellAuraConsumeNoAmmo( bool apply );
 	void SpellAuraIgnoreShapeshift(bool apply);
 	void SpellAuraPhase(bool apply);
+	void SpellAuraMirrorImage2( bool apply );
 	void SpellAuraModIgnoreArmorPct(bool apply);
 	void SpellAuraModBaseHealth(bool apply);
 	void SpellAuraModAttackPowerOfArmor(bool apply);

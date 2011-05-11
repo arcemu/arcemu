@@ -752,6 +752,7 @@ protected:
 	//MISC
 	void HandleWorldStateUITimerUpdate( WorldPacket & recv_data );
 	void HandleSetTaxiBenchmarkOpcode( WorldPacket & recv_data );
+	void HandleMirrorImageOpcode( WorldPacket &recv_data );
 
 public:
 

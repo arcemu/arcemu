@@ -114,7 +114,7 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS]={
 	&Spell::SpellEffectSummonTotem,				//SPELL_EFFECT_SUMMON_TOTEM_SLOT4 - 90
 	&Spell::SpellEffectNULL,					//SPELL_EFFECT_THREAT_ALL - 91 UNUSED
 	&Spell::SpellEffectEnchantHeldItem,			//SPELL_EFFECT_ENCHANT_HELD_ITEM - 92
-	&Spell::SpellEffectNULL,					//SPELL_EFFECT_SUMMON_PHANTASM - 93 OLD
+	&Spell::SpellEffectSetMirrorName,			//SPELL_EFFECT_SUMMON_PHANTASM - 93 OLD
 	&Spell::SpellEffectSelfResurrect,			//SPELL_EFFECT_SELF_RESURRECT - 94
 	&Spell::SpellEffectSkinning,				//SPELL_EFFECT_SKINNING - 95
 	&Spell::SpellEffectCharge,					//SPELL_EFFECT_CHARGE - 96
@@ -280,7 +280,7 @@ const char* SpellEffectNames[TOTAL_SPELL_EFFECTS] = {
 	"SUMMON_TOTEM_SLOT4",        //    90
 	"THREAT_ALL",                //    91
 	"ENCHANT_HELD_ITEM",         //    92
-	"SUMMON_PHANTASM",           //    93
+	"SET_MIRROR_NAME",           //    93
 	"SELF_RESURRECT",            //    94
 	"SKINNING",                  //    95
 	"CHARGE",                    //    96
@@ -1924,14 +1924,9 @@ void Spell::SpellEffectSummon(uint32 i)
 	case 407:	SpellEffectSummonCritter(i);	return;
 	case 61:
 	case 669:
-	case 881:	
-	case 2301:	SpellEffectSummonGuardian(i);	return;
+	case 881:
 	case 713: // Bloodworm
-		{
-			for( uint8 x = 0; x < damage; ++x )
-				SpellEffectSummonGuardian(i);
-			return;
-		}
+	case 2301:	SpellEffectSummonGuardian(i);	return;
 	case 64:	SpellEffectSummonWild(i);		return;
 	case 65:
 	case 428:	SpellEffectSummonPossessed(i);	return;
@@ -5902,4 +5897,11 @@ void Spell::SpellEffectActivateRunes(uint32 i)
 			--count;
 		}
 	}
+}
+
+void Spell::SpellEffectSetMirrorName(uint32 i)
+{
+	WorldPacket data(SMSG_CLEAR_TARGET, 8);
+	data << uint64( m_caster->GetGUID() );
+	m_caster->SendMessageToSet(&data, true);
 }

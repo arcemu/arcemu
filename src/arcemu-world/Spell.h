@@ -1747,7 +1747,7 @@ public:
 	void SpellEffectWeapon(uint32 i);
 	void SpellEffectDefense(uint32 i);
 	void SpellEffectPersistentAA(uint32 i);
-	void SpellEffectSummon(uint32 i);
+	virtual void SpellEffectSummon(uint32 i);
 	void SpellEffectLeap(uint32 i);
 	void SpellEffectEnergize(uint32 i);
 	void SpellEffectWeaponDmgPerc(uint32 i);
@@ -1800,6 +1800,7 @@ public:
 	void SpellEffectActivateObject(uint32 i);
 	void SpellEffectSummonTotem(uint32 i);
 	void SpellEffectEnchantHeldItem( uint32 i );
+	void SpellEffectSetMirrorName(uint32 i);
 	void SpellEffectSelfResurrect(uint32 i);
 	void SpellEffectSkinning(uint32 i);
 	void SpellEffectCharge(uint32 i);

@@ -268,7 +268,7 @@ pSpellAura SpellAuraHandler[TOTAL_SPELL_AURAS]={
 		&Aura::SpellAuraComprehendLang,//244 allows target to understand itself while talking in different language
 		&Aura::SpellAuraNULL,//245
 		&Aura::SpellAuraNULL,//246
-		&Aura::SpellAuraNULL,//247
+		&Aura::SpellAuraMirrorImage,//247
 		&Aura::SpellAuraModCombatResultChance,//248 SPELL_AURA_MOD_COMBAT_RESULT_CHANCE
 		&Aura::SpellAuraConvertRune,//249 SPELL_AURA_CONVERT_RUNE
 		&Aura::SpellAuraAddHealth,//250
@@ -300,7 +300,7 @@ pSpellAura SpellAuraHandler[TOTAL_SPELL_AURAS]={
 		&Aura::SpellAuraNULL,//276 Mod Damage % Mechanic
 		&Aura::SpellAuraNULL,//277 SPELL_AURA_REDIRECT_THREAT or SPELL_AURA_MOD_MAX_AFFECTED_TARGETS ?
 		&Aura::SpellAuraNULL,//278 Mod Disarm Ranged
-		&Aura::SpellAuraNULL,//279 Modify models(?)
+		&Aura::SpellAuraMirrorImage2,//279 Modify models(?)
 		&Aura::SpellAuraModIgnoreArmorPct,//280 SPELL_AURA_IGNORE_ARMOR_PCT
 		&Aura::SpellAuraNULL,//281 Mod Honor gain increased by X pct. Final Reward Honor increased by X pct for Y Rank and above. (http://thottbot.com/s58560 && http://thottbot.com/s58557)
 		&Aura::SpellAuraModBaseHealth,//282 SPELL_AURA_MOD_BASE_HEALTH
@@ -8690,5 +8690,53 @@ void Aura::SpellAuraConvertRune(bool apply)
 				dk->ConvertRune( i, dk->GetBaseRuneType(i) );
 				--count;
 			}
+	}
+}
+
+void Aura::SpellAuraMirrorImage( bool apply )
+{
+	if( m_target == NULL || ! m_target->IsCreature() )
+		return;
+
+	if( apply )
+	{
+		Creature *c_target = TO_CREATURE( m_target );
+
+		if( c_target->GetOwner() != NULL )
+			c_target->SetDisplayId( c_target->GetOwner()->GetDisplayId() );
+
+		c_target->SetUInt32Value( UNIT_FIELD_FLAGS_2, c_target->GetUInt32Value( UNIT_FIELD_FLAGS_2 ) | 0x10 );
+	}
+
+	SpellAuraMirrorImage2( apply );
+}
+
+void Aura::SpellAuraMirrorImage2( bool apply )
+{
+	if( m_target == NULL )
+		return;
+
+	if( apply )
+	{
+		if( GetCaster()->IsPlayer() )
+		{
+			Player *p = TO_PLAYER( GetCaster() );
+
+			Item *item;
+                       
+			item = p->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
+			if( item != NULL )
+				m_target->SetUInt32Value( UNIT_VIRTUAL_ITEM_SLOT_ID, item->GetProto()->ItemId );
+
+			item = p->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_OFFHAND );
+			if( item != NULL )
+				m_target->SetUInt32Value( UNIT_VIRTUAL_ITEM_SLOT_ID + 1, item->GetProto()->ItemId );
+		}
+		else
+		{
+			m_target->SetUInt32Value( UNIT_VIRTUAL_ITEM_SLOT_ID, GetCaster()->GetUInt32Value( UNIT_VIRTUAL_ITEM_SLOT_ID ) );
+			m_target->SetUInt32Value( UNIT_VIRTUAL_ITEM_SLOT_ID + 1, GetCaster()->GetUInt32Value( UNIT_VIRTUAL_ITEM_SLOT_ID + 1 ) );
+			m_target->SetUInt32Value( UNIT_VIRTUAL_ITEM_SLOT_ID + 2, GetCaster()->GetUInt32Value( UNIT_VIRTUAL_ITEM_SLOT_ID + 2 ) );
+		}
 	}
 }

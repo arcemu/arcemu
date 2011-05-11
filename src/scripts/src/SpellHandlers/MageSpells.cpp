@@ -150,6 +150,14 @@ bool MagicAbsorbtion( uint32 i, Aura *a, bool apply ){
 	return true;
 }
 
+bool MirrorImage(uint32 i, Aura *pAura, bool apply)
+{
+	Unit *caster = pAura->GetUnitCaster();
+	if( caster != NULL && apply && i == 2 )
+		caster->CastSpell( pAura->GetTarget(), pAura->GetSpellProto()->EffectTriggerSpell[i], true );
+	return true;
+}
+
 void SetupMageSpells(ScriptMgr * mgr)
 {
     mgr->register_dummy_spell(11958, &Cold_Snap);
@@ -202,5 +210,5 @@ void SetupMageSpells(ScriptMgr * mgr)
 	};
 	mgr->register_dummy_aura( magicabsorbtionids, &MagicAbsorbtion );
 
-
+	mgr->register_dummy_aura( 55342, &MirrorImage );
 }
