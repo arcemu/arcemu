@@ -17,6 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *]]
 
+assert( include("LCF.lua") )
 local function alias(LHAname, LBname)
    LCF.PacketMethods[LHAname] = function(self, ...)
       return self[LBname](self, ...);

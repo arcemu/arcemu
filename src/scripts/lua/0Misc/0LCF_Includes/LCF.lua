@@ -767,7 +767,6 @@ LCF.vars.EMOTE_FIELDS = {
 	}
 function LCF.__index(obj,key)
 	local val = LCF.vars[key]
-	--print("LCF::indexer returning value : "..tostring(val) )
 	return val
 end
 function LCF.vars.__index(tbl,key)
@@ -800,21 +799,4 @@ setmetatable( getregistry("QueryResult"), LCF.QResultMethods )
 setmetatable(LCF,LCF)
 setmetatable(LCF.vars,LCF.vars)
 --Might expand these to the other wow objects if they really do need wrappers
---load the implementation files
-local info = debug.getinfo(1)
-local src = string.reverse(info.source)
-local file_sep;
-if(GetPlatform() == "Win32") then
-	file_sep = "\\"
-else
-	file_sep = "/"
-end
--- Directory resolving algo
-local startpos,endpos = string.find(src,file_sep),string.len(src)
---Check for the prefixed '@' and ignore that.
-if(string.find(src,"@") ~= nil) then endpos = endpos -1 end
-
-local directory = string.reverse(string.sub(src,startpos,endpos))
-local impl_files = { "LCF_Object.impl", "LCF_Creature.impl", "LCF_Global.impl", "LCF_Player.impl", "LCF_Gameobject.impl", "LCF_Extra.impl", "LCF_Unit.impl", "LCF_Item.impl", "LCF_Spell.impl", "LCF_Taxi_Packet_etc.impl" }
-for k,v in pairs(impl_files) do dofile(directory..v) end
 	

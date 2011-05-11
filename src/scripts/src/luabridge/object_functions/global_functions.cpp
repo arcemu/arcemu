@@ -215,41 +215,39 @@ void lua_engine::ExecuteLuaFunction(variadic_parameter * params)
 		//place the function on the stack.
 		ReferenceHandler::getReference(lu,params->head_node->val.obj_ref);
 		int arg_cnt = params->count - 2;
-		if(arg_cnt > 0)
+
+		//retrieve the repeats.
+		variadic_node * function_node = params->head_node;
+		ptrdiff_t repeats = params->head_node->next->val.bewl;
+		/*	Prepare to push arguments, 1st assign the head node to the actual arguments registered to this function */
+		params->head_node = function_node->next->next;
+		//subtract the function n repeat node from arg count.
+		params->count-= 2;
+		//Now we push all args.
+		luabridge::tdstack<variadic_parameter*>::push(lu, params);
+		//call the function
+		if(lua_pcall(lu, arg_cnt, 0,0) )
+			report(lu);
+		//if it's not an infinite/one time call event.
+		if(repeats > 1)
+			//decrement repeats and put it back in the params.
+			function_node->next->val.bewl = (int)--repeats;
+		else if(repeats == 1)
 		{
-			//retrieve the repeats.
-			variadic_node * function_node = params->head_node;
-			ptrdiff_t repeats = params->head_node->next->val.bewl;
-			/*	Prepare to push arguments, 1st assign the head node to the actual arguments registered to this function */
-			params->head_node = function_node->next->next;
-			//subtract the function n repeat node from arg count.
-			params->count-= 2;
-			//Now we push all args.
-			luabridge::tdstack<variadic_parameter*>::push(lu, params);
-			//call the function
-			if(lua_pcall(lu, arg_cnt, 0,0) )
-				report(lu);
-			//if it's not an infinite/one time call event.
-			if(repeats > 1)
-				//decrement repeats and put it back in the params.
-				function_node->next->val.bewl = (int)--repeats;
-			else if(repeats == 1)
-			{
-				//reset our function node as the starting node.
+			//reset our function node as the starting node.
 					
-				variadic_node * repeats_node = function_node->next;
-				function_node->next = params->head_node;
-				params->head_node = function_node;
-				//de-allocate repeats node
-				delete repeats_node;
-				//remove this function from storage.
-				li_->m_globalFRefs.erase(params);
-				//since we've put the function node back.
-				params->count++;
-				//clean up the rest of the args
-				cleanup_varparam(params, lu);
-			}
-		}	
+			variadic_node * repeats_node = function_node->next;
+			function_node->next = params->head_node;
+			params->head_node = function_node;
+			//de-allocate repeats node
+			delete repeats_node;
+			//remove this function from storage.
+			li_->m_globalFRefs.erase(params);
+			//since we've put the function node back.
+			params->count++;
+			//clean up the rest of the args
+			cleanup_varparam(params, lu);
+		}
 	}
 }
 void ModifyLuaEventInterval(lua_function ref, int newInterval)

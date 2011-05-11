@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *]]
 
+ assert( include("LCF.lua") )
+ 
 function GetDBCSpellVar(entry, var, subindex)
    local prop = var
    if (subindex ~= nil) then prop = prop..subindex; end
