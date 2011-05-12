@@ -1,5 +1,5 @@
 --?!MAP=557
-assert( include("manatombs.lua") )
+assert( include("manatombs.lua") , "Failed to load manatombs.lua")
 local mod = require("DUNGEON_AUCHINDOUN.INSTANCE_MANATOMBS")
 assert(mod)
 module(mod._NAME..".SHAFFAR",package.seeall)

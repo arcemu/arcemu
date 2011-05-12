@@ -1,5 +1,6 @@
 --?!MAP=555
-assert( include("shadowlabyrinth.lua") )
+
+assert( include("shadowlabyrinth.lua") , "Failed to load shadowlabyrinth.lua")
 local mod = require("DUNGEON_AUCHINDOUN.INSTANCE_SHADOW_LABYRINTH")
 assert(mod)
 module(mod._NAME..".BLACKHEART_THE_INCITER",package.seeall)

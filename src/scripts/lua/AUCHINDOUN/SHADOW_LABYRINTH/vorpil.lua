@@ -1,5 +1,6 @@
 --?!MAP=555
-assert( include("shadowlabyrinth.lua") )
+
+assert( include("shadowlabyrinth.lua"), "Failed to load shadowlabyrinth.lua")
 local mod = require("DUNGEON_AUCHINDOUN.INSTANCE_SHADOW_LABYRINTH")
 if(type(mod) ~= "table") then error("Missing Shadow Labyrinth module!") end
 module(mod._NAME..".GRAND_MASTER_VORPIL",package.seeall)

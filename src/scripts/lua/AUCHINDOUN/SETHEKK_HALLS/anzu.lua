@@ -1,5 +1,5 @@
 --?!MAP=556
-assert(include("SethekkHalls.lua") )
+assert(include("SethekkHalls.lua") , "Failed to load SethekkHalls.lua")
 local mod = require("DUNGEON_AUCHINDOUN.INSTANCE_SETHEKK_HALLS")
 assert(mod)
 module(mod._NAME..".ANZU_THE_RAVEN_GOD",package.seeall)

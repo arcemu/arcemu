@@ -1,5 +1,5 @@
 --?!MAP=558
-assert( include("acrypts.lua") )
+assert( include("acrypts.lua") , "Failed to load acrypts.lua")
 local mod = require("DUNGEON_AUCHINDOUN.INSTANCE_ACRYPTS")
 assert(mod)
 module(mod._NAME..".EXARCH_MALADAAR",package.seeall)

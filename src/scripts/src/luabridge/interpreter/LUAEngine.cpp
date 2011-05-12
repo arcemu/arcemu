@@ -221,20 +221,31 @@ bool lua_engine::loadScript(const char* filename)
 		//get the current file directory and pre-pend it to the file name
 		lua_Debug ar;
 		std::string fullpath;
-		if(lua_getstack(context->lu, 1, &ar) == 1 && lua_getinfo(context->lu, "S", &ar) )
+
+		ptrdiff_t function_level = 1;
+		while( lua_getstack(context->lu, function_level, &ar) ) //while we have a call stack, 1 of those functions has to have been defined in .lua file.
 		{
-			fullpath+= ar.source;
-			size_t start = fullpath.find('@'); //remove @ prefix if any.
-			if(start != string::npos)
-				fullpath = fullpath.substr( ++start, (fullpath.length() - start) );
-#if WIN32
-			start = fullpath.rfind('\\'); //extract the directory
-#else
-			start = fullpath.rfind('/');
-#endif
-			if(start != string::npos)
-				fullpath = fullpath.substr(0, ++start);
+			function_level++;
+			if(lua_getinfo(context->lu, "S", &ar) )
+			{
+				fullpath+= ar.source;
+				size_t start = fullpath.find('@'); //remove @ prefix if any.
+				if(start != string::npos)
+					fullpath = fullpath.substr( ++start, (fullpath.length() - start) );
+
+				start = fullpath.rfind('\\'); //extract the directory
+				start = (start == string::npos) ? fullpath.rfind('/') : start;
+				if(start != string::npos)
+				{
+					fullpath = fullpath.substr(0, ++start);
+					break; //we've found a directory, stop here.
+				}
+				fullpath.clear();
+			}
+
 		}
+		assert(fullpath.length() > 0);
+
 		fullpath+= filename;
 		FILE * _file = fopen(fullpath.c_str(), "rb");
 		if(NULL != _file)
@@ -247,7 +258,7 @@ bool lua_engine::loadScript(const char* filename)
 			cached.data_ = (const void*)malloc(file_length);
 			cached.datasize_ = fread( (void*)cached.data_, 1, file_length, _file);
 			fclose(_file);
-			success = (0 == lua_load(context->lu, readScript, (void*)&cached , filename) ) && (0 == lua_pcall(context->lu, 0, 0, 0) );
+			success = (0 == lua_load(context->lu, readScript, (void*)&cached , fullpath.c_str() ) ) && (0 == lua_pcall(context->lu, 0, 0, 0) );
 			
 		}
 	}
