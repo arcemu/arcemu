@@ -77,7 +77,7 @@ end
 function UNIT:SetSummonedBy( summoner)
 	self:SetUInt64Value( LCF.UNIT_FIELD_SUMMONEDBY, summoner:GetGUID() )
 end
-function UNIT:GetCreator()
+function UNIT:GetCreatedBy()
 	return self:GetObject( self:GetUInt64Value(LCF.UNIT_FIELD_CREATEDBY) )
 end
 function UNIT:GetSummonedBy()

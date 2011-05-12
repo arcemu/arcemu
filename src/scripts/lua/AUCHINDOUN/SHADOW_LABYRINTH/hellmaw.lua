@@ -1,4 +1,6 @@
-local mod = getfenv(1)
+--?!MAP=555
+assert( include("shadowlabyrinth.lua") )
+local mod = require("DUNGEON_AUCHINDOUN.INSTANCE_SHADOW_LABYRINTH")
 if(type(mod) ~= "table") then error("Missing Shadow Labyrinth module!") end
 module(mod._NAME..".AMBASSADOR_HELLMAW",package.seeall)
 local self = getfenv(1)

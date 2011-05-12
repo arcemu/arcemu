@@ -1,5 +1,7 @@
-local mod = getfenv(1)
-if(type(mod) ~= "table") then error("Missing Shadow Labyrinth module!") end
+--?!MAP=555
+assert( include("shadowlabyrinth.lua") )
+local mod = require("DUNGEON_AUCHINDOUN.INSTANCE_SHADOW_LABYRINTH")
+assert(mod)
 module(mod._NAME..".BLACKHEART_THE_INCITER",package.seeall)
 local self = getfenv(1)
 

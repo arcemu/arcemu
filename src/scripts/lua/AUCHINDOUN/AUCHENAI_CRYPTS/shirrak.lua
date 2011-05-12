@@ -1,25 +1,30 @@
-local mod = getfenv(1)
+--?!MAP=558
+assert( include("acrypts.lua") )
+local mod = require("DUNGEON_AUCHINDOUN.INSTANCE_ACRYPTS")
 assert(mod)
 module(mod._NAME..".SHIRRAK_THE_DEAD_WATCHER",package.seeall)
 local self = getfenv(1)
-WorldDBQuery("DELETE FROM ai_agents WHERE entry = 18371;")
+local FocusFire;
 
+--WorldDBQuery("DELETE FROM ai_agents WHERE entry = 18371;")
 function OnCombat(unit,_,mAggro)
 	self[tostring(unit)] = {
 		bite = math.random(8,12),
 		inhibit = math.random(2,5),
 		attract = math.random(20,30),
 		f_fire = 2,
-		isHeroic = (mAggro:IsPlayer() and mAggro:IsHeroic() )
+		heroic = (mAggro:IsPlayer() and TO_PLAYER(mAggro):IsHeroic() )
 	}
 	unit:RegisterAIUpdateEvent(1000)
 end
 function OnWipe(unit)
 	unit:RemoveAIUpdateEvent()
 	unit:RemoveEvents()
+	unit:StopChannel()
 	self[tostring(unit)] = nil
 	unit:DisableCombat(false)
 end
+
 function AIUpdate(unit)
 	if(unit:IsCasting() ) then return end
 	if(unit:GetNextTarget() == nil) then
@@ -53,15 +58,16 @@ function AIUpdate(unit)
 		vars.attract = math.random(20,30)
 	end
 end
+
 function FocusFire(unit,spell_phase)
 	-- HACKS!
 	if(spell_phase == 1) then
 		local target = unit:GetRandomEnemy()
-		unit:BossRaidEmote(unit:GetName().." focuses his energy on "..target:GetName() )
+		unit:BossRaidEmote(unit:GetInfo().Name.." focuses his energy on "..TO_PLAYER(target):GetName() )
 		unit:DisableCombat(true)
 		unit:ChannelSpell(43515,target)
 		unit:SetChannelTarget(target)
-		unit:RegisterLuaEvent(FocusFire,4000,1,2)
+		unit:RegisterEvent(FocusFire,4000,1,2)
 	elseif(spell_phase == 2) then
 		local target = unit:GetChannelTarget()
 		unit:SetChannelTarget(nil)
@@ -69,14 +75,14 @@ function FocusFire(unit,spell_phase)
 		focus:SetUnselectable()
 		focus:SetUnattackable()
 		focus:DisableCombat(true)
-		focus:SetModel(17200)
+		focus:SetDisplayID(17200)
 		unit:FullCastSpellOnTarget(32300,focus)
 		unit:DisableCombat(false)
-		unit:SetCreator(focus)
-		unit:RegisterLuaEvent(FocusFire,1500,1,3)
+		unit:SetCreatedBy(focus)
+		unit:RegisterEvent(FocusFire,1500,1,3)
 	elseif(spell_phase == 3) then
-		local focus = unit:GetCreator()
-		unit:SetCreator(nil)
+		local focus = TO_CREATURE(unit:GetCreatedBy() )
+		unit:SetCreatedBy(nil)
 		if(self[tostring(unit)].isHeroic) then
 			for i = 1,math.random(3,6) do
 				focus:EventCastSpell(focus,20203,i*500,1)
@@ -89,6 +95,7 @@ function FocusFire(unit,spell_phase)
 		focus:Despawn(3500,0)
 	end
 end
+
 function FocusFire_Explode(unit,spell)
 	unit:FullCastSpell(spell)
 end

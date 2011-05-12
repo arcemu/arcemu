@@ -173,6 +173,14 @@ CREATURE.GetAddTank = CREATURE.GetSecondHated
 
 function CREATURE:MoveTo(...) self:GetAIInterface():MoveTo(...) end
 
+function CREATURE:EventCastSpell(target, spell, delay, repeats)
+	assert( target and spell)
+	local function dospell(self, target, spell)
+		self:FullCastSpellOnTarget(spell, target)
+	end
+	self:RegisterEvent( dospell, delay, repeats, target, spell)
+end
+
 function CREATURE:SetEquippedItem(slot, id)
    self:SetUInt32Value(LCF.UNIT_VIRTUAL_ITEM_SLOT_ID+slot, id)
 end

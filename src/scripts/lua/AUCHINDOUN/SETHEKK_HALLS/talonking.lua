@@ -1,4 +1,6 @@
-local mod = getfenv(1)
+--?!MAP=556
+assert(include("SethekkHalls.lua") )
+local mod = require("DUNGEON_AUCHINDOUN.INSTANCE_SETHEKK_HALLS")
 assert(mod)
 module(mod._NAME..".TALON_KING_IKISS",package.seeall)
 local self = getfenv(1)

@@ -1,8 +1,11 @@
-local mod = getfenv(1)
+--?!MAP=557
+assert( include("manatombs.lua") )
+local mod = require("DUNGEON_AUCHINDOUN.INSTANCE_MANATOMBS")
+assert(mod)
 module(mod._NAME..".PANDEMONIUS",package.seeall)
 local self = getfenv(1)
 --Delete ai agent conflicts
-WorldDBQuery("DELETE FROM ai_agents WHERE `entry` = \"18341\";")
+--WorldDBQuery("DELETE FROM ai_agents WHERE `entry` = \"18341\";")
 function OnCombat(unit,_,mAggro)
 	self[tostring(unit)] = {
 		void_blast = math.random(5,10),

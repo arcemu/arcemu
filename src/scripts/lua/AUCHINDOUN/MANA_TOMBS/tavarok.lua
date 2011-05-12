@@ -1,4 +1,7 @@
-local mod = getfenv(1)
+--?!MAP=557
+assert( include("manatombs.lua") )
+local mod = require("DUNGEON_AUCHINDOUN.INSTANCE_MANATOMBS")
+assert(mod)
 module(mod._NAME..".TAVAROK",package.seeall)
 local self = getfenv(1)
 

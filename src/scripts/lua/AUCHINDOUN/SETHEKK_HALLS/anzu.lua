@@ -1,11 +1,16 @@
-local mod = getfenv(1)
+--?!MAP=556
+assert(include("SethekkHalls.lua") )
+local mod = require("DUNGEON_AUCHINDOUN.INSTANCE_SETHEKK_HALLS")
 assert(mod)
 module(mod._NAME..".ANZU_THE_RAVEN_GOD",package.seeall)
-local self = getfenv(1)
+
+
+
+local self = {} -- local table that stores our variables, this table will be static across multiple instances of the target script creature.
 
 WorldDBQuery("DELETE FROM ai_agents WHERE entry = 23035;")
 
-function OnSpawn(unit)
+local function OnSpawn(unit)
 	local claw = unit:GetLocalGameObject(185554)
 	if(claw) then
 		claw:RemoveFromWorld()

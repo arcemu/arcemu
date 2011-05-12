@@ -1,4 +1,6 @@
-local mod = getfenv(1)
+--?!MAP=558
+assert( include("acrypts.lua") )
+local mod = require("DUNGEON_AUCHINDOUN.INSTANCE_ACRYPTS")
 assert(mod)
 module(mod._NAME..".EXARCH_MALADAAR",package.seeall)
 local self = getfenv(1)
@@ -40,7 +42,7 @@ end
 function OnDeath(unit)
 	unit:MonsterYell("This is... where I belong.")
 	unit:PlaySoundToSet(10518)
-	unit:RegisterLuaEvent(SpawnDore,10000,1)
+	--createEvent(SpawnDore,10000,1)
 end
 function AIUpdate(unit)
 	if(unit:IsCasting() ) then return end
@@ -58,9 +60,9 @@ function AIUpdate(unit)
 	elseif(vars.scream <= 0) then
 		unit:FullCastSpell(32421)
 		vars.scream = math.random(20,30)
-		local second_hated = unit:GetSecondHated()
+		local second_hated = unit:getAIInterface():GetSecondHated()
 		if(second_hated) then
-			unit:SetNextTarget(unit:GetSecondHated())
+			unit:setNextTarget(unit:getAIInterface():GetSecondHated() )
 		end
 	elseif(vars.ssteal <= 0) then
 		local say_text = math.random(3)
@@ -76,9 +78,9 @@ function AIUpdate(unit)
 		end
 		local target = unit:GetRandomEnemy()
 		unit:FullCastSpellOnTarget(32346,target)
-		local soul = unit:SpawnLocalCreature(18441,unit:GetFaction(),0)
-		soul:SetCreator(target)
 		vars.ssteal = math.random(20,30)
+		local soul = unit:SpawnLocalCreature(18441,unit:GetFaction(),0)
+		soul:SetCreatedBy(target)
 	end
 	if(vars.avatar and unit:GetHealthPct() <= 25) then
 		unit:FullCastSpell(32424)
@@ -86,6 +88,7 @@ function AIUpdate(unit)
 	end
 end
 function SpawnDore(unit)
+	print("Spawning Dore")
 	local dore = unit:SpawnCreature(19412,27.188200,-388.435730,26.584007,6.282297,0,0)
 	dore:FullCastSpell(7765)
 end
@@ -97,36 +100,37 @@ RegisterUnitEvent(18373,4,OnDeath)
 RegisterUnitEvent(18373,21,AIUpdate)
 
 function StolenSoulOnCombat(unit)
+	print("StolenSoulOnCombat!")
 	unit:FullCastSpell(32395)
-	local creator = unit:GetCreator()
+	local creator = unit:GetCreatedBy()
 	local class = creator:GetPlayerClass()
 	if(class == "Warrior") then
-		unit:RegisterLuaEvent(StolenSoul_Cast,math.random(15,20)*1000,0,37335,0x2)
+		unit:RegisterEvent(StolenSoul_Cast,math.random(15,20)*1000,0,37335,0x2)
 	elseif(class == "Paladin") then
-		unit:RegisterLuaEvent(StolenSoul_Cast,math.random(25,30)*1000,0,37369,0x2)
+		unit:RegisterEvent(StolenSoul_Cast,math.random(25,30)*1000,0,37369,0x2)
 	elseif(class == "Hunter") then
-		unit:RegisterLuaEvent(StolenSoul_Cast,math.random(15,20)*1000,0,37368,0x1)
+		unit:RegisterEvent(StolenSoul_Cast,math.random(15,20)*1000,0,37368,0x1)
 	elseif(class == "Druid") then
-		unit:RegisterLuaEvent(StolenSoul_Cast,1000,0,37368,0x3)
-		unit:RegisterLuaEvent(StolenSoulAI_Runner,5000,0)
+		unit:RegisterEvent(StolenSoul_Cast,1000,0,37368,0x3)
+		unit:RegisterEvent(StolenSoulAI_Runner,5000,0)
 	elseif(class == "Warlock") then
-		unit:RegisterLuaEvent(StolenSoul_Cast,5000,0,37334,0x3)
+		unit:RegisterEvent(StolenSoul_Cast,5000,0,37334,0x3)
 	elseif(class == "Mage") then
-		unit:RegisterLuaEvent(StolenSoul_Cast,3500,0,37329,0x3)
+		unit:RegisterEvent(StolenSoul_Cast,3500,0,37329,0x3)
 	elseif(class == "Rogue") then
-		unit:RegisterLuaEvent(StolenSoul_Cast,math.random(3,5)*1000,0,37331,0x2)
+		unit:RegisterEvent(StolenSoul_Cast,math.random(3,5)*1000,0,37331,0x2)
 	elseif(class == "Shaman") then
-		unit:RegisterLuaEvent(StolenSoul_Cast,math.random(5,8)*1000,0,37322,0x3)
+		unit:RegisterEvent(StolenSoul_Cast,math.random(5,8)*1000,0,37322,0x3)
 	elseif(class == "Priest") then
-		unit:RegisterLuaEvent(StolenSoul_Cast,3500,0,37330,0x3)
-		unit:RegisterLuaEvent(StolenSoul_Cast,math.random(20,30)*1000,0,22884,0x1)
+		unit:RegisterEvent(StolenSoul_Cast,3500,0,37330,0x3)
+		unit:RegisterEvent(StolenSoul_Cast,math.random(20,30)*1000,0,22884,0x1)
 	elseif(class == "Death Knight") then
-		unit:RegisterLuaEvent(StolenSoul_Cast,math.random(10,15)*1000,0,58839,0x2)
+		unit:RegisterEvent(StolenSoul_Cast,math.random(10,15)*1000,0,58839,0x2)
 	end
 end
 function StolenSoulOnWipe(unit)
 	unit:StopMovement(1000)
-	unit:RemoveLuaEvents()
+	unit:RemoveEvents()
 	unit:FullCastSpell(33326)
 	unit:Despawn(1000,0)
 end
@@ -161,15 +165,15 @@ RegisterUnitEvent(18441,2,StolenSoulOnWipe)
 function AvatarOnSpawn(unit)
 	local creator = unit:GetLocalCreature(18373)
 	if(creator ~= nil) then
-		unit:AttackReaciton(creator:GetNextTarget(),1,0)
+		unit:getAIInterface():AttackReaction(creator:getNextTarget(),1,0)
 	else
-		unit:AttackReaction(unit:GetClosestEnemy(),1,0)
+		unit:getAIInterface():AttackReaction(unit:getClosestEnemy(),1,0)
 	end
-	unit:RegisterLuaEvent(StolenSoul_Cast,math.random(15,20)*1000,0,16856,0x2)
-	unit:RegisterLuaEvent(StolenSoul_Cast,math.random(10,15)*1000,0,16145,0x2)
+	unit:RegisterEvent(StolenSoul_Cast,math.random(15,20)*1000,0,16856,0x2)
+	unit:RegisterEvent(StolenSoul_Cast,math.random(10,15)*1000,0,16145,0x2)
 end
 function AvatarOnWipe(unit)
-	unit:RemoveLuaEvents()
+	unit:RemoveEvents()
 end
 RegisterUnitEvent(18478,18,AvatarOnSpawn)
 RegisterUnitEvent(18478,2,AvatarOnWipe)

@@ -21,6 +21,7 @@
  ]]
  
  assert( include("LCF.lua") )
+ 
  local OBJ = LCF.ObjectMethods
  assert(OBJ)
  local function alias(LHAname, LBname)

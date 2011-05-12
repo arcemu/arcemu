@@ -149,12 +149,8 @@ end
 function LCF:BindMethod(method,method_table)
 	return function(...) return method(method_table,unpack(arg)) end
 end
-function LCF:CreateClosure(method,...)
-	local args = arg
-	local closure = function(...) return method(unpack(arg),unpack(args)) end
-	return closure
-end
+
 RegisterServerHook(15,LCF:BindMethod(LCF.HandleOnZone,LCF))
 RegisterServerHook(26,LCF:BindMethod(LCF.HandleOnAreaTrigger,LCF))
 --RegisterTimedEvent("LCF:UpdateCallBacks",100,0)
-CreateLuaEvent(LCF:BindMethod(LCF.UpdateCallBacks,LCF),100,0)
+--CreateLuaEvent(LCF:BindMethod(LCF.UpdateCallBacks,LCF),100,0)
