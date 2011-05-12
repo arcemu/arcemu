@@ -225,6 +225,8 @@ void lua_engine::ExecuteLuaFunction(variadic_parameter * params)
 		params->count-= 2;
 		//Now we push all args.
 		luabridge::tdstack<variadic_parameter*>::push(lu, params);
+		params->head_node = function_node;
+		params->count+=2;
 		//call the function
 		if(lua_pcall(lu, arg_cnt, 0,0) )
 			report(lu);
@@ -234,17 +236,8 @@ void lua_engine::ExecuteLuaFunction(variadic_parameter * params)
 			function_node->next->val.bewl = (int)--repeats;
 		else if(repeats == 1)
 		{
-			//reset our function node as the starting node.
-					
-			variadic_node * repeats_node = function_node->next;
-			function_node->next = params->head_node;
-			params->head_node = function_node;
-			//de-allocate repeats node
-			delete repeats_node;
 			//remove this function from storage.
 			li_->m_globalFRefs.erase(params);
-			//since we've put the function node back.
-			params->count++;
 			//clean up the rest of the args
 			cleanup_varparam(params, lu);
 		}

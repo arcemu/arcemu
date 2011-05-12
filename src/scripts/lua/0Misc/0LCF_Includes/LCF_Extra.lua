@@ -153,4 +153,4 @@ end
 RegisterServerHook(15,LCF:BindMethod(LCF.HandleOnZone,LCF))
 RegisterServerHook(26,LCF:BindMethod(LCF.HandleOnAreaTrigger,LCF))
 --RegisterTimedEvent("LCF:UpdateCallBacks",100,0)
---CreateLuaEvent(LCF:BindMethod(LCF.UpdateCallBacks,LCF),100,0)
+CreateLuaEvent(LCF:BindMethod(LCF.UpdateCallBacks,LCF),100,0)
