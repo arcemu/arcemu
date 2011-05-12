@@ -208,38 +208,41 @@ int CreateLuaEvent(lua_function fref, int delay, int repeats, variadic_parameter
 }
 void lua_engine::ExecuteLuaFunction(variadic_parameter * params)
 {
-	if(params != NULL )
+	if(params != NULL)
 	{
 		PLUA_INSTANCE li_ = lua_instance.get();
-		lua_State * lu = li_->lu;
-		//place the function on the stack.
-		ReferenceHandler::getReference(lu,params->head_node->val.obj_ref);
-		int arg_cnt = params->count - 2;
-
-		//retrieve the repeats.
-		variadic_node * function_node = params->head_node;
-		ptrdiff_t repeats = params->head_node->next->val.bewl;
-		/*	Prepare to push arguments, 1st assign the head node to the actual arguments registered to this function */
-		params->head_node = function_node->next->next;
-		//subtract the function n repeat node from arg count.
-		params->count-= 2;
-		//Now we push all args.
-		luabridge::tdstack<variadic_parameter*>::push(lu, params);
-		params->head_node = function_node;
-		params->count+=2;
-		//call the function
-		if(lua_pcall(lu, arg_cnt, 0,0) )
-			report(lu);
-		//if it's not an infinite/one time call event.
-		if(repeats > 1)
-			//decrement repeats and put it back in the params.
-			function_node->next->val.bewl = (int)--repeats;
-		else if(repeats == 1)
+		if( li_->m_globalFRefs.find(params) != li_->m_globalFRefs.end() )
 		{
-			//remove this function from storage.
-			li_->m_globalFRefs.erase(params);
-			//clean up the rest of the args
-			cleanup_varparam(params, lu);
+			lua_State * lu = li_->lu;
+			//place the function on the stack.
+			ReferenceHandler::getReference(lu,params->head_node->val.obj_ref);
+			int arg_cnt = params->count - 2;
+
+			//retrieve the repeats.
+			variadic_node * function_node = params->head_node;
+			ptrdiff_t repeats = params->head_node->next->val.bewl;
+			/*	Prepare to push arguments, 1st assign the head node to the actual arguments registered to this function */
+			params->head_node = function_node->next->next;
+			//subtract the function n repeat node from arg count.
+			params->count-= 2;
+			//Now we push all args.
+			luabridge::tdstack<variadic_parameter*>::push(lu, params);
+			params->head_node = function_node;
+			params->count+=2;
+			//call the function
+			if(lua_pcall(lu, arg_cnt, 0,0) )
+				report(lu);
+			//if it's not an infinite/one time call event.
+			if(repeats > 1)
+				//decrement repeats and put it back in the params.
+				function_node->next->val.bewl = (int)--repeats;
+			else if(repeats == 1)
+			{
+				//remove this function from storage.
+				li_->m_globalFRefs.erase(params);
+				//clean up the rest of the args
+				cleanup_varparam(params, lu);
+			}
 		}
 	}
 }

@@ -513,6 +513,27 @@ class__<T>& class__<T>::static_method (const char *name, FnPtr fp)
 	return *this;
 }
 
+template <typename T>
+template <typename FnPtr>
+class__<T>& class__<T>::static_method (FnPtr fp, const char * firstlabel, ...)
+{
+	assert(!fnptr<FnPtr>::mfp);
+	lua_getglobal(L, (classname<T>::name()) );
+	lua_pushlightuserdata(L, (void *)fp);
+	lua_pushcclosure(L, &function_proxy<FnPtr>::f, 1);
+	va_list arglist;
+	va_start(arglist, firstlabel);
+	for(const char * nextlabel = firstlabel; NULL != nextlabel; )
+	{
+		lua_pushvalue(L, -1);
+		rawsetfield(L, -3, nextlabel);
+		nextlabel = va_arg(arglist, const char*);
+	}
+	va_end(arglist);
+	lua_pop(L, 2);
+	return *this;
+}
+
 /*
  * Static property registration.  Works the same way as class properties,
  * but the proxy functions are stored in the static __propget and __propset

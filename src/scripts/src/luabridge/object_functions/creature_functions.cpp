@@ -506,7 +506,7 @@ namespace lua_engine
 				.property_rw("m_FleeHealth", &AIInterface::m_FleeHealth)
 				.property_rw("m_FleeDuration", &AIInterface::m_FleeDuration)
 				.method( &AIInterface::ClearHateList, "clearhatelist", "clearHateList", "ClearHateList", NULL)
-				.method( &AIInterface::WipeHateList, "wipeHateList", "WipeHateList", "wipehatelist", NULL)
+				.method( &AIInterface::WipeHateList, "wipeHateList", "WipeHateList", "wipehatelist", "WipeThreatList", "wipeThreatList", "wipethreatlist", NULL)
 				.method( &AIInterface::WipeTargetList, "wipetargetlist", "wipeTargetList", "WipeTargetList", NULL)
 				.method( &AIInterface::RemoveThreatByPtr, "removethreatbyptr", "removeThreatByPtr", "RemoveThreatByPtr", NULL)
 				.method( &AIInterface::modThreatByPtr, "modThreatByPtr", "ModThreatByPtr", "modthreatbyptr", NULL)

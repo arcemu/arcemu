@@ -98,7 +98,10 @@ namespace lua_engine
 			.method( &Arcemu::Gossip::Menu::getLanguage, "GetLanguage", "getLanguage", "getlanguage", NULL)
 			.method( &Arcemu::Gossip::Menu::setLanguage, "SetLanguage", "setLanguage", "setlanguage", NULL)
 			.method( &Arcemu::Gossip::Menu::setTextID, "SetTextID", "setTextID", "settextid", NULL)
-			.method( &Arcemu::Gossip::Menu::getTextID, "GetTextID", "getTextID", "gettextid", NULL);
+			.method( &Arcemu::Gossip::Menu::getTextID, "GetTextID", "getTextID", "gettextid", NULL)
+			.static_method( &Arcemu::Gossip::Menu::Complete, "Complete", "complete", NULL)
+			.static_method(&Arcemu::Gossip::Menu::SendQuickMenu, "SendQuickMenu", "sendQuickMenu", "sendquickmenu", NULL)
+			.static_method(&Arcemu::Gossip::Menu::SendSimpleMenu, "SendSimpleMenu", "sendSimpleMenu", "sendsimplemenu", NULL);
 		 
 		 m	.subclass<DynamicObject, Object>("DynamicObject")
 			.constructor< void(*)(uint32,uint32) >()

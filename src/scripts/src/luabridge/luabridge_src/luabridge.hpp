@@ -96,6 +96,9 @@ namespace luabridge
 		template <typename FnPtr>
 		class__<T>& static_method (const char *name, FnPtr fp);
 
+		template<typename FnPtr>
+		class__<T>& static_method(FnPtr, const char*, ...);
+
 		// Static property registration
 		template <typename U>
 		class__<T>& static_property_ro (const char *name, U *data);
