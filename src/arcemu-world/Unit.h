@@ -854,7 +854,7 @@ public:
 
 	void UpdateFlag();												// detects if we have changed combat state (in/out), and applies the flag.
 
-	bool IsInCombat();												// checks if we are in combat or not.
+	bool IsInCombat() const;												// checks if we are in combat or not.
 
 	void OnRemoveFromWorld();										// called when we are removed from world, kills all references to us.
 	

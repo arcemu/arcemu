@@ -92,6 +92,7 @@ void LuaGameObject::AIUpdate()
 
 void LuaGameObject::Destroy ()
 {
+	sEventMgr.RemoveEvents(_gameobject, EVENT_LUA_GAMEOBJ_EVENTS);
 	PLUA_INSTANCE ref = lua_instance.get();
 	{
 		li::GOInterfaceMap::iterator it;
@@ -108,13 +109,12 @@ void LuaGameObject::Destroy ()
 	{
 		li::ObjectFRefMap::iterator itr = ref->m_goFRefs.find(_gameobject->GetLowGUID() );
 		li::ObjectFRefMap::iterator itend = ref->m_goFRefs.upper_bound(_gameobject->GetLowGUID() );
-		li::ObjectFRefMap::iterator it;
 		while(itr != itend)
 		{
-			it = itr++;
-			cleanup_varparam(it->second,ref->lu);
-			ref->m_goFRefs.erase(it);
+			cleanup_varparam(itr->second,ref->lu);
+			++itr;
 		}
+		ref->m_goFRefs.erase( _gameobject->GetLowGUID() );
 	}
 	delete this;
 }

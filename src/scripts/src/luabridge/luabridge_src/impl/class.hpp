@@ -141,6 +141,10 @@ void create_const_metatable (lua_State *L, const char *name, bool destruct)
 	lua_pushcfunction(L, (&metaevent_gettypename<T> ) );
 	rawsetfield(L, -2, "type");
 
+	//	set the tostring method
+	lua_pushcfunction(L, (&metaevent_tostring<T> ) );
+	rawsetfield(L, -2, "__tostring");
+
 	lua_newtable(L);
 	rawsetfield(L, -2, "__propget");
 }

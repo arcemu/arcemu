@@ -72,9 +72,17 @@ function UNIT:StopChannel()
 	self:SetChannelSpell( 0 )
 end
 function UNIT:SetCreatedBy(creator)
-	self:SetUInt64Value(LCF.UNIT_FIELD_CREATEDBY, creator:GetGUID() )
+	local guid = 0
+	if(creator) then
+		guid = creator:GetGUID()
+	end
+	self:SetUInt64Value(LCF.UNIT_FIELD_CREATEDBY, guid)
 end
 function UNIT:SetSummonedBy( summoner)
+	local guid = 0
+	if(summoner) then
+		guid = summoner:GetGUID()
+	end
 	self:SetUInt64Value( LCF.UNIT_FIELD_SUMMONEDBY, summoner:GetGUID() )
 end
 function UNIT:GetCreatedBy()
@@ -158,3 +166,13 @@ function UNIT:CreateGuardian(entry, duration, angle, lvl)
 end
 
 alias("Emote", "EventAddEmote")
+
+--------------------------------- RE-DEFINED 'alias' here------------------------------
+alias = function(_func, ...)
+	for _,label in ipairs(arg) do
+		UNIT[label] = _func
+	end
+end
+
+alias( function(self, id, ...) for _,target in ipairs(arg) do self:CastSpell(target, id, false) end end, "FullCastSpellOnTargets", "fullCastSpellOnTargets", "fullcastspellontargets")
+alias( function(self, id, ...) for _,target in ipairs(arg) do self:CastSpell(target, id, true) end end, "CastSpellOnTargets", "castSpellOnTargets", "castspellontargets")

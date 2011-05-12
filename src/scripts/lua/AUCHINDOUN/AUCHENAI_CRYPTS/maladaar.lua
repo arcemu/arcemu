@@ -87,9 +87,8 @@ function AIUpdate(unit)
 		vars.avatar = false
 	end
 end
-function SpawnDore(unit)
-	print("Spawning Dore")
-	local dore = unit:SpawnCreature(19412,27.188200,-388.435730,26.584007,6.282297,0,0)
+function SpawnDore()
+	local dore = MapMgr:GetInterface():SpawnCreature(19412,27.188200,-388.435730,26.584007,6.282297,true,false, 0, 0, 1)
 	dore:FullCastSpell(7765)
 end
 

@@ -6739,7 +6739,7 @@ void CombatStatusHandler::OnRemoveFromWorld()
 	ClearHealers();
 }
 
-bool CombatStatusHandler::IsInCombat()
+bool CombatStatusHandler::IsInCombat() const
 {
 	// If the unit doesn't exist - OR - the unit exists but is not in world
 	if (m_Unit == NULL || !m_Unit->IsInWorld())

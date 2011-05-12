@@ -17,12 +17,12 @@ function OnCombat(unit,_,mAggro)
 		frostbolt = math.random(2,5),
 		blink = math.random(20,30),
 		beacon_spawn = 10,
-		isHeroic = (mAggro:IsPlayer() and mAggro:IsHeroic() )
+		isHeroic = (mAggro:isPlayer() and TO_PLAYER(mAggro):IsHeroic() )
 	}
-	local allies = unit:GetInRangeFriends()
+	local allies = unit:getFriendlyCreatures()
 	for _,v in pairs(allies) do
 		if(v:GetEntry() == 18431) then
-			v:AttackReaction(mAggro,1,0)
+			v:getAI():AttackReaction(mAggro,1,0)
 		end
 	end
 	local say_text = math.random(3)
@@ -57,7 +57,7 @@ function OnDeath(unit)
 	unit:PlaySoundToSet(10546)
 end
 function AIUpdate(unit)
-	if(unit:IsCasting() ) then return end
+	
 	if(unit:GetNextTarget() == nil) then
 		unit:WipeThreatList()
 	end
@@ -66,6 +66,8 @@ function AIUpdate(unit)
 	args.frostbolt = args.frostbolt -1
 	args.blink = args.blink -1
 	args.beacon_spawn = args.beacon_spawn - 1
+	
+	if(unit:IsCasting() ) then return end
 	if(args.beacon_spawn <= 0) then
 		unit:FullCastSpell(32371)
 		local say_chance = math.random()
@@ -84,11 +86,11 @@ function AIUpdate(unit)
 		args.blink = math.random(25,35)
 	elseif(args.frostbolt <= 0) then
 		local target = unit:GetRandomEnemy()
-		unit:FullCastSpellOnTarget(32370,target)
+		unit:FullCastSpellOnTarget(target, 32370)
 		args.frostbolt = math.random(7,15)
 	elseif(args.fireball <= 0) then
 		local target = unit:GetRandomEnemy()
-		unit:FullCastSpellOnTarget(20420,target)
+		unit:FullCastSpellOnTarget(target, 20420)
 		args.fireball = math.random(7,15)
 	end
 end
@@ -103,14 +105,14 @@ RegisterUnitEvent(18344,21,AIUpdate)
 	BEACON AI
 	]]
 function BeaconOnSpawn(unit)
-	local creator = unit:GetLocalCreature(18344)
-	unit:SetCreator(creator)
-	if(creator:IsInCombat() == false) then return end
+	local creator = unit:findLocalCreature(18344)
+	unit:SetCreatedBy(creator)
+	if(creator.CombatStatus:IsInCombat() == false) then return end
 	local target = unit:GetRandomEnemy()
-	unit:AttackReaction(target,1,0)
+	unit:getAI():AttackReaction(target,1,0)
 end
 function BeaconOnCombat(unit)
-	local creator = unit:GetCreator()
+	local creator = TO_CREATURE(unit:GetCreatedBy() )
 	unit:RegisterEvent(ArcaneBolt,2500,0)
 	if(self[tostring(creator)].isHeroic) then
 		unit:RegisterEvent(SummonApprentice,10000,1)
@@ -123,12 +125,12 @@ function BeaconOnWipe(unit)
 end
 function ArcaneBolt(unit)
 	local target = unit:GetRandomEnemy()
-	unit:FullCastSpellOnTarget(15254,target)
+	unit:FullCastSpellOnTarget(target, 15254)
 end
 function SummonApprentice(unit)
-	local prince = unit:GetCreator()
+	local prince = TO_CREATURE(unit:GetCreatedBy() )
 	prince:FullCastSpell(32372)
-	unit:WipeThreatList()
+	unit:getAI():WipeThreatList()
 	unit:Despawn(0,0)
 end
 RegisterUnitEvent(18431,18,BeaconOnSpawn)
@@ -136,8 +138,8 @@ RegisterUnitEvent(18431,1,BeaconOnCombat)
 RegisterUnitEvent(18431,2,BeaconOnWipe)
 
 function ApprenticeOnSpawn(unit)
-	local creator = unit:GetLocalCreature(18344)
-	local target = creator:GetNextTarget()
+	local creator = unit:findLocalCreature(18344)
+	local target = creator:getAI():getNextTarget()
 	unit:AttackReaction(target,1,0)
 end
 function ApprenticeOnCombat(unit)
@@ -145,26 +147,26 @@ function ApprenticeOnCombat(unit)
 end
 function ApprenticeOnWipe(unit)
 	unit:RemoveEvents()
+	local creator = unit:GetCreatedBy()
+	if(creator) then
+		unit:SetUnitToFollow(creator,5,(45/180)*math.pi)
+	end
 end
 function ApprenticeSpells(unit)
-	if(unit:IsCasting() ) then return end
 	if(unit:GetNextTarget() == nil) then
-		unit:WipeThreatList()
-		local creator = unit:GetCreator()
-		if(creator) then
-			unit:SetUnitToFollow(creator,5,(45/180)*math.pi)
-		end
+		unit:getAI():WipeHateList()
 	end
+	if(unit:IsCasting() ) then return end
 	local spelltocast = math.random()
 	local target = unit:GetRandomEnemy()
 	if(spelltocast) then
-		unit:FullCastSpellOnTarget(32369,target)
+		unit:FullCastSpellOnTarget(target, 32369)
 	else
-		unit:FullCastSpellOnTarget(32370,target)
+		unit:FullCastSpellOnTarget(target, 32370)
 	end
 end
 RegisterUnitEvent(18430,18,ApprenticeOnSpawn)
 RegisterUnitEvent(18430,1,ApprenticeOnCombat)
 RegisterUnitEvent(18430,2,ApprenticeOnWipe)
-		
+
 	

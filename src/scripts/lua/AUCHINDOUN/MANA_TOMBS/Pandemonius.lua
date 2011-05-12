@@ -1,4 +1,4 @@
---?!MAP=557
+--?!MAP=557,530
 assert( include("manatombs.lua") , "Failed to load manatombs.lua") 
 local mod = require("DUNGEON_AUCHINDOUN.INSTANCE_MANATOMBS")
 assert(mod)
@@ -10,12 +10,12 @@ function OnCombat(unit,_,mAggro)
 	self[tostring(unit)] = {
 		void_blast = math.random(5,10),
 		dark_shell = math.random(20,25),
-		isHeroic = (mAggro:IsPlayer() and mAggro:IsHeroic() )
+		isHeroic = (mAggro:IsPlayer() and TO_PLAYER(mAggro):IsHeroic() )
 	}
-	local allies = unit:GetInRangeFriends()
+	local allies = unit:getFriendlyCreatures()
 	for _,v in pairs(allies) do
-		if(v:GetDistanceYards(unit) < 50 and string.find(v:GetName(),"Ethereal") ~= nil) then
-			v:AttackReaction(mAggro,1,0)
+		if(v:CalcDistanceToObject(unit) < 50 and string.find( TO_CREATURE(v):GetName(),"Ethereal") ~= nil) then
+			TO_CREATURE(v):getAI():AttackReaction(mAggro,1,0)
 		end
 	end
 	local say_text = math.random(3)
@@ -50,13 +50,14 @@ function OnDeath(unit)
 	unit:PlaySoundToSet(10566)
 end
 function AIUpdate(unit)
-	if(unit:IsCasting() ) then return end
 	if(unit:GetNextTarget() == nil) then
 		unit:WipeThreatList()
 	end
 	local ref = self[tostring(unit)]
 	ref.void_blast = ref.void_blast -1
 	ref.dark_shell = ref.dark_shell - 1
+	
+	if(unit:IsCasting() ) then return end -- we want to count down our timers even when casting.
 	
 	if(ref.dark_shell <= 0) then
 		unit:BossRaidEmote(unit:GetName().." casts dark shell!")
@@ -68,18 +69,23 @@ function AIUpdate(unit)
 		ref.dark_shell = math.random(20,30)+11 -- the +11 is for the cast time and the aura duration.
 	elseif(ref.void_blast <= 0) then
 		for i = 1,5 do
-			unit:RegisterLuaEvent(VoidBlast_Protocol,i*1000,1)
+			unit:RegisterEvent(VoidBlast_Protocol,i*1000,1)
 		end
 		ref.void_blast = math.random(10,20)
-		ref.dark_shell = ref.dark_shell+5 -- delay dark shell event hax!
+		ref.dark_shell = ref.dark_shell+6 -- delay dark shell event hax!
 	end
 end
 function VoidBlast_Protocol(unit)
+
+	if( unit:IsCasting() ) then -- Noticed that sometimes there's lagg that causes void blast to sometimes be skipped.
+		unit:RegisterEvent( VoidBlast_Protocol, 500, 1)
+		return
+	end
 	local target = unit:GetRandomEnemy()
 	if(self[tostring(unit)].isHeroic) then
-		unit:FullCastSpellOnTarget(38760,target)
+		unit:FullCastSpellOnTarget(target, 38760)
 	else
-		unit:FullCastSpellOnTarget(32325,target)
+		unit:FullCastSpellOnTarget(target,32325)
 	end
 end
 RegisterUnitEvent(18341,1,OnCombat)

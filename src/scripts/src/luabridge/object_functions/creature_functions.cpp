@@ -314,6 +314,7 @@ void LuaCreature::OnDamageTaken(Unit* mAttacker, uint32 fAmount)
 
 void LuaCreature::Destroy()
 {
+	sEventMgr.RemoveEvents(_unit, EVENT_LUA_CREATURE_EVENTS);
 	PLUA_INSTANCE li_ = lua_instance.get();
 	{
 		li::CreatureInterfaceMap::iterator it;
@@ -327,15 +328,14 @@ void LuaCreature::Destroy()
 	}
 	{
 		//Function Ref clean up
-		li::ObjectFRefMap::iterator it, itr = li_->m_creatureFRefs.find(_unit->GetLowGUID() );
+		li::ObjectFRefMap::iterator itr = li_->m_creatureFRefs.find(_unit->GetLowGUID() );
 		li::ObjectFRefMap::iterator itend = li_->m_creatureFRefs.upper_bound(_unit->GetLowGUID() );
 		while(itr != itend)
 		{
-			it = itr++;
-			sEventMgr.RemoveEvents(_unit, itr->second->head_node->val.obj_ref+EVENT_LUA_CREATURE_EVENTS);
-			cleanup_varparam(it->second, li_->lu );
-
+			cleanup_varparam(itr->second, li_->lu );
+			++itr;
 		}
+		li_->m_creatureFRefs.erase( _unit->GetLowGUID() );
 	}
 	delete this;
 }

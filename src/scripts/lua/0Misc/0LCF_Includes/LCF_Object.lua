@@ -291,9 +291,9 @@ alias(stub, "GetRandomPlayer", "getRandomPlayer", "getrandomplayer")
 function stub(self)
 	local objs = self:GetInRangeObjects()
 	local aux = {}
-	for _,v in ipairs(obj) do
+	for _,v in ipairs(objs) do
 		if( v:IsCreature() ) then
-			table.insert( aux, v)
+			table.insert( aux, TO_CREATURE(v) )
 		end
 	end
 	return aux
@@ -303,9 +303,9 @@ alias(stub, "GetInRangeCreatures", "getInRangeCreatures", "getinrangecreatures",
 function stub(self)
 	local objs = self:getInRangeSameFactions()
 	local aux = {}
-	for _,v in ipairs(obj) do
+	for _,v in ipairs(objs) do
 		if( v:IsCreature() ) then
-			table.insert( aux, v)
+			table.insert( aux, TO_CREATURE(v) )
 		end
 	end
 	return aux
@@ -315,9 +315,9 @@ alias(stub, "GetFriendlyCreatures", "getFriendlyCreatures", "getfriendlycreature
 function stub(self)
 	local objs = self:getInRangeOpposingFactions()
 	local aux = {}
-	for _,v in ipairs(obj) do
+	for _,v in ipairs(objs) do
 		if( v:IsCreature() ) then
-			table.insert( aux, v)
+			table.insert( aux, TO_CREATURE(v) )
 		end
 	end
 	return aux
@@ -327,9 +327,9 @@ alias(stub, "GetHostileCreatures", "getHostileCreatures", "gethostilecreatures",
 function stub(self)
 	local objs = self:GetInRangeObjects()
 	local aux = {}
-	for _,v in ipairs(obj) do
+	for _,v in ipairs(objs) do
 		if( v:IsGameObject() ) then
-			table.insert( aux, v)
+			table.insert( aux, TO_GAMEOBJECT(v) )
 		end
 	end
 	return aux
