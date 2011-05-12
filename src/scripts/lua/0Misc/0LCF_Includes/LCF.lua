@@ -765,6 +765,16 @@ LCF.vars.EMOTE_FIELDS = {
 		EMOTE_STATE_SPELL_CHANNEL_DIRECTED	= 469,
 		EMOTE_ZZOLD_STATE_KNEEL_NO_INTERRUPT= 470
 	}
+
+LCF.vars.POWER_TYPES = {
+	POWER_TYPE_MANA = 0,
+	POWER_TYPE_RAGE = 1,
+	POWER_TYPE_FOCUS = 2,
+	POWER_TYPE_ENERGY = 3,
+	POWER_TYPE_HAPPINESS = 4,
+	POWER_TYPE_RUNES = 5,
+	POWER_TYPE_RUNIC_POWER = 6 }
+	
 function LCF.__index(obj,key)
 	local val = LCF.vars[key]
 	return val
@@ -781,7 +791,8 @@ function LCF.vars.__index(tbl,key)
 	LCF.vars.EMOTE_FIELDS[key] or
 	LCF.vars.CONTAINER_FIELDS[key] or
 	LCF.vars.CORPSE_FIELDS[key] or
-	LCF.vars.DYNOBJ_FIELDS[key]
+	LCF.vars.DYNOBJ_FIELDS[key] or
+	LCF.vars.POWER_TYPES[key]
 end
 
 -- Now we set the metatables of our wow objects.

@@ -453,12 +453,6 @@ namespace lua_engine
 			.property_ro("m_escorter", &Creature::m_escorter)
 			.method( (void (Creature::*)(lua_function,uint32,uint32,variadic_parameter*,lua_stack) )&lua_creature::RegisterScriptEngineFunction, "RegisterEvent", "registerevent", NULL)
 			.method( (void (Creature::*)() )&lua_creature::RemoveScriptEngineEvents, "RemoveEvents", "removeevents", "removevents", NULL)
-			.method( (Unit* (Creature::*)() )&lua_creature::GetRandomEnemy, "GetRandomEnemy", "getRandomEnemy", "getrandomenemy", NULL)
-			.method( (Unit*(Creature::*)() )&lua_creature::GetRandomFriend, "GetRandomFriend", "getRandomFriend", "getrandomfriend", NULL)
-			.method( (Player* (Creature::*)(int) )&lua_creature::GetRandomPlayer, "GetRandomPlayer" "getRandomPlayer", "getrandomplayer", NULL)
-			.method( (Unit*(Creature::*)() )&lua_creature::GetClosestFriend, "GetClosestFriend", "getClosestFriend", "getclosestfriend", NULL)
-			.method( (Unit* (Creature::*)() )&lua_creature::GetClosestEnemy, "GetClosestEnemy", "getClosestEnemy", "getclosestenemy", NULL)
-			.method( (Unit* (Creature::*)() )&lua_creature::GetClosestPlayer, "GetClosestPlayer", "getClosestPlayer", "getclosestplayer", NULL)
 			.method( &Creature::GetSQL_id, "GetSpawnId", "GetSpawnID", "getSpawnId", "getSpawnID", "getspawnid", NULL)
 			.method( &Creature::SaveToDB, "SaveToDB", "saveToDB", "savetodb", NULL);
 #undef bind

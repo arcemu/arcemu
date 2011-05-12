@@ -125,13 +125,6 @@ alias("IsAlive", "isAlive")
 
 function UNIT:IsInCombat() return self.CombatStatus:IsInCombat(); end
 
-function UNIT:PlaySoundToSet(sound_entry)
-   local data = LuaPacket(722, 4);
-	data:WriteUInt32(sound_entry);
-	
-   self:SendMessageToSet(data, true);
-end
-
 alias("SetAttackTimer", "setAttackTimer")
 
 alias("SetGender", "setGender")

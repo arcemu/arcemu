@@ -75,7 +75,7 @@ namespace lua_engine
 			.method( (const float(Object::*)(float,float,float) )&Object::GetDistanceSq, "GetDistance", "getDistance", "getdistance", NULL)
 			.method( &Object::GetCurrentSpell, "GetCurrentSpell", "getCurrentSpell", "getcurrentspell", NULL)
 			.method( &Object::SetCurrentSpell, "SetCurrentSpell", "setCurrentSpell", "setcurrentspell", NULL)
-			.method( &Object::GetInRangePlayers, "GetInRangePlayers", "getInRangePlayers", "getinrangeplayers", NULL)
+			.method( "inrangeplayers", &Object::GetInRangePlayers)
 			.method( &Object::GetInRangeOpposingFactions, "GetInRangeOpposingFactions", "getInRangeOpposingFactions", "getinrangeopposingfactions", NULL)
 			.method( &Object::GetInRangeSameFactions, "GetInRangeSameFactions", "getInRangeSameFactions", "getinrangesamefactions", NULL)
 			.method( &Object::GetInRangeObjects, "GetInRangeObjects", "getInRangeObjects", "getinrangeobjects", NULL)
