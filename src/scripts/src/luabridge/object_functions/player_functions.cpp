@@ -203,14 +203,14 @@ namespace lua_engine
 			.method( &Player::RemoteRevive, "Resurrect", "resurrect", "ResurrectPlayer", "resurrectPlayer", "resurrectplayer", NULL)
 			.method(&Player::GetName, "GetName", "getName", "getname", NULL)
 
-			.method(&Player::GetSession, "GetSession", "getSession", "getsession", NULL)
+			.method( &Player::GetSession, "GetSession", "getSession", "getsession", NULL)
 			.method( &Player::SaveToDB, "SaveToDB", "saveToDB", "savetodb", NULL);
 
 			m	.class_<WorldSession>("WorldSession")
 			.method(&WorldSession::GetAccountNameS, "GetAccountName", "getAccountName", "getaccountname", NULL)
 			.method( &WorldSession::GetPermissions, "GetPermissions", "getPermissions", "getpermissions", NULL)
 			.method( &WorldSession::HasGMPermissions, "IsGM", "isGM", "isgm", NULL)
-			.method( &WorldSession::GetMovementInfo, "GetMovementInfo", "getMovementInfo", "getmovementinfo", NULL);
+			.method( (const MovementInfo* (WorldSession::*)() const )&WorldSession::GetMovementInfo, "GetMovementInfo", "getMovementInfo", "getmovementinfo", NULL);
 
 			m	.class_<MovementInfo>("MovementInfo")
 				.property_ro("flags", &MovementInfo::flags);

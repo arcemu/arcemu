@@ -2484,7 +2484,7 @@ Player * ObjectMgr::CreatePlayer(uint8 _class)
 
 	guid = ++m_hiPlayerGuid;
 
-	Player* result;
+	Player* result = NULL;
 
 	switch( _class )
 	{

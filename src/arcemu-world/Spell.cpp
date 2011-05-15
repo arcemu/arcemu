@@ -2154,7 +2154,7 @@ void Spell::SendSpellGo()
 		for( uint8 k = 0; k < MAX_RUNES; k++ )
 		{
 			uint8 x = (1 << k);
-			if( x & m_rune_avail_before != x & cur_have_runes )
+			if( (x & m_rune_avail_before) != (x & cur_have_runes ) )
 				data << uint8( 0 ); //values of the rune converted into byte. We just think it is 0 but maybe it is not :P
 		}
 	}

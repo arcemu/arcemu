@@ -239,10 +239,10 @@ public:
 	/* GM Permission System */
 	void LoadSecurity(std::string securitystring);
 	void SetSecurity(std::string securitystring);
-	char* GetPermissions() { return permissions; }
-	int GetPermissionCount() { return permissioncount; }
-	bool HasPermissions() { return (permissioncount > 0) ? true : false; }
-	bool HasGMPermissions()
+	char* GetPermissions() const { return permissions; }
+	ptrdiff_t GetPermissionCount() const { return permissioncount; }
+	bool HasPermissions() const { return (permissioncount > 0) ? true : false; }
+	bool HasGMPermissions() const
 	{
 		if(!permissioncount)
 			return false;
@@ -316,9 +316,9 @@ public:
 	void SendNotInArenaTeamPacket(uint8 type);
 
 	void SetInstance(uint32 Instance) { instanceId = Instance; }
-	uint32 GetLatency() { return _latency; }
+	uint32 GetLatency() const { return _latency; }
 	string GetAccountName() { return _accountName; }
-	const char * GetAccountNameS() { return _accountName.c_str(); }
+	const char * GetAccountNameS() const { return _accountName.c_str(); }
 	const char * LocalizedWorldSrv(uint32 id);
 	const char * LocalizedMapName(uint32 id);
 	const char * LocalizedBroadCast(uint32 id);
@@ -812,6 +812,8 @@ private:
 	uint8 _updatecount;
 public:
 	MovementInfo* GetMovementInfo() { return &movement_info; }
+	const MovementInfo * GetMovementInfo() const { return &movement_info; }
+
 	static void InitPacketHandlerTable();
 	uint32 floodLines;
 	time_t floodTime;
