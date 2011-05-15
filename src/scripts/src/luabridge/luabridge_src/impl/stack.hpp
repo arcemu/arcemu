@@ -628,44 +628,49 @@ struct tdstack<lua_table>
 
 //Template specialization for guids
 
-//for value type guids, we have to allocate a ud object.
+template<typename T>
+struct tdstack< ObjectWrap<T> >
+{
+	static void push(lua_State * L,  T & _value)
+	{
+		void * ud = lua_newuserdata(L, sizeof(ObjectWrap<T>) );
+		new(ud) ObjectWrap<T>(_value);
+		luaL_getmetatable(L, classname<ObjectWrap<T> >::name() );
+		lua_setmetatable(L, -2);
+	}
+
+	static T get(lua_State * L, int index)
+	{
+		return static_cast< ObjectWrap<T>*>( checkclass(L, 1, classname<ObjectWrap<T> >::name() ) )->value_;
+	}
+};
+
+//For value type guids, we have to allocate a ud object.
 template<>
 struct tdstack<uint64>
 {
 	static void push(lua_State * L, uint64 guid)
 	{
-		uint64 * ud = (uint64*)lua_newuserdata(L, sizeof(uint64) );
-		if(ud != NULL)
-			*ud = guid;
+		tdstack<ObjectWrap<uint64> >::push(L, guid);
 	}
 	static uint64 get(lua_State *L, int index)
 	{
-		uint64 guid = 0;
-		if(lua_type(L, index) == LUA_TUSERDATA)
-			guid = *(uint64*)lua_touserdata(L,index);
-		return guid;
+		return tdstack<ObjectWrap<uint64> >::get(L, index);
 	}
 };
 
-//For reference type guids, we are in luck, we can simply push the pointer of it as a light user data and retrieve it. It's clean and we don't have to worry about gc.
+
 template<>
 struct tdstack<uint64 &>
 {
-	
 	static void push(lua_State * L, uint64 & guid)
 	{
-		uint64 * ud = (uint64*)lua_newuserdata(L, sizeof(uint64) );
-		if(ud != NULL)
-			*ud = guid;
+		tdstack<ObjectWrap<uint64> >::push(L, guid);
 	}
 	
-	static uint64 & get(lua_State *L, int index)
+	static uint64 get(lua_State *L, int index)
 	{
-		if(lua_type(L, index) == LUA_TUSERDATA)
-			return *(uint64*)lua_touserdata(L,index);
-
-		luaL_error(L,"expected userdata got %s",luaL_typename(L,index) );
-		return *(uint64*)NULL;
+		return tdstack<ObjectWrap<uint64> >::get(L, index);
 	}
 };
 
@@ -674,17 +679,11 @@ struct tdstack<const uint64>
 {
 	static void push(lua_State * L, const uint64 guid)
 	{
-		uint64 * ud = (uint64*)lua_newuserdata(L, sizeof(uint64) );
-		if(ud != NULL)
-			*ud = guid;
+		tdstack<ObjectWrap<const uint64> >::push(L, guid);
 	}
 	static const uint64 get(lua_State *L, int index)
 	{
-		if(lua_type(L, index) == LUA_TUSERDATA)
-			return *(uint64*)lua_touserdata(L,index);
-
-		luaL_error(L,"expected userdata got %s",luaL_typename(L,index) );
-		return *(uint64*)NULL;
+		return tdstack<ObjectWrap<uint64> >::get(L, index);
 	}
 };
 template<>
@@ -692,17 +691,11 @@ struct tdstack<const uint64 &>
 {
 	static void push(lua_State * L, const uint64 & guid)
 	{
-		uint64 * ud = (uint64*)lua_newuserdata(L, sizeof(uint64) );
-		if(ud != NULL)
-			*ud = guid;
+		tdstack<ObjectWrap<const uint64> >::push(L, guid);
 	}
-	static const uint64 & get(lua_State *L, int index)
+	static const uint64 get(lua_State *L, int index)
 	{
-		if(lua_type(L, index) == LUA_TUSERDATA)
-			return *(uint64*)lua_touserdata(L,index);
-
-		luaL_error(L,"expected userdata got %s",luaL_typename(L,index) );
-		return *(uint64*)NULL;
+		return tdstack<ObjectWrap<const uint64> >::get(L, index);
 	}
 };
 

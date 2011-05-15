@@ -301,6 +301,20 @@ end
 alias(stub, "GetInRangeCreatures", "getInRangeCreatures", "getinrangecreatures", "GetCreatures", "getCreatures", "getcreatures")
 
 function stub(self)
+	local objs = self:GetInRangeObjects()
+	local aux = {}
+	for _,v in ipairs(objs) do
+		if( v:IsCreature() ) then
+			table.insert( aux, TO_CREATURE(v) )
+		elseif ( v:IsPlayer() ) then
+			table.insert( aux, TO_PLAYER(v) )
+		end
+	end
+	return aux
+end
+alias(stub, "GetInRangeUnits", "getInRangeUnits", "getinrangeunits")
+
+function stub(self)
 	local objs = self:getInRangeSameFactions()
 	local aux = {}
 	for _,v in ipairs(objs) do
@@ -310,7 +324,7 @@ function stub(self)
 	end
 	return aux
 end
-alias(stub, "GetFriendlyCreatures", "getFriendlyCreatures", "getfriendlycreatures", "GetAlliedCreatures", "getAlliedCreatures", "getalliedcreatures")
+alias(stub, "GetFriendlyCreatures", "getFriendlyCreatures", "getfriendlycreatures", "GetAlliedCreatures", "getAlliedCreatures", "getalliedcreatures", "GetInRangeFriends")
 
 function stub(self)
 	local objs = self:getInRangeOpposingFactions()
@@ -322,7 +336,7 @@ function stub(self)
 	end
 	return aux
 end
-alias(stub, "GetHostileCreatures", "getHostileCreatures", "gethostilecreatures", "GetEnemyCreatures", "getEnemyCreatures", "getenemycreatures")
+alias(stub, "GetHostileCreatures", "getHostileCreatures", "gethostilecreatures", "GetEnemyCreatures", "getEnemyCreatures", "getenemycreatures", "GetInRangeEnemies")
 
 function stub(self)
 	local objs = self:GetInRangeObjects()
@@ -335,6 +349,18 @@ function stub(self)
 	return aux
 end
 alias(stub, "GetInRangeGameObjects", "getInRangeGameObjects", "getinrangegameobjects", "GetGameObjects", "getGameObjects", "getgameobjects")
+
+function OBJ:GetInRangeGameObjectsCount()
+   return #(self:GetInRangeGameObjects())
+end
+
+function OBJ:GetInRangePlayersCount()
+   return #(self:GetInRangePlayers())
+end
+
+function OBJ:GetInRangeCreaturesCount()
+   return #(self:GetInRangeCreatures())
+end
 		
 		
 		

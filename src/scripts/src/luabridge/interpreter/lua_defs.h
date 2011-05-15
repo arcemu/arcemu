@@ -313,3 +313,35 @@ public:
 	}
 };
 typedef LUA_SCRIPT* PLUA_SCRIPT;
+
+
+//object wrapper class required for uint64 numbers to support comparison metamethods etc.
+template<typename T>
+struct ObjectWrap
+{
+	T value_;
+	void operator=(const T & newvalue) { value_ = newvalue; }
+	ObjectWrap(const T & val = T() )  : value_(val) {}
+	ObjectWrap( const ObjectWrap<T> & _other) : value_( _other.value_) {}
+};
+
+template<typename T>
+bool operator==( const ObjectWrap<T> & left, const ObjectWrap<T> & right)
+{
+	return left.value_ == right.value_;
+}
+template<typename T>
+bool operator<( const ObjectWrap<T> & left, const ObjectWrap<T> & right)
+{
+	return left.value_ < right.value_;
+}
+template<typename T>
+bool operator>( const ObjectWrap<T> & left, const ObjectWrap<T> & right)
+{
+	return left.value_ > right.value_;
+}
+template<typename T>
+bool operator!=( const ObjectWrap<T> & left, const ObjectWrap<T> & right)
+{
+	return operator==(left,right);
+}

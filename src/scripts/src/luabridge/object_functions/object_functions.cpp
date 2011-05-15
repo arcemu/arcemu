@@ -103,12 +103,15 @@ namespace lua_engine
 			.static_method(&Arcemu::Gossip::Menu::SendQuickMenu, "SendQuickMenu", "sendQuickMenu", "sendquickmenu", NULL)
 			.static_method(&Arcemu::Gossip::Menu::SendSimpleMenu, "SendSimpleMenu", "sendSimpleMenu", "sendsimplemenu", NULL);
 		 
-		 m	.subclass<DynamicObject, Object>("DynamicObject")
-			.constructor< void(*)(uint32,uint32) >()
-#define BIND(name) .method(#name, &DynamicObject::name)
-			 BIND(Create)
-			 BIND(Remove);
-#undef BIND
+		 m	.subclass<DynamicObject, Object>("DynamicObject", true) //make it destroyable.
+			.method(&DynamicObject::Create, "Create", "create", NULL)
+			.method(&DynamicObject::Remove, "Remove", "remove", NULL);
+
+		m	.class_< ObjectWrap<uint64 > >("uint64");
+		//These are needed because 'classname<T>::name()' is how luabridge assigns the correct metatables to a type.
+		m	.class_decl< ObjectWrap<uint64&> >("uint64");
+		m	.class_decl< ObjectWrap<const uint64> >("uint64");
+		m	.class_decl< ObjectWrap<const uint64&> >("uint64");
 
 	}
 }

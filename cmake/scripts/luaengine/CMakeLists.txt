@@ -3,6 +3,11 @@ if(NOT BUILD_LUAENGINE )
   return()
 endif(NOT BUILD_LUAENGINE)
 
+if( BUILD_LUABRIDGE)
+	message(ERROR, "\tBUILD_LUABRIDGE is enabled but luabridge cannot run together with LuaEngine!")
+	return()
+endif( BUILD_LUABRIDGE)
+
 project(LuaEngine)
 
 #prefix variable - points to the folder which contains the source files.

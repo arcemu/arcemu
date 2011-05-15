@@ -84,6 +84,7 @@ namespace luabridge
 		// and varieties that access through function calls are provided.
 		template <typename U>
 		class__<T>& property_ro (const char *name, U T::* mp);
+
 		template <typename U>
 		class__<T>& property_ro (const char *name, U (T::*get) () const);
 		template <typename U>

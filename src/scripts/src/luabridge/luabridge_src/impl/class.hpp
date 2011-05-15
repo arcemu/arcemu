@@ -51,18 +51,56 @@ template<typename T>
 int metaevent_tostring(lua_State * L)
 {
 	T ** obj = (T**)checkclass(L, 1, classname<T>::name() );
-	char buff[55];
-	memset(buff, 0, sizeof(char)*55);
-	sprintf(buff, "%s (%p)", classname<T>::name(), *obj );
-	lua_pushstring(L,buff);
+	std::ostringstream stream;
+	stream << classname<T>::name() << " " << *obj;
+	lua_pushstring(L, stream.str().c_str() );
 	return 1;
 }
+
+/*	Specialization for uint64 */
+template<>
+int metaevent_tostring< ObjectWrap<uint64> >(lua_State *);
+
+template<>
+int metaevent_tostring< ObjectWrap<const uint64> >(lua_State * L);
+
+template<>
+int metaevent_tostring< ObjectWrap<uint64 &> >(lua_State * L);
+
+template<>
+int metaevent_tostring<const uint64 &>(lua_State * L);
+
 template<typename T>
 int metaevent_gettypename(lua_State * L)
 {
 	lua_pushstring(L, classname<T>::name() );
 	return 1;
 }
+
+template<typename T>
+int metaevent_equal(lua_State * L)
+{
+	 T ** obj1, **obj2;
+	 obj1 = (T**)checkclass(L, 1, classname<T>::name() );
+	 obj2 = (T**)checkclass(L, 2, classname<T>::name() );
+	 if(obj1 == obj2)
+		 lua_pushboolean(L, 1);
+	 else
+		 lua_pushboolean(L, 0);
+	 return 1;
+}
+
+template<>
+int metaevent_equal< ObjectWrap<uint64> >(lua_State * L );
+
+template<>
+int metaevent_equal< ObjectWrap<uint64&> >(lua_State * L );
+
+template<>
+int metaevent_equal< ObjectWrap<const uint64> >(lua_State * L );
+
+template<>
+int metaevent_equal< ObjectWrap<const uint64&> >(lua_State * L );
 
 /*
  * Lua-registerable C function template for destructors.  Objects are stored
@@ -74,8 +112,7 @@ int metaevent_gettypename(lua_State * L)
 template <typename T>
 int destructor_dispatch (lua_State *L)
 {
-	void * obj = checkclass(L, 1, lua_tostring(L, lua_upvalueindex(1)), true);
-	T ** c_obj = (T**)obj;
+	T ** c_obj = (T**)checkclass(L, 1, lua_tostring(L, lua_upvalueindex(1)), true);
 	delete *c_obj;
 	return 0;
 }
@@ -99,6 +136,9 @@ void create_metatable (lua_State *L, const char *name, bool destruct)
 	//	set the tostring method
 	lua_pushcfunction(L, (&metaevent_tostring<T> ) );
 	rawsetfield(L, -2, "__tostring");
+
+	lua_pushcfunction(L, (&metaevent_equal<T>) );
+	rawsetfield(L, -2, "__eq");
 	// Set the __gc metamethod to call the class destructor
 	if(destruct)
 	{
@@ -144,6 +184,9 @@ void create_const_metatable (lua_State *L, const char *name, bool destruct)
 	//	set the tostring method
 	lua_pushcfunction(L, (&metaevent_tostring<T> ) );
 	rawsetfield(L, -2, "__tostring");
+
+	lua_pushcfunction(L, (&metaevent_equal<T>) );
+	rawsetfield(L, -2, "__eq");
 
 	lua_newtable(L);
 	rawsetfield(L, -2, "__propget");

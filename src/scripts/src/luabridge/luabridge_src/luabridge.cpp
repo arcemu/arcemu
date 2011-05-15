@@ -284,3 +284,101 @@ int luabridge::m_newindexer (lua_State *L)
 	// Control never gets here
 	return 0;
 }
+
+template<>
+int luabridge::metaevent_tostring< ObjectWrap<uint64> >(lua_State * L)
+{
+	typedef ObjectWrap<uint64> typ;
+	uint64 guid = static_cast<typ*>(checkclass(L, 1, classname<typ>::name()) )->value_;
+	std::ostringstream stream;
+	stream << std::hex << guid;
+	lua_pushstring(L, stream.str().c_str() );
+	return 1;
+}
+
+template<>
+int luabridge::metaevent_tostring< ObjectWrap<const uint64> >(lua_State * L)
+{
+	typedef ObjectWrap<const uint64> typ;
+	const uint64 guid = static_cast<typ*>(checkclass(L, 1, classname<typ>::name()) )->value_;
+	std::ostringstream stream;
+	stream << std::hex << guid;
+	lua_pushstring(L, stream.str().c_str() );
+	return 1;
+}
+
+template<>
+int luabridge::metaevent_tostring< ObjectWrap<uint64 &> >(lua_State * L)
+{
+	typedef ObjectWrap<uint64> typ;
+	uint64 guid = static_cast<typ*>(checkclass(L, 1, classname<typ>::name()) )->value_;
+	std::ostringstream stream;
+	stream << std::hex << guid;
+	lua_pushstring(L, stream.str().c_str() );
+	return 1;
+}
+
+template<>
+int luabridge::metaevent_tostring<const uint64 &>(lua_State * L)
+{
+	typedef ObjectWrap<const uint64> typ;
+	uint64 guid = static_cast<typ*>(checkclass(L, 1, classname<typ>::name()) )->value_;
+	std::ostringstream stream;
+	stream << std::hex << guid;
+	lua_pushstring(L, stream.str().c_str() );
+	return 1;
+}
+
+template<>
+int luabridge::metaevent_equal< ObjectWrap<uint64> >(lua_State * L )
+{
+	typedef ObjectWrap<uint64> typ;
+	uint64 obj1, obj2;
+	obj1 = static_cast<typ*>(checkclass(L, 1, classname<typ>::name() ) )->value_;
+	obj2 =  static_cast<typ*>(checkclass(L, 2, classname<typ>::name() ) )->value_;
+	if(obj1 == obj2)
+		lua_pushboolean(L, 1);
+	else
+		lua_pushboolean(L, 0);
+	return 1;
+}
+
+template<>
+int luabridge::metaevent_equal< ObjectWrap<uint64&> >(lua_State * L )
+{
+	typedef ObjectWrap<uint64> typ;
+	typ & obj1 = *static_cast<typ*>(checkclass(L, 1, classname<typ>::name() ) );
+	typ & obj2 =  *static_cast<typ*>(checkclass(L, 2, classname<typ>::name() ) );
+	if(obj1 == obj2)
+		lua_pushboolean(L, 1);
+	else
+		lua_pushboolean(L, 0);
+	return 1;
+}
+
+template<>
+int luabridge::metaevent_equal< ObjectWrap<const uint64> >(lua_State * L )
+{
+	typedef ObjectWrap< const uint64> typ;
+	typ & obj1 = *static_cast<typ*>(checkclass(L, 1, classname<typ>::name() ) );
+	typ & obj2 =  *static_cast<typ*>(checkclass(L, 2, classname<typ>::name() ) );
+	if(obj1 == obj2)
+		lua_pushboolean(L, 1);
+	else
+		lua_pushboolean(L, 0);
+	return 1;
+}
+
+template<>
+int luabridge::metaevent_equal< ObjectWrap<const uint64&> >(lua_State * L )
+{
+	typedef ObjectWrap< const uint64> typ;
+	typ & obj1 = *static_cast<typ*>(checkclass(L, 1, classname<typ>::name() ) );
+	typ & obj2 =  *static_cast<typ*>(checkclass(L, 2, classname<typ>::name() ) );
+	if(obj1 == obj2)
+		lua_pushboolean(L, 1);
+	else
+		lua_pushboolean(L, 0);
+	return 1;
+}
+
