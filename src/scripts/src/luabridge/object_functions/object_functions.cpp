@@ -13,7 +13,7 @@ namespace lua_engine
 			.method( &Object::GetEntry, "GetEntry", "getEntry", "getentry", NULL)
 			.method( &Object::GetScale, "GetScale", "getScale", "getscale", NULL)
 			.method(&Object::SetScale, "SetScale", "setScale", "setscale", NULL)
-			.method( &Object::GetTypeFromGUID, "GetTypeFromGUID", "getTypeFromGUID", "gettypefromguid", NULL)
+			//.method( &Object::GetTypeFromGUID, "GetTypeFromGUID", "getTypeFromGUID", "gettypefromguid", NULL)
 			.method( &Object::GetEntryFromGUID, "GetEntryFromGUID", "getEntryFromGUID", "getentryfromguid", NULL)
 			.method( &Object::GetTypeId, "GetTypeID", "getTypeID", "gettypeid", NULL)
 			.method( &Object::IsUnit, "IsUnit", "isUnit", "isunit", NULL)
