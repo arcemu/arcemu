@@ -21,7 +21,7 @@
 #include "VMapFactory.h"
 #include "VMapManager2.h"
 
-using namespace G3D;
+//using namespace G3D;
 
 namespace VMAP
 {
@@ -54,7 +54,7 @@ namespace VMAP
     }
 
     IVMapManager *gVMapManager = 0;
-    Table<unsigned int , bool>* iIgnoreSpellIds=0;
+    G3D::Table<unsigned int , bool>* iIgnoreSpellIds=0;
 
     //===============================================
     // result false, if no more id are found
@@ -89,7 +89,7 @@ namespace VMAP
     void VMapFactory::preventSpellsFromBeingTestedForLoS(const char* pSpellIdString)
     {
         if(!iIgnoreSpellIds)
-            iIgnoreSpellIds = new Table<unsigned int , bool>();
+            iIgnoreSpellIds = new G3D::Table<unsigned int , bool>();
         if(pSpellIdString != NULL)
         {
             unsigned int pos =0;

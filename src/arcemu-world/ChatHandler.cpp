@@ -422,7 +422,6 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 			{
 				data = sChatHandler.FillMessageData( CHAT_MSG_WHISPER, lang,  msg.c_str(), _player->GetGUID(), _player->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_GM) ? 4 : 0 );
 				playercache->SendPacket(data);
-				//delete data;
 			}
 
 
