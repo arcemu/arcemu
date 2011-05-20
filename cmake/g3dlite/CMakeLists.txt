@@ -32,6 +32,7 @@ set(sources
   Random.cpp
   Ray.cpp
   ReferenceCount.cpp
+  RegistryUtil.cpp
   Sphere.cpp
   stringutils.cpp
   System.cpp
