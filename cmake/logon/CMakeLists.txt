@@ -1,25 +1,15 @@
 PROJECT(logon CXX)
 SET( prefix ${ROOT_PATH}/src/arcemu-logonserver)
 SET( sources
-  AccountCache.h
   AccountCache.cpp
-  AuthSocket.h
   AuthSocket.cpp
-  AuthStructs.h
-  AuthStructs.h
   AutoPatcher.cpp
-  AutoPatcher.h
   LogonCommServer.cpp
-  LogonCommServer.h
   LogonConsole.cpp
-  LogonConsole.h
   LogonOpcodes.cpp
-  LogonOpcodes.h
   LogonStdAfx.cpp
-  LogonStdAfx.h
   Main.cpp
-  Main.h
-  PeriodicFunctionCall_Thread.h )
+  Main.h)
 
 foreach(src IN ITEMS ${sources} )
   SET( SRCS ${SRCS} ${prefix}/${src} )
@@ -28,6 +18,7 @@ endforeach(src)
 
 include_directories( ${GLOBAL_INCLUDE_DIRS} )
 link_directories( ${EXTRA_LIBS_PATH} )
+link_directories( ${DEPENDENCY_LIBS} )
 IF( IS_64BIT )
 	link_directories( ${DEPENDENCY_DLLS64} )
 ELSE()

@@ -1,14 +1,14 @@
 PROJECT(world)
 SET( prefix ${ROOT_PATH}/src/arcemu-world )
 SET(sources
-  #vmap
-  vmap/BIH.cpp
-  vmap/MapTree.cpp
-  vmap/ModelInstance.cpp
-  vmap/TileAssembler.cpp
-  vmap/VMapFactory.cpp
-  vmap/VMapManager2.cpp
-  vmap/WorldModel.cpp
+	#vmap
+	vmap/BIH.cpp
+	vmap/MapTree.cpp
+	vmap/ModelInstance.cpp
+	vmap/TileAssembler.cpp
+	vmap/VMapFactory.cpp
+	vmap/VMapManager2.cpp
+	vmap/WorldModel.cpp
 	AchievementMgr.cpp 
 	CollideInterface.cpp  
 	VoiceChatHandler.cpp 
@@ -28,13 +28,9 @@ SET(sources
 	BattlegroundCommands.cpp 
 	BattlegroundHandler.cpp 
 	BattlegroundMgr.cpp 
-
-	StrandOfTheAncient.h 
 	StrandOfTheAncient.cpp 
-
 	Channel.cpp 
 	ChannelHandler.cpp 
-	ChannelMgr.h 
 	CharacterHandler.cpp 
 	Chat.cpp 
 	ChatHandler.cpp 
@@ -170,7 +166,8 @@ endforeach(src)
 
 include(PCHSupport)
 include_directories( ${GLOBAL_INCLUDE_DIRS} )
-#link_directories( ${DEPEDENCY_LIBS} )
+link_directories( ${EXTRA_LIBS_PATH} )
+link_directories( ${DEPENDENCY_LIBS} )
 add_executable( ${PROJECT_NAME} ${SRCS} )
 ADD_PRECOMPILED_HEADER(${PROJECT_NAME} ../../src/arcemu-world/StdAfx.h )
 set_target_properties(${PROJECT_NAME} PROPERTIES ENABLE_EXPORTS TRUE)
