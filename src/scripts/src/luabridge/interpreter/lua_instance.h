@@ -91,7 +91,7 @@ public:
 	//stores the mapmgr object whos thread we execute in.
 	MapMgr * map;
 #ifdef WIN32
-#define InterfaceMap std::hash_multimap
+#define InterfaceMap HM_NAMESPACE::hash_multimap
 #else
 #define InterfaceMap std::multimap
 #endif

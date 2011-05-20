@@ -18,6 +18,7 @@
  */
 
 #include "LUAEngine.h"
+#define SKIP_ALLOCATOR_SHARING
 #include <ScriptSetup.h>
 
 #ifdef WIN32
