@@ -46,6 +46,7 @@ SET(BUILD_ARCEMUSCRIPTS FALSE CACHE BOOL "Set to true to build script libraries.
 #Make sure our revision header is up to date.
 if( UNIX )
 	add_definitions(-Wno-deprecated)
+	SET_PROPERTY(DIRECTORY APPEND PROPERTY COMPILE_FLAGS "-fvisibility=hidden")
 	execute_process(WORKING_DIRECTORY ${ROOT_PATH} COMMAND sh extract_svn_revision.sh )
 ELSEIF( WIN32 )
 	execute_process(WORKING_DIRECTORY ${ROOT_PATH}/src/arcemu-shared COMMAND RevisionExtractor)
@@ -89,8 +90,7 @@ IF(WIN32)	#On windows, we have to specify the includes for libeay and mysql libs
 	${DEPENDENCY_INCLUDE_ROOT}/openssl
 	${DEPENDENCY_INCLUDE_ROOT}/mysql )
 ELSE()	#On apple n linux, mysql.h should have been found.
-	SET( GLOBAL_INCLUDE_DIRS ${GLOBAL_INCLUDE_DIRS}
-	${MYSQL_INCLUDE_DIR} )
+	SET( GLOBAL_INCLUDE_DIRS ${GLOBAL_INCLUDE_DIRS} ${MYSQL_INCLUDE_DIR} )
 ENDIF()
 
 #For windows, link to libeay and libmysql
