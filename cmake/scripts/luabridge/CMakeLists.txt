@@ -35,11 +35,16 @@ SET( SRCS
   ${prefix}/object_functions/lua_hooks.cpp  )
 
 include_directories( ${include_dirs} ${prefix}/interpreter )
-
+include(PCHSupport)
 add_library(${PROJECT_NAME} SHARED ${SRCS} )
 add_dependencies( ${PROJECT_NAME} ${dependancies} lualib )
 target_link_libraries( ${PROJECT_NAME} ${linkages} lualib )
 install(TARGETS ${PROJECT_NAME} DESTINATION lib)
+
+if( CMAKE_GENERATOR MATCHES Visual*)
+	ADD_NATIVE_PRECOMPILED_HEADER( ${PROJECT_NAME} LUAEngine.h ${prefix}/interpreter/LUAEngine.cpp)
+ENDIF()
+
 #Cleap up our variables(Not required.)
 unset( prefix)
 unset( SRCS )

@@ -1,11 +1,6 @@
-if(NOT BUILD_SPELLHANDLERS )
-  message("\tSpellHandlers was skipped because BUILD_SPELLHANDLERS is unchecked.")
-  return()
-endif(NOT BUILD_SPELLHANDLERS)
-
 PROJECT(SpellHandlers)
 
-SET( prefix ${SCRIPTS_PATH}/${PROJECT_NAME} )
+SET( prefix ${ROOT_PATH}/src/scripts/src/${PROJECT_NAME} )
 
 #sources -contains source files for our library.
 SET( sources
@@ -29,10 +24,11 @@ foreach(src IN ITEMS ${sources} )
   SET( SRCS ${SRCS} ${prefix}/${src} )
 endforeach(src)
 
-include_directories( ${include_dirs} )
+include_directories( ${GLOBAL_INCLUDE_DIRS} )
 add_library( ${PROJECT_NAME} SHARED ${SRCS} )
-add_dependencies( ${PROJECT_NAME} ${dependancies} )
-target_link_libraries( ${PROJECT_NAME} ${linkages} )
+add_dependencies( ${PROJECT_NAME} shared world)
+add_definitions( -DSCRIPTLIB -DSKIP_ALLOCATOR_SHARING)
+target_link_libraries( ${PROJECT_NAME} world)
 install(TARGETS ${PROJECT_NAME} DESTINATION lib)
 #Cleap up our variables(Not required.)
 unset( prefix)

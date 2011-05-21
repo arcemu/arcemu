@@ -40,6 +40,7 @@ set(sources
   TextOutput.cpp
   Triangle.cpp
   UprightFrame.cpp
+  RegistryUtil.cpp
   Vector2.cpp
   Vector3.cpp
   Vector4.cpp )

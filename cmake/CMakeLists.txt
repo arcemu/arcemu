@@ -42,6 +42,7 @@ SET( DEPENDENCY_DLLS64 ${DEPENDENCY_ROOT}/dll64)
 SET(ARCEMU_CONFIGSFILE_PATH etc CACHE PATH "Path where the arcemu config files are.")
 SET(ARCEMU_SCRIPTLIB_PATH ".." CACHE PATH "The directory which contains the 'lib' directory that has the script libraries." )
 SET(BUILD_ARCEMUSCRIPTS FALSE CACHE BOOL "Set to true to build script libraries." )
+SET(VISUALSTUDIO_COMPILERHEAPLIMIT 200 CACHE STRING "Visual Studio compiler heap limit. Ignore on darwin and unix platforms." )
 
 #Make sure our revision header is up to date.
 if( UNIX )
@@ -122,7 +123,15 @@ add_subdirectory(shared)
 add_subdirectory(g3dlite)
 add_subdirectory(logon)
 add_subdirectory(world)
+add_subdirectory( spellhandlers )
 IF(NOT WIN32)
 	add_subdirectory(crashreport)
 ENDIF()
 add_subdirectory(scripts)
+
+IF( CMAKE_GENERATOR MATCHES Visual* ) #This fixes PCH issues 'Inconsistent values for /Ym'
+	STRING( REGEX REPLACE "(/Zm)([0-9]+)" "\\1${VISUALSTUDIO_COMPILERHEAPLIMIT}" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} )
+	STRING( REGEX REPLACE "(/Zm)([0-9]+)" "\\1${VISUALSTUDIO_COMPILERHEAPLIMIT}" CMAKE_C_FLAGS ${CMAKE_C_FLAGS} )
+	SET( CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} CACHE STRING "CMAKE_CXX_FLAGS" FORCE)
+	SET( CMAKE_C_FLAGS ${CMAKE_C_FLAGS} CACHE STRING "CMAKE_C_FLAGS" FORCE)
+ENDIF( CMAKE_GENERATOR MATCHES Visual* )

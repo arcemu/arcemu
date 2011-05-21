@@ -1,14 +1,13 @@
 PROJECT(world)
 SET( prefix ${ROOT_PATH}/src/arcemu-world )
 SET(sources
-	#vmap
-	vmap/BIH.cpp
-	vmap/MapTree.cpp
-	vmap/ModelInstance.cpp
-	vmap/TileAssembler.cpp
-	vmap/VMapFactory.cpp
-	vmap/VMapManager2.cpp
-	vmap/WorldModel.cpp
+  vmap/BIH.cpp
+  vmap/MapTree.cpp
+  vmap/ModelInstance.cpp
+  vmap/TileAssembler.cpp
+  vmap/VMapFactory.cpp
+  vmap/VMapManager2.cpp
+  vmap/WorldModel.cpp
 	AchievementMgr.cpp 
 	CollideInterface.cpp  
 	VoiceChatHandler.cpp 
@@ -28,6 +27,7 @@ SET(sources
 	BattlegroundCommands.cpp 
 	BattlegroundHandler.cpp 
 	BattlegroundMgr.cpp 
+
 	StrandOfTheAncient.cpp 
 	Channel.cpp 
 	ChannelHandler.cpp 
@@ -98,6 +98,7 @@ SET(sources
 	SpellAuras.cpp 
 	SpellTarget.cpp 
 	Spell.cpp 
+	StdAfx.cpp
 	SpellEffects.cpp 
 	SpellHandler.cpp 
 	HackFixes.cpp 
@@ -166,10 +167,12 @@ endforeach(src)
 
 include(PCHSupport)
 include_directories( ${GLOBAL_INCLUDE_DIRS} )
-link_directories( ${EXTRA_LIBS_PATH} )
-link_directories( ${DEPENDENCY_LIBS} )
+link_directories( ${DEPEDENCY_LIBS} ${EXTRA_LIBS_PATH} )
 add_executable( ${PROJECT_NAME} ${SRCS} )
-ADD_PRECOMPILED_HEADER(${PROJECT_NAME} ../../src/arcemu-world/StdAfx.h )
+
+IF( CMAKE_GENERATOR MATCHES Visual*)
+	ADD_NATIVE_PRECOMPILED_HEADER(${PROJECT_NAME} StdAfx.h ${prefix}/StdAfx.cpp)
+ENDIF()
 set_target_properties(${PROJECT_NAME} PROPERTIES ENABLE_EXPORTS TRUE)
 
 add_dependencies( ${PROJECT_NAME} shared g3dlite)
