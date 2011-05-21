@@ -167,7 +167,7 @@ endforeach(src)
 
 include(PCHSupport)
 include_directories( ${GLOBAL_INCLUDE_DIRS} )
-link_directories( ${DEPEDENCY_LIBS} ${EXTRA_LIBS_PATH} )
+link_directories( ${DEPENDENCY_LIBS} ${EXTRA_LIBS_PATH} )
 add_executable( ${PROJECT_NAME} ${SRCS} )
 
 IF( CMAKE_GENERATOR MATCHES Visual*)
