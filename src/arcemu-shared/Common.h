@@ -633,4 +633,7 @@ inline static unsigned int MakeIP(const char * str)
 	return res;
 }
 
+#include "DynLib.hpp"
+#include "FindFiles.hpp"
+
 #endif

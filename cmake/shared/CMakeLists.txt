@@ -9,9 +9,11 @@ SET( sources
     printStackTrace.cpp 
     Util.cpp 
     crc32.cpp 
-	MapFile.cpp
-	MapFileEntry.cpp
-	TextFile.cpp
+    MapFile.cpp
+    MapFileEntry.cpp
+    TextFile.cpp
+    FindFiles.cpp
+    DynLib.cpp
     Threading/Mutex.cpp
     Threading/Threading.h  
     Threading/ThreadPool.cpp 

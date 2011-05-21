@@ -26,10 +26,6 @@
 #define ADD_INSTANCE_FACTORY_FUNCTION( ClassName ) static InstanceScript* Create( MapMgr* pMapMgr ) { return new ClassName( pMapMgr ); }; 
 #define ADD_GAMEOBJECT_FACTORY_FUNCTION( ClassName ) static GameObjectAIScript* Create(GameObject* GO) { return new ClassName(GO); }; 
 
-#ifndef WIN32
-#include <dlfcn.h>
-#endif
-
 class Channel;
 class Guild;
 struct Quest;
@@ -150,7 +146,7 @@ typedef set<GossipScript*> CustomGossipScripts;
 typedef HM_NAMESPACE::hash_map<uint32, Arcemu::Gossip::Script*> GossipMap;
 typedef set<QuestScript*> QuestScripts;
 typedef set<void*> ServerHookList;
-typedef list<SCRIPT_MODULE> LibraryHandleMap;
+typedef std::list< Arcemu::DynLib* > DynamicLibraryMap;
 
 #define VISIBLE_RANGE (26.46f)
 #define MAX_SCRIPTS 1000
@@ -320,7 +316,7 @@ protected:
 	HandleDummyAuraMap _auras;
 	HandleDummySpellMap _spells;
 	HandleScriptEffectMap SpellScriptEffects;
-	LibraryHandleMap _handles;
+	DynamicLibraryMap dynamiclibs;
 	ServerHookList _hooks[NUM_SERVER_HOOKS];
 	GossipScript * DefaultGossipScript;
 	CustomGossipScripts _customgossipscripts;

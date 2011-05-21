@@ -107,15 +107,6 @@ entry	text
 */
 
 #include "StdAfx.h"
-#ifndef WIN32
-    #include <dlfcn.h>
-    #include <unistd.h>
-    #include <dirent.h>
-    #include <sys/types.h>
-    #include <sys/stat.h>
-    #include <cstdlib>
-    #include <cstring>
-#endif
 
 #include <svn_revision.h>
 #define SCRIPTLIB_HIPART(x) ((x >> 16))
@@ -142,241 +133,130 @@ ScriptMgr::~ScriptMgr()
 
 }
 
-struct ScriptingEngine
-{
-#ifdef WIN32
-	HMODULE Handle;
-#else
-	void* Handle;
-#endif
+struct ScriptingEngine_dl{
+	Arcemu::DynLib *dl;
 	exp_script_register InitializeCall;
 	uint32 Type;
+
+	ScriptingEngine_dl(){
+		dl = NULL;
+		InitializeCall = NULL;
+		Type = 0;
+	}
 };
 
 void ScriptMgr::LoadScripts()
 {
-	if(!HookInterface::getSingletonPtr())
+	if( HookInterface::getSingletonPtr() == NULL )
 		new HookInterface;
 
 	Log.Success("Server","Loading External Script Libraries...");
 
-	string start_path = Config.MainConfig.GetStringDefault( "Script", "BinaryLocation", "script_bin" ) + "\\";
-	string search_path = start_path + "*.";
+	std::string Path;
+	std::string FileMask;
 
-	vector< ScriptingEngine > ScriptEngines;
-
-	/* Loading system for win32 */
 #ifdef WIN32
-	search_path += "dll";
+	Path = Config.MainConfig.GetStringDefault( "Script", "BinaryLocation", "script_bin" );
+	Path += "\\";
+	FileMask = ".dll";
+#else
+	Path = PREFIX;
+	Path += "/lib/";
+	FileMask = ".so";
+#endif
 
-	WIN32_FIND_DATA data;
+	Arcemu::FindFilesResult findres;
+	std::vector< ScriptingEngine_dl > Engines;
+
+	Arcemu::FindFiles( Path.c_str(), FileMask.c_str(), findres );
 	uint32 count = 0;
-	HANDLE find_handle = FindFirstFile( search_path.c_str(), &data );
-	if(find_handle == INVALID_HANDLE_VALUE)
+
+	while( findres.HasNext() ){
+		std::stringstream loadmessage;
+		std::string fname = Path + findres.GetNext();
+		Arcemu::DynLib *dl = new Arcemu::DynLib( fname.c_str() );
+
+		loadmessage << "  " << dl->GetName() << " : ";
+
+		if( !dl->Load() ){
+			loadmessage << "ERROR: Cannot open library.";
+			sLog.outError( loadmessage.str().c_str() );
+			delete dl;
+			continue;
+
+		}else{
+			exp_get_version vcall     = reinterpret_cast< exp_get_version >( dl->GetAddressForSymbol( "_exp_get_version" ) );
+			exp_script_register rcall = reinterpret_cast< exp_script_register >( dl->GetAddressForSymbol( "_exp_script_register" ) );
+			exp_get_script_type scall = reinterpret_cast< exp_get_script_type >( dl->GetAddressForSymbol( "_exp_get_script_type" ) );
+
+			if( ( vcall == NULL ) || ( rcall == NULL ) || ( scall == NULL ) ){
+				loadmessage << "ERROR: Cannot find version functions.";
+				sLog.outError( loadmessage.str().c_str() );
+				delete dl;
+				continue;
+			}else{
+				uint32 version = vcall();
+				uint32 stype = scall();
+
+				if( ( SCRIPTLIB_LOPART( version ) != static_cast< uint32 >( SCRIPTLIB_VERSION_MINOR ) ) || ( SCRIPTLIB_HIPART( version ) != static_cast< uint32 >( SCRIPTLIB_VERSION_MAJOR ) ) ){
+					loadmessage << "ERROR: Version mismatch.";
+					sLog.outError( loadmessage.str().c_str() );
+					delete dl;
+					continue;
+
+				}else{
+					loadmessage << "v" << SCRIPTLIB_HIPART( version ) << "." << SCRIPTLIB_LOPART( version ) << " : ";
+
+					if( ( stype & SCRIPT_TYPE_SCRIPT_ENGINE ) != 0 ){
+						ScriptingEngine_dl se;
+
+						se.dl = dl;
+						se.InitializeCall = rcall;
+						se.Type = stype;
+
+						Engines.push_back( se );
+
+						loadmessage << "delayed load";
+						
+					}else{
+						rcall( this );
+						dynamiclibs.push_back( dl );
+
+						loadmessage << "loaded";
+					}
+					sLog.outBasic( loadmessage.str().c_str() );
+					count++;
+				}
+			}
+		}
+	}
+
+	if( count == 0 ){
 		sLog.outError( "  No external scripts found! Server will continue to function with limited functionality." );
-	else
-	{
-		do
-		{
-			string full_path = start_path + data.cFileName;
-			HMODULE mod = LoadLibrary( full_path.c_str() );
-			stringstream sstext;
-			sstext << "  " << data.cFileName << " : 0x" << hex << reinterpret_cast< uint32* >( mod ) << dec << " : ";
-			if( mod == 0 )
-			{
-				sstext << "error!";
-				sLog.outError(sstext.str().c_str());
-			}
-			else
-			{
-				// find version import
-				exp_get_version vcall = (exp_get_version)GetProcAddress(mod, "_exp_get_version");
-				exp_script_register rcall = (exp_script_register)GetProcAddress(mod, "_exp_script_register");
-				exp_get_script_type scall = (exp_get_script_type)GetProcAddress(mod, "_exp_get_script_type");
-				if(vcall == 0 || rcall == 0 || scall == 0)
-				{
-					sstext << "version functions not found!";
-					sLog.outError(sstext.str().c_str());
-					FreeLibrary(mod);
+	}else{
+		Log.Success( "Server", "Loaded %u external libraries.", count );
+		Log.Success( "Server", "Loading optional scripting engines..." );
+
+		for( std::vector< ScriptingEngine_dl >::iterator itr = Engines.begin(); itr != Engines.end(); ++itr ){
+
+			if( ( itr->Type & SCRIPT_TYPE_SCRIPT_ENGINE_LUA ) != 0 ){
+
+				if( sWorld.m_LuaEngine ){
+					Log.Success( "Server", "Initializing LUA script engine..." );
+
+					itr->InitializeCall( this );
+					dynamiclibs.push_back( itr->dl );
+				}else{
+					delete itr->dl;
 				}
-				else
-				{
-					uint32 version = vcall();
-					uint32 stype = scall();
-					if(SCRIPTLIB_LOPART(version) == static_cast<uint32>( SCRIPTLIB_VERSION_MINOR ) && SCRIPTLIB_HIPART(version) == static_cast<uint32>( SCRIPTLIB_VERSION_MAJOR ))
-					{
-						if( stype & SCRIPT_TYPE_SCRIPT_ENGINE )
-						{
-							sstext << "v"<< SCRIPTLIB_HIPART(version) << "." << SCRIPTLIB_LOPART(version) << " : ";
-							sstext << "delayed load.";
-							sLog.outBasic(sstext.str().c_str());
 
-							ScriptingEngine se;
-							se.Handle = mod;
-							se.InitializeCall = rcall;
-							se.Type = stype;
-
-							ScriptEngines.push_back( se );
-						}
-						else
-						{
-							_handles.push_back(((SCRIPT_MODULE)mod));
-							sstext << "v"<< SCRIPTLIB_HIPART(version) << "." << SCRIPTLIB_LOPART(version) << " : ";
-							rcall(this);
-							sstext << "loaded.";
-							sLog.outBasic(sstext.str().c_str());
-						}
-
-						++count;
-					}
-					else
-					{
-						FreeLibrary(mod);
-						sstext << "version mismatch!";
-						sLog.outError(sstext.str().c_str());
-					}
-				}
+			}else{
+				delete itr->dl;
+				Log.Notice( "Server", "Unknown script engine type: 0x%.2X, please contact developers.", itr->Type );
 			}
 		}
-		while(FindNextFile(find_handle, &data));
-		FindClose(find_handle);
-		Log.Success("Server","Loaded %u external libraries.", count);
-
-		Log.Success("Server","Loading optional scripting engines...");
-		for(vector<ScriptingEngine>::iterator itr = ScriptEngines.begin(); itr != ScriptEngines.end(); ++itr)
-		{
-			if( itr->Type & SCRIPT_TYPE_SCRIPT_ENGINE_LUA )
-			{
-				// lua :O
-				if( sWorld.m_LuaEngine )
-				{
-					Log.Success("Server","Initializing LUA script engine...");
-					itr->InitializeCall(this);
-					_handles.push_back( (SCRIPT_MODULE)itr->Handle );
-				}
-				else
-				{
-					FreeLibrary( itr->Handle );
-				}
-			}
-			else
-			{
-				Log.Notice("Server","Unknown script engine type: 0x%.2X, please contact developers.", (*itr).Type );
-				FreeLibrary( itr->Handle );
-			}
-		}
-		Log.Success("Server","Done loading script engines...");
+		Log.Success( "Server", "Done loading script engines..." );
 	}
-#else
-	/* Loading system for *nix */
-	struct dirent ** list = NULL;
-	int filecount = scandir(PREFIX "/lib/", &list, 0, 0);
-	uint32 count = 0;
-
-	if(!filecount || !list || filecount < 0)
-		sLog.outError("  No external scripts found! Server will continue to function with limited functionality.");
-	else
-	{
-char *ext;
-		while(filecount--)
-		{
-			ext = strrchr(list[filecount]->d_name, '.');
-#ifdef HAVE_DARWIN
-			if (ext != NULL && strstr(list[filecount]->d_name, ".0.dylib") == NULL && !strcmp(ext, ".dylib")) {
-#else
-                        if (ext != NULL && !strcmp(ext, ".so")) {
-#endif
-				string full_path = "../lib/" + string(list[filecount]->d_name);
-				SCRIPT_MODULE mod = dlopen(full_path.c_str(), RTLD_NOW);
-				stringstream sstext;
-				sstext << "  " << list[filecount]->d_name << " : 0x" << hex << mod << dec << " : ";
-				if(mod == 0)
-				{
-					sstext << "error! " << dlerror();
-					sLog.outError(sstext.str().c_str());
-				}
-				else
-				{
-					// find version import
-					exp_get_version vcall = (exp_get_version)dlsym(mod, "_exp_get_version");
-					exp_script_register rcall = (exp_script_register)dlsym(mod, "_exp_script_register");
-					exp_get_script_type scall = (exp_get_script_type)dlsym(mod, "_exp_get_script_type");
-					if(vcall == 0 || rcall == 0 || scall == 0)
-					{
-						sstext << "version functions not found!";
-						sLog.outError(sstext.str().c_str());
-						dlclose(mod);
-					}
-					else
-					{
-						int32 version = vcall();
-						uint32 stype = scall();
-						if(SCRIPTLIB_LOPART(version) == SCRIPTLIB_VERSION_MINOR && SCRIPTLIB_HIPART(version) == SCRIPTLIB_VERSION_MAJOR)
-						{
-							if( stype & SCRIPT_TYPE_SCRIPT_ENGINE )
-							{
-								sstext << "v"<< SCRIPTLIB_HIPART(version) << "." << SCRIPTLIB_LOPART(version) << " : ";
-								sstext << "delayed load.";
-								sLog.outBasic(sstext.str().c_str());
-
-								ScriptingEngine se;
-								se.Handle = mod;
-								se.InitializeCall = rcall;
-								se.Type = stype;
-
-								ScriptEngines.push_back( se );
-							}
-							else
-							{
-								_handles.push_back(((SCRIPT_MODULE)mod));
-								sstext << "v"<< SCRIPTLIB_HIPART(version) << "." << SCRIPTLIB_LOPART(version) << " : ";
-								rcall(this);
-								sstext << "loaded.";
-								sLog.outBasic(sstext.str().c_str());						
-							}
-
-							++count;
-						}
-						else
-						{
-							dlclose(mod);
-							sstext << "version mismatch!";
-							sLog.outError(sstext.str().c_str());					
-						}
-					}
-				}
-			}
-			free(list[filecount]);
-		}
-		free(list);
-		sLog.outString("Loaded %u external libraries.", count);
-
-		sLog.outString("Loading optional scripting engines...");
-		for(vector<ScriptingEngine>::iterator itr = ScriptEngines.begin(); itr != ScriptEngines.end(); ++itr)
-		{
-			if( itr->Type & SCRIPT_TYPE_SCRIPT_ENGINE_LUA )
-			{
-				// lua :O
-				if( sWorld.m_LuaEngine )
-				{
-					sLog.outString("   Initializing LUA script engine...");
-					itr->InitializeCall(this);
-					_handles.push_back( (SCRIPT_MODULE)itr->Handle );
-				}
-				else
-				{
-					dlclose( itr->Handle );
-				}
-			}
-			else
-			{
-				sLog.outError("  Unknown script engine type: 0x%.2X, please contact developers.", (*itr).Type );
-				dlclose( itr->Handle );
-			}
-		}
-		sLog.outString("Done loading script engines...");
-	}
-#endif
 }
 
 void ScriptMgr::UnloadScripts()
@@ -394,16 +274,10 @@ void ScriptMgr::UnloadScripts()
 		delete *itr;
 	_questscripts.clear();
 
-	LibraryHandleMap::iterator itr = _handles.begin();
-	for(; itr != _handles.end(); ++itr)
-	{
-#ifdef WIN32
-		FreeLibrary(((HMODULE)*itr));
-#else
-		dlclose(*itr);
-#endif
-	}
-	_handles.clear();
+	for( DynamicLibraryMap::iterator itr = dynamiclibs.begin(); itr != dynamiclibs.end(); ++itr )
+		delete *itr;
+
+	dynamiclibs.clear();
 }
 
 void ScriptMgr::DumpUnimplementedSpells(){
@@ -934,29 +808,19 @@ void ScriptMgr::ReloadScriptEngines()
 	//for all scripting engines that allow reloading, assuming there will be new scripting engines.
 	exp_get_script_type version_function;
 	exp_engine_reload engine_reloadfunc;
-	for(LibraryHandleMap::iterator itr = _handles.begin(); itr != _handles.end(); ++itr)
-	{
-#ifdef WIN32
-		version_function = (exp_get_script_type)GetProcAddress( (HMODULE)(*itr),"_exp_get_script_type");
-		if(version_function == 0)
+
+	for( DynamicLibraryMap::iterator itr = dynamiclibs.begin(); itr != dynamiclibs.end(); ++itr ){
+		Arcemu::DynLib *dl = *itr;
+
+		version_function = reinterpret_cast< exp_get_script_type >( dl->GetAddressForSymbol( "_exp_get_script_type" ) );
+		if( version_function == NULL )
 			continue;
-		if(version_function() & SCRIPT_TYPE_SCRIPT_ENGINE)
-		{
-			engine_reloadfunc = (exp_engine_reload)GetProcAddress( (HMODULE)(*itr),"_export_engine_reload");
-			if(engine_reloadfunc != 0)
+
+		if( ( version_function() & SCRIPT_TYPE_SCRIPT_ENGINE ) != 0 ){
+			engine_reloadfunc = reinterpret_cast< exp_engine_reload >( dl->GetAddressForSymbol( "_export_engine_reload" ) );
+			if( engine_reloadfunc != NULL )
 				engine_reloadfunc();
 		}
-#else
-		version_function = (exp_get_script_type)dlsym( (SCRIPT_MODULE)(*itr),"_exp_get_script_type");
-		if(version_function == 0)
-			continue;
-		if(version_function() & SCRIPT_TYPE_SCRIPT_ENGINE)
-		{
-			engine_reloadfunc = (exp_engine_reload)dlsym( (SCRIPT_MODULE)(*itr),"_export_engine_reload");
-			if(engine_reloadfunc != 0)
-				engine_reloadfunc();
-		}
-#endif
 	}
 }
 
