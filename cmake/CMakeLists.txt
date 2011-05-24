@@ -41,7 +41,7 @@ SET( DEPENDENCY_DLLS64 ${DEPENDENCY_ROOT}/dll64)
 #Our configurable variables.
 SET(ARCEMU_CONFIGSFILE_PATH etc CACHE PATH "Path where the arcemu config files are.")
 SET(ARCEMU_SCRIPTLIB_PATH ".." CACHE PATH "The directory which contains the 'lib' directory that has the script libraries." )
-SET(BUILD_ARCEMUSCRIPTS TRUE CACHE BOOL "Set to true to build script libraries." )
+SET(BUILD_ARCEMUSCRIPTS TRUE CACHE BOOL "Set to false to NOT build script libraries." )
 SET(VISUALSTUDIO_COMPILERHEAPLIMIT 200 CACHE STRING "Visual Studio compiler heap limit. Ignore on darwin and unix platforms." )
 
 #Make sure our revision header is up to date.
