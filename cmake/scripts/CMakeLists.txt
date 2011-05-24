@@ -23,7 +23,7 @@ SET( BUILD_MISCSCRIPTS TRUE CACHE BOOL "Build arcMiscScripts." )
 #SET( BUILD_SPELLHANDLERS TRUE CACHE BOOL "Build arcSpellHandlers.")
 SET( BUILD_SERVERSTATUSPLUGIN TRUE CACHE BOOL "Build ServerStatusPlugin.")
 SET( BUILD_LUAENGINE FALSE CACHE BOOL "Build LuaEngine.")
-SET( BUILD_LUABRIDGE FALSE CACHE BOOL "Build luabridge.")
+SET( BUILD_LUABRIDGE TRUE CACHE BOOL "Build luabridge.")
 
 
 add_subdirectory( lualib ) #Used by luabridge and luaengine modules.
