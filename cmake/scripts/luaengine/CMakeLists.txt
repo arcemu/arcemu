@@ -22,6 +22,12 @@ include_directories( ${include_dirs} ${prefix} )
 IF( IS_LINUX )
 	add_definitions(-Wno-deprecated)
 ENDIF()
+
+IF( APPLE )
+	SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -undefined dynamic_lookup" )
+	SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -undefined dynamic_lookup" )
+ENDIF( APPLE )
+
 add_library(${PROJECT_NAME} SHARED ${SRCS} )
 add_dependencies( ${PROJECT_NAME} ${dependancies} lualib)
 target_link_libraries( ${PROJECT_NAME} ${linkages} lualib)

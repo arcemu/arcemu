@@ -26,16 +26,16 @@ SET( BUILD_LUAENGINE FALSE CACHE BOOL "Build LuaEngine.")
 SET( BUILD_LUABRIDGE TRUE CACHE BOOL "Build luabridge.")
 
 
-add_subdirectory( lualib ) #Used by luabridge and luaengine modules.
-add_subdirectory( luabridge ) 
-add_subdirectory( luaengine )
 add_subdirectory( eventscripts)
 add_subdirectory( instancescripts )
 add_subdirectory( extrascripts )
 add_subdirectory( gossipscripts )
 add_subdirectory( questscripts )
 add_subdirectory( miscscripts )
-add_subdirectory(serverstatusplugin)
+add_subdirectory( serverstatusplugin )
+add_subdirectory( lualib ) #Used by luabridge and luaengine modules.
+add_subdirectory( luabridge ) 
+add_subdirectory( luaengine )
 
 unset(SCRIPTS_PATH)
 unset(include_dirs)
