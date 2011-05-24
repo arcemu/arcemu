@@ -159,6 +159,8 @@
     <ClCompile Include="..\..\src\arcemu-shared\Network\SocketOpsLinux.cpp">
       <Filter>Network</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-shared\FindFiles.cpp" />
+    <ClCompile Include="..\..\src\arcemu-shared\DynLib.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\arcemu-shared\Database\Database.h">
@@ -361,5 +363,7 @@
     <ClInclude Include="..\..\src\arcemu-shared\Tokenizer.h">
       <Filter>Util</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\arcemu-shared\FindFiles.hpp" />
+    <ClInclude Include="..\..\src\arcemu-shared\DynLib.hpp" />
   </ItemGroup>
 </Project>

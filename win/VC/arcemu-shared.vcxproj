@@ -279,6 +279,8 @@ RevisionExtractor.exe
     <ClCompile Include="..\..\src\arcemu-shared\Auth\MD5.cpp" />
     <ClCompile Include="..\..\src\arcemu-shared\Auth\Sha1.cpp" />
     <ClCompile Include="..\..\src\arcemu-shared\Auth\WowCrypt.cpp" />
+    <ClCompile Include="..\..\src\arcemu-shared\DynLib.cpp" />
+    <ClCompile Include="..\..\src\arcemu-shared\FindFiles.cpp" />
     <ClCompile Include="..\..\src\arcemu-shared\Network\CircularBuffer.cpp" />
     <ClCompile Include="..\..\src\arcemu-shared\Network\Socket.cpp" />
     <ClCompile Include="..\..\src\arcemu-shared\Network\SocketFreeBSD.cpp">
@@ -357,6 +359,8 @@ RevisionExtractor.exe
     <ClInclude Include="..\..\src\arcemu-shared\Auth\MD5.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Auth\Sha1.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Auth\WowCrypt.h" />
+    <ClInclude Include="..\..\src\arcemu-shared\DynLib.hpp" />
+    <ClInclude Include="..\..\src\arcemu-shared\FindFiles.hpp" />
     <ClInclude Include="..\..\src\arcemu-shared\Network\CircularBuffer.h" />
     <ClInclude Include="..\..\src\arcemu-shared\Network\ListenSocketFreeBSD.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
