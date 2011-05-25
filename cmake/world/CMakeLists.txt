@@ -109,7 +109,6 @@ SET(sources
 	TradeHandler.cpp 
 	TransporterHandler.cpp 
 	Unit.cpp 
-	UnixMetric.cpp 
 	Vehicle.cpp 
 	WarsongGulch.cpp 
 	WayPoints.cpp 
