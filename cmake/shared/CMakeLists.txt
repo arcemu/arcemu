@@ -14,6 +14,8 @@ SET( sources
     TextFile.cpp
     FindFiles.cpp
     DynLib.cpp
+    SysInfo.cpp
+    PerformanceCounter.cpp
     Threading/Mutex.cpp
     Threading/Threading.h  
     Threading/ThreadPool.cpp 

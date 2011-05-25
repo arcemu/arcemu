@@ -662,6 +662,8 @@ private:
 	typedef HM_NAMESPACE::hash_map<uint32, AreaTrigger*> AreaTriggerMap;
 	AreaTriggerMap m_AreaTrigger;
 
+	Arcemu::PerformanceCounter perfcounter;
+
 protected:
 	Mutex SessionsMutex;//FOR GLOBAL !
 	SessionSet Sessions;
@@ -737,6 +739,15 @@ public:
         *totalin = LastTotalTrafficInKB;
         *totalout = LastTotalTrafficOutKB; 
     }
+
+	float GetCPUUsage(){
+		return perfcounter.GetCurrentCPUUsage();
+	}
+
+	float GetRAMUsage(){
+		return perfcounter.GetCurrentRAMUsage();
+	}
+
 };
 
 #define sWorld World::getSingleton()

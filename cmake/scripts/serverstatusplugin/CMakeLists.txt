@@ -8,7 +8,6 @@ PROJECT(ServerStatusPlugin)
 SET( prefix ${SCRIPTS_PATH}/${PROJECT_NAME} )
 
 SET( sources 
-PerfCounters.h
 ServerStatusPlugin.cpp )
 
 foreach(src IN ITEMS ${sources} )

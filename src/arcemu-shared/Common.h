@@ -635,5 +635,7 @@ inline static unsigned int MakeIP(const char * str)
 
 #include "DynLib.hpp"
 #include "FindFiles.hpp"
+#include "SysInfo.hpp"
+#include "PerformanceCounter.hpp"
 
 #endif

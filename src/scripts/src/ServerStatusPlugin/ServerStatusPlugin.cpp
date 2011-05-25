@@ -28,32 +28,7 @@ extern "C" SCRIPT_DECL uint32 _exp_get_script_type()
 	return SCRIPT_TYPE_INFODUMPER;
 }
 
-#ifdef WIN32
-	#pragma pack(push,8)
-	#include "PerfCounters.h"
-	#pragma pack(pop)
-	#include <Psapi.h>
-
-	#define SYSTEM_OBJECT_INDEX					2		// 'System' object
-	#define PROCESS_OBJECT_INDEX				230		// 'Process' object
-	#define PROCESSOR_OBJECT_INDEX				238		// 'Processor' object
-	#define TOTAL_PROCESSOR_TIME_COUNTER_INDEX	240		// '% Total processor time' counter (valid in WinNT under 'System' object)
-	#define PROCESSOR_TIME_COUNTER_INDEX		6		// '% processor time' counter (for Win2K/XP)
-
-	#pragma comment(lib, "advapi32")
-	#pragma comment(lib, "Psapi")
-#endif
-
 #define LOAD_THREAD_SLEEP					180
-
-#ifdef WIN32
-	bool m_bFirstTime = true;
-	LONGLONG m_lnOldValue = 0;
-	LARGE_INTEGER m_OldPerfTime100nSec;
-	uint32 number_of_cpus;
-#else
-UnixMetric *UMPTR = NULL;
-#endif
 
 // This is needed because windows is a piece of shit
 #ifdef WIN32
@@ -108,9 +83,7 @@ void StatDumperThread::OnShutdown()
 
 StatDumperThread::StatDumperThread()
 {
-#ifndef WIN32
- UMPTR = new UnixMetric;
-#endif
+
 }
 
 StatDumperThread::~StatDumperThread()
@@ -118,7 +91,6 @@ StatDumperThread::~StatDumperThread()
 #ifdef WIN32
 	CloseHandle(hEvent);
 #else
-	delete UMPTR;
 	pthread_cond_destroy(&cond);
 	pthread_mutex_destroy(&mutex);
 #endif
@@ -136,12 +108,6 @@ bool StatDumperThread::run()
 	if( !Config.MainConfig.GetString( "StatDumper", Filename, "Filename", "stats.xml", MAX_PATH ) )
 		strcpy( Filename, "stats.xml" );
 
-#ifdef WIN32
-	memset( &m_OldPerfTime100nSec, 0, sizeof( m_OldPerfTime100nSec ) );
-	SYSTEM_INFO si;
-	GetSystemInfo( &si );
-	number_of_cpus = si.dwNumberOfProcessors;
-#endif
 
 #ifdef WIN32
 	hEvent = CreateEvent( NULL, FALSE, FALSE, NULL );
@@ -221,71 +187,6 @@ void GenerateUptimeString(char * Dest)
         }
     }
     sprintf(Dest, "%d days, %d hours, %d minutes, %d seconds", (int)days, (int)hours, (int)mins, (int)seconds);
-}
-
-#ifdef WIN32
-
-float GetCPUUsageWin32()
-{
-    CPerfCounters<LONGLONG> PerfCounters;
-    DWORD dwObjectIndex = PROCESS_OBJECT_INDEX;
-    DWORD dwCpuUsageIndex = PROCESSOR_TIME_COUNTER_INDEX;
-
-    int				CpuUsage = 0;
-    LONGLONG		lnNewValue = 0;
-    PPERF_DATA_BLOCK pPerfData = NULL;
-    LARGE_INTEGER	NewPerfTime100nSec = {0};
-
-    lnNewValue = PerfCounters.GetCounterValueForProcessID(&pPerfData, dwObjectIndex, dwCpuUsageIndex, GetCurrentProcessId());
-    NewPerfTime100nSec = pPerfData->PerfTime100nSec;
-
-    if (m_bFirstTime)
-    {
-        m_bFirstTime = false;
-        m_lnOldValue = lnNewValue;
-        m_OldPerfTime100nSec = NewPerfTime100nSec;
-        return 0;
-    }
-
-    LONGLONG lnValueDelta = lnNewValue - m_lnOldValue;
-    double DeltaPerfTime100nSec = (double)NewPerfTime100nSec.QuadPart - (double)m_OldPerfTime100nSec.QuadPart;
-
-    m_lnOldValue = lnNewValue;
-    m_OldPerfTime100nSec = NewPerfTime100nSec;
-
-    double a = (double)lnValueDelta / DeltaPerfTime100nSec;
-    a /= double(number_of_cpus);
-    return float(a * 100.0);
-}
-
-float GetRAMUsageWin32()
-{
-    PROCESS_MEMORY_COUNTERS pmc;
-    GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc));
-    float ram = (float)pmc.PagefileUsage;
-    ram /= 1024.0f;
-    ram /= 1024.0f;
-    return ram;
-}
-
-#endif
-
-float GetCPUUsage()
-{
-#ifdef WIN32
-    return GetCPUUsageWin32();
-#else
-    return UMPTR->GetCPUUsageUnix();
-#endif
-}
-
-float GetRAMUsage()
-{
-#ifdef WIN32
-    return GetRAMUsageWin32();
-#else
-    return UMPTR->GetRAMUsageUnix();
-#endif
 }
 
 void FillOnlineTime(uint32 Time, char * Dest)
@@ -414,9 +315,9 @@ void StatDumper::DumpStats()
 
         fprintf(f, "    <uptime>%s</uptime>\n", uptime);
 		fprintf(f, "    <oplayers>%u</oplayers>\n", (unsigned int)(sWorld.getPlayerCount()));
-        fprintf(f, "    <cpu>%2.2f</cpu>\n", GetCPUUsage());
+		fprintf(f, "    <cpu>%2.2f</cpu>\n", sWorld.GetCPUUsage() );
         fprintf(f, "    <qplayers>%u</qplayers>\n", (unsigned int)sWorld.GetQueueCount());
-        fprintf(f, "    <ram>%.3f</ram>\n", GetRAMUsage());
+		fprintf(f, "    <ram>%.3f</ram>\n", sWorld.GetRAMUsage() );
         fprintf(f, "    <avglat>%.3f</avglat>\n", AvgLat);
 		fprintf(f, "    <threads>%u</threads>\n", (unsigned int)ThreadPool.GetActiveThreadCount());
 		fprintf(f, "    <fthreads>%u</fthreads>\n", (unsigned int)ThreadPool.GetFreeThreadCount());
