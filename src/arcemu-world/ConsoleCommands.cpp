@@ -25,7 +25,6 @@
 bool HandleInfoCommand(BaseConsole * pConsole, int argc, const char * argv[])
 {
 	uint32 clientsNum = (uint32)sWorld.GetSessionCount();
-
 	int gm = 0;
 	int count = 0;
 	int avg = 0;
@@ -52,6 +51,8 @@ bool HandleInfoCommand(BaseConsole * pConsole, int argc, const char * argv[])
 	pConsole->Write("Active Thread Count: %u\r\n", ThreadPool.GetActiveThreadCount());
 	pConsole->Write("Free Thread Count: %u\r\n", ThreadPool.GetFreeThreadCount());
 	pConsole->Write("Average Latency: %.3fms\r\n", count ?  ((float)((float)avg / (float)count)) : 0.0f);
+	pConsole->Write( "CPU Usage: %3.2f %%\r\n", sWorld.GetCPUUsage() );
+	pConsole->Write( "RAM Usage: %4.2f MB\r\n", sWorld.GetRAMUsage() );
 	pConsole->Write("SQL Query Cache Size (World): %u queries delayed\r\n", WorldDatabase.GetQueueSize());
 	pConsole->Write("SQL Query Cache Size (Character): %u queries delayed\r\n", CharacterDatabase.GetQueueSize());
 

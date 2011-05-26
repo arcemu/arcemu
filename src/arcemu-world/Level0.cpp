@@ -245,6 +245,8 @@ bool ChatHandler::HandleInfoCommand(const char* args, WorldSession *m_session)
 	GreenSystemMessage(m_session, "Active Thread Count: |r%u", ThreadPool.GetActiveThreadCount());
 	GreenSystemMessage(m_session, "Free Thread Count: |r%u", ThreadPool.GetFreeThreadCount());
 	GreenSystemMessage(m_session, "Average Latency: |r%.3fms", ((float)avg / (float)count));
+	GreenSystemMessage(m_session, "CPU Usage: %3.2f %%", sWorld.GetCPUUsage() );
+	GreenSystemMessage(m_session, "RAM Usage: %4.2f MB", sWorld.GetRAMUsage() );
 	GreenSystemMessage(m_session, "SQL Query Cache Size (World): |r%u queries delayed", WorldDatabase.GetQueueSize());
 	GreenSystemMessage(m_session, "SQL Query Cache Size (Character): |r%u queries delayed", CharacterDatabase.GetQueueSize());
 	

@@ -58,6 +58,8 @@ protected:					// Protected methods:
 	void TranslateRehash(char* str);
 
 	void NetworkStatus(char* str);
+
+	void Info( char* str );
 };
 
 #define sLogonConsole LogonConsole::getSingleton()

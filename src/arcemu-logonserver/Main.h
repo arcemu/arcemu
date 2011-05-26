@@ -44,6 +44,7 @@ public:
 	uint32 min_build;
 	uint8 sql_hash[20];
 
+	Arcemu::PerformanceCounter perfcounter;
 private:
 	bool m_stopEvent;
 };

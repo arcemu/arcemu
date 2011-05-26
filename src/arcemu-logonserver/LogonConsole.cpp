@@ -130,7 +130,9 @@ void LogonConsole::ProcessCmd(char *cmd)
 		{	"reload", &LogonConsole::ReloadAccts},
 		{	"rehash", &LogonConsole::TranslateRehash},
 		{	"netstatus", &LogonConsole::NetworkStatus},
-		{	"shutdown", &LogonConsole::TranslateQuit}, {"exit", &LogonConsole::TranslateQuit}, 
+		{	"shutdown", &LogonConsole::TranslateQuit},
+		{	"exit", &LogonConsole::TranslateQuit},
+		{	"info", &LogonConsole::Info},
 	};
 
 	char cmd2[80];
@@ -187,10 +189,19 @@ void LogonConsole::ProcessHelp(char *command)
 		printf("Console:--------help--------\n");
 		printf("	Help, ?: Prints this help text.\n");
 		printf("	Reload: Reloads accounts.\n");
-		printf("	Netstatus: Shows network status.\n");;
+		printf("	Netstatus: Shows network status.\n");
+		printf("	info:  shows some information about the server.\n" );
 		printf("	Shutdown, exit: Closes the logonserver.\n");
 	}
 }
+
+void LogonConsole::Info( char *str ){
+	std::cout << "LogonServer information" << std::endl;
+	std::cout << "-----------------------" << std::endl;
+	std::cout << "CPU Usage: " << LogonServer::getSingleton().perfcounter.GetCurrentCPUUsage() << "%" << std::endl;
+	std::cout << "RAM Usage: " << LogonServer::getSingleton().perfcounter.GetCurrentRAMUsage() << "MB" << std::endl;
+}
+
 //------------------------------------------------------------------------------
 
 LogonConsoleThread::LogonConsoleThread()
