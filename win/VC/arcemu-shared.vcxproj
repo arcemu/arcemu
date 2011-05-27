@@ -323,6 +323,8 @@ RevisionExtractor.exe
     <ClCompile Include="..\..\src\arcemu-shared\Network\SocketOpsWin32.cpp" />
     <ClCompile Include="..\..\src\arcemu-shared\Network\SocketWin32.cpp" />
     <ClCompile Include="..\..\src\arcemu-shared\CThreads.cpp" />
+    <ClCompile Include="..\..\src\arcemu-shared\PerformanceCounter.cpp" />
+    <ClCompile Include="..\..\src\arcemu-shared\SysInfo.cpp" />
     <ClCompile Include="..\..\src\arcemu-shared\Threading\AtomicBoolean.cpp" />
     <ClCompile Include="..\..\src\arcemu-shared\Threading\AtomicCounter.cpp" />
     <ClCompile Include="..\..\src\arcemu-shared\Threading\AtomicFloat.cpp" />

@@ -161,6 +161,8 @@
     </ClCompile>
     <ClCompile Include="..\..\src\arcemu-shared\FindFiles.cpp" />
     <ClCompile Include="..\..\src\arcemu-shared\DynLib.cpp" />
+    <ClCompile Include="..\..\src\arcemu-shared\SysInfo.cpp" />
+    <ClCompile Include="..\..\src\arcemu-shared\PerformanceCounter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\arcemu-shared\Database\Database.h">
