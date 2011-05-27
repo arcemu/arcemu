@@ -35,11 +35,15 @@
 #include <cstdlib>
 #endif
 
-#ifdef __FreeBSD__
+#if defined(__FreeBSD__) || defined(__FreeBSD_kernel__)
 #include <sys/time.h>
 #include <sys/resource.h>
 #include <sys/types.h>
 #include <sys/sysctl.h>
+
+#ifndef NULL
+#define NULL 0
+#endif
 #endif
 
 #ifdef __APPLE__
@@ -164,7 +168,7 @@ namespace Arcemu{
 	}
 #endif
 
-#ifdef __FreeBSD__
+#if defined(__FreeBSD__) || defined(__FreeBSD_kernel__)
 
 	long SysInfo::GetCPUCount(){
 		int mib[4];

@@ -18,7 +18,7 @@ ELSEIF(UNIX)
 	#mac has unix defined too but if 'if(APPLE)' fails, then it's not apple.
 	
 	#check for freebsd
-	IF( CMAKE_SYSTEM_NAME  STREQUAL "FreeBSD")
+	IF( ( CMAKE_SYSTEM_NAME  STREQUAL "FreeBSD" ) OR ( CMAKE_SYSTEM_NAME STREQUAL kFreeBSD ) )
 		SET( GLOBAL_DEFINES ${GLOBAL_DEFINES} -DUSE_KQUEUE)
 		SET( IS_FREEBSD TRUE)
 	ELSE()

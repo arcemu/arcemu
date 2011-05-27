@@ -46,7 +46,7 @@
 
 #ifdef _MSC_VER
     #define G3D_WIN32
-#elif  defined(__FreeBSD__) || defined(__OpenBSD__)
+#elif  defined(__FreeBSD__) || defined(__OpenBSD__)  || defined(__FreeBSD_kernel__)
     #define G3D_FREEBSD
     #define G3D_LINUX
 #elif defined(__linux__)
