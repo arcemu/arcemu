@@ -53,6 +53,6 @@ include_directories( ${GLOBAL_INCLUDE_DIRS} )
 add_library(${PROJECT_NAME} STATIC ${SRCS} )
 
 unset(sources)
-unset(SOURCES)
+unset(SRCS)
 unset(prefix)
 
