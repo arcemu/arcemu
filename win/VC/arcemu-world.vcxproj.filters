@@ -309,9 +309,6 @@
     <ClCompile Include="..\..\src\arcemu-world\Opcodes.cpp">
       <Filter>Networking, Handlers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\arcemu-world\UnixMetric.cpp">
-      <Filter>Networking, Handlers</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\arcemu-world\WorldSocket.cpp">
       <Filter>Networking, Handlers</Filter>
     </ClCompile>
@@ -744,9 +741,6 @@
       <Filter>Networking, Handlers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\arcemu-world\Opcodes.h">
-      <Filter>Networking, Handlers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\arcemu-world\UnixMetric.h">
       <Filter>Networking, Handlers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\arcemu-world\WorldSocket.h">
