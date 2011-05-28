@@ -26,7 +26,7 @@
 #pragma comment(lib, "Psapi")
 #endif
 
-#ifdef linux
+#if defined(linux) || defined(__linux)
 #include <sys/time.h>
 #include <sys/resource.h>
 #include <unistd.h>
@@ -105,7 +105,7 @@ namespace Arcemu{
 
 #endif
 
-#ifdef linux
+#if defined(linux) || defined(__linux)
 
 	long SysInfo::GetCPUCount(){
 		return sysconf( _SC_NPROCESSORS_ONLN );
