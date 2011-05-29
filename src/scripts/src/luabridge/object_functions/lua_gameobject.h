@@ -14,15 +14,13 @@ public:
    {
 	   PLUA_INSTANCE li_ = lua_instance.get();
 	   //locate the reference and clean up
-	   LUA_INSTANCE::ObjectFRefMap::iterator
-		   itr = li_->m_goFRefs.find( GetLowGUID() ),
-		   itend = li_->m_goFRefs.upper_bound( GetLowGUID() );
-	   for(; itr != itend; ++itr)
-		   if(itr->second == parameters)
+	   std::pair<LUA_INSTANCE::ObjectFRefMap::iterator,LUA_INSTANCE::ObjectFRefMap::iterator> frefs = li_->m_goFRefs.equal_range( GetLowGUID() );
+	   for(; frefs.first != frefs.second; ++frefs.first)
+		   if(frefs.first->second == parameters)
 			   break;
 
-	   //Do nothing if we don't have a reference to this event's parameters.
-	   if(itr != itend)
+	   //Do nothing if we don't have a reference to this events' parameters.
+	   if(frefs.first != frefs.second)
 	   {
 		   ptrdiff_t base = lua_gettop(li_->lu)+2;
 		   //push the function and it's parameters
@@ -36,7 +34,7 @@ public:
 		   if(lua_pcall(li_->lu, (parameters->count), 0, 0) )
 			   lua_engine::report(li_->lu);
 		   //erase it since we no longer need to keep track of it
-		   li_->m_goFRefs.erase(itr);
+		   li_->m_goFRefs.erase(frefs.first);
 
 		   //release resources
 		   if(parameters != NULL)
@@ -88,12 +86,9 @@ public:
 	   PLUA_INSTANCE li_ = lua_instance.get();
 	   sEventMgr.RemoveEvents(this, EVENT_LUA_GAMEOBJ_EVENTS);
 	   //Remove any stored references
-	   LUA_INSTANCE::ObjectFRefMap::iterator 
-		   itr = li_->m_goFRefs.find(this->GetLowGUID() ) , 
-		   itend = li_->m_goFRefs.upper_bound(this->GetLowGUID() );
-	   //release those resources first.
-	   for(; itr != itend; ++itr)
-		   cleanup_varparam( itr->second, li_->lu);
+	   std::pair<LUA_INSTANCE::ObjectFRefMap::iterator ,LUA_INSTANCE::ObjectFRefMap::iterator > frefs = li_->m_goFRefs.equal_range( this->GetLowGUID() ); 
+	   for(; frefs.first != frefs.second; ++frefs.first)
+		   cleanup_varparam( frefs.first->second, li_->lu);
 
 	   li_->m_goFRefs.erase( this->GetLowGUID() );
    }

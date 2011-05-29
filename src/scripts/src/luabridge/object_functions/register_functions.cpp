@@ -58,10 +58,10 @@ bool registerServerHook(uint32 hook, lua_function ref)
 	PLUA_INSTANCE li_ = lua_instance.get();
 	if(hook < NUM_SERVER_HOOKS && (ptrdiff_t)ref != LUA_REFNIL)
 	{
-		li::HookFRefMap::iterator itr = li_->m_hooks.find(hook);
-		for(; itr != li_->m_hooks.upper_bound(hook); ++itr)
+		std::pair<li::HookFRefMap::iterator,li::HookFRefMap::iterator> hooks = li_->m_hooks.equal_range(hook);
+		for(; hooks.first != hooks.second; ++hooks.first)
 		{
-			if(itr->second == ref)
+			if(hooks.first->second == ref)
 			{
 				found = true;
 				break;

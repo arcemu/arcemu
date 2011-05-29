@@ -6,17 +6,19 @@ LuaQuest::LuaQuest(uint32 id) : entry(id), QuestScript() {}
 LuaQuest::~LuaQuest()
 {
 	PLUA_INSTANCE li_ = lua_instance.get();
-	for(li::QuestInterfaceMap::iterator itr = li_->m_questInterfaceMap.find(entry); itr != li_->m_questInterfaceMap.upper_bound(entry); ++itr)
+	
+	for( std::pair<li::QuestInterfaceMap::iterator,li::QuestInterfaceMap::iterator> interfaces = li_->m_questInterfaceMap.equal_range(entry); interfaces.first != interfaces.second; ++interfaces.first )
 	{
-		if(itr->second == this)
+		if(interfaces.first->second == this)
 		{
-			li_->m_questInterfaceMap.erase(itr);
+			li_->m_questInterfaceMap.erase(interfaces.first);
 			break;
 		}
 	}
-	for(li::ObjectFRefMap::iterator it,itr = li_->m_questFRefs.find(entry); itr != li_->m_questFRefs.upper_bound(entry); )
+	li::ObjectFRefMap::iterator it;
+	for(std::pair<li::ObjectFRefMap::iterator,li::ObjectFRefMap::iterator> frefs = li_->m_questFRefs.equal_range(entry); frefs.first != frefs.second; )
 	{
-		it = itr++;
+		it = frefs.first++;
 		cleanup_varparam(it->second, li_->lu);
 		li_->m_questFRefs.erase(it);
 	}

@@ -317,24 +317,21 @@ void LuaCreature::Destroy()
 	sEventMgr.RemoveEvents(_unit, EVENT_LUA_CREATURE_EVENTS);
 	PLUA_INSTANCE li_ = lua_instance.get();
 	{
+		std::pair<li::CreatureInterfaceMap::iterator,li::CreatureInterfaceMap::iterator> interfaces = li_->m_creatureInterfaceMap.equal_range( _unit->GetEntry() );
 		li::CreatureInterfaceMap::iterator it;
-		li::CreatureInterfaceMap::iterator itr = li_->m_creatureInterfaceMap.find(_unit->GetEntry() ), itend = li_->m_creatureInterfaceMap.upper_bound(_unit->GetEntry() );
-		for(;itr != itend;)
+		for(; interfaces.first != interfaces.second;)
 		{
-			it = itr++;
+			it = interfaces.first++;
 			if(it->second != NULL && it->second == this)
 				li_->m_creatureInterfaceMap.erase(it);
 		}
 	}
 	{
 		//Function Ref clean up
-		li::ObjectFRefMap::iterator itr = li_->m_creatureFRefs.find(_unit->GetLowGUID() );
-		li::ObjectFRefMap::iterator itend = li_->m_creatureFRefs.upper_bound(_unit->GetLowGUID() );
-		while(itr != itend)
-		{
-			cleanup_varparam(itr->second, li_->lu );
-			++itr;
-		}
+		std::pair<li::ObjectFRefMap::iterator,li::ObjectFRefMap::iterator> frefs = li_->m_creatureFRefs.equal_range( _unit->GetLowGUID() );
+		for(; frefs.first != frefs.second; ++frefs.first)
+			cleanup_varparam( frefs.first->second, li_->lu);
+			
 		li_->m_creatureFRefs.erase( _unit->GetLowGUID() );
 	}
 	delete this;

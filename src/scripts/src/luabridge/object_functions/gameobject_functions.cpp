@@ -96,24 +96,19 @@ void LuaGameObject::Destroy ()
 	PLUA_INSTANCE ref = lua_instance.get();
 	{
 		li::GOInterfaceMap::iterator it;
-		li::GOInterfaceMap::iterator itr = ref->m_goInterfaceMap.find(_gameobject->GetEntry() );
-		li::GOInterfaceMap::iterator itend = ref->m_goInterfaceMap.upper_bound(_gameobject->GetEntry() );
-		while(itr != itend)
+		std::pair< li::GOInterfaceMap::iterator, li::GOInterfaceMap::iterator> interfaces = ref->m_goInterfaceMap.equal_range( _gameobject->GetEntry() );
+		for(; interfaces.first != interfaces.second; )
 		{
-			it = itr++;
+			it = interfaces.first++;
 			if(it->second != NULL && it->second == this)
 				ref->m_goInterfaceMap.erase(it);
 		}
 	}
 	//clean up any refs being used by this go.
 	{
-		li::ObjectFRefMap::iterator itr = ref->m_goFRefs.find(_gameobject->GetLowGUID() );
-		li::ObjectFRefMap::iterator itend = ref->m_goFRefs.upper_bound(_gameobject->GetLowGUID() );
-		while(itr != itend)
-		{
-			cleanup_varparam(itr->second,ref->lu);
-			++itr;
-		}
+		std::pair<li::ObjectFRefMap::iterator, li::ObjectFRefMap::iterator> frefs = ref->m_goFRefs.equal_range( _gameobject->GetLowGUID() );
+		for(; frefs.first != frefs.second; ++frefs.first)
+			cleanup_varparam( frefs.first->second, ref->lu );
 		ref->m_goFRefs.erase( _gameobject->GetLowGUID() );
 	}
 	delete this;

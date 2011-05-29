@@ -18,7 +18,6 @@
  */
 
 #include "LUAEngine.h"
-#define SKIP_ALLOCATOR_SHARING
 #include <ScriptSetup.h>
 
 #ifdef WIN32
@@ -664,11 +663,9 @@ void lua_engine::restartThread(MapMgr * map)
 	{
 		for(li::ObjectBindingMap::iterator itr = _li->m_unitBinding.begin(); itr != _li->m_unitBinding.end(); ++itr)
 		{
-			li::CreatureInterfaceMap::iterator it = _li->m_creatureInterfaceMap.find(itr->first),
-				itend = _li->m_creatureInterfaceMap.upper_bound(itr->first);
-			//assign the new binding.
-			for(; it != itend; ++it)
-				it->second->m_binding = itr->second;
+			std::pair<li::CreatureInterfaceMap::iterator, li::CreatureInterfaceMap::iterator> interfaces = _li->m_creatureInterfaceMap.equal_range( itr->first);
+			for(; interfaces.first != interfaces.second; ++interfaces.first )
+				interfaces.first->second->m_binding = itr->second;
 		}
 	}
 
@@ -676,10 +673,9 @@ void lua_engine::restartThread(MapMgr * map)
 	{
 		for(li::ObjectBindingMap::iterator itr = _li->m_goBinding.begin(); itr != _li->m_goBinding.end(); ++itr)
 		{
-			li::GOInterfaceMap::iterator it = _li->m_goInterfaceMap.find(itr->first),
-				itend = _li->m_goInterfaceMap.upper_bound(itr->first);
-			for(; it != itend; ++it)
-				it->second->m_binding = itr->second;
+			std::pair<li::GOInterfaceMap::iterator, li::GOInterfaceMap::iterator> interfaces = _li->m_goInterfaceMap.equal_range( itr->first);
+			for(; interfaces.first != interfaces.second; ++interfaces.first )
+				interfaces.first->second->m_binding = itr->second;
 		}
 	}
 
@@ -687,10 +683,9 @@ void lua_engine::restartThread(MapMgr * map)
 	{
 		for(li::ObjectBindingMap::iterator itr = _li->m_questBinding.begin(); itr != _li->m_questBinding.end(); ++itr)
 		{
-			li::QuestInterfaceMap::iterator it = _li->m_questInterfaceMap.find(itr->first),
-				itend = _li->m_questInterfaceMap.upper_bound(itr->first);
-			for(; it != itend; ++it)
-				it->second->m_binding = itr->second;
+			std::pair<li::QuestInterfaceMap::iterator, li::QuestInterfaceMap::iterator> interfaces = _li->m_questInterfaceMap.equal_range( itr->first);
+			for(; interfaces.first != interfaces.second; ++interfaces.first )
+				interfaces.first->second->m_binding = itr->second;
 		}
 	}
 

@@ -14,15 +14,13 @@ public:
    {
 	   PLUA_INSTANCE li_ = lua_instance.get();
 	   //locate the reference and clean up
-	   LUA_INSTANCE::ObjectFRefMap::iterator
-		   itr = li_->m_creatureFRefs.find( GetLowGUID() ),
-		   itend = li_->m_creatureFRefs.upper_bound( GetLowGUID() );
-	   for(; itr != itend; ++itr)
-		   if(itr->second == parameters)
+	   std::pair<LUA_INSTANCE::ObjectFRefMap::iterator,LUA_INSTANCE::ObjectFRefMap::iterator> frefs = li_->m_creatureFRefs.equal_range( this->GetLowGUID() );
+	   for(; frefs.first != frefs.second; ++frefs.first)
+		   if(frefs.first->second == parameters)
 			   break;
 
 	   //Do nothing if we don't have a reference to this event's parameters.
-	   if(itr != itend)
+	   if(frefs.first != frefs.second)
 	   {
 		   ptrdiff_t base = lua_gettop( li_->lu )+2;
 		   //push the function and it's parameters
@@ -36,7 +34,7 @@ public:
 		   if(lua_pcall(li_->lu, (parameters->count), 0, 0) )
 			   lua_engine::report(li_->lu);
 		   //erase it since we no longer need to keep track of it
-		   li_->m_creatureFRefs.erase(itr);
+		   li_->m_creatureFRefs.erase(frefs.first);
 		   //release resources
 		   if(parameters != NULL)
 			   cleanup_varparam(parameters, li_->lu);
@@ -87,14 +85,11 @@ public:
 	   PLUA_INSTANCE li_ = lua_instance.get();
 	   sEventMgr.RemoveEvents(this, EVENT_LUA_CREATURE_EVENTS);
 	   //Remove any stored references
-	   LUA_INSTANCE::ObjectFRefMap::iterator 
-		   itr = li_->m_creatureFRefs.find(this->GetLowGUID() ) , 
-		   itend = li_->m_creatureFRefs.upper_bound(this->GetLowGUID() );
-	 
-	   for(; itr != itend; ++itr)
-		   cleanup_varparam( itr->second, li_->lu );
-
-	     li_->m_creatureFRefs.erase( this->GetLowGUID() );
+	   std::pair<LUA_INSTANCE::ObjectFRefMap::iterator,LUA_INSTANCE::ObjectFRefMap::iterator> frefs = li_->m_creatureFRefs.equal_range( this->GetLowGUID() );
+	   for(; frefs.first != frefs.second; ++frefs.first)
+		   cleanup_varparam( frefs.first->second, li_->lu );
+		   
+	   li_->m_creatureFRefs.erase( this->GetLowGUID() );
 
    }
 };
