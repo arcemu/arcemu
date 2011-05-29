@@ -5,4 +5,4 @@ SET( SRCS
  ${prefix}/Main.c )
 
 add_executable( ${PROJECT_NAME} ${SRCS} )
-install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)
+install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION .)

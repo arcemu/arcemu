@@ -90,16 +90,11 @@ public:
 	//FastMutex restart_Lock;
 	//stores the mapmgr object whos thread we execute in.
 	MapMgr * map;
-#ifdef WIN32
-#define InterfaceMap HM_NAMESPACE::hash_multimap
-#else
-#define InterfaceMap std::multimap
-#endif
-	typedef InterfaceMap<uint32, variadic_parameter*> ObjectFRefMap;
-	typedef InterfaceMap<uint32, LuaCreature*> CreatureInterfaceMap;
-	typedef InterfaceMap<uint32, LuaGameObject*> GOInterfaceMap;
-	typedef InterfaceMap<uint32, LuaQuest*> QuestInterfaceMap;
-	typedef InterfaceMap<uint32, lua_function> HookFRefMap;
+	typedef HM_NAMESPACE::hash_multimap<uint32, variadic_parameter*> ObjectFRefMap;
+	typedef HM_NAMESPACE::hash_multimap<uint32, LuaCreature*> CreatureInterfaceMap;
+	typedef HM_NAMESPACE::hash_multimap<uint32, LuaGameObject*> GOInterfaceMap;
+	typedef HM_NAMESPACE::hash_multimap<uint32, LuaQuest*> QuestInterfaceMap;
+	typedef HM_NAMESPACE::hash_multimap<uint32, lua_function> HookFRefMap;
 	typedef HM_NAMESPACE::hash_map<uint32, LuaGossip*> GossipInterfaceMap;
 	typedef HM_NAMESPACE::hash_map<uint32, PSpellMapEntry> SpellFRefMap;
 	typedef std::set<variadic_parameter*> References;
@@ -117,6 +112,7 @@ public:
 	ObjectFRefMap m_goGossipFRefs;
 	SpellFRefMap m_dummySpells;
 	HookFRefMap m_hooks;
+	//HM_NAMESPACE::hash_set<ptrdiff_t> currentReferences;
 	/*	Stores coroutines that are still waiting to be resumed.
 		Since the engine can be restarted during the waiting time, it will invalidate all previously created coroutines.
 		The callbacks will then try to resume an invalid coroutine pointer and crash, so we keep track of these coroutines

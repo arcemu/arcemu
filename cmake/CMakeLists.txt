@@ -38,20 +38,51 @@ SET( DEPENDENCY_INCLUDE_ROOT ${DEPENDENCY_ROOT}/include)
 SET( DEPENDENCY_DLLS ${DEPENDENCY_ROOT}/dll)
 SET( DEPENDENCY_DLLS64 ${DEPENDENCY_ROOT}/dll64)
 
+#Install libmysql.dll required for our core to run.
+IF( WIN32)
+	IF(IS_64BIT )
+		SET( INSTALLED_DEPENDENCIES ${DEPENDENCY_DLLS64}/libmysql.dll ${DEPENDENCY_DLLS64}/libeay32.dll)
+	ELSE()
+		SET( INSTALLED_DEPENDENCIES ${DEPENDENCY_DLLS}/libmysql.dll ${DEPENDENCY_DLLS}/libeay32.dll)
+	ENDIF()
+ENDIF(WIN32)
+
 #Our configurable variables.
 SET(ARCEMU_CONFIGSFILE_PATH etc CACHE PATH "Path where the arcemu config files are.")
-SET(ARCEMU_SCRIPTLIB_PATH ".." CACHE PATH "The directory which contains the 'lib' directory that has the script libraries." )
+SET(ARCEMU_SCRIPTLIB_PATH "modules" CACHE PATH "The directory which contains the 'lib' directory that has the script libraries." )
 SET(BUILD_ARCEMUSCRIPTS TRUE CACHE BOOL "Set to false to NOT build script libraries." )
 SET(VISUALSTUDIO_COMPILERHEAPLIMIT 200 CACHE STRING "Visual Studio compiler heap limit. Ignore on darwin and unix platforms." )
 
-#Make sure our revision header is up to date.
+include(CompilerVersion)
 if( UNIX )
 	add_definitions(-Wno-deprecated)
-	SET_PROPERTY(DIRECTORY APPEND PROPERTY COMPILE_FLAGS "-fvisibility=hidden")
+	#Extract Revision
 	execute_process(WORKING_DIRECTORY ${ROOT_PATH} COMMAND sh extract_svn_revision.sh )
+	
+	#Check support for unordered_map/set
+	GetCompilerVersion( gcc_version)
+	IF( DEFINED gcc_version AND ${gcc_version} VERSION_EQUAL "4" OR ${gcc_version} VERSION_GREATER "4")
+		add_definitions(-DHAS_CXX0X -std=c++0x)
+	ENDIF()
+	
 ELSEIF( WIN32 )
+	#Extract revision
 	execute_process(WORKING_DIRECTORY ${ROOT_PATH}/src/arcemu-shared COMMAND RevisionExtractor)
 	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+	
+	#Check support for unordered_map/set
+	GetCompilerVersion( msvc_version)
+	IF(DEFINED msvc_version AND ${msvc_version} GREATER "1599" )
+		add_definitions(-DHAS_CXX0X)
+	ENDIF()
+	
+	#This fixes PCH issues 'Inconsistent values for /Ym'
+	IF( CMAKE_GENERATOR MATCHES Visual* ) 
+		STRING( REGEX REPLACE "(/Zm)([0-9]+)" "\\1${VISUALSTUDIO_COMPILERHEAPLIMIT}" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} )
+		STRING( REGEX REPLACE "(/Zm)([0-9]+)" "\\1${VISUALSTUDIO_COMPILERHEAPLIMIT}" CMAKE_C_FLAGS ${CMAKE_C_FLAGS} )
+		SET( CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} CACHE STRING "CMAKE_CXX_FLAGS" FORCE)
+		SET( CMAKE_C_FLAGS ${CMAKE_C_FLAGS} CACHE STRING "CMAKE_C_FLAGS" FORCE)
+	ENDIF( CMAKE_GENERATOR MATCHES Visual* )
 ENDIF()
 
 #Pass our configurable variables to the C++ preprocessor.
@@ -129,13 +160,6 @@ IF(NOT WIN32)
 ENDIF()
 add_subdirectory(scripts)
 
-IF( CMAKE_GENERATOR MATCHES Visual* ) #This fixes PCH issues 'Inconsistent values for /Ym'
-	STRING( REGEX REPLACE "(/Zm)([0-9]+)" "\\1${VISUALSTUDIO_COMPILERHEAPLIMIT}" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} )
-	STRING( REGEX REPLACE "(/Zm)([0-9]+)" "\\1${VISUALSTUDIO_COMPILERHEAPLIMIT}" CMAKE_C_FLAGS ${CMAKE_C_FLAGS} )
-	SET( CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} CACHE STRING "CMAKE_CXX_FLAGS" FORCE)
-	SET( CMAKE_C_FLAGS ${CMAKE_C_FLAGS} CACHE STRING "CMAKE_C_FLAGS" FORCE)
-ENDIF( CMAKE_GENERATOR MATCHES Visual* )
-
 IF( APPLE )
 	IF( NOT IS_64BIT )
 		SET( EMPTY "" )
@@ -147,3 +171,5 @@ IF( APPLE )
 		SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m32" CACHE STRING "CMAKE_CXX_FLAGS" FORCE )
 	ENDIF( NOT IS_64BIT )
 ENDIF( APPLE )
+
+INSTALL(FILES ${INSTALLED_DEPENDENCIES} DESTINATION .)

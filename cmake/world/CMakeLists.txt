@@ -176,7 +176,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES ENABLE_EXPORTS TRUE)
 
 add_dependencies( ${PROJECT_NAME} shared g3dlite)
 target_link_libraries( ${PROJECT_NAME} shared  g3dlite ${PCRE_LIBRARIES} )
-install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin )
+install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION .)
 
 
 

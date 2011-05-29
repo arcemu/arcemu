@@ -31,7 +31,7 @@ ENDIF( APPLE )
 add_library(${PROJECT_NAME} SHARED ${SRCS} )
 add_dependencies( ${PROJECT_NAME} ${dependancies} lualib)
 target_link_libraries( ${PROJECT_NAME} ${linkages} lualib)
-install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION lib)
+install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION lib)
 
 #Cleap up our variables(Not required.)
 unset( prefix)

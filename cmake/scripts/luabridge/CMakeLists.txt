@@ -44,7 +44,7 @@ include(PCHSupport)
 add_library(${PROJECT_NAME} SHARED ${SRCS} )
 add_dependencies( ${PROJECT_NAME} ${dependancies} lualib )
 target_link_libraries( ${PROJECT_NAME} ${linkages} lualib )
-install(TARGETS ${PROJECT_NAME} DESTINATION lib)
+install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION ${ARCEMU_SCRIPTLIB_PATH} LIBRARY DESTINATION ${ARCEMU_SCRIPTLIB_PATH})
 
 if( CMAKE_GENERATOR MATCHES Visual*)
 	ADD_NATIVE_PRECOMPILED_HEADER( ${PROJECT_NAME} LUAEngine.h ${prefix}/interpreter/LUAEngine.cpp)

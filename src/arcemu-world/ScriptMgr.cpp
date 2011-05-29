@@ -154,14 +154,13 @@ void ScriptMgr::LoadScripts()
 
 	std::string Path;
 	std::string FileMask;
-
+	Path = PREFIX;
+	Path += '/';
 #ifdef WIN32
-	Path = Config.MainConfig.GetStringDefault( "Script", "BinaryLocation", "script_bin" );
-	Path += "\\";
+	/*Path = Config.MainConfig.GetStringDefault( "Script", "BinaryLocation", "script_bin" );
+	Path += "\\";*/
 	FileMask = ".dll";
 #else
-	Path = PREFIX;
-	Path += "/lib/";
 	FileMask = ".so";
 #endif
 
