@@ -30,7 +30,7 @@ namespace lua_engine
 			.method( &ItemInterface::IsBagSlot, "IsBagSlot", "isBagSlot", "isbagslot", NULL)
 			.method( (Item *(ItemInterface::*)(int8,int16) )&ItemInterface::GetInventoryItem, "GetInventoryItem", "getInventoryItem", "getinventoryitem", NULL)
 			.method (&ItemInterface::GetInventorySlotById, "GetInventorySlotByID", "getInventorySlotByID", "getinventoryslotbyid", NULL)
-			.method( (Item*(ItemInterface::*)(uint32, int8, int16) )&ItemInterface::SafeAddItem, "SafeAddItem" "addItem", "additem", NULL)
+			.method( (Item*(ItemInterface::*)(uint32, int8, int16) )&ItemInterface::SafeAddItem, "SafeAddItem","addItem", "additem", NULL)
 			.method( &ItemInterface::SafeFullRemoveItemFromSlot, "RemoveItemFromSlot", "removeItemFromSlot", "removeitemfromslot", NULL)
 			.method( &ItemInterface::AddItemToFreeSlot, "AddItemToFreeSlot", "addItemToFreeSlot", "additemtofreeslot", NULL)
 			.method( &ItemInterface::AddItemToFreeBankSlot, "AddItemToFreeBankSlot", "addItemToFreeBankSlot", "additemtofreebankslot", NULL)
