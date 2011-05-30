@@ -1,28 +1,31 @@
 cmake_minimum_required(VERSION 2.6)
 #Do system checking.
 
-SET( GLOBAL_DEFINES -DHAVE_CONFIG_H)
+SET( GLOBAL_DEFINES "-DHAVE_CONFIG_H")
 
 #check platform version.
-IF( CMAKE_SYSTEM_PROCESSOR MATCHES "[xX]64" OR CMAKE_SYSTEM_PROCESSOR MATCHES "[xX]86_64" OR CMAKE_SYSTEM_PROCESSOR MATCHES "[aA][mM][dD]64" )
+IF( CMAKE_SYSTEM_PROCESSOR MATCHES "[xX]64" OR CMAKE_SYSTEM_PROCESSOR MATCHES "[xX]86_64" OR CMAKE_SYSTEM_PROCESSOR MATCHES "[aA][mM][dD]64" OR CMAKE_GENERATOR MATCHES Win64*)
 	#define for 64bit
-	SET( GLOBAL_DEFINES -DX64)
+	SET( GLOBAL_DEFINES ${GLOBAL_DEFINES} -"DX64")
 	SET( IS_64BIT TRUE)
+	IF( CMAKE_GENERATOR MATCHES Visual* OR CMAKE_GENERATOR MATCHES NMake*)
+		SET( GLOBAL_DEFINES ${GLOBAL_DEFINES} "-bigobj")
+	ENDIF()
 ENDIF()
 
 #mac osx
 IF( APPLE )
-	SET( GLOBAL_DEFINES ${GLOBAL_DEFINES} -DHAVE_DARWIN)
+	SET( GLOBAL_DEFINES ${GLOBAL_DEFINES} "-DHAVE_DARWIN")
 	SET( IS_MAC TRUE)
 ELSEIF(UNIX)
 	#mac has unix defined too but if 'if(APPLE)' fails, then it's not apple.
 	
 	#check for freebsd
 	IF( ( CMAKE_SYSTEM_NAME  STREQUAL "FreeBSD" ) OR ( CMAKE_SYSTEM_NAME STREQUAL kFreeBSD ) )
-		SET( GLOBAL_DEFINES ${GLOBAL_DEFINES} -DUSE_KQUEUE)
+		SET( GLOBAL_DEFINES ${GLOBAL_DEFINES} "-DUSE_KQUEUE")
 		SET( IS_FREEBSD TRUE)
 	ELSE()
-		SET( GLOBAL_DEFINES ${GLOBAL_DEFINES} -DUSE_EPOLL)
+		SET( GLOBAL_DEFINES ${GLOBAL_DEFINES} "-DUSE_EPOLL")
 		SET( IS_LINUX TRUE)
 	ENDIF()
 ENDIF()
@@ -54,7 +57,7 @@ SET(BUILD_ARCEMUSCRIPTS TRUE CACHE BOOL "Set to false to NOT build script librar
 SET(VISUALSTUDIO_COMPILERHEAPLIMIT 200 CACHE STRING "Visual Studio compiler heap limit. Ignore on darwin and unix platforms." )
 
 include(CompilerVersion)
-if( UNIX )
+if( CMAKE_GENERATOR MATCHES Unix* )
 	add_definitions(-Wno-deprecated)
 	#Extract Revision
 	execute_process(WORKING_DIRECTORY ${ROOT_PATH} COMMAND sh extract_svn_revision.sh )
@@ -65,14 +68,14 @@ if( UNIX )
 		add_definitions(-DHAS_CXX0X -std=c++0x)
 	ENDIF()
 	
-ELSEIF( WIN32 )
+ELSEIF( CMAKE_GENERATOR MATCHES Visual* )
 	#Extract revision
 	execute_process(WORKING_DIRECTORY ${ROOT_PATH}/src/arcemu-shared COMMAND RevisionExtractor)
 	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 	
 	#Check support for unordered_map/set
 	GetCompilerVersion( msvc_version)
-	IF(DEFINED msvc_version AND ${msvc_version} GREATER "1599" )
+	IF(DEFINED ${msvc_version} AND ${msvc_version} GREATER "1599" )
 		add_definitions(-DHAS_CXX0X)
 	ENDIF()
 	
