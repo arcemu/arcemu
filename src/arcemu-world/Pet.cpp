@@ -512,7 +512,7 @@ void Pet::InitializeSpells()
 		if( info->Attributes & ATTRIBUTES_PASSIVE )
 		{
 			// Cast on self..
-			Spell * sp = sSpellFactoryMgr.NewSpell(this, info, true, false);
+			Spell * sp = sSpellFactoryMgr.NewSpell(this, info, true, NULL);
 			SpellCastTargets targets( this->GetGUID() );
 			sp->prepare( &targets );
 

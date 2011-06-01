@@ -309,7 +309,7 @@ public:
 
             for( int i = 0; i < 3; ++i )
             {
-                mAddArray[i] = _unit->GetMapMgr()->GetInterface()->SpawnCreature( CN_TELESTRA_FIRE + i, FormSpawns[i].x, FormSpawns[i].y, FormSpawns[i].z, FormSpawns[i].o, true, true, NULL, NULL );
+                mAddArray[i] = _unit->GetMapMgr()->GetInterface()->SpawnCreature( CN_TELESTRA_FIRE + i, FormSpawns[i].x, FormSpawns[i].y, FormSpawns[i].z, FormSpawns[i].o, true, true, 0, 0 );
                 if( mAddArray[i] != NULL )
                     ++mAddCount;
             }

@@ -2913,7 +2913,7 @@ public:
 		data << uint32(0);
 		_unit->SendMessageToSet(&data, false);
 
-		ChillCounter = NULL;
+		ChillCounter = 0;
 		FlightActions = 0;
 		ChillCounter = 0;
 		PhaseTimer = 0;
@@ -2947,7 +2947,7 @@ public:
 		RegisterAIUpdateEvent(_unit->GetBaseAttackTime(MELEE));
 
 		PhaseTimer = (uint32)time(NULL) + 35;
-		ChillCounter = NULL;
+		ChillCounter = 0;
 		FlightActions = 0;
 		ChillCounter = 0;
 		m_phase = 1;

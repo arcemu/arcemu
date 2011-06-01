@@ -190,13 +190,13 @@ void SpellFunc_FlameTsunami( SpellDesc* pThis, MoonScriptCreatureAI* pCreatureAI
 			switch(RndSide)
 			{
 			case 0:
-				Tsunami = pCreatureAI->GetUnit()->GetMapMgr()->GetInterface()->SpawnCreature(CN_FLAME_TSUNAMI, TSUNAMI_SPAWN[i].x, TSUNAMI_SPAWN[i].y, TSUNAMI_SPAWN[i].z, TSUNAMI_SPAWN[i].o, true, true, NULL, NULL);  
+				Tsunami = pCreatureAI->GetUnit()->GetMapMgr()->GetInterface()->SpawnCreature(CN_FLAME_TSUNAMI, TSUNAMI_SPAWN[i].x, TSUNAMI_SPAWN[i].y, TSUNAMI_SPAWN[i].z, TSUNAMI_SPAWN[i].o, true, true, 0, 0 );  
 				
 				if( Tsunami != NULL )
 					Tsunami->GetAIInterface()->MoveTo( TSUNAMI_MOVE[i].x, TSUNAMI_MOVE[i].y, TSUNAMI_MOVE[i].z, TSUNAMI_MOVE[i].o );
 				break;
 			case 1:
-				Tsunami = pCreatureAI->GetUnit()->GetMapMgr()->GetInterface()->SpawnCreature(CN_FLAME_TSUNAMI, TSUNAMI_SPAWN[i + 3].x, TSUNAMI_SPAWN[i + 3].y, TSUNAMI_SPAWN[i + 3].z, TSUNAMI_SPAWN[i + 3].o, true, true, NULL, NULL);  
+				Tsunami = pCreatureAI->GetUnit()->GetMapMgr()->GetInterface()->SpawnCreature(CN_FLAME_TSUNAMI, TSUNAMI_SPAWN[i + 3].x, TSUNAMI_SPAWN[i + 3].y, TSUNAMI_SPAWN[i + 3].z, TSUNAMI_SPAWN[i + 3].o, true, true, 0, 0 );  
 				
 				if( Tsunami != NULL )
 					Tsunami->GetAIInterface()->MoveTo( TSUNAMI_MOVE[i + 3].x, TSUNAMI_MOVE[i + 3].y, TSUNAMI_MOVE[i + 3].z, TSUNAMI_MOVE[i + 3].o );

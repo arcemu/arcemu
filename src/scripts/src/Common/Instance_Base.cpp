@@ -70,13 +70,13 @@ Creature*	MoonInstanceScript::FindClosestCreatureOnMap( uint32 pEntry, float pX,
 
 Creature* MoonInstanceScript::SpawnCreature( uint32 pEntry, float pX, float pY, float pZ, float pO )
 {
-	Creature* NewCreature = mInstance->GetInterface()->SpawnCreature( pEntry, pX, pY, pZ, pO, true, true, NULL, NULL);
+	Creature* NewCreature = mInstance->GetInterface()->SpawnCreature( pEntry, pX, pY, pZ, pO, true, true, 0, 0 );
 	return NewCreature;
 };
 
 Creature* MoonInstanceScript::SpawnCreature( uint32 pEntry, float pX, float pY, float pZ, float pO, uint32 pFactionId )
 {
-	Creature* NewCreature = mInstance->GetInterface()->SpawnCreature( pEntry, pX, pY, pZ, pO, true, true, NULL, NULL);
+	Creature* NewCreature = mInstance->GetInterface()->SpawnCreature( pEntry, pX, pY, pZ, pO, true, true, 0, 0 );
 	if ( NewCreature != NULL )
 		NewCreature->SetFaction(pFactionId);
 
@@ -126,7 +126,7 @@ GameObject* MoonInstanceScript::FindClosestGameObjectOnMap( uint32 pEntry, float
 
 GameObject* MoonInstanceScript::SpawnGameObject( uint32 pEntry, float pX, float pY, float pZ, float pO )
 {
-	GameObject* pNewGO = mInstance->GetInterface()->SpawnGameObject( pEntry, pX, pY, pZ, pO, true, NULL, NULL );
+	GameObject* pNewGO = mInstance->GetInterface()->SpawnGameObject( pEntry, pX, pY, pZ, pO, true, 0, 0 );
 	return pNewGO;
 };
 

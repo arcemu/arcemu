@@ -362,7 +362,7 @@ class DofNaralexAI : public MoonScriptBossAI
 		// Awakening Spell
 		Awakening = AddSpell(6271, Target_Self, 0, 0, 0, 0, 0, false, "Step back and be ready!, I'll try to Awake Naralex", Text_Say);
 
-		SpawnTimer = NULL;
+		SpawnTimer = 0;
 	}
     
 	void OnReachWP(uint32 iWaypointId, bool bForwards)

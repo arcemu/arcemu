@@ -414,22 +414,22 @@ bool CrystalSpikes(uint32 i, Spell *pSpell)
 
 	for( int i = 1; i < 6; ++i )
 	{
-		pCaster->GetMapMgr()->GetInterface()->SpawnCreature( CN_CRYSTAL_SPIKE, pCaster->GetPositionX() + ( 3 * i ) + rand()%3 , pCaster->GetPositionY() + ( 3 * i ) + rand()%3 , pCaster->GetPositionZ(), pCaster->GetOrientation(), true, false, NULL, NULL );
+		pCaster->GetMapMgr()->GetInterface()->SpawnCreature( CN_CRYSTAL_SPIKE, pCaster->GetPositionX() + ( 3 * i ) + rand()%3 , pCaster->GetPositionY() + ( 3 * i ) + rand()%3 , pCaster->GetPositionZ(), pCaster->GetOrientation(), true, false, 0, 0 );
 	};
 	
 	for( int i = 1; i < 6; ++i )
 	{
-		pCaster->GetMapMgr()->GetInterface()->SpawnCreature( CN_CRYSTAL_SPIKE, pCaster->GetPositionX() - ( 3 * i ) - rand()%3 , pCaster->GetPositionY() + ( 3 * i ) + rand()%3 , pCaster->GetPositionZ(), pCaster->GetOrientation(), true, false, NULL, NULL );
+		pCaster->GetMapMgr()->GetInterface()->SpawnCreature( CN_CRYSTAL_SPIKE, pCaster->GetPositionX() - ( 3 * i ) - rand()%3 , pCaster->GetPositionY() + ( 3 * i ) + rand()%3 , pCaster->GetPositionZ(), pCaster->GetOrientation(), true, false, 0, 0 );
 	};
 	
 	for( int i = 1; i < 6; ++i )
 	{
-		pCaster->GetMapMgr()->GetInterface()->SpawnCreature( CN_CRYSTAL_SPIKE, pCaster->GetPositionX() + ( 3 * i ) + rand()%3 , pCaster->GetPositionY() - ( 3 * i ) - rand()%3 , pCaster->GetPositionZ(), pCaster->GetOrientation(), true, false, NULL, NULL );
+		pCaster->GetMapMgr()->GetInterface()->SpawnCreature( CN_CRYSTAL_SPIKE, pCaster->GetPositionX() + ( 3 * i ) + rand()%3 , pCaster->GetPositionY() - ( 3 * i ) - rand()%3 , pCaster->GetPositionZ(), pCaster->GetOrientation(), true, false, 0, 0 );
 	};
 	
 	for( int i = 1; i < 6; ++i )
 	{
-		pCaster->GetMapMgr()->GetInterface()->SpawnCreature( CN_CRYSTAL_SPIKE, pCaster->GetPositionX() - ( 3 * i ) - rand()%3 , pCaster->GetPositionY() - ( 3 * i ) - rand()%3 , pCaster->GetPositionZ(), pCaster->GetOrientation(), true, false, NULL, NULL );
+		pCaster->GetMapMgr()->GetInterface()->SpawnCreature( CN_CRYSTAL_SPIKE, pCaster->GetPositionX() - ( 3 * i ) - rand()%3 , pCaster->GetPositionY() - ( 3 * i ) - rand()%3 , pCaster->GetPositionZ(), pCaster->GetOrientation(), true, false, 0, 0 );
 	};
 
 	return true;

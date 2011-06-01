@@ -161,7 +161,7 @@ LuaSpellEntry luaSpellVars[] = {
 	{"is_ranged_spell", 2, offsetof(SpellEntry, is_ranged_spell)},
 	{"noproc", 2, offsetof(SpellEntry, noproc)},
 	{"SchoolMask", 0, offsetof(SpellEntry, SchoolMask)},
-	{NULL, NULL, NULL},
+	{NULL, 0, 0},
 };
 
 LuaSpellEntry GetLuaSpellEntryByName(const char* name)
