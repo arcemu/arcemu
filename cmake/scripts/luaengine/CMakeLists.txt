@@ -31,7 +31,7 @@ ENDIF( APPLE )
 add_library(${PROJECT_NAME} SHARED ${SRCS} )
 add_dependencies( ${PROJECT_NAME} ${dependancies} lualib)
 target_link_libraries( ${PROJECT_NAME} ${linkages} lualib)
-install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION lib)
+install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION ${ARCEMU_SCRIPTLIB_PATH} LIBRARY DESTINATION ${ARCEMU_SCRIPTLIB_PATH})
 
 #Cleap up our variables(Not required.)
 unset( prefix)

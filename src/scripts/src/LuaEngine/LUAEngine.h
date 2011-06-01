@@ -468,12 +468,12 @@ public:
 	public:
 		bool HasEvent(int ref)
 		{
-			hash_map<int, EventInfoHolder*>::iterator itr = sLuaMgr.m_registeredTimedEvents.find(ref);
+			HM_NAMESPACE::hash_map<int, EventInfoHolder*>::iterator itr = sLuaMgr.m_registeredTimedEvents.find(ref);
 			return (itr != sLuaMgr.m_registeredTimedEvents.end());
 		}
 		bool HasEventInTable(const char * table)
 		{
-			hash_map<int, EventInfoHolder*>::iterator itr = sLuaMgr.m_registeredTimedEvents.begin();
+			HM_NAMESPACE::hash_map<int, EventInfoHolder*>::iterator itr = sLuaMgr.m_registeredTimedEvents.begin();
 			for (; itr != sLuaMgr.m_registeredTimedEvents.end(); ++itr)
 			{
 				if (strncmp(itr->second->funcName, table, strlen(table)) == 0)
@@ -485,7 +485,7 @@ public:
 		}
 		bool HasEventWithName(const char * name)
 		{
-			hash_map<int, EventInfoHolder*>::iterator itr = sLuaMgr.m_registeredTimedEvents.begin();
+			HM_NAMESPACE::hash_map<int, EventInfoHolder*>::iterator itr = sLuaMgr.m_registeredTimedEvents.begin();
 			for (; itr != sLuaMgr.m_registeredTimedEvents.end(); ++itr)
 			{
 				if (strcmp(itr->second->funcName, name) == 0)
@@ -497,7 +497,7 @@ public:
 		}
 		void RemoveEventsInTable(const char * table)
 		{
-			hash_map<int, EventInfoHolder*>::iterator itr = sLuaMgr.m_registeredTimedEvents.begin(), itr2;
+			HM_NAMESPACE::hash_map<int, EventInfoHolder*>::iterator itr = sLuaMgr.m_registeredTimedEvents.begin(), itr2;
 			for (; itr != sLuaMgr.m_registeredTimedEvents.end(); )
 			{
 				itr2 = itr++;
@@ -512,7 +512,7 @@ public:
 		}
 		void RemoveEventsByName(const char * name)
 		{
-			hash_map<int, EventInfoHolder*>::iterator itr = sLuaMgr.m_registeredTimedEvents.begin(), itr2;
+			HM_NAMESPACE::hash_map<int, EventInfoHolder*>::iterator itr = sLuaMgr.m_registeredTimedEvents.begin(), itr2;
 			for (; itr != sLuaMgr.m_registeredTimedEvents.end(); )
 			{
 				itr2 = itr++;
@@ -527,7 +527,7 @@ public:
 		}
 		void RemoveEventByRef(int ref)
 		{
-			hash_map<int, EventInfoHolder*>::iterator itr = sLuaMgr.m_registeredTimedEvents.find(ref);
+			HM_NAMESPACE::hash_map<int, EventInfoHolder*>::iterator itr = sLuaMgr.m_registeredTimedEvents.find(ref);
 			if (itr != sLuaMgr.m_registeredTimedEvents.end())
 			{
 				event_RemoveByPointer(itr->second->te);
@@ -539,7 +539,7 @@ public:
 		void RemoveEvents()
 		{
 			event_RemoveEvents(EVENT_LUA_TIMED);
-			hash_map<int, EventInfoHolder*>::iterator itr = sLuaMgr.m_registeredTimedEvents.begin();
+			HM_NAMESPACE::hash_map<int, EventInfoHolder*>::iterator itr = sLuaMgr.m_registeredTimedEvents.begin();
 			for (; itr != sLuaMgr.m_registeredTimedEvents.end(); ++itr)
 			{
 				free((void*)itr->second->funcName);
