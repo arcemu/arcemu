@@ -109,9 +109,8 @@ namespace lua_engine
 
 		m	.class_< ObjectWrap<uint64 > >("uint64");
 		//These are needed because 'classname<T>::name()' is how luabridge assigns the correct metatables to a type.
-		m	.class_decl< ObjectWrap<uint64&> >("uint64");
-		m	.class_decl< ObjectWrap<const uint64> >("uint64");
-		m	.class_decl< ObjectWrap<const uint64&> >("uint64");
+		m	.class_decl< ObjectWrap<uint64&> >("uint64").class_decl< ObjectWrap<const uint64> >("uint64").class_decl< ObjectWrap<const uint64&> >("uint64");
+		m	.class_decl<uint64>("uint64").class_decl<uint64&>("uint64").class_decl<const uint64>("uint64").class_decl<const uint64&>("uint64");
 
 	}
 }

@@ -44,7 +44,7 @@ namespace luabridge
 		class__<T> class_ (const char *name, bool destruct = false);
 
 		template<typename T>
-		void class_decl(const char * name);
+		module& class_decl(const char * name);
 
 		// For registering subclasses (the base class must also be registered)
 		template <typename T, typename Base>

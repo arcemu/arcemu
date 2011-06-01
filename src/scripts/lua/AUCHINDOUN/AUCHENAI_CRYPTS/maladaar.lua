@@ -42,7 +42,7 @@ end
 function OnDeath(unit)
 	unit:MonsterYell("This is... where I belong.")
 	unit:PlaySoundToSet(10518)
-	--createEvent(SpawnDore,10000,1)
+	createEvent(SpawnDore,10000,1)
 end
 function AIUpdate(unit)
 	if(unit:IsCasting() ) then return end

@@ -641,7 +641,7 @@ struct tdstack< ObjectWrap<T> >
 
 	static T get(lua_State * L, int index)
 	{
-		return static_cast< ObjectWrap<T>*>( checkclass(L, 1, classname<ObjectWrap<T> >::name() ) )->value_;
+		return static_cast< ObjectWrap<T>*>( checkclass(L, index, classname<ObjectWrap<T> >::name() ) )->value_;
 	}
 };
 
@@ -665,7 +665,10 @@ struct tdstack<uint64 &>
 {
 	static void push(lua_State * L, uint64 & guid)
 	{
-		tdstack<ObjectWrap<uint64> >::push(L, guid);
+		if(guid == 0)
+			tdstack<void>::push(L);
+		else
+			tdstack<ObjectWrap<uint64> >::push(L, guid);
 	}
 	
 	static uint64 get(lua_State *L, int index)
@@ -679,7 +682,10 @@ struct tdstack<const uint64>
 {
 	static void push(lua_State * L, const uint64 guid)
 	{
-		tdstack<ObjectWrap<const uint64> >::push(L, guid);
+		if(guid == 0)
+			tdstack<void>::push(L);
+		else
+			tdstack<ObjectWrap<const uint64> >::push(L, guid);
 	}
 	static const uint64 get(lua_State *L, int index)
 	{
@@ -691,7 +697,10 @@ struct tdstack<const uint64 &>
 {
 	static void push(lua_State * L, const uint64 & guid)
 	{
-		tdstack<ObjectWrap<const uint64> >::push(L, guid);
+		if(guid == 0)
+			tdstack<void>::push(L);
+		else
+			tdstack<ObjectWrap<const uint64> >::push(L, guid);
 	}
 	static const uint64 get(lua_State *L, int index)
 	{

@@ -109,7 +109,8 @@ class__<T> module::class_ (const char *name, bool destruct)
 }
 
 template <typename T>
-void module::class_decl(const char * name)
+module& module::class_decl(const char * name)
 {
 	classname<T>::set_name(name);
+	return *this;
 }

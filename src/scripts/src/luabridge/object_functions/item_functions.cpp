@@ -44,7 +44,8 @@ namespace lua_engine
 			.method( &ItemInterface::FindFreeKeyringSlot, "findFreeKeyringSlot", "FindFreeKeyRingSlot", "findfreekeyringslot", NULL)
 			.method( &ItemInterface::IsEquipped, "isEquipped", "IsEquipped", "isequipped", NULL)
 			.method( &ItemInterface::CanReceiveItem, "CanReceiveItem", "canReceiveItem", "canreceiveitem", NULL)
-			.method( &ItemInterface::CanAffordItem, "CanAffordItem", "canAffordItem", "canafforditem", NULL);
+			.method( &ItemInterface::CanAffordItem, "CanAffordItem", "canAffordItem", "canafforditem", NULL)
+			.method( &ItemInterface::AddItemById, "AddItemByID", "addItemByID", "additembyid", NULL);
 #undef BIND
 #undef BINDE
 #define BIND(name) .method(#name, &Item::name)
