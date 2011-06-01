@@ -64,7 +64,7 @@ if( CMAKE_GENERATOR MATCHES Unix* )
 	
 	#Check support for unordered_map/set
 	GetCompilerVersion( gcc_version)
-	IF( DEFINED gcc_version AND ${gcc_version} VERSION_EQUAL "4" OR ${gcc_version} VERSION_GREATER "4")
+	IF( DEFINED gcc_version AND ( ${gcc_version} VERSION_EQUAL "4" OR ${gcc_version} VERSION_GREATER "4" ) AND NOT APPLE )
 		add_definitions(-DHAS_CXX0X -std=c++0x)
 	ENDIF()
 	
