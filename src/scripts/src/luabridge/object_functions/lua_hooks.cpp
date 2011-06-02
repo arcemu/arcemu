@@ -39,7 +39,7 @@ void LuaHookOnKillPlayer(Player * pPlayer, Player * pVictim)
 	{
 		lua_engine::BeginLuaFunctionCall(hooks.first->second);
 		push_int(SERVER_HOOK_EVENT_ON_KILL_PLAYER);
-		push_unit(pPlayer);
+			push_player(pPlayer);
 		push_unit(pVictim);
 		lua_engine::ExecuteLuaFunction(3);
 	}
@@ -56,7 +56,7 @@ void LuaHookOnFirstEnterWorld(Player * pPlayer)
 	{
 		lua_engine::BeginLuaFunctionCall(hooks.first->second);
 		push_int(SERVER_HOOK_EVENT_ON_FIRST_ENTER_WORLD);
-		push_unit(pPlayer);
+		push_player(pPlayer);
 		lua_engine::ExecuteLuaFunction(2);
 	}
 		
@@ -72,7 +72,7 @@ void LuaHookOnEnterWorld(Player * pPlayer)
 	{
 		lua_engine::BeginLuaFunctionCall(hooks.first->second);
 		push_int(SERVER_HOOK_EVENT_ON_ENTER_WORLD);
-		push_unit(pPlayer);
+		push_player(pPlayer);
 		lua_engine::ExecuteLuaFunction(2);
 	}
 		
@@ -88,7 +88,7 @@ void LuaHookOnGuildJoin(Player * pPlayer, Guild * pGuild)
 	{
 		lua_engine::BeginLuaFunctionCall(hooks.first->second);
 		push_int(SERVER_HOOK_EVENT_ON_GUILD_JOIN);
-		push_unit(pPlayer);
+		push_player(pPlayer);
 		push_str(pGuild->GetGuildName());
 		lua_engine::ExecuteLuaFunction(3);
 	}
@@ -105,7 +105,7 @@ void LuaHookOnDeath(Player * pPlayer)
 	{
 		lua_engine::BeginLuaFunctionCall(hooks.first->second);
 		push_int(SERVER_HOOK_EVENT_ON_DEATH);
-		push_unit(pPlayer);
+		push_player(pPlayer);
 		lua_engine::ExecuteLuaFunction(2);
 	}
 	
@@ -122,7 +122,7 @@ bool LuaHookOnRepop(Player * pPlayer)
 	{
 		lua_engine::BeginLuaFunctionCall(hooks.first->second);
 		push_int(SERVER_HOOK_EVENT_ON_REPOP);
-		push_unit(pPlayer);
+		push_player(pPlayer);
 		variadic_parameter * params = NULL;
 		if (lua_engine::ExecuteLuaFunction(2,1, &params, true)) 
 		{
@@ -146,7 +146,7 @@ void LuaHookOnEmote(Player * pPlayer, uint32 Emote, Unit * pUnit)
 	{
 		lua_engine::BeginLuaFunctionCall(hooks.first->second);
 		push_int(SERVER_HOOK_EVENT_ON_EMOTE);
-		push_unit(pPlayer);
+		push_player(pPlayer);
 		push_unit(pUnit);
 		push_int(Emote);
 		lua_engine::ExecuteLuaFunction(4);
@@ -164,7 +164,7 @@ void LuaHookOnEnterCombat(Player * pPlayer, Unit * pTarget)
 	{
 		lua_engine::BeginLuaFunctionCall(hooks.first->second);
 		push_int(SERVER_HOOK_EVENT_ON_ENTER_COMBAT);
-		push_unit(pPlayer);
+		push_player(pPlayer);
 		push_unit(pTarget);
 		lua_engine::ExecuteLuaFunction(3);
 	}
@@ -182,7 +182,7 @@ bool LuaHookOnCastSpell(Player * pPlayer, SpellEntry* pSpell, Spell* spell)
 	{
 		lua_engine::BeginLuaFunctionCall(hooks.first->second);
 		push_int(SERVER_HOOK_EVENT_ON_CAST_SPELL);
-		push_unit(pPlayer);
+		push_player(pPlayer);
 		push_int(pSpell->Id);
 		push_spell(spell);
 		variadic_parameter * params = NULL;
@@ -222,7 +222,7 @@ bool LuaHookOnLogoutRequest(Player * pPlayer)
 	{
 		lua_engine::BeginLuaFunctionCall(hooks.first->second);
 		push_int(SERVER_HOOK_EVENT_ON_LOGOUT_REQUEST);
-		push_unit(pPlayer);
+		push_player(pPlayer);
 		variadic_parameter * params = NULL;
 		if(lua_engine::ExecuteLuaFunction(2,1, &params, true) )
 		{
@@ -246,7 +246,7 @@ void LuaHookOnLogout(Player * pPlayer)
 	{
 		lua_engine::BeginLuaFunctionCall(hooks.first->second);
 		push_int(SERVER_HOOK_EVENT_ON_LOGOUT);
-		push_unit(pPlayer);
+		push_player(pPlayer);
 		lua_engine::ExecuteLuaFunction(2);
 	}
 		
@@ -262,7 +262,7 @@ void LuaHookOnQuestAccept(Player * pPlayer, Quest * pQuest, Object * pQuestGiver
 	{
 		lua_engine::BeginLuaFunctionCall(hooks.first->second);
 		push_int(SERVER_HOOK_EVENT_ON_QUEST_ACCEPT);
-		push_unit(pPlayer);
+		push_player(pPlayer);
 		push_int(pQuest->id);
 		if(!pQuestGiver)
 			push_nil();
@@ -289,7 +289,7 @@ void LuaHookOnZone(Player * pPlayer, uint32 Zone, uint32 oldZone)
 	{
 		lua_engine::BeginLuaFunctionCall(hooks.first->second);
 		push_int(SERVER_HOOK_EVENT_ON_ZONE);
-		push_unit(pPlayer);
+		push_player(pPlayer);
 		push_int(Zone);
 		push_int(oldZone);
 		lua_engine::ExecuteLuaFunction(4);
@@ -308,7 +308,7 @@ bool LuaHookOnChat(Player * pPlayer, uint32 Type, uint32 Lang, const char * Mess
 	{
 		lua_engine::BeginLuaFunctionCall(hooks.first->second);
 		push_int(SERVER_HOOK_EVENT_ON_CHAT);
-		push_unit(pPlayer);
+		push_player(pPlayer);
 		push_str(Message);
 		push_int(Type);
 		push_int(Lang);
@@ -336,7 +336,7 @@ void LuaHookOnLoot(Player * pPlayer, Unit * pTarget, uint32 Money, uint32 ItemId
 	{
 		lua_engine::BeginLuaFunctionCall(hooks.first->second);
 		push_int(SERVER_HOOK_EVENT_ON_LOOT);
-		push_unit(pPlayer);
+		push_player(pPlayer);
 		push_unit(pTarget);
 		push_int(Money);
 		push_int(ItemId);
@@ -355,26 +355,26 @@ void LuaHookOnGuildCreate(Player * pLeader, Guild * pGuild)
 	{
 		lua_engine::BeginLuaFunctionCall(hooks.first->second);
 		push_int(SERVER_HOOK_EVENT_ON_GUILD_CREATE);
-		push_unit(pLeader);
+		push_player(pLeader);
 		push_str(pGuild->GetGuildName());
 		lua_engine::ExecuteLuaFunction(3);
 	}
 		
 }
 
-void LuaHookOnEnterWorld2(Player * pPlayer)
+void LuaHookOnFullLogin(Player * pPlayer)
 {
 	CHECKVALIDSTATE
 	GET_LOCK;
-	/*li::HookFRefMap::iterator itr = lua_instance->m_hooks.find(SERVER_HOOK_ENTER_WORLD_2), itend = lua_instance->m_hooks.upper_bound(SERVER_HOOK_ENTER_WORLD_2);
+	PLUA_INSTANCE ref = lua_instance.get();
+	li::HookFRefMap::iterator itr = ref->m_hooks.find(SERVER_HOOK_EVENT_ON_FULL_LOGIN), itend = ref->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_FULL_LOGIN);
 	for(; itr != itend; ++itr)
 	{
 		lua_engine::BeginLuaFunctionCall(itr->second);
-		push_int(SERVER_HOOK_ENTER_WORLD_2);
-		push_unit(pPlayer);
+		push_int(SERVER_HOOK_EVENT_ON_FULL_LOGIN);
+		push_player(pPlayer);
 		lua_engine::ExecuteLuaFunction(2);
-	}*/
-		
+	}	
 }
 
 void LuaHookOnCharacterCreate(Player * pPlayer)
@@ -387,7 +387,7 @@ void LuaHookOnCharacterCreate(Player * pPlayer)
 	{
 		lua_engine::BeginLuaFunctionCall(hooks.first->second);
 		push_int(SERVER_HOOK_EVENT_ON_CHARACTER_CREATE);
-		push_unit(pPlayer);
+		push_player(pPlayer);
 		lua_engine::ExecuteLuaFunction(2);
 	}
 		
@@ -403,7 +403,7 @@ void LuaHookOnQuestCancelled(Player * pPlayer, Quest * pQuest)
 	{
 		lua_engine::BeginLuaFunctionCall(hooks.first->second);
 		push_int(SERVER_HOOK_EVENT_ON_QUEST_CANCELLED);
-		push_unit(pPlayer);
+		push_player(pPlayer);
 		push_int(pQuest->id);
 		lua_engine::ExecuteLuaFunction(3);
 	}
@@ -420,7 +420,7 @@ void LuaHookOnQuestFinished(Player * pPlayer, Quest * pQuest, Object * pQuestGiv
 	{
 		lua_engine::BeginLuaFunctionCall(hooks.first->second);
 		push_int(SERVER_HOOK_EVENT_ON_QUEST_FINISHED);
-		push_unit(pPlayer);
+		push_player(pPlayer);
 		push_int(pQuest->id);
 		if(!pQuestGiver)
 			push_nil();
@@ -447,8 +447,8 @@ void LuaHookOnHonorableKill(Player * pPlayer, Player * pKilled)
 	{
 		lua_engine::BeginLuaFunctionCall(hooks.first->second);
 		push_int(SERVER_HOOK_EVENT_ON_HONORABLE_KILL);
-		push_unit(pPlayer);
-		push_unit(pKilled);
+		push_player(pPlayer);
+		push_player(pKilled);
 		lua_engine::ExecuteLuaFunction(3);
 	}	
 }
@@ -463,7 +463,7 @@ void LuaHookOnArenaFinish(Player * pPlayer, ArenaTeam* pTeam, bool victory, bool
 	{
 		lua_engine::BeginLuaFunctionCall(hooks.first->second);
 		push_int(SERVER_HOOK_EVENT_ON_ARENA_FINISH);
-		push_unit(pPlayer);
+		push_player(pPlayer);
 		push_str(pTeam->m_name.c_str());
 		push_bool(victory);
 		push_bool(rated);
@@ -481,8 +481,8 @@ void LuaHookOnObjectLoot(Player * pPlayer, Object * pTarget, uint32 Money, uint3
 	{
 		lua_engine::BeginLuaFunctionCall(hooks.first->second);
 		push_int(SERVER_HOOK_EVENT_ON_OBJECTLOOT);
-		push_unit(pPlayer);
-		push_unit(pTarget);
+		push_player(pPlayer);
+		push_wobj(pTarget);
 		push_int(Money);
 		push_int(ItemId);
 		lua_engine::ExecuteLuaFunction(5);
@@ -500,7 +500,7 @@ void LuaHookOnAreaTrigger(Player * pPlayer, uint32 areaTrigger)
 	{
 		lua_engine::BeginLuaFunctionCall(hooks.first->second);
 		push_int(SERVER_HOOK_EVENT_ON_AREATRIGGER);
-		push_unit(pPlayer);
+		push_player(pPlayer);
 		push_int(areaTrigger);
 		lua_engine::ExecuteLuaFunction(3);
 	}
@@ -517,7 +517,7 @@ void LuaHookOnPostLevelUp(Player * pPlayer)
 	{
 		lua_engine::BeginLuaFunctionCall(hooks.first->second);
 		push_int(SERVER_HOOK_EVENT_ON_POST_LEVELUP);
-		push_unit(pPlayer);
+		push_player(pPlayer);
 		lua_engine::ExecuteLuaFunction(2);
 	}
 		
@@ -558,7 +558,7 @@ void LuaHookOnAdvanceSkillLine(Player * pPlayer, uint32 SkillLine, uint32 Curren
 	{
 		lua_engine::BeginLuaFunctionCall(hooks.first->second);
 		push_int(SERVER_HOOK_EVENT_ON_ADVANCE_SKILLLINE);
-		push_unit(pPlayer);
+		push_player(pPlayer);
 		push_int(SkillLine);
 		push_int(Current);
 		lua_engine::ExecuteLuaFunction(4);
@@ -576,8 +576,8 @@ void LuaHookOnDuelFinished(Player * pWinner, Player * pLoser)
 	{
 		lua_engine::BeginLuaFunctionCall(hooks.first->second);
 		push_int(SERVER_HOOK_EVENT_ON_DUEL_FINISHED);
-		push_unit(pWinner);
-		push_unit(pLoser);
+		push_player(pWinner);
+		push_player(pLoser);
 		lua_engine::ExecuteLuaFunction(3);
 	}
 		
@@ -610,7 +610,7 @@ bool LuaHookOnResurrect(Player * pPlayer)
 	{
 		lua_engine::BeginLuaFunctionCall(hooks.first->second);
 		push_int(SERVER_HOOK_EVENT_ON_RESURRECT);
-		push_unit(pPlayer);
+		push_player(pPlayer);
 		variadic_parameter * params = NULL;
 		if (lua_engine::ExecuteLuaFunction(2,1, &params, true)) 
 		{
