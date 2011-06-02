@@ -24,11 +24,6 @@ foreach(src IN ITEMS ${sources} )
   SET( SRCS ${SRCS} ${prefix}/${src} )
 endforeach(src)
 
-IF( APPLE )
-	SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -undefined dynamic_lookup" )
-	SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -undefined dynamic_lookup" )
-ENDIF( APPLE )
-
 include_directories( ${GLOBAL_INCLUDE_DIRS} )
 add_library( ${PROJECT_NAME} SHARED ${SRCS} )
 add_dependencies( ${PROJECT_NAME} shared world)
