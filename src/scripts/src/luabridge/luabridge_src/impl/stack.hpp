@@ -733,8 +733,8 @@ template <typename Typelist, int start = 1>
 struct arglist {};
 
 template <int start>
-struct arglist <nil, start>:
-	public typevallist<nil>
+struct arglist <NIL, start>:
+	public typevallist<NIL>
 {
 	arglist (lua_State *L) { (void)L; }
 };

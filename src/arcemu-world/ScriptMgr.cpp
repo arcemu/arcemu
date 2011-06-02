@@ -161,7 +161,11 @@ void ScriptMgr::LoadScripts()
 	Path += "\\";*/
 	FileMask = ".dll";
 #else
+#ifndef __APPLE__
 	FileMask = ".so";
+#else
+	FileMask = ".dylib";
+#endif
 #endif
 
 	Arcemu::FindFilesResult findres;

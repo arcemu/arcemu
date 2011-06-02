@@ -4,12 +4,12 @@
  */
 
 /*
- * Type list and definition of nil type list, which is void.
+ * Type list and definition of NIL type list, which is void.
  */
 
-typedef void nil;
+typedef void NIL;
 
-template <typename Head, typename Tail = nil>
+template <typename Head, typename Tail = NIL>
 struct typelist {};
 
 /*
@@ -78,7 +78,7 @@ template <typename Ret>
 struct fnptr <Ret (*) ()>
 {
 	FNPTR_GLOBAL_TRAITS;
-	typedef nil params;
+	typedef NIL params;
 	static Ret apply (Ret (*fp) (), const typevallist<params> &tvl)
 	{
 		(void)tvl;
@@ -221,7 +221,7 @@ template <typename T, typename Ret>
 struct fnptr <Ret (T::*) ()>
 {
 	FNPTR_MFP_TRAITS;
-	typedef nil params;
+	typedef NIL params;
 	static Ret apply (T *obj, Ret (T::*fp) (), const typevallist<params> &tvl)
 	{
 		(void)tvl;
@@ -384,7 +384,7 @@ template <typename T, typename Ret>
 struct fnptr <Ret (T::*) () const>
 {
 	FNPTR_CONST_MFP_TRAITS;
-	typedef nil params;
+	typedef NIL params;
 	static Ret apply (const T *obj, Ret (T::*fp) () const,
 		const typevallist<params> &tvl)
 	{
@@ -534,9 +534,9 @@ template <typename T, typename Typelist>
 struct constructor {};
 
 template <typename T>
-struct constructor <T, nil>
+struct constructor <T, NIL>
 {
-	static T* apply (const typevallist<nil> &tvl)
+	static T* apply (const typevallist<NIL> &tvl)
 	{
 		(void)tvl;
 		return new T;
