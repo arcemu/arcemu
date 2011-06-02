@@ -94,7 +94,7 @@ public:
 	typedef HM_NAMESPACE::hash_multimap<uint32, LuaCreature*> CreatureInterfaceMap;
 	typedef HM_NAMESPACE::hash_multimap<uint32, LuaGameObject*> GOInterfaceMap;
 	typedef HM_NAMESPACE::hash_multimap<uint32, LuaQuest*> QuestInterfaceMap;
-	typedef HM_NAMESPACE::hash_multimap<uint32, lua_function> HookFRefMap;
+	typedef std::multimap<uint32, lua_function> HookFRefMap;
 	typedef HM_NAMESPACE::hash_map<uint32, LuaGossip*> GossipInterfaceMap;
 	typedef HM_NAMESPACE::hash_map<uint32, PSpellMapEntry> SpellFRefMap;
 	typedef std::set<variadic_parameter*> References;
