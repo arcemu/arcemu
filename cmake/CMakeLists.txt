@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 2.8)
 #Do system checking.
 
 SET( GLOBAL_DEFINES "-DHAVE_CONFIG_H")
