@@ -320,7 +320,7 @@ static int SendPvPCaptureMessage(lua_State * L)
 	return 1;
 }
 */
-static void GetPlayersInMap(uint32 map_id, lua_stack, stack)
+static void GetPlayersInMap(uint32 map_id, lua_stack stack)
 {
 	uint32 count = 1;
 	lua_newtable( (lua_thread)stack);

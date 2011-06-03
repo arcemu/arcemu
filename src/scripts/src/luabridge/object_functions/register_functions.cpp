@@ -185,7 +185,6 @@ void registerGOGossipEvent(uint32 entry, uint32 evt, lua_function ref)
 		li::ObjectBindingMap::iterator itr = li_->m_goGossipBinding.find(entry);
 		if(itr != li_->m_goGossipBinding.end() )
 		{
-			found = true;
 			if(itr->second->refs[evt] != NULL && itr->second->refs[evt] != ref)
 				ReferenceHandler::removeReference(li_->lu, (ptrdiff_t)itr->second->refs[evt]);
 			itr->second->refs[evt] = ref;

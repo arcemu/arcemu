@@ -142,9 +142,9 @@ namespace lua_engine
 			BIND(CategoryCooldown);
 #undef BIND
 
-#define BIND(name) .property_ro(#name, &luaItemProto::name)
-		m	.class_decl<ItemPrototype>("ItemPrototype");
-		m	.class_<luaItemProto>("ItemPrototype")
+#define BIND(name) .property_ro(#name, &ItemPrototype::name)
+		m	.class_decl<luaItemProto>("ItemPrototype");
+		m	.class_<ItemPrototype>("ItemPrototype")
 			BIND(ItemId)
 			BIND(Name1)
 			BIND(DisplayInfoID)
