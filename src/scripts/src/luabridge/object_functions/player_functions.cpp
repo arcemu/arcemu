@@ -133,9 +133,9 @@ namespace lua_engine
 			.method(&Player::SetShapeShift, "SetShadeShift", "setShapeshift", "setshapeshift", NULL) //wiki listed
 			.method(&Player::CanSee, "CanSee", "canSee", "cansee", NULL) //wiki listed
 			.method(&Player::IsVisible, "IsVisible", "isVisible", "isvisible" ,NULL) //wiki listed
-			.method(&Player::Reset_Spells, "ResetSpells", "resetSpells", "resetspells", NULL)
-			.method(&Player::Reset_Talents, "ResetTalents", "resetTalents", "resettalents", NULL)
-			.method(&Player::GetSelectedGo, "GetSelectedGO", "getSelectedGO", "getselectedgo", NULL)
+			.method(&Player::Reset_Spells, "ResetSpells", "resetSpells", "resetspells", NULL)  //wiki listed
+			.method(&Player::Reset_Talents, "ResetTalents", "resetTalents", "resettalents", NULL) //wiki listed
+			.method(&Player::GetSelectedGo, "GetSelectedGO", "getSelectedGO", "getselectedgo", NULL) //wiki listed
 			.method(&Player::IsMounted, "IsMounted", "isMounted", "ismounted", NULL) //wiki listed
 			.method(&Player::Dismount, "Dismount", "dismount", NULL) //wiki listed
 			.method(&Player::Kick, "Kick", "kick", NULL) //wiki listed
@@ -147,60 +147,60 @@ namespace lua_engine
 			.method(&Player::ResetAllCooldowns, "ResetAllCooldowns", "resetAllCooldowns", "resetallcooldowns", NULL) //wiki listed
 			.method(&Player::ClearCooldownForSpell, "ClearCooldownForSpell", "clearCooldownForSpell", "clearcooldownforspell", NULL) //wiki listed
 
-			.method(&Player::Phase, "Phase", "phase", NULL)
+			.method(&Player::Phase, "Phase", "phase", NULL) //redundant 
 			.method(&Player::ExitInstance, "ExitInstance", "exitInstance", "exitinstance", NULL)
-			.method(&Player::GetAreaID, "GetAreaID", "getAreaID", "getareaid", NULL)
-			.method(&Player::SetAreaID, "SetAreaID", "setAreaID", "setareaid", NULL)
-			.method(&Player::EventTeleport, "Teleport", "teleport", NULL)
+			.method(&Player::GetAreaID, "GetAreaID", "getAreaID", "getareaid", NULL) //redundant 
+			.method(&Player::SetAreaID, "SetAreaID", "setAreaID", "setareaid", NULL) //redundant 
+			.method(&Player::EventTeleport, "Teleport", "teleport", NULL) //wiki listed 
 			.method(&Player::EventTeleportTaxi, "TeleportTaxi", "teleportTaxi", "teleporttaxi", NULL)
 			.method( (bool (Player::*)(uint32,uint32,float,float,float,float) )&Player::SafeTeleport, "SafeTeleport", "safeTeleport", "safeteleport", NULL) //wiki listed
 			.method(&Player::GetDungeonDifficulty, "GetDungeonDifficulty", "getDungeonDifficulty", "getdungeondifficulty", NULL) //wiki listed
 			.method(&Player::GetRaidDifficulty, "GetRaidDifficulty", "getRaidDifficulty", "getraiddifficulty", NULL) //wiki listed
 
-			.method(&Player::GetGold, "GetGold", "getGold", "getgold", NULL)
-			.method(&Player::ModGold, "ModGold", "modGold", "modgold", NULL)
-			.method(&Player::HasGold, "hasGold", "HasGold", "hasgold", NULL)
-			.method(&Player::SetGold, "SetGold", "setGold", "setgold", NULL)
-			.method(&Player::GiveGold, "GiveGold", "giveGold", "givegold", NULL)
-			.method(&Player::TakeGold, "TakeGold", "takeGold", "takegold", NULL)
+			.method(&Player::GetGold, "GetGold", "getGold", "getgold", NULL) //wiki listed
+			.method(&Player::ModGold, "ModGold", "modGold", "modgold", NULL) //wiki listed
+			.method(&Player::HasGold, "hasGold", "HasGold", "hasgold", NULL) //wiki listed
+			.method(&Player::SetGold, "SetGold", "setGold", "setgold", NULL) //wiki listed
+			.method(&Player::GiveGold, "GiveGold", "giveGold", "givegold", NULL)//wiki listed
+			.method(&Player::TakeGold, "TakeGold", "takeGold", "takegold", NULL) //wiki listed
 
 			.method(&Player::SetFarsightTarget, "SetFarsightTarget", "setFarsightTarget", "setfarsighttarget", NULL) //wiki listed
 			.method(&Player::GetFarsightTarget, "GetFarsightTarget", "getFarsightTarget", "getfarsighttarget", NULL) //wiki listed
 			
-			.method(&Player::SetXp, "SetXP", "setXP", "setxp" ,NULL)
-			.method(&Player::GetXp, "GetXP", "getXP", "getxp", NULL)
-			.method(&Player::SetNextLevelXp, "SetNextLevelXP", "setNextLevelXP", "setnextlevelxp", NULL)
+			.method(&Player::SetXp, "SetXP", "setXP", "setxp" ,NULL) //wiki listed
+			.method(&Player::GetXp, "GetXP", "getXP", "getxp", NULL) //wiki listed
+			.method(&Player::SetNextLevelXp, "SetNextLevelXP", "setNextLevelXP", "setnextlevelxp", NULL) //wiki listed
 			
-			.method(&Player::SetTalentPoints, "SetTalentPoints", "setTalentPoints", "settalentpoints", NULL)
-			.method(&Player::ModTalentPoints, "ModTalentPoints", "modTalentPoints", "modtalentpoints", NULL)
-			.method(&Player::GetTalentPoints, "GetTalentPoints", "getTalentPoints", "gettalentpoints", NULL)
+			.method(&Player::SetTalentPoints, "SetTalentPoints", "setTalentPoints", "settalentpoints", NULL)  //wiki listed
+			.method(&Player::ModTalentPoints, "ModTalentPoints", "modTalentPoints", "modtalentpoints", NULL) //wiki listed
+			.method(&Player::GetTalentPoints, "GetTalentPoints", "getTalentPoints", "gettalentpoints", NULL) //wiki listed
 
-			.method(&Player::SetHonorCurrency, "SetHonorCurrency", "setHonorCurrency", "sethonorcurrency", NULL)
-			.method(&Player::GetHonorCurrency, "GetHonorCurrency", "getHonorCurrency", "gethonorcurrency", NULL)
-			.method(&Player::ModHonorCurrency, "ModHonorCurrency", "modHonorCurrency", "modhonorcurrency", NULL)
+			.method(&Player::SetHonorCurrency, "SetHonorCurrency", "setHonorCurrency", "sethonorcurrency", NULL) //wiki listed
+			.method(&Player::GetHonorCurrency, "GetHonorCurrency", "getHonorCurrency", "gethonorcurrency", NULL) //wiki listed
+			.method(&Player::ModHonorCurrency, "ModHonorCurrency", "modHonorCurrency", "modhonorcurrency", NULL) //wiki listed
 
-			.method(&Player::GetArenaCurrency, "GetArenaCurrency", "getArenaCurrency", "getarenacurrency", NULL)
-			.method(&Player::SetArenaCurrency, "SetArenaCurrency", "setArenaCurrency", "setarenacurrency", NULL)
-			.method(&Player::ModArenaCurrency, "ModArenaCurrency", "modArenaCurrency", "modarenacurrency", NULL)
+			.method(&Player::GetArenaCurrency, "GetArenaCurrency", "getArenaCurrency", "getarenacurrency", NULL)//wiki listed
+			.method(&Player::SetArenaCurrency, "SetArenaCurrency", "setArenaCurrency", "setarenacurrency", NULL) //wiki listed
+			.method(&Player::ModArenaCurrency, "ModArenaCurrency", "modArenaCurrency", "modarenacurrency", NULL)//wiki listed
 
-			.method(&Player::SetGlyph, "SetGlyph", "setGlyph", "setglyph", NULL)
-			.method(&Player::GetGlyph, "GetGlyph", "getGlyph", "getglyph", NULL)
+			.method(&Player::SetGlyph, "SetGlyph", "setGlyph", "setglyph", NULL) //wiki listed
+			.method(&Player::GetGlyph, "GetGlyph", "getGlyph", "getglyph", NULL) //wiki listed
 
-			.method(&Player::ResetPvPTimer, "ResetPVPTimer", "resetPVPTimer", "resetpvptimer", NULL)
-			.method(&Player::StopPvPTimer, "StopPVPTimer", "stopPVPTimer", "stoppvptimer", NULL)
-			.method(&Player::PvPToggle, "PVPToggle", "pvpToggle" , "pvptoggle", NULL)
+			.method(&Player::ResetPvPTimer, "ResetPVPTimer", "resetPVPTimer", "resetpvptimer", NULL)//wiki listed
+			.method(&Player::StopPvPTimer, "StopPVPTimer", "stopPVPTimer", "stoppvptimer", NULL) //wiki listed
+			.method(&Player::PvPToggle, "PVPToggle", "pvpToggle" , "pvptoggle", NULL) //wiki listed
 
-			.method(&Player::LearnTalent, "learnTalent", "LearnTalent", "learntalent", NULL)
-			.method(&Player::AddComboPoints, "AddComboPoints", "addComboPoints", "addcombopoints", NULL)
+			.method(&Player::LearnTalent, "learnTalent", "LearnTalent", "learntalent", NULL) //too complex
+			.method(&Player::AddComboPoints, "AddComboPoints", "addComboPoints", "addcombopoints", NULL) //wiki listed
 
-			.method(&Player::GetTradeTarget, "GetTradeTarget", "getTradeTarget", "gettradetarget", NULL)
+			.method(&Player::GetTradeTarget, "GetTradeTarget", "getTradeTarget", "gettradetarget", NULL) //unused?
 			.method(&Player::Possess, "Possess", "possess", NULL) //wiki listed
 			.method(&Player::UnPossess, "Unpossess", "unpossess", NULL) //wiki listed
 
-			.method(&Player::IsAttacking, "IsAttacking", "isAttacking", "isattacking", NULL)
-			.method(&Player::PlaySound, "PlaySound", "playSound", "playsound", NULL)
-			.method(&Player::GetItemInterface, "GetItemInterface", "getItemInterface", "getiteminterface", NULL)
-			.method( &Player::RemoteRevive, "Resurrect", "resurrect", "ResurrectPlayer", "resurrectPlayer", "resurrectplayer", NULL)
+			.method(&Player::IsAttacking, "IsAttacking", "isAttacking", "isattacking", NULL) //redundant
+			.method(&Player::PlaySound, "PlaySound", "playSound", "playsound", NULL) //redundant
+			.method(&Player::GetItemInterface, "GetItemInterface", "getItemInterface", "getiteminterface", NULL) //wiki listed
+			.method( &Player::RemoteRevive, "Resurrect", "resurrect", NULL)
 			.method(&Player::GetName, "GetName", "getName", "getname", NULL) //wiki listed
 
 			.method( &Player::GetSession, "GetSession", "getSession", "getsession", NULL) //wiki listed

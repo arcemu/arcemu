@@ -26,26 +26,26 @@ namespace lua_engine
 #define BIND(name) .method(#name, &ItemInterface::name)
 #define BINDE(name, functor) .method(name, functor)
 		m	.class_<ItemInterface>("ItemInterface")
-			.method( &ItemInterface::GetOwner, "GetOwner", "getOwner", "getowner", NULL)
-			.method( &ItemInterface::IsBagSlot, "IsBagSlot", "isBagSlot", "isbagslot", NULL)
-			.method( (Item *(ItemInterface::*)(int8,int16) )&ItemInterface::GetInventoryItem, "GetInventoryItem", "getInventoryItem", "getinventoryitem", NULL)
-			.method (&ItemInterface::GetInventorySlotById, "GetInventorySlotByID", "getInventorySlotByID", "getinventoryslotbyid", NULL)
-			.method( (Item*(ItemInterface::*)(uint32, int8, int16) )&ItemInterface::SafeAddItem, "SafeAddItem","addItem", "additem", NULL)
-			.method( &ItemInterface::SafeFullRemoveItemFromSlot, "RemoveItemFromSlot", "removeItemFromSlot", "removeitemfromslot", NULL)
-			.method( &ItemInterface::AddItemToFreeSlot, "AddItemToFreeSlot", "addItemToFreeSlot", "additemtofreeslot", NULL)
-			.method( &ItemInterface::AddItemToFreeBankSlot, "AddItemToFreeBankSlot", "addItemToFreeBankSlot", "additemtofreebankslot", NULL)
-			.method( &ItemInterface::GetItemCount, "GetItemCount", "getItemCount", "getitemcount", NULL)
-			.method( &ItemInterface::RemoveItemAmt, "RemoveItemAmnt", "removeItemAmount", "removeitemamount", NULL)
-			.method( &ItemInterface::RemoveAllConjured, "removeAllConjured", "removeallconjured", NULL)
+			.method( &ItemInterface::GetOwner, "GetOwner", "getOwner", "getowner", NULL)//wiki listed
+			.method( &ItemInterface::IsBagSlot, "IsBagSlot", "isBagSlot", "isbagslot", NULL) //wiki listed
+			.method( (Item *(ItemInterface::*)(int8,int16) )&ItemInterface::GetInventoryItem, "GetInventoryItem", "getInventoryItem", "getinventoryitem", NULL) //wiki listed
+			.method (&ItemInterface::GetInventorySlotById, "GetInventorySlotByID", "getInventorySlotByID", "getinventoryslotbyid", NULL) //wiki listed
+			.method( (Item*(ItemInterface::*)(uint32, int8, int16) )&ItemInterface::SafeAddItem, "SafeAddItem","addItem", "additem", NULL)//wiki listed
+			.method( &ItemInterface::SafeFullRemoveItemFromSlot, "RemoveItemFromSlot", "removeItemFromSlot", "removeitemfromslot", NULL) //wiki listed
+			.method( &ItemInterface::AddItemToFreeSlot, "AddItemToFreeSlot", "addItemToFreeSlot", "additemtofreeslot", NULL) //wiki listed
+			.method( &ItemInterface::AddItemToFreeBankSlot, "AddItemToFreeBankSlot", "addItemToFreeBankSlot", "additemtofreebankslot", NULL) //wiki listed
+			.method( &ItemInterface::GetItemCount, "GetItemCount", "getItemCount", "getitemcount", NULL) //wiki listed
+			.method( &ItemInterface::RemoveItemAmt, "RemoveItemAmount", "removeItemAmount", "removeitemamount", NULL) //wiki listed
+			.method( &ItemInterface::RemoveAllConjured, "removeAllConjured", "removeallconjured", NULL) //wiki listed
 			.method( &ItemInterface::BuyItem, "BuyItem", "buyItem", "buyitem", NULL)
-			.method( &ItemInterface::FindFreeBackPackSlot, "FindFreeBackPackSlot", "findFreeBackPackSlot", "findfreebackpackslot", NULL)
-			.method( &ItemInterface::FindFreeBackPackSlotMax, "FindFreeBackPackSlotMax", "findFreeBackPackSlotMax", "findfreebackpackslotmax", NULL)
+			.method( &ItemInterface::FindFreeBackPackSlot, "FindFreeBackPackSlot", "findFreeBackPackSlot", "findfreebackpackslot", NULL) //wiki listed
+			.method( &ItemInterface::FindFreeBackPackSlotMax, "FindFreeBackPackSlotMax", "findFreeBackPackSlotMax", "findfreebackpackslotmax", NULL) //wiki listed
 			//BIND(FindAmmoBag)
-			.method( &ItemInterface::FindFreeKeyringSlot, "findFreeKeyringSlot", "FindFreeKeyRingSlot", "findfreekeyringslot", NULL)
-			.method( &ItemInterface::IsEquipped, "isEquipped", "IsEquipped", "isequipped", NULL)
+			.method( &ItemInterface::FindFreeKeyringSlot, "findFreeKeyringSlot", "FindFreeKeyRingSlot", "findfreekeyringslot", NULL) //wiki listed
+			.method( &ItemInterface::IsEquipped, "isEquipped", "IsEquipped", "isequipped", NULL) //wiki listed
 			.method( &ItemInterface::CanReceiveItem, "CanReceiveItem", "canReceiveItem", "canreceiveitem", NULL)
 			.method( &ItemInterface::CanAffordItem, "CanAffordItem", "canAffordItem", "canafforditem", NULL)
-			.method( &ItemInterface::AddItemById, "AddItemByID", "addItemByID", "additembyid", NULL);
+			.method( &ItemInterface::AddItemById, "AddItemByID", "addItemByID", "additembyid", NULL); //wiki listed
 #undef BIND
 #undef BINDE
 #define BIND(name) .method(#name, &Item::name)

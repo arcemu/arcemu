@@ -42,36 +42,39 @@ local PLAYER_END = UNIT_END + 0x0480
 local GAMEOBJECT_END = OBJECT_END + 0x000C
 local DYNAMICOBJECT_END = OBJECT_END + 0x0006
 local CORPSE_END = OBJECT_END + 0x001E
-LCF = {
-		ObjectMethods = {},
-		CreatureMethods = {},
-		GOMethods = {},
-		PlayerMethods = {},
-		UnitMethods = {},
-		ItemMethods = {},
-      SpellMethods = {},
-      AuraMethods = {},
-      TaxiMethods = {},
-      PacketMethods = {},
-      QResultMethods = {}
-	}
-LCF.vars  = {
-		OBJECT_FIELD_GUID = 0x0000,
-		OBJECT_FIELD_TYPE = 0x0002,
-		OBJECT_FIELD_ENTRY =0x0003,
-		OBJECT_FIELD_SCALE_X =0x0004,
-		OBJECT_FIELD_PADDING =0x0005,
-		OBJECT_END = 0x0006,
-		LOWGUID  = OBJECT_FIELD_GUID,
-		HIGHGUID = LOWGUID+1,
-		ITEM_END = OBJECT_END + 0x003A,
-		CONTAINER_END =ITEM_END + 0x004A,
-		UNIT_END = OBJECT_END + 0x008E,
-		PLAYER_END = UNIT_END + 0x0480,
-		GAMEOBJECT_END = OBJECT_END + 0x000C,
-		DYNAMICOBJECT_END = OBJECT_END + 0x0006,
-		CORPSE_END = OBJECT_END + 0x001E
-	}
+LCF = 
+{
+	ObjectMethods = {},
+	CreatureMethods = {},
+	GOMethods = {},
+	PlayerMethods = {},
+	UnitMethods = {},
+	ItemMethods = {},
+	SpellMethods = {},
+	AuraMethods = {},
+	TaxiMethods = {},
+	PacketMethods = {},
+	QResultMethods = {},
+	MapMgrMethods = {}
+}
+LCF.vars  = 
+{
+	OBJECT_FIELD_GUID = 0x0000,
+	OBJECT_FIELD_TYPE = 0x0002,
+	OBJECT_FIELD_ENTRY =0x0003,
+	OBJECT_FIELD_SCALE_X =0x0004,
+	OBJECT_FIELD_PADDING =0x0005,
+	OBJECT_END = 0x0006,
+	LOWGUID  = OBJECT_FIELD_GUID,
+	HIGHGUID = LOWGUID+1,
+	ITEM_END = OBJECT_END + 0x003A,
+	CONTAINER_END =ITEM_END + 0x004A,
+	UNIT_END = OBJECT_END + 0x008E,
+	PLAYER_END = UNIT_END + 0x0480,
+	GAMEOBJECT_END = OBJECT_END + 0x000C,
+	DYNAMICOBJECT_END = OBJECT_END + 0x0006,
+	CORPSE_END = OBJECT_END + 0x001E
+}
 	
 LCF.vars.ITEM_FIELDS = {
 		ITEM_FIELD_OWNER                          = OBJECT_END + 0x0000, -- Size: 2, Type: LONG, Flags: PUBLIC

@@ -320,9 +320,9 @@ static int SendPvPCaptureMessage(lua_State * L)
 	return 1;
 }
 */
-static void GetPlayersInMap(lua_stack stack, ptrdiff_t map_id)
+static void GetPlayersInMap(uint32 map_id, lua_stack, stack)
 {
-	ptrdiff_t count = 1;
+	uint32 count = 1;
 	lua_newtable( (lua_thread)stack);
 	MapMgr * mgr = sInstanceMgr.GetMapMgr( (uint32)map_id);
 	if(mgr != NULL)
@@ -337,7 +337,7 @@ static void GetPlayersInMap(lua_stack stack, ptrdiff_t map_id)
 	}
 }
 
-static void GetPlayersInZone(lua_stack stack, ptrdiff_t zone_id)
+static void GetPlayersInZone(uint32 zone_id, lua_stack stack)
 {
 	ptrdiff_t count = 1;
 	lua_newtable( (lua_thread)stack);
@@ -371,55 +371,55 @@ static void GetPlayersInZone(lua_stack stack, ptrdiff_t zone_id)
 	return 0;
 }*/
 
-ptrdiff_t luabit_and(ptrdiff_t left, lua_stack stack)
+uint32 luabit_and(uint32 left, lua_stack stack)
 {
-	ptrdiff_t top = lua_gettop( (lua_thread)stack);
+	uint32 top = lua_gettop( (lua_thread)stack);
 	if(top > 1)
 	{
-		for(ptrdiff_t i = 2; i <= top; ++i)
+		for(uint32 i = 2; i <= top; ++i)
 		{
 			if(lua_isnumber( (lua_thread)stack,i) )
-				left &= luaL_checkint( (lua_thread)stack, i);
+				left &= (uint32)luaL_checkint( (lua_thread)stack, i);
 		}
 	}
 	return left;
 }
-ptrdiff_t luabit_or(ptrdiff_t left, lua_stack stack)
+uint32 luabit_or(uint32 left, lua_stack stack)
 {
-	ptrdiff_t top = lua_gettop( (lua_thread)stack);
+	uint32 top = lua_gettop( (lua_thread)stack);
 	if(top > 1)
 	{
-		for(ptrdiff_t i = 2; i <= top; ++i)
+		for(uint32 i = 2; i <= top; ++i)
 		{
 			if(lua_isnumber( (lua_thread)stack, i) )
-				left |= luaL_checkint( (lua_thread)stack, i);
+				left |= (uint32)luaL_checkint( (lua_thread)stack, i);
 		}
 	}
 	return left;
 }
-ptrdiff_t luabit_xor( int left, lua_stack stack)
+uint32 luabit_xor( uint32 left, lua_stack stack)
 {
-	int top = lua_gettop( (lua_thread)stack);
+	uint32 top = lua_gettop( (lua_thread)stack);
 	if(top > 1)
 	{
-		for(int i = 2; i <= top; ++i)
+		for(uint32 i = 2; i <= top; ++i)
 		{
 			if(lua_isnumber( (lua_thread)stack, i) )
-				left ^= luaL_checkint( (lua_thread)stack, i);
+				left ^= (uint32)luaL_checkint( (lua_thread)stack, i);
 		}
 	}
 	return left;
 }
-int luabit_not(int val)
+uint32 luabit_not(uint32 val)
 {
 	return (~val);
 }
-int bit_shiftleft(int left, uint8 count)
+uint32 bit_shiftleft(uint32 left, uint8 count)
 {
 	count &= 0x7F;
 	return (left << count);
 }
-int bit_shiftright(int left, uint8 count)
+uint32 bit_shiftright(uint32 left, uint8 count)
 {
 	count &= 0x7F;
 	return (left >> count);
@@ -434,16 +434,16 @@ ARCEMU_FORCEINLINE const char * GetPlatform()
 	PUSH_GUID(L,num);
 	return 1;
 }*/
-void SendPacketToZone(WorldPacket * dat, size_t zone_id)
+void SendPacketToZone(WorldPacket * dat, uint32 zone_id)
 {
 	if (dat != NULL && zone_id)
-		sWorld.SendZoneMessage(dat,zone_id);
+		sWorld.SendZoneMessage(dat, zone_id);
 }
 
-void SendPacketToInstance(WorldPacket * pack, size_t instance)
+void SendPacketToInstance(WorldPacket * pack, uint32 instance)
 {
 	if(pack != NULL && instance)
-		sWorld.SendInstanceMessage(pack,instance);
+		sWorld.SendInstanceMessage(pack, instance);
 }
 
 void SendPacketToWorld(WorldPacket * pack)
@@ -462,12 +462,12 @@ void SendPacketToChannel(WorldPacket * pack, const char * cname, int team)
 	}
 }
 
-Creature * GetInstanceCreature(size_t map, size_t instance, lua_stack stack)
+Creature * GetInstanceCreature(uint32 map, uint32 instance, lua_stack stack)
 {
 	uint64 guid = 0;
 	uint32 spawnId = 0;
 	if(lua_type( (lua_thread)stack, 3) == LUA_TNUMBER)
-		spawnId = luaL_checkint( (lua_thread)stack,3);
+		spawnId = (uint32)luaL_checkint( (lua_thread)stack,3);
 	else
 		guid = luabridge::tdstack<uint64 &>::get( (lua_thread)stack, 3);
 
@@ -482,17 +482,17 @@ Creature * GetInstanceCreature(size_t map, size_t instance, lua_stack stack)
 	return NULL;
 }
 
-size_t GetInstancePlayerCount(size_t map, size_t instance)
+uint32 GetInstancePlayerCount(uint32 map, uint32 instance)
 {
-	Instance * pInstance = sInstanceMgr.GetInstanceByIds(map, instance);
+	Instance * pInstance = sInstanceMgr.GetInstanceByIds( map, instance);
 	if(pInstance != NULL)
 		return pInstance->m_mapMgr->GetPlayerCount();
 	return 0;
 }
 
-void GetPlayersInInstance(size_t map, size_t instance, lua_stack stack)
+void GetPlayersInInstance(uint32 map, uint32 instance, lua_stack stack)
 {
-	Instance * pInstance = sInstanceMgr.GetInstanceByIds(map, instance);
+	Instance * pInstance = sInstanceMgr.GetInstanceByIds( map, instance);
 	if(pInstance != NULL && pInstance->m_mapMgr != NULL)
 	{
 		int count = 1;

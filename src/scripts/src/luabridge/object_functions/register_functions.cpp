@@ -20,25 +20,25 @@
 #include "LUAEngine.h"
 
 static bool registerServerHook(uint32 hook, lua_function);
-static bool registerUnitEvent(uint32 , uint32 , lua_function);
-static bool registerQuestEvent(uint32,  uint32, lua_function);
-static bool registerGameObjectEvent(uint32, uint32, lua_function);
-static bool registerUnitGossipEvent(uint32, uint32, lua_function);
-static bool registerItemGossipEvent(uint32, uint32, lua_function);
-static bool registerGOGossipEvent(uint32, uint32, lua_function);
-static int suspendluathread(lua_thread, int wait_time, variadic_parameter *);
+static void registerUnitEvent(uint32 , uint32 , lua_function);
+static void registerQuestEvent(uint32,  uint32, lua_function);
+static void registerGameObjectEvent(uint32, uint32, lua_function);
+static void registerUnitGossipEvent(uint32, uint32, lua_function);
+static void registerItemGossipEvent(uint32, uint32, lua_function);
+static void registerGOGossipEvent(uint32, uint32, lua_function);
+static int suspendluathread(lua_thread, uint32, variadic_parameter *);
 static void resumeluathread(lua_thread);
 //static bool registerTimedEvent(variadic_parameter *);
 static void removeTimedEvents();
 static bool registerDummySpell(uint32, lua_function, variadic_parameter*);
-static bool registerInstanceEvent(uint32, uint32, lua_function);
+static void registerInstanceEvent(uint32, uint32, lua_function);
 
 namespace lua_engine
 {
 	void bindRegisterMethods(luabridge::module & m)
 	{
 		m	.function( &registerServerHook, "RegisterServerHook", "registerServerHook", "registerHook", NULL)
-			.function( &registerUnitEvent, "RegisterUnitEvent", "registerUnitEvent", "registerunitevent", "registerCreatureEvent", "registercreatureevent", "registercreaturevent", NULL)
+			.function( &registerUnitEvent, "RegisterUnitEvent", "registerUnitEvent", "registerunitevent", "RegisterCreatureEvent", "registerCreatureEvent", "registercreatureevent", "registercreaturevent", NULL)
 			.function( &registerQuestEvent, "RegisterQuestEvent", "registerQuestEvent", "registerquestevent", NULL)
 			.function( &registerGameObjectEvent, "RegisterGameObjectEvent", "registerGameObjectEvent", "registergameobjectevent", NULL)
 			.function( &registerUnitGossipEvent, "RegisterUnitGossipEvent", "RegisterCreatureGossip", "registercreaturegossip", "registerCreatureGossip", NULL)
@@ -72,16 +72,14 @@ bool registerServerHook(uint32 hook, lua_function ref)
 	}
 	return !found;
 }
-bool registerUnitEvent(uint32 entry, uint32 evt, lua_function ref)
+void registerUnitEvent(uint32 entry, uint32 evt, lua_function ref)
 {
-	bool found = false;
 	PLUA_INSTANCE li_ = lua_instance.get();
 	if(evt < CREATURE_EVENT_COUNT && (ptrdiff_t)ref != LUA_REFNIL)
 	{
 		li::ObjectBindingMap::iterator itr = li_->m_unitBinding.find(entry);
 		if(itr != li_->m_unitBinding.end() )
 		{
-			found = true;
 			if(itr->second->refs[evt] != NULL && itr->second->refs[evt] != ref)
 				ReferenceHandler::removeReference(li_->lu, (ptrdiff_t)itr->second->refs[evt]);
 			itr->second->refs[evt] = ref;
@@ -94,18 +92,15 @@ bool registerUnitEvent(uint32 entry, uint32 evt, lua_function ref)
 			li_->m_unitBinding.insert(make_pair(entry,bind) );
 		}
 	}
-	return found;
 }
-bool registerQuestEvent(uint32 entry, uint32 evt, lua_function ref)
+void registerQuestEvent(uint32 entry, uint32 evt, lua_function ref)
 {
-	bool found = false;
 	PLUA_INSTANCE li_ = lua_instance.get();
 	if(evt < QUEST_EVENT_COUNT && (ptrdiff_t)ref != LUA_REFNIL)
 	{
 		li::ObjectBindingMap::iterator itr = li_->m_questBinding.find(entry);
 		if(itr != li_->m_questBinding.end() )
 		{
-			found = true;
 			if(itr->second->refs[evt] != NULL && itr->second->refs[evt] != ref)
 				ReferenceHandler::removeReference(li_->lu, (ptrdiff_t)itr->second->refs[evt]);
 			itr->second->refs[evt] = ref;
@@ -118,18 +113,15 @@ bool registerQuestEvent(uint32 entry, uint32 evt, lua_function ref)
 			li_->m_questBinding.insert(make_pair(entry,bind) );
 		}
 	}
-	return found;
 }
-bool registerGameObjectEvent(uint32 entry, uint32 evt, lua_function ref)
+void registerGameObjectEvent(uint32 entry, uint32 evt, lua_function ref)
 {
-	bool found = false;
 	PLUA_INSTANCE li_ = lua_instance.get();
 	if(evt < GAMEOBJECT_EVENT_COUNT && (ptrdiff_t)ref != LUA_REFNIL)
 	{
 		li::ObjectBindingMap::iterator itr = li_->m_goBinding.find(entry);
 		if(itr != li_->m_goBinding.end() )
 		{
-			found = true;
 			if(itr->second->refs[evt] != NULL && itr->second->refs[evt] != ref)
 				ReferenceHandler::removeReference(li_->lu, (ptrdiff_t)itr->second->refs[evt]);
 			itr->second->refs[evt] = ref;
@@ -142,18 +134,15 @@ bool registerGameObjectEvent(uint32 entry, uint32 evt, lua_function ref)
 			li_->m_goBinding.insert(make_pair(entry,bind) );
 		}
 	}
-	return found;
 }
-bool registerUnitGossipEvent(uint32 entry, uint32 evt, lua_function ref)
+void registerUnitGossipEvent(uint32 entry, uint32 evt, lua_function ref)
 {
-	bool found = false;
 	PLUA_INSTANCE li_ = lua_instance.get();
 	if(evt < GOSSIP_EVENT_COUNT && (ptrdiff_t)ref != LUA_REFNIL)
 	{
 		li::ObjectBindingMap::iterator itr = li_->m_unitGossipBinding.find(entry);
 		if(itr != li_->m_unitGossipBinding.end() )
 		{
-			found = true;
 			if(itr->second->refs[evt] != NULL && itr->second->refs[evt] != ref)
 				ReferenceHandler::removeReference(li_->lu, (ptrdiff_t)itr->second->refs[evt]);
 			itr->second->refs[evt] = ref;
@@ -166,18 +155,15 @@ bool registerUnitGossipEvent(uint32 entry, uint32 evt, lua_function ref)
 			li_->m_unitGossipBinding.insert(make_pair(entry,bind) );
 		}
 	}
-	return found;
 }
-bool registerItemGossipEvent(uint32 entry, uint32 evt, lua_function ref)
+void registerItemGossipEvent(uint32 entry, uint32 evt, lua_function ref)
 {
-	bool found = false;
 	PLUA_INSTANCE li_ = lua_instance.get();
 	if(evt < GOSSIP_EVENT_COUNT && (ptrdiff_t)ref != LUA_REFNIL)
 	{
 		li::ObjectBindingMap::iterator itr = li_->m_itemGossipBinding.find(entry);
 		if(itr != li_->m_itemGossipBinding.end() )
 		{
-			found = true;
 			if(itr->second->refs[evt] != NULL && itr->second->refs[evt] != ref)
 				ReferenceHandler::removeReference(li_->lu, (ptrdiff_t)itr->second->refs[evt]);
 			itr->second->refs[evt] = ref;
@@ -190,11 +176,9 @@ bool registerItemGossipEvent(uint32 entry, uint32 evt, lua_function ref)
 			li_->m_itemGossipBinding.insert( make_pair(entry, bind) );
 		}
 	}
-	return found;
 }
-bool registerGOGossipEvent(uint32 entry, uint32 evt, lua_function ref)
+void registerGOGossipEvent(uint32 entry, uint32 evt, lua_function ref)
 {
-	bool found = false;
 	PLUA_INSTANCE li_ = lua_instance.get();
 	if(evt < GOSSIP_EVENT_COUNT && (ptrdiff_t)ref != LUA_REFNIL)
 	{
@@ -214,18 +198,15 @@ bool registerGOGossipEvent(uint32 entry, uint32 evt, lua_function ref)
 			li_->m_goGossipBinding.insert(make_pair(entry, bind) );
 		}
 	}
-	return found;
 }
-bool registerInstanceEvent(uint32 entry, uint32 evt, lua_function ref)
+void registerInstanceEvent(uint32 entry, uint32 evt, lua_function ref)
 {
-	bool found = false;
 	PLUA_INSTANCE li_ = lua_instance.get();
 	if(evt < INSTANCE_EVENT_COUNT && (ptrdiff_t)ref != LUA_REFNIL)
 	{
 		li::ObjectBindingMap::iterator itr = li_->m_instanceBinding.find(entry);
 		if(itr != li_->m_instanceBinding.end() )
 		{
-			found = true;
 			if(itr->second->refs[evt] != NULL && itr->second->refs[evt] != ref)
 				ReferenceHandler::removeReference(li_->lu, (ptrdiff_t)itr->second->refs[evt]);
 			itr->second->refs[evt] = ref;
@@ -239,7 +220,6 @@ bool registerInstanceEvent(uint32 entry, uint32 evt, lua_function ref)
 		}
 
 	}
-	return found;
 }
 bool registerDummySpell(uint32 entry, lua_function ref, variadic_parameter * params)
 {
@@ -314,10 +294,10 @@ ptrdiff_t extractfRefFromCString(lua_State * L,const char * functionName)
 	return functionRef;
 }
 
-int suspendluathread(lua_thread thread, int wait_time, variadic_parameter * params)
+int suspendluathread(lua_thread thread, uint32 wait_time, variadic_parameter * params)
 {
 	PLUA_INSTANCE li_ = lua_instance.get();
-	if(li_->map != NULL && thread != NULL && wait_time > 0)
+	if(li_->map != NULL && thread != NULL)
 	{
 		TimedEvent * evt = TimedEvent::Allocate(NULL,new CallBackFunctionP1<lua_thread>(resumeluathread,thread),0,wait_time,1);
 		//add the event to the current mapmgr.

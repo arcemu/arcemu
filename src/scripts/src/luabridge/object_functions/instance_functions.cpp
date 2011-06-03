@@ -156,24 +156,24 @@ namespace lua_engine
 	void bindMapMethods(luabridge::module & m)
 	{
 		m	.class_<MapMgr>("MapMgr")
-			.method( &MapMgr::GetMapId, "GetMapId", "getMapId", "getmapid", "getMapID", "GetMapID", NULL)
-			.method( &MapMgr::_GetObject, "GetObject", "getObject", "getobject", NULL)
+			.method( &MapMgr::GetMapId, "GetMapId", "getMapId", "getmapid", "getMapID", "GetMapID", NULL) //wiki listed
+			.method( &MapMgr::_GetObject, "GetObject", "getObject", "getobject", NULL) //wiki listed
 			.method( &MapMgr::CreateGameObject, "creategameobject", "CreateGameObject", "createGameObject", NULL)
 			.method( &MapMgr::CreateAndSpawnGameObject, "createandspawngameobject", "CreateAndSpawnGameObject", "createAndSpawnGameObject", NULL)
-			.method( &MapMgr::GetGameObject, "getGameObject", "GetGameObject", "getgameobject", NULL)
-			.method( &MapMgr::GetCreature, "getCreature", "getcreature", "GetCreature", NULL)
-			.method( &MapMgr::GetMapInfo, "GetMapInfo", "getmapinfo", "getMapInfo", "getinfo", "GetInfo", "getInfo", NULL)
+			.method( &MapMgr::GetGameObject, "getGameObject", "GetGameObject", "getgameobject", NULL) //wiki listed
+			.method( &MapMgr::GetCreature, "getCreature", "getcreature", "GetCreature", NULL)//wiki listed
+			.method( &MapMgr::GetMapInfo, "GetMapInfo", "getmapinfo", "getMapInfo", "getinfo", "GetInfo", "getInfo", NULL) //wiki listed
 			.method( &MapMgr::CreateCreature, "createCreature", "CreateCreature", "createcreature", NULL)
 			.method( &MapMgr::CreateDynamicObject, "CreateDynamicObject", "createDynamicObject", "createdynamicobject", NULL)
 			.method( &MapMgr::GetDynamicObject, "getdynamicobject", "GetDynamicObject", "getDynamicObject", NULL)
-			.method( &MapMgr::GetPlayer, "getplayer", "getPlayer", "GetPlayer", NULL)
-			.method( &MapMgr::GetInstanceID, "getinstanceid", "getInstanceID", "GetInstanceID", NULL)
+			.method( &MapMgr::GetPlayer, "getplayer", "getPlayer", "GetPlayer", NULL) //wiki listed
+			.method( &MapMgr::GetInstanceID, "getinstanceid", "getInstanceID", "GetInstanceID", NULL) //wiki listed
 			.method( &MapMgr::GetInterface, "GetInterface", "getInterface", "getinterface", NULL)
 			.method( &MapMgr::HasPlayers, "hasPlayers", "HasPlayers", "hasplayers", NULL)
 			.method( &MapMgr::GetPlayerCount, "getplayercount", "getPlayerCount", "GetPlayerCount", NULL)
 			.method( &MapMgr::SetWorldState, "setworldstate", "setWorldState", "SetWorldState", NULL)
 			.method( &MapMgr::GetSqlIdCreature, "GetSqlIdCreature", "getsqlidcreature", "getSqlIdCreature", NULL)
-			.method( &MapMgr::GetSqlIdGameObject, "GetSqlIdGameObject", "getsqlidgameobject", "getSqlIdGameObject", NULL);
+			.method( &MapMgr::GetSqlIdGameObject, "GetSqlIdGameObject", "getsqlidgameobject", "getSqlIdGameObject", NULL); 
 
 		m	.class_<MapScriptInterface>("MapScriptInterface")
 			.method(&MapScriptInterface::GetGameObjectNearestCoords, "GetGameObjectNearestCoords", "getGameObjectNearestCoords", "getgameobjectnearestcoords", NULL)

@@ -246,20 +246,19 @@ void lua_engine::ExecuteLuaFunction(variadic_parameter * params)
 		}
 	}
 }
-void ModifyLuaEventInterval(lua_function ref, int newInterval)
+void ModifyLuaEventInterval(int32 ref, uint32 newInterval)
 {
 	PLUA_INSTANCE li_ = lua_instance.get();
-	if(li_ != NULL)
+	if(li_ != NULL && ref > LUA_REFNIL  )
 	//Easy interval modification.
 		sEventMgr.ModifyEventTime(li_->map,(size_t)ref+LUA_EVENTS_END, newInterval);
 }
-static void DestroyLuaEvent(lua_function ref)
+static void DestroyLuaEvent(int32 ref)
 {
 	PLUA_INSTANCE li_ = lua_instance.get();
-	if(li_ != NULL)
+	if(li_ != NULL && ref > LUA_REFNIL )
 	{
 		//Simply remove the reference, CallFunctionByReference will find the reference has been freed and skip any processing.
-		lua_unref( li_->lu,(ptrdiff_t)ref);
 		ReferenceHandler::removeReference( li_->lu, (ptrdiff_t)ref );
 		for(li::References::iterator itr = li_->m_globalFRefs.begin(); itr != li_->m_globalFRefs.end(); ++itr)
 		{
@@ -364,14 +363,14 @@ namespace lua_engine
 {
 	void bindGlobalMethods(luabridge::module & m)
 	{
-		m	.function(&CreateLuaEvent, "CreateLuaEvent", "createEvent", "createevent", "createvent", NULL)
-			.function( &ModifyLuaEventInterval, "ModifyLuaEventInterval", "ModifyLuaEventTimer", "modifyeventtime", "modifyEventTime", NULL)
-			.function( &DestroyLuaEvent, "DestroyLuaEvent", "destroyevent", "destroyEvent", NULL)
+		m	.function(&CreateLuaEvent, "CreateLuaEvent", "createEvent", "createevent", "createvent", NULL) //wiki listed
+			.function( &ModifyLuaEventInterval, "ModifyLuaEventInterval", "ModifyLuaEventTimer", "modifyeventtime", "modifyEventTime", NULL) //wiki listed
+			.function( &DestroyLuaEvent, "DestroyLuaEvent", "destroyevent", "destroyEvent", NULL) //wiki listed
 			//Used to retrieve object method tables.
 			.function( &GetRegistryTable, "getregistry", "GetRegistry", "getRegistry", NULL)
 			//Casting global functions
-			.function( &lua_toplayer, "TO_PLAYER", "to_player", "toplayer", "TOPLAYER", NULL)
-			.function( &lua_tocreature, "TO_CREATURE", "TOCREATURE", "to_creature", "tocreature", NULL)
+			.function( &lua_toplayer, "TO_PLAYER", "to_player", "toplayer", "TOPLAYER", NULL) //wiki listed
+			.function( &lua_tocreature, "TO_CREATURE", "TOCREATURE", "to_creature", "tocreature", NULL) //wiki listed
 			.function( &lua_toitem, "TO_ITEM", "TOITEM", "toitem", "to_item", NULL)
 			.function( &lua_tounit, "TO_UNIT", "TOUNIT", "to_unit", "tounit", NULL)
 			.function( &lua_togo, "TO_GAMEOBJECT", "TOGAMEOBJECT", "to_gameobject", "togameobject", NULL)
