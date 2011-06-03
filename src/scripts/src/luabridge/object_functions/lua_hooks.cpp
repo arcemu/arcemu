@@ -367,10 +367,10 @@ void LuaHookOnFullLogin(Player * pPlayer)
 	CHECKVALIDSTATE
 	GET_LOCK;
 	PLUA_INSTANCE ref = lua_instance.get();
-	li::HookFRefMap::iterator itr = ref->m_hooks.find(SERVER_HOOK_EVENT_ON_FULL_LOGIN), itend = ref->m_hooks.upper_bound(SERVER_HOOK_EVENT_ON_FULL_LOGIN);
-	for(; itr != itend; ++itr)
+	std::pair<li::HookFRefMap::iterator,li::HookFRefMap::iterator> hooks = ref->m_hooks.equal_range(SERVER_HOOK_EVENT_ON_FULL_LOGIN);
+	for(; hooks.first != hooks.second; ++hooks.first)
 	{
-		lua_engine::BeginLuaFunctionCall(itr->second);
+		lua_engine::BeginLuaFunctionCall(hooks.first->second);
 		push_int(SERVER_HOOK_EVENT_ON_FULL_LOGIN);
 		push_player(pPlayer);
 		lua_engine::ExecuteLuaFunction(2);
