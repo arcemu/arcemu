@@ -19,6 +19,17 @@
 
 #include "LUAEngine.h"
 
+class luaItemProto : public ItemPrototype
+{
+public:
+	ARCEMU_FORCEINLINE ItemSpell* GetItemSpell(int idx)
+	{
+		if (idx < 0 || idx > 4) 
+			return NULL;
+		return &Spells[idx];
+	}
+};
+
 namespace lua_engine
 {
 	void bindItemMethods(luabridge::module &  m)
@@ -103,12 +114,37 @@ namespace lua_engine
 			.method( &Item::IsAmmoBag, "IsAmmoBag", "isAmmoBag", "isammobag", NULL)
 			.method( &Item::RemoveFromWorld, "RemoveFromWorld", "removeFromWorld", "removefromworld", NULL)
 			.method( &Item::HasEnchantments, "HasEnchantments", "hasEnchantments", "hasenchantments", NULL)
-			.method( &Item::SaveToDB, "SaveToDB", "saveToDB", "savetodb",  NULL);
+			.method( &Item::SaveToDB, "SaveToDB", "saveToDB", "savetodb",  NULL)
+			.method( &Item::GetItemLink, "GetItemLink", "getItemLink", "getitemlink", NULL)
+			;
 #undef BIND
 #undef BINDE
+		m	.subclass<Container, Item>("Container")
+			.method(&Container::GetNumSlots, "GetNumSlots", "getNumSlots", "getnumslots", NULL)
+			.method(&Container::SetNumSlots, "SetNumSlots", "setNumSlots", "setnumslots", NULL)
+			.method(&Container::AddItem, "AddItem", "addItem", "additem", NULL)
+			.method(&Container::AddItemToFreeSlot, "AddItemToFreeSlot", "addItemToFreeSlot", "additemtofreeslot", NULL)
+			.method(&Container::GetItem, "GetItem", "getItem", "getitem", NULL)
+			.method(&Container::FindFreeSlot, "FindFreeSlot", "findFreeSlot", "findfreeslot", NULL)
+			.method(&Container::HasItems, "HasItems", "hasItems", "hasitems", NULL)
+			.method(&Container::SwapItems, "SwapItems", "swapItems", "swapitems", NULL)
+			.method(&Container::SafeFullRemoveItemFromSlot, "SafeFullRemoveItemFromSlot", "RemoveItemFromSlot", "removeItemFromSlot", NULL)
+			.method(&Container::SetSlot, "SetSlot", "setSlot", "setslot", NULL)
+			.method(&Container::GetSlot, "GetSlot", "getSlot", "getslot", NULL);
 
-#define BIND(name) .property_ro(#name, &ItemPrototype::name)
-		m	.class_<ItemPrototype>("ItemPrototype")
+#define BIND(name) .property_ro(#name, &ItemSpell::name)
+		m	.class_<ItemSpell>("ItemSpell")
+			BIND(Id)
+			BIND(Trigger)
+			BIND(Charges)
+			BIND(Cooldown)
+			BIND(Category)
+			BIND(CategoryCooldown);
+#undef BIND
+
+#define BIND(name) .property_ro(#name, &luaItemProto::name)
+		m	.class_decl<ItemPrototype>("ItemPrototype");
+		m	.class_<luaItemProto>("ItemPrototype")
 			BIND(ItemId)
 			BIND(Name1)
 			BIND(DisplayInfoID)
@@ -128,7 +164,8 @@ namespace lua_engine
 			BIND(RandomSuffixId)
 			BIND(TotemCategory)
 			BIND(QuestId)
-			BIND(Description);
+			BIND(Description)
+			.method(&luaItemProto::GetItemSpell, "GetItemSpell", "getItemSpell", "getitemspell", NULL);
 #undef BIND
 	}
 }

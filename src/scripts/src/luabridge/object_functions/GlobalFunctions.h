@@ -428,12 +428,10 @@ ARCEMU_FORCEINLINE const char * GetPlatform()
 {
 	return PLATFORM_TEXT;
 }
-/*int NumberToGUID(lua_State * L)
+uint64 NumberToGUID(uint32 num)
 {
-	uint64 num = (uint64)luaL_checknumber(L,1);
-	PUSH_GUID(L,num);
-	return 1;
-}*/
+	return (uint64)num;
+}
 void SendPacketToZone(WorldPacket * dat, uint32 zone_id)
 {
 	if (dat != NULL && zone_id)

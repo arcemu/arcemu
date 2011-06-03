@@ -35,7 +35,6 @@ function GetTaxiPath(id) return sTaxiMgr:GetTaxiPath(id); end
 logcol = logcolor;
 
 --MapID and InstanceID parameters are now irrelevant, and are replaced by this MapMgr's values.
---save does not currently work
 function PerformIngameSpawn(spawntype, entry, _, x, y, z, o, facOrScale, duration, e1, e2, e3, _, save)
    if (not MapMgr) then return nil; end
    e1 = e1 or 0;
@@ -62,6 +61,7 @@ function PerformIngameSpawn(spawntype, entry, _, x, y, z, o, facOrScale, duratio
 end
 
 function EasySpawn(spawntype, entry, x, y, z, o, facOrScale, duration, e1, e2, e3, save, phase)
+   phase = phase or 1
    local u = PerformIngameSpawn(spawntype, entry, nil, x, y, z, o, facOrScale, duration, e1, e2, e3, nil, save)
    u:SetPhase(phase)
    return u;
@@ -117,4 +117,8 @@ function SetWeather(forWhat, forWhatExtra, _type, Density)
    elseif (forWhat == "object") then
       forWhatExtra:SendPacket(data);
    end
+end
+
+function SendMail(_type, sender_guid, recipient_guid, subject, body, money, cod, item_guid, stationery) 
+   sMailSystem:SendAutomatedMessage(_type, sender_guid, recipient_guid, subject, body, money, cod, item_guid, stationery)
 end

@@ -127,8 +127,6 @@ function UNIT:GetMaxMana() return self:GetMaxPower(0); end
 
 alias("GetNativeDisplay", "GetNativeDisplayId")
 
-function UNIT:GetPowerPct(idx) return (self:GetPower(idx) / self:GetMaxPower(idx)) * 100; end
-
 alias("IsAlive", "isAlive")
 
 function UNIT:IsInCombat() return self.CombatStatus:IsInCombat(); end
@@ -147,10 +145,6 @@ alias("SetModel", "SetDisplayId")
 
 function UNIT:SetNPCFlags(value) self:SetUInt32Value(LCF.UNIT_NPC_FLAGS, value); end
 
-function UNIT:SetPowerPct(pct, _type)
-   self:SetPower(_type, (pct / 100) * self:GetMaxPower(_type));
-end
-
 function UNIT:SetZoneWeather(zoneid, _type, density) return SetWeather("zone", zoneid, _type, density); end
 
 function UNIT:SpawnCreature(entry, x, y, z, o, fac, duration, e1, e2, e3, phase, save)
@@ -166,6 +160,42 @@ function UNIT:CreateGuardian(entry, duration, angle, lvl)
 end
 
 alias("Emote", "EventAddEmote")
+
+local oldSendChatMessage = getregistry("Unit").SendChatMessage;
+getregistry("Unit").SendChatMessage = function(self, _type, lang, msg, delay)
+   delay = delay or 0;
+   oldSendChatMessage(self, _type, lang, msg, delay)
+end
+
+local oldGetPower = getregistry("Unit").GetPower;
+getregistry("Unit").GetPower = function(self, powtype)
+   powtype = powtype or self:GetPowerType();
+   oldGetPower(self, powtype)
+end
+
+function UNIT:GetPowerPct(idx) return (self:GetPower(idx) / self:GetMaxPower(idx)) * 100; end
+
+local oldGetMaxPower = getregistry("Unit").GetMaxPower;
+getregistry("Unit").GetMaxPower = function(self, powtype)
+   powtype = powtype or self:GetPowerType();
+   oldGetMaxPower(self, powtype)
+end
+
+local oldSetPower = getregistry("Unit").SetPower;
+getregistry("Unit").SetPower = function(self, powtype)
+   powtype = powtype or self:GetPowerType();
+   oldSetPower(self, powtype)
+end
+
+function UNIT:SetPowerPct(pct, _type)
+   self:SetPower(_type, (pct / 100) * self:GetMaxPower(_type));
+end
+
+local oldSetMaxPower = getregistry("Unit").SetMaxPower;
+getregistry("Unit").SetMaxPower = function(self, powtype)
+   powtype = powtype or self:GetPowerType();
+   oldSetMaxPower(self, powtype)
+end
 
 --------------------------------- RE-DEFINED 'alias' here------------------------------
 alias = function(_func, ...)

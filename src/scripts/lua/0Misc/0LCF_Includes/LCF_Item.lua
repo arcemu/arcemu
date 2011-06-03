@@ -51,3 +51,40 @@ alias("Remove", "RemoveFromWorld")
 alias("RepairItem", "SetDurabilityToMax")
 
 function ITEM:GetObjectType() return "Item"; end
+
+--[[
+function ITEM:AddEnchantmentByID(uEntry, uDuration, bRemoveAtLogout)
+   self:AddEnchantment(dbcEnchant.LookupEntry(uEntry), uDuration, false, true, bRemoveAtLogout, 0, 0)
+end
+]]
+
+--returns the number of items with id 'itemid' in the container
+function ITEM:GetContainerItemCount(itemid)
+   if (not self:IsContainer()) then return 0; end
+   local pCont = TO_CONTAINER(self);
+	local TotalSlots = pCont:GetNumSlots();
+   local cnt = 0;
+	for i=0, TotalSlots do
+		local item = pCont:GetItem(i);
+		if (item) then
+			if (item:GetEntry() == itemid) then
+				cnt = cnt + item:GetStackCount(); 
+			end
+		end
+	end
+	return cnt;
+end
+
+local oldGetItemLink = getregistry("Item").GetItemLink;
+getregistry("Item").GetItemLink = function(self, lang)
+   lang = lang or LCF.LANG_UNIVERSAL;
+   oldGetItemLink(self, lang)
+end
+
+function ITEM:GetSpellId(idx)
+   return self:GetProto():GetItemSpell(idx).Id;
+end
+
+function ITEM:GetSpellTrigger(idx)
+   return self:GetProto():GetItemSpell(idx).Trigger;
+end

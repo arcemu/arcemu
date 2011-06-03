@@ -132,11 +132,18 @@ function PLAYER:GetGmRank() return self:GetSession():GetPermissions(); end
 
 alias("GetGuildId", "GetGuildID")
 
-function PLAYER:GetInventoryItem(...) return self:GetItemInterface():GetInventoryItem(...); end
+local oldGetInventoryItem = getregistry("Player").GetInventoryItem;
+getregistry("Player").GetInventoryItem = function(self, contslot, slot)
+   if (slot == nil) then 
+      return oldGetInventoryItem(self, -1, contslot);
+   else 
+      return oldGetInventoryItem(self, contslot, slot);
+   end
+end
 
 function PLAYER:GetInventoryItemById(id)
-   local s = self:GetItemInterface():GetInventorySlotById(id)
-   return self:GetItemInterface():GetInventoryItem(s)
+   local s = self:GetItemInterface():GetInventorySlotByID(id)
+   return self:GetItemInterface():GetInventoryItem(-1, s)
 end
 
 function PLAYER:GetItemCount(...) return self:GetItemInterface():GetItemCount(...); end
@@ -176,7 +183,11 @@ function PLAYER:GetPlayerMovementFlags() return self:GetSession():GetMovementInf
 
 alias("GetPlayerRace", "getRace")
 
-function PLAYER:GetUnitSelection() return MapMgr:GetObject(self:GetSelection()); end
+function PLAYER:GetUnitSelection() 
+   local sel = self:GetSelection();
+   if (sel == nil) then return nil; end
+   return MapMgr:GetObject(sel);
+end
 
 alias("GetTaxi", "GetTaxiPath")
 
@@ -204,10 +215,10 @@ alias("LearnSpell", "addSpell")
 
 --disgusting function but alas, it must be done.
 function PLAYER:LifeTimeKills(kills, check)
-   local killscheck = self:GetUInt32Value(1228)
-   if (check == "add") then self:SetUInt32Value(1228, killscheck+kills);
-   elseif (check == "del") then self:SetUInt32Value(1228, killscheck-kills);
-   elseif (check == "set") then self:SetUInt32Value(1228, kills);
+   local killscheck = self:GetUInt32Value(LCF.PLAYER_FIELD_LIFETIME_HONORBALE_KILLS)
+   if (check == "add") then self:SetUInt32Value(LCF.PLAYER_FIELD_LIFETIME_HONORBALE_KILLS, killscheck+kills);
+   elseif (check == "del") then self:SetUInt32Value(LCF.PLAYER_FIELD_LIFETIME_HONORBALE_KILLS, killscheck-kills);
+   elseif (check == "set") then self:SetUInt32Value(LCF.PLAYER_FIELD_LIFETIME_HONORBALE_KILLS, kills);
    else return killscheck; end
 end
 
@@ -270,3 +281,7 @@ function PLAYER:SendAreaTriggerMessage(message)
 end
 
 alias("RemovePvPFlag", "RemovePVPFlag")
+
+function PLAYER:AddItem(id, amt)
+   return self:GetItemInterface():AddItemByID(id, amt, 0);
+end

@@ -272,7 +272,7 @@ aialias("SetTauntedBy", "taunt")
 
 function CREATURE:SetUnitToFollow(unit, dist)
    self:GetAIInterface():SetUnitToFollow(unit)
-   self:GetAIInterface():SetFollowDistance(value)
+   self:GetAIInterface():SetFollowDistance(dist)
 end
 
 aialias("StopMovement", "StopMovement")

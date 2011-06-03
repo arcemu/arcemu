@@ -805,12 +805,12 @@ setmetatable( getregistry("Player"), LCF.PlayerMethods)
 setmetatable( getregistry("Object"), LCF.ObjectMethods)
 setmetatable( getregistry("Unit"), LCF.UnitMethods )
 setmetatable( getregistry("Item"), LCF.ItemMethods )
-setmetatable( getregistry("Spell"), LCF.SpellMethods ) --spell.impl contains Spell and Aura
+setmetatable( getregistry("Spell"), LCF.SpellMethods )
 setmetatable( getregistry("Aura"), LCF.AuraMethods )
-setmetatable( getregistry("TaxiPath"), LCF.TaxiMethods ) --taxi, packet, qresult in one file
+setmetatable( getregistry("TaxiPath"), LCF.TaxiMethods )
 setmetatable( getregistry("LuaPacket"), LCF.PacketMethods )
 setmetatable( getregistry("QueryResult"), LCF.QResultMethods )
+setmetatable( getregistry("MapMgr"), LCF.MapMgrMethods )
 setmetatable(LCF,LCF)
 setmetatable(LCF.vars,LCF.vars)
---Might expand these to the other wow objects if they really do need wrappers
 	

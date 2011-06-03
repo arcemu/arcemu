@@ -327,6 +327,13 @@ static void lua_toitem(Object * obj, lua_stack s)
 	else
 		luabridge::tdstack<void>::push( (lua_thread)s);
 }
+static void lua_tocontainer(Object * obj, lua_stack s)
+{
+	if(obj != NULL && obj->IsContainer() )
+		luabridge::tdstack<Container*>::reassignto( (lua_thread)s, 1);
+	else
+		luabridge::tdstack<void>::push( (lua_thread)s);
+}
 static void lua_tounit(Object * obj, lua_stack s)
 {
 	if(obj != NULL && obj->IsUnit() )
@@ -372,6 +379,7 @@ namespace lua_engine
 			.function( &lua_toplayer, "TO_PLAYER", "to_player", "toplayer", "TOPLAYER", NULL) //wiki listed
 			.function( &lua_tocreature, "TO_CREATURE", "TOCREATURE", "to_creature", "tocreature", NULL) //wiki listed
 			.function( &lua_toitem, "TO_ITEM", "TOITEM", "toitem", "to_item", NULL)
+			.function( &lua_tocontainer, "TO_CONTAINER", "TOCONTAINER", "tocontainer", "to_container", NULL)
 			.function( &lua_tounit, "TO_UNIT", "TOUNIT", "to_unit", "tounit", NULL)
 			.function( &lua_togo, "TO_GAMEOBJECT", "TOGAMEOBJECT", "to_gameobject", "togameobject", NULL)
 			.function( &GetGameTime, "GetGameTime", "getGameTime", "getgametime", NULL)
@@ -403,7 +411,8 @@ namespace lua_engine
 			.function( &GetPlayersInInstance, "GetPlayersInInstance", "getPlayersInInstance", "getplayersininstance", NULL)
 			.function( &include, "include", "Include", "INCLUDE", NULL)
 			.function( &WorldDBQuery, "WorldDBQuery", "worlddbquery", NULL)
-			.function( &CharDBQuery, "CharDBQuery", "chardbquer", NULL);
+			.function( &CharDBQuery, "CharDBQuery", "chardbquer", NULL)
+			.function( &NumberToGUID, "NumberToGUID", "TO_UINT64", "TO_GUID", NULL);
 
 		m	.class_<DBCStorage<SpellEntry> >("dbcSpell")
 			.method( &DBCStorage<SpellEntry>::LookupEntry, "LookupEntry", "lookupentry", NULL)
@@ -422,5 +431,10 @@ namespace lua_engine
 		lua_setglobal(m.L, "WorldDB");
 		luabridge::tdstack<Database*>::push(m.L, Database_Character);
 		lua_setglobal(m.L, "CharacterDB");
+
+		m	.class_<MailSystem>("MailSystem")
+			.method("SendAutomatedMessage", &MailSystem::SendAutomatedMessage);
+		luabridge::tdstack<MailSystem*>::push(m.L, MailSystem::getSingletonPtr());
+		lua_setglobal(m.L, "sMailSystem");
 	}
 }
