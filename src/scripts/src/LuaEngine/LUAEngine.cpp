@@ -18,6 +18,11 @@
  */
 
 #include "StdAfx.h"
+
+#ifdef HAVE_DARWIN
+#undef check
+#endif
+
 #include "LUAEngine.h"
 #include <ScriptSetup.h>
 
