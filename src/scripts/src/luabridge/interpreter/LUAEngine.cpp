@@ -267,9 +267,6 @@ bool lua_engine::loadScript(const char* filename)
 
 void lua_engine::BeginLuaFunctionCall(lua_function ref)
 {
-	//lua_settop(lu, 0);
-	
-	lua_getref(lua_state,(ptrdiff_t)ref);
 	ReferenceHandler::getReference(lua_state, (ptrdiff_t)ref);
 }
 bool lua_engine::ExecuteLuaFunction(int params, int res, variadic_parameter ** results, bool getparams)
@@ -282,12 +279,14 @@ bool lua_engine::ExecuteLuaFunction(int params, int res, variadic_parameter ** r
 		ret = false;
 		if(params++ > 0)
 		{
-			for(int i = top; i >= (top-params); i--)
+			for(int i = top; i > 0 && i >= (top-params); i--)
 			{
 				if(!lua_isnone(lu,i) )
 					lua_remove(lu,i);
 			}
 		}
+		else
+			lua_pop(lu, 1); //pop the nil pushed by BeginFunctionCall.
 	}
 	else
 	{
@@ -447,9 +446,8 @@ void lua_engine::startupEngine()
 	Log.Success("LuaEngine", "All lua states have successfully shutdown.");
 }*/
 
-void lua_engine::unload_resources( PLUA_INSTANCE _li)
+void lua_engine::unload_resources( PLUA_INSTANCE lu)
 {
-	PLUA_INSTANCE lu = _li;
 	DestroyAllLuaEvents(lu);
 
 	//Clean up the bindings, no need to unref them because we are going to close down the lua state anyway.

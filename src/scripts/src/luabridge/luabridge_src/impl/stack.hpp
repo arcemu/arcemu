@@ -1,3 +1,4 @@
+#include "../../interpreter/LUAEngine.h"
 /*
  * stack.hpp - Copyright (C) 2007 by Nathan Reed
  * Type-dispatch functions for manipulating the Lua stack.
@@ -651,7 +652,10 @@ struct tdstack<uint64>
 {
 	static void push(lua_State * L, uint64 guid)
 	{
-		tdstack<ObjectWrap<uint64> >::push(L, guid);
+		if(guid == 0)
+			tdstack<void>::push(L);
+		else
+			tdstack<ObjectWrap<uint64> >::push(L, guid);
 	}
 	static uint64 get(lua_State *L, int index)
 	{

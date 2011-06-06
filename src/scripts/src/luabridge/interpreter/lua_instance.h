@@ -1,5 +1,7 @@
 #pragma once
 
+#include "StdAfx.h"
+
 class ScriptManager
 {
 public:
@@ -97,8 +99,8 @@ public:
 	typedef HM_NAMESPACE::hash_multimap<uint32, lua_function> HookFRefMap;
 	typedef HM_NAMESPACE::hash_map<uint32, LuaGossip*> GossipInterfaceMap;
 	typedef HM_NAMESPACE::hash_map<uint32, PSpellMapEntry> SpellFRefMap;
-	typedef std::set<variadic_parameter*> References;
-	typedef std::set<lua_thread> Coroutines;
+	typedef HM_NAMESPACE::hash_set<variadic_parameter*> References;
+	typedef HM_NAMESPACE::hash_set<lua_thread> Coroutines;
 	typedef HM_NAMESPACE::hash_map<uint32, PObjectBinding> ObjectBindingMap;
 
 	/*	Reference storing maps that store references to functions and their parameters that object allocate.
@@ -140,6 +142,9 @@ public:
 	ScriptManager scripts_;
 
 } LUA_INSTANCE, *PLUA_INSTANCE;
+
+extern Arcemu::Utility::TLSObject<PLUA_INSTANCE> lua_instance;
+extern PLUA_INSTANCE LUA_COMPILER;
 
 class LuaGuard
 {

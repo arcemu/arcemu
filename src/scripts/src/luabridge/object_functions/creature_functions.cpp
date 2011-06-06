@@ -9,11 +9,12 @@ LuaCreature::~LuaCreature() {}
 void LuaCreature::OnCombatStart(Unit* mTarget)
 {
 	NULL_BINDING_CHECK
-		lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_ENTER_COMBAT]);
+	lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_ENTER_COMBAT]);
 	push_creature(_unit);
 	push_int(CREATURE_EVENT_ON_ENTER_COMBAT);
 	push_unit(mTarget);
 	lua_engine::ExecuteLuaFunction(3);
+	
 
 	RELEASE_LOCK
 }
@@ -22,7 +23,7 @@ void LuaCreature::OnCombatStop(Unit* mTarget)
 {
 	NULL_BINDING_CHECK
 
-		lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_LEAVE_COMBAT]);
+	lua_engine::BeginLuaFunctionCall(m_binding->refs[CREATURE_EVENT_ON_LEAVE_COMBAT]);
 	push_creature(_unit);
 	push_int(CREATURE_EVENT_ON_LEAVE_COMBAT);
 	push_unit(mTarget);
@@ -238,12 +239,6 @@ void LuaCreature::OnLoad()
 	lua_engine::ExecuteLuaFunction(2);
 
 	RELEASE_LOCK
-	/*uint32 iid = _unit->GetInstanceID();
-	if (_unit->GetMapMgr() == NULL || _unit->GetMapMgr()->GetMapInfo()->type == INSTANCE_NULL)
-		iid = 0;
-	OnLoadInfo.push_back(_unit->GetMapId());
-	OnLoadInfo.push_back(iid);
-	OnLoadInfo.push_back(GET_LOWGUID_PART(_unit->GetGUID()));*/
 }
 
 void LuaCreature::OnReachWP(uint32 iWaypointId, bool bForwards)

@@ -30,21 +30,17 @@ extern "C"
 #include "class_decls.h"
 #include "lua_instance.h"
 
-#ifdef DEBUG
-#define LUA_USE_APICHECK
-#endif
 #include <sys/stat.h>
 #include <sys/types.h>
-
-
 
 #include "../luabridge_src/luabridge.hpp"
 
 /*	A thread local storage lua_instance that will only get initialized for maps that attempt to run lua scripts. */
-extern Arcemu::Utility::TLSObject<PLUA_INSTANCE> lua_instance;
 /*	A lua_State that acts like a compiler for lua scripts, it loads scripts during engine startup to detect and report any errors */
-extern PLUA_INSTANCE LUA_COMPILER;
+
 #define lua_state (lua_instance.get() )->lu
+
+
 
 //Used for checking headers in scripts.
 #define ARCLUA_PREFIX "--?!"	//begins with a comment notation so that Lua will ignore our header.

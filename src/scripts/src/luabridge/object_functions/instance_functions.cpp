@@ -179,8 +179,8 @@ namespace lua_engine
 			.method(&MapScriptInterface::GetGameObjectNearestCoords, "GetGameObjectNearestCoords", "getGameObjectNearestCoords", "getgameobjectnearestcoords", NULL)
 			.method(&MapScriptInterface::GetCreatureNearestCoords, "GetCreatureNearestCoords", "getCreatureNearestCoords", "getcreaturenearestcoords", NULL)
 			.method(&MapScriptInterface::GetPlayerNearestCoords, "getPlayerNearestCoords", "GetPlayerNearestCoords", "getplayernearestcoords", NULL)
-			.method( (Creature *(MapScriptInterface::*)(uint32,float,float,float,float,bool,bool,uint32,uint32,uint32) )&MapScriptInterface::SpawnCreature, "SpawnCreature", "spawnCreature", "spawncreature", NULL)
-			.method( (GameObject*(MapScriptInterface::*)(uint32,float,float,float,float, bool, uint32, uint32, uint32) )&MapScriptInterface::SpawnGameObject, "SpawnGameObject", "spawnGameObject", "spawngameobject", NULL);
+			.method( (Creature *(MapScriptInterface::*)(uint32,float,float,float,float,bool,bool,uint32,uint32,uint32) )&MapScriptInterface::SpawnCreature, "FullSpawnCreature", "fullSpawnCreature", "fullspawncreature", NULL)
+			.method( (GameObject*(MapScriptInterface::*)(uint32,float,float,float,float, bool, uint32, uint32, uint32) )&MapScriptInterface::SpawnGameObject, "FullSpawnGameObject", "fullSpawnGameObject", "fullspawngameobject", NULL);
 
 #define prop(name) .property_ro(#name, &MapInfo::name)
 		m	.class_<MapInfo>("MapInfo")

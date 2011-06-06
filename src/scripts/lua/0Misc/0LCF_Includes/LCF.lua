@@ -54,8 +54,7 @@ LCF =
 	AuraMethods = {},
 	TaxiMethods = {},
 	PacketMethods = {},
-	QResultMethods = {},
-	MapMgrMethods = {}
+	QResultMethods = {}
 }
 LCF.vars  = 
 {
@@ -810,7 +809,6 @@ setmetatable( getregistry("Aura"), LCF.AuraMethods )
 setmetatable( getregistry("TaxiPath"), LCF.TaxiMethods )
 setmetatable( getregistry("LuaPacket"), LCF.PacketMethods )
 setmetatable( getregistry("QueryResult"), LCF.QResultMethods )
-setmetatable( getregistry("MapMgr"), LCF.MapMgrMethods )
 setmetatable(LCF,LCF)
 setmetatable(LCF.vars,LCF.vars)
 	

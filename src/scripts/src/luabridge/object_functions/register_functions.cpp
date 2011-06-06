@@ -80,14 +80,13 @@ void registerUnitEvent(uint32 entry, uint32 evt, lua_function ref)
 		li::ObjectBindingMap::iterator itr = li_->m_unitBinding.find(entry);
 		if(itr != li_->m_unitBinding.end() )
 		{
-			if(itr->second->refs[evt] != NULL && itr->second->refs[evt] != ref)
+			if(itr->second->refs[evt] != (lua_function)LUA_REFNIL && itr->second->refs[evt] != ref)
 				ReferenceHandler::removeReference(li_->lu, (ptrdiff_t)itr->second->refs[evt]);
 			itr->second->refs[evt] = ref;
 		}
 		else
 		{
 			PObjectBinding bind = new ObjectBinding;
-			memset(bind, 0, sizeof(ObjectBinding) );
 			bind->refs[evt] = ref;
 			li_->m_unitBinding.insert(make_pair(entry,bind) );
 		}
@@ -101,14 +100,13 @@ void registerQuestEvent(uint32 entry, uint32 evt, lua_function ref)
 		li::ObjectBindingMap::iterator itr = li_->m_questBinding.find(entry);
 		if(itr != li_->m_questBinding.end() )
 		{
-			if(itr->second->refs[evt] != NULL && itr->second->refs[evt] != ref)
+			if(itr->second->refs[evt] != (lua_function)LUA_REFNIL && itr->second->refs[evt] != ref)
 				ReferenceHandler::removeReference(li_->lu, (ptrdiff_t)itr->second->refs[evt]);
 			itr->second->refs[evt] = ref;
 		}
 		else
 		{
 			PObjectBinding bind = new ObjectBinding;
-			memset(bind, 0, sizeof(ObjectBinding) );
 			bind->refs[evt] = ref;
 			li_->m_questBinding.insert(make_pair(entry,bind) );
 		}
@@ -122,14 +120,13 @@ void registerGameObjectEvent(uint32 entry, uint32 evt, lua_function ref)
 		li::ObjectBindingMap::iterator itr = li_->m_goBinding.find(entry);
 		if(itr != li_->m_goBinding.end() )
 		{
-			if(itr->second->refs[evt] != NULL && itr->second->refs[evt] != ref)
+			if(itr->second->refs[evt] != (lua_function)LUA_REFNIL && itr->second->refs[evt] != ref)
 				ReferenceHandler::removeReference(li_->lu, (ptrdiff_t)itr->second->refs[evt]);
 			itr->second->refs[evt] = ref;
 		}
 		else
 		{
 			PObjectBinding bind = new ObjectBinding;
-			memset(bind, 0, sizeof(ObjectBinding) );
 			bind->refs[evt] = ref;
 			li_->m_goBinding.insert(make_pair(entry,bind) );
 		}
@@ -143,14 +140,13 @@ void registerUnitGossipEvent(uint32 entry, uint32 evt, lua_function ref)
 		li::ObjectBindingMap::iterator itr = li_->m_unitGossipBinding.find(entry);
 		if(itr != li_->m_unitGossipBinding.end() )
 		{
-			if(itr->second->refs[evt] != NULL && itr->second->refs[evt] != ref)
+			if(itr->second->refs[evt] != (lua_function)LUA_REFNIL && itr->second->refs[evt] != ref)
 				ReferenceHandler::removeReference(li_->lu, (ptrdiff_t)itr->second->refs[evt]);
 			itr->second->refs[evt] = ref;
 		}
 		else
 		{
 			PObjectBinding bind = new ObjectBinding;
-			memset(bind, 0, sizeof(ObjectBinding) );
 			bind->refs[evt] = ref;
 			li_->m_unitGossipBinding.insert(make_pair(entry,bind) );
 		}
@@ -164,14 +160,13 @@ void registerItemGossipEvent(uint32 entry, uint32 evt, lua_function ref)
 		li::ObjectBindingMap::iterator itr = li_->m_itemGossipBinding.find(entry);
 		if(itr != li_->m_itemGossipBinding.end() )
 		{
-			if(itr->second->refs[evt] != NULL && itr->second->refs[evt] != ref)
+			if(itr->second->refs[evt] != (lua_function)LUA_REFNIL && itr->second->refs[evt] != ref)
 				ReferenceHandler::removeReference(li_->lu, (ptrdiff_t)itr->second->refs[evt]);
 			itr->second->refs[evt] = ref;
 		}
 		else
 		{
 			PObjectBinding bind = new ObjectBinding;
-			memset(bind, 0, sizeof(ObjectBinding) );
 			bind->refs[evt] = ref;
 			li_->m_itemGossipBinding.insert( make_pair(entry, bind) );
 		}
@@ -185,14 +180,13 @@ void registerGOGossipEvent(uint32 entry, uint32 evt, lua_function ref)
 		li::ObjectBindingMap::iterator itr = li_->m_goGossipBinding.find(entry);
 		if(itr != li_->m_goGossipBinding.end() )
 		{
-			if(itr->second->refs[evt] != NULL && itr->second->refs[evt] != ref)
+			if(itr->second->refs[evt] != (lua_function)LUA_REFNIL && itr->second->refs[evt] != ref)
 				ReferenceHandler::removeReference(li_->lu, (ptrdiff_t)itr->second->refs[evt]);
 			itr->second->refs[evt] = ref;
 		}
 		else
 		{
 			PObjectBinding bind = new ObjectBinding;
-			memset(bind, 0, sizeof(ObjectBinding) );
 			bind->refs[evt] = ref;
 			li_->m_goGossipBinding.insert(make_pair(entry, bind) );
 		}
@@ -206,14 +200,13 @@ void registerInstanceEvent(uint32 entry, uint32 evt, lua_function ref)
 		li::ObjectBindingMap::iterator itr = li_->m_instanceBinding.find(entry);
 		if(itr != li_->m_instanceBinding.end() )
 		{
-			if(itr->second->refs[evt] != NULL && itr->second->refs[evt] != ref)
+			if(itr->second->refs[evt] != (lua_function)LUA_REFNIL && itr->second->refs[evt] != ref)
 				ReferenceHandler::removeReference(li_->lu, (ptrdiff_t)itr->second->refs[evt]);
 			itr->second->refs[evt] = ref;
 		}
 		else
 		{
 			PObjectBinding bind = new ObjectBinding;
-			memset(bind, 0, sizeof(ObjectBinding) );
 			bind->refs[evt] = ref;
 			li_->m_instanceBinding.insert(make_pair(entry,bind) );
 		}

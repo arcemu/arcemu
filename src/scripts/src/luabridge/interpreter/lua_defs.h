@@ -282,15 +282,26 @@ class LuaGameObject;
 class LuaInstance;
 class LuaQuest;
 
-typedef struct
+class SpellMapEntry
 {
-	ptrdiff_t ref;
+public:
+	int32 ref;
 	variadic_parameter * params;
-} SpellMapEntry, *PSpellMapEntry;
-typedef struct
+	SpellMapEntry() : ref(LUA_REFNIL), params(NULL) {}
+};
+typedef SpellMapEntry* PSpellMapEntry;
+
+class ObjectBinding
 {
+public:
 	lua_function refs[CREATURE_EVENT_COUNT];
-} ObjectBinding, *PObjectBinding;
+	ObjectBinding()
+	{
+		for(size_t i = 0; i < CREATURE_EVENT_COUNT; ++i)
+			refs[i] = (lua_function)LUA_REFNIL;
+	}
+};
+typedef ObjectBinding* PObjectBinding;
 
 class LUA_SCRIPT
 {
