@@ -42,14 +42,15 @@ function PerformIngameSpawn(spawntype, entry, _, x, y, z, o, facOrScale, duratio
    e3 = e3 or 0;
    local spawn
    if (spawntype == 1) then --unit
-      spawn = MapMgr:GetInterface():SpawnCreature(entry, x, y, z, o, true, false, 0, 0, 1)
+      spawn = MapMgr:GetInterface():FullSpawnCreature(entry, x, y, z, o, true, false, 0, 0, 1)
       spawn:SetEquippedItem(0, e1)
       spawn:SetEquippedItem(1, e2)
       spawn:SetEquippedItem(2, e3)
       spawn:SetFaction(facOrScale)
    elseif (spawntype == 2) then --go
-      spawn = MapMgr:GetInterface():SpawnGameObject(entry, x, y, z, o, true, false, 0, 0, 1)
+      spawn = MapMgr:GetInterface():FullSpawnGameObject(entry, x, y, z, o, false, 0, 0, 1)
       spawn:SetScale(facOrScale / 100)
+      spawn:PushToWorld(MapMgr)
    end
    if (duration > 0) then
       spawn:Despawn(duration, 0)

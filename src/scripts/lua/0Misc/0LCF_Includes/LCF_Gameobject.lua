@@ -126,4 +126,19 @@ function GAMEOBJECT:Update()
    self:Despawn(1, 1)
 end
 
-alias("GetSpawnId", "GetSQL_id")
+function GAMEOBJECT:CustomAnimate(aindex)
+   if (aindex < 2) then
+      local data = LuaPacket(179, 12);
+      data:WriteGUID(self:GetGUID());
+      data:WriteUInt32(aindex);
+      self:SendMessageToSet(data, false, false);
+      return true
+   end
+   return false
+end
+
+function GAMEOBJECT:GetAreaId()
+   return MapMgr:GetAreaID(self:GetX(), self:GetY());
+end
+
+function GAMEOBJECT:GetLandHeight(x,y) return MapMgr:GetADTLandHeight(x,y) end

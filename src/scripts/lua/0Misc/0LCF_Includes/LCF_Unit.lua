@@ -197,6 +197,18 @@ getregistry("Unit").SetMaxPower = function(self, powtype)
    oldSetMaxPower(self, powtype)
 end
 
+function UNIT:GetAreaId()
+   return MapMgr:GetAreaID(self:GetX(), self:GetY());
+end
+
+function UNIT:Actual()
+   if (self:IsCreature()) then 
+      return TO_CREATURE(self);
+   else
+      return TO_PLAYER(self);
+   end
+end
+
 --------------------------------- RE-DEFINED 'alias' here------------------------------
 alias = function(_func, ...)
 	for _,label in ipairs(arg) do

@@ -93,11 +93,6 @@ public:
 	   li_->m_goFRefs.erase( this->GetLowGUID() );
    }
 
-   const char * GetName()
-   {
-	   return this->GetInfo()->Name;
-   }
-
    void AddLoot(uint32 itemid, uint32 mincount, uint32 maxcount, uint32 ffa_loot, lua_stack s)
    {
 	   lua_State * stack = (lua_State*)s;
@@ -116,5 +111,10 @@ public:
 			   delete result;
 	   }
 	   lootmgr.AddLoot(&loot,itemid,mincount,maxcount,ffa_loot);
+   }
+
+   uint32 GetSpawnId()
+   {
+	   return (m_spawn ? m_spawn->id : 0);
    }
 };

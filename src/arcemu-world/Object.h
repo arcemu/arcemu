@@ -202,7 +202,7 @@ public:
 	const float& GetPositionY( ) const { return m_position.y; }
 	const float& GetPositionZ( ) const { return m_position.z; }
 	const float& GetOrientation( ) const { return m_position.o; }
-	void SetOrientation( float &o ) { m_position.o = o; }
+	void SetOrientation( float o ) { m_position.o = o; }
 
 	const float& GetSpawnX( ) const { return m_spawnLocation.x; }
 	const float& GetSpawnY( ) const { return m_spawnLocation.y; }

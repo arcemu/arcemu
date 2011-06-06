@@ -177,7 +177,7 @@ extern void LuaHookOnZone(Player * pPlayer, uint32 Zone, uint32 oldZone);
 extern bool LuaHookOnChat(Player * pPlayer, uint32 Type, uint32 Lang, const char * Message, const char * Misc);
 extern void LuaHookOnLoot(Player * pPlayer, Unit * pTarget, uint32 Money, uint32 ItemId);
 extern void LuaHookOnGuildCreate(Player * pLeader, Guild * pGuild);
-extern void LuaHookOnEnterWorld2(Player * pPlayer);
+extern void LuaHookOnFullLogin(Player * pPlayer);
 extern void LuaHookOnCharacterCreate(Player * pPlayer);
 extern void LuaHookOnQuestCancelled(Player * pPlayer, Quest * pQuest);
 extern void LuaHookOnQuestFinished(Player * pPlayer, Quest * pQuest, Object * pQuestGiver);

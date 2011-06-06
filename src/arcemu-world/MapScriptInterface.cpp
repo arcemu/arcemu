@@ -86,6 +86,7 @@ GameObject* MapScriptInterface::SpawnGameObject(uint32 Entry, float cX, float cY
 		return NULL;
 	}
 	pGameObject->m_phase = phase;
+	pGameObject->m_spawn = 0;
 
 	if(AddToWorld)
 		pGameObject->PushToWorld(&mapMgr);

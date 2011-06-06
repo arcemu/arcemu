@@ -26,9 +26,8 @@ namespace lua_engine
 			.method( &Object::GetPositionX, "GetPositionX", "getPositionX", "getpositionx", "getX", "GetX", "getx", NULL)
 			.method( &Object::GetPositionY, "GetPositionY", "getPositionY", "getpositiony", "getY", "GetY", "gety", NULL )
 			.method( &Object::GetPositionZ, "GetPositionZ", "getPositionZ", "getpositionz", "getz", "getZ", "GetZ", NULL)
-			.method(&Object::GetOrientation, "GetOrientation", "getO", "geto", "GetO", NULL)
-			//.method("SetO", &Object::SetOrientation)
-			//.method("SetOrientation", &Object::SetOrientation)		
+			.method( &Object::GetOrientation, "GetOrientation", "getO", "geto", "GetO", NULL)
+			.method( &Object::SetOrientation, "SetOrientation", "SetO", "setO", "seto", NULL)	
 			.method( &Object::GetSpawnX, "GetSpawnX", "getSpawnX", "getspawnx", NULL)
 			.method( &Object::GetSpawnY, "GetSpawnY", "getSpawnY", "getspawny", NULL)
 			.method( &Object::GetSpawnZ, "GetSpawnZ", "getSpawnZ", "getspawnz", NULL)
@@ -87,7 +86,8 @@ namespace lua_engine
 			.method( (void (Object::*)(WorldPacket*,bool,bool) )&Object::SendMessageToSet, "SendMessageToSet", "sendMessageToSet", "sendmessagetoset", NULL)
 			.method( &Object::PlaySoundToSet, "PlaySoundToSet", "playSound", "playsound", "PlaySound", NULL)
 			.method( &Object::IsInBg, "IsInBG", "isInBG", "isinbg", NULL)
-			.method( &Object::DealDamage, "DealDamage", "dealDamage", "dealdamage", NULL);
+			.method( &Object::DealDamage, "DealDamage", "dealDamage", "dealdamage", NULL)
+			.method( &Object::PushToWorld, "PushToWorld", "pushToWorld", "pushtoworld", NULL);
 
 		 //creatable and destroyable in the lua environment.
 		 m	.class_<Arcemu::Gossip::Menu>("GossipMenu", true)

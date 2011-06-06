@@ -147,7 +147,7 @@ alias(stub, "GetInRangePlayers", "getInRangePlayers", "getinrangeplayers")
 function stub(self)
 	local allies = self:GetInRangeSameFactions()
 	for k,v in ipairs(allies) do
-		allies[k] = TO_UNIT(v)
+		allies[k] = TO_UNIT(v):Actual();
 	end
 	return allies
 end
@@ -156,7 +156,7 @@ alias(stub, "GetInRangeAllies", "getInRangeAllies", "getinrangeallies", "GetInRa
 function stub(self)
 	local hostiles = self:GetInRangeOpposingFactions()
 	for k,v in ipairs(hostiles) do
-		hostiles[k] = TO_UNIT(v)
+		hostiles[k] = TO_UNIT(v):Actual();
 	end
 	return hostiles
 end
@@ -164,13 +164,13 @@ alias(stub, "GetInRangeEnemies", "getInRangeEnemies", "getinrangeenemies", "GetI
 
 function stub(self)
 	local allies = self:GetInRangeSameFactions()
-	return TO_UNIT( allies[ math.random(#allies) ] )
+	return TO_UNIT( allies[ math.random(#allies) ] ):Actual();
 end
 alias(stub, "GetRandomAlly", "getRandomAlly", "getrandomally", "GetRandomFriend", "getRandomFriend", "getrandomfriend")
 
 function stub(self)
 	local hostiles = self:GetInRangeOpposingFactions()
-	return TO_UNIT( hostiles[ math.random( #hostiles) ] )
+	return TO_UNIT( hostiles[ math.random( #hostiles) ] ):Actual();
 end
 alias(stub, "GetRandomEnemy", "getRandomEnemy", "getrandomenemy", "GetRandomHostile", "getRandomHostile", "getrandomhostile")
 
@@ -186,7 +186,7 @@ function stub(self)
 			suitable_ally = unit
 		end
 	end
-	return TO_UNIT(suitable_ally)
+	return TO_UNIT(suitable_ally):Actual();
 end
 alias(stub, "GetClosestAlly", "getClosestAlly", "getclosestally", "GetClosestFriend", "getClosestFriend", "getclosestfriend")
 
@@ -202,7 +202,7 @@ function stub(self)
 			suitable_hostile = unit
 		end
 	end
-	return TO_UNIT(suitable_hostile)
+	return TO_UNIT(suitable_hostile):Actual();
 end
 alias(stub, "GetClosestEnemy", "getClosestEnemy", "getclosestenemy", "GetClosestHostile", "getClosestHostile", "getclosesthostile")
 
@@ -215,7 +215,7 @@ function stub(self)
 		current_distance = self:CalcDistanceToObject(plr)
 		if(current_distance <= distance) then
 			distance = current_distance
-			suitable_hostile = plr
+			suitable_player = plr
 		end
 	end
 	return TO_PLAYER(suitable_player)
@@ -315,6 +315,22 @@ end
 alias(stub, "GetInRangeUnits", "getInRangeUnits", "getinrangeunits")
 
 function stub(self)
+	local units = self:GetInRangeUnits()
+	local distance = 9999.99
+	
+	local suitable_unit, current_distance;
+	for _, un in ipairs(units) do
+		current_distance = self:CalcDistanceToObject(un)
+		if(current_distance <= distance) then
+			distance = current_distance
+			suitable_unit = un
+		end
+	end
+	return TO_PLAYER(suitable_unit)
+end
+alias(stub, "GetClosestUnit", "getClosestUnit", "getclosestunit", "GetNearestUnit", "getNearestUnit", "getnearestunit")
+
+function stub(self)
 	local objs = self:getInRangeSameFactions()
 	local aux = {}
 	for _,v in ipairs(objs) do
@@ -361,6 +377,3 @@ end
 function OBJ:GetInRangeCreaturesCount()
    return #(self:GetInRangeCreatures())
 end
-		
-		
-		

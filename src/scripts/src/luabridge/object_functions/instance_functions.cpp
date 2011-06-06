@@ -173,7 +173,9 @@ namespace lua_engine
 			.method( &MapMgr::GetPlayerCount, "getplayercount", "getPlayerCount", "GetPlayerCount", NULL)
 			.method( &MapMgr::SetWorldState, "setworldstate", "setWorldState", "SetWorldState", NULL)
 			.method( &MapMgr::GetSqlIdCreature, "GetSqlIdCreature", "getsqlidcreature", "getSqlIdCreature", NULL)
-			.method( &MapMgr::GetSqlIdGameObject, "GetSqlIdGameObject", "getsqlidgameobject", "getSqlIdGameObject", NULL); 
+			.method( &MapMgr::GetSqlIdGameObject, "GetSqlIdGameObject", "getsqlidgameobject", "getSqlIdGameObject", NULL)
+			.method( &MapMgr::GetAreaID, "GetAreaID", "getAreaID", "getareaid", "GetAreaId", NULL)
+			.method( &MapMgr::GetADTLandHeight, "GetADTLandHeight", "getADTLandHeight", "getadtlandheight", NULL);
 
 		m	.class_<MapScriptInterface>("MapScriptInterface")
 			.method(&MapScriptInterface::GetGameObjectNearestCoords, "GetGameObjectNearestCoords", "getGameObjectNearestCoords", "getgameobjectnearestcoords", NULL)

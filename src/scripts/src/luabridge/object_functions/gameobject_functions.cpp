@@ -153,7 +153,9 @@ namespace lua_engine
 			.method( &lua_go::RegisterScriptEngineFunction, "RegisterEvent", "registerEvent", "registerevent", NULL)
 			.method( &lua_go::RemoveScriptEngineEvents, "RemoveEvents", "removeEvents", "removeevents", "removevents", NULL)
 			.method( &GameObject::GetInfo, "GetInfo", "getInfo", "getinfo", NULL)	
-			.method( &GameObject::SaveToDB, "SaveToDB", "saveToDB", "savetodb", NULL);
+			.method( &GameObject::SaveToDB, "SaveToDB", "saveToDB", "savetodb", NULL)
+			.method( &lua_go::AddLoot, "AddLoot", "addLoot", "addloot", NULL)
+			.method( &lua_go::GetSpawnId, "GetSpawnId", "GetSQL_id", "GetSpawnID", "getSpawnID", "getspawnid", NULL);
 
 		//Gameobject ai script, used for registering ai update.
 		m	.class_<GameObjectAIScript>("GameObjectAIScript")
