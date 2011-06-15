@@ -2113,6 +2113,9 @@ void Spell::SendSpellGo()
 
 	m_targets.write( data ); // this write is included the target flag
 
+	if( flags & SPELL_GO_FLAGS_POWER_UPDATE )
+		data << (uint32) p_caster->GetPower( GetProto()->powerType );
+
 	// er why handle it being null inside if if you can't get into if if its null
 	if( GetType() == SPELL_DMG_TYPE_RANGED )
 	{
@@ -2140,9 +2143,6 @@ void Spell::SendSpellGo()
 		else
 			data << uint32( 0 ) << uint32( 0 );
 	}
-
-	if( flags & SPELL_GO_FLAGS_POWER_UPDATE )
-		data << (uint32) p_caster->GetPower( GetProto()->powerType );
 
 	//data order depending on flags : 0x800, 0x200000, 0x20000, 0x20, 0x80000, 0x40 (this is not spellgoflag but seems to be from spellentry or packet..)
 //.text:00401110                 mov     eax, [ecx+14h] -> them
