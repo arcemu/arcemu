@@ -23,7 +23,7 @@
 class SERVER_DECL Mutex
 {
 public:
-	friend class Condition;
+	//friend class Condition;
 
 	/** Initializes a mutex class, with InitializeCriticalSection / pthread_mutex_init
 	 */
@@ -33,40 +33,19 @@ public:
 	 */
 	virtual ~Mutex();
 
-	/** Acquires this mutex. If it cannot be acquired immediately, it will block.
-	 */
-	ARCEMU_INLINE void Acquire()
-	{
-#ifndef WIN32
-		pthread_mutex_lock(&mutex);
-#else
-		EnterCriticalSection(&cs);
-#endif
-	}
-
-	/** Releases this mutex. No error checking performed
-	 */
-	ARCEMU_INLINE void Release()
-	{
-#ifndef WIN32
-		pthread_mutex_unlock(&mutex);
-#else
-		LeaveCriticalSection(&cs);
-#endif
-	}
-
 	/** Attempts to acquire this mutex. If it cannot be acquired (held by another thread)
 	 * it will return false.
 	 * @return false if cannot be acquired, true if it was acquired.
 	 */
-	ARCEMU_INLINE bool AttemptAcquire()
-	{
-#ifndef WIN32
-		return (pthread_mutex_trylock(&mutex) == 0);
-#else
-		return (TryEnterCriticalSection(&cs) == TRUE ? true : false);
-#endif
-	}
+	bool AttemptAcquire();
+
+	/** Acquires this mutex. If it cannot be acquired immediately, it will block.
+	 */
+	void Acquire();
+
+	/** Releases this mutex. No error checking performed
+	 */
+	void Release();
 
 protected:
 #ifdef WIN32
@@ -96,54 +75,15 @@ class SERVER_DECL FastMutex
 	DWORD m_recursiveCount;
 
 public:
-	ARCEMU_INLINE FastMutex() : m_lock(0),m_recursiveCount(0) {}
-	ARCEMU_INLINE ~FastMutex() {}
+	FastMutex() : m_lock(0),m_recursiveCount(0){}
 
-	ARCEMU_INLINE void Acquire()
-	{
-		DWORD thread_id = GetCurrentThreadId(), owner;
-		if(thread_id == (DWORD)m_lock)
-		{
-			++m_recursiveCount;
-			return;
-		}
+	~FastMutex(){}
 
-		for(;;)
-		{
-			owner = InterlockedCompareExchange(&m_lock, thread_id, 0);
-			if(owner == 0)
-				break;
+	bool AttemptAcquire();
 
-			Sleep(0);
-		}
+	void Acquire();
 
-		++m_recursiveCount;
-	}
-
-	ARCEMU_INLINE bool AttemptAcquire()
-	{
-		DWORD thread_id = GetCurrentThreadId();
-		if(thread_id == (DWORD)m_lock)
-		{
-			++m_recursiveCount;
-			return true;
-		}
-
-		DWORD owner = InterlockedCompareExchange(&m_lock, thread_id, 0);
-		if(owner == 0)
-		{
-			++m_recursiveCount;
-			return true;
-		}
-
-		return false;
-	}
-
-	ARCEMU_INLINE void Release()
-	{
-		if((--m_recursiveCount) == 0)
-			InterlockedExchange(&m_lock, 0);
-	}
+	void Release();
 };
 
 #else
