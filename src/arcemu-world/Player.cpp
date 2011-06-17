@@ -5021,12 +5021,16 @@ float Player::GetDodgeChance()
 {
 	uint32 pClass = (uint32)getClass();
 	float chance;
+	uint32 level = getLevel();
+	
+	if( level > sWorld.m_genLevelCap )
+		level = sWorld.m_genLevelCap;
 
 	// Base dodge chance
 	chance = baseDodge[pClass];
 
 	// Dodge from agility
-	chance += float( GetStat(STAT_AGILITY) / dodgeRatio[getLevel()-1][pClass] );
+	chance += float( GetStat( STAT_AGILITY ) / dodgeRatio[ level - 1 ][ pClass ] );
 
 	// Dodge from dodge rating
 	chance += CalcRating( PLAYER_RATING_MODIFIER_DODGE );
