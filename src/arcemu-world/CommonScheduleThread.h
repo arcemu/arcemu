@@ -33,6 +33,8 @@ class CommonScheduleThread : public CThread
 
 	uint32 BCTimerCount;
 
+	Arcemu::Threading::ConditionVariable cond;
+
 public:
 	CommonScheduleThread();
 	~CommonScheduleThread();

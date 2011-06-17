@@ -23,6 +23,7 @@ SET( sources
     Threading/AtomicFloat.cpp 
     Threading/AtomicCounter.cpp 
     Threading/AtomicBoolean.cpp 
+    Threading/ConditionVariable.cpp
     arcemu_getopt.cpp 
     Auth/BigNumber.cpp 
     Auth/MD5.cpp 

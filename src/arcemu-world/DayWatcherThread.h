@@ -31,6 +31,8 @@ enum DAYWATCHERSETTINGS
 
 class DayWatcherThread : public CThread
 {
+	Arcemu::Threading::ConditionVariable cond;
+
 	bool m_running;
 	bool m_busy;
 	bool m_dirty;

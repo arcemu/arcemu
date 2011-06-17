@@ -26,13 +26,6 @@
 
 #define THREAD_LOOP_INTERVAL 120 // seconds
 
-#ifdef WIN32
-static HANDLE m_abortEvent = INVALID_HANDLE_VALUE;
-#else
-static pthread_cond_t abortcond;
-static pthread_mutex_t abortmutex;
-#endif
-
 DayWatcherThread::DayWatcherThread()
 {
 	m_running = true;
@@ -47,11 +40,7 @@ DayWatcherThread::~DayWatcherThread()
 void DayWatcherThread::terminate()
 {
 	m_running = false;
-#ifdef WIN32
-	SetEvent(m_abortEvent);
-#else
-	pthread_cond_signal(&abortcond);
-#endif
+	cond.Signal();
 }
 
 void DayWatcherThread::dupe_tm_pointer(tm * returnvalue, tm * mypointer)
@@ -148,15 +137,6 @@ bool DayWatcherThread::run()
 	load_settings();
 	set_tm_pointers();
 	m_busy = false;
-#ifdef WIN32
-	m_abortEvent = CreateEvent(NULL, NULL, FALSE, NULL);
-#else
-	struct timeval now;
-	struct timespec tv;
-
-	pthread_mutex_init(&abortmutex,NULL);
-	pthread_cond_init(&abortcond,NULL);
-#endif
 	
 	while(GetThreadState() != THREADSTATE_TERMINATE)
 	{
@@ -177,27 +157,12 @@ bool DayWatcherThread::run()
 		if(GetThreadState() == THREADSTATE_TERMINATE)
 			break;
 
-#ifdef WIN32
-		if (m_abortEvent)
-			WaitForSingleObject(m_abortEvent, THREAD_LOOP_INTERVAL*1000);
-#else
-		gettimeofday(&now, NULL);
-		tv.tv_sec = now.tv_sec + THREAD_LOOP_INTERVAL;
-		tv.tv_nsec = now.tv_usec * 1000;
-		pthread_mutex_lock(&abortmutex);
-		pthread_cond_timedwait(&abortcond, &abortmutex, &tv);
-		pthread_mutex_unlock(&abortmutex);
-#endif
+		cond.Wait( THREAD_LOOP_INTERVAL * 1000 );
+
 		if(!m_running)
 			break;
 	}
-#ifdef WIN32
-	if (m_abortEvent)
-		CloseHandle(m_abortEvent);		
-#else
-	pthread_mutex_destroy(&abortmutex);
-	pthread_cond_destroy(&abortcond);
-#endif
+
 	return true;
 }
 

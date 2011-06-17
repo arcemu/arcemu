@@ -23,13 +23,6 @@
 
 #define THREAD_LOOP_INTERVAL 10 // cebernic: don't modify it
 
-#ifdef WIN32
-static HANDLE m_abortEvent = INVALID_HANDLE_VALUE;
-#else
-static pthread_cond_t abortcond;
-static pthread_mutex_t abortmutex;
-#endif
-
 CommonScheduleThread::CommonScheduleThread()
 {
 	m_running = true;
@@ -45,12 +38,8 @@ void CommonScheduleThread::terminate()
 {
 	BCTimerCount = 0;
 	m_running = false;
-#ifdef WIN32
-	SetEvent(m_abortEvent);
-#else
-	pthread_cond_signal(&abortcond);
-#endif
 
+	cond.Signal();
 }
 
 bool CommonScheduleThread::run()
@@ -62,16 +51,6 @@ bool CommonScheduleThread::run()
 		itOrderMSGEntry = objmgr.GetBCTotalItemBegin();
 	// cebernic nothing in storage
 	if ( objmgr.IsBCEntryStorageEmpty() ) sWorld.BCSystemEnable = 0;
-
-#ifdef WIN32
-	m_abortEvent = CreateEvent(NULL, NULL, FALSE, NULL);
-#else
-	struct timeval now;
-	struct timespec tv;
-
-	pthread_mutex_init(&abortmutex,NULL);
-	pthread_cond_init(&abortcond,NULL);
-#endif
 
 	BCTimerCount = getMSTime() + ((uint32)sWorld.BCInterval*1000);
 
@@ -85,27 +64,12 @@ bool CommonScheduleThread::run()
 		if(GetThreadState() == THREADSTATE_TERMINATE)
 			break;
 
-#ifdef WIN32
-		if (m_abortEvent)
-			WaitForSingleObject(m_abortEvent, THREAD_LOOP_INTERVAL*1000);
-#else
-		gettimeofday(&now, NULL);
-		tv.tv_sec = now.tv_sec + THREAD_LOOP_INTERVAL;
-		tv.tv_nsec = now.tv_usec * 1000;
-		pthread_mutex_lock(&abortmutex);
-		pthread_cond_timedwait(&abortcond, &abortmutex, &tv);
-		pthread_mutex_unlock(&abortmutex);
-#endif
+		cond.Wait( THREAD_LOOP_INTERVAL * 1000 );
+
 		if(!m_running)
 			break;
 	}
-#ifdef WIN32
-	if (m_abortEvent)
-		CloseHandle(m_abortEvent);		
-#else
-	pthread_mutex_destroy(&abortmutex);
-	pthread_cond_destroy(&abortcond);
-#endif
+
 	return true;
 }
 /*

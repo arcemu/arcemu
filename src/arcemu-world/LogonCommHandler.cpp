@@ -85,16 +85,13 @@ void LogonCommHandler::RequestAddition(LogonCommClientSocket * Socket)
 class LogonCommWatcherThread : public ThreadBase
 {
 	bool running;
-#ifdef WIN32
-	HANDLE hEvent;
-#endif
+
+	Arcemu::Threading::ConditionVariable cond;
+
 public:
 
 	LogonCommWatcherThread()
 	{
-#ifdef WIN32
-		hEvent = CreateEvent( NULL, TRUE, FALSE, NULL );
-#endif
 		running = true;
 	}
 
@@ -106,9 +103,8 @@ public:
 	void OnShutdown()
 	{
 		running = false;
-#ifdef WIN32
-		SetEvent( hEvent );
-#endif
+		
+		cond.Signal();
 	}
 
 	bool run()
@@ -117,11 +113,8 @@ public:
 		while( running )
 		{
 			sLogonCommHandler.UpdateSockets();
-#ifdef WIN32
-			WaitForSingleObject( hEvent, 5000 );
-#else
-			Sleep( 5000 );
-#endif
+
+			cond.Wait( 5000 );
 		}
 
 		return true;

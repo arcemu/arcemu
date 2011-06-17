@@ -220,12 +220,8 @@ public:
 
 struct CharacterLoaderThread : public ThreadBase
 {
-#ifdef WIN32
-	HANDLE hEvent;
-#else
-	pthread_cond_t cond;
-	pthread_mutex_t mutex;
-#endif
+	Arcemu::Threading::ConditionVariable cond;
+
 	bool running;
 public:
 	CharacterLoaderThread();

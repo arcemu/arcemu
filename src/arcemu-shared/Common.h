@@ -398,6 +398,7 @@ Scripting system exports/imports
 #include "Threading/AtomicFloat.h"
 #include "Threading/AtomicCounter.h"
 #include "Threading/AtomicBoolean.h"
+#include "Threading/ConditionVariable.h"
 
 #include "CRefcounter.h"
 

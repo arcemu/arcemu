@@ -20,7 +20,6 @@
 #ifndef FQUEUE_H
 #define FQUEUE_H
 
-#include "Condition.h"
 #include "Mutex.h"
  
 template<class T> 

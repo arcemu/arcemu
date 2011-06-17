@@ -374,9 +374,8 @@ bool Master::Run(int argc, char ** argv)
 		fprintf( fPid, "%u", (unsigned int)pid );
 		fclose( fPid );
 	}
-#ifdef WIN32
-	HANDLE hThread = GetCurrentThread();
-#endif
+
+	Arcemu::Threading::ConditionVariable cond;
 
 	uint32 loopcounter = 0;
 	//ThreadPool.Gobble();
@@ -476,11 +475,9 @@ bool Master::Run(int argc, char ** argv)
 
 		if( 50 > etime )
 		{
-#ifdef WIN32
-			WaitForSingleObject( hThread, 50 - etime );
-#else
-			Sleep( 50 - etime );
-#endif
+
+			cond.Wait( 50 - etime );
+
 		}
 	}
 	_UnhookSignals();

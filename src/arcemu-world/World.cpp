@@ -1744,11 +1744,7 @@ struct insert_playeritem
 void CharacterLoaderThread::OnShutdown()
 {
 	running=false;
-#ifdef WIN32
-	SetEvent(hEvent);
-#else
-	pthread_cond_signal(&cond);
-#endif
+	cond.Signal();
 }
 
 CharacterLoaderThread::CharacterLoaderThread()
@@ -1758,25 +1754,11 @@ CharacterLoaderThread::CharacterLoaderThread()
 
 CharacterLoaderThread::~CharacterLoaderThread()
 {
-#ifdef WIN32
-	CloseHandle(hEvent);
-#else
-	pthread_cond_destroy(&cond);
-	pthread_mutex_destroy(&mutex);
-#endif
 }
 
 bool CharacterLoaderThread::run()
 {
-#ifdef WIN32
-	hEvent = CreateEvent(NULL,FALSE,FALSE,NULL);
-#else
-	struct timeval now;
-	struct timespec tv;
 
-	pthread_mutex_init(&mutex,NULL);
-	pthread_cond_init(&cond,NULL);
-#endif
 	running=true;
 	for(;;)
 	{
@@ -1789,22 +1771,11 @@ bool CharacterLoaderThread::run()
 #endif
 
 		sWorld.PollMailboxInsertQueue(con);
-		/* While this looks weird, it ensures the system doesn't waste time switching to these contexts.
-		   WaitForSingleObject will suspend the thread,
-		   and on unix, select will as well. - Burlex
-			*/
+
 		con->Busy.Release();
-#ifdef WIN32
-		if (hEvent)
-			WaitForSingleObject(hEvent,LOAD_THREAD_SLEEP*1000);
-#else
-		gettimeofday(&now, NULL);
-		tv.tv_sec = now.tv_sec + LOAD_THREAD_SLEEP;
-		tv.tv_nsec = now.tv_usec * 1000;
-		pthread_mutex_lock(&mutex);
-		pthread_cond_timedwait(&cond, &mutex, &tv);
-		pthread_mutex_unlock(&mutex);
-#endif
+
+		cond.Wait( LOAD_THREAD_SLEEP * 1000 );
+
 		if(!running)
 			break;
 	}
