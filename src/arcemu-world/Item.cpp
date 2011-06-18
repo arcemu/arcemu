@@ -714,7 +714,7 @@ void Item::ApplyEnchantmentBonus( uint32 Slot, bool Apply )
 	if ( VisibleBase <= PLAYER_VISIBLE_ITEM_19_ENCHANTMENT )
 		m_owner->SetUInt32Value( VisibleBase, Apply ? Entry->Id : 0 ); //On 3.1 we can't add a Slot to the base now, as we no longer have multiple fields for storing them. This in some cases will try to write for example 3 visuals into one place, but now every item has only one field for this, and as we can't choose which visual to have, we'll accept the last one.
 	else
-		sLog.outError( "Item::ApplyEnchantmentBonus visual out of range! Tried to address UInt32 field %i !!!", VisibleBase );
+		LOG_ERROR( "Item::ApplyEnchantmentBonus visual out of range! Tried to address UInt32 field %i !!!", VisibleBase );
 
 	// Another one of those for loop that where not indented properly god knows what will break
 	// but i made it actually affect the code below it
@@ -850,7 +850,7 @@ void Item::ApplyEnchantmentBonus( uint32 Slot, bool Apply )
 
 			default:
 				{
-					sLog.outError( "Unknown enchantment type: %u (%u)", Entry->type[c], Entry->Id );
+					LOG_ERROR( "Unknown enchantment type: %u (%u)", Entry->type[c], Entry->Id );
 				}break;
 			}
 		}
@@ -1265,14 +1265,14 @@ uint32 Item::RepairItemCost()
 	DurabilityCostsEntry * dcosts = dbcDurabilityCosts.LookupEntryForced( m_itemProto->ItemLevel );
 	if( dcosts == NULL )
 	{
-		sLog.outError("Repair: Unknown item level (%u)", dcosts);
+		LOG_ERROR("Repair: Unknown item level (%u)", dcosts);
 		return 0;
 	}
 
 	DurabilityQualityEntry * dquality = dbcDurabilityQuality.LookupEntryForced( ( m_itemProto->Quality + 1 ) * 2);
 	if( dquality == NULL )
 	{
-		sLog.outError("Repair: Unknown item quality (%u)", dquality);
+		LOG_ERROR("Repair: Unknown item quality (%u)", dquality);
 		return 0;
 	}
 

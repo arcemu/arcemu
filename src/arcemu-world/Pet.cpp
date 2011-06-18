@@ -1392,7 +1392,7 @@ void Pet::ApplySummonLevelAbilities()
 
 	if(stat_index < 0)
 	{
-		sLog.outError("PETSTAT: No stat index found for entry %u, `%s`!", GetEntry(), GetCreatureInfo()->Name);
+		LOG_ERROR("PETSTAT: No stat index found for entry %u, `%s`!", GetEntry(), GetCreatureInfo()->Name);
 		return;
 	}
 
@@ -1470,7 +1470,7 @@ void Pet::ApplySummonLevelAbilities()
 	double mana = has_mana ? (pet_int * pet_int_to_mana) : 0.0;
 	if( health == 0 )
 	{
-		sLog.outError("Pet with entry %u has 0 health !!", GetEntry() );
+		LOG_ERROR("Pet with entry %u has 0 health !!", GetEntry() );
 		health = 100;
 	}
 	SetBaseHealth((uint32)(health));
@@ -1522,7 +1522,7 @@ void Pet::ApplyPetLevelAbilities()
 
 	//Family Aura
 	if( pet_family > 46 )
-		sLog.outError( "PETSTAT: Creature family %i [%s] has missing data.", pet_family, myFamily->name );
+		LOG_ERROR( "PETSTAT: Creature family %i [%s] has missing data.", pet_family, myFamily->name );
 	else if( family_aura[ pet_family ] != 0 )
 		this->CastSpell( this, family_aura[ pet_family ], true );
 
@@ -1652,7 +1652,7 @@ AI_Spell * Pet::HandleAutoCastEvent()
 		else
 		{
 			// bad pointers somehow end up here :S
-			sLog.outError("Bad AI_Spell detected in AutoCastEvent!");
+			LOG_ERROR("Bad AI_Spell detected in AutoCastEvent!");
 			m_autoCastSpells[AUTOCAST_EVENT_ATTACK].erase(itr);
 		}
 	}
@@ -1709,12 +1709,12 @@ void Pet::HandleAutoCastEvent( AutoCastEvents Type )
 
 		if( sp->spell == NULL )
 		{
-			sLog.outError("Found corrupted spell at m_autoCastSpells, skipping");
+			LOG_ERROR("Found corrupted spell at m_autoCastSpells, skipping");
 			continue;
 		}
 		else if( sp->autocast_type != static_cast<uint32>( Type ) )
 		{
-			sLog.outError("Found corrupted spell (%lu) at m_autoCastSpells, skipping", sp->entryId);
+			LOG_ERROR("Found corrupted spell (%lu) at m_autoCastSpells, skipping", sp->entryId);
 			continue;
 		}
 

@@ -682,7 +682,7 @@ void Player::SendInitialLogonPackets()
 
     m_session->SendPacket( &ArenaSettings );
 
-	sLog.outDetail("WORLD: Sent initial logon packets for %s.", GetName());
+	LOG_DETAIL("WORLD: Sent initial logon packets for %s.", GetName());
 }
 
 void Player::SendLootUpdate( Object *o ){
@@ -796,7 +796,7 @@ void Player::SendEquipmentSetList(){
 
 	m_session->SendPacket( &data );
 
-	sLog.outDebug("Sent SMSG_EQUIPMENT_SET_LIST.");
+	LOG_DEBUG("Sent SMSG_EQUIPMENT_SET_LIST.");
 }
 
 void Player::SendEquipmentSetSaved( uint32 setID, uint32 setGUID ){
@@ -807,7 +807,7 @@ void Player::SendEquipmentSetSaved( uint32 setID, uint32 setGUID ){
 
 	m_session->SendPacket( &data );
 
-	sLog.outDebug("Sent SMSG_EQUIPMENT_SET_SAVED.");
+	LOG_DEBUG("Sent SMSG_EQUIPMENT_SET_SAVED.");
 }
 
 void Player::SendEquipmentSetUseResult( uint8 result ){
@@ -817,5 +817,5 @@ void Player::SendEquipmentSetUseResult( uint8 result ){
 
 	m_session->SendPacket( &data );
 
-	sLog.outDebug("SMSG_EQUIPMENT_SET_USE_RESULT sent.");
+	LOG_DEBUG("SMSG_EQUIPMENT_SET_USE_RESULT sent.");
 }

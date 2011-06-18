@@ -662,7 +662,7 @@ Unit::~Unit()
 	for( std::list<ExtraStrike*>::iterator itx = m_extraStrikeTargets.begin(); itx != m_extraStrikeTargets.end(); ++itx)
 	{
 		ExtraStrike* es = *itx;
-		sLog.outError("ExtraStrike added to Unit %u by Spell ID %u wasn't removed when removing the Aura", GetGUID(), es->spell_info->Id);
+		LOG_ERROR("ExtraStrike added to Unit %u by Spell ID %u wasn't removed when removing the Aura", GetGUID(), es->spell_info->Id);
 		delete es;
 	}
 	m_extraStrikeTargets.clear();
@@ -2837,7 +2837,7 @@ uint32 Unit::GetSpellDidHitResult( Unit* pVictim, uint32 weapon_damage_type, Spe
 		float spell_flat_modifers= 0;
 		SM_FFValue(SM_FHitchance,&spell_flat_modifers,ability->SpellGroupType);
 		if(spell_flat_modifers!= 0 )
-			sLog.outDebug("!!!!!spell resist mod flat %f,  spell resist bonus %f, spell group %u",spell_flat_modifers,hitchance,ability->SpellGroupType);
+			LOG_DEBUG("!!!!!spell resist mod flat %f,  spell resist bonus %f, spell group %u",spell_flat_modifers,hitchance,ability->SpellGroupType);
 #endif
 	}
 
@@ -3920,7 +3920,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 
 		//float r = ( 7.5f * dmg.full_damage / c + f * s ) / 2.0f;
 		//float p = ( 1 + ( TO< Player* >( this )->rageFromDamageDealt / 100.0f ) );
-		//sLog.outDebug( "Rd(%i) d(%i) c(%f) f(%f) s(%f) p(%f) r(%f) rage = %f", realdamage, dmg.full_damage, c, f, s, p, r, val );
+		//LOG_DEBUG( "Rd(%i) d(%i) c(%f) f(%f) s(%f) p(%f) r(%f) rage = %f", realdamage, dmg.full_damage, c, f, s, p, r, val );
 
 		ModPower(POWER_TYPE_RAGE, (int32)val );
 		if( GetPower(POWER_TYPE_RAGE ) > 1000 )
@@ -4046,7 +4046,7 @@ void Unit::smsg_AttackStart(Unit* pVictim)
     data << GetGUID();
     data << pVictim->GetGUID();
     SendMessageToSet(&data, false);
-    sLog.outDebug( "WORLD: Sent SMSG_ATTACKSTART" );
+    LOG_DEBUG( "WORLD: Sent SMSG_ATTACKSTART" );
 
     // FLAGS changed so other players see attack animation
     //    addUnitFlag(UNIT_FLAG_COMBAT);
@@ -4402,7 +4402,7 @@ void Unit::AddAura(Aura * aur)
 	//check if we can store this aura in some empty slot
 	if( AuraSlot == 0xFFFF )
 	{
-		sLog.outError("Aura error in active aura. ");
+		LOG_ERROR("Aura error in active aura. ");
 		sEventMgr.RemoveEvents( aur );
 		delete aur;
 /*
@@ -4800,7 +4800,7 @@ void Unit::RemoveAllAurasByRequiredShapeShift(uint32 mask)
 
 bool Unit::SetAurDuration(uint32 spellId,Unit* caster,uint32 duration)
 {
-	sLog.outDebug("setAurDuration2");
+	LOG_DEBUG("setAurDuration2");
 	Aura*aur=FindAura(spellId,caster->GetGUID());
 	if(!aur)
 		return false;
@@ -4818,7 +4818,7 @@ bool Unit::SetAurDuration(uint32 spellId,uint32 duration)
 		return false;
 
 
-	sLog.outDebug("setAurDuration2");
+	LOG_DEBUG("setAurDuration2");
 	aur->SetDuration(duration);
 	sEventMgr.ModifyEventTimeLeft(aur, EVENT_AURA_REMOVE, duration);
 
@@ -5206,7 +5206,7 @@ void Unit::MoveToWaypoint(uint32 wp_id)
 		WayPoint *wp = ai->getWayPoint(wp_id);
 		if(!wp)
 		{
-			sLog.outError("WARNING: Invalid WP specified in MoveToWaypoint.");
+			LOG_ERROR("WARNING: Invalid WP specified in MoveToWaypoint.");
 			return;
 		}
 
@@ -5227,7 +5227,7 @@ int32 Unit::GetDamageDoneMod(uint32 school)
 		   return TO< Creature* >( this )->ModDamageDone[school];
 	}
 	else
-		sLog.outDebug("[NOTICE] You have bad DB, spell school = %u",school);
+		LOG_DEBUG("[NOTICE] You have bad DB, spell school = %u",school);
 	return 0;
 }
 
@@ -5241,7 +5241,7 @@ float Unit::GetDamageDonePctMod(uint32 school)
 		   return TO_CREATURE(this)->ModDamageDonePct[school];
 	}
 	else
-		sLog.outDebug("[NOTICE] You have bad DB, spell school = %u",school);
+		LOG_DEBUG("[NOTICE] You have bad DB, spell school = %u",school);
 	return 0;
 }
 
@@ -5771,7 +5771,7 @@ AuraCheckResponse Unit::AuraCheck(SpellEntry *proto, Object *caster)
 			}
 		}
 	}
-	//sLog.outDebug( "resp = %i", resp.Error );
+	//LOG_DEBUG( "resp = %i", resp.Error );
 	// return it back to our caller
 	return resp;
 }
@@ -6036,7 +6036,7 @@ void Unit::SendFullAuraUpdate(){
 	}
 	SendMessageToSet(&data, true);
 
-	sLog.outDebug("Full Aura Update: GUID: "I64FMT" - Updates: %u", GetGUID(), Updates);
+	LOG_DEBUG("Full Aura Update: GUID: "I64FMT" - Updates: %u", GetGUID(), Updates);
 }
 
 void Unit::SendAuraUpdate( uint32 AuraSlot, bool remove ){
@@ -6360,7 +6360,7 @@ Creature* Unit::create_guardian(uint32 guardian_entry,uint32 duration,float angl
 	
 	if( proto == NULL || info == NULL )
 	{
-		sLog.outError("Warning : Missing summon creature template %u !",guardian_entry);
+		LOG_ERROR("Warning : Missing summon creature template %u !",guardian_entry);
 		return NULL;
 	}
 	
@@ -7757,9 +7757,9 @@ SpellProc* Unit::AddProcTriggerSpell(SpellEntry *spell, SpellEntry *orig_spell, 
 	if( sp == NULL )
 	{
 		if( orig_spell != NULL )
-			sLog.outError("Spell id %u tried to add a non-existent spell to Unit %p as SpellProc", orig_spell->Id, this);
+			LOG_ERROR("Spell id %u tried to add a non-existent spell to Unit %p as SpellProc", orig_spell->Id, this);
 		else
-			sLog.outError("Something tried to add a non-existent spell to Unit %p as SpellProc", this);
+			LOG_ERROR("Something tried to add a non-existent spell to Unit %p as SpellProc", this);
 		return NULL;
 	}
 	m_procSpells.push_back(sp);

@@ -340,7 +340,7 @@ bool ChatHandler::HandleFaceCommand(const char* args, WorldSession *m_session)
 	//GetSession()->SendPacket( &packet );
 	//obj->BuildMovementUpdateBlock(data,0)
 	//obj->SendMessageToSet(&data,false);
-	sLog.outDebug("facing sent");
+	LOG_DEBUG("facing sent");
 	return true;
 	//((Creature *)obj)->AI_MoveTo(obj->GetPositionX()+0.1,obj->GetPositionY()+0.1,obj->GetPositionZ()+0.1,theOrientation);
 }
@@ -1009,7 +1009,7 @@ bool ChatHandler::HandleSendpacket(const char * args, WorldSession * m_session)
 
     if (!xstring)
     {
-        sLog.outDebug("[Debug][Sendpacket] Packet is invalid");
+        LOG_DEBUG("[Debug][Sendpacket] Packet is invalid");
         return false;
     }
 
@@ -1040,7 +1040,7 @@ bool ChatHandler::HandleSendpacket(const char * args, WorldSession * m_session)
             sscanf(&xstring[j+1], "%x", &HexValue);
             if (HexValue > 0xFF)
             {
-                sLog.outDebug("[Debug][Sendpacket] Packet is invalid");
+                LOG_DEBUG("[Debug][Sendpacket] Packet is invalid");
                 return false;
             }
             data << uint8(HexValue);
@@ -1053,7 +1053,7 @@ bool ChatHandler::HandleSendpacket(const char * args, WorldSession * m_session)
 
     m_session->SendPacket(&data);
 
-    sLog.outDebug("[Debug][Sendpacket] Packet was send");
+    LOG_DEBUG("[Debug][Sendpacket] Packet was send");
 #endif
     return true;
 }

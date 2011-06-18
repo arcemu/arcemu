@@ -301,7 +301,7 @@ StrandOfTheAncient::StrandOfTheAncient(MapMgr * mgr, uint32 id, uint32 lgroup, u
 	}
 	catch (...) // Exception handling
 	{	
-		sLog.outError("Exception: StrandOfTheAncient constructor");
+		LOG_ERROR("Exception: StrandOfTheAncient constructor");
 		printStackTrace();
 		throw;
 	} 
@@ -480,7 +480,7 @@ void StrandOfTheAncient::SpawnBuff(uint32 x)
 
 void StrandOfTheAncient::OnCreate()
 {
-	sLog.outDebug("OnCreate: SOTA Battleground");
+	LOG_DEBUG("OnCreate: SOTA Battleground");
 
 	SetWorldState(WORLDSTATE_SOTA_CAPTURE_BAR_DISPLAY, 0);
 	SetWorldState(WORLDSTATE_SOTA_CAPTURE_BAR_VALUE, 0);
@@ -493,7 +493,7 @@ void StrandOfTheAncient::OnCreate()
 
 void StrandOfTheAncient::OnStart()
 {
-	sLog.outDebug("OnStart: SOTA Battleground");
+	LOG_DEBUG("OnStart: SOTA Battleground");
 
 	LocationVector dest;
 	m_started = true;
@@ -520,24 +520,24 @@ void StrandOfTheAncient::OnStart()
 
 void StrandOfTheAncient::HookGenerateLoot(Player *plr, Object * pOCorpse)
 {
-	sLog.outDebug("*** StrandOfTheAncient::HookGenerateLoot");
+	LOG_DEBUG("*** StrandOfTheAncient::HookGenerateLoot");
 }
 
 void StrandOfTheAncient::HookOnUnitKill(Player * plr, Unit * pVictim)
 {
-	sLog.outDebug("*** StrandOfTheAncient::HookOnUnitKill");
+	LOG_DEBUG("*** StrandOfTheAncient::HookOnUnitKill");
 }
 
 void StrandOfTheAncient::SetIsWeekend(bool isweekend)
 {
-	sLog.outDebug("*** StrandOfTheAncient::SetIsWeekend");
+	LOG_DEBUG("*** StrandOfTheAncient::SetIsWeekend");
 	m_isWeekend = isweekend;
 }
 
 // end game, attackers captured flag
 bool StrandOfTheAncient::HookSlowLockOpen(GameObject * pGo, Player * pPlayer, Spell * pSpell)
 {
-	sLog.outDebug("*** StrandOfTheAncient::HookSlowLockOpen - Relic Captured");
+	LOG_DEBUG("*** StrandOfTheAncient::HookSlowLockOpen - Relic Captured");
 	PlaySoundToAll( 8212 );
 
 	/*

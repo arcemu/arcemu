@@ -54,7 +54,7 @@ bool AddonMgr::IsAddonBanned(std::string name, uint64 crc)
 	{
 		if(itr->second->banned)
 		{
-			sLog.outDebug("Addon %s is banned.", name.c_str());
+			LOG_DEBUG("Addon %s is banned.", name.c_str());
 			return true;
 		}
 	}
@@ -68,7 +68,7 @@ bool AddonMgr::IsAddonBanned(std::string name, uint64 crc)
 		ent->isNew = true;
 		ent->showinlist = true;
 
-		sLog.outDebug("Discovered new addon %s sent by client.", name.c_str());
+		LOG_DEBUG("Discovered new addon %s sent by client.", name.c_str());
 
 		mKnownAddons[ent->name] = ent;
 	}
@@ -97,7 +97,7 @@ bool AddonMgr::ShouldShowInList(std::string name)
 		ent->isNew = true;
 		ent->showinlist = true;
 
-		sLog.outDebug("Discovered new addon %s sent by client.", name.c_str());
+		LOG_DEBUG("Discovered new addon %s sent by client.", name.c_str());
 
 		mKnownAddons[ent->name] = ent;
 	}
@@ -119,7 +119,7 @@ void AddonMgr::SendAddonInfoPacket(WorldPacket *source, uint32 pos, WorldSession
 	}
 	catch (ByteBuffer::error &)
 	{
-		sLog.outDebug("Warning: Incomplete auth session sent.");
+		LOG_DEBUG("Warning: Incomplete auth session sent.");
 		return;
 	}
 
@@ -132,7 +132,7 @@ void AddonMgr::SendAddonInfoPacket(WorldPacket *source, uint32 pos, WorldSession
 	if((source->size() - position) < 4 || realsize == 0)
 	{
 		// we shouldn't get here.. but just in case this will stop any crash here.
-		sLog.outDebug("Warning: Incomplete auth session sent.");
+		LOG_DEBUG("Warning: Incomplete auth session sent.");
 		return;
 	}
 
@@ -140,11 +140,11 @@ void AddonMgr::SendAddonInfoPacket(WorldPacket *source, uint32 pos, WorldSession
 
 	if(result != Z_OK)
 	{
-		sLog.outError("Decompression of addon section of CMSG_AUTH_SESSION failed.");
+		LOG_ERROR("Decompression of addon section of CMSG_AUTH_SESSION failed.");
 		return;
 	}
 
-	sLog.outDetail("Decompression of addon section of CMSG_AUTH_SESSION succeeded.");
+	LOG_DETAIL("Decompression of addon section of CMSG_AUTH_SESSION succeeded.");
 	
 	uint8 Enable; // based on the parsed files from retool
 	uint32 crc;
@@ -253,7 +253,7 @@ void AddonMgr::LoadFromDB()
 	QueryResult *result = WorldDatabase.Query("SELECT * FROM clientaddons");
 	if(!result)
 	{
-		sLog.outError("Query failed: SELECT * FROM clientaddons");
+		LOG_ERROR("Query failed: SELECT * FROM clientaddons");
 		return;
 	}
 
@@ -283,7 +283,7 @@ void AddonMgr::LoadFromDB()
 
 void AddonMgr::SaveToDB()
 {
-	sLog.outDetail("AddonMgr: Saving any new addons discovered in this session to database.");
+	LOG_DETAIL("AddonMgr: Saving any new addons discovered in this session to database.");
 
 	KnownAddonsItr itr;
 
@@ -291,7 +291,7 @@ void AddonMgr::SaveToDB()
 	{
 		if(itr->second->isNew)
 		{
-			sLog.outDetail("Saving new addon %s", itr->second->name.c_str());
+			LOG_DETAIL("Saving new addon %s", itr->second->name.c_str());
 			std::stringstream ss;
 			ss << "INSERT INTO clientaddons (name, crc, banned, showinlist) VALUES(\""
 				<< WorldDatabase.EscapeString(itr->second->name) << "\",\""

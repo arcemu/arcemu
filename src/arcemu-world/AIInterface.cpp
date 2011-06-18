@@ -1414,7 +1414,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 							break;
 						}
 					default:
-						sLog.outError("AI Agents: Targettype of AI agent spell %u for creature %u not set", spellInfo->Id, TO< Creature* >( m_Unit )->GetCreatureInfo()->Id );
+						LOG_ERROR("AI Agents: Targettype of AI agent spell %u for creature %u not set", spellInfo->Id, TO< Creature* >( m_Unit )->GetCreatureInfo()->Id );
 					}
 					// CastSpell(m_Unit, spellInfo, targets);
 					if(m_nextSpell&&m_nextSpell->cooldown)
@@ -2638,7 +2638,7 @@ void AIInterface::addWayPoint(WayPoint* wp)
 
 	if(!addWayPointUnsafe(wp))
 	{
-		sLog.outError("WayPoint ID %u wasn't added to Unit ID %x due to an error occurred in AIInterface::addWayPoint()", wp->id, GetUnit()->GetGUID());
+		LOG_ERROR("WayPoint ID %u wasn't added to Unit ID %x due to an error occurred in AIInterface::addWayPoint()", wp->id, GetUnit()->GetGUID());
 		delete wp;
 	}
 }
@@ -3329,7 +3329,7 @@ void AIInterface::CastSpell(Unit* caster, SpellEntry *spellInfo, SpellCastTarget
 	// Stop movement while casting.
 	m_AIState = STATE_CASTING;
 #ifdef _AI_DEBUG
-	sLog.outDebug("AI DEBUG: Unit %u casting spell %s on target "I64FMT, caster->GetEntry(), 
+	LOG_DEBUG("AI DEBUG: Unit %u casting spell %s on target "I64FMT, caster->GetEntry(), 
 		sSpellStore.LookupString(spellInfo->Name), targets.m_unitTarget);
 #endif
 
@@ -3344,7 +3344,7 @@ SpellEntry *AIInterface::getSpellEntry(uint32 spellId)
 
 	if(!spellInfo)
 	{
-		sLog.outError("WORLD: unknown spell id %i", spellId);
+		LOG_ERROR("WORLD: unknown spell id %i", spellId);
 		return NULL;
 	}
 
@@ -3515,7 +3515,7 @@ AI_Spell *AIInterface::getSpell()
 	}
 
 #ifdef _AI_DEBUG
-	sLog.outDebug("AI DEBUG: Returning no spell for unit %u", m_Unit->GetEntry());
+	LOG_DEBUG("AI DEBUG: Returning no spell for unit %u", m_Unit->GetEntry());
 #endif
 	return 0;
 }

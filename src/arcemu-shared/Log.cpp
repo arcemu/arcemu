@@ -157,6 +157,78 @@ void oLog::outDebug( const char * str, ... )
 	outFile(m_errorFile, buf);
 }
 
+void oLog::logBasic( const char *file, int line, const char *fncname, const char *msg, ... )
+{
+	if( m_normalFile == NULL )
+		return;
+
+	char buf[ 32768 ];
+	char message[ 32768 ];
+
+	snprintf( message, 32768, " [BSC] %s:%d %s %s", file, line, fncname, msg );
+	va_list ap;
+
+	va_start( ap, msg );
+	vsnprintf( buf, 32768, message, ap );
+	va_end( ap );
+
+	outFile( m_normalFile, buf );
+}
+
+void oLog::logDetail( const char *file, int line, const char *fncname, const char *msg, ... )
+{
+	if( ( m_fileLogLevel < 1 ) || ( m_normalFile == NULL ) )
+		return;
+
+	char buf[ 32768 ];
+	char message[ 32768 ];
+
+	snprintf( message, 32768, " [DTL] %s:%d %s %s", file, line, fncname, msg );
+	va_list ap;
+
+	va_start( ap, msg );
+	vsnprintf( buf, 32768, message, ap );
+	va_end( ap );
+
+	outFile( m_normalFile, buf );
+}
+
+void oLog::logError( const char *file, int line, const char *fncname, const char *msg, ... )
+{
+	if( m_errorFile == NULL )
+		return;
+	
+	char buf[ 32768 ];
+	char message[ 32768 ];
+
+	snprintf( message, 32768, " [ERR] %s:%d %s %s", file, line, fncname, msg );
+	va_list ap;
+
+	va_start( ap, msg );
+	vsnprintf( buf, 32768, message, ap );
+	va_end( ap );
+
+	outFile( m_errorFile, buf );
+}
+
+void oLog::logDebug( const char *file, int line, const char *fncname, const char *msg, ... )
+{
+	if( ( m_fileLogLevel < 2 ) || ( m_errorFile == NULL ) )
+		return;
+
+	char buf[ 32768 ];
+	char message[ 32768 ];
+
+	snprintf( message, 32768, " [DBG] %s:%d %s %s", file, line, fncname, msg );
+	va_list ap;
+
+	va_start( ap, msg );
+	vsnprintf( buf, 32768, message, ap );
+	va_end( ap );
+
+	outFile( m_errorFile, buf );
+}
+
 //old NGLog.h methods
 void oLog::Notice(const char * source, const char * format, ...)
 {

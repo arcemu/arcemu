@@ -38,7 +38,7 @@ bool Transporter::CreateAsTransporter(uint32 EntryID, const char* Name, int32 Ti
 	if( pInfo )
 		pInfo->Type = GAMEOBJECT_TYPE_TRANSPORT;
 	else
-		sLog.outError("Transporter id[%i] name[%s] - can't set GAMEOBJECT_TYPE - it will behave badly!",EntryID,Name);
+		LOG_ERROR("Transporter id[%i] name[%s] - can't set GAMEOBJECT_TYPE - it will behave badly!",EntryID,Name);
 
 	m_overrides = GAMEOBJECT_INFVIS | GAMEOBJECT_ONMOVEWIDE; //Make it forever visible on the same map
 
@@ -475,7 +475,7 @@ void ObjectMgr::LoadTransporters()
 		Transporter * pTransporter = new Transporter((uint64)HIGHGUID_TYPE_TRANSPORTER<<32 |entry);
 		if(!pTransporter->CreateAsTransporter(entry, "", period))
 		{
-			sLog.outError("Transporter %s failed creation for some reason.", QR->Fetch()[1].GetString());
+			LOG_ERROR("Transporter %s failed creation for some reason.", QR->Fetch()[1].GetString());
 			delete pTransporter;
 		}else
 		{

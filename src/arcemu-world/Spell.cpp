@@ -225,7 +225,7 @@ Spell::Spell(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 		} break;
 
 		default:
-			sLog.outDebug("[DEBUG][SPELL] Incompatible object type, please report this to the dev's");
+			LOG_DEBUG("[DEBUG][SPELL] Incompatible object type, please report this to the dev's");
 			break;
 	}
 
@@ -847,7 +847,7 @@ uint8 Spell::prepare( SpellCastTargets * targets )
 {
 	if(!m_caster->IsInWorld())
 	{
-		sLog.outDebug("Object "I64FMT" is casting Spell ID %u while not in World", m_caster->GetGUID(), GetProto()->Id);
+		LOG_DEBUG("Object "I64FMT" is casting Spell ID %u while not in World", m_caster->GetGUID(), GetProto()->Id);
 		DecRef();
 		return SPELL_FAILED_DONT_REPORT;
 	}
@@ -1097,7 +1097,7 @@ void Spell::cast(bool check)
 		return;
 	}
 
-	sLog.outDebug("Spell::cast %u, Unit: %u", GetProto()->Id, m_caster->GetLowGUID());
+	LOG_DEBUG("Spell::cast %u, Unit: %u", GetProto()->Id, m_caster->GetLowGUID());
 
 	if(objmgr.IsSpellDisabled(GetProto()->Id))//if it's disabled it will not be casted, even if it's triggered.
 		cancastresult = uint8( m_triggeredSpell ? SPELL_FAILED_DONT_REPORT : SPELL_FAILED_SPELL_UNAVAILABLE );
@@ -1139,7 +1139,7 @@ void Spell::cast(bool check)
 			{
 				if(!TakePower()) //not enough mana
 				{
-					//sLog.outDebug("Spell::Not Enough Mana");
+					//LOG_DEBUG("Spell::Not Enough Mana");
 					SendInterrupted(SPELL_FAILED_NO_POWER);
 					SendCastResult(SPELL_FAILED_NO_POWER);
 					finish(false);
@@ -2401,7 +2401,7 @@ bool Spell::HasPower()
 			}
 		default:
 		{
-			sLog.outDebug("unknown power type");
+			LOG_DEBUG("unknown power type");
 			// we shouldn't be here to return
 			return false;
 		} break;
@@ -2528,7 +2528,7 @@ bool Spell::TakePower()
 			}
 		default:
 			{
-				sLog.outDebug("unknown power type");
+				LOG_DEBUG("unknown power type");
 				// we shouldn't be here to return
 				return false;
 			}break;
@@ -2691,7 +2691,7 @@ void Spell::HandleEffects(uint64 guid, uint32 i)
 				corpseTarget = objmgr.GetCorpse( GET_LOWGUID_PART( guid ) );
 				break;
 			default:
-				sLog.outError("unitTarget not set");
+				LOG_ERROR("unitTarget not set");
 				DecRef();
 				return;
 			}
@@ -2712,7 +2712,7 @@ void Spell::HandleEffects(uint64 guid, uint32 i)
 
 	if( id<TOTAL_SPELL_EFFECTS)
 	{
-		sLog.outDebug( "WORLD: Spell effect id = %u (%s), damage = %d", id, SpellEffectNames[id], damage);
+		LOG_DEBUG( "WORLD: Spell effect id = %u (%s), damage = %d", id, SpellEffectNames[id], damage);
 
 		/*if(unitTarget && p_caster && isAttackable(p_caster,unitTarget))
 			sEventMgr.ModifyEventTimeLeft(p_caster,EVENT_ATTACK_TIMEOUT,PLAYER_ATTACK_TIMEOUT_INTERVAL);*/
@@ -2720,7 +2720,7 @@ void Spell::HandleEffects(uint64 guid, uint32 i)
 		(*this.*SpellEffectsHandler[id])(i);
 	}
 	else
-		sLog.outError("SPELL: unknown effect %u spellid %u", id, GetProto()->Id);
+		LOG_ERROR("SPELL: unknown effect %u spellid %u", id, GetProto()->Id);
 
 	DoAfterHandleEffect(unitTarget, i);
 
@@ -2921,7 +2921,7 @@ void Spell::TriggerSpell()
 
 		if(!spellInfo)
 		{
-			sLog.outError("WORLD: unknown spell id %i\n", TriggerSpellId);
+			LOG_ERROR("WORLD: unknown spell id %i\n", TriggerSpellId);
 			return;
 		}
 
@@ -3381,7 +3381,7 @@ uint8 Spell::CanCast(bool tolerate)
 				GameObjectInfo *info = TO_GAMEOBJECT(*itr)->GetInfo();
 				if (!info)
 				{
-					sLog.outDebug("Warning: could not find info about game object %u",(*itr)->GetEntry());
+					LOG_DEBUG("Warning: could not find info about game object %u",(*itr)->GetEntry());
 					continue;
 				}
 
@@ -3726,7 +3726,7 @@ uint8 Spell::CanCast(bool tolerate)
 		SM_FFValue(u_caster->SM_FRange,&spell_flat_modifers,GetProto()->SpellGroupType);
 		SM_FFValue(u_caster->SM_PRange,&spell_pct_modifers,GetProto()->SpellGroupType);
 		if(spell_flat_modifers!= 0 || spell_pct_modifers!= 0)
-			sLog.outDebug("!!!!!spell range bonus mod flat %f , spell range bonus pct %f , spell range %f, spell group %u",spell_flat_modifers,spell_pct_modifers,maxRange,GetProto()->SpellGroupType);
+			LOG_DEBUG("!!!!!spell range bonus mod flat %f , spell range bonus pct %f , spell range %f, spell group %u",spell_flat_modifers,spell_pct_modifers,maxRange,GetProto()->SpellGroupType);
 #endif
 	}
 
@@ -4830,7 +4830,7 @@ void Spell::HandleTeleport( float x, float y, float z, uint32 mapid, Unit *Targe
 
 	}else{
 		if( mapid != Target->GetMapId() ){
-			sLog.outError("Tried to teleport a Creature to another map.");
+			LOG_ERROR("Tried to teleport a Creature to another map.");
 			return;
 		}
 		
@@ -5234,7 +5234,7 @@ void Spell::SafeAddMissedTarget(uint64 guid)
     for(SpellTargetsList::iterator i=ModeratedTargets.begin();i!=ModeratedTargets.end();i++)
         if((*i).TargetGuid==guid)
         {
-            //sLog.outDebug("[SPELL] Something goes wrong in spell target system");
+            //LOG_DEBUG("[SPELL] Something goes wrong in spell target system");
 			// this isn't actually wrong, since we only have one missed target map,
 			// whereas hit targets have multiple maps per effect.
             return;
@@ -5248,7 +5248,7 @@ void Spell::SafeAddModeratedTarget(uint64 guid, uint16 type)
 	for(SpellTargetsList::iterator i=ModeratedTargets.begin();i!=ModeratedTargets.end();i++)
 		if((*i).TargetGuid==guid)
         {
-            //sLog.outDebug("[SPELL] Something goes wrong in spell target system");
+            //LOG_DEBUG("[SPELL] Something goes wrong in spell target system");
 			// this isn't actually wrong, since we only have one missed target map,
 			// whereas hit targets have multiple maps per effect.
 			return;
@@ -5604,7 +5604,7 @@ uint8 Spell::GetErrorAtShapeshiftedCast(SpellEntry *spellInfo, uint32 form)
 		SpellShapeshiftForm * ssf = dbcSpellShapeshiftForm.LookupEntryForced( form );
 		if(!ssf)
 		{
-			sLog.outError("GetErrorAtShapeshiftedCast: unknown shapeshift %u", form);
+			LOG_ERROR("GetErrorAtShapeshiftedCast: unknown shapeshift %u", form);
 			return 0;
 		}
 
@@ -5729,7 +5729,7 @@ SpellEntry* CheckAndReturnSpellEntry(uint32 spellid)
 
 	SpellEntry* sp = dbcSpell.LookupEntryForced( spellid );
 	if(sp == NULL)
-		sLog.outDebug("Something tried to access nonexistent spell %u", spellid);
+		LOG_DEBUG("Something tried to access nonexistent spell %u", spellid);
 
 	return sp;
 }

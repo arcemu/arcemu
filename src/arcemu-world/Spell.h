@@ -1986,7 +1986,7 @@ public:
 					SM_FIValue(u_caster->SM_FDur,&spell_flat_modifers,GetProto()->SpellGroupType);
 					SM_FIValue(u_caster->SM_PDur,&spell_pct_modifers,GetProto()->SpellGroupType);
 					if(spell_flat_modifers!= 0 || spell_pct_modifers!= 0)
-						sLog.outDebug("!!!!!spell duration mod flat %d , spell duration mod pct %d , spell duration %d, spell group %u",spell_flat_modifers,spell_pct_modifers,Dur,GetProto()->SpellGroupType);
+						LOG_DEBUG("!!!!!spell duration mod flat %d , spell duration mod pct %d , spell duration %d, spell group %u",spell_flat_modifers,spell_pct_modifers,Dur,GetProto()->SpellGroupType);
 #endif
                 }
             }
@@ -2018,7 +2018,7 @@ public:
 			SM_FFValue(u_caster->SM_FRadius,&spell_flat_modifers,GetProto()->SpellGroupType);
 			SM_PFValue(u_caster->SM_PRadius,&spell_pct_modifers,GetProto()->SpellGroupType);
 			if(spell_flat_modifers!= 0 || spell_pct_modifers!=1)
-				sLog.outDebug("!!!!!spell radius mod flat %f , spell radius mod pct %f , spell radius %f, spell group %u",spell_flat_modifers,spell_pct_modifers,Rad[i],GetProto()->SpellGroupType);
+				LOG_DEBUG("!!!!!spell radius mod flat %f , spell radius mod pct %f , spell radius %f, spell group %u",spell_flat_modifers,spell_pct_modifers,Rad[i],GetProto()->SpellGroupType);
 #endif
         }
 

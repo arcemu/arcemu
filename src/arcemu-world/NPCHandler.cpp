@@ -426,7 +426,7 @@ void WorldSession::HandleGossipHelloOpcode( WorldPacket & recv_data )
 		// reputation
 		_player->Reputation_OnTalk(qst_giver->m_factionDBC);
 
-		sLog.outDebug( "WORLD: Received CMSG_GOSSIP_HELLO from %u",Arcemu::Util::GUID_LOPART( guid ) );
+		LOG_DEBUG( "WORLD: Received CMSG_GOSSIP_HELLO from %u",Arcemu::Util::GUID_LOPART( guid ) );
 
 		Arcemu::Gossip::Script * script = Arcemu::Gossip::Script::GetInterface( qst_giver );
 		if(script != NULL)
@@ -498,7 +498,7 @@ void WorldSession::HandleGossipHelloOpcode( WorldPacket & recv_data )
 		data.wpos(pos);
 		data << count;
 		SendPacket(&data);
-		sLog.outDebug( "WORLD: Sent SMSG_GOSSIP_MESSAGE" );
+		LOG_DEBUG( "WORLD: Sent SMSG_GOSSIP_MESSAGE" );
 	}
 	else
 	{
@@ -519,7 +519,7 @@ void WorldSession::HandleGossipSelectOptionOpcode( WorldPacket & recv_data )
 
 	recv_data >> guid >> unk24 >> option;
 
-	sLog.outDetail("WORLD: CMSG_GOSSIP_SELECT_OPTION Option %i Guid %.8X", option, guid );
+	LOG_DETAIL("WORLD: CMSG_GOSSIP_SELECT_OPTION Option %i Guid %.8X", option, guid );
 	Arcemu::Gossip::Script * script = NULL;
 	uint32 guidtype = GET_TYPE_FROM_GUID(guid);
 
@@ -602,7 +602,7 @@ void WorldSession::HandleNpcTextQueryOpcode( WorldPacket & recv_data )
 	GossipText *pGossip;
 
 	recv_data >> textID;
-	sLog.outDetail("WORLD: CMSG_NPC_TEXT_QUERY ID '%u'", textID );
+	LOG_DETAIL("WORLD: CMSG_NPC_TEXT_QUERY ID '%u'", textID );
 
 	recv_data >> targetGuid;
 	GetPlayer()->SetTargetGUID(  targetGuid);

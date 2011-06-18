@@ -490,7 +490,7 @@ Player::~Player ( )
 
 	if(!ok_to_remove)
 	{
-		sLog.outError("Player deleted from non-logoutplayer!");
+		LOG_ERROR("Player deleted from non-logoutplayer!");
 		printStackTrace(); // Win32 Debug
 
 		objmgr.RemovePlayer(this);
@@ -662,9 +662,9 @@ bool Player::Create(WorldPacket& data )
 		m_session->Disconnect();
 		// don't use Log.LargeErrorMessage() here, it doesn't handle %s %u in the string.
 		if(class_ == DEATHKNIGHT)
-			sLog.outError("Account Name: %s tried to create a deathknight, however your playercreateinfo table does not support this class, please update your database.", m_session->GetAccountName().c_str());
+			LOG_ERROR("Account Name: %s tried to create a deathknight, however your playercreateinfo table does not support this class, please update your database.", m_session->GetAccountName().c_str());
 		else
-			sLog.outError("Account Name: %s tried to create an invalid character with race %u and class %u, if this is intended please update your playercreateinfo table inside your database.", m_session->GetAccountName().c_str(), race, class_);
+			LOG_ERROR("Account Name: %s tried to create an invalid character with race %u and class %u, if this is intended please update your playercreateinfo table inside your database.", m_session->GetAccountName().c_str(), race, class_);
 		return false;
 	}
 
@@ -888,12 +888,12 @@ void Player::Update( uint32 p_time )
 	{
 		if( m_AutoShotAttackTimer > p_time )
 		{
-			//sLog.outDebug( "HUNTER AUTOSHOT 0) %i, %i", m_AutoShotAttackTimer, p_time );
+			//LOG_DEBUG( "HUNTER AUTOSHOT 0) %i, %i", m_AutoShotAttackTimer, p_time );
 			m_AutoShotAttackTimer -= p_time;
 		}
 		else
 		{
-			//sLog.outDebug( "HUNTER AUTOSHOT 1) %i", p_time );
+			//LOG_DEBUG( "HUNTER AUTOSHOT 1) %i", p_time );
 			EventRepeatSpell();
 		}
 	}
@@ -1036,7 +1036,7 @@ void Player::Update( uint32 p_time )
 		}
 
 		if ((mstime - m_immunityTime) > 15000) {
-			sLog.outDetail("plr guid=%d has been immune for > 15sec: %u %u %u %u %u %u %u, resetting states", GetLowGUID(),
+			LOG_DETAIL("plr guid=%d has been immune for > 15sec: %u %u %u %u %u %u %u, resetting states", GetLowGUID(),
 				SchoolImmunityList[0], SchoolImmunityList[1], SchoolImmunityList[2], SchoolImmunityList[3],
 				SchoolImmunityList[4], SchoolImmunityList[5], SchoolImmunityList[6]);
 			for(uint32 i = 0; i < 7; i++)
@@ -1111,7 +1111,7 @@ void Player::_EventAttack( bool offhand )
 	//Can't find victim, stop attacking
 	if (!pVictim)
 	{
-		sLog.outDetail("Player::Update:  No valid current selection to attack, stopping attack");
+		LOG_DETAIL("Player::Update:  No valid current selection to attack, stopping attack");
 		setHRegenTimer(5000); //prevent clicking off creature for a quick heal
 		EventAttackStop();
 		return;
@@ -1202,8 +1202,8 @@ void Player::_EventCharmAttack()
 	//Can't find victim, stop attacking
 	if (!pVictim)
 	{
-		sLog.outError( "WORLD: "I64FMT" doesn't exist.",m_curSelection);
-		sLog.outDetail("Player::Update:  No valid current selection to attack, stopping attack");
+		LOG_ERROR( "WORLD: "I64FMT" doesn't exist.",m_curSelection);
+		LOG_DETAIL("Player::Update:  No valid current selection to attack, stopping attack");
 		this->setHRegenTimer(5000); //prevent clicking off creature for a quick heal
 		clearStateFlag(UF_ATTACKING);
 		EventAttackStop();
@@ -1332,8 +1332,6 @@ void Player::_EventExploration()
 	AreaTable* at = GetMapMgr()->GetArea(GetPositionX(), GetPositionY(), GetPositionZ());
 	if (at == NULL)
 		return;
-
-	sLog.Debug("Area", "Test %u %s", at->AreaId, at->name);
 
 	uint32 AreaId = at->AreaId;
 
@@ -1979,7 +1977,7 @@ void Player::SpawnPet( uint32 pet_number )
 	std::map< uint32, PlayerPet* >::iterator itr = m_Pets.find( pet_number );
 	if( itr == m_Pets.end() )
 	{
-		sLog.outError("PET SYSTEM: "I64FMT" Tried to load invalid pet %d", GetGUID(), pet_number);
+		LOG_ERROR("PET SYSTEM: "I64FMT" Tried to load invalid pet %d", GetGUID(), pet_number);
 		return;
 	}
 	Pet *pPet = objmgr.CreatePet( itr->second->entry );
@@ -2777,7 +2775,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	if(!myClass || !myRace)
 	{
 		// bad character
-		sLog.outError("guid %u failed to login, no race or class dbc found. (race %u class %u)", (unsigned int)GetLowGUID(), (unsigned int)getRace(), (unsigned int)getClass());
+		LOG_ERROR("guid %u failed to login, no race or class dbc found. (race %u class %u)", (unsigned int)GetLowGUID(), (unsigned int)getRace(), (unsigned int)getClass());
 		RemovePendingPlayer();
 		return;
 	}
@@ -2801,7 +2799,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	info = objmgr.GetPlayerCreateInfo(getRace(), getClass());
 	if(!info)
 	{
- 		sLog.outError("player guid %u has no playerCreateInfo!", (unsigned int)GetLowGUID());
+ 		LOG_ERROR("player guid %u has no playerCreateInfo!", (unsigned int)GetLowGUID());
 		RemovePendingPlayer();
 		return;
 	}
@@ -2814,7 +2812,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 
 	if(!lvlinfo)
 	{
-		sLog.outError("guid %u level %u class %u race %u levelinfo not found!", (unsigned int)GetLowGUID(), (unsigned int)getLevel(), (unsigned int)getClass(), (unsigned int)getRace());
+		LOG_ERROR("guid %u level %u class %u race %u levelinfo not found!", (unsigned int)GetLowGUID(), (unsigned int)getLevel(), (unsigned int)getClass(), (unsigned int)getRace());
 		RemovePendingPlayer();
 		return;
 	}
@@ -3471,7 +3469,7 @@ void Player::SetPersistentInstanceId(Instance *pInstance)
 	{
 		SetPersistentInstanceId(pInstance->m_mapId, pInstance->m_difficulty, pInstance->m_instanceId);
 	}
-	sLog.outDebug("Added player %u to saved instance %u on map %u.", (uint32)GetGUID(), pInstance->m_instanceId, pInstance->m_mapId);
+	LOG_DEBUG("Added player %u to saved instance %u on map %u.", (uint32)GetGUID(), pInstance->m_instanceId, pInstance->m_mapId);
 }
 
 void Player::SetPersistentInstanceId(uint32 mapId, uint32 difficulty, uint32 instanceId)
@@ -3939,7 +3937,7 @@ void Player::_ApplyItemMods(Item* item, int16 slot, bool apply, bool justdrokedo
 		ItemSetEntry* set = dbcItemSet.LookupEntryForced( setid );
 		if( set == NULL)
 		{
-			sLog.outError("Item %u has wrong ItemSet %u", proto->ItemId, setid);
+			LOG_ERROR("Item %u has wrong ItemSet %u", proto->ItemId, setid);
 		}
 		else
 		{
@@ -6070,7 +6068,7 @@ int32 Player::CanShootRangedWeapon( uint32 spellid, Unit* target, bool autoshot 
 			m_session->OutPacket( SMSG_CANCEL_AUTO_REPEAT, 4, &spellid2 );
 		}
 		//sLog.outString( "Result for CanShootWIthRangedWeapon: %u" , fail );
-		//sLog.outDebug( "Can't shoot with ranged weapon: %u (Timer: %u)" , fail , m_AutoShotAttackTimer );
+		//LOG_DEBUG( "Can't shoot with ranged weapon: %u (Timer: %u)" , fail , m_AutoShotAttackTimer );
 		return fail;
 	}
 
@@ -6087,7 +6085,7 @@ void Player::EventRepeatSpell()
 	{
 		m_AutoShotAttackTimer = 0; //avoid flooding client with error messages
 		m_onAutoShot = false;
-		//sLog.outDebug( "Can't cast Autoshot: Target changed! (Timer: %u)" , m_AutoShotAttackTimer );
+		//LOG_DEBUG( "Can't cast Autoshot: Target changed! (Timer: %u)" , m_AutoShotAttackTimer );
 		return;
 	}
 
@@ -6095,9 +6093,9 @@ void Player::EventRepeatSpell()
 
 	if( m_isMoving )
 	{
-		//sLog.outDebug( "HUNTER AUTOSHOT 2) %i, %i", m_AutoShotAttackTimer, m_AutoShotDuration );
+		//LOG_DEBUG( "HUNTER AUTOSHOT 2) %i, %i", m_AutoShotAttackTimer, m_AutoShotDuration );
 		//m_AutoShotAttackTimer = m_AutoShotDuration;//avoid flooding client with error messages
-		//sLog.outDebug( "Can't cast Autoshot: You're moving! (Timer: %u)" , m_AutoShotAttackTimer );
+		//LOG_DEBUG( "Can't cast Autoshot: You're moving! (Timer: %u)" , m_AutoShotAttackTimer );
 		m_AutoShotAttackTimer = 100; // shoot when we can
 		return;
 	}
@@ -7435,7 +7433,7 @@ bool Player::CompressAndSendUpdateBuffer(uint32 size, const uint8* update_buffer
 
 	if(deflateInit(&stream, rate) != Z_OK)
 	{
-		sLog.outError("deflateInit failed.");
+		LOG_ERROR("deflateInit failed.");
 		return false;
 	}
 
@@ -7452,7 +7450,7 @@ bool Player::CompressAndSendUpdateBuffer(uint32 size, const uint8* update_buffer
 	if(deflate(&stream, Z_NO_FLUSH) != Z_OK ||
 		stream.avail_in != 0)
 	{
-		sLog.outError("deflate failed.");
+		LOG_ERROR("deflate failed.");
 		delete [] buffer;
 		return false;
 	}
@@ -7460,7 +7458,7 @@ bool Player::CompressAndSendUpdateBuffer(uint32 size, const uint8* update_buffer
 	// finish the deflate
 	if(deflate(&stream, Z_FINISH) != Z_STREAM_END)
 	{
-		sLog.outError("deflate failed: did not end stream");
+		LOG_ERROR("deflate failed: did not end stream");
 		delete [] buffer;
 		return false;
 	}
@@ -7468,7 +7466,7 @@ bool Player::CompressAndSendUpdateBuffer(uint32 size, const uint8* update_buffer
 	// finish up
 	if(deflateEnd(&stream) != Z_OK)
 	{
-		sLog.outError("deflateEnd failed.");
+		LOG_ERROR("deflateEnd failed.");
 		delete [] buffer;
 		return false;
 	}
@@ -7739,7 +7737,7 @@ void Player::ZoneUpdate(uint32 ZoneId)
 		UpdatePVPStatus(m_AreaID);
 	}
 
-	sLog.outDetail("ZONE_UPDATE: Player %s entered zone %s", GetName(), sAreaStore.LookupString((int)p->name));*/
+	LOG_DETAIL("ZONE_UPDATE: Player %s entered zone %s", GetName(), sAreaStore.LookupString((int)p->name));*/
 	//UpdatePvPArea();
 
 }
@@ -8222,7 +8220,7 @@ void Player::ApplyLevelInfo(LevelInfo* Info, uint32 Level)
 	//VLack: 3.1.3, as a final step, send the player's talents, this will set the talent points right too...
 	smsg_TalentsInfo(false);
 
-	sLog.outDetail("Player %s set parameters to level %u", GetName(), Level);
+	LOG_DETAIL("Player %s set parameters to level %u", GetName(), Level);
 }
 
 void Player::BroadcastMessage(const char* Format, ...)
@@ -8791,7 +8789,7 @@ void Player::CalculateBaseStats()
 	LevelInfo * levelone = objmgr.GetLevelInfo(this->getRace(),this->getClass(),1);
 	if (levelone == NULL)
 	{
-		sLog.outError("%s (%d): NULL pointer", __FUNCTION__, __LINE__);
+		LOG_ERROR("%s (%d): NULL pointer", __FUNCTION__, __LINE__);
 		return;
 	}
 	SetMaxHealth( lvlinfo->HP);
@@ -10659,13 +10657,13 @@ void Player::save_Auras()
 			//disabled proc spells until proper loading is fixed. Some spells tend to block or not remove when restored
 			if(aur->GetSpellProto()->procFlags)
 			{
-				//				sLog.outDebug("skipping aura %d because has flags %d",aur->GetSpellId(),aur->GetSpellProto()->procFlags);
+				//				LOG_DEBUG("skipping aura %d because has flags %d",aur->GetSpellId(),aur->GetSpellProto()->procFlags);
 				skip = true;
 			}
 			//disabled proc spells until proper loading is fixed. We cannot recover the charges that were used up. Will implement later
 			if(aur->GetSpellProto()->procCharges)
 			{
-				//				sLog.outDebug("skipping aura %d because has proccharges %d",aur->GetSpellId(),aur->GetSpellProto()->procCharges);
+				//				LOG_DEBUG("skipping aura %d because has proccharges %d",aur->GetSpellId(),aur->GetSpellProto()->procCharges);
 				skip = true;
 			}
 			//we are going to cast passive spells anyway on login so no need to save auras for them
@@ -10890,7 +10888,7 @@ void Player::EventDumpCompressedMovement()
 
 	if(deflateInit(&stream, rate) != Z_OK)
 	{
-		sLog.outError("deflateInit failed.");
+		LOG_ERROR("deflateInit failed.");
 		m_movementBufferLock.Release();
 		return;
 	}
@@ -10907,7 +10905,7 @@ void Player::EventDumpCompressedMovement()
 	if(deflate(&stream, Z_NO_FLUSH) != Z_OK ||
 		stream.avail_in != 0)
 	{
-		sLog.outError("deflate failed.");
+		LOG_ERROR("deflate failed.");
 		delete [] buffer;
 		m_movementBufferLock.Release();
 		return;
@@ -10916,7 +10914,7 @@ void Player::EventDumpCompressedMovement()
 	// finish the deflate
 	if(deflate(&stream, Z_FINISH) != Z_STREAM_END)
 	{
-		sLog.outError("deflate failed: did not end stream");
+		LOG_ERROR("deflate failed: did not end stream");
 		delete [] buffer;
 		m_movementBufferLock.Release();
 		return;
@@ -10925,7 +10923,7 @@ void Player::EventDumpCompressedMovement()
 	// finish up
 	if(deflateEnd(&stream) != Z_OK)
 	{
-		sLog.outError("deflateEnd failed.");
+		LOG_ERROR("deflateEnd failed.");
 		delete [] buffer;
 		m_movementBufferLock.Release();
 		return;
@@ -11684,7 +11682,7 @@ uint32 Player::GetMaxPersonalRating()
 			}
 			else
 			{
-				sLog.outError("%s: GetMemberByGuid returned NULL for player guid = %u", __FUNCTION__, m_playerInfo->guid);
+				LOG_ERROR("%s: GetMemberByGuid returned NULL for player guid = %u", __FUNCTION__, m_playerInfo->guid);
 			}
 		}
 	}
@@ -12399,7 +12397,7 @@ void Player::LearnTalent(uint32 talentid, uint32 rank, bool isPreviewed ){
 	uint32 spellid = talentInfo->RankID[ rank ];
 	if( spellid == 0 )
 	{
-		sLog.outDetail("Talent: %u Rank: %u = 0", talentid, rank);
+		LOG_DETAIL("Talent: %u Rank: %u = 0", talentid, rank);
 	}
 	else
 	{
@@ -13310,13 +13308,13 @@ void Player::AcceptQuest( uint64 guid, uint32 quest_id ){
 
 	if (!qst_giver)
 	{
-		sLog.outDebug("WORLD: Invalid questgiver GUID.");
+		LOG_DEBUG("WORLD: Invalid questgiver GUID.");
 		return;
 	}
 
 	if( !bValid || qst == NULL )
 	{
-		sLog.outDebug("WORLD: Creature is not a questgiver.");
+		LOG_DEBUG("WORLD: Creature is not a questgiver.");
 		return;
 	}
 
@@ -13418,7 +13416,7 @@ void Player::AcceptQuest( uint64 guid, uint32 quest_id ){
 
 	sQuestMgr.OnQuestAccepted(this,qst,qst_giver);
 
-	sLog.outDebug("WORLD: Added new QLE.");
+	LOG_DEBUG("WORLD: Added new QLE.");
 	sHookInterface.OnQuestAccept( this, qst, qst_giver );
 }
 
@@ -13659,7 +13657,7 @@ bool Player::CanBuyAt(VendorRestrictionEntry *vendor)
 		}
 		else
 		{
-			sLog.outError("VendorRestrictions: Mount vendor specified, but not enough info for creature %u", vendor->entry);
+			LOG_ERROR("VendorRestrictions: Mount vendor specified, but not enough info for creature %u", vendor->entry);
 		}
 	}
 

@@ -205,7 +205,7 @@ void WorldSession::HandlePetAction(WorldPacket & recv_data)
 			}break;
 		default:
 			{
-				sLog.outDebug("WARNING: Unknown pet action received. Action = %.4X, Misc = %.4X", action, misc);
+				LOG_DEBUG("WARNING: Unknown pet action received. Action = %.4X, Misc = %.4X", action, misc);
 			}break;
 		}
 
@@ -226,7 +226,7 @@ void WorldSession::HandlePetInfo(WorldPacket & recv_data)
 	CHECK_INWORLD_RETURN
 
 	//nothing
-	sLog.outDebug("HandlePetInfo is called");
+	LOG_DEBUG("HandlePetInfo is called");
 }
 
 void WorldSession::HandlePetNameQuery( WorldPacket & recv_data )
@@ -284,7 +284,7 @@ void WorldSession::HandleUnstablePet(WorldPacket & recv_data)
 	PlayerPet *pet = _player->GetPlayerPet( petnumber );
 	if(!pet)
 	{
-		sLog.outError("PET SYSTEM: Player "I64FMT" tried to unstable non-existent pet %d", _player->GetGUID(), petnumber);
+		LOG_ERROR("PET SYSTEM: Player "I64FMT" tried to unstable non-existent pet %d", _player->GetGUID(), petnumber);
 		return;
 	}
 	//unstable selected pet but spawn it only if it's alive
@@ -308,7 +308,7 @@ void WorldSession::HandleStableSwapPet(WorldPacket & recv_data)
 	PlayerPet *pet = _player->GetPlayerPet(petnumber);
 	if(!pet)
 	{
-		sLog.outError("PET SYSTEM: Player "I64FMT" tried to unstable non-existent pet %d", _player->GetGUID(), petnumber);
+		LOG_ERROR("PET SYSTEM: Player "I64FMT" tried to unstable non-existent pet %d", _player->GetGUID(), petnumber);
 		return;
 	}
 	Pet *pPet = _player->GetSummon();
@@ -537,7 +537,7 @@ void WorldSession::HandlePetCancelAura( WorldPacket& recvPacket )
 		if( (*itr)->GetGUID() == guid )//guid should be the pet guid
 		{
 			if( !(*itr)->RemoveAura( spellid ) )
-				sLog.outError("PET SYSTEM: Player "I64FMT" failed to cancel aura %u from pet", _player->GetGUID(), spellid );
+				LOG_ERROR("PET SYSTEM: Player "I64FMT" failed to cancel aura %u from pet", _player->GetGUID(), spellid );
 			break;
 		}
 	}

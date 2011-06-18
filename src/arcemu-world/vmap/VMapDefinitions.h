@@ -34,7 +34,7 @@ namespace VMAP
 #ifndef NO_CORE_FUNCS
     #include "Errors.h"
     #include "Log.h"
-    #define ERROR_LOG(...) sLog.outError(__VA_ARGS__);
+    #define ERROR_LOG(...) LOG_ERROR(__VA_ARGS__);
 #elif defined MMAP_GENERATOR
     #include <assert.h>
     #define Arcemu::Util::ARCEMU_ASSERT(x) assert(x)

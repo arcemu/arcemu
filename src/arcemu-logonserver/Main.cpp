@@ -46,7 +46,7 @@ void _OnSignal(int s)
 #ifndef WIN32
 	case SIGHUP:
 	   {
-		   sLog.outDetail("Received SIGHUP signal, reloading accounts.");
+		   LOG_DETAIL("Received SIGHUP signal, reloading accounts.");
 		   AccountMgr::getSingleton().ReloadAccounts(true);
 	   }break;
 #endif
@@ -142,7 +142,7 @@ bool startdb()
 			if( !existsPort     ){ errorMessage += "    Port\r\n"; }
 		}
 
-		sLog.outError( errorMessage.c_str());
+		LOG_ERROR( errorMessage.c_str());
 		return false;
 	}
 
@@ -153,7 +153,7 @@ bool startdb()
 		lpassword.c_str(), ldatabase.c_str(), Config.MainConfig.GetIntDefault("LogonDatabase", "ConnectionCount", 5),
 		16384))
 	{
-		sLog.outError("sql: Logon database initialization failed. Exiting.");
+		LOG_ERROR("sql: Logon database initialization failed. Exiting.");
 		return false;
 	}
 
@@ -206,7 +206,7 @@ bool Rehash()
 #endif
 	if(!Config.MainConfig.SetSource(config_file))
 	{
-		sLog.outError("Config file could not be rehashed.");
+		LOG_ERROR("Config file could not be rehashed.");
 		return false;
 	}
 
@@ -226,7 +226,7 @@ bool Rehash()
 		string::size_type i = itr->find("/");
 		if( i == string::npos )
 		{
-			sLog.outError("IP: %s could not be parsed. Ignoring", itr->c_str());
+			LOG_ERROR("IP: %s could not be parsed. Ignoring", itr->c_str());
 			continue;
 		}
 
@@ -237,7 +237,7 @@ bool Rehash()
 		unsigned char ipmask = (char)atoi(smask.c_str());
 		if( ipraw == 0 || ipmask == 0 )
 		{
-			sLog.outError("IP: %s could not be parsed. Ignoring", itr->c_str());
+			LOG_ERROR("IP: %s could not be parsed. Ignoring", itr->c_str());
 			continue;
 		}
 
@@ -252,7 +252,7 @@ bool Rehash()
 		string::size_type i = itr->find("/");
 		if( i == string::npos )
 		{
-			sLog.outError("IP: %s could not be parsed. Ignoring", itr->c_str());
+			LOG_ERROR("IP: %s could not be parsed. Ignoring", itr->c_str());
 			continue;
 		}
 
@@ -263,7 +263,7 @@ bool Rehash()
 		unsigned char ipmask = (char)atoi(smask.c_str());
 		if( ipraw == 0 || ipmask == 0 )
 		{
-			sLog.outError("IP: %s could not be parsed. Ignoring", itr->c_str());
+			LOG_ERROR("IP: %s could not be parsed. Ignoring", itr->c_str());
 			continue;
 		}
 
@@ -338,11 +338,11 @@ void LogonServer::Run(int argc, char ** argv)
 
 	if(do_check_conf)
 	{
-		sLog.outBasic("Checking config file: %s", config_file);
+		LOG_BASIC("Checking config file: %s", config_file);
 		if(Config.MainConfig.SetSource(config_file, true))
-			sLog.outBasic("  Passed without errors.");
+			LOG_BASIC("  Passed without errors.");
 		else
-			sLog.outBasic("  Encountered one or more errors.");
+			LOG_BASIC("  Encountered one or more errors.");
 		/* Remved useless die directive */
 		/*
 		string die;
@@ -499,7 +499,7 @@ void LogonServer::Run(int argc, char ** argv)
 	}
 	else
 	{
-		sLog.outError("Error creating sockets. Shutting down...");
+		LOG_ERROR("Error creating sockets. Shutting down...");
 	}
 
 	pfc->kill();
@@ -533,7 +533,7 @@ void LogonServer::Run(int argc, char ** argv)
 	delete pfc;
 	delete cl;
 	delete sl;
-	sLog.outBasic("Shutdown complete.");
+	LOG_BASIC("Shutdown complete.");
 	sLog.Close();
 }
 

@@ -183,7 +183,7 @@ void ScriptMgr::LoadScripts()
 
 		if( !dl->Load() ){
 			loadmessage << "ERROR: Cannot open library.";
-			sLog.outError( loadmessage.str().c_str() );
+			LOG_ERROR( loadmessage.str().c_str() );
 			delete dl;
 			continue;
 
@@ -194,7 +194,7 @@ void ScriptMgr::LoadScripts()
 
 			if( ( vcall == NULL ) || ( rcall == NULL ) || ( scall == NULL ) ){
 				loadmessage << "ERROR: Cannot find version functions.";
-				sLog.outError( loadmessage.str().c_str() );
+				LOG_ERROR( loadmessage.str().c_str() );
 				delete dl;
 				continue;
 			}else{
@@ -203,7 +203,7 @@ void ScriptMgr::LoadScripts()
 
 				if( ( SCRIPTLIB_LOPART( version ) != static_cast< uint32 >( SCRIPTLIB_VERSION_MINOR ) ) || ( SCRIPTLIB_HIPART( version ) != static_cast< uint32 >( SCRIPTLIB_VERSION_MAJOR ) ) ){
 					loadmessage << "ERROR: Version mismatch.";
-					sLog.outError( loadmessage.str().c_str() );
+					LOG_ERROR( loadmessage.str().c_str() );
 					delete dl;
 					continue;
 
@@ -227,7 +227,7 @@ void ScriptMgr::LoadScripts()
 
 						loadmessage << "loaded";
 					}
-					sLog.outBasic( loadmessage.str().c_str() );
+					LOG_BASIC( loadmessage.str().c_str() );
 					count++;
 				}
 			}
@@ -235,7 +235,7 @@ void ScriptMgr::LoadScripts()
 	}
 
 	if( count == 0 ){
-		sLog.outError( "  No external scripts found! Server will continue to function with limited functionality." );
+		LOG_ERROR( "  No external scripts found! Server will continue to function with limited functionality." );
 	}else{
 		Log.Success( "Server", "Loaded %u external libraries.", count );
 		Log.Success( "Server", "Loading optional scripting engines..." );
@@ -286,7 +286,7 @@ void ScriptMgr::UnloadScripts()
 void ScriptMgr::DumpUnimplementedSpells(){
 	std::ofstream of;
 
-	sLog.outBasic("Dumping IDs for spells with unimplemented dummy/script effect(s)");
+	LOG_BASIC("Dumping IDs for spells with unimplemented dummy/script effect(s)");
 	uint32 count = 0;
 
 	of.open( "unimplemented1.txt" );
@@ -316,9 +316,9 @@ void ScriptMgr::DumpUnimplementedSpells(){
 
 	of.close();
 
-	sLog.outBasic("Dumped %u IDs.", count );
+	LOG_BASIC("Dumped %u IDs.", count );
 
-	sLog.outBasic("Dumping IDs for spells with unimplemented dummy aura effect.");
+	LOG_BASIC("Dumping IDs for spells with unimplemented dummy aura effect.");
 
 	std::ofstream of2;
 	of2.open( "unimplemented2.txt" );
@@ -346,13 +346,13 @@ void ScriptMgr::DumpUnimplementedSpells(){
 
 	of2.close();
 
-	sLog.outBasic("Dumped %u IDs.", count );
+	LOG_BASIC("Dumped %u IDs.", count );
 }
 
 void ScriptMgr::register_creature_script(uint32 entry, exp_create_creature_ai callback)
 {
 	if(_creatures.find(entry) != _creatures.end())
-		sLog.outError("ScriptMgr is trying to register a script for Creature ID: %u even if there's already one for that Creature. Remove one of those scripts.", entry);
+		LOG_ERROR("ScriptMgr is trying to register a script for Creature ID: %u even if there's already one for that Creature. Remove one of those scripts.", entry);
 
 	_creatures.insert( CreatureCreateMap::value_type( entry, callback ) );
 }
@@ -360,7 +360,7 @@ void ScriptMgr::register_creature_script(uint32 entry, exp_create_creature_ai ca
 void ScriptMgr::register_gameobject_script(uint32 entry, exp_create_gameobject_ai callback)
 {
 	if(_gameobjects.find(entry) != _gameobjects.end())
-		sLog.outError("ScriptMgr is trying to register a script for GameObject ID: %u even if there's already one for that GameObject. Remove one of those scripts.", entry);
+		LOG_ERROR("ScriptMgr is trying to register a script for GameObject ID: %u even if there's already one for that GameObject. Remove one of those scripts.", entry);
 
 	_gameobjects.insert( GameObjectCreateMap::value_type( entry, callback ) );
 }
@@ -368,17 +368,17 @@ void ScriptMgr::register_gameobject_script(uint32 entry, exp_create_gameobject_a
 void ScriptMgr::register_dummy_aura(uint32 entry, exp_handle_dummy_aura callback)
 {
 	if( _auras.find(entry) != _auras.end() ){
-		sLog.outError("ScriptMgr is trying to register a script for Aura ID: %u even if there's already one for that Aura. Remove one of those scripts.", entry);
+		LOG_ERROR("ScriptMgr is trying to register a script for Aura ID: %u even if there's already one for that Aura. Remove one of those scripts.", entry);
 	}
 
 	SpellEntry *sp = dbcSpell.LookupEntryForced( entry );
 	if( sp == NULL ){
-		sLog.outError("ScriptMgr is trying to register a dummy aura handler for Spell ID: %u which is invalid.", entry );
+		LOG_ERROR("ScriptMgr is trying to register a dummy aura handler for Spell ID: %u which is invalid.", entry );
 		return;
 	}
 
 	if( !sp->AppliesAura( SPELL_AURA_DUMMY ) && !sp->AppliesAura( SPELL_AURA_PERIODIC_TRIGGER_DUMMY ) )
-		sLog.outError("ScriptMgr has registered a dummy aura handler for Spell ID: %u ( %s ), but spell has no dummy aura!", entry, sp->Name );
+		LOG_ERROR("ScriptMgr has registered a dummy aura handler for Spell ID: %u ( %s ), but spell has no dummy aura!", entry, sp->Name );
 
 	_auras.insert( HandleDummyAuraMap::value_type( entry, callback ) );
 }
@@ -386,18 +386,18 @@ void ScriptMgr::register_dummy_aura(uint32 entry, exp_handle_dummy_aura callback
 void ScriptMgr::register_dummy_spell(uint32 entry, exp_handle_dummy_spell callback)
 {
 	if(_spells.find(entry) != _spells.end()){
-		sLog.outError("ScriptMgr is trying to register a script for Spell ID: %u even if there's already one for that Spell. Remove one of those scripts.", entry);
+		LOG_ERROR("ScriptMgr is trying to register a script for Spell ID: %u even if there's already one for that Spell. Remove one of those scripts.", entry);
 		return;
 	}
 
 	SpellEntry *sp = dbcSpell.LookupEntryForced( entry );
 	if( sp == NULL ){
-		sLog.outError("ScriptMgr is trying to register a dummy handler for Spell ID: %u which is invalid.", entry );
+		LOG_ERROR("ScriptMgr is trying to register a dummy handler for Spell ID: %u which is invalid.", entry );
 		return;
 	}
 
 	if( !sp->HasEffect( SPELL_EFFECT_DUMMY ) && !sp->HasEffect( SPELL_EFFECT_SCRIPT_EFFECT) && !sp->HasEffect(SPELL_EFFECT_SEND_EVENT) )
-		sLog.outError("ScriptMgr has registered a dummy handler for Spell ID: %u ( %s ), but spell has no dummy/script/send event effect!", entry, sp->Name );
+		LOG_ERROR("ScriptMgr has registered a dummy handler for Spell ID: %u ( %s ), but spell has no dummy/script/send event effect!", entry, sp->Name );
 
 	_spells.insert( HandleDummySpellMap::value_type( entry, callback ) );
 }
@@ -408,7 +408,7 @@ void ScriptMgr::register_gossip_script(uint32 entry, GossipScript * gs)
 	if(ci)
 	{
 		if(ci->gossip_script != DefaultGossipScript)
-			sLog.outError("ScriptMgr is trying to register a gossip for Creature ID: %u even if there's already one for that Creature. Remove one of those gossips.", entry);
+			LOG_ERROR("ScriptMgr is trying to register a gossip for Creature ID: %u even if there's already one for that Creature. Remove one of those gossips.", entry);
 
 		ci->gossip_script = gs;
 	}
@@ -422,7 +422,7 @@ void ScriptMgr::register_go_gossip_script(uint32 entry, GossipScript * gs)
 	if(gi)
 	{
 		if(gi->gossip_script != NULL)
-			sLog.outError("ScriptMgr is trying to register a gossip for GameObject ID: %u even if there's already one for that GameObject. Remove one of those gossips.", entry);
+			LOG_ERROR("ScriptMgr is trying to register a gossip for GameObject ID: %u even if there's already one for that GameObject. Remove one of those gossips.", entry);
 
 		gi->gossip_script = gs;
 	}
@@ -436,7 +436,7 @@ void ScriptMgr::register_quest_script(uint32 entry, QuestScript * qs)
 	if( q != NULL )
 	{
 		if(q->pQuestScript != NULL)
-		sLog.outError("ScriptMgr is trying to register a script for Quest ID: %u even if there's already one for that Quest. Remove one of those scripts.", entry);
+		LOG_ERROR("ScriptMgr is trying to register a script for Quest ID: %u even if there's already one for that Quest. Remove one of those scripts.", entry);
 
 		q->pQuestScript = qs;
 	}
@@ -447,7 +447,7 @@ void ScriptMgr::register_quest_script(uint32 entry, QuestScript * qs)
 void ScriptMgr::register_instance_script( uint32 pMapId, exp_create_instance_ai pCallback ) 
 { 
 	if(mInstances.find(pMapId) != mInstances.end())
-		sLog.outError("ScriptMgr is trying to register a script for Instance ID: %u even if there's already one for that Instance. Remove one of those scripts.", pMapId);
+		LOG_ERROR("ScriptMgr is trying to register a script for Instance ID: %u even if there's already one for that Instance. Remove one of those scripts.", pMapId);
 
 	mInstances.insert( InstanceCreateMap::value_type( pMapId, pCallback ) ); 
 }; 
@@ -497,18 +497,18 @@ void ScriptMgr::register_script_effect( uint32 entry, exp_handle_script_effect c
 	HandleScriptEffectMap::iterator itr = SpellScriptEffects.find( entry );
 	
 	if( itr != SpellScriptEffects.end() ){
-		sLog.outError("ScriptMgr tried to register more than 1 script effect handlers for Spell %u", entry );
+		LOG_ERROR("ScriptMgr tried to register more than 1 script effect handlers for Spell %u", entry );
 		return;
 	}
 
 	SpellEntry *sp = dbcSpell.LookupEntryForced( entry );
 	if( sp == NULL ){
-		sLog.outError("ScriptMgr tried to register a script effect handler for Spell %u, which is invalid.", entry );
+		LOG_ERROR("ScriptMgr tried to register a script effect handler for Spell %u, which is invalid.", entry );
 		return;
 	}
 
 	if( !sp->HasEffect( SPELL_EFFECT_SCRIPT_EFFECT ) && !sp->HasEffect( SPELL_EFFECT_SEND_EVENT ) )
-		sLog.outError("ScriptMgr has registered a script effect handler for Spell ID: %u ( %s ), but spell has no scripted effect!", entry, sp->Name );
+		LOG_ERROR("ScriptMgr has registered a script effect handler for Spell ID: %u ( %s ), but spell has no scripted effect!", entry, sp->Name );
 
 	SpellScriptEffects.insert( std::pair< uint32, exp_handle_script_effect >( entry, callback ) );
 }
@@ -588,7 +588,7 @@ void ScriptMgr::register_item_gossip_script(uint32 entry, GossipScript * gs)
 	if(proto)
 	{
 		if(proto->gossip_script != NULL)
-		sLog.outError("ScriptMgr is trying to register a gossip for Item ID: %u even if there's already one for that Item. Remove one of those gossips.", entry);
+		LOG_ERROR("ScriptMgr is trying to register a gossip for Item ID: %u even if there's already one for that Item. Remove one of those gossips.", entry);
 
 		proto->gossip_script = gs;
 	}

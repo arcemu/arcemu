@@ -206,7 +206,7 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 				{
 					if(!sp->spell)
 					{
-						sLog.outDebug("SpellId %u in ai_agent for %u is invalid.", (unsigned int)fields[6].GetUInt32(), (unsigned int)sp->entryId);
+						LOG_DEBUG("SpellId %u in ai_agent for %u is invalid.", (unsigned int)fields[6].GetUInt32(), (unsigned int)sp->entryId);
 						delete sp;
 						sp = NULL;
 						continue;
@@ -215,7 +215,7 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 					if(sp->spell->Effect[0] == SPELL_EFFECT_LEARN_SPELL || sp->spell->Effect[1] == SPELL_EFFECT_LEARN_SPELL ||
 						sp->spell->Effect[2] == SPELL_EFFECT_LEARN_SPELL)
 					{
-						sLog.outDebug("Teaching spell %u in ai_agent for %u", (unsigned int)fields[6].GetUInt32(), (unsigned int)sp->entryId);
+						LOG_DEBUG("Teaching spell %u in ai_agent for %u", (unsigned int)fields[6].GetUInt32(), (unsigned int)sp->entryId);
 						delete sp;
 						sp = NULL;
 						continue;

@@ -457,7 +457,7 @@ bool ChatHandler::HandleQuestFinishCommand(const char * args, WorldSession * m_s
 					ItemPrototype *proto = ItemPrototypeStorage.LookupEntry(qst->reward_item[i]);
 					if(!proto)
 					{
-						sLog.outError("Invalid item prototype in quest reward! ID %d, quest %d", qst->reward_item[i], qst->id);
+						LOG_ERROR("Invalid item prototype in quest reward! ID %d, quest %d", qst->reward_item[i], qst->id);
 					}
 					else
 					{   
@@ -498,7 +498,7 @@ bool ChatHandler::HandleQuestFinishCommand(const char * args, WorldSession * m_s
 				ItemPrototype *proto = ItemPrototypeStorage.LookupEntry(qst->reward_choiceitem[reward_slot]);
 				if(!proto)
 				{
-					sLog.outError("Invalid item prototype in quest reward! ID %d, quest %d", qst->reward_choiceitem[reward_slot], qst->id);
+					LOG_ERROR("Invalid item prototype in quest reward! ID %d, quest %d", qst->reward_choiceitem[reward_slot], qst->id);
 				}
 				else
 				{
@@ -1605,7 +1605,7 @@ bool ChatHandler::HandleQuestRewardCommand(const char * args, WorldSession * m_s
 			if(!itemProto)
 			{
 				recout << "Unknown item id %lu" << itemid;
-				sLog.outError( "WORLD: Unknown item id 0x%08x", itemid );
+				LOG_ERROR( "WORLD: Unknown item id 0x%08x", itemid );
 			}
 			else
 			{
@@ -1623,7 +1623,7 @@ bool ChatHandler::HandleQuestRewardCommand(const char * args, WorldSession * m_s
 			if(!itemProto)
 			{
 				recout << "Unknown item id %lu" << itemid;
-				sLog.outError( "WORLD: Unknown item id 0x%08x", itemid );
+				LOG_ERROR( "WORLD: Unknown item id 0x%08x", itemid );
 			}
 			else
 			{
@@ -1642,7 +1642,7 @@ bool ChatHandler::HandleQuestRewardCommand(const char * args, WorldSession * m_s
 	else
 	{
 		recout << "Quest ID " << qu_id << " not found.\n";
-		sLog.outError("Quest ID %lu not found.", qu_id);
+		LOG_ERROR("Quest ID %lu not found.", qu_id);
 	}
 
 	SendMultilineMessage(m_session, recout.str().data());

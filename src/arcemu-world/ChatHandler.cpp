@@ -162,7 +162,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 			pMsg = msg.c_str();
 			break;
 		default:
-			sLog.outError("CHAT: unknown msg type %u, lang: %u", type, lang);
+			LOG_ERROR("CHAT: unknown msg type %u, lang: %u", type, lang);
 	}
 	
 
@@ -669,7 +669,7 @@ void WorldSession::HandleReportSpamOpcode( WorldPacket & recv_data )
 	CHECK_INWORLD_RETURN
 
 	CHECK_PACKET_SIZE(recv_data, 1+8);
-	sLog.outDebug("WORLD: CMSG_REPORT_SPAM");
+	LOG_DEBUG("WORLD: CMSG_REPORT_SPAM");
 
 	uint8 spam_type;                                        // 0 - mail, 1 - chat
 	uint64 spammer_guid;
@@ -702,7 +702,7 @@ void WorldSession::HandleReportSpamOpcode( WorldPacket & recv_data )
 	data << uint8(0);
 	SendPacket(&data);
 
-	sLog.outDebug("REPORT SPAM: type %u, guid %u, unk1 %u, unk2 %u, unk3 %u, unk4 %u, message %s", spam_type, Arcemu::Util::GUID_LOPART(spammer_guid), unk1, unk2, unk3, unk4, description.c_str());
+	LOG_DEBUG("REPORT SPAM: type %u, guid %u, unk1 %u, unk2 %u, unk3 %u, unk4 %u, message %s", spam_type, Arcemu::Util::GUID_LOPART(spammer_guid), unk1, unk2, unk3, unk4, description.c_str());
 }
 
 void WorldSession::HandleChatIgnoredOpcode(WorldPacket & recvPacket )

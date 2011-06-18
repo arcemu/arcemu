@@ -48,12 +48,12 @@ void ConsoleThread::terminate()
 	ir[1].Event.KeyEvent.wVirtualScanCode = 28;
 	WriteConsoleInput( GetStdHandle( STD_INPUT_HANDLE ), ir, 2, & dwTmp );
 #endif
-	sLog.outBasic( "Waiting for console thread to terminate...." );
+	LOG_BASIC( "Waiting for console thread to terminate...." );
 	while( m_isRunning )
 	{
 		Sleep( 100 );
 	}
-	sLog.outBasic( "Console shut down." );
+	LOG_BASIC( "Console shut down." );
 }
 
 bool ConsoleThread::run()

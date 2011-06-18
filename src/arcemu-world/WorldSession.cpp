@@ -71,7 +71,7 @@ WorldSession::~WorldSession()
 
 	if(_player)
 	{
-		sLog.outError("warning: logged out player in worldsession destructor");
+		LOG_ERROR("warning: logged out player in worldsession destructor");
 		LogoutPlayer(true);
 	}
 
@@ -145,13 +145,13 @@ int WorldSession::Update(uint32 InstanceID)
 		Arcemu::Util::ARCEMU_ASSERT(   packet != NULL );
 
 		if(packet->GetOpcode() >= NUM_MSG_TYPES)
-			sLog.outDetail("[Session] Received out of range packet with opcode 0x%.4X", packet->GetOpcode());
+			LOG_DETAIL("[Session] Received out of range packet with opcode 0x%.4X", packet->GetOpcode());
 		else
 		{
 			Handler = &WorldPacketHandlers[packet->GetOpcode()];
 			if(Handler->status == STATUS_LOGGEDIN && !_player && Handler->handler != 0)
 			{
-				sLog.outDetail("[Session] Received unexpected/wrong state packet with opcode %s (0x%.4X)",
+				LOG_DETAIL("[Session] Received unexpected/wrong state packet with opcode %s (0x%.4X)",
 					LookupName(packet->GetOpcode(), g_worldOpcodeNames), packet->GetOpcode());
 			}
 			else
@@ -159,7 +159,7 @@ int WorldSession::Update(uint32 InstanceID)
 				// Valid Packet :>
 				if(Handler->handler == 0)
 				{
-					sLog.outDetail("[Session] Received unhandled packet with opcode %s (0x%.4X)",
+					LOG_DETAIL("[Session] Received unhandled packet with opcode %s (0x%.4X)",
 						LookupName(packet->GetOpcode(), g_worldOpcodeNames), packet->GetOpcode());
 				}
 				else
@@ -395,7 +395,7 @@ void WorldSession::LogoutPlayer(bool Save)
 		_player = NULL;
 
 		OutPacket(SMSG_LOGOUT_COMPLETE, 0, NULL);
-		sLog.outDebug( "SESSION: Sent SMSG_LOGOUT_COMPLETE Message" );
+		LOG_DEBUG( "SESSION: Sent SMSG_LOGOUT_COMPLETE Message" );
 	}
 	_loggingOut = false;
 
@@ -453,7 +453,7 @@ void WorldSession::LoadSecurity(std::string securitystring)
 	if(permissions[tmp.size()] != 0)
 		permissions[tmp.size()] = 0;
 
-	sLog.outDebug("Loaded permissions for %u. (%u) : [%s]", this->GetAccountId(), permissioncount, securitystring.c_str());
+	LOG_DEBUG("Loaded permissions for %u. (%u) : [%s]", this->GetAccountId(), permissioncount, securitystring.c_str());
 }
 
 void WorldSession::SetSecurity(std::string securitystring)
@@ -1170,7 +1170,7 @@ void WorldSession::SendRefundInfo( uint64 GUID ){
         
         this->SendPacket( &packet );
 
-        sLog.outDebug("Sent SMSG_ITEMREFUNDINFO.");
+        LOG_DEBUG("Sent SMSG_ITEMREFUNDINFO.");
     }
 }
 
@@ -1249,7 +1249,7 @@ void WorldSession::HandleLearnMultipleTalentsOpcode(WorldPacket &recvPacket){
     uint32 talentid;
     uint32 rank;
 
-	sLog.outDebug("Recieved packet CMSG_LEARN_TALENTS_MULTIPLE.");
+	LOG_DEBUG("Recieved packet CMSG_LEARN_TALENTS_MULTIPLE.");
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // 0x04C1 CMSG_LEARN_TALENTS_MULTIPLE
@@ -1292,7 +1292,7 @@ void WorldSession::SendMOTD(){
 void WorldSession::HandleEquipmentSetUse( WorldPacket &data ){
 	CHECK_INWORLD_RETURN
 
-	sLog.outDebug("Received CMSG_EQUIPMENT_SET_USE");
+	LOG_DEBUG("Received CMSG_EQUIPMENT_SET_USE");
 
 	WoWGuid GUID;
 	int8 SrcBagID;
@@ -1363,7 +1363,7 @@ void WorldSession::HandleEquipmentSetUse( WorldPacket &data ){
 void WorldSession::HandleEquipmentSetSave( WorldPacket &data ){
 	CHECK_INWORLD_RETURN
 
-	sLog.outDebug("Received CMSG_EQUIPMENT_SET_SAVE");
+	LOG_DEBUG("Received CMSG_EQUIPMENT_SET_SAVE");
 
 	WoWGuid GUID;
 	uint32 setGUID;
@@ -1395,17 +1395,17 @@ void WorldSession::HandleEquipmentSetSave( WorldPacket &data ){
 	success = _player->GetItemInterface()->m_EquipmentSets.AddEquipmentSet( set->SetGUID, set );
 
 	if( success ){
-		sLog.outDebug("Player %u successfully stored equipment set %u at slot %u ", _player->GetLowGUID(), set->SetGUID, set->SetID );
+		LOG_DEBUG("Player %u successfully stored equipment set %u at slot %u ", _player->GetLowGUID(), set->SetGUID, set->SetID );
 		_player->SendEquipmentSetSaved( set->SetID, set->SetGUID );
 	}else{
-		sLog.outDebug("Player %u couldn't store equipment set %u at slot %u ", _player->GetLowGUID(), set->SetGUID, set->SetID );
+		LOG_DEBUG("Player %u couldn't store equipment set %u at slot %u ", _player->GetLowGUID(), set->SetGUID, set->SetID );
 	}
 }
 
 void WorldSession::HandleEquipmentSetDelete( WorldPacket &data ){
 	CHECK_INWORLD_RETURN
 
-	sLog.outDebug("Received CMSG_EQUIPMENT_SET_DELETE");
+	LOG_DEBUG("Received CMSG_EQUIPMENT_SET_DELETE");
 
 	WoWGuid setGUID;
 	bool success;
@@ -1417,9 +1417,9 @@ void WorldSession::HandleEquipmentSetDelete( WorldPacket &data ){
 	success = _player->GetItemInterface()->m_EquipmentSets.DeleteEquipmentSet( GUID );
 
 	if( success ){
-		sLog.outDebug("Equipmentset with GUID %u was successfully deleted.",GUID );
+		LOG_DEBUG("Equipmentset with GUID %u was successfully deleted.",GUID );
 	}else{
-		sLog.outDebug("Equipmentset with GUID %u couldn't be deleted.",GUID );
+		LOG_DEBUG("Equipmentset with GUID %u couldn't be deleted.",GUID );
 	}
 
 }
@@ -1427,13 +1427,13 @@ void WorldSession::HandleEquipmentSetDelete( WorldPacket &data ){
 void WorldSession::HandleQuestPOIQueryOpcode(WorldPacket& recv_data){
 	CHECK_INWORLD_RETURN
 
-	sLog.outDebug("Received CMSG_QUEST_POI_QUERY");
+	LOG_DEBUG("Received CMSG_QUEST_POI_QUERY");
 
     uint32 count = 0;
     recv_data >> count;
 
     if(count > MAX_QUEST_LOG_SIZE){
-		sLog.outDebug("Client sent Quest POI query for more than MAX_QUEST_LOG_SIZE quests.");
+		LOG_DEBUG("Client sent Quest POI query for more than MAX_QUEST_LOG_SIZE quests.");
 
 		count = MAX_QUEST_LOG_SIZE;
 	}
@@ -1452,7 +1452,7 @@ void WorldSession::HandleQuestPOIQueryOpcode(WorldPacket& recv_data){
 
     SendPacket(&data);
 
-	sLog.outDebug("Sent SMSG_QUEST_POI_QUERY_RESPONSE");
+	LOG_DEBUG("Sent SMSG_QUEST_POI_QUERY_RESPONSE");
 }
 
 void WorldSession::HandleMirrorImageOpcode( WorldPacket &recv_data )
@@ -1460,7 +1460,7 @@ void WorldSession::HandleMirrorImageOpcode( WorldPacket &recv_data )
 	if( !_player->IsInWorld() )
 		return;
 	
-	sLog.outDebug("Received CMG_GET_MIRRORIMAGE_DATA");
+	LOG_DEBUG("Received CMG_GET_MIRRORIMAGE_DATA");
 	
 	uint64 GUID;
 	
@@ -1531,5 +1531,5 @@ void WorldSession::HandleMirrorImageOpcode( WorldPacket &recv_data )
 
     SendPacket( &data );
 
-    sLog.outDebug("Sent: SMSG_MIRRORIMAGE_DATA");
+    LOG_DEBUG("Sent: SMSG_MIRRORIMAGE_DATA");
 }

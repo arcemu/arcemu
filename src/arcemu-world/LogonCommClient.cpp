@@ -39,7 +39,7 @@ LogonCommClientSocket::LogonCommClientSocket(SOCKET fd) : Socket(fd, 724288, 262
 	use_crypto = false;
 	authenticated = 0;
 
-	sLog.outDebug("Created LogonCommClientSocket %u", m_fd);
+	LOG_DEBUG("Created LogonCommClientSocket %u", m_fd);
 }
 
 void LogonCommClientSocket::OnRead()
@@ -118,7 +118,7 @@ void LogonCommClientSocket::HandlePacket(WorldPacket & recvData)
 
 	if(recvData.GetOpcode() >= RMSG_COUNT || Handlers[recvData.GetOpcode()] == 0)
 	{
-		sLog.outError("Got unknown packet from logoncomm: %u", recvData.GetOpcode());
+		LOG_ERROR("Got unknown packet from logoncomm: %u", recvData.GetOpcode());
 		return;
 	}
 
@@ -216,7 +216,7 @@ void LogonCommClientSocket::OnDisconnect()
 {
 	if(_id != 0)
 	{
-		sLog.outDetail("Calling ConnectionDropped() due to OnDisconnect().");
+		LOG_DETAIL("Calling ConnectionDropped() due to OnDisconnect().");
 		sLogonCommHandler.ConnectionDropped(_id);	
 	}
 }
@@ -348,7 +348,7 @@ void LogonCommClientSocket::CompressAndSend(ByteBuffer & uncompressed)
 
 	if(deflateInit(&stream, 1) != Z_OK)
 	{
-		sLog.outError("deflateInit failed.");
+		LOG_ERROR("deflateInit failed.");
 		return;
 	}
 
@@ -362,21 +362,21 @@ void LogonCommClientSocket::CompressAndSend(ByteBuffer & uncompressed)
 	if(deflate(&stream, Z_NO_FLUSH) != Z_OK ||
 		stream.avail_in != 0)
 	{
-		sLog.outError("deflate failed.");
+		LOG_ERROR("deflate failed.");
 		return;
 	}
 
 	// finish the deflate
 	if(deflate(&stream, Z_FINISH) != Z_STREAM_END)
 	{
-		sLog.outError("deflate failed: did not end stream");
+		LOG_ERROR("deflate failed: did not end stream");
 		return;
 	}
 
 	// finish up
 	if(deflateEnd(&stream) != Z_OK)
 	{
-		sLog.outError("deflateEnd failed.");
+		LOG_ERROR("deflateEnd failed.");
 		return;
 	}
 

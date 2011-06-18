@@ -111,7 +111,7 @@ uint32 CheckTriggerPrerequsites(AreaTrigger * pAreaTrigger, WorldSession * pSess
 
 void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
 {		
-	sLog.outDebug("AreaTrigger: %u", id);
+	LOG_DEBUG("AreaTrigger: %u", id);
 
 	// Are we REALLY here?
 	if( !_player->IsInWorld() )
@@ -125,7 +125,7 @@ void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
 
 	if( entry == NULL )
 	{
-		sLog.outDebug("Missing AreaTrigger: %u", id);
+		LOG_DEBUG("Missing AreaTrigger: %u", id);
 		return;
 	}
 

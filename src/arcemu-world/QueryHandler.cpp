@@ -34,7 +34,7 @@ void WorldSession::HandleNameQueryOpcode( WorldPacket & recv_data )
 	if(!pn)
 		return;
 
-	sLog.outDebug( "Received CMSG_NAME_QUERY for: %s", pn->name );
+	LOG_DEBUG( "Received CMSG_NAME_QUERY for: %s", pn->name );
 
 	WoWGuid pguid((uint64)pn->guid); //VLack: The usual new style guid handling on 3.1.2
 	WorldPacket data(SMSG_NAME_QUERY_RESPONSE, strlen(pn->name) + 35);
@@ -100,7 +100,7 @@ void WorldSession::HandleCreatureQueryOpcode( WorldPacket & recv_data )
 
 		if(lcn == NULL)
 		{
-			sLog.outDetail("WORLD: CMSG_CREATURE_QUERY '%s'", ci->Name);
+			LOG_DETAIL("WORLD: CMSG_CREATURE_QUERY '%s'", ci->Name);
 			data << (uint32)entry;
 			data << ci->Name;       // name of the creature
 			data << uint8(0);       // name2, always seems to be empty
@@ -110,7 +110,7 @@ void WorldSession::HandleCreatureQueryOpcode( WorldPacket & recv_data )
 		}
 		else
 		{
-			sLog.outDetail("WORLD: CMSG_CREATURE_QUERY '%s' (localized to %s)", ci->Name, lcn->Name);
+			LOG_DETAIL("WORLD: CMSG_CREATURE_QUERY '%s' (localized to %s)", ci->Name, lcn->Name);
 			data << (uint32)entry;
 			data << lcn->Name;
 			data << uint8(0); 
@@ -162,7 +162,7 @@ void WorldSession::HandleGameObjectQueryOpcode( WorldPacket & recv_data )
 	recv_data >> entryID;
 	recv_data >> guid;
 
-	sLog.outDetail("WORLD: CMSG_GAMEOBJECT_QUERY '%u'", entryID);
+	LOG_DETAIL("WORLD: CMSG_GAMEOBJECT_QUERY '%u'", entryID);
 
 	goinfo = GameObjectNameStorage.LookupEntry(entryID);
 	if(goinfo == NULL)
@@ -229,7 +229,7 @@ void WorldSession::HandleCorpseQueryOpcode(WorldPacket &recv_data)
 {
 	CHECK_INWORLD_RETURN
 
-	sLog.outDetail("WORLD: Received MSG_CORPSE_QUERY");
+	LOG_DETAIL("WORLD: Received MSG_CORPSE_QUERY");
 
 	Corpse *pCorpse;
 	WorldPacket data(MSG_CORPSE_QUERY, 25);

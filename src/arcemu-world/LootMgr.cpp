@@ -211,7 +211,7 @@ void LootMgr::LoadLootProp()
 
 LootMgr::~LootMgr()
 {
-  sLog.outDetail("  Deleting Loot Tables...");
+  LOG_DETAIL("  Deleting Loot Tables...");
   for(LootStore::iterator iter=CreatureLoot.begin(); iter != CreatureLoot.end(); ++iter)
   	delete [] iter->second.items;
 
@@ -826,7 +826,7 @@ void LootRoll::Finalize()
 			return;
 		}
 
-		sLog.outDebug("AutoLootItem MISC");
+		LOG_DEBUG("AutoLootItem MISC");
 		Item *item = objmgr.CreateItem( itemid, _player);
 		if (item== NULL)
 			return;

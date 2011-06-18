@@ -12,7 +12,7 @@ SpeedCheatDetector::SpeedCheatDetector()
 void SpeedCheatDetector::EventSpeedChange()
 {
 #ifdef _DEBUG
-	sLog.outDebug("Speedchange Event occurred prevspeed=%f",last_used_speed);
+	LOG_DEBUG("Speedchange Event occurred prevspeed=%f",last_used_speed);
 #endif
 //	last_stamp = 0;
 	//to reset or not to reset, this is the question
@@ -51,8 +51,8 @@ void SpeedCheatDetector::AddSample(float x, float y, int stamp, float player_spe
 		float dist = sqrt(dif_x*dif_x + dif_y * dif_y);
 		float cur_speed = dist / (float)time_dif * 1000.0f;
 #ifdef _DEBUG
-//		sLog.outDebug("adding speed sample dist=%f tdif = %u sp=%f shouldbes=%f, cheatspeed=%f\n",dist,time_dif,cur_speed,player_speed,cur_speed * SPDT_DETECTION_ERROR);
-//		sLog.outDebug("adding speed sample sp=%f, shouldbes=%f, cheatDspeed=%f, threat lvl = %d, ischeat detected = %u\n",cur_speed,player_speed,cur_speed * SPDT_DETECTION_ERROR,cheat_threat,IsCheatDetected());
+//		LOG_DEBUG("adding speed sample dist=%f tdif = %u sp=%f shouldbes=%f, cheatspeed=%f\n",dist,time_dif,cur_speed,player_speed,cur_speed * SPDT_DETECTION_ERROR);
+//		LOG_DEBUG("adding speed sample sp=%f, shouldbes=%f, cheatDspeed=%f, threat lvl = %d, ischeat detected = %u\n",cur_speed,player_speed,cur_speed * SPDT_DETECTION_ERROR,cheat_threat,IsCheatDetected());
 #endif
 
 		//check if we really got a cheater here

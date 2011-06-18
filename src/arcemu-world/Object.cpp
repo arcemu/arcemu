@@ -762,7 +762,7 @@ bool Object::SetPosition(const LocationVector & v, bool allowPorting /* = false 
 	if (!allowPorting && v.z < -500)
 	{
 		m_position.z = 500;
-		sLog.outError( "setPosition: fell through map; height ported" );
+		LOG_ERROR( "setPosition: fell through map; height ported" );
 
 		result = false;
 	}
@@ -793,7 +793,7 @@ bool Object::SetPosition( float newX, float newY, float newZ, float newOrientati
 	if (!allowPorting && newZ < -500)
 	{
 		m_position.z = 500;
-		sLog.outError( "setPosition: fell through map; height ported" );
+		LOG_ERROR( "setPosition: fell through map; height ported" );
 
 		result = false;
 	}
@@ -856,7 +856,7 @@ void Object::AddToWorld()
 	MapMgr *mapMgr = sInstanceMgr.GetInstance(this);
 	if(mapMgr == NULL)
 	{
-		sLog.outError("AddToWorld() failed for Object with GUID "I64FMT" MapId %u InstanceId %u", GetGUID(), GetMapId(), GetInstanceID());
+		LOG_ERROR("AddToWorld() failed for Object with GUID "I64FMT" MapId %u InstanceId %u", GetGUID(), GetMapId(), GetInstanceID());
 		return;
 	}
 
@@ -925,7 +925,7 @@ void Object::PushToWorld(MapMgr* mgr)
 
 	if(mgr == NULL)
 	{
-		sLog.outError("Invalid push to world of Object "I64FMT, GetGUID());
+		LOG_ERROR("Invalid push to world of Object "I64FMT, GetGUID());
  		return; //instance add failed
 	}
 
@@ -1426,7 +1426,7 @@ bool Object::inArc(float Position1X, float Position1Y, float FOV, float Orientat
 	float angle = calcAngle( Position1X, Position1Y, Position2X, Position2Y );
 	float lborder = getEasyAngle( ( Orientation - (FOV*0.5f/*/2*/) ) );
 	float rborder = getEasyAngle( ( Orientation + (FOV*0.5f/*/2*/) ) );
-	//sLog.outDebug("Orientation: %f Angle: %f LeftBorder: %f RightBorder %f",Orientation,angle,lborder,rborder);
+	//LOG_DEBUG("Orientation: %f Angle: %f LeftBorder: %f RightBorder %f",Orientation,angle,lborder,rborder);
 	if(((angle >= lborder) && (angle <= rborder)) || ((lborder > rborder) && ((angle < rborder) || (angle > lborder))))
 	{
 		return true;
@@ -1522,14 +1522,14 @@ void Object::_setFaction()
 	{
 		factT = dbcFactionTemplate.LookupEntryForced(TO_UNIT(this)->GetFaction());
 		if( !factT )
-			sLog.outError("Unit does not have a valid faction. It will make him act stupid in world. Don't blame us, blame yourself for not checking :P, faction %u set to entry %u",TO_UNIT(this)->GetFaction(),GetEntry() );
+			LOG_ERROR("Unit does not have a valid faction. It will make him act stupid in world. Don't blame us, blame yourself for not checking :P, faction %u set to entry %u",TO_UNIT(this)->GetFaction(),GetEntry() );
 	}
 	else
 	if(IsGameObject())
 	{
 		factT = dbcFactionTemplate.LookupEntryForced(TO< GameObject* >(this)->GetFaction());
 		if( !factT )
-			sLog.outError("Game Object does not have a valid faction. It will make him act stupid in world. Don't blame us, blame yourself for not checking :P, faction %u set to entry %u",TO< GameObject* >(this)->GetFaction(),GetEntry() );
+			LOG_ERROR("Game Object does not have a valid faction. It will make him act stupid in world. Don't blame us, blame yourself for not checking :P, faction %u set to entry %u",TO< GameObject* >(this)->GetFaction(),GetEntry() );
 	}
 
 	if(!factT)
@@ -2220,7 +2220,7 @@ void Object::AddInRangeObject(Object *pObj){
     Arcemu::Util::ARCEMU_ASSERT(    pObj != NULL );
 
 	if( pObj == this )
-        sLog.outError( "We are in range of ourselves!" );
+        LOG_ERROR( "We are in range of ourselves!" );
 
     if( pObj->IsPlayer() )
         m_inRangePlayers.insert( pObj ); 

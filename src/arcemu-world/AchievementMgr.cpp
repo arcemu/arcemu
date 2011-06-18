@@ -321,7 +321,7 @@ void AchievementMgr::LoadFromDB(QueryResult *achievementResult, QueryResult *cri
 			if( m_completedAchievements[id] == 0 )
 				m_completedAchievements[id] = fields[1].GetUInt32();
 			else 
-				sLog.outError("Duplicate completed achievement %u for player %u, skipping", id, (uint32)m_player->GetGUID() );
+				LOG_ERROR("Duplicate completed achievement %u for player %u, skipping", id, (uint32)m_player->GetGUID() );
 		} while(achievementResult->NextRow());
 	}
 
@@ -337,7 +337,7 @@ void AchievementMgr::LoadFromDB(QueryResult *achievementResult, QueryResult *cri
 				m_criteriaProgress[ progress_id ] = progress;
 			}
 			else
-				sLog.outError( "Duplicate criteria progress %u for player %u, skipping", progress_id, (uint32) m_player->GetGUID() );
+				LOG_ERROR( "Duplicate criteria progress %u for player %u, skipping", progress_id, (uint32) m_player->GetGUID() );
 
 		}while( criteriaResult->NextRow() );
 	}
@@ -2117,7 +2117,7 @@ bool AchievementMgr::GMCompleteCriteria(WorldSession* gmSession, int32 criteriaI
 			crt = dbcAchievementCriteriaStore.LookupRowForced(i);
 			if( crt == NULL )
 			{
-				sLog.outError("Achievement Criteria %lu entry not found.", i);
+				LOG_ERROR("Achievement Criteria %lu entry not found.", i);
 				continue;
 			}
 			++j;

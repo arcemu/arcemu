@@ -95,7 +95,7 @@ bool GameObject::CreateFromProto(uint32 entry,uint32 mapid, float x, float y, fl
 	pInfo = GameObjectNameStorage.LookupEntry(entry);
 	if(pInfo == NULL)
 	{
-		sLog.outError("Something tried to create a GameObject with invalid entry %u", entry);
+		LOG_ERROR("Something tried to create a GameObject with invalid entry %u", entry);
 		return false;
 	}
 
@@ -257,7 +257,7 @@ void GameObject::SaveToDB()
 {
 	if(m_spawn == NULL)
 	{
-		sLog.outError("GameObject::SaveToDB() is trying to save a GameObject with spawn Id = 0");
+		LOG_ERROR("GameObject::SaveToDB() is trying to save a GameObject with spawn Id = 0");
 		return;
 	}
 	std::stringstream ss;
@@ -354,7 +354,7 @@ void GameObject::InitAI()
 			
 			GameObjectInfo *gi = GameObjectNameStorage.LookupEntry( pInfo->sound2 );
 			if( gi == NULL ){
-				sLog.outError("Gamobject %u is of spellfocus type, has attachment GO data ( %u ), but attachment not found in database.", pInfo->ID, pInfo->sound2 );
+				LOG_ERROR("Gamobject %u is of spellfocus type, has attachment GO data ( %u ), but attachment not found in database.", pInfo->ID, pInfo->sound2 );
 				return;
 			}
 
@@ -486,7 +486,7 @@ void GameObject::UseFishingNode(Player *player)
 	FishingZoneEntry *entry = FishingZoneStorage.LookupEntry( zone );
 	if( entry == NULL ) // No fishing information found for area or zone, log an error, and end fishing
 	{
-		sLog.outError( "ERROR: Fishing zone information for zone %d not found!", zone );
+		LOG_ERROR( "ERROR: Fishing zone information for zone %d not found!", zone );
 		EndFishing( player, true );
 		return;
 	}

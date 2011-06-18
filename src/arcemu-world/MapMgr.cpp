@@ -350,7 +350,7 @@ void MapMgr::PushObject(Object *obj)
 
 	if( plObj != NULL )
 	{
-		sLog.outDetail("Creating player "I64FMT" for himself.", obj->GetGUID());
+		LOG_DETAIL("Creating player "I64FMT" for himself.", obj->GetGUID());
 		ByteBuffer pbuf(10000);
 		count = plObj->BuildCreateUpdateBlockForPlayer(&pbuf, plObj);
 		plObj->PushCreationData(&pbuf, count);
@@ -1063,7 +1063,7 @@ void MapMgr::LoadAllCells()
 				// There is no spoon. Err... cell.
 				cellInfo = Create( x , y );
 				cellInfo->Init( x , y , this );
-				sLog.outDetail( "Created cell [%u,%u] on map %u (instance %u)." , x , y , _mapId , m_instanceID );
+				LOG_DETAIL( "Created cell [%u,%u] on map %u (instance %u)." , x , y , _mapId , m_instanceID );
 				cellInfo->SetActivity( true );
 				_map->CellGoneActive( x , y );
 				Arcemu::Util::ARCEMU_ASSERT(    !cellInfo->IsLoaded() );
@@ -1077,13 +1077,13 @@ void MapMgr::LoadAllCells()
 				// Cell exists, but is inactive
 				if ( !cellInfo->IsActive() )
 				{
-					sLog.outDetail("Activated cell [%u,%u] on map %u (instance %u).", x, y, _mapId, m_instanceID );
+					LOG_DETAIL("Activated cell [%u,%u] on map %u (instance %u).", x, y, _mapId, m_instanceID );
 					_map->CellGoneActive( x , y );
 					cellInfo->SetActivity( true );
 
 					if (!cellInfo->IsLoaded())
 					{
-						//sLog.outDetail("Loading objects for Cell [%u][%u] on map %u (instance %u)...",
+						//LOG_DETAIL("Loading objects for Cell [%u][%u] on map %u (instance %u)...",
 						//	posX, posY, this->_mapId, m_instanceID);
 						spawns = _map->GetSpawnsList( x , y );
 						if( spawns )
@@ -1119,7 +1119,7 @@ void MapMgr::UpdateCellActivity(uint32 x, uint32 y, int radius)
 					objCell = Create(posX, posY);
 					objCell->Init(posX, posY, this);
 
-					sLog.outDetail("Cell [%u,%u] on map %u (instance %u) is now active.",
+					LOG_DETAIL("Cell [%u,%u] on map %u (instance %u) is now active.",
 						posX, posY, this->_mapId, m_instanceID);
 					objCell->SetActivity(true);
 					_map->CellGoneActive(posX, posY);
@@ -1127,7 +1127,7 @@ void MapMgr::UpdateCellActivity(uint32 x, uint32 y, int radius)
 
 					Arcemu::Util::ARCEMU_ASSERT(   !objCell->IsLoaded());
 
-					sLog.outDetail("Loading objects for Cell [%u][%u] on map %u (instance %u)...",
+					LOG_DETAIL("Loading objects for Cell [%u][%u] on map %u (instance %u)...",
 						posX, posY, this->_mapId, m_instanceID);
 
 					sp = _map->GetSpawnsList(posX, posY);
@@ -1139,7 +1139,7 @@ void MapMgr::UpdateCellActivity(uint32 x, uint32 y, int radius)
 				//Cell is now active
 				if (_CellActive(posX, posY) && !objCell->IsActive())
 				{
-					sLog.outDetail("Cell [%u,%u] on map %u (instance %u) is now active.",
+					LOG_DETAIL("Cell [%u,%u] on map %u (instance %u) is now active.",
 						posX, posY, this->_mapId, m_instanceID);
 					_map->CellGoneActive(posX, posY);
 					_terrain->LoadTile((int32)posX / 8, (int32)posY / 8);
@@ -1147,7 +1147,7 @@ void MapMgr::UpdateCellActivity(uint32 x, uint32 y, int radius)
 
 					if (!objCell->IsLoaded())
 					{
-						sLog.outDetail("Loading objects for Cell [%u][%u] on map %u (instance %u)...",
+						LOG_DETAIL("Loading objects for Cell [%u][%u] on map %u (instance %u)...",
 							posX, posY, this->_mapId, m_instanceID);
 						sp = _map->GetSpawnsList(posX, posY);
 						if(sp) objCell->LoadObjects(sp);
@@ -1156,7 +1156,7 @@ void MapMgr::UpdateCellActivity(uint32 x, uint32 y, int radius)
 				//Cell is no longer active
 				else if (!_CellActive(posX, posY) && objCell->IsActive())
 				{
-					sLog.outDetail("Cell [%u,%u] on map %u (instance %u) is now idle.",posX, posY, _mapId, m_instanceID);
+					LOG_DETAIL("Cell [%u,%u] on map %u (instance %u) is now idle.",posX, posY, _mapId, m_instanceID);
 					_map->CellGoneIdle(posX, posY);
 					objCell->SetActivity(false);
 					_terrain->UnloadTile((int32)posX / 8, (int32)posY / 8);
@@ -1646,7 +1646,7 @@ void MapMgr::UnloadCell(uint32 x,uint32 y)
 	MapCell * c = GetCell(x,y);
 	if(c == NULL || c->HasPlayers() || _CellActive(x,y) || !c->IsUnloadPending()) return;
 
-	sLog.outDetail("Unloading Cell [%u][%u] on map %u (instance %u)...",
+	LOG_DETAIL("Unloading Cell [%u][%u] on map %u (instance %u)...",
 		x,y,_mapId,m_instanceID);
 
 	c->Unload();
@@ -1767,11 +1767,11 @@ GameObject * MapMgr::CreateAndSpawnGameObject(uint32 entryID, float x, float y, 
 	GameObjectInfo* goi = GameObjectNameStorage.LookupEntry(entryID);
 	if(!goi)
 	{
-		sLog.outDebug("Error looking up entry in CreateAndSpawnGameObject");
+		LOG_DEBUG("Error looking up entry in CreateAndSpawnGameObject");
 		return NULL;
 	}
 
-	sLog.outDebug("CreateAndSpawnGameObject: By Entry '%u'", entryID);
+	LOG_DEBUG("CreateAndSpawnGameObject: By Entry '%u'", entryID);
 
 	GameObject *go = CreateGameObject(entryID);
 

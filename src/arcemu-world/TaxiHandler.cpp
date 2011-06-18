@@ -24,7 +24,7 @@ void WorldSession::HandleTaxiNodeStatusQueryOpcode( WorldPacket & recv_data )
 {
 	CHECK_INWORLD_RETURN
 
-	sLog.outDebug( "WORLD: Received CMSG_TAXINODE_STATUS_QUERY" );
+	LOG_DEBUG( "WORLD: Received CMSG_TAXINODE_STATUS_QUERY" );
 
 	uint64 guid;
 	uint32 curloc;
@@ -53,7 +53,7 @@ void WorldSession::HandleTaxiNodeStatusQueryOpcode( WorldPacket & recv_data )
 	}
 
 	SendPacket( &data );
-	sLog.outDebug( "WORLD: Sent SMSG_TAXINODE_STATUS" );
+	LOG_DEBUG( "WORLD: Sent SMSG_TAXINODE_STATUS" );
 }
 
 
@@ -61,7 +61,7 @@ void WorldSession::HandleTaxiQueryAvaibleNodesOpcode( WorldPacket & recv_data )
 {
 	CHECK_INWORLD_RETURN
 
-	sLog.outDebug( "WORLD: Received CMSG_TAXIQUERYAVAILABLENODES" );
+	LOG_DEBUG( "WORLD: Received CMSG_TAXIQUERYAVAILABLENODES" );
 	uint64 guid;
 	recv_data >> guid;
 	Creature *pCreature = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
@@ -119,14 +119,14 @@ void WorldSession::SendTaxiList(Creature* pCreature)
 	}
 	SendPacket( &data );
 
-	sLog.outDebug( "WORLD: Sent SMSG_SHOWTAXINODES" );
+	LOG_DEBUG( "WORLD: Sent SMSG_SHOWTAXINODES" );
 }
 
 void WorldSession::HandleActivateTaxiOpcode( WorldPacket & recv_data )
 {
 	CHECK_INWORLD_RETURN
 
-	sLog.outDebug( "WORLD: Received CMSG_ACTIVATETAXI" );
+	LOG_DEBUG( "WORLD: Received CMSG_ACTIVATETAXI" );
 
 	uint64 guid;
 	uint32 sourcenode, destinationnode;
@@ -228,7 +228,7 @@ void WorldSession::HandleActivateTaxiOpcode( WorldPacket & recv_data )
 	// 2.There is no direct path to that direction
 	// 3 Not enough Money
 	SendPacket( &data );
-	sLog.outDebug( "WORLD: Sent SMSG_ACTIVATETAXIREPLY" );
+	LOG_DEBUG( "WORLD: Sent SMSG_ACTIVATETAXIREPLY" );
 
 	// 0x001000 seems to make a mount visible
 	// 0x002000 seems to make you sit on the mount, and the mount move with you
@@ -249,7 +249,7 @@ void WorldSession::HandleMultipleActivateTaxiOpcode(WorldPacket & recvPacket)
 {
 	CHECK_INWORLD_RETURN
 
-	sLog.outDebug( "WORLD: Received CMSG_ACTIVATETAXI" );
+	LOG_DEBUG( "WORLD: Received CMSG_ACTIVATETAXI" );
 
 	uint64 guid;
 	uint32 nodecount;
@@ -361,7 +361,7 @@ void WorldSession::HandleMultipleActivateTaxiOpcode(WorldPacket & recvPacket)
 	// 2.There is no direct path to that direction
 	// 3 Not enough Money
 	SendPacket( &data );
-	sLog.outDebug( "WORLD: Sent SMSG_ACTIVATETAXIREPLY" );
+	LOG_DEBUG( "WORLD: Sent SMSG_ACTIVATETAXIREPLY" );
 
 	// 0x001000 seems to make a mount visible
 	// 0x002000 seems to make you sit on the mount, and the mount move with you

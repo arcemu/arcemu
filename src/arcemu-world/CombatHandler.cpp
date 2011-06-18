@@ -47,7 +47,7 @@ void WorldSession::HandleAttackSwingOpcode( WorldPacket & recv_data )
 
 	if(!pEnemy)
 	{
-		sLog.outDebug("WORLD: "I64FMT" does not exist.", guid);
+		LOG_DEBUG("WORLD: "I64FMT" does not exist.", guid);
 		return;
 	}
 

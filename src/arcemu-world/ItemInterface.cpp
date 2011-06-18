@@ -233,7 +233,7 @@ AddItemResult ItemInterface::m_AddItem(Item *item, int8 ContainerSlot, int16 slo
 		//Arcemu::Util::ARCEMU_ASSERT(   m_pItems[slot] == NULL);
 		if(GetInventoryItem(slot) != NULL /*|| (slot == EQUIPMENT_SLOT_OFFHAND && !m_pOwner->HasSkillLine(118))*/)
 		{
-			//sLog.outError("bugged inventory: %u %u", m_pOwner->GetName(), item->GetGUID());
+			//LOG_ERROR("bugged inventory: %u %u", m_pOwner->GetName(), item->GetGUID());
 			SlotResult result = this->FindFreeInventorySlot(item->GetProto());
 				
 			// send message to player
@@ -305,7 +305,7 @@ AddItemResult ItemInterface::m_AddItem(Item *item, int8 ContainerSlot, int16 slo
 		int VisibleBase = GetOwner()->GetVisibleBase(slot);
 		if( VisibleBase > PLAYER_VISIBLE_ITEM_19_ENTRYID )
 		{
-			sLog.outDebug("Slot warning: slot: %d", slot);
+			LOG_DEBUG("Slot warning: slot: %d", slot);
 		}
 		else
 		{
@@ -2926,7 +2926,7 @@ void ItemInterface::AddBuyBackItem(Item *it,uint32 price)
 	{
 		if((m_pOwner->GetUInt32Value(PLAYER_FIELD_VENDORBUYBACK_SLOT_1 + i) == 0) || (m_pBuyBack[i/2] == NULL))
 		{
-			sLog.outDetail("setting buybackslot %u",i/2);
+			LOG_DETAIL("setting buybackslot %u",i/2);
 			m_pBuyBack[i >> 1] = it;
 
 			m_pOwner->SetUInt64Value(PLAYER_FIELD_VENDORBUYBACK_SLOT_1 + i,m_pBuyBack[i >> 1]->GetGUID());
@@ -2957,7 +2957,7 @@ void ItemInterface::RemoveBuyBackItem(uint32 index)
 			{
 				m_pBuyBack[j] = NULL;
 
-				sLog.outDetail( "nulling %u", j );
+				LOG_DETAIL( "nulling %u", j );
 			}
 		}
 		else
@@ -2989,15 +2989,15 @@ void ItemInterface::SwapItemSlots(int8 srcslot, int8 dstslot)
 	Item* SrcItem = GetInventoryItem( srcslot );
 	Item* DstItem = GetInventoryItem( dstslot );
 
-	sLog.outDebug( "ItemInterface::SwapItemSlots(%u, %u);" , srcslot , dstslot );
+	LOG_DEBUG( "ItemInterface::SwapItemSlots(%u, %u);" , srcslot , dstslot );
 	//Item * temp = GetInventoryItem( srcslot );
 	//if( temp )
-	//	sLog.outDebug( "Source item: %s (inventoryType=%u, realslot=%u);" , temp->GetProto()->Name1 , temp->GetProto()->InventoryType , GetItemSlotByType( temp->GetProto()->InventoryType ) );
+	//	LOG_DEBUG( "Source item: %s (inventoryType=%u, realslot=%u);" , temp->GetProto()->Name1 , temp->GetProto()->InventoryType , GetItemSlotByType( temp->GetProto()->InventoryType ) );
 	//	temp = GetInventoryItem( dstslot );
 	//if( temp )
-	//	sLog.outDebug( "Destination: Item: %s (inventoryType=%u, realslot=%u);" , temp->GetProto()->Name1 , temp->GetProto()->InventoryType , GetItemSlotByType( temp->GetProto()->InventoryType ) );
+	//	LOG_DEBUG( "Destination: Item: %s (inventoryType=%u, realslot=%u);" , temp->GetProto()->Name1 , temp->GetProto()->InventoryType , GetItemSlotByType( temp->GetProto()->InventoryType ) );
 	//else
-	//	sLog.outDebug( "Destination: Empty" );
+	//	LOG_DEBUG( "Destination: Empty" );
 
 	// don't stack equipped items (even with ItemStackCheat), just swap them
 	uint32 srcItemMaxStack, dstItemMaxStack;
@@ -3074,7 +3074,7 @@ void ItemInterface::SwapItemSlots(int8 srcslot, int8 dstslot)
 			m_pOwner->ApplyItemMods( m_pItems[(int)dstslot], dstslot, false );
 	}
 
-	//sLog.outDebug( "Putting items into slots..." );
+	//LOG_DEBUG( "Putting items into slots..." );
 
 
 
@@ -3138,23 +3138,23 @@ void ItemInterface::SwapItemSlots(int8 srcslot, int8 dstslot)
 
 	if( m_pItems[(int)dstslot] != NULL )
 	{
-		//sLog.outDebug( "(SrcItem) PLAYER_FIELD_INV_SLOT_HEAD + %u is now %u" , dstslot * 2 , m_pItems[(int)dstslot]->GetGUID() );
+		//LOG_DEBUG( "(SrcItem) PLAYER_FIELD_INV_SLOT_HEAD + %u is now %u" , dstslot * 2 , m_pItems[(int)dstslot]->GetGUID() );
 		m_pOwner->SetInventorySlot(dstslot,  m_pItems[(int)dstslot]->GetGUID() );
 	}
 	else
 	{
-		//sLog.outDebug( "(SrcItem) PLAYER_FIELD_INV_SLOT_HEAD + %u is now 0" , dstslot * 2 );
+		//LOG_DEBUG( "(SrcItem) PLAYER_FIELD_INV_SLOT_HEAD + %u is now 0" , dstslot * 2 );
 		m_pOwner->SetInventorySlot(dstslot, 0 );
 	}
 
 	if( m_pItems[(int)srcslot] != NULL )
 	{
-		//sLog.outDebug( "(DstItem) PLAYER_FIELD_INV_SLOT_HEAD + %u is now %u" , dstslot * 2 , m_pItems[(int)srcslot]->GetGUID() );
+		//LOG_DEBUG( "(DstItem) PLAYER_FIELD_INV_SLOT_HEAD + %u is now %u" , dstslot * 2 , m_pItems[(int)srcslot]->GetGUID() );
 		m_pOwner->SetInventorySlot(srcslot, m_pItems[(int)srcslot]->GetGUID() );
 	}
 	else
 	{
-		//sLog.outDebug( "(DstItem) PLAYER_FIELD_INV_SLOT_HEAD + %u is now 0" , dstslot * 2 );
+		//LOG_DEBUG( "(DstItem) PLAYER_FIELD_INV_SLOT_HEAD + %u is now 0" , dstslot * 2 );
 		m_pOwner->SetInventorySlot(srcslot, 0 );
 	}
 
@@ -3440,7 +3440,7 @@ SlotResult ItemInterface::FindFreeInventorySlot(ItemPrototype *proto)
 	//special slots will be ignored of item is not set
 	if( proto != NULL )
 	{
-		//sLog.outDebug( "ItemInterface::FindFreeInventorySlot called for item %s" , proto->Name1 );
+		//LOG_DEBUG( "ItemInterface::FindFreeInventorySlot called for item %s" , proto->Name1 );
 		if( proto->BagFamily)
 		{
 			if( proto->BagFamily & ITEM_TYPE_KEYRING || proto->Class == ITEM_CLASS_KEY )
@@ -4009,7 +4009,7 @@ bool ItemInterface::AddItemById( uint32 itemid, uint32 count, int32 randomprop )
 		if( randomprop == 0 ){
 
 			if( ( it->RandomPropId != 0 ) && ( it->RandomSuffixId != 0 ) ){
-				sLog.outError("Item %u ( %s ) has both RandomPropId and RandomSuffixId.", itemid, it->Name1 );
+				LOG_ERROR("Item %u ( %s ) has both RandomPropId and RandomSuffixId.", itemid, it->Name1 );
 			}
 
 			if( it->RandomPropId != 0 ){
@@ -4018,7 +4018,7 @@ bool ItemInterface::AddItemById( uint32 itemid, uint32 count, int32 randomprop )
 				if( rp != NULL ){
 					randomprop = rp->ID;
 				}else{
-					sLog.outError( "Item %u ( %s ) has unknown RandomPropId %u", itemid, it->Name1, it->RandomPropId );
+					LOG_ERROR( "Item %u ( %s ) has unknown RandomPropId %u", itemid, it->Name1, it->RandomPropId );
 				}
 			}
 
@@ -4028,7 +4028,7 @@ bool ItemInterface::AddItemById( uint32 itemid, uint32 count, int32 randomprop )
 				if( rs != NULL ){
 					randomprop = -1 * rs->id;
 				}else{
-					sLog.outError( "Item %u ( %s ) has unknown RandomSuffixId %u", itemid, it->Name1, it->RandomSuffixId );
+					LOG_ERROR( "Item %u ( %s ) has unknown RandomSuffixId %u", itemid, it->Name1, it->RandomSuffixId );
 				}
 			}
 		}
@@ -4275,7 +4275,7 @@ bool ItemInterface::SwapItems( int8 DstInvSlot, int8 DstSlot, int8 SrcInvSlot, i
 			AddItemResult result = SafeAddItem(SrcItem,DstInvSlot,DstSlot);
 			if(!result)
 			{
-				sLog.outError("HandleSwapItem: Error while adding item to dstslot");
+				LOG_ERROR("HandleSwapItem: Error while adding item to dstslot");
 				SrcItem->DeleteFromDB();
 				SrcItem->DeleteMe();
 				SrcItem = NULL;
@@ -4288,7 +4288,7 @@ bool ItemInterface::SwapItems( int8 DstInvSlot, int8 DstSlot, int8 SrcInvSlot, i
 			AddItemResult result = SafeAddItem(DstItem,SrcInvSlot,SrcSlot);
 			if(!result)
 			{
-				sLog.outError("HandleSwapItem: Error while adding item to srcslot");
+				LOG_ERROR("HandleSwapItem: Error while adding item to srcslot");
 				DstItem->DeleteFromDB();
 				DstItem->DeleteMe();
 				DstItem = NULL;

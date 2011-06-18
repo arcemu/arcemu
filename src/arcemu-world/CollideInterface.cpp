@@ -60,7 +60,7 @@ void CCollideInterface::Init()
 	Log.Notice("CollideInterface", "Init");
 	COLLISION_BEGINTIMER;
 	CollisionMgr = ((IVMapManager*)collision_init());
-	sLog.outDebug("[%u ns] collision_init", c_GetNanoSeconds(c_GetTimerValue(), v1));
+	LOG_DEBUG("[%u ns] collision_init", c_GetNanoSeconds(c_GetTimerValue(), v1));
 }
 
 void CCollideInterface::ActivateTile(uint32 mapId, uint32 tileX, uint32 tileY)
@@ -70,7 +70,7 @@ void CCollideInterface::ActivateTile(uint32 mapId, uint32 tileX, uint32 tileY)
 	{
 		COLLISION_BEGINTIMER;
 		CollisionMgr->loadMap(sWorld.vMapPath.c_str, mapId, tileY, tileX);
-		sLog.outDebug("[%u ns] collision_activate_cell %u %u %u", c_GetNanoSeconds(c_GetTimerValue(), v1), mapId, tileX, tileY);
+		LOG_DEBUG("[%u ns] collision_activate_cell %u %u %u", c_GetNanoSeconds(c_GetTimerValue(), v1), mapId, tileX, tileY);
 	}
 
 	++m_tilesLoaded[mapId][tileX][tileY];
@@ -84,7 +84,7 @@ void CCollideInterface::DeactivateTile(uint32 mapId, uint32 tileX, uint32 tileY)
 	{
 		COLLISION_BEGINTIMER;
 		CollisionMgr->unloadMap(mapId, tileY, tileX);
-		sLog.outDebug("[%u ns] collision_deactivate_cell %u %u %u", c_GetNanoSeconds(c_GetTimerValue(), v1), mapId, tileX, tileY);
+		LOG_DEBUG("[%u ns] collision_deactivate_cell %u %u %u", c_GetNanoSeconds(c_GetTimerValue(), v1), mapId, tileX, tileY);
 	}
 
 	m_loadLock.Release();
@@ -95,14 +95,14 @@ void CCollideInterface::DeInit()
 	Log.Notice("CollideInterface", "DeInit");
 	COLLISION_BEGINTIMER;
 	collision_shutdown();
-	sLog.outDebug("[%u ns] collision_shutdown", c_GetNanoSeconds(c_GetTimerValue(), v1));
+	LOG_DEBUG("[%u ns] collision_shutdown", c_GetNanoSeconds(c_GetTimerValue(), v1));
 }
 
 float CCollideInterface::GetHeight(uint32 mapId, float x, float y, float z)
 {
 	COLLISION_BEGINTIMER;
 	float v = CollisionMgr->getHeight(mapId, x, y, z);
-	sLog.outDebug("[%u ns] GetHeight Map:%u %f %f %f", c_GetNanoSeconds(c_GetTimerValue(), v1), mapId, x, y, z);
+	LOG_DEBUG("[%u ns] GetHeight Map:%u %f %f %f", c_GetNanoSeconds(c_GetTimerValue(), v1), mapId, x, y, z);
 	return v;
 }
 
@@ -110,7 +110,7 @@ float CCollideInterface::GetHeight(uint32 mapId, LocationVector & pos)
 {
 	COLLISION_BEGINTIMER;
 	float v = CollisionMgr->getHeight(mapId, pos);
-	sLog.outDebug("[%u ns] GetHeight Map:%u %f %f %f", c_GetNanoSeconds(c_GetTimerValue(), v1), mapId, pos.x, pos.y, pos.z);
+	LOG_DEBUG("[%u ns] GetHeight Map:%u %f %f %f", c_GetNanoSeconds(c_GetTimerValue(), v1), mapId, pos.x, pos.y, pos.z);
 	return v;
 }
 
@@ -119,7 +119,7 @@ bool CCollideInterface::IsIndoor(uint32 mapId, LocationVector & pos)
 	bool r;
 	COLLISION_BEGINTIMER;
 	r = CollisionMgr->isInDoors(mapId, pos);
-	sLog.outDebug("[%u ns] IsIndoor Map:%u %f %f %f", c_GetNanoSeconds(c_GetTimerValue(), v1), mapId, pos.x, pos.y, pos.z);
+	LOG_DEBUG("[%u ns] IsIndoor Map:%u %f %f %f", c_GetNanoSeconds(c_GetTimerValue(), v1), mapId, pos.x, pos.y, pos.z);
 	return r;
 }
 
@@ -128,7 +128,7 @@ bool CCollideInterface::IsOutdoor(uint32 mapId, LocationVector & pos)
 	bool r;
 	COLLISION_BEGINTIMER;
 	r = CollisionMgr->isOutDoors(mapId, pos);
-	sLog.outDebug("[%u ns] IsOutdoor Map:%u %f %f %f", c_GetNanoSeconds(c_GetTimerValue(), v1), mapId, pos.x, pos.y, pos.z);
+	LOG_DEBUG("[%u ns] IsOutdoor Map:%u %f %f %f", c_GetNanoSeconds(c_GetTimerValue(), v1), mapId, pos.x, pos.y, pos.z);
 	return r;
 }
 
@@ -137,7 +137,7 @@ bool CCollideInterface::IsIndoor(uint32 mapId, float x, float y, float z)
 	bool r;
 	COLLISION_BEGINTIMER;
 	r = CollisionMgr->isInDoors(mapId, x, y, z);
-	sLog.outDebug("[%u ns] IsIndoor Map:%u %f %f %f", c_GetNanoSeconds(c_GetTimerValue(), v1), mapId, x, y, z);
+	LOG_DEBUG("[%u ns] IsIndoor Map:%u %f %f %f", c_GetNanoSeconds(c_GetTimerValue(), v1), mapId, x, y, z);
 	return r;
 }
 
@@ -146,7 +146,7 @@ bool CCollideInterface::IsOutdoor(uint32 mapId, float x, float y, float z)
 	bool r;
 	COLLISION_BEGINTIMER;
 	r = CollisionMgr->isOutDoors(mapId, x, y, z);
-	sLog.outDebug("[%u ns] IsOutdoor Map:%u %f %f %f", c_GetNanoSeconds(c_GetTimerValue(), v1), mapId, x, y, z);
+	LOG_DEBUG("[%u ns] IsOutdoor Map:%u %f %f %f", c_GetNanoSeconds(c_GetTimerValue(), v1), mapId, x, y, z);
 	return r;
 }
 
@@ -155,7 +155,7 @@ bool CCollideInterface::CheckLOS(uint32 mapId, LocationVector & pos1, LocationVe
 	bool r;
 	COLLISION_BEGINTIMER;
 	r = CollisionMgr->isInLineOfSight(mapId, pos1, pos2);
-	sLog.outDebug("[%u ns] CheckLOS Map:%u %f %f %f -> %f %f %f", c_GetNanoSeconds(c_GetTimerValue(), v1), mapId, pos1.x, pos1.y, pos1.z, pos2.x, pos2.y, pos2.z);
+	LOG_DEBUG("[%u ns] CheckLOS Map:%u %f %f %f -> %f %f %f", c_GetNanoSeconds(c_GetTimerValue(), v1), mapId, pos1.x, pos1.y, pos1.z, pos2.x, pos2.y, pos2.z);
 	return r;
 }
 
@@ -164,7 +164,7 @@ bool CCollideInterface::CheckLOS(uint32 mapId, float x1, float y1, float z1, flo
 	bool r;
 	COLLISION_BEGINTIMER;
 	r = CollisionMgr->isInLineOfSight(mapId, x1, y1, z1, x2, y2, z2);
-	sLog.outDebug("[%u ns] CheckLOS Map:%u %f %f %f -> %f %f %f", c_GetNanoSeconds(c_GetTimerValue(), v1), mapId, x1, y1, z1, x2, y2, z2);
+	LOG_DEBUG("[%u ns] CheckLOS Map:%u %f %f %f -> %f %f %f", c_GetNanoSeconds(c_GetTimerValue(), v1), mapId, x1, y1, z1, x2, y2, z2);
 	return r;
 }
 
@@ -173,7 +173,7 @@ bool CCollideInterface::GetFirstPoint(uint32 mapId, LocationVector & pos1, Locat
 	bool r;
 	COLLISION_BEGINTIMER;
 	r = CollisionMgr->getObjectHitPos(mapId, pos1, pos2, outvec, distmod);
-	sLog.outDebug("[%u ns] GetFirstPoint Map:%u %f %f %f -> %f %f %f", c_GetNanoSeconds(c_GetTimerValue(), v1), mapId, pos1.x, pos1.y, pos1.z, pos2.x, pos2.y, pos2.z);
+	LOG_DEBUG("[%u ns] GetFirstPoint Map:%u %f %f %f -> %f %f %f", c_GetNanoSeconds(c_GetTimerValue(), v1), mapId, pos1.x, pos1.y, pos1.z, pos2.x, pos2.y, pos2.z);
 	return r;
 }
 
@@ -182,7 +182,7 @@ bool CCollideInterface::GetFirstPoint(uint32 mapId, float x1, float y1, float z1
 	bool r;
 	COLLISION_BEGINTIMER;
 	r = CollisionMgr->getObjectHitPos(mapId, x1, y1, z1, x2, y2, z2, outx, outy, outz, distmod);
-	sLog.outDebug("[%u ns] GetFirstPoint Map:%u %f %f %f -> %f %f %f", c_GetNanoSeconds(c_GetTimerValue(), v1), mapId, x1, y1, z1, x2, y2, z2);
+	LOG_DEBUG("[%u ns] GetFirstPoint Map:%u %f %f %f -> %f %f %f", c_GetNanoSeconds(c_GetTimerValue(), v1), mapId, x1, y1, z1, x2, y2, z2);
 	return r;
 }
 

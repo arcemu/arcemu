@@ -74,7 +74,7 @@ void WorldSession::HandleMoveWorldportAckOpcode( WorldPacket & recv_data )
 		// get outta here
 		return;
 	}
-	sLog.outDebug( "WORLD: got MSG_MOVE_WORLDPORT_ACK." );
+	LOG_DEBUG( "WORLD: got MSG_MOVE_WORLDPORT_ACK." );
 
 	if(_player->m_CurrentTransporter && _player->GetMapId() != _player->m_CurrentTransporter->GetMapId())
 	{
@@ -128,7 +128,7 @@ void WorldSession::HandleMoveTeleportAckOpcode( WorldPacket & recv_data )
 			return;
 		}
 
-		sLog.outDebug( "WORLD: got MSG_MOVE_TELEPORT_ACK." );
+		LOG_DEBUG( "WORLD: got MSG_MOVE_TELEPORT_ACK." );
 		GetPlayer()->SetPlayerStatus(NONE);
 		if( GetPlayer()->m_rooted <= 0 )
 			GetPlayer()->SetMovement(MOVE_UNROOT,5);
@@ -413,26 +413,26 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 	/* Dump movement flags - Wheee!                                         */
 	/************************************************************************/
 #if 0
-	sLog.outDebug("=========================================================");
-	sLog.outDebug("Full movement flags: 0x%.8X", movement_info.flags);
+	LOG_DEBUG("=========================================================");
+	LOG_DEBUG("Full movement flags: 0x%.8X", movement_info.flags);
 	uint32 z, b;
 	for(z = 1, b = 1; b < 32;)
 	{
 		if(movement_info.flags & z)
-			sLog.outDebug("   Bit %u (0x%.8X or %u) is set!", b, z, z);
+			LOG_DEBUG("   Bit %u (0x%.8X or %u) is set!", b, z, z);
 
 		z <<= 1;
 		b+=1;
 	}
-	sLog.outDebug("=========================================================");
+	LOG_DEBUG("=========================================================");
 #endif
 
 	/************************************************************************/
 	/* Orientation dumping                                                  */
 	/************************************************************************/
 #if 0
-	sLog.outDebug("Packet: 0x%03X (%s)", recv_data.GetOpcode(), LookupName( recv_data.GetOpcode(), g_worldOpcodeNames ) );
-	sLog.outDebug("Orientation: %.10f", movement_info.orientation);
+	LOG_DEBUG("Packet: 0x%03X (%s)", recv_data.GetOpcode(), LookupName( recv_data.GetOpcode(), g_worldOpcodeNames ) );
+	LOG_DEBUG("Orientation: %.10f", movement_info.orientation);
 #endif
 
 	/************************************************************************/
@@ -827,7 +827,7 @@ void MovementInfo::init(WorldPacket & data)
 		if(data.rpos() + 4 == data.wpos())
 			data >> unk13;
 		else
-			sLog.outDebug("Extra bits of movement packet left");
+			LOG_DEBUG("Extra bits of movement packet left");
 	}
 }
 

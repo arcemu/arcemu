@@ -53,6 +53,11 @@ public:
   //log level 2
   void outDebug( const char * str, ... );
 
+  void logError( const char *file, int line, const char *fncname, const char *msg, ... );
+  void logDebug( const char *file, int line, const char *fncname, const char *msg, ... );
+  void logBasic( const char *file, int line, const char *fncname,  const char *msg, ... );
+  void logDetail( const char *file, int line, const char *fncname, const char *msg, ... );
+
   //old NGLog.h methods
   //log level 0
   void Success( const char * source, const char * format, ... );
@@ -119,6 +124,13 @@ extern SessionLogWriter * GMCommand_Log;
 extern SessionLogWriter * Player_Log;
 
 #define sLog oLog::getSingleton()
+
+#define LOG_BASIC( msg, ... ) sLog.logBasic( __FILE__, __LINE__, __FUNCTION__, msg, ##__VA_ARGS__ )
+#define LOG_DETAIL( msg, ... ) sLog.logDetail( __FILE__, __LINE__, __FUNCTION__, msg, ##__VA_ARGS__ )
+#define LOG_ERROR( msg, ... ) sLog.logError( __FILE__, __LINE__, __FUNCTION__, msg, ##__VA_ARGS__ )
+#define LOG_DEBUG( msg, ... ) sLog.logDebug( __FILE__, __LINE__, __FUNCTION__, msg, ##__VA_ARGS__ )
+
+
 #define Log sLog
 #define sCheatLog (*Anticheat_Log)
 #define sGMLog (*GMCommand_Log)

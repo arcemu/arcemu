@@ -135,7 +135,7 @@ void AccountMgr::AddAccount(Field* field)
 	{
 		//Accounts should be unbanned once the date is past their set expiry date.
 		acct->Muted= 0;
-		//sLog.outDebug("Account %s's mute has expired.",acct->UsernamePtr->c_str());
+		//LOG_DEBUG("Account %s's mute has expired.",acct->UsernamePtr->c_str());
 		sLogonSQL->Execute("UPDATE accounts SET muted = 0 WHERE acct=%u",acct->AccountId);
 	}
 	// Convert username/password to uppercase. this is needed ;)
@@ -165,7 +165,7 @@ void AccountMgr::AddAccount(Field* field)
 		}
 		else
 		{
-			sLog.outError("Account `%s` has incorrect number of bytes in encrypted password! Disabling.", Username.c_str());
+			LOG_ERROR("Account `%s` has incorrect number of bytes in encrypted password! Disabling.", Username.c_str());
 			memset(acct->SrpHash, 0, 20);
 		}
 	}
@@ -191,7 +191,7 @@ void AccountMgr::UpdateAccount(Account * acct, Field * field)
 
 	if(id != acct->AccountId)
 	{
-		sLog.outError(" >> deleting duplicate account %u [%s]...", id, Username.c_str());
+		LOG_ERROR(" >> deleting duplicate account %u [%s]...", id, Username.c_str());
 		sLogonSQL->Execute("DELETE FROM accounts WHERE acct=%u", id);
 		return;
 	}
@@ -203,7 +203,7 @@ void AccountMgr::UpdateAccount(Account * acct, Field * field)
 	{
 		//Accounts should be unbanned once the date is past their set expiry date.
 		acct->Banned = 0;
-		sLog.outDebug("Account %s's ban has expired.",acct->UsernamePtr->c_str());
+		LOG_DEBUG("Account %s's ban has expired.",acct->UsernamePtr->c_str());
 		sLogonSQL->Execute("UPDATE accounts SET banned = 0 WHERE acct=%u",acct->AccountId);
 	}
 	acct->SetGMFlags(GMFlags.c_str());
@@ -221,7 +221,7 @@ void AccountMgr::UpdateAccount(Account * acct, Field * field)
 	{
 		//Accounts should be unbanned once the date is past their set expiry date.
 		acct->Muted= 0;
-		sLog.outDebug("Account %s's mute has expired.",acct->UsernamePtr->c_str());
+		LOG_DEBUG("Account %s's mute has expired.",acct->UsernamePtr->c_str());
 		sLogonSQL->Execute("UPDATE accounts SET muted = 0 WHERE acct=%u",acct->AccountId);
 	}
 	// Convert username/password to uppercase. this is needed ;)
@@ -251,7 +251,7 @@ void AccountMgr::UpdateAccount(Account * acct, Field * field)
 		}
 		else
 		{
-			sLog.outError("Account `%s` has incorrect number of bytes in encrypted password! Disabling.", Username.c_str());
+			LOG_ERROR("Account `%s` has incorrect number of bytes in encrypted password! Disabling.", Username.c_str());
 			memset(acct->SrpHash, 0, 20);
 		}
 	}
@@ -367,7 +367,7 @@ void IPBanner::Reload()
 			string stmp = ip.substr(0, i);
 			if( i == string::npos )
 			{
-				sLog.outDetail("IP ban \"%s\" netmask not specified. assuming /32", ip.c_str());
+				LOG_DETAIL("IP ban \"%s\" netmask not specified. assuming /32", ip.c_str());
 			}
 			else
 				smask = ip.substr(i+1);
@@ -376,7 +376,7 @@ void IPBanner::Reload()
 			unsigned int ipmask = atoi(smask.c_str());
 			if( ipraw == 0 || ipmask == 0 )
 			{
-				sLog.outError("IP ban \"%s\" could not be parsed. Ignoring", ip.c_str());
+				LOG_ERROR("IP ban \"%s\" could not be parsed. Ignoring", ip.c_str());
 				continue;
 			}
 
@@ -597,7 +597,7 @@ void InformationCore::CheckServers()
 
 		if(!IsServerAllowed(s->GetRemoteAddress().s_addr))
 		{
-			sLog.outDetail("Disconnecting socket: %s due to it no longer being on an allowed IP.", s->GetRemoteIP().c_str());
+			LOG_DETAIL("Disconnecting socket: %s due to it no longer being on an allowed IP.", s->GetRemoteIP().c_str());
 			s->Disconnect();
 		}
 	}

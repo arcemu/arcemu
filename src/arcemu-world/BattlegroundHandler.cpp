@@ -107,7 +107,7 @@ void WorldSession::HandleBattleMasterHelloOpcode(WorldPacket &recv_data)
 
 	uint64 guid;
 	recv_data >> guid;
-	sLog.outDebug("Received CMSG_BATTLEMASTER_HELLO from " I64FMT, guid);
+	LOG_DEBUG("Received CMSG_BATTLEMASTER_HELLO from " I64FMT, guid);
 
 	Creature * bm = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
 
@@ -305,13 +305,13 @@ void WorldSession::HandleInspectHonorStatsOpcode( WorldPacket &recv_data )
 
 	if( _player->GetMapMgr() == NULL )
 	{
-		sLog.outError( "HandleInspectHonorStatsOpcode : _player map mgr was null" );
+		LOG_ERROR( "HandleInspectHonorStatsOpcode : _player map mgr was null" );
 		return;
 	}
 
 	if( _player->GetMapMgr()->GetPlayer( (uint32)guid ) == NULL )
 	{
-		sLog.outError( "HandleInspectHonorStatsOpcode : guid was null" );
+		LOG_ERROR( "HandleInspectHonorStatsOpcode : guid was null" );
 		return;
 	}
 
@@ -339,7 +339,7 @@ void WorldSession::HandleInspectArenaStatsOpcode( WorldPacket & recv_data )
     Player* player =  _player->GetMapMgr()->GetPlayer( (uint32)guid );
 	if( player == NULL )
 	{
-		sLog.outError( "HandleInspectHonorStatsOpcode : guid was null" );
+		LOG_ERROR( "HandleInspectHonorStatsOpcode : guid was null" );
 		return;
 	}
 

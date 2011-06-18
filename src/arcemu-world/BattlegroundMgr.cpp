@@ -1366,12 +1366,12 @@ void CBattlegroundManager::DeleteBattleground(CBattleground * bg)
 		m_queueLock.Release();
 		m_instanceLock.Release();
 
-		//sLog.outDetail("Deleting battleground from queue %u, instance %u", bg->GetType(), bg->GetId());
+		//LOG_DETAIL("Deleting battleground from queue %u, instance %u", bg->GetType(), bg->GetId());
 		delete bg;
 	}
 	catch (...) // for Win32 Debug
 	{	
-		sLog.outError("Exception: CBattlegroundManager::DeleteBattleground");
+		LOG_ERROR("Exception: CBattlegroundManager::DeleteBattleground");
 		printStackTrace();
 		throw;
 	} 

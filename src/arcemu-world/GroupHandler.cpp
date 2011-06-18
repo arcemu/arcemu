@@ -117,7 +117,7 @@ void WorldSession::HandleGroupCancelOpcode( WorldPacket & recv_data )
 {
 	CHECK_INWORLD_RETURN
 
-	sLog.outDebug( "WORLD: got CMSG_GROUP_CANCEL." );
+	LOG_DEBUG( "WORLD: got CMSG_GROUP_CANCEL." );
 }
 
 ////////////////////////////////////////////////////////////////

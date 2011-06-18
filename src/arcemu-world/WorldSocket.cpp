@@ -111,7 +111,7 @@ void WorldSocket::OutPacket(uint16 opcode, size_t len, const void* data)
 	OUTPACKET_RESULT res;
 	if( (len + 10) > WORLDSOCKET_SENDBUF_SIZE )
 	{
-		sLog.outError("WARNING: Tried to send a packet of %u bytes (which is too large) to a socket. Opcode was: %u (0x%03X)", (unsigned int)len, (unsigned int)opcode, (unsigned int)opcode);
+		LOG_ERROR("WARNING: Tried to send a packet of %u bytes (which is too large) to a socket. Opcode was: %u (0x%03X)", (unsigned int)len, (unsigned int)opcode, (unsigned int)opcode);
 		return;
 	}
 
@@ -254,7 +254,7 @@ void WorldSocket::_HandleAuthSession(WorldPacket* recvPacket)
 	}
 	catch(ByteBuffer::error &)
 	{
-		sLog.outDetail("Incomplete copy of AUTH_SESSION Received.");
+		LOG_DETAIL("Incomplete copy of AUTH_SESSION Received.");
 		return;
 	}
 
@@ -303,7 +303,7 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 	if( ForcedPermissions != NULL )
 		GMFlags.assign(ForcedPermissions->c_str());
 
-	sLog.outDebug( " >> got information packet from logon: `%s` ID %u (request %u)", AccountName.c_str(), AccountID, mRequestID);
+	LOG_DEBUG( " >> got information packet from logon: `%s` ID %u (request %u)", AccountName.c_str(), AccountID, mRequestID);
 
 	mRequestID = 0;
 	// Pull the session key.
@@ -486,7 +486,7 @@ void WorldSocket::_HandlePing(WorldPacket* recvPacket)
 	uint32 ping;
 	if(recvPacket->size() < 4)
 	{
-		sLog.outError("Socket closed due to incomplete ping packet.");
+		LOG_ERROR("Socket closed due to incomplete ping packet.");
 		Disconnect();
 		return;
 	}

@@ -273,7 +273,7 @@ void LogonCommHandler::UpdateSockets()
 			if(cs->last_pong < t && ((t - cs->last_pong) > 60))
 			{
 				// no pong for 60 seconds -> remove the socket
-				sLog.outDetail(" >> realm id %u connection dropped due to pong timeout.", (unsigned int)itr->first->ID);
+				LOG_DETAIL(" >> realm id %u connection dropped due to pong timeout.", (unsigned int)itr->first->ID);
 				cs->_id = 0;
 				cs->Disconnect();
 				itr->second = 0;
@@ -306,7 +306,7 @@ void LogonCommHandler::ConnectionDropped(uint32 ID)
 	{
 		if(itr->first->ID == ID && itr->second != 0)
 		{
-			sLog.outError(" >> realm id %u connection was dropped unexpectedly. reconnecting next loop.", ID);
+			LOG_ERROR(" >> realm id %u connection was dropped unexpectedly. reconnecting next loop.", ID);
 			itr->second = 0;
 			break;
 		}
@@ -319,7 +319,7 @@ uint32 LogonCommHandler::ClientConnected(string AccountName, WorldSocket * Socke
 	uint32 request_id = next_request++;
 	size_t i = 0;
 	const char * acct = AccountName.c_str();
-	sLog.outDebug ( " >> sending request for account information: `%s` (request %u).", AccountName.c_str(), request_id);
+	LOG_DEBUG ( " >> sending request for account information: `%s` (request %u).", AccountName.c_str(), request_id);
 
 	// Send request packet to server.
 	map<LogonServer*, LogonCommClientSocket*>::iterator itr = logons.begin();
@@ -376,7 +376,7 @@ void LogonCommHandler::LoadRealmConfiguration()
 	uint32 realmcount = Config.RealmConfig.GetIntDefault("LogonServer", "RealmCount", 1);
 	if(realmcount == 0)
 	{
-		sLog.outError("   >> no realms found. this server will not be online anywhere!");
+		LOG_ERROR("   >> no realms found. this server will not be online anywhere!");
 	}
 	else
 	{

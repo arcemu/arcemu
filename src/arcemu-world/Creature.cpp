@@ -300,7 +300,7 @@ void Creature::OnRemoveCorpse()
 	if (IsInWorld() && (int32)m_mapMgr->GetInstanceID() == m_instanceId)
 	{
 
-		sLog.outDetail("Removing corpse of "I64FMT"...", GetGUID());
+		LOG_DETAIL("Removing corpse of "I64FMT"...", GetGUID());
 
 		setDeathState(DEAD);
 		m_position = m_spawnLocation;
@@ -358,7 +358,7 @@ void Creature::OnRespawn(MapMgr * m)
 		}
 	}
 
-	sLog.outDetail("Respawning "I64FMT"...", GetGUID());
+	LOG_DETAIL("Respawning "I64FMT"...", GetGUID());
 	SetHealth( GetMaxHealth());
 	SetUInt32Value(UNIT_DYNAMIC_FLAGS, 0); // not tagging shit
 	if(m_spawn)
@@ -1111,7 +1111,7 @@ void Creature::TotemExpire(uint32 delayedDespawn)
 		Despawn(delayedDespawn, 0);
 	else
 	{
-		sLog.outError("A Totem created by spellid %u expired after it was removed from world", GetCreatedBySpell());
+		LOG_ERROR("A Totem created by spellid %u expired after it was removed from world", GetCreatedBySpell());
 		SafeDelete();
 	}
 }
@@ -1611,7 +1611,7 @@ void Creature::OnPushToWorld()
 {
 	if( proto == NULL )
 	{
-		sLog.outError("Something tried to push to world Creature ID %u with proto set to NULL.", GetEntry()); 
+		LOG_ERROR("Something tried to push to world Creature ID %u with proto set to NULL.", GetEntry()); 
 #ifdef _DEBUG
 		Arcemu::Util::ARCEMU_ASSERT( false );
 #else
@@ -1620,7 +1620,7 @@ void Creature::OnPushToWorld()
 	}
 	if( creature_info == NULL )
 	{
-		sLog.outError("Something tried to push to world Creature ID %u with creature_info set to NULL.", GetEntry()); 
+		LOG_ERROR("Something tried to push to world Creature ID %u with creature_info set to NULL.", GetEntry()); 
 #ifdef _DEBUG
 		Arcemu::Util::ARCEMU_ASSERT( false );
 #else

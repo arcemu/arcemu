@@ -219,7 +219,7 @@ uint32 QuestMgr::CalcStatus(Object* quest_giver, Player* plr)
 	if(!bValid)
 	{
 		//annoying message that is not needed since all objects don't exactly have quests 
-		//sLog.outDebug("QUESTS: Warning, invalid NPC "I64FMT" specified for CalcStatus. TypeId: %d.", quest_giver->GetGUID(), quest_giver->GetTypeId());
+		//LOG_DEBUG("QUESTS: Warning, invalid NPC "I64FMT" specified for CalcStatus. TypeId: %d.", quest_giver->GetGUID(), quest_giver->GetTypeId());
 		return status;
 	}
 
@@ -277,7 +277,7 @@ uint32 QuestMgr::ActiveQuestsCount(Object* quest_giver, Player* plr)
 
 	if(!bValid)
 	{
-		sLog.outDebug("QUESTS: Warning, invalid NPC "I64FMT" specified for ActiveQuestsCount. TypeId: %d.", quest_giver->GetGUID(), quest_giver->GetTypeId());
+		LOG_DEBUG("QUESTS: Warning, invalid NPC "I64FMT" specified for ActiveQuestsCount. TypeId: %d.", quest_giver->GetGUID(), quest_giver->GetTypeId());
 		return 0;
 	}
 
@@ -1096,7 +1096,7 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint3
 				ItemPrototype *proto = ItemPrototypeStorage.LookupEntry(qst->reward_item[i]);
 				if(!proto)
 				{
-					sLog.outError("Invalid item prototype in quest reward! ID %d, quest %d", qst->reward_item[i], qst->id);
+					LOG_ERROR("Invalid item prototype in quest reward! ID %d, quest %d", qst->reward_item[i], qst->id);
 				}
 				else
 				{   
@@ -1136,7 +1136,7 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint3
 			ItemPrototype *proto = ItemPrototypeStorage.LookupEntry(qst->reward_choiceitem[reward_slot]);
 			if(!proto)
 			{
-				sLog.outError("Invalid item prototype in quest reward! ID %d, quest %d", qst->reward_choiceitem[reward_slot], qst->id);
+				LOG_ERROR("Invalid item prototype in quest reward! ID %d, quest %d", qst->reward_choiceitem[reward_slot], qst->id);
 			}
 			else
 			{
@@ -1213,7 +1213,7 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint3
 				ItemPrototype *proto = ItemPrototypeStorage.LookupEntry(qst->reward_item[i]);
 				if(!proto)
 				{
-					sLog.outError("Invalid item prototype in quest reward! ID %d, quest %d", qst->reward_item[i], qst->id);
+					LOG_ERROR("Invalid item prototype in quest reward! ID %d, quest %d", qst->reward_item[i], qst->id);
 				}
 				else
 				{   
@@ -1253,7 +1253,7 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint3
 			ItemPrototype *proto = ItemPrototypeStorage.LookupEntry(qst->reward_choiceitem[reward_slot]);
 			if(!proto)
 			{
-				sLog.outError("Invalid item prototype in quest reward! ID %d, quest %d", qst->reward_choiceitem[reward_slot], qst->id);
+				LOG_ERROR("Invalid item prototype in quest reward! ID %d, quest %d", qst->reward_choiceitem[reward_slot], qst->id);
 			}
 			else
 			{
@@ -1609,7 +1609,7 @@ void QuestMgr::SendQuestInvalid(INVALID_REASON reason, Player *plyr)
 		return;
 	plyr->GetSession()->OutPacket(SMSG_QUESTGIVER_QUEST_INVALID, 4, &reason);
 
-	sLog.outDebug("WORLD:Sent SMSG_QUESTGIVER_QUEST_INVALID");
+	LOG_DEBUG("WORLD:Sent SMSG_QUESTGIVER_QUEST_INVALID");
 }
 
 void QuestMgr::SendQuestFailed(FAILED_REASON failed, Quest * qst, Player *plyr)
@@ -1622,7 +1622,7 @@ void QuestMgr::SendQuestFailed(FAILED_REASON failed, Quest * qst, Player *plyr)
     data << uint32(qst->id);
     data << failed;
     plyr->GetSession()->SendPacket(&data);
-	sLog.outDebug("WORLD:Sent SMSG_QUESTGIVER_QUEST_FAILED");
+	LOG_DEBUG("WORLD:Sent SMSG_QUESTGIVER_QUEST_FAILED");
 }
 
 void QuestMgr::SendQuestUpdateFailedTimer(Quest *pQuest, Player *plyr)
@@ -1631,7 +1631,7 @@ void QuestMgr::SendQuestUpdateFailedTimer(Quest *pQuest, Player *plyr)
 		return;
 
 	plyr->GetSession()->OutPacket(SMSG_QUESTUPDATE_FAILEDTIMER, 4, &pQuest->id);
-	sLog.outDebug("WORLD:Sent SMSG_QUESTUPDATE_FAILEDTIMER");
+	LOG_DEBUG("WORLD:Sent SMSG_QUESTUPDATE_FAILEDTIMER");
 }
 
 void QuestMgr::SendQuestUpdateFailed(Quest *pQuest, Player *plyr)
@@ -1640,7 +1640,7 @@ void QuestMgr::SendQuestUpdateFailed(Quest *pQuest, Player *plyr)
 		return;
 
 	plyr->GetSession()->OutPacket(SMSG_QUESTUPDATE_FAILED, 4, &pQuest->id);
-	sLog.outDebug("WORLD:Sent SMSG_QUESTUPDATE_FAILED");
+	LOG_DEBUG("WORLD:Sent SMSG_QUESTUPDATE_FAILED");
 }
 
 void QuestMgr::SendQuestLogFull(Player *plyr)
@@ -1649,7 +1649,7 @@ void QuestMgr::SendQuestLogFull(Player *plyr)
 		return;
 
 	plyr->GetSession()->OutPacket(SMSG_QUESTLOG_FULL);
-	sLog.outDebug("WORLD:Sent QUEST_LOG_FULL_MESSAGE");
+	LOG_DEBUG("WORLD:Sent QUEST_LOG_FULL_MESSAGE");
 }
 
 uint32 QuestMgr::GetGameObjectLootQuest(uint32 GO_Entry)
@@ -1664,7 +1664,7 @@ void QuestMgr::SetGameObjectLootQuest(uint32 GO_Entry, uint32 Item_Entry)
 {
 	if(m_ObjectLootQuestList.find(GO_Entry) != m_ObjectLootQuestList.end())
 	{
-		//sLog.outError("WARNING: Gameobject %d has more than 1 quest item allocated in it's loot template!", GO_Entry);
+		//LOG_ERROR("WARNING: Gameobject %d has more than 1 quest item allocated in it's loot template!", GO_Entry);
 	}
 
 	// Find the quest that has that item
@@ -1689,7 +1689,7 @@ void QuestMgr::SetGameObjectLootQuest(uint32 GO_Entry, uint32 Item_Entry)
 	}
 	itr->Destruct();
 
-	//sLog.outError("WARNING: No coresponding quest was found for quest item %d", Item_Entry);
+	//LOG_ERROR("WARNING: No coresponding quest was found for quest item %d", Item_Entry);
 }
 
 void QuestMgr::BuildQuestFailed(WorldPacket* data, uint32 questid)
@@ -1708,7 +1708,7 @@ bool QuestMgr::OnActivateQuestGiver(Object *qst_giver, Player *plr)
 
 	if (questCount == 0) 
 	{
-		sLog.outDebug("WORLD: Invalid NPC for CMSG_QUESTGIVER_HELLO.");
+		LOG_DEBUG("WORLD: Invalid NPC for CMSG_QUESTGIVER_HELLO.");
 		return false;
 	}
 	else if (questCount == 1)
@@ -1740,7 +1740,7 @@ bool QuestMgr::OnActivateQuestGiver(Object *qst_giver, Player *plr)
 
 		if(!bValid)
 		{
-			sLog.outDebug("QUESTS: Warning, invalid NPC "I64FMT" specified for OnActivateQuestGiver. TypeId: %d.", qst_giver->GetGUID(), qst_giver->GetTypeId());
+			LOG_DEBUG("QUESTS: Warning, invalid NPC "I64FMT" specified for OnActivateQuestGiver. TypeId: %d.", qst_giver->GetGUID(), qst_giver->GetTypeId());
 			return false;
 		}
 		
@@ -1759,7 +1759,7 @@ bool QuestMgr::OnActivateQuestGiver(Object *qst_giver, Player *plr)
 		{
 			sQuestMgr.BuildQuestDetails(&data, (*itr)->qst, qst_giver, 1, plr->GetSession()->language, plr);		// 1 because we have 1 quest, and we want goodbye to function
 			plr->GetSession()->SendPacket(&data);
-			sLog.outDebug( "WORLD: Sent SMSG_QUESTGIVER_QUEST_DETAILS." );
+			LOG_DEBUG( "WORLD: Sent SMSG_QUESTGIVER_QUEST_DETAILS." );
 			
 			if( (*itr)->qst->HasFlag( QUEST_FLAGS_AUTO_ACCEPT ) )
 				plr->AcceptQuest( qst_giver->GetGUID(), (*itr)->qst->id );
@@ -1769,20 +1769,20 @@ bool QuestMgr::OnActivateQuestGiver(Object *qst_giver, Player *plr)
 			sQuestMgr.BuildOfferReward(&data, (*itr)->qst, qst_giver, 1, plr->GetSession()->language, plr);
 			plr->GetSession()->SendPacket(&data);
 			//ss
-			sLog.outDebug( "WORLD: Sent SMSG_QUESTGIVER_OFFER_REWARD." );
+			LOG_DEBUG( "WORLD: Sent SMSG_QUESTGIVER_OFFER_REWARD." );
 		}
 		else if (status == QMGR_QUEST_NOT_FINISHED)
 		{
 			sQuestMgr.BuildRequestItems(&data, (*itr)->qst, qst_giver, status, plr->GetSession()->language);
 			plr->GetSession()->SendPacket(&data);
-			sLog.outDebug( "WORLD: Sent SMSG_QUESTGIVER_REQUEST_ITEMS." );
+			LOG_DEBUG( "WORLD: Sent SMSG_QUESTGIVER_REQUEST_ITEMS." );
 		}
 	}
 	else 
 	{
 		sQuestMgr.BuildQuestList(&data, qst_giver ,plr, plr->GetSession()->language);
 		plr->GetSession()->SendPacket(&data);
-		sLog.outDebug( "WORLD: Sent SMSG_QUESTGIVER_QUEST_LIST." );
+		LOG_DEBUG( "WORLD: Sent SMSG_QUESTGIVER_QUEST_LIST." );
 	}
 	return true;
 }
@@ -1873,7 +1873,7 @@ bool QuestMgr::CanStoreReward(Player *plyr, Quest *qst, uint32 reward_slot)
             slotsrequired++;
             ItemPrototype *proto = ItemPrototypeStorage.LookupEntry(qst->reward_item[i]);
             if(!proto)
-                sLog.outError("Invalid item prototype in quest reward! ID %d, quest %d", qst->reward_item[i], qst->id);
+                LOG_ERROR("Invalid item prototype in quest reward! ID %d, quest %d", qst->reward_item[i], qst->id);
             else if(plyr->GetItemInterface()->CanReceiveItem(proto, qst->reward_itemcount[i]))
 				return false;
         }
@@ -1885,7 +1885,7 @@ bool QuestMgr::CanStoreReward(Player *plyr, Quest *qst, uint32 reward_slot)
         slotsrequired++;
         ItemPrototype *proto = ItemPrototypeStorage.LookupEntry(qst->reward_choiceitem[reward_slot]);
         if(!proto)
-            sLog.outError("Invalid item prototype in quest reward! ID %d, quest %d", qst->reward_choiceitem[reward_slot], qst->id);
+            LOG_ERROR("Invalid item prototype in quest reward! ID %d, quest %d", qst->reward_choiceitem[reward_slot], qst->id);
         else if(plyr->GetItemInterface()->CanReceiveItem(proto, qst->reward_choiceitemcount[reward_slot]))
 			return false;
     }
@@ -1960,7 +1960,7 @@ void QuestMgr::LoadExtraQuestStuff()
 					else
 					{
 						// if quest has neither valid gameobject, log it.
-						sLog.outDebug("Quest %lu has required_mobtype[%d]==%lu, it's not a valid GameObject.", qst->id, i, qst->required_mob[i]);
+						LOG_DEBUG("Quest %lu has required_mobtype[%d]==%lu, it's not a valid GameObject.", qst->id, i, qst->required_mob[i]);
 					}
 				}
 				else
@@ -1971,7 +1971,7 @@ void QuestMgr::LoadExtraQuestStuff()
 					else
 					{
 						// if quest has neither valid creature, log it.
-						sLog.outDebug("Quest %lu has required_mobtype[%d]==%lu, it's not a valid Creature.", qst->id, i, qst->required_mob[i]);
+						LOG_DEBUG("Quest %lu has required_mobtype[%d]==%lu, it's not a valid Creature.", qst->id, i, qst->required_mob[i]);
 					}
 				}
 
@@ -2255,7 +2255,7 @@ void QuestMgr::AddItemQuestAssociation( uint32 itemId, Quest *qst, uint8 item_co
 	{
 		// yep, update the QuestAssociation with the new item_count information 
 		ptr->item_count = item_count;
-		sLog.outDebug( "WARNING: Duplicate entries found in item_quest_association, updating item #%d with new item_count: %d.", itemId, item_count );
+		LOG_DEBUG( "WARNING: Duplicate entries found in item_quest_association, updating item #%d with new item_count: %d.", itemId, item_count );
 	}
 }
 

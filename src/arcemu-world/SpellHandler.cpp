@@ -27,7 +27,7 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 	typedef std::list<Aura*> AuraList;
 
 	Player* p_User = GetPlayer();
-	sLog.outDetail("WORLD: got use Item packet, data length = %i",recvPacket.size());
+	LOG_DETAIL("WORLD: got use Item packet, data length = %i",recvPacket.size());
 	int8 tmp1,slot;
 	uint8 unk; //Alice : added in 3.0.2
 	uint64 item_guid;
@@ -116,7 +116,7 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 	
 	SpellEntry *spellInfo = dbcSpell.LookupEntryForced( spellId );
 	if ( spellInfo == NULL ){
-		sLog.outError("WORLD: unknown spell id %i", spellId);
+		LOG_ERROR("WORLD: unknown spell id %i", spellId);
 		return;
 	}
 	
@@ -213,7 +213,7 @@ void WorldSession::HandleSpellClick(WorldPacket& recvPacket)
 {
 	CHECK_INWORLD_RETURN
 
-	sLog.outDetail("WORLD: got CMSG_SPELLCLICK packet, data length = %i",recvPacket.size());
+	LOG_DETAIL("WORLD: got CMSG_SPELLCLICK packet, data length = %i",recvPacket.size());
 
 	if(_player->getDeathState()==CORPSE)
 		return;
@@ -235,7 +235,7 @@ void WorldSession::HandleSpellClick(WorldPacket& recvPacket)
 	{
 		SpellClickSpell *sp = SpellClickSpellStorage.LookupEntry( creature_id );
 		if( sp == NULL ){
-			sLog.outError("Spellclick packet received for creature %u but there is no spell associated with it.", creature_id );
+			LOG_ERROR("Spellclick packet received for creature %u but there is no spell associated with it.", creature_id );
 			return;
 		}
 
@@ -251,7 +251,7 @@ void WorldSession::HandleSpellClick(WorldPacket& recvPacket)
 	
 	SpellClickSpell *sp = SpellClickSpellStorage.LookupEntry( creature_id );
 	if( sp == NULL ){
-		sLog.outError("Spellclick packet received for creature %u but there is no spell associated with it.", creature_id );
+		LOG_ERROR("Spellclick packet received for creature %u but there is no spell associated with it.", creature_id );
 		return;
 	}
 	
@@ -281,14 +281,14 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 
 	if(!spellInfo)
 	{
-		sLog.outError("WORLD: unknown spell id %i", spellId);
+		LOG_ERROR("WORLD: unknown spell id %i", spellId);
 		return;
 	}
 
 	if( !_player->isAlive() && _player->GetShapeShift() != FORM_SPIRITOFREDEMPTION && !(spellInfo->Attributes & ATTRIBUTES_DEAD_CASTABLE))//They're dead, not in spirit of redemption and the spell can't be cast while dead.
 		return;	
 	
-	sLog.outDetail("WORLD: got cast spell packet, spellId - %i (%s), data length = %i",
+	LOG_DETAIL("WORLD: got cast spell packet, spellId - %i (%s), data length = %i",
 		spellId, spellInfo->Name, recvPacket.size());
 
 	// Cheat Detection only if player and not from an item
@@ -298,13 +298,13 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 	if(!GetPlayer()->HasSpell(spellId))
 	{
 		sCheatLog.writefromsession(this,"Cast spell %lu but doesn't have that spell.", spellId);
-		sLog.outDetail("WORLD: Spell isn't cast because player \'%s\' is cheating", GetPlayer()->GetName());
+		LOG_DETAIL("WORLD: Spell isn't cast because player \'%s\' is cheating", GetPlayer()->GetName());
 		return;
 	}
 	if(spellInfo->Attributes & ATTRIBUTES_PASSIVE)
 	{
 		sCheatLog.writefromsession(this,"Cast passive spell %lu.", spellId);
-		sLog.outDetail("WORLD: Spell isn't cast because player \'%s\' is cheating", GetPlayer()->GetName());
+		LOG_DETAIL("WORLD: Spell isn't cast because player \'%s\' is cheating", GetPlayer()->GetName());
 		return;
 	}
 
@@ -346,7 +346,7 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 				SpellCastTargets targets(recvPacket,GetPlayer()->GetGUID());
 				if(!targets.m_unitTarget)
 				{
-					sLog.outDebug( "Cancelling auto-shot cast because targets.m_unitTarget is null!" );
+					LOG_DEBUG( "Cancelling auto-shot cast because targets.m_unitTarget is null!" );
 					return;
 				}
 				SpellEntry *sp = dbcSpell.LookupEntry(spellid);
@@ -424,7 +424,7 @@ void WorldSession::HandleCancelAuraOpcode( WorldPacket& recvPacket )
 		if(info != NULL && !(info->Attributes & static_cast<uint32>(ATTRIBUTES_CANT_CANCEL)))
 		{
 			_player->RemoveAllAuraById( spellId );
-			sLog.outDebug("Removing all auras with ID: %u",spellId);
+			LOG_DEBUG("Removing all auras with ID: %u",spellId);
 		}
 	}
 }

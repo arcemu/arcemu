@@ -779,7 +779,7 @@ void WorldSession::HandleAuctionListPendingSales( WorldPacket & recv_data )
 	if(!pCreature || !pCreature->auctionHouse)
 		return;
 
-	sLog.outDebug("WORLD: Received CMSG_AUCTION_LIST_PENDING_SALES");
+	LOG_DEBUG("WORLD: Received CMSG_AUCTION_LIST_PENDING_SALES");
 
 	uint32 count = 0;
 

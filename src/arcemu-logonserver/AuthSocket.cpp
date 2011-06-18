@@ -83,7 +83,7 @@ void AuthSocket::HandleChallenge()
 	uint16 full_size = *(uint16*)&ReceiveBuffer[2];
 
 
-	sLog.outDetail("[AuthChallenge] got header, body is 0x%02X bytes", full_size);
+	LOG_DETAIL("[AuthChallenge] got header, body is 0x%02X bytes", full_size);
 
 	if(readBuffer.GetSize() < uint32(full_size+4))
 		return;
@@ -95,7 +95,7 @@ void AuthSocket::HandleChallenge()
 		return;
 	}
 
-	sLog.outDebug("[AuthChallenge] got full packet.");
+	LOG_DEBUG("[AuthChallenge] got full packet.");
 
 	//memcpy(&m_challenge, ReceiveBuffer, full_size + 4);
 	//RemoveReadBufferBytes(full_size + 4, true);
@@ -173,25 +173,25 @@ void AuthSocket::HandleChallenge()
 	string::size_type i = AccountName.rfind("#");
 	if( i != string::npos )
 	{
-		sLog.outError("# ACCOUNTNAME!");
+		LOG_ERROR("# ACCOUNTNAME!");
 		return;
 		//AccountName.erase( i );
 	}
 
 	// Look up the account information
-	sLog.outDebug("[AuthChallenge] Account Name: \"%s\"", AccountName.c_str());
+	LOG_DEBUG("[AuthChallenge] Account Name: \"%s\"", AccountName.c_str());
 
 	m_account = AccountMgr::getSingleton().GetAccount(AccountName);
 	if(m_account == 0)
 	{
-		sLog.outDebug("[AuthChallenge] Invalid account.");
+		LOG_DEBUG("[AuthChallenge] Invalid account.");
 
 		// Non-existant account
 		SendChallengeError(CE_NO_ACCOUNT);
 		return;
 	}
 
-	sLog.outDebug("[AuthChallenge] Account banned state = %u", m_account->Banned);
+	LOG_DEBUG("[AuthChallenge] Account banned state = %u", m_account->Banned);
 
 	// Check that the account isn't banned.
 	if(m_account->Banned == 1)
@@ -262,7 +262,7 @@ void AuthSocket::HandleProof()
 	{
 		//RemoveReadBufferBytes(75,false);
 		readBuffer.Remove(75);
-		sLog.outDebug("[AuthLogonProof] Intitiating PatchJob");
+		LOG_DEBUG("[AuthLogonProof] Intitiating PatchJob");
 		uint8 bytes[2] = {0x01,0x0a};
 		Send(bytes,2);
 		PatchMgr::getSingleton().InitiatePatch(m_patch, this);
@@ -272,7 +272,7 @@ void AuthSocket::HandleProof()
 	if(!m_account)
 		return;
 
-	sLog.outDebug("[AuthLogonProof] Interleaving and checking proof...");
+	LOG_DEBUG("[AuthLogonProof] Interleaving and checking proof...");
 
 	sAuthLogonProof_C lp;
 	//Read(sizeof(sAuthLogonProof_C), (uint8*)&lp);
@@ -353,7 +353,7 @@ void AuthSocket::HandleProof()
 		// Authentication failed.
 		//SendProofError(4, 0);
 		SendChallengeError(CE_NO_ACCOUNT);
-		sLog.outDebug("[AuthLogonProof] M1 values don't match.");
+		LOG_DEBUG("[AuthLogonProof] M1 values don't match.");
 		return;
 	}
 
@@ -366,7 +366,7 @@ void AuthSocket::HandleProof()
 	sha.Finalize();
 
 	SendProofError(0, sha.GetDigest());
-	sLog.outDebug("[AuthLogonProof] Authentication Success.");
+	LOG_DEBUG("[AuthLogonProof] Authentication Success.");
 
 	// we're authenticated now :)
 	m_authenticated = true;
@@ -502,7 +502,7 @@ void AuthSocket::HandleReconnectChallenge()
 	// Check the rest of the packet is complete.
 	uint8 * ReceiveBuffer = /*GetReadBuffer(0)*/(uint8*)readBuffer.GetBufferStart();
 	uint16 full_size = *(uint16*)&ReceiveBuffer[2];
-	sLog.outDetail("[AuthChallenge] got header, body is 0x%02X bytes", full_size);
+	LOG_DETAIL("[AuthChallenge] got header, body is 0x%02X bytes", full_size);
 
 	if(readBuffer.GetSize() < (uint32)full_size+4)
 		return;
@@ -514,7 +514,7 @@ void AuthSocket::HandleReconnectChallenge()
 		return;
 	}
 
-	sLog.outDebug("[AuthChallenge] got full packet.");
+	LOG_DEBUG("[AuthChallenge] got full packet.");
 
 	memcpy(&m_challenge, ReceiveBuffer, full_size + 4);
 	//RemoveReadBufferBytes(full_size + 4, false);
@@ -561,19 +561,19 @@ void AuthSocket::HandleReconnectChallenge()
 
 	// Look up the account information
 	string AccountName = (char*)&m_challenge.I;
-	sLog.outDebug("[AuthChallenge] Account Name: \"%s\"", AccountName.c_str());
+	LOG_DEBUG("[AuthChallenge] Account Name: \"%s\"", AccountName.c_str());
 
 	m_account = AccountMgr::getSingleton().GetAccount(AccountName);
 	if(m_account == 0)
 	{
-		sLog.outDebug("[AuthChallenge] Invalid account.");
+		LOG_DEBUG("[AuthChallenge] Invalid account.");
 
 		// Non-existant account
 		SendChallengeError(CE_NO_ACCOUNT);
 		return;
 	}
 
-	sLog.outDebug("[AuthChallenge] Account banned state = %u", m_account->Banned);
+	LOG_DEBUG("[AuthChallenge] Account banned state = %u", m_account->Banned);
 
 	// Check that the account isn't banned.
 	if(m_account->Banned == 1)
@@ -645,7 +645,7 @@ void AuthSocket::HandleReconnectProof()
 
 void AuthSocket::HandleTransferAccept()
 {
-	sLog.outDebug("Accepted transfer");
+	LOG_DEBUG("Accepted transfer");
 	if(!m_patch)
 		return;
 
@@ -656,7 +656,7 @@ void AuthSocket::HandleTransferAccept()
 
 void AuthSocket::HandleTransferResume()
 {
-	sLog.outDebug("Resuming transfer");
+	LOG_DEBUG("Resuming transfer");
 	if(!m_patch)
 		return;
 

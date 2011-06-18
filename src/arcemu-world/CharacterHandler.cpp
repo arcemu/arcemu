@@ -82,7 +82,7 @@ bool ChatHandler::HandleRenameAllCharacter(const char * args, WorldSession * m_s
 
 			if( VerifyName(pName, szLen) != E_CHAR_NAME_SUCCESS )
 			{
-				sLog.outDebug("renaming character %s, %u", pName,uGuid);
+				LOG_DEBUG("renaming character %s, %u", pName,uGuid);
                 Player * pPlayer = objmgr.GetPlayer(uGuid);
 				if( pPlayer != NULL )
 				{
@@ -640,7 +640,7 @@ void WorldSession::HandlePlayerLoginOpcode( WorldPacket & recv_data )
 	CHECK_PACKET_SIZE(recv_data, 8);
 	uint64 playerGuid = 0;
 
-	sLog.outDebug( "WORLD: Recvd Player Logon Message" );
+	LOG_DEBUG( "WORLD: Recvd Player Logon Message" );
 
 	recv_data >> playerGuid; // this is the GUID selected by the player
 	if(objmgr.GetPlayer((uint32)playerGuid) != NULL || m_loggingInPlayer || _player)
@@ -923,7 +923,7 @@ void WorldSession::FullLogin(Player * plr)
 	}
 
 
-	sLog.outDetail( "WORLD: Created new player for existing players (%s)", plr->GetName() );
+	LOG_DETAIL( "WORLD: Created new player for existing players (%s)", plr->GetName() );
 
 	// Login time, will be used for played time calc
 	plr->m_playedtime[2] = uint32( UNIXTIME );

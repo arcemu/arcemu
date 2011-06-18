@@ -1301,7 +1301,7 @@ void InstanceMgr::DeleteBattlegroundInstance(uint32 mapid, uint32 instanceid)
 	InstanceMap::iterator itr = m_instances[mapid]->find( instanceid );
 	if( itr == m_instances[mapid]->end() )
 	{
-		sLog.outError("Could not delete battleground instance!");
+		LOG_ERROR("Could not delete battleground instance!");
 		m_mapLock.Release();
 		return;
 	}
