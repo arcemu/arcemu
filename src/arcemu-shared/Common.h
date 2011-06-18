@@ -508,10 +508,6 @@ ARCEMU_INLINE uint32 now()
 #define TRUE	1
 #endif
 
-#ifndef WIN32
-#define Sleep(ms) usleep(1000*ms)
-#endif
-
 #include "Util.h"
 struct WayPoint
 {

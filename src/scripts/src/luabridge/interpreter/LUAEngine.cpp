@@ -442,7 +442,7 @@ void lua_engine::startupEngine()
 	}
 	activestates_lock.Release();
 	while(activeStates.size() )
-		Sleep(100);
+		Arcemu::Sleep(100);
 	Log.Success("LuaEngine", "All lua states have successfully shutdown.");
 }*/
 

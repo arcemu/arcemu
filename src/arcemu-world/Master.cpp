@@ -375,8 +375,6 @@ bool Master::Run(int argc, char ** argv)
 		fclose( fPid );
 	}
 
-	Arcemu::Threading::ConditionVariable cond;
-
 	uint32 loopcounter = 0;
 	//ThreadPool.Gobble();
 
@@ -476,7 +474,7 @@ bool Master::Run(int argc, char ** argv)
 		if( 50 > etime )
 		{
 
-			cond.Wait( 50 - etime );
+			Arcemu::Sleep( 50 - etime );
 
 		}
 	}
@@ -495,7 +493,7 @@ bool Master::Run(int argc, char ** argv)
 	{
 		Log.Notice( "Shutdown", "Waiting for loot to finish loading..." );
 		while( lootmgr.is_loading )
-			Sleep( 100 );
+			Arcemu::Sleep( 100 );
 	}
 
 	// send a query to wake it up if its inactive

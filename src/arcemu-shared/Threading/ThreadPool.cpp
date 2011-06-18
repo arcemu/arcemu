@@ -249,7 +249,7 @@ void CThreadPool::Shutdown()
 			}
 			Log.Debug("ThreadPool", "%u active and %u free threads remaining...",m_activeThreads.size(), m_freeThreads.size() );
 			_mutex.Release();
-			Sleep(1000);
+			Arcemu::Sleep(1000);
 			continue;
 		}
 

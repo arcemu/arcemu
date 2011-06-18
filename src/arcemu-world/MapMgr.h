@@ -280,7 +280,7 @@ public:
 		SetThreadState(THREADSTATE_TERMINATE);
 		while(thread_running)
 		{
-			Sleep(100);
+			Arcemu::Sleep(100);
 		}
 	}
 
@@ -293,8 +293,6 @@ protected:
 
 private:
 	//! Objects that exist on map
-
-	Arcemu::Threading::ConditionVariable cond;
 
 	uint32 _mapId;
 	set<Object*> _mapWideStaticObjects;

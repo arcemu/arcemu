@@ -47,7 +47,7 @@ bool WorldRunnable::run()
 		{
 			while(GetThreadState() == THREADSTATE_PAUSED)
 			{
-				Sleep(200);
+				Arcemu::Sleep(200);
 			}
 		}
 		if(GetThreadState() == THREADSTATE_TERMINATE)
@@ -97,7 +97,7 @@ bool WorldRunnable::run()
 			if execution took more than default delay 
 			no need to make this sleep*/
 		if(diff < WORLD_UPDATE_DELAY)
-			Sleep(WORLD_UPDATE_DELAY - diff);
+			Arcemu::Sleep(WORLD_UPDATE_DELAY - diff);
 	}
 
     THREAD_HANDLE_CRASH

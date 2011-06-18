@@ -1353,7 +1353,7 @@ bool MapMgr::Do()
 		if(exec_time<MAP_MGR_UPDATE_PERIOD)
 		{
 
-			cond.Wait( MAP_MGR_UPDATE_PERIOD - exec_time );
+			Arcemu::Sleep( MAP_MGR_UPDATE_PERIOD - exec_time );
 
 		}
 

@@ -421,4 +421,18 @@ namespace Arcemu{
 	long double round( long double ld ){
 		return std::floor( ld + 0.5 );
 	}
+
+	void Sleep( unsigned long timems ){
+#ifdef WIN32
+		::Sleep( timems );
+#else
+		timespec tv;
+
+		tv.tv_sec = timems / 1000;
+		tv.tv_nsec = ( timems % 1000 ) * 1000 * 1000;
+
+		nanosleep( &tv, NULL );
+#endif
+
+	}
 }

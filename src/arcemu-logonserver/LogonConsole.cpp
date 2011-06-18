@@ -55,7 +55,7 @@ void LogonConsole::Kill()
 	LOG_BASIC("Waiting for console thread to terminate....");
 	while(_thread != NULL)
 	{
-		Sleep(100);
+		Arcemu::Sleep(100);
 	}
 	LOG_BASIC("Console shut down.");
 }

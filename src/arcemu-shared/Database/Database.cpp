@@ -249,7 +249,7 @@ bool Database::run()
 		query = queries_queue.pop();
 
 		if (query == NULL)
-			Sleep(10);
+			Arcemu::Sleep(10);
 	}
 
 	con->Busy.Release();
@@ -333,7 +333,7 @@ void Database::EndThreads()
 
 	while(ThreadRunning || qt)
 	{
-		Sleep(100);
+		Arcemu::Sleep(100);
 		if(!ThreadRunning)
 			break;
 	}
@@ -369,7 +369,7 @@ void Database::thread_proc_query()
 
 		q = query_buffer.pop( );
 		if (q == NULL)
-			Sleep(10);
+			Arcemu::Sleep(10);
 	}
 
 	con->Busy.Release();

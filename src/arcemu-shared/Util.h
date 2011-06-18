@@ -62,6 +62,20 @@ volatile long Sync_Sub(volatile long* value);
 		SERVER_DECL float round( float f );
 		SERVER_DECL double round( double d );
 		SERVER_DECL long double round( long double ld );
+
+		/////////////////////////////////////////////////////////////////////////
+		//void Sleep( unsigned long timems );
+		//  Puts the calling thread to sleep for the specified miliseconds
+		//
+		//Parameter(s)
+		//  unsigned long timemes  -  time interval to put the thread to sleep for
+		//
+		//Return Value
+		//  None
+		//
+		//
+		/////////////////////////////////////////////////////////////////////////
+		void Sleep( unsigned long timems );
 	}
 
 #endif

@@ -188,7 +188,7 @@ void LogonCommHandler::Connect(LogonServer * server)
 			return;
 		}
 
-		Sleep(50);
+		Arcemu::Sleep(50);
 	}
 
 	if(conn->authenticated != 1)
@@ -223,14 +223,14 @@ void LogonCommHandler::Connect(LogonServer * server)
 			conn->Disconnect();
 			break;
 		}
-		Sleep(50);
+		Arcemu::Sleep(50);
 	}
 
 	if(!server->Registered)
 		return;
 
 	// Wait for all realms to register
-	Sleep(200);
+	Arcemu::Sleep(200);
 
 	Log.Success("LogonCommClient", "Logonserver latency is %ums.", conn->latency);
 }

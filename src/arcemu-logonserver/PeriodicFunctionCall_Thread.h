@@ -96,7 +96,7 @@ public:
 		/* wait for the thread to exit */
 		while( thread_active )
 		{
-			Sleep( 100 );
+			Arcemu::Sleep( 100 );
 		}
 		LOG_DETAIL( "PFC thread exited." );
 #else
