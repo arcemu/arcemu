@@ -701,8 +701,6 @@ public:
 	uint32 GoldLimit;
 	uint32 GoldStartAmount;
 
-	bool m_LuaEngine;
-
 	char * m_banTable;
 
 	static float m_movementCompressThreshold;

@@ -41,7 +41,7 @@ LuaEngine g_luaMgr;
 
 extern "C" SCRIPT_DECL uint32 _exp_get_script_type()
 { 
-	return SCRIPT_TYPE_SCRIPT_ENGINE | SCRIPT_TYPE_SCRIPT_ENGINE_LUA;
+	return SCRIPT_TYPE_SCRIPT_ENGINE;
 }
 
 extern "C" SCRIPT_DECL void _exp_script_register(ScriptMgr* mgr)

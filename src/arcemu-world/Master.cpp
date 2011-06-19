@@ -551,11 +551,6 @@ bool Master::Run(int argc, char ** argv)
 	delete SocketMgr::getSingletonPtr();
 	delete SocketGarbageCollector::getSingletonPtr();
 
-#ifdef ENABLE_LUA_SCRIPTING
-	sLog.outString("Deleting Script Engine...");
-	LuaEngineMgr::getSingleton().Unload();
-#endif
-
 	delete GMCommand_Log;
 	delete Anticheat_Log;
 	delete Player_Log;

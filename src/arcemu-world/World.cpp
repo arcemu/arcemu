@@ -1411,9 +1411,6 @@ void World::Rehash(bool load)
 
 	DKStartTalentPoints = Config.OptionalConfig.GetIntDefault("Optional", "DKStartingTalents", 0);
 
-	//script engine
-	m_LuaEngine = Config.MainConfig.GetBoolDefault("ScriptBackends", "LUA", true);
-
 	map_unload_time=Config.MainConfig.GetIntDefault("Server", "MapUnloadTime", MAP_CELL_DEFAULT_UNLOAD_TIME);
 	if(map_unload_time == 0)
 	{

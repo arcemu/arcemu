@@ -238,27 +238,14 @@ void ScriptMgr::LoadScripts()
 		LOG_ERROR( "  No external scripts found! Server will continue to function with limited functionality." );
 	}else{
 		Log.Success( "Server", "Loaded %u external libraries.", count );
-		Log.Success( "Server", "Loading optional scripting engines..." );
+		Log.Success( "Server", "Loading optional scripting engine(s)..." );
 
 		for( std::vector< ScriptingEngine_dl >::iterator itr = Engines.begin(); itr != Engines.end(); ++itr ){
-
-			if( ( itr->Type & SCRIPT_TYPE_SCRIPT_ENGINE_LUA ) != 0 ){
-
-				if( sWorld.m_LuaEngine ){
-					Log.Success( "Server", "Initializing LUA script engine..." );
-
-					itr->InitializeCall( this );
-					dynamiclibs.push_back( itr->dl );
-				}else{
-					delete itr->dl;
-				}
-
-			}else{
-				delete itr->dl;
-				Log.Notice( "Server", "Unknown script engine type: 0x%.2X, please contact developers.", itr->Type );
-			}
+			itr->InitializeCall( this );
+			dynamiclibs.push_back( itr->dl );
 		}
-		Log.Success( "Server", "Done loading script engines..." );
+
+		Log.Success( "Server", "Done loading scripting engine(s)..." );
 	}
 }
 
