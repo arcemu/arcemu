@@ -1411,6 +1411,16 @@ struct WMOAreaTableEntry
 	//uint32 nameflags;
 };
 
+
+struct SummonPropertiesEntry{
+	uint32 ID;
+	uint32 ControlType;
+	uint32 FactionID;
+	uint32 Type;
+	uint32 Slot;
+	uint32 Flags;
+};
+
 #pragma pack(pop)
 
 ARCEMU_INLINE float GetRadius(SpellRadius *radius)
@@ -1789,6 +1799,7 @@ extern SERVER_DECL DBCStorage<ScalingStatValuesEntry> dbcScalingStatValues;
 extern SERVER_DECL DBCStorage<ItemLimitCategoryEntry> dbcItemLimitCategory;
 extern SERVER_DECL DBCStorage< QuestXP > dbcQuestXP;
 extern SERVER_DECL DBCStorage<WMOAreaTableEntry> dbcWMOAreaTable;
+extern SERVER_DECL DBCStorage< SummonPropertiesEntry > dbcSummonProperties;
 
 bool LoadDBCs();
 

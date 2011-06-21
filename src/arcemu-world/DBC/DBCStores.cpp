@@ -85,6 +85,7 @@ SERVER_DECL DBCStorage<gtFloat> dbcSpellCritBase;
 SERVER_DECL DBCStorage<SpellShapeshiftForm> dbcSpellShapeshiftForm;
 SERVER_DECL DBCStorage<QuestXP> dbcQuestXP;
 SERVER_DECL DBCStorage<WMOAreaTableEntry> dbcWMOAreaTable;
+SERVER_DECL DBCStorage< SummonPropertiesEntry > dbcSummonProperties;
 
 const char* WorldMapOverlayStoreFormat="nxiiiixxxxxxxxxxx";
 const char* BarberShopStyleEntryFormat="nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxi";
@@ -332,6 +333,7 @@ const char* itemlimitcategoryformat = "usxxxxxxxxxxxxxxxxuu";
 const char* spellshapeshiftformformat = "uxxxxxxxxxxxxxxxxxxuuxuuuxxuuuuuuuu";
 const char* questxpformat = "uxuuuuuuuux";
 const char* wmoareaformat = "uiiixxxxxuuxxxxxxxxxxxxxxxxx";
+const char* summonpropertiesformat = "uuuuuu";
 
 template<class T>
 bool loader_stub(const char * filename, const char * format, bool ind, T& l, bool loadstrs)
@@ -409,5 +411,7 @@ bool LoadDBCs()
 	LOAD_DBC("DBC/ItemLimitCategory.dbc", itemlimitcategoryformat, true, dbcItemLimitCategory, true);
 	LOAD_DBC("DBC/QuestXP.dbc", questxpformat, true, dbcQuestXP, false );
 	LOAD_DBC("DBC/WMOAreaTable.dbc", wmoareaformat, true, dbcWMOAreaTable, false );
+	LOAD_DBC("DBC/SummonProperties.dbc", summonpropertiesformat, true, dbcSummonProperties, false );
+
 	return true;
 }

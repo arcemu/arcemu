@@ -4102,32 +4102,16 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 	uint32 slot = 10;
 	float x = p_caster->GetPositionX();
 	float y = p_caster->GetPositionY();
-
-	switch(m_spellInfo->EffectMiscValueB[i])
-	{
-	case 63: //Fire
-		slot = 2;
-		x -= 1.5f;
-		y -= 1.5f;
-		break;
-	case 81: //Earth
-		slot = 3;
-		x -= 1.5f;
-		y += 1.5f;
-		break;
-	case 82: //Water
-		slot = 1;
-		x += 1.5f;
-		y -= 1.5f;
-		break;
-	case 83: //Air
-		slot = 0;
-		x += 1.5f;
-		y += 1.5f;
-		break;
-	default:
-		break;
+	
+	SummonPropertiesEntry *spe = ::dbcSummonProperties.LookupRow( m_spellInfo->EffectMiscValueB[ i ] );
+	if( spe == NULL ){
+		LOG_ERROR( "No summon property entry for spell %u", m_spellInfo->Id );
+		return;
 	}
+
+	slot = spe->Slot;
+	x += RandomFloat( 3.0f ) - 1.5f;
+	y += RandomFloat( 3.0f ) - 1.5f;
 
 	if(slot > 3)
 	{
