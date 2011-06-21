@@ -4103,13 +4103,13 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 	float x = p_caster->GetPositionX();
 	float y = p_caster->GetPositionY();
 	
-	SummonPropertiesEntry *spe = ::dbcSummonProperties.LookupRow( m_spellInfo->EffectMiscValueB[ i ] );
+	SummonPropertiesEntry *spe = ::dbcSummonProperties.LookupEntry( m_spellInfo->EffectMiscValueB[ i ] );
 	if( spe == NULL ){
 		LOG_ERROR( "No summon property entry for spell %u", m_spellInfo->Id );
 		return;
 	}
 
-	slot = spe->Slot;
+	slot = spe->Slot - 1;
 	x += RandomFloat( 3.0f ) - 1.5f;
 	y += RandomFloat( 3.0f ) - 1.5f;
 
