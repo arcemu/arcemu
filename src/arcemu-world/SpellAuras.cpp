@@ -1076,11 +1076,13 @@ void Aura::EventUpdateGroupAA( float r ){
 		if( ( tp->GetGUID() != owner->GetGUID() ) && !tp->InGroup() )
 			removable = true;
 		else{
-			if( owner->GetGroup()->GetID() != tp->GetGroup()->GetID() )
-				removable = true;
-			
-			if( owner->GetSubGroup() != tp->GetSubGroup() )
-				removable = true;
+			if( owner->InGroup() ){
+				if( owner->GetGroup()->GetID() != tp->GetGroup()->GetID() )
+					removable = true;
+				
+				if( owner->GetSubGroup() != tp->GetSubGroup() )
+					removable = true;
+			}
 		}
 		
 		if( removable ){
