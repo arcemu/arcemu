@@ -2259,24 +2259,17 @@ set<SpellEntry*>* ObjectMgr::GetDefaultPetSpells(uint32 Entry)
 
 void ObjectMgr::LoadPetSpellCooldowns()
 {
-	DBCFile dbc;
 
-	if( !dbc.open( "DBC/CreatureSpellData.dbc" ) )
+	for( DBCStorage< CreatureSpellDataEntry >::iterator itr = dbcCreatureSpellData.begin(); itr != dbcCreatureSpellData.end(); ++itr )
 	{
-		Log.Error( "ObjectMgr", "Cannot find file ./DBC/CreatureSpellData.dbc" );
-		return;
-	}
+		CreatureSpellDataEntry *csde = *itr;
 
-	uint32 SpellId;
-	uint32 Cooldown;
-	for(uint32 i = 0; i < dbc.getRecordCount(); ++i)
-	{
 		for(uint32 j = 0; j < 3; ++j)
 		{
-			SpellId = dbc.getRecord(i).getUInt(1 + j);
-			Cooldown = dbc.getRecord(i).getUInt(5 + j);
-			Cooldown *= 10;
-			if(SpellId)
+			uint32 SpellId = csde->Spells[ j ];
+			uint32 Cooldown = csde->Cooldowns[ j ] * 10;
+
+			if( SpellId != 0 )
 			{
 				PetSpellCooldownMap::iterator itr = mPetSpellCooldowns.find(SpellId);
 				if(itr == mPetSpellCooldowns.end())

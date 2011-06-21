@@ -11,10 +11,8 @@ project status : not finished yet..not tested
 #include <stdio.h>
 #include <tchar.h>
 #include <stdlib.h>
-#include <assert.h>
-#include <conio.h>
 
-#include "../../../src/arcemu-shared/Database/dbcfile.h"
+#include "dbcfile.h"
 
 #include "defines.h"
 

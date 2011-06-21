@@ -10,7 +10,7 @@
 * Suite 300, San Francisco, California, 94105, USA.
 */
 
-#include "StdAfx.h"
+#include "dbcfile.h"
 
 DBCFile::DBCFile()
 {

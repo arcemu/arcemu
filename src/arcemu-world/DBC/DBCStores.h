@@ -1421,6 +1421,36 @@ struct SummonPropertiesEntry{
 	uint32 Flags;
 };
 
+struct NameGenEntry{
+	uint32 ID;
+	char *Name;
+	uint32 unk1;
+	uint32 unk2;
+};
+
+struct LFGDungeonEntry{
+    uint32  ID;                                             // 0
+    //char*   name[16];                                     // 1-17 Name lang
+    uint32  minlevel;                                       // 18
+    uint32  maxlevel;                                       // 19
+    uint32  reclevel;                                       // 20
+    uint32  recminlevel;                                    // 21
+    uint32  recmaxlevel;                                    // 22
+    int32  map;                                             // 23
+    uint32  difficulty;                                     // 24
+    //uint32  unk;                                          // 25
+    uint32  type;                                           // 26
+    //uint32  unk2;                                         // 27
+    //char*   unk3;                                         // 28
+    uint32  expansion;                                      // 29
+    //uint32  unk4;                                         // 30
+    uint32  grouptype;                                      // 31
+    //char*   desc[16];                                     // 32-47 Description
+    // Helpers
+    uint32 Entry() const { return ID + (type << 24); }
+};
+
+
 #pragma pack(pop)
 
 ARCEMU_INLINE float GetRadius(SpellRadius *radius)
@@ -1471,6 +1501,7 @@ public:
     public:
         iterator(T* ip = 0) : p(ip){ }
         iterator& operator++(){ ++p; return *this; }
+		iterator& operator--(){ --p; return *this; }
         bool operator!=(const iterator &i){ return (p != i.p); }
         T* operator*(){ return p; }
     };
@@ -1800,6 +1831,8 @@ extern SERVER_DECL DBCStorage<ItemLimitCategoryEntry> dbcItemLimitCategory;
 extern SERVER_DECL DBCStorage< QuestXP > dbcQuestXP;
 extern SERVER_DECL DBCStorage<WMOAreaTableEntry> dbcWMOAreaTable;
 extern SERVER_DECL DBCStorage< SummonPropertiesEntry > dbcSummonProperties;
+extern SERVER_DECL DBCStorage< NameGenEntry > dbcNameGen;
+extern SERVER_DECL DBCStorage< LFGDungeonEntry > dbcLFGDungeon;
 
 bool LoadDBCs();
 

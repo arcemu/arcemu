@@ -86,6 +86,8 @@ SERVER_DECL DBCStorage<SpellShapeshiftForm> dbcSpellShapeshiftForm;
 SERVER_DECL DBCStorage<QuestXP> dbcQuestXP;
 SERVER_DECL DBCStorage<WMOAreaTableEntry> dbcWMOAreaTable;
 SERVER_DECL DBCStorage< SummonPropertiesEntry > dbcSummonProperties;
+SERVER_DECL DBCStorage< NameGenEntry > dbcNameGen;
+SERVER_DECL DBCStorage< LFGDungeonEntry > dbcLFGDungeon;
 
 const char* WorldMapOverlayStoreFormat="nxiiiixxxxxxxxxxx";
 const char* BarberShopStyleEntryFormat="nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxi";
@@ -334,6 +336,8 @@ const char* spellshapeshiftformformat = "uxxxxxxxxxxxxxxxxxxuuxuuuxxuuuuuuuu";
 const char* questxpformat = "uxuuuuuuuux";
 const char* wmoareaformat = "uiiixxxxxuuxxxxxxxxxxxxxxxxx";
 const char* summonpropertiesformat = "uuuuuu";
+const char* namegenentryformat = "usuu";
+const char* LFGDungeonEntryformat = "nxxxxxxxxxxxxxxxxxiiiiiiixixxixixxxxxxxxxxxxxxxxx";
 
 template<class T>
 bool loader_stub(const char * filename, const char * format, bool ind, T& l, bool loadstrs)
@@ -412,6 +416,8 @@ bool LoadDBCs()
 	LOAD_DBC("DBC/QuestXP.dbc", questxpformat, true, dbcQuestXP, false );
 	LOAD_DBC("DBC/WMOAreaTable.dbc", wmoareaformat, true, dbcWMOAreaTable, false );
 	LOAD_DBC("DBC/SummonProperties.dbc", summonpropertiesformat, true, dbcSummonProperties, false );
+	LOAD_DBC("DBC/NameGen.dbc", namegenentryformat, true, dbcNameGen, true );
+	LOAD_DBC("DBC/LFGDungeons.dbc", LFGDungeonEntryformat, true, dbcLFGDungeon, false );
 
 	return true;
 }

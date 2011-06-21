@@ -54,25 +54,23 @@ public:
 
 	SkillNameMgr()
 	{
-		DBCFile SkillDBC;
-		
-		if( !SkillDBC.open( "DBC/SkillLine.dbc" ) )
-		{
-			Log.Error( "SkillNameMgr", "Cannot find file ./DBC/SkillLine.dbc" );
-			return;
-		}
+		DBCStorage< skilllineentry >::iterator itr = dbcSkillLine.end();
+		--itr;
+		skilllineentry *skillline = *itr;
 
 		//This will become the size of the skill name lookup table
-		maxskill = SkillDBC.getRecord(SkillDBC.getRecordCount()-1).getUInt(0);
+		maxskill = skillline->id;
 
 		//SkillNames = (char **) malloc(maxskill * sizeof(char *));
 		SkillNames = new char * [maxskill+1]; //(+1, arrays count from 0.. not 1.)
 		memset(SkillNames,0,(maxskill+1) * sizeof(char *));
 
-		for(uint32 i = 0; i < SkillDBC.getRecordCount(); ++i)
+		for( itr = dbcSkillLine.begin(); itr != dbcSkillLine.end(); ++itr )
 		{
-			unsigned int SkillID = SkillDBC.getRecord(i).getUInt(0);
-			const char *SkillName = SkillDBC.getRecord(i).getString(3);
+			skillline = *itr;
+
+			unsigned int SkillID = skillline->id;
+			const char *SkillName = skillline->Name;
 
 			SkillNames[SkillID] = new char [strlen(SkillName)+1];
 			//When the DBCFile gets cleaned up, so does the record data, so make a copy of it..

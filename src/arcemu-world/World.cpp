@@ -352,22 +352,15 @@ bool World::SetInitialWorldSettings()
 	}
 
 	/* Convert area table ids/flags */
-	DBCFile area;
-
-	if( !area.open( "DBC/AreaTable.dbc" ) )
+	for( DBCStorage<AreaTable>::iterator itr = dbcArea.begin(); itr != dbcArea.end(); ++itr )
 	{
-		Log.Error( "World", "Cannot find file ./DBC/AreaTable.dbc" );
-		return false;
-	}
+		AreaTable *at = *itr;
 
-	uint32 flag_, area_, zone_;
-	for(uint32 i = 0; i < area.getRecordCount(); ++i)
-	{
-		area_ = area.getRecord(i).getUInt(0);
-		flag_ = area.getRecord(i).getUInt(3);
-		zone_ = area.getRecord(i).getUInt(2);
+		uint32 area_ = at->AreaId;
+		uint32 flag_ = at->explorationFlag;
+		uint32 zone_ = at->ZoneId;
 
-		mAreaIDToTable[flag_] = dbcArea.LookupEntryForced(area_);
+		mAreaIDToTable[flag_] = at;
 		if(mZoneIDToTable.find(zone_) != mZoneIDToTable.end())
 		{
 			if(mZoneIDToTable[zone_]->AreaFlags != 312 &&
@@ -1490,22 +1483,14 @@ void World::Rehash(bool load)
 
 void World::LoadNameGenData()
 {
-	DBCFile dbc;
-
-	if( !dbc.open( "DBC/NameGen.dbc" ) )
+	for( DBCStorage< NameGenEntry >::iterator itr = dbcNameGen.begin(); itr != dbcNameGen.end(); ++itr )
 	{
-		Log.Error( "World", "Cannot find file ./DBC/NameGen.dbc" );
-		return;
-	}
+		NameGenEntry *nge = *itr;
 
-	for(uint32 i = 0; i < dbc.getRecordCount(); ++i)
-	{
 		NameGenData d;
-		if(dbc.getRecord(i).getString(1)== NULL)
-			continue;
 
-		d.name = string(dbc.getRecord(i).getString(1));
-		d.type = dbc.getRecord(i).getUInt(3);
+		d.name = std::string( nge->Name );
+		d.type = nge->unk2;
 		_namegendata[d.type].push_back(d);
 	}
 }

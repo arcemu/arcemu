@@ -13,6 +13,9 @@
 #ifndef DBCFILE_H
 #define DBCFILE_H
 
+#include <cassert>
+#include <string>
+
 class DBCFile
 {
 public:

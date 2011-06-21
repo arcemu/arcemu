@@ -25,23 +25,16 @@ initialiseSingleton( LfgMgr );
 
 LfgMgr::LfgMgr()
 {
-	DBCFile f;
-	if(f.open("DBC/LFGDungeons.dbc"))
-	{
-		for(uint32 i = 0; i < f.getRecordCount(); ++i)
-		{
-			DBCFile::Record r = f.getRecord(i);
-			uint32 id = r.getUInt(0);
-			uint32 typ = r.getUInt(20);
-
-			if(id >= MAX_DUNGEONS)
-				LOG_ERROR("!! warning: LFGDungeons contains an out of range dungeon id %u.", id);
-			else
-				LfgDungeonTypes[id] = typ;
-		}
+	for( DBCStorage< LFGDungeonEntry >::iterator itr = dbcLFGDungeon.begin(); itr != dbcLFGDungeon.end(); ++itr ){
+		LFGDungeonEntry *lfgdungeon = *itr;
+		uint32 id = lfgdungeon->ID;
+		uint32 typ = lfgdungeon->type;
+		
+		if( id >= MAX_DUNGEONS )
+			LOG_ERROR( "LFGDungeons contains an out of range dungeon id %u.", id );
+		else
+			LfgDungeonTypes[ id ] = typ;
 	}
-	else
-		LOG_ERROR("!! LFGDungeons.dbc not found, LFG tool will not function correctly.");
 }
 
 LfgMgr::~LfgMgr()
