@@ -36,8 +36,6 @@
 #include <zlib.h>
 
 #include "../arcemu-shared/Database/DatabaseEnv.h"
-#include "../arcemu-shared/Database/DBCStores.h"
-#include "../arcemu-shared/Database/dbcfile.h"
 
 #include "../arcemu-shared/Auth/BigNumber.h"
 #include "../arcemu-shared/Auth/Sha1.h"

@@ -8,6 +8,8 @@ SET(sources
   vmap/VMapFactory.cpp
   vmap/VMapManager2.cpp
   vmap/WorldModel.cpp
+  DBC/DBCStores.cpp
+  DBC/dbcfile.cpp 
 	AchievementMgr.cpp 
 	CollideInterface.cpp  
 	VoiceChatHandler.cpp 

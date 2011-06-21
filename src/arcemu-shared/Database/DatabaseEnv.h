@@ -27,7 +27,6 @@
 #include "CThreads.h"
 
 //! Our own includes.
-#include "Database/DBCStores.h"
 #include "Database/Field.h"
 #include "Database/Database.h"
 

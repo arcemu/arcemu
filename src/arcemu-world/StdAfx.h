@@ -72,8 +72,8 @@ template< class T, class U > T TO( U u ){ return static_cast< T >( u ); }
 #include <zlib.h>
 
 #include "../arcemu-shared/Database/DatabaseEnv.h"
-#include "../arcemu-shared/Database/DBCStores.h"
-#include "../arcemu-shared/Database/dbcfile.h"
+#include "DBC/DBCStores.h"
+#include "DBC/dbcfile.h"
 
 #include <Network/Network.h>
 

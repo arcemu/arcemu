@@ -78,4 +78,29 @@ volatile long Sync_Sub(volatile long* value);
 		void Sleep( unsigned long timems );
 	}
 
+
+	/////////////////////////////////////////////////////////
+	//uint32 getMSTime()
+	//  Returns the time elapsed in milliseconds
+	//
+	//Parameter(s)
+	//  None
+	//
+	//Return Value
+	//  Returns the time elapsed in milliseconds
+	//
+	//
+	/////////////////////////////////////////////////////////
+	ARCEMU_INLINE uint32 getMSTime(){
+		uint32 MSTime = 0;
+#ifdef WIN32
+		MSTime = GetTickCount();
+#else
+		timeval tv;
+		gettimeofday( &tv, NULL );
+		MSTime = ( tv.tv_sec * 1000 ) + ( tv.tv_usec / 1000 );
+#endif
+		return MSTime;
+	}
+
 #endif

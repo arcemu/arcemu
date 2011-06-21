@@ -30,10 +30,7 @@ SET( sources
     Auth/Sha1.cpp 
     Auth/WowCrypt.cpp 
     Config/Config.cpp 
-    Database/DBC.cpp 
     Database/Database.cpp 
-    Database/DBCStores.cpp  
-    Database/dbcfile.cpp 
     Database/MySQLDatabase.cpp 
     Database/CreateInterface.cpp 
     Network/CircularBuffer.cpp 
