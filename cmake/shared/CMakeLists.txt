@@ -35,6 +35,73 @@ SET( sources
     Database/CreateInterface.cpp 
     Network/CircularBuffer.cpp 
     Network/Socket.cpp  )
+	
+set( headers 
+	arcemu_getopt.h
+	Array.h
+	AuthCodes.h
+	CallBack.h
+	CircularQueue.h
+	Common.h
+	CrashHandler.h
+	crc32.h
+	CRefCounter.h
+	CThreads.h
+	DynLib.hpp
+	Errors.h
+	FastQueue.h
+	FindFiles.hpp
+	LocationVector.h
+	Log.h
+	MapFile.h
+	MapFileEntry.h
+	MersenneTwister.h
+	PerformanceCounter.hpp
+	PreallocatedQueue.h
+	printStackTrace.h
+	RC4Engine.h
+	Singleton.h
+	StackBuffer.h
+	StackWalker.h
+	StackTrace.h
+	Storage.h
+	SysInfo.hpp
+	TextFile.h
+	TLSObject.h
+	Tokenizer.h
+	Util.h
+	WorldPacket.h
+	WoWGuid.h
+	Auth/BigNumber.h
+	Auth/MD5.h
+	Auth/Sha1.h
+	Auth/WowCrypt.h
+	Config/Config.h
+	Config/ConfigEnv.h
+	Database/Database.h
+	Database/DataStore.h
+	Database/Field.h
+	Database/MySQLDatabase.h
+	Network/CircularBuffer.h
+	Network/ListenSocketWin32.h
+	Network/Network.h
+	Network/Socket.h
+	Network/SocketMgrWin32.h
+	Network/SocketOps.h
+	Network/SocketDefines.h
+	Threading/AtomicBoolean.h
+	Threading/AtomicCounter.h
+	Threading/AtomicFloat.h
+	Threading/AtomicULong.h
+	Threading/ConditionVariable.h
+	Threading/Guard.h
+	Threading/LockedQueue.h
+	Threading/Mutex.h
+	Threading/RWLock.h
+	Threading/Threading.h
+	Threading/ThreadPool.h
+	Threading/ThreadStarter.h
+)
 
 IF(WIN32)
 	SET( sources ${sources} Network/SocketMgrWin32.cpp  Network/SocketOpsWin32.cpp  Network/SocketWin32.cpp StackWalker.cpp StackTrace.cpp )
@@ -47,6 +114,9 @@ ENDIF(WIN32)
 foreach(src IN ITEMS ${sources} )
   SET( SRCS ${SRCS} ${prefix}/${src} )
 endforeach(src)
+foreach(src IN ITEMS ${headers} )
+  SET(HEADERS ${HEADERS} ${prefix}/${src} )
+endforeach(src)
 
 include_directories( ${GLOBAL_INCLUDE_DIRS} )
 IF( IS_64BIT )
@@ -55,7 +125,12 @@ ELSE()
 	link_directories( ${DEPENDENCY_DLLS} )
 ENDIF()
 link_directories( ${DEPENDENCY_LIBS} )
-ADD_LIBRARY( ${PROJECT_NAME} STATIC ${SRCS} )
+
+IF( CMAKE_GENERATOR MATCHES "Visual Studio 10")
+	ADD_LIBRARY( ${PROJECT_NAME} STATIC ${SRCS} ${HEADERS} )
+ELSE()
+	ADD_LIBRARY( ${PROJECT_NAME} STATIC ${SRCS} )
+ENDIF()
 
 target_link_libraries( ${PROJECT_NAME} ${ZLIB_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${MYSQL_LIBRARY} ${OPENSSL_LIBRARIES} ${EXTRA_LIBS} )
 

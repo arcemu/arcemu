@@ -10,8 +10,22 @@ SET( sources
   LogonStdAfx.cpp
   Main.cpp)
 
+ SET( headers
+	AccountCache.h
+	AuthSocket.h
+	AuthStructs.h
+	AutoPatcher.h
+	LogonCommServer.h
+	LogonConsole.h
+	LogonOpcodes.h
+	LogonStdAfx.h
+	Main.h
+)
 foreach(src IN ITEMS ${sources} )
   SET( SRCS ${SRCS} ${prefix}/${src} )
+endforeach(src)
+foreach(src IN ITEMS ${headers} )
+  SET( HEADERS ${HEADERS} ${prefix}/${src} )
 endforeach(src)
 
 
@@ -22,7 +36,12 @@ IF( IS_64BIT )
 ENDIF()
 
 include(PCHSupport)
-ADD_EXECUTABLE( ${PROJECT_NAME} ${SRCS})
+
+IF( CMAKE_GENERATOR MATCHES "Visual Studio 10" )
+	ADD_EXECUTABLE( ${PROJECT_NAME} ${SRCS} ${HEADERS} )
+ELSE()
+	ADD_EXECUTABLE( ${PROJECT_NAME} ${SRCS})
+ENDIF()
 
 IF( CMAKE_GENERATOR MATCHES Visual*)
 	ADD_NATIVE_PRECOMPILED_HEADER(${PROJECT_NAME} LogonStdAfx.h ${prefix}/LogonStdAfx.cpp)

@@ -150,25 +150,143 @@ SET(sources
 	Spell_Shaman.cpp
 	Spell_Warlock.cpp
 	Spell_Warrior.cpp
-	DeathKnight
-	Druid
-	Hunter
-	Mage
-	Paladin
-	Priest
-	Rogue
-	Shaman
-	Warlock
-	Warrior )
+	DeathKnight.cpp
+	Druid.cpp
+	Hunter.cpp
+	Mage.cpp
+	Paladin.cpp
+	Priest.cpp
+	Rogue.cpp
+	Shaman.cpp
+	Warlock.cpp
+	Warrior.cpp )
+
+SET( headers
+	AchievementMgr.h
+	AddonMGr.h
+	AIInterface.h
+	AlteracValley.h
+	ArathiBasin.h
+	AreaTrigger.h
+	Arenas.h
+	ArenaTeam.h
+	AuctionHouse.h
+	AuctionMgr.h
+	BaseConsole.h
+	BattlegroundMgr.h
+	CConsole.h
+	CellHandler.h
+	Channel.h
+	ChannelMgr.h
+	Chat.h
+	CollideInterface.h
+	CommonScheduleThread.h
+	ConsoleCommands.h
+	Container.h
+	Corpse.h
+	Creature.h
+	DatabaseCleaner.h
+	DayWatcherThread.h
+	DeathKnight.h
+	Definitions.h
+	Druid.h
+	DynamicObject.h
+	EquipmentSetMgr.h
+	EventableObject.h
+	EventMgr.h
+	EyeOfTheStorm.h
+	faction.h
+	GameObject.h
+	Gossip.h
+	Group.h
+	Guild.h
+	HonorHandler.h
+	Hunter.h
+	Item.h
+	ItemInterface.h
+	ItemPrototype.h
+	LfgMgr.h
+	LocalizationMgr.h
+	LogonCommClient.h
+	LogonCommHandler.h
+	LootMgr.h
+	Mage.h
+	MailSystem.h
+	MainServerDefines.h
+	Map.h
+	MapCell.h
+	MapMgr.h
+	MapScriptInterface.h
+	Master.h
+	MiscHandler.h
+	NameTables.h
+	NPCHandler.h
+	Object.h
+	ObjectMgr.h
+	ObjectStorage.h
+	Opcodes.h
+	Paladin.h
+	Pet.h
+	Player.h
+	PlayerCache.h
+	Priest.h
+	Quest.h
+	QuestMgr.h
+	Rogue.h
+	ScriptMgr.h
+	ScriptSetup.h
+	Shaman.h
+	Skill.h
+	SkillNameMgr.h
+	SpeedDetector.h
+	Spell.h
+	SpellAuras.h
+	SpellFailure.h
+	SpellMgr.h
+	SpellNameHashes.h
+	SpellProc.h
+	SpellTarget.h
+	Stats.h
+	StdAfx.h
+	StrandOfTheAncient.h
+	TaxiMgr.h
+	TerrainMgr.h
+	TransporterHandler.h
+	Unit.h
+	UpdateFields.h
+	UpdateMask.h
+	Vehicle.h
+	Warlock.h
+	Warrior.h
+	WarsongGulch.h
+	WeatherMgr.h
+	WordFilter.h
+	World.h
+	WorldCreator.h
+	WorldRunnable.h
+	WorldSession.h
+	WorldSocket.h
+	WorldState.h
+	WUtil.h
+)
+	
 
 foreach(src IN ITEMS ${sources} )
   SET( SRCS ${SRCS} ${prefix}/${src} )
+endforeach(src)
+foreach(src IN ITEMS ${headers} )
+  SET( HEADERS ${HEADERS} ${prefix}/${src} )
 endforeach(src)
 
 include(PCHSupport)
 include_directories( ${GLOBAL_INCLUDE_DIRS} )
 link_directories( ${DEPENDENCY_LIBS} ${EXTRA_LIBS_PATH} )
-add_executable( ${PROJECT_NAME} ${SRCS} )
+
+IF( CMAKE_GENERATOR MATCHES "Visual Studio 10")
+	add_executable( ${PROJECT_NAME} ${SRCS} ${HEADERS} )
+ELSE()
+	add_executable( ${PROJECT_NAME} ${SRCS} )
+ENDIF()
 
 IF( CMAKE_GENERATOR MATCHES Visual*)
 	ADD_NATIVE_PRECOMPILED_HEADER(${PROJECT_NAME} StdAfx.h ${prefix}/StdAfx.cpp)
