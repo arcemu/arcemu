@@ -424,7 +424,7 @@ enum Attributes
 	ATTRIBUTES_RANGED								= 0x00000002,	// related to ranged??
 	ATTRIBUTE_ON_NEXT_ATTACK						= 0x00000004,
 	ATTRIBUTES_UNK5									= 0x00000008, //ATTRIBUTES_UNUSED0
-	ATTRIBUTES_UNK6									= 0x00000010,
+	ATTRIBUTES_ABILITY								= 0x00000010, 
 	ATTRIBUTES_UNK7									= 0x00000020,	// Tradeskill recipies
 	ATTRIBUTES_PASSIVE								= 0x00000040,
 	ATTRIBUTES_NO_VISUAL_AURA						= 0x00000080,
@@ -512,7 +512,7 @@ enum AttributesExB
 	ATTRIBUTESEXB_UNUSED3							= 0x00008000,	// 15, not set in 3.0.3
 	ATTRIBUTESEXB_CONTROL_UNIT						= 0x00010000,	// 16, PvP Controller, RC, Creature taming, Taming Lesson
 	ATTRIBUTESEXB_REQ_RANGED_WEAPON					= 0x00020000,	// 17, used by hunters shot and stings... Possibly triggers autoshot?
-	ATTRIBUTESEXB_REVIVE_PET						= 0x00040000,	// 18, actually 1 spell, revive pet
+	ATTRIBUTESEXB_REQ_DEAD_PET						= 0x00040000,	// 18,
 	ATTRIBUTESEXB_NOT_NEED_SHAPESHIFT				= 0x00080000,	// 19, does not necessarily need shapeshift
 	ATTRIBUTESEXB_REQ_BEHIND_TARGET					= 0x00100000,	// 20,
 	ATTRIBUTESEXB_UNK23								= 0x00200000,	// 21,
@@ -528,7 +528,7 @@ enum AttributesExB
 	ATTRIBUTESEXB_UNK33								= 0x80000000,	// 31,
 };
 
-enum Flags4
+enum Flags4 // AttributesExC
 {
 	FLAGS4_NULL							= 0x0,
 	FLAGS4_UNK2							= 0x1,
@@ -565,7 +565,7 @@ enum Flags4
 	FLAGS4_UNK33						= 0x80000000,
 };
 
-enum Flags5
+enum Flags5 // AttributesExD
 {
 	FLAGS5_NULL							= 0x0,
 	FLAGS5_UNK2							= 0x1,
@@ -602,13 +602,13 @@ enum Flags5
 	FLAGS5_UNK33						= 0x80000000,
 };
 
-enum Flags6
+enum Flags6 // AttributesExE
 {
 	FLAGS6_NULL							= 0x0,
 	FLAGS6_UNK2							= 0x1,
 	FLAGS6_REAGENT_REMOVAL				= 0x2,
 	FLAGS6_UNK4							= 0x4,
-	FLAGS6_UNK5							= 0x8,
+	FLAGS6_USABLE_WHILE_STUNNED         = 0x8,
 	FLAGS6_UNK6							= 0x10,
 	FLAGS6_SINGLE_TARGET_AURA			= 0x20,
 	FLAGS6_UNK8							= 0x40,
@@ -622,8 +622,8 @@ enum Flags6
 	FLAGS6_UNK16						= 0x4000,
 	FLAGS6_UNK17						= 0x8000,
 	FLAGS6_UNK18						= 0x10000,
-	FLAGS6_UNK19						= 0x20000,
-	FLAGS6_UNK20						= 0x40000,
+	FLAGS6_USABLE_WHILE_FEARED          = 0x20000,
+	FLAGS6_USABLE_WHILE_CONFUSED        = 0x40000,
 	FLAGS6_UNK21						= 0x80000,
 	FLAGS6_UNK22						= 0x100000,
 	FLAGS6_UNK23						= 0x200000,
@@ -639,7 +639,7 @@ enum Flags6
 	FLAGS6_UNK33						= 0x80000000,
 };
 
-enum Flags7
+enum Flags7 // AttributesExF
 {
 	FLAGS7_NULL							= 0x0,
 	FLAGS7_UNK2							= 0x1,
@@ -672,6 +672,38 @@ enum SpellCastFlags
     CAST_FLAG_UNKNOWN1           = 0x2,
     CAST_FLAG_UNKNOWN2           = 0x10, // no idea yet, i saw it in blizzard spell
     CAST_FLAG_AMMO               = 0x20 // load ammo display id (uint32) and ammo inventory type (uint32)
+};
+
+/************************************************************************/
+/* General Spell Go Flags, for documentation reasons                    */
+/************************************************************************/
+enum SpellGoFlags
+{
+	//seems to make server send 1 less byte at the end. Byte seems to be 0 and not sent on triggered spells
+	//this is used only when server also sends power update to client
+	//maybe it is regen related ?
+	SPELL_GO_FLAGS_LOCK_PLAYER_CAST_ANIM	= 0x01,  //also do not send standstate update
+	//0x02
+	//0x04
+	//0x08 //seems like all of these mean some spell anim state
+	//0x10
+	SPELL_GO_FLAGS_RANGED           = 0x20, //2 functions are called on 2 values
+	//0x40
+	//0x80
+	SPELL_GO_FLAGS_ITEM_CASTER      = 0x100,
+	SPELL_GO_FLAGS_UNK200			= 0x200,
+	SPELL_GO_FLAGS_EXTRA_MESSAGE    = 0x400, //TARGET MISSES AND OTHER MESSAGES LIKE "Resist"
+	SPELL_GO_FLAGS_POWER_UPDATE		= 0x800, //seems to work hand in hand with some visual effect of update actually
+	//0x1000
+	SPELL_GO_FLAGS_UNK2000			= 0x2000,
+	SPELL_GO_FLAGS_UNK1000			= 0x1000, //no idea
+	//0x4000
+	SPELL_GO_FLAGS_UNK8000			= 0x8000, //seems to make server send extra 2 bytes before SPELL_GO_FLAGS_UNK1 and after SPELL_GO_FLAGS_UNK20000
+	SPELL_GO_FLAGS_UNK20000			= 0x20000, //seems to make server send an uint32 after m_targets.write
+	SPELL_GO_FLAGS_UNK40000			= 0x40000, //1 uint32. this is not confirmed but i have a feeling about it :D
+	SPELL_GO_FLAGS_UNK80000			= 0x80000, //2 functions called (same ones as for ranged but different)
+	SPELL_GO_FLAGS_RUNE_UPDATE		= 0x200000, //2 bytes for the rune cur and rune next flags
+	SPELL_GO_FLAGS_UNK400000		= 0x400000, //seems to make server send an uint32 after m_targets.write
 };
 
 /*enum School //moved to Unit.hack for headers dependencies.

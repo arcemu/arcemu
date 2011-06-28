@@ -1333,8 +1333,9 @@ void Spell::cast(bool check)
                 // hack fix for shoot spells, should be some other resource for it
                 // p_caster->SendSpellCoolDown(GetProto()->Id, GetProto()->RecoveryTime ? GetProto()->RecoveryTime : 2300);
 				WorldPacket data(SMSG_SPELL_COOLDOWN, 14);
-				data << GetProto()->Id;
 				data << p_caster->GetNewGUID();
+				data << uint8(0); //unk, some flags
+				data << GetProto()->Id;
 				data << uint32(GetProto()->RecoveryTime ? GetProto()->RecoveryTime : 2300);
 				p_caster->GetSession()->SendPacket(&data);
 			}
@@ -1988,38 +1989,6 @@ void Spell::SendSpellStart()
 	data << (uint32)139; //3.0.2 seems to be some small value around 250 for shadow bolt.
 	m_caster->SendMessageToSet( &data, true );
 }
-
-/************************************************************************/
-/* General Spell Go Flags, for documentation reasons                    */
-/************************************************************************/
-enum SpellGoFlags
-{
-	//seems to make server send 1 less byte at the end. Byte seems to be 0 and not sent on triggered spells
-	//this is used only when server also sends power update to client
-	//maybe it is regen related ?
-	SPELL_GO_FLAGS_LOCK_PLAYER_CAST_ANIM	= 0x01,  //also do not send standstate update
-	//0x02
-	//0x04
-	//0x08 //seems like all of these mean some spell anim state
-	//0x10
-	SPELL_GO_FLAGS_RANGED           = 0x20, //2 functions are called on 2 values
-	//0x40
-	//0x80
-	SPELL_GO_FLAGS_ITEM_CASTER      = 0x100,
-	SPELL_GO_FLAGS_UNK200			= 0x200,
-	SPELL_GO_FLAGS_EXTRA_MESSAGE    = 0x400, //TARGET MISSES AND OTHER MESSAGES LIKE "Resist"
-	SPELL_GO_FLAGS_POWER_UPDATE		= 0x800, //seems to work hand in hand with some visual effect of update actually
-	//0x1000
-	SPELL_GO_FLAGS_UNK2000			= 0x2000,
-	SPELL_GO_FLAGS_UNK1000			= 0x1000, //no idea
-	//0x4000
-	SPELL_GO_FLAGS_UNK8000			= 0x8000, //seems to make server send extra 2 bytes before SPELL_GO_FLAGS_UNK1 and after SPELL_GO_FLAGS_UNK20000
-	SPELL_GO_FLAGS_UNK20000			= 0x20000, //seems to make server send an uint32 after m_targets.write
-	SPELL_GO_FLAGS_UNK40000			= 0x40000, //1 uint32. this is not confirmed but i have a feeling about it :D
-	SPELL_GO_FLAGS_UNK80000			= 0x80000, //2 functions called (same ones as for ranged but different)
-	SPELL_GO_FLAGS_RUNE_UPDATE		= 0x200000, //2 bytes for the rune cur and rune next flags
-	SPELL_GO_FLAGS_UNK400000		= 0x400000, //seems to make server send an uint32 after m_targets.write
-};
 
 void Spell::SendSpellGo()
 {
@@ -3117,11 +3086,13 @@ uint8 Spell::CanCast(bool tolerate)
 		/**
 		*	Arena spell check
 		 */
-		if( p_caster->m_bg && IS_ARENA( p_caster->m_bg->GetType() ) && 
-			hasAttributeExD( FLAGS5_NOT_IN_ARENA ) )
+		if( p_caster->m_bg )
+		{
+			if( IS_ARENA( p_caster->m_bg->GetType() ) && hasAttributeExD( FLAGS5_NOT_IN_ARENA ) )
 				return SPELL_FAILED_NOT_IN_ARENA;
-		if (p_caster->m_bg && !p_caster->m_bg->HasStarted() && (m_spellInfo->Id == 1953 || m_spellInfo->Id == 36554))//Don't allow blink or shadowstep  if in a BG and the BG hasn't started.
-			return SPELL_FAILED_SPELL_UNAVAILABLE;
+			if( !p_caster->m_bg->HasStarted() && (m_spellInfo->Id == 1953 || m_spellInfo->Id == 36554) )//Don't allow blink or shadowstep  if in a BG and the BG hasn't started.
+				return SPELL_FAILED_SPELL_UNAVAILABLE;
+		}
 
 		/**
 		 *	Cooldowns check
@@ -3168,12 +3139,15 @@ uint8 Spell::CanCast(bool tolerate)
  		/**
 		 *	On taxi check
 		 */
-		if ( p_caster->m_onTaxi && !hasAttribute(ATTRIBUTES_MOUNT_CASTABLE) )//Are mount castable spells allowed on a taxi?
+		if ( p_caster->m_onTaxi )
 		{
-			if( m_spellInfo->Id != 33836 && m_spellInfo->Id != 45072 && m_spellInfo->Id != 45115 && m_spellInfo->Id != 31958 ) // exception for taxi bombs
-				return SPELL_FAILED_NOT_ON_TAXI;
+			if( !hasAttribute( ATTRIBUTES_MOUNT_CASTABLE ) )//Are mount castable spells allowed on a taxi?
+			{
+				if( m_spellInfo->Id != 33836 && m_spellInfo->Id != 45072 && m_spellInfo->Id != 45115 && m_spellInfo->Id != 31958 ) // exception for taxi bombs
+					return SPELL_FAILED_NOT_ON_TAXI;
+			}
 		}
-		if ( !p_caster->m_onTaxi )
+		else
 		{
 			if ( m_spellInfo->Id == 33836 || m_spellInfo->Id == 45072 || m_spellInfo->Id == 45115 || m_spellInfo->Id == 31958 )
 				return SPELL_FAILED_NOT_HERE;
@@ -3935,12 +3909,6 @@ uint8 Spell::CanCast(bool tolerate)
 					if ( target->IsPlayer() || target->getClass()!=TARGET_TYPE_DEMON )
 						return SPELL_FAILED_SPELL_UNAVAILABLE;
 				}break;
-				case 982: //Revive Pet
-				{
-					Pet *pPet = p_caster->GetSummon();
-					if(pPet && !pPet->IsDead())
-						return SPELL_FAILED_TARGET_NOT_DEAD;
-				}break;
 
 				default:
 					break;
@@ -4003,15 +3971,6 @@ uint8 Spell::CanCast(bool tolerate)
 				if( target->IsPlayer() && !TO< Player* >( target )->InGroup() )
 					return SPELL_FAILED_TARGET_NOT_IN_PARTY;
 			}
-
-			// pet's owner stuff
-			/*if (GetProto()->EffectImplicitTargetA[0] == 27 ||
-				GetProto()->EffectImplicitTargetA[1] == 27 ||
-				GetProto()->EffectImplicitTargetA[2] == 27)
-			{
-				if (!target->IsPlayer())
-					return SPELL_FAILED_TARGET_NOT_PLAYER; //if you are there something is very wrong
-			}*/
 
 			// fishing spells
 			if( GetProto()->EffectImplicitTargetA[0] == EFF_TARGET_SELF_FISHING )//||
@@ -4160,7 +4119,7 @@ uint8 Spell::CanCast(bool tolerate)
 		}
 
 		// can only silence non-physical
-		if (u_caster && u_caster->m_silenced && GetProto()->School != SCHOOL_NORMAL)
+		if ( u_caster->m_silenced && GetProto()->School != SCHOOL_NORMAL)
 		{
 			switch (GetProto()->NameHash)
 			{
@@ -4218,41 +4177,23 @@ uint8 Spell::CanCast(bool tolerate)
 		}
 
 		/**
-		 *	Stun/Fear check
+		 *	Stun check
 		 */
-		if (u_caster->IsStunned() || u_caster->IsFeared())
-		{
-			// HACK FIX
-			switch (GetProto()->NameHash)
-			{
-				case SPELL_HASH_ICE_BLOCK: //Ice Block
-				case SPELL_HASH_DIVINE_SHIELD: //Divine Shield
-				case SPELL_HASH_DIVINE_PROTECTION: //Divine Protection
-				case SPELL_HASH_BARKSKIN: //Barkskin
-				case SPELL_HASH_DISPERSION:
-					break;
-				
-				/* -Supalosa- For some reason, being charmed or sleep'd is counted as 'Stunned'.
-				Check it: http://www.wowhead.com/?spell=700 */
+		if( u_caster->IsStunned() &&  ( GetProto()->AttributesExE & FLAGS6_USABLE_WHILE_STUNNED ) == 0 )
+			return SPELL_FAILED_STUNNED;
 
-				// Will of the Forsaken (Undead Racial)
-				case SPELL_HASH_WILL_OF_THE_FORSAKEN: 
-					break;
+		/**
+		 *	Fear check
+		 */
+		if( u_caster->IsFeared()  && ( GetProto()->AttributesExE & FLAGS6_USABLE_WHILE_FEARED ) == 0 )
+			return SPELL_FAILED_FLEEING;
+		
+		/**
+		 *	Confuse check
+		 */
+		if( u_caster->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_CONFUSED) && ( GetProto()->AttributesExE & FLAGS6_USABLE_WHILE_CONFUSED ) == 0 )
+			return SPELL_FAILED_CONFUSED;
 
-				case SPELL_HASH_PVP_TRINKET:
-				case SPELL_HASH_EVERY_MAN_FOR_HIMSELF:
-					break;
-
-				case SPELL_HASH_BERSERKER_RAGE://Berserker Rage frees the caster from fear effects.
-					{
-						if( u_caster->IsStunned() )
-							return SPELL_FAILED_STUNNED;
-					}break;
-
-				default:
-					return SPELL_FAILED_STUNNED;
-			}
-		}
 
         if (u_caster->GetChannelSpellTargetGUID() != 0)
 		{
@@ -4272,6 +4213,15 @@ uint8 Spell::CanCast(bool tolerate)
 		}
 	}
 
+	/**
+	 * Dead pet check
+	*/
+	if( GetProto()->AttributesExB & ATTRIBUTESEXB_REQ_DEAD_PET && p_caster != NULL )
+	{
+		Pet *pPet = p_caster->GetSummon();
+		if( pPet != NULL && !pPet->IsDead() )
+			return SPELL_FAILED_TARGET_NOT_DEAD;
+	}
 
 	// no problems found, so we must be ok
 	return SPELL_CANCAST_OK;
