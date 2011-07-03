@@ -1035,7 +1035,6 @@ void Group::UpdateAllOutOfRangePlayersFor(Player * pPlayer)
 void Group::HandleUpdateFieldChange(uint32 Index, Player * pPlayer)
 {
 	uint32 Flags = 0;
-	m_groupLock.Acquire();
 	switch(Index)
 	{
 	case UNIT_FIELD_HEALTH:
@@ -1070,15 +1069,16 @@ void Group::HandleUpdateFieldChange(uint32 Index, Player * pPlayer)
 	}
 
 	if( Flags != 0 )
+	{
+		m_groupLock.Acquire();
 		UpdateOutOfRangePlayer( pPlayer, Flags, true, 0 );
-
-	m_groupLock.Release();
+		m_groupLock.Release();
+	}
 }
 
 void Group::HandlePartialChange(uint32 Type, Player * pPlayer)
 {
 	uint32 Flags = 0;
-	m_groupLock.Acquire();
 
 	switch(Type)
 	{
@@ -1091,10 +1091,12 @@ void Group::HandlePartialChange(uint32 Type, Player * pPlayer)
 		break;
 	}
 
-	if(Flags)
+	if( Flags != 0 )
+	{
+		m_groupLock.Acquire();
 		UpdateOutOfRangePlayer(pPlayer, Flags, true, 0);
-
-	m_groupLock.Release();
+		m_groupLock.Release();
+	}
 }
 
 Group* Group::Create()
