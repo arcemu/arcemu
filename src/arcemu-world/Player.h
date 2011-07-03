@@ -1755,7 +1755,6 @@ public:
 	 void SetMisdirectionTarget(uint64 PlayerGUID){misdirectionTarget = PlayerGUID;}
 
 	bool bReincarnation;
-	bool removeReagentCost;
 	bool ignoreShapeShiftChecks;
 	bool ignoreAuraStateCheck;
 

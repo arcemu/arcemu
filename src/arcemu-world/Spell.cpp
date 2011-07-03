@@ -2381,7 +2381,7 @@ bool Spell::HasPower()
 	//UNIT_FIELD_POWER_COST_MULTIPLIER
 	if( u_caster != NULL )
 	{
-		if (hasAttributeEx(ATTRIBUTESEX_DRAIN_WHOLE_MANA)) // Uses %100 mana
+		if (hasAttributeEx(ATTRIBUTESEX_DRAIN_WHOLE_POWER)) // Uses %100 power
 		{
 			m_caster->SetUInt32Value(powerField, 0);
 			return true;
@@ -2507,9 +2507,9 @@ bool Spell::TakePower()
 	//UNIT_FIELD_POWER_COST_MULTIPLIER
 	if( u_caster != NULL )
 	{
-		if (hasAttributeEx(ATTRIBUTESEX_DRAIN_WHOLE_MANA)) // Uses %100 mana
+		if (hasAttributeEx(ATTRIBUTESEX_DRAIN_WHOLE_POWER)) // Uses %100 power
 		{
-			m_caster->SetUInt32Value(powerField, 0);
+			m_caster->SetUInt32Value( powerField, 0 );
 			return true;
 		}
 	}
@@ -3103,7 +3103,7 @@ uint8 Spell::CanCast(bool tolerate)
 		/**
 		 * Mana check
 		 */
-		if(!HasPower())
+		if( !HasPower() )
 				return SPELL_FAILED_NO_POWER;
 
 		/**
@@ -3304,7 +3304,7 @@ uint8 Spell::CanCast(bool tolerate)
 		/**
 		 *	Check if we have the required reagents
 		 */
-		if (!(p_caster->removeReagentCost && hasAttributeExE(FLAGS6_REAGENT_REMOVAL)))
+		if( !( p_caster->HasFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_NO_REAGANT_COST ) && hasAttributeExE( FLAGS6_REAGENT_REMOVAL ) ) )
 		{
 			// Skip this with enchanting scrolls
 			if (!i_caster || i_caster->GetProto()->Flags != 268435520)
@@ -3323,11 +3323,11 @@ uint8 Spell::CanCast(bool tolerate)
 		/**
 		 *	check if we have the required tools, totems, etc
 		 */
-		for(i= 0; i<2 ;i++)
+		for( i = 0; i < 2; i++ )
 		{
 			if( GetProto()->Totem[i] != 0)
 			{
-				if(!p_caster->GetItemInterface()->GetItemCount(GetProto()->Totem[i]))
+				if( p_caster->GetItemInterface()->GetItemCount( GetProto()->Totem[i] ) == 0 )
 					return SPELL_FAILED_TOTEMS;
 			}
 		}
@@ -3385,7 +3385,7 @@ uint8 Spell::CanCast(bool tolerate)
 		 */
 		if( GetProto()->RequiresAreaId > 0 )
 		{
-			AreaGroup *ag = dbcAreaGroup.LookupEntry(GetProto()->RequiresAreaId);
+			AreaGroup *ag = dbcAreaGroup.LookupEntry( GetProto()->RequiresAreaId );
 			uint32 plrarea = p_caster->GetMapMgr()->GetAreaID( p_caster->GetPositionX(), p_caster->GetPositionY() );
 			if(plrarea != 0xFFFF)//disabling Area checks for maps with no Map_XY.bin file.
 			{	
@@ -4058,7 +4058,7 @@ uint8 Spell::CanCast(bool tolerate)
 	}
 
 	// Special State Checks (for creatures & players)
-	if( u_caster )
+	if( u_caster != NULL )
 	{
 		if (u_caster->SchoolCastPrevent[GetProto()->School])
 		{
@@ -4282,7 +4282,7 @@ void Spell::RemoveItems()
 	}
 
 	// Reagent Removal
-	if (!(p_caster->removeReagentCost && hasAttributeExD(FLAGS6_REAGENT_REMOVAL)))
+	if( !( p_caster->HasFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_NO_REAGANT_COST ) && hasAttributeExD( FLAGS6_REAGENT_REMOVAL ) ) )
 	{
 		for(uint32 i= 0; i<8 ;i++)
 		{

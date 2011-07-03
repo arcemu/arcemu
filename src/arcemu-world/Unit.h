@@ -673,7 +673,7 @@ enum UnitFieldFlags // UNIT_FIELD_FLAGS #46 - these are client flags
 	UNIT_FLAG_LOCK_PLAYER                = 0x00000004, // 3            4  ? does nothing to client (probably wrong) - only taxi code checks this
 	UNIT_FLAG_PLAYER_CONTROLLED          = 0x00000008, // 4            8  makes players and NPCs attackable / not attackable
 	UNIT_FLAG_UNKNOWN_5                  = 0x00000010, // 5           16  ? some NPCs have this
-	UNIT_FLAG_UNKNOWN_6                  = 0x00000020, // 6           32
+	UNIT_FLAG_NO_REAGANT_COST			 = 0x00000020, // 6           32  no reagant cost
 	UNIT_FLAG_PLUS_MOB                   = 0x00000040, // 7           64  ? some NPCs have this (Rare/Elite/Boss?)
 	UNIT_FLAG_UNKNOWN_8                  = 0x00000080, // 8          128  ? can change attackable status 
 	UNIT_FLAG_NOT_ATTACKABLE_9           = 0x00000100, // 9          256  changes attackable status

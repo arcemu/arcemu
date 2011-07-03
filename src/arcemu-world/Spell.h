@@ -458,7 +458,7 @@ enum AttributesEx
 {
 	ATTRIBUTESEX_NULL								= 0x00000000,	// 2^x
 	ATTRIBUTESEX_UNK2								= 0x00000001,	// 0, pet summonings
-	ATTRIBUTESEX_DRAIN_WHOLE_MANA					= 0x00000002,	// 1, Uses all power
+	ATTRIBUTESEX_DRAIN_WHOLE_POWER					= 0x00000002,	// 1, Uses all power / health
 	ATTRIBUTESEX_CHANNELED_1						= 0x00000004,	// 2, Channeled
 	ATTRIBUTESEX_UNK5								= 0x00000008,	// 3, 
 	ATTRIBUTESEX_IGNORE_IN_FRONT					= 0x00000010,	// 4, ignore verification isInFront() in unit::strike

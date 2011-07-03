@@ -111,7 +111,6 @@ SoulStone(0),
 SoulStoneReceiver(0),
 misdirectionTarget(0),
 bReincarnation(false),
-removeReagentCost(false),
 ignoreShapeShiftChecks(false),
 ignoreAuraStateCheck(false),
 m_GM_SelectedGO(0),
@@ -2038,7 +2037,6 @@ void Player::DismissActivePets()
 
 void Player::_LoadPetSpells(QueryResult * result)
 {
-	std::stringstream query;
 	std::map<uint32, std::list<uint32>* >::iterator itr;
 	uint32 entry = 0;
 	uint32 spell = 0;
@@ -4208,7 +4206,7 @@ void Player::_ApplyItemMods(Item* item, int16 slot, bool apply, bool justdrokedo
 			if( spells == NULL )
 				continue;
 
-			if( item->GetProto()->Spells[k].Trigger == 1 )
+			if( item->GetProto()->Spells[k].Trigger == ON_EQUIP )
 			{
 				if( spells->RequiredShapeShift )
 				{
@@ -4223,7 +4221,7 @@ void Player::_ApplyItemMods(Item* item, int16 slot, bool apply, bool justdrokedo
 				spell->prepare( &targets );
 
 			}
-			else if( item->GetProto()->Spells[k].Trigger == 2 )
+			else if( item->GetProto()->Spells[k].Trigger == CHANCE_ON_HIT )
 			{
 				this->AddProcTriggerSpell( spells, NULL, this->GetGUID(), 5, PROC_ON_MELEE_ATTACK, 0, NULL, NULL );
 			}
@@ -4235,7 +4233,7 @@ void Player::_ApplyItemMods(Item* item, int16 slot, bool apply, bool justdrokedo
 		item->RemoveEnchantmentBonuses();
 		for( int k = 0; k < 5; k++ )
 		{
-			if( item->GetProto()->Spells[k].Trigger == 1 )
+			if( item->GetProto()->Spells[k].Trigger == ON_EQUIP )
 			{
 				SpellEntry* spells = dbcSpell.LookupEntry( item->GetProto()->Spells[k].Id );
 				if( spells->RequiredShapeShift )
@@ -4243,7 +4241,7 @@ void Player::_ApplyItemMods(Item* item, int16 slot, bool apply, bool justdrokedo
 				else
 					RemoveAura( item->GetProto()->Spells[k].Id );
 			}
-			else if( item->GetProto()->Spells[k].Trigger == 2 )
+			else if( item->GetProto()->Spells[k].Trigger == CHANCE_ON_HIT )
 			{
 				this->RemoveProcTriggerSpell(item->GetProto()->Spells[k].Id);
 			}
@@ -4394,7 +4392,7 @@ void Player::BuildPlayerRepop()
 	uint32 AuraIds[] = {20584,9036,8326,0};
 	RemoveAuras(AuraIds); // Cebernic: Removeaura just remove once(bug?).
 
-	SetHealth(1 );
+	SetHealth( 1 );
 
 	SpellCastTargets tgt;
 	tgt.m_unitTarget=this->GetGUID();
@@ -12484,8 +12482,8 @@ void Player::SendPreventSchoolCast(uint32 SpellSchool, uint32 unTimeMs)
     data << GetGUID();
     data << uint8(0x0);
 
-       SpellSet::iterator sitr;
-       for (sitr = mSpells.begin(); sitr != mSpells.end(); ++sitr)
+    SpellSet::iterator sitr;
+	for (sitr = mSpells.begin(); sitr != mSpells.end(); ++sitr)
     {
         uint32 SpellId = (*sitr);
 

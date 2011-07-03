@@ -1,4 +1,4 @@
-/*
+ /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
  * Copyright (C) 2008-2011 <http://www.ArcEmu.org/>
@@ -8227,30 +8227,30 @@ void Aura::SpellAuraAddHealth(bool apply)
 
 void Aura::SpellAuraRemoveReagentCost(bool apply)
 {
-	if( !m_target->IsPlayer() )
+	if( p_target == NULL )
 		return;
 
 	if ( apply )
 	{
-		TO< Player* >(m_target)->removeReagentCost = true;
+		p_target->SetFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_NO_REAGANT_COST );
 	}
 	else
 	{
-		TO< Player* >(m_target)->removeReagentCost = false;
+		p_target->RemoveFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_NO_REAGANT_COST );
 	}
 }
 void Aura::SpellAuraBlockMultipleDamage(bool apply)
 {
-	if( !m_target->IsPlayer() )
+	if( p_target == NULL )
 		return;
 
 	if ( apply )
 	{
-		TO< Player* >(m_target)->m_BlockModPct += mod->m_amount;
+		p_target->m_BlockModPct += mod->m_amount;
 	}
 	else
 	{
-		TO< Player* >(m_target)->m_BlockModPct += -mod->m_amount;
+		p_target->m_BlockModPct += -mod->m_amount;
 	}
 }
 
