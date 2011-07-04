@@ -225,11 +225,12 @@ enum UNIT_TYPE
 
 enum CreatureFlag1
 {
-	CREATURE_FLAG1_TAMEABLE   = 0x0001,
-	CREATURE_FLAG1_HERBLOOT   = 0x0100,
-	CREATURE_FLAG1_MININGLOOT = 0x0200,
-	CREATURE_FLAG1_FIGHT_MOUNTED = 0x0800,
-	CREATURE_FLAG1_ENGINEERLOOT = 0x08000,
+	CREATURE_FLAG1_TAMEABLE   		= 0x00001,
+	CREATURE_FLAG1_HERBLOOT   		= 0x00100,
+	CREATURE_FLAG1_MININGLOOT 		= 0x00200,
+	CREATURE_FLAG1_FIGHT_MOUNTED 	= 0x00800,
+	CREATURE_FLAG1_ENGINEERLOOT 	= 0x08000,
+	CREATURE_FLAG1_EXOTIC			= 0x10000,
 };
 
 enum FAMILY
@@ -310,8 +311,6 @@ struct PetSpellCooldown
 	uint32 spellId;
 	int32 cooldown;
 };
-
-static uint32 Exotic[7] = { 38, 39, 41, 42, 43, 45, 46 };
 
 class CreatureAIScript;
 class GossipScript;
@@ -628,11 +627,9 @@ public:
 
 	ARCEMU_INLINE bool IsExotic()
 	{
-		for(uint32 i = 0; i < 7; ++i)
-      {
-			if(GetCreatureInfo()->Family == Exotic[i] && GetCreatureInfo()->Type == UNIT_TYPE_BEAST)
-         { return true; }
-      }
+		if( (GetCreatureInfo()->Flags1 & CREATURE_FLAG1_EXOTIC) != 0 )
+			return true;
+
 		return false;
 	}
 
