@@ -31,14 +31,20 @@ public:
 		   if(lua_gettop(li_->lu) > base)
 			   lua_insert(li_->lu, base);
 		   //call the lua function.
-		   if(lua_pcall(li_->lu, (parameters->count), 0, 0) )
+		   if(lua_pcall(li_->lu, (parameters->count-1), 0, 0) )
 			   lua_engine::report(li_->lu);
-		   //erase it since we no longer need to keep track of it
-		   li_->m_goFRefs.erase(frefs.first);
 
-		   //release resources
-		   if(parameters != NULL)
-			   cleanup_varparam(parameters, li_->lu);
+		   //check repeats for expired events.
+		   variadic_node * repeatsnode = parameters->head_node->next;
+		   if(repeatsnode->val.bewl > 0 && --repeatsnode->val.bewl == 0)
+		   {
+			   //erase it since we no longer need to keep track of it
+			   li_->m_goFRefs.erase(frefs.first);
+
+			   //release resources
+			   if(parameters != NULL)
+				   cleanup_varparam(parameters, li_->lu);
+		   }
 	   }
    }
 
@@ -61,15 +67,20 @@ public:
 			   parameters = extra;
 		   else
 			   parameters = new variadic_parameter;
-		   ++parameters->count;
+		   parameters->count+=2;
 		   variadic_node * frefnode = new variadic_node;
+		   variadic_node * repeatsnode = new variadic_node;
 		   //create a node of function type.
 		   frefnode->type = LUA_TFUNCTION;
 		   frefnode->val.obj_ref = fRef;
+		   //create a node storing repeats
+		   repeatsnode->type = CUSTOM_TYPE_REPEATS_ARG;
+		   repeatsnode->val.bewl = repeats;
 		   //Switch the head nodes
 		   if(parameters->head_node != NULL)
-			   frefnode->next = parameters->head_node;
-		   parameters->head_node = frefnode;
+			   repeatsnode->next = parameters->head_node; //set our parameters to follow the repeats node
+		   parameters->head_node = frefnode; //set our function node as the root
+		   frefnode->next = repeatsnode; //set our repeats node to follow the function node.
 		   sEventMgr.AddEvent(this, &lua_go::CallScriptEngineFunction, parameters, EVENT_LUA_GAMEOBJ_EVENTS, interval, repeats, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 		   //keep a reference to the allocated block so we can free it.
 		   lua_instance.get()->m_goFRefs.insert( make_pair( this->GetLowGUID(), parameters) );
