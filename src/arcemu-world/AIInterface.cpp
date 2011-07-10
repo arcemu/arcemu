@@ -2352,6 +2352,11 @@ void AIInterface::SendCurrentMove(Player* plyr)
 	*splineBuf << uint32(timepassed); //Time Passed (start Position)
 	*splineBuf << uint32(m_currentSplineTotalMoveTime); //Total Time
 	*splineBuf << uint32(0); //Unknown
+	*splineBuf << float(0); //unk
+	*splineBuf << float(0); //unk
+
+	*splineBuf << float(0); //trajectory parabolic soeed
+	*splineBuf << uint32(0); //trajectory time
 
 	if (m_currentMoveSpline.size() < 4) //client requires 4, lets generate shit for it
 	{

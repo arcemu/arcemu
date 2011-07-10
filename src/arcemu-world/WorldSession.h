@@ -78,7 +78,7 @@ enum MovementFlags
 	MOVEFLAG_TAXI						= 0x200,		
 	MOVEFLAG_NO_COLLISION				= 0x400,
 	MOVEFLAG_FLYING	    				= 0x800,		//verified
-	MOVEFLAG_JUMPING					= 0x1000,		//Unconfirmed
+	MOVEFLAG_REDIRECTED					= 0x1000,		//Unconfirmed
 	MOVEFLAG_FALLING					= 0x2000,       //verified
 	MOVEFLAG_FALLING_FAR				= 0x4000,		//verified
 	MOVEFLAG_FREE_FALLING				= 0x8000,		//half verified
@@ -97,7 +97,7 @@ enum MovementFlags
 	MOVEFLAG_AIR_SUSPENSION	   	 		= 0x1000000,	// confirmed allow body air suspension(good name? lol).
 	MOVEFLAG_AIR_SWIMMING				= 0x2000000,	// confirmed while flying.
 	MOVEFLAG_SPLINE_MOVER				= 0x4000000,	// Unconfirmed
-	MOVEFLAG_IMMOBILIZED				= 0x8000000,
+	MOVEFLAG_SPLINE_ENABLED				= 0x8000000,
 	MOVEFLAG_WATER_WALK					= 0x10000000,
 	MOVEFLAG_FEATHER_FALL				= 0x20000000,	// Does not negate fall damage.
 	MOVEFLAG_LEVITATE					= 0x40000000,
@@ -175,8 +175,8 @@ class MovementInfo
 public:
 	uint32 time;
 	float pitch;// -1.55=looking down, 0=looking forward, +1.55=looking up
-	uint32 unk8;//on slip 8 is zero, on jump some other number
-	uint32 unk9, unk10;//9,10 changes if you are not on foot
+	float redirectSin;//on slip 8 is zero, on jump some other number
+	float redirectCos, redirect2DSpeed;//9,10 changes if you are not on foot
 	uint32 unk11, unk12;
 	uint8 unk13;
 	uint32 unklast;//something related to collision
@@ -184,7 +184,7 @@ public:
 
 	float x, y, z, orientation;
 	uint32 flags;
-	uint32 FallTime;
+	float redirectVelocity;
 	WoWGuid transGuid;
 	float transX, transY, transZ, transO, transUnk;
 	uint8 transUnk_2;

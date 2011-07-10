@@ -336,7 +336,18 @@ uint32 TimeStamp();
 
 void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2, Player* target )
 {
-	/* ByteBuffer *splinebuf = (m_objectTypeId == TYPEID_UNIT) ? target->GetAndRemoveSplinePacket(GetGUID()) : 0; */
+	ByteBuffer* splinebuf = (m_objectTypeId == TYPEID_UNIT) ? target->GetAndRemoveSplinePacket(GetGUID()) : 0;
+
+	if (splinebuf != NULL)
+	{
+		flags2 |= MOVEFLAG_SPLINE_ENABLED | MOVEFLAG_MOVE_FORWARD;	   //1=move forward
+		if(GetTypeId() == TYPEID_UNIT)
+		{
+			if(TO_UNIT(this)->GetAIInterface()->m_moveRun == false)
+				flags2 |= MOVEFLAG_WALK;
+		}			
+	}
+
 	uint16 flag16 = 0;	// some other flag
 
 	*data << (uint16)flags;
@@ -432,7 +443,7 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 			}
 		}
 
-		if( (flags2 & (MOVEFLAG_SWIMMING | MOVEFLAG_AIR_SWIMMING)) || (flag16 & 0x20) ) // 0x2000000+0x0200000 flying/swimming, && unk sth to do with vehicles?
+		if( (flags2 & (MOVEFLAG_SWIMMING | MOVEFLAG_AIR_SWIMMING)) || (flag16 & 0x20) ) // 0x2000000+0x0200000 flying/swimming, || sflags & SMOVE_FLAG_ENABLE_PITCH
 		{
 			if(pThis && moveinfo)
 				*data << moveinfo->pitch;
@@ -445,18 +456,22 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 		else
 			*data << (uint32)0; //last fall time
 
-		if( flags2 & MOVEFLAG_JUMPING ) // 0x00001000
+		if( flags2 & MOVEFLAG_REDIRECTED ) // 0x00001000
 		{
-
+			if (moveinfo != NULL)
+			{
+				*data << moveinfo->redirectVelocity;
+				*data << moveinfo->redirectSin;
+				*data << moveinfo->redirectCos;
+				*data << moveinfo->redirect2DSpeed;
+			}
+			else
+			{
 				*data << (float)0;
 				*data << (float)1.0;
 				*data << (float)0;
-				*data << (float)0;			
-		}
-
-		if( flags2 & MOVEFLAG_SPLINE_MOVER ) // 0x4000000
-		{
-			int err1, err2; err2= 0; err1=10/err2; //FAIL please with divide by zero :)
+				*data << (float)0;	
+			}		
 		}
 
 		if( m_walkSpeed == 0 )
@@ -478,9 +493,9 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 		*data << m_turnRate;		// turn rate
 		*data << float(7);		// pitch rate, now a constant...
 
-		if( flags2 & 0x08000000 ) //VLack: On Mangos this is a nice spline movement code, but we never had such... Also, at this point we haven't got this flag, that's for sure, but fail just in case...
+		if( flags2 & MOVEFLAG_SPLINE_ENABLED ) //VLack: On Mangos this is a nice spline movement code, but we never had such... Also, at this point we haven't got this flag, that's for sure, but fail just in case...
 		{
-			int err1, err2; err2= 0; err1=10/err2; //FAIL please with divide by zero :)
+			data->appent(*splinebuf);
 		}
 	}
 	else //----------------------------------- No UPDATEFLAG_LIVING -----------------------------------

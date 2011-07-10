@@ -812,9 +812,9 @@ void MovementInfo::init(WorldPacket & data)
 	{
 		data >> pitch;
 	}
-	if (flags & MOVEFLAG_FALLING || flags & MOVEFLAG_JUMPING)
+	if (flags & MOVEFLAG_REDIRECTED)
 	{
-		data >> FallTime >> unk8 >> unk9 >> unk10;
+		data >> redirectVelocity >> redirectSin >> redirectCos >> redirect2DSpeed;
 	}
 	if (flags & MOVEFLAG_SPLINE_MOVER)
 	{
@@ -847,7 +847,7 @@ void MovementInfo::write(WorldPacket & data)
 	}
 	if (flags & MOVEFLAG_FALLING)
 	{
-		data << FallTime << unk8 << unk9 << unk10;
+		data << redirectVelocity << redirectSin << redirectCos << redirect2DSpeed;
 	}
 	if (flags & MOVEFLAG_SPLINE_MOVER)
 	{
