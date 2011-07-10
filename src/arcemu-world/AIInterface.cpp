@@ -83,19 +83,13 @@ tauntedBy(NULL),
 isTaunted(false),
 soullinkedWith(NULL),
 isSoulLinked(false),
-#ifdef HACKY_SERVER_CLIENT_POS_SYNC
-moved_for_attack(false),
-#endif
 m_runSpeed(0.0f),
 m_flySpeed(0.0f),
-m_destinationX(0),
-m_destinationY(0),
-m_destinationZ(0),
 m_last_target_x(0),
 m_last_target_y(0),
-m_nextPosX(0),
-m_nextPosY(0),
-m_nextPosZ(0),
+m_currentSplineUpdateCounter(0),
+m_currentMoveSplineIndex(0xFFFFFFFF),
+m_currentSplineFinalOrientation(0),
 m_returnX(0),
 m_returnY(0),
 m_returnZ(0),
@@ -154,9 +148,6 @@ void AIInterface::Init(Unit *un, AIType at, MovementType mt)
 		m_DefaultMeleeSpell->agent = AGENT_MELEE;
 		m_DefaultSpell = m_DefaultMeleeSpell;
 	}*/
-	m_sourceX = un->GetPositionX();
-	m_sourceY = un->GetPositionY();
-	m_sourceZ = un->GetPositionZ();
 	m_guardTimer = getMSTime();
 }
 
@@ -185,9 +176,6 @@ void AIInterface::Init(Unit *un, AIType at, MovementType mt, Unit *owner)
 	m_walkSpeed = m_Unit->m_walkSpeed*0.001f;//move distance per ms time 
 	m_runSpeed = m_Unit->m_runSpeed*0.001f;//move/ms
 	m_flySpeed = m_Unit->m_flySpeed*0.001f;
-	m_sourceX = un->GetPositionX();
-	m_sourceY = un->GetPositionY();
-	m_sourceZ = un->GetPositionZ();
 }
 
 void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
@@ -228,7 +216,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				}
 
 				// Stop the emote - change to fight emote
-				m_Unit->SetEmoteState(EMOTE_STATE_READY1H );
+				m_Unit->SetEmoteState(EMOTE_STATE_READY1H);
 				m_returnX = m_Unit->GetPositionX();
 				m_returnY = m_Unit->GetPositionY();
 				m_returnZ = m_Unit->GetPositionZ();
@@ -377,13 +365,13 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 					if(m_Unit->isAlive())
 					{
 						if(m_returnX != 0.0f && m_returnY != 0.0f && m_returnZ != 0.0f)
-							MoveTo(m_returnX,m_returnY,m_returnZ,m_Unit->GetSpawnO());
+							MoveTo(m_returnX, m_returnY, m_returnZ, m_Unit->GetSpawnO());
 						else
 						{
-							MoveTo(m_Unit->GetSpawnX(),m_Unit->GetSpawnY(),m_Unit->GetSpawnZ(),m_Unit->GetSpawnO());
-							m_returnX=m_Unit->GetSpawnX();
-							m_returnY=m_Unit->GetSpawnY();
-							m_returnZ=m_Unit->GetSpawnZ();
+							MoveTo(m_Unit->GetSpawnX(), m_Unit->GetSpawnY(), m_Unit->GetSpawnZ(), m_Unit->GetSpawnO());
+							m_returnX = m_Unit->GetSpawnX();
+							m_returnY = m_Unit->GetSpawnY();
+							m_returnZ = m_Unit->GetSpawnZ();
 						}
 
 						Creature *aiowner = TO< Creature* >(m_Unit);
@@ -666,56 +654,13 @@ void AIInterface::Update(uint32 p_time)
 	float tdist;
 	if(m_AIType == AITYPE_TOTEM)
 	{
-		Arcemu::Util::ARCEMU_ASSERT(   totemspell != 0);
-		if(p_time >= m_totemspelltimer)
-		{
-			Spell *pSpell = sSpellFactoryMgr.NewSpell(m_Unit, totemspell, true, 0);
-			Unit * nextTarget = getNextTarget();
-			if(nextTarget == NULL ||
-				(!m_Unit->GetMapMgr()->GetUnit(nextTarget->GetGUID()) || 
-				!nextTarget->isAlive() ||
-				!IsInrange(m_Unit,nextTarget,pSpell->GetProto()->base_range_or_radius_sqr) ||
-				!isAttackable(m_Unit, nextTarget,!(pSpell->GetProto()->c_is_flags & SPELL_FLAG_IS_TARGETINGSTEALTHED))
-					)
-				)
-			{
-				//we set no target and see if we managed to fid a new one
-				resetNextTarget();
-				//something happened to our target, pick another one
-				SpellCastTargets targets(0);
-				pSpell->GenerateTargets(&targets);
-				if(targets.m_targetMask & TARGET_FLAG_UNIT)
-					setNextTarget( targets.m_unitTarget );
-			}
-			nextTarget = getNextTarget();
-			if(nextTarget)
-			{
-				SpellCastTargets targets(nextTarget->GetGUID());
-				pSpell->prepare(&targets);
-				// need proper cooldown time!
-				m_totemspelltimer = m_totemspelltime;
-			}
-			else
-			{
-				delete pSpell;
-				pSpell = NULL;
-			}
-			// these will *almost always* be AoE, so no need to find a target here.
-//			SpellCastTargets targets(m_Unit->GetGUID());
-//			Spell * pSpell = sSpellFactoryMgr.NewSpell(m_Unit, totemspell, true, 0);
-//			pSpell->prepare(&targets);
-			// need proper cooldown time!
-//			m_totemspelltimer = m_totemspelltime;
-		}
-		else
-		{
-			m_totemspelltimer -= p_time;
-		}
+		_UpdateTotem(p_time);
 		return;
 	}
 
 	_UpdateTimer(p_time);
 	_UpdateTargets();
+
 	if(m_Unit->isAlive() && m_AIState != STATE_IDLE 
 		&& m_AIState != STATE_FOLLOWING && m_AIState != STATE_FEAR 
 		&& m_AIState != STATE_WANDER && m_AIState != STATE_SCRIPTMOVE)
@@ -743,34 +688,19 @@ void AIInterface::Update(uint32 p_time)
 		}
 	}
 
+	_UpdateMovementSpline();
 	_UpdateMovement(p_time);
+
 	if(m_AIState==STATE_EVADE)
 	{
-		tdist = m_Unit->GetDistanceSq(m_returnX,m_returnY,m_returnZ);
-		if(tdist <= 4.0f/*2.0*/)
+		tdist = m_Unit->GetDistanceSq(m_returnX, m_returnY, m_returnZ);
+		if(tdist <= 4.0f)
 		{
 			m_AIState = STATE_IDLE;
 			m_returnX = m_returnY = m_returnZ = 0.0f;
 			m_moveRun = false;
-			//removed by zack : in scripted events if we keep reducing this it will bug the world out !
-			//On Blizz it will return to previous wp but we can accept the fact that it will move on to next one
-			/*
-			if(hasWaypoints())
-			{
-				if(m_moveBackward)
-				{
-					if(m_currentWaypoint != GetWayPointsCount()-1)
-						m_currentWaypoint++;
-				}
-				else
-				{
-					if(m_currentWaypoint != 0)
-						m_currentWaypoint--;
-				}
-			}
-			*/
-			// Set health to full if they at there last location before attacking
-			if(m_AIType != AITYPE_PET&&!skip_reset_hp)
+
+			if(m_AIType != AITYPE_PET && !skip_reset_hp)
 				m_Unit->SetHealth(m_Unit->GetMaxHealth());
 		}
 		else
@@ -778,7 +708,7 @@ void AIInterface::Update(uint32 p_time)
 			if( m_creatureState == STOPPED )
 			{
 				// return to the home
-				if( m_returnX == 0.0f && m_returnY == 0.0f )
+				if(m_returnX == 0.0f && m_returnY == 0.0f)
 				{
 					m_returnX = m_Unit->GetSpawnX();
 					m_returnY = m_Unit->GetSpawnY();
@@ -1066,23 +996,6 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 			HandleEvent( EVENT_LEAVECOMBAT, m_Unit, 0 );
 		}
 	}
-
-#ifdef HACKY_SERVER_CLIENT_POS_SYNC
-	if( moved_for_attack && getNextTarget() && m_creatureState != MOVING )
-	{
-		//make sure we reached the exact desired location. 
-		// due to combat updates creature might interrupt moving and start attacking and does not get to destination making us get out of range errors
-		if(	m_destinationX )
-		{
-			m_Unit->m_position.x = m_destinationX;
-			m_Unit->m_position.y = m_destinationY;
-		}
-		//send a forced update position to client
-		StopMovement(0); 
-		//no need to update position until mob moves to nev target
-		moved_for_attack = false;
-	}
-#endif
 
 	if (sWorld.Collision) {
 		
@@ -2179,83 +2092,52 @@ float AIInterface::_CalcAggroRange(Unit* target)
 	return (AggroRange * AggroRange);
 }
 
-void AIInterface::_CalcDestinationAndMove(Unit *target, float dist)
+void AIInterface::_CalcDestinationAndMove(Unit* target, float dist)
 {
 	if(!m_canMove || m_Unit->IsStunned())
 	{
 		StopMovement(0); //Just Stop
 		return;
 	}
+
+	float newx, newy, newz;
 	
-	if( target && target->IsUnit() )
+	if(target != NULL)
 	{
-#ifdef HACKY_SERVER_CLIENT_POS_SYNC
-		moved_for_attack = true;
-#endif
-		float ResX = target->GetPositionX();
-		float ResY = target->GetPositionY();
+		newx = target->GetPositionX();
+		newy = target->GetPositionY();
+		newz = target->GetPositionZ();
 
 		//avoid eating bandwidth with useless movement packets when target did not move since last position
 		//this will work since it turned into a common myth that when you pull mob you should not move :D
-		if( abs(m_last_target_x - ResX) < DISTANCE_TO_SMALL_TO_WALK
-			&& abs(m_last_target_y - ResY) < DISTANCE_TO_SMALL_TO_WALK && m_creatureState == MOVING)
+		if( abs(m_last_target_x - newx) < DISTANCE_TO_SMALL_TO_WALK
+			&& abs(m_last_target_y - newy) < DISTANCE_TO_SMALL_TO_WALK && m_creatureState == MOVING)
 			return;
-		m_last_target_x = ResX;
-		m_last_target_y = ResY;
+		m_last_target_x = newx;
+		m_last_target_y = newy;
 
-		float ResZ = target->GetPositionZ();
-
-		float angle = m_Unit->calcAngle(m_Unit->GetPositionX(), m_Unit->GetPositionY(), ResX, ResY) * M_PI_FLOAT / 180.0f;
+		float angle = m_Unit->calcAngle(m_Unit->GetPositionX(), m_Unit->GetPositionY(), newx, newy) * M_PI_FLOAT / 180.0f;
 		float x = dist * cosf(angle);
 		float y = dist * sinf(angle);
 
-		if(target->IsPlayer() && TO< Player* >( target )->m_isMoving )
+		if(target->IsPlayer() && TO_PLAYER(target)->m_isMoving)
 		{
 			// cater for moving player vector based on orientation
 			x -= cosf(target->GetOrientation());
 			y -= sinf(target->GetOrientation());
 		}
 
-		m_nextPosX = ResX - x;
-		m_nextPosY = ResY - y;
-		m_nextPosZ = ResZ;
+		newx -= x;
+		newy -= y;
 	}
 	else
 	{
-		target = NULL;
-		m_nextPosX = m_Unit->GetPositionX();
-		m_nextPosY = m_Unit->GetPositionY();
-		m_nextPosZ = m_Unit->GetPositionZ();
+		newx = m_Unit->GetPositionX();
+		newy = m_Unit->GetPositionY();
+		newz = m_Unit->GetPositionZ();
 	}
 
-/*
-	if (sWorld.Collision) {
-		float target_land_z= 0.0f;
-		if( m_Unit->GetMapMgr() != NULL )
-		{
-			if(m_moveFly != true)
-			{
-				target_land_z = CollideInterface.GetHeight(m_Unit->GetMapId(), m_nextPosX, m_nextPosY, m_nextPosZ + 2.0f);
-				if( target_land_z == NO_WMO_HEIGHT )
-					target_land_z = m_Unit->GetMapMgr()->GetLandHeight(m_nextPosX, m_nextPosY);
-			}
-		}
-
-		if (m_nextPosZ > m_Unit->GetMapMgr()->GetWaterHeight(m_nextPosX, m_nextPosY) && target_land_z != 0.0f)
-			m_nextPosZ=target_land_z;
-	}
-*/
-
-	float dx = m_nextPosX - m_Unit->GetPositionX();
-	float dy = m_nextPosY - m_Unit->GetPositionY();
-	if(dy != 0.0f)
-	{
-		float angle = atan2(dx, dy);
-		m_Unit->SetOrientation(angle);
-	}
-
-	if(m_creatureState != MOVING)
-		UpdateMove();
+	Move(newx, newy, newz);
 }
 
 float AIInterface::_CalcCombatRange(Unit* target, bool ranged)
@@ -2331,111 +2213,72 @@ Comments: Some comments on the SMSG_MONSTER_MOVE packet:
 		
 *************************************************************************************************************/
 
-void AIInterface::SendMoveToPacket(float toX, float toY, float toZ, float toO, uint32 time, uint32 MoveFlags)
+void AIInterface::SendMoveToPacket()
 {
-	//this should NEVER be called directly !!!!!!
-	//use MoveTo()
-
-	StackWorldPacket<100> data(SMSG_MONSTER_MOVE);
+	WorldPacket data(SMSG_MONSTER_MOVE, 100);
 
 	data << m_Unit->GetNewGUID();
-	data << uint8( 0 ); //VLack: for 3.1.x support; I've discovered this in Mangos code while doing research on how to fix invisible mobs on 3.0.9
-	data << float( m_Unit->GetPositionX() );
-    data << float( m_Unit->GetPositionY() );
-    data << float( m_Unit->GetPositionZ() );
-	data << uint32( getMSTime() );
-	
-	// Check if we have an orientation
-	if(toO != 0.0f)
+	data << uint8(0); //vehicle seat index
+
+	if (m_currentMoveSpline.size() == 0)
 	{
-		data << uint8( 4 );
-		data << float( toO );
-	} else {
-		data << uint8( 0 );
+		//We're not moving, if here we've recently stopped, tell clients so
+		data << float(m_Unit->GetPositionX());
+		data << float(m_Unit->GetPositionY());
+		data << float(m_Unit->GetPositionZ());
+		data << uint32(getMSTime());
+		data << uint8(1); //stop
 	}
-	data << uint32( MoveFlags );
-
-	data << uint32( time );
-	data << uint32( 1 );	  // 1 waypoint
-	data << float( toX );
-    data << float( toY );
-    data << float( toZ );
-
-#ifndef ENABLE_COMPRESSED_MOVEMENT_FOR_CREATURES
-	
-    bool self = m_Unit->IsPlayer();
-
-	m_Unit->SendMessageToSet( &data, self );
-
-#else
-	if( m_Unit->IsPlayer() )
-		TO< Player* >(m_Unit)->GetSession()->SendPacket(&data);
-
-	for(set<Player*>::iterator itr = m_Unit->GetInRangePlayerSetBegin(); itr != m_Unit->GetInRangePlayerSetEnd(); ++itr)
+	else
 	{
-		if( (*itr)->GetPositionNC().Distance2DSq( m_Unit->GetPosition() ) >= World::m_movementCompressThresholdCreatures )
-			(*itr)->AppendMovementData( SMSG_MONSTER_MOVE, data.GetSize(), (const uint8*)data.GetBufferPointer() );
+		SplinePoint & splinestart = m_currentMoveSpline[0];
+		data << splinestart.pos.x;
+		data << splinestart.pos.y;
+		data << splinestart.pos.z;
+		data << splinestart.setoff;
+
+		if (m_currentSplineFinalOrientation != 0)
+			data << uint8(4) << m_currentSplineFinalOrientation;
 		else
-			(*itr)->GetSession()->SendPacket(&data);
+			data << uint8(0);
+		data << getMoveFlags();
+		data << m_currentSplineTotalMoveTime;
+		data << uint32(m_currentMoveSpline.size() - 1);
+
+		SplinePoint & finalpoint = m_currentMoveSpline[m_currentMoveSpline.size() - 1];
+		data << finalpoint.pos.x;
+		data << finalpoint.pos.y;
+		data << finalpoint.pos.z;
+		
 	}
-#endif
+	m_Unit->SendMessageToSet(&data, true);
 }
 
 bool AIInterface::StopMovement(uint32 time)
 {
+	_UpdateMovementSpline();
 	m_moveTimer = time; //set pause after stopping
-	m_creatureState = STOPPED;
 
-	m_destinationX = m_destinationY = m_destinationZ = 0;
-	m_nextPosX = m_nextPosY = m_nextPosZ = 0;
-	m_timeMoved = 0;
-	m_timeToMove = 0;
+	//Clear current spline
+	m_currentMoveSpline.clear();
+	m_currentMoveSplineIndex = 1;
+	m_currentSplineUpdateCounter = 0;
+	m_currentSplineTotalMoveTime = 0;
+	m_currentSplineFinalOrientation = 0;
 
-	WorldPacket data(27);
-	data.SetOpcode(SMSG_MONSTER_MOVE);
-	data << m_Unit->GetNewGUID();
-	data << uint8(0); //VLack: 3.1 SMSG_MONSTER_MOVE change...
-	data << m_Unit->GetPositionX() << m_Unit->GetPositionY() << m_Unit->GetPositionZ();
-	data << getMSTime();
-	data << uint8(1);   // "DontMove = 1"
-
-	m_Unit->SendMessageToSet( &data, false );
+	SendMoveToPacket();
 	return true;
 }
 
 void AIInterface::MoveTo(float x, float y, float z, float o)
 {
-	m_sourceX = m_Unit->GetPositionX();
-	m_sourceY = m_Unit->GetPositionY();
-	m_sourceZ = m_Unit->GetPositionZ();
-
 	if(!m_canMove || m_Unit->IsStunned())
 	{
 		StopMovement(0); //Just Stop
 		return;
 	}
 
-
-	m_nextPosX = x;
-	m_nextPosY = y;
-	m_nextPosZ = z;
-
-/*	//Andy
-#ifdef COLLISION
-	float target_land_z= 0.0f;
-	if( m_Unit->GetMapMgr() != NULL )
-	{
-		if(m_moveFly != true)
-		{
-			target_land_z = CollideInterface.GetHeight(m_Unit->GetMapId(), m_nextPosX, m_nextPosY, m_nextPosZ + 2.0f);
-			if( target_land_z == NO_WMO_HEIGHT )
-				target_land_z = m_Unit->GetMapMgr()->GetLandHeight(m_nextPosX, m_nextPosY);
-		}
-	}
-
-	if (m_nextPosZ > m_Unit->GetMapMgr()->GetWaterHeight(m_nextPosX, m_nextPosY) && target_land_z != 0.0f)
-		m_nextPosZ=target_land_z;
-#endif*/
+	Move(x, y, z, o);
 
 	if ( m_creatureState != MOVING )
 		UpdateMove();
@@ -2493,126 +2336,54 @@ uint32 AIInterface::getMoveFlags()
 
 void AIInterface::UpdateMove()
 {
-	//this should NEVER be called directly !!!!!!
-	//use MoveTo()
-	float distance = m_Unit->CalcDistance(m_nextPosX,m_nextPosY,m_nextPosZ);
-	
-	if(distance < DISTANCE_TO_SMALL_TO_WALK) 
-		return; //we don't want little movements here and there
-
-	m_destinationX = m_nextPosX;
-	m_destinationY = m_nextPosY;
-	m_destinationZ = m_nextPosZ;
-	
-	/*if(m_moveFly != true)
-	{
-		if(m_Unit->GetMapMgr())
-		{
-			float adt_Z = m_Unit->GetMapMgr()->GetLandHeight(m_destinationX, m_destinationY);
-			if(fabsf(adt_Z - m_destinationZ) < 3.0f)
-				m_destinationZ = adt_Z;
-		}
-	}*/
-
-	//this prevents updatemovement working on this function
-	//m_nextPosX = m_nextPosY = m_nextPosZ = 0;
-
-	uint32 moveTime;
-	/* #ifdef INHERIT_FOLLOWED_UNIT_SPEED vojta - this is pointless and we don't need it anymore
-	if( UnitToFollow )
-	{
-//		moveTime = (uint32) (distance * 1000 / UnitToFollow->m_runSpeed ); //I wonder if run peed can ever drop to 0
-//life sucks, due to calculations the pet will move slower with correct formulas. We add some catch-up speed
-		moveTime = (uint32) (distance * 1000 / ( UnitToFollow->m_runSpeed * sqrt( distance ) ) ); //I wonder if run peed can ever drop to 0
-	}
-#endif */
-	if(m_moveFly)
-		moveTime = (uint32) (distance / m_flySpeed);
-	else if(m_moveRun)
-		moveTime = (uint32) (distance / m_runSpeed);
-	else moveTime = (uint32) (distance / m_walkSpeed);
-
-	m_totalMoveTime = moveTime;
-
-	if(m_Unit->IsCreature())
-	{
-		Creature *creature = TO< Creature* >(m_Unit);
-		// check if we're returning to our respawn location. if so, reset back to default
-		// orientation
-		if(creature->GetSpawnX() == m_destinationX &&
-			creature->GetSpawnY() == m_destinationY)
-		{
-			float o = creature->GetSpawnO();
-			creature->SetOrientation(o);
-		} else {
-			// Calculate the angle to our next position
-
-			float dx = (float)m_destinationX - m_Unit->GetPositionX();
-			float dy = (float)m_destinationY - m_Unit->GetPositionY();
-			if(dy != 0.0f)
-			{
-				float angle = atan2(dy, dx);
-				m_Unit->SetOrientation(angle);
-			}
-		}
-	}
-
-	if (m_Unit->GetCurrentSpell() == NULL)
-		SendMoveToPacket(m_destinationX, m_destinationY, m_destinationZ, m_Unit->GetOrientation(), moveTime, getMoveFlags());
-
-	m_timeToMove = moveTime;
-	m_timeMoved = 0;
-	if(m_moveTimer == 0)
-	{
-		m_moveTimer =  UNIT_MOVEMENT_INTERPOLATE_INTERVAL; // update every few msecs
-	}
-
 	m_creatureState = MOVING;
 }
 
-void AIInterface::SendCurrentMove(Player* plyr/*uint64 guid*/)
+void AIInterface::SendCurrentMove(Player* plyr)
 {
-	if(m_destinationX == 0.0f && m_destinationY == 0.0f && m_destinationZ == 0.0f) return; //invalid move 
+	if (m_currentMoveSplineIndex >= m_currentMoveSpline.size())
+		return;
+
+	SplinePoint & start = m_currentMoveSpline[0];
+	uint32 timepassed = getMSTime() - start.setoff;
+
 	ByteBuffer *splineBuf = new ByteBuffer(20*4);
 	*splineBuf << uint32(0); // spline flags
-	*splineBuf << uint32((m_totalMoveTime - m_timeToMove)+m_moveTimer); //Time Passed (start Position) //should be generated/save 
-	*splineBuf << uint32(m_totalMoveTime); //Total Time //should be generated/save
+	*splineBuf << uint32(timepassed); //Time Passed (start Position)
+	*splineBuf << uint32(m_currentSplineTotalMoveTime); //Total Time
 	*splineBuf << uint32(0); //Unknown
-	*splineBuf << uint32(4); //Spline Count	// lets try this
 
-	*splineBuf << m_sourceX << m_sourceY << m_sourceZ;
-	*splineBuf << m_Unit->GetPositionX() << m_Unit->GetPositionY() << m_Unit->GetPositionZ();
-	*splineBuf << m_destinationX << m_destinationY << m_destinationZ + 0.1f;
-	*splineBuf << m_destinationX << m_destinationY << m_destinationZ + 0.2f;
-	*splineBuf << uint8(0);
-	*splineBuf << m_destinationX << m_destinationY << m_destinationZ;
+	if (m_currentMoveSpline.size() < 4) //client requires 4, lets generate shit for it
+	{
+		*splineBuf << uint32(m_currentMoveSpline.size() + 1 /* 1 fake start */ + 2 /* 2 fake ends */); //Spline Count
+		SplinePoint & end = m_currentMoveSpline[m_currentMoveSpline.size() - 1];
+
+		*splineBuf << start.pos.x << start.pos.y << start.pos.z;
+		for (uint32 i = 0; i < m_currentMoveSpline.size(); ++i)
+		{
+			*splineBuf << m_currentMoveSpline[i].pos.x;
+			*splineBuf << m_currentMoveSpline[i].pos.y;
+			*splineBuf << m_currentMoveSpline[i].pos.z;
+		}
+		*splineBuf << end.pos.x << end.pos.y << end.pos.z + 0.1f;
+		*splineBuf << end.pos.x << end.pos.y << end.pos.z + 0.2f;
+		*splineBuf << uint8(0);
+		*splineBuf << end.pos.x << end.pos.y << end.pos.z;
+	}
+	else
+	{
+		for (uint32 i = 0; i < m_currentMoveSpline.size(); ++i)
+		{
+			*splineBuf << m_currentMoveSpline[i].pos.x;
+			*splineBuf << m_currentMoveSpline[i].pos.y;
+			*splineBuf << m_currentMoveSpline[i].pos.z;
+		}
+		SplinePoint & end = m_currentMoveSpline[m_currentMoveSpline.size() - 1];
+		*splineBuf << uint8(0);
+		*splineBuf << end.pos.x << end.pos.y << end.pos.z;
+	}
 	
 	plyr->AddSplinePacket(m_Unit->GetGUID(), splineBuf);
-
-	//This should only be called by Players AddInRangeObject() ONLY
-	//using guid cuz when I attempted to use pointer the player was deleted when this event was called some times
-	//Player* plyr = World::GetPlayer(guid);
-	//if(!plyr) return;
-
-	/*if(m_destinationX == 0.0f && m_destinationY == 0.0f && m_destinationZ == 0.0f) return; //invalid move 
-	uint32 moveTime = m_timeToMove-m_timeMoved;
-	//uint32 moveTime = (m_timeToMove-m_timeMoved)+m_moveTimer;
-	WorldPacket data(50);
-	data.SetOpcode( SMSG_MONSTER_MOVE );
-	data << m_Unit->GetNewGUID();
-	data << m_Unit->GetPositionX() << m_Unit->GetPositionY() << m_Unit->GetPositionZ();
-	data << getMSTime();
-	data << uint8(0);
-	data << getMoveFlags();
-
-	//float distance = m_Unit->CalcDistance(m_destinationX, m_destinationY, m_destinationZ);
-	//uint32 moveTime = (uint32) (distance / m_runSpeed);
-
-	data << moveTime;
-	data << uint32(1); //Number of Waypoints
-	data << m_destinationX << m_destinationY << m_destinationZ;
-	plyr->GetSession()->SendPacket(&data);*/
-
 }
 
 bool AIInterface::setInFront(Unit* target) // not the best way to do it, though
@@ -2895,7 +2666,7 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 	}
 
 	//move after finishing our current spell
-	if ( m_Unit->GetCurrentSpell() != NULL )
+	if (m_Unit->GetCurrentSpell() != NULL)
 		return;
 
 	uint32 timediff = 0;
@@ -2920,14 +2691,8 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 	{
 		if(!m_moveTimer)
 		{
-			if(m_timeMoved == m_timeToMove) //reached destination
+			if (MoveDone())
 			{
-/*				if(m_fastMove)
-				{
-					m_Unit->UpdateSpeed();
-					m_fastMove = false;
-				}*/
-
 				if(m_moveType == MOVEMENTTYPE_WANTEDWP)//We reached wanted wp stop now
 					m_moveType = MOVEMENTTYPE_DONTMOVEWP;
 
@@ -2981,32 +2746,10 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 				m_moveSprint = false;
 
 				if(m_MovementType == MOVEMENTTYPE_DONTMOVEWP)
-					m_Unit->SetPosition(m_destinationX, m_destinationY, m_destinationZ, wayO, true);
-				else
-					m_Unit->SetPosition(m_destinationX, m_destinationY, m_destinationZ, m_Unit->GetOrientation(), true);
-
-				m_destinationX = m_destinationY = m_destinationZ = 0;
+					m_Unit->SetOrientation(wayO);
+			
 				m_timeMoved = 0;
 				m_timeToMove = 0;
-			}
-			else
-			{
-				//Move Server Side Update
-				float q = (float)m_timeMoved / (float)m_timeToMove;
-				float x = m_Unit->GetPositionX() + (m_destinationX - m_Unit->GetPositionX()) * q;
-				float y = m_Unit->GetPositionY() + (m_destinationY - m_Unit->GetPositionY()) * q;
-				float z = m_Unit->GetPositionZ() + (m_destinationZ - m_Unit->GetPositionZ()) * q;
-				m_Unit->SetPosition(x, y, z, m_Unit->GetOrientation());
-				
-				m_timeToMove -= m_timeMoved;
-				m_timeMoved = 0;
-				m_moveTimer = (UNIT_MOVEMENT_INTERPOLATE_INTERVAL < m_timeToMove) ? UNIT_MOVEMENT_INTERPOLATE_INTERVAL : m_timeToMove;
-			}
-			//**** Movement related stuff that should be done after a move update (Keeps Client and Server Synced) ****//
-			//**** Process the Pending Move ****//
-			if(m_nextPosX != 0.0f && m_nextPosY != 0.0f)
-			{
-				UpdateMove();
 			}
 		}
 	}
@@ -4237,4 +3980,145 @@ void AIInterface::SetWaypointMap(WayPointMap * m, bool delete_old_map)
 
 	m_waypoints = m;
 	m_waypointsLoadedFromDB = false;
+}
+
+void AIInterface::_UpdateTotem( uint32 p_time )
+{
+	Arcemu::Util::ARCEMU_ASSERT(   totemspell != 0);
+	if(p_time >= m_totemspelltimer)
+	{
+		Spell *pSpell = sSpellFactoryMgr.NewSpell(m_Unit, totemspell, true, 0);
+		Unit * nextTarget = getNextTarget();
+		if(nextTarget == NULL ||
+			(!m_Unit->GetMapMgr()->GetUnit(nextTarget->GetGUID()) || 
+			!nextTarget->isAlive() ||
+			!IsInrange(m_Unit,nextTarget,pSpell->GetProto()->base_range_or_radius_sqr) ||
+			!isAttackable(m_Unit, nextTarget,!(pSpell->GetProto()->c_is_flags & SPELL_FLAG_IS_TARGETINGSTEALTHED))
+			)
+			)
+		{
+			//we set no target and see if we managed to fid a new one
+			resetNextTarget();
+			//something happened to our target, pick another one
+			SpellCastTargets targets(0);
+			pSpell->GenerateTargets(&targets);
+			if(targets.m_targetMask & TARGET_FLAG_UNIT)
+				setNextTarget( targets.m_unitTarget );
+		}
+		nextTarget = getNextTarget();
+		if(nextTarget)
+		{
+			SpellCastTargets targets(nextTarget->GetGUID());
+			pSpell->prepare(&targets);
+			// need proper cooldown time!
+			m_totemspelltimer = m_totemspelltime;
+		}
+		else
+		{
+			delete pSpell;
+			pSpell = NULL;
+		}
+		// these will *almost always* be AoE, so no need to find a target here.
+		//			SpellCastTargets targets(m_Unit->GetGUID());
+		//			Spell * pSpell = sSpellFactoryMgr.NewSpell(m_Unit, totemspell, true, 0);
+		//			pSpell->prepare(&targets);
+		// need proper cooldown time!
+		//			m_totemspelltimer = m_totemspelltime;
+	}
+	else
+	{
+		m_totemspelltimer -= p_time;
+	}
+}
+
+void AIInterface::_UpdateMovementSpline()
+{
+	if (m_currentMoveSpline.size() == 0 || m_Unit->GetMapMgr()->mLoopCounter == m_currentSplineUpdateCounter)
+		return;
+
+	if (m_currentMoveSplineIndex >= m_currentMoveSpline.size())
+	{
+		m_creatureState = STOPPED;
+		return;
+	}
+
+	m_currentSplineUpdateCounter = m_Unit->GetMapMgr()->mLoopCounter;
+
+	SplinePoint & current = m_currentMoveSpline[m_currentMoveSplineIndex];
+	SplinePoint & prev = m_currentMoveSpline[m_currentMoveSplineIndex - 1];
+
+	G3D::Vector3 newpos;
+
+	float o = atan2(current.pos.x - prev.pos.x, current.pos.y - prev.pos.y);
+
+	if (getMSTime() > current.arrive)
+	{
+		newpos = current.pos;
+		++m_currentMoveSplineIndex;
+		m_currentSplineUpdateCounter = 0;
+	}
+	else
+		newpos = prev.pos - ((prev.pos - current.pos) * float(getMSTime() - current.setoff) / float(current.arrive - current.setoff));
+
+	m_Unit->SetPosition(newpos.x, newpos.y, newpos.z, o);
+
+	//current spline is finished, attempt to move along next
+	if (m_currentSplineUpdateCounter == 0)
+		_UpdateMovementSpline();
+}
+
+void AIInterface::Move( float & x, float & y, float & z, float o )
+{
+	//Make sure our position is up to date
+	_UpdateMovementSpline();
+
+	//Clear current spline
+	m_currentMoveSpline.clear();
+	m_currentMoveSplineIndex = 1;
+	m_currentSplineUpdateCounter = 0;
+	m_currentSplineTotalMoveTime = 0;
+	m_currentSplineFinalOrientation = o;
+
+	//Add new points
+	AddSpline(m_Unit->GetPositionX(), m_Unit->GetPositionY(), m_Unit->GetPositionZ());
+	AddSpline(x, y, z);
+
+	SendMoveToPacket();
+}
+
+void AIInterface::AddSpline( float x, float y, float z )
+{
+	SplinePoint p;
+	p.pos = G3D::Vector3(x, y, z);
+
+	if (m_currentMoveSpline.size() == 0)
+	{
+		//this is first point just insert it, it's always our position for future points
+		p.setoff = getMSTime();
+		p.arrive = getMSTime(); //now
+		m_currentMoveSpline.push_back(p);
+		return;
+	}
+
+	SplinePoint & prev = m_currentMoveSpline[m_currentMoveSpline.size() - 1];
+
+	float dx = x - prev.pos.x;
+	float dy = y - prev.pos.y;
+	float dz = z - prev.pos.z;
+	float dist = sqrt(dx * dx + dy * dy + dz * dz);
+
+	uint32 movetime;
+
+	if(m_moveFly)
+		movetime = (uint32) (dist / m_flySpeed);
+	else if (m_moveRun)
+		movetime = (uint32) (dist / m_runSpeed);
+	else
+		movetime = (uint32) (dist / m_walkSpeed);
+
+	p.setoff = prev.arrive;
+	p.arrive = prev.arrive + movetime;
+	m_currentSplineTotalMoveTime += movetime;
+
+	m_currentMoveSpline.push_back(p);
 }

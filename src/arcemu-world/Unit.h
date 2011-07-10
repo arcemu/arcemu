@@ -1856,11 +1856,8 @@ protected:
 
 
 public:
-	//Andy's crap
-
 	bool InParty(Unit* u);
 	bool InRaid(Unit* u);
-
 	const CombatStatusHandler * getcombatstatus() const { return &CombatStatus; }
 };
 

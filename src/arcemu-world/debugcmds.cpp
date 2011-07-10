@@ -257,40 +257,7 @@ bool ChatHandler::HandleAIMoveCommand(const char* args, WorldSession *m_session)
 		TO< Creature* >(obj)->GetAIInterface()->MoveTo(x,y,z,0);
 	}
 	else
-	{
-		uint32 moveTime = 0;
-		if(!Time)
-		{
-			//float dx = x - ((Creature *)obj)->GetPositionX();
-			//float dy = y - ((Creature *)obj)->GetPositionY();
-			//float dz = z - ((Creature *)obj)->GetPositionZ();
-
-			//float distance = sqrt((dx*dx) + (dy*dy) + (dz*dz));
-			if(!distance)
-			{
-				SystemMessage(m_session, "The Creature is already there.");
-				return true;
-			}
-
-			float moveSpeed = 1.0f;
-			if(!Run)
-			{
-				moveSpeed = 2.5f*0.001f;
-			}
-			else
-			{
-				moveSpeed = 7.0f*0.001f;
-			}
-
-			moveTime = uint32(distance / moveSpeed);
-		}
-		else
-		{
-			moveTime = Time;
-		}
-		//((Creature *)obj)->setMovementState(MOVING);
-		TO< Creature* >(obj)->GetAIInterface()->SendMoveToPacket(x,y,z,o,moveTime,Run);
-	}
+		TO_CREATURE(obj)->GetAIInterface()->MoveTo(x, y, z, o);
 	return true;
 }
 

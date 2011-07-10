@@ -41,7 +41,6 @@
 
 //#define INHERIT_FOLLOWED_UNIT_SPEED 1
 
-#define HACKY_SERVER_CLIENT_POS_SYNC
 
 class Object;
 class Creature;
@@ -189,6 +188,14 @@ struct AI_Spell
 	uint32 autocast_type;
 };
 
+//Assume previous point can be reached through linked list or current creature position.
+struct SplinePoint
+{
+	G3D::Vector3 pos;
+	uint32 setoff; //mstime when npc set off of this point
+	uint32 arrive; //mstime the npc reaches the destination
+};
+
 /*
 #if ENABLE_SHITTY_STL_HACKS == 1
 typedef HM_NAMESPACE::hash_map<Unit*, int32> TargetMap;
@@ -325,8 +332,10 @@ public:
 	// Update
 	virtual void Update(uint32 p_time);
 
+	void _UpdateTotem( uint32 p_time );
+
 	// Movement
-	void SendMoveToPacket(float toX, float toY, float toZ, float toO, uint32 time, uint32 MoveFlags);
+	void SendMoveToPacket();
 	//void SendMoveToSplinesPacket(std::list<Waypoint> wp, bool run);
 	void MoveTo(float x, float y, float z, float o);
 	uint32 getMoveFlags();
@@ -396,7 +405,6 @@ public:
 	uint32 m_totemspelltime;
 	SpellEntry * totemspell;
 
-	float m_sourceX, m_sourceY, m_sourceZ;
 	uint32 m_totalMoveTime;
 	ARCEMU_INLINE void AddStopTime(uint32 Time) { m_moveTimer += Time; }
 	ARCEMU_INLINE void SetNextSpell(AI_Spell * sp) { m_nextSpell = sp; }
@@ -463,6 +471,10 @@ protected:
 	void _UpdateTargets();
 	void _UpdateMovement(uint32 p_time);
 	void _UpdateTimer(uint32 p_time);
+	void _UpdateMovementSpline();
+	void AddSpline(float x, float y, float z);
+	void Move(float & x, float & y, float & z, float o = 0);
+	bool MoveDone() { return m_currentMoveSplineIndex >= m_currentMoveSpline.size(); }
 	bool m_updateAssist;
 	bool m_updateTargets;
 	uint32 m_updateAssistTimer;
@@ -499,24 +511,28 @@ protected:
 	bool	isTaunted;
 	Unit*	soullinkedWith; //This mob can be hit only by a soul linked unit
 	bool	isSoulLinked;
-#ifdef HACKY_SERVER_CLIENT_POS_SYNC
-	bool	moved_for_attack;
-#endif
 
 
 	// Movement
 	float m_walkSpeed;
 	float m_runSpeed;
 	float m_flySpeed;
-	float m_destinationX;
-	float m_destinationY;
-	float m_destinationZ;
+
 	float m_last_target_x;
 	float m_last_target_y;
-	
-	float m_nextPosX;
-	float m_nextPosY;
-	float m_nextPosZ;
+
+
+	/*
+	Splines
+
+	Note: First element in the spline (m_currentMoveSpline[0]) is always the position the creature started moving from.
+	Index is always set to 1 when movement is started, as index 0 is referenced for first move.
+	*/
+	std::vector<SplinePoint> m_currentMoveSpline;
+	uint32 m_currentMoveSplineIndex;
+	uint32 m_currentSplineUpdateCounter;
+	float m_currentSplineFinalOrientation;
+	uint32 m_currentSplineTotalMoveTime;
 
 	//Return position after attacking a mob
 	float m_returnX;

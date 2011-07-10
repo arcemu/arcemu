@@ -6349,7 +6349,22 @@ void Unit::EventCastSpell(Unit * Target, SpellEntry * Sp)
 void Unit::SetFacing(float newo)
 {
 	SetOrientation(newo);
-	m_aiInterface->SendMoveToPacket(m_position.x,m_position.y,m_position.z,m_position.o,1,0x1000); // MoveFlags = 0x1000 (run)
+
+	//generate smsg_monster_move
+	WorldPacket data(SMSG_MONSTER_MOVE, 100);
+
+	data << GetNewGUID();
+	data << uint8(0); //vehicle seat index
+	data << GetPositionX() << GetPositionY() << GetPositionZ();
+	data << getMSTime();
+	data << uint8(4); //set orientation
+	data << newo;
+	data << uint32(0x1000); //move flags: run
+	data << uint32(0); //movetime
+	data << uint32(1); //1 point
+	data << GetPositionX() << GetPositionY() << GetPositionZ();
+
+	SendMessageToSet(&data, true);
 }
 
 //guardians are temporary spawn that will inherit master faction and will follow them. Apart from that they have their own mind
@@ -8120,3 +8135,4 @@ uint32 Unit::GetAuraCountWithDispelType(uint32 dispel_type, uint64 guid)
 
 	return result;
 }
+
