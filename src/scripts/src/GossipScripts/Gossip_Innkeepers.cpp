@@ -59,6 +59,9 @@ void InnkeeperGossip::OnHello(Object* pObject, Player* Plr)
     
     menu.AddItem( Arcemu::Gossip::ICON_CHAT, "Make this inn your home.", 2 );
     menu.AddItem( Arcemu::Gossip::ICON_CHAT, "What can I do at an inn?", 3 );
+
+	sQuestMgr.FillQuestMenu( pCreature, Plr, menu );
+
 	menu.Send(Plr);
 }
 
