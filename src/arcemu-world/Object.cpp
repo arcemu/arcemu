@@ -495,7 +495,8 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 
 		if( flags2 & MOVEFLAG_SPLINE_ENABLED ) //VLack: On Mangos this is a nice spline movement code, but we never had such... Also, at this point we haven't got this flag, that's for sure, but fail just in case...
 		{
-			data->appent(*splinebuf);
+			data->append(*splinebuf);
+			delete splinebuf;
 		}
 	}
 	else //----------------------------------- No UPDATEFLAG_LIVING -----------------------------------
