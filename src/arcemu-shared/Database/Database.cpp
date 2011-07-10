@@ -238,8 +238,11 @@ bool Database::run()
 	DatabaseConnection* con = GetFreeConnection();
 	while(1)
 	{
+
 		if (query != NULL)
 		{
+			if (con == NULL)
+				con = GetFreeConnection();
 			_SendQuery(con, query, false);
 			delete[] query;
 		}
@@ -249,16 +252,22 @@ bool Database::run()
 		query = queries_queue.pop();
 
 		if (query == NULL)
+		{
+			if (con != NULL)
+				con->Busy.Release();
+			con = NULL;
 			Arcemu::Sleep(10);
+		}
 	}
 
-	con->Busy.Release();
+	if (con != NULL)
+		con->Busy.Release();
 
 	// execute all the remaining queries
 	query = queries_queue.pop();
 	while(query)
 	{
-		DatabaseConnection* con = GetFreeConnection();
+		con = GetFreeConnection();
 		_SendQuery( con, query, false );
 		con->Busy.Release();
 		delete[] query;

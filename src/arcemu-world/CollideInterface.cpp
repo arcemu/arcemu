@@ -199,8 +199,10 @@ void CCollideInterface::ActivateTile(uint32 mapId, uint32 tileX, uint32 tileY)
 	VMAP::IVMapManager* mgr = VMAP::VMapFactory::createOrGetVMapManager();
 	m_loadLock.Acquire();
 	if(m_tilesLoaded[mapId][tileX][tileY] == 0)
+	{
 		mgr->loadMap(sWorld.vMapPath.c_str(), mapId, tileX, tileY);
-
+		LoadNavMeshTile(mapId, tileX, tileY);
+	}
 	++m_tilesLoaded[mapId][tileX][tileY];
 	m_loadLock.Release();
 }
@@ -210,7 +212,26 @@ void CCollideInterface::DeactivateTile(uint32 mapId, uint32 tileX, uint32 tileY)
 	VMAP::IVMapManager* mgr = VMAP::VMapFactory::createOrGetVMapManager();
 	m_loadLock.Acquire();
 	if(!(--m_tilesLoaded[mapId][tileX][tileY]))
+	{
 		mgr->unloadMap(mapId, tileX, tileY);
+
+		NavMeshData* nav = GetNavMesh(mapId);
+
+		if (nav != NULL)
+		{
+			uint32 key = tileX | (tileY << 16);
+			nav->tilelock.Acquire();
+			std::map<uint32, dtTileRef>::iterator itr = nav->tilerefs.find(key);
+
+			if (itr != nav->tilerefs.end())
+			{
+				nav->mesh->removeTile(itr->second, NULL, NULL);
+				nav->tilerefs.erase(itr);
+			}
+
+			nav->tilelock.Release();
+		}
+	}
 
 	m_loadLock.Release();
 }
@@ -221,4 +242,114 @@ void CCollideInterface::DeInit()
 	//collision_shutdown();
 }
 
+void CCollideInterface::ActivateMap( uint32 mapid )
+{
+	m_navmaplock.Acquire();
+	std::map<uint32, NavMeshData*>::iterator itr = m_navdata.find(mapid);
+
+	if (itr != m_navdata.end())
+		++itr->second->refs;
+	else
+	{
+
+		//load params
+		char filename[1024];
+		sprintf(filename, "mmaps/%03i.mmap", mapid);
+		FILE* f = fopen(filename, "rb");
+
+		if (f == NULL)
+		{
+			m_navmaplock.Release();
+			return;
+		}
+
+		dtNavMeshParams params;
+		fread(&params, sizeof(params), 1, f);
+		fclose(f);
+
+		NavMeshData* d = new NavMeshData;
+		d->mesh = dtAllocNavMesh();
+		d->query = dtAllocNavMeshQuery();
+		d->mesh->init(&params);
+		d->query->init(d->mesh, 1024);
+		d->AddRef();
+		m_navdata.insert(std::make_pair(mapid, d));
+	}
+	m_navmaplock.Release();
+}
+
+void CCollideInterface::DeactiveMap( uint32 mapid )
+{
+	m_navmaplock.Acquire();
+
+	std::map<uint32, NavMeshData*>::iterator itr = m_navdata.find(mapid);
+
+	if (itr != m_navdata.end())
+	{
+		if (itr->second->DecRef())
+			m_navdata.erase(itr);
+	}
+
+	m_navmaplock.Release();
+}
+
+NavMeshData* CCollideInterface::GetNavMesh( uint32 mapId )
+{
+	NavMeshData* retval = NULL;
+	m_navmaplock.Acquire();
+	std::map<uint32, NavMeshData*>::iterator itr = m_navdata.find(mapId);
+
+	if (itr != m_navdata.end())
+		retval = itr->second;
+
+	m_navmaplock.Release();
+	return retval;
+}
+
+void CCollideInterface::LoadNavMeshTile( uint32 mapId, uint32 tileX, uint32 tileY )
+{
+	NavMeshData* nav = GetNavMesh(mapId);
+
+	if (nav == NULL)
+		return;
+
+	char filename[1024];
+	sprintf(filename, "mmaps/%03i%02i%02i.mmtile", mapId, tileX, tileY);
+	FILE* f = fopen(filename, "rb");
+
+	if (f == NULL)
+		return;
+
+	MmapTileHeader header;
+
+	fread(&header, sizeof(MmapTileHeader), 1, f);
+
+	if (header.mmapMagic != MMAP_MAGIC || header.mmapVersion != MMAP_VERSION)
+	{
+		sLog.Debug("NavMesh", "Load failed (%u %u %u): tile headers incorrect", mapId, tileX, tileY);
+		fclose(f);
+		return;
+	}
+
+	uint8* data = (uint8*)dtAlloc(header.size, DT_ALLOC_PERM);
+
+	if (data == NULL)
+	{
+		fclose(f);
+		return;
+	}
+
+	fread(data, 1, header.size, f);
+
+	fclose(f);
+
+	dtTileRef dtref;
+	nav->mesh->addTile(data, header.size, DT_TILE_FREE_DATA, 0, &dtref);
+
+	nav->tilelock.Acquire();
+	nav->tilerefs.insert(std::make_pair(tileX | (tileY << 16), dtref));
+	nav->tilelock.Release();
+}
+
 #endif		// COLLISION_DEBUG
+

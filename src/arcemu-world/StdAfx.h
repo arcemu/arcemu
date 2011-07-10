@@ -40,8 +40,6 @@ template< class T, class U > T TO( U u ){ return static_cast< T >( u ); }
 #define TO_DK(ptr) TO<DeathKnight*>(ptr)
 
 #define DEBUG_LOG(...) sLog.Debug("DEBUG_LOG", __VA_ARGS__)
-
-
 #include "Definitions.h"
 
 #include <cstring>
@@ -58,6 +56,13 @@ template< class T, class U > T TO( U u ){ return static_cast< T >( u ); }
 #else
 #include <tr1/array>
 #endif
+
+#include "DetourNavMeshQuery.h"
+#include "DetourNavMesh.h"
+#include "DetourNode.h"
+#include "DetourCommon.h"
+#include "DetourAlloc.h"
+#include "DetourAssert.h"
 
 #include "../arcemu-shared/Common.h"
 #include "../arcemu-shared/MersenneTwister.h"

@@ -32,14 +32,83 @@
 #define COLLISION_IMPORT 
 #endif
 
+#define MMAP_MAGIC 0x4d4d4150   // 'MMAP'
+#define MMAP_VERSION 3
+
+enum NavTerrain
+{
+	NAV_EMPTY   = 0x00,
+	NAV_GROUND  = 0x01,
+	NAV_MAGMA   = 0x02,
+	NAV_SLIME   = 0x04,
+	NAV_WATER   = 0x08,
+	NAV_UNUSED1 = 0x10,
+	NAV_UNUSED2 = 0x20,
+	NAV_UNUSED3 = 0x40,
+	NAV_UNUSED4 = 0x80
+	// we only have 8 bits
+};
+
+struct MmapTileHeader
+{
+	uint32 mmapMagic;
+	uint32 dtVersion;
+	uint32 mmapVersion;
+	uint32 size;
+	bool usesLiquids : 1;
+
+	MmapTileHeader() : mmapMagic(MMAP_MAGIC), dtVersion(DT_NAVMESH_VERSION),
+		mmapVersion(MMAP_VERSION), size(0), usesLiquids(true) {}
+};
+
+class NavMeshData;
+class NavMeshTile
+{
+public:
+	Arcemu::Threading::AtomicCounter refs;
+	dtTileRef dtref;
+};
+
+class NavMeshData
+{
+public:
+	dtNavMesh* mesh;
+	dtNavMeshQuery* query;
+
+	Arcemu::Threading::AtomicCounter refs;
+
+	FastMutex tilelock;
+	std::map<uint32, dtTileRef> tilerefs; //key by tile, x | y <<  16
+
+	~NavMeshData()
+	{
+		dtFreeNavMesh(mesh);
+		dtFreeNavMeshQuery(query);
+	}
+
+	void AddRef() { ++refs; }
+	bool DecRef() { if ((--refs) == 0) { delete this; return true; } return false; }
+};
+
 class CCollideInterface
 {
 public:
 	void Init();
 	void DeInit();
 
+	//Key: mapid
+	FastMutex m_navmaplock;
+	std::map<uint32, NavMeshData*> m_navdata;
+
+	void ActivateMap(uint32 mapid);
+	void DeactiveMap(uint32 mapid);
 	void ActivateTile(uint32 mapId, uint32 tileX, uint32 tileY);
 	void DeactivateTile(uint32 mapId, uint32 tileX, uint32 tileY);
+
+
+	NavMeshData* GetNavMesh(uint32 mapId);
+	void LoadNavMeshTile(uint32 mapId, uint32 tileX, uint32 tileY);
+
 
 #ifdef COLLISION_DEBUG
 

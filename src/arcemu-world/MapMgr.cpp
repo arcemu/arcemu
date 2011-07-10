@@ -38,6 +38,7 @@ extern bool bServerShutdown;
 MapMgr::MapMgr(Map *map, uint32 mapId, uint32 instanceid) : CellHandler<MapCell>(map), _mapId(mapId), eventHolder(instanceid)
 {
 	_terrain = new TerrainHolder(mapId);
+	CollideInterface.ActivateMap(mapId);
 	_shutdown = false;
 	m_instanceID = instanceid;
 	pMapInfo = WorldMapInfoStorage.LookupEntry(mapId);
@@ -94,6 +95,7 @@ MapMgr::MapMgr(Map *map, uint32 mapId, uint32 instanceid) : CellHandler<MapCell>
 
 MapMgr::~MapMgr()
 {
+	CollideInterface.DeactiveMap(_mapId);
 	_shutdown = true;
 	sEventMgr.RemoveEvents(this);
 	if ( ScriptInterface != NULL ) 

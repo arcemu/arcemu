@@ -41,6 +41,20 @@
 
 //#define INHERIT_FOLLOWED_UNIT_SPEED 1
 
+//Pathfinding stuff
+#define VERTEX_SIZE 3
+#define MAX_PATH_LENGTH 256
+#define SMOOTH_PATH_STEP_SIZE   6.0f
+#define SMOOTH_PATH_SLOP        0.4f
+
+inline bool inRangeYZX(const float* v1, const float* v2, const float r, const float h)
+{
+	const float dx = v2[0] - v1[0];
+	const float dy = v2[1] - v1[1]; // elevation
+	const float dz = v2[2] - v1[2];
+	return (dx*dx + dz*dz) < r*r && fabsf(dy) < h;
+}
+
 
 class Object;
 class Creature;
@@ -475,6 +489,12 @@ protected:
 	void AddSpline(float x, float y, float z);
 	void Move(float & x, float & y, float & z, float o = 0);
 	bool MoveDone() { return m_currentMoveSplineIndex >= m_currentMoveSpline.size(); }
+	bool CreatePath(float x, float y, float z, float dist = 0);
+	dtStatus findSmoothPath(const float* startPos, const float* endPos, const dtPolyRef* polyPath, const uint32 polyPathSize, float* smoothPath, int* smoothPathSize, bool &usedOffmesh, const uint32 maxSmoothPathSize, dtNavMesh* mesh, dtNavMeshQuery* query, dtQueryFilter & filter);
+	bool getSteerTarget(const float* startPos, const float* endPos, const float minTargetDist, const dtPolyRef* path, const uint32 pathSize, float* steerPos, unsigned char& steerPosFlag, dtPolyRef& steerPosRef, dtNavMeshQuery* query);
+	uint32 fixupCorridor(dtPolyRef* path, const uint32 npath, const uint32 maxPath,
+		const dtPolyRef* visited, const uint32 nvisited);
+
 	bool m_updateAssist;
 	bool m_updateTargets;
 	uint32 m_updateAssistTimer;

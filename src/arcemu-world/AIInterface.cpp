@@ -2249,7 +2249,32 @@ void AIInterface::SendMoveToPacket()
 		data << finalpoint.pos.x;
 		data << finalpoint.pos.y;
 		data << finalpoint.pos.z;
-		
+
+		if (getMoveFlags() & 0x42000)
+		{
+			for (uint32 i = 1; i < m_currentMoveSpline.size() - 1; ++i)
+			{
+				data << m_currentMoveSpline[i].pos.x;
+				data << m_currentMoveSpline[i].pos.y;
+				data << m_currentMoveSpline[i].pos.z;
+			}
+		}
+		else
+		{
+			float midx = (finalpoint.pos.x + splinestart.pos.x) * 0.5f;		
+			float midy = (finalpoint.pos.y + splinestart.pos.y) * 0.5f;		
+			float midz = (finalpoint.pos.z + splinestart.pos.z) * 0.5f;
+
+			for (uint32 i = 1; i < m_currentMoveSpline.size() - 1; ++i)
+			{
+				float tmpx = (midx - m_currentMoveSpline[i].pos.x) * 4;
+				float tmpy = (midy - m_currentMoveSpline[i].pos.y) * 4;
+				float tmpz = (midz - m_currentMoveSpline[i].pos.z) * 4;
+
+				//pack it
+				data << uint32(int(tmpx) & 0x7FF | ((int(tmpy) & 0x7FF) << 11) | ((int(tmpz) & 0x3FF) << 22));
+			}
+		}
 	}
 	m_Unit->SendMessageToSet(&data, true);
 }
@@ -2279,6 +2304,7 @@ void AIInterface::MoveTo(float x, float y, float z, float o)
 	}
 
 	Move(x, y, z, o);
+
 
 	if ( m_creatureState != MOVING )
 		UpdateMove();
@@ -4085,8 +4111,13 @@ void AIInterface::Move( float & x, float & y, float & z, float o )
 	m_currentSplineFinalOrientation = o;
 
 	//Add new points
+#ifdef TEST_PATHFINDING
+	CreatePath(x, y, z);
+#else
 	AddSpline(m_Unit->GetPositionX(), m_Unit->GetPositionY(), m_Unit->GetPositionZ());
 	AddSpline(x, y, z);
+#endif
+
 
 	SendMoveToPacket();
 }
@@ -4126,4 +4157,250 @@ void AIInterface::AddSpline( float x, float y, float z )
 	m_currentSplineTotalMoveTime += movetime;
 
 	m_currentMoveSpline.push_back(p);
+}
+
+bool AIInterface::CreatePath( float x, float y, float z, float dist /*= 0*/ )
+{
+	//make sure current spline is updated
+
+	NavMeshData* nav = CollideInterface.GetNavMesh(m_Unit->GetMapId());
+
+	if (nav == NULL)
+		return false;
+
+	float start[3] = { m_Unit->GetPositionY(), m_Unit->GetPositionZ(), m_Unit->GetPositionX() };
+	float end[3] = { y, z, x };
+	float extents[3] = { 3, 5, 3 };
+
+	dtQueryFilter filter;
+	filter.setIncludeFlags(NAV_GROUND);
+
+	dtPolyRef startref, endref;
+	nav->query->findNearestPoly(start, extents, &filter, &startref, NULL);
+	nav->query->findNearestPoly(end, extents, &filter, &endref, NULL);
+
+
+	if (startref == 0 || endref == 0)
+		return false;
+
+	dtPolyRef path[256];
+	int pathcount;
+
+	nav->query->findPath(startref, endref, start, end, &filter, path, &pathcount, 256);
+
+	if (pathcount == 0 || path[pathcount - 1] != endref)
+		return false;
+
+	float points[1024 * 3];
+	int pointcount;
+	bool usedoffmesh;
+
+	findSmoothPath(start, end, path, pathcount, points, &pointcount, usedoffmesh, 1024, nav->mesh, nav->query, filter);
+
+	//add to spline
+	for (uint32 i = 0; i < pointcount; ++i)
+		AddSpline(points[i * 3 + 2], points[i * 3 + 0], points[i * 3 + 1]);
+	return true;
+}
+
+dtStatus AIInterface::findSmoothPath( const float* startPos, const float* endPos, const dtPolyRef* polyPath, const uint32 polyPathSize, float* smoothPath, int* smoothPathSize, bool &usedOffmesh, const uint32 maxSmoothPathSize, dtNavMesh* mesh, dtNavMeshQuery* query, dtQueryFilter & filter )
+{
+	*smoothPathSize = 0;
+	uint32 nsmoothPath = 0;
+	usedOffmesh = false;
+
+	dtPolyRef polys[MAX_PATH_LENGTH];
+	memcpy(polys, polyPath, sizeof(dtPolyRef)*polyPathSize);
+	uint32 npolys = polyPathSize;
+
+	float iterPos[VERTEX_SIZE], targetPos[VERTEX_SIZE];
+	if(DT_SUCCESS != query->closestPointOnPolyBoundary(polys[0], startPos, iterPos))
+		return DT_FAILURE;
+
+	if(DT_SUCCESS != query->closestPointOnPolyBoundary(polys[npolys-1], endPos, targetPos))
+		return DT_FAILURE;
+
+	dtVcopy(&smoothPath[nsmoothPath*VERTEX_SIZE], iterPos);
+	nsmoothPath++;
+
+	// Move towards target a small advancement at a time until target reached or
+	// when ran out of memory to store the path.
+	while (npolys && nsmoothPath < maxSmoothPathSize)
+	{
+		// Find location to steer towards.
+		float steerPos[VERTEX_SIZE];
+		unsigned char steerPosFlag;
+		dtPolyRef steerPosRef = 0;
+
+		if (!getSteerTarget(iterPos, targetPos, SMOOTH_PATH_SLOP, polys, npolys, steerPos, steerPosFlag, steerPosRef, query))
+			break;
+
+		bool endOfPath = (steerPosFlag & DT_STRAIGHTPATH_END);
+		bool offMeshConnection = (steerPosFlag & DT_STRAIGHTPATH_OFFMESH_CONNECTION);
+
+		// Find movement delta.
+		float delta[VERTEX_SIZE];
+		dtVsub(delta, steerPos, iterPos);
+		float len = dtSqrt(dtVdot(delta,delta));
+		// If the steer target is end of path or off-mesh link, do not move past the location.
+		if ((endOfPath || offMeshConnection) && len < SMOOTH_PATH_STEP_SIZE)
+			len = 1.0f;
+		else
+			len = SMOOTH_PATH_STEP_SIZE / len;
+
+		float moveTgt[VERTEX_SIZE];
+		dtVmad(moveTgt, iterPos, delta, len);
+
+		// Move
+		float result[VERTEX_SIZE];
+		const static uint32 MAX_VISIT_POLY = 16;
+		dtPolyRef visited[MAX_VISIT_POLY];
+
+		uint32 nvisited = 0;
+		query->moveAlongSurface(polys[0], iterPos, moveTgt, &filter, result, visited, (int*)&nvisited, MAX_VISIT_POLY);
+		npolys = fixupCorridor(polys, npolys, MAX_PATH_LENGTH, visited, nvisited);
+
+		query->getPolyHeight(polys[0], result, &result[1]);
+		dtVcopy(iterPos, result);
+
+		// Handle end of path and off-mesh links when close enough.
+		if (endOfPath && inRangeYZX(iterPos, steerPos, SMOOTH_PATH_SLOP, 2.0f))
+		{
+			// Reached end of path.
+			dtVcopy(iterPos, targetPos);
+			if (nsmoothPath < maxSmoothPathSize)
+			{
+				dtVcopy(&smoothPath[nsmoothPath*VERTEX_SIZE], iterPos);
+				nsmoothPath++;
+			}
+			break;
+		}
+		else if (offMeshConnection && inRangeYZX(iterPos, steerPos, SMOOTH_PATH_SLOP, 2.0f))
+		{
+			// Reached off-mesh connection.
+			usedOffmesh = true;
+
+			// Advance the path up to and over the off-mesh connection.
+			dtPolyRef prevRef = 0;
+			dtPolyRef polyRef = polys[0];
+			uint32 npos = 0;
+			while (npos < npolys && polyRef != steerPosRef)
+			{
+				prevRef = polyRef;
+				polyRef = polys[npos];
+				npos++;
+			}
+
+			for (uint32 i = npos; i < npolys; ++i)
+				polys[i-npos] = polys[i];
+
+			npolys -= npos;
+
+			// Handle the connection.
+			float startPos[VERTEX_SIZE], endPos[VERTEX_SIZE];
+			if (DT_SUCCESS == mesh->getOffMeshConnectionPolyEndPoints(prevRef, polyRef, startPos, endPos))
+			{
+				if (nsmoothPath < maxSmoothPathSize)
+				{
+					dtVcopy(&smoothPath[nsmoothPath*VERTEX_SIZE], startPos);
+					nsmoothPath++;
+				}
+				// Move position at the other side of the off-mesh link.
+				dtVcopy(iterPos, endPos);
+				query->getPolyHeight(polys[0], iterPos, &iterPos[1]);
+			}
+		}
+
+		// Store results.
+		if (nsmoothPath < maxSmoothPathSize)
+		{
+			dtVcopy(&smoothPath[nsmoothPath*VERTEX_SIZE], iterPos);
+			nsmoothPath++;
+		}
+	}
+
+	*smoothPathSize = nsmoothPath;
+
+	// this is most likely loop
+	return nsmoothPath < maxSmoothPathSize ? DT_SUCCESS : DT_FAILURE;
+}
+
+bool AIInterface::getSteerTarget( const float* startPos, const float* endPos, const float minTargetDist, const dtPolyRef* path, const uint32 pathSize, float* steerPos, unsigned char& steerPosFlag, dtPolyRef& steerPosRef, dtNavMeshQuery* query )
+{
+	// Find steer target.
+	static const uint32 MAX_STEER_POINTS = 3;
+	float steerPath[MAX_STEER_POINTS*VERTEX_SIZE];
+	unsigned char steerPathFlags[MAX_STEER_POINTS];
+	dtPolyRef steerPathPolys[MAX_STEER_POINTS];
+	uint32 nsteerPath = 0;
+	dtStatus dtResult = query->findStraightPath(startPos, endPos, path, pathSize,
+		steerPath, steerPathFlags, steerPathPolys, (int*)&nsteerPath, MAX_STEER_POINTS);
+	if (!nsteerPath || DT_SUCCESS != dtResult)
+		return false;
+
+	// Find vertex far enough to steer to.
+	uint32 ns = 0;
+	while (ns < nsteerPath)
+	{
+		// Stop at Off-Mesh link or when point is further than slop away.
+		if ((steerPathFlags[ns] & DT_STRAIGHTPATH_OFFMESH_CONNECTION) ||
+			!inRangeYZX(&steerPath[ns*VERTEX_SIZE], startPos, minTargetDist, 1000.0f))
+			break;
+		ns++;
+	}
+	// Failed to find good point to steer to.
+	if (ns >= nsteerPath)
+		return false;
+
+	dtVcopy(steerPos, &steerPath[ns*VERTEX_SIZE]);
+	steerPos[1] = startPos[1];  // keep Z value
+	steerPosFlag = steerPathFlags[ns];
+	steerPosRef = steerPathPolys[ns];
+
+	return true;
+}
+
+uint32 AIInterface::fixupCorridor( dtPolyRef* path, const uint32 npath, const uint32 maxPath, const dtPolyRef* visited, const uint32 nvisited )
+{
+	int32 furthestPath = -1;
+	int32 furthestVisited = -1;
+
+	// Find furthest common polygon.
+	for (int32 i = npath-1; i >= 0; --i)
+	{
+		bool found = false;
+		for (int32 j = nvisited-1; j >= 0; --j)
+		{
+			if (path[i] == visited[j])
+			{
+				furthestPath = i;
+				furthestVisited = j;
+				found = true;
+			}
+		}
+		if (found)
+			break;
+	}
+
+	// If no intersection found just return current path.
+	if (furthestPath == -1 || furthestVisited == -1)
+		return npath;
+
+	// Concatenate paths.
+
+	// Adjust beginning of the buffer to include the visited.
+	uint32 req = nvisited - furthestVisited;
+	uint32 orig = uint32(furthestPath+1) < npath ? furthestPath+1 : npath;
+	uint32 size = npath-orig > 0 ? npath-orig : 0;
+	if (req+size > maxPath)
+		size = maxPath-req;
+
+	if (size)
+		memmove(path+req, path+orig, size*sizeof(dtPolyRef));
+
+	// Store visited
+	for (uint32 i = 0; i < req; ++i)
+		path[i] = visited[(nvisited-1)-i];
+
+	return req+size;
 }

@@ -293,8 +293,8 @@ IF( CMAKE_GENERATOR MATCHES Visual*)
 ENDIF()
 set_target_properties(${PROJECT_NAME} PROPERTIES ENABLE_EXPORTS TRUE)
 
-add_dependencies( ${PROJECT_NAME} shared g3dlite)
-target_link_libraries( ${PROJECT_NAME} shared  g3dlite ${PCRE_LIBRARIES} )
+add_dependencies( ${PROJECT_NAME} shared g3dlite detour recast)
+target_link_libraries( ${PROJECT_NAME} shared  g3dlite detour recast ${PCRE_LIBRARIES} )
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION .)
 
 

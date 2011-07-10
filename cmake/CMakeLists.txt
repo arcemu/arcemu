@@ -105,7 +105,9 @@ ${ROOT_PATH}/src/arcemu-logonserver
 ${DEPENDENCY_INCLUDE_ROOT}
 ${DEPENDENCY_INCLUDE_ROOT}/g3dlite
 ${DEPENDENCY_INCLUDE_ROOT}/pcre
-${DEPENDENCY_INCLUDE_ROOT}/zlib )
+${DEPENDENCY_INCLUDE_ROOT}/zlib
+${DEPENDENCY_INCLUDE_ROOT}/recast
+${DEPENDENCY_INCLUDE_ROOT}/detour )
 
 #Find our needed libs
 IF( NOT WIN32 )
@@ -173,11 +175,13 @@ IF( APPLE )
 	ENDIF( NOT IS_64BIT )
 ENDIF( APPLE )
 
-add_subdirectory(shared)
 add_subdirectory(g3dlite)
+add_subdirectory(recast)
+add_subdirectory(detour)
+add_subdirectory(shared)
 add_subdirectory(logon)
 add_subdirectory(world)
-add_subdirectory( spellhandlers )
+add_subdirectory(spellhandlers)
 IF(NOT WIN32)
 	add_subdirectory(crashreport)
 ENDIF()
