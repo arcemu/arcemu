@@ -1531,6 +1531,7 @@ void Spell::cast(bool check)
 	{
 		// cancast failed
 		SendCastResult(cancastresult);
+		SendInterrupted(cancastresult);
 		finish(false);
 	}
 }
@@ -2695,6 +2696,19 @@ void Spell::HandleEffects(uint64 guid, uint32 i)
 	}
 	else
 		LOG_ERROR("SPELL: unknown effect %u spellid %u", id, GetProto()->Id);
+
+	uint32 TargetType = 0;
+	TargetType |= GetTargetType(m_spellInfo->EffectImplicitTargetA[i], i);
+
+	//never get info from B if it is 0 :P
+	if (m_spellInfo->EffectImplicitTargetB[i] != 0)
+		TargetType |= GetTargetType(m_spellInfo->EffectImplicitTargetB[i], i);
+
+	if (u_caster != NULL && unitTarget != NULL && unitTarget->IsCreature() && TargetType & SPELL_TARGET_REQUIRE_ATTACKABLE && !(m_spellInfo->AttributesEx & !(m_spellInfo->AttributesEx & ATTRIBUTESEX_NO_INITIAL_AGGRO)))
+	{
+		unitTarget->GetAIInterface()->AttackReaction(u_caster, 1, 0);
+		unitTarget->GetAIInterface()->HandleEvent(EVENT_HOSTILEACTION, u_caster, 0);
+	}
 
 	DoAfterHandleEffect(unitTarget, i);
 	DecRef();
@@ -5739,12 +5753,16 @@ void Spell::HandleModeratedTarget( uint64 guid )
 
 void Spell::HandleModeratedEffects( uint64 guid )
 {
+	//note: because this was a miss etc, we don't need to do attackable target checks
 	if (u_caster != NULL && u_caster->GetMapMgr() != NULL)
 	{
 		Object* obj = u_caster->GetMapMgr()->_GetObject(guid);
 
 		if (obj != NULL && obj->IsCreature() && !(m_spellInfo->AttributesEx & ATTRIBUTESEX_NO_INITIAL_AGGRO))
+		{
 			TO_CREATURE(obj)->GetAIInterface()->AttackReaction(u_caster, 0, 0);
+			TO_CREATURE(obj)->GetAIInterface()->HandleEvent(EVENT_HOSTILEACTION, u_caster, 0);
+		}
 	}
 
 	DecRef();

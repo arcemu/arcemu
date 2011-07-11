@@ -4216,11 +4216,6 @@ void AIInterface::EventDamageTaken( Unit* pUnit, uint32 misc1 )
 		m_aiTargets.insert(TargetMap::value_type(pUnit->GetGUID(), misc1));
 	}
 	pUnit->CombatStatus.OnDamageDealt( m_Unit );
-
-	//reset combat reset range
-	m_combatResetX = pUnit->GetPositionX();
-	m_combatResetY = pUnit->GetPositionY();
-	m_combatResetZ = pUnit->GetPositionZ();
 }
 
 void AIInterface::EventFollowOwner( Unit* pUnit, uint32 misc1 )
@@ -4446,4 +4441,11 @@ void AIInterface::EventUnitDied( Unit* pUnit, uint32 misc1 )
 	//remove negative auras
 	//if( m_Unit->IsCreature() )
 	//	m_Unit->RemoveNegativeAuras();
+}
+
+void AIInterface::EventHostileAction( Unit* pUnit, uint32 misc1 )
+{
+	m_combatResetX = m_Unit->GetPositionX();
+	m_combatResetY = m_Unit->GetPositionY();
+	m_combatResetZ = m_Unit->GetPositionZ();
 }

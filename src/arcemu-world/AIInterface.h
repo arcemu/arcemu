@@ -325,8 +325,8 @@ public:
 	// Event Handler
 	void HandleEvent(uint32 event, Unit* pUnit, uint32 misc1);
 
+	void EventHostileAction( Unit* pUnit, uint32 misc1 );
 	void EventUnitDied( Unit* pUnit, uint32 misc1 );
-
 	void EventUnwander( Unit* pUnit, uint32 misc1 );
 	void EventWander( Unit* pUnit, uint32 misc1 );
 	void EventUnfear( Unit* pUnit, uint32 misc1 );

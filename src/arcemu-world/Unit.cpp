@@ -3305,6 +3305,10 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 //--------------------------------postroll processing---------------------------------------
 	uint32 abs = 0;
 	
+
+	//trigger hostile action in ai
+	pVictim->GetAIInterface()->HandleEvent(EVENT_HOSTILEACTION, this, 0);
+
 	switch(r)
 	{
 //--------------------------------miss------------------------------------------------------

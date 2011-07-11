@@ -30,4 +30,5 @@ extern pAIEvent AIEventHandlers[NUM_AI_EVENTS] = {
 	&AIInterface::EventWander,
 	&AIInterface::EventUnwander,
 	&AIInterface::EventUnitDied,
+	&AIInterface::EventHostileAction,
 };
