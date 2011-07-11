@@ -3667,8 +3667,16 @@ bool AIInterface::Move( float & x, float & y, float & z, float o /*= 0*/ )
 
 	//Add new points
 #ifdef TEST_PATHFINDING
-	if (!CreatePath(x, y, z))
-		return false;
+	if (!m_moveFly)
+	{
+		if (!CreatePath(x, y, z))
+			return false;
+	}
+	else
+	{
+		AddSpline(m_Unit->GetPositionX(), m_Unit->GetPositionY(), m_Unit->GetPositionZ());
+		AddSpline(x, y, z);
+	}
 #else
 	AddSpline(m_Unit->GetPositionX(), m_Unit->GetPositionY(), m_Unit->GetPositionZ());
 	AddSpline(x, y, z);
@@ -3730,7 +3738,7 @@ bool AIInterface::CreatePath( float x, float y, float z, float dist /*= 0*/ )
 	float extents[3] = { 3, 5, 3 };
 
 	dtQueryFilter filter;
-	filter.setIncludeFlags(NAV_GROUND);
+	filter.setIncludeFlags(NAV_GROUND | NAV_WATER | NAV_SLIME | NAV_MAGMA);
 
 	dtPolyRef startref, endref;
 	nav->query->findNearestPoly(start, extents, &filter, &startref, NULL);
