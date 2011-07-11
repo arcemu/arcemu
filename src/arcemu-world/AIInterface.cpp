@@ -72,7 +72,7 @@ m_nextTarget(0),
 m_fleeTimer(0),
 m_hasFleed(false),
 m_hasCalledForHelp(false),
-m_outOfCombatRange(2500), // Where did u get this value?
+m_outOfCombatRange(50 * 50), // Where did u get this value?
 m_Unit(NULL),
 m_PetOwner(NULL),
 FollowDistance(0.0f),
@@ -93,6 +93,9 @@ m_currentSplineFinalOrientation(0),
 m_returnX(0),
 m_returnY(0),
 m_returnZ(0),
+m_combatResetX(0),
+m_combatResetY(0),
+m_combatResetZ(0),
 m_lastFollowX(0),
 m_lastFollowY(0),
 m_UnitToFollow(0),
@@ -180,473 +183,14 @@ void AIInterface::Init(Unit *un, AIType at, MovementType mt, Unit *owner)
 
 void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 {
-	if( m_Unit == NULL ) return;
+	if(m_Unit == NULL) return;
 
     // Passive NPCs (like target dummies) shouldn't do anything.
-    if( m_AIType == AITYPE_PASSIVE ){
-        return;
-    }
+    if(m_AIType == AITYPE_PASSIVE)
+       return;
 
-	if(m_AIState != STATE_EVADE)
-	{
-		switch(event)
-		{
-		case EVENT_ENTERCOMBAT:
-			{
-				if( pUnit == NULL || pUnit->IsDead() || m_Unit->IsDead() ) return;
-
-				// set the target first
-				if(pUnit->GetInstanceID() == m_Unit->GetInstanceID())
-				{
-                    m_Unit->SetTargetGUID( pUnit->GetGUID());
-				}
-				/* send the message */
-				if( m_Unit->IsCreature() )
-				{
-					Creature* creature = TO_CREATURE( m_Unit);
-					creature->HandleMonsterSayEvent(MONSTER_SAY_EVENT_ENTER_COMBAT );
-
-					CALL_SCRIPT_EVENT(m_Unit, OnCombatStart)(pUnit);
-
-					if( creature->m_spawn && ( creature->m_spawn->channel_target_go || creature->m_spawn->channel_target_creature))
-					{
-                        m_Unit->SetChannelSpellId( 0 );
-                        m_Unit->SetChannelSpellTargetGUID( 0 );
-					}
-				}
-
-				// Stop the emote - change to fight emote
-				m_Unit->SetEmoteState(EMOTE_STATE_READY1H);
-				m_returnX = m_Unit->GetPositionX();
-				m_returnY = m_Unit->GetPositionY();
-				m_returnZ = m_Unit->GetPositionZ();
-
-				m_moveRun = true; //run to the target
-
-				// dismount if mounted
-				if( m_Unit->IsCreature() && !(TO_CREATURE( m_Unit )->GetCreatureInfo()->Flags1 & CREATURE_FLAG1_FIGHT_MOUNTED))
-					m_Unit->SetMount(0);
-
-				if(m_AIState != STATE_ATTACKING)
-					StopMovement(0);
-
-				m_AIState = STATE_ATTACKING;
-				if(m_Unit->GetMapMgr() && m_Unit->GetMapMgr()->GetMapInfo() && m_Unit->GetMapMgr()->GetMapInfo()->type == INSTANCE_RAID)
-				{
-					if(m_Unit->IsCreature())
-					{
-						if(TO< Creature* >(m_Unit)->GetCreatureInfo()->Rank == 3)
-						{
-							 m_Unit->GetMapMgr()->AddCombatInProgress(m_Unit->GetGUID());
-						}
-					}
-				}
-				if (pUnit->IsPlayer() && TO< Player* >(pUnit)->InGroup())
-				{
-					m_Unit->GetAIInterface()->modThreatByPtr(pUnit, 1);
-					Group *pGroup = TO< Player* >(pUnit)->GetGroup();
-
-					Player *pGroupGuy;
-					GroupMembersSet::iterator itr;
-					pGroup->Lock();
-					for(uint32 i = 0; i < pGroup->GetSubGroupCount(); i++) {
-						for(itr = pGroup->GetSubGroup(i)->GetGroupMembersBegin(); itr != pGroup->GetSubGroup(i)->GetGroupMembersEnd(); ++itr)
-						{
-							pGroupGuy = (*itr)->m_loggedInPlayer;
-							if( pGroupGuy && pGroupGuy->isAlive() && m_Unit->GetMapMgr() == pGroupGuy->GetMapMgr() && pGroupGuy->GetDistanceSq(pUnit) <= 40*40) //50 yards for now. lets see if it works
-							{
-								m_Unit->GetAIInterface()->AttackReaction(pGroupGuy, 1, 0);
-							}
-						}
-					}
-					pGroup->Unlock();
-				}
-				//Zack : Put mob into combat animation. Take out weapons and start to look serious :P
-				m_Unit->smsg_AttackStart( pUnit );
-			}break;
-		case EVENT_LEAVECOMBAT:
-			{
-				if( pUnit == NULL ) return;	
-				
-				if( pUnit->IsCreature() )
-				{
-					if( pUnit->IsDead() )
-						pUnit->RemoveAllAuras();
-					else
-						pUnit->RemoveNegativeAuras();
-				}
-
-				Unit* target = NULL;
-				if (m_Unit->GetMapMgr() && m_Unit->GetMapMgr()->GetMapInfo())
-				{
-					switch (m_Unit->GetMapMgr()->GetMapInfo()->type)
-					{
-					case INSTANCE_NULL:
-					case INSTANCE_BATTLEGROUND:
-						if (m_outOfCombatRange && _CalcDistanceFromHome() < m_outOfCombatRange)
-							target = FindTarget();
-						break;
-
-					case INSTANCE_RAID:
-					case INSTANCE_NONRAID:
-					case INSTANCE_MULTIMODE:
-						target = FindTarget();
-						break;
-					}
-
-					if(target != NULL)
-					{
-						AttackReaction(target, 1, 0);
-						return;
-					}
-				}
-
-				//cancel spells that we are casting. Should remove bug where creatures cast a spell after they died
-//				CancelSpellCast();
-				// restart emote
-				if(m_Unit->IsCreature())
-				{
-					Creature* creature = TO_CREATURE( m_Unit);
-					creature->HandleMonsterSayEvent( MONSTER_SAY_EVENT_ON_COMBAT_STOP );
-
-					if( creature->original_emotestate )
-						m_Unit->SetEmoteState(creature->original_emotestate );
-					else
-						m_Unit->SetEmoteState(0 );
-
-					if(creature->m_spawn && (creature->m_spawn->channel_target_go || creature->m_spawn->channel_target_creature ) )
-					{
-						if(creature->m_spawn->channel_target_go)
-							sEventMgr.AddEvent( creature, &Creature::ChannelLinkUpGO, creature->m_spawn->channel_target_go, EVENT_CREATURE_CHANNEL_LINKUP, 1000, 5, 0 );
-
-						if(creature->m_spawn->channel_target_creature)
-							sEventMgr.AddEvent( creature, &Creature::ChannelLinkUpCreature, creature->m_spawn->channel_target_creature, EVENT_CREATURE_CHANNEL_LINKUP, 1000, 5, 0 );
-					}
-				}
-
-				//reset ProcCount
-				//ResetProcCounts();
-				m_moveSprint = true;
-				LockAITargets(true);
-				m_aiTargets.clear();
-				LockAITargets(false);
-				m_fleeTimer = 0;
-				m_hasFleed = false;
-				m_hasCalledForHelp = false;
-				m_nextSpell = NULL;
-				resetNextTarget();
-				m_Unit->CombatStatus.Vanished();
-
-				if(m_AIType == AITYPE_PET)
-				{
-					m_AIState = STATE_FOLLOWING;
-					SetUnitToFollow(m_PetOwner);
-					FollowDistance = 3.0f;
-					m_lastFollowX = m_lastFollowY = 0;
-					if( m_Unit->IsPet() )
-					{
-						TO< Pet* >( m_Unit )->SetPetAction( PET_ACTION_FOLLOW );
-						if( m_Unit->isAlive() && m_Unit->IsInWorld() )
-						{
-							TO< Pet* >( m_Unit )->HandleAutoCastEvent( AUTOCAST_EVENT_LEAVE_COMBAT );
-						}
-					}
-					HandleEvent(EVENT_FOLLOWOWNER, 0, 0);
-				}
-				else
-				{
-					m_AIState = STATE_EVADE;
-
-					Unit* SavedFollow = getUnitToFollow();
-					m_UnitToFollow = 0;
-					FollowDistance = 0.0f;
-					m_lastFollowX = m_lastFollowY = 0;
-
-					if(m_Unit->isAlive())
-					{
-						if(m_returnX != 0.0f && m_returnY != 0.0f && m_returnZ != 0.0f)
-							MoveTo(m_returnX, m_returnY, m_returnZ, m_Unit->GetSpawnO());
-						else
-						{
-							MoveTo(m_Unit->GetSpawnX(), m_Unit->GetSpawnY(), m_Unit->GetSpawnZ(), m_Unit->GetSpawnO());
-							m_returnX = m_Unit->GetSpawnX();
-							m_returnY = m_Unit->GetSpawnY();
-							m_returnZ = m_Unit->GetSpawnZ();
-						}
-
-						Creature *aiowner = TO< Creature* >(m_Unit);
-						//clear tagger.
-						aiowner->UnTag();
-						aiowner->SetUInt32Value(UNIT_DYNAMIC_FLAGS,aiowner->GetUInt32Value(UNIT_DYNAMIC_FLAGS) & ~(U_DYN_FLAG_TAGGED_BY_OTHER |U_DYN_FLAG_LOOTABLE));
-					}
-					CALL_SCRIPT_EVENT(m_Unit, OnCombatStop)(SavedFollow);
-				}
-
-				if(m_Unit->GetMapMgr() && m_Unit->GetMapMgr()->GetMapInfo() && m_Unit->GetMapMgr()->GetMapInfo()->type == INSTANCE_RAID)
-				{
-					if(m_Unit->IsCreature())
-					{
-						if(TO< Creature* >(m_Unit)->GetCreatureInfo()->Rank == 3)
-						{
-							  m_Unit->GetMapMgr()->RemoveCombatInProgress(m_Unit->GetGUID());
-						}
-					}
-				}
-
-				// Remount if mounted
-				if(m_Unit->IsCreature())
-				{
-					Creature *creature = TO< Creature* >( m_Unit );
-					if( creature->m_spawn )
-						m_Unit->SetMount(creature->m_spawn->MountedDisplayID );
-						//m_Unit->SetMount(TO< Creature* >( m_Unit )->GetSpawnO->MountedDisplayID );
-				}
-				//Zack : not sure we need to send this. Did not see it in the dumps since mob died eventually but it seems logical to make this
-				m_Unit->smsg_AttackStop( pUnit );
-			}break;
-		case EVENT_DAMAGETAKEN:
-			{
-				if( pUnit == NULL ) return;
-
-				if( m_Unit->IsCreature() )
-					TO< Creature* >( m_Unit )->HandleMonsterSayEvent( MONSTER_SAY_EVENT_ON_DAMAGE_TAKEN );
-
-				pUnit->RemoveAura( 24575 );
-
-				CALL_SCRIPT_EVENT(m_Unit, OnDamageTaken)(pUnit, misc1);
-				if(!modThreatByPtr(pUnit, misc1))
-				{
-					m_aiTargets.insert(TargetMap::value_type(pUnit->GetGUID(), misc1));
-				}
-				pUnit->CombatStatus.OnDamageDealt( m_Unit );
-			}break;
-		case EVENT_FOLLOWOWNER:
-			{
-				m_AIState = STATE_FOLLOWING;
-				if(m_Unit->IsPet())
-					TO< Pet* >(m_Unit)->SetPetAction(PET_ACTION_FOLLOW);
-				SetUnitToFollow(m_PetOwner);
-				m_lastFollowX = m_lastFollowY = 0;
-				FollowDistance = 4.0f;
-
-				LockAITargets(true);
-				m_aiTargets.clear();
-				LockAITargets(false);
-				m_fleeTimer = 0;
-				m_hasFleed = false;
-				m_hasCalledForHelp = false;
-				m_nextSpell = NULL;
-				resetNextTarget();
-				m_moveRun = true;
-			}break;
-
-		case EVENT_FEAR:
-			{
-				if( pUnit == NULL ) return;
-
-				m_FearTimer = 0;
-				SetUnitToFear(pUnit);
-
-				CALL_SCRIPT_EVENT(m_Unit, OnFear)(pUnit, 0);
-				m_AIState = STATE_FEAR;
-				StopMovement(1);
-
-				m_UnitToFollow_backup = m_UnitToFollow;
-				m_UnitToFollow = 0;
-				m_lastFollowX = m_lastFollowY = 0;
-				FollowDistance_backup = FollowDistance;
-				FollowDistance = 0.0f;
-
-				LockAITargets(true);
-				m_aiTargets.clear(); // we'll get a new target after we are unfeared
-				LockAITargets(false);
-				m_fleeTimer = 0;
-				m_hasFleed = false;
-				m_hasCalledForHelp = false;
-
-				// update speed
-				m_moveRun = true;
-				getMoveFlags();
-
-				SetNextSpell( NULL );
-				resetNextTarget();
-			}break;
-
-		case EVENT_UNFEAR:
-			{
-				m_UnitToFollow = m_UnitToFollow_backup;
-				FollowDistance = FollowDistance_backup;
-				m_AIState = STATE_IDLE; // we need this to prevent permanent fear, wander, and other problems
-
-				m_UnitToFear = 0;
-				StopMovement(1);
-			}break;
-
-		case EVENT_WANDER:
-			{
-				if( pUnit == NULL ) return;
-
-				m_WanderTimer = 0;
-
-				//CALL_SCRIPT_EVENT(m_Unit, OnWander)(pUnit, 0); FIX ME
-				m_AIState = STATE_WANDER;
-				StopMovement(1);
-
-				m_UnitToFollow_backup = m_UnitToFollow;
-				m_UnitToFollow = 0;
-				m_lastFollowX = m_lastFollowY = 0;
-				FollowDistance_backup = FollowDistance;
-				FollowDistance = 0.0f;
-
-				LockAITargets(true);
-				m_aiTargets.clear(); // we'll get a new target after we are unwandered
-				LockAITargets(false);
-				m_fleeTimer = 0;
-				m_hasFleed = false;
-				m_hasCalledForHelp = false;
-
-				// update speed
-				m_moveRun = true;
-				getMoveFlags();
-
-				SetNextSpell(NULL);
-				resetNextTarget();
-			}break;
-
-		case EVENT_UNWANDER:
-			{
-				m_UnitToFollow = m_UnitToFollow_backup;
-				FollowDistance = FollowDistance_backup;
-				m_AIState = STATE_IDLE; // we need this to prevent permanent fear, wander, and other problems
-
-				StopMovement(1);
-			}break;
-
-		default:
-			{
-			}break;
-		}
-	}
-
-	//Should be able to do this stuff even when evading
-	switch(event)
-	{
-		case EVENT_UNITDIED:
-		{
-			if( pUnit == NULL ) return;
-
-			if( m_Unit->IsCreature() )
-				TO< Creature* >( m_Unit )->HandleMonsterSayEvent( MONSTER_SAY_EVENT_ON_DIED );
-
-			CALL_SCRIPT_EVENT(m_Unit, OnDied)(pUnit);
-			if ( m_Unit->IsCreature() )
-				CALL_INSTANCE_SCRIPT_EVENT( m_Unit->GetMapMgr(), OnCreatureDeath )( TO_CREATURE( m_Unit ), pUnit );
-
-			m_AIState = STATE_IDLE;
-
-			StopMovement(0);
-			LockAITargets(true);
-			m_aiTargets.clear();
-			LockAITargets(false);
-			m_UnitToFollow = 0;
-			m_lastFollowX = m_lastFollowY = 0;
-			m_UnitToFear = 0;
-			FollowDistance = 0.0f;
-			m_fleeTimer = 0;
-			m_hasFleed = false;
-			m_hasCalledForHelp = false;
-			m_nextSpell = NULL;
-
-			resetNextTarget();
-
-			// dismount if we are mounted
-			m_Unit->SetMount(0);
-
-			//reset ProcCount
-			//ResetProcCounts();
-		
-			//reset waypoint to 0
-			m_currentWaypoint = 0;
-			
-			// There isn't any need to do any attacker checks here, as
-			// they should all be taken care of in DealDamage
-
-			//removed by Zack : why do we need to go to our master if we just died ? On next spawn we will be spawned near him after all
-/*			if(m_AIType == AITYPE_PET)
-			{
-				SetUnitToFollow(m_PetOwner);
-				SetFollowDistance(3.0f);
-				HandleEvent(EVENT_FOLLOWOWNER, m_Unit, 0);
-			}*/
-
-			Instance *pInstance = NULL;
-			if( m_Unit->GetMapMgr() )
-				pInstance = m_Unit->GetMapMgr()->pInstance;
-
-			if(m_Unit->GetMapMgr()
-				&& m_Unit->IsCreature() 
-				&& !m_Unit->IsPet() 
-				&& pInstance 
-				&& (pInstance->m_mapInfo->type == INSTANCE_RAID 
-				|| pInstance->m_mapInfo->type == INSTANCE_NONRAID 
-				|| pInstance->m_mapInfo->type == INSTANCE_MULTIMODE ))
-			{
-				InstanceBossInfoMap *bossInfoMap = objmgr.m_InstanceBossInfoMap[m_Unit->GetMapMgr()->GetMapId()];
-				Creature *pCreature = TO< Creature* >( m_Unit );
-				bool found = false;
-
-				if(IS_PERSISTENT_INSTANCE(pInstance) && bossInfoMap != NULL)
-				{
-					uint32 npcGuid = pCreature->GetProto()->Id;
-					InstanceBossInfoMap::const_iterator bossInfo = bossInfoMap->find(npcGuid);
-					if(bossInfo != bossInfoMap->end())
-					{
-						found = true;
-						m_Unit->GetMapMgr()->pInstance->m_killedNpcs.insert( npcGuid );
-						m_Unit->GetMapMgr()->pInstance->SaveToDB();
-						for(InstanceBossTrashList::iterator trash = bossInfo->second->trash.begin(); trash != bossInfo->second->trash.end(); ++trash)
-						{
-							Creature *c = m_Unit->GetMapMgr()->GetSqlIdCreature((*trash));
-							if(c != NULL)
-								c->m_noRespawn = true;
-						}
-						if(!pInstance->m_persistent)
-						{
-							pInstance->m_persistent = true;
-							pInstance->SaveToDB();
-							for(PlayerStorageMap::iterator itr = m_Unit->GetMapMgr()->m_PlayerStorage.begin(); itr != m_Unit->GetMapMgr()->m_PlayerStorage.end(); ++itr)
-							{
-								(*itr).second->SetPersistentInstanceId(pInstance);
-							}
-						}
-					}
-				}
-
-				if (found == false) {
-					// No instance boss information ... so fallback ...
-					uint32 npcGuid = pCreature->GetSQL_id();
-					m_Unit->GetMapMgr()->pInstance->m_killedNpcs.insert( npcGuid );
-					m_Unit->GetMapMgr()->pInstance->SaveToDB();
-				}
-			}
-			if(m_Unit->GetMapMgr() && m_Unit->GetMapMgr()->GetMapInfo() && m_Unit->GetMapMgr()->GetMapInfo()->type == INSTANCE_RAID)
-			{
-				if(m_Unit->IsCreature())
-				{
-					if(TO< Creature* >(m_Unit)->GetCreatureInfo()->Rank == 3)
-					{
-						m_Unit->GetMapMgr()->RemoveCombatInProgress(m_Unit->GetGUID());
-					}
-				}
-			}
-
-
-			//remove negative auras
-			//if( m_Unit->IsCreature() )
-			//	m_Unit->RemoveNegativeAuras();
-
-		}break;
-	}
+	if (event < NUM_AI_EVENTS && AIEventHandlers[event] != NULL)
+		(*this.*AIEventHandlers[event])(pUnit, misc1);
 }
 
 void AIInterface::Update(uint32 p_time)
@@ -698,6 +242,7 @@ void AIInterface::Update(uint32 p_time)
 		{
 			m_AIState = STATE_IDLE;
 			m_returnX = m_returnY = m_returnZ = 0.0f;
+			m_combatResetX = m_combatResetY = m_combatResetZ = 0.0f;
 			m_moveRun = false;
 
 			if(m_AIType != AITYPE_PET && !skip_reset_hp)
@@ -969,7 +514,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 		&& m_AIState != STATE_EVADE
 		&& m_AIState != STATE_SCRIPTMOVE
 		&& !m_is_in_instance
-		&& (m_outOfCombatRange && m_Unit->GetDistanceSq(m_returnX,m_returnY,m_returnZ) > m_outOfCombatRange)  )
+		&& (m_outOfCombatRange && m_Unit->GetDistanceSq(m_combatResetX, m_combatResetY, m_combatResetZ) > m_outOfCombatRange)  )
 	{
 		HandleEvent( EVENT_LEAVECOMBAT, m_Unit, 0 );
 	}
@@ -1489,6 +1034,12 @@ void AIInterface::AttackReaction(Unit* pUnit, uint32 damage_dealt, uint32 spellI
 		WipeTargetList();
 		
 		HandleEvent(EVENT_ENTERCOMBAT, pUnit, 0);
+	}
+
+	if (m_AIState == STATE_UNFEARED)
+	{
+		//we're unfeared resume combat
+		HandleEvent(EVENT_ENTERCOMBAT, pUnit, 1);
 	}
 
 	HandleEvent(EVENT_DAMAGETAKEN, pUnit, _CalcThreat(damage_dealt, spellId ? dbcSpell.LookupEntryForced(spellId) : NULL, pUnit));
@@ -2137,7 +1688,10 @@ void AIInterface::_CalcDestinationAndMove(Unit* target, float dist)
 		newz = m_Unit->GetPositionZ();
 	}
 
-	Move(newx, newy, newz);
+	if (!Move(newx, newy, newz))
+	{
+		//todo: enter evade mode if creature, not pet, not totem
+	}
 }
 
 float AIInterface::_CalcCombatRange(Unit* target, bool ranged)
@@ -2177,7 +1731,8 @@ float AIInterface::_CalcDistanceFromHome()
 	}
 	else if(m_Unit->IsCreature())
 	{
-
+		if (m_combatResetX != 0 && m_combatResetY != 0)
+			return m_Unit->GetDistanceSq(m_combatResetX, m_combatResetY, m_combatResetZ);
 		if(m_returnX != 0.0f && m_returnY != 0.0f)
 		{
 			return m_Unit->GetDistanceSq(m_returnX,m_returnY,m_returnZ);
@@ -2295,19 +1850,18 @@ bool AIInterface::StopMovement(uint32 time)
 	return true;
 }
 
-void AIInterface::MoveTo(float x, float y, float z, float o)
+bool AIInterface::MoveTo( float x, float y, float z, float o )
 {
 	if(!m_canMove || m_Unit->IsStunned())
 	{
 		StopMovement(0); //Just Stop
-		return;
+		return false;
 	}
-
-	Move(x, y, z, o);
-
-
-	if ( m_creatureState != MOVING )
+	if (!Move(x, y, z, o))
+		return false;
+	if (m_creatureState != MOVING)
 		UpdateMove();
+	return true;
 }
 
 bool AIInterface::IsFlying()
@@ -4098,7 +3652,7 @@ void AIInterface::_UpdateMovementSpline()
 		_UpdateMovementSpline();
 }
 
-void AIInterface::Move( float & x, float & y, float & z, float o )
+bool AIInterface::Move( float & x, float & y, float & z, float o /*= 0*/ )
 {
 	//Make sure our position is up to date
 	_UpdateMovementSpline();
@@ -4112,7 +3666,8 @@ void AIInterface::Move( float & x, float & y, float & z, float o )
 
 	//Add new points
 #ifdef TEST_PATHFINDING
-	CreatePath(x, y, z);
+	if (!CreatePath(x, y, z))
+		return false;
 #else
 	AddSpline(m_Unit->GetPositionX(), m_Unit->GetPositionY(), m_Unit->GetPositionZ());
 	AddSpline(x, y, z);
@@ -4120,6 +3675,7 @@ void AIInterface::Move( float & x, float & y, float & z, float o )
 
 
 	SendMoveToPacket();
+	return true;
 }
 
 void AIInterface::AddSpline( float x, float y, float z )
@@ -4403,4 +3959,491 @@ uint32 AIInterface::fixupCorridor( dtPolyRef* path, const uint32 npath, const ui
 		path[i] = visited[(nvisited-1)-i];
 
 	return req+size;
+}
+
+void AIInterface::EventEnterCombat( Unit* pUnit, uint32 misc1 )
+{
+	if (m_AIState == STATE_EVADE)
+		return;
+	if( pUnit == NULL || pUnit->IsDead() || m_Unit->IsDead() ) return;
+
+	// set the target first
+	if(pUnit->GetInstanceID() == m_Unit->GetInstanceID())
+	{
+		m_Unit->SetTargetGUID( pUnit->GetGUID());
+	}
+	/* send the message */
+	if( m_Unit->IsCreature() )
+	{
+		Creature* creature = TO_CREATURE( m_Unit);
+		creature->HandleMonsterSayEvent(MONSTER_SAY_EVENT_ENTER_COMBAT );
+
+		CALL_SCRIPT_EVENT(m_Unit, OnCombatStart)(pUnit);
+
+		if( creature->m_spawn && ( creature->m_spawn->channel_target_go || creature->m_spawn->channel_target_creature))
+		{
+			m_Unit->SetChannelSpellId( 0 );
+			m_Unit->SetChannelSpellTargetGUID( 0 );
+		}
+	}
+
+	// Stop the emote - change to fight emote
+	m_Unit->SetEmoteState(EMOTE_STATE_READY1H);
+
+	if (misc1 == 0)
+	{
+		m_returnX = m_Unit->GetPositionX();
+		m_returnY = m_Unit->GetPositionY();
+		m_returnZ = m_Unit->GetPositionZ();
+
+		m_combatResetX = pUnit->GetPositionX();
+		m_combatResetY = pUnit->GetPositionY();
+		m_combatResetZ = pUnit->GetPositionZ();
+	}
+
+	m_moveRun = true; //run to the target
+
+	// dismount if mounted
+	if( m_Unit->IsCreature() && !(TO_CREATURE( m_Unit )->GetCreatureInfo()->Flags1 & CREATURE_FLAG1_FIGHT_MOUNTED))
+		m_Unit->SetMount(0);
+
+	if(m_AIState != STATE_ATTACKING)
+		StopMovement(0);
+
+	m_AIState = STATE_ATTACKING;
+	if(m_Unit->GetMapMgr() && m_Unit->GetMapMgr()->GetMapInfo() && m_Unit->GetMapMgr()->GetMapInfo()->type == INSTANCE_RAID)
+	{
+		if(m_Unit->IsCreature())
+		{
+			if(TO< Creature* >(m_Unit)->GetCreatureInfo()->Rank == 3)
+			{
+				m_Unit->GetMapMgr()->AddCombatInProgress(m_Unit->GetGUID());
+			}
+		}
+	}
+	if (pUnit->IsPlayer() && TO< Player* >(pUnit)->InGroup())
+	{
+		m_Unit->GetAIInterface()->modThreatByPtr(pUnit, 1);
+		Group *pGroup = TO< Player* >(pUnit)->GetGroup();
+
+		Player *pGroupGuy;
+		GroupMembersSet::iterator itr;
+		pGroup->Lock();
+		for(uint32 i = 0; i < pGroup->GetSubGroupCount(); i++) {
+			for(itr = pGroup->GetSubGroup(i)->GetGroupMembersBegin(); itr != pGroup->GetSubGroup(i)->GetGroupMembersEnd(); ++itr)
+			{
+				pGroupGuy = (*itr)->m_loggedInPlayer;
+				if( pGroupGuy && pGroupGuy->isAlive() && m_Unit->GetMapMgr() == pGroupGuy->GetMapMgr() && pGroupGuy->GetDistanceSq(pUnit) <= 40*40) //50 yards for now. lets see if it works
+				{
+					m_Unit->GetAIInterface()->AttackReaction(pGroupGuy, 1, 0);
+				}
+			}
+		}
+		pGroup->Unlock();
+	}
+	//Zack : Put mob into combat animation. Take out weapons and start to look serious :P
+	m_Unit->smsg_AttackStart( pUnit );
+}
+
+void AIInterface::EventLeaveCombat( Unit* pUnit, uint32 misc1 )
+{
+	if (m_AIState == STATE_EVADE)
+		return;
+	if( pUnit == NULL ) return;	
+
+	if( pUnit->IsCreature() )
+	{
+		if( pUnit->IsDead() )
+			pUnit->RemoveAllAuras();
+		else
+			pUnit->RemoveNegativeAuras();
+	}
+
+	Unit* target = NULL;
+	if (m_Unit->GetMapMgr() && m_Unit->GetMapMgr()->GetMapInfo())
+	{
+		switch (m_Unit->GetMapMgr()->GetMapInfo()->type)
+		{
+		case INSTANCE_NULL:
+		case INSTANCE_BATTLEGROUND:
+			if (m_outOfCombatRange && _CalcDistanceFromHome() < m_outOfCombatRange)
+				target = FindTarget();
+			break;
+
+		case INSTANCE_RAID:
+		case INSTANCE_NONRAID:
+		case INSTANCE_MULTIMODE:
+			target = FindTarget();
+			break;
+		}
+
+		if(target != NULL)
+		{
+			AttackReaction(target, 1, 0);
+			return;
+		}
+	}
+
+	//cancel spells that we are casting. Should remove bug where creatures cast a spell after they died
+	//				CancelSpellCast();
+	// restart emote
+	if(m_Unit->IsCreature())
+	{
+		Creature* creature = TO_CREATURE( m_Unit);
+		creature->HandleMonsterSayEvent( MONSTER_SAY_EVENT_ON_COMBAT_STOP );
+
+		if( creature->original_emotestate )
+			m_Unit->SetEmoteState(creature->original_emotestate );
+		else
+			m_Unit->SetEmoteState(0 );
+
+		if(creature->m_spawn && (creature->m_spawn->channel_target_go || creature->m_spawn->channel_target_creature ) )
+		{
+			if(creature->m_spawn->channel_target_go)
+				sEventMgr.AddEvent( creature, &Creature::ChannelLinkUpGO, creature->m_spawn->channel_target_go, EVENT_CREATURE_CHANNEL_LINKUP, 1000, 5, 0 );
+
+			if(creature->m_spawn->channel_target_creature)
+				sEventMgr.AddEvent( creature, &Creature::ChannelLinkUpCreature, creature->m_spawn->channel_target_creature, EVENT_CREATURE_CHANNEL_LINKUP, 1000, 5, 0 );
+		}
+	}
+
+	//reset ProcCount
+	//ResetProcCounts();
+	m_moveSprint = true;
+	LockAITargets(true);
+	m_aiTargets.clear();
+	LockAITargets(false);
+	m_fleeTimer = 0;
+	m_hasFleed = false;
+	m_hasCalledForHelp = false;
+	m_nextSpell = NULL;
+	resetNextTarget();
+	m_Unit->CombatStatus.Vanished();
+
+	if(m_AIType == AITYPE_PET)
+	{
+		m_AIState = STATE_FOLLOWING;
+		SetUnitToFollow(m_PetOwner);
+		FollowDistance = 3.0f;
+		m_lastFollowX = m_lastFollowY = 0;
+		if( m_Unit->IsPet() )
+		{
+			TO< Pet* >( m_Unit )->SetPetAction( PET_ACTION_FOLLOW );
+			if( m_Unit->isAlive() && m_Unit->IsInWorld() )
+			{
+				TO< Pet* >( m_Unit )->HandleAutoCastEvent( AUTOCAST_EVENT_LEAVE_COMBAT );
+			}
+		}
+		HandleEvent(EVENT_FOLLOWOWNER, 0, 0);
+	}
+	else
+	{
+		m_AIState = STATE_EVADE;
+
+		Unit* SavedFollow = getUnitToFollow();
+		m_UnitToFollow = 0;
+		FollowDistance = 0.0f;
+		m_lastFollowX = m_lastFollowY = 0;
+
+		if(m_Unit->isAlive())
+		{
+			if(m_returnX != 0.0f && m_returnY != 0.0f && m_returnZ != 0.0f)
+			{
+				if (!MoveTo(m_returnX, m_returnY, m_returnZ, m_Unit->GetSpawnO()))
+				{
+					m_Unit->SetPosition(m_returnX, m_returnY, m_returnZ, m_Unit->GetSpawnO());
+					StopMovement(0);
+				}
+			}
+			else
+			{
+				m_returnX = m_Unit->GetSpawnX();
+				m_returnY = m_Unit->GetSpawnY();
+				m_returnZ = m_Unit->GetSpawnZ();
+
+				if (!MoveTo(m_returnX, m_returnY, m_returnZ, m_Unit->GetSpawnO()))
+				{
+					m_Unit->SetPosition(m_returnX, m_returnY, m_returnZ, m_Unit->GetSpawnO());
+					StopMovement(0);
+				}
+			}
+
+			Creature *aiowner = TO< Creature* >(m_Unit);
+			//clear tagger.
+			aiowner->UnTag();
+			aiowner->SetUInt32Value(UNIT_DYNAMIC_FLAGS,aiowner->GetUInt32Value(UNIT_DYNAMIC_FLAGS) & ~(U_DYN_FLAG_TAGGED_BY_OTHER |U_DYN_FLAG_LOOTABLE));
+		}
+		CALL_SCRIPT_EVENT(m_Unit, OnCombatStop)(SavedFollow);
+	}
+
+	if(m_Unit->GetMapMgr() && m_Unit->GetMapMgr()->GetMapInfo() && m_Unit->GetMapMgr()->GetMapInfo()->type == INSTANCE_RAID)
+	{
+		if(m_Unit->IsCreature())
+		{
+			if(TO< Creature* >(m_Unit)->GetCreatureInfo()->Rank == 3)
+			{
+				m_Unit->GetMapMgr()->RemoveCombatInProgress(m_Unit->GetGUID());
+			}
+		}
+	}
+
+	// Remount if mounted
+	if(m_Unit->IsCreature())
+	{
+		Creature *creature = TO< Creature* >( m_Unit );
+		if( creature->m_spawn )
+			m_Unit->SetMount(creature->m_spawn->MountedDisplayID );
+		//m_Unit->SetMount(TO< Creature* >( m_Unit )->GetSpawnO->MountedDisplayID );
+	}
+	//Zack : not sure we need to send this. Did not see it in the dumps since mob died eventually but it seems logical to make this
+	m_Unit->smsg_AttackStop( pUnit );
+}
+
+void AIInterface::EventDamageTaken( Unit* pUnit, uint32 misc1 )
+{
+	if (m_AIState == STATE_EVADE)
+		return;
+	if( pUnit == NULL ) return;
+
+	if( m_Unit->IsCreature() )
+		TO< Creature* >( m_Unit )->HandleMonsterSayEvent( MONSTER_SAY_EVENT_ON_DAMAGE_TAKEN );
+
+	pUnit->RemoveAura( 24575 );
+
+	CALL_SCRIPT_EVENT(m_Unit, OnDamageTaken)(pUnit, misc1);
+	if(!modThreatByPtr(pUnit, misc1))
+	{
+		m_aiTargets.insert(TargetMap::value_type(pUnit->GetGUID(), misc1));
+	}
+	pUnit->CombatStatus.OnDamageDealt( m_Unit );
+
+	//reset combat reset range
+	m_combatResetX = pUnit->GetPositionX();
+	m_combatResetY = pUnit->GetPositionY();
+	m_combatResetZ = pUnit->GetPositionZ();
+}
+
+void AIInterface::EventFollowOwner( Unit* pUnit, uint32 misc1 )
+{
+	if (m_AIState == STATE_EVADE)
+		return;
+	m_AIState = STATE_FOLLOWING;
+	if(m_Unit->IsPet())
+		TO< Pet* >(m_Unit)->SetPetAction(PET_ACTION_FOLLOW);
+	SetUnitToFollow(m_PetOwner);
+	m_lastFollowX = m_lastFollowY = 0;
+	FollowDistance = 4.0f;
+
+	LockAITargets(true);
+	m_aiTargets.clear();
+	LockAITargets(false);
+	m_fleeTimer = 0;
+	m_hasFleed = false;
+	m_hasCalledForHelp = false;
+	m_nextSpell = NULL;
+	resetNextTarget();
+	m_moveRun = true;
+}
+
+void AIInterface::EventFear( Unit* pUnit, uint32 misc1 )
+{
+	if( pUnit == NULL ) return;
+
+	m_FearTimer = 0;
+	SetUnitToFear(pUnit);
+
+	CALL_SCRIPT_EVENT(m_Unit, OnFear)(pUnit, 0);
+	m_AIState = STATE_FEAR;
+	StopMovement(1);
+
+	m_UnitToFollow_backup = m_UnitToFollow;
+	m_UnitToFollow = 0;
+	m_lastFollowX = m_lastFollowY = 0;
+	FollowDistance_backup = FollowDistance;
+	FollowDistance = 0.0f;
+
+	LockAITargets(true);
+	m_aiTargets.clear(); // we'll get a new target after we are unfeared
+	LockAITargets(false);
+	m_fleeTimer = 0;
+	m_hasFleed = false;
+	m_hasCalledForHelp = false;
+
+	// update speed
+	m_moveRun = true;
+	getMoveFlags();
+
+	SetNextSpell( NULL );
+	resetNextTarget();
+}
+
+void AIInterface::EventUnfear( Unit* pUnit, uint32 misc1 )
+{
+	if (m_AIState == STATE_EVADE)
+		return;
+	m_UnitToFollow = m_UnitToFollow_backup;
+	FollowDistance = FollowDistance_backup;
+	m_AIState = STATE_UNFEARED; // let future reactions put us back into combat without bugging return positions
+
+	m_UnitToFear = 0;
+	StopMovement(1);
+}
+
+void AIInterface::EventWander( Unit* pUnit, uint32 misc1 )
+{
+	if (m_AIState == STATE_EVADE)
+		return;
+	if( pUnit == NULL ) return;
+
+	m_WanderTimer = 0;
+
+	//CALL_SCRIPT_EVENT(m_Unit, OnWander)(pUnit, 0); FIX ME
+	m_AIState = STATE_WANDER;
+	StopMovement(1);
+
+	m_UnitToFollow_backup = m_UnitToFollow;
+	m_UnitToFollow = 0;
+	m_lastFollowX = m_lastFollowY = 0;
+	FollowDistance_backup = FollowDistance;
+	FollowDistance = 0.0f;
+
+	LockAITargets(true);
+	m_aiTargets.clear(); // we'll get a new target after we are unwandered
+	LockAITargets(false);
+	m_fleeTimer = 0;
+	m_hasFleed = false;
+	m_hasCalledForHelp = false;
+
+	// update speed
+	m_moveRun = true;
+	getMoveFlags();
+
+	SetNextSpell(NULL);
+	resetNextTarget();
+}
+
+void AIInterface::EventUnwander( Unit* pUnit, uint32 misc1 )
+{
+	if (m_AIState == STATE_EVADE)
+		return;
+	m_UnitToFollow = m_UnitToFollow_backup;
+	FollowDistance = FollowDistance_backup;
+	m_AIState = STATE_IDLE; // we need this to prevent permanent fear, wander, and other problems
+
+	StopMovement(1);
+}
+
+void AIInterface::EventUnitDied( Unit* pUnit, uint32 misc1 )
+{
+	if( pUnit == NULL ) return;
+
+	if( m_Unit->IsCreature() )
+		TO< Creature* >( m_Unit )->HandleMonsterSayEvent( MONSTER_SAY_EVENT_ON_DIED );
+
+	CALL_SCRIPT_EVENT(m_Unit, OnDied)(pUnit);
+	if ( m_Unit->IsCreature() )
+		CALL_INSTANCE_SCRIPT_EVENT( m_Unit->GetMapMgr(), OnCreatureDeath )( TO_CREATURE( m_Unit ), pUnit );
+
+	m_AIState = STATE_IDLE;
+
+	StopMovement(0);
+	LockAITargets(true);
+	m_aiTargets.clear();
+	LockAITargets(false);
+	m_UnitToFollow = 0;
+	m_lastFollowX = m_lastFollowY = 0;
+	m_UnitToFear = 0;
+	FollowDistance = 0.0f;
+	m_fleeTimer = 0;
+	m_hasFleed = false;
+	m_hasCalledForHelp = false;
+	m_nextSpell = NULL;
+
+	resetNextTarget();
+
+	// dismount if we are mounted
+	m_Unit->SetMount(0);
+
+	//reset ProcCount
+	//ResetProcCounts();
+
+	//reset waypoint to 0
+	m_currentWaypoint = 0;
+
+	// There isn't any need to do any attacker checks here, as
+	// they should all be taken care of in DealDamage
+
+	//removed by Zack : why do we need to go to our master if we just died ? On next spawn we will be spawned near him after all
+	/*			if(m_AIType == AITYPE_PET)
+	{
+	SetUnitToFollow(m_PetOwner);
+	SetFollowDistance(3.0f);
+	HandleEvent(EVENT_FOLLOWOWNER, m_Unit, 0);
+	}*/
+
+	Instance *pInstance = NULL;
+	if( m_Unit->GetMapMgr() )
+		pInstance = m_Unit->GetMapMgr()->pInstance;
+
+	if(m_Unit->GetMapMgr()
+		&& m_Unit->IsCreature() 
+		&& !m_Unit->IsPet() 
+		&& pInstance 
+		&& (pInstance->m_mapInfo->type == INSTANCE_RAID 
+		|| pInstance->m_mapInfo->type == INSTANCE_NONRAID 
+		|| pInstance->m_mapInfo->type == INSTANCE_MULTIMODE ))
+	{
+		InstanceBossInfoMap *bossInfoMap = objmgr.m_InstanceBossInfoMap[m_Unit->GetMapMgr()->GetMapId()];
+		Creature *pCreature = TO< Creature* >( m_Unit );
+		bool found = false;
+
+		if(IS_PERSISTENT_INSTANCE(pInstance) && bossInfoMap != NULL)
+		{
+			uint32 npcGuid = pCreature->GetProto()->Id;
+			InstanceBossInfoMap::const_iterator bossInfo = bossInfoMap->find(npcGuid);
+			if(bossInfo != bossInfoMap->end())
+			{
+				found = true;
+				m_Unit->GetMapMgr()->pInstance->m_killedNpcs.insert( npcGuid );
+				m_Unit->GetMapMgr()->pInstance->SaveToDB();
+				for(InstanceBossTrashList::iterator trash = bossInfo->second->trash.begin(); trash != bossInfo->second->trash.end(); ++trash)
+				{
+					Creature *c = m_Unit->GetMapMgr()->GetSqlIdCreature((*trash));
+					if(c != NULL)
+						c->m_noRespawn = true;
+				}
+				if(!pInstance->m_persistent)
+				{
+					pInstance->m_persistent = true;
+					pInstance->SaveToDB();
+					for(PlayerStorageMap::iterator itr = m_Unit->GetMapMgr()->m_PlayerStorage.begin(); itr != m_Unit->GetMapMgr()->m_PlayerStorage.end(); ++itr)
+					{
+						(*itr).second->SetPersistentInstanceId(pInstance);
+					}
+				}
+			}
+		}
+
+		if (found == false) {
+			// No instance boss information ... so fallback ...
+			uint32 npcGuid = pCreature->GetSQL_id();
+			m_Unit->GetMapMgr()->pInstance->m_killedNpcs.insert( npcGuid );
+			m_Unit->GetMapMgr()->pInstance->SaveToDB();
+		}
+	}
+	if(m_Unit->GetMapMgr() && m_Unit->GetMapMgr()->GetMapInfo() && m_Unit->GetMapMgr()->GetMapInfo()->type == INSTANCE_RAID)
+	{
+		if(m_Unit->IsCreature())
+		{
+			if(TO< Creature* >(m_Unit)->GetCreatureInfo()->Rank == 3)
+			{
+				m_Unit->GetMapMgr()->RemoveCombatInProgress(m_Unit->GetGUID());
+			}
+		}
+	}
+
+
+	//remove negative auras
+	//if( m_Unit->IsCreature() )
+	//	m_Unit->RemoveNegativeAuras();
 }

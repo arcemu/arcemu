@@ -140,6 +140,7 @@ enum AI_State
 	STATE_EVADE,
 	STATE_MOVEWP,
 	STATE_FEAR,
+	STATE_UNFEARED,
 	STATE_WANDER,
 	STATE_STOPPED,
 	STATE_SCRIPTMOVE,
@@ -161,18 +162,6 @@ enum CreatureState
 	ATTACKING
 };
 
-enum AiEvents
-{
-	EVENT_ENTERCOMBAT,
-	EVENT_LEAVECOMBAT,
-	EVENT_DAMAGETAKEN,
-	EVENT_FEAR,
-	EVENT_UNFEAR,
-	EVENT_FOLLOWOWNER,
-	EVENT_WANDER,
-	EVENT_UNWANDER,
-	EVENT_UNITDIED,
-};
 
 struct SpellEntry;
 //enum MOD_TYPES;
@@ -335,6 +324,18 @@ public:
 
 	// Event Handler
 	void HandleEvent(uint32 event, Unit* pUnit, uint32 misc1);
+
+	void EventUnitDied( Unit* pUnit, uint32 misc1 );
+
+	void EventUnwander( Unit* pUnit, uint32 misc1 );
+	void EventWander( Unit* pUnit, uint32 misc1 );
+	void EventUnfear( Unit* pUnit, uint32 misc1 );
+	void EventFear( Unit* pUnit, uint32 misc1 );
+	void EventFollowOwner( Unit* pUnit, uint32 misc1 );
+	void EventDamageTaken( Unit* pUnit, uint32 misc1 );
+	void EventLeaveCombat( Unit* pUnit, uint32 misc1 );
+	void EventEnterCombat( Unit* pUnit, uint32 misc1 );
+
 	void OnDeath(Object* pKiller);
 	void AttackReaction(Unit *pUnit, uint32 damage_dealt, uint32 spellId = 0);
 	void HealReaction(Unit* caster, Unit* victim, SpellEntry* sp, uint32 amount);
@@ -351,7 +352,7 @@ public:
 	// Movement
 	void SendMoveToPacket();
 	//void SendMoveToSplinesPacket(std::list<Waypoint> wp, bool run);
-	void MoveTo(float x, float y, float z, float o);
+	bool MoveTo(float x, float y, float z, float o);
 	uint32 getMoveFlags();
 	void UpdateMove();
 	void SendCurrentMove(Player* plyr/*uint64 guid*/);
@@ -487,7 +488,7 @@ protected:
 	void _UpdateTimer(uint32 p_time);
 	void _UpdateMovementSpline();
 	void AddSpline(float x, float y, float z);
-	void Move(float & x, float & y, float & z, float o = 0);
+	bool Move(float & x, float & y, float & z, float o = 0);
 	bool MoveDone() { return m_currentMoveSplineIndex >= m_currentMoveSpline.size(); }
 	bool CreatePath(float x, float y, float z, float dist = 0);
 	dtStatus findSmoothPath(const float* startPos, const float* endPos, const dtPolyRef* polyPath, const uint32 polyPathSize, float* smoothPath, int* smoothPathSize, bool &usedOffmesh, const uint32 maxSmoothPathSize, dtNavMesh* mesh, dtNavMeshQuery* query, dtQueryFilter & filter);
@@ -558,6 +559,10 @@ protected:
 	float m_returnX;
 	float m_returnY;
 	float m_returnZ;
+
+	float m_combatResetX;
+	float m_combatResetY;
+	float m_combatResetZ;
 
 	float m_lastFollowX;
 	float m_lastFollowY;

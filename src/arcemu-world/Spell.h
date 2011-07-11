@@ -1668,6 +1668,11 @@ public:
     // Handle the Effects of the Spell
     virtual void HandleEffects(uint64 guid,uint32 i);
 	void HandleCastEffects(uint64 guid, uint32 i);
+
+	void HandleModeratedTarget(uint64 guid);
+
+	void HandleModeratedEffects(uint64 guid);
+
     // Take Power from the caster based on spell power usage
     bool TakePower();
     // Has power?

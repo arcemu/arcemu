@@ -21,6 +21,8 @@
 #ifndef __STDAFX_H
 #define __STDAFX_H
 
+#define TEST_PATHFINDING 1
+
 #ifdef min
 #undef min
 #endif
@@ -135,6 +137,7 @@ template< class T, class U > T TO( U u ){ return static_cast< T >( u ); }
 #include "vmap/VMapDefinitions.h"
 
 #include "AddonMgr.h"
+#include "AIEvents.h"
 #include "AIInterface.h"
 #include "AreaTrigger.h"
 #include "BattlegroundMgr.h"

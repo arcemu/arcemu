@@ -1464,6 +1464,11 @@ void Spell::cast(bool check)
 					}
 				}
 
+				for (SpellTargetsList::iterator itr = ModeratedTargets.begin(); itr != ModeratedTargets.end(); ++itr)
+				{
+					HandleModeratedTarget(itr->TargetGuid);
+				}
+
 				// spells that proc on spell cast, some talents
 				if( p_caster && p_caster->IsInWorld() )
 				{
@@ -2692,7 +2697,6 @@ void Spell::HandleEffects(uint64 guid, uint32 i)
 		LOG_ERROR("SPELL: unknown effect %u spellid %u", id, GetProto()->Id);
 
 	DoAfterHandleEffect(unitTarget, i);
-
 	DecRef();
 }
 
@@ -5668,6 +5672,82 @@ void Spell::HandleCastEffects( uint64 guid, uint32 i )
 			AddRef();
 		}
 	}
+}
+
+void Spell::HandleModeratedTarget( uint64 guid )
+{
+	if (m_spellInfo->speed == 0) //instant
+	{
+		AddRef();
+		HandleModeratedEffects(guid);
+	}
+	else
+	{
+		float destx, desty, destz, dist = 0;
+
+		if (m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION)
+		{
+			destx = m_targets.m_destX;
+			desty = m_targets.m_destY;
+			destz = m_targets.m_destZ;
+
+			dist = m_caster->CalcDistance(destx, desty, destz);
+		}
+		else if (guid == 0)
+		{
+			return;
+		}
+		else
+		{
+			if (!m_caster->IsInWorld())
+				return;
+
+			if( m_caster->GetGUID() != guid )
+			{
+				Object* obj = m_caster->GetMapMgr()->_GetObject(guid);
+				if (obj == NULL)
+					return;
+
+				destx = obj->GetPositionX();
+				desty = obj->GetPositionY();
+				//todo: this should be destz = obj->GetPositionZ() + (obj->GetModelHighBoundZ() / 2 * obj->GetUInt32Value(OBJECT_FIELD_SCALE_X))
+				if (obj->IsUnit())
+					destz = obj->GetPositionZ() + TO_UNIT(obj)->GetModelHalfSize();
+				else
+					destz = obj->GetPositionZ();
+
+				dist = m_caster->CalcDistance(destx, desty, destz);
+			}
+		}
+
+		if (dist == 0.0f)
+		{
+			AddRef();
+			HandleModeratedEffects(guid);
+		}
+		else
+		{
+			float time = dist * 1000.0f / m_spellInfo->speed;
+			//todo: arcemu doesn't support reflected spells
+			//if (reflected)
+			//	time *= 1.25; //reflected projectiles move back 4x faster
+			sEventMgr.AddEvent(this, &Spell::HandleModeratedEffects, guid, EVENT_SPELL_HIT, float2int32(time), 1, 0);
+			AddRef();
+		}
+	}
+}
+
+void Spell::HandleModeratedEffects( uint64 guid )
+{
+	if (u_caster != NULL && u_caster->GetMapMgr() != NULL)
+	{
+		Object* obj = u_caster->GetMapMgr()->_GetObject(guid);
+
+		if (obj != NULL && obj->IsCreature() && !(m_spellInfo->AttributesEx & ATTRIBUTESEX_NO_INITIAL_AGGRO))
+			TO_CREATURE(obj)->GetAIInterface()->AttackReaction(u_caster, 0, 0);
+	}
+
+	DecRef();
 }
 
 //Logs if the spell doesn't exist, using Debug loglevel.

@@ -19,6 +19,7 @@ SET(sources
 	ObjectStorage.cpp  
 	AddonMgr.cpp 
 	AIInterface.cpp 
+	AIEvents.cpp
 	AlteracValley.cpp 
 	ArathiBasin.cpp 
 	AreaTrigger.cpp 
@@ -165,6 +166,7 @@ SET( headers
 	AchievementMgr.h
 	AddonMGr.h
 	AIInterface.h
+	AIEvents.h
 	AlteracValley.h
 	ArathiBasin.h
 	AreaTrigger.h
