@@ -1957,6 +1957,7 @@ void AIInterface::SendCurrentMove(Player* plyr)
 	}
 	else
 	{
+		*splineBuf << uint32(m_currentMoveSpline.size());
 		for (uint32 i = 0; i < m_currentMoveSpline.size(); ++i)
 		{
 			*splineBuf << m_currentMoveSpline[i].pos.x;
@@ -3747,11 +3748,11 @@ bool AIInterface::CreatePath( float x, float y, float z, float dist /*= 0*/ )
 	if (pathcount == 0 || path[pathcount - 1] != endref)
 		return false;
 
-	float points[1024 * 3];
+	float points[64 * 3];
 	int pointcount;
 	bool usedoffmesh;
 
-	findSmoothPath(start, end, path, pathcount, points, &pointcount, usedoffmesh, 1024, nav->mesh, nav->query, filter);
+	findSmoothPath(start, end, path, pathcount, points, &pointcount, usedoffmesh, 64, nav->mesh, nav->query, filter);
 
 	//add to spline
 	for (uint32 i = 0; i < pointcount; ++i)
