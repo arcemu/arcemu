@@ -343,7 +343,7 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 		flags2 |= MOVEFLAG_SPLINE_ENABLED | MOVEFLAG_MOVE_FORWARD;	   //1=move forward
 		if(GetTypeId() == TYPEID_UNIT)
 		{
-			if(TO_UNIT(this)->GetAIInterface()->m_moveRun == false)
+			if(TO_UNIT(this)->GetAIInterface()->HasWalkMode(WALKMODE_WALK))
 				flags2 |= MOVEFLAG_WALK;
 		}			
 	}

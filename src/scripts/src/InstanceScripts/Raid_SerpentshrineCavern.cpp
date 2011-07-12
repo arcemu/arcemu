@@ -889,7 +889,7 @@ public:
 				//move if needed
 				if(_unit->GetAIInterface()->getNextTarget()->GetDistance2dSq(_unit) >= 400) //20 yards
 				{
-					_unit->GetAIInterface()->m_moveRun = true;
+					_unit->GetAIInterface()->SetRun();
 					_unit->GetAIInterface()->_CalcDestinationAndMove(_unit->GetAIInterface()->getNextTarget(), 5.0f);
 				}
 			}
@@ -1178,7 +1178,7 @@ public:
 			//move if needed
 			if(_unit->GetAIInterface()->getNextTarget()->GetDistance2dSq(_unit) >= 400) //20 yards
 			{
-				_unit->GetAIInterface()->m_moveRun = true;
+				_unit->GetAIInterface()->SetRun();
 				_unit->GetAIInterface()->_CalcDestinationAndMove(_unit->GetAIInterface()->getNextTarget(), 5.0f);
 			}
 		}
@@ -2526,7 +2526,7 @@ public:
 		Meteor = false;
 		PositionChange=rand()%8+15;
 		PhoenixSummon=rand()%6+17;
-		_unit->GetAIInterface()->m_moveFly = true;
+		_unit->GetAIInterface()->SetFly();
 		_unit->GetAIInterface()->StopMovement(0);
 		_unit->GetAIInterface()->SetAIState(STATE_SCRIPTMOVE);
 		_unit->GetAIInterface()->setMoveType(MOVEMENTTYPE_WANTEDWP);

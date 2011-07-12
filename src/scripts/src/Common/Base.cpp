@@ -131,7 +131,7 @@ void MoonScriptCreatureAI::MoveTo( Unit* pUnit, RangeStatusPair pRangeStatus )
 void MoonScriptCreatureAI::MoveTo( float pX, float pY, float pZ, bool pRun )
 {
 	if ( pRun )
-		_unit->GetAIInterface()->m_moveRun = true;
+		_unit->GetAIInterface()->SetRun();
 
 	_unit->GetAIInterface()->MoveTo( pX, pY, pZ, 0 );
 };
@@ -148,21 +148,21 @@ void MoonScriptCreatureAI::StopMovement()
 
 void MoonScriptCreatureAI::SetFlyMode(bool pValue)
 {
-	if( pValue && !_unit->GetAIInterface()->m_moveFly )
+	if( pValue && !_unit->GetAIInterface()->Flying() )
 	{
 		WorldPacket data(SMSG_MOVE_SET_HOVER, 13);
 		data << _unit->GetNewGUID();
 		data << uint32(0);
 		_unit->SendMessageToSet(&data, false);
-		_unit->GetAIInterface()->m_moveFly = true;
+		_unit->GetAIInterface()->StopFlying();
 	}
-	else if( !pValue && _unit->GetAIInterface()->m_moveFly )
+	else if( !pValue && _unit->GetAIInterface()->Flying() )
 	{
 		WorldPacket data(SMSG_MOVE_UNSET_HOVER, 13);
 		data << _unit->GetNewGUID();
 		data << uint32(0);
 		_unit->SendMessageToSet(&data, false);
-		_unit->GetAIInterface()->m_moveFly = false;
+		_unit->GetAIInterface()->SetFly();
 	}
 }
 

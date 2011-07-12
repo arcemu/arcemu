@@ -573,7 +573,7 @@ void Creature::SaveToDB()
 		<< GetEquippedItem(OFFHAND) << ","
 		<< GetEquippedItem(RANGED) << ",";
 
-	if(GetAIInterface()->m_moveFly)
+	if(GetAIInterface()->Flying())
 		ss << 1 << ",";
 	else if(GetAIInterface()->onGameobject)
 		ss << 2 << ",";
@@ -1353,7 +1353,7 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	m_aiInterface->m_FleeHealth = proto->m_fleeHealth;
 	m_aiInterface->m_FleeDuration = proto->m_fleeDuration;
 
-	GetAIInterface()->setMoveRunFlag(0);
+	GetAIInterface()->SetWalk();
 
     if(isattackable(spawn) && !(proto->isTrainingDummy) ){
 	  GetAIInterface()->SetAllowedToEnterCombat(true);
@@ -1392,7 +1392,7 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	}
 
 	if(spawn->CanFly == 1)
-		GetAIInterface()->m_moveFly = true;
+		GetAIInterface()->SetFly();
 	else if(spawn->CanFly == 2)
 		GetAIInterface()->onGameobject = true;
 	/* more hacks! */
@@ -1411,7 +1411,7 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
     else
         m_aiInterface->m_isNeutralGuard = false;
 
-	m_aiInterface->getMoveFlags();
+	m_aiInterface->UpdateSpeeds();
 
 	/* creature death state */
 	if( spawn->death_state == CREATURE_STATE_APPEAR_DEAD )
@@ -1567,7 +1567,7 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 	m_aiInterface->m_FleeDuration = proto->m_fleeDuration;
 
 	GetAIInterface()->setMoveType(0);
-	GetAIInterface()->setMoveRunFlag(0);
+	GetAIInterface()->SetWalk();
 
 	// load formation data
 	m_aiInterface->m_formationLinkSqlId = 0;
@@ -1600,7 +1600,7 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
     else
         m_aiInterface->m_isNeutralGuard = false;
 
-	m_aiInterface->getMoveFlags();
+	m_aiInterface->UpdateSpeeds();
 
 	m_invisFlag = static_cast<uint8>( proto->invisibility_type );
 	if( m_invisFlag > 0 )

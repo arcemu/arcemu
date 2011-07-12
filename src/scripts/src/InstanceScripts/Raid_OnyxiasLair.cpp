@@ -144,7 +144,7 @@ public:
         _unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
         _unit->GetAIInterface()->SetAIState(STATE_IDLE);
         _unit->GetAIInterface()->SetAllowedToEnterCombat(true);
-        _unit->GetAIInterface()->m_moveFly = false;
+        _unit->GetAIInterface()->StopFlying();
         _unit->GetAIInterface()->m_canMove = true;
         _unit->SetStandState(STANDSTATE_SLEEP);
         /*if(_unit->m_pacified > 0)
@@ -440,7 +440,7 @@ public:
         data << _unit->GetNewGUID();
         data << uint32(0);
         _unit->SendMessageToSet(&data, false);*/
-        _unit->GetAIInterface()->m_moveFly = true;
+        _unit->GetAIInterface()->SetFly();
     }
 
     void Land()
@@ -451,7 +451,7 @@ public:
         data << _unit->GetNewGUID();
         data << uint32(0);
         _unit->SendMessageToSet(&data, false);*/
-        _unit->GetAIInterface()->m_moveFly = false;
+        _unit->GetAIInterface()->StopFlying();
     }
 
     void SpellCast(uint32 val)

@@ -1976,7 +1976,7 @@ public:
 		/******************* Additional Settings *******************/
 
 		_unit->GetAIInterface()->setMoveType(MOVEMENTTYPE_FORWARDTHANSTOP);
-		_unit->GetAIInterface()->m_moveFly = true;
+		_unit->GetAIInterface()->SetFly();
 
 		FlameQuills = false;
 		Meteor = false;
@@ -1985,7 +1985,7 @@ public:
 		timer=lasttime=0;
 		_unit->GetAIInterface()->setOutOfCombatRange(200000);
         //RegisterAIUpdateEvent(_unit->GetBaseAttackTime(MELEE));
-		_unit->GetAIInterface()->m_moveFly = true;
+		_unit->GetAIInterface()->SetFly();
 		_unit->GetAIInterface()->StopMovement(0);
 		_unit->GetAIInterface()->SetAIState(STATE_SCRIPTMOVE);
 		_unit->GetAIInterface()->setMoveType(MOVEMENTTYPE_WANTEDWP);

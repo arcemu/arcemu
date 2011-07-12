@@ -32,9 +32,6 @@ m_WayPointsShowBackwards(false),
 m_currentWaypoint(0),
 m_moveBackward(false),
 m_moveType(0),
-m_moveRun(false),
-m_moveFly(false),
-m_moveSprint(false),
 onGameobject(false),
 m_creatureState(STOPPED),
 m_canFlee(false),
@@ -243,7 +240,7 @@ void AIInterface::Update(uint32 p_time)
 			m_AIState = STATE_IDLE;
 			m_returnX = m_returnY = m_returnZ = 0.0f;
 			m_combatResetX = m_combatResetY = m_combatResetZ = 0.0f;
-			m_moveRun = false;
+			SetWalk();
 
 			if(m_AIType != AITYPE_PET && !skip_reset_hp)
 				m_Unit->SetHealth(m_Unit->GetMaxHealth());
@@ -546,7 +543,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 		
 		if ( m_Unit->GetMapMgr() != NULL && getNextTarget() != NULL )
 		{
-			if (!m_moveFly)
+			if (!Flying())
 			{
 				float target_land_z = m_Unit->GetMapMgr()->GetLandHeight(getNextTarget()->GetPositionX(), getNextTarget()->GetPositionY(), getNextTarget()->GetPositionZ());
 
@@ -753,7 +750,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 //						dist = -(combatReach[1] - distance);
 //					gracefull_hit_on_target = GetNextTarget(); // this is an exploit where you manage to move the exact speed that mob will reposition itself all the time
 
-					m_moveRun = true;
+					SetRun();
 					_CalcDestinationAndMove(getNextTarget(), dist);
 				}
 			}break;
@@ -818,7 +815,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 					else
 						dist = 20.0f;
 
-					m_moveRun = true;
+					SetRun();
 					_CalcDestinationAndMove(getNextTarget(), dist);
 				}
 			}break;
@@ -885,7 +882,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 				else // Target out of Range -> Run to it
 				{
 					//calculate next move
-					m_moveRun = true;
+					SetRun();
 					float close_to_enemy = 0.0f;
 					if( distance > m_nextSpell->maxrange )
 						close_to_enemy = m_nextSpell->maxrange - DISTANCE_TO_SMALL_TO_WALK ;
@@ -905,7 +902,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 			{
 				//float dist = 5.0f;
 
-				m_moveRun = false;
+				SetWalk();
 				if(m_fleeTimer == 0)
 					m_fleeTimer = m_FleeDuration;
 
@@ -1002,7 +999,7 @@ void AIInterface::AttackReaction(Unit* pUnit, uint32 damage_dealt, uint32 spellI
 	{
 		if ( m_Unit->GetMapMgr() != NULL )
 		{
-			if (!m_moveFly)
+			if (!Flying())
 			{
 				float target_land_z = m_Unit->GetMapMgr()->GetLandHeight(pUnit->GetPositionX(), pUnit->GetPositionY(), pUnit->GetPositionZ());
 
@@ -1796,7 +1793,7 @@ void AIInterface::SendMoveToPacket()
 			data << uint8(4) << m_currentSplineFinalOrientation;
 		else
 			data << uint8(0);
-		data << getMoveFlags();
+		data << m_splineFlags;
 		data << m_currentSplineTotalMoveTime;
 		data << uint32(m_currentMoveSpline.size() - 1);
 
@@ -1805,7 +1802,7 @@ void AIInterface::SendMoveToPacket()
 		data << finalpoint.pos.y;
 		data << finalpoint.pos.z;
 
-		if (getMoveFlags() & 0x42000)
+		if (HasSplineFlag(SPLINEFLAG_FLYING | SPLINEFLAG_CATMULLROM))
 		{
 			for (uint32 i = 1; i < m_currentMoveSpline.size() - 1; ++i)
 			{
@@ -1866,52 +1863,22 @@ bool AIInterface::MoveTo( float x, float y, float z, float o )
 
 bool AIInterface::IsFlying()
 {
-	if(m_moveFly)
+	if(Flying())
 		return true;
-	
-	/*float z = m_Unit->GetMapMgr()->GetLandHeight(m_Unit->GetPositionX(), m_Unit->GetPositionY());
-	if(z)
-	{
-		if(m_Unit->GetPositionZ() >= (z + 1.0f)) //not on ground? Oo
-		{
-			return true;
-		}
-	}
-	return false;*/
-	if( m_Unit->IsPlayer() )
-		return TO< Player* >( m_Unit )->FlyCheat;
-
+	if(m_Unit->IsPlayer())
+		return TO_PLAYER(m_Unit)->FlyCheat;
 	return false;
 }
 
-uint32 AIInterface::getMoveFlags()
+void AIInterface::UpdateSpeeds()
 {
-	uint32 MoveFlags = 0;
-	if(m_moveFly == true) //Fly
-	{
-		m_flySpeed = m_Unit->m_flySpeed*0.001f;
-//		MoveFlags = 0x300;
-		MoveFlags = 0x3000; //VLack: flight flag changed on 3.1.1
-	}
-	else if(m_moveSprint == true) //Sprint
-	{
-		m_runSpeed = (m_Unit->m_runSpeed+5.0f)*0.001f;
-//		MoveFlags = 0x100;
-		MoveFlags = 0x1000; //VLack: on 3.1.1 0x100 would teleport the NPC, and this is not what we want here!
-	}
-	else if(m_moveRun == true) //Run
-	{
-		m_runSpeed = m_Unit->m_runSpeed*0.001f;
-//		MoveFlags = 0x100;
-		MoveFlags = 0x1000; //VLack: on 3.1.1 0x100 would teleport the NPC, and this is not what we want here!
-	}
-/*	else //Walk
-	{
-		m_runSpeed = m_Unit->m_walkSpeed*0.001f;
-		MoveFlags = 0x000;
-	}*/
-	m_walkSpeed = m_Unit->m_walkSpeed*0.001f;//move distance per ms time 
-	return MoveFlags;
+	if (HasWalkMode(WALKMODE_SPRINT))
+		m_runSpeed = (m_Unit->m_runSpeed+5.0f) * 0.001f;
+	if (HasWalkMode(WALKMODE_RUN))
+		m_runSpeed = m_Unit->m_runSpeed * 0.001f;
+
+	m_walkSpeed = m_Unit->m_walkSpeed * 0.001f;
+	m_flySpeed = m_Unit->m_flySpeed * 0.001f;
 }
 
 void AIInterface::UpdateMove()
@@ -2325,11 +2292,11 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 						}
 					}
 					else
-						m_moveTimer = RandomUInt(m_moveRun ? 5000 : 10000); // wait before next move
+						m_moveTimer = RandomUInt(HasWalkMode(WALKMODE_RUN) ? 5000 : 10000); // wait before next move
 				}
 
 				m_creatureState = STOPPED;
-				m_moveSprint = false;
+				SetWalk();
 
 				if(m_MovementType == MOVEMENTTYPE_DONTMOVEWP)
 					m_Unit->SetOrientation(wayO);
@@ -2474,8 +2441,13 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 								GetUnit()->EventModelChange();
 							}
 						}
-						m_moveFly = (wp->flags == 768) ? 1 : 0;
-						m_moveRun = (wp->flags == 256) ? 1 : 0;
+
+						if (wp->flags & 512)
+							SetFly();
+						else if (wp->flags & 256)
+							SetRun();
+						else
+							SetWalk();
 						MoveTo(wp->x, wp->y, wp->z, 0);
 					}
 				}
@@ -2620,14 +2592,14 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 					m_AIState = STATE_FOLLOWING;
 					
 					if(dist > 25.0f) //25 yard away lets run else we will loose the them
-						m_moveRun = true;
+						SetRun();
 					else 
-						m_moveRun = false;
+						SetWalk();
 
 					if(m_AIType == AITYPE_PET || (m_UnitToFollow == m_formationLinkTarget)) //Unit is Pet/formation
 					{
 						if(dist > 900.0f/*30*/)
-							m_moveSprint = true;
+							SetSprint();
 
 						float delta_x = unitToFollow->GetPositionX();
 						float delta_y = unitToFollow->GetPositionY();
@@ -3667,7 +3639,7 @@ bool AIInterface::Move( float & x, float & y, float & z, float o /*= 0*/ )
 
 	//Add new points
 #ifdef TEST_PATHFINDING
-	if (!m_moveFly)
+	if (!Flying())
 	{
 		if (!CreatePath(x, y, z))
 			return false;
@@ -3710,12 +3682,15 @@ void AIInterface::AddSpline( float x, float y, float z )
 
 	uint32 movetime;
 
-	if(m_moveFly)
+	if(HasSplineFlag(SPLINEFLAG_FLYING))
 		movetime = (uint32) (dist / m_flySpeed);
-	else if (m_moveRun)
-		movetime = (uint32) (dist / m_runSpeed);
-	else
-		movetime = (uint32) (dist / m_walkSpeed);
+	else if (HasSplineFlag(SPLINEFLAG_WALKMODE))
+	{
+		if (HasWalkMode(WALKMODE_SPRINT) || HasWalkMode(WALKMODE_RUN))
+			movetime = (uint32) (dist / m_runSpeed);
+		else if (HasWalkMode(WALKMODE_WALK))
+			movetime = (uint32) (dist / m_walkSpeed);
+	}
 
 	p.setoff = prev.arrive;
 	p.arrive = prev.arrive + movetime;
@@ -4010,7 +3985,6 @@ void AIInterface::EventEnterCombat( Unit* pUnit, uint32 misc1 )
 		m_combatResetZ = pUnit->GetPositionZ();
 	}
 
-	m_moveRun = true; //run to the target
 
 	// dismount if mounted
 	if( m_Unit->IsCreature() && !(TO_CREATURE( m_Unit )->GetCreatureInfo()->Flags1 & CREATURE_FLAG1_FIGHT_MOUNTED))
@@ -4118,7 +4092,7 @@ void AIInterface::EventLeaveCombat( Unit* pUnit, uint32 misc1 )
 
 	//reset ProcCount
 	//ResetProcCounts();
-	m_moveSprint = true;
+	SetSprint();
 	LockAITargets(true);
 	m_aiTargets.clear();
 	LockAITargets(false);
@@ -4246,7 +4220,11 @@ void AIInterface::EventFollowOwner( Unit* pUnit, uint32 misc1 )
 	m_hasCalledForHelp = false;
 	m_nextSpell = NULL;
 	resetNextTarget();
-	m_moveRun = true;
+	SetRun();
+
+	//test
+	if (m_Unit->IsPet())
+		TO_PET(m_Unit)->smsg_AttackStop(uint64(0));
 }
 
 void AIInterface::EventFear( Unit* pUnit, uint32 misc1 )
@@ -4274,9 +4252,7 @@ void AIInterface::EventFear( Unit* pUnit, uint32 misc1 )
 	m_hasCalledForHelp = false;
 
 	// update speed
-	m_moveRun = true;
-	getMoveFlags();
-
+	SetRun();
 	SetNextSpell( NULL );
 	resetNextTarget();
 }
@@ -4319,8 +4295,7 @@ void AIInterface::EventWander( Unit* pUnit, uint32 misc1 )
 	m_hasCalledForHelp = false;
 
 	// update speed
-	m_moveRun = true;
-	getMoveFlags();
+	SetRun();
 
 	SetNextSpell(NULL);
 	resetNextTarget();

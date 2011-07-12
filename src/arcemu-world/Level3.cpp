@@ -2668,7 +2668,11 @@ bool ChatHandler::HandleNPCCanFlyCommand(const char * args, WorldSession * m_ses
 	Creature * pCreature = getSelectedCreature(m_session, true);
 	if(pCreature == NULL)
 		return true;
-	pCreature->GetAIInterface()->m_moveFly = !pCreature->GetAIInterface()->m_moveFly;
+	if (pCreature->GetAIInterface()->Flying())
+		pCreature->GetAIInterface()->StopFlying();
+	else
+		pCreature->GetAIInterface()->SetFly();
+
 	pCreature->GetAIInterface()->onGameobject = false;
 	char* sSave = strtok((char*)args, " ");
 	if (sSave)
@@ -2689,7 +2693,9 @@ bool ChatHandler::HandleNPCOnGOCommand(const char * args, WorldSession * m_sessi
 	Creature * pCreature = getSelectedCreature(m_session, true);
 	if(pCreature == NULL)
 		return true;
-	pCreature->GetAIInterface()->m_moveFly = false;
+
+	pCreature->GetAIInterface()->StopFlying();
+
 	pCreature->GetAIInterface()->onGameobject = !pCreature->GetAIInterface()->onGameobject;
 	char* sSave = strtok((char*)args, " ");
 	if (sSave)

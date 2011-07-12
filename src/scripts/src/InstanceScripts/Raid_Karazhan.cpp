@@ -3673,7 +3673,7 @@ public:
 		_unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
 		_unit->GetAIInterface()->SetAIState(STATE_IDLE);
 		_unit->GetAIInterface()->SetAllowedToEnterCombat(true);
-		_unit->GetAIInterface()->m_moveFly = false;
+		_unit->GetAIInterface()->StopFlying();
 		_unit->GetAIInterface()->m_canMove = true;
 		RemoveAIUpdateEvent();
 	}
@@ -3863,7 +3863,7 @@ public:
 		data << uint32(0);
 		_unit->SendMessageToSet(&data, false);
 
-		_unit->GetAIInterface()->m_moveFly = true;
+		_unit->GetAIInterface()->SetFly();
 	}
 
 	void Land()
@@ -3875,7 +3875,7 @@ public:
 		data << uint32(0);
 		_unit->SendMessageToSet(&data, false);
 
-		_unit->GetAIInterface()->m_moveFly = false;
+		_unit->GetAIInterface()->StopFlying();
 	}
 
 	void ResetCastTime()

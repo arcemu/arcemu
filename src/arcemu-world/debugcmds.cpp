@@ -121,7 +121,7 @@ bool ChatHandler::HandleMoveInfoCommand(const char* args, WorldSession *m_sessio
 	bool minfront = obj->isInFront(m_session->GetPlayer());
 	bool pinfront = m_session->GetPlayer()->isInFront(obj);
 	uint32 movetype = TO< Creature* >(obj)->GetAIInterface()->getMoveType();
-	bool run = TO< Creature* >(obj)->GetAIInterface()->getMoveRunFlag();
+	bool run = TO< Creature* >(obj)->GetAIInterface()->HasWalkMode(WALKMODE_RUN) || TO< Creature* >(obj)->GetAIInterface()->HasWalkMode(WALKMODE_SPRINT);
 	uint32 attackerscount = (uint32)TO< Creature* >(obj)->GetAIInterface()->getAITargetsCount();
 	uint32 creatureState = TO< Creature* >(obj)->GetAIInterface()->m_creatureState;
 	uint32 curwp = TO< Creature* >(obj)->GetAIInterface()->getCurrentWaypoint();
@@ -201,7 +201,11 @@ bool ChatHandler::HandleAIMoveCommand(const char* args, WorldSession *m_session)
 	float y = m_session->GetPlayer()->GetPositionY();
 	float z = m_session->GetPlayer()->GetPositionZ();
 	float o = m_session->GetPlayer()->GetOrientation();
-	TO< Creature* >(obj)->GetAIInterface()->setMoveRunFlag((Run>0?true:false));
+
+	if (Run)
+		TO< Creature* >(obj)->GetAIInterface()->SetRun();
+	else
+		TO< Creature* >(obj)->GetAIInterface()->SetWalk();
 	float distance = TO< Creature* >(obj)->CalcDistance(x,y,z);
 	if(Move == 1)
 	{
