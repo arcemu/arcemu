@@ -24,6 +24,12 @@ include_directories( ${include_dirs} )
 add_library( ${PROJECT_NAME} SHARED ${SRCS} )
 add_dependencies( ${PROJECT_NAME} ${dependancies} )
 target_link_libraries( ${PROJECT_NAME} ${linkages} )
+
+include(PCHSupport)
+IF( CMAKE_GENERATOR MATCHES Visual*)
+	ADD_NATIVE_PRECOMPILED_HEADER(${PROJECT_NAME} Setup.h ${prefix}/Setup.cpp)
+ENDIF()
+
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION ${ARCEMU_SCRIPTLIB_PATH} LIBRARY DESTINATION ${ARCEMU_SCRIPTLIB_PATH})
 #Cleap up our variables(Not required.)
 unset( prefix)
