@@ -8,7 +8,7 @@ RecastAlloc.cpp
 RecastArea.cpp
 RecastContour.cpp
 RecastFilter.cpp
-Recastmesh.cpp
+RecastMesh.cpp
 RecastMeshDetail.cpp
 RecastRasterization.cpp
 RecastRegion.cpp)
