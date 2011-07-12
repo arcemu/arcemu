@@ -401,7 +401,7 @@ public:
 	//Move flag updating
 	void SetSplineFlag(uint32 flags) { m_splineFlags = flags; }
 	uint32 HasSplineFlag(uint32 flags) { return m_splineFlags & flags; }
-	bool Flying() { return HasSplineFlag(SPLINEFLAG_FLYING); }
+	bool Flying() { return HasSplineFlag(SPLINEFLAG_FLYING) != 0; }
 	void SetFly() { SetSplineFlag(SPLINEFLAG_FLYING); }
 	void SetSprint() { if (Flying()) return; SetSplineFlag(SPLINEFLAG_WALKMODE); SetWalkMode(WALKMODE_SPRINT); UpdateSpeeds(); }
 	void SetRun() { if (Flying()) return; SetSplineFlag(SPLINEFLAG_WALKMODE); SetWalkMode(WALKMODE_RUN); UpdateSpeeds(); }

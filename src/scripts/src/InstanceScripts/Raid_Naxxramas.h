@@ -2687,7 +2687,7 @@ public:
     {
 		_unit->GetAIInterface()->MoveTo(PhaseTwoWP[1].x, PhaseTwoWP[1].y, PhaseTwoWP[1].z + 10.5f, PhaseTwoWP[1].o);
 		_unit->SetUInt64Value(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-		_unit->GetAIInterface()->m_moveFly = true;
+		_unit->GetAIInterface()->SetFly();
 		_unit->m_noRespawn = true;
 		_unit->Despawn(7000, 0);
 
@@ -2904,7 +2904,7 @@ public:
 
 		_unit->GetAIInterface()->setMoveType(MOVEMENTTYPE_DONTMOVEWP);
 		_unit->GetAIInterface()->SetAllowedToEnterCombat(true);
-		_unit->GetAIInterface()->m_moveFly = false;
+		_unit->GetAIInterface()->StopFlying();
 		_unit->GetAIInterface()->m_canMove = true;
 		_unit->CastSpell(_unit, IMMUNITY_FROST, true);
 
@@ -2929,7 +2929,7 @@ public:
 
 		_unit->GetAIInterface()->setMoveType(MOVEMENTTYPE_DONTMOVEWP);
 		_unit->GetAIInterface()->SetAllowedToEnterCombat(true);
-		_unit->GetAIInterface()->m_moveFly = false;
+		_unit->GetAIInterface()->StopFlying();
 		_unit->GetAIInterface()->m_canMove = true;
 
 		WorldPacket data(SMSG_MOVE_UNSET_HOVER, 13);
@@ -2979,7 +2979,7 @@ public:
 
 		_unit->GetAIInterface()->setMoveType(MOVEMENTTYPE_DONTMOVEWP);
 		_unit->GetAIInterface()->SetAllowedToEnterCombat(true);
-		_unit->GetAIInterface()->m_moveFly = false;
+		_unit->GetAIInterface()->StopFlying();
 		_unit->GetAIInterface()->m_canMove = true;
 
 		WorldPacket data(SMSG_MOVE_UNSET_HOVER, 13);
@@ -3194,7 +3194,7 @@ public:
 					}
 				}
 
-				_unit->GetAIInterface()->m_moveFly = false;
+				_unit->GetAIInterface()->StopFlying();
 				_unit->Emote(EMOTE_ONESHOT_LAND);
 
 				WorldPacket data(SMSG_MOVE_UNSET_HOVER, 13);
@@ -3340,7 +3340,7 @@ public:
 		if (iWaypointId == 1)
 		{
 			_unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_FROST_BREATH_TRIGGER3, PhaseTwoWP[1].x, PhaseTwoWP[1].y, PhaseTwoWP[1].z, _unit->GetOrientation(), true, false, 0, 0);
-			_unit->GetAIInterface()->m_moveFly = true;
+			_unit->GetAIInterface()->SetFly();
 			_unit->Emote(EMOTE_ONESHOT_LIFTOFF);
 
 			WorldPacket data(SMSG_MOVE_SET_HOVER, 13);
@@ -4608,7 +4608,7 @@ public:
 		spells[0].perctrigger = 0.0f;
 		spells[0].attackstoptimer = 1000;
 
-		_unit->GetAIInterface()->m_moveRun = true;
+		_unit->GetAIInterface()->SetRun();
 		_unit->m_noRespawn = true;
 
 		OnStart = false;

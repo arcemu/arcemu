@@ -508,8 +508,6 @@ namespace lua_engine
 				.method( &AIInterface::deleteWaypoints, "deleteWayPoints", "DeleteWayPoints", "deletewaypoints", NULL)
 				.method( &AIInterface::setMoveType, "setmovetype", "SetMoveType", "setMoveType", NULL)
 				.method( &AIInterface::getMoveType, "getMoveType", "GetMoveType", "getmovetype", NULL)
-				.method( &AIInterface::setMoveRunFlag, "setmoverunflag", "setMoveRunFlag", "SetMoveRunFlag", NULL)
-				.method( &AIInterface::getMoveRunFlag, "getmoverunflag", "getMoveRunFlag", "GetMoveRunFlag", NULL)
 				.method( &AIInterface::setWaypointToMove, "setwaypointtomove", "setwaypointomove", "setWayPointToMove", "setWaypointToMove", "SetWaypointToMove", "SetNextWaypoint", "setnextwaypoint", "setNextWaypoint", NULL)
 				.method( &AIInterface::IsFlying, "isFlying", "isflying", "IsFlying", NULL)
 				.method( &AIInterface::getCurrentAgent, "getCurrentAgent", "GetCurrentAgent", "getcurrentagent", NULL)
