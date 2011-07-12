@@ -4221,10 +4221,6 @@ void AIInterface::EventFollowOwner( Unit* pUnit, uint32 misc1 )
 	m_nextSpell = NULL;
 	resetNextTarget();
 	SetRun();
-
-	//test
-	if (m_Unit->IsPet())
-		TO_PET(m_Unit)->smsg_AttackStop(uint64(0));
 }
 
 void AIInterface::EventFear( Unit* pUnit, uint32 misc1 )
