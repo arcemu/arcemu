@@ -68,6 +68,11 @@ bool DeathStrike(uint32 i, Spell* pSpell)
 		count++;
 	if( Target->HasAura(FROST_FEVER) )
 		count++;
+	if( Target->HasAura(EBON_PLAGUE) )
+		count++;
+	if( Target->HasAura(CRYPT_FEVER) )
+		count++;
+		
 
 	if( count )
 	{
