@@ -295,6 +295,9 @@ void CCollideInterface::DeactiveMap( uint32 mapid )
 
 NavMeshData* CCollideInterface::GetNavMesh( uint32 mapId )
 {
+#ifndef TEST_PATHFINDING
+	return NULL;
+#endif
 	NavMeshData* retval = NULL;
 	m_navmaplock.Acquire();
 	std::map<uint32, NavMeshData*>::iterator itr = m_navdata.find(mapId);
