@@ -88,6 +88,7 @@ m_currentSplineUpdateCounter(0),
 m_currentMoveSplineIndex(0xFFFFFFFF),
 m_currentSplineFinalOrientation(0),
 m_splinePriority(SPLINE_PRIORITY_MOVEMENT),
+m_splineFlags(SPLINEFLAG_WALKMODE),
 m_returnX(0),
 m_returnY(0),
 m_returnZ(0),
@@ -3618,14 +3619,16 @@ void AIInterface::_UpdateMovementSpline()
 
 	float o = atan2(current.pos.x - prev.pos.x, current.pos.y - prev.pos.y);
 
-	if (getMSTime() > current.arrive)
+	int curmstime = getMSTime();
+
+	if (curmstime >= current.arrive)
 	{
 		newpos = current.pos;
 		++m_currentMoveSplineIndex;
 		m_currentSplineUpdateCounter = 0;
 	}
 	else
-		newpos = prev.pos - ((prev.pos - current.pos) * float(getMSTime() - current.setoff) / float(current.arrive - current.setoff));
+		newpos = prev.pos - ((prev.pos - current.pos) * float(curmstime - current.setoff) / float(current.arrive - current.setoff));
 
 	m_Unit->SetPosition(newpos.x, newpos.y, newpos.z, o);
 
