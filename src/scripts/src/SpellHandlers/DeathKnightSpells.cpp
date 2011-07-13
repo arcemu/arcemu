@@ -64,14 +64,15 @@ bool DeathStrike(uint32 i, Spell* pSpell)
 	Unit* Target = pSpell->GetUnitTarget();
 
 	int count = 0;
-	if( Target->HasAura(BLOOD_PLAGUE) )
+	if(Target->HasAura(BLOOD_PLAGUE))
 		count++;
-	if( Target->HasAura(FROST_FEVER) )
+	if(Target->HasAura(FROST_FEVER))
 		count++;
-	if( Target->HasAura(EBON_PLAGUE) )
+	if(Target->HasAurasWithNameHash(SPELL_HASH_EBON_PLAGUE))
 		count++;
-	if( Target->HasAura(CRYPT_FEVER) )
+	if(Target->HasAurasWithNameHash(SPELL_HASH_CRYPT_FEVER))
 		count++;
+	count = min(count, 3); //limited to 15% incase spell uniques are wrong for ebon plague and crypt fever
 		
 
 	if( count )
