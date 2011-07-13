@@ -2099,7 +2099,7 @@ public:
 	void DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32 unitEvent, uint32 spellId, bool no_remove_auras = false);
 	void TakeDamage(Unit *pAttacker, uint32 damage, uint32 spellid, bool no_remove_auras = false );
 	void Die( Unit *pAttacker, uint32 damage, uint32 spellid );
-	void knockback( float CasterOrientation, int32 basepoint, uint32 miscvalue, bool invert = false );
+	void HandleKnockback(Object* caster, float horizontal, float vertical);
 
 	 uint32 LastHonorResetTime() const { return m_lastHonorResetTime; }
 	 void LastHonorResetTime(uint32 val) { m_lastHonorResetTime = val; }

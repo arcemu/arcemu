@@ -4595,18 +4595,18 @@ void Spell::SpellEffectSummonCritter(uint32 i)
 
 void Spell::SpellEffectKnockBack(uint32 i)
 {
-	if( playerTarget == NULL || !playerTarget->isAlive() || m_caster == NULL )
+	if(unitTarget == NULL || !unitTarget->isAlive())
 		return;
 
-	playerTarget->knockback( m_caster->GetOrientation(), GetProto()->EffectBasePoints[ i ] + 1, GetProto()->EffectMiscValue[ i ] );
+	unitTarget->HandleKnockback(m_caster, GetProto()->EffectMiscValue[i] / 10, damage / 10);
 }
 
 void Spell::SpellEffectKnockBack2(uint32 i)
 {
-	if( playerTarget == NULL || !playerTarget->isAlive() || m_caster == NULL )
+	if(unitTarget == NULL || !unitTarget->isAlive())
 		return;
 	
-	playerTarget->knockback( m_caster->GetOrientation(), GetProto()->EffectBasePoints[ i ] + 1, GetProto()->EffectMiscValue[ i ], true );
+	unitTarget->HandleKnockback(m_caster, GetProto()->EffectMiscValue[i] / 10, damage / 10);
 }
 
 void Spell::SpellEffectDisenchant( uint32 i )

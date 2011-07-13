@@ -13139,42 +13139,24 @@ void Player::Die( Unit *pAttacker, uint32 damage, uint32 spellid ){
 }
 
 
-void Player::knockback( float CasterOrientation, int32 basepoint, uint32 miscvalue, bool invert ){
-	float dx, dy;
-	float value1 = float( basepoint );
-	float value2 = float( miscvalue );
-	float proportion;
-	float multiplier;
-
-	if( invert )
-		multiplier = -1.0f;
-	else
-		multiplier = 1.0f;
-
-	if( value2 != 0 )
-		proportion = value1 / value2;
-	else
-		proportion = 0;
-
-	if(proportion){
-		value1 = value1 / (10 * proportion);
-		value2 = value2 / 10 * proportion;
-	}else{
-		value2 = value1 / 10;
-		value1 = 0.1f;
-	}
-
-	dx = sinf( CasterOrientation );
-	dy = cosf( CasterOrientation );
+void Player::HandleKnockback( Object* caster, float horizontal, float vertical )
+{
+	if (caster == NULL)
+		caster = this;
+	float angle = calcRadAngle(caster->GetPositionX(), caster->GetPositionY(), GetPositionX(), GetPositionY());
+	if (caster == this)
+		angle = GetOrientation() + M_PI;
+	float sin = sinf(angle);
+	float cos = cosf(angle);
 
 	WorldPacket data(SMSG_MOVE_KNOCK_BACK, 50);
 
 	data << GetNewGUID();
 	data << uint32( getMSTime() );
-	data << float( multiplier * dy );
-	data << float( multiplier * dx );
-	data << float( value1 );
-	data << float( -value2 );
+	data << float(cos);
+	data << float(sin);
+	data << float(horizontal);
+	data << float(-vertical);
 	
 	GetSession()->SendPacket( &data );
 	

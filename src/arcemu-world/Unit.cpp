@@ -8140,3 +8140,65 @@ uint32 Unit::GetAuraCountWithDispelType(uint32 dispel_type, uint64 guid)
 	return result;
 }
 
+void Unit::HandleKnockback( Object* caster, float horizontal, float vertical )
+{
+	//This is in unit and not creature because players who are mind controlled must use this.
+	if (caster == NULL)
+		caster = this;
+	float angle = calcRadAngle(caster->GetPositionX(), caster->GetPositionY(), GetPositionX(), GetPositionY());
+	if (caster == this)
+		angle = GetOrientation() + M_PI;
+
+	float destx = GetPositionX() + horizontal * cos(angle);
+	float desty = GetPositionY() + horizontal * sin(angle);
+	float destz = GetMapMgr()->GetLandHeight(destx, desty, GetPositionZ() + 2);
+
+	float testx, testy, testz;
+
+	if (CollideInterface.GetFirstPoint(GetMapId(), GetPositionX(), GetPositionY(), GetPositionZ() + 2, destx, desty, destz + 2, testx, testy, testz, -0.5f))
+	{
+		//hit something
+		destx = testx;
+		desty = testy;
+		destz = testz;
+	}
+
+	destz = GetMapMgr()->GetLandHeight(destx, desty, destz + 2);
+
+
+	NavMeshData* nav = CollideInterface.GetNavMesh(GetMapId());
+
+	if (nav != NULL)
+	{
+		//raycast nav mesh to see if this place is valid
+		float start[3] = { GetPositionY(), GetPositionZ(), GetPositionX() };
+		float end[3] = { desty, destz, destx };
+		float extents[3] = { 3, 5, 3 };
+		dtQueryFilter filter;
+		filter.setIncludeFlags(NAV_GROUND | NAV_WATER | NAV_SLIME | NAV_MAGMA);
+
+		dtPolyRef startref;
+		nav->query->findNearestPoly(start, extents, &filter, &startref, NULL);
+
+		float hitpos;
+		float hitnormal[3];
+		dtPolyRef path[256];
+		int32 pathcount;
+		nav->query->raycast(startref, start, end, &filter, &hitpos, hitnormal, path, &pathcount, 256);
+
+		if (hitpos < 1) //we've hit something, modify end to our new values
+		{
+			end[0] = start[0] + (end[0] - start[0]) * hitpos;
+			end[1] = start[1] + (end[1] - start[1]) * hitpos;
+			end[2] = start[2] + (end[2] - start[2]) * hitpos;
+		}
+
+		//copy end back to function floats
+		desty = end[0];
+		destz = end[1];
+		destx = end[2];
+	}
+
+	GetAIInterface()->MoveKnockback(destx, desty, destz, horizontal, vertical);
+}
+

@@ -87,6 +87,7 @@ m_last_target_y(0),
 m_currentSplineUpdateCounter(0),
 m_currentMoveSplineIndex(0xFFFFFFFF),
 m_currentSplineFinalOrientation(0),
+m_splinePriority(SPLINE_PRIORITY_MOVEMENT),
 m_returnX(0),
 m_returnY(0),
 m_returnZ(0),
@@ -257,7 +258,7 @@ void AIInterface::Update(uint32 p_time)
 					m_returnZ = m_Unit->GetSpawnZ();
 				}
 
-				MoveTo(m_returnX, m_returnY, m_returnZ, m_Unit->GetSpawnO());
+				MoveEvadeReturn();
 			}
 		}
 	}
@@ -1795,6 +1796,13 @@ void AIInterface::SendMoveToPacket()
 			data << uint8(0);
 		data << m_splineFlags;
 		data << m_currentSplineTotalMoveTime;
+
+		if (m_splineFlags & SPLINEFLAG_TRAJECTORY)
+		{
+			data << m_splinetrajectoryVertical;
+			data << m_splinetrajectoryTime;
+		}
+
 		data << uint32(m_currentMoveSpline.size() - 1);
 
 		SplinePoint & finalpoint = m_currentMoveSpline[m_currentMoveSpline.size() - 1];
@@ -1833,6 +1841,7 @@ void AIInterface::SendMoveToPacket()
 
 bool AIInterface::StopMovement(uint32 time)
 {
+	m_splinePriority = SPLINE_PRIORITY_MOVEMENT;
 	_UpdateMovementSpline();
 	m_moveTimer = time; //set pause after stopping
 
@@ -3622,11 +3631,18 @@ void AIInterface::_UpdateMovementSpline()
 
 	//current spline is finished, attempt to move along next
 	if (m_currentSplineUpdateCounter == 0)
-		_UpdateMovementSpline();
+	{
+		if (MoveDone())
+			OnMoveCompleted();
+		else
+			_UpdateMovementSpline();
+	}
 }
 
 bool AIInterface::Move( float & x, float & y, float & z, float o /*= 0*/ )
 {
+	if (m_splinePriority > SPLINE_PRIORITY_MOVEMENT)
+		return false;
 	//Make sure our position is up to date
 	_UpdateMovementSpline();
 
@@ -3732,13 +3748,13 @@ bool AIInterface::CreatePath( float x, float y, float z, float dist /*= 0*/ )
 		return false;
 
 	float points[64 * 3];
-	int pointcount;
+	int32 pointcount;
 	bool usedoffmesh;
 
 	findSmoothPath(start, end, path, pathcount, points, &pointcount, usedoffmesh, 64, nav->mesh, nav->query, filter);
 
 	//add to spline
-	for (uint32 i = 0; i < pointcount; ++i)
+	for (int32 i = 0; i < pointcount; ++i)
 		AddSpline(points[i * 3 + 2], points[i * 3 + 0], points[i * 3 + 1]);
 	return true;
 }
@@ -4131,24 +4147,13 @@ void AIInterface::EventLeaveCombat( Unit* pUnit, uint32 misc1 )
 		if(m_Unit->isAlive())
 		{
 			if(m_returnX != 0.0f && m_returnY != 0.0f && m_returnZ != 0.0f)
-			{
-				if (!MoveTo(m_returnX, m_returnY, m_returnZ, m_Unit->GetSpawnO()))
-				{
-					m_Unit->SetPosition(m_returnX, m_returnY, m_returnZ, m_Unit->GetSpawnO());
-					StopMovement(0);
-				}
-			}
+				MoveEvadeReturn();
 			else
 			{
 				m_returnX = m_Unit->GetSpawnX();
 				m_returnY = m_Unit->GetSpawnY();
 				m_returnZ = m_Unit->GetSpawnZ();
-
-				if (!MoveTo(m_returnX, m_returnY, m_returnZ, m_Unit->GetSpawnO()))
-				{
-					m_Unit->SetPosition(m_returnX, m_returnY, m_returnZ, m_Unit->GetSpawnO());
-					StopMovement(0);
-				}
+				MoveEvadeReturn();
 			}
 
 			Creature *aiowner = TO< Creature* >(m_Unit);
@@ -4428,4 +4433,76 @@ void AIInterface::EventHostileAction( Unit* pUnit, uint32 misc1 )
 	m_combatResetX = m_Unit->GetPositionX();
 	m_combatResetY = m_Unit->GetPositionY();
 	m_combatResetZ = m_Unit->GetPositionZ();
+}
+
+void AIInterface::MoveKnockback( float x, float y, float z, float horizontal, float vertical )
+{
+	HandleEvent(EVENT_KNOCKEDBACK, NULL, 0);
+	m_splinePriority = SPLINE_PRIORITY_REDIRECTION;
+
+	//Clear current spline
+	m_currentMoveSpline.clear();
+	m_currentMoveSplineIndex = 1;
+	m_currentSplineUpdateCounter = 0;
+	m_currentSplineTotalMoveTime = 0;
+	m_currentSplineFinalOrientation = 0;
+
+	m_splinetrajectoryTime = 0;
+	m_splinetrajectoryVertical = vertical;
+
+	SetRun();
+	m_runSpeed *= 3;
+	//lets say vertical being 7.5 would give us 100% of our speed towards target
+	//anything higher gets a proportional loss of speed
+	//this is for spells which knock you up high, but for a short distance
+	float speedmod = vertical / 7.5;
+	m_runSpeed /= speedmod;
+
+
+	AddSpline(m_Unit->GetPositionX(), m_Unit->GetPositionY(), m_Unit->GetPositionZ());
+	AddSpline(x, y, z);
+
+	AddSplineFlag(SPLINEFLAG_TRAJECTORY | SPLINEFLAG_KNOCKBACK);
+
+	SendMoveToPacket();
+
+	//fix run speed
+	UpdateSpeeds();
+}
+
+void AIInterface::OnMoveCompleted()
+{
+	uint32 splineflags = m_splineFlags;
+
+	//remove trajectory flag
+	RemoveSplineFlag(SPLINEFLAG_TRAJECTORY | SPLINEFLAG_KNOCKBACK);
+
+	//reset spline priority so other movements can happen
+	m_splinePriority = SPLINE_PRIORITY_MOVEMENT;
+
+	if (splineflags & SPLINEFLAG_KNOCKBACK && m_AIState == STATE_IDLE)
+	{
+		m_AIState = STATE_EVADE;
+		MoveEvadeReturn();
+	}
+}
+
+void AIInterface::MoveEvadeReturn()
+{
+	if (!MoveTo(m_returnX, m_returnY, m_returnZ, m_Unit->GetSpawnO()) && m_splinePriority == SPLINE_PRIORITY_MOVEMENT)
+	{
+		m_Unit->SetPosition(m_returnX, m_returnY, m_returnZ, m_Unit->GetSpawnO());
+		StopMovement(0);
+	}
+}
+
+void AIInterface::EventKnockedBack( Unit* pUnit, uint32 misc1 )
+{
+	//if we're not in combat, set return position so OnMoveComplete can move us back
+	if (m_AIState == STATE_IDLE)
+	{
+		m_returnX = m_Unit->GetPositionX();
+		m_returnY = m_Unit->GetPositionX();
+		m_returnZ = m_Unit->GetPositionX();
+	}
 }

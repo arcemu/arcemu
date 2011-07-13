@@ -106,6 +106,12 @@ enum WalkMode
 	WALKMODE_WALK,
 };
 
+enum SplinePriority
+{
+	SPLINE_PRIORITY_MOVEMENT,
+	SPLINE_PRIORITY_REDIRECTION,
+};
+
 
 enum AIType
 {
@@ -368,6 +374,7 @@ public:
 	// Event Handler
 	void HandleEvent(uint32 event, Unit* pUnit, uint32 misc1);
 
+	void EventKnockedBack( Unit* pUnit, uint32 misc1 );
 	void EventHostileAction( Unit* pUnit, uint32 misc1 );
 	void EventUnitDied( Unit* pUnit, uint32 misc1 );
 	void EventUnwander( Unit* pUnit, uint32 misc1 );
@@ -401,6 +408,8 @@ public:
 	//Move flag updating
 	void SetSplineFlag(uint32 flags) { m_splineFlags = flags; }
 	uint32 HasSplineFlag(uint32 flags) { return m_splineFlags & flags; }
+	void AddSplineFlag(uint32 flags) { m_splineFlags |= flags; }
+	void RemoveSplineFlag(uint32 flags) { m_splineFlags &= ~flags; }
 	bool Flying() { return HasSplineFlag(SPLINEFLAG_FLYING) != 0; }
 	void SetFly() { SetSplineFlag(SPLINEFLAG_FLYING); }
 	void SetSprint() { if (Flying()) return; SetSplineFlag(SPLINEFLAG_WALKMODE); SetWalkMode(WALKMODE_SPRINT); UpdateSpeeds(); }
@@ -544,16 +553,15 @@ protected:
 	void AddSpline(float x, float y, float z);
 	bool Move(float & x, float & y, float & z, float o = 0);
 	bool MoveDone() { return m_currentMoveSplineIndex >= m_currentMoveSpline.size(); }
+	void OnMoveCompleted();
+
+	void MoveEvadeReturn();
+
 	bool CreatePath(float x, float y, float z, float dist = 0);
 	dtStatus findSmoothPath(const float* startPos, const float* endPos, const dtPolyRef* polyPath, const uint32 polyPathSize, float* smoothPath, int* smoothPathSize, bool &usedOffmesh, const uint32 maxSmoothPathSize, dtNavMesh* mesh, dtNavMeshQuery* query, dtQueryFilter & filter);
 	bool getSteerTarget(const float* startPos, const float* endPos, const float minTargetDist, const dtPolyRef* path, const uint32 pathSize, float* steerPos, unsigned char& steerPosFlag, dtPolyRef& steerPosRef, dtNavMeshQuery* query);
 	uint32 fixupCorridor(dtPolyRef* path, const uint32 npath, const uint32 maxPath,
 		const dtPolyRef* visited, const uint32 nvisited);
-
-	void MoveKnockback(float x, float y, float z)
-	{
-
-	}
 
 	bool m_updateAssist;
 	bool m_updateTargets;
@@ -612,7 +620,10 @@ protected:
 	uint32 m_currentMoveSplineIndex;
 	uint32 m_currentSplineUpdateCounter;
 	float m_currentSplineFinalOrientation;
+	float m_splinetrajectoryVertical;
+	uint32 m_splinetrajectoryTime;
 	uint32 m_currentSplineTotalMoveTime;
+	uint32 m_splinePriority;
 
 	//Return position after attacking a mob
 	float m_returnX;
@@ -652,5 +663,7 @@ public:
 	bool skip_reset_hp;
 
 	void WipeCurrentTarget();
+
+	void MoveKnockback(float x, float y, float z, float horizontal, float vertical);
 };
 #endif

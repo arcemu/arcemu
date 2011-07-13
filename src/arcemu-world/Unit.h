@@ -1792,6 +1792,8 @@ public:
 	virtual void Die( Unit *pAttacker, uint32 damage, uint32 spellid );
 	virtual bool isCritter(){ return false; }
 
+	virtual void HandleKnockback(Object* caster, float horizontal, float vertical);
+
 	void AddGarbagePet( Pet *pet );
 
 protected:
