@@ -284,11 +284,7 @@ include(PCHSupport)
 include_directories( ${GLOBAL_INCLUDE_DIRS} )
 link_directories( ${DEPENDENCY_LIBS} ${EXTRA_LIBS_PATH} )
 
-IF( CMAKE_GENERATOR MATCHES "Visual Studio 10")
-	add_executable( ${PROJECT_NAME} ${SRCS} ${HEADERS} )
-ELSE()
-	add_executable( ${PROJECT_NAME} ${SRCS} )
-ENDIF()
+add_executable( ${PROJECT_NAME} ${SRCS} ${HEADERS} )
 
 IF( CMAKE_GENERATOR MATCHES Visual*)
 	ADD_NATIVE_PRECOMPILED_HEADER(${PROJECT_NAME} StdAfx.h ${prefix}/StdAfx.cpp)

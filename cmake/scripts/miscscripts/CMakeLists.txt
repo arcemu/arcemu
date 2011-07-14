@@ -32,6 +32,6 @@ ENDIF()
 
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION ${ARCEMU_SCRIPTLIB_PATH} LIBRARY DESTINATION ${ARCEMU_SCRIPTLIB_PATH})
 #Cleap up our variables(Not required.)
-unset( prefix)
+unset( prefix )
 unset( SRCS )
 unset( sources )
