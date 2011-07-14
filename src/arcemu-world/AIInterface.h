@@ -374,7 +374,7 @@ public:
 	// Event Handler
 	void HandleEvent(uint32 event, Unit* pUnit, uint32 misc1);
 
-	void EventKnockedBack( Unit* pUnit, uint32 misc1 );
+	void EventForceRedirected( Unit* pUnit, uint32 misc1 );
 	void EventHostileAction( Unit* pUnit, uint32 misc1 );
 	void EventUnitDied( Unit* pUnit, uint32 misc1 );
 	void EventUnwander( Unit* pUnit, uint32 misc1 );
@@ -396,6 +396,8 @@ public:
 
 	// Update
 	virtual void Update(uint32 p_time);
+
+	void SetReturnPosition();
 
 	void _UpdateTotem( uint32 p_time );
 
@@ -665,5 +667,6 @@ public:
 	void WipeCurrentTarget();
 
 	void MoveKnockback(float x, float y, float z, float horizontal, float vertical);
+	void MoveLeap(float x, float y, float z);
 };
 #endif

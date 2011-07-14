@@ -5768,6 +5768,49 @@ void Spell::HandleModeratedEffects( uint64 guid )
 	DecRef();
 }
 
+void Spell::SpellEffectJumpBehindTarget( uint32 i )
+{
+	if (u_caster == NULL)
+		return;
+	if (m_targets.m_targetMask & TARGET_FLAG_UNIT)
+	{
+		Object* uobj = m_caster->GetMapMgr()->_GetObject(m_targets.m_unitTarget);
+
+		if (uobj == NULL || !uobj->IsUnit())
+			return;
+		Unit* un = TO_UNIT(uobj);
+		float rad = un->GetBoundingRadius();
+		float angle = un->GetOrientation() + M_PI; //behind
+		float x = un->GetPositionX() + cosf(angle) * rad;
+		float y = un->GetPositionY() + sinf(angle) * rad;
+		float z = un->GetPositionZ();
+
+		if (u_caster->GetAIInterface() != NULL)
+			u_caster->GetAIInterface()->MoveLeap(x, y, z);
+	}
+	else if (m_targets.m_targetMask & TARGET_FLAG_SOURCE_LOCATION | TARGET_FLAG_DEST_LOCATION)
+	{
+		float x, y, z;
+
+		//this can also jump to a point
+		if (m_targets.m_targetMask & TARGET_FLAG_SOURCE_LOCATION)
+		{
+			x = m_targets.m_srcX;
+			y = m_targets.m_srcY;
+			z = m_targets.m_srcZ;
+		}
+		if (m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION)
+		{
+			x = m_targets.m_destX;
+			y = m_targets.m_destY;
+			z = m_targets.m_destZ;
+		}
+
+		if (u_caster->GetAIInterface() != NULL)
+			u_caster->GetAIInterface()->MoveLeap(x, y, z);
+	}
+}
+
 //Logs if the spell doesn't exist, using Debug loglevel.
 SpellEntry* CheckAndReturnSpellEntry(uint32 spellid)
 {

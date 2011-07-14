@@ -62,8 +62,8 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS]={
 	&Spell::SpellEffectDispel,					//SPELL_EFFECT_DISPEL - 38
 	&Spell::SpellEffectNULL,                    //SPELL_EFFECT_LANGUAGE - 39
 	&Spell::SpellEffectDualWield,				//SPELL_EFFECT_DUAL_WIELD - 40
-	&Spell::SpellEffectSummonWild,				//SPELL_EFFECT_SUMMON_WILD - 41
-	&Spell::SpellEffectNULL,					//SPELL_EFFECT_JUMP_BEHIND_TARGET - 42
+	&Spell::SpellEffectJumpTarget,				//SPELL_EFFECT_JUMP_TARGET - 41
+	&Spell::SpellEffectJumpBehindTarget,		//SPELL_EFFECT_JUMP_BEHIND_TARGET - 42
 	&Spell::SpellEffectNULL,					//SPELL_EFFECT_TELEPORT_UNITS_FACE_CASTER - 43
 	&Spell::SpellEffectSkillStep,				//SPELL_EFFECT_SKILL_STEP - 44
 	&Spell::SpellEffectAddHonor,				//SPELL_ADD_HONOR - 45

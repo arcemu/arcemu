@@ -5575,14 +5575,6 @@ void ApplyNormalFixes()
 			sp->is_melee_spell = true;
 		}
 
-		sp = CheckAndReturnSpellEntry(49376); //feral charge cat
-		if( sp != NULL )
-		{
-			sp->Effect[1] = SPELL_EFFECT_CHARGE; //hackfix (meant to use trigger missile which isn't implemented)
-			sp->EffectImplicitTargetA[1] = EFF_TARGET_SINGLE_ENEMY;
-			sp->Effect[2] = SPELL_EFFECT_NULL;
-		}
-
 		sp = CheckAndReturnSpellEntry(20719); //feline grace
 		if( sp != NULL )
 			sp->Effect[0] = SPELL_EFFECT_NULL;

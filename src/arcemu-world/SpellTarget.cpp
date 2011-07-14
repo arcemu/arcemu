@@ -353,7 +353,7 @@ void Spell::AddAOETargets(uint32 i, uint32 TargetType, float r, uint32 maxtarget
 		source = tarobj->GetPosition();
 	else
 	{
-		m_targets.m_targetMask = TARGET_FLAG_DEST_LOCATION;
+		m_targets.m_targetMask |= TARGET_FLAG_DEST_LOCATION;
 		source.x = m_targets.m_destX;
 		source.y = m_targets.m_destY;
 		source.z = m_targets.m_destZ;

@@ -234,7 +234,7 @@ void AIInterface::Update(uint32 p_time)
 	_UpdateMovementSpline();
 	_UpdateMovement(p_time);
 
-	if(m_AIState==STATE_EVADE)
+	if(m_AIState == STATE_EVADE)
 	{
 		tdist = m_Unit->GetDistanceSq(m_returnX, m_returnY, m_returnZ);
 		if(tdist <= 4.0f)
@@ -254,9 +254,8 @@ void AIInterface::Update(uint32 p_time)
 				// return to the home
 				if(m_returnX == 0.0f && m_returnY == 0.0f)
 				{
-					m_returnX = m_Unit->GetSpawnX();
-					m_returnY = m_Unit->GetSpawnY();
-					m_returnZ = m_Unit->GetSpawnZ();
+					SetReturnPosition();
+
 				}
 
 				MoveEvadeReturn();
@@ -3995,9 +3994,7 @@ void AIInterface::EventEnterCombat( Unit* pUnit, uint32 misc1 )
 
 	if (misc1 == 0)
 	{
-		m_returnX = m_Unit->GetPositionX();
-		m_returnY = m_Unit->GetPositionY();
-		m_returnZ = m_Unit->GetPositionZ();
+		SetReturnPosition();
 
 		m_combatResetX = pUnit->GetPositionX();
 		m_combatResetY = pUnit->GetPositionY();
@@ -4149,15 +4146,8 @@ void AIInterface::EventLeaveCombat( Unit* pUnit, uint32 misc1 )
 
 		if(m_Unit->isAlive())
 		{
-			if(m_returnX != 0.0f && m_returnY != 0.0f && m_returnZ != 0.0f)
-				MoveEvadeReturn();
-			else
-			{
-				m_returnX = m_Unit->GetSpawnX();
-				m_returnY = m_Unit->GetSpawnY();
-				m_returnZ = m_Unit->GetSpawnZ();
-				MoveEvadeReturn();
-			}
+			SetReturnPosition();
+			MoveEvadeReturn();
 
 			Creature *aiowner = TO< Creature* >(m_Unit);
 			//clear tagger.
@@ -4440,7 +4430,7 @@ void AIInterface::EventHostileAction( Unit* pUnit, uint32 misc1 )
 
 void AIInterface::MoveKnockback( float x, float y, float z, float horizontal, float vertical )
 {
-	HandleEvent(EVENT_KNOCKEDBACK, NULL, 0);
+	HandleEvent(EVENT_FORCEREDIRECTED, NULL, 0);
 	m_splinePriority = SPLINE_PRIORITY_REDIRECTION;
 
 	//Clear current spline
@@ -4483,7 +4473,8 @@ void AIInterface::OnMoveCompleted()
 	//reset spline priority so other movements can happen
 	m_splinePriority = SPLINE_PRIORITY_MOVEMENT;
 
-	if (splineflags & SPLINEFLAG_KNOCKBACK && m_AIState == STATE_IDLE)
+	//we've been knocked somewhere without entering combat, move back
+	if (m_AIState == STATE_IDLE && m_returnX != 0.0f && m_returnY != 0.0f && m_returnZ != 0.0f)
 	{
 		m_AIState = STATE_EVADE;
 		MoveEvadeReturn();
@@ -4499,13 +4490,45 @@ void AIInterface::MoveEvadeReturn()
 	}
 }
 
-void AIInterface::EventKnockedBack( Unit* pUnit, uint32 misc1 )
+void AIInterface::EventForceRedirected( Unit* pUnit, uint32 misc1 )
 {
-	//if we're not in combat, set return position so OnMoveComplete can move us back
 	if (m_AIState == STATE_IDLE)
-	{
-		m_returnX = m_Unit->GetPositionX();
-		m_returnY = m_Unit->GetPositionX();
-		m_returnZ = m_Unit->GetPositionX();
-	}
+		SetReturnPosition();
+}
+
+void AIInterface::MoveLeap( float x, float y, float z )
+{
+	m_splinePriority = SPLINE_PRIORITY_REDIRECTION;
+
+	//Clear current spline
+	m_currentMoveSpline.clear();
+	m_currentMoveSplineIndex = 1;
+	m_currentSplineUpdateCounter = 0;
+	m_currentSplineTotalMoveTime = 0;
+	m_currentSplineFinalOrientation = 0;
+
+	m_splinetrajectoryTime = 0;
+	m_splinetrajectoryVertical = 5; //we don't have values for this afaik
+
+	SetRun();
+	m_runSpeed *= 3;
+
+	AddSpline(m_Unit->GetPositionX(), m_Unit->GetPositionY(), m_Unit->GetPositionZ());
+	AddSpline(x, y, z);
+
+	AddSplineFlag(SPLINEFLAG_TRAJECTORY);
+
+	SendMoveToPacket();
+
+	//fix run speed
+	UpdateSpeeds();
+}
+
+void AIInterface::SetReturnPosition()
+{
+	if (m_returnX != 0.0f && m_returnY != 0.0f && m_returnZ != 0.0f) //already returning somewhere
+		return;
+	m_returnX = m_Unit->GetSpawnX();
+	m_returnY = m_Unit->GetSpawnY();
+	m_returnZ = m_Unit->GetSpawnZ();
 }
