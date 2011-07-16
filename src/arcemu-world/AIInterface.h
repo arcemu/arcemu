@@ -559,7 +559,7 @@ protected:
 
 	void MoveEvadeReturn();
 
-	bool CreatePath(float x, float y, float z, float dist = 0);
+	bool CreatePath(float x, float y, float z,  bool onlytest = false);
 	dtStatus findSmoothPath(const float* startPos, const float* endPos, const dtPolyRef* polyPath, const uint32 polyPathSize, float* smoothPath, int* smoothPathSize, bool &usedOffmesh, const uint32 maxSmoothPathSize, dtNavMesh* mesh, dtNavMeshQuery* query, dtQueryFilter & filter);
 	bool getSteerTarget(const float* startPos, const float* endPos, const float minTargetDist, const dtPolyRef* path, const uint32 pathSize, float* steerPos, unsigned char& steerPosFlag, dtPolyRef& steerPosRef, dtNavMeshQuery* query);
 	uint32 fixupCorridor(dtPolyRef* path, const uint32 npath, const uint32 maxPath,
@@ -666,6 +666,7 @@ public:
 
 	void WipeCurrentTarget();
 
+	bool CanCreatePath(float x, float y, float z) { return CreatePath(x, y, z, true); }
 	void MoveKnockback(float x, float y, float z, float horizontal, float vertical);
 	void MoveLeap(float x, float y, float z, float o = 0);
 };

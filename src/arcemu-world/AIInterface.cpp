@@ -3717,7 +3717,7 @@ void AIInterface::AddSpline( float x, float y, float z )
 	m_currentMoveSpline.push_back(p);
 }
 
-bool AIInterface::CreatePath( float x, float y, float z, float dist /*= 0*/ )
+bool AIInterface::CreatePath( float x, float y, float z, bool onlytest /*= false*/ )
 {
 	//make sure current spline is updated
 
@@ -3744,7 +3744,8 @@ bool AIInterface::CreatePath( float x, float y, float z, float dist /*= 0*/ )
 	dtPolyRef path[256];
 	int pathcount;
 
-	nav->query->findPath(startref, endref, start, end, &filter, path, &pathcount, 256);
+	if (nav->query->findPath(startref, endref, start, end, &filter, path, &pathcount, 256) != DT_SUCCESS)
+		return false;
 
 	if (pathcount == 0 || path[pathcount - 1] != endref)
 		return false;
@@ -3753,11 +3754,15 @@ bool AIInterface::CreatePath( float x, float y, float z, float dist /*= 0*/ )
 	int32 pointcount;
 	bool usedoffmesh;
 
-	findSmoothPath(start, end, path, pathcount, points, &pointcount, usedoffmesh, 64, nav->mesh, nav->query, filter);
+	if (findSmoothPath(start, end, path, pathcount, points, &pointcount, usedoffmesh, 64, nav->mesh, nav->query, filter) != DT_SUCCESS)
+		return false;
 
 	//add to spline
-	for (int32 i = 0; i < pointcount; ++i)
-		AddSpline(points[i * 3 + 2], points[i * 3 + 0], points[i * 3 + 1]);
+	if (!onlytest)
+	{
+		for (int32 i = 0; i < pointcount; ++i)
+			AddSpline(points[i * 3 + 2], points[i * 3 + 0], points[i * 3 + 1]);
+	}
 	return true;
 }
 
@@ -4532,3 +4537,4 @@ void AIInterface::SetReturnPosition()
 	m_returnY = m_Unit->GetSpawnY();
 	m_returnZ = m_Unit->GetSpawnZ();
 }
+
