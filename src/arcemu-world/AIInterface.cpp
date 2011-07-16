@@ -4541,3 +4541,43 @@ void AIInterface::SetReturnPosition()
 	m_returnZ = m_Unit->GetSpawnZ();
 }
 
+bool AIInterface::MoveCharge( float x, float y, float z )
+{
+	m_splinePriority = SPLINE_PRIORITY_REDIRECTION;
+
+	//Clear current spline
+	m_currentMoveSpline.clear();
+	m_currentMoveSplineIndex = 1;
+	m_currentSplineUpdateCounter = 0;
+	m_currentSplineTotalMoveTime = 0;
+	m_currentSplineFinalOrientation = 0;
+
+	SetRun();
+
+	m_runSpeed *= 3.5f;
+
+#ifdef TEST_PATHFINDING
+	if (!Flying())
+	{
+		if (!CreatePath(x, y, z))
+		{
+			StopMovement(0); //old spline is probly still active on client, need to keep in sync
+			return false;
+		}
+	}
+	else
+	{
+		AddSpline(m_Unit->GetPositionX(), m_Unit->GetPositionY(), m_Unit->GetPositionZ());
+		AddSpline(x, y, z);
+	}
+#else
+	AddSpline(m_Unit->GetPositionX(), m_Unit->GetPositionY(), m_Unit->GetPositionZ());
+	AddSpline(x, y, z);
+#endif
+
+	UpdateSpeeds(); //reset run speed
+
+	SendMoveToPacket();
+	return true;
+}
+

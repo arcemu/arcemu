@@ -4483,61 +4483,31 @@ void Spell::SpellEffectSkinning(uint32 i)
 
 void Spell::SpellEffectCharge(uint32 i)
 {
-	if(!unitTarget || !unitTarget->isAlive()) return;
+	if (unitTarget == NULL || !unitTarget->isAlive())
+		return;
 	if (u_caster->IsStunned() || u_caster->m_rooted || u_caster->IsPacified() || u_caster->IsFeared())
 		return;
 
 	float x, y, z;
-	float dx,dy;
-	//if(unitTarget->GetTypeId() == TYPEID_UNIT)
-	//	if(unitTarget->GetAIInterface())
-	//		unitTarget->GetAIInterface()->StopMovement(5000);
-	if(unitTarget->GetPositionX() == 0.0f || unitTarget->GetPositionY() == 0.0f)
-		return;
-	dx=unitTarget->GetPositionX()-m_caster->GetPositionX();
-	dy=unitTarget->GetPositionY()-m_caster->GetPositionY();
+	float rad = unitTarget->GetBoundingRadius() - u_caster->GetBoundingRadius();
+
+	float dx = m_caster->GetPositionX() - unitTarget->GetPositionX();
+	float dy = m_caster->GetPositionY() - unitTarget->GetPositionY();
 	if(dx == 0.0f || dy == 0.0f)
 		return;
-	float d = sqrt(dx*dx+dy*dy)-unitTarget->GetBoundingRadius()-u_caster->GetBoundingRadius();
-	float alpha = atanf(dy/dx);
-	if(dx<0)
+	float alpha = atanf(dy / dx);
+	if(dx < 0)
 		alpha += M_PI_FLOAT;
 
-	x = d * cosf(alpha) + m_caster->GetPositionX();
-	y = d * sinf(alpha) + m_caster->GetPositionY();
+	x = rad * cosf(alpha) + unitTarget->GetPositionX();
+	y = rad * sinf(alpha) + unitTarget->GetPositionY();
 	z = unitTarget->GetPositionZ();
 
-	uint32 time = uint32( (m_caster->CalcDistance(unitTarget) / ((m_caster->m_runSpeed * 3.5) * 0.001f)) + 0.5);
-
-	WorldPacket data(SMSG_MONSTER_MOVE, 50);
-	data << m_caster->GetNewGUID();
-	data << uint8(0);
-	data << m_caster->GetPositionX();
-	data << m_caster->GetPositionY();
-	data << m_caster->GetPositionZ();
-	data << getMSTime();
-	data << uint8(0x00);
-	data << uint32(0x00001000);
-	data << time;
-	data << uint32(1);
-	data << x << y << z;
-	if(unitTarget->IsCreature())
-		unitTarget->GetAIInterface()->StopMovement(2000);
-
-	u_caster->SendMessageToSet(&data, true);
-
-	u_caster->SetPosition(x,y,z,alpha,true);
-	u_caster->addStateFlag(UF_ATTACKING);
-	u_caster ->smsg_AttackStart( unitTarget );
-	u_caster->setAttackTimer(time, false);
-	u_caster->setAttackTimer(time, true);
-
-	// trigger an event to reset speedhack detection
-	if( p_caster )
+	if (!u_caster->GetAIInterface()->MoveCharge(x, y, z))
 	{
-		p_caster->EventAttackStart();
-		p_caster->SpeedCheatDelay( time + 1000 );
-		p_caster->z_axisposition = 0.0f;
+		//failed
+		SendInterrupted(SPELL_FAILED_NOPATH);
+		SendCastResult(SPELL_FAILED_NOPATH);
 	}
 }
 
