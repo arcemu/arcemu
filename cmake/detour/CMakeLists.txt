@@ -1,6 +1,7 @@
 project(detour)
 
 SET( prefix ${DEPENDENCY_SOURCES}/${PROJECT_NAME} )
+SET( hprefix ${DEPENDENCY_INCLUDE_ROOT}/${PROJECT_NAME} )
 
 SET(sources
 DetourAlloc.cpp
@@ -25,10 +26,11 @@ foreach(src IN ITEMS ${sources} )
   SET( SRCS ${SRCS} ${prefix}/${src} )
 endforeach(src)
 foreach(src IN ITEMS ${headers} )
-  SET( HEADERS ${HEADERS} ${prefix}/${src} )
+  SET( HEADERS ${HEADERS} ${hprefix}/${src} )
 endforeach(src)
 
+
 include_directories( ${GLOBAL_INCLUDE_DIRS} )
-add_library(${PROJECT_NAME} STATIC ${SRCS} )
+add_library(${PROJECT_NAME} STATIC ${SRCS} ${HEADERS} )
 #Set it to the project name.
 set(DETOUR_LIBRARIES ${PROJECT_NAME} CACHE INTERNAL "Detour Libraries")
