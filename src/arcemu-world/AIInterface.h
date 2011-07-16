@@ -551,10 +551,8 @@ protected:
 	void _UpdateTargets();
 	void _UpdateMovement(uint32 p_time);
 	void _UpdateTimer(uint32 p_time);
-	void _UpdateMovementSpline();
 	void AddSpline(float x, float y, float z);
 	bool Move(float & x, float & y, float & z, float o = 0);
-	bool MoveDone() { return m_currentMoveSplineIndex >= m_currentMoveSpline.size(); }
 	void OnMoveCompleted();
 
 	void MoveEvadeReturn();
@@ -666,6 +664,8 @@ public:
 
 	void WipeCurrentTarget();
 
+	void UpdateMovementSpline();
+	bool MoveDone() { return m_currentMoveSplineIndex >= m_currentMoveSpline.size(); }
 	bool CanCreatePath(float x, float y, float z) { return CreatePath(x, y, z, true); }
 	void MoveKnockback(float x, float y, float z, float horizontal, float vertical);
 	void MoveLeap(float x, float y, float z, float o = 0);

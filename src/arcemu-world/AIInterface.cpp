@@ -231,7 +231,7 @@ void AIInterface::Update(uint32 p_time)
 		}
 	}
 
-	_UpdateMovementSpline();
+	UpdateMovementSpline();
 	_UpdateMovement(p_time);
 
 	if(m_AIState == STATE_EVADE)
@@ -1842,7 +1842,7 @@ void AIInterface::SendMoveToPacket()
 bool AIInterface::StopMovement(uint32 time)
 {
 	m_splinePriority = SPLINE_PRIORITY_MOVEMENT;
-	_UpdateMovementSpline();
+	UpdateMovementSpline();
 	m_moveTimer = time; //set pause after stopping
 
 	//Clear current spline
@@ -3598,7 +3598,7 @@ void AIInterface::_UpdateTotem( uint32 p_time )
 	}
 }
 
-void AIInterface::_UpdateMovementSpline()
+void AIInterface::UpdateMovementSpline()
 {
 	if (m_currentMoveSpline.size() == 0 || m_Unit->GetMapMgr()->mLoopCounter == m_currentSplineUpdateCounter)
 		return;
@@ -3637,7 +3637,7 @@ void AIInterface::_UpdateMovementSpline()
 		if (MoveDone())
 			OnMoveCompleted();
 		else
-			_UpdateMovementSpline();
+			UpdateMovementSpline();
 	}
 }
 
@@ -3646,7 +3646,7 @@ bool AIInterface::Move( float & x, float & y, float & z, float o /*= 0*/ )
 	if (m_splinePriority > SPLINE_PRIORITY_MOVEMENT)
 		return false;
 	//Make sure our position is up to date
-	_UpdateMovementSpline();
+	UpdateMovementSpline();
 
 	//Clear current spline
 	m_currentMoveSpline.clear();
@@ -3660,7 +3660,10 @@ bool AIInterface::Move( float & x, float & y, float & z, float o /*= 0*/ )
 	if (!Flying())
 	{
 		if (!CreatePath(x, y, z))
+		{
+			StopMovement(0); //old spline is probly still active on client, need to keep in sync
 			return false;
+		}
 	}
 	else
 	{
