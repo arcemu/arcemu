@@ -38,7 +38,7 @@ void InitImplicitTargetFlags()
 	SET_TARGET_TYPE(15, SPELL_TARGET_AREA_SELF | SPELL_TARGET_REQUIRE_ATTACKABLE);
 	SET_TARGET_TYPE(16, SPELL_TARGET_AREA | SPELL_TARGET_REQUIRE_ATTACKABLE);
 	//SET_TARGET_TYPE(17, SPELL_TARGET_AREA);
-	SET_TARGET_TYPE(18, SPELL_TARGET_AREA_SELF | SPELL_TARGET_REQUIRE_ATTACKABLE);
+	SET_TARGET_TYPE(18, SPELL_TARGET_AREA_SELF | SPELL_TARGET_NO_OBJECT);
 	SET_TARGET_TYPE(20, SPELL_TARGET_AREA_PARTY);
 	SET_TARGET_TYPE(21, SPELL_TARGET_REQUIRE_FRIENDLY);
 	SET_TARGET_TYPE(22, SPELL_TARGET_AREA_SELF);
@@ -104,8 +104,11 @@ void Spell::FillTargetMap(uint32 i)
 	if (m_spellInfo->EffectImplicitTargetB[i] != 0)
 		TargetType |= GetTargetType(m_spellInfo->EffectImplicitTargetB[i], i);
 
-	if (TargetType & (SPELL_TARGET_NOT_IMPLEMENTED | SPELL_TARGET_NO_OBJECT))
+	if (TargetType & SPELL_TARGET_NOT_IMPLEMENTED)
 		return;
+	if (TargetType & SPELL_TARGET_NO_OBJECT) //summon spells that appear infront of caster
+		HandleTargetNoObject();
+
 
 	//always add this guy :P
 	if (!(TargetType & (SPELL_TARGET_AREA | SPELL_TARGET_AREA_SELF | SPELL_TARGET_AREA_CURTARGET | SPELL_TARGET_AREA_CONE | SPELL_TARGET_OBJECT_SELF | SPELL_TARGET_OBJECT_PETOWNER)))
@@ -499,6 +502,12 @@ bool Spell::GenerateTargets(SpellCastTargets* t)
 		{
 			t->m_targetMask |= TARGET_FLAG_UNIT;
 			t->m_unitTarget = u_caster->GetGUID();
+			result = true;
+		}
+
+		if (TargetType & SPELL_TARGET_NO_OBJECT)
+		{
+			t->m_targetMask = TARGET_FLAG_SELF;
 			result = true;
 		}
 

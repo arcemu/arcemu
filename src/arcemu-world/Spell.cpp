@@ -5779,14 +5779,15 @@ void Spell::SpellEffectJumpBehindTarget( uint32 i )
 		if (uobj == NULL || !uobj->IsUnit())
 			return;
 		Unit* un = TO_UNIT(uobj);
-		float rad = un->GetBoundingRadius();
+		float rad = un->GetBoundingRadius() + u_caster->GetBoundingRadius();
 		float angle = un->GetOrientation() + M_PI; //behind
 		float x = un->GetPositionX() + cosf(angle) * rad;
 		float y = un->GetPositionY() + sinf(angle) * rad;
 		float z = un->GetPositionZ();
+		float o = un->calcRadAngle(x, y, un->GetPositionX(), un->GetPositionY());
 
 		if (u_caster->GetAIInterface() != NULL)
-			u_caster->GetAIInterface()->MoveLeap(x, y, z);
+			u_caster->GetAIInterface()->MoveLeap(x, y, z, o);
 	}
 	else if (m_targets.m_targetMask & TARGET_FLAG_SOURCE_LOCATION | TARGET_FLAG_DEST_LOCATION)
 	{
@@ -5809,6 +5810,30 @@ void Spell::SpellEffectJumpBehindTarget( uint32 i )
 		if (u_caster->GetAIInterface() != NULL)
 			u_caster->GetAIInterface()->MoveLeap(x, y, z);
 	}
+}
+
+void Spell::HandleTargetNoObject()
+{
+	float dist = 5;
+	float newx = m_caster->GetPositionX() + cosf(m_caster->GetOrientation()) * dist;
+	float newy = m_caster->GetPositionY() + sinf(m_caster->GetOrientation()) * dist;
+	float newz = m_caster->GetPositionZ();
+
+	//clamp Z
+	newz = m_caster->GetMapMgr()->GetLandHeight(newx, newy, newz);
+
+	//if not in line of sight we summon inside caster
+	if (!CollideInterface.CheckLOS(m_caster->GetMapId(), m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ() + 2, newx, newy, newz + 2))
+	{
+		newx = m_caster->GetPositionX();
+		newy = m_caster->GetPositionY();
+		newz = m_caster->GetPositionZ();
+	}
+
+	m_targets.m_targetMask |= TARGET_FLAG_DEST_LOCATION;
+	m_targets.m_destX = newx;
+	m_targets.m_destY = newy;
+	m_targets.m_destZ = newz;
 }
 
 //Logs if the spell doesn't exist, using Debug loglevel.

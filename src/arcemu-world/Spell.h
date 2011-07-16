@@ -1653,7 +1653,10 @@ public:
     bool GenerateTargets(SpellCastTargets *store_buff);
     // Fills the target map of the spell packet
     void FillTargetMap(uint32);
-    // See if we hit the target or can it resist (evade/immune/resist on spellgo) (0=success)
+
+	void HandleTargetNoObject();
+
+	// See if we hit the target or can it resist (evade/immune/resist on spellgo) (0=success)
     uint8 DidHit(uint32 effindex,Unit* target);
 	// Prepares the spell that's going to cast to targets
     uint8 prepare(SpellCastTargets * targets);

@@ -667,6 +667,6 @@ public:
 	void WipeCurrentTarget();
 
 	void MoveKnockback(float x, float y, float z, float horizontal, float vertical);
-	void MoveLeap(float x, float y, float z);
+	void MoveLeap(float x, float y, float z, float o = 0);
 };
 #endif

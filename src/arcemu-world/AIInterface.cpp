@@ -4496,7 +4496,7 @@ void AIInterface::EventForceRedirected( Unit* pUnit, uint32 misc1 )
 		SetReturnPosition();
 }
 
-void AIInterface::MoveLeap( float x, float y, float z )
+void AIInterface::MoveLeap( float x, float y, float z, float o /*= 0*/ )
 {
 	m_splinePriority = SPLINE_PRIORITY_REDIRECTION;
 
@@ -4505,7 +4505,7 @@ void AIInterface::MoveLeap( float x, float y, float z )
 	m_currentMoveSplineIndex = 1;
 	m_currentSplineUpdateCounter = 0;
 	m_currentSplineTotalMoveTime = 0;
-	m_currentSplineFinalOrientation = 0;
+	m_currentSplineFinalOrientation = o;
 
 	m_splinetrajectoryTime = 0;
 	m_splinetrajectoryVertical = 5; //we don't have values for this afaik
