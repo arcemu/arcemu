@@ -36,7 +36,7 @@ typedef struct
 {
 	string Name;
 	string Address;
-	uint32 Colour;
+	uint32 flags;
 	uint32 Icon;
 	uint32 TimeZone;
 	float Population;

@@ -175,7 +175,7 @@ typedef struct
 {
 	string Name;
 	string Address;
-	uint32 Colour;
+	uint32 flags;
 	uint32 Icon;
 	uint32 TimeZone;
 	float Population;
@@ -222,7 +222,8 @@ public:
 	Realm*        GetRealm(uint32 realm_id);
 	int32		  GetRealmIdByName(string Name);
 	void		  RemoveRealm(uint32 realm_id);
-	void		  UpdateRealmStatus(uint32 realm_id, uint8 Color);
+	void SetRealmOffline(uint32 realm_id);
+	void UpdateRealmStatus(uint32 realm_id, uint8 flags);
 	void		  UpdateRealmPop(uint32 realm_id, float pop);
 
 	ARCEMU_INLINE void   AddServerSocket(LogonCommServerSocket * sock) { serverSocketLock.Acquire(); m_serverSockets.insert( sock ); serverSocketLock.Release(); }

@@ -56,7 +56,7 @@ void LogonCommServerSocket::OnDisconnect()
 		set<uint32>::iterator itr = server_ids.begin();
 
 		for(; itr != server_ids.end(); ++itr)
-			sInfoCore.RemoveRealm((*itr));
+			sInfoCore.SetRealmOffline((*itr));
 
 		sInfoCore.RemoveServerSocket(this);
 	}
@@ -187,15 +187,17 @@ void LogonCommServerSocket::HandleRegister(WorldPacket & recvData)
 
 	Realm * realm = new Realm;
 
-    realm->Colour = 0;
+    realm->flags = 0;
     realm->Icon = 0;
     realm->TimeZone = 0;
     realm->Population = 0;
     realm->Lock = 0;
 
     realm->Name = Name;
-	realm->Colour = 0;
-	recvData >> realm->Address >> realm->Colour >> realm->Icon >> realm->TimeZone >> realm->Population >> realm->Lock;
+	realm->flags = 0;
+	recvData >> realm->Address >> realm->flags >> realm->Icon >> realm->TimeZone >> realm->Population >> realm->Lock;
+
+	sLog.outString("TEST FLAGS %u", realm->flags);
 
 
 //	uint32 my_id = sInfoCore.GenerateRealmID();

@@ -395,8 +395,15 @@ void IPBanner::Reload()
 Realm * InformationCore::AddRealm(uint32 realm_id, Realm * rlm)
 {
 	realmLock.Acquire();
-	m_realms.insert( make_pair( realm_id, rlm ) );
 	map<uint32, Realm*>::iterator itr = m_realms.find(realm_id);
+
+	if (itr == m_realms.end())
+		m_realms.insert(make_pair( realm_id, rlm));
+	else
+	{
+		delete itr->second;
+		itr->second = rlm;
+	}
 	realmLock.Release();
 	return rlm;
 }
@@ -432,20 +439,19 @@ void InformationCore::RemoveRealm(uint32 realm_id)
 	map<uint32, Realm*>::iterator itr = m_realms.find(realm_id);
 	if(itr != m_realms.end())
 	{
-		Log.Notice("InfoCore","Removing realm id:(%u) due to socket close.",realm_id);
 		delete itr->second;
 		m_realms.erase(itr);
 	}
 	realmLock.Release();
 }
 
-void InformationCore::UpdateRealmStatus(uint32 realm_id, uint8 Color)
+void InformationCore::UpdateRealmStatus( uint32 realm_id, uint8 flags )
 {
 	realmLock.Acquire();
 	map<uint32, Realm*>::iterator itr = m_realms.find(realm_id);
 	if(itr != m_realms.end())
 	{
-		itr->second->Colour = Color;
+		itr->second->flags = flags;
 	}
 	realmLock.Release();
 }
@@ -456,18 +462,18 @@ void InformationCore::UpdateRealmPop(uint32 realm_id, float pop)
 	map<uint32, Realm*>::iterator itr = m_realms.find(realm_id);
 	if(itr != m_realms.end())
 	{
-		uint8 temp;
+		uint8 flags;
 		if( pop >= 3 )
-			temp =  0x81; // Full
+			flags =  REALM_FLAG_FULL | REALM_FLAG_INVALID; // Full
 		else if ( pop >= 2 )
-			temp = 0x01; // Red
+			flags = REALM_FLAG_INVALID; // Red
 		else if ( pop >= 0.5 )
-			temp = 0x00; // Green
+			flags = 0; // Green
 		else
-			temp = 0x20; // recommended
+			flags = REALM_FLAG_NEW_PLAYERS; // recommended
 
 		itr->second->Population = (pop > 0) ? (pop >= 1) ? (pop >= 2) ? 2.0f : 1.0f : 0.0f : 0.0f;
-		itr->second->Colour = temp;
+		itr->second->flags = flags;
 	}
 	realmLock.Release();
 }
@@ -496,7 +502,7 @@ void InformationCore::SendRealms(AuthSocket * Socket)
 //		data << uint8(itr->second->Colour);		
 		data << uint8(itr->second->Icon);
 		data << uint8(itr->second->Lock);		// delete when using data << itr->second->Lock;
-		data << uint8(itr->second->Colour);
+		data << uint8(itr->second->flags);
 
 		// This part is the same for all.
 		data << itr->second->Name;
@@ -571,7 +577,7 @@ void InformationCore::TimeoutSockets()
 			for( set< uint32 >::iterator RealmITR = s->server_ids.begin(); RealmITR != s->server_ids.end(); ++RealmITR ){
 				uint32 RealmID = *RealmITR;
 
-				RemoveRealm( RealmID );
+				SetRealmOffline( RealmID );
 			}
 			
 			s->removed = true;
@@ -603,4 +609,17 @@ void InformationCore::CheckServers()
 	}
 
 	serverSocketLock.Release();
+}
+
+void InformationCore::SetRealmOffline( uint32 realm_id )
+{
+	realmLock.Acquire();
+	map<uint32, Realm*>::iterator itr = m_realms.find(realm_id);
+	if(itr != m_realms.end())
+	{
+		itr->second->flags = REALM_FLAG_OFFLINE | REALM_FLAG_INVALID;
+		itr->second->CharacterMap.clear();
+		Log.Notice("InfoCore", "Realm %u is now offline (socket close).", realm_id);
+	}
+	realmLock.Release();
 }
