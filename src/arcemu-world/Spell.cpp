@@ -5822,8 +5822,8 @@ void Spell::HandleTargetNoObject()
 	//clamp Z
 	newz = m_caster->GetMapMgr()->GetLandHeight(newx, newy, newz);
 
-	//if not in line of sight we summon inside caster
-	if (!CollideInterface.CheckLOS(m_caster->GetMapId(), m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ() + 2, newx, newy, newz + 2))
+	//if not in line of sight, or too far away we summon inside caster
+	if (fabs(newz - m_caster->GetPositionZ()) > 10 || !CollideInterface.CheckLOS(m_caster->GetMapId(), m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ() + 2, newx, newy, newz + 2))
 	{
 		newx = m_caster->GetPositionX();
 		newy = m_caster->GetPositionY();
