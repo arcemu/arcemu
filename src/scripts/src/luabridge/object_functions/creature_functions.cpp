@@ -515,7 +515,10 @@ namespace lua_engine
 				.method( &AIInterface::SetAllowedToEnterCombat, "setAllowedToEnterCombat", "SetAllowedToEnterCombat", "setallowedtoentercombat", NULL)
 				.method( &AIInterface::GetAllowedToEnterCombat, "getAllowedToEnterCombat", "GetAllowedToEnterCombat", "getallowedtoentercombat", NULL)
 				.method( &AIInterface::getAITargetsCount, "getAITargetsCount", "getaitargetscount", "GetAITargetsCount", NULL)
-				.method( &AIInterface::addWayPoint, "addWayPoint", "AddWayPoint", "addwaypoint", NULL);
+				.method( &AIInterface::addWayPoint, "addWayPoint", "AddWayPoint", "addwaypoint", NULL)
+				.method( &AIInterface::addAssistTargets, "AddAssistTargets", "addAssistTargets", "addassisttargets", NULL)
+				.method( &AIInterface::SetAIType, "SetAIType", "setAIType", "setaitype", NULL)
+				.method( &AIInterface::getAIType, "GetAIType", "getAIType", "getaitype", NULL);
 #undef BIND
 
 			//waypoint struct

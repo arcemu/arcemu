@@ -209,6 +209,14 @@ function UNIT:Actual()
    end
 end
 
+alias("AddAuraObject", "AddAura")
+
+function UNIT:AddAuraByID(spellid, duration, temp)
+   local aura = Aura(dbcSpell:LookupEntry(spellid), duration, self, self, temp)
+   self:AddAura(aura)
+   return true
+end
+
 --------------------------------- RE-DEFINED 'alias' here------------------------------
 alias = function(_func, ...)
 	for _,label in ipairs(arg) do

@@ -7,6 +7,7 @@ namespace lua_engine
 	void bindAuraMethods(luabridge::module & m)
 	{
 		m	.class_<Aura>("Aura")
+			.constructor<void (*)(SpellEntry*, uint32, Unit*, Unit*, bool)>()
 			.method(&Aura::GetSpellProto, "GetSpellProto", "getproto","GetProto", "getProto", NULL)
 			.method(&Aura::GetSpellId, "GetID", "GetSpellID", "getid", NULL)
 

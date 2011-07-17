@@ -186,7 +186,7 @@ alias("GetPlayerRace", "getRace")
 function PLAYER:GetUnitSelection() 
    local sel = self:GetSelection();
    if (sel == nil) then return nil; end
-   return MapMgr:GetObject(sel);
+   return TO_UNIT(MapMgr:GetObject(sel)):Actual();
 end
 
 alias("GetTaxi", "GetTaxiPath")
@@ -276,7 +276,7 @@ end
 
 function PLAYER:SendAreaTriggerMessage(message) 
    local data = LuaPacket(696, 6 + string.len(message))
-   data:WriteUInt32(0); data:WriteString(msg); data:WriteUInt8(0);
+   data:WriteUInt32(0); data:WriteString(message); data:WriteUInt8(0);
    self:SendPacket(data);
 end
 
@@ -284,4 +284,263 @@ alias("RemovePvPFlag", "RemovePVPFlag")
 
 function PLAYER:AddItem(id, amt)
    return self:GetItemInterface():AddItemByID(id, amt, 0);
+end
+
+function PLAYER:AddArenaPoints(points)
+   if (points < 0) then return; end
+   self.m_arenaPoints = self.m_arenaPoints + points;
+   self:RecalculateHonor();
+end
+
+function PLAYER:RemoveArenaPoints(points)
+   local newPoints = self.m_arenaPoints - points;
+   if (newPoints >= 0) then
+      self.m_arenaPoints = newPoints;
+      self:RecalculateHonor();
+   end
+end
+
+function PLAYER:AddGroupMember(plr, subgrp)
+   subgrp = subgrp or -1
+   if (self:GetGroup()) then
+      self:GetGroup():AddMember(plr:GetPlayerInfo(), subgrp)
+   end
+end
+
+function PLAYER:AddGuildMember(id, rank)
+   rank = rank or -1;
+   local guild = objmgr:GetGuild(id)
+   if (guild) then
+      guild:AddGuildMember(self:GetPlayerInfo(), nil, rank)
+   end
+end
+
+function PLAYER:AddLifetimeKills(points)
+   if (points > 0) then
+      self.m_killsLifetime = self.m_killsLifetime + points
+   end
+end
+
+function PLAYER:AdvanceQuestObjective(questid, objective)
+   local qle = self:GetQuestLogForEntry(questid)
+   if (qle ~= nil) then
+      qle:SetMobCount(objective, qle:GetMobCount(objective) + 1)
+      qle:SendUpdateAddKill()
+      if (qle:CanBeFinished()) then
+         qle:SendQuestComplete()
+      end
+      
+      qle:UpdatePlayerFields()
+   end
+end
+
+function PLAYER:ChangeGuildMaster(newMaster)
+   local guild = self:GetGuild()
+   if (guild) then
+      guild:ChangeGuildMaster(newMaster:GetPlayerInfo(), self:GetSession())
+   end
+end
+
+function PLAYER:DemoteGuildMember(target)
+   local guild = self:GetGuild()
+   if (guild) then
+      guild:DemoteGuildMember(target:GetPlayerInfo(), self:GetSession())
+   end
+end
+
+function PLAYER:DisbandGuild(guildID)
+   guildID = guildID or -1
+   local guild
+   if (guildID >= 0) then
+      guild = objmgr:GetGuild(guildID)
+   else
+      guild = self:GetGuild()
+   end
+   if (guild) then
+      guild:Disband()
+   end
+end
+
+function PLAYER:ExpandToRaid()
+   local group = self:GetGroup()
+   if (group) then
+      group:ExpandToRaid()
+   end
+end
+
+function PLAYER:GetGroupLeader()
+   local group = self:GetGroup()
+   if (group) then
+      return group:GetLeader().loggedInPlayer
+   end
+   return nil
+end
+
+function PLAYER:GetGroupType()
+   local group = self:GetGroup()
+   if (group) then
+      return group:GetGroupType()
+   end
+   return nil
+end
+
+function PLAYER:GetGuildMemberCount()
+   local guild = self:GetGuild()
+   if (guild) then
+      return guild:GetNumMembers()
+   end
+   return nil
+end
+
+function PLAYER:GetGuildMotd(guildID)
+   guildID = guildID or -1
+   local guild
+   if (guildID >= 0) then
+      guild = objmgr:GetGuild(guildID)
+   else
+      guild = self:GetGuild()
+   end
+   if (guild) then
+      return guild:GetMOTD()
+   end
+   return nil
+end
+
+function PLAYER:GetGuildName()
+   local guild = self:GetGuild()
+   if (guild) then
+      return guild:GetGuildName()
+   end
+   return nil
+end
+
+function PLAYER:GuildBankDepositMoney(amount)
+   local guild = self:GetGuild()
+   if (guild) then
+      guild:DepositMoney(self:GetSession(), amount)
+   end
+end
+
+function PLAYER:GuildBankWithdrawMoney(amount)
+   local guild = self:GetGuild()
+   if (guild) then
+      guild:WithdrawMoney(self:GetSession(), amount)
+   end
+end
+
+function PLAYER:PromoteGuildMember(target)
+   local guild = self:GetGuild()
+   if (guild) then
+      guild:PromoteGuildMember(target:GetPlayerInfo(), self:GetSession())
+   end
+end
+
+function PLAYER:RemoveGuildMember(target)
+   local guild = self:GetGuild()
+   if (guild) then
+      guild:RemoveGuildMember(target:GetPlayerInfo(), self:GetSession())
+   end
+end
+
+function PLAYER:SendGuildChatMessage(message, isOfficerChat)
+   local guild = self:GetGuild()
+   if (guild) then
+      guild:RemoveGuildMember(target:GetPlayerInfo(), self:GetSession())
+      if (isOfficerChat) then
+         guild:OfficerChat(message, self:GetSession(), 0)
+      else
+         guild:GuildChat(message, self:GetSession(), 0)
+      end
+   end
+end
+
+function PLAYER:SendGuildInvite(target, sendErrors)
+   if (sendErrors == nil) then sendErrors = true; end
+   local GUILD_CREATE_S = 0
+   local GUILD_INVITE_S = 1
+   
+   --error codes that may be returned
+   --note: there is no longer a faction check in this, you can do it yourself if necessary.
+   local GUILD_PLAYER_NOT_IN_GUILD = 9 --(sender not in guild)
+   local ALREADY_IN_GUILD = 3 --(target already in guild)
+   local ALREADY_INVITED_TO_GUILD = 5 --(target already invited to guild)
+   
+   local GUILD_U_HAVE_INVITED = 0
+   local SMSG_GUILD_INVITE = 131
+   local inviteeName = self:GetName()
+   local guild = self:GetGuild()
+   
+   if (not guild) then
+      if (sendErrors) then Guild.SendGuildCommandResult(self:GetSession(), GUILD_CREATE_S, "", GUILD_PLAYER_NOT_IN_GUILD); end
+      return GUILD_PLAYER_NOT_IN_GUILD;
+   elseif (target:GetGuildId()) then
+      if (sendErrors) then Guild.SendGuildCommandResult(self:GetSession(), GUILD_INVITE_S, target:GetName(), ALREADY_IN_GUILD); end
+      return ALREADY_IN_GUILD;
+   elseif (target:GetGuildInvitersGuid() ~= 0) then
+      if (sendErrors) then Guild.SendGuildCommandResult(self:GetSession(), GUILD_INVITE_S, target:GetName(), ALREADY_INVITED_TO_GUILD); end
+      return ALREADY_INVITED_TO_GUILD;
+   else
+      Guild.SendGuildCommandResult(self:GetSession(), GUILD_INVITE_S, inviteeName, GUILD_U_HAVE_INVITED);
+      local data = LuaPacket(SMSG_GUILD_INVITE, 100);
+      data:WriteString(inviteeName)
+      data:WriteString(guild:GetGuildName());
+      target:SendPacket(data);
+      target:SetGuildInvitersGuid(self:GetLowGUID());
+      return true;
+   end
+end
+
+function PLAYER:SendGuildLog()
+   local guild = self:GetGuild()
+   if (guild) then
+      guild:SendGuildLog(self:GetSession())
+   end
+end
+
+function PLAYER:SendPacketToGuild(packet, guildID)
+   guildID = guildID or -1
+   local guild
+   if (guildID >= 0) then
+      guild = objmgr:GetGuild(guildID)
+   else
+      guild = self:GetGuild()
+   end
+   if (guild) then
+      guild:SendPacket(packet)
+   end
+end
+
+function PLAYER:SendPacketToGroup(packet)
+   local group = self:GetGroup()
+   if (group) then
+      group:SendPacketToAll(packet)
+   end
+end
+
+function PLAYER:SetGroupLeader(newLeader, bSilent)
+   local group = self:GetGroup()
+   if (group) then
+      group:SetGroupLeader(newLeader, bSilent)
+   end
+end
+
+function PLAYER:SetGuildInformation(gi)
+   local guild = self:GetGuild()
+   if (guild) then
+      guild:SetGuildInformation(gi, self:GetSession())
+   end
+end
+
+function PLAYER:SetGuildMotd(gi)
+   local guild = self:GetGuild()
+   if (guild) then
+      guild:SetMOTD(gi, self:GetSession())
+   end
+end
+
+function PLAYER:SetOfficerNote(target, note)
+   local guild = self:GetGuild()
+   if (guild) then
+      guild:SetOfficerNote(target:GetPlayerInfo(), note, self:GetSession())
+   end
 end

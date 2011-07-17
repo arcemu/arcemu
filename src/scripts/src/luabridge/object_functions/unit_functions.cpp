@@ -158,7 +158,8 @@ namespace lua_engine
 			.property_rw("walkspeed", (float Unit::*)(&Unit::m_walkSpeed) )
 			.property_rw("flyspeed", (float Unit::*)(&Unit::m_flySpeed) )
 			.property_ro("CombatStatus", &Unit::getcombatstatus)
-			.method(&Unit::EventAddEmote, "EventAddEmote", "eventAddEmote", "eventaddemote", NULL);
+			.method(&Unit::EventAddEmote, "EventAddEmote", "eventAddEmote", "eventaddemote", NULL)
+			.method( &Unit::AddAura, "AddAura", "addAura", "addaura", NULL);
 #undef BIND
 			m	.class_<CombatStatusHandler>("CombatStatus")
 				.method( &CombatStatusHandler::IsInCombat, "IsInCombat", "isInCombat", "isincombat", NULL);

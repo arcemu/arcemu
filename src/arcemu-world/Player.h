@@ -655,9 +655,11 @@ struct FactionReputation
 };
 
 typedef HM_NAMESPACE::hash_map<uint32, uint32> PlayerInstanceMap;
-struct PlayerInfo
+class SERVER_DECL PlayerInfo
 {
+public:
 	~PlayerInfo();
+	
 	uint32 guid;
 	uint32 acct;
 	char * name;

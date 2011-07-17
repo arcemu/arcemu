@@ -113,7 +113,8 @@ namespace lua_engine
 	extern void bindObjectMethods(luabridge::module &);
 	extern void bindUnitMethods(luabridge::module &);
 	extern void bindCreatureMethods(luabridge::module &);
-	extern void bindPlayerMethods(luabridge::module &);;
+	extern void bindPlayerMethods(luabridge::module &);
+	extern void bindQuestMethods(luabridge::module &);
 	extern void bindGameobjectMethods(luabridge::module &);
 	extern void bindSQLMethods(luabridge::module &);
 	extern void bindSpellMethods(luabridge::module &);

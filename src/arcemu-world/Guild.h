@@ -21,7 +21,7 @@
 #ifndef _GUILD_H
 #define _GUILD_H
 
-struct PlayerInfo;
+class PlayerInfo;
 
 #define MAX_GUILD_RANKS 10
 enum PETITION_TURNIN_ERRORS

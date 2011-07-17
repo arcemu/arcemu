@@ -51,7 +51,7 @@ namespace lua_engine
 	{
 		m	.class_decl<luapacket>("LuaPacket");
 		m	.class_<WorldPacket>("LuaPacket",true)
-			.constructor<void (*)(uint16,size_t res)>()
+			.constructor<void (*)(uint16,uint32)>()
 			.method( &WorldPacket::GetOpcode, "GetOpcode", "getOpcode", "getopcode", "opcode", "Opcode", NULL)
 			.method( &WorldPacket::clear, "Clear", "clear", "Reset", NULL)
 			.method( &luapacket::writeint8, "WriteInt8", "writeint8", "writebyte", "WriteByte", NULL)
@@ -59,7 +59,7 @@ namespace lua_engine
 			.method( &luapacket::writeint16, "WriteInt16", "writeint16", "WriteShort", "writeshort", NULL)
 			.method(  &luapacket::writeuint16, "WriteUInt16", "writeuint16", "writeushort", "WriteUShort", NULL)
 			.method( &luapacket::writeint32, "WriteInt32", "writeint32", "writelong", "WriteLong", NULL)
-			.method(  &luapacket::writeuint32, "WriteUint32", "writeuint32", "writeulong", "WriteULong", NULL)
+			.method(  &luapacket::writeuint32, "WriteUInt32", "writeuint32", "writeulong", "WriteULong", NULL)
 			.method( &luapacket::writewowguid, "WriteWowGUID", "writewowguid", "writeWoWGUID", NULL)
 			.method( &luapacket::size, "Size", "size", NULL)
 			.method( &luapacket::writestring, "WriteString", "writestring", NULL)

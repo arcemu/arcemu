@@ -114,5 +114,30 @@ namespace lua_engine
 		}
 		return pLua;
 	}
+
+	void bindQuestMethods(luabridge::module &m)
+	{
+		m	.class_<QuestLogEntry>("QuestLogEntry")
+			.method( &QuestLogEntry::CanBeFinished, "CanBeFinished", "canBeFinished", "canbefinished", NULL)
+			.method( &QuestLogEntry::Complete, "Complete", "complete", NULL)
+			.method( &QuestLogEntry::SubtractTime, "SubtractTime", "subtractTime", "subtracttime", NULL)
+			.method( &QuestLogEntry::UpdatePlayerFields, "UpdatePlayerFields", "updatePlayerFields", "updateplayerfields", NULL)
+			.method( &QuestLogEntry::SetTrigger, "SetTrigger", "setTrigger", "settrigger", NULL)
+			.method( &QuestLogEntry::SetMobCount, "SetMobCount", "setMobCount", "setmobcount", NULL)
+			.method( &QuestLogEntry::IncrementMobCount, "IncrementMobCount", "incrementMobCount", "incrementmobcount", NULL)
+			.method( &QuestLogEntry::IsUnitAffected, "IsUnitAffected", "isUnitAffected", "isunitaffected", NULL)
+			.method( &QuestLogEntry::IsCastQuest, "IsCastQuest", "isCastQuest", "iscastquest", NULL)
+			.method( &QuestLogEntry::IsEmoteQuest, "IsEmoteQuest", "isEmoteQuest", "isemotequest", NULL)
+			.method( &QuestLogEntry::AddAffectedUnit, "AddAffectedUnit", "addAffectedUnit", "addaffectedunit", NULL)
+			.method( &QuestLogEntry::ClearAffectedUnits, "ClearAffectedUnits", "clearAffectedUnits", "clearaffectedunits", NULL)
+			.method( &QuestLogEntry::SetSlot, "SetSlot", "setSlot", "setslot", NULL)
+			.method( &QuestLogEntry::Finish, "Finish", "finish", NULL)
+			.method( &QuestLogEntry::SendQuestComplete, "SendQuestComplete", "sendQuestComplete", "sendquestcomplete", NULL)
+			.method( &QuestLogEntry::SendUpdateAddKill, "SendUpdateAddKill", "sendUpdateAddKill", "sendupdateaddkill", NULL)
+			.method( &QuestLogEntry::GetMobCount, "GetMobCount", "getMobCount", "getmobcount", NULL)
+			.method( &QuestLogEntry::GetExploredAreas, "GetExploredAreas", "getExploredAreas", "getexploredareas", NULL)
+			.method( &QuestLogEntry::GetBaseField, "GetBaseField", "getBaseField", "getbasefield", NULL)
+			.method( &QuestLogEntry::GetSlot, "GetSlot", "getSlot", "getslot", NULL);
+	}
 	
 }

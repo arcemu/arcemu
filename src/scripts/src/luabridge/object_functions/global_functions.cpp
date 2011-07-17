@@ -411,8 +411,13 @@ namespace lua_engine
 			.function( &GetPlayersInInstance, "GetPlayersInInstance", "getPlayersInInstance", "getplayersininstance", NULL)
 			.function( &include, "include", "Include", "INCLUDE", NULL)
 			.function( &WorldDBQuery, "WorldDBQuery", "worlddbquery", NULL)
-			.function( &CharDBQuery, "CharDBQuery", "chardbquer", NULL)
-			.function( &NumberToGUID, "NumberToGUID", "TO_UINT64", "TO_GUID", NULL);
+			.function( &CharDBQuery, "CharDBQuery", "chardbquery", NULL)
+			.function( &NumberToGUID, "NumberToGUID", "TO_UINT64", "TO_GUID", NULL)
+			.function( &isFriendly, "isFriendly", "IsFriendly", NULL)
+			.function( &isHostile, "isHostile", "IsHostile", NULL)
+			.function( &isNeutral, "isNeutral", "IsNeutral", NULL)
+			.function( &isAttackable, "isAttackable", "IsAttackable", NULL);
+
 
 		m	.class_<DBCStorage<SpellEntry> >("dbcSpell")
 			.method( &DBCStorage<SpellEntry>::LookupEntry, "LookupEntry", "lookupentry", NULL)
@@ -436,5 +441,105 @@ namespace lua_engine
 			.method("SendAutomatedMessage", &MailSystem::SendAutomatedMessage);
 		luabridge::tdstack<MailSystem*>::push(m.L, MailSystem::getSingletonPtr());
 		lua_setglobal(m.L, "sMailSystem");
+
+		m	.class_<ObjectMgr>("ObjectMgr")
+			.method( &ObjectMgr::GetPlayerInfo, "GetPlayerInfo", "getPlayerInfo", "getplayerinfo", NULL)
+			.method( &ObjectMgr::GetPlayerInfoByName, "GetPlayerInfoByName", "getPlayerInfoByName", "getplayerinfobyname", NULL)
+			.method( &ObjectMgr::GetPlayerCreateInfo, "GetPlayerCreateInfo", "getPlayerCreateInfo", "getplayercreateinfo", NULL)
+			.method( &ObjectMgr::GetGroupByLeader, "GetGroupByLeader", "getGroupByLeader", "getgroupbyleader", NULL)
+			.method( &ObjectMgr::GetGroupById, "GetGroupById", "GetGroupByID" "getGroupById", "getGroupByID", "getgroupbyid", NULL)
+			.method( &ObjectMgr::GetTotalGuildCount, "GetTotalGuildCount", "getTotalGuildCount", "gettotalguildcount", NULL)
+			.method( &ObjectMgr::GetGuild, "GetGuild", "getGuild", "getguild", NULL)
+			.method( &ObjectMgr::GetGuildByLeaderGuid, "GetGuildByLeaderGuid", "getGuildByLeaderGuid", "GetGuildByLeaderGUID", "getGuildByLeaderGUID", "getguildbyleaderguid", NULL)
+			.method( &ObjectMgr::GetGuildByGuildName, "GetGuildByGuildName", "getGuildByGuildName", "getguildbyguildname", NULL);
+
+		luabridge::tdstack<ObjectMgr*>::push(m.L, ObjectMgr::getSingletonPtr());
+		lua_setglobal(m.L, "objmgr");
+		luabridge::tdstack<ObjectMgr*>::push(m.L, ObjectMgr::getSingletonPtr());
+		lua_setglobal(m.L, "sObjectMgr");
+
+
+		/*m	.class_<World>("World") //probably not the best idea to expose this
+			.method( &World::getHordePlayerCount, "GetHordePlayerCount", "getHordePlayerCount", "gethordeplayercount", NULL)
+			.method( &World::getAlliancePlayerCount, "GetAlliancePlayerCount", "getAlliancePlayerCount", "getallianceplayercount", NULL)
+			.method( &World::getPlayerCount, "GetPlayerCount", "getPlayerCount", "getplayercount", NULL)
+			.method( &World::Rehash, "Rehash", "rehash", NULL)
+			.method( &World::FindSession, "FindSession", "findSession", "findsession", NULL)
+			.method( &World::FindSessionByName, "FindSessionByName", "findSessionByName", "findsessionbyname", NULL)
+			.method( &World::GetPlayerLimit, "GetPlayerLimit", "getPlayerLimit", "getplayerlimit", NULL)
+			.method( &World::SetPlayerLimit, "SetPlayerLimit", "setPlayerLimit", "setplayerlimit", NULL)
+			.method( &World::SetMotd, "SetMotd", "setMotd", "setmotd", NULL)
+			.method( &World::GetMotd, "GetMotd", "getMotd", "getmotd", NULL)
+			.method( &World::GetGameTime, "GetGameTime", "getGameTime", "getgametime", NULL)
+			.method( &World::SendWorldText, "SendWorldText", "sendWorldText", "sendworldtext", NULL)
+			.method( &World::SendWorldWideScreenText, "SendWorldWideScreenText", "sendWorldWideScreenText", "sendworldwidescreentext", NULL)
+			.method( &World::SendGlobalMessage, "SendGlobalMessage", "sendGlobalMessage", "sendglobalmessage", NULL)
+			.method( &World::SendZoneMessage, "SendZoneMessage", "sendZoneMessage", "sendzonemessage", NULL)
+			.method( &World::SendInstanceMessage, "SendInstanceMessage", "sendInstanceMessage", "sendinstancemessage", NULL)
+			.method( &World::SendFactionMessage, "SendFactionMessage", "sendFactionMessage", "sendfactionmessage", NULL)
+			.method( &World::SendGamemasterMessage, "SendGamemasterMessage", "sendGamemasterMessage", "sendgamemastermessage", NULL)
+			.method( &World::SendGMWorldText, "SendGMWorldText", "sendGMWorldText", "sendgmworldtext", NULL)
+			.method( &World::SendDamageLimitTextToGM, "SendDamageLimitTextToGM", "sendDamageLimitTextToGM", "senddamagelimittexttogm", NULL)
+			.method( &World::SendBCMessageByID, "SendBCMessageByID", "sendBCMessageByID", "sendbcmessagebyid", NULL)
+			.method( &World::SendLocalizedWorldText, "SendLocalizedWorldText", "sendLocalizedWorldText", "sendlocalizedworldtext", NULL)
+			.method( &World::SendZoneUnderAttackMsg, "SendZoneUnderAttackMsg", "sendZoneUnderAttackMsg", "sendzoneunderattackmsg", NULL)
+			.method( &World::GetUptime, "GetUptime", "getUptime", "getuptime", NULL)
+			.method( &World::GetStartTime, "GetStartTime", "getStartTime", "getstarttime", NULL)
+			.method( &World::setRate, "SetRate", "setRate", "setrate", NULL)
+			.method( &World::getRate, "GetRate", "getRate", "getrate", NULL)
+			.method( &World::getIntRate, "GetIntRate", "getIntRate", "getintrate", NULL)
+			.method( &World::setIntRate, "SetIntRate", "setIntRate", "setintrate", NULL)
+			.method( &World::GenerateName, "GenerateName", "generateName", "generatename", NULL)
+			.method( &World::SaveAllPlayers, "SaveAllPlayers", "saveAllPlayers", "saveallplayers", NULL)
+			.method( &World::SetKickAFKPlayerTime, "SetKickAFKPlayerTime", "setKickAFKPlayerTime", "setkickafkplayertime", NULL)
+			.method( &World::GetKickAFKPlayerTime, "GetKickAFKPlayerTime", "getKickAFKPlayerTime", "getkickafkplayertime", NULL)
+			.method( &World::GetRealmType, "GetRealmType", "getRealmType", "getrealmtype", NULL);
+			.property_ro( "MapPath", &World::MapPath )
+			.property_ro( "vMapPath", &World::vMapPath )
+			.property_rw( "BreathingEnabled", &World::BreathingEnabled )
+			.property_rw( "SpeedhackProtection", &World::SpeedhackProtection )
+			.property_rw( "StartingLevel", &World::StartingLevel )
+			.property_rw( "ExtraTalents", &World::ExtraTalents )
+			.property_rw( "MaxProfs", &World::MaxProfs )
+			.property_rw( "DKStartTalentPoints", &World::DKStartTalentPoints )
+			.property_rw( "Collision", &World::Collision )
+			.property_rw( "DisableFearMovement", &World::DisableFearMovement )
+			.property_rw( "flood_lines", &World::flood_lines )
+			.property_rw( "flood_seconds", &World::flood_seconds )
+			.property_rw( "flood_message", &World::flood_message )
+			.property_rw( "show_gm_in_who_list", &World::show_gm_in_who_list )
+			.property_rw( "interfaction_chat", &World::interfaction_chat )
+			.property_rw( "interfaction_group", &World::interfaction_group )
+			.property_rw( "interfaction_guild", &World::interfaction_guild )
+			.property_rw( "interfaction_trade", &World::interfaction_trade )
+			.property_rw( "interfaction_friend", &World::interfaction_friend )
+			.property_rw( "interfaction_misc", &World::interfaction_misc )
+			.property_rw( "crossover_chars", &World::crossover_chars )
+			.property_rw( "antiMasterLootNinja", &World::antiMasterLootNinja )
+			.property_rw( "gamemaster_listOnlyActiveGMs", &World::gamemaster_listOnlyActiveGMs )
+			.property_rw( "gamemaster_hidePermissions", &World::gamemaster_hidePermissions )
+			.property_rw( "gamemaster_startonGMIsland", &World::gamemaster_startonGMIsland )
+			.property_rw( "Arena_Season", &World::Arena_Season )
+			.property_rw( "Arena_Progress", &World::Arena_Progress )
+			.property_rw( "announce_tag", &World::announce_tag )
+			.property_rw( "GMAdminTag", &World::GMAdminTag )
+			.property_rw( "NameinAnnounce", &World::NameinAnnounce )
+			.property_rw( "NameinWAnnounce", &World::NameinWAnnounce )
+			.property_rw( "announce_output", &World::announce_output )
+			.property_rw( "announce_tagcolor", &World::announce_tagcolor )
+			.property_rw( "announce_gmtagcolor", &World::announce_gmtagcolor )
+			.property_rw( "announce_namecolor", &World::announce_namecolor )
+			.property_rw( "announce_msgcolor", &World::announce_msgcolor )
+			.property_rw( "ann_namecolor", &World::ann_namecolor )
+			.property_rw( "ann_gmtagcolor", &World::ann_gmtagcolor )
+			.property_rw( "ann_tagcolor", &World::ann_tagcolor )
+			.property_rw( "ann_msgcolor", &World::ann_msgcolor )
+			.property_rw( "antihack_teleport", &World::antihack_teleport )
+			.property_rw( "antihack_speed", &World::antihack_speed )
+			.property_rw( "antihack_flight", &World::antihack_flight );
+
+		luabridge::tdstack<World*>::push(m.L, World::getSingletonPtr());
+		lua_setglobal(m.L, "sWorld"); */
+			
 	}
 }

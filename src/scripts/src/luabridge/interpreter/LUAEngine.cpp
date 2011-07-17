@@ -744,6 +744,7 @@ namespace lua_engine
 		bindUnitMethods(m);
 		bindCreatureMethods(m);
 		bindPlayerMethods(m);
+		bindQuestMethods(m);
 		bindGameobjectMethods(m);
 		bindSQLMethods(m);
 		bindSpellMethods(m);

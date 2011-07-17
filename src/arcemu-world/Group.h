@@ -89,7 +89,7 @@ enum PartyUpdateFlagGroups
 	GROUP_UPDATE_TYPE_FULL_REQUEST_REPLY		=   0x7FFC0BFF,
 };
 
-struct PlayerInfo;
+class PlayerInfo;
 typedef struct
 {
 	PlayerInfo * player_info;

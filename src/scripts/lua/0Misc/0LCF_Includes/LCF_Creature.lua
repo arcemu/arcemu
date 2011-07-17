@@ -280,3 +280,27 @@ aialias("StopMovement", "StopMovement")
 aialias("WipeThreatList", "WipeHateList")
 
 function CREATURE:GetObjectType() return "Unit"; end
+
+function CREATURE:AddAssistTargets(friend)
+   if (isFriendly(self, friend)) then
+      self:GetAIInterface():addAssistTargets(friend)
+   end
+end
+
+aialias("AttackReaction", "AttackReaction")
+
+function CREATURE:AggroWithInRangeFriends()
+   if (not self.CombatStatus:IsInCombat()) then return; end
+   
+   local pTarget = self:GetAIInterface():getNextTarget();
+   if (not pTarget) then return; end
+   
+   for k,v in pairs(self:getInRangeSameFactions()) do
+      if (not v:IsDead() and v:IsCreature()) then
+         if (self:CalcDistanceToObject(v) < 10) then
+            v:GetAIInterface():setNextTarget(pTarget)
+            v:GetAIInterface():AttackReaction(pTarget, 1, 0)
+         end
+      end
+   end
+end

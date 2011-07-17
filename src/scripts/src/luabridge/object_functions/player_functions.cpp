@@ -107,8 +107,9 @@ namespace lua_engine
 			.method(&Player::GetBanReason, "GetBanReason", "getBanReason", "getbanreason", NULL) //wiki listed
 
 			.method(&Player::IsInGuild, "IsInGuild", "isInGuild", "isinguild" ,NULL) //wiki listed
-			.method( &Player::GetGuildId, "GetGuildID", "getGuildID", "getguildid", NULL) //wiki listed
-			.method( &Player::SetGuildId, "setGuildID", "SetGuildID", "setguildid", NULL) //wiki listed
+			.method(&Player::GetGuildId, "GetGuildID", "getGuildID", "getguildid", NULL) //wiki listed
+			.method(&Player::GetGuild, "GetGuild", "getGuild", "getguild", NULL)
+			.method(&Player::SetGuildId, "setGuildID", "SetGuildID", "setguildid", NULL) //wiki listed
 			.method(&Player::GetGuildRank, "GetGuildRank", "getGuildRank", "getguildrank", NULL) //wiki listed
 			.method(&Player::SetGuildRank, "SetGuildRank", "setGuildRank", "setguildrank", NULL) //wiki listed
 			.method(&Player::GetGuildInvitersGuid, "GetGuildInvitersGuid", "getGuildInvitersGUID", "getguildinvitersguid", NULL)
@@ -204,7 +205,14 @@ namespace lua_engine
 			.method(&Player::GetName, "GetName", "getName", "getname", NULL) //wiki listed
 
 			.method( &Player::GetSession, "GetSession", "getSession", "getsession", NULL) //wiki listed
-			.method( &Player::SaveToDB, "SaveToDB", "saveToDB", "savetodb", NULL);
+			.method( &Player::SaveToDB, "SaveToDB", "saveToDB", "savetodb", NULL)
+			.method( &Player::RecalculateHonor, "RecalculateHonor", "recalculateHonor", "recalculatehonor", NULL)
+			.property_rw( "m_arenaPoints", &Player::m_arenaPoints )
+			.method( &Player::getPlayerInfo, "GetPlayerInfo", "getPlayerInfo", "getplayerinfo", NULL )
+			.method( &Player::GetGroup, "GetGroup", "getGroup", "getgroup", NULL)
+			.property_rw( "m_killsLifetime", &Player::m_killsLifetime )
+			.method( &Player::GetQuestLogForEntry, "GetQuestLogForEntry", "getQuestLogForEntry", "getquestlogforentry", NULL )
+			.method( &Player::GetQuestLogInSlot, "GetQuestLogInSlot", "getQuestLogInSlot", "getquestloginslot", NULL );
 
 			m	.class_<WorldSession>("WorldSession")
 			.method(&WorldSession::GetAccountNameS, "GetAccountName", "getAccountName", "getaccountname", NULL)
@@ -221,5 +229,77 @@ namespace lua_engine
 
 			luabridge::tdstack<ChatHandler*>::push(m.L, ChatHandler::getSingletonPtr() );
 			lua_setglobal(m.L, "sChatHandler");
+
+			m	.class_<PlayerInfo>("PlayerInfo")
+				.property_ro("guid", &PlayerInfo::guid)
+				.property_ro("acct", &PlayerInfo::acct)
+				.property_ro("name", &PlayerInfo::name)
+				.property_ro("race", &PlayerInfo::race)
+				.property_ro("gender", &PlayerInfo::gender)
+				.property_ro("class", &PlayerInfo::cl)
+				.property_ro("team", &PlayerInfo::team)
+				//.property_ro("lastOnline", &PlayerInfo::lastOnline) time_t will be uint64 :S
+				.property_ro("lastZone", &PlayerInfo::lastZone)
+				.property_ro("lastLevel", &PlayerInfo::lastLevel)
+				.property_ro("loggedInPlayer", &PlayerInfo::m_loggedInPlayer)
+				.property_ro("group", &PlayerInfo::m_Group)
+				.property_ro("subGroup", &PlayerInfo::subGroup)
+				.property_ro("guild", &PlayerInfo::guild);
+
+			m	.class_<Group>("Group")
+				.method( &Group::AddMember, "AddMember", "addMember", "addmember", NULL)
+				.method( &Group::RemovePlayer, "RemovePlayer", "removePlayer", "removeplayer", NULL)
+				.method( (bool (Group::*)(Player*))&Group::HasMember, "HasMember", "hasMember", "hasmember", NULL)
+				.method( (bool (Group::*)(PlayerInfo*))&Group::HasMember, "HasMemberByInfo", "hasMemberByInfo", "hasmemberbyinfo", NULL)
+				.method( &Group::SetLeader, "SetLeader", "setLeader", "setleader", NULL)
+				.method( &Group::SetLooter, "SetLooter", "setLooter", "setlooter", NULL)
+				.method( &Group::SendPacketToAll, "SendPacketToAll", "sendPacketToAll", "sendpackettoall", NULL)
+				.method( &Group::SendPacketToAllButOne, "SendPacketToAllButOne", "sendPacketToAllButOne", "sendpackettoallbutone", NULL)
+				.method( &Group::GetLeader, "GetLeader", "getLeader", "getleader", NULL)
+				.method( &Group::GetLooter, "GetLooter", "getLooter", "getlooter", NULL)
+				.method( &Group::ExpandToRaid, "ExpandToRaid", "expandToRaid", "expandtoraid", NULL)
+				.method( &Group::GetGroupType, "GetGroupType", "getGroupType", "getgrouptype", NULL)
+				.method( &Group::GetID, "GetID", "getID", "getid", NULL)
+				.method( &Group::SetDungeonDifficulty, "SetDungeonDifficulty", "setDungeonDifficulty", "setdungeondifficulty", NULL)
+				.method( &Group::SetRaidDifficulty, "SetRaidDifficulty", "setRaidDifficulty", "setraiddifficulty", NULL);
+
+			m	.class_<Guild>("Guild")
+				.property_ro("creationDay", &Guild::creationDay)
+				.property_ro("creationMonth", &Guild::creationMonth)
+				.property_ro("creationYear", &Guild::creationYear)
+				.method( &Guild::AddGuildMember, "AddGuildMember", "addGuildMember", "addguildmember", NULL)
+				.method( &Guild::SetMOTD, "SetMOTD", "setMOTD", "setmotd", NULL)
+				.method( &Guild::GetMOTD, "GetMOTD", "getMOTD", "getmotd", NULL)
+				.method( &Guild::SetGuildInformation, "SetGuildInformation", "setGuildInformation", "setguildinformation", NULL)
+				.method( &Guild::GetGuildInformation, "GetGuildInformation", "getGuildInformation", "getguildinformation", NULL)
+				.method( &Guild::SendGuildRoster, "SendGuildRoster", "sendGuildRoster", "sendguildroster", NULL)
+				.method( &Guild::RemoveGuildMember, "RemoveGuildMember", "removeGuildMember", "removeguildmember", NULL)
+				.method( &Guild::PromoteGuildMember, "PromoteGuildMember", "promoteGuildMember", "promoteguildmember", NULL)
+				.method( &Guild::DemoteGuildMember, "DemoteGuildMember", "demoteGuildMember", "demoteguildmember", NULL)
+				.method( &Guild::ChangeGuildMaster, "ChangeGuildMaster", "changeGuildMaster", "changeguildmaster", NULL)
+				.method( &Guild::SendPacket, "SendPacket", "sendPacket", "sendpacket", NULL)
+				.method( &Guild::GuildChat, "GuildChat", "guildChat", "guildchat", NULL)
+				.method( &Guild::OfficerChat, "OfficerChat", "officerChat", "officerchat", NULL)
+				.method( &Guild::SendGuildLog, "SendGuildLog", "sendGuildLog", "sendguildlog", NULL)
+				.method( &Guild::SendGuildBankLog, "SendGuildBankLog", "sendGuildBankLog", "sendguildbanklog", NULL)
+				.method( &Guild::SetPublicNote, "SetPublicNote", "setPublicNote", "setpublicnote", NULL)
+				.method( &Guild::SetOfficerNote, "SetOfficerNote", "setOfficerNote", "setofficernote", NULL)
+				.method( &Guild::Disband, "Disband", "disband", "disband", NULL)
+				.method( &Guild::GetGuildName, "GetGuildName", "getGuildName", "getguildname", NULL)
+				.method( &Guild::GetGuildLeader, "GetGuildLeader", "getGuildLeader", "getguildleader", NULL)
+				.method( &Guild::GetGuildId, "GetGuildId", "getGuildId", "getguildid", NULL)
+				.method( &Guild::GetBankTabCount, "GetBankTabCount", "getBankTabCount", "getbanktabcount", NULL)
+				.method( &Guild::GetBankBalance, "GetBankBalance", "getBankBalance", "getbankbalance", NULL)
+				.method( &Guild::GetNumMembers, "GetNumMembers", "getNumMembers", "getnummembers", NULL)
+				.method( &Guild::DepositMoney, "DepositMoney", "depositMoney", "depositmoney", NULL)
+				.method( &Guild::WithdrawMoney, "WithdrawMoney", "withdrawMoney", "withdrawmoney", NULL)
+				.method( &Guild::SpendMoney, "SpendMoney", "spendMoney", "spendmoney", NULL)
+				.method( &Guild::SendGuildInfo, "SendGuildInfo", "sendGuildInfo", "sendguildinfo", NULL)
+				.method( &Guild::SetTabardInfo, "SetTabardInfo", "setTabardInfo", "settabardinfo", NULL)
+				.method( &Guild::SendGuildBank, "SendGuildBank", "sendGuildBank", "sendguildbank", NULL)
+				.method( &Guild::SendGuildBankInfo, "SendGuildBankInfo", "sendGuildBankInfo", "sendguildbankinfo", NULL)
+				.method( &Guild::GetNumMembers, "GetNumMembers", "getNumMembers", "getnummembers", NULL)
+				.static_method( &Guild::SendGuildCommandResult, "SendGuildCommandResult", "sendGuildCommandResult", "sendguildcommandresult", NULL);
+
 	}
 }
