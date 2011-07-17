@@ -45,7 +45,7 @@ set( headers
 	Common.h
 	CrashHandler.h
 	crc32.h
-	CRefCounter.h
+	CRefcounter.h
 	CThreads.h
 	DynLib.hpp
 	Errors.h

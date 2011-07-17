@@ -164,7 +164,7 @@ SET(sources
 
 SET( headers
 	AchievementMgr.h
-	AddonMGr.h
+	AddonMgr.h
 	AIInterface.h
 	AIEvents.h
 	AlteracValley.h
