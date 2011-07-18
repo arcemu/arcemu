@@ -8170,8 +8170,8 @@ void Unit::HandleKnockback( Object* caster, float horizontal, float vertical )
 		if (!GetAIInterface()->CanCreatePath(destx, desty, destz))
 		{
 			//raycast nav mesh to see if this place is valid
-			float start[3] = { GetPositionY(), GetPositionZ() + 0.5, GetPositionX() };
-			float end[3] = { desty, destz + 0.5, destx };
+			float start[3] = { GetPositionY(), GetPositionZ() + 0.5f, GetPositionX() };
+			float end[3] = { desty, destz + 0.5f, destx };
 			float extents[3] = { 3, 5, 3 };
 			dtQueryFilter filter;
 			filter.setIncludeFlags(NAV_GROUND | NAV_WATER | NAV_SLIME | NAV_MAGMA);
