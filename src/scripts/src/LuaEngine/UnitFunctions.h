@@ -1934,7 +1934,7 @@ namespace luaUnit
 		data << uint32(0);
 		ptr->SendMessageToSet(&data, true);
 		ptr->GetAIInterface()->disable_melee = true;
-		ptr->GetAIInterface()->m_moveFly = true;
+		ptr->GetAIInterface()->SetFly();
 		ptr->Emote(EMOTE_ONESHOT_LIFTOFF);
 		return 0;
 	}
@@ -1945,7 +1945,7 @@ namespace luaUnit
 		data << ptr->GetNewGUID();
 		data << uint32(0);
 		ptr->SendMessageToSet(&data, true);
-		ptr->GetAIInterface()->m_moveFly = false;
+		ptr->GetAIInterface()->StopFlying();
 		ptr->GetAIInterface()->disable_melee = false;
 		ptr->Emote(EMOTE_ONESHOT_LAND);
 		return 0;
@@ -2397,14 +2397,6 @@ namespace luaUnit
 		if(ptr)
 			lua_pushnumber(L,ptr->GetEntry());
 		return 1;
-	}
-
-	int SetMoveRunFlag(lua_State * L, Unit * ptr)
-	{
-		TEST_UNIT()
-		int enabled = luaL_checkint(L, 1);
-		ptr->GetAIInterface()->setMoveRunFlag((enabled > 0) ? true : false);
-		return 0;
 	}
 
 	int HandleEvent(lua_State * L, Unit * ptr)
@@ -3311,7 +3303,10 @@ namespace luaUnit
 	{
 		TEST_UNIT()
 		bool enabled = CHECK_BOOL(L,1);
-		ptr->GetAIInterface()->m_moveFly = enabled;
+		if (enabled)
+			ptr->GetAIInterface()->SetFly();
+		else
+			ptr->GetAIInterface()->StopFlying();
 		return 0;
 	}
 
@@ -5347,21 +5342,15 @@ namespace luaUnit
 		int movetype = luaL_checkint(L,1); //0: walk, 1: run, 2: fly.
 		if (movetype == 2)
 		{
-			ptr->GetAIInterface()->m_moveFly = true;
-			ptr->GetAIInterface()->m_moveRun = false;
-			ptr->GetAIInterface()->m_moveSprint = false;
+			ptr->GetAIInterface()->SetFly();
 		}
 		else if (movetype == 1)
 		{
-			ptr->GetAIInterface()->m_moveFly = false;
-			ptr->GetAIInterface()->m_moveRun = true;
-			ptr->GetAIInterface()->m_moveSprint = false;
+			ptr->GetAIInterface()->SetRun();
 		}
 		else
 		{
-			ptr->GetAIInterface()->m_moveFly = false;
-			ptr->GetAIInterface()->m_moveRun = false;
-			ptr->GetAIInterface()->m_moveSprint = false;
+			ptr->GetAIInterface()->SetWalk();
 		}
 		return 0;
 	}

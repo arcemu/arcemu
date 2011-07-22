@@ -189,7 +189,6 @@ RegType<Unit> UnitMethods[] = {
 	{ "GetSpawnO", &luaUnit::GetSpawnO },
 	{ "GetInRangePlayersCount", &luaUnit::GetInRangePlayersCount },
 	{ "GetEntry", &luaUnit::GetEntry },
-	{ "SetMoveRunFlag", &luaUnit::SetMoveRunFlag },
 	{ "GetAIState", &luaUnit::GetAIState },
 	{ "ModUInt32Value", &luaUnit::ModUInt32Value },
 	{ "ModFloatValue", &luaUnit::ModFloatValue },
