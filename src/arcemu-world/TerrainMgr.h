@@ -331,6 +331,8 @@ public:
 
 	AreaTable* GetArea(float x, float y, float z);
 
+	AreaTable* GetArea2D( float x, float y );
+
 	bool GetLiquidInfo(float x, float y, float z, float & liquidlevel, uint32 & liquidtype)
 	{
 		VMAP::IVMapManager* vmgr = VMAP::VMapFactory::createOrGetVMapManager();

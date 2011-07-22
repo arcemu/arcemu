@@ -30,18 +30,32 @@ TerrainTile* TerrainHolder::GetTile( float x, float y )
 
 AreaTable* TerrainHolder::GetArea( float x, float y, float z )
 {
+	AreaTable* ret = NULL;
+	float vmap_z = z;
 	VMAP::IVMapManager* vmgr = VMAP::VMapFactory::createOrGetVMapManager();
 
 	uint32 flags;
 	int32 adtid, rootid, groupid;
 
-	if (vmgr->getAreaInfo(m_mapid, x, y, z, flags, adtid, rootid, groupid))
+	if (vmgr->getAreaInfo(m_mapid, x, y, vmap_z, flags, adtid, rootid, groupid))
 	{
+		float adtz = GetADTLandHeight(x, y);
+
+		if (adtz > vmap_z && z + 1 > adtz)
+			return GetArea2D(x, y);
+
 		WMOAreaTableEntry* wmoArea = sWorld.GetWMOAreaData(rootid, adtid, groupid);
 		if (wmoArea != NULL)
-			return dbcArea.LookupEntryForced(wmoArea->areaId);
+			ret = dbcArea.LookupEntryForced(wmoArea->areaId);
 	}
 
+	if (ret == NULL) //fall back to 2d if no vmaps or vmap has no areaid set
+		ret = GetArea2D(x, y);
+	return ret;
+}
+
+AreaTable* TerrainHolder::GetArea2D( float x, float y )
+{
 	uint32 exploreFlag = GetAreaFlag(x, y);
 
 	std::map<uint32, AreaTable*>::iterator itr = sWorld.mAreaIDToTable.find(exploreFlag);
