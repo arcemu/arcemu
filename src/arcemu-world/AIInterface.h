@@ -43,7 +43,7 @@
 
 //Pathfinding stuff
 #define VERTEX_SIZE 3
-#define MAX_PATH_LENGTH 256
+#define MAX_PATH_LENGTH 512
 #define SMOOTH_PATH_STEP_SIZE   6.0f
 #define SMOOTH_PATH_SLOP        0.4f
 

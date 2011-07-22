@@ -3753,11 +3753,11 @@ bool AIInterface::CreatePath( float x, float y, float z, bool onlytest /*= false
 	if (pathcount == 0 || path[pathcount - 1] != endref)
 		return false;
 
-	float points[64 * 3];
+	float points[MAX_PATH_LENGTH * 3];
 	int32 pointcount;
 	bool usedoffmesh;
 
-	if (findSmoothPath(start, end, path, pathcount, points, &pointcount, usedoffmesh, 64, nav->mesh, nav->query, filter) != DT_SUCCESS)
+	if (findSmoothPath(start, end, path, pathcount, points, &pointcount, usedoffmesh, MAX_PATH_LENGTH, nav->mesh, nav->query, filter) != DT_SUCCESS)
 		return false;
 
 	//add to spline
