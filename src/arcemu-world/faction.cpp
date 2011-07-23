@@ -135,16 +135,6 @@ bool isHostile(Object* objA, Object* objB)// B is hostile for A?
 		hostile = true;
 	}*/
 
-		// anyway, this place won't fight
-	AreaTable *atA = NULL;
-	AreaTable *atB = NULL;
-
-	if( objA->IsPlayer() )
-		atA = dbcArea.LookupEntry( TO< Player* >( objA )->GetAreaID() );
-
-	if( objB->IsPlayer() )
-		atB = dbcArea.LookupEntry( TO< Player* >( objB )->GetAreaID() );
-
 	// check friend/enemy list
 	for(uint32 i = 0; i < 4; i++)
 	{
@@ -166,18 +156,11 @@ bool isHostile(Object* objA, Object* objB)// B is hostile for A?
     
 
 //////////////////////////////////////////// PvP checks /////////////////////////////////
-    {
-        Player *A = GetPlayerOwner( objA );
-        Player *B = GetPlayerOwner( objB );
+	Player* ownerA = objA->GetPlayerOwner();
+	Player* ownerB = objB->GetPlayerOwner();
 
-        if( hostile && A != NULL && B != NULL ){
-			if( !B->IsSanctuaryFlagged() && ( B->IsPvPFlagged() || B->IsFFAPvPFlagged() ) )
-                return true;
-            else
-                return false;
-        }
-
-    }
+	if (ownerA != NULL && ownerB != NULL && (ownerA->IsSanctuaryFlagged() || ownerB->IsSanctuaryFlagged()))
+		return false;
 /////////////////////////////////////////////////////////////////////////////////////////
 
 	// Reputation System Checks
@@ -424,40 +407,10 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
 		}
 	}
 
-	// do not let people attack each other in sanctuary
-	// Dueling is already catered for
-	AreaTable *atA = NULL;
-	AreaTable *atB = NULL;
+	Player* ownerA = objA->GetPlayerOwner();
+	Player* ownerB = objB->GetPlayerOwner();
 
-	// cebernic: don't forget totem
-
-	if ( objA->IsCreature() )
-	{
-		if( TO< Creature* >(objA)->IsTotem() && TO< Creature* >( objA )->GetOwner() )
-			atA = dbcArea.LookupEntry( TO< Player* >( TO< Creature* >( objA )->GetOwner() )->GetAreaID() );
-		else
-		if( objA->IsPet() && TO< Pet* >( objA )->GetPetOwner() )
-			atA = dbcArea.LookupEntry( TO< Pet* >( objA )->GetPetOwner()->GetAreaID() );
-	}
-	
-	if ( objB->IsCreature() )
-	{
-		if( TO< Creature* >(objB)->IsTotem() && TO< Creature* >( objB )->GetOwner() )
-			atB = dbcArea.LookupEntry( TO< Player* >( TO< Creature* >( objB )->GetOwner())->GetAreaID() );
-		else if( objB->IsPet() && TO< Pet* >( objB )->GetPetOwner() )
-			atB = dbcArea.LookupEntry( TO< Pet* >( objB )->GetPetOwner()->GetAreaID() );
-
-	}			
-		
-	if( objA->IsPlayer() )
-		atA = dbcArea.LookupEntry( TO< Player* >( objA )->GetAreaID() );
-
-	if( objB->IsPlayer() )
-		atB = dbcArea.LookupEntry( TO< Player* >( objB )->GetAreaID() );
-
-	// We have the area codes
-	// We know they aren't dueling
-	if( ( atA && atA->AreaFlags & 0x800) || (atB && atB->AreaFlags & 0x800) ) // cebernic: fix older logic error
+	if (ownerA != NULL && ownerB != NULL && (ownerA->IsSanctuaryFlagged() || ownerB->IsSanctuaryFlagged()))
 		return false;
 
 	if(objA->m_faction == objB->m_faction)  // same faction can't kill each other unless in ffa pvp/duel

@@ -1175,7 +1175,7 @@ Unit* AIInterface::FindTarget()
 	// not attackable creatures sometimes fight enemies in scripted fights though
 	if(m_Unit->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NOT_ATTACKABLE_2))
 	{
-		return 0;
+		return NULL;
 	}
 
     // Start of neutralguard snippet
@@ -1209,15 +1209,18 @@ Unit* AIInterface::FindTarget()
 				continue;
 			if (distance > dist)
 			{
-				if (sWorld.Collision) {
-					if( CollideInterface.CheckLOS( m_Unit->GetMapId(), m_Unit->GetPositionNC(), tmpPlr->GetPositionNC() ) )
+				if (sWorld.Collision)
+				{
+					if(CollideInterface.CheckLOS( m_Unit->GetMapId(), m_Unit->GetPositionNC(), tmpPlr->GetPositionNC()))
 					{
 						distance = dist;
-						target = TO< Unit* >(tmpPlr);
+						target = TO_UNIT(tmpPlr);
 					}
-				} else {
+				}
+				else
+				{
 					distance = dist;
-					target = TO< Unit* >(tmpPlr);
+					target = TO_UNIT(tmpPlr);
 				}
 			}
 		}
