@@ -3487,15 +3487,24 @@ void Aura::SpellAuraModIncreaseEnergy(bool apply)
 
 void Aura::SpellAuraModShapeshift(bool apply)
 {
-	if( p_target == NULL )
-		return;
+	if (p_target != NULL)
+	{
+		if (p_target->m_MountSpellId != 0 && p_target->m_MountSpellId != m_spellProto->Id)
+		{
+			switch (mod->m_miscValue)
+			{
+			case FORM_BATTLESTANCE:
+			case FORM_DEFENSIVESTANCE:
+			case FORM_BERSERKERSTANCE:
+			case FORM_UNDEAD:
+				break;
+			default: p_target->Dismount();
+			}
+		}
+	}
 
-	if( p_target->m_MountSpellId && p_target->m_MountSpellId != m_spellProto->Id )
-		if( !(mod->m_miscValue & ( FORM_BATTLESTANCE | FORM_DEFENSIVESTANCE | FORM_BERSERKERSTANCE ) ) )
-			p_target->Dismount(); // these spells are not compatible
-
-	SpellShapeshiftForm * ssf = dbcSpellShapeshiftForm.LookupEntry( mod->m_miscValue );
-	if( !ssf )
+	SpellShapeshiftForm* ssf = dbcSpellShapeshiftForm.LookupEntry( mod->m_miscValue );
+	if (ssf == NULL)
 		return;
 
 	uint32 spellId = 0;
@@ -3530,8 +3539,6 @@ void Aura::SpellAuraModShapeshift(bool apply)
 					m_target->RemoveAura(sp);//prowl
 				}
 			}
-			TO< Player* >( m_target )->UpdateAttackSpeed();
-
 		} break;
 	case FORM_TREE:
 		{
@@ -3656,7 +3663,8 @@ void Aura::SpellAuraModShapeshift(bool apply)
 	case FORM_SKELETON:
 	case FORM_ZOMBIE:
 		{
-			p_target->SendAvailSpells(ssf, apply);
+			if (p_target != NULL)
+				p_target->SendAvailSpells(ssf, apply);
 		}break;
 	case FORM_METAMORPHOSIS:
 		{
@@ -3666,39 +3674,42 @@ void Aura::SpellAuraModShapeshift(bool apply)
 
 	if( apply )
 	{
-		if( m_target->getClass() == WARRIOR && m_target->GetPower( POWER_TYPE_RAGE ) > p_target->m_retainedrage )
-			m_target->SetPower( POWER_TYPE_RAGE, p_target->m_retainedrage );
-
-		if( m_target->getClass() == DRUID )
+		if (p_target != NULL)
 		{
-			if( Rand( p_target->m_furorChance ) )
+			if (p_target->getClass() == WARRIOR && p_target->GetPower(POWER_TYPE_RAGE) > p_target->m_retainedrage)
+				p_target->SetPower(POWER_TYPE_RAGE, p_target->m_retainedrage);
+
+			if( m_target->getClass() == DRUID )
 			{
-				uint32 furorSpell;
-				if( mod->m_miscValue == FORM_CAT )
-					furorSpell = 17099;
-				else if( mod->m_miscValue == FORM_BEAR || mod->m_miscValue == FORM_DIREBEAR )
-					furorSpell = 17057;
-				else
-					furorSpell = 0;
-
-				if( furorSpell != 0 )
+				if(Rand(p_target->m_furorChance))
 				{
-					SpellEntry *spellInfo = dbcSpell.LookupEntry( furorSpell );
+					uint32 furorSpell;
+					if( mod->m_miscValue == FORM_CAT )
+						furorSpell = 17099;
+					else if( mod->m_miscValue == FORM_BEAR || mod->m_miscValue == FORM_DIREBEAR )
+						furorSpell = 17057;
+					else
+						furorSpell = 0;
 
-					Spell *sp = sSpellFactoryMgr.NewSpell(m_target, spellInfo, true, NULL);
-					SpellCastTargets tgt;
-					tgt.m_unitTarget = m_target->GetGUID();
-					sp->prepare(&tgt);
+					if( furorSpell != 0 )
+					{
+						SpellEntry *spellInfo = dbcSpell.LookupEntry( furorSpell );
+
+						Spell *sp = sSpellFactoryMgr.NewSpell(m_target, spellInfo, true, NULL);
+						SpellCastTargets tgt;
+						tgt.m_unitTarget = m_target->GetGUID();
+						sp->prepare(&tgt);
+					}
 				}
 			}
-		}
 
-		if( spellId != GetSpellId() )
-		{
-			if( p_target->m_ShapeShifted )
-				p_target->RemoveAura( p_target->m_ShapeShifted );
+			if( spellId != GetSpellId() )
+			{
+				if( p_target->m_ShapeShifted )
+					p_target->RemoveAura( p_target->m_ShapeShifted );
 
-			p_target->m_ShapeShifted = GetSpellId();
+				p_target->m_ShapeShifted = GetSpellId();
+			}
 		}
 
 		if( modelId != 0 )
@@ -3707,10 +3718,10 @@ void Aura::SpellAuraModShapeshift(bool apply)
 			m_target->EventModelChange();
 		}
 
-		p_target->SetShapeShift( static_cast<uint8>( mod->m_miscValue ));
+		m_target->SetShapeShift(mod->m_miscValue);
 
 		// check for spell id
-		if( spellId == 0 )
+		if(spellId == 0)
 			return;
 
 		SpellEntry* spellInfo = dbcSpell.LookupEntry(spellId );
@@ -3754,30 +3765,40 @@ void Aura::SpellAuraModShapeshift(bool apply)
 		}
 
 		//execute after we changed shape
-		p_target->EventTalentHearthOfWildChange( true );
+		if (p_target != NULL)
+			p_target->EventTalentHearthOfWildChange( true );
 	}
 	else
 	{
-		if( ssf->id != FORM_STEALTH )
-			m_target->RemoveAllAurasByRequiredShapeShift( DecimalToMask(mod->m_miscValue) );
+		if(ssf->id != FORM_STEALTH)
+			m_target->RemoveAllAurasByRequiredShapeShift(DecimalToMask(mod->m_miscValue));
 
 		if( m_target->IsCasting() && m_target->m_currentSpell && m_target->m_currentSpell->GetProto() 
 			&& ( m_target->m_currentSpell->GetProto()->RequiredShapeShift & DecimalToMask(mod->m_miscValue) ) )
 			m_target->InterruptSpell();
 
 		//execute before changing shape back
-		p_target->EventTalentHearthOfWildChange( false );
+		if (p_target != NULL)
+		{
+			p_target->EventTalentHearthOfWildChange( false );
+			p_target->m_ShapeShifted = 0;
+		}
 		m_target->SetDisplayId(m_target->GetNativeDisplayId() );
 		m_target->EventModelChange();
-		if( spellId != GetSpellId() )
+		if(spellId != GetSpellId())
 		{
-			if( spellId )
+			if(spellId)
 				m_target->RemoveAura( spellId );
 		}
-		p_target->m_ShapeShifted = 0;
-		p_target->SetShapeShift( 0 );
+		
+		m_target->SetShapeShift(0);
 	}
-	p_target->UpdateStats();
+
+	if (p_target != NULL)
+	{
+		p_target->UpdateStats();
+		p_target->UpdateAttackSpeed();
+	}
 }
 
 void Aura::SpellAuraModEffectImmunity(bool apply)

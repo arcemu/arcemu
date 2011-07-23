@@ -1616,6 +1616,10 @@ public:
 	
 	void AggroPvPGuards();
 
+	virtual void SetShapeShift(uint8 ss) { SetByte(UNIT_FIELD_BYTES_2, 3, ss); }
+	uint8 GetShapeShift() { return GetByte(UNIT_FIELD_BYTES_2,3); }
+	uint32 GetShapeShiftMask() { return ((uint32)1 << (GetShapeShift() - 1)); }
+
 /////////////////////////////////////////////////////// Unit properties ///////////////////////////////////////////////////
     void SetCharmedUnitGUID( uint64 GUID ){ SetUInt64Value( UNIT_FIELD_CHARM, GUID ); }
     void SetSummonedUnitGUID( uint64 GUID ){ SetUInt64Value( UNIT_FIELD_SUMMON, GUID ); }

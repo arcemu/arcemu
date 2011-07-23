@@ -1574,15 +1574,6 @@ public:
 	const float& GetBindPositionZ( ) const { return m_bind_pos_z; }
 	const uint32& GetBindMapId( ) const { return m_bind_mapid; }
 	const uint32& GetBindZoneId( ) const { return m_bind_zoneid; }
-	 uint8 GetShapeShift()
-	{
-		return GetByte(UNIT_FIELD_BYTES_2,3);
-	}
-
-	 uint32 GetShapeShiftMask()
-	{
-		return ( (uint32)1 << (GetShapeShift() - 1) );
-	}
 
 	void delayAttackTimer(int32 delay)
 	{

@@ -9289,7 +9289,7 @@ void Player::SaveAuras(stringstream &ss)
 void Player::SetShapeShift(uint8 ss)
 {
 	uint8 old_ss = GetShapeShift(); //GetByte( UNIT_FIELD_BYTES_2, 3 );
-	SetByte( UNIT_FIELD_BYTES_2, 3, ss );
+	SetByte(UNIT_FIELD_BYTES_2, 3, ss);
 
 	//remove auras that we should not have
 	for( uint32 x = MAX_TOTAL_AURAS_START; x < MAX_TOTAL_AURAS_END; x++ )
