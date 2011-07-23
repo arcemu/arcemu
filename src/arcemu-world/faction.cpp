@@ -145,9 +145,6 @@ bool isHostile(Object* objA, Object* objB)// B is hostile for A?
 	if( objB->IsPlayer() )
 		atB = dbcArea.LookupEntry( TO< Player* >( objB )->GetAreaID() );
 
-	if( ( atA && atA->AreaFlags & 0x800) || (atB && atB->AreaFlags & 0x800) ) // cebernic: fix older logic error
-		return false;
-
 	// check friend/enemy list
 	for(uint32 i = 0; i < 4; i++)
 	{
