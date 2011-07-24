@@ -3621,7 +3621,7 @@ void AIInterface::UpdateMovementSpline()
 
 	float o = atan2(current.pos.x - prev.pos.x, current.pos.y - prev.pos.y);
 
-	int curmstime = getMSTime();
+	uint32 curmstime = getMSTime();
 
 	if (curmstime >= current.arrive)
 	{
