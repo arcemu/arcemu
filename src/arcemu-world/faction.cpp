@@ -119,21 +119,10 @@ bool isHostile(Object* objA, Object* objB)// B is hostile for A?
 	int ret = isBgEnemy(objA, objB);
 	if (ret != -1) return ret == 1;
 
-	uint32 faction = objB->m_faction->Mask;
-	uint32 host = objA->m_faction->HostileMask;
-
-	/*if( faction != 0 )
-	{*/
-		if(faction & host)
-		{
-			hostile = true;
-		}
-	/*}
-	else
-	{
-		// default to true
+	if (objB->m_faction->Mask & objA->m_faction->HostileMask)
 		hostile = true;
-	}*/
+	if (objA->m_faction->Mask & objB->m_faction->HostileMask)
+		hostile = true;
 
 	// check friend/enemy list
 	for(uint32 i = 0; i < 4; i++)
