@@ -1845,7 +1845,8 @@ void AIInterface::SendMoveToPacket()
 bool AIInterface::StopMovement(uint32 time)
 {
 	m_splinePriority = SPLINE_PRIORITY_MOVEMENT;
-	UpdateMovementSpline();
+	if (m_Unit->GetMapMgr() != NULL)
+		UpdateMovementSpline();
 	m_moveTimer = time; //set pause after stopping
 
 	//Clear current spline
@@ -1855,7 +1856,8 @@ bool AIInterface::StopMovement(uint32 time)
 	m_currentSplineTotalMoveTime = 0;
 	m_currentSplineFinalOrientation = 0;
 
-	SendMoveToPacket();
+	if (m_Unit->GetMapMgr() != NULL)
+		SendMoveToPacket();
 	return true;
 }
 
