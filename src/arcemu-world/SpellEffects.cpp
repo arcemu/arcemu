@@ -2144,124 +2144,67 @@ void Spell::SpellEffectSummon(uint32 i)
 
 void Spell::SpellEffectLeap(uint32 i) // Leap
 {
+	if (unitTarget == NULL)
+		return;
 	float radius = GetRadius(i);
-	// remove movement impeding auras
-	u_caster->RemoveAurasByInterruptFlag(AURA_INTERRUPT_ON_ANY_DAMAGE_TAKEN);
-	// cebernic: 2008-10-11
-	// thanks for the guys who gave the suggestions to my private forum(p2wow.com)
-	// Blink works perfectly atm.Features:no traversed / never outspace falling:D / calc right everywhere even multi floors or underground / much blizzlike.
-	// a couple hours i wasted, so it full tested.
+	unitTarget->RemoveAurasByInterruptFlag(AURA_INTERRUPT_ON_ANY_DAMAGE_TAKEN);
 
-	if (sWorld.Collision) {
-		if(p_caster && p_caster->m_bg && !p_caster->m_bg->HasStarted()) // tempfix
-			return;
+	NavMeshData* nav = CollideInterface.GetNavMesh(m_caster->GetMapId());
 
-		int _UNDERGROUND   = 0x2;
-		int _COLLIDED      = 0x4;
-		int _LAND_BREAK    = 0x8;
-		int _POS_BREAK     = 0x10;
-		int _BLOCK_BREAK   = 0x20;
+	if (nav != NULL)
+	{
+		float destx = unitTarget->GetPositionX() + radius * cos(unitTarget->GetOrientation());
+		float desty = unitTarget->GetPositionY() + radius * sin(unitTarget->GetOrientation());
+		float landz = unitTarget->GetMapMgr()->GetLandHeight(destx, desty, unitTarget->GetPositionZ() + 2);
+		float waterz;
+		uint32 watertype;
+		unitTarget->GetMapMgr()->GetLiquidInfo(destx, desty, unitTarget->GetPositionZ() + 2, waterz, watertype);
+		float destz = max(waterz, landz);
 
-		int flag= 0;
+		//raycast nav mesh to see if this place is valid
+		float start[3] = { unitTarget->GetPositionY(), unitTarget->GetPositionZ() + 0.5f, unitTarget->GetPositionX() };
+		float end[3] = { desty, destz + 0.5f, destx };
+		float extents[3] = { 3, 5, 3 };
+		dtQueryFilter filter;
+		filter.setIncludeFlags(NAV_GROUND | NAV_WATER | NAV_SLIME | NAV_MAGMA);
 
-		float newposX, newposY, newposZ;
-		// init first variables
-		float ori = m_caster->GetOrientation();
-		float posX = m_caster->GetPositionX();
-		float posY = m_caster->GetPositionY();
-		float posZ = m_caster->GetPositionZ();
-		if ( m_caster->GetMapMgr()->IsUnderground(posX,posY,posZ) )// make sure not eq.
-			flag |= _UNDERGROUND;
-
-		LocationVector src(posX,posY,posZ);
-		LocationVector finaldest(posX,posY,posZ);
-
-
-		uint8 steps = 20; // higher precision, but more performance waste, radius =20.0f may each 1y will be checked.
-		float radius_steps = radius / steps;
-		uint8 j = 0;
-
-		float _SharpCounter = 0.0f;
-		for ( j = 1; j < steps; j++ )
+		dtPolyRef startref;
+		if (nav->query->findNearestPoly(start, extents, &filter, &startref, NULL) == DT_SUCCESS && startref != 0)
 		{
-			newposX = posX + ( j * radius_steps * cosf( ori ) );
-			newposY = posY + ( j * radius_steps * sinf( ori ) );
-			newposZ =  m_caster->GetMapMgr()->GetFirstZWithCPZ(newposX,newposY,posZ);
+			float result[3];
+			int numvisited;
+			dtPolyRef visited[MAX_PATH_LENGTH];
 
-			if ( newposZ != NO_WMO_HEIGHT ) flag |= _COLLIDED;
-			if (flag & _COLLIDED){
-				if ( newposZ == NO_WMO_HEIGHT ) { // been round 2
-					flag |= _LAND_BREAK;
-					break;
-				}
-			}else {
-				newposZ = m_caster->GetMapMgr()->GetADTLandHeight(newposX,newposY);
-			}
-
-			if ( fabs( ( newposZ - finaldest.z ) / radius_steps ) > 1.0f ) {flag |= _POS_BREAK; break;} // too high
-
-
-			LocationVector dest(newposX,newposY,newposZ);
-			dest.o = ori;
-			if ( j>1 && CollideInterface.GetFirstPoint( m_caster->GetMapId(),src, dest,dest, -1.5f ) ) {flag |= _BLOCK_BREAK; break;} // blocked then break;
-
-			if ( newposZ > finaldest.z ){
-				_SharpCounter = _SharpCounter+(newposZ - finaldest.z); // this value reserved for more extends.
-			}
-
-			//printf("x:%f y:%f z:%f counter%d sharp%f\n",newposX,newposY,newposZ,j,_SharpCounter );
-
-			finaldest.x = newposX;
-			finaldest.y = newposY;
-			finaldest.z = newposZ;
-		}
-
-
-		/*if ( flag & _UNDERGROUND ) printf("_UNDERGROUND 1\n");
-		if ( flag & _COLLIDED ) printf("_COLLIDED 1\n");
-		if ( flag & _LAND_BREAK ) printf("_LAND_BREAK 1\n");
-		if ( flag & _POS_BREAK ) printf("_POS_BREAK 1\n");
-		if ( flag & _BLOCK_BREAK ) printf("_BLOCK_BREAK 1\n");*/
-
-
-		if ( j <3 ) return; //wallhack?
-
-		if ( !(flag & _UNDERGROUND) )
-		{
-			newposZ = m_caster->GetMapMgr()->GetADTLandHeight( finaldest.x,finaldest.y );
-			if ( newposZ > finaldest.z ) finaldest.z = newposZ;
-		}
-
-		if ( !(flag&_COLLIDED) && (flag&_POS_BREAK) ) {
-			// just test again ,landheight wasn't strictly, collision system better;p
-			// so it makes you on falling.
-			newposX = posX + ( ((j * radius_steps)+0.5f) * cosf( m_caster->GetOrientation() ) );
-			newposY = posY + ( ((j * radius_steps)+0.5f) * sinf( m_caster->GetOrientation() ) );
-			newposZ = m_caster->GetMapMgr()->GetADTLandHeight(newposX,newposY);
-			if ( newposZ > finaldest.z ) finaldest.z = finaldest.z+4.0f; // taking big Z
-		}
-
-		finaldest.o = m_caster->GetOrientation();
-
-		if(p_caster)
-		{
-			p_caster->blinked = true;
-			p_caster->SafeTeleport( p_caster->GetMapId(), p_caster->GetInstanceID(), finaldest );
+			nav->query->moveAlongSurface(startref, start, end, &filter, result, visited, &numvisited, MAX_PATH_LENGTH);
+			nav->query->getPolyHeight(visited[numvisited - 1], result, &result[1]);
+			//copy end back to function floats
+			desty = result[0];
+			destz = result[1];
+			destx = result[2];
 		}
 		else
 		{
-			u_caster->SetPosition(finaldest, true);
+			//we've blinked but we're not in reach of the nav mesh, we simply blink to where we were (high in air for example).
+			destx = unitTarget->GetPositionX();
+			desty = unitTarget->GetPositionY();
+			destz = unitTarget->GetPositionZ();
 		}
-	} else {
-		if(!p_caster) return;
+
+		if (playerTarget)
+			playerTarget->SafeTeleport(playerTarget->GetMapId(), playerTarget->GetInstanceID(), LocationVector(destx, desty, destz, playerTarget->GetOrientation()));
+	}
+	else
+	{
+		if (playerTarget == NULL) //let client handle this for players
+			return;
 
 		WorldPacket data(SMSG_MOVE_KNOCK_BACK, 50);
-		data << p_caster->GetNewGUID();
+		data << playerTarget->GetNewGUID();
 		data << getMSTime();
-		data << cosf(p_caster->GetOrientation()) << sinf(p_caster->GetOrientation());
+		data << cosf(playerTarget->GetOrientation()) << sinf(playerTarget->GetOrientation());
 		data << radius;
 		data << float(-10.0f);
-		p_caster->GetSession()->SendPacket(&data);
+		playerTarget->GetSession()->SendPacket(&data);
 	}
 }
 

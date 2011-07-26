@@ -2545,6 +2545,7 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 					m_FearTimer=getMSTime()+100;
 				else
 				{
+					SetRun(); //fear = run bitch run
 					MoveTo(Fx, Fy, Fz, Fo);
 					m_FearTimer = m_totalMoveTime + getMSTime() + 200;
 				}
@@ -3829,7 +3830,7 @@ dtStatus AIInterface::findSmoothPath( const float* startPos, const float* endPos
 		query->moveAlongSurface(polys[0], iterPos, moveTgt, &filter, result, visited, (int*)&nvisited, MAX_VISIT_POLY);
 		npolys = fixupCorridor(polys, npolys, MAX_PATH_LENGTH, visited, nvisited);
 
-		query->getPolyHeight(polys[0], result, &result[1]);
+		query->getPolyHeight(visited[nvisited - 1], result, &result[1]);
 		dtVcopy(iterPos, result);
 
 		// Handle end of path and off-mesh links when close enough.

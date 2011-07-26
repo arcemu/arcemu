@@ -8179,23 +8179,16 @@ void Unit::HandleKnockback( Object* caster, float horizontal, float vertical )
 			dtPolyRef startref;
 			nav->query->findNearestPoly(start, extents, &filter, &startref, NULL);
 
-			float hitpos;
-			float hitnormal[3];
-			dtPolyRef path[256];
-			int32 pathcount;
-			nav->query->raycast(startref, start, end, &filter, &hitpos, hitnormal, path, &pathcount, 256);
+			float result[3];
+			int numvisited;
+			dtPolyRef visited[MAX_PATH_LENGTH];
 
-			if (hitpos < 1) //we've hit something, modify end to our new values
-			{
-				end[0] = start[0] + (end[0] - start[0]) * hitpos;
-				end[1] = start[1] + (end[1] - start[1]) * hitpos;
-				end[2] = start[2] + (end[2] - start[2]) * hitpos;
-			}
-
+			nav->query->moveAlongSurface(startref, start, end, &filter, result, visited, &numvisited, MAX_PATH_LENGTH);
+			nav->query->getPolyHeight(visited[numvisited - 1], result, &result[1]);
 			//copy end back to function floats
-			desty = end[0];
-			destz = end[1];
-			destx = end[2];
+			desty = result[0];
+			destz = result[1];
+			destx = result[2];
 		}
 	}
 	else //test against vmap if mmap isn't available
