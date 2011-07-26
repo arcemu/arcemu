@@ -668,7 +668,8 @@ public:
 	bool MoveDone() { return m_currentMoveSplineIndex >= m_currentMoveSpline.size(); }
 	bool CanCreatePath(float x, float y, float z) { return CreatePath(x, y, z, true); }
 	void MoveKnockback(float x, float y, float z, float horizontal, float vertical);
-	void MoveLeap(float x, float y, float z, float o = 0);
+	void MoveJump(float x, float y, float z, float o = 0);
+	void MoveTeleport(float x, float y, float z, float o = 0);
 	bool MoveCharge(float x, float y, float z);
 };
 #endif

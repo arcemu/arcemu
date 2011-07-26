@@ -2190,8 +2190,10 @@ void Spell::SpellEffectLeap(uint32 i) // Leap
 			destz = unitTarget->GetPositionZ();
 		}
 
-		if (playerTarget)
+		if (playerTarget != NULL)
 			playerTarget->SafeTeleport(playerTarget->GetMapId(), playerTarget->GetInstanceID(), LocationVector(destx, desty, destz, playerTarget->GetOrientation()));
+		else if (unitTarget != NULL)
+			unitTarget->GetAIInterface()->MoveTeleport(destx, desty, destz, unitTarget->GetOrientation());
 	}
 	else
 	{

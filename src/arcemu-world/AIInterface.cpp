@@ -4479,8 +4479,8 @@ void AIInterface::OnMoveCompleted()
 {
 	uint32 splineflags = m_splineFlags;
 
-	//remove trajectory flag
-	RemoveSplineFlag(SPLINEFLAG_TRAJECTORY | SPLINEFLAG_KNOCKBACK);
+	//remove flags that are temporary
+	RemoveSplineFlag(SPLINEFLAG_DONE | SPLINEFLAG_TRAJECTORY | SPLINEFLAG_KNOCKBACK);
 
 	//reset spline priority so other movements can happen
 	m_splinePriority = SPLINE_PRIORITY_MOVEMENT;
@@ -4508,7 +4508,7 @@ void AIInterface::EventForceRedirected( Unit* pUnit, uint32 misc1 )
 		SetReturnPosition();
 }
 
-void AIInterface::MoveLeap( float x, float y, float z, float o /*= 0*/ )
+void AIInterface::MoveJump( float x, float y, float z, float o /*= 0*/ )
 {
 	m_splinePriority = SPLINE_PRIORITY_REDIRECTION;
 
@@ -4583,5 +4583,25 @@ bool AIInterface::MoveCharge( float x, float y, float z )
 
 	SendMoveToPacket();
 	return true;
+}
+
+void AIInterface::MoveTeleport( float x, float y, float z, float o /*= 0*/ )
+{
+	m_currentMoveSpline.clear();
+	m_currentMoveSplineIndex = 1;
+	m_currentSplineUpdateCounter = 0;
+	m_currentSplineTotalMoveTime = 0;
+	m_currentSplineFinalOrientation = o;
+
+	AddSplineFlag(SPLINEFLAG_DONE);
+
+	AddSpline(m_Unit->GetPositionX(), m_Unit->GetPositionY(), m_Unit->GetPositionZ());
+	AddSpline(x, y, z);
+
+	SendMoveToPacket();
+
+	//complete move
+	m_currentMoveSpline.clear();
+	m_Unit->SetPosition(x, y, z, o);
 }
 
