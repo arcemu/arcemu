@@ -62,7 +62,7 @@ void Player::Gossip_SendPOI(float X, float Y, uint32 Icon, uint32 Flags, uint32 
 	if( Name != NULL )
 		namelen = strlen( Name );
    
-	WorldPacket data( SMSG_GOSSIP_POI, 11 + namelen );
+	WorldPacket data( SMSG_GOSSIP_POI, 21 + namelen );
 
 	data << uint32( Flags );
 	data << float( X );

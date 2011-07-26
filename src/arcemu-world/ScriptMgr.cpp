@@ -391,6 +391,7 @@ void ScriptMgr::register_dummy_spell(uint32 entry, exp_handle_dummy_spell callba
 
 void ScriptMgr::register_gossip_script(uint32 entry, GossipScript * gs)
 {
+	register_creature_gossip(entry, gs);
 	/*CreatureInfo * ci = CreatureNameStorage.LookupEntry(entry);
 	if(ci)
 	{
@@ -405,6 +406,7 @@ void ScriptMgr::register_gossip_script(uint32 entry, GossipScript * gs)
 
 void ScriptMgr::register_go_gossip_script(uint32 entry, GossipScript * gs)
 {
+	register_go_gossip(entry, gs);
 	/*GameObjectInfo * gi = GameObjectNameStorage.LookupEntry(entry);
 	if(gi)
 	{
@@ -571,6 +573,7 @@ bool ScriptMgr::CallScriptedItem(Item * pItem, Player * pPlayer)
 
 void ScriptMgr::register_item_gossip_script(uint32 entry, GossipScript * gs)
 {
+	register_item_gossip(entry, gs);
 	/*ItemPrototype * proto = ItemPrototypeStorage.LookupEntry(entry);
 	if(proto)
 	{
@@ -738,6 +741,8 @@ void ScriptMgr::register_creature_gossip( uint32 entry, Arcemu::Gossip::Script *
 	GossipMap::iterator itr = creaturegossip_.find(entry);
 	if(itr == creaturegossip_.end() )
 		creaturegossip_.insert( make_pair(entry, script) );
+	//keeping track of all created gossips to delete them all on shutdown
+	_customgossipscripts.insert(script);
 }
 
 bool ScriptMgr::has_creature_gossip( uint32 entry) const
@@ -758,6 +763,8 @@ void ScriptMgr::register_item_gossip( uint32 entry, Arcemu::Gossip::Script* scri
 	GossipMap::iterator itr = itemgossip_.find(entry);
 	if(itr == itemgossip_.end() )
 		itemgossip_.insert( make_pair(entry, script) );
+	//keeping track of all created gossips to delete them all on shutdown
+	_customgossipscripts.insert(script);
 }
 
 void ScriptMgr::register_go_gossip( uint32 entry, Arcemu::Gossip::Script* script)
@@ -765,6 +772,8 @@ void ScriptMgr::register_go_gossip( uint32 entry, Arcemu::Gossip::Script* script
 	GossipMap::iterator itr = gogossip_.find(entry);
 	if(itr == gogossip_.end() )
 		gogossip_.insert( make_pair(entry, script) );
+	//keeping track of all created gossips to delete them all on shutdown
+	_customgossipscripts.insert(script);
 }
 
 bool ScriptMgr::has_item_gossip( uint32 entry) const
@@ -812,6 +821,30 @@ void ScriptMgr::ReloadScriptEngines()
 				engine_reloadfunc();
 		}
 	}
+}
+
+//support for Gossip scripts added before r4106 changes
+void GossipScript::OnHello(Object* pObject, Player* Plr)
+{
+	GossipHello(pObject, Plr, true);
+}
+
+void GossipScript::OnSelectOption(Object* pObject, Player* Plr, uint32 Id, const char * EnteredCode)
+{
+	uint32 IntId = 1;
+
+	if(Plr->CurrentGossipMenu != NULL) 
+	{ 
+		GossipMenuItem item = Plr->CurrentGossipMenu->GetItem(Id); 
+		IntId = item.IntId; 
+	}
+
+	GossipSelectOption(pObject, Plr, Id , IntId, EnteredCode);
+}
+
+void GossipScript::OnEnd(Object* pObject, Player* Plr)
+{
+	GossipEnd(pObject, Plr);
 }
 
 /* Hook Implementations */

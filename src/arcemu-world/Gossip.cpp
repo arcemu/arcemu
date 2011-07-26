@@ -275,6 +275,11 @@ entry	text
 82  Deathknight
 */
 
+void Gossip::Script::Destroy()
+{
+	delete this;
+}
+
 Gossip::Script * Gossip::Script::GetInterface(Creature* creature)
 {
 	Gossip::Script * script = sScriptMgr.get_creature_gossip( creature->GetEntry() );

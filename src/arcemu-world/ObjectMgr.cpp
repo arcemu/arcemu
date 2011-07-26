@@ -1762,7 +1762,7 @@ void GossipMenu::BuildPacket(WorldPacket& Packet)
 
 void GossipMenu::SendTo(Player* Plr)
 {
-	WorldPacket data(SMSG_GOSSIP_MESSAGE, Menu.size() * 50 + 12);
+	WorldPacket data(SMSG_GOSSIP_MESSAGE, Menu.size() * 50 + 24);
 	BuildPacket(data);
 	data << uint32(0);  // 0 quests obviously
 	Plr->GetSession()->SendPacket(&data);

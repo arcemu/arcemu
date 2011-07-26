@@ -141,7 +141,7 @@ typedef HM_NAMESPACE::hash_map<uint32, exp_handle_dummy_aura> HandleDummyAuraMap
 typedef HM_NAMESPACE::hash_map<uint32, exp_handle_dummy_spell> HandleDummySpellMap;
 typedef HM_NAMESPACE::hash_map< uint32, exp_handle_script_effect > HandleScriptEffectMap;
 typedef HM_NAMESPACE::hash_map<uint32, exp_create_instance_ai> InstanceCreateMap;
-typedef set<GossipScript*> CustomGossipScripts;
+typedef set<Arcemu::Gossip::Script*> CustomGossipScripts;
 typedef HM_NAMESPACE::hash_map<uint32, Arcemu::Gossip::Script*> GossipMap;
 typedef set<QuestScript*> QuestScripts;
 typedef set<void*> ServerHookList;
@@ -398,7 +398,7 @@ protected:
 	GameObject* _gameobject;
 };
 
-class SERVER_DECL GossipScript
+class SERVER_DECL GossipScript : public Arcemu::Gossip::Script
 {
 public:
 	GossipScript() {}
@@ -407,7 +407,11 @@ public:
 	virtual void GossipHello(Object* pObject, Player* Plr, bool AutoSend) {}
 	virtual void GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, uint32 IntId, const char * EnteredCode) {}
 	virtual void GossipEnd(Object* pObject, Player* Plr) {}
-	virtual void Destroy() {}
+
+	//support for Gossip scripts added before r4106
+	virtual void OnHello(Object* pObject, Player* Plr);
+	virtual void OnSelectOption(Object* pObject, Player* Plr, uint32 Id, const char * EnteredCode);
+	virtual void OnEnd(Object* pObject, Player* Plr);
 };
 
 class SERVER_DECL QuestScript
