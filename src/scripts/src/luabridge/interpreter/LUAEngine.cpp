@@ -60,15 +60,15 @@ extern "C"
 		lua_engine::restartEngine();
 	}
 };
-void lua_engine::report(lua_State * L)
-{
-	const char * msg= lua_tostring(L,-1);
-	int count = 5;
-	while(msg && --count > 0)
-	{
-		lua_pop(L,1);
-		printf("\t%s\n",msg);
-		msg=lua_tostring(L,-1);
+
+void lua_engine::report( lua_State * L ){
+	int count = lua_gettop( L );
+
+	while( count > 0 ){
+		const char *msg= lua_tostring( L, -1 );
+		LOG_ERROR( msg );
+		lua_pop( L, 1 );
+		count--;
 	}
 }
 
