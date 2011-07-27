@@ -107,7 +107,10 @@ void Spell::FillTargetMap(uint32 i)
 	if (TargetType & SPELL_TARGET_NOT_IMPLEMENTED)
 		return;
 	if (TargetType & SPELL_TARGET_NO_OBJECT) //summon spells that appear infront of caster
+	{
 		HandleTargetNoObject();
+		return;
+	}
 
 
 	//always add this guy :P
