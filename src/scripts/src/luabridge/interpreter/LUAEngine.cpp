@@ -177,8 +177,8 @@ void lua_engine::loadScripts()
 			fseek(script_file, 0, SEEK_END);
 			file_length = ftell(script_file);
 			rewind(script_file);
-			script->data_ = (const void*)malloc(file_length);
-			memset( (void*)script->data_, 0, file_length);
+			script->data_ = (const void*)malloc(file_length + 1);
+			memset( (void*)script->data_, 0, file_length + 1);
 			script->datasize_ = fread( (void*)script->data_, 1, file_length, script_file);
 			fclose(script_file);
 			parseHeader( script );
