@@ -2685,18 +2685,6 @@ void Spell::HandleEffects(uint64 guid, uint32 i)
 	}
 #endif
 
-	if( id<TOTAL_SPELL_EFFECTS)
-	{
-		LOG_DEBUG( "WORLD: Spell effect id = %u (%s), damage = %d", id, SpellEffectNames[id], damage);
-
-		/*if(unitTarget && p_caster && isAttackable(p_caster,unitTarget))
-			sEventMgr.ModifyEventTimeLeft(p_caster,EVENT_ATTACK_TIMEOUT,PLAYER_ATTACK_TIMEOUT_INTERVAL);*/
-
-		(*this.*SpellEffectsHandler[id])(i);
-	}
-	else
-		LOG_ERROR("SPELL: unknown effect %u spellid %u", id, GetProto()->Id);
-
 	uint32 TargetType = 0;
 	TargetType |= GetTargetType(m_spellInfo->EffectImplicitTargetA[i], i);
 
@@ -2709,6 +2697,15 @@ void Spell::HandleEffects(uint64 guid, uint32 i)
 		unitTarget->GetAIInterface()->AttackReaction(u_caster, 1, 0);
 		unitTarget->GetAIInterface()->HandleEvent(EVENT_HOSTILEACTION, u_caster, 0);
 	}
+
+
+	if(id < TOTAL_SPELL_EFFECTS)
+	{
+		LOG_DEBUG( "WORLD: Spell effect id = %u (%s), damage = %d", id, SpellEffectNames[id], damage);
+		(*this.*SpellEffectsHandler[id])(i);
+	}
+	else
+		LOG_ERROR("SPELL: unknown effect %u spellid %u", id, GetProto()->Id);
 
 	DoAfterHandleEffect(unitTarget, i);
 	DecRef();
