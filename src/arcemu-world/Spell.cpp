@@ -5811,7 +5811,7 @@ void Spell::SpellEffectJumpBehindTarget( uint32 i )
 
 void Spell::HandleTargetNoObject()
 {
-	float dist = 5;
+	float dist = 3;
 	float newx = m_caster->GetPositionX() + cosf(m_caster->GetOrientation()) * dist;
 	float newy = m_caster->GetPositionY() + sinf(m_caster->GetOrientation()) * dist;
 	float newz = m_caster->GetPositionZ();
