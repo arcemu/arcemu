@@ -418,6 +418,7 @@ protected:
 	bool HandleNPCCanFlyCommand(const char * args, WorldSession * m_session);
 	bool HandleNPCOnGOCommand(const char * args, WorldSession * m_session);
 	bool HandleNPCLootCommand(const char* args, WorldSession* m_session);
+	bool HandleNPCCastCommand( const char* args, WorldSession* m_session );
 
 	// Ban
 	bool HandleBanCharacterCommand(const char* args, WorldSession *m_session);

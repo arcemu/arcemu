@@ -4070,3 +4070,24 @@ bool ChatHandler::HandleNPCLootCommand(const char* args, WorldSession* m_session
 	}
 	return true;
 }
+
+bool ChatHandler::HandleNPCCastCommand( const char *args, WorldSession *m_session ){
+	if( args == NULL )
+		return false;
+
+	Creature *c = getSelectedCreature( m_session );
+	if( c == NULL )
+		return false;
+
+	uint32 spellid = atol( args );
+	if( spellid == NULL )
+		return false;
+
+	SpellEntry *sp = dbcSpell.LookupEntry( spellid );
+	if( sp == NULL )
+		return false;
+
+	c->CastSpell( reinterpret_cast< Unit* >( NULL ), sp, false );
+
+	return true;
+}
