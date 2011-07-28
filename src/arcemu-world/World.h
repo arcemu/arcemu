@@ -375,6 +375,23 @@ public:
 	void SendWorldText(const char *text, WorldSession *self = 0);
 	void SendWorldWideScreenText(const char *text, WorldSession *self = 0);
 	void SendGlobalMessage(WorldPacket *packet, WorldSession *self = 0);
+
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////
+	//void PlaySoundToAll( uint32 soundid )
+	//  Plays the sound to everyone logged in and in the world
+	//
+	//Parameter(s)
+	//  uint32 soundid  -  Identifier of the sound to play
+	//
+	//Return Value
+	//  None
+	//
+	//
+	///////////////////////////////////////////////////////////////////////////////////////////////////
+	void PlaySoundToAll( uint32 soundid );
+
+
 	void SendZoneMessage(WorldPacket *packet, uint32 zoneid, WorldSession *self = 0);
 	void SendInstanceMessage(WorldPacket *packet, uint32 instanceid, WorldSession *self = 0);
 	void SendFactionMessage(WorldPacket *packet, uint8 teamId);

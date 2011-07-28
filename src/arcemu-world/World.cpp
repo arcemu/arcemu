@@ -629,6 +629,25 @@ void World::SendGlobalMessage(WorldPacket *packet, WorldSession *self)
 
 	m_sessionlock.ReleaseReadLock();
 }
+
+void World::PlaySoundToAll( uint32 soundid ){
+
+	WorldPacket data( SMSG_PLAY_SOUND, 4 );
+	data << uint32( soundid );
+
+	m_sessionlock.AcquireWriteLock();
+
+	for( SessionMap::iterator itr = m_sessions.begin(); itr != m_sessions.end(); ++itr ){
+		WorldSession *s = itr->second;
+		
+		if( ( s->GetPlayer() != NULL ) && s->GetPlayer()->IsInWorld() )
+			s->SendPacket( &data );
+	}
+
+	m_sessionlock.ReleaseWriteLock();
+}
+
+
 void World::SendFactionMessage(WorldPacket *packet, uint8 teamId)
 {
 	m_sessionlock.AcquireReadLock();

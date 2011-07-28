@@ -2461,15 +2461,17 @@ bool ChatHandler::HandlePlayerInfo(const char* args, WorldSession * m_session)
 
 bool ChatHandler::HandleGlobalPlaySoundCommand(const char* args, WorldSession * m_session)
 {
-	if(!*args) return false;
+	if( *args == NULL )
+		return false;
+	
 	uint32 sound = atoi(args);
-	if(!sound) return false;
+	if( sound == 0 )
+		return false;
 
-	WorldPacket data(SMSG_PLAY_SOUND, 4);
-	data << sound;
-	sWorld.SendGlobalMessage(&data, 0);
+	sWorld.PlaySoundToAll( sound );
 	BlueSystemMessage(m_session, "Broadcasted sound %u to server.", sound);
 	sGMLog.writefromsession(m_session, "used play all command soundid %u", sound);
+
 	return true;
 }
 
