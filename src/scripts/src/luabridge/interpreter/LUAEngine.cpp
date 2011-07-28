@@ -57,7 +57,12 @@ extern "C"
 	}
 
 	SCRIPT_DECL void _exp_engine_unload(){
-		LOG_DETAIL( "exp_engine_unload was called." );
+		le::scriptLock.Acquire();
+		//delete the scripts shared between the Lua instances
+		for(le::LuaScriptData::iterator itr = le::compiled_scripts.begin(); itr != le::compiled_scripts.end(); ++itr)
+			delete itr->second;
+		le::compiled_scripts.clear();
+		le::scriptLock.Release();
 	}
 
 	SCRIPT_DECL void _export_engine_reload()
