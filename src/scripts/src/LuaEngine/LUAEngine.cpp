@@ -76,14 +76,14 @@ template<> RegType<Field>* GetMethodTable<Field>();
 template<> RegType<QueryResult>* GetMethodTable<QueryResult>();
 template<> RegType<Aura>* GetMethodTable<Aura>();
 
-void report(lua_State * L)
-{
-	const char * msg= lua_tostring(L,-1);
-	while(msg)
-	{
-		lua_pop(L,-1);
-		printf("\t%s\n", msg);
-		msg=lua_tostring(L,-1);
+void report( lua_State *L ){
+	int count = lua_gettop( L );
+	
+	while( count > 0 ){
+		const char *msg = lua_tostring( L,-1 );
+		LOG_ERROR( msg );
+		lua_pop( L, 1 );
+		count--;
 	}
 }
 
@@ -731,7 +731,11 @@ static int RegisterUnitGossipEvent(lua_State * L)
 		functionRef = ExtractfRefFromCString(L,luaL_checkstring(L,3));
 	if(functionRef > 0)
 		sLuaMgr.RegisterEvent(REGTYPE_UNIT_GOSSIP,entry,ev,functionRef);
-	lua_pop(L,3);
+	
+	// lua_ref pops from the stack, so we need to check the actual size and remove 
+	int l = lua_gettop( L );
+	lua_pop( L, l );
+
 	return 0;
 }
 static int RegisterItemGossipEvent(lua_State * L)
