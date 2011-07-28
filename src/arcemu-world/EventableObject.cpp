@@ -304,6 +304,12 @@ EventableObjectHolder::~EventableObjectHolder()
 {
 	sEventMgr.RemoveEventHolder(this);
 
+	m_insertPoolLock.Acquire();
+	EventList::iterator insertPoolItr = m_insertPool.begin();
+	for(; insertPoolItr != m_insertPool.end(); ++insertPoolItr)
+		(*insertPoolItr)->DecRef();
+	m_insertPoolLock.Release();
+
 	/* decrement events reference count */
 	m_lock.Acquire();
 	EventList::iterator itr = m_events.begin();
