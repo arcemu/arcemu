@@ -1513,62 +1513,40 @@ bool ChatHandler::HandleModifyLevelCommand(const char* args, WorldSession* m_ses
 	return true;
 }
 
-bool ChatHandler::HandleCreatePetCommand(const char* args, WorldSession* m_session)
-{
-/*	if(!args || strlen(args) < 2)
+bool ChatHandler::HandleCreatePetCommand( const char* args, WorldSession* m_session ){
+	if( ( args == NULL ) || ( strlen( args ) < 2 ) )
+		return false;
+	
+	uint32 entry = atol(args);
+	if( entry == 0 )
 		return false;
 
-	uint32 Entry = atol(args);
-	if(!Entry)
+	CreatureInfo *ci = CreatureNameStorage.LookupEntry( entry );
+	CreatureProto *cp = CreatureProtoStorage.LookupEntry( entry );
+
+	if( ( ci == NULL ) || ( cp == NULL ) )
 		return false;
-	CreatureProto * pTemplate = CreatureProtoStorage.LookupEntry(Entry);
-	CreatureInfo * pCreatureInfo = CreatureNameStorage.LookupEntry(Entry);
-	if(!pTemplate || !pCreatureInfo)
-	{
-		RedSystemMessage(m_session, "Invalid creature spawn template: %u", Entry);
+	
+	Player *p = m_session->GetPlayer();
+
+	p->DismissActivePets();
+	p->RemoveFieldSummon();
+
+	float followangle = -M_PI_FLOAT * 2;
+	LocationVector v( p->GetPosition() );
+	
+	v.x += ( 3 * ( cosf( followangle + p->GetOrientation() ) ) );
+	v.y += ( 3 * ( sinf( followangle + p->GetOrientation() ) ) );
+	
+	Pet *pet = objmgr.CreatePet( entry );
+	
+	if( !pet->CreateAsSummon( entry, ci, NULL, p, NULL, 1, 0, &v, true ) ){
+		pet->DeleteMe();
 		return true;
 	}
-	Player * plr = m_session->GetPlayer();
+	
+	pet->GetAIInterface()->SetUnitToFollowAngle( followangle );
 
-	// spawn a creature of this id to create from
-	Creature * pCreature = new Creature(HIGHGUID_UNIT ,1);//no need in guid
-	CreatureSpawn * sp = new CreatureSpawn;
-	sp->id = 1;
-	sp->bytes = 0;
-	sp->bytes2 = 0;
-	sp->displayid = pCreatureInfo->Male_DisplayID;
-	sp->emote_state = 0;
-	sp->entry = pCreatureInfo->Id;
-	sp->factionid = pTemplate->Faction;
-	sp->flags = 0;
-	sp->form = 0;
-	sp->movetype = 0;
-	sp->o = plr->GetOrientation();
-	sp->x = plr->GetPositionX();
-	sp->y = plr->GetPositionY();
-	//sp->respawnNpcLink = 0;
-	sp->stand_state = 0;
-	sp->channel_spell=sp->channel_target_creature=sp->channel_target_go= 0;
-	pCreature->Load(sp, (uint32)NULL, NULL);
-
-	Pet *old_tame = plr->GetSummon();
-	if(old_tame != NULL)
-	{
-		old_tame->Dismiss(true);
-	}
-
-	// create a pet from this creature
-	Pet * pPet = objmgr.CreatePet( Entry );
-	pPet->SetInstanceID(plr->GetInstanceID());
-	pPet->SetMapId(plr->GetMapId());
-	pPet->CreateAsSummon(Entry, pCreatureInfo, pCreature, plr, NULL, 0x2, 0);
-
-	// remove the temp creature
-	delete sp;
-	delete pCreature;
-
-	sGMLog.writefromsession(m_session, "used create pet entry %u", Entry);
-*/
 	return true;
 }
 

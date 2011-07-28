@@ -1392,8 +1392,8 @@ void Pet::ApplySummonLevelAbilities()
 
 	if(stat_index < 0)
 	{
-		LOG_ERROR("PETSTAT: No stat index found for entry %u, `%s`!", GetEntry(), GetCreatureInfo()->Name);
-		return;
+		LOG_ERROR("PETSTAT: No stat index found for entry %u, `%s`! Using 5 as a default.", GetEntry(), GetCreatureInfo()->Name);
+		stat_index = 5;
 	}
 
 	static double R_base_str[6] = {18.1884058, -15, -15, -15, -15, -15};
