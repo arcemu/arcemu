@@ -264,6 +264,8 @@ void ScriptMgr::UnloadScripts()
 		delete *itr;
 	_questscripts.clear();
 
+	UnloadScriptEngines();
+
 	for( DynamicLibraryMap::iterator itr = dynamiclibs.begin(); itr != dynamiclibs.end(); ++itr )
 		delete *itr;
 
@@ -822,6 +824,28 @@ void ScriptMgr::ReloadScriptEngines()
 		}
 	}
 }
+
+void ScriptMgr::UnloadScriptEngines(){
+	//for all scripting engines that allow unloading, assuming there will be new scripting engines.
+	exp_get_script_type version_function;
+	exp_engine_unload engine_unloadfunc;
+
+	for( DynamicLibraryMap::iterator itr = dynamiclibs.begin(); itr != dynamiclibs.end(); ++itr ){
+		Arcemu::DynLib *dl = *itr;
+
+		version_function = reinterpret_cast< exp_get_script_type >( dl->GetAddressForSymbol( "_exp_get_script_type" ) );
+		if( version_function == NULL )
+			continue;
+
+		if( ( version_function() & SCRIPT_TYPE_SCRIPT_ENGINE ) != 0 ){
+			engine_unloadfunc = reinterpret_cast< exp_engine_unload >( dl->GetAddressForSymbol( "_exp_engine_unload" ) );
+			if( engine_unloadfunc != NULL )
+				engine_unloadfunc();
+		}
+	}
+}
+
+
 
 //support for Gossip scripts added before r4106 changes
 void GossipScript::OnHello(Object* pObject, Player* Plr)

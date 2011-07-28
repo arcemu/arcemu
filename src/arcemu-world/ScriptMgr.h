@@ -130,6 +130,7 @@ typedef bool(*exp_handle_script_effect)(uint32 i, Spell * pSpell);
 typedef bool(*exp_handle_dummy_aura)(uint32 i, Aura * pAura, bool apply);
 typedef void(*exp_script_register)(ScriptMgr * mgr);
 typedef void(*exp_engine_reload)();
+typedef void(*exp_engine_unload)();
 typedef uint32(*exp_get_script_type)();
 
 typedef uint32(*exp_get_version)();
@@ -213,6 +214,7 @@ public:
 	void register_script_effect(uint32* entries, exp_handle_script_effect callback);
 
 	void ReloadScriptEngines();
+	void UnloadScriptEngines();
 
 	ARCEMU_INLINE GossipScript * GetDefaultGossipScript() { return DefaultGossipScript; }
 

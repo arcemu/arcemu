@@ -55,6 +55,11 @@ extern "C"
 		m_scriptMgr = mgr;
 		lua_engine::startupEngine();
 	}
+
+	SCRIPT_DECL void _exp_engine_unload(){
+		LOG_DETAIL( "exp_engine_unload was called." );
+	}
+
 	SCRIPT_DECL void _export_engine_reload()
 	{
 		lua_engine::restartEngine();

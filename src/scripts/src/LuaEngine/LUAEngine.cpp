@@ -49,6 +49,11 @@ extern "C" SCRIPT_DECL void _exp_script_register(ScriptMgr* mgr)
 	m_scriptMgr = mgr;
 	sLuaMgr.Startup();
 }
+
+extern "C" SCRIPT_DECL void _exp_engine_unload(){
+	LOG_BASIC( "exp_engine_unload was called" );
+}
+
 extern "C" SCRIPT_DECL void _export_engine_reload()
 {
 	sLuaMgr.Restart();
