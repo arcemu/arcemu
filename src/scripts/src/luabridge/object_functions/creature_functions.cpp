@@ -429,7 +429,7 @@ namespace lua_engine
 			.method(&Creature::CanSee, "cansee", "canSee", "CanSee", NULL)
 			.property_ro("isSkinned", &Creature::Skinned)
 			.method(&Creature::GetSQL_id, "GetSQL_Id", "GetSQLID", "getSQLID", "getsqlid", NULL)
-			.method(&Creature::GetTotemSlot, "getTotemSlot", "GetTotemSlot", "gettotemslot", "getotemslot", NULL)
+			//.method(&Creature::GetTotemSlot, "getTotemSlot", "GetTotemSlot", "gettotemslot", "getotemslot", NULL)
 			.method(&Creature::GetGroup, "getGroup", "GetGroup", "getgroup", NULL)
 			.method(&Creature::IsPickPocketed, "isPickPocketed", "IsPickPocketed", "ispickpocketed", NULL)
 			.method(&Creature::GetCreatureInfo, "getCreatureInfo", "GetCreatureInfo", "getcreatureinfo", "getinfo", "GetInfo", "getInfo", NULL)

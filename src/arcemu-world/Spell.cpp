@@ -1184,10 +1184,8 @@ void Spell::cast(bool check)
 			if ( MagnetTarget && MagnetTarget->IsCreature())
 			{
 				Creature *MagnetCreature = TO< Creature* >( MagnetTarget );
-				if(MagnetCreature->IsTotem())
-				{
-					sEventMgr.ModifyEventTimeLeft(MagnetCreature, EVENT_TOTEM_EXPIRE, 0);
-				}
+				if( MagnetCreature->IsTotem() )
+					MagnetCreature->Despawn( 1, 0 );
 			}
 		}
 
@@ -1844,9 +1842,10 @@ void Spell::finish(bool successful)
 		}
 	}
 
-	if( p_caster )
+	if( p_caster != NULL ){
 		if( hadEffect || ( cancastresult == SPELL_CANCAST_OK && !GetSpellFailed() ) )
 			RemoveItems();
+	}
 
 	DecRef();
 }
@@ -2263,6 +2262,14 @@ void Spell::SendChannelUpdate(uint32 time)
 			{
 				u_caster->SetChannelSpellTargetGUID(0);
 				u_caster->SetChannelSpellId(0);
+			}
+		}
+
+		if( p_caster != NULL ){
+			if( m_spellInfo->HasEffect( SPELL_EFFECT_SUMMON ) && ( p_caster->GetCharmedUnitGUID() != 0 ) ){
+				Unit *u = p_caster->GetMapMgr()->GetUnit( p_caster->GetCharmedUnitGUID() );
+				if( ( u != NULL ) && ( u->GetCreatedBySpell() == m_spellInfo->Id ) )
+					p_caster->UnPossess();
 			}
 		}
 	}

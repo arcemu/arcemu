@@ -1733,35 +1733,73 @@ GameObject * MapMgr::GetSqlIdGameObject(uint32 sqlid)
 	return (itr == _sqlids_gameobjects.end()) ? NULL : itr->second;
 }
 
-Creature * MapMgr::CreateCreature(uint32 entry)
-{
-	uint64 newguid = (uint64)HIGHGUID_TYPE_UNIT << 32;
-	char * pHighGuid = (char*)&newguid;
-	char * pEntry = (char*)&entry;
-	pHighGuid[3] |= pEntry[0];
-	pHighGuid[4] |= pEntry[1];
-	pHighGuid[5] |= pEntry[2];
-	pHighGuid[6] |= pEntry[3];
+uint64 MapMgr::GenerateCreatureGUID( uint32 entry ){
+	uint64 newguid = static_cast< uint64 >( HIGHGUID_TYPE_UNIT ) << 32;
+	char * pHighGuid = reinterpret_cast< char* >( &newguid );
+	char * pEntry = reinterpret_cast< char* >( &entry );
 
-	if(_reusable_guids_creature.size())
-	{
-		uint32 guid = _reusable_guids_creature.front();
+	pHighGuid[ 3 ] |= pEntry[ 0 ];
+	pHighGuid[ 4 ] |= pEntry[ 1 ];
+	pHighGuid[ 5 ] |= pEntry[ 2 ];
+	pHighGuid[ 6 ] |= pEntry[ 3 ];
+
+	uint32 guid = 0;
+
+	if( _reusable_guids_creature.size() > 0 ){
+		guid = _reusable_guids_creature.front();
 		_reusable_guids_creature.pop_front();
 
-		newguid |= guid;
-		return new Creature(newguid);
+	}else{
+		m_CreatureHighGuid++;
+
+		if( m_CreatureHighGuid >= CreatureStorage.size() ){
+			// Reallocate array with larger size.
+			size_t newsize = CreatureStorage.size() + RESERVE_EXPAND_SIZE;
+			CreatureStorage.resize( newsize, NULL );
+		}
+		guid = m_CreatureHighGuid;
 	}
 
-    if( ++m_CreatureHighGuid  >= CreatureStorage.size() )
-	{
-		// Reallocate array with larger size.
-        size_t newsize = CreatureStorage.size() + RESERVE_EXPAND_SIZE;
-        CreatureStorage.resize( newsize, NULL );
-	}
+	newguid |= guid;
 
-	newguid |= m_CreatureHighGuid;
-	return new Creature(newguid);
+	return newguid;
 }
+
+Creature * MapMgr::CreateCreature( uint32 entry ){
+	uint64 guid = GenerateCreatureGUID( entry );
+
+	return new Creature( guid );
+}
+
+
+Summon* MapMgr::CreateSummon( uint32 entry, SummonType type ){
+	uint64 guid = GenerateCreatureGUID( entry );
+
+	switch( type ){
+		case SUMMONTYPE_GUARDIAN:
+			return new GuardianSummon( guid );
+			break;
+
+		case SUMMONTYPE_WILD:
+			return new WildSummon( guid );
+			break;
+
+		case SUMMONTYPE_TOTEM:
+			return new TotemSummon( guid );
+			break;
+
+		case SUMMONTYPE_COMPANION:
+			return new CompanionSummon( guid );
+			break;
+
+		case SUMMONTYPE_POSSESSED:
+			return new PossessedSummon( guid );
+			break;
+	}
+
+	return new Summon( guid );
+}
+
 
 // Spawns the object too, without which you can not interact with the object
 GameObject * MapMgr::CreateAndSpawnGameObject(uint32 entryID, float x, float y, float z, float o, float scale)

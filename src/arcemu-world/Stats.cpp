@@ -76,7 +76,8 @@ uint32 CalculateXpToGive(Unit *pVictim, Unit *pAttacker)
 	if(pVictim->IsPlayer())
 		return 0;
 
-	if(TO_CREATURE(pVictim)->IsTotem())
+	// No xp reward for killing summons
+	if( pVictim->GetCreatedByGUID() != 0 )
 		return 0;
 
 	CreatureInfo *victimI;

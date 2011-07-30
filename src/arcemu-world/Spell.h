@@ -256,15 +256,15 @@ enum SpellCastTargetFlags
     TARGET_FLAG_ITEM                = 0x0010,
     TARGET_FLAG_SOURCE_LOCATION     = 0x0020,
     TARGET_FLAG_DEST_LOCATION       = 0x0040,
-    TARGET_FLAG_UNK6                = 0x0080,
-    TARGET_FLAG_UNK7                = 0x0100,
-    TARGET_FLAG_CORPSE              = 0x0200,
-    TARGET_FLAG_UNK8                = 0x0400,
+    TARGET_FLAG_OBJECT_CASTER       = 0x0080,
+    TARGET_FLAG_UNIT_CASTER         = 0x0100,
+    TARGET_FLAG_CORPSE              = 0x0200, // PvP Corpse
+    TARGET_FLAG_UNIT_CORPSE         = 0x0400, // Gathering professions
     TARGET_FLAG_OBJECT              = 0x0800,
     TARGET_FLAG_TRADE_ITEM          = 0x1000,
     TARGET_FLAG_STRING              = 0x2000,
-    TARGET_FLAG_UNK9                = 0x4000,
-    TARGET_FLAG_CORPSE2             = 0x8000,
+    TARGET_FLAG_OPEN_LOCK           = 0x4000, // opening object/lock
+    TARGET_FLAG_CORPSE2             = 0x8000, // for resurrection spells
     TARGET_FLAG_GLYPH               = 0x20000
 };
 #ifndef NEW_PROCFLAGS
@@ -867,7 +867,7 @@ enum SpellEffects
 	SPELL_EFFECT_DISPEL,                    //    38
 	SPELL_EFFECT_LANGUAGE,                  //    39
 	SPELL_EFFECT_DUAL_WIELD,                //    40
-	SPELL_EFFECT_SUMMON_WILD,               //    41
+	SPELL_EFFECT_LEAP_41,                   //    41
 	SPELL_EFFECT_SUMMON_GUARDIAN,           //    42
 	SPELL_EFFECT_TELEPORT_UNITS_FACE_CASTER,//    43
 	SPELL_EFFECT_SKILL_STEP,                //    44
@@ -899,7 +899,7 @@ enum SpellEffects
 	SPELL_EFFECT_PULL,                      //    70
 	SPELL_EFFECT_PICKPOCKET,                //    71
 	SPELL_EFFECT_ADD_FARSIGHT,              //    72
-	SPELL_EFFECT_SUMMON_POSSESSED,          //    73
+	SPELL_EFFECT_UNTRAIN_TALENTS,           //    73
     SPELL_EFFECT_USE_GLYPH,	                //    74
 	SPELL_EFFECT_HEAL_MECHANICAL,           //    75
 	SPELL_EFFECT_SUMMON_OBJECT_WILD,        //    76
@@ -913,17 +913,17 @@ enum SpellEffects
 	SPELL_EFFECT_STUCK,                     //    84
 	SPELL_EFFECT_SUMMON_PLAYER,             //    85
 	SPELL_EFFECT_ACTIVATE_OBJECT,           //    86
-	SPELL_EFFECT_SUMMON_TOTEM_SLOT1,        //    87
-	SPELL_EFFECT_SUMMON_TOTEM_SLOT2,        //    88
-	SPELL_EFFECT_SUMMON_TOTEM_SLOT3,        //    89
-	SPELL_EFFECT_SUMMON_TOTEM_SLOT4,        //    90
+	SPELL_EFFECT_BUILDING_DAMAGE,           //    87
+	SPELL_EFFECT_BUILDING_REPAIR,           //    88
+	SPELL_EFFECT_BUILDING_SWITCH_STATE,     //    89
+	SPELL_EFFECT_KILL_CREDIT_90,            //    90
 	SPELL_EFFECT_THREAT_ALL,                //    91
 	SPELL_EFFECT_ENCHANT_HELD_ITEM,         //    92
 	SPELL_EFFECT_SUMMON_PHANTASM,           //    93
 	SPELL_EFFECT_SELF_RESURRECT,            //    94
 	SPELL_EFFECT_SKINNING,                  //    95
 	SPELL_EFFECT_CHARGE,                    //    96
-	SPELL_EFFECT_SUMMON_CRITTER,            //    97
+	SPELL_EFFECT_SUMMON_MULTIPLE_TOTEMS,    //    97
 	SPELL_EFFECT_KNOCK_BACK,                //    98
 	SPELL_EFFECT_DISENCHANT,                //    99
 	SPELL_EFFECT_INEBRIATE,                 //    100
@@ -938,7 +938,7 @@ enum SpellEffects
 	SPELL_EFFECT_SUMMON_DEAD_PET,           //    109
 	SPELL_EFFECT_DESTROY_ALL_TOTEMS,        //    110
 	SPELL_EFFECT_DURABILITY_DAMAGE,         //    111
-	SPELL_EFFECT_SUMMON_DEMON,              //    112
+	SPELL_EFFECT_NONE_112,                  //    112
 	SPELL_EFFECT_RESURRECT_FLAT,            //    113
 	SPELL_EFFECT_ATTACK_ME,                 //    114
 	SPELL_EFFECT_DURABILITY_DAMAGE_PCT,     //    115
@@ -1787,7 +1787,15 @@ public:
 	void SpellEffectWeapon(uint32 i);
 	void SpellEffectDefense(uint32 i);
 	void SpellEffectPersistentAA(uint32 i);
-	virtual void SpellEffectSummon(uint32 i);
+	
+	virtual void SpellEffectSummon( uint32 i );
+	void SpellEffectSummonWild( uint32 i, SummonPropertiesEntry *spe, CreatureProto *proto, LocationVector &v );
+	void SpellEffectSummonGuardian( uint32 i, SummonPropertiesEntry *spe, CreatureProto *proto, LocationVector &v );
+	void SpellEffectSummonTemporaryPet( uint32 i, SummonPropertiesEntry *spe, CreatureProto *proto, LocationVector &v );
+	void SpellEffectSummonTotem( uint32 i, SummonPropertiesEntry *spe, CreatureProto *proto, LocationVector &v );
+	void SpellEffectSummonPossessed( uint32 i, SummonPropertiesEntry *spe, CreatureProto *proto, LocationVector &v );
+	void SpellEffectSummonCompanion( uint32 i, SummonPropertiesEntry *spe, CreatureProto *proto, LocationVector &v );
+
 	void SpellEffectLeap(uint32 i);
 	void SpellEffectEnergize(uint32 i);
 	void SpellEffectWeaponDmgPerc(uint32 i);
@@ -1800,8 +1808,6 @@ public:
 	void SpellEffectDispel(uint32 i);
 	void SpellEffectLanguage(uint32 i);
 	void SpellEffectDualWield(uint32 i);
-	void SpellEffectSummonWild(uint32 i);
-	void SpellEffectSummonGuardian(uint32 i);
 	void SpellEffectSkillStep(uint32 i);
 	void SpellEffectAddHonor(uint32 i);
 	void SpellEffectSpawn(uint32 i);
@@ -1826,7 +1832,6 @@ public:
 	void SpellEffectDistract(uint32 i);
 	void SpellEffectPickpocket(uint32 i);
 	void SpellEffectAddFarsight(uint32 i);
-	void SpellEffectSummonPossessed(uint32 i);
 	void SpellEffectUseGlyph(uint32 i);
 	void SpellEffectHealMechanical(uint32 i);
 	void SpellEffectSummonObjectWild(uint32 i);
@@ -1838,13 +1843,11 @@ public:
 	void SpellEffectStuck(uint32 i);
 	void SpellEffectSummonPlayer(uint32 i);
 	void SpellEffectActivateObject(uint32 i);
-	void SpellEffectSummonTotem(uint32 i);
 	void SpellEffectEnchantHeldItem( uint32 i );
 	void SpellEffectSetMirrorName(uint32 i);
 	void SpellEffectSelfResurrect(uint32 i);
 	void SpellEffectSkinning(uint32 i);
 	void SpellEffectCharge(uint32 i);
-	void SpellEffectSummonCritter(uint32 i);
 	void SpellEffectKnockBack(uint32 i);
 	void SpellEffectKnockBack2(uint32 i);
 	void SpellEffectDisenchant( uint32 i );
@@ -1858,7 +1861,6 @@ public:
 	void SpellEffectDestroyAllTotems(uint32 i);
 	void SpellEffectDurabilityDamage(uint32 i);
     void SpellEffectDurabilityDamagePCT(uint32 i);
-	void SpellEffectSummonDemon(uint32 i);
 	void SpellEffectResurrectNew(uint32 i);
 	void SpellEffectAttackMe(uint32 i);
 	void SpellEffectSkinPlayerCorpse(uint32 i);

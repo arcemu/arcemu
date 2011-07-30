@@ -56,7 +56,6 @@ m_questSharer(0),
 timed_quest_slot(0),
 pctReputationMod(0),
 DuelingWith(NULL),
-m_eyeofkilrogg(NULL),
 m_lootGuid(0),
 m_currentLoot(0),
 bShouldHaveLootableOnCorpse(false),
@@ -762,7 +761,7 @@ bool Player::Create(WorldPacket& data )
     if(class_ == WARRIOR)
 		SetShapeShift(FORM_BATTLESTANCE);
 
-	SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED);
+	SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PVP_ATTACKABLE);
 	SetStat(STAT_STRENGTH, info->strength );
 	SetStat(STAT_AGILITY, info->ability );
 	SetStat(STAT_STAMINA, info->stamina );
@@ -2028,7 +2027,7 @@ void Player::DismissActivePets()
 	for(std::list<Pet*>::reverse_iterator itr = m_Summons.rbegin(); itr != m_Summons.rend();)
 	{
 		Pet* summon = (*itr);
-		if( summon->IsSummon() )
+		if( summon->IsSummonedPet() )
 			summon->Dismiss();			// summons
 		else
 			summon->Remove( true, false );// hunter pets
@@ -2940,7 +2939,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		SetShapeShift(FORM_BATTLESTANCE);
 
 	SetUInt32Value(UNIT_FIELD_BYTES_2, (0x28 << 8));
-	SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED);
+	SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PVP_ATTACKABLE);
 	SetBoundingRadius(0.388999998569489f);
 	SetCombatReach(1.5f);
 
@@ -3785,16 +3784,14 @@ void Player::RemoveFromWorld()
 	//clear buyback
 	GetItemInterface()->EmptyBuyBack();
 
-	for(uint32 x= 0;x<4;x++)
-	{
-		if(m_TotemSlots[x])
-			m_TotemSlots[x]->TotemExpire();
-	}
-
 	ClearSplinePackets();
 
+	
+	summonhandler.RemoveAllSummons();
 	DismissActivePets();
 	RemoveFieldSummon();
+
+	
 
 	if(m_SummonedObject)
 	{
@@ -3820,7 +3817,6 @@ void Player::RemoveFromWorld()
 		Unit::RemoveFromWorld(false);
 	}
 
-	RemoveAllGuardians();
 
 #ifdef ENABLE_COMPRESSED_MOVEMENT
 	MovementCompressor->RemovePlayer(this);
@@ -4594,7 +4590,7 @@ void Player::KillPlayer()
 	StopMirrorTimer(1);
 	StopMirrorTimer(2);
 
-	SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED); // Player death animation, also can be used with DYNAMIC_FLAGS <- huh???
+	SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PVP_ATTACKABLE); // Player death animation, also can be used with DYNAMIC_FLAGS <- huh???
 	SetUInt32Value( UNIT_DYNAMIC_FLAGS, 0x00 );
 
 	if( getClass() == WARRIOR ) // Rage resets on death
@@ -4602,11 +4598,7 @@ void Player::KillPlayer()
 	else if( getClass() == DEATHKNIGHT )
 		SetPower( POWER_TYPE_RUNIC_POWER, 0 );
 
-    
-    for( int i = 0; i < 4; ++i ){
-        if( m_TotemSlots[i] != NULL)
-            m_TotemSlots[i]->TotemExpire();
-    }
+	summonhandler.RemoveAllSummons();
 
 	sHookInterface.OnDeath( this );
 
@@ -5782,8 +5774,6 @@ void Player::OnRemoveInRangeObject(Object* pObj)
 			m_currentSpell->cancel();	   // cancel the spell
 		m_CurrentCharm= 0;
 
-		if( p->m_temp_summon && p->IsCreature() )
-			TO< Creature* >( p )->DeleteMe();
 	}
 
     // We've just gone out of range of our pet :(
@@ -9767,12 +9757,25 @@ void Player::SetNoseLevel()
 	}
 }
 
-void Player::Possess(Unit * pTarget)
+void Player::Possess( uint64 GUID, uint32 delay )
 {
 	if( m_CurrentCharm)
 		return;
 
-	m_CurrentCharm = pTarget->GetGUID();
+	Root();
+
+	if( delay != 0 ){
+		sEventMgr.AddEvent( this, &Player::Possess, GUID, uint32( 0 ), 0, delay, 1, 0 );
+		return;
+	}
+
+	Unit *pTarget = m_mapMgr->GetUnit( GUID );
+	if( pTarget == NULL ){
+		Unroot();
+		return;
+	}
+
+	m_CurrentCharm = GUID;
 	if(pTarget->IsCreature())
 	{
 		// unit-only stuff.
@@ -9783,12 +9786,11 @@ void Player::Possess(Unit * pTarget)
 
 	m_noInterrupt++;
 	SetCharmedUnitGUID( pTarget->GetGUID() );
-	SetFarsightTarget(pTarget->GetGUID());
-
-    pTarget->SetCharmedUnitGUID( GetGUID() );
+	pTarget->SetCharmedByGUID( GetGUID() );
 	pTarget->SetCharmTempVal(pTarget->GetFaction());
+	SetFarsightTarget(pTarget->GetGUID());
 	pTarget->SetFaction(GetFaction());
-	pTarget->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED_CREATURE);
+	pTarget->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED_CREATURE | UNIT_FLAG_PVP_ATTACKABLE  );
 
 	SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_LOCK_PLAYER);
 
@@ -9801,66 +9803,17 @@ void Player::Possess(Unit * pTarget)
 	pTarget->UpdateOppFactionSet();
 
 
-	/* build + send pet_spells packet */
-	if(pTarget->m_temp_summon)
-		return;
-
-	if( !( pTarget->IsPet() && TO< Pet* >( pTarget ) == GetSummon() ) )
-	{
-		list<uint32> avail_spells;
-		//Steam Tonks
-		if(pTarget->GetEntry() == 15328)
-		{
-			uint32 rand_spellid = TonkSpecials[RandomUInt(3)];
-			avail_spells.push_back(CANNON);
-			avail_spells.push_back(MORTAR);
-			avail_spells.push_back(rand_spellid);
-			avail_spells.push_back(NITROUS);
-		}
-		else
-		{
-			for(list<AI_Spell*>::iterator itr = pTarget->GetAIInterface()->m_spells.begin(); itr != pTarget->GetAIInterface()->m_spells.end(); ++itr)
-			{
-				if((*itr)->agent == AGENT_SPELL)
-					avail_spells.push_back((*itr)->spell->Id);
-			}
-		}
-		list<uint32>::iterator itr = avail_spells.begin();
-
-		WorldPacket data(SMSG_PET_SPELLS, pTarget->GetAIInterface()->m_spells.size() * 4 + 20);
-		data << pTarget->GetGUID();
-		data << uint16(0x00000000);//unk1
-		data << uint32(0x00000101);//unk2
-		data << uint32(0x00000100);//unk3
-
-		// First spell is attack.
-		data << uint32(PET_SPELL_ATTACK);
-
-		// Send the actionbar
-		for(uint32 i = 1; i < 10; ++i)
-		{
-			if(itr != avail_spells.end())
-			{
-				data << uint16((*itr)) << uint16(DEFAULT_SPELL_STATE);
-				++itr;
-			}
-			else
-				data << uint16(0) << uint8(0) << uint8(i+5);
-		}
-		// Send the rest of the spells.
-		data << uint8(avail_spells.size());
-		for(itr = avail_spells.begin(); itr != avail_spells.end(); ++itr)
-			data << uint16(*itr) << uint16(DEFAULT_SPELL_STATE);
-
-		data << uint64(0);
-		m_session->SendPacket(&data);
+	if( !( pTarget->IsPet() && TO< Pet* >( pTarget ) == GetSummon() ) ){
+		WorldPacket data( SMSG_PET_SPELLS, 4 * 4 + 20 );
+		pTarget->BuildPetSpellList( data );
+		m_session->SendPacket( &data );
 	}
 
 }
 
 void Player::UnPossess()
 {
-	if( /*m_Summon ||*/ !m_CurrentCharm)
+	if( m_CurrentCharm == 0 )
 		return;
 
 	Unit * pTarget = GetMapMgr()->GetUnit( m_CurrentCharm );
@@ -9882,9 +9835,10 @@ void Player::UnPossess()
 	SetFarsightTarget(0);
 	SetCharmedUnitGUID( 0 );
     pTarget->SetCharmedByGUID( 0 );
+	SetCharmedUnitGUID( 0 );
 
 	RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_LOCK_PLAYER);
-	pTarget->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED_CREATURE);
+	pTarget->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED_CREATURE | UNIT_FLAG_PVP_ATTACKABLE  );
 	pTarget->SetFaction(pTarget->GetCharmTempVal());
 	pTarget->UpdateOppFactionSet();
 
@@ -9892,15 +9846,15 @@ void Player::UnPossess()
 	WorldPacket data(SMSG_CLIENT_CONTROL_UPDATE, 10);
 	data << pTarget->GetNewGUID() << uint8(0);
 	m_session->SendPacket(&data);
-
-	if(pTarget->m_temp_summon)
-		return;
-
+	
 	if( !( pTarget->IsPet() && TO< Pet* >( pTarget ) == GetSummon() ) )
-	{
-		data.Initialize( SMSG_PET_SPELLS );
-		data << uint64(0);
-		m_session->SendPacket( &data );
+		SendEmptyPetSpellList();
+
+	Unroot();
+
+	if( !pTarget->IsPet() && ( pTarget->GetCreatedByGUID() == GetGUID() ) ){
+		sEventMgr.AddEvent( TO< Object* >( pTarget ), &Object::Delete, 0, 1, 1, 0 );
+		return;
 	}
 }
 
@@ -12117,13 +12071,8 @@ void Player::SetPvPFlag()
 
 	SetByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_PVP);
 	SetFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP);
-       
-    // Adjusting the totems' PVP flag
-    for( uint8 i = 0; i < 4; ++i )
-	{
-		if( m_TotemSlots[i] != NULL )
-			m_TotemSlots[i]->SetPvPFlag();
-	}
+
+	summonhandler.SetPvPFlags();
 	
 	// flagging the pet too for PvP, if we have one
 	std::list<Pet*> summons = GetSummons();
@@ -12135,10 +12084,6 @@ void Player::SetPvPFlag()
 	if( CombatStatus.IsInCombat() )
 		SetFlag(PLAYER_FLAGS, 0x100);
 
-	// adjust our guardians too
-	std::set< Creature* >::iterator itr = m_Guardians.begin();
-	for( ; itr != m_Guardians.end(); ++itr )
-		(*itr)->SetPvPFlag();
 }
 
 void Player::RemovePvPFlag()
@@ -12146,13 +12091,8 @@ void Player::RemovePvPFlag()
 	StopPvPTimer();
 	RemoveByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_PVP);
 	RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP);
-	
-	// Adjusting the totems' PVP flag
-	for( uint8 i = 0; i < 4; ++i )
-	{
-		if( m_TotemSlots[i] != NULL )
-			m_TotemSlots[i]->RemovePvPFlag();
-	}
+
+	summonhandler.RemovePvPFlags();
 	
 	// If we have a pet we will remove the pvp flag from that too
 	std::list<Pet*> summons = GetSummons();
@@ -12160,11 +12100,6 @@ void Player::RemovePvPFlag()
 	{
 		(*itr)->RemovePvPFlag();
 	}
-
-	// adjust our guardians too
-	std::set< Creature* >::iterator itr = m_Guardians.begin();
-	for( ; itr != m_Guardians.end(); ++itr )
-		(*itr)->RemovePvPFlag();
 }
 
 bool Player::IsFFAPvPFlagged()
@@ -12177,12 +12112,8 @@ void Player::SetFFAPvPFlag()
 	StopPvPTimer();
 	SetByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_FFA_PVP);
 	SetFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP);
-	
-	for( uint8 i = 0; i < 4; ++i )
-	{
-		if( m_TotemSlots[i] != NULL )
-			m_TotemSlots[i]->SetFFAPvPFlag();
-	}
+
+	summonhandler.SetFFAPvPFlags();
 	
 	// flagging the pet too for FFAPvP, if we have one
 	std::list<Pet*> summons = GetSummons();
@@ -12190,11 +12121,6 @@ void Player::SetFFAPvPFlag()
 	{
 		(*itr)->SetFFAPvPFlag();
 	}
-
-	// adjust our guardians too
-	std::set< Creature* >::iterator itr = m_Guardians.begin();
-	for( ; itr != m_Guardians.end(); ++itr )
-		(*itr)->SetFFAPvPFlag();
 }
 
 void Player::RemoveFFAPvPFlag()
@@ -12202,13 +12128,8 @@ void Player::RemoveFFAPvPFlag()
 	StopPvPTimer();
 	RemoveByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_FFA_PVP);
 	RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP);
-	
-	// Adjusting the totems' FFAPVP flag	
-	for( uint8 i = 0; i < 4; ++i )
-	{
-		if( m_TotemSlots[i] != NULL )
-			m_TotemSlots[i]->RemoveFFAPvPFlag();
-	}
+
+	summonhandler.RemoveFFAPvPFlags();
 	
 	// If we have a pet we will remove the FFA pvp flag from that too
 	std::list<Pet*> summons = GetSummons();
@@ -12216,11 +12137,6 @@ void Player::RemoveFFAPvPFlag()
 	{
 		(*itr)->RemoveFFAPvPFlag();
 	}
-
-	// adjust our guardians too
-	std::set< Creature* >::iterator itr = m_Guardians.begin();
-	for( ; itr != m_Guardians.end(); ++itr )
-		(*itr)->RemoveFFAPvPFlag();
 }
 
 bool Player::IsSanctuaryFlagged()
@@ -12232,35 +12148,21 @@ void Player::SetSanctuaryFlag()
 {
 	SetByteFlag( UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_SANCTUARY );
 
-	for(int i = 0; i < 4; ++i)
-	{
-		if( m_TotemSlots[i] != NULL )
-			m_TotemSlots[i]->SetSanctuaryFlag();
-	}
-	
+	summonhandler.SetSanctuaryFlags();
+
 	// flagging the pet too for sanctuary, if we have one
 	std::list<Pet*> summons = GetSummons();
 	for(std::list<Pet*>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
 	{
 		(*itr)->SetSanctuaryFlag();
 	}
-	
-	// adjust our guardians too
-	std::set< Creature* >::iterator itr = m_Guardians.begin();
-	for( ; itr != m_Guardians.end(); ++itr )
-		(*itr)->SetSanctuaryFlag();
 }
 
 void Player::RemoveSanctuaryFlag()
 {
 	RemoveByteFlag( UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_SANCTUARY );
 
-	// Adjusting the totems' sanctuary flag	
-	for(int i = 0; i < 4; ++i)
-	{
-		if( m_TotemSlots[i] != NULL )
-			m_TotemSlots[i]->RemoveSanctuaryFlag();
-	}
+	summonhandler.RemoveSanctuaryFlags();
 	
 	// If we have a pet we will remove the sanctuary flag from that too
 	std::list<Pet*> summons = GetSummons();
@@ -12268,11 +12170,6 @@ void Player::RemoveSanctuaryFlag()
 	{
 		(*itr)->RemoveSanctuaryFlag();
 	}
-
-	// adjust our guardians too
-	std::set< Creature* >::iterator itr = m_Guardians.begin();
-	for( ; itr != m_Guardians.end(); ++itr )
-		(*itr)->RemoveSanctuaryFlag();
 }
 
 void Player::SendExploreXP( uint32 areaid, uint32 xp ){
@@ -13117,8 +13014,8 @@ void Player::Die( Unit *pAttacker, uint32 damage, uint32 spellid ){
 	m_UnderwaterTime = 0;
 	m_UnderwaterState = 0;
 
+	summonhandler.RemoveAllSummons();
 	DismissActivePets();
-	RemoveAllGuardians();
 
 	SetHealth( 0 );
 
@@ -13182,6 +13079,14 @@ void Player::Phase( uint8 command, uint32 newphase ){
 		p->Phase( command, newphase );
 	}
 		//We should phase other, non-combat "pets" too...
+
+	if( m_CurrentCharm != 0 ){
+		Unit *charm = m_mapMgr->GetUnit( m_CurrentCharm );
+		if( charm == NULL )
+			return;
+
+		charm->Phase( command, newphase );
+	}
 }
 
 // TODO: Use this method all over source code
@@ -13655,4 +13560,14 @@ bool Player::CanTrainAt(Trainer * trn)
 	}
 
 	return true;
+}
+
+void Player::SendEmptyPetSpellList(){
+	WorldPacket data( SMSG_PET_SPELLS, 8 );
+	data << uint64( 0 );
+	m_session->SendPacket( &data );
+}
+
+void Player::BuildPetSpellList( WorldPacket &data ){
+	data << uint64( 0 );
 }

@@ -2343,9 +2343,9 @@ namespace luaUnit
 		return 1;
 	}
 
-	int SetRotation(lua_State * L, Unit * ptr)
+	int SendAIReaction(lua_State * L, Unit * ptr)
 	{
-		ptr->SetRotation(ptr->GetGUID());
+		ptr->SendAIReaction();
 		return 0;
 	}
 
@@ -2937,6 +2937,7 @@ namespace luaUnit
 		return 1;
 	}
 
+	/*
 	int CreateGuardian(lua_State * L, Unit * ptr)
 	{
 		uint32 guardian_entry = CHECK_ULONG(L,1);
@@ -2948,6 +2949,7 @@ namespace luaUnit
 		PUSH_UNIT(L, TO_UNIT(ptr->create_guardian(guardian_entry,duration,angle,lvl,NULL)));
 		return 1;
 	}
+	*/
 
 	int IsInArc(lua_State * L, Unit * ptr)
 	{
@@ -3413,7 +3415,7 @@ namespace luaUnit
 		TEST_PLAYER()
 		Unit * target = CHECK_UNIT(L,1);
 		if (target)
-			TO_PLAYER(ptr)->Possess(target);
+			TO_PLAYER(ptr)->Possess( target->GetGUID() );
 		return 0;
 	}
 

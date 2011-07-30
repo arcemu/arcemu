@@ -1381,39 +1381,6 @@ std::vector<CreatureItem>* ObjectMgr::GetVendorList(uint32 entry)
 	return mVendors[entry];
 }
 
-void ObjectMgr::LoadTotemSpells()
-{
-	std::stringstream query;
-	QueryResult *result = WorldDatabase.Query( "SELECT * FROM totemspells" );
-
-	if(!result)
-	{
-		return;
-	}
-
-	//TotemSpells *ts = NULL;
-	SpellEntry * sp;
-	uint32 spellid;
-
-	do
-	{
-		Field *fields = result->Fetch();
-		spellid = fields[1].GetUInt32();
-		sp = dbcSpell.LookupEntryForced(spellid);
-		if(!spellid || !sp) continue;
-
-		m_totemSpells.insert( TotemSpellMap::value_type( fields[0].GetUInt32(), sp ));
-	} while( result->NextRow() );
-
-	delete result;
-	Log.Success("ObjectMgr", "%u totem spells loaded.", m_totemSpells.size());
-}
-
-SpellEntry* ObjectMgr::GetTotemSpell(uint32 spellId)
-{
-	return m_totemSpells[spellId];
-}
-
 void ObjectMgr::LoadAIThreatToSpellId()
 {
 	QueryResult *result = WorldDatabase.Query( "SELECT * FROM ai_threattospellid" );

@@ -462,9 +462,10 @@ void WorldSession::HandlePetCastSpell(WorldPacket & recvPacket)
 	CHECK_INWORLD_RETURN
 
 	uint64 guid;
+	uint8  castCount;
 	uint32 spellid;
 	uint32 flags;
-	recvPacket >> guid >> spellid >> flags;
+	recvPacket >> guid >> castCount >> spellid >> flags;
 
 	SpellEntry * sp = dbcSpell.LookupEntryForced(spellid);
 	if ( sp == NULL )
@@ -525,6 +526,28 @@ void WorldSession::HandlePetCastSpell(WorldPacket & recvPacket)
 					break;
 				}
 			}
+			
+			if( nc->IsCreature() ){
+				Creature *c = TO< Creature* >( nc );
+
+				if( c->GetProto()->spelldataid != 0 ){
+					CreatureSpellDataEntry *spe = dbcCreatureSpellData.LookupEntry( c->GetProto()->spelldataid );
+					
+					if( spe != NULL )
+						for( uint32 i = 0; i < 3; i++ )
+							if( spe->Spells[ i ] == spellid ){
+								check = true;
+								break;
+							}
+				}
+				
+				for( uint32 i = 0; i < 4; i++ )
+					if( c->GetProto()->AISpells[ i ] == spellid ){
+						check = true;
+						break;
+					}
+			}
+			
 			if( !check )
 				return;
 
@@ -542,6 +565,10 @@ void WorldSession::HandleCancelTotem(WorldPacket & recv_data)
 	uint8 slot;
 	recv_data >> slot;
 
-   	if( slot < 4 && _player->m_TotemSlots[slot] )
-		_player->m_TotemSlots[slot]->TotemExpire();
+	if( slot >= UNIT_SUMMON_SLOTS ){
+		LOG_ERROR( "Player %u %s tried to cancel a summon at slot %u, slot number is out of range. ( tried to crash the server? )", _player->GetLowGUID(), _player->GetName(), slot );
+		return;
+	}
+
+	_player->summonhandler.RemoveSummonFromSlot( slot );
 }

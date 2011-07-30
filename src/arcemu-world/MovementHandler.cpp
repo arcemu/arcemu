@@ -257,6 +257,49 @@ void _HandleBreathing(MovementInfo &movement_info, Player * _player, WorldSessio
 
 }
 
+struct MovementFlagName{
+	uint32 flag;
+	char *name;
+};
+
+static MovementFlagName MoveFlagsToNames[] = {
+	{ MOVEFLAG_MOVE_STOP, "MOVEFLAG_MOVE_STOP" },
+	{ MOVEFLAG_MOVE_FORWARD, "MOVEFLAG_MOVE_FORWARD" },
+	{ MOVEFLAG_MOVE_BACKWARD, "MOVEFLAG_MOVE_BACKWARD" },
+	{ MOVEFLAG_STRAFE_LEFT, "MOVEFLAG_STRAFE_LEFT" },
+	{ MOVEFLAG_STRAFE_RIGHT, "MOVEFLAG_STRAFE_RIGHT" },
+	{ MOVEFLAG_TURN_LEFT, "MOVEFLAG_TURN_LEFT" },
+	{ MOVEFLAG_TURN_RIGHT, "MOVEFLAG_TURN_RIGHT" },
+	{ MOVEFLAG_PITCH_DOWN, "MOVEFLAG_PITCH_DOWN" },
+	{ MOVEFLAG_PITCH_UP, "MOVEFLAG_PITCH_UP" },
+	{ MOVEFLAG_WALK, "MOVEFLAG_WALK" },
+	{ MOVEFLAG_TAXI, "MOVEFLAG_TAXI" },
+	{ MOVEFLAG_NO_COLLISION, "MOVEFLAG_NO_COLLISION" },
+	{ MOVEFLAG_FLYING, "MOVEFLAG_FLYING" },
+	{ MOVEFLAG_REDIRECTED, "MOVEFLAG_REDIRECTED" },
+	{ MOVEFLAG_FALLING, "MOVEFLAG_FALLING" },
+	{ MOVEFLAG_FALLING_FAR, "MOVEFLAG_FALLING_FAR" },
+	{ MOVEFLAG_FREE_FALLING, "MOVEFLAG_FREE_FALLING" },
+	{ MOVEFLAG_TB_PENDING_STOP, "MOVEFLAG_TB_PENDING_STOP" },
+	{ MOVEFLAG_TB_PENDING_UNSTRAFE, "MOVEFLAG_TB_PENDING_UNSTRAFE" },
+	{ MOVEFLAG_TB_PENDING_FALL, "MOVEFLAG_TB_PENDING_FALL" },
+	{ MOVEFLAG_TB_PENDING_FORWARD, "MOVEFLAG_TB_PENDING_FORWARD" },
+	{ MOVEFLAG_TB_PENDING_BACKWARD, "MOVEFLAG_TB_PENDING_BACKWARD" },
+	{ MOVEFLAG_SWIMMING, "MOVEFLAG_SWIMMING" },
+	{ MOVEFLAG_FLYING_PITCH_UP, "MOVEFLAG_FLYING_PITCH_UP" },
+	{ MOVEFLAG_CAN_FLY, "MOVEFLAG_CAN_FLY" },
+	{ MOVEFLAG_AIR_SUSPENSION, "MOVEFLAG_AIR_SUSPENSION" },
+	{ MOVEFLAG_AIR_SWIMMING, "MOVEFLAG_AIR_SWIMMING" },
+	{ MOVEFLAG_SPLINE_MOVER, "MOVEFLAG_SPLINE_MOVER" },
+	{ MOVEFLAG_SPLINE_ENABLED, "MOVEFLAG_SPLINE_ENABLED" },
+	{ MOVEFLAG_WATER_WALK, "MOVEFLAG_WATER_WALK" },
+	{ MOVEFLAG_FEATHER_FALL, "MOVEFLAG_FEATHER_FALL" },
+	{ MOVEFLAG_LEVITATE, "MOVEFLAG_LEVITATE" },
+	{ MOVEFLAG_LOCAL, "MOVEFLAG_LOCAL" },
+};
+
+static const uint32 nmovementflags = sizeof( MoveFlagsToNames ) / sizeof( MovementFlagName );
+
 void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 {
 	CHECK_INWORLD_RETURN
@@ -324,10 +367,23 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 		/*case MSG_MOVE_FALL_LAND:
 			_player->jumping = false;
 			break;*/
+
 		default:
 			moved = false;
 			break;
 	}
+
+#if 0
+
+	LOG_DETAIL( "Got %s", g_worldOpcodeNames[ opcode ].name );
+	
+	LOG_DETAIL( "Movement flags" );
+	for( uint32 i = 0; i < nmovementflags; i++ )
+		if( ( movement_info.flags & MoveFlagsToNames[ i ].flag ) != 0 )
+			LOG_DETAIL( "%s", MoveFlagsToNames[ i ].name );
+
+#endif
+	
 	if( moved )
 	{
 		if( !_player->moving && !_player->strafing && !_player->jumping )
@@ -617,7 +673,10 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 	/************************************************************************/
 	/* Remove Spells                                                        */
 	/************************************************************************/
-	uint32 flags = AURA_INTERRUPT_ON_MOVEMENT;
+	uint32 flags = 0;
+	if( ( movement_info.flags & MOVEFLAG_MOTION_MASK ) != 0 )
+		flags |= AURA_INTERRUPT_ON_MOVEMENT;
+
 	if( !( movement_info.flags & MOVEFLAG_SWIMMING || movement_info.flags & MOVEFLAG_FALLING ) )
 		flags |= AURA_INTERRUPT_ON_LEAVE_WATER;
 	if( movement_info.flags & MOVEFLAG_SWIMMING )

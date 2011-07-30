@@ -176,10 +176,10 @@ bool ChatHandler::HandleDeleteCommand(const char* args, WorldSession *m_session)
     
     unit->DeleteFromDB();
 
-	if(unit->IsTotem())
-		unit->TotemExpire();
-	else
-	{
+	if( unit->IsSummon() ){
+		unit->Delete();
+	}else{
+
 		if(unit->m_spawn)
 		{
 			uint32 cellx = uint32(((_maxX-unit->m_spawn->x)/_cellSize));
@@ -202,27 +202,7 @@ bool ChatHandler::HandleDeleteCommand(const char* args, WorldSession *m_session)
 			}
 		}
 
-		bool removeFromWorld = true;
-		if( unit->GetCreatedByGUID() != 0 )
-		{
-			Unit *pSummoner = unit->GetMapMgr()->GetUnit( unit->GetCreatedByGUID() );
-
-			if( pSummoner && pSummoner->IsCreature() )
-			{
-				Creature *pSummonerC = TO< Creature* >( pSummoner );
-
-				// We are deleting a summon summoned by a totem so better delete the totem too
-				if( pSummonerC->IsTotem() )
-				{
-					pSummonerC->TotemExpire();
-					//TotemExpire() will take care of deleting unit.
-					removeFromWorld = false;
-				}
-			}
-		}
-
-		if(removeFromWorld)
-			unit->RemoveFromWorld(false,true);
+		unit->RemoveFromWorld(false,true);
 	}
 
 	BlueSystemMessage(m_session, "Creature deleted");

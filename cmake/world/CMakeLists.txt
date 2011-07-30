@@ -40,6 +40,12 @@ SET(sources
 	Container.cpp 
 	Corpse.cpp 
 	Creature.cpp 
+	Entities/Summons/Summon.cpp
+	Entities/Summons/CompanionSummon.cpp
+	Entities/Summons/GuardianSummon.cpp
+	Entities/Summons/PossessedSummon.cpp
+	Entities/Summons/TotemSummon.cpp
+	Entities/Summons/WildSummon.cpp
 	debugcmds.cpp 
 	DuelHandler.cpp 
 	DynamicObject.cpp 
@@ -101,6 +107,7 @@ SET(sources
 	SpellTarget.cpp 
 	Spell.cpp 
 	StdAfx.cpp
+	SummonHandler.cpp
 	SpellEffects.cpp 
 	SpellHandler.cpp 
 	HackFixes.cpp 
@@ -183,6 +190,7 @@ SET( headers
 	Chat.h
 	CollideInterface.h
 	CommonScheduleThread.h
+	Entities/Summons/CompanionSummon.h
 	ConsoleCommands.h
 	Container.h
 	Corpse.h
@@ -201,6 +209,7 @@ SET( headers
 	GameObject.h
 	Gossip.h
 	Group.h
+	Entities/Summons/GuardianSummon.h
 	Guild.h
 	HonorHandler.h
 	Hunter.h
@@ -231,6 +240,7 @@ SET( headers
 	Pet.h
 	Player.h
 	PlayerCache.h
+	Entities/Summons/PossessedSummon.h
 	Priest.h
 	Quest.h
 	QuestMgr.h
@@ -251,8 +261,10 @@ SET( headers
 	Stats.h
 	StdAfx.h
 	StrandOfTheAncient.h
+	Entities/Summons/Summon.h
 	TaxiMgr.h
 	TerrainMgr.h
+	Entities/Summons/TotemSummon.h
 	TransporterHandler.h
 	Unit.h
 	UpdateFields.h
@@ -262,6 +274,7 @@ SET( headers
 	Warrior.h
 	WarsongGulch.h
 	WeatherMgr.h
+	Entities/Summons/WildSummon.h
 	WordFilter.h
 	World.h
 	WorldCreator.h

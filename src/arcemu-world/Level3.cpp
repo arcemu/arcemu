@@ -656,18 +656,129 @@ bool ChatHandler::HandleAddSkillCommand(const char* args, WorldSession *m_sessio
 	return true;
 }
 
+struct UnitFlagNames{
+	uint32 Flag;
+	char *Name;
+};
+
+struct UnitDynFlagNames{
+	uint32 Flag;
+	char *Name;
+};
+
+static const char *POWERTYPE[] = {
+	"Mana",
+	"Rage",
+	"Focus",
+	"Energy",
+	"Happiness",
+	"Runes",
+	"Runic Power"
+};
+
+static const UnitFlagNames UnitFlagToName[] = {
+	{ UNIT_FLAG_UNKNOWN_1, "UNIT_FLAG_UNKNOWN_1" },
+	{ UNIT_FLAG_NOT_ATTACKABLE_2, "UNIT_FLAG_NOT_ATTACKABLE_2" },
+	{ UNIT_FLAG_LOCK_PLAYER, "UNIT_FLAG_LOCK_PLAYER" },
+	{ UNIT_FLAG_PVP_ATTACKABLE, "UNIT_FLAG_PVP_ATTACKABLE" },
+	{ UNIT_FLAG_UNKNOWN_5, "UNIT_FLAG_UNKNOWN_5" },
+	{ UNIT_FLAG_NO_REAGANT_COST, "UNIT_FLAG_NO_REAGANT_COST" },
+	{ UNIT_FLAG_PLUS_MOB, "UNIT_FLAG_PLUS_MOB" },
+	{ UNIT_FLAG_UNKNOWN_8, "UNIT_FLAG_UNKNOWN_8" },
+	{ UNIT_FLAG_NOT_ATTACKABLE_9, "UNIT_FLAG_NOT_ATTACKABLE_9" },
+	{ UNIT_FLAG_UNKNOWN_10, "UNIT_FLAG_UNKNOWN_10" },
+	{ UNIT_FLAG_LOOTING, "UNIT_FLAG_LOOTING" },
+	{ UNIT_FLAG_SELF_RES, "UNIT_FLAG_SELF_RES" },
+	{ UNIT_FLAG_PVP, "UNIT_FLAG_PVP" },
+	{ UNIT_FLAG_SILENCED, "UNIT_FLAG_SILENCED" },
+	{ UNIT_FLAG_DEAD, "UNIT_FLAG_DEAD" },
+	{ UNIT_FLAG_UNKNOWN_16, "UNIT_FLAG_UNKNOWN_16" },
+	{ UNIT_FLAG_ALIVE, "UNIT_FLAG_ALIVE" },
+	{ UNIT_FLAG_PACIFIED, "UNIT_FLAG_PACIFIED" },
+	{ UNIT_FLAG_STUNNED, "UNIT_FLAG_STUNNED" },
+	{ UNIT_FLAG_COMBAT, "UNIT_FLAG_COMBAT" },
+	{ UNIT_FLAG_MOUNTED_TAXI, "UNIT_FLAG_MOUNTED_TAXI" },
+	{ UNIT_FLAG_DISARMED, "UNIT_FLAG_DISARMED" },
+	{ UNIT_FLAG_CONFUSED, "UNIT_FLAG_CONFUSED" },
+	{ UNIT_FLAG_FLEEING, "UNIT_FLAG_FLEEING" },
+	{ UNIT_FLAG_PLAYER_CONTROLLED_CREATURE, "UNIT_FLAG_PLAYER_CONTROLLED_CREATURE" },
+	{ UNIT_FLAG_NOT_SELECTABLE, "UNIT_FLAG_NOT_SELECTABLE" },
+	{ UNIT_FLAG_SKINNABLE, "UNIT_FLAG_SKINNABLE" },
+	{ UNIT_FLAG_UNKNOWN_28, "UNIT_FLAG_UNKNOWN_28" },
+	{ UNIT_FLAG_UNKNOWN_29, "UNIT_FLAG_UNKNOWN_29" },
+	{ UNIT_FLAG_FEIGN_DEATH, "UNIT_FLAG_FEIGN_DEATH" },
+	{ UNIT_FLAG_UNKNOWN_31, "UNIT_FLAG_UNKNOWN_31" },
+	{ UNIT_FLAG_UNKNOWN_32, "UNIT_FLAG_UNKNOWN_32" }
+};
+
+static uint32 numflags = sizeof( UnitFlagToName ) / sizeof( UnitFlagNames );
+
+static const UnitDynFlagNames UnitDynFlagToName[] = {
+	{ U_DYN_FLAG_LOOTABLE, "U_DYN_FLAG_LOOTABLE" },
+	{ U_DYN_FLAG_UNIT_TRACKABLE, "U_DYN_FLAG_UNIT_TRACKABLE" },
+	{ U_DYN_FLAG_TAGGED_BY_OTHER, "U_DYN_FLAG_TAGGED_BY_OTHER" },
+	{ U_DYN_FLAG_TAPPED_BY_PLAYER, "U_DYN_FLAG_TAPPED_BY_PLAYER" },
+	{ U_DYN_FLAG_PLAYER_INFO, "U_DYN_FLAG_PLAYER_INFO" },
+	{ U_DYN_FLAG_DEAD, "U_DYN_FLAG_DEAD" }
+};
+
+static uint32 numdynflags = sizeof( UnitDynFlagToName ) / sizeof( UnitDynFlagNames );
+
+static const char *GENDER[] = {
+	"male",
+	"female",
+	"neutral"
+};
+
+static const char *CLASS[] = {
+	"invalid 0",
+	"warrior",
+	"paladin",
+	"hunter",
+	"rogue",
+	"priest",
+	"deathknight",
+	"shaman",
+	"mage",
+	"warlock",
+	"invalid 10",
+	"druid"
+};
+
+static const char *SHEATSTATE[] = {
+	"none",
+	"melee",
+	"Ranged"
+};
+
+struct UnitPvPFlagNames{
+	uint32 Flag;
+	char *Name;
+};
+
+static const UnitPvPFlagNames UnitPvPFlagToName[] = {
+	{ U_FIELD_BYTES_FLAG_PVP, "U_FIELD_BYTES_FLAG_PVP" },
+	{ U_FIELD_BYTES_FLAG_FFA_PVP, "U_FIELD_BYTES_FLAG_FFA_PVP" },
+	{ U_FIELD_BYTES_FLAG_SANCTUARY, "U_FIELD_BYTES_FLAG_SANCTUARY" }
+};
+
+static const uint32 numpvpflags = sizeof( UnitPvPFlagToName ) / sizeof( UnitPvPFlagNames );
+
+struct PetFlagNames{
+	uint32 Flag;
+	char *Name;
+};
+
+static const PetFlagNames PetFlagToName[] = {
+	{ UNIT_CAN_BE_RENAMED, "UNIT_CAN_BE_RENAMED" },
+	{ UNIT_CAN_BE_ABANDONED, "UNIT_CAN_BE_ABANDONED" }
+};
+
+static const uint32 numpetflags = sizeof( PetFlagToName ) / sizeof( PetFlagNames );
+
+
 bool ChatHandler::HandleNpcInfoCommand(const char *args, WorldSession *m_session)
 {
-
-	static const char *POWERTYPE[] = {
-		"Mana",
-		"Rage",
-		"Focus",
-		"Energy",
-		"Happiness",
-		"Runes",
-		"Runic Power"
-	};
 
     uint32 guid = Arcemu::Util::GUID_LOPART(m_session->GetPlayer()->GetSelection());
 	Creature *crt = getSelectedCreature(m_session);
@@ -713,13 +824,12 @@ bool ChatHandler::HandleNpcInfoCommand(const char *args, WorldSession *m_session
 	if(crt->m_faction)
 		SystemMessage(m_session, "Combat Support: 0x%.3X", crt->m_faction->FriendlyMask);
 	SystemMessage(m_session, "Health (cur/max): %d/%d", crt->GetHealth(), crt->GetMaxHealth());
-	SystemMessage(m_session, "Mana (cur/max): %d/%d", crt->GetPower( POWER_TYPE_MANA ), crt->GetMaxPower( POWER_TYPE_MANA ) );
-	SystemMessage(m_session, "Happiness (cur/max): %d/%d", crt->GetPower( POWER_TYPE_HAPPINESS ), crt->GetMaxPower( POWER_TYPE_HAPPINESS ) );
-	SystemMessage(m_session, "Focus (cur/max): %d/%d", crt->GetPower( POWER_TYPE_FOCUS ), crt->GetMaxPower( POWER_TYPE_FOCUS ) );
 
 	uint32 powertype = crt->GetPowerType();
-	if( powertype >= 0 && powertype <= 6 )
+	if( ( powertype >= 0 ) && ( powertype <= 6 ) ){
 		SystemMessage(m_session, "Powertype: %s", POWERTYPE[ powertype ] );
+		SystemMessage(m_session, "Power (cur/max): %d/%d", crt->GetPower( powertype ), crt->GetMaxPower( powertype ) );
+	}
 
 	SystemMessage(m_session, "Armor/Holy/Fire/Nature/Frost/Shadow/Arcane");
 	SystemMessage(m_session, "%d/%d/%d/%d/%d/%d/%d", crt->GetResistance(SCHOOL_NORMAL), crt->GetResistance(SCHOOL_HOLY), crt->GetResistance(SCHOOL_FIRE), crt->GetResistance(SCHOOL_NATURE), crt->GetResistance(SCHOOL_FROST), crt->GetResistance(SCHOOL_SHADOW), crt->GetResistance(SCHOOL_ARCANE));
@@ -742,9 +852,80 @@ bool ChatHandler::HandleNpcInfoCommand(const char *args, WorldSession *m_session
 	sstext << uint16((uint8)(theBytes >> 16) & 0xFF) << " " << uint16((uint8)(theBytes >> 24) & 0xFF) << '\0';
 	SendMultilineMessage( m_session, sstext.str().c_str() );
 
-    if( crt->GetOwner() && crt->GetOwner()->IsPlayer() )
-        SystemMessage(m_session, "Owner: %s", "player" );
-    
+	uint8 gender = crt->getGender();
+	if( gender >= 0 && gender <= 2 )
+		SystemMessage( m_session, "Gender: %s", GENDER[ gender ] );
+	else
+		SystemMessage( m_session, "Gender: invalid %u", gender );
+
+	uint8 crclass = crt->getClass();
+	if( crclass <= 11 )
+		SystemMessage( m_session, "Class: %s", CLASS[ crclass ] );
+	else
+		SystemMessage( m_session, "Class: invalid %u", crclass );
+
+	SystemMessage( m_session, "Free pet talent points: %u", crt->GetByte( UNIT_FIELD_BYTES_1, 1 ) );
+
+	uint8 sheat = crt->GetByte( UNIT_FIELD_BYTES_2, 0 );
+	if( sheat <= 2 )
+		SystemMessage( m_session, "Sheat state: %s", SHEATSTATE[ sheat ] );
+
+	uint8 pvpflags = crt->GetByte( UNIT_FIELD_BYTES_2, 1 );
+
+	SystemMessage( m_session, "PvP flags: %u", pvpflags );
+
+	for( uint32 i = 0; i < numpvpflags; i++ )
+		if( ( pvpflags & UnitPvPFlagToName[ i ].Flag ) != 0 )
+			SystemMessage( m_session, "%s", UnitPvPFlagToName[ i ].Name );
+
+	uint8 petflags = crt->GetByte( UNIT_FIELD_BYTES_2, 2 );
+
+	SystemMessage( m_session, "Pet flags: %u", petflags );
+
+	for( uint32 i = 0; i < numpetflags; i++ )
+		if( ( petflags & PetFlagToName[ i ].Flag ) != 0 )
+			SystemMessage( m_session, "%s", PetFlagToName[ i ].Name );
+
+	if( crt->CombatStatus.IsInCombat() )
+		SystemMessage( m_session, "Creature is in combat" );
+	else
+		SystemMessage( m_session, "Creature is NOT in combat" );
+
+	Unit *owner = NULL;
+	if( crt->IsSummon() )
+		owner = TO< Summon* >( crt )->GetOwner();
+
+	if( owner != NULL ){
+		if( owner->IsPlayer() )
+			SystemMessage( m_session, "Owner is a %s", "player" );
+		if( owner->IsPet() )
+			SystemMessage( m_session, "Owner is a %s", "pet" );
+		if( owner->IsCreature() )
+			SystemMessage( m_session, "Owner is a %s", "creature" );
+	}
+
+	SystemMessage( m_session, "Creator GUID: %u", Arcemu::Util::GUID_LOPART( crt->GetCreatedByGUID() ) );
+	SystemMessage( m_session, "Summoner GUID: %u", Arcemu::Util::GUID_LOPART( crt->GetSummonedByGUID() ) );
+	SystemMessage( m_session, "Charmer GUID: %u", Arcemu::Util::GUID_LOPART( crt->GetCharmedByGUID() ) );
+	SystemMessage( m_session, "Creator Spell: %u", Arcemu::Util::GUID_LOPART( crt->GetCreatedBySpell() ) );
+
+	
+	
+	uint32 unitflags = crt->GetUInt32Value( UNIT_FIELD_FLAGS );
+	
+	SystemMessage( m_session, "Unit flags: %u", unitflags );
+
+	for( uint32 i = 0; i < numflags; i++ )
+		if( ( unitflags & UnitFlagToName[ i ].Flag ) != 0 )
+			SystemMessage( m_session, "%s", UnitFlagToName[ i ].Name );
+
+	uint32 dynflags = crt->GetUInt32Value( UNIT_DYNAMIC_FLAGS );
+	SystemMessage( m_session, "Unit dynamic flags: %u", dynflags );
+
+	for( uint32 i = 0; i < numdynflags; i++ )
+		if( ( dynflags & UnitDynFlagToName[ i ].Flag ) != 0 )
+			SystemMessage( m_session, "%s", UnitDynFlagToName[ i ].Name );
+
 	return true;
 }
 
@@ -3235,7 +3416,7 @@ bool ChatHandler::HandleNpcPossessCommand(const char * args, WorldSession * m_se
 		return true;
 	}
 
-	m_session->GetPlayer()->Possess(pTarget);
+	m_session->GetPlayer()->Possess(pTarget->GetGUID());
 	BlueSystemMessage(m_session, "Possessed "I64FMT, pTarget->GetGUID());
 	switch( pTarget->GetTypeId() )
 	{

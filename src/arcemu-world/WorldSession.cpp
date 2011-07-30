@@ -333,8 +333,10 @@ void WorldSession::LogoutPlayer(bool Save)
 		_player->load_health = _player->GetUInt32Value( UNIT_FIELD_HEALTH );
 		_player->load_mana = _player->GetPower(POWER_TYPE_MANA);
 
+
+		_player->summonhandler.RemoveAllSummons();
+
 		_player->DismissActivePets();
-		_player->RemoveAllGuardians();
 
 		//_player->SaveAuras();
 
@@ -874,6 +876,7 @@ void WorldSession::InitPacketHandlerTable()
 	WorldPacketHandlers[CMSG_PET_SPELL_AUTOCAST].handler						= &WorldSession::HandlePetSpellAutocast;
 	WorldPacketHandlers[CMSG_PET_CANCEL_AURA].handler						= &WorldSession::HandlePetCancelAura;
 	WorldPacketHandlers[CMSG_PET_LEARN_TALENT].handler						= &WorldSession::HandlePetLearnTalent;
+	WorldPacketHandlers[ CMSG_DISMISS_CRITTER ].handler                     = &WorldSession::HandleDismissCritter;
 	
 	// Battlegrounds
 	WorldPacketHandlers[CMSG_BATTLEFIELD_PORT].handler						  = &WorldSession::HandleBattlefieldPortOpcode;
@@ -1470,10 +1473,10 @@ void WorldSession::HandleMirrorImageOpcode( WorldPacket &recv_data )
 	if( Image == NULL )
 		return; // ups no unit found with that GUID on the map. Spoofed packet?
 	
-	if( static_cast< Creature* >( Image )->GetOwner() == NULL )
+	if( Image->GetCreatedByGUID() == 0 )
 		return;
 	
-	uint64 CasterGUID = static_cast< Creature* >( Image )->GetOwner()->GetGUID();
+	uint64 CasterGUID = Image->GetCreatedByGUID();
 	Unit *Caster = _player->GetMapMgr()->GetUnit( CasterGUID );
 	if( Caster == NULL )
 		return; // apperantly this mirror image mirrors nothing, poor lonely soul :(
@@ -1533,3 +1536,27 @@ void WorldSession::HandleMirrorImageOpcode( WorldPacket &recv_data )
 
     LOG_DEBUG("Sent: SMSG_MIRRORIMAGE_DATA");
 }
+
+void WorldSession::HandleDismissCritter( WorldPacket &recv_data ){
+	uint64 GUID;
+
+	recv_data >> GUID;
+
+	if( _player->GetSummonedCritterGUID() == 0 ){
+		LOG_ERROR( "Player %u sent dismiss companion packet, but player has no companion",_player->GetLowGUID() );
+		return;
+	}
+
+	if( _player->GetSummonedCritterGUID() != GUID ){
+		LOG_ERROR( "Player %u sent dismiss companion packet, but it doesn't match player's companion", _player->GetLowGUID() );
+		return;
+	}
+
+	Unit *companion = _player->GetMapMgr()->GetUnit( GUID );
+	if( companion != NULL ){
+		companion->Delete();
+	}
+
+	_player->SetSummonedCritterGUID( 0 );
+}
+

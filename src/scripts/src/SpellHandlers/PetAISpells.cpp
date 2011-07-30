@@ -1,26 +1,164 @@
 #include "Setup.h"
 
+class ArmyOfTheDeadGhoulAI : public CreatureAIScript{
+public:
+	ADD_CREATURE_FACTORY_FUNCTION( ArmyOfTheDeadGhoulAI );
+	ArmyOfTheDeadGhoulAI( Creature *c ) : CreatureAIScript( c ){
+	}
+
+	void OnLoad(){
+		if( _unit->IsSummon() ){
+			Summon *s = TO< Summon* >( _unit );
+			
+			float parent_bonus = s->GetOwner()->GetDamageDoneMod( SCHOOL_NORMAL ) * 0.04f ;
+			
+			s->SetMinDamage( s->GetMinDamage() + parent_bonus );
+			s->SetMaxDamage( s->GetMaxDamage() + parent_bonus );
+		}
+	}
+
+private:
+
+};
+
+class ShadowFiendAI : public CreatureAIScript{
+public:
+	ADD_CREATURE_FACTORY_FUNCTION( ShadowFiendAI );
+	ShadowFiendAI( Creature *c ) : CreatureAIScript( c ){
+	}
+
+	void OnLoad(){
+
+		if( _unit->IsPet() ){
+			Pet *s = TO< Pet* >( _unit );
+
+			float parent_bonus = s->GetPetOwner()->GetDamageDoneMod( SCHOOL_SHADOW ) * 0.065f;
+			
+			s->SetMinDamage( s->GetMinDamage() + parent_bonus );
+			s->SetMaxDamage( s->GetMaxDamage() + parent_bonus );
+			s->BaseDamage[ 0 ] += parent_bonus;
+			s->BaseDamage[ 1 ] += parent_bonus;
+			
+			Unit *uTarget = s->GetMapMgr()->GetUnit( s->GetPetOwner()->GetTargetGUID() );
+			if( ( uTarget != NULL ) && isAttackable( s->GetPetOwner(), uTarget ) ){
+				s->GetAIInterface()->AttackReaction( uTarget, 1 );
+				s->GetAIInterface()->setNextTarget( uTarget );
+			}
+		}
+	}
+
+private:
+
+};
+
+class MirrorImageAI : public CreatureAIScript{
+public:
+	ADD_CREATURE_FACTORY_FUNCTION( MirrorImageAI );
+	MirrorImageAI( Creature *c ) : CreatureAIScript( c ){
+	}
+
+	void OnLoad(){
+		if( _unit->IsSummon() ){
+			Summon *s = TO< Summon* >( _unit );
+			Unit *owner = s->GetOwner();
+
+			owner->CastSpell( _unit, 45204, true ); // clone me
+			owner->CastSpell( _unit, 58838, true ); // inherit threat list
+			
+			// Mage mirror image spell
+			if( _unit->GetCreatedBySpell() == 58833 ){
+				_unit->SetMaxHealth( 2500 );
+				_unit->SetHealth( 2500 );
+				_unit->SetMaxPower( POWER_TYPE_MANA, owner->GetMaxPower( POWER_TYPE_MANA ) );
+				_unit->SetPower( POWER_TYPE_MANA, owner->GetPower( POWER_TYPE_MANA ) );
+				
+				SpellRange *range = NULL;
+				
+				AI_Spell sp1;
+
+				sp1.entryId = 59638;
+				sp1.spell = dbcSpell.LookupEntryForced( sp1.entryId );
+				sp1.spellType = STYPE_DAMAGE;
+				sp1.agent = AGENT_SPELL;
+				sp1.spelltargetType = TTYPE_SINGLETARGET;
+				sp1.cooldown = 0;
+				sp1.cooldowntime = 0;
+				sp1.Misc2 = 0;
+				sp1.procCount = 0;
+				sp1.procChance = 100;
+				range = dbcSpellRange.LookupEntry( sp1.spell->rangeIndex );
+				sp1.minrange = GetMinRange( range );
+				sp1.maxrange = GetMaxRange( range );
+
+				_unit->GetAIInterface()->addSpellToList( &sp1 );
+				
+				AI_Spell sp2;
+				sp2.entryId = 59637;
+				sp2.spell = dbcSpell.LookupEntryForced( sp2.entryId );
+				sp2.spellType = STYPE_DAMAGE;
+				sp2.agent = AGENT_SPELL;
+				sp2.spelltargetType = TTYPE_SINGLETARGET;
+				sp2.cooldown = 0;
+				sp2.cooldowntime = 0;
+				sp2.Misc2 = 0;
+				sp2.procCount = 0;
+				sp2.procChance = 100;
+				range = dbcSpellRange.LookupEntry( sp2.spell->rangeIndex );
+				sp2.minrange = GetMinRange( range );
+				sp2.maxrange = GetMaxRange( range );
+
+				_unit->GetAIInterface()->addSpellToList( &sp2 );
+
+			}
+		}
+
+	}
+
+private:
+};
+
 class DancingRuneWeaponAI : public CreatureAIScript
 {
 public:
 	ADD_CREATURE_FACTORY_FUNCTION(DancingRuneWeaponAI);
 	DancingRuneWeaponAI(Creature* pCreature) : CreatureAIScript(pCreature)
 	{ 
-		Player *pOwner = TO< Player* >(_unit->GetAIInterface()->GetPetOwner());
-		
-		if(pOwner)
-		{
-			Item * item = pOwner->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
-			for( int s = 0; s < 5; s++)
-			{
-				if( item->GetProto()->Spells[s].Id == 0 )
-					continue;
-				if( item->GetProto()->Spells[s].Trigger == CHANCE_ON_HIT )
-				{
 
-					procSpell[s] = item->GetProto()->Spells[s].Id;	
+	}
+
+	void OnLoad(){
+		_unit->SetDisplayId( _unit->GetCreatureInfo()->Female_DisplayID );
+		_unit->SetBaseAttackTime( MELEE,2000 );
+
+		if( _unit->IsSummon() ){
+			Summon *s = TO< Summon* >( _unit );
+
+			Unit *owner = s->GetOwner();
+			
+			if( owner->IsPlayer() ){
+				Player *pOwner = TO< Player* >( owner );
+				
+				Item *item = pOwner->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
+				if( item != NULL ){
+					
+					for( int s = 0; s < 5; s++){
+						if( item->GetProto()->Spells[s].Id == 0 )
+							continue;
+						
+						if( item->GetProto()->Spells[s].Trigger == CHANCE_ON_HIT )
+							procSpell[s] = item->GetProto()->Spells[s].Id;
+					}
+					
+					s->SetEquippedItem( MELEE, item->GetEntry()  );
+					s->SetBaseAttackTime( MELEE, item->GetProto()->Delay );
+
 				}
+
+				pOwner->SetPower( POWER_TYPE_RUNIC_POWER, 0 );
 			}
+			
+			s->SetMinDamage( owner->GetDamageDoneMod( SCHOOL_NORMAL ) );
+			s->SetMaxDamage( owner->GetDamageDoneMod( SCHOOL_NORMAL ) );
 		}
 	}
 
@@ -114,7 +252,9 @@ private:
 	int procSpell[5];
 };
 
-void SetupPetAISpells(ScriptMgr * mgr)
-{
-    mgr->register_creature_script(27893, &DancingRuneWeaponAI::Create);
+void SetupPetAISpells( ScriptMgr *mgr ){
+	mgr->register_creature_script( 24207, &ArmyOfTheDeadGhoulAI::Create );
+	mgr->register_creature_script( 19668, &ShadowFiendAI::Create );
+    mgr->register_creature_script( 27893, &DancingRuneWeaponAI::Create );
+	mgr->register_creature_script( 31216, &MirrorImageAI::Create );
 };

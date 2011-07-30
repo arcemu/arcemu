@@ -5994,6 +5994,10 @@ void ApplyNormalFixes()
 			sp->procFlags = uint32( PROC_ON_CAST_SPELL | PROC_TARGET_SELF );
 		}
 
+		// Eye of Acherus, our phase shift mode messes up the control :/
+		sp = CheckAndReturnSpellEntry( 51852 );
+		if( sp != NULL )
+			sp->Effect[ 0 ] = 0;
 				
 
 // #ifdef NEW_PROCFLAGS

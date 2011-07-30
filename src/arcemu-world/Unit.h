@@ -615,6 +615,8 @@ typedef enum
 	EMOTE_ZZOLD_STATE_KNEEL_NO_INTERRUPT= 470,
 } EmoteType;
 
+
+// byte flags value (UNIT_FIELD_BYTES_1,0)
 enum StandState
 {
 	STANDSTATE_STAND			 = 0,
@@ -653,12 +655,33 @@ enum UnitSpecialStates
 	UNIT_STATE_FROZEN    = 0x4000,
 };
 
-enum UnitFieldBytes1
-{
-	U_FIELD_BYTES_ANIMATION_FROZEN = 0x01,
+// byte flags value (UNIT_FIELD_BYTES_1,2)
+enum UnitStandFlags{
+	UNIT_STAND_FLAGS_UNK1         = 0x01,
+	UNIT_STAND_FLAGS_CREEP        = 0x02,
+	UNIT_STAND_FLAGS_UNK3         = 0x04,
+	UNIT_STAND_FLAGS_UNK4         = 0x08,
+	UNIT_STAND_FLAGS_UNK5         = 0x10,
+	UNIT_STAND_FLAGS_ALL          = 0xFF
 };
 
-enum UnitFieldBytes2
+// byte flags value (UNIT_FIELD_BYTES_1,3)
+enum UnitBytes1_Flags{
+	UNIT_BYTE1_FLAG_ALWAYS_STAND = 0x01,
+	UNIT_BYTE1_FLAG_UNK_2        = 0x02,                    // Creature that can fly and are not on the ground appear to have this flag. If they are on the ground, flag is not present.
+	UNIT_BYTE1_FLAG_UNTRACKABLE  = 0x04,
+	UNIT_BYTE1_FLAG_ALL          = 0xFF
+};
+
+// byte value (UNIT_FIELD_BYTES_2,0)
+enum UnitBytes2_SheathState{
+	SHEATH_STATE_UNARMED  = 0,                              // non prepared weapon
+	SHEATH_STATE_MELEE    = 1,                              // prepared melee weapon
+	SHEATH_STATE_RANGED   = 2                               // prepared ranged weapon
+};
+
+// UNIT_FIELD_BYTES_2, 1
+enum UnitBytes2_PvPFlags
 {
 	U_FIELD_BYTES_FLAG_PVP     = 0x01,
 	U_FIELD_BYTES_FLAG_FFA_PVP = 0x04,
@@ -666,12 +689,49 @@ enum UnitFieldBytes2
 	U_FIELD_BYTES_FLAG_AURAS   = 0x10,
 };
 
+// byte flags value (UNIT_FIELD_BYTES_2,2)
+enum UnitBytes2_PetFlags{
+	UNIT_CAN_BE_RENAMED     = 0x01,
+	UNIT_CAN_BE_ABANDONED   = 0x02,
+};
+
+// byte value (UNIT_FIELD_BYTES_2,3)
+enum ShapeshiftForm
+{
+	FORM_NORMAL             = 0,
+	FORM_CAT                = 1,
+	FORM_TREE               = 2,
+	FORM_TRAVEL             = 3,
+	FORM_AQUA               = 4,
+	FORM_BEAR               = 5,
+	FORM_AMBIENT            = 6,
+	FORM_GHOUL              = 7,
+	FORM_DIREBEAR           = 8,
+	FORM_SKELETON			= 10,
+	FORM_SHADOWDANCE		= 13,
+	FORM_CREATUREBEAR       = 14,
+	FORM_GHOSTWOLF          = 16,
+	FORM_BATTLESTANCE       = 17,
+	FORM_DEFENSIVESTANCE    = 18,
+	FORM_BERSERKERSTANCE    = 19,
+	FORM_ZOMBIE				= 21,
+	FORM_METAMORPHOSIS		= 22,
+	FORM_UNDEAD				= 25,	// Lichborne?
+	FORM_SWIFT              = 27,
+	FORM_SHADOW             = 28,
+	FORM_FLIGHT             = 29,
+	FORM_STEALTH            = 30,
+	FORM_MOONKIN            = 31,
+	FORM_SPIRITOFREDEMPTION = 32,
+};
+
+
 enum UnitFieldFlags // UNIT_FIELD_FLAGS #46 - these are client flags
 {	//                                            Hex    Bit     Decimal  Comments
 	UNIT_FLAG_UNKNOWN_1                  = 0x00000001, // 1            1
 	UNIT_FLAG_NOT_ATTACKABLE_2           = 0x00000002, // 2            2  client won't let you attack them
 	UNIT_FLAG_LOCK_PLAYER                = 0x00000004, // 3            4  ? does nothing to client (probably wrong) - only taxi code checks this
-	UNIT_FLAG_PLAYER_CONTROLLED          = 0x00000008, // 4            8  makes players and NPCs attackable / not attackable
+	UNIT_FLAG_PVP_ATTACKABLE             = 0x00000008, // 4            8  makes players and NPCs attackable / not attackable
 	UNIT_FLAG_UNKNOWN_5                  = 0x00000010, // 5           16  ? some NPCs have this
 	UNIT_FLAG_NO_REAGANT_COST			 = 0x00000020, // 6           32  no reagant cost
 	UNIT_FLAG_PLUS_MOB                   = 0x00000040, // 7           64  ? some NPCs have this (Rare/Elite/Boss?)
@@ -702,20 +762,19 @@ enum UnitFieldFlags // UNIT_FIELD_FLAGS #46 - these are client flags
 	UNIT_FLAG_UNKNOWN_32                 = 0x80000000, // 32  2147483648
 };
 
-enum UnitFieldFlags2
-{
-	UNIT_FLAG2_FEIGN_DEATH			= 0x0000001,
-	UNIT_FLAG2_UNK1					= 0x0000002,	// Hides body and body armor. Weapons, shoulder and head armors still visible
-	UNIT_FLAG2_UNK2					= 0x0000004,
-	UNIT_FLAG2_COMPREHEND_LANG		= 0x0000008,	// Allows target to understand itself while talking in different language
-	UNIT_FLAG2_UNK4					= 0x0000010,
-	UNIT_FLAG2_UNK5					= 0x0000020,
-	UNIT_FLAG2_FORCE_MOVE			= 0x0000040,	// Makes target to run forward
-	UNIT_FLAG2_DISARM_OFFHAND		= 0x0000080,
-	UNIT_FLAG2_UNK8					= 0x0000100,
-	UNIT_FLAG2_UNK9					= 0x0000200,
-	UNIT_FLAG2_DISARM_RANGED		= 0x0000400,
-	UNIT_FLAG2_ENABLE_POWER_REGEN	= 0x0000800,
+enum UnitFieldFlags2{
+	UNIT_FLAG2_FEIGN_DEATH          = 0x0000001,
+	UNIT_FLAG2_UNK1                 = 0x0000002,	// Hides body and body armor. Weapons, shoulder and head armors still visible
+	UNIT_FLAG2_UNK2                 = 0x0000004,
+	UNIT_FLAG2_COMPREHEND_LANG      = 0x0000008,	// Allows target to understand itself while talking in different language
+	UNIT_FLAG2_MIRROR_IMAGE         = 0x0000010,
+	UNIT_FLAG2_UNK5                 = 0x0000020,
+	UNIT_FLAG2_FORCE_MOVE           = 0x0000040,	// Makes target to run forward
+	UNIT_FLAG2_DISARM_OFFHAND       = 0x0000080,
+	UNIT_FLAG2_UNK8                 = 0x0000100,
+	UNIT_FLAG2_UNK9                 = 0x0000200,
+	UNIT_FLAG2_DISARM_RANGED        = 0x0000400,
+	UNIT_FLAG2_ENABLE_POWER_REGEN   = 0x0000800,
 };
 
 enum UnitDynamicFlags
@@ -821,6 +880,8 @@ enum School
 	SCHOOL_ARCANE = 6,
 	SCHOOL_COUNT
 };
+
+#define UNIT_SUMMON_SLOTS 6
 
 typedef std::list<struct ProcTriggerSpellOnSpell> ProcTriggerSpellOnSpellList;
 
@@ -1123,12 +1184,13 @@ public:
 	int32 GetSpellDmgBonus(Unit *pVictim, SpellEntry *spellInfo,int32 base_dmg, bool isdot);
    
     uint32 m_addDmgOnce;
-	Creature *m_TotemSlots[4];
 	uint32 m_ObjectSlots[4];
 	uint32 m_triggerSpell;
 	uint32 m_triggerDamage;
 	uint32 m_canMove;
-	
+
+	SummonHandler summonhandler;
+
 	// Spell Effect Variables
 	int32 m_silenced;
 	bool m_damgeShieldsInUse;
@@ -1485,21 +1547,6 @@ public:
 
 	int32 m_modlanguage;
 	
-	Creature *critterPet;
-	
-	/************************************************************************/
-    /* Guardians                                                            */
-    /************************************************************************/
-
-	//guardians are temporary spawn that will inherit master faction and will follow them. Apart from that they have their own mind	
-	std::set<Creature*> m_Guardians;
-	Creature* create_guardian( uint32 guardian_entry, uint32 duration, float angle, uint32 lvl = 0, GameObject * obj = NULL, LocationVector * Vec = NULL, uint32 spellid = 0 ); 
-	void AddGuardianRef( Creature* guard ){ Arcemu::Util::ARCEMU_ASSERT( guard != NULL );  m_Guardians.insert( guard );	}
-	void RemoveGuardianRef( Creature* g );
-	void RemoveAllGuardians( bool remove_from_world = true );
-
-	/************************************************************************/
-
 	uint32 GetCharmTempVal() { return m_charmtemp; }
 	void SetCharmTempVal(uint32 val) { m_charmtemp = val; }
 
@@ -1544,6 +1591,7 @@ public:
             return false;
     }
 
+	virtual void UnPossess(){}
 
 	virtual bool isTrainingDummy(){ return false; }
 
@@ -1800,6 +1848,8 @@ public:
 
 	void AddGarbagePet( Pet *pet );
 
+	virtual void BuildPetSpellList( WorldPacket &data );
+
 protected:
 	Unit ();
     void RemoveGarbage();
@@ -1862,6 +1912,7 @@ protected:
 
 
 public:
+	virtual Group* GetGroup(){ return NULL; }
 	bool InParty(Unit* u);
 	bool InRaid(Unit* u);
 	const CombatStatusHandler * getcombatstatus() const { return &CombatStatus; }

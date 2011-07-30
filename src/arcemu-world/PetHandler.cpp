@@ -256,7 +256,7 @@ void WorldSession::HandleStablePet(WorldPacket & recv_data)
 
 	// remove pet from world and association with player
 	Pet *pPet = _player->GetSummon();
-	if( pPet != NULL && pPet->IsSummon() ) 
+	if( pPet != NULL && pPet->IsSummonedPet() ) 
 		return;
 	
 	PlayerPet *pet = _player->GetPlayerPet( _player->GetUnstabledPetNumber() );
@@ -312,7 +312,7 @@ void WorldSession::HandleStableSwapPet(WorldPacket & recv_data)
 		return;
 	}
 	Pet *pPet = _player->GetSummon();
-	if( pPet != NULL && pPet->IsSummon() )
+	if( pPet != NULL && pPet->IsSummonedPet() )
 		return;
 
 	//stable current pet

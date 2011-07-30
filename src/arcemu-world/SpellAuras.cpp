@@ -921,6 +921,12 @@ void Aura::Remove()
 		caster->SetChannelSpellTargetGUID(0);
 		caster->SetChannelSpellId(0);
 	}
+
+	if( ( caster != NULL ) && caster->IsPlayer() && m_spellProto->HasEffect( SPELL_EFFECT_SUMMON ) ){
+		Unit *charm = caster->GetMapMgr()->GetUnit( caster->GetCharmedUnitGUID() );
+		if( ( charm != NULL ) && ( charm->GetCreatedBySpell() == m_spellProto->Id ) )
+			TO< Player* >( caster )->UnPossess();
+	}
 }
 
 void Aura::AddMod( uint32 t, int32 a, uint32 miscValue, uint32 i )
@@ -1002,10 +1008,7 @@ void Aura::UpdateModifiers( )
 void Aura::EventUpdateGroupAA( float r ){
 	Player *owner = NULL;
 
-	if( m_target->IsPlayer() )
-		owner = TO< Player* >( m_target );
-	else
-		owner = m_target->GetPlayerOwner();
+	owner = TO< Player* >( m_target->GetPlayerOwner() );
 
 	if( owner == NULL ){
 		targets.clear();
@@ -1098,7 +1101,7 @@ void Aura::EventUpdateRaidAA( float r ){
 	if( m_target->IsPlayer() )
 		owner = TO< Player* >( m_target );
 	else
-		owner = m_target->GetPlayerOwner();
+		owner = TO< Player* >( m_target->GetPlayerOwner() );
 
 	if( owner == NULL ){
 		targets.clear();
@@ -1360,13 +1363,14 @@ void Aura::EventUpdateOwnerAA( float r ){
 		return;
 
 	Creature *c = TO_CREATURE( o );
-	Unit *ou = c->GetOwner();
+	if( !c->IsSummon() )
+		return;
 
-	if( ou == NULL ){
-		ou = c->GetMapMgr()->GetUnit( c->GetCreatedByGUID() );
-		if( ou == NULL )
-			return;
-	}
+	Unit *ou = NULL;
+	ou = TO< Summon* >( c )->GetOwner();
+
+	if( ou == NULL )
+		return;
 	
 	if( ou->isAlive() &&
 		!ou->HasAura( m_spellProto->Id ) &&
@@ -1561,7 +1565,7 @@ void Aura::SpellAuraModPossess(bool apply)
 	if(apply)
 	{
 		if( caster != NULL && caster->IsInWorld() )
-			TO< Player* >(caster)->Possess( m_target );
+			TO< Player* >(caster)->Possess( m_target->GetGUID() );
 	}
 	else
 	{
@@ -1589,7 +1593,7 @@ void Aura::SpellAuraModPossess(bool apply)
 			}
 
 			m_target->SetCharmedByGUID(  0 );
-			m_target->RemoveFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED_CREATURE );
+			m_target->RemoveFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED_CREATURE | UNIT_FLAG_PVP_ATTACKABLE  );
 			m_target->SetFaction(m_target->GetCharmTempVal() );
 			m_target->UpdateOppFactionSet();
 		}
@@ -1864,7 +1868,7 @@ void Aura::SpellAuraModConfuse(bool apply)
 {
 	Unit* u_caster = GetUnitCaster();
 
-	if( m_target->IsCreature() && TO< Creature* >(m_target)->IsTotem() )
+	if( m_target->IsTotem() )
 		return;
 
 	if(apply)
@@ -2010,7 +2014,7 @@ void Aura::SpellAuraModFear(bool apply)
 	Unit* u_caster = GetUnitCaster();
 
 	if( m_target->IsCreature() && 
-        ( TO< Creature* >(m_target)->IsTotem() || TO< Creature* >( m_target )->isRooted() ) )
+        ( m_target->IsTotem() || TO< Creature* >( m_target )->isRooted() ) )
 		return;
 
 	if(apply)
@@ -8164,7 +8168,7 @@ void Aura::SpellAuraModPossessPet(bool apply)
 		{	
 			if( apply )
 			{
-				pCaster->Possess( m_target );
+				pCaster->Possess( m_target->GetGUID() );
 				pCaster->SpeedCheatDelay( GetDuration() );
 			}
 			else
@@ -8721,14 +8725,11 @@ void Aura::SpellAuraMirrorImage( bool apply )
 	if( m_target == NULL || ! m_target->IsCreature() )
 		return;
 
-	if( apply )
-	{
-		Creature *c_target = TO_CREATURE( m_target );
+	if( apply && m_target->IsSummon() && ( m_target->GetCreatedByGUID() == GetCasterGUID() ) ){
+		Summon *s = TO< Summon* >( m_target );
 
-		if( c_target->GetOwner() != NULL )
-			c_target->SetDisplayId( c_target->GetOwner()->GetDisplayId() );
-
-		c_target->SetUInt32Value( UNIT_FIELD_FLAGS_2, c_target->GetUInt32Value( UNIT_FIELD_FLAGS_2 ) | 0x10 );
+		s->SetDisplayId( s->GetOwner()->GetDisplayId() );
+		s->SetUInt32Value( UNIT_FIELD_FLAGS_2, s->GetUInt32Value( UNIT_FIELD_FLAGS_2 ) | UNIT_FLAG2_MIRROR_IMAGE );
 	}
 
 	SpellAuraMirrorImage2( apply );
@@ -8739,7 +8740,7 @@ void Aura::SpellAuraMirrorImage2( bool apply )
 	if( m_target == NULL )
 		return;
 
-	if( apply )
+	if( apply && m_target->IsSummon() && ( m_target->GetCreatedByGUID() == GetCasterGUID() ) )
 	{
 		if( GetCaster()->IsPlayer() )
 		{

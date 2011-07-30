@@ -144,11 +144,69 @@ public:
 	virtual void AddToWorld();
 	virtual void AddToWorld(MapMgr * pMapMgr);
 	void PushToWorld(MapMgr*);
-	virtual void OnPushToWorld() { }
-	virtual void OnPrePushToWorld() { }
 	virtual void RemoveFromWorld(bool free_guid);
-	//called AFTER removing the Object from world.
-	virtual void OnRemoveFromWorld() { }
+
+
+	////////////////////////////////////////////////////////////////////////////////
+	//virtual void OnPrePushToWorld()
+	//  Virtual method that is called, BEFORE pushing the Object in the game world
+	//
+	//Parameter(s)
+	//  None
+	//
+	//Return Value
+	//  None
+	//
+	//
+	////////////////////////////////////////////////////////////////////////////////
+	virtual void OnPrePushToWorld(){}
+
+
+	////////////////////////////////////////////////////////////////////////////////
+	//virtual void OnPushToWorld()
+	//  Virtual method that is called, AFTER pushing the Object in the game world
+	//
+	//Parameter(s)
+	//  None
+	//
+	//Return Value
+	//  None
+	//
+	//
+	////////////////////////////////////////////////////////////////////////////////
+	virtual void OnPushToWorld(){}
+
+
+	////////////////////////////////////////////////////////////////////////////////
+	//virtual void OnPreRemoveFromWorld()
+	//  Virtual method that is called, BEFORE removing the Object from the game world
+	//
+	//Parameter(s)
+	//  None
+	//
+	//Return Value
+	//  None
+	//
+	//
+	////////////////////////////////////////////////////////////////////////////////
+	virtual void OnPreRemoveFromWorld(){}
+
+
+	////////////////////////////////////////////////////////////////////////////////
+	//virtual void OnRemoveFromWorld()
+	//  Virtual method that is called, AFTER removing the Object from the game world
+	//
+	//Parameter(s)
+	//  None
+	//
+	//Return Value
+	//  None
+	//
+	//
+	////////////////////////////////////////////////////////////////////////////////
+	virtual void OnRemoveFromWorld(){}
+
+
 
 	//! Guid always comes first
 	const uint64& GetGUID() const{ return GetUInt64Value( OBJECT_FIELD_GUID ); }
@@ -176,6 +234,8 @@ public:
 	bool IsCreature() { return m_objectTypeId == TYPEID_UNIT; }
 	bool IsItem() { return m_objectTypeId == TYPEID_ITEM; }
 	virtual bool IsPet() { return false; }
+	virtual bool IsTotem(){ return false; }
+	virtual bool IsSummon(){ return false; }
 	bool IsGameObject() { return m_objectTypeId == TYPEID_GAMEOBJECT; }
 	bool IsCorpse() { return m_objectTypeId == TYPEID_CORPSE; }
 	bool IsContainer() { return m_objectTypeId == TYPEID_CONTAINER; }
@@ -196,8 +256,7 @@ public:
 
 	bool SetPosition( float newX, float newY, float newZ, float newOrientation, bool allowPorting = false );
 	bool SetPosition( const LocationVector & v, bool allowPorting = false);
-	void SetRotation( uint64 guid );
-
+	
 	const float& GetPositionX( ) const { return m_position.x; }
 	const float& GetPositionY( ) const { return m_position.y; }
 	const float& GetPositionZ( ) const { return m_position.z; }
@@ -507,6 +566,36 @@ public:
 	void SendMessageToSet(StackBufferBase * data, bool self) { OutPacketToSet(data->GetOpcode(), static_cast<uint16>( data->GetSize() ), data->GetBufferPointer(), self); }
 	virtual void OutPacketToSet(uint16 Opcode, uint16 Len, const void * Data, bool self);
 
+	/////////////////////////////////////////////////////////////////////////
+	//void SendAIReaction( uint32 reaction = 2 )
+	//  Notifies the player's clients about the AI reaction of this object
+	//  ( NPC growl for example "aggro sound" )
+	//
+	//Parameter(s)
+	//  uint32 reaction  -  Reaction type
+	//
+	//Return Value
+	//  None
+	//
+	//
+	/////////////////////////////////////////////////////////////////////////
+	void SendAIReaction( uint32 reaction = 2 );
+
+	/////////////////////////////////////////////////////////////////////////
+	//void SendDestroyObject()
+	//  Destroys this Object for the players' clients that are nearby
+	//  ( removes object from the scene )
+	//
+	//Parameter(s)
+	//  None
+	//
+	//Return Value
+	//  None
+	//
+	//
+	/////////////////////////////////////////////////////////////////////////
+	void SendDestroyObject();
+
 	//! Fill values with data from a space separated string of uint32s.
 	void LoadValues(const char* data);
 
@@ -574,8 +663,6 @@ public:
 			RemoveFromWorld(true);
 		delete this;
 	}
-	//! GMScript not used anymore (Dropped for 64bit compatibility).
-	void GMScriptEvent(void * function, uint32 argc, uint32 * argv, uint32 * argt);
 	//! 
 	size_t GetInRangeOppFactCount() { return m_oppFactsInRange.size(); }
 	//! Play's a sound to players in range.
@@ -682,7 +769,7 @@ public:
 	void SetCurrentSpell(Spell* cSpell) { m_currentSpell = cSpell; }
 
 	//Andy's crap
-	Player* GetPlayerOwner();
+	virtual Object* GetPlayerOwner();
 	std::set<Spell*> m_pendingSpells;
 };
 

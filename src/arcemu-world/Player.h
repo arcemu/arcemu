@@ -100,35 +100,6 @@ enum Races
 	RACE_DRAENEI = 11,
 };
 
-enum ShapeshiftForm
-{
-	FORM_NORMAL             = 0,
-	FORM_CAT                = 1,
-	FORM_TREE               = 2,
-	FORM_TRAVEL             = 3,
-	FORM_AQUA               = 4,
-	FORM_BEAR               = 5,
-	FORM_AMBIENT            = 6,
-	FORM_GHOUL              = 7,
-	FORM_DIREBEAR           = 8,
-	FORM_SKELETON			= 10,
-	FORM_SHADOWDANCE		= 13,
-	FORM_CREATUREBEAR       = 14,
-	FORM_GHOSTWOLF          = 16,
-	FORM_BATTLESTANCE       = 17,
-	FORM_DEFENSIVESTANCE    = 18,
-	FORM_BERSERKERSTANCE    = 19,
-	FORM_ZOMBIE				= 21,
-	FORM_METAMORPHOSIS		= 22,
-	FORM_UNDEAD				= 25,	// Lichborne?
-	FORM_SWIFT              = 27,
-	FORM_SHADOW             = 28,
-	FORM_FLIGHT             = 29,
-	FORM_STEALTH            = 30,
-	FORM_MOONKIN            = 31,
-	FORM_SPIRITOFREDEMPTION = 32,
-};
-
 enum PlayerStatus
 {
 	NONE			 = 0,
@@ -1016,6 +987,25 @@ public:
 	void SendEquipmentSetList();
 	void SendEquipmentSetSaved( uint32 setID, uint32 setGUID );
 	void SendEquipmentSetUseResult( uint8 result );
+	void SendEmptyPetSpellList();
+
+	/////////////////////////////////////////////////////////////////////////////////////////
+	//void SendTotemCreated( uint8 slot, uint64 GUID, uint32 duration, uint32 spellid )
+	//  Notifies the client about the creation of a Totem/Summon
+	//  ( client will show a right-clickable icon with a timer that can cancel the summon )
+	//
+	//Parameter(s)
+	//  uint8 slot       -  Summon slot number
+	//  uint64 GUID      -  GUID of the summon
+	//  uint32 duration  -  Duration of the summon ( the timer of the icon )
+	//  uint32 spellid   -  ID of the spell that created this summon
+	//
+	//Return Value
+	//  None
+	//
+	//
+	/////////////////////////////////////////////////////////////////////////////////////////
+	void SendTotemCreated( uint8 slot, uint64 GUID, uint32 duration, uint32 spellid );
 
     void OutPacket( uint16 opcode, uint16 len, const void *data );
     void SendPacket( WorldPacket *packet );
@@ -1029,6 +1019,7 @@ public:
 
 	void Update( uint32 time );
     void BuildFlagUpdateForNonGroupSet(uint32 index, uint32 flag);
+	void BuildPetSpellList( WorldPacket &data );
 	void SetAFKReason(std::string reason) { m_cache->SetStringValue(CACHE_AFK_DND_REASON, reason); };
 	 const char* GetName() { return m_name.c_str(); }
 	 std::string* GetNameString() { return &m_name; }
@@ -1412,7 +1403,6 @@ public:
 	void						EventSummonPet(Pet *new_pet); //if we charmed or simply summoned a pet, this function should get called
 	void						EventDismissPet(); //if pet/charm died or whatever happened we should call this function
 
-	Creature * m_eyeofkilrogg;
     /************************************************************************/
     /* Item Interface                                                       */
     /************************************************************************/
@@ -2158,7 +2148,7 @@ public:
 	float m_noseLevel;
 
 	/* Mind Control */
-	void Possess(Unit * pTarget);
+	void Possess( uint64 GUID, uint32 delay = 0 );
 	void UnPossess();
 
 	/* Last Speeds */
@@ -2498,6 +2488,8 @@ public:
 
 	bool CanBuyAt(VendorRestrictionEntry *vendor);
 	bool CanTrainAt(Trainer *);
+
+	Object *GetPlayerOwner(){ return this; };
 };
 
 class SkillIterator

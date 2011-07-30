@@ -146,9 +146,9 @@ public:
 	void InitializeSpells();
 	void InitializeMe(bool first);
 	void SendSpellsToOwner();
-	void SendNullSpellsToOwner();
 	void SendCastFailed( uint32 spellid, uint8 fail );
 	void SendActionFeedback( PetActionFeedback value  );
+	void BuildPetSpellList( WorldPacket &data );
 
 	ARCEMU_INLINE void SetPetAction(uint32 act) { m_Action = act; }
 	ARCEMU_INLINE uint32 GetPetAction(void) { return m_Action; }
@@ -229,7 +229,7 @@ public:
 
 	AI_Spell * CreateAISpell(SpellEntry * info);
 	ARCEMU_INLINE PetSpellMap* GetSpells() { return &mSpells; }
-	ARCEMU_INLINE bool IsSummon() { return Summon; }
+	ARCEMU_INLINE bool IsSummonedPet() { return Summon; }
 
 	void  SetAutoCastSpell(AI_Spell * sp);
 	void Rename(string NewName);
@@ -256,6 +256,8 @@ public:
 	void DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32 unitEvent, uint32 spellId, bool no_remove_auras = false);
 	void TakeDamage(Unit *pAttacker, uint32 damage, uint32 spellid, bool no_remove_auras = false );
 	void Die( Unit *pAttacker, uint32 damage, uint32 spellid );
+
+	Object *GetPlayerOwner();
 
 protected:
 	Player *m_Owner;

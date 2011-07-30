@@ -129,10 +129,7 @@ Unit::Unit()
 	m_deathState = ALIVE;
 	m_meleespell = 0;
 	m_addDmgOnce = 0;
-	m_TotemSlots[0] = NULL;
-	m_TotemSlots[1] = NULL;
-	m_TotemSlots[2] = NULL;
-	m_TotemSlots[3] = NULL;
+
 	m_ObjectSlots[0] = 0;
 	m_ObjectSlots[1] = 0;
 	m_ObjectSlots[2] = 0;
@@ -251,8 +248,6 @@ Unit::Unit()
 	m_CombatResult_Dodge = 0;
 	m_CombatResult_Parry = 0;
 
-	critterPet = NULL;
-
 	m_useAI = false;
 	for(i= 0;i<10;i++)
 	{
@@ -364,7 +359,6 @@ Unit::Unit()
 //	fearSpell = 0;
 	m_extraAttackCounter = false;
 	CombatStatus.SetUnit(this);
-	m_temp_summon=false;
 	m_chargeSpellsInUse=false;
 //	m_spellsbusy=false;
 	m_interruptedRegenTime = 0;
@@ -3458,7 +3452,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 				dmg.full_damage += float2int32( dmg.full_damage *  pVictim->ModDamageTakenByMechPCT[MECHANIC_BLEEDING] );
 
 			//pet happiness state dmg modifier
-			if( IsPet() && !TO< Pet* >(this)->IsSummon() )
+			if( IsPet() && !TO< Pet* >(this)->IsSummonedPet() )
 				dmg.full_damage = ( dmg.full_damage <= 0 ) ? 0 : float2int32( dmg.full_damage * TO< Pet* >( this )->GetHappinessDmgMod() );
 
 			if(dmg.full_damage < 0)
@@ -5832,12 +5826,12 @@ void Unit::OnPushToWorld()
 void Unit::RemoveFromWorld(bool free_guid)
 {
 	CombatStatus.OnRemoveFromWorld();
-	if( critterPet != NULL )
-	{
-		critterPet->RemoveFromWorld(false, true);
-		//removed by Zack. Multiple deletes would lead to crash.
-//		delete critterPet;
-		critterPet = NULL;
+	if( GetSummonedCritterGUID() != 0 ){
+		SetSummonedCritterGUID( 0 );
+
+		Unit *u = m_mapMgr->GetUnit( GetSummonedCritterGUID() );
+		if( u != NULL )
+			u->Delete();
 	}
 
 	if(dynObj != 0)
@@ -6374,93 +6368,6 @@ void Unit::SetFacing(float newo)
 	data << GetPositionX() << GetPositionY() << GetPositionZ();
 
 	SendMessageToSet(&data, true);
-}
-
-//guardians are temporary spawn that will inherit master faction and will follow them. Apart from that they have their own mind
-Creature* Unit::create_guardian(uint32 guardian_entry,uint32 duration,float angle, uint32 lvl, GameObject * obj, LocationVector * Vec, uint32 spellid )
-{
-	CreatureProto * proto = CreatureProtoStorage.LookupEntry( guardian_entry );
-	CreatureInfo * info = CreatureNameStorage.LookupEntry( guardian_entry );
-	
-	if( proto == NULL || info == NULL )
-	{
-		LOG_ERROR("Warning : Missing summon creature template %u !",guardian_entry);
-		return NULL;
-	}
-	
-	float m_followAngle = angle;
-	float x = 3 * ( cosf( m_followAngle + GetOrientation() ) );
-	float y = 3 * ( sinf( m_followAngle + GetOrientation() ) );
-	float z = 0;
-
-	Creature* p = GetMapMgr()->CreateCreature( guardian_entry );
-
-	if( Vec )
-	{
-		x += Vec->x;
-		y += Vec->y;
-		z += Vec->z;
-	}
-	//Summoned by a GameObject?
-	else if( obj == NULL )
-	{
-		x += GetPositionX();
-		y += GetPositionY();
-		z += GetPositionZ();
-	}
-	else //if so, we should appear on it's location ;)
-	{
-		x += obj->GetPositionX();
-		y += obj->GetPositionY();
-		z += obj->GetPositionZ();
-	}
-	p->Load( proto, x, y, z );
-
-	if( lvl != 0 )
-	{
-		/* MANA */
-		p->SetPowerType(POWER_TYPE_MANA);
-		p->SetMaxPower( POWER_TYPE_MANA,p->GetMaxPower( POWER_TYPE_MANA )+28+10*lvl);
-		p->SetPower( POWER_TYPE_MANA,p->GetPower( POWER_TYPE_MANA ) + 28 + 10 * lvl );
-		/* HEALTH */
-		p->SetMaxHealth(p->GetMaxHealth()+28+30*lvl);
-		p->SetHealth(p->GetHealth()+28+30*lvl);
-		/* LEVEL */
-		p->setLevel(lvl);
-	}
-
-	p->SetType( CREATURE_TYPE_GUARDIAN );
-	p->SetSummonedByGUID( GetGUID());
-	p->SetCreatedByGUID( GetGUID());
-	p->SetCreatedBySpell( spellid );
-	p->SetZoneId(GetZoneId());
-	p->SetFaction(GetFaction());
-	p->SetUInt32Value( UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED );
-	p->Phase(PHASE_SET, GetPhase());
-
-	p->GetAIInterface()->Init(p,AITYPE_PET,MOVEMENTTYPE_NONE,this);
-	p->GetAIInterface()->SetUnitToFollow(this);
-	p->GetAIInterface()->SetUnitToFollowAngle(m_followAngle);
-	p->GetAIInterface()->SetFollowDistance(3.0f);
-	p->m_noRespawn = true;
-
-	// if it's summoned by a totem owned by a player it will be owned by the player, so we can PvP check on them in dealdamage, and isattackable
-	if( IsCreature() && TO< Creature* >( this )->IsTotem() && TO< Creature* >( this )->GetOwner() != NULL )
-	{
-		Player* totem_owner = TO< Player* >( TO< Creature* >( this )->GetOwner() );
-		p->SetOwner( TO< Unit* >( totem_owner ) );
-	}
-	else
-	{
-		p->SetOwner( this );
-		AddGuardianRef( p );
-	}
-
-	p->PushToWorld( GetMapMgr() );
-
-	sEventMgr.AddEvent( p, &Creature::SummonExpire, EVENT_SUMMON_EXPIRE, duration, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
-
-	return p;
 }
 
 float Unit::get_chance_to_daze(Unit *target)
@@ -7652,34 +7559,6 @@ void Unit::UpdatePowerAmm()
 	SendMessageToSet( &data, true );
 }
 
-void Unit::RemoveGuardianRef( Creature* g )
-{
-
-    Arcemu::Util::ARCEMU_ASSERT(    g != NULL );
-
-	// just remove from the set	
-	std::set< Creature* >::iterator itr = m_Guardians.find( g );
-	if( itr != m_Guardians.end() )
-		m_Guardians.erase( itr );
-}
-
-void Unit::RemoveAllGuardians( bool remove_from_world )
-{
-	// remove all guardians from set and optionally remove from world
-	std::set< Creature* >::iterator itr = m_Guardians.begin();
-	while( itr != m_Guardians.end() )
-	{
-        Creature *c = *itr;
-
-		c->SetOwner( NULL );
-
-		if( remove_from_world )
-            c->DeleteMe();
-
-		m_Guardians.erase( itr++ );
-	}
-}
-
 void Unit::SetDualWield(bool enabled)
 {
 	m_dualWield = enabled;
@@ -7943,8 +7822,8 @@ void Unit::RemoveCurrentUnitForSingleTargetAura(uint32 name_hash)
 
 bool Unit::InParty( Unit* u )
 {
-	Player* p = GetPlayerOwner();
-	Player* uFrom = u->GetPlayerOwner();
+	Player* p = TO< Player* >( GetPlayerOwner() );
+	Player* uFrom = TO< Player* >( u->GetPlayerOwner() );
 
 	if (p == NULL || uFrom == NULL)
 		return false;
@@ -7960,8 +7839,8 @@ bool Unit::InParty( Unit* u )
 
 bool Unit::InRaid( Unit* u )
 {
-	Player* p = GetPlayerOwner();
-	Player* uFrom = u->GetPlayerOwner();
+	Player* p = TO< Player* >( GetPlayerOwner() );
+	Player* uFrom = TO< Player* >( u->GetPlayerOwner() );
 
 	if (p == NULL || uFrom == NULL)
 		return false;
@@ -8209,3 +8088,7 @@ void Unit::HandleKnockback( Object* caster, float horizontal, float vertical )
 	GetAIInterface()->MoveKnockback(destx, desty, destz, horizontal, vertical);
 }
 
+
+void Unit::BuildPetSpellList( WorldPacket &data ){
+	data << uint64( 0 );
+}

@@ -389,8 +389,6 @@ public:
 	void OnDeath(Object* pKiller);
 	void AttackReaction(Unit *pUnit, uint32 damage_dealt, uint32 spellId = 0);
 	void HealReaction(Unit* caster, Unit* victim, SpellEntry* sp, uint32 amount);
-	void Event_Summon_EE_totem(uint32 summon_duration);
-	void Event_Summon_FE_totem(uint32 summon_duration);
 	void EventAiInterfaceParamsetFinish();
 	void EventChangeFaction( Unit *ForceAttackersToHateThisInstead= NULL );	//we have to tell our current enemies to stop attacking us, we should also forget about our targets
 

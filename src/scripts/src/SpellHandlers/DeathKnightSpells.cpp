@@ -133,30 +133,37 @@ bool Strangulate( uint32 i, Aura * pAura, bool apply ){
 bool RaiseDead( uint32 i, Spell *s ){
 	if( s->p_caster == NULL )
 		return false;
-	
+
 	float x = s->p_caster->GetPositionX()+rand()%25;
 	float y = s->p_caster->GetPositionY()+rand()%25;
 	float z = s->p_caster->GetPositionZ();
 
-	Corpse *corpseTarget = s->GetCorpseTarget();
-	
-	if( corpseTarget != NULL ) // We are targeting a corpse.
-	{
+	SpellEntry *sp = NULL;
+
+	// Master of Ghouls
+	if( !s->p_caster->HasAura( 52143 ) ){
+		Corpse *corpseTarget = s->GetCorpseTarget();
+
+		// We need a corpse for this spell
+		// Doesn't seem to be supported yet, so let's comment this for now
+		/*
+		if( corpseTarget != NULL )
+			return true;
+
 		x = corpseTarget->GetPositionX();
 		y = corpseTarget->GetPositionY();
 		z = corpseTarget->GetPositionZ();
+		*/
+
+
+		// Minion version, 1 min duration
+		sp = dbcSpell.LookupEntry( 46585 );
+	}else{
+		// Pet version, infinite duration
+		sp = dbcSpell.LookupEntry( 52150 );
 	}
-		
-		if( s->p_caster->HasSpellwithNameHash( SPELL_HASH_MASTER_OF_GHOULS ) ){
-			SpellEntry *ghoulSpell = dbcSpell.LookupEntryForced(52150);
-			if( ghoulSpell != NULL )
-				s->p_caster->CastSpellAoF(x,y,z,ghoulSpell,true );
-		
-		}else{
-			LocationVector vec( x, y, z );
-			Creature *c = s->p_caster->create_guardian( 26125, 3*60*1000, M_PI_FLOAT, s->p_caster->getLevel(), NULL, &vec );
-			c->CastSpell( c->GetGUID(), 50142, true ); // emerge
-		}
+	
+	s->p_caster->CastSpellAoF( x, y, z, sp, true );
 
 	return true;
 }

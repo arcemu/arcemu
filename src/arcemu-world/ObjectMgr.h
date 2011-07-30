@@ -408,13 +408,11 @@ public:
 	typedef std::map<uint32, uint32>                                    NpcToGossipTextMap;
 	typedef std::map<uint32, set<SpellEntry*> >                         PetDefaultSpellMap;
 	typedef std::map<uint32, uint32>                                    PetSpellCooldownMap;
-	typedef std::map<uint32, SpellEntry*>                               TotemSpellMap;
 	typedef std::multimap <uint32,uint32>                               BCEntryStorage;
 	typedef std::map< uint32, SpellTargetConstraint* >					SpellTargetConstraintMap;
 
     // object holders
 	GmTicketList         GM_TicketList;
-	TotemSpellMap        m_totemSpells;
 	OverrideIdMap        mOverrideIdMap;
 	InstanceBossInfoMap* m_InstanceBossInfoMap[NUM_MAPS];
 	PlayerCacheMap m_playerCache;
@@ -507,9 +505,6 @@ public:
 	std::vector<CreatureItem> *GetVendorList(uint32 entry);
 	void SetVendorList(uint32 Entry, std::vector<CreatureItem>* list_);
 
-	//Totem
-	SpellEntry* GetTotemSpell(uint32 spellId);
-
 	std::list<ItemPrototype*>* GetListForItemSet(uint32 setid);
 
 	Pet * CreatePet( uint32 entry );
@@ -542,7 +537,6 @@ public:
 	void LoadSpellSkills();
 	void LoadVendors();
 	void ReloadVendors();
-	void LoadTotemSpells();
 	void LoadAIThreatToSpellId();
 	void LoadSpellProcs();
 	void LoadSpellEffectsOverride();

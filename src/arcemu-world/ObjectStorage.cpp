@@ -26,7 +26,7 @@ const char * gItemPrototypeFormat						= "uuuusuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu
 const char * gItemNameFormat							= "usu";
 const char * gCreatureNameFormat						= "usssuuuuuuuuuuffcuuuuuuu";
 const char * gGameObjectNameFormat						= "uuussssuuuuuuuuuuuuuuuuuuuuuuuufuuuuuu";
-const char * gCreatureProtoFormat						= "uuuuuuufuuuffuuffuuuuuuuuffsuuufffuuuuuuuuuu";
+const char * gCreatureProtoFormat						= "uuuuuuufuuuffuuffuuuuuuuuffsuuufffuuuuuuuuuuu";
 const char * gDisplayBoundingFormat						= "ufffffff";
 const char * gVendorRestrictionEntryFormat				= "uuuuuuuu";
 const char * gAreaTriggerFormat							= "ucuusffffuu";
@@ -45,6 +45,7 @@ const char * gWorldStringTableFormat					= "us"; // p2wow added [for worldserver
 const char * gWorldBroadCastFormat						= "usu";// announce message
 const char * gBattleMasterFormat						= "uu";
 const char * gSpellClickSpellsFormat					= "uu";
+const char * gTotemDisplayIDsFormat                     = "uuuu";
 
 /** SQLStorage symbols
  */
@@ -69,6 +70,7 @@ SERVER_DECL SQLStorage<WorldStringTable, HashMapStorageContainer<WorldStringTabl
 SERVER_DECL SQLStorage<WorldBroadCast, HashMapStorageContainer<WorldBroadCast> >			WorldBroadCastStorage;
 SERVER_DECL SQLStorage<BGMaster, HashMapStorageContainer<BGMaster> >						BGMasterStorage;
 SERVER_DECL SQLStorage< SpellClickSpell, HashMapStorageContainer< SpellClickSpell > >		SpellClickSpellStorage;
+SERVER_DECL SQLStorage< TotemDisplayIdEntry, HashMapStorageContainer< TotemDisplayIdEntry > > TotemDisplayIdStorage;
 
 
 SERVER_DECL set<string> ExtraMapCreatureTables;
@@ -521,7 +523,7 @@ void Storage_FillTaskList(TaskList & tl)
 	make_task(WorldBroadCastStorage, WorldBroadCast, HashMapStorageContainer, "worldbroadcast", gWorldBroadCastFormat);
 	make_task(BGMasterStorage, BGMaster, HashMapStorageContainer, "battlemasters", gBattleMasterFormat);
 	make_task( SpellClickSpellStorage, SpellClickSpell, HashMapStorageContainer, "SpellClickSpells", gSpellClickSpellsFormat );
-	
+	make_task( TotemDisplayIdStorage, TotemDisplayIdEntry, HashMapStorageContainer, "totemdisplayids", gTotemDisplayIDsFormat );
 }
 
 void Storage_Cleanup()
@@ -566,6 +568,7 @@ void Storage_Cleanup()
 	WorldBroadCastStorage.Cleanup();
 	BGMasterStorage.Cleanup();
 	SpellClickSpellStorage.Cleanup();
+	TotemDisplayIdStorage.Cleanup();
 }
 
 vector<pair<string,string> > additionalTables;

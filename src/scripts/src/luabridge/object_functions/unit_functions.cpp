@@ -101,7 +101,7 @@ namespace lua_engine
 			.method( &Unit::SetCurrentSpell, "SetCurrentSpell", "setCurrentSpell", "setcurrentspell", NULL)
 			.method( &Unit::RemoveStealth, "RemoveStealth", "removeStealth", "removestealth", NULL)
 			.method( &Unit::RemoveInvisibility, "RemoveInvisibility", "removeInvisibility", "removeinvisibility", NULL)
-			BIND(create_guardian)
+			//BIND(create_guardian)
 			.method( &Unit::DisableAI, "DisableAI", "disableAI", "disableai", NULL)
 			.method( &Unit::EnableAI, "EnableAI", "enableAI", "enableai", NULL)
 			.method( &Unit::IsSpiritHealer, "IsSpiritHealer", "isSpiritHealer", "isspirithealer", NULL)

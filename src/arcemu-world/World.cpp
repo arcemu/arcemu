@@ -411,7 +411,6 @@ bool World::SetInitialWorldSettings()
 	MAKE_TASK(ObjectMgr,  LoadCreatureWaypoints);
 	MAKE_TASK(ObjectMgr,  LoadCreatureTimedEmotes);
 	MAKE_TASK(ObjectMgr,  LoadTrainers);
-	MAKE_TASK(ObjectMgr,  LoadTotemSpells);
 	MAKE_TASK(ObjectMgr,  LoadSpellSkills);
 	MAKE_TASK(ObjectMgr,  LoadSpellOverride);
 	MAKE_TASK(ObjectMgr,  LoadVendors);
@@ -2232,3 +2231,4 @@ void World::SendZoneUnderAttackMsg( uint32 areaid, uint8 team ){
     
     SendFactionMessage( &data, team );
 }
+

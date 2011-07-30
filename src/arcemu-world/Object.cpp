@@ -22,16 +22,6 @@
 #include "Unit.h"
 using namespace std;
 
-//#define DEG2RAD (M_PI/180.0)
-
-void Object::SetRotation( uint64 guid )
-{
-	WorldPacket data(SMSG_AI_REACTION, 12);
-	data << guid;
-	data << uint32(2);
-	SendMessageToSet(&data, false);
-}
-
 Object::Object() : m_position(0,0,0,0), m_spawnLocation(0,0,0,0)
 {
 	m_mapId = MAPID_NOT_IN_WORLD;
@@ -975,10 +965,15 @@ void Object::PushToWorld(MapMgr* mgr)
 void Object::RemoveFromWorld(bool free_guid)
 {
 	Arcemu::Util::ARCEMU_ASSERT(   m_mapMgr != NULL );
+
+	OnPreRemoveFromWorld();
+
 	MapMgr * m = m_mapMgr;
 	m_mapMgr = NULL;
 
 	m->RemoveObject(this, free_guid);
+
+	OnRemoveFromWorld();
 
 	std::set<Spell*>::iterator itr, itr2;
 	Spell* sp;
@@ -995,8 +990,6 @@ void Object::RemoveFromWorld(bool free_guid)
 	}
 	//shouldnt need to clear, spell destructor will erase
 	//m_pendingSpells.clear();
-
-	OnRemoveFromWorld();
 
 	m_instanceId = INSTANCEID_NOT_IN_WORLD;
 	m_mapId = MAPID_NOT_IN_WORLD;
@@ -2185,28 +2178,35 @@ bool Object::IsInBg()
 	return false;
 }
 
-uint32 Object::GetTeam()
-{
-	if (IsPlayer())
-	{
-		return TO< Player* >( this )->GetTeam();
-	}
-	if (IsPet())
-	{
-		if (TO< Pet* >( this )->GetPetOwner() != NULL)
-		{
-			return TO< Pet* >( this )->GetPetOwner()->GetTeam();
-		}
-	}
-	if (IsUnit() && !IsPlayer() && TO< Creature* >( this )->IsTotem() )
-	{
-		if (TO< Creature* >( this )->GetOwner() != NULL)
-		{
-			return TO< Creature* >( this )->GetOwner()->GetTeam();
-		}
+uint32 Object::GetTeam(){
+
+	switch( m_factionDBC->ID ){
+		// Human
+		case 1:
+		// Dwarf
+		case 3:
+		// Nightelf
+		case 4:
+		// Gnome
+		case 8:
+		// Draenei
+		case 927:
+			return TEAM_ALLIANCE;
+
+		// Orc
+		case 2:
+		// Undead
+		case 5:
+		// Tauren
+		case 6:
+		// Troll
+		case 9:
+		// Bloodelf
+		case 914:
+			return TEAM_HORDE;
 	}
 
-	return static_cast<uint32>(-1);
+	return static_cast< uint32 >( -1 );
 }
 
 //Manipulates the phase value, see "enum PHASECOMMANDS" in Object.h for a longer explanation!
@@ -2363,13 +2363,7 @@ DynamicObject * Object::GetMapMgrDynamicObject(const uint64 & guid)
 	return GetMapMgr()->GetDynamicObject(GET_LOWGUID_PART(guid));
 }
 
-Player* Object::GetPlayerOwner()
-{
-	if (IsPlayer())
-		return TO_PLAYER(this);
-
-	if (IsCreature() && (IsPet() || TO_CREATURE(this)->IsTotem()) && TO_PET(this)->GetOwner() != NULL && TO_PET(this)->GetOwner()->IsPlayer())
-		return TO_PLAYER(TO_CREATURE(this)->GetOwner());
+Object* Object::GetPlayerOwner(){
 	return NULL;
 }
 
@@ -2391,4 +2385,18 @@ void Object::SetMapCell(MapCell* cell)
 		m_mapCell_x = cell->GetPositionX();
 		m_mapCell_y = cell->GetPositionY();
 	}
+}
+
+void Object::SendAIReaction( uint32 reaction ){
+	WorldPacket data( SMSG_AI_REACTION, 12);
+	data << uint64( GetGUID() );
+	data << uint32( reaction );
+	SendMessageToSet( &data, false );
+}
+
+void Object::SendDestroyObject(){
+	WorldPacket data( SMSG_DESTROY_OBJECT, 9 );	
+	data << uint64( GetGUID() );
+	data << uint8( 0 );
+	SendMessageToSet( &data, false );
 }

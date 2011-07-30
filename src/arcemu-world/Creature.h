@@ -170,6 +170,7 @@ struct CreatureProto
 	uint32 isTrainingDummy;
     uint32 guardtype;
 	uint32 summonguard;
+	uint32 spelldataid;
 
 	/* AI Stuff */
 	bool m_canRangedAttack;
@@ -193,6 +194,13 @@ struct VendorRestrictionEntry
 	uint32 canbuyattextid;
 	uint32 cannotbuyattextid;
 	uint32 flags;
+};
+
+struct TotemDisplayIdEntry{
+	uint32 DisplayId;       // male displayid in creature_names
+	uint32 DraeneiId;       // Totem displayid for Draenei
+	uint32 TrollId;         // Totem displayid for Troll
+	uint32 OrcId;           // Totem displayid for Orc
 };
 
 #pragma pack(pop)
@@ -505,8 +513,6 @@ public:
 	void RegenerateMana();
 	int BaseAttackType;
 
-	int32 AISpellsCooldown[4];
-
 	bool CanSee(Unit* obj) // * Invisibility & Stealth Detection - Partha *
 	{
 		if(!obj)
@@ -577,12 +583,12 @@ public:
 	void OnJustDied();
 	void OnRemoveCorpse();
 	void OnRespawn(MapMgr * m);
+
+	void BuildPetSpellList( WorldPacket &data );
+
 protected:
 	virtual void SafeDelete();//use DeleteMe() instead of SafeDelete() to avoid crashes like InWorld Creatures deleted.
 public:
-	void SummonExpire(); // this is used for guardians. They are non respawnable creatures linked to a player
-
-
 	// In Range
 	void AddInRangeObject(Object* pObj);
 	void OnRemoveInRangeObject(Object* pObj);
@@ -599,13 +605,9 @@ public:
 	void SetEnslaveSpell(uint32 spellId) { m_enslaveSpell = spellId; }
 	bool RemoveEnslave();
 
-    // Owner unit (the one that summoned it)
-    ARCEMU_INLINE Unit *GetOwner(){ return m_owner; }
-	ARCEMU_INLINE uint32 GetTotemSlot() { return totemSlot; }
-	ARCEMU_INLINE void SetTotemSlot(uint32 slot) { totemSlot = slot; }
-    ARCEMU_INLINE void SetOwner( Unit *pUnitOwner ){ m_owner = pUnitOwner; }
+	Object *GetPlayerOwner();
 
-	virtual Group *GetGroup();
+	Group *GetGroup();
 
 	ARCEMU_INLINE bool IsPickPocketed() { return m_PickPocketed; }
 	ARCEMU_INLINE void SetPickPocketed(bool val = true) { m_PickPocketed = val; }
@@ -623,7 +625,6 @@ public:
 	void RegenerateFocus();
 
 	CreatureFamilyEntry * myFamily;
-	ARCEMU_INLINE bool IsTotem() { return m_owner != NULL && totemSlot != -1; }
 
 	ARCEMU_INLINE bool IsExotic()
 	{
@@ -643,7 +644,6 @@ public:
 			return false;
 	}
 
-	void TotemExpire(uint32 delayedDespawn = 0);
 	void FormationLinkUp(uint32 SqlId);
 	void ChannelLinkUpGO(uint32 SqlId);
 	void ChannelLinkUpCreature(uint32 SqlId);
@@ -653,8 +653,6 @@ public:
 	uint32 original_emotestate;
 
 	CreatureSpawn * m_spawn;
-
-	void AISpellUpdate();
 
 	void OnPushToWorld();
 	virtual void Despawn(uint32 delay, uint32 respawntime);
@@ -716,9 +714,6 @@ protected:
 
 	uint32 m_enslaveCount;
 	uint32 m_enslaveSpell;
-
-    Unit * m_owner;
-	int32 totemSlot;
 
 	bool m_PickPocketed;
 	uint32 _fields[UNIT_END];

@@ -71,9 +71,7 @@ bool ChatHandler::HandleShowReactionCommand(const char* args, WorldSession *m_se
 
 	uint32 Reaction  = atoi(pReaction);
 
-	WorldPacket data(SMSG_AI_REACTION, 12);
-	data << obj->GetGUID() << uint32(Reaction);
-	m_session->SendPacket( &data );
+	obj->SendAIReaction( Reaction );
 
 	std::stringstream sstext;
 	sstext << "Sent Reaction of " << Reaction << " to " << obj->GetUIdFromGUID() << '\0';

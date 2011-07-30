@@ -1229,9 +1229,7 @@ Unit* AIInterface::FindTarget()
 			m_Unit->m_runSpeed = m_Unit->m_base_runSpeed * 2.0f;
 			AttackReaction(target, 1, 0);
 
-			WorldPacket data(SMSG_AI_REACTION, 12);
-			data << m_Unit->GetGUID() << uint32(2);		// Aggro sound
-			TO< Player* >( target )->GetSession()->SendPacket( &data );
+			m_Unit->SendAIReaction();
 
 			return target;
 		}
@@ -1339,12 +1337,9 @@ Unit* AIInterface::FindTarget()
 		}*/
 
 		AttackReaction(target, 1, 0);
-		if(target->IsPlayer())
-		{
-			WorldPacket data(SMSG_AI_REACTION, 12);
-			data << m_Unit->GetGUID() << uint32(2);		// Aggro sound
-			TO< Player* >( target )->GetSession()->SendPacket( &data );
-		}
+		
+		m_Unit->SendAIReaction();
+		
 		if(target->GetCreatedByGUID() != 0)
 		{
             uint64 charmer = target->GetCharmedByGUID();
@@ -3350,70 +3345,6 @@ void AIInterface::ResetProcCounts()
 	for(list<AI_Spell*>::iterator itr = m_spells.begin(); itr != m_spells.end(); ++itr)
 		if((*itr)->procCount)
 			(*itr)->procCounter= 0;
-}
-
-//we only cast once a spell and we will set his health and resistances. Note that this can be made with db too !
-void AIInterface::Event_Summon_EE_totem( uint32 summon_duration )
-{
-	//Event_Summon_EE_totem() is called only by Spell::SpellEffectSummonTotem() only if caster is not NULL, 
-	//so NULL-checks are not needed here.
-	Unit *caster = m_Unit->GetMapMgr()->GetUnit( m_Unit->GetCreatedByGUID() );
-	//timer should not reach this value thus not cast this spell again
-	m_totemspelltimer = 0xEFFFFFFF;
-	//some say it should inherit the level of the caster
-	//creatures do not support PETs and the spell uses that effect so we force a summon guardian thing
-	Creature *ourslave = m_Unit->create_guardian( 15352, 0xFFFFFFFF, -M_PI_FLOAT * 2, caster->getLevel() );//since the totem is the only one allowed to despawn this, we set its despawn time to infinite.
-    if( ourslave == NULL )
-		return;
-
-	m_Unit->AddGuardianRef( ourslave );
-	ourslave->ResistanceModPct[ SCHOOL_NATURE ] = 100; //we should be immune to nature dmg. This can be also set in db
-	ourslave->m_noRespawn = true;
-	ourslave->SetOwner( caster );
-	ourslave->SetUInt32Value( UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED | UNIT_FLAG_SELF_RES );
-
-    // we want the elemental to have the same pvp flag as the shaman who popped the totem
-    if( caster->IsPvPFlagged() )
-        ourslave->SetPvPFlag();
-    else
-        ourslave->RemovePvPFlag();
-
-    if( caster->IsFFAPvPFlagged() )
-        ourslave->SetFFAPvPFlag();
-    else
-        ourslave->RemoveFFAPvPFlag();
-}
-
-//we only cast once a spell and we will set his health and resistances. Note that this can be made with db too !
-void AIInterface::Event_Summon_FE_totem( uint32 summon_duration )
-{
-	//Event_Summon_FE_totem() is called only by Spell::SpellEffectSummonTotem() only if caster is not NULL, 
-	//so NULL-checks are not needed here.
-	Unit *caster = m_Unit->GetMapMgr()->GetUnit( m_Unit->GetCreatedByGUID() );
-	//timer should not reach this value thus not cast this spell again
-	m_totemspelltimer = 0xEFFFFFFF;
-	//some say it should inherit the level of the caster
-	//creatures do not support PETs and the spell uses that effect so we force a summon guardian thing
-	Creature *ourslave = m_Unit->create_guardian( 15438, 0xFFFFFFFF, -M_PI_FLOAT * 2, caster->getLevel() );//since the totem is the only one allowed to despawn this, we set its despawn time to infinite.
-    if( ourslave == NULL )
-		return;
-
-	m_Unit->AddGuardianRef( ourslave );
-	ourslave->ResistanceModPct[ SCHOOL_FIRE ] = 100; //we should be immune to nature dmg. This can be also set in db
-	ourslave->m_noRespawn = true;
-	ourslave->SetOwner( caster );
-	ourslave->SetUInt32Value( UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED | UNIT_FLAG_SELF_RES );
-
-    // we want the elemental to have the same pvp flag as the shaman who popped the totem
-    if( caster->IsPvPFlagged() )
-        ourslave->SetPvPFlag();
-    else
-        ourslave->RemovePvPFlag();
-
-    if( caster->IsFFAPvPFlagged() )
-        ourslave->SetFFAPvPFlag();
-    else
-        ourslave->RemoveFFAPvPFlag();
 }
 
 void AIInterface::EventChangeFaction( Unit *ForceAttackersToHateThisInstead )

@@ -570,18 +570,6 @@ bool EyeOfKilrog( uint32 i, Aura *a, bool apply ){
 
 	if(!apply)
 	{
-		if(m_target->IsPlayer())
-		{
-			Player * pCaster = TO_PLAYER(m_target);
-			Creature *summon = pCaster->m_eyeofkilrogg;
-			pCaster->UnPossess();
-
-			if(summon)
-				summon->DeleteMe();
-
-			pCaster->m_eyeofkilrogg = 0;
-			pCaster->SetFarsightTarget(0);
-		}
 	}
 
 	return true;

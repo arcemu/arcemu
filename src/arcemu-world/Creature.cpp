@@ -188,10 +188,6 @@ Creature::Creature(uint64 guid)
 		FlatStatMod[x]= 0;
 	}
 
-	totemSlot = -1;
-
-    m_owner = NULL;
-
 	m_PickPocketed = false;
 	m_SellItems = NULL;
 	_myScriptClass = NULL;
@@ -223,8 +219,6 @@ Creature::Creature(uint64 guid)
 	BaseAttackType = SCHOOL_NORMAL;
 	m_healthfromspell = 0;
 	m_speedFromHaste = 0;
-	memset(AISpellsCooldown,0,sizeof(int32)*4);
-
 	m_Creature_type = 0;
 }
 
@@ -252,18 +246,11 @@ Creature::~Creature()
 
 	// Creature::PrepareForRemove() nullifies m_owner. If m_owner is not NULL then the Creature wasn't removed from world
 	//but it got a reference to m_owner
-	Arcemu::Util::ARCEMU_ASSERT( m_owner == NULL );
 }
 
 void Creature::Update( uint32 p_time )
 {
 	Unit::Update( p_time );
-
-	if(IsTotem() && IsDead())
-	{
-        DeleteMe();
-		return;
-	}
 
 	if(m_corpseEvent)
 	{
@@ -683,8 +670,8 @@ void Creature::setDeathState(DeathState s)
 			m_currentSpell->cancel();
 
 		// if it's not a Pet, and not a summon and it has skinningloot then we will allow skinning
-		if ( !IsPet() && m_owner == NULL && lootmgr.IsSkinnable(GetEntry()))
-			SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SKINNABLE);
+		if( ( GetCreatedByGUID() == 0 ) && ( GetSummonedByGUID() == 0 ) && lootmgr.IsSkinnable( creature_info->Id ) )
+			SetFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_SKINNABLE );
 
 
 	}
@@ -808,12 +795,6 @@ void Creature::AddInRangeObject(Object* pObj)
 
 void Creature::OnRemoveInRangeObject(Object* pObj)
 {
-	if( IsTotem() && m_owner == pObj)		// player gone out of range of the totem
-	{
-		// Expire next loop.
-		event_ModifyTimeLeft(EVENT_TOTEM_EXPIRE, 1);
-	}
-
 	if(m_escorter == pObj)
 	{
 		// we lost our escorter, return to the spawn.
@@ -1088,31 +1069,6 @@ void Creature::UpdateItemAmount(uint32 itemid)
 			}
 			return;
 		}
-	}
-}
-
-void Creature::TotemExpire(uint32 delayedDespawn)
-{
-	//notice in any case the owner that we expired.
-	if( m_owner != NULL )
-	{		
-		if(GetCreatedBySpell() == 6495) // sentry totem
-			m_owner->RemoveAura(6495);
-		m_owner->m_TotemSlots[totemSlot] = 0;
-		if( m_owner->IsPlayer() )
-			TO< Player* >( m_owner )->SendDestroyObject( GetGUID() ); //make sure the client knows it's gone...
-		m_owner = NULL;
-    }
-
-	totemSlot = -1;
-
-	//allow the despawn to be delayed.
-	if(IsInWorld())
-		Despawn(delayedDespawn, 0);
-	else
-	{
-		LOG_ERROR("A Totem created by spellid %u expired after it was removed from world", GetCreatedBySpell());
-		SafeDelete();
 	}
 }
 
@@ -1637,9 +1593,6 @@ void Creature::OnPushToWorld()
 
 		CastSpell(this, sp, 0);
 	}
-	//generic ai stuff
-	if ( this->GetProto()->AISpells[0] != 0 )
-		sEventMgr.AddEvent(this, &Creature::AISpellUpdate, EVENT_CREATURE_AISPELL, 500, 0, 0);
 
 	if( GetScript() == NULL )
 	{
@@ -1685,134 +1638,6 @@ void Creature::OnPushToWorld()
 
 	}
 	CALL_INSTANCE_SCRIPT_EVENT( m_mapMgr, OnCreaturePushToWorld )( this );
-}
-
-void Creature::AISpellUpdate()
-{
-	//lower cooldowns
-	for (int i= 0; i<4; i++)
-	{
-		if (AISpellsCooldown[i]>=500)
-			AISpellsCooldown[i]-=500;
-		else
-			AISpellsCooldown[i]= 0;
-	}
-
-	if (!IsInWorld() || !isAlive())
-		return;
-
-	Spell* s=GetCurrentSpell();
-	if (s != NULL) //check everythings going well on current spells
-	{
-
-		SpellRange* range=dbcSpellRange.LookupEntryForced(s->GetProto()->rangeIndex);
-
-		if (s->GetUnitTarget() != NULL && range != NULL && (CalcDistance(s->GetUnitTarget()) > range->maxRange || CalcDistance(s->GetUnitTarget()) < range->minRange))
-			s->cancel();
-
-		if (m_silenced || IsStunned() || IsFeared())
-			s->cancel();
-
-		if (sWorld.Collision) {
-			if (s->GetUnitTarget() != NULL && !CollideInterface.CheckLOS(GetMapId(), GetPositionX(), GetPositionY(), GetPositionZ(), s->GetUnitTarget()->GetPositionX(), s->GetUnitTarget()->GetPositionY(), s->GetUnitTarget()->GetPositionZ()))
-				s->cancel();
-		}
-	}
-	else //guess we can cast a spell now
-	{
-		if (!(this->GetProto()->AISpellsFlags & CREATURE_AI_FLAG_CASTOUTOFCOMBAT) && !CombatStatus.IsInCombat())
-			return;
-
-		bool random_chosen=false;
-
-		//calculate global cooldown
-		int32 GCD=RandomUInt(2000)+5000;
-
-		if (this->GetProto()->AISpellsFlags & CREATURE_AI_FLAG_PLAYERGCD)
-			GCD=1500;
-
-		//do we have a spell to use?
-		for (int i= 0; i<4; i++)
-		{
-			if (this->GetProto()->AISpellsFlags & CREATURE_AI_FLAG_RANDOMCAST && !random_chosen)
-			{
-				//find the max spell
-				uint32 maxindex= 0;
-				for (int j= 0; j<4; j++)
-				{
-					if (this->GetProto()->AISpells[j]== 0)
-						break;
-					else
-						maxindex=j;
-				}
-
-				//move index randomly
-				if (maxindex > 0)
-					i=RandomUInt(maxindex);
-
-				random_chosen=true;
-			}
-
-			if (this->GetProto()->AISpells[i]== 0)
-				continue;
-
-			if (AISpellsCooldown[i]== 0) //we can cast?
-			{
-				//get the spell
-				SpellEntry* newspell=dbcSpell.LookupEntry(this->GetProto()->AISpells[i]);
-				SpellCastTime* casttime=dbcSpellCastTime.LookupEntry(newspell->CastingTimeIndex);
-				Spell* spell = sSpellFactoryMgr.NewSpell(this, newspell, false, 0);
-				SpellCastTargets t(0);
-				spell->GenerateTargets(&t);
-
-				//printf("\nCOOLDOWN: %u, %u", newspell->RecoveryTime, newspell->CategoryRecoveryTime);
-
-				//printf("\nTEST: %f %f %f "I64FMT" "I64FMT, t.m_destX, t.m_destY, t.m_destZ, t.m_itemTarget, t.m_unitTarget);
-
-				//we have no targets?
-				if (t.m_destX == 0.0f && t.m_destY == 0.0f && t.m_destZ == 0.0f && t.m_itemTarget == 0 && t.m_unitTarget == 0)
-				{
-					//printf("\nNo target, not casting!");
-					delete spell;
-					spell = NULL;
-					continue;
-				}
-
-				//hacky
-				spell->m_targets = t;
-
-				if (objmgr.IsSpellDisabled(spell->GetProto()->Id) || spell->CanCast(false) != SPELL_CANCAST_OK || !spell->HasPower() || m_silenced || IsStunned() || IsFeared())
-				{
-					delete spell;
-					spell = NULL;
-					continue;
-				}
-
-				spell->prepare(&t);
-
-				//stop movement for spells with a cast time
-				if (casttime->CastTime > 0)
-					GetAIInterface()->StopMovement(0);
-
-				if (newspell->CategoryRecoveryTime > newspell->RecoveryTime)
-					AISpellsCooldown[i]=newspell->CategoryRecoveryTime;
-				else
-					AISpellsCooldown[i]=newspell->RecoveryTime;
-
-
-				//weve cast, set GCD
-				for (int j= 0; j<4; j++)
-					if (AISpellsCooldown[j] < GCD)
-						AISpellsCooldown[j] = GCD;
-			}
-		}
-	}
-}
-
-// this is used for guardians. They are non respawnable creatures linked to a player
-void Creature::SummonExpire()
-{
-    DeleteMe();
 }
 
 void Creature::Despawn(uint32 delay, uint32 respawntime)
@@ -1926,24 +1751,7 @@ float Creature::GetBaseParry()
 	return 5.0f;
 }
 
-Group *Creature::GetGroup()
-{
-	if ( IsPet() )
-		TO< Pet* >(this)->GetGroup();
-	else if( IsTotem() && m_owner != NULL )
-		return TO< Player* >( m_owner )->GetGroup();
-	else if( GetCreatedByGUID() && GetMapMgr() )
-	{
-		Unit *tu = GetMapMgr()->GetUnit( GetCreatedByGUID() );
-		if( tu )
-		{
-			if( tu->IsPlayer() )
-				TO< Player* >(tu)->GetGroup();
-			else if( tu->IsCreature() )
-				TO< Creature* >(tu)->GetGroup();
-		}
-		else return NULL;
-	}
+Group *Creature::GetGroup(){
 	return NULL;
 }
 
@@ -1990,21 +1798,13 @@ bool Creature::IsPvPFlagged()
 void Creature::SetPvPFlag()
 {
 	SetByteFlag( UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_PVP );
-	
-	// adjust our guardians too
-	std::set< Creature* >::iterator itr = m_Guardians.begin();
-	for( ; itr != m_Guardians.end(); ++itr )
-		(*itr)->SetPvPFlag();
+	summonhandler.SetPvPFlags();
 }
 
 void Creature::RemovePvPFlag()
 {
 	RemoveByteFlag( UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_PVP );
-	
-	// adjust our guardians too
-	std::set< Creature* >::iterator itr = m_Guardians.begin();
-	for( ; itr != m_Guardians.end(); ++itr )
-		(*itr)->RemovePvPFlag();
+	summonhandler.RemovePvPFlags();
 }
 
 bool Creature::IsFFAPvPFlagged()
@@ -2015,21 +1815,13 @@ bool Creature::IsFFAPvPFlagged()
 void Creature::SetFFAPvPFlag()
 {
 	SetByteFlag( UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_FFA_PVP );
-
-	// adjust our guardians too
-	std::set< Creature* >::iterator itr = m_Guardians.begin();
-	for( ; itr != m_Guardians.end(); ++itr )
-		(*itr)->SetFFAPvPFlag();
+	summonhandler.SetFFAPvPFlags();
 }
 
 void Creature::RemoveFFAPvPFlag()
 {
 	RemoveByteFlag( UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_FFA_PVP );
-
-	// adjust our guardians too
-	std::set< Creature* >::iterator itr = m_Guardians.begin();
-	for( ; itr != m_Guardians.end(); ++itr )
-		(*itr)->RemoveFFAPvPFlag();
+	summonhandler.RemoveFFAPvPFlags();
 }
 
 bool Creature::IsSanctuaryFlagged()
@@ -2040,51 +1832,34 @@ bool Creature::IsSanctuaryFlagged()
 void Creature::SetSanctuaryFlag()
 { 
 	SetByteFlag( UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_SANCTUARY );
-	
-	// adjust our guardians too
-	std::set< Creature* >::iterator itr = m_Guardians.begin();
-	for( ; itr != m_Guardians.end(); ++itr )
-		(*itr)->SetSanctuaryFlag();
+	summonhandler.SetSanctuaryFlags();
 }
 
 void Creature::RemoveSanctuaryFlag()
 { 
 	RemoveByteFlag( UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_SANCTUARY );
-
-	// adjust our guardians too
-	std::set< Creature* >::iterator itr = m_Guardians.begin();
-	for( ; itr != m_Guardians.end(); ++itr )
-		(*itr)->RemoveSanctuaryFlag();
+	summonhandler.RemoveSanctuaryFlags();
 }
 
 void Creature::PrepareForRemove()
 {
-	//remove ai stuff
-	sEventMgr.RemoveEvents( this, EVENT_CREATURE_AISPELL );
-
 	RemoveAllAuras();
 	
-	// If we have a summons then let's remove them
-	RemoveAllGuardians();
+	summonhandler.RemoveAllSummons();
 	
-	if( IsTotem() )
-		m_owner->m_TotemSlots[totemSlot] = NULL;
-
-	// remove our reference from owner
-	if( m_owner != NULL )
-	{
-		m_owner->RemoveGuardianRef( this );
-		m_owner = NULL;
-	}
-
 	if(!IsInWorld())
 		return;
 
-	if(GetCreatedByGUID() != 0)
-	{
-		Unit* summoner = GetMapMgrUnit(GetCreatedByGUID());
-		if(summoner != NULL && summoner->critterPet != NULL && summoner->critterPet->GetGUID() == GetGUID())
-			summoner->critterPet = NULL;
+	if( GetCreatedByGUID() != 0 ){
+
+		Unit *summoner = GetMapMgrUnit( GetCreatedByGUID() );
+		if( summoner != NULL ){
+			if( summoner->GetSummonedCritterGUID() == GetGUID() )
+				summoner->SetSummonedCritterGUID( 0 );
+			
+			if( GetCreatedBySpell() != 0 )
+				summoner->RemoveAura( GetCreatedBySpell() );
+		}
 	}
 
 	if(GetMapMgr()->GetMapInfo() && GetMapMgr()->GetMapInfo()->type == INSTANCE_RAID)
@@ -2118,21 +1893,21 @@ void Creature::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint
 
 	pVictim->SetStandState( STANDSTATE_STAND );
 
-	if( pVictim->IsPvPFlagged() && m_owner != NULL && m_owner->IsPlayer() ){
-		Player *p = TO< Player* >( m_owner );
+	if( pVictim->IsPvPFlagged()  ){
+		Player *p = TO< Player* >( GetPlayerOwner() );
 
-		if( !p->IsPvPFlagged() )
-			p->PvPToggle();
-
-		p->AggroPvPGuards();
+		if( p != NULL ){
+			if( !p->IsPvPFlagged() )
+				p->PvPToggle();
+			p->AggroPvPGuards();
+		}
 	}
 
 	// Bg dmg counter
 	if( pVictim != this ){
-		if( m_owner != NULL && m_owner->IsPlayer() ){
-			Player *p = TO< Player* >( m_owner );
-
-			if( p != NULL && p->m_bg != NULL && GetMapMgr() == pVictim->GetMapMgr() ){
+		Player *p = TO< Player* >( GetPlayerOwner() );
+		if( p != NULL ){
+			if( p->m_bg != NULL && GetMapMgr() == pVictim->GetMapMgr() ){
 				p->m_bgScore.DamageDone += damage;
 				p->m_bg->UpdatePvPData();
 			}
@@ -2177,36 +1952,9 @@ void Creature::TakeDamage(Unit *pAttacker, uint32 damage, uint32 spellid, bool n
 }
 
 void Creature::Die( Unit *pAttacker, uint32 damage, uint32 spellid ){
-	// We've just killed a totem
-	if( IsTotem() ){
-		// If we have summons then let's remove them first
-		RemoveAllGuardians();
-		
-		//we delete the summon later since its reference is used outside of this loop, like AIInterface::_UpdateCombat().
-		//this fixes totems not properly disappearing from the clients.
-		//on a side note, it would be better to modify AIInterface::_UpdateCombat() instead of this.
-		TotemExpire(1);
-		return;
-	}
-	
-	// We've killed some kind of summon
-	if( GetCreatedByGUID() != 0 ){
-		Unit *pSummoner = GetMapMgr()->GetUnit( GetCreatedByGUID() );
-		
-		if( pSummoner && pSummoner->IsInWorld() && pSummoner->IsCreature() ){
-			Creature *pSummonerC = TO< Creature* >( pSummoner );
-			
-			// We've killed a summon summoned by a totem
-			if( pSummonerC->IsTotem() )
-				pSummonerC->TotemExpire(1);
-		}
-	}
-
 	//general hook for die
 	if( !sHookInterface.OnPreUnitDie( pAttacker, this) )
-		return;
-
-	
+		return;	
 
 	// on die and an target die proc
 	{
@@ -2274,7 +2022,7 @@ void Creature::Die( Unit *pAttacker, uint32 damage, uint32 spellid ){
 
 	SetFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_DEAD );
 
-	if( !IsTotem() && GetCreatedByGUID() == 0 && GetTaggerGUID() != 0 ){
+	if( ( GetCreatedByGUID() == 0 ) && ( GetTaggerGUID() != 0 ) ){
 		Unit *owner = m_mapMgr->GetUnit( GetTaggerGUID() );
 
 		if( owner != NULL )
@@ -2289,15 +2037,11 @@ void Creature::Die( Unit *pAttacker, uint32 damage, uint32 spellid ){
 			TO_PLAYER( owner )->EventDismissPet();
 	}
 	
-	if( GetCreatedByGUID() != 0 )
-		SetCreatedByGUID( 0 );
-
-	if( GetOwner() != NULL ){
-		GetOwner()->RemoveGuardianRef( this );
-		SetOwner( NULL );
+	if( GetCharmedByGUID() != 0 ){
+		Unit *charmer = m_mapMgr->GetUnit( GetCharmedByGUID() );
+		if( charmer != NULL )
+			charmer->UnPossess();
 	}
-
-
 }
 
 void Creature::SendChatMessage(uint8 type, uint32 lang, const char *msg, uint32 delay)
@@ -2412,4 +2156,52 @@ void Creature::HandleMonsterSayEvent(MONSTER_SAY_EVENTS Event)
 
 		SendChatMessage(static_cast<uint8>( ms->Type ), ms->Language, newText.c_str());
 	}
+}
+
+void Creature::BuildPetSpellList( WorldPacket &data ){
+
+	data << uint64( GetGUID() );
+	data << uint16( 0 );
+	data << uint32( 0 );
+	data << uint32( 0 );
+	
+	list< uint32 > avail_spells;
+
+	if( proto->spelldataid != 0 ){
+		CreatureSpellDataEntry *spe = dbcCreatureSpellData.LookupEntry( proto->spelldataid );
+		
+		for( uint32 i = 0; i < 3; i++ ){
+			uint32 spellid = spe->Spells[ i ];
+
+			if( spellid == 0 )
+				break;
+			else
+				avail_spells.push_back( spellid );
+		}
+	}else{
+		for( uint32 i = 0; i < 4; i++ )
+			avail_spells.push_back( proto->AISpells[ i ] );
+	}
+
+	list< uint32 >::iterator itr = avail_spells.begin();
+	
+	// Send the actionbar
+	for( uint32 i = 1; i < 10; ++i ){
+		if( itr != avail_spells.end() ){
+			data << uint16( *itr );
+			data << uint16( DEFAULT_SPELL_STATE );
+			++itr;
+		}else{
+			data << uint16( 0 );
+			data << uint8( 0 );
+			data << uint8( i+5 );
+		}
+	}
+	
+	data << uint8( 0 );
+	data << uint8( 0 );
+}
+
+Object* Creature::GetPlayerOwner(){
+	return NULL;
 }

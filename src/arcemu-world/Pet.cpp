@@ -100,19 +100,6 @@ void Pet::SetNameForEntry( uint32 entry )
 {
 	switch( entry )
 	{
-		case WATER_ELEMENTAL:
-		case WATER_ELEMENTAL_NEW:
-			m_name = "Water Elemental";
-			break;
-		case SHADOWFIEND:
-			m_name = "Shadowfiend";
-			break;
-		case SPIRITWOLF:
-			m_name = "Spirit Wolf";
-			break;
-		case DANCINGRUNEWEAPON:
-			m_name = "Rune Weapon";
-			break;
 		case PET_IMP:
 		case PET_VOIDWALKER:
 		case PET_SUCCUBUS:
@@ -198,11 +185,18 @@ bool Pet::CreateAsSummon( uint32 entry, CreatureInfo *ci, Creature* created_from
 
 	if( created_from_creature == NULL )
 	{
-		SetNameForEntry( entry );
-		if( created_by_spell != NULL )
-			SetUInt64Value( UNIT_CREATED_BY_SPELL, created_by_spell->Id );
+		m_name.assign( creature_info->Name );
 
-		SetUInt32Value( UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED );
+		if( created_by_spell != NULL ){
+			if( created_by_spell->HasEffect( SPELL_EFFECT_SUMMON_PET ) ||
+				created_by_spell->HasEffect( SPELL_EFFECT_TAME_CREATURE ) ||
+				created_by_spell->HasEffect( SPELL_EFFECT_TAMECREATURE ) )
+				SetNameForEntry( entry );
+
+			SetCreatedBySpell( created_by_spell->Id );
+		}
+
+		SetUInt32Value( UNIT_FIELD_FLAGS, UNIT_FLAG_PVP_ATTACKABLE  );
 		SetUInt32Value( UNIT_FIELD_BYTES_2, (0x01 | (0x28 << 8) | (0x2 << 24) ) );
 		SetBoundingRadius(0.5f );
 		SetCombatReach(0.75f );
@@ -218,7 +212,7 @@ bool Pet::CreateAsSummon( uint32 entry, CreatureInfo *ci, Creature* created_from
 		SetBoundingRadius(created_from_creature->GetBoundingRadius() );
 		SetCombatReach(created_from_creature->GetCombatReach() );
 
-		SetUInt32Value( UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED | UNIT_FLAG_COMBAT ); // why combat ??
+		SetUInt32Value( UNIT_FIELD_FLAGS, UNIT_FLAG_PVP_ATTACKABLE  | UNIT_FLAG_COMBAT ); // why combat ??
 		SetPower( POWER_TYPE_HAPPINESS, PET_HAPPINESS_UPDATE_VALUE >> 1 );	//happiness
 		SetMaxPower( POWER_TYPE_HAPPINESS, 1000000 );
 		SetUInt32Value( UNIT_FIELD_PETEXPERIENCE, 0 );
@@ -373,59 +367,68 @@ void Pet::Update( uint32 time )
 	}
 }
 
+void Pet::BuildPetSpellList( WorldPacket &data ){
+
+	data << uint64( GetGUID() );
+
+	if( myFamily != NULL )
+		data << uint16( myFamily->ID );
+	else
+		data << uint16( 0 );
+
+	data << uint32( 0 );
+	data << uint8( GetPetState() );	// 0x0 = passive, 0x1 = defensive, 0x2 = aggressive
+	data << uint8( GetPetAction() );	// 0x0 = stay, 0x1 = follow, 0x2 = attack
+	data << uint16( 0 );				// flags: 0xFF = disabled pet bar (eg. when pet stunned)
+	
+	// Send the actionbar
+	for( uint8 i = 0; i < 10; i++ ){
+		if(ActionBar[i] & 0x4000000)		// Commands
+			data << uint32( ActionBar[ i ] );
+		else{
+			if( ActionBar[i] ){
+				data << uint16( ActionBar[ i ] );
+				data << GetSpellState( ActionBar[ i ] );
+			}else{
+				data << uint16( 0 );
+				data << uint8( 0 );
+				data<< uint8( i + 5 );
+			}
+		}
+	}
+
+	// we don't send spells for the water elemental so it doesn't show up in the spellbook
+	if( m_ExpireTime == 0 ){
+		// Send the rest of the spells.
+		data << uint8( mSpells.size() );
+		for( PetSpellMap::iterator itr = mSpells.begin(); itr != mSpells.end(); ++itr ){
+			data << uint16( itr->first->Id );
+			data << uint16( itr->second );
+		}
+	}
+	
+	data << uint8( 0 );
+
+}
+
 void Pet::SendSpellsToOwner()
 {
 	if( m_Owner == NULL )
 		return;
 
-	uint16 packetsize = ( GetEntry() != WATER_ELEMENTAL && GetEntry() != WATER_ELEMENTAL_NEW && GetEntry() != SPIRITWOLF ) ? ( ( uint16 )mSpells.size() * 4 + 59 ) : 62;
-	WorldPacket * data = new WorldPacket( SMSG_PET_SPELLS, packetsize );
-	*data << GetGUID();
-	*data << uint16( myFamily != NULL ? myFamily->ID : 0 );	// pet family to determine talent tree
-	*data << m_ExpireTime;
-	*data << uint8( GetPetState() );	// 0x0 = passive, 0x1 = defensive, 0x2 = aggressive
-	*data << uint8( GetPetAction() );	// 0x0 = stay, 0x1 = follow, 0x2 = attack
-	*data << uint16( 0 );				// flags: 0xFF = disabled pet bar (eg. when pet stunned)
+	uint16 packetsize;
+	if( m_ExpireTime == 0 )
+		packetsize = static_cast< uint16 >( mSpells.size() * 4 + 59 );
+	else
+		packetsize = 62;
 
-	// Send the actionbar
-	for( uint8 i = 0; i < 10; ++i )
-	{
-		if(ActionBar[i] & 0x4000000)		// Commands
-			*data << uint32( ActionBar[i] );
-		else
-		{
-			if( ActionBar[i] )
-				*data << uint16( ActionBar[i] ) << GetSpellState( ActionBar[i] );
-			else
-				*data << uint16(0) << uint8(0) << uint8(i+5);
-		}
-	}
+	WorldPacket data( SMSG_PET_SPELLS, packetsize );
 
-	// we don't send spells for the water elemental so it doesn't show up in the spellbook
-	if( GetEntry() != WATER_ELEMENTAL && GetEntry() != WATER_ELEMENTAL_NEW && GetEntry() != SPIRITWOLF )
-	{
-		// Send the rest of the spells.
-		*data << uint8( mSpells.size() );
-		for( PetSpellMap::iterator itr = mSpells.begin(); itr != mSpells.end(); ++itr )
-			*data << uint16( itr->first->Id ) << uint16( itr->second );
-	}
-	*data << uint8(0); 			// loop cycles
-	/*in loop:
-	*data << uint32(0x6010);	//spellid
-	*data << uint64(0);			// unk */
-	m_Owner->delayedPackets.add( data );
+	BuildPetSpellList( data );
+
+	m_Owner->SendPacket( &data );
 }
 
-void Pet::SendNullSpellsToOwner()
-{
-	if( m_Owner == NULL || m_Owner->GetSession() == NULL )
-		return;
-
-	WorldPacket data(8);
-	data.SetOpcode( SMSG_PET_SPELLS );
-	data << uint64(0);
-	m_Owner->GetSession()->SendPacket( &data );
-}
 void Pet::SendTalentsToOwner()
 {
 	if( m_Owner == NULL )
@@ -640,7 +643,7 @@ void Pet::LoadFromDB( Player* owner, PlayerPet * pi )
 	if( pi->type == WARLOCKPET ){
 		SetNameForEntry( mPi->entry );
 		SetUInt64Value( UNIT_CREATED_BY_SPELL, mPi->spellid );
-		SetUInt32Value( UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED );
+		SetUInt32Value( UNIT_FIELD_FLAGS, UNIT_FLAG_PVP_ATTACKABLE  );
 		SetUInt32Value( UNIT_FIELD_BYTES_2, (0x01 | (0x28 << 8) | (0x2 << 24) ) );
 		SetBoundingRadius(0.5f );
 		SetCombatReach(0.75f );
@@ -648,7 +651,7 @@ void Pet::LoadFromDB( Player* owner, PlayerPet * pi )
 	}else{
 		SetBoundingRadius( proto->BoundingRadius  );
 		SetCombatReach( proto->CombatReach );
-		SetUInt32Value( UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED | UNIT_FLAG_COMBAT ); // why combat ??
+		SetUInt32Value( UNIT_FIELD_FLAGS, UNIT_FLAG_PVP_ATTACKABLE  | UNIT_FLAG_COMBAT ); // why combat ??
 		SetPower( POWER_TYPE_HAPPINESS, PET_HAPPINESS_UPDATE_VALUE >> 1 );      //happiness
 		SetMaxPower( POWER_TYPE_HAPPINESS, 1000000 );
 		SetUInt32Value( UNIT_FIELD_PETEXPERIENCE, 0 );
@@ -873,7 +876,7 @@ void Pet::Remove( bool bUpdate, bool bSetOffline )
 
 void Pet::RemoveFromWorld(bool free_guid)
 {
-	if(IsSummon())
+	if(IsSummonedPet())
 		PrepareForRemove(false, true);
 	else
 		PrepareForRemove(true, false);
@@ -930,7 +933,7 @@ void Pet::PrepareForRemove(bool bUpdate, bool bSetOffline)
 	{
 		if( !bExpires )
 			UpdatePetInfo( bSetOffline );
-		if( !IsSummon() )
+		if( !IsSummonedPet() )
 			m_Owner->_SavePet( NULL );
 	}
 
@@ -940,7 +943,7 @@ void Pet::PrepareForRemove(bool bUpdate, bool bSetOffline)
 	if( m_Owner->GetSummon() == NULL )//we have no more summons, required by spells summoning more than 1.
 	{
 		m_Owner->SetSummonedUnitGUID( 0 );
-		SendNullSpellsToOwner();
+		m_Owner->SendEmptyPetSpellList();
 	}
 	else if( main_summon )//we just removed the summon displayed in the portrait so we need to update it with another one.
 	{
@@ -955,7 +958,7 @@ void Pet::PrepareForRemove(bool bUpdate, bool bSetOffline)
 void Pet::setDeathState(DeathState s)
 {
 	Creature::setDeathState(s);
-	if ( s == JUST_DIED && IsSummon() )
+	if ( s == JUST_DIED && IsSummonedPet() )
 	{
 		//we can't dimiss the summon now now since it's still needed in DealDamage()
 		sEventMgr.AddEvent( this ,&Pet::Dismiss , EVENT_UNK, 1 , 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT ); 
@@ -1015,6 +1018,29 @@ void Pet::UpdateSpellList( bool showLearnSpells )
 	// SkillLine 2
 	uint32 s2 = 0;
 
+	if( proto->spelldataid != 0 ){
+		CreatureSpellDataEntry *sd = dbcCreatureSpellData.LookupEntry( proto->spelldataid );
+
+		for( uint32 i = 0; i < 3; i++ ){
+			uint32 spellid = sd->Spells[ i ];
+
+			if( spellid != 0 ){
+				SpellEntry *sp = dbcSpell.LookupEntry( spellid );
+				if( sp != NULL )
+					AddSpell( sp, true, showLearnSpells );
+			}
+		}
+	}
+	
+	for( uint32 i = 0; i < 4; i++ ){
+		uint32 spellid = proto->AISpells[ i ];
+		if( spellid != 0 ){
+			SpellEntry *sp = dbcSpell.LookupEntry( spellid );
+			if( sp != NULL )
+				AddSpell( sp, true, showLearnSpells );
+		}
+	}
+
 	if( GetCreatureInfo()->Family == 0 && Summon )
 	{
 		// Get spells from the owner
@@ -1026,7 +1052,7 @@ void Pet::UpdateSpellList( bool showLearnSpells )
 			it2 = it1->second.begin();
 			for(; it2 != it1->second.end(); ++it2)
 			{
-				AddSpell( dbcSpell.LookupEntry( *it2 ), false, false );
+				AddSpell( dbcSpell.LookupEntry( *it2 ), true, showLearnSpells );
 			}
 		}
 		return;
@@ -2088,7 +2114,7 @@ void Pet::Die( Unit *pAttacker, uint32 damage, uint32 spellid ){
 		Pet* pPet = this;
 		
 		// dying pet looses 1 happiness level (not in BG)
-		if( !pPet->IsSummon() && !pPet->IsInBg() )
+		if( !pPet->IsSummonedPet() && !pPet->IsInBg() )
 		{
 			pPet->ModPower( POWER_TYPE_HAPPINESS, -PET_HAPPINESS_UPDATE_VALUE );
 		}
@@ -2096,5 +2122,6 @@ void Pet::Die( Unit *pAttacker, uint32 damage, uint32 spellid ){
 	}/* ----------------------------- PET DEATH HANDLING END -------------- */
 }
 
-
-
+Object* Pet::GetPlayerOwner(){
+	return m_Owner;
+}

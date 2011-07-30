@@ -140,7 +140,10 @@ class SeaforiumDepthCharge : public MoonScriptCreatureAI
 	}
 
 	void OnLoad(){
-		Unit *summoner = _unit->GetOwner();
+		if( !_unit->IsSummon() )
+			return;
+
+		Unit *summoner = TO< Summon* >( _unit )->GetOwner();
 
 		if( summoner != NULL ){
 			if( summoner->IsPlayer() ){

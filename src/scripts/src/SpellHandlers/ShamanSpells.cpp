@@ -45,8 +45,11 @@ bool SkyShatterRegalia( uint32 i, Spell *s ){
 	
 	if(!s->p_caster)
 		return false;
-	
-	if( s->p_caster->m_TotemSlots[0] && s->p_caster->m_TotemSlots[1] && s->p_caster->m_TotemSlots[2] && s->p_caster->m_TotemSlots[3])
+
+	if( s->p_caster->summonhandler.HasSummonInSlot( 0 ) &&
+		s->p_caster->summonhandler.HasSummonInSlot( 1 ) &&
+		s->p_caster->summonhandler.HasSummonInSlot( 2 ) &&
+		s->p_caster->summonhandler.HasSummonInSlot( 3 ) )
 	{
 		Aura *aur = sSpellFactoryMgr.NewAura(dbcSpell.LookupEntry(38437), 5000, s->p_caster, s->p_caster, true);
 		
