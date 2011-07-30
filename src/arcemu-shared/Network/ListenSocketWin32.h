@@ -38,7 +38,7 @@ public:
 		}
 
 		// bind.. well attempt to.
-		int ret = bind(m_socket, (const sockaddr*)&m_address, sizeof(m_address));
+		int ret = ::bind(m_socket, (const sockaddr*)&m_address, sizeof(m_address));
 		if(ret != 0)
 		{
 			sLog.outError("Bind unsuccessful on port %u.", Port);
