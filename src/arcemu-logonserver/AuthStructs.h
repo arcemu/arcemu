@@ -52,11 +52,12 @@ typedef struct {
 	uint8   unk2;		   // 0x00
 	uint8   B[32];
 	uint8   g_len;		  // 0x01
-	uint8   g[1];
+	uint8   g;
 	uint8   N_len;		  // 0x20
 	uint8   N[32];
 	uint8   s[32];
 	uint8   unk3[16];
+	uint8   unk4;
 } sAuthLogonChallenge_S;
 
 typedef struct {

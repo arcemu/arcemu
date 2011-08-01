@@ -227,8 +227,22 @@ void AuthSocket::HandleChallenge()
 		*(uint32*)&m_account->Locale[0] = *(uint32*)temp;
 	}
 
+	//////////////////////////////////////////////// SRP6 Challenge ////////////////////////////////////////////////
+	//
+	//
+	// First we will generate the Verifier value using the following formulas
+	//
+	// x = SHA1(s | SHA1(I | ":" | P))
+	// v = g^x % N
+	//
+	// The SHA1(I | ":" | P) part for x we have in the account database, this is the encrypted password, reversed
+	// N is a safe prime
+	// g is the generator
+	// | means concatenation in this contect
+	//
+	//
+
 	Sha1Hash sha;
-	//uint32 tc = s.GetNumBytes();
 	sha.UpdateData( s.AsByteArray(), 32 );
 	sha.UpdateData( m_account->SrpHash, 20 );
 	sha.Finalize();
@@ -236,30 +250,40 @@ void AuthSocket::HandleChallenge()
 	BigNumber x;
 	x.SetBinary( sha.GetDigest(), sha.GetLength() );
 	v = g.ModExp(x, N);
+
+	// Next we generate b, and B which are the public and private values of the server
+	// 
+	// b = random()
+	// B = k*v + g^b % N
+	//
+	// in our case the multiplier parameters, k = 3
+	
 	b.SetRand(152);
+	uint8 k = 3;
 
 	BigNumber gmod = g.ModExp(b, N);
-	B = ((v * 3) + gmod) % N;
+	B = ( ( v * k ) + gmod ) % N;
 	ASSERT(gmod.GetNumBytes() <= 32);
 
 	BigNumber unk;
 	unk.SetRand(128);
 
-	uint8 response[200];
-	uint32 c = 0;
-	response[c] = 0;										c += 1;
-	response[c] = 0;										c += 1;
-	response[c] = CE_SUCCESS;								c += 1;
-	memcpy(&response[c], B.AsByteArray(), 32);				c += 32;
-	response[c] = 1;										c += 1;
-	response[c] = g.AsByteArray()[0];						c += 1;
-	response[c] = 32;										c += 1;
-	memcpy(&response[c], N.AsByteArray(), 32);				c += 32;
-	memcpy(&response[c], s.AsByteArray(), s.GetNumBytes()); c += s.GetNumBytes();
-	memcpy(&response[c], unk.AsByteArray(), 16);			c += 16;
-	response[c] = 0;										c += 1;
 
-	Send(response, c);
+	// Now we send B, g, N and s to the client as a challenge, asking the client for the proof
+	sAuthLogonChallenge_S challenge;
+	challenge.cmd = 0;
+	challenge.error = 0;
+	challenge.unk2 = CE_SUCCESS;
+	memcpy( challenge.B, B.AsByteArray(), 32 );
+	challenge.g_len = 1;
+	challenge.g = ( g.AsByteArray() )[ 0 ];
+	challenge.N_len = 32;
+	memcpy( challenge.N, N.AsByteArray(), 32 );
+	memcpy( challenge.s, s.AsByteArray(), 32 );
+	memcpy( challenge.unk3, unk.AsByteArray(), 16 );
+	challenge.unk4 = 0;
+
+	Send( reinterpret_cast< uint8* >( &challenge ), sizeof( sAuthLogonChallenge_S ) );
 }
 
 void AuthSocket::HandleProof()
@@ -290,6 +314,16 @@ void AuthSocket::HandleProof()
 	//Read(sizeof(sAuthLogonProof_C), (uint8*)&lp);
 	readBuffer.Read(&lp, sizeof(sAuthLogonProof_C));
 
+
+	////////////////////////////////////////////////////// SRP6 ///////////////////////////////////////////////
+	//Now comes the famous secret Xi Chi fraternity handshake ( http://www.youtube.com/watch?v=jJSYBoI2si0 ),
+	//generating a session key
+	// 
+	// A = g^a % N
+	// u = SHA1( A | B )
+	//
+	//
+
 	BigNumber A;
 	A.SetBinary(lp.A, 32);
 
@@ -300,7 +334,12 @@ void AuthSocket::HandleProof()
 	BigNumber u;
 	u.SetBinary(sha.GetDigest(), 20);
 
+	// S session key key, S = ( A * v^u ) ^ b
 	BigNumber S = (A * (v.ModExp(u, N))).ModExp(b, N);
+
+
+	// Generate M
+	// M = H(H(N) xor H(g), H(I), s, A, B, K) according to http://srp.stanford.edu/design.html
 	uint8 t[32];
 	uint8 t1[16];
 	uint8 vK[40];
@@ -359,13 +398,14 @@ void AuthSocket::HandleProof()
 	BigNumber M;
 	M.SetBinary(sha.GetDigest(), 20);
 
-	// Compare M1 values.
+	// Compare the M value the client sent us to the one we generated, this proves we both have the same values
+	// which proves we have the same username-password pairs
 	if(memcmp(lp.M1, M.AsByteArray(), 20) != 0)
 	{
 		// Authentication failed.
 		//SendProofError(4, 0);
 		SendChallengeError(CE_NO_ACCOUNT);
-		LOG_DEBUG("[AuthLogonProof] M1 values don't match. ( Usually this means invalid password. )");
+		LOG_DEBUG( "[AuthLogonProof] M values don't match. ( Either invalid password or the logon server is bugged. )" );
 		return;
 	}
 

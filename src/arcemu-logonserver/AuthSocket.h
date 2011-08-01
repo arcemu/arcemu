@@ -72,11 +72,13 @@ protected:
 	Account * m_account;
 	bool m_authenticated;
 
-	//////////////////////////////////////////////////
-	// Authentication BigNumbers
-	/////////////////////////
-	BigNumber N, s, g, v;
-	BigNumber b, B;
+	// BigNumbers for the SRP6 implementation
+	BigNumber N; // Safe prime
+	BigNumber g; // Generator
+	BigNumber s; // Salt
+	BigNumber v; // Verifier
+	BigNumber b; // server private value
+	BigNumber B; // server public value
 	BigNumber rs;
 
 	//////////////////////////////////////////////////

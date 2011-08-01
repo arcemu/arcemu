@@ -29,7 +29,7 @@ struct Account
 	char * GMFlags;
 	uint8 AccountFlags;
 	uint32 Banned;
-	uint8 SrpHash[20];
+	uint8 SrpHash[20]; // the encrypted password field, reversed
 	uint8 * SessionKey;
 	string * UsernamePtr;
 	uint32 Muted;
