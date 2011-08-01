@@ -4480,7 +4480,7 @@ class ParasiticShadowfiendAI : public MoonScriptCreatureAI
 		}
 		else
 		{
-			Despawn(0);
+			Despawn(100);
 		}
     }
 
