@@ -74,8 +74,10 @@ void AuthSocket::OnDisconnect()
 void AuthSocket::HandleChallenge()
 {
 	// No header
-	if(readBuffer.GetContiguiousBytes() < 4)
+	if(readBuffer.GetContiguiousBytes() < 4){
+		LOG_ERROR( "[AuthChallenge] Packet has no header. Refusing to handle." );
 		return;
+	}
 
 	// Check the rest of the packet is complete.
 	uint8 * ReceiveBuffer = (uint8*)readBuffer.GetBufferStart();
@@ -83,19 +85,22 @@ void AuthSocket::HandleChallenge()
 	uint16 full_size = *(uint16*)&ReceiveBuffer[2];
 
 
-	LOG_DETAIL("[AuthChallenge] got header, body is 0x%02X bytes", full_size);
+	LOG_DETAIL("[AuthChallenge] got header, body is %u bytes", full_size );
 
-	if(readBuffer.GetSize() < uint32(full_size+4))
+	if(readBuffer.GetSize() < uint32(full_size+4)){
+		LOG_ERROR( "[AuthChallenge] Packet is smaller than expected, refusing to handle" );
 		return;
+	}
 
 	// Copy the data into our cached challenge structure
 	if(full_size > sizeof(sAuthLogonChallenge_C))
 	{
+		LOG_ERROR( "[AuthChallenge] Packet is larger than expected, refusing to handle!" );
 		Disconnect();
 		return;
 	}
 
-	LOG_DEBUG("[AuthChallenge] got full packet.");
+	LOG_DEBUG("[AuthChallenge] got a complete packet.");
 
 	//memcpy(&m_challenge, ReceiveBuffer, full_size + 4);
 	//RemoveReadBufferBytes(full_size + 4, true);
@@ -109,6 +114,7 @@ void AuthSocket::HandleChallenge()
 	if(build > LogonServer::getSingleton().max_build)
 	{
 		// wtf?
+		LOG_DETAIL( "[AuthChallenge] Client %s has wrong version. More up to date than server. Server: %u, Client: %u", GetRemoteIP().c_str(), LogonServer::getSingleton().max_build, m_challenge.build );
 		SendChallengeError(CE_WRONG_BUILD_NUMBER);
 		return;
 	}
@@ -126,6 +132,7 @@ void AuthSocket::HandleChallenge()
 		if(m_patch == NULL)
 		{
 			// could not find a valid patch
+			LOG_DETAIL( "[AuthChallenge] Client %s has wrong version. More up to date than server. Server: %u, Client: %u", GetRemoteIP().c_str(), LogonServer::getSingleton().min_build, m_challenge.build );
 			SendChallengeError(CE_WRONG_BUILD_NUMBER);
 			return;
 		}
@@ -149,6 +156,9 @@ void AuthSocket::HandleChallenge()
 
 	// Check for a possible IP ban on this client.
 	BAN_STATUS ipb = IPBanner::getSingleton().CalculateBanStatus(GetRemoteAddress());
+
+	if( ipb != BAN_STATUS_NOT_BANNED )
+		LOG_DETAIL( "[AuthChallenge] Client %s is banned, refusing to continue.", GetRemoteIP().c_str() );
 
 	switch(ipb)
 	{
@@ -254,8 +264,10 @@ void AuthSocket::HandleChallenge()
 
 void AuthSocket::HandleProof()
 {
-	if(readBuffer.GetSize() < sizeof(sAuthLogonProof_C))
+	if(readBuffer.GetSize() < sizeof(sAuthLogonProof_C)){
+		LOG_ERROR( "[AuthLogonProof] The packet received is larger than expected, refusing to handle it!" );
 		return ;
+	}
 
 	// patch
 	if(m_patch&&!m_account)
@@ -353,7 +365,7 @@ void AuthSocket::HandleProof()
 		// Authentication failed.
 		//SendProofError(4, 0);
 		SendChallengeError(CE_NO_ACCOUNT);
-		LOG_DEBUG("[AuthLogonProof] M1 values don't match.");
+		LOG_DEBUG("[AuthLogonProof] M1 values don't match. ( Usually this means invalid password. )");
 		return;
 	}
 
@@ -485,7 +497,7 @@ void AuthSocket::OnRead()
 	if(Command < MAX_AUTH_CMD && Handlers[Command] != NULL)
 		(this->*Handlers[Command])();
 	else
-		Log.Debug("AuthSocket", "Unknown cmd %u", Command);
+		LOG_DEBUG( "AuthSocket", "Unknown cmd %u", Command );
 }
 
 void AuthSocket::HandleRealmlist()
@@ -502,7 +514,7 @@ void AuthSocket::HandleReconnectChallenge()
 	// Check the rest of the packet is complete.
 	uint8 * ReceiveBuffer = /*GetReadBuffer(0)*/(uint8*)readBuffer.GetBufferStart();
 	uint16 full_size = *(uint16*)&ReceiveBuffer[2];
-	LOG_DETAIL("[AuthChallenge] got header, body is 0x%02X bytes", full_size);
+	LOG_DETAIL("[AuthChallenge] got header, body is %u bytes", full_size);
 
 	if(readBuffer.GetSize() < (uint32)full_size+4)
 		return;

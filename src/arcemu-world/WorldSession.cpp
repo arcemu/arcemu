@@ -519,7 +519,7 @@ void WorldSession::InitPacketHandlerTable()
 	WorldPacketHandlers[CMSG_PLAYER_LOGIN].handler							  = &WorldSession::HandlePlayerLoginOpcode; 
 	WorldPacketHandlers[CMSG_PLAYER_LOGIN].status							   = STATUS_AUTHED;
 
-	WorldPacketHandlers[CMSG_REALM_SPLIT].handler							  = &WorldSession::HandleRealmStateRequestOpcode; 
+	WorldPacketHandlers[CMSG_REALM_SPLIT].handler							  = &WorldSession::HandleRealmSplitOpcode; 
 	WorldPacketHandlers[CMSG_REALM_SPLIT].status							   = STATUS_AUTHED;
 
 	// Queries
@@ -950,10 +950,6 @@ void WorldSession::InitPacketHandlerTable()
 	WorldPacketHandlers[0x03AF].handler = &WorldSession::HandleChannelVoiceQueryOpcode;
 	//WorldPacketHandlers[CMSG_CHANNEL_VOICE_QUERY].handler = &WorldSession::HandleChannelVoiceQueryOpcode;
 	WorldPacketHandlers[CMSG_OPT_OUT_OF_LOOT].handler = &WorldSession::HandleSetAutoLootPassOpcode;
-
-	WorldPacketHandlers[0x038C].handler = &WorldSession::Handle38C;
-	WorldPacketHandlers[0x038C].status = STATUS_AUTHED;
-
 	WorldPacketHandlers[CMSG_QUESTGIVER_STATUS_MULTIPLE_QUERY].handler = &WorldSession::HandleInrangeQuestgiverQuery;
 	WorldPacketHandlers[CMSG_REMOVE_GLYPH].handler = &WorldSession::HandleRemoveGlyph;
 	WorldPacketHandlers[CMSG_ALTER_APPEARANCE].handler = &WorldSession::HandleBarberShopResult;
@@ -1019,17 +1015,6 @@ void WorldSession::SendChatPacket(WorldPacket * data, uint32 langpos, int32 lang
 void WorldSession::Delete()
 {
 	delete this;
-}
-
-void WorldSession::Handle38C(WorldPacket & recv_data)
-{
-	uint32 v;
-	recv_data >> v;
-
-	WorldPacket data(0x038B, 17);
-	data << v << uint32(0);
-	data << "01/01/01";
-	SendPacket(&data);
 }
 
 /*

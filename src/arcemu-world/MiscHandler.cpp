@@ -2517,7 +2517,7 @@ void WorldSession::HandleSetTaxiBenchmarkOpcode( WorldPacket & recv_data )
 	LOG_DEBUG("Client used \"/timetest %d\" command", mode);
 }
 
-void WorldSession::HandleRealmStateRequestOpcode( WorldPacket & recv_data )
+void WorldSession::HandleRealmSplitOpcode( WorldPacket & recv_data )
 {
 	CHECK_PACKET_SIZE(recv_data, 4);
 
@@ -2529,7 +2529,7 @@ void WorldSession::HandleRealmStateRequestOpcode( WorldPacket & recv_data )
 
 	WorldPacket data(SMSG_REALM_SPLIT, 4+4+split_date.size()+1);
 	data << unk;
-	data << uint32(0x00000000);                             // realm split state
+	data << uint32( 0 ); // realm split state
 	// split states:
 	// 0x0 realm normal
 	// 0x1 realm split

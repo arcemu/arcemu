@@ -344,7 +344,7 @@ protected:
 	uint8 DeleteCharacter(uint32 guid);
 	void HandleCharCreateOpcode(WorldPacket& recvPacket);
 	void HandlePlayerLoginOpcode(WorldPacket& recvPacket);
-	void HandleRealmStateRequestOpcode(WorldPacket& recvPacket);
+	void HandleRealmSplitOpcode(WorldPacket& recvPacket);
 
 	/// Authentification and misc opcodes (MiscHandler.cpp):
 	void HandlePingOpcode(WorldPacket& recvPacket);
@@ -743,7 +743,6 @@ protected:
 	void HandleSetAutoLootPassOpcode(WorldPacket & recv_data);
 
 	void HandleSetFriendNote(WorldPacket & recv_data);
-	void Handle38C(WorldPacket & recv_data);
 	void HandleInrangeQuestgiverQuery(WorldPacket & recv_data);
 
 	void HandleRemoveGlyph(WorldPacket & recv_data);
