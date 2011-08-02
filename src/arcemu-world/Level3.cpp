@@ -658,12 +658,12 @@ bool ChatHandler::HandleAddSkillCommand(const char* args, WorldSession *m_sessio
 
 struct UnitFlagNames{
 	uint32 Flag;
-	char *Name;
+	const char *Name;
 };
 
 struct UnitDynFlagNames{
 	uint32 Flag;
-	char *Name;
+	const char *Name;
 };
 
 static const char *POWERTYPE[] = {
@@ -753,7 +753,7 @@ static const char *SHEATSTATE[] = {
 
 struct UnitPvPFlagNames{
 	uint32 Flag;
-	char *Name;
+	const char *Name;
 };
 
 static const UnitPvPFlagNames UnitPvPFlagToName[] = {
@@ -766,7 +766,7 @@ static const uint32 numpvpflags = sizeof( UnitPvPFlagToName ) / sizeof( UnitPvPF
 
 struct PetFlagNames{
 	uint32 Flag;
-	char *Name;
+	const char *Name;
 };
 
 static const PetFlagNames PetFlagToName[] = {
@@ -2642,7 +2642,7 @@ bool ChatHandler::HandlePlayerInfo(const char* args, WorldSession * m_session)
 
 bool ChatHandler::HandleGlobalPlaySoundCommand(const char* args, WorldSession * m_session)
 {
-	if( *args == NULL )
+	if( *args == '\0' )
 		return false;
 	
 	uint32 sound = atoi(args);
@@ -4255,7 +4255,7 @@ bool ChatHandler::HandleNPCLootCommand(const char* args, WorldSession* m_session
 }
 
 bool ChatHandler::HandleNPCCastCommand( const char *args, WorldSession *m_session ){
-	if( args == NULL )
+	if( *args == '\0' )
 		return false;
 
 	Creature *c = getSelectedCreature( m_session );
@@ -4263,7 +4263,7 @@ bool ChatHandler::HandleNPCCastCommand( const char *args, WorldSession *m_sessio
 		return false;
 
 	uint32 spellid = atol( args );
-	if( spellid == NULL )
+	if( spellid == 0 )
 		return false;
 
 	SpellEntry *sp = dbcSpell.LookupEntry( spellid );

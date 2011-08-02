@@ -259,7 +259,7 @@ void _HandleBreathing(MovementInfo &movement_info, Player * _player, WorldSessio
 
 struct MovementFlagName{
 	uint32 flag;
-	char *name;
+	const char *name;
 };
 
 static MovementFlagName MoveFlagsToNames[] = {
