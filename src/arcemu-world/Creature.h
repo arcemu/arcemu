@@ -609,6 +609,20 @@ public:
 
 	Group *GetGroup();
 
+	int32 GetDamageDoneMod( uint32 school ){
+		if( school >= SCHOOL_COUNT )
+			return 0;
+
+		return ModDamageDone[ school ];
+	}
+
+	float GetDamageDonePctMod( uint32 school ){
+		if( school >= SCHOOL_COUNT )
+			return 0;
+
+		return ModDamageDonePct[ school ];
+	}
+
 	ARCEMU_INLINE bool IsPickPocketed() { return m_PickPocketed; }
 	ARCEMU_INLINE void SetPickPocketed(bool val = true) { m_PickPocketed = val; }
 

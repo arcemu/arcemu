@@ -1161,7 +1161,23 @@ public:
 		return ( s == FORM_BEAR || s == FORM_DIREBEAR || s == FORM_CAT );
 		//Shady: actually ghostwolf form doesn't use weapon too.
 	}
+
 	void CalcDamage();
+
+	int32 GetDamageDoneMod( uint32 school ){
+		if( school >= SCHOOL_COUNT )
+			return 0;
+
+		return static_cast< int32 >( GetPosDamageDoneMod( school ) ) - static_cast< int32 >( GetNegDamageDoneMod( school ) );
+	}
+
+	float GetDamageDonePctMod( uint32 school ){
+		if( school >= SCHOOL_COUNT )
+			return 0;
+		
+		return m_floatValues[ PLAYER_FIELD_MOD_DAMAGE_DONE_PCT + school ];
+	}
+
 	uint32 GetMainMeleeDamage(uint32 AP_owerride); // I need this for windfury
     uint32 GetMaxLevel(){ return GetUInt32Value(PLAYER_FIELD_MAX_LEVEL); }
 

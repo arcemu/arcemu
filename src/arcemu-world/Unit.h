@@ -1245,8 +1245,10 @@ public:
 	Loot loot;
 	uint32 SchoolCastPrevent[SCHOOL_COUNT];
 	int32 MechanicDurationPctMod[28];
-	int32 GetDamageDoneMod(uint32 school);
-	float GetDamageDonePctMod(uint32 school);
+
+	virtual int32 GetDamageDoneMod( uint32 school ){ return 0; }
+	virtual float GetDamageDonePctMod( uint32 school ){ return 0; }
+
 	float DamageDoneModPCT[SCHOOL_COUNT];
 	int32 DamageTakenMod[SCHOOL_COUNT];
 	float DamageTakenPctMod[SCHOOL_COUNT];

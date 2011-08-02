@@ -5220,34 +5220,6 @@ void Unit::MoveToWaypoint(uint32 wp_id)
 	}
 }
 
-int32 Unit::GetDamageDoneMod(uint32 school)
-{
-	if (school < SCHOOL_COUNT)
-	{
-		if( this->IsPlayer() )
-		   return (int32)TO_PLAYER(this)->GetPosDamageDoneMod( school ) - (int32)TO_PLAYER(this)->GetNegDamageDoneMod( school );
-		else
-		   return TO< Creature* >( this )->ModDamageDone[school];
-	}
-	else
-		LOG_DEBUG("[NOTICE] You have bad DB, spell school = %u",school);
-	return 0;
-}
-
-float Unit::GetDamageDonePctMod(uint32 school)
-{
-	if (school < SCHOOL_COUNT)
-	{
-	    if(this->IsPlayer())
-		   return m_floatValues[PLAYER_FIELD_MOD_DAMAGE_DONE_PCT+school];
-		else
-		   return TO_CREATURE(this)->ModDamageDonePct[school];
-	}
-	else
-		LOG_DEBUG("[NOTICE] You have bad DB, spell school = %u",school);
-	return 0;
-}
-
 void Unit::CalcDamage()
 {
 	if( IsPlayer() )
