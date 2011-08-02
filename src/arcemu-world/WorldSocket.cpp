@@ -306,8 +306,9 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 	LOG_DEBUG( " >> got information packet from logon: `%s` ID %u (request %u)", AccountName.c_str(), AccountID, mRequestID);
 
 	mRequestID = 0;
-	// Pull the session key.
-//	uint8 K[40];
+
+	// Pull the sessionkey we generated during the logon - client handshake
+	uint8 K[40];
 	recvData.read(K, 40);
 	
 	_crypt.Init(K);
