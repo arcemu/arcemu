@@ -20,39 +20,63 @@
 #include "Setup.h"
 #include "Raid_Ulduar.h"
 
-
-// Ulduar Teleporter
-void UlduarTeleporter::GossipHello(Object*  pObject, Player* Plr, bool AutoSend)
-{
-	GossipMenu *Menu;
-    objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 0, Plr);
-
-    Menu->AddItem(0, "Teleport to the Expedition Base Camp.", 0);
-    Menu->AddItem(0, "Teleport to the Formation Grounds.", 1);
-    Menu->AddItem(0, "Teleport to the Colossal Forge.", 2);
-
-    if(AutoSend)
-		Menu->SendTo(Plr);
+static float UlduarTeleCoords[ 9 ][ 4 ] = {
+	{ -706.122f, -92.6024f, 429.876f, 0.0f },
+	{ 131.248f, -35.3802f, 409.804f, 0.0f },
+	{ 553.233f, -12.3247f, 409.679f, 0.0f },
+	{ 926.292f, -11.4635f, 418.595f, -0.017452f },
+	{ 1498.05f, -24.3509f, 420.966f, 0.034906f },
+	{ 1859.65f, -24.9121f, 448.811f, 0.0f },
+	{ 2086.26f, -23.9948f, 421.316f, 0.0f },
+	{ 2518.16f, 2569.03f, 412.299f, 0.0f },
+	{ 1854.82f,	-11.5608f, 334.175f, 0.0f }
 };
 
-void UlduarTeleporter::GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, uint32 IntId, const char *Code)
-{
-	switch(IntId)
-	{
-	case 0:
-		Plr->SafeTeleport(603, Plr->GetInstanceID(), -735.864075f, -93.616364f, 429.841797f, 0.079723f);
-		break;
-	case 1:
-		Plr->SafeTeleport(603, Plr->GetInstanceID(), 130.710297f, -35.272095f, 409.804901f, 6.276515f);
-		break;
-	case 2:
-		Plr->SafeTeleport(603, Plr->GetInstanceID(), 539.894897f, -11.009894f, 409.804749f, 0.021830f);
-		break;
-	};
+class UlduarTeleporterAI : public GameObjectAIScript{
+public:
+
+	UlduarTeleporterAI( GameObject *go ) : GameObjectAIScript( go ){
+	}
+
+	~UlduarTeleporterAI(){}
+
+	static GameObjectAIScript* Create( GameObject *go ){ return new UlduarTeleporterAI( go ); }
+
+	void OnActivate( Player *player ){
+		GossipMenu *menu = NULL;
+		objmgr.CreateGossipMenuForPlayer( &menu, _gameobject->GetGUID(), 0, player );
+
+		menu->AddItem( Arcemu::Gossip::ICON_CHAT, "Expedition Base Camp.", 0 );
+		menu->AddItem( Arcemu::Gossip::ICON_CHAT, "Formation Grounds", 1);
+		menu->AddItem( Arcemu::Gossip::ICON_CHAT, "Colossal Forge", 2);
+		menu->AddItem( Arcemu::Gossip::ICON_CHAT, "Scrapyard", 3 );
+		menu->AddItem( Arcemu::Gossip::ICON_CHAT, "Antechamber of Ulduar", 4 );
+		menu->AddItem( Arcemu::Gossip::ICON_CHAT, "Shattered Walkway", 5 );
+		menu->AddItem( Arcemu::Gossip::ICON_CHAT, "Conservatory of Life", 6 );
+		menu->AddItem( Arcemu::Gossip::ICON_CHAT, "Spark of Imagination", 7 );
+		menu->AddItem( Arcemu::Gossip::ICON_CHAT, "Prison of Yogg-Saron", 8 );
+
+		menu->SendTo( player );
+	}
 };
 
-void SetupUlduar(ScriptMgr* mgr)
-{
-	GossipScript * UlduarTele = new UlduarTeleporter();
-	mgr->register_go_gossip_script(194569, UlduarTele);
+class UlduarTeleporterGossip : public GossipScript{
+public:
+
+	UlduarTeleporterGossip() : GossipScript(){
+	}
+
+	void OnSelectOption( Object *object, Player *player, uint32 Id, const char *enteredcode ){
+		Arcemu::Gossip::Menu::Complete( player );
+		
+		if( Id >= 9 )
+			return;
+		else
+			player->SafeTeleport( 603, player->GetInstanceID(), UlduarTeleCoords[ Id ][ 0 ], UlduarTeleCoords[ Id ][ 1 ],  UlduarTeleCoords[ Id ][ 2 ], UlduarTeleCoords[ Id ][ 3 ] );
+	}
+};
+
+void SetupUlduar( ScriptMgr *mgr ){
+	mgr->register_gameobject_script( 194569, &UlduarTeleporterAI::Create );
+	mgr->register_go_gossip_script( 194569, new UlduarTeleporterGossip() );
 };

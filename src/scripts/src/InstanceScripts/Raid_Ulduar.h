@@ -17,17 +17,4 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// Ulduar Teleporter
-class SCRIPT_DECL UlduarTeleporter : public GossipScript
-{
-public:
-	void GossipHello(Object* pObject, Player*  Plr, bool AutoSend);
-	void GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, uint32 IntId, const char * Code);
-
-	void GossipEnd(Object*  pObject, Player* Plr)
-	{
-		GossipScript::GossipEnd(pObject, Plr);
-	};
-};
-
 void SetupUlduar(ScriptMgr* mgr);
