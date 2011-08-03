@@ -618,7 +618,9 @@ static int RegisterServerHook(lua_State * L)
 		functionRef = ExtractfRefFromCString(L,luaL_checkstring(L,2));
 	if(functionRef > 0)
 		sLuaMgr.RegisterEvent(REGTYPE_SERVHOOK,0,ev,functionRef);
-	lua_pop(L,2);
+	
+	lua_pop( L, lua_gettop( L ) );
+
 	return 0;
 }
 
@@ -641,7 +643,9 @@ static int RegisterDummySpell(lua_State * L)
 		functionRef = ExtractfRefFromCString(L,luaL_checkstring(L,2));
 	if(functionRef > 0)
 		sLuaMgr.RegisterEvent(REGTYPE_DUMMYSPELL,entry,0,functionRef);
-	lua_pop(L,2);
+
+	lua_pop( L, lua_gettop( L ) );
+
 	return 0;
 }
 
@@ -660,7 +664,9 @@ static int RegisterUnitEvent(lua_State * L)
 		functionRef = ExtractfRefFromCString(L,luaL_checkstring(L,3));
 	if(functionRef > 0)
 		sLuaMgr.RegisterEvent(REGTYPE_UNIT,entry,ev,functionRef);
-	lua_pop(L,3);
+
+	lua_pop( L, lua_gettop( L ) );
+
 	return 0;
 }
 
@@ -679,7 +685,9 @@ static int RegisterInstanceEvent(lua_State * L)
 		functionRef = ExtractfRefFromCString(L,luaL_checkstring(L,3));
 	if(functionRef > 0)
 		sLuaMgr.RegisterEvent(REGTYPE_INSTANCE,map,ev,functionRef);
-	lua_pop(L,3);
+
+	lua_pop( L, lua_gettop( L ) );
+
 	return 0;
 }
 
@@ -698,7 +706,9 @@ static int RegisterQuestEvent(lua_State * L)
 		functionRef = ExtractfRefFromCString(L,luaL_checkstring(L,3));
 	if(functionRef > 0)
 		sLuaMgr.RegisterEvent(REGTYPE_QUEST,entry,ev,functionRef);
-	lua_pop(L,3);
+
+	lua_pop( L, lua_gettop( L ) );
+
 	return 0;
 }
 
@@ -717,7 +727,9 @@ static int RegisterGameObjectEvent(lua_State * L)
 		functionRef = ExtractfRefFromCString(L,luaL_checkstring(L,3));
 	if(functionRef > 0)
 		sLuaMgr.RegisterEvent(REGTYPE_GO,entry,ev,functionRef);
-	lua_pop(L,3);
+
+	lua_pop( L, lua_gettop( L ) );
+
 	return 0;
 }
 
@@ -736,10 +748,8 @@ static int RegisterUnitGossipEvent(lua_State * L)
 		functionRef = ExtractfRefFromCString(L,luaL_checkstring(L,3));
 	if(functionRef > 0)
 		sLuaMgr.RegisterEvent(REGTYPE_UNIT_GOSSIP,entry,ev,functionRef);
-	
-	// lua_ref pops from the stack, so we need to check the actual size and remove 
-	int l = lua_gettop( L );
-	lua_pop( L, l );
+
+	lua_pop( L, lua_gettop( L ) );
 
 	return 0;
 }
@@ -758,7 +768,9 @@ static int RegisterItemGossipEvent(lua_State * L)
 		functionRef = ExtractfRefFromCString(L,luaL_checkstring(L,3));
 	if(functionRef > 0)
 		sLuaMgr.RegisterEvent(REGTYPE_ITEM_GOSSIP,entry,ev,functionRef);
-	lua_pop(L,3);
+
+	lua_pop( L, lua_gettop( L ) );
+
 	return 0;
  }
 static int RegisterGOGossipEvent(lua_State * L)
@@ -776,7 +788,9 @@ static int RegisterGOGossipEvent(lua_State * L)
 		functionRef = ExtractfRefFromCString(L,luaL_checkstring(L,3));
 	if(functionRef > 0)
 		sLuaMgr.RegisterEvent(REGTYPE_GO_GOSSIP,entry,ev,functionRef);
-	lua_pop(L,3);
+
+	lua_pop( L, lua_gettop( L ) );
+
 	return 0;
 }
 
