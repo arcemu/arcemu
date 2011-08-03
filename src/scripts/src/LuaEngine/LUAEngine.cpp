@@ -1725,11 +1725,11 @@ public:
 	LuaObjectBinding * m_binding;
 };
 
-class LuaGameObject : public GameObjectAIScript
+class LuaGameObjectScript : public GameObjectAIScript
 {
 public:
-	LuaGameObject(GameObject * go) : GameObjectAIScript(go), m_binding(NULL) {}
-	~LuaGameObject() {}
+	LuaGameObjectScript(GameObject * go) : GameObjectAIScript(go), m_binding(NULL) {}
+	~LuaGameObjectScript() {}
 	ARCEMU_INLINE GameObject * getGO() { return _gameobject; }
 	void OnCreate()
 	{
@@ -1796,7 +1796,7 @@ public:
 	}
 	void Destroy ()
 	{
-		typedef std::multimap<uint32,LuaGameObject*> GMAP;
+		typedef std::multimap<uint32,LuaGameObjectScript*> GMAP;
 		GMAP & gMap = sLuaMgr.getLuGameObjectMap();
 		GMAP::iterator itr = gMap.find(_gameobject->GetEntry());
 		GMAP::iterator itend = gMap.upper_bound(_gameobject->GetEntry());
@@ -2225,9 +2225,9 @@ CreatureAIScript * CreateLuaCreature(Creature * src)
 	return script;
 }
 
-GameObjectAIScript * CreateLuaGameObject(GameObject * src)
+GameObjectAIScript * CreateLuaGameObjectScript(GameObject * src)
 {
-	LuaGameObject * script = NULL;
+	LuaGameObjectScript * script = NULL;
 	if(src != NULL) 
 	{
 		uint32 id = src->GetInfo()->ID;
@@ -2235,9 +2235,9 @@ GameObjectAIScript * CreateLuaGameObject(GameObject * src)
 		pBinding = sLuaMgr.getGameObjectBinding(id);
 		if( pBinding != NULL) 
 		{
-			typedef multimap<uint32,LuaGameObject*> GMAP;
+			typedef multimap<uint32,LuaGameObjectScript*> GMAP;
 			GMAP & gMap = sLuaMgr.getLuGameObjectMap();
-			script = new LuaGameObject(src);
+			script = new LuaGameObjectScript(src);
 			gMap.insert(make_pair(id,script));
 			script->m_binding = pBinding;
 		}
@@ -2394,8 +2394,8 @@ void LuaEngine::Startup()
 
 	for(LuaObjectBindingMap::iterator itr = m_gameobjectBinding.begin(); itr != m_gameobjectBinding.end(); ++itr)
 	{
-		m_scriptMgr->register_gameobject_script( itr->first, CreateLuaGameObject );
-		sLuaMgr.getLuGameObjectMap().insert(make_pair(itr->first,(LuaGameObject*)NULL));
+		m_scriptMgr->register_gameobject_script( itr->first, CreateLuaGameObjectScript );
+		sLuaMgr.getLuGameObjectMap().insert(make_pair(itr->first,(LuaGameObjectScript*)NULL));
 	}
 
 	for(LuaObjectBindingMap::iterator itr = m_questBinding.begin(); itr != m_questBinding.end(); ++itr)
@@ -2747,14 +2747,14 @@ void LuaEngine::Restart()
 	}
 	for(LuaObjectBindingMap::iterator itr = m_gameobjectBinding.begin(); itr != m_gameobjectBinding.end(); ++itr)
 	{
-		typedef multimap<uint32,LuaGameObject*> GMAP;
+		typedef multimap<uint32,LuaGameObjectScript*> GMAP;
 		GMAP & gMap = sLuaMgr.getLuGameObjectMap();
 		GMAP::iterator it = gMap.find(itr->first);
 		GMAP::iterator itend = gMap.upper_bound(itr->first);
 		if(it == gMap.end() )
 		{
-			m_scriptMgr->register_gameobject_script(itr->first,CreateLuaGameObject);
-			gMap.insert(make_pair(itr->first,(LuaGameObject*)NULL));
+			m_scriptMgr->register_gameobject_script(itr->first,CreateLuaGameObjectScript);
+			gMap.insert(make_pair(itr->first,(LuaGameObjectScript*)NULL));
 		}
 		else
 		{

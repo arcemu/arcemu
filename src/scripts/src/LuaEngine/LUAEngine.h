@@ -37,7 +37,7 @@ extern "C"
 
 class LuaEngine;
 class LuaCreature;
-class LuaGameObject;
+class LuaGameObjectScript;
 class LuaQuest;
 class LuaInstance;
 class LuaGossip;
@@ -265,7 +265,7 @@ private:
 
 	//maps to creature, & go script interfaces
 	std::multimap<uint32, LuaCreature*> m_cAIScripts;
-	std::multimap<uint32, LuaGameObject*> m_gAIScripts;
+	std::multimap<uint32, LuaGameObjectScript*> m_gAIScripts;
 	HM_NAMESPACE::hash_map<uint32, LuaQuest*> m_qAIScripts;
 	HM_NAMESPACE::hash_map<uint32, LuaInstance*> m_iAIScripts;
 
@@ -442,7 +442,7 @@ public:
 		return (itr == m_gogAIScripts.end()) ? NULL : itr->second;
 	}
 	ARCEMU_INLINE std::multimap<uint32, LuaCreature*> & getLuCreatureMap() { return m_cAIScripts; }
-	ARCEMU_INLINE std::multimap<uint32, LuaGameObject*> & getLuGameObjectMap() { return m_gAIScripts; }
+	ARCEMU_INLINE std::multimap<uint32, LuaGameObjectScript*> & getLuGameObjectMap() { return m_gAIScripts; }
 	ARCEMU_INLINE HM_NAMESPACE::hash_map<uint32, LuaQuest*> & getLuQuestMap() { return m_qAIScripts; }
 	ARCEMU_INLINE HM_NAMESPACE::hash_map<uint32, LuaInstance*> & getLuInstanceMap() { return m_iAIScripts; }
 	ARCEMU_INLINE HM_NAMESPACE::hash_map<uint32, LuaGossip*> & getUnitGossipInterfaceMap() { return m_unitgAIScripts; }
