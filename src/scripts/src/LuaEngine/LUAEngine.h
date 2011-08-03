@@ -297,57 +297,57 @@ public:
 	ARCEMU_INLINE bool ExecuteCall(uint8 params = 0,uint8 res = 0);
 	ARCEMU_INLINE void EndCall(uint8 res = 0);
 	//Wrappers
-	ARCEMU_INLINE Unit * CHECK_UNIT(lua_State * L,int narg) 
+	ARCEMU_INLINE Unit * CheckUnit(lua_State * L,int narg) 
 	{ 
 		if(L == NULL) return ArcLuna<Unit>::check(lu,narg);
 		else return ArcLuna<Unit>::check(L,narg);
 	}
-	ARCEMU_INLINE GameObject * CHECK_GO(lua_State * L,int narg) 
+	ARCEMU_INLINE GameObject * CheckGo(lua_State * L,int narg) 
 	{ 
 		if(L == NULL) return ArcLuna<GameObject>::check(lu,narg);
 		else return ArcLuna<GameObject>::check(L,narg);
 	}
-	ARCEMU_INLINE Item * CHECK_ITEM(lua_State * L,int narg) 
+	ARCEMU_INLINE Item * CheckItem(lua_State * L,int narg) 
 	{ 
 		if(L == NULL) return ArcLuna<Item>::check(lu,narg);
 		else return ArcLuna<Item>::check(L,narg);
 	}
-	ARCEMU_INLINE WorldPacket * CHECK_PACKET(lua_State * L,int narg) 
+	ARCEMU_INLINE WorldPacket * CheckPacket(lua_State * L,int narg) 
 	{ 
 		if(L == NULL) return ArcLuna<WorldPacket>::check(lu,narg);
 		else return ArcLuna<WorldPacket>::check(L,narg);
 	}
-	ARCEMU_INLINE uint64 CHECK_GUID(lua_State * L, int narg) {
+	ARCEMU_INLINE uint64 CheckGuid(lua_State * L, int narg) {
 		if(L == NULL) return GUID_MGR::check(lu,narg);
 		else return GUID_MGR::check(L,narg);
 	}
-	ARCEMU_INLINE Object * CHECK_OBJECT(lua_State * L, int narg) {
+	ARCEMU_INLINE Object * CheckObject(lua_State * L, int narg) {
 		if(L == NULL) return ArcLuna<Object>::check(lu,narg);
 		else return ArcLuna<Object>::check(L,narg);
 	}
-	ARCEMU_INLINE TaxiPath * CHECK_TAXIPATH(lua_State * L, int narg) {
+	ARCEMU_INLINE TaxiPath * CheckTaxiPath(lua_State * L, int narg) {
 		if(L == NULL) return ArcLuna<TaxiPath>::check(lu,narg);
 		else return ArcLuna<TaxiPath>::check(L,narg);
 	}
-	ARCEMU_INLINE Spell * CHECK_SPELL(lua_State * L, int narg) {
+	ARCEMU_INLINE Spell * CheckSpell(lua_State * L, int narg) {
 		if(L == NULL) return ArcLuna<Spell>::check(lu,narg);
 		else return ArcLuna<Spell>::check(L,narg);
 	}
-	ARCEMU_INLINE Aura * CHECK_AURA(lua_State * L, int narg) {
+	ARCEMU_INLINE Aura * CheckAura(lua_State * L, int narg) {
 		if(L == NULL) return ArcLuna<Aura>::check(lu,narg);
 		else return ArcLuna<Aura>::check(L,narg);
 	}
 
-	void PUSH_UNIT(Object * unit, lua_State * L = NULL);
-	void PUSH_GO(Object * go, lua_State * L = NULL);
-	void PUSH_ITEM(Object * item, lua_State * L = NULL);
-	void PUSH_GUID(uint64 guid, lua_State * L = NULL);
-	void PUSH_PACKET(WorldPacket * packet, lua_State * L = NULL);
-	void PUSH_TAXIPATH(TaxiPath * tp, lua_State * L = NULL);
-	void PUSH_SPELL(Spell * sp, lua_State * L = NULL);
-	void PUSH_SQLFIELD(Field * field, lua_State * L = NULL);
-	void PUSH_SQLRESULT(QueryResult * res, lua_State * L = NULL);
-	void PUSH_AURA(Aura * aura, lua_State * L = NULL);
+	void PushUnit(Object * unit, lua_State * L = NULL);
+	void PushGo(Object * go, lua_State * L = NULL);
+	void PushItem(Object * item, lua_State * L = NULL);
+	void PushGuid(uint64 guid, lua_State * L = NULL);
+	void PushPacket(WorldPacket * packet, lua_State * L = NULL);
+	void PushTaxiPath(TaxiPath * tp, lua_State * L = NULL);
+	void PushSpell(Spell * sp, lua_State * L = NULL);
+	void PushSqlField(Field * field, lua_State * L = NULL);
+	void PushSqlResult(QueryResult * res, lua_State * L = NULL);
+	void PushAura(Aura * aura, lua_State * L = NULL);
 
 	ARCEMU_INLINE void PUSH_BOOL(bool bewl) {
 		if(bewl) 
