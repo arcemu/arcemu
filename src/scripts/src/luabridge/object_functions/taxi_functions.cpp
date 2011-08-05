@@ -21,13 +21,12 @@
 
 #include "LUAEngine.h"
 
-class luataxinode : public TaxiNode
+class luataxinode : public TaxiPathNode
 {
 public:
 	//a constructor object to allow taxinodes to be constructed lua side using the __call metaevent
-	luataxinode(uint32 id, uint32 map_id, float x, float y, float z)
+	luataxinode(uint32 map_id, float x, float y, float z)
 	{
-		this->id = id;
 		this->mapid = map_id;
 		this->x = x;
 		this->y = y;
@@ -48,16 +47,22 @@ namespace lua_engine
 {
 	void bindTaxiMethods(luabridge::module & m)
 	{
-		m	.class_decl<TaxiNode>("TaxiNode");
-		m	.class_<luataxinode>("TaxiNode")
-			.constructor< void(*)(uint32,uint32,float,float,float) >()
+		m	.class_decl<TaxiPathNode>("TaxiPathNode");
+		m	.class_<luataxinode>("TaxiPathNode")
+			.constructor< void(*)(uint32,float,float,float) >()
 			.property_rw("x", (float (luataxinode::*) )&TaxiNode::x)
 			.property_rw("y", (float (luataxinode::*) )&TaxiNode::y)
 			.property_rw("z", (float (luataxinode::*) )&TaxiNode::z)
-			.property_rw("id", (float (luataxinode::*) )&TaxiNode::id)
-			.property_rw("mapid", (uint32 (luataxinode::*) )&TaxiNode::mapid)
-			.property_rw("alliance_mount", (uint32 (luataxinode::*) )&TaxiNode::alliance_mount)
-			.property_rw("horde_mount", (uint32 (luataxinode::*) )&TaxiNode::horde_mount);
+			.property_rw("mapid", (uint32 (luataxinode::*) )&TaxiNode::mapid);
+
+		m	.class_<TaxiNode>("TaxiNode")
+			.property_ro("x", &TaxiNode::x)
+			.property_ro("y", &TaxiNode::y)
+			.property_ro("z", &TaxiNode::z)
+			.property_ro("mapid", &TaxiNode::mapid)
+			.property_ro("id", &TaxiNode::id)
+			.property_ro("horde_mount", &TaxiNode::horde_mount)
+			.property_ro("alliance_mount", &TaxiNode::alliance_mount);
 
 		m	.class_<TaxiPath>("TaxiPath")
 			.constructor<void(*)()>()

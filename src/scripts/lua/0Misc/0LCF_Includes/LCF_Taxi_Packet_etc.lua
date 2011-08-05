@@ -25,26 +25,26 @@ local function alias(LHAname, LBname)
 end
  
 -----TAXI-----
-function LCF.TaxiMethods.QuickAddPathNode(map, x, y, z, idx)
+function LCF.TaxiMethods:QuickAddPathNode(map, x, y, z, idx)
    idx = idx or self:GetNodeCount();
-   local n = TaxiNode(idx, map, x, y, z)
+   local n = TaxiPathNode(map, x, y, z)
    self:AddPathNode(idx, n)
 end
 
-function LCF.TaxiMethods.GetId() return self:GetID(); end
+function LCF.TaxiMethods:GetId() return self:GetID(); end
 
-function LCF.TaxiMethods.GetObjectType() return "TaxiPath"; end
+function LCF.TaxiMethods:GetObjectType() return "TaxiPath"; end
 
 -----PACKET-----
 alias("GetOpcode", "opcode")
 
 alias("GetSize", "size")
 
-function LCF.PacketMethods.WriteUnitWoWGuid(unit) self:writeWoWGuid(unit:GetNewGuid()); end
+function LCF.PacketMethods:WriteUnitWoWGuid(unit) self:writeWoWGuid(unit:GetNewGuid()); end
 
-function LCF.PacketMethods.WriteUnitGuid(unit) self:WriteGUID(unit:GetGUID()); end
+function LCF.PacketMethods:WriteUnitGuid(unit) self:WriteGUID(unit:GetGUID()); end
 
-function LCF.PacketMethods.GetObjectType() return "Packet"; end
+function LCF.PacketMethods:GetObjectType() return "Packet"; end
 
 -----QRESULT------
-function LCF.QResultMethods.GetColumnCount() return self:GetFieldCount(); end
+function LCF.QResultMethods:GetColumnCount() return self:GetFieldCount(); end

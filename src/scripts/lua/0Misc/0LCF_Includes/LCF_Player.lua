@@ -259,7 +259,8 @@ end
 
 function PLAYER:SetPlayerWeather(_type, density) SetWeather("object", self, _type, density); end
 
-function PLAYER:QuickStartTaxi(taxipath, mountid) self:StartTaxi(taxipath, mountid, 0); end
+function PLAYER:QuickStartTaxi(taxipath, mountid) self:TaxiStart(taxipath, mountid, 0); end
+function PLAYER:StartTaxi(taxipath, mountid) self:TaxiStart(taxipath, mountid, 0); end
 
 alias("UnlearnSpell", "removeSpell")
 
