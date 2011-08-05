@@ -126,7 +126,9 @@ void LogonConsole::ProcessCmd(char *cmd)
 	SCmd cmds[] =
 	{
 
-		{	"?", &LogonConsole::TranslateHelp}, {"help", &LogonConsole::TranslateHelp},
+		{	"?", &LogonConsole::TranslateHelp},
+		{   "help", &LogonConsole::TranslateHelp},
+		{   "createaccount", &LogonConsole::CreateAccount },
 		{	"reload", &LogonConsole::ReloadAccts},
 		{	"rehash", &LogonConsole::TranslateRehash},
 		{	"netstatus", &LogonConsole::NetworkStatus},
@@ -188,6 +190,7 @@ void LogonConsole::ProcessHelp(char *command)
 	{
 		printf("Console:--------help--------\n");
 		printf("	Help, ?: Prints this help text.\n");
+		printf("	createaccount: Creates new accounts\n");
 		printf("	Reload: Reloads accounts.\n");
 		printf("	Netstatus: Shows network status.\n");
 		printf("	info:  shows some information about the server.\n" );
@@ -200,6 +203,53 @@ void LogonConsole::Info( char *str ){
 	std::cout << "-----------------------" << std::endl;
 	std::cout << "CPU Usage: " << LogonServer::getSingleton().perfcounter.GetCurrentCPUUsage() << "%" << std::endl;
 	std::cout << "RAM Usage: " << LogonServer::getSingleton().perfcounter.GetCurrentRAMUsage() << "MB" << std::endl;
+}
+
+void LogonConsole::CreateAccount( char *str ){
+	char name[ 512 ];
+	char password[ 512 ];
+	char email[ 512 ];
+
+	int count = sscanf( str, "%s %s %s", name, password, email );
+	if( count != 3 ){
+		std::cout << "usage: createaccount <name> <password> <email>" << std::endl;
+		std::cout << "example: createaccount ghostcrawler Ih4t3p4l4dins greg.street@blizzard.com" << std::endl;
+		return;
+	}
+
+	{
+		// need to pass uppercase names to check if account exists
+		std::string aname( name );
+
+		for( std::string::iterator itr = aname.begin(); itr != aname.end(); ++itr )
+			*itr = toupper( *itr );
+
+		if( AccountMgr::getSingleton().GetAccount( aname ) != NULL ){
+			std::cout << "There's already an account with name " << name << std::endl;
+			return;
+		}
+	}
+
+	std::string pass;
+	pass.assign( name );
+	pass.push_back( ':' );
+	pass.append( password );
+	
+	std::stringstream query;
+	query << "INSERT INTO `accounts`( `login`,`password`,`encrypted_password`,`gm`,`banned`,`email`,`flags`,`banreason`) VALUES ( '";
+	query << name << "','',";
+	query << "SHA( UPPER( '" << pass << "' ) ),'0','0','";
+	query << email << "','";
+	query << 24 << "','' );";
+
+	if( !sLogonSQL->WaitExecuteNA( query.str().c_str() ) ){
+		std::cout << "Couldn't save new account to database. Aborting." << std::endl;
+		return;
+	}
+
+	AccountMgr::getSingleton().ReloadAccounts( true );
+
+	std::cout << "Account created." << std::endl; 
 }
 
 //------------------------------------------------------------------------------

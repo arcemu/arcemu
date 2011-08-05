@@ -59,7 +59,9 @@ protected:					// Protected methods:
 
 	void NetworkStatus(char* str);
 
-	void Info( char* str );
+	void Info( char *str );
+
+	void CreateAccount( char *str );
 };
 
 #define sLogonConsole LogonConsole::getSingleton()

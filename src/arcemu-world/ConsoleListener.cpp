@@ -371,11 +371,6 @@ void HandleConsoleInput(BaseConsole * pConsole, const char * szInput)
 			"Cancels a pending shutdown."
 		},
 		{
-			&HandleCreateAccountCommand,
-			"createaccount", "<name> <pass> <email> <flags>",
-			"Creates an account."
-		},
-		{
 			&HandleInfoCommand,
 			"info", "None",
 			"Gives server runtime information."
