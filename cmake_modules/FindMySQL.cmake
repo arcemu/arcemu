@@ -15,12 +15,13 @@ FIND_PATH(MYSQL_INCLUDE_DIR mysql.h
   /usr/local/include/mysql
   /usr/include/mysql
   /usr/local/mysql/include
+  /opt/local/include/mysql5/mysql
 )
 
 SET(MYSQL_NAMES mysqlclient mysqlclient_r)
 FIND_LIBRARY(MYSQL_LIBRARY
   NAMES ${MYSQL_NAMES}
-  PATHS /usr/lib /usr/lib/mysql /usr/local/lib /usr/local/mysql/lib /usr/local/lib/mysql
+  PATHS /usr/lib /usr/lib/mysql /usr/local/lib /usr/local/mysql/lib /usr/local/lib/mysql /opt/local/lib/mysql5/mysql
 )
 
 IF (MYSQL_INCLUDE_DIR AND MYSQL_LIBRARY)
