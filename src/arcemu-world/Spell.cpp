@@ -3106,7 +3106,7 @@ uint8 Spell::CanCast(bool tolerate)
 		}
 
 		/**
-		*	Arena spell check
+		 *	Battlegrounds/Arena check
 		 */
 		if( p_caster->m_bg )
 		{
@@ -3115,6 +3115,8 @@ uint8 Spell::CanCast(bool tolerate)
 			if( !p_caster->m_bg->HasStarted() && (m_spellInfo->Id == 1953 || m_spellInfo->Id == 36554) )//Don't allow blink or shadowstep  if in a BG and the BG hasn't started.
 				return SPELL_FAILED_SPELL_UNAVAILABLE;
 		}
+		else if (hasAttributeExC( FLAGS4_BG_ONLY ))
+			return SPELL_FAILED_ONLY_BATTLEGROUNDS;
 
 		/**
 		 *	Cooldowns check
@@ -3441,14 +3443,6 @@ uint8 Spell::CanCast(bool tolerate)
 		if (GetProto()->casterAuraSpellNot && p_caster->HasAura( GetProto()->casterAuraSpellNot ))
 		{
 			return SPELL_FAILED_NOT_READY;
-		}
-
-		// Let's not allow players to blink through gates.
-		// Until we fix the real problem this will work.
-		if (p_caster->m_bg && !p_caster->m_bg->HasStarted())
-		{
-			if (GetProto()->NameHash == SPELL_HASH_BLINK)
-				return SPELL_FAILED_SPELL_UNAVAILABLE;
 		}
 	}
 
