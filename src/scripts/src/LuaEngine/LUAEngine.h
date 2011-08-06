@@ -338,6 +338,20 @@ public:
 		else return ArcLuna<Aura>::check(L,narg);
 	}
 
+	bool CheckBool(lua_State * L, int narg)
+	{
+		//first try with bool type
+		if(lua_isboolean(L,narg))
+			return lua_toboolean(L,narg) > 0;
+		//then try with integer type
+		else if(lua_isnumber(L,narg))
+			return lua_tonumber(L,narg) > 0;
+		//then return false by default as specified at http://www.lua.org/pil/24.2.2.html
+		//"It is OK to call them even when the given element does not have the correct type.
+		//In this case, lua_toboolean, lua_tonumber and lua_strlen return zero"
+		else return false;
+	}
+
 	void PushUnit(Object * unit, lua_State * L = NULL);
 	void PushGo(Object * go, lua_State * L = NULL);
 	void PushItem(Object * item, lua_State * L = NULL);

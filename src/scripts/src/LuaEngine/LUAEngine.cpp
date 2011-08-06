@@ -3002,7 +3002,7 @@ void LuaEngine::ResumeLuaThread(int ref) {
 #define CHECK_FLOAT(L,narg) (lua_isnoneornil(L,(narg)) ) ? 0.00f : (float)luaL_checknumber(L,(narg)); 
 #define CHECK_ULONG(L,narg) (uint32)luaL_checknumber((L),(narg))
 #define CHECK_USHORT(L, narg) (uint16)luaL_checkinteger((L),(narg))
-#define CHECK_BOOL(L,narg) (lua_toboolean((L),(narg)) > 0) ? true : false
+#define CHECK_BOOL(L,narg) sLuaMgr.CheckBool(L,narg)
 
 #define PUSH_UNIT(L, unit) sLuaMgr.PushUnit(TO_UNIT(unit),L)
 #define PUSH_GO(L, go) sLuaMgr.PushGo(TO< GameObject* >(go),L)
