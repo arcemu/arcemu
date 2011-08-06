@@ -4655,6 +4655,8 @@ public:
 
 	static int StopChannel(lua_State * L, Unit * ptr)
 	{
+		if(ptr == NULL)
+			return 0;
 		ptr->SetChannelSpellTargetGUID( 0);
 		ptr->SetChannelSpellId(0);
 		return 0;
