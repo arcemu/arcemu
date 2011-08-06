@@ -214,7 +214,7 @@ RegType<Unit> UnitMethods[] = {
 	{ "IsPacified", &LuaUnit::IsPacified },
 	{ "IsStunned", &LuaUnit::IsStunned },
 	{ "IsFeared", &LuaUnit::IsFeared },
-	//{ "CreateGuardian", &LuaUnit::CreateGuardian },
+	{ "CreateGuardian", &LuaUnit::CreateGuardian },
 	{ "HandleEvent", &LuaUnit::HandleEvent },
 	{ "HasInRangeObjects", &LuaUnit::HasInRangeObjects },
 	{ "IsInWater", &LuaUnit::IsInWater },

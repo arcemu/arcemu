@@ -2938,19 +2938,36 @@ public:
 		return 1;
 	}
 
-	/*
-	static int CreateGuardian(lua_State * L, Unit * ptr)
-	{
-		uint32 guardian_entry = CHECK_ULONG(L,1);
-		uint32 duration = CHECK_ULONG(L, 2);
-		float angle = CHECK_FLOAT(L, 3);
-		uint32 lvl  = CHECK_ULONG(L, 4);
-		if (!ptr || !guardian_entry || !lvl)
+	static int CreateGuardian( lua_State *L, Unit  *ptr ){
+		uint32 entry = CHECK_ULONG( L, 1 );
+		uint32 duration = CHECK_ULONG( L, 2 );
+		float angle = CHECK_FLOAT( L, 3 );
+		uint32 lvl  = CHECK_ULONG( L, 4 );
+		
+		if( ( ptr == NULL ) || ( entry == 0 ) || ( lvl == 0 ) )
 			return 0;
-		PUSH_UNIT(L, TO_UNIT(ptr->create_guardian(guardian_entry,duration,angle,lvl,NULL)));
+
+		CreatureProto *cp = CreatureProtoStorage.LookupEntry( entry );
+		if( cp == NULL )
+			return 0;
+
+		LocationVector v( ptr->GetPosition() );
+		v.x += ( 3 * ( cosf( angle + v.o ) ) );
+		v.y += ( 3 * ( sinf( angle + v.o ) ) );
+
+		Summon *guardian = ptr->GetMapMgr()->CreateSummon( entry, SUMMONTYPE_GUARDIAN );
+
+		guardian->Load( cp, ptr, v, 0, -1 );
+		guardian->GetAIInterface()->SetUnitToFollowAngle( angle );
+		guardian->PushToWorld( ptr->GetMapMgr() );
+
+		if( guardian == NULL )
+			return 0;
+
+		PUSH_UNIT( L, guardian );
+
 		return 1;
 	}
-	*/
 
 	static int IsInArc(lua_State * L, Unit * ptr)
 	{
