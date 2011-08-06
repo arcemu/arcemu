@@ -1194,13 +1194,12 @@ protected:
 class VaelastraszGossip : public GossipScript
 {
 public:
-    void GossipHello(Object* pObject, Player*  Plr, bool AutoSend)
+    void GossipHello( Object *pObject, Player *Plr )
     {
         GossipMenu *Menu;
         objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 9903, Plr);
 
-        if(AutoSend)
-            Menu->SendTo(Plr);
+        Menu->SendTo(Plr);
 
     }
 	

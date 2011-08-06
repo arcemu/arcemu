@@ -54,7 +54,7 @@ public:
 class HeroesofOld1 : public GossipScript
 {
 public:
-	void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+	void GossipHello( Object *pObject, Player *plr )
 	{
 		if(!plr)
 			return;
@@ -68,8 +68,7 @@ public:
 		if(plr->GetQuestLogForEntry(2702) || plr->HasFinishedQuest(2702))
 			Menu->AddItem( 0, "I need to speak with Corporal.", 1);
 	 
-		if(AutoSend)
-			Menu->SendTo(plr);
+		Menu->SendTo(plr);
 	}
  
 	void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * EnteredCode)
@@ -84,7 +83,7 @@ public:
 		switch (IntId)
 		{
 			case 0:
-				GossipHello(pObject, plr, true);
+				GossipHello(pObject, plr );
 				break;
  
 			case 1:

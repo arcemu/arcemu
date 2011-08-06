@@ -99,12 +99,12 @@ public:
 class JainaProudmooreGS : public GossipScript
 {
 public:
-	void GossipHello(Object* pObject, Player* Plr, bool AutoSend)
+	void GossipHello( Object *pObject, Player *plr )
 	{
 		if(pObject->GetMapMgr()->GetMapId() != MAP_HYJALPAST)//in case someone spawned this NPC in another map
 			return;
 		GossipMenu *Menu;
-		objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 1, Plr);
+		objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 1, plr);
 
 		switch(pObject->GetMapMgr()->GetScript()->GetInstanceData(HYJAL_TYPE_BASIC, 0))
 		{
@@ -121,8 +121,7 @@ public:
 			break;
 		}
 
-		if(AutoSend)
-			Menu->SendTo(Plr);
+		Menu->SendTo(plr);
 	}
 
 	void GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, uint32 IntId, const char * Code)
@@ -162,12 +161,12 @@ public:
 class ThrallGS : public GossipScript
 {
 public:
-	void GossipHello(Object* pObject, Player* Plr, bool AutoSend)
+	void GossipHello( Object *pObject, Player *plr )
 	{
 		if(pObject->GetMapMgr()->GetMapId() != MAP_HYJALPAST)//in case someone spawned this NPC in another map
 			return;
 		GossipMenu *Menu;
-		objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 1, Plr);
+		objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 1, plr);
 
 		switch(pObject->GetMapMgr()->GetScript()->GetInstanceData(HYJAL_TYPE_BASIC, 0))
 		{
@@ -180,8 +179,7 @@ public:
 			break;
 		}
 
-		if(AutoSend)
-			Menu->SendTo(Plr);
+		Menu->SendTo(plr);
 	}
 
 	void GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, uint32 IntId, const char * Code)

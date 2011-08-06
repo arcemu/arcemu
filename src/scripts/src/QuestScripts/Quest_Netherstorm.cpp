@@ -23,7 +23,7 @@
 class Veronia : public GossipScript
 {
 public:
-	void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+	void GossipHello( Object *pObject, Player *plr )
 	{
 		GossipMenu *Menu;
 		if(plr->GetQuestLogForEntry(10652))

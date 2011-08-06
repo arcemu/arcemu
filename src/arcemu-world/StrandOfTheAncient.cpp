@@ -114,7 +114,7 @@ Strand of the Ancients
 #include "StdAfx.h"
 
 /*
-	void GossipHello(Object* pObject, Player * plr, bool AutoSend)
+	void GossipHello( Object *pObject, Player *plr )
 	{
 		GossipMenu *Menu;
 		uint32 Team = plr->GetTeam();
@@ -135,8 +135,7 @@ Strand of the Ancients
 			Menu->AddItem( 0, "I would like to enter the battleground.", BATTLEGROUND_STRAND_OF_THE_ANCIENT);
 		}
 
-		if (AutoSend)
-			Menu->SendTo(plr);
+		Menu->SendTo(plr);
 	}
 
 	void GossipSelectOption(Object* pObject, Player * plr, uint32 Id, uint32 IntId, const char * Code)

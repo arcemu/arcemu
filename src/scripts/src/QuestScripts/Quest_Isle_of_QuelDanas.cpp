@@ -71,7 +71,7 @@ public:
 class SCRIPT_DECL AyrenCloudbreaker_Gossip : public GossipScript
 {
 public:
-	void GossipHello(Object* pObject, Player* pPlayer, bool AutoSend)
+	void GossipHello( Object *pObject, Player *pPlayer )
 	{
 		GossipMenu *Menu;
 		objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 12252, pPlayer);
@@ -114,7 +114,7 @@ public:
 class SCRIPT_DECL UnrestrainedDragonhawk_Gossip : public GossipScript
 {
 public:
-	void GossipHello(Object* pObject, Player* pPlayer, bool AutoSend)
+	void GossipHello( Object *pObject, Player *pPlayer )
 	{
 		GossipMenu *Menu;
 		objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 12371, pPlayer);

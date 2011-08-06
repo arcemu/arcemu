@@ -27,7 +27,7 @@
 class BeatenCorpse : public GossipScript
 {
 public:
-  void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+  void GossipHello( Object *pObject, Player *plr )
   {
     GossipMenu *Menu;
     objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 3557, plr);
@@ -35,8 +35,7 @@ public:
     if(plr->GetQuestLogForEntry(4921) != NULL)
       Menu->AddItem(0, "I inspect the body further.", 1);
     
-    if(AutoSend)
-      Menu->SendTo(plr);
+    Menu->SendTo(plr);
   }
 
   void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)

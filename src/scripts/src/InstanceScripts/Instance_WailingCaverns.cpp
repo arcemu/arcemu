@@ -288,7 +288,7 @@ static Location ToNaralex[] =
 class DofNaralexGossip : public GossipScript
 {
 public:
-	void GossipHello(Object* pObject, Player* Plr, bool AutoSend)
+	void GossipHello( Object *pObject, Player *plr )
 	{
 		Unit* Fanglord1 = pObject->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(-151.139008f, 414.367004f, -72.629402f, CN_LORD_COBRAHN);
 		Unit* Fanglord2 = pObject->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(36.807400f, -241.063995f, -79.498901f, CN_LORD_PYTHAS);
@@ -298,16 +298,16 @@ public:
 		if((!Fanglord1 || !Fanglord1->isAlive()) && (!Fanglord2 || !Fanglord2->isAlive()) && (!Fanglord3 || !Fanglord3->isAlive()) && (!Fanglord4 || !Fanglord4->isAlive()))
 		{
 			GossipMenu *Menu;
-			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 699, Plr);
+			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 699, plr);
 			Menu->AddItem(0, "Let's go!", 2);
-			Menu->SendTo(Plr);
+			Menu->SendTo(plr);
 		}
 		else
 		{
 			GossipMenu *Menu;
-			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 698, Plr);
+			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 698, plr);
 			Menu->AddItem(0, "I will slay those Fanglords", 1);
-			Menu->SendTo(Plr);
+			Menu->SendTo(plr);
 		}	
 			
 	}
@@ -321,7 +321,7 @@ public:
 		{
 		case 0: // Return to start
 
-			GossipHello(pCreature, Plr, true);
+			GossipHello(pCreature, Plr );
 			break;
 
 		case 1: // Disciple of Naralex Casts Mark of the Wild on players.

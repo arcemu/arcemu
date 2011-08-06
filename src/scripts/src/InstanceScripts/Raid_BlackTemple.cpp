@@ -4543,7 +4543,7 @@ void SpellFunc_Parasitic(SpellDesc* pThis, MoonScriptCreatureAI* pCreatureAI, Un
 class SCRIPT_DECL AkamaGossip : public GossipScript
 {
 public:
-    void GossipHello(Object* pObject, Player* pPlayer, bool AutoSend)
+    void GossipHello( Object *pObject, Player *pPlayer )
     {
 		Creature* pAIOwner = TO_CREATURE(pObject);
 		if (pAIOwner->GetScript() == NULL)
@@ -4562,8 +4562,7 @@ public:
 			Menu->AddItem(0, "I'm ready, Akama.", 1);
 		}
 	 
-		if (AutoSend)
-			Menu->SendTo(pPlayer);
+		Menu->SendTo(pPlayer);
     }
  
 	void GossipSelectOption(Object* pObject, Player* pPlayer, uint32 Id, uint32 IntId, const char * EnteredCode)
@@ -4576,7 +4575,7 @@ public:
 		switch (IntId)
 		{
 		case 0:
-			GossipHello(pObject, pPlayer, true);
+			GossipHello(pObject, pPlayer );
 			break;
 		case 1:
 			pAIOwner->SetUInt32Value(UNIT_NPC_FLAGS, 0);

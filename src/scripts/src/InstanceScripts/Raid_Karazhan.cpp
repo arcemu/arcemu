@@ -29,7 +29,7 @@
 class Berthold : public GossipScript
 {
 public:
-	void GossipHello(Object* pObject, Player*  Plr, bool AutoSend)
+	void GossipHello( Object *pObject, Player *Plr )
 	{
 		GossipMenu *Menu;
 		objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4037, Plr);
@@ -43,8 +43,7 @@ public:
 		if(!soa || !soa->isAlive())
 			Menu->AddItem( 0, "Please teleport me to the Guardian's Library.", 4);
 
-		if(AutoSend)
-			Menu->SendTo(Plr);
+		Menu->SendTo(Plr);
 	}
 
 	void GossipSelectOption(Object* pObject, Player*  Plr, uint32 Id, uint32 IntId, const char * Code)
@@ -52,7 +51,7 @@ public:
 		switch (IntId)
 		{
 			case 0:
-				GossipHello(pObject, Plr, true);
+				GossipHello(pObject, Plr );
 				break;
 
 			case 4:
@@ -688,7 +687,7 @@ uint32 WayStartBBW[1000000];
 class BarnesGS : public GossipScript
 {
 public:
-	void GossipHello(Object* pObject, Player*  Plr, bool AutoSend)
+	void GossipHello( Object *pObject, Player *Plr )
 	{
 		GossipMenu *Menu;
 		if(WayStartBBW[pObject->GetInstanceID()] == 5)
@@ -701,8 +700,8 @@ public:
 			//Finally, everything is in place. Are you ready for your big stage debut?
  			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 8970, Plr);
 			Menu->AddItem( 0, "I'm not an actor.", 1 );
- 			if(AutoSend)
- 				Menu->SendTo(Plr);
+ 			
+			Menu->SendTo(Plr);
 
 		}
 	}
@@ -712,7 +711,7 @@ public:
 		switch (IntId)
 		{
 			case 0:
-				GossipHello(pObject, Plr, true);
+				GossipHello(pObject, Plr );
 				break;
 
 			case 1:
@@ -744,15 +743,14 @@ public:
 class GrandMother : public GossipScript
 {
 public:
-	void GossipHello(Object* pObject, Player*  Plr, bool AutoSend)
+	void GossipHello( Object *pObject, Player *Plr )
 	{
 		GossipMenu *Menu;
 		objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 7245, Plr);
 		
 		Menu->AddItem( 0, "What phat lewts you have Grandmother!", 1);
 
-		if(AutoSend)
-			Menu->SendTo(Plr);
+		Menu->SendTo(Plr);
 	}
 
 	void GossipSelectOption(Object* pObject, Player*  Plr, uint32 Id, uint32 IntId, const char * Code)
@@ -760,7 +758,7 @@ public:
 		switch (IntId)
 		{
 			case 0:
-				GossipHello(pObject, Plr, true);
+				GossipHello(pObject, Plr );
 				break;
 
 			case 1:

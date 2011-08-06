@@ -36,20 +36,19 @@ static LocationExtra ProspectorAnvilwardWaypoints[] = {
 class ProspectorAnvilwardGossip : public GossipScript
 {
 	public:
-		void GossipHello( Object * pObject, Player * Plr, bool AutoSend );
+		void GossipHello( Object *pObject, Player *Plr );
 		void GossipSelectOption( Object * pObject, Player * Plr, uint32 Id, uint32 IntId, const char * EnteredCode );
 		void GossipEnd( Object * pObject, Player * Plr ) { Plr->CloseGossip(); }
 };
 
-void ProspectorAnvilwardGossip::GossipHello( Object * pObject, Player * Plr, bool AutoSend )
+void ProspectorAnvilwardGossip::GossipHello( Object *pObject, Player *Plr )
 {
 	GossipMenu * Menu;
 	objmgr.CreateGossipMenuForPlayer( &Menu, pObject->GetGUID(), 2, Plr );
 
 	Menu->AddItem( 0, "Show me...", 1 );
 
-	if ( AutoSend )
-		Menu->SendTo( Plr );
+	Menu->SendTo( Plr );
 }
 
 void ProspectorAnvilwardGossip::GossipSelectOption( Object * pObject, Player * Plr, uint32 Id, uint32 IntId, const char * EnteredCode )

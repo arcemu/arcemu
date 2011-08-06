@@ -27,7 +27,7 @@
 class StrFever : public GossipScript
 {
 public:
-	void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+	void GossipHello( Object *pObject, Player *plr )
 	{
 		if(!plr)
 			return;
@@ -41,8 +41,7 @@ public:
 		if(plr->GetQuestLogForEntry(348) && plr->GetItemInterface()->GetItemCount(2799, 0) && !plr->GetItemInterface()->GetItemCount(2797, 0))
 			Menu->AddItem( 0, "I'm ready, Summon Him!", 1);
 
-		if(AutoSend)
-			Menu->SendTo(plr);
+		Menu->SendTo(plr);
 	}
 
 	void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * EnteredCode)
@@ -57,7 +56,7 @@ public:
 		switch (IntId)
 		{
 			case 0:
-				GossipHello(pObject, plr, true);
+				GossipHello(pObject, plr );
 				break;
 
 			case 1:

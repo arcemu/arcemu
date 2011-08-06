@@ -219,7 +219,7 @@ enum eGossipTexts
 class ErozionGossip : public GossipScript
 {
 public:
-	void GossipHello(Object* pObject, Player*  Plr, bool AutoSend)
+	void GossipHello( Object *pObject, Player *Plr )
 	{
 		GossipMenu *Menu;
         OldHilsbradInstance* pInstance = dynamic_cast<OldHilsbradInstance*>( pObject->GetMapMgr()->GetScript() );
@@ -234,8 +234,7 @@ public:
 
 		// It should give another menu if instance is done id: 10474, NYI
 
-		if(AutoSend)
-			Menu->SendTo(Plr);
+		Menu->SendTo(Plr);
 	}
 
 	void GossipSelectOption(Object* pObject, Player*  Plr, uint32 Id, uint32 IntId, const char * Code)
@@ -255,15 +254,14 @@ public:
 class BrazenGossip : public GossipScript
 {
 public:
-	void GossipHello(Object* pObject, Player*  Plr, bool AutoSend)
+	void GossipHello( Object *pObject, Player *Plr )
 	{
 		GossipMenu *Menu;
 
         objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), BRAZAN_ON_HELLO, Plr);
 	    Menu->AddItem( 0, "I am ready to go to Durnholde Keep.", 1 );
 
-		if(AutoSend)
-			Menu->SendTo(Plr);
+		Menu->SendTo(Plr);
 	}
 
 	void GossipSelectOption(Object* pObject, Player*  Plr, uint32 Id, uint32 IntId, const char * Code)
@@ -354,7 +352,7 @@ class ThrallAI : public MoonScriptCreatureAI // this will be replaced with escor
 class ThrallGossip : public GossipScript
 {
 public:
-	void GossipHello(Object* pObject, Player*  Plr, bool AutoSend)
+	void GossipHello( Object *pObject, Player *Plr )
 	{
 		GossipMenu *Menu;
         if( !pObject->IsCreature() )
@@ -363,8 +361,7 @@ public:
         objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), THRALL_ON_HELLO, Plr);
 	    Menu->AddItem( 0, "[PH] Start escort.", 1 );
 
-		if(AutoSend)
-			Menu->SendTo(Plr);
+		Menu->SendTo(Plr);
 	}
 
 	void GossipSelectOption(Object* pObject, Player*  Plr, uint32 Id, uint32 IntId, const char * Code)

@@ -51,10 +51,10 @@
 class StormwindGuard : public GossipScript
 {
 public:
-    void GossipHello(Object* pObject, Player* Plr, bool AutoSend)
+    void GossipHello( Object *pObject, Player *plr )
     {
         GossipMenu *Menu;
-        objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 933, Plr);
+        objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 933, plr);
 
         Menu->AddItem(0, "Auction House"		, 1);
         Menu->AddItem(0, "Bank of Stormwind"	, 2);
@@ -72,8 +72,7 @@ public:
         Menu->AddItem(0, "Class Trainer"		, 14);
         Menu->AddItem(0, "Profession Trainer"	, 15);
 
-        if(AutoSend)
-            Menu->SendTo(Plr);
+        Menu->SendTo(plr);
     }
 
     void GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, uint32 IntId, const char * Code)
@@ -82,7 +81,7 @@ public:
         switch(IntId)
         {
         case 0:     // Return to start
-            GossipHello(pObject, Plr, true);
+            GossipHello(pObject, Plr );
             break;
 
             //////////////////////
@@ -331,10 +330,10 @@ public:
 class DarnassusGuard : public GossipScript
 {
 public:
-    void GossipHello(Object* pObject, Player* Plr, bool AutoSend)
+    void GossipHello( Object *pObject, Player *plr )
     {
         GossipMenu *Menu;
-        objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 3016, Plr);
+        objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 3016, plr);
 
         Menu->AddItem( 0, "Auction House"      , 1);
         Menu->AddItem( 0, "The Bank"           , 2);
@@ -349,8 +348,7 @@ public:
 	 	Menu->AddItem( 0, "Profession Trainer" , 11);
 		Menu->AddItem( 0, "Lexicon of Power"   , 27);
 
-        if(AutoSend)
-            Menu->SendTo(Plr);
+        Menu->SendTo(plr);
     }
 
     void GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, uint32 IntId, const char * Code)
@@ -359,7 +357,7 @@ public:
         switch(IntId)
         {
         case 0:     // Return to start
-            GossipHello(pObject, Plr, true);
+            GossipHello(pObject, Plr );
             break;
 
             //////////////////////
@@ -544,10 +542,10 @@ public:
 class GoldshireGuard : public GossipScript
 {
 public:
-    void GossipHello(Object* pObject, Player* Plr, bool AutoSend)
+    void GossipHello( Object *pObject, Player *plr )
     {
         GossipMenu *Menu;
-        objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4259, Plr);
+        objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4259, plr);
 		Menu->AddItem( 0, "Bank"                 , 1);
 		Menu->AddItem( 0, "Gryphon Master"       , 2);
 		Menu->AddItem( 0, "Guild Master"         , 3);
@@ -555,8 +553,8 @@ public:
 		Menu->AddItem( 0, "Stable Master"        , 5);
 		Menu->AddItem( 0, "Class Trainer"        , 6);
 		Menu->AddItem( 0, "Profession Trainer"   , 7);
-        if(AutoSend)
-            Menu->SendTo(Plr);
+        
+		Menu->SendTo(plr);
     }
 
 	void GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, uint32 IntId, const char * Code)
@@ -566,7 +564,7 @@ public:
         {	
 	
 		case 0:     // Return to start
-			GossipHello(pObject, Plr, true);
+			GossipHello(pObject, Plr );
 			break;
 
             //////////////////////
@@ -764,10 +762,10 @@ public:
 class UndercityGuard : public GossipScript
 {
 public:
-    void GossipHello(Object* pObject, Player* Plr, bool AutoSend)
+    void GossipHello( Object *pObject, Player *plr )
     {
         GossipMenu *Menu;
-        objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 3543, Plr);
+        objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 3543, plr);
 		
 		Menu->AddItem(0, "The bank", 1);
 		Menu->AddItem(0, "The bat handler", 2);
@@ -781,8 +779,8 @@ public:
 		Menu->AddItem(0, "The battlemaster", 10);
 		Menu->AddItem(0, "A class trainer", 11);
 		Menu->AddItem(0, "A profession trainer", 12);
-        if(AutoSend)
-            Menu->SendTo(Plr);
+        
+		Menu->SendTo(plr);
     }
 
     void GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, uint32 IntId, const char * Code)
@@ -791,7 +789,7 @@ public:
         switch(IntId)
         {
         case 0:     // Return to start
-            GossipHello(pObject, Plr, true);
+            GossipHello(pObject, Plr );
             break;
 
             //////////////////////
@@ -997,10 +995,10 @@ public:
 class TeldrassilGuard : public GossipScript
 {
 public:
-    void GossipHello(Object* pObject, Player* Plr, bool AutoSend)
+    void GossipHello( Object *pObject, Player *plr )
     {
         GossipMenu *Menu;
-        objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4316, Plr);
+        objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4316, plr);
 
         Menu->AddItem(0, "The Bank", 1);
 		Menu->AddItem(0, "Rut'Theran Ferry", 2);
@@ -1010,8 +1008,7 @@ public:
 		Menu->AddItem(0, "Class Trainer", 6);
 		Menu->AddItem(0, "Profession Trainer", 7);
 
-        if(AutoSend)
-            Menu->SendTo(Plr);
+        Menu->SendTo(plr);
     }
 	
     void GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, uint32 IntId, const char * Code)
@@ -1020,7 +1017,7 @@ public:
         switch(IntId)
         {
         case 0:     // Return to start
-            GossipHello(pObject, Plr, true);
+            GossipHello(pObject, Plr );
             break;
 
             //////////////////////
@@ -1174,10 +1171,10 @@ public:
 class SilvermoonGuard : public GossipScript
 {
 public:
-    void GossipHello(Object* pObject, Player* Plr, bool AutoSend)
+    void GossipHello( Object *pObject, Player *plr )
     {
         GossipMenu *Menu;
-        objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 9316, Plr);
+        objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 9316, plr);
 
         Menu->AddItem(0, "Auction House"		, 1);
         Menu->AddItem(0, "The Bank"				, 2);
@@ -1193,8 +1190,7 @@ public:
         Menu->AddItem(0, "Mana Loom"			, 12);
 		Menu->AddItem(0, "Lexicon of Power"		, 40);
 
-        if(AutoSend)
-            Menu->SendTo(Plr);
+        Menu->SendTo(plr);
     }
 
     void GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, uint32 IntId, const char * Code)
@@ -1203,7 +1199,7 @@ public:
         switch(IntId)
         {
         case 0:     // Return to start
-            GossipHello(pObject, Plr, true);
+            GossipHello(pObject, Plr );
             break;
 
             //////////////////////
@@ -1470,10 +1466,10 @@ public:
 class ExodarGuard : public GossipScript
 {
 public:
-    void GossipHello(Object* pObject, Player* Plr, bool AutoSend)
+    void GossipHello( Object *pObject, Player *plr )
     {
         GossipMenu *Menu;
-        objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 9551, Plr);
+        objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 9551, plr);
         Menu->AddItem(0, "Auction House"		, 1);
         Menu->AddItem(0, "The Bank"				, 2);
         Menu->AddItem(0, "Hippogryph Master"	, 3);
@@ -1486,8 +1482,8 @@ public:
         Menu->AddItem(0, "Class Trainer"		, 10);
         Menu->AddItem(0, "Profession Trainer"	, 11);
 		Menu->AddItem(0, "Lexicon of Power"		, 34);
-        if(AutoSend)
-            Menu->SendTo(Plr);
+        
+		Menu->SendTo(plr);
     }
 
     void GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, uint32 IntId, const char * Code)
@@ -1496,7 +1492,7 @@ public:
         switch(IntId)
         {
         case 0:     // Return to start
-            GossipHello(pObject, Plr, true);
+            GossipHello(pObject, Plr );
             break;
 
             //////////////////////
@@ -1731,10 +1727,10 @@ public:
 class OrgrimmarGuard : public GossipScript
 {
 public:
-    void GossipHello(Object* pObject, Player* Plr, bool AutoSend)
+    void GossipHello( Object *pObject, Player *plr )
     {
         GossipMenu *Menu;
-        objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 2593, Plr);
+        objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 2593, plr);
         Menu->AddItem(0, "The bank", 1);
         Menu->AddItem(0, "The wind rider master", 2);
         Menu->AddItem(0, "The guild master", 3);
@@ -1748,8 +1744,8 @@ public:
         Menu->AddItem(0, "The battlemaster", 11);
         Menu->AddItem(0, "A class trainer", 12);
         Menu->AddItem(0, "A profession trainer", 13);
-        if(AutoSend)
-            Menu->SendTo(Plr);
+        
+		Menu->SendTo(plr);
     }
 
     void GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, uint32 IntId, const char * Code)
@@ -1758,7 +1754,7 @@ public:
         switch(IntId)
         {
         case 0:     // Return to start
-            GossipHello(pObject, Plr, true);
+            GossipHello(pObject, Plr );
             break;
 
             //////////////////////
@@ -1982,10 +1978,10 @@ public:
 class ThunderbluffGuard : public GossipScript
 {
 public:
-    void GossipHello(Object* pObject, Player* Plr, bool AutoSend)
+    void GossipHello( Object *pObject, Player *plr )
     {
         GossipMenu *Menu;
-        objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 3543, Plr);
+        objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 3543, plr);
         Menu->AddItem(0, "The bank", 1);
         Menu->AddItem(0, "The wind rider master", 2);
         Menu->AddItem(0, "The guild master", 3);
@@ -1997,8 +1993,8 @@ public:
         Menu->AddItem(0, "The battlemaster", 9);
         Menu->AddItem(0, "A class trainer", 10);
         Menu->AddItem(0, "A profession trainer", 11);
-        if(AutoSend)
-            Menu->SendTo(Plr);
+        
+		Menu->SendTo(plr);
     }
 
     void GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, uint32 IntId, const char * Code)
@@ -2007,7 +2003,7 @@ public:
         switch(IntId)
         {
         case 0:     // Return to start
-            GossipHello(pObject, Plr, true);
+            GossipHello(pObject, Plr );
             break;
 
             //////////////////////
@@ -2200,18 +2196,18 @@ public:
 class BloodhoofGuard : public GossipScript
 {
 public:
-    void GossipHello(Object* pObject, Player* Plr, bool AutoSend)
+    void GossipHello( Object *pObject, Player *plr )
     {
         GossipMenu *Menu;
-        objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 3543, Plr);
+        objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 3543, plr);
         Menu->AddItem(0, "The bank", 1);
         Menu->AddItem(0, "The wind rider master", 2);
         Menu->AddItem(0, "The inn", 3);
         Menu->AddItem(0, "The stable master", 4);
         Menu->AddItem(0, "A class trainer", 5);
         Menu->AddItem(0, "A profession trainer", 6);    
-        if(AutoSend)
-            Menu->SendTo(Plr);
+        
+		Menu->SendTo(plr);
     }
 
     void GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, uint32 IntId, const char * Code)
@@ -2220,7 +2216,7 @@ public:
         switch(IntId)
         {
         case 0:     // Return to start
-            GossipHello(pObject, Plr, true);
+            GossipHello(pObject, Plr );
             break;
 
             //////////////////////
@@ -2367,18 +2363,18 @@ public:
 class RazorHillGuard : public GossipScript
 {
 public:
-    void GossipHello(Object* pObject, Player* Plr, bool AutoSend)
+    void GossipHello( Object *pObject, Player *plr )
     {
         GossipMenu *Menu;
-        objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4037, Plr);
+        objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4037, plr);
         Menu->AddItem(0, "The bank", 1);
         Menu->AddItem(0, "The wind rider master", 2);
         Menu->AddItem(0, "The inn", 3);
         Menu->AddItem(0, "The stable master", 4);
         Menu->AddItem(0, "A class trainer", 5);
         Menu->AddItem(0, "A profession trainer", 6);    
-        if(AutoSend)
-            Menu->SendTo(Plr);
+        
+		Menu->SendTo(plr);
     }
 
     void GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, uint32 IntId, const char * Code)
@@ -2387,7 +2383,7 @@ public:
         switch(IntId)
         {
         case 0:     // Return to start
-            GossipHello(pObject, Plr, true);
+            GossipHello(pObject, Plr );
             break;
 
             //////////////////////
@@ -2564,18 +2560,18 @@ public:
 class BrillGuard : public GossipScript
 {
 public:
-    void GossipHello(Object* pObject, Player* Plr, bool AutoSend)
+    void GossipHello( Object *pObject, Player *plr )
     {
         GossipMenu *Menu;
-        objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 2593, Plr);
+        objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 2593, plr);
         Menu->AddItem(0, "The bank", 1);
         Menu->AddItem(0, "The bat handler", 2);
         Menu->AddItem(0, "The inn", 3);
         Menu->AddItem(0, "The stable master", 4);
         Menu->AddItem(0, "A class trainer", 5);
         Menu->AddItem(0, "A profession trainer", 6);    
-        if(AutoSend)
-            Menu->SendTo(Plr);
+        
+		Menu->SendTo(plr);
     }
 
     void GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, uint32 IntId, const char * Code)
@@ -2584,7 +2580,7 @@ public:
         switch(IntId)
         {
         case 0:     // Return to start
-            GossipHello(pObject, Plr, true);
+            GossipHello(pObject, Plr );
             break;
 
             //////////////////////
@@ -2753,10 +2749,10 @@ public:
 class IronforgeGuard : public GossipScript
 {
 public:
-    void GossipHello(Object* pObject, Player* Plr, bool AutoSend)
+    void GossipHello( Object *pObject, Player *plr )
     {
         GossipMenu *Menu;
-        objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 2760, Plr);
+        objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 2760, plr);
         Menu->AddItem(0, "Auction House"			, 1);
         Menu->AddItem(0, "Bank of Ironforge"		, 2);
         Menu->AddItem(0, "Deeprun Tram"				, 3);
@@ -2771,8 +2767,8 @@ public:
         Menu->AddItem(0, "Class Trainer"			, 12);
         Menu->AddItem(0, "Profession Trainer"		, 13);
 		Menu->AddItem(0, "Lexicon of Power"			, 35);
-        if(AutoSend)
-            Menu->SendTo(Plr);
+        
+		Menu->SendTo(plr);
     }
 
     void GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, uint32 IntId, const char * Code)
@@ -2781,7 +2777,7 @@ public:
         switch(IntId)
         {
         case 0:     // Return to start
-            GossipHello(pObject, Plr, true);
+            GossipHello(pObject, Plr );
             break;
 
             //////////////////////
@@ -3018,10 +3014,10 @@ public:
 class KharanosGuard : public GossipScript
 {
 public:
-    void GossipHello(Object* pObject, Player* Plr, bool AutoSend)
+    void GossipHello( Object *pObject, Player *plr )
     {
         GossipMenu *Menu;
-        objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4287, Plr);
+        objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4287, plr);
         Menu->AddItem(0, "Bank", 1);
         Menu->AddItem(0, "Gryphon Master", 2);
         Menu->AddItem(0, "Guild Master", 3);
@@ -3029,8 +3025,8 @@ public:
         Menu->AddItem(0, "Stable Master", 5);
         Menu->AddItem(0, "Class Trainer", 6);
         Menu->AddItem(0, "Profession Trainer", 7);
-        if(AutoSend)
-            Menu->SendTo(Plr);
+        
+		Menu->SendTo(plr);
     }
 
     void GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, uint32 IntId, const char * Code)
@@ -3039,7 +3035,7 @@ public:
         switch(IntId)
         {
         case 0:     // Return to start
-            GossipHello(pObject, Plr, true);
+            GossipHello(pObject, Plr );
             break;
 
             //////////////////////
@@ -3224,18 +3220,18 @@ public:
 class FalconwingGuard : public GossipScript
 {
 public:
-    void GossipHello(Object* pObject, Player* Plr, bool AutoSend)
+    void GossipHello( Object *pObject, Player *plr )
     {
         GossipMenu *Menu;
-        objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 2593, Plr);
+        objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 2593, plr);
         Menu->AddItem(0, "Bat Handler", 1);
         Menu->AddItem(0, "Guild Master", 2);
         Menu->AddItem(0, "The Inn", 3);
         Menu->AddItem(0, "Stable Master", 4);
         Menu->AddItem(0, "Class Trainer", 5);
         Menu->AddItem(0, "Profession Trainer", 6);
-        if(AutoSend)
-            Menu->SendTo(Plr);
+        
+		Menu->SendTo(plr);
     }
 
     void GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, uint32 IntId, const char * Code)
@@ -3244,7 +3240,7 @@ public:
         switch(IntId)
         {
         case 0:     // Return to start
-            GossipHello(pObject, Plr, true);
+            GossipHello(pObject, Plr );
             break;
 
             //////////////////////
@@ -3429,10 +3425,10 @@ public:
 class AzureWatchGuard : public GossipScript
 {
 public:
-    void GossipHello(Object* pObject, Player* Plr, bool AutoSend)
+    void GossipHello( Object *pObject, Player *plr )
     {
         GossipMenu *Menu;
-        objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 10066, Plr);
+        objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 10066, plr);
         Menu->AddItem(0, "Bank"					, 1);
         Menu->AddItem(0, "Hippogryph Master"	, 2);
         Menu->AddItem(0, "Guild Master"			, 3);
@@ -3440,8 +3436,8 @@ public:
         Menu->AddItem(0, "Stable"				, 5);
         Menu->AddItem(0, "Class Trainer"		, 6);
 		Menu->AddItem(0, "Profession Trainer"	, 7);
-        if(AutoSend)
-            Menu->SendTo(Plr);
+        
+		Menu->SendTo(plr);
     }
 
     void GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, uint32 IntId, const char * Code)
@@ -3450,7 +3446,7 @@ public:
         switch(IntId)
         {
         case 0:     // Return to start
-            GossipHello(pObject, Plr, true);
+            GossipHello(pObject, Plr );
             break;
 
             //////////////////////
@@ -3650,10 +3646,10 @@ public:
 class ShattrathGuard : public GossipScript
 {
 public:
-    void GossipHello(Object* pObject, Player* Plr, bool AutoSend)
+    void GossipHello( Object *pObject, Player *plr )
     {
         GossipMenu *Menu;
-        objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 10524, Plr);
+        objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 10524, plr);
 
         Menu->AddItem(0, "World's End Tavern", 1);
         Menu->AddItem(0, "Bank", 2);
@@ -3667,8 +3663,7 @@ public:
         Menu->AddItem(0, "Alchemy Lab", 10);
         Menu->AddItem(0, "Gem Merchant", 11);
 
-        if(AutoSend)
-            Menu->SendTo(Plr);
+        Menu->SendTo(plr);
     }
 
    void GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, uint32 IntId, const char * Code)
@@ -3677,7 +3672,7 @@ public:
         switch(IntId)
         {
         case 0:     // Return to start
-            GossipHello(pObject, Plr, true);
+            GossipHello(pObject, Plr );
             break;
 
             //////////////////////

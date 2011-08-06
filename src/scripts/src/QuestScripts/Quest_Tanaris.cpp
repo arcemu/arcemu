@@ -27,7 +27,7 @@
 class SpiritScreeches : public GossipScript
 {
 public:
-	void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+	void GossipHello( Object *pObject, Player *plr )
 	{
 		if(!plr)
 			return;
@@ -42,8 +42,7 @@ public:
 			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 2039, plr);
 			Menu->AddItem( 0, "Goodbye", 1);
 
-			if(AutoSend)
-				Menu->SendTo(plr);
+			Menu->SendTo(plr);
 		}
 
 
@@ -62,7 +61,7 @@ public:
 		switch (IntId)
 		{
 			case 0:
-				GossipHello(pObject, plr, true);
+				GossipHello(pObject, plr );
 				break;
 
 			case 1:
@@ -112,7 +111,7 @@ public:
 class StewardOfTime : public GossipScript
 {
 public:
-	void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+	void GossipHello( Object *pObject, Player *plr )
 	{
 		GossipMenu *Menu;
 		if(plr->GetQuestLogForEntry(10279) || plr->HasFinishedQuest(10279))

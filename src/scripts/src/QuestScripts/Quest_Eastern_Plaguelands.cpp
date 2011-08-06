@@ -43,7 +43,7 @@ class Darrowshire_Spirit : public GossipScript
 {
 public:
 
-   void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+   void GossipHello( Object *pObject, Player *plr )
    {
       QuestLogEntry *en = plr->GetQuestLogForEntry(5211);
 
@@ -59,8 +59,7 @@ public:
       GossipMenu *Menu;
       objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 3873, plr);
 
-      if(AutoSend)
-         Menu->SendTo(plr);
+      Menu->SendTo(plr);
 
       if(!pObject || !pObject->IsCreature())
         return;

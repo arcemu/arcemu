@@ -68,15 +68,14 @@ public:
 class SCRIPT_DECL MissingScout_Gossip : public GossipScript
 {
 public:
-       void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+       void GossipHello( Object *pObject, Player *plr )
        {
                GossipMenu *Menu;
                objmgr.CreateGossipMenuForPlayer( &Menu, pObject->GetGUID(), 13611, plr );
                if( plr->HasQuest(12864) )
                        Menu->AddItem( 0, GOSSIP_SCOUTMENU1, 1 );
        
-               if( AutoSend )
-                       Menu->SendTo(plr);
+               Menu->SendTo(plr);
        }
        void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
        {

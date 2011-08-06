@@ -219,7 +219,7 @@ enum eFizzcrank
 class FizzcrankGossip : public GossipScript
 {
 public:
-	void GossipHello(Object* pObject, Player*  pPlayer, bool AutoSend)
+	void GossipHello( Object *pObject, Player *pPlayer )
 	{
 		GossipMenu *Menu;
         
@@ -228,8 +228,7 @@ public:
         if( sEAS.GetQuest( pPlayer, QUEST_THE_MECHAGNOMES ) )
 		    Menu->AddItem( 0, GOSSIP_ITEM_TELL_ME, 1 );
 
-		if(AutoSend)
-			Menu->SendTo(pPlayer);
+		Menu->SendTo(pPlayer);
 	}
 
 	void GossipSelectOption(Object* pObject, Player*  pPlayer, uint32 Id, uint32 IntId, const char * Code)
@@ -299,7 +298,7 @@ enum eSurristrasz
 class SurristraszGossip : public GossipScript
 {
 public:
-	void GossipHello(Object* pObject, Player*  pPlayer, bool AutoSend)
+	void GossipHello( Object *pObject, Player *pPlayer )
 	{
 		GossipMenu *Menu;
         
@@ -308,8 +307,7 @@ public:
 	    Menu->AddItem( 0, GOSSIP_ITEM_FREE_FLIGHT, 1 ); 
         Menu->AddItem( 3, GOSSIP_ITEM_FLIGHT, 2 );
 
-		if(AutoSend)
-			Menu->SendTo(pPlayer);
+		Menu->SendTo(pPlayer);
 	};
 
     void GossipSelectOption(Object* pObject, Player*  pPlayer, uint32 Id, uint32 IntId, const char * Code)

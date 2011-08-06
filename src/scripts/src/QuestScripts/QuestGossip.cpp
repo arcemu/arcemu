@@ -24,7 +24,7 @@
 class Lady_Jaina : public GossipScript
 {
 public:
-	void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+	void GossipHello( Object *pObject, Player *plr )
 	{
 		GossipMenu *Menu;
 		if(plr->GetQuestLogForEntry(558))
@@ -44,7 +44,7 @@ public:
 		switch(IntId)
 		{
 		case 0: // Return to start
-			GossipHello(pCreature, plr, true);
+			GossipHello(pCreature, plr );
 			break;
 		case 1: // Give Item
 			{
@@ -61,7 +61,7 @@ public:
 class Cairne : public GossipScript
 {
 public:
-	void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+	void GossipHello( Object *pObject, Player *plr )
 	{
 		GossipMenu *Menu;
 		if(plr->GetQuestLogForEntry(925))
@@ -82,7 +82,7 @@ public:
 		switch(IntId)
 		{
 		case 0: // Return to start
-			GossipHello(pCreature, plr, true);
+			GossipHello(pCreature, plr );
 			break;
 		case 1: // Give Item
 			{
@@ -102,7 +102,7 @@ public:
 class TeleportQ_Gossip : public GossipScript
 {
 public:
-    void GossipHello(Object* pObject, Player * plr, bool AutoSend)
+    void GossipHello( Object *pObject, Player *plr )
     {
 		if( plr->GetQuestLogForEntry(12791) != NULL || plr->GetQuestLogForEntry(12794) != NULL || plr->GetQuestLogForEntry(12796) )
 		{

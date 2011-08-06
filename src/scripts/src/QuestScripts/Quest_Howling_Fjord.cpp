@@ -99,7 +99,7 @@ public:
 class Plaguethis_Gossip : public GossipScript
 {
 public:
-	void GossipHello(Object* pObject, Player * plr, bool AutoSend)
+	void GossipHello( Object *pObject, Player *plr )
     {
 		GossipMenu *Menu;
         objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 40002, plr);
@@ -108,8 +108,7 @@ public:
 			Menu->AddItem( 0, "Greer, i need a gryphon to ride and some bombs to drop on New Agamand!", 1 );
        
 
-        if(AutoSend)
-            Menu->SendTo(plr);
+        Menu->SendTo(plr);
     }
 
 	void GossipSelectOption(Object* pObject, Player * plr, uint32 Id, uint32 IntId, const char * Code)

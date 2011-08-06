@@ -221,7 +221,7 @@ public:
 class PrisonerGossip : public GossipScript
 {
 public:
-	void GossipHello(Object* pObject, Player* pPlayer, bool AutoSend)
+	void GossipHello( Object *pObject, Player *pPlayer )
 	{
 		if ( pPlayer == NULL )			// useless, but who knows
 			return;
@@ -255,8 +255,8 @@ public:
 				GossipMenu *Menu;
 				objmgr.CreateGossipMenuForPlayer( &Menu, pObject->GetGUID(), 10104, pPlayer );
 				Menu->AddItem( 0, "Walk free, Elder. Bring the spirits back to your tribe.", 1 );
-				if ( AutoSend )
-					Menu->SendTo( pPlayer );
+				
+				Menu->SendTo( pPlayer );
 			}
 		}
    	}
@@ -272,7 +272,7 @@ public:
 		switch ( IntId )
 		{
 		case 0:
-			GossipHello( pObject, pPlayer, true );
+			GossipHello( pObject, pPlayer );
 			break;
 		case 1:
 		{

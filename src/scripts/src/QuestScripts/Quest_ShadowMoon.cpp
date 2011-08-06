@@ -281,7 +281,7 @@ public:
 class NeltharakusTale_Gossip : public GossipScript
 {
 public:
-    void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+    void GossipHello( Object *pObject, Player *plr )
     {
 		if (plr->GetQuestLogForEntry(10814))
 		{
@@ -386,20 +386,20 @@ public:
 class FlanisSwiftwing_Gossip : public GossipScript
 {
 public:
-    void GossipHello(Object * pObject, Player* Plr, bool AutoSend);
+    void GossipHello( Object *pObject, Player *Plr );
     void GossipSelectOption(Object * pObject, Player* Plr, uint32 Id, uint32 IntId, const char * Code);
     void GossipEnd(Object * pObject, Player* Plr, Creature * pCreature);
 
 };
 
-void FlanisSwiftwing_Gossip::GossipHello(Object* pObject, Player * plr, bool AutoSend)
+void FlanisSwiftwing_Gossip::GossipHello( Object *pObject, Player *plr )
 {
 	GossipMenu *Menu;
 	objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 40002, plr);
 	if(plr->GetQuestLogForEntry(10583) != NULL)
 		Menu->AddItem( 0, "Examine the corpse", 1 );
-	if(AutoSend)
-		Menu->SendTo(plr);
+	
+	Menu->SendTo(plr);
 };
 
 void FlanisSwiftwing_Gossip::GossipSelectOption(Object* pObject, Player * plr, uint32 Id, uint32 IntId, const char * Code)

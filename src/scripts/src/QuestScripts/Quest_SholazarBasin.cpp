@@ -63,15 +63,15 @@ public:
 class SCRIPT_DECL HemetTasteTest : public GossipScript
 {
 public:
-    void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+    void GossipHello( Object *pObject, Player *plr )
     {
         if(plr->HasQuest(12645))
 		{
 			GossipMenu *Menu;
 			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 40002, plr);
 			Menu->AddItem( 0, GOSSIP_TASTETEST, 1);
-			if(AutoSend)
-				Menu->SendTo(plr);
+			
+			Menu->SendTo(plr);
 		}
     }
 
@@ -110,7 +110,7 @@ public:
 class SCRIPT_DECL HadriusTasteTest : public GossipScript
 {
 public:
-    void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+    void GossipHello( Object *pObject, Player *plr )
     {
 		if(plr->HasQuest(12645))
 		{
@@ -118,8 +118,7 @@ public:
 			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 40002, plr);
 			Menu->AddItem( 0, GOSSIP_TASTETEST, 1);
 
-			if(AutoSend)
-				Menu->SendTo(plr);
+			Menu->SendTo(plr);
 		}
     }
 
@@ -157,7 +156,7 @@ public:
 class SCRIPT_DECL TamaraTasteTest : public GossipScript
 {
 public:
-    void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+    void GossipHello( Object *pObject, Player *plr )
     {
 		if(plr->HasQuest(12645))
 		{
@@ -165,8 +164,7 @@ public:
 			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 40002, plr);
 			Menu->AddItem( 0, GOSSIP_TASTETEST, 1);
 
-			if(AutoSend)
-				Menu->SendTo(plr);
+			Menu->SendTo(plr);
 		}
     }
 

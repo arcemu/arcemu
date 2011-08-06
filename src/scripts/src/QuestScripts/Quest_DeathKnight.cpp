@@ -23,7 +23,7 @@
 class ScourgeGryphonOne : public GossipScript
 {
 public:
-	void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+	void GossipHello( Object *pObject, Player *plr )
 	{
 		TaxiPath * path = sTaxiMgr.GetTaxiPath( 1053 );
 		plr->TaxiStart( path, 26308, 0 );
@@ -33,7 +33,7 @@ public:
 class ScourgeGryphonTwo : public GossipScript
 {
 public:
-	void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+	void GossipHello( Object *pObject, Player *plr )
 	{
 		TaxiPath * path = sTaxiMgr.GetTaxiPath( 1054 );
 		plr->TaxiStart( path, 26308, 0 );

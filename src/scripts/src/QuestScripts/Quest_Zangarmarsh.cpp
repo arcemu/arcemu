@@ -27,7 +27,7 @@
 class AncientMarks : public GossipScript
 {
 public:
-	void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+	void GossipHello( Object *pObject, Player *plr )
 	{
 		GossipMenu *Menu;
 		uint32 entry = pObject->GetEntry();
@@ -50,8 +50,7 @@ public:
 		if(plr->HasFinishedQuest(9785) || plr->GetQuestLogForEntry(9785))
 			Menu->AddItem(0, text, 1);
 
-		if(AutoSend)
-			Menu->SendTo(plr);
+		Menu->SendTo(plr);
 	}
 
 	void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
@@ -109,7 +108,7 @@ public:
 class ElderKuruti : public GossipScript
 {
 public:
-	void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+	void GossipHello( Object *pObject, Player *plr )
 	{
 		GossipMenu *Menu;
 		if(!plr->GetItemInterface()->GetItemCount(24573, true))

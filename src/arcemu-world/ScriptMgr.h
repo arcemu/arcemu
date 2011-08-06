@@ -406,7 +406,7 @@ public:
 	GossipScript() {}
 	virtual ~GossipScript() {} 
 
-	virtual void GossipHello(Object* pObject, Player* Plr, bool AutoSend) {}
+	virtual void GossipHello( Object *pObject, Player *plr ) {}
 	virtual void GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, uint32 IntId, const char * EnteredCode) {}
 	virtual void GossipEnd(Object* pObject, Player* Plr) {}
 

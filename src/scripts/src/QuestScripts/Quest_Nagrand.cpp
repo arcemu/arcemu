@@ -406,7 +406,7 @@ public:
 class LumpGossipScript : public GossipScript
 {
 public:
-	void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+	void GossipHello( Object *pObject, Player *plr )
 	{
 		GossipMenu *Menu;
 		objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 1, plr);
@@ -423,7 +423,7 @@ public:
 		switch (IntId)
 		{
 		case 0:
-			GossipHello(pObject, plr, true);
+			GossipHello(pObject, plr );
 			break;
 		case 1:
 			if(plr->GetQuestLogForEntry(9918))

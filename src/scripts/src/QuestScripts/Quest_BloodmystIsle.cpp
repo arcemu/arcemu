@@ -40,7 +40,7 @@ public:
 class TheKesselRun1 : public GossipScript
 {
 public:
-    void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+    void GossipHello( Object *pObject, Player *plr )
     {
 		if(!plr)
 			return;
@@ -54,8 +54,7 @@ public:
 			if(plr->GetQuestLogForEntry(9663))
 			Menu->AddItem( 0, "Warn him", 1);
 	 
-		if(AutoSend)
-			Menu->SendTo(plr);
+		Menu->SendTo(plr);
     }
  
 	void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * EnteredCode)
@@ -70,7 +69,7 @@ public:
 		switch (IntId)
 		{
 			case 0:
-				GossipHello(pObject, plr, true);
+				GossipHello(pObject, plr );
 				break;
  
 			case 1:
@@ -93,7 +92,7 @@ public:
 class TheKesselRun2 : public GossipScript
 {
 public:
-    void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+    void GossipHello( Object *pObject, Player *plr )
     {
 		if(!plr)
 			return;
@@ -107,8 +106,7 @@ public:
 			if(plr->GetQuestLogForEntry(9663))
 			Menu->AddItem( 0, "Warn him", 1);
 	 
-		if(AutoSend)
-			Menu->SendTo(plr);
+		Menu->SendTo(plr);
     }
  
 	void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * EnteredCode)
@@ -123,7 +121,7 @@ public:
 		switch (IntId)
 		{
 			case 0:
-				GossipHello(pObject, plr, true);
+				GossipHello(pObject, plr );
 				break;
  
 			case 1:
@@ -146,7 +144,7 @@ public:
 class TheKesselRun3 : public GossipScript
 {
 public:
-    void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+    void GossipHello( Object *pObject, Player *plr )
     {
 		if(!plr)
 			return;
@@ -160,8 +158,7 @@ public:
 			if(plr->GetQuestLogForEntry(9663))
 			Menu->AddItem( 0, "Warn him", 1);
 	 
-		if(AutoSend)
-			Menu->SendTo(plr);
+		Menu->SendTo(plr);
     }
  
 	void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * EnteredCode)
@@ -176,7 +173,7 @@ public:
 		switch (IntId)
 		{
 			case 0:
-				GossipHello(pObject, plr, true);
+				GossipHello(pObject, plr );
 				break;
  
 			case 1:

@@ -1867,7 +1867,7 @@ public:
 		}
 	}
 
-	void GossipHello(Object* pObject, Player* Plr, bool AutoSend)
+	void GossipHello( Object *pObject, Player *plr )
 	{
 		GET_LOCK
 		if(pObject->IsCreature())
@@ -1877,9 +1877,8 @@ public:
 			sLuaMgr.BeginCall(m_unit_gossip_binding->m_functionReferences[GOSSIP_EVENT_ON_TALK]);
 			sLuaMgr.PushUnit(pObject);
 			sLuaMgr.PUSH_UINT(GOSSIP_EVENT_ON_TALK);
-			sLuaMgr.PushUnit(Plr);
-			sLuaMgr.PUSH_BOOL(AutoSend);
-			sLuaMgr.ExecuteCall(4);
+			sLuaMgr.PushUnit(plr);
+			sLuaMgr.ExecuteCall(3);
         }
         else if(pObject->IsItem())
         {
@@ -1888,9 +1887,8 @@ public:
 			sLuaMgr.BeginCall(m_item_gossip_binding->m_functionReferences[GOSSIP_EVENT_ON_TALK]);
 			sLuaMgr.PushItem(pObject);
 			sLuaMgr.PUSH_UINT(GOSSIP_EVENT_ON_TALK);
-			sLuaMgr.PushUnit(Plr);
-			sLuaMgr.PUSH_BOOL(AutoSend);
-			sLuaMgr.ExecuteCall(4);
+			sLuaMgr.PushUnit(plr);
+			sLuaMgr.ExecuteCall(3);
         }
 		else if(pObject->IsGameObject())
         {
@@ -1899,9 +1897,8 @@ public:
             sLuaMgr.BeginCall(m_go_gossip_binding->m_functionReferences[GOSSIP_EVENT_ON_TALK]);
 			sLuaMgr.PushGo(pObject);
 			sLuaMgr.PUSH_UINT(GOSSIP_EVENT_ON_TALK);
-			sLuaMgr.PushUnit(Plr);
-			sLuaMgr.PUSH_BOOL(AutoSend);
-			sLuaMgr.ExecuteCall(4);
+			sLuaMgr.PushUnit(plr);
+			sLuaMgr.ExecuteCall(3);
         }
 		RELEASE_LOCK
 	}

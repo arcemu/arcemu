@@ -52,7 +52,7 @@ public:
 class SCRIPT_DECL MoonkinGhost_Gossip : public GossipScript
 {
 public:
-    void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+    void GossipHello( Object *pObject, Player *plr )
     {
         GossipMenu *Menu;
         objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4714, plr);
@@ -66,8 +66,7 @@ public:
 			Menu->AddItem( 0, GOSSIP_GHOST_MOONKIN, 2); //Ally
 		}
         
-        if(AutoSend)
-            Menu->SendTo(plr);
+        Menu->SendTo(plr);
     }
 
     void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
@@ -80,7 +79,7 @@ public:
         switch(IntId)
         {
 		case 0: // Return to start
-			GossipHello(pCreature, plr, true);
+			GossipHello(pCreature, plr );
 			break;
 
         case 1: //Horde
@@ -138,7 +137,7 @@ public:
 class SCRIPT_DECL BearGhost_Gossip : public GossipScript
 {
 public:
-    void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+    void GossipHello( Object *pObject, Player *plr )
     {
         GossipMenu *Menu;
         objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4719, plr);
@@ -152,8 +151,7 @@ public:
 			Menu->AddItem( 0, GOSSIP_GHOST_BEAR_A, 5);
 		}
 
-        if(AutoSend)
-            Menu->SendTo(plr);
+        Menu->SendTo(plr);
     }
 
     void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
@@ -166,7 +164,7 @@ public:
         switch(IntId)
         {
 		case 0: // Return to start
-			GossipHello(pCreature, plr, true);
+			GossipHello(pCreature, plr );
 			break;
         case 1:
 			{

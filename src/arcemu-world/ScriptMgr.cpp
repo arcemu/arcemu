@@ -850,7 +850,7 @@ void ScriptMgr::UnloadScriptEngines(){
 //support for Gossip scripts added before r4106 changes
 void GossipScript::OnHello(Object* pObject, Player* Plr)
 {
-	GossipHello(pObject, Plr, true);
+	GossipHello(pObject, Plr );
 }
 
 void GossipScript::OnSelectOption(Object* pObject, Player* Plr, uint32 Id, const char * EnteredCode)

@@ -24,7 +24,7 @@
 class SCRIPT_DECL DearestNatalia1 : public GossipScript
 {
 	public:
-		void GossipHello(Object* pObject, Player * Plr, bool AutoSend)
+		void GossipHello( Object *pObject, Player *Plr )
 		{
 			GossipMenu * Menu;
 			QuestLogEntry * en = Plr->GetQuestLogForEntry( 8304 );
@@ -34,8 +34,7 @@ class SCRIPT_DECL DearestNatalia1 : public GossipScript
 			if ( en && en->GetMobCount(1) < en->GetQuest()->required_mobcount[1] )
 				Menu->AddItem(0, "Hello, Rutgar. The Commander has sent me here to gather some information about his missing wife.", 3);
 
-			if(AutoSend)
-				Menu->SendTo(Plr);
+			Menu->SendTo(Plr);
 		}
 
 		void GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, uint32 IntId, const char * Code)
@@ -44,7 +43,7 @@ class SCRIPT_DECL DearestNatalia1 : public GossipScript
 			switch(IntId)
 			{
 				case 0:
-					GossipHello(pObject, Plr, true);
+					GossipHello(pObject, Plr );
 					break;
 				case 3:
 					{
@@ -105,7 +104,7 @@ class SCRIPT_DECL DearestNatalia1 : public GossipScript
 class SCRIPT_DECL DearestNatalia2 : public GossipScript
 {
 	public:
-		void GossipHello(Object* pObject, Player * Plr, bool AutoSend)
+		void GossipHello( Object *pObject, Player *Plr )
 		{
 			GossipMenu * Menu;
 			QuestLogEntry * en = Plr->GetQuestLogForEntry( 8304 );
@@ -116,8 +115,7 @@ class SCRIPT_DECL DearestNatalia2 : public GossipScript
 			if ( en && (en->GetMobCount(0) < en->GetQuest()->required_mobcount[0]) && (en->GetMobCount(1) == 1) )
 				Menu->AddItem(0, "Hello, Frankal. I've heard that you might have some information as to the whereabouts of Mistress Natalia Mar'alith.", 3);
 
-			if(AutoSend)
-				Menu->SendTo(Plr);
+			Menu->SendTo(Plr);
 		}
 
 		void GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, uint32 IntId, const char * Code)
@@ -126,7 +124,7 @@ class SCRIPT_DECL DearestNatalia2 : public GossipScript
 			switch(IntId)
 			{
 				case 0:
-					GossipHello(pObject, Plr, true);
+					GossipHello(pObject, Plr );
 					break;
 				case 3:
 					{

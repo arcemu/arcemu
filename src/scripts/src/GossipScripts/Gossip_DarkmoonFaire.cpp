@@ -17,7 +17,7 @@ Team: Sun++ (www.sunplusplus.info)
 class SetupCarnies_Gossip : public GossipScript
 {
 public:
-    void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+    void GossipHello( Object *pObject, Player *plr )
     {
         GossipMenu *Menu;
 		int randGossip;
@@ -40,9 +40,8 @@ public:
 				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 50003, plr);
 			break;
 			}
-        
-        if(AutoSend)
-            Menu->SendTo(plr);
+			
+			Menu->SendTo(plr);
     }
 
     void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
@@ -53,7 +52,7 @@ public:
 		switch(IntId)
         {
         case 1:
-			GossipHello(pObject, plr, true);
+			GossipHello(pObject, plr );
         break;
 		}
     }
@@ -108,7 +107,7 @@ public:
 class ActiveCarnies_Gossip : public GossipScript
 {
 public:
-    void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+    void GossipHello( Object *pObject, Player *plr )
     {
         GossipMenu *Menu;
 		int randGossip;
@@ -131,9 +130,8 @@ public:
 				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 60010, plr);
 			break;
 			}
-        
-        if(AutoSend)
-            Menu->SendTo(plr);
+			
+			Menu->SendTo(plr);
     }
 
     void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
@@ -144,7 +142,7 @@ public:
 		switch(IntId)
         {
         case 1:
-			GossipHello(pObject, plr, true);
+			GossipHello(pObject, plr );
         break;
 		}
     }
@@ -194,7 +192,7 @@ public:
 class Burth_Gossip : public GossipScript
 {
 public:
-    void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+    void GossipHello( Object *pObject, Player *plr )
     {
 		GossipMenu *Menu;
 		
@@ -234,9 +232,8 @@ public:
 				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 60050, plr);
 			break;
 			}
-                        
-        if(AutoSend)
-            Menu->SendTo(plr);
+			
+			Menu->SendTo(plr);
     }
 
     void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
@@ -247,7 +244,7 @@ public:
         switch(IntId)
         {
         case 1:
-			GossipHello(pObject, plr, true);
+			GossipHello(pObject, plr );
 		break;
 		}
     }
@@ -303,7 +300,7 @@ public:
 class FliksFrog_Gossip : public GossipScript
 {
 public:
-    void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+    void GossipHello( Object *pObject, Player *plr )
     {
 		GossipMenu *Menu;
 		
@@ -319,8 +316,7 @@ public:
 			break;
 			}
                         
-        if(AutoSend)
-            Menu->SendTo(plr);
+        Menu->SendTo(plr);
     }
 
     void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
@@ -331,7 +327,7 @@ public:
         switch(IntId)
         {
         case 1:
-			GossipHello(pObject, plr, true);
+			GossipHello(pObject, plr );
 		break;
 		}
     }
@@ -432,15 +428,14 @@ public:
 class MaximaBlastenheimer_Gossip : public GossipScript
 {
 public:
-    void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+    void GossipHello( Object *pObject, Player *plr )
     {
 		GossipMenu *Menu;
 		
 		objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 60048, plr);
 		Menu->AddItem(0, "Tell me how to use the Blastenheimer 5000 Ultra Cannon.", 1);
                         
-        if(AutoSend)
-            Menu->SendTo(plr);
+        Menu->SendTo(plr);
     }
 
     void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
@@ -453,7 +448,7 @@ public:
         switch(IntId)
         {
         case 0: 
-			GossipHello(pObject, plr, true);
+			GossipHello(pObject, plr );
 		break;
 
 		case 1:
@@ -513,7 +508,7 @@ public:
 class ProfessorThaddeusPaleo_Gossip : public GossipScript
 {
 public:
-    void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+    void GossipHello( Object *pObject, Player *plr )
     {
 		GossipMenu *Menu;
 		objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 60016, plr);
@@ -522,8 +517,7 @@ public:
 			Menu->AddItem( 1, "Let me browse your goods.", 1 );
 			Menu->AddItem( 0, "Tell me more about these Darkmoon Cards.", 2 );
         
-        if(AutoSend)
-            Menu->SendTo(plr);
+        Menu->SendTo(plr);
     }
 
     void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
@@ -647,7 +641,7 @@ public:
 class Sayge_Gossip : public GossipScript
 {
 public:
-    void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+    void GossipHello( Object *pObject, Player *plr )
     {
 		GossipMenu *Menu;
 		// Check to see if the player already has a buff from Sayge.
@@ -661,8 +655,7 @@ public:
 			Menu->AddItem(0, "I am ready to discover where my fortune lies!", 1);
 		}
                         
-		if(AutoSend)
-			Menu->SendTo(plr);
+		Menu->SendTo(plr);
     }
 
     void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
@@ -900,7 +893,7 @@ public:
 class SelinaDourman_Gossip : public GossipScript
 {
 public:
-    void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+    void GossipHello( Object *pObject, Player *plr )
     {
 		GossipMenu *Menu;
 		
@@ -910,8 +903,7 @@ public:
 		Menu->AddItem(0, "What are Darkmoon Cards?", 3);
 		Menu->AddItem(0, "What other things can I do at the faire?", 4);
                         
-        if(AutoSend)
-            Menu->SendTo(plr);
+        Menu->SendTo(plr);
     }
 
     void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
@@ -977,15 +969,14 @@ public:
 class SilasDarkmoon_Gossip : public GossipScript
 {
 public:
-    void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+    void GossipHello( Object *pObject, Player *plr )
     {
 		GossipMenu *Menu;
 		
 		objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 60013, plr);
 		Menu->AddItem(0, "Silas, why is most everything at the fair free? How do you make a profit?", 1);
                         
-        if(AutoSend)
-            Menu->SendTo(plr);
+        Menu->SendTo(plr);
     }
 
     void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)

@@ -32,7 +32,7 @@ public:
 class WoodlandWalkerGossip : public GossipScript
 {
 public:
-	void GossipHello(Object* pObject, Player* plr, bool AutoSend)
+	void GossipHello( Object *pObject, Player *plr )
 	{
 		Creature*  pCreature = (pObject->IsCreature())?(TO_CREATURE(pObject)):NULL;
 		if( pCreature == NULL )

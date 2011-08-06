@@ -26,7 +26,7 @@
 class DraeneiFishingNet : public GossipScript
 {
 public:
-	void GossipHello( Object* pObject, Player* pPlayer, bool AutoSend )
+	void GossipHello( Object *pObject, Player *pPlayer )
 	{
 		if ( pObject == NULL || !pObject->IsItem() || pPlayer == NULL )
 			return;

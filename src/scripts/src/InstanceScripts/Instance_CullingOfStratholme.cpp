@@ -1237,15 +1237,14 @@ protected:
 class ArthasGossip : public GossipScript
 {
 public:
-	void GossipHello(Object* pObject, Player*  Plr, bool AutoSend)
+	void GossipHello( Object *pObject, Player *Plr )
 	{
 		GossipMenu *Menu;
 		objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 1, Plr);
 		
 		Menu->AddItem( 0, "We're ready to go!", 1 );//find correct txt
 
-		if(AutoSend)
-			Menu->SendTo(Plr);
+		Menu->SendTo(Plr);
 	}
 
 	void GossipSelectOption(Object* pObject, Player*  Plr, uint32 Id, uint32 IntId, const char * Code)
@@ -1254,7 +1253,7 @@ public:
 		{
 			case 0:
 				{
-					GossipHello(pObject, Plr, true);
+					GossipHello(pObject, Plr );
 				}break;
 			case 1:
 				{
