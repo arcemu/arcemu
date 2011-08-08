@@ -21,7 +21,7 @@
 #ifndef __STDAFX_H
 #define __STDAFX_H
 
-//#define TEST_PATHFINDING 1
+#define TEST_PATHFINDING 1
 
 #ifdef min
 #undef min
@@ -30,6 +30,16 @@
 #ifdef max
 #undef max
 #endif
+
+/* platforms that already define M_PI in math.h */
+#ifdef M_PI
+#undef M_PI
+#endif
+
+#define M_PI	   3.14159265358979323846
+#define M_H_PI     1.57079632679489661923
+#define M_Q_PI     0.785398163397448309615
+#define M_PI_FLOAT 3.14159f
 
 template< class T, class U > T TO( U u ){ return static_cast< T >( u ); }
 #define TO_CREATURE(ptr) TO<Creature*>(ptr) 
@@ -117,16 +127,6 @@ template< class T, class U > T TO( U u ){ return static_cast< T >( u ); }
 #ifdef ENABLE_ACHIEVEMENTS
 #include "AchievementMgr.h"
 #endif
-
-/* platforms that already define M_PI in math.h */
-#ifdef M_PI
-#undef M_PI
-#endif
-
-#define M_PI	   3.14159265358979323846
-#define M_H_PI     1.57079632679489661923
-#define M_Q_PI     0.785398163397448309615
-#define M_PI_FLOAT 3.14159f
 
 //VMAP
 #include "vmap/ModelInstance.h"

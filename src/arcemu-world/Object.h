@@ -771,6 +771,10 @@ public:
 	//Andy's crap
 	virtual Object* GetPlayerOwner();
 	std::set<Spell*> m_pendingSpells;
+
+	bool GetPoint(float angle, float rad, float & outx, float & outy, float & outz);
+	bool GetRandomPoint(float rad, float & outx, float & outy, float & outz) { return GetPoint(RandomFloat(M_PI * 2),rad, outx, outy, outz); }
+	bool GetRandomPoint(float rad, LocationVector & out) { return GetRandomPoint(rad, out.x, out.y, out.z); }
 };
 
 
