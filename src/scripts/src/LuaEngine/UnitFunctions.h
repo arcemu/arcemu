@@ -1406,6 +1406,8 @@ class LuaUnit
 		}
 		static int GetInRangeFriends(lua_State* L, Unit* ptr)
 		{
+			if(ptr == NULL)
+				return 0;
 			Object* pC = NULL;
 			uint32 count = 0;
 			lua_newtable(L);
@@ -1425,6 +1427,8 @@ class LuaUnit
 
 		static int GetInRangeEnemies(lua_State* L, Unit* ptr)
 		{
+			if(ptr == NULL)
+				return 0;
 			uint32 count = 0;
 			lua_newtable(L);
 			for(set<Object*>::iterator itr = ptr->GetInRangeSetBegin(); itr != ptr->GetInRangeSetEnd(); itr++)
@@ -1442,6 +1446,8 @@ class LuaUnit
 
 		static int GetInRangeUnits(lua_State* L, Unit* ptr)
 		{
+			if(ptr == NULL)
+				return 0;
 			uint32 count = 0;
 			lua_newtable(L);
 			for(set<Object*>::iterator itr = ptr->GetInRangeSetBegin(); itr != ptr->GetInRangeSetEnd(); itr++)
