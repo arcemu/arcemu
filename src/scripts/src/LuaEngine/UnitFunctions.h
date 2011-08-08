@@ -133,6 +133,21 @@ class LuaUnit
 			return 0;
 		}
 
+		static int GossipAddQuests( lua_State *L, Unit *ptr ){
+			TEST_UNIT()
+
+			if( Menu == NULL ){
+				LOG_ERROR( "There's no menu to fill quests into." );
+				return 0;
+			}
+
+			Player *player = CHECK_PLAYER( L, 1 );
+
+			sQuestMgr.FillQuestMenu( TO< Creature* >( ptr ), player, *Menu );
+
+			return 0;
+		}
+
 		
 		static int GossipComplete(lua_State * L, Unit * ptr)
 		{

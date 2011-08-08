@@ -85,6 +85,7 @@ RegType<Unit> UnitMethods[] =
 	{ "GossipComplete", &LuaUnit::GossipComplete },
 	{ "GossipSendPOI", &LuaUnit::GossipSendPOI },
 	{ "GossipSendQuickMenu", &LuaUnit::GossipSendQuickMenu },
+	{ "GossipAddQuests", &LuaUnit::GossipAddQuests },
 	{ "GetName", &LuaUnit::GetName },
 	{ "SendChatMessage", &LuaUnit::SendChatMessage },
 	{ "MoveTo", &LuaUnit::MoveTo },
