@@ -27,20 +27,21 @@
 #include <openssl/sha.h>
 #include <openssl/rc4.h>
 
-class WowCrypt {
-public:
-	WowCrypt();
-	~WowCrypt();
+class WowCrypt
+{
+	public:
+		WowCrypt();
+		~WowCrypt();
 
-	void Init(uint8 *K);
-    ARCEMU_INLINE void DecryptRecv(uint8* pData, size_t len) { if( !m_initialized) { return; } RC4(&m_clientDecrypt, (unsigned long)len, pData, pData); }
-    ARCEMU_INLINE void EncryptSend(uint8* pData, size_t len) { if( !m_initialized) { return; } RC4(&m_serverEncrypt, (unsigned long)len, pData, pData); }
-    bool IsInitialized() { return m_initialized; }
+		void Init(uint8* K);
+		ARCEMU_INLINE void DecryptRecv(uint8* pData, size_t len) { if(!m_initialized) { return; } RC4(&m_clientDecrypt, (unsigned long)len, pData, pData); }
+		ARCEMU_INLINE void EncryptSend(uint8* pData, size_t len) { if(!m_initialized) { return; } RC4(&m_serverEncrypt, (unsigned long)len, pData, pData); }
+		bool IsInitialized() { return m_initialized; }
 
-private:
-    RC4_KEY m_clientDecrypt;
-    RC4_KEY m_serverEncrypt;
-    bool m_initialized;
+	private:
+		RC4_KEY m_clientDecrypt;
+		RC4_KEY m_serverEncrypt;
+		bool m_initialized;
 };
 
 #endif

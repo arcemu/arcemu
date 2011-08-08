@@ -22,15 +22,15 @@
 //Quick class wrapper method that pushes field objects to lua.
 class LuaResult : public QueryResult
 {
-public:
-	LuaResult() : QueryResult(0,0) {}
-	LuaResult(const LuaResult & other) : QueryResult(other.GetFieldCount(),other.GetRowCount() ) {}
-	Field * GetColumn(int clm)
-	{
-		if( (uint32)clm <= GetFieldCount() )
-			return &Fetch()[clm];
-		return NULL;
-	}
+	public:
+		LuaResult() : QueryResult(0, 0) {}
+		LuaResult(const LuaResult & other) : QueryResult(other.GetFieldCount(), other.GetRowCount()) {}
+		Field* GetColumn(int clm)
+		{
+			if((uint32)clm <= GetFieldCount())
+				return &Fetch()[clm];
+			return NULL;
+		}
 };
 
 namespace lua_engine
@@ -39,20 +39,20 @@ namespace lua_engine
 	{
 		m	.class_decl<QueryResult>("QueryResult");
 		m	.class_<QueryResult>("QueryResult")
-			.method( &QueryResult::NextRow, "NextRow", "nextRow", "nextrow", NULL)
-			.method( &QueryResult::GetFieldCount, "GetFieldCount", "getFieldCount", "getfieldcount", NULL)
-			.method( (Field* (LuaResult::*)(int) )&LuaResult::GetColumn, "GetColumn", "getColumn" , "getcolumn", NULL)
-			.method( &QueryResult::GetRowCount, "GetRowCount", "getRowCount", "getrowcount", NULL);
+		.method(&QueryResult::NextRow, "NextRow", "nextRow", "nextrow", NULL)
+		.method(&QueryResult::GetFieldCount, "GetFieldCount", "getFieldCount", "getfieldcount", NULL)
+		.method((Field * (LuaResult::*)(int))&LuaResult::GetColumn, "GetColumn", "getColumn" , "getcolumn", NULL)
+		.method(&QueryResult::GetRowCount, "GetRowCount", "getRowCount", "getrowcount", NULL);
 
 		m	.class_<Field>("SQL_Field")
-			.method( &Field::GetString, "GetString", "getString", "getstring", NULL)
-			.method( &Field::GetInt8, "GetByte", "getbyte", "GetInt8", "getInt8", "getint8", NULL)
-			.method( &Field::GetUInt8, "GetUInt8", "getuint8", "GetUByte", "getubyte", "getUByte", NULL)
-			.method( &Field::GetInt16, "GetInt16", "getint16", "GetShort", "getShort", NULL)
-			.method( &Field::GetUInt16, "GetUInt16", "getUInt16", "getuint16", "getushort", "GetUShort", "getUShort", NULL)
-			.method( &Field::GetInt32, "GetInt32", "getInt32", "getint32", "getlong", "GetLong", "getLong", NULL)
-			.method( &Field::GetUInt32, "GetUInt32", "getUInt32", "getuint32", "GetULong", "getULong", "getulong", NULL)
-			.method( &Field::GetFloat, "GetFloat", "getFloat", "getfloat", NULL)
-			.method( &Field::GetUInt64, "GetGUID", "getGUID", "getguid", "GetUInt64", "getUInt64", "getuint64", NULL);
+		.method(&Field::GetString, "GetString", "getString", "getstring", NULL)
+		.method(&Field::GetInt8, "GetByte", "getbyte", "GetInt8", "getInt8", "getint8", NULL)
+		.method(&Field::GetUInt8, "GetUInt8", "getuint8", "GetUByte", "getubyte", "getUByte", NULL)
+		.method(&Field::GetInt16, "GetInt16", "getint16", "GetShort", "getShort", NULL)
+		.method(&Field::GetUInt16, "GetUInt16", "getUInt16", "getuint16", "getushort", "GetUShort", "getUShort", NULL)
+		.method(&Field::GetInt32, "GetInt32", "getInt32", "getint32", "getlong", "GetLong", "getLong", NULL)
+		.method(&Field::GetUInt32, "GetUInt32", "getUInt32", "getuint32", "GetULong", "getULong", "getulong", NULL)
+		.method(&Field::GetFloat, "GetFloat", "getFloat", "getfloat", NULL)
+		.method(&Field::GetUInt64, "GetGUID", "getGUID", "getguid", "GetUInt64", "getUInt64", "getuint64", NULL);
 	}
 }

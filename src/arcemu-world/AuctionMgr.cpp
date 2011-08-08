@@ -20,21 +20,21 @@
 
 #include "StdAfx.h"
 
-initialiseSingleton( AuctionMgr );
+initialiseSingleton(AuctionMgr);
 
 void AuctionMgr::LoadAuctionHouses()
 {
 	Log.Notice("AuctionMgr", "Loading Auction Houses...");
 
-	QueryResult * res = CharacterDatabase.Query("SELECT MAX(auctionId) FROM auctions");
+	QueryResult* res = CharacterDatabase.Query("SELECT MAX(auctionId) FROM auctions");
 	if(res)
 	{
-		maxId.SetVal( res->Fetch()[0].GetUInt32() );
+		maxId.SetVal(res->Fetch()[0].GetUInt32());
 		delete res;
 	}
 
 	res = WorldDatabase.Query("SELECT DISTINCT ahgroup FROM auctionhouse");
-	AuctionHouse * ah;
+	AuctionHouse* ah;
 	map<uint32, AuctionHouse*> tempmap;
 	if(res)
 	{
@@ -45,26 +45,28 @@ void AuctionMgr::LoadAuctionHouses()
 			ah = new AuctionHouse(res->Fetch()[0].GetUInt32());
 			ah->LoadAuctions();
 			auctionHouses.push_back(ah);
-			tempmap.insert( make_pair( res->Fetch()[0].GetUInt32(), ah ) );
-			if( !((++c) % period) )
+			tempmap.insert(make_pair(res->Fetch()[0].GetUInt32(), ah));
+			if(!((++c) % period))
 				Log.Notice("AuctionHouse", "Done %u/%u, %u%% complete.", c, res->GetRowCount(), c * 100 / res->GetRowCount());
 
-		}while(res->NextRow());
+		}
+		while(res->NextRow());
 		delete res;
 	}
 
 	res = WorldDatabase.Query("SELECT creature_entry, ahgroup FROM auctionhouse");
 	if(res)
 	{
-		do 
+		do
 		{
-			auctionHouseEntryMap.insert( make_pair( res->Fetch()[0].GetUInt32(), tempmap[res->Fetch()[1].GetUInt32()] ) );
-		} while(res->NextRow());
+			auctionHouseEntryMap.insert(make_pair(res->Fetch()[0].GetUInt32(), tempmap[res->Fetch()[1].GetUInt32()]));
+		}
+		while(res->NextRow());
 		delete res;
 	}
 }
 
-AuctionHouse * AuctionMgr::GetAuctionHouse(uint32 Entry)
+AuctionHouse* AuctionMgr::GetAuctionHouse(uint32 Entry)
 {
 	HM_NAMESPACE::hash_map<uint32, AuctionHouse*>::iterator itr = auctionHouseEntryMap.find(Entry);
 	if(itr == auctionHouseEntryMap.end()) return NULL;
@@ -75,7 +77,7 @@ void AuctionMgr::Update()
 {
 	if((++loopcount % 100))
 		return;
-		
+
 	vector<AuctionHouse*>::iterator itr = auctionHouses.begin();
 	for(; itr != auctionHouses.end(); ++itr)
 	{

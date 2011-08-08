@@ -43,18 +43,18 @@ SERVER_DECL bool isAlliance(Object* objA); // A is alliance?
 //  Returns false otherwise.
 //
 /////////////////////////////////////////////////////////////////
-SERVER_DECL bool isNeutral( Object *a, Object *b );
+SERVER_DECL bool isNeutral(Object* a, Object* b);
 
 ARCEMU_INLINE bool isFriendly(Object* objA, Object* objB)// B is friendly to A if its not hostile
 {
-	if( !(objA->m_phase & objB->m_phase) )	//We have to return prematurely, because isHostile would return false (phase difference!!!), and it would result in a true return value here.
+	if(!(objA->m_phase & objB->m_phase))	//We have to return prematurely, because isHostile would return false (phase difference!!!), and it would result in a true return value here.
 		return false;			//We must do this, as it affects AoE spell targets, thus required for them to function properly (so you won't heal out of phase friends...).
 	return !isHostile(objA, objB);
 }
 
 ARCEMU_INLINE bool isSameFaction(Object* objA, Object* objB)
 {
-	if( !objB->m_faction || !objA->m_faction )
+	if(!objB->m_faction || !objA->m_faction)
 		return true; //we return true to not give any agro to this object since it might cause other problems later
 	return (objB->m_faction->Faction == objA->m_faction->Faction);
 }

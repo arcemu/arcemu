@@ -26,135 +26,135 @@
 namespace luaItem
 {
 	///////GOSSIP///////
-	int GossipCreateMenu(lua_State * L, Item * ptr)
+	int GossipCreateMenu(lua_State* L, Item* ptr)
 	{
 		int text_id = luaL_checkint(L, 1);
-		Player * plr = CHECK_PLAYER(L,2);
- 		int autosend = luaL_checkint(L, 3);
+		Player* plr = CHECK_PLAYER(L, 2);
+		int autosend = luaL_checkint(L, 3);
 		objmgr.CreateGossipMenuForPlayer(&Menu, ptr->GetGUID(), text_id, plr);
 		if(autosend)
 			Menu->SendTo(plr);
 		return 1;
 	}
 
-	int GossipMenuAddItem(lua_State * L, Item * ptr)
+	int GossipMenuAddItem(lua_State* L, Item* ptr)
 	{
 		int icon = luaL_checkint(L, 1);
-   		const char * menu_text = luaL_checkstring(L, 2);
+		const char* menu_text = luaL_checkstring(L, 2);
 		int IntId = luaL_checkint(L, 3);
 		bool extra = (luaL_checkint(L, 4)) ? true : false;
-		const char * boxmessage = luaL_optstring(L,5,"");
-		uint32 boxmoney = luaL_optint(L,6,0);
-	    
+		const char* boxmessage = luaL_optstring(L, 5, "");
+		uint32 boxmoney = luaL_optint(L, 6, 0);
+
 		Menu->AddMenuItem(icon, menu_text, 0, IntId, boxmessage, boxmoney, extra);
 		return 0;
 	}
 
-	int GossipSendMenu(lua_State * L, Item * ptr)
+	int GossipSendMenu(lua_State* L, Item* ptr)
 	{
-		Player * plr = CHECK_PLAYER(L,1);
+		Player* plr = CHECK_PLAYER(L, 1);
 		Menu->SendTo(plr);
 		return 1;
 	}
 
-	int GossipComplete(lua_State * L, Item * ptr)
+	int GossipComplete(lua_State* L, Item* ptr)
 	{
-		Player * plr = CHECK_PLAYER(L,1);
+		Player* plr = CHECK_PLAYER(L, 1);
 		plr->Gossip_Complete();
 		return 1;
 	}
 
-	int GossipSendPOI(lua_State * L, Item * ptr)
+	int GossipSendPOI(lua_State* L, Item* ptr)
 	{
-		Player * plr = CHECK_PLAYER(L,1);
+		Player* plr = CHECK_PLAYER(L, 1);
 		float x = CHECK_FLOAT(L, 2);
 		float y = CHECK_FLOAT(L, 3);
 		int icon = luaL_checkint(L, 4);
 		int flags = luaL_checkint(L, 5);
 		int data = luaL_checkint(L, 6);
-		const char * name = luaL_checkstring(L, 7);
+		const char* name = luaL_checkstring(L, 7);
 
 		plr->Gossip_SendPOI(x, y, icon, flags, data, name);
 		return 1;
 	}
 
-	int GetOwner(lua_State * L, Item* ptr)
+	int GetOwner(lua_State* L, Item* ptr)
 	{
-		Player * owner = ptr->GetOwner();
+		Player* owner = ptr->GetOwner();
 		if(owner != NULL)
-			PUSH_UNIT(L,owner);
+			PUSH_UNIT(L, owner);
 		else
 			lua_pushnil(L);
 		return 1;
 	}
 
-	int AddEnchantment(lua_State * L, Item* ptr)
+	int AddEnchantment(lua_State* L, Item* ptr)
 	{
-		int entry = luaL_checkint(L,1);
-		int duration = luaL_checkint(L,2);
+		int entry = luaL_checkint(L, 1);
+		int duration = luaL_checkint(L, 2);
 		bool permanent = (duration == 0) ? true : false;
 		bool temp = (luaL_checkint(L, 3) == 1) ? true : false;
 
-		EnchantEntry *eentry = dbcEnchant.LookupEntry( entry );
+		EnchantEntry* eentry = dbcEnchant.LookupEntry(entry);
 
 		lua_pushinteger(L, ptr->AddEnchantment(eentry, duration, permanent, true, temp)); //Return the enchantment Slot back to LUA
 		return 1;
 	}
 
-	int GetGUID(lua_State * L, Item* ptr)
+	int GetGUID(lua_State* L, Item* ptr)
 	{
-		PUSH_GUID(L,ptr->GetGUID());
+		PUSH_GUID(L, ptr->GetGUID());
 		return 1;
 	}
 
-	int RemoveEnchantment(lua_State * L, Item* ptr)
+	int RemoveEnchantment(lua_State* L, Item* ptr)
 	{
-		int slot = luaL_checkint(L,1);
-		bool temp = CHECK_BOOL(L,2);
+		int slot = luaL_checkint(L, 1);
+		bool temp = CHECK_BOOL(L, 2);
 
-		if (slot == -1)	ptr->RemoveAllEnchantments(temp);
-		else if (slot == -2) ptr->RemoveProfessionEnchant();
-		else if (slot == -3) ptr->RemoveSocketBonusEnchant();
-		else if (slot >= 0) ptr->RemoveEnchantment(slot);
+		if(slot == -1)	ptr->RemoveAllEnchantments(temp);
+		else if(slot == -2) ptr->RemoveProfessionEnchant();
+		else if(slot == -3) ptr->RemoveSocketBonusEnchant();
+		else if(slot >= 0) ptr->RemoveEnchantment(slot);
 
 		return 0;
 	}
 
-	int GetEntryId(lua_State * L, Item* ptr)
+	int GetEntryId(lua_State* L, Item* ptr)
 	{
-		if (!ptr) return 0;
-		ItemPrototype * proto = ptr->GetProto();
+		if(!ptr) return 0;
+		ItemPrototype* proto = ptr->GetProto();
 		lua_pushnumber(L, proto->ItemId);
 		return 1;
 	}
 
-	int GetName(lua_State * L, Item* ptr)
+	int GetName(lua_State* L, Item* ptr)
 	{
-		if (!ptr) 
+		if(!ptr)
 			return 0;
-		ItemPrototype * proto = ptr->GetProto();
+		ItemPrototype* proto = ptr->GetProto();
 		lua_pushstring(L, proto->Name1);
 		return 1;
 	}
 
-	int GetSpellId(lua_State * L, Item* ptr)
+	int GetSpellId(lua_State* L, Item* ptr)
 	{
 		uint32 index = luaL_checkint(L, 1);
-		if (!ptr || index < 0 || index > 5)
+		if(!ptr || index < 0 || index > 5)
 			return 0;
-		ItemPrototype * proto = ptr->GetProto();
+		ItemPrototype* proto = ptr->GetProto();
 		lua_pushnumber(L, proto->Spells[index].Id);
 		return 1;
 	}
 
-	int GetSpellTrigger(lua_State * L, Item* ptr)
+	int GetSpellTrigger(lua_State* L, Item* ptr)
 	{
 		uint32 index = luaL_checkint(L, 1);
-		if (!ptr || index < 0 || index > 5)
+		if(!ptr || index < 0 || index > 5)
 			return 0;
-		ItemPrototype * proto = ptr->GetProto();
+		ItemPrototype* proto = ptr->GetProto();
 		lua_pushnumber(L, proto->Spells[index].Trigger);
-		/*	
+		/*
 			USE				= 0,
 			ON_EQUIP		= 1,
 			CHANCE_ON_HIT	= 2,
@@ -164,27 +164,27 @@ namespace luaItem
 		return 1;
 	}
 
-	int AddLoot(lua_State * L, Item* ptr)
+	int AddLoot(lua_State* L, Item* ptr)
 	{
 		//TEST_UNIT()
-		uint32 itemid = luaL_checkint(L,1);
-		uint32 mincount = luaL_checkint(L,2);
-		uint32 maxcount = luaL_checkint(L,3);
-		uint32 ffa_loot = luaL_checkint(L,4);
-		bool perm = ((luaL_optint(L,5,0) == 1) ? true : false);
-		if (perm)
+		uint32 itemid = luaL_checkint(L, 1);
+		uint32 mincount = luaL_checkint(L, 2);
+		uint32 maxcount = luaL_checkint(L, 3);
+		uint32 ffa_loot = luaL_checkint(L, 4);
+		bool perm = ((luaL_optint(L, 5, 0) == 1) ? true : false);
+		if(perm)
 		{
 			float chance = CHECK_FLOAT(L, 6);
 			QueryResult* result = WorldDatabase.Query("SELECT * FROM loot_items WHERE entryid = %u, itemid = %u", ptr->GetEntry(), itemid);
-			if (!result)
+			if(!result)
 				WorldDatabase.Execute("REPLACE INTO loot_items VALUES (%u, %u, %f, 0, 0, 0, %u, %u, %u)", ptr->GetEntry(), itemid, chance, mincount, maxcount, ffa_loot);
 			delete result;
 		}
-		lootmgr.AddLoot(ptr->loot,itemid,mincount,maxcount,ffa_loot);
+		lootmgr.AddLoot(ptr->loot, itemid, mincount, maxcount, ffa_loot);
 		return 1;
 	}
 
-	int GetItemLink(lua_State * L, Item * ptr)
+	int GetItemLink(lua_State* L, Item* ptr)
 	{
 		uint32 lang = luaL_optint(L, 1, LANG_UNIVERSAL);
 		if(!ptr)
@@ -192,48 +192,48 @@ namespace luaItem
 		lua_pushstring(L, ptr->GetItemLink(lang).c_str());
 		return 1;
 	}
-	int SetByteValue(lua_State * L, Item * ptr)
+	int SetByteValue(lua_State* L, Item* ptr)
 	{
-		uint32 index = luaL_checkint(L,1);
-		uint32 index1 = luaL_checkint(L,2);
-		uint8 value = luaL_checkint(L,3);
-		ptr->SetByte(index,index1,value);
+		uint32 index = luaL_checkint(L, 1);
+		uint32 index1 = luaL_checkint(L, 2);
+		uint8 value = luaL_checkint(L, 3);
+		ptr->SetByte(index, index1, value);
 		return 1;
 	}
 
-	int GetByteValue(lua_State * L, Item * ptr)
+	int GetByteValue(lua_State* L, Item* ptr)
 	{
-		uint32 index = luaL_checkint(L,1);
-		uint32 index1 = luaL_checkint(L,2);
-		lua_pushinteger(L,ptr->GetByte(index,index1));
+		uint32 index = luaL_checkint(L, 1);
+		uint32 index1 = luaL_checkint(L, 2);
+		lua_pushinteger(L, ptr->GetByte(index, index1));
 		return 1;
 	}
 
-	int GetItemLevel(lua_State * L, Item * ptr)
+	int GetItemLevel(lua_State* L, Item* ptr)
 	{
 		lua_pushnumber(L, ptr->GetProto()->ItemLevel);
 		return 1;
 	}
 
-	int GetRequiredLevel(lua_State * L, Item * ptr)
+	int GetRequiredLevel(lua_State* L, Item* ptr)
 	{
 		lua_pushnumber(L, ptr->GetProto()->RequiredLevel);
 		return 1;
 	}
 
-	int GetBuyPrice(lua_State * L, Item * ptr)
+	int GetBuyPrice(lua_State* L, Item* ptr)
 	{
 		lua_pushnumber(L, ptr->GetProto()->BuyPrice);
 		return 1;
 	}
 
-	int GetSellPrice(lua_State * L, Item * ptr)
+	int GetSellPrice(lua_State* L, Item* ptr)
 	{
 		lua_pushnumber(L, ptr->GetProto()->SellPrice);
 		return 1;
 	}
 
-	int RepairItem(lua_State * L, Item * ptr)
+	int RepairItem(lua_State* L, Item* ptr)
 	{
 		if(!ptr)
 			return 0;
@@ -241,7 +241,7 @@ namespace luaItem
 		return 1;
 	}
 
-	int GetMaxDurability(lua_State * L, Item * ptr)
+	int GetMaxDurability(lua_State* L, Item* ptr)
 	{
 		if(!ptr)
 			return 0;
@@ -249,7 +249,7 @@ namespace luaItem
 		return 1;
 	}
 
-	int GetDurability(lua_State * L, Item * ptr)
+	int GetDurability(lua_State* L, Item* ptr)
 	{
 		if(!ptr)
 			return 0;
@@ -257,7 +257,7 @@ namespace luaItem
 		return 1;
 	}
 
-	int HasEnchantment(lua_State * L, Item * ptr)
+	int HasEnchantment(lua_State* L, Item* ptr)
 	{
 		if(!ptr)
 			return 0;
@@ -268,7 +268,7 @@ namespace luaItem
 		return 1;
 	}
 
-	int ModifyEnchantmentTime(lua_State * L, Item * ptr)
+	int ModifyEnchantmentTime(lua_State* L, Item* ptr)
 	{
 		uint32 slot = luaL_checkint(L, 1);
 		uint32 duration = luaL_checkint(L, 2);
@@ -278,7 +278,7 @@ namespace luaItem
 		return 1;
 	}
 
-	int SetStackCount(lua_State * L, Item * ptr)
+	int SetStackCount(lua_State* L, Item* ptr)
 	{
 		uint32 count = luaL_checkint(L, 1);
 		if(!ptr || !count || count > 1000)
@@ -287,47 +287,47 @@ namespace luaItem
 		return 1;
 	}
 
-	int HasFlag(lua_State * L, Item * ptr)
+	int HasFlag(lua_State* L, Item* ptr)
 	{
-		uint32 index = luaL_checkint(L,1);
-		uint32 flag = luaL_checkint(L,2);
-		lua_pushboolean(L, ptr->HasFlag(index,flag) ? 1 : 0);
+		uint32 index = luaL_checkint(L, 1);
+		uint32 flag = luaL_checkint(L, 2);
+		lua_pushboolean(L, ptr->HasFlag(index, flag) ? 1 : 0);
 		return 1;
 	}
 
-	int IsSoulbound(lua_State * L, Item * ptr)
+	int IsSoulbound(lua_State* L, Item* ptr)
 	{
-		ptr->IsSoulbound() ? lua_pushboolean(L,1) : lua_pushboolean(L,0);
+		ptr->IsSoulbound() ? lua_pushboolean(L, 1) : lua_pushboolean(L, 0);
 		return 1;
 	}
 
-	int IsAccountbound(lua_State * L, Item * ptr)
+	int IsAccountbound(lua_State* L, Item* ptr)
 	{
-		ptr->IsAccountbound() ? lua_pushboolean(L,1) : lua_pushboolean(L,0);
+		ptr->IsAccountbound() ? lua_pushboolean(L, 1) : lua_pushboolean(L, 0);
 		return 1;
 	}
 
-	int IsContainer(lua_State * L, Item * ptr)
+	int IsContainer(lua_State* L, Item* ptr)
 	{
-		ptr->IsContainer() ? lua_pushboolean(L,1) : lua_pushboolean(L,0);
+		ptr->IsContainer() ? lua_pushboolean(L, 1) : lua_pushboolean(L, 0);
 		return 1;
 	}
 
-	int GetContainerItemCount(lua_State * L, Item * ptr)
+	int GetContainerItemCount(lua_State* L, Item* ptr)
 	{
-		uint32 itemid = CHECK_ULONG(L,1);
-		if (!ptr->IsContainer() || !itemid) return 0;
-		Container * pCont = TO< Container* >(ptr);
+		uint32 itemid = CHECK_ULONG(L, 1);
+		if(!ptr->IsContainer() || !itemid) return 0;
+		Container* pCont = TO< Container* >(ptr);
 		int16 TotalSlots = static_cast<int16>(pCont->GetNumSlots());
 		int cnt = 0;
-		for (int16 i = 0; i < TotalSlots; i++)
+		for(int16 i = 0; i < TotalSlots; i++)
 		{
-			Item *item = pCont->GetItem(i);
-			if (item)
+			Item* item = pCont->GetItem(i);
+			if(item)
 			{
 				if(item->GetEntry() == itemid && item->wrapped_item_id == 0)
 				{
-					cnt += item->GetStackCount() ? item->GetStackCount() : 1; 
+					cnt += item->GetStackCount() ? item->GetStackCount() : 1;
 				}
 			}
 		}
@@ -335,21 +335,21 @@ namespace luaItem
 		return 1;
 	}
 
-	int GetEquippedSlot(lua_State * L, Item * ptr)
+	int GetEquippedSlot(lua_State* L, Item* ptr)
 	{
-		if (!ptr) return 0;
+		if(!ptr) return 0;
 		lua_pushinteger(L, ptr->GetOwner()->GetItemInterface()->GetInventorySlotById(ptr->GetEntry()));
 		return 1;
 	}
 
-	int GetObjectType(lua_State * L, Item * ptr)
+	int GetObjectType(lua_State* L, Item* ptr)
 	{
-		if (!ptr) { lua_pushnil(L); return 1; }
+		if(!ptr) { lua_pushnil(L); return 1; }
 		lua_pushstring(L, "Item");
 		return 1;
 	}
 
-	int Remove(lua_State * L, Item * ptr)
+	int Remove(lua_State* L, Item* ptr)
 	{
 		if(ptr == NULL || !ptr->IsInWorld() || !ptr->IsItem())
 		{
@@ -359,12 +359,12 @@ namespace luaItem
 		return 0;
 	}
 
-	int Create(lua_State * L, Item * ptr)
+	int Create(lua_State* L, Item* ptr)
 	{
-		uint32 id = CHECK_ULONG(L,1);
-		uint32 stackcount = CHECK_ULONG(L,2);
-		Item * pItem = objmgr.CreateItem(id,NULL);
-		if (!pItem)
+		uint32 id = CHECK_ULONG(L, 1);
+		uint32 stackcount = CHECK_ULONG(L, 2);
+		Item* pItem = objmgr.CreateItem(id, NULL);
+		if(!pItem)
 			RET_NIL();
 		pItem->SetStackCount(stackcount);
 		pItem->SaveToDB(0, 0, true, NULL);
@@ -372,89 +372,89 @@ namespace luaItem
 		return 1;
 	}
 
-	int ModUInt32Value(lua_State * L, Item * ptr)
+	int ModUInt32Value(lua_State* L, Item* ptr)
 	{
 		int field = luaL_checkint(L, 1);
 		int value = luaL_checkint(L, 2);
-		if (ptr) 
+		if(ptr)
 			ptr->ModSignedInt32Value(field, value);
 		return 0;
 	}
 
-	int ModFloatValue(lua_State * L, Item * ptr)
+	int ModFloatValue(lua_State* L, Item* ptr)
 	{
 		int field = luaL_checkint(L, 1);
 		float value = CHECK_FLOAT(L, 2);
-		if (ptr) 
+		if(ptr)
 			ptr->ModFloatValue(field, value);
 		return 0;
 	}
 
-	int SetUInt32Value(lua_State * L, Item * ptr)
+	int SetUInt32Value(lua_State* L, Item* ptr)
 	{
 		int field = luaL_checkint(L, 1);
 		int value = luaL_checkint(L, 2);
-		if (ptr) 
+		if(ptr)
 			ptr->SetUInt32Value(field, value);
 		return 0;
 	}
 
-	int SetUInt64Value(lua_State * L, Item * ptr)
+	int SetUInt64Value(lua_State* L, Item* ptr)
 	{
-		uint32 field = CHECK_ULONG(L,1);
-		uint64 guid = CHECK_GUID(L,2);
-		if (ptr) 
+		uint32 field = CHECK_ULONG(L, 1);
+		uint64 guid = CHECK_GUID(L, 2);
+		if(ptr)
 			ptr->SetUInt64Value(field, guid);
 		return 0;
 	}
 
-	int RemoveFlag(lua_State * L, Item * ptr)
+	int RemoveFlag(lua_State* L, Item* ptr)
 	{
-		int field = luaL_checkint(L,1);
-		int value = luaL_checkint(L,2);
-		if (ptr)
-			ptr->RemoveFlag(field,value);
+		int field = luaL_checkint(L, 1);
+		int value = luaL_checkint(L, 2);
+		if(ptr)
+			ptr->RemoveFlag(field, value);
 		return 0;
 	}
 
-	int SetFlag(lua_State * L, Item * ptr)
+	int SetFlag(lua_State* L, Item* ptr)
 	{
-		int field = luaL_checkint(L,1);
-		int value = luaL_checkint(L,2);
-		if (ptr)
-			ptr->SetFlag(field,value);
+		int field = luaL_checkint(L, 1);
+		int value = luaL_checkint(L, 2);
+		if(ptr)
+			ptr->SetFlag(field, value);
 		return 0;
 	}
 
-	int SetFloatValue(lua_State * L, Item * ptr)
+	int SetFloatValue(lua_State* L, Item* ptr)
 	{
 		int field = luaL_checkint(L, 1);
 		float value = CHECK_FLOAT(L, 2);
-		if (ptr) 
+		if(ptr)
 			ptr->SetFloatValue(field, value);
 		return 0;
 	}
 
-	int GetUInt32Value(lua_State * L, Item * ptr)
+	int GetUInt32Value(lua_State* L, Item* ptr)
 	{
 		int field = luaL_checkint(L, 1);
-		if (ptr) 
+		if(ptr)
 			lua_pushnumber(L, ptr->GetUInt32Value(field));
 		return 1;
 	}
 
-	int GetUInt64Value(lua_State * L, Item * ptr)
+	int GetUInt64Value(lua_State* L, Item* ptr)
 	{
 		int field = luaL_checkint(L, 1);
-		if (ptr)
+		if(ptr)
 			PUSH_GUID(L, ptr->GetUInt64Value(field));
 		return 1;
 	}
 
-	int GetFloatValue(lua_State * L, Item * ptr)
+	int GetFloatValue(lua_State* L, Item* ptr)
 	{
 		int field = luaL_checkint(L, 1);
-		if (ptr) 
+		if(ptr)
 			lua_pushnumber(L, ptr->GetFloatValue(field));
 		return 1;
 	}

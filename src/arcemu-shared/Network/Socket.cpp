@@ -16,8 +16,8 @@ Socket::Socket(SOCKET fd, uint32 sendbuffersize, uint32 recvbuffersize) : m_fd(f
 	readBuffer.Allocate(recvbuffersize);
 	writeBuffer.Allocate(sendbuffersize);
 
-    m_BytesSent = 0;
-    m_BytesRecieved = 0;
+	m_BytesSent = 0;
+	m_BytesRecieved = 0;
 
 	// IOCP Member Variables
 #ifdef CONFIG_USE_IOCP
@@ -25,7 +25,8 @@ Socket::Socket(SOCKET fd, uint32 sendbuffersize, uint32 recvbuffersize) : m_fd(f
 #endif
 
 	// Check for needed fd allocation.
-	if(m_fd == 0){
+	if(m_fd == 0)
+	{
 		m_fd = SocketOps::CreateTCPFileDescriptor();
 	}
 
@@ -36,9 +37,9 @@ Socket::~Socket()
 {
 }
 
-bool Socket::Connect(const char * Address, uint32 Port)
+bool Socket::Connect(const char* Address, uint32 Port)
 {
-	struct hostent * ci = gethostbyname(Address);
+	struct hostent* ci = gethostbyname(Address);
 	if(ci == 0)
 		return false;
 
@@ -58,7 +59,7 @@ bool Socket::Connect(const char * Address, uint32 Port)
 	return true;
 }
 
-void Socket::Accept(sockaddr_in * address)
+void Socket::Accept(sockaddr_in* address)
 {
 	memcpy(&m_client, address, sizeof(*address));
 	_OnConnect();
@@ -69,8 +70,8 @@ void Socket::_OnConnect()
 	// set common parameters on the file descriptor
 	SocketOps::Nonblocking(m_fd);
 	SocketOps::DisableBuffering(m_fd);
-/*	SocketOps::SetRecvBufferSize(m_fd, m_writeBufferSize);
-	SocketOps::SetSendBufferSize(m_fd, m_writeBufferSize);*/
+	/*	SocketOps::SetRecvBufferSize(m_fd, m_writeBufferSize);
+		SocketOps::SetSendBufferSize(m_fd, m_writeBufferSize);*/
 	m_connected.SetVal(true);
 
 	// IOCP stuff
@@ -84,7 +85,7 @@ void Socket::_OnConnect()
 	OnConnect();
 }
 
-bool Socket::Send(const uint8 * Bytes, uint32 Size)
+bool Socket::Send(const uint8* Bytes, uint32 Size)
 {
 	bool rv;
 
@@ -98,18 +99,18 @@ bool Socket::Send(const uint8 * Bytes, uint32 Size)
 	return rv;
 }
 
-bool Socket::BurstSend(const uint8 * Bytes, uint32 Size)
+bool Socket::BurstSend(const uint8* Bytes, uint32 Size)
 {
 	return writeBuffer.Write(Bytes, Size);
 }
 
 string Socket::GetRemoteIP()
 {
-	char* ip = (char*)inet_ntoa( m_client.sin_addr );
-	if( ip != NULL )
-		return string( ip );
+	char* ip = (char*)inet_ntoa(m_client.sin_addr);
+	if(ip != NULL)
+		return string(ip);
 	else
-		return string( "noip" );
+		return string("noip");
 }
 
 void Socket::Disconnect()
@@ -126,7 +127,7 @@ void Socket::Disconnect()
 	// Call virtual ondisconnect
 	OnDisconnect();
 
-	if(!IsDeleted()) 
+	if(!IsDeleted())
 		Delete();
 }
 
@@ -140,7 +141,7 @@ void Socket::Delete()
 
 	if(IsConnected()) Disconnect();
 
-	SocketOps::CloseSocket( m_fd );
+	SocketOps::CloseSocket(m_fd);
 
 	sSocketGarbageCollector.QueueSocket(this);
 }

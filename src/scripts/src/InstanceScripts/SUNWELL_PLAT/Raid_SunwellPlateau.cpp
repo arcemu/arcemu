@@ -45,11 +45,11 @@
 
 class SunbladeProtectorAI : public MoonScriptCreatureAI
 {
-	MOONSCRIPT_FACTORY_FUNCTION(SunbladeProtectorAI, MoonScriptCreatureAI);
-	SunbladeProtectorAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
-	{
-		AddSpell(SUNBLADE_PROTECTOR_FEL_LIGHTNING, Target_RandomPlayer, 100, 0, 15, 0, 60);
-	}
+		MOONSCRIPT_FACTORY_FUNCTION(SunbladeProtectorAI, MoonScriptCreatureAI);
+		SunbladeProtectorAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
+		{
+			AddSpell(SUNBLADE_PROTECTOR_FEL_LIGHTNING, Target_RandomPlayer, 100, 0, 15, 0, 60);
+		}
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -62,14 +62,14 @@ class SunbladeProtectorAI : public MoonScriptCreatureAI
 
 class ShadowswordAssassinAI : public MoonScriptCreatureAI
 {
-	MOONSCRIPT_FACTORY_FUNCTION(ShadowswordAssassinAI, MoonScriptCreatureAI);
-	ShadowswordAssassinAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
-	{
-		AddSpell(SHADOWSWORD_ASSASSIN_ASSASSINS_MARK, Target_RandomPlayer, 100, 0, 15, 0, 100);
-		AddSpell(SHADOWSWORD_ASSASSIN_AIMED_SHOT, Target_Current, 15, 4, 6, 5, 35, true);
-		AddSpell(SHADOWSWORD_ASSASSIN_SHADOWSTEP, Target_RandomPlayer, 15, 0, 50, 0, 40);
-		AddSpell(SHADOWSWORD_ASSASSIN_GREATER_INVISIBILITY, Target_Self, 5, 0, 180);
-	}
+		MOONSCRIPT_FACTORY_FUNCTION(ShadowswordAssassinAI, MoonScriptCreatureAI);
+		ShadowswordAssassinAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
+		{
+			AddSpell(SHADOWSWORD_ASSASSIN_ASSASSINS_MARK, Target_RandomPlayer, 100, 0, 15, 0, 100);
+			AddSpell(SHADOWSWORD_ASSASSIN_AIMED_SHOT, Target_Current, 15, 4, 6, 5, 35, true);
+			AddSpell(SHADOWSWORD_ASSASSIN_SHADOWSTEP, Target_RandomPlayer, 15, 0, 50, 0, 40);
+			AddSpell(SHADOWSWORD_ASSASSIN_GREATER_INVISIBILITY, Target_Self, 5, 0, 180);
+		}
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -80,12 +80,12 @@ class ShadowswordAssassinAI : public MoonScriptCreatureAI
 
 class ShadowswordCommanderAI : public MoonScriptCreatureAI
 {
-	MOONSCRIPT_FACTORY_FUNCTION(ShadowswordCommanderAI, MoonScriptCreatureAI);
-	ShadowswordCommanderAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
-	{
-		AddSpell(SHADOWSWORD_COMMANDER_SHIELD_SLAM, Target_Current, 10, 0, 10);
-		AddSpell(SHADOWSWORD_COMMANDER_BATTLESHOUT, Target_Self, 20, 0, 25);
-	}
+		MOONSCRIPT_FACTORY_FUNCTION(ShadowswordCommanderAI, MoonScriptCreatureAI);
+		ShadowswordCommanderAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
+		{
+			AddSpell(SHADOWSWORD_COMMANDER_SHIELD_SLAM, Target_Current, 10, 0, 10);
+			AddSpell(SHADOWSWORD_COMMANDER_BATTLESHOUT, Target_Self, 20, 0, 25);
+		}
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -142,7 +142,7 @@ class SathrovarrTheCorruptorAI : public MoonScriptBossAI
     MOONSCRIPT_FACTORY_FUNCTION(SathrovarrTheCorruptorAI, MoonScriptBossAI);
 	SathrovarrTheCorruptorAI(Creature* pCreature) : MoonScriptBossAI(pCreature)
 	{
-		AddSpell(SATHROVARR_THE_CORRUPTOR_CURSE_OF_BOUNDLESS_AGONY, Target_RandomPlayer, 20, 0, 12, 0, 40); 
+		AddSpell(SATHROVARR_THE_CORRUPTOR_CURSE_OF_BOUNDLESS_AGONY, Target_RandomPlayer, 20, 0, 12, 0, 40);
 		AddSpell(SATHROVARR_THE_CORRUPTOR_SHADOW_BOLT_VOLLEY, Target_RandomPlayerApplyAura, 20, 1, 25, 0, 40);
 		AddSpell(SATHROVARR_THE_CORRUPTOR_CORRUPTING_STRIKE, Target_Current, 30, 0, 5, 0, 10);
 
@@ -164,26 +164,26 @@ class SathrovarrTheCorruptorAI : public MoonScriptBossAI
 
 class BrutallusAI : public MoonScriptBossAI
 {
-    MOONSCRIPT_FACTORY_FUNCTION(BrutallusAI, MoonScriptBossAI);
-	BrutallusAI(Creature* pCreature) : MoonScriptBossAI(pCreature)
-	{
-		AddSpell(BRUTALLUS_METEOR_SLASH, Target_Self, 100, 1, 12);
-		AddSpell(BRUTALLUS_BURN, Target_RandomPlayer, 50, 0, 20);
-		AddSpell(BRUTALLUS_STOMP, Target_Current, 25, 0, 30);
+		MOONSCRIPT_FACTORY_FUNCTION(BrutallusAI, MoonScriptBossAI);
+		BrutallusAI(Creature* pCreature) : MoonScriptBossAI(pCreature)
+		{
+			AddSpell(BRUTALLUS_METEOR_SLASH, Target_Self, 100, 1, 12);
+			AddSpell(BRUTALLUS_BURN, Target_RandomPlayer, 50, 0, 20);
+			AddSpell(BRUTALLUS_STOMP, Target_Current, 25, 0, 30);
 
-		//6min Enrage
-		SetEnrageInfo(AddSpell(BRUTALLUS_BERSERK, Target_Self, 0, 0, 0, 0, 0, false, "So much for a real challenge... Die!", Text_Yell, 12470), 360000);
+			//6min Enrage
+			SetEnrageInfo(AddSpell(BRUTALLUS_BERSERK, Target_Self, 0, 0, 0, 0, 0, false, "So much for a real challenge... Die!", Text_Yell, 12470), 360000);
 
-		//Emotes
-		AddEmote(Event_OnCombatStart, "Ah, more lambs to the slaughter!", Text_Yell, 12463);
-		AddEmote(Event_OnTargetDied, "Perish, insect!", Text_Yell, 12464);
-		AddEmote(Event_OnTargetDied, "You are meat!", Text_Yell, 12465);
-		AddEmote(Event_OnTargetDied, "Too easy!", Text_Yell, 12466);
-		AddEmote(Event_OnDied, "Gah! Well done... Now... this gets... interesting...", Text_Yell, 12471);
-		AddEmote(Event_OnTaunt, "Bring the fight to me!", Text_Yell, 12467);
-		AddEmote(Event_OnTaunt, "Another day, another glorious battle!", Text_Yell, 12468);
-		AddEmote(Event_OnTaunt, "I live for this!", Text_Yell, 12469);
-	}
+			//Emotes
+			AddEmote(Event_OnCombatStart, "Ah, more lambs to the slaughter!", Text_Yell, 12463);
+			AddEmote(Event_OnTargetDied, "Perish, insect!", Text_Yell, 12464);
+			AddEmote(Event_OnTargetDied, "You are meat!", Text_Yell, 12465);
+			AddEmote(Event_OnTargetDied, "Too easy!", Text_Yell, 12466);
+			AddEmote(Event_OnDied, "Gah! Well done... Now... this gets... interesting...", Text_Yell, 12471);
+			AddEmote(Event_OnTaunt, "Bring the fight to me!", Text_Yell, 12467);
+			AddEmote(Event_OnTaunt, "Another day, another glorious battle!", Text_Yell, 12468);
+			AddEmote(Event_OnTaunt, "I live for this!", Text_Yell, 12469);
+		}
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -200,38 +200,38 @@ class BrutallusAI : public MoonScriptBossAI
 
 class FelmystAI : public MoonScriptBossAI
 {
-    MOONSCRIPT_FACTORY_FUNCTION(FelmystAI, MoonScriptBossAI);
-	FelmystAI(Creature* pCreature) : MoonScriptBossAI(pCreature)
-	{
-		//Phase 1 spells
-		AddPhaseSpell(1, AddSpell(FELMYST_CLEAVE, Target_Current, 6, 0, 10, 0, 5));
-		AddPhaseSpell(1, AddSpell(FELMYST_GAS_NOVA, Target_Self, 25, 1, 18));
-		AddPhaseSpell(1, AddSpell(FELMYST_ENCAPSULATE, Target_RandomPlayer, 25, 7, 30, 0, 30));
-		AddPhaseSpell(1, AddSpell(FELMYST_CORROSION, Target_Current, 20, 0.75f, 35, 0, 30, false, "Choke on your final breath!", Text_Yell, 12478));
+		MOONSCRIPT_FACTORY_FUNCTION(FelmystAI, MoonScriptBossAI);
+		FelmystAI(Creature* pCreature) : MoonScriptBossAI(pCreature)
+		{
+			//Phase 1 spells
+			AddPhaseSpell(1, AddSpell(FELMYST_CLEAVE, Target_Current, 6, 0, 10, 0, 5));
+			AddPhaseSpell(1, AddSpell(FELMYST_GAS_NOVA, Target_Self, 25, 1, 18));
+			AddPhaseSpell(1, AddSpell(FELMYST_ENCAPSULATE, Target_RandomPlayer, 25, 7, 30, 0, 30));
+			AddPhaseSpell(1, AddSpell(FELMYST_CORROSION, Target_Current, 20, 0.75f, 35, 0, 30, false, "Choke on your final breath!", Text_Yell, 12478));
 
-		//Phase 2 spells
-		AddPhaseSpell(2, AddSpell(FELMYST_DEMONIC_VAPOR, Target_RandomPlayer, 10, 0, 20));
+			//Phase 2 spells
+			AddPhaseSpell(2, AddSpell(FELMYST_DEMONIC_VAPOR, Target_RandomPlayer, 10, 0, 20));
 
-		//Phase 3 spells
-		//Fog of corruption is the actual breath Felmyst does during his second phase, probably we'll have to spawn it like a creature.
-		//AddSpell(FELMYST_FOG_OF_CORRUPTION, Target_RandomPlayerApplyAura, 15, 0, 20, 0, 10); Does not support by the core.
+			//Phase 3 spells
+			//Fog of corruption is the actual breath Felmyst does during his second phase, probably we'll have to spawn it like a creature.
+			//AddSpell(FELMYST_FOG_OF_CORRUPTION, Target_RandomPlayerApplyAura, 15, 0, 20, 0, 10); Does not support by the core.
 
-		//10min Enrage
-		SetEnrageInfo(AddSpell(FELMYST_ENRAGE, Target_Self, 0, 0, 0, 0, 0, false, "No more hesitation! Your fates are written!", Text_Yell, 12482), 600000);
+			//10min Enrage
+			SetEnrageInfo(AddSpell(FELMYST_ENRAGE, Target_Self, 0, 0, 0, 0, 0, false, "No more hesitation! Your fates are written!", Text_Yell, 12482), 600000);
 
-		//Emotes
-		AddEmote(Event_OnCombatStart, "Glory to Kil'jaeden! Death to all who oppose!", Text_Yell, 12477);
-		AddEmote(Event_OnTargetDied, "I kill for the master! ", Text_Yell, 12480);
-		AddEmote(Event_OnTargetDied, "The end has come!", Text_Yell, 12481);
-		AddEmote(Event_OnDied, "Kil'jaeden... will... prevail...", Text_Yell, 12483);
-		AddEmote(Event_OnTaunt, "I am stronger than ever before!", Text_Yell, 12479);
-	}
+			//Emotes
+			AddEmote(Event_OnCombatStart, "Glory to Kil'jaeden! Death to all who oppose!", Text_Yell, 12477);
+			AddEmote(Event_OnTargetDied, "I kill for the master! ", Text_Yell, 12480);
+			AddEmote(Event_OnTargetDied, "The end has come!", Text_Yell, 12481);
+			AddEmote(Event_OnDied, "Kil'jaeden... will... prevail...", Text_Yell, 12483);
+			AddEmote(Event_OnTaunt, "I am stronger than ever before!", Text_Yell, 12479);
+		}
 
-	void OnCombatStart(Unit* pTarget)
-	{
-		ApplyAura(FELMYST_NOXIOUS_FUME);
-		ParentClass::OnCombatStart(pTarget);
-	}
+		void OnCombatStart(Unit* pTarget)
+		{
+			ApplyAura(FELMYST_NOXIOUS_FUME);
+			ParentClass::OnCombatStart(pTarget);
+		}
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -246,29 +246,29 @@ class FelmystAI : public MoonScriptBossAI
 
 class LadySacrolashAI : public MoonScriptBossAI
 {
-    MOONSCRIPT_FACTORY_FUNCTION(LadySacrolashAI, MoonScriptBossAI);
-	LadySacrolashAI(Creature* pCreature) : MoonScriptBossAI(pCreature)
-	{
-		AddSpell(LADY_SACROLASH_DARK_TOUCHED, Target_RandomPlayerApplyAura, 50, 0, 10, 0, 50);
-		AddSpell(LADY_SACROLASH_SHADOW_BLADES, Target_Current, 25, 1.5, 5, 0, 50);
-		AddSpell(LADY_SACROLASH_SHADOW_NOVA, Target_RandomPlayer, 15, 3.5, 20, 0, 50, false, "Shadow to the aid of fire!", Text_Yell, 12485);
-		AddSpell(LADY_SACROLASH_CONFOUNDING_BLOW, Target_RandomPlayer, 10, 0, 15, 0, 50);
-		SetEnrageInfo(AddSpell(LADY_SACROLASH_ENRAGE, Target_Self, 0, 0, 0, 0, 0, 0, "Time is a luxury you no longer possess!", Text_Yell, 0), 360000); // Wasn't able to find sound for this text
-
-		//Emotes
-		AddEmote(Event_OnTargetDied, "Shadows, engulf!", Text_Yell, 12486);
-		AddEmote(Event_OnDied, "I... fade.", Text_Yell, 0); // Wasn't able to find sound for this text
-	}
-
-	void OnDied(Unit* pKiller)
-	{
-		MoonScriptCreatureAI* mGrandWarlockAlythess = GetNearestCreature(CN_GRAND_WARLOCK_ALYTHESS);
-		if( mGrandWarlockAlythess != NULL && mGrandWarlockAlythess->IsAlive() )
+		MOONSCRIPT_FACTORY_FUNCTION(LadySacrolashAI, MoonScriptBossAI);
+		LadySacrolashAI(Creature* pCreature) : MoonScriptBossAI(pCreature)
 		{
-			mGrandWarlockAlythess->Emote("Sacrolash!", Text_Yell, 12492);
+			AddSpell(LADY_SACROLASH_DARK_TOUCHED, Target_RandomPlayerApplyAura, 50, 0, 10, 0, 50);
+			AddSpell(LADY_SACROLASH_SHADOW_BLADES, Target_Current, 25, 1.5, 5, 0, 50);
+			AddSpell(LADY_SACROLASH_SHADOW_NOVA, Target_RandomPlayer, 15, 3.5, 20, 0, 50, false, "Shadow to the aid of fire!", Text_Yell, 12485);
+			AddSpell(LADY_SACROLASH_CONFOUNDING_BLOW, Target_RandomPlayer, 10, 0, 15, 0, 50);
+			SetEnrageInfo(AddSpell(LADY_SACROLASH_ENRAGE, Target_Self, 0, 0, 0, 0, 0, 0, "Time is a luxury you no longer possess!", Text_Yell, 0), 360000); // Wasn't able to find sound for this text
+
+			//Emotes
+			AddEmote(Event_OnTargetDied, "Shadows, engulf!", Text_Yell, 12486);
+			AddEmote(Event_OnDied, "I... fade.", Text_Yell, 0); // Wasn't able to find sound for this text
 		}
-		ParentClass::OnDied(pKiller);
-	}
+
+		void OnDied(Unit* pKiller)
+		{
+			MoonScriptCreatureAI* mGrandWarlockAlythess = GetNearestCreature(CN_GRAND_WARLOCK_ALYTHESS);
+			if(mGrandWarlockAlythess != NULL && mGrandWarlockAlythess->IsAlive())
+			{
+				mGrandWarlockAlythess->Emote("Sacrolash!", Text_Yell, 12492);
+			}
+			ParentClass::OnDied(pKiller);
+		}
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -282,30 +282,30 @@ class LadySacrolashAI : public MoonScriptBossAI
 
 class GrandWarlockAlythessAI : public MoonScriptBossAI
 {
-    MOONSCRIPT_FACTORY_FUNCTION(GrandWarlockAlythessAI, MoonScriptBossAI);
-	GrandWarlockAlythessAI(Creature* pCreature) : MoonScriptBossAI(pCreature)
-	{
-		AddSpell(GRAND_WARLOCK_ALYTHESS_PYROGENICS, Target_Self, 100, 0, 10, 0, 50);
-		AddSpell(GRAND_WARLOCK_ALYTHESS_FLAME_TOUCHED, Target_RandomPlayerApplyAura, 10, 0, 30, 0, 50);
-		AddSpell(GRAND_WARLOCK_ALYTHESS_CONFLAGRATION, Target_RandomPlayer, 15, 3.5, 25, 0, 50, false, "Fire to the aid of shadow!", Text_Yell, 12489);
-		AddSpell(GRAND_WARLOCK_ALYTHESS_BLAZE, Target_RandomPlayer, 30, 2.5, 0, 0, 50);
-		AddSpell(GRAND_WARLOCK_ALYTHESS_FLAME_SEAR, Target_RandomPlayer, 20, 0, 0, 0, 50);
-		SetEnrageInfo(AddSpell(GRAND_WARLOCK_ALYTHESS_ENRAGE, Target_Self, 0, 0, 0, 0, 0, false, "Your luck has run its course!", Text_Yell, 12493), 360000);
-
-		//Emotes
-		AddEmote(Event_OnTargetDied, "Fire, consume!", Text_Yell, 12490);
-		AddEmote(Event_OnDied, "I... fade.", Text_Yell, 0); // Wasn't able to find sound for this text
-	}
-
-	void OnDied(Unit* pKiller)
-	{
-		MoonScriptCreatureAI* mLadySacrolash = GetNearestCreature(CN_LADY_SACROLASH);
-		if( mLadySacrolash != NULL && mLadySacrolash->IsAlive() )
+		MOONSCRIPT_FACTORY_FUNCTION(GrandWarlockAlythessAI, MoonScriptBossAI);
+		GrandWarlockAlythessAI(Creature* pCreature) : MoonScriptBossAI(pCreature)
 		{
-			mLadySacrolash->Emote("Alythess! Your fire burns within me!", Text_Yell, 12488);
+			AddSpell(GRAND_WARLOCK_ALYTHESS_PYROGENICS, Target_Self, 100, 0, 10, 0, 50);
+			AddSpell(GRAND_WARLOCK_ALYTHESS_FLAME_TOUCHED, Target_RandomPlayerApplyAura, 10, 0, 30, 0, 50);
+			AddSpell(GRAND_WARLOCK_ALYTHESS_CONFLAGRATION, Target_RandomPlayer, 15, 3.5, 25, 0, 50, false, "Fire to the aid of shadow!", Text_Yell, 12489);
+			AddSpell(GRAND_WARLOCK_ALYTHESS_BLAZE, Target_RandomPlayer, 30, 2.5, 0, 0, 50);
+			AddSpell(GRAND_WARLOCK_ALYTHESS_FLAME_SEAR, Target_RandomPlayer, 20, 0, 0, 0, 50);
+			SetEnrageInfo(AddSpell(GRAND_WARLOCK_ALYTHESS_ENRAGE, Target_Self, 0, 0, 0, 0, 0, false, "Your luck has run its course!", Text_Yell, 12493), 360000);
+
+			//Emotes
+			AddEmote(Event_OnTargetDied, "Fire, consume!", Text_Yell, 12490);
+			AddEmote(Event_OnDied, "I... fade.", Text_Yell, 0); // Wasn't able to find sound for this text
 		}
-		ParentClass::OnDied(pKiller);
-	}
+
+		void OnDied(Unit* pKiller)
+		{
+			MoonScriptCreatureAI* mLadySacrolash = GetNearestCreature(CN_LADY_SACROLASH);
+			if(mLadySacrolash != NULL && mLadySacrolash->IsAlive())
+			{
+				mLadySacrolash->Emote("Alythess! Your fire burns within me!", Text_Yell, 12488);
+			}
+			ParentClass::OnDied(pKiller);
+		}
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -322,34 +322,34 @@ class GrandWarlockAlythessAI : public MoonScriptBossAI
 
 class MuruAI : public MoonScriptBossAI
 {
-    MOONSCRIPT_FACTORY_FUNCTION(MuruAI, MoonScriptBossAI);
-	MuruAI(Creature* pCreature) : MoonScriptBossAI(pCreature)
-	{
-		AddSpell(MURU_NEGATIVE_ENERGY, Target_Self, 25, 0, 0);
-		AddSpell(MURU_DARKNESS, Target_Self, 20, 0, 45);
+		MOONSCRIPT_FACTORY_FUNCTION(MuruAI, MoonScriptBossAI);
+		MuruAI(Creature* pCreature) : MoonScriptBossAI(pCreature)
+		{
+			AddSpell(MURU_NEGATIVE_ENERGY, Target_Self, 25, 0, 0);
+			AddSpell(MURU_DARKNESS, Target_Self, 20, 0, 45);
 
-		//AddSpell(MURU_SUMMON_BERSERKER, Target_, 15, 3.5, 25, 0, 50);  Most of Databases don't the SQL for this yet. Also I am not sure what function are for summoning Spells :).
-		//AddSpell(MURU_SUMMON_FURY_MAGE, Target_, 30, 2.5, 0, 0, 50);
-		//AddSpell(MURU_SUMMON_VOID_SENTINEL, Target_, 20, 0, 0, 0, 50);
-	}
+			//AddSpell(MURU_SUMMON_BERSERKER, Target_, 15, 3.5, 25, 0, 50);  Most of Databases don't the SQL for this yet. Also I am not sure what function are for summoning Spells :).
+			//AddSpell(MURU_SUMMON_FURY_MAGE, Target_, 30, 2.5, 0, 0, 50);
+			//AddSpell(MURU_SUMMON_VOID_SENTINEL, Target_, 20, 0, 0, 0, 50);
+		}
 };
 
 class ShadowswordBerserkerAI : public MoonScriptCreatureAI
 {
-    MOONSCRIPT_FACTORY_FUNCTION(ShadowswordBerserkerAI, MoonScriptCreatureAI);
-	ShadowswordBerserkerAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature){}
+		MOONSCRIPT_FACTORY_FUNCTION(ShadowswordBerserkerAI, MoonScriptCreatureAI);
+		ShadowswordBerserkerAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature) {}
 };
 
 class ShadowswordFuryMageAI : public MoonScriptCreatureAI
 {
-    MOONSCRIPT_FACTORY_FUNCTION(ShadowswordFuryMageAI, MoonScriptCreatureAI);
-	ShadowswordFuryMageAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature){}
+		MOONSCRIPT_FACTORY_FUNCTION(ShadowswordFuryMageAI, MoonScriptCreatureAI);
+		ShadowswordFuryMageAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature) {}
 };
 
 class VoidSentinelAI : public MoonScriptCreatureAI
 {
-    MOONSCRIPT_FACTORY_FUNCTION(VoidSentinelAI, MoonScriptCreatureAI);
-	VoidSentinelAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature){}
+		MOONSCRIPT_FACTORY_FUNCTION(VoidSentinelAI, MoonScriptCreatureAI);
+		VoidSentinelAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature) {}
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -358,11 +358,11 @@ class VoidSentinelAI : public MoonScriptCreatureAI
 
 class EntropiusAI : public MoonScriptBossAI
 {
-    MOONSCRIPT_FACTORY_FUNCTION(EntropiusAI, MoonScriptBossAI);
-	EntropiusAI(Creature* pCreature) : MoonScriptBossAI(pCreature)
-	{
-		//TODO
-	}
+		MOONSCRIPT_FACTORY_FUNCTION(EntropiusAI, MoonScriptBossAI);
+		EntropiusAI(Creature* pCreature) : MoonScriptBossAI(pCreature)
+		{
+			//TODO
+		}
 };
 
 void SetupSunwellPlateau(ScriptMgr* pScriptMgr)

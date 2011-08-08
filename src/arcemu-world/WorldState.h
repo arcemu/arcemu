@@ -27,12 +27,12 @@ typedef std::map<uint32, uint32> WorldStateMap;
 
 class WorldStateHandler
 {
-public:
-	WorldStateMap m_states;
+	public:
+		WorldStateMap m_states;
 
-	void SetState(uint32 index, uint32 value);
+		void SetState(uint32 index, uint32 value);
 
-	ARCEMU_INLINE void EraseState(uint32 index) { m_states.erase(index); }
+		ARCEMU_INLINE void EraseState(uint32 index) { m_states.erase(index); }
 };
 
 #endif

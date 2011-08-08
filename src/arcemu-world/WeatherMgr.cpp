@@ -23,80 +23,80 @@
 /// Weather defines
 enum WeatherTypes
 {
-     WEATHER_TYPE_NORMAL            = 0, // NORMAL
-     WEATHER_TYPE_FOG               = 1, // FOG --> current value irrelevant
-     WEATHER_TYPE_RAIN              = 2, // RAIN
-     WEATHER_TYPE_HEAVY_RAIN        = 4, // HEAVY_RAIN
-     WEATHER_TYPE_SNOW              = 8, // SNOW
-     WEATHER_TYPE_SANDSTORM         = 16 // SANDSTORM
+    WEATHER_TYPE_NORMAL            = 0, // NORMAL
+    WEATHER_TYPE_FOG               = 1, // FOG --> current value irrelevant
+    WEATHER_TYPE_RAIN              = 2, // RAIN
+    WEATHER_TYPE_HEAVY_RAIN        = 4, // HEAVY_RAIN
+    WEATHER_TYPE_SNOW              = 8, // SNOW
+    WEATHER_TYPE_SANDSTORM         = 16 // SANDSTORM
 };
 
 enum WeatherSounds
 {
-     WEATHER_NOSOUND                = 0,
-     WEATHER_RAINLIGHT              = 8533,
-     WEATHER_RAINMEDIUM             = 8534,
-     WEATHER_RAINHEAVY              = 8535,
-     WEATHER_SNOWLIGHT              = 8536,
-     WEATHER_SNOWMEDIUM             = 8537,
-     WEATHER_SNOWHEAVY              = 8538,
-     WEATHER_SANDSTORMLIGHT         = 8556,
-     WEATHER_SANDSTORMMEDIUM        = 8557,
-     WEATHER_SANDSTORMHEAVY         = 8558
+    WEATHER_NOSOUND                = 0,
+    WEATHER_RAINLIGHT              = 8533,
+    WEATHER_RAINMEDIUM             = 8534,
+    WEATHER_RAINHEAVY              = 8535,
+    WEATHER_SNOWLIGHT              = 8536,
+    WEATHER_SNOWMEDIUM             = 8537,
+    WEATHER_SNOWHEAVY              = 8538,
+    WEATHER_SANDSTORMLIGHT         = 8556,
+    WEATHER_SANDSTORMMEDIUM        = 8557,
+    WEATHER_SANDSTORMHEAVY         = 8558
 };
 
-initialiseSingleton( WeatherMgr );
+initialiseSingleton(WeatherMgr);
 
-void BuildWeatherPacket(WorldPacket * data, uint32 Effect, float Density )
+void BuildWeatherPacket(WorldPacket* data, uint32 Effect, float Density)
 {
 	data->Initialize(SMSG_WEATHER);
-	if(Effect == 0 ) // set all parameter to 0 for sunny.
-		*data << uint32(0) << float(0) << uint32(0) << uint8(0);		
-	else if (Effect == 1) // No sound/density for fog
-		*data << Effect << float(0) << uint32(0) << uint8(0);		
+	if(Effect == 0)  // set all parameter to 0 for sunny.
+		*data << uint32(0) << float(0) << uint32(0) << uint8(0);
+	else if(Effect == 1)  // No sound/density for fog
+		*data << Effect << float(0) << uint32(0) << uint8(0);
 	else
-		*data << Effect << Density << GetSound(Effect,Density) << uint8(0) ;
+		*data << Effect << Density << GetSound(Effect, Density) << uint8(0) ;
 //	LOG_DEBUG("Send Weather Update %d, Density %f, Sound %d, unint8(0)", Effect,Density,GetSound(Effect,Density));
 }
 
 uint32 GetSound(uint32 Effect, float Density)
 {
-    uint32 sound;
-    if(Density<= 0.30f)
+	uint32 sound;
+	if(Density <= 0.30f)
 		return WEATHER_NOSOUND;
 
 	switch(Effect)
-    {
-        case 2:                                             //rain
-        case 4:                                             
-            if(Density  <0.40f)
-                 sound = WEATHER_RAINLIGHT;
-            else if(Density  <0.70f)
-                sound = WEATHER_RAINMEDIUM;
-            else
-                sound = WEATHER_RAINHEAVY;
-            break;
-        case 8:                                             //snow
-            if(Density  <0.40f)
-                sound = WEATHER_SNOWLIGHT;
-            else if(Density  <0.70f)
-                sound = WEATHER_SNOWMEDIUM;
-            else
-                sound = WEATHER_SNOWHEAVY;
-            break;
-        case 16:                                             //storm
-            if(Density  <0.40f)
-                sound = WEATHER_SANDSTORMLIGHT;
-            else if(Density  <0.70f)
-                sound = WEATHER_SANDSTORMMEDIUM;
-            else
-                sound = WEATHER_SANDSTORMHEAVY;
-            break;
+	{
+		case 2:                                             //rain
+		case 4:
+			if(Density  < 0.40f)
+				sound = WEATHER_RAINLIGHT;
+			else if(Density  < 0.70f)
+				sound = WEATHER_RAINMEDIUM;
+			else
+				sound = WEATHER_RAINHEAVY;
+			break;
+		case 8:                                             //snow
+			if(Density  < 0.40f)
+				sound = WEATHER_SNOWLIGHT;
+			else if(Density  < 0.70f)
+				sound = WEATHER_SNOWMEDIUM;
+			else
+				sound = WEATHER_SNOWHEAVY;
+			break;
+		case 16:                                             //storm
+			if(Density  < 0.40f)
+				sound = WEATHER_SANDSTORMLIGHT;
+			else if(Density  < 0.70f)
+				sound = WEATHER_SANDSTORMMEDIUM;
+			else
+				sound = WEATHER_SANDSTORMHEAVY;
+			break;
 		default:											//no sound
-            sound = WEATHER_NOSOUND;
-            break;
-    }
-    return sound;
+			sound = WEATHER_NOSOUND;
+			break;
+	}
+	return sound;
 }
 
 WeatherMgr::WeatherMgr()
@@ -117,15 +117,15 @@ WeatherMgr::~WeatherMgr()
 void WeatherMgr::LoadFromDB()
 {
 	//sLog.outString("  Loading Weather..."); // weather type 0= sunny / 1= fog / 2 = light_rain / 4 = rain / 8 = snow / ?? = sandstorm
-	QueryResult *result = WorldDatabase.Query( "SELECT zoneId,high_chance,high_type,med_chance,med_type,low_chance,low_type FROM weather" );
+	QueryResult* result = WorldDatabase.Query("SELECT zoneId,high_chance,high_type,med_chance,med_type,low_chance,low_type FROM weather");
 
-	if( !result )
+	if(!result)
 		return;
 
 	do
 	{
-		Field *fields = result->Fetch();
-		WeatherInfo *wi = new WeatherInfo;
+		Field* fields = result->Fetch();
+		WeatherInfo* wi = new WeatherInfo;
 		wi->m_zoneId = fields[0].GetUInt32();
 		wi->m_effectValues[0] = fields[1].GetUInt32();  // high_chance
 		wi->m_effectValues[1] = fields[2].GetUInt32();  // high_type
@@ -136,22 +136,23 @@ void WeatherMgr::LoadFromDB()
 		m_zoneWeathers[wi->m_zoneId] = wi;
 
 		wi->_GenerateWeather();
-	} while( result->NextRow() );
+	}
+	while(result->NextRow());
 	Log.Notice("WeatherMgr", "Loaded weather information for %u zones.", result->GetRowCount());
 
 	delete result;
 }
 
-void WeatherMgr::SendWeather(Player *plr)  //Update weather when player has changed zone (WorldSession::HandleZoneUpdateOpcode)
+void WeatherMgr::SendWeather(Player* plr)  //Update weather when player has changed zone (WorldSession::HandleZoneUpdateOpcode)
 {
 	std::map<uint32, WeatherInfo*>::iterator itr;
 	itr = m_zoneWeathers.find(plr->GetZoneId());
 
-	if (itr == m_zoneWeathers.end())
+	if(itr == m_zoneWeathers.end())
 	{
 		WorldPacket data(SMSG_WEATHER, 9);
 		BuildWeatherPacket(&data, 0, 0);
-		plr->GetSession()->SendPacket( &data );
+		plr->GetSession()->SendPacket(&data);
 		plr->m_lastSeenWeather = 0;
 
 		return;
@@ -170,9 +171,9 @@ WeatherInfo::WeatherInfo()
 	m_maxDensity = 0;
 	m_totalTime = 0;
 	m_zoneId = 0;
-    
-    // Weather updates run in WorldRunnable thread
-    m_holder = sEventMgr.GetEventHolder( WORLD_INSTANCE );
+
+	// Weather updates run in WorldRunnable thread
+	m_holder = sEventMgr.GetEventHolder(WORLD_INSTANCE);
 }
 
 WeatherInfo::~WeatherInfo()
@@ -186,39 +187,39 @@ void WeatherInfo::_GenerateWeather()
 	m_currentEffect = 0;
 	m_currentDensity = 0.30f;//Starting Offset (don't go below, it's annoying fog)
 	float fd = RandomFloat();
-	m_maxDensity = fd+1; //1 - 2
-	m_totalTime = (RandomUInt(11) + 5)*1000*120;//update approx. every 1-2 minutes
+	m_maxDensity = fd + 1; //1 - 2
+	m_totalTime = (RandomUInt(11) + 5) * 1000 * 120; //update approx. every 1-2 minutes
 
 	uint32 rv = RandomUInt(100);
 
 	std::map<uint32, uint32>::iterator itr;
 
-	if (rv <= m_effectValues[4]) // %chance on changing weather from sunny to m_effectValues[5]
+	if(rv <= m_effectValues[4])  // %chance on changing weather from sunny to m_effectValues[5]
 	{
-		m_currentEffect = m_effectValues[5]; 
+		m_currentEffect = m_effectValues[5];
 	}
-	else if (rv <= m_effectValues[2]) // %chance on changing weather from sunny to m_effectValues[3]
+	else if(rv <= m_effectValues[2])  // %chance on changing weather from sunny to m_effectValues[3]
 	{
-		m_currentEffect = m_effectValues[3]; 
+		m_currentEffect = m_effectValues[3];
 	}
-	else if (rv <= m_effectValues[0]) // %chance on changing weather from sunny to m_effectValues[1]
+	else if(rv <= m_effectValues[0])  // %chance on changing weather from sunny to m_effectValues[1]
 	{
-		m_currentEffect = m_effectValues[1]; 
+		m_currentEffect = m_effectValues[1];
 	}
 
 	SendUpdate();
 
-	sEventMgr.AddEvent(this, &WeatherInfo::BuildUp, EVENT_WEATHER_UPDATE, (uint32)(m_totalTime/ceil(m_maxDensity/WEATHER_DENSITY_UPDATE)*2), 0,0);
-	Log.Debug("WeatherMgr", "Forecast for zone:%d new type:%d new interval:%d ms",m_zoneId,m_currentEffect,(uint32)(m_totalTime/ceil(m_maxDensity/WEATHER_DENSITY_UPDATE)*2));
+	sEventMgr.AddEvent(this, &WeatherInfo::BuildUp, EVENT_WEATHER_UPDATE, (uint32)(m_totalTime / ceil(m_maxDensity / WEATHER_DENSITY_UPDATE) * 2), 0, 0);
+	Log.Debug("WeatherMgr", "Forecast for zone:%d new type:%d new interval:%d ms", m_zoneId, m_currentEffect, (uint32)(m_totalTime / ceil(m_maxDensity / WEATHER_DENSITY_UPDATE) * 2));
 }
 
 void WeatherInfo::BuildUp()
 {
-    // Increase until 0.5, start random counter when reached   
-	if (m_currentDensity >= 0.50f) 
+	// Increase until 0.5, start random counter when reached
+	if(m_currentDensity >= 0.50f)
 	{
 		sEventMgr.RemoveEvents(this, EVENT_WEATHER_UPDATE);
-		sEventMgr.AddEvent(this, &WeatherInfo::Update, EVENT_WEATHER_UPDATE, (uint32)(m_totalTime/ceil(m_maxDensity/WEATHER_DENSITY_UPDATE)*4), 0,0);
+		sEventMgr.AddEvent(this, &WeatherInfo::Update, EVENT_WEATHER_UPDATE, (uint32)(m_totalTime / ceil(m_maxDensity / WEATHER_DENSITY_UPDATE) * 4), 0, 0);
 //		LOG_DEBUG("Weather starting random for zone:%d type:%d new interval:%d ms",m_zoneId,m_currentEffect,(uint32)(m_totalTime/ceil(m_maxDensity/WEATHER_DENSITY_UPDATE)*4));
 	}
 	else
@@ -230,11 +231,11 @@ void WeatherInfo::BuildUp()
 }
 void WeatherInfo::Update()
 {
-    // There will be a 66% the weather density decreases. If Sunny, use as currentDensity as countdown
-	if (m_currentEffect == 0 || RandomUInt(100) < 66) 
+	// There will be a 66% the weather density decreases. If Sunny, use as currentDensity as countdown
+	if(m_currentEffect == 0 || RandomUInt(100) < 66)
 	{
 		m_currentDensity -= WEATHER_DENSITY_UPDATE;
-		if (m_currentDensity < 0.30f) //0.20 is considered fog, lower values are annoying
+		if(m_currentDensity < 0.30f)  //0.20 is considered fog, lower values are annoying
 		{
 			m_currentDensity = 0.0f;
 			m_currentEffect = 0;
@@ -246,7 +247,7 @@ void WeatherInfo::Update()
 	else
 	{
 		m_currentDensity += WEATHER_DENSITY_UPDATE;
-		if (m_currentDensity >= m_maxDensity)
+		if(m_currentDensity >= m_maxDensity)
 		{
 			m_currentDensity = m_maxDensity;
 			return;
@@ -263,7 +264,7 @@ void WeatherInfo::SendUpdate()
 	sWorld.SendZoneMessage(&data, m_zoneId, 0);
 }
 
-void WeatherInfo::SendUpdate(Player *plr) //Updates weather for player's zone-change only if new zone weather differs
+void WeatherInfo::SendUpdate(Player* plr) //Updates weather for player's zone-change only if new zone weather differs
 {
 	if(plr->m_lastSeenWeather == m_currentEffect) //return if weather is same as previous zone
 		return;
@@ -272,5 +273,5 @@ void WeatherInfo::SendUpdate(Player *plr) //Updates weather for player's zone-ch
 
 	WorldPacket data(SMSG_WEATHER, 9);
 	BuildWeatherPacket(&data, m_currentEffect, m_currentDensity);
-	plr->GetSession()->SendPacket( &data );
+	plr->GetSession()->SendPacket(&data);
 }

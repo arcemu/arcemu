@@ -41,8 +41,8 @@
 #define M_Q_PI     0.785398163397448309615
 #define M_PI_FLOAT 3.14159f
 
-template< class T, class U > T TO( U u ){ return static_cast< T >( u ); }
-#define TO_CREATURE(ptr) TO<Creature*>(ptr) 
+template< class T, class U > T TO(U u) { return static_cast< T >(u); }
+#define TO_CREATURE(ptr) TO<Creature*>(ptr)
 #define TO_PLAYER(ptr) TO<Player*>(ptr)
 #define TO_OBJECT(ptr) TO<Object*>(ptr)
 #define TO_UNIT(ptr) TO<Unit*>(ptr)

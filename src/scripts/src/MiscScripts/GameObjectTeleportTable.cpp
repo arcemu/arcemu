@@ -31,72 +31,72 @@
 struct GameobjectTeleport
 {
 	uint32 mapid;
-	float x,y,z,o;
+	float x, y, z, o;
 	uint32 req_level;
 };
-std::map<uint32,GameobjectTeleport*> m_teleStorage;
+std::map<uint32, GameobjectTeleport*> m_teleStorage;
 
 class CustomTeleport: public GameObjectAIScript // Custom Portals
 {
-public:
-    CustomTeleport(GameObject* goinstance) : GameObjectAIScript(goinstance)
-	{
-	}
-    ~CustomTeleport()
-	{
-	}
-	
-	void OnActivate(Player * pPlayer)
-    {
-        float x,y,z,orientation;
-        uint32 mapid;
+	public:
+		CustomTeleport(GameObject* goinstance) : GameObjectAIScript(goinstance)
+		{
+		}
+		~CustomTeleport()
+		{
+		}
 
-		std::map<uint32,GameobjectTeleport*>::iterator itr = m_teleStorage.find(this->_gameobject->GetEntry());
-        if (itr != m_teleStorage.end())
-        {
-			GameobjectTeleport * gt = itr->second;
-			uint32 required_level = gt->req_level;
+		void OnActivate(Player* pPlayer)
+		{
+			float x, y, z, orientation;
+			uint32 mapid;
 
-			if ((required_level == 0) || (required_level <= pPlayer->getLevel()))
+			std::map<uint32, GameobjectTeleport*>::iterator itr = m_teleStorage.find(this->_gameobject->GetEntry());
+			if(itr != m_teleStorage.end())
 			{
-				mapid = gt->mapid;
-				x = gt->x;
-				y = gt->y;
-				z = gt->z;
-				orientation = gt->o;
+				GameobjectTeleport* gt = itr->second;
+				uint32 required_level = gt->req_level;
 
-				pPlayer->SafeTeleport(mapid, 0, x, y, z, orientation);
+				if((required_level == 0) || (required_level <= pPlayer->getLevel()))
+				{
+					mapid = gt->mapid;
+					x = gt->x;
+					y = gt->y;
+					z = gt->z;
+					orientation = gt->o;
+
+					pPlayer->SafeTeleport(mapid, 0, x, y, z, orientation);
+				}
+				else if(required_level != 0)
+				{
+					pPlayer->BroadcastMessage("You must be at least level %ld to use this portal", required_level);
+				}
 			}
-			else if (required_level != 0)
-			{
-				pPlayer->BroadcastMessage("You must be at least level %ld to use this portal", required_level);
-			}
-        }
-    }
-    static GameObjectAIScript *Create(GameObject * GO) { return new CustomTeleport(GO); }
+		}
+		static GameObjectAIScript* Create(GameObject* GO) { return new CustomTeleport(GO); }
 };
 
 
 //Pay Attention: This feature is disable by default.
-void InitializeGameObjectTeleportTable(ScriptMgr * mgr)
+void InitializeGameObjectTeleportTable(ScriptMgr* mgr)
 {
-	QueryResult *result = NULL;
-    result = WorldDatabase.Query("SELECT * FROM gameobject_teleports");
-    if(result != NULL)
-    {
+	QueryResult* result = NULL;
+	result = WorldDatabase.Query("SELECT * FROM gameobject_teleports");
+	if(result != NULL)
+	{
 		// Check if the SQL table is setup correctly
-		if (result->GetFieldCount() < 7)
+		if(result->GetFieldCount() < 7)
 		{
 			sLog.outError("Error: Custom portals disabled, invalid 'gameobject_teleports' table.");
 			delete result;
 			return;
 		}
-        do
-        {
-			GameobjectTeleport * gt = new GameobjectTeleport;
-			Field *fields = result->Fetch();
+		do
+		{
+			GameobjectTeleport* gt = new GameobjectTeleport;
+			Field* fields = result->Fetch();
 			uint32 entry = fields[0].GetUInt32();
-            gt->mapid = fields[1].GetUInt32();
+			gt->mapid = fields[1].GetUInt32();
 			gt->x = fields[2].GetFloat();
 			gt->y = fields[3].GetFloat();
 			gt->z = fields[4].GetFloat();
@@ -104,7 +104,8 @@ void InitializeGameObjectTeleportTable(ScriptMgr * mgr)
 			gt->req_level = fields[6].GetUInt32();
 			m_teleStorage[entry] = gt;
 			mgr->register_gameobject_script(entry, &CustomTeleport::Create);
-        } while (result->NextRow());
-        delete result;
-    }
+		}
+		while(result->NextRow());
+		delete result;
+	}
 }

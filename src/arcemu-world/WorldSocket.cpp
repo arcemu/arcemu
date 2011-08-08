@@ -41,29 +41,29 @@ struct ServerPktHeader
 #pragma pack(pop)
 
 WorldSocket::WorldSocket(SOCKET fd)
-:
-Socket(fd, sWorld.SocketSendBufSize, sWorld.SocketRecvBufSize),
-Authed(false),
-mOpcode(0),
-mRemaining(0),
-mSize(0),
-mSeed(RandomUInt()),
-mRequestID(0),
-mSession(NULL),
-pAuthenticationPacket(NULL),
-_latency(0),
-mQueued(false),
-m_nagleEanbled(false),
-m_fullAccountName(NULL)
+	:
+	Socket(fd, sWorld.SocketSendBufSize, sWorld.SocketRecvBufSize),
+	Authed(false),
+	mOpcode(0),
+	mRemaining(0),
+	mSize(0),
+	mSeed(RandomUInt()),
+	mRequestID(0),
+	mSession(NULL),
+	pAuthenticationPacket(NULL),
+	_latency(0),
+	mQueued(false),
+	m_nagleEanbled(false),
+	m_fullAccountName(NULL)
 {
 
 }
 
 WorldSocket::~WorldSocket()
 {
-	WorldPacket * pck;
+	WorldPacket* pck;
 	queueLock.Acquire();
-	while( (pck = _queue.Pop()) != NULL )
+	while((pck = _queue.Pop()) != NULL)
 	{
 		delete pck;
 	}
@@ -75,10 +75,10 @@ WorldSocket::~WorldSocket()
 	if(mSession)
 	{
 		mSession->SetSocket(NULL);
-		mSession= NULL;
+		mSession = NULL;
 	}
 
-	if( m_fullAccountName != NULL )
+	if(m_fullAccountName != NULL)
 	{
 		delete m_fullAccountName;
 		m_fullAccountName = NULL;
@@ -90,7 +90,7 @@ void WorldSocket::OnDisconnect()
 	if(mSession)
 	{
 		mSession->SetSocket(0);
-		mSession= NULL;
+		mSession = NULL;
 	}
 
 	if(mRequestID != 0)
@@ -102,14 +102,14 @@ void WorldSocket::OnDisconnect()
 	if(mQueued)
 	{
 		sWorld.RemoveQueuedSocket(this);	// Remove from queued sockets.
-		mQueued=false;
+		mQueued = false;
 	}
 }
 
 void WorldSocket::OutPacket(uint16 opcode, size_t len, const void* data)
 {
 	OUTPACKET_RESULT res;
-	if( (len + 10) > WORLDSOCKET_SENDBUF_SIZE )
+	if((len + 10) > WORLDSOCKET_SENDBUF_SIZE)
 	{
 		LOG_ERROR("WARNING: Tried to send a packet of %u bytes (which is too large) to a socket. Opcode was: %u (0x%03X)", (unsigned int)len, (unsigned int)opcode, (unsigned int)opcode);
 		return;
@@ -123,7 +123,7 @@ void WorldSocket::OutPacket(uint16 opcode, size_t len, const void* data)
 	{
 		/* queue the packet */
 		queueLock.Acquire();
-		WorldPacket * pck = new WorldPacket(opcode, len);
+		WorldPacket* pck = new WorldPacket(opcode, len);
 		if(len) pck->append((const uint8*)data, len);
 		_queue.Push(pck);
 		queueLock.Release();
@@ -139,35 +139,38 @@ void WorldSocket::UpdateQueuedPackets()
 		return;
 	}
 
-	WorldPacket * pck;
-	while( (pck = _queue.front()) != NULL )
+	WorldPacket* pck;
+	while((pck = _queue.front()) != NULL)
 	{
 		/* try to push out as many as you can */
 		switch(_OutPacket(pck->GetOpcode(), pck->size(), pck->size() ? pck->contents() : NULL))
 		{
-		case OUTPACKET_RESULT_SUCCESS:
-			{
-				delete pck;
-				_queue.pop_front();
-			}break;
-
-		case OUTPACKET_RESULT_NO_ROOM_IN_BUFFER:
-			{
-				/* still connected */
-				queueLock.Release();
-				return;
-			}break;
-
-		default:
-			{
-				/* kill everything in the buffer */
-				while( (pck == _queue.Pop()) != 0 )
+			case OUTPACKET_RESULT_SUCCESS:
 				{
 					delete pck;
+					_queue.pop_front();
 				}
-				queueLock.Release();
-				return;
-			}break;
+				break;
+
+			case OUTPACKET_RESULT_NO_ROOM_IN_BUFFER:
+				{
+					/* still connected */
+					queueLock.Release();
+					return;
+				}
+				break;
+
+			default:
+				{
+					/* kill everything in the buffer */
+					while((pck == _queue.Pop()) != 0)
+					{
+						delete pck;
+					}
+					queueLock.Release();
+					return;
+				}
+				break;
 		}
 	}
 	queueLock.Release();
@@ -181,14 +184,14 @@ OUTPACKET_RESULT WorldSocket::_OutPacket(uint16 opcode, size_t len, const void* 
 
 	BurstBegin();
 	//if((m_writeByteCount + len + 4) >= m_writeBufferSize)
-	if( writeBuffer.GetSpace() < (len+4) )
+	if(writeBuffer.GetSpace() < (len + 4))
 	{
 		BurstEnd();
 		return OUTPACKET_RESULT_NO_ROOM_IN_BUFFER;
 	}
 
 	// Packet logger :)
-	sWorldLog.LogPacket((uint32)len, opcode, (const uint8*)data, 1, (mSession ? mSession->GetAccountId() : 0) );
+	sWorldLog.LogPacket((uint32)len, opcode, (const uint8*)data, 1, (mSession ? mSession->GetAccountId() : 0));
 
 	// Encrypt the packet
 	// First, create the header.
@@ -197,7 +200,7 @@ OUTPACKET_RESULT WorldSocket::_OutPacket(uint16 opcode, size_t len, const void* 
 	Header.cmd = opcode;
 	Header.size = ntohs((uint16)len + 2);
 
-	_crypt.EncryptSend((uint8*)&Header, sizeof (ServerPktHeader));
+	_crypt.EncryptSend((uint8*)&Header, sizeof(ServerPktHeader));
 
 	// Pass the header to our send buffer
 	rv = BurstSend((const uint8*)&Header, 4);
@@ -218,16 +221,16 @@ void WorldSocket::OnConnect()
 	sWorld.mAcceptedConnections++;
 	_latency = getMSTime();
 
-	WorldPacket wp( SMSG_AUTH_CHALLENGE, 24 );
+	WorldPacket wp(SMSG_AUTH_CHALLENGE, 24);
 
-	wp << uint32( 1 );
-	wp << uint32( mSeed );
-	wp << uint32( 0xC0FFEEEE );
-	wp << uint32( 0x00BABE00 );
-	wp << uint32( 0xDF1697E5 );
-	wp << uint32( 0x1234ABCD );
+	wp << uint32(1);
+	wp << uint32(mSeed);
+	wp << uint32(0xC0FFEEEE);
+	wp << uint32(0x00BABE00);
+	wp << uint32(0xDF1697E5);
+	wp << uint32(0x1234ABCD);
 
-	SendPacket( &wp );
+	SendPacket(&wp);
 
 }
 
@@ -237,7 +240,7 @@ void WorldSocket::_HandleAuthSession(WorldPacket* recvPacket)
 	uint32 unk2, unk3;
 	uint64 unk4;
 	uint32 unk5, unk6, unk7;
-	
+
 	_latency = getMSTime() - _latency;
 
 	try
@@ -260,7 +263,7 @@ void WorldSocket::_HandleAuthSession(WorldPacket* recvPacket)
 
 	// Send out a request for this account.
 	mRequestID = sLogonCommHandler.ClientConnected(account, this);
-	
+
 	if(mRequestID == 0xFFFFFFFF)
 	{
 		Disconnect();
@@ -268,10 +271,10 @@ void WorldSocket::_HandleAuthSession(WorldPacket* recvPacket)
 	}
 
 	// shitty hash !
-	m_fullAccountName = new string( account );
+	m_fullAccountName = new string(account);
 
-	// Set the authentication packet 
-    pAuthenticationPacket = recvPacket;
+	// Set the authentication packet
+	pAuthenticationPacket = recvPacket;
 }
 
 void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 requestid)
@@ -291,40 +294,40 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 
 	// Extract account information from the packet.
 	string AccountName;
-	const string * ForcedPermissions;
+	const string* ForcedPermissions;
 	uint32 AccountID;
 	string GMFlags;
 	uint8 AccountFlags;
 	string lang = "enUS";
 	uint32 i;
-	
+
 	recvData >> AccountID >> AccountName >> GMFlags >> AccountFlags;
 	ForcedPermissions = sLogonCommHandler.GetForcedPermissions(AccountName);
-	if( ForcedPermissions != NULL )
+	if(ForcedPermissions != NULL)
 		GMFlags.assign(ForcedPermissions->c_str());
 
-	LOG_DEBUG( " >> got information packet from logon: `%s` ID %u (request %u)", AccountName.c_str(), AccountID, mRequestID);
+	LOG_DEBUG(" >> got information packet from logon: `%s` ID %u (request %u)", AccountName.c_str(), AccountID, mRequestID);
 
 	mRequestID = 0;
 
 	// Pull the sessionkey we generated during the logon - client handshake
 	uint8 K[40];
 	recvData.read(K, 40);
-	
+
 	_crypt.Init(K);
-	
+
 	//checking if player is already connected
 	//disconnect current player and login this one(blizzlike)
 
 	if(recvData.rpos() != recvData.wpos())
 		recvData.read((uint8*)lang.data(), 4);
 
-	WorldSession *session = sWorld.FindSession( AccountID );
-	if( session)
+	WorldSession* session = sWorld.FindSession(AccountID);
+	if(session)
 	{
 		// AUTH_FAILED = 0x0D
 		session->Disconnect();
-		
+
 		// clear the logout timer so he times out straight away
 		session->SetLogoutTimer(1);
 
@@ -341,24 +344,24 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 	pAuthenticationPacket->read(digest, 20);
 
 	uint32 t = 0;
-	if( m_fullAccountName == NULL )				// should never happen !
+	if(m_fullAccountName == NULL)				// should never happen !
 		sha.UpdateData(AccountName);
 	else
 	{
 		sha.UpdateData(*m_fullAccountName);
-		
+
 		// this is unused now. we may as well free up the memory.
 		delete m_fullAccountName;
 		m_fullAccountName = NULL;
 	}
 
-	sha.UpdateData((uint8 *)&t, 4);
-	sha.UpdateData((uint8 *)&mClientSeed, 4);
-	sha.UpdateData((uint8 *)&mSeed, 4);
-	sha.UpdateData((uint8 *)&K, 40);
+	sha.UpdateData((uint8*)&t, 4);
+	sha.UpdateData((uint8*)&mClientSeed, 4);
+	sha.UpdateData((uint8*)&mSeed, 4);
+	sha.UpdateData((uint8*)&K, 40);
 	sha.Finalize();
 
-	if (memcmp(sha.GetDigest(), digest, 20))
+	if(memcmp(sha.GetDigest(), digest, 20))
 	{
 		// AUTH_UNKNOWN_ACCOUNT = 21
 		OutPacket(SMSG_AUTH_RESPONSE, 1, "\x15");
@@ -366,12 +369,12 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 	}
 
 	// Allocate session
-	WorldSession * pSession = new WorldSession(AccountID, AccountName, this);
+	WorldSession* pSession = new WorldSession(AccountID, AccountName, this);
 	mSession = pSession;
-	Arcemu::Util::ARCEMU_ASSERT(   mSession != NULL );
+	Arcemu::Util::ARCEMU_ASSERT(mSession != NULL);
 	// aquire delete mutex
 	pSession->deleteMutex.Acquire();
-	
+
 	// Set session properties
 	pSession->SetClientBuild(mClientBuild);
 	pSession->LoadSecurity(GMFlags);
@@ -387,22 +390,22 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 
 	if(sWorld.m_useAccountData)
 	{
-		QueryResult * pResult = CharacterDatabase.Query("SELECT * FROM account_data WHERE acct = %u", AccountID);
-		if( pResult == NULL )
+		QueryResult* pResult = CharacterDatabase.Query("SELECT * FROM account_data WHERE acct = %u", AccountID);
+		if(pResult == NULL)
 			CharacterDatabase.Execute("INSERT INTO account_data VALUES(%u, '', '', '', '', '', '', '', '', '')", AccountID);
 		else
 		{
 			size_t len;
-			const char * data;
-			char * d;
+			const char* data;
+			char* d;
 			for(i = 0; i < 8; ++i)
 			{
-				data = pResult->Fetch()[1+i].GetString();
+				data = pResult->Fetch()[1 + i].GetString();
 				len = data ? strlen(data) : 0;
 				if(len > 1)
 				{
-					d = new char[len+1];
-					memcpy(d, data, len+1);
+					d = new char[len + 1];
+					memcpy(d, data, len + 1);
 					pSession->SetAccountData(i, d, true, (uint32)len);
 				}
 			}
@@ -413,7 +416,7 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 
 	Log.Debug("Auth", "%s from %s:%u [%ums]", AccountName.c_str(), GetRemoteIP().c_str(), GetRemotePort(), _latency);
 #ifdef SESSION_CAP
-	if( sWorld.GetSessionCount() >= SESSION_CAP )
+	if(sWorld.GetSessionCount() >= SESSION_CAP)
 	{
 		OutPacket(SMSG_AUTH_RESPONSE, 1, "\x0D");
 		Disconnect();
@@ -423,9 +426,12 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 
 	// Check for queue.
 	uint32 playerLimit = sWorld.GetPlayerLimit();
-	if( (sWorld.GetSessionCount() < playerLimit) || pSession->HasGMPermissions() ) {
+	if((sWorld.GetSessionCount() < playerLimit) || pSession->HasGMPermissions())
+	{
 		Authenticate();
-	} else if( playerLimit > 0 ){
+	}
+	else if(playerLimit > 0)
+	{
 		// Queued, sucker.
 		uint32 Position = sWorld.AddQueuedSocket(this);
 		mQueued = true;
@@ -433,7 +439,9 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 
 		// Send packet so we know what we're doing
 		UpdateQueuePosition(Position);
-	} else {
+	}
+	else
+	{
 		OutPacket(SMSG_AUTH_RESPONSE, 1, "\x0E"); // AUTH_REJECT = 14
 		Disconnect();
 	}
@@ -444,30 +452,30 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 
 void WorldSocket::Authenticate()
 {
-	Arcemu::Util::ARCEMU_ASSERT(   pAuthenticationPacket != NULL );
+	Arcemu::Util::ARCEMU_ASSERT(pAuthenticationPacket != NULL);
 	mQueued = false;
 
-	if( mSession == NULL )
+	if(mSession == NULL)
 		return;
 
-	if( mSession->HasFlag( ACCOUNT_FLAG_XPACK_02 ) )
-		OutPacket( SMSG_AUTH_RESPONSE, 11, "\x0C\x30\x78\x00\x00\x00\x00\x00\x00\x00\x02" );
-	else if( mSession->HasFlag( ACCOUNT_FLAG_XPACK_01 ) )
-		OutPacket( SMSG_AUTH_RESPONSE, 11, "\x0C\x30\x78\x00\x00\x00\x00\x00\x00\x00\x01" );
+	if(mSession->HasFlag(ACCOUNT_FLAG_XPACK_02))
+		OutPacket(SMSG_AUTH_RESPONSE, 11, "\x0C\x30\x78\x00\x00\x00\x00\x00\x00\x00\x02");
+	else if(mSession->HasFlag(ACCOUNT_FLAG_XPACK_01))
+		OutPacket(SMSG_AUTH_RESPONSE, 11, "\x0C\x30\x78\x00\x00\x00\x00\x00\x00\x00\x01");
 	else
-		OutPacket( SMSG_AUTH_RESPONSE, 11, "\x0C\x30\x78\x00\x00\x00\x00\x00\x00\x00\x00" );
+		OutPacket(SMSG_AUTH_RESPONSE, 11, "\x0C\x30\x78\x00\x00\x00\x00\x00\x00\x00\x00");
 
-	sAddonMgr.SendAddonInfoPacket( pAuthenticationPacket, static_cast< uint32 >( pAuthenticationPacket->rpos() ), mSession );
+	sAddonMgr.SendAddonInfoPacket(pAuthenticationPacket, static_cast< uint32 >(pAuthenticationPacket->rpos()), mSession);
 	mSession->_latency = _latency;
 
 	delete pAuthenticationPacket;
 	pAuthenticationPacket = NULL;
 
-	sWorld.AddSession( mSession );
-	sWorld.AddGlobalSession( mSession );
-	
-	if( mSession->HasGMPermissions() )
-		sWorld.gmList.insert( mSession );
+	sWorld.AddSession(mSession);
+	sWorld.AddGlobalSession(mSession);
+
+	if(mSession->HasGMPermissions())
+		sWorld.gmList.insert(mSession);
 
 }
 
@@ -549,24 +557,24 @@ void WorldSocket::OnRead()
 			readBuffer.Read((uint8*)&Header, 6);
 
 			// Decrypt the header
-			_crypt.DecryptRecv((uint8*)&Header, sizeof (ClientPktHeader));
+			_crypt.DecryptRecv((uint8*)&Header, sizeof(ClientPktHeader));
 
 			mRemaining = mSize = ntohs(Header.size) - 4;
 			mOpcode = Header.cmd;
 		}
 
-		WorldPacket * Packet;
+		WorldPacket* Packet;
 
 		if(mRemaining > 0)
 		{
-			if( readBuffer.GetSize() < mRemaining )
+			if(readBuffer.GetSize() < mRemaining)
 			{
 				// We have a fragmented packet. Wait for the complete one before proceeding.
 				return;
 			}
 		}
 
-		Packet = new WorldPacket( static_cast<uint16>( mOpcode ), mSize);
+		Packet = new WorldPacket(static_cast<uint16>(mOpcode), mSize);
 		Packet->resize(mSize);
 
 		if(mRemaining > 0)
@@ -576,26 +584,29 @@ void WorldSocket::OnRead()
 			readBuffer.Read((uint8*)Packet->contents(), mRemaining);
 		}
 
-		sWorldLog.LogPacket(mSize, static_cast<uint16>( mOpcode ), mSize ? Packet->contents() : NULL, 0, (mSession ? mSession->GetAccountId() : 0) );
+		sWorldLog.LogPacket(mSize, static_cast<uint16>(mOpcode), mSize ? Packet->contents() : NULL, 0, (mSession ? mSession->GetAccountId() : 0));
 		mRemaining = mSize = mOpcode = 0;
 
 		// Check for packets that we handle
 		switch(Packet->GetOpcode())
 		{
-		case CMSG_PING:
-			{
-				_HandlePing(Packet);
-				delete Packet;
-			}break;
-		case CMSG_AUTH_SESSION:
-			{
-				_HandleAuthSession(Packet);
-			}break;
-		default:
-			{
-				if(mSession) mSession->QueuePacket(Packet);
-				else delete Packet;
-			}break;
+			case CMSG_PING:
+				{
+					_HandlePing(Packet);
+					delete Packet;
+				}
+				break;
+			case CMSG_AUTH_SESSION:
+				{
+					_HandleAuthSession(Packet);
+				}
+				break;
+			default:
+				{
+					if(mSession) mSession->QueuePacket(Packet);
+					else delete Packet;
+				}
+				break;
 		}
 	}
 }
@@ -606,7 +617,7 @@ void WorldLog::LogPacket(uint32 len, uint16 opcode, const uint8* data, uint8 dir
 {
 #ifdef ECHO_PACKET_LOG_TO_CONSOLE
 	sLog.outString("[%s]: %s %s (0x%03X) of %u bytes.", direction ? "SERVER" : "CLIENT", direction ? "sent" : "received",
-		LookupName(opcode, g_worldOpcodeNames), opcode, len);
+	               LookupName(opcode, g_worldOpcodeNames), opcode, len);
 #endif
 
 	if(bEnabled)
@@ -614,11 +625,11 @@ void WorldLog::LogPacket(uint32 len, uint16 opcode, const uint8* data, uint8 dir
 		mutex.Acquire();
 		unsigned int line = 1;
 		unsigned int countpos = 0;
-		uint16 lenght = static_cast<uint16>( len );
+		uint16 lenght = static_cast<uint16>(len);
 		unsigned int count = 0;
 
 		fprintf(m_file, "{%s} Packet: (0x%04X) %s PacketSize = %u stamp = %u accountid = %u\n", (direction ? "SERVER" : "CLIENT"), opcode,
-			LookupName(opcode, g_worldOpcodeNames), lenght, getMSTime(), accountid );
+		        LookupName(opcode, g_worldOpcodeNames), lenght, getMSTime(), accountid);
 		fprintf(m_file, "|------------------------------------------------|----------------|\n");
 		fprintf(m_file, "|00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F |0123456789ABCDEF|\n");
 		fprintf(m_file, "|------------------------------------------------|----------------|\n");
@@ -626,20 +637,20 @@ void WorldLog::LogPacket(uint32 len, uint16 opcode, const uint8* data, uint8 dir
 		if(lenght > 0)
 		{
 			fprintf(m_file, "|");
-			for (count = 0 ; count < lenght ; count++)
+			for(count = 0 ; count < lenght ; count++)
 			{
-				if (countpos == 16)
+				if(countpos == 16)
 				{
 					countpos = 0;
 
 					fprintf(m_file, "|");
 
-					for (unsigned int a = count-16; a < count;a++)
+					for(unsigned int a = count - 16; a < count; a++)
 					{
-						if ((data[a] < 32) || (data[a] > 126))
+						if((data[a] < 32) || (data[a] > 126))
 							fprintf(m_file, ".");
 						else
-							fprintf(m_file, "%c",data[a]);
+							fprintf(m_file, "%c", data[a]);
 					}
 
 					fprintf(m_file, "|\n");
@@ -648,51 +659,51 @@ void WorldLog::LogPacket(uint32 len, uint16 opcode, const uint8* data, uint8 dir
 					fprintf(m_file, "|");
 				}
 
-				fprintf(m_file, "%02X ",data[count]);
+				fprintf(m_file, "%02X ", data[count]);
 
 				//FIX TO PARSE PACKETS WITH LENGTH < OR = TO 16 BYTES.
-				if (count+1 == lenght && lenght <= 16)
+				if(count + 1 == lenght && lenght <= 16)
 				{
-					for (unsigned int b = countpos+1; b < 16;b++)
+					for(unsigned int b = countpos + 1; b < 16; b++)
 						fprintf(m_file, "   ");
 
 					fprintf(m_file, "|");
 
-					for (unsigned int a = 0; a < lenght;a++)
+					for(unsigned int a = 0; a < lenght; a++)
 					{
-						if ((data[a] < 32) || (data[a] > 126))
+						if((data[a] < 32) || (data[a] > 126))
 							fprintf(m_file, ".");
 						else
-							fprintf(m_file, "%c",data[a]);
+							fprintf(m_file, "%c", data[a]);
 					}
 
-					for (unsigned int c = count; c < 15;c++)
+					for(unsigned int c = count; c < 15; c++)
 						fprintf(m_file, " ");
 
 					fprintf(m_file, "|\n");
 				}
 
 				//FIX TO PARSE THE LAST LINE OF THE PACKETS WHEN THE LENGTH IS > 16 AND ITS IN THE LAST LINE.
-				if (count+1 == lenght && lenght > 16)
+				if(count + 1 == lenght && lenght > 16)
 				{
-					for (unsigned int b = countpos+1; b < 16;b++)
+					for(unsigned int b = countpos + 1; b < 16; b++)
 						fprintf(m_file, "   ");
 
 					fprintf(m_file, "|");
 
 					unsigned short print = 0;
 
-					for (unsigned int a = line * 16 - 16; a < lenght;a++)
+					for(unsigned int a = line * 16 - 16; a < lenght; a++)
 					{
-						if ((data[a] < 32) || (data[a] > 126))
+						if((data[a] < 32) || (data[a] > 126))
 							fprintf(m_file, ".");
 						else
-							fprintf(m_file, "%c",data[a]);
+							fprintf(m_file, "%c", data[a]);
 
 						print++;
 					}
 
-					for (unsigned int c = print; c < 16;c++)
+					for(unsigned int c = print; c < 16; c++)
 						fprintf(m_file, " ");
 
 					fprintf(m_file, "|\n");

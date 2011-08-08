@@ -3,89 +3,90 @@
 
 #include "StdAfx.h"
 
-enum SpellTreeName {
+enum SpellTreeName
+{
 
-	SPELLTREE_MAGE_ARCANE						= 237,
-	SPELLTREE_MAGE_FIRE							= 8,
-	SPELLTREE_MAGE_FROST 						= 6,
+    SPELLTREE_MAGE_ARCANE						= 237,
+    SPELLTREE_MAGE_FIRE							= 8,
+    SPELLTREE_MAGE_FROST 						= 6,
 
-	SPELLTREE_ROGUE_ASSASSINATION				= 253,
-	SPELLTREE_ROGUE_COMBAT						= 38,
-	SPELLTREE_ROGUE_SUBTLETY					= 39,
+    SPELLTREE_ROGUE_ASSASSINATION				= 253,
+    SPELLTREE_ROGUE_COMBAT						= 38,
+    SPELLTREE_ROGUE_SUBTLETY					= 39,
 
-	SPELLTREE_WARLOCK_AFFLICTION				= 355,
-	SPELLTREE_WARLOCK_DEMONOLOGY				= 354,
-	SPELLTREE_WARLOCK_DESTRUCTION				= 593,
+    SPELLTREE_WARLOCK_AFFLICTION				= 355,
+    SPELLTREE_WARLOCK_DEMONOLOGY				= 354,
+    SPELLTREE_WARLOCK_DESTRUCTION				= 593,
 
-	SPELLTREE_WARRIOR_ARMS						= 26,
-	SPELLTREE_WARRIOR_FURY						= 256,
-	SPELLTREE_WARRIOR_PROTECTION				= 257,
+    SPELLTREE_WARRIOR_ARMS						= 26,
+    SPELLTREE_WARRIOR_FURY						= 256,
+    SPELLTREE_WARRIOR_PROTECTION				= 257,
 
-	SPELLTREE_SHAMAN_ELEMENTAL					= 375,
-	SPELLTREE_SHAMAN_ENHANCEMENT				= 373,
-	SPELLTREE_SHAMAN_RESTORATION				= 374,
+    SPELLTREE_SHAMAN_ELEMENTAL					= 375,
+    SPELLTREE_SHAMAN_ENHANCEMENT				= 373,
+    SPELLTREE_SHAMAN_RESTORATION				= 374,
 
-	SPELLTREE_PALADIN_HOLY						= 594,
-	SPELLTREE_PALADIN_PROTECTION				= 267,
-	SPELLTREE_PALADIN_RETRIBUTION 				= 184,
+    SPELLTREE_PALADIN_HOLY						= 594,
+    SPELLTREE_PALADIN_PROTECTION				= 267,
+    SPELLTREE_PALADIN_RETRIBUTION 				= 184,
 
-	SPELLTREE_DEATHKNIGHT_BLOOD					= 770,
-	SPELLTREE_DEATHKNIGHT_FROST					= 771,
-	SPELLTREE_DEATHKNIGHT_UNHOLY				= 772,
+    SPELLTREE_DEATHKNIGHT_BLOOD					= 770,
+    SPELLTREE_DEATHKNIGHT_FROST					= 771,
+    SPELLTREE_DEATHKNIGHT_UNHOLY				= 772,
 
-	SPELLTREE_PRIEST_DISCIPLINE					= 613,
-	SPELLTREE_PRIEST_HOLY						= 56,
-	SPELLTREE_PRIEST_SHADOW						= 78,
+    SPELLTREE_PRIEST_DISCIPLINE					= 613,
+    SPELLTREE_PRIEST_HOLY						= 56,
+    SPELLTREE_PRIEST_SHADOW						= 78,
 
-	SPELLTREE_HUNTER_BEASTMASTERY				= 50,
-	SPELLTREE_HUNTER_MARKSMANSHIP				= 163,
-	SPELLTREE_HUNTER_SURVIVAL					= 51,
+    SPELLTREE_HUNTER_BEASTMASTERY				= 50,
+    SPELLTREE_HUNTER_MARKSMANSHIP				= 163,
+    SPELLTREE_HUNTER_SURVIVAL					= 51,
 
-	SPELLTREE_DRUID_BALANCE						= 574,
-	SPELLTREE_DRUID_FERAL_COMBAT				= 134,
-	SPELLTREE_DRUID_RESTORATION					= 573,
+    SPELLTREE_DRUID_BALANCE						= 574,
+    SPELLTREE_DRUID_FERAL_COMBAT				= 134,
+    SPELLTREE_DRUID_RESTORATION					= 573,
 };
 
 class SkillNameMgr
 {
-public:
-	char **SkillNames;
-	uint32 maxskill;
+	public:
+		char** SkillNames;
+		uint32 maxskill;
 
-	SkillNameMgr()
-	{
-		DBCStorage< skilllineentry >::iterator itr = dbcSkillLine.end();
-		--itr;
-		skilllineentry *skillline = *itr;
-
-		//This will become the size of the skill name lookup table
-		maxskill = skillline->id;
-
-		//SkillNames = (char **) malloc(maxskill * sizeof(char *));
-		SkillNames = new char * [maxskill+1]; //(+1, arrays count from 0.. not 1.)
-		memset(SkillNames,0,(maxskill+1) * sizeof(char *));
-
-		for( itr = dbcSkillLine.begin(); itr != dbcSkillLine.end(); ++itr )
+		SkillNameMgr()
 		{
-			skillline = *itr;
+			DBCStorage< skilllineentry >::iterator itr = dbcSkillLine.end();
+			--itr;
+			skilllineentry* skillline = *itr;
 
-			unsigned int SkillID = skillline->id;
-			const char *SkillName = skillline->Name;
+			//This will become the size of the skill name lookup table
+			maxskill = skillline->id;
 
-			SkillNames[SkillID] = new char [strlen(SkillName)+1];
-			//When the DBCFile gets cleaned up, so does the record data, so make a copy of it..
-			memcpy(SkillNames[SkillID],SkillName,strlen(SkillName)+1);
+			//SkillNames = (char **) malloc(maxskill * sizeof(char *));
+			SkillNames = new char * [maxskill + 1]; //(+1, arrays count from 0.. not 1.)
+			memset(SkillNames, 0, (maxskill + 1) * sizeof(char*));
+
+			for(itr = dbcSkillLine.begin(); itr != dbcSkillLine.end(); ++itr)
+			{
+				skillline = *itr;
+
+				unsigned int SkillID = skillline->id;
+				const char* SkillName = skillline->Name;
+
+				SkillNames[SkillID] = new char [strlen(SkillName) + 1];
+				//When the DBCFile gets cleaned up, so does the record data, so make a copy of it..
+				memcpy(SkillNames[SkillID], SkillName, strlen(SkillName) + 1);
+			}
 		}
-	}
-	~SkillNameMgr()
-	{
-		for(uint32 i = 0;i<=maxskill;i++)
+		~SkillNameMgr()
 		{
-			if(SkillNames[i] != 0)
-				delete[] SkillNames[i];
+			for(uint32 i = 0; i <= maxskill; i++)
+			{
+				if(SkillNames[i] != 0)
+					delete[] SkillNames[i];
+			}
+			delete[] SkillNames;
 		}
-		delete[] SkillNames;
-	}
 };
 #endif
 

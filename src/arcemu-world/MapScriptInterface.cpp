@@ -48,7 +48,7 @@ uint32 MapScriptInterface::GetPlayerCountInRadius(float x, float y, float z /* =
 	uint32 endY = cellY < _sizeY ? cellY + 1 : _sizeY;
 	uint32 startX = cellX > 0 ? cellX - 1 : 0;
 	uint32 startY = cellY > 0 ? cellY - 1 : 0;
-	MapCell * pCell;
+	MapCell* pCell;
 	ObjectSet::iterator iter, iter_end;
 
 	for(uint32 cx = startX; cx < endX; ++cx)
@@ -65,7 +65,7 @@ uint32 MapScriptInterface::GetPlayerCountInRadius(float x, float y, float z /* =
 			for(; iter != iter_end; ++iter)
 			{
 				if((*iter)->IsPlayer() &&
-					(*iter)->CalcDistance(x, y, (z == 0.0f ? (*iter)->GetPositionZ() : z)) < radius)
+				        (*iter)->CalcDistance(x, y, (z == 0.0f ? (*iter)->GetPositionZ() : z)) < radius)
 				{
 					++PlayerCount;
 				}
@@ -79,7 +79,7 @@ uint32 MapScriptInterface::GetPlayerCountInRadius(float x, float y, float z /* =
 GameObject* MapScriptInterface::SpawnGameObject(uint32 Entry, float cX, float cY, float cZ, float cO, bool AddToWorld, uint32 Misc1, uint32 Misc2, uint32 phase)
 {
 
-	GameObject *pGameObject = mapMgr.CreateGameObject(Entry);
+	GameObject* pGameObject = mapMgr.CreateGameObject(Entry);
 	if(!pGameObject->CreateFromProto(Entry, mapMgr.GetMapId(), cX, cY, cZ, cO))
 	{
 		delete pGameObject;
@@ -94,12 +94,12 @@ GameObject* MapScriptInterface::SpawnGameObject(uint32 Entry, float cX, float cY
 	return pGameObject;
 }
 
-GameObject * MapScriptInterface::SpawnGameObject(GOSpawn * gs, bool AddToWorld)
+GameObject* MapScriptInterface::SpawnGameObject(GOSpawn* gs, bool AddToWorld)
 {
 	if(!gs)
 		return NULL;
 
-	GameObject *pGameObject = mapMgr.CreateGameObject(gs->entry);
+	GameObject* pGameObject = mapMgr.CreateGameObject(gs->entry);
 	if(!pGameObject->Load(gs))
 	{
 		delete pGameObject;
@@ -114,14 +114,14 @@ GameObject * MapScriptInterface::SpawnGameObject(GOSpawn * gs, bool AddToWorld)
 
 Creature* MapScriptInterface::SpawnCreature(uint32 Entry, float cX, float cY, float cZ, float cO, bool AddToWorld, bool tmplate, uint32 Misc1, uint32 Misc2, uint32 phase)
 {
-	CreatureProto * proto = CreatureProtoStorage.LookupEntry(Entry);
-	CreatureInfo * info = CreatureNameStorage.LookupEntry(Entry);
+	CreatureProto* proto = CreatureProtoStorage.LookupEntry(Entry);
+	CreatureInfo* info = CreatureNameStorage.LookupEntry(Entry);
 	if(proto == 0 || info == 0)
 	{
 		return 0;
 	}
 
-	CreatureSpawn * sp = new CreatureSpawn;
+	CreatureSpawn* sp = new CreatureSpawn;
 	sp->entry = Entry;
 	uint32 DisplayID = 0;
 	uint8 Gender = info->GenerateModelId(&DisplayID);
@@ -150,38 +150,38 @@ Creature* MapScriptInterface::SpawnCreature(uint32 Entry, float cX, float cY, fl
 	sp->CanFly = 0;
 	sp->phase = phase;
 
-	Creature * p = this->mapMgr.CreateCreature(Entry);
-	Arcemu::Util::ARCEMU_ASSERT(   p != NULL );
+	Creature* p = this->mapMgr.CreateCreature(Entry);
+	Arcemu::Util::ARCEMU_ASSERT(p != NULL);
 	p->Load(sp, (uint32)NULL, NULL);
 	p->setGender(Gender);
 	p->spawnid = 0;
 	p->m_spawn = 0;
 	delete sp;
-	if (AddToWorld)
+	if(AddToWorld)
 		p->PushToWorld(&mapMgr);
 	return p;
 }
 
-Creature * MapScriptInterface::SpawnCreature(CreatureSpawn * sp, bool AddToWorld)
+Creature* MapScriptInterface::SpawnCreature(CreatureSpawn* sp, bool AddToWorld)
 {
 	if(!sp)
 		return NULL;
 
-	CreatureProto * proto = CreatureProtoStorage.LookupEntry(sp->entry);
-	CreatureInfo * info = CreatureNameStorage.LookupEntry(sp->entry);
+	CreatureProto* proto = CreatureProtoStorage.LookupEntry(sp->entry);
+	CreatureInfo* info = CreatureNameStorage.LookupEntry(sp->entry);
 	if(proto == 0 || info == 0)
 	{
 		return 0;
 	}
 
 	uint8 Gender = info->GenerateModelId(&sp->displayid);
-	Creature * p = this->mapMgr.CreateCreature(sp->entry);
-	Arcemu::Util::ARCEMU_ASSERT(   p != NULL );
+	Creature* p = this->mapMgr.CreateCreature(sp->entry);
+	Arcemu::Util::ARCEMU_ASSERT(p != NULL);
 	p->Load(sp, (uint32)NULL, NULL);
 	p->setGender(Gender);
 	p->spawnid = 0;
 	p->m_spawn = 0;
-	if (AddToWorld)
+	if(AddToWorld)
 		p->PushToWorld(&mapMgr);
 	return p;
 }
@@ -191,12 +191,12 @@ void MapScriptInterface::DeleteCreature(Creature* ptr)
 	delete ptr;
 }
 
-void MapScriptInterface::DeleteGameObject(GameObject *ptr)
+void MapScriptInterface::DeleteGameObject(GameObject* ptr)
 {
 	delete ptr;
 }
 
-WayPoint * StructFactory::CreateWaypoint()
+WayPoint* StructFactory::CreateWaypoint()
 {
 	return new WayPoint;
 }

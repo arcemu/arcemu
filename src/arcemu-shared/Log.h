@@ -33,95 +33,99 @@ class WorldSession;
 
 enum LogType
 {
-	WORLD_LOG,
-	LOGON_LOG
+    WORLD_LOG,
+    LOGON_LOG
 };
 
 extern SERVER_DECL time_t UNIXTIME;		/* update this every loop to avoid the time() syscall! */
 extern SERVER_DECL tm g_localTime;
 
-std::string FormatOutputString(const char * Prefix, const char * Description, bool useTimeStamp);
+std::string FormatOutputString(const char* Prefix, const char* Description, bool useTimeStamp);
 
-class SERVER_DECL oLog : public Singleton< oLog > {
-public:
-  //log level 0
-  void outString( const char * str, ... );
-  void outError( const char * err, ... );
-  void outBasic( const char * str, ... );
-  //log level 1
-  void outDetail( const char * str, ... );
-  //log level 2
-  void outDebug( const char * str, ... );
+class SERVER_DECL oLog : public Singleton< oLog >
+{
+	public:
+		//log level 0
+		void outString(const char* str, ...);
+		void outError(const char* err, ...);
+		void outBasic(const char* str, ...);
+		//log level 1
+		void outDetail(const char* str, ...);
+		//log level 2
+		void outDebug(const char* str, ...);
 
-  void logError( const char *file, int line, const char *fncname, const char *msg, ... );
-  void logDebug( const char *file, int line, const char *fncname, const char *msg, ... );
-  void logBasic( const char *file, int line, const char *fncname,  const char *msg, ... );
-  void logDetail( const char *file, int line, const char *fncname, const char *msg, ... );
+		void logError(const char* file, int line, const char* fncname, const char* msg, ...);
+		void logDebug(const char* file, int line, const char* fncname, const char* msg, ...);
+		void logBasic(const char* file, int line, const char* fncname,  const char* msg, ...);
+		void logDetail(const char* file, int line, const char* fncname, const char* msg, ...);
 
-  //old NGLog.h methods
-  //log level 0
-  void Success( const char * source, const char * format, ... );
-  void Error( const char * source, const char * format, ... );
-  void LargeErrorMessage( const char * str, ... );
-  //log level 1
-  void Notice( const char * source, const char * format, ... );
-  void Warning( const char * source, const char * format, ... );
-  //log level 2
-  void Debug( const char * source, const char * format, ... );
+		//old NGLog.h methods
+		//log level 0
+		void Success(const char* source, const char* format, ...);
+		void Error(const char* source, const char* format, ...);
+		void LargeErrorMessage(const char* str, ...);
+		//log level 1
+		void Notice(const char* source, const char* format, ...);
+		void Warning(const char* source, const char* format, ...);
+		//log level 2
+		void Debug(const char* source, const char* format, ...);
 
-  void SetLogging(bool enabled);
-  
-  void Init(int32 fileLogLevel, LogType logType);
-  void SetFileLoggingLevel(int32 level);
+		void SetLogging(bool enabled);
 
-  void Close();
+		void Init(int32 fileLogLevel, LogType logType);
+		void SetFileLoggingLevel(int32 level);
 
-  int32 m_fileLogLevel;
-  
-private:
-  FILE *m_normalFile, *m_errorFile;
-  void outFile(FILE *file, char *msg, const char *source = NULL);
-  void Time(char *buffer);
-  ARCEMU_INLINE char dcd( char in ){
-	  char out = in;
-	  out -= 13;
-	  out ^= 131;
-	  return out;
-  } 
+		void Close();
 
-  void dcds( char *str ){
-	  unsigned long i = 0;
-	  size_t len = strlen( str );
+		int32 m_fileLogLevel;
 
-	  for(i = 0; i < len; ++i )
-		  str[i] = dcd( str[i] );
+	private:
+		FILE* m_normalFile, *m_errorFile;
+		void outFile(FILE* file, char* msg, const char* source = NULL);
+		void Time(char* buffer);
+		ARCEMU_INLINE char dcd(char in)
+		{
+			char out = in;
+			out -= 13;
+			out ^= 131;
+			return out;
+		}
 
-  }
+		void dcds(char* str)
+		{
+			unsigned long i = 0;
+			size_t len = strlen(str);
 
-  void pdcds( const char *str, char *buf ){
-	  strcpy(buf, str);
-	  dcds( buf );
-  }
+			for(i = 0; i < len; ++i)
+				str[i] = dcd(str[i]);
+
+		}
+
+		void pdcds(const char* str, char* buf)
+		{
+			strcpy(buf, str);
+			dcds(buf);
+		}
 };
 
 class SessionLogWriter
 {
-	FILE * m_file;
-	char * m_filename;
-public:
-	SessionLogWriter(const char * filename, bool open);
-	~SessionLogWriter();
+		FILE* m_file;
+		char* m_filename;
+	public:
+		SessionLogWriter(const char* filename, bool open);
+		~SessionLogWriter();
 
-	void write(const char* format, ...);
-	void writefromsession(WorldSession* session, const char* format, ...);
-	ARCEMU_INLINE bool IsOpen() { return (m_file != NULL); }
-	void Open();
-	void Close();
+		void write(const char* format, ...);
+		void writefromsession(WorldSession* session, const char* format, ...);
+		ARCEMU_INLINE bool IsOpen() { return (m_file != NULL); }
+		void Open();
+		void Close();
 };
 
-extern SessionLogWriter * Anticheat_Log;
-extern SessionLogWriter * GMCommand_Log;
-extern SessionLogWriter * Player_Log;
+extern SessionLogWriter* Anticheat_Log;
+extern SessionLogWriter* GMCommand_Log;
+extern SessionLogWriter* Player_Log;
 
 #define sLog oLog::getSingleton()
 
@@ -138,17 +142,17 @@ extern SessionLogWriter * Player_Log;
 
 class WorldLog : public Singleton<WorldLog>
 {
-public:
-	WorldLog();
-	~WorldLog();
+	public:
+		WorldLog();
+		~WorldLog();
 
-	void LogPacket(uint32 len, uint16 opcode, const uint8* data, uint8 direction, uint32 accountid= 0);
-	void Enable();
-	void Disable();
-private:
-	FILE * m_file;
-	Mutex mutex;
-	bool bEnabled;
+		void LogPacket(uint32 len, uint16 opcode, const uint8* data, uint8 direction, uint32 accountid = 0);
+		void Enable();
+		void Disable();
+	private:
+		FILE* m_file;
+		Mutex mutex;
+		bool bEnabled;
 };
 
 #define sWorldLog WorldLog::getSingleton()

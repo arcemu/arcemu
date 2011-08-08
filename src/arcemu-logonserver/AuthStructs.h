@@ -24,9 +24,10 @@
 #pragma pack(1)
 #else
 #pragma pack(push,1)
-#endif 
+#endif
 
-typedef struct {
+typedef struct
+{
 	uint8   cmd;
 	uint8   error;		  // 0x00
 	uint16  size;		   // 0x0026
@@ -46,7 +47,8 @@ typedef struct {
 
 typedef sAuthLogonChallenge_C sAuthReconnectChallenge_C;
 
-typedef struct {
+typedef struct
+{
 	uint8   cmd;			// 0x00 CMD_AUTH_LOGON_CHALLENGE
 	uint8   error;		  // 0 - ok
 	uint8   unk2;		   // 0x00
@@ -60,7 +62,8 @@ typedef struct {
 	uint8   unk4;
 } sAuthLogonChallenge_S;
 
-typedef struct {
+typedef struct
+{
 	uint8   cmd; // 0x01
 	uint8   A[32];
 	uint8   M1[20];
@@ -69,14 +72,16 @@ typedef struct {
 	uint8   unk;
 } sAuthLogonProof_C;
 
-typedef struct {
+typedef struct
+{
 	uint16  unk1;
 	uint32  unk2;
 	uint8   unk3[4];
 	uint16  unk4[20];	   // sha1(A,g,?)
 }  sAuthLogonProofKey_C;
 
-typedef struct {
+typedef struct
+{
 	uint8   cmd;			// 0x01 CMD_AUTH_LOGON_PROOF
 	uint8   error;
 	uint8   M2[20];

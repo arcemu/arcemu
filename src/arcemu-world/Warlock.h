@@ -23,10 +23,10 @@
 
 class Warlock : public Player
 {
-public:
-	Warlock ( uint32 guid ) : Player( guid ) {}
+	public:
+		Warlock(uint32 guid) : Player(guid) {}
 
-	bool IsWarlock() { return true; }
+		bool IsWarlock() { return true; }
 };
 
 #endif

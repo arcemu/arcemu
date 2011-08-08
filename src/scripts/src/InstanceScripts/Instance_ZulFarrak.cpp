@@ -39,64 +39,64 @@ Fevered Plague 16186 =  Inflicts 72 to 78 Nature damage to an enemy, then an add
 
 class thekaAI : public CreatureAIScript
 {
-public:
-	ADD_CREATURE_FACTORY_FUNCTION(thekaAI);
+	public:
+		ADD_CREATURE_FACTORY_FUNCTION(thekaAI);
 
-    thekaAI(Creature* pCreature) : CreatureAIScript(pCreature) 
-	{
-
-        morph = dbcSpell.LookupEntry(theka_transform);
-
-		plague = dbcSpell.LookupEntry(fevered_plague);
-	}
-
-	void OnCombatStart(Unit* mTarget) 
-	{
-		morphcheck = true;
-		plaguecount = 0;
-		RegisterAIUpdateEvent(1000);
-	}
-
-	void OnCombatStop(Unit* mTarget) 
-	{
-        _unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
-        _unit->GetAIInterface()->SetAIState(STATE_IDLE);
-		morphcheck = false;
-		plaguecount = 0;
-        RemoveAIUpdateEvent();
-	}
-
-	void OnDied(Unit* mKiller) 
-	{
-		morphcheck = false;
-		plaguecount = 0;
-        RemoveAIUpdateEvent();
-	}
-
-	void AIUpdate() 
-	{
-		plaguecount++;
-		randomplague = 16 + RandomUInt(3);
-		if(plaguecount >= randomplague && _unit->GetAIInterface()->getNextTarget())
+		thekaAI(Creature* pCreature) : CreatureAIScript(pCreature)
 		{
-			plaguecount = 0;
-			Unit* target = NULL;
-			target = _unit->GetAIInterface()->getNextTarget();
-			_unit->CastSpell(target, plague, true);
+
+			morph = dbcSpell.LookupEntry(theka_transform);
+
+			plague = dbcSpell.LookupEntry(fevered_plague);
 		}
-		else if(_unit->GetHealthPct() <= 30 && morphcheck)
+
+		void OnCombatStart(Unit* mTarget)
+		{
+			morphcheck = true;
+			plaguecount = 0;
+			RegisterAIUpdateEvent(1000);
+		}
+
+		void OnCombatStop(Unit* mTarget)
+		{
+			_unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
+			_unit->GetAIInterface()->SetAIState(STATE_IDLE);
+			morphcheck = false;
+			plaguecount = 0;
+			RemoveAIUpdateEvent();
+		}
+
+		void OnDied(Unit* mKiller)
 		{
 			morphcheck = false;
-
-			_unit->CastSpell(_unit, morph, false);
+			plaguecount = 0;
+			RemoveAIUpdateEvent();
 		}
-	}
 
-protected:
-	int plaguecount, randomplague;
-	bool morphcheck;
-	SpellEntry * morph;
-	SpellEntry * plague;
+		void AIUpdate()
+		{
+			plaguecount++;
+			randomplague = 16 + RandomUInt(3);
+			if(plaguecount >= randomplague && _unit->GetAIInterface()->getNextTarget())
+			{
+				plaguecount = 0;
+				Unit* target = NULL;
+				target = _unit->GetAIInterface()->getNextTarget();
+				_unit->CastSpell(target, plague, true);
+			}
+			else if(_unit->GetHealthPct() <= 30 && morphcheck)
+			{
+				morphcheck = false;
+
+				_unit->CastSpell(_unit, morph, false);
+			}
+		}
+
+	protected:
+		int plaguecount, randomplague;
+		bool morphcheck;
+		SpellEntry* morph;
+		SpellEntry* plague;
 };
 
 
@@ -104,7 +104,7 @@ protected:
 
 // Antu'sul
 
-/* 
+/*
 needs a aggro trigger outside cave
 
 yells
@@ -122,34 +122,34 @@ misc info
 
 he summons 6 Sul'lithuz Broodling 8138 on aggro
 he summons Servant of antu'sul 8156 75% with spell 11894
-he summons Servant of antu'sul 8156 25% with spell 11894 each 15 second  
+he summons Servant of antu'sul 8156 25% with spell 11894 each 15 second
 
 ------------------------------------------------------------------------------------------------
 */
 class antusulTriggerAI : public CreatureAIScript
 {
-public:
-	ADD_CREATURE_FACTORY_FUNCTION(antusulTriggerAI);
+	public:
+		ADD_CREATURE_FACTORY_FUNCTION(antusulTriggerAI);
 
-	antusulTriggerAI(Creature* pCreature) : CreatureAIScript(pCreature){}
+		antusulTriggerAI(Creature* pCreature) : CreatureAIScript(pCreature) {}
 
-	void OnCombatStart(Unit* mTarget) 
-	{
-		_unit->GetAIInterface()->m_canMove = false;
-		_unit->GetAIInterface()->disable_melee = true;
-		_unit->SetUInt64Value(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-
-		Unit* antusul = NULL;
-		antusul = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(1815.030029f, 686.817017f, 14.519000f, 8127);
-		if(antusul)
+		void OnCombatStart(Unit* mTarget)
 		{
-			if(antusul->isAlive())
+			_unit->GetAIInterface()->m_canMove = false;
+			_unit->GetAIInterface()->disable_melee = true;
+			_unit->SetUInt64Value(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+
+			Unit* antusul = NULL;
+			antusul = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(1815.030029f, 686.817017f, 14.519000f, 8127);
+			if(antusul)
 			{
-				antusul->GetAIInterface()->AttackReaction(mTarget, 0, 0);
-				antusul->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "Lunch has arrived, my beutiful childern. Tear them to pieces!");
+				if(antusul->isAlive())
+				{
+					antusul->GetAIInterface()->AttackReaction(mTarget, 0, 0);
+					antusul->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "Lunch has arrived, my beutiful childern. Tear them to pieces!");
+				}
 			}
 		}
-	}
 
 };
 /*--------------------------------------------------------------------------------------*/
@@ -160,211 +160,214 @@ public:
 
 class antusulAI : public CreatureAIScript
 {
-public:
-	ADD_CREATURE_FACTORY_FUNCTION(antusulAI);
+	public:
+		ADD_CREATURE_FACTORY_FUNCTION(antusulAI);
 
-    antusulAI(Creature* pCreature) : CreatureAIScript(pCreature) 
-	{
-		add1 = add2 = add3 = add4 = add5 = add6 = trigger = NULL;
-        servant = dbcSpell.LookupEntry(servants);
-		//healing_ward = dbcSpell.LookupEntry(healingward);
-		//earthgrab_ward = dbcSpell.LookupEntry(earthgrabward);
-	}
-
-	void OnCombatStart(Unit* mTarget) 
-	{
-		add1 = add2 = add3 = add4 = add5 = add6 = trigger = NULL;
-		spawns = firstspawn = secondspawn = true;
-		spawns2 = attack = false;
-		/*healingwardcount = earthgrabcount = hmax = emax =*/ secondspawncount = 0;
-		RegisterAIUpdateEvent(1000);
-	}
-
-	void OnCombatStop(Unit* mTarget) 
-	{
-		spawns = spawns2 = attack = firstspawn = secondspawn = false;
-		/*healingwardcount = earthgrabcount = hmax = emax =*/ secondspawncount = 0;
-        _unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
-        _unit->GetAIInterface()->SetAIState(STATE_IDLE);
-        RemoveAIUpdateEvent();
-		resettrigger();
-		deletespawns();
-	}
-
-	void OnDied(Unit* mKiller) 
-	{
-		spawns = spawns2 = attack = firstspawn = secondspawn = false;
-		/*healingwardcount = earthgrabcount = hmax = emax =*/ secondspawncount = 0;
-        RemoveAIUpdateEvent();
-		trigger = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(1811.943726f, 714.839417f, 12.897189f, 133337);
-		if (trigger)
-			trigger->Despawn(100, 0);
-	}
-
-	void AIUpdate() 
-	{
-		//healingwardcount++;
-		//earthgrabcount++;
-		//hmax = 15 + RandomUInt(5);
-		//emax = 15 + RandomUInt(5);
-		if(_unit->GetHealthPct() <= 75 && firstspawn)
+		antusulAI(Creature* pCreature) : CreatureAIScript(pCreature)
 		{
-			firstspawn = false;
-			_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "Rise and defend your master!");
-			_unit->CastSpell(_unit, servant, true);
+			add1 = add2 = add3 = add4 = add5 = add6 = trigger = NULL;
+			servant = dbcSpell.LookupEntry(servants);
+			//healing_ward = dbcSpell.LookupEntry(healingward);
+			//earthgrab_ward = dbcSpell.LookupEntry(earthgrabward);
 		}
-		if(_unit->GetHealthPct() <= 25)
+
+		void OnCombatStart(Unit* mTarget)
 		{
-			secondspawncount++;
-			if(secondspawn)
+			add1 = add2 = add3 = add4 = add5 = add6 = trigger = NULL;
+			spawns = firstspawn = secondspawn = true;
+			spawns2 = attack = false;
+			/*healingwardcount = earthgrabcount = hmax = emax =*/
+			secondspawncount = 0;
+			RegisterAIUpdateEvent(1000);
+		}
+
+		void OnCombatStop(Unit* mTarget)
+		{
+			spawns = spawns2 = attack = firstspawn = secondspawn = false;
+			/*healingwardcount = earthgrabcount = hmax = emax =*/
+			secondspawncount = 0;
+			_unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
+			_unit->GetAIInterface()->SetAIState(STATE_IDLE);
+			RemoveAIUpdateEvent();
+			resettrigger();
+			deletespawns();
+		}
+
+		void OnDied(Unit* mKiller)
+		{
+			spawns = spawns2 = attack = firstspawn = secondspawn = false;
+			/*healingwardcount = earthgrabcount = hmax = emax =*/
+			secondspawncount = 0;
+			RemoveAIUpdateEvent();
+			trigger = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(1811.943726f, 714.839417f, 12.897189f, 133337);
+			if(trigger)
+				trigger->Despawn(100, 0);
+		}
+
+		void AIUpdate()
+		{
+			//healingwardcount++;
+			//earthgrabcount++;
+			//hmax = 15 + RandomUInt(5);
+			//emax = 15 + RandomUInt(5);
+			if(_unit->GetHealthPct() <= 75 && firstspawn)
 			{
-				secondspawn = false;
-				_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "The children of sul will protect their master. Rise once more Sul'lithuz!");
+				firstspawn = false;
+				_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "Rise and defend your master!");
 				_unit->CastSpell(_unit, servant, true);
 			}
-			if(secondspawncount >= 15)
+			if(_unit->GetHealthPct() <= 25)
 			{
-				secondspawncount = 0;
-				_unit->CastSpell(_unit, servant, true);
-			}
+				secondspawncount++;
+				if(secondspawn)
+				{
+					secondspawn = false;
+					_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "The children of sul will protect their master. Rise once more Sul'lithuz!");
+					_unit->CastSpell(_unit, servant, true);
+				}
+				if(secondspawncount >= 15)
+				{
+					secondspawncount = 0;
+					_unit->CastSpell(_unit, servant, true);
+				}
 
-		}
-		if(attack)
-		{
-			Unit* Target = NULL;
-			Target = _unit->GetAIInterface()->getNextTarget();
-			if (_unit->GetAIInterface()->getNextTarget())
+			}
+			if(attack)
 			{
-				if(add1 && Target)
+				Unit* Target = NULL;
+				Target = _unit->GetAIInterface()->getNextTarget();
+				if(_unit->GetAIInterface()->getNextTarget())
 				{
-					add1->GetAIInterface()->AttackReaction(Target, 0, 0);
+					if(add1 && Target)
+					{
+						add1->GetAIInterface()->AttackReaction(Target, 0, 0);
+					}
+					if(add2 && Target)
+					{
+						add2->GetAIInterface()->AttackReaction(Target, 0, 0);
+					}
+					if(add3 && Target)
+					{
+						add3->GetAIInterface()->AttackReaction(Target, 0, 0);
+					}
+					if(add4 && Target)
+					{
+						add4->GetAIInterface()->AttackReaction(Target, 0, 0);
+					}
+					if(add5 && Target)
+					{
+						add5->GetAIInterface()->AttackReaction(Target, 0, 0);
+					}
+					if(add6 && Target)
+					{
+						add6->GetAIInterface()->AttackReaction(Target, 0, 0);
+					}
 				}
-				if(add2 && Target)
-				{
-					add2->GetAIInterface()->AttackReaction(Target, 0, 0);
-				}
-				if(add3 && Target)
-				{
-					add3->GetAIInterface()->AttackReaction(Target, 0, 0);
-				}
-				if(add4 && Target)
-				{
-					add4->GetAIInterface()->AttackReaction(Target, 0, 0);
-				}
-				if(add5 && Target)
-				{
-					add5->GetAIInterface()->AttackReaction(Target, 0, 0);
-				}
-				if(add6 && Target)
-				{
-					add6->GetAIInterface()->AttackReaction(Target, 0, 0);
-				}
+
+				attack = false;
 			}
+			if(spawns2)
+			{
+				spawns2 = false;
+				addsdefine();
+				attack = true;
+			}
+			if(spawns)
+			{
+				spawns = false;
+				spawnadds();
+				spawns2 = true;
+			}
+			/*if(healingwardcount >= hmax)
+			{
+				//_unit->CastSpell(_unit, healing_ward, true);    wrong spell id cant find right one
+				healingwardcount = 0;
+			}
+			if(earthgrabcount >= emax)
+			{
+				//_unit->CastSpell(_unit, earthgrab_ward, true);   the totem needs to be scripted with its own ai
+				earthgrabcount = 0;
+			}*/
+		}
 
-			attack = false;
-		}
-		if(spawns2)
+		void spawnadds()
 		{
-			spawns2 = false;
-			addsdefine();
-			attack = true;
+			_unit->GetMapMgr()->GetInterface()->SpawnCreature(8138, 1777.753540f, 741.063538f, 16.439308f, 6.197119f, true, false, 0, 0);
+			_unit->GetMapMgr()->GetInterface()->SpawnCreature(8138, 1782.193481f, 751.190002f, 16.620836f, 5.174994f, true, false, 0, 0);
+			_unit->GetMapMgr()->GetInterface()->SpawnCreature(8138, 1790.956299f, 754.666809f, 14.195786f, 5.174208f, true, false, 0, 0);
+			_unit->GetMapMgr()->GetInterface()->SpawnCreature(8138, 1800.902710f, 755.723267f, 15.642491f, 4.545889f, true, false, 0, 0);
+			_unit->GetMapMgr()->GetInterface()->SpawnCreature(8138, 1809.339722f, 749.212402f, 16.910545f, 4.109208f, true, false, 0, 0);
+			_unit->GetMapMgr()->GetInterface()->SpawnCreature(8138, 1818.182129f, 744.702820f, 17.801855f, 3.899507f, true, false, 0, 0);
 		}
-		if(spawns)
-		{
-			spawns = false;
-			spawnadds();
-			spawns2 = true;
-		}
-		/*if(healingwardcount >= hmax)
-		{
-			//_unit->CastSpell(_unit, healing_ward, true);    wrong spell id cant find right one
-			healingwardcount = 0;
-		}
-		if(earthgrabcount >= emax)
-		{
-			//_unit->CastSpell(_unit, earthgrab_ward, true);   the totem needs to be scripted with its own ai
-			earthgrabcount = 0;
-		}*/
-	}
 
-	void spawnadds()
-	{
-		_unit->GetMapMgr()->GetInterface()->SpawnCreature(8138, 1777.753540f, 741.063538f, 16.439308f, 6.197119f, true, false, 0, 0);
-		_unit->GetMapMgr()->GetInterface()->SpawnCreature(8138, 1782.193481f, 751.190002f, 16.620836f, 5.174994f, true, false, 0, 0);
-		_unit->GetMapMgr()->GetInterface()->SpawnCreature(8138, 1790.956299f, 754.666809f, 14.195786f, 5.174208f, true, false, 0, 0);
-		_unit->GetMapMgr()->GetInterface()->SpawnCreature(8138, 1800.902710f, 755.723267f, 15.642491f, 4.545889f, true, false, 0, 0);
-		_unit->GetMapMgr()->GetInterface()->SpawnCreature(8138, 1809.339722f, 749.212402f, 16.910545f, 4.109208f, true, false, 0, 0);
-		_unit->GetMapMgr()->GetInterface()->SpawnCreature(8138, 1818.182129f, 744.702820f, 17.801855f, 3.899507f, true, false, 0, 0);
-	}
-	
-	void addsdefine()
-	{
-		add1 = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(1777.753540f, 741.063538f, 16.439308f, 8138);
-		add2 = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(1782.193481f, 751.190002f, 16.620836f, 8138);
-		add3 = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(1790.956299f, 754.666809f, 14.195786f, 8138);
-		add4 = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(1800.902710f, 755.723267f, 15.642491f, 8138);
-		add5 = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(1809.339722f, 749.212402f, 16.910545f, 8138);
-		add6 = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(1818.182129f, 744.702820f, 17.801855f, 8138);	
-	}
-	
-	void resettrigger()
-	{
-		trigger = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(1811.943726f, 714.839417f, 12.897189f, 133337);
-		if(trigger)
+		void addsdefine()
 		{
-			trigger->GetAIInterface()->m_canMove = true;
-			trigger->GetAIInterface()->disable_melee = false;
-			trigger->SetUInt64Value(UNIT_FIELD_FLAGS, 0);
+			add1 = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(1777.753540f, 741.063538f, 16.439308f, 8138);
+			add2 = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(1782.193481f, 751.190002f, 16.620836f, 8138);
+			add3 = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(1790.956299f, 754.666809f, 14.195786f, 8138);
+			add4 = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(1800.902710f, 755.723267f, 15.642491f, 8138);
+			add5 = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(1809.339722f, 749.212402f, 16.910545f, 8138);
+			add6 = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(1818.182129f, 744.702820f, 17.801855f, 8138);
 		}
-	}
 
-	void deletespawns()
-	{
-		if(add1)
+		void resettrigger()
 		{
-			add1->Despawn(1000, 0);
+			trigger = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(1811.943726f, 714.839417f, 12.897189f, 133337);
+			if(trigger)
+			{
+				trigger->GetAIInterface()->m_canMove = true;
+				trigger->GetAIInterface()->disable_melee = false;
+				trigger->SetUInt64Value(UNIT_FIELD_FLAGS, 0);
+			}
 		}
-		if(add2)
-		{
-			add2->Despawn(1000, 0);
-		}
-		if(add3)
-		{
-			add3->Despawn(1000, 0);
-		}
-		if(add4)
-		{
-			add4->Despawn(1000, 0);
-		}
-		if(add5)
-		{
-			add5->Despawn(1000, 0);
-		}
-		if(add6)
-		{
-			add6->Despawn(1000, 0);
-		}
-	}
 
-protected:
-	bool spawns, spawns2, attack, firstspawn, secondspawn;
-	int /*healingwardcount, earthgrabcount, hmax, emax,*/ secondspawncount;
+		void deletespawns()
+		{
+			if(add1)
+			{
+				add1->Despawn(1000, 0);
+			}
+			if(add2)
+			{
+				add2->Despawn(1000, 0);
+			}
+			if(add3)
+			{
+				add3->Despawn(1000, 0);
+			}
+			if(add4)
+			{
+				add4->Despawn(1000, 0);
+			}
+			if(add5)
+			{
+				add5->Despawn(1000, 0);
+			}
+			if(add6)
+			{
+				add6->Despawn(1000, 0);
+			}
+		}
 
-	Creature* add1;
-	Creature* add2;
-	Creature* add3;
-	Creature* add4;
-	Creature* add5;
-	Creature* add6;
-	Creature* trigger;
+	protected:
+		bool spawns, spawns2, attack, firstspawn, secondspawn;
+		int /*healingwardcount, earthgrabcount, hmax, emax,*/ secondspawncount;
 
-	SpellEntry * servant;
-	SpellEntry * healing_ward;
-	SpellEntry * earthgrab_ward;
+		Creature* add1;
+		Creature* add2;
+		Creature* add3;
+		Creature* add4;
+		Creature* add5;
+		Creature* add6;
+		Creature* trigger;
+
+		SpellEntry* servant;
+		SpellEntry* healing_ward;
+		SpellEntry* earthgrab_ward;
 };
 
 
-void SetupZulFarrak(ScriptMgr * mgr)
+void SetupZulFarrak(ScriptMgr* mgr)
 {
 	mgr->register_creature_script(8127, &antusulAI::Create);
 	mgr->register_creature_script(7272, &thekaAI::Create);

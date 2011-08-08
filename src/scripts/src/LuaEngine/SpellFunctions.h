@@ -25,13 +25,15 @@
 #define GET_SPELLVAR_BOOL(proto,offset,subindex) *(bool*)((char*)(proto) + (offset) + (subindex))
 #define GET_SPELLVAR_FLOAT(proto,offset,subindex) *(float*)((char*)(proto) + (offset) + (subindex))
 
-struct LuaSpellEntry {
+struct LuaSpellEntry
+{
 	const char* name;
 	uint32 typeId; //0: int, 1: char*, 2: bool, 3: float
 	size_t offset;
 };
 
-LuaSpellEntry luaSpellVars[] = {
+LuaSpellEntry luaSpellVars[] =
+{
 	{"Id", 0, offsetof(SpellEntry, Id)},
 	{"Category", 0, offsetof(SpellEntry, Category)},
 	{"DispelType", 0, offsetof(SpellEntry, DispelType)},
@@ -166,10 +168,10 @@ LuaSpellEntry luaSpellVars[] = {
 
 LuaSpellEntry GetLuaSpellEntryByName(const char* name)
 {
-	for (uint32 itr = 0; luaSpellVars[itr].name != NULL; itr++)
+	for(uint32 itr = 0; luaSpellVars[itr].name != NULL; itr++)
 	{
 		LuaSpellEntry l = luaSpellVars[itr];
-		if (strcmp(l.name, name) == 0) //they entered a correct var name
+		if(strcmp(l.name, name) == 0)  //they entered a correct var name
 			return l;
 	}
 	int lElem = sizeof(luaSpellVars) / sizeof(luaSpellVars[0]) - 1;
@@ -178,20 +180,20 @@ LuaSpellEntry GetLuaSpellEntryByName(const char* name)
 
 namespace LuaSpell
 {
-	int GetCaster(lua_State * L, Spell * sp)
+	int GetCaster(lua_State* L, Spell* sp)
 	{
-		if (!sp) return 0;
-		if (sp->u_caster) //unit caster
+		if(!sp) return 0;
+		if(sp->u_caster)  //unit caster
 		{
 			PUSH_UNIT(L, sp->u_caster);
 			return 1;
 		}
-		else if (sp->g_caster) //gameobject
+		else if(sp->g_caster)  //gameobject
 		{
 			PUSH_GO(L, sp->g_caster);
 			return 1;
 		}
-		else if (sp->i_caster) //item
+		else if(sp->i_caster)  //item
 		{
 			PUSH_ITEM(L, sp->i_caster);
 			return 1;
@@ -203,28 +205,28 @@ namespace LuaSpell
 		}
 	}
 
-	int GetEntry(lua_State * L, Spell * sp)
+	int GetEntry(lua_State* L, Spell* sp)
 	{
-		if (!sp) return 0;
+		if(!sp) return 0;
 		lua_pushinteger(L, sp->GetProto()->Id);
 		return 1;
 	}
 
-	int IsDuelSpell(lua_State * L, Spell * sp)
+	int IsDuelSpell(lua_State* L, Spell* sp)
 	{
-		if (!sp) return 0;
+		if(!sp) return 0;
 		lua_pushboolean(L, sp->duelSpell ? 1 : 0);
 		return 1;
 	}
 
-	int GetSpellType(lua_State * L, Spell * sp)
+	int GetSpellType(lua_State* L, Spell* sp)
 	{
-		if (!sp) return 0;
+		if(!sp) return 0;
 		lua_pushinteger(L, sp->GetType());
 		return 1;
 	}
 
-	int GetSpellState(lua_State * L, Spell * sp)
+	int GetSpellState(lua_State* L, Spell* sp)
 	{
 		/*
 		SPELL_STATE_NULL      = 0,
@@ -233,240 +235,240 @@ namespace LuaSpell
 		SPELL_STATE_FINISHED  = 3,
 		SPELL_STATE_IDLE      = 4
 		*/
-		if (!sp) return 0;
+		if(!sp) return 0;
 		lua_pushinteger(L, sp->getState());
 		return 1;
 	}
 
-	int Cancel(lua_State * L, Spell * sp)
+	int Cancel(lua_State* L, Spell* sp)
 	{
-		if (!sp) return 0;
+		if(!sp) return 0;
 		sp->cancel();
 		return 0;
 	}
 
-	int Cast(lua_State * L, Spell * sp)
+	int Cast(lua_State* L, Spell* sp)
 	{
-		if (!sp) return 0;
+		if(!sp) return 0;
 		bool check = CHECK_BOOL(L, 1);
 		sp->cast(check);
 		return 0;
 	}
 
-	int CanCast(lua_State * L, Spell * sp)
+	int CanCast(lua_State* L, Spell* sp)
 	{
-		if (!sp) return 0;
+		if(!sp) return 0;
 		lua_pushinteger(L, sp->CanCast(false));
 		return 1;
 	}
 
-	int Finish(lua_State * L, Spell * sp)
+	int Finish(lua_State* L, Spell* sp)
 	{
-		if (!sp) return 0;
+		if(!sp) return 0;
 		sp->finish();
 		return 0;
 	}
 
-	int GetTarget(lua_State * L, Spell * sp)
+	int GetTarget(lua_State* L, Spell* sp)
 	{
-		if (!sp || !sp->m_caster->IsInWorld()) 
+		if(!sp || !sp->m_caster->IsInWorld())
 			RET_NIL()
 
-		if (sp->m_targets.m_unitTarget)
-		{
-			PUSH_UNIT(L, sp->m_caster->GetMapMgr()->GetUnit(sp->m_targets.m_unitTarget));
-			return 1;
-		}
-		else if (sp->m_targets.m_itemTarget)
-		{
-			if (!sp->p_caster) 
+			if(sp->m_targets.m_unitTarget)
+			{
+				PUSH_UNIT(L, sp->m_caster->GetMapMgr()->GetUnit(sp->m_targets.m_unitTarget));
+				return 1;
+			}
+			else if(sp->m_targets.m_itemTarget)
+			{
+				if(!sp->p_caster)
+					RET_NIL()
+					PUSH_ITEM(L, sp->p_caster->GetItemInterface()->GetItemByGUID(sp->m_targets.m_itemTarget));
+				return 1;
+			}
+			else
 				RET_NIL()
-			PUSH_ITEM(L, sp->p_caster->GetItemInterface()->GetItemByGUID(sp->m_targets.m_itemTarget));
-			return 1;
-		}
-		else
-			RET_NIL()
-	}
+			}
 
-	int IsStealthSpell(lua_State * L, Spell * sp)
+	int IsStealthSpell(lua_State* L, Spell* sp)
 	{
-		if (!sp) return 0;
+		if(!sp) return 0;
 		lua_pushboolean(L, sp->IsStealthSpell() ? 1 : 0);
 		return 1;
 	}
 
-	int IsInvisibilitySpell(lua_State * L, Spell * sp)
+	int IsInvisibilitySpell(lua_State* L, Spell* sp)
 	{
-		if (!sp) return 0;
+		if(!sp) return 0;
 		lua_pushboolean(L, sp->IsInvisibilitySpell() ? 1 : 0);
 		return 1;
 	}
 
-	int GetPossibleEnemy(lua_State * L, Spell * sp)
+	int GetPossibleEnemy(lua_State* L, Spell* sp)
 	{
 		float range = (float)luaL_optnumber(L, 1, 0.0f);
-		if (!sp || range < 0) return 0;
+		if(!sp || range < 0) return 0;
 		PUSH_GUID(L, sp->GetSinglePossibleEnemy(0, range));
 		return 1;
 	}
 
-	int GetPossibleFriend(lua_State * L, Spell * sp)
+	int GetPossibleFriend(lua_State* L, Spell* sp)
 	{
 		float range = (float)luaL_optnumber(L, 1, 0.0f);
-		if (!sp || range < 0) return 0;
+		if(!sp || range < 0) return 0;
 		PUSH_GUID(L, sp->GetSinglePossibleFriend(0, range));
 		return 1;
 	}
 
-	int HasPower(lua_State * L, Spell * sp)
+	int HasPower(lua_State* L, Spell* sp)
 	{
-		if (!sp) return 0;
+		if(!sp) return 0;
 		lua_pushboolean(L, sp->HasPower() ? 1 : 0);
 		return 1;
 	}
 
-	int IsAspect(lua_State * L, Spell * sp)
+	int IsAspect(lua_State* L, Spell* sp)
 	{
-		if (!sp) return 0;
+		if(!sp) return 0;
 		lua_pushboolean(L, sp->IsAspect() ? 1 : 0);
 		return 1;
 	}
 
-	int IsSeal(lua_State * L, Spell * sp)
+	int IsSeal(lua_State* L, Spell* sp)
 	{
-		if (!sp) return 0;
+		if(!sp) return 0;
 		lua_pushboolean(L, sp->IsSeal() ? 1 : 0);
 		return 1;
 	}
 
-	int GetObjectType(lua_State * L, Spell * sp)
+	int GetObjectType(lua_State* L, Spell* sp)
 	{
-		if (!sp) 
-		{ 
-			lua_pushnil(L); 
-			return 1; 
+		if(!sp)
+		{
+			lua_pushnil(L);
+			return 1;
 		}
 		lua_pushstring(L, "Spell");
 		return 1;
 	}
 
-	int SetVar(lua_State * L, Spell * sp)
+	int SetVar(lua_State* L, Spell* sp)
 	{
-		const char* var = luaL_checkstring(L,1);
+		const char* var = luaL_checkstring(L, 1);
 		int subindex = 0;
 		int valindex = 2;
-		if (lua_gettop(L) == 3)
+		if(lua_gettop(L) == 3)
 		{
-			subindex = luaL_optint(L,2,0);
+			subindex = luaL_optint(L, 2, 0);
 			valindex++;
 		}
-		if (!sp || !var || subindex < 0) 
-		{ 
-			lua_pushboolean(L, 0); 
-			return 1; 
+		if(!sp || !var || subindex < 0)
+		{
+			lua_pushboolean(L, 0);
+			return 1;
 		}
 		sp->InitProtoOverride();
-		SpellEntry * proto = sp->GetProto();
+		SpellEntry* proto = sp->GetProto();
 		LuaSpellEntry l = GetLuaSpellEntryByName(var);
-		if (!l.name)
+		if(!l.name)
 			RET_BOOL(false);
-		switch (l.typeId) //0: int, 1: char*, 2: bool, 3: float
+		switch(l.typeId)  //0: int, 1: char*, 2: bool, 3: float
 		{
-		case 0:
-			GET_SPELLVAR_INT(proto,l.offset,subindex) = luaL_checkinteger(L, valindex);
-			lua_pushboolean(L, 1);
-			break;
-		case 1:
-			strcpy(GET_SPELLVAR_CHAR(proto,l.offset,subindex), luaL_checkstring(L, valindex));
-			lua_pushboolean(L, 1);
-			break;
-		case 2:
-			GET_SPELLVAR_BOOL(proto,l.offset,subindex) = CHECK_BOOL(L, valindex);
-			lua_pushboolean(L, 1);
-			break;
-		case 3:
-			GET_SPELLVAR_FLOAT(proto,l.offset,subindex) = (float)luaL_checknumber(L, valindex);
-			lua_pushboolean(L, 1);
-			break;
+			case 0:
+				GET_SPELLVAR_INT(proto, l.offset, subindex) = luaL_checkinteger(L, valindex);
+				lua_pushboolean(L, 1);
+				break;
+			case 1:
+				strcpy(GET_SPELLVAR_CHAR(proto, l.offset, subindex), luaL_checkstring(L, valindex));
+				lua_pushboolean(L, 1);
+				break;
+			case 2:
+				GET_SPELLVAR_BOOL(proto, l.offset, subindex) = CHECK_BOOL(L, valindex);
+				lua_pushboolean(L, 1);
+				break;
+			case 3:
+				GET_SPELLVAR_FLOAT(proto, l.offset, subindex) = (float)luaL_checknumber(L, valindex);
+				lua_pushboolean(L, 1);
+				break;
 		}
 		return 1;
 	}
 
-	int GetVar(lua_State * L, Spell * sp)
+	int GetVar(lua_State* L, Spell* sp)
 	{
-		const char* var = luaL_checkstring(L,1);
-		int subindex = luaL_optint(L,2,0);
-		if (!sp || !var || subindex < 0) 
-		{ 
+		const char* var = luaL_checkstring(L, 1);
+		int subindex = luaL_optint(L, 2, 0);
+		if(!sp || !var || subindex < 0)
+		{
 			lua_pushnil(L);
-			return 1; 
+			return 1;
 		}
-		SpellEntry * proto = sp->GetProto();
+		SpellEntry* proto = sp->GetProto();
 		LuaSpellEntry l = GetLuaSpellEntryByName(var);
-		if (!l.name)
+		if(!l.name)
 			RET_NIL();
-		switch (l.typeId) //0: int, 1: char*, 2: bool, 3: float
+		switch(l.typeId)  //0: int, 1: char*, 2: bool, 3: float
 		{
-		case 0:
-			lua_pushinteger(L, GET_SPELLVAR_INT(proto,l.offset,subindex));
-			break;
-		case 1:
-			lua_pushstring(L, GET_SPELLVAR_CHAR(proto,l.offset,subindex));
-			break;
-		case 2:
-			lua_pushboolean(L, (GET_SPELLVAR_BOOL(proto,l.offset,subindex)) ? 1 : 0);
-			break;
-		case 3:
-			lua_pushnumber(L, GET_SPELLVAR_FLOAT(proto,l.offset,subindex));
-			break;
+			case 0:
+				lua_pushinteger(L, GET_SPELLVAR_INT(proto, l.offset, subindex));
+				break;
+			case 1:
+				lua_pushstring(L, GET_SPELLVAR_CHAR(proto, l.offset, subindex));
+				break;
+			case 2:
+				lua_pushboolean(L, (GET_SPELLVAR_BOOL(proto, l.offset, subindex)) ? 1 : 0);
+				break;
+			case 3:
+				lua_pushnumber(L, GET_SPELLVAR_FLOAT(proto, l.offset, subindex));
+				break;
 		}
 		return 1;
 	}
 
-	int ResetVar(lua_State * L, Spell * sp)
+	int ResetVar(lua_State* L, Spell* sp)
 	{
-		const char* var = luaL_checkstring(L,1);
-		int subindex = luaL_optint(L,2,0);
-		if (!sp || !var || subindex < 0) 
-		{ 
+		const char* var = luaL_checkstring(L, 1);
+		int subindex = luaL_optint(L, 2, 0);
+		if(!sp || !var || subindex < 0)
+		{
 			lua_pushboolean(L, 0);
-			return 1; 
+			return 1;
 		}
 		LuaSpellEntry l = GetLuaSpellEntryByName(var);
-		if (!l.name)
+		if(!l.name)
 			RET_BOOL(false);
-		switch (l.typeId) //0: int, 1: char*, 2: bool, 3: float
+		switch(l.typeId)  //0: int, 1: char*, 2: bool, 3: float
 		{
-		case 0:
-			GET_SPELLVAR_INT(sp->GetProto(),l.offset,subindex) = GET_SPELLVAR_INT(sp->m_spellInfo,l.offset,subindex);
-			lua_pushboolean(L, 1);
-			break;
-		case 1:
-			GET_SPELLVAR_CHAR(sp->GetProto(),l.offset,subindex) = GET_SPELLVAR_CHAR(sp->m_spellInfo,l.offset,subindex);
-			lua_pushboolean(L, 1);
-			break;
-		case 2:
-			GET_SPELLVAR_BOOL(sp->GetProto(),l.offset,subindex) = GET_SPELLVAR_BOOL(sp->m_spellInfo,l.offset,subindex);
-			lua_pushboolean(L, 1);
-			break;
-		case 3:
-			GET_SPELLVAR_FLOAT(sp->GetProto(),l.offset,subindex) = GET_SPELLVAR_FLOAT(sp->m_spellInfo,l.offset,subindex);
-			lua_pushboolean(L, 1);
-			break;
+			case 0:
+				GET_SPELLVAR_INT(sp->GetProto(), l.offset, subindex) = GET_SPELLVAR_INT(sp->m_spellInfo, l.offset, subindex);
+				lua_pushboolean(L, 1);
+				break;
+			case 1:
+				GET_SPELLVAR_CHAR(sp->GetProto(), l.offset, subindex) = GET_SPELLVAR_CHAR(sp->m_spellInfo, l.offset, subindex);
+				lua_pushboolean(L, 1);
+				break;
+			case 2:
+				GET_SPELLVAR_BOOL(sp->GetProto(), l.offset, subindex) = GET_SPELLVAR_BOOL(sp->m_spellInfo, l.offset, subindex);
+				lua_pushboolean(L, 1);
+				break;
+			case 3:
+				GET_SPELLVAR_FLOAT(sp->GetProto(), l.offset, subindex) = GET_SPELLVAR_FLOAT(sp->m_spellInfo, l.offset, subindex);
+				lua_pushboolean(L, 1);
+				break;
 		}
 		return 1;
 	}
 
-	int ResetAllVars(lua_State * L, Spell * sp)
+	int ResetAllVars(lua_State* L, Spell* sp)
 	{
-		if (!sp) return 0;
+		if(!sp) return 0;
 		sp->m_spellInfo_override = NULL;
 		return 0;
 	}
 
-	int GetCastedItemId(lua_State * L, Spell * sp)
+	int GetCastedItemId(lua_State* L, Spell* sp)
 	{
-		if (!sp) 
+		if(!sp)
 		{
 			lua_pushnil(L);
 			return 1;

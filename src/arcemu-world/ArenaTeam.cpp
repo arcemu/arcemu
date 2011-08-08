@@ -20,7 +20,8 @@
 
 #include "StdAfx.h"
 
-static const uint32 TeamCountToId[6] = {
+static const uint32 TeamCountToId[6] =
+{
 	0,						// 0
 	0,						// 1
 	0,						// 2
@@ -29,7 +30,8 @@ static const uint32 TeamCountToId[6] = {
 	ARENA_TEAM_TYPE_5V5,	// 5
 };
 
-static const uint32 IdToTeamCount[6] = {
+static const uint32 IdToTeamCount[6] =
+{
 	3,
 	4,
 	5,
@@ -57,10 +59,10 @@ ArenaTeam::ArenaTeam(uint32 Type, uint32 Id)
 	m_stat_ranking = 0;
 }
 
-ArenaTeam::ArenaTeam(Field * f)
+ArenaTeam::ArenaTeam(Field* f)
 {
 	uint32 z = 0, i, guid;
-	const char * data;
+	const char* data;
 	int ret;
 
 	m_id = f[z++].GetUInt32();
@@ -86,13 +88,13 @@ ArenaTeam::ArenaTeam(Field * f)
 	{
 		data = f[z++].GetString();
 		ret = sscanf(data, "%u %u %u %u %u %u", &guid, &m_members[i].Played_ThisWeek, &m_members[i].Won_ThisWeek,
-			&m_members[i].Played_ThisSeason, &m_members[i].Won_ThisSeason, &m_members[i].PersonalRating);
+		             &m_members[i].Played_ThisSeason, &m_members[i].Won_ThisSeason, &m_members[i].PersonalRating);
 		if(ret >= 5)
 		{
 			m_members[i].Info = objmgr.GetPlayerInfo(guid);
 			if(m_members[i].Info)
 				++m_memberCount;
-			if (ret == 5)
+			if(ret == 5)
 			{
 				// In case PersonalRating is not in the string just set the rating to the team rating
 				m_members[i].PersonalRating = m_stat_rating;
@@ -103,9 +105,9 @@ ArenaTeam::ArenaTeam(Field * f)
 	}
 }
 
-void ArenaTeam::SendPacket(WorldPacket * data)
+void ArenaTeam::SendPacket(WorldPacket* data)
 {
-	PlayerInfo * info;
+	PlayerInfo* info;
 	for(uint32 i = 0; i < m_memberCount; ++i)
 	{
 		info = m_members[i].Info;
@@ -117,16 +119,16 @@ void ArenaTeam::SendPacket(WorldPacket * data)
 void ArenaTeam::Destroy()
 {
 	char buffer[1024];
-	WorldPacket * data;
+	WorldPacket* data;
 	vector<PlayerInfo*> tokill;
 	uint32 i;
 	tokill.reserve(m_memberCount);
-	snprintf(buffer,1024, "The arena team, '%s', disbanded.", m_name.c_str());
+	snprintf(buffer, 1024, "The arena team, '%s', disbanded.", m_name.c_str());
 	data = sChatHandler.FillSystemMessageData(buffer);
 	SendPacket(data);
 	delete data;
 
-	for(i= 0; i < m_memberCount; ++i)
+	for(i = 0; i < m_memberCount; ++i)
 	{
 		if(m_members[i].Info)
 			tokill.push_back(m_members[i].Info);
@@ -141,10 +143,10 @@ void ArenaTeam::Destroy()
 	delete this;
 }
 
-bool ArenaTeam::AddMember(PlayerInfo * info)
+bool ArenaTeam::AddMember(PlayerInfo* info)
 {
 	uint32 base_field;
-	Player * plr = info->m_loggedInPlayer;
+	Player* plr = info->m_loggedInPlayer;
 	if(m_memberCount >= m_slots)
 		return false;
 
@@ -155,33 +157,33 @@ bool ArenaTeam::AddMember(PlayerInfo * info)
 
 	if(plr)
 	{
-		base_field = (m_type*7) + PLAYER_FIELD_ARENA_TEAM_INFO_1_1;
+		base_field = (m_type * 7) + PLAYER_FIELD_ARENA_TEAM_INFO_1_1;
 		plr->SetUInt32Value(base_field, m_id);
-		plr->SetUInt32Value(base_field+1,m_leader);
+		plr->SetUInt32Value(base_field + 1, m_leader);
 
-        plr->m_arenaTeams[m_type]=this;
+		plr->m_arenaTeams[m_type] = this;
 		plr->GetSession()->SystemMessage("You are now a member of the arena team, '%s'.", m_name.c_str());
 	}
 	return true;
 }
 
-bool ArenaTeam::RemoveMember(PlayerInfo * info)
+bool ArenaTeam::RemoveMember(PlayerInfo* info)
 {
 	for(uint32 i = 0; i < m_memberCount; ++i)
 	{
 		if(m_members[i].Info == info)
 		{
 			/* memcpy all the blocks in front of him back (so we only loop O(members) instead of O(slots) */
-			for(uint32 j = (i+1); j < m_memberCount; ++j)
-				memcpy(&m_members[j-1], &m_members[j], sizeof(ArenaTeamMember));
+			for(uint32 j = (i + 1); j < m_memberCount; ++j)
+				memcpy(&m_members[j - 1], &m_members[j], sizeof(ArenaTeamMember));
 
 			--m_memberCount;
 			SaveToDB();
 
 			if(info->m_loggedInPlayer)
 			{
-				info->m_loggedInPlayer->SetUInt32Value(PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (m_type*7), 0);
-				info->m_loggedInPlayer->m_arenaTeams[m_type]= 0;
+				info->m_loggedInPlayer->SetUInt32Value(PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (m_type * 7), 0);
+				info->m_loggedInPlayer->m_arenaTeams[m_type] = 0;
 			}
 			return true;
 		}
@@ -228,14 +230,14 @@ void ArenaTeam::Roster(WorldPacket & data)
 	{
 		PlayerInfo* info = m_members[i].Info;
 		// TODO : burlex figure out why this became null
-		if( info != NULL )
+		if(info != NULL)
 		{
 			data << uint64(info->guid);
-			data << uint8( (info->m_loggedInPlayer != NULL) ? 1 : 0 );
+			data << uint8((info->m_loggedInPlayer != NULL) ? 1 : 0);
 			data << info->name;
-			data << uint32( m_members[i].Info->guid == m_leader ? 0 : 1); // Unk
-			data << uint8( info->lastLevel );
-			data << uint8( info->cl );
+			data << uint32(m_members[i].Info->guid == m_leader ? 0 : 1);  // Unk
+			data << uint8(info->lastLevel);
+			data << uint8(info->cl);
 			data << m_members[i].Played_ThisWeek;
 			data << m_members[i].Won_ThisWeek;
 			data << m_members[i].Played_ThisSeason;
@@ -250,36 +252,36 @@ void ArenaTeam::SaveToDB()
 	std::stringstream ss;
 	uint32 i;
 
-    ss << "DELETE FROM arenateams WHERE id = ";
-    ss << m_id;
-    ss << ";";
+	ss << "DELETE FROM arenateams WHERE id = ";
+	ss << m_id;
+	ss << ";";
 
-    CharacterDatabase.ExecuteNA( ss.str().c_str() );
+	CharacterDatabase.ExecuteNA(ss.str().c_str());
 
-    ss.rdbuf()->str("");
+	ss.rdbuf()->str("");
 
 	ss << "INSERT INTO arenateams VALUES("
-		<< m_id << ","
-		<< m_type << ","
-		<< m_leader << ",'"
-		<< m_name << "',"
-		<< m_emblemStyle << ","
-		<< m_emblemColour << ","
-		<< m_borderStyle << ","
-		<< m_borderColour << ","
-		<< m_backgroundColour << ","
-		<< m_stat_rating << ",'"
-		<< m_stat_gamesplayedweek << " " << m_stat_gameswonweek << " "
-		<< m_stat_gamesplayedseason << " " << m_stat_gameswonseason << "',"
-		<< m_stat_ranking;
+	   << m_id << ","
+	   << m_type << ","
+	   << m_leader << ",'"
+	   << m_name << "',"
+	   << m_emblemStyle << ","
+	   << m_emblemColour << ","
+	   << m_borderStyle << ","
+	   << m_borderColour << ","
+	   << m_backgroundColour << ","
+	   << m_stat_rating << ",'"
+	   << m_stat_gamesplayedweek << " " << m_stat_gameswonweek << " "
+	   << m_stat_gamesplayedseason << " " << m_stat_gameswonseason << "',"
+	   << m_stat_ranking;
 
 	for(i = 0; i < m_memberCount; ++i)
 	{
 		if(m_members[i].Info)
 		{
 			ss << ",'" << m_members[i].Info->guid << " " << m_members[i].Played_ThisWeek << " "
-				<< m_members[i].Won_ThisWeek << " " << m_members[i].Played_ThisSeason << " "
-				<< m_members[i].Won_ThisSeason << " " << m_members[i].PersonalRating << "'";
+			   << m_members[i].Won_ThisWeek << " " << m_members[i].Played_ThisSeason << " "
+			   << m_members[i].Won_ThisSeason << " " << m_members[i].PersonalRating << "'";
 		}
 		else
 		{
@@ -306,15 +308,15 @@ bool ArenaTeam::HasMember(uint32 guid)
 	return false;
 }
 
-void ArenaTeam::SetLeader(PlayerInfo * info)
+void ArenaTeam::SetLeader(PlayerInfo* info)
 {
 	uint32 old_leader = m_leader;
 	char buffer[1024];
-	WorldPacket * data;
-	snprintf(buffer, 1024,"%s is now the captain of the arena team, '%s'.", info->name, m_name.c_str());
+	WorldPacket* data;
+	snprintf(buffer, 1024, "%s is now the captain of the arena team, '%s'.", info->name, m_name.c_str());
 	data = sChatHandler.FillSystemMessageData(buffer);
-	m_leader=info->guid;
-    SendPacket(data);
+	m_leader = info->guid;
+	SendPacket(data);
 	delete data;
 
 	/* set the fields */
@@ -323,17 +325,17 @@ void ArenaTeam::SetLeader(PlayerInfo * info)
 		if(m_members[i].Info == info)		/* new leader */
 		{
 			if(m_members[i].Info->m_loggedInPlayer)
-				m_members[i].Info->m_loggedInPlayer->SetUInt32Value(PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (m_type*7) + 1, 0);
+				m_members[i].Info->m_loggedInPlayer->SetUInt32Value(PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (m_type * 7) + 1, 0);
 		}
 		else if(m_members[i].Info->guid == old_leader)
 		{
 			if(m_members[i].Info->m_loggedInPlayer)
-				m_members[i].Info->m_loggedInPlayer->SetUInt32Value(PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (m_type*7) + 1, 1);
+				m_members[i].Info->m_loggedInPlayer->SetUInt32Value(PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (m_type * 7) + 1, 1);
 		}
 	}
 }
 
-ArenaTeamMember * ArenaTeam::GetMember(PlayerInfo * info)
+ArenaTeamMember* ArenaTeam::GetMember(PlayerInfo* info)
 {
 	for(uint32 i = 0; i < m_memberCount; ++i)
 	{
@@ -343,7 +345,7 @@ ArenaTeamMember * ArenaTeam::GetMember(PlayerInfo * info)
 	return NULL;
 }
 
-ArenaTeamMember * ArenaTeam::GetMemberByGuid(uint32 guid)
+ArenaTeamMember* ArenaTeam::GetMemberByGuid(uint32 guid)
 {
 	for(uint32 i = 0; i < m_memberCount; ++i)
 	{
@@ -356,7 +358,7 @@ ArenaTeamMember * ArenaTeam::GetMemberByGuid(uint32 guid)
 void WorldSession::HandleArenaTeamRosterOpcode(WorldPacket & recv_data)
 {
 	uint32 teamId;
-	ArenaTeam * team;
+	ArenaTeam* team;
 	recv_data >> teamId;
 	team = objmgr.GetArenaTeamById(teamId);
 	if(team)
@@ -370,7 +372,7 @@ void WorldSession::HandleArenaTeamRosterOpcode(WorldPacket & recv_data)
 
 void WorldSession::HandleArenaTeamQueryOpcode(WorldPacket & recv_data)
 {
-	ArenaTeam * team;
+	ArenaTeam* team;
 	uint32 team_id;
 	recv_data >> team_id;
 
@@ -395,8 +397,8 @@ void WorldSession::HandleArenaTeamAddMemberOpcode(WorldPacket & recv_data)
 	uint32 teamId;
 	recv_data >> teamId >> player_name;
 
-	ArenaTeam * pTeam = objmgr.GetArenaTeamById(teamId);
-	if( !pTeam )
+	ArenaTeam* pTeam = objmgr.GetArenaTeamById(teamId);
+	if(!pTeam)
 		return;
 
 	if(!pTeam->HasMember(GetPlayer()->GetLowGUID()))
@@ -405,7 +407,7 @@ void WorldSession::HandleArenaTeamAddMemberOpcode(WorldPacket & recv_data)
 		return;
 	}
 
-	Player * plr = objmgr.GetPlayer(player_name.c_str(), false);
+	Player* plr = objmgr.GetPlayer(player_name.c_str(), false);
 	if(plr == NULL)
 	{
 		SystemMessage("Player `%s` is non-existent or not online.", player_name.c_str());
@@ -418,9 +420,9 @@ void WorldSession::HandleArenaTeamAddMemberOpcode(WorldPacket & recv_data)
 		return;
 	}
 
-    if( plr->getLevel() < PLAYER_ARENA_MIN_LEVEL )
-    {
-        SystemMessage( "Player must be level %u to join an arena team.", PLAYER_ARENA_MIN_LEVEL );
+	if(plr->getLevel() < PLAYER_ARENA_MIN_LEVEL)
+	{
+		SystemMessage("Player must be level %u to join an arena team.", PLAYER_ARENA_MIN_LEVEL);
 		return;
 	}
 
@@ -453,11 +455,11 @@ void WorldSession::HandleArenaTeamRemoveMemberOpcode(WorldPacket & recv_data)
 
 	CHECK_INWORLD_RETURN
 
-	ArenaTeam * team;
+	ArenaTeam* team;
 	uint8 slot;
 	uint32 teamId;
 	string name;
-	PlayerInfo * inf;
+	PlayerInfo* inf;
 	recv_data >> teamId >> name;
 
 	team = objmgr.GetArenaTeamById(teamId);
@@ -467,9 +469,9 @@ void WorldSession::HandleArenaTeamRemoveMemberOpcode(WorldPacket & recv_data)
 		return;
 	}
 
-	slot = static_cast<uint8>( team->m_type );
+	slot = static_cast<uint8>(team->m_type);
 
-	if( (team = _player->m_arenaTeams[slot]) == NULL )
+	if((team = _player->m_arenaTeams[slot]) == NULL)
 	{
 		SystemMessage("You are not in an arena team of this type.");
 		return;
@@ -481,7 +483,7 @@ void WorldSession::HandleArenaTeamRemoveMemberOpcode(WorldPacket & recv_data)
 		return;
 	}
 
-	if( (inf = objmgr.GetPlayerInfoByName(name.c_str())) == NULL )
+	if((inf = objmgr.GetPlayerInfoByName(name.c_str())) == NULL)
 	{
 		SystemMessage("That player cannot be found.");
 		return;
@@ -496,8 +498,8 @@ void WorldSession::HandleArenaTeamRemoveMemberOpcode(WorldPacket & recv_data)
 	if(team->RemoveMember(inf))
 	{
 		char buffer[1024];
-		WorldPacket * data;
-		snprintf(buffer,1024,"%s was removed from the arena team '%s'.", inf->name, team->m_name.c_str());
+		WorldPacket* data;
+		snprintf(buffer, 1024, "%s was removed from the arena team '%s'.", inf->name, team->m_name.c_str());
 		data = sChatHandler.FillSystemMessageData(buffer);
 		team->SendPacket(data);
 		delete data;
@@ -509,7 +511,7 @@ void WorldSession::HandleArenaTeamInviteAcceptOpcode(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_RETURN
 
-	ArenaTeam * team;
+	ArenaTeam* team;
 
 	if(_player->m_arenateaminviteguid == 0)
 	{
@@ -518,7 +520,7 @@ void WorldSession::HandleArenaTeamInviteAcceptOpcode(WorldPacket & recv_data)
 	}
 
 	team = objmgr.GetArenaTeamById(_player->m_arenateaminviteguid);
-	_player->m_arenateaminviteguid= 0;
+	_player->m_arenateaminviteguid = 0;
 	if(team == 0)
 	{
 		SystemMessage("That arena team no longer exists.");
@@ -540,8 +542,8 @@ void WorldSession::HandleArenaTeamInviteAcceptOpcode(WorldPacket & recv_data)
 	if(team->AddMember(_player->m_playerInfo))
 	{
 		char buffer[1024];
-		WorldPacket * data;
-		snprintf(buffer,1024,"%s joined the arena team, '%s'.", _player->GetName(), team->m_name.c_str());
+		WorldPacket* data;
+		snprintf(buffer, 1024, "%s joined the arena team, '%s'.", _player->GetName(), team->m_name.c_str());
 		data = sChatHandler.FillSystemMessageData(buffer);
 		team->SendPacket(data);
 		delete data;
@@ -556,7 +558,7 @@ void WorldSession::HandleArenaTeamInviteDenyOpcode(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_RETURN
 
-	ArenaTeam * team;
+	ArenaTeam* team;
 	if(_player->m_arenateaminviteguid == 0)
 	{
 		SystemMessage("You were not invited.");
@@ -564,11 +566,11 @@ void WorldSession::HandleArenaTeamInviteDenyOpcode(WorldPacket & recv_data)
 	}
 
 	team = objmgr.GetArenaTeamById(_player->m_arenateaminviteguid);
-	_player->m_arenateaminviteguid= 0;
+	_player->m_arenateaminviteguid = 0;
 	if(team == NULL)
 		return;
 
-	Player * plr = objmgr.GetPlayer(team->m_leader);
+	Player* plr = objmgr.GetPlayer(team->m_leader);
 	if(plr != NULL)
 		plr->GetSession()->SystemMessage("%s denied your arena team invitation for %s.", _player->GetName(), team->m_name.c_str());
 }
@@ -577,7 +579,7 @@ void WorldSession::HandleArenaTeamLeaveOpcode(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_RETURN
 
-	ArenaTeam * team;
+	ArenaTeam* team;
 	uint32 teamId;
 	recv_data >> teamId;
 
@@ -589,13 +591,13 @@ void WorldSession::HandleArenaTeamLeaveOpcode(WorldPacket & recv_data)
 		return;
 	}
 
-	if( (team = _player->m_arenaTeams[team->m_type]) == NULL )
+	if((team = _player->m_arenaTeams[team->m_type]) == NULL)
 	{
 		SystemMessage("You are not in an arena team of this type.");
 		return;
 	}
 
-	if (team->m_leader == _player->GetLowGUID() && team->m_memberCount == 1)
+	if(team->m_leader == _player->GetLowGUID() && team->m_memberCount == 1)
 	{
 		team->Destroy();
 		return;
@@ -610,8 +612,8 @@ void WorldSession::HandleArenaTeamLeaveOpcode(WorldPacket & recv_data)
 	if(team->RemoveMember(_player->m_playerInfo))
 	{
 		char buffer[1024];
-		WorldPacket * data;
-		snprintf(buffer,1024,"%s left the arena team, '%s'.", _player->GetName(), team->m_name.c_str());
+		WorldPacket* data;
+		snprintf(buffer, 1024, "%s left the arena team, '%s'.", _player->GetName(), team->m_name.c_str());
 		data = sChatHandler.FillSystemMessageData(buffer);
 		team->SendPacket(data);
 		delete data;
@@ -623,7 +625,7 @@ void WorldSession::HandleArenaTeamDisbandOpcode(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_RETURN
 
-	ArenaTeam * team;
+	ArenaTeam* team;
 	uint32 teamId;
 	recv_data >> teamId;
 
@@ -634,7 +636,7 @@ void WorldSession::HandleArenaTeamDisbandOpcode(WorldPacket & recv_data)
 		return;
 	}
 
-	if( (team = _player->m_arenaTeams[team->m_type]) == NULL )
+	if((team = _player->m_arenaTeams[team->m_type]) == NULL)
 	{
 		SystemMessage("You are not in an arena team of this type.");
 		return;
@@ -656,8 +658,8 @@ void WorldSession::HandleArenaTeamPromoteOpcode(WorldPacket & recv_data)
 	uint32 teamId;
 	uint8 slot;
 	string name;
-	ArenaTeam * team;
-	PlayerInfo * inf;
+	ArenaTeam* team;
+	PlayerInfo* inf;
 	recv_data >> teamId >> name;
 
 	team = objmgr.GetArenaTeamById(teamId);
@@ -667,12 +669,12 @@ void WorldSession::HandleArenaTeamPromoteOpcode(WorldPacket & recv_data)
 		return;
 	}
 
-	slot = static_cast<uint8>( team->m_type );
+	slot = static_cast<uint8>(team->m_type);
 
-	if( slot >= NUM_ARENA_TEAM_TYPES )
+	if(slot >= NUM_ARENA_TEAM_TYPES)
 		return;
 
-	if( (team = _player->m_arenaTeams[slot]) == NULL )
+	if((team = _player->m_arenaTeams[slot]) == NULL)
 	{
 		SystemMessage("You are not in an arena team of this type.");
 		return;
@@ -684,7 +686,7 @@ void WorldSession::HandleArenaTeamPromoteOpcode(WorldPacket & recv_data)
 		return;
 	}
 
-	if( (inf = objmgr.GetPlayerInfoByName(name.c_str())) == NULL )
+	if((inf = objmgr.GetPlayerInfoByName(name.c_str())) == NULL)
 	{
 		SystemMessage("That player cannot be found.");
 		return;

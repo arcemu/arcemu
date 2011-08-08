@@ -28,39 +28,39 @@ namespace luPacket
 		NORMAL OPERATIONS
 		*/
 
-	int CreatePacket(lua_State * L, WorldPacket * packet)
+	int CreatePacket(lua_State* L, WorldPacket* packet)
 	{
-		int opcode = luaL_checkint(L,1);
-		int size = luaL_checkint(L,2);
+		int opcode = luaL_checkint(L, 1);
+		int size = luaL_checkint(L, 2);
 		if(opcode >= NUM_MSG_TYPES)
-			luaL_error(L,"CreatePacket got opcode %d greater than max opcode %d.",opcode,NUM_MSG_TYPES);
+			luaL_error(L, "CreatePacket got opcode %d greater than max opcode %d.", opcode, NUM_MSG_TYPES);
 		else
 		{
-			WorldPacket * npacket = new WorldPacket(opcode,size);
-			PUSH_PACKET(L,npacket);
+			WorldPacket* npacket = new WorldPacket(opcode, size);
+			PUSH_PACKET(L, npacket);
 		}
 		return 1;
 	}
-	int GetOpcode(lua_State *L, WorldPacket * packet)
+	int GetOpcode(lua_State* L, WorldPacket* packet)
 	{
 		if(packet == NULL)
 			lua_pushnil(L);
 		else
-			lua_pushinteger(L,packet->GetOpcode());
+			lua_pushinteger(L, packet->GetOpcode());
 		return 1;
 	}
-	int GetSize(lua_State *L, WorldPacket * packet)
+	int GetSize(lua_State* L, WorldPacket* packet)
 	{
 		if(packet == NULL)
 			lua_pushnil(L);
 		else
-			lua_pushinteger(L,packet->size());
+			lua_pushinteger(L, packet->size());
 		return 1;
 	}
 	/*
 		READ OPERATIONS
 		*/
-	int ReadUByte(lua_State * L, WorldPacket * packet)
+	int ReadUByte(lua_State* L, WorldPacket* packet)
 	{
 		if(packet == NULL)
 			lua_pushnil(L);
@@ -68,11 +68,11 @@ namespace luPacket
 		{
 			uint8 byte;
 			(*packet) >> byte;
-			lua_pushinteger(L,byte);
+			lua_pushinteger(L, byte);
 		}
 		return 1;
 	}
-	int ReadByte(lua_State * L, WorldPacket * packet)
+	int ReadByte(lua_State* L, WorldPacket* packet)
 	{
 		if(packet == NULL)
 			lua_pushnil(L);
@@ -80,107 +80,107 @@ namespace luPacket
 		{
 			int8 byte;
 			(*packet) >> byte;
-			lua_pushinteger(L,byte);
+			lua_pushinteger(L, byte);
 		}
 		return 1;
 	}
-	int ReadShort(lua_State * L, WorldPacket * packet)
+	int ReadShort(lua_State* L, WorldPacket* packet)
 	{
 		int16 val;
 		if(packet != NULL)
 		{
 			(*packet) >> val;
-			lua_pushinteger(L,val);
+			lua_pushinteger(L, val);
 		}
 		else
 			lua_pushnil(L);
 		return 1;
 	}
-	int ReadUShort(lua_State * L, WorldPacket * packet)
+	int ReadUShort(lua_State* L, WorldPacket* packet)
 	{
 		uint16 val;
 		if(packet != NULL)
 		{
 			(*packet) >> val;
-			lua_pushinteger(L,val);
+			lua_pushinteger(L, val);
 		}
 		else
 			lua_pushnil(L);
 		return 1;
 	}
-	int ReadLong(lua_State * L, WorldPacket * packet)
+	int ReadLong(lua_State* L, WorldPacket* packet)
 	{
 		int32 val;
 		if(packet != NULL)
 		{
 			(*packet) >> val;
-			lua_pushinteger(L,val);
+			lua_pushinteger(L, val);
 		}
 		else
 			lua_pushnil(L);
 		return 1;
 	}
-	int ReadULong(lua_State * L, WorldPacket * packet)
+	int ReadULong(lua_State* L, WorldPacket* packet)
 	{
 		uint32 val;
 		if(packet != NULL)
 		{
 			(*packet) >> val;
-			lua_pushinteger(L,val);
+			lua_pushinteger(L, val);
 		}
 		else
 			lua_pushnil(L);
 		return 1;
 	}
-	int ReadFloat(lua_State * L, WorldPacket * packet)
+	int ReadFloat(lua_State* L, WorldPacket* packet)
 	{
 		float val;
 		if(packet != NULL)
 		{
 			(*packet) >> val;
-			lua_pushnumber(L,val);
+			lua_pushnumber(L, val);
 		}
 		else
 			lua_pushnil(L);
 		return 1;
 	}
-	int ReadDouble(lua_State * L, WorldPacket * packet)
+	int ReadDouble(lua_State* L, WorldPacket* packet)
 	{
 		double val;
 		if(packet != NULL)
 		{
 			(*packet) >> val;
-			lua_pushnumber(L,val);
+			lua_pushnumber(L, val);
 		}
 		else
 			lua_pushnil(L);
 		return 1;
 	}
-	int ReadGUID(lua_State * L, WorldPacket * packet)
+	int ReadGUID(lua_State* L, WorldPacket* packet)
 	{
 		uint64 guid;
 		if(packet != NULL)
 		{
 			(*packet) >> guid;
-			PUSH_GUID(L,guid);
+			PUSH_GUID(L, guid);
 		}
 		else
 			lua_pushnil(L);
 		return 1;
 	}
-	int ReadWoWGuid(lua_State * L, WorldPacket * packet)
+	int ReadWoWGuid(lua_State* L, WorldPacket* packet)
 	{
 		WoWGuid nGuid;
 		if(packet != NULL)
 		{
 			(*packet) >> nGuid;
-			PUSH_GUID(L,nGuid.GetOldGuid());
+			PUSH_GUID(L, nGuid.GetOldGuid());
 		}
 		else
 			lua_pushnil(L);
 		return 1;
 	}
-	int ReadString(lua_State * L, WorldPacket * packet)
+	int ReadString(lua_State* L, WorldPacket* packet)
 	{
 		string str;
 		if(packet != NULL)
@@ -197,80 +197,80 @@ namespace luPacket
 		WRITE OPERATIONS
 		*/
 
-	int WriteByte(lua_State * L, WorldPacket * packet)
+	int WriteByte(lua_State* L, WorldPacket* packet)
 	{
-		int8 byte = (int8)luaL_checkint(L,1);
+		int8 byte = (int8)luaL_checkint(L, 1);
 		(*packet) << byte;
 		return 0;
 	}
-	int WriteUByte(lua_State * L, WorldPacket * packet)
+	int WriteUByte(lua_State* L, WorldPacket* packet)
 	{
-		uint8 byte = (uint8)luaL_checkint(L,1);
+		uint8 byte = (uint8)luaL_checkint(L, 1);
 		(*packet) << byte;
 		return 0;
 	}
-	int WriteShort(lua_State * L, WorldPacket * packet)
+	int WriteShort(lua_State* L, WorldPacket* packet)
 	{
-		int16 val = (int16)luaL_checkint(L,1);
+		int16 val = (int16)luaL_checkint(L, 1);
 		(*packet) << val;
 		return 0;
 	}
-	int WriteUShort(lua_State * L, WorldPacket * packet)
+	int WriteUShort(lua_State* L, WorldPacket* packet)
 	{
-		uint16 val = (uint16)luaL_checkint(L,1);
+		uint16 val = (uint16)luaL_checkint(L, 1);
 		(*packet) << val;
 		return 0;
 	}
-	int WriteLong(lua_State * L, WorldPacket * packet)
+	int WriteLong(lua_State* L, WorldPacket* packet)
 	{
-		int32 val = (int32)luaL_checkint(L,1);
+		int32 val = (int32)luaL_checkint(L, 1);
 		(*packet) << val;
 		return 0;
 	}
-	int WriteULong(lua_State * L, WorldPacket * packet)
+	int WriteULong(lua_State* L, WorldPacket* packet)
 	{
-		uint32 val = (uint32)luaL_checkint(L,1);
+		uint32 val = (uint32)luaL_checkint(L, 1);
 		(*packet) << val;
 		return 0;
 	}
-	int WriteFloat(lua_State * L, WorldPacket * packet)
+	int WriteFloat(lua_State* L, WorldPacket* packet)
 	{
-		float val = (float)luaL_checknumber(L,1);
+		float val = (float)luaL_checknumber(L, 1);
 		(*packet) << val;
 		return 0;
 	}
-	int WriteDouble(lua_State * L, WorldPacket * packet)
+	int WriteDouble(lua_State* L, WorldPacket* packet)
 	{
-		double val = luaL_checknumber(L,1);
+		double val = luaL_checknumber(L, 1);
 		(*packet) << val;
 		return 0;
 	}
-	int WriteGUID(lua_State * L, WorldPacket * packet)
+	int WriteGUID(lua_State* L, WorldPacket* packet)
 	{
-		uint64 guid = CHECK_GUID(L,1);
+		uint64 guid = CHECK_GUID(L, 1);
 		(*packet) << guid;
 		return 0;
 	}
-	int WriteWoWGuid(lua_State * L, WorldPacket * packet)
+	int WriteWoWGuid(lua_State* L, WorldPacket* packet)
 	{
-		Object * target = CHECK_OBJECT(L,1);
-		if (packet != NULL)
-		(*packet) << target->GetNewGUID();
+		Object* target = CHECK_OBJECT(L, 1);
+		if(packet != NULL)
+			(*packet) << target->GetNewGUID();
 		return 0;
 	}
-	int WriteString(lua_State * L, WorldPacket * packet)
+	int WriteString(lua_State* L, WorldPacket* packet)
 	{
-		string str = string(luaL_checkstring(L,1));
+		string str = string(luaL_checkstring(L, 1));
 		(*packet) << str;
 		return 0;
 	}
-	
-	int GetObjectType(lua_State * L, WorldPacket * packet)
+
+	int GetObjectType(lua_State* L, WorldPacket* packet)
 	{
-		if (!packet) 
-		{ 
-			lua_pushnil(L); 
-			return 1; 
+		if(!packet)
+		{
+			lua_pushnil(L);
+			return 1;
 		}
 		lua_pushstring(L, "Packet");
 		return 1;
@@ -280,4 +280,4 @@ namespace luPacket
 #endif
 
 
-		
+

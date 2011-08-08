@@ -33,12 +33,12 @@ LogonCommHandler::LogonCommHandler()
 	hash.UpdateData(logon_pass);
 	hash.Finalize();
 
-	memset(sql_passhash,0,20);
+	memset(sql_passhash, 0, 20);
 	memcpy(sql_passhash, hash.GetDigest(), 20);
 
 	// player limit
 	pLimit = Config.MainConfig.GetIntDefault("Server", "PlayerLimit", 500);
-	if ( pLimit == 0 ) pLimit = 1;
+	if(pLimit == 0) pLimit = 1;
 	server_population = 0;
 
 	// cleanup
@@ -49,19 +49,19 @@ LogonCommHandler::LogonCommHandler()
 LogonCommHandler::~LogonCommHandler()
 {
 	for(set<LogonServer*>::iterator i = servers.begin(); i != servers.end(); ++i)
-		delete (*i);
+		delete(*i);
 
 	for(set<Realm*>::iterator i = realms.begin(); i != realms.end(); ++i)
-		delete (*i);
+		delete(*i);
 }
 
-LogonCommClientSocket * LogonCommHandler::ConnectToLogon(string Address, uint32 Port)
+LogonCommClientSocket* LogonCommHandler::ConnectToLogon(string Address, uint32 Port)
 {
-	LogonCommClientSocket * conn = ConnectTCPSocket<LogonCommClientSocket>(Address.c_str(), static_cast<u_short>( Port ));
+	LogonCommClientSocket* conn = ConnectTCPSocket<LogonCommClientSocket>(Address.c_str(), static_cast<u_short>(Port));
 	return conn;
 }
 
-void LogonCommHandler::RequestAddition(LogonCommClientSocket * Socket)
+void LogonCommHandler::RequestAddition(LogonCommClientSocket* Socket)
 {
 	set<Realm*>::iterator itr = realms.begin();
 
@@ -70,55 +70,55 @@ void LogonCommHandler::RequestAddition(LogonCommClientSocket * Socket)
 		WorldPacket data(RCMSG_REGISTER_REALM, 100);
 
 		// Add realm to the packet
-		Realm * realm = *itr;
+		Realm* realm = *itr;
 		data << realm->Name;
 		data << realm->Address;
-        data << realm->flags;
-        data << realm->Icon;
-        data << realm->TimeZone;
+		data << realm->flags;
+		data << realm->Icon;
+		data << realm->TimeZone;
 		data << float(realm->Population);
 		data << uint8(realm->Lock);
-		Socket->SendPacket(&data,false);
+		Socket->SendPacket(&data, false);
 	}
 }
 
 class LogonCommWatcherThread : public ThreadBase
 {
-	bool running;
+		bool running;
 
-	Arcemu::Threading::ConditionVariable cond;
+		Arcemu::Threading::ConditionVariable cond;
 
-public:
+	public:
 
-	LogonCommWatcherThread()
-	{
-		running = true;
-	}
-
-	~LogonCommWatcherThread()
-	{
-
-	}
-
-	void OnShutdown()
-	{
-		running = false;
-		
-		cond.Signal();
-	}
-
-	bool run()
-	{
-		sLogonCommHandler.ConnectAll();
-		while( running )
+		LogonCommWatcherThread()
 		{
-			sLogonCommHandler.UpdateSockets();
-
-			cond.Wait( 5000 );
+			running = true;
 		}
 
-		return true;
-	}
+		~LogonCommWatcherThread()
+		{
+
+		}
+
+		void OnShutdown()
+		{
+			running = false;
+
+			cond.Signal();
+		}
+
+		bool run()
+		{
+			sLogonCommHandler.ConnectAll();
+			while(running)
+			{
+				sLogonCommHandler.UpdateSockets();
+
+				cond.Wait(5000);
+			}
+
+			return true;
+		}
 };
 
 void LogonCommHandler::Startup()
@@ -127,8 +127,8 @@ void LogonCommHandler::Startup()
 	LoadRealmConfiguration();
 
 	Log.Notice("LogonCommClient", "Loading forced permission strings...");
-	QueryResult * result = CharacterDatabase.Query("SELECT * FROM account_forced_permissions");
-	if( result != NULL )
+	QueryResult* result = CharacterDatabase.Query("SELECT * FROM account_forced_permissions");
+	if(result != NULL)
 	{
 		do
 		{
@@ -136,13 +136,14 @@ void LogonCommHandler::Startup()
 			string perm = result->Fetch()[1].GetString();
 
 			arcemu_TOUPPER(acct);
-            forced_permissions.insert(make_pair(acct,perm));
+			forced_permissions.insert(make_pair(acct, perm));
 
-		} while (result->NextRow());
+		}
+		while(result->NextRow());
 		delete result;
 	}
 
-	ThreadPool.ExecuteTask( new LogonCommWatcherThread() );
+	ThreadPool.ExecuteTask(new LogonCommWatcherThread());
 }
 
 void LogonCommHandler::ConnectAll()
@@ -152,7 +153,7 @@ void LogonCommHandler::ConnectAll()
 		Connect(*itr);
 }
 
-const string* LogonCommHandler::GetForcedPermissions(string& username)
+const string* LogonCommHandler::GetForcedPermissions(string & username)
 {
 	ForcedPermissionMap::iterator itr = forced_permissions.find(username);
 	if(itr == forced_permissions.end())
@@ -161,14 +162,14 @@ const string* LogonCommHandler::GetForcedPermissions(string& username)
 	return &itr->second;
 }
 
-void LogonCommHandler::Connect(LogonServer * server)
+void LogonCommHandler::Connect(LogonServer* server)
 {
 	if(sMaster.m_ShutdownEvent == true && sMaster.m_ShutdownTimer <= 120000) // 2minutes
 		return;
 
 	server->RetryTime = (uint32)UNIXTIME + 10;
 	server->Registered = false;
-	LogonCommClientSocket * conn = ConnectToLogon(server->Address, server->Port);
+	LogonCommClientSocket* conn = ConnectToLogon(server->Address, server->Port);
 	logons[server] = conn;
 	if(conn == 0)
 	{
@@ -184,7 +185,7 @@ void LogonCommHandler::Connect(LogonServer * server)
 		{
 			Log.Error("LogonCommClient", "Authentication timed out.");
 			conn->Disconnect();
-			logons[server]= NULL;
+			logons[server] = NULL;
 			return;
 		}
 
@@ -193,14 +194,14 @@ void LogonCommHandler::Connect(LogonServer * server)
 
 	if(conn->authenticated != 1)
 	{
-		Log.Error("LogonCommClient","Authentication failed.");
+		Log.Error("LogonCommClient", "Authentication failed.");
 		logons[server] = 0;
 		conn->Disconnect();
 		return;
 	}
 
-	Log.Success("LogonCommClient","Authentication OK.");
-  Log.Notice("LogonCommClient", "Logonserver was connected on [%s:%u].", server->Address.c_str(), server->Port );
+	Log.Success("LogonCommClient", "Authentication OK.");
+	Log.Notice("LogonCommClient", "Logonserver was connected on [%s:%u].", server->Address.c_str(), server->Port);
 
 	// Send the initial ping
 	conn->SendPing();
@@ -254,7 +255,7 @@ void LogonCommHandler::UpdateSockets()
 	mapLock.Acquire();
 
 	map<LogonServer*, LogonCommClientSocket*>::iterator itr = logons.begin();
-	LogonCommClientSocket * cs;
+	LogonCommClientSocket* cs;
 	uint32 t = (uint32)UNIXTIME;
 	for(; itr != logons.end(); ++itr)
 	{
@@ -263,12 +264,12 @@ void LogonCommHandler::UpdateSockets()
 		{
 			if(!pings) continue;
 
-            if(cs->IsDeleted() || !cs->IsConnected())
-            {
-                cs->_id = 0;
-                itr->second = 0;
-                continue;
-            }
+			if(cs->IsDeleted() || !cs->IsConnected())
+			{
+				cs->_id = 0;
+				itr->second = 0;
+				continue;
+			}
 
 			if(cs->last_pong < t && ((t - cs->last_pong) > 60))
 			{
@@ -280,7 +281,7 @@ void LogonCommHandler::UpdateSockets()
 				continue;
 			}
 
-			if( (t - cs->last_ping) > 15 )
+			if((t - cs->last_ping) > 15)
 			{
 				// send a ping packet.
 				cs->SendPing();
@@ -314,24 +315,24 @@ void LogonCommHandler::ConnectionDropped(uint32 ID)
 	mapLock.Release();
 }
 
-uint32 LogonCommHandler::ClientConnected(string AccountName, WorldSocket * Socket)
+uint32 LogonCommHandler::ClientConnected(string AccountName, WorldSocket* Socket)
 {
 	uint32 request_id = next_request++;
 	size_t i = 0;
-	const char * acct = AccountName.c_str();
-	LOG_DEBUG ( " >> sending request for account information: `%s` (request %u).", AccountName.c_str(), request_id);
+	const char* acct = AccountName.c_str();
+	LOG_DEBUG(" >> sending request for account information: `%s` (request %u).", AccountName.c_str(), request_id);
 
 	// Send request packet to server.
 	map<LogonServer*, LogonCommClientSocket*>::iterator itr = logons.begin();
 	if(logons.size() == 0)
 	{
 		// No valid logonserver is connected.
-		return (uint32)-1;
+		return (uint32) - 1;
 	}
 
-	LogonCommClientSocket * s = itr->second;
-	if( s == NULL )
-		return (uint32)-1;
+	LogonCommClientSocket* s = itr->second;
+	if(s == NULL)
+		return (uint32) - 1;
 
 	pendingLock.Acquire();
 
@@ -339,11 +340,11 @@ uint32 LogonCommHandler::ClientConnected(string AccountName, WorldSocket * Socke
 	data << request_id;
 
 	// strip the shitty hash from it
-	for(; acct[i] != '#' && acct[i] != '\0'; ++i )
-		data.append( &acct[i], 1 );
+	for(; acct[i] != '#' && acct[i] != '\0'; ++i)
+		data.append(&acct[i], 1);
 
-	data.append( "\0", 1 );
-	s->SendPacket(&data,false);
+	data.append("\0", 1);
+	s->SendPacket(&data, false);
 
 	pending_logons[request_id] = Socket;
 	pendingLock.Release();
@@ -366,7 +367,7 @@ void LogonCommHandler::RemoveUnauthedSocket(uint32 id)
 
 void LogonCommHandler::LoadRealmConfiguration()
 {
-	LogonServer * ls = new LogonServer;
+	LogonServer* ls = new LogonServer;
 	ls->ID = idhigh++;
 	ls->Name = Config.RealmConfig.GetStringDefault("LogonServer", "Name", "UnkLogon");
 	ls->Address = Config.RealmConfig.GetStringDefault("LogonServer", "Address", "127.0.0.1");
@@ -380,24 +381,24 @@ void LogonCommHandler::LoadRealmConfiguration()
 	}
 	else
 	{
-		for(uint32 i = 1; i < realmcount+1; ++i)
+		for(uint32 i = 1; i < realmcount + 1; ++i)
 		{
-			Realm * realm = new Realm;
+			Realm* realm = new Realm;
 			realm->Name = Config.RealmConfig.GetStringVA("Name", "SomeRealm", "Realm%u", i);
 			realm->Address = Config.RealmConfig.GetStringVA("Address", "127.0.0.1:8129", "Realm%u", i);
 			realm->flags = 0;
 			realm->TimeZone = Config.RealmConfig.GetIntVA("TimeZone", 1, "Realm%u", i);
 			realm->Population = Config.RealmConfig.GetFloatVA("Population", 0, "Realm%u", i);
-			realm->Lock = static_cast<uint8>( Config.RealmConfig.GetIntVA("Lock", 0, "Realm%u", i) );
+			realm->Lock = static_cast<uint8>(Config.RealmConfig.GetIntVA("Lock", 0, "Realm%u", i));
 			string rt = Config.RealmConfig.GetStringVA("Icon", "Normal", "Realm%u", i);
 			uint32 type;
 
 			// process realm type
-			if( stricmp(rt.c_str(), "pvp")== 0 )
+			if(stricmp(rt.c_str(), "pvp") == 0)
 				type = REALMTYPE_PVP;
-			else if( stricmp(rt.c_str(), "rp")== 0 )
+			else if(stricmp(rt.c_str(), "rp") == 0)
 				type = REALMTYPE_RP;
-			else if( stricmp(rt.c_str(), "rppvp")== 0 )
+			else if(stricmp(rt.c_str(), "rppvp") == 0)
 				type = REALMTYPE_RPPVP;
 			else
 				type = REALMTYPE_NORMAL;
@@ -422,7 +423,7 @@ void LogonCommHandler::UpdateAccountCount(uint32 account_id, uint8 add)
 	itr->second->UpdateAccountCount(account_id, add);
 }
 
-void LogonCommHandler::TestConsoleLogon(string& username, string& password, uint32 requestnum)
+void LogonCommHandler::TestConsoleLogon(string & username, string & password, uint32 requestnum)
 {
 	string newuser = username;
 	string newpass = password;
@@ -454,7 +455,7 @@ void LogonCommHandler::TestConsoleLogon(string& username, string& password, uint
 }
 
 // db funcs
-void LogonCommHandler::Account_SetBanned(const char * account, uint32 banned, const char *reason)
+void LogonCommHandler::Account_SetBanned(const char* account, uint32 banned, const char* reason)
 {
 	map<LogonServer*, LogonCommClientSocket*>::iterator itr = logons.begin();
 	if(logons.size() == 0 || itr->second == 0)
@@ -471,7 +472,7 @@ void LogonCommHandler::Account_SetBanned(const char * account, uint32 banned, co
 	itr->second->SendPacket(&data, false);
 }
 
-void LogonCommHandler::Account_SetGM(const char * account, const char * flags)
+void LogonCommHandler::Account_SetGM(const char* account, const char* flags)
 {
 	map<LogonServer*, LogonCommClientSocket*>::iterator itr = logons.begin();
 	if(logons.size() == 0 || itr->second == 0)
@@ -487,7 +488,7 @@ void LogonCommHandler::Account_SetGM(const char * account, const char * flags)
 	itr->second->SendPacket(&data, false);
 }
 
-void LogonCommHandler::Account_SetMute(const char * account, uint32 muted)
+void LogonCommHandler::Account_SetMute(const char* account, uint32 muted)
 {
 	map<LogonServer*, LogonCommClientSocket*>::iterator itr = logons.begin();
 	if(logons.size() == 0 || itr->second == 0)
@@ -503,7 +504,7 @@ void LogonCommHandler::Account_SetMute(const char * account, uint32 muted)
 	itr->second->SendPacket(&data, false);
 }
 
-void LogonCommHandler::IPBan_Add(const char * ip, uint32 duration,const char *reason)
+void LogonCommHandler::IPBan_Add(const char* ip, uint32 duration, const char* reason)
 {
 	map<LogonServer*, LogonCommClientSocket*>::iterator itr = logons.begin();
 	if(logons.size() == 0 || itr->second == 0)
@@ -520,7 +521,7 @@ void LogonCommHandler::IPBan_Add(const char * ip, uint32 duration,const char *re
 	itr->second->SendPacket(&data, false);
 }
 
-void LogonCommHandler::IPBan_Remove(const char * ip)
+void LogonCommHandler::IPBan_Remove(const char* ip)
 {
 	map<LogonServer*, LogonCommClientSocket*>::iterator itr = logons.begin();
 	if(logons.size() == 0 || itr->second == 0)

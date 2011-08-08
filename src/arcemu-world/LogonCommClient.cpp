@@ -24,17 +24,17 @@ typedef struct
 {
 	uint16 opcode;
 	uint32 size;
-}logonpacket;
+} logonpacket;
 #pragma pack(pop)
 
-static void swap32( uint32* p ) { *p = ((*p >> 24 & 0xff)) | ((*p >> 8) & 0xff00) | ((*p << 8) & 0xff0000) | (*p << 24); }
+static void swap32(uint32* p) { *p = ((*p >> 24 & 0xff)) | ((*p >> 8) & 0xff00) | ((*p << 8) & 0xff0000) | (*p << 24); }
 
 LogonCommClientSocket::LogonCommClientSocket(SOCKET fd) : Socket(fd, 724288, 262444)
 {
 	// do nothing
 	last_ping = last_pong = (uint32)UNIXTIME;
 	remaining = opcode = 0;
-	_id= 0;
+	_id = 0;
 	latency = 0;
 	use_crypto = false;
 	authenticated = 0;
@@ -85,7 +85,7 @@ void LogonCommClientSocket::OnRead()
 
 		// handle the packet
 		HandlePacket(buff);
-		
+
 		remaining = 0;
 		opcode = 0;
 	}
@@ -93,7 +93,8 @@ void LogonCommClientSocket::OnRead()
 
 void LogonCommClientSocket::HandlePacket(WorldPacket & recvData)
 {
-	static logonpacket_handler Handlers[RMSG_COUNT] = {
+	static logonpacket_handler Handlers[RMSG_COUNT] =
+	{
 		NULL,												// RMSG_NULL
 		NULL,												// RCMSG_REGISTER_REALM
 		&LogonCommClientSocket::HandleRegister,				// RSMSG_REALM_REGISTERED
@@ -136,7 +137,7 @@ void LogonCommClientSocket::HandleRegister(WorldPacket & recvData)
 	Log.Success("LogonCommClient", "Realm `%s` (UNICODE) registered as realm %u.", _StringToANSI(realmname.c_str()), realmlid);
 #else
 	Log.Success("LogonCommClient", "Realm `%s` registered as realm %u.", realmname.c_str(), realmlid);
-#endif	
+#endif
 
 	LogonCommHandler::getSingleton().AdditionAck(_id, realmlid);
 	realm_ids.insert(realmlid);
@@ -151,7 +152,7 @@ void LogonCommClientSocket::HandleSessionInfo(WorldPacket & recvData)
 	m.Acquire();
 
 	// find the socket with this request
-	WorldSocket * sock = sLogonCommHandler.GetSocketByRequest(request_id);
+	WorldSocket* sock = sLogonCommHandler.GetSocketByRequest(request_id);
 	if(sock == 0 || sock->Authed || !sock->IsConnected())	   // Expired/Client disconnected
 	{
 		m.Release();
@@ -175,16 +176,16 @@ void LogonCommClientSocket::SendPing()
 {
 	pingtime = getMSTime();
 	WorldPacket data(RCMSG_PING, 4);
-	SendPacket(&data,false);
+	SendPacket(&data, false);
 
 	last_ping = (uint32)UNIXTIME;
 }
 
-void LogonCommClientSocket::SendPacket(WorldPacket * data, bool no_crypto)
+void LogonCommClientSocket::SendPacket(WorldPacket* data, bool no_crypto)
 {
 	logonpacket header;
 	bool rv;
-	if( !IsConnected() || IsDeleted())
+	if(!IsConnected() || IsDeleted())
 		return;
 
 	BurstBegin();
@@ -217,7 +218,7 @@ void LogonCommClientSocket::OnDisconnect()
 	if(_id != 0)
 	{
 		LOG_DETAIL("Calling ConnectionDropped() due to OnDisconnect().");
-		sLogonCommHandler.ConnectionDropped(_id);	
+		sLogonCommHandler.ConnectionDropped(_id);
 	}
 }
 
@@ -227,10 +228,10 @@ LogonCommClientSocket::~LogonCommClientSocket()
 
 void LogonCommClientSocket::SendChallenge()
 {
-	uint8 * key = sLogonCommHandler.sql_passhash;
+	uint8* key = sLogonCommHandler.sql_passhash;
 
 	_recvCrypto.Setup(key, 20);
-	_sendCrypto.Setup(key, 20);	
+	_sendCrypto.Setup(key, 20);
 
 	/* packets are encrypted from now on */
 	use_crypto = true;
@@ -263,16 +264,16 @@ void LogonCommClientSocket::UpdateAccountCount(uint32 account_id, uint8 add)
 	{
 		data.clear();
 		data << (*itr) << account_id << add;
-		SendPacket(&data,false);
+		SendPacket(&data, false);
 	}
 }
 
 void LogonCommClientSocket::HandleRequestAccountMapping(WorldPacket & recvData)
 {
-	uint32 t= getMSTime();
+	uint32 t = getMSTime();
 	uint32 realm_id;
 	uint32 account_id;
-	QueryResult * result;
+	QueryResult* result;
 	map<uint32, uint8> mapping_to_send;
 	map<uint32, uint8>::iterator itr;
 
@@ -284,15 +285,16 @@ void LogonCommClientSocket::HandleRequestAccountMapping(WorldPacket & recvData)
 
 	if(result)
 	{
-		do 
+		do
 		{
 			account_id = result->Fetch()[0].GetUInt32();
 			itr = mapping_to_send.find(account_id);
 			if(itr != mapping_to_send.end())
 				itr->second++;
 			else
-				mapping_to_send.insert( make_pair( account_id, 1 ) );
-		} while(result->NextRow());
+				mapping_to_send.insert(make_pair(account_id, 1));
+		}
+		while(result->NextRow());
 		delete result;
 	}
 
@@ -310,7 +312,7 @@ void LogonCommClientSocket::HandleRequestAccountMapping(WorldPacket & recvData)
 	{
 		// Send no more than 40000 characters at once.
 		uncompressed << realm_id;
-		
+
 		if(Remaining > 40000)
 			uncompressed << uint32(40000);
 		else
@@ -318,7 +320,7 @@ void LogonCommClientSocket::HandleRequestAccountMapping(WorldPacket & recvData)
 
 		for(uint32 i = 0; i < 40000; ++i, ++itr)
 		{
-            uncompressed << uint32(itr->first) << uint8(itr->second);
+			uncompressed << uint32(itr->first) << uint8(itr->second);
 			if(!--Remaining)
 				break;
 		}
@@ -328,14 +330,14 @@ void LogonCommClientSocket::HandleRequestAccountMapping(WorldPacket & recvData)
 			break;
 
 		uncompressed.clear();
-	}	
-	Log.Notice("LogonCommClient", "Build character mapping in %ums. (%u)", getMSTime()-t,mapping_to_send.size());
+	}
+	Log.Notice("LogonCommClient", "Build character mapping in %ums. (%u)", getMSTime() - t, mapping_to_send.size());
 }
 
 void LogonCommClientSocket::CompressAndSend(ByteBuffer & uncompressed)
 {
 	// I still got no idea where this came from :p
-	size_t destsize = uncompressed.size() + uncompressed.size()/10 + 16;
+	size_t destsize = uncompressed.size() + uncompressed.size() / 10 + 16;
 
 	// w000t w000t kat000t for gzipped packets
 	WorldPacket data(RCMSG_ACCOUNT_CHARACTER_MAPPING_REPLY, destsize + 4);
@@ -353,14 +355,14 @@ void LogonCommClientSocket::CompressAndSend(ByteBuffer & uncompressed)
 	}
 
 	// set up stream pointers
-	stream.next_out  = (Bytef*)((uint8*)data.contents())+4;
+	stream.next_out  = (Bytef*)((uint8*)data.contents()) + 4;
 	stream.avail_out = (uInt)destsize;
 	stream.next_in   = (Bytef*)uncompressed.contents();
 	stream.avail_in  = (uInt)uncompressed.size();
 
 	// call the actual process
 	if(deflate(&stream, Z_NO_FLUSH) != Z_OK ||
-		stream.avail_in != 0)
+	        stream.avail_in != 0)
 	{
 		LOG_ERROR("deflate failed.");
 		return;
@@ -382,8 +384,8 @@ void LogonCommClientSocket::CompressAndSend(ByteBuffer & uncompressed)
 
 	*(uint32*)data.contents() = (uint32)uncompressed.size();
 
-    data.resize(stream.total_out + 4);
-	SendPacket(&data,false);
+	data.resize(stream.total_out + 4);
+	SendPacket(&data, false);
 }
 
 void LogonCommClientSocket::HandleDisconnectAccount(WorldPacket & recvData)
@@ -391,7 +393,7 @@ void LogonCommClientSocket::HandleDisconnectAccount(WorldPacket & recvData)
 	uint32 id;
 	recvData >> id;
 
-	WorldSession * sess = sWorld.FindSession(id);
+	WorldSession* sess = sWorld.FindSession(id);
 	if(sess != NULL)
 		sess->Disconnect();
 }
@@ -409,7 +411,7 @@ void LogonCommClientSocket::HandlePopulationRequest(WorldPacket & recvData)
 	uint32 realmId;
 	// Grab the realm id
 	recvData >> realmId;
-	
+
 	// Send the result
 	WorldPacket data(RCMSG_REALM_POP_RES, 16);
 	data << realmId << LogonCommHandler::getSingleton().GetServerPopulation();

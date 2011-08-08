@@ -37,11 +37,11 @@ class GameObject;
 
 enum CThreadState
 {
-	THREADSTATE_TERMINATE = 0,
-	THREADSTATE_PAUSED	= 1,
-	THREADSTATE_SLEEPING  = 2,
-	THREADSTATE_BUSY	  = 3,
-	THREADSTATE_AWAITING  = 4,
+    THREADSTATE_TERMINATE = 0,
+    THREADSTATE_PAUSED	= 1,
+    THREADSTATE_SLEEPING  = 2,
+    THREADSTATE_BUSY	  = 3,
+    THREADSTATE_AWAITING  = 4,
 };
 
 
@@ -49,33 +49,33 @@ struct NameTableEntry;
 
 class SERVER_DECL CThread : public ThreadBase
 {
-public:
-	CThread();
-	~CThread();
+	public:
+		CThread();
+		~CThread();
 
-	ARCEMU_INLINE void SetThreadState(CThreadState thread_state) { ThreadState.SetVal(thread_state); }
-	ARCEMU_INLINE CThreadState GetThreadState()
-	{
-		unsigned long val = ThreadState.GetVal();
-		return static_cast<CThreadState>(val);
-	}
-	int GetThreadId() { return ThreadId; }
-	time_t GetStartTime() { return start_time; }
-	virtual bool run();
-	virtual void OnShutdown();
+		ARCEMU_INLINE void SetThreadState(CThreadState thread_state) { ThreadState.SetVal(thread_state); }
+		ARCEMU_INLINE CThreadState GetThreadState()
+		{
+			unsigned long val = ThreadState.GetVal();
+			return static_cast<CThreadState>(val);
+		}
+		int GetThreadId() { return ThreadId; }
+		time_t GetStartTime() { return start_time; }
+		virtual bool run();
+		virtual void OnShutdown();
 
-protected:
-	CThread& operator=( CThread &other )
-	{
-		this->start_time = other.start_time;
-		this->ThreadId = other.ThreadId;
-		this->ThreadState.SetVal( other.ThreadState.GetVal() );
-		return *this;
-	}
+	protected:
+		CThread & operator=(CThread & other)
+		{
+			this->start_time = other.start_time;
+			this->ThreadId = other.ThreadId;
+			this->ThreadState.SetVal(other.ThreadState.GetVal());
+			return *this;
+		}
 
-	Arcemu::Threading::AtomicCounter ThreadState;
-	time_t start_time;
-	int ThreadId;
+		Arcemu::Threading::AtomicCounter ThreadState;
+		time_t start_time;
+		int ThreadId;
 };
 
 #endif

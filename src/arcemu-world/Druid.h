@@ -23,10 +23,10 @@
 
 class Druid : public Player
 {
-public:
-	Druid ( uint32 guid ) : Player( guid ) {}
+	public:
+		Druid(uint32 guid) : Player(guid) {}
 
-	bool IsDruid() { return true; }
+		bool IsDruid() { return true; }
 };
 
 #endif

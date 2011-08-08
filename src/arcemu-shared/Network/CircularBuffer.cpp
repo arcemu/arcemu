@@ -44,20 +44,20 @@ CircularBuffer::~CircularBuffer()
  * @param bytes number of bytes to read
  * @return true if there was enough data, false otherwise
  */
-bool CircularBuffer::Read(void * destination, size_t bytes)
+bool CircularBuffer::Read(void* destination, size_t bytes)
 {
-	if (m_buffer == NULL)
+	if(m_buffer == NULL)
 		return false;
 
 	// copy as much out of region a
 	size_t cnt = bytes;
 	size_t aRead = 0, bRead = 0;
-	if( (m_regionASize + m_regionBSize) < bytes )
+	if((m_regionASize + m_regionBSize) < bytes)
 		return false;
 
 	// If we have both region A and region B, always "finish" off region A first, as
 	// this will contain the "oldest" data
-	if( m_regionASize > 0 )
+	if(m_regionASize > 0)
 	{
 		aRead = (cnt > m_regionASize) ? m_regionASize : cnt;
 		memcpy(destination, m_regionAPointer, aRead);
@@ -67,7 +67,7 @@ bool CircularBuffer::Read(void * destination, size_t bytes)
 	}
 
 	// Data left over? read the data from buffer B
-	if( cnt > 0 && m_regionBSize > 0 )
+	if(cnt > 0 && m_regionBSize > 0)
 	{
 		bRead = (cnt > m_regionBSize) ? m_regionBSize : cnt;
 		memcpy((char*)destination + aRead, m_regionBPointer, bRead);
@@ -77,12 +77,12 @@ bool CircularBuffer::Read(void * destination, size_t bytes)
 	}
 
 	// is buffer A empty? move buffer B to buffer A, to increase future performance
-	if( m_regionASize == 0 )
+	if(m_regionASize == 0)
 	{
-		if( m_regionBSize > 0 )
+		if(m_regionBSize > 0)
 		{
 			// push it all to the start of the buffer.
-			if( m_regionBPointer != m_buffer )
+			if(m_regionBPointer != m_buffer)
 				memmove(m_buffer, m_regionBPointer, m_regionBSize);
 
 			m_regionAPointer = m_buffer;
@@ -114,15 +114,15 @@ void CircularBuffer::AllocateB()
  * @param bytes number of bytes to be written
  * @return true if was successful, otherwise false
  */
-bool CircularBuffer::Write(const void * data, size_t bytes)
+bool CircularBuffer::Write(const void* data, size_t bytes)
 {
-	if (m_buffer == NULL)
+	if(m_buffer == NULL)
 		return false;
 
 	// If buffer B exists, write to it.
-	if( m_regionBPointer != NULL )
+	if(m_regionBPointer != NULL)
 	{
-		if( GetBFreeSpace() < bytes )
+		if(GetBFreeSpace() < bytes)
 			return false;
 
 		memcpy(&m_regionBPointer[m_regionBSize], data, bytes);
@@ -131,10 +131,10 @@ bool CircularBuffer::Write(const void * data, size_t bytes)
 	}
 
 	// Otherwise, write to buffer A, or initialize buffer B depending on which has more space.
-	if( GetAFreeSpace() < GetSpaceBeforeA() )
+	if(GetAFreeSpace() < GetSpaceBeforeA())
 	{
 		AllocateB();
-		if( GetBFreeSpace() < bytes )
+		if(GetBFreeSpace() < bytes)
 			return false;
 
 		memcpy(&m_regionBPointer[m_regionBSize], data, bytes);
@@ -143,7 +143,7 @@ bool CircularBuffer::Write(const void * data, size_t bytes)
 	}
 	else
 	{
-		if( GetAFreeSpace() < bytes )
+		if(GetAFreeSpace() < bytes)
 			return false;
 
 		memcpy(&m_regionAPointer[m_regionASize], data, bytes);
@@ -156,12 +156,12 @@ bool CircularBuffer::Write(const void * data, size_t bytes)
  */
 size_t CircularBuffer::GetSpace()
 {
-	if( m_regionBPointer != NULL )
+	if(m_regionBPointer != NULL)
 		return GetBFreeSpace();
 	else
 	{
 		// would allocating buffer B get us more data?
-		if( GetAFreeSpace() < GetSpaceBeforeA() )
+		if(GetAFreeSpace() < GetSpaceBeforeA())
 		{
 			AllocateB();
 			return GetBFreeSpace();
@@ -183,7 +183,7 @@ size_t CircularBuffer::GetSize()
  */
 size_t CircularBuffer::GetContiguiousBytes()
 {
-	if( m_regionASize )			// A before B
+	if(m_regionASize)			// A before B
 		return m_regionASize;
 	else
 		return m_regionBSize;
@@ -200,7 +200,7 @@ void CircularBuffer::Remove(size_t len)
 
 	// If we have both region A and region B, always "finish" off region A first, as
 	// this will contain the "oldest" data
-	if( m_regionASize > 0 )
+	if(m_regionASize > 0)
 	{
 		aRem = (cnt > m_regionASize) ? m_regionASize : cnt;
 		m_regionASize -= aRem;
@@ -209,7 +209,7 @@ void CircularBuffer::Remove(size_t len)
 	}
 
 	// Data left over? cut the data from buffer B
-	if( cnt > 0 && m_regionBSize > 0 )
+	if(cnt > 0 && m_regionBSize > 0)
 	{
 		bRem = (cnt > m_regionBSize) ? m_regionBSize : cnt;
 		m_regionBSize -= bRem;
@@ -218,14 +218,14 @@ void CircularBuffer::Remove(size_t len)
 	}
 
 	// is buffer A empty? move buffer B to buffer A, to increase future performance
-	if( m_regionASize == 0 )
+	if(m_regionASize == 0)
 	{
-		if( m_regionBSize > 0 )
+		if(m_regionBSize > 0)
 		{
 			// push it all to the start of the buffer.
-			if( m_regionBPointer != m_buffer )
+			if(m_regionBPointer != m_buffer)
 				memmove(m_buffer, m_regionBPointer, m_regionBSize);
-	
+
 			m_regionAPointer = m_buffer;
 			m_regionASize = m_regionBSize;
 			m_regionBPointer = NULL;
@@ -244,9 +244,9 @@ void CircularBuffer::Remove(size_t len)
 
 /** Returns a pointer at the "end" of the buffer, where new data can be written
  */
-void * CircularBuffer::GetBuffer()
+void* CircularBuffer::GetBuffer()
 {
-	if( m_regionBPointer != NULL )
+	if(m_regionBPointer != NULL)
 		return m_regionBPointer + m_regionBSize;
 	else
 		return m_regionAPointer + m_regionASize;
@@ -267,7 +267,7 @@ void CircularBuffer::Allocate(size_t size)
  */
 void CircularBuffer::IncrementWritten(size_t len)			// known as "commit"
 {
-	if( m_regionBPointer != NULL )
+	if(m_regionBPointer != NULL)
 		m_regionBSize += len;
 	else
 		m_regionASize += len;
@@ -275,11 +275,11 @@ void CircularBuffer::IncrementWritten(size_t len)			// known as "commit"
 
 /** Returns a pointer at the "beginning" of the buffer, where data can be pulled from
  */
-void * CircularBuffer::GetBufferStart()
+void* CircularBuffer::GetBufferStart()
 {
-	if( m_regionASize > 0 )
+	if(m_regionASize > 0)
 		return m_regionAPointer;
 	else
 		return m_regionBPointer;
-		
+
 }

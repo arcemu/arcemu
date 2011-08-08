@@ -26,11 +26,11 @@
 */
 uint32 GetAchievementIDFromLink(const char* achievementlink)
 {
-	if( achievementlink == NULL )
+	if(achievementlink == NULL)
 		return 0;
 
 	const char* ptr = strstr(achievementlink, "|Hachievement:");
-	if( ptr == NULL )
+	if(ptr == NULL)
 		return 0;
 
 	// achievement id is just past "|Hachievement:" (14 bytes)
@@ -47,19 +47,19 @@ uint32 GetAchievementIDFromLink(const char* achievementlink)
 */
 bool SendAchievementProgress(const CriteriaProgress* c)
 {
-	if( c == NULL || c->counter <= 0 )
+	if(c == NULL || c->counter <= 0)
 		// achievement not started yet, don't send progress
 		return false;
 
 	AchievementCriteriaEntry const* acEntry = dbcAchievementCriteriaStore.LookupEntryForced(c->id);
-	if( !acEntry )
+	if(!acEntry)
 		return false;
 
-	if( acEntry->requiredType == ACHIEVEMENT_CRITERIA_TYPE_GAIN_REPUTATION )
+	if(acEntry->requiredType == ACHIEVEMENT_CRITERIA_TYPE_GAIN_REPUTATION)
 		// Exalted with X faction (don't send 12323/42000 progress, it's not shown anyway)
 		return false;
 
-	if( acEntry->requiredType == ACHIEVEMENT_CRITERIA_TYPE_REACH_LEVEL )
+	if(acEntry->requiredType == ACHIEVEMENT_CRITERIA_TYPE_REACH_LEVEL)
 		// Reach level (don't send 7/80 progress, it's not shown anyway)
 		return false;
 
@@ -73,7 +73,7 @@ bool SendAchievementProgress(const CriteriaProgress* c)
 */
 bool SaveAchievementProgressToDB(const CriteriaProgress* c)
 {
-	if( c->counter <= 0 )
+	if(c->counter <= 0)
 	{
 		// don't save it if it's not started yet
 		return false;
@@ -81,7 +81,7 @@ bool SaveAchievementProgressToDB(const CriteriaProgress* c)
 	AchievementCriteriaEntry const* acEntry = dbcAchievementCriteriaStore.LookupEntry(c->id);
 	switch(acEntry->requiredType)
 	{
-		// these get updated when character logs on, don't save to character progress db
+			// these get updated when character logs on, don't save to character progress db
 		case ACHIEVEMENT_CRITERIA_TYPE_REACH_LEVEL:
 		case ACHIEVEMENT_CRITERIA_TYPE_EXPLORE_AREA:
 		case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_ACHIEVEMENT:
@@ -147,14 +147,14 @@ bool ShowCompletedAchievement(uint32 achievementID, const Player* plr)
 		case 1463: // Realm First! Northrend Vanguard: First player on the realm to gain exalted reputation with the Argent Crusade, Wyrmrest Accord, Kirin Tor and Knights of the Ebon Blade.
 			{
 				QueryResult* achievementResult = CharacterDatabase.Query("SELECT guid FROM character_achievement WHERE achievement=%u ORDER BY date LIMIT 1", achievementID);
-				if( achievementResult != NULL )
+				if(achievementResult != NULL)
 				{
 					Field* field = achievementResult->Fetch();
-					if( field != NULL )
+					if(field != NULL)
 					{
 						// somebody has this Realm First achievement... is it this player?
 						uint64 firstguid = field->GetUInt32();
-						if( firstguid != (uint32)plr->GetGUID() )
+						if(firstguid != (uint32)plr->GetGUID())
 						{
 							// nope, somebody else was first.
 							delete achievementResult;
@@ -179,10 +179,10 @@ bool ShowCompletedAchievement(uint32 achievementID, const Player* plr)
 /**
 	AchievementMgr constructor
 */
-AchievementMgr::AchievementMgr(Player *player)
-:
-m_player(player),
-isCharacterLoading(true)
+AchievementMgr::AchievementMgr(Player* player)
+	:
+	m_player(player),
+	isCharacterLoading(true)
 {
 
 }
@@ -192,7 +192,7 @@ isCharacterLoading(true)
 */
 AchievementMgr::~AchievementMgr()
 {
-	for(CriteriaProgressMap::iterator iter = m_criteriaProgress.begin(); iter!=m_criteriaProgress.end(); ++iter)
+	for(CriteriaProgressMap::iterator iter = m_criteriaProgress.begin(); iter != m_criteriaProgress.end(); ++iter)
 		delete iter->second;
 	m_criteriaProgress.clear();
 	m_completedAchievements.clear();
@@ -202,40 +202,40 @@ AchievementMgr::~AchievementMgr()
 	Save Achievement data to database
 	Saves all completed achievements to database.  Saves all achievement progresses that have been started, and that aren't calculated on login, to database.
 */
-void AchievementMgr::SaveToDB(QueryBuffer *buf)
+void AchievementMgr::SaveToDB(QueryBuffer* buf)
 {
-	if( !m_completedAchievements.empty() )
+	if(!m_completedAchievements.empty())
 	{
 		std::ostringstream ss;
 
-        ss << "DELETE FROM character_achievement WHERE guid = ";
-        ss << m_player->GetLowGUID();
-        ss << ";";
+		ss << "DELETE FROM character_achievement WHERE guid = ";
+		ss << m_player->GetLowGUID();
+		ss << ";";
 
 		if(buf == NULL)
-			CharacterDatabase.ExecuteNA( ss.str().c_str() );
+			CharacterDatabase.ExecuteNA(ss.str().c_str());
 		else
-			buf->AddQueryNA( ss.str().c_str() );
+			buf->AddQueryNA(ss.str().c_str());
 
-        ss.rdbuf()->str("");
+		ss.rdbuf()->str("");
 
 		ss << "INSERT INTO character_achievement VALUES ";
 		bool first = true;
-		for(CompletedAchievementMap::iterator iter = m_completedAchievements.begin(); iter!=m_completedAchievements.end(); iter++)
+		for(CompletedAchievementMap::iterator iter = m_completedAchievements.begin(); iter != m_completedAchievements.end(); iter++)
 		{
-			if( ss.str().length() >= 16000 )
+			if(ss.str().length() >= 16000)
 			{
 				// SQL query length is limited to 16384 characters
 				if(buf == NULL)
-					CharacterDatabase.ExecuteNA( ss.str().c_str() );
+					CharacterDatabase.ExecuteNA(ss.str().c_str());
 				else
-					buf->AddQueryNA( ss.str().c_str() );
+					buf->AddQueryNA(ss.str().c_str());
 				ss.str("");
 				ss << "INSERT INTO character_achievement VALUES ";
 				first = true;
 			}
 
-			if( !first )
+			if(!first)
 			{
 				ss << ", ";
 			}
@@ -243,48 +243,48 @@ void AchievementMgr::SaveToDB(QueryBuffer *buf)
 			{
 				first = false;
 			}
-            ss << "(" << m_player->GetLowGUID() << ", " << iter->first << ", " << iter->second << ")";
+			ss << "(" << m_player->GetLowGUID() << ", " << iter->first << ", " << iter->second << ")";
 		}
 		if(buf == NULL)
-			CharacterDatabase.ExecuteNA( ss.str().c_str() );
+			CharacterDatabase.ExecuteNA(ss.str().c_str());
 		else
-			buf->AddQueryNA( ss.str().c_str() );
+			buf->AddQueryNA(ss.str().c_str());
 	}
 
-	if( !m_criteriaProgress.empty() )
+	if(!m_criteriaProgress.empty())
 	{
 		std::ostringstream ss;
 
-        ss << "DELETE FROM character_achievement_progress WHERE guid = ";
-        ss << m_player->GetLowGUID();
-        ss << ";";
+		ss << "DELETE FROM character_achievement_progress WHERE guid = ";
+		ss << m_player->GetLowGUID();
+		ss << ";";
 
 		if(buf == NULL)
-			CharacterDatabase.ExecuteNA( ss.str().c_str() );
+			CharacterDatabase.ExecuteNA(ss.str().c_str());
 		else
-			buf->AddQueryNA( ss.str().c_str() );
+			buf->AddQueryNA(ss.str().c_str());
 
-        ss.rdbuf()->str("");
+		ss.rdbuf()->str("");
 
 		ss << "INSERT INTO character_achievement_progress VALUES ";
 		bool first = true;
-		for(CriteriaProgressMap::iterator iter = m_criteriaProgress.begin(); iter!=m_criteriaProgress.end(); ++iter)
+		for(CriteriaProgressMap::iterator iter = m_criteriaProgress.begin(); iter != m_criteriaProgress.end(); ++iter)
 		{
-			if( SaveAchievementProgressToDB(iter->second) )
+			if(SaveAchievementProgressToDB(iter->second))
 			{
 				// only save some progresses, others will be updated when character logs in
-				if( ss.str().length() >= 16000 )
+				if(ss.str().length() >= 16000)
 				{
 					// SQL query length is limited to 16384 characters
 					if(buf == NULL)
-						CharacterDatabase.ExecuteNA( ss.str().c_str() );
+						CharacterDatabase.ExecuteNA(ss.str().c_str());
 					else
-						buf->AddQueryNA( ss.str().c_str() );
+						buf->AddQueryNA(ss.str().c_str());
 					ss.str("");
 					ss << "INSERT INTO character_achievement_progress VALUES ";
 					first = true;
 				}
-				if( !first )
+				if(!first)
 				{
 					ss << ", ";
 				}
@@ -292,16 +292,16 @@ void AchievementMgr::SaveToDB(QueryBuffer *buf)
 				{
 					first = false;
 				}
-                ss << "(" << m_player->GetLowGUID() << ", " << iter->first << ", " << iter->second->counter << ", " << iter->second->date << ")";
+				ss << "(" << m_player->GetLowGUID() << ", " << iter->first << ", " << iter->second->counter << ", " << iter->second->date << ")";
 			}
 		}
-		if( !first )
+		if(!first)
 		{
 			// don't execute query if there's no entries to save
 			if(buf == NULL)
-				CharacterDatabase.ExecuteNA( ss.str().c_str() );
+				CharacterDatabase.ExecuteNA(ss.str().c_str());
 			else
-				buf->AddQueryNA( ss.str().c_str() );
+				buf->AddQueryNA(ss.str().c_str());
 		}
 	}
 }
@@ -310,36 +310,38 @@ void AchievementMgr::SaveToDB(QueryBuffer *buf)
 	Load achievements from database.
 	Loads completed achievements and achievement progresses from the database.
 */
-void AchievementMgr::LoadFromDB(QueryResult *achievementResult, QueryResult *criteriaResult)
+void AchievementMgr::LoadFromDB(QueryResult* achievementResult, QueryResult* criteriaResult)
 {
-	if( achievementResult )
+	if(achievementResult)
 	{
 		do
 		{
-			Field *fields = achievementResult->Fetch();
+			Field* fields = achievementResult->Fetch();
 			uint32 id = fields[0].GetUInt32();
-			if( m_completedAchievements[id] == 0 )
+			if(m_completedAchievements[id] == 0)
 				m_completedAchievements[id] = fields[1].GetUInt32();
-			else 
-				LOG_ERROR("Duplicate completed achievement %u for player %u, skipping", id, (uint32)m_player->GetGUID() );
-		} while(achievementResult->NextRow());
+			else
+				LOG_ERROR("Duplicate completed achievement %u for player %u, skipping", id, (uint32)m_player->GetGUID());
+		}
+		while(achievementResult->NextRow());
 	}
 
-	if( criteriaResult )
+	if(criteriaResult)
 	{
 		do
 		{
-			Field *fields = criteriaResult->Fetch();
+			Field* fields = criteriaResult->Fetch();
 			uint32 progress_id = fields[0].GetUInt32();
-			if( m_criteriaProgress[ progress_id ] == NULL )
+			if(m_criteriaProgress[ progress_id ] == NULL)
 			{
-				CriteriaProgress *progress = new CriteriaProgress( progress_id, fields[1].GetUInt32(), fields[2].GetUInt64() );
+				CriteriaProgress* progress = new CriteriaProgress(progress_id, fields[1].GetUInt32(), fields[2].GetUInt64());
 				m_criteriaProgress[ progress_id ] = progress;
 			}
 			else
-				LOG_ERROR( "Duplicate criteria progress %u for player %u, skipping", progress_id, (uint32) m_player->GetGUID() );
+				LOG_ERROR("Duplicate criteria progress %u for player %u, skipping", progress_id, (uint32) m_player->GetGUID());
 
-		}while( criteriaResult->NextRow() );
+		}
+		while(criteriaResult->NextRow());
 	}
 }
 
@@ -350,18 +352,18 @@ void AchievementMgr::LoadFromDB(QueryResult *achievementResult, QueryResult *cri
 */
 void AchievementMgr::SendAchievementEarned(AchievementEntry const* achievement)
 {
-	if( achievement == NULL || isCharacterLoading )
+	if(achievement == NULL || isCharacterLoading)
 	{
 		return;
 	}
 
-	const char *msg = "|Hplayer:$N|h[$N]|h has earned the achievement $a!";
+	const char* msg = "|Hplayer:$N|h[$N]|h has earned the achievement $a!";
 	uint32* guidList = NULL;
 	uint32 guidCount = 0;
 	uint32 guidIndex = 0;
 
 	// Send Achievement message to everyone currently on the server
-	if( achievement->flags & (ACHIEVEMENT_FLAG_REALM_FIRST_KILL | ACHIEVEMENT_FLAG_REALM_FIRST_REACH) )
+	if(achievement->flags & (ACHIEVEMENT_FLAG_REALM_FIRST_KILL | ACHIEVEMENT_FLAG_REALM_FIRST_REACH))
 	{
 		WorldPacket data(SMSG_SERVER_FIRST_ACHIEVEMENT, 200);
 		data << GetPlayer()->GetName();
@@ -375,7 +377,7 @@ void AchievementMgr::SendAchievementEarned(AchievementEntry const* achievement)
 		// allocate enough space
 		guidList = new uint32[sWorld.GetSessionCount() + 256];
 		// Send Achievement message to every guild member currently on the server
-		if( GetPlayer()->IsInGuild() )
+		if(GetPlayer()->IsInGuild())
 		{
 			Guild* guild = GetPlayer()->getPlayerInfo()->guild;
 			WorldPacket data(SMSG_MESSAGECHAT, 200);
@@ -384,7 +386,7 @@ void AchievementMgr::SendAchievementEarned(AchievementEntry const* achievement)
 			data << uint64(GetPlayer()->GetGUID());
 			data << uint32(5);
 			data << uint64(GetPlayer()->GetGUID());
-			data << uint32(strlen(msg)+1);
+			data << uint32(strlen(msg) + 1);
 			data << msg;
 			data << uint8(0);
 			data << uint32(achievement->ID);
@@ -393,7 +395,7 @@ void AchievementMgr::SendAchievementEarned(AchievementEntry const* achievement)
 			GuildMemberMap::iterator guildItrLast = guild->GetGuildMembersEnd();
 			while(guildItr != guildItrLast)
 			{
-				if( guildItr->first->m_loggedInPlayer && guildItr->first->m_loggedInPlayer->GetSession() )
+				if(guildItr->first->m_loggedInPlayer && guildItr->first->m_loggedInPlayer->GetSession())
 				{
 					guildItr->first->m_loggedInPlayer->GetSession()->SendPacket(&data);
 					// store GUID, so we don't send message to the same player again (anti-spam)
@@ -409,15 +411,15 @@ void AchievementMgr::SendAchievementEarned(AchievementEntry const* achievement)
 		cdata << uint64(GetPlayer()->GetGUID());
 		cdata << uint32(5);
 		cdata << uint64(GetPlayer()->GetGUID());
-		cdata << uint32(strlen(msg)+1);
+		cdata << uint32(strlen(msg) + 1);
 		cdata << msg;
 		cdata << uint8(0);
 		cdata << uint32(achievement->ID);
 		bool alreadySent;
 		// Send Achievement message to group members
 		Group* grp = GetPlayer()->GetGroup();
-		
-		if( grp )
+
+		if(grp)
 		{
 //			grp->SendPacketToAll(&cdata);
 			uint8 i = 0;
@@ -427,7 +429,7 @@ void AchievementMgr::SendAchievementEarned(AchievementEntry const* achievement)
 			for(; i < grp->GetSubGroupCount(); ++i)
 			{
 				SubGroup* sg = grp->GetSubGroup(i);
-				if( sg == NULL )
+				if(sg == NULL)
 				{
 					continue;
 				}
@@ -436,19 +438,19 @@ void AchievementMgr::SendAchievementEarned(AchievementEntry const* achievement)
 				groupItrLast = sg->GetGroupMembersEnd();
 				for(; groupItr != groupItrLast; ++groupItr)
 				{
-					if( (*groupItr)->m_loggedInPlayer != NULL && (*groupItr)->m_loggedInPlayer->GetSession() )
+					if((*groupItr)->m_loggedInPlayer != NULL && (*groupItr)->m_loggedInPlayer->GetSession())
 					{
 						// check if achievement message has already been sent to this player (if they received a guild achievement message already)
 						alreadySent = false;
 						for(guidIndex = 0; guidIndex < guidCount; ++guidIndex)
 						{
-							if( guidList[guidIndex] == (*groupItr)->guid )
+							if(guidList[guidIndex] == (*groupItr)->guid)
 							{
 								alreadySent = true;
 								guidIndex = guidCount;
 							}
 						}
-						if( !alreadySent )
+						if(!alreadySent)
 						{
 							(*groupItr)->m_loggedInPlayer->GetSession()->SendPacket(&cdata);
 							guidList[guidCount++] = (*groupItr)->guid;
@@ -464,21 +466,21 @@ void AchievementMgr::SendAchievementEarned(AchievementEntry const* achievement)
 		for(; inRangeItr != inRangeItrLast; ++inRangeItr)
 		{
 
-            Player *p = TO< Player* >( (*inRangeItr) );
+			Player* p = TO< Player* >((*inRangeItr));
 
-			if( p && p->GetSession() &&  !p->Social_IsIgnoring( GetPlayer()->GetLowGUID() ) )
+			if(p && p->GetSession() &&  !p->Social_IsIgnoring(GetPlayer()->GetLowGUID()))
 			{
 				// check if achievement message has already been sent to this player (in guild or group)
 				alreadySent = false;
 				for(guidIndex = 0; guidIndex < guidCount; ++guidIndex)
 				{
-					if( guidList[guidIndex] == p->GetLowGUID() )
+					if(guidList[guidIndex] == p->GetLowGUID())
 					{
 						alreadySent = true;
 						guidIndex = guidCount;
 					}
 				}
-				if( !alreadySent )
+				if(!alreadySent)
 				{
 					p->GetSession()->SendPacket(&cdata);
 					guidList[guidCount++] = p->GetLowGUID();
@@ -489,12 +491,12 @@ void AchievementMgr::SendAchievementEarned(AchievementEntry const* achievement)
 		alreadySent = false;
 		for(guidIndex = 0; guidIndex < guidCount; ++guidIndex)
 		{
-			if( guidList[guidIndex] == GetPlayer()->GetLowGUID() )
+			if(guidList[guidIndex] == GetPlayer()->GetLowGUID())
 			{
 				alreadySent = true;
 				guidIndex = guidCount;
 			}
-			if( !alreadySent )
+			if(!alreadySent)
 			{
 				GetPlayer()->GetSession()->SendPacket(&cdata);
 			}
@@ -502,13 +504,13 @@ void AchievementMgr::SendAchievementEarned(AchievementEntry const* achievement)
 	}
 //	GetPlayer()->SendMessageToSet(&cdata, true);
 
-	WorldPacket data( SMSG_ACHIEVEMENT_EARNED, 30);
+	WorldPacket data(SMSG_ACHIEVEMENT_EARNED, 30);
 	data << GetPlayer()->GetNewGUID();
-	data << uint32( achievement->ID );
-	data << uint32( secsToTimeBitFields(UNIXTIME) );
+	data << uint32(achievement->ID);
+	data << uint32(secsToTimeBitFields(UNIXTIME));
 	data << uint32(0);
 	GetPlayer()->GetSession()->SendPacket(&data);
-	if( guidList )
+	if(guidList)
 	{
 		delete [] guidList;
 	}
@@ -519,7 +521,7 @@ void AchievementMgr::SendAchievementEarned(AchievementEntry const* achievement)
 */
 void AchievementMgr::SendCriteriaUpdate(CriteriaProgress* progress)
 {
-	if( progress == NULL || isCharacterLoading )
+	if(progress == NULL || isCharacterLoading)
 	{
 		return;
 	}
@@ -534,7 +536,7 @@ void AchievementMgr::SendCriteriaUpdate(CriteriaProgress* progress)
 	data << uint32(secsToTimeBitFields(progress->date));
 	data << uint32(0);  // timer 1
 	data << uint32(0);  // timer 2
-	if( !GetPlayer()->IsInWorld() ) //VLack: maybe we should NOT send these delayed, for 3.1.1, but seems logical
+	if(!GetPlayer()->IsInWorld())   //VLack: maybe we should NOT send these delayed, for 3.1.1, but seems logical
 		GetPlayer()->CopyAndSendDelayedPacket(&data);
 	else
 		GetPlayer()->GetSession()->SendPacket(&data);
@@ -547,7 +549,7 @@ void AchievementMgr::SendCriteriaUpdate(CriteriaProgress* progress)
 */
 void AchievementMgr::CheckAllAchievementCriteria()
 {
-	for(uint32 i= 0; i<ACHIEVEMENT_CRITERIA_TYPE_TOTAL; i++)
+	for(uint32 i = 0; i < ACHIEVEMENT_CRITERIA_TYPE_TOTAL; i++)
 		UpdateAchievementCriteria(AchievementCriteriaTypes(i));
 }
 
@@ -560,80 +562,80 @@ void AchievementMgr::CheckAllAchievementCriteria()
 void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, int32 miscvalue1, int32 miscvalue2, uint32 time)
 {
 	uint64 selectedGUID;
-	if( type == ACHIEVEMENT_CRITERIA_TYPE_DO_EMOTE )
+	if(type == ACHIEVEMENT_CRITERIA_TYPE_DO_EMOTE)
 	{
 		selectedGUID = GetPlayer()->GetSelection();
 	}
-	AchievementCriteriaEntryList const& achievementCriteriaList = objmgr.GetAchievementCriteriaByType(type);
-	for(AchievementCriteriaEntryList::const_iterator i = achievementCriteriaList.begin(); i!=achievementCriteriaList.end(); ++i)
+	AchievementCriteriaEntryList const & achievementCriteriaList = objmgr.GetAchievementCriteriaByType(type);
+	for(AchievementCriteriaEntryList::const_iterator i = achievementCriteriaList.begin(); i != achievementCriteriaList.end(); ++i)
 	{
-		AchievementCriteriaEntry const *achievementCriteria = (*i);
+		AchievementCriteriaEntry const* achievementCriteria = (*i);
 
-		if( IsCompletedCriteria(achievementCriteria) )
+		if(IsCompletedCriteria(achievementCriteria))
 		{
 			// don't bother updating it, if it has already been completed
 			continue;
 		}
 
-		if( (achievementCriteria->groupFlag & ACHIEVEMENT_CRITERIA_GROUP_NOT_IN_GROUP) && GetPlayer()->GetGroup() )
+		if((achievementCriteria->groupFlag & ACHIEVEMENT_CRITERIA_GROUP_NOT_IN_GROUP) && GetPlayer()->GetGroup())
 		{
 			// criteria requires that the player not be in a group, but they are in a group, so don't update it
 			continue;
 		}
 
-		AchievementEntry const *achievement = dbcAchievementStore.LookupEntryForced(achievementCriteria->referredAchievement);
-		if( !achievement )
+		AchievementEntry const* achievement = dbcAchievementStore.LookupEntryForced(achievementCriteria->referredAchievement);
+		if(!achievement)
 		{
 			// referred achievement not found (shouldn't normally happen)
 			continue;
 		}
 
-		if( (achievement->factionFlag == ACHIEVEMENT_FACTION_FLAG_HORDE && !GetPlayer()->IsTeamHorde() ) ||
-			(achievement->factionFlag == ACHIEVEMENT_FACTION_FLAG_ALLIANCE && !GetPlayer()->IsTeamAlliance() ) )
+		if((achievement->factionFlag == ACHIEVEMENT_FACTION_FLAG_HORDE && !GetPlayer()->IsTeamHorde()) ||
+		        (achievement->factionFlag == ACHIEVEMENT_FACTION_FLAG_ALLIANCE && !GetPlayer()->IsTeamAlliance()))
 		{
 			// achievement requires a faction of which the player is not a member
 			continue;
 		}
 
-		switch (type)
+		switch(type)
 		{
-			//Start of Achievement List
+				//Start of Achievement List
 			case ACHIEVEMENT_CRITERIA_TYPE_REACH_LEVEL:
 				SetCriteriaProgress(achievementCriteria, GetPlayer()->getLevel());
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM:
 			case ACHIEVEMENT_CRITERIA_TYPE_OWN_ITEM:
-				if( achievementCriteria->loot_item.itemID == static_cast<uint32>( miscvalue1 ))
+				if(achievementCriteria->loot_item.itemID == static_cast<uint32>(miscvalue1))
 				{
 					UpdateCriteriaProgress(achievementCriteria, miscvalue2);
 				}
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_EXPLORE_AREA:
-				if( GetPlayer()->HasOverlayUncovered(achievementCriteria->explore_area.areaReference) )
+				if(GetPlayer()->HasOverlayUncovered(achievementCriteria->explore_area.areaReference))
 				{
 					SetCriteriaProgress(achievementCriteria, 1);
 				}
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_QUESTS_IN_ZONE:
-				if( achievementCriteria->complete_quests_in_zone.zoneID == static_cast<uint32>( miscvalue1 ))
+				if(achievementCriteria->complete_quests_in_zone.zoneID == static_cast<uint32>(miscvalue1))
 				{
 					UpdateCriteriaProgress(achievementCriteria, 1);
 				}
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_QUEST:
-				if( achievementCriteria->complete_quest.questID == static_cast<uint32>( miscvalue1 ))
+				if(achievementCriteria->complete_quest.questID == static_cast<uint32>(miscvalue1))
 				{
 					UpdateCriteriaProgress(achievementCriteria, 1);
 				}
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_GAIN_REPUTATION:
-				if( achievementCriteria->gain_reputation.factionID == static_cast<uint32>( miscvalue1 ))
+				if(achievementCriteria->gain_reputation.factionID == static_cast<uint32>(miscvalue1))
 				{
 					SetCriteriaProgress(achievementCriteria, miscvalue2);
 				}
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_LEARN_SPELL:
-				if( achievementCriteria->learn_spell.spellID == static_cast<uint32>( miscvalue1 ))
+				if(achievementCriteria->learn_spell.spellID == static_cast<uint32>(miscvalue1))
 				{
 					SetCriteriaProgress(achievementCriteria, miscvalue2);
 				}
@@ -641,41 +643,41 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 			case ACHIEVEMENT_CRITERIA_TYPE_NUMBER_OF_MOUNTS:
 				// Vanity pets owned - miscvalue1==778
 				// Number of mounts  - miscvalue1==777
-				if( achievementCriteria->number_of_mounts.unknown == static_cast<uint32>( miscvalue1 ))
+				if(achievementCriteria->number_of_mounts.unknown == static_cast<uint32>(miscvalue1))
 				{
 					UpdateCriteriaProgress(achievementCriteria, 1);
 				}
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_BE_SPELL_TARGET:
 			case ACHIEVEMENT_CRITERIA_TYPE_BE_SPELL_TARGET2:
-				if( achievementCriteria->be_spell_target.spellID == static_cast<uint32>( miscvalue1))
+				if(achievementCriteria->be_spell_target.spellID == static_cast<uint32>(miscvalue1))
 				{
 					UpdateCriteriaProgress(achievementCriteria, 1);
 				}
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE:
-				if( achievementCriteria->kill_creature.creatureID == static_cast<uint32>( miscvalue1 ))
+				if(achievementCriteria->kill_creature.creatureID == static_cast<uint32>(miscvalue1))
 				{
 					switch(achievement->ID)
 					{
 						case 2556: // Pest Control
-							if(   (miscvalue1== 3300 && achievementCriteria->index== 1)   // Adder
-								|| (miscvalue1==32261 && achievementCriteria->index== 2)   // Crystal Spider
-								|| (miscvalue1==24270 && achievementCriteria->index== 3)   // Devouring Maggot
-								|| (miscvalue1== 9699 && achievementCriteria->index== 4)   // Fire Beetle
-								|| (miscvalue1==24174 && achievementCriteria->index== 5)   // Fjord Rat
-								|| (miscvalue1==32258 && achievementCriteria->index== 6)   // Gold Beetle
-								|| (miscvalue1==16068 && achievementCriteria->index== 7)   // Larva
-								|| (miscvalue1==16030 && achievementCriteria->index== 8)   // Maggot
-								|| (miscvalue1== 4953 && achievementCriteria->index== 9)   // Moccasin
-								|| (miscvalue1== 6271 && achievementCriteria->index==10)   // Mouse
-								|| (miscvalue1== 4075 && achievementCriteria->index==11)   // Rat
-								|| (miscvalue1== 4076 && achievementCriteria->index==12)   // Roach
-								|| (miscvalue1==15476 && achievementCriteria->index==13)   // Scorpion
-								|| (miscvalue1== 2914 && achievementCriteria->index==14)   // Snake
-								|| (miscvalue1==14881 && achievementCriteria->index==15)   // Spider
-								|| (miscvalue1==32428 && achievementCriteria->index==16)   // Underbelly Rat
-								|| (miscvalue1==28202 && achievementCriteria->index==17) ) // Zul'Drak Rat
+							if((miscvalue1 == 3300 && achievementCriteria->index == 1)    // Adder
+							        || (miscvalue1 == 32261 && achievementCriteria->index == 2) // Crystal Spider
+							        || (miscvalue1 == 24270 && achievementCriteria->index == 3) // Devouring Maggot
+							        || (miscvalue1 == 9699 && achievementCriteria->index == 4) // Fire Beetle
+							        || (miscvalue1 == 24174 && achievementCriteria->index == 5) // Fjord Rat
+							        || (miscvalue1 == 32258 && achievementCriteria->index == 6) // Gold Beetle
+							        || (miscvalue1 == 16068 && achievementCriteria->index == 7) // Larva
+							        || (miscvalue1 == 16030 && achievementCriteria->index == 8) // Maggot
+							        || (miscvalue1 == 4953 && achievementCriteria->index == 9) // Moccasin
+							        || (miscvalue1 == 6271 && achievementCriteria->index == 10) // Mouse
+							        || (miscvalue1 == 4075 && achievementCriteria->index == 11) // Rat
+							        || (miscvalue1 == 4076 && achievementCriteria->index == 12) // Roach
+							        || (miscvalue1 == 15476 && achievementCriteria->index == 13) // Scorpion
+							        || (miscvalue1 == 2914 && achievementCriteria->index == 14) // Snake
+							        || (miscvalue1 == 14881 && achievementCriteria->index == 15) // Spider
+							        || (miscvalue1 == 32428 && achievementCriteria->index == 16) // Underbelly Rat
+							        || (miscvalue1 == 28202 && achievementCriteria->index == 17)) // Zul'Drak Rat
 							{
 								SetCriteriaProgress(achievementCriteria, 1);
 							}
@@ -734,7 +736,7 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 						case 1721: // Heroic: Archavon the Stone Watcher
 						case 1817: // The Culling of Time
 						case 1865: // Lockdown!
-							if( GetPlayer()->iInstanceType >= MODE_HEROIC )
+							if(GetPlayer()->iInstanceType >= MODE_HEROIC)
 							{
 								UpdateCriteriaProgress(achievementCriteria, 1);
 							}
@@ -852,7 +854,7 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 							// Defeat Ley-Guardian Eregos in The Oculus on Heroic Difficulty without anyone in your party using an Amber Drake.
 							break;
 						default:
-							if( !IS_INSTANCE(GetPlayer()->GetMapId()) || (GetPlayer()->iInstanceType == MODE_NORMAL) )
+							if(!IS_INSTANCE(GetPlayer()->GetMapId()) || (GetPlayer()->iInstanceType == MODE_NORMAL))
 							{
 								// already tested heroic achievements above, the rest should be normal or non-dungeon
 								UpdateCriteriaProgress(achievementCriteria, 1);
@@ -862,19 +864,19 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 				}
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_REACH_SKILL_LEVEL:
-				if( achievementCriteria->reach_skill_level.skillID == static_cast<uint32>( miscvalue1 ))
+				if(achievementCriteria->reach_skill_level.skillID == static_cast<uint32>(miscvalue1))
 				{
 					SetCriteriaProgress(achievementCriteria, miscvalue2);
 				}
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_LEARN_SKILL_LEVEL:
-				if( achievementCriteria->learn_skill_level.skillID == static_cast<uint32>( miscvalue1 ))
+				if(achievementCriteria->learn_skill_level.skillID == static_cast<uint32>(miscvalue1))
 				{
 					SetCriteriaProgress(achievementCriteria, miscvalue2);
 				}
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_EQUIP_ITEM:
-				if( achievementCriteria->equip_item.itemID == static_cast<uint32>( miscvalue1 ))
+				if(achievementCriteria->equip_item.itemID == static_cast<uint32>(miscvalue1))
 				{
 					SetCriteriaProgress(achievementCriteria, 1);
 				}
@@ -887,20 +889,20 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 				// AchievementType for both Achievement ID:556 (Equip epic items) and ID:557 (Equip superior items)
 				//    is the same (47) ACHIEVEMENT_CRITERIA_TYPE_EQUIP_EPIC_ITEM
 				// Going to send item slot in miscvalue1 and item quality in miscvalue2 when calling UpdateAchievementCriteria.
-				if( achievementCriteria->equip_epic_item.itemSlot == static_cast<uint32>( miscvalue1 ))
+				if(achievementCriteria->equip_epic_item.itemSlot == static_cast<uint32>(miscvalue1))
 				{
-					if( (achievementCriteria->referredAchievement == 556) && (miscvalue2 == ITEM_QUALITY_EPIC_PURPLE) )
+					if((achievementCriteria->referredAchievement == 556) && (miscvalue2 == ITEM_QUALITY_EPIC_PURPLE))
 					{
 						SetCriteriaProgress(achievementCriteria, 1);
 					}
-					else if( (achievementCriteria->referredAchievement == 557) && (miscvalue2 == ITEM_QUALITY_RARE_BLUE) )
+					else if((achievementCriteria->referredAchievement == 557) && (miscvalue2 == ITEM_QUALITY_RARE_BLUE))
 					{
 						SetCriteriaProgress(achievementCriteria, 1);
 					}
 				}
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_DO_EMOTE:
-				if( achievementCriteria->do_emote.emoteID == static_cast<uint32>( miscvalue1 ))
+				if(achievementCriteria->do_emote.emoteID == static_cast<uint32>(miscvalue1))
 				{
 					// emote matches, check the achievement target ... (if required)
 					Unit* pUnit = GetPlayer()->GetMapMgr()->GetUnit(selectedGUID);
@@ -908,30 +910,30 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 					{
 						case 1206: // To All The Squirrels I've Loved Before
 							// requires a target
-							if( pUnit )
+							if(pUnit)
 							{
 								uint32 ent = pUnit->GetEntry();
-								if(   (ent== 1412 && achievementCriteria->index== 1)   // Squirrel
-									|| (ent==25679 && achievementCriteria->index== 2)   // Steam Frog
-									|| (ent==25677 && achievementCriteria->index== 3)   // Borean Frog
-									|| (ent== 6368 && achievementCriteria->index== 4)   // Cat
-									|| (ent==  620 && achievementCriteria->index== 5)   // Chicken
-									|| (ent== 2442 && achievementCriteria->index== 6)   // Cow
-									|| (ent== 6827 && achievementCriteria->index== 7)   // Crab
-									|| (ent==  883 && achievementCriteria->index== 8)   // Deer
-									|| (ent==19665 && achievementCriteria->index== 9)   // Ewe
-									|| (ent==  890 && achievementCriteria->index==10)   // Fawn
-									|| (ent==13321 && achievementCriteria->index==11)   // Frog
-									|| (ent== 4166 && achievementCriteria->index==12)   // Gazelle
-									|| (ent== 5951 && achievementCriteria->index==13)   // Hare
-									|| (ent== 9600 && achievementCriteria->index==14)   // Parrot
-									|| (ent==  721 && achievementCriteria->index==15)   // Rabbit
-									|| (ent== 2098 && achievementCriteria->index==16)   // Ram
-									|| (ent== 1933 && achievementCriteria->index==17)   // Sheep
-									|| (ent==17467 && achievementCriteria->index==18)   // Skunk
-									|| (ent==10685 && achievementCriteria->index==19)   // Swine
-									|| (ent== 1420 && achievementCriteria->index==20)   // Toad
-									|| (ent== 2620 && achievementCriteria->index==21) ) // Prairie Dog
+								if((ent == 1412 && achievementCriteria->index == 1)    // Squirrel
+								        || (ent == 25679 && achievementCriteria->index == 2) // Steam Frog
+								        || (ent == 25677 && achievementCriteria->index == 3) // Borean Frog
+								        || (ent == 6368 && achievementCriteria->index == 4) // Cat
+								        || (ent ==  620 && achievementCriteria->index == 5) // Chicken
+								        || (ent == 2442 && achievementCriteria->index == 6) // Cow
+								        || (ent == 6827 && achievementCriteria->index == 7) // Crab
+								        || (ent ==  883 && achievementCriteria->index == 8) // Deer
+								        || (ent == 19665 && achievementCriteria->index == 9) // Ewe
+								        || (ent ==  890 && achievementCriteria->index == 10) // Fawn
+								        || (ent == 13321 && achievementCriteria->index == 11) // Frog
+								        || (ent == 4166 && achievementCriteria->index == 12) // Gazelle
+								        || (ent == 5951 && achievementCriteria->index == 13) // Hare
+								        || (ent == 9600 && achievementCriteria->index == 14) // Parrot
+								        || (ent ==  721 && achievementCriteria->index == 15) // Rabbit
+								        || (ent == 2098 && achievementCriteria->index == 16) // Ram
+								        || (ent == 1933 && achievementCriteria->index == 17) // Sheep
+								        || (ent == 17467 && achievementCriteria->index == 18) // Skunk
+								        || (ent == 10685 && achievementCriteria->index == 19) // Swine
+								        || (ent == 1420 && achievementCriteria->index == 20) // Toad
+								        || (ent == 2620 && achievementCriteria->index == 21)) // Prairie Dog
 								{
 									SetCriteriaProgress(achievementCriteria, 1);
 								}
@@ -939,21 +941,21 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 							break;
 						case 2557: // To All The Squirrels Who Shared My Life
 							// requires a target
-							if( pUnit )
+							if(pUnit)
 							{
 								uint32 ent = pUnit->GetEntry();
-								if(   (ent==29328 && achievementCriteria->index== 1)   // Arctic Hare
-									|| (ent==31685 && achievementCriteria->index== 2)   // Borean Marmot
-									|| (ent==28407 && achievementCriteria->index== 3)   // Fjord Penguin
-									|| (ent==24746 && achievementCriteria->index== 4)   // Fjord Turkey
-									|| (ent==32498 && achievementCriteria->index== 5)   // Glacier Penguin (not in db?)
-									|| (ent==31889 && achievementCriteria->index== 6)   // Grizzly Squirrel
-									|| (ent== 6653 && achievementCriteria->index== 7)   // Huge Toad
-									|| (ent== 9700 && achievementCriteria->index== 8)   // Lava Crab
-									|| (ent==31890 && achievementCriteria->index== 9)   // Mountain Skunk
-									|| (ent==26503 && achievementCriteria->index==10)   // Scalawag Frog
-									|| (ent==28093 && achievementCriteria->index==11)   // Sholazar Tickbird
-									|| (ent==28440 && achievementCriteria->index==12) ) // Tundra Penguin
+								if((ent == 29328 && achievementCriteria->index == 1)   // Arctic Hare
+								        || (ent == 31685 && achievementCriteria->index == 2) // Borean Marmot
+								        || (ent == 28407 && achievementCriteria->index == 3) // Fjord Penguin
+								        || (ent == 24746 && achievementCriteria->index == 4) // Fjord Turkey
+								        || (ent == 32498 && achievementCriteria->index == 5) // Glacier Penguin (not in db?)
+								        || (ent == 31889 && achievementCriteria->index == 6) // Grizzly Squirrel
+								        || (ent == 6653 && achievementCriteria->index == 7) // Huge Toad
+								        || (ent == 9700 && achievementCriteria->index == 8) // Lava Crab
+								        || (ent == 31890 && achievementCriteria->index == 9) // Mountain Skunk
+								        || (ent == 26503 && achievementCriteria->index == 10) // Scalawag Frog
+								        || (ent == 28093 && achievementCriteria->index == 11) // Sholazar Tickbird
+								        || (ent == 28440 && achievementCriteria->index == 12)) // Tundra Penguin
 								{
 									SetCriteriaProgress(achievementCriteria, 1);
 								}
@@ -962,7 +964,7 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 						case 247: // Make Love, Not Warcraft
 							{
 								Player* pTarget = objmgr.GetPlayer((uint32)selectedGUID);
-								if( pTarget && pTarget->IsDead() && isHostile(pTarget, GetPlayer()) )
+								if(pTarget && pTarget->IsDead() && isHostile(pTarget, GetPlayer()))
 								{
 									UpdateCriteriaProgress(achievementCriteria, 1);
 								}
@@ -989,7 +991,7 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 							// Naxxramas (achievementCriteria->index==5)
 							break;
 
-						// Statistics for emotes
+							// Statistics for emotes
 						case 1042: // Number of Hugs
 						case 1045: // Total cheers
 						case 1047: // Total facepalms
@@ -1008,11 +1010,11 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 				switch(achievementCriteria->referredAchievement)
 				{
 					case 231:
-						if(   ( (miscvalue1 ==  30) && (achievementCriteria->index==1) )   // Alterac Valley
-							|| ( (miscvalue1 == 529) && (achievementCriteria->index==2) )   // Arathi Basin
-							|| ( (miscvalue1 == 566) && (achievementCriteria->index==3) )   // Eye of the Storm
-							|| ( (miscvalue1 == 489) && (achievementCriteria->index==4) )   // Warsong Gulch
-							|| ( (miscvalue1 == 607) && (achievementCriteria->index==5) ) ) // Strand of the Ancients
+						if(((miscvalue1 ==  30) && (achievementCriteria->index == 1))      // Alterac Valley
+						        || ((miscvalue1 == 529) && (achievementCriteria->index == 2))   // Arathi Basin
+						        || ((miscvalue1 == 566) && (achievementCriteria->index == 3))   // Eye of the Storm
+						        || ((miscvalue1 == 489) && (achievementCriteria->index == 4))   // Warsong Gulch
+						        || ((miscvalue1 == 607) && (achievementCriteria->index == 5)))  // Strand of the Ancients
 						{
 							UpdateCriteriaProgress(achievementCriteria, 1);
 						}
@@ -1023,30 +1025,30 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 						UpdateCriteriaProgress(achievementCriteria, 1);
 						break;
 					case 1488:
-						if(   ( (miscvalue1 ==   0) && (achievementCriteria->index==1) )   // Eastern Kingdoms
-							|| ( (miscvalue1 ==   1) && (achievementCriteria->index==2) )   // Kalimdor
-							|| ( (miscvalue1 == 530) && (achievementCriteria->index==3) )   // Burning Crusade Areas
-							|| ( (miscvalue1 == 571) && (achievementCriteria->index==4) ) ) // Northrend
+						if(((miscvalue1 ==   0) && (achievementCriteria->index == 1))      // Eastern Kingdoms
+						        || ((miscvalue1 ==   1) && (achievementCriteria->index == 2))   // Kalimdor
+						        || ((miscvalue1 == 530) && (achievementCriteria->index == 3))   // Burning Crusade Areas
+						        || ((miscvalue1 == 571) && (achievementCriteria->index == 4)))  // Northrend
 						{
 							UpdateCriteriaProgress(achievementCriteria, 1);
 						}
 						break;
 					case 1490:
-						if(   ( (miscvalue1 == 559) && (achievementCriteria->index==1) )   // Nagrand Arena
-							|| ( (miscvalue1 == 562) && (achievementCriteria->index==2) )   // Blade's Edge Arena
-							|| ( (miscvalue1 == 572) && (achievementCriteria->index==3) )   // Ruins of Lordaeron
-							|| ( (miscvalue1 == 617) && (achievementCriteria->index==4) )   // Dalaran Sewers
-							|| ( (miscvalue1 == 618) && (achievementCriteria->index==5) ) ) // Ring of Valor
+						if(((miscvalue1 == 559) && (achievementCriteria->index == 1))      // Nagrand Arena
+						        || ((miscvalue1 == 562) && (achievementCriteria->index == 2))   // Blade's Edge Arena
+						        || ((miscvalue1 == 572) && (achievementCriteria->index == 3))   // Ruins of Lordaeron
+						        || ((miscvalue1 == 617) && (achievementCriteria->index == 4))   // Dalaran Sewers
+						        || ((miscvalue1 == 618) && (achievementCriteria->index == 5)))  // Ring of Valor
 						{
 							UpdateCriteriaProgress(achievementCriteria, 1);
 						}
 						break;
 					case 1491:
-						if(   ( (miscvalue1 ==  30) && (achievementCriteria->index==1) )   // Alterac Valley
-							|| ( (miscvalue1 == 529) && (achievementCriteria->index==2) )   // Arathi Basin
-							|| ( (miscvalue1 == 489) && (achievementCriteria->index==3) )   // Warsong Gulch
-							|| ( (miscvalue1 == 566) && (achievementCriteria->index==4) )   // Eye of the Storm
-							|| ( (miscvalue1 == 607) && (achievementCriteria->index==5) ) ) // Strand of the Ancients
+						if(((miscvalue1 ==  30) && (achievementCriteria->index == 1))      // Alterac Valley
+						        || ((miscvalue1 == 529) && (achievementCriteria->index == 2))   // Arathi Basin
+						        || ((miscvalue1 == 489) && (achievementCriteria->index == 3))   // Warsong Gulch
+						        || ((miscvalue1 == 566) && (achievementCriteria->index == 4))   // Eye of the Storm
+						        || ((miscvalue1 == 607) && (achievementCriteria->index == 5)))  // Strand of the Ancients
 						{
 							UpdateCriteriaProgress(achievementCriteria, 1);
 						}
@@ -1058,31 +1060,31 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 					case 1494: // TODO: 5v5 Arena Killing Blows
 						break;
 					case 1495: // Alterac Valley Killing Blows
-						if( miscvalue1 == 30 )
+						if(miscvalue1 == 30)
 						{
 							UpdateCriteriaProgress(achievementCriteria, 1);
 						}
 						break;
 					case 1496: // Arathi Basin Killing Blows
-						if( miscvalue1 == 529 )
+						if(miscvalue1 == 529)
 						{
 							UpdateCriteriaProgress(achievementCriteria, 1);
 						}
 						break;
 					case 1497: // Warsong Gulch Killing Blows
-						if( miscvalue1 == 489 )
+						if(miscvalue1 == 489)
 						{
 							UpdateCriteriaProgress(achievementCriteria, 1);
 						}
 						break;
 					case 1498: // Eye of the Storm Killing Blows
-						if( miscvalue1 == 566 )
+						if(miscvalue1 == 566)
 						{
 							UpdateCriteriaProgress(achievementCriteria, 1);
 						}
 						break;
 					case 1499: // Strand of the Ancients Killing Blows
-						if( miscvalue1 == 607 )
+						if(miscvalue1 == 607)
 						{
 							UpdateCriteriaProgress(achievementCriteria, 1);
 						}
@@ -1096,7 +1098,7 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 				}
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_USE_ITEM: // itemID in miscvalue1
-				if( achievementCriteria->use_item.itemID == static_cast<uint32>( miscvalue1 ))
+				if(achievementCriteria->use_item.itemID == static_cast<uint32>(miscvalue1))
 				{
 					switch(achievementCriteria->referredAchievement)
 					{
@@ -1121,28 +1123,28 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 					crGUID <<= 32; // shift to high 32-bits
 					crGUID += miscvalue2;
 					Unit* pUnit = GetPlayer()->GetMapMgr()->GetUnit(crGUID);
-					if( pUnit )
+					if(pUnit)
 					{
 						uint32 crType = UNIT_TYPE_NONE;
 						bool crTotem = false;
-						bool yieldXP = CalculateXpToGive( pUnit, GetPlayer() )  > 0;
-						if( pUnit->IsCreature() )
+						bool yieldXP = CalculateXpToGive(pUnit, GetPlayer())  > 0;
+						if(pUnit->IsCreature())
 						{
 							crTotem = pUnit->IsTotem();
 							crType = TO_CREATURE(pUnit)->GetCreatureInfo()->Type;
-							if(     (achievementCriteria->ID == 4944)                             // Total NPC kills              refAch==1197
-								|| ( (achievementCriteria->ID == 4946) && (yieldXP)            )   // Kill an NPC that yields XP   refAch==1198
-								|| ( (achievementCriteria->ID == 4948) && (crType==UNIT_TYPE_BEAST)      )   // Beasts                       refAch== 107
-								|| ( (achievementCriteria->ID == 4958) && (crType==UNIT_TYPE_CRITTER)    )   // Critters killed              refAch== 107
-								|| ( (achievementCriteria->ID == 4949) && (crType==UNIT_TYPE_DEMON)      )   // Demons                       refAch== 107
-								|| ( (achievementCriteria->ID == 4950) && (crType==UNIT_TYPE_DRAGONKIN) )   // Dragonkin                    refAch== 107
-								|| ( (achievementCriteria->ID == 4951) && (crType==UNIT_TYPE_ELEMENTAL)  )   // Elemental                    refAch== 107
-								|| ( (achievementCriteria->ID == 4952) && (crType==UNIT_TYPE_GIANT)      )   // Giant                        refAch== 107
-								|| ( (achievementCriteria->ID == 4953) && (crType==UNIT_TYPE_HUMANOID)   )   // Humanoid                     refAch== 107
-								|| ( (achievementCriteria->ID == 4954) && (crType==UNIT_TYPE_MECHANICAL) )   // Mechanical                   refAch== 107
-								|| ( (achievementCriteria->ID == 4955) && (crType==UNIT_TYPE_UNDEAD)     )   // Undead                       refAch== 107
-								|| ( (achievementCriteria->ID == 4956) && (crType==UNIT_TYPE_NONE)		 )   // Unspecified                  refAch== 107
-								|| ( (achievementCriteria->ID == 4957) && (crTotem)            ) ) // Totems                       refAch== 107
+							if((achievementCriteria->ID == 4944)                                  // Total NPC kills              refAch==1197
+							        || ((achievementCriteria->ID == 4946) && (yieldXP))                // Kill an NPC that yields XP   refAch==1198
+							        || ((achievementCriteria->ID == 4948) && (crType == UNIT_TYPE_BEAST))        // Beasts                       refAch== 107
+							        || ((achievementCriteria->ID == 4958) && (crType == UNIT_TYPE_CRITTER))      // Critters killed              refAch== 107
+							        || ((achievementCriteria->ID == 4949) && (crType == UNIT_TYPE_DEMON))        // Demons                       refAch== 107
+							        || ((achievementCriteria->ID == 4950) && (crType == UNIT_TYPE_DRAGONKIN))   // Dragonkin                    refAch== 107
+							        || ((achievementCriteria->ID == 4951) && (crType == UNIT_TYPE_ELEMENTAL))    // Elemental                    refAch== 107
+							        || ((achievementCriteria->ID == 4952) && (crType == UNIT_TYPE_GIANT))        // Giant                        refAch== 107
+							        || ((achievementCriteria->ID == 4953) && (crType == UNIT_TYPE_HUMANOID))     // Humanoid                     refAch== 107
+							        || ((achievementCriteria->ID == 4954) && (crType == UNIT_TYPE_MECHANICAL))   // Mechanical                   refAch== 107
+							        || ((achievementCriteria->ID == 4955) && (crType == UNIT_TYPE_UNDEAD))       // Undead                       refAch== 107
+							        || ((achievementCriteria->ID == 4956) && (crType == UNIT_TYPE_NONE))     // Unspecified                  refAch== 107
+							        || ((achievementCriteria->ID == 4957) && (crTotem)))               // Totems                       refAch== 107
 							{
 								UpdateCriteriaProgress(achievementCriteria, 1);
 							}
@@ -1151,17 +1153,17 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 				}
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_USE_GAMEOBJECT:
-				if( achievementCriteria->use_gameobject.goEntry == static_cast<uint32>( miscvalue1 ))
+				if(achievementCriteria->use_gameobject.goEntry == static_cast<uint32>(miscvalue1))
 				{
 					UpdateCriteriaProgress(achievementCriteria, 1);
 				}
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_FALL_WITHOUT_DYING:
 				// fall distance (>=65) has been checked before UpdateAchievementCriteria() call, but it is sent in miscvalue1 just in case "they" add more...
-				if( achievement->ID == 1260 )
+				if(achievement->ID == 1260)
 				{
 					// Fall 65 yards without dying while completely smashed during the Brewfest Holiday.
-					if( miscvalue2 == DRUNKEN_SMASHED )
+					if(miscvalue2 == DRUNKEN_SMASHED)
 					{
 						// drunken state, "completely smashed"
 						// TODO: Check if it is during the Brewfest Holiday ...
@@ -1175,31 +1177,31 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 				}
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_HONORABLE_KILL_AT_AREA:
-				if( achievementCriteria->honorable_kill_at_area.areaID == static_cast<uint32>( miscvalue1 ))
+				if(achievementCriteria->honorable_kill_at_area.areaID == static_cast<uint32>(miscvalue1))
 				{
 					UpdateCriteriaProgress(achievementCriteria, 1);
 				}
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_HK_CLASS:
-				if( achievementCriteria->hk_class.classID == static_cast<uint32>( miscvalue1 ))
+				if(achievementCriteria->hk_class.classID == static_cast<uint32>(miscvalue1))
 				{
 					UpdateCriteriaProgress(achievementCriteria, 1);
 				}
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_HK_RACE:
-				if( achievementCriteria->hk_race.raceID == static_cast<uint32>( miscvalue1 ))
+				if(achievementCriteria->hk_race.raceID == static_cast<uint32>(miscvalue1))
 				{
 					UpdateCriteriaProgress(achievementCriteria, 1);
 				}
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_DEATH_AT_MAP:
-				if( achievementCriteria->death_at_map.mapID == static_cast<uint32>( miscvalue1 ))
+				if(achievementCriteria->death_at_map.mapID == static_cast<uint32>(miscvalue1))
 				{
 					UpdateCriteriaProgress(achievementCriteria, 1);
 				}
 				break;
 
-			// these achievement criteria types simply update the progress by the value passed in miscvalue1
+				// these achievement criteria types simply update the progress by the value passed in miscvalue1
 			case ACHIEVEMENT_CRITERIA_TYPE_QUEST_REWARD_GOLD:
 			case ACHIEVEMENT_CRITERIA_TYPE_LOOT_MONEY:
 			case ACHIEVEMENT_CRITERIA_TYPE_GAIN_EXALTED_REPUTATION:
@@ -1213,7 +1215,7 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 			case ACHIEVEMENT_CRITERIA_TYPE_DEATH:
 				UpdateCriteriaProgress(achievementCriteria, miscvalue1);
 				break;
-			//End of Achievement List
+				//End of Achievement List
 			default:
 				return;
 		}
@@ -1227,122 +1229,122 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 */
 void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type)
 {
-	AchievementCriteriaEntryList const& achievementCriteriaList = objmgr.GetAchievementCriteriaByType(type);
-	for(AchievementCriteriaEntryList::const_iterator i = achievementCriteriaList.begin(); i!=achievementCriteriaList.end(); ++i)
+	AchievementCriteriaEntryList const & achievementCriteriaList = objmgr.GetAchievementCriteriaByType(type);
+	for(AchievementCriteriaEntryList::const_iterator i = achievementCriteriaList.begin(); i != achievementCriteriaList.end(); ++i)
 	{
-		AchievementCriteriaEntry const *achievementCriteria = (*i);
+		AchievementCriteriaEntry const* achievementCriteria = (*i);
 
-		AchievementEntry const *achievement = dbcAchievementStore.LookupEntryForced(achievementCriteria->referredAchievement);
-		if( !achievement //|| IsCompletedCriteria(achievementCriteria)
-			|| (achievement->flags & ACHIEVEMENT_FLAG_COUNTER)
-			|| (achievement->factionFlag == ACHIEVEMENT_FACTION_FLAG_HORDE && !m_player->IsTeamHorde() )
-			|| (achievement->factionFlag == ACHIEVEMENT_FACTION_FLAG_ALLIANCE && !m_player->IsTeamAlliance() ) )
+		AchievementEntry const* achievement = dbcAchievementStore.LookupEntryForced(achievementCriteria->referredAchievement);
+		if(!achievement  //|| IsCompletedCriteria(achievementCriteria)
+		        || (achievement->flags & ACHIEVEMENT_FLAG_COUNTER)
+		        || (achievement->factionFlag == ACHIEVEMENT_FACTION_FLAG_HORDE && !m_player->IsTeamHorde())
+		        || (achievement->factionFlag == ACHIEVEMENT_FACTION_FLAG_ALLIANCE && !m_player->IsTeamAlliance()))
 		{
 			continue;
 		}
 
 		switch(type)
 		{
-		//Start of Achievement List
-		case ACHIEVEMENT_CRITERIA_TYPE_REACH_LEVEL:
-			SetCriteriaProgress(achievementCriteria, GetPlayer()->getLevel());
-			break;
-		case ACHIEVEMENT_CRITERIA_TYPE_EXPLORE_AREA:
-			if( GetPlayer()->HasOverlayUncovered(achievementCriteria->explore_area.areaReference) )
-			{
-				SetCriteriaProgress(achievementCriteria, 1);
-			}
-			break;
-		case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_ACHIEVEMENT:
-			if( m_completedAchievements.find(achievementCriteria->complete_achievement.linkedAchievement) != m_completedAchievements.end() )
-			{
-				SetCriteriaProgress(achievementCriteria, 1, true);
-			}
-			break;
-		case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_QUEST_COUNT:
-			SetCriteriaProgress(achievementCriteria, (int32)GetPlayer()->m_finishedQuests.size());
-			break;
-		case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_QUESTS_IN_ZONE:
-			{
-				uint32 qcinzone = 0;
-				set<uint32>::iterator qc = GetPlayer()->m_finishedQuests.begin();
-				for(; qc!=GetPlayer()->m_finishedQuests.end(); ++qc)
+				//Start of Achievement List
+			case ACHIEVEMENT_CRITERIA_TYPE_REACH_LEVEL:
+				SetCriteriaProgress(achievementCriteria, GetPlayer()->getLevel());
+				break;
+			case ACHIEVEMENT_CRITERIA_TYPE_EXPLORE_AREA:
+				if(GetPlayer()->HasOverlayUncovered(achievementCriteria->explore_area.areaReference))
 				{
-					Quest* qst = QuestStorage.LookupEntry(*qc);
-					if( qst && qst->zone_id == achievementCriteria->complete_quests_in_zone.zoneID )
-					{
-						++qcinzone;
-					}
+					SetCriteriaProgress(achievementCriteria, 1);
 				}
-				SetCriteriaProgress(achievementCriteria, qcinzone);
-			}
-			break;
-		case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_QUEST:
-			{
-				uint32 completed = 0;
-				set<uint32>::iterator it = GetPlayer()->m_finishedQuests.find(achievementCriteria->complete_quest.questID);
-				if( it!=GetPlayer()->m_finishedQuests.end() )
+				break;
+			case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_ACHIEVEMENT:
+				if(m_completedAchievements.find(achievementCriteria->complete_achievement.linkedAchievement) != m_completedAchievements.end())
 				{
-					++completed;
+					SetCriteriaProgress(achievementCriteria, 1, true);
 				}
-				SetCriteriaProgress(achievementCriteria, completed);
-			}
-			break;
-		case ACHIEVEMENT_CRITERIA_TYPE_GAIN_REPUTATION:
-			{
-				int32 rep = GetPlayer()->GetStanding(achievementCriteria->gain_reputation.factionID);
-				SetCriteriaProgress(achievementCriteria, rep);
-			}
-			break;
-		case ACHIEVEMENT_CRITERIA_TYPE_GAIN_EXALTED_REPUTATION:
-			SetCriteriaProgress(achievementCriteria,GetPlayer()->GetExaltedCount());
-			break;
-		case ACHIEVEMENT_CRITERIA_TYPE_LEARN_SPELL:
-			if( GetPlayer()->HasSpell(achievementCriteria->learn_spell.spellID) )
-			{
-				SetCriteriaProgress(achievementCriteria, 1);
-			}
-			break;
-		case ACHIEVEMENT_CRITERIA_TYPE_NUMBER_OF_MOUNTS:
-			{
-				// achievementCriteria field4 = 777 for mounts, 778 for companion pets
-				SpellSet::iterator sl = GetPlayer()->mSpells.begin();
-				uint32 nm = 0;
-				while(sl != GetPlayer()->mSpells.end())
+				break;
+			case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_QUEST_COUNT:
+				SetCriteriaProgress(achievementCriteria, (int32)GetPlayer()->m_finishedQuests.size());
+				break;
+			case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_QUESTS_IN_ZONE:
 				{
-					SpellEntry* sp = dbcSpell.LookupEntryForced(*sl);
-					if( achievementCriteria->number_of_mounts.unknown == 777 && sp && sp->MechanicsType == MECHANIC_MOUNTED )
+					uint32 qcinzone = 0;
+					set<uint32>::iterator qc = GetPlayer()->m_finishedQuests.begin();
+					for(; qc != GetPlayer()->m_finishedQuests.end(); ++qc)
 					{
-						// mount spell
-						++nm;
-					}
-					else if( achievementCriteria->number_of_mounts.unknown == 778 && sp && (sp->Effect[0]==SPELL_EFFECT_SUMMON) )
-					{
-						// Companion pet?
-						// make sure it's a companion pet, not some other summon-type spell
-						if( strncmp(sp->Description,"Right Cl", 8) == 0 )
+						Quest* qst = QuestStorage.LookupEntry(*qc);
+						if(qst && qst->zone_id == achievementCriteria->complete_quests_in_zone.zoneID)
 						{
-							// "Right Click to summon and dismiss " ...
-							++nm;
+							++qcinzone;
 						}
 					}
-					++sl;
+					SetCriteriaProgress(achievementCriteria, qcinzone);
 				}
-				SetCriteriaProgress(achievementCriteria, nm);
-			}
-			break;
-		case ACHIEVEMENT_CRITERIA_TYPE_REACH_SKILL_LEVEL:
-			SetCriteriaProgress(achievementCriteria, GetPlayer()->_GetSkillLineCurrent(achievementCriteria->reach_skill_level.skillID, true));
-			break;
-		case ACHIEVEMENT_CRITERIA_TYPE_LEARN_SKILL_LEVEL:
-			SetCriteriaProgress(achievementCriteria, GetPlayer()->_GetSkillLineMax(achievementCriteria->learn_skill_level.skillID)/75);
-			break;
-		case ACHIEVEMENT_CRITERIA_TYPE_BUY_BANK_SLOT:
-			SetCriteriaProgress(achievementCriteria, (uint8)(GetPlayer()->GetUInt32Value(PLAYER_BYTES_2) >> 16));
-			break;
-		//End of Achievement List
-		default:
-			break;
+				break;
+			case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_QUEST:
+				{
+					uint32 completed = 0;
+					set<uint32>::iterator it = GetPlayer()->m_finishedQuests.find(achievementCriteria->complete_quest.questID);
+					if(it != GetPlayer()->m_finishedQuests.end())
+					{
+						++completed;
+					}
+					SetCriteriaProgress(achievementCriteria, completed);
+				}
+				break;
+			case ACHIEVEMENT_CRITERIA_TYPE_GAIN_REPUTATION:
+				{
+					int32 rep = GetPlayer()->GetStanding(achievementCriteria->gain_reputation.factionID);
+					SetCriteriaProgress(achievementCriteria, rep);
+				}
+				break;
+			case ACHIEVEMENT_CRITERIA_TYPE_GAIN_EXALTED_REPUTATION:
+				SetCriteriaProgress(achievementCriteria, GetPlayer()->GetExaltedCount());
+				break;
+			case ACHIEVEMENT_CRITERIA_TYPE_LEARN_SPELL:
+				if(GetPlayer()->HasSpell(achievementCriteria->learn_spell.spellID))
+				{
+					SetCriteriaProgress(achievementCriteria, 1);
+				}
+				break;
+			case ACHIEVEMENT_CRITERIA_TYPE_NUMBER_OF_MOUNTS:
+				{
+					// achievementCriteria field4 = 777 for mounts, 778 for companion pets
+					SpellSet::iterator sl = GetPlayer()->mSpells.begin();
+					uint32 nm = 0;
+					while(sl != GetPlayer()->mSpells.end())
+					{
+						SpellEntry* sp = dbcSpell.LookupEntryForced(*sl);
+						if(achievementCriteria->number_of_mounts.unknown == 777 && sp && sp->MechanicsType == MECHANIC_MOUNTED)
+						{
+							// mount spell
+							++nm;
+						}
+						else if(achievementCriteria->number_of_mounts.unknown == 778 && sp && (sp->Effect[0] == SPELL_EFFECT_SUMMON))
+						{
+							// Companion pet?
+							// make sure it's a companion pet, not some other summon-type spell
+							if(strncmp(sp->Description, "Right Cl", 8) == 0)
+							{
+								// "Right Click to summon and dismiss " ...
+								++nm;
+							}
+						}
+						++sl;
+					}
+					SetCriteriaProgress(achievementCriteria, nm);
+				}
+				break;
+			case ACHIEVEMENT_CRITERIA_TYPE_REACH_SKILL_LEVEL:
+				SetCriteriaProgress(achievementCriteria, GetPlayer()->_GetSkillLineCurrent(achievementCriteria->reach_skill_level.skillID, true));
+				break;
+			case ACHIEVEMENT_CRITERIA_TYPE_LEARN_SKILL_LEVEL:
+				SetCriteriaProgress(achievementCriteria, GetPlayer()->_GetSkillLineMax(achievementCriteria->learn_skill_level.skillID) / 75);
+				break;
+			case ACHIEVEMENT_CRITERIA_TYPE_BUY_BANK_SLOT:
+				SetCriteriaProgress(achievementCriteria, (uint8)(GetPlayer()->GetUInt32Value(PLAYER_BYTES_2) >> 16));
+				break;
+				//End of Achievement List
+			default:
+				break;
 		}
 		CompletedCriteria(achievementCriteria);
 	}
@@ -1353,40 +1355,40 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type)
 */
 bool AchievementMgr::IsCompletedCriteria(AchievementCriteriaEntry const* achievementCriteria)
 {
-	if( !achievementCriteria )
+	if(!achievementCriteria)
 	{
 		return false;
 	}
 	AchievementEntry const* achievement = dbcAchievementStore.LookupEntryForced(achievementCriteria->referredAchievement);
-	if( achievement == NULL )
+	if(achievement == NULL)
 	{
 		return false;
 	}
 
 
-	if( achievement->flags & ACHIEVEMENT_FLAG_COUNTER )
+	if(achievement->flags & ACHIEVEMENT_FLAG_COUNTER)
 	{
 		return false;
 	}
 
-	if( achievement->flags & (ACHIEVEMENT_FLAG_REALM_FIRST_REACH | ACHIEVEMENT_FLAG_REALM_FIRST_KILL) )
+	if(achievement->flags & (ACHIEVEMENT_FLAG_REALM_FIRST_REACH | ACHIEVEMENT_FLAG_REALM_FIRST_KILL))
 	{
-		if( objmgr.allCompletedAchievements.find(achievement->ID)!=objmgr.allCompletedAchievements.end() )
+		if(objmgr.allCompletedAchievements.find(achievement->ID) != objmgr.allCompletedAchievements.end())
 		{
 			return false;
 		}
 	}
 
 	CriteriaProgressMap::iterator itr = m_criteriaProgress.find(achievementCriteria->ID);
-	if( itr == m_criteriaProgress.end() )
+	if(itr == m_criteriaProgress.end())
 	{
 		return false;
 	}
 
-	CriteriaProgress *progress = itr->second;
+	CriteriaProgress* progress = itr->second;
 
 	// 0 or negative, not completed.
-	if( progress->counter < 1 )
+	if(progress->counter < 1)
 	{
 		return false;
 	}
@@ -1395,26 +1397,26 @@ bool AchievementMgr::IsCompletedCriteria(AchievementCriteriaEntry const* achieve
 	switch(achievementCriteria->requiredType)
 	{
 		case ACHIEVEMENT_CRITERIA_TYPE_REACH_LEVEL:
-			if( ( achievement->ID == 467 && GetPlayer()->getClass() != SHAMAN ) ||
-				( achievement->ID == 466 && GetPlayer()->getClass() != DRUID ) ||
-				( achievement->ID == 465 && GetPlayer()->getClass() != PALADIN ) ||
-				( achievement->ID == 464 && GetPlayer()->getClass() != PRIEST ) ||
-				( achievement->ID == 463 && GetPlayer()->getClass() != WARLOCK ) ||
-				( achievement->ID == 462 && GetPlayer()->getClass() != HUNTER ) ||
-				( achievement->ID == 461 && GetPlayer()->getClass() != DEATHKNIGHT ) ||
-				( achievement->ID == 460 && GetPlayer()->getClass() != MAGE ) ||
-				( achievement->ID == 459 && GetPlayer()->getClass() != WARRIOR ) ||
-				( achievement->ID == 458 && GetPlayer()->getClass() != ROGUE ) ||
-				( achievement->ID == 1404 && GetPlayer()->getRace() != RACE_GNOME ) ||
-				( achievement->ID == 1405 && GetPlayer()->getRace() != RACE_BLOODELF ) ||
-				( achievement->ID == 1406 && GetPlayer()->getRace() != RACE_DRAENEI ) ||
-				( achievement->ID == 1407 && GetPlayer()->getRace() != RACE_DWARF ) ||
-				( achievement->ID == 1408 && GetPlayer()->getRace() != RACE_HUMAN ) ||
-				( achievement->ID == 1409 && GetPlayer()->getRace() != RACE_NIGHTELF ) ||
-				( achievement->ID == 1410 && GetPlayer()->getRace() != RACE_ORC ) ||
-				( achievement->ID == 1411 && GetPlayer()->getRace() != RACE_TAUREN ) ||
-				( achievement->ID == 1412 && GetPlayer()->getRace() != RACE_TROLL ) ||
-				( achievement->ID == 1413 && GetPlayer()->getRace() != RACE_UNDEAD ) )
+			if((achievement->ID == 467 && GetPlayer()->getClass() != SHAMAN) ||
+			        (achievement->ID == 466 && GetPlayer()->getClass() != DRUID) ||
+			        (achievement->ID == 465 && GetPlayer()->getClass() != PALADIN) ||
+			        (achievement->ID == 464 && GetPlayer()->getClass() != PRIEST) ||
+			        (achievement->ID == 463 && GetPlayer()->getClass() != WARLOCK) ||
+			        (achievement->ID == 462 && GetPlayer()->getClass() != HUNTER) ||
+			        (achievement->ID == 461 && GetPlayer()->getClass() != DEATHKNIGHT) ||
+			        (achievement->ID == 460 && GetPlayer()->getClass() != MAGE) ||
+			        (achievement->ID == 459 && GetPlayer()->getClass() != WARRIOR) ||
+			        (achievement->ID == 458 && GetPlayer()->getClass() != ROGUE) ||
+			        (achievement->ID == 1404 && GetPlayer()->getRace() != RACE_GNOME) ||
+			        (achievement->ID == 1405 && GetPlayer()->getRace() != RACE_BLOODELF) ||
+			        (achievement->ID == 1406 && GetPlayer()->getRace() != RACE_DRAENEI) ||
+			        (achievement->ID == 1407 && GetPlayer()->getRace() != RACE_DWARF) ||
+			        (achievement->ID == 1408 && GetPlayer()->getRace() != RACE_HUMAN) ||
+			        (achievement->ID == 1409 && GetPlayer()->getRace() != RACE_NIGHTELF) ||
+			        (achievement->ID == 1410 && GetPlayer()->getRace() != RACE_ORC) ||
+			        (achievement->ID == 1411 && GetPlayer()->getRace() != RACE_TAUREN) ||
+			        (achievement->ID == 1412 && GetPlayer()->getRace() != RACE_TROLL) ||
+			        (achievement->ID == 1413 && GetPlayer()->getRace() != RACE_UNDEAD))
 			{
 				return false;
 			}
@@ -1463,7 +1465,7 @@ bool AchievementMgr::IsCompletedCriteria(AchievementCriteriaEntry const* achieve
 		case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_ACHIEVEMENT:
 			return m_completedAchievements.find(achievementCriteria->complete_achievement.linkedAchievement) != m_completedAchievements.end();
 
-		// These achievements only require counter to be 1 (or higher)
+			// These achievements only require counter to be 1 (or higher)
 		case ACHIEVEMENT_CRITERIA_TYPE_EXPLORE_AREA:
 		case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_QUEST:
 		case ACHIEVEMENT_CRITERIA_TYPE_LEARN_SPELL:
@@ -1474,9 +1476,9 @@ bool AchievementMgr::IsCompletedCriteria(AchievementCriteriaEntry const* achieve
 		case ACHIEVEMENT_CRITERIA_TYPE_FALL_WITHOUT_DYING:
 			return progresscounter >= 1;
 
-		// unknown or need to be finished:
+			// unknown or need to be finished:
 		default:
-			if( achievementCriteria->raw.field4 > 0 )
+			if(achievementCriteria->raw.field4 > 0)
 			{
 				return progresscounter >= achievementCriteria->raw.field4;
 			}
@@ -1490,13 +1492,13 @@ bool AchievementMgr::IsCompletedCriteria(AchievementCriteriaEntry const* achieve
 */
 void AchievementMgr::CompletedCriteria(AchievementCriteriaEntry const* criteria)
 {
-	if( !IsCompletedCriteria( criteria ) )
+	if(!IsCompletedCriteria(criteria))
 	{
 		return;
 	}
 	AchievementEntry const* achievement = dbcAchievementStore.LookupEntry(criteria->referredAchievement);
 
-	if( criteria->completionFlag & ACHIEVEMENT_CRITERIA_COMPLETE_FLAG_ALL || GetAchievementCompletionState(achievement) == ACHIEVEMENT_COMPLETED_COMPLETED_NOT_STORED )
+	if(criteria->completionFlag & ACHIEVEMENT_CRITERIA_COMPLETE_FLAG_ALL || GetAchievementCompletionState(achievement) == ACHIEVEMENT_COMPLETED_COMPLETED_NOT_STORED)
 	{
 		CompletedAchievement(achievement);
 	}
@@ -1510,27 +1512,27 @@ void AchievementMgr::CompletedCriteria(AchievementCriteriaEntry const* criteria)
 */
 AchievementCompletionState AchievementMgr::GetAchievementCompletionState(AchievementEntry const* entry)
 {
-	if( m_completedAchievements.find(entry->ID)!=m_completedAchievements.end() )
+	if(m_completedAchievements.find(entry->ID) != m_completedAchievements.end())
 	{
 		return ACHIEVEMENT_COMPLETED_COMPLETED_STORED;
 	}
 
 	uint32 completedCount = 0;
 	bool foundOutstanding = false;
-	for ( uint32 rowId = 0; rowId<dbcAchievementCriteriaStore.GetNumRows(); ++rowId )
+	for(uint32 rowId = 0; rowId < dbcAchievementCriteriaStore.GetNumRows(); ++rowId)
 	{
 		AchievementCriteriaEntry const* criteria = dbcAchievementCriteriaStore.LookupRowForced(rowId);
-		if( criteria == NULL || criteria->referredAchievement!= entry->ID )
+		if(criteria == NULL || criteria->referredAchievement != entry->ID)
 		{
 			continue;
 		}
 
-		if( IsCompletedCriteria(criteria) && criteria->completionFlag & ACHIEVEMENT_CRITERIA_COMPLETE_FLAG_ALL )
+		if(IsCompletedCriteria(criteria) && criteria->completionFlag & ACHIEVEMENT_CRITERIA_COMPLETE_FLAG_ALL)
 		{
 			return ACHIEVEMENT_COMPLETED_COMPLETED_NOT_STORED;
 		}
 
-		if( !IsCompletedCriteria(criteria) )
+		if(!IsCompletedCriteria(criteria))
 		{
 			foundOutstanding = true;
 		}
@@ -1539,12 +1541,12 @@ AchievementCompletionState AchievementMgr::GetAchievementCompletionState(Achieve
 			++completedCount;
 		}
 	}
-	if( !foundOutstanding )
+	if(!foundOutstanding)
 	{
 		return ACHIEVEMENT_COMPLETED_COMPLETED_NOT_STORED;
 	}
 
-	if( (entry->count > 1) && (completedCount >= entry->count) )
+	if((entry->count > 1) && (completedCount >= entry->count))
 	{
 		return ACHIEVEMENT_COMPLETED_COMPLETED_NOT_STORED;
 	}
@@ -1557,30 +1559,30 @@ AchievementCompletionState AchievementMgr::GetAchievementCompletionState(Achieve
 */
 void AchievementMgr::SetCriteriaProgress(AchievementCriteriaEntry const* entry, int32 newValue, bool relative)
 {
-	CriteriaProgress *progress = NULL;
+	CriteriaProgress* progress = NULL;
 
-	if( m_criteriaProgress.find(entry->ID) == m_criteriaProgress.end() )
+	if(m_criteriaProgress.find(entry->ID) == m_criteriaProgress.end())
 	{
-		if( newValue < 1 )
+		if(newValue < 1)
 		{
 			return;
 		}
 		progress = new CriteriaProgress(entry->ID, newValue);
-		m_criteriaProgress[entry->ID]=progress;
+		m_criteriaProgress[entry->ID] = progress;
 	}
 	else
 	{
 		progress = m_criteriaProgress[entry->ID];
-		if( progress->counter == newValue )
+		if(progress->counter == newValue)
 		{
 			return;
 		}
 		progress->counter = newValue;
 	}
-	if( progress->counter > 0 )
+	if(progress->counter > 0)
 	{
 		// Send update only if criteria is started (counter > 0)
-		SendCriteriaUpdate( progress );
+		SendCriteriaUpdate(progress);
 	}
 }
 
@@ -1590,16 +1592,16 @@ void AchievementMgr::SetCriteriaProgress(AchievementCriteriaEntry const* entry, 
 */
 void AchievementMgr::UpdateCriteriaProgress(AchievementCriteriaEntry const* entry, int32 updateByValue)
 {
-	CriteriaProgress *progress = NULL;
+	CriteriaProgress* progress = NULL;
 
-	if( m_criteriaProgress.find(entry->ID) == m_criteriaProgress.end() )
+	if(m_criteriaProgress.find(entry->ID) == m_criteriaProgress.end())
 	{
-		if( updateByValue < 1 )
+		if(updateByValue < 1)
 		{
 			return;
 		}
 		progress = new CriteriaProgress(entry->ID, updateByValue);
-		m_criteriaProgress[entry->ID]=progress;
+		m_criteriaProgress[entry->ID] = progress;
 	}
 	else
 	{
@@ -1608,7 +1610,7 @@ void AchievementMgr::UpdateCriteriaProgress(AchievementCriteriaEntry const* entr
 	}
 	if(progress->counter > 0)
 	{
-		SendCriteriaUpdate( progress );
+		SendCriteriaUpdate(progress);
 	}
 }
 
@@ -1617,19 +1619,19 @@ void AchievementMgr::UpdateCriteriaProgress(AchievementCriteriaEntry const* entr
 */
 void AchievementMgr::CompletedAchievement(AchievementEntry const* achievement)
 {
-	if( achievement->flags & ACHIEVEMENT_FLAG_COUNTER || m_completedAchievements.find(achievement->ID)!=m_completedAchievements.end() )
+	if(achievement->flags & ACHIEVEMENT_FLAG_COUNTER || m_completedAchievements.find(achievement->ID) != m_completedAchievements.end())
 	{
 		return;
 	}
 
-	if( ShowCompletedAchievement(achievement->ID, GetPlayer()) )
+	if(ShowCompletedAchievement(achievement->ID, GetPlayer()))
 	{
-		SendAchievementEarned( achievement );
+		SendAchievementEarned(achievement);
 	}
 	m_completedAchievements[achievement->ID] = time(NULL);
 
-	objmgr.allCompletedAchievements.insert( achievement->ID );
-	UpdateAchievementCriteria( ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_ACHIEVEMENT );
+	objmgr.allCompletedAchievements.insert(achievement->ID);
+	UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_ACHIEVEMENT);
 
 	// check for reward
 	GiveAchievementReward(achievement);
@@ -1648,69 +1650,69 @@ void AchievementMgr::SendAllAchievementData(Player* player)
 	AchievementEntry const* achievement;
 
 	WorldPacket data;
-	if( packetSize < 0x8000 )
+	if(packetSize < 0x8000)
 	{
-		data.resize( packetSize );
+		data.resize(packetSize);
 	}
 	else
 	{
-		data.resize( 0x7fff );
+		data.resize(0x7fff);
 	}
 
 	CompletedAchievementMap::iterator completeIter = m_completedAchievements.begin();
 	CriteriaProgressMap::iterator progressIter = m_criteriaProgress.begin();
 	bool packetFull;
 
-	while( !doneCompleted || !doneProgress )
+	while(!doneCompleted || !doneProgress)
 	{
 		data.clear();
-		if( player == m_player )
+		if(player == m_player)
 		{
-			data.SetOpcode ( SMSG_ALL_ACHIEVEMENT_DATA );
+			data.SetOpcode(SMSG_ALL_ACHIEVEMENT_DATA);
 		}
 		else
 		{
-			data.SetOpcode( SMSG_RESPOND_INSPECT_ACHIEVEMENTS );
+			data.SetOpcode(SMSG_RESPOND_INSPECT_ACHIEVEMENTS);
 			FastGUIDPack(data, m_player->GetGUID());
 		}
 		packetFull = false;
 
 		// add the completed achievements
-		if( !doneCompleted )
+		if(!doneCompleted)
 		{
-			for( ; completeIter != m_completedAchievements.end() && !packetFull; ++completeIter )
+			for(; completeIter != m_completedAchievements.end() && !packetFull; ++completeIter)
 			{
-				if( ShowCompletedAchievement(completeIter->first, m_player) )
+				if(ShowCompletedAchievement(completeIter->first, m_player))
 				{
 					data << uint32(completeIter->first);
 					data << uint32(secsToTimeBitFields(completeIter->second));
 				}
 				packetFull = data.size() > 0x7f00;
 			}
-			if( completeIter == m_completedAchievements.end() )
+			if(completeIter == m_completedAchievements.end())
 			{
 				doneCompleted = true;
 			}
 		}
-		
+
 		// 0xffffffff separates between completed achievements and ones in progress
 		data << int32(-1);
 		for(; progressIter != m_criteriaProgress.end() && !packetFull; ++progressIter)
 		{
 			acEntry = dbcAchievementCriteriaStore.LookupEntryForced(progressIter->first);
-			if( !acEntry )
+			if(!acEntry)
 			{
 				continue;
 			}
 			achievement = dbcAchievementStore.LookupEntryForced(acEntry->referredAchievement);
-			if( !achievement )
+			if(!achievement)
 			{
 				continue;
 			}
 			// achievement progress to send to self
-			if( player == m_player )
+			if(player == m_player)
 			{
-				if( SendAchievementProgress(progressIter->second) )
+				if(SendAchievementProgress(progressIter->second))
 				{
 					data << uint32(progressIter->first);
 					data.appendPackGUID(progressIter->second->counter);
@@ -1725,7 +1727,7 @@ void AchievementMgr::SendAllAchievementData(Player* player)
 			else
 			{
 				// only send statistics, no other unfinished achievement progress, since client only displays them as completed or not completed
-				if( (progressIter->second->counter > 0) && (achievement->flags & ACHIEVEMENT_FLAG_COUNTER) )
+				if((progressIter->second->counter > 0) && (achievement->flags & ACHIEVEMENT_FLAG_COUNTER))
 				{
 					data << uint32(progressIter->first);
 					data.appendPackGUID(progressIter->second->counter);
@@ -1738,7 +1740,7 @@ void AchievementMgr::SendAllAchievementData(Player* player)
 			}
 			packetFull = data.size() > 0x7f00;
 		}
-		if( progressIter == m_criteriaProgress.end() )
+		if(progressIter == m_criteriaProgress.end())
 		{
 			doneProgress = true;
 		}
@@ -1747,7 +1749,7 @@ void AchievementMgr::SendAllAchievementData(Player* player)
 		data << int32(-1);
 		player->GetSession()->SendPacket(&data);
 	}
-	if( isCharacterLoading && player == m_player )
+	if(isCharacterLoading && player == m_player)
 	{
 		// a SMSG_ALL_ACHIEVEMENT_DATA packet has been sent to the player, so the achievement manager can send SMSG_CRITERIA_UPDATE and SMSG_ACHIEVEMENT_EARNED when it gets them
 		isCharacterLoading = false;
@@ -1760,10 +1762,10 @@ void AchievementMgr::SendAllAchievementData(Player* player)
 uint32 AchievementMgr::GetCriteriaProgressCount()
 {
 	uint32 criteriapc = 0;
-	for(CriteriaProgressMap::iterator iter = m_criteriaProgress.begin(); iter!=m_criteriaProgress.end(); ++iter)
+	for(CriteriaProgressMap::iterator iter = m_criteriaProgress.begin(); iter != m_criteriaProgress.end(); ++iter)
 	{
 		//AchievementEntry const *achievement = dbcAchievementStore.LookupEntry(iter->second->id);
-		if( SendAchievementProgress(iter->second) )
+		if(SendAchievementProgress(iter->second))
 		{
 			++criteriapc;
 		}
@@ -1776,7 +1778,7 @@ uint32 AchievementMgr::GetCriteriaProgressCount()
 */
 void AchievementMgr::GiveAchievementReward(AchievementEntry const* entry)
 {
-	if( entry == NULL || isCharacterLoading )
+	if(entry == NULL || isCharacterLoading)
 	{
 		return;
 	}
@@ -1786,7 +1788,7 @@ void AchievementMgr::GiveAchievementReward(AchievementEntry const* entry)
 	r.rankId = 0;
 	r.spellId = 0;
 
-	if( strlen(entry->rewardName) > 0 )
+	if(strlen(entry->rewardName) > 0)
 	{
 		switch(entry->unknown2)
 		{
@@ -1867,7 +1869,7 @@ void AchievementMgr::GiveAchievementReward(AchievementEntry const* entry)
 				break;
 			case 0x000009db: // Title Reward: Matron/Patron
 				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
-				r.rankId = (GetPlayer()->getGender()==1) ? /* Matron */ PVPTITLE_MATRON : /* Patron */ PVPTITLE_PATRON;
+				r.rankId = (GetPlayer()->getGender() == 1) ? /* Matron */ PVPTITLE_MATRON : /* Patron */ PVPTITLE_PATRON;
 				break;
 			case 0x00000a03: // Title Reward: Conqueror
 				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
@@ -1987,29 +1989,29 @@ void AchievementMgr::GiveAchievementReward(AchievementEntry const* entry)
 			default:
 				break;
 		}
-		if( r.type & ACHIEVEMENT_REWARDTYPE_TITLE )
+		if(r.type & ACHIEVEMENT_REWARDTYPE_TITLE)
 		{
 			GetPlayer()->SetKnownTitle(static_cast< RankTitles >(r.rankId), true);
-			GetPlayer()->SetChosenTitle(0 );
+			GetPlayer()->SetChosenTitle(0);
 		}
-		if( r.type & ACHIEVEMENT_REWARDTYPE_ITEM )
+		if(r.type & ACHIEVEMENT_REWARDTYPE_ITEM)
 		{
 			// How does this work? Add item directly to inventory, or send through mail?
 			ItemPrototype* it = ItemPrototypeStorage.LookupEntry(r.itemId);
-			if( it )
+			if(it)
 			{
-				Item *item;
+				Item* item;
 				item = objmgr.CreateItem(r.itemId, GetPlayer());
-				if( item == NULL )
+				if(item == NULL)
 				{
 					// this is bad - item not found in db or unable to be created for some reason
 					GetPlayer()->GetSession()->SendNotification("Unable to create item with id %lu!", r.itemId);
 					return;
 				}
-				item->SetStackCount(  1);
-				if( it->Bonding==ITEM_BIND_ON_PICKUP )
+				item->SetStackCount(1);
+				if(it->Bonding == ITEM_BIND_ON_PICKUP)
 				{
-					if( it->Flags & ITEM_FLAG_ACCOUNTBOUND )
+					if(it->Flags & ITEM_FLAG_ACCOUNTBOUND)
 					{
 						// any "accountbound" items for achievement rewards?  maybe later...
 						item->AccountBind();
@@ -2020,7 +2022,7 @@ void AchievementMgr::GiveAchievementReward(AchievementEntry const* entry)
 					}
 				}
 
-				if( !GetPlayer()->GetItemInterface()->AddItemToFreeSlot(item) )
+				if(!GetPlayer()->GetItemInterface()->AddItemToFreeSlot(item))
 				{
 					// this is bad. inventory full. maybe we should mail it instead?
 					GetPlayer()->GetSession()->SendNotification("No free slots were found in your inventory!");
@@ -2029,7 +2031,7 @@ void AchievementMgr::GiveAchievementReward(AchievementEntry const* entry)
 				}
 			}
 		}
-		if( r.type & ACHIEVEMENT_REWARDTYPE_SPELL )
+		if(r.type & ACHIEVEMENT_REWARDTYPE_SPELL)
 		{
 			GetPlayer()->addSpell(r.spellId);
 		}
@@ -2052,23 +2054,23 @@ uint32 AchievementMgr::GetCompletedAchievementsCount() const
 */
 bool AchievementMgr::GMCompleteAchievement(WorldSession* gmSession, int32 achievementID)
 {
-	if( achievementID == -1 )
+	if(achievementID == -1)
 	{
 		uint32 nr = dbcAchievementStore.GetNumRows();
 		AchievementEntry const* ach;
 		for(uint32 i = 0; i < nr; ++i)
 		{
 			ach = dbcAchievementStore.LookupRowForced(i);
-			if( ach == NULL )
+			if(ach == NULL)
 			{
 				m_player->GetSession()->SystemMessage("Achievement %lu entry not found.", i);
 			}
 			else
 			{
-				if( !(ach->flags & ACHIEVEMENT_FLAG_COUNTER) )
+				if(!(ach->flags & ACHIEVEMENT_FLAG_COUNTER))
 				{
-					if( (ach->factionFlag == ACHIEVEMENT_FACTION_FLAG_HORDE && !m_player->IsTeamHorde() ) ||
-						(ach->factionFlag == ACHIEVEMENT_FACTION_FLAG_ALLIANCE && !m_player->IsTeamAlliance() ) )
+					if((ach->factionFlag == ACHIEVEMENT_FACTION_FLAG_HORDE && !m_player->IsTeamHorde()) ||
+					        (ach->factionFlag == ACHIEVEMENT_FACTION_FLAG_ALLIANCE && !m_player->IsTeamAlliance()))
 					{
 						continue;
 					}
@@ -2079,21 +2081,21 @@ bool AchievementMgr::GMCompleteAchievement(WorldSession* gmSession, int32 achiev
 		m_player->GetSession()->SystemMessage("All achievements completed.");
 		return true;
 	}
-	if( m_completedAchievements.find(achievementID) != m_completedAchievements.end() )
+	if(m_completedAchievements.find(achievementID) != m_completedAchievements.end())
 	{
 		gmSession->SystemMessage("Player has already completed that achievement.");
 		return false;
 	}
 	AchievementEntry const* achievement = dbcAchievementStore.LookupEntryForced(achievementID);
-	if( !achievement )
+	if(!achievement)
 	{
 		gmSession->SystemMessage("Achievement %lu entry not found.", achievementID);
 		return false;
 	}
-	if( achievement->flags & ACHIEVEMENT_FLAG_COUNTER )
+	if(achievement->flags & ACHIEVEMENT_FLAG_COUNTER)
 	{
 		gmSession->SystemMessage("Achievement (%lu) |Hachievement:%lu:"I64FMT":0:0:0:-1:0:0:0:0|h[%s]|h is a counter and cannot be completed.",
-			achievement->ID, achievement->ID, gmSession->GetPlayer()->GetGUID(), achievement->name);
+		                         achievement->ID, achievement->ID, gmSession->GetPlayer()->GetGUID(), achievement->name);
 		return false;
 	}
 	CompletedAchievement(achievement);
@@ -2108,22 +2110,22 @@ bool AchievementMgr::GMCompleteAchievement(WorldSession* gmSession, int32 achiev
 */
 bool AchievementMgr::GMCompleteCriteria(WorldSession* gmSession, int32 criteriaID)
 {
-	if( criteriaID == -1 )
+	if(criteriaID == -1)
 	{
 		uint32 nr = dbcAchievementCriteriaStore.GetNumRows();
 		AchievementCriteriaEntry const* crt;
 		for(uint32 i = 0, j = 0; j < nr; ++i)
 		{
 			crt = dbcAchievementCriteriaStore.LookupRowForced(i);
-			if( crt == NULL )
+			if(crt == NULL)
 			{
 				LOG_ERROR("Achievement Criteria %lu entry not found.", i);
 				continue;
 			}
 			++j;
-			if( crt->raw.field4 )
+			if(crt->raw.field4)
 			{
-				SetCriteriaProgress( crt, crt->raw.field4 );
+				SetCriteriaProgress(crt, crt->raw.field4);
 				CompletedCriteria(crt);
 			}
 		}
@@ -2131,38 +2133,38 @@ bool AchievementMgr::GMCompleteCriteria(WorldSession* gmSession, int32 criteriaI
 		return true;
 	}
 	AchievementCriteriaEntry const* criteria = dbcAchievementCriteriaStore.LookupEntryForced(criteriaID);
-	if( !criteria )
+	if(!criteria)
 	{
 		gmSession->SystemMessage("Achievement criteria %lu not found.", criteriaID);
 		return false;
 	}
-	if( IsCompletedCriteria(criteria) )
+	if(IsCompletedCriteria(criteria))
 	{
 		gmSession->SystemMessage("Achievement criteria %lu already completed.", criteriaID);
 		return false;
 	}
 	AchievementEntry const* achievement = dbcAchievementStore.LookupEntryForced(criteria->referredAchievement);
-	if( !achievement )
+	if(!achievement)
 	{
 		// achievement not found
 		gmSession->SystemMessage("Referred achievement (%lu) entry not found.", criteria->referredAchievement);
 		return false;
 	}
-	if( achievement->flags & ACHIEVEMENT_FLAG_COUNTER )
+	if(achievement->flags & ACHIEVEMENT_FLAG_COUNTER)
 	{
 		// can't complete this type of achivement (counter)
 		gmSession->SystemMessage("Referred achievement (%lu) |Hachievement:%lu:"I64FMT":0:0:0:-1:0:0:0:0|h[%s]|h is a counter and cannot be completed.",
-			achievement->ID, achievement->ID, gmSession->GetPlayer()->GetGUID(), achievement->name);
+		                         achievement->ID, achievement->ID, gmSession->GetPlayer()->GetGUID(), achievement->name);
 		return false;
 	}
 
 	CriteriaProgressMap::iterator itr = m_criteriaProgress.find(criteriaID);
-	CriteriaProgress *progress;
-	if( itr == m_criteriaProgress.end() )
+	CriteriaProgress* progress;
+	if(itr == m_criteriaProgress.end())
 	{
 		// not in progress map
 		progress = new CriteriaProgress(criteriaID, 0);
-		m_criteriaProgress[criteriaID]=progress;
+		m_criteriaProgress[criteriaID] = progress;
 	}
 	else
 	{
@@ -2170,7 +2172,7 @@ bool AchievementMgr::GMCompleteCriteria(WorldSession* gmSession, int32 criteriaI
 	}
 
 	progress->counter = criteria->raw.field4;
-	SendCriteriaUpdate( progress );
+	SendCriteriaUpdate(progress);
 	CompletedCriteria(criteria);
 	return true;
 }
@@ -2182,7 +2184,7 @@ bool AchievementMgr::GMCompleteCriteria(WorldSession* gmSession, int32 criteriaI
 void AchievementMgr::GMResetAchievement(int32 achievementID)
 {
 	std::ostringstream ss;
-	if( achievementID == -1 )
+	if(achievementID == -1)
 	{
 		// reset all achievements
 		CompletedAchievementMap::iterator itr = m_completedAchievements.begin();
@@ -2194,7 +2196,7 @@ void AchievementMgr::GMResetAchievement(int32 achievementID)
 		}
 		m_completedAchievements.clear();
 		ss << "DELETE FROM character_achievement WHERE guid = " << m_player->GetLowGUID();
-		CharacterDatabase.Execute( ss.str().c_str() );
+		CharacterDatabase.Execute(ss.str().c_str());
 	}
 	else // reset a single achievement
 	{
@@ -2203,7 +2205,7 @@ void AchievementMgr::GMResetAchievement(int32 achievementID)
 		GetPlayer()->GetSession()->SendPacket(&resetData);
 		m_completedAchievements.erase(achievementID);
 		ss << "DELETE FROM character_achievement WHERE guid = " << m_player->GetLowGUID() << " AND achievement = " << achievementID;
-		CharacterDatabase.Execute( ss.str().c_str() );
+		CharacterDatabase.Execute(ss.str().c_str());
 	}
 }
 
@@ -2214,10 +2216,10 @@ void AchievementMgr::GMResetAchievement(int32 achievementID)
 void AchievementMgr::GMResetCriteria(int32 criteriaID)
 {
 	std::ostringstream ss;
-	if( criteriaID == -1 )
+	if(criteriaID == -1)
 	{
 		// reset all achievement criteria
-		for(CriteriaProgressMap::iterator iter = m_criteriaProgress.begin(); iter!=m_criteriaProgress.end(); ++iter)
+		for(CriteriaProgressMap::iterator iter = m_criteriaProgress.begin(); iter != m_criteriaProgress.end(); ++iter)
 		{
 			WorldPacket resetData(SMSG_CRITERIA_DELETED, 4);
 			resetData << uint32(iter->first);
@@ -2226,7 +2228,7 @@ void AchievementMgr::GMResetCriteria(int32 criteriaID)
 		}
 		m_criteriaProgress.clear();
 		ss << "DELETE FROM character_achievement_progress WHERE guid = " << m_player->GetLowGUID();
-		CharacterDatabase.Execute( ss.str().c_str() );
+		CharacterDatabase.Execute(ss.str().c_str());
 	}
 	else // reset a single achievement criteria
 	{
@@ -2235,7 +2237,7 @@ void AchievementMgr::GMResetCriteria(int32 criteriaID)
 		GetPlayer()->GetSession()->SendPacket(&resetData);
 		m_criteriaProgress.erase(criteriaID);
 		ss << "DELETE FROM character_achievement_progress WHERE guid = " << m_player->GetLowGUID() << " AND criteria = " << criteriaID;
-		CharacterDatabase.Execute( ss.str().c_str() );
+		CharacterDatabase.Execute(ss.str().c_str());
 	}
 	CheckAllAchievementCriteria();
 }
@@ -2246,7 +2248,7 @@ void AchievementMgr::GMResetCriteria(int32 criteriaID)
 time_t AchievementMgr::GetCompletedTime(AchievementEntry const* achievement)
 {
 	CompletedAchievementMap::iterator iter = m_completedAchievements.find(achievement->ID);
-	if( iter != m_completedAchievements.end() )
+	if(iter != m_completedAchievements.end())
 	{
 		// achievement is completed, return the date/time it was completed
 		return iter->second;

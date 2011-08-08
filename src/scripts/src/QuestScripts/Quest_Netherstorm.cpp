@@ -22,30 +22,30 @@
 
 class Veronia : public GossipScript
 {
-public:
-	void GossipHello( Object *pObject, Player *plr )
-	{
-		GossipMenu *Menu;
-		if(plr->GetQuestLogForEntry(10652))
+	public:
+		void GossipHello(Object* pObject, Player* plr)
 		{
-			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 1, plr);
-			Menu->AddItem( 0, "I'm ready", 1);
-			Menu->SendTo(plr);
+			GossipMenu* Menu;
+			if(plr->GetQuestLogForEntry(10652))
+			{
+				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 1, plr);
+				Menu->AddItem(0, "I'm ready", 1);
+				Menu->SendTo(plr);
+			}
 		}
-	}
 
-	void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
-	{
-		Creature* creat = TO_CREATURE(pObject);
-		switch(IntId)
+		void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char* Code)
 		{
-		case 1:
-			creat->CastSpell(plr, dbcSpell.LookupEntry(34905), true);
-			break;
+			Creature* creat = TO_CREATURE(pObject);
+			switch(IntId)
+			{
+				case 1:
+					creat->CastSpell(plr, dbcSpell.LookupEntry(34905), true);
+					break;
+			}
 		}
-	}
 
-}; 
+};
 
 
 

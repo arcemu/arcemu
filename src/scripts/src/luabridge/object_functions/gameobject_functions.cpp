@@ -21,7 +21,7 @@
 //include our custom go methods
 #include "lua_gameobject.h"
 
-LuaGameObject::LuaGameObject(GameObject * go) : GameObjectAIScript(go), m_binding(NULL) {}
+LuaGameObject::LuaGameObject(GameObject* go) : GameObjectAIScript(go), m_binding(NULL) {}
 LuaGameObject::~LuaGameObject() {}
 void LuaGameObject::OnCreate()
 {
@@ -55,7 +55,7 @@ void LuaGameObject::OnDespawn()
 	RELEASE_LOCK
 }
 
-void LuaGameObject::OnLootTaken(Player * pLooter, ItemPrototype *pItemInfo)
+void LuaGameObject::OnLootTaken(Player* pLooter, ItemPrototype* pItemInfo)
 {
 
 	NULL_BINDING_CHECK
@@ -69,7 +69,7 @@ void LuaGameObject::OnLootTaken(Player * pLooter, ItemPrototype *pItemInfo)
 	RELEASE_LOCK
 }
 
-void LuaGameObject::OnActivate(Player * pPlayer)
+void LuaGameObject::OnActivate(Player* pPlayer)
 {
 	NULL_BINDING_CHECK
 
@@ -90,14 +90,14 @@ void LuaGameObject::AIUpdate()
 	RELEASE_LOCK
 }
 
-void LuaGameObject::Destroy ()
+void LuaGameObject::Destroy()
 {
 	sEventMgr.RemoveEvents(_gameobject, EVENT_LUA_GAMEOBJ_EVENTS);
 	PLUA_INSTANCE ref = lua_instance.get();
 	{
 		li::GOInterfaceMap::iterator it;
-		std::pair< li::GOInterfaceMap::iterator, li::GOInterfaceMap::iterator> interfaces = ref->m_goInterfaceMap.equal_range( _gameobject->GetEntry() );
-		for(; interfaces.first != interfaces.second; )
+		std::pair< li::GOInterfaceMap::iterator, li::GOInterfaceMap::iterator> interfaces = ref->m_goInterfaceMap.equal_range(_gameobject->GetEntry());
+		for(; interfaces.first != interfaces.second;)
 		{
 			it = interfaces.first++;
 			if(it->second != NULL && it->second == this)
@@ -106,10 +106,10 @@ void LuaGameObject::Destroy ()
 	}
 	//clean up any refs being used by this go.
 	{
-		std::pair<li::ObjectFRefMap::iterator, li::ObjectFRefMap::iterator> frefs = ref->m_goFRefs.equal_range( _gameobject->GetLowGUID() );
+		std::pair<li::ObjectFRefMap::iterator, li::ObjectFRefMap::iterator> frefs = ref->m_goFRefs.equal_range(_gameobject->GetLowGUID());
 		for(; frefs.first != frefs.second; ++frefs.first)
-			cleanup_varparam( frefs.first->second, ref->lu );
-		ref->m_goFRefs.erase( _gameobject->GetLowGUID() );
+			cleanup_varparam(frefs.first->second, ref->lu);
+		ref->m_goFRefs.erase(_gameobject->GetLowGUID());
 	}
 	delete this;
 }
@@ -117,57 +117,57 @@ void LuaGameObject::Destroy ()
 
 namespace lua_engine
 {
-	GameObjectAIScript * createluagameobject(GameObject * src)
+	GameObjectAIScript* createluagameobject(GameObject* src)
 	{
-		LuaGameObject * script = NULL;
+		LuaGameObject* script = NULL;
 		PLUA_INSTANCE ref = lua_instance.get();
-		if(src != NULL) 
+		if(src != NULL)
 		{
 			uint32 id = src->GetInfo()->ID;
 			uint32 low_guid = src->GetLowGUID();
 			li::ObjectBindingMap::iterator itr = ref->m_goBinding.find(id);
-			PObjectBinding pBinding = (itr != ref->m_goBinding.end() ) ? itr->second : NULL;
-			if( pBinding != NULL) 
+			PObjectBinding pBinding = (itr != ref->m_goBinding.end()) ? itr->second : NULL;
+			if(pBinding != NULL)
 			{
 				script = new LuaGameObject(src);
-				ref->m_goInterfaceMap.insert( make_pair(id,script));
+				ref->m_goInterfaceMap.insert(make_pair(id, script));
 				script->m_binding = pBinding;
 			}
 		}
 		return script;
 	}
 
-	void bindGameobjectMethods(luabridge::module & m )
+	void bindGameobjectMethods(luabridge::module & m)
 	{
 		m	.class_decl<lua_go>("GameObject");
 		m	.subclass<GameObject, Object>("GameObject")
-			.method( &GameObject::HasQuests, "HasQuests", "hasQuests", "hasquests", NULL)
-			.method( &GameObject::NumOfQuests, "NumQuests", "numofquests", "NumOfQuests", NULL)
-			//.method("Close", &GameObject::EventCloseDoor)
-			.method( &GameObject::Despawn, "Despawn", "despawn", NULL)
-			.method( &GameObject::ExpireAndDelete, "ExpireAndDelete", "expireanddelete", "expirendelete",  NULL)
-			.method( &GameObject::isQuestGiver, "IsQuestGiver", "isQuestGiver", "isquestgiver", NULL)
-			//.property_ro("summoner", &lua_go::m_summoner)
-			.method( &GameObject::RemoveFromWorld, "RemoveFromWorld", "removeFromWorld", "removefromworld", NULL)
-			.method( &GameObject::GetScript, "GetScript", "getScript", "getscript", NULL)
-			.method( &lua_go::RegisterScriptEngineFunction, "RegisterEvent", "registerEvent", "registerevent", NULL)
-			.method( &lua_go::RemoveScriptEngineEvents, "RemoveEvents", "removeEvents", "removeevents", "removevents", NULL)
-			.method( &GameObject::GetInfo, "GetInfo", "getInfo", "getinfo", NULL)	
-			.method( &GameObject::SaveToDB, "SaveToDB", "saveToDB", "savetodb", NULL)
-			.method( &lua_go::AddLoot, "AddLoot", "addLoot", "addloot", NULL)
-			.method( &lua_go::GetSpawnId, "GetSpawnId", "GetSQL_id", "GetSpawnID", "getSpawnID", "getspawnid", NULL);
+		.method(&GameObject::HasQuests, "HasQuests", "hasQuests", "hasquests", NULL)
+		.method(&GameObject::NumOfQuests, "NumQuests", "numofquests", "NumOfQuests", NULL)
+		//.method("Close", &GameObject::EventCloseDoor)
+		.method(&GameObject::Despawn, "Despawn", "despawn", NULL)
+		.method(&GameObject::ExpireAndDelete, "ExpireAndDelete", "expireanddelete", "expirendelete",  NULL)
+		.method(&GameObject::isQuestGiver, "IsQuestGiver", "isQuestGiver", "isquestgiver", NULL)
+		//.property_ro("summoner", &lua_go::m_summoner)
+		.method(&GameObject::RemoveFromWorld, "RemoveFromWorld", "removeFromWorld", "removefromworld", NULL)
+		.method(&GameObject::GetScript, "GetScript", "getScript", "getscript", NULL)
+		.method(&lua_go::RegisterScriptEngineFunction, "RegisterEvent", "registerEvent", "registerevent", NULL)
+		.method(&lua_go::RemoveScriptEngineEvents, "RemoveEvents", "removeEvents", "removeevents", "removevents", NULL)
+		.method(&GameObject::GetInfo, "GetInfo", "getInfo", "getinfo", NULL)
+		.method(&GameObject::SaveToDB, "SaveToDB", "saveToDB", "savetodb", NULL)
+		.method(&lua_go::AddLoot, "AddLoot", "addLoot", "addloot", NULL)
+		.method(&lua_go::GetSpawnId, "GetSpawnId", "GetSQL_id", "GetSpawnID", "getSpawnID", "getspawnid", NULL);
 
 		//Gameobject ai script, used for registering ai update.
 		m	.class_<GameObjectAIScript>("GameObjectAIScript")
-			.method( &GameObjectAIScript::RegisterAIUpdateEvent, "RegisterAIUpdateEvent", "registerAIUpdate", "registeraiupdate", NULL)
-			.method(&GameObjectAIScript::ModifyAIUpdateEvent, "ModifyAIUpdateEvent", "ModifyAIUpdate", "modifyAIUpdate", "modifyaiupdate", NULL)
-			.method( &GameObjectAIScript::RemoveAIUpdateEvent, "RemoveAIUpdateEvent", "RemoveAIUpdate", "removeAIUpdate", "removeaiupdate", NULL);
+		.method(&GameObjectAIScript::RegisterAIUpdateEvent, "RegisterAIUpdateEvent", "registerAIUpdate", "registeraiupdate", NULL)
+		.method(&GameObjectAIScript::ModifyAIUpdateEvent, "ModifyAIUpdateEvent", "ModifyAIUpdate", "modifyAIUpdate", "modifyaiupdate", NULL)
+		.method(&GameObjectAIScript::RemoveAIUpdateEvent, "RemoveAIUpdateEvent", "RemoveAIUpdate", "removeAIUpdate", "removeaiupdate", NULL);
 
 		m	.class_<GameObjectInfo>("GameObjectInfo")
-			.property_ro("ID", &GameObjectInfo::ID)
-			.property_ro("Type", &GameObjectInfo::Type)
-			.property_ro("DisplayID", &GameObjectInfo::DisplayID)
-			.property_ro("Name", &GameObjectInfo::Name)
-			.property_ro("SpellFocus", &GameObjectInfo::SpellFocus);
+		.property_ro("ID", &GameObjectInfo::ID)
+		.property_ro("Type", &GameObjectInfo::Type)
+		.property_ro("DisplayID", &GameObjectInfo::DisplayID)
+		.property_ro("Name", &GameObjectInfo::Name)
+		.property_ro("SpellFocus", &GameObjectInfo::SpellFocus);
 	}
 }

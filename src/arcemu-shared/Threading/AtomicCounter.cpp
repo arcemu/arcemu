@@ -19,17 +19,20 @@
 
 #include "../Common.h"
 
-namespace Arcemu{
-	namespace Threading{
+namespace Arcemu
+{
+	namespace Threading
+	{
 
-		unsigned long AtomicCounter::operator++(){
+		unsigned long AtomicCounter::operator++()
+		{
 			unsigned long val = 0;
 
 #ifdef WIN32
-			val = InterlockedIncrement( reinterpret_cast< volatile LONG* >( &Value ) );
+			val = InterlockedIncrement(reinterpret_cast< volatile LONG* >(&Value));
 #else
 #ifdef __GNUC__
-			val = __sync_add_and_fetch( &Value, 1 );
+			val = __sync_add_and_fetch(&Value, 1);
 #else
 #error Your platform (architecture and compiler) is NOT supported. Arcemu requires little endian architecture, and at least GCC 4.1
 #endif
@@ -38,14 +41,15 @@ namespace Arcemu{
 			return val;
 		}
 
-		unsigned long AtomicCounter::operator--(){
+		unsigned long AtomicCounter::operator--()
+		{
 			unsigned long val = 0;
 
 #ifdef WIN32
-			val = InterlockedDecrement( reinterpret_cast< volatile LONG* >( &Value ) );
+			val = InterlockedDecrement(reinterpret_cast< volatile LONG* >(&Value));
 #else
 #ifdef __GNUC__
-			val = __sync_add_and_fetch( &Value, -1 );
+			val = __sync_add_and_fetch(&Value, -1);
 #else
 #error Your platform (architecture and compiler) is NOT supported. Arcemu requires little endian architecture, and at least GCC 4.1
 #endif

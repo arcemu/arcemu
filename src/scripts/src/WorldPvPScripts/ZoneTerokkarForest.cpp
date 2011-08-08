@@ -15,12 +15,12 @@
 // Towers
 enum Towers
 {
-	TOWER_1, // North-west
-	TOWER_2, // North
-	TOWER_3, // North-east
-	TOWER_4, // South-east
-	TOWER_5, // South
-	TOWER_COUNT,
+    TOWER_1, // North-west
+    TOWER_2, // North
+    TOWER_3, // North-east
+    TOWER_4, // South-east
+    TOWER_5, // South
+    TOWER_COUNT,
 };
 
 // Tower GameObject Ids
@@ -42,7 +42,7 @@ int32 TFg_superiorTeam = -1;			// SUPERIORITY
 
 // Fields to update visual view of the client map
 static const uint32 g_hordeStateFields[5]		= {	WORLDSTATE_TEROKKAR_TOWER1_HORDE,	WORLDSTATE_TEROKKAR_TOWER2_HORDE,	WORLDSTATE_TEROKKAR_TOWER3_HORDE,	WORLDSTATE_TEROKKAR_TOWER4_HORDE,	WORLDSTATE_TEROKKAR_TOWER5_HORDE };
-static const uint32 g_allianceStateFields[5]	= {	WORLDSTATE_TEROKKAR_TOWER1_ALLIANCE,WORLDSTATE_TEROKKAR_TOWER2_ALLIANCE,WORLDSTATE_TEROKKAR_TOWER3_ALLIANCE,WORLDSTATE_TEROKKAR_TOWER4_ALLIANCE,WORLDSTATE_TEROKKAR_TOWER5_ALLIANCE };
+static const uint32 g_allianceStateFields[5]	= {	WORLDSTATE_TEROKKAR_TOWER1_ALLIANCE, WORLDSTATE_TEROKKAR_TOWER2_ALLIANCE, WORLDSTATE_TEROKKAR_TOWER3_ALLIANCE, WORLDSTATE_TEROKKAR_TOWER4_ALLIANCE, WORLDSTATE_TEROKKAR_TOWER5_ALLIANCE };
 static const uint32 g_neutralStateFields[5]		= {	WORLDSTATE_TEROKKAR_TOWER1_NEUTRAL,	WORLDSTATE_TEROKKAR_TOWER2_NEUTRAL,	WORLDSTATE_TEROKKAR_TOWER3_NEUTRAL,	WORLDSTATE_TEROKKAR_TOWER4_NEUTRAL,	WORLDSTATE_TEROKKAR_TOWER5_NEUTRAL };
 
 // updates clients visual counter, and adds the buffs to players if needed
@@ -51,25 +51,25 @@ HEARTHSTONE_INLINE void UpdateTowerCount(shared_ptr<MapMgr> mgr)
 	mgr->GetStateManager().UpdateWorldState(WORLDSTATE_TEROKKAR_ALLIANCE_TOWERS_CONTROLLED, TFg_allianceTowers);
 	mgr->GetStateManager().UpdateWorldState(WORLDSTATE_TEROKKAR_HORDE_TOWERS_CONTROLLED, TFg_hordeTowers);
 
-	if( TFg_superiorTeam == 0 && TFg_allianceTowers != 5 )
+	if(TFg_superiorTeam == 0 && TFg_allianceTowers != 5)
 	{
 		mgr->RemovePositiveAuraFromPlayers(0, BLESSING_OF_AUCHINDOUND);
 		TFg_superiorTeam = -1;
 	}
 
-	if( TFg_superiorTeam == 1 && TFg_hordeTowers != 5 )
+	if(TFg_superiorTeam == 1 && TFg_hordeTowers != 5)
 	{
 		mgr->RemovePositiveAuraFromPlayers(1, BLESSING_OF_AUCHINDOUND);
 		TFg_superiorTeam = -1;
 	}
 
-	if( TFg_allianceTowers == 5 && TFg_superiorTeam != 0 )
+	if(TFg_allianceTowers == 5 && TFg_superiorTeam != 0)
 	{
 		TFg_superiorTeam = 0;
 		mgr->CastSpellOnPlayers(0, BLESSING_OF_AUCHINDOUND);
 	}
 
-	if( TFg_hordeTowers == 5 && TFg_superiorTeam != 1 )
+	if(TFg_hordeTowers == 5 && TFg_superiorTeam != 1)
 	{
 		TFg_superiorTeam = 1;
 		mgr->CastSpellOnPlayers(1, BLESSING_OF_AUCHINDOUND);
@@ -78,308 +78,308 @@ HEARTHSTONE_INLINE void UpdateTowerCount(shared_ptr<MapMgr> mgr)
 
 enum BannerStatus
 {
-	BANNER_STATUS_NEUTRAL = 0,
-	BANNER_STATUS_ALLIANCE = 1,
-	BANNER_STATUS_HORDE = 2,
+    BANNER_STATUS_NEUTRAL = 0,
+    BANNER_STATUS_ALLIANCE = 1,
+    BANNER_STATUS_HORDE = 2,
 };
 
 class TerokkarForestBannerAI : public GameObjectAIScript
 {
-	map<uint32, uint32> StoredPlayers;
-	uint32 Status;
-	const char * ControlPointName;
-	uint32 towerid;
-	uint32 m_bannerStatus;
+		map<uint32, uint32> StoredPlayers;
+		uint32 Status;
+		const char* ControlPointName;
+		uint32 towerid;
+		uint32 m_bannerStatus;
 
-public:
+	public:
 
-	TerokkarForestBannerAI(GameObjectPointer go) : GameObjectAIScript(go)
-	{
-		m_bannerStatus = BANNER_STATUS_NEUTRAL;
-		Status = 50;
-
-		switch(go->GetEntry())
+		TerokkarForestBannerAI(GameObjectPointer go) : GameObjectAIScript(go)
 		{
-		case G_TOWER_1:
-			ControlPointName = "Tower 1";
-			towerid = TOWER_1;
-			break;
+			m_bannerStatus = BANNER_STATUS_NEUTRAL;
+			Status = 50;
 
-		case G_TOWER_2:
-			ControlPointName = "Tower 2";
-			towerid = TOWER_2;
-			break;
-
-		case G_TOWER_3:
-			ControlPointName = "Tower 3";
-			towerid = TOWER_3;
-			break;
-
-		case G_TOWER_4:
-			ControlPointName = "Tower 4";
-			towerid = TOWER_4;
-			break;
-
-		case G_TOWER_5:
-			ControlPointName = "Tower 5";
-			towerid = TOWER_5;
-			break;
-
-		default:
-			ControlPointName = "Unknown";
-			break;
-		}
-	}
-
-	void AIUpdate()
-	{
-		uint32 plrcounts[2] = { 0, 0 };
-
-		// details:
-		//   loop through inrange players, for new ones, send the enable CP worldstate.
-		//   the value of the map is a timestamp of the last update, to avoid cpu time wasted
-		//   doing lookups of objects that have already been updated
-
-		unordered_set<PlayerPointer>::iterator itr = _gameobject->GetInRangePlayerSetBegin();		
-		unordered_set<PlayerPointer>::iterator itrend = _gameobject->GetInRangePlayerSetEnd();
-		map<uint32,uint32>::iterator it2, it3;
-		uint32 timeptr = (uint32)UNIXTIME;
-		bool in_range;
-		bool is_valid;
-		PlayerPointer plr;
-		
-		for(; itr != itrend; ++itr)
-		{
-			if( !(*itr)->IsPvPFlagged() || (*itr)->InStealth() )
-				is_valid = false;
-			else
-				is_valid = true;
-
-			in_range = (_gameobject->GetDistance2dSq((*itr)) <= BANNER_RANGE) ? true : false;
-
-			it2 = StoredPlayers.find((*itr)->GetLowGUID());
-			if( it2 == StoredPlayers.end() )
+			switch(go->GetEntry())
 			{
-				// new player :)
-				if( in_range )
-				{
-					(*itr)->SendWorldStateUpdate(WORLDSTATE_TEROKKAR_PVP_CAPTURE_BAR_DISPLAY, 1);
-					(*itr)->SendWorldStateUpdate(WORLDSTATE_TEROKKAR_PVP_CAPTURE_BAR_VALUE, Status);
-					StoredPlayers.insert(make_pair((*itr)->GetLowGUID(), timeptr));
+				case G_TOWER_1:
+					ControlPointName = "Tower 1";
+					towerid = TOWER_1;
+					break;
 
-					if( is_valid )
-						plrcounts[(*itr)->GetTeam()]++;
-				}
+				case G_TOWER_2:
+					ControlPointName = "Tower 2";
+					towerid = TOWER_2;
+					break;
+
+				case G_TOWER_3:
+					ControlPointName = "Tower 3";
+					towerid = TOWER_3;
+					break;
+
+				case G_TOWER_4:
+					ControlPointName = "Tower 4";
+					towerid = TOWER_4;
+					break;
+
+				case G_TOWER_5:
+					ControlPointName = "Tower 5";
+					towerid = TOWER_5;
+					break;
+
+				default:
+					ControlPointName = "Unknown";
+					break;
 			}
-			else
+		}
+
+		void AIUpdate()
+		{
+			uint32 plrcounts[2] = { 0, 0 };
+
+			// details:
+			//   loop through inrange players, for new ones, send the enable CP worldstate.
+			//   the value of the map is a timestamp of the last update, to avoid cpu time wasted
+			//   doing lookups of objects that have already been updated
+
+			unordered_set<PlayerPointer>::iterator itr = _gameobject->GetInRangePlayerSetBegin();
+			unordered_set<PlayerPointer>::iterator itrend = _gameobject->GetInRangePlayerSetEnd();
+			map<uint32, uint32>::iterator it2, it3;
+			uint32 timeptr = (uint32)UNIXTIME;
+			bool in_range;
+			bool is_valid;
+			PlayerPointer plr;
+
+			for(; itr != itrend; ++itr)
 			{
-				// oldie
-				if( !in_range )
+				if(!(*itr)->IsPvPFlagged() || (*itr)->InStealth())
+					is_valid = false;
+				else
+					is_valid = true;
+
+				in_range = (_gameobject->GetDistance2dSq((*itr)) <= BANNER_RANGE) ? true : false;
+
+				it2 = StoredPlayers.find((*itr)->GetLowGUID());
+				if(it2 == StoredPlayers.end())
 				{
-					(*itr)->SendWorldStateUpdate(WORLDSTATE_TEROKKAR_PVP_CAPTURE_BAR_DISPLAY, 0);
-					StoredPlayers.erase(it2);
+					// new player :)
+					if(in_range)
+					{
+						(*itr)->SendWorldStateUpdate(WORLDSTATE_TEROKKAR_PVP_CAPTURE_BAR_DISPLAY, 1);
+						(*itr)->SendWorldStateUpdate(WORLDSTATE_TEROKKAR_PVP_CAPTURE_BAR_VALUE, Status);
+						StoredPlayers.insert(make_pair((*itr)->GetLowGUID(), timeptr));
+
+						if(is_valid)
+							plrcounts[(*itr)->GetTeam()]++;
+					}
 				}
 				else
 				{
-					(*itr)->SendWorldStateUpdate(WORLDSTATE_TEROKKAR_PVP_CAPTURE_BAR_VALUE, Status);
-					it2->second = timeptr;
-					if( is_valid )
-						plrcounts[(*itr)->GetTeam()]++;
+					// oldie
+					if(!in_range)
+					{
+						(*itr)->SendWorldStateUpdate(WORLDSTATE_TEROKKAR_PVP_CAPTURE_BAR_DISPLAY, 0);
+						StoredPlayers.erase(it2);
+					}
+					else
+					{
+						(*itr)->SendWorldStateUpdate(WORLDSTATE_TEROKKAR_PVP_CAPTURE_BAR_VALUE, Status);
+						it2->second = timeptr;
+						if(is_valid)
+							plrcounts[(*itr)->GetTeam()]++;
+					}
 				}
 			}
-		}
 
-		// handle stuff for the last tick
-		if( Status == 100 && m_bannerStatus != BANNER_STATUS_ALLIANCE )
-		{
-			m_bannerStatus = BANNER_STATUS_ALLIANCE;
-			SetArtKit();
-
-			// send message to everyone in the zone, has been captured by the Alliance
-			_gameobject->GetMapMgr()->SendPvPCaptureMessage(ZONE_TEROKKAR_FOREST, ZONE_TEROKKAR_FOREST, "|cffffff00%s has been taken by the Alliance!|r", ControlPointName);
-
-			// tower update
-			TFg_allianceTowers++;
-			UpdateTowerCount(_gameobject->GetMapMgr());
-
-			// state update
-			_gameobject->GetMapMgr()->GetStateManager().UpdateWorldState(g_neutralStateFields[towerid], 0);
-			_gameobject->GetMapMgr()->GetStateManager().UpdateWorldState(g_allianceStateFields[towerid], 1);
-
-			// woot
-			TFg_towerOwners[towerid] = 1;
-			UpdateInDB();
-		}
-		else if( Status == 0 && m_bannerStatus != BANNER_STATUS_HORDE )
-		{
-			m_bannerStatus = BANNER_STATUS_HORDE;
-			SetArtKit();
-
-			// send message to everyone in the zone, has been captured by the Horde
-			_gameobject->GetMapMgr()->SendPvPCaptureMessage(ZONE_TEROKKAR_FOREST, ZONE_TEROKKAR_FOREST, "|cffffff00%s has been taken by the Horde!|r", ControlPointName);
-			
-			// tower update
-			TFg_hordeTowers++;
-			UpdateTowerCount(_gameobject->GetMapMgr());
-
-			// state update
-			_gameobject->GetMapMgr()->GetStateManager().UpdateWorldState(g_neutralStateFields[towerid], 0);
-			_gameobject->GetMapMgr()->GetStateManager().UpdateWorldState(g_hordeStateFields[towerid], 1);
-
-			// woot
-			TFg_towerOwners[towerid] = 0;
-			UpdateInDB();
-		}
-		else if( m_bannerStatus != BANNER_STATUS_NEUTRAL )
-		{
-			// if the difference for the faction is >50, change to neutral
-			if( m_bannerStatus == BANNER_STATUS_ALLIANCE && Status <= 50 )
+			// handle stuff for the last tick
+			if(Status == 100 && m_bannerStatus != BANNER_STATUS_ALLIANCE)
 			{
-				// send message: The Alliance has lost control of point xxx
-				m_bannerStatus = BANNER_STATUS_NEUTRAL;
-				SetArtKit();
-				
-				TFg_allianceTowers--;
-				UpdateTowerCount(_gameobject->GetMapMgr());
-
-				_gameobject->GetMapMgr()->SendPvPCaptureMessage(ZONE_TEROKKAR_FOREST, ZONE_TEROKKAR_FOREST, "|cffffff00The Alliance have lost control of %s!|r", ControlPointName);
-
-				// state update
-				_gameobject->GetMapMgr()->GetStateManager().UpdateWorldState(g_allianceStateFields[towerid], 0);
-				_gameobject->GetMapMgr()->GetStateManager().UpdateWorldState(g_neutralStateFields[towerid], 1);
-
-				// woot
-				TFg_towerOwners[towerid] = -1;
-				UpdateInDB();
-			}
-			else if( m_bannerStatus == BANNER_STATUS_HORDE && Status >= 50 )
-			{
-				// send message: The Alliance has lost control of point xxx
-				m_bannerStatus = BANNER_STATUS_NEUTRAL;
+				m_bannerStatus = BANNER_STATUS_ALLIANCE;
 				SetArtKit();
 
-				TFg_hordeTowers--;
+				// send message to everyone in the zone, has been captured by the Alliance
+				_gameobject->GetMapMgr()->SendPvPCaptureMessage(ZONE_TEROKKAR_FOREST, ZONE_TEROKKAR_FOREST, "|cffffff00%s has been taken by the Alliance!|r", ControlPointName);
+
+				// tower update
+				TFg_allianceTowers++;
 				UpdateTowerCount(_gameobject->GetMapMgr());
 
-				_gameobject->GetMapMgr()->SendPvPCaptureMessage(ZONE_TEROKKAR_FOREST, ZONE_TEROKKAR_FOREST, "|cffffff00The Horde have lost control of %s!|r", ControlPointName);
-
 				// state update
-				_gameobject->GetMapMgr()->GetStateManager().UpdateWorldState(g_hordeStateFields[towerid], 0);
-				_gameobject->GetMapMgr()->GetStateManager().UpdateWorldState(g_neutralStateFields[towerid], 1);
+				_gameobject->GetMapMgr()->GetStateManager().UpdateWorldState(g_neutralStateFields[towerid], 0);
+				_gameobject->GetMapMgr()->GetStateManager().UpdateWorldState(g_allianceStateFields[towerid], 1);
 
 				// woot
-				TFg_towerOwners[towerid] = -1;
+				TFg_towerOwners[towerid] = 1;
 				UpdateInDB();
 			}
-		}
-
-		// send any out of range players the disable flag
-		for(it2 = StoredPlayers.begin(); it2 != StoredPlayers.end(); )
-		{
-			it3 = it2;
-			++it2;
-
-			if( it3->second != timeptr )
+			else if(Status == 0 && m_bannerStatus != BANNER_STATUS_HORDE)
 			{
-				plr = _gameobject->GetMapMgr()->GetPlayer(it3->first);
-				
-				// they WILL be out of range at this point. this is guaranteed. means they left the set rly quickly.
-				if( plr )
-					plr->SendWorldStateUpdate(WORLDSTATE_TEROKKAR_PVP_CAPTURE_BAR_DISPLAY, 0);
+				m_bannerStatus = BANNER_STATUS_HORDE;
+				SetArtKit();
 
-				StoredPlayers.erase(it3);
+				// send message to everyone in the zone, has been captured by the Horde
+				_gameobject->GetMapMgr()->SendPvPCaptureMessage(ZONE_TEROKKAR_FOREST, ZONE_TEROKKAR_FOREST, "|cffffff00%s has been taken by the Horde!|r", ControlPointName);
+
+				// tower update
+				TFg_hordeTowers++;
+				UpdateTowerCount(_gameobject->GetMapMgr());
+
+				// state update
+				_gameobject->GetMapMgr()->GetStateManager().UpdateWorldState(g_neutralStateFields[towerid], 0);
+				_gameobject->GetMapMgr()->GetStateManager().UpdateWorldState(g_hordeStateFields[towerid], 1);
+
+				// woot
+				TFg_towerOwners[towerid] = 0;
+				UpdateInDB();
+			}
+			else if(m_bannerStatus != BANNER_STATUS_NEUTRAL)
+			{
+				// if the difference for the faction is >50, change to neutral
+				if(m_bannerStatus == BANNER_STATUS_ALLIANCE && Status <= 50)
+				{
+					// send message: The Alliance has lost control of point xxx
+					m_bannerStatus = BANNER_STATUS_NEUTRAL;
+					SetArtKit();
+
+					TFg_allianceTowers--;
+					UpdateTowerCount(_gameobject->GetMapMgr());
+
+					_gameobject->GetMapMgr()->SendPvPCaptureMessage(ZONE_TEROKKAR_FOREST, ZONE_TEROKKAR_FOREST, "|cffffff00The Alliance have lost control of %s!|r", ControlPointName);
+
+					// state update
+					_gameobject->GetMapMgr()->GetStateManager().UpdateWorldState(g_allianceStateFields[towerid], 0);
+					_gameobject->GetMapMgr()->GetStateManager().UpdateWorldState(g_neutralStateFields[towerid], 1);
+
+					// woot
+					TFg_towerOwners[towerid] = -1;
+					UpdateInDB();
+				}
+				else if(m_bannerStatus == BANNER_STATUS_HORDE && Status >= 50)
+				{
+					// send message: The Alliance has lost control of point xxx
+					m_bannerStatus = BANNER_STATUS_NEUTRAL;
+					SetArtKit();
+
+					TFg_hordeTowers--;
+					UpdateTowerCount(_gameobject->GetMapMgr());
+
+					_gameobject->GetMapMgr()->SendPvPCaptureMessage(ZONE_TEROKKAR_FOREST, ZONE_TEROKKAR_FOREST, "|cffffff00The Horde have lost control of %s!|r", ControlPointName);
+
+					// state update
+					_gameobject->GetMapMgr()->GetStateManager().UpdateWorldState(g_hordeStateFields[towerid], 0);
+					_gameobject->GetMapMgr()->GetStateManager().UpdateWorldState(g_neutralStateFields[towerid], 1);
+
+					// woot
+					TFg_towerOwners[towerid] = -1;
+					UpdateInDB();
+				}
+			}
+
+			// send any out of range players the disable flag
+			for(it2 = StoredPlayers.begin(); it2 != StoredPlayers.end();)
+			{
+				it3 = it2;
+				++it2;
+
+				if(it3->second != timeptr)
+				{
+					plr = _gameobject->GetMapMgr()->GetPlayer(it3->first);
+
+					// they WILL be out of range at this point. this is guaranteed. means they left the set rly quickly.
+					if(plr)
+						plr->SendWorldStateUpdate(WORLDSTATE_TEROKKAR_PVP_CAPTURE_BAR_DISPLAY, 0);
+
+					StoredPlayers.erase(it3);
+				}
+			}
+
+			// work out current status for next tick
+			uint32 delta;
+			if(plrcounts[0] > plrcounts[1])
+			{
+				delta = plrcounts[0] - plrcounts[1];
+				delta *= CAPTURE_RATE;
+
+				// cap it at 25 so the banner always gets removed.
+				if(delta > 25)
+					delta = 25;
+
+				Status += delta;
+				if(Status >= 100)
+					Status = 100;
+			}
+			else if(plrcounts[1] > plrcounts[0])
+			{
+				delta = plrcounts[1] - plrcounts[0];
+				delta *= CAPTURE_RATE;
+
+				// cap it at 25 so the banner always gets removed.
+				if(delta > 25)
+					delta = 25;
+
+				if(delta > Status)
+					Status = 0;
+				else
+					Status -= delta;
 			}
 		}
 
-		// work out current status for next tick
-		uint32 delta;
-		if( plrcounts[0] > plrcounts[1] )
+		void SetArtKit()
 		{
-			delta = plrcounts[0] - plrcounts[1];
-			delta *= CAPTURE_RATE;
-
-			// cap it at 25 so the banner always gets removed.
-			if( delta > 25 )
-				delta = 25;
-
-			Status += delta;
-			if( Status >= 100 )
-				Status = 100;
-		}
-		else if( plrcounts[1] > plrcounts[0] )
-		{
-			delta = plrcounts[1] - plrcounts[0];
-			delta *= CAPTURE_RATE;
-			
-			// cap it at 25 so the banner always gets removed.
-			if( delta > 25 )
-				delta = 25;
-
-			if( delta > Status )
-				Status = 0;
-			else
-				Status -= delta;
-		}
-	}
-
-	void SetArtKit()
-	{
-		static const uint32 artkits_flagpole[3] = { 3, 2, 1 };
+			static const uint32 artkits_flagpole[3] = { 3, 2, 1 };
 //		_gameobject->SetUInt32Value(GAMEOBJECT_ARTKIT, artkits_flagpole[m_bannerStatus]);
-	}
-
-	void OnSpawn()
-	{
-		m_bannerStatus = BANNER_STATUS_NEUTRAL;
-
-		// preloaded data, do we have any?
-		if( TFg_towerOwners[towerid] == 1 )
-		{
-			m_bannerStatus = BANNER_STATUS_HORDE;
-			Status = 0;
-
-			// state update
-			_gameobject->GetMapMgr()->GetStateManager().UpdateWorldState(g_hordeStateFields[towerid], 1);
-			_gameobject->GetMapMgr()->GetStateManager().UpdateWorldState(g_neutralStateFields[towerid], 0);
-
-			// countz
-			TFg_hordeTowers++;
-			UpdateTowerCount(_gameobject->GetMapMgr());
-			SetArtKit();
-		}
-		else if( TFg_towerOwners[towerid] == 0 )
-		{
-			m_bannerStatus = BANNER_STATUS_ALLIANCE;
-			Status = 100;
-
-			// state update
-			_gameobject->GetMapMgr()->GetStateManager().UpdateWorldState(g_allianceStateFields[towerid], 1);
-			_gameobject->GetMapMgr()->GetStateManager().UpdateWorldState(g_neutralStateFields[towerid], 0);
-
-			// countz
-			TFg_allianceTowers++;
-			UpdateTowerCount(_gameobject->GetMapMgr());
-			SetArtKit();
 		}
 
-		// start the event timer
-		RegisterAIUpdateEvent(UPDATE_PERIOD);
-	}
+		void OnSpawn()
+		{
+			m_bannerStatus = BANNER_STATUS_NEUTRAL;
 
-	//////////////////////////////////////////////////////////////////////////
-	// Save Data To DB
-	//////////////////////////////////////////////////////////////////////////
-	void UpdateInDB()
-	{
-		static const char * fieldnames[TOWER_COUNT] = { "Terokkar-Tower1-status", "Terokkar-Tower2-status", "Terokkar-Tower3-status", "Terokkar-Tower4-status", "Terokkar-Tower5-status" };
-		const char * msg = "-1";
-		if( Status == 100 )
-			msg = "0";
-		else
-			msg = "1";
-			
-		WorldStateManager::SetPersistantSetting(fieldnames[towerid], msg);
-	}
+			// preloaded data, do we have any?
+			if(TFg_towerOwners[towerid] == 1)
+			{
+				m_bannerStatus = BANNER_STATUS_HORDE;
+				Status = 0;
+
+				// state update
+				_gameobject->GetMapMgr()->GetStateManager().UpdateWorldState(g_hordeStateFields[towerid], 1);
+				_gameobject->GetMapMgr()->GetStateManager().UpdateWorldState(g_neutralStateFields[towerid], 0);
+
+				// countz
+				TFg_hordeTowers++;
+				UpdateTowerCount(_gameobject->GetMapMgr());
+				SetArtKit();
+			}
+			else if(TFg_towerOwners[towerid] == 0)
+			{
+				m_bannerStatus = BANNER_STATUS_ALLIANCE;
+				Status = 100;
+
+				// state update
+				_gameobject->GetMapMgr()->GetStateManager().UpdateWorldState(g_allianceStateFields[towerid], 1);
+				_gameobject->GetMapMgr()->GetStateManager().UpdateWorldState(g_neutralStateFields[towerid], 0);
+
+				// countz
+				TFg_allianceTowers++;
+				UpdateTowerCount(_gameobject->GetMapMgr());
+				SetArtKit();
+			}
+
+			// start the event timer
+			RegisterAIUpdateEvent(UPDATE_PERIOD);
+		}
+
+		//////////////////////////////////////////////////////////////////////////
+		// Save Data To DB
+		//////////////////////////////////////////////////////////////////////////
+		void UpdateInDB()
+		{
+			static const char* fieldnames[TOWER_COUNT] = { "Terokkar-Tower1-status", "Terokkar-Tower2-status", "Terokkar-Tower3-status", "Terokkar-Tower4-status", "Terokkar-Tower5-status" };
+			const char* msg = "-1";
+			if(Status == 100)
+				msg = "0";
+			else
+				msg = "1";
+
+			WorldStateManager::SetPersistantSetting(fieldnames[towerid], msg);
+		}
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -391,14 +391,14 @@ void TFZoneHook(PlayerPointer plr, uint32 Zone, uint32 OldZone)
 	if(!plr)
 		return;
 
-	if( Zone == ZONE_TEROKKAR_FOREST )
+	if(Zone == ZONE_TEROKKAR_FOREST)
 	{
-		if( TFg_superiorTeam == plr->GetTeam() )
+		if(TFg_superiorTeam == plr->GetTeam())
 			plr->CastSpell(plr, dbcSpell.LookupEntry(BLESSING_OF_AUCHINDOUND), true);
 	}
-	else if( OldZone == ZONE_TEROKKAR_FOREST )
+	else if(OldZone == ZONE_TEROKKAR_FOREST)
 	{
-		if( TFg_superiorTeam == plr->GetTeam() )
+		if(TFg_superiorTeam == plr->GetTeam())
 			plr->RemovePositiveAura(BLESSING_OF_AUCHINDOUND);
 	}
 }
@@ -427,24 +427,25 @@ void TFSpawnObjects(shared_ptr<MapMgr> pmgr)
 	if(!pmgr || pmgr->GetMapId() != 530)
 		return;
 
-	const static sgodata godata[] = {
-		{ 183104,-3081.65f,5335.03f,17.1853f,-2.14675f, 0, 0, 0.878817f,-0.477159f, 1, 32, 0, 1 },
-		{ 183411,-2939.9f,4788.73f,18.987f,2.77507f, 0, 0, 0.983255f,0.182236f, 1, 32, 0, 1 },
-		{ 183412,-3174.94f,4440.97f,16.2281f,1.86750f, 0, 0, 0.803857f,0.594823f, 1, 32, 0, 1 },
-		{ 183413,-3603.31f,4529.15f,20.9077f,0.994838f, 0, 0, 0.477159f,0.878817f, 1, 32, 0, 1 },
-		{ 183414,-3812.37f,4899.3f,17.7249f,0.087266f, 0, 0, 0.043619f,0.999048f, 1, 32, 0, 1 },
+	const static sgodata godata[] =
+	{
+		{ 183104, -3081.65f, 5335.03f, 17.1853f, -2.14675f, 0, 0, 0.878817f, -0.477159f, 1, 32, 0, 1 },
+		{ 183411, -2939.9f, 4788.73f, 18.987f, 2.77507f, 0, 0, 0.983255f, 0.182236f, 1, 32, 0, 1 },
+		{ 183412, -3174.94f, 4440.97f, 16.2281f, 1.86750f, 0, 0, 0.803857f, 0.594823f, 1, 32, 0, 1 },
+		{ 183413, -3603.31f, 4529.15f, 20.9077f, 0.994838f, 0, 0, 0.477159f, 0.878817f, 1, 32, 0, 1 },
+		{ 183414, -3812.37f, 4899.3f, 17.7249f, 0.087266f, 0, 0, 0.043619f, 0.999048f, 1, 32, 0, 1 },
 		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 	};
 
 	uint32 i;
-	const sgodata *p;
+	const sgodata* p;
 	for(i = 0; i < 5; ++i)
 	{
 		p = &godata[i];
 
 		GameObjectPointer pGo = NULLGOB;
 		pGo = pmgr->GetInterface()->SpawnGameObject(p->entry, p->posx, p->posy, p->posz, p->facing, false, 0, 0);
-		if( !pGo )
+		if(!pGo)
 			continue;
 
 		pGo->SetByte(GAMEOBJECT_BYTES_1, GAMEOBJECT_BYTES_STATE, p->state);
@@ -453,7 +454,7 @@ void TFSpawnObjects(shared_ptr<MapMgr> pmgr)
 
 		for(uint32 j = 0; j < 4; ++j)
 		{
-			pGo->SetFloatValue(GAMEOBJECT_ROTATION+j, p->orientation[j]);
+			pGo->SetFloatValue(GAMEOBJECT_ROTATION + j, p->orientation[j]);
 		}
 
 		// now make his script
@@ -465,11 +466,11 @@ void TFSpawnObjects(shared_ptr<MapMgr> pmgr)
 	}
 }
 
-void SetupPvPTerokkarForest(ScriptMgr *mgr)
+void SetupPvPTerokkarForest(ScriptMgr* mgr)
 {
 	// register instance hooker
-	mgr->register_hook(SERVER_HOOK_EVENT_ON_ZONE, (void *)&TFZoneHook);
-	mgr->register_hook(SERVER_HOOK_EVENT_ON_CONTINENT_CREATE, (void *)&TFSpawnObjects);
+	mgr->register_hook(SERVER_HOOK_EVENT_ON_ZONE, (void*)&TFZoneHook);
+	mgr->register_hook(SERVER_HOOK_EVENT_ON_CONTINENT_CREATE, (void*)&TFSpawnObjects);
 
 	// load data
 	const string Tower1 = WorldStateManager::GetPersistantSetting("Terokkar-Tower1-status", "-1");

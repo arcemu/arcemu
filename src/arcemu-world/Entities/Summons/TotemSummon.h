@@ -29,51 +29,52 @@
 //
 //
 ///////////////////////////////////////////////////////////
-class TotemSummon : public Summon{
-public:
-	TotemSummon( uint64 GUID );
+class TotemSummon : public Summon
+{
+	public:
+		TotemSummon(uint64 GUID);
 
 
-	~TotemSummon();
+		~TotemSummon();
 
 
-	void Load( CreatureProto *proto, Unit *owner, LocationVector &position, uint32 spellid, int32 summonslot );
+		void Load(CreatureProto* proto, Unit* owner, LocationVector & position, uint32 spellid, int32 summonslot);
 
 
-	void OnPushToWorld();
+		void OnPushToWorld();
 
 
-	void OnPreRemoveFromWorld();
+		void OnPreRemoveFromWorld();
 
 
-	bool IsTotem(){ return true; }
+		bool IsTotem() { return true; }
 
 
-	Group* GetGroup();
+		Group* GetGroup();
 
 
-    //////////////////////////////////////////////////////
-	//void SetupSpells()
-	//  Sets up the spells the totem will cast
-	//  This code was almost directly copied from SpellEffects.cpp,
-	//  it requires further refactoring!
-	//  For example totems should cast like other units..
-	//
-	//Parameter(s)
-	//  None
-	//
-	//Return Value
-	//  None
-	//
-	//
-	//////////////////////////////////////////////////////
-	void SetupSpells();
+		//////////////////////////////////////////////////////
+		//void SetupSpells()
+		//  Sets up the spells the totem will cast
+		//  This code was almost directly copied from SpellEffects.cpp,
+		//  it requires further refactoring!
+		//  For example totems should cast like other units..
+		//
+		//Parameter(s)
+		//  None
+		//
+		//Return Value
+		//  None
+		//
+		//
+		//////////////////////////////////////////////////////
+		void SetupSpells();
 
 
-	void Die( Unit *pAttacker, uint32 damage, uint32 spellid );
+		void Die(Unit* pAttacker, uint32 damage, uint32 spellid);
 
 
-private:
+	private:
 };
 
 #endif

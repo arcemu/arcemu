@@ -38,12 +38,12 @@
    ((v)=cast(t *, luaM_reallocv(L, v, oldn, n, sizeof(t))))
 
 
-LUAI_FUNC void *luaM_realloc_ (lua_State *L, void *block, size_t oldsize,
-                                                          size_t size);
-LUAI_FUNC void *luaM_toobig (lua_State *L);
-LUAI_FUNC void *luaM_growaux_ (lua_State *L, void *block, int *size,
-                               size_t size_elem, int limit,
-                               const char *errormsg);
+LUAI_FUNC void* luaM_realloc_(lua_State* L, void* block, size_t oldsize,
+                              size_t size);
+LUAI_FUNC void* luaM_toobig(lua_State* L);
+LUAI_FUNC void* luaM_growaux_(lua_State* L, void* block, int* size,
+                              size_t size_elem, int limit,
+                              const char* errormsg);
 
 #endif
 

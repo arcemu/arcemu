@@ -22,15 +22,15 @@
 
 class SERVER_DECL ThreadBase
 {
-public:
-	ThreadBase() {}
-	virtual ~ThreadBase() {}
-	virtual bool run() = 0;
-	virtual void OnShutdown() {}
+	public:
+		ThreadBase() {}
+		virtual ~ThreadBase() {}
+		virtual bool run() = 0;
+		virtual void OnShutdown() {}
 #ifdef WIN32
-	HANDLE THREAD_HANDLE;
+		HANDLE THREAD_HANDLE;
 #else
-	pthread_t THREAD_HANDLE;
+		pthread_t THREAD_HANDLE;
 #endif
 };
 

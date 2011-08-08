@@ -25,12 +25,12 @@
 
 class ConsoleThread : public ThreadBase
 {
-protected:
-	bool m_killSwitch;
-	bool m_isRunning;
-public:
-	bool run();
-	void terminate();
+	protected:
+		bool m_killSwitch;
+		bool m_isRunning;
+	public:
+		bool run();
+		void terminate();
 };
 
 #endif

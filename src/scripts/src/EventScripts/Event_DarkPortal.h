@@ -95,7 +95,7 @@ class InfernalSiegebreakerAI;
 //==============================================================================================//
 
 // Infernals' spawn points
-struct Coords Infernals[]=
+struct Coords Infernals[] =
 {
 	{ -261.202820f, 1097.126099f, 41.666908f, 4.543878f },
 	{ -255.785507f, 1097.852295f, 41.666908f, 4.680013f },
@@ -104,7 +104,7 @@ struct Coords Infernals[]=
 };
 
 // Demons' spawn points
-struct Coords DSPoints[]=
+struct Coords DSPoints[] =
 {
 	{ -259.384735f, 1207.090210f, 37.783020f, 3.815325f },	// <- 1
 	{ -255.924347f, 1214.213379f, 35.689049f, 3.397272f },
@@ -119,7 +119,7 @@ struct Coords DSPoints[]=
 };
 
 // Demons' path from Pit Commander's back to dark portal
-struct Coords PitDemonPaths[]=
+struct Coords PitDemonPaths[] =
 {
 	{},
 	{ -259.824768f, 1193.424561f, 41.702896f, 4.637918f },	// <- 1S
@@ -209,14 +209,14 @@ struct Coords PitDemonPaths[]=
 //==============================================================================================//
 
 // Commander/Lieutenant positions to script special units spawning
-struct Coords AHChecks[]=
+struct Coords AHChecks[] =
 {
 	{ -265.506012f, 1028.310059f, 54.324100f, 5.455820f },	// ---- Commander Duron
 	{ -232.919998f, 1028.270020f, 54.407799f, 3.892080f }	// ---- Lieutenant General Orion
 };
 
 // Special units' last WPs
-struct Coords SWP[]=
+struct Coords SWP[] =
 {
 	{ -269.433014f, 1072.020020f, 54.490700f, 1.505257f },	// ---- Justinius the Harbinger
 	{ -230.486786f, 1072.293945f, 54.353722f, 1.658060f }	// ---- Melgromm Highmountain
@@ -227,13 +227,13 @@ struct Coords SWP[]=
 //==============================================================================================//
 
 // Alliance units spawn pos
-struct Coords ASPoints[]=
+struct Coords ASPoints[] =
 {
 	{ -337.971008f, 963.656582f, 54.461300f, 1.675520f }
 };
 
 // Alliance spawned units' ways (last WP is before stairs)
-struct Coords AWP[]=
+struct Coords AWP[] =
 {
 	{},
 	{ -329.585999f, 989.763977f, 54.327599f, 1.181110f },
@@ -250,7 +250,7 @@ struct Coords AWP[]=
 };
 
 // Alliance spawned units' WPs from stairs to formation positions (melee)
-struct Coords AMWP[]=
+struct Coords AMWP[] =
 {
 	{ -272.106995f, 1098.439941f, 42.094299f, 1.343900f },
 	{ -268.051819f, 1098.389771f, 41.736443f, 1.637637f },	// custom
@@ -265,7 +265,7 @@ struct Coords AMWP[]=
 };
 
 // Alliance spawned units' WPs from stairs to formation positions (ranged)
-struct Coords ARWP[]=
+struct Coords ARWP[] =
 {
 	{ -270.035004f, 1087.030029f, 45.921700f, 1.431170f },
 	{ -265.329987f, 1087.189941f, 45.865299f, 1.518440f },
@@ -276,7 +276,7 @@ struct Coords ARWP[]=
 };
 
 // Alliance spawned units' WPs from stairs to formation positions (casters)
-struct Coords ACWP[]=
+struct Coords ACWP[] =
 {
 	{ -273.237000f, 1075.800049f, 54.494099f, 1.309757f },
 	{ -276.255005f, 1084.689941f, 54.515301f, 1.309757f }
@@ -287,13 +287,13 @@ struct Coords ACWP[]=
 //==============================================================================================//
 
 // Horde units spawn pos
-struct Coords HSPoints[]=
+struct Coords HSPoints[] =
 {
 	{ -161.376007f, 966.457608f, 54.463501f, 1.745330f }
 };
 
 // Horde spawned units' ways (last WP is before stairs)
-struct Coords HWP[]=
+struct Coords HWP[] =
 {
 	{},
 	{ -173.104004f, 1002.599976f, 54.326099f, 1.867840f },
@@ -306,12 +306,12 @@ struct Coords HWP[]=
 	{ -233.727005f, 1050.369995f, 54.433300f, 2.086830f },
 	{ -234.591003f, 1055.890015f, 54.433399f, 1.602190f },
 	{ -235.057999f, 1070.739990f, 54.312000f, 2.351221f }
-	
+
 	// ... to add
 };
 
 // Horde spawned units' WPs from stairs to formation positions (melee)
-struct Coords HMWP[]=
+struct Coords HMWP[] =
 {
 	{ -229.492004f, 1098.260010f, 41.849998f, 1.413720f },
 	{ -233.701004f, 1098.250000f, 41.849998f, 1.413720f },
@@ -326,7 +326,7 @@ struct Coords HMWP[]=
 };
 
 // Horde spawned units' WPs from stairs to formation positions (ranged)
-struct Coords HRWP[]=
+struct Coords HRWP[] =
 {
 	{ -232.173996f, 1087.959961f, 45.621899f, 1.570800f },	// custom
 	{ -235.501999f, 1087.959961f, 45.621899f, 1.361360f },	// custom
@@ -337,7 +337,7 @@ struct Coords HRWP[]=
 };
 
 // Horde spawned units' WPs from stairs to formation positions (ranged)
-struct Coords HCWP[]=
+struct Coords HCWP[] =
 {
 	{ -227.608994f, 1074.969971f, 54.492901f, 1.855608f },
 	{ -225.987000f, 1083.229980f, 54.437401f, 1.855608f }	// custom
@@ -347,7 +347,7 @@ struct Coords HCWP[]=
 //======================================= Other Stuff ==========================================//
 //==============================================================================================//
 
-struct Coords AHSPoints[]=
+struct Coords AHSPoints[] =
 {
 	{ -337.971008f, 963.656982f, 54.461300f, 1.675520f },	// ---- Alliance Spawn Point
 	{ -161.376007f, 966.458008f, 54.463501f, 1.745330f },	// ---- Horde Spawn Point
@@ -361,11 +361,11 @@ struct Coords AHSPoints[]=
 
 class OutlandScript : public MoonInstanceScript
 {
-public:
-	MOONSCRIPT_INSTANCE_FACTORY_FUNCTION( OutlandScript, MoonInstanceScript );
-	OutlandScript( MapMgrPointer pMapMgr );
+	public:
+		MOONSCRIPT_INSTANCE_FACTORY_FUNCTION(OutlandScript, MoonInstanceScript);
+		OutlandScript(MapMgrPointer pMapMgr);
 
-	void Destroy();
+		void Destroy();
 };
 
 //==============================================================================================//
@@ -379,98 +379,98 @@ public:
 
 class DarkPortalEventTriggerAI : public MoonScriptCreatureAI
 {
-public:
-	MOONSCRIPT_FACTORY_FUNCTION( DarkPortalEventTriggerAI, MoonScriptCreatureAI );
-    DarkPortalEventTriggerAI( CreaturePointer pCreature );
-	friend class MelGrommHighmountainAI;
-	friend class OrgrimmarGruntAI;
-	friend class OrgrimmarShamanAI;
-	friend class DarkspearAxeThrowerAI;
-	friend class UndercityMageAI;
-	friend class JustiniusTheHarbingerAI;
-	friend class StormwindSoldierAI;
-	friend class IronforgePaladinAI;
-	friend class DarnassianArcherAI;
-	friend class StormwindMageAI;
-	friend class PitCommanderAI;
-	friend class InfernalSiegebreakerAI;
-	friend class FelSoldierAI;
-	friend class WrathMasterAI;
+	public:
+		MOONSCRIPT_FACTORY_FUNCTION(DarkPortalEventTriggerAI, MoonScriptCreatureAI);
+		DarkPortalEventTriggerAI(CreaturePointer pCreature);
+		friend class MelGrommHighmountainAI;
+		friend class OrgrimmarGruntAI;
+		friend class OrgrimmarShamanAI;
+		friend class DarkspearAxeThrowerAI;
+		friend class UndercityMageAI;
+		friend class JustiniusTheHarbingerAI;
+		friend class StormwindSoldierAI;
+		friend class IronforgePaladinAI;
+		friend class DarnassianArcherAI;
+		friend class StormwindMageAI;
+		friend class PitCommanderAI;
+		friend class InfernalSiegebreakerAI;
+		friend class FelSoldierAI;
+		friend class WrathMasterAI;
 
-	// Standard function used every 'ai frequency time'
-    void AIUpdate();
+		// Standard function used every 'ai frequency time'
+		void AIUpdate();
 
-	// Function to check Commander/Lieutenant units' states and spawn special units if needed
-	void SpecialUnitChecks();
+		// Function to check Commander/Lieutenant units' states and spawn special units if needed
+		void SpecialUnitChecks();
 
-	// Bool used to check if we can spawn any unit for this formation to prevent its messing
-	bool IsRegimentFull( AIContainer pVectorSet, size_t pSetSize );
+		// Bool used to check if we can spawn any unit for this formation to prevent its messing
+		bool IsRegimentFull(AIContainer pVectorSet, size_t pSetSize);
 
-	// Function used to check if any alliance unit should be spawned
-	void SpawnAllianceUnit();
+		// Function used to check if any alliance unit should be spawned
+		void SpawnAllianceUnit();
 
-	// Function used to check if any horde unit should be spawned
-	void SpawnHordeUnit();
+		// Function used to check if any horde unit should be spawned
+		void SpawnHordeUnit();
 
-	// Function used to add unit to Chain Aggro Container
-	void AddUnitToChainAggro( UnitPointer pUnit );
+		// Function used to add unit to Chain Aggro Container
+		void AddUnitToChainAggro(UnitPointer pUnit);
 
-	// Function used to check Pit Commander's state
-	void PitCommanderChecks();
+		// Function used to check Pit Commander's state
+		void PitCommanderChecks();
 
-	// Function used to summon infernals
-	void PitCommanderInfernalSummon();
+		// Function used to summon infernals
+		void PitCommanderInfernalSummon();
 
-	// Function we use to send 5 demons to attack Dark Portal defenders
-	void PitCommanderAttackCmd();
+		// Function we use to send 5 demons to attack Dark Portal defenders
+		void PitCommanderAttackCmd();
 
-	// Void used to spawn demons
-	void PitCommanderSpawn();
+		// Void used to spawn demons
+		void PitCommanderSpawn();
 
-	// Procedure that removes all event spawns
-	void Destroy();
+		// Procedure that removes all event spawns
+		void Destroy();
 
-	// Timers
-	int32						mPitCommanderRespawnTimer;
-	int32						mAllianceSummonTimer;
-	int32						mHordeSummonTimer;
-	int32						mAllianceMoveTimer;
-	int32						mHordeMoveTimer;
-	int32						mInfernalSummonTimer;
-	int32						mDemonRespawnTimer;
-	int32						mJustiMoveTimer;
-	int32						mMelgrMoveTimer;
-	int32						mSpecialUnitCheckTimer;
+		// Timers
+		int32						mPitCommanderRespawnTimer;
+		int32						mAllianceSummonTimer;
+		int32						mHordeSummonTimer;
+		int32						mAllianceMoveTimer;
+		int32						mHordeMoveTimer;
+		int32						mInfernalSummonTimer;
+		int32						mDemonRespawnTimer;
+		int32						mJustiMoveTimer;
+		int32						mMelgrMoveTimer;
+		int32						mSpecialUnitCheckTimer;
 
-	// Ids
-	uint32						mInfernalSpawnPointId;
+		// Ids
+		uint32						mInfernalSpawnPointId;
 
-	// Event additions
-	bool						mHasSummonedInfernals;
-	bool						mResurrected;
-	bool						mResurrect;
+		// Event additions
+		bool						mHasSummonedInfernals;
+		bool						mResurrected;
+		bool						mResurrect;
 
-	// Chain-aggro related variables
-	ChainAggroEntity*			mFormationChain;
+		// Chain-aggro related variables
+		ChainAggroEntity*			mFormationChain;
 
-	// Creature AI pointers
-	PitCommanderAI*				mPitCommander;
-	MoonScriptCreatureAI*		mAlliance;
-	MoonScriptCreatureAI*		mHorde;
-	JustiniusTheHarbingerAI*	mJusti;
-	MelGrommHighmountainAI*		mMelgr;
+		// Creature AI pointers
+		PitCommanderAI*				mPitCommander;
+		MoonScriptCreatureAI*		mAlliance;
+		MoonScriptCreatureAI*		mHorde;
+		JustiniusTheHarbingerAI*	mJusti;
+		MelGrommHighmountainAI*		mMelgr;
 
-	typedef unordered_set< InfernalSiegebreakerAI* > AIInfernalSet;
+		typedef unordered_set< InfernalSiegebreakerAI* > AIInfernalSet;
 
-	AIMap						mFightingDemonSet;
-	AIMap						mQueuedDemonSet;
-	AIInfernalSet				mInfernalTable;
-	AIContainer					mAllianceMelee;
-	AIContainer					mAllianceRanged;
-	AIContainer					mAllianceCaster;
-	AIContainer					mHordeMelee;
-	AIContainer					mHordeRanged;
-	AIContainer					mHordeCaster;
+		AIMap						mFightingDemonSet;
+		AIMap						mQueuedDemonSet;
+		AIInfernalSet				mInfernalTable;
+		AIContainer					mAllianceMelee;
+		AIContainer					mAllianceRanged;
+		AIContainer					mAllianceCaster;
+		AIContainer					mHordeMelee;
+		AIContainer					mHordeRanged;
+		AIContainer					mHordeCaster;
 };
 
 
@@ -478,7 +478,7 @@ public:
 //===================================Horde Units=======================================//
 //=====================================================================================//
 
-// Can't find his OnCombatStart sound id - _unit->PlaySoundToSet(?); 
+// Can't find his OnCombatStart sound id - _unit->PlaySoundToSet(?);
 #define MELGROMM_HIGHMOUNTAIN_EARTH_SHOCK					22885
 #define MELGROMM_HIGHMOUNTAIN_CHAIN_LIGHTNING				33643
 #define MELGROMM_HIGHMOUNTAIN_CHAIN_HEAL					33642
@@ -491,32 +491,32 @@ public:
 
 class MelGrommHighmountainAI : public MoonScriptCreatureAI
 {
-public:
-	MOONSCRIPT_FACTORY_FUNCTION( MelGrommHighmountainAI, MoonScriptCreatureAI );
-    MelGrommHighmountainAI( CreaturePointer pCreature );
+	public:
+		MOONSCRIPT_FACTORY_FUNCTION(MelGrommHighmountainAI, MoonScriptCreatureAI);
+		MelGrommHighmountainAI(CreaturePointer pCreature);
 
-    void		OnCombatStop( UnitPointer pTarget );
-	void		OnReachWP( uint32 pWaypointId, bool pForwards );
-	void		Destroy();
+		void		OnCombatStop(UnitPointer pTarget);
+		void		OnReachWP(uint32 pWaypointId, bool pForwards);
+		void		Destroy();
 
-	DarkPortalEventTriggerAI*	mTriggerAI;
-	uint32						mLastWP;
+		DarkPortalEventTriggerAI*	mTriggerAI;
+		uint32						mLastWP;
 };
 
 #define ORGRIMMAR_GRUNT_IRON_BITE	32962
 
 class OrgrimmarGruntAI : public MoonScriptCreatureAI
 {
-public:
-	MOONSCRIPT_FACTORY_FUNCTION( OrgrimmarGruntAI, MoonScriptCreatureAI );
-    OrgrimmarGruntAI( CreaturePointer pCreature );
+	public:
+		MOONSCRIPT_FACTORY_FUNCTION(OrgrimmarGruntAI, MoonScriptCreatureAI);
+		OrgrimmarGruntAI(CreaturePointer pCreature);
 
-	void		OnCombatStop( UnitPointer pTarget );
-	void		OnReachWP( uint32 pWaypointId, bool pForwards );
-	void		Destroy();
+		void		OnCombatStop(UnitPointer pTarget);
+		void		OnReachWP(uint32 pWaypointId, bool pForwards);
+		void		Destroy();
 
-	DarkPortalEventTriggerAI*	mTriggerAI;
-	uint32						mLastWP;
+		DarkPortalEventTriggerAI*	mTriggerAI;
+		uint32						mLastWP;
 };
 
 #define ORGRIMMAR_SHAMAN_FLAME_SHOCK		15616
@@ -526,34 +526,34 @@ public:
 
 class OrgrimmarShamanAI : public MoonScriptCreatureAI
 {
-public:
-	MOONSCRIPT_FACTORY_FUNCTION( OrgrimmarShamanAI, MoonScriptCreatureAI );
-    OrgrimmarShamanAI( CreaturePointer pCreature );
+	public:
+		MOONSCRIPT_FACTORY_FUNCTION(OrgrimmarShamanAI, MoonScriptCreatureAI);
+		OrgrimmarShamanAI(CreaturePointer pCreature);
 
-	void		OnCombatStop( UnitPointer pTarget );
-	void		OnReachWP( uint32 pWaypointId, bool pForwards );
-	void		Destroy();
+		void		OnCombatStop(UnitPointer pTarget);
+		void		OnReachWP(uint32 pWaypointId, bool pForwards);
+		void		Destroy();
 
-	DarkPortalEventTriggerAI*	mTriggerAI;
-	uint32						mLastWP;
+		DarkPortalEventTriggerAI*	mTriggerAI;
+		uint32						mLastWP;
 };
 
 #define DARKSPEAR_AXE_THROWER_THROW		10277
 
 class DarkspearAxeThrowerAI : public MoonScriptCreatureAI
 {
-public:
-	MOONSCRIPT_FACTORY_FUNCTION( DarkspearAxeThrowerAI, MoonScriptCreatureAI );
-    DarkspearAxeThrowerAI( CreaturePointer pCreature );
+	public:
+		MOONSCRIPT_FACTORY_FUNCTION(DarkspearAxeThrowerAI, MoonScriptCreatureAI);
+		DarkspearAxeThrowerAI(CreaturePointer pCreature);
 
-	void		OnCombatStart( UnitPointer pTarget );
-	void		OnCombatStop( UnitPointer pTarget );
-    void		AIUpdate();
-	void		OnReachWP( uint32 pWaypointId, bool pForwards );
-	void		Destroy();
+		void		OnCombatStart(UnitPointer pTarget);
+		void		OnCombatStop(UnitPointer pTarget);
+		void		AIUpdate();
+		void		OnReachWP(uint32 pWaypointId, bool pForwards);
+		void		Destroy();
 
-	DarkPortalEventTriggerAI*	mTriggerAI;
-	uint32						mLastWP;
+		DarkPortalEventTriggerAI*	mTriggerAI;
+		uint32						mLastWP;
 };
 
 #define UNDERCITY_MAGE_ICEBOLT		33463
@@ -562,18 +562,18 @@ public:
 
 class UndercityMageAI : public MoonScriptCreatureAI
 {
-public:
-	MOONSCRIPT_FACTORY_FUNCTION(UndercityMageAI, MoonScriptCreatureAI);
-    UndercityMageAI(CreaturePointer pCreature);
+	public:
+		MOONSCRIPT_FACTORY_FUNCTION(UndercityMageAI, MoonScriptCreatureAI);
+		UndercityMageAI(CreaturePointer pCreature);
 
-    void		OnCombatStart( UnitPointer pTarget );
-    void		OnCombatStop( UnitPointer pTarget );
-    void		AIUpdate();
-	void		OnReachWP( uint32 pWaypointId, bool pForwards );
-	void		Destroy();
+		void		OnCombatStart(UnitPointer pTarget);
+		void		OnCombatStop(UnitPointer pTarget);
+		void		AIUpdate();
+		void		OnReachWP(uint32 pWaypointId, bool pForwards);
+		void		Destroy();
 
-	DarkPortalEventTriggerAI*	mTriggerAI;
-	uint32						mLastWP;
+		DarkPortalEventTriggerAI*	mTriggerAI;
+		uint32						mLastWP;
 };
 
 //=====================================================================================//
@@ -586,23 +586,23 @@ public:
 #define JUSTINIUS_THE_HARBINGER_DIVINE_SHIELD				33581
 #define JUSTINIUS_THE_HARBINGER_GREATER_BLESSING_OF_MIGHT	33564
 
-void SpellFunc_Justinius_Consecration( SpellDesc *pThis, MoonScriptCreatureAI *pCreatureAI, UnitPointer pTarget, TargetType pType );
+void SpellFunc_Justinius_Consecration(SpellDesc* pThis, MoonScriptCreatureAI* pCreatureAI, UnitPointer pTarget, TargetType pType);
 
 class JustiniusTheHarbingerAI : public MoonScriptCreatureAI
 {
-public:
-	MOONSCRIPT_FACTORY_FUNCTION( JustiniusTheHarbingerAI, MoonScriptCreatureAI );
-    JustiniusTheHarbingerAI( CreaturePointer pCreature );
+	public:
+		MOONSCRIPT_FACTORY_FUNCTION(JustiniusTheHarbingerAI, MoonScriptCreatureAI);
+		JustiniusTheHarbingerAI(CreaturePointer pCreature);
 
-	void		OnCombatStart( UnitPointer pTarget );
-    void		OnCombatStop( UnitPointer pTarget );
-	bool		CanCastConsecration();
-	void		OnReachWP( uint32 pWaypointId, bool pForwards );
-	void		Destroy();
+		void		OnCombatStart(UnitPointer pTarget);
+		void		OnCombatStop(UnitPointer pTarget);
+		bool		CanCastConsecration();
+		void		OnReachWP(uint32 pWaypointId, bool pForwards);
+		void		Destroy();
 
-	SpellDesc*					mConsecration;
-	DarkPortalEventTriggerAI*	mTriggerAI;
-	uint32						mLastWP;
+		SpellDesc*					mConsecration;
+		DarkPortalEventTriggerAI*	mTriggerAI;
+		uint32						mLastWP;
 };
 
 #define STORMWIND_SOLDIER_STRIKE				33626
@@ -610,16 +610,16 @@ public:
 
 class StormwindSoldierAI : public MoonScriptCreatureAI
 {
-public:
-	MOONSCRIPT_FACTORY_FUNCTION( StormwindSoldierAI, MoonScriptCreatureAI );
-    StormwindSoldierAI( CreaturePointer pCreature );
+	public:
+		MOONSCRIPT_FACTORY_FUNCTION(StormwindSoldierAI, MoonScriptCreatureAI);
+		StormwindSoldierAI(CreaturePointer pCreature);
 
-	void		OnCombatStop( UnitPointer pTarget );
-	void		OnReachWP( uint32 pWaypointId, bool pForwards );
-	void		Destroy();
+		void		OnCombatStop(UnitPointer pTarget);
+		void		OnReachWP(uint32 pWaypointId, bool pForwards);
+		void		Destroy();
 
-	DarkPortalEventTriggerAI*	mTriggerAI;
-	uint32						mLastWP;
+		DarkPortalEventTriggerAI*	mTriggerAI;
+		uint32						mLastWP;
 };
 
 #define IRONFORGE_PALADIN_SEAL_OF_SACRIFICE		13903
@@ -628,34 +628,34 @@ public:
 
 class IronforgePaladinAI : public MoonScriptCreatureAI
 {
-public:
-	MOONSCRIPT_FACTORY_FUNCTION( IronforgePaladinAI, MoonScriptCreatureAI );
-    IronforgePaladinAI( CreaturePointer pCreature );
+	public:
+		MOONSCRIPT_FACTORY_FUNCTION(IronforgePaladinAI, MoonScriptCreatureAI);
+		IronforgePaladinAI(CreaturePointer pCreature);
 
-	void		OnCombatStop( UnitPointer pTarget );
-	void		OnReachWP( uint32 iWaypointId, bool pForwards );
-	void		Destroy();
+		void		OnCombatStop(UnitPointer pTarget);
+		void		OnReachWP(uint32 iWaypointId, bool pForwards);
+		void		Destroy();
 
-	DarkPortalEventTriggerAI*	mTriggerAI;
-	uint32						mLastWP;
+		DarkPortalEventTriggerAI*	mTriggerAI;
+		uint32						mLastWP;
 };
 
 #define DARNASSIAN_ARCHER_SHOOT		15620
 
 class DarnassianArcherAI : public MoonScriptCreatureAI
 {
-public:
-	MOONSCRIPT_FACTORY_FUNCTION( DarnassianArcherAI, MoonScriptCreatureAI );
-    DarnassianArcherAI( CreaturePointer pCreature );
+	public:
+		MOONSCRIPT_FACTORY_FUNCTION(DarnassianArcherAI, MoonScriptCreatureAI);
+		DarnassianArcherAI(CreaturePointer pCreature);
 
-	void		OnCombatStart( UnitPointer pTarget );
-	void		OnCombatStop( UnitPointer pTarget );
-    void		AIUpdate();
-	void		OnReachWP( uint32 pWaypointId, bool pForwards );
-	void		Destroy();
+		void		OnCombatStart(UnitPointer pTarget);
+		void		OnCombatStop(UnitPointer pTarget);
+		void		AIUpdate();
+		void		OnReachWP(uint32 pWaypointId, bool pForwards);
+		void		Destroy();
 
-	DarkPortalEventTriggerAI*	mTriggerAI;
-	uint32						mLastWP;
+		DarkPortalEventTriggerAI*	mTriggerAI;
+		uint32						mLastWP;
 };
 
 #define STORMWIND_MAGE_FIREBALL			33417
@@ -664,18 +664,18 @@ public:
 
 class StormwindMageAI : public MoonScriptCreatureAI
 {
-public:
-	MOONSCRIPT_FACTORY_FUNCTION( StormwindMageAI, MoonScriptCreatureAI );
-    StormwindMageAI( CreaturePointer pCreature );
+	public:
+		MOONSCRIPT_FACTORY_FUNCTION(StormwindMageAI, MoonScriptCreatureAI);
+		StormwindMageAI(CreaturePointer pCreature);
 
-    void		OnCombatStart( UnitPointer pTarget );
-    void		OnCombatStop( UnitPointer pTarget );
-    void		AIUpdate();
-	void		OnReachWP( uint32 pWaypointId, bool pForwards );
-	void		Destroy();
+		void		OnCombatStart(UnitPointer pTarget);
+		void		OnCombatStop(UnitPointer pTarget);
+		void		AIUpdate();
+		void		OnReachWP(uint32 pWaypointId, bool pForwards);
+		void		Destroy();
 
-	DarkPortalEventTriggerAI*	mTriggerAI;
-	uint32						mLastWP;
+		DarkPortalEventTriggerAI*	mTriggerAI;
+		uint32						mLastWP;
 };
 
 //=====================================================================================//
@@ -688,29 +688,29 @@ public:
 
 class PitCommanderAI : public MoonScriptCreatureAI
 {
-public:
-	MOONSCRIPT_FACTORY_FUNCTION( PitCommanderAI, MoonScriptCreatureAI );
-    PitCommanderAI( CreaturePointer pCreature );
+	public:
+		MOONSCRIPT_FACTORY_FUNCTION(PitCommanderAI, MoonScriptCreatureAI);
+		PitCommanderAI(CreaturePointer pCreature);
 
-	void		Destroy();
+		void		Destroy();
 
-	DarkPortalEventTriggerAI*	mTriggerAI;
+		DarkPortalEventTriggerAI*	mTriggerAI;
 };
 // Not sure about use, but it's reasonable way to cast Suicide spell
 #define INFERNAL_SIEGEBREAKER_SUICIDE	7
 
 class InfernalSiegebreakerAI : public MoonScriptCreatureAI
 {
-public:
-	MOONSCRIPT_FACTORY_FUNCTION( InfernalSiegebreakerAI, MoonScriptCreatureAI );
-    InfernalSiegebreakerAI( CreaturePointer pCreature );
+	public:
+		MOONSCRIPT_FACTORY_FUNCTION(InfernalSiegebreakerAI, MoonScriptCreatureAI);
+		InfernalSiegebreakerAI(CreaturePointer pCreature);
 
-	void		OnCombatStart( UnitPointer pTarget );
-	void		AIUpdate();
-	void		Destroy();
+		void		OnCombatStart(UnitPointer pTarget);
+		void		AIUpdate();
+		void		Destroy();
 
-	DarkPortalEventTriggerAI*	mTriggerAI;
-	SpellDesc*					mSuicide;
+		DarkPortalEventTriggerAI*	mTriggerAI;
+		SpellDesc*					mSuicide;
 };
 
 #define FEL_SOLDIER_CUTDOWN		32009
@@ -718,28 +718,28 @@ public:
 
 class FelSoldierAI : public MoonScriptCreatureAI
 {
-	MOONSCRIPT_FACTORY_FUNCTION( FelSoldierAI, MoonScriptCreatureAI );
-	FelSoldierAI( CreaturePointer pCreature );
+		MOONSCRIPT_FACTORY_FUNCTION(FelSoldierAI, MoonScriptCreatureAI);
+		FelSoldierAI(CreaturePointer pCreature);
 
-	void		OnCombatStop( UnitPointer pTarget );
-	void		OnReachWP( uint32 pWaypointId, bool pForwards );
-	void		Destroy();
+		void		OnCombatStop(UnitPointer pTarget);
+		void		OnReachWP(uint32 pWaypointId, bool pForwards);
+		void		Destroy();
 
-	DarkPortalEventTriggerAI*	mTriggerAI;
-	uint32						mLastWP;
+		DarkPortalEventTriggerAI*	mTriggerAI;
+		uint32						mLastWP;
 };
 
 class WrathMasterAI : public MoonScriptCreatureAI
 {
-	MOONSCRIPT_FACTORY_FUNCTION( WrathMasterAI, MoonScriptCreatureAI );
-	WrathMasterAI( CreaturePointer pCreature );
+		MOONSCRIPT_FACTORY_FUNCTION(WrathMasterAI, MoonScriptCreatureAI);
+		WrathMasterAI(CreaturePointer pCreature);
 
-	void		OnCombatStop( UnitPointer pTarget );
-	void		OnReachWP( uint32 pWaypointId, bool pForwards );
-	void		Destroy();
+		void		OnCombatStop(UnitPointer pTarget);
+		void		OnReachWP(uint32 pWaypointId, bool pForwards);
+		void		Destroy();
 
-	DarkPortalEventTriggerAI*	mTriggerAI;
-	uint32						mLastWP;
+		DarkPortalEventTriggerAI*	mTriggerAI;
+		uint32						mLastWP;
 };
 
-void SetupEventDarkPortal( ScriptMgr* pScriptMgr );
+void SetupEventDarkPortal(ScriptMgr* pScriptMgr);

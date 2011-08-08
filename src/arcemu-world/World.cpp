@@ -21,7 +21,7 @@
 #include "StdAfx.h"
 #include <CrashHandler.h>
 
-initialiseSingleton( World );
+initialiseSingleton(World);
 
 DayWatcherThread* dw = NULL;
 CommonScheduleThread* cs = NULL;
@@ -41,7 +41,7 @@ World::World()
 	GmClientChannel = "";
 
 	m_StartTime = 0;
-	eventholder = new EventableObjectHolder( WORLD_INSTANCE );
+	eventholder = new EventableObjectHolder(WORLD_INSTANCE);
 	m_holder = eventholder;
 	m_event_Instanceid = eventholder->GetInstanceID();
 
@@ -64,38 +64,38 @@ World::World()
 	NameinAnnounce = false;
 	NameinWAnnounce = false;
 	announce_output = true;
-	map_unload_time= 0;
+	map_unload_time = 0;
 	antiMasterLootNinja = false;
 
 	SocketSendBufSize = WORLDSOCKET_SENDBUF_SIZE;
 	SocketRecvBufSize = WORLDSOCKET_RECVBUF_SIZE;
 
-	m_levelCap=PLAYER_LEVEL_CAP;
-	m_genLevelCap=PLAYER_LEVEL_CAP;
-	StartingLevel=1;
-	m_limitedNames=false;
+	m_levelCap = PLAYER_LEVEL_CAP;
+	m_genLevelCap = PLAYER_LEVEL_CAP;
+	StartingLevel = 1;
+	m_limitedNames = false;
 	m_banTable = NULL;
 	DKStartTalentPoints = 0;
 
-    TotalTrafficInKB = 0.0;
-    TotalTrafficOutKB = 0.0;
-    LastTotalTrafficInKB = 0.0;
-    LastTotalTrafficOutKB = 0.0;
-    LastTrafficQuery = 0;
+	TotalTrafficInKB = 0.0;
+	TotalTrafficOutKB = 0.0;
+	LastTotalTrafficInKB = 0.0;
+	LastTotalTrafficOutKB = 0.0;
+	LastTrafficQuery = 0;
 }
 
 void CleanupRandomNumberGenerators();
 void World::LogoutPlayers()
 {
 	Log.Notice("World", "Logging out players...");
-	for(SessionMap::iterator i=m_sessions.begin();i!=m_sessions.end();i++)
+	for(SessionMap::iterator i = m_sessions.begin(); i != m_sessions.end(); i++)
 	{
 		(i->second)->LogoutPlayer(true);
 	}
 
 	Log.Notice("World", "Deleting sessions...");
-	WorldSession * p;
-	for(SessionMap::iterator i=m_sessions.begin();i!=m_sessions.end();)
+	WorldSession* p;
+	for(SessionMap::iterator i = m_sessions.begin(); i != m_sessions.end();)
 	{
 		p = i->second;
 		++i;
@@ -115,10 +115,10 @@ World::~World()
 
 	Log.Notice("ObjectMgr", "~ObjectMgr()");
 	delete ObjectMgr::getSingletonPtr();
-	
+
 	Log.Notice("LootMgr", "~LootMgr()");
 	delete LootMgr::getSingletonPtr();
-	
+
 	Log.Notice("LfgMgr", "~LfgMgr()");
 	delete LfgMgr::getSingletonPtr();
 
@@ -127,13 +127,13 @@ World::~World()
 
 	Log.Notice("QuestMgr", "~QuestMgr()");
 	delete QuestMgr::getSingletonPtr();
-  
+
 	Log.Notice("WeatherMgr", "~WeatherMgr()");
 	delete WeatherMgr::getSingletonPtr();
 
 	Log.Notice("TaxiMgr", "~TaxiMgr()");
 	delete TaxiMgr::getSingletonPtr();
-	
+
 	Log.Notice("BattlegroundMgr", "~BattlegroundMgr()");
 	delete CBattlegroundManager::getSingletonPtr();
 
@@ -149,7 +149,7 @@ World::~World()
 	Log.Notice("Rnd", "~Rnd()");
 	CleanupRandomNumberGenerators();
 
-	for( AreaTriggerMap::iterator i = m_AreaTrigger.begin( ); i != m_AreaTrigger.end( ); ++ i ) 
+	for(AreaTriggerMap::iterator i = m_AreaTrigger.begin(); i != m_AreaTrigger.end(); ++ i)
 	{
 		delete i->second;
 	}
@@ -172,12 +172,12 @@ World::~World()
 WorldSession* World::FindSession(uint32 id)
 {
 	m_sessionlock.AcquireReadLock();
-	WorldSession * ret = 0;
+	WorldSession* ret = 0;
 	SessionMap::const_iterator itr = m_sessions.find(id);
 
 	if(itr != m_sessions.end())
 		ret = itr->second;
-	
+
 	m_sessionlock.ReleaseReadLock();
 
 	return ret;
@@ -200,7 +200,7 @@ void World::RemoveSession(uint32 id)
 
 void World::AddSession(WorldSession* s)
 {
-    Arcemu::Util::ARCEMU_ASSERT(    s != NULL );
+	Arcemu::Util::ARCEMU_ASSERT(s != NULL);
 
 	m_sessionlock.AcquireWriteLock();
 
@@ -214,19 +214,19 @@ void World::AddSession(WorldSession* s)
 	m_sessionlock.ReleaseWriteLock();
 }
 
-void World::AddGlobalSession(WorldSession *session)
+void World::AddGlobalSession(WorldSession* session)
 {
-    Arcemu::Util::ARCEMU_ASSERT(    session != NULL );
+	Arcemu::Util::ARCEMU_ASSERT(session != NULL);
 
 	SessionsMutex.Acquire();
 	Sessions.insert(session);
 	SessionsMutex.Release();
 }
 
-void World::RemoveGlobalSession(WorldSession *session)
+void World::RemoveGlobalSession(WorldSession* session)
 {
 
-    Arcemu::Util::ARCEMU_ASSERT(    session != NULL );
+	Arcemu::Util::ARCEMU_ASSERT(session != NULL);
 
 	SessionsMutex.Acquire();
 	Sessions.erase(session);
@@ -240,32 +240,32 @@ bool BasicTaskExecutor::run()
 	switch(priority)
 	{
 		case BTE_PRIORITY_LOW:
-			::SetThreadPriority( ::GetCurrentThread(), THREAD_PRIORITY_LOWEST );
+			::SetThreadPriority(::GetCurrentThread(), THREAD_PRIORITY_LOWEST);
 			break;
 
 		case BTW_PRIORITY_HIGH:
-			::SetThreadPriority( ::GetCurrentThread(), THREAD_PRIORITY_ABOVE_NORMAL );
+			::SetThreadPriority(::GetCurrentThread(), THREAD_PRIORITY_ABOVE_NORMAL);
 			break;
 
 		default:		// BTW_PRIORITY_MED
-			::SetThreadPriority( ::GetCurrentThread(), THREAD_PRIORITY_NORMAL );
+			::SetThreadPriority(::GetCurrentThread(), THREAD_PRIORITY_NORMAL);
 			break;
 	}
 #else
 	struct sched_param param;
 	switch(priority)
 	{
-	case BTE_PRIORITY_LOW:
-		param.sched_priority = 0;
-		break;
+		case BTE_PRIORITY_LOW:
+			param.sched_priority = 0;
+			break;
 
-	case BTW_PRIORITY_HIGH:
-		param.sched_priority = 10;
-		break;
+		case BTW_PRIORITY_HIGH:
+			param.sched_priority = 10;
+			break;
 
-	default:		// BTW_PRIORITY_MED
-		param.sched_priority = 5;
-		break;
+		default:		// BTW_PRIORITY_MED
+			param.sched_priority = 5;
+			break;
 	}
 	pthread_setschedparam(pthread_self(), SCHED_OTHER, &param);
 #endif
@@ -290,7 +290,7 @@ bool World::SetInitialWorldSettings()
 
 	CharacterDatabase.WaitExecute("UPDATE characters SET online = 0 WHERE online = 1");
 	CharacterDatabase.WaitExecute("UPDATE characters SET banned= 0,banReason='' WHERE banned > 100 AND banned < %u", UNIXTIME);
-   
+
 	m_lastTick = UNIXTIME;
 
 	// TODO: clean this
@@ -298,13 +298,13 @@ bool World::SetInitialWorldSettings()
 	char hour[3];
 	char minute[3];
 	char second[3];
-	struct tm *tmPtr;
+	struct tm* tmPtr;
 	tiempo = UNIXTIME;
 	tmPtr = localtime(&tiempo);
-	strftime( hour, 3, "%H", tmPtr );
-	strftime( minute, 3, "%M", tmPtr );
-	strftime( second, 3, "%S", tmPtr );
-	m_gameTime = (3600*atoi(hour))+(atoi(minute)*60)+(atoi(second)); // server starts at noon
+	strftime(hour, 3, "%H", tmPtr);
+	strftime(minute, 3, "%M", tmPtr);
+	strftime(second, 3, "%S", tmPtr);
+	m_gameTime = (3600 * atoi(hour)) + (atoi(minute) * 60) + (atoi(second)); // server starts at noon
 
 	// TODO: clean this
 	// fill in emotes table
@@ -344,17 +344,17 @@ bool World::SetInitialWorldSettings()
 
 	uint32 start_time = getMSTime();
 
-	Log.Success( "World", "Loading DBC files..." );
-	if( !LoadDBCs() )
+	Log.Success("World", "Loading DBC files...");
+	if(!LoadDBCs())
 	{
 		Log.LargeErrorMessage("One or more of the DBC files are missing.", "These are absolutely necessary for the server to function.", "The server will not start without them.", NULL);
 		return false;
 	}
 
 	/* Convert area table ids/flags */
-	for( DBCStorage<AreaTable>::iterator itr = dbcArea.begin(); itr != dbcArea.end(); ++itr )
+	for(DBCStorage<AreaTable>::iterator itr = dbcArea.begin(); itr != dbcArea.end(); ++itr)
 	{
-		AreaTable *at = *itr;
+		AreaTable* at = *itr;
 
 		uint32 area_ = at->AreaId;
 		uint32 flag_ = at->explorationFlag;
@@ -364,7 +364,7 @@ bool World::SetInitialWorldSettings()
 		if(mZoneIDToTable.find(zone_) != mZoneIDToTable.end())
 		{
 			if(mZoneIDToTable[zone_]->AreaFlags != 312 &&
-				mAreaIDToTable[flag_]->AreaFlags == 312)
+			        mAreaIDToTable[flag_]->AreaFlags == 312)
 			{
 				// over ride.
 				mZoneIDToTable[zone_] = mAreaIDToTable[flag_];
@@ -417,7 +417,7 @@ bool World::SetInitialWorldSettings()
 	MAKE_TASK(ObjectMgr,  LoadAIThreatToSpellId);
 	MAKE_TASK(ObjectMgr,  LoadSpellProcs);
 	MAKE_TASK(ObjectMgr,  LoadSpellEffectsOverride);
-	MAKE_TASK( ObjectMgr, LoadSpellTargetConstraints );
+	MAKE_TASK(ObjectMgr, LoadSpellTargetConstraints);
 	MAKE_TASK(ObjectMgr,  LoadDefaultPetSpells);
 	MAKE_TASK(ObjectMgr,  LoadPetSpellCooldowns);
 	MAKE_TASK(ObjectMgr,  LoadGuildCharters);
@@ -447,7 +447,7 @@ bool World::SetInitialWorldSettings()
 
 	CommandTableStorage::getSingleton().Load();
 	Log.Success("WordFilter", "Loading...");
-	
+
 	g_characterNameFilter = new WordFilter();
 	g_chatFilter = new WordFilter();
 	g_characterNameFilter->Load("wordfilter_character_names");
@@ -457,7 +457,8 @@ bool World::SetInitialWorldSettings()
 
 	Log.Success("World", "Database loaded in %ums.", getMSTime() - start_time);
 
-	if (Collision) {
+	if(Collision)
+	{
 		CollideInterface.Init();
 	}
 
@@ -481,12 +482,12 @@ bool World::SetInitialWorldSettings()
 
 // ------------------------------------------------------------------------------------------------
 
-	Log.Success("World","Starting Transport System...");
+	Log.Success("World", "Starting Transport System...");
 	objmgr.LoadTransporters();
 
 	//Start the Achievement system :D
 #ifdef ENABLE_ACHIEVEMENTS
-	Log.Success("World","Starting Achievement System..");
+	Log.Success("World", "Starting Achievement System..");
 	objmgr.LoadAchievementCriteriaList();
 #endif
 	// start mail system
@@ -502,8 +503,8 @@ bool World::SetInitialWorldSettings()
 		Log.Notice("World", "Backgrounding loot loading...");
 
 		// loot background loading in a lower priority thread.
-		ThreadPool.ExecuteTask(new BasicTaskExecutor(new CallbackP0<LootMgr>(LootMgr::getSingletonPtr(), &LootMgr::LoadLoot), 
-			BTE_PRIORITY_LOW));
+		ThreadPool.ExecuteTask(new BasicTaskExecutor(new CallbackP0<LootMgr>(LootMgr::getSingletonPtr(), &LootMgr::LoadLoot),
+		                       BTE_PRIORITY_LOW));
 	}
 	else
 	{
@@ -516,18 +517,18 @@ bool World::SetInitialWorldSettings()
 	new CBattlegroundManager;
 
 	dw = new DayWatcherThread();
-	ThreadPool.ExecuteTask( dw );
-	
+	ThreadPool.ExecuteTask(dw);
+
 	// commonschedule sys
 	cs = new CommonScheduleThread();
-	ThreadPool.ExecuteTask( cs );
-	
+	ThreadPool.ExecuteTask(cs);
 
-	ThreadPool.ExecuteTask( new CharacterLoaderThread() );
+
+	ThreadPool.ExecuteTask(new CharacterLoaderThread());
 
 #ifdef ENABLE_COMPRESSED_MOVEMENT
 	MovementCompressor = new CMovementCompressorThread();
-	ThreadPool.ExecuteTask( MovementCompressor );
+	ThreadPool.ExecuteTask(MovementCompressor);
 #endif
 
 	// Preload and compile talent and talent tab data to speed up talent inspect
@@ -536,57 +537,57 @@ bool World::SetInitialWorldSettings()
 	uint32 talent_pos;
 	uint32 talent_class;
 
-    for( uint32 i = 0; i < dbcTalent.GetNumRows(); ++i )
-    {
-        TalentEntry const* talent_info = dbcTalent.LookupRowForced( i );
+	for(uint32 i = 0; i < dbcTalent.GetNumRows(); ++i)
+	{
+		TalentEntry const* talent_info = dbcTalent.LookupRowForced(i);
 		// Don't add invalid talents or Hunter Pet talents (trees 409, 410 and 411) to the inspect table
-		if( talent_info == NULL || talent_info->TalentTree == 409 || talent_info->TalentTree == 410 || talent_info->TalentTree == 411 )
+		if(talent_info == NULL || talent_info->TalentTree == 409 || talent_info->TalentTree == 410 || talent_info->TalentTree == 411)
 			continue;
 
-		TalentTabEntry const* tab_info = dbcTalentTab.LookupEntryForced( talent_info->TalentTree );
-		if( tab_info == NULL )
+		TalentTabEntry const* tab_info = dbcTalentTab.LookupEntryForced(talent_info->TalentTree);
+		if(tab_info == NULL)
 			continue;
 
-        talent_max_rank = 0;
-        for( uint32 j = 5; j > 0; --j )
-        {
-            if( talent_info->RankID[j - 1] )
-            {
-                talent_max_rank = j;
-                break;
-            }
+		talent_max_rank = 0;
+		for(uint32 j = 5; j > 0; --j)
+		{
+			if(talent_info->RankID[j - 1])
+			{
+				talent_max_rank = j;
+				break;
+			}
 		}
 
-		InspectTalentTabBit[( talent_info->Row << 24 ) + ( talent_info->Col << 16 ) + talent_info->TalentID] = talent_max_rank;
+		InspectTalentTabBit[(talent_info->Row << 24) + (talent_info->Col << 16) + talent_info->TalentID] = talent_max_rank;
 		InspectTalentTabSize[talent_info->TalentTree] += talent_max_rank;
 	}
 
-	for( uint32 i = 0; i < dbcTalentTab.GetNumRows(); ++i )
+	for(uint32 i = 0; i < dbcTalentTab.GetNumRows(); ++i)
 	{
-		TalentTabEntry const* tab_info = dbcTalentTab.LookupRowForced( i );
+		TalentTabEntry const* tab_info = dbcTalentTab.LookupRowForced(i);
 
 		// Don't add invalid TalentTabs or Hunter Pet TalentTabs (ClassMask == 0) to the InspectTalentTabPages
-		if( tab_info == NULL || tab_info->ClassMask == 0 )
+		if(tab_info == NULL || tab_info->ClassMask == 0)
 			continue;
 
 		talent_pos = 0;
-        
-		for( talent_class = 0; talent_class < 12; ++talent_class )
+
+		for(talent_class = 0; talent_class < 12; ++talent_class)
 		{
-			if( tab_info->ClassMask & ( 1 << talent_class ) )
+			if(tab_info->ClassMask & (1 << talent_class))
 				break;
 		}
 
 		InspectTalentTabPages[talent_class + 1][tab_info->TabPage] = tab_info->TalentTabID;
 
-		for( std::map< uint32, uint32 >::iterator itr = InspectTalentTabBit.begin(); itr != InspectTalentTabBit.end(); ++itr )
+		for(std::map< uint32, uint32 >::iterator itr = InspectTalentTabBit.begin(); itr != InspectTalentTabBit.end(); ++itr)
 		{
 			uint32 talent_id = itr->first & 0xFFFF;
-			TalentEntry const* talent_info = dbcTalent.LookupEntryForced( talent_id );
-			if( talent_info == NULL )
+			TalentEntry const* talent_info = dbcTalent.LookupEntryForced(talent_id);
+			if(talent_info == NULL)
 				continue;
 
-			if( talent_info->TalentTree != tab_info->TalentTabID )
+			if(talent_info->TalentTree != tab_info->TalentTabID)
 				continue;
 
 			InspectTalentTabPos[talent_id] = talent_pos;
@@ -605,22 +606,22 @@ void World::Update(time_t diff)
 	_UpdateGameTime();
 	UpdateQueuedSessions((uint32)diff);
 #ifdef SESSION_CAP
-	if( GetSessionCount() >= SESSION_CAP )
-		TerminateProcess(GetCurrentProcess(),0);
+	if(GetSessionCount() >= SESSION_CAP)
+		TerminateProcess(GetCurrentProcess(), 0);
 #endif
 }
 
 
-void World::SendGlobalMessage(WorldPacket *packet, WorldSession *self)
+void World::SendGlobalMessage(WorldPacket* packet, WorldSession* self)
 {
 	m_sessionlock.AcquireReadLock();
 
 	SessionMap::iterator itr;
-	for (itr = m_sessions.begin(); itr != m_sessions.end(); itr++)
+	for(itr = m_sessions.begin(); itr != m_sessions.end(); itr++)
 	{
-		if (itr->second->GetPlayer() &&
-			itr->second->GetPlayer()->IsInWorld()
-			&& itr->second != self)  // don't send to self!
+		if(itr->second->GetPlayer() &&
+		        itr->second->GetPlayer()->IsInWorld()
+		        && itr->second != self)  // don't send to self!
 		{
 			itr->second->SendPacket(packet);
 		}
@@ -629,29 +630,31 @@ void World::SendGlobalMessage(WorldPacket *packet, WorldSession *self)
 	m_sessionlock.ReleaseReadLock();
 }
 
-void World::PlaySoundToAll( uint32 soundid ){
+void World::PlaySoundToAll(uint32 soundid)
+{
 
-	WorldPacket data( SMSG_PLAY_SOUND, 4 );
-	data << uint32( soundid );
+	WorldPacket data(SMSG_PLAY_SOUND, 4);
+	data << uint32(soundid);
 
 	m_sessionlock.AcquireWriteLock();
 
-	for( SessionMap::iterator itr = m_sessions.begin(); itr != m_sessions.end(); ++itr ){
-		WorldSession *s = itr->second;
-		
-		if( ( s->GetPlayer() != NULL ) && s->GetPlayer()->IsInWorld() )
-			s->SendPacket( &data );
+	for(SessionMap::iterator itr = m_sessions.begin(); itr != m_sessions.end(); ++itr)
+	{
+		WorldSession* s = itr->second;
+
+		if((s->GetPlayer() != NULL) && s->GetPlayer()->IsInWorld())
+			s->SendPacket(&data);
 	}
 
 	m_sessionlock.ReleaseWriteLock();
 }
 
 
-void World::SendFactionMessage(WorldPacket *packet, uint8 teamId)
+void World::SendFactionMessage(WorldPacket* packet, uint8 teamId)
 {
 	m_sessionlock.AcquireReadLock();
 	SessionMap::iterator itr;
-	Player * plr;
+	Player* plr;
 	for(itr = m_sessions.begin(); itr != m_sessions.end(); itr++)
 	{
 		plr = itr->second->GetPlayer();
@@ -664,35 +667,35 @@ void World::SendFactionMessage(WorldPacket *packet, uint8 teamId)
 	m_sessionlock.ReleaseReadLock();
 }
 
-void World::SendGamemasterMessage(WorldPacket *packet, WorldSession *self)
+void World::SendGamemasterMessage(WorldPacket* packet, WorldSession* self)
 {
 	m_sessionlock.AcquireReadLock();
 	SessionMap::iterator itr;
 	for(itr = m_sessions.begin(); itr != m_sessions.end(); itr++)
 	{
-	  if (itr->second->GetPlayer() &&
-	  itr->second->GetPlayer()->IsInWorld()
-	  && itr->second != self)  // don't send to self!
-	  {
-		if(itr->second->CanUseCommand('u'))
-		itr->second->SendPacket(packet);
-	  }
+		if(itr->second->GetPlayer() &&
+		        itr->second->GetPlayer()->IsInWorld()
+		        && itr->second != self)  // don't send to self!
+		{
+			if(itr->second->CanUseCommand('u'))
+				itr->second->SendPacket(packet);
+		}
 	}
 	m_sessionlock.ReleaseReadLock();
 }
 
-void World::SendZoneMessage(WorldPacket *packet, uint32 zoneid, WorldSession *self)
+void World::SendZoneMessage(WorldPacket* packet, uint32 zoneid, WorldSession* self)
 {
 	m_sessionlock.AcquireReadLock();
 
 	SessionMap::iterator itr;
-	for (itr = m_sessions.begin(); itr != m_sessions.end(); itr++)
+	for(itr = m_sessions.begin(); itr != m_sessions.end(); itr++)
 	{
-		if (itr->second->GetPlayer() &&
-			itr->second->GetPlayer()->IsInWorld()
-			&& itr->second != self)  // don't send to self!
+		if(itr->second->GetPlayer() &&
+		        itr->second->GetPlayer()->IsInWorld()
+		        && itr->second != self)  // don't send to self!
 		{
-			if (itr->second->GetPlayer()->GetZoneId() == zoneid)
+			if(itr->second->GetPlayer()->GetZoneId() == zoneid)
 				itr->second->SendPacket(packet);
 		}
 	}
@@ -700,18 +703,18 @@ void World::SendZoneMessage(WorldPacket *packet, uint32 zoneid, WorldSession *se
 	m_sessionlock.ReleaseReadLock();
 }
 
-void World::SendInstanceMessage(WorldPacket *packet, uint32 instanceid, WorldSession *self)
+void World::SendInstanceMessage(WorldPacket* packet, uint32 instanceid, WorldSession* self)
 {
 	m_sessionlock.AcquireReadLock();
 
 	SessionMap::iterator itr;
-	for (itr = m_sessions.begin(); itr != m_sessions.end(); itr++)
+	for(itr = m_sessions.begin(); itr != m_sessions.end(); itr++)
 	{
-		if (itr->second->GetPlayer() &&
-			itr->second->GetPlayer()->IsInWorld()
-			&& itr->second != self)  // don't send to self!
+		if(itr->second->GetPlayer() &&
+		        itr->second->GetPlayer()->IsInWorld()
+		        && itr->second != self)  // don't send to self!
 		{
-			if (itr->second->GetPlayer()->GetInstanceID() == (int32)instanceid)
+			if(itr->second->GetPlayer()->GetInstanceID() == (int32)instanceid)
 				itr->second->SendPacket(packet);
 		}
 	}
@@ -719,16 +722,16 @@ void World::SendInstanceMessage(WorldPacket *packet, uint32 instanceid, WorldSes
 	m_sessionlock.ReleaseReadLock();
 }
 
-void World::SendWorldText(const char* text, WorldSession *self)
+void World::SendWorldText(const char* text, WorldSession* self)
 {
-    uint32 textLen = (uint32)strlen((char*)text) + 1;
+	uint32 textLen = (uint32)strlen((char*)text) + 1;
 
-    WorldPacket data(textLen + 40);
+	WorldPacket data(textLen + 40);
 
 	data.Initialize(SMSG_MESSAGECHAT);
 	data << uint8(CHAT_MSG_SYSTEM);
 	data << uint32(LANG_UNIVERSAL);
-	
+
 	data << (uint64)0; // Who cares about guid when there's no nickname displayed heh ?
 	data << (uint32)0;
 	data << (uint64)0;
@@ -739,20 +742,22 @@ void World::SendWorldText(const char* text, WorldSession *self)
 
 	SendGlobalMessage(&data, self);
 
-	if(announce_output){
-		sLog.outString("> %s", text);}
+	if(announce_output)
+	{
+		sLog.outString("> %s", text);
+	}
 }
 
-void World::SendGMWorldText(const char* text, WorldSession *self)
+void World::SendGMWorldText(const char* text, WorldSession* self)
 {
-    uint32 textLen = (uint32)strlen((char*)text) + 1;
+	uint32 textLen = (uint32)strlen((char*)text) + 1;
 
-    WorldPacket data(textLen + 40);
+	WorldPacket data(textLen + 40);
 
 	data.Initialize(SMSG_MESSAGECHAT);
 	data << uint8(CHAT_MSG_SYSTEM);
 	data << uint32(LANG_UNIVERSAL);
-	
+
 	data << (uint64)0;
 	data << (uint32)0;
 	data << (uint64)0;
@@ -763,9 +768,10 @@ void World::SendGMWorldText(const char* text, WorldSession *self)
 	SendGamemasterMessage(&data, self);
 }
 
-void World::SendDamageLimitTextToGM( const char *playername, const char *dmglog ){
-	string gm_ann( MSG_COLOR_GREEN );
-	
+void World::SendDamageLimitTextToGM(const char* playername, const char* dmglog)
+{
+	string gm_ann(MSG_COLOR_GREEN);
+
 	gm_ann += "|Hplayer:";
 	gm_ann += playername;
 	gm_ann += "|h[";
@@ -773,11 +779,11 @@ void World::SendDamageLimitTextToGM( const char *playername, const char *dmglog 
 	gm_ann += "]|h: ";
 	gm_ann += MSG_COLOR_YELLOW;
 	gm_ann += dmglog;
-	
+
 	sWorld.SendGMWorldText(gm_ann.c_str());
 }
 
-void World::SendWorldWideScreenText(const char *text, WorldSession *self)
+void World::SendWorldWideScreenText(const char* text, WorldSession* self)
 {
 	WorldPacket data(256);
 	data.Initialize(SMSG_AREA_TRIGGER_MESSAGE);
@@ -788,7 +794,7 @@ void World::SendWorldWideScreenText(const char *text, WorldSession *self)
 void World::UpdateSessions(uint32 diff)
 {
 	SessionSet::iterator itr, it2;
-	WorldSession *session;
+	WorldSession* session;
 	int result;
 
 
@@ -813,7 +819,7 @@ void World::UpdateSessions(uint32 diff)
 			{
 				// complete deletion after relinquishing SessionMutex!
 				// Otherwise Valgrind (probably falsely) reports a possible deadlock!
-				ErasableSessions.push_back( session );
+				ErasableSessions.push_back(session);
 			}
 			Sessions.erase(it2);
 		}
@@ -821,7 +827,7 @@ void World::UpdateSessions(uint32 diff)
 
 	SessionsMutex.Release();
 
-	DeleteSessions( ErasableSessions );
+	DeleteSessions(ErasableSessions);
 	ErasableSessions.clear();
 }
 
@@ -830,11 +836,11 @@ std::string World::GenerateName(uint32 type)
 	if(_namegendata[type].size() == 0)
 		return "ERR";
 
-	uint32 ent = RandomUInt((uint32)_namegendata[type].size()-1);
+	uint32 ent = RandomUInt((uint32)_namegendata[type].size() - 1);
 	return _namegendata[type].at(ent).name;
 }
 
-void World::DeleteSession(WorldSession *session)
+void World::DeleteSession(WorldSession* session)
 {
 	m_sessionlock.AcquireWriteLock();
 	m_sessions.erase(session->GetAccountId());
@@ -842,18 +848,21 @@ void World::DeleteSession(WorldSession *session)
 	delete session;
 }
 
-void World::DeleteSessions( std::list< WorldSession* > &slist ){
+void World::DeleteSessions(std::list< WorldSession* > &slist)
+{
 	m_sessionlock.AcquireWriteLock();
 
-	for( std::list< WorldSession* >::iterator itr = slist.begin(); itr != slist.end(); ++itr ){
-		WorldSession *s = *itr;
-		m_sessions.erase( s->GetAccountId() );
+	for(std::list< WorldSession* >::iterator itr = slist.begin(); itr != slist.end(); ++itr)
+	{
+		WorldSession* s = *itr;
+		m_sessions.erase(s->GetAccountId());
 	}
 
 	m_sessionlock.ReleaseWriteLock();
 
-	for( std::list< WorldSession* >::iterator itr = slist.begin(); itr != slist.end(); ++itr ){
-		WorldSession *s = *itr;
+	for(std::list< WorldSession* >::iterator itr = slist.begin(); itr != slist.end(); ++itr)
+	{
+		WorldSession* s = *itr;
 		delete s;
 	}
 }
@@ -865,9 +874,9 @@ uint32 World::GetNonGmSessionCount()
 	uint32 total = (uint32)m_sessions.size();
 
 	SessionMap::const_iterator itr = m_sessions.begin();
-	for( ; itr != m_sessions.end(); itr++ )
+	for(; itr != m_sessions.end(); itr++)
 	{
-		if( (itr->second)->HasGMPermissions() )
+		if((itr->second)->HasGMPermissions())
 			total--;
 	}
 
@@ -938,7 +947,7 @@ uint32 World::GetQueuePos(WorldSocket* Socket)
 
 void World::UpdateQueuedSessions(uint32 diff)
 {
-	if(diff >= m_queueUpdateTimer) 
+	if(diff >= m_queueUpdateTimer)
 	{
 		m_queueUpdateTimer = mQueueUpdateInterval;
 		queueMutex.Acquire();
@@ -948,7 +957,7 @@ void World::UpdateQueuedSessions(uint32 diff)
 			queueMutex.Release();
 			return;
 		}
-		
+
 		while(m_sessions.size() < m_playerLimit && mQueuedSessions.size())
 		{
 			// Yay. We can let another player in now.
@@ -956,7 +965,7 @@ void World::UpdateQueuedSessions(uint32 diff)
 			// this is in a different thread again.
 
 			QueueSet::iterator iter = mQueuedSessions.begin();
-			WorldSocket * QueuedSocket = *iter;
+			WorldSocket* QueuedSocket = *iter;
 			mQueuedSessions.erase(iter);
 
 			// Welcome, sucker.
@@ -980,14 +989,14 @@ void World::UpdateQueuedSessions(uint32 diff)
 		while(iter != mQueuedSessions.end())
 		{
 			(*iter)->UpdateQueuePosition(Position++);
-			if(iter==mQueuedSessions.end())
+			if(iter == mQueuedSessions.end())
 				break;
 			else
 				++iter;
 		}
 		queueMutex.Release();
-	} 
-	else 
+	}
+	else
 	{
 		m_queueUpdateTimer -= diff;
 	}
@@ -1001,24 +1010,24 @@ void World::SaveAllPlayers()
 	sLog.outString("Saving all players to database...");
 	uint32 count = 0;
 	PlayerStorageMap::const_iterator itr;
-		// Servers started and obviously running. lets save all players.
+	// Servers started and obviously running. lets save all players.
 	uint32 mt;
-	objmgr._playerslock.AcquireReadLock();   
-	for (itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
+	objmgr._playerslock.AcquireReadLock();
+	for(itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
+	{
+		if(itr->second->GetSession())
 		{
-			if(itr->second->GetSession())
-			{
-				mt = getMSTime();
-				itr->second->SaveToDB(false);
-				LOG_DETAIL("Saved player `%s` (level %u) in %ums.", itr->second->GetName(), itr->second->getLevel(), getMSTime() - mt);
-				++count;
-			}
+			mt = getMSTime();
+			itr->second->SaveToDB(false);
+			LOG_DETAIL("Saved player `%s` (level %u) in %ums.", itr->second->GetName(), itr->second->getLevel(), getMSTime() - mt);
+			++count;
 		}
+	}
 	objmgr._playerslock.ReleaseReadLock();
 	sLog.outString("Saved %u players.", count);
 }
 
-WorldSession* World::FindSessionByName(const char * Name)//case insensitive
+WorldSession* World::FindSessionByName(const char* Name) //case insensitive
 {
 	m_sessionlock.AcquireReadLock();
 
@@ -1026,11 +1035,11 @@ WorldSession* World::FindSessionByName(const char * Name)//case insensitive
 	SessionMap::iterator itr = m_sessions.begin();
 	for(; itr != m_sessions.end(); ++itr)
 	{
-	  if(!stricmp(itr->second->GetAccountName().c_str(),Name))
-	  {
-		  m_sessionlock.ReleaseReadLock();
+		if(!stricmp(itr->second->GetAccountName().c_str(), Name))
+		{
+			m_sessionlock.ReleaseReadLock();
 			return itr->second;
-	  }
+		}
 	}
 	m_sessionlock.ReleaseReadLock();
 	return 0;
@@ -1051,14 +1060,14 @@ void World::ShutdownClasses()
 	delete MailSystem::getSingletonPtr();
 }
 
-void World::GetStats(uint32 * GMCount, float * AverageLatency)
+void World::GetStats(uint32* GMCount, float* AverageLatency)
 {
 	int gm = 0;
 	int count = 0;
 	int avg = 0;
 	PlayerStorageMap::const_iterator itr;
 	objmgr._playerslock.AcquireReadLock();
-	for (itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
+	for(itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
 	{
 		if(itr->second->GetSession())
 		{
@@ -1066,7 +1075,7 @@ void World::GetStats(uint32 * GMCount, float * AverageLatency)
 			avg += itr->second->GetSession()->GetLatency();
 			if(itr->second->GetSession()->GetPermissionCount())
 				gm++;
-		}			
+		}
 	}
 	objmgr._playerslock.ReleaseReadLock();
 
@@ -1074,28 +1083,28 @@ void World::GetStats(uint32 * GMCount, float * AverageLatency)
 	*GMCount = gm;
 }
 
-void TaskList::AddTask(Task * task)
+void TaskList::AddTask(Task* task)
 {
 	queueLock.Acquire();
 	tasks.insert(task);
 	queueLock.Release();
 }
 
-Task * TaskList::GetTask()
+Task* TaskList::GetTask()
 {
 	queueLock.Acquire();
 
 	Task* t = 0;
 
-    for(set<Task*>::iterator itr = tasks.begin(); itr != tasks.end(); ++itr)
+	for(set<Task*>::iterator itr = tasks.begin(); itr != tasks.end(); ++itr)
 	{
-	    if(!(*itr)->in_progress)
+		if(!(*itr)->in_progress)
 		{
-		    t = (*itr);
+			t = (*itr);
 			t->in_progress = true;
 			break;
 		}
-    }
+	}
 
 	queueLock.Release();
 
@@ -1129,8 +1138,8 @@ void TaskList::spawn()
 		SYSTEM_INFO s;
 		GetSystemInfo(&s);
 		threadcount = s.dwNumberOfProcessors * 2;
-		if(threadcount>8)
-			threadcount=8;
+		if(threadcount > 8)
+			threadcount = 8;
 #endif
 	}
 	else
@@ -1174,25 +1183,25 @@ void Task::execute()
 
 bool TaskExecutor::run()
 {
-	Task * t;
-    
-    THREAD_TRY_EXECUTION
+	Task* t;
 
-		while(starter->running)
+	THREAD_TRY_EXECUTION
+
+	while(starter->running)
+	{
+		t = starter->GetTask();
+		if(t)
 		{
-			t = starter->GetTask();
-			if(t)
-			{
-				t->execute();
-				t->completed = true;
-				starter->RemoveTask(t);
-				delete t;
-			}
-			else
-				Arcemu::Sleep(20);
+			t->execute();
+			t->completed = true;
+			starter->RemoveTask(t);
+			delete t;
 		}
+		else
+			Arcemu::Sleep(20);
+	}
 
-    THREAD_HANDLE_CRASH
+	THREAD_HANDLE_CRASH
 
 	return true;
 }
@@ -1205,7 +1214,7 @@ void TaskList::waitForThreadsToExit()
 	}
 }
 
-void World::DeleteObject(Object * obj)
+void World::DeleteObject(Object* obj)
 {
 	delete obj;
 }
@@ -1214,13 +1223,13 @@ void World::Rehash(bool load)
 {
 	if(load)
 	{
-		#ifdef WIN32
+#ifdef WIN32
 		Config.MainConfig.SetSource("configs/world.conf", true);
 		Config.OptionalConfig.SetSource("configs/optional.conf", true);
-		#else
+#else
 		Config.MainConfig.SetSource((char*)CONFDIR "/world.conf", true);
 		Config.OptionalConfig.SetSource((char*)CONFDIR "/optional.conf", true);
-		#endif
+#endif
 	}
 	if(!ChannelMgr::getSingletonPtr())
 		new ChannelMgr;
@@ -1237,23 +1246,23 @@ void World::Rehash(bool load)
 	compression_threshold = Config.MainConfig.GetIntDefault("Server", "CompressionThreshold", 1000);
 
 	// load regeneration rates.
-	setRate(RATE_HEALTH,Config.MainConfig.GetFloatDefault("Rates", "Health",1)); // health
-	setRate(RATE_POWER1,Config.MainConfig.GetFloatDefault("Rates", "Power1",1)); // mana
-	setRate(RATE_POWER2,Config.MainConfig.GetFloatDefault("Rates", "Power2",1)); // rage
-	setRate(RATE_POWER3,Config.MainConfig.GetFloatDefault("Rates", "Power3",1)); // focus
-	setRate(RATE_POWER4,Config.MainConfig.GetFloatDefault("Rates", "Power4",1)); // energy
-	setRate(RATE_POWER7,Config.MainConfig.GetFloatDefault("Rates", "Power7",1)); // runic power (rate unused)
-	setRate(RATE_DROP0,Config.MainConfig.GetFloatDefault("Rates", "DropGrey",1));
-	setRate(RATE_DROP1,Config.MainConfig.GetFloatDefault("Rates", "DropWhite",1));
-	setRate(RATE_DROP2,Config.MainConfig.GetFloatDefault("Rates", "DropGreen",1));
-	setRate(RATE_DROP3,Config.MainConfig.GetFloatDefault("Rates", "DropBlue",1));
-	setRate(RATE_DROP4,Config.MainConfig.GetFloatDefault("Rates", "DropPurple",1));
-	setRate(RATE_DROP5,Config.MainConfig.GetFloatDefault("Rates", "DropOrange",1));
-	setRate(RATE_DROP6,Config.MainConfig.GetFloatDefault("Rates", "DropArtifact",1));
-	setRate(RATE_XP,Config.MainConfig.GetFloatDefault("Rates", "XP",1));
-	setRate(RATE_RESTXP,Config.MainConfig.GetFloatDefault("Rates", "RestXP", 1));
-	setRate(RATE_QUESTXP,Config.MainConfig.GetFloatDefault("Rates", "QuestXP", 1));
-	setRate(RATE_EXPLOREXP,Config.MainConfig.GetFloatDefault("Rates", "ExploreXP", 1));
+	setRate(RATE_HEALTH, Config.MainConfig.GetFloatDefault("Rates", "Health", 1)); // health
+	setRate(RATE_POWER1, Config.MainConfig.GetFloatDefault("Rates", "Power1", 1)); // mana
+	setRate(RATE_POWER2, Config.MainConfig.GetFloatDefault("Rates", "Power2", 1)); // rage
+	setRate(RATE_POWER3, Config.MainConfig.GetFloatDefault("Rates", "Power3", 1)); // focus
+	setRate(RATE_POWER4, Config.MainConfig.GetFloatDefault("Rates", "Power4", 1)); // energy
+	setRate(RATE_POWER7, Config.MainConfig.GetFloatDefault("Rates", "Power7", 1)); // runic power (rate unused)
+	setRate(RATE_DROP0, Config.MainConfig.GetFloatDefault("Rates", "DropGrey", 1));
+	setRate(RATE_DROP1, Config.MainConfig.GetFloatDefault("Rates", "DropWhite", 1));
+	setRate(RATE_DROP2, Config.MainConfig.GetFloatDefault("Rates", "DropGreen", 1));
+	setRate(RATE_DROP3, Config.MainConfig.GetFloatDefault("Rates", "DropBlue", 1));
+	setRate(RATE_DROP4, Config.MainConfig.GetFloatDefault("Rates", "DropPurple", 1));
+	setRate(RATE_DROP5, Config.MainConfig.GetFloatDefault("Rates", "DropOrange", 1));
+	setRate(RATE_DROP6, Config.MainConfig.GetFloatDefault("Rates", "DropArtifact", 1));
+	setRate(RATE_XP, Config.MainConfig.GetFloatDefault("Rates", "XP", 1));
+	setRate(RATE_RESTXP, Config.MainConfig.GetFloatDefault("Rates", "RestXP", 1));
+	setRate(RATE_QUESTXP, Config.MainConfig.GetFloatDefault("Rates", "QuestXP", 1));
+	setRate(RATE_EXPLOREXP, Config.MainConfig.GetFloatDefault("Rates", "ExploreXP", 1));
 	setIntRate(INTRATE_SAVE, Config.MainConfig.GetIntDefault("Rates", "Save", 1));
 	setRate(RATE_MONEY, Config.MainConfig.GetFloatDefault("Rates", "DropMoney", 1.0f));
 	setRate(RATE_QUESTREPUTATION, Config.MainConfig.GetFloatDefault("Rates", "QuestReputation", 1.0f));
@@ -1284,9 +1293,8 @@ void World::Rehash(bool load)
 		if(!log_enabled)
 			Anticheat_Log->Close();
 	}
-	else
-		if(log_enabled)
-			Anticheat_Log->Open();
+	else if(log_enabled)
+		Anticheat_Log->Open();
 
 	log_enabled = Config.MainConfig.GetBoolDefault("Log", "GMCommands", false);
 	if(GMCommand_Log->IsOpen())
@@ -1294,9 +1302,8 @@ void World::Rehash(bool load)
 		if(!log_enabled)
 			GMCommand_Log->Close();
 	}
-	else
-		if(log_enabled)
-			GMCommand_Log->Open();
+	else if(log_enabled)
+		GMCommand_Log->Open();
 
 	log_enabled = Config.MainConfig.GetBoolDefault("Log", "Player", false);
 	if(Player_Log->IsOpen())
@@ -1311,18 +1318,18 @@ void World::Rehash(bool load)
 	}
 
 #ifdef WIN32
-	DWORD current_priority_class = GetPriorityClass( GetCurrentProcess() );
-	bool high = Config.MainConfig.GetBoolDefault( "Server", "AdjustPriority", false );
+	DWORD current_priority_class = GetPriorityClass(GetCurrentProcess());
+	bool high = Config.MainConfig.GetBoolDefault("Server", "AdjustPriority", false);
 
-	if( high )
+	if(high)
 	{
-		if( current_priority_class != HIGH_PRIORITY_CLASS )
-			SetPriorityClass( GetCurrentProcess(), HIGH_PRIORITY_CLASS );
+		if(current_priority_class != HIGH_PRIORITY_CLASS)
+			SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);
 	}
 	else
 	{
-		if( current_priority_class != NORMAL_PRIORITY_CLASS )
-			SetPriorityClass( GetCurrentProcess(), NORMAL_PRIORITY_CLASS );
+		if(current_priority_class != NORMAL_PRIORITY_CLASS)
+			SetPriorityClass(GetCurrentProcess(), NORMAL_PRIORITY_CLASS);
 	}
 #endif
 
@@ -1335,7 +1342,7 @@ void World::Rehash(bool load)
 	m_lfgForNonLfg = Config.MainConfig.GetBoolDefault("Server", "EnableLFGJoin", false);
 
 	realmtype = Config.MainConfig.GetBoolDefault("Server", "RealmType", false);
-	TimeOut= uint32(1000* Config.MainConfig.GetIntDefault("Server", "ConnectionTimeout", 180) );
+	TimeOut = uint32(1000 * Config.MainConfig.GetIntDefault("Server", "ConnectionTimeout", 180));
 	GMTTimeZone = Config.MainConfig.GetIntDefault("Server", "TimeZone", 0);
 
 	uint32 config_flags = 0;
@@ -1366,7 +1373,7 @@ void World::Rehash(bool load)
 	interfaction_group = Config.OptionalConfig.GetBoolDefault("Interfaction", "InterfactionGroup", false);
 	interfaction_guild = Config.OptionalConfig.GetBoolDefault("Interfaction", "InterfactionGuild", false);
 	interfaction_trade = Config.OptionalConfig.GetBoolDefault("Interfaction", "InterfactionTrade", false);
-	interfaction_friend= Config.OptionalConfig.GetBoolDefault("Interfaction", "InterfactionFriends", false);
+	interfaction_friend = Config.OptionalConfig.GetBoolDefault("Interfaction", "InterfactionFriends", false);
 	interfaction_misc = Config.OptionalConfig.GetBoolDefault("Interfaction", "InterfactionMisc", false);
 	crossover_chars = Config.OptionalConfig.GetBoolDefault("Interfaction", "CrossOverCharacters", false);
 	gamemaster_listOnlyActiveGMs = Config.OptionalConfig.GetBoolDefault("GameMaster", "ListOnlyActiveGMs", false);
@@ -1395,20 +1402,20 @@ void World::Rehash(bool load)
 	BCTriggerPercentCap = Config.OptionalConfig.GetIntDefault("CommonSchedule", "BroadCastTriggerPercentCap", 100);
 	BCInterval = Config.OptionalConfig.GetIntDefault("CommonSchedule", "BroadCastInterval", 1);
 	BCSystemEnable = Config.OptionalConfig.GetBoolDefault("CommonSchedule", "AutoBroadCast", false);
-	BCOrderMode = Config.OptionalConfig.GetIntDefault("CommonSchedule", "BroadCastOrderMode",0);
+	BCOrderMode = Config.OptionalConfig.GetIntDefault("CommonSchedule", "BroadCastOrderMode", 0);
 
-	if ( BCInterval < 10 ) BCInterval = 10;
-	else if ( BCInterval > 1440 ) BCInterval = 1440;
-	if ( BCTriggerPercentCap >= 99 ) BCTriggerPercentCap = 98;
-	else if ( BCTriggerPercentCap <= 1 ) BCTriggerPercentCap = 0;
-	if ( BCOrderMode < 0 ) BCOrderMode = 0;
-	else if ( BCOrderMode >1 ) BCOrderMode = 1;
+	if(BCInterval < 10) BCInterval = 10;
+	else if(BCInterval > 1440) BCInterval = 1440;
+	if(BCTriggerPercentCap >= 99) BCTriggerPercentCap = 98;
+	else if(BCTriggerPercentCap <= 1) BCTriggerPercentCap = 0;
+	if(BCOrderMode < 0) BCOrderMode = 0;
+	else if(BCOrderMode > 1) BCOrderMode = 1;
 
 
 	if(!flood_lines || !flood_seconds)
 		flood_lines = flood_seconds = 0;
 
-	m_AdditionalFun = Config.OptionalConfig.GetBoolDefault("Optional", "AdditionalFun",false);
+	m_AdditionalFun = Config.OptionalConfig.GetBoolDefault("Optional", "AdditionalFun", false);
 	MaxProfs = (uint32)Config.OptionalConfig.GetIntDefault("Optional", "MaxProfessions", 2);
 
 	// Max Gold Settings
@@ -1422,7 +1429,7 @@ void World::Rehash(bool load)
 
 	DKStartTalentPoints = Config.OptionalConfig.GetIntDefault("Optional", "DKStartingTalents", 0);
 
-	map_unload_time=Config.MainConfig.GetIntDefault("Server", "MapUnloadTime", MAP_CELL_DEFAULT_UNLOAD_TIME);
+	map_unload_time = Config.MainConfig.GetIntDefault("Server", "MapUnloadTime", MAP_CELL_DEFAULT_UNLOAD_TIME);
 	if(map_unload_time == 0)
 	{
 		LOG_ERROR("MapUnloadTime is set to 0. This will NEVER unload MapCells!!! Overriding it to default value of %u", MAP_CELL_DEFAULT_UNLOAD_TIME);
@@ -1460,7 +1467,7 @@ void World::Rehash(bool load)
 
 	m_bgSet_SOTA_MIN = Config.MainConfig.GetIntDefault("Battleground", "SOTA_MIN", 10);
 	m_bgSet_SOTA_MAX = Config.MainConfig.GetIntDefault("Battleground", "SOTA_MAX", 15);
-	
+
 
 	// damage/hp/mp cap settings
 	m_limits.enable = Config.MainConfig.GetBoolDefault("Limits", "Enable", true);
@@ -1479,7 +1486,7 @@ void World::Rehash(bool load)
 	// ======================================
 	m_movementCompressInterval = Config.MainConfig.GetIntDefault("Movement", "FlushInterval", 1000);
 	m_movementCompressRate = Config.MainConfig.GetIntDefault("Movement", "CompressRate", 1);
-	
+
 	m_movementCompressThresholdCreatures = Config.MainConfig.GetFloatDefault("Movement", "CompressThresholdCreatures", 15.0f);
 	m_movementCompressThresholdCreatures *= m_movementCompressThresholdCreatures;
 
@@ -1487,35 +1494,35 @@ void World::Rehash(bool load)
 	m_movementCompressThreshold *= m_movementCompressThreshold;		// square it to avoid sqrt() on checks
 	// ======================================
 
-	if( m_banTable != NULL )
-		free( m_banTable );
+	if(m_banTable != NULL)
+		free(m_banTable);
 
 	m_banTable = NULL;
-	string s = Config.MainConfig.GetStringDefault( "Server", "BanTable", "" );
-	if( !s.empty() )
-		m_banTable = strdup( s.c_str() );
+	string s = Config.MainConfig.GetStringDefault("Server", "BanTable", "");
+	if(!s.empty())
+		m_banTable = strdup(s.c_str());
 
-	if( load )
+	if(load)
 		Channel::LoadConfSettings();
 }
 
 void World::LoadNameGenData()
 {
-	for( DBCStorage< NameGenEntry >::iterator itr = dbcNameGen.begin(); itr != dbcNameGen.end(); ++itr )
+	for(DBCStorage< NameGenEntry >::iterator itr = dbcNameGen.begin(); itr != dbcNameGen.end(); ++itr)
 	{
-		NameGenEntry *nge = *itr;
+		NameGenEntry* nge = *itr;
 
 		NameGenData d;
 
-		d.name = std::string( nge->Name );
+		d.name = std::string(nge->Name);
 		d.type = nge->unk2;
 		_namegendata[d.type].push_back(d);
 	}
 }
 
-void World::CharacterEnumProc(QueryResultVector& results, uint32 AccountId)
+void World::CharacterEnumProc(QueryResultVector & results, uint32 AccountId)
 {
-	WorldSession * s = FindSession(AccountId);
+	WorldSession* s = FindSession(AccountId);
 	if(s == NULL)
 		return;
 
@@ -1659,9 +1666,9 @@ void World::AnnounceColorChooser(int tagcolor, int gmtagcolor, int namecolor, in
 	LOG_BASIC("Announce colors initialized.");
 }
 
-void World::LoadAccountDataProc(QueryResultVector& results, uint32 AccountId)
+void World::LoadAccountDataProc(QueryResultVector & results, uint32 AccountId)
 {
-	WorldSession * s = FindSession(AccountId);
+	WorldSession* s = FindSession(AccountId);
 	if(s == NULL)
 		return;
 
@@ -1685,7 +1692,7 @@ void World::CleanupCheaters()
 	if(result == NULL)
 		return;
 
-	do 
+	do
 	{
 		f = result->Fetch();
 		guid = f[0].GetUInt32();
@@ -1695,11 +1702,11 @@ void World::CleanupCheaters()
 		talentpts = f[4].GetUInt32();
 		start = f[5].GetString();
 		should_talents = (level<10 ? 0 : level - 9);
-		used_talents -= 
-        		
+		used_talents -=
+
 
 		start = (char*)get_next_field.GetString();//buff;
-		while(true) 
+		while(true)
 		{
 			end = strchr(start,',');
 			if(!end)break;
@@ -1743,7 +1750,7 @@ struct insert_playeritem
 
 void CharacterLoaderThread::OnShutdown()
 {
-	running=false;
+	running = false;
 	cond.Signal();
 }
 
@@ -1759,11 +1766,11 @@ CharacterLoaderThread::~CharacterLoaderThread()
 bool CharacterLoaderThread::run()
 {
 
-	running=true;
+	running = true;
 	for(;;)
 	{
 		// Get a single connection to maintain for the whole process.
-		DatabaseConnection * con = CharacterDatabase.GetFreeConnection();
+		DatabaseConnection* con = CharacterDatabase.GetFreeConnection();
 
 		// this hasn't been updated in some time, enable it if you want to fix/use it
 #if 0
@@ -1774,7 +1781,7 @@ bool CharacterLoaderThread::run()
 
 		con->Busy.Release();
 
-		cond.Wait( LOAD_THREAD_SLEEP * 1000 );
+		cond.Wait(LOAD_THREAD_SLEEP * 1000);
 
 		if(!running)
 			break;
@@ -1783,71 +1790,72 @@ bool CharacterLoaderThread::run()
 	return true;
 }
 
-void World::PollMailboxInsertQueue(DatabaseConnection * con)
+void World::PollMailboxInsertQueue(DatabaseConnection* con)
 {
-	QueryResult * result;
-	Field * f;
-	Item * pItem;
+	QueryResult* result;
+	Field* f;
+	Item* pItem;
 	uint32 itemid;
 	uint32 stackcount;
 
 	result = CharacterDatabase.FQuery("SELECT * FROM mailbox_insert_queue", con);
-	if( result != NULL )
+	if(result != NULL)
 	{
 		Log.Notice("MailboxQueue", "Sending queued messages....");
-		do 
+		do
 		{
 			f = result->Fetch();
 			itemid = f[6].GetUInt32();
 			stackcount = f[7].GetUInt32();
-			
-			if( itemid != 0 )
+
+			if(itemid != 0)
 			{
-				pItem = objmgr.CreateItem( itemid, NULL );
-				if( pItem != NULL )
+				pItem = objmgr.CreateItem(itemid, NULL);
+				if(pItem != NULL)
 				{
-					pItem->SetStackCount(  stackcount );
-					pItem->SaveToDB( 0, 0, true, NULL );
+					pItem->SetStackCount(stackcount);
+					pItem->SaveToDB(0, 0, true, NULL);
 				}
 			}
 			else
 				pItem = NULL;
 
 			Log.Notice("MailboxQueue", "Sending message to %u (item: %u)...", f[1].GetUInt32(), itemid);
-			sMailSystem.SendAutomatedMessage( 0, f[0].GetUInt64(), f[1].GetUInt64(), f[2].GetString(), f[3].GetString(), f[5].GetUInt32(),
-				0, pItem ? pItem->GetGUID() : 0, f[4].GetUInt32() );
+			sMailSystem.SendAutomatedMessage(0, f[0].GetUInt64(), f[1].GetUInt64(), f[2].GetString(), f[3].GetString(), f[5].GetUInt32(),
+			                                 0, pItem ? pItem->GetGUID() : 0, f[4].GetUInt32());
 
-			if( pItem != NULL )
+			if(pItem != NULL)
 				pItem->DeleteMe();
 
-		} while ( result->NextRow() );
+		}
+		while(result->NextRow());
 		delete result;
 		Log.Notice("MailboxQueue", "Done.");
 		CharacterDatabase.FWaitExecute("DELETE FROM mailbox_insert_queue", con);
 	}
 }
 
-void World::PollCharacterInsertQueue(DatabaseConnection * con)
+void World::PollCharacterInsertQueue(DatabaseConnection* con)
 {
 	// Our local stuff..
 	bool has_results = false;
 	map<uint32, vector<insert_playeritem> > itemMap;
-	map<uint32,vector<insert_playeritem> >::iterator itr;
-	Field * f;
-	insert_playeritem ipi;                          
-	static const char * characterTableFormat = "uSuuuuuussuuuuuuuuuuuuuuffffuususuufffuuuuusuuuUssuuuuuuffffuuuuufffssssssuuuuuuuu";
+	map<uint32, vector<insert_playeritem> >::iterator itr;
+	Field* f;
+	insert_playeritem ipi;
+	static const char* characterTableFormat = "uSuuuuuussuuuuuuuuuuuuuuffffuususuufffuuuuusuuuUssuuuuuuffffuuuuufffssssssuuuuuuuu";
 
 	// Lock the table to prevent any more inserts
 	CharacterDatabase.FWaitExecute("LOCK TABLES `playeritems_insert_queue` WRITE", con);
 
 	// Cache all items in memory. This will save us doing additional queries and slowing down the db.
-	QueryResult * result = CharacterDatabase.FQuery("SELECT * FROM playeritems_insert_queue", con);
+	QueryResult* result = CharacterDatabase.FQuery("SELECT * FROM playeritems_insert_queue", con);
 	if(result)
 	{
-		do 
+		do
 		{
 			f = result->Fetch();
-			
+
 			ipi.ownerguid = f[0].GetUInt32();
 			ipi.entry = f[1].GetUInt32();
 			ipi.wrapped_item_id = f[2].GetUInt32();
@@ -1869,14 +1877,15 @@ void World::PollCharacterInsertQueue(DatabaseConnection * con)
 			{
 				vector<insert_playeritem> to_insert;
 				to_insert.push_back(ipi);
-				itemMap.insert(make_pair(ipi.ownerguid,to_insert));
+				itemMap.insert(make_pair(ipi.ownerguid, to_insert));
 			}
 			else
 			{
 				itr->second.push_back(ipi);
 			}
-		
-		} while(result->NextRow());
+
+		}
+		while(result->NextRow());
 		delete result;
 	}
 
@@ -1896,10 +1905,10 @@ void World::PollCharacterInsertQueue(DatabaseConnection * con)
 	{
 		uint32 guid;
 		std::stringstream ss;
-		do 
+		do
 		{
 			f = result->Fetch();
-			char * p = (char*)characterTableFormat;
+			char* p = (char*)characterTableFormat;
 			uint32 i = 1;
 			guid = f[0].GetUInt32();
 			uint32 new_guid = objmgr.GenerateLowGuid(HIGHGUID_TYPE_PLAYER);
@@ -1907,39 +1916,41 @@ void World::PollCharacterInsertQueue(DatabaseConnection * con)
 			ss << "INSERT INTO characters VALUES(" << new_guid;
 
 			// create his playerinfo in the server
-			PlayerInfo * inf = new PlayerInfo();
+			PlayerInfo* inf = new PlayerInfo();
 			inf->acct = f[1].GetUInt32();
 
 			while(*p != 0)
 			{
 				switch(*p)
 				{
-				case 's':
-					ss << ",'" << CharacterDatabase.EscapeString(f[i].GetString(), con) << "'";
-					break;
+					case 's':
+						ss << ",'" << CharacterDatabase.EscapeString(f[i].GetString(), con) << "'";
+						break;
 
-				case 'f':
-					ss << ",'" << f[i].GetFloat() << "'";
-					break;
+					case 'f':
+						ss << ",'" << f[i].GetFloat() << "'";
+						break;
 
-				case 'S':
-					{
-						// this is the character name, append a hex version of the guid to it to prevent name clashes.
-						char newname[100];
-						snprintf(newname,20,"%5s%X",f[i].GetString(),new_guid);
-						ss << ",'" << CharacterDatabase.EscapeString(newname,con) << "'";
-						inf->name = strdup(newname);
-					}break;
+					case 'S':
+						{
+							// this is the character name, append a hex version of the guid to it to prevent name clashes.
+							char newname[100];
+							snprintf(newname, 20, "%5s%X", f[i].GetString(), new_guid);
+							ss << ",'" << CharacterDatabase.EscapeString(newname, con) << "'";
+							inf->name = strdup(newname);
+						}
+						break;
 
-				case 'U':
-					{
-						// this is our forced rename field. force it to one.
-						ss << ",1";
-					}break;
+					case 'U':
+						{
+							// this is our forced rename field. force it to one.
+							ss << ",1";
+						}
+						break;
 
-				default:
-					ss << "," << f[i].GetUInt32();
-					break;
+					default:
+						ss << "," << f[i].GetUInt32();
+						break;
 				}
 
 				++i;
@@ -1947,7 +1958,7 @@ void World::PollCharacterInsertQueue(DatabaseConnection * con)
 			}
 
 			ss << ")";
-			CharacterDatabase.FWaitExecute(ss.str().c_str(),con);
+			CharacterDatabase.FWaitExecute(ss.str().c_str(), con);
 
 			inf->cl = f[4].GetUInt32();
 			inf->gender = f[5].GetUInt32();
@@ -1955,28 +1966,28 @@ void World::PollCharacterInsertQueue(DatabaseConnection * con)
 			inf->lastLevel = f[7].GetUInt32();
 			inf->lastOnline = UNIXTIME;
 			inf->lastZone = 0;
-			inf->m_Group= NULL;
-			inf->m_loggedInPlayer= NULL;
-			inf->guild= NULL;
-			inf->guildRank= NULL;
-			inf->guildMember= NULL;
-			inf->race=f[3].GetUInt32();
-			inf->subGroup= 0;
+			inf->m_Group = NULL;
+			inf->m_loggedInPlayer = NULL;
+			inf->guild = NULL;
+			inf->guildRank = NULL;
+			inf->guildMember = NULL;
+			inf->race = f[3].GetUInt32();
+			inf->subGroup = 0;
 			switch(inf->race)
 			{
-			case RACE_HUMAN:
-			case RACE_GNOME:
-			case RACE_DWARF:
-			case RACE_NIGHTELF:
-			case RACE_DRAENEI:
-				inf->team= 0;
-				break;
+				case RACE_HUMAN:
+				case RACE_GNOME:
+				case RACE_DWARF:
+				case RACE_NIGHTELF:
+				case RACE_DRAENEI:
+					inf->team = 0;
+					break;
 
-			default:
-				inf->team=1;
-				break;
+				default:
+					inf->team = 1;
+					break;
 			}
-			
+
 			// add playerinfo to objectmgr
 			objmgr.AddPlayerInfo(inf);
 
@@ -1990,26 +2001,27 @@ void World::PollCharacterInsertQueue(DatabaseConnection * con)
 					ss << "INSERT INTO playeritems VALUES(";
 					new_item_guid = objmgr.GenerateLowGuid(HIGHGUID_TYPE_ITEM);
 					ss << new_guid << ","
-						<< new_item_guid << ","
-						<< (*vtr).entry << ","
-						<< (*vtr).wrapped_item_id << ","
-						<< (*vtr).wrapped_creator << ","
-						<< (*vtr).creator << ","
-						<< (*vtr).count << ","
-						<< (*vtr).charges << ","
-						<< (*vtr).flags << ","
-						<< (*vtr).randomprop << ","
-						<< (*vtr).randomsuffix << ","
-						<< (*vtr).itemtext << ","
-						<< (*vtr).durability << ","
-						<< (*vtr).containerslot << ","
-						<< (*vtr).slot << ",'"
-						<< (*vtr).enchantments << "')";
-					CharacterDatabase.FWaitExecute(ss.str().c_str(),con);
+					   << new_item_guid << ","
+					   << (*vtr).entry << ","
+					   << (*vtr).wrapped_item_id << ","
+					   << (*vtr).wrapped_creator << ","
+					   << (*vtr).creator << ","
+					   << (*vtr).count << ","
+					   << (*vtr).charges << ","
+					   << (*vtr).flags << ","
+					   << (*vtr).randomprop << ","
+					   << (*vtr).randomsuffix << ","
+					   << (*vtr).itemtext << ","
+					   << (*vtr).durability << ","
+					   << (*vtr).containerslot << ","
+					   << (*vtr).slot << ",'"
+					   << (*vtr).enchantments << "')";
+					CharacterDatabase.FWaitExecute(ss.str().c_str(), con);
 				}
 			}
 			ss.rdbuf()->str("");
-		} while(result->NextRow());
+		}
+		while(result->NextRow());
 		has_results = true;
 		delete result;
 	}
@@ -2022,10 +2034,10 @@ void World::PollCharacterInsertQueue(DatabaseConnection * con)
 	}
 }
 
-void World::DisconnectUsersWithAccount(const char * account, WorldSession * m_session)
+void World::DisconnectUsersWithAccount(const char* account, WorldSession* m_session)
 {
 	SessionMap::iterator itr;
-	WorldSession * session;
+	WorldSession* session;
 	m_sessionlock.AcquireReadLock();
 	bool FoundUser = false;
 	for(itr = m_sessions.begin(); itr != m_sessions.end();)
@@ -2036,21 +2048,21 @@ void World::DisconnectUsersWithAccount(const char * account, WorldSession * m_se
 		if(!stricmp(account, session->GetAccountNameS()))
 		{
 			FoundUser = true;
-			m_session->SystemMessage("Disconnecting user with account `%s` IP `%s` Player `%s`.", session->GetAccountNameS(), 
-				session->GetSocket() ? session->GetSocket()->GetRemoteIP().c_str() : "noip", session->GetPlayer() ? session->GetPlayer()->GetName() : "noplayer");
+			m_session->SystemMessage("Disconnecting user with account `%s` IP `%s` Player `%s`.", session->GetAccountNameS(),
+			                         session->GetSocket() ? session->GetSocket()->GetRemoteIP().c_str() : "noip", session->GetPlayer() ? session->GetPlayer()->GetName() : "noplayer");
 
 			session->Disconnect();
 		}
 	}
 	m_sessionlock.ReleaseReadLock();
-	if ( FoundUser == false )
-		m_session->SystemMessage("There is nobody online with account [%s]",account);
+	if(FoundUser == false)
+		m_session->SystemMessage("There is nobody online with account [%s]", account);
 }
 
-void World::DisconnectUsersWithIP(const char * ip, WorldSession * m_session)
+void World::DisconnectUsersWithIP(const char* ip, WorldSession* m_session)
 {
 	SessionMap::iterator itr;
-	WorldSession * session;
+	WorldSession* session;
 	m_sessionlock.AcquireReadLock();
 	bool FoundUser = false;
 	for(itr = m_sessions.begin(); itr != m_sessions.end();)
@@ -2065,21 +2077,21 @@ void World::DisconnectUsersWithIP(const char * ip, WorldSession * m_session)
 		if(!stricmp(ip, ip2.c_str()))
 		{
 			FoundUser = true;
-			m_session->SystemMessage("Disconnecting user with account `%s` IP `%s` Player `%s`.", session->GetAccountNameS(), 
-				ip2.c_str(), session->GetPlayer() ? session->GetPlayer()->GetName() : "noplayer");
+			m_session->SystemMessage("Disconnecting user with account `%s` IP `%s` Player `%s`.", session->GetAccountNameS(),
+			                         ip2.c_str(), session->GetPlayer() ? session->GetPlayer()->GetName() : "noplayer");
 
 			session->Disconnect();
 		}
 	}
-	if ( FoundUser == false )
-		m_session->SystemMessage("There is nobody online with ip [%s]",ip);
+	if(FoundUser == false)
+		m_session->SystemMessage("There is nobody online with ip [%s]", ip);
 	m_sessionlock.ReleaseReadLock();
 }
 
-void World::DisconnectUsersWithPlayerName(const char * plr, WorldSession * m_session)
+void World::DisconnectUsersWithPlayerName(const char* plr, WorldSession* m_session)
 {
 	SessionMap::iterator itr;
-	WorldSession * session;
+	WorldSession* session;
 	m_sessionlock.AcquireReadLock();
 	bool FoundUser = false;
 	for(itr = m_sessions.begin(); itr != m_sessions.end();)
@@ -2093,14 +2105,14 @@ void World::DisconnectUsersWithPlayerName(const char * plr, WorldSession * m_ses
 		if(!stricmp(plr, session->GetPlayer()->GetName()))
 		{
 			FoundUser = true;
-			m_session->SystemMessage("Disconnecting user with account `%s` IP `%s` Player `%s`.", session->GetAccountNameS(), 
-				session->GetSocket() ? session->GetSocket()->GetRemoteIP().c_str() : "noip", session->GetPlayer() ? session->GetPlayer()->GetName() : "noplayer");
+			m_session->SystemMessage("Disconnecting user with account `%s` IP `%s` Player `%s`.", session->GetAccountNameS(),
+			                         session->GetSocket() ? session->GetSocket()->GetRemoteIP().c_str() : "noip", session->GetPlayer() ? session->GetPlayer()->GetName() : "noplayer");
 
 			session->Disconnect();
 		}
 	}
-	if (FoundUser == false)
-		m_session->SystemMessage("There is no body online with the name [%s]",plr);
+	if(FoundUser == false)
+		m_session->SystemMessage("There is no body online with the name [%s]", plr);
 	m_sessionlock.ReleaseReadLock();
 }
 
@@ -2108,7 +2120,7 @@ string World::GetUptimeString()
 {
 	char str[300];
 	time_t pTime = (time_t)UNIXTIME - m_StartTime;
-	tm * tmv = gmtime(&pTime);
+	tm* tmv = gmtime(&pTime);
 
 	snprintf(str, 300, "%u days, %u hours, %u minutes, %u seconds.", tmv->tm_yday, tmv->tm_hour, tmv->tm_min, tmv->tm_sec);
 	return string(str);
@@ -2118,18 +2130,18 @@ void World::SendBCMessageByID(uint32 id)
 {
 	m_sessionlock.AcquireReadLock();
 	SessionMap::iterator itr;
-	for (itr = m_sessions.begin(); itr != m_sessions.end(); itr++)
+	for(itr = m_sessions.begin(); itr != m_sessions.end(); itr++)
 	{
-		if (itr->second->GetPlayer() &&
-			itr->second->GetPlayer()->IsInWorld() )
+		if(itr->second->GetPlayer() &&
+		        itr->second->GetPlayer()->IsInWorld())
 		{
-			const char *text = itr->second->LocalizedBroadCast(id);
+			const char* text = itr->second->LocalizedBroadCast(id);
 			uint32 textLen = (uint32)strlen(text) + 1;
 			WorldPacket data(textLen + 40);
 			data.Initialize(SMSG_MESSAGECHAT);
 			data << uint8(CHAT_MSG_SYSTEM);
 			data << uint32(LANG_UNIVERSAL);
-	
+
 			data << (uint64)0; // Who cares about guid when there's no nickname displayed heh ?
 			data << (uint32)0;
 			data << (uint64)0;
@@ -2145,46 +2157,49 @@ void World::SendBCMessageByID(uint32 id)
 // cebernic:2008-10-19
 // Format as SendLocalizedWorldText("forcing english & {5}{12} %s","test");
 // 5,12 are ids from worldstring_table
-void World::SendLocalizedWorldText(bool wide,const char * format, ...) // May not optimized,just for works.
+void World::SendLocalizedWorldText(bool wide, const char* format, ...)  // May not optimized,just for works.
 {
 	m_sessionlock.AcquireReadLock();
 	SessionMap::iterator itr;
-	for (itr = m_sessions.begin(); itr != m_sessions.end(); itr++)
+	for(itr = m_sessions.begin(); itr != m_sessions.end(); itr++)
 	{
-		if (itr->second->GetPlayer() &&
-			itr->second->GetPlayer()->IsInWorld() )
+		if(itr->second->GetPlayer() &&
+		        itr->second->GetPlayer()->IsInWorld())
 		{
-			string temp = SessionLocalizedTextFilter(itr->second,format);
+			string temp = SessionLocalizedTextFilter(itr->second, format);
 			// parsing
 			format = (char*)temp.c_str();
 			char buffer[1024];
 			va_list ap;
-			va_start(ap,format);
-			vsnprintf(buffer,1024,format,ap);
+			va_start(ap, format);
+			vsnprintf(buffer, 1024, format, ap);
 			va_end(ap);
 			// again,we need parse args
-			temp = SessionLocalizedTextFilter(itr->second,buffer);
-			memset(buffer,0,temp.length()+1);
-			memcpy(buffer,temp.c_str(),temp.length()+1); // full done
+			temp = SessionLocalizedTextFilter(itr->second, buffer);
+			memset(buffer, 0, temp.length() + 1);
+			memcpy(buffer, temp.c_str(), temp.length() + 1); // full done
 
 			uint32 textLen = (uint32)strlen(buffer) + 1;
 			WorldPacket data(textLen + 40);
 
-			if ( wide ){
+			if(wide)
+			{
 				data.Initialize(SMSG_AREA_TRIGGER_MESSAGE);
-				data << uint32( 0 );
-                data << (char*)buffer;
-                data << uint8( 0 );
-			}else {
+				data << uint32(0);
+				data << (char*)buffer;
+				data << uint8(0);
+			}
+			else
+			{
 				data.Initialize(SMSG_MESSAGECHAT);
-				data << uint8( CHAT_MSG_SYSTEM );
-				data << uint32( LANG_UNIVERSAL );		
-				data << uint64( 0 ); // Who cares about guid when there's no nickname displayed heh ?
-				data << uint32( 0 );
-				data << uint64( 0 );
-				data << uint32( textLen );
+				data << uint8(CHAT_MSG_SYSTEM);
+				data << uint32(LANG_UNIVERSAL);
+				data << uint64(0);   // Who cares about guid when there's no nickname displayed heh ?
+				data << uint32(0);
+				data << uint64(0);
+				data << uint32(textLen);
 				data << buffer;
-				data << uint8( 0 );
+				data << uint8(0);
 			}
 			itr->second->SendPacket(&data);
 		}
@@ -2192,43 +2207,46 @@ void World::SendLocalizedWorldText(bool wide,const char * format, ...) // May no
 	m_sessionlock.ReleaseReadLock();
 }
 
-void World::UpdateTotalTraffic(){
+void World::UpdateTotalTraffic()
+{
 
-    unsigned long sent = 0;
-    unsigned long recieved = 0;
-    double TrafficIn = 0;
-    double TrafficOut = 0;
+	unsigned long sent = 0;
+	unsigned long recieved = 0;
+	double TrafficIn = 0;
+	double TrafficOut = 0;
 
-    LastTrafficQuery = UNIXTIME;
-    LastTotalTrafficInKB = TotalTrafficInKB;
-    LastTotalTrafficOutKB = TotalTrafficOutKB;
-    WorldSocket *s = NULL;
+	LastTrafficQuery = UNIXTIME;
+	LastTotalTrafficInKB = TotalTrafficInKB;
+	LastTotalTrafficOutKB = TotalTrafficOutKB;
+	WorldSocket* s = NULL;
 
-    objmgr._playerslock.AcquireReadLock();
-    HM_NAMESPACE::hash_map<uint32, Player*>::const_iterator itr;
+	objmgr._playerslock.AcquireReadLock();
+	HM_NAMESPACE::hash_map<uint32, Player*>::const_iterator itr;
 
-    for (itr = objmgr._players.begin(); itr != objmgr._players.end(); ++itr){
-	s = itr->second->GetSession()->GetSocket();
-	
-	if(!s || !s->IsConnected() || s->IsDeleted())
-	  continue;
-	
-        s->PollTraffic(&sent,&recieved);
+	for(itr = objmgr._players.begin(); itr != objmgr._players.end(); ++itr)
+	{
+		s = itr->second->GetSession()->GetSocket();
 
-        TrafficIn += ( static_cast<double>(recieved) ); 
-        TrafficOut += ( static_cast<double>(sent) );
-    }
+		if(!s || !s->IsConnected() || s->IsDeleted())
+			continue;
 
-    TotalTrafficInKB += (TrafficIn / 1024.0);
-    TotalTrafficOutKB += (TrafficOut / 1024.0);
+		s->PollTraffic(&sent, &recieved);
 
-    objmgr._playerslock.ReleaseReadLock();
+		TrafficIn += (static_cast<double>(recieved));
+		TrafficOut += (static_cast<double>(sent));
+	}
+
+	TotalTrafficInKB += (TrafficIn / 1024.0);
+	TotalTrafficOutKB += (TrafficOut / 1024.0);
+
+	objmgr._playerslock.ReleaseReadLock();
 }
 
-void World::SendZoneUnderAttackMsg( uint32 areaid, uint8 team ){
-    WorldPacket data( SMSG_ZONE_UNDER_ATTACK, 4 );
-    data << uint32( areaid );
-    
-    SendFactionMessage( &data, team );
+void World::SendZoneUnderAttackMsg(uint32 areaid, uint8 team)
+{
+	WorldPacket data(SMSG_ZONE_UNDER_ATTACK, 4);
+	data << uint32(areaid);
+
+	SendFactionMessage(&data, team);
 }
 

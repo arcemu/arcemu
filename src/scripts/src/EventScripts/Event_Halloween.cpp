@@ -9,19 +9,19 @@ Team  : Sun++
 //Black Cat
 class BlackCat : public MoonScriptCreatureAI
 {
-	MOONSCRIPT_FACTORY_FUNCTION(BlackCat, MoonScriptCreatureAI);
-	BlackCat(Creature* pCreature) : MoonScriptCreatureAI(pCreature) {}
+		MOONSCRIPT_FACTORY_FUNCTION(BlackCat, MoonScriptCreatureAI);
+		BlackCat(Creature* pCreature) : MoonScriptCreatureAI(pCreature) {}
 
-	void OnDied(Unit* pKiller)
-	{
-		pKiller->CastSpell( pKiller, 39477, true );
-		ParentClass::OnDied(pKiller);
-	}
+		void OnDied(Unit* pKiller)
+		{
+			pKiller->CastSpell(pKiller, 39477, true);
+			ParentClass::OnDied(pKiller);
+		}
 };
 
 // HEADLESS HORSEMAN ENCOUNTER
-static LocationExtra WaypointGoldshire[] = 
-{	
+static LocationExtra WaypointGoldshire[] =
+{
 	{  },
 	{ -9502.733398f, 31.395960f, 60.433193f, 1.217366f, Flag_Fly }, //1
 	{ -9493.925781f, 55.272415f, 60.433193f, 0.781469f, Flag_Fly },
@@ -62,11 +62,11 @@ static LocationExtra WaypointGoldshire[] =
 
 class HeadlessHorsemanAI : public MoonScriptCreatureAI
 {
-    MOONSCRIPT_FACTORY_FUNCTION(HeadlessHorsemanAI, MoonScriptCreatureAI);
-	HeadlessHorsemanAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
-	{
-		//Scarlet Monastery Boss
-	}
+		MOONSCRIPT_FACTORY_FUNCTION(HeadlessHorsemanAI, MoonScriptCreatureAI);
+		HeadlessHorsemanAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
+		{
+			//Scarlet Monastery Boss
+		}
 };
 
 // Headless Horseman - Fire
@@ -74,11 +74,11 @@ class HeadlessHorsemanAI : public MoonScriptCreatureAI
 
 class HeadlessHorsemanFireAI : public MoonScriptCreatureAI
 {
-    MOONSCRIPT_FACTORY_FUNCTION(HeadlessHorsemanFireAI, MoonScriptCreatureAI);
-	HeadlessHorsemanFireAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
-	{
-		_unit->CastSpell( _unit, 42971, true );
-	}
+		MOONSCRIPT_FACTORY_FUNCTION(HeadlessHorsemanFireAI, MoonScriptCreatureAI);
+		HeadlessHorsemanFireAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
+		{
+			_unit->CastSpell(_unit, 42971, true);
+		}
 };
 
 // Shade of the HorsemanAI
@@ -86,85 +86,87 @@ class HeadlessHorsemanFireAI : public MoonScriptCreatureAI
 #define SHADE_OF_THE_HORSEMAN_SUMMON			42394  //Don't think this one is the correct spell
 /*
  * Research
- * NPC: 
+ * NPC:
  * http://www.wowhead.com/?npc=23537 Headless Horseman - Fire (DND) should be invisible? created by ->
- * http://www.wowhead.com/?spell=42118 
+ * http://www.wowhead.com/?spell=42118
  * I guess this is the target of the water spells
  * Need to check all visual auras for these http://www.wowhead.com/?search=horseman#uncategorized-spells
  */
 class ShadeOfTheHorsemanAI : public MoonScriptCreatureAI
 {
-    MOONSCRIPT_FACTORY_FUNCTION(ShadeOfTheHorsemanAI, MoonScriptCreatureAI);
-	ShadeOfTheHorsemanAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
-	{
-		SetCanEnterCombat(false);
-		_unit->SetMount(22653);
-		//Spells
-		mSummon = AddSpell(SHADE_OF_THE_HORSEMAN_SUMMON, Target_Self, 0, 0, 0);
+		MOONSCRIPT_FACTORY_FUNCTION(ShadeOfTheHorsemanAI, MoonScriptCreatureAI);
+		ShadeOfTheHorsemanAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
+		{
+			SetCanEnterCombat(false);
+			_unit->SetMount(22653);
+			//Spells
+			mSummon = AddSpell(SHADE_OF_THE_HORSEMAN_SUMMON, Target_Self, 0, 0, 0);
 
-		//Emotes
-		AddEmote(Event_OnDied, "So eager you are, for my blood to spill. Yet to vanquish me, 'tis my head you must kill!", Text_Yell, 11969 );
-		Emote("Prepare yourselves, the bells have tolled! Shelter your weak, your young, and your old! Each of you shall pay the final sum. Cry for mercy, the reckoning has come!", Text_Yell, 11966);	//On Spawn?
-		
-		switch( _unit->GetMapMgr()->GetAreaID( _unit->GetPositionX(), _unit->GetPositionY() ) )
-		{		
-			case 87: // Goldshire
+			//Emotes
+			AddEmote(Event_OnDied, "So eager you are, for my blood to spill. Yet to vanquish me, 'tis my head you must kill!", Text_Yell, 11969);
+			Emote("Prepare yourselves, the bells have tolled! Shelter your weak, your young, and your old! Each of you shall pay the final sum. Cry for mercy, the reckoning has come!", Text_Yell, 11966);	//On Spawn?
+
+			switch(_unit->GetMapMgr()->GetAreaID(_unit->GetPositionX(), _unit->GetPositionY()))
+			{
+				case 87: // Goldshire
 					{
 						WPCount = 30;
 						WayPoints = WaypointGoldshire;
-					}break;
-		}
-
-		for (int i = 1 ; i <= WPCount ; ++i)
-		{
-			AddWaypoint(CreateWaypoint( i, 0, WayPoints[i].addition, WayPoints[i]));
-		}
-	}
-
-	void OnReachWP(uint32 iWaypointId, bool bForwards)
-	{
-		if( iWaypointId == uint32(WPCount) ) // Reached end
-		{
-			StopWaypointMovement();
-			if( GetNearestCreature( CN_HEADLESS_HORSEMAN_FIRE ) == NULL ) // CASE players win
-			{
-				Emote("My flames have died, left not a spark! I shall send you now to the lifeless dark!", Text_Yell, 11968 );
-				Despawn(30000, 0); //Despawn after 30 secs
-			}
-			else // CASE players lost
-			{
-				Emote("Fire consumes! You've tried and failed. Let there be no doubt, justice prevailed!", Text_Yell, 11967 );
-				Despawn(12000, 0); //Despawn after 12 secs
-			}
-		}
-		else
-		{
-			switch( _unit->GetMapMgr()->GetAreaID( _unit->GetPositionX(), _unit->GetPositionY() ) )
-			{
-			case 87: // Goldshire
-				{
-					if( iWaypointId == 6 )
-					{
-						_unit->CastSpell( _unit, 42118, true );
 					}
-				}break;
+					break;
+			}
+
+			for(int i = 1 ; i <= WPCount ; ++i)
+			{
+				AddWaypoint(CreateWaypoint(i, 0, WayPoints[i].addition, WayPoints[i]));
 			}
 		}
-		ParentClass::OnReachWP(iWaypointId, bForwards);
-	}
 
-	void OnDied( Unit* pKiller )
-	{
-		GameObject* Pumpkin = sEAS.SpawnGameobject( TO_PLAYER(pKiller), 2883, _unit->GetPositionX()+RandomFloat(5.0f), _unit->GetPositionY()+RandomFloat(5.0f), _unit->GetPositionZ(), 0, 1, 0, 0, 0, 0 );
-		if(Pumpkin != NULL)
-			_unit->CastSpell(Pumpkin->GetGUID(), 42277, true );
+		void OnReachWP(uint32 iWaypointId, bool bForwards)
+		{
+			if(iWaypointId == uint32(WPCount))   // Reached end
+			{
+				StopWaypointMovement();
+				if(GetNearestCreature(CN_HEADLESS_HORSEMAN_FIRE) == NULL)     // CASE players win
+				{
+					Emote("My flames have died, left not a spark! I shall send you now to the lifeless dark!", Text_Yell, 11968);
+					Despawn(30000, 0); //Despawn after 30 secs
+				}
+				else // CASE players lost
+				{
+					Emote("Fire consumes! You've tried and failed. Let there be no doubt, justice prevailed!", Text_Yell, 11967);
+					Despawn(12000, 0); //Despawn after 12 secs
+				}
+			}
+			else
+			{
+				switch(_unit->GetMapMgr()->GetAreaID(_unit->GetPositionX(), _unit->GetPositionY()))
+				{
+					case 87: // Goldshire
+						{
+							if(iWaypointId == 6)
+							{
+								_unit->CastSpell(_unit, 42118, true);
+							}
+						}
+						break;
+				}
+			}
+			ParentClass::OnReachWP(iWaypointId, bForwards);
+		}
 
-		ParentClass::OnDied(pKiller);
-	}
+		void OnDied(Unit* pKiller)
+		{
+			GameObject* Pumpkin = sEAS.SpawnGameobject(TO_PLAYER(pKiller), 2883, _unit->GetPositionX() + RandomFloat(5.0f), _unit->GetPositionY() + RandomFloat(5.0f), _unit->GetPositionZ(), 0, 1, 0, 0, 0, 0);
+			if(Pumpkin != NULL)
+				_unit->CastSpell(Pumpkin->GetGUID(), 42277, true);
 
-	int8		WPCount;
-	LocationExtra		*WayPoints;
-	SpellDesc*	mSummon;
+			ParentClass::OnDied(pKiller);
+		}
+
+		int8		WPCount;
+		LocationExtra*		WayPoints;
+		SpellDesc*	mSummon;
 };
 
 // Headless Horseman - Wisp Invis
@@ -172,67 +174,67 @@ class ShadeOfTheHorsemanAI : public MoonScriptCreatureAI
 
 class HeadlessHorsemanWispInvisAI : public MoonScriptCreatureAI
 {
-    MOONSCRIPT_FACTORY_FUNCTION(HeadlessHorsemanWispInvisAI, MoonScriptCreatureAI);
-	HeadlessHorsemanWispInvisAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature){}
+		MOONSCRIPT_FACTORY_FUNCTION(HeadlessHorsemanWispInvisAI, MoonScriptCreatureAI);
+		HeadlessHorsemanWispInvisAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature) {}
 
-	void AIUpdate()
-	{
-		time_t tiempo;
-		struct tm *tmPtr;
-		tiempo = UNIXTIME;
-		tmPtr = localtime(&tiempo);
-		if( tmPtr->tm_min == 0 && (tmPtr->tm_hour % 4) == 0 ) // All check for the time
+		void AIUpdate()
 		{
-			mHeadlessHorseman = GetNearestCreature( CN_SHADE_OF_THE_HORSEMAN );
-			if( mHeadlessHorseman == NULL )
+			time_t tiempo;
+			struct tm* tmPtr;
+			tiempo = UNIXTIME;
+			tmPtr = localtime(&tiempo);
+			if(tmPtr->tm_min == 0 && (tmPtr->tm_hour % 4) == 0)   // All check for the time
 			{
-				SpawnCreature( CN_SHADE_OF_THE_HORSEMAN, _unit->GetPositionX(), _unit->GetPositionY(), _unit->GetPositionZ(), _unit->GetOrientation());
-				SetAIUpdateFreq( 4 * 60 * 1000 );
+				mHeadlessHorseman = GetNearestCreature(CN_SHADE_OF_THE_HORSEMAN);
+				if(mHeadlessHorseman == NULL)
+				{
+					SpawnCreature(CN_SHADE_OF_THE_HORSEMAN, _unit->GetPositionX(), _unit->GetPositionY(), _unit->GetPositionZ(), _unit->GetOrientation());
+					SetAIUpdateFreq(4 * 60 * 1000);
+				}
 			}
+			ParentClass::AIUpdate();
 		}
-		ParentClass::AIUpdate();
-	}
-	
-	MoonScriptCreatureAI*	mHeadlessHorseman;
+
+		MoonScriptCreatureAI*	mHeadlessHorseman;
 };
 
 class WaterBarrel : public GameObjectAIScript
 {
-public:
-	WaterBarrel(GameObject*  goinstance) : GameObjectAIScript(goinstance) {}
-	static GameObjectAIScript *Create(GameObject* GO) { return new WaterBarrel(GO); }
+	public:
+		WaterBarrel(GameObject*  goinstance) : GameObjectAIScript(goinstance) {}
+		static GameObjectAIScript* Create(GameObject* GO) { return new WaterBarrel(GO); }
 
-	void OnActivate(Player* pPlayer)
-	{
-		SlotResult slotresult;
-		ItemPrototype *proto = ItemPrototypeStorage.LookupEntry( 32971 );
-		if( !proto )
-			return;
-		
-		slotresult = pPlayer->GetItemInterface()->FindFreeInventorySlot( proto );
+		void OnActivate(Player* pPlayer)
+		{
+			SlotResult slotresult;
+			ItemPrototype* proto = ItemPrototypeStorage.LookupEntry(32971);
+			if(!proto)
+				return;
 
-		if( !slotresult.Result )
-		{
-			pPlayer->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, INV_ERR_INVENTORY_FULL);
-			return;
-		}
-		else
-		{
-			if( pPlayer->GetItemInterface()->GetItemCount( 32971, false ) == 0 )
-			{
-				Item* itm = objmgr.CreateItem( 32971, pPlayer );
-				pPlayer->GetItemInterface()->SafeAddItem( itm, slotresult.ContainerSlot, slotresult.Slot);
-			}
-			else
+			slotresult = pPlayer->GetItemInterface()->FindFreeInventorySlot(proto);
+
+			if(!slotresult.Result)
 			{
 				pPlayer->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, INV_ERR_INVENTORY_FULL);
 				return;
 			}
+			else
+			{
+				if(pPlayer->GetItemInterface()->GetItemCount(32971, false) == 0)
+				{
+					Item* itm = objmgr.CreateItem(32971, pPlayer);
+					pPlayer->GetItemInterface()->SafeAddItem(itm, slotresult.ContainerSlot, slotresult.Slot);
+				}
+				else
+				{
+					pPlayer->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, INV_ERR_INVENTORY_FULL);
+					return;
+				}
+			}
 		}
-	}
 };
 
-void SetupHalloween(ScriptMgr *mgr)
+void SetupHalloween(ScriptMgr* mgr)
 {
 	mgr->register_creature_script(22816, &BlackCat::Create);
 	mgr->register_creature_script(CN_HEADLESS_HORSEMAN, &HeadlessHorsemanAI::Create);

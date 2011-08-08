@@ -23,77 +23,77 @@
 
 class Lady_Jaina : public GossipScript
 {
-public:
-	void GossipHello( Object *pObject, Player *plr )
-	{
-		GossipMenu *Menu;
-		if(plr->GetQuestLogForEntry(558))
+	public:
+		void GossipHello(Object* pObject, Player* plr)
 		{
-			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 7012, plr);
-			Menu->AddItem(0, "Lady Jaina, this may sound like an odd request... but I have a young ward who is quite shy. You are a hero to him, and he asked me to get your autograph.", 1);
-			Menu->SendTo(plr);
-		}
-	}
-
-	void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
-	{
-		Creature*  pCreature = (pObject->IsCreature())?(TO_CREATURE(pObject)):NULL;
-		if(pObject==NULL)
-			return;
-
-		switch(IntId)
-		{
-		case 0: // Return to start
-			GossipHello(pCreature, plr );
-			break;
-		case 1: // Give Item
+			GossipMenu* Menu;
+			if(plr->GetQuestLogForEntry(558))
 			{
-				plr->CastSpell(plr, dbcSpell.LookupEntry(23122),true);
-				plr->Gossip_Complete();
-				break;
+				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 7012, plr);
+				Menu->AddItem(0, "Lady Jaina, this may sound like an odd request... but I have a young ward who is quite shy. You are a hero to him, and he asked me to get your autograph.", 1);
+				Menu->SendTo(plr);
 			}
-			break;
 		}
-	}
+
+		void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char* Code)
+		{
+			Creature*  pCreature = (pObject->IsCreature()) ? (TO_CREATURE(pObject)) : NULL;
+			if(pObject == NULL)
+				return;
+
+			switch(IntId)
+			{
+				case 0: // Return to start
+					GossipHello(pCreature, plr);
+					break;
+				case 1: // Give Item
+					{
+						plr->CastSpell(plr, dbcSpell.LookupEntry(23122), true);
+						plr->Gossip_Complete();
+						break;
+					}
+					break;
+			}
+		}
 
 };
 
 class Cairne : public GossipScript
 {
-public:
-	void GossipHello( Object *pObject, Player *plr )
-	{
-		GossipMenu *Menu;
-		if(plr->GetQuestLogForEntry(925))
+	public:
+		void GossipHello(Object* pObject, Player* plr)
 		{
-			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 7013, plr);
-			Menu->AddItem(0, "Give me hoofprint.", 1);
-			Menu->SendTo(plr);
-		}
-	}
-
-	void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
-	{
-		GossipMenu *Menu;
-		Creature*  pCreature = (pObject->IsCreature())?(TO_CREATURE(pObject)):NULL;
-		if(pObject==NULL)
-			return;
-
-		switch(IntId)
-		{
-		case 0: // Return to start
-			GossipHello(pCreature, plr );
-			break;
-		case 1: // Give Item
+			GossipMenu* Menu;
+			if(plr->GetQuestLogForEntry(925))
 			{
-				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 7014, plr);
+				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 7013, plr);
+				Menu->AddItem(0, "Give me hoofprint.", 1);
 				Menu->SendTo(plr);
-				plr->CastSpell(plr, dbcSpell.LookupEntry(23123),true);
-				break;
 			}
-			break;
 		}
-	}
+
+		void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char* Code)
+		{
+			GossipMenu* Menu;
+			Creature*  pCreature = (pObject->IsCreature()) ? (TO_CREATURE(pObject)) : NULL;
+			if(pObject == NULL)
+				return;
+
+			switch(IntId)
+			{
+				case 0: // Return to start
+					GossipHello(pCreature, plr);
+					break;
+				case 1: // Give Item
+					{
+						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 7014, plr);
+						Menu->SendTo(plr);
+						plr->CastSpell(plr, dbcSpell.LookupEntry(23123), true);
+						break;
+					}
+					break;
+			}
+		}
 
 };
 
@@ -101,28 +101,28 @@ public:
 
 class TeleportQ_Gossip : public GossipScript
 {
-public:
-    void GossipHello( Object *pObject, Player *plr )
-    {
-		if( plr->GetQuestLogForEntry(12791) != NULL || plr->GetQuestLogForEntry(12794) != NULL || plr->GetQuestLogForEntry(12796) )
+	public:
+		void GossipHello(Object* pObject, Player* plr)
 		{
-			TO_CREATURE(pObject)->CastSpell(plr, TELEPORT_SPELL, false);
+			if(plr->GetQuestLogForEntry(12791) != NULL || plr->GetQuestLogForEntry(12794) != NULL || plr->GetQuestLogForEntry(12796))
+			{
+				TO_CREATURE(pObject)->CastSpell(plr, TELEPORT_SPELL, false);
+			}
 		}
-    }
 };
 
-void SetupQuestGossip(ScriptMgr * mgr)
+void SetupQuestGossip(ScriptMgr* mgr)
 {
-	GossipScript * LJ = new Lady_Jaina();
-	GossipScript * CB = new Cairne();
+	GossipScript* LJ = new Lady_Jaina();
+	GossipScript* CB = new Cairne();
 
 	mgr->register_gossip_script(4968, LJ);
 	mgr->register_gossip_script(3057, CB);
 
 	// **** Dalaran quests start **** //
-	GossipScript * TeleportQGossip = new TeleportQ_Gossip;
+	GossipScript* TeleportQGossip = new TeleportQ_Gossip;
 
-	// Horde 
+	// Horde
 	mgr->register_gossip_script(26471, TeleportQGossip);
 	mgr->register_gossip_script(29155, TeleportQGossip);
 	mgr->register_gossip_script(29159, TeleportQGossip);

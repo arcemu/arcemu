@@ -26,13 +26,13 @@ extern "C" {
 #define REPLACE_FILTER 1
 #define SEARCH_FILTER 0
 
-WordFilter * g_characterNameFilter;
-WordFilter * g_chatFilter;
+WordFilter* g_characterNameFilter;
+WordFilter* g_chatFilter;
 
 WordFilter::~WordFilter()
 {
 	size_t i;
-	WordFilterMatch * p;
+	WordFilterMatch* p;
 
 	if(!m_filters)
 		return;
@@ -40,7 +40,7 @@ WordFilter::~WordFilter()
 	for(i = 0; i < m_filterCount; ++i)
 	{
 		p = m_filters[i];
-		if(p== NULL)
+		if(p == NULL)
 			continue;
 
 		if(p->szMatch)
@@ -66,12 +66,12 @@ WordFilter::~WordFilter()
 	delete [] m_filters;
 }
 
-bool WordFilter::CompileExpression(const char * szExpression, void** pOutput, void** pExtraOutput)
+bool WordFilter::CompileExpression(const char* szExpression, void** pOutput, void** pExtraOutput)
 {
-	pcre * re;
-	pcre_extra * ee = 0;
-	const char * error;
-	const char * error2 = 0;
+	pcre* re;
+	pcre_extra* ee = 0;
+	const char* error;
+	const char* error2 = 0;
 	int erroffset;
 
 	re = pcre_compile(szExpression, 0, &error, &erroffset, NULL);
@@ -91,26 +91,26 @@ bool WordFilter::CompileExpression(const char * szExpression, void** pOutput, vo
 		return false;
 	}
 
-    *pOutput = (void*)re;
+	*pOutput = (void*)re;
 	*pExtraOutput = (void*)ee;
 	return true;
 }
 
-void WordFilter::Load(const char * szTableName)
+void WordFilter::Load(const char* szTableName)
 {
-	WordFilterMatch * pMatch;
+	WordFilterMatch* pMatch;
 	size_t i;
 	list<WordFilterMatch*> lItems;
 	list<WordFilterMatch*>::iterator itr;
-	QueryResult * pResult = WorldDatabase.Query("SELECT * FROM %s", szTableName);
-	if(pResult== NULL)
+	QueryResult* pResult = WorldDatabase.Query("SELECT * FROM %s", szTableName);
+	if(pResult == NULL)
 		return;
 
-	do 
+	do
 	{
 		pMatch = new WordFilterMatch;
 		pMatch->szMatch = (strlen(pResult->Fetch()[0].GetString()) > 1) ? strdup(pResult->Fetch()[0].GetString()) : NULL;
-		if(pMatch->szMatch== NULL)
+		if(pMatch->szMatch == NULL)
 		{
 			delete pMatch;
 			continue;
@@ -141,16 +141,17 @@ void WordFilter::Load(const char * szTableName)
 		}
 		else
 		{
-			pMatch->pCompiledIgnoreExpression= NULL;
-			pMatch->pCompiledIgnoreExpressionOptions= NULL;
+			pMatch->pCompiledIgnoreExpression = NULL;
+			pMatch->pCompiledIgnoreExpressionOptions = NULL;
 		}
 
 		pMatch->iType = pResult->Fetch()[2].GetUInt32();
 		lItems.push_back(pMatch);
-	} while (pResult->NextRow());
+	}
+	while(pResult->NextRow());
 	delete pResult;
 
-	if(lItems.size()== 0)
+	if(lItems.size() == 0)
 		return;
 
 	m_filters = new WordFilterMatch*[lItems.size()];
@@ -161,23 +162,23 @@ void WordFilter::Load(const char * szTableName)
 	m_filterCount = i;
 }
 
-bool WordFilter::Parse(string& sMessage, bool bAllowReplace /* = true */)
+bool WordFilter::Parse(string & sMessage, bool bAllowReplace /* = true */)
 {
 #define N 10
 #define NC (N*3)
 	size_t i;
-	int ovec[N*3];
+	int ovec[N * 3];
 	int n;
-	WordFilterMatch * pFilter;
-	const char * szInput = sMessage.c_str();
+	WordFilterMatch* pFilter;
+	const char* szInput = sMessage.c_str();
 	size_t iLen = sMessage.length();
-	//char 
+	//char
 
 	for(i = 0; i < m_filterCount; ++i)
 	{
 		pFilter = m_filters[i];
 		if((n = pcre_exec((const pcre*)pFilter->pCompiledExpression,
-			(const pcre_extra*)pFilter->pCompiledExpressionOptions, szInput, (int)iLen, 0, 0, ovec, NC)) < 0)
+		                  (const pcre_extra*)pFilter->pCompiledExpressionOptions, szInput, (int)iLen, 0, 0, ovec, NC)) < 0)
 		{
 			if(n == PCRE_ERROR_NOMATCH)
 				continue;
@@ -192,7 +193,7 @@ bool WordFilter::Parse(string& sMessage, bool bAllowReplace /* = true */)
 			{
 				// ignore case
 				if((n = pcre_exec((const pcre*)pFilter->pCompiledIgnoreExpression,
-					(const pcre_extra*)pFilter->pCompiledIgnoreExpressionOptions, szInput, (int)iLen, 0, 0, ovec, NC)) < 0)
+				                  (const pcre_extra*)pFilter->pCompiledIgnoreExpressionOptions, szInput, (int)iLen, 0, 0, ovec, NC)) < 0)
 				{
 					// our string didn't match any of the excludes, so it passes
 					if(n == PCRE_ERROR_NOMATCH)
@@ -222,8 +223,8 @@ bool WordFilter::Parse(string& sMessage, bool bAllowReplace /* = true */)
 	if it finds one then it checks the following character and deals with it.
 
 	it really should be a case of ORDER DENY,ALLOW, but atm it is ALLOW,DENY
-	
-	The following should be considered 'unfriendly' sequences. Ones that occur 
+
+	The following should be considered 'unfriendly' sequences. Ones that occur
 	normally in chat, but only in specific circumstances, these should all be dealt with here:
 	|c[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F] - Colour tag, should be followed by a |H *always*
 	|r - end of colour tag, should always follow a |h
@@ -233,7 +234,7 @@ bool WordFilter::Parse(string& sMessage, bool bAllowReplace /* = true */)
 		achievement
 		trade
 		quest
-	
+
 	The following are the 'bad' sequences. These should NEVER be transmitted:
 	|T and |t - open/close icon tags. Not handled here - if detected the entire message is dropped and the player gets a warning sysmsg
 	\n - newline char. Not handled, afaik currently stripped out by the client
@@ -241,7 +242,7 @@ bool WordFilter::Parse(string& sMessage, bool bAllowReplace /* = true */)
 	The following are not particularly 'unfriendly' sequences, and aren't handled:
 	|1 and |4 - plural sequence
 	|3 - used to crash the client, appears to do nothing now
-	|H - the following types are registered by default: gm_chat, player. The former opens GM Chat, and the latter when clicked 
+	|H - the following types are registered by default: gm_chat, player. The former opens GM Chat, and the latter when clicked
 	opens a whisper to the player targetted by the link. Additional types may exist but would be registered by 3rd party addons
 	so any exploit using it would depend on the presence of a specific 3rd party addon in the victim's client.
 
@@ -254,72 +255,72 @@ bool WordFilter::Parse(string& sMessage, bool bAllowReplace /* = true */)
 
 	--Stewart, April 09
 */
-bool WordFilter::ParseEscapeCodes(char * sMsg, bool bAllowLinks)
+bool WordFilter::ParseEscapeCodes(char* sMsg, bool bAllowLinks)
 {
-	if(!strstr(sMsg,"|"))
+	if(!strstr(sMsg, "|"))
 		return true;
-	
-	uint32 j= 0;
-	for( j= 0; j<(((string)sMsg).length()); j++)
+
+	uint32 j = 0;
+	for(j = 0; j < (((string)sMsg).length()); j++)
 	{
-		if( ((string)sMsg).at(j) != char('|') )
+		if(((string)sMsg).at(j) != char('|'))
 			continue;
-	
+
 		//Myth fix server crashes, unhandled null pointers ftw
-		if (j+1>=(((string)sMsg).length()))
+		if(j + 1 >= (((string)sMsg).length()))
 			return true;
 
 		string newstr;
-		char * i;
-		switch( ((string)sMsg).at(j+1) )
+		char* i;
+		switch(((string)sMsg).at(j + 1))
 		{
 			case char('c'):
-				if(((string)sMsg).length() < j + 10 )
+				if(((string)sMsg).length() < j + 10)
 				{
 					sMsg[j] = '\0';
 					break;
 				}
 				i = sMsg + j + 10;
-				if( strncmp(i,"|H",2) == 0 && bAllowLinks)
+				if(strncmp(i, "|H", 2) == 0 && bAllowLinks)
 					continue;
-				newstr = ((string)sMsg).replace(j,10,"");
-				strcpy(sMsg,newstr.c_str());
-				j= 0;
-			break;
+				newstr = ((string)sMsg).replace(j, 10, "");
+				strcpy(sMsg, newstr.c_str());
+				j = 0;
+				break;
 			case char('r'):
 				i = (sMsg + j) - 2;
-				if(strncmp(i,"|h",2) == 0 && bAllowLinks)
+				if(strncmp(i, "|h", 2) == 0 && bAllowLinks)
 				{
 					continue;
 				}
-				newstr = ((string)sMsg).replace(j,2,"");
-				strcpy(sMsg,newstr.c_str());
-				j= 0;
-			break;
+				newstr = ((string)sMsg).replace(j, 2, "");
+				strcpy(sMsg, newstr.c_str());
+				j = 0;
+				break;
 			case char('H'):
 				//abc  |Hitem:111:2:3:4:5:6:7:8:9|h[Tough Jerky]|h|r
 				//    ^=j                         ^=i-sMsg  (approx)
-				i = strstr(sMsg,"|h");
+				i = strstr(sMsg, "|h");
 				if(bAllowLinks && i)
 					continue;
 				if(i)
-					newstr = ((string)sMsg).replace(j,((size_t)(i - sMsg))-(j),"");
+					newstr = ((string)sMsg).replace(j, ((size_t)(i - sMsg)) - (j), "");
 				else
-					newstr = ((string)sMsg).replace(j,strlen(sMsg)-j,"");
-				strcpy(sMsg,newstr.c_str());
-				
-				j= 0;
-			break;
+					newstr = ((string)sMsg).replace(j, strlen(sMsg) - j, "");
+				strcpy(sMsg, newstr.c_str());
+
+				j = 0;
+				break;
 			case char('h'):
 				if(bAllowLinks)
 					continue;
-				if(((string)sMsg).at(j-1) == char(']'))
-					newstr = ((string)sMsg).replace(j-1,3,"");
+				if(((string)sMsg).at(j - 1) == char(']'))
+					newstr = ((string)sMsg).replace(j - 1, 3, "");
 				else
-					newstr = ((string)sMsg).replace(j,2,"");
-				strcpy(sMsg,newstr.c_str());
-				j= 0;
-			break;
+					newstr = ((string)sMsg).replace(j, 2, "");
+				strcpy(sMsg, newstr.c_str());
+				j = 0;
+				break;
 		}
 	}
 	return true;

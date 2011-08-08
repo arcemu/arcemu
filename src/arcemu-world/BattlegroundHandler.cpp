@@ -20,7 +20,7 @@
 
 #include "StdAfx.h"
 
-void WorldSession::HandleBattlefieldPortOpcode(WorldPacket &recv_data)
+void WorldSession::HandleBattlefieldPortOpcode(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_RETURN
 
@@ -46,13 +46,13 @@ void WorldSession::HandleBattlefieldPortOpcode(WorldPacket &recv_data)
 	}
 }
 
-void WorldSession::HandleBattlefieldStatusOpcode(WorldPacket &recv_data)
+void WorldSession::HandleBattlefieldStatusOpcode(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_RETURN
 
-/**********************************************************************************
-* This is done based on whether we are queued, inside, or not in a battleground.
-***********************************************************************************/
+	/**********************************************************************************
+	* This is done based on whether we are queued, inside, or not in a battleground.
+	***********************************************************************************/
 	if(_player->m_pendingBattleground)		// Ready to port
 		BattlegroundManager.SendBattlefieldStatus(_player, BGSTATUS_READY, _player->m_pendingBattleground->GetType(), _player->m_pendingBattleground->GetId(), 120000, 0, _player->m_pendingBattleground->Rated());
 	else if(_player->m_bg)					// Inside a bg
@@ -61,7 +61,7 @@ void WorldSession::HandleBattlefieldStatusOpcode(WorldPacket &recv_data)
 		BattlegroundManager.SendBattlefieldStatus(_player, BGSTATUS_NOFLAGS, 0, 0, 0, 0, 0);
 }
 
-void WorldSession::HandleBattlefieldListOpcode(WorldPacket &recv_data)
+void WorldSession::HandleBattlefieldListOpcode(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_RETURN
 
@@ -72,7 +72,7 @@ void WorldSession::HandleBattlefieldListOpcode(WorldPacket &recv_data)
 
 	// weeeeeeeeeeeeeeeeeeeee
 	CHECK_INWORLD_ASSERT;
-	
+
 	BattlegroundManager.HandleBattlegroundListPacket(this, BGType, from);
 }
 
@@ -85,21 +85,26 @@ void WorldSession::SendBattlegroundList(Creature* pCreature, uint32 mapid)
 	* uint32 t = BattleGroundType
 	**********************************************************************************/
 	uint32 t = BATTLEGROUND_WARSONG_GULCH;
-	if(mapid == 0){
-		if( strstr(pCreature->GetCreatureInfo()->SubName, "Arena") != NULL){
-				t = BATTLEGROUND_ARENA_2V2;
-		}else{
-			BGMaster *battlemaster = BGMasterStorage.LookupEntry( pCreature->GetProto()->Id );			
-			if( battlemaster != NULL )
+	if(mapid == 0)
+	{
+		if(strstr(pCreature->GetCreatureInfo()->SubName, "Arena") != NULL)
+		{
+			t = BATTLEGROUND_ARENA_2V2;
+		}
+		else
+		{
+			BGMaster* battlemaster = BGMasterStorage.LookupEntry(pCreature->GetProto()->Id);
+			if(battlemaster != NULL)
 				t = battlemaster->bg;
 		}
-	}else
+	}
+	else
 		t = mapid;
 
-    BattlegroundManager.HandleBattlegroundListPacket(this, t);
+	BattlegroundManager.HandleBattlegroundListPacket(this, t);
 }
 
-void WorldSession::HandleBattleMasterHelloOpcode(WorldPacket &recv_data)
+void WorldSession::HandleBattleMasterHelloOpcode(WorldPacket & recv_data)
 {
 	CHECK_PACKET_SIZE(recv_data, 8);
 
@@ -109,7 +114,7 @@ void WorldSession::HandleBattleMasterHelloOpcode(WorldPacket &recv_data)
 	recv_data >> guid;
 	LOG_DEBUG("Received CMSG_BATTLEMASTER_HELLO from " I64FMT, guid);
 
-	Creature * bm = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
+	Creature* bm = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
 
 	if(!bm)
 		return;
@@ -120,28 +125,28 @@ void WorldSession::HandleBattleMasterHelloOpcode(WorldPacket &recv_data)
 	SendBattlegroundList(bm, 0);
 }
 
-void WorldSession::HandleLeaveBattlefieldOpcode(WorldPacket &recv_data)
+void WorldSession::HandleLeaveBattlefieldOpcode(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_RETURN
 
-	if( _player->m_bg && _player->IsInWorld() )
+	if(_player->m_bg && _player->IsInWorld())
 		_player->m_bg->RemovePlayer(_player, false);
 }
 
-void WorldSession::HandleAreaSpiritHealerQueryOpcode(WorldPacket &recv_data)
+void WorldSession::HandleAreaSpiritHealerQueryOpcode(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_RETURN
 
-	if( !_player->m_bg )
+	if(!_player->m_bg)
 		return;
 
 	uint64 guid;
 	recv_data >> guid;
 
-	Creature * psg = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
+	Creature* psg = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
 	if(psg == NULL)
 		return;
-	
+
 	uint32 restime = _player->m_bg->GetLastResurrect() + 30;
 	if((uint32)UNIXTIME > restime)
 		restime = 1000;
@@ -153,46 +158,46 @@ void WorldSession::HandleAreaSpiritHealerQueryOpcode(WorldPacket &recv_data)
 	SendPacket(&data);
 }
 
-void WorldSession::HandleAreaSpiritHealerQueueOpcode(WorldPacket &recv_data)
+void WorldSession::HandleAreaSpiritHealerQueueOpcode(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_RETURN
 
-	if( !_player->m_bg)
+	if(!_player->m_bg)
 		return;
 
 	uint64 guid;
 	recv_data >> guid;
-	Creature * psg = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
+	Creature* psg = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
 	if(psg == NULL)
 		return;
 
 	_player->m_bg->QueuePlayerForResurrect(_player, psg);
-	_player->CastSpell(_player,2584,true);
+	_player->CastSpell(_player, 2584, true);
 }
 
-void WorldSession::HandleBattlegroundPlayerPositionsOpcode(WorldPacket &recv_data)
+void WorldSession::HandleBattlegroundPlayerPositionsOpcode(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_RETURN
 
 	// empty opcode
-	CBattleground *bg = _player->m_bg;
-    if( !bg )
-        return;
+	CBattleground* bg = _player->m_bg;
+	if(!bg)
+		return;
 
 	if(bg->GetType() == BATTLEGROUND_WARSONG_GULCH)
-    {
-        uint32 count1 = 0;
+	{
+		uint32 count1 = 0;
 		uint32 count2 = 0;
 
-        Player *ap = objmgr.GetPlayer(TO< WarsongGulch* >(bg)->GetAllianceFlagHolderGUID());
-        if(ap) ++count2;
+		Player* ap = objmgr.GetPlayer(TO< WarsongGulch* >(bg)->GetAllianceFlagHolderGUID());
+		if(ap) ++count2;
 
-        Player *hp = objmgr.GetPlayer(TO< WarsongGulch* >(bg)->GetHordeFlagHolderGUID());
-        if(hp) ++count2;
+		Player* hp = objmgr.GetPlayer(TO< WarsongGulch* >(bg)->GetHordeFlagHolderGUID());
+		if(hp) ++count2;
 
-        WorldPacket data(MSG_BATTLEGROUND_PLAYER_POSITIONS, (4+4+16*count1+16*count2));
-        data << count1;
-        data << count2;
+		WorldPacket data(MSG_BATTLEGROUND_PLAYER_POSITIONS, (4 + 4 + 16 * count1 + 16 * count2));
+		data << count1;
+		data << count2;
 		if(ap)
 		{
 			data << (uint64)ap->GetGUID();
@@ -213,10 +218,10 @@ void WorldSession::HandleBattlegroundPlayerPositionsOpcode(WorldPacket &recv_dat
 		uint32 count1 = 0;
 		uint32 count2 = 0;
 
-		Player *ap = objmgr.GetPlayer(TO< EyeOfTheStorm* >(bg)->GetFlagHolderGUID());
+		Player* ap = objmgr.GetPlayer(TO< EyeOfTheStorm* >(bg)->GetFlagHolderGUID());
 		if(ap) ++count2;
 
-		WorldPacket data(MSG_BATTLEGROUND_PLAYER_POSITIONS, (4+4+16*count1+16*count2));
+		WorldPacket data(MSG_BATTLEGROUND_PLAYER_POSITIONS, (4 + 4 + 16 * count1 + 16 * count2));
 		data << count1;
 		data << count2;
 		if(ap)
@@ -230,7 +235,7 @@ void WorldSession::HandleBattlegroundPlayerPositionsOpcode(WorldPacket &recv_dat
 	}
 }
 
-void WorldSession::HandleBattleMasterJoinOpcode(WorldPacket &recv_data)
+void WorldSession::HandleBattleMasterJoinOpcode(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_RETURN;
 
@@ -256,7 +261,7 @@ void WorldSession::HandleBattleMasterJoinOpcode(WorldPacket &recv_data)
 		BattlegroundManager.HandleBattlegroundJoin(this, recv_data);
 }
 
-void WorldSession::HandleArenaJoinOpcode(WorldPacket &recv_data)
+void WorldSession::HandleArenaJoinOpcode(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_RETURN;
 
@@ -267,93 +272,93 @@ void WorldSession::HandleArenaJoinOpcode(WorldPacket &recv_data)
 	}
 
 	/* are we already in a queue? */
-    if(_player->m_bgIsQueued)
+	if(_player->m_bgIsQueued)
 		BattlegroundManager.RemovePlayerFromQueues(_player);
 
-	uint32 bgtype= 0;
+	uint32 bgtype = 0;
 	uint64 guid;
 	uint8 arenacategory;
 	uint8 as_group;
 	uint8 rated_match;
-    recv_data >> guid >> arenacategory >> as_group >> rated_match;
+	recv_data >> guid >> arenacategory >> as_group >> rated_match;
 	switch(arenacategory)
 	{
-	case 0:		// 2v2
-		bgtype = BATTLEGROUND_ARENA_2V2;
-		break;
+		case 0:		// 2v2
+			bgtype = BATTLEGROUND_ARENA_2V2;
+			break;
 
-	case 1:		// 3v3
-		bgtype = BATTLEGROUND_ARENA_3V3;
-		break;
+		case 1:		// 3v3
+			bgtype = BATTLEGROUND_ARENA_3V3;
+			break;
 
-	case 2:		// 5v5
-		bgtype = BATTLEGROUND_ARENA_5V5;
-		break;
+		case 2:		// 5v5
+			bgtype = BATTLEGROUND_ARENA_5V5;
+			break;
 	}
 
 	if(bgtype != 0)
 		BattlegroundManager.HandleArenaJoin(this, bgtype, as_group, rated_match);
 }
 
-void WorldSession::HandleInspectHonorStatsOpcode( WorldPacket &recv_data )
+void WorldSession::HandleInspectHonorStatsOpcode(WorldPacket & recv_data)
 {
-    CHECK_PACKET_SIZE( recv_data, 8 );
+	CHECK_PACKET_SIZE(recv_data, 8);
 	CHECK_INWORLD_RETURN;
 
-    uint64 guid;
-    recv_data >> guid;
+	uint64 guid;
+	recv_data >> guid;
 
-	if( _player->GetMapMgr() == NULL )
+	if(_player->GetMapMgr() == NULL)
 	{
-		LOG_ERROR( "HandleInspectHonorStatsOpcode : _player map mgr was null" );
+		LOG_ERROR("HandleInspectHonorStatsOpcode : _player map mgr was null");
 		return;
 	}
 
-	if( _player->GetMapMgr()->GetPlayer( (uint32)guid ) == NULL )
+	if(_player->GetMapMgr()->GetPlayer((uint32)guid) == NULL)
 	{
-		LOG_ERROR( "HandleInspectHonorStatsOpcode : guid was null" );
+		LOG_ERROR("HandleInspectHonorStatsOpcode : guid was null");
 		return;
 	}
 
-    Player* player =  _player->GetMapMgr()->GetPlayer( (uint32)guid );
+	Player* player =  _player->GetMapMgr()->GetPlayer((uint32)guid);
 
-    WorldPacket data( MSG_INSPECT_HONOR_STATS, 13 );
+	WorldPacket data(MSG_INSPECT_HONOR_STATS, 13);
 
-    data << player->GetGUID() << (uint8)player->GetHonorCurrency();
-    data << player->GetUInt32Value( PLAYER_FIELD_KILLS );
-    data << player->GetUInt32Value( PLAYER_FIELD_TODAY_CONTRIBUTION );
-    data << player->GetUInt32Value( PLAYER_FIELD_YESTERDAY_CONTRIBUTION );
-    data << player->GetUInt32Value( PLAYER_FIELD_LIFETIME_HONORBALE_KILLS );
+	data << player->GetGUID() << (uint8)player->GetHonorCurrency();
+	data << player->GetUInt32Value(PLAYER_FIELD_KILLS);
+	data << player->GetUInt32Value(PLAYER_FIELD_TODAY_CONTRIBUTION);
+	data << player->GetUInt32Value(PLAYER_FIELD_YESTERDAY_CONTRIBUTION);
+	data << player->GetUInt32Value(PLAYER_FIELD_LIFETIME_HONORBALE_KILLS);
 
-    SendPacket( &data );
+	SendPacket(&data);
 }
 
-void WorldSession::HandleInspectArenaStatsOpcode( WorldPacket & recv_data )
+void WorldSession::HandleInspectArenaStatsOpcode(WorldPacket & recv_data)
 {
-    CHECK_PACKET_SIZE( recv_data, 8 );
+	CHECK_PACKET_SIZE(recv_data, 8);
 	CHECK_INWORLD_RETURN;
 
-    uint64 guid;
-    recv_data >> guid;
+	uint64 guid;
+	recv_data >> guid;
 
-    Player* player =  _player->GetMapMgr()->GetPlayer( (uint32)guid );
-	if( player == NULL )
+	Player* player =  _player->GetMapMgr()->GetPlayer((uint32)guid);
+	if(player == NULL)
 	{
-		LOG_ERROR( "HandleInspectHonorStatsOpcode : guid was null" );
+		LOG_ERROR("HandleInspectHonorStatsOpcode : guid was null");
 		return;
 	}
 
 	uint32 id;
 
-    for( uint8 i = 0; i < 3; i++ )
-    {
-		id = player->GetUInt32Value( PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + ( i * 7 ) );
-        if( id > 0 )
-        {
-            ArenaTeam* team = objmgr.GetArenaTeamById( id );
-            if( team != NULL )
+	for(uint8 i = 0; i < 3; i++)
+	{
+		id = player->GetUInt32Value(PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (i * 7));
+		if(id > 0)
+		{
+			ArenaTeam* team = objmgr.GetArenaTeamById(id);
+			if(team != NULL)
 			{
-				WorldPacket data( MSG_INSPECT_ARENA_TEAMS, 8 + 1 + 4 * 5 );
+				WorldPacket data(MSG_INSPECT_ARENA_TEAMS, 8 + 1 + 4 * 5);
 				data << player->GetGUID();
 				data << team->m_type;
 				data << team->m_id;
@@ -361,15 +366,15 @@ void WorldSession::HandleInspectArenaStatsOpcode( WorldPacket & recv_data )
 				data << team->m_stat_gamesplayedweek;
 				data << team->m_stat_gameswonweek;
 				data << team->m_stat_gamesplayedseason;
-				SendPacket( &data );
+				SendPacket(&data);
 
 			}
-        }
-    }
+		}
+	}
 }
 
 
-void WorldSession::HandlePVPLogDataOpcode(WorldPacket &recv_data)
+void WorldSession::HandlePVPLogDataOpcode(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_RETURN;
 	if(_player->m_bg)
@@ -378,7 +383,7 @@ void WorldSession::HandlePVPLogDataOpcode(WorldPacket &recv_data)
 
 void WorldSession::SendNotInArenaTeamPacket(uint8 type)
 {
-	WorldPacket data(SMSG_ARENA_ERROR, 4+1); // 886 - You are not in a %uv%u arena team
+	WorldPacket data(SMSG_ARENA_ERROR, 4 + 1); // 886 - You are not in a %uv%u arena team
 	data << uint32(0);                       // E_ERR_ARENA_NO_TEAM_II (1 = E_ERR_ARENA_EXPIRED_CAIS)
 	data << uint8(type);                     // team type (2=2v2,3=3v3,5=5v5), can be used for custom types...
 	SendPacket(&data);

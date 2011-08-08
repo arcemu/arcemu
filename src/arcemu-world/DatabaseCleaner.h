@@ -23,13 +23,13 @@
 
 class DatabaseCleaner : public Singleton<DatabaseCleaner>
 {
-public:
-	void Run();
+	public:
+		void Run();
 
-protected:
-	void CleanCharacters();
-	void CleanWorld();
-	void Optimize();
+	protected:
+		void CleanCharacters();
+		void CleanWorld();
+		void Optimize();
 };
 
 #endif

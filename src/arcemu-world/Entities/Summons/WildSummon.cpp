@@ -20,23 +20,28 @@
 
 #include "../../StdAfx.h"
 
-WildSummon::WildSummon( uint64 GUID ) : Summon( GUID ){
+WildSummon::WildSummon(uint64 GUID) : Summon(GUID)
+{
 }
 
-WildSummon::~WildSummon(){
+WildSummon::~WildSummon()
+{
 }
 
-void WildSummon::Load( CreatureProto *proto, Unit *owner, LocationVector &position, uint32 spellid, int32 summonslot ){
-	Summon::Load( proto, owner, position, spellid, summonslot );
-	
-	setLevel( owner->getLevel() );
+void WildSummon::Load(CreatureProto* proto, Unit* owner, LocationVector & position, uint32 spellid, int32 summonslot)
+{
+	Summon::Load(proto, owner, position, spellid, summonslot);
+
+	setLevel(owner->getLevel());
 }
 
-void WildSummon::OnPushToWorld(){
+void WildSummon::OnPushToWorld()
+{
 	Summon::OnPushToWorld();
 }
 
-void WildSummon::OnPreRemoveFromWorld(){
+void WildSummon::OnPreRemoveFromWorld()
+{
 	Summon::OnPreRemoveFromWorld();
 }
 

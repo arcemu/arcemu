@@ -27,18 +27,18 @@
 
 enum Stats
 {
-	STAT_STRENGTH,
-	STAT_AGILITY,
-	STAT_STAMINA,
-	STAT_INTELLECT,
-	STAT_SPIRIT,
+    STAT_STRENGTH,
+    STAT_AGILITY,
+    STAT_STAMINA,
+    STAT_INTELLECT,
+    STAT_SPIRIT,
 };
 
 SERVER_DECL uint32 getConColor(uint16 AttackerLvl, uint16 VictimLvl);
-SERVER_DECL uint32 CalculateXpToGive(Unit *pVictim, Unit *pAttacker);
-SERVER_DECL uint32 CalculateStat(uint16 level,double a3, double a2, double a1, double a0);
-SERVER_DECL uint32 CalculateDamage( Unit* pAttacker, Unit* pVictim, uint32 weapon_damage_type, uint32 *spellgroup, SpellEntry* ability );
-SERVER_DECL uint32 GainStat(uint16 level, uint8 playerclass,uint8 Stat);
-SERVER_DECL bool isEven (int num);
+SERVER_DECL uint32 CalculateXpToGive(Unit* pVictim, Unit* pAttacker);
+SERVER_DECL uint32 CalculateStat(uint16 level, double a3, double a2, double a1, double a0);
+SERVER_DECL uint32 CalculateDamage(Unit* pAttacker, Unit* pVictim, uint32 weapon_damage_type, uint32* spellgroup, SpellEntry* ability);
+SERVER_DECL uint32 GainStat(uint16 level, uint8 playerclass, uint8 Stat);
+SERVER_DECL bool isEven(int num);
 
 #endif

@@ -22,19 +22,19 @@
 #include "Common.h"
 
 #ifndef EOL
-	#ifdef WIN32
-		#define EOL "\r\n"
-	#else
-		#define EOL "\n"
-	#endif
+#ifdef WIN32
+#define EOL "\r\n"
+#else
+#define EOL "\n"
+#endif
 #endif
 
 #ifndef EOL_SIZE
-	#ifdef WIN32
-		#define EOL_SIZE 2
-	#else
-		#define EOL_SIZE 1
-	#endif
+#ifdef WIN32
+#define EOL_SIZE 2
+#else
+#define EOL_SIZE 1
+#endif
 #endif
 
 using namespace std;
@@ -50,42 +50,42 @@ typedef map<uint32, ConfigSetting> ConfigBlock;
 
 class SERVER_DECL ConfigFile
 {
-public:
-	ConfigFile();
-	~ConfigFile();
+	public:
+		ConfigFile();
+		~ConfigFile();
 
-	bool SetSource(const char *file, bool ignorecase = true);
-	ConfigSetting * GetSetting(const char * Block, const char * Setting);
+		bool SetSource(const char* file, bool ignorecase = true);
+		ConfigSetting* GetSetting(const char* Block, const char* Setting);
 
-	bool GetString(const char * block, const char* name, std::string *value);
-	std::string GetStringDefault(const char * block, const char* name, const char* def);
-	std::string GetStringVA(const char * block, const char* def, const char * name, ...);
-	bool GetString(const char * block, char * buffer, const char * name, const char * def, uint32 len);
+		bool GetString(const char* block, const char* name, std::string* value);
+		std::string GetStringDefault(const char* block, const char* name, const char* def);
+		std::string GetStringVA(const char* block, const char* def, const char* name, ...);
+		bool GetString(const char* block, char* buffer, const char* name, const char* def, uint32 len);
 
-	bool GetBool(const char * block, const char* name, bool *value);
-	bool GetBoolDefault(const char * block, const char* name, const bool def);
+		bool GetBool(const char* block, const char* name, bool* value);
+		bool GetBoolDefault(const char* block, const char* name, const bool def);
 
-	bool GetInt(const char * block, const char* name, int *value);
-	int GetIntDefault(const char * block, const char* name, const int def);
-	int GetIntVA(const char * block, int def, const char* name, ...);
+		bool GetInt(const char* block, const char* name, int* value);
+		int GetIntDefault(const char* block, const char* name, const int def);
+		int GetIntVA(const char* block, int def, const char* name, ...);
 
-	bool GetFloat(const char * block, const char* name, float *value);
-	float GetFloatDefault(const char * block, const char* name, const float def);
-	float GetFloatVA(const char * block, float def, const char* name, ...);
+		bool GetFloat(const char* block, const char* name, float* value);
+		float GetFloatDefault(const char* block, const char* name, const float def);
+		float GetFloatVA(const char* block, float def, const char* name, ...);
 
-private:
-	map<uint32, ConfigBlock> m_settings;
+	private:
+		map<uint32, ConfigBlock> m_settings;
 };
 
 
 class SERVER_DECL ConfigMgr
 {
-	// Mainly used for WS, others will probably only have one.
-public:
-	ConfigFile MainConfig;
-	ConfigFile RealmConfig;
-	ConfigFile ClusterConfig;
-	ConfigFile OptionalConfig;
+		// Mainly used for WS, others will probably only have one.
+	public:
+		ConfigFile MainConfig;
+		ConfigFile RealmConfig;
+		ConfigFile ClusterConfig;
+		ConfigFile OptionalConfig;
 };
 
 extern SERVER_DECL ConfigMgr Config;

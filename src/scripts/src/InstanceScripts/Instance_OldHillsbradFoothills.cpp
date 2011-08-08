@@ -52,34 +52,34 @@ static Location Fires[] =
 
 static Location ThrallWP1[] = // pre 2nd boss
 {
-    { 0, 0, 0, 0 },
-    { 2230.29f,	115.049f,	82.2946f,	4.22934f },
-    { 2233.85f,	112.592f,	82.3021f,	5.77657f },
-    { 2231.99f,	108.086f,	82.6628f,	2.69702f },
-    { 2216.39f,	116.700f,	89.4553f,	2.59256f },
-    { 2208.22f,	103.356f,	89.4553f,	2.65854f },
-    { 2198.24f,	109.313f,	89.4553f,	2.60356f },
-    { 2203.42f,	119.908f,	89.4553f,	1.01862f },
-    { 2208.59f,	129.058f,	87.9559f,	2.60984f },
-    { 2195.72f,	136.440f,	88.2164f,	2.62162f },
-    { 2177.87f,	145.974f,	88.2163f,	2.61770f },
-    { 2171.95f,	149.297f,	87.8722f,	4.18456f },
-    { 2164.01f,	137.472f,	84.8832f,	3.90811f },
-    { 2150.95f,	127.355f,	77.7717f,	3.75103f },
-    { 2143.23f,	126.945f,	75.7064f,	2.34045f },
-    { 2139.72f,	135.942f,	72.8990f,	1.76868f },
-    { 2139.86f,	147.191f,	69.7701f,	1.55820f },
-    { 2141.66f,	155.228f,	66.9579f,	1.09010f },
-    { 2146.55f,	164.604f,	64.9990f,	2.45041f },
-    { 2143.41f,	169.553f,	66.2217f,	2.61220f },
-    { 2131.21f,	177.859f,	68.9637f,	2.53759f },
-    { 2118.25f,	186.881f,	68.8476f,	2.53366f },
-    { 2109.50f,	192.808f,	66.2216f,   2.66718f },
-    { 2098.07f,	196.281f,	65.2279f,	2.96406f },
-    { 2088.29f,	206.624f,	64.8821f,	2.43470f },
-    { 2072.24f,	220.331f,	64.8736f,	2.43470f },
-    { 2058.74f,	239.180f,	63.7724f,	2.32396f },
-    { 2054.77f,	243.723f,	63.2682f,	2.39857f }
+	{ 0, 0, 0, 0 },
+	{ 2230.29f,	115.049f,	82.2946f,	4.22934f },
+	{ 2233.85f,	112.592f,	82.3021f,	5.77657f },
+	{ 2231.99f,	108.086f,	82.6628f,	2.69702f },
+	{ 2216.39f,	116.700f,	89.4553f,	2.59256f },
+	{ 2208.22f,	103.356f,	89.4553f,	2.65854f },
+	{ 2198.24f,	109.313f,	89.4553f,	2.60356f },
+	{ 2203.42f,	119.908f,	89.4553f,	1.01862f },
+	{ 2208.59f,	129.058f,	87.9559f,	2.60984f },
+	{ 2195.72f,	136.440f,	88.2164f,	2.62162f },
+	{ 2177.87f,	145.974f,	88.2163f,	2.61770f },
+	{ 2171.95f,	149.297f,	87.8722f,	4.18456f },
+	{ 2164.01f,	137.472f,	84.8832f,	3.90811f },
+	{ 2150.95f,	127.355f,	77.7717f,	3.75103f },
+	{ 2143.23f,	126.945f,	75.7064f,	2.34045f },
+	{ 2139.72f,	135.942f,	72.8990f,	1.76868f },
+	{ 2139.86f,	147.191f,	69.7701f,	1.55820f },
+	{ 2141.66f,	155.228f,	66.9579f,	1.09010f },
+	{ 2146.55f,	164.604f,	64.9990f,	2.45041f },
+	{ 2143.41f,	169.553f,	66.2217f,	2.61220f },
+	{ 2131.21f,	177.859f,	68.9637f,	2.53759f },
+	{ 2118.25f,	186.881f,	68.8476f,	2.53366f },
+	{ 2109.50f,	192.808f,	66.2216f,   2.66718f },
+	{ 2098.07f,	196.281f,	65.2279f,	2.96406f },
+	{ 2088.29f,	206.624f,	64.8821f,	2.43470f },
+	{ 2072.24f,	220.331f,	64.8736f,	2.43470f },
+	{ 2058.74f,	239.180f,	63.7724f,	2.32396f },
+	{ 2054.77f,	243.723f,	63.2682f,	2.39857f }
 };
 
 #define MAX_THRALLWP1 27
@@ -122,89 +122,89 @@ enum OHF_ENTRIES
 
 class OldHilsbradInstance : public MoonInstanceScript
 {
-private:
-    int32 m_numBarrel;
-    uint32 m_phaseData[OHF_END];
+	private:
+		int32 m_numBarrel;
+		uint32 m_phaseData[OHF_END];
 
-public:
-    MOONSCRIPT_INSTANCE_FACTORY_FUNCTION( OldHilsbradInstance, MoonInstanceScript );
-	OldHilsbradInstance( MapMgr* pMapMgr ) : MoonInstanceScript( pMapMgr )
-    {
-        m_numBarrel = 0;
+	public:
+		MOONSCRIPT_INSTANCE_FACTORY_FUNCTION(OldHilsbradInstance, MoonInstanceScript);
+		OldHilsbradInstance(MapMgr* pMapMgr) : MoonInstanceScript(pMapMgr)
+		{
+			m_numBarrel = 0;
 
-        for( int i = 0; i < OHF_END; ++i )
-            m_phaseData[i] = OHF_DATA_NOT_STARTED; 
-    };
-    
-    void OnLoad()
-    {
-        AddWorldState( WS_OLD_HILLSBRAD, 0 );
-    }
+			for(int i = 0; i < OHF_END; ++i)
+				m_phaseData[i] = OHF_DATA_NOT_STARTED;
+		};
 
-    void OnPlayerEnter( Player* pPlayer )
-    {
-        SendWorldStates( pPlayer );
+		void OnLoad()
+		{
+			AddWorldState(WS_OLD_HILLSBRAD, 0);
+		}
 
-		if(pPlayer->getGender() == 0)
-			pPlayer->CastSpell( pPlayer, 35482, true ); // Human Male illusion
-		else
-			pPlayer->CastSpell( pPlayer, 35483, true ); // Human Female illusion
-    };
+		void OnPlayerEnter(Player* pPlayer)
+		{
+			SendWorldStates(pPlayer);
 
-    void SetData( uint32 pIndex, uint32 pData )
-    {
-        if( pIndex >= OHF_END )
-            return;
+			if(pPlayer->getGender() == 0)
+				pPlayer->CastSpell(pPlayer, 35482, true);   // Human Male illusion
+			else
+				pPlayer->CastSpell(pPlayer, 35483, true);   // Human Female illusion
+		};
 
-        if( pIndex == OHF_PHASE_2 )
-            RemoveWorldStates();
+		void SetData(uint32 pIndex, uint32 pData)
+		{
+			if(pIndex >= OHF_END)
+				return;
 
-        m_phaseData[pIndex] = pData;
-    };
+			if(pIndex == OHF_PHASE_2)
+				RemoveWorldStates();
 
-    uint32 GetData( uint32 pIndex )
-	{
-        if( pIndex >= OHF_END )
-            return 0;
+			m_phaseData[pIndex] = pData;
+		};
 
-        return m_phaseData[pIndex];
-    };
+		uint32 GetData(uint32 pIndex)
+		{
+			if(pIndex >= OHF_END)
+				return 0;
 
-    void OnGameObjectActivate( GameObject* pGameObject, Player* pPlayer )
-    {
-        if( pGameObject->GetEntry() != GO_LODGE_ABLAZE || GetData( OHF_PHASE_1 ) == OHF_DATA_DONE )
-            return;
+			return m_phaseData[pIndex];
+		};
 
-        pGameObject->Despawn( 1000, 0 );
-        m_numBarrel++;
-        SetWorldState( WS_OLD_HILLSBRAD, m_numBarrel );
-        if( m_numBarrel != 5 )
-            return;
+		void OnGameObjectActivate(GameObject* pGameObject, Player* pPlayer)
+		{
+			if(pGameObject->GetEntry() != GO_LODGE_ABLAZE || GetData(OHF_PHASE_1) == OHF_DATA_DONE)
+				return;
 
-        SetData( OHF_PHASE_1, OHF_DATA_DONE );
+			pGameObject->Despawn(1000, 0);
+			m_numBarrel++;
+			SetWorldState(WS_OLD_HILLSBRAD, m_numBarrel);
+			if(m_numBarrel != 5)
+				return;
 
-        for( PlayerStorageMap::iterator itr = mInstance->m_PlayerStorage.begin(); itr !=  mInstance->m_PlayerStorage.end(); ++itr )
-	    {
-		    pPlayer = itr->second;
+			SetData(OHF_PHASE_1, OHF_DATA_DONE);
 
-		    QuestLogEntry *qle = pPlayer->GetQuestLogForEntry( 10283 );
-	  	    if( !qle )
-                continue;
+			for(PlayerStorageMap::iterator itr = mInstance->m_PlayerStorage.begin(); itr !=  mInstance->m_PlayerStorage.end(); ++itr)
+			{
+				pPlayer = itr->second;
 
-		    qle->SetMobCount(0, qle->GetMobCount( 0 ) + 1);
-		    qle->SendUpdateAddKill( 0 );
-		    qle->UpdatePlayerFields();
-	    };
-	        
-        GameObject* pGO = NULL;
-	    for( uint8 i = 0; i < 21; i++ )
-	    {
-		    pGO = SpawnGameObject( GO_FIRE, Fires[i].x, Fires[i].y, Fires[i].z, Fires[i].o );
-		    sEAS.GameobjectDelete( pGO, 10*60*1000);
-	    }
+				QuestLogEntry* qle = pPlayer->GetQuestLogForEntry(10283);
+				if(!qle)
+					continue;
 
-	    SpawnCreature( CN_LIEUTENANT_DRAKE, 2118.310303f, 89.565969f, 52.453037f, 2.027089f );
-    }
+				qle->SetMobCount(0, qle->GetMobCount(0) + 1);
+				qle->SendUpdateAddKill(0);
+				qle->UpdatePlayerFields();
+			};
+
+			GameObject* pGO = NULL;
+			for(uint8 i = 0; i < 21; i++)
+			{
+				pGO = SpawnGameObject(GO_FIRE, Fires[i].x, Fires[i].y, Fires[i].z, Fires[i].o);
+				sEAS.GameobjectDelete(pGO, 10 * 60 * 1000);
+			}
+
+			SpawnCreature(CN_LIEUTENANT_DRAKE, 2118.310303f, 89.565969f, 52.453037f, 2.027089f);
+		}
 };
 
 enum eGossipTexts
@@ -218,176 +218,177 @@ enum eGossipTexts
 
 class ErozionGossip : public GossipScript
 {
-public:
-	void GossipHello( Object *pObject, Player *Plr )
-	{
-		GossipMenu *Menu;
-        OldHilsbradInstance* pInstance = dynamic_cast<OldHilsbradInstance*>( pObject->GetMapMgr()->GetScript() );
-
-        if( !pInstance )
-            return;
-        
-        objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), EROZION_ON_HELLO, Plr);
-
-        if( pInstance->GetData( OHF_PHASE_1 ) != OHF_DATA_DONE && !Plr->HasItemCount( 25853,1 ) )
-		    Menu->AddItem( 0, "I need a pack of Incendiary Bombs.", 1 );
-
-		// It should give another menu if instance is done id: 10474, NYI
-
-		Menu->SendTo(Plr);
-	}
-
-	void GossipSelectOption(Object* pObject, Player*  Plr, uint32 Id, uint32 IntId, const char * Code)
-	{
-		switch (IntId)
+	public:
+		void GossipHello(Object* pObject, Player* Plr)
 		{
-			case 1:
-                Item* pBombs = objmgr.CreateItem( 25853, Plr);
-                if( pBombs )
-				    Plr->GetItemInterface()->AddItemToFreeSlot( pBombs );
-                break;
+			GossipMenu* Menu;
+			OldHilsbradInstance* pInstance = dynamic_cast<OldHilsbradInstance*>(pObject->GetMapMgr()->GetScript());
+
+			if(!pInstance)
+				return;
+
+			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), EROZION_ON_HELLO, Plr);
+
+			if(pInstance->GetData(OHF_PHASE_1) != OHF_DATA_DONE && !Plr->HasItemCount(25853, 1))
+				Menu->AddItem(0, "I need a pack of Incendiary Bombs.", 1);
+
+			// It should give another menu if instance is done id: 10474, NYI
+
+			Menu->SendTo(Plr);
 		}
-	}
+
+		void GossipSelectOption(Object* pObject, Player*  Plr, uint32 Id, uint32 IntId, const char* Code)
+		{
+			switch(IntId)
+			{
+				case 1:
+					Item* pBombs = objmgr.CreateItem(25853, Plr);
+					if(pBombs)
+						Plr->GetItemInterface()->AddItemToFreeSlot(pBombs);
+					break;
+			}
+		}
 
 };
 
 class BrazenGossip : public GossipScript
 {
-public:
-	void GossipHello( Object *pObject, Player *Plr )
-	{
-		GossipMenu *Menu;
-
-        objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), BRAZAN_ON_HELLO, Plr);
-	    Menu->AddItem( 0, "I am ready to go to Durnholde Keep.", 1 );
-
-		Menu->SendTo(Plr);
-	}
-
-	void GossipSelectOption(Object* pObject, Player*  Plr, uint32 Id, uint32 IntId, const char * Code)
-	{
-        GossipMenu *Menu;
-		switch (IntId)
+	public:
+		void GossipHello(Object* pObject, Player* Plr)
 		{
-        case 1:
-            {
-			    if ( !Plr->HasItemCount( 25853,1 ) ) 
-                {
-                    objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), BRAZAN_NEED_ITEM, Plr);
-                    Menu->SendTo(Plr);
-                } 
-                else 
-                {
-				    Plr->TaxiStart( sTaxiMgr.GetTaxiPath( 534 ), 8317, 0 );
-                    Plr->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_MOUNTED_TAXI);
-                }
-            }break;
-		}
-	}
+			GossipMenu* Menu;
 
-}; 
+			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), BRAZAN_ON_HELLO, Plr);
+			Menu->AddItem(0, "I am ready to go to Durnholde Keep.", 1);
+
+			Menu->SendTo(Plr);
+		}
+
+		void GossipSelectOption(Object* pObject, Player*  Plr, uint32 Id, uint32 IntId, const char* Code)
+		{
+			GossipMenu* Menu;
+			switch(IntId)
+			{
+				case 1:
+					{
+						if(!Plr->HasItemCount(25853, 1))
+						{
+							objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), BRAZAN_NEED_ITEM, Plr);
+							Menu->SendTo(Plr);
+						}
+						else
+						{
+							Plr->TaxiStart(sTaxiMgr.GetTaxiPath(534), 8317, 0);
+							Plr->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_MOUNTED_TAXI);
+						}
+					}
+					break;
+			}
+		}
+
+};
 
 class LieutenantDrakeAI : public MoonScriptCreatureAI
 {
-    OldHilsbradInstance* pInstance;
+		OldHilsbradInstance* pInstance;
 
-public:
-    MOONSCRIPT_FACTORY_FUNCTION( LieutenantDrakeAI, MoonScriptCreatureAI );
- 	LieutenantDrakeAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
- 	{
-		pInstance = dynamic_cast<OldHilsbradInstance*>( GetInstanceScript() );
- 	};
+	public:
+		MOONSCRIPT_FACTORY_FUNCTION(LieutenantDrakeAI, MoonScriptCreatureAI);
+		LieutenantDrakeAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
+		{
+			pInstance = dynamic_cast<OldHilsbradInstance*>(GetInstanceScript());
+		};
 
-    void OnCombatStart( Unit* pTarget )
-    {
-        if( pInstance )
-            pInstance->SetData( OHF_PHASE_2, OHF_DATA_IN_PROGRESS );
+		void OnCombatStart(Unit* pTarget)
+		{
+			if(pInstance)
+				pInstance->SetData(OHF_PHASE_2, OHF_DATA_IN_PROGRESS);
 
-        ParentClass::OnCombatStart( pTarget );
-    };
+			ParentClass::OnCombatStart(pTarget);
+		};
 
-    void OnCombatStop( Unit* pTarget )
-    {
-        if( pInstance )
-            pInstance->SetData( OHF_PHASE_2, OHF_DATA_PERFORMED );
+		void OnCombatStop(Unit* pTarget)
+		{
+			if(pInstance)
+				pInstance->SetData(OHF_PHASE_2, OHF_DATA_PERFORMED);
 
-        ParentClass::OnCombatStop( pTarget );
-    };
+			ParentClass::OnCombatStop(pTarget);
+		};
 };
 
 class ThrallAI : public MoonScriptCreatureAI // this will be replaced with escortAI
 {
-    MOONSCRIPT_FACTORY_FUNCTION( ThrallAI, MoonScriptCreatureAI );
-    ThrallAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
-    {
-        SetMoveType(Move_DontMoveWP);
-        for( int i = 1; i < MAX_THRALLWP1; ++i )
-            AddWaypoint( CreateWaypoint( i, 0, Flag_Walk, ThrallWP1[i] ) );
-    };
+		MOONSCRIPT_FACTORY_FUNCTION(ThrallAI, MoonScriptCreatureAI);
+		ThrallAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
+		{
+			SetMoveType(Move_DontMoveWP);
+			for(int i = 1; i < MAX_THRALLWP1; ++i)
+				AddWaypoint(CreateWaypoint(i, 0, Flag_Walk, ThrallWP1[i]));
+		};
 
-    void StartEscort( Player* pPlayer )
-    {
-        GameObject* pGO = GetNearestGameObject();
-        if( pGO )
-            pGO->SetState( pGO->GetState() == 1 ? 0 : 1 );
+		void StartEscort(Player* pPlayer)
+		{
+			GameObject* pGO = GetNearestGameObject();
+			if(pGO)
+				pGO->SetState(pGO->GetState() == 1 ? 0 : 1);
 
-        _unit->SetUInt32Value(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_NONE);
-        SetMoveType(Move_ForwardThenStop);
-    };
+			_unit->SetUInt32Value(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_NONE);
+			SetMoveType(Move_ForwardThenStop);
+		};
 
-    void OnCombatStop(Unit* pTarget)
-    {
-        ParentClass::OnCombatStop(pTarget);
-        SetWaypointToMove( m_currentWp );
-    };
+		void OnCombatStop(Unit* pTarget)
+		{
+			ParentClass::OnCombatStop(pTarget);
+			SetWaypointToMove(m_currentWp);
+		};
 
-    void OnReachWP(uint32 iWaypointId, bool bForwards)
-    {
-        m_currentWp = iWaypointId;
-    };
+		void OnReachWP(uint32 iWaypointId, bool bForwards)
+		{
+			m_currentWp = iWaypointId;
+		};
 
-    uint32 m_currentWp;
+		uint32 m_currentWp;
 };
 
 class ThrallGossip : public GossipScript
 {
-public:
-	void GossipHello( Object *pObject, Player *Plr )
-	{
-		GossipMenu *Menu;
-        if( !pObject->IsCreature() )
-            return;
-        
-        objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), THRALL_ON_HELLO, Plr);
-	    Menu->AddItem( 0, "[PH] Start escort.", 1 );
-
-		Menu->SendTo(Plr);
-	}
-
-	void GossipSelectOption(Object* pObject, Player*  Plr, uint32 Id, uint32 IntId, const char * Code)
-	{
-		switch (IntId)
+	public:
+		void GossipHello(Object* pObject, Player* Plr)
 		{
-			case 1:
-                ThrallAI* pThrall = TO< ThrallAI* >( TO_CREATURE( pObject )->GetScript() );
-                if( pThrall )
-                    pThrall->StartEscort( Plr );
-                break;
+			GossipMenu* Menu;
+			if(!pObject->IsCreature())
+				return;
+
+			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), THRALL_ON_HELLO, Plr);
+			Menu->AddItem(0, "[PH] Start escort.", 1);
+
+			Menu->SendTo(Plr);
 		}
-	}
+
+		void GossipSelectOption(Object* pObject, Player*  Plr, uint32 Id, uint32 IntId, const char* Code)
+		{
+			switch(IntId)
+			{
+				case 1:
+					ThrallAI* pThrall = TO< ThrallAI* >(TO_CREATURE(pObject)->GetScript());
+					if(pThrall)
+						pThrall->StartEscort(Plr);
+					break;
+			}
+		}
 
 };
 
-void SetupOldHillsbradFoothills(ScriptMgr * mgr)
+void SetupOldHillsbradFoothills(ScriptMgr* mgr)
 {
-    mgr->register_instance_script( MAP_OLD_HILSBRAD, &OldHilsbradInstance::Create); 
-    mgr->register_creature_script( CN_LIEUTENANT_DRAKE, &LieutenantDrakeAI::Create );
-    mgr->register_creature_script( CN_THRALL, &ThrallAI::Create );
+	mgr->register_instance_script(MAP_OLD_HILSBRAD, &OldHilsbradInstance::Create);
+	mgr->register_creature_script(CN_LIEUTENANT_DRAKE, &LieutenantDrakeAI::Create);
+	mgr->register_creature_script(CN_THRALL, &ThrallAI::Create);
 
-    GossipScript * eGossip = new ErozionGossip;
-    mgr->register_gossip_script( CN_EROZION, eGossip );
-    GossipScript * bGossip = new BrazenGossip; 
-    mgr->register_gossip_script( CN_BRAZEN, bGossip );
-    GossipScript * tGossip = new ThrallGossip;
-    mgr->register_gossip_script( CN_THRALL, tGossip );
+	GossipScript* eGossip = new ErozionGossip;
+	mgr->register_gossip_script(CN_EROZION, eGossip);
+	GossipScript* bGossip = new BrazenGossip;
+	mgr->register_gossip_script(CN_BRAZEN, bGossip);
+	GossipScript* tGossip = new ThrallGossip;
+	mgr->register_gossip_script(CN_THRALL, tGossip);
 }

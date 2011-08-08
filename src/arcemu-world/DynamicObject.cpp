@@ -25,16 +25,16 @@ DynamicObject::DynamicObject(uint32 high, uint32 low)
 	m_objectTypeId = TYPEID_DYNAMICOBJECT;
 	m_valuesCount = DYNAMICOBJECT_END;
 	m_uint32Values = _fields;
-	memset(m_uint32Values, 0,(DYNAMICOBJECT_END)*sizeof(uint32));
+	memset(m_uint32Values, 0, (DYNAMICOBJECT_END)*sizeof(uint32));
 	m_updateMask.SetCount(DYNAMICOBJECT_END);
-	m_uint32Values[OBJECT_FIELD_TYPE] = TYPE_DYNAMICOBJECT|TYPE_OBJECT;
+	m_uint32Values[OBJECT_FIELD_TYPE] = TYPE_DYNAMICOBJECT | TYPE_OBJECT;
 	m_uint32Values[LOWGUID] = low;
 	m_uint32Values[HIGHGUID] = high;
 	m_wowGuid.Init(GetGUID());
-	SetScale( 1 );
+	SetScale(1);
 
 
-	m_parentSpell= NULL;
+	m_parentSpell = NULL;
 	m_aliveDuration = 0;
 	u_caster = NULL;
 	m_spellProto = NULL;
@@ -47,18 +47,18 @@ DynamicObject::~DynamicObject()
 		u_caster->dynObj = NULL;
 }
 
-void DynamicObject::Create(Unit * caster, Spell * pSpell, float x, float y, float z, uint32 duration, float radius)
+void DynamicObject::Create(Unit* caster, Spell* pSpell, float x, float y, float z, uint32 duration, float radius)
 {
-	Object::_Create(caster->GetMapId(),x, y, z, 0);
+	Object::_Create(caster->GetMapId(), x, y, z, 0);
 	if(pSpell->g_caster)
 	{
 		m_parentSpell = pSpell;
 	}
-	if( pSpell->p_caster == NULL )
+	if(pSpell->p_caster == NULL)
 	{
 		// try to find player caster here
-		if( caster->IsPlayer() )
-			p_caster = TO< Player* >( caster );
+		if(caster->IsPlayer())
+			p_caster = TO< Player* >(caster);
 	}
 	else
 		p_caster = pSpell->p_caster;
@@ -66,7 +66,7 @@ void DynamicObject::Create(Unit * caster, Spell * pSpell, float x, float y, floa
 	m_spellProto = pSpell->GetProto();
 	SetUInt64Value(DYNAMICOBJECT_CASTER, caster->GetGUID());
 
-	SetEntry( m_spellProto->Id );
+	SetEntry(m_spellProto->Id);
 	m_uint32Values[DYNAMICOBJECT_BYTES] = 0x01eeeeee;
 	m_uint32Values[DYNAMICOBJECT_SPELLID] = m_spellProto->Id;
 
@@ -74,7 +74,7 @@ void DynamicObject::Create(Unit * caster, Spell * pSpell, float x, float y, floa
 	m_position.x = x; //m_floatValues[DYNAMICOBJECT_POS_X]  = x;
 	m_position.y = y; //m_floatValues[DYNAMICOBJECT_POS_Y]  = y;
 	m_position.z = z; //m_floatValues[DYNAMICOBJECT_POS_Z]  = z;
-	
+
 
 	m_aliveDuration = duration;
 	u_caster = caster;
@@ -84,7 +84,7 @@ void DynamicObject::Create(Unit * caster, Spell * pSpell, float x, float y, floa
 
 	if(pSpell->g_caster)
 		PushToWorld(pSpell->g_caster->GetMapMgr());
-	else 
+	else
 		PushToWorld(caster->GetMapMgr());
 
 	if(caster->dynObj != NULL)
@@ -93,23 +93,23 @@ void DynamicObject::Create(Unit * caster, Spell * pSpell, float x, float y, floa
 		caster->dynObj->Remove();
 	}
 	caster->dynObj = this;
-  
+
 	//sEventMgr.AddEvent(this, &DynamicObject::UpdateTargets, EVENT_DYNAMICOBJECT_UPDATE, 100, 0,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-    UpdateTargets();
+	UpdateTargets();
 }
 
-void DynamicObject::AddInRangeObject( Object* pObj )
+void DynamicObject::AddInRangeObject(Object* pObj)
 {
-	Object::AddInRangeObject( pObj );
+	Object::AddInRangeObject(pObj);
 }
 
-void DynamicObject::OnRemoveInRangeObject( Object* pObj )
+void DynamicObject::OnRemoveInRangeObject(Object* pObj)
 {
-	if( pObj->IsUnit() )
+	if(pObj->IsUnit())
 	{
-		targets.erase( pObj->GetGUID() );
+		targets.erase(pObj->GetGUID());
 	}
-	Object::OnRemoveInRangeObject( pObj );
+	Object::OnRemoveInRangeObject(pObj);
 }
 
 void DynamicObject::UpdateTargets()
@@ -119,22 +119,22 @@ void DynamicObject::UpdateTargets()
 
 	if(m_aliveDuration >= 100)
 	{
-		Unit * target;
-		Aura * pAura;
+		Unit* target;
+		Aura* pAura;
 
 		float radius = m_floatValues[ DYNAMICOBJECT_RADIUS ] * m_floatValues[ DYNAMICOBJECT_RADIUS ];
 
-        // Looking for targets in the Object set
-        for( std::set< Object* >::iterator itr = m_objectsInRange.begin(); itr != m_objectsInRange.end(); ++itr )
+		// Looking for targets in the Object set
+		for(std::set< Object* >::iterator itr = m_objectsInRange.begin(); itr != m_objectsInRange.end(); ++itr)
 		{
-            Object *o = *itr;
+			Object* o = *itr;
 
-			if( !o->IsUnit() || !TO< Unit* >( o )->isAlive() )
+			if(!o->IsUnit() || !TO< Unit* >(o)->isAlive())
 				continue;
 
-			target = TO< Unit* >( o );
+			target = TO< Unit* >(o);
 
-			if( !isAttackable( u_caster, target, !(m_spellProto->c_is_flags & SPELL_FLAG_IS_TARGETINGSTEALTHED) ) )
+			if(!isAttackable(u_caster, target, !(m_spellProto->c_is_flags & SPELL_FLAG_IS_TARGETINGSTEALTHED)))
 				continue;
 
 			// skip units already hit, their range will be tested later
@@ -149,13 +149,13 @@ void DynamicObject::UpdateTargets()
 					if(m_spellProto->Effect[i] == SPELL_EFFECT_PERSISTENT_AREA_AURA)
 					{
 						pAura->AddMod(m_spellProto->EffectApplyAuraName[i],
-							m_spellProto->EffectBasePoints[i]+1, m_spellProto->EffectMiscValue[i], i);
+						              m_spellProto->EffectBasePoints[i] + 1, m_spellProto->EffectMiscValue[i], i);
 					}
 				}
 				target->AddAura(pAura);
 				if(p_caster)
 				{
-					p_caster->HandleProc(PROC_ON_CAST_SPECIFIC_SPELL | PROC_ON_CAST_SPELL,target, m_spellProto);
+					p_caster->HandleProc(PROC_ON_CAST_SPECIFIC_SPELL | PROC_ON_CAST_SPELL, target, m_spellProto);
 					p_caster->m_procCounter = 0;
 				}
 
@@ -164,12 +164,12 @@ void DynamicObject::UpdateTargets()
 			}
 		}
 
-       
+
 		// loop the targets, check the range of all of them
 		DynamicObjectList::iterator jtr  = targets.begin();
 		DynamicObjectList::iterator jtr2;
 		DynamicObjectList::iterator jend = targets.end();
-		
+
 		while(jtr != jend)
 		{
 			target = GetMapMgr() ? GetMapMgr()->GetUnit(*jtr) : NULL;
@@ -199,33 +199,34 @@ void DynamicObject::UpdateTargets()
 void DynamicObject::Remove()
 {
 	// remove aura from all targets
-	Unit * target;
+	Unit* target;
 
-    if( !IsInWorld() ){
-        delete this;
-        return;
-    }
+	if(!IsInWorld())
+	{
+		delete this;
+		return;
+	}
 
-    for( std::set< uint64 >::iterator itr = targets.begin(); itr != targets.end(); ++itr )
+	for(std::set< uint64 >::iterator itr = targets.begin(); itr != targets.end(); ++itr)
 	{
 
-        uint64 TargetGUID = *itr;
+		uint64 TargetGUID = *itr;
 
-        target = m_mapMgr->GetUnit( TargetGUID );
+		target = m_mapMgr->GetUnit(TargetGUID);
 
-        if (target != NULL)
+		if(target != NULL)
 			target->RemoveAura(m_spellProto->Id);
 	}
 
-	WorldPacket data( SMSG_GAMEOBJECT_DESPAWN_ANIM, 8 );
-	
-	data << GetGUID();
-	SendMessageToSet( &data, false );
+	WorldPacket data(SMSG_GAMEOBJECT_DESPAWN_ANIM, 8);
 
-	if( IsInWorld() )
+	data << GetGUID();
+	SendMessageToSet(&data, false);
+
+	if(IsInWorld())
 		RemoveFromWorld(true);
 
-	if (u_caster != NULL && m_spellProto->ChannelInterruptFlags != 0)
+	if(u_caster != NULL && m_spellProto->ChannelInterruptFlags != 0)
 	{
 		u_caster->SetChannelSpellTargetGUID(0);
 		u_caster->SetChannelSpellId(0);

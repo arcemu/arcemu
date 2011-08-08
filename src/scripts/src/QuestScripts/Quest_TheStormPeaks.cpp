@@ -21,43 +21,43 @@
 // The Gifts of Loken
 class LokensFury : public GameObjectAIScript
 {
-public:
-	ADD_GAMEOBJECT_FACTORY_FUNCTION(LokensFury);
-	LokensFury(GameObject* goinstance) : GameObjectAIScript(goinstance) {};
+	public:
+		ADD_GAMEOBJECT_FACTORY_FUNCTION(LokensFury);
+		LokensFury(GameObject* goinstance) : GameObjectAIScript(goinstance) {};
 
-	void OnActivate(Player* pPlayer)
-	{
-		if ( sEAS.GetQuest( pPlayer, 12965) )
-			sEAS.KillMobForQuest( pPlayer, 12965, 0 );
-	};
+		void OnActivate(Player* pPlayer)
+		{
+			if(sEAS.GetQuest(pPlayer, 12965))
+				sEAS.KillMobForQuest(pPlayer, 12965, 0);
+		};
 
 };
 
 class LokensPower : public GameObjectAIScript
 {
-public:
-	ADD_GAMEOBJECT_FACTORY_FUNCTION(LokensPower);
-	LokensPower(GameObject* goinstance) : GameObjectAIScript(goinstance) {};
+	public:
+		ADD_GAMEOBJECT_FACTORY_FUNCTION(LokensPower);
+		LokensPower(GameObject* goinstance) : GameObjectAIScript(goinstance) {};
 
-	void OnActivate(Player* pPlayer)
-	{
-		if ( sEAS.GetQuest( pPlayer, 12965) )
-			sEAS.KillMobForQuest( pPlayer, 12965, 1 );
-	};
+		void OnActivate(Player* pPlayer)
+		{
+			if(sEAS.GetQuest(pPlayer, 12965))
+				sEAS.KillMobForQuest(pPlayer, 12965, 1);
+		};
 
 };
 
 class LokensFavor : public GameObjectAIScript
 {
-public:
-	ADD_GAMEOBJECT_FACTORY_FUNCTION(LokensFavor);
-	LokensFavor(GameObject* goinstance) : GameObjectAIScript(goinstance) {};
+	public:
+		ADD_GAMEOBJECT_FACTORY_FUNCTION(LokensFavor);
+		LokensFavor(GameObject* goinstance) : GameObjectAIScript(goinstance) {};
 
-	void OnActivate(Player* pPlayer)
-	{
-		if ( sEAS.GetQuest( pPlayer, 12965) )
-			sEAS.KillMobForQuest( pPlayer, 12965, 2 );
-	};
+		void OnActivate(Player* pPlayer)
+		{
+			if(sEAS.GetQuest(pPlayer, 12965))
+				sEAS.KillMobForQuest(pPlayer, 12965, 2);
+		};
 
 };
 
@@ -67,61 +67,64 @@ public:
 
 class SCRIPT_DECL MissingScout_Gossip : public GossipScript
 {
-public:
-       void GossipHello( Object *pObject, Player *plr )
-       {
-               GossipMenu *Menu;
-               objmgr.CreateGossipMenuForPlayer( &Menu, pObject->GetGUID(), 13611, plr );
-               if( plr->HasQuest(12864) )
-                       Menu->AddItem( 0, GOSSIP_SCOUTMENU1, 1 );
-       
-               Menu->SendTo(plr);
-       }
-       void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
-       {
-               Creature* pCreature = (pObject->IsCreature()) ? (TO_CREATURE(pObject)) : NULL;
-               if(pCreature == NULL)
-                       return;
+	public:
+		void GossipHello(Object* pObject, Player* plr)
+		{
+			GossipMenu* Menu;
+			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 13611, plr);
+			if(plr->HasQuest(12864))
+				Menu->AddItem(0, GOSSIP_SCOUTMENU1, 1);
 
-               GossipMenu *Menu;
-               switch(IntId)
-               {
-                       case 1:
-                       {
-                               objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 13612, plr);
-                               Menu->AddItem( 0, GOSSIP_SCOUTMENU2, 2);
-                               Menu->SendTo(plr);
-                       }break;
-                       case 2:
-                       {
-                               objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 13613, plr);
-                               Menu->AddItem( 0, GOSSIP_SCOUTMENU3, 3);
-                               Menu->SendTo(plr);
-                       }break;
-                       case 3:
-                       {
-                               objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 13614, plr);
-                               Menu->SendTo(plr);
+			Menu->SendTo(plr);
+		}
+		void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char* Code)
+		{
+			Creature* pCreature = (pObject->IsCreature()) ? (TO_CREATURE(pObject)) : NULL;
+			if(pCreature == NULL)
+				return;
 
-                               QuestLogEntry *qle = plr->GetQuestLogForEntry(12864);
-                               if(qle == NULL || qle->GetMobCount(0) != 0)
-                                       return;
+			GossipMenu* Menu;
+			switch(IntId)
+			{
+				case 1:
+					{
+						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 13612, plr);
+						Menu->AddItem(0, GOSSIP_SCOUTMENU2, 2);
+						Menu->SendTo(plr);
+					}
+					break;
+				case 2:
+					{
+						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 13613, plr);
+						Menu->AddItem(0, GOSSIP_SCOUTMENU3, 3);
+						Menu->SendTo(plr);
+					}
+					break;
+				case 3:
+					{
+						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 13614, plr);
+						Menu->SendTo(plr);
 
-                               qle->SetMobCount(0, 1);
-                               qle->SendUpdateAddKill(0);
-                               qle->UpdatePlayerFields();
-                       }break;
-               }
-       }
+						QuestLogEntry* qle = plr->GetQuestLogForEntry(12864);
+						if(qle == NULL || qle->GetMobCount(0) != 0)
+							return;
+
+						qle->SetMobCount(0, 1);
+						qle->SendUpdateAddKill(0);
+						qle->UpdatePlayerFields();
+					}
+					break;
+			}
+		}
 
 };
 
- void SetupTheStormPeaks(ScriptMgr * mgr)
- {
-        // The Gifts of Loken
-        mgr->register_gameobject_script(192120, &LokensFury::Create);
-        mgr->register_gameobject_script(192121, &LokensPower::Create);
-        mgr->register_gameobject_script(192122, &LokensFavor::Create);
-       GossipScript * MissingScoutGossip = new MissingScout_Gossip;
-       mgr->register_gossip_script(29811, MissingScoutGossip);
- }
+void SetupTheStormPeaks(ScriptMgr* mgr)
+{
+	// The Gifts of Loken
+	mgr->register_gameobject_script(192120, &LokensFury::Create);
+	mgr->register_gameobject_script(192121, &LokensPower::Create);
+	mgr->register_gameobject_script(192122, &LokensFavor::Create);
+	GossipScript* MissingScoutGossip = new MissingScout_Gossip;
+	mgr->register_gossip_script(29811, MissingScoutGossip);
+}

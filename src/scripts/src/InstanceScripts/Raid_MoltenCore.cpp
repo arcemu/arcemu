@@ -33,62 +33,62 @@
 // Golemagg AI
 class CoreRagerAI : public CreatureAIScript
 {
-public:
-    ADD_CREATURE_FACTORY_FUNCTION(CoreRagerAI);
-    CoreRagerAI(Creature* pCreature) : CreatureAIScript(pCreature)
-    {
-		m_mangle = true;
+	public:
+		ADD_CREATURE_FACTORY_FUNCTION(CoreRagerAI);
+		CoreRagerAI(Creature* pCreature) : CreatureAIScript(pCreature)
+		{
+			m_mangle = true;
 
-        info_mangle = dbcSpell.LookupEntry(MANGLE);
-    }
-    
-    void OnCombatStart(Unit* mTarget)
-    {
-		RegisterAIUpdateEvent(_unit->GetBaseAttackTime(MELEE));
-    }
+			info_mangle = dbcSpell.LookupEntry(MANGLE);
+		}
 
-    void OnCombatStop(Unit* mTarget)
-    {
-        _unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
-        _unit->GetAIInterface()->SetAIState(STATE_IDLE);
-       RemoveAIUpdateEvent();
-    }
+		void OnCombatStart(Unit* mTarget)
+		{
+			RegisterAIUpdateEvent(_unit->GetBaseAttackTime(MELEE));
+		}
 
-    void OnDied(Unit* mKiller)
-    {
-       RemoveAIUpdateEvent();
-    }
+		void OnCombatStop(Unit* mTarget)
+		{
+			_unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
+			_unit->GetAIInterface()->SetAIState(STATE_IDLE);
+			RemoveAIUpdateEvent();
+		}
 
-    void AIUpdate()
-    {	
-	    uint32 val = RandomUInt(1000);
-        SpellCast(val);
-    }
+		void OnDied(Unit* mKiller)
+		{
+			RemoveAIUpdateEvent();
+		}
 
-    void SpellCast(uint32 val)
-    {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())//_unit->getAttackTarget())
-        {
-			//Unit* target = _unit->GetAIInterface()->GetNextTarget();
-            if(m_mangle)
-            {
-                _unit->CastSpell(_unit, info_mangle, false);
-                m_mangle = false;
-                return;
-            }
+		void AIUpdate()
+		{
+			uint32 val = RandomUInt(1000);
+			SpellCast(val);
+		}
 
-            if(val >= 100 && val <= 220)
-            {
-                _unit->setAttackTimer(9000, false);
-                m_mangle = true;
-            }
-        }
-    }
+		void SpellCast(uint32 val)
+		{
+			if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())//_unit->getAttackTarget())
+			{
+				//Unit* target = _unit->GetAIInterface()->GetNextTarget();
+				if(m_mangle)
+				{
+					_unit->CastSpell(_unit, info_mangle, false);
+					m_mangle = false;
+					return;
+				}
 
-protected:
+				if(val >= 100 && val <= 220)
+				{
+					_unit->setAttackTimer(9000, false);
+					m_mangle = true;
+				}
+			}
+		}
 
-    bool m_mangle;
-    SpellEntry *info_mangle;
+	protected:
+
+		bool m_mangle;
+		SpellEntry* info_mangle;
 };
 
 #define CN_SULFURON_HARBRINGER 12098
@@ -101,91 +101,91 @@ protected:
 // Sulfuron Harbringer AI
 class SulfuronAI : public CreatureAIScript
 {
-public:
-    ADD_CREATURE_FACTORY_FUNCTION(SulfuronAI);
-    SulfuronAI(Creature* pCreature) : CreatureAIScript(pCreature)
-    {
-		m_demoralizingshout = m_inspire = m_flamespear = true;
+	public:
+		ADD_CREATURE_FACTORY_FUNCTION(SulfuronAI);
+		SulfuronAI(Creature* pCreature) : CreatureAIScript(pCreature)
+		{
+			m_demoralizingshout = m_inspire = m_flamespear = true;
 
-        info_demoralizingshout = dbcSpell.LookupEntry(DEMORALIZING_SHOUT);
-		info_inspire = dbcSpell.LookupEntry(INSPIRE);
-		info_flamespear = dbcSpell.LookupEntry(FLAME_SPEAR);
-    }
-    
-    void OnCombatStart(Unit* mTarget)
-    {
-		RegisterAIUpdateEvent(_unit->GetBaseAttackTime(MELEE));
-    }
+			info_demoralizingshout = dbcSpell.LookupEntry(DEMORALIZING_SHOUT);
+			info_inspire = dbcSpell.LookupEntry(INSPIRE);
+			info_flamespear = dbcSpell.LookupEntry(FLAME_SPEAR);
+		}
 
-    void OnCombatStop(Unit* mTarget)
-    {
-        _unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
-        _unit->GetAIInterface()->SetAIState(STATE_IDLE);
-       RemoveAIUpdateEvent();
-    }
+		void OnCombatStart(Unit* mTarget)
+		{
+			RegisterAIUpdateEvent(_unit->GetBaseAttackTime(MELEE));
+		}
 
-    void OnDied(Unit* mKiller)
-    {
-       RemoveAIUpdateEvent();
-    }
+		void OnCombatStop(Unit* mTarget)
+		{
+			_unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
+			_unit->GetAIInterface()->SetAIState(STATE_IDLE);
+			RemoveAIUpdateEvent();
+		}
 
-    void AIUpdate()
-    {	
-	    uint32 val = RandomUInt(1000);
-        SpellCast(val);
-    }
+		void OnDied(Unit* mKiller)
+		{
+			RemoveAIUpdateEvent();
+		}
 
-    void SpellCast(uint32 val)
-    {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())//_unit->getAttackTarget())
-        {
-			//Unit* target = _unit->GetAIInterface()->GetNextTarget();
-                      
-            if(m_demoralizingshout)
-            {
-                _unit->CastSpell(_unit, info_demoralizingshout, false);
-                m_demoralizingshout = false;
-                return;
-            }
-            
-            if(m_inspire)
-            {
-                _unit->CastSpell(_unit, info_inspire, false);
-                m_inspire = false;
-                return;
-            }
-            
-            if(m_flamespear)
-            {
-                _unit->CastSpell(_unit, info_flamespear, false);
-                m_flamespear = false;
-                return;
-            }
-            
-            if(val >= 100 && val <= 180)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_inspire = true;
-            }
-            
-            if(val > 180 && val <= 260)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_demoralizingshout = true;
-            }
-            
-            if(val > 260 && val <= 320)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_flamespear = true;
-            }
-        }
-    }
+		void AIUpdate()
+		{
+			uint32 val = RandomUInt(1000);
+			SpellCast(val);
+		}
 
-protected:
+		void SpellCast(uint32 val)
+		{
+			if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())//_unit->getAttackTarget())
+			{
+				//Unit* target = _unit->GetAIInterface()->GetNextTarget();
 
-    bool m_demoralizingshout,m_inspire,m_flamespear;
-    SpellEntry *info_demoralizingshout, *info_inspire, *info_flamespear;
+				if(m_demoralizingshout)
+				{
+					_unit->CastSpell(_unit, info_demoralizingshout, false);
+					m_demoralizingshout = false;
+					return;
+				}
+
+				if(m_inspire)
+				{
+					_unit->CastSpell(_unit, info_inspire, false);
+					m_inspire = false;
+					return;
+				}
+
+				if(m_flamespear)
+				{
+					_unit->CastSpell(_unit, info_flamespear, false);
+					m_flamespear = false;
+					return;
+				}
+
+				if(val >= 100 && val <= 180)
+				{
+					_unit->setAttackTimer(1000, false);
+					m_inspire = true;
+				}
+
+				if(val > 180 && val <= 260)
+				{
+					_unit->setAttackTimer(1000, false);
+					m_demoralizingshout = true;
+				}
+
+				if(val > 260 && val <= 320)
+				{
+					_unit->setAttackTimer(1000, false);
+					m_flamespear = true;
+				}
+			}
+		}
+
+	protected:
+
+		bool m_demoralizingshout, m_inspire, m_flamespear;
+		SpellEntry* info_demoralizingshout, *info_inspire, *info_flamespear;
 };
 
 
@@ -197,7 +197,7 @@ protected:
           o Ragnaros: TOO SOON! YOU HAVE AWAKENED ME TOO SOON, EXECUTUS! WHAT IS THE MEANING OF THIS INTRUSION?
           o Majordomo Executus: These mortal infidels, my lord! They have invaded your sanctum, and seek to steal your secrets!
           o Ragnaros: FOOL! YOU ALLOWED THESE INSECTS TO RUN RAMPANT THROUGH THE HALLOWED CORE, AND NOW YOU LEAD THEM TO MY VERY LAIR? YOU HAVE FAILED ME, EXECUTUS! JUSTICE SHALL BE MET, INDEED!
-          o Ragnaros: NOW FOR YOU, INSECTS. BOLDLY YOU SOUGHT THE POWER OF RAGNAROS! NOW YOU SHALL SEE IT FIRSTHAND! 
+          o Ragnaros: NOW FOR YOU, INSECTS. BOLDLY YOU SOUGHT THE POWER OF RAGNAROS! NOW YOU SHALL SEE IT FIRSTHAND!
     * DIE, INSECT! (When he kills the player he has aggro on)
     * BY FIRE BE PURGED! (Ranged knockback)
     * TASTE THE FLAMES OF SULFURON! (Melee knockback)
@@ -219,118 +219,118 @@ protected:
 // Ragnaros AI
 class RagnarosAI : public CreatureAIScript
 {
-public:
-    ADD_CREATURE_FACTORY_FUNCTION(RagnarosAI);
-    RagnarosAI(Creature* pCreature) : CreatureAIScript(pCreature)
-    {
-		m_elementalfire = m_wrath = m_hammer = m_meltweapon = m_summonsons = true;
+	public:
+		ADD_CREATURE_FACTORY_FUNCTION(RagnarosAI);
+		RagnarosAI(Creature* pCreature) : CreatureAIScript(pCreature)
+		{
+			m_elementalfire = m_wrath = m_hammer = m_meltweapon = m_summonsons = true;
 
-        info_elementalfire = dbcSpell.LookupEntry(ELEMENTAL_FIRE);
-		info_wrath = dbcSpell.LookupEntry(WRATH_OF_RAGNAROS);
-		info_hammer = dbcSpell.LookupEntry(HAMMER_OF_RAGNAROS);
-		info_meltweapon = dbcSpell.LookupEntry(MELT_WEAPON);
-		info_summonsons = dbcSpell.LookupEntry(SUMMON_SONS_OF_FLAMES);
-		_unit->Root();
-    }
-    
-    void OnCombatStart(Unit* mTarget)
-    {
-		RegisterAIUpdateEvent(_unit->GetBaseAttackTime(MELEE));
-		_unit->GetAIInterface()->skip_reset_hp=true;
-    }
+			info_elementalfire = dbcSpell.LookupEntry(ELEMENTAL_FIRE);
+			info_wrath = dbcSpell.LookupEntry(WRATH_OF_RAGNAROS);
+			info_hammer = dbcSpell.LookupEntry(HAMMER_OF_RAGNAROS);
+			info_meltweapon = dbcSpell.LookupEntry(MELT_WEAPON);
+			info_summonsons = dbcSpell.LookupEntry(SUMMON_SONS_OF_FLAMES);
+			_unit->Root();
+		}
 
-    void OnCombatStop(Unit* mTarget)
-    {
-        _unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
-        _unit->GetAIInterface()->SetAIState(STATE_IDLE);
-       RemoveAIUpdateEvent();
-    }
-    
-    void OnTargetDied(Unit* mTarget)
-    {
-        _unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "DIE, INSECT!");
-        _unit->PlaySoundToSet(8051);
-    }
+		void OnCombatStart(Unit* mTarget)
+		{
+			RegisterAIUpdateEvent(_unit->GetBaseAttackTime(MELEE));
+			_unit->GetAIInterface()->skip_reset_hp = true;
+		}
 
-    void OnDied(Unit* mKiller)
-    {
-       RemoveAIUpdateEvent();
-    }
+		void OnCombatStop(Unit* mTarget)
+		{
+			_unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
+			_unit->GetAIInterface()->SetAIState(STATE_IDLE);
+			RemoveAIUpdateEvent();
+		}
 
-    void AIUpdate()
-    {	
-	    uint32 val = RandomUInt(1000);
-        SpellCast(val);
-    }
+		void OnTargetDied(Unit* mTarget)
+		{
+			_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "DIE, INSECT!");
+			_unit->PlaySoundToSet(8051);
+		}
 
-    void SpellCast(uint32 val)
-    {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())//_unit->getAttackTarget())
-        {
-			Unit* target = _unit->GetAIInterface()->getNextTarget();
-			                      
-            if(m_elementalfire)
-            {
-                _unit->CastSpell(target, info_elementalfire, false);
-                m_elementalfire = false;
-                return;
-            }
-            
-            if(m_wrath)
-            {
-                _unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "Taste the Flames of Sulfuron!");
-		        _unit->PlaySoundToSet(8047);
-                _unit->CastSpell(_unit, info_wrath, false);
-                m_wrath = false;
-                return;
-            }
-            
-            if(m_hammer)
-            {
-                _unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "By fire be purged!");
-		        _unit->PlaySoundToSet(8046);
-                _unit->CastSpell(_unit, info_hammer, false);
-                m_hammer = false;
-                return;
-            }
-            
-            if(m_meltweapon)
-            {
-                _unit->CastSpell(target, info_meltweapon, false);
-                m_meltweapon = false;
-                return;
-            }
-            
-            if(val >= 100 && val <= 160)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_elementalfire = true;
-            }
-            
-            if(val > 160 && val <= 220)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_wrath = true;
-            }
-            
-            if(val > 220 && val <= 280)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_hammer = true;
-            }
-            if(val > 340 && val <= 400)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_meltweapon = true;
-            }
-            
-        }
-    }
+		void OnDied(Unit* mKiller)
+		{
+			RemoveAIUpdateEvent();
+		}
 
-protected:
+		void AIUpdate()
+		{
+			uint32 val = RandomUInt(1000);
+			SpellCast(val);
+		}
 
-    bool m_elementalfire,m_wrath,m_hammer,m_meltweapon,m_summonsons;
-    SpellEntry *info_elementalfire, *info_wrath, *info_hammer, *info_meltweapon,*info_summonsons;
+		void SpellCast(uint32 val)
+		{
+			if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())//_unit->getAttackTarget())
+			{
+				Unit* target = _unit->GetAIInterface()->getNextTarget();
+
+				if(m_elementalfire)
+				{
+					_unit->CastSpell(target, info_elementalfire, false);
+					m_elementalfire = false;
+					return;
+				}
+
+				if(m_wrath)
+				{
+					_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "Taste the Flames of Sulfuron!");
+					_unit->PlaySoundToSet(8047);
+					_unit->CastSpell(_unit, info_wrath, false);
+					m_wrath = false;
+					return;
+				}
+
+				if(m_hammer)
+				{
+					_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "By fire be purged!");
+					_unit->PlaySoundToSet(8046);
+					_unit->CastSpell(_unit, info_hammer, false);
+					m_hammer = false;
+					return;
+				}
+
+				if(m_meltweapon)
+				{
+					_unit->CastSpell(target, info_meltweapon, false);
+					m_meltweapon = false;
+					return;
+				}
+
+				if(val >= 100 && val <= 160)
+				{
+					_unit->setAttackTimer(1000, false);
+					m_elementalfire = true;
+				}
+
+				if(val > 160 && val <= 220)
+				{
+					_unit->setAttackTimer(1000, false);
+					m_wrath = true;
+				}
+
+				if(val > 220 && val <= 280)
+				{
+					_unit->setAttackTimer(1000, false);
+					m_hammer = true;
+				}
+				if(val > 340 && val <= 400)
+				{
+					_unit->setAttackTimer(1000, false);
+					m_meltweapon = true;
+				}
+
+			}
+		}
+
+	protected:
+
+		bool m_elementalfire, m_wrath, m_hammer, m_meltweapon, m_summonsons;
+		SpellEntry* info_elementalfire, *info_wrath, *info_hammer, *info_meltweapon, *info_summonsons;
 };
 
 /*
@@ -348,12 +348,12 @@ TODO:
 
 class MoltenGiantAI : public MoonScriptCreatureAI
 {
-    MOONSCRIPT_FACTORY_FUNCTION(MoltenGiantAI, MoonScriptCreatureAI);
-    MoltenGiantAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
-    {
-		AddSpell(MOLTENGIANT_STOMP, Target_Current, 10, 0, 5);
-		AddSpell(MOLTENGIANT_KNOCKBACK, Target_Self, 10, 0, 5);
-    }
+		MOONSCRIPT_FACTORY_FUNCTION(MoltenGiantAI, MoonScriptCreatureAI);
+		MoltenGiantAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
+		{
+			AddSpell(MOLTENGIANT_STOMP, Target_Current, 10, 0, 5);
+			AddSpell(MOLTENGIANT_KNOCKBACK, Target_Self, 10, 0, 5);
+		}
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -365,13 +365,13 @@ class MoltenGiantAI : public MoonScriptCreatureAI
 
 class MoltenDestroyerAI : public MoonScriptCreatureAI
 {
-    MOONSCRIPT_FACTORY_FUNCTION(MoltenDestroyerAI, MoonScriptCreatureAI);
-    MoltenDestroyerAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
-    {
-		AddSpell(MOLTENDESTROYER_MASSIVE_TREMOR, Target_Self, 12.5f, 0, 0);
+		MOONSCRIPT_FACTORY_FUNCTION(MoltenDestroyerAI, MoonScriptCreatureAI);
+		MoltenDestroyerAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
+		{
+			AddSpell(MOLTENDESTROYER_MASSIVE_TREMOR, Target_Self, 12.5f, 0, 0);
 //		AddSpell(MOLTENDESTROYER_SMASH_ATTACK, Target_Self, 10, 0, 0);
-		AddSpell(MOLTENDESTROYER_KNOCKDOWN, Target_Current, 12.5f, 0, 0);
-    }
+			AddSpell(MOLTENDESTROYER_KNOCKDOWN, Target_Current, 12.5f, 0, 0);
+		}
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -382,12 +382,12 @@ class MoltenDestroyerAI : public MoonScriptCreatureAI
 
 class FirelordAI : public MoonScriptCreatureAI
 {
-    MOONSCRIPT_FACTORY_FUNCTION(FirelordAI, MoonScriptCreatureAI);
-    FirelordAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
-    {
-		AddSpell(FIRELORD_SUMMON_LAVA_SPAWN, Target_Self, 20, 0, 10);
-		AddSpell(FIRELORD_SOUL_BURN, Target_RandomPlayer, 20, 0, 5);
-    }
+		MOONSCRIPT_FACTORY_FUNCTION(FirelordAI, MoonScriptCreatureAI);
+		FirelordAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
+		{
+			AddSpell(FIRELORD_SUMMON_LAVA_SPAWN, Target_Self, 20, 0, 10);
+			AddSpell(FIRELORD_SOUL_BURN, Target_RandomPlayer, 20, 0, 5);
+		}
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -396,11 +396,11 @@ class FirelordAI : public MoonScriptCreatureAI
 
 class LavaAnnihilatorAI : public MoonScriptCreatureAI
 {
-    MOONSCRIPT_FACTORY_FUNCTION(LavaAnnihilatorAI, MoonScriptCreatureAI);
-    LavaAnnihilatorAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
-    {
-		AddSpellFunc(&SpellFunc_ClearHateList, Target_Self, 20, 0, 0);
-    }
+		MOONSCRIPT_FACTORY_FUNCTION(LavaAnnihilatorAI, MoonScriptCreatureAI);
+		LavaAnnihilatorAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
+		{
+			AddSpellFunc(&SpellFunc_ClearHateList, Target_Self, 20, 0, 0);
+		}
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -417,23 +417,35 @@ class LavaAnnihilatorAI : public MoonScriptCreatureAI
 
 class AncientCoreHoundAI : public MoonScriptCreatureAI
 {
-    MOONSCRIPT_FACTORY_FUNCTION(AncientCoreHoundAI, MoonScriptCreatureAI);
-    AncientCoreHoundAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
-    {
-		AddSpell(ANCIENTCOREHOUND_LAVA_BREATH, Target_Self, 20, 0, 3);
-		AddSpell(ANCIENTCOREHOUND_VICIOUS_BITE, Target_Self, 20, 0, 0);
-
-		//Each Ancient Core Hound have only one of the following spell
-		switch( RandomUInt(5) )
+		MOONSCRIPT_FACTORY_FUNCTION(AncientCoreHoundAI, MoonScriptCreatureAI);
+		AncientCoreHoundAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
 		{
-			case 0: AddSpell(ANCIENTCOREHOUND_GROUND_STOMP, Target_Self, 20, 0, 15); break;
-			case 1: AddSpell(ANCIENTCOREHOUND_ANCIENT_DREAD, Target_Self, 20, 0, 15); break;
-			case 2: AddSpell(ANCIENTCOREHOUND_ANCIENT_DESPAIR, Target_Self, 20, 0, 15); break;
-			case 3: AddSpell(ANCIENTCOREHOUND_CAUTERIZING_FLAMES, Target_Self, 20, 0, 15); break;
-			case 4: AddSpell(ANCIENTCOREHOUND_WITHERING_HEAT, Target_Self, 20, 0, 15); break;
-			case 5: AddSpell(ANCIENTCOREHOUND_ANCIENT_HYSTERIA, Target_Self, 20, 0, 15); break;
+			AddSpell(ANCIENTCOREHOUND_LAVA_BREATH, Target_Self, 20, 0, 3);
+			AddSpell(ANCIENTCOREHOUND_VICIOUS_BITE, Target_Self, 20, 0, 0);
+
+			//Each Ancient Core Hound have only one of the following spell
+			switch(RandomUInt(5))
+			{
+				case 0:
+					AddSpell(ANCIENTCOREHOUND_GROUND_STOMP, Target_Self, 20, 0, 15);
+					break;
+				case 1:
+					AddSpell(ANCIENTCOREHOUND_ANCIENT_DREAD, Target_Self, 20, 0, 15);
+					break;
+				case 2:
+					AddSpell(ANCIENTCOREHOUND_ANCIENT_DESPAIR, Target_Self, 20, 0, 15);
+					break;
+				case 3:
+					AddSpell(ANCIENTCOREHOUND_CAUTERIZING_FLAMES, Target_Self, 20, 0, 15);
+					break;
+				case 4:
+					AddSpell(ANCIENTCOREHOUND_WITHERING_HEAT, Target_Self, 20, 0, 15);
+					break;
+				case 5:
+					AddSpell(ANCIENTCOREHOUND_ANCIENT_HYSTERIA, Target_Self, 20, 0, 15);
+					break;
+			}
 		}
-    }
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -443,11 +455,11 @@ class AncientCoreHoundAI : public MoonScriptCreatureAI
 
 class LavaSurgerAI : public MoonScriptCreatureAI
 {
-    MOONSCRIPT_FACTORY_FUNCTION(LavaSurgerAI, MoonScriptCreatureAI);
-    LavaSurgerAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
-    {
-		AddSpell(LAVASURGER_SURGE, Target_RandomUnit, 20, 0, 5, 0, 40);
-    }
+		MOONSCRIPT_FACTORY_FUNCTION(LavaSurgerAI, MoonScriptCreatureAI);
+		LavaSurgerAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
+		{
+			AddSpell(LAVASURGER_SURGE, Target_RandomUnit, 20, 0, 5, 0, 40);
+		}
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -457,11 +469,11 @@ class LavaSurgerAI : public MoonScriptCreatureAI
 
 class FlameImpAI : public MoonScriptCreatureAI
 {
-    MOONSCRIPT_FACTORY_FUNCTION(FlameImpAI, MoonScriptCreatureAI);
-    FlameImpAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
-    {
-		AddSpell(FLAMEIMP_FIRE_NOVA, Target_Current, 25, 0, 0);
-    }
+		MOONSCRIPT_FACTORY_FUNCTION(FlameImpAI, MoonScriptCreatureAI);
+		FlameImpAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
+		{
+			AddSpell(FLAMEIMP_FIRE_NOVA, Target_Current, 25, 0, 0);
+		}
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -471,11 +483,11 @@ class FlameImpAI : public MoonScriptCreatureAI
 
 class CoreHoundAI : public MoonScriptCreatureAI
 {
-    MOONSCRIPT_FACTORY_FUNCTION(CoreHoundAI, MoonScriptCreatureAI);
-    CoreHoundAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
-    {
-		AddSpell(COREHOUND_SERRATED_BITE, Target_RandomPlayer, 10, 0, 0, 0, 10);
-    }
+		MOONSCRIPT_FACTORY_FUNCTION(CoreHoundAI, MoonScriptCreatureAI);
+		CoreHoundAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
+		{
+			AddSpell(COREHOUND_SERRATED_BITE, Target_RandomPlayer, 10, 0, 0, 0, 10);
+		}
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -485,11 +497,11 @@ class CoreHoundAI : public MoonScriptCreatureAI
 
 class LavaReaverAI : public MoonScriptCreatureAI
 {
-    MOONSCRIPT_FACTORY_FUNCTION(LavaReaverAI, MoonScriptCreatureAI);
-    LavaReaverAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
-    {
-		AddSpell(LAVAREAVER_CLEAVE, Target_Current, 20, 0, 0, 0, 15);
-    }
+		MOONSCRIPT_FACTORY_FUNCTION(LavaReaverAI, MoonScriptCreatureAI);
+		LavaReaverAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
+		{
+			AddSpell(LAVAREAVER_CLEAVE, Target_Current, 20, 0, 0, 0, 15);
+		}
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -499,11 +511,11 @@ class LavaReaverAI : public MoonScriptCreatureAI
 
 class LavaElementalAI : public MoonScriptCreatureAI
 {
-    MOONSCRIPT_FACTORY_FUNCTION(LavaElementalAI, MoonScriptCreatureAI);
-    LavaElementalAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
-    {
-		AddSpell(LAVAELEMENTAL_PYROCLAST_BARRAGE, Target_Self, 10, 0, 10);
-    }
+		MOONSCRIPT_FACTORY_FUNCTION(LavaElementalAI, MoonScriptCreatureAI);
+		LavaElementalAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
+		{
+			AddSpell(LAVAELEMENTAL_PYROCLAST_BARRAGE, Target_Self, 10, 0, 10);
+		}
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -514,20 +526,20 @@ class LavaElementalAI : public MoonScriptCreatureAI
 
 class FlameguardAI : public MoonScriptCreatureAI
 {
-    MOONSCRIPT_FACTORY_FUNCTION(FlameguardAI, MoonScriptCreatureAI);
-    FlameguardAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
-    {
-		AddSpell(FLAMEGUARD_FIRE_SHIELD, Target_Self, 100, 0, 0);
-		mFlames = AddSpell(FLAMEGUARD_FLAMES, Target_Self, 0, 0, 0);
-    }
+		MOONSCRIPT_FACTORY_FUNCTION(FlameguardAI, MoonScriptCreatureAI);
+		FlameguardAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
+		{
+			AddSpell(FLAMEGUARD_FIRE_SHIELD, Target_Self, 100, 0, 0);
+			mFlames = AddSpell(FLAMEGUARD_FLAMES, Target_Self, 0, 0, 0);
+		}
 
-	void OnDied(Unit* pKiller)
-	{
-		CastSpellNowNoScheduling(mFlames);
-		ParentClass::OnDied(pKiller);
-	}
+		void OnDied(Unit* pKiller)
+		{
+			CastSpellNowNoScheduling(mFlames);
+			ParentClass::OnDied(pKiller);
+		}
 
-	SpellDesc* mFlames;
+		SpellDesc* mFlames;
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -539,13 +551,13 @@ class FlameguardAI : public MoonScriptCreatureAI
 
 class FirewalkerAI : public MoonScriptCreatureAI
 {
-    MOONSCRIPT_FACTORY_FUNCTION(FirewalkerAI, MoonScriptCreatureAI);
-    FirewalkerAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
-    {
-		AddSpell(FIREWALKER_MELT_ARMOR, Target_Self, 10, 0, 0);
-		AddSpell(FIREWALKER_INCITE_FLAMES, Target_Self, 10, 0, 0);
-		AddSpell(FIREWALKER_FIRE_BLOSSOM, Target_Self, 10, 0, 0);
-    }
+		MOONSCRIPT_FACTORY_FUNCTION(FirewalkerAI, MoonScriptCreatureAI);
+		FirewalkerAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
+		{
+			AddSpell(FIREWALKER_MELT_ARMOR, Target_Self, 10, 0, 0);
+			AddSpell(FIREWALKER_INCITE_FLAMES, Target_Self, 10, 0, 0);
+			AddSpell(FIREWALKER_FIRE_BLOSSOM, Target_Self, 10, 0, 0);
+		}
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -557,13 +569,13 @@ class FirewalkerAI : public MoonScriptCreatureAI
 
 class LucifronAI : public MoonScriptBossAI
 {
-    MOONSCRIPT_FACTORY_FUNCTION(LucifronAI, MoonScriptBossAI);
-	LucifronAI(Creature* pCreature) : MoonScriptBossAI(pCreature)
-	{
-		AddSpell(LUCIFRON_IMPEDING_DOOM, Target_Self, 8, 0, 0);
-		AddSpell(LUCIFRON_LUCIFRONS_CURSE, Target_Self, 8, 0, 0);
-		AddSpell(LUCIFRON_SHADOW_SHOCK, Target_Self, 8, 0, 0);
-	}
+		MOONSCRIPT_FACTORY_FUNCTION(LucifronAI, MoonScriptBossAI);
+		LucifronAI(Creature* pCreature) : MoonScriptBossAI(pCreature)
+		{
+			AddSpell(LUCIFRON_IMPEDING_DOOM, Target_Self, 8, 0, 0);
+			AddSpell(LUCIFRON_LUCIFRONS_CURSE, Target_Self, 8, 0, 0);
+			AddSpell(LUCIFRON_SHADOW_SHOCK, Target_Self, 8, 0, 0);
+		}
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -574,12 +586,12 @@ class LucifronAI : public MoonScriptBossAI
 
 class FlamewakerProtectorAI : public MoonScriptCreatureAI
 {
-    MOONSCRIPT_FACTORY_FUNCTION(FlamewakerProtectorAI, MoonScriptCreatureAI);
-	FlamewakerProtectorAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
-	{
-		AddSpell(FLAMEWAKERPROTECTOR_CLEAVE, Target_Current, 8, 0, 0, 0, 15);
-		AddSpell(FLAMEWAKERPROTECTOR_DOMINATE_MIND, Target_RandomPlayer, 4, 0, 0, 0, 20);
-	}
+		MOONSCRIPT_FACTORY_FUNCTION(FlamewakerProtectorAI, MoonScriptCreatureAI);
+		FlamewakerProtectorAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
+		{
+			AddSpell(FLAMEWAKERPROTECTOR_CLEAVE, Target_Current, 8, 0, 0, 0, 15);
+			AddSpell(FLAMEWAKERPROTECTOR_DOMINATE_MIND, Target_RandomPlayer, 4, 0, 0, 0, 20);
+		}
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -592,14 +604,14 @@ class FlamewakerProtectorAI : public MoonScriptCreatureAI
 
 class MagmadarAI : public MoonScriptBossAI
 {
-    MOONSCRIPT_FACTORY_FUNCTION(MagmadarAI, MoonScriptBossAI);
-	MagmadarAI(Creature* pCreature) : MoonScriptBossAI(pCreature)
-	{
-		AddSpell(MAGMADAR_MAGMA_SPIT, Target_Self, 8, 0, 0);
-		AddSpell(MAGMADAR_LAVA_BREATH, Target_Self, 8, 0, 0);
-		AddSpell(MAGMADAR_PANIC, Target_Self, 8, 0, 0);
-		AddSpell(MAGMADAR_LAVA_BOMB, Target_RandomPlayer, 8, 0, 0, 0, 100);
-	}
+		MOONSCRIPT_FACTORY_FUNCTION(MagmadarAI, MoonScriptBossAI);
+		MagmadarAI(Creature* pCreature) : MoonScriptBossAI(pCreature)
+		{
+			AddSpell(MAGMADAR_MAGMA_SPIT, Target_Self, 8, 0, 0);
+			AddSpell(MAGMADAR_LAVA_BREATH, Target_Self, 8, 0, 0);
+			AddSpell(MAGMADAR_PANIC, Target_Self, 8, 0, 0);
+			AddSpell(MAGMADAR_LAVA_BOMB, Target_RandomPlayer, 8, 0, 0, 0, 100);
+		}
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -611,13 +623,13 @@ class MagmadarAI : public MoonScriptBossAI
 
 class GehennasAI : public MoonScriptBossAI
 {
-    MOONSCRIPT_FACTORY_FUNCTION(GehennasAI, MoonScriptBossAI);
-	GehennasAI(Creature* pCreature) : MoonScriptBossAI(pCreature)
-	{
-		AddSpell(GEHENNAS_SHADOW_BOLT, Target_RandomPlayer, 8, 0, 0, 0, 45);
-		AddSpell(GEHENNAS_GEHENNAS_CURSE, Target_Self, 8, 0, 0);
-		AddSpell(GEHENNAS_RAIN_OF_FIRE, Target_RandomPlayerDestination, 4, 0, 0, 0, 40);
-	}
+		MOONSCRIPT_FACTORY_FUNCTION(GehennasAI, MoonScriptBossAI);
+		GehennasAI(Creature* pCreature) : MoonScriptBossAI(pCreature)
+		{
+			AddSpell(GEHENNAS_SHADOW_BOLT, Target_RandomPlayer, 8, 0, 0, 0, 45);
+			AddSpell(GEHENNAS_GEHENNAS_CURSE, Target_Self, 8, 0, 0);
+			AddSpell(GEHENNAS_RAIN_OF_FIRE, Target_RandomPlayerDestination, 4, 0, 0, 0, 40);
+		}
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -629,13 +641,13 @@ class GehennasAI : public MoonScriptBossAI
 
 class FlamewakerAI : public MoonScriptCreatureAI
 {
-    MOONSCRIPT_FACTORY_FUNCTION(FlamewakerAI, MoonScriptCreatureAI);
-	FlamewakerAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
-	{
-		AddSpell(FLAMEWAKER_SUNDER_ARMOR, Target_Current, 8, 0, 0);
-		AddSpell(FLAMEWAKER_FIST_OF_RAGNAROS, Target_Self, 8, 0, 0);
-		AddSpell(FLAMEWAKER_STRIKE, Target_Current, 14, 0, 0);
-	}
+		MOONSCRIPT_FACTORY_FUNCTION(FlamewakerAI, MoonScriptCreatureAI);
+		FlamewakerAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
+		{
+			AddSpell(FLAMEWAKER_SUNDER_ARMOR, Target_Current, 8, 0, 0);
+			AddSpell(FLAMEWAKER_FIST_OF_RAGNAROS, Target_Self, 8, 0, 0);
+			AddSpell(FLAMEWAKER_STRIKE, Target_Current, 14, 0, 0);
+		}
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -646,12 +658,12 @@ class FlamewakerAI : public MoonScriptCreatureAI
 
 class GarrAI : public MoonScriptBossAI
 {
-    MOONSCRIPT_FACTORY_FUNCTION(GarrAI, MoonScriptBossAI);
-	GarrAI(Creature* pCreature) : MoonScriptBossAI(pCreature)
-	{
-		AddSpell(GARR_ANTIMAGIC_PULSE, Target_Self, 10, 0, 0);
-		AddSpell(GARR_MAGMA_SHACKES, Target_Self, 10, 0, 0);
-	}
+		MOONSCRIPT_FACTORY_FUNCTION(GarrAI, MoonScriptBossAI);
+		GarrAI(Creature* pCreature) : MoonScriptBossAI(pCreature)
+		{
+			AddSpell(GARR_ANTIMAGIC_PULSE, Target_Self, 10, 0, 0);
+			AddSpell(GARR_MAGMA_SHACKES, Target_Self, 10, 0, 0);
+		}
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -663,41 +675,41 @@ class GarrAI : public MoonScriptBossAI
 
 class FireswornAI : public MoonScriptCreatureAI
 {
-    MOONSCRIPT_FACTORY_FUNCTION(FireswornAI, MoonScriptCreatureAI);
-	FireswornAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
-	{
-		mGarr = NULL;
-
-		//Spells
-		AddSpell(FIRESWORN_IMMOLATE, Target_Current, 10, 0, 0, 0, 40);
-		mEruption = AddSpell(FIRESWORN_ERUPTION, Target_Self, 0, 0, 0);
-		mSeparationAnxiety = AddSpell(FIRESWORN_SEPARATION_ANXIETY, Target_Self, 0, 5, 5);
-	}
-
-	void OnCombatStart(Unit* pTarget)
-	{
-		mGarr = TO< MoonScriptBossAI* >(GetNearestCreature(CN_GARR));
-		ParentClass::OnCombatStart(pTarget);
-	}
-
-	void OnDied(Unit* pKiller)
-	{
-		CastSpellNowNoScheduling(mEruption);
-		ParentClass::OnDied(pKiller);
-	}
-
-	void AIUpdate()
-	{
-		if( mGarr && mGarr->IsAlive() && GetRange(mGarr) > 100 )
+		MOONSCRIPT_FACTORY_FUNCTION(FireswornAI, MoonScriptCreatureAI);
+		FireswornAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
 		{
-			CastSpell(mSeparationAnxiety);
-		}
-		ParentClass::AIUpdate();
-	}
+			mGarr = NULL;
 
-	SpellDesc*			mEruption;
-	SpellDesc*			mSeparationAnxiety;
-	MoonScriptBossAI*	mGarr;
+			//Spells
+			AddSpell(FIRESWORN_IMMOLATE, Target_Current, 10, 0, 0, 0, 40);
+			mEruption = AddSpell(FIRESWORN_ERUPTION, Target_Self, 0, 0, 0);
+			mSeparationAnxiety = AddSpell(FIRESWORN_SEPARATION_ANXIETY, Target_Self, 0, 5, 5);
+		}
+
+		void OnCombatStart(Unit* pTarget)
+		{
+			mGarr = TO< MoonScriptBossAI* >(GetNearestCreature(CN_GARR));
+			ParentClass::OnCombatStart(pTarget);
+		}
+
+		void OnDied(Unit* pKiller)
+		{
+			CastSpellNowNoScheduling(mEruption);
+			ParentClass::OnDied(pKiller);
+		}
+
+		void AIUpdate()
+		{
+			if(mGarr && mGarr->IsAlive() && GetRange(mGarr) > 100)
+			{
+				CastSpell(mSeparationAnxiety);
+			}
+			ParentClass::AIUpdate();
+		}
+
+		SpellDesc*			mEruption;
+		SpellDesc*			mSeparationAnxiety;
+		MoonScriptBossAI*	mGarr;
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -709,13 +721,13 @@ class FireswornAI : public MoonScriptCreatureAI
 
 class BaronGeddonAI : public MoonScriptBossAI
 {
-    MOONSCRIPT_FACTORY_FUNCTION(BaronGeddonAI, MoonScriptBossAI);
-	BaronGeddonAI(Creature* pCreature) : MoonScriptBossAI(pCreature)
-	{
-		AddSpell(BARONGEDDON_INFERNO, Target_Self, 8, 0, 0);
-		AddSpell(BARONGEDDON_IGNITE_MANA, Target_Self, 8, 0, 0);
-		AddSpell(BARONGEDDON_LIVING_BOMB, Target_RandomPlayer, 8, 0, 0, 0, 45);
-	}
+		MOONSCRIPT_FACTORY_FUNCTION(BaronGeddonAI, MoonScriptBossAI);
+		BaronGeddonAI(Creature* pCreature) : MoonScriptBossAI(pCreature)
+		{
+			AddSpell(BARONGEDDON_INFERNO, Target_Self, 8, 0, 0);
+			AddSpell(BARONGEDDON_IGNITE_MANA, Target_Self, 8, 0, 0);
+			AddSpell(BARONGEDDON_LIVING_BOMB, Target_RandomPlayer, 8, 0, 0, 0, 45);
+		}
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -731,30 +743,30 @@ void SpellFunc_ShazzrahBlinkArcaneExplosions(SpellDesc* pThis, MoonScriptCreatur
 
 class ShazzrahAI : public MoonScriptBossAI
 {
-    MOONSCRIPT_FACTORY_FUNCTION(ShazzrahAI, MoonScriptBossAI);
-	ShazzrahAI(Creature* pCreature) : MoonScriptBossAI(pCreature)
-	{
-		AddSpell(SHAZZRAH_SHAZZRAHS_CURSE, Target_Self, 8, 0, 0);
-		AddSpell(SHAZZRAH_MAGIC_GROUNDING, Target_Self, 6, 0, 0);
-		AddSpell(SHAZZRAH_COUNTERSPELL, Target_Self, 6, 0, 0);
+		MOONSCRIPT_FACTORY_FUNCTION(ShazzrahAI, MoonScriptBossAI);
+		ShazzrahAI(Creature* pCreature) : MoonScriptBossAI(pCreature)
+		{
+			AddSpell(SHAZZRAH_SHAZZRAHS_CURSE, Target_Self, 8, 0, 0);
+			AddSpell(SHAZZRAH_MAGIC_GROUNDING, Target_Self, 6, 0, 0);
+			AddSpell(SHAZZRAH_COUNTERSPELL, Target_Self, 6, 0, 0);
 
-		mBlink = AddSpell(SHAZZRAH_BLINK, Target_RandomPlayer, 0, 0, 0);
-		mArcaneExplosion = AddSpell(SHAZZRAH_ARCANE_EXPLOSION, Target_Self, 0, 0, 0);
-		AddSpellFunc(&SpellFunc_ShazzrahBlinkArcaneExplosions, Target_Self, 8, -1, 15);
-	}
+			mBlink = AddSpell(SHAZZRAH_BLINK, Target_RandomPlayer, 0, 0, 0);
+			mArcaneExplosion = AddSpell(SHAZZRAH_ARCANE_EXPLOSION, Target_Self, 0, 0, 0);
+			AddSpellFunc(&SpellFunc_ShazzrahBlinkArcaneExplosions, Target_Self, 8, -1, 15);
+		}
 
-	SpellDesc* mBlink;
-	SpellDesc* mArcaneExplosion;
+		SpellDesc* mBlink;
+		SpellDesc* mArcaneExplosion;
 };
 
 void SpellFunc_ShazzrahBlinkArcaneExplosions(SpellDesc* pThis, MoonScriptCreatureAI* pCreatureAI, Unit* pTarget, TargetType pType)
 {
-	ShazzrahAI* Shazzrah = ( pCreatureAI ) ? TO< ShazzrahAI* >(pCreatureAI) : NULL;
-	if( Shazzrah )
+	ShazzrahAI* Shazzrah = (pCreatureAI) ? TO< ShazzrahAI* >(pCreatureAI) : NULL;
+	if(Shazzrah)
 	{
 		//Teleport blink, then cast 4 arcane explosions
 		Shazzrah->CastSpell(Shazzrah->mBlink);
-		for( int Iter = 0; Iter < 4; Iter++ ) Shazzrah->CastSpell(Shazzrah->mArcaneExplosion);
+		for(int Iter = 0; Iter < 4; Iter++) Shazzrah->CastSpell(Shazzrah->mArcaneExplosion);
 	}
 }
 
@@ -768,45 +780,45 @@ void SpellFunc_ShazzrahBlinkArcaneExplosions(SpellDesc* pThis, MoonScriptCreatur
 
 class GolemaggAI : public MoonScriptBossAI
 {
-    MOONSCRIPT_FACTORY_FUNCTION(GolemaggAI, MoonScriptBossAI);
-	GolemaggAI(Creature* pCreature) : MoonScriptBossAI(pCreature)
-	{
-		AddSpell(GOLEMAGG_GOLEMAGGS_TRUST, Target_Self, 8, 0, 0);
-		AddSpell(GOLEMAGG_MAGMA_SPLASH, Target_Self, 8, 0, 0);
-		AddSpell(GOLEMAGG_PYROBLAST, Target_RandomPlayer, 8, 0, 0, 0, 40);
-		AddSpell(GOLEMAGG_EARTHQUAKE, Target_Self, 8, 0, 0);
-	}
+		MOONSCRIPT_FACTORY_FUNCTION(GolemaggAI, MoonScriptBossAI);
+		GolemaggAI(Creature* pCreature) : MoonScriptBossAI(pCreature)
+		{
+			AddSpell(GOLEMAGG_GOLEMAGGS_TRUST, Target_Self, 8, 0, 0);
+			AddSpell(GOLEMAGG_MAGMA_SPLASH, Target_Self, 8, 0, 0);
+			AddSpell(GOLEMAGG_PYROBLAST, Target_RandomPlayer, 8, 0, 0, 0, 40);
+			AddSpell(GOLEMAGG_EARTHQUAKE, Target_Self, 8, 0, 0);
+		}
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Register
 void SetupMoltenCore(ScriptMgr* pScriptMgr)
 {
-    pScriptMgr->register_creature_script(CN_MOLTENGIANT, &MoltenGiantAI::Create);
-    pScriptMgr->register_creature_script(CN_MOLTENDESTROYER, &MoltenDestroyerAI::Create);
-    pScriptMgr->register_creature_script(CN_FIRELORD, &FirelordAI::Create);
+	pScriptMgr->register_creature_script(CN_MOLTENGIANT, &MoltenGiantAI::Create);
+	pScriptMgr->register_creature_script(CN_MOLTENDESTROYER, &MoltenDestroyerAI::Create);
+	pScriptMgr->register_creature_script(CN_FIRELORD, &FirelordAI::Create);
 	pScriptMgr->register_creature_script(CN_LAVAANNIHILATOR, &LavaAnnihilatorAI::Create);
 	pScriptMgr->register_creature_script(CN_ANCIENTCOREHOUND, &AncientCoreHoundAI::Create);
-    pScriptMgr->register_creature_script(CN_LAVASURGER, &LavaSurgerAI::Create);
-    pScriptMgr->register_creature_script(CN_FLAMEIMP, &FlameImpAI::Create);
-    pScriptMgr->register_creature_script(CN_COREHOUND, &CoreHoundAI::Create);
-    pScriptMgr->register_creature_script(CN_LAVAREAVER, &LavaReaverAI::Create);
-    pScriptMgr->register_creature_script(CN_LAVAELEMENTAL, &LavaElementalAI::Create);
-    pScriptMgr->register_creature_script(CN_FLAMEGUARD, &FlameguardAI::Create);
-    pScriptMgr->register_creature_script(CN_FIREWALKER, &FirewalkerAI::Create);
-    pScriptMgr->register_creature_script(CN_LUCIFRON, &LucifronAI::Create);
+	pScriptMgr->register_creature_script(CN_LAVASURGER, &LavaSurgerAI::Create);
+	pScriptMgr->register_creature_script(CN_FLAMEIMP, &FlameImpAI::Create);
+	pScriptMgr->register_creature_script(CN_COREHOUND, &CoreHoundAI::Create);
+	pScriptMgr->register_creature_script(CN_LAVAREAVER, &LavaReaverAI::Create);
+	pScriptMgr->register_creature_script(CN_LAVAELEMENTAL, &LavaElementalAI::Create);
+	pScriptMgr->register_creature_script(CN_FLAMEGUARD, &FlameguardAI::Create);
+	pScriptMgr->register_creature_script(CN_FIREWALKER, &FirewalkerAI::Create);
+	pScriptMgr->register_creature_script(CN_LUCIFRON, &LucifronAI::Create);
 	pScriptMgr->register_creature_script(CN_FLAMEWAKERPROTECTOR, &FlamewakerProtectorAI::Create);
-    pScriptMgr->register_creature_script(CN_MAGMADAR, &MagmadarAI::Create);
-    pScriptMgr->register_creature_script(CN_GEHENNAS, &GehennasAI::Create);
-    pScriptMgr->register_creature_script(CN_FLAMEWAKER, &FlamewakerAI::Create);
-    pScriptMgr->register_creature_script(CN_GARR, &GarrAI::Create);
-    pScriptMgr->register_creature_script(CN_FIRESWORN, &FireswornAI::Create);
-    pScriptMgr->register_creature_script(CN_BARONGEDDON, &BaronGeddonAI::Create);
-    pScriptMgr->register_creature_script(CN_SHAZZRAH, &ShazzrahAI::Create);
+	pScriptMgr->register_creature_script(CN_MAGMADAR, &MagmadarAI::Create);
+	pScriptMgr->register_creature_script(CN_GEHENNAS, &GehennasAI::Create);
+	pScriptMgr->register_creature_script(CN_FLAMEWAKER, &FlamewakerAI::Create);
+	pScriptMgr->register_creature_script(CN_GARR, &GarrAI::Create);
+	pScriptMgr->register_creature_script(CN_FIRESWORN, &FireswornAI::Create);
+	pScriptMgr->register_creature_script(CN_BARONGEDDON, &BaronGeddonAI::Create);
+	pScriptMgr->register_creature_script(CN_SHAZZRAH, &ShazzrahAI::Create);
 
-    pScriptMgr->register_creature_script(CN_GOLEMAGG, &GolemaggAI::Create);
-    pScriptMgr->register_creature_script(CN_CORERAGER, &CoreRagerAI::Create);
+	pScriptMgr->register_creature_script(CN_GOLEMAGG, &GolemaggAI::Create);
+	pScriptMgr->register_creature_script(CN_CORERAGER, &CoreRagerAI::Create);
 
-    pScriptMgr->register_creature_script(CN_SULFURON_HARBRINGER, &SulfuronAI::Create);
-    pScriptMgr->register_creature_script(CN_RAGNAROS, &RagnarosAI::Create);
+	pScriptMgr->register_creature_script(CN_SULFURON_HARBRINGER, &SulfuronAI::Create);
+	pScriptMgr->register_creature_script(CN_RAGNAROS, &RagnarosAI::Create);
 }

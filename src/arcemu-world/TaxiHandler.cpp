@@ -20,11 +20,11 @@
 
 #include "StdAfx.h"
 
-void WorldSession::HandleTaxiNodeStatusQueryOpcode( WorldPacket & recv_data )
+void WorldSession::HandleTaxiNodeStatusQueryOpcode(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_RETURN
 
-	LOG_DEBUG( "WORLD: Received CMSG_TAXINODE_STATUS_QUERY" );
+	LOG_DEBUG("WORLD: Received CMSG_TAXINODE_STATUS_QUERY");
 
 	uint64 guid;
 	uint32 curloc;
@@ -33,38 +33,38 @@ void WorldSession::HandleTaxiNodeStatusQueryOpcode( WorldPacket & recv_data )
 
 	recv_data >> guid;
 
-	curloc = sTaxiMgr.GetNearestTaxiNode( GetPlayer( )->GetPositionX( ), GetPlayer( )->GetPositionY( ), GetPlayer( )->GetPositionZ( ), GetPlayer( )->GetMapId( ) );
+	curloc = sTaxiMgr.GetNearestTaxiNode(GetPlayer()->GetPositionX(), GetPlayer()->GetPositionY(), GetPlayer()->GetPositionZ(), GetPlayer()->GetMapId());
 
 	field = (uint8)((curloc - 1) / 32);
-	submask = 1<<((curloc-1)%32);
+	submask = 1 << ((curloc - 1) % 32);
 
 	WorldPacket data(9);
-	data.Initialize( SMSG_TAXINODE_STATUS );
+	data.Initialize(SMSG_TAXINODE_STATUS);
 	data << guid;
 
 	// Check for known nodes
-	if ( (GetPlayer( )->GetTaximask(field) & submask) != submask )
+	if((GetPlayer()->GetTaximask(field) & submask) != submask)
 	{
-		data << uint8( 0 );
+		data << uint8(0);
 	}
 	else
 	{
-		data << uint8( 1 );
+		data << uint8(1);
 	}
 
-	SendPacket( &data );
-	LOG_DEBUG( "WORLD: Sent SMSG_TAXINODE_STATUS" );
+	SendPacket(&data);
+	LOG_DEBUG("WORLD: Sent SMSG_TAXINODE_STATUS");
 }
 
 
-void WorldSession::HandleTaxiQueryAvaibleNodesOpcode( WorldPacket & recv_data )
+void WorldSession::HandleTaxiQueryAvaibleNodesOpcode(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_RETURN
 
-	LOG_DEBUG( "WORLD: Received CMSG_TAXIQUERYAVAILABLENODES" );
+	LOG_DEBUG("WORLD: Received CMSG_TAXIQUERYAVAILABLENODES");
 	uint64 guid;
 	recv_data >> guid;
-	Creature *pCreature = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
+	Creature* pCreature = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
 	if(!pCreature) return;
 
 	SendTaxiList(pCreature);
@@ -78,55 +78,55 @@ void WorldSession::SendTaxiList(Creature* pCreature)
 	uint32 submask;
 	uint64 guid = pCreature->GetGUID();
 
-	curloc = sTaxiMgr.GetNearestTaxiNode( _player->GetPositionX(), _player->GetPositionY(), _player->GetPositionZ(), _player->GetMapId() );
-	if( curloc == 0 )
+	curloc = sTaxiMgr.GetNearestTaxiNode(_player->GetPositionX(), _player->GetPositionY(), _player->GetPositionZ(), _player->GetMapId());
+	if(curloc == 0)
 		return;
 
 	field = (uint8)((curloc - 1) / 32);
-	submask = 1<<((curloc-1)%32);
+	submask = 1 << ((curloc - 1) % 32);
 
 	// Check for known nodes
-	if (!(GetPlayer( )->GetTaximask(field) & submask))
+	if(!(GetPlayer()->GetTaximask(field) & submask))
 	{
-		GetPlayer()->SetTaximask(field, (submask | GetPlayer( )->GetTaximask(field)) );
+		GetPlayer()->SetTaximask(field, (submask | GetPlayer()->GetTaximask(field)));
 
 		OutPacket(SMSG_NEW_TAXI_PATH);
 
 		//Send packet
 		WorldPacket update(SMSG_TAXINODE_STATUS, 9);
-		update << guid << uint8( 1 );
-		SendPacket( &update );
+		update << guid << uint8(1);
+		SendPacket(&update);
 	}
 
 	//Set Mask
 	memset(TaxiMask, 0, sizeof(TaxiMask));
 	sTaxiMgr.GetGlobalTaxiNodeMask(curloc, TaxiMask);
-	TaxiMask[field] |= 1 << ((curloc-1)%32);
+	TaxiMask[field] |= 1 << ((curloc - 1) % 32);
 
 	//Remove nodes unknown to player
 	for(uint8 i = 0; i < 12; i++)
 	{
-		TaxiMask[i] &= GetPlayer( )->GetTaximask(i);
+		TaxiMask[i] &= GetPlayer()->GetTaximask(i);
 	}
 
 	WorldPacket data(64);
-	data.Initialize( SMSG_SHOWTAXINODES );
-	data << uint32( 1 ) << guid;
-	data << uint32( curloc );
+	data.Initialize(SMSG_SHOWTAXINODES);
+	data << uint32(1) << guid;
+	data << uint32(curloc);
 	for(int i = 0; i < 12; i++)
 	{
 		data << TaxiMask[i];
 	}
-	SendPacket( &data );
+	SendPacket(&data);
 
-	LOG_DEBUG( "WORLD: Sent SMSG_SHOWTAXINODES" );
+	LOG_DEBUG("WORLD: Sent SMSG_SHOWTAXINODES");
 }
 
-void WorldSession::HandleActivateTaxiOpcode( WorldPacket & recv_data )
+void WorldSession::HandleActivateTaxiOpcode(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_RETURN
 
-	LOG_DEBUG( "WORLD: Received CMSG_ACTIVATETAXI" );
+	LOG_DEBUG("WORLD: Received CMSG_ACTIVATETAXI");
 
 	uint64 guid;
 	uint32 sourcenode, destinationnode;
@@ -144,42 +144,42 @@ void WorldSession::HandleActivateTaxiOpcode( WorldPacket & recv_data )
 	TaxiPath* taxipath = sTaxiMgr.GetTaxiPath(sourcenode, destinationnode);
 	TaxiNode* taxinode = sTaxiMgr.GetTaxiNode(sourcenode);
 
-	if( !taxinode || !taxipath )
+	if(!taxinode || !taxipath)
 		return;
 
 	curloc = taxinode->id;
 	field = (uint8)((curloc - 1) / 32);
-	submask = 1<<((curloc-1)%32);
+	submask = 1 << ((curloc - 1) % 32);
 
 	// Check for known nodes
-	if ( (GetPlayer( )->GetTaximask(field) & submask) != submask )
+	if((GetPlayer()->GetTaximask(field) & submask) != submask)
 	{
-		data << uint32( 1 );
-		SendPacket( &data );
+		data << uint32(1);
+		SendPacket(&data);
 		return;
 	}
 
 	// Check for valid node
-	if (!taxinode)
+	if(!taxinode)
 	{
-		data << uint32( 1 );
-		SendPacket( &data );
+		data << uint32(1);
+		SendPacket(&data);
 		return;
 	}
 
-	if (!taxipath || !taxipath->GetNodeCount())
+	if(!taxipath || !taxipath->GetNodeCount())
 	{
-		data << uint32( 2 );
-		SendPacket( &data );
+		data << uint32(2);
+		SendPacket(&data);
 		return;
 	}
 
 	// Check for gold
 	newmoney = (GetPlayer()->GetGold() - taxipath->GetPrice());
-	if(newmoney < 0 )
+	if(newmoney < 0)
 	{
-		data << uint32( 3 );
-		SendPacket( &data );
+		data << uint32(3);
+		SendPacket(&data);
 		return;
 	}
 
@@ -191,7 +191,7 @@ void WorldSession::HandleActivateTaxiOpcode( WorldPacket & recv_data )
 	// fer0x: Incorrect system. Need take values from TaxiNodes.dbc
 
 	uint32 modelid = 0;
-	if( _player->IsTeamHorde() )
+	if(_player->IsTeamHorde())
 	{
 		/*
 		if( taxinode->horde_mount == 2224 )
@@ -200,7 +200,7 @@ void WorldSession::HandleActivateTaxiOpcode( WorldPacket & recv_data )
 			modelid =1566; // In case it's a bat or a bad id
 		*/
 
-		CreatureInfo* ci = CreatureNameStorage.LookupEntry( taxinode->horde_mount );
+		CreatureInfo* ci = CreatureNameStorage.LookupEntry(taxinode->horde_mount);
 		if(!ci) return;
 		modelid = ci->Male_DisplayID;
 		if(!modelid) return;
@@ -214,7 +214,7 @@ void WorldSession::HandleActivateTaxiOpcode( WorldPacket & recv_data )
 			modelid =1147; // In case it's a gryphon or a bad id
 		*/
 
-		CreatureInfo* ci = CreatureNameStorage.LookupEntry( taxinode->alliance_mount );
+		CreatureInfo* ci = CreatureNameStorage.LookupEntry(taxinode->alliance_mount);
 		if(!ci) return;
 		modelid = ci->Male_DisplayID;
 		if(!modelid) return;
@@ -222,13 +222,13 @@ void WorldSession::HandleActivateTaxiOpcode( WorldPacket & recv_data )
 
 	//GetPlayer( )->setDismountCost( newmoney );
 
-	data << uint32( 0 );
+	data << uint32(0);
 	// 0 Ok
 	// 1 Unspecified Server Taxi Error
 	// 2.There is no direct path to that direction
 	// 3 Not enough Money
-	SendPacket( &data );
-	LOG_DEBUG( "WORLD: Sent SMSG_ACTIVATETAXIREPLY" );
+	SendPacket(&data);
+	LOG_DEBUG("WORLD: Sent SMSG_ACTIVATETAXIREPLY");
 
 	// 0x001000 seems to make a mount visible
 	// 0x002000 seems to make you sit on the mount, and the mount move with you
@@ -236,8 +236,8 @@ void WorldSession::HandleActivateTaxiOpcode( WorldPacket & recv_data )
 	// 0x000008 seems to enable detailed collision checking
 
 	//! Check if the player is casting, obviously they should not be able to cast on a taxi
-	if ( _player->GetCurrentSpell() != NULL )
-		 _player->GetCurrentSpell()->cancel();
+	if(_player->GetCurrentSpell() != NULL)
+		_player->GetCurrentSpell()->cancel();
 
 	_player->taxi_model_id = modelid;
 	_player->TaxiStart(taxipath, modelid, 0);
@@ -249,7 +249,7 @@ void WorldSession::HandleMultipleActivateTaxiOpcode(WorldPacket & recvPacket)
 {
 	CHECK_INWORLD_RETURN
 
-	LOG_DEBUG( "WORLD: Received CMSG_ACTIVATETAXI" );
+	LOG_DEBUG("WORLD: Received CMSG_ACTIVATETAXI");
 
 	uint64 guid;
 	uint32 nodecount;
@@ -264,14 +264,14 @@ void WorldSession::HandleMultipleActivateTaxiOpcode(WorldPacket & recvPacket)
 	if(nodecount < 2)
 		return;
 
-	if(nodecount>10)
+	if(nodecount > 10)
 	{
 		Disconnect();
 		return;
 	}
 
 	for(uint32 i = 0; i < nodecount; ++i)
-		pathes.push_back( recvPacket.read<uint32>() );
+		pathes.push_back(recvPacket.read<uint32>());
 
 	if(GetPlayer()->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_LOCK_PLAYER))
 		return;
@@ -281,53 +281,53 @@ void WorldSession::HandleMultipleActivateTaxiOpcode(WorldPacket & recvPacket)
 	TaxiNode* taxinode = sTaxiMgr.GetTaxiNode(pathes[0]);
 
 	// Check for valid node
-	if( taxinode == NULL )
+	if(taxinode == NULL)
 	{
-		data << uint32( 1 );
-		SendPacket( &data );
+		data << uint32(1);
+		SendPacket(&data);
 		return;
 	}
 
-	if( taxipath == NULL || !taxipath->GetNodeCount() )
+	if(taxipath == NULL || !taxipath->GetNodeCount())
 	{
-		data << uint32( 2 );
-		SendPacket( &data );
+		data << uint32(2);
+		SendPacket(&data);
 		return;
 	}
-	
+
 	curloc = taxinode->id;
 	field = (uint8)((curloc - 1) / 32);
-	submask = 1<<((curloc-1)%32);
+	submask = 1 << ((curloc - 1) % 32);
 
 	// Check for known nodes
-	if ( ( _player->GetTaximask(field) & submask ) != submask )
+	if((_player->GetTaximask(field) & submask) != submask)
 	{
-		data << uint32( 1 );
-		SendPacket( &data );
+		data << uint32(1);
+		SendPacket(&data);
 		return;
 	}
 
-	if (taxipath->GetID() == 766 || taxipath->GetID() == 767 || taxipath->GetID() == 771 || taxipath->GetID() == 772)
+	if(taxipath->GetID() == 766 || taxipath->GetID() == 767 || taxipath->GetID() == 771 || taxipath->GetID() == 772)
 	{
-		data << uint32( 2 );
-		SendPacket( &data );
+		data << uint32(2);
+		SendPacket(&data);
 		return;
 	}
 
 	uint32 totalcost = taxipath->GetPrice();
 	for(uint32 i = 2; i < nodecount; ++i)
 	{
-		TaxiPath * np = sTaxiMgr.GetTaxiPath(pathes[i-1], pathes[i]);
+		TaxiPath* np = sTaxiMgr.GetTaxiPath(pathes[i - 1], pathes[i]);
 		if(!np) return;
 		totalcost += np->GetPrice();
 	}
 
 	// Check for gold
 	newmoney = (GetPlayer()->GetGold() - totalcost);
-	if(newmoney < 0 )
+	if(newmoney < 0)
 	{
-		data << uint32( 3 );
-		SendPacket( &data );
+		data << uint32(3);
+		SendPacket(&data);
 		return;
 	}
 
@@ -338,16 +338,16 @@ void WorldSession::HandleMultipleActivateTaxiOpcode(WorldPacket & recvPacket)
 	// hippogryph: 479
 
 	uint32 modelid = 0;
-	if( _player->IsTeamHorde() )
+	if(_player->IsTeamHorde())
 	{
-		CreatureInfo* ci = CreatureNameStorage.LookupEntry( taxinode->horde_mount );
+		CreatureInfo* ci = CreatureNameStorage.LookupEntry(taxinode->horde_mount);
 		if(!ci) return;
 		modelid = ci->Male_DisplayID;
 		if(!modelid) return;
 	}
 	else
 	{
-		CreatureInfo* ci = CreatureNameStorage.LookupEntry( taxinode->alliance_mount );
+		CreatureInfo* ci = CreatureNameStorage.LookupEntry(taxinode->alliance_mount);
 		if(!ci) return;
 		modelid = ci->Male_DisplayID;
 		if(!modelid) return;
@@ -355,13 +355,13 @@ void WorldSession::HandleMultipleActivateTaxiOpcode(WorldPacket & recvPacket)
 
 	//GetPlayer( )->setDismountCost( newmoney );
 
-	data << uint32( 0 );
+	data << uint32(0);
 	// 0 Ok
 	// 1 Unspecified Server Taxi Error
 	// 2.There is no direct path to that direction
 	// 3 Not enough Money
-	SendPacket( &data );
-	LOG_DEBUG( "WORLD: Sent SMSG_ACTIVATETAXIREPLY" );
+	SendPacket(&data);
+	LOG_DEBUG("WORLD: Sent SMSG_ACTIVATETAXIREPLY");
 
 	// 0x001000 seems to make a mount visible
 	// 0x002000 seems to make you sit on the mount, and the mount move with you
@@ -373,7 +373,7 @@ void WorldSession::HandleMultipleActivateTaxiOpcode(WorldPacket & recvPacket)
 	// build the rest of the path list
 	for(uint32 i = 2; i < nodecount; ++i)
 	{
-		TaxiPath * np = sTaxiMgr.GetTaxiPath(pathes[i-1], pathes[i]);
+		TaxiPath* np = sTaxiMgr.GetTaxiPath(pathes[i - 1], pathes[i]);
 		if(!np) return;
 
 		// add to the list.. :)

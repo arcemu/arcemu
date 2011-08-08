@@ -209,47 +209,47 @@ enum SpellCastResult
     SPELL_FAILED_SUMMON_PENDING                 = 0xB7,
     SPELL_FAILED_MAX_SOCKETS                    = 0xB8,
     SPELL_FAILED_PET_CAN_RENAME                 = 0xB9,
-	SPELL_FAILED_TARGET_CANNOT_BE_RESURRECTED	= 0xBA,
+    SPELL_FAILED_TARGET_CANNOT_BE_RESURRECTED	= 0xBA,
     SPELL_FAILED_UNKNOWN                        = 0xBB
-}; 
+};
 #define SPELL_CANCAST_OK SPELL_FAILED_SUCCESS
 
 enum PetTameFailure
 {
-	PETTAME_INVALIDCREATURE                                      = 1,
-	PETTAME_TOOMANY                                              = 2,
-	PETTAME_CREATUREALREADYOWNED                                 = 3,
-	PETTAME_NOTTAMEABLE                                          = 4,
-	PETTAME_ANOTHERSUMMONACTIVE                                  = 5,
-	PETTAME_UNITSCANTTAME                                        = 6,
-	PETTAME_NOPETAVAILABLE                                       = 7,
-	PETTAME_INTERNALERROR                                        = 8,
-	PETTAME_TOOHIGHLEVEL                                         = 9,
-	PETTAME_DEAD                                                 = 10,
-	PETTAME_NOTDEAD                                              = 11,
-	PETTAME_CANTCONTROLEXOTIC                                    = 12,
-	PETTAME_UNKNOWNERROR                                         = 13,
+    PETTAME_INVALIDCREATURE                                      = 1,
+    PETTAME_TOOMANY                                              = 2,
+    PETTAME_CREATUREALREADYOWNED                                 = 3,
+    PETTAME_NOTTAMEABLE                                          = 4,
+    PETTAME_ANOTHERSUMMONACTIVE                                  = 5,
+    PETTAME_UNITSCANTTAME                                        = 6,
+    PETTAME_NOPETAVAILABLE                                       = 7,
+    PETTAME_INTERNALERROR                                        = 8,
+    PETTAME_TOOHIGHLEVEL                                         = 9,
+    PETTAME_DEAD                                                 = 10,
+    PETTAME_NOTDEAD                                              = 11,
+    PETTAME_CANTCONTROLEXOTIC                                    = 12,
+    PETTAME_UNKNOWNERROR                                         = 13,
 };
 
 enum MOUNT_FAILURE
 {
-	ERR_MOUNT_NOTMOUNTABLE                                       = 0,
-	ERR_MOUNT_TOOFARAWAY                                         = 1,
-	ERR_MOUNT_ALREADYMOUNTED                                     = 2,
-	ERR_MOUNT_INVALIDMOUNTEE                                     = 3,
-	ERR_MOUNT_NOTYOURPET                                         = 4,
-	ERR_MOUNT_OTHER                                              = 5,
-	ERR_MOUNT_LOOTING                                            = 6,
-	ERR_MOUNT_RACECANTMOUNT                                      = 7,
-	ERR_MOUNT_SHAPESHIFTED                                       = 8,
-	ERR_MOUNT_FORCEDDISMOUNT                                     = 9
+    ERR_MOUNT_NOTMOUNTABLE                                       = 0,
+    ERR_MOUNT_TOOFARAWAY                                         = 1,
+    ERR_MOUNT_ALREADYMOUNTED                                     = 2,
+    ERR_MOUNT_INVALIDMOUNTEE                                     = 3,
+    ERR_MOUNT_NOTYOURPET                                         = 4,
+    ERR_MOUNT_OTHER                                              = 5,
+    ERR_MOUNT_LOOTING                                            = 6,
+    ERR_MOUNT_RACECANTMOUNT                                      = 7,
+    ERR_MOUNT_SHAPESHIFTED                                       = 8,
+    ERR_MOUNT_FORCEDDISMOUNT                                     = 9
 };
 
 enum DISMOUNT_FAILURE
 {
-	ERR_DISMOUNT_NOPET											 = 0,
-	ERR_DISMOUNT_NOTMOUNTED                                      = 1,
-	ERR_DISMOUNT_NOTYOURPET                                      = 2
+    ERR_DISMOUNT_NOPET											 = 0,
+    ERR_DISMOUNT_NOTMOUNTED                                      = 1,
+    ERR_DISMOUNT_NOTYOURPET                                      = 2
 };
 #endif
 

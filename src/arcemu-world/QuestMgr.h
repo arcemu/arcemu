@@ -23,190 +23,191 @@
 
 struct QuestRelation
 {
-	Quest *qst;
+	Quest* qst;
 	uint8 type;
 };
 
 struct QuestAssociation
 {
-	Quest *qst;
+	Quest* qst;
 	uint8 item_count;
 };
 
 struct QuestPOIPoint
 {
-    int32 x;
-    int32 y;
+	int32 x;
+	int32 y;
 
-    QuestPOIPoint() : x( 0 ), y( 0 ) {}
-    
-	QuestPOIPoint( int32 px, int32 py ) :
-	x( px ),
-	y( py ){}
+	QuestPOIPoint() : x(0), y(0) {}
+
+	QuestPOIPoint(int32 px, int32 py) :
+		x(px),
+		y(py) {}
 };
 
-struct QuestPOI{
+struct QuestPOI
+{
 	uint32 PoiId;
-    int32  ObjectiveIndex;
-    uint32 MapId;
-    uint32 MapAreaId;
-    uint32 FloorId;
-    uint32 Unk3;
-    uint32 Unk4;
+	int32  ObjectiveIndex;
+	uint32 MapId;
+	uint32 MapAreaId;
+	uint32 FloorId;
+	uint32 Unk3;
+	uint32 Unk4;
 
-    std::vector< QuestPOIPoint > points;
+	std::vector< QuestPOIPoint > points;
 
-    QuestPOI() : PoiId( 0 ), ObjectiveIndex( 0 ), MapId( 0 ), MapAreaId( 0 ), FloorId( 0 ), Unk3( 0 ), Unk4( 0 ){}
-    
-	QuestPOI( uint32 poiId, int32 objIndex, uint32 mapId, uint32 mapAreaId, uint32 floorId, uint32 unk3, uint32 unk4 ) :
-	PoiId( poiId ),
-	ObjectiveIndex( objIndex ),
-	MapId( mapId ),
-	MapAreaId( mapAreaId ),
-	FloorId( floorId ),
-	Unk3( unk3 ),
-	Unk4( unk4 ){}
+	QuestPOI() : PoiId(0), ObjectiveIndex(0), MapId(0), MapAreaId(0), FloorId(0), Unk3(0), Unk4(0) {}
+
+	QuestPOI(uint32 poiId, int32 objIndex, uint32 mapId, uint32 mapAreaId, uint32 floorId, uint32 unk3, uint32 unk4) :
+		PoiId(poiId),
+		ObjectiveIndex(objIndex),
+		MapId(mapId),
+		MapAreaId(mapAreaId),
+		FloorId(floorId),
+		Unk3(unk3),
+		Unk4(unk4) {}
 };
 
 typedef std::vector< QuestPOI > QuestPOIVector;
 typedef HM_NAMESPACE::hash_map< uint32, QuestPOIVector > QuestPOIMap;
 
 class Item;
-typedef std::list<QuestRelation *> QuestRelationList;
-typedef std::list<QuestAssociation *> QuestAssociationList;
+typedef std::list<QuestRelation*> QuestRelationList;
+typedef std::list<QuestAssociation*> QuestAssociationList;
 
 class SERVER_DECL QuestMgr :  public Singleton < QuestMgr >
 {
-public:
+	public:
 
-	~QuestMgr();
+		~QuestMgr();
 
-	uint32 PlayerMeetsReqs(Player* plr, Quest* qst, bool skiplevelcheck);
+		uint32 PlayerMeetsReqs(Player* plr, Quest* qst, bool skiplevelcheck);
 
-	uint32 CalcStatus(Object* quest_giver, Player* plr);
-	uint32 CalcQuestStatus(Object* quest_giver, Player* plr, QuestRelation* qst);
-	uint32 CalcQuestStatus(Object* quest_giver, Player* plr, Quest* qst, uint8 type, bool skiplevelcheck);
-	uint32 CalcQuestStatus(Player* plr, uint32 qst);
-	uint32 ActiveQuestsCount(Object* quest_giver, Player* plr);
+		uint32 CalcStatus(Object* quest_giver, Player* plr);
+		uint32 CalcQuestStatus(Object* quest_giver, Player* plr, QuestRelation* qst);
+		uint32 CalcQuestStatus(Object* quest_giver, Player* plr, Quest* qst, uint8 type, bool skiplevelcheck);
+		uint32 CalcQuestStatus(Player* plr, uint32 qst);
+		uint32 ActiveQuestsCount(Object* quest_giver, Player* plr);
 
-	//Packet Forging...
-	void BuildOfferReward(WorldPacket* data,Quest* qst, Object* qst_giver, uint32 menutype, uint32 language, Player * plr);
-	void BuildQuestDetails(WorldPacket* data, Quest* qst, Object* qst_giver, uint32 menutype, uint32 language, Player * plr);
-	void BuildRequestItems(WorldPacket* data, Quest* qst, Object* qst_giver, uint32 status, uint32 language);
-	void BuildQuestComplete(Player*, Quest* qst);
-	void BuildQuestList(WorldPacket* data, Object* qst_giver, Player* plr, uint32 language);
-	bool OnActivateQuestGiver(Object *qst_giver, Player *plr);
-    bool isRepeatableQuestFinished(Player *plr, Quest *qst);
+		//Packet Forging...
+		void BuildOfferReward(WorldPacket* data, Quest* qst, Object* qst_giver, uint32 menutype, uint32 language, Player* plr);
+		void BuildQuestDetails(WorldPacket* data, Quest* qst, Object* qst_giver, uint32 menutype, uint32 language, Player* plr);
+		void BuildRequestItems(WorldPacket* data, Quest* qst, Object* qst_giver, uint32 status, uint32 language);
+		void BuildQuestComplete(Player*, Quest* qst);
+		void BuildQuestList(WorldPacket* data, Object* qst_giver, Player* plr, uint32 language);
+		bool OnActivateQuestGiver(Object* qst_giver, Player* plr);
+		bool isRepeatableQuestFinished(Player* plr, Quest* qst);
 
-	void SendQuestUpdateAddKill(Player* plr, uint32 questid, uint32 entry, uint32 count, uint32 tcount, uint64 guid);
-	void BuildQuestUpdateAddItem(WorldPacket* data, uint32 itemid, uint32 count);
-	void BuildQuestUpdateComplete(WorldPacket* data, Quest* qst);
-	void BuildQuestFailed(WorldPacket* data, uint32 questid);
-	void BuildQuestPOIResponse( WorldPacket &data, uint32 questid );
-	void SendPushToPartyResponse(Player *plr, Player* pTarget, uint8 response);
+		void SendQuestUpdateAddKill(Player* plr, uint32 questid, uint32 entry, uint32 count, uint32 tcount, uint64 guid);
+		void BuildQuestUpdateAddItem(WorldPacket* data, uint32 itemid, uint32 count);
+		void BuildQuestUpdateComplete(WorldPacket* data, Quest* qst);
+		void BuildQuestFailed(WorldPacket* data, uint32 questid);
+		void BuildQuestPOIResponse(WorldPacket & data, uint32 questid);
+		void SendPushToPartyResponse(Player* plr, Player* pTarget, uint8 response);
 
-	bool OnGameObjectActivate(Player *plr, GameObject *go);
-	void OnPlayerKill(Player* plr, Creature* victim, bool IsGroupKill);
-	void _OnPlayerKill(Player* plr, uint32 entry, bool IsGroupKill);
-	void OnPlayerCast(Player* plr, uint32 spellid, uint64& victimguid);
-	void OnPlayerEmote(Player* plr, uint32 emoteid, uint64& victimguid);
-	void OnPlayerItemPickup(Player* plr, Item* item);
-	void OnPlayerExploreArea(Player* plr, uint32 AreaID);
-	void AreaExplored(Player* plr, uint32 QuestID);// scriptdev2
+		bool OnGameObjectActivate(Player* plr, GameObject* go);
+		void OnPlayerKill(Player* plr, Creature* victim, bool IsGroupKill);
+		void _OnPlayerKill(Player* plr, uint32 entry, bool IsGroupKill);
+		void OnPlayerCast(Player* plr, uint32 spellid, uint64 & victimguid);
+		void OnPlayerEmote(Player* plr, uint32 emoteid, uint64 & victimguid);
+		void OnPlayerItemPickup(Player* plr, Item* item);
+		void OnPlayerExploreArea(Player* plr, uint32 AreaID);
+		void AreaExplored(Player* plr, uint32 QuestID);// scriptdev2
 
-	void OnQuestAccepted(Player* plr, Quest* qst, Object *qst_giver);
-	void OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint32 reward_slot);
+		void OnQuestAccepted(Player* plr, Quest* qst, Object* qst_giver);
+		void OnQuestFinished(Player* plr, Quest* qst, Object* qst_giver, uint32 reward_slot);
 
-	void GiveQuestRewardReputation(Player* plr, Quest* qst, Object *qst_giver);
+		void GiveQuestRewardReputation(Player* plr, Quest* qst, Object* qst_giver);
 
-	uint32 GenerateQuestXP(Player *plr, Quest *qst);
-	uint32 GenerateRewardMoney( Player * plr, Quest * qst );
+		uint32 GenerateQuestXP(Player* plr, Quest* qst);
+		uint32 GenerateRewardMoney(Player* plr, Quest* qst);
 
-	void SendQuestInvalid( INVALID_REASON reason, Player *plyr);
-	void SendQuestFailed(FAILED_REASON failed, Quest *qst, Player *plyr);
-	void SendQuestUpdateFailed(Quest *pQuest, Player *plyr);
-	void SendQuestUpdateFailedTimer(Quest *pQuest, Player *plyr);
-	void SendQuestLogFull(Player *plyr);
-	
-	void LoadNPCQuests(Creature *qst_giver);
-	void LoadGOQuests(GameObject *go);
+		void SendQuestInvalid(INVALID_REASON reason, Player* plyr);
+		void SendQuestFailed(FAILED_REASON failed, Quest* qst, Player* plyr);
+		void SendQuestUpdateFailed(Quest* pQuest, Player* plyr);
+		void SendQuestUpdateFailedTimer(Quest* pQuest, Player* plyr);
+		void SendQuestLogFull(Player* plyr);
 
-	QuestRelationList* GetCreatureQuestList(uint32 entryid);
-	QuestRelationList* GetGOQuestList(uint32 entryid);
-	QuestAssociationList* GetQuestAssociationListForItemId (uint32 itemId);
-	uint32 GetGameObjectLootQuest(uint32 GO_Entry);
-	void SetGameObjectLootQuest(uint32 GO_Entry, uint32 Item_Entry);
-	ARCEMU_INLINE bool IsQuestRepeatable(Quest *qst) { return (qst->is_repeatable==1 ? true : false); }
-	ARCEMU_INLINE bool IsQuestDaily(Quest *qst) { return (qst->is_repeatable==2 ? true : false); }
+		void LoadNPCQuests(Creature* qst_giver);
+		void LoadGOQuests(GameObject* go);
 
-	bool CanStoreReward(Player *plyr, Quest *qst, uint32 reward_slot);
+		QuestRelationList* GetCreatureQuestList(uint32 entryid);
+		QuestRelationList* GetGOQuestList(uint32 entryid);
+		QuestAssociationList* GetQuestAssociationListForItemId(uint32 itemId);
+		uint32 GetGameObjectLootQuest(uint32 GO_Entry);
+		void SetGameObjectLootQuest(uint32 GO_Entry, uint32 Item_Entry);
+		ARCEMU_INLINE bool IsQuestRepeatable(Quest* qst) { return (qst->is_repeatable == 1 ? true : false); }
+		ARCEMU_INLINE bool IsQuestDaily(Quest* qst) { return (qst->is_repeatable == 2 ? true : false); }
 
-	ARCEMU_INLINE int32 QuestHasMob(Quest* qst, uint32 mob)
-	{
-		for(uint32 i = 0; i < 4; ++i)
-			if(qst->required_mob[i] == (int32)mob)
-				return qst->required_mobcount[i];
-		return -1;
-	}
+		bool CanStoreReward(Player* plyr, Quest* qst, uint32 reward_slot);
 
-	ARCEMU_INLINE int32 GetOffsetForMob(Quest *qst, uint32 mob)
-	{
-		for(uint32 i = 0; i < 4; ++i)
-			if(qst->required_mob[i] == (int32)mob)
-				return i;
+		ARCEMU_INLINE int32 QuestHasMob(Quest* qst, uint32 mob)
+		{
+			for(uint32 i = 0; i < 4; ++i)
+				if(qst->required_mob[i] == (int32)mob)
+					return qst->required_mobcount[i];
+			return -1;
+		}
 
-		return -1;
-	}
+		ARCEMU_INLINE int32 GetOffsetForMob(Quest* qst, uint32 mob)
+		{
+			for(uint32 i = 0; i < 4; ++i)
+				if(qst->required_mob[i] == (int32)mob)
+					return i;
 
-	ARCEMU_INLINE int32 GetOffsetForItem(Quest *qst, uint32 itm)
-	{
-		for(uint32 i = 0; i < 4; ++i)
-			if(qst->required_item[i] == itm)
-				return i;
+			return -1;
+		}
 
-		return -1;
-	}
-	void LoadExtraQuestStuff();
+		ARCEMU_INLINE int32 GetOffsetForItem(Quest* qst, uint32 itm)
+		{
+			for(uint32 i = 0; i < 4; ++i)
+				if(qst->required_item[i] == itm)
+					return i;
 
-	//************************************
-	// Purpose : Fills the packet with the quests that the quest giver which the player qualifies for.
-	// Parameter:	Creature * quest giver
-	// Parameter:	Player * player for whom quests are qualified
-	// Parameter:	Arcemu::Gossip::Menu& - menu to fill with quests.
-	// Return : void
-	//************************************
-	void FillQuestMenu(Creature *, Player *, Arcemu::Gossip::Menu&);
+			return -1;
+		}
+		void LoadExtraQuestStuff();
 
-private:
+		//************************************
+		// Purpose : Fills the packet with the quests that the quest giver which the player qualifies for.
+		// Parameter:	Creature * quest giver
+		// Parameter:	Player * player for whom quests are qualified
+		// Parameter:	Arcemu::Gossip::Menu& - menu to fill with quests.
+		// Return : void
+		//************************************
+		void FillQuestMenu(Creature*, Player*, Arcemu::Gossip::Menu &);
 
-	HM_NAMESPACE::hash_map<uint32, list<QuestRelation *>* > m_npc_quests;
-	HM_NAMESPACE::hash_map<uint32, list<QuestRelation *>* > m_obj_quests;
-	HM_NAMESPACE::hash_map<uint32, list<QuestRelation *>* > m_itm_quests;
-	QuestPOIMap m_QuestPOIMap;
+	private:
 
-	HM_NAMESPACE::hash_map<uint32, list<QuestAssociation *>* > m_quest_associations;
-	ARCEMU_INLINE HM_NAMESPACE::hash_map<uint32, list<QuestAssociation *>* >& GetQuestAssociationList()
+		HM_NAMESPACE::hash_map<uint32, list<QuestRelation*>* > m_npc_quests;
+		HM_NAMESPACE::hash_map<uint32, list<QuestRelation*>* > m_obj_quests;
+		HM_NAMESPACE::hash_map<uint32, list<QuestRelation*>* > m_itm_quests;
+		QuestPOIMap m_QuestPOIMap;
+
+		HM_NAMESPACE::hash_map<uint32, list<QuestAssociation*>* > m_quest_associations;
+		ARCEMU_INLINE HM_NAMESPACE::hash_map<uint32, list<QuestAssociation*>* >& GetQuestAssociationList()
 		{return m_quest_associations;}
 
-	HM_NAMESPACE::hash_map<uint32, uint32>		  m_ObjectLootQuestList;
+		HM_NAMESPACE::hash_map<uint32, uint32>		  m_ObjectLootQuestList;
 
-	template <class T> void _AddQuest(uint32 entryid, Quest *qst, uint8 type);
+		template <class T> void _AddQuest(uint32 entryid, Quest* qst, uint8 type);
 
-	template <class T> HM_NAMESPACE::hash_map<uint32, list<QuestRelation *>* >& _GetList();
+		template <class T> HM_NAMESPACE::hash_map<uint32, list<QuestRelation*>* >& _GetList();
 
-	void AddItemQuestAssociation( uint32 itemId, Quest *qst, uint8 item_count);
+		void AddItemQuestAssociation(uint32 itemId, Quest* qst, uint8 item_count);
 
-	// Quest Loading
-	void _RemoveChar(char* c, std::string *str);
-	void _CleanLine(std::string *str);
+		// Quest Loading
+		void _RemoveChar(char* c, std::string* str);
+		void _CleanLine(std::string* str);
 };
 
-template<> ARCEMU_INLINE HM_NAMESPACE::hash_map<uint32, list<QuestRelation *>* >& QuestMgr::_GetList<Creature>()
-	{return m_npc_quests;}
-template<> ARCEMU_INLINE HM_NAMESPACE::hash_map<uint32, list<QuestRelation *>* >& QuestMgr::_GetList<GameObject>()
-	{return m_obj_quests;}
-template<> ARCEMU_INLINE HM_NAMESPACE::hash_map<uint32, list<QuestRelation *>* >& QuestMgr::_GetList<Item>()
-	{return m_itm_quests;}
+template<> ARCEMU_INLINE HM_NAMESPACE::hash_map<uint32, list<QuestRelation*>* >& QuestMgr::_GetList<Creature>()
+{return m_npc_quests;}
+template<> ARCEMU_INLINE HM_NAMESPACE::hash_map<uint32, list<QuestRelation*>* >& QuestMgr::_GetList<GameObject>()
+{return m_obj_quests;}
+template<> ARCEMU_INLINE HM_NAMESPACE::hash_map<uint32, list<QuestRelation*>* >& QuestMgr::_GetList<Item>()
+{return m_itm_quests;}
 
 
 #define sQuestMgr QuestMgr::getSingleton()

@@ -22,8 +22,9 @@
 /* SCRIPT FUNCTION TABLES                                               */
 /************************************************************************/
 
-RegType<Item> ItemMethods[] = {
-    { "GossipCreateMenu", &luaItem::GossipCreateMenu },
+RegType<Item> ItemMethods[] =
+{
+	{ "GossipCreateMenu", &luaItem::GossipCreateMenu },
 	{ "GossipMenuAddItem", &luaItem::GossipMenuAddItem },
 	{ "GossipSendMenu", &luaItem::GossipSendMenu },
 	{ "GossipComplete", &luaItem::GossipComplete },
@@ -75,7 +76,8 @@ RegType<Item> ItemMethods[] = {
 
 
 
-RegType<Unit> UnitMethods[] = {
+RegType<Unit> UnitMethods[] =
+{
 	{ "GossipCreateMenu", &LuaUnit::GossipCreateMenu },
 	{ "GossipMenuAddItem", &LuaUnit::GossipMenuAddItem },
 	{ "GossipSendMenu", &LuaUnit::GossipSendMenu },
@@ -141,7 +143,7 @@ RegType<Unit> UnitMethods[] = {
 	{ "SetModel", &LuaUnit::SetModel },
 	{ "SetScale", &LuaUnit::SetScale },
 	{ "SetFaction", &LuaUnit::SetFaction },
-	{ "SetStandState",&LuaUnit::SetStandState },
+	{ "SetStandState", &LuaUnit::SetStandState },
 	{ "Teleport" , &LuaUnit::TeleportUnit },
 	{ "GetPlayerClass", &LuaUnit::GetPlayerClass },
 	{ "ClearThreatList", &LuaUnit::ClearHateList },
@@ -160,7 +162,7 @@ RegType<Unit> UnitMethods[] = {
 	{ "GetDistance", &LuaUnit::GetDistance },
 	{ "GetGUID", &LuaUnit::GetGUID },
 	{ "GetCreatureNearestCoords", &LuaUnit::GetCreatureNearestCoords },
-    { "CastSpellAoF", &LuaUnit::CastSpellAoF },
+	{ "CastSpellAoF", &LuaUnit::CastSpellAoF },
 	{ "GetGameObjectNearestCoords", &LuaUnit::GetGameObjectNearestCoords },
 	{ "SetInFront", &LuaUnit::SetInFront },
 	{ "RemoveAllAuras", &LuaUnit::RemoveAllAuras },
@@ -333,12 +335,12 @@ RegType<Unit> UnitMethods[] = {
 	{ "EnableFlight", &LuaUnit::EnableFlight },
 	{ "GetCoinage", &LuaUnit::GetCoinage },
 	{ "FlagPvP", &LuaUnit::FlagPvP },
-    { "GetDisplay", &LuaUnit::GetDisplay },
-    { "GetNativeDisplay", &LuaUnit::GetNativeDisplay },
+	{ "GetDisplay", &LuaUnit::GetDisplay },
+	{ "GetNativeDisplay", &LuaUnit::GetNativeDisplay },
 	{ "IsMounted", &LuaUnit::IsMounted },
 
 	{ "PlaySoundToPlayer", &LuaUnit::PlaySoundToPlayer },
-	{ "GetDuelState", &LuaUnit::GetDuelState }, 
+	{ "GetDuelState", &LuaUnit::GetDuelState },
 	{ "SetPosition", &LuaUnit::SetPosition},
 	{ "CastSpellOnTarget", &LuaUnit::CastSpellOnTarget},
 	{ "GetLandHeight", &LuaUnit::GetLandHeight},
@@ -534,7 +536,8 @@ RegType<Unit> UnitMethods[] = {
 	{ NULL, NULL },
 };
 
-RegType<GameObject> GOMethods[] = {
+RegType<GameObject> GOMethods[] =
+{
 	{ "GetGUID", &LuaGameObject::GetGUID },
 	{ "GetName", &LuaGameObject::GetName },
 	{ "GetCreatureNearestCoords", &LuaGameObject::GetCreatureNearestCoords },
@@ -574,12 +577,12 @@ RegType<GameObject> GOMethods[] = {
 	{ "CastSpell", &LuaGameObject::CastSpell },
 	{ "CastSpellOnTarget", &LuaGameObject::CastSpellOnTarget },
 	{ "GossipObjectCreateMenu", &LuaGameObject::GossipCreateMenu },
-	{ "GossipObjectMenuAddItem", &LuaGameObject::GossipMenuAddItem }, 
+	{ "GossipObjectMenuAddItem", &LuaGameObject::GossipMenuAddItem },
 	{ "GossipObjectSendMenu", &LuaGameObject::GossipSendMenu },
 	{ "GossipObjectComplete", &LuaGameObject::GossipComplete },
 	{ "GossipObjectSendPOI", &LuaGameObject::GossipSendPOI },
 	{ "GossipCreateMenu", &LuaGameObject::GossipCreateMenu },
-	{ "GossipMenuAddItem", &LuaGameObject::GossipMenuAddItem }, 
+	{ "GossipMenuAddItem", &LuaGameObject::GossipMenuAddItem },
 	{ "GossipSendMenu", &LuaGameObject::GossipSendMenu },
 	{ "GossipComplete", &LuaGameObject::GossipComplete },
 	{ "GossipSendPOI", &LuaGameObject::GossipSendPOI },
@@ -636,7 +639,8 @@ RegType<GameObject> GOMethods[] = {
 	{ NULL, NULL },
 };
 
-RegType<WorldPacket> LuaPacketMethods[] = {
+RegType<WorldPacket> LuaPacketMethods[] =
+{
 	{"CreatePacket", &luPacket::CreatePacket },
 	{ "GetOpcode", &luPacket::GetOpcode },
 	{ "GetSize", &luPacket::GetSize },
@@ -644,19 +648,19 @@ RegType<WorldPacket> LuaPacketMethods[] = {
 	{"ReadByte", &luPacket::ReadByte },
 	{"ReadUByte", &luPacket::ReadUByte },
 	{"ReadShort", &luPacket::ReadShort },
-	{"ReadUShort",&luPacket::ReadUShort },
+	{"ReadUShort", &luPacket::ReadUShort },
 	{"ReadLong", &luPacket::ReadLong },
 	{"ReadULong", &luPacket::ReadULong },
-	{"ReadFloat",&luPacket::ReadFloat },
+	{"ReadFloat", &luPacket::ReadFloat },
 	{"ReadDouble", &luPacket::ReadDouble },
-	{"ReadGUID",&luPacket::ReadGUID },
-	{"ReadWoWGuid",&luPacket::ReadWoWGuid },
+	{"ReadGUID", &luPacket::ReadGUID },
+	{"ReadWoWGuid", &luPacket::ReadWoWGuid },
 	{"ReadString", &luPacket::ReadString },
 	//WRITE OPERATIONS
 	{"WriteUByte", &luPacket::WriteUByte },
 	{"WriteByte", &luPacket::WriteByte },
-	{"WriteShort",&luPacket::WriteShort },
-	{"WriteUShort",&luPacket::WriteUShort },
+	{"WriteShort", &luPacket::WriteShort },
+	{"WriteUShort", &luPacket::WriteUShort },
 	{"WriteLong", &luPacket::WriteLong },
 	{"WriteULong", &luPacket::WriteULong },
 	{"WriteFloat", &luPacket::WriteFloat },
@@ -668,7 +672,8 @@ RegType<WorldPacket> LuaPacketMethods[] = {
 	{NULL, NULL},
 };
 
-RegType<TaxiPath> LuaTaxiMethods[] = {
+RegType<TaxiPath> LuaTaxiMethods[] =
+{
 	{ "CreateTaxi", &LuaTaxi::CreateTaxi },
 	{ "GetNodeCount", &LuaTaxi::GetNodeCount },
 	{ "AddPathNode", &LuaTaxi::AddPathNode },
@@ -681,7 +686,8 @@ RegType<TaxiPath> LuaTaxiMethods[] = {
 	{NULL, NULL},
 };
 
-RegType<Spell> SpellMethods[] = {
+RegType<Spell> SpellMethods[] =
+{
 	{ "GetCaster", &LuaSpell::GetCaster },
 	{ "GetEntry", &LuaSpell::GetEntry },
 	{ "IsDuelSpell", &LuaSpell::IsDuelSpell },
@@ -707,7 +713,7 @@ RegType<Spell> SpellMethods[] = {
 	{ "GetCastedItemId", &LuaSpell::GetCastedItemId},
 	{NULL, NULL},
 };
-RegType<QueryResult> QResultMethods[] = 
+RegType<QueryResult> QResultMethods[] =
 {
 	{"GetColumn", &luaSql::GetColumn },
 	{"NextRow", &luaSql::NextRow },
@@ -715,21 +721,23 @@ RegType<QueryResult> QResultMethods[] =
 	{"GetRowCount", &luaSql::GetRowCount },
 	{ NULL, NULL},
 };
-RegType<Field> SQLFieldMethods[] = {
+RegType<Field> SQLFieldMethods[] =
+{
 	{"GetByte", &luaSql::GetByte },
 	{"GetUByte", &luaSql::GetUByte },
 	{"GetShort", &luaSql::GetShort },
 	{"GetUShort", &luaSql::GetUShort},
 	{"GetLong", &luaSql::GetLong },
 	{"GetULong", &luaSql::GetULong },
-	{"GetString",&luaSql::GetString },
+	{"GetString", &luaSql::GetString },
 	{"GetGUID", &luaSql::GetGUID },
 	{"GetFloat", &luaSql::GetFloat },
 	{"GetBool", &luaSql::GetBool },
 	{NULL, NULL},
 };
 
-RegType<Aura> AuraMethods[] = {
+RegType<Aura> AuraMethods[] =
+{
 	{"GetObjectType", &LuaAura::GetObjectType},
 	{"GetSpellId", &LuaAura::GetSpellId},
 	{"GetCaster", &LuaAura::GetCaster},

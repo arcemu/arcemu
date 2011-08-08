@@ -45,18 +45,18 @@ bool DeathKnight::GetRuneIsUsed(uint8 slot)
 
 void DeathKnight::ConvertRune(uint8 slot, uint8 type)
 {
-	if( m_runes[slot].type == type )
+	if(m_runes[slot].type == type)
 		return;
 
 	m_runes[slot].type = type;
-	SendRuneUpdate( slot );
+	SendRuneUpdate(slot);
 }
 
 uint32 DeathKnight::HasRunes(uint8 type, uint32 count)
 {
 	uint32 found = 0;
-	for( uint8 i = 0; i < MAX_RUNES && count != found; ++i )
-		if( m_runes[i].type == type && ! m_runes[i].is_used )
+	for(uint8 i = 0; i < MAX_RUNES && count != found; ++i)
+		if(m_runes[i].type == type && ! m_runes[i].is_used)
 			found++;
 	return (count - found);
 }
@@ -64,12 +64,12 @@ uint32 DeathKnight::HasRunes(uint8 type, uint32 count)
 uint32 DeathKnight::TakeRunes(uint8 type, uint32 count)
 {
 	uint8 found = 0;
-	for( uint8 i= 0; i < MAX_RUNES && count != found; ++i )
-		if( m_runes[i].type == type && ! m_runes[i].is_used )
+	for(uint8 i = 0; i < MAX_RUNES && count != found; ++i)
+		if(m_runes[i].type == type && ! m_runes[i].is_used)
 		{
 			m_runes[i].is_used = true;
 			m_last_used_rune_slot = i;
-			sEventMgr.AddEvent( this, &DeathKnight::ResetRune, i, EVENT_PLAYER_RUNE_REGEN + i, 10000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
+			sEventMgr.AddEvent(this, &DeathKnight::ResetRune, i, EVENT_PLAYER_RUNE_REGEN + i, 10000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 			found++;
 		}
 	return (count - found);
@@ -78,22 +78,22 @@ uint32 DeathKnight::TakeRunes(uint8 type, uint32 count)
 void DeathKnight::ResetRune(uint8 slot)
 {
 	m_runes[slot].is_used = false;
-	sEventMgr.RemoveEvents( this, EVENT_PLAYER_RUNE_REGEN + slot );
+	sEventMgr.RemoveEvents(this, EVENT_PLAYER_RUNE_REGEN + slot);
 }
 
 uint8 DeathKnight::GetRuneFlags()
 {
 	uint8 result = 0;
-	for( uint8 k= 0; k < MAX_RUNES; k++ )
-		if( ! m_runes[k].is_used )
+	for(uint8 k = 0; k < MAX_RUNES; k++)
+		if(! m_runes[k].is_used)
 			result |= (1 << k);
 	return result;
 }
 
 bool DeathKnight::IsAllRunesOfTypeInUse(uint8 type)
 {
-	for( uint8 i = 0; i < MAX_RUNES; ++i )
-		if( m_runes[i].type == type && ! m_runes[i].is_used )
+	for(uint8 i = 0; i < MAX_RUNES; ++i)
+		if(m_runes[i].type == type && ! m_runes[i].is_used)
 			return false;
 	return true;
 }

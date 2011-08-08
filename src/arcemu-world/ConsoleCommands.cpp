@@ -22,7 +22,7 @@
 #include <svn_revision.h>
 #include "ConsoleCommands.h"
 
-bool HandleInfoCommand(BaseConsole * pConsole, int argc, const char * argv[])
+bool HandleInfoCommand(BaseConsole* pConsole, int argc, const char* argv[])
 {
 	uint32 clientsNum = (uint32)sWorld.GetSessionCount();
 	int gm = 0;
@@ -30,7 +30,7 @@ bool HandleInfoCommand(BaseConsole * pConsole, int argc, const char * argv[])
 	int avg = 0;
 	PlayerStorageMap::const_iterator itr;
 	objmgr._playerslock.AcquireReadLock();
-	for (itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
+	for(itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
 	{
 		if(itr->second->GetSession())
 		{
@@ -50,22 +50,22 @@ bool HandleInfoCommand(BaseConsole * pConsole, int argc, const char * argv[])
 	pConsole->Write("Current Players: %d (%d GMs, %d queued)\r\n", clientsNum, gm,  0);
 	pConsole->Write("Active Thread Count: %u\r\n", ThreadPool.GetActiveThreadCount());
 	pConsole->Write("Free Thread Count: %u\r\n", ThreadPool.GetFreeThreadCount());
-	pConsole->Write("Average Latency: %.3fms\r\n", count ?  ((float)((float)avg / (float)count)) : 0.0f);
-	pConsole->Write( "CPU Usage: %3.2f %%\r\n", sWorld.GetCPUUsage() );
-	pConsole->Write( "RAM Usage: %4.2f MB\r\n", sWorld.GetRAMUsage() );
+	pConsole->Write("Average Latency: %.3fms\r\n", count ? ((float)((float)avg / (float)count)) : 0.0f);
+	pConsole->Write("CPU Usage: %3.2f %%\r\n", sWorld.GetCPUUsage());
+	pConsole->Write("RAM Usage: %4.2f MB\r\n", sWorld.GetRAMUsage());
 	pConsole->Write("SQL Query Cache Size (World): %u queries delayed\r\n", WorldDatabase.GetQueueSize());
 	pConsole->Write("SQL Query Cache Size (Character): %u queries delayed\r\n", CharacterDatabase.GetQueueSize());
 
 	return true;
 }
 
-bool HandleNetworkStatusCommand(BaseConsole * pConsole, int argc, const char * argv[])
+bool HandleNetworkStatusCommand(BaseConsole* pConsole, int argc, const char* argv[])
 {
 	sSocketMgr.ShowStatus();
 	return true;
 }
 
-bool HandleGMsCommand(BaseConsole * pConsole, int argc, const char * argv[])
+bool HandleGMsCommand(BaseConsole* pConsole, int argc, const char* argv[])
 {
 	WorldPacket data;
 	//bool first = true;
@@ -77,7 +77,7 @@ bool HandleGMsCommand(BaseConsole * pConsole, int argc, const char * argv[])
 
 	PlayerStorageMap::const_iterator itr;
 	objmgr._playerslock.AcquireReadLock();
-	for (itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
+	for(itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
 	{
 		if(itr->second->GetSession()->GetPermissionCount())
 		{
@@ -91,7 +91,7 @@ bool HandleGMsCommand(BaseConsole * pConsole, int argc, const char * argv[])
 }
 
 
-bool HandleOnlinePlayersCommand(BaseConsole * pConsole, int argc, const char * argv[])
+bool HandleOnlinePlayersCommand(BaseConsole* pConsole, int argc, const char* argv[])
 {
 	WorldPacket data;
 	//bool first = true;
@@ -103,7 +103,7 @@ bool HandleOnlinePlayersCommand(BaseConsole * pConsole, int argc, const char * a
 
 	PlayerStorageMap::const_iterator itr;
 	objmgr._playerslock.AcquireReadLock();
-	for (itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
+	for(itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
 	{
 		pConsole->Write("| %21s | %15u | %03u ms |\r\n" , itr->second->GetName(), itr->second->GetSession()->GetPlayer()->getLevel(), itr->second->GetSession()->GetLatency());
 	}
@@ -113,16 +113,16 @@ bool HandleOnlinePlayersCommand(BaseConsole * pConsole, int argc, const char * a
 	return true;
 }
 
-void ConcatArgs(string & outstr, int argc, int startoffset, const char * argv[])
+void ConcatArgs(string & outstr, int argc, int startoffset, const char* argv[])
 {
 	for(int i = startoffset + 1; i < argc; ++i)
 	{
 		outstr += argv[i];
-		if((i+1) != (argc))
+		if((i + 1) != (argc))
 			outstr += " ";
 	}
 }
-bool HandleAnnounceCommand(BaseConsole * pConsole, int argc, const char * argv[])
+bool HandleAnnounceCommand(BaseConsole* pConsole, int argc, const char* argv[])
 {
 	char pAnnounce[1024];
 	string outstr;
@@ -136,7 +136,7 @@ bool HandleAnnounceCommand(BaseConsole * pConsole, int argc, const char * argv[]
 	return true;
 }
 
-bool HandleWAnnounceCommand(BaseConsole * pConsole, int argc, const char * argv[])
+bool HandleWAnnounceCommand(BaseConsole* pConsole, int argc, const char* argv[])
 {
 	char pAnnounce[1024];
 	string outstr;
@@ -150,10 +150,10 @@ bool HandleWAnnounceCommand(BaseConsole * pConsole, int argc, const char * argv[
 	pConsole->Write("Message sent.\r\n");
 	return true;
 }
-bool HandleWhisperCommand(BaseConsole * pConsole, int argc, const char * argv[])
+bool HandleWhisperCommand(BaseConsole* pConsole, int argc, const char* argv[])
 {
 	char pAnnounce[1024];
-	Player * pPlayer;
+	Player* pPlayer;
 	string outstr;
 
 	if(argc < 3)
@@ -161,7 +161,7 @@ bool HandleWhisperCommand(BaseConsole * pConsole, int argc, const char * argv[])
 
 	pPlayer = objmgr.GetPlayer(argv[1]);
 
-	if( pPlayer == NULL )
+	if(pPlayer == NULL)
 	{
 		pConsole->Write("Could not find player, %s.\r\n", argv[1]);
 		return true;
@@ -175,17 +175,17 @@ bool HandleWhisperCommand(BaseConsole * pConsole, int argc, const char * argv[])
 	return true;
 }
 
-bool HandleKickCommand(BaseConsole * pConsole, int argc, const char * argv[])
+bool HandleKickCommand(BaseConsole* pConsole, int argc, const char* argv[])
 {
 	if(argc < 3)
 		return false;
 
 	char pAnnounce[1024];
-	Player * pPlayer;
+	Player* pPlayer;
 	string outstr;
 
 	pPlayer = objmgr.GetPlayer(argv[1]);
-	if( pPlayer == NULL )
+	if(pPlayer == NULL)
 	{
 		pConsole->Write("Could not find player, %s.\r\n", argv[1]);
 		return true;
@@ -199,16 +199,16 @@ bool HandleKickCommand(BaseConsole * pConsole, int argc, const char * argv[])
 	return true;
 }
 
-bool HandleShutDownCommand(BaseConsole * pConsole, int argc, const char * argv[])
+bool HandleShutDownCommand(BaseConsole* pConsole, int argc, const char* argv[])
 {
 	uint32 delay = 5;
 	if(argc >= 2)
 	{
-		if (stricmp(argv[1], "fast") == 0)
+		if(stricmp(argv[1], "fast") == 0)
 		{
 			PlayerStorageMap::const_iterator itr;
 			objmgr._playerslock.AcquireReadLock();
-			for (itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
+			for(itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
 			{
 				if(itr->second->GetSession())
 					itr->second->SaveToDB(false);
@@ -223,13 +223,13 @@ bool HandleShutDownCommand(BaseConsole * pConsole, int argc, const char * argv[]
 		}
 	}
 
-    sMaster.m_ShutdownTimer = delay * 1000;
+	sMaster.m_ShutdownTimer = delay * 1000;
 	sMaster.m_ShutdownEvent = true;
 	pConsole->Write("Shutdown has initiated.\r\n");
 	return true;
 }
 
-bool HandleCancelCommand(BaseConsole * pConsole, int argc, const char * argv[])
+bool HandleCancelCommand(BaseConsole* pConsole, int argc, const char* argv[])
 {
 	pConsole->Write("Shutdown has been canceled.\r\n");
 	sMaster.m_ShutdownTimer = 5000;
@@ -237,7 +237,7 @@ bool HandleCancelCommand(BaseConsole * pConsole, int argc, const char * argv[])
 	return true;
 }
 
-bool HandleBanAccountCommand(BaseConsole * pConsole, int argc, const char * argv[])
+bool HandleBanAccountCommand(BaseConsole* pConsole, int argc, const char* argv[])
 {
 	if(argc < 3)
 		return false;
@@ -246,12 +246,12 @@ bool HandleBanAccountCommand(BaseConsole * pConsole, int argc, const char * argv
 	if(timeperiod < 0)
 		return false;
 
-	uint32 banned = (timeperiod ? (uint32)UNIXTIME+timeperiod : 1);
+	uint32 banned = (timeperiod ? (uint32)UNIXTIME + timeperiod : 1);
 
 	char emptystring = 0;
-	char * pReason;
-	if( argc == 4 )
-		pReason = (char *)argv[3];
+	char* pReason;
+	if(argc == 4)
+		pReason = (char*)argv[3];
 	else
 		pReason = &emptystring;
 
@@ -259,12 +259,12 @@ bool HandleBanAccountCommand(BaseConsole * pConsole, int argc, const char * argv
 	sLogonCommHandler.Account_SetBanned(argv[1], banned, pReason);
 
 	pConsole->Write("Account '%s' has been banned %s%s. The change will be effective immediately.\r\n", argv[1],
-		timeperiod ? "until " : "forever", timeperiod ? ConvertTimeStampToDataTime(timeperiod+(uint32)UNIXTIME).c_str() : "");
+	                timeperiod ? "until " : "forever", timeperiod ? ConvertTimeStampToDataTime(timeperiod + (uint32)UNIXTIME).c_str() : "");
 
 	return true;
 }
 
-bool HandleUnbanAccountCommand(BaseConsole * pConsole, int argc, const char * argv[])
+bool HandleUnbanAccountCommand(BaseConsole* pConsole, int argc, const char* argv[])
 {
 	if(argc < 2)
 		return false;
@@ -275,31 +275,32 @@ bool HandleUnbanAccountCommand(BaseConsole * pConsole, int argc, const char * ar
 	return true;
 }
 
-bool HandleMOTDCommand(BaseConsole * pConsole, int argc, const char * argv[])
+bool HandleMOTDCommand(BaseConsole* pConsole, int argc, const char* argv[])
 {
 	if(argc < 2)
 	{
-		pConsole->Write( "The current message of the day is: '%s'.\r\n", sWorld.GetMotd() );
-	}else
+		pConsole->Write("The current message of the day is: '%s'.\r\n", sWorld.GetMotd());
+	}
+	else
 	{
 		char set_motd[1024];
 		string outstr;
-		ConcatArgs( outstr, argc, 0, argv );
-		snprintf( set_motd, 1024, "%s", outstr.c_str() );
+		ConcatArgs(outstr, argc, 0, argv);
+		snprintf(set_motd, 1024, "%s", outstr.c_str());
 
-		sWorld.SetMotd( set_motd );
-		pConsole->Write( "The message of the day has been set to: '%s'.\r\n", sWorld.GetMotd() );
+		sWorld.SetMotd(set_motd);
+		pConsole->Write("The message of the day has been set to: '%s'.\r\n", sWorld.GetMotd());
 	}
 	return true;
 }
 
-bool HandlePlayerInfoCommand(BaseConsole * pConsole, int argc, const char * argv[])
+bool HandlePlayerInfoCommand(BaseConsole* pConsole, int argc, const char* argv[])
 {
 	if(argc < 2)
 		return false;
 
-	Player * plr = objmgr.GetPlayer(argv[1]);
-	if( plr == NULL )
+	Player* plr = objmgr.GetPlayer(argv[1]);
+	if(plr == NULL)
 	{
 		pConsole->Write("Player not found.\r\n");
 		return true;
@@ -314,20 +315,20 @@ bool HandlePlayerInfoCommand(BaseConsole * pConsole, int argc, const char * argv
 	return true;
 }
 
-void TestConsoleLogin(string& username, string& password, uint32 requestno)
+void TestConsoleLogin(string & username, string & password, uint32 requestno)
 {
 	sLogonCommHandler.TestConsoleLogon(username, password, requestno);
 }
 
-bool HandleRevivePlayer(BaseConsole * pConsole, int argc, const char * argv[])
+bool HandleRevivePlayer(BaseConsole* pConsole, int argc, const char* argv[])
 {
-	if ( !argc )
+	if(!argc)
 		return false;
 
-	Player *plr = objmgr.GetPlayer(argv[1], false);
+	Player* plr = objmgr.GetPlayer(argv[1], false);
 	if(!plr)
 	{
-		pConsole->Write( "Could not find player %s.\r\n", argv[1]);
+		pConsole->Write("Could not find player %s.\r\n", argv[1]);
 		return true;
 	}
 
@@ -335,7 +336,8 @@ bool HandleRevivePlayer(BaseConsole * pConsole, int argc, const char * argv[])
 	{
 		plr->RemoteRevive();
 		pConsole->Write("Revived player %s.\r\n", argv[1]);
-	} else
+	}
+	else
 	{
 		pConsole->Write("Player %s is not dead.\r\n", argv[1]);
 	}
@@ -343,34 +345,34 @@ bool HandleRevivePlayer(BaseConsole * pConsole, int argc, const char * argv[])
 }
 
 
-bool HandleRehashCommand(BaseConsole * pConsole, int argc, const char * argv[])
+bool HandleRehashCommand(BaseConsole* pConsole, int argc, const char* argv[])
 {
 	pConsole->Write("Config file re-parsed.");
 	sWorld.Rehash(true);
 	return true;
 }
 
-bool HandleNameHashCommand(BaseConsole * pConsole, int argc, const char * argv[])
+bool HandleNameHashCommand(BaseConsole* pConsole, int argc, const char* argv[])
 {
-	if( !argc )
+	if(!argc)
 		return false;
 	string spname;
-		ConcatArgs(spname, argc, 0, argv);
-	pConsole->Write( "Name Hash for %s is 0x%X" , spname.c_str() , crc32((const unsigned char*)spname.c_str(), (unsigned int)spname.length()) );
+	ConcatArgs(spname, argc, 0, argv);
+	pConsole->Write("Name Hash for %s is 0x%X" , spname.c_str() , crc32((const unsigned char*)spname.c_str(), (unsigned int)spname.length()));
 	sWorld.Rehash(true);
 	return true;
 }
 
-bool HandleClearConsoleCommand(BaseConsole * pConsole, int argc, const char * argv[])
+bool HandleClearConsoleCommand(BaseConsole* pConsole, int argc, const char* argv[])
 {
-    system("cls");
+	system("cls");
 	pConsole->Write("Out of the ashes, Chuck Norris appears! With a roundhouse kick, your console shall now be cleaned!");
-    return true;
+	return true;
 }
 
-bool HandleReloadConsoleCommand(BaseConsole * pConsole, int argc, const char *argv[])
+bool HandleReloadConsoleCommand(BaseConsole* pConsole, int argc, const char* argv[])
 {
-	sWorld.SendWorldText("Support for reloading tables on the fly was disabled in Arcemu revision 3621. You are seeing this message because apparently reading SVN changelog or using forums search is way over the head of some of our users.", 0 );
+	sWorld.SendWorldText("Support for reloading tables on the fly was disabled in Arcemu revision 3621. You are seeing this message because apparently reading SVN changelog or using forums search is way over the head of some of our users.", 0);
 	return true;
 
 	/*
@@ -417,7 +419,7 @@ bool HandleReloadConsoleCommand(BaseConsole * pConsole, int argc, const char *ar
 	*/
 
 }
-bool HandleScriptEngineReloadCommand(BaseConsole *, int, const char* [])
+bool HandleScriptEngineReloadCommand(BaseConsole*, int, const char* [])
 {
 	sScriptMgr.ReloadScriptEngines();
 	return true;

@@ -23,10 +23,10 @@
 
 class Shaman : public Player
 {
-public:
-	Shaman ( uint32 guid ) : Player( guid ) {}
+	public:
+		Shaman(uint32 guid) : Player(guid) {}
 
-	bool IsShaman() { return true; }
+		bool IsShaman() { return true; }
 };
 
 #endif

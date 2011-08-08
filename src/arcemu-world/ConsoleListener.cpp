@@ -32,78 +32,78 @@
 
 enum STATES
 {
-	STATE_USER		= 1,
-	STATE_PASSWORD	= 2,
-	STATE_LOGGED	= 3,
-	STATE_WAITING	= 4,
+    STATE_USER		= 1,
+    STATE_PASSWORD	= 2,
+    STATE_LOGGED	= 3,
+    STATE_WAITING	= 4,
 };
 
 class ConsoleSocket : public Socket
 {
-	RemoteConsole * m_pConsole;
-	char * m_pBuffer;
-	uint32 m_pBufferLen;
-	uint32 m_pBufferPos;
-	uint32 m_state;
-	string m_username;
-	string m_password;
-	uint32 m_requestNo;
-	uint8 m_failedLogins;
+		RemoteConsole* m_pConsole;
+		char* m_pBuffer;
+		uint32 m_pBufferLen;
+		uint32 m_pBufferPos;
+		uint32 m_state;
+		string m_username;
+		string m_password;
+		uint32 m_requestNo;
+		uint8 m_failedLogins;
 
-public:
-	ConsoleSocket(SOCKET iFd);
-	~ConsoleSocket();
+	public:
+		ConsoleSocket(SOCKET iFd);
+		~ConsoleSocket();
 
-	void OnRead();
-	void OnDisconnect();
-	void OnConnect();
-	void TryAuthenticate();
-	void AuthCallback(bool result);
+		void OnRead();
+		void OnDisconnect();
+		void OnConnect();
+		void TryAuthenticate();
+		void AuthCallback(bool result);
 };
 
 class ConsoleAuthMgr : public Singleton<ConsoleAuthMgr>
 {
-	Mutex authmgrlock;
-	uint32 highrequestid;
-	map<uint32, ConsoleSocket*> requestmap;
-public:
+		Mutex authmgrlock;
+		uint32 highrequestid;
+		map<uint32, ConsoleSocket*> requestmap;
+	public:
 
-	ConsoleAuthMgr()
-	{
-		highrequestid = 1;
-	}
+		ConsoleAuthMgr()
+		{
+			highrequestid = 1;
+		}
 
-	uint32 GenerateRequestId()
-	{
-		uint32 n;
-		authmgrlock.Acquire();
-		n = highrequestid++;
-		authmgrlock.Release();
-        return n;
-	}
+		uint32 GenerateRequestId()
+		{
+			uint32 n;
+			authmgrlock.Acquire();
+			n = highrequestid++;
+			authmgrlock.Release();
+			return n;
+		}
 
-	void SetRequest(uint32 id, ConsoleSocket * sock)
-	{
-		authmgrlock.Acquire();
-		if( sock == NULL )
-			requestmap.erase(id);
-		else
-			requestmap.insert(make_pair(id, sock));
-		authmgrlock.Release();
-	}
+		void SetRequest(uint32 id, ConsoleSocket* sock)
+		{
+			authmgrlock.Acquire();
+			if(sock == NULL)
+				requestmap.erase(id);
+			else
+				requestmap.insert(make_pair(id, sock));
+			authmgrlock.Release();
+		}
 
-	ConsoleSocket * GetRequest(uint32 id)
-	{
-		ConsoleSocket* rtn;
-		authmgrlock.Acquire();
-		map<uint32,ConsoleSocket*>::iterator itr = requestmap.find(id);
-		if(itr == requestmap.end())
-			rtn = NULL;
-		else
-			rtn = itr->second;
-		authmgrlock.Release();
-		return rtn;
-	}
+		ConsoleSocket* GetRequest(uint32 id)
+		{
+			ConsoleSocket* rtn;
+			authmgrlock.Acquire();
+			map<uint32, ConsoleSocket*>::iterator itr = requestmap.find(id);
+			if(itr == requestmap.end())
+				rtn = NULL;
+			else
+				rtn = itr->second;
+			authmgrlock.Release();
+			return rtn;
+		}
 };
 
 ListenSocket<ConsoleSocket> * g_pListenSocket = NULL;
@@ -111,11 +111,11 @@ initialiseSingleton(ConsoleAuthMgr);
 
 void ConsoleAuthCallback(uint32 request, uint32 result)
 {
-	ConsoleSocket * pSocket = ConsoleAuthMgr::getSingleton().GetRequest(request);
+	ConsoleSocket* pSocket = ConsoleAuthMgr::getSingleton().GetRequest(request);
 	if(pSocket == NULL || !pSocket->IsConnected())
 		return;
 
-    if(result)
+	if(result)
 		pSocket->AuthCallback(true);
 	else
 		pSocket->AuthCallback(false);
@@ -127,7 +127,7 @@ void CloseConsoleListener()
 		g_pListenSocket->Close();
 }
 
-bool StartConsoleListener( )
+bool StartConsoleListener()
 {
 #ifndef ENABLE_REMOTE_CONSOLE
 	return false;
@@ -136,16 +136,16 @@ bool StartConsoleListener( )
 	uint32 lport = Config.MainConfig.GetIntDefault("RemoteConsole", "Port", 8092);
 	bool enabled = Config.MainConfig.GetBoolDefault("RemoteConsole", "Enabled", false);
 
-	if( !enabled )
+	if(!enabled)
 		return false;
 
-	g_pListenSocket = new ListenSocket<ConsoleSocket>( lhost.c_str(), lport );
-	if( g_pListenSocket == NULL )
+	g_pListenSocket = new ListenSocket<ConsoleSocket>(lhost.c_str(), lport);
+	if(g_pListenSocket == NULL)
 		return false;
 
-	if( !g_pListenSocket->IsOpen( ) )
+	if(!g_pListenSocket->IsOpen())
 	{
-		g_pListenSocket->Close( );
+		g_pListenSocket->Close();
 		delete g_pListenSocket;
 		g_pListenSocket = NULL;
 		return false;
@@ -156,12 +156,12 @@ bool StartConsoleListener( )
 #endif
 }
 
-ThreadBase * GetConsoleListener()
+ThreadBase* GetConsoleListener()
 {
 	return (ThreadBase*)g_pListenSocket;
 }
 
-ConsoleSocket::ConsoleSocket( SOCKET iFd ) : Socket(iFd, 10000, 1000)
+ConsoleSocket::ConsoleSocket(SOCKET iFd) : Socket(iFd, 10000, 1000)
 {
 	m_pBufferLen = LOCAL_BUFFER_SIZE;
 	m_pBufferPos = 0;
@@ -171,29 +171,29 @@ ConsoleSocket::ConsoleSocket( SOCKET iFd ) : Socket(iFd, 10000, 1000)
 	m_failedLogins = 0;
 }
 
-ConsoleSocket::~ConsoleSocket( )
+ConsoleSocket::~ConsoleSocket()
 {
-	if( m_pBuffer != NULL )
+	if(m_pBuffer != NULL)
 		delete [] m_pBuffer;
 
-	if( m_pConsole != NULL )
+	if(m_pConsole != NULL)
 		delete m_pConsole;
 
 	if(m_requestNo)
 	{
 		ConsoleAuthMgr::getSingleton().SetRequest(m_requestNo, NULL);
-		m_requestNo= 0;
+		m_requestNo = 0;
 	}
 }
 
-void TestConsoleLogin(string& username, string& password, uint32 requestid);
+void TestConsoleLogin(string & username, string & password, uint32 requestid);
 
 void ConsoleSocket::OnRead()
 {
 	uint32 readlen = (uint32)readBuffer.GetSize();
 	uint32 len;
-	char * p;
-	if( ( readlen + m_pBufferPos ) >= m_pBufferLen )
+	char* p;
+	if((readlen + m_pBufferPos) >= m_pBufferLen)
 	{
 		Disconnect();
 		return;
@@ -204,51 +204,51 @@ void ConsoleSocket::OnRead()
 
 	// let's look for any newline bytes.
 	p = strchr(m_pBuffer, '\n');
-	while( p != NULL )
+	while(p != NULL)
 	{
 		// windows is stupid. :P
-		len = (uint32)((p+1) - m_pBuffer);
-		if( *(p-1) == '\r' )
-			*(p-1) = '\0';
+		len = (uint32)((p + 1) - m_pBuffer);
+		if(*(p - 1) == '\r')
+			*(p - 1) = '\0';
 
 		*p = '\0';
 
 		// handle the command
-		if( *m_pBuffer != '\0' )
+		if(*m_pBuffer != '\0')
 		{
 			switch(m_state)
 			{
-			case STATE_USER:
-				m_username = string(m_pBuffer);
-				m_pConsole->Write("password: ");
-				m_state = STATE_PASSWORD;
-				break;
-
-			case STATE_PASSWORD:
-				m_password = string(m_pBuffer);
-				m_pConsole->Write("\r\nAttempting to authenticate. Please wait.\r\n");
-				m_state = STATE_WAITING;
-
-				m_requestNo = ConsoleAuthMgr::getSingleton().GenerateRequestId();
-				ConsoleAuthMgr::getSingleton().SetRequest(m_requestNo, this);
-
-                TestConsoleLogin(m_username, m_password, m_requestNo);
-				break;
-
-			case STATE_LOGGED:
-				if( !strnicmp( m_pBuffer, "quit", 4 ) )
-				{
-					Disconnect();
+				case STATE_USER:
+					m_username = string(m_pBuffer);
+					m_pConsole->Write("password: ");
+					m_state = STATE_PASSWORD;
 					break;
-				}
 
-                HandleConsoleInput(m_pConsole, m_pBuffer);
-				break;
+				case STATE_PASSWORD:
+					m_password = string(m_pBuffer);
+					m_pConsole->Write("\r\nAttempting to authenticate. Please wait.\r\n");
+					m_state = STATE_WAITING;
+
+					m_requestNo = ConsoleAuthMgr::getSingleton().GenerateRequestId();
+					ConsoleAuthMgr::getSingleton().SetRequest(m_requestNo, this);
+
+					TestConsoleLogin(m_username, m_password, m_requestNo);
+					break;
+
+				case STATE_LOGGED:
+					if(!strnicmp(m_pBuffer, "quit", 4))
+					{
+						Disconnect();
+						break;
+					}
+
+					HandleConsoleInput(m_pConsole, m_pBuffer);
+					break;
 			}
 		}
 
 		// move the bytes back
-		if( len == m_pBufferPos )
+		if(len == m_pBufferPos)
 		{
 			m_pBuffer[0] = '\0';
 			m_pBufferPos = 0;
@@ -275,7 +275,7 @@ void ConsoleSocket::OnDisconnect()
 	if(m_requestNo)
 	{
 		ConsoleAuthMgr::getSingleton().SetRequest(m_requestNo, NULL);
-		m_requestNo= 0;
+		m_requestNo = 0;
 	}
 	if(m_state == STATE_LOGGED)
 	{
@@ -286,9 +286,9 @@ void ConsoleSocket::OnDisconnect()
 void ConsoleSocket::AuthCallback(bool result)
 {
 	ConsoleAuthMgr::getSingleton().SetRequest(m_requestNo, NULL);
-	m_requestNo= 0;
+	m_requestNo = 0;
 
-	if( !result )
+	if(!result)
 	{
 		m_pConsole->Write("Authentication failed.\r\n\r\n");
 		m_failedLogins++;
@@ -306,8 +306,8 @@ void ConsoleSocket::AuthCallback(bool result)
 	{
 		m_pConsole->Write("User `%s` authenticated.\r\n\r\n", m_username.c_str());
 		Log.Notice("RemoteConsole", "User `%s` authenticated.", m_username.c_str());
-		const char * argv[1];
-		HandleInfoCommand(m_pConsole,1, argv);
+		const char* argv[1];
+		HandleInfoCommand(m_pConsole, 1, argv);
 		m_pConsole->Write("Type ? to see commands, quit to end session.\r\n");
 		m_state = STATE_LOGGED;
 	}
@@ -318,7 +318,7 @@ RemoteConsole::RemoteConsole(ConsoleSocket* pSocket)
 	m_pSocket = pSocket;
 }
 
-void RemoteConsole::Write(const char * Format, ...)
+void RemoteConsole::Write(const char* Format, ...)
 {
 	char obuf[65536];
 	va_list ap;
@@ -327,7 +327,7 @@ void RemoteConsole::Write(const char * Format, ...)
 	vsnprintf(obuf, 65536, Format, ap);
 	va_end(ap);
 
-	if( *obuf == '\0' )
+	if(*obuf == '\0')
 		return;
 
 	m_pSocket->Send((const uint8*)obuf, (uint32)strlen(obuf));
@@ -336,15 +336,16 @@ void RemoteConsole::Write(const char * Format, ...)
 struct ConsoleCommand
 {
 	bool(*CommandPointer)(BaseConsole*, int, const char*[]);
-	const char * Name;					// 10 chars
-	const char * ArgumentFormat;		// 30 chars
-	const char * Description;			// 40 chars
-										// = 70 chars
+	const char* Name;					// 10 chars
+	const char* ArgumentFormat;		// 30 chars
+	const char* Description;			// 40 chars
+	// = 70 chars
 };
 
-void HandleConsoleInput(BaseConsole * pConsole, const char * szInput)
+void HandleConsoleInput(BaseConsole* pConsole, const char* szInput)
 {
-	static ConsoleCommand Commands[] = {
+	static ConsoleCommand Commands[] =
+	{
 		{
 			&HandleAnnounceCommand,
 			"a", "<announce string>",
@@ -447,7 +448,7 @@ void HandleConsoleInput(BaseConsole * pConsole, const char * szInput)
 		},
 		{
 			&HandleWhisperCommand,
-			"whisper","<player> <message>",
+			"whisper", "<player> <message>",
 			"Whispers a message to someone from the console."
 		},
 		{
@@ -477,42 +478,42 @@ void HandleConsoleInput(BaseConsole * pConsole, const char * szInput)
 	};
 
 	uint32 i;
-	char * p, *q;
+	char* p, *q;
 
 	// let's tokenize into arguments.
 	vector<const char*> tokens;
 
 	q = (char*)szInput;
 	p = strchr(q, ' ');
-	while( p != NULL )
+	while(p != NULL)
 	{
 		*p = 0;
 		tokens.push_back(q);
 
-		q = p+1;
+		q = p + 1;
 		p = strchr(q, ' ');
 	}
 
-	if( q != NULL && *q != '\0' )
-		tokens.push_back( q	);
+	if(q != NULL && *q != '\0')
+		tokens.push_back(q);
 
-	if( tokens.empty() )
+	if(tokens.empty())
 		return;
 
-	if( !stricmp(tokens[0], "help") || tokens[0][0] == '?' )
+	if(!stricmp(tokens[0], "help") || tokens[0][0] == '?')
 	{
-		if( tokens.size() > 1 )
+		if(tokens.size() > 1)
 		{
 			for(i = 0; Commands[i].Name != NULL; ++i)
 			{
-				if( !stricmp( Commands[i].Name, tokens[1] ) )
+				if(!stricmp(Commands[i].Name, tokens[1]))
 				{
-					pConsole->Write( "Command: %s\r\n"
-						"Arguments: %s\r\n"
-						"Description: %s\r\n",
-						Commands[i].Name,
-						Commands[i].ArgumentFormat,
-						Commands[i].Description );
+					pConsole->Write("Command: %s\r\n"
+					                "Arguments: %s\r\n"
+					                "Description: %s\r\n",
+					                Commands[i].Name,
+					                Commands[i].ArgumentFormat,
+					                Commands[i].Description);
 					return;
 				}
 			}
@@ -520,7 +521,7 @@ void HandleConsoleInput(BaseConsole * pConsole, const char * szInput)
 
 		pConsole->Write("===============================================================================\r\n");
 		pConsole->Write("| %15s | %57s |\r\n", "Name", "Arguments");
-		pConsole->Write("===============================================================================\r\n");		
+		pConsole->Write("===============================================================================\r\n");
 		for(i = 0; Commands[i].Name != NULL; ++i)
 		{
 			pConsole->Write("| %15s | %57s |\r\n", Commands[i].Name, Commands[i].ArgumentFormat);
@@ -533,11 +534,11 @@ void HandleConsoleInput(BaseConsole * pConsole, const char * szInput)
 	{
 		for(i = 0; Commands[i].Name != NULL; ++i)
 		{
-			if( !stricmp( Commands[i].Name, tokens[0] ) )
+			if(!stricmp(Commands[i].Name, tokens[0]))
 			{
-				if( !Commands[i].CommandPointer( pConsole, (int)tokens.size(), &tokens[0] ) )
+				if(!Commands[i].CommandPointer(pConsole, (int)tokens.size(), &tokens[0]))
 				{
-					pConsole->Write("[!]Error, '%s' used an incorrect syntax, the correct syntax is: '%s'.\r\n\r\n", Commands[i].Name, Commands[i].ArgumentFormat );
+					pConsole->Write("[!]Error, '%s' used an incorrect syntax, the correct syntax is: '%s'.\r\n\r\n", Commands[i].Name, Commands[i].ArgumentFormat);
 					return;
 				}
 				else
@@ -549,7 +550,7 @@ void HandleConsoleInput(BaseConsole * pConsole, const char * szInput)
 	}
 }
 
-void LocalConsole::Write(const char * Format, ...)
+void LocalConsole::Write(const char* Format, ...)
 {
 	va_list ap;
 	va_start(ap, Format);

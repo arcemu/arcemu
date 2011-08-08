@@ -20,34 +20,34 @@
 
 #include "StdAfx.h"
 
-void WorldSession::HandleSetVisibleRankOpcode( WorldPacket& recv_data )
+void WorldSession::HandleSetVisibleRankOpcode(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_RETURN
 
-	CHECK_PACKET_SIZE( recv_data, 4 );
+	CHECK_PACKET_SIZE(recv_data, 4);
 	uint32 ChosenRank;
-	recv_data >> ChosenRank; 
-	if( ChosenRank == 0xFFFFFFFF )
-		_player->SetChosenTitle(0 );
-	else if( _player->HasTitle( static_cast< RankTitles >( ChosenRank ) ) )
-		_player->SetChosenTitle(ChosenRank );
+	recv_data >> ChosenRank;
+	if(ChosenRank == 0xFFFFFFFF)
+		_player->SetChosenTitle(0);
+	else if(_player->HasTitle(static_cast< RankTitles >(ChosenRank)))
+		_player->SetChosenTitle(ChosenRank);
 }
 
-void HonorHandler::AddHonorPointsToPlayer(Player *pPlayer, uint32 uAmount)
+void HonorHandler::AddHonorPointsToPlayer(Player* pPlayer, uint32 uAmount)
 {
 	pPlayer->HandleProc(PROC_ON_GAIN_EXPIERIENCE, pPlayer, NULL);
 	pPlayer->m_procCounter = 0;
-	
-	if( pPlayer->GetMapId() == 559 || pPlayer->GetMapId() == 562 || pPlayer->GetMapId() == 572)
+
+	if(pPlayer->GetMapId() == 559 || pPlayer->GetMapId() == 562 || pPlayer->GetMapId() == 572)
 		return;
 	pPlayer->m_honorPoints += uAmount;
 	pPlayer->m_honorToday += uAmount;
-	if (pPlayer->m_honorPoints > 75000) pPlayer->m_honorPoints = 75000;
+	if(pPlayer->m_honorPoints > 75000) pPlayer->m_honorPoints = 75000;
 
 	RecalculateHonorFields(pPlayer);
 }
 
-int32 HonorHandler::CalculateHonorPointsForKill( uint32 playerLevel, uint32 victimLevel )
+int32 HonorHandler::CalculateHonorPointsForKill(uint32 playerLevel, uint32 victimLevel)
 {
 
 	uint32 k_level = playerLevel;
@@ -55,51 +55,51 @@ int32 HonorHandler::CalculateHonorPointsForKill( uint32 playerLevel, uint32 vict
 
 	uint32 k_grey = 0;
 
-	if( k_level > 5 && k_level < 40 )
+	if(k_level > 5 && k_level < 40)
 	{
-		k_grey = k_level - 5 - float2int32( std::floor( ((float)k_level) / 10.0f ) );
+		k_grey = k_level - 5 - float2int32(std::floor(((float)k_level) / 10.0f));
 	}
 	else
 	{
-		k_grey = k_level - 1 - float2int32( std::floor( ((float)k_level) / 5.0f ) );
+		k_grey = k_level - 1 - float2int32(std::floor(((float)k_level) / 5.0f));
 	}
 
 	if(v_level <= k_grey)
 		return 0;
 
-	float honor_points = -0.53177f + 0.59357f * exp((k_level +23.54042f) / 26.07859f);
-	honor_points *= World::getSingleton().getRate( RATE_HONOR );
-	return float2int32( honor_points );
+	float honor_points = -0.53177f + 0.59357f * exp((k_level + 23.54042f) / 26.07859f);
+	honor_points *= World::getSingleton().getRate(RATE_HONOR);
+	return float2int32(honor_points);
 }
 
-void HonorHandler::OnPlayerKilled( Player *pPlayer, Player* pVictim )
+void HonorHandler::OnPlayerKilled(Player* pPlayer, Player* pVictim)
 {
-	if( pVictim->m_honorless )
+	if(pVictim->m_honorless)
 		return;
 
-	if( pPlayer->m_bg )
+	if(pPlayer->m_bg)
 	{
-		if( pVictim->m_bgTeam == pPlayer->m_bgTeam )
+		if(pVictim->m_bgTeam == pPlayer->m_bgTeam)
 			return;
 
 		// patch 2.4, players killed >50 times in battlegrounds won't be worth honor for the rest of that bg
-		if( pVictim->m_bgScore.Deaths >= 50 )
+		if(pVictim->m_bgScore.Deaths >= 50)
 			return;
 	}
 	else
 	{
-		if( pPlayer->GetTeam() == pVictim->GetTeam() )
+		if(pPlayer->GetTeam() == pVictim->GetTeam())
 			return;
 	}
 
 	// Calculate points
 	int32 Points = 0;
 	if(pPlayer != pVictim)
-		Points = CalculateHonorPointsForKill( pPlayer->getLevel(), pVictim->getLevel() );
+		Points = CalculateHonorPointsForKill(pPlayer->getLevel(), pVictim->getLevel());
 
-	if( Points > 0 )
+	if(Points > 0)
 	{
-		if( pPlayer->m_bg )
+		if(pPlayer->m_bg)
 		{
 			// hackfix for battlegrounds (since the groups there are disabled, we need to do this manually)
 			vector<Player*> toadd;
@@ -111,11 +111,11 @@ void HonorHandler::OnPlayerKilled( Player *pPlayer, Player* pVictim )
 			for(set<Player*>::iterator itr = s->begin(); itr != s->end(); ++itr)
 			{
 				// Also check that the player is in range, and the player is alive.
-				if((*itr) == pPlayer || ((*itr)->isAlive() && (*itr)->isInRange(pPlayer,100.0f)))
+				if((*itr) == pPlayer || ((*itr)->isAlive() && (*itr)->isInRange(pPlayer, 100.0f)))
 					toadd.push_back(*itr);
 			}
 
-			if( toadd.size() > 0 )
+			if(toadd.size() > 0)
 			{
 				uint32 pts = Points / (uint32)toadd.size();
 				for(vector<Player*>::iterator vtr = toadd.begin(); vtr != toadd.end(); ++vtr)
@@ -149,7 +149,7 @@ void HonorHandler::OnPlayerKilled( Player *pPlayer, Player* pVictim )
 					continue;
 
 				bool added = false;
-				Player * plr = TO_PLAYER(*itr);
+				Player* plr = TO_PLAYER(*itr);
 				if(pVictim->CombatStatus.m_attackers.find(plr->GetGUID()) != pVictim->CombatStatus.m_attackers.end())
 				{
 					added = true;
@@ -158,17 +158,17 @@ void HonorHandler::OnPlayerKilled( Player *pPlayer, Player* pVictim )
 
 				if(added && plr->GetGroup())
 				{
-					Group * pGroup = plr->GetGroup();
+					Group* pGroup = plr->GetGroup();
 					uint32 groups = pGroup->GetSubGroupCount();
 					for(uint32 i = 0; i < groups; i++)
 					{
-						SubGroup * sg = pGroup->GetSubGroup(i);
+						SubGroup* sg = pGroup->GetSubGroup(i);
 						if(!sg) continue;
 
 						for(GroupMembersSet::iterator itr2 = sg->GetGroupMembersBegin(); itr2 != sg->GetGroupMembersEnd(); itr2++)
 						{
-							PlayerInfo * pi = (*itr2);
-							Player * gm = objmgr.GetPlayer(pi->guid);
+							PlayerInfo* pi = (*itr2);
+							Player* gm = objmgr.GetPlayer(pi->guid);
 							if(!gm) continue;
 
 							if(gm->isInRange(pVictim, 100.0f))
@@ -180,7 +180,7 @@ void HonorHandler::OnPlayerKilled( Player *pPlayer, Player* pVictim )
 
 			for(set<Player*>::iterator itr = contributors.begin(); itr != contributors.end(); itr++)
 			{
-				Player * pAffectedPlayer = (*itr);
+				Player* pAffectedPlayer = (*itr);
 				if(!pAffectedPlayer) continue;
 
 				pAffectedPlayer->m_killsToday++;
@@ -201,24 +201,24 @@ void HonorHandler::OnPlayerKilled( Player *pPlayer, Player* pVictim )
 				}
 				int PvPToken = 0;
 				Config.OptionalConfig.GetInt("Extra", "PvPToken", &PvPToken);
-				if( PvPToken > 0 )
+				if(PvPToken > 0)
 				{
 					int PvPTokenID = 0;
 					Config.OptionalConfig.GetInt("Extra", "PvPTokenID", &PvPTokenID);
-					if( PvPTokenID > 0 ) 
+					if(PvPTokenID > 0)
 					{
-						Item * PvPTokenItem = objmgr.CreateItem(PvPTokenID, pAffectedPlayer);
-						if( PvPTokenItem )
+						Item* PvPTokenItem = objmgr.CreateItem(PvPTokenID, pAffectedPlayer);
+						if(PvPTokenItem)
 						{
 							PvPTokenItem->SoulBind();
-							pAffectedPlayer->GetItemInterface()->AddItemToFreeSlot( PvPTokenItem );
+							pAffectedPlayer->GetItemInterface()->AddItemToFreeSlot(PvPTokenItem);
 						}
 					}
 				}
 				if(pAffectedPlayer->GetZoneId() == 3518)
 				{
 					// Add Halaa Battle Token
-					SpellEntry * pvp_token_spell = dbcSpell.LookupEntry(pAffectedPlayer->IsTeamHorde() ? 33004 : 33005);
+					SpellEntry* pvp_token_spell = dbcSpell.LookupEntry(pAffectedPlayer->IsTeamHorde() ? 33004 : 33005);
 					pAffectedPlayer->CastSpell(pAffectedPlayer, pvp_token_spell, true);
 				}
 				// If we are in Hellfire Peninsula <http://www.wowwiki.com/Hellfire_Peninsula#World_PvP_-_Hellfire_Fortifications>
@@ -234,7 +234,7 @@ void HonorHandler::OnPlayerKilled( Player *pPlayer, Player* pVictim )
 					*/
 
 					// Add Mark of Thrallmar/Honor Hold
-					SpellEntry * pvp_token_spell = dbcSpell.LookupEntry(pAffectedPlayer->IsTeamHorde() ? 32158 : 32155);
+					SpellEntry* pvp_token_spell = dbcSpell.LookupEntry(pAffectedPlayer->IsTeamHorde() ? 32158 : 32155);
 					pAffectedPlayer->CastSpell(pAffectedPlayer, pvp_token_spell, true);
 				}
 			}
@@ -242,9 +242,9 @@ void HonorHandler::OnPlayerKilled( Player *pPlayer, Player* pVictim )
 	}
 }
 
-void HonorHandler::RecalculateHonorFields(Player *pPlayer)
+void HonorHandler::RecalculateHonorFields(Player* pPlayer)
 {
-	pPlayer->SetUInt32Value(PLAYER_FIELD_KILLS, uint16(pPlayer->m_killsToday) | ( pPlayer->m_killsYesterday << 16 ) );
+	pPlayer->SetUInt32Value(PLAYER_FIELD_KILLS, uint16(pPlayer->m_killsToday) | (pPlayer->m_killsYesterday << 16));
 	pPlayer->SetUInt32Value(PLAYER_FIELD_TODAY_CONTRIBUTION, pPlayer->m_honorToday);
 	pPlayer->SetUInt32Value(PLAYER_FIELD_YESTERDAY_CONTRIBUTION, pPlayer->m_honorYesterday);
 	pPlayer->SetUInt32Value(PLAYER_FIELD_LIFETIME_HONORBALE_KILLS, pPlayer->m_killsLifetime);
@@ -259,7 +259,7 @@ void HonorHandler::RecalculateHonorFields(Player *pPlayer)
 bool ChatHandler::HandleAddKillCommand(const char* args, WorldSession* m_session)
 {
 	uint32 KillAmount = args ? atol(args) : 1;
-	Player *plr = getSelectedChar(m_session, true);
+	Player* plr = getSelectedChar(m_session, true);
 	if(plr == NULL)
 		return true;
 
@@ -268,7 +268,7 @@ bool ChatHandler::HandleAddKillCommand(const char* args, WorldSession* m_session
 
 	plr->m_killsToday += KillAmount;
 	plr->m_killsLifetime += KillAmount;
-	plr->SetUInt32Value(PLAYER_FIELD_KILLS, uint16(plr->m_killsToday) | ( plr->m_killsYesterday << 16 ) );
+	plr->SetUInt32Value(PLAYER_FIELD_KILLS, uint16(plr->m_killsToday) | (plr->m_killsYesterday << 16));
 	plr->SetUInt32Value(PLAYER_FIELD_LIFETIME_HONORBALE_KILLS, plr->m_killsLifetime);
 
 	return true;
@@ -277,7 +277,7 @@ bool ChatHandler::HandleAddKillCommand(const char* args, WorldSession* m_session
 bool ChatHandler::HandleAddHonorCommand(const char* args, WorldSession* m_session)
 {
 	uint32 HonorAmount = args ? atol(args) : 1;
-	Player *plr = getSelectedChar(m_session, true);
+	Player* plr = getSelectedChar(m_session, true);
 	if(plr == 0)
 		return true;
 
@@ -304,8 +304,8 @@ bool ChatHandler::HandlePVPCreditCommand(const char* args, WorldSession* m_sessi
 		return true;
 	}
 
-	BlueSystemMessage(m_session, "Building packet with Rank %u, Points %u, GUID "I64FMT".", 
-		Rank, Points, Guid);
+	BlueSystemMessage(m_session, "Building packet with Rank %u, Points %u, GUID "I64FMT".",
+	                  Rank, Points, Guid);
 
 	WorldPacket data(SMSG_PVP_CREDIT, 12);
 	data << Points << Guid << Rank;

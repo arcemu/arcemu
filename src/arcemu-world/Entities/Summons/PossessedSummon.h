@@ -27,24 +27,25 @@
 //  They despawn when killed or dismissed
 //
 //////////////////////////////////////////////////////////////////////////////////
-class PossessedSummon : public Summon{
-public:
-	PossessedSummon( uint64 GUID );
+class PossessedSummon : public Summon
+{
+	public:
+		PossessedSummon(uint64 GUID);
 
 
-	~PossessedSummon();
+		~PossessedSummon();
 
 
-	void Load( CreatureProto *proto, Unit *owner, LocationVector &position, uint32 spellid, int32 summonslot );
+		void Load(CreatureProto* proto, Unit* owner, LocationVector & position, uint32 spellid, int32 summonslot);
 
 
-	void OnPushToWorld();
+		void OnPushToWorld();
 
 
-	void OnPreRemoveFromWorld();
+		void OnPreRemoveFromWorld();
 
 
-private:
+	private:
 };
 
 #endif

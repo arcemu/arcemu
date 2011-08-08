@@ -22,54 +22,54 @@
 //  GossipScript subclass for turning on/off Player experience gain
 class XpEliminatorGossip : public Arcemu::Gossip::Script
 {
-public:
-	XpEliminatorGossip()
-	{
-		GOSSIP_DISABLE_XP_GAIN = "I no longer wish to gain experience.";
-		GOSSIP_ENABLE_XP_GAIN = "I wish to start gaining experience again";
-
-		GOSSIP_BOXMSG_DISABLE_XP_GAIN = "Are you certain you wish to stop gaining experience?";
-		GOSSIP_BOXMSG_ENABLE_XP_GAIN = "Are you certain you wish to start gaining experience again?";
-	}
-
-	void OnHello(Object* pObject, Player* plr)
-	{
-		Arcemu::Gossip::Menu menu(pObject->GetGUID(), 14736);
-		if( plr->CanGainXp() )
-			menu.AddItem( Arcemu::Gossip::ICON_CHAT, GOSSIP_DISABLE_XP_GAIN, 1, 100000, GOSSIP_BOXMSG_DISABLE_XP_GAIN);
-		else
-			menu.AddItem( Arcemu::Gossip::ICON_CHAT, GOSSIP_ENABLE_XP_GAIN, 1, 100000, GOSSIP_BOXMSG_ENABLE_XP_GAIN);
-
-		menu.Send(plr);
-    }
-
-	void OnSelectOption(Object* pObject, Player* plr, uint32 Id, const char * Code)
-	{
-		// turning xp gains on/off costs 10g each time
-		if( plr->HasGold( 100000 ) )
+	public:
+		XpEliminatorGossip()
 		{
-			plr->ModGold( -100000 );
-			plr->ToggleXpGain();
-		}
-		Arcemu::Gossip::Menu::Complete(plr);
-    }
+			GOSSIP_DISABLE_XP_GAIN = "I no longer wish to gain experience.";
+			GOSSIP_ENABLE_XP_GAIN = "I wish to start gaining experience again";
 
-	void Destroy() { delete this; }
-	
-private:
-	const char *GOSSIP_DISABLE_XP_GAIN;
-	const char *GOSSIP_ENABLE_XP_GAIN;
-	
-	const char *GOSSIP_BOXMSG_DISABLE_XP_GAIN;
-	const char *GOSSIP_BOXMSG_ENABLE_XP_GAIN;
+			GOSSIP_BOXMSG_DISABLE_XP_GAIN = "Are you certain you wish to stop gaining experience?";
+			GOSSIP_BOXMSG_ENABLE_XP_GAIN = "Are you certain you wish to start gaining experience again?";
+		}
+
+		void OnHello(Object* pObject, Player* plr)
+		{
+			Arcemu::Gossip::Menu menu(pObject->GetGUID(), 14736);
+			if(plr->CanGainXp())
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, GOSSIP_DISABLE_XP_GAIN, 1, 100000, GOSSIP_BOXMSG_DISABLE_XP_GAIN);
+			else
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, GOSSIP_ENABLE_XP_GAIN, 1, 100000, GOSSIP_BOXMSG_ENABLE_XP_GAIN);
+
+			menu.Send(plr);
+		}
+
+		void OnSelectOption(Object* pObject, Player* plr, uint32 Id, const char* Code)
+		{
+			// turning xp gains on/off costs 10g each time
+			if(plr->HasGold(100000))
+			{
+				plr->ModGold(-100000);
+				plr->ToggleXpGain();
+			}
+			Arcemu::Gossip::Menu::Complete(plr);
+		}
+
+		void Destroy() { delete this; }
+
+	private:
+		const char* GOSSIP_DISABLE_XP_GAIN;
+		const char* GOSSIP_ENABLE_XP_GAIN;
+
+		const char* GOSSIP_BOXMSG_DISABLE_XP_GAIN;
+		const char* GOSSIP_BOXMSG_ENABLE_XP_GAIN;
 
 };
 
-void SetupXpEliminatorGossip(ScriptMgr * mgr)
+void SetupXpEliminatorGossip(ScriptMgr* mgr)
 {
 
-	Arcemu::Gossip::Script *xegs = new XpEliminatorGossip();
+	Arcemu::Gossip::Script* xegs = new XpEliminatorGossip();
 
-	mgr->register_creature_gossip( 35364, xegs );  // Slahtzt the Horde NPC
-	mgr->register_creature_gossip( 35365, xegs );  // Besten the Alliance NPC
+	mgr->register_creature_gossip(35364, xegs);    // Slahtzt the Horde NPC
+	mgr->register_creature_gossip(35365, xegs);    // Besten the Alliance NPC
 }

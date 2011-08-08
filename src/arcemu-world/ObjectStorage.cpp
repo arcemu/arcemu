@@ -22,30 +22,30 @@
 
 /** Table formats converted to strings
  */
-const char * gItemPrototypeFormat						= "uuuusuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuffuffuuuuuuuuuufuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuusuuuuuuuuuuuuuuuuuuuuuuuuuuuuu";
-const char * gItemNameFormat							= "usu";
-const char * gCreatureNameFormat						= "usssuuuuuuuuuuffcuuuuuuu";
-const char * gGameObjectNameFormat						= "uuussssuuuuuuuuuuuuuuuuuuuuuuuufuuuuuu";
-const char * gCreatureProtoFormat						= "uuuuuuufuuuffuuffuuuuuuuuffsuuufffuuuuuuuuuuu";
-const char * gDisplayBoundingFormat						= "ufffffff";
-const char * gVendorRestrictionEntryFormat				= "uuuuuuuu";
-const char * gAreaTriggerFormat							= "ucuusffffuu";
-const char * gItemPageFormat							= "usu";
-const char * gNpcTextFormat								= "ufssuuuuuuufssuuuuuuufssuuuuuuufssuuuuuuufssuuuuuuufssuuuuuuufssuuuuuuufssuuuuuuu";
-const char * gQuestFormat								= "uuuuuuuuuuuuuuuuuuussssssssssuuuuuuuuuuuuiiiiuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuiiiiiiuiuuuuuuuuuuuusuuuusuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu";
+const char* gItemPrototypeFormat						= "uuuusuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuffuffuuuuuuuuuufuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuusuuuuuuuuuuuuuuuuuuuuuuuuuuuuu";
+const char* gItemNameFormat							= "usu";
+const char* gCreatureNameFormat						= "usssuuuuuuuuuuffcuuuuuuu";
+const char* gGameObjectNameFormat						= "uuussssuuuuuuuuuuuuuuuuuuuuuuuufuuuuuu";
+const char* gCreatureProtoFormat						= "uuuuuuufuuuffuuffuuuuuuuuffsuuufffuuuuuuuuuuu";
+const char* gDisplayBoundingFormat						= "ufffffff";
+const char* gVendorRestrictionEntryFormat				= "uuuuuuuu";
+const char* gAreaTriggerFormat							= "ucuusffffuu";
+const char* gItemPageFormat							= "usu";
+const char* gNpcTextFormat								= "ufssuuuuuuufssuuuuuuufssuuuuuuufssuuuuuuufssuuuuuuufssuuuuuuufssuuuuuuufssuuuuuuu";
+const char* gQuestFormat								= "uuuuuuuuuuuuuuuuuuussssssssssuuuuuuuuuuuuiiiiuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuiiiiiiuiuuuuuuuuuuuusuuuusuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu";
 //const char * gSpellExtraFormat							= "uuuu";
-const char * gGraveyardFormat							= "uffffuuuux";
-const char * gTeleportCoordFormat						= "uxufffx";
-const char * gPvPAreaFormat								= "ush";
-const char * gFishingFormat								= "uuu";
-const char * gWorldMapInfoFormat						= "uuuuuufffusuuuuuuufu";
-const char * gZoneGuardsFormat							= "uuu";
-const char * gUnitModelSizeFormat						= "ufu";
-const char * gWorldStringTableFormat					= "us"; // p2wow added [for worldserver common message storage]
-const char * gWorldBroadCastFormat						= "usu";// announce message
-const char * gBattleMasterFormat						= "uu";
-const char * gSpellClickSpellsFormat					= "uu";
-const char * gTotemDisplayIDsFormat                     = "uuuu";
+const char* gGraveyardFormat							= "uffffuuuux";
+const char* gTeleportCoordFormat						= "uxufffx";
+const char* gPvPAreaFormat								= "ush";
+const char* gFishingFormat								= "uuu";
+const char* gWorldMapInfoFormat						= "uuuuuufffusuuuuuuufu";
+const char* gZoneGuardsFormat							= "uuu";
+const char* gUnitModelSizeFormat						= "ufu";
+const char* gWorldStringTableFormat					= "us";  // p2wow added [for worldserver common message storage]
+const char* gWorldBroadCastFormat						= "usu"; // announce message
+const char* gBattleMasterFormat						= "uu";
+const char* gSpellClickSpellsFormat					= "uu";
+const char* gTotemDisplayIDsFormat                     = "uuuu";
 
 /** SQLStorage symbols
  */
@@ -78,20 +78,20 @@ SERVER_DECL set<string> ExtraMapGameObjectTables;
 
 void ObjectMgr::LoadProfessionDiscoveries()
 {
-	QueryResult * result = WorldDatabase.Query( "SELECT * from professiondiscoveries" );
-	if ( result != NULL )
+	QueryResult* result = WorldDatabase.Query("SELECT * from professiondiscoveries");
+	if(result != NULL)
 	{
 		do
 		{
-			Field *f = result->Fetch();
-			ProfessionDiscovery * pf = new ProfessionDiscovery;
+			Field* f = result->Fetch();
+			ProfessionDiscovery* pf = new ProfessionDiscovery;
 			pf->SpellId = f[0].GetUInt32();
 			pf->SpellToDiscover = f[1].GetUInt32();
 			pf->SkillValue = f[2].GetUInt32();
 			pf->Chance = f[3].GetFloat();
-			ProfessionDiscoveryTable.insert( pf );
+			ProfessionDiscoveryTable.insert(pf);
 		}
-		while( result->NextRow() );
+		while(result->NextRow());
 		delete result;
 	}
 }
@@ -100,7 +100,7 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 {
 	{
 		StorageContainerIterator<CreatureProto> * itr = CreatureProtoStorage.MakeIterator();
-		CreatureProto * cn;
+		CreatureProto* cn;
 		while(!itr->AtEnd())
 		{
 			cn = itr->Get();
@@ -112,7 +112,7 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 				{
 					uint32 id = atol((*it).c_str());
 					if(id)
-						cn->start_auras.insert( id );
+						cn->start_auras.insert(id);
 				}
 			}
 
@@ -120,7 +120,7 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 				cn->MinHealth = 1;
 			if(!cn->MaxHealth)
 				cn->MaxHealth = 1;
-			if (cn->AttackType > SCHOOL_ARCANE)
+			if(cn->AttackType > SCHOOL_ARCANE)
 				cn->AttackType = SCHOOL_NORMAL;
 
 			cn->m_canFlee = cn->m_canRangedAttack = cn->m_canCallForHelp = false;
@@ -138,14 +138,14 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 
 	{
 		StorageContainerIterator<CreatureInfo> * itr = CreatureNameStorage.MakeIterator();
-		CreatureInfo * ci;
+		CreatureInfo* ci;
 		while(!itr->AtEnd())
 		{
 			ci = itr->Get();
 
 			ci->lowercase_name = string(ci->Name);
 			for(uint32 j = 0; j < ci->lowercase_name.length(); ++j)
-				ci->lowercase_name[j] = static_cast<char>( tolower(ci->lowercase_name[j]) ); // Darvaleo 2008/08/15 - Copied lowercase conversion logic from ItemPrototype task
+				ci->lowercase_name[j] = static_cast<char>(tolower(ci->lowercase_name[j]));   // Darvaleo 2008/08/15 - Copied lowercase conversion logic from ItemPrototype task
 
 			ci->gossip_script = sScriptMgr.GetDefaultGossipScript();
 
@@ -161,22 +161,22 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 	// Load AI Agents
 	if(Config.MainConfig.GetBoolDefault("Server", "LoadAIAgents", true))
 	{
-		QueryResult * result = WorldDatabase.Query( "SELECT * FROM ai_agents" );
-		CreatureProto * cn;
+		QueryResult* result = WorldDatabase.Query("SELECT * FROM ai_agents");
+		CreatureProto* cn;
 
-		if( result != NULL )
+		if(result != NULL)
 		{
-			AI_Spell *sp;
-			SpellEntry * spe;
+			AI_Spell* sp;
+			SpellEntry* spe;
 			uint32 entry;
 
 			do
 			{
-				Field *fields = result->Fetch();
+				Field* fields = result->Fetch();
 				entry = fields[0].GetUInt32();
 				cn = CreatureProtoStorage.LookupEntry(entry);
 				spe = dbcSpell.LookupEntryForced(fields[6].GetUInt32());
-				if( spe == NULL )
+				if(spe == NULL)
 				{
 					Log.Error("AIAgent", "For %u has nonexistent spell %u.", fields[0].GetUInt32(), fields[6].GetUInt32());
 					continue;
@@ -191,18 +191,18 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 				sp->procChance = fields[4].GetUInt32();
 				sp->procCount = fields[5].GetUInt32();
 				sp->spell = spe;
-				sp->spellType = static_cast<uint8>( fields[7].GetUInt32() );
+				sp->spellType = static_cast<uint8>(fields[7].GetUInt32());
 
 				int32  targettype = fields[8].GetInt32();
-				if( targettype == -1 )
-					sp->spelltargetType = static_cast<uint8>( GetAiTargetType( spe ) );
-				else sp->spelltargetType = static_cast<uint8>( targettype );
+				if(targettype == -1)
+					sp->spelltargetType = static_cast<uint8>(GetAiTargetType(spe));
+				else sp->spelltargetType = static_cast<uint8>(targettype);
 
 				sp->cooldown = fields[9].GetInt32();
 				sp->floatMisc1 = fields[10].GetFloat();
-				sp->autocast_type=(uint32)-1;
-				sp->cooldowntime=getMSTime();
-				sp->procCounter= 0;
+				sp->autocast_type = (uint32) - 1;
+				sp->cooldowntime = getMSTime();
+				sp->procCounter = 0;
 				sp->Misc2 = fields[11].GetUInt32();
 				if(sp->agent == AGENT_SPELL)
 				{
@@ -213,9 +213,9 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 						sp = NULL;
 						continue;
 					}
-					
+
 					if(sp->spell->Effect[0] == SPELL_EFFECT_LEARN_SPELL || sp->spell->Effect[1] == SPELL_EFFECT_LEARN_SPELL ||
-						sp->spell->Effect[2] == SPELL_EFFECT_LEARN_SPELL)
+					        sp->spell->Effect[2] == SPELL_EFFECT_LEARN_SPELL)
 					{
 						LOG_DEBUG("Teaching spell %u in ai_agent for %u", (unsigned int)fields[6].GetUInt32(), (unsigned int)sp->entryId);
 						delete sp;
@@ -227,21 +227,21 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 					sp->maxrange = GetMaxRange(dbcSpellRange.LookupEntry(sp->spell->rangeIndex));
 
 					//omg the poor darling has no clue about making ai_agents
-					if(sp->cooldown == (uint32)-1)
+					if(sp->cooldown == (uint32) - 1)
 					{
 						//now this will not be exact cooldown but maybe a bigger one to not make him spam spells to often
 						int cooldown;
-						SpellDuration *sd=dbcSpellDuration.LookupEntry(sp->spell->DurationIndex);
-						int Dur= 0;
-						int Casttime= 0;//most of the time 0
-						int RecoveryTime=sp->spell->RecoveryTime;
+						SpellDuration* sd = dbcSpellDuration.LookupEntry(sp->spell->DurationIndex);
+						int Dur = 0;
+						int Casttime = 0; //most of the time 0
+						int RecoveryTime = sp->spell->RecoveryTime;
 						if(sp->spell->DurationIndex)
 							Dur =::GetDuration(sd);
-						Casttime=GetCastTime(dbcSpellCastTime.LookupEntry(sp->spell->CastingTimeIndex));
-						cooldown=Dur+Casttime+RecoveryTime;
-						if(cooldown<0)
-							sp->cooldown=2000;//huge value that should not loop while adding some timestamp to it
-						else sp->cooldown=cooldown;
+						Casttime = GetCastTime(dbcSpellCastTime.LookupEntry(sp->spell->CastingTimeIndex));
+						cooldown = Dur + Casttime + RecoveryTime;
+						if(cooldown < 0)
+							sp->cooldown = 2000; //huge value that should not loop while adding some timestamp to it
+						else sp->cooldown = cooldown;
 					}
 
 					/*
@@ -275,7 +275,7 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 				{
 					cn->m_canFlee = true;
 					if(sp->floatMisc1)
-						cn->m_canFlee = (sp->floatMisc1>0.0f ? true : false);
+						cn->m_canFlee = (sp->floatMisc1 > 0.0f ? true : false);
 					else
 						cn->m_fleeHealth = 0.2f;
 
@@ -299,7 +299,8 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 				{
 					cn->spells.push_back(sp);
 				}
-			} while( result->NextRow() );
+			}
+			while(result->NextRow());
 
 			delete result;
 		}
@@ -308,21 +309,21 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 
 void ObjectMgr::LoadExtraItemStuff()
 {
-	map<uint32,uint32> foodItems;
-	QueryResult * result = WorldDatabase.Query("SELECT * FROM itempetfood ORDER BY entry");
+	map<uint32, uint32> foodItems;
+	QueryResult* result = WorldDatabase.Query("SELECT * FROM itempetfood ORDER BY entry");
 	if(result)
 	{
-		Field *f = result->Fetch();
+		Field* f = result->Fetch();
 		do
-		{		
-			foodItems.insert( make_pair( f[0].GetUInt32(), f[1].GetUInt32() ) );
+		{
+			foodItems.insert(make_pair(f[0].GetUInt32(), f[1].GetUInt32()));
 		}
 		while(result->NextRow());
 		delete result;
 	}
 
 	StorageContainerIterator<ItemPrototype> * itr = ItemPrototypeStorage.MakeIterator();
-	ItemPrototype * pItemPrototype;
+	ItemPrototype* pItemPrototype;
 	while(!itr->AtEnd())
 	{
 		pItemPrototype = itr->Get();
@@ -332,9 +333,11 @@ void ObjectMgr::LoadExtraItemStuff()
 			std::list<ItemPrototype*>* l;
 			if(itr2 == mItemSets.end())
 			{
-				l = new std::list<ItemPrototype*>;				
-				mItemSets.insert( ItemSetContentMap::value_type( pItemPrototype->ItemSet, l) );
-			} else {
+				l = new std::list<ItemPrototype*>;
+				mItemSets.insert(ItemSetContentMap::value_type(pItemPrototype->ItemSet, l));
+			}
+			else
+			{
 				l = itr2->second;
 			}
 			l->push_back(pItemPrototype);
@@ -344,137 +347,137 @@ void ObjectMgr::LoadExtraItemStuff()
 		// lowercase name, used for searches
 		pItemPrototype->lowercase_name = pItemPrototype->Name1;
 		for(uint32 j = 0; j < pItemPrototype->lowercase_name.length(); ++j)
-			pItemPrototype->lowercase_name[j] = static_cast<char>( tolower(pItemPrototype->lowercase_name[j]) );
+			pItemPrototype->lowercase_name[j] = static_cast<char>(tolower(pItemPrototype->lowercase_name[j]));
 
 		//load item_pet_food_type from extra table
 		uint32 ft = 0;
-		map<uint32,uint32>::iterator iter = foodItems.find(pItemPrototype->ItemId);
+		map<uint32, uint32>::iterator iter = foodItems.find(pItemPrototype->ItemId);
 		if(iter != foodItems.end())
 			ft = iter->second;
 		pItemPrototype->FoodType = ft ;
 
 		// forced pet entries
-		switch( pItemPrototype->ItemId )
+		switch(pItemPrototype->ItemId)
 		{
-		case 28071: //Grimoire of Anguish (Rank 1)
-		case 28072: //Grimoire of Anguish (Rank 2)
-		case 28073: //Grimoire of Anguish (Rank 3)
-		case 25469: //Grimoire of Avoidance
-		case 23734: //Grimoire of Cleave (Rank 1)
-		case 23745: //Grimoire of Cleave (Rank 2)
-		case 23755: //Grimoire of Cleave (Rank 3)
-		case 25900: //Grimoire of Demonic Frenzy
-		case 23711: //Grimoire of Intercept (Rank 1)
-		case 23730: //Grimoire of Intercept (Rank 2)
-		case 23731: //Grimoire of Intercept (Rank 3)
-			// Felguard
-			pItemPrototype->ForcedPetId = 17252;
-			break;
+			case 28071: //Grimoire of Anguish (Rank 1)
+			case 28072: //Grimoire of Anguish (Rank 2)
+			case 28073: //Grimoire of Anguish (Rank 3)
+			case 25469: //Grimoire of Avoidance
+			case 23734: //Grimoire of Cleave (Rank 1)
+			case 23745: //Grimoire of Cleave (Rank 2)
+			case 23755: //Grimoire of Cleave (Rank 3)
+			case 25900: //Grimoire of Demonic Frenzy
+			case 23711: //Grimoire of Intercept (Rank 1)
+			case 23730: //Grimoire of Intercept (Rank 2)
+			case 23731: //Grimoire of Intercept (Rank 3)
+				// Felguard
+				pItemPrototype->ForcedPetId = 17252;
+				break;
 
-		case 16321: //Grimoire of Blood Pact (Rank 1)
-		case 16322: //Grimoire of Blood Pact (Rank 2)
-		case 16323: //Grimoire of Blood Pact (Rank 3)
-		case 16324: //Grimoire of Blood Pact (Rank 4)
-		case 16325: //Grimoire of Blood Pact (Rank 5)
-		case 22180: //Grimoire of Blood Pact (Rank 6)
-		case 16326: //Grimoire of Fire Shield (Rank 1)
-		case 16327: //Grimoire of Fire Shield (Rank 2)
-		case 16328: //Grimoire of Fire Shield (Rank 3)
-		case 16329: //Grimoire of Fire Shield (Rank 4)
-		case 16330: //Grimoire of Fire Shield (Rank 5)
-		case 22181: //Grimoire of Fire Shield (Rank 6)
-		case 16302: //Grimoire of Firebolt (Rank 2)
-		case 16316: //Grimoire of Firebolt (Rank 3)
-		case 16317: //Grimoire of Firebolt (Rank 4)
-		case 16318: //Grimoire of Firebolt (Rank 5)
-		case 16319: //Grimoire of Firebolt (Rank 6)
-		case 16320: //Grimoire of Firebolt (Rank 7)
-		case 22179: //Grimoire of Firebolt (Rank 8)
-		case 16331: //Grimoire of Phase Shift
-			// Imp
-			pItemPrototype->ForcedPetId = 416;
-			break;
+			case 16321: //Grimoire of Blood Pact (Rank 1)
+			case 16322: //Grimoire of Blood Pact (Rank 2)
+			case 16323: //Grimoire of Blood Pact (Rank 3)
+			case 16324: //Grimoire of Blood Pact (Rank 4)
+			case 16325: //Grimoire of Blood Pact (Rank 5)
+			case 22180: //Grimoire of Blood Pact (Rank 6)
+			case 16326: //Grimoire of Fire Shield (Rank 1)
+			case 16327: //Grimoire of Fire Shield (Rank 2)
+			case 16328: //Grimoire of Fire Shield (Rank 3)
+			case 16329: //Grimoire of Fire Shield (Rank 4)
+			case 16330: //Grimoire of Fire Shield (Rank 5)
+			case 22181: //Grimoire of Fire Shield (Rank 6)
+			case 16302: //Grimoire of Firebolt (Rank 2)
+			case 16316: //Grimoire of Firebolt (Rank 3)
+			case 16317: //Grimoire of Firebolt (Rank 4)
+			case 16318: //Grimoire of Firebolt (Rank 5)
+			case 16319: //Grimoire of Firebolt (Rank 6)
+			case 16320: //Grimoire of Firebolt (Rank 7)
+			case 22179: //Grimoire of Firebolt (Rank 8)
+			case 16331: //Grimoire of Phase Shift
+				// Imp
+				pItemPrototype->ForcedPetId = 416;
+				break;
 
-		case 16357: //Grimoire of Consume Shadows (Rank 1)
-		case 16358: //Grimoire of Consume Shadows (Rank 2)
-		case 16359: //Grimoire of Consume Shadows (Rank 3)
-		case 16360: //Grimoire of Consume Shadows (Rank 4)
-		case 16361: //Grimoire of Consume Shadows (Rank 5)
-		case 16362: //Grimoire of Consume Shadows (Rank 6)
-		case 22184: //Grimoire of Consume Shadows (Rank 7)
-		case 16351: //Grimoire of Sacrifice (Rank 1)
-		case 16352: //Grimoire of Sacrifice (Rank 2)
-		case 16353: //Grimoire of Sacrifice (Rank 3)
-		case 16354: //Grimoire of Sacrifice (Rank 4)
-		case 16355: //Grimoire of Sacrifice (Rank 5)
-		case 16356: //Grimoire of Sacrifice (Rank 6)
-		case 22185: //Grimoire of Sacrifice (Rank 7)
-		case 16363: //Grimoire of Suffering (Rank 1)
-		case 16364: //Grimoire of Suffering (Rank 2)
-		case 16365: //Grimoire of Suffering (Rank 3)
-		case 16366: //Grimoire of Suffering (Rank 4)
-		case 22183: //Grimoire of Suffering (Rank 5)
-		case 28068: //Grimoire of Suffering (Rank 6)
-		case 16346: //Grimoire of Torment (Rank 2)
-		case 16347: //Grimoire of Torment (Rank 3)
-		case 16348: //Grimoire of Torment (Rank 4)
-		case 16349: //Grimoire of Torment (Rank 5)
-		case 16350: //Grimoire of Torment (Rank 6)
-		case 22182: //Grimoire of Torment (Rank 7)
-			// Voidwalker
-			pItemPrototype->ForcedPetId = 1860;
-			break;
+			case 16357: //Grimoire of Consume Shadows (Rank 1)
+			case 16358: //Grimoire of Consume Shadows (Rank 2)
+			case 16359: //Grimoire of Consume Shadows (Rank 3)
+			case 16360: //Grimoire of Consume Shadows (Rank 4)
+			case 16361: //Grimoire of Consume Shadows (Rank 5)
+			case 16362: //Grimoire of Consume Shadows (Rank 6)
+			case 22184: //Grimoire of Consume Shadows (Rank 7)
+			case 16351: //Grimoire of Sacrifice (Rank 1)
+			case 16352: //Grimoire of Sacrifice (Rank 2)
+			case 16353: //Grimoire of Sacrifice (Rank 3)
+			case 16354: //Grimoire of Sacrifice (Rank 4)
+			case 16355: //Grimoire of Sacrifice (Rank 5)
+			case 16356: //Grimoire of Sacrifice (Rank 6)
+			case 22185: //Grimoire of Sacrifice (Rank 7)
+			case 16363: //Grimoire of Suffering (Rank 1)
+			case 16364: //Grimoire of Suffering (Rank 2)
+			case 16365: //Grimoire of Suffering (Rank 3)
+			case 16366: //Grimoire of Suffering (Rank 4)
+			case 22183: //Grimoire of Suffering (Rank 5)
+			case 28068: //Grimoire of Suffering (Rank 6)
+			case 16346: //Grimoire of Torment (Rank 2)
+			case 16347: //Grimoire of Torment (Rank 3)
+			case 16348: //Grimoire of Torment (Rank 4)
+			case 16349: //Grimoire of Torment (Rank 5)
+			case 16350: //Grimoire of Torment (Rank 6)
+			case 22182: //Grimoire of Torment (Rank 7)
+				// Voidwalker
+				pItemPrototype->ForcedPetId = 1860;
+				break;
 
-		case 16368: //Grimoire of Lash of Pain (Rank 2)
-		case 16371: //Grimoire of Lash of Pain (Rank 3)
-		case 16372: //Grimoire of Lash of Pain (Rank 4)
-		case 16373: //Grimoire of Lash of Pain (Rank 5)
-		case 16374: //Grimoire of Lash of Pain (Rank 6)
-		case 22186: //Grimoire of Lash of Pain (Rank 7)
-		case 16380: //Grimoire of Lesser Invisibility
-		case 16379: //Grimoire of Seduction
-		case 16375: //Grimoire of Soothing Kiss (Rank 1)
-		case 16376: //Grimoire of Soothing Kiss (Rank 2)
-		case 16377: //Grimoire of Soothing Kiss (Rank 3)
-		case 16378: //Grimoire of Soothing Kiss (Rank 4)
-		case 22187: //Grimoire of Soothing Kiss (Rank 5)
-			// Succubus
-			pItemPrototype->ForcedPetId = 1863;
-			break;
+			case 16368: //Grimoire of Lash of Pain (Rank 2)
+			case 16371: //Grimoire of Lash of Pain (Rank 3)
+			case 16372: //Grimoire of Lash of Pain (Rank 4)
+			case 16373: //Grimoire of Lash of Pain (Rank 5)
+			case 16374: //Grimoire of Lash of Pain (Rank 6)
+			case 22186: //Grimoire of Lash of Pain (Rank 7)
+			case 16380: //Grimoire of Lesser Invisibility
+			case 16379: //Grimoire of Seduction
+			case 16375: //Grimoire of Soothing Kiss (Rank 1)
+			case 16376: //Grimoire of Soothing Kiss (Rank 2)
+			case 16377: //Grimoire of Soothing Kiss (Rank 3)
+			case 16378: //Grimoire of Soothing Kiss (Rank 4)
+			case 22187: //Grimoire of Soothing Kiss (Rank 5)
+				// Succubus
+				pItemPrototype->ForcedPetId = 1863;
+				break;
 
-		case 16381: //Grimoire of Devour Magic (Rank 2)
-		case 16382: //Grimoire of Devour Magic (Rank 3)
-		case 16383: //Grimoire of Devour Magic (Rank 4)
-		case 22188: //Grimoire of Devour Magic (Rank 5)
-		case 22189: //Grimoire of Devour Magic (Rank 6)
-		case 16390: //Grimoire of Paranoia
-		case 16388: //Grimoire of Spell Lock (Rank 1)
-		case 16389: //Grimoire of Spell Lock (Rank 2)
-		case 16384: //Grimoire of Tainted Blood (Rank 1)
-		case 16385: //Grimoire of Tainted Blood (Rank 2)
-		case 16386: //Grimoire of Tainted Blood (Rank 3)
-		case 16387: //Grimoire of Tainted Blood (Rank 4)
-		case 22190: //Grimoire of Tainted Blood (Rank 5)
-			//Felhunter
-			pItemPrototype->ForcedPetId = 417;
-			break;
+			case 16381: //Grimoire of Devour Magic (Rank 2)
+			case 16382: //Grimoire of Devour Magic (Rank 3)
+			case 16383: //Grimoire of Devour Magic (Rank 4)
+			case 22188: //Grimoire of Devour Magic (Rank 5)
+			case 22189: //Grimoire of Devour Magic (Rank 6)
+			case 16390: //Grimoire of Paranoia
+			case 16388: //Grimoire of Spell Lock (Rank 1)
+			case 16389: //Grimoire of Spell Lock (Rank 2)
+			case 16384: //Grimoire of Tainted Blood (Rank 1)
+			case 16385: //Grimoire of Tainted Blood (Rank 2)
+			case 16386: //Grimoire of Tainted Blood (Rank 3)
+			case 16387: //Grimoire of Tainted Blood (Rank 4)
+			case 22190: //Grimoire of Tainted Blood (Rank 5)
+				//Felhunter
+				pItemPrototype->ForcedPetId = 417;
+				break;
 
-		case 21283:
-		case 3144:
-		case 21282:
-		case 9214:
-		case 21281:
-		case 22891:
-			// Player
-			pItemPrototype->ForcedPetId = 0;
-			break;
+			case 21283:
+			case 3144:
+			case 21282:
+			case 9214:
+			case 21281:
+			case 22891:
+				// Player
+				pItemPrototype->ForcedPetId = 0;
+				break;
 
-		default:
-			pItemPrototype->ForcedPetId = -1;
-			break;
+			default:
+				pItemPrototype->ForcedPetId = -1;
+				break;
 		}
 
-        if(!itr->Inc())
+		if(!itr->Inc())
 			break;
 	}
 
@@ -485,13 +488,13 @@ void ObjectMgr::LoadExtraItemStuff()
 void ObjectMgr::LoadExtraGameObjectStuff()
 {
 	StorageContainerIterator<GameObjectInfo> * itr = GameObjectNameStorage.MakeIterator();
-	GameObjectInfo * goi;
+	GameObjectInfo* goi;
 	while(!itr->AtEnd())
 	{
 		goi = itr->Get();
 
-		if( !itr->Inc() )
-		break;
+		if(!itr->Inc())
+			break;
 	}
 	itr->Destruct();
 }
@@ -522,25 +525,25 @@ void Storage_FillTaskList(TaskList & tl)
 	make_task(WorldStringTableStorage, WorldStringTable, HashMapStorageContainer, "worldstring_tables", gWorldStringTableFormat);
 	make_task(WorldBroadCastStorage, WorldBroadCast, HashMapStorageContainer, "worldbroadcast", gWorldBroadCastFormat);
 	make_task(BGMasterStorage, BGMaster, HashMapStorageContainer, "battlemasters", gBattleMasterFormat);
-	make_task( SpellClickSpellStorage, SpellClickSpell, HashMapStorageContainer, "SpellClickSpells", gSpellClickSpellsFormat );
-	make_task( TotemDisplayIdStorage, TotemDisplayIdEntry, HashMapStorageContainer, "totemdisplayids", gTotemDisplayIDsFormat );
+	make_task(SpellClickSpellStorage, SpellClickSpell, HashMapStorageContainer, "SpellClickSpells", gSpellClickSpellsFormat);
+	make_task(TotemDisplayIdStorage, TotemDisplayIdEntry, HashMapStorageContainer, "totemdisplayids", gTotemDisplayIDsFormat);
 }
 
 void Storage_Cleanup()
 {
 	{
 		StorageContainerIterator<CreatureProto> * itr = CreatureProtoStorage.MakeIterator();
-		CreatureProto * p;
+		CreatureProto* p;
 		while(!itr->AtEnd())
 		{
 			p = itr->Get();
-			if (p->aura_string)
+			if(p->aura_string)
 			{
 				free(p->aura_string);
 				p->aura_string = NULL;
 			}
 			for(list<AI_Spell*>::iterator it = p->spells.begin(); it != p->spells.end(); ++it)
-				delete (*it);
+				delete(*it);
 			p->spells.clear();
 			p->start_auras.clear();
 			if(!itr->Inc())
@@ -571,9 +574,9 @@ void Storage_Cleanup()
 	TotemDisplayIdStorage.Cleanup();
 }
 
-vector<pair<string,string> > additionalTables;
+vector<pair<string, string> > additionalTables;
 
-bool LoadAdditionalTable(const char * TableName, const char * SecondName, bool firstLoad = false)
+bool LoadAdditionalTable(const char* TableName, const char* SecondName, bool firstLoad = false)
 {
 	if(!stricmp(TableName, "creature_spawns"))
 	{
@@ -623,7 +626,7 @@ bool LoadAdditionalTable(const char * TableName, const char * SecondName, bool f
 	return true;
 }
 
-bool Storage_ReloadTable(const char * TableName)
+bool Storage_ReloadTable(const char* TableName)
 {
 	// bur: mah god this is ugly :P
 	/*if(!stricmp(TableName, "items"))					// Items
@@ -666,13 +669,13 @@ bool Storage_ReloadTable(const char * TableName)
 	}
 	else
 		return false;
-	
+
 	uint32 len = (uint32)strlen(TableName);
 	uint32 len2;
-	for(vector<pair<string,string> >::iterator itr = additionalTables.begin(); itr != additionalTables.end(); ++itr)
+	for(vector<pair<string, string> >::iterator itr = additionalTables.begin(); itr != additionalTables.end(); ++itr)
 	{
-		len2=(uint32)itr->second.length();
-		if(!strnicmp(TableName, itr->second.c_str(), min(len,len2)))
+		len2 = (uint32)itr->second.length();
+		if(!strnicmp(TableName, itr->second.c_str(), min(len, len2)))
 			LoadAdditionalTable(TableName, itr->first.c_str());
 	}
 	return true;
@@ -698,8 +701,9 @@ void Storage_LoadAdditionalTables()
 		if(sscanf((*itr).c_str(), "%s %s", s1, s2) != 2)
 			continue;
 
-		if(LoadAdditionalTable(s2, s1, true)) {
-			pair<string,string> tmppair;
+		if(LoadAdditionalTable(s2, s1, true))
+		{
+			pair<string, string> tmppair;
 			tmppair.first = string(s1);
 			tmppair.second = string(s2);
 			additionalTables.push_back(tmppair);
@@ -707,54 +711,56 @@ void Storage_LoadAdditionalTables()
 	}
 }
 
-void ObjectMgr::StoreBroadCastGroupKey() 
+void ObjectMgr::StoreBroadCastGroupKey()
 // cebernic: plz feedback
 {
 	// init
-	if ( !sWorld.BCSystemEnable ) {
-		Log.Notice("ObjectMgr","BCSystem Disabled.");
+	if(!sWorld.BCSystemEnable)
+	{
+		Log.Notice("ObjectMgr", "BCSystem Disabled.");
 		return;
 	}
 	// ----------------
 
 	vector<string> keyGroup;
-	QueryResult * result = WorldDatabase.Query( "SELECT DISTINCT percent FROM `worldbroadcast` ORDER BY percent DESC" );
+	QueryResult* result = WorldDatabase.Query("SELECT DISTINCT percent FROM `worldbroadcast` ORDER BY percent DESC");
 	// result->GetRowCount();
-	if ( result != NULL )
+	if(result != NULL)
 	{
 		do
 		{
-			Field *f = result->Fetch();
-			keyGroup.push_back( string(f[0].GetString()) );
+			Field* f = result->Fetch();
+			keyGroup.push_back(string(f[0].GetString()));
 		}
-		while( result->NextRow() );
+		while(result->NextRow());
 		delete result;
 		result = NULL;
 	}
-	
-	if ( keyGroup.empty() ) {
+
+	if(keyGroup.empty())
+	{
 		Log.Notice("ObjectMgr", "BCSystem error! worldbroadcast empty? fill it first!");
 		sWorld.BCSystemEnable = false;
 		return;
 	}
 	else
-	Log.Notice("ObjectMgr","BCSystem Enabled with %u KeyGroups.",keyGroup.size());
+		Log.Notice("ObjectMgr", "BCSystem Enabled with %u KeyGroups.", keyGroup.size());
 
 	for(vector<string>::iterator itr = keyGroup.begin(); itr != keyGroup.end(); ++itr)
 	{
 		string curKey = (*itr);
 		char szSQL[512];
-		memset(szSQL,0,sizeof(szSQL));
-		sprintf(szSQL,"SELECT entry,percent FROM `worldbroadcast` WHERE percent='%s' ",curKey.c_str());
-		result = WorldDatabase.Query( szSQL );
-		if ( result != NULL )
+		memset(szSQL, 0, sizeof(szSQL));
+		sprintf(szSQL, "SELECT entry,percent FROM `worldbroadcast` WHERE percent='%s' ", curKey.c_str());
+		result = WorldDatabase.Query(szSQL);
+		if(result != NULL)
 		{
 			do
 			{
-				Field *f = result->Fetch();
-				m_BCEntryStorage.insert(pair<uint32,uint32>( uint32(atoi(curKey.c_str())), f[0].GetUInt32()  ));
+				Field* f = result->Fetch();
+				m_BCEntryStorage.insert(pair<uint32, uint32>(uint32(atoi(curKey.c_str())), f[0].GetUInt32()));
 			}
-			while( result->NextRow() );
+			while(result->NextRow());
 			delete result;
 		}
 	}

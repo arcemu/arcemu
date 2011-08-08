@@ -24,11 +24,11 @@ void WorldSession::HandleConvertGroupToRaidOpcode(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_RETURN
 
-	// This is just soooo easy now   
-	Group *pGroup = _player->GetGroup();
+	// This is just soooo easy now
+	Group* pGroup = _player->GetGroup();
 	if(!pGroup) return;
 
-	if ( pGroup->GetLeader() != _player->m_playerInfo )   //access denied
+	if(pGroup->GetLeader() != _player->m_playerInfo)      //access denied
 	{
 		SendPartyCommandResult(_player, 0, "", ERR_PARTY_YOU_ARE_NOT_LEADER);
 		return;
@@ -48,7 +48,7 @@ void WorldSession::HandleGroupChangeSubGroup(WorldPacket & recv_data)
 	recv_data >> name;
 	recv_data >> subGroup;
 
-	PlayerInfo * inf = objmgr.GetPlayerInfoByName(name.c_str());
+	PlayerInfo* inf = objmgr.GetPlayerInfoByName(name.c_str());
 	if(inf == NULL || inf->m_Group == NULL || inf->m_Group != _player->m_playerInfo->m_Group)
 		return;
 
@@ -65,7 +65,7 @@ void WorldSession::HandleGroupAssistantLeader(WorldPacket & recv_data)
 	if(_player->GetGroup() == NULL)
 		return;
 
-	if ( _player->GetGroup()->GetLeader() != _player->m_playerInfo )   //access denied
+	if(_player->GetGroup()->GetLeader() != _player->m_playerInfo)      //access denied
 	{
 		SendPartyCommandResult(_player, 0, "", ERR_PARTY_YOU_ARE_NOT_LEADER);
 		return;
@@ -73,11 +73,11 @@ void WorldSession::HandleGroupAssistantLeader(WorldPacket & recv_data)
 
 	recv_data >> guid >> on;
 	if(on == 0)
-        _player->GetGroup()->SetAssistantLeader(NULL);
+		_player->GetGroup()->SetAssistantLeader(NULL);
 	else
 	{
-		PlayerInfo * np = objmgr.GetPlayerInfo((uint32)guid);
-		if(np== NULL)
+		PlayerInfo* np = objmgr.GetPlayerInfo((uint32)guid);
+		if(np == NULL)
 			_player->GetGroup()->SetAssistantLeader(NULL);
 		else
 		{
@@ -87,7 +87,7 @@ void WorldSession::HandleGroupAssistantLeader(WorldPacket & recv_data)
 	}
 }
 
-void WorldSession::HandleGroupPromote(WorldPacket& recv_data)
+void WorldSession::HandleGroupPromote(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_RETURN
 
@@ -97,7 +97,7 @@ void WorldSession::HandleGroupPromote(WorldPacket& recv_data)
 	if(_player->GetGroup() == NULL)
 		return;
 
-	if ( _player->GetGroup()->GetLeader() != _player->m_playerInfo )   //access denied
+	if(_player->GetGroup()->GetLeader() != _player->m_playerInfo)      //access denied
 	{
 		SendPartyCommandResult(_player, 0, "", ERR_PARTY_YOU_ARE_NOT_LEADER);
 		return;
@@ -111,15 +111,15 @@ void WorldSession::HandleGroupPromote(WorldPacket& recv_data)
 
 	if(promotetype == 0)
 		function_to_call = &Group::SetMainTank;
-	else if(promotetype==1)
+	else if(promotetype == 1)
 		function_to_call = &Group::SetMainAssist;
 
 	if(on == 0)
 		(_player->GetGroup()->*function_to_call)(NULL);
 	else
 	{
-		PlayerInfo * np = objmgr.GetPlayerInfo((uint32)guid);
-		if(np== NULL)
+		PlayerInfo* np = objmgr.GetPlayerInfo((uint32)guid);
+		if(np == NULL)
 			(_player->GetGroup()->*function_to_call)(NULL);
 		else
 		{
@@ -130,27 +130,27 @@ void WorldSession::HandleGroupPromote(WorldPacket& recv_data)
 }
 
 void WorldSession::HandleRequestRaidInfoOpcode(WorldPacket & recv_data)
-{  
+{
 	CHECK_INWORLD_RETURN
 
-	//		  SMSG_RAID_INSTANCE_INFO			 = 716,  //(0x2CC)	
+	//		  SMSG_RAID_INSTANCE_INFO			 = 716,  //(0x2CC)
 	//sInstanceSavingManager.BuildRaidSavedInstancesForPlayer(_player);
 	sInstanceMgr.BuildRaidSavedInstancesForPlayer(_player);
 }
 
-void WorldSession::HandleReadyCheckOpcode(WorldPacket& recv_data)
+void WorldSession::HandleReadyCheckOpcode(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_RETURN
 
-	Group * pGroup  = _player->GetGroup();
+	Group* pGroup  = _player->GetGroup();
 
 	if(!pGroup)
 		return;
 
-	if( recv_data.size() == 0 )
+	if(recv_data.size() == 0)
 	{
 		// only leader or leader assistant can perform the ready check
-		if( pGroup->GetLeader() == _player->m_playerInfo || pGroup->GetAssistantLeader() == _player->m_playerInfo )
+		if(pGroup->GetLeader() == _player->m_playerInfo || pGroup->GetAssistantLeader() == _player->m_playerInfo)
 		{
 			WorldPacket data(MSG_RAID_READY_CHECK, 8);
 			data << GetPlayer()->GetGUID();
@@ -171,9 +171,9 @@ void WorldSession::HandleReadyCheckOpcode(WorldPacket& recv_data)
 		data << _player->GetGUID();
 		data << ready;
 
-		if( pGroup->GetLeader() && pGroup->GetLeader()->m_loggedInPlayer )
+		if(pGroup->GetLeader() && pGroup->GetLeader()->m_loggedInPlayer)
 			pGroup->GetLeader()->m_loggedInPlayer->GetSession()->SendPacket(&data);
-		if( pGroup->GetAssistantLeader() && pGroup->GetAssistantLeader()->m_loggedInPlayer )
+		if(pGroup->GetAssistantLeader() && pGroup->GetAssistantLeader()->m_loggedInPlayer)
 			pGroup->GetAssistantLeader()->m_loggedInPlayer->GetSession()->SendPacket(&data);
 	}
 }

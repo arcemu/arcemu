@@ -24,45 +24,56 @@
 // Fire Locations
 //////////////////////////////////////////////////////////////////////////
 
-const AVSpawnLocation g_fireLocations[AV_NUM_CONTROL_POINTS][30] = {
+const AVSpawnLocation g_fireLocations[AV_NUM_CONTROL_POINTS][30] =
+{
 
-	{		// Aid Station
+	{
+		// Aid Station
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// Stormpike Graveyard
+	{
+		// Stormpike Graveyard
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// Stonehearth Graveyard
+	{
+		// Stonehearth Graveyard
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// Snowfall graveyard
+	{
+		// Snowfall graveyard
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// coldtooth mine
+	{
+		// coldtooth mine
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// irondeep mine
+	{
+		// irondeep mine
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// iceblood gy
+	{
+		// iceblood gy
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// frostwolf gy
+	{
+		// frostwolf gy
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// frostwolf relief
+	{
+		// frostwolf relief
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// dun baldar nth
+	{
+		// dun baldar nth
 		{ 667.917297f, -137.020660f, 63.645058f, 1.094849f },
 		{ 680.675903f, -125.554802f, 63.666199f, 0.089540f },
 		{ 685.923828f, -148.394562f, 56.618328f, 1.138047f },
@@ -73,7 +84,8 @@ const AVSpawnLocation g_fireLocations[AV_NUM_CONTROL_POINTS][30] = {
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// dun baldar sth
+	{
+		// dun baldar sth
 		{ 568.422852f, -83.935478f, 51.942871f, 2.324003f },
 		{ 547.981018f, -93.095024f, 51.942841f, 0.898504f },
 		{ 549.647034f, -80.551971f, 44.820171f, 2.858073f },
@@ -84,7 +96,8 @@ const AVSpawnLocation g_fireLocations[AV_NUM_CONTROL_POINTS][30] = {
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// icewing
+	{
+		// icewing
 		{ 198.799316f, -361.116241f, 56.391476f, 5.363494f },
 		{ 217.211273f, -375.348236f, 56.368317f, 0.494023f },
 		{ 200.838547f, -362.912231f, 49.267738f, 2.708846f },
@@ -95,7 +108,8 @@ const AVSpawnLocation g_fireLocations[AV_NUM_CONTROL_POINTS][30] = {
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// stonehearth
+	{
+		// stonehearth
 		{ -162.115128f, -458.521393f, 40.389114f, 5.921130f },
 		{ -146.283035f, -451.985413f, 40.392101f, 1.593585f },
 		{ -154.911880f, -440.288513f, 33.280674f, 3.392147f },
@@ -106,7 +120,8 @@ const AVSpawnLocation g_fireLocations[AV_NUM_CONTROL_POINTS][30] = {
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// iceblood
+	{
+		// iceblood
 		{ -569.760010f, -263.288513f, 75.008682f, 2.104091f },
 		{ -570.742493f, -271.907837f, 74.988449f, 3.238992f },
 		{ -578.531372f, -253.600327f, 74.959206f, 0.647177f },
@@ -119,7 +134,8 @@ const AVSpawnLocation g_fireLocations[AV_NUM_CONTROL_POINTS][30] = {
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// tower point
+	{
+		// tower point
 		{ -769.523010f, -358.549561f, 68.635841f, 3.853180f },
 		{ -762.504395f, -362.904480f, 68.543678f, 5.730278f },
 		{ -761.258606f, -360.407471f, 72.666672f, 1.618719f },
@@ -132,7 +148,8 @@ const AVSpawnLocation g_fireLocations[AV_NUM_CONTROL_POINTS][30] = {
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// east frostwolf
+	{
+		// east frostwolf
 		{ -1304.755249f, -322.213409f, 91.419922f, 5.141234f },
 		{ -1304.633057f, -310.950684f, 91.677505f, 0.746931f },
 		{ -1301.672974f, -309.800598f, 95.747795f, 3.586145f },
@@ -145,7 +162,8 @@ const AVSpawnLocation g_fireLocations[AV_NUM_CONTROL_POINTS][30] = {
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// west frostwolf
+	{
+		// west frostwolf
 		{ -1299.614014f, -263.684998f, 114.151276f, 4.944896f },
 		{ -1297.918335f, -269.959930f, 114.151276f, 4.772108f },
 		{ -1304.088379f, -272.878387f, 114.098404f, 5.200147f },
@@ -185,59 +203,72 @@ o: 2.295235
 // Initial Guard Locations
 //////////////////////////////////////////////////////////////////////////
 
-const AVSpawnLocation g_initalGuardLocations[AV_NUM_CONTROL_POINTS][30] = {
+const AVSpawnLocation g_initalGuardLocations[AV_NUM_CONTROL_POINTS][30] =
+{
 
-	{		// Aid Station
+	{
+		// Aid Station
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// Stormpike Graveyard
+	{
+		// Stormpike Graveyard
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// Stonehearth Graveyard
+	{
+		// Stonehearth Graveyard
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// Snowfall graveyard
+	{
+		// Snowfall graveyard
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// coldtooth mine
+	{
+		// coldtooth mine
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// irondeep mine
+	{
+		// irondeep mine
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// iceblood gy
+	{
+		// iceblood gy
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// frostwolf gy
+	{
+		// frostwolf gy
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// frostwolf relief
+	{
+		// frostwolf relief
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// dun baldar nth
+	{
+		// dun baldar nth
 		{ 672.141296f, -120.239807f, 64.147659f, 2.379753f },
 		{ 664.585083f, -126.076088f, 64.120972f, 2.768524f },
 		{ 661.464905f, -137.339371f, 64.216965f, 3.436112f },
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// dun baldar sth
+	{
+		// dun baldar sth
 		{ 564.124146f, -71.107430f, 52.488060f, 1.300614f },
 		{ 571.863770f, -77.084518f, 52.367657f, 0.295303f },
 		{ 574.969543f, -90.801270f, 52.412132f, 5.910901f },
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// icewing
+	{
+		// icewing
 		{ 222.674530f, -378.605408f, 57.147060f, 5.577111f },
 		{ 210.093506f, -384.971558f, 56.793076f, 4.595366f },
 		{ 199.602188f, -380.995575f, 56.864891f, 3.754991f },
@@ -247,7 +278,8 @@ const AVSpawnLocation g_initalGuardLocations[AV_NUM_CONTROL_POINTS][30] = {
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// stonehearth
+	{
+		// stonehearth
 		{ -139.692780f, -445.390533f, 40.982857f, 0.527005f },
 		{ -140.723969f, -457.597168f, 40.862610f, 5.643875f },
 		{ -148.143784f, -464.959808f, 40.933720f, 5.639948f },
@@ -257,7 +289,8 @@ const AVSpawnLocation g_initalGuardLocations[AV_NUM_CONTROL_POINTS][30] = {
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// iceblood
+	{
+		// iceblood
 		{ -568.816711f, -255.542038f, 75.008690f, 1.025736f },
 		{ -580.106445f, -264.803497f, 74.931145f, 3.931711f },
 		{ -572.966248f, -271.499786f, 74.933746f, 4.198746f },
@@ -265,7 +298,8 @@ const AVSpawnLocation g_initalGuardLocations[AV_NUM_CONTROL_POINTS][30] = {
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// tower point
+	{
+		// tower point
 		{ -760.347595f, -358.281586f, 90.885597f, 0.358147f },
 		{ -759.719116f, -367.059113f, 90.826775f, 5.722414f },
 		{ -768.441956f, -372.756653f, 90.933365f, 4.991992f },
@@ -274,7 +308,8 @@ const AVSpawnLocation g_initalGuardLocations[AV_NUM_CONTROL_POINTS][30] = {
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// east frostwolf
+	{
+		// east frostwolf
 		{ -1297.069092f, -309.338623f, 113.769043f, 1.002180f },
 		{ -1293.462036f, -316.529602f, 113.774048f, 0.067557f },
 		{ -1298.062256f, -326.274994f, 113.820679f, 5.015566f },
@@ -284,7 +319,8 @@ const AVSpawnLocation g_initalGuardLocations[AV_NUM_CONTROL_POINTS][30] = {
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// west frostwolf
+	{
+		// west frostwolf
 		{ -1299.964233f, -275.591461f, 114.055862f, 1.241742f },
 		{ -1306.900757f, -268.969574f, 114.055481f, 3.464420f },
 		{ -1305.109375f, -261.103363f, 114.068550f, 2.298103f },
@@ -299,7 +335,8 @@ const AVSpawnLocation g_initalGuardLocations[AV_NUM_CONTROL_POINTS][30] = {
 //////////////////////////////////////////////////////////////////////////
 
 struct AVHomeNPC { uint32 id_a; uint32 id_h; float a_x; float a_y; float a_z; float a_o; float h_x; float h_y; float h_z; float h_o; };
-const AVHomeNPC g_HomeNpcInfo[AV_NUM_CONTROL_POINTS] = {
+const AVHomeNPC g_HomeNpcInfo[AV_NUM_CONTROL_POINTS] =
+{
 	{ 0, 0, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },																		// stormpike aid station
 	{ 0, 0, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },																		// stormpike graveyard
 	{ 0, 0, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },																		// stonehearth graveyard
@@ -323,21 +360,23 @@ const AVHomeNPC g_HomeNpcInfo[AV_NUM_CONTROL_POINTS] = {
 // Control Point Templates
 //////////////////////////////////////////////////////////////////////////
 
-static AVNodeTemplate g_nodeTemplates[AV_NUM_CONTROL_POINTS] = {
-	
+static AVNodeTemplate g_nodeTemplates[AV_NUM_CONTROL_POINTS] =
+{
+
 	// name,						GY?		cap?	graveyard location
-	{ "Stormpike Aid Station",		true,	true,	{ 634.607971f, 47.408627f, 69.890488f },
-		
+	{
+		"Stormpike Aid Station",		true,	true,	{ 634.607971f, 47.408627f, 69.890488f },
+
 		// control point definition, ids, position vector, rotations
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION														ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION														ROTATION
 		{	{	179286,		179286,		179284,		179287,		179285 },	639.184326f,	-31.640333f,	46.202557f,		1.3546723f,		0.9025853f,		-0.4305111f },
 
 		// aura definition
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{	0,			0,			0,			0,			0 },		0.0f, 0.0f, 0.0f, 0.0f,									0.0f, 0.0f	},
 
 		// glow definition
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION														ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION														ROTATION
 		{	{	180102,		180102,		180100,		180102,		180101 },	639.184326f,	-31.640333f,	46.202557f,		1.3546723f,		0.0f,			0.0f		},
 
 		// guard ids -	NEUTRAL,	ALLIANCE,	HORDE
@@ -360,18 +399,19 @@ static AVNodeTemplate g_nodeTemplates[AV_NUM_CONTROL_POINTS] = {
 	},
 
 	// name,						GY?		cap?	graveyard location
-	{ "Stormpike Graveyard",		true,	true,	{ 675.970947f, -373.707336f, 29.780785f },
-		
+	{
+		"Stormpike Graveyard",		true,	true,	{ 675.970947f, -373.707336f, 29.780785f },
+
 		// control point definition, ids, position vector, rotations
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{	179286,		179286,		179284,		179287,		179285 },	670.904175f, -294.181641f, 30.283506f, 4.232887f,		0.4067366f, 0.9135454f },
 
 		// aura definition
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{	0,			0,			0,			0,			0 },		0.0f, 0.0f, 0.0f, 0.0f,									0.0f, 0.0f	},
 
 		// glow definition
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION														ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION														ROTATION
 		{	{	180102,		180102,		180100,		180102,		180101 },	670.904175f,	-294.181641f,	30.283506f,		4.232887f,		0.0f,			0.0f		},
 
 		// guard ids -	NEUTRAL,	ALLIANCE,	HORDE
@@ -394,18 +434,19 @@ static AVNodeTemplate g_nodeTemplates[AV_NUM_CONTROL_POINTS] = {
 	},
 
 	// name,						GY?		cap?	graveyard location
-	{ "Stonehearth Graveyard",		true,	true,	{ 73.869370f, -495.597656f, 48.740143f },
-		
+	{
+		"Stonehearth Graveyard",		true,	true,	{ 73.869370f, -495.597656f, 48.740143f },
+
 		// control point definition, ids, position vector, rotations
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{	179286,		179286,		179284,		179287,		179285 },	78.367012f, -404.769928f, 47.051014f, 4.350670f,		0.2672384f, 0.9636304f	},
 
 		// aura definition
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{	0,			0,			0,			0,			0 },		0.0f, 0.0f, 0.0f, 0.0f,									0.0f, 0.0f	},
 
 		// glow definition
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION														ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION														ROTATION
 		{	{	180102,		180102,		180100,		180102,		180101 },	78.367012f,	-404.769928f,	47.051014f,		4.350670f,		0.0f,			0.0f		},
 
 		// guard ids -	NEUTRAL,	ALLIANCE,	HORDE
@@ -428,18 +469,19 @@ static AVNodeTemplate g_nodeTemplates[AV_NUM_CONTROL_POINTS] = {
 	},
 
 	// name,					GY?		cap?	graveyard location
-	{ "Snowfall Graveyard",		true,	true,	{ -161.472916f, 34.797512f, 77.191841f },
-		
+	{
+		"Snowfall Graveyard",		true,	true,	{ -161.472916f, 34.797512f, 77.191841f },
+
 		// control point definition, ids, position vector, rotations
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{	180418,		179286,		179284,		179287,		179285 },	-202.571854f, -112.612862f, 78.489014f, 1.666146f,		0.9366722f, 0.3502073f	},
 
 		// aura definition
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{	0,			0,			0,			0,			0 },		0.0f, 0.0f, 0.0f, 0.0f,									0.0f, 0.0f	},
 
 		// glow definition
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION														ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION														ROTATION
 		{	{	180102,		180102,		180100,		180102,		180101 },	-202.571854f,	-112.612862f,	78.489014f,		1.666146f,		0.0f,			0.0f		},
 
 		// guard ids -	NEUTRAL,	ALLIANCE,	HORDE
@@ -462,18 +504,19 @@ static AVNodeTemplate g_nodeTemplates[AV_NUM_CONTROL_POINTS] = {
 	},
 
 	// name,					GY?		cap?	graveyard location
-	{ "Coldtooth Mine",			false,	true,	{ 0.0f, 0.0f, 0.0f },
-		
+	{
+		"Coldtooth Mine",			false,	true,	{ 0.0f, 0.0f, 0.0f },
+
 		// control point definition, ids, position vector, rotations
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{	0,			0,			0,			0,			0 },		0.0f, 0.0f, 0.0f, 0.0f,									0.0f, 0.0f	},
 
 		// aura definition
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{	0,			0,			0,			0,			0 },		0.0f, 0.0f, 0.0f, 0.0f,									0.0f, 0.0f	},
 
 		// aura definition
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{	0,			0,			0,			0,			0 },		0.0f, 0.0f, 0.0f, 0.0f,									0.0f, 0.0f	},
 
 		// guard ids -	NEUTRAL,	ALLIANCE,	HORDE
@@ -496,18 +539,19 @@ static AVNodeTemplate g_nodeTemplates[AV_NUM_CONTROL_POINTS] = {
 	},
 
 	// name,					GY?		cap?	graveyard location
-	{ "Irondeep Mine",			false,	true,	{ 0.0f, 0.0f, 0.0f },
-		
+	{
+		"Irondeep Mine",			false,	true,	{ 0.0f, 0.0f, 0.0f },
+
 		// control point definition, ids, position vector, rotations
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{	0,			0,			0,			0,			0 },		0.0f, 0.0f, 0.0f, 0.0f,									0.0f, 0.0f	},
 
 		// aura definition
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{	0,			0,			0,			0,			0 },		0.0f, 0.0f, 0.0f, 0.0f,									0.0f, 0.0f				},
 
 		// glow definition
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION														ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION														ROTATION
 		{	{	0,			0,			0,			0,			0 },		0.0f, 0.0f, 0.0f, 0.0f,											0.0f,			0.0f		},
 
 		// guard ids -	NEUTRAL,	ALLIANCE,	HORDE
@@ -530,18 +574,19 @@ static AVNodeTemplate g_nodeTemplates[AV_NUM_CONTROL_POINTS] = {
 	},
 
 	// name,					GY?		cap?	graveyard location
-	{ "Iceblood Graveyard",		true,	true,	{ -531.067627f, -405.459778f, 49.552971f },
-		
+	{
+		"Iceblood Graveyard",		true,	true,	{ -531.067627f, -405.459778f, 49.552971f },
+
 		// control point definition, ids, position vector, rotations
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{	179286,		179286,		179284,		179287,		179285 },	-611.891113f, -395.925751f, 60.798248f, 3.193738f,		0.9135455f, -0.4067366f	},
 
 		// aura definition
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{	0,			0,			0,			0,			0 },		0.0f, 0.0f, 0.0f, 0.0f,									0.0f, 0.0f	},
 
 		// glow definition
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION														ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION														ROTATION
 		{	{	180102,		180102,		180100,		180102,		180101 },	-611.891113f,	-395.925751f,	60.798248f,		3.193738f,		0.0f,			0.0f		},
 
 		// guard ids -	NEUTRAL,	ALLIANCE,	HORDE
@@ -564,18 +609,19 @@ static AVNodeTemplate g_nodeTemplates[AV_NUM_CONTROL_POINTS] = {
 	},
 
 	// name,					GY?		cap?	graveyard location
-	{ "Frostwolf Graveyard",	true,	true,	{ -1088.008545f, -248.774918f, 57.680843f },
-		
+	{
+		"Frostwolf Graveyard",	true,	true,	{ -1088.008545f, -248.774918f, 57.680843f },
+
 		// control point definition, ids, position vector, rotations
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{	179286,		179286,		179284,		179287,		179285 },	-1082.267578f, -344.454590f, 55.272388f, 1.579743f,		0.9025853f, -0.4305111f	},
 
 		// aura definition
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{	0,			0,			0,			0,			0 },		0.0f, 0.0f, 0.0f, 0.0f,									0.0f, 0.0f	},
 
 		// glow definition
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION														ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION														ROTATION
 		{	{	180102,		180102,		180100,		180102,		180101 },	-1082.267578f,	-344.454590f,	55.272388f,		1.579743f,		0.0f,			0.0f		},
 
 		// guard ids -	NEUTRAL,	ALLIANCE,	HORDE
@@ -598,18 +644,19 @@ static AVNodeTemplate g_nodeTemplates[AV_NUM_CONTROL_POINTS] = {
 	},
 
 	// name,					GY?		cap?	graveyard location
-	{ "Frostwolf Relief Hut",	true,	true,	{ -1500.063599f, -333.146393f, 101.133186f },
-		
+	{
+		"Frostwolf Relief Hut",	true,	true,	{ -1500.063599f, -333.146393f, 101.133186f },
+
 		// control point definition, ids, position vector, rotations
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{	179286,		179286,		179284,		179287,		179285 },	-1401.263550f, -309.601624f, 89.412560f, 3.538534f,		0.4067366f, 0.9135454f	},
 
 		// aura definition
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{	0,			0,			0,			0,			0 },		0.0f, 0.0f, 0.0f, 0.0f,									0.0f, 0.0f	},
 
 		// glow definition
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION														ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION														ROTATION
 		{	{	180102,		180102,		180100,		180102,		180101 },	-1401.263550f,	-309.601624f,	89.412560f,		3.538534f,		0.0f,			0.0f		},
 
 		// guard ids -	NEUTRAL,	ALLIANCE,	HORDE
@@ -632,18 +679,19 @@ static AVNodeTemplate g_nodeTemplates[AV_NUM_CONTROL_POINTS] = {
 	},
 
 	// name,					GY?		cap?	graveyard location
-	{ "North Dun Baldar Bunker",false,	false,	{ 0.0f, 0.0f, 0.0f },
-		
+	{
+		"North Dun Baldar Bunker", false,	false,	{ 0.0f, 0.0f, 0.0f },
+
 		// control point definition, ids, position vector, rotations
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{		0,		179286,		179284,		179287,			0 },	673.361877f, -144.169357f, 63.651852f, 0.969958f,		0.2672384f, 0.9636304f	},
 
 		// aura definition
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{		0,		179446,		178927,		179446,			0 },	678.393250f, -136.145126f, 76.004265f, 4.515254f,		0.0f, 0.0f				},
 
 		// glow definition
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION														ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION														ROTATION
 		{	{		0,		180423,		180421,		180423,			0 },	678.393250f, -136.145126f, 76.004265f, 4.515254f,											0.0f,			0.0f		},
 
 		// guard ids -	NEUTRAL,	ALLIANCE,	HORDE
@@ -666,18 +714,19 @@ static AVNodeTemplate g_nodeTemplates[AV_NUM_CONTROL_POINTS] = {
 	},
 
 	// name,					GY?		cap?	graveyard location
-	{ "South Dun Baldar Bunker",false,	false,	{ 0.0f, 0.0f, 0.0f },
-		
+	{
+		"South Dun Baldar Bunker", false,	false,	{ 0.0f, 0.0f, 0.0f },
+
 		// control point definition, ids, position vector, rotations
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{		0,		179286,		179284,		179287,			0 },	552.990234f, -77.527374f, 51.926868f, 3.5410520f,		0.9366722f, 0.3502073f	},
 
 		// aura definition
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{		0,		179450,		178932,		179450,			0 },	556.081543f, -84.437355f, 64.411903f, 5.006125f,		0.0f, 0.0f				},
 
 		// glow definition
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION														ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION														ROTATION
 		{	{		0,		180423,		180421,		180423,			0 },	556.081543f, -84.437355f, 64.411903f, 5.006125f,											0.0f,			0.0f		},
 
 		// guard ids -	NEUTRAL,	ALLIANCE,	HORDE
@@ -700,18 +749,19 @@ static AVNodeTemplate g_nodeTemplates[AV_NUM_CONTROL_POINTS] = {
 	},
 
 	// name,					GY?		cap?	graveyard location
-	{ "Icewing Bunker",			false,	false,	{ 0.0f, 0.0f, 0.0f },
-		
+	{
+		"Icewing Bunker",			false,	false,	{ 0.0f, 0.0f, 0.0f },
+
 		// control point definition, ids, position vector, rotations
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{		0,		179286,		179284,		179287,			0 },	201.845840f, -358.886963f, 56.370701f, 5.403111f,		0.9135455f, -0.4067366f	},
 
 		// aura definition
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{		0,		179454,		178947,		179454,			0 },	208.691223f, -367.553314f, 68.696632f, 3.317518f,		0.0f, 0.0f				},
 
 		// glow definition
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION														ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION														ROTATION
 		{	{		0,		180423,		180421,		180423,			0 },	208.691223f, -367.553314f, 68.696632f, 3.317518f,											0.0f,			0.0f		},
 
 		// guard ids -	NEUTRAL,	ALLIANCE,	HORDE
@@ -734,18 +784,19 @@ static AVNodeTemplate g_nodeTemplates[AV_NUM_CONTROL_POINTS] = {
 	},
 
 	// name,					GY?		cap?	graveyard location
-	{ "Stonehearth Bunker",		false,	false,	{ 0.0f, 0.0f, 0.0f },
-		
+	{
+		"Stonehearth Bunker",		false,	false,	{ 0.0f, 0.0f, 0.0f },
+
 		// control point definition, ids, position vector, rotations
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{		0,		179286,		179284,		179287,			0 },	-151.776291f, -439.776245f, 40.381840f, 4.319230f,		0.9025853f, -0.4305111f	},
 
 		// aura definition
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{		0,		179458,		178948,		179458,			0 },	-156.257721f, -448.993652f, 52.797112f, 2.803080f,		0.0f, 0.0f				},
 
 		// glow definition
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION														ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION														ROTATION
 		{	{		0,		180423,		180421,		180423,			0 },	-156.257721f, -448.993652f, 52.797112f, 2.803080f,											0.0f,			0.0f		},
 
 		// guard ids -	NEUTRAL,	ALLIANCE,	HORDE
@@ -768,18 +819,19 @@ static AVNodeTemplate g_nodeTemplates[AV_NUM_CONTROL_POINTS] = {
 	},
 
 	// name,					GY?		cap?	graveyard location
-	{ "Iceblood Tower",			false,	false,	{ 0.0f, 0.0f, 0.0f },
-		
+	{
+		"Iceblood Tower",			false,	false,	{ 0.0f, 0.0f, 0.0f },
+
 		// control point definition, ids, position vector, rotations
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{	0,			179286,			0,		179287,		179285 },	-572.502869f, -262.418365f, 75.008713f, 5.483192f,		0.4067366f, 0.9135454f	},
 
 		// aura definition
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{		0,		179436,			0,		179436,		178955 },	-572.408386f, -262.620422f, 88.636307f, 0.712354f,		0.0f, 0.0f				},
 
 		// glow definition
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{		0,		180423,			0,		180423,		180422 },	-572.408386f, -262.620422f, 88.636307f, 0.712354f,		0.0f,			0.0f		},
 
 		// guard ids -	NEUTRAL,	ALLIANCE,	HORDE
@@ -802,18 +854,19 @@ static AVNodeTemplate g_nodeTemplates[AV_NUM_CONTROL_POINTS] = {
 	},
 
 	// name,					GY?		cap?	graveyard location
-	{ "Tower Point",			false,	false,	{ 0.0f, 0.0f, 0.0f },
-		
+	{
+		"Tower Point",			false,	false,	{ 0.0f, 0.0f, 0.0f },
+
 		// control point definition, ids, position vector, rotations
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{		0,		179286,			0,		179287,		179285 },	-767.986511f, -363.091064f, 90.894920f, 4.265791f,		0.2672384f, 0.9636304f	},
 
 		// aura definition
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{		0,		179440,			0,		179440,		178956 },	-768.181519f, -362.942719f, 104.553452f, 4.761085f,		0.0f, 0.0f				},
 
 		// glow definition
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION														ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION														ROTATION
 		{	{		0,		180423,			0,		180423,		180422 },	-768.181519f, -362.942719f, 104.553452f, 4.761085f,											0.0f,			0.0f		},
 
 		// guard ids -	NEUTRAL,	ALLIANCE,	HORDE
@@ -836,18 +889,19 @@ static AVNodeTemplate g_nodeTemplates[AV_NUM_CONTROL_POINTS] = {
 	},
 
 	// name,					GY?		cap?	graveyard location
-	{ "East Frostwolf Tower",	false,	false,	{ 0.0f, 0.0f, 0.0f },
-		
+	{
+		"East Frostwolf Tower",	false,	false,	{ 0.0f, 0.0f, 0.0f },
+
 		// control point definition, ids, position vector, rotations
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{		0,		179286,			0,		179287,		179285 },	-1302.814453f, -315.957458f, 113.867195f, 1.956738f,	0.9366722f, 0.3502073f	},
 
 		// aura definition
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{		0,		179442,			0,		179442,		178957 },	-1302.916626f, -316.606079f, 127.526337f, 6.176374f,	0.0f, 0.0f				},
 
 		// glow definition
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION														ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION														ROTATION
 		{	{		0,		180423,			0,		180423,		180422 },	-1302.916626f, -316.606079f, 127.526337f, 6.176374f,											0.0f,			0.0f		},
 
 		// guard ids -	NEUTRAL,	ALLIANCE,	HORDE
@@ -870,18 +924,19 @@ static AVNodeTemplate g_nodeTemplates[AV_NUM_CONTROL_POINTS] = {
 	},
 
 	// name,					GY?		cap?	graveyard location
-	{ "West Frostwolf Tower",	false,	false,	{ 0.0f, 0.0f, 0.0f },
-		
+	{
+		"West Frostwolf Tower",	false,	false,	{ 0.0f, 0.0f, 0.0f },
+
 		// control point definition, ids, position vector, rotations
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{		0,		179286,			0,		179287,		179285 },	-1296.913818f, -266.521271f, 114.151245f, 3.336680f,	0.9135455f, -0.4067366f	},
 
 		// aura definition
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{		0,		179444,			0,		179444,		178958 },	-1297.889404f, -266.714233f, 127.789467f, 5.931325f,	0.0f, 0.0f				},
 
 		// glow definition
-			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION														ROTATION
+		//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION														ROTATION
 		{	{		0,		180423,			0,		180423,		180422 },	-1297.889404f, -266.714233f, 127.789467f, 5.931325f,											0.0f,			0.0f		},
 
 		// guard ids -	NEUTRAL,	ALLIANCE,	HORDE
@@ -905,7 +960,8 @@ static AVNodeTemplate g_nodeTemplates[AV_NUM_CONTROL_POINTS] = {
 };
 
 // gameobject faction def'n
-static uint32 g_gameObjectFactions[AV_NODE_STATE_COUNT] = {
+static uint32 g_gameObjectFactions[AV_NODE_STATE_COUNT] =
+{
 	35,				// neutral
 	2,				// alliance assault
 	2,				// alliance	controlled
@@ -913,7 +969,8 @@ static uint32 g_gameObjectFactions[AV_NODE_STATE_COUNT] = {
 	1,				// horde controlled
 };
 
-const static int32 g_stateToGuardType[AV_NODE_STATE_COUNT] = {
+const static int32 g_stateToGuardType[AV_NODE_STATE_COUNT] =
+{
 	0,				// neutral
 	-1,				// alliance assault
 	1,				// alliance	controlled
@@ -921,7 +978,8 @@ const static int32 g_stateToGuardType[AV_NODE_STATE_COUNT] = {
 	2,				// horde controlled
 };
 
-static const char *g_stateNames[AV_NODE_STATE_COUNT] = {
+static const char* g_stateNames[AV_NODE_STATE_COUNT] =
+{
 	"AV_NODE_STATE_NEUTRAL_CONTROLLED",
 	"AV_NODE_STATE_ALLIANCE_ASSAULTING",
 	"AV_NODE_STATE_ALLIANCE_CONTROLLED",
@@ -929,7 +987,7 @@ static const char *g_stateNames[AV_NODE_STATE_COUNT] = {
 	"AV_NODE_STATE_HORDE_CONTROLLED",
 };
 
-AlteracValley::AVNode::AVNode( AlteracValley *parent, AVNodeTemplate *tmpl, uint32 nodeid )
+AlteracValley::AVNode::AVNode(AlteracValley* parent, AVNodeTemplate* tmpl, uint32 nodeid)
 {
 	m_bg = parent;
 	m_template = tmpl;
@@ -948,13 +1006,13 @@ AlteracValley::AVNode::AVNode( AlteracValley *parent, AVNodeTemplate *tmpl, uint
 	ChangeState(m_state);
 
 	// spawn initial guards (if we have any)
-	if( !m_template->m_capturable && m_template->m_initialSpawnId )
+	if(!m_template->m_capturable && m_template->m_initialSpawnId)
 	{
 		// then we are probably a tower.
-		const AVSpawnLocation *spi = g_initalGuardLocations[nodeid];
-		CreatureInfo *ci = CreatureNameStorage.LookupEntry(m_template->m_initialSpawnId);
-		CreatureProto *cp = CreatureProtoStorage.LookupEntry(m_template->m_initialSpawnId);
-		Creature *sp;
+		const AVSpawnLocation* spi = g_initalGuardLocations[nodeid];
+		CreatureInfo* ci = CreatureNameStorage.LookupEntry(m_template->m_initialSpawnId);
+		CreatureProto* cp = CreatureProtoStorage.LookupEntry(m_template->m_initialSpawnId);
+		Creature* sp;
 		Log.Debug("AlteracValley", "spawning guards at bunker %s of %s (%u)", m_template->m_name, ci->Name, ci->Id);
 
 		while(spi->x != 0.0f)
@@ -967,18 +1025,18 @@ AlteracValley::AVNode::AVNode( AlteracValley *parent, AVNodeTemplate *tmpl, uint
 	}
 
 	// spawn initial home npc
-	if( g_HomeNpcInfo[m_nodeId].id_a != 0 )
+	if(g_HomeNpcInfo[m_nodeId].id_a != 0)
 	{
 		// spawn alliance npcs if its a horde tower
-		if( m_template->m_defaultState == AV_NODE_STATE_ALLIANCE_CONTROLLED )
+		if(m_template->m_defaultState == AV_NODE_STATE_ALLIANCE_CONTROLLED)
 		{
 			m_homeNPC = m_bg->SpawnCreature(g_HomeNpcInfo[m_nodeId].id_a, g_HomeNpcInfo[m_nodeId].a_x, g_HomeNpcInfo[m_nodeId].a_y,
-				g_HomeNpcInfo[m_nodeId].a_z, g_HomeNpcInfo[m_nodeId].a_o);
+			                                g_HomeNpcInfo[m_nodeId].a_z, g_HomeNpcInfo[m_nodeId].a_o);
 		}
 		else
 		{
 			m_homeNPC = m_bg->SpawnCreature(g_HomeNpcInfo[m_nodeId].id_h, g_HomeNpcInfo[m_nodeId].h_x, g_HomeNpcInfo[m_nodeId].h_y,
-				g_HomeNpcInfo[m_nodeId].h_z, g_HomeNpcInfo[m_nodeId].h_o);
+			                                g_HomeNpcInfo[m_nodeId].h_z, g_HomeNpcInfo[m_nodeId].h_o);
 		}
 	}
 }
@@ -988,23 +1046,23 @@ AlteracValley::AVNode::~AVNode()
 
 }
 
-void AlteracValley::AVNode::Assault(Player *plr)
+void AlteracValley::AVNode::Assault(Player* plr)
 {
 	// player assaulted the control point.
 	// safety check
 	Log.Debug("AlteracValley", "AVNode::Assault(%s) : entering", m_template->m_name);
-	if( plr->IsTeamAlliance() && ( m_state == AV_NODE_STATE_ALLIANCE_ASSAULTING || m_state == AV_NODE_STATE_ALLIANCE_CONTROLLED ) )
+	if(plr->IsTeamAlliance() && (m_state == AV_NODE_STATE_ALLIANCE_ASSAULTING || m_state == AV_NODE_STATE_ALLIANCE_CONTROLLED))
 		return;
 
-	if( plr->IsTeamHorde() && ( m_state == AV_NODE_STATE_HORDE_ASSAULTING || m_state == AV_NODE_STATE_HORDE_CONTROLLED ) )
+	if(plr->IsTeamHorde() && (m_state == AV_NODE_STATE_HORDE_ASSAULTING || m_state == AV_NODE_STATE_HORDE_CONTROLLED))
 		return;
 
-	if( m_destroyed )
+	if(m_destroyed)
 		return;
 
-	// are we returning the node to us? 
-	if( ( plr->IsTeamAlliance() && m_lastState == AV_NODE_STATE_ALLIANCE_CONTROLLED ) ||
-		( plr->IsTeamHorde() && m_lastState == AV_NODE_STATE_HORDE_CONTROLLED ) )
+	// are we returning the node to us?
+	if((plr->IsTeamAlliance() && m_lastState == AV_NODE_STATE_ALLIANCE_CONTROLLED) ||
+	        (plr->IsTeamHorde() && m_lastState == AV_NODE_STATE_HORDE_CONTROLLED))
 	{
 		// set the state for capture
 		m_state = plr->IsTeamAlliance() ? AV_NODE_STATE_ALLIANCE_ASSAULTING : AV_NODE_STATE_HORDE_ASSAULTING;
@@ -1013,7 +1071,7 @@ void AlteracValley::AVNode::Assault(Player *plr)
 		Capture();
 
 		// pvp data
-		if( m_template->m_isGraveyard )
+		if(m_template->m_isGraveyard)
 			plr->m_bgScore.MiscData[BG_SCORE_AV_GRAVEYARDS_DEFENDED]++;
 		else
 			plr->m_bgScore.MiscData[BG_SCORE_AV_TOWERS_DEFENDED]++;
@@ -1033,12 +1091,12 @@ void AlteracValley::AVNode::Assault(Player *plr)
 	ChangeState(plr->IsTeamHorde() ? AV_NODE_STATE_HORDE_ASSAULTING : AV_NODE_STATE_ALLIANCE_ASSAULTING);
 
 	// pvp data
-	if( m_template->m_isGraveyard )
+	if(m_template->m_isGraveyard)
 	{
 		// send message
 		m_bg->SendChatMessage(CHAT_MSG_BG_EVENT_ALLIANCE + plr->GetTeam(), 0, "%s claims the %s! If left unchallenged, the %s will control it!", plr->GetName(), m_template->m_name,
-			plr->IsTeamHorde() ? "Horde" : "Alliance");
-		
+		                      plr->IsTeamHorde() ? "Horde" : "Alliance");
+
 		plr->m_bgScore.MiscData[BG_SCORE_AV_GRAVEYARDS_ASSAULTED]++;
 	}
 	else
@@ -1052,10 +1110,10 @@ void AlteracValley::AVNode::Spawn()
 {
 	// spawn control point (if we should have one)
 	Log.Debug("AlteracValley", "AVNode::Spawn for %s, state = %u %s, old_state = %u %s", m_template->m_name, m_state, g_stateNames[m_state], m_lastState, g_stateNames[m_lastState]);
-	if( m_template->m_flagLocation.id[m_state] == 0 )
+	if(m_template->m_flagLocation.id[m_state] == 0)
 	{
 		// no flag should be spawned, despawn if one exists
-		if( m_flag != NULL )
+		if(m_flag != NULL)
 		{
 			Log.Debug("AlteracValley", "AVNode::Spawn(%s) : Despawning main flag", m_template->m_name);
 			m_flag->Despawn(0, 0);
@@ -1065,13 +1123,13 @@ void AlteracValley::AVNode::Spawn()
 	else
 	{
 		// spawn the flag.
-		const AVGameObject *g = &m_template->m_flagLocation;
+		const AVGameObject* g = &m_template->m_flagLocation;
 		Log.Debug("AlteracValley", "AVNode::Spawn(%s) : Spawning main flag", m_template->m_name);
-		if( m_flag == NULL )
+		if(m_flag == NULL)
 		{
 			// initial spawn
 			m_flag = m_bg->SpawnGameObject(g->id[m_state], m_bg->GetMapMgr()->GetMapId(), g->x, g->y, g->z, g->o, 0, 0, 1.0f);
-			m_flag->bannerslot = static_cast<int8>( m_nodeId );
+			m_flag->bannerslot = static_cast<int8>(m_nodeId);
 			m_flag->SetFaction(g_gameObjectFactions[m_state]);
 			m_flag->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 			m_flag->SetUInt32Value(GAMEOBJECT_DYNAMIC, 1);
@@ -1080,15 +1138,15 @@ void AlteracValley::AVNode::Spawn()
 		else
 		{
 			// change entry, but to do this change guid
-			if( m_flag->GetEntry() != g->id[m_state] || !m_flag->IsInWorld() )
+			if(m_flag->GetEntry() != g->id[m_state] || !m_flag->IsInWorld())
 			{
-				GameObjectInfo *goi = GameObjectNameStorage.LookupEntry(g->id[m_state]);
+				GameObjectInfo* goi = GameObjectNameStorage.LookupEntry(g->id[m_state]);
 				m_flag->RemoveFromWorld(false);
-				m_flag->SetEntry( g->id[m_state] );
+				m_flag->SetEntry(g->id[m_state]);
 				m_flag->SetNewGuid(m_bg->GetMapMgr()->GenerateGameobjectGuid());
 				m_flag->SetInfo(goi);
 				m_flag->SetDisplayId(goi->DisplayID);
-				m_flag->SetType(static_cast<uint8>( goi->Type ));
+				m_flag->SetType(static_cast<uint8>(goi->Type));
 				m_flag->SetFaction(g_gameObjectFactions[m_state]);
 				m_flag->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 				m_flag->SetUInt32Value(GAMEOBJECT_DYNAMIC, 1);
@@ -1098,22 +1156,22 @@ void AlteracValley::AVNode::Spawn()
 	}
 
 	// spawn secondary control node aura (if there should be one)
-	if( m_template->m_auraLocation.id[m_state] == 0 )
+	if(m_template->m_auraLocation.id[m_state] == 0)
 	{
 		// no flag should be spawned, despawn if one exists
-		if( m_aura != NULL )
+		if(m_aura != NULL)
 		{
 			Log.Debug("AlteracValley", "AVNode::Spawn(%s) : Despawning secondary flag", m_template->m_name);
-			m_aura->Despawn(0,0);
+			m_aura->Despawn(0, 0);
 			m_aura = NULL;
 		}
 	}
 	else
 	{
 		// spawn the flag.
-		const AVGameObject *g = &m_template->m_auraLocation;
+		const AVGameObject* g = &m_template->m_auraLocation;
 		Log.Debug("AlteracValley", "AVNode::Spawn(%s) : Spawning secondary flag", m_template->m_name);
-		if( m_aura == NULL )
+		if(m_aura == NULL)
 		{
 			// initial spawn
 			m_aura = m_bg->SpawnGameObject(g->id[m_state], m_bg->GetMapMgr()->GetMapId(), g->x, g->y, g->z, g->o, 0, 0, 3.0f);
@@ -1126,15 +1184,15 @@ void AlteracValley::AVNode::Spawn()
 		else
 		{
 			// change entry, but to do this change guid
-			if( m_aura->GetEntry() != g->id[m_state] || !m_aura->IsInWorld() )
+			if(m_aura->GetEntry() != g->id[m_state] || !m_aura->IsInWorld())
 			{
-				GameObjectInfo *goi = GameObjectNameStorage.LookupEntry(g->id[m_state]);
+				GameObjectInfo* goi = GameObjectNameStorage.LookupEntry(g->id[m_state]);
 				m_aura->RemoveFromWorld(false);
-				m_aura->SetEntry( g->id[m_state]);
+				m_aura->SetEntry(g->id[m_state]);
 				m_aura->SetNewGuid(m_bg->GetMapMgr()->GenerateGameobjectGuid());
 				m_aura->SetInfo(goi);
 				m_aura->SetDisplayId(goi->DisplayID);
-				m_aura->SetType(static_cast<uint8>( goi->Type ));
+				m_aura->SetType(static_cast<uint8>(goi->Type));
 				m_aura->SetFaction(g_gameObjectFactions[m_state]);
 				m_aura->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 				m_aura->SetUInt32Value(GAMEOBJECT_FLAGS, 1);
@@ -1145,22 +1203,22 @@ void AlteracValley::AVNode::Spawn()
 	}
 
 	// spawn glow
-	if( m_template->m_glowLocation.id[m_state] == 0 )
+	if(m_template->m_glowLocation.id[m_state] == 0)
 	{
 		// no flag should be spawned, despawn if one exists
-		if( m_glow != NULL )
+		if(m_glow != NULL)
 		{
 			Log.Debug("AlteracValley", "AVNode::Spawn(%s) : Despawning glow", m_template->m_name);
-			m_glow->Despawn(0,0);
+			m_glow->Despawn(0, 0);
 			m_glow = NULL;
 		}
 	}
 	else
 	{
 		// spawn the flag.
-		const AVGameObject *g = &m_template->m_glowLocation;
+		const AVGameObject* g = &m_template->m_glowLocation;
 		Log.Debug("AlteracValley", "AVNode::Spawn(%s) : Spawning glow", m_template->m_name);
-		if( m_glow == NULL )
+		if(m_glow == NULL)
 		{
 			// initial spawn
 			m_glow = m_bg->SpawnGameObject(g->id[m_state], m_bg->GetMapMgr()->GetMapId(), g->x, g->y, g->z, g->o, 0, 0, 1.0f);
@@ -1169,31 +1227,31 @@ void AlteracValley::AVNode::Spawn()
 			m_glow->SetUInt32Value(GAMEOBJECT_FLAGS, 1);
 			m_glow->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 			if(m_glow->GetEntry() == 180422 || m_glow->GetEntry() == 180423)
-				m_glow->SetScale(  10.0f);
+				m_glow->SetScale(10.0f);
 			else
-				m_glow->SetScale(  2.0f);
+				m_glow->SetScale(2.0f);
 			m_glow->PushToWorld(m_bg->GetMapMgr());
 		}
 		else
 		{
 			// change entry, but to do this change guid
-			if( m_glow->GetEntry() != g->id[m_state] || !m_glow->IsInWorld() )
+			if(m_glow->GetEntry() != g->id[m_state] || !m_glow->IsInWorld())
 			{
-				GameObjectInfo *goi = GameObjectNameStorage.LookupEntry(g->id[m_state]);
+				GameObjectInfo* goi = GameObjectNameStorage.LookupEntry(g->id[m_state]);
 				m_glow->RemoveFromWorld(false);
-				m_glow->SetEntry(  g->id[m_state]);
+				m_glow->SetEntry(g->id[m_state]);
 				m_glow->SetNewGuid(m_bg->GetMapMgr()->GenerateGameobjectGuid());
 				m_glow->SetInfo(goi);
 				m_glow->SetDisplayId(goi->DisplayID);
-				m_glow->SetType(static_cast<uint8>( goi->Type ));
+				m_glow->SetType(static_cast<uint8>(goi->Type));
 				m_glow->SetFaction(g_gameObjectFactions[m_state]);
 				m_glow->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 				m_glow->SetUInt32Value(GAMEOBJECT_FLAGS, 1);
 				m_glow->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 				if(m_glow->GetEntry() == 180422 || m_glow->GetEntry() == 180423)
-					m_glow->SetScale(  10.0f);
+					m_glow->SetScale(10.0f);
 				else
-					m_glow->SetScale(  2.0f);
+					m_glow->SetScale(2.0f);
 				m_glow->PushToWorld(m_bg->GetMapMgr());
 			}
 		}
@@ -1201,24 +1259,24 @@ void AlteracValley::AVNode::Spawn()
 
 
 	// update field states :O
-	if( m_template->m_worldStateFields[m_lastState] != 0 )
+	if(m_template->m_worldStateFields[m_lastState] != 0)
 		m_bg->SetWorldState(m_template->m_worldStateFields[m_lastState], 0);
 
-	if( m_template->m_worldStateFields[m_state] != 0 )
+	if(m_template->m_worldStateFields[m_state] != 0)
 		m_bg->SetWorldState(m_template->m_worldStateFields[m_state], 1);
 
 	// despawn/spawn guards
-	if( m_state == AV_NODE_STATE_ALLIANCE_CONTROLLED || m_state == AV_NODE_STATE_HORDE_CONTROLLED )
+	if(m_state == AV_NODE_STATE_ALLIANCE_CONTROLLED || m_state == AV_NODE_STATE_HORDE_CONTROLLED)
 	{
 		Log.Debug("AlteracValley", "AVNode::Spawn(%s) : despawning guards", m_template->m_name);
 		for(vector<Creature*>::iterator itr = m_guards.begin(); itr != m_guards.end(); ++itr)
 			(*itr)->Despawn(0, 0);
-		
+
 		m_guards.clear();
 
 		// spawn guards if needed
 		uint32 t = g_stateToGuardType[m_state];
-		if( t > 0 && m_template->m_guardId[t] != 0 )
+		if(t > 0 && m_template->m_guardId[t] != 0)
 		{
 			Log.Debug("AlteracValley", "AVNode::Spawn(%s) : spawning %u guards of %u", m_template->m_name, m_template->m_guardCount, m_template->m_guardId[t]);
 			for(uint32 i = 0; i < m_template->m_guardCount; ++i)
@@ -1231,25 +1289,25 @@ void AlteracValley::AVNode::Spawn()
 		}
 	}
 
-	if( g_stateToGuardType[m_state] > 0 )
+	if(g_stateToGuardType[m_state] > 0)
 		SpawnGuards(g_stateToGuardType[m_state]);
 
 	// spirit guides
-	if( m_template->m_isGraveyard )
+	if(m_template->m_isGraveyard)
 	{
 		// should one be spawned
-		if( m_spiritGuide != NULL )
+		if(m_spiritGuide != NULL)
 		{
 			Log.Debug("AlteracValley", "AVNode::Spawn(%s) : despawning spirit guide", m_template->m_name);
 			// move everyone in the revive queue to a different node
 			map<Creature*, set<uint32> >::iterator itr = m_bg->m_resurrectMap.find(m_spiritGuide);
-			if( itr != m_bg->m_resurrectMap.end() )
+			if(itr != m_bg->m_resurrectMap.end())
 			{
 				for(set<uint32>::iterator it2 = itr->second.begin(); it2 != itr->second.end(); ++it2)
 				{
 					// repop him at a new GY
-					Player *plr_tmp = m_bg->GetMapMgr()->GetPlayer(*it2);
-					if( plr_tmp != NULL )
+					Player* plr_tmp = m_bg->GetMapMgr()->GetPlayer(*it2);
+					if(plr_tmp != NULL)
 					{
 						m_bg->HookHandleRepop(plr_tmp);
 						m_bg->QueueAtNearestSpiritGuide(plr_tmp, m_spiritGuide);
@@ -1262,24 +1320,24 @@ void AlteracValley::AVNode::Spawn()
 			m_spiritGuide = NULL;
 		}
 
-		if( m_state == AV_NODE_STATE_ALLIANCE_CONTROLLED )
+		if(m_state == AV_NODE_STATE_ALLIANCE_CONTROLLED)
 		{
 			Log.Debug("AlteracValley", "AVNode::Spawn(%s) : spawning spirit guide", m_template->m_name);
 
 			// spawn new spirit guide
-			m_spiritGuide = m_bg->SpawnSpiritGuide(m_template->m_graveyardLocation.x, m_template->m_graveyardLocation.y, 
-				m_template->m_graveyardLocation.z, m_template->m_graveyardLocation.z, 0);
+			m_spiritGuide = m_bg->SpawnSpiritGuide(m_template->m_graveyardLocation.x, m_template->m_graveyardLocation.y,
+			                                       m_template->m_graveyardLocation.z, m_template->m_graveyardLocation.z, 0);
 
 			// add
 			m_bg->AddSpiritGuide(m_spiritGuide);
 		}
-		else if( m_state == AV_NODE_STATE_HORDE_CONTROLLED )
+		else if(m_state == AV_NODE_STATE_HORDE_CONTROLLED)
 		{
 			Log.Debug("AlteracValley", "AVNode::Spawn(%s) : spawning spirit guide", m_template->m_name);
 
 			// spawn new spirit guide
-			m_spiritGuide = m_bg->SpawnSpiritGuide(m_template->m_graveyardLocation.x, m_template->m_graveyardLocation.y, 
-				m_template->m_graveyardLocation.z, m_template->m_graveyardLocation.z, 1);
+			m_spiritGuide = m_bg->SpawnSpiritGuide(m_template->m_graveyardLocation.x, m_template->m_graveyardLocation.y,
+			                                       m_template->m_graveyardLocation.z, m_template->m_graveyardLocation.z, 1);
 
 			// add
 			m_bg->AddSpiritGuide(m_spiritGuide);
@@ -1305,26 +1363,26 @@ void AlteracValley::AVNode::ChangeState(uint32 new_state)
 
 void AlteracValley::AVNode::Capture()
 {
-	if( m_destroyed )
+	if(m_destroyed)
 		return;
 
 	Log.Debug("AlteracValley", "AVNode::Capture(%s) : entering", m_template->m_name);
 
 	// sooo easy
 	sEventMgr.RemoveEvents(m_bg, EVENT_AV_CAPTURE_CP_0 + m_nodeId);
-	if( m_state == AV_NODE_STATE_HORDE_ASSAULTING )
+	if(m_state == AV_NODE_STATE_HORDE_ASSAULTING)
 		ChangeState(AV_NODE_STATE_HORDE_CONTROLLED);
 	else
 		ChangeState(AV_NODE_STATE_ALLIANCE_CONTROLLED);
 
 	// were we destroyed?
-	if( !m_template->m_capturable )
+	if(!m_template->m_capturable)
 	{
-		if( m_state != m_template->m_defaultState )
+		if(m_state != m_template->m_defaultState)
 		{
 			// spawn fire!
-			const AVSpawnLocation *spi = g_fireLocations[m_nodeId];
-			GameObject *go;
+			const AVSpawnLocation* spi = g_fireLocations[m_nodeId];
+			GameObject* go;
 
 			Log.Debug("AlteracValley", "spawning fires at bunker %s", m_template->m_name);
 			while(spi->x != 0.0f)
@@ -1335,7 +1393,7 @@ void AlteracValley::AVNode::Capture()
 			}
 
 			// disable the flag
-			if( m_flag != NULL )
+			if(m_flag != NULL)
 			{
 				m_flag->SetUInt32Value(GAMEOBJECT_FLAGS, 1);
 				m_flag->SetUInt32Value(GAMEOBJECT_DYNAMIC, 0);
@@ -1348,49 +1406,49 @@ void AlteracValley::AVNode::Capture()
 			// send message
 			m_bg->Herald("The %s has destroyed the %s.", (m_template->m_defaultState == AV_NODE_STATE_ALLIANCE_CONTROLLED) ? "Horde" : "Alliance", m_template->m_name);
 
-			if( m_template->m_defaultState == AV_NODE_STATE_ALLIANCE_CONTROLLED )
+			if(m_template->m_defaultState == AV_NODE_STATE_ALLIANCE_CONTROLLED)
 			{
 				for(set<Player*>::iterator itx = m_bg->m_players[1].begin(); itx != m_bg->m_players[1].end(); ++itx)
 				{
-					Player * plr = (*itx);
+					Player* plr = (*itx);
 					if(!plr) continue;
 
-					HonorHandler::AddHonorPointsToPlayer( plr, 62);
+					HonorHandler::AddHonorPointsToPlayer(plr, 62);
 				}
 			}
-			else if( m_template->m_defaultState == AV_NODE_STATE_HORDE_CONTROLLED )
+			else if(m_template->m_defaultState == AV_NODE_STATE_HORDE_CONTROLLED)
 			{
 				for(set<Player*>::iterator itx = m_bg->m_players[0].begin(); itx != m_bg->m_players[0].end(); ++itx)
 				{
-					Player * plr = (*itx);
+					Player* plr = (*itx);
 					if(!plr) continue;
 
-					HonorHandler::AddHonorPointsToPlayer( plr, 62);
+					HonorHandler::AddHonorPointsToPlayer(plr, 62);
 				}
 			}
 
 			// the npc at our home has to change.
-			if( m_homeNPC != NULL )
+			if(m_homeNPC != NULL)
 				m_homeNPC->Despawn(0, 0);
 
 			// respawn if we have one
-			if( g_HomeNpcInfo[m_nodeId].id_a != 0 )
+			if(g_HomeNpcInfo[m_nodeId].id_a != 0)
 			{
 				// spawn alliance npcs if its a horde tower
-				if( m_template->m_defaultState == AV_NODE_STATE_HORDE_CONTROLLED )
+				if(m_template->m_defaultState == AV_NODE_STATE_HORDE_CONTROLLED)
 				{
 					m_homeNPC = m_bg->SpawnCreature(g_HomeNpcInfo[m_nodeId].id_a, g_HomeNpcInfo[m_nodeId].a_x, g_HomeNpcInfo[m_nodeId].a_y,
-						g_HomeNpcInfo[m_nodeId].a_z, g_HomeNpcInfo[m_nodeId].a_o);
+					                                g_HomeNpcInfo[m_nodeId].a_z, g_HomeNpcInfo[m_nodeId].a_o);
 				}
 				else
 				{
 					m_homeNPC = m_bg->SpawnCreature(g_HomeNpcInfo[m_nodeId].id_h, g_HomeNpcInfo[m_nodeId].h_x, g_HomeNpcInfo[m_nodeId].h_y,
-						g_HomeNpcInfo[m_nodeId].h_z, g_HomeNpcInfo[m_nodeId].h_o);
+					                                g_HomeNpcInfo[m_nodeId].h_z, g_HomeNpcInfo[m_nodeId].h_o);
 				}
 			}
 
 			// lose 75 reinforcements
-			if( m_template->m_defaultState == AV_NODE_STATE_ALLIANCE_CONTROLLED )
+			if(m_template->m_defaultState == AV_NODE_STATE_ALLIANCE_CONTROLLED)
 				m_bg->RemoveReinforcements(0, AV_POINTS_ON_DESTROY_BUNKER);
 			else
 				m_bg->RemoveReinforcements(1, AV_POINTS_ON_DESTROY_BUNKER);
@@ -1408,7 +1466,7 @@ void AlteracValley::AVNode::Capture()
 	}
 }
 
-AlteracValley::AlteracValley(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t) : CBattleground(mgr,id,lgroup,t)
+AlteracValley::AlteracValley(MapMgr* mgr, uint32 id, uint32 lgroup, uint32 t) : CBattleground(mgr, id, lgroup, t)
 {
 	m_playerCountPerTeam = 40;
 	m_reinforcements[0] = AV_NUM_REINFORCEMENTS;
@@ -1419,11 +1477,11 @@ AlteracValley::AlteracValley(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t) :
 
 AlteracValley::~AlteracValley()
 {
-	for( uint8 x = 0; x < AV_NUM_CONTROL_POINTS; ++x )
+	for(uint8 x = 0; x < AV_NUM_CONTROL_POINTS; ++x)
 		delete m_nodes[x];
 }
 
-bool AlteracValley::HookSlowLockOpen(GameObject * pGo, Player * pPlayer, Spell * pSpell)
+bool AlteracValley::HookSlowLockOpen(GameObject* pGo, Player* pPlayer, Spell* pSpell)
 {
 	// burlex todo: find a cleaner way to do this that doesnt waste memory.
 	if(pGo->bannerslot >= 0 && pGo->bannerslot < AV_NUM_CONTROL_POINTS)
@@ -1436,33 +1494,33 @@ bool AlteracValley::HookSlowLockOpen(GameObject * pGo, Player * pPlayer, Spell *
 	return false;
 }
 
-void AlteracValley::HookFlagDrop(Player * plr, GameObject * obj)
+void AlteracValley::HookFlagDrop(Player* plr, GameObject* obj)
 {
 
 }
 
-void AlteracValley::HookFlagStand(Player * plr, GameObject * obj)
+void AlteracValley::HookFlagStand(Player* plr, GameObject* obj)
 {
 
 }
 
-void AlteracValley::HookOnMount(Player * plr)
+void AlteracValley::HookOnMount(Player* plr)
 {
 
 }
 
-void AlteracValley::HookOnAreaTrigger(Player * plr, uint32 id)
+void AlteracValley::HookOnAreaTrigger(Player* plr, uint32 id)
 {
 
 }
 
-bool AlteracValley::HookHandleRepop(Player * plr)
+bool AlteracValley::HookHandleRepop(Player* plr)
 {
 	uint32 x;
 	float dist = 999999.0f;
 	float dt;
 	LocationVector dest_pos;
-	if( plr->IsTeamHorde() )
+	if(plr->IsTeamHorde())
 		dest_pos.ChangeCoords(-1433.550903f, -608.329529f, 51.149689f);
 	else
 		dest_pos.ChangeCoords(876.434448f, -489.599579f, 96.517174f);
@@ -1472,15 +1530,15 @@ bool AlteracValley::HookHandleRepop(Player * plr)
 		for(x = 0; x < AV_NUM_CONTROL_POINTS; ++x)
 		{
 			// skip non-graveyards
-			if( !m_nodes[x]->m_template->m_isGraveyard )
+			if(!m_nodes[x]->m_template->m_isGraveyard)
 				continue;
 
 			// make sure they're owned by us
-			if( ( plr->IsTeamAlliance() && m_nodes[x]->m_state == AV_NODE_STATE_ALLIANCE_CONTROLLED ) ||
-				( plr->IsTeamHorde() && m_nodes[x]->m_state == AV_NODE_STATE_HORDE_CONTROLLED ) )
+			if((plr->IsTeamAlliance() && m_nodes[x]->m_state == AV_NODE_STATE_ALLIANCE_CONTROLLED) ||
+			        (plr->IsTeamHorde() && m_nodes[x]->m_state == AV_NODE_STATE_HORDE_CONTROLLED))
 			{
 				dt = plr->GetPositionNC().Distance2DSq(m_nodes[x]->m_template->m_graveyardLocation.x, m_nodes[x]->m_template->m_graveyardLocation.y);
-				if( dt < dist )
+				if(dt < dist)
 				{
 					// new one
 					dest_pos.ChangeCoords(m_nodes[x]->m_template->m_graveyardLocation.x, m_nodes[x]->m_template->m_graveyardLocation.y, m_nodes[x]->m_template->m_graveyardLocation.z);
@@ -1495,13 +1553,13 @@ bool AlteracValley::HookHandleRepop(Player * plr)
 	return false;
 }
 
-void AlteracValley::HookOnHK(Player * plr)
+void AlteracValley::HookOnHK(Player* plr)
 {
 	plr->m_bgScore.HonorableKills++;
 	UpdatePvPData();
 }
 
-void AlteracValley::DropFlag(Player * plr)
+void AlteracValley::DropFlag(Player* plr)
 {
 
 }
@@ -1515,7 +1573,7 @@ void AlteracValley::OnCreate()
 	SetWorldState(WORLDSTATE_AV_HORDE_SCORE, 600);
 
 	// Alliance Gate
-	GameObject *gate = SpawnGameObject(AV_GAMEOBJECT_GATE, GetMapMgr()->GetMapId(), 780.487f, -493.024f, 99.9553f, 3.0976f, 32, 114, 3.000000f);
+	GameObject* gate = SpawnGameObject(AV_GAMEOBJECT_GATE, GetMapMgr()->GetMapId(), 780.487f, -493.024f, 99.9553f, 3.0976f, 32, 114, 3.000000f);
 	gate->SetParentRotation(2, 0.0129570f);
 	gate->SetParentRotation(3, -0.0602880f);
 	gate->PushToWorld(m_mapMgr);
@@ -1532,11 +1590,11 @@ void AlteracValley::OnCreate()
 	{
 		for(uint32 j = 0; j < AV_NODE_STATE_COUNT; ++j)
 		{
-			if( g_nodeTemplates[i].m_worldStateFields[j] != 0 )
+			if(g_nodeTemplates[i].m_worldStateFields[j] != 0)
 				SetWorldState(g_nodeTemplates[i].m_worldStateFields[j], 0);
 		}
 	}
-	
+
 	for(uint8 x = 0; x < AV_NUM_CONTROL_POINTS; ++x)
 		m_nodes[x] = new AVNode(this, &g_nodeTemplates[x], x);
 
@@ -1555,8 +1613,10 @@ void AlteracValley::OnCreate()
 
 void AlteracValley::OnStart()
 {
-	for(uint32 i = 0; i < 2; ++i) {
-		for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr) {
+	for(uint32 i = 0; i < 2; ++i)
+	{
+		for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
+		{
 			(*itr)->RemoveAura(BG_PREPARATION);
 		}
 	}
@@ -1576,24 +1636,24 @@ void AlteracValley::OnStart()
 	sEventMgr.AddEvent(this, &AlteracValley::EventUpdateResources, EVENT_BATTLEGROUND_RESOURCEUPDATE, AV_REINFORCEMENT_ADD_INTERVAL, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 }
 
-void AlteracValley::OnAddPlayer(Player * plr)
-{	
+void AlteracValley::OnAddPlayer(Player* plr)
+{
 	if(!m_started)
 		plr->CastSpell(plr, BG_PREPARATION, true);
 
-	if( plr->IsTeamHorde() )
+	if(plr->IsTeamHorde())
 	{
-		plr->SetAtWar( 730, true );
-		plr->SetStanding( 730, -9000);
+		plr->SetAtWar(730, true);
+		plr->SetStanding(730, -9000);
 	}
 	else
 	{
-		plr->SetAtWar( 729, true );
-		plr->SetStanding( 729, -9000);
+		plr->SetAtWar(729, true);
+		plr->SetStanding(729, -9000);
 	}
 }
 
-void AlteracValley::OnRemovePlayer(Player * plr)
+void AlteracValley::OnRemovePlayer(Player* plr)
 {
 	plr->RemoveAura(BG_PREPARATION);
 }
@@ -1606,14 +1666,14 @@ LocationVector AlteracValley::GetStartingCoords(uint32 Team)
 		return LocationVector(876.434448f, -489.599579f, 96.517174f, 3.222486f);
 }
 
-void AlteracValley::HookOnPlayerDeath(Player * plr)
+void AlteracValley::HookOnPlayerDeath(Player* plr)
 {
 	RemoveReinforcements(plr->GetTeam(), AV_POINTS_ON_KILL);
 }
 
 void AlteracValley::AddReinforcements(uint32 teamId, uint32 amt)
 {
-	if( ((int32)( m_reinforcements[teamId] + amt )) > AV_NUM_REINFORCEMENTS )
+	if(((int32)(m_reinforcements[teamId] + amt)) > AV_NUM_REINFORCEMENTS)
 		m_reinforcements[teamId] = AV_NUM_REINFORCEMENTS;
 	else
 		m_reinforcements[teamId] += amt;
@@ -1623,7 +1683,7 @@ void AlteracValley::AddReinforcements(uint32 teamId, uint32 amt)
 
 void AlteracValley::RemoveReinforcements(uint32 teamId, uint32 amt)
 {
-	if( ((int32)( m_reinforcements[teamId] - amt )) < 0 )
+	if(((int32)(m_reinforcements[teamId] - amt)) < 0)
 		m_reinforcements[teamId] = 0;
 	else
 		m_reinforcements[teamId] -= amt;
@@ -1631,13 +1691,13 @@ void AlteracValley::RemoveReinforcements(uint32 teamId, uint32 amt)
 	SetWorldState(WORLDSTATE_AV_ALLIANCE_SCORE + teamId, m_reinforcements[teamId]);
 
 	// We've lost. :(
-	if( m_reinforcements[teamId] == 0 )
+	if(m_reinforcements[teamId] == 0)
 	{
-		Finish( teamId );
+		Finish(teamId);
 	}
 }
 
-void AlteracValley::HookOnPlayerKill(Player * plr, Player * pVictim)
+void AlteracValley::HookOnPlayerKill(Player* plr, Player* pVictim)
 {
 	if(pVictim->IsPlayer())
 	{
@@ -1646,58 +1706,58 @@ void AlteracValley::HookOnPlayerKill(Player * plr, Player * pVictim)
 	}
 }
 
-void AlteracValley::HookOnUnitKill(Player * plr, Unit * pVictim)
+void AlteracValley::HookOnUnitKill(Player* plr, Unit* pVictim)
 {
 	if(pVictim->IsPlayer())
 		return;
 
-	Player * plr2;
-	if(pVictim->GetEntry() == AV_NPC_GENERAL_VANNDAR_STORMPIKE) 
+	Player* plr2;
+	if(pVictim->GetEntry() == AV_NPC_GENERAL_VANNDAR_STORMPIKE)
 	{
 		Herald("The Stormpike General is dead!");
-		RemoveReinforcements( 0, AV_NUM_REINFORCEMENTS );
+		RemoveReinforcements(0, AV_NUM_REINFORCEMENTS);
 
 		for(set<Player*>::iterator itx = m_players[1].begin(); itx != m_players[1].end(); ++itx)
 		{
 			plr2 = (*itx);
 			if(!plr2) continue;
 
-			HonorHandler::AddHonorPointsToPlayer( plr2, 62);
+			HonorHandler::AddHonorPointsToPlayer(plr2, 62);
 		}
 	}
 	else if(pVictim->GetEntry() == AV_NPC_GENERAL_DREK_THAR)
 	{
 		Herald("The Frostwolf General is dead!");
-		RemoveReinforcements( 1, AV_NUM_REINFORCEMENTS );
+		RemoveReinforcements(1, AV_NUM_REINFORCEMENTS);
 
 		for(set<Player*>::iterator itx = m_players[0].begin(); itx != m_players[0].end(); ++itx)
 		{
 			plr2 = (*itx);
 			if(!plr2) continue;
 
-			HonorHandler::AddHonorPointsToPlayer( plr2, AV_HONOR_ON_KILL_BOSS );
+			HonorHandler::AddHonorPointsToPlayer(plr2, AV_HONOR_ON_KILL_BOSS);
 		}
 	}
 	else if(pVictim->GetEntry() == AV_NPC_CAPTAIN_GALVANGAR)
 	{
-		RemoveReinforcements( 1, AV_POINTS_ON_KILL_CAPTAIN );
+		RemoveReinforcements(1, AV_POINTS_ON_KILL_CAPTAIN);
 		for(set<Player*>::iterator itx = m_players[0].begin(); itx != m_players[0].end(); ++itx)
 		{
 			plr2 = (*itx);
 			if(!plr2) continue;
 
-			HonorHandler::AddHonorPointsToPlayer( plr2, AV_HONOR_ON_KILL_BOSS);
+			HonorHandler::AddHonorPointsToPlayer(plr2, AV_HONOR_ON_KILL_BOSS);
 		}
 	}
 	else if(pVictim->GetEntry() == AV_NPC_CAPTAIN_BALINDA_STONEHEARTH)
 	{
-		RemoveReinforcements( 0, AV_POINTS_ON_KILL_CAPTAIN );
+		RemoveReinforcements(0, AV_POINTS_ON_KILL_CAPTAIN);
 		for(set<Player*>::iterator itx = m_players[1].begin(); itx != m_players[1].end(); ++itx)
 		{
 			plr2 = (*itx);
 			if(!plr2) continue;
 
-			HonorHandler::AddHonorPointsToPlayer( plr2, AV_HONOR_ON_KILL_BOSS);
+			HonorHandler::AddHonorPointsToPlayer(plr2, AV_HONOR_ON_KILL_BOSS);
 		}
 	}
 	/*else if(pVictim->GetEntry() == AV_NPC_TASKMASTER_SNIVVLE)
@@ -1739,15 +1799,15 @@ void AlteracValley::Finish(uint32 losingTeam)
 	sEventMgr.AddEvent(TO< CBattleground* >(this), &CBattleground::Close, EVENT_BATTLEGROUND_CLOSE, 120000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 
 	/* add the marks of honor to all players */
-	SpellEntry * winner_spell = dbcSpell.LookupEntry(24955);
-	SpellEntry * loser_spell = dbcSpell.LookupEntry(24954);
+	SpellEntry* winner_spell = dbcSpell.LookupEntry(24955);
+	SpellEntry* loser_spell = dbcSpell.LookupEntry(24954);
 	for(uint32 i = 0; i < 2; ++i)
 	{
 		for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
 		{
 			(*itr)->Root();
 
-			if( (*itr)->HasFlag(PLAYER_FLAGS, 0x2) )
+			if((*itr)->HasFlag(PLAYER_FLAGS, 0x2))
 				continue;
 
 			if(i == losingTeam)
@@ -1771,13 +1831,14 @@ struct AVLoot
 	uint32 MaxCount;
 };
 
-const static AVLoot g_avLoot[] = {
-	
+const static AVLoot g_avLoot[] =
+{
+
 	// Alliance Loot
 	{ 17306,	0,		100.0f, 1, 1 },			// Stormpike Soldier's Blood
 	{ 17326,	0,		80.0, 1, 1 },				// Stormpike Soldier's Meat
 
-	// Horde Loot	
+	// Horde Loot
 	{ 17423,	1,		50.0f, 1, 1 },			// Crystal Cluster
 
 	// Global loot
@@ -1787,23 +1848,23 @@ const static AVLoot g_avLoot[] = {
 	{ 0, 0, 0},
 };
 
-void AlteracValley::HookGenerateLoot(Player *plr, Object *pCorpse)
+void AlteracValley::HookGenerateLoot(Player* plr, Object* pCorpse)
 {
-	const AVLoot *loot_ptr = &g_avLoot[0];
+	const AVLoot* loot_ptr = &g_avLoot[0];
 	while(loot_ptr->ItemId != 0)
 	{
-		if( loot_ptr->Faction == -1 || loot_ptr->Faction == static_cast<int8>( plr->GetTeam() ))
+		if(loot_ptr->Faction == -1 || loot_ptr->Faction == static_cast<int8>(plr->GetTeam()))
 		{
-			if( Rand(loot_ptr->Chance * sWorld.getRate(RATE_DROP0)) )
+			if(Rand(loot_ptr->Chance * sWorld.getRate(RATE_DROP0)))
 			{
 				__LootItem li;
-				ItemPrototype *pProto = ItemPrototypeStorage.LookupEntry(loot_ptr->ItemId);
-				if( pProto != NULL )
+				ItemPrototype* pProto = ItemPrototypeStorage.LookupEntry(loot_ptr->ItemId);
+				if(pProto != NULL)
 				{
 					li.ffa_loot = 0;
 					li.item.displayid = pProto->DisplayInfoID;
 					li.item.itemproto = pProto;
-					if( loot_ptr->MinCount != loot_ptr->MaxCount )
+					if(loot_ptr->MinCount != loot_ptr->MaxCount)
 						li.iItemsCount = RandomUInt(loot_ptr->MaxCount - loot_ptr->MinCount) + loot_ptr->MinCount;
 					else
 						li.iItemsCount = loot_ptr->MinCount;
@@ -1832,11 +1893,11 @@ void AlteracValley::HookGenerateLoot(Player *plr, Object *pCorpse)
 
 void AlteracValley::EventUpdateResources()
 {
-/*	for(uint32 i = 0; i < 2; i++)
-	{
-		AddReinforcements( i, m_mineControl[i] );
-	}
-	sEventMgr.AddEvent(this, &AlteracValley::EventUpdateResources, EVENT_BATTLEGROUND_RESOURCEUPDATE, 45000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);*/
+	/*	for(uint32 i = 0; i < 2; i++)
+		{
+			AddReinforcements( i, m_mineControl[i] );
+		}
+		sEventMgr.AddEvent(this, &AlteracValley::EventUpdateResources, EVENT_BATTLEGROUND_RESOURCEUPDATE, 45000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);*/
 }
 
 void AlteracValley::EventAssaultControlPoint(uint32 x)
@@ -1844,7 +1905,7 @@ void AlteracValley::EventAssaultControlPoint(uint32 x)
 	m_nodes[x]->Capture();
 }
 
-void AlteracValley::Herald(const char *format, ...)
+void AlteracValley::Herald(const char* format, ...)
 {
 	char msgbuf[100];
 	va_list ap;
@@ -1863,13 +1924,13 @@ void AlteracValley::Herald(const char *format, ...)
 	data << uint32(7);			// Herald
 	data << "Herald";			// Herald
 	data << uint64(0);
-	data << uint32(msglen+1);
+	data << uint32(msglen + 1);
 	data << msgbuf;
 	data << uint8(0x00);
 	DistributePacketToAll(&data);
 }
 
-void AlteracValley::HookOnFlagDrop(Player *plr)
+void AlteracValley::HookOnFlagDrop(Player* plr)
 {
 
 }

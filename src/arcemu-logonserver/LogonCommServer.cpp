@@ -23,10 +23,10 @@ typedef struct
 {
 	uint16 opcode;
 	uint32 size;
-}logonpacket;
+} logonpacket;
 #pragma pack(pop)
 
-static void swap32( uint32* p ) { *p = ((*p >> 24 & 0xff)) | ((*p >> 8) & 0xff00) | ((*p << 8) & 0xff0000) | (*p << 24); }
+static void swap32(uint32* p) { *p = ((*p >> 24 & 0xff)) | ((*p >> 8) & 0xff00) | ((*p << 8) & 0xff0000) | (*p << 24); }
 
 LogonCommServerSocket::LogonCommServerSocket(SOCKET fd) : Socket(fd, 65536, 524288)
 {
@@ -64,7 +64,7 @@ void LogonCommServerSocket::OnDisconnect()
 
 void LogonCommServerSocket::OnConnect()
 {
-	if( !IsServerAllowed(GetRemoteAddress().s_addr) )
+	if(!IsServerAllowed(GetRemoteAddress().s_addr))
 	{
 		LOG_ERROR("Server connection from %s:%u DENIED, not an allowed IP.", GetRemoteIP().c_str(), GetRemotePort());
 		Disconnect();
@@ -81,7 +81,7 @@ void LogonCommServerSocket::OnRead()
 	{
 		if(!remaining)
 		{
-			if( readBuffer.GetSize() < 6)
+			if(readBuffer.GetSize() < 6)
 				return;	 // no header
 
 			// read header
@@ -132,7 +132,8 @@ void LogonCommServerSocket::HandlePacket(WorldPacket & recvData)
 		return;
 	}
 
-	static logonpacket_handler Handlers[RMSG_COUNT] = {
+	static logonpacket_handler Handlers[RMSG_COUNT] =
+	{
 		NULL,												// RMSG_NULL
 		&LogonCommServerSocket::HandleRegister,				// RCMSG_REGISTER_REALM
 		NULL,												// RSMSG_REALM_REGISTERED
@@ -172,7 +173,7 @@ void LogonCommServerSocket::HandleRegister(WorldPacket & recvData)
 	recvData >> Name;
 	my_id = sInfoCore.GetRealmIdByName(Name);
 
-	if (my_id == -1)
+	if(my_id == -1)
 	{
 		my_id = sInfoCore.GenerateRealmID();
 		sLog.outString("Registering realm `%s` under ID %u.", Name.c_str(), my_id);
@@ -181,19 +182,19 @@ void LogonCommServerSocket::HandleRegister(WorldPacket & recvData)
 	{
 		sInfoCore.RemoveRealm(my_id);
 		int new_my_id = sInfoCore.GenerateRealmID(); //socket timout will DC old id after a while, make sure it's not the one we restarted
-		sLog.outString("Updating realm `%s` with ID %u to new ID %u.", Name.c_str(), my_id, new_my_id );
+		sLog.outString("Updating realm `%s` with ID %u to new ID %u.", Name.c_str(), my_id, new_my_id);
 		my_id = new_my_id;
 	}
 
-	Realm * realm = new Realm;
+	Realm* realm = new Realm;
 
-    realm->flags = 0;
-    realm->Icon = 0;
-    realm->TimeZone = 0;
-    realm->Population = 0;
-    realm->Lock = 0;
+	realm->flags = 0;
+	realm->Icon = 0;
+	realm->TimeZone = 0;
+	realm->Population = 0;
+	realm->Lock = 0;
 
-    realm->Name = Name;
+	realm->Name = Name;
 	realm->flags = 0;
 	recvData >> realm->Address >> realm->flags >> realm->Icon >> realm->TimeZone >> realm->Population >> realm->Lock;
 
@@ -229,7 +230,7 @@ void LogonCommServerSocket::HandleSessionRequest(WorldPacket & recvData)
 
 	// get sessionkey!
 	uint32 error = 0;
-	Account * acct = sAccountMgr.GetAccount(account_name);
+	Account* acct = sAccountMgr.GetAccount(account_name);
 	if(acct == NULL || acct->SessionKey == NULL)
 		error = 1;		  // Unauthorized user.
 
@@ -263,7 +264,7 @@ void LogonCommServerSocket::HandlePing(WorldPacket & recvData)
 	last_ping.SetVal((uint32)time(NULL));
 }
 
-void LogonCommServerSocket::SendPacket(WorldPacket * data)
+void LogonCommServerSocket::SendPacket(WorldPacket* data)
 {
 	bool rv;
 	BurstBegin();
@@ -277,14 +278,14 @@ void LogonCommServerSocket::SendPacket(WorldPacket * data)
 	if(use_crypto)
 		sendCrypto.Process((unsigned char*)&header, (unsigned char*)&header, 6);
 
-	rv=BurstSend((uint8*)&header, 6);
+	rv = BurstSend((uint8*)&header, 6);
 
 	if(data->size() > 0 && rv)
 	{
 		if(use_crypto)
 			sendCrypto.Process((unsigned char*)data->contents(), (unsigned char*)data->contents(), (uint32)data->size());
 
-		rv=BurstSend(data->contents(), (uint32)data->size());
+		rv = BurstSend(data->contents(), (uint32)data->size());
 	}
 
 	if(rv) BurstPush();
@@ -364,7 +365,7 @@ void LogonCommServerSocket::HandleMappingReply(WorldPacket & recvData)
 	uint32 count;
 	uint32 realm_id;
 	buf >> realm_id;
-	Realm * realm = sInfoCore.GetRealm(realm_id);
+	Realm* realm = sInfoCore.GetRealm(realm_id);
 	if(!realm)
 		return;
 
@@ -380,7 +381,7 @@ void LogonCommServerSocket::HandleMappingReply(WorldPacket & recvData)
 		if(itr != realm->CharacterMap.end())
 			itr->second = number_of_characters;
 		else
-			realm->CharacterMap.insert( make_pair( account_id, number_of_characters ) );
+			realm->CharacterMap.insert(make_pair(account_id, number_of_characters));
 	}
 
 	sInfoCore.getRealmLock().Release();
@@ -393,7 +394,7 @@ void LogonCommServerSocket::HandleUpdateMapping(WorldPacket & recvData)
 	uint8 chars_to_add;
 	recvData >> realm_id;
 
-	Realm * realm = sInfoCore.GetRealm(realm_id);
+	Realm* realm = sInfoCore.GetRealm(realm_id);
 	if(!realm)
 		return;
 
@@ -404,7 +405,7 @@ void LogonCommServerSocket::HandleUpdateMapping(WorldPacket & recvData)
 	if(itr != realm->CharacterMap.end())
 		itr->second += chars_to_add;
 	else
-		realm->CharacterMap.insert( make_pair( account_id, chars_to_add ) );
+		realm->CharacterMap.insert(make_pair(account_id, chars_to_add));
 
 	sInfoCore.getRealmLock().Release();
 }
@@ -422,7 +423,7 @@ void LogonCommServerSocket::HandleTestConsoleLogin(WorldPacket & recvData)
 
 	data << request;
 
-	Account * pAccount = sAccountMgr.GetAccount(accountname);
+	Account* pAccount = sAccountMgr.GetAccount(accountname);
 	if(pAccount == NULL)
 	{
 		data << uint32(0);
@@ -448,95 +449,100 @@ void LogonCommServerSocket::HandleTestConsoleLogin(WorldPacket & recvData)
 	SendPacket(&data);
 }
 
-void LogonCommServerSocket::HandleDatabaseModify(WorldPacket& recvData)
+void LogonCommServerSocket::HandleDatabaseModify(WorldPacket & recvData)
 {
 	uint32 method;
 	recvData >> method;
 
 	switch(method)
 	{
-	case 1:			// set account ban
-		{
-			string account;
-			string banreason;
-			uint32 duration;
-			recvData >> account >> duration >> banreason;
+		case 1:			// set account ban
+			{
+				string account;
+				string banreason;
+				uint32 duration;
+				recvData >> account >> duration >> banreason;
 
-			// remember we expect this in uppercase
-			arcemu_TOUPPER(account);
+				// remember we expect this in uppercase
+				arcemu_TOUPPER(account);
 
-			Account * pAccount = sAccountMgr.GetAccount(account);
-			if( pAccount == NULL )
-				return;
+				Account* pAccount = sAccountMgr.GetAccount(account);
+				if(pAccount == NULL)
+					return;
 
-			pAccount->Banned = duration;
+				pAccount->Banned = duration;
 
-			// update it in the sql (duh)
-			sLogonSQL->Execute("UPDATE accounts SET banned = %u, banreason = '%s' WHERE login = \"%s\"", duration, sLogonSQL->EscapeString( banreason ).c_str(), sLogonSQL->EscapeString(account).c_str());
+				// update it in the sql (duh)
+				sLogonSQL->Execute("UPDATE accounts SET banned = %u, banreason = '%s' WHERE login = \"%s\"", duration, sLogonSQL->EscapeString(banreason).c_str(), sLogonSQL->EscapeString(account).c_str());
 
-		}break;
+			}
+			break;
 
-	case 2:		// set gm
-		{
-			string account;
-			string gm;
-			recvData >> account >> gm;
+		case 2:		// set gm
+			{
+				string account;
+				string gm;
+				recvData >> account >> gm;
 
-			// remember we expect this in uppercase
-			arcemu_TOUPPER(account);
+				// remember we expect this in uppercase
+				arcemu_TOUPPER(account);
 
-			Account * pAccount = sAccountMgr.GetAccount(account);
-			if( pAccount == NULL )
-				return;
+				Account* pAccount = sAccountMgr.GetAccount(account);
+				if(pAccount == NULL)
+					return;
 
-			pAccount->SetGMFlags( account.c_str() );
+				pAccount->SetGMFlags(account.c_str());
 
-			// update it in the sql (duh)
-			sLogonSQL->Execute("UPDATE accounts SET gm = \"%s\" WHERE login = \"%s\"", sLogonSQL->EscapeString(gm).c_str(), sLogonSQL->EscapeString(account).c_str());
+				// update it in the sql (duh)
+				sLogonSQL->Execute("UPDATE accounts SET gm = \"%s\" WHERE login = \"%s\"", sLogonSQL->EscapeString(gm).c_str(), sLogonSQL->EscapeString(account).c_str());
 
-		}break;
+			}
+			break;
 
-	case 3:		// set mute
-		{
-			string account;
-			uint32 duration;
-			recvData >> account >> duration;
+		case 3:		// set mute
+			{
+				string account;
+				uint32 duration;
+				recvData >> account >> duration;
 
-			// remember we expect this in uppercase
-			arcemu_TOUPPER(account);
+				// remember we expect this in uppercase
+				arcemu_TOUPPER(account);
 
-			Account * pAccount = sAccountMgr.GetAccount(account);
-			if( pAccount == NULL )
-				return;
+				Account* pAccount = sAccountMgr.GetAccount(account);
+				if(pAccount == NULL)
+					return;
 
-			pAccount->Muted = duration;
+				pAccount->Muted = duration;
 
-			// update it in the sql (duh)
-			sLogonSQL->Execute("UPDATE accounts SET muted = %u WHERE login = \"%s\"", duration, sLogonSQL->EscapeString(account).c_str());
-		}break;
+				// update it in the sql (duh)
+				sLogonSQL->Execute("UPDATE accounts SET muted = %u WHERE login = \"%s\"", duration, sLogonSQL->EscapeString(account).c_str());
+			}
+			break;
 
-	case 4:		// ip ban add
-		{
-			string ip;
-			string banreason;
-			uint32 duration;
+		case 4:		// ip ban add
+			{
+				string ip;
+				string banreason;
+				uint32 duration;
 
-			recvData >> ip >> duration >> banreason;
+				recvData >> ip >> duration >> banreason;
 
-			if( sIPBanner.Add( ip.c_str(), duration ) )
-				sLogonSQL->Execute("INSERT INTO ipbans VALUES(\"%s\", %u, \"%s\")", sLogonSQL->EscapeString(ip).c_str(), duration, sLogonSQL->EscapeString(banreason).c_str() );
+				if(sIPBanner.Add(ip.c_str(), duration))
+					sLogonSQL->Execute("INSERT INTO ipbans VALUES(\"%s\", %u, \"%s\")", sLogonSQL->EscapeString(ip).c_str(), duration, sLogonSQL->EscapeString(banreason).c_str());
 
-		}break;
+			}
+			break;
 
-	case 5:		// ip ban remove
-		{
-			string ip;
-			recvData >> ip;
+		case 5:		// ip ban remove
+			{
+				string ip;
+				recvData >> ip;
 
-			if( sIPBanner.Remove( ip.c_str() ) )
-				sLogonSQL->Execute("DELETE FROM ipbans WHERE ip = \"%s\"", sLogonSQL->EscapeString(ip).c_str());
+				if(sIPBanner.Remove(ip.c_str()))
+					sLogonSQL->Execute("DELETE FROM ipbans WHERE ip = \"%s\"", sLogonSQL->EscapeString(ip).c_str());
 
-		}break;
+			}
+			break;
 
 	}
 }
@@ -556,7 +562,7 @@ void LogonCommServerSocket::RefreshRealmsPop()
 
 	WorldPacket data(RSMSG_REALM_POP_REQ, 4);
 	set<uint32>::iterator itr = server_ids.begin();
-	for( ; itr != server_ids.end() ; itr++ )
+	for(; itr != server_ids.end() ; itr++)
 	{
 		data.clear();
 		data << (*itr);

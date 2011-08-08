@@ -25,7 +25,7 @@
 #include "StdAfx.h"
 #include <svn_revision.h>
 
-bool ChatHandler::ShowHelpForCommand(WorldSession *m_session, ChatCommand *table, const char* cmd)
+bool ChatHandler::ShowHelpForCommand(WorldSession* m_session, ChatCommand* table, const char* cmd)
 {
 	for(uint32 i = 0; table[i].Name != NULL; i++)
 	{
@@ -56,7 +56,7 @@ bool ChatHandler::ShowHelpForCommand(WorldSession *m_session, ChatCommand *table
 	return false;
 }
 
-bool ChatHandler::HandleHelpCommand(const char* args, WorldSession *m_session)
+bool ChatHandler::HandleHelpCommand(const char* args, WorldSession* m_session)
 {
 //	ChatCommand *table = getCommandTable();
 	WorldPacket data;
@@ -77,9 +77,9 @@ bool ChatHandler::HandleHelpCommand(const char* args, WorldSession *m_session)
 }
 
 
-bool ChatHandler::HandleCommandsCommand(const char* args, WorldSession *m_session)
+bool ChatHandler::HandleCommandsCommand(const char* args, WorldSession* m_session)
 {
-	ChatCommand *table = CommandTableStorage::getSingleton().Get();
+	ChatCommand* table = CommandTableStorage::getSingleton().Get();
 	WorldPacket data;
 
 	std::string output;
@@ -97,33 +97,34 @@ bool ChatHandler::HandleCommandsCommand(const char* args, WorldSession *m_sessio
 
 		switch(table[i].CommandGroup)
 		{
-		case 'z':
-			{
-				output+="|cffff6060";
-				output+=table[i].Name;
-				output+="|r, ";
-			}
-			break;
-		case 'm':
-			{
-				output+="|cff00ffff";
-				output+=table[i].Name;
-				output+=", ";
-			}
-			break;
-		case 'c':
-			{
-				output += "|cff00ff00";
-				output += table[i].Name;
-				output += "|r, ";
-			}break;
-		default:
-			{
-				output+="|cff00ccff";
-				output+=table[i].Name;
-				output+="|r, ";
-			}
-			break;
+			case 'z':
+				{
+					output += "|cffff6060";
+					output += table[i].Name;
+					output += "|r, ";
+				}
+				break;
+			case 'm':
+				{
+					output += "|cff00ffff";
+					output += table[i].Name;
+					output += ", ";
+				}
+				break;
+			case 'c':
+				{
+					output += "|cff00ff00";
+					output += table[i].Name;
+					output += "|r, ";
+				}
+				break;
+			default:
+				{
+					output += "|cff00ccff";
+					output += table[i].Name;
+					output += "|r, ";
+				}
+				break;
 		}
 
 		count++;
@@ -137,8 +138,8 @@ bool ChatHandler::HandleCommandsCommand(const char* args, WorldSession *m_sessio
 		output += "\n";
 
 
-		//FillSystemMessageData(&data, table[i].Name);
-		//m_session->SendPacket(&data);
+	//FillSystemMessageData(&data, table[i].Name);
+	//m_session->SendPacket(&data);
 	//}
 
 	SendMultilineMessage(m_session, output.c_str());
@@ -146,10 +147,10 @@ bool ChatHandler::HandleCommandsCommand(const char* args, WorldSession *m_sessio
 	return true;
 }
 
-bool ChatHandler::HandleStartCommand(const char* args, WorldSession *m_session)
+bool ChatHandler::HandleStartCommand(const char* args, WorldSession* m_session)
 {
 	std::string race;
-	Player *m_plyr = getSelectedChar(m_session, false);
+	Player* m_plyr = getSelectedChar(m_session, false);
 	if(m_plyr == NULL)
 		return false;
 
@@ -194,10 +195,10 @@ bool ChatHandler::HandleStartCommand(const char* args, WorldSession *m_session)
 		race = "his";
 	}
 	// find the first matching one
-	PlayerCreateInfo *info = NULL;
+	PlayerCreateInfo* info = NULL;
 	for(uint8 i = 1; i <= 11; i++)
 	{
-		info = objmgr.GetPlayerCreateInfo( ( raceid ? raceid : i ), ( classid ? classid : i ) );
+		info = objmgr.GetPlayerCreateInfo((raceid ? raceid : i), (classid ? classid : i));
 		if(info != NULL)
 			break;
 	}
@@ -215,7 +216,7 @@ bool ChatHandler::HandleStartCommand(const char* args, WorldSession *m_session)
 }
 
 
-bool ChatHandler::HandleInfoCommand(const char* args, WorldSession *m_session)
+bool ChatHandler::HandleInfoCommand(const char* args, WorldSession* m_session)
 {
 	WorldPacket data;
 
@@ -227,7 +228,7 @@ bool ChatHandler::HandleInfoCommand(const char* args, WorldSession *m_session)
 	int avg = 0;
 	PlayerStorageMap::const_iterator itr;
 	objmgr._playerslock.AcquireReadLock();
-	for (itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
+	for(itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
 	{
 		if(itr->second->GetSession())
 		{
@@ -239,43 +240,43 @@ bool ChatHandler::HandleInfoCommand(const char* args, WorldSession *m_session)
 	}
 	objmgr._playerslock.ReleaseReadLock();
 	GreenSystemMessage(m_session, "Server Revision: |r%sArcEmu r%u/%s-%s-%s %s(www.arcemu.org)", MSG_COLOR_WHITE,
-		BUILD_REVISION, CONFIG, PLATFORM_TEXT, ARCH, MSG_COLOR_LIGHTBLUE);
+	                   BUILD_REVISION, CONFIG, PLATFORM_TEXT, ARCH, MSG_COLOR_LIGHTBLUE);
 	GreenSystemMessage(m_session, "Server Uptime: |r%s", sWorld.GetUptimeString().c_str());
-	GreenSystemMessage(m_session, "Current Players: |r%d (%d GMs) (%u Peak)", count, gm,sWorld.PeakSessionCount);
+	GreenSystemMessage(m_session, "Current Players: |r%d (%d GMs) (%u Peak)", count, gm, sWorld.PeakSessionCount);
 	GreenSystemMessage(m_session, "Active Thread Count: |r%u", ThreadPool.GetActiveThreadCount());
 	GreenSystemMessage(m_session, "Free Thread Count: |r%u", ThreadPool.GetFreeThreadCount());
 	GreenSystemMessage(m_session, "Average Latency: |r%.3fms", ((float)avg / (float)count));
-	GreenSystemMessage(m_session, "CPU Usage: %3.2f %%", sWorld.GetCPUUsage() );
-	GreenSystemMessage(m_session, "RAM Usage: %4.2f MB", sWorld.GetRAMUsage() );
+	GreenSystemMessage(m_session, "CPU Usage: %3.2f %%", sWorld.GetCPUUsage());
+	GreenSystemMessage(m_session, "RAM Usage: %4.2f MB", sWorld.GetRAMUsage());
 	GreenSystemMessage(m_session, "SQL Query Cache Size (World): |r%u queries delayed", WorldDatabase.GetQueueSize());
 	GreenSystemMessage(m_session, "SQL Query Cache Size (Character): |r%u queries delayed", CharacterDatabase.GetQueueSize());
-	
+
 	return true;
 }
 
-bool ChatHandler::HandleNetworkStatusCommand(const char* args, WorldSession *m_session)
+bool ChatHandler::HandleNetworkStatusCommand(const char* args, WorldSession* m_session)
 {
 	//sSocketMgr.ShowStatus();
 	return true;
 }
 
-bool ChatHandler::HandleNYICommand(const char* args, WorldSession *m_session)
+bool ChatHandler::HandleNYICommand(const char* args, WorldSession* m_session)
 {
 	RedSystemMessage(m_session, "Not yet implemented.");
 	return true;
 }
 
-bool ChatHandler::HandleDismountCommand(const char* args, WorldSession *m_session)
+bool ChatHandler::HandleDismountCommand(const char* args, WorldSession* m_session)
 {
-	Unit *m_target = NULL;
+	Unit* m_target = NULL;
 
-	Player *p_target = getSelectedChar(m_session, false);
+	Player* p_target = getSelectedChar(m_session, false);
 
 	if(p_target)
 		m_target = p_target;
 	else
 	{
-		Creature *m_crt = getSelectedCreature(m_session, false);
+		Creature* m_crt = getSelectedCreature(m_session, false);
 		if(m_crt)
 			m_target = m_crt;
 	}
@@ -292,10 +293,10 @@ bool ChatHandler::HandleDismountCommand(const char* args, WorldSession *m_sessio
 		return true;
 	}
 
-	if( p_target != NULL )
+	if(p_target != NULL)
 		p_target->Dismount();
 
-	m_target->SetUInt32Value( UNIT_FIELD_MOUNTDISPLAYID , 0);
+	m_target->SetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID , 0);
 	//m_target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_MOUNTED_TAXI);
 
 	BlueSystemMessage(m_session, "Now unmounted.");
@@ -303,13 +304,13 @@ bool ChatHandler::HandleDismountCommand(const char* args, WorldSession *m_sessio
 }
 
 
-bool ChatHandler::HandleSaveCommand(const char* args, WorldSession *m_session)
+bool ChatHandler::HandleSaveCommand(const char* args, WorldSession* m_session)
 {
-	Player *p_target = getSelectedChar(m_session, false);
+	Player* p_target = getSelectedChar(m_session, false);
 	if(p_target == NULL)
 		return false;
 
-	if(p_target->m_nextSave < 300000 ) //5min out of 10 left so 5 min since last save
+	if(p_target->m_nextSave < 300000)  //5min out of 10 left so 5 min since last save
 	{
 		p_target->SaveToDB(false);
 		GreenSystemMessage(m_session, "Player %s saved to DB", p_target->GetName());
@@ -321,7 +322,7 @@ bool ChatHandler::HandleSaveCommand(const char* args, WorldSession *m_session)
 	return true;
 }
 
-bool ChatHandler::HandleGMListCommand(const char* args, WorldSession *m_session)
+bool ChatHandler::HandleGMListCommand(const char* args, WorldSession* m_session)
 {
 	WorldPacket data;
 	bool first = true;
@@ -330,7 +331,7 @@ bool ChatHandler::HandleGMListCommand(const char* args, WorldSession *m_session)
 
 	PlayerStorageMap::const_iterator itr;
 	objmgr._playerslock.AcquireReadLock();
-	for (itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
+	for(itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
 	{
 		if(itr->second->GetSession()->GetPermissionCount())
 		{
@@ -361,13 +362,13 @@ bool ChatHandler::HandleGMListCommand(const char* args, WorldSession *m_session)
 	return true;
 }
 
-bool ChatHandler::HandleGMStatusCommand(const char* args, WorldSession *m_session)
+bool ChatHandler::HandleGMStatusCommand(const char* args, WorldSession* m_session)
 {
 	if(m_session->GetPlayer()->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_GM))
 		BlueSystemMessage(m_session, "GM Flag: On");
 	else
 		BlueSystemMessage(m_session, "GM Flag: Off");
-	
+
 	if(m_session->GetPlayer()->m_isGmInvisible)
 		BlueSystemMessage(m_session, "GM Invis: On");
 	else
@@ -376,52 +377,52 @@ bool ChatHandler::HandleGMStatusCommand(const char* args, WorldSession *m_sessio
 	return true;
 }
 
-bool ChatHandler::HandleRangeCheckCommand( const char *args , WorldSession *m_session )
+bool ChatHandler::HandleRangeCheckCommand(const char* args , WorldSession* m_session)
 {
 	WorldPacket data;
 	uint64 guid = m_session->GetPlayer()->GetSelection();
-	m_session->SystemMessage( "=== RANGE CHECK ===" );
+	m_session->SystemMessage("=== RANGE CHECK ===");
 	if(guid == 0)
 	{
 		m_session->SystemMessage("No selection.");
 		return true;
 	}
 
-	Unit *unit = m_session->GetPlayer()->GetMapMgr()->GetUnit( guid );
+	Unit* unit = m_session->GetPlayer()->GetMapMgr()->GetUnit(guid);
 	if(!unit)
 	{
 		m_session->SystemMessage("Invalid selection.");
 		return true;
 	}
-	float DistSq = unit->GetDistanceSq( m_session->GetPlayer() );
-	m_session->SystemMessage( "GetDistanceSq  :   %u" , float2int32( DistSq ) );
-	LocationVector locvec( m_session->GetPlayer()->GetPositionX() , m_session->GetPlayer()->GetPositionY() , m_session->GetPlayer()->GetPositionZ() );
-	float DistReal = unit->CalcDistance( locvec );
-	m_session->SystemMessage( "CalcDistance   :   %u" , float2int32( DistReal ) );
-	float Dist2DSq = unit->GetDistance2dSq( m_session->GetPlayer() );
-	m_session->SystemMessage( "GetDistance2dSq:   %u" , float2int32( Dist2DSq ) );
+	float DistSq = unit->GetDistanceSq(m_session->GetPlayer());
+	m_session->SystemMessage("GetDistanceSq  :   %u" , float2int32(DistSq));
+	LocationVector locvec(m_session->GetPlayer()->GetPositionX() , m_session->GetPlayer()->GetPositionY() , m_session->GetPlayer()->GetPositionZ());
+	float DistReal = unit->CalcDistance(locvec);
+	m_session->SystemMessage("CalcDistance   :   %u" , float2int32(DistReal));
+	float Dist2DSq = unit->GetDistance2dSq(m_session->GetPlayer());
+	m_session->SystemMessage("GetDistance2dSq:   %u" , float2int32(Dist2DSq));
 	return true;
 }
 
-bool ChatHandler::HandleGmLogCommentCommand( const char *args , WorldSession *m_session )
+bool ChatHandler::HandleGmLogCommentCommand(const char* args , WorldSession* m_session)
 {
 	if(!args || !strlen(args)) return false;
-	BlueSystemMessage(m_session, "Added Logcomment: %s",args);
-	sGMLog.writefromsession(m_session,"Logcomment: %s", args);
+	BlueSystemMessage(m_session, "Added Logcomment: %s", args);
+	sGMLog.writefromsession(m_session, "Logcomment: %s", args);
 	return true;
 }
 
-bool ChatHandler::HandleRatingsCommand( const char *args , WorldSession *m_session )
+bool ChatHandler::HandleRatingsCommand(const char* args , WorldSession* m_session)
 {
 	m_session->SystemMessage("Ratings!!!");
 	Player* m_plyr = getSelectedChar(m_session, false);
 
-	if( m_plyr == NULL )
+	if(m_plyr == NULL)
 		return false;
 
-	for( uint32 i = 0; i < 24; i++ )
+	for(uint32 i = 0; i < 24; i++)
 	{
-		m_plyr->ModUnsigned32Value( PLAYER_FIELD_COMBAT_RATING_1 + i, i );
+		m_plyr->ModUnsigned32Value(PLAYER_FIELD_COMBAT_RATING_1 + i, i);
 	}
 	m_plyr->UpdateStats();
 	return true;
@@ -432,10 +433,10 @@ float CalculateDistance(float x1, float y1, float z1, float x2, float y2, float 
 	float dx = x1 - x2;
 	float dy = y1 - y2;
 	float dz = z1 - z2;
-	return sqrt(dx*dx + dy*dy + dz*dz);
+	return sqrt(dx * dx + dy * dy + dz * dz);
 }
 
-bool ChatHandler::HandleSimpleDistanceCommand( const char *args , WorldSession *m_session )
+bool ChatHandler::HandleSimpleDistanceCommand(const char* args , WorldSession* m_session)
 {
 	float toX, toY, toZ;
 	if(sscanf(args, "%f %f %f", &toX, &toY, &toZ) != 3)
@@ -445,48 +446,48 @@ bool ChatHandler::HandleSimpleDistanceCommand( const char *args , WorldSession *
 		return false;
 
 	float distance = CalculateDistance(
-		m_session->GetPlayer()->GetPositionX(),
-		m_session->GetPlayer()->GetPositionY(),
-		m_session->GetPlayer()->GetPositionZ(),
-		toX, toY, toZ);
+	                     m_session->GetPlayer()->GetPositionX(),
+	                     m_session->GetPlayer()->GetPositionY(),
+	                     m_session->GetPlayer()->GetPositionZ(),
+	                     toX, toY, toZ);
 
 	m_session->SystemMessage("Your distance to location (%f, %f, %f) is %0.2f meters.",
-		toX, toY, toZ, distance);
+	                         toX, toY, toZ, distance);
 
 	return true;
 }
 
-bool ChatHandler::HandleSendFailed( const char *args , WorldSession *m_session )
+bool ChatHandler::HandleSendFailed(const char* args , WorldSession* m_session)
 {
-	Player* plr = getSelectedChar( m_session, true );
-	if( plr == NULL )
+	Player* plr = getSelectedChar(m_session, true);
+	if(plr == NULL)
 		return false;
 
-	uint32 fail = atol( args );
-	if( SPELL_CANCAST_OK < fail )
+	uint32 fail = atol(args);
+	if(SPELL_CANCAST_OK < fail)
 	{
-		RedSystemMessage( m_session, "Argument %u is out of range!", fail );
+		RedSystemMessage(m_session, "Argument %u is out of range!", fail);
 		return false;
 	}
-	plr->SendCastResult( 1, ( uint8 )fail, 0, 0 );
+	plr->SendCastResult(1, (uint8)fail, 0, 0);
 	return true;
 }
 
-bool ChatHandler::HandlePlayMovie( const char *args, WorldSession *m_session )
+bool ChatHandler::HandlePlayMovie(const char* args, WorldSession* m_session)
 {
-	Player* plr = getSelectedChar( m_session, true );
-	if( plr == NULL )
+	Player* plr = getSelectedChar(m_session, true);
+	if(plr == NULL)
 		return false;
 
-	uint32 movie = atol( args );
-	
-	plr->SendTriggerMovie( movie );
+	uint32 movie = atol(args);
 
-	SystemMessage( m_session, "Movie started." );
+	plr->SendTriggerMovie(movie);
+
+	SystemMessage(m_session, "Movie started.");
 	return true;
 }
 
-bool ChatHandler::HandleAuraUpdateAdd( const char *args, WorldSession *m_session )
+bool ChatHandler::HandleAuraUpdateAdd(const char* args, WorldSession* m_session)
 {
 	if(!args)
 		return false;
@@ -497,22 +498,22 @@ bool ChatHandler::HandleAuraUpdateAdd( const char *args, WorldSession *m_session
 	if(sscanf(args, "%u 0x%X %i", &SpellID, &Flags, &StackCount) != 3 && sscanf(args, "%u %u %i", &SpellID, &Flags, &StackCount) != 3)
 		return false;
 
-	Player * Pl = m_session->GetPlayer();
-	if(Aura * AuraPtr = Pl->FindAura(SpellID))
+	Player* Pl = m_session->GetPlayer();
+	if(Aura* AuraPtr = Pl->FindAura(SpellID))
 	{
 		uint8 VisualSlot = AuraPtr->m_visualSlot;
-		Pl->SendAuraUpdate( AuraPtr->m_auraSlot, false );
+		Pl->SendAuraUpdate(AuraPtr->m_auraSlot, false);
 		SystemMessage(m_session, "SMSG_AURA_UPDATE (update): VisualSlot %u - SpellID %u - Flags %i (0x%04X) - StackCount %i", VisualSlot, SpellID, Flags, Flags, StackCount);
 	}
 	else
 	{
-		SpellEntry * Sp = dbcSpell.LookupEntryForced(SpellID);
+		SpellEntry* Sp = dbcSpell.LookupEntryForced(SpellID);
 		if(!Sp)
 		{
 			SystemMessage(m_session, "SpellID %u is invalid.", SpellID);
 			return true;
 		}
-		Spell * SpellPtr = sSpellFactoryMgr.NewSpell(Pl, Sp, false, NULL);
+		Spell* SpellPtr = sSpellFactoryMgr.NewSpell(Pl, Sp, false, NULL);
 		AuraPtr = sSpellFactoryMgr.NewAura(Sp, SpellPtr->GetDuration(), Pl, Pl);
 		Pl->AddAura(AuraPtr); // Serves purpose to just add the aura to our auraslots
 		SystemMessage(m_session, "SMSG_AURA_UPDATE (add): VisualSlot %u - SpellID %u - Flags %i (0x%04X) - StackCount %i", AuraPtr->m_visualSlot, SpellID, Flags, Flags, StackCount);
@@ -521,17 +522,17 @@ bool ChatHandler::HandleAuraUpdateAdd( const char *args, WorldSession *m_session
 	return true;
 }
 
-bool ChatHandler::HandleAuraUpdateRemove( const char *args, WorldSession *m_session )
+bool ChatHandler::HandleAuraUpdateRemove(const char* args, WorldSession* m_session)
 {
 	if(!args)
 		return false;
 
-	char * pArgs = strtok((char*)args, " ");
+	char* pArgs = strtok((char*)args, " ");
 	if(!pArgs)
 		return false;
 	uint8 VisualSlot = (uint8)atoi(pArgs);
-	Player * Pl = m_session->GetPlayer();
-	Aura * AuraPtr = Pl->FindAura(Pl->m_auravisuals[VisualSlot]);
+	Player* Pl = m_session->GetPlayer();
+	Aura* AuraPtr = Pl->FindAura(Pl->m_auravisuals[VisualSlot]);
 	if(!AuraPtr)
 	{
 		SystemMessage(m_session, "No auraid found in slot %u", VisualSlot);
@@ -542,21 +543,22 @@ bool ChatHandler::HandleAuraUpdateRemove( const char *args, WorldSession *m_sess
 	return true;
 }
 
-bool ChatHandler::HandlePhaseCommand( const char *args , WorldSession *m_session )
+bool ChatHandler::HandlePhaseCommand(const char* args , WorldSession* m_session)
 {
-	Player *p_target = getSelectedChar(m_session, false);
+	Player* p_target = getSelectedChar(m_session, false);
 	if(p_target == NULL)
 		return false;
 
-	if(strlen(args)<1) {
-		SystemMessage(m_session, "%s phase:%s%u",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,p_target->GetPhase());
+	if(strlen(args) < 1)
+	{
+		SystemMessage(m_session, "%s phase:%s%u", MSG_COLOR_GREEN, MSG_COLOR_LIGHTBLUE, p_target->GetPhase());
 		return true;
 	}
 
 	uint32 i = atoi(args);
 	p_target->Phase(PHASE_SET, i);
 
-	if( p_target->GetSession() )
+	if(p_target->GetSession())
 	{
 		WorldPacket data(SMSG_SET_PHASE_SHIFT, 4);
 		data << i;

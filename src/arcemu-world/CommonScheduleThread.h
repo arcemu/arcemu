@@ -18,31 +18,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
- /*
-   Cebernic : This thread watching global schedule and execute it.
- */
+/*
+  Cebernic : This thread watching global schedule and execute it.
+*/
 
 #ifndef _COMMONSCHEDULETHREAD_
 #define _COMMONSCHEDULETHREAD_
 
 class CommonScheduleThread : public CThread
 {
-	bool m_running;
-	bool m_busy;
-	std::multimap<uint32,uint32>::iterator itOrderMSGEntry;
+		bool m_running;
+		bool m_busy;
+		std::multimap<uint32, uint32>::iterator itOrderMSGEntry;
 
-	uint32 BCTimerCount;
+		uint32 BCTimerCount;
 
-	Arcemu::Threading::ConditionVariable cond;
+		Arcemu::Threading::ConditionVariable cond;
 
-public:
-	CommonScheduleThread();
-	~CommonScheduleThread();
+	public:
+		CommonScheduleThread();
+		~CommonScheduleThread();
 
-	bool run();
-	void terminate();
+		bool run();
+		void terminate();
 
-	void BroadCastExec();
+		void BroadCastExec();
 };
 
 #endif

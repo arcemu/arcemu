@@ -501,10 +501,10 @@ struct CharTitlesEntry
 
 struct CurrencyTypesEntry
 {
-    //uint32    ID;                                       // 0 not used
-    uint32    ItemId;                                     // 1 used as real index
-    //uint32    Category;                                 // 2 may be category
-    uint32    BitIndex;                                   // 3 bit index in PLAYER_FIELD_KNOWN_CURRENCIES (1 << (index-1))
+	//uint32    ID;                                       // 0 not used
+	uint32    ItemId;                                     // 1 used as real index
+	//uint32    Category;                                 // 2 may be category
+	uint32    BitIndex;                                   // 3 bit index in PLAYER_FIELD_KNOWN_CURRENCIES (1 << (index-1))
 };
 
 struct ItemSetEntry
@@ -524,7 +524,7 @@ struct ItemSetEntry
 struct ItemLimitCategoryEntry
 {
 	uint32 Id;					// 0	- Id
-	char * name;				// 1	- Displayed name
+	char* name;				// 1	- Displayed name
 	uint32 maxAmount;			// 18	- Max amount of items
 	uint32 equippedFlag;		// 19	- equipped (bool?)
 };
@@ -612,7 +612,8 @@ struct EnchantEntry
 
 };
 
-struct GemPropertyEntry{
+struct GemPropertyEntry
+{
 	uint32 Entry;
 	uint32 EnchantmentID;
 	uint32 unk1;//bool
@@ -630,9 +631,9 @@ struct GlyphPropertyEntry	//GlyphProperties.dbc
 
 struct GlyphSlotEntry
 {
-        uint32 Id;
-        uint32 Type;
-        uint32 Slot;
+	uint32 Id;
+	uint32 Type;
+	uint32 Slot;
 };
 
 struct skilllineentry //SkillLine.dbc
@@ -754,14 +755,14 @@ struct SpellEntry
 	uint32 MaxTargets;                                        //213
 	uint32 Spell_Dmg_Type;                                    //214 dmg_class Integer 0=None, 1=Magic, 2=Melee, 3=Ranged
 	uint32 PreventionType;                                    //215 0,1,2 related to Spell_Dmg_Type I think
-	int32  StanceBarOrder;                                    //216 Related to paladin aura's 
+	int32  StanceBarOrder;                                    //216 Related to paladin aura's
 	float  dmg_multiplier[ MAX_SPELL_EFFECTS ];               //217-219 Maybe related to EffectChainTarget?
 	uint32 MinFactionID;                                      //220 References Faction.dbc
-	uint32 MinReputation;                                     //221 Standing enumerated in Player.h 
+	uint32 MinReputation;                                     //221 Standing enumerated in Player.h
 	uint32 RequiredAuraVision;                                //222 Mostly test spells as of
 	uint32 TotemCategory[2];                                  //223-224 References TotemCategory.dbc
 	int32  RequiresAreaId;                                    //225 References AreaGroup.dbc
-	uint32 School;                                            //226 Enumerated in Unit.h 
+	uint32 School;                                            //226 Enumerated in Unit.h
 	uint32 RuneCostID;                                        //227 References SpellRuneCost.dbc
 //	uint32 SpellMissileID;                                    //228 References SpellMissile.dbc
 //	uint32 UnKnown;                                           //229 powerdisplayid ?
@@ -816,10 +817,10 @@ struct SpellEntry
 
 	// Pointer to static method of a Spell subclass to create a new instance. If this is NULL, the generic Spell class will be created
 	// Its type is void because class Spell is not visible here, so it'll be casted accordingly when necessary
-	void *(*SpellFactoryFunc);
+	void* (*SpellFactoryFunc);
 
 	// Same for Auras
-	void *(*AuraFactoryFunc);
+	void* (*AuraFactoryFunc);
 
 	////////////////////////////////////////////////////////////////////////////////
 	//bool HasEffect( uint32 effect )
@@ -833,9 +834,10 @@ struct SpellEntry
 	//  Returns false if Spell has not this effect.
 	//
 	///////////////////////////////////////////////////////////////////////////////
-	bool HasEffect( uint32 effect ){
-		for( uint32 i = 0; i < MAX_SPELL_EFFECTS; ++i )
-			if( Effect[ i ] == effect )
+	bool HasEffect(uint32 effect)
+	{
+		for(uint32 i = 0; i < MAX_SPELL_EFFECTS; ++i)
+			if(Effect[ i ] == effect)
 				return true;
 
 		return false;
@@ -854,11 +856,12 @@ struct SpellEntry
 	//  Returns false if we don't.
 	//
 	///////////////////////////////////////////////////////////////////////////////
-	bool HasCustomFlagForEffect( uint32 effect, uint32 flag ){
-		if( effect >= MAX_SPELL_EFFECTS )
+	bool HasCustomFlagForEffect(uint32 effect, uint32 flag)
+	{
+		if(effect >= MAX_SPELL_EFFECTS)
 			return false;
 
-		if( ( EffectCustomFlag[ effect ] & flag ) != 0 )
+		if((EffectCustomFlag[ effect ] & flag) != 0)
 			return true;
 		else
 			return false;
@@ -876,19 +879,21 @@ struct SpellEntry
 	//  Returns false otherwise.
 	//
 	//////////////////////////////////////////////////////////////////////////////
-	bool AppliesAura( uint32 aura ){
+	bool AppliesAura(uint32 aura)
+	{
 
-		for( uint32 i = 0; i < MAX_SPELL_EFFECTS; ++i ){
-			
-			if( ( Effect[ i ] == 6 || // SPELL_EFFECT_APPLY_GROUP_AREA_AURA
-				Effect[ i ] == 27 || // SPELL_EFFECT_PERSISTENT_AREA_AURA
-				Effect[ i ] == 35 || // SPELL_EFFECT_APPLY_GROUP_AREA_AURA
-				Effect[ i ] == 65 || // SPELL_EFFECT_APPLY_RAID_AREA_AURA
-				Effect[ i ] == 119 || // SPELL_EFFECT_APPLY_PET_AREA_AURA
-				Effect[ i ] == 128 || // SPELL_EFFECT_APPLY_FRIEND_AREA_AURA
-				Effect[ i ] == 129 || // SPELL_EFFECT_APPLY_ENEMY_AREA_AURA
-				Effect[ i ] == 143 ) && // SPELL_EFFECT_APPLY_OWNER_AREA_AURA
-				EffectApplyAuraName[ i ] == aura )
+		for(uint32 i = 0; i < MAX_SPELL_EFFECTS; ++i)
+		{
+
+			if((Effect[ i ] == 6 ||   // SPELL_EFFECT_APPLY_GROUP_AREA_AURA
+			        Effect[ i ] == 27 || // SPELL_EFFECT_PERSISTENT_AREA_AURA
+			        Effect[ i ] == 35 || // SPELL_EFFECT_APPLY_GROUP_AREA_AURA
+			        Effect[ i ] == 65 || // SPELL_EFFECT_APPLY_RAID_AREA_AURA
+			        Effect[ i ] == 119 || // SPELL_EFFECT_APPLY_PET_AREA_AURA
+			        Effect[ i ] == 128 || // SPELL_EFFECT_APPLY_FRIEND_AREA_AURA
+			        Effect[ i ] == 129 || // SPELL_EFFECT_APPLY_ENEMY_AREA_AURA
+			        Effect[ i ] == 143) &&  // SPELL_EFFECT_APPLY_OWNER_AREA_AURA
+			        EffectApplyAuraName[ i ] == aura)
 				return true;
 		}
 
@@ -908,26 +913,29 @@ struct SpellEntry
 	//
 	//
 	/////////////////////////////////////////////////////////////////////////////////
-	uint32 GetAAEffectId(){
+	uint32 GetAAEffectId()
+	{
 
-		for( uint32 i = 0; i < MAX_SPELL_EFFECTS; i++ ){
+		for(uint32 i = 0; i < MAX_SPELL_EFFECTS; i++)
+		{
 
-			if( Effect[ i ] == 35 || // SPELL_EFFECT_APPLY_GROUP_AREA_AURA
-				Effect[ i ] == 65 || // SPELL_EFFECT_APPLY_RAID_AREA_AURA
-				Effect[ i ] == 119 || // SPELL_EFFECT_APPLY_PET_AREA_AURA
-				Effect[ i ] == 128 || // SPELL_EFFECT_APPLY_FRIEND_AREA_AURA
-				Effect[ i ] == 129 || // SPELL_EFFECT_APPLY_ENEMY_AREA_AURA
-				Effect[ i ] == 143 ) // SPELL_EFFECT_APPLY_OWNER_AREA_AURA
+			if(Effect[ i ] == 35 ||  // SPELL_EFFECT_APPLY_GROUP_AREA_AURA
+			        Effect[ i ] == 65 || // SPELL_EFFECT_APPLY_RAID_AREA_AURA
+			        Effect[ i ] == 119 || // SPELL_EFFECT_APPLY_PET_AREA_AURA
+			        Effect[ i ] == 128 || // SPELL_EFFECT_APPLY_FRIEND_AREA_AURA
+			        Effect[ i ] == 129 || // SPELL_EFFECT_APPLY_ENEMY_AREA_AURA
+			        Effect[ i ] == 143)  // SPELL_EFFECT_APPLY_OWNER_AREA_AURA
 				return Effect[ i ];
 		}
 
 		return 0;
 	}
 
-	SpellEntry(){
+	SpellEntry()
+	{
 		CustomFlags = 0;
 
-		for( uint32 i = 0; i < MAX_SPELL_EFFECTS; i++ )
+		for(uint32 i = 0; i < MAX_SPELL_EFFECTS; i++)
 			EffectCustomFlag[ i ] = 0;
 
 		SpellFactoryFunc = NULL;
@@ -1335,7 +1343,7 @@ struct ChatChannelDBC
 {
 	uint32 id;
 	uint32 flags;
-	char * name_pattern[16];
+	char* name_pattern[16];
 };
 
 struct DurabilityQualityEntry
@@ -1375,23 +1383,26 @@ struct AreaTriggerEntry
 	float     box_o;        // 9 extent rotation by about z axis
 };
 
-struct ScalingStatDistributionEntry{
+struct ScalingStatDistributionEntry
+{
 	uint32 id;
 	int32 stat[10];
 	uint32 statmodifier[10];
 	uint32 maxlevel;
 };
 
-struct ScalingStatValuesEntry{
+struct ScalingStatValuesEntry
+{
 	uint32 id;
 	uint32 level;
 	uint32 multiplier[16];
 };
 
-struct QuestXP{
-    uint32      questLevel;                                 // 0
-    uint32      xpIndex[8];                                 // 1-9
-    //unk                                                   // 10
+struct QuestXP
+{
+	uint32      questLevel;                                 // 0
+	uint32      xpIndex[8];                                 // 1-9
+	//unk                                                   // 10
 };
 
 struct WMOAreaTableEntry
@@ -1411,31 +1422,34 @@ struct WMOAreaTableEntry
 	//uint32 nameflags;
 };
 
-enum SummonControlTypes{
-	SUMMON_CONTROL_TYPE_WILD = 0,
-	SUMMON_CONTROL_TYPE_GUARDIAN = 1,
-	SUMMON_CONTROL_TYPE_PET = 2,
-	SUMMON_CONTROL_TYPE_POSSESSED = 3,
-	SUMMON_CONTROL_TYPE_VEHICLE = 4,
-};
- 
-enum SummonTypes{
-	SUMMON_TYPE_NONE = 0,
-	SUMMON_TYPE_PET = 1,
-	SUMMON_TYPE_GUARDIAN = 2,
-	SUMMON_TYPE_MINION = 3,
-	SUMMON_TYPE_TOTEM = 4,
-	SUMMON_TYPE_COMPANION = 5,
-	SUMMON_TYPE_RUNEBLADE = 6,
-	SUMMON_TYPE_CONSTRUCT = 7,
-	SUMMON_TYPE_OPPONENT = 8,
-	SUMMON_TYPE_VEHICLE = 9,
-	SUMMON_TYPE_MOUNT = 10,
-	SUMMON_TYPE_LIGHTWELL = 11,
-	SUMMON_TYPE_BUTLER = 12
+enum SummonControlTypes
+{
+    SUMMON_CONTROL_TYPE_WILD = 0,
+    SUMMON_CONTROL_TYPE_GUARDIAN = 1,
+    SUMMON_CONTROL_TYPE_PET = 2,
+    SUMMON_CONTROL_TYPE_POSSESSED = 3,
+    SUMMON_CONTROL_TYPE_VEHICLE = 4,
 };
 
-struct SummonPropertiesEntry{
+enum SummonTypes
+{
+    SUMMON_TYPE_NONE = 0,
+    SUMMON_TYPE_PET = 1,
+    SUMMON_TYPE_GUARDIAN = 2,
+    SUMMON_TYPE_MINION = 3,
+    SUMMON_TYPE_TOTEM = 4,
+    SUMMON_TYPE_COMPANION = 5,
+    SUMMON_TYPE_RUNEBLADE = 6,
+    SUMMON_TYPE_CONSTRUCT = 7,
+    SUMMON_TYPE_OPPONENT = 8,
+    SUMMON_TYPE_VEHICLE = 9,
+    SUMMON_TYPE_MOUNT = 10,
+    SUMMON_TYPE_LIGHTWELL = 11,
+    SUMMON_TYPE_BUTLER = 12
+};
+
+struct SummonPropertiesEntry
+{
 	uint32 ID;
 	uint32 ControlType;
 	uint32 FactionID;
@@ -1444,55 +1458,57 @@ struct SummonPropertiesEntry{
 	uint32 Flags;
 };
 
-struct NameGenEntry{
+struct NameGenEntry
+{
 	uint32 ID;
-	char *Name;
+	char* Name;
 	uint32 unk1;
 	uint32 unk2;
 };
 
-struct LFGDungeonEntry{
-    uint32  ID;                                             // 0
-    //char*   name[16];                                     // 1-17 Name lang
-    uint32  minlevel;                                       // 18
-    uint32  maxlevel;                                       // 19
-    uint32  reclevel;                                       // 20
-    uint32  recminlevel;                                    // 21
-    uint32  recmaxlevel;                                    // 22
-    int32  map;                                             // 23
-    uint32  difficulty;                                     // 24
-    //uint32  unk;                                          // 25
-    uint32  type;                                           // 26
-    //uint32  unk2;                                         // 27
-    //char*   unk3;                                         // 28
-    uint32  expansion;                                      // 29
-    //uint32  unk4;                                         // 30
-    uint32  grouptype;                                      // 31
-    //char*   desc[16];                                     // 32-47 Description
-    // Helpers
-    uint32 Entry() const { return ID + (type << 24); }
+struct LFGDungeonEntry
+{
+	uint32  ID;                                             // 0
+	//char*   name[16];                                     // 1-17 Name lang
+	uint32  minlevel;                                       // 18
+	uint32  maxlevel;                                       // 19
+	uint32  reclevel;                                       // 20
+	uint32  recminlevel;                                    // 21
+	uint32  recmaxlevel;                                    // 22
+	int32  map;                                             // 23
+	uint32  difficulty;                                     // 24
+	//uint32  unk;                                          // 25
+	uint32  type;                                           // 26
+	//uint32  unk2;                                         // 27
+	//char*   unk3;                                         // 28
+	uint32  expansion;                                      // 29
+	//uint32  unk4;                                         // 30
+	uint32  grouptype;                                      // 31
+	//char*   desc[16];                                     // 32-47 Description
+	// Helpers
+	uint32 Entry() const { return ID + (type << 24); }
 };
 
 
 #pragma pack(pop)
 
-ARCEMU_INLINE float GetRadius(SpellRadius *radius)
+ARCEMU_INLINE float GetRadius(SpellRadius* radius)
 {
 	return radius->Radius;
 }
-ARCEMU_INLINE uint32 GetCastTime(SpellCastTime *time)
+ARCEMU_INLINE uint32 GetCastTime(SpellCastTime* time)
 {
 	return time->CastTime;
 }
-ARCEMU_INLINE float GetMaxRange(SpellRange *range)
+ARCEMU_INLINE float GetMaxRange(SpellRange* range)
 {
 	return range->maxRange;
 }
-ARCEMU_INLINE float GetMinRange(SpellRange *range)
+ARCEMU_INLINE float GetMinRange(SpellRange* range)
 {
 	return range->minRange;
 }
-ARCEMU_INLINE uint32 GetDuration(SpellDuration *dur)
+ARCEMU_INLINE uint32 GetDuration(SpellDuration* dur)
 {
 	return dur->Duration1;
 }
@@ -1502,289 +1518,292 @@ ARCEMU_INLINE uint32 GetDuration(SpellDuration *dur)
 template<class T>
 class SERVER_DECL DBCStorage
 {
-	T * m_heapBlock;
-	T * m_firstEntry;
+		T* m_heapBlock;
+		T* m_firstEntry;
 
-	T ** m_entries;
-	uint32 m_max;
-	uint32 m_numrows;
-	uint32 m_stringlength;
-	char * m_stringData;
+		T** m_entries;
+		uint32 m_max;
+		uint32 m_numrows;
+		uint32 m_stringlength;
+		char* m_stringData;
 
-	uint32 rows;
-	uint32 cols;
-	uint32 useless_shit;
-	uint32 header;
+		uint32 rows;
+		uint32 cols;
+		uint32 useless_shit;
+		uint32 header;
 
-public:
+	public:
 
-    class iterator{
-    private:
-        T *p;
-    public:
-        iterator(T* ip = 0) : p(ip){ }
-        iterator& operator++(){ ++p; return *this; }
-		iterator& operator--(){ --p; return *this; }
-        bool operator!=(const iterator &i){ return (p != i.p); }
-        T* operator*(){ return p; }
-    };
-
-    iterator begin(){ 
-        return iterator(&m_heapBlock[0]);
-    }
-    iterator end(){ 
-        return iterator(&m_heapBlock[m_numrows]); 
-    }
-
-	DBCStorage()
-	{
-		m_heapBlock = NULL;
-		m_entries = NULL;
-		m_firstEntry = NULL;
-		m_max = 0;
-		m_numrows = 0;
-		m_stringlength= 0;
-		m_stringData = NULL;
-	}
-
-	~DBCStorage()
-	{
-		Cleanup();
-	}
-
-	void Cleanup()
-	{
-		if(m_heapBlock)
+		class iterator
 		{
-			free(m_heapBlock);
+			private:
+				T* p;
+			public:
+				iterator(T* ip = 0) : p(ip) { }
+				iterator & operator++() { ++p; return *this; }
+				iterator & operator--() { --p; return *this; }
+				bool operator!=(const iterator & i) { return (p != i.p); }
+				T* operator*() { return p; }
+		};
+
+		iterator begin()
+		{
+			return iterator(&m_heapBlock[0]);
+		}
+		iterator end()
+		{
+			return iterator(&m_heapBlock[m_numrows]);
+		}
+
+		DBCStorage()
+		{
 			m_heapBlock = NULL;
-		}
-		if(m_entries)
-		{
-			free(m_entries);
 			m_entries = NULL;
-		}
-		if( m_stringData != NULL )
-		{
-			free(m_stringData);
+			m_firstEntry = NULL;
+			m_max = 0;
+			m_numrows = 0;
+			m_stringlength = 0;
 			m_stringData = NULL;
 		}
-	}
 
-	bool Load(const char * filename, const char * format, bool load_indexed, bool load_strings)
-	{
-		uint32 i;
-		uint32 string_length;
-		long pos;
-
-		FILE * f = fopen(filename, "rb");
-		if(f == NULL)
-			return false;
-
-		/* read the number of rows, and allocate our block on the heap */
-		fread(&header,4,1,f);
-		fread(&rows, 4, 1, f);
-		fread(&cols, 4, 1, f);
-		fread(&useless_shit, 4, 1, f);
-		fread(&string_length, 4, 1, f);
-		pos = ftell(f);
-
-		if( load_strings )
+		~DBCStorage()
 		{
-			fseek( f, 20 + ( rows * cols * 4 ), SEEK_SET );
-			m_stringData = (char*)malloc(string_length);
-			m_stringlength = string_length;
-			if (m_stringData)
-				fread( m_stringData, string_length, 1, f );
+			Cleanup();
 		}
 
-		fseek(f, pos, SEEK_SET);
-
-		m_heapBlock = (T*)malloc(rows * sizeof(T));
-		ASSERT(m_heapBlock);
-
-		/* read the data for each row */
-		for(i = 0; i < rows; ++i)
+		void Cleanup()
 		{
-			memset(&m_heapBlock[i], 0, sizeof(T));
-			ReadEntry(f, &m_heapBlock[i], format, cols, filename);
+			if(m_heapBlock)
+			{
+				free(m_heapBlock);
+				m_heapBlock = NULL;
+			}
+			if(m_entries)
+			{
+				free(m_entries);
+				m_entries = NULL;
+			}
+			if(m_stringData != NULL)
+			{
+				free(m_stringData);
+				m_stringData = NULL;
+			}
+		}
+
+		bool Load(const char* filename, const char* format, bool load_indexed, bool load_strings)
+		{
+			uint32 i;
+			uint32 string_length;
+			long pos;
+
+			FILE* f = fopen(filename, "rb");
+			if(f == NULL)
+				return false;
+
+			/* read the number of rows, and allocate our block on the heap */
+			fread(&header, 4, 1, f);
+			fread(&rows, 4, 1, f);
+			fread(&cols, 4, 1, f);
+			fread(&useless_shit, 4, 1, f);
+			fread(&string_length, 4, 1, f);
+			pos = ftell(f);
+
+			if(load_strings)
+			{
+				fseek(f, 20 + (rows * cols * 4), SEEK_SET);
+				m_stringData = (char*)malloc(string_length);
+				m_stringlength = string_length;
+				if(m_stringData)
+					fread(m_stringData, string_length, 1, f);
+			}
+
+			fseek(f, pos, SEEK_SET);
+
+			m_heapBlock = (T*)malloc(rows * sizeof(T));
+			ASSERT(m_heapBlock);
+
+			/* read the data for each row */
+			for(i = 0; i < rows; ++i)
+			{
+				memset(&m_heapBlock[i], 0, sizeof(T));
+				ReadEntry(f, &m_heapBlock[i], format, cols, filename);
+
+				if(load_indexed)
+				{
+					/* all the time the first field in the dbc is our unique entry */
+					if(*(uint32*)&m_heapBlock[i] > m_max)
+						m_max = *(uint32*)&m_heapBlock[i];
+				}
+			}
 
 			if(load_indexed)
 			{
-				/* all the time the first field in the dbc is our unique entry */
-				if(*(uint32*)&m_heapBlock[i] > m_max)
-					m_max = *(uint32*)&m_heapBlock[i];
-			}
-		}
+				m_entries = (T**)malloc(sizeof(T*) * (m_max + 1));
+				ASSERT(m_entries);
 
-		if(load_indexed)
-		{
-			m_entries = (T**)malloc(sizeof(T*) * (m_max+1));
-			ASSERT(m_entries);
-
-			memset(m_entries, 0, (sizeof(T*) * (m_max+1)));
-			for(i = 0; i < rows; ++i)
-			{
-				if(m_firstEntry == NULL)
-					m_firstEntry = &m_heapBlock[i];
-
-				m_entries[*(uint32*)&m_heapBlock[i]] = &m_heapBlock[i];
-			}
-		}
-
-		m_numrows = rows;
-
-		fclose(f);
-		return true;
-	}
-
-	void ReadEntry(FILE * f, T * dest, const char * format, uint32 cols, const char * filename)
-	{
-		const char * t = format;
-		uint32 * dest_ptr = (uint32*)dest;
-		uint32 c = 0;
-		uint32 val;
-		size_t len = strlen(format);
-		if(len!= cols)
-			sLog.outError("!!! possible invalid format in file %s (us: %u, them: %u)", filename, len, cols);
-
-		while(*t != 0)
-		{
-			if((++c) > cols)
-			{
-				++t;
-				sLog.outError("!!! Read buffer overflow in DBC reading of file %s", filename);
-				continue;
-			}
-
-			fread(&val, 4, 1, f);
-			if(*t == 'x')
-			{
-				++t;
-				continue;		// skip!
-			}
-
-			if(( *t == 's' ) || ( *t=='l' ))
-			{
-				char ** new_ptr = (char**)dest_ptr;
-				static const char * null_str = "";
-				char * ptr;
-				// if t == 'lxxxxxxxxxxxxxxxx' use localized strings in case
-				// the english one is empty. *t ends at most on the locale flag
-				for(int count = (*t == 'l') ? 16 : 0 ;
-					val == 0 && count > 0 && *(t+1) == 'x'; t++, count--)
+				memset(m_entries, 0, (sizeof(T*) * (m_max + 1)));
+				for(i = 0; i < rows; ++i)
 				{
-					fread(&val, 4, 1, f);
+					if(m_firstEntry == NULL)
+						m_firstEntry = &m_heapBlock[i];
 
+					m_entries[*(uint32*)&m_heapBlock[i]] = &m_heapBlock[i];
 				}
-				if( val < m_stringlength )
-					ptr = m_stringData + val;
+			}
+
+			m_numrows = rows;
+
+			fclose(f);
+			return true;
+		}
+
+		void ReadEntry(FILE* f, T* dest, const char* format, uint32 cols, const char* filename)
+		{
+			const char* t = format;
+			uint32* dest_ptr = (uint32*)dest;
+			uint32 c = 0;
+			uint32 val;
+			size_t len = strlen(format);
+			if(len != cols)
+				sLog.outError("!!! possible invalid format in file %s (us: %u, them: %u)", filename, len, cols);
+
+			while(*t != 0)
+			{
+				if((++c) > cols)
+				{
+					++t;
+					sLog.outError("!!! Read buffer overflow in DBC reading of file %s", filename);
+					continue;
+				}
+
+				fread(&val, 4, 1, f);
+				if(*t == 'x')
+				{
+					++t;
+					continue;		// skip!
+				}
+
+				if((*t == 's') || (*t == 'l'))
+				{
+					char** new_ptr = (char**)dest_ptr;
+					static const char* null_str = "";
+					char* ptr;
+					// if t == 'lxxxxxxxxxxxxxxxx' use localized strings in case
+					// the english one is empty. *t ends at most on the locale flag
+					for(int count = (*t == 'l') ? 16 : 0 ;
+					        val == 0 && count > 0 && *(t + 1) == 'x'; t++, count--)
+					{
+						fread(&val, 4, 1, f);
+
+					}
+					if(val < m_stringlength)
+						ptr = m_stringData + val;
+					else
+						ptr = (char*)null_str;
+
+					*new_ptr = ptr;
+					new_ptr++;
+					dest_ptr = (uint32*)new_ptr;
+				}
 				else
-					ptr = (char*)null_str;
+				{
+					*dest_ptr = val;
+					dest_ptr++;
+				}
 
-				*new_ptr = ptr;
-				new_ptr++;
-				dest_ptr = (uint32*)new_ptr;
+				++t;
 			}
-			else
-			{
-				*dest_ptr = val;
-				dest_ptr++;
-			}
-
-			++t;
 		}
-	}
 
-	ARCEMU_INLINE uint32 GetNumRows()
-	{
-		return m_numrows;
-	}
+		ARCEMU_INLINE uint32 GetNumRows()
+		{
+			return m_numrows;
+		}
 
-	T * LookupEntryForced(uint32 i)
-	{
+		T* LookupEntryForced(uint32 i)
+		{
 #if 0
-		if(m_entries)
-		{
-			if(i > m_max || m_entries[i] == NULL)
+			if(m_entries)
 			{
-				printf("LookupEntryForced failed for entry %u\n", i);
-				return NULL;
+				if(i > m_max || m_entries[i] == NULL)
+				{
+					printf("LookupEntryForced failed for entry %u\n", i);
+					return NULL;
+				}
+				else
+					return m_entries[i];
 			}
 			else
-				return m_entries[i];
-		}
-		else
-		{
-			if(i >= m_numrows)
-				return NULL;
-			else
-				return &m_heapBlock[i];
-		}
+			{
+				if(i >= m_numrows)
+					return NULL;
+				else
+					return &m_heapBlock[i];
+			}
 #else
-		if(m_entries)
-		{
-			if(i > m_max || m_entries[i] == NULL)
-				return NULL;
+			if(m_entries)
+			{
+				if(i > m_max || m_entries[i] == NULL)
+					return NULL;
+				else
+					return m_entries[i];
+			}
 			else
-				return m_entries[i];
+			{
+				if(i >= m_numrows)
+					return NULL;
+				else
+					return &m_heapBlock[i];
+			}
+#endif
 		}
-		else
+
+		T* LookupRowForced(uint32 i)
 		{
 			if(i >= m_numrows)
 				return NULL;
 			else
 				return &m_heapBlock[i];
 		}
-#endif
-	}
 
-	T * LookupRowForced(uint32 i)
-	{
-		if(i >= m_numrows)
-			return NULL;
-		else
-			return &m_heapBlock[i];
-	}
-
-	T * CreateCopy(T * obj)
-	{
-		T * oCopy = (T*)malloc(sizeof(T));
-		ASSERT(oCopy);
-		memcpy(oCopy,obj,sizeof(T));
-		return oCopy;
-	}
-	void SetRow(uint32 i, T * t)
-	{
-		if(i < m_max && m_entries)
-			m_entries[i] = t;
-	}
-
-	T * LookupEntry(uint32 i)
-	{
-		if(m_entries)
+		T* CreateCopy(T* obj)
 		{
-			if(i > m_max || m_entries[i] == NULL)
-				return m_firstEntry;
-			else
-				return m_entries[i];
+			T* oCopy = (T*)malloc(sizeof(T));
+			ASSERT(oCopy);
+			memcpy(oCopy, obj, sizeof(T));
+			return oCopy;
 		}
-		else
+		void SetRow(uint32 i, T* t)
+		{
+			if(i < m_max && m_entries)
+				m_entries[i] = t;
+		}
+
+		T* LookupEntry(uint32 i)
+		{
+			if(m_entries)
+			{
+				if(i > m_max || m_entries[i] == NULL)
+					return m_firstEntry;
+				else
+					return m_entries[i];
+			}
+			else
+			{
+				if(i >= m_numrows)
+					return &m_heapBlock[0];
+				else
+					return &m_heapBlock[i];
+			}
+		}
+
+		T* LookupRow(uint32 i)
 		{
 			if(i >= m_numrows)
 				return &m_heapBlock[0];
 			else
 				return &m_heapBlock[i];
 		}
-	}
-
-	T * LookupRow(uint32 i)
-	{
-		if(i >= m_numrows)
-			return &m_heapBlock[0];
-		else
-			return &m_heapBlock[i];
-	}
 
 };
 

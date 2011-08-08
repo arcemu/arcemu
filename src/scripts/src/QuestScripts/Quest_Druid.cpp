@@ -28,22 +28,22 @@ Edits by : FenixGman
 
 class Lunaclaw : public CreatureAIScript
 {
-public:
-  ADD_CREATURE_FACTORY_FUNCTION(Lunaclaw);
+	public:
+		ADD_CREATURE_FACTORY_FUNCTION(Lunaclaw);
 
-  Lunaclaw(Creature* pCreature) : CreatureAIScript(pCreature) {}
+		Lunaclaw(Creature* pCreature) : CreatureAIScript(pCreature) {}
 
-  void OnDied(Unit* mKiller)
-  {
-	if(!mKiller->IsPlayer())
-	  return;
+		void OnDied(Unit* mKiller)
+		{
+			if(!mKiller->IsPlayer())
+				return;
 
-	Player* plr = TO_PLAYER(mKiller);
+			Player* plr = TO_PLAYER(mKiller);
 
-	if(plr->GetMapMgr() == NULL || plr->GetMapMgr()->GetInterface() == NULL)
-		return;
-	sEAS.SpawnCreature(plr, 12144, _unit->GetPositionX(), _unit->GetPositionY(), _unit->GetPositionZ(), 0, 1*60*1000);
-  }
+			if(plr->GetMapMgr() == NULL || plr->GetMapMgr()->GetInterface() == NULL)
+				return;
+			sEAS.SpawnCreature(plr, 12144, _unit->GetPositionX(), _unit->GetPositionY(), _unit->GetPositionZ(), 0, 1 * 60 * 1000);
+		}
 };
 
 // Lunaclaw ghost gossip
@@ -51,81 +51,81 @@ public:
 
 class SCRIPT_DECL MoonkinGhost_Gossip : public GossipScript
 {
-public:
-    void GossipHello( Object *pObject, Player *plr )
-    {
-        GossipMenu *Menu;
-        objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4714, plr);
-
-		if(plr->GetQuestLogForEntry(6002) != NULL)
+	public:
+		void GossipHello(Object* pObject, Player* plr)
 		{
-			Menu->AddItem( 0, GOSSIP_GHOST_MOONKIN, 1); //Horde
+			GossipMenu* Menu;
+			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4714, plr);
+
+			if(plr->GetQuestLogForEntry(6002) != NULL)
+			{
+				Menu->AddItem(0, GOSSIP_GHOST_MOONKIN, 1);  //Horde
+			}
+			else if(plr->GetQuestLogForEntry(6001) != NULL)
+			{
+				Menu->AddItem(0, GOSSIP_GHOST_MOONKIN, 2);  //Ally
+			}
+
+			Menu->SendTo(plr);
 		}
-		else if(plr->GetQuestLogForEntry(6001) != NULL)
+
+		void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char* Code)
 		{
-			Menu->AddItem( 0, GOSSIP_GHOST_MOONKIN, 2); //Ally
-		}
-        
-        Menu->SendTo(plr);
-    }
+			Creature*  pCreature = (pObject->IsCreature()) ? (TO_CREATURE(pObject)) : NULL;
+			if(!pObject->IsCreature())
+				return;
 
-    void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
-    {
-		Creature*  pCreature = (pObject->IsCreature())?(TO_CREATURE(pObject)):NULL;
-		if(!pObject->IsCreature())
-			return;
-		
-		GossipMenu * Menu;
-        switch(IntId)
-        {
-		case 0: // Return to start
-			GossipHello(pCreature, plr );
-			break;
-
-        case 1: //Horde
+			GossipMenu* Menu;
+			switch(IntId)
 			{
-				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4715, plr);
-				Menu->SendTo(plr);
+				case 0: // Return to start
+					GossipHello(pCreature, plr);
+					break;
 
-				QuestLogEntry *qle = plr->GetQuestLogForEntry(6002);
-				if(qle == NULL)
-				return;
+				case 1: //Horde
+					{
+						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4715, plr);
+						Menu->SendTo(plr);
 
-				if(qle->GetMobCount(0) != 0)
-				return;
+						QuestLogEntry* qle = plr->GetQuestLogForEntry(6002);
+						if(qle == NULL)
+							return;
 
-				qle->SetMobCount(0, 1);
-				qle->SendUpdateAddKill(0);
-				qle->UpdatePlayerFields();
+						if(qle->GetMobCount(0) != 0)
+							return;
 
-				pCreature->Emote(EMOTE_ONESHOT_WAVE);
-				pCreature->Despawn(240000,0);
+						qle->SetMobCount(0, 1);
+						qle->SendUpdateAddKill(0);
+						qle->UpdatePlayerFields();
+
+						pCreature->Emote(EMOTE_ONESHOT_WAVE);
+						pCreature->Despawn(240000, 0);
+					}
+					break;
+
+				case 2: //Ally
+					{
+						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4715, plr);
+						Menu->SendTo(plr);
+
+						QuestLogEntry* qle = plr->GetQuestLogForEntry(6001);
+						if(qle == NULL)
+							return;
+
+						if(qle->GetMobCount(0) != 0)
+							return;
+
+						qle->SetMobCount(0, 1);
+						qle->SendUpdateAddKill(0);
+						qle->UpdatePlayerFields();
+
+						pCreature->Emote(EMOTE_ONESHOT_WAVE);
+						pCreature->Despawn(240000, 0);
+					}
+					break;
+
 			}
-			break;
-
-		case 2: //Ally
-			{
-				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4715, plr);
-				Menu->SendTo(plr);
-
-				QuestLogEntry *qle = plr->GetQuestLogForEntry(6001);
-				if(qle == NULL)
-				return;
-
-				if(qle->GetMobCount(0) != 0)
-				return;
-
-				qle->SetMobCount(0, 1);
-				qle->SendUpdateAddKill(0);
-				qle->UpdatePlayerFields();
-
-				pCreature->Emote(EMOTE_ONESHOT_WAVE);
-				pCreature->Despawn(240000,0);
-			}
-			break;
-
 		}
-	}
 };
 
 // bear ghost gossip
@@ -136,143 +136,143 @@ public:
 
 class SCRIPT_DECL BearGhost_Gossip : public GossipScript
 {
-public:
-    void GossipHello( Object *pObject, Player *plr )
-    {
-        GossipMenu *Menu;
-        objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4719, plr);
-
-		if(plr->GetQuestLogForEntry(5930) != NULL) // horde
+	public:
+		void GossipHello(Object* pObject, Player* plr)
 		{
-			Menu->AddItem( 0, GOSSIP_GHOST_BEAR_A, 1);
-		}
-		else if(plr->GetQuestLogForEntry(5929) != NULL) // ally
-		{
-			Menu->AddItem( 0, GOSSIP_GHOST_BEAR_A, 5);
-		}
+			GossipMenu* Menu;
+			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4719, plr);
 
-        Menu->SendTo(plr);
-    }
-
-    void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char * Code)
-    {
-		Creature*  pCreature = (pObject->IsCreature())?(TO_CREATURE(pObject)):NULL;
-		if(!pObject->IsCreature())
-			return;
-		
-		GossipMenu * Menu;
-        switch(IntId)
-        {
-		case 0: // Return to start
-			GossipHello(pCreature, plr );
-			break;
-        case 1:
+			if(plr->GetQuestLogForEntry(5930) != NULL) // horde
 			{
-			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4721, plr);
-			Menu->AddItem( 0, GOSSIP_GHOST_BEAR_B, 2);
-			Menu->SendTo(plr);
-			break;
+				Menu->AddItem(0, GOSSIP_GHOST_BEAR_A, 1);
 			}
+			else if(plr->GetQuestLogForEntry(5929) != NULL) // ally
+			{
+				Menu->AddItem(0, GOSSIP_GHOST_BEAR_A, 5);
+			}
+
+			Menu->SendTo(plr);
+		}
+
+		void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char* Code)
+		{
+			Creature*  pCreature = (pObject->IsCreature()) ? (TO_CREATURE(pObject)) : NULL;
+			if(!pObject->IsCreature())
+				return;
+
+			GossipMenu* Menu;
+			switch(IntId)
+			{
+				case 0: // Return to start
+					GossipHello(pCreature, plr);
+					break;
+				case 1:
+					{
+						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4721, plr);
+						Menu->AddItem(0, GOSSIP_GHOST_BEAR_B, 2);
+						Menu->SendTo(plr);
+						break;
+					}
 				case 2:
-				{
-					objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4733, plr);
-					Menu->AddItem( 0, GOSSIP_GHOST_BEAR_C, 3);
-					Menu->SendTo(plr);
-					break;
-				}
+					{
+						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4733, plr);
+						Menu->AddItem(0, GOSSIP_GHOST_BEAR_C, 3);
+						Menu->SendTo(plr);
+						break;
+					}
 				case 3:
-				{
-					objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4734, plr);
-					Menu->AddItem( 0, GOSSIP_GHOST_BEAR_D, 4);
-					Menu->SendTo(plr);
-					break;
-				}
-			case 4:
-			{
-			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4735, plr);
-			
-			QuestLogEntry *qle = plr->GetQuestLogForEntry(5930);
-			if(qle == NULL)
-			return;
+					{
+						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4734, plr);
+						Menu->AddItem(0, GOSSIP_GHOST_BEAR_D, 4);
+						Menu->SendTo(plr);
+						break;
+					}
+				case 4:
+					{
+						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4735, plr);
 
-			if(qle->GetMobCount(0) != 0)
-			return;
+						QuestLogEntry* qle = plr->GetQuestLogForEntry(5930);
+						if(qle == NULL)
+							return;
 
-			qle->SetMobCount(0, 1);
-			qle->SendUpdateAddKill(0);
-			qle->UpdatePlayerFields();
+						if(qle->GetMobCount(0) != 0)
+							return;
 
-			Menu->SendTo(plr);
-			break;
-			}
-		case 5:
-			{
-			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4721, plr);
-			Menu->AddItem( 0, GOSSIP_GHOST_BEAR_B, 6);
-			Menu->SendTo(plr);
-			break;
-			}
+						qle->SetMobCount(0, 1);
+						qle->SendUpdateAddKill(0);
+						qle->UpdatePlayerFields();
+
+						Menu->SendTo(plr);
+						break;
+					}
+				case 5:
+					{
+						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4721, plr);
+						Menu->AddItem(0, GOSSIP_GHOST_BEAR_B, 6);
+						Menu->SendTo(plr);
+						break;
+					}
 				case 6:
-				{
-					objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4733, plr);
-					Menu->AddItem( 0, GOSSIP_GHOST_BEAR_C, 7);
-					Menu->SendTo(plr);
-					break;
-				}
+					{
+						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4733, plr);
+						Menu->AddItem(0, GOSSIP_GHOST_BEAR_C, 7);
+						Menu->SendTo(plr);
+						break;
+					}
 				case 7:
-				{
-					objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4734, plr);
-					Menu->AddItem( 0, GOSSIP_GHOST_BEAR_D, 8);
-					Menu->SendTo(plr);
-					break;
-				}
-			case 8:
-			{
-			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4735, plr);
-			
-			QuestLogEntry *qle = plr->GetQuestLogForEntry(5929);
-			if(qle == NULL)
-			return;
+					{
+						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4734, plr);
+						Menu->AddItem(0, GOSSIP_GHOST_BEAR_D, 8);
+						Menu->SendTo(plr);
+						break;
+					}
+				case 8:
+					{
+						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4735, plr);
 
-			if(qle->GetMobCount(0) != 0)
-			return;
+						QuestLogEntry* qle = plr->GetQuestLogForEntry(5929);
+						if(qle == NULL)
+							return;
 
-			qle->SetMobCount(0, 1);
-			qle->SendUpdateAddKill(0);
-			qle->UpdatePlayerFields();
+						if(qle->GetMobCount(0) != 0)
+							return;
 
-			Menu->SendTo(plr);
-			break;
+						qle->SetMobCount(0, 1);
+						qle->SendUpdateAddKill(0);
+						qle->UpdatePlayerFields();
+
+						Menu->SendTo(plr);
+						break;
+					}
 			}
 		}
-	}
 };
 
 class MoongladeQuest : public QuestScript
-{	
-public:
-  void OnQuestStart(Player* mTarget, QuestLogEntry * qLogEntry)
-  {
-	if(!mTarget->HasSpell(19027))
-	  mTarget->CastSpell(mTarget, dbcSpell.LookupEntry(19027), true);
-  }
+{
+	public:
+		void OnQuestStart(Player* mTarget, QuestLogEntry* qLogEntry)
+		{
+			if(!mTarget->HasSpell(19027))
+				mTarget->CastSpell(mTarget, dbcSpell.LookupEntry(19027), true);
+		}
 };
 
 
 
-void SetupDruid(ScriptMgr * mgr)
+void SetupDruid(ScriptMgr* mgr)
 {
-	
-  GossipScript * MoonkinGhostGossip = new MoonkinGhost_Gossip;
-  GossipScript * BearGhostGossip = new BearGhost_Gossip;
-  QuestScript *Moonglade = new MoongladeQuest();
-  mgr->register_quest_script(5921, Moonglade);
-  mgr->register_quest_script(5922, Moonglade);
-  mgr->register_creature_script(12138, &Lunaclaw::Create);
 
-  //Register gossip scripts
-  mgr->register_gossip_script(12144, MoonkinGhostGossip); // Ghost of Lunaclaw
-  mgr->register_gossip_script(11956, BearGhostGossip); // Great Bear Spirit
-  
+	GossipScript* MoonkinGhostGossip = new MoonkinGhost_Gossip;
+	GossipScript* BearGhostGossip = new BearGhost_Gossip;
+	QuestScript* Moonglade = new MoongladeQuest();
+	mgr->register_quest_script(5921, Moonglade);
+	mgr->register_quest_script(5922, Moonglade);
+	mgr->register_creature_script(12138, &Lunaclaw::Create);
+
+	//Register gossip scripts
+	mgr->register_gossip_script(12144, MoonkinGhostGossip); // Ghost of Lunaclaw
+	mgr->register_gossip_script(11956, BearGhostGossip); // Great Bear Spirit
+
 }
 

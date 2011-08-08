@@ -18,18 +18,18 @@
  *
  */
 
-enum LFGTypes 
+enum LFGTypes
 {
-	LFG_NONE = 0,
-	LFG_INSTANCE = 1,
-	LFG_RAID = 2,
-	LFG_QUEST = 3,
-	LFG_ZONE = 4,
-	LFG_HEROIC_DUNGEON = 5, // from client
-	LFG_ANY_DUNGEON = 6,
-	LFG_ANY_HEROIC_DUNGEON = 7,
-	LFG_DAILY_DUNGEON = 8,
-	LFG_DAILY_HEROIC_DUNGEON = 9,
+    LFG_NONE = 0,
+    LFG_INSTANCE = 1,
+    LFG_RAID = 2,
+    LFG_QUEST = 3,
+    LFG_ZONE = 4,
+    LFG_HEROIC_DUNGEON = 5, // from client
+    LFG_ANY_DUNGEON = 6,
+    LFG_ANY_HEROIC_DUNGEON = 7,
+    LFG_DAILY_DUNGEON = 8,
+    LFG_DAILY_HEROIC_DUNGEON = 9,
 };
 
 #define MAX_DUNGEONS 294+1 // check max entry's +1 on lfgdungeons.dbc
@@ -39,43 +39,43 @@ enum LFGTypes
 class LfgMatch;
 class LfgMgr : public Singleton < LfgMgr >, EventableObject
 {
-public:	
-	
-	typedef list<Player*> LfgPlayerList;
+	public:
 
-	LfgMgr();
-	~LfgMgr();
-	
-	bool AttemptLfgJoin(Player * pl, uint32 LfgDungeonId);
-	void SetPlayerInLFGqueue(Player *pl,uint32 LfgDungeonId);
-	void SetPlayerInLfmList(Player * pl, uint32 LfgDungeonId);
-	void RemovePlayerFromLfgQueue(Player *pl,uint32 LfgDungeonId);
-	void RemovePlayerFromLfgQueues(Player * pl);
-	void RemovePlayerFromLfmList(Player * pl, uint32 LfmDungeonId);
-	void UpdateLfgQueue(uint32 LfgDungeonId);
-	void SendLfgList(Player * plr, uint32 Dungeon);
+		typedef list<Player*> LfgPlayerList;
 
-	int32 event_GetInstanceId() { return -1; }
-	
-protected:
-	
-	LfgPlayerList m_lookingForGroup[MAX_DUNGEONS];
-	LfgPlayerList m_lookingForMore[MAX_DUNGEONS];
-	Mutex m_lock;
-	
-	
+		LfgMgr();
+		~LfgMgr();
+
+		bool AttemptLfgJoin(Player* pl, uint32 LfgDungeonId);
+		void SetPlayerInLFGqueue(Player* pl, uint32 LfgDungeonId);
+		void SetPlayerInLfmList(Player* pl, uint32 LfgDungeonId);
+		void RemovePlayerFromLfgQueue(Player* pl, uint32 LfgDungeonId);
+		void RemovePlayerFromLfgQueues(Player* pl);
+		void RemovePlayerFromLfmList(Player* pl, uint32 LfmDungeonId);
+		void UpdateLfgQueue(uint32 LfgDungeonId);
+		void SendLfgList(Player* plr, uint32 Dungeon);
+
+		int32 event_GetInstanceId() { return -1; }
+
+	protected:
+
+		LfgPlayerList m_lookingForGroup[MAX_DUNGEONS];
+		LfgPlayerList m_lookingForMore[MAX_DUNGEONS];
+		Mutex m_lock;
+
+
 };
 
 class LfgMatch
 {
-public:
-	set<Player*> PendingPlayers;
-	set<Player*> AcceptedPlayers;
-	Mutex lock;
-	uint32 DungeonId;
-    Group * pGroup;
+	public:
+		set<Player*> PendingPlayers;
+		set<Player*> AcceptedPlayers;
+		Mutex lock;
+		uint32 DungeonId;
+		Group* pGroup;
 
-	LfgMatch(uint32 did) : DungeonId(did),pGroup(NULL) { }
+		LfgMatch(uint32 did) : DungeonId(did), pGroup(NULL) { }
 };
 
 extern uint32 LfgDungeonTypes[MAX_DUNGEONS];

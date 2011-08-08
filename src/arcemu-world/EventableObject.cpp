@@ -47,62 +47,64 @@ EventableObject::EventableObject()
 	m_events.clear();
 }
 
-void EventableObject::event_AddEvent(TimedEvent * ptr)
+void EventableObject::event_AddEvent(TimedEvent* ptr)
 {
 	m_lock.Acquire();
 
-	if( m_holder == NULL )
+	if(m_holder == NULL)
 	{
 		m_event_Instanceid = event_GetInstanceID();
 		m_holder = sEventMgr.GetEventHolder(m_event_Instanceid);
-        
-        if( m_holder == NULL ){
 
-            ///////////////////////////////////////// this is for me for debugging purposes - dfighter ////////////////////////////
-            // Arcemu::Util::ARCEMU_ASSERT( false );
-            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		if(m_holder == NULL)
+		{
 
-            // We still couldn't find an eventholder for us so let's run in WorldRunnable
-            m_event_Instanceid = WORLD_INSTANCE;
-            m_holder = sEventMgr.GetEventHolder(m_event_Instanceid);
-        }
+			///////////////////////////////////////// this is for me for debugging purposes - dfighter ////////////////////////////
+			// Arcemu::Util::ARCEMU_ASSERT( false );
+			///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+			// We still couldn't find an eventholder for us so let's run in WorldRunnable
+			m_event_Instanceid = WORLD_INSTANCE;
+			m_holder = sEventMgr.GetEventHolder(m_event_Instanceid);
+		}
 	}
 
-    // We still couldn't find an event holder for ourselves :(
-    Arcemu::Util::ARCEMU_ASSERT(   m_holder != NULL );
+	// We still couldn't find an event holder for ourselves :(
+	Arcemu::Util::ARCEMU_ASSERT(m_holder != NULL);
 
-    // If we are flagged not to run in WorldRunnable then we won't!
-    // This is much better than adding us to the eventholder and removing on an update
-    if( m_event_Instanceid == WORLD_INSTANCE && ( ptr->eventFlag & EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT ) ){
-        delete ptr->cb;
-        delete ptr;
+	// If we are flagged not to run in WorldRunnable then we won't!
+	// This is much better than adding us to the eventholder and removing on an update
+	if(m_event_Instanceid == WORLD_INSTANCE && (ptr->eventFlag & EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT))
+	{
+		delete ptr->cb;
+		delete ptr;
 
-        ///////////////////////////////////////// this is for me for debugging purposes - dfighter ////////////////////////////
-        // Arcemu::Util::ARCEMU_ASSERT( false );
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		///////////////////////////////////////// this is for me for debugging purposes - dfighter ////////////////////////////
+		// Arcemu::Util::ARCEMU_ASSERT( false );
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		m_lock.Release();
-        return;
-    }
+		return;
+	}
 
 	ptr->IncRef();
 	ptr->instanceId = m_event_Instanceid;
-	pair<uint32,TimedEvent*> p(ptr->eventType, ptr);
-	m_events.insert( p );
+	pair<uint32, TimedEvent*> p(ptr->eventType, ptr);
+	m_events.insert(p);
 	m_lock.Release();
 
-   
-    /* Add to event manager */
+
+	/* Add to event manager */
 	m_holder->AddEvent(ptr);
 }
 
-void EventableObject::event_RemoveByPointer(TimedEvent * ev)
+void EventableObject::event_RemoveByPointer(TimedEvent* ev)
 {
 	m_lock.Acquire();
 	EventMap::iterator itr = m_events.find(ev->eventType);
 	EventMap::iterator it2;
 	if(itr != m_events.end())
 	{
-		do 
+		do
 		{
 			it2 = itr++;
 
@@ -115,7 +117,8 @@ void EventableObject::event_RemoveByPointer(TimedEvent * ev)
 				return;
 			}
 
-		} while(itr != m_events.upper_bound(ev->eventType));
+		}
+		while(itr != m_events.upper_bound(ev->eventType));
 	}
 	m_lock.Release();
 }
@@ -145,7 +148,7 @@ void EventableObject::event_RemoveEvents(uint32 EventType)
 		EventMap::iterator it2;
 		if(itr != m_events.end())
 		{
-			do 
+			do
 			{
 				it2 = itr++;
 
@@ -153,7 +156,8 @@ void EventableObject::event_RemoveEvents(uint32 EventType)
 				it2->second->DecRef();
 				m_events.erase(it2);
 
-			} while(itr != m_events.upper_bound(EventType));
+			}
+			while(itr != m_events.upper_bound(EventType));
 		}
 	}
 
@@ -165,7 +169,7 @@ void EventableObject::event_RemoveEvents()
 	event_RemoveEvents(EVENT_REMOVAL_FLAG_ALL);
 }
 
-void EventableObject::event_ModifyTimeLeft(uint32 EventType, time_t TimeLeft,bool unconditioned)
+void EventableObject::event_ModifyTimeLeft(uint32 EventType, time_t TimeLeft, bool unconditioned)
 {
 	m_lock.Acquire();
 	if(!m_events.size())
@@ -177,19 +181,20 @@ void EventableObject::event_ModifyTimeLeft(uint32 EventType, time_t TimeLeft,boo
 	EventMap::iterator itr = m_events.find(EventType);
 	if(itr != m_events.end())
 	{
-		do 
+		do
 		{
 			if(unconditioned)
 				itr->second->currTime = TimeLeft;
 			else itr->second->currTime = (TimeLeft > itr->second->msTime) ? itr->second->msTime : TimeLeft;
 			++itr;
-		} while(itr != m_events.upper_bound(EventType));
+		}
+		while(itr != m_events.upper_bound(EventType));
 	}
 
 	m_lock.Release();
 }
 
-bool EventableObject::event_GetTimeLeft(uint32 EventType, time_t * Time)
+bool EventableObject::event_GetTimeLeft(uint32 EventType, time_t* Time)
 {
 	m_lock.Acquire();
 	if(!m_events.size())
@@ -201,9 +206,9 @@ bool EventableObject::event_GetTimeLeft(uint32 EventType, time_t * Time)
 	EventMap::iterator itr = m_events.find(EventType);
 	if(itr != m_events.end())
 	{
-		do 
+		do
 		{
-			if( itr->second->deleted )
+			if(itr->second->deleted)
 			{
 				++itr;
 				continue;
@@ -213,7 +218,8 @@ bool EventableObject::event_GetTimeLeft(uint32 EventType, time_t * Time)
 			m_lock.Release();
 			return true;
 
-		} while(itr != m_events.upper_bound(EventType));
+		}
+		while(itr != m_events.upper_bound(EventType));
 	}
 
 	m_lock.Release();
@@ -232,11 +238,12 @@ void EventableObject::event_ModifyTime(uint32 EventType, time_t Time)
 	EventMap::iterator itr = m_events.find(EventType);
 	if(itr != m_events.end())
 	{
-		do 
+		do
 		{
 			itr->second->msTime = Time;
 			++itr;
-		} while(itr != m_events.upper_bound(EventType));
+		}
+		while(itr != m_events.upper_bound(EventType));
 	}
 
 	m_lock.Release();
@@ -254,11 +261,12 @@ void EventableObject::event_ModifyTimeAndTimeLeft(uint32 EventType, time_t Time)
 	EventMap::iterator itr = m_events.find(EventType);
 	if(itr != m_events.end())
 	{
-		do 
+		do
 		{
 			itr->second->currTime = itr->second->msTime = Time;
 			++itr;
-		} while(itr != m_events.upper_bound(EventType));
+		}
+		while(itr != m_events.upper_bound(EventType));
 	}
 
 	m_lock.Release();
@@ -279,7 +287,7 @@ bool EventableObject::event_HasEvent(uint32 EventType)
 	EventMap::iterator itr = m_events.find(EventType);
 	if(itr != m_events.end())
 	{
-		do 
+		do
 		{
 			if(!itr->second->deleted)
 			{
@@ -287,7 +295,8 @@ bool EventableObject::event_HasEvent(uint32 EventType)
 				break;
 			}
 			++itr;
-		} while(itr != m_events.upper_bound(EventType));
+		}
+		while(itr != m_events.upper_bound(EventType));
 	}
 
 	m_lock.Release();
@@ -332,7 +341,7 @@ void EventableObjectHolder::Update(time_t time_difference)
 		if((*iqi)->deleted || (*iqi)->instanceId != mInstanceId)
 			(*iqi)->DecRef();
 		else
-			m_events.push_back( (*iqi) );
+			m_events.push_back((*iqi));
 
 		m_insertPool.erase(iqi);
 	}
@@ -341,19 +350,20 @@ void EventableObjectHolder::Update(time_t time_difference)
 	/* Now we can proceed normally. */
 	EventList::iterator itr = m_events.begin();
 	EventList::iterator it2;
-	TimedEvent * ev;
+	TimedEvent* ev;
 
 	while(itr != m_events.end())
 	{
 		it2 = itr++;
 
-		if((*it2)->instanceId != mInstanceId || (*it2)->deleted ){
+		if((*it2)->instanceId != mInstanceId || (*it2)->deleted)
+		{
 
 			(*it2)->DecRef();
-			
+
 			// remove from this list.
 			m_events.erase(it2);
-			
+
 			continue;
 		}
 
@@ -375,10 +385,10 @@ void EventableObjectHolder::Update(time_t time_difference)
 				ev->cb->execute();
 
 			// check if the event is expired now.
-            if(ev->repeats && --ev->repeats == 0)
+			if(ev->repeats && --ev->repeats == 0)
 			{
 				// Event expired :>
-				
+
 				/* remove the event from the object */
 				/*obj = (EventableObject*)ev->obj;
 				obj->event_RemoveByPointer(ev);*/
@@ -416,21 +426,21 @@ void EventableObject::event_Relocate()
 	/* prevent any new stuff from getting added */
 	m_lock.Acquire();
 
-	EventableObjectHolder * nh = sEventMgr.GetEventHolder(event_GetInstanceID());
+	EventableObjectHolder* nh = sEventMgr.GetEventHolder(event_GetInstanceID());
 	if(nh != m_holder)
 	{
 		// whee, we changed event holder :>
 		// doing this will change the instanceid on all the events, as well as add to the new holder.
-		
+
 		//If nh is NULL then we were removed from world. There's no reason to be added to WORLD_INSTANCE EventMgr, let's just wait till something will add us again to world.
-		if( nh == NULL )
+		if(nh == NULL)
 		{
 			//set instaceId to 0 to each event of this EventableObject, so EventableObjectHolder::Update() will remove them from its EventList.
-			for( EventMap::iterator itr = m_events.begin(); itr != m_events.end(); ++itr )
+			for(EventMap::iterator itr = m_events.begin(); itr != m_events.end(); ++itr)
 			{
 				itr->second->instanceId = 0;
 			}
-			// reset our instance id. 
+			// reset our instance id.
 			m_event_Instanceid = 0;
 		}
 		else
@@ -454,29 +464,29 @@ uint32 EventableObject::event_GetEventPeriod(uint32 EventType)
 	EventMap::iterator itr = m_events.find(EventType);
 	if(itr != m_events.end())
 		ret = (uint32)itr->second->msTime;
-	
+
 	m_lock.Release();
 	return ret;
 }
 
-void EventableObjectHolder::AddEvent(TimedEvent * ev)
+void EventableObjectHolder::AddEvent(TimedEvent* ev)
 {
 	// m_lock NEEDS TO BE A RECURSIVE MUTEX
 	ev->IncRef();
 	if(!m_lock.AttemptAcquire())
 	{
 		m_insertPoolLock.Acquire();
-		m_insertPool.push_back( ev );
+		m_insertPool.push_back(ev);
 		m_insertPoolLock.Release();
 	}
 	else
 	{
-		m_events.push_back( ev );
+		m_events.push_back(ev);
 		m_lock.Release();
 	}
 }
 
-void EventableObjectHolder::AddObject(EventableObject * obj)
+void EventableObjectHolder::AddObject(EventableObject* obj)
 {
 	// transfer all of this objects events into our holder
 	if(!m_lock.AttemptAcquire())
@@ -497,7 +507,7 @@ void EventableObjectHolder::AddObject(EventableObject * obj)
 				continue;
 			}
 
-			itr->second->IncRef();	
+			itr->second->IncRef();
 			itr->second->instanceId = mInstanceId;
 			m_insertPool.push_back(itr->second);
 		}
@@ -518,7 +528,7 @@ void EventableObjectHolder::AddObject(EventableObject * obj)
 
 			itr->second->IncRef();
 			itr->second->instanceId = mInstanceId;
-			m_events.push_back( itr->second );
+			m_events.push_back(itr->second);
 		}
 		m_lock.Release();
 	}

@@ -29,12 +29,12 @@ MD5Hash::~MD5Hash()
 
 }
 
-void MD5Hash::UpdateData(const std::string &str)
+void MD5Hash::UpdateData(const std::string & str)
 {
 	UpdateData((const uint8*)str.data(), (int)str.length());
 }
 
-void MD5Hash::UpdateData(const uint8 *dta, int len)
+void MD5Hash::UpdateData(const uint8* dta, int len)
 {
 	MD5_Update(&mC, dta, len);
 }

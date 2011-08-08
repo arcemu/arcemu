@@ -32,7 +32,7 @@
 #endif
 
 // Database impl
-Database * sLogonSQL;
+Database* sLogonSQL;
 initialiseSingleton(LogonServer);
 Arcemu::Threading::AtomicBoolean mrunning(true);
 Mutex _authSocketLock;
@@ -41,23 +41,24 @@ set<AuthSocket*> _authSockets;
 /*** Signal Handler ***/
 void _OnSignal(int s)
 {
-	switch (s)
+	switch(s)
 	{
 #ifndef WIN32
-	case SIGHUP:
-	   {
-		   LOG_DETAIL("Received SIGHUP signal, reloading accounts.");
-		   AccountMgr::getSingleton().ReloadAccounts(true);
-	   }break;
+		case SIGHUP:
+			{
+				LOG_DETAIL("Received SIGHUP signal, reloading accounts.");
+				AccountMgr::getSingleton().ReloadAccounts(true);
+			}
+			break;
 #endif
-	case SIGINT:
-	case SIGTERM:
-	case SIGABRT:
+		case SIGINT:
+		case SIGTERM:
+		case SIGABRT:
 #ifdef _WIN32
-	case SIGBREAK:
+		case SIGBREAK:
 #endif
-		mrunning.SetVal(false);
-		break;
+			mrunning.SetVal(false);
+			break;
 	}
 
 	signal(s, _OnSignal);
@@ -67,12 +68,12 @@ int main(int argc, char** argv)
 {
 #ifndef WIN32
 	rlimit rl;
-	if (getrlimit(RLIMIT_CORE, &rl) == -1)
+	if(getrlimit(RLIMIT_CORE, &rl) == -1)
 		printf("getrlimit failed. This could be problem.\n");
 	else
 	{
 		rl.rlim_cur = rl.rlim_max;
-		if (setrlimit(RLIMIT_CORE, &rl) == -1)
+		if(setrlimit(RLIMIT_CORE, &rl) == -1)
 			printf("setrlimit failed. Server may not save core.dump files.\n");
 	}
 #endif
@@ -80,7 +81,7 @@ int main(int argc, char** argv)
 	new LogonServer;
 
 	// Run!
-	LogonServer::getSingleton( ).Run(argc, argv);
+	LogonServer::getSingleton().Run(argc, argv);
 	delete LogonServer::getSingletonPtr();
 }
 
@@ -90,7 +91,7 @@ int main(int argc, char** argv)
   *
   * Reads the configs\logon.conf file and parses the <LogonDatabase> tag
   *
-  * Any errors in this file, such as a missing parameter should be caught 
+  * Any errors in this file, such as a missing parameter should be caught
   * and the user notified in an intelligent way
   *
   * If no errors are found, the database is initialized
@@ -110,14 +111,14 @@ bool startdb()
 	bool existsPassword = Config.MainConfig.GetString("LogonDatabase", "Password", &lpassword);
 	bool existsHostname = Config.MainConfig.GetString("LogonDatabase", "Hostname", &lhostname);
 	bool existsName     = Config.MainConfig.GetString("LogonDatabase", "Name",     &ldatabase);
-	bool existsPort     = Config.MainConfig.GetInt(   "LogonDatabase", "Port",     &lport    );
+	bool existsPort     = Config.MainConfig.GetInt("LogonDatabase", "Port",     &lport);
 
 	// Configure Logon Database...
 
 	// logical AND every parameter to ensure we catch any error
 	result = existsUsername && existsPassword && existsHostname && existsName && existsPort;
 
-	if( !result )
+	if(!result)
 	{
 		//Build informative error message
 		//Built as one string and then printed rather than calling sLog.outString(...) for every line,
@@ -126,8 +127,8 @@ bool startdb()
 		//If the <LogonDatabase> tag is malformed, all parameters will fail, and a different error message is given
 
 		string errorMessage = "sql: Certain <LogonDatabase> parameters not found in configs\\logon.conf \r\n";
-		if( !(existsHostname || existsUsername || existsPassword  ||  
-			  existsName     || existsPort ) )
+		if(!(existsHostname || existsUsername || existsPassword  ||
+		        existsName     || existsPort))
 		{
 			errorMessage += "  Double check that you have remembered the entire <LogonDatabase> tag.\r\n";
 			errorMessage += "  All parameters missing. It is possible you forgot the first '<' character.\r\n";
@@ -135,14 +136,14 @@ bool startdb()
 		else
 		{
 			errorMessage +=                        "  Missing paramer(s):\r\n";
-			if( !existsHostname ){ errorMessage += "    Hostname\r\n" ; }
-			if( !existsUsername ){ errorMessage += "    Username\r\n" ; }
-			if( !existsPassword ){ errorMessage += "    Password\r\n" ; }
-			if( !existsName     ){ errorMessage += "    Name\r\n"; }
-			if( !existsPort     ){ errorMessage += "    Port\r\n"; }
+			if(!existsHostname) { errorMessage += "    Hostname\r\n" ; }
+			if(!existsUsername) { errorMessage += "    Username\r\n" ; }
+			if(!existsPassword) { errorMessage += "    Password\r\n" ; }
+			if(!existsName) { errorMessage += "    Name\r\n"; }
+			if(!existsPort) { errorMessage += "    Port\r\n"; }
 		}
 
-		LOG_ERROR( errorMessage.c_str());
+		LOG_ERROR(errorMessage.c_str());
 		return false;
 	}
 
@@ -150,8 +151,8 @@ bool startdb()
 
 	// Initialize it
 	if(!sLogonSQL->Initialize(lhostname.c_str(), (unsigned int)lport, lusername.c_str(),
-		lpassword.c_str(), ldatabase.c_str(), Config.MainConfig.GetIntDefault("LogonDatabase", "ConnectionCount", 5),
-		16384))
+	                          lpassword.c_str(), ldatabase.c_str(), Config.MainConfig.GetIntDefault("LogonDatabase", "ConnectionCount", 5),
+	                          16384))
 	{
 		LOG_ERROR("sql: Logon database initialization failed. Exiting.");
 		return false;
@@ -172,7 +173,7 @@ bool IsServerAllowed(unsigned int IP)
 	m_allowedIpLock.Acquire();
 	for(vector<AllowedIP>::iterator itr = m_allowedIps.begin(); itr != m_allowedIps.end(); ++itr)
 	{
-		if( ParseCIDRBan(IP, itr->IP, itr->Bytes) )
+		if(ParseCIDRBan(IP, itr->IP, itr->Bytes))
 		{
 			m_allowedIpLock.Release();
 			return true;
@@ -187,7 +188,7 @@ bool IsServerAllowedMod(unsigned int IP)
 	m_allowedIpLock.Acquire();
 	for(vector<AllowedIP>::iterator itr = m_allowedModIps.begin(); itr != m_allowedModIps.end(); ++itr)
 	{
-		if( ParseCIDRBan(IP, itr->IP, itr->Bytes) )
+		if(ParseCIDRBan(IP, itr->IP, itr->Bytes))
 		{
 			m_allowedIpLock.Release();
 			return true;
@@ -200,9 +201,9 @@ bool IsServerAllowedMod(unsigned int IP)
 bool Rehash()
 {
 #ifdef WIN32
-	char * config_file = "configs/logon.conf";
+	char* config_file = "configs/logon.conf";
 #else
-	char * config_file = (char*)CONFDIR "/logon.conf";
+	char* config_file = (char*)CONFDIR "/logon.conf";
 #endif
 	if(!Config.MainConfig.SetSource(config_file))
 	{
@@ -224,18 +225,18 @@ bool Rehash()
 	for(itr = vips.begin(); itr != vips.end(); ++itr)
 	{
 		string::size_type i = itr->find("/");
-		if( i == string::npos )
+		if(i == string::npos)
 		{
 			LOG_ERROR("IP: %s could not be parsed. Ignoring", itr->c_str());
 			continue;
 		}
 
 		string stmp = itr->substr(0, i);
-		string smask = itr->substr(i+1);
+		string smask = itr->substr(i + 1);
 
 		unsigned int ipraw = MakeIP(stmp.c_str());
 		unsigned char ipmask = (char)atoi(smask.c_str());
-		if( ipraw == 0 || ipmask == 0 )
+		if(ipraw == 0 || ipmask == 0)
 		{
 			LOG_ERROR("IP: %s could not be parsed. Ignoring", itr->c_str());
 			continue;
@@ -250,18 +251,18 @@ bool Rehash()
 	for(itr = vipsmod.begin(); itr != vipsmod.end(); ++itr)
 	{
 		string::size_type i = itr->find("/");
-		if( i == string::npos )
+		if(i == string::npos)
 		{
 			LOG_ERROR("IP: %s could not be parsed. Ignoring", itr->c_str());
 			continue;
 		}
 
 		string stmp = itr->substr(0, i);
-		string smask = itr->substr(i+1);
+		string smask = itr->substr(i + 1);
 
 		unsigned int ipraw = MakeIP(stmp.c_str());
 		unsigned char ipmask = (char)atoi(smask.c_str());
-		if( ipraw == 0 || ipmask == 0 )
+		if(ipraw == 0 || ipmask == 0)
 		{
 			LOG_ERROR("IP: %s could not be parsed. Ignoring", itr->c_str());
 			continue;
@@ -273,7 +274,7 @@ bool Rehash()
 		m_allowedModIps.push_back(tmp);
 	}
 
-	if( InformationCore::getSingletonPtr() != NULL )
+	if(InformationCore::getSingletonPtr() != NULL)
 		sInfoCore.CheckServers();
 
 	m_allowedIpLock.Release();
@@ -282,14 +283,14 @@ bool Rehash()
 }
 
 
-void LogonServer::Run(int argc, char ** argv)
+void LogonServer::Run(int argc, char** argv)
 {
 	UNIXTIME = time(NULL);
 	g_localTime = *localtime(&UNIXTIME);
 #ifdef WIN32
-	char * config_file = "configs/logon.conf";
+	char* config_file = "configs/logon.conf";
 #else
-	char * config_file = (char*)CONFDIR "/logon.conf";
+	char* config_file = (char*)CONFDIR "/logon.conf";
 #endif
 	int file_log_level = DEF_VALUE_NOT_SET;
 	int screen_log_level = DEF_VALUE_NOT_SET;
@@ -307,29 +308,29 @@ void LogonServer::Run(int argc, char ** argv)
 	};
 
 	int c;
-	while ((c = arcemu_getopt_long_only(argc, argv, ":f:", longopts, NULL)) != -1)
+	while((c = arcemu_getopt_long_only(argc, argv, ":f:", longopts, NULL)) != -1)
 	{
-		switch (c)
+		switch(c)
 		{
-		case 'c':
-			/* Log filename was set */
-			config_file = new char[strlen(arcemu_optarg)];
-			strcpy(config_file,arcemu_optarg);
-			break;
-		case 0:
-			break;
-		default:
-			sLog.Init(0, LOGON_LOG);
-			sLog.outBasic("Usage: %s [--checkconf] [--fileloglevel <level>] [--conf <filename>] [--version]", argv[0]);
-			return;
+			case 'c':
+				/* Log filename was set */
+				config_file = new char[strlen(arcemu_optarg)];
+				strcpy(config_file, arcemu_optarg);
+				break;
+			case 0:
+				break;
+			default:
+				sLog.Init(0, LOGON_LOG);
+				sLog.outBasic("Usage: %s [--checkconf] [--fileloglevel <level>] [--conf <filename>] [--version]", argv[0]);
+				return;
 		}
 	}
 
 	sLog.Init(0, LOGON_LOG);
-	
+
 	sLog.outBasic(BANNER, BUILD_TAG, BUILD_REVISION, CONFIG, PLATFORM_TEXT, ARCH);
 	sLog.outError(BANNER, BUILD_TAG, BUILD_REVISION, CONFIG, PLATFORM_TEXT, ARCH);
-	
+
 	if(do_version)
 	{
 		sLog.Close();
@@ -354,11 +355,11 @@ void LogonServer::Run(int argc, char ** argv)
 	}
 
 	/* set new log levels */
-	if( file_log_level != (int)DEF_VALUE_NOT_SET )
+	if(file_log_level != (int)DEF_VALUE_NOT_SET)
 		sLog.SetFileLoggingLevel(file_log_level);
 
 	printf("The key combination <Ctrl-C> will safely shut down the server at any time.");
-	Log.Success("System","Initializing Random Number Generators...");
+	Log.Success("System", "Initializing Random Number Generators...");
 
 	Log.Success("Config", "Loading Config Files...");
 	if(!Rehash())
@@ -371,7 +372,7 @@ void LogonServer::Run(int argc, char ** argv)
 	sLog.SetFileLoggingLevel(Config.MainConfig.GetIntDefault("LogLevel", "File", 0));
 
 	ThreadPool.Startup();
-   
+
 	if(!startdb())
 	{
 		sLog.Close();
@@ -391,7 +392,7 @@ void LogonServer::Run(int argc, char ** argv)
 	Log.Success("AccountMgr", "%u accounts are loaded and ready.", sAccountMgr.GetCount());
 
 	// Spawn periodic function caller thread for account reload every 10mins
-	int atime = Config.MainConfig.GetIntDefault("Rates", "AccountRefresh",600);
+	int atime = Config.MainConfig.GetIntDefault("Rates", "AccountRefresh", 600);
 	atime *= 1000;
 	//SpawnPeriodicCallThread(AccountMgr, AccountMgr::getSingletonPtr(), &AccountMgr::ReloadAccountsCallback, time);
 	PeriodicFunctionCaller<AccountMgr> * pfc = new PeriodicFunctionCaller<AccountMgr>(AccountMgr::getSingletonPtr(), &AccountMgr::ReloadAccountsCallback, atime);
@@ -418,7 +419,7 @@ void LogonServer::Run(int argc, char ** argv)
 	hash.UpdateData(logon_pass);
 	hash.Finalize();
 	memcpy(sql_hash, hash.GetDigest(), 20);
-	
+
 	ThreadPool.ExecuteTask(new LogonConsoleThread);
 
 	new SocketMgr;
@@ -451,15 +452,15 @@ void LogonServer::Run(int argc, char ** argv)
 #endif
 
 		/* write pid file */
-		FILE * fPid = fopen("logonserver.pid", "w");
+		FILE* fPid = fopen("logonserver.pid", "w");
 		if(fPid)
 		{
 			uint32 pid;
-	#ifdef WIN32
+#ifdef WIN32
 			pid = GetCurrentProcessId();
-	#else
+#else
 			pid = getpid();
-	#endif
+#endif
 			fprintf(fPid, "%u", (unsigned int)pid);
 			fclose(fPid);
 		}
@@ -471,10 +472,10 @@ void LogonServer::Run(int argc, char ** argv)
 			if(!(++loop_counter % 20))	 // 20 seconds
 				CheckForDeadSockets();
 
-			if(!(loop_counter%300))	// 5mins
+			if(!(loop_counter % 300))	// 5mins
 				ThreadPool.IntegrityCheck();
 
-			if(!(loop_counter%5))
+			if(!(loop_counter % 5))
 			{
 				sInfoCore.TimeoutSockets();
 				sSocketGarbageCollector.Update();
@@ -488,13 +489,13 @@ void LogonServer::Run(int argc, char ** argv)
 		}
 
 		sLog.outString("Shutting down...");
-        signal(SIGINT, 0);
-        signal(SIGTERM, 0);
-        signal(SIGABRT, 0);
+		signal(SIGINT, 0);
+		signal(SIGTERM, 0);
+		signal(SIGABRT, 0);
 #ifdef _WIN32
-        signal(SIGBREAK, 0);
+		signal(SIGBREAK, 0);
 #else
-        signal(SIGHUP, 0);
+		signal(SIGHUP, 0);
 #endif
 	}
 	else
@@ -549,7 +550,7 @@ void LogonServer::CheckForDeadSockets()
 	time_t diff;
 	set<AuthSocket*>::iterator itr = _authSockets.begin();
 	set<AuthSocket*>::iterator it2;
-	AuthSocket * s;
+	AuthSocket* s;
 
 	for(itr = _authSockets.begin(); itr != _authSockets.end();)
 	{

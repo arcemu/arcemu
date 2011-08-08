@@ -93,7 +93,7 @@
 #define LUA_CPATH_DEFAULT \
 		".\\?.dll;"  LUA_CDIR"?.dll;" LUA_CDIR"loadall.dll;" \
 		LUA_CDIR"clibs\\?.dll;" LUA_CDIR"clibs\\loadall.dll;" \
-		".\\?51.dll;"  LUA_CDIR"?51.dll;" LUA_CDIR"clibs\\?51.dll" 
+		".\\?51.dll;"  LUA_CDIR"?51.dll;" LUA_CDIR"clibs\\?51.dll"
 
 #else
 #define LUA_ROOT	"/usr/local/"

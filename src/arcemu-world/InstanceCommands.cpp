@@ -20,21 +20,23 @@
 
 #include "StdAfx.h"
 
-const char * GetDifficultyString(uint8 difficulty)
+const char* GetDifficultyString(uint8 difficulty)
 {
 	switch(difficulty)
 	{
-	case MODE_NORMAL:
-		return "normal";
-	case MODE_HEROIC:
-		return "heroic";
-	default:
-		return "unknown";
+		case MODE_NORMAL:
+			return "normal";
+		case MODE_HEROIC:
+			return "heroic";
+		default:
+			return "unknown";
 	}
 }
 
-const char *GetRaidDifficultyString( uint8 diff ){
-	switch( diff ){
+const char* GetRaidDifficultyString(uint8 diff)
+{
+	switch(diff)
+	{
 		case MODE_NORMAL_10MEN:
 			return "normal 10men";
 		case MODE_NORMAL_25MEN:
@@ -48,35 +50,36 @@ const char *GetRaidDifficultyString( uint8 diff ){
 	}
 }
 
-const char * GetMapTypeString(uint8 type)
+const char* GetMapTypeString(uint8 type)
 {
 	switch(type)
 	{
-	case INSTANCE_NULL:
-		return "Continent";
-	case INSTANCE_RAID:
-		return "Raid";
-	case INSTANCE_NONRAID:
-		return "Non-Raid";
-	case INSTANCE_BATTLEGROUND:
-		return "PvP";
-	case INSTANCE_MULTIMODE:
-		return "MultiMode";
-	default:
-		return "Unknown";
+		case INSTANCE_NULL:
+			return "Continent";
+		case INSTANCE_RAID:
+			return "Raid";
+		case INSTANCE_NONRAID:
+			return "Non-Raid";
+		case INSTANCE_BATTLEGROUND:
+			return "PvP";
+		case INSTANCE_MULTIMODE:
+			return "MultiMode";
+		default:
+			return "Unknown";
 	}
 }
 
-bool ChatHandler::HandleResetAllInstancesCommand(const char* args, WorldSession *m_session)
+bool ChatHandler::HandleResetAllInstancesCommand(const char* args, WorldSession* m_session)
 {
 
-	Player * plr;
-	if(strlen(args)== 0)
+	Player* plr;
+	if(strlen(args) == 0)
 		plr = getSelectedChar(m_session, true);
 	else
 		plr = objmgr.GetPlayer(args, false);;
-		
-	if(!plr){
+
+	if(!plr)
+	{
 		RedSystemMessage(m_session, "Player not found");
 		return true;
 	}
@@ -89,7 +92,7 @@ bool ChatHandler::HandleResetAllInstancesCommand(const char* args, WorldSession 
 	return true;
 }
 
-bool ChatHandler::HandleResetInstanceCommand(const char* args, WorldSession *m_session)
+bool ChatHandler::HandleResetInstanceCommand(const char* args, WorldSession* m_session)
 {
 
 	uint32 instanceId;
@@ -100,7 +103,7 @@ bool ChatHandler::HandleResetInstanceCommand(const char* args, WorldSession *m_s
 	// Parse arguments
 	char* space = (char*)strchr(args, ' ');
 	if(space)
-	{	
+	{
 		*space = '\0';
 		playername = space + 1;
 		argc = 2;
@@ -112,21 +115,22 @@ bool ChatHandler::HandleResetInstanceCommand(const char* args, WorldSession *m_s
 		RedSystemMessage(m_session, "You must specify an instance id.");
 		return true;
 	}
-	
 
-	Player * plr;
 
-	if( argc == 1 )
+	Player* plr;
+
+	if(argc == 1)
 		plr = getSelectedChar(m_session, true);
 	else
 		plr = objmgr.GetPlayer((const char*)playername, false);;
-		
-	if(!plr){
+
+	if(!plr)
+	{
 		RedSystemMessage(m_session, "Player not found");
 		return true;
 	}
-	
-	Instance *instance = sInstanceMgr.GetInstanceByIds(NUM_MAPS, instanceId);
+
+	Instance* instance = sInstanceMgr.GetInstanceByIds(NUM_MAPS, instanceId);
 	if(instance == NULL)
 	{
 		RedSystemMessage(m_session, "There's no instance with id %u.", instanceId);
@@ -139,13 +143,13 @@ bool ChatHandler::HandleResetInstanceCommand(const char* args, WorldSession *m_s
 		{
 			bool foundSomething = false;
 			plr->getPlayerInfo()->savedInstanceIdsLock.Acquire();
-			for(uint32 difficulty= 0; difficulty<NUM_INSTANCE_MODES; difficulty++)
+			for(uint32 difficulty = 0; difficulty < NUM_INSTANCE_MODES; difficulty++)
 			{
 				PlayerInstanceMap::iterator itr = plr->getPlayerInfo()->savedInstanceIds[difficulty].find(instance->m_mapId);
 				if(itr == plr->getPlayerInfo()->savedInstanceIds[difficulty].end() || (*itr).second != instance->m_instanceId)
 					continue;
 				plr->SetPersistentInstanceId(instance->m_mapId, difficulty, 0);
-				SystemMessage(m_session, "Instance with id %u (%s) is persistent and will only be revoked from player.", instanceId, GetDifficultyString( static_cast<uint8>( difficulty )));
+				SystemMessage(m_session, "Instance with id %u (%s) is persistent and will only be revoked from player.", instanceId, GetDifficultyString(static_cast<uint8>(difficulty)));
 				foundSomething = true;
 			}
 			plr->getPlayerInfo()->savedInstanceIdsLock.Release();
@@ -168,7 +172,7 @@ bool ChatHandler::HandleResetInstanceCommand(const char* args, WorldSession *m_s
 
 	if(instance->m_creatorGroup)
 	{
-		Group *group = plr->GetGroup();
+		Group* group = plr->GetGroup();
 		if(group == NULL || instance->m_creatorGroup != group->GetID())
 		{
 			RedSystemMessage(m_session, "Player %s is not a member of the group assigned to the non-persistent instance with id %u.", plr->GetName(), instanceId);
@@ -193,13 +197,13 @@ bool ChatHandler::HandleResetInstanceCommand(const char* args, WorldSession *m_s
 	return true;
 }
 
-bool ChatHandler::HandleShutdownInstanceCommand(const char* args, WorldSession *m_session)
+bool ChatHandler::HandleShutdownInstanceCommand(const char* args, WorldSession* m_session)
 {
 	uint32 instanceId = (args ? atoi(args) : 0);
 	if(instanceId == 0)
 		return false;
 
-	Instance *instance = sInstanceMgr.GetInstanceByIds(NUM_MAPS, instanceId);
+	Instance* instance = sInstanceMgr.GetInstanceByIds(NUM_MAPS, instanceId);
 	if(instance == NULL)
 	{
 		RedSystemMessage(m_session, "There's no instance with id %u.", instanceId);
@@ -232,9 +236,9 @@ bool ChatHandler::HandleShutdownInstanceCommand(const char* args, WorldSession *
 //	//sGMLog.writefromsession(m_session, "used delete instance command on instance %u,", 0);
 //}
 
-bool ChatHandler::HandleGetInstanceInfoCommand(const char* args, WorldSession *m_session)
+bool ChatHandler::HandleGetInstanceInfoCommand(const char* args, WorldSession* m_session)
 {
-	Player *plr = m_session->GetPlayer();
+	Player* plr = m_session->GetPlayer();
 	if(plr == NULL)
 		return false;
 
@@ -248,7 +252,7 @@ bool ChatHandler::HandleGetInstanceInfoCommand(const char* args, WorldSession *m
 			return false;
 	}
 
-	Instance *instance = sInstanceMgr.GetInstanceByIds(NUM_MAPS, instanceId);
+	Instance* instance = sInstanceMgr.GetInstanceByIds(NUM_MAPS, instanceId);
 	if(instance == NULL)
 	{
 		if(userInput)
@@ -269,15 +273,16 @@ bool ChatHandler::HandleGetInstanceInfoCommand(const char* args, WorldSession *m
 	ss << "Persistent: " << MSG_COLOR_CYAN << (instance->m_persistent ? "Yes" : "No") << "|r\n";
 	if(instance->m_mapInfo != NULL)
 	{
-		ss << "Type: " << MSG_COLOR_CYAN << GetMapTypeString( static_cast<uint8>( instance->m_mapInfo->type )) << "|r";
-		
+		ss << "Type: " << MSG_COLOR_CYAN << GetMapTypeString(static_cast<uint8>(instance->m_mapInfo->type)) << "|r";
+
 		if(instance->m_mapInfo->type == INSTANCE_MULTIMODE)
 		{
-			ss << " (" << MSG_COLOR_CYAN << GetDifficultyString( static_cast<uint8>( instance->m_difficulty )) << "|r)";
+			ss << " (" << MSG_COLOR_CYAN << GetDifficultyString(static_cast<uint8>(instance->m_difficulty)) << "|r)";
 		}
 
-		if( instance->m_mapInfo->type == INSTANCE_RAID ){
-			ss << " (" << MSG_COLOR_CYAN << GetRaidDifficultyString( static_cast<uint8>( instance->m_difficulty )) << "|r)";
+		if(instance->m_mapInfo->type == INSTANCE_RAID)
+		{
+			ss << " (" << MSG_COLOR_CYAN << GetRaidDifficultyString(static_cast<uint8>(instance->m_difficulty)) << "|r)";
 		}
 
 		ss << "\n";
@@ -294,7 +299,7 @@ bool ChatHandler::HandleGetInstanceInfoCommand(const char* args, WorldSession *m
 	{
 		ss << "Status: " << MSG_COLOR_LIGHTRED << "Idle|r";
 		if(instance->m_mapMgr->InactiveMoveTime && instance->m_mapMgr->GetMapInfo()->type != INSTANCE_NULL)
-			ss << " (" << MSG_COLOR_CYAN << "Shutdown in " << MSG_COLOR_LIGHTRED << ( ((long)instance->m_mapMgr->InactiveMoveTime - UNIXTIME) / 60 ) << MSG_COLOR_CYAN << " minutes|r)";
+			ss << " (" << MSG_COLOR_CYAN << "Shutdown in " << MSG_COLOR_LIGHTRED << (((long)instance->m_mapMgr->InactiveMoveTime - UNIXTIME) / 60) << MSG_COLOR_CYAN << " minutes|r)";
 		ss << "\n";
 	}
 	else
@@ -307,9 +312,9 @@ bool ChatHandler::HandleGetInstanceInfoCommand(const char* args, WorldSession *m
 	return true;
 }
 
-bool ChatHandler::HandleCreateInstanceCommand(const char * args, WorldSession * m_session)
+bool ChatHandler::HandleCreateInstanceCommand(const char* args, WorldSession* m_session)
 {
-	Player *plr = getSelectedChar(m_session, true);
+	Player* plr = getSelectedChar(m_session, true);
 	float x, y, z;
 	uint32 mapid;
 	if(sscanf(args, "%u %f %f %f", (unsigned int*)&mapid, &x, &y, &z) != 4)
@@ -323,7 +328,7 @@ bool ChatHandler::HandleCreateInstanceCommand(const char * args, WorldSession * 
 	if(!plr) return false;
 
 	/* Create Map Manager */
-	MapMgr * mgr = sInstanceMgr.CreateInstance(INSTANCE_NONRAID, mapid);
+	MapMgr* mgr = sInstanceMgr.CreateInstance(INSTANCE_NONRAID, mapid);
 	if(mgr == NULL)
 	{
 		sLog.Error("CreateInstanceGMCommand", "CreateInstance() call failed for map %u", mapid);
@@ -345,7 +350,9 @@ bool ChatHandler::HandleExitInstanceCommand(const char* args, WorldSession* m_se
 	{
 		RedSystemMessage(m_session, "Entry points not found.");
 		return true;
-	} else {
+	}
+	else
+	{
 		GreenSystemMessage(m_session, "Removal successful.");
 		return true;
 	}
@@ -353,7 +360,7 @@ bool ChatHandler::HandleExitInstanceCommand(const char* args, WorldSession* m_se
 
 bool ChatHandler::HandleShowInstancesCommand(const char* args, WorldSession* m_session)
 {
-	Player * plr = getSelectedChar(m_session, true);
+	Player* plr = getSelectedChar(m_session, true);
 	if(!plr)
 		return true;
 
@@ -361,24 +368,24 @@ bool ChatHandler::HandleShowInstancesCommand(const char* args, WorldSession* m_s
 	std::stringstream ss;
 	ss << "Show persistent instances of " << MSG_COLOR_CYAN << plr->GetName() << "|r\n";
 	plr->getPlayerInfo()->savedInstanceIdsLock.Acquire();
-	for(uint32 difficulty= 0; difficulty<NUM_INSTANCE_MODES; difficulty++)
+	for(uint32 difficulty = 0; difficulty < NUM_INSTANCE_MODES; difficulty++)
 	{
 		for(PlayerInstanceMap::iterator itr = plr->getPlayerInfo()->savedInstanceIds[difficulty].begin(); itr != plr->getPlayerInfo()->savedInstanceIds[difficulty].end(); ++itr)
 		{
 			count++;
 			ss << " - " << MSG_COLOR_CYAN << (*itr).second << "|r";
-			MapInfo *mapInfo = WorldMapInfoStorage.LookupEntry((*itr).first);
+			MapInfo* mapInfo = WorldMapInfoStorage.LookupEntry((*itr).first);
 			if(mapInfo != NULL)
 				ss << " (" << MSG_COLOR_CYAN << mapInfo->name << "|r)";
-			Instance *pInstance = sInstanceMgr.GetInstanceByIds((*itr).first, (*itr).second);
+			Instance* pInstance = sInstanceMgr.GetInstanceByIds((*itr).first, (*itr).second);
 			if(pInstance == NULL)
 				ss << " - " << MSG_COLOR_RED << "Expired!|r";
 			else
 			{
-				ss << " [" << GetMapTypeString( static_cast<uint8>( pInstance->m_mapInfo->type )) << "]";
+				ss << " [" << GetMapTypeString(static_cast<uint8>(pInstance->m_mapInfo->type)) << "]";
 				if(pInstance->m_mapInfo->type == INSTANCE_MULTIMODE)
 				{
-					ss << " [" << GetDifficultyString( static_cast<uint8>( pInstance->m_difficulty )) << "]";
+					ss << " [" << GetDifficultyString(static_cast<uint8>(pInstance->m_difficulty)) << "]";
 				}
 				ss << " - ";
 				if(pInstance->m_mapMgr == NULL)

@@ -35,10 +35,10 @@ void Channel::LoadConfSettings()
 	m_confSettingLock.Release();
 }
 
-bool Channel::HasMember(Player * pPlayer)
+bool Channel::HasMember(Player* pPlayer)
 {
 	m_lock.Acquire();
-	if( m_members.find(pPlayer) == m_members.end() )
+	if(m_members.find(pPlayer) == m_members.end())
 	{
 		m_lock.Release();
 		return false;
@@ -50,9 +50,9 @@ bool Channel::HasMember(Player * pPlayer)
 	}
 }
 
-Channel::Channel(const char * name, uint32 team, uint32 type_id)
+Channel::Channel(const char* name, uint32 team, uint32 type_id)
 {
-	ChatChannelDBC * pDBC;
+	ChatChannelDBC* pDBC;
 	m_flags = 0;
 	m_announce = true;
 	m_muted = false;
@@ -63,7 +63,7 @@ Channel::Channel(const char * name, uint32 team, uint32 type_id)
 	m_minimumLevel = 1;
 
 	pDBC = dbcChatChannels.LookupEntryForced(type_id);
-	if( pDBC != NULL )
+	if(pDBC != NULL)
 	{
 		m_general = true;
 		m_announce = false;
@@ -71,13 +71,13 @@ Channel::Channel(const char * name, uint32 team, uint32 type_id)
 		m_flags |= 0x10;			// general flag
 		// flags (0x01 = custom?, 0x04 = trade?, 0x20 = city?, 0x40 = lfg?, , 0x80 = voice?,
 
-		if( pDBC->flags & 0x08 )
+		if(pDBC->flags & 0x08)
 			m_flags |= 0x08;		// trade
 
-		if( pDBC->flags & 0x10 || pDBC->flags & 0x20 )
+		if(pDBC->flags & 0x10 || pDBC->flags & 0x20)
 			m_flags |= 0x20;		// city flag
 
-		if( pDBC->flags & 0x40000 )
+		if(pDBC->flags & 0x40000)
 			m_flags |= 0x40;		// lfg flag
 	}
 	else
@@ -85,7 +85,7 @@ Channel::Channel(const char * name, uint32 team, uint32 type_id)
 
 	for(vector<string>::iterator itr = m_minimumChannel.begin(); itr != m_minimumChannel.end(); ++itr)
 	{
-		if( stricmp(name, itr->c_str()) )
+		if(stricmp(name, itr->c_str()))
 		{
 			m_minimumLevel = 10;
 			m_general = true;
@@ -95,18 +95,18 @@ Channel::Channel(const char * name, uint32 team, uint32 type_id)
 	}
 }
 
-void Channel::AttemptJoin(Player * plr, const char * password)
+void Channel::AttemptJoin(Player* plr, const char* password)
 {
 	Guard mGuard(m_lock);
 	WorldPacket data(SMSG_CHANNEL_NOTIFY, 100);
 	uint32 flags = CHANNEL_FLAG_NONE;
 
-	if( !m_general && plr->GetSession()->CanUseCommand('c') )
+	if(!m_general && plr->GetSession()->CanUseCommand('c'))
 		flags |= CHANNEL_FLAG_MODERATOR;
 
 	if(!m_password.empty() && strcmp(m_password.c_str(), password) != 0)
 	{
-        data << uint8(CHANNEL_NOTIFY_FLAG_WRONGPASS) << m_name;
+		data << uint8(CHANNEL_NOTIFY_FLAG_WRONGPASS) << m_name;
 		plr->GetSession()->SendPacket(&data);
 		return;
 	}
@@ -138,7 +138,7 @@ void Channel::AttemptJoin(Player * plr, const char * password)
 	}
 
 	data.clear();
-	if( m_flags & 0x40 && !plr->GetSession()->HasFlag( ACCOUNT_FLAG_NO_AUTOJOIN ) )
+	if(m_flags & 0x40 && !plr->GetSession()->HasFlag(ACCOUNT_FLAG_NO_AUTOJOIN))
 		data << uint8(CHANNEL_NOTIFY_FLAG_YOUJOINED) << m_name << uint8(0x1A) << uint32(0) << uint32(0);
 	else
 		data << uint8(CHANNEL_NOTIFY_FLAG_YOUJOINED) << m_name << m_flags << m_id << uint32(0);
@@ -146,7 +146,7 @@ void Channel::AttemptJoin(Player * plr, const char * password)
 	plr->GetSession()->SendPacket(&data);
 }
 
-void Channel::Part(Player * plr, bool send_packet )
+void Channel::Part(Player* plr, bool send_packet)
 {
 	m_lock.Acquire();
 	WorldPacket data(SMSG_CHANNEL_NOTIFY, 100);
@@ -171,11 +171,11 @@ void Channel::Part(Player * plr, bool send_packet )
 		SetOwner(NULL, NULL);
 	}
 
-	if(plr->GetSession() && (plr->GetSession()->IsLoggingOut() || plr->m_TeleportState == 1 ))
+	if(plr->GetSession() && (plr->GetSession()->IsLoggingOut() || plr->m_TeleportState == 1))
 	{
 
 	}
-	else if( send_packet )
+	else if(send_packet)
 	{
 		data << uint8(CHANNEL_NOTIFY_FLAG_YOULEFT) << m_name << m_id << uint32(0) << uint8(0);
 		plr->GetSession()->SendPacket(&data);
@@ -187,24 +187,24 @@ void Channel::Part(Player * plr, bool send_packet )
 		data << uint8(CHANNEL_NOTIFY_FLAG_LEFT) << m_name << plr->GetGUID();
 		SendToAll(&data);
 
-/*		data.Initialize(SMSG_PLAYER_LEFT_CHANNEL);
-		data << plr->GetGUID() << m_flags << m_id << m_name;
-		SendToAll(&data);*/
+		/*		data.Initialize(SMSG_PLAYER_LEFT_CHANNEL);
+				data << plr->GetGUID() << m_flags << m_id << m_name;
+				SendToAll(&data);*/
 	}
 
-    if(m_members.size() == 0 )
-    {
-        m_lock.Release();
+	if(m_members.size() == 0)
+	{
+		m_lock.Release();
 		channelmgr.RemoveChannel(this);
-    }
+	}
 	else
 		m_lock.Release();
 }
 
-void Channel::SetOwner(Player * oldpl, Player * plr)
+void Channel::SetOwner(Player* oldpl, Player* plr)
 {
 	Guard mGuard(m_lock);
-	Player * pOwner = NULL;
+	Player* pOwner = NULL;
 	uint32 oldflags = 0, oldflags2 = 0;
 	WorldPacket data(SMSG_CHANNEL_NOTIFY, 100);
 	if(oldpl != NULL)
@@ -285,7 +285,7 @@ void Channel::SetOwner(Player * oldpl, Player * plr)
 	SendToAll(&data);
 }
 
-void Channel::Invite(Player * plr, Player * new_player)
+void Channel::Invite(Player* plr, Player* new_player)
 {
 	Guard mGuard(m_lock);
 	if(m_members.find(plr) == m_members.end())
@@ -309,7 +309,7 @@ void Channel::Invite(Player * plr, Player * new_player)
 	plr->GetSession()->SendPacket(&data);
 }
 
-void Channel::Moderate(Player * plr)
+void Channel::Moderate(Player* plr)
 {
 	Guard mGuard(m_lock);
 	MemberMap::iterator itr = m_members.find(plr);
@@ -333,11 +333,11 @@ void Channel::Moderate(Player * plr)
 	SendToAll(&data);
 }
 
-void Channel::Say(Player * plr, const char * message, Player * for_gm_client, bool forced)
+void Channel::Say(Player* plr, const char* message, Player* for_gm_client, bool forced)
 {
 	Guard mGuard(m_lock);
 	MemberMap::iterator itr = m_members.find(plr);
-	WorldPacket data(SMSG_CHANNEL_NOTIFY, strlen(message)+100);
+	WorldPacket data(SMSG_CHANNEL_NOTIFY, strlen(message) + 100);
 	if(!forced)
 	{
 		if(m_members.end() == itr)
@@ -363,7 +363,7 @@ void Channel::Say(Player * plr, const char * message, Player * for_gm_client, bo
 	}
 
 	// not blizzlike but meh
-	if( plr->getLevel() < m_minimumLevel )
+	if(plr->getLevel() < m_minimumLevel)
 	{
 		plr->BroadcastMessage("You must be level %u to speak in the channel, '%s'.", m_minimumLevel, m_name.c_str());
 		return;
@@ -376,7 +376,7 @@ void Channel::Say(Player * plr, const char * message, Player * for_gm_client, bo
 	data << uint32(0);		// rank?
 	data << m_name;			// channel name
 	data << plr->GetGUID();	// guid again?
-	data << uint32(strlen(message)+1);
+	data << uint32(strlen(message) + 1);
 	data << message;
 	data << (uint8)(plr->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_GM) ? 4 : 0);
 	if(for_gm_client != NULL)
@@ -385,21 +385,21 @@ void Channel::Say(Player * plr, const char * message, Player * for_gm_client, bo
 		SendToAll(&data);
 }
 
-void Channel::SendNotOn(Player * plr)
+void Channel::SendNotOn(Player* plr)
 {
 	WorldPacket data(SMSG_CHANNEL_NOTIFY, 100);
 	data << uint8(CHANNEL_NOTIFY_FLAG_NOTON) << m_name;
 	plr->GetSession()->SendPacket(&data);
 }
 
-void Channel::SendAlreadyOn(Player * plr, Player* plr2)
+void Channel::SendAlreadyOn(Player* plr, Player* plr2)
 {
 	WorldPacket data(SMSG_CHANNEL_NOTIFY, 100);
 	data << uint8(CHANNEL_NOTIFY_FLAG_ALREADY_ON) << m_name << plr2->GetGUID();
 	plr->GetSession()->SendPacket(&data);
 }
 
-void Channel::Kick(Player * plr, Player * die_player, bool ban)
+void Channel::Kick(Player* plr, Player* die_player, bool ban)
 {
 	Guard mGuard(m_lock);
 	MemberMap::iterator itr = m_members.find(die_player);
@@ -421,14 +421,14 @@ void Channel::Kick(Player * plr, Player * die_player, bool ban)
 		return;
 	}
 
-    if(!(me_itr->second & CHANNEL_FLAG_OWNER || me_itr->second & CHANNEL_FLAG_MODERATOR) && !plr->GetSession()->CanUseCommand('a') )
-    {
+	if(!(me_itr->second & CHANNEL_FLAG_OWNER || me_itr->second & CHANNEL_FLAG_MODERATOR) && !plr->GetSession()->CanUseCommand('a'))
+	{
 		data << uint8(CHANNEL_NOTIFY_FLAG_NOTMOD) << m_name;
 		plr->GetSession()->SendPacket(&data);
 		return;
 	}
 
-    flags = itr->second;
+	flags = itr->second;
 	data << uint8(CHANNEL_NOTIFY_FLAG_KICKED) << m_name << die_player->GetGUID();
 	SendToAll(&data);
 
@@ -452,7 +452,7 @@ void Channel::Kick(Player * plr, Player * die_player, bool ban)
 	die_player->GetSession()->SendPacket(&data);
 }
 
-void Channel::Unban(Player * plr, PlayerInfo * bplr)
+void Channel::Unban(Player* plr, PlayerInfo* bplr)
 {
 	Guard mGuard(m_lock);
 	MemberMap::iterator itr = m_members.find(plr);
@@ -464,8 +464,8 @@ void Channel::Unban(Player * plr, PlayerInfo * bplr)
 		return;
 	}
 
-    if(!(itr->second & CHANNEL_FLAG_OWNER || itr->second & CHANNEL_FLAG_MODERATOR) && !plr->GetSession()->CanUseCommand('a') )
-    {
+	if(!(itr->second & CHANNEL_FLAG_OWNER || itr->second & CHANNEL_FLAG_MODERATOR) && !plr->GetSession()->CanUseCommand('a'))
+	{
 		data << uint8(CHANNEL_NOTIFY_FLAG_NOTMOD) << m_name;
 		plr->GetSession()->SendPacket(&data);
 		return;
@@ -484,7 +484,7 @@ void Channel::Unban(Player * plr, PlayerInfo * bplr)
 	m_bannedMembers.erase(it2);
 }
 
-void Channel::Voice(Player * plr, Player * v_player)
+void Channel::Voice(Player* plr, Player* v_player)
 {
 	Guard mGuard(m_lock);
 	MemberMap::iterator itr = m_members.find(plr);
@@ -504,20 +504,20 @@ void Channel::Voice(Player * plr, Player * v_player)
 		return;
 	}
 
-    if(!(itr->second & CHANNEL_FLAG_OWNER || itr->second & CHANNEL_FLAG_MODERATOR) && !plr->GetSession()->CanUseCommand('a') )
-    {
+	if(!(itr->second & CHANNEL_FLAG_OWNER || itr->second & CHANNEL_FLAG_MODERATOR) && !plr->GetSession()->CanUseCommand('a'))
+	{
 		data << uint8(CHANNEL_NOTIFY_FLAG_NOTMOD) << m_name;
 		plr->GetSession()->SendPacket(&data);
 		return;
 	}
 
 	uint32 oldflags = itr2->second;
-    itr2->second |= CHANNEL_FLAG_VOICED;
+	itr2->second |= CHANNEL_FLAG_VOICED;
 	data << uint8(CHANNEL_NOTIFY_FLAG_MODE_CHG) << m_name << v_player->GetGUID() << uint8(oldflags) << uint8(itr2->second);
 	SendToAll(&data);
 }
 
-void Channel::Devoice(Player * plr, Player * v_player)
+void Channel::Devoice(Player* plr, Player* v_player)
 {
 	Guard mGuard(m_lock);
 	MemberMap::iterator itr = m_members.find(plr);
@@ -537,7 +537,7 @@ void Channel::Devoice(Player * plr, Player * v_player)
 		return;
 	}
 
-    if(!(itr->second & CHANNEL_FLAG_OWNER || itr->second & CHANNEL_FLAG_MODERATOR) && !plr->GetSession()->CanUseCommand('a') )
+	if(!(itr->second & CHANNEL_FLAG_OWNER || itr->second & CHANNEL_FLAG_MODERATOR) && !plr->GetSession()->CanUseCommand('a'))
 	{
 		data << uint8(CHANNEL_NOTIFY_FLAG_NOTMOD) << m_name;
 		plr->GetSession()->SendPacket(&data);
@@ -550,7 +550,7 @@ void Channel::Devoice(Player * plr, Player * v_player)
 	SendToAll(&data);
 }
 
-void Channel::Mute(Player * plr, Player * die_player)
+void Channel::Mute(Player* plr, Player* die_player)
 {
 	Guard mGuard(m_lock);
 	MemberMap::iterator itr = m_members.find(plr);
@@ -570,7 +570,7 @@ void Channel::Mute(Player * plr, Player * die_player)
 		return;
 	}
 
-    if(!(itr->second & CHANNEL_FLAG_OWNER || itr->second & CHANNEL_FLAG_MODERATOR) && !plr->GetSession()->CanUseCommand('a') )
+	if(!(itr->second & CHANNEL_FLAG_OWNER || itr->second & CHANNEL_FLAG_MODERATOR) && !plr->GetSession()->CanUseCommand('a'))
 	{
 		data << uint8(CHANNEL_NOTIFY_FLAG_NOTMOD) << m_name;
 		plr->GetSession()->SendPacket(&data);
@@ -583,7 +583,7 @@ void Channel::Mute(Player * plr, Player * die_player)
 	SendToAll(&data);
 }
 
-void Channel::Unmute(Player * plr, Player * die_player)
+void Channel::Unmute(Player* plr, Player* die_player)
 {
 	Guard mGuard(m_lock);
 	MemberMap::iterator itr = m_members.find(plr);
@@ -603,7 +603,7 @@ void Channel::Unmute(Player * plr, Player * die_player)
 		return;
 	}
 
-    if(!(itr->second & CHANNEL_FLAG_OWNER || itr->second & CHANNEL_FLAG_MODERATOR) && !plr->GetSession()->CanUseCommand('a') )
+	if(!(itr->second & CHANNEL_FLAG_OWNER || itr->second & CHANNEL_FLAG_MODERATOR) && !plr->GetSession()->CanUseCommand('a'))
 	{
 		data << uint8(CHANNEL_NOTIFY_FLAG_NOTMOD) << m_name;
 		plr->GetSession()->SendPacket(&data);
@@ -616,7 +616,7 @@ void Channel::Unmute(Player * plr, Player * die_player)
 	SendToAll(&data);
 }
 
-void Channel::GiveModerator(Player * plr, Player * new_player)
+void Channel::GiveModerator(Player* plr, Player* new_player)
 {
 	Guard mGuard(m_lock);
 	MemberMap::iterator itr = m_members.find(plr);
@@ -649,7 +649,7 @@ void Channel::GiveModerator(Player * plr, Player * new_player)
 	SendToAll(&data);
 }
 
-void Channel::TakeModerator(Player * plr, Player * new_player)
+void Channel::TakeModerator(Player* plr, Player* new_player)
 {
 	Guard mGuard(m_lock);
 	MemberMap::iterator itr = m_members.find(plr);
@@ -669,7 +669,7 @@ void Channel::TakeModerator(Player * plr, Player * new_player)
 		return;
 	}
 
-    if(!(itr->second & CHANNEL_FLAG_OWNER || itr->second & CHANNEL_FLAG_MODERATOR) && !plr->GetSession()->CanUseCommand('a') )
+	if(!(itr->second & CHANNEL_FLAG_OWNER || itr->second & CHANNEL_FLAG_MODERATOR) && !plr->GetSession()->CanUseCommand('a'))
 	{
 		data << uint8(CHANNEL_NOTIFY_FLAG_NOTMOD) << m_name;
 		plr->GetSession()->SendPacket(&data);
@@ -682,7 +682,7 @@ void Channel::TakeModerator(Player * plr, Player * new_player)
 	SendToAll(&data);
 }
 
-void Channel::Announce(Player * plr)
+void Channel::Announce(Player* plr)
 {
 	Guard mGuard(m_lock);
 	MemberMap::iterator itr = m_members.find(plr);
@@ -694,7 +694,7 @@ void Channel::Announce(Player * plr)
 		return;
 	}
 
-    if(!(itr->second & CHANNEL_FLAG_OWNER || itr->second & CHANNEL_FLAG_MODERATOR) && !plr->GetSession()->CanUseCommand('a') )
+	if(!(itr->second & CHANNEL_FLAG_OWNER || itr->second & CHANNEL_FLAG_MODERATOR) && !plr->GetSession()->CanUseCommand('a'))
 	{
 		data << uint8(CHANNEL_NOTIFY_FLAG_NOTMOD) << m_name;
 		plr->GetSession()->SendPacket(&data);
@@ -706,7 +706,7 @@ void Channel::Announce(Player * plr)
 	SendToAll(&data);
 }
 
-void Channel::Password(Player * plr, const char * pass)
+void Channel::Password(Player* plr, const char* pass)
 {
 	Guard mGuard(m_lock);
 	MemberMap::iterator itr = m_members.find(plr);
@@ -718,7 +718,7 @@ void Channel::Password(Player * plr, const char * pass)
 		return;
 	}
 
-    if(!(itr->second & CHANNEL_FLAG_OWNER || itr->second & CHANNEL_FLAG_MODERATOR) && !plr->GetSession()->CanUseCommand('a') )
+	if(!(itr->second & CHANNEL_FLAG_OWNER || itr->second & CHANNEL_FLAG_MODERATOR) && !plr->GetSession()->CanUseCommand('a'))
 	{
 		data << uint8(CHANNEL_NOTIFY_FLAG_NOTMOD) << m_name;
 		plr->GetSession()->SendPacket(&data);
@@ -730,10 +730,10 @@ void Channel::Password(Player * plr, const char * pass)
 	SendToAll(&data);
 }
 
-void Channel::List(Player * plr)
+void Channel::List(Player* plr)
 {
 	Guard mGuard(m_lock);
-	WorldPacket data(SMSG_CHANNEL_LIST, 50 + (m_members.size()*9));
+	WorldPacket data(SMSG_CHANNEL_LIST, 50 + (m_members.size() * 9));
 	MemberMap::iterator itr = m_members.find(plr);
 	if(itr == m_members.end())
 	{
@@ -769,7 +769,7 @@ void Channel::List(Player * plr)
 	plr->GetSession()->SendPacket(&data);
 }
 
-void Channel::GetOwner(Player * plr)
+void Channel::GetOwner(Player* plr)
 {
 	Guard mGuard(m_lock);
 	MemberMap::iterator itr = m_members.find(plr);
@@ -812,28 +812,28 @@ Channel::~Channel()
 	m_lock.Release();
 }
 
-void Channel::SendToAll(WorldPacket * data)
+void Channel::SendToAll(WorldPacket* data)
 {
 	Guard guard(m_lock);
 	for(MemberMap::iterator itr = m_members.begin(); itr != m_members.end(); ++itr)
 		itr->first->GetSession()->SendPacket(data);
 }
 
-void Channel::SendToAll(WorldPacket * data, Player * plr)
+void Channel::SendToAll(WorldPacket* data, Player* plr)
 {
 	Guard guard(m_lock);
 	for(MemberMap::iterator itr = m_members.begin(); itr != m_members.end(); ++itr)
 	{
-		if (itr->first != plr)
+		if(itr->first != plr)
 			itr->first->GetSession()->SendPacket(data);
 	}
 }
 
-Channel * ChannelMgr::GetCreateChannel(const char *name, Player * p, uint32 type_id)
+Channel* ChannelMgr::GetCreateChannel(const char* name, Player* p, uint32 type_id)
 {
 	ChannelList::iterator itr;
-	ChannelList * cl = &Channels[0];
-	Channel * chn;
+	ChannelList* cl = &Channels[0];
+	Channel* chn;
 	if(seperatechannels && p != NULL && stricmp(name, sWorld.getGmClientChannel().c_str()))
 		cl = &Channels[p->GetTeam()];
 
@@ -851,25 +851,25 @@ Channel * ChannelMgr::GetCreateChannel(const char *name, Player * p, uint32 type
 	m_confSettingLock.Acquire();
 	for(vector<string>::iterator itr2 = m_bannedChannels.begin(); itr2 != m_bannedChannels.end(); ++itr2)
 	{
-		if(!strnicmp( name, itr2->c_str(), itr2->size() ) )
+		if(!strnicmp(name, itr2->c_str(), itr2->size()))
 		{
 			lock.Release();
 			m_confSettingLock.Release();
 			return NULL;
 		}
 	}
-	
-	chn = new Channel(name, ( seperatechannels && p != NULL ) ? p->GetTeam() : 0, type_id);
+
+	chn = new Channel(name, (seperatechannels && p != NULL) ? p->GetTeam() : 0, type_id);
 	m_confSettingLock.Release();//Channel::Channel() reads configs so we release the lock after we create the Channel.
 	cl->insert(make_pair(chn->m_name, chn));
 	lock.Release();
 	return chn;
 }
 
-Channel * ChannelMgr::GetChannel(const char *name, Player * p)
+Channel* ChannelMgr::GetChannel(const char* name, Player* p)
 {
 	ChannelList::iterator itr;
-	ChannelList * cl = &Channels[0];
+	ChannelList* cl = &Channels[0];
 	if(seperatechannels && stricmp(name, sWorld.getGmClientChannel().c_str()))
 		cl = &Channels[p->GetTeam()];
 
@@ -887,10 +887,10 @@ Channel * ChannelMgr::GetChannel(const char *name, Player * p)
 	return NULL;
 }
 
-Channel * ChannelMgr::GetChannel(const char *name, uint32 team)
+Channel* ChannelMgr::GetChannel(const char* name, uint32 team)
 {
 	ChannelList::iterator itr;
-	ChannelList * cl = &Channels[0];
+	ChannelList* cl = &Channels[0];
 	if(seperatechannels && stricmp(name, sWorld.getGmClientChannel().c_str()))
 		cl = &Channels[team];
 
@@ -908,10 +908,10 @@ Channel * ChannelMgr::GetChannel(const char *name, uint32 team)
 	return NULL;
 }
 
-void ChannelMgr::RemoveChannel(Channel * chn)
+void ChannelMgr::RemoveChannel(Channel* chn)
 {
 	ChannelList::iterator itr;
-	ChannelList * cl = &Channels[0];
+	ChannelList* cl = &Channels[0];
 	if(seperatechannels)
 		cl = &Channels[chn->m_team];
 

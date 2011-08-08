@@ -22,7 +22,7 @@
 LocalConsole g_localConsole;
 
 #ifndef WIN32
-    #include <poll.h>
+#include <poll.h>
 #endif
 
 void ConsoleThread::terminate()
@@ -46,14 +46,14 @@ void ConsoleThread::terminate()
 	ir[1].Event.KeyEvent.wRepeatCount = 1;
 	ir[1].Event.KeyEvent.wVirtualKeyCode = 13;
 	ir[1].Event.KeyEvent.wVirtualScanCode = 28;
-	WriteConsoleInput( GetStdHandle( STD_INPUT_HANDLE ), ir, 2, & dwTmp );
+	WriteConsoleInput(GetStdHandle(STD_INPUT_HANDLE), ir, 2, & dwTmp);
 #endif
-	LOG_BASIC( "Waiting for console thread to terminate...." );
-	while( m_isRunning )
+	LOG_BASIC("Waiting for console thread to terminate....");
+	while(m_isRunning)
 	{
-		Arcemu::Sleep( 100 );
+		Arcemu::Sleep(100);
 	}
-	LOG_BASIC( "Console shut down." );
+	LOG_BASIC("Console shut down.");
 }
 
 bool ConsoleThread::run()
@@ -72,25 +72,25 @@ bool ConsoleThread::run()
 
 	m_killSwitch = false;
 	m_isRunning = true;
-	while( m_killSwitch != true )
+	while(m_killSwitch != true)
 	{
 #ifdef WIN32
 
 		// Read in single line from "stdin"
-		memset( cmd, 0, sizeof( cmd ) ); 
-		if( fgets( cmd, 300, stdin ) == NULL )
+		memset(cmd, 0, sizeof(cmd));
+		if(fgets(cmd, 300, stdin) == NULL)
 			continue;
 
-		if( m_killSwitch )
+		if(m_killSwitch)
 			break;
 
 #else
 		int ret = poll(&input, 1, 1000);
-		if (ret < 0)
+		if(ret < 0)
 		{
 			break;
 		}
-		else if( ret == 0 )
+		else if(ret == 0)
 		{
 			if(!m_killSwitch)	// timeout
 				continue;
@@ -99,14 +99,14 @@ bool ConsoleThread::run()
 		}
 
 		ret = read(0, cmd, sizeof(cmd));
-		if (ret <= 0)
+		if(ret <= 0)
 		{
 			break;
 		}
 #endif
 
 		len = strlen(cmd);
-		for( i = 0; i < len; ++i )
+		for(i = 0; i < len; ++i)
 		{
 			if(cmd[i] == '\n' || cmd[i] == '\r')
 				cmd[i] = '\0';

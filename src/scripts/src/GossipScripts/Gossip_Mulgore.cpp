@@ -20,23 +20,23 @@
 
 class SkornWhitecloud_Gossip : public Arcemu::Gossip::Script
 {
-public:
-    void OnHello(Object* pObject, Player* plr)
-    {
-		Arcemu::Gossip::Menu::SendQuickMenu(pObject->GetGUID(), 522, plr, 1, Arcemu::Gossip::ICON_CHAT, "Tell me a story, Skorn.");
-    }
+	public:
+		void OnHello(Object* pObject, Player* plr)
+		{
+			Arcemu::Gossip::Menu::SendQuickMenu(pObject->GetGUID(), 522, plr, 1, Arcemu::Gossip::ICON_CHAT, "Tell me a story, Skorn.");
+		}
 
-    void OnSelectOption(Object* pObject, Player* plr, uint32 Id, const char * Code)
-    {
-		if(!pObject->IsCreature())
-			return;
-		Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 523, plr);
-    }
+		void OnSelectOption(Object* pObject, Player* plr, uint32 Id, const char* Code)
+		{
+			if(!pObject->IsCreature())
+				return;
+			Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 523, plr);
+		}
 
-	void Destroy() { delete this; }
+		void Destroy() { delete this; }
 };
 
-void SetupMulgoreGossip(ScriptMgr * mgr)
+void SetupMulgoreGossip(ScriptMgr* mgr)
 {
 	mgr->register_creature_gossip(3052, new SkornWhitecloud_Gossip); // Skorn Whitecloud
 }

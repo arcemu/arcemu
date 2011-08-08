@@ -1,4 +1,4 @@
-/* 
+/*
 ===============================
 The Darkmoon Faire Project
 Author: Nexis
@@ -11,70 +11,70 @@ Team: Sun++ (www.sunplusplus.info)
 // Blastenheimer 5000 Ultra Cannon
 class Blastenheimer5000 : public GameObjectAIScript
 {
-public:
-	Blastenheimer5000( GameObject* pGameObject ) : GameObjectAIScript( pGameObject )
-	{
-		mPlayerGuid = 0;
-	};
-
-	static GameObjectAIScript* Create( GameObject* pGameObject )
-	{
-		return new Blastenheimer5000( pGameObject );
-	};
-
-	void OnActivate( Player* pPlayer )
-	{
-		if ( pPlayer == NULL || mPlayerGuid != 0 )
-			return;
-
-		// Do you think we should look for ai owner ?
-		/*GameObject* BlastCannon = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords( pPlayer->GetPositionX(), pPlayer->GetPositionY(), pPlayer->GetPositionZ(), 180515 );
-		if ( BlastCannon != NULL )
-			BlastCannon->SetUInt32Value( GAMEOBJECT_FLAGS, 33 );*/
-
-		pPlayer->CastSpell( pPlayer, 24832, true );
-		pPlayer->SetMovement( MOVE_ROOT, 1 );
-		_gameobject->PlaySoundToSet( 8476 );
-		mPlayerGuid = static_cast<uint32>(pPlayer->GetGUID());
-		RegisterAIUpdateEvent( 2200 );
-	};
-
-	void AIUpdate()
-	{
-		Player* CurrentPlayer = objmgr.GetPlayer( mPlayerGuid );
-		if ( CurrentPlayer == NULL )
+	public:
+		Blastenheimer5000(GameObject* pGameObject) : GameObjectAIScript(pGameObject)
 		{
-			RemoveAIUpdateEvent();
 			mPlayerGuid = 0;
-			return;
 		};
 
-		if ( CurrentPlayer->GetMapId() == 530 ) 		// Shattrath
+		static GameObjectAIScript* Create(GameObject* pGameObject)
 		{
-			CurrentPlayer->SafeTeleport( 530, 0, -1742.640869f, 5454.712402f, -7.928009f, 4.606363f );
-		}
-		else if ( CurrentPlayer->GetMapId() == 0 ) 		// Elwynn Forest
-		{
-			CurrentPlayer->SafeTeleport( 0, 0, -9569.150391f, -14.753426f, 68.051422f, 4.874008f );
-		}
-		else if ( CurrentPlayer->GetMapId() == 1 ) 		// Mulgore
-		{
-			CurrentPlayer->SafeTeleport( 1, 0, -1326.711914f, 86.301125f, 133.093918f, 3.510725f );
+			return new Blastenheimer5000(pGameObject);
 		};
 
-		CurrentPlayer->SetMovement( MOVE_UNROOT, 1 );
-		CurrentPlayer->CastSpell( CurrentPlayer, 42867, true ); // 24742
-		_gameobject->SetUInt32Value(GAMEOBJECT_FLAGS,0);
-		mPlayerGuid = 0;
-		RemoveAIUpdateEvent();
-	};
+		void OnActivate(Player* pPlayer)
+		{
+			if(pPlayer == NULL || mPlayerGuid != 0)
+				return;
 
-protected:
+			// Do you think we should look for ai owner ?
+			/*GameObject* BlastCannon = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords( pPlayer->GetPositionX(), pPlayer->GetPositionY(), pPlayer->GetPositionZ(), 180515 );
+			if ( BlastCannon != NULL )
+				BlastCannon->SetUInt32Value( GAMEOBJECT_FLAGS, 33 );*/
 
-	uint32	mPlayerGuid;
+			pPlayer->CastSpell(pPlayer, 24832, true);
+			pPlayer->SetMovement(MOVE_ROOT, 1);
+			_gameobject->PlaySoundToSet(8476);
+			mPlayerGuid = static_cast<uint32>(pPlayer->GetGUID());
+			RegisterAIUpdateEvent(2200);
+		};
+
+		void AIUpdate()
+		{
+			Player* CurrentPlayer = objmgr.GetPlayer(mPlayerGuid);
+			if(CurrentPlayer == NULL)
+			{
+				RemoveAIUpdateEvent();
+				mPlayerGuid = 0;
+				return;
+			};
+
+			if(CurrentPlayer->GetMapId() == 530) 		// Shattrath
+			{
+				CurrentPlayer->SafeTeleport(530, 0, -1742.640869f, 5454.712402f, -7.928009f, 4.606363f);
+			}
+			else if(CurrentPlayer->GetMapId() == 0) 		// Elwynn Forest
+			{
+				CurrentPlayer->SafeTeleport(0, 0, -9569.150391f, -14.753426f, 68.051422f, 4.874008f);
+			}
+			else if(CurrentPlayer->GetMapId() == 1) 		// Mulgore
+			{
+				CurrentPlayer->SafeTeleport(1, 0, -1326.711914f, 86.301125f, 133.093918f, 3.510725f);
+			};
+
+			CurrentPlayer->SetMovement(MOVE_UNROOT, 1);
+			CurrentPlayer->CastSpell(CurrentPlayer, 42867, true);   // 24742
+			_gameobject->SetUInt32Value(GAMEOBJECT_FLAGS, 0);
+			mPlayerGuid = 0;
+			RemoveAIUpdateEvent();
+		};
+
+	protected:
+
+		uint32	mPlayerGuid;
 };
 
-/* 
+/*
 Spells:
 =====================
 Cannon - 24933
@@ -144,7 +144,7 @@ protected:
 };
 */
 
-void SetupDarkmoonFaireObjects(ScriptMgr * mgr)
+void SetupDarkmoonFaireObjects(ScriptMgr* mgr)
 {
 	mgr->register_gameobject_script(180515, &Blastenheimer5000::Create);			// Blastenheimer 5000 Ultra Cannon
 	// mgr->register_gameobject_script(180524, &TonkControlConsole::Create);			// Tonk Control Console

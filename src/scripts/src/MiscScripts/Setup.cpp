@@ -32,7 +32,7 @@ extern "C" SCRIPT_DECL void _exp_script_register(ScriptMgr* mgr)	// Comment any 
 	SetupRandomScripts(mgr);
 	SetupMiscCreatures(mgr);
 	SetupDarkmoonFaireObjects(mgr);
-	
+
 	// Sets up gossip scripts for gameobjects in the (optional)
 	// gameobject_teleports table. If the table doesn't exist the
 	// initialization will quietly fail.
@@ -41,9 +41,9 @@ extern "C" SCRIPT_DECL void _exp_script_register(ScriptMgr* mgr)	// Comment any 
 
 #ifdef WIN32
 
-BOOL APIENTRY DllMain( HANDLE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved )
+BOOL APIENTRY DllMain(HANDLE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)
 {
-    return TRUE;
+	return TRUE;
 }
 
 #endif

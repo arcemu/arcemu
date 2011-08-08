@@ -39,7 +39,7 @@
 #define ACTIVE_CUBES_TO_BANISH	5		// 5 cubes
 
 // Channelers Coords is list of spawn points of all 5 channelers casting spell on Magtheridon
-static Location Channelers[]=
+static Location Channelers[] =
 {
 	{ -55.638000f,   1.869050f, 0.630946f },
 	{ -31.861300f, -35.919399f, 0.630945f },
@@ -49,7 +49,7 @@ static Location Channelers[]=
 };
 
 // Columns coords used for Cave In spell to give "collapse" effect
-static Location Columns[]=
+static Location Columns[] =
 {
 	{  17.7522f,  34.5464f,  0.144816f },
 	{  19.0966f, -29.2772f,  0.133036f },
@@ -60,7 +60,7 @@ static Location Columns[]=
 };
 
 // Cave In Target Triggers coords
-static Location CaveInPos[]=
+static Location CaveInPos[] =
 {
 	{ -37.183399f, -19.491400f,  0.312451f },
 	{ -11.374900f, -29.121401f,  0.312463f },
@@ -71,7 +71,7 @@ static Location CaveInPos[]=
 };
 
 // Cube Triggers coords
-static Location CubeTriggers[]=
+static Location CubeTriggers[] =
 {
 	{ -54.277199f,   2.343740f, 2.404560f },
 	{ -31.471001f, -34.155998f, 2.335100f },
@@ -92,346 +92,347 @@ static Location CubeTriggers[]=
 
 class MagtheridonTriggerAI : public CreatureAIScript
 {
-public:
-    ADD_CREATURE_FACTORY_FUNCTION(MagtheridonTriggerAI);
-	std::vector<Unit*> ChannelersTable;	// Vector "list" of Channelers
-	bool KilledChanneler[5];			// Bool that says if channeler died or not
+	public:
+		ADD_CREATURE_FACTORY_FUNCTION(MagtheridonTriggerAI);
+		std::vector<Unit*> ChannelersTable;	// Vector "list" of Channelers
+		bool KilledChanneler[5];			// Bool that says if channeler died or not
 
-    MagtheridonTriggerAI(Creature* pCreature) : CreatureAIScript(pCreature)
-    {
-		// We set default value for KillerdChanneler array to avoid any unexpected situations
-		for (int i = 0; i < 5; i++)
+		MagtheridonTriggerAI(Creature* pCreature) : CreatureAIScript(pCreature)
 		{
-			KilledChanneler[i] = false;
-		}
-		// Variable initialization
-		YellTimer = YELL_TIMER;
-		EventStarted = false;
-		PhaseOneTimer = 0;
-		Phase = 0;
-		// Trigger settings
-		_unit->SetUInt64Value(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-		_unit->GetAIInterface()->SetAllowedToEnterCombat(false);
-		RegisterAIUpdateEvent(1000);
-	}
-
-	void AIUpdate()
-    {
-		// Magtheridon yells when raid progresses, but during fight with himself
-		YellTimer--;
-		if (Phase <= 1 && !YellTimer)
-		{
-			// If Magtheridon can be found we let him yell one of six different texts
-			Unit* Magtheridon = NULL;
-			Magtheridon = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(-22.657900f, 2.159050f, -0.345542f, 17257);
-			if (Magtheridon)
+			// We set default value for KillerdChanneler array to avoid any unexpected situations
+			for(int i = 0; i < 5; i++)
 			{
-				uint32 SoundID = 0;
-				std::string Text = "";
-				
-				switch (RandomUInt(6))
-				{
-				case 1:
-					Text = "Wretched, meddling insects! Release me, and perhaps I will grant you a merciful death!";
-					SoundID = 10247;
-					break;
-				case 2:
-					Text = "Vermin! Leeches! Take my blood and choke on it!";
-					SoundID = 10248;
-					break;
-				case 3:
-					Text = "Illidan is an arrogant fool! I will crush him and reclaim Outland as my own!";
-					SoundID = 10249;
-					break;
-				case 4:
-					Text = "Away, you mindless parasites! My blood is my own!";
-					SoundID = 10250;
-					break;
-				case 5:
-					Text = "How long do you believe your pathetic sorcery can hold me?";
-					SoundID = 10251;
-					break;
-				case 6:
-					Text = "My blood will be the end of you!";
-					SoundID = 10252;
-					break;
-				default:
-					Text = "My blood will be the end of you!";
-					SoundID = 10252;
-				}
-
-				if (SoundID && Text != "")
-				{
-					Magtheridon->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, Text.c_str());
-					Magtheridon->PlaySoundToSet(SoundID);
-				}
+				KilledChanneler[i] = false;
 			}
-			// We reset YellTimer to default value to let Pit Lord say something again and again
+			// Variable initialization
 			YellTimer = YELL_TIMER;
+			EventStarted = false;
+			PhaseOneTimer = 0;
+			Phase = 0;
+			// Trigger settings
+			_unit->SetUInt64Value(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+			_unit->GetAIInterface()->SetAllowedToEnterCombat(false);
+			RegisterAIUpdateEvent(1000);
 		}
-		// If our channeler "list" has unexpected size we try to recreate it
-		if (ChannelersTable.size() < 5 && !EventStarted)
+
+		void AIUpdate()
 		{
-			// We clear old "list"
-			ChannelersTable.clear();
-			// In order to recreate channeler "list" we need ot look for them in hardcoded spawn positions
-			Unit* Channeler;
-			for (int i = 0; i < 5; i++)
+			// Magtheridon yells when raid progresses, but during fight with himself
+			YellTimer--;
+			if(Phase <= 1 && !YellTimer)
 			{
-				Channeler = NULL;
-				Channeler = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(Channelers[i].x, Channelers[i].y, Channelers[i].z, 17256);
-				if (!Channeler)
-					continue;
-				// If Channeler was found we push him at the end of our "list"
-				ChannelersTable.push_back(Channeler);
-				// If Magtheridon is spawned we tell channeler to cast spell on Pit Lord
+				// If Magtheridon can be found we let him yell one of six different texts
 				Unit* Magtheridon = NULL;
 				Magtheridon = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(-22.657900f, 2.159050f, -0.345542f, 17257);
-				if (Magtheridon && Channeler->isAlive() && !Channeler->GetAIInterface()->getNextTarget())
+				if(Magtheridon)
 				{
-					Channeler->SetChannelSpellTargetGUID(Magtheridon->GetGUID());
-					Channeler->SetChannelSpellId(SHADOW_GRASP);
-				}
-			}
-		}
-		// If ChannelersTable is not empty we check list to find if none of channelers died
-		if (ChannelersTable.size() > 0)
-		{
-			// We look through list
-			size_t Counter = 0;
-			for (size_t i = 0; i < ChannelersTable.size(); i++)
-			{
-				// If channeler was already dead we count him as already dead one and go to others
-				if (KilledChanneler[i])
-				{
-					Counter++;
-					continue;
-				}
+					uint32 SoundID = 0;
+					std::string Text = "";
 
-				// Safe check to prevent memory corruptions
-				Unit* Channeler = ChannelersTable[i];
-				if ( Channeler && !Channeler->IsInWorld() )
-				{
-					ChannelersTable[i] = NULL;
-					Channeler = NULL;
-					continue;
-				}
-
-				// If channeler wasn't dead before and now is not alive we buff other alive channelers
-				if ( Channeler && !Channeler->isAlive() && Channeler->IsInWorld() )
-				{
-					// We look through list of channelers to find alive ones and buff them
-					Unit* BuffedChanneler;
-					for (size_t x = 0; x < ChannelersTable.size(); x++)
+					switch(RandomUInt(6))
 					{
-						// Safe check to prevent memory corruption
-						BuffedChanneler = ChannelersTable[x];
-						if ( BuffedChanneler && !BuffedChanneler->IsInWorld() )
-						{
-							ChannelersTable[x] = NULL;
-							BuffedChanneler = NULL;
-							continue;
-						}
-
-						// If channeler is found, alive and is not channeler we checked before if he's dead we move on
-						if (BuffedChanneler && BuffedChanneler != Channeler && BuffedChanneler->isAlive())
-						{
-							// We apply Soul Transfer Aura to channeler who should be buffed
-							Aura* aura = sSpellFactoryMgr.NewAura( dbcSpell.LookupEntry(SOUL_TRANSFER), (uint32)-1, BuffedChanneler, BuffedChanneler );
-							BuffedChanneler->AddAura(aura);
-						}
+						case 1:
+							Text = "Wretched, meddling insects! Release me, and perhaps I will grant you a merciful death!";
+							SoundID = 10247;
+							break;
+						case 2:
+							Text = "Vermin! Leeches! Take my blood and choke on it!";
+							SoundID = 10248;
+							break;
+						case 3:
+							Text = "Illidan is an arrogant fool! I will crush him and reclaim Outland as my own!";
+							SoundID = 10249;
+							break;
+						case 4:
+							Text = "Away, you mindless parasites! My blood is my own!";
+							SoundID = 10250;
+							break;
+						case 5:
+							Text = "How long do you believe your pathetic sorcery can hold me?";
+							SoundID = 10251;
+							break;
+						case 6:
+							Text = "My blood will be the end of you!";
+							SoundID = 10252;
+							break;
+						default:
+							Text = "My blood will be the end of you!";
+							SoundID = 10252;
 					}
-					// We count channeler which died between last and this trigger as dead and count him as dead one
-					KilledChanneler[i] = true;
-					Counter++;
-				}
-			}
-			// If only one channeler is alive we can clear list, because we won't need other channelers to be buffed
-			/*if (Counter >= ChannelersTable.size() - 1)
-				ChannelersTable.clear();*/
-		}
-		// If table is empty (0 channelers spawned) we remove banish and go to phase 2 at once
-		if (!ChannelersTable.size() && !Phase)
-		{
-			Unit* Magtheridon = NULL;
-			Magtheridon = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(-22.657900f, 2.159050f, -0.345542f, 17257);
-			if (Magtheridon)
-			{
-				Magtheridon->GetAIInterface()->SetAllowedToEnterCombat(true);
-				Magtheridon->SetUInt64Value(UNIT_FIELD_FLAGS, 0);
-				Magtheridon->RemoveAura(BANISHMENT);
-				Magtheridon->RemoveAura(BANISH);
-			}
 
-			Phase = 2;
-		}
-		// If Event wasn't started yet we check if it shouldn't be marked as started
-		if (!EventStarted)
-		{
-			// We look for channeler that may be In Combat or was killed by that unit enemy
-			Unit* Channeler = NULL;
-			Unit* UnitTarget = NULL;
-			for (size_t i = 0; i < ChannelersTable.size(); i++)
-			{
-				// Safe check to prevent memory corruptions
-				Channeler = ChannelersTable[i];
-				if ( Channeler && !Channeler->IsInWorld() )
-				{
-					ChannelersTable[i] = NULL;
-					Channeler = NULL;
-					continue;
-				}
-
-				// If dead or channeler In Combat is found we check if we have already copied target
-				if (Channeler && Channeler->isAlive() && Channeler->GetAIInterface()->getNextTarget())
-				{
-					// If channeler is In Combat and we haven't copied any target yet we copy it
-					if (Channeler->GetAIInterface()->getNextTarget() && !UnitTarget)
+					if(SoundID && Text != "")
 					{
-						UnitTarget = Channeler->GetAIInterface()->getNextTarget();
+						Magtheridon->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, Text.c_str());
+						Magtheridon->PlaySoundToSet(SoundID);
 					}
-					// We switch phase and mark event as started
-					EventStarted = true;
-					Phase = 1;
+				}
+				// We reset YellTimer to default value to let Pit Lord say something again and again
+				YellTimer = YELL_TIMER;
+			}
+			// If our channeler "list" has unexpected size we try to recreate it
+			if(ChannelersTable.size() < 5 && !EventStarted)
+			{
+				// We clear old "list"
+				ChannelersTable.clear();
+				// In order to recreate channeler "list" we need ot look for them in hardcoded spawn positions
+				Unit* Channeler;
+				for(int i = 0; i < 5; i++)
+				{
+					Channeler = NULL;
+					Channeler = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(Channelers[i].x, Channelers[i].y, Channelers[i].z, 17256);
+					if(!Channeler)
+						continue;
+					// If Channeler was found we push him at the end of our "list"
+					ChannelersTable.push_back(Channeler);
+					// If Magtheridon is spawned we tell channeler to cast spell on Pit Lord
+					Unit* Magtheridon = NULL;
+					Magtheridon = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(-22.657900f, 2.159050f, -0.345542f, 17257);
+					if(Magtheridon && Channeler->isAlive() && !Channeler->GetAIInterface()->getNextTarget())
+					{
+						Channeler->SetChannelSpellTargetGUID(Magtheridon->GetGUID());
+						Channeler->SetChannelSpellId(SHADOW_GRASP);
+					}
 				}
 			}
-			// Immediately after phase switching we check if channelers are In Combat
-			if (EventStarted)
+			// If ChannelersTable is not empty we check list to find if none of channelers died
+			if(ChannelersTable.size() > 0)
 			{
-				// We look through all channelers if they are In Combat and have targets
-				for (size_t i = 0; i < ChannelersTable.size(); i++)
+				// We look through list
+				size_t Counter = 0;
+				for(size_t i = 0; i < ChannelersTable.size(); i++)
 				{
-					// Safe check to prevent memory corruption
-					Channeler = ChannelersTable[i];
-					if ( Channeler && !Channeler->IsInWorld() )
+					// If channeler was already dead we count him as already dead one and go to others
+					if(KilledChanneler[i])
+					{
+						Counter++;
+						continue;
+					}
+
+					// Safe check to prevent memory corruptions
+					Unit* Channeler = ChannelersTable[i];
+					if(Channeler && !Channeler->IsInWorld())
 					{
 						ChannelersTable[i] = NULL;
 						Channeler = NULL;
 						continue;
 					}
 
-					// If channeler is not In Combat we force him to attack target we copied before
-					if (Channeler && !Channeler->GetAIInterface()->getNextTarget() && UnitTarget)
+					// If channeler wasn't dead before and now is not alive we buff other alive channelers
+					if(Channeler && !Channeler->isAlive() && Channeler->IsInWorld())
 					{
-						Channeler->GetAIInterface()->SetAllowedToEnterCombat(true);
-						Channeler->GetAIInterface()->AttackReaction(UnitTarget, 1, 0);
+						// We look through list of channelers to find alive ones and buff them
+						Unit* BuffedChanneler;
+						for(size_t x = 0; x < ChannelersTable.size(); x++)
+						{
+							// Safe check to prevent memory corruption
+							BuffedChanneler = ChannelersTable[x];
+							if(BuffedChanneler && !BuffedChanneler->IsInWorld())
+							{
+								ChannelersTable[x] = NULL;
+								BuffedChanneler = NULL;
+								continue;
+							}
+
+							// If channeler is found, alive and is not channeler we checked before if he's dead we move on
+							if(BuffedChanneler && BuffedChanneler != Channeler && BuffedChanneler->isAlive())
+							{
+								// We apply Soul Transfer Aura to channeler who should be buffed
+								Aura* aura = sSpellFactoryMgr.NewAura(dbcSpell.LookupEntry(SOUL_TRANSFER), (uint32) - 1, BuffedChanneler, BuffedChanneler);
+								BuffedChanneler->AddAura(aura);
+							}
+						}
+						// We count channeler which died between last and this trigger as dead and count him as dead one
+						KilledChanneler[i] = true;
+						Counter++;
 					}
 				}
-				// If Magtheridon is found we remove Banish aura from him
-				Unit* Magtheridon = NULL;
-				Magtheridon = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(-22.657900f, 2.159050f, -0.345542f, 17257);
-				if (Magtheridon)
-					Magtheridon->RemoveAura(BANISH);
-
-				// If Gate is found we close it
-				GameObject*  Gate = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-72.5866f, 1.559f, 0.0f, 183847);
-				if (Gate)
-					Gate->SetState(1);
+				// If only one channeler is alive we can clear list, because we won't need other channelers to be buffed
+				/*if (Counter >= ChannelersTable.size() - 1)
+					ChannelersTable.clear();*/
 			}
-		}
-		// We use different functions for each phase
-		switch (Phase)
-		{
-		case 1:
-			// If we are about to release Magtheridon we remove his Banishment aura, change his flag and use emotes that should be used
-			PhaseOneTimer++;
-			if (PhaseOneTimer == BANISH_TIMER-2)
+			// If table is empty (0 channelers spawned) we remove banish and go to phase 2 at once
+			if(!ChannelersTable.size() && !Phase)
 			{
 				Unit* Magtheridon = NULL;
 				Magtheridon = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(-22.657900f, 2.159050f, -0.345542f, 17257);
-				if (Magtheridon)
-				{
-					if (RandomUInt(4) == 1)
-					{	// on movies I saw only another text, but Magtheridon may use this one rarely too, so added here
-						Magtheridon->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "Thank you for releasing me. Now... die!");
-						Magtheridon->PlaySoundToSet(10254);
-					}
-					else
-					{
-						Magtheridon->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "I... am... unleashed!");
-						Magtheridon->PlaySoundToSet(10253);
-					}
-
-					Magtheridon->SetUInt64Value(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_2);
-					Magtheridon->Emote(EMOTE_ONESHOT_CREATURE_SPECIAL);
-					Magtheridon->RemoveAura(BANISHMENT);
-				}
-			}
-			// Time runs out, phase switches and Magtheridon can get In Combat
-			if (PhaseOneTimer == BANISH_TIMER)
-			{
-				Unit* Magtheridon = NULL;
-				Magtheridon = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(-22.657900f, 2.159050f, -0.345542f, 17257);
-				if (Magtheridon)
+				if(Magtheridon)
 				{
 					Magtheridon->GetAIInterface()->SetAllowedToEnterCombat(true);
 					Magtheridon->SetUInt64Value(UNIT_FIELD_FLAGS, 0);
+					Magtheridon->RemoveAura(BANISHMENT);
+					Magtheridon->RemoveAura(BANISH);
 				}
 
 				Phase = 2;
 			}
-			// Setting checks to reset encounter
-			if (PhaseOneTimer == 115 || PhaseOneTimer == 105 || PhaseOneTimer == 90 || PhaseOneTimer == 75 ||
-				PhaseOneTimer == 60 || PhaseOneTimer == 45 || PhaseOneTimer == 30 || PhaseOneTimer == 15)
+			// If Event wasn't started yet we check if it shouldn't be marked as started
+			if(!EventStarted)
 			{
-				// We check if any of channelers casts banish spell on Magtheridon and then we reset timer and setting
-				Unit* Magtheridon = NULL;
-				Magtheridon = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(-22.657900f, 2.159050f, -0.345542f, 17257);
-				if (Magtheridon)
-				{
-					Aura* aura = Magtheridon->FindAura(BANISH);
-					if (aura)
-					{
-						EventStarted = false;
-						PhaseOneTimer = 0;
-						Phase = 0;
-					}
-				}
-				// Script creates vector "list" of alive channelers and counts those In Combat
+				// We look for channeler that may be In Combat or was killed by that unit enemy
 				Unit* Channeler = NULL;
-				size_t AliveInCombat = 0;
-				std::vector <Unit*> AliveChannelers;
-				for (size_t i = 0; i < ChannelersTable.size(); i++)
+				Unit* UnitTarget = NULL;
+				for(size_t i = 0; i < ChannelersTable.size(); i++)
 				{
+					// Safe check to prevent memory corruptions
 					Channeler = ChannelersTable[i];
-					if ( Channeler && !Channeler->IsInWorld() )
+					if(Channeler && !Channeler->IsInWorld())
 					{
 						ChannelersTable[i] = NULL;
 						Channeler = NULL;
 						continue;
 					}
 
-					if (Channeler && Channeler->isAlive())
+					// If dead or channeler In Combat is found we check if we have already copied target
+					if(Channeler && Channeler->isAlive() && Channeler->GetAIInterface()->getNextTarget())
 					{
-						AliveChannelers.push_back(Channeler);
-						if (Channeler->GetAIInterface()->getNextTarget())
-							AliveInCombat++;
+						// If channeler is In Combat and we haven't copied any target yet we copy it
+						if(Channeler->GetAIInterface()->getNextTarget() && !UnitTarget)
+						{
+							UnitTarget = Channeler->GetAIInterface()->getNextTarget();
+						}
+						// We switch phase and mark event as started
+						EventStarted = true;
+						Phase = 1;
 					}
 				}
-				// If less than half of alive channelers is out of combat we open Magtheridon's gate
-				if (AliveInCombat < AliveChannelers.size()/2)
+				// Immediately after phase switching we check if channelers are In Combat
+				if(EventStarted)
 				{
+					// We look through all channelers if they are In Combat and have targets
+					for(size_t i = 0; i < ChannelersTable.size(); i++)
+					{
+						// Safe check to prevent memory corruption
+						Channeler = ChannelersTable[i];
+						if(Channeler && !Channeler->IsInWorld())
+						{
+							ChannelersTable[i] = NULL;
+							Channeler = NULL;
+							continue;
+						}
+
+						// If channeler is not In Combat we force him to attack target we copied before
+						if(Channeler && !Channeler->GetAIInterface()->getNextTarget() && UnitTarget)
+						{
+							Channeler->GetAIInterface()->SetAllowedToEnterCombat(true);
+							Channeler->GetAIInterface()->AttackReaction(UnitTarget, 1, 0);
+						}
+					}
+					// If Magtheridon is found we remove Banish aura from him
+					Unit* Magtheridon = NULL;
+					Magtheridon = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(-22.657900f, 2.159050f, -0.345542f, 17257);
+					if(Magtheridon)
+						Magtheridon->RemoveAura(BANISH);
+
+					// If Gate is found we close it
 					GameObject*  Gate = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-72.5866f, 1.559f, 0.0f, 183847);
-					if (Gate)
-						Gate->SetState(0);
+					if(Gate)
+						Gate->SetState(1);
 				}
-				// After doing our job we can clear temporary channeler list
-				AliveChannelers.clear();
 			}
-			break;
-		default:
+			// We use different functions for each phase
+			switch(Phase)
 			{
+				case 1:
+					// If we are about to release Magtheridon we remove his Banishment aura, change his flag and use emotes that should be used
+					PhaseOneTimer++;
+					if(PhaseOneTimer == BANISH_TIMER - 2)
+					{
+						Unit* Magtheridon = NULL;
+						Magtheridon = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(-22.657900f, 2.159050f, -0.345542f, 17257);
+						if(Magtheridon)
+						{
+							if(RandomUInt(4) == 1)
+							{
+								// on movies I saw only another text, but Magtheridon may use this one rarely too, so added here
+								Magtheridon->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "Thank you for releasing me. Now... die!");
+								Magtheridon->PlaySoundToSet(10254);
+							}
+							else
+							{
+								Magtheridon->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "I... am... unleashed!");
+								Magtheridon->PlaySoundToSet(10253);
+							}
+
+							Magtheridon->SetUInt64Value(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_2);
+							Magtheridon->Emote(EMOTE_ONESHOT_CREATURE_SPECIAL);
+							Magtheridon->RemoveAura(BANISHMENT);
+						}
+					}
+					// Time runs out, phase switches and Magtheridon can get In Combat
+					if(PhaseOneTimer == BANISH_TIMER)
+					{
+						Unit* Magtheridon = NULL;
+						Magtheridon = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(-22.657900f, 2.159050f, -0.345542f, 17257);
+						if(Magtheridon)
+						{
+							Magtheridon->GetAIInterface()->SetAllowedToEnterCombat(true);
+							Magtheridon->SetUInt64Value(UNIT_FIELD_FLAGS, 0);
+						}
+
+						Phase = 2;
+					}
+					// Setting checks to reset encounter
+					if(PhaseOneTimer == 115 || PhaseOneTimer == 105 || PhaseOneTimer == 90 || PhaseOneTimer == 75 ||
+					        PhaseOneTimer == 60 || PhaseOneTimer == 45 || PhaseOneTimer == 30 || PhaseOneTimer == 15)
+					{
+						// We check if any of channelers casts banish spell on Magtheridon and then we reset timer and setting
+						Unit* Magtheridon = NULL;
+						Magtheridon = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(-22.657900f, 2.159050f, -0.345542f, 17257);
+						if(Magtheridon)
+						{
+							Aura* aura = Magtheridon->FindAura(BANISH);
+							if(aura)
+							{
+								EventStarted = false;
+								PhaseOneTimer = 0;
+								Phase = 0;
+							}
+						}
+						// Script creates vector "list" of alive channelers and counts those In Combat
+						Unit* Channeler = NULL;
+						size_t AliveInCombat = 0;
+						std::vector <Unit*> AliveChannelers;
+						for(size_t i = 0; i < ChannelersTable.size(); i++)
+						{
+							Channeler = ChannelersTable[i];
+							if(Channeler && !Channeler->IsInWorld())
+							{
+								ChannelersTable[i] = NULL;
+								Channeler = NULL;
+								continue;
+							}
+
+							if(Channeler && Channeler->isAlive())
+							{
+								AliveChannelers.push_back(Channeler);
+								if(Channeler->GetAIInterface()->getNextTarget())
+									AliveInCombat++;
+							}
+						}
+						// If less than half of alive channelers is out of combat we open Magtheridon's gate
+						if(AliveInCombat < AliveChannelers.size() / 2)
+						{
+							GameObject*  Gate = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-72.5866f, 1.559f, 0.0f, 183847);
+							if(Gate)
+								Gate->SetState(0);
+						}
+						// After doing our job we can clear temporary channeler list
+						AliveChannelers.clear();
+					}
+					break;
+				default:
+					{
+					}
 			}
 		}
-    }
 
-protected:
+	protected:
 
-	bool EventStarted;
+		bool EventStarted;
 
-	uint32 PhaseOneTimer;
-	uint32 YellTimer;
-	uint32 Phase;
+		uint32 PhaseOneTimer;
+		uint32 YellTimer;
+		uint32 Phase;
 };
 
 // Manticron Cube Gameobject
@@ -442,201 +443,201 @@ protected:
 
 class ManticronCubeGO : public GameObjectAIScript
 {
-public:
-	ManticronCubeGO(GameObject*  pGameObject) : GameObjectAIScript(pGameObject)
-	{
-		Magtheridon = CubeTrigger = NULL;
-	}
-
-	void OnActivate(Player*  pPlayer)
-	{
-		// We check if player has aura that prevents anyone from using this GO
-		Aura* aura = pPlayer->FindAura(MIND_EXHAUSTION);
-		if (aura)
-			return;
-
-		// If we don't have Magtheridon we try to find it (with normal "getting creature" it was NOT working mostly).
-		if (!Magtheridon)
+	public:
+		ManticronCubeGO(GameObject*  pGameObject) : GameObjectAIScript(pGameObject)
 		{
-			for (int i = 0; i < 6; i++)
+			Magtheridon = CubeTrigger = NULL;
+		}
+
+		void OnActivate(Player*  pPlayer)
+		{
+			// We check if player has aura that prevents anyone from using this GO
+			Aura* aura = pPlayer->FindAura(MIND_EXHAUSTION);
+			if(aura)
+				return;
+
+			// If we don't have Magtheridon we try to find it (with normal "getting creature" it was NOT working mostly).
+			if(!Magtheridon)
 			{
-				if (Magtheridon)
-					continue;
+				for(int i = 0; i < 6; i++)
+				{
+					if(Magtheridon)
+						continue;
 
-				Magtheridon = _gameobject->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(CaveInPos[i].x, CaveInPos[i].y, CaveInPos[i].z, 17257);
+					Magtheridon = _gameobject->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(CaveInPos[i].x, CaveInPos[i].y, CaveInPos[i].z, 17257);
+				}
 			}
-		}
-		
-		// We check if after trying to find Magtheridon we have found it at least
-		if (!Magtheridon)
-			return;
 
-		// We check if Magtheridon is in world, is alive, has correct flag and so on
-		if (!Magtheridon->isAlive() || !Magtheridon->GetAIInterface()->getNextTarget())
-			return;
+			// We check if after trying to find Magtheridon we have found it at least
+			if(!Magtheridon)
+				return;
 
-		// If we haven't "filled" pointer already we do that now
-		if (!CubeTrigger)
-			CubeTrigger = _gameobject->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(_gameobject->GetPositionX(), _gameobject->GetPositionY(), _gameobject->GetPositionZ(), 17376);
+			// We check if Magtheridon is in world, is alive, has correct flag and so on
+			if(!Magtheridon->isAlive() || !Magtheridon->GetAIInterface()->getNextTarget())
+				return;
 
-		// We check if Cube Trigger we want to use exists and if is alive
-		if (!CubeTrigger || (CubeTrigger && !CubeTrigger->isAlive()))
-			return;
+			// If we haven't "filled" pointer already we do that now
+			if(!CubeTrigger)
+				CubeTrigger = _gameobject->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(_gameobject->GetPositionX(), _gameobject->GetPositionY(), _gameobject->GetPositionZ(), 17376);
 
-		// We check if Cube Trigger is not in use
-		if (CubeTrigger && CubeTrigger->GetChannelSpellId() == SHADOW_GRASP && CubeTrigger->GetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT) == Magtheridon->GetGUID())
-			return;
+			// We check if Cube Trigger we want to use exists and if is alive
+			if(!CubeTrigger || (CubeTrigger && !CubeTrigger->isAlive()))
+				return;
 
-		// We set player to channel spell "on Cube"
-		pPlayer->CastSpell(pPlayer, dbcSpell.LookupEntry(SHADOW_GRASP2), false);
+			// We check if Cube Trigger is not in use
+			if(CubeTrigger && CubeTrigger->GetChannelSpellId() == SHADOW_GRASP && CubeTrigger->GetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT) == Magtheridon->GetGUID())
+				return;
 
-		// We trigger channeling spell on Magtheridon for Cube Trigger
-		CubeTrigger->SetChannelSpellTargetGUID(Magtheridon->GetGUID());
-		CubeTrigger->SetChannelSpellId(SHADOW_GRASP);
+			// We set player to channel spell "on Cube"
+			pPlayer->CastSpell(pPlayer, dbcSpell.LookupEntry(SHADOW_GRASP2), false);
 
-		// We save player data in pointer as well as his position for further use
-		x = pPlayer->GetPositionX();
-		y = pPlayer->GetPositionY();
-		z = pPlayer->GetPositionZ();
-		Channeler = pPlayer;
+			// We trigger channeling spell on Magtheridon for Cube Trigger
+			CubeTrigger->SetChannelSpellTargetGUID(Magtheridon->GetGUID());
+			CubeTrigger->SetChannelSpellId(SHADOW_GRASP);
 
-		// We save/initialize vars
-		MagYell = false;
+			// We save player data in pointer as well as his position for further use
+			x = pPlayer->GetPositionX();
+			y = pPlayer->GetPositionY();
+			z = pPlayer->GetPositionZ();
+			Channeler = pPlayer;
 
-		// We register AI to check if GO is still being used
-		RegisterAIUpdateEvent(1000);
-	}
+			// We save/initialize vars
+			MagYell = false;
 
-	void AIUpdate()
-	{
-		// Channeler settings check
-		// We check if pointer has Channeler data and if so we check if that channeler is alive, in world and if channels Cube
-		if (Channeler && (!Channeler->isAlive() || !Channeler->IsInWorld()))
-		{
-			CubeTrigger->SetChannelSpellTargetGUID(0);
-			CubeTrigger->SetChannelSpellId(0);
-
-			Channeler = NULL;
-		}
-		
-		// If player still exists (is in world, alive and so on) we check if he has "channeling aura"
-		Aura* aura = NULL;
-		if (Channeler)
-			aura = Channeler->FindAura(SHADOW_GRASP2);
-
-		// If player doesn't have aura we interrupt channeling
-		if (Channeler && (!aura || !Channeler->GetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT)))
-		{
-			CubeTrigger->SetChannelSpellTargetGUID(0);
-			CubeTrigger->SetChannelSpellId(0);
-
-			// If player's channeling went over (and he was hit before) aura won't be removed when channeling ends - core bug
-			Channeler->RemoveAura(SHADOW_GRASP2);
-
-			Channeler = NULL;
+			// We register AI to check if GO is still being used
+			RegisterAIUpdateEvent(1000);
 		}
 
-		// Safe check to prevent crashes when Channeler was nulled
-		if (!Channeler)
+		void AIUpdate()
 		{
+			// Channeler settings check
+			// We check if pointer has Channeler data and if so we check if that channeler is alive, in world and if channels Cube
+			if(Channeler && (!Channeler->isAlive() || !Channeler->IsInWorld()))
+			{
+				CubeTrigger->SetChannelSpellTargetGUID(0);
+				CubeTrigger->SetChannelSpellId(0);
+
+				Channeler = NULL;
+			}
+
+			// If player still exists (is in world, alive and so on) we check if he has "channeling aura"
+			Aura* aura = NULL;
+			if(Channeler)
+				aura = Channeler->FindAura(SHADOW_GRASP2);
+
+			// If player doesn't have aura we interrupt channeling
+			if(Channeler && (!aura || !Channeler->GetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT)))
+			{
+				CubeTrigger->SetChannelSpellTargetGUID(0);
+				CubeTrigger->SetChannelSpellId(0);
+
+				// If player's channeling went over (and he was hit before) aura won't be removed when channeling ends - core bug
+				Channeler->RemoveAura(SHADOW_GRASP2);
+
+				Channeler = NULL;
+			}
+
+			// Safe check to prevent crashes when Channeler was nulled
+			if(!Channeler)
+			{
+				uint32 Counter = 0;
+				for(int i = 0; i < 5; i++)
+				{
+					Unit* GlobalCubeTrigger = NULL;
+					GlobalCubeTrigger = _gameobject->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(CubeTriggers[i].x, CubeTriggers[i].y, CubeTriggers[i].z, 17376);
+					if(GlobalCubeTrigger && GlobalCubeTrigger->GetChannelSpellId() == SHADOW_GRASP && CubeTrigger->GetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT) == Magtheridon->GetGUID())
+						Counter++;
+				}
+
+				if(!Counter)
+				{
+					if(Magtheridon && Magtheridon->isAlive())
+						Magtheridon->RemoveAura(BANISH);
+
+					MagYell = true;
+				}
+
+				return;
+			}
+
+			// We check if Magtheridon is spawned, is in world and so on
+			if(!Magtheridon || (Magtheridon && (!Magtheridon->isAlive() || !Magtheridon->IsInWorld() || !Magtheridon->GetAIInterface()->getNextTarget())))
+			{
+				CubeTrigger->SetChannelSpellTargetGUID(0);
+				CubeTrigger->SetChannelSpellId(0);
+			}
+
+			// We count Cubes that channel spell on Magtheridon
 			uint32 Counter = 0;
-			for (int i = 0; i < 5; i++)
+			for(int i = 0; i < 5; i++)
 			{
 				Unit* GlobalCubeTrigger = NULL;
 				GlobalCubeTrigger = _gameobject->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(CubeTriggers[i].x, CubeTriggers[i].y, CubeTriggers[i].z, 17376);
-				if (GlobalCubeTrigger && GlobalCubeTrigger->GetChannelSpellId() == SHADOW_GRASP && CubeTrigger->GetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT) == Magtheridon->GetGUID())
+				if(GlobalCubeTrigger && GlobalCubeTrigger->GetChannelSpellId() == SHADOW_GRASP && CubeTrigger->GetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT) == Magtheridon->GetGUID())
 					Counter++;
 			}
 
-			if (!Counter)
+			// If it's the first and the only one Cube triggering spell we use Magtheridon's yell
+			if(Counter == 1 && !MagYell)
 			{
-				if (Magtheridon && Magtheridon->isAlive())
-					Magtheridon->RemoveAura(BANISH);
+				Magtheridon->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "Not again... NOT AGAIN!");
+				Magtheridon->PlaySoundToSet(10256);
 
 				MagYell = true;
 			}
 
-			return;
+			// If we have all req. Cubes active we may banish Magtheridon
+			if(Counter >= ACTIVE_CUBES_TO_BANISH && Magtheridon && Magtheridon->isAlive())
+			{
+				Magtheridon->CastSpell(Magtheridon, dbcSpell.LookupEntry(BANISH), true);
+				Magtheridon->GetAIInterface()->StopMovement(3000);
+				Magtheridon->setAttackTimer(3000, false);
+
+				if(Magtheridon->GetCurrentSpell())
+					Magtheridon->GetCurrentSpell()->cancel();
+
+				// We add channeling player aura that does not allow that go to be used again in 1.3 min
+				Aura* aura = sSpellFactoryMgr.NewAura(dbcSpell.LookupEntry(MIND_EXHAUSTION), (uint32)78000, Magtheridon, Channeler);
+				Channeler->AddAura(aura);
+
+				MagYell = true;
+
+				return;
+			}
+
+			// If not enough Cubes are active we eventually Banish from Magtheridon
+			if(Counter < ACTIVE_CUBES_TO_BANISH && Magtheridon && Magtheridon->isAlive())
+			{
+				Magtheridon->RemoveAura(BANISH);
+
+				MagYell = true;
+			}
+
 		}
 
-		// We check if Magtheridon is spawned, is in world and so on
-		if (!Magtheridon || (Magtheridon && (!Magtheridon->isAlive() || !Magtheridon->IsInWorld() || !Magtheridon->GetAIInterface()->getNextTarget())))
-		{
-			CubeTrigger->SetChannelSpellTargetGUID(0);
-			CubeTrigger->SetChannelSpellId(0);
-		}
+		static GameObjectAIScript* Create(GameObject*  GO) { return new ManticronCubeGO(GO); }
 
-		// We count Cubes that channel spell on Magtheridon
-		uint32 Counter = 0;
-		for (int i = 0; i < 5; i++)
-		{
-			Unit* GlobalCubeTrigger = NULL;
-			GlobalCubeTrigger = _gameobject->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(CubeTriggers[i].x, CubeTriggers[i].y, CubeTriggers[i].z, 17376);
-			if (GlobalCubeTrigger && GlobalCubeTrigger->GetChannelSpellId() == SHADOW_GRASP && CubeTrigger->GetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT) == Magtheridon->GetGUID())
-				Counter++;
-		}
+	protected:
 
-		// If it's the first and the only one Cube triggering spell we use Magtheridon's yell
-		if (Counter == 1 && !MagYell)
-		{
-			Magtheridon->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "Not again... NOT AGAIN!");
-			Magtheridon->PlaySoundToSet(10256);
-
-			MagYell = true;
-		}
-
-		// If we have all req. Cubes active we may banish Magtheridon
-		if (Counter >= ACTIVE_CUBES_TO_BANISH && Magtheridon && Magtheridon->isAlive())
-		{
-			Magtheridon->CastSpell(Magtheridon, dbcSpell.LookupEntry(BANISH), true);
-			Magtheridon->GetAIInterface()->StopMovement(3000);
-			Magtheridon->setAttackTimer(3000, false);
-
-			if(Magtheridon->GetCurrentSpell())
-				Magtheridon->GetCurrentSpell()->cancel();
-
-			// We add channeling player aura that does not allow that go to be used again in 1.3 min
-			Aura* aura = sSpellFactoryMgr.NewAura( dbcSpell.LookupEntry(MIND_EXHAUSTION),(uint32)78000, Magtheridon, Channeler );
-			Channeler->AddAura(aura);
-
-			MagYell = true;
-
-			return;
-		}
-
-		// If not enough Cubes are active we eventually Banish from Magtheridon
-		if (Counter < ACTIVE_CUBES_TO_BANISH && Magtheridon && Magtheridon->isAlive())
-		{
-			Magtheridon->RemoveAura(BANISH);
-
-			MagYell = true;
-		}
-
-	}
-
-	static GameObjectAIScript *Create(GameObject*  GO) { return new ManticronCubeGO(GO); }
-
-protected:
-
-	bool MagYell;
-	float x, y, z;
-	Unit* Magtheridon;
-	Player* Channeler;
-	Unit* CubeTrigger;
+		bool MagYell;
+		float x, y, z;
+		Unit* Magtheridon;
+		Player* Channeler;
+		Unit* CubeTrigger;
 };
 
 #define CN_CUBE_TRIGGER 17376
 
 class CubeTriggerAI : public CreatureAIScript
 {
-public:
-    ADD_CREATURE_FACTORY_FUNCTION(CubeTriggerAI);
+	public:
+		ADD_CREATURE_FACTORY_FUNCTION(CubeTriggerAI);
 
-    CubeTriggerAI(Creature* pCreature) : CreatureAIScript(pCreature)
-    {
-		_unit->SetUInt64Value(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-		_unit->GetAIInterface()->SetAllowedToEnterCombat(false);
-	}
+		CubeTriggerAI(Creature* pCreature) : CreatureAIScript(pCreature)
+		{
+			_unit->SetUInt64Value(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+			_unit->GetAIInterface()->SetAllowedToEnterCombat(false);
+		}
 };
 
 // Hellfire Warder
@@ -652,210 +653,216 @@ public:
 
 class HellfireWarderAI : public CreatureAIScript
 {
-public:
-    ADD_CREATURE_FACTORY_FUNCTION(HellfireWarderAI);
-	SP_AI_Spell spells[7];
-	bool m_spellcheck[7];
+	public:
+		ADD_CREATURE_FACTORY_FUNCTION(HellfireWarderAI);
+		SP_AI_Spell spells[7];
+		bool m_spellcheck[7];
 
-    HellfireWarderAI(Creature* pCreature) : CreatureAIScript(pCreature)
-    {
-		nrspells = 7;
-		for(int i=0;i<nrspells;i++)
+		HellfireWarderAI(Creature* pCreature) : CreatureAIScript(pCreature)
 		{
-			m_spellcheck[i] = false;
-			spells[i].casttime = 0;
-		} 
-
-		spells[0].info = dbcSpell.LookupEntry(HW_SHADOW_BOLT_VOLLEY);
-		spells[0].targettype = TARGET_VARIOUS;
-		spells[0].instant = false;
-		spells[0].perctrigger = 15.0f;
-		spells[0].attackstoptimer = 1000;
-		spells[0].cooldown = 5;
-
-		spells[1].info = dbcSpell.LookupEntry(SHADOW_WORD_PAIN);
-		spells[1].targettype = TARGET_RANDOM_SINGLE;	
-		spells[1].instant = true;
-		spells[1].perctrigger = 6.0f;
-		spells[1].attackstoptimer = 1000;
-		spells[1].mindist2cast = 0.0f;
-		spells[1].maxdist2cast = 30.0f;
-		spells[1].minhp2cast = 0;
-		spells[1].maxhp2cast = 100;
-		spells[1].cooldown = 7;
-
-		spells[2].info = dbcSpell.LookupEntry(UNSTABLE_AFFLICTION);
-		spells[2].targettype = TARGET_RANDOM_SINGLE;
-		spells[2].instant = true;
-		spells[2].perctrigger = 6.0f;
-		spells[2].attackstoptimer = 1000;
-		spells[2].mindist2cast = 0.0f;
-		spells[2].maxdist2cast = 30.0f;
-		spells[2].minhp2cast = 0;
-		spells[2].maxhp2cast = 100;
-		spells[2].cooldown = 7;
-
-		spells[3].info = dbcSpell.LookupEntry(DEATH_COIL);
-		spells[3].targettype = TARGET_RANDOM_SINGLE;
-		spells[3].instant = true;
-		spells[3].perctrigger = 5.0f;
-		spells[3].attackstoptimer = 1000;
-		spells[3].mindist2cast = 0.0f;
-		spells[3].maxdist2cast = 30.0f;
-		spells[3].minhp2cast = 0;
-		spells[3].maxhp2cast = 100;
-		spells[3].cooldown = 8;
-
-		spells[4].info = dbcSpell.LookupEntry(RAIN_OF_FIRE);
-		spells[4].targettype = TARGET_RANDOM_DESTINATION;
-		spells[4].instant = true;
-		spells[4].perctrigger = 5.0f;
-		spells[4].attackstoptimer = 1000;
-		spells[4].mindist2cast = 0.0f;
-		spells[4].maxdist2cast = 30.0f;
-		spells[4].minhp2cast = 0;
-		spells[4].maxhp2cast = 100;
-		spells[4].cooldown = 6;
-
-		spells[5].info = dbcSpell.LookupEntry(HW_FEAR);
-		spells[5].targettype = TARGET_RANDOM_SINGLE;
-		spells[5].instant = false;
-		spells[5].perctrigger = 4.0f;
-		spells[5].attackstoptimer = 1000;
-		spells[5].mindist2cast = 0.0f;
-		spells[5].maxdist2cast = 30.0f;
-		spells[5].minhp2cast = 0;
-		spells[5].maxhp2cast = 100;
-		spells[5].cooldown = 10;
-
-		spells[6].info = dbcSpell.LookupEntry(SHADOW_BURST);
-		spells[6].targettype = TARGET_VARIOUS;
-		spells[6].instant = false;							// not sure but works ;)
-		spells[6].perctrigger = 4.0f;
-		spells[6].attackstoptimer = 8;
-	}
-
-	void OnCombatStart(Unit* mTarget)
-    {
-        RegisterAIUpdateEvent(_unit->GetBaseAttackTime(MELEE));
-
-		for (int i = 0; i < nrspells; i++)
-			spells[i].casttime = 0;
-    }
-
-    void OnCombatStop(Unit* mTarget)
-    {
-        _unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
-        _unit->GetAIInterface()->SetAIState(STATE_IDLE);
-        RemoveAIUpdateEvent();
-    }
-
-	void OnDied(Unit* mKiller)
-    {
-		RemoveAIUpdateEvent();
-    }
-
-	void AIUpdate()
-    {
-		float val = RandomFloat(100.0f);
-        SpellCast(val);
-    }
-
-    void SpellCast(float val)
-    {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
-        {
-			float comulativeperc = 0;
-		    Unit* target = NULL;
-			for(int i=0;i<nrspells;i++)
+			nrspells = 7;
+			for(int i = 0; i < nrspells; i++)
 			{
-				if(!spells[i].perctrigger) continue;
-				
-				if(m_spellcheck[i])
-				{
-					target = _unit->GetAIInterface()->getNextTarget();
-					switch(spells[i].targettype)
-					{
-						case TARGET_SELF:
-						case TARGET_VARIOUS:
-							_unit->CastSpell(_unit, spells[i].info, spells[i].instant); break;
-						case TARGET_ATTACKING:
-							_unit->CastSpell(target, spells[i].info, spells[i].instant); break;
-						case TARGET_DESTINATION:
-							_unit->CastSpellAoF(target->GetPositionX(),target->GetPositionY(),target->GetPositionZ(), spells[i].info, spells[i].instant); break;
-						case TARGET_RANDOM_FRIEND:
-						case TARGET_RANDOM_SINGLE:
-						case TARGET_RANDOM_DESTINATION:
-							CastSpellOnRandomTarget(i, spells[i].mindist2cast, spells[i].maxdist2cast, spells[i].minhp2cast, spells[i].maxhp2cast); break;
-					}
-					m_spellcheck[i] = false;
-					return;
-				}
-
-				uint32 t = (uint32)time(NULL);
-				if(val > comulativeperc && val <= (comulativeperc + spells[i].perctrigger) && t > spells[i].casttime)
-				{
-					_unit->setAttackTimer(spells[i].attackstoptimer, false);
-					spells[i].casttime = t + spells[i].cooldown;
-					m_spellcheck[i] = true;
-				}
-				comulativeperc += spells[i].perctrigger;
-			}
-        }
-    }
-
-	void CastSpellOnRandomTarget(uint32 i, float mindist2cast, float maxdist2cast, int minhp2cast, int maxhp2cast)
-	{
-		if (!maxdist2cast) maxdist2cast = 100.0f;
-		if (!maxhp2cast) maxhp2cast = 100;
-
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
-        {
-			std::vector<Unit*> TargetTable;		/* From M4ksiu - Big THX to Capt who helped me with std stuff to make it simple and fully working <3 */
-												/* If anyone wants to use this function, then leave this note!										 */
-			for(set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); ++itr) 
-			{ 
-				if (((spells[i].targettype == TARGET_RANDOM_FRIEND && isFriendly(_unit, (*itr))) || (spells[i].targettype != TARGET_RANDOM_FRIEND && isHostile(_unit, (*itr)) && (*itr) != _unit)) && (*itr)->IsUnit()) // isAttackable(_unit, (*itr)) && 
-				{
-					Unit* RandomTarget = NULL;
-					RandomTarget = TO_UNIT(*itr);
-
-					if (RandomTarget->isAlive() && _unit->GetDistance2dSq(RandomTarget) >= mindist2cast*mindist2cast && _unit->GetDistance2dSq(RandomTarget) <= maxdist2cast*maxdist2cast && ((RandomTarget->GetHealthPct() >= minhp2cast && RandomTarget->GetHealthPct() <= maxhp2cast && spells[i].targettype == TARGET_RANDOM_FRIEND) || (_unit->GetAIInterface()->getThreatByPtr(RandomTarget) > 0 && isHostile(_unit, RandomTarget))))
-					{
-						TargetTable.push_back(RandomTarget);
-					} 
-				} 
+				m_spellcheck[i] = false;
+				spells[i].casttime = 0;
 			}
 
-			if (_unit->GetHealthPct() >= minhp2cast && _unit->GetHealthPct() <= maxhp2cast && spells[i].targettype == TARGET_RANDOM_FRIEND)
-				TargetTable.push_back(_unit);
+			spells[0].info = dbcSpell.LookupEntry(HW_SHADOW_BOLT_VOLLEY);
+			spells[0].targettype = TARGET_VARIOUS;
+			spells[0].instant = false;
+			spells[0].perctrigger = 15.0f;
+			spells[0].attackstoptimer = 1000;
+			spells[0].cooldown = 5;
 
-			if (!TargetTable.size())
-				return;
+			spells[1].info = dbcSpell.LookupEntry(SHADOW_WORD_PAIN);
+			spells[1].targettype = TARGET_RANDOM_SINGLE;
+			spells[1].instant = true;
+			spells[1].perctrigger = 6.0f;
+			spells[1].attackstoptimer = 1000;
+			spells[1].mindist2cast = 0.0f;
+			spells[1].maxdist2cast = 30.0f;
+			spells[1].minhp2cast = 0;
+			spells[1].maxhp2cast = 100;
+			spells[1].cooldown = 7;
 
-			size_t RandTarget = rand()%TargetTable.size();
+			spells[2].info = dbcSpell.LookupEntry(UNSTABLE_AFFLICTION);
+			spells[2].targettype = TARGET_RANDOM_SINGLE;
+			spells[2].instant = true;
+			spells[2].perctrigger = 6.0f;
+			spells[2].attackstoptimer = 1000;
+			spells[2].mindist2cast = 0.0f;
+			spells[2].maxdist2cast = 30.0f;
+			spells[2].minhp2cast = 0;
+			spells[2].maxhp2cast = 100;
+			spells[2].cooldown = 7;
 
-			Unit*  RTarget = TargetTable[RandTarget];
+			spells[3].info = dbcSpell.LookupEntry(DEATH_COIL);
+			spells[3].targettype = TARGET_RANDOM_SINGLE;
+			spells[3].instant = true;
+			spells[3].perctrigger = 5.0f;
+			spells[3].attackstoptimer = 1000;
+			spells[3].mindist2cast = 0.0f;
+			spells[3].maxdist2cast = 30.0f;
+			spells[3].minhp2cast = 0;
+			spells[3].maxhp2cast = 100;
+			spells[3].cooldown = 8;
 
-			if (!RTarget)
-				return;
+			spells[4].info = dbcSpell.LookupEntry(RAIN_OF_FIRE);
+			spells[4].targettype = TARGET_RANDOM_DESTINATION;
+			spells[4].instant = true;
+			spells[4].perctrigger = 5.0f;
+			spells[4].attackstoptimer = 1000;
+			spells[4].mindist2cast = 0.0f;
+			spells[4].maxdist2cast = 30.0f;
+			spells[4].minhp2cast = 0;
+			spells[4].maxhp2cast = 100;
+			spells[4].cooldown = 6;
 
-			switch (spells[i].targettype)
-			{
-			case TARGET_RANDOM_FRIEND:
-			case TARGET_RANDOM_SINGLE:
-				_unit->CastSpell(RTarget, spells[i].info, spells[i].instant); break;
-			case TARGET_RANDOM_DESTINATION:
-				_unit->CastSpellAoF(RTarget->GetPositionX(), RTarget->GetPositionY(), RTarget->GetPositionZ(), spells[i].info, spells[i].instant); break;
-			}
+			spells[5].info = dbcSpell.LookupEntry(HW_FEAR);
+			spells[5].targettype = TARGET_RANDOM_SINGLE;
+			spells[5].instant = false;
+			spells[5].perctrigger = 4.0f;
+			spells[5].attackstoptimer = 1000;
+			spells[5].mindist2cast = 0.0f;
+			spells[5].maxdist2cast = 30.0f;
+			spells[5].minhp2cast = 0;
+			spells[5].maxhp2cast = 100;
+			spells[5].cooldown = 10;
 
-			TargetTable.clear();
+			spells[6].info = dbcSpell.LookupEntry(SHADOW_BURST);
+			spells[6].targettype = TARGET_VARIOUS;
+			spells[6].instant = false;							// not sure but works ;)
+			spells[6].perctrigger = 4.0f;
+			spells[6].attackstoptimer = 8;
 		}
-	}
 
-protected:
+		void OnCombatStart(Unit* mTarget)
+		{
+			RegisterAIUpdateEvent(_unit->GetBaseAttackTime(MELEE));
 
-	int nrspells;
+			for(int i = 0; i < nrspells; i++)
+				spells[i].casttime = 0;
+		}
+
+		void OnCombatStop(Unit* mTarget)
+		{
+			_unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
+			_unit->GetAIInterface()->SetAIState(STATE_IDLE);
+			RemoveAIUpdateEvent();
+		}
+
+		void OnDied(Unit* mKiller)
+		{
+			RemoveAIUpdateEvent();
+		}
+
+		void AIUpdate()
+		{
+			float val = RandomFloat(100.0f);
+			SpellCast(val);
+		}
+
+		void SpellCast(float val)
+		{
+			if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
+			{
+				float comulativeperc = 0;
+				Unit* target = NULL;
+				for(int i = 0; i < nrspells; i++)
+				{
+					if(!spells[i].perctrigger) continue;
+
+					if(m_spellcheck[i])
+					{
+						target = _unit->GetAIInterface()->getNextTarget();
+						switch(spells[i].targettype)
+						{
+							case TARGET_SELF:
+							case TARGET_VARIOUS:
+								_unit->CastSpell(_unit, spells[i].info, spells[i].instant);
+								break;
+							case TARGET_ATTACKING:
+								_unit->CastSpell(target, spells[i].info, spells[i].instant);
+								break;
+							case TARGET_DESTINATION:
+								_unit->CastSpellAoF(target->GetPositionX(), target->GetPositionY(), target->GetPositionZ(), spells[i].info, spells[i].instant);
+								break;
+							case TARGET_RANDOM_FRIEND:
+							case TARGET_RANDOM_SINGLE:
+							case TARGET_RANDOM_DESTINATION:
+								CastSpellOnRandomTarget(i, spells[i].mindist2cast, spells[i].maxdist2cast, spells[i].minhp2cast, spells[i].maxhp2cast);
+								break;
+						}
+						m_spellcheck[i] = false;
+						return;
+					}
+
+					uint32 t = (uint32)time(NULL);
+					if(val > comulativeperc && val <= (comulativeperc + spells[i].perctrigger) && t > spells[i].casttime)
+					{
+						_unit->setAttackTimer(spells[i].attackstoptimer, false);
+						spells[i].casttime = t + spells[i].cooldown;
+						m_spellcheck[i] = true;
+					}
+					comulativeperc += spells[i].perctrigger;
+				}
+			}
+		}
+
+		void CastSpellOnRandomTarget(uint32 i, float mindist2cast, float maxdist2cast, int minhp2cast, int maxhp2cast)
+		{
+			if(!maxdist2cast) maxdist2cast = 100.0f;
+			if(!maxhp2cast) maxhp2cast = 100;
+
+			if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
+			{
+				std::vector<Unit*> TargetTable;		/* From M4ksiu - Big THX to Capt who helped me with std stuff to make it simple and fully working <3 */
+				/* If anyone wants to use this function, then leave this note!										 */
+				for(set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); ++itr)
+				{
+					if(((spells[i].targettype == TARGET_RANDOM_FRIEND && isFriendly(_unit, (*itr))) || (spells[i].targettype != TARGET_RANDOM_FRIEND && isHostile(_unit, (*itr)) && (*itr) != _unit)) && (*itr)->IsUnit())  // isAttackable(_unit, (*itr)) &&
+					{
+						Unit* RandomTarget = NULL;
+						RandomTarget = TO_UNIT(*itr);
+
+						if(RandomTarget->isAlive() && _unit->GetDistance2dSq(RandomTarget) >= mindist2cast * mindist2cast && _unit->GetDistance2dSq(RandomTarget) <= maxdist2cast * maxdist2cast && ((RandomTarget->GetHealthPct() >= minhp2cast && RandomTarget->GetHealthPct() <= maxhp2cast && spells[i].targettype == TARGET_RANDOM_FRIEND) || (_unit->GetAIInterface()->getThreatByPtr(RandomTarget) > 0 && isHostile(_unit, RandomTarget))))
+						{
+							TargetTable.push_back(RandomTarget);
+						}
+					}
+				}
+
+				if(_unit->GetHealthPct() >= minhp2cast && _unit->GetHealthPct() <= maxhp2cast && spells[i].targettype == TARGET_RANDOM_FRIEND)
+					TargetTable.push_back(_unit);
+
+				if(!TargetTable.size())
+					return;
+
+				size_t RandTarget = rand() % TargetTable.size();
+
+				Unit*  RTarget = TargetTable[RandTarget];
+
+				if(!RTarget)
+					return;
+
+				switch(spells[i].targettype)
+				{
+					case TARGET_RANDOM_FRIEND:
+					case TARGET_RANDOM_SINGLE:
+						_unit->CastSpell(RTarget, spells[i].info, spells[i].instant);
+						break;
+					case TARGET_RANDOM_DESTINATION:
+						_unit->CastSpellAoF(RTarget->GetPositionX(), RTarget->GetPositionY(), RTarget->GetPositionZ(), spells[i].info, spells[i].instant);
+						break;
+				}
+
+				TargetTable.clear();
+			}
+		}
+
+	protected:
+
+		int nrspells;
 };
 
 // Hellfire Channeler
@@ -868,217 +875,223 @@ protected:
 
 class HellfireChannelerAI : public CreatureAIScript
 {
-public:
-	ADD_CREATURE_FACTORY_FUNCTION(HellfireChannelerAI);
-	SP_AI_Spell spells[5];
-	bool m_spellcheck[5];
-	
-	HellfireChannelerAI(Creature* pCreature) : CreatureAIScript(pCreature)
-	{
-		nrspells = 4;
-		for(int i=0;i<nrspells;i++)
+	public:
+		ADD_CREATURE_FACTORY_FUNCTION(HellfireChannelerAI);
+		SP_AI_Spell spells[5];
+		bool m_spellcheck[5];
+
+		HellfireChannelerAI(Creature* pCreature) : CreatureAIScript(pCreature)
 		{
-			m_spellcheck[i] = false;
-			spells[i].casttime = 0;
-		}
-			
-		spells[0].info = dbcSpell.LookupEntry(SHADOW_BOLT_VOLLEY);
-		spells[0].targettype = TARGET_VARIOUS;
-		spells[0].instant = false;
-		spells[0].perctrigger = 10.0f;
-		spells[0].attackstoptimer = 1000;
-		spells[0].cooldown = 5;
-
-		spells[1].info = dbcSpell.LookupEntry(FEAR);
-		spells[1].targettype = TARGET_RANDOM_SINGLE;	
-		spells[1].instant = false;
-		spells[1].perctrigger = 7.0f;
-		spells[1].attackstoptimer = 1000;
-		spells[1].mindist2cast = 0.0f;
-		spells[1].maxdist2cast = 20.0f;
-		spells[1].minhp2cast = 0;
-		spells[1].maxhp2cast = 100;
-		spells[1].cooldown = 10;
-		
-		spells[2].info = dbcSpell.LookupEntry(DARK_MENDING);
-		spells[2].targettype = TARGET_RANDOM_FRIEND;	
-		spells[2].instant = false;
-		spells[2].perctrigger = 8.0f;
-		spells[2].attackstoptimer = 1000;
-		spells[2].mindist2cast = 0.0f;
-		spells[2].maxdist2cast = 40.0f;
-		spells[2].minhp2cast = 0;
-		spells[2].maxhp2cast = 70;
-		spells[2].cooldown = 8;
-
-		spells[3].info = dbcSpell.LookupEntry(BURNING_ABYSSAL);
-		spells[3].targettype = TARGET_RANDOM_SINGLE;	
-		spells[3].instant = true;
-		spells[3].perctrigger = 6.0f;
-		spells[3].attackstoptimer = 1000;
-		spells[3].mindist2cast = 0.0f;
-		spells[3].maxdist2cast = 30.0f;
-		spells[3].minhp2cast = 0;
-		spells[3].maxhp2cast = 100;
-		spells[3].cooldown = 30;
-
-		spells[4].info = dbcSpell.LookupEntry(SOUL_TRANSFER);
-		spells[4].targettype = TARGET_VARIOUS;	
-		spells[4].instant = true;
-
-		_unit->GetAIInterface()->SetAllowedToEnterCombat(false);
-	}
-
-	void OnCombatStart(Unit* mTarget)
-	{
-		RegisterAIUpdateEvent(_unit->GetBaseAttackTime(MELEE));
-
-		_unit->SetChannelSpellTargetGUID(0);
-		_unit->SetChannelSpellId(0);
-
-		for (int i = 0; i < nrspells; i++)
-			spells[i].casttime = 0;
-	}
-		
-	void OnCombatStop(Unit* mTarget)
-	{
-		_unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
-		_unit->GetAIInterface()->SetAIState(STATE_IDLE);
-		RemoveAIUpdateEvent();
-
-		if (_unit->isAlive())
-		{
-
-			Unit* Magtheridon = NULL;
-			Magtheridon = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(-22.657900f, 2.159050f, -0.345542f, 17257);
-			if (Magtheridon && Magtheridon->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_9))
+			nrspells = 4;
+			for(int i = 0; i < nrspells; i++)
 			{
-				_unit->SetChannelSpellTargetGUID(Magtheridon->GetGUID());
-				_unit->SetChannelSpellId(SHADOW_GRASP);
+				m_spellcheck[i] = false;
+				spells[i].casttime = 0;
+			}
 
-				Magtheridon->CastSpell(Magtheridon, dbcSpell.LookupEntry(BANISH), true);
+			spells[0].info = dbcSpell.LookupEntry(SHADOW_BOLT_VOLLEY);
+			spells[0].targettype = TARGET_VARIOUS;
+			spells[0].instant = false;
+			spells[0].perctrigger = 10.0f;
+			spells[0].attackstoptimer = 1000;
+			spells[0].cooldown = 5;
+
+			spells[1].info = dbcSpell.LookupEntry(FEAR);
+			spells[1].targettype = TARGET_RANDOM_SINGLE;
+			spells[1].instant = false;
+			spells[1].perctrigger = 7.0f;
+			spells[1].attackstoptimer = 1000;
+			spells[1].mindist2cast = 0.0f;
+			spells[1].maxdist2cast = 20.0f;
+			spells[1].minhp2cast = 0;
+			spells[1].maxhp2cast = 100;
+			spells[1].cooldown = 10;
+
+			spells[2].info = dbcSpell.LookupEntry(DARK_MENDING);
+			spells[2].targettype = TARGET_RANDOM_FRIEND;
+			spells[2].instant = false;
+			spells[2].perctrigger = 8.0f;
+			spells[2].attackstoptimer = 1000;
+			spells[2].mindist2cast = 0.0f;
+			spells[2].maxdist2cast = 40.0f;
+			spells[2].minhp2cast = 0;
+			spells[2].maxhp2cast = 70;
+			spells[2].cooldown = 8;
+
+			spells[3].info = dbcSpell.LookupEntry(BURNING_ABYSSAL);
+			spells[3].targettype = TARGET_RANDOM_SINGLE;
+			spells[3].instant = true;
+			spells[3].perctrigger = 6.0f;
+			spells[3].attackstoptimer = 1000;
+			spells[3].mindist2cast = 0.0f;
+			spells[3].maxdist2cast = 30.0f;
+			spells[3].minhp2cast = 0;
+			spells[3].maxhp2cast = 100;
+			spells[3].cooldown = 30;
+
+			spells[4].info = dbcSpell.LookupEntry(SOUL_TRANSFER);
+			spells[4].targettype = TARGET_VARIOUS;
+			spells[4].instant = true;
+
+			_unit->GetAIInterface()->SetAllowedToEnterCombat(false);
+		}
+
+		void OnCombatStart(Unit* mTarget)
+		{
+			RegisterAIUpdateEvent(_unit->GetBaseAttackTime(MELEE));
+
+			_unit->SetChannelSpellTargetGUID(0);
+			_unit->SetChannelSpellId(0);
+
+			for(int i = 0; i < nrspells; i++)
+				spells[i].casttime = 0;
+		}
+
+		void OnCombatStop(Unit* mTarget)
+		{
+			_unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
+			_unit->GetAIInterface()->SetAIState(STATE_IDLE);
+			RemoveAIUpdateEvent();
+
+			if(_unit->isAlive())
+			{
+
+				Unit* Magtheridon = NULL;
+				Magtheridon = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(-22.657900f, 2.159050f, -0.345542f, 17257);
+				if(Magtheridon && Magtheridon->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_9))
+				{
+					_unit->SetChannelSpellTargetGUID(Magtheridon->GetGUID());
+					_unit->SetChannelSpellId(SHADOW_GRASP);
+
+					Magtheridon->CastSpell(Magtheridon, dbcSpell.LookupEntry(BANISH), true);
+				}
 			}
 		}
-	}
 
-	void OnDamageTaken(Unit* mAttacker, uint32 fAmount)
-	{
-		if (!_unit->GetAIInterface()->GetAllowedToEnterCombat())
-			_unit->GetAIInterface()->SetAllowedToEnterCombat(true);
-	}
-		
-	void OnDied(Unit* mKiller)
-	{
-		RemoveAIUpdateEvent();
-
-		_unit->SetChannelSpellTargetGUID(0);
-		_unit->SetChannelSpellId(0);
-	}
-		
-	void AIUpdate()
-	{
-		float val = RandomFloat(100.0f);
-		SpellCast(val);
-	}
-	
-	void SpellCast(float val)
-	{
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
+		void OnDamageTaken(Unit* mAttacker, uint32 fAmount)
 		{
-			float comulativeperc = 0;
-			Unit* target = NULL;
-			for(int i=0;i<nrspells;i++)
+			if(!_unit->GetAIInterface()->GetAllowedToEnterCombat())
+				_unit->GetAIInterface()->SetAllowedToEnterCombat(true);
+		}
+
+		void OnDied(Unit* mKiller)
+		{
+			RemoveAIUpdateEvent();
+
+			_unit->SetChannelSpellTargetGUID(0);
+			_unit->SetChannelSpellId(0);
+		}
+
+		void AIUpdate()
+		{
+			float val = RandomFloat(100.0f);
+			SpellCast(val);
+		}
+
+		void SpellCast(float val)
+		{
+			if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
 			{
-				if(!spells[i].perctrigger) continue;
-				
-				if(m_spellcheck[i])
+				float comulativeperc = 0;
+				Unit* target = NULL;
+				for(int i = 0; i < nrspells; i++)
 				{
-					target = _unit->GetAIInterface()->getNextTarget();
-					switch(spells[i].targettype)
+					if(!spells[i].perctrigger) continue;
+
+					if(m_spellcheck[i])
 					{
-						case TARGET_SELF:
-						case TARGET_VARIOUS:
-							_unit->CastSpell(_unit, spells[i].info, spells[i].instant); break;
-						case TARGET_ATTACKING:
-							_unit->CastSpell(target, spells[i].info, spells[i].instant); break;
-						case TARGET_DESTINATION:
-							_unit->CastSpellAoF(target->GetPositionX(),target->GetPositionY(),target->GetPositionZ(), spells[i].info, spells[i].instant); break;
-						case TARGET_RANDOM_FRIEND:
-						case TARGET_RANDOM_SINGLE:
-						case TARGET_RANDOM_DESTINATION:
-							CastSpellOnRandomTarget(i, spells[i].mindist2cast, spells[i].maxdist2cast, spells[i].minhp2cast, spells[i].maxhp2cast); break;
+						target = _unit->GetAIInterface()->getNextTarget();
+						switch(spells[i].targettype)
+						{
+							case TARGET_SELF:
+							case TARGET_VARIOUS:
+								_unit->CastSpell(_unit, spells[i].info, spells[i].instant);
+								break;
+							case TARGET_ATTACKING:
+								_unit->CastSpell(target, spells[i].info, spells[i].instant);
+								break;
+							case TARGET_DESTINATION:
+								_unit->CastSpellAoF(target->GetPositionX(), target->GetPositionY(), target->GetPositionZ(), spells[i].info, spells[i].instant);
+								break;
+							case TARGET_RANDOM_FRIEND:
+							case TARGET_RANDOM_SINGLE:
+							case TARGET_RANDOM_DESTINATION:
+								CastSpellOnRandomTarget(i, spells[i].mindist2cast, spells[i].maxdist2cast, spells[i].minhp2cast, spells[i].maxhp2cast);
+								break;
+						}
+						m_spellcheck[i] = false;
+						return;
 					}
-					m_spellcheck[i] = false;
-					return;
-				}
 
-				uint32 t = (uint32)time(NULL);
-				if(val > comulativeperc && val <= (comulativeperc + spells[i].perctrigger) && t > spells[i].casttime)
-				{
-					if (i == 2 && _unit->GetHealthPct() > 50)
-						continue;
-
-					_unit->setAttackTimer(spells[i].attackstoptimer, false);
-					spells[i].casttime = t + spells[i].cooldown;
-					m_spellcheck[i] = true;
-				}
-				comulativeperc += spells[i].perctrigger;
-			}
-		}
-	}
-
-	void CastSpellOnRandomTarget(uint32 i, float mindist2cast, float maxdist2cast, int minhp2cast, int maxhp2cast)
-	{
-		if (!maxdist2cast) maxdist2cast = 100.0f;
-		if (!maxhp2cast) maxhp2cast = 100;
-
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
-        {
-			std::vector<Unit*> TargetTable;		/* From M4ksiu - Big THX to Capt who helped me with std stuff to make it simple and fully working <3 */
-												/* If anyone wants to use this function, then leave this note!										 */
-			for(set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); ++itr) 
-			{ 
-				if (((spells[i].targettype == TARGET_RANDOM_FRIEND && isFriendly(_unit, (*itr))) || (spells[i].targettype != TARGET_RANDOM_FRIEND && isHostile(_unit, (*itr)) && (*itr) != _unit)) && (*itr)->IsUnit()) // isAttackable(_unit, (*itr)) && 
-				{
-					Unit* RandomTarget = NULL;
-					RandomTarget = TO_UNIT(*itr);
-
-					if (RandomTarget->isAlive() && _unit->GetDistance2dSq(RandomTarget) >= mindist2cast*mindist2cast && _unit->GetDistance2dSq(RandomTarget) <= maxdist2cast*maxdist2cast && ((RandomTarget->GetHealthPct() >= minhp2cast && RandomTarget->GetHealthPct() <= maxhp2cast && spells[i].targettype == TARGET_RANDOM_FRIEND) || (_unit->GetAIInterface()->getThreatByPtr(RandomTarget) > 0 && isHostile(_unit, RandomTarget))))
+					uint32 t = (uint32)time(NULL);
+					if(val > comulativeperc && val <= (comulativeperc + spells[i].perctrigger) && t > spells[i].casttime)
 					{
-						TargetTable.push_back(RandomTarget);
-					} 
-				} 
+						if(i == 2 && _unit->GetHealthPct() > 50)
+							continue;
+
+						_unit->setAttackTimer(spells[i].attackstoptimer, false);
+						spells[i].casttime = t + spells[i].cooldown;
+						m_spellcheck[i] = true;
+					}
+					comulativeperc += spells[i].perctrigger;
+				}
 			}
-
-			if (_unit->GetHealthPct() >= minhp2cast && _unit->GetHealthPct() <= maxhp2cast && spells[i].targettype == TARGET_RANDOM_FRIEND)
-				TargetTable.push_back(_unit);
-
-			if (!TargetTable.size())
-				return;
-
-			size_t RandTarget = rand()%TargetTable.size();
-
-			Unit*  RTarget = TargetTable[RandTarget];
-
-			if (!RTarget)
-				return;
-
-			switch (spells[i].targettype)
-			{
-			case TARGET_RANDOM_FRIEND:
-			case TARGET_RANDOM_SINGLE:
-				_unit->CastSpell(RTarget, spells[i].info, spells[i].instant); break;
-			case TARGET_RANDOM_DESTINATION:
-				_unit->CastSpellAoF(RTarget->GetPositionX(), RTarget->GetPositionY(), RTarget->GetPositionZ(), spells[i].info, spells[i].instant); break;
-			}
-
-			TargetTable.clear();
 		}
-	}
-		
-protected:
-		
-	int nrspells;
+
+		void CastSpellOnRandomTarget(uint32 i, float mindist2cast, float maxdist2cast, int minhp2cast, int maxhp2cast)
+		{
+			if(!maxdist2cast) maxdist2cast = 100.0f;
+			if(!maxhp2cast) maxhp2cast = 100;
+
+			if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
+			{
+				std::vector<Unit*> TargetTable;		/* From M4ksiu - Big THX to Capt who helped me with std stuff to make it simple and fully working <3 */
+				/* If anyone wants to use this function, then leave this note!										 */
+				for(set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); ++itr)
+				{
+					if(((spells[i].targettype == TARGET_RANDOM_FRIEND && isFriendly(_unit, (*itr))) || (spells[i].targettype != TARGET_RANDOM_FRIEND && isHostile(_unit, (*itr)) && (*itr) != _unit)) && (*itr)->IsUnit())  // isAttackable(_unit, (*itr)) &&
+					{
+						Unit* RandomTarget = NULL;
+						RandomTarget = TO_UNIT(*itr);
+
+						if(RandomTarget->isAlive() && _unit->GetDistance2dSq(RandomTarget) >= mindist2cast * mindist2cast && _unit->GetDistance2dSq(RandomTarget) <= maxdist2cast * maxdist2cast && ((RandomTarget->GetHealthPct() >= minhp2cast && RandomTarget->GetHealthPct() <= maxhp2cast && spells[i].targettype == TARGET_RANDOM_FRIEND) || (_unit->GetAIInterface()->getThreatByPtr(RandomTarget) > 0 && isHostile(_unit, RandomTarget))))
+						{
+							TargetTable.push_back(RandomTarget);
+						}
+					}
+				}
+
+				if(_unit->GetHealthPct() >= minhp2cast && _unit->GetHealthPct() <= maxhp2cast && spells[i].targettype == TARGET_RANDOM_FRIEND)
+					TargetTable.push_back(_unit);
+
+				if(!TargetTable.size())
+					return;
+
+				size_t RandTarget = rand() % TargetTable.size();
+
+				Unit*  RTarget = TargetTable[RandTarget];
+
+				if(!RTarget)
+					return;
+
+				switch(spells[i].targettype)
+				{
+					case TARGET_RANDOM_FRIEND:
+					case TARGET_RANDOM_SINGLE:
+						_unit->CastSpell(RTarget, spells[i].info, spells[i].instant);
+						break;
+					case TARGET_RANDOM_DESTINATION:
+						_unit->CastSpellAoF(RTarget->GetPositionX(), RTarget->GetPositionY(), RTarget->GetPositionZ(), spells[i].info, spells[i].instant);
+						break;
+				}
+
+				TargetTable.clear();
+			}
+		}
+
+	protected:
+
+		int nrspells;
 };
 
 // Burning Abyssal AI
@@ -1089,155 +1102,161 @@ protected:
 
 class BurningAbyssalAI : public CreatureAIScript
 {
-public:
-    ADD_CREATURE_FACTORY_FUNCTION(BurningAbyssalAI);
-	SP_AI_Spell spells[1];
-	bool m_spellcheck[1];
+	public:
+		ADD_CREATURE_FACTORY_FUNCTION(BurningAbyssalAI);
+		SP_AI_Spell spells[1];
+		bool m_spellcheck[1];
 
-    BurningAbyssalAI(Creature* pCreature) : CreatureAIScript(pCreature)
-    {
-		nrspells = 1;
-		for(int i=0;i<nrspells;i++)
+		BurningAbyssalAI(Creature* pCreature) : CreatureAIScript(pCreature)
 		{
-			m_spellcheck[i] = false;
-			spells[i].casttime = 0;
-		} 
-
-		spells[0].info = dbcSpell.LookupEntry(FIRE_BLAST);
-		spells[0].targettype = TARGET_RANDOM_SINGLE;
-		spells[0].instant = true;
-		spells[0].perctrigger = 8.0f;
-		spells[0].attackstoptimer = 1000;
-		spells[0].mindist2cast = 0.0f;
-		spells[0].maxdist2cast = 20.0f;
-		spells[0].minhp2cast = 0;
-		spells[0].maxhp2cast = 100;
-		spells[0].cooldown = 10;
-
-		_unit->m_noRespawn = true;
-	}
-
-	void OnCombatStart(Unit* mTarget)
-    {
-        RegisterAIUpdateEvent(_unit->GetBaseAttackTime(MELEE));
-
-		for (int i = 0; i < nrspells; i++)
-			spells[i].casttime = 0;
-    }
-
-    void OnCombatStop(Unit* mTarget)
-    {
-        _unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
-        _unit->GetAIInterface()->SetAIState(STATE_IDLE);
-        RemoveAIUpdateEvent();
-    }
-
-	void OnDied(Unit* mKiller)
-    {
-		RemoveAIUpdateEvent();
-    }
-
-	void AIUpdate()
-    {
-		float val = RandomFloat(100.0f);
-        SpellCast(val);
-    }
-
-    void SpellCast(float val)
-    {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
-        {
-			float comulativeperc = 0;
-		    Unit* target = NULL;
-			for(int i=0;i<nrspells;i++)
+			nrspells = 1;
+			for(int i = 0; i < nrspells; i++)
 			{
-				if(!spells[i].perctrigger) continue;
-				
-				if(m_spellcheck[i])
-				{
-					target = _unit->GetAIInterface()->getNextTarget();
-					switch(spells[i].targettype)
-					{
-						case TARGET_SELF:
-						case TARGET_VARIOUS:
-							_unit->CastSpell(_unit, spells[i].info, spells[i].instant); break;
-						case TARGET_ATTACKING:
-							_unit->CastSpell(target, spells[i].info, spells[i].instant); break;
-						case TARGET_DESTINATION:
-							_unit->CastSpellAoF(target->GetPositionX(),target->GetPositionY(),target->GetPositionZ(), spells[i].info, spells[i].instant); break;
-						case TARGET_RANDOM_FRIEND:
-						case TARGET_RANDOM_SINGLE:
-						case TARGET_RANDOM_DESTINATION:
-							CastSpellOnRandomTarget(i, spells[i].mindist2cast, spells[i].maxdist2cast, spells[i].minhp2cast, spells[i].maxhp2cast); break;
-					}
-					m_spellcheck[i] = false;
-					return;
-				}
-
-				uint32 t = (uint32)time(NULL);
-				if(val > comulativeperc && val <= (comulativeperc + spells[i].perctrigger) && t > spells[i].casttime)
-				{
-					_unit->setAttackTimer(spells[i].attackstoptimer, false);
-					spells[i].casttime = t + spells[i].cooldown;
-					m_spellcheck[i] = true;
-				}
-				comulativeperc += spells[i].perctrigger;
-			}
-        }
-    }
-
-	void CastSpellOnRandomTarget(uint32 i, float mindist2cast, float maxdist2cast, int minhp2cast, int maxhp2cast)
-	{
-		if (!maxdist2cast) maxdist2cast = 100.0f;
-		if (!maxhp2cast) maxhp2cast = 100;
-
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
-        {
-			std::vector<Unit*> TargetTable;		/* From M4ksiu - Big THX to Capt who helped me with std stuff to make it simple and fully working <3 */
-												/* If anyone wants to use this function, then leave this note!										 */
-			for(set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); ++itr) 
-			{ 
-				if (((spells[i].targettype == TARGET_RANDOM_FRIEND && isFriendly(_unit, (*itr))) || (spells[i].targettype != TARGET_RANDOM_FRIEND && isHostile(_unit, (*itr)) && (*itr) != _unit)) && (*itr)->IsUnit()) // isAttackable(_unit, (*itr)) && 
-				{
-					Unit* RandomTarget = NULL;
-					RandomTarget = TO_UNIT(*itr);
-
-					if (RandomTarget->isAlive() && _unit->GetDistance2dSq(RandomTarget) >= mindist2cast*mindist2cast && _unit->GetDistance2dSq(RandomTarget) <= maxdist2cast*maxdist2cast && ((RandomTarget->GetHealthPct() >= minhp2cast && RandomTarget->GetHealthPct() <= maxhp2cast && spells[i].targettype == TARGET_RANDOM_FRIEND) || (_unit->GetAIInterface()->getThreatByPtr(RandomTarget) > 0 && isHostile(_unit, RandomTarget))))
-					{
-						TargetTable.push_back(RandomTarget);
-					} 
-				} 
+				m_spellcheck[i] = false;
+				spells[i].casttime = 0;
 			}
 
-			if (_unit->GetHealthPct() >= minhp2cast && _unit->GetHealthPct() <= maxhp2cast && spells[i].targettype == TARGET_RANDOM_FRIEND)
-				TargetTable.push_back(_unit);
+			spells[0].info = dbcSpell.LookupEntry(FIRE_BLAST);
+			spells[0].targettype = TARGET_RANDOM_SINGLE;
+			spells[0].instant = true;
+			spells[0].perctrigger = 8.0f;
+			spells[0].attackstoptimer = 1000;
+			spells[0].mindist2cast = 0.0f;
+			spells[0].maxdist2cast = 20.0f;
+			spells[0].minhp2cast = 0;
+			spells[0].maxhp2cast = 100;
+			spells[0].cooldown = 10;
 
-			if (!TargetTable.size())
-				return;
-
-			size_t RandTarget = rand()%TargetTable.size();
-
-			Unit*  RTarget = TargetTable[RandTarget];
-
-			if (!RTarget)
-				return;
-
-			switch (spells[i].targettype)
-			{
-			case TARGET_RANDOM_FRIEND:
-			case TARGET_RANDOM_SINGLE:
-				_unit->CastSpell(RTarget, spells[i].info, spells[i].instant); break;
-			case TARGET_RANDOM_DESTINATION:
-				_unit->CastSpellAoF(RTarget->GetPositionX(), RTarget->GetPositionY(), RTarget->GetPositionZ(), spells[i].info, spells[i].instant); break;
-			}
-
-			TargetTable.clear();
+			_unit->m_noRespawn = true;
 		}
-	}
 
-protected:
+		void OnCombatStart(Unit* mTarget)
+		{
+			RegisterAIUpdateEvent(_unit->GetBaseAttackTime(MELEE));
 
-	int nrspells;
+			for(int i = 0; i < nrspells; i++)
+				spells[i].casttime = 0;
+		}
+
+		void OnCombatStop(Unit* mTarget)
+		{
+			_unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
+			_unit->GetAIInterface()->SetAIState(STATE_IDLE);
+			RemoveAIUpdateEvent();
+		}
+
+		void OnDied(Unit* mKiller)
+		{
+			RemoveAIUpdateEvent();
+		}
+
+		void AIUpdate()
+		{
+			float val = RandomFloat(100.0f);
+			SpellCast(val);
+		}
+
+		void SpellCast(float val)
+		{
+			if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
+			{
+				float comulativeperc = 0;
+				Unit* target = NULL;
+				for(int i = 0; i < nrspells; i++)
+				{
+					if(!spells[i].perctrigger) continue;
+
+					if(m_spellcheck[i])
+					{
+						target = _unit->GetAIInterface()->getNextTarget();
+						switch(spells[i].targettype)
+						{
+							case TARGET_SELF:
+							case TARGET_VARIOUS:
+								_unit->CastSpell(_unit, spells[i].info, spells[i].instant);
+								break;
+							case TARGET_ATTACKING:
+								_unit->CastSpell(target, spells[i].info, spells[i].instant);
+								break;
+							case TARGET_DESTINATION:
+								_unit->CastSpellAoF(target->GetPositionX(), target->GetPositionY(), target->GetPositionZ(), spells[i].info, spells[i].instant);
+								break;
+							case TARGET_RANDOM_FRIEND:
+							case TARGET_RANDOM_SINGLE:
+							case TARGET_RANDOM_DESTINATION:
+								CastSpellOnRandomTarget(i, spells[i].mindist2cast, spells[i].maxdist2cast, spells[i].minhp2cast, spells[i].maxhp2cast);
+								break;
+						}
+						m_spellcheck[i] = false;
+						return;
+					}
+
+					uint32 t = (uint32)time(NULL);
+					if(val > comulativeperc && val <= (comulativeperc + spells[i].perctrigger) && t > spells[i].casttime)
+					{
+						_unit->setAttackTimer(spells[i].attackstoptimer, false);
+						spells[i].casttime = t + spells[i].cooldown;
+						m_spellcheck[i] = true;
+					}
+					comulativeperc += spells[i].perctrigger;
+				}
+			}
+		}
+
+		void CastSpellOnRandomTarget(uint32 i, float mindist2cast, float maxdist2cast, int minhp2cast, int maxhp2cast)
+		{
+			if(!maxdist2cast) maxdist2cast = 100.0f;
+			if(!maxhp2cast) maxhp2cast = 100;
+
+			if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
+			{
+				std::vector<Unit*> TargetTable;		/* From M4ksiu - Big THX to Capt who helped me with std stuff to make it simple and fully working <3 */
+				/* If anyone wants to use this function, then leave this note!										 */
+				for(set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); ++itr)
+				{
+					if(((spells[i].targettype == TARGET_RANDOM_FRIEND && isFriendly(_unit, (*itr))) || (spells[i].targettype != TARGET_RANDOM_FRIEND && isHostile(_unit, (*itr)) && (*itr) != _unit)) && (*itr)->IsUnit())  // isAttackable(_unit, (*itr)) &&
+					{
+						Unit* RandomTarget = NULL;
+						RandomTarget = TO_UNIT(*itr);
+
+						if(RandomTarget->isAlive() && _unit->GetDistance2dSq(RandomTarget) >= mindist2cast * mindist2cast && _unit->GetDistance2dSq(RandomTarget) <= maxdist2cast * maxdist2cast && ((RandomTarget->GetHealthPct() >= minhp2cast && RandomTarget->GetHealthPct() <= maxhp2cast && spells[i].targettype == TARGET_RANDOM_FRIEND) || (_unit->GetAIInterface()->getThreatByPtr(RandomTarget) > 0 && isHostile(_unit, RandomTarget))))
+						{
+							TargetTable.push_back(RandomTarget);
+						}
+					}
+				}
+
+				if(_unit->GetHealthPct() >= minhp2cast && _unit->GetHealthPct() <= maxhp2cast && spells[i].targettype == TARGET_RANDOM_FRIEND)
+					TargetTable.push_back(_unit);
+
+				if(!TargetTable.size())
+					return;
+
+				size_t RandTarget = rand() % TargetTable.size();
+
+				Unit*  RTarget = TargetTable[RandTarget];
+
+				if(!RTarget)
+					return;
+
+				switch(spells[i].targettype)
+				{
+					case TARGET_RANDOM_FRIEND:
+					case TARGET_RANDOM_SINGLE:
+						_unit->CastSpell(RTarget, spells[i].info, spells[i].instant);
+						break;
+					case TARGET_RANDOM_DESTINATION:
+						_unit->CastSpellAoF(RTarget->GetPositionX(), RTarget->GetPositionY(), RTarget->GetPositionZ(), spells[i].info, spells[i].instant);
+						break;
+				}
+
+				TargetTable.clear();
+			}
+		}
+
+	protected:
+
+		int nrspells;
 };
 
 // Magtheridon
@@ -1257,407 +1276,413 @@ protected:
 
 class MagtheridonAI : public CreatureAIScript
 {
-public:
-    ADD_CREATURE_FACTORY_FUNCTION(MagtheridonAI);
-	SP_AI_Spell spells[7];
-	bool m_spellcheck[7];
+	public:
+		ADD_CREATURE_FACTORY_FUNCTION(MagtheridonAI);
+		SP_AI_Spell spells[7];
+		bool m_spellcheck[7];
 
-    MagtheridonAI(Creature* pCreature) : CreatureAIScript(pCreature)
-    {
-		nrspells = 2;
-		for(int i=0;i<nrspells;i++)
+		MagtheridonAI(Creature* pCreature) : CreatureAIScript(pCreature)
 		{
-			m_spellcheck[i] = true;
-			spells[i].casttime = 0;
+			nrspells = 2;
+			for(int i = 0; i < nrspells; i++)
+			{
+				m_spellcheck[i] = true;
+				spells[i].casttime = 0;
+			}
+
+			spells[0].info = dbcSpell.LookupEntry(CLEAVE);
+			spells[0].targettype = TARGET_ATTACKING;
+			spells[0].instant = true;
+			spells[0].perctrigger = 6.0f;
+			spells[0].attackstoptimer = 1000;
+			spells[0].cooldown = 15;
+
+			spells[1].info = dbcSpell.LookupEntry(CONFLAGRATION);
+			spells[1].targettype = TARGET_RANDOM_SINGLE;
+			spells[1].instant = true;
+			spells[1].perctrigger = 7.0f;
+			spells[1].attackstoptimer = 1000;
+			spells[1].mindist2cast = 0.0f;
+			spells[1].maxdist2cast = 30.0f;
+			spells[1].minhp2cast = 0;
+			spells[1].maxhp2cast = 100;
+			spells[1].cooldown = 35;
+
+			spells[2].info = dbcSpell.LookupEntry(QUAKE1);
+			spells[2].targettype = TARGET_VARIOUS;
+			spells[2].instant = true;
+
+			spells[3].info = dbcSpell.LookupEntry(QUAKE2);
+			spells[3].targettype = TARGET_VARIOUS;
+			spells[3].instant = true;
+
+			spells[4].info = dbcSpell.LookupEntry(BLAST_NOVA);
+			spells[4].targettype = TARGET_VARIOUS;
+			spells[4].instant = false;
+
+			spells[5].info = dbcSpell.LookupEntry(CAVE_IN);
+			spells[5].instant = true;
+
+			spells[6].info = dbcSpell.LookupEntry(ENRAGE);
+			spells[6].targettype = TARGET_SELF;
+			spells[6].instant = true;
+
+			_unit->SetUInt64Value(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_9);
+
+			Aura* aura = sSpellFactoryMgr.NewAura(dbcSpell.LookupEntry(BANISHMENT), (uint32) - 1, _unit, _unit);
+			_unit->AddAura(aura);
+
+			_unit->CastSpell(_unit, dbcSpell.LookupEntry(BANISH), true);
+			_unit->GetAIInterface()->SetAllowedToEnterCombat(false);
+			_unit->SetUInt32Value(UNIT_FIELD_BYTES_2, 1);
+
+			timer_quake = timer_enrage = timer_blastNova = timer_caveIn = 0;
+			PhaseSwitch = false;
 		}
 
-		spells[0].info = dbcSpell.LookupEntry(CLEAVE);
-		spells[0].targettype = TARGET_ATTACKING;
-		spells[0].instant = true;
-		spells[0].perctrigger = 6.0f;
-		spells[0].attackstoptimer = 1000;
-		spells[0].cooldown = 15;
-
-		spells[1].info = dbcSpell.LookupEntry(CONFLAGRATION);
-		spells[1].targettype = TARGET_RANDOM_SINGLE;
-		spells[1].instant = true;
-		spells[1].perctrigger = 7.0f;
-		spells[1].attackstoptimer = 1000;
-		spells[1].mindist2cast = 0.0f;
-		spells[1].maxdist2cast = 30.0f;
-		spells[1].minhp2cast = 0;
-		spells[1].maxhp2cast = 100;
-		spells[1].cooldown = 35;
-
-		spells[2].info = dbcSpell.LookupEntry(QUAKE1);
-		spells[2].targettype = TARGET_VARIOUS;
-		spells[2].instant = true;
-
-		spells[3].info = dbcSpell.LookupEntry(QUAKE2);
-		spells[3].targettype = TARGET_VARIOUS;
-		spells[3].instant = true;
-
-		spells[4].info = dbcSpell.LookupEntry(BLAST_NOVA);
-		spells[4].targettype = TARGET_VARIOUS;
-		spells[4].instant = false;
-
-		spells[5].info = dbcSpell.LookupEntry(CAVE_IN);
-		spells[5].instant = true;
-
-		spells[6].info = dbcSpell.LookupEntry(ENRAGE);
-		spells[6].targettype = TARGET_SELF;
-		spells[6].instant = true;
-
-		_unit->SetUInt64Value(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_9);
-
-		Aura* aura = sSpellFactoryMgr.NewAura( dbcSpell.LookupEntry(BANISHMENT), (uint32)-1, _unit, _unit );
-		_unit->AddAura(aura);
-
-		_unit->CastSpell(_unit, dbcSpell.LookupEntry(BANISH), true);
-		_unit->GetAIInterface()->SetAllowedToEnterCombat(false);
-		_unit->SetUInt32Value(UNIT_FIELD_BYTES_2, 1);
-
-		timer_quake = timer_enrage = timer_blastNova = timer_caveIn = 0;
-		PhaseSwitch = false;
-	}
-
-	void OnCombatStart(Unit* mTarget)
-    {		
-		timer_quake = timer_enrage = timer_blastNova = timer_caveIn = 0;
-		PhaseSwitch = false;
-
-        RegisterAIUpdateEvent(_unit->GetBaseAttackTime(MELEE));
-
-		for (int i = 0; i < nrspells; i++)
-			spells[i].casttime = 0;
-
-		GameObject* Gate = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-72.5866f, 1.559f, 0.0f, 183847);
-		if (Gate)
-			Gate->SetState(1);
-    }
-
-    void OnCombatStop(Unit* mTarget)
-    {
-        _unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
-        _unit->GetAIInterface()->SetAIState(STATE_IDLE);
-        RemoveAIUpdateEvent();
-
-		if (_unit->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_9) || _unit->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_2))
-			return;
-
-		GameObject*  Gate = NULL;
-		for (int i = 0; i < 6; i++)
+		void OnCombatStart(Unit* mTarget)
 		{
-			Gate = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(Columns[i].x, Columns[i].y, Columns[i].z, 184634+i);
-			if (Gate)
+			timer_quake = timer_enrage = timer_blastNova = timer_caveIn = 0;
+			PhaseSwitch = false;
+
+			RegisterAIUpdateEvent(_unit->GetBaseAttackTime(MELEE));
+
+			for(int i = 0; i < nrspells; i++)
+				spells[i].casttime = 0;
+
+			GameObject* Gate = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-72.5866f, 1.559f, 0.0f, 183847);
+			if(Gate)
 				Gate->SetState(1);
 		}
 
-		Gate = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(0.0f, 0.0f, 0.0f, 184653);
-		if (Gate)
-			Gate->SetState(1);
-
-		Gate = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-72.5866f, 1.559f, 0.0f, 183847);
-		if (Gate)
-			Gate->SetState(0);
-    }
-
-	void OnDied(Unit* mKiller)
-    {
-		_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "The Legion... will consume you... all....");
-		_unit->PlaySoundToSet(10258);
-
-       RemoveAIUpdateEvent();
-    }
-
-	void OnTargetDied(Unit* mTarget)
-	{
-		if (_unit->GetHealthPct() > 0)
+		void OnCombatStop(Unit* mTarget)
 		{
-			_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "Did you think me weak? Soft? Who is the weak one now?!");
-			_unit->PlaySoundToSet(10255);
-		}
-	}
-	
-	void AIUpdate()
-    {
-		if (PhaseSwitch)
-			PhaseThree();
-		else PhaseTwo();
-    }
+			_unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
+			_unit->GetAIInterface()->SetAIState(STATE_IDLE);
+			RemoveAIUpdateEvent();
 
-	void PhaseTwo()
-	{
-		Aura* aura = _unit->FindAura(BANISH);
+			if(_unit->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_9) || _unit->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_2))
+				return;
 
-		if (_unit->GetHealthPct() <= 30)
-		{
-			timer_caveIn = 1;
-			PhaseSwitch = true;
-		}
-
-		timer_quake++;
-		timer_enrage++;
-		timer_blastNova++;
-
-		if (timer_quake > 27)
-		{
-			if (timer_quake < 33)
+			GameObject*  Gate = NULL;
+			for(int i = 0; i < 6; i++)
 			{
-				_unit->CastSpell(_unit, spells[2].info, spells[2].instant);
-
-				for (int i = 0; i < 6; i++)
-				{
-					Unit* Trigger = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(CaveInPos[i].x, CaveInPos[i].y, CaveInPos[i].z, 17474);
-					if (Trigger)
-					{
-						Trigger->CastSpell(Trigger, spells[3].info, spells[3].instant);
-					}
-				}
+				Gate = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(Columns[i].x, Columns[i].y, Columns[i].z, 184634 + i);
+				if(Gate)
+					Gate->SetState(1);
 			}
 
-			if (timer_quake == 32)
-				timer_quake = 0;
-		}
-		
-		if (timer_blastNova == 33)
-		{
-			_unit->SendChatMessageAlternateEntry(17257, CHAT_MSG_EMOTE, LANG_UNIVERSAL, " begins to cast Blast Nova!");
-		}
-		if(timer_blastNova > 33 && _unit->GetCurrentSpell() == NULL && !aura)
-		{
-			_unit->GetAIInterface()->StopMovement(3000);
-			_unit->setAttackTimer(3000, false);
-			
-			_unit->CastSpell(_unit, dbcSpell.LookupEntry(BLAST_NOVA), false);
+			Gate = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(0.0f, 0.0f, 0.0f, 184653);
+			if(Gate)
+				Gate->SetState(1);
 
-			timer_blastNova = 0;
-			timer_quake = 0;
-			return;
+			Gate = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-72.5866f, 1.559f, 0.0f, 183847);
+			if(Gate)
+				Gate->SetState(0);
 		}
 
-		if(timer_enrage > 667 && _unit->GetCurrentSpell() == NULL && !aura)
+		void OnDied(Unit* mKiller)
 		{
-			_unit->CastSpell(_unit, dbcSpell.LookupEntry(ENRAGE), true);
+			_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "The Legion... will consume you... all....");
+			_unit->PlaySoundToSet(10258);
 
-			timer_enrage = 0;
+			RemoveAIUpdateEvent();
 		}
 
-		if (!aura)
+		void OnTargetDied(Unit* mTarget)
 		{
-			float val = RandomFloat(100.0f);
-			SpellCast(val);
-		}
-	}
-
-	void PhaseThree()
-	{
-		Aura* aura = _unit->FindAura(BANISH);
-
-		timer_quake++;
-		timer_enrage++;
-		timer_blastNova++;
-
-		if (timer_quake > 27)
-		{
-			if (timer_quake < 33)
+			if(_unit->GetHealthPct() > 0)
 			{
-				_unit->CastSpell(_unit, spells[2].info, spells[2].instant);
+				_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "Did you think me weak? Soft? Who is the weak one now?!");
+				_unit->PlaySoundToSet(10255);
+			}
+		}
 
-				for (int i = 0; i < 6; i++)
-				{
-					Unit* Trigger = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(CaveInPos[i].x, CaveInPos[i].y, CaveInPos[i].z, 17474);
-					if (Trigger)
-					{
-						Trigger->CastSpell(Trigger, spells[3].info, spells[3].instant);
-					}
-				}
+		void AIUpdate()
+		{
+			if(PhaseSwitch)
+				PhaseThree();
+			else PhaseTwo();
+		}
+
+		void PhaseTwo()
+		{
+			Aura* aura = _unit->FindAura(BANISH);
+
+			if(_unit->GetHealthPct() <= 30)
+			{
+				timer_caveIn = 1;
+				PhaseSwitch = true;
 			}
 
-			if (timer_quake == 32)
-				timer_quake = 0;
-		}
+			timer_quake++;
+			timer_enrage++;
+			timer_blastNova++;
 
-		if (timer_blastNova == 33)
-		{
-			_unit->SendChatMessageAlternateEntry(17257, CHAT_MSG_MONSTER_EMOTE, LANG_UNIVERSAL, " begins to cast Blast Nova!");
-		}
-		if(timer_blastNova > 33 && _unit->GetCurrentSpell() == NULL && !aura)
-		{
-			_unit->GetAIInterface()->StopMovement(3000);
-			_unit->setAttackTimer(3000, false);
-
-			_unit->CastSpell(_unit, dbcSpell.LookupEntry(BLAST_NOVA), false);
-
-			timer_blastNova = 0;
-			timer_quake = 0;
-			return;
-		}
-
-		if(timer_caveIn && (timer_caveIn != 1 || (_unit->GetCurrentSpell() == NULL && timer_caveIn == 1 && !aura)))
-		{
-			timer_caveIn++;
-			if (timer_caveIn == 2)
+			if(timer_quake > 27)
 			{
-				_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "I will not be taken so easily. Let the walls of this prison tremble... and FALL!!!");
-				_unit->PlaySoundToSet(10257);
+				if(timer_quake < 33)
+				{
+					_unit->CastSpell(_unit, spells[2].info, spells[2].instant);
 
-				_unit->GetAIInterface()->StopMovement(2000);
-				_unit->setAttackTimer(2000, false);
+					for(int i = 0; i < 6; i++)
+					{
+						Unit* Trigger = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(CaveInPos[i].x, CaveInPos[i].y, CaveInPos[i].z, 17474);
+						if(Trigger)
+						{
+							Trigger->CastSpell(Trigger, spells[3].info, spells[3].instant);
+						}
+					}
+				}
 
-				_unit->CastSpell(_unit, dbcSpell.LookupEntry(CAMERA_SHAKE), true);
+				if(timer_quake == 32)
+					timer_quake = 0;
+			}
+
+			if(timer_blastNova == 33)
+			{
+				_unit->SendChatMessageAlternateEntry(17257, CHAT_MSG_EMOTE, LANG_UNIVERSAL, " begins to cast Blast Nova!");
+			}
+			if(timer_blastNova > 33 && _unit->GetCurrentSpell() == NULL && !aura)
+			{
+				_unit->GetAIInterface()->StopMovement(3000);
+				_unit->setAttackTimer(3000, false);
+
+				_unit->CastSpell(_unit, dbcSpell.LookupEntry(BLAST_NOVA), false);
+
+				timer_blastNova = 0;
+				timer_quake = 0;
 				return;
 			}
 
-			if (timer_caveIn == 3)
+			if(timer_enrage > 667 && _unit->GetCurrentSpell() == NULL && !aura)
 			{
-				GameObject*  Gate = NULL;
-				for (int i = 0; i < 6; i++)
-				{
-					Gate = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(Columns[i].x, Columns[i].y, Columns[i].z, 184634+i);
-					if (Gate)
-						Gate->SetState(0);
-				}
+				_unit->CastSpell(_unit, dbcSpell.LookupEntry(ENRAGE), true);
 
-				Gate = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(0.0f, 0.0f, 0.0f, 184653);
-				if (Gate)
-					Gate->SetState(0);
+				timer_enrage = 0;
 			}
 
-			if (timer_caveIn == 5)
+			if(!aura)
 			{
-				for (int i = 0; i < 6; i++)
-				{
-					Unit* Trigger = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(CaveInPos[i].x, CaveInPos[i].y, CaveInPos[i].z, 17474);
-					if (Trigger)
-					{
-						Trigger->CastSpellAoF(CaveInPos[i].x, CaveInPos[i].y, CaveInPos[i].z, spells[5].info, spells[5].instant);
-					}
-				}
-
-				timer_caveIn = 0;
+				float val = RandomFloat(100.0f);
+				SpellCast(val);
 			}
 		}
 
-		if(timer_enrage > 667 && _unit->GetCurrentSpell() == NULL && !aura)
+		void PhaseThree()
 		{
-			_unit->CastSpell(_unit, dbcSpell.LookupEntry(ENRAGE), true);
+			Aura* aura = _unit->FindAura(BANISH);
 
-			timer_enrage = 0;
-			//return;
-		}
+			timer_quake++;
+			timer_enrage++;
+			timer_blastNova++;
 
-		if (!aura)
-		{
-			float val = RandomFloat(100.0f);
-			SpellCast(val);
-		}
-	}
-	
-	void SpellCast(float val)
-    {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
-        {
-			float comulativeperc = 0;
-		    Unit* target = NULL;
-			for(int i=0;i<nrspells;i++)
+			if(timer_quake > 27)
 			{
-				if(!spells[i].perctrigger) continue;
-				
-				if(m_spellcheck[i])
+				if(timer_quake < 33)
 				{
-					target = _unit->GetAIInterface()->getNextTarget();
-					switch(spells[i].targettype)
+					_unit->CastSpell(_unit, spells[2].info, spells[2].instant);
+
+					for(int i = 0; i < 6; i++)
 					{
-						case TARGET_SELF:
-						case TARGET_VARIOUS:
-							_unit->CastSpell(_unit, spells[i].info, spells[i].instant); break;
-						case TARGET_ATTACKING:
-							_unit->CastSpell(target, spells[i].info, spells[i].instant); break;
-						case TARGET_DESTINATION:
-							_unit->CastSpellAoF(target->GetPositionX(),target->GetPositionY(),target->GetPositionZ(), spells[i].info, spells[i].instant); break;
-						case TARGET_RANDOM_FRIEND:
-						case TARGET_RANDOM_SINGLE:
-						case TARGET_RANDOM_DESTINATION:
-							CastSpellOnRandomTarget(i, spells[i].mindist2cast, spells[i].maxdist2cast, spells[i].minhp2cast, spells[i].maxhp2cast); break;
+						Unit* Trigger = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(CaveInPos[i].x, CaveInPos[i].y, CaveInPos[i].z, 17474);
+						if(Trigger)
+						{
+							Trigger->CastSpell(Trigger, spells[3].info, spells[3].instant);
+						}
 					}
-					m_spellcheck[i] = false;
+				}
+
+				if(timer_quake == 32)
+					timer_quake = 0;
+			}
+
+			if(timer_blastNova == 33)
+			{
+				_unit->SendChatMessageAlternateEntry(17257, CHAT_MSG_MONSTER_EMOTE, LANG_UNIVERSAL, " begins to cast Blast Nova!");
+			}
+			if(timer_blastNova > 33 && _unit->GetCurrentSpell() == NULL && !aura)
+			{
+				_unit->GetAIInterface()->StopMovement(3000);
+				_unit->setAttackTimer(3000, false);
+
+				_unit->CastSpell(_unit, dbcSpell.LookupEntry(BLAST_NOVA), false);
+
+				timer_blastNova = 0;
+				timer_quake = 0;
+				return;
+			}
+
+			if(timer_caveIn && (timer_caveIn != 1 || (_unit->GetCurrentSpell() == NULL && timer_caveIn == 1 && !aura)))
+			{
+				timer_caveIn++;
+				if(timer_caveIn == 2)
+				{
+					_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "I will not be taken so easily. Let the walls of this prison tremble... and FALL!!!");
+					_unit->PlaySoundToSet(10257);
+
+					_unit->GetAIInterface()->StopMovement(2000);
+					_unit->setAttackTimer(2000, false);
+
+					_unit->CastSpell(_unit, dbcSpell.LookupEntry(CAMERA_SHAKE), true);
 					return;
 				}
 
-				uint32 t = (uint32)time(NULL);
-				if(val > comulativeperc && val <= (comulativeperc + spells[i].perctrigger) && t > spells[i].casttime)
+				if(timer_caveIn == 3)
 				{
-					_unit->setAttackTimer(spells[i].attackstoptimer, false);
-					spells[i].casttime = t + spells[i].cooldown;
-					m_spellcheck[i] = true;
-				}
-				comulativeperc += spells[i].perctrigger;
-			}
-        }
-    }
-
-	void CastSpellOnRandomTarget(uint32 i, float mindist2cast, float maxdist2cast, int minhp2cast, int maxhp2cast)
-	{
-		if (!maxdist2cast) maxdist2cast = 100.0f;
-		if (!maxhp2cast) maxhp2cast = 100;
-
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
-        {
-			std::vector<Unit*> TargetTable;		/* From M4ksiu - Big THX to Capt who helped me with std stuff to make it simple and fully working <3 */
-												/* If anyone wants to use this function, then leave this note!										 */
-			for(set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); ++itr) 
-			{ 
-				if (((spells[i].targettype == TARGET_RANDOM_FRIEND && isFriendly(_unit, (*itr))) || (spells[i].targettype != TARGET_RANDOM_FRIEND && isHostile(_unit, (*itr)) && (*itr) != _unit)) && (*itr)->IsUnit()) // isAttackable(_unit, (*itr)) && 
-				{
-					Unit* RandomTarget = NULL;
-					RandomTarget = TO_UNIT(*itr);
-
-					if (RandomTarget->isAlive() && _unit->GetDistance2dSq(RandomTarget) >= mindist2cast*mindist2cast && _unit->GetDistance2dSq(RandomTarget) <= maxdist2cast*maxdist2cast && ((RandomTarget->GetHealthPct() >= minhp2cast && RandomTarget->GetHealthPct() <= maxhp2cast && spells[i].targettype == TARGET_RANDOM_FRIEND) || (_unit->GetAIInterface()->getThreatByPtr(RandomTarget) > 0 && isHostile(_unit, RandomTarget))))
+					GameObject*  Gate = NULL;
+					for(int i = 0; i < 6; i++)
 					{
-						TargetTable.push_back(RandomTarget);
-					} 
-				} 
+						Gate = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(Columns[i].x, Columns[i].y, Columns[i].z, 184634 + i);
+						if(Gate)
+							Gate->SetState(0);
+					}
+
+					Gate = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(0.0f, 0.0f, 0.0f, 184653);
+					if(Gate)
+						Gate->SetState(0);
+				}
+
+				if(timer_caveIn == 5)
+				{
+					for(int i = 0; i < 6; i++)
+					{
+						Unit* Trigger = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(CaveInPos[i].x, CaveInPos[i].y, CaveInPos[i].z, 17474);
+						if(Trigger)
+						{
+							Trigger->CastSpellAoF(CaveInPos[i].x, CaveInPos[i].y, CaveInPos[i].z, spells[5].info, spells[5].instant);
+						}
+					}
+
+					timer_caveIn = 0;
+				}
 			}
 
-			if (_unit->GetHealthPct() >= minhp2cast && _unit->GetHealthPct() <= maxhp2cast && spells[i].targettype == TARGET_RANDOM_FRIEND)
-				TargetTable.push_back(_unit);
-
-			if (!TargetTable.size())
-				return;
-
-			size_t RandTarget = rand()%TargetTable.size();
-
-			Unit*  RTarget = TargetTable[RandTarget];
-
-			if (!RTarget)
-				return;
-
-			switch (spells[i].targettype)
+			if(timer_enrage > 667 && _unit->GetCurrentSpell() == NULL && !aura)
 			{
-			case TARGET_RANDOM_FRIEND:
-			case TARGET_RANDOM_SINGLE:
-				_unit->CastSpell(RTarget, spells[i].info, spells[i].instant); break;
-			case TARGET_RANDOM_DESTINATION:
-				_unit->CastSpellAoF(RTarget->GetPositionX(), RTarget->GetPositionY(), RTarget->GetPositionZ(), spells[i].info, spells[i].instant); break;
+				_unit->CastSpell(_unit, dbcSpell.LookupEntry(ENRAGE), true);
+
+				timer_enrage = 0;
+				//return;
 			}
 
-			TargetTable.clear();
+			if(!aura)
+			{
+				float val = RandomFloat(100.0f);
+				SpellCast(val);
+			}
 		}
-	}
 
-protected:
+		void SpellCast(float val)
+		{
+			if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
+			{
+				float comulativeperc = 0;
+				Unit* target = NULL;
+				for(int i = 0; i < nrspells; i++)
+				{
+					if(!spells[i].perctrigger) continue;
 
-	int nrspells;
-	int timer_quake;
-	int timer_enrage;
-	int timer_caveIn;
-	int timer_blastNova;
+					if(m_spellcheck[i])
+					{
+						target = _unit->GetAIInterface()->getNextTarget();
+						switch(spells[i].targettype)
+						{
+							case TARGET_SELF:
+							case TARGET_VARIOUS:
+								_unit->CastSpell(_unit, spells[i].info, spells[i].instant);
+								break;
+							case TARGET_ATTACKING:
+								_unit->CastSpell(target, spells[i].info, spells[i].instant);
+								break;
+							case TARGET_DESTINATION:
+								_unit->CastSpellAoF(target->GetPositionX(), target->GetPositionY(), target->GetPositionZ(), spells[i].info, spells[i].instant);
+								break;
+							case TARGET_RANDOM_FRIEND:
+							case TARGET_RANDOM_SINGLE:
+							case TARGET_RANDOM_DESTINATION:
+								CastSpellOnRandomTarget(i, spells[i].mindist2cast, spells[i].maxdist2cast, spells[i].minhp2cast, spells[i].maxhp2cast);
+								break;
+						}
+						m_spellcheck[i] = false;
+						return;
+					}
 
-	bool PhaseSwitch;
+					uint32 t = (uint32)time(NULL);
+					if(val > comulativeperc && val <= (comulativeperc + spells[i].perctrigger) && t > spells[i].casttime)
+					{
+						_unit->setAttackTimer(spells[i].attackstoptimer, false);
+						spells[i].casttime = t + spells[i].cooldown;
+						m_spellcheck[i] = true;
+					}
+					comulativeperc += spells[i].perctrigger;
+				}
+			}
+		}
+
+		void CastSpellOnRandomTarget(uint32 i, float mindist2cast, float maxdist2cast, int minhp2cast, int maxhp2cast)
+		{
+			if(!maxdist2cast) maxdist2cast = 100.0f;
+			if(!maxhp2cast) maxhp2cast = 100;
+
+			if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->getNextTarget())
+			{
+				std::vector<Unit*> TargetTable;		/* From M4ksiu - Big THX to Capt who helped me with std stuff to make it simple and fully working <3 */
+				/* If anyone wants to use this function, then leave this note!										 */
+				for(set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); ++itr)
+				{
+					if(((spells[i].targettype == TARGET_RANDOM_FRIEND && isFriendly(_unit, (*itr))) || (spells[i].targettype != TARGET_RANDOM_FRIEND && isHostile(_unit, (*itr)) && (*itr) != _unit)) && (*itr)->IsUnit())  // isAttackable(_unit, (*itr)) &&
+					{
+						Unit* RandomTarget = NULL;
+						RandomTarget = TO_UNIT(*itr);
+
+						if(RandomTarget->isAlive() && _unit->GetDistance2dSq(RandomTarget) >= mindist2cast * mindist2cast && _unit->GetDistance2dSq(RandomTarget) <= maxdist2cast * maxdist2cast && ((RandomTarget->GetHealthPct() >= minhp2cast && RandomTarget->GetHealthPct() <= maxhp2cast && spells[i].targettype == TARGET_RANDOM_FRIEND) || (_unit->GetAIInterface()->getThreatByPtr(RandomTarget) > 0 && isHostile(_unit, RandomTarget))))
+						{
+							TargetTable.push_back(RandomTarget);
+						}
+					}
+				}
+
+				if(_unit->GetHealthPct() >= minhp2cast && _unit->GetHealthPct() <= maxhp2cast && spells[i].targettype == TARGET_RANDOM_FRIEND)
+					TargetTable.push_back(_unit);
+
+				if(!TargetTable.size())
+					return;
+
+				size_t RandTarget = rand() % TargetTable.size();
+
+				Unit*  RTarget = TargetTable[RandTarget];
+
+				if(!RTarget)
+					return;
+
+				switch(spells[i].targettype)
+				{
+					case TARGET_RANDOM_FRIEND:
+					case TARGET_RANDOM_SINGLE:
+						_unit->CastSpell(RTarget, spells[i].info, spells[i].instant);
+						break;
+					case TARGET_RANDOM_DESTINATION:
+						_unit->CastSpellAoF(RTarget->GetPositionX(), RTarget->GetPositionY(), RTarget->GetPositionZ(), spells[i].info, spells[i].instant);
+						break;
+				}
+
+				TargetTable.clear();
+			}
+		}
+
+	protected:
+
+		int nrspells;
+		int timer_quake;
+		int timer_enrage;
+		int timer_caveIn;
+		int timer_blastNova;
+
+		bool PhaseSwitch;
 };
 
-void SetupMagtheridonsLair(ScriptMgr * mgr)
+void SetupMagtheridonsLair(ScriptMgr* mgr)
 {
 	mgr->register_gameobject_script(MANTICRON_CUBE, &ManticronCubeGO::Create);
 
@@ -1666,5 +1691,5 @@ void SetupMagtheridonsLair(ScriptMgr * mgr)
 	mgr->register_creature_script(CN_HELLFIRE_WARDER, &HellfireWarderAI::Create);
 	mgr->register_creature_script(CN_HELLFIRE_CHANNELER, &HellfireChannelerAI::Create);
 	mgr->register_creature_script(CN_BURNING_ABYSSAL, &BurningAbyssalAI::Create);
-	mgr->register_creature_script(CN_MAGTHERIDON, &MagtheridonAI::Create);	
+	mgr->register_creature_script(CN_MAGTHERIDON, &MagtheridonAI::Create);
 }

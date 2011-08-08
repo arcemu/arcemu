@@ -20,24 +20,24 @@
 
 #include "StdAfx.h"
 
-trainertype trainer_types[TRAINER_TYPE_MAX] = 
+trainertype trainer_types[TRAINER_TYPE_MAX] =
 {
-{	"Warrior",			   0 },
-{	"Paladin",			   0 },
-{	"Rogue"  ,			   0 },
-{	"Warlock",			   0 },
-{	"Mage",				  0 },
-{	"Shaman",				0 },
-{	"Priest",				0 },
-{	"Hunter",				0 },
-{	"Druid",				 0 },
-{	"Leatherwork",		   2 },
-{	"Skinning",			  2 },
-{	"Fishing",			   2 },
-{	"First Aid",			 2 },
-{	"Physician",			 2 },
-{	"Engineer",			  2 },
-{	"Weapon Master",		 0 },
+	{	"Warrior",			   0 },
+	{	"Paladin",			   0 },
+	{	"Rogue"  ,			   0 },
+	{	"Warlock",			   0 },
+	{	"Mage",				  0 },
+	{	"Shaman",				0 },
+	{	"Priest",				0 },
+	{	"Hunter",				0 },
+	{	"Druid",				 0 },
+	{	"Leatherwork",		   2 },
+	{	"Skinning",			  2 },
+	{	"Fishing",			   2 },
+	{	"First Aid",			 2 },
+	{	"Physician",			 2 },
+	{	"Engineer",			  2 },
+	{	"Weapon Master",		 0 },
 };
 
 
@@ -45,13 +45,13 @@ trainertype trainer_types[TRAINER_TYPE_MAX] =
 //////////////////////////////////////////////////////////////
 /// This function handles MSG_TABARDVENDOR_ACTIVATE:
 //////////////////////////////////////////////////////////////
-void WorldSession::HandleTabardVendorActivateOpcode( WorldPacket & recv_data )
+void WorldSession::HandleTabardVendorActivateOpcode(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_ASSERT;
 
 	uint64 guid;
 	recv_data >> guid;
-	Creature *pCreature = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
+	Creature* pCreature = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
 	if(!pCreature) return;
 
 	SendTabardHelp(pCreature);
@@ -60,23 +60,23 @@ void WorldSession::HandleTabardVendorActivateOpcode( WorldPacket & recv_data )
 void WorldSession::SendTabardHelp(Creature* pCreature)
 {
 	WorldPacket data(8);
-	data.Initialize( MSG_TABARDVENDOR_ACTIVATE );
+	data.Initialize(MSG_TABARDVENDOR_ACTIVATE);
 	data << pCreature->GetGUID();
-	SendPacket( &data );
+	SendPacket(&data);
 }
 
 
 //////////////////////////////////////////////////////////////
 /// This function handles CMSG_BANKER_ACTIVATE:
 //////////////////////////////////////////////////////////////
-void WorldSession::HandleBankerActivateOpcode( WorldPacket & recv_data )
+void WorldSession::HandleBankerActivateOpcode(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_ASSERT;
 
 	uint64 guid;
 	recv_data >> guid;
 
-	Creature *pCreature = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
+	Creature* pCreature = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
 	if(!pCreature) return;
 
 	SendBankerList(pCreature);
@@ -86,9 +86,9 @@ void WorldSession::SendBankerList(Creature* pCreature)
 {
 
 	WorldPacket data(8);
-	data.Initialize( SMSG_SHOW_BANK );
+	data.Initialize(SMSG_SHOW_BANK);
 	data << pCreature->GetGUID();
-	SendPacket( &data );
+	SendPacket(&data);
 }
 
 //////////////////////////////////////////////////////////////
@@ -97,7 +97,7 @@ void WorldSession::SendBankerList(Creature* pCreature)
 //NOTE: we select prerequirements for spell that TEACHES you
 //not by spell that you learn!
 
-void WorldSession::HandleTrainerListOpcode( WorldPacket & recv_data )
+void WorldSession::HandleTrainerListOpcode(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_ASSERT;
 
@@ -113,19 +113,19 @@ void WorldSession::HandleTrainerListOpcode( WorldPacket & recv_data )
 
 void WorldSession::SendTrainerList(Creature* pCreature)
 {
-	Trainer * pTrainer = pCreature->GetTrainer();
+	Trainer* pTrainer = pCreature->GetTrainer();
 	//if(pTrainer == 0 || !CanTrainAt(_player, pTrainer)) return;
 	if(pTrainer == NULL)
 		return;
 
-	if(! _player->CanTrainAt(pTrainer) )
-		Arcemu::Gossip::Menu::SendSimpleMenu(pCreature->GetGUID(), pTrainer->Cannot_Train_GossipTextId, GetPlayer() );
+	if(! _player->CanTrainAt(pTrainer))
+		Arcemu::Gossip::Menu::SendSimpleMenu(pCreature->GetGUID(), pTrainer->Cannot_Train_GossipTextId, GetPlayer());
 	else
 	{
 		WorldPacket data(SMSG_TRAINER_LIST, 5000);
-		TrainerSpell * pSpell;
+		TrainerSpell* pSpell;
 		uint32 Spacer = 0;
-		uint32 Count= 0;
+		uint32 Count = 0;
 		uint8 Status;
 		string Text;
 
@@ -137,9 +137,9 @@ void WorldSession::SendTrainerList(Creature* pCreature)
 		{
 			pSpell = &(*itr);
 			Status = TrainerGetSpellStatus(pSpell);
-			if( pSpell->pCastRealSpell != NULL )
+			if(pSpell->pCastRealSpell != NULL)
 				data << pSpell->pCastSpell->Id;
-			else if( pSpell->pLearnSpell )
+			else if(pSpell->pLearnSpell)
 				data << pSpell->pLearnSpell->Id;
 			else
 				continue;
@@ -159,7 +159,7 @@ void WorldSession::SendTrainerList(Creature* pCreature)
 
 		*(uint32*)&data.contents()[12] = Count;
 
-		if ( stricmp(pTrainer->UIMessage,"DMSG") == 0 )
+		if(stricmp(pTrainer->UIMessage, "DMSG") == 0)
 			data << _player->GetSession()->LocalizedWorldSrv(37);
 		else
 			data << pTrainer->UIMessage;
@@ -168,107 +168,108 @@ void WorldSession::SendTrainerList(Creature* pCreature)
 }
 
 
-void WorldSession::HandleTrainerBuySpellOpcode(WorldPacket& recvPacket)
+void WorldSession::HandleTrainerBuySpellOpcode(WorldPacket & recvPacket)
 {
 	CHECK_INWORLD_ASSERT;
 
-    ////////////////////////////////////////////////////////////////////////////////
-    // As of 3.1.3 the client sends this when buying a spell
-    //
-    // {CLIENT} Packet: (0x01B2) CMSG_TRAINER_BUY_SPELL PacketSize = 12 TimeStamp = 39035859
-    // A0 85 00 06 7A 00 30 F1 2D 85 00 00 
-    //
-    // Structure:
-    // uint64 GUID     - GUID of the trainer
-    // uint32 spellid  - ID of the spell being bought
-    ////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////
+	// As of 3.1.3 the client sends this when buying a spell
+	//
+	// {CLIENT} Packet: (0x01B2) CMSG_TRAINER_BUY_SPELL PacketSize = 12 TimeStamp = 39035859
+	// A0 85 00 06 7A 00 30 F1 2D 85 00 00
+	//
+	// Structure:
+	// uint64 GUID     - GUID of the trainer
+	// uint32 spellid  - ID of the spell being bought
+	////////////////////////////////////////////////////////////////////////////////
 
 	uint64 Guid;
 	uint32 TeachingSpellID;
 
 	recvPacket >> Guid >> TeachingSpellID;
-	Creature *pCreature = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(Guid));
-	
-/////////////////////////////////////////// Checks //////////////////////////////////////
-    
-    if(pCreature == NULL) return;
+	Creature* pCreature = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(Guid));
 
-	Trainer *pTrainer = pCreature->GetTrainer();
+/////////////////////////////////////////// Checks //////////////////////////////////////
+
+	if(pCreature == NULL) return;
+
+	Trainer* pTrainer = pCreature->GetTrainer();
 	if(pTrainer == 0)
 		return;
 
-    // Check if the trainer offers that spell
-	TrainerSpell * pSpell = NULL;
+	// Check if the trainer offers that spell
+	TrainerSpell* pSpell = NULL;
 	for(vector<TrainerSpell>::iterator itr = pTrainer->Spells.begin(); itr != pTrainer->Spells.end(); ++itr)
 	{
-		if( ( itr->pCastSpell && itr->pCastSpell->Id == TeachingSpellID ) ||
-			( itr->pLearnSpell && itr->pLearnSpell->Id == TeachingSpellID ) )
+		if((itr->pCastSpell && itr->pCastSpell->Id == TeachingSpellID) ||
+		        (itr->pLearnSpell && itr->pLearnSpell->Id == TeachingSpellID))
 		{
 			pSpell = &(*itr);
 		}
 	}
-	
-    // If the trainer doesn't offer it, this is probably some packet mangling
-    if(pSpell == NULL){
-        // Disconnecting the player
-		sCheatLog.writefromsession(this, "Player %s tried learning none-obtainable spell - Possibly using WPE", _player->GetName() );
-        this->Disconnect();
-		return;
-    }
 
-    // We can't learn it
-	if(TrainerGetSpellStatus(pSpell) > 0) 
-        return;
+	// If the trainer doesn't offer it, this is probably some packet mangling
+	if(pSpell == NULL)
+	{
+		// Disconnecting the player
+		sCheatLog.writefromsession(this, "Player %s tried learning none-obtainable spell - Possibly using WPE", _player->GetName());
+		this->Disconnect();
+		return;
+	}
+
+	// We can't learn it
+	if(TrainerGetSpellStatus(pSpell) > 0)
+		return;
 
 //////////////////////////////////////////// Teaching ////////////////////////////////////
-	
-	_player->ModGold( -(int32)pSpell->Cost );
 
-	if( pSpell->pCastSpell)
+	_player->ModGold(-(int32)pSpell->Cost);
+
+	if(pSpell->pCastSpell)
 	{
-        _player->CastSpell( _player, pSpell->pCastSpell->Id, true );
-    }
-    else
+		_player->CastSpell(_player, pSpell->pCastSpell->Id, true);
+	}
+	else
 	{
 /////////////////////////////////////// Showing the learning spellvisuals//////////////
-            _player->SendPlaySpellVisual( pCreature->GetGUID(), 0x5B3 );
-            _player->SendPlaySpellVisual( _player->GetGUID(), 0x16A );
+		_player->SendPlaySpellVisual(pCreature->GetGUID(), 0x5B3);
+		_player->SendPlaySpellVisual(_player->GetGUID(), 0x16A);
 ///////////////////////////////////////////////////////////////////////////////////////
-        
-        // add the spell itself
-		_player->addSpell( pSpell->pLearnSpell->Id );
-    }
+
+		// add the spell itself
+		_player->addSpell(pSpell->pLearnSpell->Id);
+	}
 
 	if(pSpell->DeleteSpell)
 	{
 		// Remove old spell.
-		if( pSpell->pLearnSpell )
+		if(pSpell->pLearnSpell)
 			_player->removeSpell(pSpell->DeleteSpell, true, true, pSpell->pLearnSpell->Id);
 		else if(pSpell->pCastSpell)
 			_player->removeSpell(pSpell->DeleteSpell, true, true, pSpell->pCastRealSpell->Id);
 		else
-			_player->removeSpell(pSpell->DeleteSpell,true,false,0);
+			_player->removeSpell(pSpell->DeleteSpell, true, false, 0);
 	}
 
 	_player->_UpdateSkillFields();
 
-    /////////////////////////////////////////////////////////////////////////////////
-    // As of 3.1.3 this is sent after buying the spell
-    // 
-    //
-    // {SERVER} Packet: (0x01B3) SMSG_TRAINER_BUY_SUCCEEDED PacketSize = 12 TimeStamp = 39035968
-    // A0 85 00 06 7A 00 30 F1 2D 85 00 00 
-    // 
-    // structure:
-    //
-    // uint64 GUID    -  GUID of the trainer
-    // uint32 spellid -  ID of the spell we bought
-    //////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////
+	// As of 3.1.3 this is sent after buying the spell
+	//
+	//
+	// {SERVER} Packet: (0x01B3) SMSG_TRAINER_BUY_SUCCEEDED PacketSize = 12 TimeStamp = 39035968
+	// A0 85 00 06 7A 00 30 F1 2D 85 00 00
+	//
+	// structure:
+	//
+	// uint64 GUID    -  GUID of the trainer
+	// uint32 spellid -  ID of the spell we bought
+	//////////////////////////////////////////////////////////////////////////////////
 
-    WorldPacket data( SMSG_TRAINER_BUY_SUCCEEDED, 12 );
+	WorldPacket data(SMSG_TRAINER_BUY_SUCCEEDED, 12);
 
-    data << uint64( Guid ) << uint32( TeachingSpellID );
-    this->SendPacket( &data );
+	data << uint64(Guid) << uint32(TeachingSpellID);
+	this->SendPacket(&data);
 }
 
 uint8 WorldSession::TrainerGetSpellStatus(TrainerSpell* pSpell)
@@ -276,21 +277,21 @@ uint8 WorldSession::TrainerGetSpellStatus(TrainerSpell* pSpell)
 	if(!pSpell->pCastSpell && !pSpell->pLearnSpell)
 		return TRAINER_STATUS_NOT_LEARNABLE;
 
-	if( pSpell->pCastRealSpell && (_player->HasSpell(pSpell->pCastRealSpell->Id) || _player->HasDeletedSpell(pSpell->pCastRealSpell->Id)) )
+	if(pSpell->pCastRealSpell && (_player->HasSpell(pSpell->pCastRealSpell->Id) || _player->HasDeletedSpell(pSpell->pCastRealSpell->Id)))
 		return TRAINER_STATUS_ALREADY_HAVE;
 
-	if( pSpell->pLearnSpell && (_player->HasSpell(pSpell->pLearnSpell->Id) || _player->HasDeletedSpell(pSpell->pLearnSpell->Id)) )
+	if(pSpell->pLearnSpell && (_player->HasSpell(pSpell->pLearnSpell->Id) || _player->HasDeletedSpell(pSpell->pLearnSpell->Id)))
 		return TRAINER_STATUS_ALREADY_HAVE;
 
 	if(pSpell->DeleteSpell && _player->HasDeletedSpell(pSpell->DeleteSpell))
 		return TRAINER_STATUS_ALREADY_HAVE;
 
-	if(	(pSpell->RequiredLevel && _player->getLevel()<pSpell->RequiredLevel)
-		|| (pSpell->RequiredSpell && !_player->HasSpell(pSpell->RequiredSpell))
-		|| (pSpell->Cost && !_player->HasGold(pSpell->Cost))
-		|| (pSpell->RequiredSkillLine && _player->_GetSkillLineCurrent(pSpell->RequiredSkillLine,true) < pSpell->RequiredSkillLineValue)
-		|| (pSpell->IsProfession && _player->GetPrimaryProfessionPoints() == 0)//check level 1 professions if we can learn a new profession
-		)
+	if((pSpell->RequiredLevel && _player->getLevel() < pSpell->RequiredLevel)
+	        || (pSpell->RequiredSpell && !_player->HasSpell(pSpell->RequiredSpell))
+	        || (pSpell->Cost && !_player->HasGold(pSpell->Cost))
+	        || (pSpell->RequiredSkillLine && _player->_GetSkillLineCurrent(pSpell->RequiredSkillLine, true) < pSpell->RequiredSkillLineValue)
+	        || (pSpell->IsProfession && _player->GetPrimaryProfessionPoints() == 0)//check level 1 professions if we can learn a new profession
+	  )
 		return TRAINER_STATUS_NOT_LEARNABLE;
 	return TRAINER_STATUS_LEARNABLE;
 }
@@ -298,14 +299,14 @@ uint8 WorldSession::TrainerGetSpellStatus(TrainerSpell* pSpell)
 //////////////////////////////////////////////////////////////
 /// This function handles CMSG_PETITION_SHOWLIST:
 //////////////////////////////////////////////////////////////
-void WorldSession::HandleCharterShowListOpcode( WorldPacket & recv_data )
+void WorldSession::HandleCharterShowListOpcode(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_RETURN
 
 	uint64 guid;
 	recv_data >> guid;
 
-	Creature *pCreature = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
+	Creature* pCreature = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
 	if(!pCreature) return;
 
 	SendCharterRequest(pCreature);
@@ -313,16 +314,16 @@ void WorldSession::HandleCharterShowListOpcode( WorldPacket & recv_data )
 
 void WorldSession::SendCharterRequest(Creature* pCreature)
 {
-	if( !pCreature )
+	if(!pCreature)
 		return;
 
-	if( !pCreature->isTabardDesigner() )
+	if(!pCreature->isTabardDesigner())
 	{
 		WorldPacket data(SMSG_PETITION_SHOWLIST, 81);
 
 		data << pCreature->GetGUID();
 		data << uint8(0x03); //number of charter types in packet
-		
+
 		//2v2 arena charters start
 		data << uint32(0x01); //petition number (in packet)
 		data << uint32(ARENA_TEAM_CHARTER_2v2); //itemid
@@ -331,7 +332,7 @@ void WorldSession::SendCharterRequest(Creature* pCreature)
 		data << uint32(0x01); //unknown, (charter type? seems to be 0x0 for guilds and 0x1 for arena charters)
 		data << uint32(0x01); // Signatures required (besides petition owner)
 		//2v2 arena charters end
-		
+
 		//3v3 arena charters start
 		data << uint32(0x02); //petition number (in packet)
 		data << uint32(ARENA_TEAM_CHARTER_3v3); //itemid
@@ -340,7 +341,7 @@ void WorldSession::SendCharterRequest(Creature* pCreature)
 		data << uint32(0x01);
 		data << uint32(0x02); // Signatures required (besides petition owner)
 		//3v3 arena charters end
-		
+
 		//5v5 arena charters start
 		data << uint32(0x03); //petition number (in packet)
 		data << uint32(ARENA_TEAM_CHARTER_5v5); //itemid
@@ -349,30 +350,30 @@ void WorldSession::SendCharterRequest(Creature* pCreature)
 		data << uint32(0x01);
 		data << uint32(0x04); // Signatures required (besides petition owner)
 		//5v5 arena charters end
-		
+
 		SendPacket(&data);
 	}
 	else
 	{
 		WorldPacket data(33);
-		data.Initialize( SMSG_PETITION_SHOWLIST );
+		data.Initialize(SMSG_PETITION_SHOWLIST);
 		data << pCreature->GetGUID();
 		data << uint8(1);                  // num charters in packet (although appears to only turn off the cost display, maybe due to packet not being parsed /shrug)
 		data << uint32(1);                // charter 1 in packet
 		data << uint32(0x16E7);  // ItemId of the guild charter
-	    data << uint32(0x3F21);  // item displayid
+		data << uint32(0x3F21);  // item displayid
 
 		data << uint32(1000);      // charter price
 		data << uint32(0);                // unknown, maybe charter type
 		data << uint32(9);                // amount of unique players needed to sign the charter
-		SendPacket( &data );
+		SendPacket(&data);
 	}
 }
 
 //////////////////////////////////////////////////////////////
 /// This function handles MSG_AUCTION_HELLO:
 //////////////////////////////////////////////////////////////
-void WorldSession::HandleAuctionHelloOpcode( WorldPacket & recv_data )
+void WorldSession::HandleAuctionHelloOpcode(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_RETURN
 
@@ -398,20 +399,20 @@ void WorldSession::SendAuctionList(Creature* auctioneer)
 	data << uint64(auctioneer->GetGUID());
 	data << uint32(AH->GetID());
 	data << uint8(AH->enabled ? 1 : 0); // Alleycat - Need to correct this properly.
-	SendPacket( &data );
+	SendPacket(&data);
 }
 
 //////////////////////////////////////////////////////////////
 /// This function handles CMSG_GOSSIP_HELLO:
 //////////////////////////////////////////////////////////////
-void WorldSession::HandleGossipHelloOpcode( WorldPacket & recv_data )
+void WorldSession::HandleGossipHelloOpcode(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_RETURN
 
 	uint64 guid;
 
 	recv_data >> guid;
-	Creature *qst_giver = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
+	Creature* qst_giver = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
 
 	if(qst_giver != NULL)
 	{
@@ -420,17 +421,17 @@ void WorldSession::HandleGossipHelloOpcode( WorldPacket & recv_data )
 			qst_giver->GetAIInterface()->StopMovement(30000);
 
 		// unstealth meh
-		if( _player->IsStealth() )
-			_player->RemoveAllAuraType( SPELL_AURA_MOD_STEALTH );
+		if(_player->IsStealth())
+			_player->RemoveAllAuraType(SPELL_AURA_MOD_STEALTH);
 
 		// reputation
 		_player->Reputation_OnTalk(qst_giver->m_factionDBC);
 
-		LOG_DEBUG( "WORLD: Received CMSG_GOSSIP_HELLO from %u",Arcemu::Util::GUID_LOPART( guid ) );
+		LOG_DEBUG("WORLD: Received CMSG_GOSSIP_HELLO from %u", Arcemu::Util::GUID_LOPART(guid));
 
-		Arcemu::Gossip::Script * script = Arcemu::Gossip::Script::GetInterface( qst_giver );
+		Arcemu::Gossip::Script* script = Arcemu::Gossip::Script::GetInterface(qst_giver);
 		if(script != NULL)
-			script->OnHello(qst_giver, GetPlayer() );
+			script->OnHello(qst_giver, GetPlayer());
 	}
 
 	/*GossipScript * Script = qst_giver->GetCreatureInfo()->gossip_script;
@@ -455,7 +456,7 @@ void WorldSession::HandleGossipHelloOpcode( WorldPacket & recv_data )
 			if (status >= QMGR_QUEST_CHAT)
 			{
 				if (!ql.count((*it)->qst->id) )
-				{	
+				{
 					ql.insert((*it)->qst->id);
 					count++;
 
@@ -509,7 +510,7 @@ void WorldSession::HandleGossipHelloOpcode( WorldPacket & recv_data )
 //////////////////////////////////////////////////////////////
 /// This function handles CMSG_GOSSIP_SELECT_OPTION:
 //////////////////////////////////////////////////////////////
-void WorldSession::HandleGossipSelectOptionOpcode( WorldPacket & recv_data )
+void WorldSession::HandleGossipSelectOptionOpcode(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_RETURN
 
@@ -519,103 +520,103 @@ void WorldSession::HandleGossipSelectOptionOpcode( WorldPacket & recv_data )
 
 	recv_data >> guid >> unk24 >> option;
 
-	LOG_DETAIL("WORLD: CMSG_GOSSIP_SELECT_OPTION Option %i Guid %.8X", option, guid );
-	Arcemu::Gossip::Script * script = NULL;
+	LOG_DETAIL("WORLD: CMSG_GOSSIP_SELECT_OPTION Option %i Guid %.8X", option, guid);
+	Arcemu::Gossip::Script* script = NULL;
 	uint32 guidtype = GET_TYPE_FROM_GUID(guid);
 
-	Object * qst_giver;
-	if(guidtype == HIGHGUID_TYPE_ITEM )	//Item objects are retrieved differently.
+	Object* qst_giver;
+	if(guidtype == HIGHGUID_TYPE_ITEM)	//Item objects are retrieved differently.
 	{
-		qst_giver = GetPlayer()->GetItemInterface()->GetItemByGUID( guid );
+		qst_giver = GetPlayer()->GetItemInterface()->GetItemByGUID(guid);
 		if(qst_giver != NULL)
-			script = Arcemu::Gossip::Script::GetInterface( TO_ITEM(qst_giver) );
+			script = Arcemu::Gossip::Script::GetInterface(TO_ITEM(qst_giver));
 	}
 	else
 		qst_giver = GetPlayer()->GetMapMgr()->_GetObject(guid);
 	if(qst_giver != NULL)
 	{
-		if(guidtype==HIGHGUID_TYPE_UNIT)
-			script = Arcemu::Gossip::Script::GetInterface( TO_CREATURE(qst_giver) );
-		else if(guidtype==HIGHGUID_TYPE_GAMEOBJECT)
-			script = Arcemu::Gossip::Script::GetInterface( TO_GAMEOBJECT(qst_giver) );
+		if(guidtype == HIGHGUID_TYPE_UNIT)
+			script = Arcemu::Gossip::Script::GetInterface(TO_CREATURE(qst_giver));
+		else if(guidtype == HIGHGUID_TYPE_GAMEOBJECT)
+			script = Arcemu::Gossip::Script::GetInterface(TO_GAMEOBJECT(qst_giver));
 	}
 	if(script != NULL)
 	{
 		string str;
-		if(recv_data.rpos()!=recv_data.wpos() )
+		if(recv_data.rpos() != recv_data.wpos())
 			recv_data >> str;
-		if(str.length() > 0  )
-			script->OnSelectOption(qst_giver, GetPlayer() , option, str.c_str() );
+		if(str.length() > 0)
+			script->OnSelectOption(qst_giver, GetPlayer() , option, str.c_str());
 		else
-			script->OnSelectOption(qst_giver, GetPlayer() , option, NULL );
+			script->OnSelectOption(qst_giver, GetPlayer() , option, NULL);
 	}
 }
 
 //////////////////////////////////////////////////////////////
 /// This function handles CMSG_SPIRIT_HEALER_ACTIVATE:
 //////////////////////////////////////////////////////////////
-void WorldSession::HandleSpiritHealerActivateOpcode( WorldPacket & recv_data )
+void WorldSession::HandleSpiritHealerActivateOpcode(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_RETURN
 
-	if( !_player->IsDead() )
+	if(!_player->IsDead())
 		return;
 
-	GetPlayer( )->DeathDurabilityLoss(0.25);
-	GetPlayer( )->ResurrectPlayer();
+	GetPlayer()->DeathDurabilityLoss(0.25);
+	GetPlayer()->ResurrectPlayer();
 
 	if(_player->getLevel() > 10)
 	{
 		Aura* aur = GetPlayer()->FindAura(15007);
-		
-		if( aur == NULL ) // If the player already have the aura, just extend it.
+
+		if(aur == NULL)   // If the player already have the aura, just extend it.
 		{
-			SpellEntry *spellInfo = dbcSpell.LookupEntry( 15007 );//resurrection sickness
+			SpellEntry* spellInfo = dbcSpell.LookupEntry(15007);  //resurrection sickness
 			SpellCastTargets targets;
 			targets.m_unitTarget = GetPlayer()->GetGUID();
-			Spell * sp = sSpellFactoryMgr.NewSpell(_player,spellInfo,true,NULL);
+			Spell* sp = sSpellFactoryMgr.NewSpell(_player, spellInfo, true, NULL);
 			sp->prepare(&targets);
 		}
 
 		//calc new duration
-		int32 duration=600000; //10mins
+		int32 duration = 600000; //10mins
 
-		if (_player->getLevel() < 20)
-			duration=(_player->getLevel() - 10) * 60000;
+		if(_player->getLevel() < 20)
+			duration = (_player->getLevel() - 10) * 60000;
 
-			_player->SetAurDuration(15007,duration); //cebernic: change this to setaurduration() to be refreshed.
+		_player->SetAurDuration(15007, duration); //cebernic: change this to setaurduration() to be refreshed.
 	}
 
-	GetPlayer( )->SetHealth( GetPlayer()->GetMaxHealth()/2);
+	GetPlayer()->SetHealth(GetPlayer()->GetMaxHealth() / 2);
 }
 
 //////////////////////////////////////////////////////////////
 /// This function handles CMSG_NPC_TEXT_QUERY:
 //////////////////////////////////////////////////////////////
-void WorldSession::HandleNpcTextQueryOpcode( WorldPacket & recv_data )
+void WorldSession::HandleNpcTextQueryOpcode(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_RETURN
 
 	WorldPacket data;
 	uint32 textID;
 	uint64 targetGuid;
-	GossipText *pGossip;
+	GossipText* pGossip;
 
 	recv_data >> textID;
-	LOG_DETAIL("WORLD: CMSG_NPC_TEXT_QUERY ID '%u'", textID );
+	LOG_DETAIL("WORLD: CMSG_NPC_TEXT_QUERY ID '%u'", textID);
 
 	recv_data >> targetGuid;
-	GetPlayer()->SetTargetGUID(  targetGuid);
+	GetPlayer()->SetTargetGUID(targetGuid);
 
 	pGossip = NpcTextStorage.LookupEntry(textID);
-	LocalizedNpcText * lnc = (language>0) ? sLocalizationMgr.GetLocalizedNpcText(textID,language) : NULL;
+	LocalizedNpcText* lnc = (language > 0) ? sLocalizationMgr.GetLocalizedNpcText(textID, language) : NULL;
 
-	data.Initialize( SMSG_NPC_TEXT_UPDATE );
+	data.Initialize(SMSG_NPC_TEXT_UPDATE);
 	data << textID;
-	
+
 	if(pGossip)
 	{
-		data << float( 1.0f );		// Unknown
+		data << float(1.0f);		// Unknown
 		for(uint32 i = 0; i < 8; i++)
 		{
 			if(lnc)
@@ -634,10 +635,10 @@ void WorldSession::HandleNpcTextQueryOpcode( WorldPacket & recv_data )
 			for(uint32 e = 0; e < 6; e++)
 				data << uint32(pGossip->Texts[i].Emote[e]);
 
-			if(i!=7) data << uint32(0x00);	// don't append to last
+			if(i != 7) data << uint32(0x00);	// don't append to last
 		}
-	} 
-	else 
+	}
+	else
 	{
 		data << float(1.0f);		// unknown
 		data << _player->GetSession()->LocalizedWorldSrv(70);
@@ -647,7 +648,7 @@ void WorldSession::HandleNpcTextQueryOpcode( WorldPacket & recv_data )
 		for(uint32 e = 0; e < 6; e++)
 			data << uint32(0x00);
 
-		for(int i= 0;i<7;i++)
+		for(int i = 0; i < 7; i++)
 		{
 			data << uint32(0x00);
 			data << uint8(0x00) << uint8(0x00);
@@ -662,13 +663,13 @@ void WorldSession::HandleNpcTextQueryOpcode( WorldPacket & recv_data )
 	return;
 }
 
-void WorldSession::HandleBinderActivateOpcode( WorldPacket & recv_data )
+void WorldSession::HandleBinderActivateOpcode(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_RETURN;
 	uint64 guid;
 	recv_data >> guid;
 
-	Creature *pC = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
+	Creature* pC = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
 	if(!pC) return;
 
 	SendInnkeeperBind(pC);
@@ -718,11 +719,11 @@ void WorldSession::SendStabledPetList(uint64 npcguid)
 	data << uint8(_player->m_StableSlotCount);
 	for(std::map<uint32, PlayerPet*>::iterator itr = _player->m_Pets.begin(); itr != _player->m_Pets.end(); ++itr)
 	{
-		data << uint32( itr->first );			// pet no
-		data << uint32( itr->second->entry );	// entryid
-		data << uint32( itr->second->level );	// level
+		data << uint32(itr->first);			// pet no
+		data << uint32(itr->second->entry);	// entryid
+		data << uint32(itr->second->level);	// level
 		data << itr->second->name;			// name
-		if( itr->second->stablestate == STABLE_STATE_ACTIVE )
+		if(itr->second->stablestate == STABLE_STATE_ACTIVE)
 			data << uint8(STABLE_STATE_ACTIVE);
 		else
 		{

@@ -35,21 +35,21 @@
 
 enum TimeVariables
 {
-	TIME_SECOND = 1,
-	TIME_MINUTE = TIME_SECOND * 60,
-	TIME_HOUR   = TIME_MINUTE * 60,
-	TIME_DAY	= TIME_HOUR * 24,
-	TIME_MONTH	= TIME_DAY * 30,
-	TIME_YEAR	= TIME_MONTH * 12
+    TIME_SECOND = 1,
+    TIME_MINUTE = TIME_SECOND * 60,
+    TIME_HOUR   = TIME_MINUTE * 60,
+    TIME_DAY	= TIME_HOUR * 24,
+    TIME_MONTH	= TIME_DAY * 30,
+    TIME_YEAR	= TIME_MONTH * 12
 };
 
 enum MsTimeVariables
 {
-	MSTIME_SECOND = 1000,
-	MSTIME_6SECONDS = MSTIME_SECOND * 6,
-	MSTIME_MINUTE = MSTIME_SECOND * 60,
-	MSTIME_HOUR   = MSTIME_MINUTE * 60,
-	MSTIME_DAY	  = MSTIME_HOUR * 24
+    MSTIME_SECOND = 1000,
+    MSTIME_6SECONDS = MSTIME_SECOND * 6,
+    MSTIME_MINUTE = MSTIME_SECOND * 60,
+    MSTIME_HOUR   = MSTIME_MINUTE * 60,
+    MSTIME_DAY	  = MSTIME_HOUR * 24
 };
 
 #ifdef WIN32
@@ -94,7 +94,7 @@ enum MsTimeVariables
 
 #ifdef CONFIG_USE_SELECT
 #undef FD_SETSIZE
-#define FD_SETSIZE 2048 
+#define FD_SETSIZE 2048
 #endif
 
 #if defined( __WIN32__ ) || defined( WIN32 ) || defined( _WIN32 )
@@ -170,33 +170,33 @@ enum MsTimeVariables
 #endif
 
 #ifdef X64
-    #define ARCH "X64"
+#define ARCH "X64"
 #else
-    #define ARCH "X86"
+#define ARCH "X86"
 #endif
 
 
 #if PLATFORM == PLATFORM_WIN32
-    #define STRCASECMP stricmp
+#define STRCASECMP stricmp
 #else
-    #define STRCASECMP strcasecmp
+#define STRCASECMP strcasecmp
 #endif
 
 #if PLATFORM == PLATFORM_WIN32
-	#define ASYNC_NET
+#define ASYNC_NET
 #endif
 
 #ifdef USE_EPOLL
-	#define CONFIG_USE_EPOLL
+#define CONFIG_USE_EPOLL
 #endif
 #ifdef USE_KQUEUE
-	#define CONFIG_USE_KQUEUE
+#define CONFIG_USE_KQUEUE
 #endif
 #ifdef USE_SELECT
-	#define CONFIG_USE_SELECT
+#define CONFIG_USE_SELECT
 #endif
 #ifdef USE_POLL
-	#define CONFIG_USE_POLL
+#define CONFIG_USE_POLL
 #endif
 
 #ifdef min
@@ -255,7 +255,7 @@ enum MsTimeVariables
 #	define __fastcall __attribute__((__fastcall__))
 #  endif
 #else
-#define __fastcall  
+#define __fastcall
 #endif
 #endif
 
@@ -263,40 +263,40 @@ enum MsTimeVariables
 	TEST SUPPORT FOR TR1
 	*/
 #ifdef HAS_CXX0X
-	#include <unordered_map>
-	#include <unordered_set>
-	#define HM_NAMESPACE ::std
-	#define hash_map unordered_map
-	#define hash_multimap unordered_multimap
-	#define hash_set unordered_set
-	#define hash_multiset tr1::unordered_multiset
+#include <unordered_map>
+#include <unordered_set>
+#define HM_NAMESPACE ::std
+#define hash_map unordered_map
+#define hash_multimap unordered_multimap
+#define hash_set unordered_set
+#define hash_multiset tr1::unordered_multiset
 #elif COMPILER == COMPILER_GNU && __GNUC__ >= 3
-	#include <ext/hash_map>
-	#include <ext/hash_set>
-	#define HM_NAMESPACE __gnu_cxx
-	namespace __gnu_cxx
+#include <ext/hash_map>
+#include <ext/hash_set>
+#define HM_NAMESPACE __gnu_cxx
+namespace __gnu_cxx
+{
+	template<> struct hash<unsigned long long>
 	{
-		template<> struct hash<unsigned long long>
-		{
-			size_t operator()(const unsigned long long &__x) const { return (size_t)__x; }
-		};
-		template<typename T> struct hash<T *>
-		{
-			size_t operator()(T * const &__x) const { return (size_t)__x; }
-		};
-		//support for std::strings as keys to hash maps
-		template<> struct hash< ::std::string>
-		{
-			size_t operator()(const ::std::string & keyval) const
-			{ 
-				return hash<const char*>()( keyval.c_str() ); 
-			}
-		};
+		size_t operator()(const unsigned long long & __x) const { return (size_t)__x; }
 	};
+	template<typename T> struct hash<T*>
+	{
+		size_t operator()(T* const & __x) const { return (size_t)__x; }
+	};
+	//support for std::strings as keys to hash maps
+	template<> struct hash< ::std::string>
+	{
+		size_t operator()(const ::std::string & keyval) const
+		{
+			return hash<const char*>()(keyval.c_str());
+		}
+	};
+};
 #else
-	#define HM_NAMESPACE ::stdext
-	#include <hash_map>
-	#include <hash_set>
+#define HM_NAMESPACE ::stdext
+#include <hash_map>
+#include <hash_set>
 #endif
 
 
@@ -367,27 +367,27 @@ typedef uint8_t uint8;
 
 #endif
 
-/* 
+/*
 Scripting system exports/imports
 */
 
 #ifdef WIN32
-	#ifndef SCRIPTLIB
-		#define SERVER_DECL __declspec(dllexport)
-		#define SCRIPT_DECL __declspec(dllimport)
-	#else
-		#define SERVER_DECL __declspec(dllimport)
-		#define SCRIPT_DECL __declspec(dllexport)
-	#endif
-	#define DECL_LOCAL
-#elif defined __GNUC__ && __GNUC__ >= 4
-	#define SERVER_DECL __attribute__((visibility ("default")))
-	#define SCRIPT_DECL __attribute__((visibility ("default")))
-	#define DECL_LOCAL __attribute__((visibility ("hidden")))
+#ifndef SCRIPTLIB
+#define SERVER_DECL __declspec(dllexport)
+#define SCRIPT_DECL __declspec(dllimport)
 #else
-	#define SERVER_DECL
-	#define SCRIPT_DECL
-	#define DECL_LOCAL
+#define SERVER_DECL __declspec(dllimport)
+#define SCRIPT_DECL __declspec(dllexport)
+#endif
+#define DECL_LOCAL
+#elif defined __GNUC__ && __GNUC__ >= 4
+#define SERVER_DECL __attribute__((visibility ("default")))
+#define SCRIPT_DECL __attribute__((visibility ("default")))
+#define DECL_LOCAL __attribute__((visibility ("hidden")))
+#else
+#define SERVER_DECL
+#define SCRIPT_DECL
+#define DECL_LOCAL
 #endif
 
 // Include all threading files
@@ -435,13 +435,13 @@ Scripting system exports/imports
 #endif
 
 // fast int abs
-static inline int int32abs( const int value )
+static inline int int32abs(const int value)
 {
 	return (value ^ (value >> 31)) - (value >> 31);
 }
 
 // fast int abs and recast to unsigned
-static inline uint32 int32abs2uint32( const int value )
+static inline uint32 int32abs2uint32(const int value)
 {
 	return (uint32)(value ^ (value >> 31)) - (value >> 31);
 }
@@ -451,7 +451,8 @@ static inline int float2int32(const float value)
 {
 #if !defined(X64) && COMPILER == COMPILER_MICROSOFT && !defined(USING_BIG_ENDIAN)
 	int i;
-	__asm {
+	__asm
+	{
 		fld value
 		frndint
 		fistp i
@@ -470,17 +471,18 @@ static inline int long2int32(const double value)
 {
 #if !defined(X64) && COMPILER == COMPILER_MICROSOFT && !defined(USING_BIG_ENDIAN)
 	int i;
-	__asm {
+	__asm
+	{
 		fld value
 		frndint
 		fistp i
 	}
 	return i;
 #else
-  union { int asInt[2]; double asDouble; } n;
-  n.asDouble = value + 6755399441055744.0;
+	union { int asInt[2]; double asDouble; } n;
+	n.asDouble = value + 6755399441055744.0;
 
-  return n.asInt [0];
+	return n.asInt [0];
 #endif
 }
 
@@ -493,7 +495,7 @@ static inline int long2int32(const double value)
 #endif
 
 ARCEMU_INLINE uint32 now()
-{	
+{
 #ifdef WIN32
 	return GetTickCount();
 #else
@@ -535,38 +537,38 @@ struct spawn_timed_emotes
 {
 	uint8		type; //1 standstate, 2 emotestate, 3 emoteoneshot
 	uint32		value; //get yar list elsewhere
-	char		*msg; //maybe we wish to say smething while changing emote state
+	char*		msg; //maybe we wish to say smething while changing emote state
 	uint8		msg_type; //yell ? say ?
 	uint8		msg_lang; //yell ? say ?
 	uint32		expire_after; //going to nex faze in
 };
 typedef std::list<spawn_timed_emotes*> TimedEmoteList;
 
-ARCEMU_INLINE void reverse_array(uint8 * pointer, size_t count)
+ARCEMU_INLINE void reverse_array(uint8* pointer, size_t count)
 {
 	size_t x;
-	uint8 * temp = (uint8*)malloc(count);
+	uint8* temp = (uint8*)malloc(count);
 	memcpy(temp, pointer, count);
 	for(x = 0; x < count; ++x)
-		pointer[x] = temp[count-x-1];
+		pointer[x] = temp[count - x - 1];
 	free(temp);
 }
 
 typedef std::vector<WayPoint*> WayPointMap;
 
-int32 GetTimePeriodFromString(const char * str);
+int32 GetTimePeriodFromString(const char* str);
 std::string ConvertTimeStampToString(uint32 timestamp);
 std::string ConvertTimeStampToDataTime(uint32 timestamp);
 
 uint32 DecimalToMask(uint32 dec);
 
-ARCEMU_INLINE void arcemu_TOLOWER(std::string& str)
+ARCEMU_INLINE void arcemu_TOLOWER(std::string & str)
 {
 	for(size_t i = 0; i < str.length(); ++i)
 		str[i] = (char)tolower(str[i]);
 }
 
-ARCEMU_INLINE void arcemu_TOUPPER(std::string& str)
+ARCEMU_INLINE void arcemu_TOUPPER(std::string & str)
 {
 	for(size_t i = 0; i < str.length(); ++i)
 		str[i] = (char)toupper(str[i]);
@@ -578,18 +580,19 @@ inline static bool ParseCIDRBan(unsigned int IP, unsigned int Mask, unsigned int
 	// CIDR bans are a compacted form of IP / Submask
 	// So 192.168.1.0/255.255.255.0 would be 192.168.1.0/24
 	// IP's in the 192.168l.1.x range would be hit, others not.
-	unsigned char * source_ip = (unsigned char*)&IP;
-	unsigned char * mask = (unsigned char*)&Mask;
+	unsigned char* source_ip = (unsigned char*)&IP;
+	unsigned char* mask = (unsigned char*)&Mask;
 	int full_bytes = MaskBits / 8;
 	int leftover_bits = MaskBits % 8;
 	//int byte;
 
 	// sanity checks for the data first
-	if( MaskBits > 32 )
+	if(MaskBits > 32)
 		return false;
 
 	// this is the table for comparing leftover bits
-	static const unsigned char leftover_bits_compare[9] = {
+	static const unsigned char leftover_bits_compare[9] =
+	{
 		0x00,			// 00000000
 		0x80,			// 10000000
 		0xC0,			// 11000000
@@ -602,17 +605,17 @@ inline static bool ParseCIDRBan(unsigned int IP, unsigned int Mask, unsigned int
 	};
 
 	// if we have any full bytes, compare them with memcpy
-	if( full_bytes > 0 )
+	if(full_bytes > 0)
 	{
-		if( memcmp( source_ip, mask, full_bytes ) != 0 )
+		if(memcmp(source_ip, mask, full_bytes) != 0)
 			return false;
 	}
 
 	// compare the left over bits
-	if( leftover_bits > 0 )
+	if(leftover_bits > 0)
 	{
-		if( ( source_ip[full_bytes] & leftover_bits_compare[leftover_bits] ) !=
-			( mask[full_bytes] & leftover_bits_compare[leftover_bits] ) )
+		if((source_ip[full_bytes] & leftover_bits_compare[leftover_bits]) !=
+		        (mask[full_bytes] & leftover_bits_compare[leftover_bits]))
 		{
 			// one of the bits does not match
 			return false;
@@ -623,11 +626,11 @@ inline static bool ParseCIDRBan(unsigned int IP, unsigned int Mask, unsigned int
 	return true;
 }
 
-inline static unsigned int MakeIP(const char * str)
+inline static unsigned int MakeIP(const char* str)
 {
 	unsigned int bytes[4];
 	unsigned int res;
-	if( sscanf(str, "%u.%u.%u.%u", &bytes[0], &bytes[1], &bytes[2], &bytes[3]) != 4 )
+	if(sscanf(str, "%u.%u.%u.%u", &bytes[0], &bytes[1], &bytes[2], &bytes[3]) != 4)
 		return 0;
 
 	res = bytes[0] | (bytes[1] << 8) | (bytes[2] << 16) | (bytes[3] << 24);

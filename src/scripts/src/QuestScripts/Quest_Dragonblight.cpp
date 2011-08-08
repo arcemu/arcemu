@@ -16,66 +16,66 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 #include "Setup.h"
 
 class WoodlandWalker : public CreatureAIScript
 {
-public:
-	ADD_CREATURE_FACTORY_FUNCTION(WoodlandWalker);
-	WoodlandWalker(Creature* pCreature) : CreatureAIScript(pCreature)
-	{
-		pCreature->SetFaction(35 );
-	}
+	public:
+		ADD_CREATURE_FACTORY_FUNCTION(WoodlandWalker);
+		WoodlandWalker(Creature* pCreature) : CreatureAIScript(pCreature)
+		{
+			pCreature->SetFaction(35);
+		}
 };
 
 class WoodlandWalkerGossip : public GossipScript
 {
-public:
-	void GossipHello( Object *pObject, Player *plr )
-	{
-		Creature*  pCreature = (pObject->IsCreature())?(TO_CREATURE(pObject)):NULL;
-		if( pCreature == NULL )
-			return;
-
-		uint32 chance = RandomUInt(1);
-		if( chance == 0 )
+	public:
+		void GossipHello(Object* pObject, Player* plr)
 		{
-			pCreature->SetFaction(14 );
-			pCreature->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "The Woodlands Walker is angered by your request and attacks!" );
-		}
-		else
-		{
-			sEAS.AddItem( 36786, plr );
-			pCreature->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "Breaking off a piece of its bark, the Woodlands Walker hands it to you before departing." );
-		}
+			Creature*  pCreature = (pObject->IsCreature()) ? (TO_CREATURE(pObject)) : NULL;
+			if(pCreature == NULL)
+				return;
 
-	}
+			uint32 chance = RandomUInt(1);
+			if(chance == 0)
+			{
+				pCreature->SetFaction(14);
+				pCreature->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "The Woodlands Walker is angered by your request and attacks!");
+			}
+			else
+			{
+				sEAS.AddItem(36786, plr);
+				pCreature->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "Breaking off a piece of its bark, the Woodlands Walker hands it to you before departing.");
+			}
+
+		}
 
 };
 
 class WrathGateQuestCinema : public QuestScript
-{	
-public:
-  void OnQuestComplete(Player* mTarget, QuestLogEntry *qLogEntry)
-  {
-	if( mTarget == NULL )
-		return;
+{
+	public:
+		void OnQuestComplete(Player* mTarget, QuestLogEntry* qLogEntry)
+		{
+			if(mTarget == NULL)
+				return;
 
-	// send packet for movie
-	uint32 id = 14;	
-	mTarget->GetSession()->OutPacket(SMSG_TRIGGER_MOVIE, sizeof(uint32), &id);
-  }
+			// send packet for movie
+			uint32 id = 14;
+			mTarget->GetSession()->OutPacket(SMSG_TRIGGER_MOVIE, sizeof(uint32), &id);
+		}
 };
 
-void SetupDragonblight(ScriptMgr * mgr)
+void SetupDragonblight(ScriptMgr* mgr)
 {
 	mgr->register_creature_script(26421, &WoodlandWalker::Create);
 
-	GossipScript * WW = new WoodlandWalkerGossip();
+	GossipScript* WW = new WoodlandWalkerGossip();
 	mgr->register_gossip_script(26421, WW);
-	
-	QuestScript *WrathGateCinema = new WrathGateQuestCinema();
+
+	QuestScript* WrathGateCinema = new WrathGateQuestCinema();
 	mgr->register_quest_script(12499, WrathGateCinema);
 	mgr->register_quest_script(12500, WrathGateCinema);
 }

@@ -20,7 +20,7 @@
 
 #include "StdAfx.h"
 
-void WorldSession::HandleAttackSwingOpcode( WorldPacket & recv_data )
+void WorldSession::HandleAttackSwingOpcode(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_RETURN
 
@@ -36,13 +36,13 @@ void WorldSession::HandleAttackSwingOpcode( WorldPacket & recv_data )
 	}
 
 	// AttackSwing
-	Log.Debug( "WORLD","Recvd CMSG_ATTACKSWING Message" );
+	Log.Debug("WORLD", "Recvd CMSG_ATTACKSWING Message");
 
 	if(GetPlayer()->IsPacified() || GetPlayer()->IsStunned() || GetPlayer()->IsFeared())
 		return;
 
 //	printf("Got ATTACK SWING: %08X %08X\n", GUID_HIPART(guid), Arcemu::Util::GUID_LOPART( guid ));
-	Unit *pEnemy = _player->GetMapMgr()->GetUnit(guid);
+	Unit* pEnemy = _player->GetMapMgr()->GetUnit(guid);
 	//printf("Pointer: %08X\n", pEnemy);
 
 	if(!pEnemy)
@@ -59,16 +59,16 @@ void WorldSession::HandleAttackSwingOpcode( WorldPacket & recv_data )
 
 }
 
-void WorldSession::HandleAttackStopOpcode( WorldPacket & recv_data )
+void WorldSession::HandleAttackStopOpcode(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_RETURN
 
 	uint64 guid = GetPlayer()->GetSelection();
 
-	if( guid )
+	if(guid)
 	{
-		Unit* pEnemy = _player->GetMapMgr()->GetUnit( guid );
-		if( pEnemy != NULL)
+		Unit* pEnemy = _player->GetMapMgr()->GetUnit(guid);
+		if(pEnemy != NULL)
 		{
 			GetPlayer()->EventAttackStop();
 			GetPlayer()->smsg_AttackStop(pEnemy);

@@ -23,144 +23,144 @@
 namespace luaSql
 {
 	//QueryResult methods
-	int GetColumn(lua_State * L, QueryResult * res) 
+	int GetColumn(lua_State* L, QueryResult* res)
 	{
 		if(res != NULL)
 		{
-			uint32 column = CHECK_ULONG(L,1);
+			uint32 column = CHECK_ULONG(L, 1);
 			uint32 fields = res->GetFieldCount();
 			if(column > fields)
-				luaL_error(L,"GetColumn, Column %d bigger than max column %d",column,res->GetFieldCount() );
+				luaL_error(L, "GetColumn, Column %d bigger than max column %d", column, res->GetFieldCount());
 			else
 			{
-				Field * field = &(res->Fetch()[column]);
+				Field* field = &(res->Fetch()[column]);
 				if(field == NULL)
 					lua_pushnil(L);
 				else
-					PUSH_SQLFIELD(L,field);
+					PUSH_SQLFIELD(L, field);
 			}
 		}
 		else
 			lua_pushnil(L);
 		return 1;
 	}
-	int NextRow(lua_State * L, QueryResult * res)
+	int NextRow(lua_State* L, QueryResult* res)
 	{
 		if(res != NULL)
 		{
-			if(res->NextRow() )
-				lua_pushboolean(L,1);
+			if(res->NextRow())
+				lua_pushboolean(L, 1);
 			else
-				lua_pushboolean(L,0);
+				lua_pushboolean(L, 0);
 		}
 		else
-			lua_pushboolean(L,0);
+			lua_pushboolean(L, 0);
 		return 1;
 	}
-	int GetColumnCount(lua_State * L, QueryResult * res)
+	int GetColumnCount(lua_State* L, QueryResult* res)
 	{
 		if(res == NULL)
 			lua_pushnil(L);
 		else
-			lua_pushnumber(L,res->GetFieldCount());
+			lua_pushnumber(L, res->GetFieldCount());
 		return 1;
 	}
 
-	int GetRowCount(lua_State * L, QueryResult * res)
+	int GetRowCount(lua_State* L, QueryResult* res)
 	{
 		if(res == NULL)
 			lua_pushnil(L);
 		else
-			lua_pushnumber(L,res->GetRowCount());
+			lua_pushnumber(L, res->GetRowCount());
 		return 1;
 	}
 
 	// Field api
-	int GetString(lua_State * L, Field * field)
+	int GetString(lua_State* L, Field* field)
 	{
 		if(field == NULL)
 			lua_pushnil(L);
 		else
-			lua_pushstring(L,field->GetString());
+			lua_pushstring(L, field->GetString());
 		return 1;
 	}
-	int GetFloat(lua_State * L, Field * field)
+	int GetFloat(lua_State* L, Field* field)
 	{
 		if(field == NULL)
 			lua_pushnil(L);
 		else
-			lua_pushnumber(L,field->GetFloat());
+			lua_pushnumber(L, field->GetFloat());
 		return 1;
 	}
-	int GetBool(lua_State * L, Field * field)
+	int GetBool(lua_State* L, Field* field)
 	{
 		if(field == NULL)
 			lua_pushnil(L);
 		else
 		{
-			if(field->GetBool() )
-				lua_pushboolean(L,1);
+			if(field->GetBool())
+				lua_pushboolean(L, 1);
 			else
-				lua_pushboolean(L,0);
+				lua_pushboolean(L, 0);
 		}
 		return 1;
 	}
-	int GetUByte(lua_State *L, Field * field)
+	int GetUByte(lua_State* L, Field* field)
 	{
 		if(field == NULL)
 			lua_pushnil(L);
 		else
-			lua_pushinteger(L,field->GetUInt8());
+			lua_pushinteger(L, field->GetUInt8());
 		return 1;
 	}
-	int GetByte(lua_State * L, Field * field)
+	int GetByte(lua_State* L, Field* field)
 	{
 		if(field == NULL)
 			lua_pushnil(L);
 		else
-			lua_pushinteger(L,field->GetInt8());
+			lua_pushinteger(L, field->GetInt8());
 		return 1;
 	}
-	int GetUShort(lua_State * L, Field * field)
+	int GetUShort(lua_State* L, Field* field)
 	{
 		if(field == NULL)
 			lua_pushnil(L);
 		else
-			lua_pushinteger(L,field->GetUInt16());
+			lua_pushinteger(L, field->GetUInt16());
 		return 1;
 	}
-	int GetShort(lua_State * L, Field * field)
+	int GetShort(lua_State* L, Field* field)
 	{
 		if(field == NULL)
 			lua_pushnil(L);
 		else
-			lua_pushinteger(L,field->GetInt16());
+			lua_pushinteger(L, field->GetInt16());
 		return 1;
 	}
-	int GetULong(lua_State * L, Field * field)
+	int GetULong(lua_State* L, Field* field)
 	{
 		if(field == NULL)
 			lua_pushnil(L);
 		else
-			lua_pushnumber(L,field->GetUInt32());
+			lua_pushnumber(L, field->GetUInt32());
 		return 1;
 	}
-	int GetLong(lua_State * L, Field * field)
+	int GetLong(lua_State* L, Field* field)
 	{
 		if(field == NULL)
 			lua_pushnil(L);
 		else
-			lua_pushnumber(L,field->GetInt32());
+			lua_pushnumber(L, field->GetInt32());
 		return 1;
 	}
-	int GetGUID(lua_State * L, Field * field)
+	int GetGUID(lua_State* L, Field* field)
 	{
 		if(field == NULL)
 			lua_pushnil(L);
 		else
 		{
 			uint64 guid = field->GetUInt64();
-			PUSH_GUID(L,guid);
+			PUSH_GUID(L, guid);
 		}
 		return 1;
 	}

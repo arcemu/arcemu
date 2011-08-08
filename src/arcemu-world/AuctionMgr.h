@@ -24,38 +24,39 @@
 class AuctionHouse;
 class AuctionMgr : public Singleton <AuctionMgr>
 {
-public:
-	AuctionMgr()
-	{
-		loopcount = 0;
-		maxId.SetVal( 1 );
-	}
+	public:
+		AuctionMgr()
+		{
+			loopcount = 0;
+			maxId.SetVal(1);
+		}
 
-	~AuctionMgr()
-	{
-		vector<AuctionHouse*>::iterator itr = auctionHouses.begin();
-		for(; itr != auctionHouses.end(); ++itr)
-			delete (*itr);
-	}
+		~AuctionMgr()
+		{
+			vector<AuctionHouse*>::iterator itr = auctionHouses.begin();
+			for(; itr != auctionHouses.end(); ++itr)
+				delete(*itr);
+		}
 
-	void LoadAuctionHouses();
-	void Update();
+		void LoadAuctionHouses();
+		void Update();
 
-	AuctionHouse * GetAuctionHouse(uint32 Entry);
+		AuctionHouse* GetAuctionHouse(uint32 Entry);
 
-	uint32 GenerateAuctionId(){ 
-		uint32 id = ++maxId;
+		uint32 GenerateAuctionId()
+		{
+			uint32 id = ++maxId;
 
-		return id;
-	}
+			return id;
+		}
 
-private:
-	HM_NAMESPACE::hash_map<uint32, AuctionHouse*> auctionHouseEntryMap;
-	vector<AuctionHouse*> auctionHouses;
+	private:
+		HM_NAMESPACE::hash_map<uint32, AuctionHouse*> auctionHouseEntryMap;
+		vector<AuctionHouse*> auctionHouses;
 
-	Arcemu::Threading::AtomicCounter maxId;
+		Arcemu::Threading::AtomicCounter maxId;
 
-	uint32 loopcount;
+		uint32 loopcount;
 };
 
 #define sAuctionMgr AuctionMgr::getSingleton()

@@ -20,6 +20,6 @@
 
 #include "Setup.h"
 
-void SetupAzshara(ScriptMgr * mgr)
+void SetupAzshara(ScriptMgr* mgr)
 {
 }

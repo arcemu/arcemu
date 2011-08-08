@@ -22,16 +22,16 @@
 
 enum _errors
 {
-	CE_SUCCESS = 0x00,
-	CE_IPBAN= 0x01,									  //2bd -- unable to connect (some internal problem)
-	CE_ACCOUNT_CLOSED = 0x03,							 // "This account has been closed and is no longer in service -- Please check the registered email address of this account for further information.";
-	CE_NO_ACCOUNT= 0x04,								 //(5)The information you have entered is not valid.  Please check the spelling of the account name and password.  If you need help in retrieving a lost or stolen password and account
-	CE_ACCOUNT_IN_USE = 0x06,							 //This account is already logged in.  Please check the spelling and try again.
-	CE_PREORDER_TIME_LIMIT= 0x07,
-	CE_SERVER_FULL= 0x08,								//Could not log in at this time.  Please try again later.
-	CE_WRONG_BUILD_NUMBER= 0x09,						 //Unable to validate game version.  This may be caused by file corruption or the interference of another program.
-	CE_UPDATE_CLIENT= 0x0a,
-	CE_ACCOUNT_FREEZED= 0x0c
+    CE_SUCCESS = 0x00,
+    CE_IPBAN = 0x01,									 //2bd -- unable to connect (some internal problem)
+    CE_ACCOUNT_CLOSED = 0x03,							 // "This account has been closed and is no longer in service -- Please check the registered email address of this account for further information.";
+    CE_NO_ACCOUNT = 0x04,								 //(5)The information you have entered is not valid.  Please check the spelling of the account name and password.  If you need help in retrieving a lost or stolen password and account
+    CE_ACCOUNT_IN_USE = 0x06,							 //This account is already logged in.  Please check the spelling and try again.
+    CE_PREORDER_TIME_LIMIT = 0x07,
+    CE_SERVER_FULL = 0x08,								//Could not log in at this time.  Please try again later.
+    CE_WRONG_BUILD_NUMBER = 0x09,						 //Unable to validate game version.  This may be caused by file corruption or the interference of another program.
+    CE_UPDATE_CLIENT = 0x0a,
+    CE_ACCOUNT_FREEZED = 0x0c
 } ;
 
 AuthSocket::AuthSocket(SOCKET fd) : Socket(fd, 32768, 4096)
@@ -43,8 +43,8 @@ AuthSocket::AuthSocket(SOCKET fd) : Socket(fd, 32768, 4096)
 	m_account = 0;
 	last_recv = time(NULL);
 	removedFromSet = false;
-	m_patch= NULL;
-	m_patchJob= NULL;
+	m_patch = NULL;
+	m_patchJob = NULL;
 	_authSocketLock.Acquire();
 	_authSockets.insert(this);
 	_authSocketLock.Release();
@@ -67,35 +67,37 @@ void AuthSocket::OnDisconnect()
 	if(m_patchJob)
 	{
 		PatchMgr::getSingleton().AbortPatchJob(m_patchJob);
-		m_patchJob= NULL;
+		m_patchJob = NULL;
 	}
 }
 
 void AuthSocket::HandleChallenge()
 {
 	// No header
-	if(readBuffer.GetContiguiousBytes() < 4){
-		LOG_ERROR( "[AuthChallenge] Packet has no header. Refusing to handle." );
+	if(readBuffer.GetContiguiousBytes() < 4)
+	{
+		LOG_ERROR("[AuthChallenge] Packet has no header. Refusing to handle.");
 		return;
 	}
 
 	// Check the rest of the packet is complete.
-	uint8 * ReceiveBuffer = (uint8*)readBuffer.GetBufferStart();
+	uint8* ReceiveBuffer = (uint8*)readBuffer.GetBufferStart();
 
 	uint16 full_size = *(uint16*)&ReceiveBuffer[2];
 
 
-	LOG_DETAIL("[AuthChallenge] got header, body is %u bytes", full_size );
+	LOG_DETAIL("[AuthChallenge] got header, body is %u bytes", full_size);
 
-	if(readBuffer.GetSize() < uint32(full_size+4)){
-		LOG_ERROR( "[AuthChallenge] Packet is smaller than expected, refusing to handle" );
+	if(readBuffer.GetSize() < uint32(full_size + 4))
+	{
+		LOG_ERROR("[AuthChallenge] Packet is smaller than expected, refusing to handle");
 		return;
 	}
 
 	// Copy the data into our cached challenge structure
 	if(full_size > sizeof(sAuthLogonChallenge_C))
 	{
-		LOG_ERROR( "[AuthChallenge] Packet is larger than expected, refusing to handle!" );
+		LOG_ERROR("[AuthChallenge] Packet is larger than expected, refusing to handle!");
 		Disconnect();
 		return;
 	}
@@ -114,7 +116,7 @@ void AuthSocket::HandleChallenge()
 	if(build > LogonServer::getSingleton().max_build)
 	{
 		// wtf?
-		LOG_DETAIL( "[AuthChallenge] Client %s has wrong version. More up to date than server. Server: %u, Client: %u", GetRemoteIP().c_str(), LogonServer::getSingleton().max_build, m_challenge.build );
+		LOG_DETAIL("[AuthChallenge] Client %s has wrong version. More up to date than server. Server: %u, Client: %u", GetRemoteIP().c_str(), LogonServer::getSingleton().max_build, m_challenge.build);
 		SendChallengeError(CE_WRONG_BUILD_NUMBER);
 		return;
 	}
@@ -122,7 +124,7 @@ void AuthSocket::HandleChallenge()
 	if(build < LogonServer::getSingleton().min_build)
 	{
 		// can we patch?
-		char flippedloc[5] = {0,0,0,0,0};
+		char flippedloc[5] = {0, 0, 0, 0, 0};
 		flippedloc[0] = m_challenge.country[3];
 		flippedloc[1] = m_challenge.country[2];
 		flippedloc[2] = m_challenge.country[1];
@@ -132,15 +134,16 @@ void AuthSocket::HandleChallenge()
 		if(m_patch == NULL)
 		{
 			// could not find a valid patch
-			LOG_DETAIL( "[AuthChallenge] Client %s has wrong version. More up to date than server. Server: %u, Client: %u", GetRemoteIP().c_str(), LogonServer::getSingleton().min_build, m_challenge.build );
+			LOG_DETAIL("[AuthChallenge] Client %s has wrong version. More up to date than server. Server: %u, Client: %u", GetRemoteIP().c_str(), LogonServer::getSingleton().min_build, m_challenge.build);
 			SendChallengeError(CE_WRONG_BUILD_NUMBER);
 			return;
 		}
 
-		Log.Debug("Patch", "Selected patch %u%s for client.", m_patch->Version,m_patch->Locality);
+		Log.Debug("Patch", "Selected patch %u%s for client.", m_patch->Version, m_patch->Locality);
 
 
-		uint8 response[119] = {
+		uint8 response[119] =
+		{
 			0x00, 0x00, 0x00, 0x72, 0x50, 0xa7, 0xc9, 0x27, 0x4a, 0xfa, 0xb8, 0x77, 0x80, 0x70, 0x22,
 			0xda, 0xb8, 0x3b, 0x06, 0x50, 0x53, 0x4a, 0x16, 0xe2, 0x65, 0xba, 0xe4, 0x43, 0x6f, 0xe3,
 			0x29, 0x36, 0x18, 0xe3, 0x45, 0x01, 0x07, 0x20, 0x89, 0x4b, 0x64, 0x5e, 0x89, 0xe1, 0x53,
@@ -157,8 +160,8 @@ void AuthSocket::HandleChallenge()
 	// Check for a possible IP ban on this client.
 	BAN_STATUS ipb = IPBanner::getSingleton().CalculateBanStatus(GetRemoteAddress());
 
-	if( ipb != BAN_STATUS_NOT_BANNED )
-		LOG_DETAIL( "[AuthChallenge] Client %s is banned, refusing to continue.", GetRemoteIP().c_str() );
+	if(ipb != BAN_STATUS_NOT_BANNED)
+		LOG_DETAIL("[AuthChallenge] Client %s is banned, refusing to continue.", GetRemoteIP().c_str());
 
 	switch(ipb)
 	{
@@ -181,7 +184,7 @@ void AuthSocket::HandleChallenge()
 	// Clear the shitty hash (for server)
 	string AccountName = (char*)&m_challenge.I;
 	string::size_type i = AccountName.rfind("#");
-	if( i != string::npos )
+	if(i != string::npos)
 	{
 		LOG_ERROR("# ACCOUNTNAME!");
 		return;
@@ -243,26 +246,26 @@ void AuthSocket::HandleChallenge()
 	//
 
 	Sha1Hash sha;
-	sha.UpdateData( s.AsByteArray(), 32 );
-	sha.UpdateData( m_account->SrpHash, 20 );
+	sha.UpdateData(s.AsByteArray(), 32);
+	sha.UpdateData(m_account->SrpHash, 20);
 	sha.Finalize();
 
 	BigNumber x;
-	x.SetBinary( sha.GetDigest(), sha.GetLength() );
+	x.SetBinary(sha.GetDigest(), sha.GetLength());
 	v = g.ModExp(x, N);
 
 	// Next we generate b, and B which are the public and private values of the server
-	// 
+	//
 	// b = random()
 	// B = k*v + g^b % N
 	//
 	// in our case the multiplier parameters, k = 3
-	
+
 	b.SetRand(152);
 	uint8 k = 3;
 
 	BigNumber gmod = g.ModExp(b, N);
-	B = ( ( v * k ) + gmod ) % N;
+	B = ((v * k) + gmod) % N;
 	ASSERT(gmod.GetNumBytes() <= 32);
 
 	BigNumber unk;
@@ -274,33 +277,34 @@ void AuthSocket::HandleChallenge()
 	challenge.cmd = 0;
 	challenge.error = 0;
 	challenge.unk2 = CE_SUCCESS;
-	memcpy( challenge.B, B.AsByteArray(), 32 );
+	memcpy(challenge.B, B.AsByteArray(), 32);
 	challenge.g_len = 1;
-	challenge.g = ( g.AsByteArray() )[ 0 ];
+	challenge.g = (g.AsByteArray())[ 0 ];
 	challenge.N_len = 32;
-	memcpy( challenge.N, N.AsByteArray(), 32 );
-	memcpy( challenge.s, s.AsByteArray(), 32 );
-	memcpy( challenge.unk3, unk.AsByteArray(), 16 );
+	memcpy(challenge.N, N.AsByteArray(), 32);
+	memcpy(challenge.s, s.AsByteArray(), 32);
+	memcpy(challenge.unk3, unk.AsByteArray(), 16);
 	challenge.unk4 = 0;
 
-	Send( reinterpret_cast< uint8* >( &challenge ), sizeof( sAuthLogonChallenge_S ) );
+	Send(reinterpret_cast< uint8* >(&challenge), sizeof(sAuthLogonChallenge_S));
 }
 
 void AuthSocket::HandleProof()
 {
-	if(readBuffer.GetSize() < sizeof(sAuthLogonProof_C)){
-		LOG_ERROR( "[AuthLogonProof] The packet received is larger than expected, refusing to handle it!" );
+	if(readBuffer.GetSize() < sizeof(sAuthLogonProof_C))
+	{
+		LOG_ERROR("[AuthLogonProof] The packet received is larger than expected, refusing to handle it!");
 		return ;
 	}
 
 	// patch
-	if(m_patch&&!m_account)
+	if(m_patch && !m_account)
 	{
 		//RemoveReadBufferBytes(75,false);
 		readBuffer.Remove(75);
 		LOG_DEBUG("[AuthLogonProof] Intitiating PatchJob");
-		uint8 bytes[2] = {0x01,0x0a};
-		Send(bytes,2);
+		uint8 bytes[2] = {0x01, 0x0a};
+		Send(bytes, 2);
 		PatchMgr::getSingleton().InitiatePatch(m_patch, this);
 		return;
 	}
@@ -318,7 +322,7 @@ void AuthSocket::HandleProof()
 	////////////////////////////////////////////////////// SRP6 ///////////////////////////////////////////////
 	//Now comes the famous secret Xi Chi fraternity handshake ( http://www.youtube.com/watch?v=jJSYBoI2si0 ),
 	//generating a session key
-	// 
+	//
 	// A = g^a % N
 	// u = SHA1( A | B )
 	//
@@ -344,27 +348,27 @@ void AuthSocket::HandleProof()
 	uint8 t1[16];
 	uint8 vK[40];
 	memcpy(t, S.AsByteArray(), 32);
-	for (int i = 0; i < 16; i++)
+	for(int i = 0; i < 16; i++)
 	{
-		t1[i] = t[i*2];
+		t1[i] = t[i * 2];
 	}
 	sha.Initialize();
 	sha.UpdateData(t1, 16);
 	sha.Finalize();
-	for (int i = 0; i < 20; i++)
+	for(int i = 0; i < 20; i++)
 	{
-		vK[i*2] = sha.GetDigest()[i];
+		vK[i * 2] = sha.GetDigest()[i];
 	}
-	for (int i = 0; i < 16; i++)
+	for(int i = 0; i < 16; i++)
 	{
-		t1[i] = t[i*2+1];
+		t1[i] = t[i * 2 + 1];
 	}
 	sha.Initialize();
 	sha.UpdateData(t1, 16);
 	sha.Finalize();
-	for (int i = 0; i < 20; i++)
+	for(int i = 0; i < 20; i++)
 	{
-		vK[i*2+1] = sha.GetDigest()[i];
+		vK[i * 2 + 1] = sha.GetDigest()[i];
 	}
 	m_sessionkey.SetBinary(vK, 40);
 
@@ -377,7 +381,7 @@ void AuthSocket::HandleProof()
 	sha.Initialize();
 	sha.UpdateBigNumbers(&g, NULL);
 	sha.Finalize();
-	for (int i = 0; i < 20; i++)
+	for(int i = 0; i < 20; i++)
 	{
 		hash[i] ^= sha.GetDigest()[i];
 	}
@@ -405,7 +409,7 @@ void AuthSocket::HandleProof()
 		// Authentication failed.
 		//SendProofError(4, 0);
 		SendChallengeError(CE_NO_ACCOUNT);
-		LOG_DEBUG( "[AuthLogonProof] M values don't match. ( Either invalid password or the logon server is bugged. )" );
+		LOG_DEBUG("[AuthLogonProof] M values don't match. ( Either invalid password or the logon server is bugged. )");
 		return;
 	}
 
@@ -436,7 +440,7 @@ void AuthSocket::SendChallengeError(uint8 Error)
 	Send(buffer, 3);
 }
 
-void AuthSocket::SendProofError(uint8 Error, uint8 * M2)
+void AuthSocket::SendProofError(uint8 Error, uint8* M2)
 {
 	uint8 buffer[32];
 	memset(buffer, 0, 32);
@@ -453,7 +457,7 @@ void AuthSocket::SendProofError(uint8 Error, uint8 * M2)
 	}
 
 	memcpy(&buffer[2], M2, 20);
-    buffer[22]= 0x01; //<-- ARENA TOURNAMENT ACC FLAG!
+	buffer[22] = 0x01; //<-- ARENA TOURNAMENT ACC FLAG!
 
 	Send(buffer, 32);
 }
@@ -471,60 +475,61 @@ void AuthSocket::SendProofError(uint8 Error, uint8 * M2)
 #define MAX_AUTH_CMD 53
 
 typedef void (AuthSocket::*AuthHandler)();
-static AuthHandler Handlers[MAX_AUTH_CMD] = {
-		&AuthSocket::HandleChallenge,			// 0
-		&AuthSocket::HandleProof,				// 1
-		&AuthSocket::HandleReconnectChallenge,	// 2
-		&AuthSocket::HandleReconnectProof,		// 3
-		NULL,									// 4
-		NULL,									// 5
-		NULL,									// 6
-		NULL,									// 7
-		NULL,									// 8
-		NULL,									// 9
-		NULL,									// 10
-		NULL,									// 11
-		NULL,									// 12
-		NULL,									// 13
-		NULL,									// 14
-		NULL,									// 15
-		&AuthSocket::HandleRealmlist,			// 16
-		NULL,									// 17
-		NULL,									// 18
-		NULL,									// 19
-		NULL,									// 20
-		NULL,									// 21
-		NULL,									// 22
-		NULL,									// 23
-		NULL,									// 24
-		NULL,									// 25
-		NULL,									// 26
-		NULL,									// 27
-		NULL,									// 28
-		NULL,									// 29
-		NULL,									// 30
-		NULL,									// 31
-		NULL,									// 32
-		NULL,									// 33
-		NULL,									// 34
-		NULL,									// 35
-		NULL,									// 36
-		NULL,									// 37
-		NULL,									// 38
-		NULL,									// 39
-		NULL,									// 40
-		NULL,									// 41
-		NULL,									// 42
-		NULL,									// 43
-		NULL,									// 44
-		NULL,									// 45
-		NULL,									// 46
-		NULL,									// 47
-		NULL,									// 48
-		NULL,									// 49
-		&AuthSocket::HandleTransferAccept,		// 50
-		&AuthSocket::HandleTransferResume,		// 51
-		&AuthSocket::HandleTransferCancel,		// 52
+static AuthHandler Handlers[MAX_AUTH_CMD] =
+{
+	&AuthSocket::HandleChallenge,			// 0
+	&AuthSocket::HandleProof,				// 1
+	&AuthSocket::HandleReconnectChallenge,	// 2
+	&AuthSocket::HandleReconnectProof,		// 3
+	NULL,									// 4
+	NULL,									// 5
+	NULL,									// 6
+	NULL,									// 7
+	NULL,									// 8
+	NULL,									// 9
+	NULL,									// 10
+	NULL,									// 11
+	NULL,									// 12
+	NULL,									// 13
+	NULL,									// 14
+	NULL,									// 15
+	&AuthSocket::HandleRealmlist,			// 16
+	NULL,									// 17
+	NULL,									// 18
+	NULL,									// 19
+	NULL,									// 20
+	NULL,									// 21
+	NULL,									// 22
+	NULL,									// 23
+	NULL,									// 24
+	NULL,									// 25
+	NULL,									// 26
+	NULL,									// 27
+	NULL,									// 28
+	NULL,									// 29
+	NULL,									// 30
+	NULL,									// 31
+	NULL,									// 32
+	NULL,									// 33
+	NULL,									// 34
+	NULL,									// 35
+	NULL,									// 36
+	NULL,									// 37
+	NULL,									// 38
+	NULL,									// 39
+	NULL,									// 40
+	NULL,									// 41
+	NULL,									// 42
+	NULL,									// 43
+	NULL,									// 44
+	NULL,									// 45
+	NULL,									// 46
+	NULL,									// 47
+	NULL,									// 48
+	NULL,									// 49
+	&AuthSocket::HandleTransferAccept,		// 50
+	&AuthSocket::HandleTransferResume,		// 51
+	&AuthSocket::HandleTransferCancel,		// 52
 };
 
 void AuthSocket::OnRead()
@@ -537,7 +542,7 @@ void AuthSocket::OnRead()
 	if(Command < MAX_AUTH_CMD && Handlers[Command] != NULL)
 		(this->*Handlers[Command])();
 	else
-		LOG_DEBUG( "AuthSocket", "Unknown cmd %u", Command );
+		LOG_DEBUG("AuthSocket", "Unknown cmd %u", Command);
 }
 
 void AuthSocket::HandleRealmlist()
@@ -552,15 +557,15 @@ void AuthSocket::HandleReconnectChallenge()
 		return;
 
 	// Check the rest of the packet is complete.
-	uint8 * ReceiveBuffer = /*GetReadBuffer(0)*/(uint8*)readBuffer.GetBufferStart();
+	uint8* ReceiveBuffer = /*GetReadBuffer(0)*/(uint8*)readBuffer.GetBufferStart();
 	uint16 full_size = *(uint16*)&ReceiveBuffer[2];
 	LOG_DETAIL("[AuthChallenge] got header, body is %u bytes", full_size);
 
-	if(readBuffer.GetSize() < (uint32)full_size+4)
+	if(readBuffer.GetSize() < (uint32)full_size + 4)
 		return;
 
 	// Copy the data into our cached challenge structure
-	if((size_t)(full_size+4) > sizeof(sAuthLogonChallenge_C))
+	if((size_t)(full_size + 4) > sizeof(sAuthLogonChallenge_C))
 	{
 		Disconnect();
 		return;
@@ -574,7 +579,7 @@ void AuthSocket::HandleReconnectChallenge()
 
 	// Check client build.
 	if(m_challenge.build > LogonServer::getSingleton().max_build ||
-		m_challenge.build < LogonServer::getSingleton().min_build)
+	        m_challenge.build < LogonServer::getSingleton().min_build)
 	{
 		SendChallengeError(CE_WRONG_BUILD_NUMBER);
 		return;
@@ -585,31 +590,31 @@ void AuthSocket::HandleReconnectChallenge()
 
 	switch(ipb)
 	{
-	case BAN_STATUS_PERMANENT_BAN:
-		SendChallengeError(CE_ACCOUNT_CLOSED);
-		return;
+		case BAN_STATUS_PERMANENT_BAN:
+			SendChallengeError(CE_ACCOUNT_CLOSED);
+			return;
 
-	case BAN_STATUS_TIME_LEFT_ON_BAN:
-		SendChallengeError(CE_ACCOUNT_FREEZED);
-		return;
+		case BAN_STATUS_TIME_LEFT_ON_BAN:
+			SendChallengeError(CE_ACCOUNT_FREEZED);
+			return;
 
-	default:
-		break;
+		default:
+			break;
 	}
 
 	// Null-terminate the account string
 	m_challenge.I[m_challenge.I_len] = 0;
 
 	// Clear the shitty hash (for server)
-/*	size_t i = 0;
-	for( i = m_challenge.I_len; i >= 0; --i )
-	{
-		if( m_challenge.I[i] == '#' )
+	/*	size_t i = 0;
+		for( i = m_challenge.I_len; i >= 0; --i )
 		{
-			m_challenge.I[i] = '\0';
-			break;
-		}
-	}*/
+			if( m_challenge.I[i] == '#' )
+			{
+				m_challenge.I[i] = '\0';
+				break;
+			}
+		}*/
 
 	// Look up the account information
 	string AccountName = (char*)&m_challenge.I;
@@ -671,13 +676,13 @@ void AuthSocket::HandleReconnectProof()
 	Read(58, const_cast<uint8*>(buf.contents()));
 	buf.hexlike();*/
 
-	if (!m_account)
+	if(!m_account)
 		return;
 
 	// Don't update when IP banned, but update anyway if it's an account ban
 	sLogonSQL->Execute("UPDATE accounts SET lastlogin=NOW(), lastip='%s' WHERE acct=%u;", GetRemoteIP().c_str(), m_account->AccountId);
 	//RemoveReadBufferBytes(GetReadBufferSize(), true);
-	readBuffer.Remove( readBuffer.GetSize() );
+	readBuffer.Remove(readBuffer.GetSize());
 
 	if(!m_account->SessionKey)
 	{
@@ -703,7 +708,7 @@ void AuthSocket::HandleTransferAccept()
 
 	//RemoveReadBufferBytes(1,false);
 	readBuffer.Remove(1);
-	PatchMgr::getSingleton().BeginPatchJob(m_patch,this,0);
+	PatchMgr::getSingleton().BeginPatchJob(m_patch, this, 0);
 }
 
 void AuthSocket::HandleTransferResume()
@@ -717,10 +722,10 @@ void AuthSocket::HandleTransferResume()
 	uint64 size;
 	//Read(8,(uint8*)&size);
 	readBuffer.Read(&size, 8);
-	if(size>=m_patch->FileSize)
+	if(size >= m_patch->FileSize)
 		return;
 
-	PatchMgr::getSingleton().BeginPatchJob(m_patch,this,(uint32)size);
+	PatchMgr::getSingleton().BeginPatchJob(m_patch, this, (uint32)size);
 }
 
 void AuthSocket::HandleTransferCancel()

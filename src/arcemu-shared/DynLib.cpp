@@ -26,10 +26,12 @@
 #include "DynLib.hpp"
 
 
-namespace Arcemu{
+namespace Arcemu
+{
 
-	DynLib::DynLib( const char *libfilename ){
-		if( libfilename == NULL )
+	DynLib::DynLib(const char* libfilename)
+	{
+		if(libfilename == NULL)
 			throw "Dynlib::Dynlib() encountered NULL library filename";
 
 		filename = libfilename;
@@ -37,42 +39,50 @@ namespace Arcemu{
 		error = false;
 	}
 
-	DynLib::~DynLib(){
+	DynLib::~DynLib()
+	{
 		Close();
 	}
 
 #ifdef WIN32
 
-	bool DynLib::Load(){
-		lptr = LoadLibrary( filename.c_str() );
-		
-		if( lptr != NULL ){
+	bool DynLib::Load()
+	{
+		lptr = LoadLibrary(filename.c_str());
+
+		if(lptr != NULL)
+		{
 			return true;
-		}else{
+		}
+		else
+		{
 			error = true;
 			return false;
 		}
 	}
 
-	void* DynLib::GetAddressForSymbol( const char *symbol ){
-		void *address = NULL;
-		
-		address = GetProcAddress( reinterpret_cast< HMODULE >( lptr ), symbol );
-		
-		if( address == NULL )
+	void* DynLib::GetAddressForSymbol(const char* symbol)
+	{
+		void* address = NULL;
+
+		address = GetProcAddress(reinterpret_cast< HMODULE >(lptr), symbol);
+
+		if(address == NULL)
 			error = true;
-		
+
 		return address;
 	}
 
-	void DynLib::Close(){
-		
-		if( lptr != NULL ){
+	void DynLib::Close()
+	{
+
+		if(lptr != NULL)
+		{
 			int err = 0;
-			
-			err = FreeLibrary( reinterpret_cast< HMODULE >( lptr ) );
-			
-			if( err != 0 )
+
+			err = FreeLibrary(reinterpret_cast< HMODULE >(lptr));
+
+			if(err != 0)
 				error = true;
 		}
 	}
@@ -80,36 +90,43 @@ namespace Arcemu{
 
 #else
 
-	bool DynLib::Load(){
-		lptr = dlopen( filename.c_str(), RTLD_NOW );
-		
-		if( lptr != NULL ){
+	bool DynLib::Load()
+	{
+		lptr = dlopen(filename.c_str(), RTLD_NOW);
+
+		if(lptr != NULL)
+		{
 			return true;
-		}else{
+		}
+		else
+		{
 			error = true;
 			return false;
 		}
 	}
 
-	void* DynLib::GetAddressForSymbol( const char *symbol ){
-		void *address = NULL;
-		
-		address = dlsym( lptr, symbol );
-		
-		if( address == NULL )
+	void* DynLib::GetAddressForSymbol(const char* symbol)
+	{
+		void* address = NULL;
+
+		address = dlsym(lptr, symbol);
+
+		if(address == NULL)
 			error = true;
-		
+
 		return address;
 	}
 
-	void DynLib::Close(){
-		
-		if( lptr != NULL ){
+	void DynLib::Close()
+	{
+
+		if(lptr != NULL)
+		{
 			int err = 0;
-			
-			err = dlclose( lptr );
-			
-			if( err != 0 )
+
+			err = dlclose(lptr);
+
+			if(err != 0)
 				error = true;
 		}
 	}

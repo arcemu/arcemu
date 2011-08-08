@@ -19,70 +19,70 @@
 
 #include "Setup.h"
 
-bool Penance(uint32 i, Spell * pSpell)
+bool Penance(uint32 i, Spell* pSpell)
 {
-	if( !pSpell->p_caster || !pSpell->p_caster->isAlive() || 
-		!pSpell->GetUnitTarget() || !pSpell->GetUnitTarget()->isAlive() )
+	if(!pSpell->p_caster || !pSpell->p_caster->isAlive() ||
+	        !pSpell->GetUnitTarget() || !pSpell->GetUnitTarget()->isAlive())
 		return true;
 
-	Unit *target = pSpell->GetUnitTarget();
-	Player *player = pSpell->p_caster;
+	Unit* target = pSpell->GetUnitTarget();
+	Player* player = pSpell->p_caster;
 
 	// index 0 contains the spell for the first tick, index 1 is the peroidic cast spell.
 	uint32 hostileSpell[] = {0, 0};
 	uint32 friendlySpell[] = {0, 0};
 
-	switch( pSpell->GetProto()->Id )
+	switch(pSpell->GetProto()->Id)
 	{
-	case 47540: //Rank 1
-		hostileSpell[0] = 47666;
-		hostileSpell[1] = 47758;
+		case 47540: //Rank 1
+			hostileSpell[0] = 47666;
+			hostileSpell[1] = 47758;
 
-		friendlySpell[0] = 47750;
-		friendlySpell[1] = 47757;
-		break;
-	case 53005:
-		hostileSpell[0] = 52998;
-		hostileSpell[1] = 53001;
+			friendlySpell[0] = 47750;
+			friendlySpell[1] = 47757;
+			break;
+		case 53005:
+			hostileSpell[0] = 52998;
+			hostileSpell[1] = 53001;
 
-		friendlySpell[0] = 52983;
-		friendlySpell[1] = 52986;
-		break;
-	case 53006:
-		hostileSpell[0] = 52999;
-		hostileSpell[1] = 53002;
+			friendlySpell[0] = 52983;
+			friendlySpell[1] = 52986;
+			break;
+		case 53006:
+			hostileSpell[0] = 52999;
+			hostileSpell[1] = 53002;
 
-		friendlySpell[0] = 52984;
-		friendlySpell[1] = 52987;
-		break;
-	case 53007:
-		hostileSpell[0] = 53000;
-		hostileSpell[1] = 53003;
+			friendlySpell[0] = 52984;
+			friendlySpell[1] = 52987;
+			break;
+		case 53007:
+			hostileSpell[0] = 53000;
+			hostileSpell[1] = 53003;
 
-		friendlySpell[0] = 52985;
-		friendlySpell[1] = 52988;
-		break;
+			friendlySpell[0] = 52985;
+			friendlySpell[1] = 52988;
+			break;
 	}
 
-	if( isAttackable(player, target) ) // Do holy damage
+	if(isAttackable(player, target))   // Do holy damage
 	{
 		// First tick is instant.
 		player->CastSpell(target, hostileSpell[0], true);
 		player->CastSpell(target, hostileSpell[1], false);
 	}
 	else // Heal
-	{ 
+	{
 		player->CastSpell(target, friendlySpell[0], true);
 		player->CastSpell(target, friendlySpell[1], false);
 	}
 	return true;
 }
 
-bool DivineAegis(uint32 i, Aura *pAura, bool apply)
+bool DivineAegis(uint32 i, Aura* pAura, bool apply)
 {
-	Unit *target = pAura->GetTarget();
+	Unit* target = pAura->GetTarget();
 
-	if (apply)
+	if(apply)
 		target->AddProcTriggerSpell(47753, pAura->GetSpellId(), pAura->m_casterGuid, pAura->GetSpellProto()->procChance, PROC_ON_SPELL_CRIT_HIT, 0, NULL, NULL);
 	else
 		target->RemoveProcTriggerSpell(47753, pAura->m_casterGuid);
@@ -90,11 +90,11 @@ bool DivineAegis(uint32 i, Aura *pAura, bool apply)
 	return true;
 }
 
-bool ImprovedDevouringPlague(uint32 i, Aura *pAura, bool apply)
+bool ImprovedDevouringPlague(uint32 i, Aura* pAura, bool apply)
 {
-	Unit *target = pAura->GetTarget();
+	Unit* target = pAura->GetTarget();
 
-	if (apply)
+	if(apply)
 	{
 		static uint32 classMask[3] = { 0x2000000, 0, 0 };
 		target->AddProcTriggerSpell(63675, pAura->GetSpellProto()->Id, pAura->m_casterGuid, pAura->GetSpellProto()->procChance, PROC_ON_CAST_SPELL, 0, NULL, classMask);
@@ -105,11 +105,11 @@ bool ImprovedDevouringPlague(uint32 i, Aura *pAura, bool apply)
 	return true;
 }
 
-bool VampiricEmbrace(uint32 i, Aura *pAura, bool apply)
+bool VampiricEmbrace(uint32 i, Aura* pAura, bool apply)
 {
-	Unit *target = pAura->GetTarget();
+	Unit* target = pAura->GetTarget();
 
-	if (apply)
+	if(apply)
 		target->AddProcTriggerSpell(15290, pAura->GetSpellId(), pAura->m_casterGuid, pAura->GetSpellProto()->procChance, PROC_ON_ANY_HOSTILE_ACTION | PROC_TARGET_SELF, 0, NULL, NULL);
 	else
 		target->RemoveProcTriggerSpell(15290, pAura->m_casterGuid);
@@ -117,21 +117,21 @@ bool VampiricEmbrace(uint32 i, Aura *pAura, bool apply)
 	return true;
 }
 
-bool VampiricTouch(uint32 i, Aura *pAura, bool apply)
+bool VampiricTouch(uint32 i, Aura* pAura, bool apply)
 {
-	Unit *target = pAura->GetTarget();
+	Unit* target = pAura->GetTarget();
 
-	switch( i )
+	switch(i)
 	{
 		case 0:
-			if (apply)
+			if(apply)
 				target->AddProcTriggerSpell(64085, pAura->GetSpellId(), pAura->m_casterGuid, pAura->GetSpellProto()->procChance, PROC_ON_PRE_DISPELL_AURA_VICTIM | PROC_TARGET_SELF, 0, NULL, NULL);
 			else
 				target->RemoveProcTriggerSpell(64085, pAura->m_casterGuid);
 			break;
 
 		case 2:
-			if (apply)
+			if(apply)
 				target->AddProcTriggerSpell(34919, pAura->GetSpellId(), pAura->m_casterGuid, pAura->GetSpellProto()->procChance, PROC_ON_SPELL_HIT_VICTIM, 0, NULL, NULL);
 			else
 				target->RemoveProcTriggerSpell(34919, pAura->m_casterGuid);
@@ -141,11 +141,11 @@ bool VampiricTouch(uint32 i, Aura *pAura, bool apply)
 	return true;
 }
 
-bool EmpoweredRenew(uint32 i, Aura *pAura, bool apply)
+bool EmpoweredRenew(uint32 i, Aura* pAura, bool apply)
 {
-	Unit *target = pAura->GetTarget();
+	Unit* target = pAura->GetTarget();
 
-	if (apply)
+	if(apply)
 	{
 		static uint32 classMask[3] = { 0x40, 0, 0 };
 		target->AddProcTriggerSpell(63544, pAura->GetSpellId(), pAura->m_casterGuid, pAura->GetSpellProto()->procChance, PROC_ON_CAST_SPELL, 0, NULL, classMask);
@@ -156,11 +156,11 @@ bool EmpoweredRenew(uint32 i, Aura *pAura, bool apply)
 	return true;
 }
 
-bool ImprovedMindBlast(uint32 i, Aura *pAura, bool apply)
+bool ImprovedMindBlast(uint32 i, Aura* pAura, bool apply)
 {
-	Unit *target = pAura->GetTarget();
+	Unit* target = pAura->GetTarget();
 
-	if (apply)
+	if(apply)
 	{
 		static uint32 classMask[3] = { 0x2000, 0, 0 };
 		target->AddProcTriggerSpell(48301, pAura->GetSpellId(), pAura->m_casterGuid, pAura->GetSpellProto()->procChance, PROC_ON_SPELL_HIT, 0, NULL, classMask);
@@ -171,11 +171,11 @@ bool ImprovedMindBlast(uint32 i, Aura *pAura, bool apply)
 	return true;
 }
 
-bool PainAndSufferingAura(uint32 i, Aura *pAura, bool apply)
+bool PainAndSufferingAura(uint32 i, Aura* pAura, bool apply)
 {
-	Unit *target = pAura->GetTarget();
+	Unit* target = pAura->GetTarget();
 
-	if( apply )
+	if(apply)
 	{
 		static uint32 classMask[3] = { 0, 0, 0x40 };
 		target->AddProcTriggerSpell(47948, pAura->GetSpellId(), pAura->m_casterGuid, pAura->GetSpellProto()->procChance, PROC_ON_CAST_SPELL, 0, NULL, classMask);
@@ -188,16 +188,16 @@ bool PainAndSufferingAura(uint32 i, Aura *pAura, bool apply)
 
 bool PainAndSufferingProc(uint32 i, Spell* pSpell)
 {
-	Player *caster = pSpell->p_caster;
-	if( caster == NULL )
+	Player* caster = pSpell->p_caster;
+	if(caster == NULL)
 		return true;
 
-	Unit *target = pSpell->GetUnitTarget();
-	if( target == NULL)
+	Unit* target = pSpell->GetUnitTarget();
+	if(target == NULL)
 		return true;
 
-	Aura *aura = target->FindAuraByNameHash(SPELL_HASH_SHADOW_WORD__PAIN, caster->GetGUID());
-	if( aura == NULL )
+	Aura* aura = target->FindAuraByNameHash(SPELL_HASH_SHADOW_WORD__PAIN, caster->GetGUID());
+	if(aura == NULL)
 		return true;
 
 	// Set new aura's duration, reset event timer and set client visual aura
@@ -208,11 +208,11 @@ bool PainAndSufferingProc(uint32 i, Spell* pSpell)
 	return true;
 }
 
-bool BodyAndSoul(uint32 i, Aura *pAura, bool apply)
+bool BodyAndSoul(uint32 i, Aura* pAura, bool apply)
 {
-	Unit *target = pAura->GetTarget();
+	Unit* target = pAura->GetTarget();
 
-	if (apply)
+	if(apply)
 	{
 		static uint32 classMask[3] = { 0, 1, 0 };
 		target->AddProcTriggerSpell(64134, pAura->GetSpellId(), pAura->m_casterGuid, pAura->GetModAmount(i), PROC_ON_CAST_SPELL | PROC_TARGET_SELF, 0, NULL, classMask);
@@ -223,23 +223,23 @@ bool BodyAndSoul(uint32 i, Aura *pAura, bool apply)
 	return true;
 }
 
-bool PrayerOfMendingAura(uint32 i, Aura *pAura, bool apply)
+bool PrayerOfMendingAura(uint32 i, Aura* pAura, bool apply)
 {
-	Unit *target = pAura->GetTarget();
+	Unit* target = pAura->GetTarget();
 
-	if( apply )
+	if(apply)
 		target->AddProcTriggerSpell(pAura->GetSpellProto(), pAura->GetSpellProto(), pAura->m_casterGuid, pAura->GetSpellProto()->procChance, PROC_ON_ANY_DAMAGE_VICTIM, pAura->GetSpellProto()->procCharges, NULL, NULL);
 	else
 	{
 		int32 count = target->GetAuraStackCount(pAura->GetSpellId());
-		if( count == 1 )
+		if(count == 1)
 			target->RemoveProcTriggerSpell(pAura->GetSpellId(), pAura->m_casterGuid);
 	}
 
 	return true;
 }
 
-void SetupPriestSpells(ScriptMgr * mgr)
+void SetupPriestSpells(ScriptMgr* mgr)
 {
 	uint32 PenanceIds[] =
 	{
@@ -249,7 +249,7 @@ void SetupPriestSpells(ScriptMgr * mgr)
 		53007, // Rank 4
 		0,
 	};
-    mgr->register_dummy_spell(PenanceIds, &Penance);
+	mgr->register_dummy_spell(PenanceIds, &Penance);
 
 	uint32 DivineAegisIds[] = { 47509, 47511, 47515, 0 };
 	mgr->register_dummy_aura(DivineAegisIds, &DivineAegis);

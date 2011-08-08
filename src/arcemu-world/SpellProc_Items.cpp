@@ -22,27 +22,27 @@
 
 class TwinBladesOfAzzinothSpellProc : public SpellProc
 {
-	SPELL_PROC_FACTORY_FUNCTION(TwinBladesOfAzzinothSpellProc);
+		SPELL_PROC_FACTORY_FUNCTION(TwinBladesOfAzzinothSpellProc);
 
-	void Init(Object *obj)
-	{
-		if( ! mTarget->IsPlayer() )
-			return;
-
-		/* The Twin Blades of Azzinoth.
-			* According to comments on wowhead, this proc has ~0.75ppm (procs-per-minute). */
-		Item* mh = TO_PLAYER( mTarget )->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
-		Item* of = TO_PLAYER( mTarget )->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_OFFHAND );
-		if( mh != NULL && of != NULL )
+		void Init(Object* obj)
 		{
-			uint32 mhs = mh->GetProto()->Delay;
-			uint32 ohs = of->GetProto()->Delay;
-			mProcChance = mhs * ohs / ( 800 * ( mhs + ohs ) ); // 0.75 ppm
+			if(! mTarget->IsPlayer())
+				return;
+
+			/* The Twin Blades of Azzinoth.
+				* According to comments on wowhead, this proc has ~0.75ppm (procs-per-minute). */
+			Item* mh = TO_PLAYER(mTarget)->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_MAINHAND);
+			Item* of = TO_PLAYER(mTarget)->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_OFFHAND);
+			if(mh != NULL && of != NULL)
+			{
+				uint32 mhs = mh->GetProto()->Delay;
+				uint32 ohs = of->GetProto()->Delay;
+				mProcChance = mhs * ohs / (800 * (mhs + ohs));     // 0.75 ppm
+			}
 		}
-	}
 };
 
 void SpellProcMgr::SetupItems()
 {
-	AddByNameHash( SPELL_HASH_THE_TWIN_BLADES_OF_AZZINOTH, &TwinBladesOfAzzinothSpellProc::Create );
+	AddByNameHash(SPELL_HASH_THE_TWIN_BLADES_OF_AZZINOTH, &TwinBladesOfAzzinothSpellProc::Create);
 }

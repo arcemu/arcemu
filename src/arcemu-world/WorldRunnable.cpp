@@ -38,7 +38,7 @@ bool WorldRunnable::run()
 	uint32 LastWorldUpdate = getMSTime();
 	uint32 LastSessionsUpdate = getMSTime();
 
-    THREAD_TRY_EXECUTION
+	THREAD_TRY_EXECUTION
 
 	while(GetThreadState() != THREADSTATE_TERMINATE)
 	{
@@ -61,32 +61,32 @@ bool WorldRunnable::run()
 		now = getMSTime();
 		execution_start = now;
 
-		if( now < LastWorldUpdate)//overrun
+		if(now < LastWorldUpdate) //overrun
 			diff = WORLD_UPDATE_DELAY;
 		else
-			diff = now-LastWorldUpdate;
-		
+			diff = now - LastWorldUpdate;
+
 		LastWorldUpdate = now;
-		sWorld.Update( diff );
-		
+		sWorld.Update(diff);
+
 		now = getMSTime();
-		
-		if( now < LastSessionsUpdate)//overrun
+
+		if(now < LastSessionsUpdate) //overrun
 			diff = WORLD_UPDATE_DELAY;
 		else
-			diff = now-LastSessionsUpdate;
-		
+			diff = now - LastSessionsUpdate;
+
 		LastSessionsUpdate = now;
-		sWorld.UpdateSessions( diff );
-		
+		sWorld.UpdateSessions(diff);
+
 		now = getMSTime();
-		//we have to wait now 
-		
+		//we have to wait now
+
 		if(execution_start > now)//overrun
-			diff = WORLD_UPDATE_DELAY-now;
+			diff = WORLD_UPDATE_DELAY - now;
 
 		else
-			diff = now-execution_start; //time used for updating 
+			diff = now - execution_start; //time used for updating
 
 		if(GetThreadState() == THREADSTATE_TERMINATE)
 			break;
@@ -94,12 +94,12 @@ bool WorldRunnable::run()
 		ThreadState.SetVal(THREADSTATE_SLEEPING);
 
 		/*This is execution time compensating system
-			if execution took more than default delay 
+			if execution took more than default delay
 			no need to make this sleep*/
 		if(diff < WORLD_UPDATE_DELAY)
 			Arcemu::Sleep(WORLD_UPDATE_DELAY - diff);
 	}
 
-    THREAD_HANDLE_CRASH
+	THREAD_HANDLE_CRASH
 	return true;
 }

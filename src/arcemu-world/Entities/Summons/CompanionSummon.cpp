@@ -21,21 +21,24 @@
 
 #include "../../StdAfx.h"
 
-CompanionSummon::CompanionSummon( uint64 GUID ) : Summon( GUID ){
+CompanionSummon::CompanionSummon(uint64 GUID) : Summon(GUID)
+{
 }
 
-CompanionSummon::~CompanionSummon(){
+CompanionSummon::~CompanionSummon()
+{
 }
 
-void CompanionSummon::Load( CreatureProto *proto, Unit *owner, LocationVector &position, uint32 spellid, int32 summonslot ){
-	Summon::Load( proto, owner, position, spellid, summonslot );
+void CompanionSummon::Load(CreatureProto* proto, Unit* owner, LocationVector & position, uint32 spellid, int32 summonslot)
+{
+	Summon::Load(proto, owner, position, spellid, summonslot);
 
-	SetFaction( 35 );
-	setLevel( 1 );
-	m_aiInterface->Init( this, AITYPE_PET,MOVEMENTTYPE_NONE, owner );
-	m_aiInterface->SetUnitToFollow( owner );
-	m_aiInterface->SetUnitToFollowAngle( -M_PI_FLOAT / 2 );
-	m_aiInterface->SetFollowDistance( 3.0f );
+	SetFaction(35);
+	setLevel(1);
+	m_aiInterface->Init(this, AITYPE_PET, MOVEMENTTYPE_NONE, owner);
+	m_aiInterface->SetUnitToFollow(owner);
+	m_aiInterface->SetUnitToFollowAngle(-M_PI_FLOAT / 2);
+	m_aiInterface->SetFollowDistance(3.0f);
 	m_aiInterface->disable_melee = true;
 	bInvincible = true;
 
@@ -43,11 +46,13 @@ void CompanionSummon::Load( CreatureProto *proto, Unit *owner, LocationVector &p
 	RemoveFFAPvPFlag();
 }
 
-void CompanionSummon::OnPushToWorld(){
+void CompanionSummon::OnPushToWorld()
+{
 	Summon::OnPushToWorld();
 }
 
-void CompanionSummon::OnPreRemoveFromWorld(){
+void CompanionSummon::OnPreRemoveFromWorld()
+{
 	Summon::OnPreRemoveFromWorld();
 }
 

@@ -20,35 +20,40 @@
 
 #include "../../StdAfx.h"
 
-GuardianSummon::GuardianSummon( uint64 GUID ) : Summon( GUID ){
+GuardianSummon::GuardianSummon(uint64 GUID) : Summon(GUID)
+{
 }
 
-GuardianSummon::~GuardianSummon(){
+GuardianSummon::~GuardianSummon()
+{
 }
 
-void GuardianSummon::Load( CreatureProto *proto, Unit *owner, LocationVector &position, uint32 spellid, int32 summonslot ){
-	Summon::Load( proto, owner, position, spellid, summonslot );
+void GuardianSummon::Load(CreatureProto* proto, Unit* owner, LocationVector & position, uint32 spellid, int32 summonslot)
+{
+	Summon::Load(proto, owner, position, spellid, summonslot);
 
-	SetPowerType( POWER_TYPE_MANA );
-	SetMaxPower( POWER_TYPE_MANA, GetMaxPower( POWER_TYPE_MANA ) + 28 + 10 * getLevel() );
-	SetPower( POWER_TYPE_MANA, GetPower( POWER_TYPE_MANA ) + 28 + 10 * getLevel() );
-	setLevel( owner->getLevel() );
-	SetMaxHealth( GetMaxHealth() + 28 + 30 * getLevel() );
-	SetHealth( GetMaxHealth() );
-	SetType( CREATURE_TYPE_GUARDIAN );
-	
-	m_aiInterface->Init( this, AITYPE_PET ,MOVEMENTTYPE_NONE, owner );
-	m_aiInterface->SetUnitToFollow( owner );
-	m_aiInterface->SetFollowDistance( 3.0f );
+	SetPowerType(POWER_TYPE_MANA);
+	SetMaxPower(POWER_TYPE_MANA, GetMaxPower(POWER_TYPE_MANA) + 28 + 10 * getLevel());
+	SetPower(POWER_TYPE_MANA, GetPower(POWER_TYPE_MANA) + 28 + 10 * getLevel());
+	setLevel(owner->getLevel());
+	SetMaxHealth(GetMaxHealth() + 28 + 30 * getLevel());
+	SetHealth(GetMaxHealth());
+	SetType(CREATURE_TYPE_GUARDIAN);
+
+	m_aiInterface->Init(this, AITYPE_PET , MOVEMENTTYPE_NONE, owner);
+	m_aiInterface->SetUnitToFollow(owner);
+	m_aiInterface->SetFollowDistance(3.0f);
 
 	m_noRespawn = true;
 }
 
-void GuardianSummon::OnPushToWorld(){
+void GuardianSummon::OnPushToWorld()
+{
 	Summon::OnPushToWorld();
 }
 
-void GuardianSummon::OnPreRemoveFromWorld(){
+void GuardianSummon::OnPreRemoveFromWorld()
+{
 	Summon::OnPreRemoveFromWorld();
 }
 

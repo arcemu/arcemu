@@ -38,45 +38,45 @@ typedef multimap<uint32, TimedEvent*> EventMap;
 
 class SERVER_DECL EventableObject
 {
-	friend class EventMgr;
-	friend class EventableObjectHolder;
+		friend class EventMgr;
+		friend class EventableObjectHolder;
 
-protected:
-	void event_RemoveEvents();
-	void event_RemoveEvents(uint32 EventType);
-	void event_ModifyTimeLeft(uint32 EventType, time_t TimeLeft,bool unconditioned=false);
-	void event_ModifyTime(uint32 EventType, time_t Time);
-	void event_ModifyTimeAndTimeLeft(uint32 EventType, time_t Time);
-	bool event_HasEvent(uint32 EventType);
-	void event_RemoveByPointer(TimedEvent * ev);
-	int32 event_GetCurrentInstanceId() { return m_event_Instanceid; }
-	bool event_GetTimeLeft(uint32 EventType, time_t * Time);
+	protected:
+		void event_RemoveEvents();
+		void event_RemoveEvents(uint32 EventType);
+		void event_ModifyTimeLeft(uint32 EventType, time_t TimeLeft, bool unconditioned = false);
+		void event_ModifyTime(uint32 EventType, time_t Time);
+		void event_ModifyTimeAndTimeLeft(uint32 EventType, time_t Time);
+		bool event_HasEvent(uint32 EventType);
+		void event_RemoveByPointer(TimedEvent* ev);
+		int32 event_GetCurrentInstanceId() { return m_event_Instanceid; }
+		bool event_GetTimeLeft(uint32 EventType, time_t* Time);
 
-public:
-	uint32 event_GetEventPeriod(uint32 EventType);
-	// Public methods
-	EventableObject();
-	virtual ~EventableObject();
+	public:
+		uint32 event_GetEventPeriod(uint32 EventType);
+		// Public methods
+		EventableObject();
+		virtual ~EventableObject();
 
-	bool event_HasEvents() { return m_events.size() > 0 ? true : false; }
-	void event_AddEvent(TimedEvent * ptr);
-	void event_Relocate();
-	
-	// this func needs to be implemented by all eventable classes. use it to retrieve the instance
-	// id that it needs to attach itself to.
-	
-	virtual int32 event_GetInstanceID() { return WORLD_INSTANCE; }
+		bool event_HasEvents() { return m_events.size() > 0 ? true : false; }
+		void event_AddEvent(TimedEvent* ptr);
+		void event_Relocate();
 
-	void AddRef() { Sync_Add(&m_refs); }
-	void DecRef() { if (Sync_Sub(&m_refs) == 0) delete this; }
+		// this func needs to be implemented by all eventable classes. use it to retrieve the instance
+		// id that it needs to attach itself to.
 
-protected:
+		virtual int32 event_GetInstanceID() { return WORLD_INSTANCE; }
 
-	int32 m_event_Instanceid;
-	Mutex m_lock;
-	EventMap m_events;
-	EventableObjectHolder * m_holder;
-	volatile long m_refs;
+		void AddRef() { Sync_Add(&m_refs); }
+		void DecRef() { if(Sync_Sub(&m_refs) == 0) delete this; }
+
+	protected:
+
+		int32 m_event_Instanceid;
+		Mutex m_lock;
+		EventMap m_events;
+		EventableObjectHolder* m_holder;
+		volatile long m_refs;
 };
 
 /**
@@ -93,25 +93,25 @@ typedef set<EventableObject*> EventableObjectSet;
 
 class EventableObjectHolder
 {
-public:
-	EventableObjectHolder(int32 instance_id);
-	~EventableObjectHolder();
+	public:
+		EventableObjectHolder(int32 instance_id);
+		~EventableObjectHolder();
 
-	void Update(time_t time_difference);
+		void Update(time_t time_difference);
 
-	void AddEvent(TimedEvent * ev);
-	void AddObject(EventableObject * obj);
+		void AddEvent(TimedEvent* ev);
+		void AddObject(EventableObject* obj);
 
-	uint32 GetInstanceID() { return mInstanceId; }
+		uint32 GetInstanceID() { return mInstanceId; }
 
-protected:
-	int32 mInstanceId;
-	Mutex m_lock;
-	EventList m_events;
+	protected:
+		int32 mInstanceId;
+		Mutex m_lock;
+		EventList m_events;
 
-	Mutex m_insertPoolLock;
-	typedef list<TimedEvent*> InsertableQueue;
-	InsertableQueue m_insertPool;
+		Mutex m_insertPoolLock;
+		typedef list<TimedEvent*> InsertableQueue;
+		InsertableQueue m_insertPool;
 };
 
 #endif

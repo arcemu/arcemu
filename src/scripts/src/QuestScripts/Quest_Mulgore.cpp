@@ -23,26 +23,26 @@
 
 
 
-		
+
 class The_Plains_Vision : public CreatureAIScript
 {
-public:
-	ADD_CREATURE_FACTORY_FUNCTION(The_Plains_Vision);
-	The_Plains_Vision(Creature* pCreature) : CreatureAIScript(pCreature) {}
+	public:
+		ADD_CREATURE_FACTORY_FUNCTION(The_Plains_Vision);
+		The_Plains_Vision(Creature* pCreature) : CreatureAIScript(pCreature) {}
 
-	void OnReachWP(uint32 iWaypointId, bool bForwards)
-	{
-		if(iWaypointId == 2)
-			_unit->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "You follow me.");
-		if(iWaypointId == 22)
+		void OnReachWP(uint32 iWaypointId, bool bForwards)
 		{
-			sEAS.DeleteWaypoints(_unit);
-			_unit->Despawn(500,0);
+			if(iWaypointId == 2)
+				_unit->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "You follow me.");
+			if(iWaypointId == 22)
+			{
+				sEAS.DeleteWaypoints(_unit);
+				_unit->Despawn(500, 0);
+			}
 		}
-	}
 };
 
-void SetupMulgore(ScriptMgr * mgr)
+void SetupMulgore(ScriptMgr* mgr)
 {
 	mgr->register_creature_script(2983, &The_Plains_Vision::Create);
 }

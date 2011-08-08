@@ -22,18 +22,18 @@
 #include "CrashHandler.h"
 #include "Log.h"
 
-void OutputCrashLogLine(const char * format, ...)
+void OutputCrashLogLine(const char* format, ...)
 {
-        std::string s = FormatOutputString("logs", "CrashLog", false);
-        FILE * m_file = fopen(s.c_str(), "a");
-        if(!m_file) return;
+	std::string s = FormatOutputString("logs", "CrashLog", false);
+	FILE* m_file = fopen(s.c_str(), "a");
+	if(!m_file) return;
 
-        va_list ap;
-        va_start(ap, format);
-        vfprintf(m_file, format, ap);
-        fprintf(m_file, "\n");
-        fclose(m_file);
-        va_end(ap);
+	va_list ap;
+	va_start(ap, format);
+	vfprintf(m_file, format, ap);
+	fprintf(m_file, "\n");
+	fclose(m_file);
+	va_end(ap);
 }
 
 #ifdef WIN32
@@ -57,7 +57,7 @@ bool ON_CRASH_BREAK_DEBUGGER;
 void StartCrashHandler()
 {
 	// Firstly, check if there is a debugger present. There isn't any point in
-	// handling crashes internally if we have a debugger attached, that would 
+	// handling crashes internally if we have a debugger attached, that would
 	// just piss us off. :P
 
 	// Check for a debugger.
@@ -91,48 +91,48 @@ void StartCrashHandler()
 ///////////////////////////////////////////////////////////////////////////////
 // GetExceptionDescription
 // Translate the exception code into something human readable
-static const TCHAR *GetExceptionDescription(DWORD ExceptionCode)
+static const TCHAR* GetExceptionDescription(DWORD ExceptionCode)
 {
 	struct ExceptionNames
 	{
 		DWORD	ExceptionCode;
-		TCHAR *	ExceptionName;
+		TCHAR* 	ExceptionName;
 	};
 
 #if 0  // from winnt.h
-#define STATUS_WAIT_0					((DWORD   )0x00000000L)	
-#define STATUS_ABANDONED_WAIT_0		  ((DWORD   )0x00000080L)	
-#define STATUS_USER_APC				  ((DWORD   )0x000000C0L)	
-#define STATUS_TIMEOUT				   ((DWORD   )0x00000102L)	
-#define STATUS_PENDING				   ((DWORD   )0x00000103L)	
-#define STATUS_SEGMENT_NOTIFICATION	  ((DWORD   )0x40000005L)	
-#define STATUS_GUARD_PAGE_VIOLATION	  ((DWORD   )0x80000001L)	
-#define STATUS_DATATYPE_MISALIGNMENT	 ((DWORD   )0x80000002L)	
-#define STATUS_BREAKPOINT				((DWORD   )0x80000003L)	
-#define STATUS_SINGLE_STEP			   ((DWORD   )0x80000004L)	
-#define STATUS_ACCESS_VIOLATION		  ((DWORD   )0xC0000005L)	
-#define STATUS_IN_PAGE_ERROR			 ((DWORD   )0xC0000006L)	
-#define STATUS_INVALID_HANDLE			((DWORD   )0xC0000008L)	
-#define STATUS_NO_MEMORY				 ((DWORD   )0xC0000017L)	
-#define STATUS_ILLEGAL_INSTRUCTION	   ((DWORD   )0xC000001DL)	
-#define STATUS_NONCONTINUABLE_EXCEPTION  ((DWORD   )0xC0000025L)	
-#define STATUS_INVALID_DISPOSITION	   ((DWORD   )0xC0000026L)	
-#define STATUS_ARRAY_BOUNDS_EXCEEDED	 ((DWORD   )0xC000008CL)	
-#define STATUS_FLOAT_DENORMAL_OPERAND	((DWORD   )0xC000008DL)	
-#define STATUS_FLOAT_DIVIDE_BY_ZERO	  ((DWORD   )0xC000008EL)	
-#define STATUS_FLOAT_INEXACT_RESULT	  ((DWORD   )0xC000008FL)	
-#define STATUS_FLOAT_INVALID_OPERATION   ((DWORD   )0xC0000090L)	
-#define STATUS_FLOAT_OVERFLOW			((DWORD   )0xC0000091L)	
-#define STATUS_FLOAT_STACK_CHECK		 ((DWORD   )0xC0000092L)	
-#define STATUS_FLOAT_UNDERFLOW		   ((DWORD   )0xC0000093L)	
-#define STATUS_INTEGER_DIVIDE_BY_ZERO	((DWORD   )0xC0000094L)	
-#define STATUS_INTEGER_OVERFLOW		  ((DWORD   )0xC0000095L)	
-#define STATUS_PRIVILEGED_INSTRUCTION	((DWORD   )0xC0000096L)	
-#define STATUS_STACK_OVERFLOW			((DWORD   )0xC00000FDL)	
-#define STATUS_CONTROL_C_EXIT			((DWORD   )0xC000013AL)	
-#define STATUS_FLOAT_MULTIPLE_FAULTS	 ((DWORD   )0xC00002B4L)	
-#define STATUS_FLOAT_MULTIPLE_TRAPS	  ((DWORD   )0xC00002B5L)	
-#define STATUS_ILLEGAL_VLM_REFERENCE	 ((DWORD   )0xC00002C0L)	 
+#define STATUS_WAIT_0					((DWORD   )0x00000000L)
+#define STATUS_ABANDONED_WAIT_0		  ((DWORD   )0x00000080L)
+#define STATUS_USER_APC				  ((DWORD   )0x000000C0L)
+#define STATUS_TIMEOUT				   ((DWORD   )0x00000102L)
+#define STATUS_PENDING				   ((DWORD   )0x00000103L)
+#define STATUS_SEGMENT_NOTIFICATION	  ((DWORD   )0x40000005L)
+#define STATUS_GUARD_PAGE_VIOLATION	  ((DWORD   )0x80000001L)
+#define STATUS_DATATYPE_MISALIGNMENT	 ((DWORD   )0x80000002L)
+#define STATUS_BREAKPOINT				((DWORD   )0x80000003L)
+#define STATUS_SINGLE_STEP			   ((DWORD   )0x80000004L)
+#define STATUS_ACCESS_VIOLATION		  ((DWORD   )0xC0000005L)
+#define STATUS_IN_PAGE_ERROR			 ((DWORD   )0xC0000006L)
+#define STATUS_INVALID_HANDLE			((DWORD   )0xC0000008L)
+#define STATUS_NO_MEMORY				 ((DWORD   )0xC0000017L)
+#define STATUS_ILLEGAL_INSTRUCTION	   ((DWORD   )0xC000001DL)
+#define STATUS_NONCONTINUABLE_EXCEPTION  ((DWORD   )0xC0000025L)
+#define STATUS_INVALID_DISPOSITION	   ((DWORD   )0xC0000026L)
+#define STATUS_ARRAY_BOUNDS_EXCEEDED	 ((DWORD   )0xC000008CL)
+#define STATUS_FLOAT_DENORMAL_OPERAND	((DWORD   )0xC000008DL)
+#define STATUS_FLOAT_DIVIDE_BY_ZERO	  ((DWORD   )0xC000008EL)
+#define STATUS_FLOAT_INEXACT_RESULT	  ((DWORD   )0xC000008FL)
+#define STATUS_FLOAT_INVALID_OPERATION   ((DWORD   )0xC0000090L)
+#define STATUS_FLOAT_OVERFLOW			((DWORD   )0xC0000091L)
+#define STATUS_FLOAT_STACK_CHECK		 ((DWORD   )0xC0000092L)
+#define STATUS_FLOAT_UNDERFLOW		   ((DWORD   )0xC0000093L)
+#define STATUS_INTEGER_DIVIDE_BY_ZERO	((DWORD   )0xC0000094L)
+#define STATUS_INTEGER_OVERFLOW		  ((DWORD   )0xC0000095L)
+#define STATUS_PRIVILEGED_INSTRUCTION	((DWORD   )0xC0000096L)
+#define STATUS_STACK_OVERFLOW			((DWORD   )0xC00000FDL)
+#define STATUS_CONTROL_C_EXIT			((DWORD   )0xC000013AL)
+#define STATUS_FLOAT_MULTIPLE_FAULTS	 ((DWORD   )0xC00002B4L)
+#define STATUS_FLOAT_MULTIPLE_TRAPS	  ((DWORD   )0xC00002B5L)
+#define STATUS_ILLEGAL_VLM_REFERENCE	 ((DWORD   )0xC00002C0L)
 #endif
 
 	ExceptionNames ExceptionMap[] =
@@ -163,20 +163,20 @@ static const TCHAR *GetExceptionDescription(DWORD ExceptionCode)
 		{0xe06d7363, _T("a Microsoft C++ Exception")},
 	};
 
-	for (int i = 0; i < sizeof(ExceptionMap) / sizeof(ExceptionMap[0]); i++)
-		if (ExceptionCode == ExceptionMap[i].ExceptionCode)
+	for(int i = 0; i < sizeof(ExceptionMap) / sizeof(ExceptionMap[0]); i++)
+		if(ExceptionCode == ExceptionMap[i].ExceptionCode)
 			return ExceptionMap[i].ExceptionName;
 
 	return _T("an Unknown exception type");
 }
 
-void echo(const char * format, ...)
+void echo(const char* format, ...)
 {
 	va_list ap;
 	va_start(ap, format);
 	vprintf(format, ap);
 	std::string s = FormatOutputString("logs", "CrashLog", false);
-	FILE * m_file = fopen(s.c_str(), "a");
+	FILE* m_file = fopen(s.c_str(), "a");
 	if(!m_file)
 	{
 		va_end(ap);
@@ -193,7 +193,7 @@ void PrintCrashInformation(PEXCEPTION_POINTERS except)
 	echo("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n");
 	echo("Server has crashed. Reason was:\n");
 	echo("   %s at 0x%08X\n", GetExceptionDescription(except->ExceptionRecord->ExceptionCode),
-		(unsigned long)except->ExceptionRecord->ExceptionAddress);
+	     (unsigned long)except->ExceptionRecord->ExceptionAddress);
 #ifdef REPACK
 	echo("%s repack by %s has crashed. Visit %s for support.", REPACK, REPACK_AUTHOR, REPACK_WEBSITE);
 #endif
@@ -215,42 +215,42 @@ void CStackWalker::OnDbgHelpErr(LPCSTR szFuncName, DWORD gle, DWORD64 addr)
 
 }
 
-void CStackWalker::OnCallstackEntry(CallstackEntryType eType, CallstackEntry &entry)
+void CStackWalker::OnCallstackEntry(CallstackEntryType eType, CallstackEntry & entry)
 {
 	CHAR buffer[STACKWALK_MAX_NAMELEN];
-	if ( (eType != lastEntry) && (entry.offset != 0) )
+	if((eType != lastEntry) && (entry.offset != 0))
 	{
-		if (entry.name[0] == 0)
+		if(entry.name[0] == 0)
 			strcpy(entry.name, "(function-name not available)");
-		if (entry.undName[0] != 0)
+		if(entry.undName[0] != 0)
 			strcpy(entry.name, entry.undName);
-		if (entry.undFullName[0] != 0)
+		if(entry.undFullName[0] != 0)
 			strcpy(entry.name, entry.undFullName);
 
-		char * p = strrchr(entry.loadedImageName, '\\');
+		char* p = strrchr(entry.loadedImageName, '\\');
 		if(!p)
 			p = entry.loadedImageName;
 		else
 			++p;
 
-		if (entry.lineFileName[0] == 0)
+		if(entry.lineFileName[0] == 0)
 		{
 			if(entry.name[0] == 0)
 				sprintf(entry.name, "%p", entry.offset);
-			
-			sprintf(buffer, "%s!%s Line %u\n", p, entry.name, entry.lineNumber );
+
+			sprintf(buffer, "%s!%s Line %u\n", p, entry.name, entry.lineNumber);
 		}
 		else
 			sprintf(buffer, "%s!%s Line %u\n", p, entry.name, entry.lineNumber);
 
-        OnOutput(buffer);
+		OnOutput(buffer);
 	}
 }
 
 void CStackWalker::OnOutput(LPCSTR szText)
 {
 	std::string s = FormatOutputString("logs", "CrashLog", false);
-	FILE * m_file = fopen(s.c_str(), "a");
+	FILE* m_file = fopen(s.c_str(), "a");
 	if(!m_file) return;
 
 	sLog.outError("   %s", szText);
@@ -273,19 +273,19 @@ int __cdecl HandleCrash(PEXCEPTION_POINTERS pExceptPtrs)
 		__except(HandleCrash(GetExceptionInformation()), EXCEPTION_CONTINUE_EXECUTION)
 		{
 
-		}		
+		}
 	}
 
 	/* only allow one thread to crash. */
 	if(!m_crashLock.AttemptAcquire())
 	{
-		TerminateThread(GetCurrentThread(),static_cast<DWORD>(-1));
+		TerminateThread(GetCurrentThread(), static_cast<DWORD>(-1));
 		// not reached
 	}
 
 	if(died)
 	{
-		TerminateProcess(GetCurrentProcess(),static_cast<UINT>(-1));
+		TerminateProcess(GetCurrentProcess(), static_cast<UINT>(-1));
 		// not reached:P
 	}
 
@@ -293,39 +293,39 @@ int __cdecl HandleCrash(PEXCEPTION_POINTERS pExceptPtrs)
 
 	// Create the date/time string
 	time_t curtime = time(NULL);
-	tm * pTime = localtime(&curtime);
+	tm* pTime = localtime(&curtime);
 	char filename[MAX_PATH];
-	TCHAR modname[MAX_PATH*2];
+	TCHAR modname[MAX_PATH * 2];
 	ZeroMemory(modname, sizeof(modname));
-	if(GetModuleFileName(0, modname, MAX_PATH*2-2) <= 0)
+	if(GetModuleFileName(0, modname, MAX_PATH * 2 - 2) <= 0)
 		strcpy(modname, "UNKNOWN");
 
-	char * mname = strrchr(modname, '\\');
-	(void*)mname++;	 // Remove the last 
+	char* mname = strrchr(modname, '\\');
+	(void*)mname++;	 // Remove the last
 
 #ifdef _DEBUG
-	const char *format = "CrashDumps\\dump-%s-%u-%u-%u-%u-%u-%u-%u-%u.dmp";
+	const char* format = "CrashDumps\\dump-%s-%u-%u-%u-%u-%u-%u-%u-%u.dmp";
 #else
-	const char *format = "CrashDumps\\build-arcemu-in-debug-if-you-want-a-proper-crashdump-%s-%u-%u-%u-%u-%u-%u-%u-%u.dmp";
+	const char* format = "CrashDumps\\build-arcemu-in-debug-if-you-want-a-proper-crashdump-%s-%u-%u-%u-%u-%u-%u-%u-%u.dmp";
 #endif
 	sprintf(filename, format,
-		mname, BUILD_REVISION, pTime->tm_year+1900, pTime->tm_mon+1, pTime->tm_mday,
-		pTime->tm_hour, pTime->tm_min, pTime->tm_sec, GetCurrentThreadId());
-	
+	        mname, BUILD_REVISION, pTime->tm_year + 1900, pTime->tm_mon + 1, pTime->tm_mday,
+	        pTime->tm_hour, pTime->tm_min, pTime->tm_sec, GetCurrentThreadId());
+
 
 	HANDLE hDump = CreateFile(filename, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS,
-		FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH, 0);
+	                          FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH, 0);
 
 	if(hDump == INVALID_HANDLE_VALUE)
 	{
 		// Create the directory first
 		CreateDirectory("CrashDumps", 0);
 		hDump = CreateFile(filename, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS,
-			FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH, 0);
+		                   FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH, 0);
 	}
 
 	sLog.outError("Server has crashed. Creating crash dump file %s", filename);
-	
+
 	if(hDump == INVALID_HANDLE_VALUE)
 	{
 		sLog.outError("Could not open crash dump file.");
@@ -340,13 +340,13 @@ int __cdecl HandleCrash(PEXCEPTION_POINTERS pExceptPtrs)
 
 
 		MiniDumpWriteDump(GetCurrentProcess(), GetCurrentProcessId(),
-			hDump, MiniDumpWithIndirectlyReferencedMemory, &info, 0, 0);
+		                  hDump, MiniDumpWithIndirectlyReferencedMemory, &info, 0, 0);
 #endif
 		CloseHandle(hDump);
 	}
 
 	SetPriorityClass(GetCurrentProcess(), BELOW_NORMAL_PRIORITY_CLASS);
-	OnCrash(!ON_CRASH_BREAK_DEBUGGER);	  
+	OnCrash(!ON_CRASH_BREAK_DEBUGGER);
 
 	sLog.Close();
 	return EXCEPTION_CONTINUE_SEARCH;

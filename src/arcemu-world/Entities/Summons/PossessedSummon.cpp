@@ -20,25 +20,30 @@
 
 #include "../../StdAfx.h"
 
-PossessedSummon::PossessedSummon( uint64 GUID ) : Summon( GUID ){
+PossessedSummon::PossessedSummon(uint64 GUID) : Summon(GUID)
+{
 }
 
-PossessedSummon::~PossessedSummon(){
+PossessedSummon::~PossessedSummon()
+{
 }
 
-void PossessedSummon::Load( CreatureProto *proto, Unit *owner, LocationVector &position, uint32 spellid, int32 summonslot ){
-	Summon::Load( proto, owner, position, spellid, summonslot );
+void PossessedSummon::Load(CreatureProto* proto, Unit* owner, LocationVector & position, uint32 spellid, int32 summonslot)
+{
+	Summon::Load(proto, owner, position, spellid, summonslot);
 
-	setLevel( owner->getLevel() );
-	setAItoUse( false );
-	m_aiInterface->StopMovement( 0 );
+	setLevel(owner->getLevel());
+	setAItoUse(false);
+	m_aiInterface->StopMovement(0);
 }
 
-void PossessedSummon::OnPushToWorld(){
+void PossessedSummon::OnPushToWorld()
+{
 	Summon::OnPushToWorld();
 }
 
-void PossessedSummon::OnPreRemoveFromWorld(){
+void PossessedSummon::OnPreRemoveFromWorld()
+{
 	Summon::OnPreRemoveFromWorld();
 }
 

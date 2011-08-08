@@ -25,25 +25,25 @@ class ConsoleSocket;
 
 class BaseConsole
 {
-public:
-	virtual ~BaseConsole() {}
-	virtual void Write(const char * Format, ...) = 0;
+	public:
+		virtual ~BaseConsole() {}
+		virtual void Write(const char* Format, ...) = 0;
 };
 
 class RemoteConsole : public BaseConsole
 {
-	ConsoleSocket * m_pSocket;
-public:
-	RemoteConsole(ConsoleSocket* pSocket);
-	void Write(const char * Format, ...);
+		ConsoleSocket* m_pSocket;
+	public:
+		RemoteConsole(ConsoleSocket* pSocket);
+		void Write(const char* Format, ...);
 };
 
 class LocalConsole : public BaseConsole
 {
-public:
-	void Write(const char * Format, ...);
+	public:
+		void Write(const char* Format, ...);
 };
 
-void HandleConsoleInput(BaseConsole * pConsole, const char * szInput);
+void HandleConsoleInput(BaseConsole* pConsole, const char* szInput);
 
 #endif

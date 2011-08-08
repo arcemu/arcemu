@@ -27,13 +27,13 @@ class SpeedCheatDetector
 	public:
 		SpeedCheatDetector();
 		void		AddSample(float x, float y, int stamp, float player_speed); // update the detector with new values
-		inline char	IsCheatDetected(){ return cheat_threat >= CHEAT_ALARMS_TO_TRIGGER_CHEAT; } // test cheater status
+		inline char	IsCheatDetected() { return cheat_threat >= CHEAT_ALARMS_TO_TRIGGER_CHEAT; } // test cheater status
 		void		SkipSamplingUntil(int stamp);	// delay then reset cheat detector
-		void		ReportCheater(Player *_player);	// take actions against a cheater
+		void		ReportCheater(Player* _player);	// take actions against a cheater
 		void		EventSpeedChange();				// reset internal values on speed change
 
 	private:
-		float			last_x,last_y;
+		float			last_x, last_y;
 		int				last_stamp;
 		signed char		cheat_threat;		//don't draw quick conclusions. If player is suspicious over time then kill him
 		float			last_used_speed;	//we reset if speed changed since our last measure

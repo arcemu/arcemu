@@ -46,7 +46,7 @@
 	if(x && y && z && entry)
 	{
 		if (spawntype == 1) //Unit
-		{ 
+		{
 			CreatureProto *p = CreatureProtoStorage.LookupEntry(entry);
 			CreatureInfo *i = CreatureNameStorage.LookupEntry(entry);
 			if (p == NULL || i == NULL)
@@ -92,14 +92,14 @@
 			pCreature->SetEquippedItem(RANGED,equip3);
 			pCreature->m_noRespawn = true;
 			pCreature->PushToWorld(mapMgr);
-			if (duration>0) 
+			if (duration>0)
 				pCreature->Despawn(duration,0);
 			if (save)
 				pCreature->SaveToDB();
 			PUSH_UNIT(L,pCreature);
-		} 
+		}
 		else if (spawntype == 2) //GO
-		{ 
+		{
 			GameObjectInfo *n = GameObjectNameStorage.LookupEntry(entry);
 			if (n == NULL)
 				return 0;
@@ -147,21 +147,21 @@
 		lua_pushnil(L);
 	return 1;
 }*/
-	
+
 ARCEMU_FORCEINLINE static ptrdiff_t GetGameTime()
 {
 	return (ptrdiff_t)sWorld.GetGameTime();
 }
 
-static Player * GetPlayer(const char * name)
+static Player* GetPlayer(const char* name)
 {
-	Player * plr = objmgr.GetPlayer(name);
-	if(plr != NULL && !plr->IsInWorld() )
+	Player* plr = objmgr.GetPlayer(name);
+	if(plr != NULL && !plr->IsInWorld())
 		plr = NULL;
 	return plr;
 }
 
-ARCEMU_FORCEINLINE static const char * enginename() //also mapped to GetLuaEngine()
+ARCEMU_FORCEINLINE static const char* enginename()  //also mapped to GetLuaEngine()
 {
 	return ENGINE_NAME;
 }
@@ -175,75 +175,75 @@ ARCEMU_FORCEINLINE static void logcolor(ptrdiff_t color)
 {
 	//Log.Color(color);
 }
-ARCEMU_FORCEINLINE static QueryResult* WorldDBQuery(const char * query)
+ARCEMU_FORCEINLINE static QueryResult* WorldDBQuery(const char* query)
 {
 	if(query != NULL)
 		return WorldDatabase.Query(query);
 	return NULL;
 }
 
-ARCEMU_FORCEINLINE static QueryResult* CharDBQuery(const char * query)
+ARCEMU_FORCEINLINE static QueryResult* CharDBQuery(const char* query)
 {
 	if(query != NULL)
 		return CharacterDatabase.Query(query);
 	return NULL;
 }
 
-static void SendWorldMessage(const char * msg, uint32 msg_type)
+static void SendWorldMessage(const char* msg, uint32 msg_type)
 {
 	if(msg != NULL && msg_type)
 	{
-		if (msg_type == 1)
+		if(msg_type == 1)
 			sWorld.SendWorldWideScreenText(msg);
-		else if (msg_type == 2)
+		else if(msg_type == 2)
 			sWorld.SendWorldText(msg);
 	}
 }
 
-static void ReloadTable(const char * TableName)
+static void ReloadTable(const char* TableName)
 {
 	if(TableName == NULL)
 		return;
 
-	if (!stricmp(TableName, "spell_disable"))
+	if(!stricmp(TableName, "spell_disable"))
 		objmgr.ReloadDisabledSpells();
-	else if (!stricmp(TableName, "vendors"))
+	else if(!stricmp(TableName, "vendors"))
 		objmgr.ReloadVendors();
 	else
 	{
-		if (!stricmp(TableName, "items"))					// Items
+		if(!stricmp(TableName, "items"))					// Items
 			ItemPrototypeStorage.Reload();
-		else if (!stricmp(TableName, "creature_proto"))		// Creature Proto
+		else if(!stricmp(TableName, "creature_proto"))		// Creature Proto
 			CreatureProtoStorage.Reload();
-		else if (!stricmp(TableName, "creature_names"))		// Creature Names
+		else if(!stricmp(TableName, "creature_names"))		// Creature Names
 			CreatureNameStorage.Reload();
-		else if (!stricmp(TableName, "gameobject_names"))	// GO Names
+		else if(!stricmp(TableName, "gameobject_names"))	// GO Names
 			GameObjectNameStorage.Reload();
-		else if (!stricmp(TableName, "areatriggers"))		// Areatriggers
+		else if(!stricmp(TableName, "areatriggers"))		// Areatriggers
 			AreaTriggerStorage.Reload();
-		else if (!stricmp(TableName, "itempages"))			// Item Pages
+		else if(!stricmp(TableName, "itempages"))			// Item Pages
 			ItemPageStorage.Reload();
-		else if (!stricmp(TableName, "worldstring_tables"))			// wst
+		else if(!stricmp(TableName, "worldstring_tables"))			// wst
 			WorldStringTableStorage.Reload();
-		else if (!stricmp(TableName, "worldbroadcast"))			// wb
+		else if(!stricmp(TableName, "worldbroadcast"))			// wb
 			WorldBroadCastStorage.Reload();
-		else if (!stricmp(TableName, "quests"))				// Quests
+		else if(!stricmp(TableName, "quests"))				// Quests
 			QuestStorage.Reload();
-		else if (!stricmp(TableName, "npc_text"))			// NPC Text Storage
+		else if(!stricmp(TableName, "npc_text"))			// NPC Text Storage
 			NpcTextStorage.Reload();
-		else if (!stricmp(TableName, "fishing"))				// Fishing Zones
+		else if(!stricmp(TableName, "fishing"))				// Fishing Zones
 			FishingZoneStorage.Reload();
 		else if(!stricmp(TableName, "teleport_coords"))		// Teleport coords
 			TeleportCoordStorage.Reload();
-		else if (!stricmp(TableName, "graveyards"))			// Graveyards
+		else if(!stricmp(TableName, "graveyards"))			// Graveyards
 			GraveyardStorage.Reload();
-		else if (!stricmp(TableName, "worldmap_info"))		// WorldMapInfo
+		else if(!stricmp(TableName, "worldmap_info"))		// WorldMapInfo
 			WorldMapInfoStorage.Reload();
-		else if (!stricmp(TableName, "zoneguards"))
+		else if(!stricmp(TableName, "zoneguards"))
 			ZoneGuardStorage.Reload();
-		else if (!stricmp(TableName, "unit_display_sizes"))
+		else if(!stricmp(TableName, "unit_display_sizes"))
 			UnitModelSizeStorage.Reload();
-		else if (!stricmp(TableName, "command_overrides"))	// Command Overrides
+		else if(!stricmp(TableName, "command_overrides"))	// Command Overrides
 		{
 			CommandTableStorage::getSingleton().Dealloc();
 			CommandTableStorage::getSingleton().Init();
@@ -262,14 +262,14 @@ static void GetPlayersInWorld(lua_stack stack)
 {
 	ptrdiff_t count = 1;
 	//push a new table.
-	lua_newtable( (lua_thread)stack);
+	lua_newtable((lua_thread)stack);
 	objmgr._playerslock.AcquireReadLock();
-    HM_NAMESPACE::hash_map<uint32, Player*>::const_iterator itr;
-    for (itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
-    {
-		lua_pushinteger( (lua_thread)stack, count);
-		luabridge::tdstack<Player*>::push( (lua_thread)stack, (*itr).second );
-		lua_rawset( (lua_thread)stack,-3);
+	HM_NAMESPACE::hash_map<uint32, Player*>::const_iterator itr;
+	for(itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
+	{
+		lua_pushinteger((lua_thread)stack, count);
+		luabridge::tdstack<Player*>::push((lua_thread)stack, (*itr).second);
+		lua_rawset((lua_thread)stack, -3);
 		++count;
 	}
 	objmgr._playerslock.ReleaseReadLock();
@@ -323,15 +323,15 @@ static int SendPvPCaptureMessage(lua_State * L)
 static void GetPlayersInMap(uint32 map_id, lua_stack stack)
 {
 	uint32 count = 1;
-	lua_newtable( (lua_thread)stack);
-	MapMgr * mgr = sInstanceMgr.GetMapMgr( (uint32)map_id);
+	lua_newtable((lua_thread)stack);
+	MapMgr* mgr = sInstanceMgr.GetMapMgr((uint32)map_id);
 	if(mgr != NULL)
 	{
 		for(PlayerStorageMap::iterator itr = mgr->m_PlayerStorage.begin(); itr != mgr->m_PlayerStorage.end(); ++itr)
 		{
-			lua_pushinteger( (lua_thread)stack,count);
-			luabridge::tdstack<Player*>::push( (lua_thread)stack, itr->second);
-			lua_rawset( (lua_thread)stack ,-3);
+			lua_pushinteger((lua_thread)stack, count);
+			luabridge::tdstack<Player*>::push((lua_thread)stack, itr->second);
+			lua_rawset((lua_thread)stack , -3);
 			count++;
 		}
 	}
@@ -340,16 +340,16 @@ static void GetPlayersInMap(uint32 map_id, lua_stack stack)
 static void GetPlayersInZone(uint32 zone_id, lua_stack stack)
 {
 	ptrdiff_t count = 1;
-	lua_newtable( (lua_thread)stack);
+	lua_newtable((lua_thread)stack);
 	objmgr._playerslock.AcquireReadLock();
 	HM_NAMESPACE::hash_map<uint32, Player*>::const_iterator itr;
-    for(itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
+	for(itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
 	{
 		if(itr->second->GetZoneId() == (uint32)zone_id)
 		{
-			lua_pushinteger( (lua_thread)stack,count);
-			luabridge::tdstack<Player*>::push( (lua_thread)stack, itr->second);
-			lua_rawset( (lua_thread)stack,-3);
+			lua_pushinteger((lua_thread)stack, count);
+			luabridge::tdstack<Player*>::push((lua_thread)stack, itr->second);
+			lua_rawset((lua_thread)stack, -3);
 			++count;
 		}
 	}
@@ -373,39 +373,39 @@ static void GetPlayersInZone(uint32 zone_id, lua_stack stack)
 
 uint32 luabit_and(uint32 left, lua_stack stack)
 {
-	uint32 top = lua_gettop( (lua_thread)stack);
+	uint32 top = lua_gettop((lua_thread)stack);
 	if(top > 1)
 	{
 		for(uint32 i = 2; i <= top; ++i)
 		{
-			if(lua_isnumber( (lua_thread)stack,i) )
-				left &= (uint32)luaL_checkint( (lua_thread)stack, i);
+			if(lua_isnumber((lua_thread)stack, i))
+				left &= (uint32)luaL_checkint((lua_thread)stack, i);
 		}
 	}
 	return left;
 }
 uint32 luabit_or(uint32 left, lua_stack stack)
 {
-	uint32 top = lua_gettop( (lua_thread)stack);
+	uint32 top = lua_gettop((lua_thread)stack);
 	if(top > 1)
 	{
 		for(uint32 i = 2; i <= top; ++i)
 		{
-			if(lua_isnumber( (lua_thread)stack, i) )
-				left |= (uint32)luaL_checkint( (lua_thread)stack, i);
+			if(lua_isnumber((lua_thread)stack, i))
+				left |= (uint32)luaL_checkint((lua_thread)stack, i);
 		}
 	}
 	return left;
 }
-uint32 luabit_xor( uint32 left, lua_stack stack)
+uint32 luabit_xor(uint32 left, lua_stack stack)
 {
-	uint32 top = lua_gettop( (lua_thread)stack);
+	uint32 top = lua_gettop((lua_thread)stack);
 	if(top > 1)
 	{
 		for(uint32 i = 2; i <= top; ++i)
 		{
-			if(lua_isnumber( (lua_thread)stack, i) )
-				left ^= (uint32)luaL_checkint( (lua_thread)stack, i);
+			if(lua_isnumber((lua_thread)stack, i))
+				left ^= (uint32)luaL_checkint((lua_thread)stack, i);
 		}
 	}
 	return left;
@@ -424,7 +424,7 @@ uint32 bit_shiftright(uint32 left, uint8 count)
 	count &= 0x7F;
 	return (left >> count);
 }
-ARCEMU_FORCEINLINE const char * GetPlatform()
+ARCEMU_FORCEINLINE const char* GetPlatform()
 {
 	return PLATFORM_TEXT;
 }
@@ -432,57 +432,57 @@ uint64 NumberToGUID(uint32 num)
 {
 	return (uint64)num;
 }
-void SendPacketToZone(WorldPacket * dat, uint32 zone_id)
+void SendPacketToZone(WorldPacket* dat, uint32 zone_id)
 {
-	if (dat != NULL && zone_id)
+	if(dat != NULL && zone_id)
 		sWorld.SendZoneMessage(dat, zone_id);
 }
 
-void SendPacketToInstance(WorldPacket * pack, uint32 instance)
+void SendPacketToInstance(WorldPacket* pack, uint32 instance)
 {
 	if(pack != NULL && instance)
 		sWorld.SendInstanceMessage(pack, instance);
 }
 
-void SendPacketToWorld(WorldPacket * pack)
+void SendPacketToWorld(WorldPacket* pack)
 {
-	if (pack)
+	if(pack)
 		sWorld.SendGlobalMessage(pack);
 }
 
-void SendPacketToChannel(WorldPacket * pack, const char * cname, int team)
+void SendPacketToChannel(WorldPacket* pack, const char* cname, int team)
 {
 	if(pack != NULL && cname != NULL)
 	{
-		Channel * pChannel = channelmgr.GetChannel(cname, team);
+		Channel* pChannel = channelmgr.GetChannel(cname, team);
 		if(pChannel)
 			pChannel->SendToAll(pack);
 	}
 }
 
-Creature * GetInstanceCreature(uint32 map, uint32 instance, lua_stack stack)
+Creature* GetInstanceCreature(uint32 map, uint32 instance, lua_stack stack)
 {
 	uint64 guid = 0;
 	uint32 spawnId = 0;
-	if(lua_type( (lua_thread)stack, 3) == LUA_TNUMBER)
-		spawnId = (uint32)luaL_checkint( (lua_thread)stack,3);
+	if(lua_type((lua_thread)stack, 3) == LUA_TNUMBER)
+		spawnId = (uint32)luaL_checkint((lua_thread)stack, 3);
 	else
-		guid = luabridge::tdstack<uint64 &>::get( (lua_thread)stack, 3);
+		guid = luabridge::tdstack<uint64 &>::get((lua_thread)stack, 3);
 
-	Instance * pInstance = sInstanceMgr.GetInstanceByIds(map, instance);
-	if(pInstance == NULL || (!guid && !spawnId) ) 
+	Instance* pInstance = sInstanceMgr.GetInstanceByIds(map, instance);
+	if(pInstance == NULL || (!guid && !spawnId))
 		return NULL;
 	if(guid)
-		return pInstance->m_mapMgr->GetCreature( GET_LOWGUID_PART(guid) );
+		return pInstance->m_mapMgr->GetCreature(GET_LOWGUID_PART(guid));
 	else
-		return pInstance->m_mapMgr->GetSqlIdCreature( spawnId );
+		return pInstance->m_mapMgr->GetSqlIdCreature(spawnId);
 
 	return NULL;
 }
 
 uint32 GetInstancePlayerCount(uint32 map, uint32 instance)
 {
-	Instance * pInstance = sInstanceMgr.GetInstanceByIds( map, instance);
+	Instance* pInstance = sInstanceMgr.GetInstanceByIds(map, instance);
 	if(pInstance != NULL)
 		return pInstance->m_mapMgr->GetPlayerCount();
 	return 0;
@@ -490,17 +490,17 @@ uint32 GetInstancePlayerCount(uint32 map, uint32 instance)
 
 void GetPlayersInInstance(uint32 map, uint32 instance, lua_stack stack)
 {
-	Instance * pInstance = sInstanceMgr.GetInstanceByIds( map, instance);
+	Instance* pInstance = sInstanceMgr.GetInstanceByIds(map, instance);
 	if(pInstance != NULL && pInstance->m_mapMgr != NULL)
 	{
 		int count = 1;
-		lua_newtable( (lua_thread)stack );
-		MapMgr * mgr = pInstance->m_mapMgr;
-		for (PlayerStorageMap::iterator itr = mgr->m_PlayerStorage.begin(); itr != mgr->m_PlayerStorage.end(); ++itr)
+		lua_newtable((lua_thread)stack);
+		MapMgr* mgr = pInstance->m_mapMgr;
+		for(PlayerStorageMap::iterator itr = mgr->m_PlayerStorage.begin(); itr != mgr->m_PlayerStorage.end(); ++itr)
 		{
-			lua_pushinteger( (lua_thread)stack,count);
-			luabridge::tdstack<Player*>::push( (lua_thread)stack, itr->second);
-			lua_rawset( (lua_thread)stack,-3);
+			lua_pushinteger((lua_thread)stack, count);
+			luabridge::tdstack<Player*>::push((lua_thread)stack, itr->second);
+			lua_rawset((lua_thread)stack, -3);
 		}
 	}
 }

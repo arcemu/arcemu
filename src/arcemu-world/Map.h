@@ -64,18 +64,19 @@ typedef struct
 	uint32 phase;
 
 	/* sets one of the bytes of an uint32 */
-	uint32 setbyte(uint32 buffer, uint8 index, uint32 byte){
-    
-	/* We don't want a segfault, now do we? */
-	if(index >= 4)
-	  return buffer;
-  
-	byte = byte << index*8;
-	buffer = buffer | byte;
-        
-	return buffer;
+	uint32 setbyte(uint32 buffer, uint8 index, uint32 byte)
+	{
+
+		/* We don't want a segfault, now do we? */
+		if(index >= 4)
+			return buffer;
+
+		byte = byte << index * 8;
+		buffer = buffer | byte;
+
+		return buffer;
 	}
-}CreatureSpawn;
+} CreatureSpawn;
 
 typedef struct
 {
@@ -106,63 +107,63 @@ typedef struct
 {
 	CreatureSpawnList CreatureSpawns;
 	GOSpawnList GOSpawns;
-}CellSpawns;
+} CellSpawns;
 
 class SERVER_DECL Map
 {
-public:
-	Map(uint32 mapid, MapInfo * inf);
-	~Map();
+	public:
+		Map(uint32 mapid, MapInfo* inf);
+		~Map();
 
-	ARCEMU_INLINE string GetNameString() { return name; }
-	ARCEMU_INLINE const char* GetName() { return name.c_str(); }
-	ARCEMU_INLINE MapEntry* GetDBCEntry() { return me; }
+		ARCEMU_INLINE string GetNameString() { return name; }
+		ARCEMU_INLINE const char* GetName() { return name.c_str(); }
+		ARCEMU_INLINE MapEntry* GetDBCEntry() { return me; }
 
-	ARCEMU_INLINE CellSpawns *GetSpawnsList(uint32 cellx,uint32 celly)
-	{
-		Arcemu::Util::ARCEMU_ASSERT(   cellx < _sizeX);
-		Arcemu::Util::ARCEMU_ASSERT(   celly < _sizeY);
-		if(spawns[cellx]== NULL) return NULL;
-
-		return spawns[cellx][celly];
-	}
-	ARCEMU_INLINE CellSpawns * GetSpawnsListAndCreate(uint32 cellx, uint32 celly)
-	{
-		Arcemu::Util::ARCEMU_ASSERT(   cellx < _sizeX);
-		Arcemu::Util::ARCEMU_ASSERT(   celly < _sizeY);
-		if(spawns[cellx]== NULL)
+		ARCEMU_INLINE CellSpawns* GetSpawnsList(uint32 cellx, uint32 celly)
 		{
-			spawns[cellx] = new CellSpawns*[_sizeY];
-			memset(spawns[cellx],0,sizeof(CellSpawns*)*_sizeY);
+			Arcemu::Util::ARCEMU_ASSERT(cellx < _sizeX);
+			Arcemu::Util::ARCEMU_ASSERT(celly < _sizeY);
+			if(spawns[cellx] == NULL) return NULL;
+
+			return spawns[cellx][celly];
+		}
+		ARCEMU_INLINE CellSpawns* GetSpawnsListAndCreate(uint32 cellx, uint32 celly)
+		{
+			Arcemu::Util::ARCEMU_ASSERT(cellx < _sizeX);
+			Arcemu::Util::ARCEMU_ASSERT(celly < _sizeY);
+			if(spawns[cellx] == NULL)
+			{
+				spawns[cellx] = new CellSpawns*[_sizeY];
+				memset(spawns[cellx], 0, sizeof(CellSpawns*)*_sizeY);
+			}
+
+			if(spawns[cellx][celly] == 0)
+				spawns[cellx][celly] = new CellSpawns;
+			return spawns[cellx][celly];
 		}
 
-		if(spawns[cellx][celly] == 0)
-			spawns[cellx][celly] = new CellSpawns;
-		return spawns[cellx][celly];
-	}
+		void LoadSpawns(bool reload);//set to true to make clean up
+		uint32 CreatureSpawnCount;
+		uint32 GameObjectSpawnCount;
 
-	void LoadSpawns(bool reload);//set to true to make clean up
-	uint32 CreatureSpawnCount;
-	uint32 GameObjectSpawnCount;
+		ARCEMU_INLINE void CellGoneActive(uint32 x, uint32 y)
+		{
+		}
 
-	ARCEMU_INLINE void CellGoneActive(uint32 x, uint32 y)
-	{
-	}
+		ARCEMU_INLINE void CellGoneIdle(uint32 x, uint32 y)
+		{
+		}
 
-	ARCEMU_INLINE void CellGoneIdle(uint32 x,uint32 y)
-	{
-	}
+	private:
+		MapInfo* 	   _mapInfo;
+		uint32 _mapId;
+		string name;
+		MapEntry* me;
 
-private:
-	MapInfo *	   _mapInfo;
-	uint32 _mapId;
-	string name;
-	MapEntry * me;
-
-	//new stuff
-	CellSpawns **spawns[_sizeX];
-public:
-	CellSpawns staticSpawns;
+		//new stuff
+		CellSpawns** spawns[_sizeX];
+	public:
+		CellSpawns staticSpawns;
 };
 
 #endif

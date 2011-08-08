@@ -163,8 +163,8 @@
 
 typedef struct
 {
-    uint8 itemclass;
-    uint32 subclass;
+	uint8 itemclass;
+	uint32 subclass;
 } ItemProf;
 
 const ItemProf* GetProficiencyBySkill(uint32 skill);

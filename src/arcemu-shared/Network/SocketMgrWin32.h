@@ -15,58 +15,60 @@
 class Socket;
 class SERVER_DECL SocketMgr : public Singleton<SocketMgr>
 {
-public:
-	SocketMgr();
-	~SocketMgr();
+	public:
+		SocketMgr();
+		~SocketMgr();
 
-	ARCEMU_INLINE HANDLE GetCompletionPort() { return m_completionPort; }
-	void SpawnWorkerThreads();
-	void CloseAll();
-	void ShowStatus();
-	void AddSocket(Socket * s)
-	{
-		socketLock.Acquire();
-		_sockets.insert(s);
-		++socket_count;
-		socketLock.Release();
-	}
+		ARCEMU_INLINE HANDLE GetCompletionPort() { return m_completionPort; }
+		void SpawnWorkerThreads();
+		void CloseAll();
+		void ShowStatus();
+		void AddSocket(Socket* s)
+		{
+			socketLock.Acquire();
+			_sockets.insert(s);
+			++socket_count;
+			socketLock.Release();
+		}
 
-	void RemoveSocket(Socket * s)
-	{
-		socketLock.Acquire();
-		_sockets.erase(s);
-		--socket_count;
-		socketLock.Release();
-	}
+		void RemoveSocket(Socket* s)
+		{
+			socketLock.Acquire();
+			_sockets.erase(s);
+			--socket_count;
+			socketLock.Release();
+		}
 
-	void ShutdownThreads();
-	long threadcount;
+		void ShutdownThreads();
+		long threadcount;
 
-private:
-	HANDLE m_completionPort;
-	set<Socket*> _sockets;
-	Mutex socketLock;
-	Arcemu::Threading::AtomicCounter socket_count;
+	private:
+		HANDLE m_completionPort;
+		set<Socket*> _sockets;
+		Mutex socketLock;
+		Arcemu::Threading::AtomicCounter socket_count;
 };
 
 #define sSocketMgr SocketMgr::getSingleton()
 
-typedef void(*OperationHandler)(Socket * s, uint32 len);
+typedef void(*OperationHandler)(Socket* s, uint32 len);
 
 class SocketWorkerThread : public ThreadBase
 {
-public:
-	bool run();
+	public:
+		bool run();
 };
 
-void SERVER_DECL HandleReadComplete(Socket * s, uint32 len);
-void SERVER_DECL HandleWriteComplete(Socket * s, uint32 len);
-void SERVER_DECL HandleShutdown(Socket * s, uint32 len);
+void SERVER_DECL HandleReadComplete(Socket* s, uint32 len);
+void SERVER_DECL HandleWriteComplete(Socket* s, uint32 len);
+void SERVER_DECL HandleShutdown(Socket* s, uint32 len);
 
-static OperationHandler ophandlers[NUM_SOCKET_IO_EVENTS] = {
+static OperationHandler ophandlers[NUM_SOCKET_IO_EVENTS] =
+{
 	&HandleReadComplete,
 	&HandleWriteComplete,
-	&HandleShutdown };
+	&HandleShutdown
+};
 
 #endif
 #endif

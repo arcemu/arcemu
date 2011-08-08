@@ -46,20 +46,20 @@ void Socket::WriteCallback()
 		{
 			int wsaerror = WSAGetLastError();
 
-			if( wsaerror != WSA_IO_PENDING)
+			if(wsaerror != WSA_IO_PENDING)
 			{
-				sLog.outError( "WSAGetLastError() = %d on socket %u",wsaerror, m_fd );
+				sLog.outError("WSAGetLastError() = %d on socket %u", wsaerror, m_fd);
 
 				m_writeEvent.Unmark();
 				DecSendLock();
 				Disconnect();
 			}
 		}
-        m_BytesSent += w_length;
+		m_BytesSent += w_length;
 	}
 	else
 	{
-        // Write operation is completed.
+		// Write operation is completed.
 		DecSendLock();
 	}
 	m_writeMutex.Release();
@@ -75,7 +75,7 @@ void Socket::SetupReadEvent()
 	DWORD flags = 0;
 	WSABUF buf;
 	buf.len = (u_long)readBuffer.GetSpace();
-	buf.buf = (char*)readBuffer.GetBuffer();	
+	buf.buf = (char*)readBuffer.GetBuffer();
 
 	// event that will trigger after data is receieved
 	/*OverlappedStruct * ov = new OverlappedStruct(SOCKET_IO_EVENT_READ_COMPLETE);
@@ -96,7 +96,7 @@ void Socket::SetupReadEvent()
 			Disconnect();
 		}
 	}
-    m_BytesRecieved += r_length;
+	m_BytesRecieved += r_length;
 	//m_readEvent = ov;
 	m_readMutex.Release();
 }

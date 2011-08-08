@@ -20,46 +20,46 @@
 
 class CurgleCranklehop_Gossip : public Arcemu::Gossip::Script
 {
-public:
-    void OnHello(Object* pObject, Player* plr)
-    {
-		Arcemu::Gossip::Menu menu(pObject->GetGUID(), 1519);
-		menu.AddItem( Arcemu::Gossip::ICON_CHAT, "Please tell me more about the hippogryphs.", 1 );
-		menu.AddItem( Arcemu::Gossip::ICON_CHAT, "Please tell me more about the Gordunni ogres.", 2);
-		menu.Send(plr);
-    }
+	public:
+		void OnHello(Object* pObject, Player* plr)
+		{
+			Arcemu::Gossip::Menu menu(pObject->GetGUID(), 1519);
+			menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Please tell me more about the hippogryphs.", 1);
+			menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Please tell me more about the Gordunni ogres.", 2);
+			menu.Send(plr);
+		}
 
-    void OnSelectOption(Object* pObject, Player* plr, uint32 Id, const char * Code)
-    {
-		Arcemu::Gossip::Menu menu(pObject->GetGUID(), 0);
-		if(1 == Id)
-			menu.setTextID(1521);
-		else
-			menu.setTextID(1646);
-		menu.Send(plr);
-    }
+		void OnSelectOption(Object* pObject, Player* plr, uint32 Id, const char* Code)
+		{
+			Arcemu::Gossip::Menu menu(pObject->GetGUID(), 0);
+			if(1 == Id)
+				menu.setTextID(1521);
+			else
+				menu.setTextID(1646);
+			menu.Send(plr);
+		}
 
-	void Destroy() { delete this; }
+		void Destroy() { delete this; }
 
-}; 
+};
 
 class TrentonLighthammer_Gossip : public Arcemu::Gossip::Script
 {
-public:
-     void OnHello(Object* pObject, Player* plr)
-    {
-		Arcemu::Gossip::Menu::SendQuickMenu(pObject->GetGUID(), 1758, plr, 1, Arcemu::Gossip::ICON_CHAT, "Tell me more, Trenton.");
-    }
+	public:
+		void OnHello(Object* pObject, Player* plr)
+		{
+			Arcemu::Gossip::Menu::SendQuickMenu(pObject->GetGUID(), 1758, plr, 1, Arcemu::Gossip::ICON_CHAT, "Tell me more, Trenton.");
+		}
 
-    void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, const char * Code)
-    {
-		Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 1759, plr);
-    }
+		void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, const char* Code)
+		{
+			Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 1759, plr);
+		}
 
-	void Destroy() { delete this; }
+		void Destroy() { delete this; }
 };
 
-void SetupTanarisGossip(ScriptMgr * mgr)
+void SetupTanarisGossip(ScriptMgr* mgr)
 {
 	mgr->register_creature_gossip(7763, new CurgleCranklehop_Gossip);		// Curgle Cranklehop
 	mgr->register_creature_gossip(7804, new TrentonLighthammer_Gossip);	// Trenton Lighthammer

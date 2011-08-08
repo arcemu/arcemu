@@ -18,10 +18,10 @@
  */
 
 //////////////////////////////////////////////
-// Notes: .Execute is ASYNC! - 
+// Notes: .Execute is ASYNC! -
 // We should probably be using QueryBuffer for ASYNC and NONE-ASYNC queries to not lag the emu.
 // See: Player::_SavePetSpells for example of usage
-// updated: Tuesday, June 16th 2009 - Hasbro 
+// updated: Tuesday, June 16th 2009 - Hasbro
 //////////////////////////////////////////////
 
 #include "DatabaseEnv.h"
@@ -33,7 +33,7 @@ SQLCallbackBase::~SQLCallbackBase()
 
 Database::Database() : CThread()
 {
-	_counter= 0;
+	_counter = 0;
 	Connections = NULL;
 	mConnectionCount = -1;   // Not connected.
 	ThreadRunning = true;
@@ -41,7 +41,7 @@ Database::Database() : CThread()
 
 Database::~Database()
 {
-	
+
 }
 
 void Database::_Initialize()
@@ -54,12 +54,12 @@ void Database::_Initialize()
 	ThreadPool.ExecuteTask(qt);
 }
 
-DatabaseConnection * Database::GetFreeConnection()
+DatabaseConnection* Database::GetFreeConnection()
 {
 	uint32 i = 0;
 	for(;;)
 	{
-		DatabaseConnection * con = Connections[ ((i++) % mConnectionCount) ];
+		DatabaseConnection* con = Connections[((i++) % mConnectionCount) ];
 		if(con->Busy.AttemptAcquire())
 			return con;
 	}
@@ -69,8 +69,8 @@ DatabaseConnection * Database::GetFreeConnection()
 }
 
 // Use this when we request data that can return a value (not async)
-QueryResult * Database::Query(const char* QueryString, ...)
-{	
+QueryResult* Database::Query(const char* QueryString, ...)
+{
 	char sql[16384];
 	va_list vlist;
 	va_start(vlist, QueryString);
@@ -78,46 +78,46 @@ QueryResult * Database::Query(const char* QueryString, ...)
 	va_end(vlist);
 
 	// Send the query
-	QueryResult * qResult = NULL;
-	DatabaseConnection * con = GetFreeConnection();
+	QueryResult* qResult = NULL;
+	DatabaseConnection* con = GetFreeConnection();
 
 	if(_SendQuery(con, sql, false))
-		qResult = _StoreQueryResult( con );
-	
-	con->Busy.Release();
-	return qResult;
-}
-
-QueryResult * Database::QueryNA(const char* QueryString)
-{	
-	// Send the query
-	QueryResult * qResult = NULL;
-	DatabaseConnection * con = GetFreeConnection();
-
-	if( _SendQuery( con, QueryString, false ) )
-		qResult = _StoreQueryResult( con );
+		qResult = _StoreQueryResult(con);
 
 	con->Busy.Release();
 	return qResult;
 }
 
-QueryResult * Database::FQuery(const char * QueryString, DatabaseConnection * con)
-{	
+QueryResult* Database::QueryNA(const char* QueryString)
+{
 	// Send the query
-	QueryResult * qResult = NULL;
-	if( _SendQuery( con, QueryString, false ) )
-		qResult = _StoreQueryResult( con );
+	QueryResult* qResult = NULL;
+	DatabaseConnection* con = GetFreeConnection();
+
+	if(_SendQuery(con, QueryString, false))
+		qResult = _StoreQueryResult(con);
+
+	con->Busy.Release();
+	return qResult;
+}
+
+QueryResult* Database::FQuery(const char* QueryString, DatabaseConnection* con)
+{
+	// Send the query
+	QueryResult* qResult = NULL;
+	if(_SendQuery(con, QueryString, false))
+		qResult = _StoreQueryResult(con);
 
 	return qResult;
 }
 
-void Database::FWaitExecute(const char * QueryString, DatabaseConnection * con)
-{	
+void Database::FWaitExecute(const char* QueryString, DatabaseConnection* con)
+{
 	// Send the query
-	_SendQuery( con, QueryString, false );
+	_SendQuery(con, QueryString, false);
 }
 
-void QueryBuffer::AddQuery(const char * format, ...)
+void QueryBuffer::AddQuery(const char* format, ...)
 {
 	char query[16384];
 	va_list vlist;
@@ -126,53 +126,53 @@ void QueryBuffer::AddQuery(const char * format, ...)
 	va_end(vlist);
 
 	size_t len = strlen(query);
-	char * pBuffer = new char[len+1];
+	char* pBuffer = new char[len + 1];
 	memcpy(pBuffer, query, len + 1);
 
 	queries.push_back(pBuffer);
 }
 
-void QueryBuffer::AddQueryNA( const char * str )
+void QueryBuffer::AddQueryNA(const char* str)
 {
 	size_t len = strlen(str);
-	char * pBuffer = new char[len+1];
+	char* pBuffer = new char[len + 1];
 	memcpy(pBuffer, str, len + 1);
 
 	queries.push_back(pBuffer);
 }
 
-void QueryBuffer::AddQueryStr(const string& str)
+void QueryBuffer::AddQueryStr(const string & str)
 {
 	size_t len = str.size();
-	char * pBuffer = new char[len+1];
+	char* pBuffer = new char[len + 1];
 	memcpy(pBuffer, str.c_str(), len + 1);
 
 	queries.push_back(pBuffer);
 }
 
-void Database::PerformQueryBuffer(QueryBuffer * b, DatabaseConnection * ccon)
+void Database::PerformQueryBuffer(QueryBuffer* b, DatabaseConnection* ccon)
 {
 	if(!b->queries.size())
 		return;
 
-	DatabaseConnection * con = ccon;
-	if( ccon == NULL )
+	DatabaseConnection* con = ccon;
+	if(ccon == NULL)
 		con = GetFreeConnection();
-	
+
 	_BeginTransaction(con);
 
 	for(vector<char*>::iterator itr = b->queries.begin(); itr != b->queries.end(); ++itr)
 	{
 		_SendQuery(con, *itr, false);
-		delete[] (*itr);
+		delete[](*itr);
 	}
 
 	_EndTransaction(con);
 
-	if( ccon == NULL )
+	if(ccon == NULL)
 		con->Busy.Release();
 }
-// Use this when we do not have a result. ex: INSERT into SQL 1 
+// Use this when we do not have a result. ex: INSERT into SQL 1
 bool Database::Execute(const char* QueryString, ...)
 {
 	char query[16384];
@@ -186,7 +186,7 @@ bool Database::Execute(const char* QueryString, ...)
 		return WaitExecuteNA(query);
 
 	size_t len = strlen(query);
-	char * pBuffer = new char[len+1];
+	char* pBuffer = new char[len + 1];
 	memcpy(pBuffer, query, len + 1);
 
 	queries_queue.push(pBuffer);
@@ -199,7 +199,7 @@ bool Database::ExecuteNA(const char* QueryString)
 		return WaitExecuteNA(QueryString);
 
 	size_t len = strlen(QueryString);
-	char * pBuffer = new char[len+1];
+	char* pBuffer = new char[len + 1];
 	memcpy(pBuffer, QueryString, len + 1);
 
 	queries_queue.push(pBuffer);
@@ -215,7 +215,7 @@ bool Database::WaitExecute(const char* QueryString, ...)
 	vsnprintf(sql, 16384, QueryString, vlist);
 	va_end(vlist);
 
-	DatabaseConnection * con = GetFreeConnection();
+	DatabaseConnection* con = GetFreeConnection();
 	bool Result = _SendQuery(con, sql, false);
 	con->Busy.Release();
 	return Result;
@@ -223,7 +223,7 @@ bool Database::WaitExecute(const char* QueryString, ...)
 
 bool Database::WaitExecuteNA(const char* QueryString)
 {
-	DatabaseConnection * con = GetFreeConnection();
+	DatabaseConnection* con = GetFreeConnection();
 	bool Result = _SendQuery(con, QueryString, false);
 	con->Busy.Release();
 	return Result;
@@ -239,9 +239,9 @@ bool Database::run()
 	while(1)
 	{
 
-		if (query != NULL)
+		if(query != NULL)
 		{
-			if (con == NULL)
+			if(con == NULL)
 				con = GetFreeConnection();
 			_SendQuery(con, query, false);
 			delete[] query;
@@ -251,16 +251,16 @@ bool Database::run()
 			break;
 		query = queries_queue.pop();
 
-		if (query == NULL)
+		if(query == NULL)
 		{
-			if (con != NULL)
+			if(con != NULL)
 				con->Busy.Release();
 			con = NULL;
 			Arcemu::Sleep(10);
 		}
 	}
 
-	if (con != NULL)
+	if(con != NULL)
 		con->Busy.Release();
 
 	// execute all the remaining queries
@@ -268,7 +268,7 @@ bool Database::run()
 	while(query)
 	{
 		con = GetFreeConnection();
-		_SendQuery( con, query, false );
+		_SendQuery(con, query, false);
 		con->Busy.Release();
 		delete[] query;
 		query = queries_queue.pop();
@@ -278,7 +278,7 @@ bool Database::run()
 	return false;
 }
 
-void AsyncQuery::AddQuery(const char * format, ...)
+void AsyncQuery::AddQuery(const char* format, ...)
 {
 	AsyncQueryResult res;
 	va_list ap;
@@ -289,7 +289,7 @@ void AsyncQuery::AddQuery(const char * format, ...)
 	va_end(ap);
 	len = strlen(buffer);
 	ASSERT(len);
-	res.query = new char[len+1];
+	res.query = new char[len + 1];
 	res.query[len] = 0;
 	memcpy(res.query, buffer, len);
 	res.result = NULL;
@@ -298,7 +298,7 @@ void AsyncQuery::AddQuery(const char * format, ...)
 
 void AsyncQuery::Perform()
 {
-	DatabaseConnection * conn = db->GetFreeConnection();
+	DatabaseConnection* conn = db->GetFreeConnection();
 	for(vector<AsyncQueryResult>::iterator itr = queries.begin(); itr != queries.end(); ++itr)
 		itr->result = db->FQuery(itr->query, conn);
 
@@ -323,17 +323,17 @@ AsyncQuery::~AsyncQuery()
 void Database::EndThreads()
 {
 	//these 2 loops spin until theres nothing left
-	while (1)
+	while(1)
 	{
 		QueryBuffer* buf = query_buffer.pop();
-		if (buf == NULL)
+		if(buf == NULL)
 			break;
 		query_buffer.push(buf);
 	}
-	while (1)
+	while(1)
 	{
 		char* buf = queries_queue.pop();
-		if (buf == NULL)
+		if(buf == NULL)
 			break;
 		queries_queue.push(buf);
 	}
@@ -348,9 +348,9 @@ void Database::EndThreads()
 	}
 }
 
-bool QueryThread::run( )
+bool QueryThread::run()
 {
-	db->thread_proc_query( );
+	db->thread_proc_query();
 	return true;
 }
 
@@ -367,34 +367,34 @@ void Database::thread_proc_query()
 	q = query_buffer.pop();
 	while(1)
 	{
-		if (q != NULL)
+		if(q != NULL)
 		{
-			PerformQueryBuffer( q, con );
+			PerformQueryBuffer(q, con);
 			delete q;
 		}
 
 		if(GetThreadState() == THREADSTATE_TERMINATE)
 			break;
 
-		q = query_buffer.pop( );
-		if (q == NULL)
+		q = query_buffer.pop();
+		if(q == NULL)
 			Arcemu::Sleep(10);
 	}
 
 	con->Busy.Release();
 
 	// kill any queries
-	q = query_buffer.pop( );
+	q = query_buffer.pop();
 	while(q != NULL)
 	{
-		PerformQueryBuffer( q, NULL );
+		PerformQueryBuffer(q, NULL);
 		delete q;
 
 		q = query_buffer.pop();
 	}
 }
 
-void Database::QueueAsyncQuery(AsyncQuery * query)
+void Database::QueueAsyncQuery(AsyncQuery* query)
 {
 	query->db = this;
 	/*if(qt == NULL)
@@ -407,18 +407,18 @@ void Database::QueueAsyncQuery(AsyncQuery * query)
 	query->Perform();
 }
 
-void Database::AddQueryBuffer(QueryBuffer * b)
+void Database::AddQueryBuffer(QueryBuffer* b)
 {
-	if( qt != NULL )
-		query_buffer.push( b );
+	if(qt != NULL)
+		query_buffer.push(b);
 	else
 	{
-		PerformQueryBuffer( b, NULL );
+		PerformQueryBuffer(b, NULL);
 		delete b;
 	}
 }
 
-void Database::FreeQueryResult(QueryResult * p)
+void Database::FreeQueryResult(QueryResult* p)
 {
 	delete p;
 }

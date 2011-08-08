@@ -18,8 +18,9 @@
  */
 #pragma once
 
-extern "C" 
-{		// we're C++, and LUA is C, so the compiler needs to know to use C function names.
+extern "C"
+{
+	// we're C++, and LUA is C, so the compiler needs to know to use C function names.
 #include "../../lualib/lua.h"
 #include "../../lualib/lauxlib.h"
 #include "../../lualib/lualib.h"
@@ -48,20 +49,20 @@ extern "C"
 #define ARCLUA_SUFFIX '\x0A'	//line feed char
 #define ARCLUA_SUFFIX_SIZE 1
 #define GET_LOCK
-#define RELEASE_LOCK 
+#define RELEASE_LOCK
 #define NULL_BINDING_CHECK GET_LOCK; if(m_binding == NULL) return;
 //don't execute lua code from invalid lua states, might prevent some server hooks from firing lua code.
 #define CHECKVALIDSTATE { if(lua_instance.get() == NULL) return; }
 
 namespace lua_engine
 {
-	extern CreatureAIScript * createluacreature(Creature*);
-	extern GameObjectAIScript * createluagameobject(GameObject*);
-	extern QuestScript * createluaquest(uint32);
-	extern Arcemu::Gossip::Script * createunitgossipInterface(uint32 id);
-	extern Arcemu::Gossip::Script * createitemgossipInterface(uint32 id);
-	extern Arcemu::Gossip::Script * creategogossipInterface(uint32 id);
-	extern InstanceScript * createluainstance(MapMgr*);
+	extern CreatureAIScript* createluacreature(Creature*);
+	extern GameObjectAIScript* createluagameobject(GameObject*);
+	extern QuestScript* createluaquest(uint32);
+	extern Arcemu::Gossip::Script* createunitgossipInterface(uint32 id);
+	extern Arcemu::Gossip::Script* createitemgossipInterface(uint32 id);
+	extern Arcemu::Gossip::Script* creategogossipInterface(uint32 id);
+	extern InstanceScript* createluainstance(MapMgr*);
 
 	typedef HM_NAMESPACE::hash_map<std::string, PLUA_SCRIPT> LuaScriptData;
 	typedef std::set<uint32> hooked_dummySpells;
@@ -78,38 +79,38 @@ namespace lua_engine
 	//Locked when we are accessing cached script data
 	extern FastMutex scriptLock;
 
-	
+
 	static void startupEngine();
-	static void loadScripts(PLUA_INSTANCE);	
+	static void loadScripts(PLUA_INSTANCE);
 	extern bool loadScript(const char*);
 	static void loadScripts();
-	static void scriptload_searchdir(char *Dirname, deque<string>& );
+	static void scriptload_searchdir(char* Dirname, deque<string>&);
 	extern void restartEngine();
 	//static void shutdownEngine();
-	extern void restartThread(MapMgr *);
+	extern void restartThread(MapMgr*);
 	extern void shutdownThread(MapMgr*);
-	
-	static void unload_resources( PLUA_INSTANCE);
+
+	static void unload_resources(PLUA_INSTANCE);
 	extern void report(lua_State*);
 	//static void loadCompiler(PLUA_INSTANCE);
 	static void loadState(PLUA_INSTANCE);
 	//a lua reader that simply passes lua script data.
-	static const char * readScript(lua_State *, void *, size_t *);
+	static const char* readScript(lua_State*, void*, size_t*);
 	//a lua writer that dumps scripts in binary form
 	//static int dumpScript(lua_State *, const void *, size_t, void*);
 
 	//static void dumpScripts2HDD();
-	//special header parsing	
-	static void parseHeader(PLUA_SCRIPT);	
+	//special header parsing
+	static void parseHeader(PLUA_SCRIPT);
 	//c to lua and lua to c methods
 	extern void BeginLuaFunctionCall(lua_function ref);
-	extern bool ExecuteLuaFunction(int = 0, int = 0, variadic_parameter ** = NULL, bool= false);
-	extern void ExecuteLuaFunction(variadic_parameter* );
+	extern bool ExecuteLuaFunction(int = 0, int = 0, variadic_parameter** = NULL, bool = false);
+	extern void ExecuteLuaFunction(variadic_parameter*);
 	extern void EndLuaFunctionCall(int results = 0);
 
 
 	//Binding methods, implemented in other files to keep things neat.
-	extern void bindRegisterMethods(luabridge::module&);
+	extern void bindRegisterMethods(luabridge::module &);
 	extern void bindObjectMethods(luabridge::module &);
 	extern void bindUnitMethods(luabridge::module &);
 	extern void bindCreatureMethods(luabridge::module &);
@@ -149,7 +150,7 @@ namespace lua_engine
 #define push_str(cstr) luabridge::tdstack<const char*>::push(lua_state, (cstr) )
 #define push_float(flewt) luabridge::tdstack<float>::push(lua_state, (flewt) )
 #define push_double(doublee) luabridge::tdstack<double>::push(lua_state, (doublee))
-#define push_varargs(varargs) luabridge::tdstack<variadic_parameter*>::push(lua_state, (varargs) ) 
+#define push_varargs(varargs) luabridge::tdstack<variadic_parameter*>::push(lua_state, (varargs) )
 
 }
 
@@ -160,39 +161,39 @@ namespace lua_engine
 #define RegisterHook(evt, _func) { if(!m_scriptMgr->has_hook(evt, _func) ) m_scriptMgr->register_hook( (ServerHookEvents)(evt), (_func) ); }
 
 extern void DestroyAllLuaEvents(PLUA_INSTANCE instance);
-extern bool LuaHookOnNewCharacter(uint32 Race, uint32 Class, WorldSession *, const char * Name);
-extern void LuaHookOnKillPlayer(Player * pPlayer, Player * pVictim);
-extern void LuaHookOnFirstEnterWorld(Player * pPlayer);
-extern void LuaHookOnEnterWorld(Player * pPlayer);
-extern void LuaHookOnGuildJoin(Player * pPlayer, Guild * pGuild);
-extern void LuaHookOnDeath(Player * pPlayer);
-extern bool LuaHookOnRepop(Player * pPlayer);
-extern void LuaHookOnEmote(Player * pPlayer, uint32 Emote, Unit * pUnit);
-extern void LuaHookOnEnterCombat(Player * pPlayer, Unit * pTarget);
-extern bool LuaHookOnCastSpell(Player * pPlayer, SpellEntry* pSpell, Spell* spell);
+extern bool LuaHookOnNewCharacter(uint32 Race, uint32 Class, WorldSession*, const char* Name);
+extern void LuaHookOnKillPlayer(Player* pPlayer, Player* pVictim);
+extern void LuaHookOnFirstEnterWorld(Player* pPlayer);
+extern void LuaHookOnEnterWorld(Player* pPlayer);
+extern void LuaHookOnGuildJoin(Player* pPlayer, Guild* pGuild);
+extern void LuaHookOnDeath(Player* pPlayer);
+extern bool LuaHookOnRepop(Player* pPlayer);
+extern void LuaHookOnEmote(Player* pPlayer, uint32 Emote, Unit* pUnit);
+extern void LuaHookOnEnterCombat(Player* pPlayer, Unit* pTarget);
+extern bool LuaHookOnCastSpell(Player* pPlayer, SpellEntry* pSpell, Spell* spell);
 extern void LuaHookOnTick();
-extern bool LuaHookOnLogoutRequest(Player * pPlayer);
-extern void LuaHookOnLogout(Player * pPlayer);
-extern void LuaHookOnQuestAccept(Player * pPlayer, Quest * pQuest, Object * pQuestGiver);
-extern void LuaHookOnZone(Player * pPlayer, uint32 Zone, uint32 oldZone);
-extern bool LuaHookOnChat(Player * pPlayer, uint32 Type, uint32 Lang, const char * Message, const char * Misc);
-extern void LuaHookOnLoot(Player * pPlayer, Unit * pTarget, uint32 Money, uint32 ItemId);
-extern void LuaHookOnGuildCreate(Player * pLeader, Guild * pGuild);
-extern void LuaHookOnFullLogin(Player * pPlayer);
-extern void LuaHookOnCharacterCreate(Player * pPlayer);
-extern void LuaHookOnQuestCancelled(Player * pPlayer, Quest * pQuest);
-extern void LuaHookOnQuestFinished(Player * pPlayer, Quest * pQuest, Object * pQuestGiver);
-extern void LuaHookOnHonorableKill(Player * pPlayer, Player * pKilled);
-extern void LuaHookOnArenaFinish(Player * pPlayer, ArenaTeam* pTeam, bool victory, bool rated);
-extern void LuaHookOnObjectLoot(Player * pPlayer, Object * pTarget, uint32 Money, uint32 ItemId);
-extern void LuaHookOnAreaTrigger(Player * pPlayer, uint32 areaTrigger);
-extern void LuaHookOnPostLevelUp(Player * pPlayer);
-extern bool LuaHookOnPreUnitDie(Unit *Killer, Unit *Victim);
-extern void LuaHookOnAdvanceSkillLine(Player * pPlayer, uint32 SkillLine, uint32 Current);
-extern void LuaHookOnDuelFinished(Player * pWinner, Player * pLoser);
-extern void LuaHookOnAuraRemove(Aura * aura);
-extern bool LuaHookOnResurrect(Player * pPlayer);
-extern bool LuaOnDummySpell(uint32 effectIndex, Spell * pSpell);
+extern bool LuaHookOnLogoutRequest(Player* pPlayer);
+extern void LuaHookOnLogout(Player* pPlayer);
+extern void LuaHookOnQuestAccept(Player* pPlayer, Quest* pQuest, Object* pQuestGiver);
+extern void LuaHookOnZone(Player* pPlayer, uint32 Zone, uint32 oldZone);
+extern bool LuaHookOnChat(Player* pPlayer, uint32 Type, uint32 Lang, const char* Message, const char* Misc);
+extern void LuaHookOnLoot(Player* pPlayer, Unit* pTarget, uint32 Money, uint32 ItemId);
+extern void LuaHookOnGuildCreate(Player* pLeader, Guild* pGuild);
+extern void LuaHookOnFullLogin(Player* pPlayer);
+extern void LuaHookOnCharacterCreate(Player* pPlayer);
+extern void LuaHookOnQuestCancelled(Player* pPlayer, Quest* pQuest);
+extern void LuaHookOnQuestFinished(Player* pPlayer, Quest* pQuest, Object* pQuestGiver);
+extern void LuaHookOnHonorableKill(Player* pPlayer, Player* pKilled);
+extern void LuaHookOnArenaFinish(Player* pPlayer, ArenaTeam* pTeam, bool victory, bool rated);
+extern void LuaHookOnObjectLoot(Player* pPlayer, Object* pTarget, uint32 Money, uint32 ItemId);
+extern void LuaHookOnAreaTrigger(Player* pPlayer, uint32 areaTrigger);
+extern void LuaHookOnPostLevelUp(Player* pPlayer);
+extern bool LuaHookOnPreUnitDie(Unit* Killer, Unit* Victim);
+extern void LuaHookOnAdvanceSkillLine(Player* pPlayer, uint32 SkillLine, uint32 Current);
+extern void LuaHookOnDuelFinished(Player* pWinner, Player* pLoser);
+extern void LuaHookOnAuraRemove(Aura* aura);
+extern bool LuaHookOnResurrect(Player* pPlayer);
+extern bool LuaOnDummySpell(uint32 effectIndex, Spell* pSpell);
 
 
- 
+

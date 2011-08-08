@@ -25,7 +25,7 @@
 __declspec(dllimport) void* AllocateMemory(size_t iSize);
 __declspec(dllimport) void FreeMemory(void* pPointer);
 
-void * ::operator new(size_t iSize)
+void* ::operator new(size_t iSize)
 {
 	return AllocateMemory(iSize);
 }

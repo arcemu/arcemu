@@ -31,7 +31,7 @@ CThread::CThread() : ThreadBase()
 
 CThread::~CThread()
 {
-	
+
 }
 
 bool CThread::run()

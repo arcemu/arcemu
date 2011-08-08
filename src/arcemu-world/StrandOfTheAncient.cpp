@@ -151,7 +151,8 @@ Strand of the Ancients
 #define GO_RELIC 192834
 const float sotaTitanRelic[4] = { 836.5f, -108.8f, 111.59f, 0.0f };
 
-const uint32 GateGOIds[6] = {
+const uint32 GateGOIds[6] =
+{
 	190722,	// Gate of the Green Emerald
 	190727,	// Gate of the Yellow Moon
 	190724,	// Gate of the Blue Sapphire
@@ -159,7 +160,8 @@ const uint32 GateGOIds[6] = {
 	190723,	// Gate of the Purple Amethyst
 	192549,	// Chamber of Ancient Relics
 };
-const float sotaGates[GATE_COUNT][4] = {
+const float sotaGates[GATE_COUNT][4] =
+{
 	{ 1411.57f, 108.163f, 28.692f, 5.441f },
 	{ 1055.452f, -108.1f, 82.134f, 0.034f },
 	{ 1431.3413f, -219.437f, 30.893f, 0.9736f },
@@ -170,7 +172,8 @@ const float sotaChamberGate[4] = { 878.555f, -108.989f, 119.835f, 0.0565f };
 
 // Things radiating out from the gates... same orientation as door.
 const uint32 GateSigilGOIds[5] =  { 192687, 192685, 192689, 192690, 192691, };
-const float sotaGateSigils[GATE_COUNT][4] = {
+const float sotaGateSigils[GATE_COUNT][4] =
+{
 	{ 1414.054f, 106.72f, 41.442f, 5.441f },
 	{ 1060.63f, -107.8f, 94.7f, 0.034f },
 	{ 1433.383f, -216.4f, 43.642f, 0.9736f },
@@ -179,7 +182,8 @@ const float sotaGateSigils[GATE_COUNT][4] = {
 };
 
 // Defender transporter platform locations
-const float sotaTransporters[GATE_COUNT][4] = {
+const float sotaTransporters[GATE_COUNT][4] =
+{
 	{ 1394.0444f, 72.586f, 31.0535f, 0.0f },
 	{ 1065.0f, -89.7f, 81.08f, 0.0f },
 	{ 1467.95f, -225.67f, 30.9f, 0.0f },
@@ -188,7 +192,8 @@ const float sotaTransporters[GATE_COUNT][4] = {
 };
 
 // Defender transporter destination locations
-const float sotaTransporterDestination[GATE_COUNT][4] = {
+const float sotaTransporterDestination[GATE_COUNT][4] =
+{
 	{ 1388.94f, 103.067f, 34.49f, 5.4571f },
 	{ 1043.69f, -87.95f, 87.12f, 0.003f },
 	{ 1441.0411f, -240.974f, 35.264f, 0.949f },
@@ -197,7 +202,8 @@ const float sotaTransporterDestination[GATE_COUNT][4] = {
 };
 
 // Two guns per gate, GUN_LEFT and GUN_RIGHT
-const float sotaGunMounts[GATE_COUNT][2][4] = {
+const float sotaGunMounts[GATE_COUNT][2][4] =
+{
 	{ { 1436.429f, 110.05f, 41.407f, 5.4f }, { 1404.9023f, 84.758f, 41.183f, 5.46f } },
 	{ { 1068.693f, -86.951f, 93.81f, 0.02f }, { 1068.83f, -127.56f, 96.45f, 0.0912f } },
 	{ { 1422.115f, -196.433f, 42.1825f, 1.0222f }, { 1454.887f, -220.454f, 41.956f, 0.9627f } },
@@ -208,30 +214,35 @@ const float sotaGunMounts[GATE_COUNT][2][4] = {
 // ---- Verify remaining ----- //
 
 // This change as the game progresses
-const float sotaRepop[2][4] = {
+const float sotaRepop[2][4] =
+{
 	{ 1600.0f, 58.3f, 11.0f, 2.98f },
 	{ 1600.0f, 58.3f, 11.0f, 2.98f },
 };
 
 // There should only be two boats. boats three and four here
 // are a lazy hack for not wanting to program the boats to move via waypoints
-const float sotaBoats[4][4] = {
+const float sotaBoats[4][4] =
+{
 	{ 1623.34f, 37.0f, 1.0f, 3.65f },
 	{ 2439.4f, 845.38f, 1.0f, 3.35f },
 	{ 1623.34f, 37.0f, 1.0f, 3.65f },
 	{ 2439.4f, 845.38f, 1.0f, 3.35f },
 };
-const float sotaAttackerStartingPosition[2][4] = {
+const float sotaAttackerStartingPosition[2][4] =
+{
 	{ 2445.288f, 849.35f, 10.0f, 3.76f },
 	{ 2445.288f, 849.35f, 10.0f, 3.76f },
 };
-const float sotaStopBoatsPlayer[2][4] = {
+const float sotaStopBoatsPlayer[2][4] =
+{
 	{ 1624.7f, 42.93f, 10.0f, 2.63f },
 	{ 1624.7f, 42.93f, 10.0f, 2.63f },
 };
 const float sotaDefenderStartingPosition[4] = { 1209.7f, -65.16f, 70.1f, 0.0f };
 
-const float sotaStartingPosition[2][4] = {
+const float sotaStartingPosition[2][4] =
+{
 	{ 2445.288f, 849.35f, 9.25f, 3.76f },
 	{ 1209.7f, -65.16f, 70.1f, 0.0f },
 };
@@ -239,7 +250,7 @@ const float sotaStartingPosition[2][4] = {
 // We'll need to borrow this from elsewhere
 float CalculateDistance(float x1, float y1, float z1, float x2, float y2, float z2);
 
-StrandOfTheAncient::StrandOfTheAncient(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t) : CBattleground(mgr, id, lgroup, t)
+StrandOfTheAncient::StrandOfTheAncient(MapMgr* mgr, uint32 id, uint32 lgroup, uint32 t) : CBattleground(mgr, id, lgroup, t)
 {
 	int i;
 
@@ -253,7 +264,8 @@ StrandOfTheAncient::StrandOfTheAncient(MapMgr * mgr, uint32 id, uint32 lgroup, u
 		//char *crash = 0;
 		//*crash = 10;
 
-		for (i= 0; i<2; i++) {
+		for(i = 0; i < 2; i++)
+		{
 			m_players[i].clear();
 			m_pendPlayers[i].clear();
 		}
@@ -264,33 +276,33 @@ StrandOfTheAncient::StrandOfTheAncient(MapMgr * mgr, uint32 id, uint32 lgroup, u
 		//uint32 mapId = BattlegroundManager.GetMap(BATTLEGROUND_STRAND_OF_THE_ANCIENT);
 
 		// Boats
-		for (i = 0; i < 4; i++)
+		for(i = 0; i < 4; i++)
 		{
 			m_boats[i] = m_mapMgr->CreateAndSpawnGameObject(20808,
-				sotaBoats[i][0], sotaBoats[i][1], sotaBoats[i][2], sotaBoats[i][3], 1.0f);
+			             sotaBoats[i][0], sotaBoats[i][1], sotaBoats[i][2], sotaBoats[i][3], 1.0f);
 			m_boats[i]->PushToWorld(mgr);
 		}
 
 		/* Relic */
 		m_relic = m_mapMgr->CreateAndSpawnGameObject(GO_RELIC, sotaTitanRelic[0],
-			sotaTitanRelic[1], sotaTitanRelic[2], sotaTitanRelic[3], 1.0f);
+		          sotaTitanRelic[1], sotaTitanRelic[2], sotaTitanRelic[3], 1.0f);
 
-		for (i = 0; i < GATE_COUNT; i++)
+		for(i = 0; i < GATE_COUNT; i++)
 		{
 			m_gates[i] = m_mapMgr->CreateAndSpawnGameObject(GateGOIds[i],
-				sotaGates[i][0], sotaGates[i][1], sotaGates[i][2], sotaGates[i][3], 1.0f);
+			             sotaGates[i][0], sotaGates[i][1], sotaGates[i][2], sotaGates[i][3], 1.0f);
 			m_gateSigils[i] = m_mapMgr->CreateAndSpawnGameObject(GateSigilGOIds[i],
-				sotaGateSigils[i][0], sotaGateSigils[i][1], sotaGateSigils[i][2],
-				sotaGateSigils[i][3], 1.0f);
+			                  sotaGateSigils[i][0], sotaGateSigils[i][1], sotaGateSigils[i][2],
+			                  sotaGateSigils[i][3], 1.0f);
 			m_gateTransporters[i] = m_mapMgr->CreateAndSpawnGameObject(192819,
-				sotaTransporters[i][0], sotaTransporters[i][1], sotaTransporters[i][2],
-				sotaTransporters[i][3], 1.0f);
+			                        sotaTransporters[i][0], sotaTransporters[i][1], sotaTransporters[i][2],
+			                        sotaTransporters[i][3], 1.0f);
 		}
 
 		// Spawn door for Chamber of Ancient Relics
 		m_endgate = m_mapMgr->CreateAndSpawnGameObject(GateGOIds[i],
-			sotaChamberGate[0], sotaChamberGate[1], sotaChamberGate[2],
-			sotaChamberGate[3], 1.0f);
+		            sotaChamberGate[0], sotaChamberGate[1], sotaChamberGate[2],
+		            sotaChamberGate[3], 1.0f);
 
 
 		/* create the buffs */
@@ -298,49 +310,49 @@ StrandOfTheAncient::StrandOfTheAncient(MapMgr * mgr, uint32 id, uint32 lgroup, u
 			SpawnBuff(i);
 
 	}
-	catch (...) // Exception handling
-	{	
+	catch(...)  // Exception handling
+	{
 		LOG_ERROR("Exception: StrandOfTheAncient constructor");
 		printStackTrace();
 		throw;
-	} 
+	}
 
 }
 
 StrandOfTheAncient::~StrandOfTheAncient()
 {
-	if (m_relic && !m_relic->IsInWorld())
+	if(m_relic && !m_relic->IsInWorld())
 	{
 		delete m_relic;
 		m_relic = 0;
 	}
 
-	for (int i = 0; i < GATE_COUNT; i++)
+	for(int i = 0; i < GATE_COUNT; i++)
 	{
-		if (m_gates[i] && !m_gates[i]->IsInWorld())
+		if(m_gates[i] && !m_gates[i]->IsInWorld())
 		{
 			delete m_gates[i];
 			m_gates[i] = 0;
 		}
-		if (m_gateSigils[i] && !m_gateSigils[i]->IsInWorld())
+		if(m_gateSigils[i] && !m_gateSigils[i]->IsInWorld())
 		{
 			delete m_gateSigils[i];
 			m_gateSigils[i] = 0;
 		}
-		if (m_gateTransporters[i] && !m_gateTransporters[i]->IsInWorld())
+		if(m_gateTransporters[i] && !m_gateTransporters[i]->IsInWorld())
 		{
 			delete m_gateTransporters[i];
 			m_gateTransporters[i] = 0;
 		}
 	}
 
-	if (m_endgate && !m_endgate->IsInWorld())
+	if(m_endgate && !m_endgate->IsInWorld())
 	{
 		delete m_endgate;
 		m_endgate = 0;
 	}
 
-	for (uint32 i = 0; i < BUFF_COUNT; ++i)
+	for(uint32 i = 0; i < BUFF_COUNT; ++i)
 	{
 		// buffs may not be spawned, so delete them if they're not
 		if(m_buffs[i] && !m_buffs[i]->IsInWorld())
@@ -353,50 +365,50 @@ StrandOfTheAncient::~StrandOfTheAncient()
 }
 
 
-void StrandOfTheAncient::HookOnAreaTrigger(Player * plr, uint32 id)
+void StrandOfTheAncient::HookOnAreaTrigger(Player* plr, uint32 id)
 {
 
 }
 
-void StrandOfTheAncient::HookOnPlayerKill(Player * plr, Player * pVictim)
+void StrandOfTheAncient::HookOnPlayerKill(Player* plr, Player* pVictim)
 {
 	plr->m_bgScore.KillingBlows++;
 	UpdatePvPData();
 }
 
-void StrandOfTheAncient::HookOnHK(Player * plr)
+void StrandOfTheAncient::HookOnHK(Player* plr)
 {
 	plr->m_bgScore.HonorableKills++;
 	UpdatePvPData();
 }
 
-void StrandOfTheAncient::OnPlatformTeleport(Player *plr)
+void StrandOfTheAncient::OnPlatformTeleport(Player* plr)
 {
 	LocationVector dest;
 	uint32 closest_platform = 0;
 
-	for (uint32 i = 0; i < GATE_COUNT; i++)
+	for(uint32 i = 0; i < GATE_COUNT; i++)
 	{
 		float distance = CalculateDistance(plr->GetPositionX(),
-			plr->GetPositionY(), plr->GetPositionZ(),
-			sotaTransporterDestination[i][0],
-			sotaTransporterDestination[i][1],
-			sotaTransporterDestination[i][2]);
-		if (distance < 75)
+		                                   plr->GetPositionY(), plr->GetPositionZ(),
+		                                   sotaTransporterDestination[i][0],
+		                                   sotaTransporterDestination[i][1],
+		                                   sotaTransporterDestination[i][2]);
+		if(distance < 75)
 		{
 			closest_platform = i;
 			break;
 		}
 	}
 	dest.ChangeCoords(sotaTransporterDestination[closest_platform][0],
-		sotaTransporterDestination[closest_platform][1],
-		sotaTransporterDestination[closest_platform][2],
-		sotaTransporterDestination[closest_platform][3]);
+	                  sotaTransporterDestination[closest_platform][1],
+	                  sotaTransporterDestination[closest_platform][2],
+	                  sotaTransporterDestination[closest_platform][3]);
 
 	plr->SafeTeleport(plr->GetMapId(), plr->GetInstanceID(), dest);
 }
 
-void StrandOfTheAncient::OnAddPlayer(Player * plr)
+void StrandOfTheAncient::OnAddPlayer(Player* plr)
 {
 	if(!m_started)
 		plr->CastSpell(plr, BG_PREPARATION, true);
@@ -404,7 +416,7 @@ void StrandOfTheAncient::OnAddPlayer(Player * plr)
 	sota_players.push_back(plr);
 }
 
-void StrandOfTheAncient::OnRemovePlayer(Player * plr)
+void StrandOfTheAncient::OnRemovePlayer(Player* plr)
 {
 	plr->RemoveAura(BG_PREPARATION);
 	sota_players.remove(plr);
@@ -418,27 +430,27 @@ LocationVector StrandOfTheAncient::GetStartingCoords(uint32 team)
 	 */
 
 	return LocationVector(sotaStartingPosition[team][0],
-		sotaStartingPosition[team][1], sotaStartingPosition[team][2],
-		sotaStartingPosition[team][3]);
+	                      sotaStartingPosition[team][1], sotaStartingPosition[team][2],
+	                      sotaStartingPosition[team][3]);
 }
 
-void StrandOfTheAncient::HookOnPlayerDeath(Player * plr)
+void StrandOfTheAncient::HookOnPlayerDeath(Player* plr)
 {
 	plr->m_bgScore.Deaths++;
 	UpdatePvPData();
 }
 
-void StrandOfTheAncient::HookOnMount(Player * plr)
+void StrandOfTheAncient::HookOnMount(Player* plr)
 {
 	/* Allowed */
 }
 
-bool StrandOfTheAncient::HookHandleRepop(Player * plr)
+bool StrandOfTheAncient::HookHandleRepop(Player* plr)
 {
 	LocationVector dest;
 
 	dest.ChangeCoords(sotaRepop[plr->GetTeam()][0], sotaRepop[plr->GetTeam()][1],
-		sotaRepop[plr->GetTeam()][2], sotaRepop[plr->GetTeam()][3]);
+	                  sotaRepop[plr->GetTeam()][2], sotaRepop[plr->GetTeam()][3]);
 
 	plr->SafeTeleport(plr->GetMapId(), plr->GetInstanceID(), dest);
 	return true;
@@ -448,32 +460,32 @@ void StrandOfTheAncient::SpawnBuff(uint32 x)
 {
 	//uint32 mapid = BattlegroundManager.GetMap(BATTLEGROUND_STRAND_OF_THE_ANCIENT);
 	uint32 mapid = 607;
-    switch(x)
+	switch(x)
 	{
-	case 0:
-		m_buffs[x] = SpawnGameObject(184977, mapid, 1449.9296875f, 1470.70971679688f, 342.634552001953f, -1.64060950279236f, 0, 114, 1);
-		m_buffs[x]->SetParentRotation(2, 0.73135370016098f);
-		m_buffs[x]->SetParentRotation(3, -0.681998312473297f);
-		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-		m_buffs[x]->SetType(GAMEOBJECT_TYPE_TRAP);
-		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
-		break;
-	case 1:
-		m_buffs[x] = SpawnGameObject(184971, mapid, 1005.17071533203f, 1447.94567871094f, 335.903228759766f, 1.64060950279236f, 0, 114, 1);
-		m_buffs[x]->SetParentRotation(2, 0.73135370016098f);
-		m_buffs[x]->SetParentRotation(3, 0.681998372077942f);
-		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-		m_buffs[x]->SetType(GAMEOBJECT_TYPE_TRAP);
-		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
-		break;
-	case 2:
-		m_buffs[x] = SpawnGameObject(184965, mapid, 1317.50573730469f, 1550.85070800781f, 313.234375f, -0.26179963350296f, 0, 114, 1);
-		m_buffs[x]->SetParentRotation(2, 0.130526319146156f);
-		m_buffs[x]->SetParentRotation(3, -0.991444826126099f);
-		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-		m_buffs[x]->SetType(GAMEOBJECT_TYPE_TRAP);
-		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
-		break;
+		case 0:
+			m_buffs[x] = SpawnGameObject(184977, mapid, 1449.9296875f, 1470.70971679688f, 342.634552001953f, -1.64060950279236f, 0, 114, 1);
+			m_buffs[x]->SetParentRotation(2, 0.73135370016098f);
+			m_buffs[x]->SetParentRotation(3, -0.681998312473297f);
+			m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+			m_buffs[x]->SetType(GAMEOBJECT_TYPE_TRAP);
+			m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
+			break;
+		case 1:
+			m_buffs[x] = SpawnGameObject(184971, mapid, 1005.17071533203f, 1447.94567871094f, 335.903228759766f, 1.64060950279236f, 0, 114, 1);
+			m_buffs[x]->SetParentRotation(2, 0.73135370016098f);
+			m_buffs[x]->SetParentRotation(3, 0.681998372077942f);
+			m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+			m_buffs[x]->SetType(GAMEOBJECT_TYPE_TRAP);
+			m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
+			break;
+		case 2:
+			m_buffs[x] = SpawnGameObject(184965, mapid, 1317.50573730469f, 1550.85070800781f, 313.234375f, -0.26179963350296f, 0, 114, 1);
+			m_buffs[x]->SetParentRotation(2, 0.130526319146156f);
+			m_buffs[x]->SetParentRotation(3, -0.991444826126099f);
+			m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+			m_buffs[x]->SetType(GAMEOBJECT_TYPE_TRAP);
+			m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
+			break;
 	}
 }
 
@@ -499,30 +511,30 @@ void StrandOfTheAncient::OnStart()
 
 	for(list<Player*>::iterator itr = sota_players.begin(); itr != sota_players.end(); ++itr)
 	{
-		Player *plr = *itr;
+		Player* plr = *itr;
 		dest.ChangeCoords(sotaStopBoatsPlayer[plr->GetTeam()][0], sotaStopBoatsPlayer[plr->GetTeam()][1],
-			sotaStopBoatsPlayer[plr->GetTeam()][2], sotaStopBoatsPlayer[plr->GetTeam()][3]);
+		                  sotaStopBoatsPlayer[plr->GetTeam()][2], sotaStopBoatsPlayer[plr->GetTeam()][3]);
 
 		plr->SafeTeleport(plr->GetMapId(), plr->GetInstanceID(), dest);
 	}
 
-	SetWorldState(WORLDSTATE_SOTA_CAPTURE_BAR_DISPLAY, (uint32)-1);
-	SetWorldState(WORLDSTATE_SOTA_CAPTURE_BAR_VALUE, (uint32)-1);
+	SetWorldState(WORLDSTATE_SOTA_CAPTURE_BAR_DISPLAY, (uint32) - 1);
+	SetWorldState(WORLDSTATE_SOTA_CAPTURE_BAR_VALUE, (uint32) - 1);
 	SetWorldState(WORLDSTATE_SOTA_BONUS_TIME, 1);
 	SetWorldState(WORLDSTATE_SOTA_TIMER_1, 10); // 10 Minute Timer
 
 	//SetTime(ROUND_LENGTH, 0);
-	sEventMgr.AddEvent( this, &StrandOfTheAncient::TimeTick, EVENT_SOTA_TIMER, MSTIME_SECOND * 5, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
+	sEventMgr.AddEvent(this, &StrandOfTheAncient::TimeTick, EVENT_SOTA_TIMER, MSTIME_SECOND * 5, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 
 	UpdatePvPData();
 }
 
-void StrandOfTheAncient::HookGenerateLoot(Player *plr, Object * pOCorpse)
+void StrandOfTheAncient::HookGenerateLoot(Player* plr, Object* pOCorpse)
 {
 	LOG_DEBUG("*** StrandOfTheAncient::HookGenerateLoot");
 }
 
-void StrandOfTheAncient::HookOnUnitKill(Player * plr, Unit * pVictim)
+void StrandOfTheAncient::HookOnUnitKill(Player* plr, Unit* pVictim)
 {
 	LOG_DEBUG("*** StrandOfTheAncient::HookOnUnitKill");
 }
@@ -534,10 +546,10 @@ void StrandOfTheAncient::SetIsWeekend(bool isweekend)
 }
 
 // end game, attackers captured flag
-bool StrandOfTheAncient::HookSlowLockOpen(GameObject * pGo, Player * pPlayer, Spell * pSpell)
+bool StrandOfTheAncient::HookSlowLockOpen(GameObject* pGo, Player* pPlayer, Spell* pSpell)
 {
 	LOG_DEBUG("*** StrandOfTheAncient::HookSlowLockOpen - Relic Captured");
-	PlaySoundToAll( 8212 );
+	PlaySoundToAll(8212);
 
 	/*
 	// Root everyone, THEN Start next round, and Unroot -- OR -- Shutdown battleground.
@@ -554,7 +566,7 @@ bool StrandOfTheAncient::HookSlowLockOpen(GameObject * pGo, Player * pPlayer, Sp
 }
 
 // For banners
-void StrandOfTheAncient::HookFlagStand(Player * plr, GameObject * obj)
+void StrandOfTheAncient::HookFlagStand(Player* plr, GameObject* obj)
 {
 }
 
@@ -569,23 +581,23 @@ void StrandOfTheAncient::SetTime(uint32 secs, uint32 WorldState)
 	digits[2] = seconds % 10;
 
 	//m_mapMgr->GetStateManager().UpdateWorldState( WorldState, 1 );
-	SetWorldState( WORLDSTATE_SOTA_TIMER_1, digits[0] );
-	SetWorldState( WORLDSTATE_SOTA_TIMER_2, digits[1] );
-	SetWorldState( WORLDSTATE_SOTA_TIMER_3, digits[2] );
-	SetRoundTime( secs );
+	SetWorldState(WORLDSTATE_SOTA_TIMER_1, digits[0]);
+	SetWorldState(WORLDSTATE_SOTA_TIMER_2, digits[1]);
+	SetWorldState(WORLDSTATE_SOTA_TIMER_3, digits[2]);
+	SetRoundTime(secs);
 }
 
 void StrandOfTheAncient::PrepareRound()
 {
 	//SetWorldState( WORLDSTATE_SOTA_ALLIANCE_DEFENDER, Attackers == HORDE ? 1 : 0 );
 	//SetWorldState( WORLDSTATE_SOTA_ALLIANCE_ATTACKER, Attackers == HORDE ? 0 : 1 );
-	SetWorldState( WORLDSTATE_SOTA_ALLIANCE_DEFENDER, 1);
-	SetWorldState( WORLDSTATE_SOTA_ALLIANCE_ATTACKER, 0);
+	SetWorldState(WORLDSTATE_SOTA_ALLIANCE_DEFENDER, 1);
+	SetWorldState(WORLDSTATE_SOTA_ALLIANCE_ATTACKER, 0);
 };
 
 void StrandOfTheAncient::TimeTick()
 {
-	SetTime(GetRoundTime() - 5,0);
+	SetTime(GetRoundTime() - 5, 0);
 	if(GetRoundTime() == 0)
 	{
 		sEventMgr.RemoveEvents(this, EVENT_SOTA_TIMER);
@@ -593,10 +605,10 @@ void StrandOfTheAncient::TimeTick()
 };
 
 // Not used?
-void StrandOfTheAncient::HookOnFlagDrop(Player * plr)
+void StrandOfTheAncient::HookOnFlagDrop(Player* plr)
 {
 }
-void StrandOfTheAncient::HookFlagDrop(Player * plr, GameObject * obj)
+void StrandOfTheAncient::HookFlagDrop(Player* plr, GameObject* obj)
 {
 }
 void StrandOfTheAncient::HookOnShadowSight()

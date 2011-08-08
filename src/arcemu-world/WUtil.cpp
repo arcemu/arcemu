@@ -21,20 +21,24 @@
 #include "StdAfx.h"
 #include <iostream>
 
-uint32 Arcemu::Util::GUID_HIPART( uint64 GUID ){
-    uint32 higuid = *( reinterpret_cast< const uint32* >( &GUID ) + 1 );
+uint32 Arcemu::Util::GUID_HIPART(uint64 GUID)
+{
+	uint32 higuid = *(reinterpret_cast< const uint32* >(&GUID) + 1);
 
-    return higuid;
+	return higuid;
 }
 
-uint32 Arcemu::Util::GUID_LOPART( uint64 GUID ){
-    uint32 loguid = *( reinterpret_cast< const uint32* >( &GUID ) );
+uint32 Arcemu::Util::GUID_LOPART(uint64 GUID)
+{
+	uint32 loguid = *(reinterpret_cast< const uint32* >(&GUID));
 
-    return loguid;
+	return loguid;
 }
 
-void Arcemu::Util::ARCEMU_ASSERT(  bool condition){
-	if( !condition ){
+void Arcemu::Util::ARCEMU_ASSERT(bool condition)
+{
+	if(!condition)
+	{
 		LOG_ERROR("Assertion failed. Please submit the callstack on ArcEmu IssueTracker (unless you are using a repack).");
 		sLog.Close();
 
@@ -43,20 +47,22 @@ void Arcemu::Util::ARCEMU_ASSERT(  bool condition){
 	}
 }
 
-uint64 Arcemu::Util::MAKE_PET_GUID( uint32 entry, uint32 lowGUID ){
+uint64 Arcemu::Util::MAKE_PET_GUID(uint32 entry, uint32 lowGUID)
+{
 	uint64 val = 0;
 
-	val = uint64( HIGHGUID_TYPE_PET ) << 32;
-	val = val | ( uint64( entry ) << 24 );
+	val = uint64(HIGHGUID_TYPE_PET) << 32;
+	val = val | (uint64(entry) << 24);
 	val = val | lowGUID;
 
 	return val;
 }
 
-uint64 Arcemu::Util::MAKE_ITEM_GUID( uint32 lowguid ){
+uint64 Arcemu::Util::MAKE_ITEM_GUID(uint32 lowguid)
+{
 	uint64 GUID = 0;
 
-	uint32 *u = reinterpret_cast< uint32* >( &GUID );
+	uint32* u = reinterpret_cast< uint32* >(&GUID);
 
 	u[ 0 ] = lowguid;
 	u[ 1 ] = HIGHGUID_TYPE_ITEM;

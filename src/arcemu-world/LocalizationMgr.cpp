@@ -30,18 +30,18 @@ void LocalizationMgr::Shutdown()
 #define SAFE_FREE_PTR(x) if(deletedPointers.find((x)) == deletedPointers.end()) { deletedPointers.insert((x)); free((x)); }
 
 	set<void*> deletedPointers;
-	uint32 maxid= 0;
-	uint32 i,j;
-	vector<pair<uint32,uint32> >::iterator xtr = m_languages.begin();
+	uint32 maxid = 0;
+	uint32 i, j;
+	vector<pair<uint32, uint32> >::iterator xtr = m_languages.begin();
 	for(; xtr != m_languages.end(); ++xtr)
-		if(xtr->second>maxid)
-			maxid=xtr->second;
+		if(xtr->second > maxid)
+			maxid = xtr->second;
 
 	maxid++;
 	Log.Notice("LocalizationMgr", "Beginning pointer cleanup...");
 	uint32 t = getMSTime();
 
-    for(i = 0; i < maxid; ++i)
+	for(i = 0; i < maxid; ++i)
 	{
 		for(HM_NAMESPACE::hash_map<uint32, LocalizedQuest>::iterator itr = m_Quests[i].begin(); itr != m_Quests[i].end(); ++itr)
 		{
@@ -118,31 +118,32 @@ void LocalizationMgr::Shutdown()
 	delete [] m_WorldBroadCast;
 	delete [] m_WorldMapInfo;
 	m_languages.clear();
-	Log.Notice("LocalizationMgr", "Pointer cleanup completed in %.4f seconds.", (getMSTime()-t) / 1000.0f);
+	Log.Notice("LocalizationMgr", "Pointer cleanup completed in %.4f seconds.", (getMSTime() - t) / 1000.0f);
 #undef SAFE_FREE_PTR
 }
 
-void LocalizationMgr::Lower(string& conv)
+void LocalizationMgr::Lower(string & conv)
 {
 	for(size_t i = 0; i < conv.length(); ++i)
-		conv[i] = static_cast<char>( tolower(conv[i]) );
+		conv[i] = static_cast<char>(tolower(conv[i]));
 }
 
-void LocalizationMgr::GetDistinctLanguages(set<string>& dest, const char * table)
+void LocalizationMgr::GetDistinctLanguages(set<string>& dest, const char* table)
 {
-	QueryResult * result = WorldDatabase.Query("SELECT DISTINCT language_code FROM %s", table);
+	QueryResult* result = WorldDatabase.Query("SELECT DISTINCT language_code FROM %s", table);
 	if(result == NULL)
 		return;
 
 	string lc;
-	do 
+	do
 	{
 		lc = result->Fetch()[0].GetString();
 		sLocalizationMgr.Lower(lc);
-        if(dest.find(lc)==dest.end())
+		if(dest.find(lc) == dest.end())
 			dest.insert(lc);
 
-	} while(result->NextRow());
+	}
+	while(result->NextRow());
 	delete result;
 }
 
@@ -151,7 +152,7 @@ uint32 LocalizationMgr::GetLanguageId(uint32 full)
 	if(m_disabled)
 		return 0;
 
-	for(vector<pair<uint32,uint32> >::iterator itr = m_languages.begin(); itr != m_languages.end(); ++itr)
+	for(vector<pair<uint32, uint32> >::iterator itr = m_languages.begin(); itr != m_languages.end(); ++itr)
 		if(itr->first == full)
 			return itr->second;
 
@@ -163,7 +164,7 @@ void LocalizationMgr::Reload(bool first)
 	if(first)
 		return;
 
-	QueryResult * result;
+	QueryResult* result;
 	set<string> languages;
 	map<string, string> bound_languages;
 	GetDistinctLanguages(languages, "creature_names_localized");
@@ -184,13 +185,13 @@ void LocalizationMgr::Reload(bool first)
 	for(vector<string>::iterator ztr = tbindings.begin(); ztr != tbindings.end(); ++ztr)
 	{
 		char lb[200];
-		string ll1,ll2;
-		strcpy(lb,(*ztr).c_str());
+		string ll1, ll2;
+		strcpy(lb, (*ztr).c_str());
 
-		char * lbp = strchr(lb,'=');
-		if(lbp== NULL)
+		char* lbp = strchr(lb, '=');
+		if(lbp == NULL)
 			continue;
-		*lbp= 0;
+		*lbp = 0;
 		lbp++;
 
 		ll1 = string(lb);
@@ -209,11 +210,11 @@ void LocalizationMgr::Reload(bool first)
 	/* Generate Language IDs                                                */
 	/************************************************************************/
 
-	uint32 langid=1;
-	pair<uint32,uint32> dpr;
+	uint32 langid = 1;
+	pair<uint32, uint32> dpr;
 	for(set<string>::iterator sitr = languages.begin(); sitr != languages.end(); ++sitr)
 	{
-		if((*sitr)=="enus")		// Default
+		if((*sitr) == "enus")		// Default
 		{
 			dpr.first = *(uint32*)sitr->c_str();
 			dpr.second = 0;
@@ -252,13 +253,13 @@ void LocalizationMgr::Reload(bool first)
 		LocalizedCreatureName cn;
 		string str;
 		uint32 entry;
-		Field * f;
+		Field* f;
 		uint32 lid;
 
 		result = WorldDatabase.Query("SELECT * FROM creature_names_localized");
 		if(result)
 		{
-			do 
+			do
 			{
 				f = result->Fetch();
 				str = string(f[1].GetString());
@@ -271,7 +272,8 @@ void LocalizationMgr::Reload(bool first)
 				cn.Name = strdup(f[2].GetString());
 				cn.SubName = strdup(f[3].GetString());
 				m_CreatureNames[lid].insert(make_pair(entry, cn));
-			} while(result->NextRow());
+			}
+			while(result->NextRow());
 			delete result;
 		}
 	}
@@ -283,13 +285,13 @@ void LocalizationMgr::Reload(bool first)
 		LocalizedGameObjectName gn;
 		string str;
 		uint32 entry;
-		Field * f;
+		Field* f;
 		uint32 lid;
 
 		result = WorldDatabase.Query("SELECT * FROM gameobject_names_localized");
 		if(result)
 		{
-			do 
+			do
 			{
 				f = result->Fetch();
 				str = string(f[1].GetString());
@@ -301,7 +303,8 @@ void LocalizationMgr::Reload(bool first)
 
 				gn.Name = strdup(f[2].GetString());
 				m_GameObjectNames[lid].insert(make_pair(entry, gn));
-			} while(result->NextRow());
+			}
+			while(result->NextRow());
 			delete result;
 		}
 	}
@@ -313,13 +316,13 @@ void LocalizationMgr::Reload(bool first)
 		LocalizedItem it;
 		string str;
 		uint32 entry;
-		Field * f;
+		Field* f;
 		uint32 lid;
 
 		result = WorldDatabase.Query("SELECT * FROM items_localized");
 		if(result)
 		{
-			do 
+			do
 			{
 				f = result->Fetch();
 				str = string(f[1].GetString());
@@ -337,7 +340,8 @@ void LocalizationMgr::Reload(bool first)
 				it.Name = strdup(f[2].GetString());
 				it.Description = strdup(f[3].GetString());
 				m_Items[lid].insert(make_pair(entry, it));
-			} while(result->NextRow());
+			}
+			while(result->NextRow());
 			delete result;
 		}
 	}
@@ -349,13 +353,13 @@ void LocalizationMgr::Reload(bool first)
 		LocalizedQuest q;
 		string str;
 		uint32 entry;
-		Field * f;
+		Field* f;
 		uint32 lid;
 
 		result = WorldDatabase.Query("SELECT * FROM quests_localized");
 		if(result)
 		{
-			do 
+			do
 			{
 				f = result->Fetch();
 				str = string(f[1].GetString());
@@ -375,9 +379,10 @@ void LocalizationMgr::Reload(bool first)
 				q.ObjectiveText[1] = strdup(f[9].GetString());
 				q.ObjectiveText[2] = strdup(f[10].GetString());
 				q.ObjectiveText[3] = strdup(f[11].GetString());
-				
+
 				m_Quests[lid].insert(make_pair(entry, q));
-			} while(result->NextRow());
+			}
+			while(result->NextRow());
 			delete result;
 		}
 	}
@@ -389,14 +394,14 @@ void LocalizationMgr::Reload(bool first)
 		LocalizedNpcText nt;
 		string str;
 		uint32 entry;
-		Field * f;
+		Field* f;
 		uint32 lid;
 		uint32 counter;
 
 		result = WorldDatabase.Query("SELECT * FROM npc_text_localized");
 		if(result)
 		{
-			do 
+			do
 			{
 				f = result->Fetch();
 				str = string(f[1].GetString());
@@ -414,7 +419,8 @@ void LocalizationMgr::Reload(bool first)
 				}
 
 				m_NpcTexts[lid].insert(make_pair(entry, nt));
-			} while(result->NextRow());
+			}
+			while(result->NextRow());
 			delete result;
 		}
 	}
@@ -425,13 +431,13 @@ void LocalizationMgr::Reload(bool first)
 		LocalizedItemPage nt;
 		string str;
 		uint32 entry;
-		Field * f;
+		Field* f;
 		uint32 lid;
 
 		result = WorldDatabase.Query("SELECT * FROM itempages_localized");
 		if(result)
 		{
-			do 
+			do
 			{
 				f = result->Fetch();
 				str = string(f[1].GetString());
@@ -443,7 +449,8 @@ void LocalizationMgr::Reload(bool first)
 
 				nt.Text = strdup(f[2].GetString());
 				m_ItemPages[lid].insert(make_pair(entry, nt));
-			} while(result->NextRow());
+			}
+			while(result->NextRow());
 			delete result;
 		}
 	}
@@ -455,13 +462,13 @@ void LocalizationMgr::Reload(bool first)
 		LocalizedWorldStringTable nt;
 		string str;
 		uint32 entry;
-		Field * f;
+		Field* f;
 		uint32 lid;
 
 		result = WorldDatabase.Query("SELECT * FROM worldstring_tables_localized");
 		if(result)
 		{
-			do 
+			do
 			{
 				f = result->Fetch();
 				str = string(f[1].GetString());
@@ -473,7 +480,8 @@ void LocalizationMgr::Reload(bool first)
 
 				nt.Text = strdup(f[2].GetString());
 				m_WorldStrings[lid].insert(make_pair(entry, nt));
-			} while(result->NextRow());
+			}
+			while(result->NextRow());
 			delete result;
 		}
 	}
@@ -485,13 +493,13 @@ void LocalizationMgr::Reload(bool first)
 		LocalizedWorldBroadCast nt;
 		string str;
 		uint32 entry;
-		Field * f;
+		Field* f;
 		uint32 lid;
 
 		result = WorldDatabase.Query("SELECT * FROM worldbroadcast_localized");
 		if(result)
 		{
-			do 
+			do
 			{
 				f = result->Fetch();
 				str = string(f[1].GetString());
@@ -503,7 +511,8 @@ void LocalizationMgr::Reload(bool first)
 
 				nt.Text = strdup(f[2].GetString());
 				m_WorldBroadCast[lid].insert(make_pair(entry, nt));
-			} while(result->NextRow());
+			}
+			while(result->NextRow());
 			delete result;
 		}
 	}
@@ -515,13 +524,13 @@ void LocalizationMgr::Reload(bool first)
 		LocalizedWorldMapInfo nt;
 		string str;
 		uint32 entry;
-		Field * f;
+		Field* f;
 		uint32 lid;
 
 		result = WorldDatabase.Query("SELECT * FROM worldmap_info_localized");
 		if(result)
 		{
-			do 
+			do
 			{
 				f = result->Fetch();
 				str = string(f[1].GetString());
@@ -533,7 +542,8 @@ void LocalizationMgr::Reload(bool first)
 
 				nt.Text = strdup(f[2].GetString());
 				m_WorldMapInfo[lid].insert(make_pair(entry, nt));
-			} while(result->NextRow());
+			}
+			while(result->NextRow());
 			delete result;
 		}
 	}
@@ -541,11 +551,11 @@ void LocalizationMgr::Reload(bool first)
 	/************************************************************************/
 	/* Apply all the language bindings.                                     */
 	/************************************************************************/
-	for(map<string,string>::iterator itr = bound_languages.begin(); itr != bound_languages.end(); ++itr)
+	for(map<string, string>::iterator itr = bound_languages.begin(); itr != bound_languages.end(); ++itr)
 	{
 		uint32 source_language_id = GetLanguageId(itr->second);
 		uint32 dest_language_id = GetLanguageId(itr->first);
-		if(source_language_id== 0 || dest_language_id == 0)
+		if(source_language_id == 0 || dest_language_id == 0)
 		{
 			sLog.Error("LocalizationMgr", "Invalid locale conversion string specified: %u->%u (%s->%s)", source_language_id, dest_language_id, itr->second.c_str(), itr->first.c_str());
 			continue;

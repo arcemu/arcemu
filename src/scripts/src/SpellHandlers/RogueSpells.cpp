@@ -21,51 +21,53 @@
 
 //Alice : Correct formula for Rogue - Preparation
 
-bool Preparation(uint32 i, Spell * pSpell) 
-{ 
-	if(!pSpell->p_caster) return true; 
+bool Preparation(uint32 i, Spell* pSpell)
+{
+	if(!pSpell->p_caster) return true;
 
-	pSpell->p_caster->ClearCooldownForSpell( 5277 );        // Evasion Rank 1  
-	pSpell->p_caster->ClearCooldownForSpell( 26669 );       // Evasion Rank 2  
-	pSpell->p_caster->ClearCooldownForSpell( 2983 );        // Sprint Rank 1  
-	pSpell->p_caster->ClearCooldownForSpell( 8696 );        // Sprint Rank 2  
-	pSpell->p_caster->ClearCooldownForSpell( 11305 );       // Sprint Rank 3  
-	pSpell->p_caster->ClearCooldownForSpell( 1856 );        // Vanish Rank 1  
-	pSpell->p_caster->ClearCooldownForSpell( 1857 );        // Vanish Rank 2  
-	pSpell->p_caster->ClearCooldownForSpell( 26889 );       // Vanish Rank 3  
-	pSpell->p_caster->ClearCooldownForSpell( 14177 );       // Cold Blood  
-	pSpell->p_caster->ClearCooldownForSpell( 36554 );       // Shadowstep  
-	if( pSpell->p_caster->HasAura( 56819 ) )                // Glyph of Preparation item = 42968 casts 57127 that apply aura 56819.
+	pSpell->p_caster->ClearCooldownForSpell(5277);          // Evasion Rank 1
+	pSpell->p_caster->ClearCooldownForSpell(26669);         // Evasion Rank 2
+	pSpell->p_caster->ClearCooldownForSpell(2983);          // Sprint Rank 1
+	pSpell->p_caster->ClearCooldownForSpell(8696);          // Sprint Rank 2
+	pSpell->p_caster->ClearCooldownForSpell(11305);         // Sprint Rank 3
+	pSpell->p_caster->ClearCooldownForSpell(1856);          // Vanish Rank 1
+	pSpell->p_caster->ClearCooldownForSpell(1857);          // Vanish Rank 2
+	pSpell->p_caster->ClearCooldownForSpell(26889);         // Vanish Rank 3
+	pSpell->p_caster->ClearCooldownForSpell(14177);         // Cold Blood
+	pSpell->p_caster->ClearCooldownForSpell(36554);         // Shadowstep
+	if(pSpell->p_caster->HasAura(56819))                    // Glyph of Preparation item = 42968 casts 57127 that apply aura 56819.
 	{
-		pSpell->p_caster->ClearCooldownForSpell( 13877 );   // Blade Flurry
-		pSpell->p_caster->ClearCooldownForSpell( 51722 );   // Dismantle
-		pSpell->p_caster->ClearCooldownForSpell( 1766 );    // Kick
+		pSpell->p_caster->ClearCooldownForSpell(13877);     // Blade Flurry
+		pSpell->p_caster->ClearCooldownForSpell(51722);     // Dismantle
+		pSpell->p_caster->ClearCooldownForSpell(1766);      // Kick
 	}
-	return true;  
+	return true;
 }
 
-bool Shiv(uint32 i, Spell *pSpell){
-	Unit *pTarget = pSpell->GetUnitTarget();
+bool Shiv(uint32 i, Spell* pSpell)
+{
+	Unit* pTarget = pSpell->GetUnitTarget();
 	if(!pSpell->p_caster || !pTarget) return true;
 
 	pSpell->p_caster->CastSpell(pTarget->GetGUID(), 5940, true);
 
-	Item *it = pSpell->p_caster->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_OFFHAND );
+	Item* it = pSpell->p_caster->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_OFFHAND);
 	if(!it) return true;
 
-	EnchantmentInstance * ench = it->GetEnchantment( TEMP_ENCHANTMENT_SLOT );
-	if(ench) {
+	EnchantmentInstance* ench = it->GetEnchantment(TEMP_ENCHANTMENT_SLOT);
+	if(ench)
+	{
 		EnchantEntry* Entry = ench->Enchantment;
-		for( uint32 c = 0; c < 3; c++ )
+		for(uint32 c = 0; c < 3; c++)
 		{
-			if( Entry->type[c] && Entry->spell[c] )
+			if(Entry->type[c] && Entry->spell[c])
 			{
-				SpellEntry *sp = dbcSpell.LookupEntry( Entry->spell[c] );
+				SpellEntry* sp = dbcSpell.LookupEntry(Entry->spell[c]);
 				if(!sp) return true;
 
-				if( sp->c_is_flags & SPELL_FLAG_IS_POISON )
+				if(sp->c_is_flags & SPELL_FLAG_IS_POISON)
 				{
-					pSpell->p_caster->CastSpell(pTarget->GetGUID(),Entry->spell[c], true);
+					pSpell->p_caster->CastSpell(pTarget->GetGUID(), Entry->spell[c], true);
 				}
 			}
 		}
@@ -75,24 +77,24 @@ bool Shiv(uint32 i, Spell *pSpell){
 
 bool ImprovedSprint(uint32 i, Spell* pSpell)
 {
-	if( i == 0 )
+	if(i == 0)
 	{
-		Unit *target = pSpell->GetUnitTarget();
-		if (target == NULL)
+		Unit* target = pSpell->GetUnitTarget();
+		if(target == NULL)
 			return true;
 
 		target->RemoveAllAurasByMechanic(MECHANIC_ENSNARED, -1, true);
 		target->RemoveAllAurasByMechanic(MECHANIC_ROOTED, -1, true);
 	}
-	
+
 	return true;
 }
 
-bool CutToTheChase(uint32 i, Aura *pAura, bool apply)
+bool CutToTheChase(uint32 i, Aura* pAura, bool apply)
 {
-	Unit *target = pAura->GetTarget();
+	Unit* target = pAura->GetTarget();
 
-	if (apply)
+	if(apply)
 	{
 		static uint32 classMask[3] = { 0x20000, 0x8, 0 };
 		target->AddProcTriggerSpell(pAura->GetSpellProto(), pAura->GetSpellProto(), pAura->m_casterGuid, pAura->GetSpellProto()->procChance, PROC_ON_CAST_SPELL | PROC_TARGET_SELF, 0, NULL, classMask);
@@ -103,11 +105,11 @@ bool CutToTheChase(uint32 i, Aura *pAura, bool apply)
 	return true;
 }
 
-bool DeadlyBrew(uint32 i, Aura *pAura, bool apply)
+bool DeadlyBrew(uint32 i, Aura* pAura, bool apply)
 {
-	Unit *target = pAura->GetTarget();
+	Unit* target = pAura->GetTarget();
 
-	if (apply)
+	if(apply)
 	{
 		static uint32 classMask[3] = { 0x1000A000, 0, 0 };
 		target->AddProcTriggerSpell(pAura->GetSpellProto(), pAura->GetSpellProto(), pAura->m_casterGuid, pAura->GetSpellProto()->procChance, PROC_ON_CAST_SPELL , 0, NULL, classMask);
@@ -118,44 +120,45 @@ bool DeadlyBrew(uint32 i, Aura *pAura, bool apply)
 	return true;
 }
 
-bool CloakOfShadows( uint32 i, Spell *s ){
-	Unit *unitTarget = s->GetUnitTarget();
+bool CloakOfShadows(uint32 i, Spell* s)
+{
+	Unit* unitTarget = s->GetUnitTarget();
 
-	if( !unitTarget || !unitTarget->isAlive())
+	if(!unitTarget || !unitTarget->isAlive())
 		return false;
-	
-	Aura * pAura;
+
+	Aura* pAura;
 	for(uint32 j = MAX_NEGATIVE_AURAS_EXTEDED_START; j < MAX_NEGATIVE_AURAS_EXTEDED_END; ++j)
 	{
 		pAura = unitTarget->m_auras[j];
-		if( pAura != NULL && !pAura->IsPassive()
-			&& !pAura->IsPositive()
-			&& !(pAura->GetSpellProto()->Attributes & ATTRIBUTES_IGNORE_INVULNERABILITY)
-			&& pAura->GetSpellProto()->School != 0
-			)
+		if(pAura != NULL && !pAura->IsPassive()
+		        && !pAura->IsPositive()
+		        && !(pAura->GetSpellProto()->Attributes & ATTRIBUTES_IGNORE_INVULNERABILITY)
+		        && pAura->GetSpellProto()->School != 0
+		  )
 			pAura->Remove();
 	}
 
 	return true;
 }
 
-bool CheatDeath( uint32 i, Aura *a, bool apply )
+bool CheatDeath(uint32 i, Aura* a, bool apply)
 {
-	Unit *u_target = a->GetTarget();
-	Player *p_target = NULL;
+	Unit* u_target = a->GetTarget();
+	Player* p_target = NULL;
 
-	if( u_target->IsPlayer() )
-		p_target = TO_PLAYER( u_target );
+	if(u_target->IsPlayer())
+		p_target = TO_PLAYER(u_target);
 
-	if( p_target != NULL )
+	if(p_target != NULL)
 	{
-		int32 m = (int32)( 8.0f * p_target->CalcRating( PLAYER_RATING_MODIFIER_MELEE_CRIT_RESILIENCE ) );
-		if( m > 90 )
+		int32 m = (int32)(8.0f * p_target->CalcRating(PLAYER_RATING_MODIFIER_MELEE_CRIT_RESILIENCE));
+		if(m > 90)
 			m = 90;
 
 		float val;
 
-		if( apply )
+		if(apply)
 		{
 			a->SetPositive();
 
@@ -166,23 +169,24 @@ bool CheatDeath( uint32 i, Aura *a, bool apply )
 			val = m / 100.0f;
 		}
 
-		for( uint32 x = 0; x < 7; x++ )
+		for(uint32 x = 0; x < 7; x++)
 			p_target->DamageTakenPctMod[x] += val;
 	}
 
 	return true;
 }
 
-bool MasterOfSubtletly( uint32 i, Aura *a, bool apply ){
-	Unit *u_target = a->GetTarget();
-	Player *p_target = NULL;
+bool MasterOfSubtletly(uint32 i, Aura* a, bool apply)
+{
+	Unit* u_target = a->GetTarget();
+	Player* p_target = NULL;
 
-	if( u_target->IsPlayer() )
-		p_target = TO_PLAYER( u_target );
+	if(u_target->IsPlayer())
+		p_target = TO_PLAYER(u_target);
 
-	int32 amount = a->GetModAmount( i );
-	
-	if( apply )
+	int32 amount = a->GetModAmount(i);
+
+	if(apply)
 	{
 		p_target->m_outStealthDamageBonusPct += amount;
 		p_target->m_outStealthDamageBonusPeriod = 6;		// 6 seconds
@@ -198,33 +202,35 @@ bool MasterOfSubtletly( uint32 i, Aura *a, bool apply ){
 	return true;
 }
 
-bool PreyOnTheWeakPeriodicDummy( uint32 i, Aura *a, bool apply ){
-	Unit *m_target = a->GetTarget();
-	Player *p_target = NULL;
+bool PreyOnTheWeakPeriodicDummy(uint32 i, Aura* a, bool apply)
+{
+	Unit* m_target = a->GetTarget();
+	Player* p_target = NULL;
 
-	if( !apply )
+	if(!apply)
 		return true;
 
-	if( m_target->IsPlayer() )
-		p_target = TO_PLAYER( m_target );
+	if(m_target->IsPlayer())
+		p_target = TO_PLAYER(m_target);
 
-	if( p_target != NULL && p_target->getClass() == ROGUE ){
-		
-		Unit* target = p_target->GetMapMgr()->GetUnit( p_target->GetTarget() );
-		if( target == NULL )
+	if(p_target != NULL && p_target->getClass() == ROGUE)
+	{
+
+		Unit* target = p_target->GetMapMgr()->GetUnit(p_target->GetTarget());
+		if(target == NULL)
 			return true;
-		
+
 		uint32 plrHP = p_target->GetHealth();
 		uint32 targetHP = target->GetHealth();
-		
-		if( plrHP > targetHP )
-			p_target->CastSpell( p_target, 58670, true );
+
+		if(plrHP > targetHP)
+			p_target->CastSpell(p_target, 58670, true);
 	}
-	
+
 	return true;
 }
 
-void SetupRogueSpells(ScriptMgr * mgr)
+void SetupRogueSpells(ScriptMgr* mgr)
 {
 	mgr->register_dummy_spell(5938, &Shiv);
 	mgr->register_dummy_spell(14185, &Preparation);
@@ -236,20 +242,22 @@ void SetupRogueSpells(ScriptMgr * mgr)
 	mgr->register_dummy_aura(51625, &DeadlyBrew);
 	mgr->register_dummy_aura(51626, &DeadlyBrew);
 
-	mgr->register_dummy_spell( 35729, &CloakOfShadows );
+	mgr->register_dummy_spell(35729, &CloakOfShadows);
 
-	mgr->register_dummy_aura( 45182, &CheatDeath );
+	mgr->register_dummy_aura(45182, &CheatDeath);
 
 
-	uint32 masterofsubtletlyids[] = {
+	uint32 masterofsubtletlyids[] =
+	{
 		31223,
 		31222,
 		31221,
 		0
 	};
-	mgr->register_dummy_aura( masterofsubtletlyids, &MasterOfSubtletly );
+	mgr->register_dummy_aura(masterofsubtletlyids, &MasterOfSubtletly);
 
-	uint32 preyontheweakids[] = {
+	uint32 preyontheweakids[] =
+	{
 		51685,
 		51686,
 		51687,
@@ -257,5 +265,5 @@ void SetupRogueSpells(ScriptMgr * mgr)
 		51689,
 		0
 	};
-	mgr->register_dummy_aura( preyontheweakids, &PreyOnTheWeakPeriodicDummy );
+	mgr->register_dummy_aura(preyontheweakids, &PreyOnTheWeakPeriodicDummy);
 }
