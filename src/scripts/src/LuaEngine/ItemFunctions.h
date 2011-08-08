@@ -103,6 +103,28 @@ namespace luaItem
 		plr->Gossip_SendPOI(x, y, icon, flags, data, name);
 		return 1;
 	}
+	
+	static int GossipSendQuickMenu( lua_State *L, Item *ptr ){
+		if( ptr == NULL )
+			return 0;
+		
+		uint32 text_id = luaL_checkint( L, 1 );
+		Player *player = CHECK_PLAYER( L, 2 );
+		uint32 itemid = luaL_checkint( L, 3 );
+		uint8 itemicon = CHECK_UINT8( L, 4 );
+		const char *itemtext = luaL_checkstring( L, 5 );
+		uint32 requiredmoney = CHECK_ULONG( L, 6 );
+		const char *moneytext = luaL_checkstring( L, 7 );
+		uint8 extra = CHECK_UINT8( L, 8 );
+		
+		if( player == NULL )
+			return 0;
+		
+		Arcemu::Gossip::Menu::SendQuickMenu( ptr->GetGUID(), text_id, player, itemid, itemicon, itemtext, requiredmoney, moneytext, extra );
+		
+		return 0;
+	}
+
 
 	int GetOwner(lua_State* L, Item* ptr)
 	{
