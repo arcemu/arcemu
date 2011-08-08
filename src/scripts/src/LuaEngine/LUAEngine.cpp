@@ -1836,10 +1836,10 @@ class LuaGameObjectScript : public GameObjectAIScript
 		LuaObjectBinding* m_binding;
 };
 
-class LuaGossip : public GossipScript
+class LuaGossip : public Arcemu::Gossip::Script
 {
 	public:
-		LuaGossip() : GossipScript(), m_unit_gossip_binding(NULL), m_item_gossip_binding(NULL), m_go_gossip_binding(NULL) {}
+		LuaGossip() : Arcemu::Gossip::Script(), m_unit_gossip_binding(NULL), m_item_gossip_binding(NULL), m_go_gossip_binding(NULL) {}
 		~LuaGossip()
 		{
 			typedef HM_NAMESPACE::hash_map<uint32, LuaGossip*> MapType;
@@ -1882,7 +1882,7 @@ class LuaGossip : public GossipScript
 			}
 		}
 
-		void GossipHello(Object* pObject, Player* plr)
+		void OnHello(Object* pObject, Player* plr)
 		{
 			GET_LOCK
 			if(pObject->IsCreature())
@@ -1918,7 +1918,7 @@ class LuaGossip : public GossipScript
 			RELEASE_LOCK
 		}
 
-		void GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, uint32 IntId, const char* EnteredCode)
+		void OnSelectOption(Object* pObject, Player* Plr, uint32 Id, const char* EnteredCode)
 		{
 			GET_LOCK
 			if(pObject->IsCreature())
@@ -1930,7 +1930,7 @@ class LuaGossip : public GossipScript
 				sLuaMgr.PUSH_UINT(GOSSIP_EVENT_ON_SELECT_OPTION);
 				sLuaMgr.PushUnit(Plr);
 				sLuaMgr.PUSH_UINT(Id);
-				sLuaMgr.PUSH_UINT(IntId);
+				sLuaMgr.PUSH_UINT(Id); // used to be IntId
 				sLuaMgr.PUSH_STRING(EnteredCode);
 				sLuaMgr.ExecuteCall(6);
 			}
@@ -1942,7 +1942,7 @@ class LuaGossip : public GossipScript
 				sLuaMgr.PUSH_UINT(GOSSIP_EVENT_ON_SELECT_OPTION);
 				sLuaMgr.PushUnit(Plr);
 				sLuaMgr.PUSH_UINT(Id);
-				sLuaMgr.PUSH_UINT(IntId);
+				sLuaMgr.PUSH_UINT(Id); // used to be IntId
 				sLuaMgr.PUSH_STRING(EnteredCode);
 				sLuaMgr.ExecuteCall(6);
 			}
@@ -1954,14 +1954,14 @@ class LuaGossip : public GossipScript
 				sLuaMgr.PUSH_UINT(GOSSIP_EVENT_ON_SELECT_OPTION);
 				sLuaMgr.PushUnit(Plr);
 				sLuaMgr.PUSH_UINT(Id);
-				sLuaMgr.PUSH_UINT(IntId);
+				sLuaMgr.PUSH_UINT(Id); // used to be IntId
 				sLuaMgr.PUSH_STRING(EnteredCode);
 				sLuaMgr.ExecuteCall(6);
 			}
 			RELEASE_LOCK
 		}
 
-		void GossipEnd(Object* pObject, Player* Plr)
+		void OnEnd(Object* pObject, Player* Plr)
 		{
 			GET_LOCK
 			if(pObject->IsCreature())
@@ -2310,7 +2310,7 @@ InstanceScript* CreateLuaInstance(MapMgr* pMapMgr)
 	return pLua;
 }
 
-GossipScript* CreateLuaUnitGossipScript(uint32 id)
+Arcemu::Gossip::Script* CreateLuaUnitGossipScript(uint32 id)
 {
 	LuaGossip* pLua = NULL;
 	LuaObjectBinding* pBinding = sLuaMgr.getLuaUnitGossipBinding(id);
@@ -2335,7 +2335,7 @@ GossipScript* CreateLuaUnitGossipScript(uint32 id)
 	}
 	return pLua;
 }
-GossipScript* CreateLuaItemGossipScript(uint32 id)
+Arcemu::Gossip::Script* CreateLuaItemGossipScript(uint32 id)
 {
 	LuaGossip* pLua = NULL;
 	LuaObjectBinding* pBinding = sLuaMgr.getLuaItemGossipBinding(id);
@@ -2361,7 +2361,7 @@ GossipScript* CreateLuaItemGossipScript(uint32 id)
 	}
 	return pLua;
 }
-GossipScript* CreateLuaGOGossipScript(uint32 id)
+Arcemu::Gossip::Script* CreateLuaGOGossipScript(uint32 id)
 {
 	LuaGossip* pLua = NULL;
 	LuaObjectBinding* pBinding = g_luaMgr.getLuaGOGossipBinding(id);
@@ -2428,30 +2428,30 @@ void LuaEngine::Startup()
 
 	for(LuaObjectBindingMap::iterator itr = m_unit_gossipBinding.begin(); itr != m_unit_gossipBinding.end(); ++itr)
 	{
-		GossipScript* gs = CreateLuaUnitGossipScript(itr->first);
+		Arcemu::Gossip::Script* gs = CreateLuaUnitGossipScript(itr->first);
 		if(gs != NULL)
 		{
-			m_scriptMgr->register_gossip_script(itr->first, gs);
+			m_scriptMgr->register_creature_gossip(itr->first, gs);
 			sLuaMgr.getUnitGossipInterfaceMap().insert(make_pair(itr->first, (LuaGossip*)NULL));
 		}
 	}
 
 	for(LuaObjectBindingMap::iterator itr = m_item_gossipBinding.begin(); itr != m_item_gossipBinding.end(); ++itr)
 	{
-		GossipScript* gs = CreateLuaItemGossipScript(itr->first);
+		Arcemu::Gossip::Script* gs = CreateLuaItemGossipScript(itr->first);
 		if(gs != NULL)
 		{
-			m_scriptMgr->register_item_gossip_script(itr->first, gs);
+			m_scriptMgr->register_item_gossip(itr->first, gs);
 			sLuaMgr.getItemGossipInterfaceMap().insert(make_pair(itr->first, (LuaGossip*)NULL));
 		}
 	}
 
 	for(LuaObjectBindingMap::iterator itr = m_go_gossipBinding.begin(); itr != m_go_gossipBinding.end(); ++itr)
 	{
-		GossipScript* gs = CreateLuaGOGossipScript(itr->first);
+		Arcemu::Gossip::Script* gs = CreateLuaGOGossipScript(itr->first);
 		if(gs != NULL)
 		{
-			m_scriptMgr->register_go_gossip_script(itr->first, gs);
+			m_scriptMgr->register_go_gossip(itr->first, gs);
 			sLuaMgr.getGameObjectGossipInterfaceMap().insert(make_pair(itr->first, (LuaGossip*)NULL));
 		}
 	}
@@ -2840,10 +2840,10 @@ void LuaEngine::Restart()
 		GMAP::iterator it = gMap.find(itr->first);
 		if(it == gMap.end())
 		{
-			GossipScript* gs = CreateLuaUnitGossipScript(itr->first);
+			Arcemu::Gossip::Script* gs = CreateLuaUnitGossipScript(itr->first);
 			if(gs != NULL)
 			{
-				m_scriptMgr->register_gossip_script(itr->first, gs);
+				m_scriptMgr->register_creature_gossip(itr->first, gs);
 				gMap.insert(make_pair(itr->first, (LuaGossip*)NULL));
 			}
 		}
@@ -2861,10 +2861,10 @@ void LuaEngine::Restart()
 		GMAP::iterator it = gMap.find(itr->first);
 		if(it == gMap.end())
 		{
-			GossipScript* gs = CreateLuaItemGossipScript(itr->first);
+			Arcemu::Gossip::Script* gs = CreateLuaItemGossipScript(itr->first);
 			if(gs != NULL)
 			{
-				m_scriptMgr->register_item_gossip_script(itr->first, gs);
+				m_scriptMgr->register_item_gossip(itr->first, gs);
 				gMap.insert(make_pair(itr->first, (LuaGossip*)NULL));
 			}
 		}
@@ -2882,10 +2882,10 @@ void LuaEngine::Restart()
 		GMAP::iterator it = gMap.find(itr->first);
 		if(it == gMap.end())
 		{
-			GossipScript* gs = CreateLuaGOGossipScript(itr->first);
+			Arcemu::Gossip::Script* gs = CreateLuaGOGossipScript(itr->first);
 			if(gs != NULL)
 			{
-				m_scriptMgr->register_go_gossip_script(itr->first, gs);
+				m_scriptMgr->register_go_gossip(itr->first, gs);
 				gMap.insert(make_pair(itr->first, (LuaGossip*)NULL));
 			}
 		}
