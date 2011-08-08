@@ -31,9 +31,15 @@ namespace luaItem
 		int text_id = luaL_checkint(L, 1);
 		Player* plr = CHECK_PLAYER(L, 2);
 		int autosend = luaL_checkint(L, 3);
-		objmgr.CreateGossipMenuForPlayer(&Menu, ptr->GetGUID(), text_id, plr);
-		if(autosend)
-			Menu->SendTo(plr);
+
+		if( Menu != NULL )
+			delete Menu;
+
+		Menu = new Arcemu::Gossip::Menu( ptr->GetGUID(), text_id );
+
+		if( autosend != 0 )
+			Menu->Send( plr );
+
 		return 1;
 	}
 
@@ -42,25 +48,45 @@ namespace luaItem
 		int icon = luaL_checkint(L, 1);
 		const char* menu_text = luaL_checkstring(L, 2);
 		int IntId = luaL_checkint(L, 3);
-		bool extra = (luaL_checkint(L, 4)) ? true : false;
+		bool coded = (luaL_checkint(L, 4)) ? true : false;
 		const char* boxmessage = luaL_optstring(L, 5, "");
 		uint32 boxmoney = luaL_optint(L, 6, 0);
+		
+		if( Menu == NULL ){
+			LOG_ERROR( "There is no menu to add items to!" );
+			return 0;
+		}
 
-		Menu->AddMenuItem(icon, menu_text, 0, IntId, boxmessage, boxmoney, extra);
+		Menu->AddItem( icon, menu_text, IntId, boxmoney, boxmessage, coded );
+
 		return 0;
 	}
 
 	int GossipSendMenu(lua_State* L, Item* ptr)
 	{
 		Player* plr = CHECK_PLAYER(L, 1);
-		Menu->SendTo(plr);
+		
+		if( Menu == NULL ){
+			LOG_ERROR( "There is no menu to send!" );
+			return 0;
+		}
+
+		Menu->Send( plr );
+
 		return 1;
 	}
 
 	int GossipComplete(lua_State* L, Item* ptr)
 	{
 		Player* plr = CHECK_PLAYER(L, 1);
-		plr->Gossip_Complete();
+		
+		if( Menu == NULL ){
+			LOG_ERROR( "There is no menu to complete!" );
+			return 0;
+		}
+
+		Menu->Complete( plr );
+
 		return 1;
 	}
 

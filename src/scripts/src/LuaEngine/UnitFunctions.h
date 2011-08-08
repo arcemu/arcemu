@@ -42,61 +42,90 @@ class LuaUnit
 
 			return 1;
 		}
-
-		static int GossipCreateMenu(lua_State* L, Unit* ptr)
+		
+		static int GossipCreateMenu(lua_State * L, Unit * ptr)
 		{
 			int text_id = luaL_checkint(L, 1);
-			Player* plr = CHECK_PLAYER(L, 2);
+			Player *plr = CHECK_PLAYER(L,2);
 			int autosend = luaL_checkint(L, 3);
-			if(plr == NULL) return 0;
-
-			objmgr.CreateGossipMenuForPlayer(&Menu, ptr->GetGUID(), text_id, plr);
-			if(autosend)
-				Menu->SendTo(plr);
+			
+			if( plr == NULL )
+				return 0;
+			
+			if( Menu != NULL )
+				delete Menu;
+			
+			Menu = new Arcemu::Gossip::Menu( ptr->GetGUID(), text_id );
+			
+			if( autosend != 0 )
+				Menu->Send( plr );
+			
 			return 0;
 		}
-
-		static int GossipMenuAddItem(lua_State* L, Unit* ptr)
+		
+		static int GossipMenuAddItem(lua_State * L, Unit * ptr)
 		{
 			int icon = luaL_checkint(L, 1);
-			const char* menu_text = luaL_checkstring(L, 2);
+			const char * menu_text = luaL_checkstring(L, 2);
 			int IntId = luaL_checkint(L, 3);
-			bool extra = (luaL_checkint(L, 4)) ? true : false;
-			const char* boxmessage = luaL_optstring(L, 5, "");
-			uint32 boxmoney = luaL_optint(L, 6, 0);
+			bool coded = (luaL_checkint(L, 4)) ? true : false;
+			const char * boxmessage = luaL_optstring(L,5,"");
+			uint32 boxmoney = luaL_optint(L,6,0);
 
-			Menu->AddMenuItem(icon, menu_text, 0, IntId, boxmessage, boxmoney, extra);
+			if( Menu == NULL ){
+				LOG_ERROR( "There is no menu to add items to!" );
+				return 0;
+			}
+			
+			Menu->AddItem( icon, menu_text, IntId, boxmoney, boxmessage, coded );
+			
 			return 0;
 		}
-
-		static int GossipSendMenu(lua_State* L, Unit* ptr)
+		
+		static int GossipSendMenu(lua_State * L, Unit * ptr)
 		{
-			Player* plr = CHECK_PLAYER(L, 1);
+			Player* plr = CHECK_PLAYER(L,1);
+
+			if( Menu == NULL ){
+				LOG_ERROR( "There is no menu to send!" );
+				return 0;
+			}
+
 			if(plr != NULL)
-				Menu->SendTo(plr);
+				Menu->Send( plr );
+			
 			return 0;
 		}
-
-		static int GossipSendPOI(lua_State* L, Unit* ptr)
+		
+		static int GossipSendPOI(lua_State * L, Unit * ptr)
 		{
 			TEST_PLAYER()
-			Player* plr = TO_PLAYER(ptr);
-			float x = CHECK_FLOAT(L, 1);
+			Player * plr = TO_PLAYER(ptr);
+			float x = CHECK_FLOAT(L,1);
 			float y = CHECK_FLOAT(L, 2);
 			int icon = luaL_checkint(L, 3);
 			int flags = luaL_checkint(L, 4);
 			int data = luaL_checkint(L, 5);
-			const char* name = luaL_checkstring(L, 6);
-
+			const char * name = luaL_checkstring(L, 6);
+			
 			plr->Gossip_SendPOI(x, y, icon, flags, data, name);
+
 			return 0;
 		}
 
-		static int GossipComplete(lua_State* L, Unit* ptr)
+		
+		static int GossipComplete(lua_State * L, Unit * ptr)
 		{
 			TEST_PLAYER()
-			Player* plr = TO_PLAYER(ptr);
-			plr->Gossip_Complete();
+			Player * plr = TO_PLAYER(ptr);
+
+			if( Menu == NULL ){
+				LOG_ERROR( "There is no menu to complete!" );
+				return 0;
+			}
+
+			Menu->Complete( plr );
+			
 			return 0;
 		}
 

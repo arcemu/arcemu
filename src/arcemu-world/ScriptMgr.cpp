@@ -891,7 +891,7 @@ void GossipScript::OnHello(Object* pObject, Player* Plr)
 
 void GossipScript::OnSelectOption(Object* pObject, Player* Plr, uint32 Id, const char* EnteredCode)
 {
-	uint32 IntId = 1;
+	uint32 IntId = Id;
 
 	if(Plr->CurrentGossipMenu != NULL)
 	{
