@@ -60,6 +60,7 @@ World::World()
 	gamemaster_listOnlyActiveGMs = false;
 	gamemaster_hidePermissions = false;
 	gamemaster_startonGMIsland = true;
+	gamemaster_disableachievements = false;
 	GMAdminTag = true;
 	NameinAnnounce = false;
 	NameinWAnnounce = false;
@@ -1379,6 +1380,7 @@ void World::Rehash(bool load)
 	gamemaster_listOnlyActiveGMs = Config.OptionalConfig.GetBoolDefault("GameMaster", "ListOnlyActiveGMs", false);
 	gamemaster_hidePermissions = Config.OptionalConfig.GetBoolDefault("GameMaster", "HidePermissions", false);
 	gamemaster_startonGMIsland = Config.MainConfig.GetBoolDefault("GameMaster", "StartOnGMIsland", true);
+	gamemaster_disableachievements = Config.MainConfig.GetBoolDefault( "GameMaster", "DisableAchievements", false );
 	StartingLevel = Config.OptionalConfig.GetIntDefault("Optional", "StartingLevel", 1);
 	if(StartingLevel > PLAYER_LEVEL_CAP) {StartingLevel = PLAYER_LEVEL_CAP;}
 	antiMasterLootNinja = Config.OptionalConfig.GetBoolDefault("Optional", "AntiMasterLootNinja", false);

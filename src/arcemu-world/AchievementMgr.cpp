@@ -561,6 +561,9 @@ void AchievementMgr::CheckAllAchievementCriteria()
 */
 void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, int32 miscvalue1, int32 miscvalue2, uint32 time)
 {
+	if( m_player->GetSession()->HasGMPermissions() && sWorld.gamemaster_disableachievements )
+		return;
+	
 	uint64 selectedGUID;
 	if(type == ACHIEVEMENT_CRITERIA_TYPE_DO_EMOTE)
 	{
@@ -1229,6 +1232,9 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 */
 void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type)
 {
+	if( m_player->GetSession()->HasGMPermissions() && sWorld.gamemaster_disableachievements )
+		return;
+
 	AchievementCriteriaEntryList const & achievementCriteriaList = objmgr.GetAchievementCriteriaByType(type);
 	for(AchievementCriteriaEntryList::const_iterator i = achievementCriteriaList.begin(); i != achievementCriteriaList.end(); ++i)
 	{
