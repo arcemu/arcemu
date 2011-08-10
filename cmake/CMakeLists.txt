@@ -104,6 +104,7 @@ ${ROOT_PATH}/src/arcemu-world
 ${ROOT_PATH}/src/arcemu-logonserver
 ${DEPENDENCY_INCLUDE_ROOT}
 ${DEPENDENCY_INCLUDE_ROOT}/g3dlite
+${DEPENDENCY_INCLUDE_ROOT}/vmaplib
 ${DEPENDENCY_INCLUDE_ROOT}/pcre
 ${DEPENDENCY_INCLUDE_ROOT}/zlib
 ${DEPENDENCY_INCLUDE_ROOT}/recast
@@ -176,6 +177,7 @@ IF( APPLE )
 ENDIF( APPLE )
 
 add_subdirectory(g3dlite)
+add_subdirectory(vmaplib)
 add_subdirectory(recast)
 add_subdirectory(detour)
 add_subdirectory(shared)

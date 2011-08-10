@@ -1,13 +1,6 @@
 PROJECT(world)
 SET( prefix ${ROOT_PATH}/src/arcemu-world )
 SET(sources
-  vmap/BIH.cpp
-  vmap/MapTree.cpp
-  vmap/ModelInstance.cpp
-  vmap/TileAssembler.cpp
-  vmap/VMapFactory.cpp
-  vmap/VMapManager2.cpp
-  vmap/WorldModel.cpp
   DBC/DBCStores.cpp
 	AchievementMgr.cpp 
 	CollideInterface.cpp  
@@ -304,8 +297,8 @@ IF( CMAKE_GENERATOR MATCHES Visual*)
 ENDIF()
 set_target_properties(${PROJECT_NAME} PROPERTIES ENABLE_EXPORTS TRUE)
 
-add_dependencies( ${PROJECT_NAME} shared g3dlite detour recast)
-target_link_libraries( ${PROJECT_NAME} shared  g3dlite detour recast ${PCRE_LIBRARIES} )
+add_dependencies( ${PROJECT_NAME} shared g3dlite vmaplib detour recast)
+target_link_libraries( ${PROJECT_NAME} shared  g3dlite vmaplib detour recast ${PCRE_LIBRARIES} )
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION .)
 
 

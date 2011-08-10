@@ -16,7 +16,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include "StdAfx.h"
 #include "MapTree.h"
 #include "ModelInstance.h"
 #include "VMapManager2.h"
@@ -27,8 +26,6 @@
 #include <iomanip>
 #include <limits>
 
-using G3D::Vector3;
-
 namespace VMAP
 {
 
@@ -36,7 +33,7 @@ namespace VMAP
 	{
 		public:
 			MapRayCallback(ModelInstance* val): prims(val), hit(false) {}
-			bool operator()(const G3D::Ray & ray, uint32 entry, float & distance, bool pStopAtFirstHit = true)
+			bool operator()(const G3D::Ray & ray, G3D::uint32 entry, float & distance, bool pStopAtFirstHit = true)
 			{
 				bool result = prims[entry].intersectRay(ray, distance, pStopAtFirstHit);
 				if(result)
@@ -53,7 +50,7 @@ namespace VMAP
 	{
 		public:
 			AreaInfoCallback(ModelInstance* val): prims(val) {}
-			void operator()(const Vector3 & point, uint32 entry)
+			void operator()(const G3D::Vector3 & point, G3D::uint32 entry)
 			{
 #ifdef VMAP_DEBUG
 				DEBUG_LOG("trying to intersect '%s'", prims[entry].name.c_str());
@@ -69,7 +66,7 @@ namespace VMAP
 	{
 		public:
 			LocationInfoCallback(ModelInstance* val, LocationInfo & info): prims(val), locInfo(info), result(false) {}
-			void operator()(const Vector3 & point, uint32 entry)
+			void operator()(const G3D::Vector3 & point, G3D::uint32 entry)
 			{
 #ifdef VMAP_DEBUG
 				DEBUG_LOG("trying to intersect '%s'", prims[entry].name.c_str());
@@ -86,7 +83,7 @@ namespace VMAP
 
 	//=========================================================
 
-	std::string StaticMapTree::getTileFileName(uint32 mapID, uint32 tileX, uint32 tileY)
+	std::string StaticMapTree::getTileFileName(G3D::uint32 mapID, G3D::uint32 tileX, G3D::uint32 tileY)
 	{
 		std::stringstream tilefilename;
 		tilefilename.fill('0');
@@ -96,7 +93,7 @@ namespace VMAP
 		return tilefilename.str();
 	}
 
-	bool StaticMapTree::getAreaInfo(Vector3 & pos, uint32 & flags, int32 & adtId, int32 & rootId, int32 & groupId) const
+	bool StaticMapTree::getAreaInfo(G3D::Vector3 & pos, G3D::uint32 & flags, G3D::int32 & adtId, G3D::int32 & rootId, G3D::int32 & groupId) const
 	{
 		AreaInfoCallback intersectionCallBack(iTreeValues);
 		iTree.intersectPoint(pos, intersectionCallBack);
@@ -112,14 +109,14 @@ namespace VMAP
 		return false;
 	}
 
-	bool StaticMapTree::GetLocationInfo(const Vector3 & pos, LocationInfo & info) const
+	bool StaticMapTree::GetLocationInfo(const G3D::Vector3 & pos, LocationInfo & info) const
 	{
 		LocationInfoCallback intersectionCallBack(iTreeValues, info);
 		iTree.intersectPoint(pos, intersectionCallBack);
 		return intersectionCallBack.result;
 	}
 
-	StaticMapTree::StaticMapTree(uint32 mapID, const std::string & basePath):
+	StaticMapTree::StaticMapTree(G3D::uint32 mapID, const std::string & basePath):
 		iMapID(mapID), iTreeValues(0), iBasePath(basePath)
 	{
 		if(iBasePath.length() > 0 && (iBasePath[iBasePath.length() - 1] != '/' || iBasePath[iBasePath.length() - 1] != '\\'))
@@ -152,7 +149,7 @@ namespace VMAP
 	}
 	//=========================================================
 
-	bool StaticMapTree::isInLineOfSight(const Vector3 & pos1, const Vector3 & pos2) const
+	bool StaticMapTree::isInLineOfSight(const G3D::Vector3 & pos1, const G3D::Vector3 & pos2) const
 	{
 		float maxDist = (pos2 - pos1).magnitude();
 		// valid map coords should *never ever* produce float overflow, but this would produce NaNs too:
@@ -173,19 +170,24 @@ namespace VMAP
 	Return the hit pos or the original dest pos
 	*/
 
-	bool StaticMapTree::getObjectHitPos(const Vector3 & pPos1, const Vector3 & pPos2, Vector3 & pResultHitPos, float pModifyDist) const
+	bool StaticMapTree::getObjectHitPos(const G3D::Vector3 & pPos1, const G3D::Vector3 & pPos2, G3D::Vector3 & pResultHitPos, float pModifyDist) const
 	{
 		bool result = false;
 		float maxDist = (pPos2 - pPos1).magnitude();
 		// valid map coords should *never ever* produce float overflow, but this would produce NaNs too:
-		Arcemu::Util::ARCEMU_ASSERT(maxDist < std::numeric_limits<float>::max());
+		
+		if( maxDist > std::numeric_limits<float>::max() ){
+			printf( "maxDist is out of range, aborting." );
+			((void(*)())0)();
+		}
+
 		// prevent NaN values which can cause BIH intersection to enter infinite loop
 		if(maxDist < 1e-10f)
 		{
 			pResultHitPos = pPos2;
 			return false;
 		}
-		Vector3 dir = (pPos2 - pPos1) / maxDist;            // direction with length of 1
+		G3D::Vector3 dir = (pPos2 - pPos1) / maxDist;            // direction with length of 1
 		G3D::Ray ray(pPos1, dir);
 		float dist = maxDist;
 		if(getIntersectionTime(ray, dist, false))
@@ -218,10 +220,10 @@ namespace VMAP
 
 	//=========================================================
 
-	float StaticMapTree::getHeight(const Vector3 & pPos, float maxSearchDist) const
+	float StaticMapTree::getHeight(const G3D::Vector3 & pPos, float maxSearchDist) const
 	{
 		float height = G3D::inf();
-		Vector3 dir = Vector3(0, 0, -1);
+		G3D::Vector3 dir = G3D::Vector3(0, 0, -1);
 		G3D::Ray ray(pPos, dir);   // direction with length of 1
 		float maxDist = maxSearchDist;
 		if(getIntersectionTime(ray, maxDist, false))
@@ -233,7 +235,7 @@ namespace VMAP
 
 	//=========================================================
 
-	bool StaticMapTree::CanLoadMap(const std::string & vmapPath, uint32 mapID, uint32 tileX, uint32 tileY)
+	bool StaticMapTree::CanLoadMap(const std::string & vmapPath, G3D::uint32 mapID, G3D::uint32 tileX, G3D::uint32 tileY)
 	{
 		std::string basePath = vmapPath;
 		if(basePath.length() > 0 && (basePath[basePath.length() - 1] != '/' || basePath[basePath.length() - 1] != '\\'))
@@ -272,7 +274,7 @@ namespace VMAP
 
 	bool StaticMapTree::InitMap(const std::string & fname, VMapManager2* vm)
 	{
-		DEBUG_LOG("Initializing StaticMapTree '%s'", fname.c_str());
+		printf("Initializing StaticMapTree '%s'", fname.c_str());
 		bool success = true;
 		std::string fullname = iBasePath + fname;
 		FILE* rf = fopen(fullname.c_str(), "rb");
@@ -300,12 +302,12 @@ namespace VMAP
 			// only non-tiled maps have them, and if so exactly one (so far at least...)
 			ModelSpawn spawn;
 #ifdef VMAP_DEBUG
-			DEBUG_LOG("Map isTiled: %u", static_cast<uint32>(iIsTiled));
+			DEBUG_LOG("Map isTiled: %u", static_cast<G3D::uint32>(iIsTiled));
 #endif
 			if(!iIsTiled && ModelSpawn::readFromFile(rf, spawn))
 			{
 				WorldModel* model = vm->acquireModelInstance(iBasePath, spawn.name);
-				DEBUG_LOG("StaticMapTree::InitMap(): loading %s", spawn.name.c_str());
+				printf("StaticMapTree::InitMap(): loading %s", spawn.name.c_str());
 				if(model)
 				{
 					// assume that global model always is the first and only tree value (could be improved...)
@@ -315,7 +317,7 @@ namespace VMAP
 				else
 				{
 					success = false;
-					ERROR_LOG("StaticMapTree::InitMap() could not acquire WorldModel pointer for '%s'!", spawn.name.c_str());
+					printf("StaticMapTree::InitMap() could not acquire WorldModel pointer for '%s'!", spawn.name.c_str());
 				}
 			}
 
@@ -331,7 +333,7 @@ namespace VMAP
 		for(loadedSpawnMap::iterator i = iLoadedSpawns.begin(); i != iLoadedSpawns.end(); ++i)
 		{
 			iTreeValues[i->first].setUnloaded();
-			for(uint32 refCount = 0; refCount < i->second; ++refCount)
+			for(G3D::uint32 refCount = 0; refCount < i->second; ++refCount)
 				vm->releaseModelInstance(iTreeValues[i->first].name);
 		}
 		iLoadedSpawns.clear();
@@ -340,7 +342,7 @@ namespace VMAP
 
 	//=========================================================
 
-	bool StaticMapTree::LoadMapTile(uint32 tileX, uint32 tileY, VMapManager2* vm)
+	bool StaticMapTree::LoadMapTile(G3D::uint32 tileX, G3D::uint32 tileY, VMapManager2* vm)
 	{
 		if(!iIsTiled)
 		{
@@ -351,7 +353,7 @@ namespace VMAP
 		}
 		if(!iTreeValues)
 		{
-			ERROR_LOG("StaticMapTree::LoadMapTile(): Tree has not been initialized! [%u,%u]", tileX, tileY);
+			printf("StaticMapTree::LoadMapTile(): Tree has not been initialized! [%u,%u]", tileX, tileY);
 			return false;
 		}
 		bool result = true;
@@ -363,10 +365,10 @@ namespace VMAP
 			char chunk[8];
 			if(!readChunk(tf, chunk, VMAP_MAGIC, 8))
 				result = false;
-			uint32 numSpawns;
-			if(result && fread(&numSpawns, sizeof(uint32), 1, tf) != 1)
+			G3D::uint32 numSpawns;
+			if(result && fread(&numSpawns, sizeof(G3D::uint32), 1, tf) != 1)
 				result = false;
-			for(uint32 i = 0; i < numSpawns && result; ++i)
+			for(G3D::uint32 i = 0; i < numSpawns && result; ++i)
 			{
 				// read model spawns
 				ModelSpawn spawn;
@@ -376,12 +378,12 @@ namespace VMAP
 					// acquire model instance
 					WorldModel* model = vm->acquireModelInstance(iBasePath, spawn.name);
 					if(!model)
-						ERROR_LOG("StaticMapTree::LoadMapTile() could not acquire WorldModel pointer for '%s'!", spawn.name.c_str());
+						printf("StaticMapTree::LoadMapTile() could not acquire WorldModel pointer for '%s'!", spawn.name.c_str());
 
 					// update tree
-					uint32 referencedVal;
+					G3D::uint32 referencedVal;
 
-					fread(&referencedVal, sizeof(uint32), 1, tf);
+					fread(&referencedVal, sizeof(G3D::uint32), 1, tf);
 					if(!iLoadedSpawns.count(referencedVal))
 					{
 #ifdef VMAP_DEBUG
@@ -416,13 +418,13 @@ namespace VMAP
 
 	//=========================================================
 
-	void StaticMapTree::UnloadMapTile(uint32 tileX, uint32 tileY, VMapManager2* vm)
+	void StaticMapTree::UnloadMapTile(G3D::uint32 tileX, G3D::uint32 tileY, VMapManager2* vm)
 	{
-		uint32 tileID = packTileID(tileX, tileY);
+		G3D::uint32 tileID = packTileID(tileX, tileY);
 		loadedTileMap::iterator tile = iLoadedTiles.find(tileID);
 		if(tile == iLoadedTiles.end())
 		{
-			ERROR_LOG("StaticMapTree::UnloadMapTile(): Trying to unload non-loaded tile. Map:%u X:%u Y:%u", iMapID, tileX, tileY);
+			printf("StaticMapTree::UnloadMapTile(): Trying to unload non-loaded tile. Map:%u X:%u Y:%u", iMapID, tileX, tileY);
 			return;
 		}
 		if(tile->second)  // file associated with tile
@@ -435,10 +437,10 @@ namespace VMAP
 				char chunk[8];
 				if(!readChunk(tf, chunk, VMAP_MAGIC, 8))
 					result = false;
-				uint32 numSpawns;
-				if(fread(&numSpawns, sizeof(uint32), 1, tf) != 1)
+				G3D::uint32 numSpawns;
+				if(fread(&numSpawns, sizeof(G3D::uint32), 1, tf) != 1)
 					result = false;
-				for(uint32 i = 0; i < numSpawns && result; ++i)
+				for(G3D::uint32 i = 0; i < numSpawns && result; ++i)
 				{
 					// read model spawns
 					ModelSpawn spawn;
@@ -449,12 +451,12 @@ namespace VMAP
 						vm->releaseModelInstance(spawn.name);
 
 						// update tree
-						uint32 referencedNode;
+						G3D::uint32 referencedNode;
 
-						fread(&referencedNode, sizeof(uint32), 1, tf);
+						fread(&referencedNode, sizeof(G3D::uint32), 1, tf);
 						if(!iLoadedSpawns.count(referencedNode))
 						{
-							ERROR_LOG("Trying to unload non-referenced model '%s' (ID:%u)", spawn.name.c_str(), spawn.ID);
+							printf("Trying to unload non-referenced model '%s' (ID:%u)", spawn.name.c_str(), spawn.ID);
 						}
 						else if(--iLoadedSpawns[referencedNode] == 0)
 						{

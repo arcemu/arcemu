@@ -49,8 +49,8 @@ namespace VMAP
 			void moveToBasePos(const G3D::Vector3 & pBasePos) { iPos -= pBasePos; }
 	};
 
-	typedef std::map<uint32, ModelSpawn> UniqueEntryMap;
-	typedef std::multimap<uint32, uint32> TileMap;
+	typedef std::map<G3D::uint32, ModelSpawn> UniqueEntryMap;
+	typedef std::multimap<G3D::uint32, G3D::uint32> TileMap;
 
 	struct MapSpawns
 	{
@@ -58,7 +58,7 @@ namespace VMAP
 		TileMap TileEntries;
 	};
 
-	typedef std::map<uint32, MapSpawns*> MapData;
+	typedef std::map<G3D::uint32, MapSpawns*> MapData;
 	//===============================================
 
 	class TileAssembler

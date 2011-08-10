@@ -129,13 +129,13 @@ template< class T, class U > T TO(U u) { return static_cast< T >(u); }
 #endif
 
 //VMAP
-#include "vmap/ModelInstance.h"
-#include "vmap/WorldModel.h"
-#include "vmap/MapTree.h"
-#include "vmap/BIH.h"
-#include "vmap/VMapFactory.h"
-#include "vmap/VMapManager2.h"
-#include "vmap/VMapDefinitions.h"
+#include "ModelInstance.h"
+#include "WorldModel.h"
+#include "MapTree.h"
+#include "BIH.h"
+#include "VMapFactory.h"
+#include "VMapManager2.h"
+#include "VMapDefinitions.h"
 
 #include "AddonMgr.h"
 #include "AIEvents.h"

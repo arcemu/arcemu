@@ -16,14 +16,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include "StdAfx.h"
 #include "ModelInstance.h"
 #include "WorldModel.h"
 #include "MapTree.h"
 #include "VMapDefinitions.h"
-
-using G3D::Vector3;
-using G3D::Ray;
 
 namespace VMAP
 {
@@ -51,8 +47,8 @@ namespace VMAP
 			return false;
 		}
 		// child bounds are defined in object space:
-		Vector3 p = iInvRot * (pRay.origin() - iPos) * iInvScale;
-		Ray modRay(p, iInvRot * pRay.direction());
+		G3D::Vector3 p = iInvRot * (pRay.origin() - iPos) * iInvScale;
+		G3D::Ray modRay(p, iInvRot * pRay.direction());
 		float distance = pMaxDist * iInvScale;
 		bool hit = iModel->IntersectRay(modRay, distance, pStopAtFirstHit);
 		if(hit)
@@ -79,12 +75,12 @@ namespace VMAP
 		if(!iBound.contains(p))
 			return;
 		// child bounds are defined in object space:
-		Vector3 pModel = iInvRot * (p - iPos) * iInvScale;
-		Vector3 zDirModel = iInvRot * Vector3(0.f, 0.f, -1.f);
+		G3D::Vector3 pModel = iInvRot * (p - iPos) * iInvScale;
+		G3D::Vector3 zDirModel = iInvRot * G3D::Vector3(0.f, 0.f, -1.f);
 		float zDist;
 		if(iModel->IntersectPoint(pModel, zDirModel, zDist, info))
 		{
-			Vector3 modelGround = pModel + zDist * zDirModel;
+			G3D::Vector3 modelGround = pModel + zDist * zDirModel;
 			// Transform back to world space. Note that:
 			// Mat * vec == vec * Mat.transpose()
 			// and for rotation matrices: Mat.inverse() == Mat.transpose()
@@ -113,12 +109,12 @@ namespace VMAP
 		if(!iBound.contains(p))
 			return false;
 		// child bounds are defined in object space:
-		Vector3 pModel = iInvRot * (p - iPos) * iInvScale;
-		Vector3 zDirModel = iInvRot * Vector3(0.f, 0.f, -1.f);
+		G3D::Vector3 pModel = iInvRot * (p - iPos) * iInvScale;
+		G3D::Vector3 zDirModel = iInvRot * G3D::Vector3(0.f, 0.f, -1.f);
 		float zDist;
 		if(iModel->GetLocationInfo(pModel, zDirModel, zDist, info))
 		{
-			Vector3 modelGround = pModel + zDist * zDirModel;
+			G3D::Vector3 modelGround = pModel + zDist * zDirModel;
 			// Transform back to world space. Note that:
 			// Mat * vec == vec * Mat.transpose()
 			// and for rotation matrices: Mat.inverse() == Mat.transpose()
@@ -136,8 +132,8 @@ namespace VMAP
 	bool ModelInstance::GetLiquidLevel(const G3D::Vector3 & p, LocationInfo & info, float & liqHeight) const
 	{
 		// child bounds are defined in object space:
-		Vector3 pModel = iInvRot * (p - iPos) * iInvScale;
-		//Vector3 zDirModel = iInvRot * Vector3(0.f, 0.f, -1.f);
+		G3D::Vector3 pModel = iInvRot * (p - iPos) * iInvScale;
+		//G3D::Vector3 zDirModel = iInvRot * G3D::Vector3(0.f, 0.f, -1.f);
 		float zLevel;
 		if(info.hitModel->GetLiquidLevel(pModel, zLevel))
 		{
@@ -153,44 +149,44 @@ namespace VMAP
 
 	bool ModelSpawn::readFromFile(FILE* rf, ModelSpawn & spawn)
 	{
-		uint32 check = 0, nameLen;
-		check += fread(&spawn.flags, sizeof(uint32), 1, rf);
+		G3D::uint32 check = 0, nameLen;
+		check += fread(&spawn.flags, sizeof(G3D::uint32), 1, rf);
 		// EoF?
 		if(!check)
 		{
 			if(ferror(rf))
-				ERROR_LOG("Error reading ModelSpawn!");
+				printf("Error reading ModelSpawn!");
 			return false;
 		}
-		check += fread(&spawn.adtId, sizeof(uint16), 1, rf);
-		check += fread(&spawn.ID, sizeof(uint32), 1, rf);
+		check += fread(&spawn.adtId, sizeof(G3D::uint16), 1, rf);
+		check += fread(&spawn.ID, sizeof(G3D::uint32), 1, rf);
 		check += fread(&spawn.iPos, sizeof(float), 3, rf);
 		check += fread(&spawn.iRot, sizeof(float), 3, rf);
 		check += fread(&spawn.iScale, sizeof(float), 1, rf);
 		bool has_bound = ((spawn.flags & MOD_HAS_BOUND) != 0);
 		if(has_bound)  // only WMOs have bound in MPQ, only available after computation
 		{
-			Vector3 bLow, bHigh;
+			G3D::Vector3 bLow, bHigh;
 			check += fread(&bLow, sizeof(float), 3, rf);
 			check += fread(&bHigh, sizeof(float), 3, rf);
 			spawn.iBound = G3D::AABox(bLow, bHigh);
 		}
-		check += fread(&nameLen, sizeof(uint32), 1, rf);
+		check += fread(&nameLen, sizeof(G3D::uint32), 1, rf);
 		if(check != (has_bound ? 17U : 11U))
 		{
-			ERROR_LOG("Error reading ModelSpawn!");
+			printf("Error reading ModelSpawn!");
 			return false;
 		}
 		char nameBuff[500];
 		if(nameLen > 500) // file names should never be that long, must be file error
 		{
-			ERROR_LOG("Error reading ModelSpawn, file name too long!");
+			printf("Error reading ModelSpawn, file name too long!");
 			return false;
 		}
 		check = fread(nameBuff, sizeof(char), nameLen, rf);
 		if(check != nameLen)
 		{
-			ERROR_LOG("Error reading name string of ModelSpawn!");
+			printf("Error reading name string of ModelSpawn!");
 			return false;
 		}
 		spawn.name = std::string(nameBuff, nameLen);
@@ -199,10 +195,10 @@ namespace VMAP
 
 	bool ModelSpawn::writeToFile(FILE* wf, const ModelSpawn & spawn)
 	{
-		uint32 check = 0;
-		check += fwrite(&spawn.flags, sizeof(uint32), 1, wf);
-		check += fwrite(&spawn.adtId, sizeof(uint16), 1, wf);
-		check += fwrite(&spawn.ID, sizeof(uint32), 1, wf);
+		G3D::uint32 check = 0;
+		check += fwrite(&spawn.flags, sizeof(G3D::uint32), 1, wf);
+		check += fwrite(&spawn.adtId, sizeof(G3D::uint16), 1, wf);
+		check += fwrite(&spawn.ID, sizeof(G3D::uint32), 1, wf);
 		check += fwrite(&spawn.iPos, sizeof(float), 3, wf);
 		check += fwrite(&spawn.iRot, sizeof(float), 3, wf);
 		check += fwrite(&spawn.iScale, sizeof(float), 1, wf);
@@ -212,8 +208,8 @@ namespace VMAP
 			check += fwrite(&spawn.iBound.low(), sizeof(float), 3, wf);
 			check += fwrite(&spawn.iBound.high(), sizeof(float), 3, wf);
 		}
-		uint32 nameLen = spawn.name.length();
-		check += fwrite(&nameLen, sizeof(uint32), 1, wf);
+		G3D::uint32 nameLen = spawn.name.length();
+		check += fwrite(&nameLen, sizeof(G3D::uint32), 1, wf);
 		if(check != (has_bound ? 17U : 11U)) return false;
 		check = fwrite(spawn.name.c_str(), sizeof(char), nameLen, wf);
 		if(check != nameLen) return false;

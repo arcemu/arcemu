@@ -16,7 +16,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include "StdAfx.h"
 #include <iostream>
 #include <iomanip>
 #include <string>
@@ -26,8 +25,6 @@
 #include "ModelInstance.h"
 #include "WorldModel.h"
 #include "VMapDefinitions.h"
-
-using G3D::Vector3;
 
 namespace VMAP
 {
@@ -54,9 +51,9 @@ namespace VMAP
 
 	//=========================================================
 
-	Vector3 VMapManager2::convertPositionToInternalRep(float x, float y, float z) const
+	G3D::Vector3 VMapManager2::convertPositionToInternalRep(float x, float y, float z) const
 	{
-		Vector3 pos;
+		G3D::Vector3 pos;
 		const float mid = 0.5f * 64.0f * 533.33333333f;
 		pos.x = mid - x;
 		pos.y = mid - y;
@@ -67,9 +64,9 @@ namespace VMAP
 
 	//=========================================================
 
-	Vector3 VMapManager2::convertPositionToMangosRep(float x, float y, float z) const
+	G3D::Vector3 VMapManager2::convertPositionToMangosRep(float x, float y, float z) const
 	{
-		Vector3 pos;
+		G3D::Vector3 pos;
 		const float mid = 0.5f * 64.0f * 533.33333333f;
 		pos.x = mid - x;
 		pos.y = mid - y;
@@ -106,7 +103,7 @@ namespace VMAP
 	//=========================================================
 	// load one tile (internal use only)
 
-	bool VMapManager2::_loadMap(unsigned int pMapId, const std::string & basePath, uint32 tileX, uint32 tileY)
+	bool VMapManager2::_loadMap(unsigned int pMapId, const std::string & basePath, G3D::uint32 tileX, G3D::uint32 tileY)
 	{
 		InstanceTreeMap::iterator instanceTree = iInstanceMapTrees.find(pMapId);
 		if(instanceTree == iInstanceMapTrees.end())
@@ -161,8 +158,8 @@ namespace VMAP
 		InstanceTreeMap::iterator instanceTree = iInstanceMapTrees.find(pMapId);
 		if(instanceTree != iInstanceMapTrees.end())
 		{
-			Vector3 pos1 = convertPositionToInternalRep(x1, y1, z1);
-			Vector3 pos2 = convertPositionToInternalRep(x2, y2, z2);
+			G3D::Vector3 pos1 = convertPositionToInternalRep(x1, y1, z1);
+			G3D::Vector3 pos2 = convertPositionToInternalRep(x2, y2, z2);
 			if(pos1 != pos2)
 			{
 				result = instanceTree->second->isInLineOfSight(pos1, pos2);
@@ -186,9 +183,9 @@ namespace VMAP
 			InstanceTreeMap::iterator instanceTree = iInstanceMapTrees.find(pMapId);
 			if(instanceTree != iInstanceMapTrees.end())
 			{
-				Vector3 pos1 = convertPositionToInternalRep(x1, y1, z1);
-				Vector3 pos2 = convertPositionToInternalRep(x2, y2, z2);
-				Vector3 resultPos;
+				G3D::Vector3 pos1 = convertPositionToInternalRep(x1, y1, z1);
+				G3D::Vector3 pos2 = convertPositionToInternalRep(x2, y2, z2);
+				G3D::Vector3 resultPos;
 				result = instanceTree->second->getObjectHitPos(pos1, pos2, resultPos, pModifyDist);
 				resultPos = convertPositionToMangosRep(resultPos.x, resultPos.y, resultPos.z);
 				rx = resultPos.x;
@@ -212,7 +209,7 @@ namespace VMAP
 			InstanceTreeMap::iterator instanceTree = iInstanceMapTrees.find(pMapId);
 			if(instanceTree != iInstanceMapTrees.end())
 			{
-				Vector3 pos = convertPositionToInternalRep(x, y, z);
+				G3D::Vector3 pos = convertPositionToInternalRep(x, y, z);
 				height = instanceTree->second->getHeight(pos, maxSearchDist);
 				if(!(height < G3D::inf()))
 				{
@@ -225,13 +222,13 @@ namespace VMAP
 
 	//=========================================================
 
-	bool VMapManager2::getAreaInfo(unsigned int pMapId, float x, float y, float & z, uint32 & flags, int32 & adtId, int32 & rootId, int32 & groupId) const
+	bool VMapManager2::getAreaInfo(unsigned int pMapId, float x, float y, float & z, G3D::uint32 & flags, G3D::int32 & adtId, G3D::int32 & rootId, G3D::int32 & groupId) const
 	{
 		bool result = false;
 		InstanceTreeMap::const_iterator instanceTree = iInstanceMapTrees.find(pMapId);
 		if(instanceTree != iInstanceMapTrees.end())
 		{
-			Vector3 pos = convertPositionToInternalRep(x, y, z);
+			G3D::Vector3 pos = convertPositionToInternalRep(x, y, z);
 			result = instanceTree->second->getAreaInfo(pos, flags, adtId, rootId, groupId);
 			// z is not touched by convertPositionToMangosRep(), so just copy
 			z = pos.z;
@@ -239,13 +236,13 @@ namespace VMAP
 		return(result);
 	}
 
-	bool VMapManager2::GetLiquidLevel(uint32 pMapId, float x, float y, float z, uint8 ReqLiquidType, float & level, float & floor, uint32 & type) const
+	bool VMapManager2::GetLiquidLevel(G3D::uint32 pMapId, float x, float y, float z, G3D::uint8 ReqLiquidType, float & level, float & floor, G3D::uint32 & type) const
 	{
 		InstanceTreeMap::const_iterator instanceTree = iInstanceMapTrees.find(pMapId);
 		if(instanceTree != iInstanceMapTrees.end())
 		{
 			LocationInfo info;
-			Vector3 pos = convertPositionToInternalRep(x, y, z);
+			G3D::Vector3 pos = convertPositionToInternalRep(x, y, z);
 			if(instanceTree->second->GetLocationInfo(pos, info))
 			{
 				floor = info.ground_Z;
@@ -269,11 +266,11 @@ namespace VMAP
 			WorldModel* worldmodel = new WorldModel();
 			if(!worldmodel->readFile(basepath + filename + ".vmo"))
 			{
-				ERROR_LOG("VMapManager2: could not load '%s%s.vmo'!", basepath.c_str(), filename.c_str());
+				printf("VMapManager2: could not load '%s%s.vmo'!", basepath.c_str(), filename.c_str());
 				delete worldmodel;
 				return NULL;
 			}
-			DEBUG_LOG("VMapManager2: loading file '%s%s'.", basepath.c_str(), filename.c_str());
+			printf("VMapManager2: loading file '%s%s'.", basepath.c_str(), filename.c_str());
 			model = iLoadedModelFiles.insert(std::pair<std::string, ManagedModel>(filename, ManagedModel())).first;
 			model->second.setModel(worldmodel);
 		}
@@ -286,12 +283,12 @@ namespace VMAP
 		ModelFileMap::iterator model = iLoadedModelFiles.find(filename);
 		if(model == iLoadedModelFiles.end())
 		{
-			ERROR_LOG("VMapManager2: trying to unload non-loaded file '%s'!", filename.c_str());
+			printf("VMapManager2: trying to unload non-loaded file '%s'!", filename.c_str());
 			return;
 		}
 		if(model->second.decRefCount() == 0)
 		{
-			DEBUG_LOG("VMapManager2: unloading file '%s'", filename.c_str());
+			printf("VMapManager2: unloading file '%s'", filename.c_str());
 			delete model->second.getModel();
 			iLoadedModelFiles.erase(model);
 		}

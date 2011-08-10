@@ -28,25 +28,8 @@ namespace VMAP
 	const char RAW_VMAP_MAGIC[] = "VMAP003";                // used in extracted vmap files with raw data
 
 	// defined in TileAssembler.cpp currently...
-	bool readChunk(FILE* rf, char* dest, const char* compare, uint32 len);
+	bool readChunk(FILE* rf, char* dest, const char* compare, G3D::uint32 len);
 }
 
-#ifndef NO_CORE_FUNCS
-#include "Errors.h"
-#include "Log.h"
-#define ERROR_LOG(...) LOG_ERROR(__VA_ARGS__);
-#elif defined MMAP_GENERATOR
-#include <assert.h>
-#define Arcemu::Util::ARCEMU_ASSERT(x) assert(x)
-#define DEBUG_LOG(...) 0
-#define DETAIL_LOG(...) 0
-#define ERROR_LOG(...) do{ printf("ERROR:"); printf(__VA_ARGS__); printf("\n"); } while(0)
-#else
-#include <assert.h>
-#define Arcemu::Util::ARCEMU_ASSERT(x) assert(x)
-#define DEBUG_LOG(...) do{ printf(__VA_ARGS__); printf("\n"); } while(0)
-#define DETAIL_LOG(...) do{ printf(__VA_ARGS__); printf("\n"); } while(0)
-#define ERROR_LOG(...) do{ printf("ERROR:"); printf(__VA_ARGS__); printf("\n"); } while(0)
-#endif
-
 #endif // _VMAPDEFINITIONS_H
+

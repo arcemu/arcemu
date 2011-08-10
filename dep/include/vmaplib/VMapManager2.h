@@ -19,8 +19,14 @@
 #ifndef _VMAPMANAGER2_H
 #define _VMAPMANAGER2_H
 
-#include "IVMapManager.h"
 #include <G3D/Vector3.h>
+#include "IVMapManager.h"
+
+#ifdef WIN32
+#include <unordered_map>
+#else
+#include <tr1/unordered_map>
+#endif
 
 //===========================================================
 
@@ -56,8 +62,8 @@ namespace VMAP
 			int iRefCount;
 	};
 
-	typedef HM_NAMESPACE::hash_map<uint32 , StaticMapTree*> InstanceTreeMap;
-	typedef HM_NAMESPACE::hash_map<std::string, ManagedModel> ModelFileMap;
+	typedef std::tr1::unordered_map<G3D::uint32 , StaticMapTree*> InstanceTreeMap;
+	typedef std::tr1::unordered_map<std::string, ManagedModel> ModelFileMap;
 
 	class VMapManager2 : public IVMapManager
 	{
@@ -66,8 +72,8 @@ namespace VMAP
 			ModelFileMap iLoadedModelFiles;
 			InstanceTreeMap iInstanceMapTrees;
 
-			bool _loadMap(uint32 pMapId, const std::string & basePath, uint32 tileX, uint32 tileY);
-			/* void _unloadMap(uint32 pMapId, uint32 x, uint32 y); */
+			bool _loadMap(G3D::uint32 pMapId, const std::string & basePath, G3D::uint32 tileX, G3D::uint32 tileY);
+			/* void _unloadMap(G3D::uint32 pMapId, G3D::uint32 x, G3D::uint32 y); */
 
 		public:
 			// public for debug
@@ -92,8 +98,8 @@ namespace VMAP
 
 			bool processCommand(char* pCommand) { return false; }      // for debug and extensions
 
-			bool getAreaInfo(unsigned int pMapId, float x, float y, float & z, uint32 & flags, int32 & adtId, int32 & rootId, int32 & groupId) const;
-			bool GetLiquidLevel(uint32 pMapId, float x, float y, float z, uint8 ReqLiquidType, float & level, float & floor, uint32 & type) const;
+			bool getAreaInfo(unsigned int pMapId, float x, float y, float & z, G3D::uint32 & flags, G3D::int32 & adtId, G3D::int32 & rootId, G3D::int32 & groupId) const;
+			bool GetLiquidLevel(G3D::uint32 pMapId, float x, float y, float z, G3D::uint8 ReqLiquidType, float & level, float & floor, G3D::uint32 & type) const;
 
 			WorldModel* acquireModelInstance(const std::string & basepath, const std::string & filename);
 			void releaseModelInstance(const std::string & filename);

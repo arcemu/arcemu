@@ -16,13 +16,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include "StdAfx.h"
 #include "BIH.h"
 
-void BIH::buildHierarchy(std::vector<uint32> &tempTree, buildData & dat, BuildStats & stats)
+void BIH::buildHierarchy(std::vector<G3D::uint32> &tempTree, buildData & dat, BuildStats & stats)
 {
 	// create space for the first node
-	tempTree.push_back(uint32(3 << 30));   // dummy leaf
+	tempTree.push_back(G3D::uint32(3 << 30));   // dummy leaf
 	tempTree.insert(tempTree.end(), 2, 0);
 	//tempTree.add(0);
 
@@ -33,7 +32,7 @@ void BIH::buildHierarchy(std::vector<uint32> &tempTree, buildData & dat, BuildSt
 	subdivide(0, dat.numPrims - 1, tempTree, dat, gridBox, nodeBox, 0, 1, stats);
 }
 
-void BIH::subdivide(int left, int right, std::vector<uint32> &tempTree, buildData & dat, AABound & gridBox, AABound & nodeBox, int nodeIndex, int depth, BuildStats & stats)
+void BIH::subdivide(int left, int right, std::vector<G3D::uint32> &tempTree, buildData & dat, AABound & gridBox, AABound & nodeBox, int nodeIndex, int depth, BuildStats & stats)
 {
 	if((right - left + 1) <= dat.maxPrims || depth >= MAX_STACK_SIZE)
 	{
@@ -52,7 +51,7 @@ void BIH::subdivide(int left, int right, std::vector<uint32> &tempTree, buildDat
 		prevAxis = axis;
 		prevSplit = split;
 		// perform quick consistency checks
-		Vector3 d(gridBox.hi - gridBox.lo);
+		G3D::Vector3 d(gridBox.hi - gridBox.lo);
 		if(d.x < 0 || d.y < 0 || d.z < 0)
 			throw std::logic_error("negative node extents");
 		for(int i = 0; i < 3; i++)
@@ -251,32 +250,32 @@ void BIH::subdivide(int left, int right, std::vector<uint32> &tempTree, buildDat
 
 bool BIH::writeToFile(FILE* wf) const
 {
-	uint32 treeSize = tree.size();
-	uint32 check = 0, count = 0;
+	G3D::uint32 treeSize = tree.size();
+	G3D::uint32 check = 0, count = 0;
 	check += fwrite(&bounds.low(), sizeof(float), 3, wf);
 	check += fwrite(&bounds.high(), sizeof(float), 3, wf);
-	check += fwrite(&treeSize, sizeof(uint32), 1, wf);
-	check += fwrite(&tree[0], sizeof(uint32), treeSize, wf);
+	check += fwrite(&treeSize, sizeof(G3D::uint32), 1, wf);
+	check += fwrite(&tree[0], sizeof(G3D::uint32), treeSize, wf);
 	count = objects.size();
-	check += fwrite(&count, sizeof(uint32), 1, wf);
-	check += fwrite(&objects[0], sizeof(uint32), count, wf);
+	check += fwrite(&count, sizeof(G3D::uint32), 1, wf);
+	check += fwrite(&objects[0], sizeof(G3D::uint32), count, wf);
 	return check == (3 + 3 + 2 + treeSize + count);
 }
 
 bool BIH::readFromFile(FILE* rf)
 {
-	uint32 treeSize;
-	Vector3 lo, hi;
-	uint32 check = 0, count = 0;
+	G3D::uint32 treeSize;
+	G3D::Vector3 lo, hi;
+	G3D::uint32 check = 0, count = 0;
 	check += fread(&lo, sizeof(float), 3, rf);
 	check += fread(&hi, sizeof(float), 3, rf);
-	bounds = AABox(lo, hi);
-	check += fread(&treeSize, sizeof(uint32), 1, rf);
+	bounds = G3D::AABox(lo, hi);
+	check += fread(&treeSize, sizeof(G3D::uint32), 1, rf);
 	tree.resize(treeSize);
-	check += fread(&tree[0], sizeof(uint32), treeSize, rf);
-	check += fread(&count, sizeof(uint32), 1, rf);
-	objects.resize(count); // = new uint32[nObjects];
-	check += fread(&objects[0], sizeof(uint32), count, rf);
+	check += fread(&tree[0], sizeof(G3D::uint32), treeSize, rf);
+	check += fread(&count, sizeof(G3D::uint32), 1, rf);
+	objects.resize(count); // = new G3D::uint32[nObjects];
+	check += fread(&objects[0], sizeof(G3D::uint32), count, rf);
 	return check == (3 + 3 + 2 + treeSize + count);
 }
 
