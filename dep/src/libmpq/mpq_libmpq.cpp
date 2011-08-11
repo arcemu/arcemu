@@ -3,7 +3,6 @@
 #include "common.h"
 
 //typedef std::vector<mpq_archive*> ArchiveSet;
-typedef std::vector<MPQArchive*> ArchiveSet;
 ArchiveSet gOpenArchives;
 
 MPQArchive::MPQArchive(const char* filename)

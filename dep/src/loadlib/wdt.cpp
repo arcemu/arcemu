@@ -4,7 +4,10 @@
 
 bool wdt_MWMO::prepareLoadedData()
 {
-	if( ( fcc_txt[ 0 ] != 'M' ) || ( fcc_txt[ 1 ] != 'W' ) || ( fcc_txt[ 2 ] != 'M' ) || ( fcc_txt[ 3 ] != 'O' ) )
+    if( ( fcc_txt[ 3 ] != 'M' ) ||
+		( fcc_txt[ 2 ] != 'W' ) ||
+		( fcc_txt[ 1 ] != 'M' ) ||
+		( fcc_txt[ 0 ] != 'O' ) )
 		return false;
 
     return true;
@@ -12,18 +15,24 @@ bool wdt_MWMO::prepareLoadedData()
 
 bool wdt_MPHD::prepareLoadedData()
 {
-	if( ( fcc_txt[ 0 ] != 'M' ) || ( fcc_txt[ 1 ] != 'P' ) || ( fcc_txt[ 2 ] != 'H' ) || ( fcc_txt[ 3 ] != 'D' ) )
+    if( ( fcc_txt[ 3 ] != 'M' ) ||
+		( fcc_txt[ 2 ] != 'P' ) ||
+		( fcc_txt[ 1 ] != 'H' ) ||
+		( fcc_txt[ 0 ] != 'D' ) )
 		return false;
-
-    return true;
+	
+	return true;
 }
 
 bool wdt_MAIN::prepareLoadedData()
 {
-	if( ( fcc_txt[ 0 ] != 'M' ) || ( fcc_txt[ 1 ] != 'A' ) || ( fcc_txt[ 2 ] != 'I' ) || ( fcc_txt[ 3 ] != 'N' ) )
+    if( ( fcc_txt[ 3 ] != 'M' ) ||
+		( fcc_txt[ 2 ] != 'A' ) ||
+		( fcc_txt[ 1 ] != 'I' ) ||
+		( fcc_txt[ 0 ] != 'N' ) )
 		return false;
-
-    return true;
+	
+	return true;
 }
 
 WDT_file::WDT_file()

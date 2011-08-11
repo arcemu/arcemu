@@ -18,9 +18,8 @@ foreach(src IN ITEMS ${sources} )
 endforeach(src)
 
 include_directories( ${DEPENDENCY_INCLUDE_ROOT}/${PROJECT_NAME} ${DEPENDENCY_INCLUDE_ROOT}/zlib )
-link_directories( ${DEPENDENCY_LIBS} ${EXTRA_LIBS_PATH} )
 add_library(${PROJECT_NAME} STATIC ${SRCS} )
-target_link_libraries( ${PROJECT_NAME} zlib )
+target_link_libraries( ${PROJECT_NAME} ${ZLIB_LIBRARIES} )
 
 unset(sources)
 unset(SRCS)

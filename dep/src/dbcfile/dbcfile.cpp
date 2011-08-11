@@ -1,7 +1,7 @@
 #define _CRT_SECURE_NO_DEPRECATE
 
-#include <fstream>
 #include "dbcfile.h"
+#include "mpq_libmpq.h"
 
 DBCFile::DBCFile(const std::string &filename):
     filename(filename),
@@ -11,73 +11,38 @@ DBCFile::DBCFile(const std::string &filename):
 }
 bool DBCFile::open()
 {
-	std::ifstream f(filename.c_str());
+    MPQFile f(filename.c_str());
     char header[4];
     unsigned int na,nb,es,ss;
 
-    f.read(header,4); // Number of records
-
-	if( f.fail() ){
-		f.close();
-		return false;
-	}
-
-	if(header[0]!='W' || header[1]!='D' || header[2]!='B' || header[3]!='C'){
-		f.close();
+    if(f.read(header,4)!=4)                                 // Number of records
         return false;
-	}
 
-    f.read( reinterpret_cast< char* >(&na),4);    // Number of records
+    if(header[0]!='W' || header[1]!='D' || header[2]!='B' || header[3]!='C')
+        return false;
 
-	if( f.fail() ){
-		f.close();
-		return false;
-	}
-    
-	f.read( reinterpret_cast< char* >(&nb),4);    // Number of fields
-
-	if( f.fail() ){
-		f.close();
-		return false;
-	}
-    
-	
-	f.read( reinterpret_cast< char* >(&es),4);    // Size of a record
-
-	if( f.fail() ){
-		f.close();
-		return false;
-	}
-    
-	
-	f.read( reinterpret_cast< char* >(&ss),4);   // String size
-
-	if( f.fail() ){
-		f.close();
-		return false;
-	}
+    if(f.read(&na,4)!=4)                                    // Number of records
+        return false;
+    if(f.read(&nb,4)!=4)                                    // Number of fields
+        return false;
+    if(f.read(&es,4)!=4)                                    // Size of a record
+        return false;
+    if(f.read(&ss,4)!=4)                                    // String size
+        return false;
 
     recordSize = es;
     recordCount = na;
     fieldCount = nb;
     stringSize = ss;
-	if(fieldCount*4 != recordSize){
-		f.close();
+    if(fieldCount*4 != recordSize)
         return false;
-	}
 
     data = new unsigned char[recordSize*recordCount+stringSize];
     stringTable = data + recordSize*recordCount;
 
     size_t data_size = recordSize*recordCount+stringSize;
-
-    f.read( reinterpret_cast< char* >(data),data_size);
-
-	if( f.fail() ){
-		f.close();
-		return false;
-	}
-
+    if(f.read(data,data_size)!=data_size)
+        return false;
     f.close();
     return true;
 }

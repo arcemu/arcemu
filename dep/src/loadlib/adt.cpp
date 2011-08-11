@@ -53,7 +53,10 @@ bool ADT_file::prepareLoadedData()
 
 bool adt_MHDR::prepareLoadedData()
 {
-	if( ( fcc_txt[ 0 ] != 'M' ) || ( fcc_txt[ 1 ] != 'H' ) || ( fcc_txt[ 2 ] != 'D' ) || ( fcc_txt[ 3 ] != 'R' ) )
+	if( ( fcc_txt[ 3 ] != 'M' ) ||
+		( fcc_txt[ 2 ] != 'H' ) ||
+		( fcc_txt[ 1 ] != 'D' ) ||
+		( fcc_txt[ 0 ] != 'R' ) )
 		return false;
 
     if (size!=sizeof(adt_MHDR)-8)
@@ -72,7 +75,10 @@ bool adt_MHDR::prepareLoadedData()
 
 bool adt_MCIN::prepareLoadedData()
 {
-	if( ( fcc_txt[ 0 ] != 'M' ) || ( fcc_txt[ 1 ] != 'C' ) || ( fcc_txt[ 2 ] != 'I' ) || ( fcc_txt[ 3 ] != 'N' ) )
+	if( ( fcc_txt[ 3 ] != 'M' ) ||
+		( fcc_txt[ 2 ] != 'C' ) ||
+		( fcc_txt[ 1 ] != 'I' ) ||
+		( fcc_txt[ 0 ] != 'N' ) )
 		return false;
 
     // Check cells data
@@ -86,9 +92,11 @@ bool adt_MCIN::prepareLoadedData()
 
 bool adt_MH2O::prepareLoadedData()
 {
-	if( ( fcc_txt[ 0 ] != 'M' ) || ( fcc_txt[ 1 ] != 'H' ) || ( fcc_txt[ 2 ] != '2' ) || ( fcc_txt[ 3 ] != 'O' ) )
+    if( ( fcc_txt[ 3 ] != 'M' ) ||
+		( fcc_txt[ 2 ] != 'H' ) ||
+		( fcc_txt[ 1 ] != '2' ) ||
+		( fcc_txt[ 0 ] != 'O' ) )
 		return false;
-
 
     // Check liquid data
 //    for (int i=0; i<ADT_CELLS_PER_GRID;i++)
@@ -99,7 +107,10 @@ bool adt_MH2O::prepareLoadedData()
 
 bool adt_MCNK::prepareLoadedData()
 {
-	if( ( fcc_txt[ 0 ] != 'M' ) || ( fcc_txt[ 1 ] != 'C' ) || ( fcc_txt[ 2 ] != 'N' ) || ( fcc_txt[ 3 ] != 'K' ) )
+    if( ( fcc_txt[ 3 ] != 'M' ) ||
+		( fcc_txt[ 2 ] != 'C' ) ||
+		( fcc_txt[ 1 ] != 'N' ) ||
+		( fcc_txt[ 0 ] != 'K' ) )
 		return false;
 
     // Check height map
@@ -114,7 +125,10 @@ bool adt_MCNK::prepareLoadedData()
 
 bool adt_MCVT::prepareLoadedData()
 {
-	if( ( fcc_txt[ 0 ] != 'M' ) || ( fcc_txt[ 1 ] != 'C' ) || ( fcc_txt[ 2 ] != 'V' ) || ( fcc_txt[ 3 ] != 'T' ) )
+    if( ( fcc_txt[ 3 ] != 'M' ) ||
+		( fcc_txt[ 2 ] != 'C' ) ||
+		( fcc_txt[ 1 ] != 'V' ) ||
+		( fcc_txt[ 0 ] != 'T' ) )
 		return false;
 
     if (size != sizeof(adt_MCVT)-8)
@@ -125,7 +139,10 @@ bool adt_MCVT::prepareLoadedData()
 
 bool adt_MCLQ::prepareLoadedData()
 {
-	if( ( fcc_txt[ 0 ] != 'M' ) || ( fcc_txt[ 1 ] != 'C' ) || ( fcc_txt[ 2 ] != 'L' ) || ( fcc_txt[ 3 ] != 'Q' ) )
+    if( ( fcc_txt[ 3 ] != 'M' ) ||
+		( fcc_txt[ 2 ] != 'C' ) ||
+		( fcc_txt[ 1 ] != 'L' ) ||
+		( fcc_txt[ 0 ] != 'Q' ) )
 		return false;
 
     return true;
