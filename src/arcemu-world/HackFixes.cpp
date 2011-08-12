@@ -117,7 +117,7 @@ void ApplyNormalFixes()
 			}
 		}
 
-		Arcemu::Util::ARCEMU_ASSERT(sp->School < SCHOOL_COUNT);
+		ARCEMU_ASSERT(sp->School < SCHOOL_COUNT);
 
 		// correct caster/target aura states
 		if(sp->CasterAuraState > 1)

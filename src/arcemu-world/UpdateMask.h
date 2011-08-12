@@ -39,21 +39,21 @@ class UpdateMask
 
 		void SetBit(const uint32 index)
 		{
-			Arcemu::Util::ARCEMU_ASSERT(index < mCount);
+			ARCEMU_ASSERT(index < mCount);
 			((uint8*)mUpdateMask)[ index >> 3 ] |= 1 << (index & 0x7);
 			// ( (uint8 *)mUpdateMask )[ index / 8 ] |= 1 * pow( 2, index % 8 );
 		}
 
 		void UnsetBit(const uint32 index)
 		{
-			Arcemu::Util::ARCEMU_ASSERT(index < mCount);
+			ARCEMU_ASSERT(index < mCount);
 			((uint8*)mUpdateMask)[ index >> 3 ] &= (0xff ^ (1 << (index & 0x7)));
 			// ( (uint8 *)mUpdateMask )[ index / 8 ] &= 255 - ( 1 * pow( 2, index % 8 ) ) );
 		}
 
 		bool GetBit(const uint32 index) const
 		{
-			Arcemu::Util::ARCEMU_ASSERT(index < mCount);
+			ARCEMU_ASSERT(index < mCount);
 			return (((uint8*)mUpdateMask)[ index >> 3 ] & (1 << (index & 0x7))) != 0;
 			//actually int->bool conversion is not needed here
 		}
@@ -103,21 +103,21 @@ class UpdateMask
 
 		void operator &= (const UpdateMask & mask)
 		{
-			Arcemu::Util::ARCEMU_ASSERT(mask.mCount <= mCount);
+			ARCEMU_ASSERT(mask.mCount <= mCount);
 			for(uint32 i = 0; i < mBlocks; i++)
 				mUpdateMask[i] &= mask.mUpdateMask[i];
 		}
 
 		void operator |= (const UpdateMask & mask)
 		{
-			Arcemu::Util::ARCEMU_ASSERT(mask.mCount <= mCount);
+			ARCEMU_ASSERT(mask.mCount <= mCount);
 			for(uint32 i = 0; i < mBlocks; i++)
 				mUpdateMask[i] |= mask.mUpdateMask[i];
 		}
 
 		UpdateMask operator & (const UpdateMask & mask) const
 		{
-			Arcemu::Util::ARCEMU_ASSERT(mask.mCount <= mCount);
+			ARCEMU_ASSERT(mask.mCount <= mCount);
 
 			UpdateMask newmask;
 			newmask = *this;
@@ -128,7 +128,7 @@ class UpdateMask
 
 		UpdateMask operator | (const UpdateMask & mask) const
 		{
-			Arcemu::Util::ARCEMU_ASSERT(mask.mCount <= mCount);
+			ARCEMU_ASSERT(mask.mCount <= mCount);
 
 			UpdateMask newmask;
 			newmask = *this;

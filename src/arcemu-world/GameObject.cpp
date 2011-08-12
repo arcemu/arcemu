@@ -240,7 +240,7 @@ void GameObject::Despawn(uint32 delay, uint32 respawntime)
 	{
 		/* Get our originating mapcell */
 		MapCell* pCell = GetMapCell();
-		Arcemu::Util::ARCEMU_ASSERT(pCell != NULL);
+		ARCEMU_ASSERT(pCell != NULL);
 		pCell->_respawnObjects.insert(this);
 		sEventMgr.RemoveEvents(this);
 		sEventMgr.AddEvent(m_mapMgr, &MapMgr::EventRespawnGameObject, this, pCell->GetPositionX(), pCell->GetPositionY(), EVENT_GAMEOBJECT_ITEM_SPAWN, respawntime, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
@@ -684,7 +684,7 @@ void GameObject::Activate()
 
 void GameObject::CallScriptUpdate()
 {
-	Arcemu::Util::ARCEMU_ASSERT(myScript != NULL);
+	ARCEMU_ASSERT(myScript != NULL);
 	myScript->AIUpdate();
 }
 

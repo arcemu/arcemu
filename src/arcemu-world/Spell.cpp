@@ -156,7 +156,7 @@ void SpellCastTargets::write(WorldPacket & data)
 
 Spell::Spell(Object* Caster, SpellEntry* info, bool triggered, Aura* aur)
 {
-	Arcemu::Util::ARCEMU_ASSERT(Caster != NULL && info != NULL);
+	ARCEMU_ASSERT(Caster != NULL && info != NULL);
 
 	Caster->m_pendingSpells.insert(this);
 	m_overrideBasePoints = false;
@@ -1054,7 +1054,7 @@ void Spell::cancel()
 					if(p_caster->GetSummonedObject()->IsInWorld())
 						p_caster->GetSummonedObject()->RemoveFromWorld(true);
 					// for now..
-					Arcemu::Util::ARCEMU_ASSERT(p_caster->GetSummonedObject()->IsGameObject());
+					ARCEMU_ASSERT(p_caster->GetSummonedObject()->IsGameObject());
 					delete p_caster->GetSummonedObject();
 					p_caster->SetSummonedObject(NULL);
 				}
@@ -2965,7 +2965,7 @@ void Spell::TriggerSpell()
 		}
 
 		Spell *spell = sSpellFactoryMgr.NewSpell(m_caster, spellInfo,false, NULL);
-		WPArcemu::Util::ARCEMU_ASSERT(   spell);
+		WPARCEMU_ASSERT(   spell);
 
 		SpellCastTargets targets;
 		if(TriggerSpellTarget)

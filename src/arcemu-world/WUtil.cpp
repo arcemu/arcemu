@@ -35,7 +35,7 @@ uint32 Arcemu::Util::GUID_LOPART(uint64 GUID)
 	return loguid;
 }
 
-void Arcemu::Util::ARCEMU_ASSERT(bool condition)
+void Arcemu::Util::ArcemuAssert(bool condition)
 {
 	if(!condition)
 	{

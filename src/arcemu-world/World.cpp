@@ -201,7 +201,7 @@ void World::RemoveSession(uint32 id)
 
 void World::AddSession(WorldSession* s)
 {
-	Arcemu::Util::ARCEMU_ASSERT(s != NULL);
+	ARCEMU_ASSERT(s != NULL);
 
 	m_sessionlock.AcquireWriteLock();
 
@@ -217,7 +217,7 @@ void World::AddSession(WorldSession* s)
 
 void World::AddGlobalSession(WorldSession* session)
 {
-	Arcemu::Util::ARCEMU_ASSERT(session != NULL);
+	ARCEMU_ASSERT(session != NULL);
 
 	SessionsMutex.Acquire();
 	Sessions.insert(session);
@@ -227,7 +227,7 @@ void World::AddGlobalSession(WorldSession* session)
 void World::RemoveGlobalSession(WorldSession* session)
 {
 
-	Arcemu::Util::ARCEMU_ASSERT(session != NULL);
+	ARCEMU_ASSERT(session != NULL);
 
 	SessionsMutex.Acquire();
 	Sessions.erase(session);

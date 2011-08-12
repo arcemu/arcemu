@@ -56,7 +56,7 @@ ItemInterface::~ItemInterface()
 //-------------------------------------------------------------------// 100%
 uint32 ItemInterface::m_CreateForPlayer(ByteBuffer* data)
 {
-	Arcemu::Util::ARCEMU_ASSERT(m_pOwner != NULL);
+	ARCEMU_ASSERT(m_pOwner != NULL);
 	uint32 count = 0;
 
 	for(int i = 0; i < MAX_INVENTORY_SLOT; i++)
@@ -95,7 +95,7 @@ uint32 ItemInterface::m_CreateForPlayer(ByteBuffer* data)
 //-------------------------------------------------------------------// 100%
 void ItemInterface::m_DestroyForPlayer()
 {
-	Arcemu::Util::ARCEMU_ASSERT(m_pOwner != NULL);
+	ARCEMU_ASSERT(m_pOwner != NULL);
 
 	for(int i = 0; i < MAX_INVENTORY_SLOT; i++)
 	{
@@ -181,8 +181,8 @@ AddItemResult ItemInterface::SafeAddItem(Item* pItem, int8 ContainerSlot, int16 
 //-------------------------------------------------------------------//
 AddItemResult ItemInterface::m_AddItem(Item* item, int8 ContainerSlot, int16 slot)
 {
-	Arcemu::Util::ARCEMU_ASSERT(slot < MAX_INVENTORY_SLOT);
-	Arcemu::Util::ARCEMU_ASSERT(ContainerSlot < MAX_INVENTORY_SLOT);
+	ARCEMU_ASSERT(slot < MAX_INVENTORY_SLOT);
+	ARCEMU_ASSERT(ContainerSlot < MAX_INVENTORY_SLOT);
 	if(item == NULL || !item->GetProto() || slot < 0)
 		return ADD_ITEM_RESULT_ERROR;
 
@@ -230,7 +230,7 @@ AddItemResult ItemInterface::m_AddItem(Item* item, int8 ContainerSlot, int16 slo
 	//case 1, item is from backpack container
 	if(ContainerSlot == INVENTORY_SLOT_NOT_SET)
 	{
-		//Arcemu::Util::ARCEMU_ASSERT(   m_pItems[slot] == NULL);
+		//ARCEMU_ASSERT(   m_pItems[slot] == NULL);
 		if(GetInventoryItem(slot) != NULL /*|| (slot == EQUIPMENT_SLOT_OFFHAND && !m_pOwner->HasSkillLine(118))*/)
 		{
 			//LOG_ERROR("bugged inventory: %u %u", m_pOwner->GetName(), item->GetGUID());
@@ -387,8 +387,8 @@ bool ItemInterface::IsBagSlot(int16 slot)
 //-------------------------------------------------------------------//
 Item* ItemInterface::SafeRemoveAndRetreiveItemFromSlot(int8 ContainerSlot, int16 slot, bool destroy)
 {
-	Arcemu::Util::ARCEMU_ASSERT(slot < MAX_INVENTORY_SLOT);
-	Arcemu::Util::ARCEMU_ASSERT(ContainerSlot < MAX_INVENTORY_SLOT);
+	ARCEMU_ASSERT(slot < MAX_INVENTORY_SLOT);
+	ARCEMU_ASSERT(ContainerSlot < MAX_INVENTORY_SLOT);
 	Item* pItem = NULL;
 
 	if(ContainerSlot == INVENTORY_SLOT_NOT_SET)
@@ -557,8 +557,8 @@ Item* ItemInterface::SafeRemoveAndRetreiveItemByGuid(uint64 guid, bool destroy)
 //-------------------------------------------------------------------//
 bool ItemInterface::SafeFullRemoveItemFromSlot(int8 ContainerSlot, int16 slot)
 {
-	Arcemu::Util::ARCEMU_ASSERT(slot < MAX_INVENTORY_SLOT);
-	Arcemu::Util::ARCEMU_ASSERT(ContainerSlot < MAX_INVENTORY_SLOT);
+	ARCEMU_ASSERT(slot < MAX_INVENTORY_SLOT);
+	ARCEMU_ASSERT(ContainerSlot < MAX_INVENTORY_SLOT);
 
 	if(ContainerSlot == INVENTORY_SLOT_NOT_SET)
 	{
@@ -3987,7 +3987,7 @@ bool ItemInterface::AddItemById(uint32 itemid, uint32 count, int32 randomprop)
 
 	Player* chr = GetOwner();
 
-	Arcemu::Util::ARCEMU_ASSERT(chr != NULL);
+	ARCEMU_ASSERT(chr != NULL);
 
 	ItemPrototype* it = ItemPrototypeStorage.LookupEntry(itemid);
 	if(it == NULL)

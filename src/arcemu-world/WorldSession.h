@@ -42,7 +42,7 @@ struct TrainerSpell;
 // Does nothing on release builds
 ////////////////////////////////////////
 #ifdef _DEBUG
-#define CHECK_INWORLD_ASSERT Arcemu::Util::ARCEMU_ASSERT( _player != NULL && _player->IsInWorld() )
+#define CHECK_INWORLD_ASSERT ARCEMU_ASSERT( _player != NULL && _player->IsInWorld() )
 #else
 #define CHECK_INWORLD_ASSERT CHECK_INWORLD_RETURN
 #endif
@@ -262,7 +262,7 @@ class SERVER_DECL WorldSession
 
 		void SetAccountData(uint32 index, char* data, bool initial, uint32 sz)
 		{
-			Arcemu::Util::ARCEMU_ASSERT(index < 8);
+			ARCEMU_ASSERT(index < 8);
 			if(sAccountData[index].data)
 				delete [] sAccountData[index].data;
 			sAccountData[index].data = data;
@@ -275,7 +275,7 @@ class SERVER_DECL WorldSession
 
 		AccountDataEntry* GetAccountData(uint32 index)
 		{
-			Arcemu::Util::ARCEMU_ASSERT(index < 8);
+			ARCEMU_ASSERT(index < 8);
 			return &sAccountData[index];
 		}
 

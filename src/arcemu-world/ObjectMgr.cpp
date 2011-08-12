@@ -1025,7 +1025,7 @@ uint32 ObjectMgr::GenerateMailID()
 }
 uint32 ObjectMgr::GenerateLowGuid(uint32 guidhigh)
 {
-	Arcemu::Util::ARCEMU_ASSERT(guidhigh == HIGHGUID_TYPE_ITEM || guidhigh == HIGHGUID_TYPE_CONTAINER || guidhigh == HIGHGUID_TYPE_PLAYER);
+	ARCEMU_ASSERT(guidhigh == HIGHGUID_TYPE_ITEM || guidhigh == HIGHGUID_TYPE_CONTAINER || guidhigh == HIGHGUID_TYPE_PLAYER);
 
 	uint32 ret;
 	if(guidhigh == HIGHGUID_TYPE_ITEM)
@@ -1165,7 +1165,7 @@ PlayerCreateInfo* ObjectMgr::GetPlayerCreateInfo(uint8 race, uint8 class_) const
 
 void ObjectMgr::AddGuild(Guild* pGuild)
 {
-	Arcemu::Util::ARCEMU_ASSERT(pGuild != NULL);
+	ARCEMU_ASSERT(pGuild != NULL);
 	mGuild[pGuild->GetGuildId()] = pGuild;
 }
 
@@ -1220,7 +1220,7 @@ Guild* ObjectMgr::GetGuildByGuildName(std::string guildName)
 
 void ObjectMgr::AddGMTicket(GM_Ticket* ticket, bool startup)
 {
-	Arcemu::Util::ARCEMU_ASSERT(ticket  != NULL);
+	ARCEMU_ASSERT(ticket  != NULL);
 	GM_TicketList.push_back(ticket);
 
 	// save
@@ -1776,7 +1776,7 @@ void ObjectMgr::CreateGossipMenuForPlayer(GossipMenu** Location, uint64 Guid, ui
 	}
 
 	GossipMenu* Menu = new GossipMenu(Guid, TextID);
-	Arcemu::Util::ARCEMU_ASSERT(Menu != NULL);
+	ARCEMU_ASSERT(Menu != NULL);
 
 	if(Plr->CurrentGossipMenu != NULL)
 		delete Plr->CurrentGossipMenu;
@@ -1937,7 +1937,7 @@ void ObjectMgr::LoadTrainers()
 				{
 					uint32 skill = ts.pCastRealSpell->EffectMiscValue[1];
 					skilllineentry* sk = dbcSkillLine.LookupEntryForced(skill);
-					Arcemu::Util::ARCEMU_ASSERT(sk != NULL);
+					ARCEMU_ASSERT(sk != NULL);
 					if(sk->type == SKILL_TYPE_PROFESSION)
 						ts.IsProfession = true;
 					else
@@ -2210,7 +2210,7 @@ LevelInfo* ObjectMgr::GetLevelInfo(uint32 Race, uint32 Class, uint32 Level)
 
 			// Pull the level information from the second map.
 			LevelMap::iterator it2 = itr->second->find(Level);
-			Arcemu::Util::ARCEMU_ASSERT(it2 != itr->second->end());
+			ARCEMU_ASSERT(it2 != itr->second->end());
 
 			return it2->second;
 		}
@@ -2282,7 +2282,7 @@ void ObjectMgr::LoadPetSpellCooldowns()
 				else
 				{
 					uint32 SP2 = mPetSpellCooldowns[SpellId];
-					Arcemu::Util::ARCEMU_ASSERT(Cooldown == SP2);
+					ARCEMU_ASSERT(Cooldown == SP2);
 				}
 			}
 		}
@@ -2683,7 +2683,7 @@ void Charter::AddSignature(uint32 PlayerGuid)
 		}
 	}
 
-	Arcemu::Util::ARCEMU_ASSERT(i != Slots);
+	ARCEMU_ASSERT(i != Slots);
 }
 
 void Charter::RemoveSignature(uint32 PlayerGuid)

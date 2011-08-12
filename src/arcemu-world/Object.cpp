@@ -75,9 +75,9 @@ Object::Object() : m_position(0, 0, 0, 0), m_spawnLocation(0, 0, 0, 0)
 Object::~Object()
 {
 	if(!IsItem())
-		Arcemu::Util::ARCEMU_ASSERT(!m_inQueue);
+		ARCEMU_ASSERT(!m_inQueue);
 
-	Arcemu::Util::ARCEMU_ASSERT(!IsInWorld());
+	ARCEMU_ASSERT(!IsInWorld());
 
 	// for linux
 	m_instanceId = INSTANCEID_NOT_IN_WORLD;
@@ -197,7 +197,7 @@ uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer* data, Player* target)
 	*data << updatetype;
 
 	// we shouldn't be here, under any circumstances, unless we have a wowguid..
-	Arcemu::Util::ARCEMU_ASSERT(m_wowGuid.GetNewGuidLen() > 0);
+	ARCEMU_ASSERT(m_wowGuid.GetNewGuidLen() > 0);
 	*data << m_wowGuid;
 
 	*data << m_objectTypeId;
@@ -295,7 +295,7 @@ uint32 Object::BuildValuesUpdateBlockForPlayer(ByteBuffer* data, Player* target)
 		if(updateMask.GetBit(x))
 		{
 			*data << (uint8) UPDATETYPE_VALUES;		// update type == update
-			Arcemu::Util::ARCEMU_ASSERT(m_wowGuid.GetNewGuidLen() > 0);
+			ARCEMU_ASSERT(m_wowGuid.GetNewGuidLen() > 0);
 			*data << m_wowGuid;
 
 			_BuildValuesUpdate(data, &updateMask, target);
@@ -312,7 +312,7 @@ uint32 Object::BuildValuesUpdateBlockForPlayer(ByteBuffer* buf, UpdateMask* mask
 	// update type == update
 	*buf << (uint8) UPDATETYPE_VALUES;
 
-	Arcemu::Util::ARCEMU_ASSERT(m_wowGuid.GetNewGuidLen() > 0);
+	ARCEMU_ASSERT(m_wowGuid.GetNewGuidLen() > 0);
 	*buf << m_wowGuid;
 
 	_BuildValuesUpdate(buf, mask, 0);
@@ -708,7 +708,7 @@ void Object::_BuildValuesUpdate(ByteBuffer* data, UpdateMask* updateMask, Player
 		reset = true;
 	}
 
-	Arcemu::Util::ARCEMU_ASSERT(updateMask && updateMask->GetCount()  == m_valuesCount);
+	ARCEMU_ASSERT(updateMask && updateMask->GetCount()  == m_valuesCount);
 	uint32 bc;
 	uint32 values_count;
 	if(m_valuesCount > (2 * 0x20))    //if number of blocks > 2->  unit and player+item container
@@ -790,7 +790,7 @@ bool Object::SetPosition(float newX, float newY, float newZ, float newOrientatio
 {
 	bool updateMap = false, result = true;
 
-	Arcemu::Util::ARCEMU_ASSERT(!isnan(newX) && !isnan(newY) && !isnan(newOrientation));
+	ARCEMU_ASSERT(!isnan(newX) && !isnan(newY) && !isnan(newOrientation));
 
 	//It's a good idea to push through EVERY transport position change, no matter how small they are. By: VLack aka. VLsoft
 	if(IsGameObject() && TO< GameObject* >(this)->GetInfo()->Type == GAMEOBJECT_TYPE_TRANSPORT)
@@ -936,7 +936,7 @@ void Object::AddToWorld(MapMgr* pMapMgr)
 //this can only be called from the thread of mapmgr!!!
 void Object::PushToWorld(MapMgr* mgr)
 {
-	Arcemu::Util::ARCEMU_ASSERT(t_currentMapContext.get() == mgr);
+	ARCEMU_ASSERT(t_currentMapContext.get() == mgr);
 
 	if(mgr == NULL)
 	{
@@ -971,7 +971,7 @@ void Object::PushToWorld(MapMgr* mgr)
 //! Remove object from world
 void Object::RemoveFromWorld(bool free_guid)
 {
-	Arcemu::Util::ARCEMU_ASSERT(m_mapMgr != NULL);
+	ARCEMU_ASSERT(m_mapMgr != NULL);
 
 	OnPreRemoveFromWorld();
 
@@ -1013,7 +1013,7 @@ void Object::RemoveFromWorld(bool free_guid)
 //! Set uint32 property
 void Object::SetUInt32Value(const uint32 index, const uint32 value)
 {
-	Arcemu::Util::ARCEMU_ASSERT(index < m_valuesCount);
+	ARCEMU_ASSERT(index < m_valuesCount);
 	//! Save updating when val isn't changing.
 	if(m_uint32Values[index] == value)
 		return;
@@ -1087,14 +1087,14 @@ void Object::SetUInt32Value(const uint32 index, const uint32 value)
 
 uint32 Object::GetModPUInt32Value(const uint32 index, const int32 value)
 {
-	Arcemu::Util::ARCEMU_ASSERT(index < m_valuesCount);
+	ARCEMU_ASSERT(index < m_valuesCount);
 	int32 basevalue = (int32)m_uint32Values[ index ];
 	return ((basevalue * value) / 100);
 }
 
 void Object::ModUnsigned32Value(uint32 index, int32 mod)
 {
-	Arcemu::Util::ARCEMU_ASSERT(index < m_valuesCount);
+	ARCEMU_ASSERT(index < m_valuesCount);
 	if(mod == 0)
 		return;
 
@@ -1160,7 +1160,7 @@ void Object::ModUnsigned32Value(uint32 index, int32 mod)
 
 void Object::ModSignedInt32Value(uint32 index, int32 value)
 {
-	Arcemu::Util::ARCEMU_ASSERT(index < m_valuesCount);
+	ARCEMU_ASSERT(index < m_valuesCount);
 	if(value == 0)
 		return;
 
@@ -1196,7 +1196,7 @@ void Object::ModSignedInt32Value(uint32 index, int32 value)
 
 void Object::ModFloatValue(const uint32 index, const float value)
 {
-	Arcemu::Util::ARCEMU_ASSERT(index < m_valuesCount);
+	ARCEMU_ASSERT(index < m_valuesCount);
 	m_floatValues[ index ] += value;
 
 	if(IsInWorld())
@@ -1212,7 +1212,7 @@ void Object::ModFloatValue(const uint32 index, const float value)
 }
 void Object::ModFloatValueByPCT(const uint32 index, int32 byPct)
 {
-	Arcemu::Util::ARCEMU_ASSERT(index < m_valuesCount);
+	ARCEMU_ASSERT(index < m_valuesCount);
 	if(byPct > 0)
 		m_floatValues[ index ] *= 1.0f + byPct / 100.0f;
 	else
@@ -1234,7 +1234,7 @@ void Object::ModFloatValueByPCT(const uint32 index, int32 byPct)
 //! Set uint64 property
 void Object::SetUInt64Value(const uint32 index, const uint64 value)
 {
-	Arcemu::Util::ARCEMU_ASSERT(index + 1 < m_valuesCount);
+	ARCEMU_ASSERT(index + 1 < m_valuesCount);
 
 	uint64* p = reinterpret_cast< uint64* >(&m_uint32Values[ index ]);
 
@@ -1259,7 +1259,7 @@ void Object::SetUInt64Value(const uint32 index, const uint64 value)
 //! Set float property
 void Object::SetFloatValue(const uint32 index, const float value)
 {
-	Arcemu::Util::ARCEMU_ASSERT(index < m_valuesCount);
+	ARCEMU_ASSERT(index < m_valuesCount);
 	if(m_floatValues[index] == value)
 		return;
 
@@ -1293,7 +1293,7 @@ void Object::RemoveFlag(const uint32 index, uint32 oldFlag)
 
 float Object::CalcDistance(Object* Ob)
 {
-	Arcemu::Util::ARCEMU_ASSERT(Ob != NULL);
+	ARCEMU_ASSERT(Ob != NULL);
 	return CalcDistance(this->GetPositionX(), this->GetPositionY(), this->GetPositionZ(), Ob->GetPositionX(), Ob->GetPositionY(), Ob->GetPositionZ());
 }
 float Object::CalcDistance(float ObX, float ObY, float ObZ)
@@ -1302,13 +1302,13 @@ float Object::CalcDistance(float ObX, float ObY, float ObZ)
 }
 float Object::CalcDistance(Object* Oa, Object* Ob)
 {
-	Arcemu::Util::ARCEMU_ASSERT(Oa != NULL);
-	Arcemu::Util::ARCEMU_ASSERT(Ob != NULL);
+	ARCEMU_ASSERT(Oa != NULL);
+	ARCEMU_ASSERT(Ob != NULL);
 	return CalcDistance(Oa->GetPositionX(), Oa->GetPositionY(), Oa->GetPositionZ(), Ob->GetPositionX(), Ob->GetPositionY(), Ob->GetPositionZ());
 }
 float Object::CalcDistance(Object* Oa, float ObX, float ObY, float ObZ)
 {
-	Arcemu::Util::ARCEMU_ASSERT(Oa != NULL);
+	ARCEMU_ASSERT(Oa != NULL);
 	return CalcDistance(Oa->GetPositionX(), Oa->GetPositionY(), Oa->GetPositionZ(), ObX, ObY, ObZ);
 }
 
@@ -1322,7 +1322,7 @@ float Object::CalcDistance(float OaX, float OaY, float OaZ, float ObX, float ObY
 
 bool Object::IsWithinDistInMap(Object* obj, const float dist2compare) const
 {
-	Arcemu::Util::ARCEMU_ASSERT(obj != NULL);
+	ARCEMU_ASSERT(obj != NULL);
 	float xdest = this->GetPositionX() - obj->GetPositionX();
 	float ydest = this->GetPositionY() - obj->GetPositionY();
 	float zdest = this->GetPositionZ() - obj->GetPositionZ();
@@ -1331,7 +1331,7 @@ bool Object::IsWithinDistInMap(Object* obj, const float dist2compare) const
 
 bool Object::IsWithinLOSInMap(Object* obj)
 {
-	Arcemu::Util::ARCEMU_ASSERT(obj != NULL);
+	ARCEMU_ASSERT(obj != NULL);
 	if(!IsInMap(obj)) return false;
 	LocationVector location;
 	location = obj->GetPosition();
@@ -2096,7 +2096,7 @@ void Object::Deactivate(MapMgr* mgr)
 
 void Object::SetByte(uint32 index, uint32 index1, uint8 value)
 {
-	Arcemu::Util::ARCEMU_ASSERT(index < m_valuesCount);
+	ARCEMU_ASSERT(index < m_valuesCount);
 	// save updating when val isn't changing.
 
 	uint8* v = &((uint8*)m_uint32Values)[index * 4 + index1];
@@ -2121,8 +2121,8 @@ void Object::SetByte(uint32 index, uint32 index1, uint8 value)
 
 void Object::SetByteFlag(uint16 index, uint8 offset, uint8 newFlag)
 {
-	Arcemu::Util::ARCEMU_ASSERT(index < m_valuesCount);
-	Arcemu::Util::ARCEMU_ASSERT(offset < 4);
+	ARCEMU_ASSERT(index < m_valuesCount);
+	ARCEMU_ASSERT(offset < 4);
 
 	offset <<= 3;
 
@@ -2145,8 +2145,8 @@ void Object::SetByteFlag(uint16 index, uint8 offset, uint8 newFlag)
 
 void Object::RemoveByteFlag(uint16 index, uint8 offset, uint8 oldFlag)
 {
-	Arcemu::Util::ARCEMU_ASSERT(index < m_valuesCount);
-	Arcemu::Util::ARCEMU_ASSERT(offset < 4);
+	ARCEMU_ASSERT(index < m_valuesCount);
+	ARCEMU_ASSERT(offset < 4);
 
 	offset <<= 3;
 
@@ -2258,7 +2258,7 @@ void Object::Phase(uint8 command, uint32 newphase)
 			m_phase = 1;
 			break;
 		default:
-			Arcemu::Util::ARCEMU_ASSERT(false);
+			ARCEMU_ASSERT(false);
 	}
 
 	return;
@@ -2267,7 +2267,7 @@ void Object::Phase(uint8 command, uint32 newphase)
 void Object::AddInRangeObject(Object* pObj)
 {
 
-	Arcemu::Util::ARCEMU_ASSERT(pObj != NULL);
+	ARCEMU_ASSERT(pObj != NULL);
 
 	if(pObj == this)
 		LOG_ERROR("We are in range of ourselves!");
@@ -2308,14 +2308,14 @@ void Object::SendMessageToSet(WorldPacket* data, bool bToSelf, bool myteam_only)
 
 void Object::RemoveInRangeObject(Object* pObj)
 {
-	Arcemu::Util::ARCEMU_ASSERT(pObj != NULL);
+	ARCEMU_ASSERT(pObj != NULL);
 
 	if(pObj->IsPlayer())
 	{
-		Arcemu::Util::ARCEMU_ASSERT(m_inRangePlayers.erase(pObj) == 1);
+		ARCEMU_ASSERT(m_inRangePlayers.erase(pObj) == 1);
 	}
 
-	Arcemu::Util::ARCEMU_ASSERT(m_objectsInRange.erase(pObj) == 1);
+	ARCEMU_ASSERT(m_objectsInRange.erase(pObj) == 1);
 
 	OnRemoveInRangeObject(pObj);
 }
@@ -2328,7 +2328,7 @@ void Object::RemoveSelfFromInrangeSets()
 	{
 		Object* o = *itr;
 
-		Arcemu::Util::ARCEMU_ASSERT(o != NULL);
+		ARCEMU_ASSERT(o != NULL);
 
 		o->RemoveInRangeObject(this);
 
@@ -2407,7 +2407,7 @@ Object* Object::GetPlayerOwner()
 
 MapCell* Object::GetMapCell() const
 {
-	Arcemu::Util::ARCEMU_ASSERT(m_mapMgr != NULL);
+	ARCEMU_ASSERT(m_mapMgr != NULL);
 	return m_mapMgr->GetCell(m_mapCell_x, m_mapCell_y);
 }
 

@@ -25,7 +25,7 @@ initialiseSingleton(CommandTableStorage);
 
 ChatCommand* ChatHandler::getCommandTable()
 {
-	Arcemu::Util::ARCEMU_ASSERT(false);
+	ARCEMU_ASSERT(false);
 	return 0;
 }
 
@@ -109,7 +109,7 @@ void CommandTableStorage::Load()
 
 void CommandTableStorage::Override(const char* command, const char* level)
 {
-	Arcemu::Util::ARCEMU_ASSERT(level[0] != '\0');
+	ARCEMU_ASSERT(level[0] != '\0');
 	char* cmd = strdup(command);
 
 	// find the command we're talking about
@@ -757,7 +757,7 @@ void CommandTableStorage::Init()
 		{
 			// Set the correct pointer.
 			ChatCommand* np = GetSubCommandTable(p->Name);
-			Arcemu::Util::ARCEMU_ASSERT(np != NULL);
+			ARCEMU_ASSERT(np != NULL);
 			p->ChildCommands = np;
 		}
 		++p;
@@ -925,7 +925,7 @@ WorldPacket* ChatHandler::FillMessageData(uint32 type, uint32 language, const ch
 	//uint32	len_of_text;
 	//char	    text[];		 // not sure ? i think is null terminated .. not null terminated
 	//uint8	    afk_state;
-	Arcemu::Util::ARCEMU_ASSERT(type != CHAT_MSG_CHANNEL);
+	ARCEMU_ASSERT(type != CHAT_MSG_CHANNEL);
 	//channels are handled in channel handler and so on
 	uint32 messageLength = (uint32)strlen(message) + 1;
 

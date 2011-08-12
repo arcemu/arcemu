@@ -371,7 +371,7 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 	// Allocate session
 	WorldSession* pSession = new WorldSession(AccountID, AccountName, this);
 	mSession = pSession;
-	Arcemu::Util::ARCEMU_ASSERT(mSession != NULL);
+	ARCEMU_ASSERT(mSession != NULL);
 	// aquire delete mutex
 	pSession->deleteMutex.Acquire();
 
@@ -452,7 +452,7 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 
 void WorldSocket::Authenticate()
 {
-	Arcemu::Util::ARCEMU_ASSERT(pAuthenticationPacket != NULL);
+	ARCEMU_ASSERT(pAuthenticationPacket != NULL);
 	mQueued = false;
 
 	if(mSession == NULL)

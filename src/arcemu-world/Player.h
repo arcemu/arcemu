@@ -2534,7 +2534,7 @@ class SkillIterator
 		void BeginSearch()
 		{
 			// iteminterface doesn't use mutexes, maybe it should :P
-			Arcemu::Util::ARCEMU_ASSERT(!m_searchInProgress);
+			ARCEMU_ASSERT(!m_searchInProgress);
 			m_itr = m_target->m_skills.begin();
 			m_endItr = m_target->m_skills.end();
 			m_searchInProgress = true;
@@ -2543,7 +2543,7 @@ class SkillIterator
 		void EndSearch()
 		{
 			// nothing here either
-			Arcemu::Util::ARCEMU_ASSERT(m_searchInProgress);
+			ARCEMU_ASSERT(m_searchInProgress);
 			m_searchInProgress = false;
 		}
 

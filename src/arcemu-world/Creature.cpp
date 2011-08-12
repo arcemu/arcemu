@@ -326,7 +326,7 @@ void Creature::OnRemoveCorpse()
 	else
 	{
 		// if we got here it's pretty bad
-		Arcemu::Util::ARCEMU_ASSERT(false);
+		ARCEMU_ASSERT(false);
 	}
 }
 
@@ -1032,7 +1032,7 @@ void Creature::RegenerateFocus()
 
 void Creature::CallScriptUpdate()
 {
-	Arcemu::Util::ARCEMU_ASSERT(_myScriptClass != NULL);
+	ARCEMU_ASSERT(_myScriptClass != NULL);
 	if(!IsInWorld())
 		return;
 
@@ -1599,7 +1599,7 @@ void Creature::OnPushToWorld()
 	{
 		LOG_ERROR("Something tried to push to world Creature ID %u with proto set to NULL.", GetEntry());
 #ifdef _DEBUG
-		Arcemu::Util::ARCEMU_ASSERT(false);
+		ARCEMU_ASSERT(false);
 #else
 		SetCreatureProto(CreatureProtoStorage.LookupEntry(GetEntry()));
 #endif
@@ -1608,7 +1608,7 @@ void Creature::OnPushToWorld()
 	{
 		LOG_ERROR("Something tried to push to world Creature ID %u with creature_info set to NULL.", GetEntry());
 #ifdef _DEBUG
-		Arcemu::Util::ARCEMU_ASSERT(false);
+		ARCEMU_ASSERT(false);
 #else
 		SetCreatureInfo(CreatureNameStorage.LookupEntry(GetEntry()));
 #endif
@@ -1658,12 +1658,12 @@ void Creature::OnPushToWorld()
 	m_aiInterface->m_is_in_instance = (m_mapMgr->GetMapInfo()->type != INSTANCE_NULL) ? true : false;
 	if(this->HasItems())
 	{
-		for(std::vector<CreatureItem>::iterator itr = m_SellItems->begin(); itr != m_SellItems->end(); ++itr)
+		for(std::vector<CreatureItem>::iterator itr2 = m_SellItems->begin(); itr2 != m_SellItems->end(); ++itr2)
 		{
-			if(itr->max_amount == 0)
-				itr->available_amount = 0;
-			else if(itr->available_amount < itr->max_amount)
-				sEventMgr.AddEvent(this, &Creature::UpdateItemAmount, itr->itemid, EVENT_ITEM_UPDATE, VENDOR_ITEMS_UPDATE_TIME, 1, 0);
+			if(itr2->max_amount == 0)
+				itr2->available_amount = 0;
+			else if(itr2->available_amount < itr2->max_amount)
+				sEventMgr.AddEvent(this, &Creature::UpdateItemAmount, itr2->itemid, EVENT_ITEM_UPDATE, VENDOR_ITEMS_UPDATE_TIME, 1, 0);
 		}
 
 	}
@@ -1693,7 +1693,7 @@ void Creature::Despawn(uint32 delay, uint32 respawntime)
 		if(pCell == NULL)
 			pCell = GetMapCell();
 
-		Arcemu::Util::ARCEMU_ASSERT(pCell != NULL);
+		ARCEMU_ASSERT(pCell != NULL);
 		pCell->_respawnObjects.insert(this);
 		sEventMgr.RemoveEvents(this);
 		sEventMgr.AddEvent(m_mapMgr, &MapMgr::EventRespawnCreature, this, pCell->GetPositionX(), pCell->GetPositionY(), EVENT_CREATURE_RESPAWN, respawntime, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);

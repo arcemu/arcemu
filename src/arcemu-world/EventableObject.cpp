@@ -60,7 +60,7 @@ void EventableObject::event_AddEvent(TimedEvent* ptr)
 		{
 
 			///////////////////////////////////////// this is for me for debugging purposes - dfighter ////////////////////////////
-			// Arcemu::Util::ARCEMU_ASSERT( false );
+			// ARCEMU_ASSERT( false );
 			///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 			// We still couldn't find an eventholder for us so let's run in WorldRunnable
@@ -70,7 +70,7 @@ void EventableObject::event_AddEvent(TimedEvent* ptr)
 	}
 
 	// We still couldn't find an event holder for ourselves :(
-	Arcemu::Util::ARCEMU_ASSERT(m_holder != NULL);
+	ARCEMU_ASSERT(m_holder != NULL);
 
 	// If we are flagged not to run in WorldRunnable then we won't!
 	// This is much better than adding us to the eventholder and removing on an update
@@ -80,7 +80,7 @@ void EventableObject::event_AddEvent(TimedEvent* ptr)
 		delete ptr;
 
 		///////////////////////////////////////// this is for me for debugging purposes - dfighter ////////////////////////////
-		// Arcemu::Util::ARCEMU_ASSERT( false );
+		// ARCEMU_ASSERT( false );
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		m_lock.Release();
 		return;

@@ -449,7 +449,7 @@ void WorldSession::HandlePetRename(WorldPacket & recv_data)
 	// Disable pet rename.
 	pet->SetUInt32Value(UNIT_FIELD_BYTES_2, 1 | /* (0x28 << 8) | */ (PET_RENAME_NOT_ALLOWED << 16));
 
-	Arcemu::Util::ARCEMU_ASSERT(pet->GetPetOwner() != NULL);
+	ARCEMU_ASSERT(pet->GetPetOwner() != NULL);
 
 	if(pet->GetPetOwner()->IsPvPFlagged())
 		pet->SetPvPFlag();

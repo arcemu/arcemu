@@ -767,7 +767,7 @@ void CBattlegroundManager::RemovePlayerFromQueues(Player* plr)
 {
 	m_queueLock.Acquire();
 
-	Arcemu::Util::ARCEMU_ASSERT(plr->m_bgQueueType < BATTLEGROUND_NUM_TYPES);
+	ARCEMU_ASSERT(plr->m_bgQueueType < BATTLEGROUND_NUM_TYPES);
 
 	sEventMgr.RemoveEvents(plr, EVENT_BATTLEGROUND_QUEUE_UPDATE);
 
@@ -1007,7 +1007,7 @@ void CBattleground::UpdatePvPData()
 
 void CBattleground::BuildPvPUpdateDataPacket(WorldPacket* data)
 {
-	Arcemu::Util::ARCEMU_ASSERT(data != NULL);
+	ARCEMU_ASSERT(data != NULL);
 
 	data->Initialize(MSG_PVP_LOG_DATA);
 	data->reserve(10 * (m_players[0].size() + m_players[1].size()) + 50);
@@ -1090,7 +1090,7 @@ void CBattleground::BuildPvPUpdateDataPacket(WorldPacket* data)
 		{
 			for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
 			{
-				Arcemu::Util::ARCEMU_ASSERT(*itr != NULL);
+				ARCEMU_ASSERT(*itr != NULL);
 				if((*itr)->m_isGmInvisible)
 					continue;
 				*data << (*itr)->GetGUID();

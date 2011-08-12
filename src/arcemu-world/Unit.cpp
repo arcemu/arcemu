@@ -6233,7 +6233,7 @@ void Unit::SendAuraUpdate(uint32 AuraSlot, bool remove)
 {
 	Aura* aur = m_auras[ AuraSlot ];
 
-	Arcemu::Util::ARCEMU_ASSERT(aur != NULL);
+	ARCEMU_ASSERT(aur != NULL);
 
 	WorldPacket data(SMSG_AURA_UPDATE, 30);
 
@@ -6536,7 +6536,7 @@ bool Unit::GetSpeedDecrease()
 
 void Unit::EventCastSpell(Unit* Target, SpellEntry* Sp)
 {
-	Arcemu::Util::ARCEMU_ASSERT(Sp != NULL);
+	ARCEMU_ASSERT(Sp != NULL);
 	Spell* pSpell = sSpellFactoryMgr.NewSpell(Target, Sp, true, NULL);
 	SpellCastTargets targets(Target->GetGUID());
 	pSpell->prepare(&targets);
@@ -6667,7 +6667,7 @@ void CombatStatusHandler::AddAttackTarget(const uint64 & guid)
 		return;
 
 	//we MUST be in world
-	Arcemu::Util::ARCEMU_ASSERT(m_Unit->IsInWorld());
+	ARCEMU_ASSERT(m_Unit->IsInWorld());
 
 	m_attackTargets.insert(guid);
 	//printf("Adding attack target "I64FMT" to "I64FMT"\n", guid, m_Unit->GetGUID());
@@ -6786,7 +6786,7 @@ void CombatStatusHandler::OnDamageDealt(Unit* pTarget)
 void CombatStatusHandler::AddAttacker(const uint64 & guid)
 {
 	//we MUST be in world
-	Arcemu::Util::ARCEMU_ASSERT(m_Unit->IsInWorld());
+	ARCEMU_ASSERT(m_Unit->IsInWorld());
 	m_attackers.insert(guid);
 	UpdateFlag();
 }
@@ -7782,7 +7782,7 @@ void Unit::AddGarbageSpell(Spell* sp)
 
 void Unit::AddGarbagePet(Pet* pet)
 {
-	Arcemu::Util::ARCEMU_ASSERT(pet->GetPetOwner()->GetGUID() == GetGUID() && !pet->IsInWorld());
+	ARCEMU_ASSERT(pet->GetPetOwner()->GetGUID() == GetGUID() && !pet->IsInWorld());
 	m_GarbagePets.push_back(pet);
 }
 

@@ -135,7 +135,7 @@ int WorldSession::Update(uint32 InstanceID)
 
 	while((packet = _recvQueue.Pop()) != 0)
 	{
-		Arcemu::Util::ARCEMU_ASSERT(packet != NULL);
+		ARCEMU_ASSERT(packet != NULL);
 
 		if(packet->GetOpcode() >= NUM_MSG_TYPES)
 			LOG_DETAIL

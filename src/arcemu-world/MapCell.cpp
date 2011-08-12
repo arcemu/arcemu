@@ -295,7 +295,7 @@ void MapCell::CancelPendingUnload()
 void MapCell::Unload()
 {
 	Log.Debug("MapCell", "Unloading cell %u %u", _x, _y);
-	Arcemu::Util::ARCEMU_ASSERT(_unloadpending);
+	ARCEMU_ASSERT(_unloadpending);
 	if(_active)
 	{
 		_unloadpending = false;

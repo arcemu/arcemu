@@ -30,11 +30,11 @@ namespace Arcemu
 		public:
 			SERVER_DECL static uint32 GUID_LOPART(uint64 GUID);
 			SERVER_DECL static uint32 GUID_HIPART(uint64 GUID);
-			static void ARCEMU_ASSERT(bool condition);
+			static void ArcemuAssert(bool condition);
 			static uint64 MAKE_PET_GUID(uint32 entry, uint32 lowGUID);
 			static uint64 MAKE_ITEM_GUID(uint32 lowGUID);
 	};
 }
-
+#define ARCEMU_ASSERT( EXPR ) Arcemu::Util::ArcemuAssert( EXPR ); ANALYSIS_ASSUME( EXPR )
 
 #endif

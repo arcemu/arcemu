@@ -543,7 +543,7 @@ void Pet::InitializeSpells()
 
 AI_Spell* Pet::CreateAISpell(SpellEntry* info)
 {
-	Arcemu::Util::ARCEMU_ASSERT(info != NULL);
+	ARCEMU_ASSERT(info != NULL);
 
 	// Create an AI_Spell
 	map<uint32, AI_Spell*>::iterator itr = m_AISpellStore.find(info->Id);
@@ -726,7 +726,7 @@ void Pet::LoadFromDB(Player* owner, PlayerPet* pi)
 void Pet::OnPushToWorld()
 {
 	//Pets MUST always have an owner
-	Arcemu::Util::ARCEMU_ASSERT(m_Owner != NULL);
+	ARCEMU_ASSERT(m_Owner != NULL);
 	//before we initialize pet spells so we can apply spell mods on them
 	m_Owner->EventSummonPet(this);
 
@@ -796,7 +796,7 @@ void Pet::InitializeMe(bool first)
 
 	PushToWorld(m_Owner->GetMapMgr());
 	//we MUST be sure Pet was pushed to world.
-	Arcemu::Util::ARCEMU_ASSERT(IsInWorld());
+	ARCEMU_ASSERT(IsInWorld());
 
 	InitializeSpells();
 
@@ -905,7 +905,7 @@ void Pet::OnRemoveFromWorld()
 	for(itr = ownerSummons.begin(); itr != ownerSummons.end(); ++itr)
 	{
 		//m_Owner MUST NOT have a reference to us anymore
-		Arcemu::Util::ARCEMU_ASSERT((*itr)->GetGUID() != GetGUID());
+		ARCEMU_ASSERT((*itr)->GetGUID() != GetGUID());
 	}
 }
 
@@ -1780,8 +1780,8 @@ void Pet::HandleAutoCastEvent(AutoCastEvents Type)
 
 void Pet::SetAutoCast(AI_Spell* sp, bool on)
 {
-	Arcemu::Util::ARCEMU_ASSERT(sp != NULL);
-	Arcemu::Util::ARCEMU_ASSERT(sp->spell != NULL);
+	ARCEMU_ASSERT(sp != NULL);
+	ARCEMU_ASSERT(sp->spell != NULL);
 
 	if(sp->autocast_type > 0)
 	{

@@ -168,8 +168,8 @@ QuestLogEntry::~QuestLogEntry()
 
 void QuestLogEntry::Init(Quest* quest, Player* plr, uint32 slot)
 {
-	Arcemu::Util::ARCEMU_ASSERT(quest != NULL);
-	Arcemu::Util::ARCEMU_ASSERT(plr != NULL);
+	ARCEMU_ASSERT(quest != NULL);
+	ARCEMU_ASSERT(plr != NULL);
 
 	m_quest = quest;
 	m_plr = plr;
@@ -237,7 +237,7 @@ bool QuestLogEntry::IsUnitAffected(Unit* target)
 
 void QuestLogEntry::SaveToDB(QueryBuffer* buf)
 {
-	Arcemu::Util::ARCEMU_ASSERT(m_slot != -1);
+	ARCEMU_ASSERT(m_slot != -1);
 	if(!mDirty)
 		return;
 
@@ -278,7 +278,7 @@ bool QuestLogEntry::LoadFromDB(Field* fields)
 {
 	// playerguid,questid,timeleft,area0,area1,area2,area3,kill0,kill1,kill2,kill3
 	int f = 3;
-	Arcemu::Util::ARCEMU_ASSERT(m_plr && m_quest);
+	ARCEMU_ASSERT(m_plr && m_quest);
 	m_time_left = fields[f].GetUInt32();
 	f++;
 	for(int i = 0; i < 4; ++i)
@@ -380,28 +380,28 @@ void QuestLogEntry::SubtractTime(uint32 value)
 
 void QuestLogEntry::SetMobCount(uint32 i, uint32 count)
 {
-	Arcemu::Util::ARCEMU_ASSERT(i < 4);
+	ARCEMU_ASSERT(i < 4);
 	m_mobcount[i] = count;
 	mDirty = true;
 }
 
 void QuestLogEntry::IncrementMobCount(uint32 i)
 {
-	Arcemu::Util::ARCEMU_ASSERT(i < 4);
+	ARCEMU_ASSERT(i < 4);
 	++m_mobcount[i];
 	mDirty = true;
 }
 
 void QuestLogEntry::SetTrigger(uint32 i)
 {
-	Arcemu::Util::ARCEMU_ASSERT(i < 4);
+	ARCEMU_ASSERT(i < 4);
 	m_explored_areas[i] = 1;
 	mDirty = true;
 }
 
 void QuestLogEntry::SetSlot(int32 i)
 {
-	Arcemu::Util::ARCEMU_ASSERT(i != -1);
+	ARCEMU_ASSERT(i != -1);
 	m_slot = i;
 }
 

@@ -23,8 +23,15 @@
 #include "printStackTrace.h"
 // TODO: handle errors better
 
+#if CODE_ANALYSIS
+#include<codeanalysis\sourceannotations.h>
+#define ANALYSIS_ASSUME( EXPR ) __analysis_assume( EXPR )
+#else
+#define ANALYSIS_ASSUME( EXPR )
+#endif
+
 // An assert isn't necessarily fatal, but we want to stop anyways
-#define WPAssert( EXPR ) if (!(EXPR)) { arcAssertFailed(__FILE__,__LINE__,#EXPR); assert(EXPR); ((void(*)())0)(); }
+#define WPAssert( EXPR ) if (!(EXPR)) { arcAssertFailed(__FILE__,__LINE__,#EXPR); assert(EXPR); ((void(*)())0)(); } ANALYSIS_ASSUME( EXPR )
 
 #define WPError( assertion, errmsg ) if( ! (assertion) ) { Log::getSingleton( ).outError( "%s:%i ERROR:\n  %s\n", __FILE__, __LINE__, (char *)errmsg ); assert( false ); }
 #define WPWarning( assertion, errmsg ) if( ! (assertion) ) { Log::getSingleton( ).outError( "%s:%i WARNING:\n  %s\n", __FILE__, __LINE__, (char *)errmsg ); }
