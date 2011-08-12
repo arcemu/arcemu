@@ -2937,8 +2937,7 @@ class LuaUnit
 			Unit* target = CHECK_UNIT(L, 1);
 			float dist = CHECK_FLOAT(L, 2);
 			float angle = CHECK_FLOAT(L, 3);
-			if(!ptr || !dist || !angle)
-				return 0;
+
 			ptr->GetAIInterface()->SetUnitToFollow(target);
 			ptr->GetAIInterface()->SetFollowDistance(dist);
 			ptr->GetAIInterface()->SetUnitToFollowAngle(angle);
