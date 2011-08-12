@@ -5937,7 +5937,7 @@ void Spell::SpellEffectJumpBehindTarget(uint32 i)
 		if(u_caster->GetAIInterface() != NULL)
 			u_caster->GetAIInterface()->MoveJump(x, y, z, o);
 	}
-	else if(m_targets.m_targetMask & TARGET_FLAG_SOURCE_LOCATION | TARGET_FLAG_DEST_LOCATION)
+	else if(m_targets.m_targetMask & (TARGET_FLAG_SOURCE_LOCATION | TARGET_FLAG_DEST_LOCATION))
 	{
 		float x, y, z;
 

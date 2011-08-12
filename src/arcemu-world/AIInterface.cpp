@@ -3666,6 +3666,20 @@ void AIInterface::AddSpline(float x, float y, float z)
 			movetime = (uint32)(dist / m_runSpeed);
 		else if(HasWalkMode(WALKMODE_WALK))
 			movetime = (uint32)(dist / m_walkSpeed);
+		else
+		{
+			LOG_ERROR("Added a spline with unhandled spline flag: %X", m_splineFlags);
+			//setting movetime to default value of 1 second. Change if to either a return; or something more meaningful
+			//but don't leave movetime uninitialized...
+			movetime = 1.0f;
+		}
+	}
+	else
+	{
+		LOG_ERROR("Added a spline with unhandled spline flag: %X", m_splineFlags);
+		//setting movetime to default value of 1 second. Change if to either a return; or something more meaningful
+		//but don't leave movetime uninitialized...
+		movetime = 1.0f;
 	}
 
 	p.setoff = prev.arrive;

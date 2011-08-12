@@ -415,7 +415,7 @@ void WorldSession::HandleAutoEquipItemOpcode(WorldPacket & recv_data)
 
 	Item* eitem = _player->GetItemInterface()->GetInventoryItem(SrcInvSlot, SrcSlot);
 
-	if(!eitem)
+	if(eitem == NULL)
 	{
 		_player->GetItemInterface()->BuildInventoryChangeError(eitem, NULL, INV_ERR_ITEM_NOT_FOUND);
 		return;
@@ -562,18 +562,21 @@ void WorldSession::HandleAutoEquipItemOpcode(WorldPacket & recv_data)
 
 	}
 
-	if(eitem != NULL && eitem->GetProto()->Bonding == ITEM_BIND_ON_EQUIP)
-		eitem->SoulBind();
+	if(eitem != NULL)
+	{
+		if(eitem->GetProto()->Bonding == ITEM_BIND_ON_EQUIP)
+			eitem->SoulBind();
 #ifdef ENABLE_ACHIEVEMENTS
-	_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_EQUIP_ITEM, eitem->GetProto()->ItemId, 0, 0);
-	// Achievement ID:556 description Equip an epic item in every slot with a minimum item level of 213.
-	// "213" value not found in achievement or criteria entries, have to hard-code it here? :(
-	// Achievement ID:557 description Equip a superior item in every slot with a minimum item level of 187.
-	// "187" value not found in achievement or criteria entries, have to hard-code it here? :(
-	if((eitem->GetProto()->Quality == ITEM_QUALITY_RARE_BLUE && eitem->GetProto()->ItemLevel >= 187) ||
-	        (eitem->GetProto()->Quality == ITEM_QUALITY_EPIC_PURPLE && eitem->GetProto()->ItemLevel >= 213))
-		_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_EQUIP_EPIC_ITEM, Slot, eitem->GetProto()->Quality, 0);
+		_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_EQUIP_ITEM, eitem->GetProto()->ItemId, 0, 0);
+		// Achievement ID:556 description Equip an epic item in every slot with a minimum item level of 213.
+		// "213" value not found in achievement or criteria entries, have to hard-code it here? :(
+		// Achievement ID:557 description Equip a superior item in every slot with a minimum item level of 187.
+		// "187" value not found in achievement or criteria entries, have to hard-code it here? :(
+		if((eitem->GetProto()->Quality == ITEM_QUALITY_RARE_BLUE && eitem->GetProto()->ItemLevel >= 187) ||
+				(eitem->GetProto()->Quality == ITEM_QUALITY_EPIC_PURPLE && eitem->GetProto()->ItemLevel >= 213))
+			_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_EQUIP_EPIC_ITEM, Slot, eitem->GetProto()->Quality, 0);
 #endif
+	}
 	//Recalculate Expertise (for Weapon specs)
 	_player->CalcExpertise();
 }
