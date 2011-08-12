@@ -2934,6 +2934,8 @@ class LuaUnit
 
 		static int SetUnitToFollow(lua_State* L, Unit* ptr)
 		{
+			TEST_UNIT()
+
 			Unit* target = CHECK_UNIT(L, 1);
 			float dist = CHECK_FLOAT(L, 2);
 			float angle = CHECK_FLOAT(L, 3);
