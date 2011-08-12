@@ -29,6 +29,12 @@ add_library( ${PROJECT_NAME} SHARED ${SRCS} )
 add_dependencies( ${PROJECT_NAME} shared world )
 add_definitions( -DSCRIPTLIB -DSKIP_ALLOCATOR_SHARING )
 target_link_libraries( ${PROJECT_NAME} world )
+
+include(PCHSupport)
+IF( CMAKE_GENERATOR MATCHES Visual*)
+	ADD_NATIVE_PRECOMPILED_HEADER(${PROJECT_NAME} Setup.h ${prefix}/Setup.cpp)
+ENDIF()
+
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION ${ARCEMU_SCRIPTLIB_PATH} LIBRARY DESTINATION ${ARCEMU_SCRIPTLIB_PATH} )
 #Cleap up our variables(Not required.)
 unset( prefix )
