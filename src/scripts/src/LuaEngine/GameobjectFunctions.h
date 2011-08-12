@@ -708,8 +708,8 @@ class LuaGameObject
 			if(sp && target != NULL)
 			{
 				Spell* tSpell = sSpellFactoryMgr.NewSpell(ptr, dbcSpell.LookupEntry(sp), true, NULL);
-				SpellCastTargets sp(target->GetGUID());
-				tSpell->prepare(&sp);
+				SpellCastTargets spCastTargets(target->GetGUID());
+				tSpell->prepare(&spCastTargets);
 			}
 			return 0;
 		}
@@ -870,7 +870,7 @@ class LuaGameObject
 		{
 			WorldPacket* data = CHECK_PACKET(L, 1);
 			bool self = CHECK_BOOL(L, 2);
-			if(ptr != NULL || data != NULL)
+			if(ptr != NULL && data != NULL)
 				ptr->SendMessageToSet(data, self);
 			return 0;
 		}

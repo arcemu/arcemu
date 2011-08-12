@@ -928,10 +928,8 @@ class LuaUnit
 		}
 		static int DeleteAllWaypoints(lua_State* L, Unit* ptr)
 		{
-			Creature* crc = NULL;
 			if(ptr != NULL && ptr->IsCreature())
-				crc = TO_CREATURE(ptr);
-			crc->GetAIInterface()->deleteWaypoints();
+				ptr->GetAIInterface()->deleteWaypoints();
 			return 0;
 		}
 
