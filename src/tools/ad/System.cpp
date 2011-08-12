@@ -905,9 +905,8 @@ void ExtractMapsFromMpq(uint32 build)
     char mpq_map_name[1024];
 
     printf("Extracting maps...\n");
-	std::cin.get();
 
-    uint32 map_count = ReadMapDBC();
+	uint32 map_count = ReadMapDBC();
 
     ReadAreaTableDBC();
     ReadLiquidTypeTableDBC();
