@@ -71,9 +71,9 @@ class SCRIPT_DECL MoonkinGhost_Gossip : public GossipScript
 
 		void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char* Code)
 		{
-			Creature*  pCreature = (pObject->IsCreature()) ? (TO_CREATURE(pObject)) : NULL;
 			if(!pObject->IsCreature())
 				return;
+			Creature* pCreature = TO_CREATURE(pObject);
 
 			GossipMenu* Menu;
 			switch(IntId)

@@ -661,9 +661,9 @@ class Sayge_Gossip : public GossipScript
 		void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char* Code)
 		{
 			GossipMenu* Menu;
-			Creature* pCreature = (pObject->IsCreature()) ? (TO_CREATURE(pObject)) : NULL;
 			if(!pObject->IsCreature())
 				return;
+			Creature* pCreature = TO_CREATURE(pObject);
 
 			switch(IntId)
 			{
@@ -911,9 +911,9 @@ class SelinaDourman_Gossip : public GossipScript
 		void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char* Code)
 		{
 			GossipMenu* Menu;
-			Creature* pCreature = (pObject->IsCreature()) ? (TO_CREATURE(pObject)) : NULL;
 			if(!pObject->IsCreature())
 				return;
+			Creature* pCreature = TO_CREATURE(pObject);
 
 			switch(IntId)
 
@@ -984,9 +984,9 @@ class SilasDarkmoon_Gossip : public GossipScript
 		void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char* Code)
 		{
 			GossipMenu* Menu;
-			Creature* pCreature = (pObject->IsCreature()) ? (TO_CREATURE(pObject)) : NULL;
 			if(!pObject->IsCreature())
 				return;
+			Creature* pCreature = TO_CREATURE(pObject);
 
 			switch(IntId)
 			{

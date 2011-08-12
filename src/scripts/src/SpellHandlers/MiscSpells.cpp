@@ -330,7 +330,7 @@ bool EatenRecently(uint32 i, Aura* pAura, bool apply)
 		return true;
 
 	Unit* caster = pAura->GetUnitCaster();
-	if(caster || caster->IsPlayer())
+	if(caster == NULL || caster->IsPlayer())
 		return true;
 
 	Creature* NetherDrake = TO_CREATURE(caster);

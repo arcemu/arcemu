@@ -176,13 +176,13 @@ bool CheatDeath(uint32 i, Aura* a, bool apply)
 	return true;
 }
 
-bool MasterOfSubtletly(uint32 i, Aura* a, bool apply)
+bool MasterOfSubtlety(uint32 i, Aura* a, bool apply)
 {
 	Unit* u_target = a->GetTarget();
-	Player* p_target = NULL;
+	if(!u_target->IsPlayer())
+		return true;
 
-	if(u_target->IsPlayer())
-		p_target = TO_PLAYER(u_target);
+	Player* p_target = TO_PLAYER(u_target);
 
 	int32 amount = a->GetModAmount(i);
 
@@ -247,14 +247,14 @@ void SetupRogueSpells(ScriptMgr* mgr)
 	mgr->register_dummy_aura(45182, &CheatDeath);
 
 
-	uint32 masterofsubtletlyids[] =
+	uint32 masterofsubtletyids[] =
 	{
 		31223,
 		31222,
 		31221,
 		0
 	};
-	mgr->register_dummy_aura(masterofsubtletlyids, &MasterOfSubtletly);
+	mgr->register_dummy_aura(masterofsubtletyids, &MasterOfSubtlety);
 
 	uint32 preyontheweakids[] =
 	{
