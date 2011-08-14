@@ -12,6 +12,10 @@ include_directories( ${DEPENDENCY_INCLUDE_ROOT}/vmaplib ${DEPENDENCY_INCLUDE_ROO
 
 ADD_EXECUTABLE( ${PROJECT_NAME} ${SRCS} )
 
-target_link_libraries( ${PROJECT_NAME} vmaplib g3dlite ${ZLIB_LIBRARIES} )
+IF( APPLE )
+	target_link_libraries( ${PROJECT_NAME} vmaplib g3dlite ${ZLIB_LIBRARIES} "-framework Carbon" )
+ELSE( APPLE )
+	target_link_libraries( ${PROJECT_NAME} vmaplib g3dlite ${ZLIB_LIBRARIES} )
+ENDIF( APPLE )
 
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION ${ARCEMU_TOOLS_PATH} )

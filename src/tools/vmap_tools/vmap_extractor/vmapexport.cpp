@@ -457,7 +457,7 @@ int main(int argc, char ** argv)
     //xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     // Create the working directory
     if(mkdir(szWorkDirWmo
-#ifdef __linux__
+#ifndef _WIN32
                     , 0711
 #endif
                     ))
