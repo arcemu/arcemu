@@ -13,6 +13,10 @@ foreach(src IN ITEMS ${sources} )
   SET( SRCS ${SRCS} ${prefix}/${src} )
 endforeach(src)
 
+IF( NOT WIN32 AND NOT IS_64BIT )
+	add_definitions( -D_FILE_OFFSET_BITS=64 )
+ENDIF( NOT WIN32 AND NOT IS_64BIT )
+
 include_directories( ${DEPENDENCY_INCLUDE_ROOT}/libmpq_new ${DEPENDENCY_INCLUDE_ROOT}/loadlib ${DEPENDENCY_INCLUDE_ROOT}/zlib ${DEPENDENCY_INCLUDE_ROOT}/bzip2 )
 
 ADD_EXECUTABLE( ${PROJECT_NAME} ${SRCS} )
