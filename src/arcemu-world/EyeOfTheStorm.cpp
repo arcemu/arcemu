@@ -900,9 +900,9 @@ bool EyeOfTheStorm::GivePoints(uint32 team, uint32 points)
 		m_lastHonorGainPoints[team] += resourcesToGainBH;
 	}
 
-	if(m_points[team] >= 2000)
+	if(m_points[team] >= 1600)
 	{
-		m_points[team] = 2000;
+		m_points[team] = 1600;
 
 		m_ended = true;
 		m_winningteam = static_cast<uint8>(team);
