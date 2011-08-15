@@ -224,7 +224,7 @@ class LuaGameObject
 			float dist = 0;
 			Player* ret = NULL;
 
-			for(set<Object*>::iterator itr = ptr->GetInRangePlayerSetBegin(); itr != ptr->GetInRangePlayerSetEnd();)
+			for(set<Object*>::iterator itr = ptr->GetInRangePlayerSetBegin(); itr != ptr->GetInRangePlayerSetEnd(); ++itr)
 			{
 				d2 = (TO< Player* >(*itr))->GetDistanceSq(ptr);
 				if(!ret || d2 < dist)
