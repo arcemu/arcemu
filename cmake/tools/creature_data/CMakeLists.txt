@@ -18,11 +18,11 @@ IF( NOT WIN32 AND NOT IS_64BIT )
 	add_definitions( -D_FILE_OFFSET_BITS=64 )
 ENDIF( NOT WIN32 AND NOT IS_64BIT )
 
-include_directories( ${DEPENDENCY_INCLUDE_ROOT}/dbcfile ${DEPENDENCY_INCLUDE_ROOT}/libmpq ${DEPENDENCY_INCLUDE_ROOT}/zlib )
+include_directories( ${DEPENDENCY_INCLUDE_ROOT}/dbcfile ${DEPENDENCY_INCLUDE_ROOT}/loadlib ${DEPENDENCY_INCLUDE_ROOT}/libmpq_new )
 
 ADD_EXECUTABLE( ${PROJECT_NAME} ${SRCS} ${HEADERS} )
 
-target_link_libraries( ${PROJECT_NAME} dbcfile libmpq ${ZLIB_LIBRARIES} )
+target_link_libraries( ${PROJECT_NAME} dbcfile )
 
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION ${ARCEMU_TOOLS_PATH} )
 
