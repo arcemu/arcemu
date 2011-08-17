@@ -221,6 +221,7 @@ int main()
 			if (attachments[i].bone > header->nBoneLookupTable)
 			{
 				printf("Attachment %u requests bonelookup %u (too large, bonelookup table is only %u entries)\n", i, attachments[i].bone, header->nBoneLookupTable);
+				continue;
 			}
 			uint16 boneindex = bonelookups[attachments[i].bone];
 			if (boneindex > header->nBones)
