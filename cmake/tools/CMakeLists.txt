@@ -4,7 +4,6 @@ SET(BUILD_TOOLS_VMAPS TRUE CACHE BOOL "Build VMAP extractor tools." )
 SET(BUILD_TOOLS_CREATUREDATA TRUE CACHE BOOL "Build creature data extractor tools" )
 
 add_subdirectory( bzip2 )
-#add_subdirectory( libmpq )
 add_subdirectory( libmpq_new )
 add_subdirectory( dbcfile )
 add_subdirectory( loadlib )
