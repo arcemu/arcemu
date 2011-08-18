@@ -124,7 +124,7 @@ WorldPacket* WorldSession::BuildQuestQueryResponse(Quest* qst)
 		*data << uint32(0);							// 3.3.0 Unknown
 	}
 
-	for(i = 0; i < 6; ++i)
+	for(i = 0; i < MAX_REQUIRED_QUEST_ITEM; ++i)
 	{
 		*data << qst->required_item[i];				// Collect item [i]
 		*data << qst->required_itemcount[i];		// Collect item count [i]
@@ -343,7 +343,7 @@ bool QuestLogEntry::CanBeFinished()
 		}
 	}
 
-	for(i = 0; i < 4; ++i)
+	for(i = 0; i < MAX_REQUIRED_QUEST_ITEM; ++i)
 	{
 		if(m_quest->required_item[i])
 		{

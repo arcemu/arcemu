@@ -5960,7 +5960,7 @@ bool Player::HasQuestForItem(uint32 itemid)
 			if(!qst->count_required_item)
 				continue;
 
-			for(uint32 j = 0; j < 4; ++j)
+			for(uint32 j = 0; j < MAX_REQUIRED_QUEST_ITEM; ++j)
 				if(qst->required_item[j] == itemid && (GetItemInterface()->GetItemCount(itemid) < qst->required_itemcount[j]))
 					return true;
 		}

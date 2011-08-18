@@ -143,6 +143,7 @@ enum QUEST_SHARE
 
 #define arcemu_QUEST_REPEATABLE 1
 #define arcemu_QUEST_REPEATABLE_DAILY 2
+#define MAX_REQUIRED_QUEST_ITEM 6
 
 class QuestScript;
 #pragma pack(push,1)
@@ -180,8 +181,8 @@ struct Quest
 
 	char* objectivetexts[4];
 
-	uint32 required_item[6];
-	uint32 required_itemcount[6];
+	uint32 required_item[ MAX_REQUIRED_QUEST_ITEM ];
+	uint32 required_itemcount[ MAX_REQUIRED_QUEST_ITEM ];
 
 	int32 required_mob[4]; //positive is NPC, negative is GO
 	uint32 required_mobcount[4];

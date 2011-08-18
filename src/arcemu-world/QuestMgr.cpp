@@ -29,7 +29,7 @@ bool QuestMgr::isRepeatableQuestFinished(Player* plr, Quest* qst)
 {
 	uint32 i;
 
-	for(i = 0; i < 4; ++i)
+	for(i = 0; i < MAX_REQUIRED_QUEST_ITEM; ++i)
 	{
 		if(qst->required_item[i])
 		{
@@ -503,7 +503,7 @@ void QuestMgr::BuildRequestItems(WorldPacket* data, Quest* qst, Object* qst_give
 	*data << qst->count_required_item;
 
 	// (loop for each item)
-	for(uint32 i = 0; i < 6; ++i)
+	for(uint32 i = 0; i < MAX_REQUIRED_QUEST_ITEM; ++i)
 	{
 		if(qst->required_item[i] != 0)
 		{
@@ -920,7 +920,7 @@ void QuestMgr::OnPlayerItemPickup(Player* plr, Item* item)
 			if(qle->GetQuest()->count_required_item == 0)
 				continue;
 
-			for(j = 0; j < 4; ++j)
+			for(j = 0; j < MAX_REQUIRED_QUEST_ITEM; ++j)
 			{
 				if(qle->GetQuest()->required_item[j] == entry)
 				{
@@ -1173,7 +1173,7 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object* qst_giver, uint3
 		}
 
 		// Remove items
-		for(uint32 i = 0; i < 4; ++i)
+		for(uint32 i = 0; i < MAX_REQUIRED_QUEST_ITEM; ++i)
 		{
 			if(qst->required_item[i]) plr->GetItemInterface()->RemoveItemAmt(qst->required_item[i], qst->required_itemcount[i]);
 		}
@@ -1289,7 +1289,7 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object* qst_giver, uint3
 		}
 
 		// Remove items
-		for(uint32 i = 0; i < 4; ++i)
+		for(uint32 i = 0; i < MAX_REQUIRED_QUEST_ITEM; ++i)
 		{
 			if(qst->required_item[i]) plr->GetItemInterface()->RemoveItemAmt(qst->required_item[i], qst->required_itemcount[i]);
 		}
@@ -1679,7 +1679,7 @@ void QuestMgr::SetGameObjectLootQuest(uint32 GO_Entry, uint32 Item_Entry)
 	while(!itr->AtEnd())
 	{
 		Quest* qst = itr->Get();
-		for(i = 0; i < 4; ++i)
+		for(i = 0; i < MAX_REQUIRED_QUEST_ITEM; ++i)
 		{
 			if(qst->required_item[i] == Item_Entry)
 			{
@@ -1983,9 +1983,6 @@ void QuestMgr::LoadExtraQuestStuff()
 				qst->count_required_mob++;
 			}
 
-			if(qst->required_item[i])
-				qst->count_required_item++;
-
 			if(qst->reward_item[i])
 				qst->count_reward_item++;
 
@@ -1998,6 +1995,10 @@ void QuestMgr::LoadExtraQuestStuff()
 			if(qst->required_quests[i])
 				qst->count_requiredquests++;
 		}
+
+		for( int i = 0; i < MAX_REQUIRED_QUEST_ITEM; i++ )
+			if( qst->required_item[ i ] != 0 )
+				qst->count_required_item++;
 
 		for(int i = 0; i < 6; ++i)
 		{

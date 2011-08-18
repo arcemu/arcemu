@@ -161,7 +161,7 @@ class SERVER_DECL QuestMgr :  public Singleton < QuestMgr >
 
 		ARCEMU_INLINE int32 GetOffsetForItem(Quest* qst, uint32 itm)
 		{
-			for(uint32 i = 0; i < 4; ++i)
+			for(uint32 i = 0; i < MAX_REQUIRED_QUEST_ITEM; ++i)
 				if(qst->required_item[i] == itm)
 					return i;
 
