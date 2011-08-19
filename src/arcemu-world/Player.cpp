@@ -4986,6 +4986,16 @@ bool Player::HasFinishedQuest(uint32 quest_id)
 	return (m_finishedQuests.find(quest_id) != m_finishedQuests.end());
 }
 
+
+bool Player::HasTimedQuest(){
+	for( uint32 i = 0; i < 25; i++ )
+		if( ( m_questlog[ i ] != NULL ) && ( m_questlog[ i ]->GetQuest()->time != 0 ) )
+			return true;
+
+	return false;
+}
+
+
 void Player::ClearQuest(uint32 id)
 {
 	m_finishedQuests.erase(id);
@@ -13464,9 +13474,10 @@ void Player::AcceptQuest(uint64 guid, uint32 quest_id)
 		return;
 	}
 
-	//FIX ME
-	/*if(Player Has Timed quest && qst->HasFlag(QUEST_FLAG_TIMED))
-		sQuestMgr.SendQuestInvalid(INVALID_REASON_HAVE_TIMED_QUEST);*/
+	if( ( qst->time != 0 ) && HasTimedQuest() ){
+		sQuestMgr.SendQuestInvalid( INVALID_REASON_HAVE_TIMED_QUEST, this );
+		return;
+	}
 
 	if(qst->count_receiveitems || qst->srcitem)
 	{

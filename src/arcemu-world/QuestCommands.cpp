@@ -250,6 +250,11 @@ bool ChatHandler::HandleQuestStartCommand(const char* args, WorldSession* m_sess
 				}
 				else
 				{
+					if( ( qst->time != 0 ) && plr->HasTimedQuest() ){
+						sQuestMgr.SendQuestInvalid( INVALID_REASON_HAVE_TIMED_QUEST, plr );
+						return true;
+					}
+
 					sGMLog.writefromsession(m_session, "started quest %u [%s] for player %s", qst->id, qst->title, plr->GetName());
 
 					QuestLogEntry* qle = new QuestLogEntry();

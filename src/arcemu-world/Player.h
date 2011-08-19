@@ -1095,6 +1095,23 @@ class SERVER_DECL Player : public Unit
 
 		bool                HasFinishedQuest(uint32 quest_id);
 
+
+		/////////////////////////////////////////////////////
+		//bool HasTimedQuest()
+		//  Tells if the Player has a timed quest already
+		//
+		//Parameter(s)
+		//  None
+		//
+		//Return Value
+		//  Returns true if the Player already has a timed quest
+		//  Returns false otherwise
+		//
+		//
+		/////////////////////////////////////////////////////
+		bool HasTimedQuest();
+
+
 		/////////////////////////////////////////////////////
 		//void ClearQuest( uint32 id )
 		//  Clears the finished status of a quest
