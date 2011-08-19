@@ -4014,6 +4014,9 @@ bool ItemInterface::AddItemById(uint32 itemid, uint32 count, int32 randomprop)
 				// increase stack by new amount
 				free_stack_item->ModStackCount(count);
 				free_stack_item->m_isDirty = true;
+				
+				sQuestMgr.OnPlayerItemPickup( m_pOwner, free_stack_item );
+
 				return true;
 			}
 		}
@@ -4092,6 +4095,7 @@ bool ItemInterface::AddItemById(uint32 itemid, uint32 count, int32 randomprop)
 #ifdef ENABLE_ACHIEVEMENTS
 			chr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, itemid, 1, 0);
 #endif
+			sQuestMgr.OnPlayerItemPickup( m_pOwner, item );
 			count -= toadd;
 		}
 		else
