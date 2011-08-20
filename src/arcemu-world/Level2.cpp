@@ -1056,7 +1056,7 @@ bool ChatHandler::HandleGOInfo(const char* args, WorldSession* m_session)
 
 	if(GOInfo->Name)
 		SystemMessage(m_session, "%s Name:%s%s", MSG_COLOR_GREEN, MSG_COLOR_LIGHTBLUE, GOInfo->Name);
-	SystemMessage(m_session, "%s Size:%s%u", MSG_COLOR_GREEN, MSG_COLOR_LIGHTBLUE, GObj->GetScale());
+	SystemMessage(m_session, "%s Size:%s%f", MSG_COLOR_GREEN, MSG_COLOR_LIGHTBLUE, GObj->GetScale());
 	SystemMessage(m_session, "%s Parent Rotation O1:%s%f", MSG_COLOR_GREEN, MSG_COLOR_LIGHTBLUE, GObj->GetParentRotation(1));
 	SystemMessage(m_session, "%s Parent Rotation O2:%s%f", MSG_COLOR_GREEN, MSG_COLOR_LIGHTBLUE, GObj->GetParentRotation(2));
 	SystemMessage(m_session, "%s Parent Rotation O3:%s%f", MSG_COLOR_GREEN, MSG_COLOR_LIGHTBLUE, GObj->GetParentRotation(3));
