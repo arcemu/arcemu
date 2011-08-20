@@ -284,6 +284,12 @@ class QuestScript;
 
 #define MAX_QUEST_LOG_SIZE 25
 
+enum QuestCompletionStatus{
+	QUEST_INCOMPLETE = 0,
+	QUEST_COMPLETE   = 1,
+	QUEST_FAILED     = 2
+};
+
 class SERVER_DECL QuestLogEntry : public EventableObject
 {
 		friend class QuestMgr;
@@ -315,6 +321,23 @@ class SERVER_DECL QuestLogEntry : public EventableObject
 
 		void SetSlot(int32 i);
 		void Finish();
+
+
+		//////////////////////////////////////////////////////////////
+		//void Fail( bool timerexpired )
+		//  Marks the quest as failed
+		//
+		//Parameter(s)
+		//  bool timerexpired  -  true if the reason for failure is
+		//                        timer expiration.
+		//
+		//Return Value
+		//  None
+		//
+		//
+		//////////////////////////////////////////////////////////////
+		void Fail( bool timerexpired );
+
 
 		void SendQuestComplete();
 		void SendUpdateAddKill(uint32 i);

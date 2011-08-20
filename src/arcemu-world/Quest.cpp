@@ -312,10 +312,13 @@ bool QuestLogEntry::CanBeFinished()
 {
 	uint32 i;
 
-	if(m_quest->iscompletedbyspelleffect && !completed)
+	if(m_quest->iscompletedbyspelleffect && ( completed == QUEST_INCOMPLETE ) )
 		return false;
 
-	if(completed)
+	if( completed == QUEST_FAILED )
+		return false;
+	else
+	if( completed == QUEST_COMPLETE )
 		return true;
 
 	for(i = 0; i < 4; ++i)
@@ -407,6 +410,8 @@ void QuestLogEntry::SetSlot(int32 i)
 
 void QuestLogEntry::Finish()
 {
+	sEventMgr.RemoveEvents( m_plr, EVENT_TIMED_QUEST_EXPIRE );
+
 	uint32 base = GetBaseField(m_slot);
 	m_plr->SetUInt32Value(base + 0, 0);
 	m_plr->SetUInt32Value(base + 1, 0);
@@ -420,6 +425,22 @@ void QuestLogEntry::Finish()
 	// delete ourselves
 
 	delete this;
+}
+
+void QuestLogEntry::Fail( bool timerexpired ){
+	sEventMgr.RemoveEvents( m_plr, EVENT_TIMED_QUEST_EXPIRE );
+
+	completed = QUEST_FAILED;
+	m_time_left = 0;
+	mDirty = true;
+	
+	uint32 base = GetBaseField( m_slot );
+	m_plr->SetUInt32Value( base + 1, 2 );
+
+	if( timerexpired )
+		sQuestMgr.SendQuestUpdateFailedTimer( m_quest, m_plr );
+	else
+		sQuestMgr.SendQuestUpdateFailed( m_quest, m_plr );
 }
 
 void QuestLogEntry::UpdatePlayerFields()
@@ -512,9 +533,17 @@ void QuestLogEntry::UpdatePlayerFields()
 		}
 	}
 
+	if( completed == QUEST_FAILED )
+		field0 |= 2;
+
 	m_plr->SetUInt32Value(base + 1, field0);
 	m_plr->SetUInt64Value(base + 2, field1);
-	m_plr->SetUInt32Value(base + 4, (m_time_left ? (uint32)(UNIXTIME + m_time_left / 1000) : 0));
+	
+	if( m_time_left > 0 )
+		m_plr->SetUInt32Value( base + 4, static_cast< uint32 >( UNIXTIME + m_time_left / 1000 ) );
+	else
+		m_plr->SetUInt32Value( base + 4, 0 );
+
 }
 
 void QuestLogEntry::SendQuestComplete()
@@ -534,6 +563,6 @@ void QuestLogEntry::SendUpdateAddKill(uint32 i)
 
 void QuestLogEntry::Complete()
 {
-	completed = 1;
+	completed = QUEST_COMPLETE;
 }
 

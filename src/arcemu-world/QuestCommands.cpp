@@ -292,6 +292,9 @@ bool ChatHandler::HandleQuestStartCommand(const char* args, WorldSession* m_sess
 					//ScriptSystem->OnQuestEvent(qst, TO< Creature* >( qst_giver ), _player, QUEST_EVENT_ON_ACCEPT);
 
 					sHookInterface.OnQuestAccept(plr, qst, NULL);
+					
+					if( qst->time > 0 )
+						sEventMgr.AddEvent( plr, &Player::EventTimedQuestExpire, qst->id, EVENT_TIMED_QUEST_EXPIRE, qst->time, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
 
 					recout += "Quest has been added to the player's quest log.";
 				}
@@ -574,6 +577,28 @@ bool ChatHandler::HandleQuestFinishCommand(const char* args, WorldSession* m_ses
 	recout += "\n\n";
 
 	SendMultilineMessage(m_session, recout.c_str());
+
+	return true;
+}
+
+bool ChatHandler::HandleQuestFailCommand( const char *args, WorldSession *m_session ){
+	if( args == NULL )
+		return false;
+
+	uint32 questid = static_cast< uint32 >( atoi( args ) );
+
+	if( questid == 0 )
+		return false;
+
+	Player *player = m_session->GetPlayer();
+	QuestLogEntry *qle = player->GetQuestLogForEntry( questid );
+
+	if( qle == NULL ){
+		RedSystemMessage( m_session, "quest %u not found in player's questlog", questid );
+		return false;
+	}
+
+	qle->Fail( false );
 
 	return true;
 }

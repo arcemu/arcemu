@@ -6310,13 +6310,16 @@ void Player::EventDeActivateGameObject(GameObject* obj)
 	obj->BuildFieldUpdatePacket(this, GAMEOBJECT_DYNAMIC, 0);
 }
 
-void Player::EventTimedQuestExpire(Quest* qst, QuestLogEntry* qle, uint32 log_slot)
-{
-	WorldPacket fail;
-	sQuestMgr.BuildQuestFailed(&fail, qst->id);
-	GetSession()->SendPacket(&fail);
+void Player::EventTimedQuestExpire( uint32 questid ){
+	QuestLogEntry *qle = this->GetQuestLogForEntry( questid );
+	if( qle == NULL )
+		return;
+
+	Quest *qst = qle->GetQuest();
+
+	sQuestMgr.SendQuestUpdateFailedTimer( qst, this );
 	CALL_QUESTSCRIPT_EVENT(qle, OnQuestCancel)(this);
-	qle->Finish();
+	qle->Fail( true );
 }
 
 //scriptdev2
@@ -13525,16 +13528,8 @@ void Player::AcceptQuest(uint64 guid, uint32 quest_id)
 		}
 	}
 
-	// Timed quest handler.
-	if(qst->time > 0)
-	{
-		//Start Quest Timer Event Here
-		//sEventMgr.AddEvent(GetPlayer(), &Player::EventTimedQuestExpire, qst, qle, static_cast<uint32>(log_slot), EVENT_TIMED_QUEST_EXPIRE, qst->time * 1000, 1);
-		//uint32 qtime = static_cast<uint32>(time(NULL) + qst->time);
-		//GetPlayer()->SetUInt32Value(log_slot+2, qtime);
-		//GetPlayer()->SetUInt32Value(PLAYER_QUEST_LOG_1_01 + (log_slot * 3), qtime);
-		//GetPlayer()->timed_quest_slot = log_slot;
-	}
+	if( qst->time > 0 )
+		sEventMgr.AddEvent( this, &Player::EventTimedQuestExpire, qst->id, EVENT_TIMED_QUEST_EXPIRE, qst->time, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
 
 	if(qst->count_required_item || qst_giver->IsGameObject())	// gameobject quests deactivate
 		UpdateNearbyGameObjects();

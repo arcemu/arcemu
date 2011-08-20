@@ -564,6 +564,7 @@ class SERVER_DECL ChatHandler : public Singleton<ChatHandler>
 		bool HandleQuestFinisherCommand(const char* args, WorldSession* m_session);
 		bool HandleQuestDelStartCommand(const char* args, WorldSession* m_session);
 		bool HandleQuestFinishCommand(const char* args, WorldSession* m_session);
+		bool HandleQuestFailCommand( const char *args, WorldSession *m_session );
 		bool HandleQuestGiverCommand(const char* args, WorldSession* m_session);
 		bool HandleQuestItemCommand(const char* args, WorldSession* m_session);
 		bool HandleQuestListCommand(const char* args, WorldSession* m_session);

@@ -1090,10 +1090,12 @@ class SERVER_DECL Player : public Unit
 		void			PushToFinishedDailies(uint32 questid) { DailyMutex.Acquire(); m_finishedDailies.insert(questid); DailyMutex.Release();}
 		bool		HasFinishedDaily(uint32 questid) { return (m_finishedDailies.find(questid) == m_finishedDailies.end() ? false : true); }
 		void                AddToFinishedQuests(uint32 quest_id);
-		void                EventTimedQuestExpire(Quest* qst, QuestLogEntry* qle, uint32 log_slot);
 		void				AreaExploredOrEventHappens(uint32 questId);   // scriptdev2
 
 		bool                HasFinishedQuest(uint32 quest_id);
+
+		
+		void EventTimedQuestExpire( uint32 questid );
 
 
 		/////////////////////////////////////////////////////
