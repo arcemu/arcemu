@@ -227,7 +227,6 @@ class SERVER_DECL Object : public EventableObject
 		float GetScale() { return m_floatValues[ OBJECT_FIELD_SCALE_X ]; }
 		void SetScale(float scale) { SetFloatValue(OBJECT_FIELD_SCALE_X, scale); };
 
-		const uint32 GetEntryFromGUID() const { return uint32((*(uint64*)m_uint32Values >> 24) & 0xFFFFFFFF); }
 		const uint32 GetTypeFromGUID() const { return (m_uint32Values[ HIGHGUID ] & HIGHGUID_TYPE_MASK); }
 		const uint32 GetUIdFromGUID() const { return (m_uint32Values[ LOWGUID ] & LOWGUID_ENTRY_MASK); }
 

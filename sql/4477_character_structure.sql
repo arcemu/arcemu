@@ -21,7 +21,7 @@ CREATE TABLE `arcemu_db_version` (
   PRIMARY KEY (`LastUpdate`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-insert  into `arcemu_db_version`(`LastUpdate`) values (3800);
+insert  into `arcemu_db_version`(`LastUpdate`) values (4477);
 
 
 DROP TABLE IF EXISTS `account_data`;
@@ -681,7 +681,7 @@ CREATE TABLE `mailbox` (
   `message_id` int(30) NOT NULL DEFAULT '0',
   `message_type` int(30) NOT NULL DEFAULT '0',
   `player_guid` int(30) NOT NULL DEFAULT '0',
-  `sender_guid` int(30) NOT NULL DEFAULT '0',
+  `sender_guid` bigint(30) NOT NULL DEFAULT '0',
   `subject` varchar(255) NOT NULL DEFAULT '',
   `body` longtext NOT NULL,
   `money` int(30) NOT NULL DEFAULT '0',
@@ -702,7 +702,7 @@ CREATE TABLE `mailbox` (
 DROP TABLE IF EXISTS `mailbox_insert_queue`;
 
 CREATE TABLE `mailbox_insert_queue` (
-  `sender_guid` int(30) NOT NULL,
+  `sender_guid` bigint(30) NOT NULL,
   `receiver_guid` int(30) NOT NULL,
   `subject` varchar(200) NOT NULL,
   `body` varchar(500) NOT NULL,

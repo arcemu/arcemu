@@ -69,3 +69,8 @@ uint64 Arcemu::Util::MAKE_ITEM_GUID(uint32 lowguid)
 
 	return GUID;
 }
+
+uint32 Arcemu::Util::GET_CREATURE_ENTRY_FROM_GUID(uint64 guid)
+{
+	return ( guid >> 24) & 0x0FFFFFFF;
+}
