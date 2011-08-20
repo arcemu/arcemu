@@ -54,7 +54,6 @@ Player::Player(uint32 guid)
 	m_taxi_pos_z(0),
 	m_onTaxi(false),
 	m_questSharer(0),
-	timed_quest_slot(0),
 	pctReputationMod(0),
 	DuelingWith(NULL),
 	m_lootGuid(0),

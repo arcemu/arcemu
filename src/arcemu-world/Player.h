@@ -1160,7 +1160,6 @@ class SERVER_DECL Player : public Unit
 		Mutex				DailyMutex;
 		std::set<uint32>	m_finishedDailies;
 		uint32              m_questSharer;
-		uint32              timed_quest_slot;
 		std::set<uint32>    quest_spells;
 		std::set<uint32>    quest_mobs;
 

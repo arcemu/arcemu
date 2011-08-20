@@ -66,8 +66,6 @@ string RemoveQuestFromPlayer(Player* plr, Quest* qst)
 					if(qst->receive_items[i])
 						plr->GetItemInterface()->RemoveItemAmt(qst->receive_items[i], 1);
 				}
-				if(qst->time > 0)
-					plr->timed_quest_slot = 0;
 
 				plr->UpdateNearbyGameObjects();
 			}

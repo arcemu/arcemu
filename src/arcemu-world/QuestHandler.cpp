@@ -270,10 +270,6 @@ void WorldSession::HandleQuestlogRemoveQuestOpcode(WorldPacket & recvPacket)
 		if(qPtr->receive_items[i])
 			GetPlayer()->GetItemInterface()->RemoveItemAmt(qPtr->receive_items[i], 1);
 	}
-	if(qPtr->time > 0)
-	{
-		GetPlayer()->timed_quest_slot = 0;
-	}
 	GetPlayer()->UpdateNearbyGameObjects();
 
 	sHookInterface.OnQuestCancelled(_player, qPtr);
@@ -582,10 +578,6 @@ void WorldSession::HandleQuestgiverChooseRewardOpcode(WorldPacket & recvPacket)
 		data << guid;
 		data << qst->next_quest_id;
 		HandleQuestGiverQueryQuestOpcode(data);
-	}
-	if(qst->time > 0)
-	{
-		GetPlayer()->timed_quest_slot = 0;
 	}
 }
 
