@@ -525,7 +525,7 @@ void QuestLogEntry::UpdatePlayerFields()
 		}
 	}
 
-	if( expirytime < UNIXTIME )
+	if( ( m_quest->time != 0 ) && ( expirytime < UNIXTIME ) )
 		completed = QUEST_FAILED;
 
 	if( completed == QUEST_FAILED )
@@ -534,7 +534,7 @@ void QuestLogEntry::UpdatePlayerFields()
 	m_plr->SetUInt32Value(base + 1, field0);
 	m_plr->SetUInt64Value(base + 2, field1);
 
-	if( completed != QUEST_FAILED ){
+	if( ( m_quest->time != 0 ) && ( completed != QUEST_FAILED ) ){
 		m_plr->SetUInt32Value( base + 4, expirytime );
 		sEventMgr.AddEvent( m_plr, &Player::EventTimedQuestExpire, m_quest->id, EVENT_TIMED_QUEST_EXPIRE, ( expirytime - UNIXTIME ) * 1000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
 	}else
