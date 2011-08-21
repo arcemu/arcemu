@@ -99,7 +99,8 @@ bool EarthShieldDummyAura(uint32 i, Aura* a, bool apply)
 
 	if(apply)
 		m_target->AddProcTriggerSpell(a->GetSpellProto(), a->m_casterGuid, NULL, NULL);
-	else
+	//remove the proc trigger spell if there's only 1 aura left, so the one being removed right now
+	else if(m_target->GetAuraStackCount(a->GetSpellId()) == 1)
 		m_target->RemoveProcTriggerSpell(a->GetSpellId(), a->m_casterGuid);
 
 	return true;
