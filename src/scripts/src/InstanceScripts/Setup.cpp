@@ -32,6 +32,7 @@ extern "C" SCRIPT_DECL void _exp_script_register(ScriptMgr* mgr)	// Comment any 
 	SetupAuchenaiCrypts(mgr);
 	SetupAzjolNerub(mgr);
 	SetupTheBlackMorass(mgr);
+	SetupBlackfathomDeeps(mgr);
 	SetupBlackrockDepths(mgr);
 	SetupBlackrockSpire(mgr);
 	SetupBloodFurnace(mgr);

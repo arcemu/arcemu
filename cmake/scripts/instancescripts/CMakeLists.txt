@@ -11,6 +11,7 @@ set(sources
 Instance_Arcatraz.cpp 
 Instance_AuchenaiCrypts.cpp 
 Instance_AzjolNerub.cpp 
+Instance_BlackfathomDeeps.cpp 
 Instance_BlackMorass.cpp 
 Instance_BlackrockDepths.cpp 
 Instance_BlackrockSpire.cpp 

@@ -29,6 +29,7 @@ void SetupArcatraz(ScriptMgr* mgr);
 void SetupAuchenaiCrypts(ScriptMgr* mgr);
 void SetupAzjolNerub(ScriptMgr* mgr) ;
 void SetupTheBlackMorass(ScriptMgr* mgr);
+void SetupBlackfathomDeeps( ScriptMgr *mgr );
 void SetupBlackrockSpire(ScriptMgr* mgr);
 void SetupBlackrockDepths(ScriptMgr* mgr);
 void SetupBloodFurnace(ScriptMgr* mgr);
