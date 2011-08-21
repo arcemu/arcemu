@@ -205,10 +205,10 @@ void QuestLogEntry::Init(Quest* quest, Player* plr, uint32 slot)
 	memset(m_mobcount, 0, 4 * 4);
 	memset(m_explored_areas, 0, 4 * 4);
 
-	if(m_quest->time)
-		m_time_left = m_quest->time;
+	if( m_quest->time > 0 )
+		expirytime = UNIXTIME + m_quest->time / 1000;
 	else
-		m_time_left = 0;
+		expirytime = 0;
 
 	if(!plr->GetSession()->m_loggingInPlayer)  //quest script should not be called on login
 		CALL_QUESTSCRIPT_EVENT(this, OnQuestStart)(plr, this);
@@ -257,7 +257,7 @@ void QuestLogEntry::SaveToDB(QueryBuffer* buf)
 	ss.rdbuf()->str("");
 
 	ss << "INSERT INTO questlog VALUES(";
-	ss << m_plr->GetLowGUID() << "," << m_quest->id << "," << m_slot << "," << m_time_left;
+	ss << m_plr->GetLowGUID() << "," << m_quest->id << "," << m_slot << "," << expirytime;
 	for(int i = 0; i < 4; ++i)
 		ss << "," << m_explored_areas[i];
 
@@ -279,7 +279,7 @@ bool QuestLogEntry::LoadFromDB(Field* fields)
 	// playerguid,questid,timeleft,area0,area1,area2,area3,kill0,kill1,kill2,kill3
 	int f = 3;
 	ARCEMU_ASSERT(m_plr && m_quest);
-	m_time_left = fields[f].GetUInt32();
+	expirytime = fields[f].GetUInt32();
 	f++;
 	for(int i = 0; i < 4; ++i)
 	{
@@ -373,14 +373,6 @@ bool QuestLogEntry::CanBeFinished()
 	return true;
 }
 
-void QuestLogEntry::SubtractTime(uint32 value)
-{
-	if(this->m_time_left  <= value)
-		m_time_left = 0;
-	else
-		m_time_left -= value;
-}
-
 void QuestLogEntry::SetMobCount(uint32 i, uint32 count)
 {
 	ARCEMU_ASSERT(i < 4);
@@ -431,7 +423,7 @@ void QuestLogEntry::Fail( bool timerexpired ){
 	sEventMgr.RemoveEvents( m_plr, EVENT_TIMED_QUEST_EXPIRE );
 
 	completed = QUEST_FAILED;
-	m_time_left = 0;
+	expirytime = 0;
 	mDirty = true;
 	
 	uint32 base = GetBaseField( m_slot );
@@ -533,17 +525,20 @@ void QuestLogEntry::UpdatePlayerFields()
 		}
 	}
 
+	if( expirytime < UNIXTIME )
+		completed = QUEST_FAILED;
+
 	if( completed == QUEST_FAILED )
 		field0 |= 2;
 
 	m_plr->SetUInt32Value(base + 1, field0);
 	m_plr->SetUInt64Value(base + 2, field1);
-	
-	if( m_time_left > 0 )
-		m_plr->SetUInt32Value( base + 4, static_cast< uint32 >( UNIXTIME + m_time_left / 1000 ) );
-	else
-		m_plr->SetUInt32Value( base + 4, 0 );
 
+	if( completed != QUEST_FAILED ){
+		m_plr->SetUInt32Value( base + 4, expirytime );
+		sEventMgr.AddEvent( m_plr, &Player::EventTimedQuestExpire, m_quest->id, EVENT_TIMED_QUEST_EXPIRE, ( expirytime - UNIXTIME ) * 1000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
+	}else
+		m_plr->SetUInt32Value( base + 4, 0 );
 }
 
 void QuestLogEntry::SendQuestComplete()

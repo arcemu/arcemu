@@ -13527,9 +13527,6 @@ void Player::AcceptQuest(uint64 guid, uint32 quest_id)
 		}
 	}
 
-	if( qst->time > 0 )
-		sEventMgr.AddEvent( this, &Player::EventTimedQuestExpire, qst->id, EVENT_TIMED_QUEST_EXPIRE, qst->time, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
-
 	if(qst->count_required_item || qst_giver->IsGameObject())	// gameobject quests deactivate
 		UpdateNearbyGameObjects();
 

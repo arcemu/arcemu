@@ -304,7 +304,6 @@ class SERVER_DECL QuestLogEntry : public EventableObject
 
 		bool CanBeFinished();
 		void Complete();
-		void SubtractTime(uint32 value);
 		void SaveToDB(QueryBuffer* buf);
 		bool LoadFromDB(Field* fields);
 		void UpdatePlayerFields();
@@ -339,6 +338,27 @@ class SERVER_DECL QuestLogEntry : public EventableObject
 		void Fail( bool timerexpired );
 
 
+		/////////////////////////////////////////////////////////////
+		//bool HasFailed()
+		//  Tells if the Quest has failed.
+		//
+		//Parameter(s)
+		//  None
+		//
+		//Return Value
+		//  Returns true if the quest has failed.
+		//  Returns false otherwise.
+		//
+		//
+		/////////////////////////////////////////////////////////////
+		bool HasFailed(){
+			if( completed == QUEST_FAILED )
+				return true;
+			else
+				return false;
+		}
+
+
 		void SendQuestComplete();
 		void SendUpdateAddKill(uint32 i);
 		ARCEMU_INLINE uint32 GetMobCount(uint32 i) { return m_mobcount[i]; }
@@ -366,7 +386,7 @@ class SERVER_DECL QuestLogEntry : public EventableObject
 		bool iscastquest;
 		bool isemotequest;
 
-		uint32 m_time_left;
+		uint32 expirytime;
 		int32 m_slot;
 };
 

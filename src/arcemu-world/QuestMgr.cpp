@@ -137,6 +137,9 @@ uint32 QuestMgr::CalcQuestStatus(Object* quest_giver, Player* plr, Quest* qst, u
 	}
 	else
 	{
+		if( qle->HasFailed() )
+			return QMGR_QUEST_NOT_FINISHED;
+
 		if(type & QUESTGIVER_QUEST_END)
 		{
 			if(!qle->CanBeFinished())

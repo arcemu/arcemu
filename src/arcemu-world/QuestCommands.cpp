@@ -290,9 +290,6 @@ bool ChatHandler::HandleQuestStartCommand(const char* args, WorldSession* m_sess
 					//ScriptSystem->OnQuestEvent(qst, TO< Creature* >( qst_giver ), _player, QUEST_EVENT_ON_ACCEPT);
 
 					sHookInterface.OnQuestAccept(plr, qst, NULL);
-					
-					if( qst->time > 0 )
-						sEventMgr.AddEvent( plr, &Player::EventTimedQuestExpire, qst->id, EVENT_TIMED_QUEST_EXPIRE, qst->time, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
 
 					recout += "Quest has been added to the player's quest log.";
 				}
