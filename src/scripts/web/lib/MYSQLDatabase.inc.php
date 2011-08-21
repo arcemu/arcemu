@@ -20,7 +20,7 @@
  *
  */
  
-require_once('Database.inc');
+require_once('Database.inc.php');
 
 
 //////////////////////////////////////////////////////////////

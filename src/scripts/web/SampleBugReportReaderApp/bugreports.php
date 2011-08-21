@@ -20,9 +20,9 @@
  *
  */
  
-require_once('Config.inc');
-require_once('BugReportListLoader.inc');
-require_once('BugReportListRenderer.inc');
+require_once('Config.inc.php');
+require_once('BugReportListLoader.inc.php');
+require_once('BugReportListRenderer.inc.php');
 
 $loader = new BugReportListLoader();
 $renderer = new BugReportListRenderer();

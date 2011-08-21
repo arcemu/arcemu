@@ -21,18 +21,18 @@
  */
 
 
-require_once('../lib/StringTokenizer.inc');
+require_once('../lib/StringTokenizer.inc.php');
 
 /////////////////////////////////////////////////////////
-//class ArcemuBugReportTypeFieldParser
-//  Simple Arcemu bugreport type field parser class
+//class ArcemuBugReportContentFieldParser
+//  Simple Arcemu bugreport content field parser class
 //
 ////////////////////////////////////////////////////////
-class BugReportTypeFieldParser{
+class BugReportContentFieldParser{
 	private $BugReport;
 	private $Data;
 	
-	public function BugReportTypeFieldParser( $str  ){
+	public function BugReportContentFieldParser( $str  ){
 		$this->BugReport = $str;
 		$this->Data = array();
 	}
@@ -57,7 +57,7 @@ class BugReportTypeFieldParser{
 			return false;
 			
 		$tokenizer =
-			new StringTokenizer( $this->BugReport, "</>" );
+			new StringTokenizer( $this->BugReport, ":\t\n" );
 		
 		if( !$tokenizer->HasNextToken() )
 			return false;
@@ -65,33 +65,20 @@ class BugReportTypeFieldParser{
 		
 		$key = 0;
 		$value = NULL;
-		$intag = false;
+		$count = 0;
 		
 		while( $tokenizer->HasNextToken() ){
-			$i = 0;
+			$token = $tokenizer->GetNextToken();
 			
-			if( $intag == false ){
-				$key = $tokenizer->GetNextToken();
-				if( !is_numeric( $key ) )
-					return false;
+			if( $count % 2 != 0 ){
+				$value = $token;
 				
-				$intag = true;
+				$this->Data[ $key ] = $value;
 			}else{
-				if( $value == NULL ){
-					$value = $tokenizer->GetNextToken();
-				}else{
-					$i = $tokenizer->GetNextToken();
-					if( is_numeric( $i ) && ( $i == $key ) ){
-						$this->Data[ $key ] = $value;
-						$intag = false;
-						$value = NULL;
-						$key = 0;
-						$i = 0;
-					}else{
-						return false;
-					}
-				}
+				$key = $token;
 			}
+			
+			$count++;
 		}
 		
 		return true;

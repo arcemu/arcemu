@@ -73,8 +73,8 @@ if( !$resp->is_valid ){
                     
 //////////////////////////////////////////////////////////////////////////////
 
-include( 'Config.inc' );  
-include( '../lib/MYSQLDatabase.inc' );
+include( 'Config.inc.php' );  
+include( '../lib/MYSQLDatabase.inc.php' );
 
 $db = new MYSQLDatabase( $dbusername, $dbpassword, $dbhost, $dbport, $dbname );
 

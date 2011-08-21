@@ -21,9 +21,9 @@
  */
 
 
-require_once( '../lib/MYSQLDatabase.inc' );
-require_once( 'BugReportTypeFieldParser.inc' );
-require_once( 'BugReportContentFieldParser.inc' );
+require_once( '../lib/MYSQLDatabase.inc.php' );
+require_once( 'BugReportTypeFieldParser.inc.php' );
+require_once( 'BugReportContentFieldParser.inc.php' );
 
 /////////////////////////////////////////////////////
 //class BugReportLoader

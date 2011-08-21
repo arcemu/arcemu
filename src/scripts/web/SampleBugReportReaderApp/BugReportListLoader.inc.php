@@ -21,7 +21,7 @@
  */
 
 
-require_once('../lib/MYSQLDatabase.inc');
+require_once('../lib/MYSQLDatabase.inc.php');
 
 /////////////////////////////////////////////////////
 //class BugReportListLoader

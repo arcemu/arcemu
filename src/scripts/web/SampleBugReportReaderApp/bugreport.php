@@ -20,9 +20,9 @@
  *
  */
  
-require_once( 'Config.inc' );
-require_once( 'BugReportLoader.inc' );
-require_once( 'BugReportRenderer.inc' );
+require_once( 'Config.inc.php' );
+require_once( 'BugReportLoader.inc.php' );
+require_once( 'BugReportRenderer.inc.php' );
 
 $uid = $_GET["uid"];
 
