@@ -45,34 +45,6 @@ class FelOrcScavengersQAI : public CreatureAIScript
 		}
 };
 
-/*--------------------------------------------------------------------------------------------------------*/
-// A Burden Of Souls
-
-class BurdenOfSoulsQAI : public CreatureAIScript
-{
-	public:
-		ADD_CREATURE_FACTORY_FUNCTION(BurdenOfSoulsQAI);
-		BurdenOfSoulsQAI(Creature* pCreature) : CreatureAIScript(pCreature)  {}
-
-		void OnDied(Unit* mKiller)
-		{
-			if(!mKiller->IsPlayer())
-				return;
-
-			QuestLogEntry* pQuest = TO_PLAYER(mKiller)->GetQuestLogForEntry(10864);
-			if(pQuest != NULL && pQuest->GetMobCount(0) < pQuest->GetQuest()->required_mobcount[0])
-			{
-				pQuest->SetMobCount(0, pQuest->GetMobCount(0) + 1);
-				pQuest->SendUpdateAddKill(0);
-				pQuest->UpdatePlayerFields();
-			}
-		}
-};
-
-
-
-
-
 class Dreadtusk : public CreatureAIScript
 {
 	public:
@@ -407,14 +379,6 @@ void SetupHellfirePeninsula(ScriptMgr* mgr)
 	mgr->register_creature_script(16925, &FelOrcScavengersQAI::Create);
 	mgr->register_creature_script(18952, &FelOrcScavengersQAI::Create);
 
-	mgr->register_creature_script(19411, &BurdenOfSoulsQAI::Create);
-	mgr->register_creature_script(19410, &BurdenOfSoulsQAI::Create);
-	mgr->register_creature_script(16867, &BurdenOfSoulsQAI::Create);
-	mgr->register_creature_script(16870, &BurdenOfSoulsQAI::Create);
-	mgr->register_creature_script(19413, &BurdenOfSoulsQAI::Create);
-	mgr->register_creature_script(19414, &BurdenOfSoulsQAI::Create);
-	mgr->register_creature_script(16878, &BurdenOfSoulsQAI::Create);
-	mgr->register_creature_script(19415, &BurdenOfSoulsQAI::Create);
 	mgr->register_creature_script(16992, &Dreadtusk::Create);
 
 	mgr->register_gameobject_script(184661, &ZethGorMustBurnAlliance::Create);
