@@ -4437,7 +4437,7 @@ class ShadowDemonAI : public MoonScriptCreatureAI
 			}
 			else
 			{
-				Despawn(0);
+				Despawn(1);
 			}
 		}
 
@@ -4517,7 +4517,7 @@ class ParasiticShadowfiendAI : public MoonScriptCreatureAI
 			}
 			else
 			{
-				Despawn(100);
+				Despawn(1);
 			}
 		}
 
