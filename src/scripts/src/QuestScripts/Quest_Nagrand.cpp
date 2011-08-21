@@ -21,45 +21,6 @@
 
 #include "Setup.h"
 
-// Giselda The Crone Quest
-class GiseldaTheCroneQAI : public CreatureAIScript
-{
-	public:
-		ADD_CREATURE_FACTORY_FUNCTION(GiseldaTheCroneQAI);
-		GiseldaTheCroneQAI(Creature* pCreature) : CreatureAIScript(pCreature)  {}
-
-		void OnDied(Unit* mKiller)
-		{
-			if(mKiller->IsPlayer())
-			{
-				if((TO_PLAYER(mKiller))->IsTeamAlliance())
-				{
-					QuestLogEntry* en = (TO_PLAYER(mKiller))->GetQuestLogForEntry(9936);
-					if(en && en->GetMobCount(1) < en->GetQuest()->required_mobcount[1])
-					{
-						uint32 newcount = en->GetMobCount(1) + 1;
-						en->SetMobCount(1, newcount);
-						en->SendUpdateAddKill(1);
-						en->UpdatePlayerFields();
-						return;
-					}
-				}
-				else
-				{
-					QuestLogEntry* en = (TO_PLAYER(mKiller))->GetQuestLogForEntry(9935);
-					if(en && en->GetMobCount(1) < en->GetQuest()->required_mobcount[1])
-					{
-						uint32 newcount = en->GetMobCount(1) + 1;
-						en->SetMobCount(1, newcount);
-						en->SendUpdateAddKill(1);
-						en->UpdatePlayerFields();
-						return;
-					}
-				}
-			}
-		}
-};
-
 //*********************************************************************************************
 //							   The Ring of Blood
 //*********************************************************************************************
@@ -448,11 +409,6 @@ class LumpGossipScript : public GossipScript
 
 void SetupNagrand(ScriptMgr* mgr)
 {
-	mgr->register_creature_script(17147, &GiseldaTheCroneQAI::Create);
-	mgr->register_creature_script(17148, &GiseldaTheCroneQAI::Create);
-	mgr->register_creature_script(18397, &GiseldaTheCroneQAI::Create);
-	mgr->register_creature_script(18658, &GiseldaTheCroneQAI::Create);
-	mgr->register_creature_script(17146, &GiseldaTheCroneQAI::Create);
 	mgr->register_creature_script(18351, &NotOnMyWatch::Create);
 	mgr->register_creature_script(18069, &mogorQAI::Create);
 
