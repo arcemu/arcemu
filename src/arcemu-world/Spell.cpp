@@ -4696,7 +4696,7 @@ int32 Spell::DoCalculateEffect(uint32 i, Unit* target, int32 value)
 			}
 		case SPELL_HASH_GOUGE:
 			{
-				if(u_caster != NULL)
+				if(u_caster != NULL && i == 0)
 					value += (uint32)ceilf(u_caster->GetAP() * 0.21f);
 				break;
 			}
