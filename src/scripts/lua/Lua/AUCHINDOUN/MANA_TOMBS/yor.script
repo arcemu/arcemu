@@ -1,0 +1,35 @@
+local mod = getfenv(1)
+module(mod._NAME..".YOR",package.seeall)
+local self = getfenv(1)
+
+WorldDBQuery("DELETE FROM ai_agents WHERE entry = 22930;")
+
+function OnCombat(unit)
+	self[tostring(unit)] = {
+		fire_breath = math.random(2,5),
+		stomp = math.random(9,10)
+	}
+	unit:RegisterAIUpdateEvent()
+end
+function OnWipe(unit)
+	unit:RemoveAIUpdateEvent()
+	self[tostring(unit)] = nil
+end
+function AIUpdate(unit)
+	if(unit:GetNextTarget() == nil) then
+		unit:WipeThreatList()
+	end
+	local args = self[tostring(unit)]
+	args.fire_breath = args.fire_breath -1
+	args.stomp = args.stomp -1
+	if(args.stomp <= 0) then
+		unit:FullCastSpell(33919)
+		args.stomp = math.random(15,30)
+	elseif(args.fire_breath <= 0) then
+		unit:FullCastSpell(19630)
+		args.fire_breath = math.random(10,15)
+	end
+end
+RegisterUnitEvent(22930,1,OnCombat)
+RegisterUnitEvent(22930,2,OnWipe)
+RegisterUnitEvent(22930,21,AIUpdate)
