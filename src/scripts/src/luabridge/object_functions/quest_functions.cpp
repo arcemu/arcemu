@@ -120,7 +120,6 @@ namespace lua_engine
 		m	.class_<QuestLogEntry>("QuestLogEntry")
 		.method(&QuestLogEntry::CanBeFinished, "CanBeFinished", "canBeFinished", "canbefinished", NULL)
 		.method(&QuestLogEntry::Complete, "Complete", "complete", NULL)
-		.method(&QuestLogEntry::SubtractTime, "SubtractTime", "subtractTime", "subtracttime", NULL)
 		.method(&QuestLogEntry::UpdatePlayerFields, "UpdatePlayerFields", "updatePlayerFields", "updateplayerfields", NULL)
 		.method(&QuestLogEntry::SetTrigger, "SetTrigger", "setTrigger", "settrigger", NULL)
 		.method(&QuestLogEntry::SetMobCount, "SetMobCount", "setMobCount", "setmobcount", NULL)
