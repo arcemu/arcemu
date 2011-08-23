@@ -52,7 +52,11 @@ public:
 class FathomStone : public GameObjectAIScript
 {
 public:
-	FathomStone(GameObject*  goinstance) : GameObjectAIScript(goinstance) {}
+	FathomStone(GameObject*  goinstance) : GameObjectAIScript(goinstance)
+	{
+		SpawnBaronAquanis = true;
+	}
+
 	static GameObjectAIScript* Create(GameObject*  GO) { return new FathomStone(GO); }
 
 	void OnActivate(Player*  pPlayer)
