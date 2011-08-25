@@ -190,15 +190,14 @@ void HonorHandler::OnPlayerKilled(Player* pPlayer, Player* pVictim)
 
 				int32 contributorpts = Points / (int32)contributors.size();
 				AddHonorPointsToPlayer(pAffectedPlayer, contributorpts);
-				if(pVictim->IsPlayer())
-				{
-					sHookInterface.OnHonorableKill(pAffectedPlayer, TO_PLAYER(pVictim));
 
-					WorldPacket data(SMSG_PVP_CREDIT, 12);
-					uint32 pvppoints = contributorpts * 10; // Why *10?
-					data << pvppoints << pVictim->GetGUID() << uint32(pVictim->GetPVPRank());
-					pAffectedPlayer->GetSession()->SendPacket(&data);
-				}
+				sHookInterface.OnHonorableKill(pAffectedPlayer, pVictim);
+
+				WorldPacket data(SMSG_PVP_CREDIT, 12);
+				uint32 pvppoints = contributorpts * 10; // Why *10?
+				data << pvppoints << pVictim->GetGUID() << uint32(pVictim->GetPVPRank());
+				pAffectedPlayer->GetSession()->SendPacket(&data);
+
 				int PvPToken = 0;
 				Config.OptionalConfig.GetInt("Extra", "PvPToken", &PvPToken);
 				if(PvPToken > 0)
