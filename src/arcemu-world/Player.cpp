@@ -668,10 +668,16 @@ bool Player::Create(WorldPacket & data)
 		return false;
 	}
 
-	// check that the account CAN create TBC characters, if we're making some
-	if(race >= RACE_BLOODELF && !((m_session->_accountFlags & ACCOUNT_FLAG_XPACK_01) && (m_session->_accountFlags & ACCOUNT_FLAG_XPACK_02)))
+	// check that the account can create TBC characters, if we're making some
+	if( race >= RACE_BLOODELF && !(m_session->_accountFlags & ACCOUNT_FLAG_XPACK_01) )
 	{
-		//sCheatLog.writefromsession(m_session, "tried to create player with race %u and class %u but no expansion flags", race, class_);
+		m_session->Disconnect();
+		return false;
+	}
+	
+	// check that the account can create deathknights, if we're making one
+	if( class_ == DEATHKNIGHT && !(m_session->_accountFlags & ACCOUNT_FLAG_XPACK_02) )
+	{
 		m_session->Disconnect();
 		return false;
 	}
