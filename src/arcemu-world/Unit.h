@@ -1214,6 +1214,7 @@ class SERVER_DECL Unit : public Object
 		void SetOnMeleeSpell(uint32 spell, uint8 ecn = 0) { m_meleespell = spell; m_meleespell_ecn = ecn;  }
 		uint32 GetOnMeleeSpell() { return m_meleespell; }
 		uint8 GetOnMeleeSpellEcn() { return m_meleespell_ecn; }
+		void CastOnMeleeSpell();
 
 		uint32 DoDamageSplitTarget(uint32 res, uint32 school_type, bool melee_dmg);
 

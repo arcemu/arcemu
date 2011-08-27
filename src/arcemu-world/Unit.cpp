@@ -8261,3 +8261,13 @@ void Unit::BuildPetSpellList(WorldPacket & data)
 {
 	data << uint64(0);
 }
+
+void Unit::CastOnMeleeSpell(){
+	SpellEntry *spellInfo = dbcSpell.LookupEntry( GetOnMeleeSpell() );
+	Spell *spell = sSpellFactoryMgr.NewSpell( this, spellInfo, true, NULL );
+	spell->extra_cast_number = GetOnMeleeSpellEcn();	
+	SpellCastTargets targets;
+	targets.m_unitTarget = GetTargetGUID();
+	spell->prepare( &targets );
+	SetOnMeleeSpell(0);
+}

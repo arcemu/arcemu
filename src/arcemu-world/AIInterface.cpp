@@ -716,7 +716,11 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 									return; //omg lol, in seconds we lost target. This might be possible due to the Eventrelocated
 								uint32 health_before_strike = t_unit->GetHealth();
 #endif
-								m_Unit->Strike(getNextTarget(), (agent == AGENT_MELEE ? MELEE : RANGED), NULL, 0, 0, 0, false, false);
+								if( m_Unit->GetOnMeleeSpell() != 0 ){
+									m_Unit->CastOnMeleeSpell();
+								}else
+									m_Unit->Strike(getNextTarget(), (agent == AGENT_MELEE ? MELEE : RANGED), NULL, 0, 0, 0, false, false);
+
 #ifdef ENABLE_CREATURE_DAZE
 								//now if the target is facing his back to us then we could just cast dazed on him :P
 								//as far as i know dazed is casted by most of the creatures but feel free to remove this code if you think otherwise

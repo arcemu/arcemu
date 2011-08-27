@@ -1171,21 +1171,10 @@ void Player::_EventAttack(bool offhand)
 			SetStealth(0);
 		}
 
-		if(!GetOnMeleeSpell() || offhand)
-		{
+		if( ( GetOnMeleeSpell() == 0 ) || offhand)
 			Strike(pVictim, (offhand ? OFFHAND : MELEE), NULL, 0, 0, 0, false, false);
-
-		}
 		else
-		{
-			SpellEntry* spellInfo = dbcSpell.LookupEntry(GetOnMeleeSpell());
-			Spell* spell = sSpellFactoryMgr.NewSpell(this, spellInfo, true, NULL);
-			spell->extra_cast_number = GetOnMeleeSpellEcn();
-			SpellCastTargets targets;
-			targets.m_unitTarget = GetSelection();
-			spell->prepare(&targets);
-			SetOnMeleeSpell(0);
-		}
+			CastOnMeleeSpell();
 	}
 }
 
