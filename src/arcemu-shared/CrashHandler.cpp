@@ -303,12 +303,7 @@ int __cdecl HandleCrash(PEXCEPTION_POINTERS pExceptPtrs)
 	char* mname = strrchr(modname, '\\');
 	(void*)mname++;	 // Remove the last
 
-#ifdef _DEBUG
-	const char* format = "CrashDumps\\dump-%s-%u-%u-%u-%u-%u-%u-%u-%u.dmp";
-#else
-	const char* format = "CrashDumps\\build-arcemu-in-debug-if-you-want-a-proper-crashdump-%s-%u-%u-%u-%u-%u-%u-%u-%u.dmp";
-#endif
-	sprintf(filename, format,
+	sprintf(filename, "CrashDumps\\dump-%s-%u-%u-%u-%u-%u-%u-%u-%u.dmp",
 	        mname, BUILD_REVISION, pTime->tm_year + 1900, pTime->tm_mon + 1, pTime->tm_mday,
 	        pTime->tm_hour, pTime->tm_min, pTime->tm_sec, GetCurrentThreadId());
 
@@ -332,7 +327,6 @@ int __cdecl HandleCrash(PEXCEPTION_POINTERS pExceptPtrs)
 	}
 	else
 	{
-#ifdef _DEBUG
 		MINIDUMP_EXCEPTION_INFORMATION info;
 		info.ClientPointers = FALSE;
 		info.ExceptionPointers = pExceptPtrs;
@@ -341,7 +335,7 @@ int __cdecl HandleCrash(PEXCEPTION_POINTERS pExceptPtrs)
 
 		MiniDumpWriteDump(GetCurrentProcess(), GetCurrentProcessId(),
 		                  hDump, MiniDumpWithIndirectlyReferencedMemory, &info, 0, 0);
-#endif
+
 		CloseHandle(hDump);
 	}
 
