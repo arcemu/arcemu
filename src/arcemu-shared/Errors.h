@@ -31,7 +31,7 @@
 #endif
 
 // An assert isn't necessarily fatal, but we want to stop anyways
-#define WPAssert( EXPR ) if (!(EXPR)) { arcAssertFailed(__FILE__,__LINE__,#EXPR); assert(EXPR); ((void(*)())0)(); } ANALYSIS_ASSUME( EXPR )
+#define WPAssert( EXPR ) if (!(EXPR)) { arcAssertFailed(__FILE__,__LINE__,#EXPR); ((void(*)())0)(); } ANALYSIS_ASSUME( EXPR )
 
 #define WPError( assertion, errmsg ) if( ! (assertion) ) { Log::getSingleton( ).outError( "%s:%i ERROR:\n  %s\n", __FILE__, __LINE__, (char *)errmsg ); assert( false ); }
 #define WPWarning( assertion, errmsg ) if( ! (assertion) ) { Log::getSingleton( ).outError( "%s:%i WARNING:\n  %s\n", __FILE__, __LINE__, (char *)errmsg ); }
