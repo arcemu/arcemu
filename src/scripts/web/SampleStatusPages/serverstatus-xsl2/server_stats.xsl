@@ -254,6 +254,23 @@
 				<xsl:when test="map = 622">Transport: Orgrim's Hammer</xsl:when>
 				<xsl:when test="map = 623">Transport: The Skybreaker</xsl:when>
 				<xsl:when test="map = 624">Vault of Archavon</xsl:when>
+				<xsl:when test="map = 628">Isle of Conquest</xsl:when>
+				<xsl:when test="map = 631">Icecrown Citadel</xsl:when>
+				<xsl:when test="map = 632">The Forge of Souls</xsl:when>
+				<xsl:when test="map = 641">Transport: Alliance Airship BG</xsl:when>
+				<xsl:when test="map = 642">Transport: HordeAirshipBG</xsl:when>
+				<xsl:when test="map = 647">Transport: Orgrimmar to Thunder Bluff</xsl:when>
+				<xsl:when test="map = 649">Trial of the Crusader</xsl:when>
+				<xsl:when test="map = 650">Trial of the Champion</xsl:when>
+				<xsl:when test="map = 658">Pit of Saron</xsl:when>
+				<xsl:when test="map = 668">Halls of Reflection</xsl:when>
+				<xsl:when test="map = 672">Transport: The Skybreaker (Icecrown Citadel Raid)</xsl:when>
+				<xsl:when test="map = 673">Transport: Orgrim's Hammer (Icecrown Citadel Raid)</xsl:when>
+				<xsl:when test="map = 712">Transport: The Skybreaker (IC Dungeon)</xsl:when>
+				<xsl:when test="map = 713">Transport: Orgrim's Hammer (IC Dungeon)</xsl:when>
+				<xsl:when test="map = 718">Trasnport: The Mighty Wind (Icecrown Citadel Raid)</xsl:when>
+				<xsl:when test="map = 723">Stormwind</xsl:when>
+				<xsl:when test="map = 724">The Ruby Sanctum</xsl:when>
 				</xsl:choose>&quot; , <xsl:value-of select="map" /> , <xsl:value-of select="players" /> , <xsl:value-of select="maxplayers" /> , &quot;<xsl:value-of select="maptype" />&quot; , &quot;<xsl:value-of select="creationtime" />&quot; , &quot;<xsl:value-of select="expirytime" />&quot; );
 </xsl:for-each>
 	FieldSortDirection2[1] = !FieldSortDirection2[1];
@@ -402,6 +419,23 @@ DoSort( 1 , 2 );
 <xsl:when test="map = 622">Transport: Orgrim's Hammer</xsl:when>
 <xsl:when test="map = 623">Transport: The Skybreaker</xsl:when>
 <xsl:when test="map = 624">Vault of Archavon</xsl:when>
+<xsl:when test="map = 628">Isle of Conquest</xsl:when>
+<xsl:when test="map = 631">Icecrown Citadel</xsl:when>
+<xsl:when test="map = 632">The Forge of Souls</xsl:when>
+<xsl:when test="map = 641">Transport: Alliance Airship BG</xsl:when>
+<xsl:when test="map = 642">Transport: HordeAirshipBG</xsl:when>
+<xsl:when test="map = 647">Transport: Orgrimmar to Thunder Bluff</xsl:when>
+<xsl:when test="map = 649">Trial of the Crusader</xsl:when>
+<xsl:when test="map = 650">Trial of the Champion</xsl:when>
+<xsl:when test="map = 658">Pit of Saron</xsl:when>
+<xsl:when test="map = 668">Halls of Reflection</xsl:when>
+<xsl:when test="map = 672">Transport: The Skybreaker (Icecrown Citadel Raid)</xsl:when>
+<xsl:when test="map = 673">Transport: Orgrim's Hammer (Icecrown Citadel Raid)</xsl:when>
+<xsl:when test="map = 712">Transport: The Skybreaker (IC Dungeon)</xsl:when>
+<xsl:when test="map = 713">Transport: Orgrim's Hammer (IC Dungeon)</xsl:when>
+<xsl:when test="map = 718">Trasnport: The Mighty Wind (Icecrown Citadel Raid)</xsl:when>
+<xsl:when test="map = 723">Stormwind</xsl:when>
+<xsl:when test="map = 724">The Ruby Sanctum</xsl:when>
             </xsl:choose>&quot; , &quot;<xsl:choose>
 				<xsl:when test="areaid = 1">Dun Morogh</xsl:when>
 				<xsl:when test="areaid = 2">Longshore</xsl:when>
