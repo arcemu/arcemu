@@ -110,9 +110,6 @@ class powerconv : public GameObjectAIScript
 
 		void OnActivate(Player* pPlayer)
 		{
-			if(!pPlayer)
-				return;
-
 			QuestLogEntry* qle = pPlayer->GetQuestLogForEntry(10584);
 			if(qle == NULL)
 				return;
@@ -135,9 +132,6 @@ class NetherEgg : public GameObjectAIScript
 
 		void OnActivate(Player* pPlayer)
 		{
-			if(!pPlayer)
-				return;
-
 			QuestLogEntry* qle = pPlayer->GetQuestLogForEntry(10609);
 			if(qle == NULL)
 				return;
@@ -205,9 +199,6 @@ class LegionObelisk : public GameObjectAIScript
 
 		void OnActivate(Player* pPlayer)
 		{
-			if(pPlayer == NULL || pPlayer->GetMapMgr() == NULL || pPlayer->GetMapMgr()->GetInterface() == NULL)
-				return;
-
 			GameObject* obelisk1 = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(2898.92f, 4759.29f, 277.408f, 185198);
 			GameObject* obelisk2 = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(2942.3f, 4752.28f, 285.553f, 185197);
 			GameObject* obelisk3 = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(2834.39f, 4856.67f, 277.632f, 185196);

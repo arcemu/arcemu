@@ -917,8 +917,6 @@ class Quest_Dispelling_Illusions : public QuestScript
 	public:
 		void OnQuestStart(Player* mTarget, QuestLogEntry* qLogEntry)
 		{
-			if(mTarget == NULL || mTarget->GetMapMgr() == NULL || mTarget->GetMapMgr()->GetInterface() == NULL)
-				return;
 			for(uint8 i = 0; i < 5; i++)
 				SpawnCrates(i, mTarget->GetMapMgr());
 		}

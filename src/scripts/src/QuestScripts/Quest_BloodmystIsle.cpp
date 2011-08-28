@@ -208,9 +208,6 @@ class SavingPrincessStillpine : public GameObjectAIScript
 
 		void OnActivate(Player* pPlayer)
 		{
-			if(!pPlayer)
-				return;
-
 			QuestLogEntry* qle = pPlayer->GetQuestLogForEntry(9667);
 			if(qle == NULL)
 				return;

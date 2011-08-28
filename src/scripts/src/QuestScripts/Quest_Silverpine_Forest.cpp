@@ -27,8 +27,6 @@ class EscortingErland : public QuestScript
 
 		void OnQuestStart(Player* mTarget, QuestLogEntry* qLogEntry)
 		{
-			if(mTarget == NULL || mTarget->GetMapMgr() == NULL || mTarget->GetMapMgr()->GetInterface() == NULL)
-				return;
 			float SSX = mTarget->GetPositionX();
 			float SSY = mTarget->GetPositionY();
 			float SSZ = mTarget->GetPositionZ();

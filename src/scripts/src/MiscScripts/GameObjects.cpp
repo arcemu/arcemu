@@ -577,8 +577,6 @@ class BringMetheEgg : public GameObjectAIScript
 
 		void OnActivate(Player* pPlayer)
 		{
-			if(!pPlayer)
-				return;
 			QuestLogEntry* qle = pPlayer->GetQuestLogForEntry(10111);
 			if(qle == NULL)
 				return;
@@ -598,9 +596,6 @@ class MysteriousEgg : public GameObjectAIScript
 
 		void OnActivate(Player* pPlayer)
 		{
-			if(!pPlayer)
-				return;
-
 			QuestLogEntry* qle = pPlayer->GetQuestLogForEntry(10111);
 			if(qle == NULL)
 				return;
@@ -662,9 +657,6 @@ class APlagueUponThee : public GameObjectAIScript
 
 		void OnActivate(Player* pPlayer)
 		{
-			if(!pPlayer)
-				return;
-
 			GameObject* barel = sEAS.SpawnGameobject(pPlayer, 177491, pPlayer->GetPositionX(), pPlayer->GetPositionY(), pPlayer->GetPositionZ(), pPlayer->GetOrientation(), 1, 0, 0, 0, 0);
 			sEAS.GameobjectDelete(barel, 2 * 60 * 1000);
 		}
@@ -680,9 +672,6 @@ class SerpentStatue : public GameObjectAIScript
 
 		void OnActivate(Player* pPlayer)
 		{
-			if(!pPlayer)
-				return;
-
 			QuestLogEntry* qle = pPlayer->GetQuestLogForEntry(6027);
 			if(qle == NULL)
 				return;
@@ -703,9 +692,6 @@ class CuregosGold : public GameObjectAIScript
 
 		void OnActivate(Player* pPlayer)
 		{
-			if(!pPlayer)
-				return;
-
 			QuestLogEntry* qle = pPlayer->GetQuestLogForEntry(2882);
 			if(qle == NULL)
 				return;
@@ -745,9 +731,6 @@ class DreadmaulRock : public GameObjectAIScript
 
 		void OnActivate(Player* pPlayer)
 		{
-			if(!pPlayer)
-				return;
-
 			QuestLogEntry* qle = pPlayer->GetQuestLogForEntry(3821);
 			if(qle == NULL)
 				return;
@@ -772,9 +755,6 @@ class HandofIruxos : public GameObjectAIScript
 
 		void OnActivate(Player* pPlayer)
 		{
-			if(!pPlayer)
-				return;
-
 			QuestLogEntry* qle = pPlayer->GetQuestLogForEntry(5381);
 			if(qle == NULL)
 				return;
@@ -795,9 +775,6 @@ class LegionPortals : public GameObjectAIScript
 
 		void OnActivate(Player* pPlayer)
 		{
-			if(!pPlayer)
-				return;
-
 			QuestLogEntry* qle = pPlayer->GetQuestLogForEntry(5581);
 			if(qle == NULL)
 				return;
@@ -822,9 +799,6 @@ class ProphecyofAkida : public GameObjectAIScript
 
 		void OnActivate(Player* pPlayer)
 		{
-			if(!pPlayer)
-				return;
-
 			QuestLogEntry* qle = pPlayer->GetQuestLogForEntry(9544);
 			if(qle == NULL)
 				return;
@@ -854,9 +828,6 @@ class Razormaw : public GameObjectAIScript
 
 		void OnActivate(Player* pPlayer)
 		{
-			if(!pPlayer)
-				return;
-
 			QuestLogEntry* qle = pPlayer->GetQuestLogForEntry(9689);
 			if(qle == NULL)
 				return;
@@ -877,9 +848,6 @@ class TabletoftheSeven : public GameObjectAIScript
 
 		void OnActivate(Player* pPlayer)
 		{
-			if(!pPlayer)
-				return;
-
 			QuestLogEntry* qle = pPlayer->GetQuestLogForEntry(4296);
 			if(qle == NULL)
 				return;
@@ -899,9 +867,6 @@ class TestofEndurance : public GameObjectAIScript
 
 		void OnActivate(Player* pPlayer)
 		{
-			if(!pPlayer)
-				return;
-
 			QuestLogEntry* qle = pPlayer->GetQuestLogForEntry(1150);
 			if(qle == NULL)
 				return;
@@ -931,9 +896,6 @@ class TheFallenExarch : public GameObjectAIScript
 
 		void OnActivate(Player* pPlayer)
 		{
-			if(!pPlayer)
-				return;
-
 			QuestLogEntry* qle = pPlayer->GetQuestLogForEntry(10915);
 			if(qle == NULL)
 				return;
@@ -954,9 +916,6 @@ class TheFinalCode : public GameObjectAIScript
 
 		void OnActivate(Player* pPlayer)
 		{
-			if(!pPlayer)
-				return;
-
 			QuestLogEntry* qle = pPlayer->GetQuestLogForEntry(10447);
 			if(qle == NULL)
 				return;
@@ -980,9 +939,6 @@ class TheRootofAllEvil : public GameObjectAIScript
 
 		void OnActivate(Player* pPlayer)
 		{
-			if(!pPlayer)
-				return;
-
 			QuestLogEntry* qle = pPlayer->GetQuestLogForEntry(8481);
 			if(qle == NULL)
 				return;
@@ -1003,9 +959,6 @@ class TheThunderspike : public GameObjectAIScript
 
 		void OnActivate(Player* pPlayer)
 		{
-			if(!pPlayer)
-				return;
-
 			if(!pPlayer->GetQuestLogForEntry(10526))
 				return;
 
@@ -1031,9 +984,6 @@ class StrengthofOne : public GameObjectAIScript
 
 		void OnActivate(Player* pPlayer)
 		{
-			if(!pPlayer)
-				return;
-
 			QuestLogEntry* qle = pPlayer->GetQuestLogForEntry(9582);
 			if(qle == NULL)
 				return;

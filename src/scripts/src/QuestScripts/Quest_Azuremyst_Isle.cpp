@@ -83,9 +83,6 @@ class TotemofCoo : public QuestScript
 	public:
 		void OnQuestStart(Player* pPlayer, QuestLogEntry* pQuest)
 		{
-			if(pPlayer == NULL || pPlayer->GetMapMgr() == NULL || pPlayer->GetMapMgr()->GetInterface() == NULL)
-				return;
-
 			Creature* pAkida = sEAS.SpawnCreature(pPlayer, 17379, -4183.043457f, -12511.419922f, 44.361786f, 6.05629f, 0);
 			if(pAkida == NULL)
 				return;

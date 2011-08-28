@@ -223,9 +223,6 @@ class VanquishingAquantion : public GameObjectAIScript
 
 		void OnActivate(Player* pPlayer)
 		{
-			if(!pPlayer)
-				return;
-
 			QuestLogEntry* qle = pPlayer->GetQuestLogForEntry(9174);
 			if(qle == NULL)
 				return;

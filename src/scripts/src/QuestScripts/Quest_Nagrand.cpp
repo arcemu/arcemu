@@ -31,9 +31,6 @@ class Quest_The_Ring_of_Blood_The_Final_Challenge : public QuestScript
 	public:
 		void OnQuestStart(Player* mTarget, QuestLogEntry* qLogEntry)
 		{
-			if(mTarget == NULL || mTarget->GetMapMgr() == NULL || mTarget->GetMapMgr()->GetInterface() == NULL)
-				return;
-
 			Creature* pMogor = mTarget->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(mTarget->GetPositionX(), mTarget->GetPositionY(), 0, 18069);
 
 			if(pMogor != NULL)
@@ -62,9 +59,6 @@ class Quest_The_Ring_of_Blood_The_Final_Challenge : public QuestScript
 
 		void OnQuestComplete(Player* mTarget, QuestLogEntry* qLogEntry)
 		{
-			if(mTarget == NULL || mTarget->GetMapMgr() == NULL || mTarget->GetMapMgr()->GetInterface() == NULL)
-				return;
-
 			Creature* mogor = mTarget->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(mTarget->GetPositionX(), mTarget->GetPositionY(), 0, 18069);
 
 			if(mogor != NULL)
@@ -79,9 +73,6 @@ class Quest_The_Ring_of_Blood_The_Warmaul_Champion : public QuestScript
 	public:
 		void OnQuestStart(Player* mTarget, QuestLogEntry* qLogEntry)
 		{
-			if(mTarget == NULL || mTarget->GetMapMgr() == NULL || mTarget->GetMapMgr()->GetInterface() == NULL)
-				return;
-
 			Unit* pQgiver = mTarget->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(mTarget->GetPositionX(), mTarget->GetPositionY(), 0, 18471);
 
 			if(pQgiver != NULL)
@@ -99,9 +90,6 @@ class Quest_The_Ring_of_Blood_The_Warmaul_Champion : public QuestScript
 
 		void OnQuestComplete(Player* mTarget, QuestLogEntry* qLogEntry)
 		{
-			if(mTarget == NULL || mTarget->GetMapMgr() == NULL || mTarget->GetMapMgr()->GetInterface() == NULL)
-				return;
-
 			Unit* pMogor = mTarget->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(mTarget->GetPositionX(), mTarget->GetPositionY(), 0, 18069);
 
 			if(pMogor != NULL)
@@ -124,9 +112,6 @@ class Quest_The_Ring_of_Blood_Skragath : public QuestScript
 	public:
 		void OnQuestStart(Player* mTarget, QuestLogEntry* qLogEntry)
 		{
-			if(mTarget == NULL || mTarget->GetMapMgr() == NULL || mTarget->GetMapMgr()->GetInterface() == NULL)
-				return;
-
 			Unit* Qgiver = mTarget->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(mTarget->GetPositionX(), mTarget->GetPositionY(), 0, 18471);
 
 			if(Qgiver != NULL)
@@ -146,9 +131,6 @@ class Quest_The_Ring_of_Blood_Skragath : public QuestScript
 
 		void OnQuestComplete(Player* mTarget, QuestLogEntry* qLogEntry)
 		{
-			if(mTarget == NULL || mTarget->GetMapMgr() == NULL || mTarget->GetMapMgr()->GetInterface() == NULL)
-				return;
-
 			Unit* mogor = mTarget->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(mTarget->GetPositionX(), mTarget->GetPositionY(), 0, 18069);
 
 			if(mogor != NULL)
@@ -170,9 +152,6 @@ class Quest_The_Ring_of_Blood_Rokdar_the_Sundered_Lord : public QuestScript
 	public:
 		void OnQuestStart(Player* mTarget, QuestLogEntry* qLogEntry)
 		{
-			if(mTarget == NULL || mTarget->GetMapMgr() == NULL || mTarget->GetMapMgr()->GetInterface() == NULL)
-				return;
-
 			Unit* Qgiver = mTarget->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(mTarget->GetPositionX(), mTarget->GetPositionY(), 0, 18471);
 
 			if(Qgiver != NULL)
@@ -191,9 +170,6 @@ class Quest_The_Ring_of_Blood_Rokdar_the_Sundered_Lord : public QuestScript
 
 		void OnQuestComplete(Player* mTarget, QuestLogEntry* qLogEntry)
 		{
-			if(mTarget == NULL || mTarget->GetMapMgr() == NULL || mTarget->GetMapMgr()->GetInterface() == NULL)
-				return;
-
 			Unit* mogor = mTarget->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(mTarget->GetPositionX(), mTarget->GetPositionY(), 0, 18069);
 
 			if(mogor != NULL)
@@ -211,9 +187,6 @@ class Quest_The_Ring_of_Blood_The_Blue_Brothers : public QuestScript
 	public:
 		void OnQuestStart(Player* mTarget, QuestLogEntry* qLogEntry)
 		{
-			if(mTarget == NULL || mTarget->GetMapMgr() == NULL || mTarget->GetMapMgr()->GetInterface() == NULL)
-				return;
-
 			Creature* pBrokentoe = mTarget->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(mTarget->GetPositionX(), mTarget->GetPositionY(), 0, 18398);
 
 			if(pBrokentoe != NULL)
@@ -236,9 +209,6 @@ class Quest_The_Ring_of_Blood_The_Blue_Brothers : public QuestScript
 
 		void OnQuestComplete(Player* mTarget, QuestLogEntry* qLogEntry)
 		{
-			if(mTarget == NULL || mTarget->GetMapMgr() == NULL || mTarget->GetMapMgr()->GetInterface() == NULL)
-				return;
-
 			Unit* mogor = mTarget->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(mTarget->GetPositionX(), mTarget->GetPositionY(), 0, 18069);
 
 			if(mogor != NULL)
@@ -263,9 +233,6 @@ class Quest_The_Ring_of_Blood_Brokentoe : public QuestScript
 	public:
 		void OnQuestStart(Player* mTarget, QuestLogEntry* qLogEntry)
 		{
-			if(mTarget == NULL || mTarget->GetMapMgr() == NULL || mTarget->GetMapMgr()->GetInterface() == NULL)
-				return;
-
 			Unit* Qgiver = mTarget->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(mTarget->GetPositionX(), mTarget->GetPositionY(), 0, 18471);
 
 			if(Qgiver != NULL)
@@ -279,9 +246,6 @@ class Quest_The_Ring_of_Blood_Brokentoe : public QuestScript
 
 		void OnQuestComplete(Player* mTarget, QuestLogEntry* qLogEntry)
 		{
-			if(mTarget == NULL || mTarget->GetMapMgr() == NULL || mTarget->GetMapMgr()->GetInterface() == NULL)
-				return;
-
 			Unit* Qgiver = mTarget->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(mTarget->GetPositionX(), mTarget->GetPositionY(), 0, 18471);
 
 			if(Qgiver != NULL)

@@ -337,9 +337,6 @@ class DarkTidingsAlliance : public QuestScript
 	public:
 		void OnQuestComplete(Player* pPlayer, QuestLogEntry* qLogEntry)
 		{
-			if(pPlayer == NULL)
-				return;
-
 			Creature* pCreature = pPlayer->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(pPlayer->GetPositionX(), pPlayer->GetPositionY(), pPlayer->GetPositionZ(), 17479);
 			if(pCreature == NULL)
 				return;
@@ -355,9 +352,6 @@ class DarkTidingsHorde : public QuestScript
 	public:
 		void OnQuestComplete(Player* pPlayer, QuestLogEntry* qLogEntry)
 		{
-			if(pPlayer == NULL)
-				return;
-
 			Creature* pCreature = pPlayer->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(pPlayer->GetPositionX(), pPlayer->GetPositionY(), pPlayer->GetPositionZ(), 17558);
 			if(pCreature == NULL)
 				return;

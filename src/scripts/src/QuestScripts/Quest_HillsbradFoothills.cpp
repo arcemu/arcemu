@@ -28,8 +28,6 @@ class WantedBaronVardus : public QuestScript
 
 		void OnQuestStart(Player* mTarget, QuestLogEntry* qLogEntry)
 		{
-			if(mTarget == NULL || mTarget->GetMapMgr() == NULL || mTarget->GetMapMgr()->GetInterface() == NULL)
-				return;
 			if(BaronVardusAllowSpawn == true)
 			{
 				uint32 rand = RandomUInt(3);

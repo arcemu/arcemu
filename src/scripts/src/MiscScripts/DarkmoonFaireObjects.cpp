@@ -24,7 +24,7 @@ class Blastenheimer5000 : public GameObjectAIScript
 
 		void OnActivate(Player* pPlayer)
 		{
-			if(pPlayer == NULL || mPlayerGuid != 0)
+			if(mPlayerGuid != 0)
 				return;
 
 			// Do you think we should look for ai owner ?

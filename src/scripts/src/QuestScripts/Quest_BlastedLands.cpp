@@ -28,9 +28,6 @@ class HeroesofOld : public QuestScript
 	public:
 		void OnQuestStart(Player* mTarget, QuestLogEntry* qLogEntry)
 		{
-			if(mTarget == NULL || mTarget->GetMapMgr() == NULL || mTarget->GetMapMgr()->GetInterface() == NULL)
-				return;
-
 			Creature* spawncheckcr = mTarget->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(mTarget->GetPositionX(), mTarget->GetPositionY(), mTarget->GetPositionZ(), 7750);
 
 			if(!spawncheckcr)

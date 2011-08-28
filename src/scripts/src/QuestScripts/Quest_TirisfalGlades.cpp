@@ -25,8 +25,6 @@ class TheDormantShade : public QuestScript
 	public:
 		void OnQuestComplete(Player* mTarget, QuestLogEntry* qLogEntry)
 		{
-			if(mTarget == NULL || mTarget->GetMapMgr() == NULL || mTarget->GetMapMgr()->GetInterface() == NULL)
-				return;
 			Creature* creat = mTarget->GetMapMgr()->GetInterface()->SpawnCreature(1946, 2467.314f, 14.8471f, 23.5950f, 0, true, false, 0, 0);
 			creat->Despawn(60000, 0);
 			creat->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "You have disturbed my rest. Now face my wrath!");
@@ -84,8 +82,6 @@ class ARoguesDeal  : public QuestScript
 
 		void OnQuestStart(Player* mTarget, QuestLogEntry* qLogEntry)
 		{
-			if(mTarget == NULL || mTarget->GetMapMgr() == NULL || mTarget->GetMapMgr()->GetInterface() == NULL)
-				return;
 			float SSX = mTarget->GetPositionX();
 			float SSY = mTarget->GetPositionY();
 			float SSZ = mTarget->GetPositionZ();
@@ -107,8 +103,6 @@ class FieldsofGrief : public QuestScript
 
 		void OnQuestComplete(Player* mTarget, QuestLogEntry* qLogEntry)
 		{
-			if(mTarget == NULL || mTarget->GetMapMgr() == NULL || mTarget->GetMapMgr()->GetInterface() == NULL)
-				return;
 			float SSX = mTarget->GetPositionX();
 			float SSY = mTarget->GetPositionY();
 			float SSZ = mTarget->GetPositionZ();

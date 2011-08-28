@@ -59,9 +59,6 @@ class WrathGateQuestCinema : public QuestScript
 	public:
 		void OnQuestComplete(Player* mTarget, QuestLogEntry* qLogEntry)
 		{
-			if(mTarget == NULL)
-				return;
-
 			// send packet for movie
 			uint32 id = 14;
 			mTarget->GetSession()->OutPacket(SMSG_TRIGGER_MOVIE, sizeof(uint32), &id);

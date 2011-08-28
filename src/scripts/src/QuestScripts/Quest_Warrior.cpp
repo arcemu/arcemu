@@ -62,8 +62,6 @@ class TheSummoning : public GossipScript
 
 				case 1:
 					{
-						if(plr == NULL || plr->GetMapMgr() == NULL || plr->GetMapMgr()->GetInterface() == NULL)
-							return;
 						Creature* whirlwind = plr->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(plr->GetPositionX(), plr->GetPositionY(), plr->GetPositionZ(), 6239);
 						if(whirlwind != NULL)
 						{
@@ -138,8 +136,6 @@ class BeatBartleby : public QuestScript
 
 		void OnQuestStart(Player* mTarget, QuestLogEntry* qLogEntry)
 		{
-			if(mTarget == NULL || mTarget->GetMapMgr() == NULL || mTarget->GetMapMgr()->GetInterface() == NULL)
-				return;
 			float SSX = mTarget->GetPositionX();
 			float SSY = mTarget->GetPositionY();
 			float SSZ = mTarget->GetPositionZ();

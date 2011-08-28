@@ -92,8 +92,6 @@ class Cleansing_of_the_Orb_of_Orahil : public QuestScript
 
 		void OnQuestStart(Player* mTarget, QuestLogEntry* qLogEntry)
 		{
-			if(mTarget == NULL || mTarget->GetMapMgr() == NULL || mTarget->GetMapMgr()->GetInterface() == NULL)
-				return;
 			float SSX = mTarget->GetPositionX();
 			float SSY = mTarget->GetPositionY();
 			float SSZ = mTarget->GetPositionZ();
@@ -179,8 +177,6 @@ class ChallengeOverlordMokMorokk : public QuestScript
 
 		void OnQuestStart(Player* mTarget, QuestLogEntry* qLogEntry)
 		{
-			if(mTarget == NULL || mTarget->GetMapMgr() == NULL || mTarget->GetMapMgr()->GetInterface() == NULL)
-				return;
 			float SSX = mTarget->GetPositionX();
 			float SSY = mTarget->GetPositionY();
 			float SSZ = mTarget->GetPositionZ();
@@ -249,8 +245,6 @@ class TheMissingDiplomat2 : public QuestScript
 
 		void OnQuestStart(Player* mTarget, QuestLogEntry* qLogEntry)
 		{
-			if(mTarget == NULL || mTarget->GetMapMgr() == NULL || mTarget->GetMapMgr()->GetInterface() == NULL)
-				return;
 			float SSX = mTarget->GetPositionX();
 			float SSY = mTarget->GetPositionY();
 			float SSZ = mTarget->GetPositionZ();

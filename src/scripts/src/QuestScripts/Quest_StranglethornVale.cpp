@@ -86,8 +86,6 @@ class Beka : public CreatureAIScript
 			if(mKiller->IsPlayer())
 			{
 				Player* mPlayer = TO_PLAYER(mKiller);
-				if(mPlayer->GetMapMgr() == NULL || mPlayer->GetMapMgr()->GetInterface() == NULL)
-					return;
 				Creature*  beka1 = sEAS.SpawnCreature(mPlayer, 1516, -13770.5f, -6.79f, 42.8f, 5.7f , 0);
 				beka1->GetAIInterface()->MoveTo(-13727.8f, -26.2f, 46.15f, 4.07f);
 				beka1->Despawn(10 * 60 * 1000, 0);
@@ -97,8 +95,6 @@ class Beka : public CreatureAIScript
 				Player* mPlayer = _unit->GetMapMgr()->GetInterface()->GetPlayerNearestCoords(_unit->GetPositionX(), _unit->GetPositionY(), _unit->GetPositionZ());
 				if(mPlayer)
 				{
-					if(mPlayer == NULL || mPlayer->GetMapMgr() == NULL || mPlayer->GetMapMgr()->GetInterface() == NULL)
-						return;
 					Creature*  beka1 = sEAS.SpawnCreature(mPlayer, 1516, -13770.5f, -6.79f, 42.8f, 5.7f , 0);
 					beka1->GetAIInterface()->MoveTo(-13727.8f, -26.2f, 46.15f, 4.07f);
 					beka1->Despawn(10 * 60 * 1000, 0);
@@ -118,8 +114,6 @@ class Beka1 : public CreatureAIScript
 			if(mKiller->IsPlayer())
 			{
 				Player* mPlayer = TO_PLAYER(mKiller);
-				if(mPlayer->GetMapMgr() == NULL || mPlayer->GetMapMgr()->GetInterface() == NULL)
-					return;
 				Creature* beka1 = sEAS.SpawnCreature(mPlayer, 1514, -13770.5f, -6.79f, 42.8f, 5.7f, 0);
 				beka1->GetAIInterface()->MoveTo(-13727.8f, -26.2f, 46.15f, 4.07f);
 				beka1->Despawn(10 * 60 * 1000, 0);
@@ -129,8 +123,6 @@ class Beka1 : public CreatureAIScript
 				Player* mPlayer = _unit->GetMapMgr()->GetInterface()->GetPlayerNearestCoords(_unit->GetPositionX(), _unit->GetPositionY(), _unit->GetPositionZ());
 				if(mPlayer)
 				{
-					if(mPlayer == NULL || mPlayer->GetMapMgr() == NULL || mPlayer->GetMapMgr()->GetInterface() == NULL)
-						return;
 					Creature* beka1 = sEAS.SpawnCreature(mPlayer, 1514, -13770.5f, -6.79f, 42.8f, 5.7f, 0);
 					beka1->GetAIInterface()->MoveTo(-13727.8f, -26.2f, 46.15f, 4.07f);
 					beka1->Despawn(10 * 60 * 1000, 0);
@@ -147,9 +139,6 @@ class Beka2 : public CreatureAIScript
 
 		void OnDied(Unit* mKiller)
 		{
-			if(mKiller->GetMapMgr() == NULL || mKiller->GetMapMgr()->GetInterface() == NULL)
-				return;
-
 			float SSX = mKiller->GetPositionX();
 			float SSY = mKiller->GetPositionY();
 			float SSZ = mKiller->GetPositionZ();
@@ -166,8 +155,6 @@ class BloodscalpClanHeads : public QuestScript
 
 		void OnQuestComplete(Player* mTarget, QuestLogEntry* qLogEntry)
 		{
-			if(mTarget == NULL || mTarget->GetMapMgr() == NULL || mTarget->GetMapMgr()->GetInterface() == NULL)
-				return;
 			float SSX = mTarget->GetPositionX();
 			float SSY = mTarget->GetPositionY();
 			float SSZ = mTarget->GetPositionZ();
@@ -206,8 +193,6 @@ class BacktoBootyBay : public QuestScript
 
 		void OnQuestComplete(Player* mTarget, QuestLogEntry* qLogEntry)
 		{
-			if(mTarget == NULL || mTarget->GetMapMgr() == NULL || mTarget->GetMapMgr()->GetInterface() == NULL)
-				return;
 			float X = mTarget->GetPositionX();
 			float Y = mTarget->GetPositionY();
 			float Z = mTarget->GetPositionZ();
@@ -229,8 +214,6 @@ class VoodooDues : public QuestScript
 
 		void OnQuestComplete(Player* mTarget, QuestLogEntry* qLogEntry)
 		{
-			if(mTarget == NULL || mTarget->GetMapMgr() == NULL || mTarget->GetMapMgr()->GetInterface() == NULL)
-				return;
 			float X = mTarget->GetPositionX();
 			float Y = mTarget->GetPositionY();
 			float Z = mTarget->GetPositionZ();
@@ -282,9 +265,6 @@ class FacingNegolash : public QuestScript
 {
 		void OnQuestComplete(Player* pPlayer, QuestLogEntry* qLogEntry)
 		{
-			if(!pPlayer)
-				return;
-
 			GameObject* obj = NULL;
 
 			for(uint8 i = 0; i < 9; i++)
