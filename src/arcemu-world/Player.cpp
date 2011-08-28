@@ -2987,8 +2987,11 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 			case 927:	// draenei
 				m_team = m_bgTeam = 0;
 				break;
-
-			default:
+			case 2: // orc
+			case 5: // undead
+			case 6: // tauren
+			case 9: // troll
+			case 914: // bloodelf
 				m_team = m_bgTeam = 1;
 				break;
 		}
