@@ -74,7 +74,7 @@ if( CMAKE_GENERATOR MATCHES Unix* )
 ELSEIF( CMAKE_GENERATOR MATCHES Visual* )
 	#Extract revision
 	execute_process(WORKING_DIRECTORY ${ROOT_PATH}/src/arcemu-shared COMMAND RevisionExtractor)
-	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+	add_definitions(-D_CRT_SECURE_NO_WARNINGS /EHa )
 	
 	#Check support for unordered_map/set
 	GetCompilerVersion( msvc_version)
