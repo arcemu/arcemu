@@ -13375,6 +13375,15 @@ void Player::SendChatMessage(uint8 type, uint32 lang, const char* msg, uint32 de
 	delete data;
 }
 
+void Player::SendChatMessageToPlayer(uint8 type, uint32 lang, const char* msg, Player* plr)
+{
+	if(plr == NULL)
+		return;
+	WorldPacket* data = sChatHandler.FillMessageData(type, lang, msg, GetGUID());
+	plr->SendPacket(data);
+	delete data;
+}
+
 void Player::AcceptQuest(uint64 guid, uint32 quest_id)
 {
 

@@ -2124,6 +2124,29 @@ void Creature::SendChatMessage(uint8 type, uint32 lang, const char* msg, uint32 
 	SendMessageToSet(&data, true);
 }
 
+void Creature::SendChatMessageToPlayer(uint8 type, uint32 lang, const char* msg, Player* plr)
+{
+	size_t UnitNameLength = 0, MessageLength = 0;
+	if( plr == NULL)
+		return;
+
+	UnitNameLength = strlen((char*)GetCreatureInfo()->Name) + 1;
+	MessageLength = strlen((char*)msg) + 1;
+
+	WorldPacket data(SMSG_MESSAGECHAT, 35 + UnitNameLength + MessageLength);
+	data << type;
+	data << lang;
+	data << GetGUID();
+	data << uint32(0);			// new in 2.1.0
+	data << uint32(UnitNameLength);
+	data << GetCreatureInfo()->Name;
+	data << uint64(0);
+	data << uint32(MessageLength);
+	data << msg;
+	data << uint8(0x00);
+	plr->GetSession()->SendPacket(&data);
+}
+
 void Creature::HandleMonsterSayEvent(MONSTER_SAY_EVENTS Event)
 {
 	NpcMonsterSay* ms = creature_info->MonsterSay[Event];

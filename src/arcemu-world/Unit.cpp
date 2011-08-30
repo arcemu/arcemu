@@ -5285,31 +5285,6 @@ void Unit::Emote(EmoteType emote)
 	SendMessageToSet(&data, true);
 }
 
-void Unit::SendChatMessageToPlayer(uint8 type, uint32 lang, const char* msg, Player* plr)
-{
-	size_t UnitNameLength = 0, MessageLength = 0;
-	CreatureInfo* ci = IsCreature() ? TO_CREATURE(this)->GetCreatureInfo() : NULL;
-
-	if(ci == NULL || plr == NULL)
-		return;
-
-	UnitNameLength = strlen((char*)ci->Name) + 1;
-	MessageLength = strlen((char*)msg) + 1;
-
-	WorldPacket data(SMSG_MESSAGECHAT, 35 + UnitNameLength + MessageLength);
-	data << type;
-	data << lang;
-	data << GetGUID();
-	data << uint32(0);			// new in 2.1.0
-	data << uint32(UnitNameLength);
-	data << ci->Name;
-	data << uint64(0);
-	data << uint32(MessageLength);
-	data << msg;
-	data << uint8(0x00);
-	plr->GetSession()->SendPacket(&data);
-}
-
 void Unit::SendChatMessageAlternateEntry(uint32 entry, uint8 type, uint32 lang, const char* msg)
 {
 	size_t UnitNameLength = 0, MessageLength = 0;

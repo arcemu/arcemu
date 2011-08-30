@@ -936,6 +936,7 @@ class SERVER_DECL Player : public Unit
 
 		// Scripting
 		void SendChatMessage(uint8 type, uint32 lang, const char* msg, uint32 delay = 0);
+		void SendChatMessageToPlayer(uint8 type, uint32 lang, const char* msg, Player* plr);
 
 	protected:
 
