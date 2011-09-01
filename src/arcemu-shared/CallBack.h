@@ -27,18 +27,6 @@ class CallbackBase
 		virtual ~CallbackBase() {};
 };
 
-class CallbackFP
-{
-		typedef void(*callback)();
-		callback mycallback;
-	public:
-		CallbackFP(callback cb) : mycallback(cb) {}
-		void operator()();
-		void execute();
-		void set(callback cb) { mycallback = cb; }
-		CallbackFP* Create();
-};
-
 class CallBackFunctionP0 : public CallbackBase
 {
 		typedef void(*cbfunction)();
