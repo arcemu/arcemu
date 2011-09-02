@@ -119,6 +119,7 @@ bool GameObject::CreateFromProto(uint32 entry, uint32 mapid, float x, float y, f
 	SetDisplayId(pInfo->DisplayID);
 	SetType(static_cast<uint8>(pInfo->Type));
 	InitAI();
+	_LoadQuests();
 
 	return true;
 }
@@ -452,7 +453,6 @@ bool GameObject::Load(GOSpawn* spawn)
 		SetFaction(spawn->faction);
 	}
 	SetScale(spawn->scale);
-	_LoadQuests();
 
 	return true;
 }
