@@ -657,8 +657,15 @@ class APlagueUponThee : public GameObjectAIScript
 
 		void OnActivate(Player* pPlayer)
 		{
-			GameObject* barel = sEAS.SpawnGameobject(pPlayer, 177491, pPlayer->GetPositionX(), pPlayer->GetPositionY(), pPlayer->GetPositionZ(), pPlayer->GetOrientation(), 1, 0, 0, 0, 0);
-			sEAS.GameobjectDelete(barel, 2 * 60 * 1000);
+			if( pPlayer->GetQuestLogForEntry(5902) || pPlayer->GetQuestLogForEntry(5904) )
+			{
+				GameObject * go = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(pPlayer->GetPositionX(),pPlayer->GetPositionY(),pPlayer->GetPositionZ(), 177491);
+				if(go == NULL)
+				{
+					GameObject * barel = sEAS.SpawnGameobject(pPlayer, 177491, 2449.51f, -1662.32f, 104.38f, 1.0f, 1, 0, 0, 0, 0);
+					sEAS.GameobjectDelete(barel, 2*60*1000);
+				}
+			}
 		}
 };
 

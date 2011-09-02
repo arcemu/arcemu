@@ -58,19 +58,40 @@ class TheInfestedProtectorsQAI : public CreatureAIScript
 
 		void OnDied(Unit* mKiller)
 		{
-			if(!mKiller->IsPlayer())
-				return;
+			if(mKiller->IsPlayer())
+			{
+				Player * plr = TO_PLAYER(mKiller);
+				if(plr->GetQuestLogForEntry(10896))
+				{
+					if(Rand(90))
+					{
+						uint32 min,max,finall;
+						switch(_unit->GetEntry())
+						{
+							case 22307:
+								min = 4; max = 11;
+								break;
+							case 22095:
+								min = 2; max = 5;
+								break;
+						}
 
-			Player* plr = TO_PLAYER(mKiller);
+						finall = min + RandomUInt(max - min);
 
-			if(!plr->GetQuestLogForEntry(10896))
-				return;
+						float SSX = _unit->GetPositionX();
+						float SSY = _unit->GetPositionY();
+						float SSZ = _unit->GetPositionZ();
+						float SSO = _unit->GetOrientation();
 
-			sEAS.SpawnCreature(plr, 22419, _unit->GetPositionX() + RandomFloat(3.0f), _unit->GetPositionY() + RandomFloat(3.0f), _unit->GetPositionZ(), RandomFloat(1.0f), 60 * 200);
-			sEAS.SpawnCreature(plr, 22419, _unit->GetPositionX() + RandomFloat(3.0f), _unit->GetPositionY() + RandomFloat(3.0f), _unit->GetPositionZ(), RandomFloat(1.0f), 60 * 200);
-			sEAS.SpawnCreature(plr, 22419, _unit->GetPositionX() + RandomFloat(3.0f), _unit->GetPositionY() + RandomFloat(3.0f), _unit->GetPositionZ(), RandomFloat(1.0f), 60 * 200);
-			sEAS.SpawnCreature(plr, 22419, _unit->GetPositionX() + RandomFloat(3.0f), _unit->GetPositionY() + RandomFloat(3.0f), _unit->GetPositionZ(), RandomFloat(1.0f), 60 * 200);
-			sEAS.SpawnCreature(plr, 22419, _unit->GetPositionX() + RandomFloat(3.0f), _unit->GetPositionY() + RandomFloat(3.0f), _unit->GetPositionZ(), RandomFloat(1.0f), 60 * 200);
+						for(uint8 i = 0; i < finall; i++)
+						{
+							Creature * NewCreature = _unit->GetMapMgr()->GetInterface()->SpawnCreature(22419, SSX + RandomFloat(3.0f), SSY + RandomFloat(3.0f), SSZ, SSO + RandomFloat(1.0f), true, false, 0, 0);
+							if ( NewCreature != NULL )
+								NewCreature->Despawn(120000, 0);
+						}
+					}
+				}
+			}
 		}
 };
 
