@@ -126,7 +126,6 @@ initialiseSingleton(HookInterface);
 
 ScriptMgr::ScriptMgr()
 {
-	DefaultGossipScript = new GossipScript();
 }
 
 ScriptMgr::~ScriptMgr()
@@ -277,8 +276,6 @@ void ScriptMgr::UnloadScripts()
 	for(CustomGossipScripts::iterator itr = _customgossipscripts.begin(); itr != _customgossipscripts.end(); ++itr)
 		(*itr)->Destroy();
 	_customgossipscripts.clear();
-	delete this->DefaultGossipScript;
-	this->DefaultGossipScript = NULL;
 
 	for(QuestScripts::iterator itr = _questscripts.begin(); itr != _questscripts.end(); ++itr)
 		delete *itr;
@@ -421,31 +418,11 @@ void ScriptMgr::register_dummy_spell(uint32 entry, exp_handle_dummy_spell callba
 void ScriptMgr::register_gossip_script(uint32 entry, GossipScript* gs)
 {
 	register_creature_gossip(entry, gs);
-	/*CreatureInfo * ci = CreatureNameStorage.LookupEntry(entry);
-	if(ci)
-	{
-		if(ci->gossip_script != DefaultGossipScript)
-			LOG_ERROR("ScriptMgr is trying to register a gossip for Creature ID: %u even if there's already one for that Creature. Remove one of those gossips.", entry);
-
-		ci->gossip_script = gs;
-	}
-
-	_customgossipscripts.insert(gs);*/
 }
 
 void ScriptMgr::register_go_gossip_script(uint32 entry, GossipScript* gs)
 {
 	register_go_gossip(entry, gs);
-	/*GameObjectInfo * gi = GameObjectNameStorage.LookupEntry(entry);
-	if(gi)
-	{
-		if(gi->gossip_script != NULL)
-			LOG_ERROR("ScriptMgr is trying to register a gossip for GameObject ID: %u even if there's already one for that GameObject. Remove one of those gossips.", entry);
-
-		gi->gossip_script = gs;
-	}
-
-	_customgossipscripts.insert(gs);*/
 }
 
 void ScriptMgr::register_quest_script(uint32 entry, QuestScript* qs)
@@ -607,16 +584,6 @@ bool ScriptMgr::CallScriptedItem(Item* pItem, Player* pPlayer)
 void ScriptMgr::register_item_gossip_script(uint32 entry, GossipScript* gs)
 {
 	register_item_gossip(entry, gs);
-	/*ItemPrototype * proto = ItemPrototypeStorage.LookupEntry(entry);
-	if(proto)
-	{
-		if(proto->gossip_script != NULL)
-		LOG_ERROR("ScriptMgr is trying to register a gossip for Item ID: %u even if there's already one for that Item. Remove one of those gossips.", entry);
-
-		proto->gossip_script = gs;
-	}
-
-	_customgossipscripts.insert(gs);*/
 }
 
 /* CreatureAI Stuff */
@@ -744,18 +711,6 @@ bool ScriptMgr::has_script_effect(uint32 entry) const
 bool ScriptMgr::has_instance_script(uint32 id) const
 {
 	return (mInstances.find(id) != mInstances.end());
-}
-
-bool ScriptMgr::has_creature_gossip_script(uint32 entry) const
-{
-	return true;
-	//return (info == NULL || info->gossip_script != DefaultGossipScript);
-}
-
-bool ScriptMgr::has_item_gossip_script(uint32 entry) const
-{
-	return true;
-	//return (proto == NULL || proto->gossip_script != NULL);
 }
 
 bool ScriptMgr::has_hook(ServerHookEvents evt, void* ptr) const

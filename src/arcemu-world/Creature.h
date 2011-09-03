@@ -109,7 +109,6 @@ struct CreatureInfo
 	uint32 waypointid;
 
 	std::string lowercase_name;
-	GossipScript* gossip_script;
 	NpcMonsterSay* MonsterSay[NUM_MONSTER_SAY_EVENTS];
 
 	uint8 GenerateModelId(uint32* des)

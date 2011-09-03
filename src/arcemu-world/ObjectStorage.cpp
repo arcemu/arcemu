@@ -147,8 +147,6 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 			for(uint32 j = 0; j < ci->lowercase_name.length(); ++j)
 				ci->lowercase_name[j] = static_cast<char>(tolower(ci->lowercase_name[j]));   // Darvaleo 2008/08/15 - Copied lowercase conversion logic from ItemPrototype task
 
-			ci->gossip_script = sScriptMgr.GetDefaultGossipScript();
-
 			for(int i = 0; i < NUM_MONSTER_SAY_EVENTS; i++)
 				ci->MonsterSay[i] = objmgr.HasMonsterSay(ci->Id, MONSTER_SAY_EVENTS(i));
 

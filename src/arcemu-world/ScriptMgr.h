@@ -216,8 +216,6 @@ class SERVER_DECL ScriptMgr : public Singleton<ScriptMgr>
 		void ReloadScriptEngines();
 		void UnloadScriptEngines();
 
-		ARCEMU_INLINE GossipScript* GetDefaultGossipScript() { return DefaultGossipScript; }
-
 		//************************************
 		// Purpose :	Returns true if ScriptMgr has already registered the specified creature id.
 		// Parameter:	uint32 - the id of the creature to search for.
@@ -255,29 +253,11 @@ class SERVER_DECL ScriptMgr : public Singleton<ScriptMgr>
 		bool has_instance_script(uint32) const;
 
 		//************************************
-		// Purpose :	Returns true if ScriptMgr has already registered the specified creature id
-		// Parameter:	uint32 - the creature id to search for
-		//************************************
-		bool has_creature_gossip_script(uint32) const;
-
-		//************************************
-		// Purpose :	Returns true if ScriptMgr has already registered the specified gameobject id.
-		// Parameter:	uint32 - the gameobject id to search for
-		//************************************
-		bool has_go_gossip_script(uint32) const;
-
-		//************************************
 		// Purpose :	Returns true if ScriptMgr has registered the specified function ptr to the specified event.
 		// Parameter:	ServerHookEvents - the event number
 		// Parameter:	void * - the function pointer to search for.
 		//************************************
 		bool has_hook(ServerHookEvents, void*) const;
-
-		//************************************
-		// Purpose :	Returns true if ScriptMgr has already registered the specified item id.
-		// Parameter:	uint32 - the item id to search for
-		//************************************
-		bool has_item_gossip_script(uint32) const;
 
 		//************************************
 		// Purpose :	Returns true if ScriptMgr has already registered the specified quest id.
@@ -319,7 +299,6 @@ class SERVER_DECL ScriptMgr : public Singleton<ScriptMgr>
 		HandleScriptEffectMap SpellScriptEffects;
 		DynamicLibraryMap dynamiclibs;
 		ServerHookList _hooks[NUM_SERVER_HOOKS];
-		GossipScript* DefaultGossipScript;
 		CustomGossipScripts _customgossipscripts;
 		QuestScripts _questscripts;
 		GossipMap creaturegossip_, gogossip_, itemgossip_;

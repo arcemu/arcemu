@@ -664,7 +664,6 @@ struct ItemPrototype
 
 	string lowercase_name;	// used in auctions
 	uint32 FoodType;		//pet food type
-	GossipScript* gossip_script;
 	int32 ForcedPetId;
 };
 
