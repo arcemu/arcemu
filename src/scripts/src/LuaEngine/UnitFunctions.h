@@ -564,43 +564,18 @@ class LuaUnit
 				lua_pushnil(L);
 				return 1;
 			}
-			CreatureSpawn* sp = new CreatureSpawn;
-			uint32 gender = i->GenerateModelId(&sp->displayid);
-			sp->entry = entry;
-			sp->form = 0;
-			sp->id = objmgr.GenerateCreatureSpawnID();
-			sp->movetype = 0;
-			sp->x = x;
-			sp->y = y;
-			sp->z = z;
-			sp->o = o;
-			sp->emote_state = 0;
-			sp->flags = 0;
-			sp->factionid = faction;
-			sp->bytes0 = sp->setbyte(0, 2, gender);
-			sp->bytes1 = 0;
-			sp->bytes2 = 0;
-			sp->stand_state = 0;
-			sp->death_state = 0;
-			sp->channel_target_creature = sp->channel_target_go = sp->channel_spell = 0;
-			sp->MountedDisplayID = 0;
-			sp->Item1SlotDisplay = equip1;
-			sp->Item2SlotDisplay = equip2;
-			sp->Item3SlotDisplay = equip3;
-			sp->CanFly = 0;
-			sp->phase = phase;
 			Creature* pCreature = ptr->GetMapMgr()->CreateCreature(entry);
 			if(pCreature == NULL)
 			{
 				lua_pushnil(L);
 				return 1;
 			}
-			pCreature->Load(sp, (uint32)NULL, NULL);
-			pCreature->m_loadedFromDB = true;
+			pCreature->Load(p, x, y, z, o);
 			pCreature->SetFaction(faction);
 			pCreature->SetEquippedItem(MELEE, equip1);
 			pCreature->SetEquippedItem(OFFHAND, equip2);
 			pCreature->SetEquippedItem(RANGED, equip3);
+			pCreature->Phase(PHASE_SET, phase);
 			pCreature->m_noRespawn = true;
 			pCreature->PushToWorld(ptr->GetMapMgr());
 			if(duration)

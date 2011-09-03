@@ -532,8 +532,47 @@ void Creature::generateLoot()
 
 void Creature::SaveToDB()
 {
-	if(!spawnid)
-		spawnid = objmgr.GenerateCreatureSpawnID();
+	if(m_spawn == NULL)
+	{
+		m_spawn = new CreatureSpawn;
+		m_spawn->entry = GetEntry();
+		m_spawn->form = 0;
+		m_spawn->id = spawnid = objmgr.GenerateCreatureSpawnID();
+		m_spawn->movetype = m_aiInterface->getMoveType();
+		m_spawn->displayid = m_uint32Values[UNIT_FIELD_DISPLAYID];
+		m_spawn->x = m_position.x;
+		m_spawn->y = m_position.y;
+		m_spawn->z = m_position.z;
+		m_spawn->o = m_position.o;
+		m_spawn->emote_state = m_uint32Values[UNIT_NPC_EMOTESTATE];
+		m_spawn->flags = m_uint32Values[UNIT_FIELD_FLAGS];
+		m_spawn->factionid = GetFaction();
+		m_spawn->bytes0 = m_uint32Values[UNIT_FIELD_BYTES_0];
+		m_spawn->bytes1 = m_uint32Values[UNIT_FIELD_BYTES_1];
+		m_spawn->bytes2 = m_uint32Values[UNIT_FIELD_BYTES_2];
+		m_spawn->stand_state = GetStandState();
+		m_spawn->death_state = 0;
+		m_spawn->channel_target_creature = 0;
+		m_spawn->channel_target_go = 0;
+		m_spawn->channel_spell = 0;
+		m_spawn->MountedDisplayID = m_uint32Values[UNIT_FIELD_MOUNTDISPLAYID];
+		m_spawn->Item1SlotDisplay = GetEquippedItem(MELEE);
+		m_spawn->Item2SlotDisplay = GetEquippedItem(OFFHAND);
+		m_spawn->Item3SlotDisplay = GetEquippedItem(RANGED);
+		if(GetAIInterface()->Flying())
+			m_spawn->CanFly = 1;
+		else if(GetAIInterface()->onGameobject)
+			m_spawn->CanFly = 2;
+		else
+			m_spawn->CanFly = 0;
+		m_spawn->phase = m_phase;
+
+		uint32 x = GetMapMgr()->GetPosX(GetPositionX());
+		uint32 y = GetMapMgr()->GetPosY(GetPositionY());
+
+		// Add spawn to map
+		GetMapMgr()->GetBaseMap()->GetSpawnsListAndCreate(x, y)->CreatureSpawns.push_back(m_spawn);
+	}
 
 	std::stringstream ss;
 
@@ -562,17 +601,11 @@ void Creature::SaveToDB()
 	   << m_uint32Values[UNIT_FIELD_BYTES_2] << ","
 	   << m_uint32Values[UNIT_NPC_EMOTESTATE] << ",0,";
 
-	if(m_spawn)
-		ss << m_spawn->channel_spell << "," << m_spawn->channel_target_go << "," << m_spawn->channel_target_creature << ",";
-	else
-		ss << "0,0,0,";
+	ss << m_spawn->channel_spell << "," << m_spawn->channel_target_go << "," << m_spawn->channel_target_creature << ",";
 
 	ss << uint32(GetStandState()) << ",";
 
-	if(m_spawn)
-		ss << m_spawn->death_state << ",";
-	else
-		ss << "0,";
+	ss << m_spawn->death_state << ",";
 
 	ss << m_uint32Values[UNIT_FIELD_MOUNTDISPLAYID] << ","
 	   << GetEquippedItem(MELEE) << ","
