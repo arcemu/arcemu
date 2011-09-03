@@ -1854,6 +1854,7 @@ GameObject* MapMgr::CreateAndSpawnGameObject(uint32 entryID, float x, float y, f
 	gs->z = go->GetPositionZ();
 	gs->state = go->GetByte(GAMEOBJECT_BYTES_1, 0);
 	//gs->stateNpcLink = 0;
+	gs->overrides = go->GetOverrides();
 
 	uint32 cx = GetPosX(x);
 	uint32 cy = GetPosY(y);

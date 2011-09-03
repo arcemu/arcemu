@@ -629,26 +629,7 @@ class LuaUnit
 				go->CreateFromProto(entry_id, mapid, x, y, z, o);
 				go->Phase(PHASE_SET, phase);
 				go->SetScale(scale);
-				// Create spawn instance
-				GOSpawn* gs = new GOSpawn;
-				gs->entry = go->GetEntry();
-				gs->facing = go->GetOrientation();
-				gs->faction = go->GetFaction();
-				gs->flags = go->GetUInt32Value(GAMEOBJECT_FLAGS);
-				gs->id = objmgr.GenerateGameObjectSpawnID();
-				gs->o = 0.0f;
-				gs->o1 = go->GetParentRotation(0);
-				gs->o2 = go->GetParentRotation(2);
-				gs->o3 = go->GetParentRotation(3);
-				gs->scale = go->GetScale();
-				gs->x = go->GetPositionX();
-				gs->y = go->GetPositionY();
-				gs->z = go->GetPositionZ();
-				gs->state = go->GetByte(GAMEOBJECT_BYTES_1, 0);
-				//gs->stateNpcLink = 0;
-				gs->phase = go->GetPhase();
 
-				go->m_spawn = gs;
 				go->PushToWorld(ptr->GetMapMgr());
 
 				if(duration)

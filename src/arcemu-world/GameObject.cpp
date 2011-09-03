@@ -259,8 +259,29 @@ void GameObject::SaveToDB()
 {
 	if(m_spawn == NULL)
 	{
-		LOG_ERROR("GameObject::SaveToDB() is trying to save a GameObject with spawn Id = 0");
-		return;
+		// Create spawn instance
+		m_spawn = new GOSpawn;
+		m_spawn->entry = GetEntry();
+		m_spawn->facing = GetOrientation();
+		m_spawn->faction = GetFaction();
+		m_spawn->flags = GetUInt32Value(GAMEOBJECT_FLAGS);
+		m_spawn->id = objmgr.GenerateGameObjectSpawnID();
+		m_spawn->o1 = GetParentRotation(0);
+		m_spawn->o2 = GetParentRotation(2);
+		m_spawn->o3 = GetParentRotation(3);
+		m_spawn->scale = GetScale();
+		m_spawn->x = GetPositionX();
+		m_spawn->y = GetPositionY();
+		m_spawn->z = GetPositionZ();
+		m_spawn->o = 0.0f;
+		m_spawn->state = GetByte(GAMEOBJECT_BYTES_1, 0);
+		m_spawn->phase = GetPhase();
+		m_spawn->overrides = m_overrides;
+
+		uint32 cx = GetMapMgr()->GetPosX(GetPositionX());
+		uint32 cy = GetMapMgr()->GetPosY(GetPositionY());
+
+		GetMapMgr()->GetBaseMap()->GetSpawnsListAndCreate(cx, cy)->GOSpawns.push_back(m_spawn);
 	}
 	std::stringstream ss;
 
