@@ -1646,7 +1646,6 @@ class SERVER_DECL Player : public Unit
 		void PrepareQuestMenu(uint64 guid);
 		void SendGossipMenu(uint32 TitleTextId, uint64 npcGUID);
 		void CloseGossip();
-		QuestStatus GetQuestStatus(uint32 quest_id);
 
 
 		bool m_bUnlimitedBreath;

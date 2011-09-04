@@ -7684,21 +7684,6 @@ void Player::SendGossipMenu(uint32 TitleTextId, uint64 npcGUID)
 	PlayerTalkClass->SendTo(this);
 }
 
-QuestStatus Player::GetQuestStatus(uint32 quest_id)
-{
-	uint32 status = sQuestMgr.CalcQuestStatus(this, quest_id);
-	switch(status)
-	{
-		case QMGR_QUEST_NOT_FINISHED:
-			return QUEST_STATUS_INCOMPLETE;
-		case QMGR_QUEST_FINISHED:
-			return QUEST_STATUS_COMPLETE;
-		case QMGR_QUEST_NOT_AVAILABLE:
-			return QUEST_STATUS_UNAVAILABLE;
-	}
-	return QUEST_STATUS_UNAVAILABLE;
-}
-
 bool Player::IsInCity()
 {
 	AreaTable* at = GetMapMgr()->GetArea(GetPositionX(), GetPositionY(), GetPositionZ());
