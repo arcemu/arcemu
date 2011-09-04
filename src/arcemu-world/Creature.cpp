@@ -465,19 +465,14 @@ void Creature::generateLoot()
 	 * (hopefully) get 24 random bits, which is then used to create a
 	 * normal distribution over 1/24th of the difference.
 	 */
-	if((loot.gold > 0) && (loot.gold < 12))
-	{
-		/* Don't use the below formula for very small cash - rouding
-		 * errors will be too bad.. */
-	}
-	else if(loot.gold >= 12)
+	if( loot.gold >= 12 )
 	{
 		uint32 random_bits;
 		double chunk_size;
 		double gold_fp;
 
 		/* Split up the difference into 12 chunks.. */
-		chunk_size = ((double) loot.gold) / 12.0;
+		chunk_size = loot.gold / 12.0;
 
 		/* Get 24 random bits. We use the low order bits, because we're
 		 * too lazy to check how many random bits the system actually
@@ -498,8 +493,7 @@ void Creature::generateLoot()
 
 		/* To hide your discrete values a bit, add another random
 		 * amount between -(chunk_size/2) and +(chunk_size/2). */
-		gold_fp += chunk_size
-		           * ((((double) rand()) / (((double) RAND_MAX) + 1.0)) - .5);
+		gold_fp += chunk_size * (rand() / (RAND_MAX + 1.0) - 0.5);
 
 		/*
 		 * In theory we can end up with a negative amount. Give at
@@ -511,23 +505,10 @@ void Creature::generateLoot()
 
 		/* Convert the floating point gold value to an integer again
 		 * and we're done. */
-		loot.gold = (uint32)(.5 + gold_fp);
-	}
-	else /* if(!loot.gold) */
-	{
-		CreatureInfo* info = GetCreatureInfo();
-		if(info->Type != UNIT_TYPE_BEAST)
-		{
-			if(m_uint32Values[UNIT_FIELD_MAXHEALTH] <= 1667)
-				//generate copper
-				loot.gold = (uint32)((info->Rank + 1) * getLevel() * (rand() % 5 + 1));
-			else
-				loot.gold = (uint32)((info->Rank + 1) * getLevel() * (rand() % 5 + 1) * (this->GetMaxHealth() * 0.0006)); //generate copper
-		}
+		loot.gold = static_cast<uint32>(0.5 + gold_fp);
 	}
 
-	if(loot.gold)
-		loot.gold = int32(float(loot.gold) * sWorld.getRate(RATE_MONEY));
+	loot.gold = static_cast<uint32>( loot.gold * sWorld.getRate(RATE_MONEY) );
 }
 
 void Creature::SaveToDB()
