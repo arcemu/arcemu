@@ -1941,9 +1941,9 @@ class VashjAI : public CreatureAIScript
 			wp->o = 0.0f;
 			wp->waittime = 0;
 			wp->flags = RUN;
-			wp->forwardemoteoneshot = 0;
+			wp->forwardemoteoneshot = false;
 			wp->forwardemoteid = 0;
-			wp->backwardemoteoneshot = 0;
+			wp->backwardemoteoneshot = false;
 			wp->backwardemoteid = 0;
 			wp->forwardskinid = 0;
 			wp->backwardskinid = 0;
@@ -2145,9 +2145,9 @@ class VashjAI : public CreatureAIScript
 					wp->o = ElementalSpawnPoints2[pos].o;
 					wp->waittime = 0;
 					wp->flags = WALK;
-					wp->forwardemoteoneshot = 0;
+					wp->forwardemoteoneshot = false;
 					wp->forwardemoteid = 0;
-					wp->backwardemoteoneshot = 0;
+					wp->backwardemoteoneshot = false;
 					wp->backwardemoteid = 0;
 					wp->forwardskinid = 0;
 					wp->backwardskinid = 0;
@@ -2162,9 +2162,9 @@ class VashjAI : public CreatureAIScript
 					wp->o = 0;
 					wp->waittime = 0;
 					wp->flags = WALK;
-					wp->forwardemoteoneshot = 0;
+					wp->forwardemoteoneshot = false;
 					wp->forwardemoteid = 0;
-					wp->backwardemoteoneshot = 0;
+					wp->backwardemoteoneshot = false;
 					wp->backwardemoteid = 0;
 					wp->forwardskinid = 0;
 					wp->backwardskinid = 0;
@@ -2898,9 +2898,9 @@ class ToxicSporeBatAI : public CreatureAIScript
 			wp->o = fly[id].o;
 			wp->waittime = waittime;
 			wp->flags = flags;
-			wp->forwardemoteoneshot = 0;
+			wp->forwardemoteoneshot = false;
 			wp->forwardemoteid = 0;
-			wp->backwardemoteoneshot = 0;
+			wp->backwardemoteoneshot = false;
 			wp->backwardemoteid = 0;
 			wp->forwardskinid = 0;
 			wp->backwardskinid = 0;

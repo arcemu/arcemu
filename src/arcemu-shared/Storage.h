@@ -181,13 +181,13 @@ class SERVER_DECL ArrayStorageContainer
 		 */
 		bool DeallocateEntry(uint32 Entry)
 		{
-			if(Entry >= _max || _array[Entry] == 0)
+			if(Entry >= _max || _array[Entry] == NULL)
 				return false;
 
 #ifndef STORAGE_ALLOCATION_POOLS
 			delete _array[Entry];
 #endif
-			_array[Entry] = 0;
+			_array[Entry] = NULL;
 			return true;
 		}
 
@@ -196,7 +196,7 @@ class SERVER_DECL ArrayStorageContainer
 		T* LookupEntry(uint32 Entry)
 		{
 			if(Entry >= _max)
-				return reinterpret_cast<T*>(0);
+				return reinterpret_cast<T*>(NULL);
 			else
 				return _array[Entry];
 		}
@@ -235,12 +235,12 @@ class SERVER_DECL ArrayStorageContainer
 			for(uint32 i = 0; i < _max; ++i)
 			{
 #ifndef STORAGE_ALLOCATION_POOLS
-				if(_array[i] != 0)
+				if(_array[i] != NULL)
 				{
 					delete _array[i];
 				}
 #endif
-				_array[i] = 0;
+				_array[i] = NULL;
 			}
 		}
 };

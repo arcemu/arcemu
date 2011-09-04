@@ -945,9 +945,9 @@ WayPoint* MoonScriptCreatureAI::CreateWaypoint(int pId, uint32 pWaittime, uint32
 	wp->o = pCoords.o;
 	wp->waittime = pWaittime;
 	wp->flags = pMoveFlag;
-	wp->forwardemoteoneshot = 0;
+	wp->forwardemoteoneshot = false;
 	wp->forwardemoteid = 0;
-	wp->backwardemoteoneshot = 0;
+	wp->backwardemoteoneshot = false;
 	wp->backwardemoteid = 0;
 	wp->forwardskinid = 0;
 	wp->backwardskinid = 0;
@@ -964,9 +964,9 @@ WayPoint* MoonScriptCreatureAI::CreateWaypoint(int pId, uint32 pWaittime, uint32
 	wp->o = pCoords.o;
 	wp->waittime = pWaittime;
 	wp->flags = pMoveFlag;
-	wp->forwardemoteoneshot = 0;
+	wp->forwardemoteoneshot = false;
 	wp->forwardemoteid = 0;
-	wp->backwardemoteoneshot = 0;
+	wp->backwardemoteoneshot = false;
 	wp->backwardemoteid = 0;
 	wp->forwardskinid = 0;
 	wp->backwardskinid = 0;

@@ -412,7 +412,7 @@ Realm* InformationCore::AddRealm(uint32 realm_id, Realm* rlm)
 
 Realm* InformationCore::GetRealm(uint32 realm_id)
 {
-	Realm* ret = 0;
+	Realm* ret = NULL;
 
 	realmLock.Acquire();
 	map<uint32, Realm*>::iterator itr = m_realms.find(realm_id);

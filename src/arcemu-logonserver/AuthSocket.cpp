@@ -40,7 +40,7 @@ AuthSocket::AuthSocket(SOCKET fd) : Socket(fd, 32768, 4096)
 	g.SetDword(7);
 	s.SetRand(256);
 	m_authenticated = false;
-	m_account = 0;
+	m_account = NULL;
 	last_recv = time(NULL);
 	removedFromSet = false;
 	m_patch = NULL;

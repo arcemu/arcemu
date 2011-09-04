@@ -86,7 +86,7 @@ int StackTrace::printStackTrace(MapFile** map, int maps,
 
 		// find entry info
 		int entry = -1;
-		const MapFile* entryMap = 0;
+		const MapFile* entryMap = NULL;
 		for(int j = 0 ; j < maps ; ++j)
 		{
 			entry = map[j]->findEntry(addr);

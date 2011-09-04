@@ -48,8 +48,8 @@ class FastQueue
 
 		FastQueue()
 		{
-			last = 0;
-			first = 0;
+			last = NULL;
+			first = NULL;
 		}
 
 		~FastQueue()
@@ -60,7 +60,7 @@ class FastQueue
 		void Clear()
 		{
 			// clear any elements
-			while(last != 0)
+			while(last != NULL)
 				Pop();
 		}
 
@@ -74,7 +74,7 @@ class FastQueue
 				first = n;
 
 			last = n;
-			n->next = 0;
+			n->next = NULL;
 			n->element = elem;
 			m_lock.Release();
 		}
@@ -82,17 +82,17 @@ class FastQueue
 		T Pop()
 		{
 			m_lock.Acquire();
-			if(first == 0)
+			if(first == NULL)
 			{
 				m_lock.Release();
-				return reinterpret_cast<T>(0);
+				return reinterpret_cast<T>(NULL);
 			}
 
 			T ret = first->element;
 			node* td = first;
 			first = td->next;
 			if(!first)
-				last = 0;
+				last = NULL;
 
 			delete td;
 			m_lock.Release();
@@ -102,10 +102,10 @@ class FastQueue
 		T front()
 		{
 			m_lock.Acquire();
-			if(first == 0)
+			if(first == NULL)
 			{
 				m_lock.Release();
-				return reinterpret_cast<T>(0);
+				return reinterpret_cast<T>(NULL);
 			}
 
 			T ret = first->element;
@@ -116,7 +116,7 @@ class FastQueue
 		void pop_front()
 		{
 			m_lock.Acquire();
-			if(first == 0)
+			if(first == NULL)
 			{
 				m_lock.Release();
 				return;
@@ -125,7 +125,7 @@ class FastQueue
 			node* td = first;
 			first = td->next;
 			if(!first)
-				last = 0;
+				last = NULL;
 
 			delete td;
 			m_lock.Release();
@@ -135,7 +135,7 @@ class FastQueue
 		{
 			bool ret;
 			m_lock.Acquire();
-			ret = (first != 0);
+			ret = (first != NULL);
 			m_lock.Release();
 			return ret;
 		}

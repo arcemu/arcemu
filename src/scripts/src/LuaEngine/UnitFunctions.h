@@ -237,8 +237,8 @@ class LuaUnit
 		{
 			uint32 newphase = CHECK_ULONG(L, 1);
 			bool Save = (luaL_optint(L, 2, false) > 0 ? true : false);
-			Creature* crt = 0;
-			Player* p_target = 0;
+			Creature* crt = NULL;
+			Player* p_target = NULL;
 			//Save is only for creatures. if you want to save to DB with players, use your own query (security purposes).
 			//Lua: CharDBQuery("UPDATE `characters` SET `phase`='"..phase.."' WHERE (`name`='"..player:GetName().."'",0)
 			if(!ptr)
@@ -279,8 +279,8 @@ class LuaUnit
 		{
 			uint32 newphase = CHECK_ULONG(L, 1);
 			bool Save = (luaL_optint(L, 2, false) > 0 ? true : false);
-			Creature* crt = 0;
-			Player* p_target = 0;
+			Creature* crt = NULL;
+			Player* p_target = NULL;
 			//Save is only for creatures. if you want to save to DB with players, use your own query (security purposes).
 			//Lua: CharDBQuery("UPDATE `characters` SET `phase`='"..player:GetPhase().."' WHERE (`name`='"..player:GetName().."'",0)
 			if(!ptr)
@@ -321,8 +321,8 @@ class LuaUnit
 		{
 			uint32 newphase = CHECK_ULONG(L, 1);
 			bool Save = (luaL_checkint(L, 2) > 0 ? true : false);
-			Creature* crt = 0;
-			Player* p_target = 0;
+			Creature* crt = NULL;
+			Player* p_target = NULL;
 			//Save is only for creatures. if you want to save to DB with players, use your own query (security purposes).
 			//Lua: CharDBQuery("UPDATE `characters` SET `phase`='"..player:GetPhase().."' WHERE (`name`='"..player:GetName().."'",0)
 			if(!ptr)

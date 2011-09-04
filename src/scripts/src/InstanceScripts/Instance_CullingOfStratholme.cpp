@@ -1079,9 +1079,9 @@ class UTHER_AI : public CreatureAIScript
 			wp->o = walk[id].o;
 			wp->waittime = waittime;
 			wp->flags = flags;
-			wp->forwardemoteoneshot = 0;
+			wp->forwardemoteoneshot = false;
 			wp->forwardemoteid = 0;
-			wp->backwardemoteoneshot = 0;
+			wp->backwardemoteoneshot = false;
 			wp->backwardemoteid = 0;
 			wp->forwardskinid = 0;
 			wp->backwardskinid = 0;
@@ -1257,9 +1257,9 @@ class ARTHAS_AI : public CreatureAIScript
 			wp->o = ArthasWalk[id].o;
 			wp->waittime = waittime;
 			wp->flags = flags;
-			wp->forwardemoteoneshot = 0;
+			wp->forwardemoteoneshot = false;
 			wp->forwardemoteid = 0;
-			wp->backwardemoteoneshot = 0;
+			wp->backwardemoteoneshot = false;
 			wp->backwardemoteid = 0;
 			wp->forwardskinid = 0;
 			wp->backwardskinid = 0;

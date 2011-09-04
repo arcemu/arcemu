@@ -73,8 +73,8 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recv_data)
 	uint32 type;
 	int32 lang;
 
-	const char* pMisc = 0;
-	const char* pMsg = 0;
+	const char* pMisc = NULL;
+	const char* pMsg = NULL;
 	recv_data >> type;
 	recv_data >> lang;
 

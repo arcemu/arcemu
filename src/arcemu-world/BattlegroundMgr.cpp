@@ -1250,7 +1250,7 @@ void CBattleground::PortPlayer(Player* plr, bool skip_teleport /* = false*/)
 CBattleground* CBattlegroundManager::CreateInstance(uint32 Type, uint32 LevelGroup)
 {
 	CreateBattlegroundFunc cfunc = BGCFuncs[Type];
-	MapMgr* mgr = 0;
+	MapMgr* mgr = NULL;
 	CBattleground* bg;
 	bool isWeekend = false;
 	struct tm tm;

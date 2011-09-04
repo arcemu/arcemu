@@ -44,7 +44,7 @@ class SERVER_DECL MapScriptInterface
 			if(pCell == 0)
 				return 0;
 
-			T* ClosestObject = 0;
+			T* ClosestObject = NULL;
 			float ClosestDist = 999999.0f;
 			float CurrentDist = 0;
 

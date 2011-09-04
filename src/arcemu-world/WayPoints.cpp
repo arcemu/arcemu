@@ -760,9 +760,9 @@ bool ChatHandler::HandleGenerateWaypoints(const char* args, WorldSession* m_sess
 		wp->z = z;
 		wp->waittime = 5000;
 		wp->flags = 0;
-		wp->forwardemoteoneshot = 0;
+		wp->forwardemoteoneshot = false;
 		wp->forwardemoteid = 0;
-		wp->backwardemoteoneshot = 0;
+		wp->backwardemoteoneshot = false;
 		wp->backwardemoteid = 0;
 		wp->forwardskinid = 0;
 		wp->backwardskinid = 0;

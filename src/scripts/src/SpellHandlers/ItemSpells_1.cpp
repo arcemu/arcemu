@@ -594,7 +594,7 @@ bool ExtractGas(uint32 i, Spell* s)
 {
 	bool check = false;
 	uint32 cloudtype = 0;
-	Creature* creature = 0;
+	Creature* creature = NULL;
 
 	if(!s->p_caster)
 		return false;

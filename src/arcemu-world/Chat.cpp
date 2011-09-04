@@ -115,9 +115,9 @@ void CommandTableStorage::Override(const char* command, const char* level)
 	// find the command we're talking about
 	char* sp = strchr(cmd, ' ');
 	const char* command_name = cmd;
-	const char* subcommand_name = 0;
+	const char* subcommand_name = NULL;
 
-	if(sp != 0)
+	if(sp != NULL)
 	{
 		// we're dealing with a subcommand.
 		*sp = 0;

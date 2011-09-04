@@ -222,7 +222,7 @@ Creature::Creature(uint64 guid)
 	SetAttackPowerMultiplier(0.0f);
 	SetRangedAttackPowerMultiplier(0.0f);
 	m_custom_waypoint_map = 0;
-	m_escorter = 0;
+	m_escorter = NULL;
 	m_limbostate = false;
 	m_corpseEvent = false;
 	m_respawnCell = NULL;
@@ -1791,9 +1791,9 @@ void Creature::SetGuardWaypoints()
 
 		wp->o = 0;
 		wp->backwardemoteid = 0;
-		wp->backwardemoteoneshot = 0;
+		wp->backwardemoteoneshot = false;
 		wp->forwardemoteid = 0;
-		wp->forwardemoteoneshot = 0;
+		wp->forwardemoteoneshot = false;
 		wp->backwardskinid = m_uint32Values[UNIT_FIELD_NATIVEDISPLAYID];
 		wp->forwardskinid = m_uint32Values[UNIT_FIELD_NATIVEDISPLAYID];
 		GetAIInterface()->addWayPoint(wp);

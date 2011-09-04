@@ -431,9 +431,9 @@ class OnyxiaAI : public CreatureAIScript
 			wp->o = coords[id].o;
 			wp->waittime = waittime;
 			wp->flags = flags;
-			wp->forwardemoteoneshot = 0;
+			wp->forwardemoteoneshot = false;
 			wp->forwardemoteid = 0;
-			wp->backwardemoteoneshot = 0;
+			wp->backwardemoteoneshot = false;
 			wp->backwardemoteid = 0;
 			wp->forwardskinid = 0;
 			wp->backwardskinid = 0;
