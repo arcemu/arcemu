@@ -544,46 +544,57 @@ void WorldSession::HandleNpcTextQueryOpcode(WorldPacket & recv_data)
 
 	if(pGossip)
 	{
-		data << float(1.0f);		// Unknown
-		for(uint32 i = 0; i < 8; i++)
+		for(uint8 i = 0; i < 8; i++)
 		{
+			data << float(pGossip->Texts[i].Prob);
+
 			if(lnc)
 			{
-				data << lnc->Texts[i][0];
-				data << lnc->Texts[i][1];
+				if(strlen(lnc->Texts[i][0]) == 0)
+					data << lnc->Texts[i][1];
+				else
+					data << lnc->Texts[i][0];
+
+				if(strlen(lnc->Texts[i][1]) == 0)
+					data << lnc->Texts[i][0];
+				else
+					data << lnc->Texts[i][1];
 			}
 			else
 			{
-				data << pGossip->Texts[i].Text[0];
-				data << pGossip->Texts[i].Text[1];
+				if(strlen(pGossip->Texts[i].Text[0]) == 0)
+					data << pGossip->Texts[i].Text[1];
+				else
+					data << pGossip->Texts[i].Text[0];
+
+				if(strlen(pGossip->Texts[i].Text[1]) == 0)
+					data << pGossip->Texts[i].Text[0];
+				else
+					data << pGossip->Texts[i].Text[1];
 			}
-
 			data << pGossip->Texts[i].Lang;
-			data << uint32(0x00);		// Was prob.. but if you set it to 0 emotes work ;)
-			for(uint32 e = 0; e < 6; e++)
-				data << uint32(pGossip->Texts[i].Emote[e]);
 
-			if(i != 7) data << uint32(0x00);	// don't append to last
+			for(int e = 0; e < GOSSIP_EMOTE_COUNT; e++)
+			{
+				data << uint32(pGossip->Texts[i].Emotes[e].Delay);
+				data << uint32(pGossip->Texts[i].Emotes[e].Emote);
+			}
 		}
 	}
 	else
 	{
-		data << float(1.0f);		// unknown
-		data << _player->GetSession()->LocalizedWorldSrv(70);
-		data << _player->GetSession()->LocalizedWorldSrv(70);
-		data << uint32(0x00);	// ?
-		data << uint32(0x00);	// ?
-		for(uint32 e = 0; e < 6; e++)
-			data << uint32(0x00);
-
-		for(int i = 0; i < 7; i++)
+		for(uint8 i= 0; i < 8; i++)
 		{
-			data << uint32(0x00);
-			data << uint8(0x00) << uint8(0x00);
-			data << uint32(0x00);	// ?
-			data << uint32(0x00);	// ?
-			for(uint32 e = 0; e < 6; e++)
-				data << uint32(0x00);	// emote 1
+			data << float(1.0f);		// Prob
+			data << _player->GetSession()->LocalizedWorldSrv(70);
+			data << _player->GetSession()->LocalizedWorldSrv(70);
+			data << uint32(0x00);		// Language
+
+			for(int e = 0; e < GOSSIP_EMOTE_COUNT; e++)
+			{
+				data << uint32(0x00);		// Emote delay
+				data << uint32(0x00);		// Emote
+			}
 		}
 	}
 
