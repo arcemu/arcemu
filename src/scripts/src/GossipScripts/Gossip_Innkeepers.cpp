@@ -55,9 +55,9 @@ void InnkeeperGossip::OnHello(Object* pObject, Player* Plr)
 #endif
 
 	if(pCreature->isVendor())
-		menu.AddItem(Arcemu::Gossip::ICON_VENDOR, "I would like to browse your goods.", 1);
+		menu.AddItem(Arcemu::Gossip::ICON_VENDOR, Plr->GetSession()->LocalizedWorldSrv(Arcemu::Gossip::VENDOR), 1);
 
-	menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Make this inn your home.", 2);
+	menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedWorldSrv(Arcemu::Gossip::INNKEEPER), 2);
 	menu.AddItem(Arcemu::Gossip::ICON_CHAT, "What can I do at an inn?", 3);
 
 	sQuestMgr.FillQuestMenu(pCreature, Plr, menu);
@@ -84,7 +84,7 @@ void InnkeeperGossip::OnSelectOption(Object* pObject, Player* Plr, uint32 Id, co
 			break;
 		case 3:     // WHAT CAN I DO ?
 			// Prepare second menu
-			Arcemu::Gossip::Menu::SendQuickMenu(pCreature->GetGUID(), 1853, Plr, 2, Arcemu::Gossip::ICON_CHAT, "Make this inn your home.");
+			Arcemu::Gossip::Menu::SendQuickMenu(pCreature->GetGUID(), 1853, Plr, 2, Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedWorldSrv(Arcemu::Gossip::INNKEEPER));
 			break;
 		case 4:     // EVENT OF HALLOWEEN
 			if(!Plr->HasAura(SPELL_TRICK_OR_TREATED))
