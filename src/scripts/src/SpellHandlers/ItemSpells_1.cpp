@@ -215,9 +215,6 @@ bool ForemansBlackjack(uint32 i, Spell* pSpell)
 	sprintf(msg, "Ow! Ok, I'll get back to work, %s", pSpell->p_caster->GetName());
 	target->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, msg);
 
-	// Increment the quest log
-	sQuestMgr.OnPlayerKill(pSpell->p_caster, c_target, false);
-
 	c_target->Emote(EMOTE_STATE_WORK_CHOPWOOD);
 
 	// Add timed event to return lazy peon to Zzz after 5-10 minutes (spell 17743)
