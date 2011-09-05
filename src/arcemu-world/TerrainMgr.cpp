@@ -282,7 +282,7 @@ void TileMap::Load(char* filename)
 
 	if(header.buildMagic != 12340)  //wow version
 	{
-		sLog.Error("Terrain", "%s: from incorrect client (you: %u us: %u)", header.buildMagic, 12340);
+		sLog.Error("Terrain", "%s: from incorrect client (you: %u us: %u)", filename, header.buildMagic, 12340);
 		fclose(f);
 		return;
 	}
