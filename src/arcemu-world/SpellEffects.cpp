@@ -2505,38 +2505,10 @@ void Spell::SpellEffectTriggerMissile(uint32 i) // Trigger Missile
 	}
 
 	// Cast the triggered spell on the destination location, spells like Freezing Arrow use it
-	if((u_caster != NULL) && (m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION))
+	if(m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION)
 	{
 		u_caster->CastSpellAoF(m_targets.m_destX, m_targets.m_destY, m_targets.m_destZ, spInfo, true);
 		return;
-	}
-
-	float spellRadius = GetRadius(i);
-
-	// TODO: Following should be / is probably in SpellTarget code
-	for(std::set<Object*>::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); itr++)
-	{
-		if(!((*itr)->IsUnit()) || !TO< Unit* >((*itr))->isAlive())
-			continue;
-		Unit* t = TO< Unit* >((*itr));
-
-		float r;
-		float d = m_targets.m_destX - t->GetPositionX();
-		r = d * d;
-		d = m_targets.m_destY - t->GetPositionY();
-		r += d * d;
-		d = m_targets.m_destZ - t->GetPositionZ();
-		r += d * d;
-
-		if(sqrt(r) > spellRadius) continue;
-
-		if(!isAttackable(m_caster, *itr))//Fix Me: only enemy targets?
-			continue;
-
-		Spell* sp = sSpellFactoryMgr.NewSpell(m_caster, spInfo, true, NULL);
-		SpellCastTargets tgt;
-		tgt.m_unitTarget = (*itr)->GetGUID();
-		sp->prepare(&tgt);
 	}
 }
 

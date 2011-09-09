@@ -1687,13 +1687,30 @@ class SERVER_DECL Spell : public EventableObject
 		void cast(bool);
 		// Finishes the casted spell
 		void finish(bool successful = true);
+
 		// Handle the Effects of the Spell
 		virtual void HandleEffects(uint64 guid, uint32 i);
 		void HandleCastEffects(uint64 guid, uint32 i);
-
 		void HandleModeratedTarget(uint64 guid);
-
 		void HandleModeratedEffects(uint64 guid);
+
+		void SetMissileDestination()
+		{
+			if (m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION)
+				return;
+			if(m_caster->IsInWorld() && m_targets.m_targetMask & (TARGET_FLAG_OBJECT | TARGET_FLAG_UNIT | TARGET_FLAG_CORPSE | TARGET_FLAG_CORPSE2))
+			{
+				Object* obj = m_caster->GetMapMgr()->_GetObject(m_targets.m_unitTarget);
+
+				if (obj != NULL)
+				{
+					m_targets.m_targetMask = TARGET_FLAG_DEST_LOCATION;
+					m_targets.m_destX = obj->GetPositionX();
+					m_targets.m_destY = obj->GetPositionY();
+					m_targets.m_destZ = obj->GetPositionZ();
+				}
+			}
+		}
 
 		// Take Power from the caster based on spell power usage
 		bool TakePower();
@@ -1770,7 +1787,6 @@ class SERVER_DECL Spell : public EventableObject
 		void SendTameFailure(uint8 failure);
 		static void SendHealSpellOnPlayer(Object* caster, Object* target, uint32 healed, bool critical, uint32 overhealed, uint32 spellid, uint32 absorbed = 0);
 		static void SendHealManaSpellOnPlayer(Object* caster, Object* target, uint32 dmg, uint32 powertype, uint32 spellid);
-
 
 		void HandleAddAura(uint64 guid);
 		void writeSpellGoTargets(WorldPacket* data);
