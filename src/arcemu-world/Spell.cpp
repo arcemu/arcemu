@@ -1095,10 +1095,6 @@ void Spell::AddStartCooldown()
 
 void Spell::cast(bool check)
 {
-	for (uint32 i = 0; i < 3; ++i)
-		if (GetProto()->Effect[i] == SPELL_EFFECT_TRIGGER_MISSILE)
-			SetMissileDestination();
-
 	if(duelSpell && (
 	            (p_caster != NULL && p_caster->GetDuelState() != DUEL_STATE_STARTED) ||
 	            (u_caster != NULL && u_caster->IsPet() && TO< Pet* >(u_caster)->GetPetOwner() && TO< Pet* >(u_caster)->GetPetOwner()->GetDuelState() != DUEL_STATE_STARTED)))
@@ -1183,7 +1179,7 @@ void Spell::cast(bool check)
 				}
 			}
 
-			if(GetProto()->Effect[i] && GetProto()->Effect[i] != SPELL_EFFECT_PERSISTENT_AREA_AURA && GetProto()->Effect[i] != SPELL_EFFECT_TRIGGER_MISSILE)
+			if(GetProto()->Effect[i] && GetProto()->Effect[i] != SPELL_EFFECT_PERSISTENT_AREA_AURA)
 				FillTargetMap(i);
 		}
 
@@ -4700,7 +4696,7 @@ int32 Spell::DoCalculateEffect(uint32 i, Unit* target, int32 value)
 			}
 		case SPELL_HASH_GOUGE:
 			{
-				if(u_caster != NULL)
+				if(u_caster != NULL && i == 0)
 					value += (uint32)ceilf(u_caster->GetAP() * 0.21f);
 				break;
 			}

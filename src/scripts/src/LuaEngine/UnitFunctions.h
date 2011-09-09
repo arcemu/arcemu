@@ -42,114 +42,125 @@ class LuaUnit
 
 			return 1;
 		}
-
-		static int GossipCreateMenu(lua_State* L, Unit* ptr)
+		
+		static int GossipCreateMenu(lua_State * L, Unit * ptr)
 		{
 			int text_id = luaL_checkint(L, 1);
-			Player* plr = CHECK_PLAYER(L, 2);
+			Player *plr = CHECK_PLAYER(L,2);
 			int autosend = luaL_checkint(L, 3);
-
-			if(plr == NULL)
+			
+			if( plr == NULL )
 				return 0;
-
-			if(Menu != NULL)
+			
+			if( Menu != NULL )
 				delete Menu;
-
-			Menu = new Arcemu::Gossip::Menu(ptr->GetGUID(), text_id);
-
-			if(autosend != 0)
-				Menu->Send(plr);
-
+			
+			Menu = new Arcemu::Gossip::Menu( ptr->GetGUID(), text_id );
+			
+			if( autosend != 0 )
+				Menu->Send( plr );
+			
 			return 0;
 		}
-
-		static int GossipMenuAddItem(lua_State* L, Unit* ptr)
+		
+		static int GossipMenuAddItem(lua_State * L, Unit * ptr)
 		{
 			int icon = luaL_checkint(L, 1);
-			const char* menu_text = luaL_checkstring(L, 2);
+			const char * menu_text = luaL_checkstring(L, 2);
 			int IntId = luaL_checkint(L, 3);
 			bool coded = (luaL_checkint(L, 4)) ? true : false;
-			const char* boxmessage = luaL_optstring(L, 5, "");
-			uint32 boxmoney = luaL_optint(L, 6, 0);
+			const char * boxmessage = luaL_optstring(L,5,"");
+			uint32 boxmoney = luaL_optint(L,6,0);
 
-			if(Menu == NULL)
-			{
-				LOG_ERROR("There is no menu to add items to!");
+			if( Menu == NULL ){
+				LOG_ERROR( "There is no menu to add items to!" );
 				return 0;
 			}
-
-			Menu->AddItem(icon, menu_text, IntId, boxmoney, boxmessage, coded);
-
+			
+			Menu->AddItem( icon, menu_text, IntId, boxmoney, boxmessage, coded );
+			
 			return 0;
 		}
-
-		static int GossipSendMenu(lua_State* L, Unit* ptr)
+		
+		static int GossipSendMenu(lua_State * L, Unit * ptr)
 		{
-			Player* plr = CHECK_PLAYER(L, 1);
+			Player* plr = CHECK_PLAYER(L,1);
 
-			if(Menu == NULL)
-			{
-				LOG_ERROR("There is no menu to send!");
+			if( Menu == NULL ){
+				LOG_ERROR( "There is no menu to send!" );
 				return 0;
 			}
 
 			if(plr != NULL)
-				Menu->Send(plr);
-
+				Menu->Send( plr );
+			
 			return 0;
 		}
-
-		static int GossipSendPOI(lua_State* L, Unit* ptr)
+		
+		static int GossipSendPOI(lua_State * L, Unit * ptr)
 		{
 			TEST_PLAYER()
-			Player* plr = TO_PLAYER(ptr);
-			float x = CHECK_FLOAT(L, 1);
+			Player * plr = TO_PLAYER(ptr);
+			float x = CHECK_FLOAT(L,1);
 			float y = CHECK_FLOAT(L, 2);
 			int icon = luaL_checkint(L, 3);
 			int flags = luaL_checkint(L, 4);
 			int data = luaL_checkint(L, 5);
-			const char* name = luaL_checkstring(L, 6);
-
+			const char * name = luaL_checkstring(L, 6);
+			
 			plr->Gossip_SendPOI(x, y, icon, flags, data, name);
 
 			return 0;
 		}
 
-		static int GossipSendQuickMenu(lua_State* L, Unit* ptr)
-		{
+		static int GossipSendQuickMenu( lua_State *L, Unit *ptr ){
 			TEST_UNIT()
 
-			uint32 text_id = luaL_checkint(L, 1);
-			Player* player = CHECK_PLAYER(L, 2);
-			uint32 itemid = luaL_checkint(L, 3);
-			uint8 itemicon = CHECK_UINT8(L, 4);
-			const char* itemtext = luaL_checkstring(L, 5);
-			uint32 requiredmoney = CHECK_ULONG(L, 6);
-			const char* moneytext = luaL_checkstring(L, 7);
-			uint8 extra = CHECK_UINT8(L, 8);
+			uint32 text_id = luaL_checkint( L, 1 );
+			Player *player = CHECK_PLAYER( L, 2 );
+			uint32 itemid = luaL_checkint( L, 3 );
+			uint8 itemicon = CHECK_UINT8( L, 4 );
+			const char *itemtext = luaL_checkstring( L, 5 );
+			uint32 requiredmoney = CHECK_ULONG( L, 6 );
+			const char *moneytext = luaL_checkstring( L, 7 );
+			uint8 extra = CHECK_UINT8( L, 8 );
 
-			if(player == NULL)
+			if( player == NULL )
 				return 0;
 
-			Arcemu::Gossip::Menu::SendQuickMenu(ptr->GetGUID(), text_id, player, itemid, itemicon, itemtext, requiredmoney, moneytext, extra);
+			Arcemu::Gossip::Menu::SendQuickMenu( ptr->GetGUID(), text_id, player, itemid, itemicon, itemtext, requiredmoney, moneytext, extra );
+			
+			return 0;
+		}
+
+		static int GossipAddQuests( lua_State *L, Unit *ptr ){
+			TEST_UNIT()
+
+			if( Menu == NULL ){
+				LOG_ERROR( "There's no menu to fill quests into." );
+				return 0;
+			}
+
+			Player *player = CHECK_PLAYER( L, 1 );
+
+			sQuestMgr.FillQuestMenu( TO< Creature* >( ptr ), player, *Menu );
 
 			return 0;
 		}
 
-
-		static int GossipComplete(lua_State* L, Unit* ptr)
+		
+		static int GossipComplete(lua_State * L, Unit * ptr)
 		{
 			TEST_PLAYER()
-			Player* plr = TO_PLAYER(ptr);
+			Player * plr = TO_PLAYER(ptr);
 
-			if(Menu == NULL)
-			{
-				LOG_ERROR("There is no menu to complete!");
+			if( Menu == NULL ){
+				LOG_ERROR( "There is no menu to complete!" );
 				return 0;
 			}
 
-			Menu->Complete(plr);
-
+			Menu->Complete( plr );
+			
 			return 0;
 		}
 
@@ -226,8 +237,8 @@ class LuaUnit
 		{
 			uint32 newphase = CHECK_ULONG(L, 1);
 			bool Save = (luaL_optint(L, 2, false) > 0 ? true : false);
-			Creature* crt = 0;
-			Player* p_target = 0;
+			Creature* crt = NULL;
+			Player* p_target = NULL;
 			//Save is only for creatures. if you want to save to DB with players, use your own query (security purposes).
 			//Lua: CharDBQuery("UPDATE `characters` SET `phase`='"..phase.."' WHERE (`name`='"..player:GetName().."'",0)
 			if(!ptr)
@@ -268,8 +279,8 @@ class LuaUnit
 		{
 			uint32 newphase = CHECK_ULONG(L, 1);
 			bool Save = (luaL_optint(L, 2, false) > 0 ? true : false);
-			Creature* crt = 0;
-			Player* p_target = 0;
+			Creature* crt = NULL;
+			Player* p_target = NULL;
 			//Save is only for creatures. if you want to save to DB with players, use your own query (security purposes).
 			//Lua: CharDBQuery("UPDATE `characters` SET `phase`='"..player:GetPhase().."' WHERE (`name`='"..player:GetName().."'",0)
 			if(!ptr)
@@ -310,8 +321,8 @@ class LuaUnit
 		{
 			uint32 newphase = CHECK_ULONG(L, 1);
 			bool Save = (luaL_checkint(L, 2) > 0 ? true : false);
-			Creature* crt = 0;
-			Player* p_target = 0;
+			Creature* crt = NULL;
+			Player* p_target = NULL;
 			//Save is only for creatures. if you want to save to DB with players, use your own query (security purposes).
 			//Lua: CharDBQuery("UPDATE `characters` SET `phase`='"..player:GetPhase().."' WHERE (`name`='"..player:GetName().."'",0)
 			if(!ptr)
@@ -553,43 +564,18 @@ class LuaUnit
 				lua_pushnil(L);
 				return 1;
 			}
-			CreatureSpawn* sp = new CreatureSpawn;
-			uint32 gender = i->GenerateModelId(&sp->displayid);
-			sp->entry = entry;
-			sp->form = 0;
-			sp->id = objmgr.GenerateCreatureSpawnID();
-			sp->movetype = 0;
-			sp->x = x;
-			sp->y = y;
-			sp->z = z;
-			sp->o = o;
-			sp->emote_state = 0;
-			sp->flags = 0;
-			sp->factionid = faction;
-			sp->bytes0 = sp->setbyte(0, 2, gender);
-			sp->bytes1 = 0;
-			sp->bytes2 = 0;
-			sp->stand_state = 0;
-			sp->death_state = 0;
-			sp->channel_target_creature = sp->channel_target_go = sp->channel_spell = 0;
-			sp->MountedDisplayID = 0;
-			sp->Item1SlotDisplay = equip1;
-			sp->Item2SlotDisplay = equip2;
-			sp->Item3SlotDisplay = equip3;
-			sp->CanFly = 0;
-			sp->phase = phase;
 			Creature* pCreature = ptr->GetMapMgr()->CreateCreature(entry);
 			if(pCreature == NULL)
 			{
 				lua_pushnil(L);
 				return 1;
 			}
-			pCreature->Load(sp, (uint32)NULL, NULL);
-			pCreature->m_loadedFromDB = true;
+			pCreature->Load(p, x, y, z, o);
 			pCreature->SetFaction(faction);
 			pCreature->SetEquippedItem(MELEE, equip1);
 			pCreature->SetEquippedItem(OFFHAND, equip2);
 			pCreature->SetEquippedItem(RANGED, equip3);
+			pCreature->Phase(PHASE_SET, phase);
 			pCreature->m_noRespawn = true;
 			pCreature->PushToWorld(ptr->GetMapMgr());
 			if(duration)
@@ -618,26 +604,7 @@ class LuaUnit
 				go->CreateFromProto(entry_id, mapid, x, y, z, o);
 				go->Phase(PHASE_SET, phase);
 				go->SetScale(scale);
-				// Create spawn instance
-				GOSpawn* gs = new GOSpawn;
-				gs->entry = go->GetEntry();
-				gs->facing = go->GetOrientation();
-				gs->faction = go->GetFaction();
-				gs->flags = go->GetUInt32Value(GAMEOBJECT_FLAGS);
-				gs->id = objmgr.GenerateGameObjectSpawnID();
-				gs->o = 0.0f;
-				gs->o1 = go->GetParentRotation(0);
-				gs->o2 = go->GetParentRotation(2);
-				gs->o3 = go->GetParentRotation(3);
-				gs->scale = go->GetScale();
-				gs->x = go->GetPositionX();
-				gs->y = go->GetPositionY();
-				gs->z = go->GetPositionZ();
-				gs->state = go->GetByte(GAMEOBJECT_BYTES_1, 0);
-				//gs->stateNpcLink = 0;
-				gs->phase = go->GetPhase();
 
-				go->m_spawn = gs;
 				go->PushToWorld(ptr->GetMapMgr());
 
 				if(duration)
@@ -917,10 +884,8 @@ class LuaUnit
 		}
 		static int DeleteAllWaypoints(lua_State* L, Unit* ptr)
 		{
-			Creature* crc = NULL;
 			if(ptr != NULL && ptr->IsCreature())
-				crc = TO_CREATURE(ptr);
-			crc->GetAIInterface()->deleteWaypoints();
+				ptr->GetAIInterface()->deleteWaypoints();
 			return 0;
 		}
 
@@ -2923,11 +2888,12 @@ class LuaUnit
 
 		static int SetUnitToFollow(lua_State* L, Unit* ptr)
 		{
+			TEST_UNIT()
+
 			Unit* target = CHECK_UNIT(L, 1);
 			float dist = CHECK_FLOAT(L, 2);
 			float angle = CHECK_FLOAT(L, 3);
-			if(!ptr || !dist || !angle)
-				return 0;
+
 			ptr->GetAIInterface()->SetUnitToFollow(target);
 			ptr->GetAIInterface()->SetFollowDistance(dist);
 			ptr->GetAIInterface()->SetUnitToFollowAngle(angle);

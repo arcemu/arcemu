@@ -57,7 +57,7 @@ extern LuaEngine g_luaMgr;
 #define sLuaMgr g_luaMgr
 #define sLuaEventMgr g_luaMgr.LuaEventMgr
 
-Arcemu::Gossip::Menu* Menu;
+Arcemu::Gossip::Menu *Menu;
 
 #define GET_LOCK sLuaMgr.getLock().Acquire();
 #define RELEASE_LOCK sLuaMgr.getLock().Release();

@@ -32,13 +32,13 @@ namespace luaItem
 		Player* plr = CHECK_PLAYER(L, 2);
 		int autosend = luaL_checkint(L, 3);
 
-		if(Menu != NULL)
+		if( Menu != NULL )
 			delete Menu;
 
-		Menu = new Arcemu::Gossip::Menu(ptr->GetGUID(), text_id);
+		Menu = new Arcemu::Gossip::Menu( ptr->GetGUID(), text_id );
 
-		if(autosend != 0)
-			Menu->Send(plr);
+		if( autosend != 0 )
+			Menu->Send( plr );
 
 		return 1;
 	}
@@ -51,14 +51,13 @@ namespace luaItem
 		bool coded = (luaL_checkint(L, 4)) ? true : false;
 		const char* boxmessage = luaL_optstring(L, 5, "");
 		uint32 boxmoney = luaL_optint(L, 6, 0);
-
-		if(Menu == NULL)
-		{
-			LOG_ERROR("There is no menu to add items to!");
+		
+		if( Menu == NULL ){
+			LOG_ERROR( "There is no menu to add items to!" );
 			return 0;
 		}
 
-		Menu->AddItem(icon, menu_text, IntId, boxmoney, boxmessage, coded);
+		Menu->AddItem( icon, menu_text, IntId, boxmoney, boxmessage, coded );
 
 		return 0;
 	}
@@ -66,14 +65,13 @@ namespace luaItem
 	int GossipSendMenu(lua_State* L, Item* ptr)
 	{
 		Player* plr = CHECK_PLAYER(L, 1);
-
-		if(Menu == NULL)
-		{
-			LOG_ERROR("There is no menu to send!");
+		
+		if( Menu == NULL ){
+			LOG_ERROR( "There is no menu to send!" );
 			return 0;
 		}
 
-		Menu->Send(plr);
+		Menu->Send( plr );
 
 		return 1;
 	}
@@ -81,14 +79,13 @@ namespace luaItem
 	int GossipComplete(lua_State* L, Item* ptr)
 	{
 		Player* plr = CHECK_PLAYER(L, 1);
-
-		if(Menu == NULL)
-		{
-			LOG_ERROR("There is no menu to complete!");
+		
+		if( Menu == NULL ){
+			LOG_ERROR( "There is no menu to complete!" );
 			return 0;
 		}
 
-		Menu->Complete(plr);
+		Menu->Complete( plr );
 
 		return 1;
 	}
@@ -106,26 +103,25 @@ namespace luaItem
 		plr->Gossip_SendPOI(x, y, icon, flags, data, name);
 		return 1;
 	}
-
-	static int GossipSendQuickMenu(lua_State* L, Item* ptr)
-	{
-		if(ptr == NULL)
+	
+	static int GossipSendQuickMenu( lua_State *L, Item *ptr ){
+		if( ptr == NULL )
 			return 0;
-
-		uint32 text_id = luaL_checkint(L, 1);
-		Player* player = CHECK_PLAYER(L, 2);
-		uint32 itemid = luaL_checkint(L, 3);
-		uint8 itemicon = CHECK_UINT8(L, 4);
-		const char* itemtext = luaL_checkstring(L, 5);
-		uint32 requiredmoney = CHECK_ULONG(L, 6);
-		const char* moneytext = luaL_checkstring(L, 7);
-		uint8 extra = CHECK_UINT8(L, 8);
-
-		if(player == NULL)
+		
+		uint32 text_id = luaL_checkint( L, 1 );
+		Player *player = CHECK_PLAYER( L, 2 );
+		uint32 itemid = luaL_checkint( L, 3 );
+		uint8 itemicon = CHECK_UINT8( L, 4 );
+		const char *itemtext = luaL_checkstring( L, 5 );
+		uint32 requiredmoney = CHECK_ULONG( L, 6 );
+		const char *moneytext = luaL_checkstring( L, 7 );
+		uint8 extra = CHECK_UINT8( L, 8 );
+		
+		if( player == NULL )
 			return 0;
-
-		Arcemu::Gossip::Menu::SendQuickMenu(ptr->GetGUID(), text_id, player, itemid, itemicon, itemtext, requiredmoney, moneytext, extra);
-
+		
+		Arcemu::Gossip::Menu::SendQuickMenu( ptr->GetGUID(), text_id, player, itemid, itemicon, itemtext, requiredmoney, moneytext, extra );
+		
 		return 0;
 	}
 
