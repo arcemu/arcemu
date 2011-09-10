@@ -715,16 +715,16 @@ void Creature::setDeathState(DeathState s)
 void Creature::AddToWorld()
 {
 	// force set faction
-	if(m_faction == 0 || m_factionDBC == 0)
+	if(m_faction == NULL || m_factionDBC == NULL)
 		_setFaction();
 
-	if(creature_info == 0)
+	if(creature_info == NULL)
 		creature_info = CreatureNameStorage.LookupEntry(GetEntry());
 
-	if(creature_info == 0)
+	if(creature_info == NULL)
 		return;
 
-	if(m_faction == 0 || m_factionDBC == 0)
+	if(m_faction == NULL || m_factionDBC == NULL)
 		return;
 
 	Object::AddToWorld();
@@ -733,16 +733,16 @@ void Creature::AddToWorld()
 void Creature::AddToWorld(MapMgr* pMapMgr)
 {
 	// force set faction
-	if(m_faction == 0 || m_factionDBC == 0)
+	if(m_faction == NULL || m_factionDBC == NULL)
 		_setFaction();
 
-	if(creature_info == 0)
+	if(creature_info == NULL)
 		creature_info = CreatureNameStorage.LookupEntry(GetEntry());
 
-	if(creature_info == 0)
+	if(creature_info == NULL)
 		return;
 
-	if(m_faction == 0 || m_factionDBC == 0)
+	if(m_faction == NULL || m_factionDBC == NULL)
 		return;
 
 	Object::AddToWorld(pMapMgr);
@@ -750,10 +750,10 @@ void Creature::AddToWorld(MapMgr* pMapMgr)
 
 bool Creature::CanAddToWorld()
 {
-	if(m_factionDBC == 0 || m_faction == 0)
+	if(m_factionDBC == NULL || m_faction == NULL)
 		_setFaction();
 
-	if(creature_info == 0 || m_faction == 0 || m_factionDBC == 0 || proto == 0)
+	if(creature_info == NULL || m_faction == NULL || m_factionDBC == NULL || proto == NULL)
 		return false;
 
 	return true;

@@ -1794,7 +1794,7 @@ Creature* CBattleground::SpawnSpiritGuide(float x, float y, float z, float o, ui
 		horde = 1;
 
 	CreatureInfo* pInfo = CreatureNameStorage.LookupEntry(13116 + horde);
-	if(pInfo == 0)
+	if(pInfo == NULL)
 	{
 		return NULL;
 	}

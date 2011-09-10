@@ -1561,7 +1561,7 @@ void ObjectMgr::LoadSpellEffectsOverride()
 Item* ObjectMgr::CreateItem(uint32 entry, Player* owner)
 {
 	ItemPrototype* proto = ItemPrototypeStorage.LookupEntry(entry);
-	if(proto == 0) return 0;
+	if(proto == NULL) return 0;
 
 	if(proto->InventoryType == INVTYPE_BAG)
 	{

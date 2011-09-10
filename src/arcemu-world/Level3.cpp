@@ -1691,7 +1691,7 @@ bool ChatHandler::HandleModifyLevelCommand(const char* args, WorldSession* m_ses
 
 	// lookup level information
 	LevelInfo* Info = objmgr.GetLevelInfo(plr->getRace(), plr->getClass(), Level);
-	if(Info == 0)
+	if(Info == NULL)
 	{
 		RedSystemMessage(m_session, "Levelup information not found.");
 		return true;
@@ -2760,7 +2760,7 @@ bool ChatHandler::HandleCreatureSpawnCommand(const char* args, WorldSession* m_s
 
 	CreatureProto* proto = CreatureProtoStorage.LookupEntry(entry);
 	CreatureInfo* info = CreatureNameStorage.LookupEntry(entry);
-	if(proto == 0 || info == 0)
+	if(proto == NULL || info == NULL)
 	{
 		RedSystemMessage(m_session, "Invalid entry id.");
 		return true;
