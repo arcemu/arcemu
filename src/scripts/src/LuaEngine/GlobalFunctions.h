@@ -70,7 +70,7 @@ namespace luaGlobalFunctions
 				pCreature->SetEquippedItem(RANGED, equip3);
 				pCreature->Phase(PHASE_SET, 1);
 				pCreature->m_noRespawn = true;
-				pCreature->PushToWorld(mapMgr);
+				pCreature->AddToWorld(mapMgr);
 				if(duration > 0)
 					pCreature->Despawn(duration, 0);
 				if(save)
@@ -91,7 +91,7 @@ namespace luaGlobalFunctions
 				go->Phase(PHASE_SET, 1);
 				go->SetScale(((float)faction) / 100.0f);
 
-				go->PushToWorld(mapMgr);
+				go->AddToWorld(mapMgr);
 
 				if(duration)
 					sEventMgr.AddEvent(go, &GameObject::ExpireAndDelete, EVENT_GAMEOBJECT_UPDATE, duration, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
