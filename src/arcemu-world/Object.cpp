@@ -2441,7 +2441,7 @@ void Object::SendDestroyObject()
 	SendMessageToSet(&data, false);
 }
 
-bool Object::GetPoint(float angle, float rad, float & outx, float & outy, float & outz)
+bool Object::GetPoint(float angle, float rad, float & outx, float & outy, float & outz, bool sloppypath)
 {
 	if(!IsInWorld())
 		return false;
@@ -2458,7 +2458,7 @@ bool Object::GetPoint(float angle, float rad, float & outx, float & outy, float 
 	if(nav != NULL)
 	{
 		//if we can path there, go for it
-		if(!IsUnit() || !TO_UNIT(this)->GetAIInterface()->CanCreatePath(outx, outy, outz))
+		if(!IsUnit() || !sloppypath || !TO_UNIT(this)->GetAIInterface()->CanCreatePath(outx, outy, outz))
 		{
 			//raycast nav mesh to see if this place is valid
 			float start[3] = { GetPositionY(), GetPositionZ() + 0.5f, GetPositionX() };
@@ -2470,16 +2470,34 @@ bool Object::GetPoint(float angle, float rad, float & outx, float & outy, float 
 			dtPolyRef startref;
 			nav->query->findNearestPoly(start, extents, &filter, &startref, NULL);
 
+			float point, pointNormal;
 			float result[3];
 			int numvisited;
 			dtPolyRef visited[MAX_PATH_LENGTH];
 
-			nav->query->moveAlongSurface(startref, start, end, &filter, result, visited, &numvisited, MAX_PATH_LENGTH);
-			nav->query->getPolyHeight(visited[numvisited - 1], result, &result[1]);
-			//copy end back to function floats
-			outy = result[0];
-			outz = result[1];
-			outx = result[2];
+			dtStatus rayresult = nav->query->raycast(startref, start, end, &filter, &point, &pointNormal, visited, &numvisited, MAX_PATH_LENGTH);
+
+			if (point <= 1.0f)
+			{
+				if (numvisited == 0 || rayresult == DT_FAILURE)
+				{
+					result[0] = start[0];
+					result[1] = start[1];
+					result[2] = start[2];
+				}
+				else
+				{
+					result[0] = start[0] + ((end[0] - start[0]) * point);
+					result[1] = start[1] + ((end[1] - start[1]) * point);
+					result[2] = start[2] + ((end[2] - start[2]) * point);
+					nav->query->getPolyHeight(visited[numvisited - 1], result, &result[1]);
+				}
+
+				//copy end back to function floats
+				outy = result[0];
+				outz = result[1];
+				outx = result[2];
+			}
 		}
 	}
 	else //test against vmap if mmap isn't available

@@ -776,7 +776,7 @@ class SERVER_DECL Object : public EventableObject
 		virtual Object* GetPlayerOwner();
 		std::set<Spell*> m_pendingSpells;
 
-		bool GetPoint(float angle, float rad, float & outx, float & outy, float & outz);
+		bool GetPoint(float angle, float rad, float & outx, float & outy, float & outz, bool sloppypath = false);
 		bool GetRandomPoint(float rad, float & outx, float & outy, float & outz) { return GetPoint(RandomFloat(float(M_PI * 2)), rad, outx, outy, outz); }
 		bool GetRandomPoint(float rad, LocationVector & out) { return GetRandomPoint(rad, out.x, out.y, out.z); }
 };

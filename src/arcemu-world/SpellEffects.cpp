@@ -2320,43 +2320,8 @@ void Spell::SpellEffectLeap(uint32 i) // Leap
 
 	if(nav != NULL)
 	{
-		float destx = unitTarget->GetPositionX() + radius * cos(unitTarget->GetOrientation());
-		float desty = unitTarget->GetPositionY() + radius * sin(unitTarget->GetOrientation());
-		float landz = unitTarget->GetMapMgr()->GetLandHeight(destx, desty, unitTarget->GetPositionZ() + 2);
-		float waterz;
-		uint32 watertype;
-		unitTarget->GetMapMgr()->GetLiquidInfo(destx, desty, unitTarget->GetPositionZ() + 2, waterz, watertype);
-		float destz = max(waterz, landz);
-
-		//raycast nav mesh to see if this place is valid
-		float start[3] = { unitTarget->GetPositionY(), unitTarget->GetPositionZ() + 0.5f, unitTarget->GetPositionX() };
-		float end[3] = { desty, destz + 0.5f, destx };
-		float extents[3] = { 3, 5, 3 };
-		dtQueryFilter filter;
-		filter.setIncludeFlags(NAV_GROUND | NAV_WATER | NAV_SLIME | NAV_MAGMA);
-
-		dtPolyRef startref;
-		if(nav->query->findNearestPoly(start, extents, &filter, &startref, NULL) == DT_SUCCESS && startref != 0)
-		{
-			float result[3];
-			int numvisited;
-			dtPolyRef visited[MAX_PATH_LENGTH];
-
-			nav->query->moveAlongSurface(startref, start, end, &filter, result, visited, &numvisited, MAX_PATH_LENGTH);
-			nav->query->getPolyHeight(visited[numvisited - 1], result, &result[1]);
-			//copy end back to function floats
-			desty = result[0];
-			destz = result[1];
-			destx = result[2];
-		}
-		else
-		{
-			//we've blinked but we're not in reach of the nav mesh, we simply blink to where we were (high in air for example).
-			destx = unitTarget->GetPositionX();
-			desty = unitTarget->GetPositionY();
-			destz = unitTarget->GetPositionZ();
-		}
-
+		float destx, desty, destz;
+		unitTarget->GetPoint(unitTarget->GetOrientation(), radius, destx, desty, destz);
 		if(playerTarget != NULL)
 			playerTarget->SafeTeleport(playerTarget->GetMapId(), playerTarget->GetInstanceID(), LocationVector(destx, desty, destz, playerTarget->GetOrientation()));
 		else if(unitTarget != NULL)
