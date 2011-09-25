@@ -868,6 +868,9 @@ void Group::UpdateOutOfRangePlayer(Player* pPlayer, uint32 Flags, bool Distribut
 	if(pPlayer->GetPowerType() != POWER_TYPE_MANA)
 		Flags |= GROUP_UPDATE_FLAG_POWER_TYPE;
 
+	if( pPlayer->GetCurrentVehicle() != NULL )
+		Flags |= GROUP_UPDATE_FLAG_VEHICLE_SEAT;
+
 	/*Flags |= GROUP_UPDATE_FLAG_PET_NAME;
 	Flags |= GROUP_UPDATE_FLAG_PET_UNK_1;*/
 
@@ -916,6 +919,11 @@ void Group::UpdateOutOfRangePlayer(Player* pPlayer, uint32 Flags, bool Distribut
 	{
 		*data << int16(pPlayer->GetPositionX()) << int16(pPlayer->GetPositionY());			// wtf packed floats? O.o
 		pPlayer->m_last_group_position = pPlayer->GetPosition();
+	}
+
+	if( Flags & GROUP_UPDATE_FLAG_VEHICLE_SEAT ){
+		if( pPlayer->GetCurrentVehicle() != NULL )
+			*data << uint32( pPlayer->GetCurrentVehicle()->GetSeatEntryForPassenger( pPlayer ) );
 	}
 
 	if(Flags & GROUP_UPDATE_TYPE_FULL_REQUEST_REPLY)

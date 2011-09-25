@@ -45,6 +45,8 @@ enum HIGHGUID_TYPE
 #define GET_TYPE_FROM_GUID(x) ( Arcemu::Util::GUID_HIPART( (x) ) & HIGHGUID_TYPE_MASK )
 #define GET_LOWGUID_PART(x) ( Arcemu::Util::GUID_LOPART( (x) ) & LOWGUID_ENTRY_MASK )
 
+#define MAX_INTERACTION_RANGE 5.0f
+
 // TODO: fix that type mess
 
 enum TYPE
@@ -113,6 +115,27 @@ typedef struct
 	int32 full_damage;
 	uint32 resisted_damage;
 } dealdamage;
+
+struct TransporterInfo{
+	uint64 guid;
+	float x;
+	float y;
+	float z;
+	float o;
+	uint32 flags;
+	uint8 seat;
+
+	TransporterInfo(){
+		guid = 0;
+		x = 0.0f;
+		y = 0.0f;
+		z = 0.0f;
+		o = 0.0f;
+		flags = 0;
+		seat = 0;
+	}
+};
+
 
 class WorldPacket;
 class ByteBuffer;
@@ -229,7 +252,7 @@ class SERVER_DECL Object : public EventableObject
 
 		const uint32 GetTypeFromGUID() const { return (m_uint32Values[ HIGHGUID ] & HIGHGUID_TYPE_MASK); }
 		const uint32 GetUIdFromGUID() const { return (m_uint32Values[ LOWGUID ] & LOWGUID_ENTRY_MASK); }
-
+		
 		// type
 		const uint8 & GetTypeId() const { return m_objectTypeId; }
 		bool IsUnit()	{ return (m_objectTypeId == TYPEID_UNIT || m_objectTypeId == TYPEID_PLAYER); }
@@ -239,6 +262,7 @@ class SERVER_DECL Object : public EventableObject
 		virtual bool IsPet() { return false; }
 		virtual bool IsTotem() { return false; }
 		virtual bool IsSummon() { return false; }
+		virtual bool IsVehicle(){ return false; }
 		bool IsGameObject() { return m_objectTypeId == TYPEID_GAMEOBJECT; }
 		bool IsCorpse() { return m_objectTypeId == TYPEID_CORPSE; }
 		bool IsContainer() { return m_objectTypeId == TYPEID_CONTAINER; }
@@ -616,6 +640,8 @@ class SERVER_DECL Object : public EventableObject
 
 		float m_base_runSpeed;
 		float m_base_walkSpeed;
+
+		TransporterInfo transporter_info;
 
 		uint32 m_phase; //This stores the phase, if two objects have the same bit set, then they can see each other. The default phase is 0x1.
 

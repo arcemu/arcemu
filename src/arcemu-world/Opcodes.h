@@ -1208,7 +1208,7 @@ enum Opcodes
     SMSG_PET_UNLEARNED_SPELL                        = 0x49A,	// implemented
     CMSG_CHANGE_SEATS_ON_CONTROLLED_VEHICLE         = 0x49B,	// not used in client
     CMSG_HEARTH_AND_RESURRECT                       = 0x49C,	/// TODO: implement
-    SMSG_CONTROL_VECHICLE                           = 0x49D,	/// TODO: implement correctly...
+    SMSG_CONTROL_VEHICLE                            = 0x49D,	/// TODO: implement correctly...
     SMSG_CRITERIA_DELETED                           = 0x49E,	// implemented
     SMSG_ACHIEVEMENT_DELETED                        = 0x49F,	// implemented
     CMSG_SERVER_INFO_QUERY                          = 0x4A0,	// not used in client
@@ -1218,9 +1218,9 @@ enum Opcodes
     CMSG_QUERY_VEHICLE_STATUS                       = 0x4A4,	// not used in client
     UMSG_UNKNOWN_1189                               = 0x4A5,	/// TODO: investigate, old SMSG_PET_GUIDS
     SMSG_UNKNOWN_1190                               = 0x4A6,	/// TODO: investigate, old SMSG_CLIENTCACHE_VERSION
-    SMSG_UNKNOWN_1191                               = 0x4A7,	/// TODO: investigate, smsg guid+uint32 (vehicle)
-    CMSG_UNKNOWN_1192                               = 0x4A8,	/// TODO: investigate, cmsg uint64
-    CMSG_EJECT_PASSENGER                            = 0x4A9,	/// TODO: investigate, cmsg uint64
+    SMSG_PLAYER_VEHICLE_DATA                        = 0x4A7,	/// TODO: investigate, smsg guid+uint32 (vehicle)
+	CMSG_PLAYER_VEHICLE_ENTER                       = 0x4A8,	/// TODO: investigate, cmsg uint64
+	CMSG_EJECT_PASSENGER                            = 0x4A9,	/// TODO: investigate, cmsg uint64
     SMSG_PET_GUIDS                                  = 0x4AA,	/// TODO: implement
     SMSG_CLIENTCACHE_VERSION                        = 0x4AB,	/// TODO: implement
     UMSG_UNKNOWN_1196                               = 0x4AC,	/// TODO: investigate
@@ -1311,7 +1311,8 @@ enum NPCFlags
     UNIT_NPC_FLAG_AUCTIONEER		= 2097152,
     UNIT_NPC_FLAG_STABLEMASTER		= 4194304,
     UNIT_NPC_FLAG_GUILD_BANK		= 8388608,
-    UNIT_NPC_FLAG_SPELLCLICK		= 16777216
+    UNIT_NPC_FLAG_SPELLCLICK		= 16777216,
+	UNIT_NPC_FLAG_PLAYER_VEHICLE	= 0x02000000
 };
 
 #endif

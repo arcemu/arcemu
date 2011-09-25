@@ -967,6 +967,7 @@ class SERVER_DECL Player : public Unit
 		bool Cooldown_CanCast(SpellEntry* pSpell);
 		bool Cooldown_CanCast(ItemPrototype* pProto, uint32 x);
 		void UpdatePotionCooldown();
+		bool HasSpellWithAuraNameAndBasePoints( uint32 auraname, uint32 basepoints );
 
 	protected:
 		void _Cooldown_Add(uint32 Type, uint32 Misc, uint32 Time, uint32 SpellId, uint32 ItemId);
@@ -1543,7 +1544,7 @@ class SERVER_DECL Player : public Unit
 		/* Movement system                                                      */
 		/************************************************************************/
 		void SetMovement(uint8 pType, uint32 flag);
-		void SetPlayerSpeed(uint8 SpeedType, float value);
+		void SetSpeeds( uint8 type, float speed );
 		float GetPlayerSpeed() {return m_runSpeed;}
 		uint8 m_currentMovement;
 		bool m_isMoving;
@@ -1631,9 +1632,7 @@ class SERVER_DECL Player : public Unit
 		void AddCalculatedRestXP(uint32 seconds);
 		void ApplyPlayerRestState(bool apply);
 		void UpdateRestState();
-		bool m_noFallDamage;
-		float z_axisposition;
-		int32 m_safeFall;
+
 		// Gossip
 		GossipMenu* CurrentGossipMenu;
 		void CleanupGossipMenu();
@@ -1663,14 +1662,6 @@ class SERVER_DECL Player : public Unit
 		std::set< uint64 >::iterator FindVisible(uint64 obj) { return m_visibleObjects.find(obj); }
 		void RemoveIfVisible(uint64 obj);
 
-		//Transporters
-		bool m_lockTransportVariables;
-		uint64 m_TransporterGUID;
-		float m_TransporterX;
-		float m_TransporterY;
-		float m_TransporterZ;
-		float m_TransporterO;
-		float m_TransporterUnk;
 		// Misc
 		void EventCannibalize(uint32 amount);
 		bool m_AllowAreaTriggerPort;
@@ -1802,6 +1793,7 @@ class SERVER_DECL Player : public Unit
 
 		uint32 m_ShapeShifted;
 		uint32 m_MountSpellId;
+		uint32 mountvehicleid;
 
 		bool IsMounted()
 		{
@@ -1819,6 +1811,18 @@ class SERVER_DECL Player : public Unit
 				m_MountSpellId = 0;
 			}
 		}
+		
+		bool IsVehicle(){
+			if( mountvehicleid != 0 )
+				return true;
+			else
+				return false;
+		}
+
+
+		void AddVehicleComponent( uint32 creature_entry, uint32 vehicleid );
+
+		void RemoveVehicleComponent();
 
 		void SendMountResult(uint32 result)
 		{
@@ -2212,8 +2216,8 @@ class SERVER_DECL Player : public Unit
 		{
 			ResurrectPlayer();
 			SetMovement(MOVE_UNROOT, 5);
-			SetPlayerSpeed(RUN, PLAYER_NORMAL_RUN_SPEED);
-			SetPlayerSpeed(SWIM, PLAYER_NORMAL_SWIM_SPEED);
+			SetSpeeds(RUN, PLAYER_NORMAL_RUN_SPEED);
+			SetSpeeds(SWIM, PLAYER_NORMAL_SWIM_SPEED);
 			SetMovement(MOVE_LAND_WALK, 8);
 			SetHealth(GetUInt32Value(UNIT_FIELD_MAXHEALTH));
 		}
@@ -2256,7 +2260,6 @@ class SERVER_DECL Player : public Unit
 		/************************************************************************/
 		void SendLevelupInfo(uint32 level, uint32 Hp, uint32 Mana, uint32 Stat0, uint32 Stat1, uint32 Stat2, uint32 Stat3, uint32 Stat4);
 		void SendLogXPGain(uint64 guid, uint32 NormalXP, uint32 RestedXP, bool type);
-		void SendEnvironmentalDamageLog(const uint64 & guid, uint8 type, uint32 damage);
 		void SendWorldStateUpdate(uint32 WorldState, uint32 Value);
 		void SendCastResult(uint32 SpellId, uint8 ErrorMessage, uint8 MultiCast, uint32 Extra);
 		void Gossip_SendPOI(float X, float Y, uint32 Icon, uint32 Flags, uint32 Data, const char* Name);

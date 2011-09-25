@@ -26,6 +26,7 @@ class GossipScript;
 
 #define MAX_CREATURE_INV_ITEMS 150
 #define MAX_CREATURE_LOOT 8
+#define MAX_CREATURE_PROTO_SPELLS 8
 #define MAX_PET_SPELL 4
 #define VENDOR_ITEMS_UPDATE_TIME 3600000
 #include "Map.h"
@@ -164,13 +165,15 @@ struct CreatureProto
 	float	run_speed;//most of the time mobs use this
 	float fly_speed;
 	uint32 extra_a9_flags;
-	uint32 AISpells[4];
+	uint32 AISpells[ MAX_CREATURE_PROTO_SPELLS ];
 	uint32 AISpellsFlags;
 	uint32 modImmunities;
 	uint32 isTrainingDummy;
 	uint32 guardtype;
 	uint32 summonguard;
 	uint32 spelldataid;
+	uint32 vehicleid;
+	uint32 rooted;
 
 	/* AI Stuff */
 	bool m_canRangedAttack;
@@ -180,8 +183,9 @@ struct CreatureProto
 	bool m_canCallForHelp;
 	float m_callForHelpHealth;
 
-	set<uint32> start_auras;
-	list<AI_Spell*> spells;
+	std::set<uint32> start_auras;
+	std::vector< uint32 > castable_spells;
+	std::list<AI_Spell*> spells;
 };
 
 struct VendorRestrictionEntry
@@ -340,9 +344,17 @@ class SERVER_DECL Creature : public Unit
 
 		Creature(uint64 guid);
 		virtual ~Creature();
-
+		
 		// For derived subclasses of Creature
-		virtual bool IsVehicle() { return false; }
+		bool IsVehicle(){
+			if( proto->vehicleid != 0 )
+				return true;
+			else
+				return false;
+		}
+		
+		void AddVehicleComponent( uint32 creature_entry, uint32 vehicleid );
+		void RemoveVehicleComponent();
 
 		bool Load(CreatureSpawn* spawn, uint32 mode, MapInfo* info);
 		void Load(CreatureProto* proto_, float x, float y, float z, float o = 0);
@@ -380,6 +392,7 @@ class SERVER_DECL Creature : public Unit
 		void SetSanctuaryFlag();
 		void RemoveSanctuaryFlag();
 
+		void SetSpeeds( uint8 type, float speed );
 
 		int32 GetSlotByItemId(uint32 itemid)
 		{
@@ -698,9 +711,6 @@ class SERVER_DECL Creature : public Unit
 		MapCell* m_respawnCell;
 		bool m_noRespawn;
 		uint32 m_respawnTimeOverride;
-		LocationVector* m_transportPosition;
-		uint32 m_transportGuid;
-		WoWGuid m_transportNewGuid;
 
 		float GetBaseParry();
 		bool isattackable(CreatureSpawn* spawn);

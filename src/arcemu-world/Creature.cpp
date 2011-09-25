@@ -233,8 +233,6 @@ Creature::Creature(uint64 guid)
 	m_noRespawn = false;
 	m_respawnTimeOverride = 0;
 	m_canRegenerateHP = true;
-	m_transportGuid = 0;
-	m_transportPosition = NULL;
 	BaseAttackType = SCHOOL_NORMAL;
 	m_healthfromspell = 0;
 	m_speedFromHaste = 0;
@@ -1349,7 +1347,7 @@ bool Creature::Load(CreatureSpawn* spawn, uint32 mode, MapInfo* info)
 
 	GetAIInterface()->SetWalk();
 
-	if(isattackable(spawn) && !(proto->isTrainingDummy))
+	if(isattackable(spawn) && !(proto->isTrainingDummy) && !IsVehicle() )
 	{
 		GetAIInterface()->SetAllowedToEnterCombat(true);
 	}
@@ -1357,7 +1355,6 @@ bool Creature::Load(CreatureSpawn* spawn, uint32 mode, MapInfo* info)
 	{
 		GetAIInterface()->SetAllowedToEnterCombat(false);
 		GetAIInterface()->SetAIType(AITYPE_PASSIVE);
-		Root();
 	}
 
 	// load formation data
@@ -1433,6 +1430,16 @@ bool Creature::Load(CreatureSpawn* spawn, uint32 mode, MapInfo* info)
 	this->m_position.y = spawn->y;
 	this->m_position.z = spawn->z;
 	this->m_position.o = spawn->o;
+
+	if( IsVehicle() ){
+		AddVehicleComponent( proto->Id, proto->vehicleid );
+		SetFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK );
+		setAItoUse( false );
+	}
+
+	if( proto->rooted != 0 )
+		Root();
+
 	return true;
 }
 
@@ -1445,7 +1452,7 @@ void Creature::Load(CreatureProto* proto_, float x, float y, float z, float o)
 	if(!creature_info)
 		return;
 
-	if(proto_->isTrainingDummy == 0)
+	if(proto_->isTrainingDummy == 0 && !IsVehicle() )
 	{
 		GetAIInterface()->SetAllowedToEnterCombat(true);
 	}
@@ -1453,7 +1460,6 @@ void Creature::Load(CreatureProto* proto_, float x, float y, float z, float o)
 	{
 		GetAIInterface()->SetAllowedToEnterCombat(false);
 		GetAIInterface()->SetAIType(AITYPE_PASSIVE);
-		Root();
 	}
 
 	m_walkSpeed = m_base_walkSpeed = proto->walk_speed; //set speeds
@@ -1605,6 +1611,15 @@ void Creature::Load(CreatureProto* proto_, float x, float y, float z, float o)
 	m_invisFlag = static_cast<uint8>(proto->invisibility_type);
 	if(m_invisFlag > 0)
 		m_invisible = true;
+
+	if( IsVehicle() ){
+		AddVehicleComponent( proto->Id, proto->vehicleid );
+		SetFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK );
+		setAItoUse( false );
+	}
+
+	if( proto->rooted != 0 )
+		Root();
 }
 
 void Creature::OnPushToWorld()
@@ -1681,6 +1696,7 @@ void Creature::OnPushToWorld()
 		}
 
 	}
+
 	CALL_INSTANCE_SCRIPT_EVENT(m_mapMgr, OnCreaturePushToWorld)(this);
 }
 
@@ -1886,6 +1902,56 @@ void Creature::RemoveSanctuaryFlag()
 	summonhandler.RemoveSanctuaryFlags();
 }
 
+void Creature::SetSpeeds( uint8 type, float speed ){
+	WorldPacket data( 50 );
+
+	data << GetNewGUID();
+	data << uint32( 0 );
+
+	if( type == RUN )
+		data << uint8( 0 );
+
+	data << float( speed );
+
+	switch( type ){
+
+		case WALK:{
+			data.SetOpcode( SMSG_FORCE_WALK_SPEED_CHANGE );
+			m_walkSpeed = speed;
+			break;}
+
+		case RUN:{
+			data.SetOpcode(SMSG_FORCE_RUN_SPEED_CHANGE);
+			m_runSpeed = speed;
+			break;}
+		
+		case RUNBACK:{
+			data.SetOpcode(SMSG_FORCE_RUN_BACK_SPEED_CHANGE);
+			m_backWalkSpeed = speed;
+			break;}
+		
+		case SWIM:{
+			data.SetOpcode(SMSG_FORCE_SWIM_SPEED_CHANGE);
+			m_swimSpeed = speed;
+			break;}
+		
+		case SWIMBACK:{
+			data.SetOpcode(SMSG_FORCE_SWIM_BACK_SPEED_CHANGE);
+			m_backSwimSpeed = speed;
+			break;}
+
+		case FLY:{
+			data.SetOpcode(SMSG_FORCE_FLIGHT_SPEED_CHANGE);
+			m_flySpeed = speed;
+			break;}
+
+		default:
+			return;
+	}
+
+	SendMessageToSet( &data , true );
+}
+
 void Creature::PrepareForRemove()
 {
 	RemoveAllAuras();
@@ -2011,6 +2077,15 @@ void Creature::TakeDamage(Unit* pAttacker, uint32 damage, uint32 spellid, bool n
 
 void Creature::Die(Unit* pAttacker, uint32 damage, uint32 spellid)
 {
+	if( GetVehicleComponent() != NULL ){
+		GetVehicleComponent()->RemoveAccessories();
+		GetVehicleComponent()->EjectAllPassengers();
+	}
+
+	// Creature falls off vehicle on death
+	if( ( currentvehicle != NULL ) )
+		currentvehicle->EjectPassenger( this );
+
 	//general hook for die
 	if(!sHookInterface.OnPreUnitDie(pAttacker, this))
 		return;
@@ -2255,36 +2330,19 @@ void Creature::BuildPetSpellList(WorldPacket & data)
 	data << uint64(GetGUID());
 	data << uint16(0);
 	data << uint32(0);
-	data << uint32(0);
-
-	list< uint32 > avail_spells;
-
-	if(proto->spelldataid != 0)
-	{
-		CreatureSpellDataEntry* spe = dbcCreatureSpellData.LookupEntry(proto->spelldataid);
-
-		for(uint32 i = 0; i < 3; i++)
-		{
-			uint32 spellid = spe->Spells[ i ];
-
-			if(spellid == 0)
-				break;
-			else
-				avail_spells.push_back(spellid);
-		}
-	}
+	if( !IsVehicle() )
+		data << uint32(0);
 	else
-	{
-		for(uint32 i = 0; i < 4; i++)
-			avail_spells.push_back(proto->AISpells[ i ]);
-	}
+		data << uint32( 0x101 );
 
-	list< uint32 >::iterator itr = avail_spells.begin();
+	
+
+	std::vector< uint32 >::iterator itr = proto->castable_spells.begin();
 
 	// Send the actionbar
 	for(uint32 i = 1; i < 10; ++i)
 	{
-		if(itr != avail_spells.end())
+		if(itr != proto->castable_spells.end())
 		{
 			data << uint16(*itr);
 			data << uint16(DEFAULT_SPELL_STATE);
@@ -2294,7 +2352,7 @@ void Creature::BuildPetSpellList(WorldPacket & data)
 		{
 			data << uint16(0);
 			data << uint8(0);
-			data << uint8(i + 5);
+			data << uint8(i + 8);
 		}
 	}
 
@@ -2305,4 +2363,19 @@ void Creature::BuildPetSpellList(WorldPacket & data)
 Object* Creature::GetPlayerOwner()
 {
 	return NULL;
+}
+
+void Creature::AddVehicleComponent( uint32 creature_entry, uint32 vehicleid ){
+	if( vehicle != NULL ){
+		LOG_ERROR( "Creature %u ( %s ) with GUID %u already has a vehicle component.", proto->Id, creature_info->Name, GetUIdFromGUID() );
+		return;
+	}
+
+	vehicle = new Vehicle();
+	vehicle->Load( this, creature_entry, vehicleid );
+}
+
+void Creature::RemoveVehicleComponent(){
+	delete vehicle;
+	vehicle = NULL;
 }

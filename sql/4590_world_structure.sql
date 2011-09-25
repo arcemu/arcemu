@@ -87,7 +87,7 @@ CREATE TABLE `arcemu_db_version` (
 
 /*Data for the table `arcemu_db_version` */
 
-insert  into `arcemu_db_version`(`LastUpdate`) values (4524);
+insert  into `arcemu_db_version`(`LastUpdate`) values (4590);
 
 /*Table structure for table `areatriggers` */
 
@@ -275,16 +275,22 @@ CREATE TABLE `creature_proto` (
   `run_speed` float NOT NULL DEFAULT '8',
   `fly_speed` float NOT NULL DEFAULT '14',
   `extra_a9_flags` int(30) NOT NULL DEFAULT '0',
-  `spell1` int(30) NOT NULL DEFAULT '0',
-  `spell2` int(30) NOT NULL DEFAULT '0',
-  `spell3` int(30) NOT NULL DEFAULT '0',
-  `spell4` int(30) NOT NULL DEFAULT '0',
+  `spell1` int(30) unsigned NOT NULL DEFAULT '0',
+  `spell2` int(30) unsigned NOT NULL DEFAULT '0',
+  `spell3` int(30) unsigned NOT NULL DEFAULT '0',
+  `spell4` int(30) unsigned NOT NULL DEFAULT '0',
+  `spell5` int(30) unsigned NOT NULL DEFAULT '0',
+  `spell6` int(30) unsigned NOT NULL DEFAULT '0',
+  `spell7` int(30) unsigned NOT NULL DEFAULT '0',
+  `spell8` int(30) unsigned NOT NULL DEFAULT '0',
   `spell_flags` int(30) NOT NULL DEFAULT '0',
   `modImmunities` int(30) unsigned NOT NULL DEFAULT '0',
   `isTrainingDummy` int(10) unsigned NOT NULL DEFAULT '0',
   `guardtype` int(10) unsigned NOT NULL DEFAULT '0',
   `summonguard` int(10) unsigned NOT NULL DEFAULT '0',
   `spelldataid` INT UNSIGNED DEFAULT '0' NOT NULL,
+  `vehicleid` INT UNSIGNED DEFAULT '0' NOT NULL,
+  `rooted` INT UNSIGNED DEFAULT '0' NOT NULL,
   PRIMARY KEY (`entry`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Creature System';
 

@@ -614,10 +614,10 @@ bool ChatHandler::HandleModifySpeedCommand(const char* args, WorldSession* m_ses
 	snprintf((char*)buf, 256, "%s set your speed to %2.2f.", m_session->GetPlayer()->GetName(), Speed);
 	SystemMessage(chr->GetSession(), buf);
 
-	chr->SetPlayerSpeed(RUN, Speed);
-	chr->SetPlayerSpeed(SWIM, Speed);
-	chr->SetPlayerSpeed(RUNBACK, Speed / 2); // Backwards slower, it's more natural :P
-	chr->SetPlayerSpeed(FLY, Speed * 2); // Flying is faster :P
+	chr->SetSpeeds(RUN, Speed);
+	chr->SetSpeeds(SWIM, Speed);
+	chr->SetSpeeds(RUNBACK, Speed / 2); // Backwards slower, it's more natural :P
+	chr->SetSpeeds(FLY, Speed * 2); // Flying is faster :P
 
 	return true;
 }
@@ -1362,3 +1362,157 @@ bool ChatHandler::HandleLookupAchievementCmd(const char* args, WorldSession* m_s
 
 
 #endif
+
+bool ChatHandler::HandleVehicleEjectPassengerCommand( const char *args, WorldSession *session ){
+	uint32 seat = 0;
+
+	std::stringstream ss( args );
+	ss >> seat;
+	if( ss.fail() ){
+		RedSystemMessage( session, "You need to specify a seat number." );
+		return false;
+	}
+
+	Player *p = session->GetPlayer();
+
+	if( p->GetTargetGUID() == 0 ){
+		RedSystemMessage( session, "You need to select a vehicle." );
+		return false;
+	}
+
+	Unit *u = p->GetMapMgr()->GetUnit( p->GetTargetGUID() );
+	if( u == NULL ){
+		RedSystemMessage( session, "You need to select a vehicle." );
+		return false;
+	}
+
+	if( u->GetVehicleComponent() == NULL ){
+		RedSystemMessage( session, "You need to select a vehicle." );
+		return false;
+	}
+
+	u->GetVehicleComponent()->EjectPassengerFromSeat( seat );
+
+	return true;
+}
+
+bool ChatHandler::HandleVehicleEjectAllPassengersCommand( const char *args, WorldSession *session ){
+	Player *p = session->GetPlayer();
+
+	if( p->GetTargetGUID() == 0 ){
+		RedSystemMessage( session, "You need to select a vehicle." );
+		return false;
+	}
+
+	Unit *u = p->GetMapMgr()->GetUnit( p->GetTargetGUID() );
+	if( u == NULL ){
+		RedSystemMessage( session, "You need to select a vehicle." );
+		return false;
+	}
+
+	if( u->GetVehicleComponent() == NULL ){
+		RedSystemMessage( session, "You need to select a vehicle." );
+		return false;
+	}
+
+	u->GetVehicleComponent()->EjectAllPassengers();
+
+	return true;
+}
+
+bool ChatHandler::HandleVehicleInstallAccessoriesCommand( const char *args, WorldSession *session ){
+	Player *p = session->GetPlayer();
+
+	if( p->GetTargetGUID() == 0 ){
+		RedSystemMessage( session, "You need to select a vehicle." );
+		return false;
+	}
+
+	Unit *u = p->GetMapMgr()->GetUnit( p->GetTargetGUID() );
+	if( u == NULL ){
+		RedSystemMessage( session, "You need to select a vehicle." );
+		return false;
+	}
+
+	if( u->GetVehicleComponent() == NULL ){
+		RedSystemMessage( session, "You need to select a vehicle." );
+		return false;
+	}
+
+	u->GetVehicleComponent()->InstallAccessories();
+
+	return true;
+}
+
+bool ChatHandler::HandleVehicleRemoveAccessoriesCommand( const char *args, WorldSession *session ){
+	Player *p = session->GetPlayer();
+
+	if( p->GetTargetGUID() == 0 ){
+		RedSystemMessage( session, "You need to select a vehicle." );
+		return false;
+	}
+
+	Unit *u = p->GetMapMgr()->GetUnit( p->GetTargetGUID() );
+	if( u == NULL ){
+		RedSystemMessage( session, "You need to select a vehicle." );
+		return false;
+	}
+
+	if( u->GetVehicleComponent() == NULL ){
+		RedSystemMessage( session, "You need to select a vehicle." );
+		return false;
+	}
+
+	u->GetVehicleComponent()->RemoveAccessories();
+
+
+	return true;
+}
+
+bool ChatHandler::HandleVehicleAddPassengerCommand(const char *args, WorldSession *session){
+	std::stringstream ss( args );
+
+	uint32 creature_entry;
+
+	ss >> creature_entry;
+	if( ss.fail() ){
+		RedSystemMessage( session, "You need to specify a creature id." );
+		return false;
+	}
+
+	if( session->GetPlayer()->GetTargetGUID() == 0 ){
+		RedSystemMessage( session, "You need to select a vehicle." );
+		return false;
+	}
+
+	Unit *u = session->GetPlayer()->GetMapMgr()->GetUnit( session->GetPlayer()->GetTargetGUID() );
+	if( u == NULL ){
+		RedSystemMessage( session, "You need to select a vehicle." );
+		return false;
+	}
+
+	if( u->GetVehicleComponent() == NULL ){
+		RedSystemMessage( session, "You need to select a vehicle." );
+		return false;
+	}
+
+	if( !u->GetVehicleComponent()->HasEmptySeat() ){
+		RedSystemMessage( session, "That vehicle has no more empty seats." );
+		return false;
+	}
+	
+	CreatureInfo  *ci = CreatureNameStorage.LookupEntry( creature_entry );
+	CreatureProto *cp = CreatureProtoStorage.LookupEntry( creature_entry );
+
+	if( ( ci == NULL ) || ( cp == NULL ) ){
+		RedSystemMessage( session, "Creature %u doesn't exist in the database", creature_entry );
+		return false;
+	}
+	
+	Creature *c = u->GetMapMgr()->CreateCreature( creature_entry );
+	c->Load( cp, u->GetPositionX(), u->GetPositionY(), u->GetPositionZ(), u->GetOrientation() );
+	c->PushToWorld( u->GetMapMgr() );	
+	c->EnterVehicle( u->GetGUID(), 1 );
+
+	return true;
+}

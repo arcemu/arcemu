@@ -253,16 +253,29 @@ void WorldSession::HandleSpellClick(WorldPacket & recvPacket)
 	if(!target_unit)
 		return;
 
+	if( !_player->isInRange( target_unit, MAX_INTERACTION_RANGE ) )
+		return;
+
+	if( target_unit->IsVehicle() ){
+		if( target_unit->GetVehicleComponent() != NULL )
+			target_unit->GetVehicleComponent()->AddPassenger( _player );
+		return;
+	}
+
 	uint32 creature_id = target_unit->GetEntry();
 	uint32 cast_spell_id = 0;
 
 	if(!_player->HasAurasWithNameHash(SPELL_HASH_LIGHTWELL_RENEW) && target_unit->RemoveAura(59907))
 	{
-		SpellClickSpell* sp = SpellClickSpellStorage.LookupEntry(creature_id);
-		if(sp == NULL)
-		{
-			LOG_ERROR("Spellclick packet received for creature %u but there is no spell associated with it.", creature_id);
-			return;
+		SpellClickSpell *sp = SpellClickSpellStorage.LookupEntry( creature_id );
+		if( sp == NULL ){
+			if( target_unit->IsCreature() ){
+				Creature *c = TO< Creature* >( target_unit );
+				
+				sChatHandler.BlueSystemMessage( this, "NPC Id %u ( %s ) has no spellclick spell associated with it.", c->GetProto()->Id, c->GetCreatureInfo()->Name  );
+				LOG_ERROR("Spellclick packet received for creature %u but there is no spell associated with it.", creature_id );
+				return;
+			}
 		}
 
 		cast_spell_id = sp->SpellID;
@@ -274,12 +287,16 @@ void WorldSession::HandleSpellClick(WorldPacket & recvPacket)
 
 		return;
 	}
+	
+	SpellClickSpell *sp = SpellClickSpellStorage.LookupEntry( creature_id );
+	if( sp == NULL ){
+		if( target_unit->IsCreature() ){
+			Creature *c = TO< Creature* >( target_unit );
 
-	SpellClickSpell* sp = SpellClickSpellStorage.LookupEntry(creature_id);
-	if(sp == NULL)
-	{
-		LOG_ERROR("Spellclick packet received for creature %u but there is no spell associated with it.", creature_id);
-		return;
+			sChatHandler.BlueSystemMessage( this, "NPC Id %u ( %s ) has no spellclick spell associated with it.", c->GetProto()->Id, c->GetCreatureInfo()->Name  );
+			LOG_ERROR("Spellclick packet received for creature %u but there is no spell associated with it.", creature_id );
+			return;
+		}
 	}
 
 	cast_spell_id = sp->SpellID;
@@ -488,11 +505,16 @@ void WorldSession::HandlePetCastSpell(WorldPacket & recvPacket)
 
 	CHECK_INWORLD_RETURN
 
-	uint64 guid;
-	uint8  castCount;
-	uint32 spellid;
-	uint32 flags;
-	recvPacket >> guid >> castCount >> spellid >> flags;
+	uint64 guid = 0;
+	uint8  castCount = 0;
+	uint32 spellid = 0;
+	uint8  castflags = 0;
+	uint32 targetmask = 0;
+
+	recvPacket >> guid;
+	recvPacket >> castCount;
+	recvPacket >> spellid;
+	recvPacket >> castflags;
 
 	SpellEntry* sp = dbcSpell.LookupEntryForced(spellid);
 	if(sp == NULL)
@@ -505,35 +527,28 @@ void WorldSession::HandlePetCastSpell(WorldPacket & recvPacket)
 	}
 	else if(guid != _player->m_CurrentCharm)
 	{
-		return;
+		if( _player->GetCharmedUnitGUID() != guid )
+			return;
 	}
 
-	/* burlex: this is.. strange */
 	SpellCastTargets targets;
-	targets.m_targetMask = static_cast<uint16>(flags);
+	targets.read( recvPacket, guid );
 
-	if(flags == 0)
-		targets.m_unitTarget = guid;
-	else if(flags & TARGET_FLAG_UNIT)
-	{
-		WoWGuid guid2;
-		recvPacket >> guid2;
-		targets.m_unitTarget = guid2.GetOldGuid();
+	float missilepitch = 0.0f;
+	float missilespeed = 0;
+	uint32 traveltime  = 0;
+	
+	if( castflags & 2 ){
+		recvPacket >> missilepitch;
+		recvPacket >> missilespeed;
+
+		float dx = targets.m_destX - targets.m_srcX;
+		float dy = targets.m_destY - targets.m_srcY;
+
+		if( ( missilepitch != M_PI / 4 ) && ( missilepitch != -M_PI / 4 ) ) //lets not divide by 0 lul
+			traveltime = ( sqrtf( dx * dx + dy * dy ) / ( cosf( missilepitch ) * missilespeed ) ) * 1000;
 	}
-	else if(flags & TARGET_FLAG_SOURCE_LOCATION)
-	{
-		recvPacket >> targets.m_srcX >> targets.m_srcY >> targets.m_srcZ;
-	}
-	else if(flags & TARGET_FLAG_DEST_LOCATION)
-	{
-		recvPacket >> targets.m_destX >> targets.m_destY >> targets.m_destZ;
-	}
-	else if(flags & TARGET_FLAG_STRING)
-	{
-		std::string ss;
-		recvPacket >> ss;
-		targets.m_strTarget = ss;
-	}
+
 	if(spellid == 33395)	// Summoned Water Elemental's freeze
 	{
 		Spell* pSpell = sSpellFactoryMgr.NewSpell(_player->GetSummon(), sp, false, 0);
@@ -541,7 +556,11 @@ void WorldSession::HandlePetCastSpell(WorldPacket & recvPacket)
 	}
 	else			// trinket?
 	{
-		Unit* nc = _player->GetMapMgr()->GetUnit(_player->m_CurrentCharm);
+		uint64 charmguid = _player->m_CurrentCharm;
+		if( charmguid == 0 )
+			charmguid = _player->GetCharmedUnitGUID();
+
+		Unit* nc = _player->GetMapMgr()->GetUnit( charmguid );
 		if(nc)
 		{
 			bool check = false;
@@ -583,6 +602,9 @@ void WorldSession::HandlePetCastSpell(WorldPacket & recvPacket)
 				return;
 
 			Spell* pSpell = sSpellFactoryMgr.NewSpell(nc, sp, false, 0);
+			pSpell->m_missilePitch = missilepitch;
+			pSpell->m_missileTravelTime = traveltime;
+
 			pSpell->prepare(&targets);
 		}
 	}

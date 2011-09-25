@@ -1441,7 +1441,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 				plyr->SafeTeleport(plyr->GetMapId(), plyr->GetInstanceID(), obj->GetPositionX(), obj->GetPositionY(), obj->GetPositionZ(), obj->GetOrientation());
 				plyr->SetStandState(STANDSTATE_SIT_MEDIUM_CHAIR);
 				plyr->m_lastRunSpeed = 0; //counteract mount-bug; reset speed to zero to force update SetPlayerSpeed in next line.
-				//plyr->SetPlayerSpeed(RUN,plyr->m_base_runSpeed); <--cebernic : Oh No,this could be wrong. If I have some mods existed,this just on baserunspeed as a fixed value?
+				//plyr->SetSpeeds(RUN,plyr->m_base_runSpeed); <--cebernic : Oh No,this could be wrong. If I have some mods existed,this just on baserunspeed as a fixed value?
 				plyr->UpdateSpeed();
 			}
 			break;

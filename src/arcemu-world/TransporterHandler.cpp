@@ -330,11 +330,14 @@ void Transporter::UpdatePosition()
 		mNextWaypoint = GetNextWaypoint();
 		if(mCurrentWaypoint->second.mapid != GetMapId() || mCurrentWaypoint->second.teleport)
 		{
+			passengers.clear();
 			TransportPassengers(mCurrentWaypoint->second.mapid, GetMapId(), mCurrentWaypoint->second.x, mCurrentWaypoint->second.y, mCurrentWaypoint->second.z);
 			break;
 		}
-		else
+		else{
 			SetPosition(mCurrentWaypoint->second.x, mCurrentWaypoint->second.y, mCurrentWaypoint->second.z, m_position.o, false);
+			MovePassengers( mCurrentWaypoint->second.x, mCurrentWaypoint->second.y, mCurrentWaypoint->second.z, m_position.o );
+		}
 
 		if(mCurrentWaypoint->second.delayed)
 		{
@@ -406,11 +409,9 @@ void Transporter::TransportPassengers(uint32 mapid, uint32 oldmap, float x, floa
 			if(!plr->GetSession() || !plr->IsInWorld())
 				continue;
 
-			plr->m_lockTransportVariables = true;
-
-			v.x = x + plr->m_TransporterX;
-			v.y = y + plr->m_TransporterY;
-			v.z = z + plr->m_TransporterZ;
+			v.x = x + plr->transporter_info.x;
+			v.y = y + plr->transporter_info.y;
+			v.z = z + plr->transporter_info.z;
 			v.o = plr->GetOrientation();
 
 			if(mapid == 530 && !plr->GetSession()->HasFlag(ACCOUNT_FLAG_XPACK_01))
@@ -455,12 +456,8 @@ Transporter::~Transporter()
 {
 	sEventMgr.RemoveEvents(this);
 	for(TransportNPCMap::iterator itr = m_npcs.begin(); itr != m_npcs.end(); ++itr)
-	{
-		if(itr->second->IsCreature())
-			delete TO< Creature* >(itr->second)->m_transportPosition;
-
 		delete itr->second;
-	}
+
 }
 
 void ObjectMgr::LoadTransporters()
@@ -526,9 +523,11 @@ void Transporter::AddNPC(uint32 Entry, float offsetX, float offsetY, float offse
 
 	Creature* pCreature = new Creature((uint64)HIGHGUID_TYPE_TRANSPORTER << 32 | guid);
 	pCreature->Load(proto, m_position.x, m_position.y, m_position.z);
-	pCreature->m_transportPosition = new LocationVector(offsetX, offsetY, offsetZ, offsetO);
-	pCreature->m_transportGuid = GetUIdFromGUID();
-	pCreature->m_transportNewGuid = GetNewGUID();
+	pCreature->transporter_info.x = offsetX;
+	pCreature->transporter_info.y = offsetY;
+	pCreature->transporter_info.z = offsetZ;
+	pCreature->transporter_info.o = offsetO;
+	pCreature->transporter_info.guid = GetGUID();
 	m_npcs.insert(make_pair(guid, pCreature));
 }
 
@@ -549,10 +548,45 @@ uint32 Transporter::BuildCreateUpdateBlockForPlayer(ByteBuffer* data, Player* ta
 
 	// add all the npcs to the packet
 	for(TransportNPCMap::iterator itr = m_npcs.begin(); itr != m_npcs.end(); ++itr)
-	{
-		itr->second->SetPosition(GetPosition(), false);
 		cnt += itr->second->BuildCreateUpdateBlockForPlayer(data, target);
-	}
 
 	return cnt;
 }
+
+void Transporter::MovePassengers( float x, float y, float z, float o ){
+	for( TransportNPCMap::iterator itr = m_npcs.begin(); itr != m_npcs.end(); ++itr ){
+		Object *obj = itr->second;
+		
+		obj->SetPosition( x + obj->transporter_info.x, y + obj->transporter_info.y, z + obj->transporter_info.z, o + obj->transporter_info.o, false );
+	}
+
+	for( PassengerMap::iterator itr = mPassengers.begin(); itr != mPassengers.end(); ++itr ){
+		Player *p = itr->second;
+		p->SetPosition( x + p->transporter_info.x, y + p->transporter_info.y, z + p->transporter_info.z, o + p->transporter_info.o, false );
+	}
+
+	for( std::map< uint64, Object* >::iterator itr = passengers.begin(); itr != passengers.end(); ++itr ){
+		Object *obj = itr->second;
+		
+		obj->SetPosition( x + obj->transporter_info.x, y + obj->transporter_info.y, z + obj->transporter_info.z, o + obj->transporter_info.o, false );
+	}
+}
+
+void Transporter::AddPassenger( Object *o ){
+	if( o->IsPlayer() ){
+		AddPlayer( static_cast< Player* >( o ) );
+		return;
+	}
+
+	passengers[ o->GetGUID() ] = o;
+}
+
+void Transporter::RemovePassenger( Object *o ){
+	if( o->IsPlayer() ){
+		RemovePlayer( static_cast< Player* >( o ) );
+		return;
+	}
+
+	passengers.erase( o->GetGUID() );
+}
+

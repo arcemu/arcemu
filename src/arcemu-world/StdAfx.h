@@ -121,6 +121,7 @@ template< class T, class U > T TO(U u) { return static_cast< T >(u); }
 #include "LootMgr.h"
 #include "SpellProc.h"
 #include "SummonHandler.h"
+#include "Vehicle.h"
 #include "Unit.h"
 #include "Gossip.h"
 
@@ -199,7 +200,6 @@ template< class T, class U > T TO(U u) { return static_cast< T >(u); }
 #include "ItemInterface.h"
 #include "Stats.h"
 #include "WorldCreator.h"
-#include "Vehicle.h"
 #include "ObjectMgr.h"
 #include "CThreads.h"
 #include "ScriptMgr.h"

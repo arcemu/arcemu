@@ -1011,7 +1011,7 @@ void AIInterface::DismissPet()
 
 void AIInterface::AttackReaction(Unit* pUnit, uint32 damage_dealt, uint32 spellId)
 {
-	if(m_AIState == STATE_EVADE || !pUnit || !pUnit->isAlive() || m_Unit->IsDead() || m_Unit == pUnit)
+	if(m_AIState == STATE_EVADE || !pUnit || !pUnit->isAlive() || m_Unit->IsDead() || ( m_Unit == pUnit ) || ( m_AIType == AITYPE_PASSIVE ) )
 		return;
 
 	if(sWorld.Collision && pUnit->IsPlayer())
@@ -1858,6 +1858,9 @@ void AIInterface::SendMoveToPacket()
 
 bool AIInterface::StopMovement(uint32 time)
 {
+	if( m_Unit->GetCurrentVehicle() != NULL )
+		return true;
+
 	m_splinePriority = SPLINE_PRIORITY_MOVEMENT;
 	if(m_Unit->GetMapMgr() != NULL)
 		UpdateMovementSpline();

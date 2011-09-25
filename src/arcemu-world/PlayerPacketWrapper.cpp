@@ -133,21 +133,6 @@ void Player::SendLogXPGain(uint64 guid, uint32 NormalXP, uint32 RestedXP, bool t
 	m_session->SendPacket(&data);
 }
 
-// this one needs to be send inrange...
-void Player::SendEnvironmentalDamageLog(const uint64 & guid, uint8 type, uint32 damage)
-{
-
-	WorldPacket data(SMSG_ENVIRONMENTALDAMAGELOG, 20);
-
-	data << uint64(guid);
-	data << uint8(type);
-	data << uint32(damage);
-	data << uint64(0);
-
-	SendMessageToSet(&data, true, false);
-}
-
-
 void Player::SendCastResult(uint32 SpellId, uint8 ErrorMessage, uint8 MultiCast, uint32 Extra)
 {
 

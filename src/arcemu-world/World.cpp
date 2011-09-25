@@ -418,7 +418,7 @@ bool World::SetInitialWorldSettings()
 	MAKE_TASK(ObjectMgr,  LoadAIThreatToSpellId);
 	MAKE_TASK(ObjectMgr,  LoadSpellProcs);
 	MAKE_TASK(ObjectMgr,  LoadSpellEffectsOverride);
-	MAKE_TASK(ObjectMgr, LoadSpellTargetConstraints);
+	MAKE_TASK(ObjectMgr,  LoadSpellTargetConstraints);
 	MAKE_TASK(ObjectMgr,  LoadDefaultPetSpells);
 	MAKE_TASK(ObjectMgr,  LoadPetSpellCooldowns);
 	MAKE_TASK(ObjectMgr,  LoadGuildCharters);
@@ -435,10 +435,11 @@ bool World::SetInitialWorldSettings()
 	MAKE_TASK(ObjectMgr, LoadExtraCreatureProtoStuff);
 	MAKE_TASK(ObjectMgr, LoadExtraItemStuff);
 	MAKE_TASK(ObjectMgr, LoadExtraGameObjectStuff);
-	MAKE_TASK(QuestMgr, LoadExtraQuestStuff);
+	MAKE_TASK(QuestMgr,  LoadExtraQuestStuff);
 	MAKE_TASK(ObjectMgr, LoadArenaTeams);
 	MAKE_TASK(ObjectMgr, LoadProfessionDiscoveries);
 	MAKE_TASK(ObjectMgr, StoreBroadCastGroupKey);
+	MAKE_TASK(ObjectMgr, LoadVehicleAccessories);
 
 #undef MAKE_TASK
 
@@ -1253,6 +1254,7 @@ void World::Rehash(bool load)
 	setRate(RATE_POWER3, Config.MainConfig.GetFloatDefault("Rates", "Power3", 1)); // focus
 	setRate(RATE_POWER4, Config.MainConfig.GetFloatDefault("Rates", "Power4", 1)); // energy
 	setRate(RATE_POWER7, Config.MainConfig.GetFloatDefault("Rates", "Power7", 1)); // runic power (rate unused)
+	setRate( RATE_VEHICLES_POWER_REGEN, Config.MainConfig.GetFloatDefault( "Rates", "VehiclePower", 1.0f ) ); // Vehicle power regeneration
 	setRate(RATE_DROP0, Config.MainConfig.GetFloatDefault("Rates", "DropGrey", 1));
 	setRate(RATE_DROP1, Config.MainConfig.GetFloatDefault("Rates", "DropWhite", 1));
 	setRate(RATE_DROP2, Config.MainConfig.GetFloatDefault("Rates", "DropGreen", 1));

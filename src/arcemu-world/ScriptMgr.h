@@ -350,6 +350,84 @@ class SERVER_DECL CreatureAIScript
 		void SetLinkedCreature(CreatureAIScript* creatureAI);
 		void LinkedCreatureDeleted();
 
+		//////////////////////////////////////// Vehicle passenger hooks /////////////////////////////////////
+		
+		////////////////////////////////////////////////
+		//void OnEnterVehicle()
+		//  Called when this passenger enters a vehicle
+		//
+		//Parameter(s)
+		//  None
+		//
+		//Return Value
+		//  None
+		//
+		//
+		////////////////////////////////////////////////
+		virtual void OnEnterVehicle(){}
+
+
+		////////////////////////////////////////////////
+		//void OnExitVehicle()
+		//  Called when this passenger leaves the vehicle
+		//
+		//Parameter(s)
+		//  None
+		//
+		//Return Value
+		//  None
+		//
+		//
+		////////////////////////////////////////////////
+		virtual void OnExitVehicle(){}
+		
+
+		/////////////////////////////////////////// Vehicle Hooks ////////////////////////////////////////////
+		
+		/////////////////////////////////////////////////////
+		//void OnFirstPassengerEntered()
+		//  Called when the first passenger enters
+		//
+		//Parameter(s)
+		//  Unit *passenger  -  The passenger who entered
+		//
+		//Return Value
+		//  None
+		//
+		//
+		/////////////////////////////////////////////////////
+		virtual void OnFirstPassengerEntered( Unit *passenger ){}
+
+		////////////////////////////////////////////////////
+		//void OnVehicleFull()
+		//  Called when there are no more free seats
+		//
+		//Parameter(s)
+		//  None
+		//
+		//Return Value
+		//  None
+		//
+		//
+		////////////////////////////////////////////////////
+		virtual void OnVehicleFull(){}
+
+
+		////////////////////////////////////////////////////
+		//void OnLastPassengerLeft( Unit *passenger )
+		//  Called when the last passenger leaves
+		//
+		//Parameter(s)
+		//  Unit *passenger  - The passenger who left
+		//
+		//Return Value
+		//  None
+		//
+		//
+		////////////////////////////////////////////////////
+		virtual void OnLastPassengerLeft( Unit *passenger ){}
+
+
 	protected:
 		Creature* _unit;
 

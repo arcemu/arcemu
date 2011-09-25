@@ -1490,6 +1490,139 @@ struct LFGDungeonEntry
 };
 
 
+#define MAX_VEHICLE_SEATS 8
+
+enum VehicleFlags{
+	VEHICLE_FLAG_NO_STRAFE                       = 0x00000001,           // Sets MOVEFLAG2_NO_STRAFE
+	VEHICLE_FLAG_NO_JUMPING                      = 0x00000002,           // Sets MOVEFLAG2_NO_JUMPING
+	VEHICLE_FLAG_FULLSPEEDTURNING                = 0x00000004,           // Sets MOVEFLAG2_FULLSPEEDTURNING
+	VEHICLE_FLAG_ALLOW_PITCHING                  = 0x00000010,           // Sets MOVEFLAG2_ALLOW_PITCHING
+	VEHICLE_FLAG_FULLSPEEDPITCHING               = 0x00000020,           // Sets MOVEFLAG2_FULLSPEEDPITCHING
+	VEHICLE_FLAG_CUSTOM_PITCH                    = 0x00000040,           // If set use pitchMin and pitchMax from DBC, otherwise pitchMin = -pi/2, pitchMax = pi/2
+	VEHICLE_FLAG_ADJUST_AIM_ANGLE                = 0x00000400,           // Lua_IsVehicleAimAngleAdjustable
+	VEHICLE_FLAG_ADJUST_AIM_POWER                = 0x00000800,           // Lua_IsVehicleAimPowerAdjustable
+};
+
+struct VehicleEntry{
+	uint32  ID;                                           // 0
+	uint32  flags;                                        // 1
+	float   turnSpeed;                                    // 2
+	float   pitchSpeed;                                   // 3
+	float   pitchMin;                                     // 4
+	float   pitchMax;                                     // 5
+	uint32  seatID[MAX_VEHICLE_SEATS];                    // 6-13
+	float   mouseLookOffsetPitch;                         // 14
+	float   cameraFadeDistScalarMin;                      // 15
+	float   cameraFadeDistScalarMax;                      // 16
+    float   cameraPitchOffset;                            // 17
+    float   facingLimitRight;                             // 18
+    float   facingLimitLeft;                              // 19
+    float   msslTrgtTurnLingering;                        // 20
+    float   msslTrgtPitchLingering;                       // 21
+    float   msslTrgtMouseLingering;                       // 22
+    float   msslTrgtEndOpacity;                           // 23
+    float   msslTrgtArcSpeed;                             // 24
+    float   msslTrgtArcRepeat;                            // 25
+    float   msslTrgtArcWidth;                             // 26
+    float   msslTrgtImpactRadius[2];                      // 27-28
+    char*   msslTrgtArcTexture;                           // 29
+    char*   msslTrgtImpactTexture;                        // 30
+    char*   msslTrgtImpactModel[2];                       // 31-32
+    float   cameraYawOffset;                              // 33
+    uint32  uiLocomotionType;                             // 34
+    float   msslTrgtImpactTexRadius;                      // 35
+    uint32  uiSeatIndicatorType;                          // 36
+    uint32  powerType;                                    // 37, new in 3.1
+};
+
+enum VehicleSeatFlags{
+    VEHICLE_SEAT_FLAG_HIDE_PASSENGER             = 0x00000200,           // Passenger is hidden
+    VEHICLE_SEAT_FLAG_UNK11                      = 0x00000400,
+    VEHICLE_SEAT_FLAG_CAN_CONTROL                = 0x00000800,           // Lua_UnitInVehicleControlSeat
+    VEHICLE_SEAT_FLAG_CAN_ATTACK                 = 0x00004000,           // Can attack, cast spells and use items from vehicle?
+    VEHICLE_SEAT_FLAG_USABLE                     = 0x02000000,           // Lua_CanExitVehicle
+    VEHICLE_SEAT_FLAG_CAN_SWITCH                 = 0x04000000,           // Lua_CanSwitchVehicleSeats
+    VEHICLE_SEAT_FLAG_CAN_CAST                   = 0x20000000,           // Lua_UnitHasVehicleUI
+};
+
+enum VehicleSeatFlagsB{
+    VEHICLE_SEAT_FLAG_B_NONE                     = 0x00000000,
+    VEHICLE_SEAT_FLAG_B_USABLE_FORCED            = 0x00000002, 
+    VEHICLE_SEAT_FLAG_B_USABLE_FORCED_2          = 0x00000040,
+    VEHICLE_SEAT_FLAG_B_USABLE_FORCED_3          = 0x00000100,
+};
+
+struct VehicleSeatEntry{
+    uint32  ID;                                           // 0
+    uint32  flags;                                        // 1
+    int32   attachmentID;                                 // 2
+    float   attachmentOffsetX;                            // 3
+    float   attachmentOffsetY;                            // 4
+    float   attachmentOffsetZ;                            // 5
+    float   enterPreDelay;                                // 6
+    float   enterSpeed;                                   // 7
+    float   enterGravity;                                 // 8
+    float   enterMinDuration;                             // 9
+    float   enterMaxDuration;                             // 10
+    float   enterMinArcHeight;                            // 11
+    float   enterMaxArcHeight;                            // 12
+    int32   enterAnimStart;                               // 13
+    int32   enterAnimLoop;                                // 14
+    int32   rideAnimStart;                                // 15
+    int32   rideAnimLoop;                                 // 16
+    int32   rideUpperAnimStart;                           // 17
+    int32   rideUpperAnimLoop;                            // 18
+    float   exitPreDelay;                                 // 19
+    float   exitSpeed;                                    // 20
+    float   exitGravity;                                  // 21
+    float   exitMinDuration;                              // 22
+    float   exitMaxDuration;                              // 23
+    float   exitMinArcHeight;                             // 24
+    float   exitMaxArcHeight;                             // 25
+    int32   exitAnimStart;                                // 26
+    int32   exitAnimLoop;                                 // 27
+    int32   exitAnimEnd;                                  // 28
+    float   passengerYaw;                                 // 29
+    float   passengerPitch;                               // 30
+    float   passengerRoll;                                // 31
+    int32   passengerAttachmentID;                        // 32
+    int32   vehicleEnterAnim;                             // 33
+    int32   vehicleExitAnim;                              // 34
+    int32   vehicleRideAnimLoop;                          // 35
+    int32   vehicleEnterAnimBone;                         // 36
+    int32   vehicleExitAnimBone;                          // 37
+    int32   vehicleRideAnimLoopBone;                      // 38
+    float   vehicleEnterAnimDelay;                        // 39
+    float   vehicleExitAnimDelay;                         // 40
+    uint32  vehicleAbilityDisplay;                        // 41
+    uint32  enterUISoundID;                               // 42
+    uint32  exitUISoundID;                                // 43
+    int32   uiSkin;                                       // 44
+    uint32  flagsB;                                       // 45
+
+    bool IsUsable() const{
+		if( ( flags & VEHICLE_SEAT_FLAG_USABLE ) != 0 )
+			return true;
+		else
+			return false;
+	}
+
+	bool IsController() const{
+		if( ( flags & VEHICLE_SEAT_FLAG_CAN_CONTROL ) != 0 )
+			return true;
+		else
+			return false;
+	}
+
+	bool HidesPassenger() const{
+		if( ( flags & VEHICLE_SEAT_FLAG_HIDE_PASSENGER ) != 0 )
+			return true;
+		else
+			return false;
+	}
+};
+
+
 #pragma pack(pop)
 
 ARCEMU_INLINE float GetRadius(SpellRadius* radius)
@@ -1875,6 +2008,8 @@ extern SERVER_DECL DBCStorage<WMOAreaTableEntry> dbcWMOAreaTable;
 extern SERVER_DECL DBCStorage< SummonPropertiesEntry > dbcSummonProperties;
 extern SERVER_DECL DBCStorage< NameGenEntry > dbcNameGen;
 extern SERVER_DECL DBCStorage< LFGDungeonEntry > dbcLFGDungeon;
+extern SERVER_DECL DBCStorage< VehicleEntry > dbcVehicle;
+extern SERVER_DECL DBCStorage< VehicleSeatEntry > dbcVehicleSeat;
 
 bool LoadDBCs();
 

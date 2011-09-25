@@ -1694,6 +1694,59 @@ class LuaCreature : public CreatureAIScript
 			sLuaMgr.ExecuteCall(4);
 			RELEASE_LOCK
 		}
+
+		void OnEnterVehicle(){
+			CHECK_BINDING_ACQUIRELOCK;
+
+			sLuaMgr.BeginCall( m_binding->m_functionReferences[ CREATURE_EVENT_ON_ENTER_VEHICLE ] );
+			sLuaMgr.PushUnit( _unit );
+			sLuaMgr.ExecuteCall( 1 );
+
+			RELEASE_LOCK;
+		}
+
+		void OnExitVehicle(){
+			CHECK_BINDING_ACQUIRELOCK;
+
+			sLuaMgr.BeginCall( m_binding->m_functionReferences[ CREATURE_EVENT_ON_EXIT_VEHICLE ] );
+			sLuaMgr.PushUnit( _unit );
+			sLuaMgr.ExecuteCall( 1 );
+
+			RELEASE_LOCK;
+		}
+
+		void OnFirstPassengerEntered( Unit *passenger ){
+			CHECK_BINDING_ACQUIRELOCK;
+
+			sLuaMgr.BeginCall( m_binding->m_functionReferences[ CREATURE_EVENT_ON_FIRST_PASSENGER_ENTERED ] );
+			sLuaMgr.PushUnit( _unit );
+			sLuaMgr.PushUnit( passenger );
+			sLuaMgr.ExecuteCall( 2 );
+
+			RELEASE_LOCK;
+		}
+
+		void OnVehicleFull(){
+			CHECK_BINDING_ACQUIRELOCK;
+
+			sLuaMgr.BeginCall( m_binding->m_functionReferences[ CREATURE_EVENT_ON_VEHICLE_FULL ] );
+			sLuaMgr.PushUnit( _unit );
+			sLuaMgr.ExecuteCall( 1 );
+
+			RELEASE_LOCK;
+		}
+
+		void OnLastPassengerLeft( Unit *passenger ){
+			CHECK_BINDING_ACQUIRELOCK;
+
+			sLuaMgr.BeginCall( m_binding->m_functionReferences[ CREATURE_EVENT_ON_LAST_PASSENGER_LEFT ] );
+			sLuaMgr.PushUnit( _unit );
+			sLuaMgr.PushUnit( passenger );
+			sLuaMgr.ExecuteCall( 2 );
+
+			RELEASE_LOCK;
+		}
+
 		void StringFunctionCall(int fRef)
 		{
 

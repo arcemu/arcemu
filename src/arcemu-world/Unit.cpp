@@ -400,6 +400,13 @@ Unit::Unit()
 	TaggerGuid = 0;
 
 	m_singleTargetAura.clear();
+
+	vehicle = NULL;
+	currentvehicle = NULL;
+
+	m_noFallDamage = false;
+	z_axisposition = 0.0f;
+	m_safeFall     = 0;
 }
 
 Unit::~Unit()
@@ -2689,6 +2696,13 @@ void Unit::RegeneratePower(bool isinterrupted)
 
 	if(!isAlive())
 		return;
+
+	if( !IsPlayer() && IsVehicle() ){
+		uint32 powertype = GetPowerType();
+		float wrate = sWorld.getRate( RATE_VEHICLES_POWER_REGEN );
+		float amount = wrate * 20.0f;
+		SetPower( powertype, GetPower( powertype ) + amount );
+	}
 
 	//druids regen every tick, which is every 100ms, at one energy, as of 3.0.2
 	//I don't know how mana has changed exactly, but it has, will research it - optical
@@ -5634,15 +5648,11 @@ void Unit::UpdateSpeed()
 		m_runSpeed = m_maxSpeed;
 	}
 
-	if(IsPlayer())
-	{
-		if(TO_PLAYER(this)->m_changingMaps)
-			TO< Player* >(this)->resend_speed = true;
-		else
-		{
-			TO< Player* >(this)->SetPlayerSpeed(RUN, m_runSpeed);
-			TO< Player* >(this)->SetPlayerSpeed(FLY, m_flySpeed);
-		}
+	if( IsPlayer() && TO_PLAYER(this)->m_changingMaps ){
+		TO< Player* >(this)->resend_speed = true;
+	}else{
+		SetSpeeds( RUN, m_runSpeed );
+		SetSpeeds( FLY, m_flySpeed );
 	}
 }
 
@@ -5795,35 +5805,34 @@ void Unit::PlaySpellVisual(uint64 target, uint32 spellVisual)
 
 void Unit::Root()
 {
-	this->m_special_state |= UNIT_STATE_ROOT;
+	m_special_state |= UNIT_STATE_ROOT;
 
-	if(IsPlayer())
-	{
-		TO< Player* >(this)->SetMovement(MOVE_ROOT, 1);
-	}
-	else
-	{
+	if( !IsPlayer() ){
 		m_aiInterface->m_canMove = false;
 		m_aiInterface->StopMovement(1);
 	}
 
 	m_rooted = 1;
+
+	WorldPacket data( SMSG_FORCE_MOVE_ROOT, 12 );
+	data << GetNewGUID();
+	data << uint32( 1 );
+	SendMessageToSet( &data, true, false );
 }
 
 void Unit::Unroot()
 {
-	this->m_special_state &= ~UNIT_STATE_ROOT;
-
-	if(IsPlayer())
-	{
-		TO< Player* >(this)->SetMovement(MOVE_UNROOT, 5);
-	}
-	else
-	{
+	m_special_state &= ~UNIT_STATE_ROOT;
+		
+	if( !IsPlayer() )
 		m_aiInterface->m_canMove = true;
-	}
 
 	m_rooted = 0;
+
+	WorldPacket data( SMSG_FORCE_MOVE_UNROOT, 12 );
+	data << GetNewGUID();
+	data << uint32( 5 );
+	SendMessageToSet( &data, true, false );
 }
 
 void Unit::RemoveAurasByBuffType(uint32 buff_type, const uint64 & guid, uint32 skip)
@@ -5967,11 +5976,26 @@ void Unit::OnPushToWorld()
 		if(m_auras[x] != 0)
 			m_auras[x]->RelocateEvents();
 	}
+
+	if( GetVehicleComponent() != NULL )
+		GetVehicleComponent()->InstallAccessories();
+
+	z_axisposition = 0.0f;
 }
 
 //! Remove Unit from world
 void Unit::RemoveFromWorld(bool free_guid)
 {
+	if( GetCurrentVehicle() != NULL )
+		GetCurrentVehicle()->EjectPassenger( this );
+
+	if( GetVehicleComponent() != NULL ){
+		GetVehicleComponent()->RemoveAccessories();
+		GetVehicleComponent()->EjectAllPassengers();
+	}
+
+	RemoveVehicleComponent();
+
 	CombatStatus.OnRemoveFromWorld();
 	if(GetSummonedCritterGUID() != 0)
 	{
@@ -6297,6 +6321,8 @@ void Unit::RemoveAurasOfSchool(uint32 School, bool Positive, bool Immune)
 
 void Unit::EnableFlight()
 {
+	z_axisposition = 0.0f;
+
 	if(!IsPlayer() || TO_PLAYER(this)->m_changingMaps)
 	{
 		WorldPacket data(SMSG_MOVE_SET_CAN_FLY, 13);
@@ -6310,7 +6336,6 @@ void Unit::EnableFlight()
 		*data << GetNewGUID();
 		*data << uint32(2);
 		SendMessageToSet(data, false);
-		TO< Player* >(this)->z_axisposition = 0.0f;
 		TO< Player* >(this)->delayedPackets.add(data);
 		TO< Player* >(this)->m_setflycheat = true;
 	}
@@ -6318,6 +6343,8 @@ void Unit::EnableFlight()
 
 void Unit::DisableFlight()
 {
+	z_axisposition = 0.0f;
+
 	if(!IsPlayer() || TO_PLAYER(this)->m_changingMaps)
 	{
 		WorldPacket data(SMSG_MOVE_UNSET_CAN_FLY, 13);
@@ -6331,7 +6358,6 @@ void Unit::DisableFlight()
 		*data << GetNewGUID();
 		*data << uint32(5);
 		SendMessageToSet(data, false);
-		TO< Player* >(this)->z_axisposition = 0.0f;
 		TO< Player* >(this)->delayedPackets.add(data);
 		TO< Player* >(this)->m_setflycheat = false;
 	}
@@ -7831,7 +7857,7 @@ uint64 Unit::GetTaggerGUID()
 
 bool Unit::isLootable()
 {
-	if(IsTagged() && !IsPet() && !isCritter() && !(IsPlayer() && !IsInBg()) && GetCreatedByGUID() == 0)
+	if(IsTagged() && !IsPet() && !isCritter() && !(IsPlayer() && !IsInBg()) && ( GetCreatedByGUID() == 0 ) && !IsVehicle() )
 		return true;
 	else
 		return false;
@@ -8245,4 +8271,98 @@ void Unit::CastOnMeleeSpell(){
 	targets.m_unitTarget = GetTargetGUID();
 	spell->prepare( &targets );
 	SetOnMeleeSpell(0);
+}
+
+void Unit::SendHopOnVehicle( Unit *vehicleowner, uint32 seat ){
+	WorldPacket data(SMSG_MONSTER_MOVE_TRANSPORT, 50);
+	data << GetNewGUID();
+	data << vehicleowner->GetNewGUID();
+	data << uint8( seat );
+
+	if( IsPlayer() )
+		data << uint8( 1 );
+	else
+		data << uint8( 0 );
+
+	data << float( GetPositionX() /* - vehicleowner->GetPositionX() */ );
+	data << float( GetPositionY() /* - vehicleowner->GetPositionY() */ );
+	data << float( GetPositionZ() /* - vehicleowner->GetPositionZ() */ );
+	data << getMSTime();
+	data << uint8( 4 ); // splinetype_facing_angle
+	data << float( 0.0f ); // facing angle
+	data << uint32( 0x00800000 ); // splineflag transport
+	data << uint32( 0 ); // movetime
+	data << uint32( 1 ); // wp count
+	data << float( 0.0f ); // x
+	data << float( 0.0f ); // y
+	data << float( 0.0f ); // z
+
+	SendMessageToSet( &data, true );
+}
+
+void Unit::SendHopOffVehicle( Unit *vehicleowner, LocationVector &landposition ){
+	WorldPacket data(SMSG_MONSTER_MOVE, 1+12+4+1+4+4+4+12+8 );
+	data << GetNewGUID();
+
+	if( IsPlayer() )
+		data << uint8( 1 );
+	else
+		data << uint8( 0 );
+
+	data << float( GetPositionX() );
+	data << float( GetPositionY() );
+	data << float( GetPositionZ() );
+	data << uint32( getMSTime() );
+	data << uint8( 4 /* SPLINETYPE_FACING_ANGLE */ );
+	data << float( GetOrientation() );                        // guess
+	data << uint32( 0x01000000 /* SPLINEFLAG_EXIT_VEHICLE */ );
+	data << uint32( 0 );                                      // Time in between points
+	data << uint32( 1 );                                      // 1 single waypoint
+	data << float( vehicleowner->GetPositionX() );
+	data << float( vehicleowner->GetPositionY() );
+	data << float( vehicleowner->GetPositionZ() );
+
+    SendMessageToSet(&data, true);
+}
+
+
+void Unit::EnterVehicle( uint64 guid, uint32 delay ){
+	if( delay != 0 ){
+		sEventMgr.AddEvent( this, &Unit::EnterVehicle, guid, uint32( 0 ), 0, delay, 1, 0 );
+		return;
+	}
+
+	Unit *u = m_mapMgr->GetUnit( guid );
+
+	if( u == NULL )
+		return;
+
+	if( u->GetVehicleComponent() == NULL )
+		return;
+
+	if( currentvehicle != NULL )
+		return;
+
+	u->GetVehicleComponent()->AddPassenger( this );
+}
+
+Unit* Unit::GetVehicleBase(){
+	if( currentvehicle != NULL )
+		return currentvehicle->GetOwner();
+	else
+	if( vehicle != NULL )
+		return this;
+
+	return NULL;
+}
+
+void Unit::SendEnvironmentalDamageLog( uint64 guid, uint8 type, uint32 damage ){
+	WorldPacket data( SMSG_ENVIRONMENTALDAMAGELOG, 20 );
+	
+	data << uint64( guid );
+	data << uint8( type );
+	data << uint32( damage );
+	data << uint64( 0 );
+
+	SendMessageToSet( &data, true, false );
 }

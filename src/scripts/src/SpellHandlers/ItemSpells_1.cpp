@@ -916,6 +916,35 @@ bool DrinkDummyAura(uint32 i, Aura* a, bool apply)
 	return true;
 }
 
+bool X53Mount( uint32 i, Aura *a, bool apply ){
+	if( a->GetTarget() == NULL )
+		return true;
+
+	if( !a->GetTarget()->IsPlayer() )
+		return true;
+
+	if( apply ){
+		uint32 newspell = 0;
+		Player *p = TO< Player* >( a->GetTarget() );
+		AreaTable *area = dbcArea.LookupEntry( p->GetAreaID() );
+		uint32 skill = p->_GetSkillLineCurrent( SKILL_RIDING, true );
+
+		if( skill >= 225 &&
+			( ( ( area->AreaFlags & 1024 ) && p->GetMapId() != 571 ) ||
+			( ( area->AreaFlags & 1024 ) && p->GetMapId() == 571 && p->HasSpellwithNameHash( SPELL_HASH_COLD_WEATHER_FLYING ) ) ) ){
+				if( skill == 300 ){
+					if( p->HasSpellWithAuraNameAndBasePoints( SPELL_AURA_ENABLE_FLIGHT2, 310 ) )
+						newspell = 76154;
+					else
+						newspell = 75972;
+				}else
+					newspell = 75957;
+		}
+		a->GetTarget()->CastSpell( a->GetTarget(), newspell, true );
+	}
+	return true;
+}
+
 // ADD NEW FUNCTIONS ABOVE THIS LINE
 // *****************************************************************************
 
@@ -997,7 +1026,8 @@ void SetupItemSpells_1(ScriptMgr* mgr)
 		72623,
 		0
 	};
-	mgr->register_dummy_aura(DrinkDummySpellIDs, &::DrinkDummyAura);
+	mgr->register_dummy_aura(DrinkDummySpellIDs, &DrinkDummyAura);
+	mgr->register_dummy_aura(75973, &X53Mount);
 
 
 // REGISTER NEW DUMMY SPELLS ABOVE THIS LINE

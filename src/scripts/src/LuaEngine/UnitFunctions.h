@@ -2341,7 +2341,7 @@ class LuaUnit
 		{
 			float Speed = CHECK_FLOAT(L, 1);
 			if(ptr && Speed)
-				ptr->m_runSpeed = Speed;
+				ptr->SetSpeeds( RUN, Speed );
 			return 0;
 		}
 
@@ -2349,7 +2349,7 @@ class LuaUnit
 		{
 			float Speed = CHECK_FLOAT(L, 1);
 			if(ptr && Speed)
-				ptr->m_walkSpeed = Speed;
+				ptr->SetSpeeds( WALK, Speed );
 			return 0;
 		}
 
@@ -2357,7 +2357,7 @@ class LuaUnit
 		{
 			float Speed = CHECK_FLOAT(L, 1);
 			if(ptr && Speed)
-				ptr->m_flySpeed = Speed;
+				ptr->SetSpeeds( FLY, Speed );
 			return 0;
 		}
 
@@ -3672,10 +3672,10 @@ class LuaUnit
 			float Speed = CHECK_FLOAT(L, 1);
 			if(Speed < 1 || Speed > 255)
 				return 0;
-			plr->SetPlayerSpeed(RUN, Speed);
-			plr->SetPlayerSpeed(SWIM, Speed);
-			plr->SetPlayerSpeed(RUNBACK, Speed / 2);
-			plr->SetPlayerSpeed(FLY, Speed * 2);
+			plr->SetSpeeds(RUN, Speed);
+			plr->SetSpeeds(SWIM, Speed);
+			plr->SetSpeeds(RUNBACK, Speed / 2);
+			plr->SetSpeeds(FLY, Speed * 2);
 			return 0;
 		}
 
@@ -5946,6 +5946,243 @@ class LuaUnit
 			else
 				lua_pushnil(L);
 			return 1;
+		}
+
+		static int IsOnVehicle( lua_State *L, Unit *ptr ){
+			TEST_UNITPLAYER()
+
+			if( ( ptr->GetCurrentVehicle() != NULL ) || ( ptr->IsPlayer() && ptr->IsVehicle() ) )
+				lua_pushboolean( L, 1 );
+			else
+				lua_pushboolean( L, 0 );
+
+			return 1;
+		}
+
+
+		static int SpawnAndEnterVehicle( lua_State *L, Unit *ptr ){
+			TEST_UNITPLAYER()
+
+			uint32 creature_entry = 0;
+			uint32 delay = 0;
+
+			if( lua_gettop( L ) != 2 )
+				return 0;
+
+			creature_entry = luaL_checkint( L, 1 );
+			delay = luaL_checkint( L, 2 );
+
+			if( delay < 1 * 1000 )
+				delay = 1 * 1000;
+
+			if( creature_entry == 0 )
+				return 0;
+
+			if( ( ptr->GetCurrentVehicle() != NULL ) && ( !ptr->IsPlayer() || !ptr->IsVehicle() ) )
+				return 0;
+
+			CreatureInfo *ci = CreatureNameStorage.LookupEntry( creature_entry );
+			if( ci == NULL )
+				return 0;
+
+			CreatureProto *cp = CreatureProtoStorage.LookupEntry( creature_entry );
+			if( cp == NULL )
+				return 0;
+			
+			Player *p = NULL;
+			if( ptr->IsPlayer() )
+				p = static_cast< Player* >( ptr );
+
+			if( ( cp->vehicleid == 0 ) && ( p == NULL ) && ( !p->GetSession()->HasGMPermissions() ) )
+				return 0;
+
+			LocationVector v( ptr->GetPosition() );
+			
+			Creature *c = ptr->GetMapMgr()->CreateCreature( cp->Id );
+			c->Load( cp, v.x, v.y, v.z, v.o );
+			c->RemoveFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK );
+			c->PushToWorld( ptr->GetMapMgr() );
+			
+			// Need to delay this a bit since first the client needs to see the vehicle
+			ptr->EnterVehicle( c->GetGUID(), delay );
+			
+			return 0;
+		}
+
+		static int DismissVehicle( lua_State *L, Unit *ptr ){
+			TEST_UNITPLAYER()
+
+			Vehicle *v = NULL;
+
+			if( ptr->GetCurrentVehicle() != NULL )
+				v = ptr->GetCurrentVehicle();
+			else
+			if( ptr->IsPlayer() && ( ptr->GetVehicleComponent() != NULL ) )
+				v = ptr->GetVehicleComponent();
+
+			if( v == NULL )
+				return 0;
+
+			v->EjectAllPassengers();
+			
+			Unit *o = v->GetOwner();
+
+			if( o->IsPlayer() )
+				o->RemoveAllAuraType( SPELL_AURA_MOUNTED );
+			else
+				o->Delete();
+
+			return 0;
+		}
+
+		static int AddVehiclePassenger( lua_State *L, Unit *ptr ){
+			TEST_UNITPLAYER()
+
+			Vehicle *v = NULL;
+
+			if( ptr->GetCurrentVehicle() != NULL )
+				v = ptr->GetCurrentVehicle();
+			else
+			if( ptr->IsPlayer() && ( ptr->GetVehicleComponent() != NULL ) )
+				v = ptr->GetVehicleComponent();
+
+			if( v == NULL )
+				return 0;
+
+			if( !v->HasEmptySeat() )
+				return 0;
+
+			if( lua_gettop( L ) != 1 )
+				return 0;
+
+			uint32 creature_entry = luaL_checkint( L, 1 );
+			
+			CreatureInfo  *ci = CreatureNameStorage.LookupEntry( creature_entry );
+			CreatureProto *cp = CreatureProtoStorage.LookupEntry( creature_entry );
+			
+			if( ( ci == NULL ) || ( cp == NULL ) )
+				return 0;
+
+			Unit *u = v->GetOwner();
+			
+			Creature *c = u->GetMapMgr()->CreateCreature( creature_entry );
+			c->Load( cp, u->GetPositionX(), u->GetPositionY(), u->GetPositionZ(), u->GetOrientation() );
+			c->PushToWorld( u->GetMapMgr() );
+			c->EnterVehicle( u->GetGUID(), 1 );
+
+			return 0;
+		}
+
+
+		static int HasEmptyVehicleSeat( lua_State *L, Unit *ptr ){
+			TEST_UNITPLAYER();
+
+			Vehicle *v = NULL;
+
+			if( ptr->GetCurrentVehicle() != NULL )
+				v = ptr->GetCurrentVehicle();
+			else
+			if( ptr->IsPlayer() && ( ptr->GetVehicleComponent() != NULL ) )
+				v = ptr->GetVehicleComponent();
+
+			if( v == NULL )
+				return 0;
+
+			if( v->HasEmptySeat() )
+				lua_pushboolean( L, 1 );
+			else
+				lua_pushboolean( L, 0 );
+
+			return 1;
+		}
+
+		static int EnterVehicle( lua_State *L, Unit *ptr ){
+			TEST_UNITPLAYER()
+
+			if( lua_gettop( L ) != 2 )
+				return 0;
+
+			uint64 guid = CHECK_GUID( L, 1 );
+			uint32 delay = luaL_checkint( L, 2 );
+
+			ptr->EnterVehicle( guid, delay );
+
+			return 0;
+		}
+
+		static int ExitVehicle( lua_State *L, Unit *ptr ){
+			TEST_UNITPLAYER()
+
+			if( ptr->GetCurrentVehicle() != NULL )
+				ptr->GetCurrentVehicle()->EjectPassenger( ptr );
+			else
+			if( ptr->IsPlayer() && ( ptr->GetVehicleComponent() != NULL ) )
+				ptr->RemoveAllAuraType( SPELL_AURA_MOUNTED );
+
+			return 0;
+		}
+
+		static int GetVehicleBase( lua_State *L, Unit *ptr ){
+			TEST_UNITPLAYER();
+
+			Unit *u = ptr->GetVehicleBase();
+
+			if( u != NULL )
+				PUSH_UNIT( L, u );
+			else
+				lua_pushnil( L );
+
+			return 1;
+		}
+
+		static int EjectAllVehiclePassengers( lua_State *L, Unit *ptr ){
+			TEST_UNITPLAYER();
+
+			Unit *u = ptr->GetVehicleBase();
+			if( u == NULL )
+				return 0;
+
+			u->GetVehicleComponent()->EjectAllPassengers();
+
+			return 0;
+		}
+
+		static int EjectVehiclePassengerFromSeat( lua_State *L, Unit *ptr ){
+			TEST_UNITPLAYER();
+
+			Unit *u = ptr->GetVehicleBase();
+			if( u == NULL )
+				return 0;
+
+			if( lua_gettop( L ) != 1 )
+				return 0;
+
+			uint32 seat = luaL_checkint( L, 1 );
+
+			u->GetVehicleComponent()->EjectPassengerFromSeat( seat );
+
+			return 0;
+		}
+
+		static int MoveVehiclePassengerToSeat( lua_State *L, Unit *ptr ){
+			TEST_UNITPLAYER();
+
+			Unit *u = ptr->GetVehicleBase();
+			if( u == NULL )
+				return 0;
+
+			if( lua_gettop( L ) != 2 )
+				return 0;
+
+			Unit *passenger = CHECK_UNIT( L, 1 );
+			uint32 seat = luaL_checkint( L, 2 );
+
+			if( passenger == NULL )
+				return 0;
+
+			u->GetVehicleComponent()->MovePassengerToSeat( passenger, seat );
+
+			return 0;
 		}
 };
 #endif

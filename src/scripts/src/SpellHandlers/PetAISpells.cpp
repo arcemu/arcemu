@@ -131,6 +131,7 @@ class MirrorImageAI : public CreatureAIScript
 	private:
 };
 
+
 class DancingRuneWeaponAI : public CreatureAIScript
 {
 	public:
@@ -271,10 +272,27 @@ class DancingRuneWeaponAI : public CreatureAIScript
 		int procSpell[5];
 };
 
+class FrostBroodVanquisherAI : public CreatureAIScript{
+public:
+	ADD_CREATURE_FACTORY_FUNCTION( FrostBroodVanquisherAI );
+	FrostBroodVanquisherAI( Creature *c ) : CreatureAIScript( c ){
+	}
+
+	void OnLoad(){
+		_unit->SetByte( UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_UNK_2 );
+	}
+
+	void OnLastPassengerLeft( Unit *passenger ){
+		if( _unit->GetSummonedByGUID() == passenger->GetGUID() )
+			_unit->Despawn( 1 * 1000, 0 );
+	}
+};
+
 void SetupPetAISpells(ScriptMgr* mgr)
 {
 	mgr->register_creature_script(24207, &ArmyOfTheDeadGhoulAI::Create);
 	mgr->register_creature_script(19668, &ShadowFiendAI::Create);
 	mgr->register_creature_script(27893, &DancingRuneWeaponAI::Create);
 	mgr->register_creature_script(31216, &MirrorImageAI::Create);
+	mgr->register_creature_script( 28670, &FrostBroodVanquisherAI::Create );
 };

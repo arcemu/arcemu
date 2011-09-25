@@ -556,35 +556,41 @@ bool ChatHandler::HandleDebugWaterWalk(const char* args, WorldSession* m_session
 
 bool ChatHandler::HandleDebugUnroot(const char* args, WorldSession* m_session)
 {
-	Player* chr = getSelectedChar(m_session);
-	char buf[256];
-
-	if(chr == NULL)  // Ignatich: what should NOT happen but just in case...
-	{
-		SystemMessage(m_session,  "No character selected.");
-		return false;
+	if( m_session->GetPlayer()->GetTargetGUID() == 0 ){
+		RedSystemMessage( m_session, "You need to select a unit!" );
+		return true;
 	}
 
-	chr->SetMovement(MOVE_UNROOT, 5);
+	Unit *u = m_session->GetPlayer()->GetMapMgr()->GetUnit( m_session->GetPlayer()->GetTargetGUID() );
+	if( u == NULL ){
+		RedSystemMessage( m_session, "You need to select a unit!" );
+		return true;
+	}
 
-	snprintf((char*)buf, 256, "UnRoot Test Ran.");
-	SystemMessage(m_session, buf);
+	u->Unroot();
+
+	SystemMessage( m_session, "Unit unrooted!" );
+
 	return true;
 }
 
 bool ChatHandler::HandleDebugRoot(const char* args, WorldSession* m_session)
 {
-	Player* chr = getSelectedChar(m_session);
-	char buf[256];
-
-	if(chr == NULL)  // Ignatich: what should NOT happen but just in case...
-	{
-		SystemMessage(m_session, "No character selected.");
+	if( m_session->GetPlayer()->GetTargetGUID() == 0 ){
+		RedSystemMessage( m_session, "You need to select a unit!" );
 		return true;
 	}
-	chr->SetMovement(MOVE_ROOT, 1);
-	snprintf((char*)buf, 256, "Root Test Ran.");
-	SystemMessage(m_session, buf);
+
+	Unit *u = m_session->GetPlayer()->GetMapMgr()->GetUnit( m_session->GetPlayer()->GetTargetGUID() );
+	if( u == NULL ){
+		RedSystemMessage( m_session, "You need to select a unit!" );
+		return true;
+	}
+
+	u->Root();
+
+	SystemMessage( m_session, "Unit rooted!" );
+
 	return true;
 }
 

@@ -713,7 +713,7 @@ static const UnitFlagNames UnitFlagToName[] =
 	{ UNIT_FLAG_PLAYER_CONTROLLED_CREATURE, "UNIT_FLAG_PLAYER_CONTROLLED_CREATURE" },
 	{ UNIT_FLAG_NOT_SELECTABLE, "UNIT_FLAG_NOT_SELECTABLE" },
 	{ UNIT_FLAG_SKINNABLE, "UNIT_FLAG_SKINNABLE" },
-	{ UNIT_FLAG_UNKNOWN_28, "UNIT_FLAG_UNKNOWN_28" },
+	{ UNIT_FLAG_MOUNT, "UNIT_FLAG_MOUNT" },
 	{ UNIT_FLAG_UNKNOWN_29, "UNIT_FLAG_UNKNOWN_29" },
 	{ UNIT_FLAG_FEIGN_DEATH, "UNIT_FLAG_FEIGN_DEATH" },
 	{ UNIT_FLAG_UNKNOWN_31, "UNIT_FLAG_UNKNOWN_31" },
@@ -837,7 +837,9 @@ bool ChatHandler::HandleNpcInfoCommand(const char* args, WorldSession* m_session
 
 		SystemMessage(m_session, "NPCFlags: %d%s", crt->GetUInt32Value(UNIT_NPC_FLAGS), s.c_str());
 	}
-	SystemMessage(m_session, "DisplayID: %d", crt->GetDisplayId());
+	SystemMessage(m_session, "DisplayID: %u", crt->GetDisplayId() );
+	SystemMessage(m_session, "VehicleID: %u", crt->GetProto()->vehicleid );
+
 	if(crt->m_faction)
 		SystemMessage(m_session, "Combat Support: 0x%.3X", crt->m_faction->FriendlyMask);
 	SystemMessage(m_session, "Health (cur/max): %d/%d", crt->GetHealth(), crt->GetMaxHealth());

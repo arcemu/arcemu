@@ -662,6 +662,9 @@ class SERVER_DECL ObjectMgr : public Singleton < ObjectMgr >, public EventableOb
 		std::set<uint32> allCompletedAchievements;
 #endif
 
+		void LoadVehicleAccessories();
+		std::vector< VehicleAccessoryEntry* >* GetVehicleAccessories( uint32 creature_entry );
+
 #undef ENABLE_ALWAYS_SERIOUS_MODE_GCC_STL_HACK
 
 // it's for private persons (pps)
@@ -782,6 +785,8 @@ class SERVER_DECL ObjectMgr : public Singleton < ObjectMgr >, public EventableOb
 #ifdef ENABLE_ACHIEVEMENTS
 		AchievementCriteriaEntryList m_AchievementCriteriasByType[ACHIEVEMENT_CRITERIA_TYPE_TOTAL];
 #endif
+		std::map< uint32, std::vector< VehicleAccessoryEntry* >* > vehicle_accessories;
+
 };
 
 

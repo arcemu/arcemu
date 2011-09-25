@@ -762,7 +762,7 @@ enum UnitFieldFlags // UNIT_FIELD_FLAGS #46 - these are client flags
     UNIT_FLAG_PLAYER_CONTROLLED_CREATURE = 0x01000000, // 25    16777216
     UNIT_FLAG_NOT_SELECTABLE             = 0x02000000, // 26    33554432  cannot select the unit
     UNIT_FLAG_SKINNABLE                  = 0x04000000, // 27    67108864
-    UNIT_FLAG_UNKNOWN_28                 = 0x08000000, // 28   134217728  ? was MAKE_CHAR_UNTOUCHABLE (probably wrong), nothing ever set it
+    UNIT_FLAG_MOUNT                      = 0x08000000, // 28   134217728  ? was MAKE_CHAR_UNTOUCHABLE (probably wrong), nothing ever set it
     UNIT_FLAG_UNKNOWN_29                 = 0x10000000, // 29   268435456
     UNIT_FLAG_FEIGN_DEATH                = 0x20000000, // 30   536870912
     UNIT_FLAG_UNKNOWN_31                 = 0x40000000, // 31  1073741824  ? was WEAPON_OFF and being used for disarm
@@ -1521,6 +1521,7 @@ class SERVER_DECL Unit : public Object
 		bool GetSpeedDecrease();
 		int32 m_mountedspeedModifier;
 		int32 m_flyspeedModifier;
+		virtual void SetSpeeds( uint8 type, float speed ){}
 		void UpdateSpeed();
 		void EnableFlight();
 		void DisableFlight();
@@ -1926,12 +1927,32 @@ class SERVER_DECL Unit : public Object
 		float m_parryfromspell;
 		uint32 m_BlockModPct; // is % but does not need float and does not need /100!
 
+		Vehicle *currentvehicle;  // The vehicle the unit is attached to
+		Vehicle *vehicle;         // The Unit's own vehicle component
 
 	public:
+		void SetCurrentVehicle( Vehicle *v ){ currentvehicle = v; }
+		void EnterVehicle( uint64 guid, uint32 delay );
+		Vehicle* GetCurrentVehicle(){ return currentvehicle; }
+		Vehicle* GetVehicleComponent(){ return vehicle; }
+		virtual void AddVehicleComponent( uint32 creature_entry, uint32 vehicleid ){}
+		virtual void RemoveVehicleComponent(){}
+
+		void SendHopOnVehicle( Unit *vehicleowner, uint32 seat );
+		void SendHopOffVehicle( Unit *vehicleowner, LocationVector &landposition );
+
+		Unit* GetVehicleBase();
+
 		virtual Group* GetGroup() { return NULL; }
 		bool InParty(Unit* u);
 		bool InRaid(Unit* u);
 		const CombatStatusHandler* getcombatstatus() const { return &CombatStatus; }
+
+		bool m_noFallDamage;
+		float z_axisposition;
+		int32 m_safeFall;
+		
+		void SendEnvironmentalDamageLog( uint64 guid, uint8 type, uint32 damage );
 };
 
 

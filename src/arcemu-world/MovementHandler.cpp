@@ -81,9 +81,9 @@ void WorldSession::HandleMoveWorldportAckOpcode(WorldPacket & recv_data)
 		/* wow, our pc must really suck. */
 		Transporter* pTrans = _player->m_CurrentTransporter;
 
-		float c_tposx = pTrans->GetPositionX() + _player->m_TransporterX;
-		float c_tposy = pTrans->GetPositionY() + _player->m_TransporterY;
-		float c_tposz = pTrans->GetPositionZ() + _player->m_TransporterZ;
+		float c_tposx = pTrans->GetPositionX() + _player->transporter_info.x;
+		float c_tposy = pTrans->GetPositionY() + _player->transporter_info.y;
+		float c_tposz = pTrans->GetPositionZ() + _player->transporter_info.z;
 
 
 		_player->SetMapId(pTrans->GetMapId());
@@ -275,9 +275,9 @@ static MovementFlagName MoveFlagsToNames[] =
 	{ MOVEFLAG_PITCH_DOWN, "MOVEFLAG_PITCH_DOWN" },
 	{ MOVEFLAG_PITCH_UP, "MOVEFLAG_PITCH_UP" },
 	{ MOVEFLAG_WALK, "MOVEFLAG_WALK" },
-	{ MOVEFLAG_TAXI, "MOVEFLAG_TAXI" },
+	{ MOVEFLAG_TRANSPORT, "MOVEFLAG_TRANSPORT" },
 	{ MOVEFLAG_NO_COLLISION, "MOVEFLAG_NO_COLLISION" },
-	{ MOVEFLAG_FLYING, "MOVEFLAG_FLYING" },
+	{ MOVEFLAG_ROOTED, "MOVEFLAG_ROOTED" },
 	{ MOVEFLAG_REDIRECTED, "MOVEFLAG_REDIRECTED" },
 	{ MOVEFLAG_FALLING, "MOVEFLAG_FALLING" },
 	{ MOVEFLAG_FALLING_FAR, "MOVEFLAG_FALLING_FAR" },
@@ -327,7 +327,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recv_data)
 	/************************************************************************/
 	/* Make sure the packet is the correct size range.                      */
 	/************************************************************************/
-	if(recv_data.size() > 80) { Disconnect(); return; }
+	//if(recv_data.size() > 80) { Disconnect(); return; }
 
 	/************************************************************************/
 	/* Read Movement Data Packet                                            */
@@ -340,8 +340,11 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recv_data)
 	{
 		return;
 	}
-
-	// m_MoverWoWGuid = guid;
+	
+	// Player is in control of some entity, so we move that instead of the player
+	Unit *mover = _player->GetMapMgr()->GetUnit( m_MoverWoWGuid.GetOldGuid() );
+	if( mover == NULL )
+		return;
 
 	/************************************************************************/
 	/* Update player movement state                                         */
@@ -433,7 +436,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recv_data)
 		/* Anti-Teleport                                                        */
 		/************************************************************************/
 		if(sWorld.antihack_teleport && _player->m_position.Distance2DSq(movement_info.x, movement_info.y) > 3025.0f
-		        && _player->m_runSpeed < 50.0f && !_player->m_TransporterGUID)
+		        && _player->m_runSpeed < 50.0f && !_player->transporter_info.guid)
 		{
 			sCheatLog.writefromsession(this, "Disconnected for teleport hacking. Player speed: %f, Distance traveled: %f", _player->m_runSpeed, sqrt(_player->m_position.Distance2DSq(movement_info.x, movement_info.y)));
 			Disconnect();
@@ -442,7 +445,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recv_data)
 	}
 
 	//update the detector
-	if(sWorld.antihack_speed && !_player->GetTaxiState() && _player->m_TransporterGUID == 0 && !_player->GetSession()->GetPermissionCount())
+	if(sWorld.antihack_speed && !_player->GetTaxiState() && _player->transporter_info.guid == 0 && !_player->GetSession()->GetPermissionCount())
 	{
 		// simplified: just take the fastest speed. less chance of fuckups too
 		float speed = (_player->flying_aura) ? _player->m_flySpeed : (_player->m_swimSpeed > _player-> m_runSpeed) ? _player->m_swimSpeed : _player->m_runSpeed;
@@ -567,31 +570,32 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recv_data)
 		if(recv_data.GetOpcode() == MSG_MOVE_FALL_LAND)
 		{
 			// player has finished falling
-			//if _player->z_axisposition contains no data then set to current position
-			if(!_player->z_axisposition)
-				_player->z_axisposition = movement_info.z;
+			//if z_axisposition contains no data then set to current position
+			if(!mover->z_axisposition)
+				mover->z_axisposition = movement_info.z;
 
 			// calculate distance fallen
-			uint32 falldistance = float2int32(_player->z_axisposition - movement_info.z);
-			if(_player->z_axisposition <= movement_info.z)
+			uint32 falldistance = float2int32(mover->z_axisposition - movement_info.z);
+			if(mover->z_axisposition <= movement_info.z)
 				falldistance = 1;
 			/*Safe Fall*/
-			if((int)falldistance > _player->m_safeFall)
-				falldistance -= _player->m_safeFall;
+			if((int)falldistance > mover->m_safeFall)
+				falldistance -= mover->m_safeFall;
 			else
 				falldistance = 1;
 
 			//checks that player has fallen more than 12 units, otherwise no damage will be dealt
 			//falltime check is also needed here, otherwise sudden changes in Z axis position, such as using !recall, may result in death
-			if(_player->isAlive() && !_player->bInvincible && !_player->GodModeCheat && falldistance > 12 && (UNIXTIME >= _player->m_fallDisabledUntil) /*&& movement_info.FallTime > 1000*/ && !_player->m_noFallDamage)
+			if( mover->isAlive() && !mover->bInvincible && ( falldistance > 12 ) && !mover->m_noFallDamage &&
+				( ( mover->GetGUID() != _player->GetGUID() ) || ( !_player->GodModeCheat && ( UNIXTIME >= _player->m_fallDisabledUntil ) ) ) )
 			{
 				// 1.7% damage for each unit fallen on Z axis over 13
-				uint32 health_loss = float2int32(_player->GetUInt32Value(UNIT_FIELD_MAXHEALTH) * (falldistance - 12) * 0.017f);
+				uint32 health_loss = static_cast< uint32 >( mover->GetHealth() * ( falldistance - 12 ) * 0.017f );
 
-				if(health_loss >= _player->GetUInt32Value(UNIT_FIELD_HEALTH))
-					health_loss = _player->GetUInt32Value(UNIT_FIELD_HEALTH);
+				if( health_loss >= mover->GetHealth() )
+					health_loss = mover->GetHealth();
 #ifdef ENABLE_ACHIEVEMENTS
-				else if(falldistance >= 65)
+				else if( ( falldistance >= 65 ) && ( mover->GetGUID() == _player->GetGUID() ) )
 				{
 					// Rather than Updating achievement progress every time fall damage is taken, all criteria currently have 65 yard requirement...
 					// Achievement 964: Fall 65 yards without dying.
@@ -600,67 +604,63 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recv_data)
 				}
 #endif
 
-				_player->SendEnvironmentalDamageLog(_player->GetGUID(), DAMAGE_FALL, health_loss);
-				_player->DealDamage(_player, health_loss, 0, 0, 0);
+				mover->SendEnvironmentalDamageLog(mover->GetGUID(), DAMAGE_FALL, health_loss);
+				mover->DealDamage(mover, health_loss, 0, 0, 0);
 
 				//_player->RemoveStealth(); // cebernic : why again? lost stealth by AURA_INTERRUPT_ON_ANY_DAMAGE_TAKEN already.
 			}
-			_player->z_axisposition = 0.0f;
+			mover->z_axisposition = 0.0f;
 		}
 		else
 			//whilst player is not falling, continuously update Z axis position.
 			//once player lands this will be used to determine how far he fell.
 			if(!(movement_info.flags & MOVEFLAG_FALLING))
-				_player->z_axisposition = movement_info.z;
+				mover->z_axisposition = movement_info.z;
 	}
 
 	/************************************************************************/
 	/* Transporter Setup                                                    */
 	/************************************************************************/
-	if(!_player->m_lockTransportVariables)
-	{
-		if(_player->m_TransporterGUID && !movement_info.transGuid)
-		{
-			/* we left the transporter we were on */
-			if(_player->m_CurrentTransporter)
-			{
-				_player->m_CurrentTransporter->RemovePlayer(_player);
-				_player->m_CurrentTransporter = NULL;
-			}
+	if( ( mover->transporter_info.guid != 0 ) && ( movement_info.transGuid.GetOldGuid() == 0 ) ){
+		/* we left the transporter we were on */
 
-			_player->m_TransporterGUID = 0;
-			_player->SpeedCheatReset();
-		}
-		else if(movement_info.transGuid)
-		{
-			if(!_player->m_TransporterGUID)
-			{
-				_player->m_CurrentTransporter = objmgr.GetTransporter(uint32(Arcemu::Util::GUID_LOPART(movement_info.transGuid)));
-				if(_player->m_CurrentTransporter)
-					_player->m_CurrentTransporter->AddPlayer(_player);
+		Transporter *transporter = objmgr.GetTransporter( Arcemu::Util::GUID_LOPART( mover->transporter_info.guid ) );
+		if( transporter != NULL )
+			transporter->RemovePassenger( mover );
 
+		mover->transporter_info.guid = 0;
+		_player->SpeedCheatReset();
+
+	}else{
+		if( movement_info.transGuid.GetOldGuid() != 0 ){
+
+			if( mover->transporter_info.guid == 0 ){
+				Transporter *transporter = objmgr.GetTransporter( Arcemu::Util::GUID_LOPART( movement_info.transGuid ) );
+				if( transporter != NULL )
+					transporter->AddPassenger( mover );
+				
 				/* set variables */
-				_player->m_TransporterGUID = movement_info.transGuid;
-				_player->m_TransporterUnk = movement_info.transUnk;
-				_player->m_TransporterX = movement_info.transX;
-				_player->m_TransporterY = movement_info.transY;
-				_player->m_TransporterZ = movement_info.transZ;
-			}
-			else
-			{
+				mover->transporter_info.guid = movement_info.transGuid;
+				mover->transporter_info.flags = movement_info.transUnk;
+				mover->transporter_info.x = movement_info.transX;
+				mover->transporter_info.y = movement_info.transY;
+				mover->transporter_info.z = movement_info.transZ;
+			
+			}else{
 				/* no changes */
-				_player->m_TransporterUnk = movement_info.transUnk;
-				_player->m_TransporterX = movement_info.transX;
-				_player->m_TransporterY = movement_info.transY;
-				_player->m_TransporterZ = movement_info.transZ;
+				mover->transporter_info.flags = movement_info.transUnk;
+				mover->transporter_info.x = movement_info.transX;
+				mover->transporter_info.y = movement_info.transY;
+				mover->transporter_info.z = movement_info.transZ;
 			}
 		}
-		/*float x = movement_info.x - movement_info.transX;
-		float y = movement_info.y - movement_info.transY;
-		float z = movement_info.z - movement_info.transZ;
-		Transporter* trans = _player->m_CurrentTransporter;
-		if(trans) sChatHandler.SystemMessageToPlr(_player, "Client t pos: %f %f\nServer t pos: %f %f   Diff: %f %f", x,y, trans->GetPositionX(), trans->GetPositionY(), trans->CalcDistance(x,y,z), trans->CalcDistance(movement_info.x, movement_info.y, movement_info.z));*/
 	}
+	
+	/*float x = movement_info.x - movement_info.transX;
+	float y = movement_info.y - movement_info.transY;
+	float z = movement_info.z - movement_info.transZ;
+	Transporter* trans = _player->m_CurrentTransporter;
+	if(trans) sChatHandler.SystemMessageToPlr(_player, "Client t pos: %f %f\nServer t pos: %f %f   Diff: %f %f", x,y, trans->GetPositionX(), trans->GetPositionY(), trans->CalcDistance(x,y,z), trans->CalcDistance(movement_info.x, movement_info.y, movement_info.z));*/
 
 	/************************************************************************/
 	/* Anti-Speed Hack Checks                                               */
@@ -730,12 +730,8 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recv_data)
 	}
 	else
 	{
-		// Player is in control of some entity, so we move that instead of the player
-		Unit* mover = _player->GetMapMgr()->GetUnit(m_MoverWoWGuid.GetOldGuid());
-		if(mover == NULL)
-			return;
-
-		mover->SetPosition(movement_info.x, movement_info.y, movement_info.z, movement_info.orientation);
+		if( !mover->isRooted() )
+			mover->SetPosition(movement_info.x, movement_info.y, movement_info.z, movement_info.orientation);
 	}
 }
 
@@ -781,8 +777,8 @@ void WorldSession::HandleSetActiveMoverOpcode(WorldPacket & recv_data)
 		if(!(_player->m_CurrentCharm == guid) &&
 		        !(_player->GetGUID() == guid))
 		{
-			// cheater!
-			return;
+			if( _player->GetCurrentVehicle()->GetOwner()->GetGUID() != guid )
+				return;
 		}
 
 		// generate wowguid
@@ -871,6 +867,32 @@ void WorldSession::HandleTeleportCheatOpcode(WorldPacket & recv_data)
 	_player->SafeTeleport(_player->GetMapId(), _player->GetInstanceID(), vec);
 }
 
+MovementInfo::MovementInfo(){
+	time = 0;
+	pitch = 0.0f;
+	redirectSin = 0.0f;
+	redirectCos = 0.0f;
+	redirect2DSpeed = 0.0f;
+	unk11 = 0;
+	unk12 = 0;
+	unk13 = 0;
+	unklast = 0;
+	unk_230 = 0;
+	x = 0.0f;
+	y = 0.0f;
+	z = 0.0f;
+	orientation = 0.0f;
+	flags = 0;
+	redirectVelocity = 0.0f;
+	transGuid = 0;
+	transX = 0.0f;
+	transY = 0.0f;
+	transZ = 0.0f;
+	transO = 0.0f;
+	transUnk = 0.0f;
+	transUnk_2 = 0;
+}
+
 void MovementInfo::init(WorldPacket & data)
 {
 	transGuid = 0;
@@ -878,7 +900,7 @@ void MovementInfo::init(WorldPacket & data)
 	data >> flags >> unk_230 >> time;
 	data >> x >> y >> z >> orientation;
 
-	if(flags & MOVEFLAG_TAXI)
+	if(flags & MOVEFLAG_TRANSPORT)
 	{
 		data >> transGuid >> transX >> transY >> transZ >> transO >> transUnk >> transUnk_2;
 	}
@@ -911,7 +933,7 @@ void MovementInfo::write(WorldPacket & data)
 
 	data << x << y << z << orientation;
 
-	if(flags & MOVEFLAG_TAXI)
+	if(flags & MOVEFLAG_TRANSPORT)
 	{
 		data << transGuid << transX << transY << transZ << transO << transUnk << transUnk_2;
 	}

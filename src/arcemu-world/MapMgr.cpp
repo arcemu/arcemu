@@ -395,6 +395,7 @@ void MapMgr::PushObject(Object* obj)
 				break;
 
 			case HIGHGUID_TYPE_UNIT:
+			case HIGHGUID_TYPE_VEHICLE:
 				{
 					ARCEMU_ASSERT(obj->GetUIdFromGUID() <= m_CreatureHighGuid);
 					CreatureStorage[ obj->GetUIdFromGUID() ] = TO< Creature* >(obj);
@@ -470,6 +471,7 @@ void MapMgr::PushStaticObject(Object* obj)
 	switch(obj->GetTypeFromGUID())
 	{
 		case HIGHGUID_TYPE_UNIT:
+		case HIGHGUID_TYPE_VEHICLE:
 			CreatureStorage[ obj->GetUIdFromGUID() ] = TO< Creature* >(obj);
 			break;
 
@@ -516,6 +518,7 @@ void MapMgr::RemoveObject(Object* obj, bool free_guid)
 	switch(obj->GetTypeFromGUID())
 	{
 		case HIGHGUID_TYPE_UNIT:
+		case HIGHGUID_TYPE_VEHICLE:
 			ARCEMU_ASSERT(obj->GetUIdFromGUID() <= m_CreatureHighGuid);
 			CreatureStorage[ obj->GetUIdFromGUID() ] = NULL;
 			if(TO_CREATURE(obj)->m_spawn != NULL)
@@ -686,7 +689,7 @@ void MapMgr::ChangeObjectLocation(Object* obj)
 			curObj = *iter;
 			++iter;
 
-			if(curObj->IsPlayer() && plObj != NULL && plObj->m_TransporterGUID && plObj->m_TransporterGUID == TO< Player* >(curObj)->m_TransporterGUID)
+			if(curObj->IsPlayer() && plObj != NULL && plObj->transporter_info.guid && plObj->transporter_info.guid == TO< Player* >(curObj)->transporter_info.guid)
 				fRange = 0.0f; // unlimited distance for people on same boat
 			else if(curObj->GetTypeFromGUID() == HIGHGUID_TYPE_TRANSPORTER)
 				fRange = 0.0f; // unlimited distance for transporters (only up to 2 cells +/- anyway.)
@@ -865,7 +868,7 @@ void MapMgr::UpdateInRangeSet(Object* obj, Player* plObj, MapCell* cell, ByteBuf
 		if(curObj == NULL)
 			continue;
 
-		if(curObj->IsPlayer() && obj->IsPlayer() && plObj != NULL && plObj->m_TransporterGUID && plObj->m_TransporterGUID == TO< Player* >(curObj)->m_TransporterGUID)
+		if(curObj->IsPlayer() && obj->IsPlayer() && plObj != NULL && plObj->transporter_info.guid && plObj->transporter_info.guid == TO< Player* >(curObj)->transporter_info.guid)
 			fRange = 0.0f; // unlimited distance for people on same boat
 		else if(curObj->GetTypeFromGUID() == HIGHGUID_TYPE_TRANSPORTER)
 			fRange = 0.0f; // unlimited distance for transporters (only up to 2 cells +/- anyway.)
@@ -1446,6 +1449,7 @@ Unit* MapMgr::GetUnit(const uint64 & guid)
 	switch(GET_TYPE_FROM_GUID(guid))
 	{
 		case HIGHGUID_TYPE_UNIT:
+		case HIGHGUID_TYPE_VEHICLE:
 			return GetCreature(GET_LOWGUID_PART(guid));
 			break;
 
@@ -1471,7 +1475,8 @@ Object* MapMgr::_GetObject(const uint64 & guid)
 		case	HIGHGUID_TYPE_GAMEOBJECT:
 			return GetGameObject(GET_LOWGUID_PART(guid));
 			break;
-		case	HIGHGUID_TYPE_UNIT:
+		case HIGHGUID_TYPE_UNIT:
+		case HIGHGUID_TYPE_VEHICLE:
 			return GetCreature(GET_LOWGUID_PART(guid));
 			break;
 		case	HIGHGUID_TYPE_DYNAMICOBJECT:
@@ -1741,7 +1746,14 @@ GameObject* MapMgr::GetSqlIdGameObject(uint32 sqlid)
 
 uint64 MapMgr::GenerateCreatureGUID(uint32 entry)
 {
-	uint64 newguid = static_cast< uint64 >(HIGHGUID_TYPE_UNIT) << 32;
+	uint64 newguid = 0;
+
+	CreatureProto *proto = CreatureProtoStorage.LookupEntry( entry );
+	if( proto->vehicleid == 0 )
+		newguid = static_cast< uint64 >( HIGHGUID_TYPE_UNIT ) << 32;
+	else
+		newguid = static_cast< uint64 >( HIGHGUID_TYPE_VEHICLE ) << 32;
+
 	char* pHighGuid = reinterpret_cast< char* >(&newguid);
 	char* pEntry = reinterpret_cast< char* >(&entry);
 

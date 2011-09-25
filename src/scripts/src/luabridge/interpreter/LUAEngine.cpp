@@ -71,10 +71,9 @@ extern "C"
 		lua_engine::restartEngine();
 	}
 };
-
-void lua_engine::report(lua_State* L)
+void lua_engine::report(lua_State * L)
 {
-	int count = lua_gettop(L);
+	int count = lua_gettop( L );
 
 	while(count > 0)
 	{

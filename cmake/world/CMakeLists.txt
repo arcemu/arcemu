@@ -112,6 +112,7 @@ SET(sources
 	TransporterHandler.cpp 
 	Unit.cpp 
 	Vehicle.cpp 
+	VehicleHandler.cpp
 	WarsongGulch.cpp 
 	WayPoints.cpp 
 	WeatherMgr.cpp 

@@ -75,9 +75,9 @@ enum MovementFlags
 
     // Byte 2 (Resets on Situation Change)
     MOVEFLAG_WALK						= 0x100,		//verified
-    MOVEFLAG_TAXI						= 0x200,
+    MOVEFLAG_TRANSPORT					= 0x200,
     MOVEFLAG_NO_COLLISION				= 0x400,
-    MOVEFLAG_FLYING	    				= 0x800,		//verified
+    MOVEFLAG_ROOTED	    				= 0x800,		//verified
     MOVEFLAG_REDIRECTED					= 0x1000,		//Unconfirmed
     MOVEFLAG_FALLING					= 0x2000,       //verified
     MOVEFLAG_FALLING_FAR				= 0x4000,		//verified
@@ -113,6 +113,14 @@ enum MovementFlags
     MOVEFLAG_PENDING_STRAFE_MASK		= 0x600000,
     MOVEFLAG_PENDING_MOVE_MASK			= 0x180000,
     MOVEFLAG_FULL_FALLING_MASK			= 0xE000,
+};
+
+enum MovementFlags2{
+	MOVEFLAG2_NO_STRAFING        = 0x01,
+	MOVEFLAG2_NO_JUMPING         = 0x02,
+	MOVEFLAG2_FULLSPEED_TURNING  = 0x08,
+	MOVEFLAG2_FULLSPEED_PITCHING = 0x10,
+	MOVEFLAG2_ALLOW_PITCHING     = 0x20
 };
 
 struct OpcodeHandler
@@ -189,6 +197,8 @@ class MovementInfo
 		WoWGuid transGuid;
 		float transX, transY, transZ, transO, transUnk;
 		uint8 transUnk_2;
+
+		MovementInfo();
 
 		void init(WorldPacket & data);
 		void write(WorldPacket & data);
@@ -556,6 +566,12 @@ class SERVER_DECL WorldSession
 		void HandlePushQuestToPartyOpcode(WorldPacket & recvPacket);
 		void HandleQuestPushResult(WorldPacket & recvPacket);
 		void HandleQuestPOIQueryOpcode(WorldPacket & recv_data);
+	
+	void HandleDismissVehicle( WorldPacket &recv_data );
+	void HandleChangeVehicleSeat( WorldPacket &recv_data );
+	void HandleRemoveVehiclePassenger( WorldPacket &recv_data );
+	void HandleLeaveVehicle( WorldPacket &recv_data );
+	void HandleEnterVehicle( WorldPacket &recv_data );
 
 
 		/// Chat opcodes (Chat.cpp)
@@ -814,7 +830,6 @@ class SERVER_DECL WorldSession
 	public:
 		MovementInfo* GetMovementInfo() { return &movement_info; }
 		const MovementInfo* GetMovementInfo() const { return &movement_info; }
-
 		static void InitPacketHandlerTable();
 		uint32 floodLines;
 		time_t floodTime;

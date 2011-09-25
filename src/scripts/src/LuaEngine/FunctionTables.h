@@ -536,6 +536,17 @@ RegType<Unit> UnitMethods[] =
 	{ "CastSpellAoE", &LuaUnit::CastSpellAoF },
 	{ "SetFlag", &LuaUnit::SetFlag },
 	{ "SetSelectedGO", &LuaUnit::SetSelectedGO },
+	{ "IsOnVehicle", &LuaUnit::IsOnVehicle },
+	{ "SpawnAndEnterVehicle", &LuaUnit::SpawnAndEnterVehicle },
+	{ "DismissVehicle", &LuaUnit::DismissVehicle },
+	{ "AddVehiclePassenger", &LuaUnit::AddVehiclePassenger },
+	{ "HasEmptyVehicleSeat", &LuaUnit::HasEmptyVehicleSeat },
+	{ "EnterVehicle", &LuaUnit::EnterVehicle },
+	{ "ExitVehicle", &LuaUnit::ExitVehicle },
+	{ "GetVehicleBase", &LuaUnit::GetVehicleBase },
+	{ "EjectAllVehiclePassengers", &LuaUnit::EjectAllVehiclePassengers },
+	{ "EjectVehiclePassengerFromSeat", &LuaUnit::EjectVehiclePassengerFromSeat },
+	{ "MoveVehiclePassengerToSeat", &LuaUnit::MoveVehiclePassengerToSeat },
 	{ NULL, NULL },
 };
 

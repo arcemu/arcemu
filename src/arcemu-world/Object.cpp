@@ -158,6 +158,8 @@ uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer* data, Player* target)
 		updatetype = UPDATETYPE_CREATE_YOURSELF;
 	}
 
+	
+
 	// gameobject stuff
 	if(IsGameObject())
 	{
@@ -192,6 +194,9 @@ uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer* data, Player* target)
 		if(flags != 0x0352 && IsGameObject() && TO< GameObject* >(this)->GetInfo()->Type == GAMEOBJECT_TYPE_TRANSPORT && !(TO< GameObject* >(this)->GetOverrides() & GAMEOBJECT_OVERRIDE_PARENTROT))
 			flags = 0x0352;
 	}
+
+	if( IsVehicle() )
+		flags |= UPDATEFLAG_VEHICLE;
 
 	// build our actual update
 	*data << updatetype;
@@ -341,7 +346,18 @@ void Object::_BuildMovementUpdate(ByteBuffer* data, uint16 flags, uint32 flags2,
 		}
 	}
 
-	uint16 flag16 = 0;	// some other flag
+	uint16 moveflags2 = 0; // mostly seem to be used by vehicles to control what kind of movement is allowed
+	if( IsVehicle() ){
+		Unit *u = static_cast< Unit* >( this );
+		if( u->GetVehicleComponent() != NULL )
+			moveflags2 |= u->GetVehicleComponent()->GetMoveFlags2();
+
+		if( IsCreature() ){
+			if( static_cast< Unit* >( this )->HasAuraWithName( SPELL_AURA_ENABLE_FLIGHT ) )
+				flags2 |= ( MOVEFLAG_NO_COLLISION | MOVEFLAG_AIR_SWIMMING );
+		}
+
+	}
 
 	*data << (uint16)flags;
 
@@ -364,10 +380,15 @@ void Object::_BuildMovementUpdate(ByteBuffer* data, uint16 flags, uint32 flags2,
 
 	if(flags & UPDATEFLAG_LIVING)  //0x20
 	{
-		if(pThis && pThis->m_TransporterGUID != 0)
-			flags2 |= MOVEFLAG_TAXI; //0x200
-		else if(uThis != NULL && uThis->m_transportGuid != 0 && uThis->m_transportPosition != NULL)
-			flags2 |= MOVEFLAG_TAXI; //0x200
+		if(pThis && pThis->transporter_info.guid != 0)
+			flags2 |= MOVEFLAG_TRANSPORT; //0x200
+		else if(uThis != NULL && transporter_info.guid != 0 && uThis->transporter_info.guid != 0)
+			flags2 |= MOVEFLAG_TRANSPORT; //0x200
+
+		if( ( pThis != NULL ) && pThis->isRooted() )
+			flags2 |= MOVEFLAG_ROOTED;
+		else if( ( uThis != NULL ) && uThis->isRooted() )
+			flags2 |= MOVEFLAG_ROOTED;
 
 		if(uThis != NULL)
 		{
@@ -387,7 +408,7 @@ void Object::_BuildMovementUpdate(ByteBuffer* data, uint16 flags, uint32 flags2,
 			if(uThis->GetAIInterface()->IsFlying())
 				flags2 |= MOVEFLAG_NO_COLLISION; //0x400 Zack : Teribus the Cursed had flag 400 instead of 800 and he is flying all the time
 			if(uThis->GetAIInterface()->onGameobject)
-				flags2 |= MOVEFLAG_FLYING;
+				flags2 |= MOVEFLAG_ROOTED;
 			if(uThis->GetProto()->extra_a9_flags)
 			{
 //do not send shit we can't honor
@@ -399,7 +420,7 @@ void Object::_BuildMovementUpdate(ByteBuffer* data, uint16 flags, uint32 flags2,
 
 		*data << (uint32)flags2;
 
-		*data << (uint16)flag16;
+		*data << (uint16)moveflags2;
 
 		*data << getMSTime(); // this appears to be time in ms but can be any thing. Maybe packet serializer ?
 
@@ -415,29 +436,19 @@ void Object::_BuildMovementUpdate(ByteBuffer* data, uint16 flags, uint32 flags2,
 		*data << (float)m_position.z;
 		*data << (float)m_position.o;
 
-		if(flags2 & MOVEFLAG_TAXI) //0x0200
+		if(flags2 & MOVEFLAG_TRANSPORT) //0x0200
 		{
-			if(pThis)
-			{
-				WoWGuid wowguid(pThis->m_TransporterGUID);
-				*data << wowguid;
-				*data << pThis->m_TransporterX << pThis->m_TransporterY << pThis->m_TransporterZ << pThis->m_TransporterO;
-				*data << pThis->m_TransporterUnk;
-				*data << (uint8)0;
-			}
-			else if(uThis != NULL && uThis->m_transportPosition != NULL)
-			{
-				uint64 tguid = ((uint64)HIGHGUID_TYPE_TRANSPORTER << 32) | uThis->m_transportGuid;
-				WoWGuid wowguid(tguid);
-				*data << wowguid;
-				*data << uThis->m_transportPosition->x << uThis->m_transportPosition->y <<
-				      uThis->m_transportPosition->z << uThis->m_transportPosition->o;
-				*data << uint32(0);
-				*data << uint8(0);
-			}
+			*data << WoWGuid( transporter_info.guid );
+			*data << float( transporter_info.x );
+			*data << float( transporter_info.y );
+			*data << float( transporter_info.z );
+			*data << float( transporter_info.o );
+			*data << uint32( transporter_info.flags );
+			*data << uint8( transporter_info.seat );
 		}
 
-		if((flags2 & (MOVEFLAG_SWIMMING | MOVEFLAG_AIR_SWIMMING)) || (flag16 & 0x20))   // 0x2000000+0x0200000 flying/swimming, || sflags & SMOVE_FLAG_ENABLE_PITCH
+
+		if((flags2 & (MOVEFLAG_SWIMMING | MOVEFLAG_AIR_SWIMMING)) || (moveflags2 & MOVEFLAG2_ALLOW_PITCHING))   // 0x2000000+0x0200000 flying/swimming, || sflags & SMOVE_FLAG_ENABLE_PITCH
 		{
 			if(pThis && moveinfo)
 				*data << moveinfo->pitch;
@@ -547,12 +558,19 @@ void Object::_BuildMovementUpdate(ByteBuffer* data, uint16 flags, uint32 flags2,
 
 	if(flags & UPDATEFLAG_TRANSPORT)   //0x2
 	{
-		*data << getMSTime();
-	}
-	if(flags & UPDATEFLAG_VEHICLE)   //0x80
-	{
-		*data << uint32(0);   //Vehicle ID
-		*data << float(0);   //Facing
+        *data << getMSTime();
+    }
+	if( flags & UPDATEFLAG_VEHICLE ){
+		uint32 vehicleid = 0;
+
+		if( IsCreature() )
+			vehicleid = TO< Creature* >( this )->GetProto()->vehicleid;
+		else
+		if( IsPlayer() )
+			vehicleid = TO< Player* >( this )->mountvehicleid;
+
+		*data << uint32( vehicleid );
+		*data << float( GetOrientation() );
 	}
 
 	if(flags & UPDATEFLAG_ROTATION)   //0x0200
@@ -820,6 +838,12 @@ bool Object::SetPosition(float newX, float newY, float newZ, float newOrientatio
 		{
 			TO< Player* >(this)->GetGroup()->HandlePartialChange(PARTY_UPDATE_FLAG_POSITION, TO< Player* >(this));
 		}
+	}
+
+	if( IsUnit() ){
+		Unit *u = static_cast< Unit* >( this );
+		if( u->GetVehicleComponent() != NULL )
+			u->GetVehicleComponent()->MovePassengers( newX, newY, newZ, newOrientation );
 	}
 
 	return result;

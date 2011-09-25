@@ -22,17 +22,17 @@
 
 /** Table formats converted to strings
  */
-const char* gItemPrototypeFormat						= "uuuusuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuffuffuuuuuuuuuufuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuusuuuuuuuuuuuuuuuuuuuuuuuuuuuuu";
-const char* gItemNameFormat							= "usu";
-const char* gCreatureNameFormat						= "usssuuuuuuuuuuffcuuuuuuu";
-const char* gGameObjectNameFormat						= "uuussssuuuuuuuuuuuuuuuuuuuuuuuufuuuuuu";
-const char* gCreatureProtoFormat						= "uuuuuuufuuuffuuffuuuuuuuuffsuuufffuuuuuuuuuuu";
-const char* gDisplayBoundingFormat						= "ufffffff";
-const char* gVendorRestrictionEntryFormat				= "uuuuuuuu";
-const char* gAreaTriggerFormat							= "ucuusffffuu";
-const char* gItemPageFormat							= "usu";
-const char* gNpcTextFormat								= "ufssuuuuuuufssuuuuuuufssuuuuuuufssuuuuuuufssuuuuuuufssuuuuuuufssuuuuuuufssuuuuuuu";
-const char* gQuestFormat								= "uuuuuuuuuuuuuuuuuuussssssssssuuuuuuuuuuuuiiiiuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuiiiiiiuiuuuuuuuuuuuusuuuusuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu";
+const char * gItemPrototypeFormat						= "uuuusuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuffuffuuuuuuuuuufuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuusuuuuuuuuuuuuuuuuuuuuuuuuuuuuu";
+const char * gItemNameFormat							= "usu";
+const char * gCreatureNameFormat						= "usssuuuuuuuuuuffcuuuuuuu";
+const char * gGameObjectNameFormat						= "uuussssuuuuuuuuuuuuuuuuuuuuuuuufuuuuuu";
+const char * gCreatureProtoFormat						= "uuuuuuufuuuffuuffuuuuuuuuffsuuufffuuuuuuuuuuuuuuuuu";
+const char * gDisplayBoundingFormat						= "ufffffff";
+const char * gVendorRestrictionEntryFormat				= "uuuuuuuu";
+const char * gAreaTriggerFormat							= "ucuusffffuu";
+const char * gItemPageFormat							= "usu";
+const char * gNpcTextFormat								= "ufssuuuuuuufssuuuuuuufssuuuuuuufssuuuuuuufssuuuuuuufssuuuuuuufssuuuuuuufssuuuuuuu";
+const char * gQuestFormat								= "uuuuuuuuuuuuuuuuuuussssssssssuuuuuuuuuuuuiiiiuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuiiiiiiuiuuuuuuuuuuuusuuuusuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu";
 //const char * gSpellExtraFormat							= "uuuu";
 const char* gGraveyardFormat							= "uffffuuuux";
 const char* gTeleportCoordFormat						= "uxufffx";
@@ -104,6 +104,41 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 		while(!itr->AtEnd())
 		{
 			cn = itr->Get();
+
+			// Process spell fields
+			for( uint32 i = 0; i < MAX_CREATURE_PROTO_SPELLS; i++ ){
+				if( cn->AISpells[ i ] == 0 )
+					continue;
+
+				SpellEntry *sp = dbcSpell.LookupEntryForced( cn->AISpells[ i ] );
+				if( sp == NULL )
+					continue;
+
+				if( ( sp->Attributes & ATTRIBUTES_PASSIVE ) == 0 )
+					cn->castable_spells.push_back( sp->Id );
+				else
+					cn->start_auras.insert( sp->Id );
+
+			}
+
+			// process creature spells from creaturespelldata.dbc
+			if( cn->spelldataid != 0 ){
+				CreatureSpellDataEntry* spe = dbcCreatureSpellData.LookupEntry( cn->spelldataid );
+				for( uint32 i = 0; i < 3; i++ ){
+					if( spe->Spells[ i ] == 0 )
+						continue;
+
+					SpellEntry *sp = dbcSpell.LookupEntryForced( spe->Spells[ i ] );
+					if( sp == NULL )
+						continue;
+
+					if( ( sp->Attributes & ATTRIBUTES_PASSIVE ) == 0 )
+						cn->castable_spells.push_back( sp->Id );
+					else
+						cn->start_auras.insert( sp->Id );
+				}
+			}
+
 			if(cn->aura_string)
 			{
 				string auras = string(cn->aura_string);

@@ -145,11 +145,17 @@ class Transporter : public GameObject
 		Creature* GetCreature(uint32 Guid);
 		GameObject* GetGameObject(uint32 Guid);
 
+		void AddPassenger( Object *o );
+		void RemovePassenger( Object *o );
+
+		void MovePassengers( float x, float y, float z, float o );
+
 	private:
 
 		TransportNPCMap m_npcs;
 		WaypointMap m_WayPoints;
 		PassengerMap mPassengers;
+		std::map< uint64, Object* > passengers;
 
 		int32 m_period;
 

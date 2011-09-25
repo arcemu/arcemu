@@ -104,7 +104,14 @@ void SpellCastTargets::read(WorldPacket & data, uint64 caster)
 
 	if(m_targetMask & TARGET_FLAG_SOURCE_LOCATION)
 	{
-		data >> m_srcX >> m_srcY >> m_srcZ;
+		WoWGuid guid;
+		
+		data >> guid;
+		unkuint64_1 = guid.GetOldGuid();
+		
+		data >> m_srcX;
+		data >> m_srcY;
+		data >> m_srcZ;
 
 		if(!(m_targetMask & TARGET_FLAG_DEST_LOCATION))
 		{
@@ -116,7 +123,14 @@ void SpellCastTargets::read(WorldPacket & data, uint64 caster)
 
 	if(m_targetMask & TARGET_FLAG_DEST_LOCATION)
 	{
-		data >> guid >> m_destX >> m_destY >> m_destZ;
+		WoWGuid guid;
+		data >> guid;
+		unkuint64_2 = guid.GetOldGuid();
+		
+		data >> m_destX;
+		data >> m_destY;
+		data >> m_destZ;
+
 		if(!(m_targetMask & TARGET_FLAG_SOURCE_LOCATION))
 		{
 			m_srcX = m_destX;
@@ -144,11 +158,19 @@ void SpellCastTargets::write(WorldPacket & data)
 	if(m_targetMask & (TARGET_FLAG_ITEM | TARGET_FLAG_TRADE_ITEM))
 		FastGUIDPack(data, m_itemTarget);
 
-	if(m_targetMask & TARGET_FLAG_SOURCE_LOCATION)
-		data << m_srcX << m_srcY << m_srcZ;
+	if(m_targetMask & TARGET_FLAG_SOURCE_LOCATION){
+		data << WoWGuid( unkuint64_1 );		
+		data << m_srcX;
+		data << m_srcY;
+		data << m_srcZ;
+	}
 
-	if(m_targetMask & TARGET_FLAG_DEST_LOCATION)
-		data << uint8(0) << m_destX << m_destY << m_destZ;
+	if(m_targetMask & TARGET_FLAG_DEST_LOCATION){
+		data << WoWGuid( unkuint64_2 );		
+		data << m_destX;
+		data << m_destY;
+		data << m_destZ;
+	}
 
 	if(m_targetMask & TARGET_FLAG_STRING)
 		data << m_strTarget.c_str();
@@ -290,6 +312,9 @@ Spell::Spell(Object* Caster, SpellEntry* info, bool triggered, Aura* aur)
 		m_rune_avail_before = TO_DK(p_caster)->GetRuneFlags();
 
 	m_target_constraint = objmgr.GetSpellTargetConstraintForSpell(info->Id);
+	
+	m_missilePitch = 0.0f;
+	m_missileTravelTime = 0;
 }
 
 Spell::~Spell()
@@ -2046,6 +2071,9 @@ void Spell::SendSpellGo()
 	data.SetOpcode(SMSG_SPELL_GO);
 	uint32 flags = 0;
 
+	if( m_missileTravelTime != 0 )
+		flags |= 0x20000;
+
 	if(GetType() == SPELL_DMG_TYPE_RANGED)
 		flags |= SPELL_GO_FLAGS_RANGED; // 0x20 RANGED
 
@@ -2145,6 +2173,22 @@ void Spell::SendSpellGo()
 				data << uint8(0);   //values of the rune converted into byte. We just think it is 0 but maybe it is not :P
 		}
 	}
+
+
+
+/*
+		float dx = targets.m_destX - targets.m_srcX;
+		float dy = targets.m_destY - targets.m_srcY;
+		if (missilepitch != M_PI / 4 && missilepitch != -M_PI / 4) //lets not divide by 0 lul
+			traveltime = (sqrtf(dx * dx + dy * dy) / (cosf(missilepitch) * missilespeed)) * 1000;
+*/
+	
+	if( flags & 0x20000 ){
+		data << float( m_missilePitch );
+		data << uint32( m_missileTravelTime );
+	}
+
+
 	if(m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION)
 		data << uint8(0);   //some spells require this ? not sure if it is last byte or before that.
 
@@ -2696,6 +2740,7 @@ void Spell::HandleEffects(uint64 guid, uint32 i)
 			switch(GET_TYPE_FROM_GUID(guid))
 			{
 				case HIGHGUID_TYPE_UNIT:
+				case HIGHGUID_TYPE_VEHICLE:
 					unitTarget = m_caster->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
 					break;
 				case HIGHGUID_TYPE_PET:
@@ -5826,10 +5871,17 @@ void Spell::HandleCastEffects(uint64 guid, uint32 i)
 		}
 		else
 		{
-			float time = dist * 1000.0f / m_spellInfo->speed;
+			float time;
+
+			if( m_missileTravelTime != 0 )
+				time = m_missileTravelTime;
+			else
+				time = dist * 1000.0f / m_spellInfo->speed;
+
 			//todo: arcemu doesn't support reflected spells
 			//if (reflected)
 			//	time *= 1.25; //reflected projectiles move back 4x faster
+
 			sEventMgr.AddEvent(this, &Spell::HandleEffects, guid, i, EVENT_SPELL_HIT, float2int32(time), 1, 0);
 			AddRef();
 		}

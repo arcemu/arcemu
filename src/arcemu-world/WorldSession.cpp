@@ -1343,6 +1343,16 @@ void WorldSession::InitPacketHandlerTable()
 
 	WorldPacketHandlers[CMSG_GET_MIRRORIMAGE_DATA].handler =
 	    &WorldSession::HandleMirrorImageOpcode;
+	
+	WorldPacketHandlers[ CMSG_DISMISS_CONTROLLED_VEHICLE ].handler = &WorldSession::HandleDismissVehicle;
+	WorldPacketHandlers[ CMSG_REQUEST_VEHICLE_EXIT ].handler = &WorldSession::HandleLeaveVehicle;
+	WorldPacketHandlers[ CMSG_REQUEST_VEHICLE_PREV_SEAT ].handler = &WorldSession::HandleChangeVehicleSeat;
+	WorldPacketHandlers[ CMSG_REQUEST_VEHICLE_NEXT_SEAT ].handler = &WorldSession::HandleChangeVehicleSeat;
+	WorldPacketHandlers[ CMSG_REQUEST_VEHICLE_SWITCH_SEAT ].handler = &WorldSession::HandleChangeVehicleSeat;
+	WorldPacketHandlers[ CMSG_CHANGE_SEATS_ON_CONTROLLED_VEHICLE ].handler = &WorldSession::HandleChangeVehicleSeat;
+	WorldPacketHandlers[ CMSG_PLAYER_VEHICLE_ENTER ].handler = &WorldSession::HandleEnterVehicle;
+	WorldPacketHandlers[ CMSG_EJECT_PASSENGER ].handler = &WorldSession::HandleRemoveVehiclePassenger;
+
 }
 
 void SessionLogWriter::writefromsession(WorldSession* session,

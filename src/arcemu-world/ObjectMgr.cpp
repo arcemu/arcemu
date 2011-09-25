@@ -233,6 +233,19 @@ ObjectMgr::~ObjectMgr()
 
 	m_spelltargetconstraints.clear();
 
+	Log.Notice("ObjectMgr", "Cleaning up vehicle accessories...");
+	for( std::map< uint32, std::vector< VehicleAccessoryEntry* >* >::iterator itr = vehicle_accessories.begin(); itr != vehicle_accessories.end(); ++itr ){
+		std::vector< VehicleAccessoryEntry* > *v = itr->second;
+
+		for( std::vector< VehicleAccessoryEntry* >::iterator itr2 = v->begin(); itr2 != v->end(); ++itr2 )
+			delete *itr2;
+		v->clear();
+
+		delete v;
+	}
+	
+	vehicle_accessories.clear();
+
 }
 
 //
@@ -3470,3 +3483,45 @@ PlayerCache* ObjectMgr::GetPlayerCache(const char* name, bool caseSensitive /*= 
 
 	return ret;
 }
+
+void ObjectMgr::LoadVehicleAccessories(){
+	QueryResult *result = WorldDatabase.Query( "SELECT creature_entry, accessory_entry, seat FROM vehicle_accessories;" );
+
+	if( result != NULL ){
+		
+		do{
+			Field *row = result->Fetch();
+			VehicleAccessoryEntry *entry = new VehicleAccessoryEntry();
+			uint32 creature_entry = 0;
+			
+			creature_entry = row[ 0 ].GetUInt32();
+			entry->accessory_entry = row[ 1 ].GetUInt32();
+			entry->seat = row[ 2 ].GetUInt32();
+			
+			std::map< uint32, std::vector< VehicleAccessoryEntry* >* >::iterator itr
+				= vehicle_accessories.find( creature_entry );
+
+			if( itr != vehicle_accessories.end() ){
+				itr->second->push_back( entry );
+			}else{
+				std::vector< VehicleAccessoryEntry* >* v = new std::vector< VehicleAccessoryEntry* >();
+				v->push_back( entry );
+				vehicle_accessories.insert( std::make_pair( creature_entry, v ) );
+			}
+		
+		}while( result->NextRow() );
+
+		delete result;
+	}
+}
+
+std::vector< VehicleAccessoryEntry* >* ObjectMgr::GetVehicleAccessories( uint32 creature_entry ){
+	std::map< uint32, std::vector< VehicleAccessoryEntry* >* >::iterator itr =
+		vehicle_accessories.find( creature_entry );
+	
+	if( itr == vehicle_accessories.end() )
+		return NULL;
+	else
+		return itr->second;
+}
+

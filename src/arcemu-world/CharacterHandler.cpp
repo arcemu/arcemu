@@ -887,9 +887,9 @@ void WorldSession::FullLogin(Player* plr)
 	bool enter_world = true;
 
 	// Find our transporter and add us if we're on one.
-	if(plr->m_TransporterGUID != 0)
+	if(plr->transporter_info.guid != 0)
 	{
-		Transporter* pTrans = objmgr.GetTransporter(Arcemu::Util::GUID_LOPART(plr->m_TransporterGUID));
+		Transporter* pTrans = objmgr.GetTransporter(Arcemu::Util::GUID_LOPART(plr->transporter_info.guid));
 		if(pTrans)
 		{
 			if(plr->IsDead())
@@ -899,9 +899,9 @@ void WorldSession::FullLogin(Player* plr)
 				plr->SetPower(POWER_TYPE_MANA, plr->GetMaxPower(POWER_TYPE_MANA));
 			}
 
-			float c_tposx = pTrans->GetPositionX() + plr->m_TransporterX;
-			float c_tposy = pTrans->GetPositionY() + plr->m_TransporterY;
-			float c_tposz = pTrans->GetPositionZ() + plr->m_TransporterZ;
+			float c_tposx = pTrans->GetPositionX() + plr->transporter_info.x;
+			float c_tposy = pTrans->GetPositionY() + plr->transporter_info.y;
+			float c_tposz = pTrans->GetPositionZ() + plr->transporter_info.z;
 
 			if(plr->GetMapId() != pTrans->GetMapId())	   // loaded wrong map
 			{

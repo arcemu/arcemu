@@ -5211,6 +5211,9 @@ void Aura::SpellAuraMounted(bool apply)
 		uint32 displayId = ci->Male_DisplayID;
 		if(!displayId) return;
 
+		CreatureProto *cp = CreatureProtoStorage.LookupEntry( mod->m_miscValue );
+		if( cp == NULL )
+			return;
 		p_target->m_MountSpellId = m_spellProto->Id;
 		p_target->flying_aura = 0;
 		m_target->SetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID , displayId);
@@ -5220,9 +5223,45 @@ void Aura::SpellAuraMounted(bool apply)
 			p_target->RemoveAura(p_target->m_ShapeShifted);
 
 		p_target->DismissActivePets();
+
+		p_target->mountvehicleid = cp->vehicleid;
+
+		if( p_target->mountvehicleid != 0 ){
+			p_target->AddVehicleComponent( cp->Id, cp->vehicleid );
+			
+			WorldPacket data( SMSG_PLAYER_VEHICLE_DATA, 12 );
+			data << p_target->GetNewGUID();
+			data << uint32( p_target->mountvehicleid );
+			p_target->SendMessageToSet( &data, true );
+			
+			data.Initialize( SMSG_CONTROL_VEHICLE );
+			p_target->SendPacket( &data );
+
+			p_target->SetFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_MOUNT );
+			p_target->SetFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_PLAYER_VEHICLE );
+
+			p_target->GetVehicleComponent()->InstallAccessories();
+		}
+
 	}
 	else
 	{
+		if( p_target->GetVehicleComponent() != NULL ){
+			p_target->RemoveFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_PLAYER_VEHICLE );
+			p_target->RemoveFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_MOUNT );
+
+			p_target->GetVehicleComponent()->RemoveAccessories();
+			p_target->GetVehicleComponent()->EjectAllPassengers();
+
+			WorldPacket data( SMSG_PLAYER_VEHICLE_DATA, 12 );
+			data << p_target->GetNewGUID();
+			data << uint32( 0 );
+			p_target->SendMessageToSet( &data, true );
+
+			p_target->RemoveVehicleComponent();
+		}
+
+		p_target->mountvehicleid = 0;
 		p_target->m_MountSpellId = 0;
 		p_target->flying_aura = 0;
 		m_target->SetMount(0);
@@ -8320,8 +8359,29 @@ void Aura::SpellAuraReduceEffectDuration(bool apply)
 	}
 }
 
+// Caster = player
+// Target = vehicle
 void Aura::HandleAuraControlVehicle(bool apply)
 {
+	return;
+
+	if( !GetCaster()->IsUnit() )
+		return;
+
+	if( !m_target->IsVehicle() )
+		return;
+
+	Unit *caster = static_cast< Unit* >( GetCaster() );
+
+	if( apply ){
+		if( m_target->GetVehicleComponent()->HasEmptySeat() )
+			m_target->GetVehicleComponent()->AddPassenger( caster );
+
+	}else{
+		if( ( caster->GetCurrentVehicle() != NULL ) && ( caster->GetCurrentVehicle() == m_target->GetVehicleComponent() ) )
+			m_target->GetVehicleComponent()->EjectPassenger( caster );		
+	}
+
 }
 
 void Aura::SpellAuraModCombatResultChance(bool apply)

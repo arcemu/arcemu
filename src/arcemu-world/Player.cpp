@@ -76,14 +76,6 @@ Player::Player(uint32 guid)
 	m_bUnlimitedBreath(false),
 	m_UnderwaterTime(180000),
 	m_UnderwaterState(0),
-	m_lockTransportVariables(false),
-//transport shit
-	m_TransporterGUID(0),
-	m_TransporterX(0.0f),
-	m_TransporterY(0.0f),
-	m_TransporterZ(0.0f),
-	m_TransporterO(0.0f),
-	m_TransporterUnk(0.0f),
 	m_AllowAreaTriggerPort(true),
 // Battleground
 	m_bg(NULL),
@@ -423,9 +415,6 @@ Player::Player(uint32 guid)
 #endif
 
 	m_requiresNoAmmo = false;
-	m_safeFall = 0;
-	m_noFallDamage = false;
-	z_axisposition = 0.0f;
 	m_KickDelay = 0;
 	m_passOnLoot = false;
 	m_changingMaps = true;
@@ -474,6 +463,7 @@ Player::Player(uint32 guid)
 //	m_achievement_points = 0;
 
 	ChampioningFactionID = 0;
+	mountvehicleid = 0;
 }
 
 void Player::OnLogin()
@@ -971,15 +961,6 @@ void Player::Update(uint32 p_time)
 	if(mstime >= m_nextSave)
 		SaveToDB(false);
 
-	if(m_CurrentTransporter && !m_lockTransportVariables)
-	{
-		// Update our position, using trnasporter X/Y
-		float c_tposx = m_CurrentTransporter->GetPositionX() + m_TransporterX;
-		float c_tposy = m_CurrentTransporter->GetPositionY() + m_TransporterY;
-		float c_tposz = m_CurrentTransporter->GetPositionZ() + m_TransporterZ;
-		SetPosition(c_tposx, c_tposy, c_tposz, GetOrientation(), false);
-	}
-
 	// Exploration
 	if(mstime >= m_explorationTimer)
 	{
@@ -1085,7 +1066,7 @@ void Player::EventDismount(uint32 money, float x, float y, float z)
 	RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_MOUNTED_TAXI);
 	RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_LOCK_PLAYER);
 
-	SetPlayerSpeed(RUN, m_runSpeed);
+	SetSpeeds(RUN, m_runSpeed);
 
 	sEventMgr.RemoveEvents(this, EVENT_PLAYER_TAXI_INTERPOLATE);
 
@@ -1431,7 +1412,7 @@ void Player::_EventExploration()
 		}
 	}
 
-	if(!(currFields & val) && !GetTaxiState() && !m_TransporterGUID) //Unexplored Area		// bur: we don't want to explore new areas when on taxi
+	if(!(currFields & val) && !GetTaxiState() && !transporter_info.guid) //Unexplored Area		// bur: we don't want to explore new areas when on taxi
 	{
 		SetUInt32Value(offset, (uint32)(currFields | val));
 
@@ -2229,6 +2210,7 @@ void Player::InitVisibleUpdateBits()
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_CHANNEL_OBJECT + 1);
 	Player::m_visibleUpdateMask.SetBit(UNIT_CHANNEL_SPELL);
 	Player::m_visibleUpdateMask.SetBit(UNIT_DYNAMIC_FLAGS);
+	Player::m_visibleUpdateMask.SetBit(UNIT_NPC_FLAGS);
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_HOVERHEIGHT);
 
 	Player::m_visibleUpdateMask.SetBit(PLAYER_FLAGS);
@@ -2480,7 +2462,7 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 	}
 
 	ss << "," << (m_CurrentTransporter ? m_CurrentTransporter->GetEntry() : (uint32)0);
-	ss << ",'" << m_TransporterX << "','" << m_TransporterY << "','" << m_TransporterZ << "'";
+	ss << ",'" << transporter_info.x << "','" << transporter_info.y << "','" << transporter_info.z << "'";
 	ss << ",'";
 
 	SaveSpells(bNewCharacter, buf);
@@ -3070,16 +3052,16 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		field_index++;
 	}
 
-	m_TransporterGUID = get_next_field.GetUInt32();
-	if(m_TransporterGUID)
+	transporter_info.guid = get_next_field.GetUInt32();
+	if(transporter_info.guid)
 	{
-		Transporter* t = objmgr.GetTransporter(Arcemu::Util::GUID_LOPART(m_TransporterGUID));
-		m_TransporterGUID = t ? t->GetGUID() : 0;
+		Transporter* t = objmgr.GetTransporter(Arcemu::Util::GUID_LOPART(transporter_info.guid));
+		transporter_info.guid = t ? t->GetGUID() : 0;
 	}
 
-	m_TransporterX = get_next_field.GetFloat();
-	m_TransporterY = get_next_field.GetFloat();
-	m_TransporterZ = get_next_field.GetFloat();
+	transporter_info.x = get_next_field.GetFloat();
+	transporter_info.y = get_next_field.GetFloat();
+	transporter_info.z = get_next_field.GetFloat();
 
 	LoadSpells(results[ 12 ].result);
 
@@ -3601,11 +3583,11 @@ void Player::AddToWorld()
 	m_setflycheat = false;
 
 	// check transporter
-	if(m_TransporterGUID && m_CurrentTransporter)
+	if(transporter_info.guid && m_CurrentTransporter)
 	{
-		SetPosition(m_CurrentTransporter->GetPositionX() + m_TransporterX,
-		            m_CurrentTransporter->GetPositionY() + m_TransporterY,
-		            m_CurrentTransporter->GetPositionZ() + m_TransporterZ,
+		SetPosition(m_CurrentTransporter->GetPositionX() + transporter_info.x,
+		            m_CurrentTransporter->GetPositionY() + transporter_info.y,
+		            m_CurrentTransporter->GetPositionZ() + transporter_info.z,
 		            GetOrientation(), false);
 	}
 
@@ -3636,11 +3618,11 @@ void Player::AddToWorld(MapMgr* pMapMgr)
 	FlyCheat = false;
 	m_setflycheat = false;
 	// check transporter
-	if(m_TransporterGUID && m_CurrentTransporter)
+	if(transporter_info.guid && m_CurrentTransporter)
 	{
-		SetPosition(m_CurrentTransporter->GetPositionX() + m_TransporterX,
-		            m_CurrentTransporter->GetPositionY() + m_TransporterY,
-		            m_CurrentTransporter->GetPositionZ() + m_TransporterZ,
+		SetPosition(m_CurrentTransporter->GetPositionX() + transporter_info.x,
+		            m_CurrentTransporter->GetPositionY() + transporter_info.y,
+		            m_CurrentTransporter->GetPositionZ() + transporter_info.z,
 		            GetOrientation(), false);
 	}
 
@@ -3688,7 +3670,6 @@ void Player::OnPushToWorld()
 	SpeedCheatReset();
 	m_beingPushed = false;
 	AddItemsToWorld();
-	m_lockTransportVariables = false;
 
 	// delay the unlock movement packet
 	WorldPacket* data = new WorldPacket(SMSG_TIME_SYNC_REQ, 4);
@@ -3771,7 +3752,6 @@ void Player::OnPushToWorld()
 		m_bg->OnPlayerPushed(this);
 	}
 
-	z_axisposition = 0.0f;
 	m_changingMaps = false;
 	SendFullAuraUpdate();
 
@@ -4339,18 +4319,18 @@ void Player::SetMovement(uint8 pType, uint32 flag)
 		SendMessageToSet(&data, true);
 }
 
-void Player::SetPlayerSpeed(uint8 SpeedType, float value)
+void Player::SetSpeeds( uint8 type, float speed )
 {
 	WorldPacket data(50);
 
-	if(SpeedType != SWIMBACK)
+	if(type != SWIMBACK)
 	{
 		data << GetNewGUID();
 		data << m_speedChangeCounter++;
-		if(SpeedType == RUN)
+		if(type == RUN)
 			data << uint8(1);
 
-		data << value;
+		data << float( speed );
 	}
 	else
 	{
@@ -4359,61 +4339,67 @@ void Player::SetPlayerSpeed(uint8 SpeedType, float value)
 		data << uint8(0);
 		data << uint32(getMSTime());
 		data << GetPosition();
-		data << m_position.o;
+		data << float( m_position.o );
 		data << uint32(0);
-		data << value;
+		data << float( speed );
 	}
 
-	switch(SpeedType)
+	switch(type)
 	{
+		case WALK:{
+			data.SetOpcode( SMSG_FORCE_WALK_SPEED_CHANGE );
+			m_walkSpeed = speed;
+
+			break; }
+
 		case RUN:
 			{
-				if(value == m_lastRunSpeed)
+				if(speed == m_lastRunSpeed)
 					return;
 
 				data.SetOpcode(SMSG_FORCE_RUN_SPEED_CHANGE);
-				m_runSpeed = value;
-				m_lastRunSpeed = value;
+				m_runSpeed = speed;
+				m_lastRunSpeed = speed;
 			}
 			break;
 		case RUNBACK:
 			{
-				if(value == m_lastRunBackSpeed)
+				if(speed == m_lastRunBackSpeed)
 					return;
 
 				data.SetOpcode(SMSG_FORCE_RUN_BACK_SPEED_CHANGE);
-				m_backWalkSpeed = value;
-				m_lastRunBackSpeed = value;
+				m_backWalkSpeed = speed;
+				m_lastRunBackSpeed = speed;
 			}
 			break;
 		case SWIM:
 			{
-				if(value == m_lastSwimSpeed)
+				if(speed == m_lastSwimSpeed)
 					return;
 
 				data.SetOpcode(SMSG_FORCE_SWIM_SPEED_CHANGE);
-				m_swimSpeed = value;
-				m_lastSwimSpeed = value;
+				m_swimSpeed = speed;
+				m_lastSwimSpeed = speed;
 			}
 			break;
 		case SWIMBACK:
 			{
-				if(value == m_lastBackSwimSpeed)
+				if(speed == m_lastBackSwimSpeed)
 					break;
 
 				data.SetOpcode(SMSG_FORCE_SWIM_BACK_SPEED_CHANGE);
-				m_backSwimSpeed = value;
-				m_lastBackSwimSpeed = value;
+				m_backSwimSpeed = speed;
+				m_lastBackSwimSpeed = speed;
 			}
 			break;
 		case FLY:
 			{
-				if(value == m_lastFlySpeed)
+				if(speed == m_lastFlySpeed)
 					return;
 
 				data.SetOpcode(SMSG_FORCE_FLIGHT_SPEED_CHANGE);
-				m_flySpeed = value;
-				m_lastFlySpeed = value;
+				m_flySpeed = speed;
+				m_lastFlySpeed = speed;
 			}
 			break;
 		default:
@@ -4482,7 +4468,7 @@ void Player::RepopRequestedPlayer()
 	{
 		m_CurrentTransporter->RemovePlayer(this);
 		m_CurrentTransporter = NULL;
-		m_TransporterGUID = 0;
+		transporter_info.guid = 0;
 
 		//ResurrectPlayer();
 		RepopAtGraveyard(GetPositionX(), GetPositionY(), GetPositionZ(), GetMapId());
@@ -4645,6 +4631,10 @@ void Player::KillPlayer()
 		SetPower(POWER_TYPE_RUNIC_POWER, 0);
 
 	summonhandler.RemoveAllSummons();
+
+	// Player falls off vehicle on death
+	if( currentvehicle != NULL )
+		currentvehicle->EjectPassenger( this );
 
 	sHookInterface.OnDeath(this);
 
@@ -6808,7 +6798,7 @@ void Player::JumpToEndTaxiNode(TaxiPath* path)
 	RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_MOUNTED_TAXI);
 	RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_LOCK_PLAYER);
 
-	SetPlayerSpeed(RUN, m_runSpeed);
+	SetSpeeds(RUN, m_runSpeed);
 
 	SafeTeleport(pathnode->mapid, 0, LocationVector(pathnode->x, pathnode->y, pathnode->z));
 
@@ -7492,8 +7482,8 @@ void Player::ProcessPendingUpdates()
 	// resend speed if needed
 	if(resend_speed)
 	{
-		SetPlayerSpeed(RUN, m_runSpeed);
-		SetPlayerSpeed(FLY, m_flySpeed);
+		SetSpeeds(RUN, m_runSpeed);
+		SetSpeeds(FLY, m_flySpeed);
 		resend_speed = false;
 	}
 }
@@ -8387,16 +8377,16 @@ bool Player::SafeTeleport(uint32 MapID, uint32 InstanceID, const LocationVector 
 		SetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID , 0);
 		RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_MOUNTED_TAXI);
 		RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_LOCK_PLAYER);
-		SetPlayerSpeed(RUN, m_runSpeed);
+		SetSpeeds(RUN, m_runSpeed);
 	}
-	if(m_TransporterGUID)
+	if(transporter_info.guid)
 	{
-		Transporter* pTrans = objmgr.GetTransporter(Arcemu::Util::GUID_LOPART(m_TransporterGUID));
-		if(pTrans && !m_lockTransportVariables)
+		Transporter* pTrans = objmgr.GetTransporter(Arcemu::Util::GUID_LOPART(transporter_info.guid));
+		if(pTrans)
 		{
 			pTrans->RemovePlayer(this);
 			m_CurrentTransporter = NULL;
-			m_TransporterGUID = 0;
+			transporter_info.guid = 0;
 		}
 	}
 
@@ -11082,6 +11072,22 @@ void Player::UpdatePotionCooldown()
 	m_lastPotionId = 0;
 }
 
+bool Player::HasSpellWithAuraNameAndBasePoints( uint32 auraname, uint32 basepoints ){
+	for( SpellSet::iterator itr = mSpells.begin(); itr != mSpells.end(); ++itr ){
+		SpellEntry *sp = dbcSpell.LookupEntry( *itr );
+
+		for( uint32 i = 0; i < 3; i++ ){
+			if( sp->Effect[ i ] == SPELL_EFFECT_APPLY_AURA ){
+				if( ( sp->EffectApplyAuraName[ i ] == auraname ) && ( sp->EffectBasePoints[ i ] == ( basepoints - 1 ) ) )
+					return true;
+			}
+		}
+
+	}
+
+	return false;
+}
+
 void Player::_Cooldown_Add(uint32 Type, uint32 Misc, uint32 Time, uint32 SpellId, uint32 ItemId)
 {
 	PlayerCooldownMap::iterator itr = m_cooldownMap[Type].find(Misc);
@@ -11363,7 +11369,7 @@ void Player::_LoadPlayerCooldowns(QueryResult* result)
 
 void Player::_FlyhackCheck()
 {
-	if(!sWorld.antihack_flight || m_TransporterGUID != 0 || GetTaxiState() || (sWorld.no_antihack_on_gm && GetSession()->HasGMPermissions()))
+	if(!sWorld.antihack_flight || transporter_info.guid != 0 || GetTaxiState() || (sWorld.no_antihack_on_gm && GetSession()->HasGMPermissions()))
 		return;
 	return;
 	//disabled
@@ -11747,14 +11753,10 @@ void Player::SpeedCheatReset()
 	SDetector->EventSpeedChange();
 
 	/*
-	SetPlayerSpeed(RUN, m_runSpeed);
-	SetPlayerSpeed(SWIM, m_runSpeed);
-	SetPlayerSpeed(RUNBACK, m_runSpeed / 2); // Backwards slower, it's more natural :P
-
-	WorldPacket data(SMSG_FORCE_FLIGHT_SPEED_CHANGE, 16);
-	data << GetNewGUID();
-	data << uint32(0) << m_flySpeed;
-	SendMessageToSet(&data, true);
+	SetSpeeds(RUN, m_runSpeed);
+	SetSpeeds(SWIM, m_runSpeed);
+	SetSpeeds(RUNBACK, m_runSpeed / 2); // Backwards slower, it's more natural :P
+	SetSpeeds(FLY, m_flySpeed );
 	*/
 }
 
@@ -13112,6 +13114,10 @@ void Player::TakeDamage(Unit* pAttacker, uint32 damage, uint32 spellid, bool no_
 
 void Player::Die(Unit* pAttacker, uint32 damage, uint32 spellid)
 {
+	if( GetVehicleComponent() != NULL ){
+		GetVehicleComponent()->RemoveAccessories();
+		GetVehicleComponent()->EjectAllPassengers();
+	}
 
 #ifdef ENABLE_ACHIEVEMENTS
 	// A Player has died
@@ -13812,4 +13818,24 @@ void Player::SendEmptyPetSpellList()
 void Player::BuildPetSpellList(WorldPacket & data)
 {
 	data << uint64(0);
+}
+
+void Player::AddVehicleComponent( uint32 creature_entry, uint32 vehicleid ){
+	if( mountvehicleid == 0 ){
+		LOG_ERROR( "Tried to add a vehicle component with 0 as vehicle id for player %u ( %s )", GetLowGUID(), GetName() );
+		return;
+	}
+
+	if( vehicle != NULL ){
+		LOG_ERROR( "Tried to add a vehicle component, but there's already one for player %u ( %s )", GetLowGUID(), GetName() );
+		return;
+	}
+	
+	vehicle = new Vehicle();
+	vehicle->Load( this, creature_entry, vehicleid );
+}
+
+void Player::RemoveVehicleComponent(){
+	delete vehicle;
+	vehicle = NULL;
 }

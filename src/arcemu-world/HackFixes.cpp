@@ -433,6 +433,12 @@ void ApplyNormalFixes()
 		// set extra properties
 		sp->RankNumber = rank;
 
+
+		// various flight spells
+		// these make vehicles and other charmed stuff fliable
+		if( sp->activeIconID == 2158 )
+			sp->Attributes |= ATTRIBUTES_PASSIVE;
+
 		uint32 pr = sp->procFlags;
 		for(uint32 y = 0; y < 3; y++)
 		{
