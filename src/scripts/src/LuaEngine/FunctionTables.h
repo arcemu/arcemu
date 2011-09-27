@@ -651,6 +651,10 @@ RegType<GameObject> GOMethods[] =
 	{ "GetClosestUnit", &LuaGameObject::GetClosestUnit },
 	{ "SetFlag", &LuaGameObject::SetFlag },
 	{ "RemoveFlag", &LuaGameObject::RemoveFlag },
+	{ "Damage", &LuaGameObject::Damage },
+	{ "Rebuild", &LuaGameObject::Rebuild },
+	{ "GetHP", &LuaGameObject::GetHP },
+	{ "GetMaxHP", &LuaGameObject::GetMaxHP },
 	{ NULL, NULL },
 };
 

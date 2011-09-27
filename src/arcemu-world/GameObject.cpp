@@ -54,6 +54,8 @@ GameObject::GameObject(uint64 guid)
 	m_respawnCell = NULL;
 	m_rotation = 0;
 	m_overrides = 0;
+	hitpoints = 0;
+	maxhitpoints = 0;
 }
 
 GameObject::~GameObject()
@@ -355,6 +357,9 @@ void GameObject::InitAI()
 {
 	if(!pInfo)
 		return;
+
+	if( pInfo->Type == GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING )
+		Rebuild();
 
 	// this fixes those fuckers in booty bay
 	if(pInfo->SpellFocus == 0 &&
@@ -827,3 +832,57 @@ uint8 GameObject::GetState()
 	return GetByte(GAMEOBJECT_BYTES_1, 0);
 }
 
+void GameObject::Damage( uint32 damage, uint64 AttackerGUID, uint64 ControllerGUID, uint32 SpellID ){
+	// If we are already destroyed there's nothing to damage!
+	if( hitpoints == 0 )
+		return;
+	
+	if( damage >= hitpoints ){
+		// Instant destruction
+		hitpoints = 0;
+		
+		SetFlags( GAMEOBJECT_FLAG_DESTROYED );
+		SetFlags( GetFlags() & ~GAMEOBJECT_FLAG_DAMAGED );
+		SetDisplayId( pInfo->sound9); // destroyed display id
+
+		CALL_GO_SCRIPT_EVENT( this, OnDestroyed)();
+	
+	}else{
+		// Simply damaging
+		hitpoints -= damage;
+		
+		if( !HasFlags( GAMEOBJECT_FLAG_DAMAGED ) ){
+			// Intact  ->  Damaged
+			
+			// Are we below the intact-damaged transition treshold?
+			if( hitpoints <= ( maxhitpoints - pInfo->SpellFocus ) ){
+				SetFlags( GAMEOBJECT_FLAG_DAMAGED );
+				SetDisplayId( pInfo->sound4 ); // damaged display id
+			}
+		}
+
+		CALL_GO_SCRIPT_EVENT( this, OnDamaged )( damage );
+	}
+	
+	uint8 animprogress = static_cast< uint8 >( Arcemu::round( hitpoints/ float( maxhitpoints ) ) * 255 );
+	SetAnimProgress( animprogress );
+	SendDamagePacket( damage, AttackerGUID, ControllerGUID, SpellID );
+}
+
+void GameObject::SendDamagePacket( uint32 damage, uint64 AttackerGUID, uint64 ControllerGUID, uint32 SpellID ){
+	WorldPacket data( SMSG_DESTRUCTIBLE_BUILDING_DAMAGE, 29 );
+	
+	data << WoWGuid( GetNewGUID() );
+	data << WoWGuid( AttackerGUID );
+	data << WoWGuid( ControllerGUID );
+	data << uint32( damage );
+	data << uint32( SpellID );
+	SendMessageToSet( &data, false, false );
+}
+
+void GameObject::Rebuild(){
+	SetFlags( GetFlags() & uint32( ~( GAMEOBJECT_FLAG_DAMAGED | GAMEOBJECT_FLAG_DESTROYED ) ) );
+	SetDisplayId( pInfo->DisplayID );
+	maxhitpoints = pInfo->SpellFocus + pInfo->sound5;
+	hitpoints = maxhitpoints;
+}

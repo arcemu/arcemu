@@ -1874,6 +1874,7 @@ class SERVER_DECL Spell : public EventableObject
 		void SpellEffectStuck(uint32 i);
 		void SpellEffectSummonPlayer(uint32 i);
 		void SpellEffectActivateObject(uint32 i);
+		void SpellEffectBuildingDamage(uint32 i);
 		void SpellEffectEnchantHeldItem(uint32 i);
 		void SpellEffectSetMirrorName(uint32 i);
 		void SpellEffectSelfResurrect(uint32 i);

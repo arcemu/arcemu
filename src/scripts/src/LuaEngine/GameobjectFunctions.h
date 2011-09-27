@@ -1192,5 +1192,57 @@ class LuaGameObject
 			PUSH_UNIT(L, ret);
 			return 1;
 		}
+
+		static int Damage( lua_State *L, GameObject *ptr ){
+			TEST_GO();
+
+			if( ptr->GetInfo()->Type != GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING )
+				return 0;
+
+			if( lua_gettop( L ) != 3 )
+				return 0;
+
+			uint32 damage = luaL_checkint( L, 1 );
+			uint64 guid = CHECK_GUID( L, 2 );
+			uint32 spellid = luaL_checkint( L, 3 );
+
+			ptr->Damage( damage, guid, guid, spellid );
+
+			return 0;
+		}
+
+		static int Rebuild( lua_State *L, GameObject *ptr ){
+			TEST_GO();
+
+			if( ptr->GetInfo()->Type != GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING )
+				return 0;
+
+			ptr->Rebuild();
+
+
+			return 0;
+		}
+
+		static int GetHP( lua_State *L, GameObject *ptr ){
+			TEST_GO();
+
+			if( ptr->GetInfo()->Type != GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING )
+				return 0;
+
+			lua_pushinteger( L, ptr->GetHP() );
+
+			return 1;
+		}
+
+		static int GetMaxHP( lua_State *L, GameObject *ptr ){
+			TEST_GO();
+
+			if( ptr->GetInfo()->Type != GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING )
+				return 0;
+
+			lua_pushinteger( L, ptr->GetMaxHP() );
+
+			return 1;
+		}
 };
 #endif

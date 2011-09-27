@@ -446,6 +446,8 @@ class SERVER_DECL GameObjectAIScript
 		virtual void OnDespawn() {}
 		virtual void OnLootTaken(Player* pLooter, ItemPrototype* pItemInfo) {}
 		virtual void OnActivate(Player* pPlayer) {}
+		virtual void OnDamaged( uint32 damage ){}
+		virtual void OnDestroyed(){}
 		virtual void AIUpdate() {}
 		virtual void Destroy() { delete this; }
 

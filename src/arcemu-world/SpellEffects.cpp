@@ -109,7 +109,7 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS] =
 	&Spell::SpellEffectStuck,					//SPELL_EFFECT_STUCK - 84
 	&Spell::SpellEffectSummonPlayer,			//SPELL_EFFECT_SUMMON_PLAYER - 85
 	&Spell::SpellEffectActivateObject,			//SPELL_EFFECT_ACTIVATE_OBJECT - 86
-	&Spell::SpellEffectNULL,					//SPELL_EFFECT_BUILDING_DAMAGE - 87
+	&Spell::SpellEffectBuildingDamage,				//SPELL_EFFECT_BUILDING_DAMAGE - 87
 	&Spell::SpellEffectNULL,					//SPELL_EFFECT_BUILDING_REPAIR - 88
 	&Spell::SpellEffectNULL,					//SPELL_EFFECT_BUILDING_SWITCH_STATE - 89
 	&Spell::SpellEffectNULL,					//SPELL_EFFECT_KILL_CREDIT_90 - 90
@@ -4055,6 +4055,30 @@ void Spell::SpellEffectActivateObject(uint32 i) // Activate Object
 	gameObjTarget->Activate();
 
 	sEventMgr.AddEvent(gameObjTarget, &GameObject::Deactivate, 0, GetDuration(), 1, 0);
+}
+
+
+void Spell::SpellEffectBuildingDamage(uint32 i){
+	if( gameObjTarget == NULL )
+		return;
+
+	if( gameObjTarget->GetInfo()->Type != GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING )
+		return;
+
+	if( u_caster == NULL )
+		return;
+
+	uint32 damage = m_spellInfo->EffectBasePoints[ i ] + 1;
+	Unit *controller = NULL;
+
+	if( u_caster->GetVehicleComponent() != NULL )
+		controller = u_caster->GetMapMgr()->GetUnit( u_caster->GetCharmedByGUID() );
+
+	if( controller == NULL )
+		controller = u_caster;
+
+	// Baaaam
+	gameObjTarget->Damage( damage, u_caster->GetGUID(), controller->GetGUID(), m_spellInfo->Id );
 }
 
 

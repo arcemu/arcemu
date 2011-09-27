@@ -1040,6 +1040,9 @@ bool ChatHandler::HandleGOInfo(const char* args, WorldSession* m_session)
 		case GAMEOBJECT_TYPE_FLAGDROP:
 			strcpy(gotypetxt, "Flag Drop");
 			break;
+		case GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING:
+			strcpy(gotypetxt, "Destructible Building");
+			break;
 		default:
 			strcpy(gotypetxt, "Unknown.");
 			break;
@@ -1061,6 +1064,10 @@ bool ChatHandler::HandleGOInfo(const char* args, WorldSession* m_session)
 	SystemMessage(m_session, "%s Parent Rotation O1:%s%f", MSG_COLOR_GREEN, MSG_COLOR_LIGHTBLUE, GObj->GetParentRotation(1));
 	SystemMessage(m_session, "%s Parent Rotation O2:%s%f", MSG_COLOR_GREEN, MSG_COLOR_LIGHTBLUE, GObj->GetParentRotation(2));
 	SystemMessage(m_session, "%s Parent Rotation O3:%s%f", MSG_COLOR_GREEN, MSG_COLOR_LIGHTBLUE, GObj->GetParentRotation(3));
+
+	if( GOInfo->Type == GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING ){
+		SystemMessage(m_session, "%s HP:%s%u/%u", MSG_COLOR_GREEN, MSG_COLOR_LIGHTBLUE, GObj->GetHP(), GObj->GetMaxHP() );
+	}
 
 	return true;
 }
@@ -1335,6 +1342,88 @@ bool ChatHandler::HandleGOAnimProgress(const char* args, WorldSession* m_session
 	uint32 ap = atol(args);
 	GObj->SetByte(GAMEOBJECT_BYTES_1, 3, static_cast<uint8>(ap));
 	BlueSystemMessage(m_session, "Set ANIMPROGRESS to %u", ap);
+	return true;
+}
+
+bool ChatHandler::HandleGOFactionCommand( const char *args, WorldSession *session ){
+	GameObject *go = session->GetPlayer()->GetSelectedGo();
+	if( go == NULL ){
+		RedSystemMessage( session, "You need to select a GO first!" );
+		return true;
+	}
+
+	if( *args == '\0' ){
+		RedSystemMessage( session, "You need to specify a faction!" );
+		return true;
+	}
+
+	std::stringstream ss( args );
+	uint32 faction = 0;
+
+	ss >> faction;
+	if( ss.fail() ){
+		RedSystemMessage( session, "You need to specify a faction!" );
+		return true;
+	}
+
+	go->SetFaction( faction );
+
+	BlueSystemMessage( session, "GameObject faction has been changed to %u", faction );
+
+	return true;
+}
+
+bool ChatHandler::HandleGODamageCommand( const char *args, WorldSession *session ){
+	GameObject *go = session->GetPlayer()->GetSelectedGo();
+	if( go == NULL ){
+		RedSystemMessage( session, "You need to select a GO first!" );
+		return true;
+	}
+
+	if( go->GetInfo()->Type != GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING ){
+		RedSystemMessage( session, "The selected GO must be a destructible building!" );
+		return true;
+	}
+
+	if( *args == '\0' ){
+		RedSystemMessage( session, "You need to specify how much you want to damage the selected GO!" );
+		return true;
+	}
+
+	uint32 damage = 0;
+	std::stringstream ss( args );
+
+	ss >> damage;
+	if( ss.fail() ){
+		RedSystemMessage( session, "You need to specify how much you want to damage the selected GO!" );
+		return true;
+	}
+
+	uint64 guid = session->GetPlayer()->GetGUID();
+
+	BlueSystemMessage( session, "Attempting to damage GO..." );
+
+	go->Damage( damage, guid, guid, 0 );
+
+	return true;
+}
+
+bool ChatHandler::HandleGORebuildCommand( const char *args, WorldSession *session ){
+	GameObject *go = session->GetPlayer()->GetSelectedGo();
+	if( go == NULL ){
+		RedSystemMessage( session, "You need to select a GO first!" );
+		return true;
+	}
+
+	if( go->GetInfo()->Type != GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING ){
+		RedSystemMessage( session, "The selected GO must be a destructible building!" );
+		return true;
+	}
+
+	BlueSystemMessage( session, "Attempting to rebuild building..." );
+
+	go->Rebuild();
+
 	return true;
 }
 

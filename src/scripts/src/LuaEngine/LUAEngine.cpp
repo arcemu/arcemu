@@ -1860,6 +1860,24 @@ class LuaGameObjectScript : public GameObjectAIScript
 			sLuaMgr.ExecuteCall(1);
 			RELEASE_LOCK
 		}
+
+		void OnDamaged( uint32 damage ){
+			CHECK_BINDING_ACQUIRELOCK;
+			sLuaMgr.BeginCall( m_binding->m_functionReferences[ GAMEOBJECT_EVENT_ON_DAMAGED ] );
+			sLuaMgr.PushGo( _gameobject );
+			sLuaMgr.PUSH_UINT( damage );
+			sLuaMgr.ExecuteCall( 2 );
+			RELEASE_LOCK;
+		}
+
+		void OnDestroyed(){
+			CHECK_BINDING_ACQUIRELOCK;
+			sLuaMgr.BeginCall( m_binding->m_functionReferences[ GAMEOBJECT_EVENT_ON_DESTROYED ] );
+			sLuaMgr.PushGo( _gameobject );
+			sLuaMgr.ExecuteCall( 1 );
+			RELEASE_LOCK;
+		}
+
 		void Destroy()
 		{
 			typedef std::multimap<uint32, LuaGameObjectScript*> GMAP;

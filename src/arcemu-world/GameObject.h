@@ -21,6 +21,19 @@
 #ifndef WOWSERVER_GAMEOBJECT_H
 #define WOWSERVER_GAMEOBJECT_H
 
+enum GO_STATE{
+	GAMEOBJECT_STATE_OPEN              =  0,
+	GAMEOBJECT_STATE_CLOSED            =  1,
+	GAMEOBJECT_STATE_ALTERNATIVE_OPEN  =  2
+};
+
+enum GO_FLAGS{
+	GAMEOBJECT_FLAG_NONSELECTABLE  = 0x1,
+	GAMEOBJECT_FLAG_LOCKED         = 0x2,
+	GAMEOBJECT_FLAG_DAMAGED        = 0x200,
+	GAMEOBJECT_FLAG_DESTROYED      = 0x400
+};
+
 class Player;
 class GameObjectAIScript;
 class GameObjectTemplate;
@@ -298,6 +311,82 @@ class SERVER_DECL GameObject : public Object
 
 		void SetType(uint8 type) { SetByte(GAMEOBJECT_BYTES_1, 1, type); }
 		uint8 GetType() { return GetByte(GAMEOBJECT_BYTES_1, 1); }
+		
+		void SetFlags( uint32 flags ){ SetUInt32Value( GAMEOBJECT_FLAGS, flags ); }		
+		uint32 GetFlags(){ return GetUInt32Value( GAMEOBJECT_FLAGS ); }
+		
+		bool HasFlags( uint32 flags ){
+			if( HasFlag( GAMEOBJECT_FLAGS, flags ) != 0 )
+				return true;
+			else
+				return false;
+		}
+		
+		void SetArtKit( uint8 artkit ){ SetByte( GAMEOBJECT_BYTES_1, 2, artkit ); }
+		uint8 GetArtkKit(){ return GetByte( GAMEOBJECT_BYTES_1, 2 ); }
+		void SetAnimProgress( uint8 progress ){ SetByte( GAMEOBJECT_BYTES_1, 3, progress ); }
+		uint8 GetAnimProgress(){ return GetByte( GAMEOBJECT_BYTES_1, 3 ); }
+		
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//void Damage( uint32 damage, uint64 AttackerGUID, uint64 ControllerGUID,  uint32 SpellID )
+		//  Damages the destructible GameObject with a spell
+		//
+		//Parameters
+		//  uint32 damage          -  The hit points that the GO will lose
+		//  uint64 AttackerGUID    -  GUID of the caster of the damaging spell
+		//  uint64 ControllerGUID  -  GUID of the controller of the caster of the damaging spell
+		//  uint32 SpellID         -  ID of the damaging spell
+		//
+		//Return Value
+		//  None
+		//
+		//
+		////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void Damage( uint32 damage, uint64 AttackerGUID, uint64 ControllerGUID,  uint32 SpellID );
+
+		////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//void Rebuild()
+		//  Rebuilds the damaged/destroyed GameObject.
+		//
+		//Parameters
+		//  None
+		//
+		//Return Value
+		//  None
+		//
+		//
+		////////////////////////////////////////////////////////////////////////////////////////////////////////
+		void Rebuild();
+
+
+		////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//uint32 GetHP()
+		//  Returns the current hitpoints of the GameObject
+		//
+		//Parameters
+		//  None
+		//
+		//Return Value
+		//  Returns the current hitpoints of the GameObject
+		//
+		//
+		////////////////////////////////////////////////////////////////////////////////////////////////////////
+		uint32 GetHP(){ return hitpoints; }
+
+
+		////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//uint32 GetMaxHP()
+		//  Returns the maximum hitpoints of the GameObject
+		//
+		//Parameters
+		//  None
+		//
+		//Return Value
+		//  Returns the maximum hitpoints of the GameObject
+		//
+		//
+		////////////////////////////////////////////////////////////////////////////////////////////////////////
+		uint32 GetMaxHP(){ return maxhitpoints; }
 
 	protected:
 
@@ -309,6 +398,28 @@ class SERVER_DECL GameObject : public Object
 		uint32 usage_remaining; //used for mining to mark times it can be mined
 
 		uint32 m_overrides; //See enum GAMEOBJECT_OVERRIDES!
+
+
+		///////////////////////////////////////////////////////////////////////////////////////////////////////
+		//void SendDamagePacket( uint32 damage, uint64 AttackerGUID, uint64 ControllerGUID,  uint32 SpellID )
+		//  Notifies the surrounding clients about the GameObject taking damage
+		//
+		//Parameters
+		//  uint32 damage          -  The hit points that the GO will lose
+		//  uint64 AttackerGUID    -  GUID of the caster of the damaging spell
+		//  uint64 ControllerGUID  -  GUID of the controller of the caster of the damaging spell
+		//  uint32 SpellID         -  ID of the damaging spell
+		//
+		//Return Value
+		//  None
+		//
+		//
+		//////////////////////////////////////////////////////////////////////////////////////////////////////
+		void SendDamagePacket( uint32 damage, uint64 AttackerGUID, uint64 ControllerGUID, uint32 SpellID );
+		
+		
+		uint32 hitpoints;
+		uint32 maxhitpoints;
 
 };
 
