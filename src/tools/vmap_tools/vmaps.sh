@@ -1,5 +1,5 @@
 #!/bin/sh
-mkdir vmaps
+mkdir -p vmaps
 ./vmap_extractor
 ./vmap_assembler Buildings vmaps
 
