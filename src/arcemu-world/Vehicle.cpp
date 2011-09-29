@@ -122,6 +122,9 @@ void Vehicle::AddPassengerToSeat( Unit *passenger, uint32 seatid ){
 
 	passenger->RemoveAllAuraType( SPELL_AURA_MOUNTED );
 
+	if( passenger->GetCurrentVehicle() != NULL )
+		passenger->GetCurrentVehicle()->EjectPassenger( passenger );
+
 	// set moveflags
 	// set movement info
 	
