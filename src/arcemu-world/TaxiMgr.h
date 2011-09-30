@@ -47,6 +47,8 @@ class TaxiPath
 	public:
 		TaxiPath()
 		{
+			price = 0;
+			id = 0;
 		}
 
 		~TaxiPath()
