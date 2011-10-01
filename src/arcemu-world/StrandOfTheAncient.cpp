@@ -252,71 +252,6 @@ float CalculateDistance(float x1, float y1, float z1, float x2, float y2, float 
 
 StrandOfTheAncient::StrandOfTheAncient(MapMgr* mgr, uint32 id, uint32 lgroup, uint32 t) : CBattleground(mgr, id, lgroup, t)
 {
-	int i;
-
-	printStackTrace();
-
-	// Lets start using exception handling rather than relying on
-	// the crash handler all the time. :)
-	try
-	{
-		// Crash on purpose... :P
-		//char *crash = 0;
-		//*crash = 10;
-
-		for(i = 0; i < 2; i++)
-		{
-			m_players[i].clear();
-			m_pendPlayers[i].clear();
-		}
-		//m_worldStates.clear();
-		m_pvpData.clear();
-		m_resurrectMap.clear();
-
-		//uint32 mapId = BattlegroundManager.GetMap(BATTLEGROUND_STRAND_OF_THE_ANCIENT);
-
-		// Boats
-		for(i = 0; i < 4; i++)
-		{
-			m_boats[i] = m_mapMgr->CreateAndSpawnGameObject(20808,
-			             sotaBoats[i][0], sotaBoats[i][1], sotaBoats[i][2], sotaBoats[i][3], 1.0f);
-			m_boats[i]->PushToWorld(mgr);
-		}
-
-		/* Relic */
-		m_relic = m_mapMgr->CreateAndSpawnGameObject(GO_RELIC, sotaTitanRelic[0],
-		          sotaTitanRelic[1], sotaTitanRelic[2], sotaTitanRelic[3], 1.0f);
-
-		for(i = 0; i < GATE_COUNT; i++)
-		{
-			m_gates[i] = m_mapMgr->CreateAndSpawnGameObject(GateGOIds[i],
-			             sotaGates[i][0], sotaGates[i][1], sotaGates[i][2], sotaGates[i][3], 1.0f);
-			m_gateSigils[i] = m_mapMgr->CreateAndSpawnGameObject(GateSigilGOIds[i],
-			                  sotaGateSigils[i][0], sotaGateSigils[i][1], sotaGateSigils[i][2],
-			                  sotaGateSigils[i][3], 1.0f);
-			m_gateTransporters[i] = m_mapMgr->CreateAndSpawnGameObject(192819,
-			                        sotaTransporters[i][0], sotaTransporters[i][1], sotaTransporters[i][2],
-			                        sotaTransporters[i][3], 1.0f);
-		}
-
-		// Spawn door for Chamber of Ancient Relics
-		m_endgate = m_mapMgr->CreateAndSpawnGameObject(GateGOIds[i],
-		            sotaChamberGate[0], sotaChamberGate[1], sotaChamberGate[2],
-		            sotaChamberGate[3], 1.0f);
-
-
-		/* create the buffs */
-		for(i = 0; i < BUFF_COUNT; ++i)
-			SpawnBuff(i);
-
-	}
-	catch(...)  // Exception handling
-	{
-		LOG_ERROR("Exception: StrandOfTheAncient constructor");
-		printStackTrace();
-		throw;
-	}
-
 }
 
 StrandOfTheAncient::~StrandOfTheAncient()
@@ -493,6 +428,72 @@ void StrandOfTheAncient::OnCreate()
 {
 	LOG_DEBUG("OnCreate: SOTA Battleground");
 
+	int i;
+
+	printStackTrace();
+
+	// Lets start using exception handling rather than relying on
+	// the crash handler all the time. :)
+	try
+	{
+		// Crash on purpose... :P
+		//char *crash = 0;
+		//*crash = 10;
+
+		for(i = 0; i < 2; i++)
+		{
+			m_players[i].clear();
+			m_pendPlayers[i].clear();
+		}
+		//m_worldStates.clear();
+		m_pvpData.clear();
+		m_resurrectMap.clear();
+
+		//uint32 mapId = BattlegroundManager.GetMap(BATTLEGROUND_STRAND_OF_THE_ANCIENT);
+
+		// Boats
+		for(i = 0; i < 4; i++)
+		{
+			m_boats[i] = m_mapMgr->CreateAndSpawnGameObject(20808,
+			             sotaBoats[i][0], sotaBoats[i][1], sotaBoats[i][2], sotaBoats[i][3], 1.0f);
+			m_boats[i]->PushToWorld( m_mapMgr );
+		}
+
+		/* Relic */
+		m_relic = m_mapMgr->CreateAndSpawnGameObject(GO_RELIC, sotaTitanRelic[0],
+		          sotaTitanRelic[1], sotaTitanRelic[2], sotaTitanRelic[3], 1.0f);
+
+		for(i = 0; i < GATE_COUNT; i++)
+		{
+			m_gates[i] = m_mapMgr->CreateAndSpawnGameObject(GateGOIds[i],
+			             sotaGates[i][0], sotaGates[i][1], sotaGates[i][2], sotaGates[i][3], 1.0f);
+			m_gateSigils[i] = m_mapMgr->CreateAndSpawnGameObject(GateSigilGOIds[i],
+			                  sotaGateSigils[i][0], sotaGateSigils[i][1], sotaGateSigils[i][2],
+			                  sotaGateSigils[i][3], 1.0f);
+			m_gateTransporters[i] = m_mapMgr->CreateAndSpawnGameObject(192819,
+			                        sotaTransporters[i][0], sotaTransporters[i][1], sotaTransporters[i][2],
+			                        sotaTransporters[i][3], 1.0f);
+		}
+
+		// Spawn door for Chamber of Ancient Relics
+		m_endgate = m_mapMgr->CreateAndSpawnGameObject(GateGOIds[i],
+		            sotaChamberGate[0], sotaChamberGate[1], sotaChamberGate[2],
+		            sotaChamberGate[3], 1.0f);
+
+
+		/* create the buffs */
+		for(i = 0; i < BUFF_COUNT; ++i)
+			SpawnBuff(i);
+
+	}
+	catch(...)  // Exception handling
+	{
+		LOG_ERROR("Exception: StrandOfTheAncient constructor");
+		printStackTrace();
+		throw;
+	}
+
+
 	SetWorldState(WORLDSTATE_SOTA_CAPTURE_BAR_DISPLAY, 0);
 	SetWorldState(WORLDSTATE_SOTA_CAPTURE_BAR_VALUE, 0);
 	PrepareRound();
@@ -523,7 +524,7 @@ void StrandOfTheAncient::OnStart()
 	SetWorldState(WORLDSTATE_SOTA_BONUS_TIME, 1);
 	SetWorldState(WORLDSTATE_SOTA_TIMER_1, 10); // 10 Minute Timer
 
-	//SetTime(ROUND_LENGTH, 0);
+	SetTime(ROUND_LENGTH, 0);
 	sEventMgr.AddEvent(this, &StrandOfTheAncient::TimeTick, EVENT_SOTA_TIMER, MSTIME_SECOND * 5, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 
 	UpdatePvPData();
