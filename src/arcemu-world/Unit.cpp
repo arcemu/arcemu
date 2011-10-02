@@ -3848,6 +3848,7 @@ void Unit::Strike(Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability,
 					else
 						hit_status |= HITSTATUS_BLOCK;
 				}
+				CALL_SCRIPT_EVENT(this, OnHit)(pVictim, realdamage);
 			}
 			break;
 	}
