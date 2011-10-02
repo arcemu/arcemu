@@ -1307,9 +1307,6 @@ bool Creature::Load(CreatureSpawn* spawn, uint32 mode, MapInfo* info)
 	if(isAuctioner())
 		auctionHouse = sAuctionMgr.GetAuctionHouse(GetEntry());
 
-//NPC FLAGS
-	m_aiInterface->LoadWaypointMapFromDB(spawn->id);
-
 	//load resistances
 	for(uint8 x = 0; x < 7; x++)
 		BaseResistance[x] = GetResistance(x);
