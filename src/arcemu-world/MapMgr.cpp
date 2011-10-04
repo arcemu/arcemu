@@ -1749,7 +1749,7 @@ uint64 MapMgr::GenerateCreatureGUID(uint32 entry)
 	uint64 newguid = 0;
 
 	CreatureProto *proto = CreatureProtoStorage.LookupEntry( entry );
-	if( proto->vehicleid == 0 )
+	if( ( proto == NULL ) || ( proto->vehicleid == 0 ) )
 		newguid = static_cast< uint64 >( HIGHGUID_TYPE_UNIT ) << 32;
 	else
 		newguid = static_cast< uint64 >( HIGHGUID_TYPE_VEHICLE ) << 32;
