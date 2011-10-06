@@ -193,31 +193,33 @@ void WorldSession::HandleActivateTaxiOpcode(WorldPacket & recv_data)
 	uint32 modelid = 0;
 	if(_player->IsTeamHorde())
 	{
-		/*
-		if( taxinode->horde_mount == 2224 )
-			modelid =295; // In case it's a wyvern
+		CreatureInfo *ci = CreatureNameStorage.LookupEntry( taxinode->horde_mount );
+		
+		if( ci == NULL )
+			ci = CreatureNameStorage.LookupEntry( taxinode->alliance_mount );
+		
+		if( ci == NULL )
+			ci = CreatureNameStorage.LookupEntry( 541 ); // Riding Gryphon, in case neither of the above work
+		
+		if( ci != NULL )
+			modelid = ci->Male_DisplayID;
 		else
-			modelid =1566; // In case it's a bat or a bad id
-		*/
-
-		CreatureInfo* ci = CreatureNameStorage.LookupEntry(taxinode->horde_mount);
-		if(!ci) return;
-		modelid = ci->Male_DisplayID;
-		if(!modelid) return;
+			modelid = 6852; // Riding Gryphon modelid, in case it wasn't in the db;
 	}
 	else
 	{
-		/*
-		if( taxinode->alliance_mount == 3837 )
-			modelid =479; // In case it's an hippogryph
-		else
-			modelid =1147; // In case it's a gryphon or a bad id
-		*/
+		CreatureInfo *ci = CreatureNameStorage.LookupEntry( taxinode->alliance_mount );
+		
+		if( ci == NULL )
+			ci = CreatureNameStorage.LookupEntry( taxinode->horde_mount );
+		
+		if( ci == NULL )
+			ci = CreatureNameStorage.LookupEntry( 541 ); // Riding Gryphon, in case neither of the above work
 
-		CreatureInfo* ci = CreatureNameStorage.LookupEntry(taxinode->alliance_mount);
-		if(!ci) return;
-		modelid = ci->Male_DisplayID;
-		if(!modelid) return;
+		if( ci != NULL )
+			modelid = ci->Male_DisplayID;
+		else
+			modelid = 6852; // Riding Gryphon modelid, in case it wasn't in the db
 	}
 
 	//GetPlayer( )->setDismountCost( newmoney );

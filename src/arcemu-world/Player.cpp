@@ -6632,6 +6632,9 @@ void Player::TaxiStart(TaxiPath* path, uint32 modelid, uint32 start_node)
 
 	Dismount();
 
+	if( currentvehicle != NULL )
+		currentvehicle->EjectPassenger( this );
+
 	//also remove morph spells
 	if(GetDisplayId() != GetNativeDisplayId())
 	{
