@@ -122,6 +122,9 @@ void Vehicle::AddPassengerToSeat( Unit *passenger, uint32 seatid ){
 
 	passenger->RemoveAllAuraType( SPELL_AURA_MOUNTED );
 
+	if( passenger->IsPlayer() )
+		static_cast< Player* >( passenger )->DismissActivePets();
+
 	if( passenger->GetCurrentVehicle() != NULL )
 		passenger->GetCurrentVehicle()->EjectPassenger( passenger );
 
@@ -290,6 +293,9 @@ void Vehicle::EjectPassengerFromSeat( uint32 seatid ){
 		else
 			owner->SetFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK );
 	}
+
+	if( passenger->IsPlayer() )
+		static_cast< Player* >( passenger )->SpawnActivePet();
 
 	if( passenger->IsCreature() ){
 		Creature *c = static_cast< Creature* >( passenger );
