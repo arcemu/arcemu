@@ -6,6 +6,6 @@ CREATE TABLE `worldstate_templates` (
   `field` int(10) unsigned NOT NULL DEFAULT '0',
   `value` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`map`,`zone`,`field`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 UPDATE `arcemu_db_version` SET `LastUpdate` = '4626';
