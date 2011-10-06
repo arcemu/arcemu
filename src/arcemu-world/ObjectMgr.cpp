@@ -246,6 +246,14 @@ ObjectMgr::~ObjectMgr()
 	
 	vehicle_accessories.clear();
 
+
+	Log.Notice( "ObjectMgr", "Cleaning up worldstate templates" );
+	for( std::map< uint32, std::multimap< uint32, WorldState >* >::iterator itr = worldstate_templates.begin(); itr != worldstate_templates.end(); ++itr ){
+		itr->second->clear();
+		delete itr->second;
+	}
+
+	worldstate_templates.clear();
 }
 
 //
@@ -3525,3 +3533,55 @@ std::vector< VehicleAccessoryEntry* >* ObjectMgr::GetVehicleAccessories( uint32 
 		return itr->second;
 }
 
+void ObjectMgr::LoadWorldStateTemplates(){
+	QueryResult *result = WorldDatabase.QueryNA( "SELECT DISTINCT map FROM worldstate_templates ORDER BY map;" );
+
+	if( result == NULL )
+		return;
+
+	do{
+		Field *row = result->Fetch();
+		uint32 mapid = row[ 0 ].GetUInt32();
+		
+		worldstate_templates.insert( std::make_pair( mapid, new std::multimap< uint32, WorldState >() ) );
+
+	}while( result->NextRow() );
+
+	delete result;
+
+	result = WorldDatabase.QueryNA( "SELECT map, zone, field, value FROM worldstate_templates;" );
+
+	if( result == NULL )
+		return;
+
+	do{
+		Field *row = result->Fetch();
+		WorldState ws;
+
+		uint32 mapid = row[ 0 ].GetUInt32();
+		uint32 zone  = row[ 1 ].GetUInt32();
+		ws.field = row[ 2 ].GetUInt32();
+		ws.value = row[ 3 ].GetUInt32();
+
+		std::map< uint32, std::multimap< uint32, WorldState >* >::iterator itr
+			= worldstate_templates.find( mapid );
+
+		if( itr == worldstate_templates.end() )
+			continue;
+
+		itr->second->insert( std::make_pair( zone, ws ) );
+
+	}while( result->NextRow() );
+
+	delete result;
+}
+
+std::multimap< uint32, WorldState >* ObjectMgr::GetWorldStatesForMap( uint32 map ) const{
+	std::map< uint32, std::multimap< uint32, WorldState >* >::const_iterator itr =
+		worldstate_templates.find( map );
+
+	if( itr == worldstate_templates.end() )
+		return NULL;
+	else
+		return itr->second;
+}

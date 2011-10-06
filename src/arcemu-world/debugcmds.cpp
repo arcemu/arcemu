@@ -1089,3 +1089,67 @@ bool ChatHandler::HandleDebugSpawnWarCommand(const char* args, WorldSession* m_s
 	}
 	return true;
 }
+
+bool ChatHandler::HandleUpdateWorldStateCommand( const char *args, WorldSession *session ){
+	if( *args == '\0' ){
+		RedSystemMessage( session, "You need to specify the worldstate field and the new value." );
+		return true;
+	}
+
+	uint32 field = 0;
+	uint32 state = 0;
+
+	std::stringstream ss( args );
+
+	ss >> field;
+	if( ss.fail() ){
+		RedSystemMessage( session, "You need to specify the worldstate field and the new value." );
+		return true;
+	}
+
+	ss >> state;
+	if( ss.fail() ){
+		RedSystemMessage( session, "You need to specify the worldstate field and the new value." );
+		return true;
+	}
+
+	session->GetPlayer()->SendWorldStateUpdate( field, state );
+
+	return true;
+}
+
+bool ChatHandler::HandleInitWorldStatesCommand(const char *args, WorldSession *session){
+	Player *p = session->GetPlayer();
+
+	uint32 zone = p->GetZoneId();
+	if( zone == 0 )
+		zone = p->GetAreaID();
+
+	BlueSystemMessage( session, "Sending initial worldstates for zone %u", zone );
+
+	p->SendInitialWorldstates();	
+
+	return true;
+}
+
+
+bool ChatHandler::HandleClearWorldStatesCommand( const char *args, WorldSession *session ){
+	Player *p = session->GetPlayer();
+
+	uint32 zone = p->GetZoneId();
+	if( zone == 0 )
+		zone = p->GetAreaID();
+
+	BlueSystemMessage( session, "Clearing worldstates for zone %u", zone );
+
+	WorldPacket data( SMSG_INIT_WORLD_STATES, 16 );
+	
+	data << uint32( p->GetMapId() );
+	data << uint32( p->GetZoneId() );
+	data << uint32( p->GetAreaID() );
+	data << uint16( 0 );
+
+	p->SendPacket( &data );
+
+	return true;
+}

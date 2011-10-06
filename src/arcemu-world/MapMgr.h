@@ -90,7 +90,7 @@ class Transporter;
 
 #define CALL_INSTANCE_SCRIPT_EVENT( Mgr, Func ) if ( Mgr != NULL && Mgr->GetScript() != NULL ) Mgr->GetScript()->Func
 
-class SERVER_DECL MapMgr : public CellHandler <MapCell>, public EventableObject, public CThread
+class SERVER_DECL MapMgr : public CellHandler <MapCell>, public EventableObject, public IEventListener, public CThread
 {
 		friend class MapCell;
 		friend class MapScriptInterface;
@@ -273,14 +273,11 @@ class SERVER_DECL MapMgr : public CellHandler <MapCell>, public EventableObject,
 		void EventRespawnGameObject(GameObject* o, uint16 x, uint16 y);
 		void SendChatMessageToCellPlayers(Object* obj, WorldPacket* packet, uint32 cell_radius, uint32 langpos, int32 lang, WorldSession* originator);
 		void SendPvPCaptureMessage(int32 ZoneMask, uint32 ZoneId, const char* Message, ...);
+		void SendPacketToAllPlayers( WorldPacket *packet ) const;
+		void SendPacketToPlayersInZone( uint32 zone, WorldPacket *packet ) const;
+
 		Instance* pInstance;
 		void BeginInstanceExpireCountdown();
-
-		//worldstates
-		WorldStateHandlerMap m_worldStates;
-
-		void SendInitialStates(Player* plr);
-		void SetWorldState(uint32 zoneid, uint32 index, uint32 value);
 
 		// better hope to clear any references to us when calling this :P
 		void InstanceShutdown()
@@ -365,8 +362,20 @@ class SERVER_DECL MapMgr : public CellHandler <MapCell>, public EventableObject,
 		bool thread_kill_only;
 		bool thread_running;
 
+		WorldStatesHandler& GetWorldStatesHandler(){ return worldstateshandler; }
+
+		void Notify( uint32 type = 0, uint32 data1 = 0, uint32 data2 = 0, uint32 data3 = 0 );
+
 	protected:
 		InstanceScript* mInstanceScript;
+
+	private:
+		WorldStatesHandler worldstateshandler;
+
 };
+
+typedef void(*MapMgrEventHandler)( MapMgr*, uint32, uint32, uint32 );
+void REGISTER_MAPMGR_EVENT_HANDLERS();
+void CALL_MAPMGR_EVENT_HANDLER( MapMgr *mgr, uint32 type, uint32 data1, uint32 data2, uint32 data3 );
 
 #endif

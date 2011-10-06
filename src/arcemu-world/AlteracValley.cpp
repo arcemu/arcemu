@@ -1471,6 +1471,7 @@ AlteracValley::AlteracValley(MapMgr* mgr, uint32 id, uint32 lgroup, uint32 t) : 
 	m_playerCountPerTeam = 40;
 	m_reinforcements[0] = AV_NUM_REINFORCEMENTS;
 	m_reinforcements[1] = AV_NUM_REINFORCEMENTS;
+	m_zoneid = 2597;
 
 	memset(m_nodes, 0, sizeof(m_nodes));
 }
@@ -1566,12 +1567,6 @@ void AlteracValley::DropFlag(Player* plr)
 
 void AlteracValley::OnCreate()
 {
-	SetWorldState(WORLDSTATE_AV_ALLIANCE_SCORE_DISPLAY, 1);
-	SetWorldState(WORLDSTATE_AV_HORDE_SCORE_DISPLAY, 1);
-
-	SetWorldState(WORLDSTATE_AV_ALLIANCE_SCORE, 600);
-	SetWorldState(WORLDSTATE_AV_HORDE_SCORE, 600);
-
 	// Alliance Gate
 	GameObject* gate = SpawnGameObject(AV_GAMEOBJECT_GATE, GetMapMgr()->GetMapId(), 780.487f, -493.024f, 99.9553f, 3.0976f, 32, 114, 3.000000f);
 	gate->SetParentRotation(2, 0.0129570f);
@@ -1585,15 +1580,6 @@ void AlteracValley::OnCreate()
 	gate->SetParentRotation(3, 0.922766f);
 	gate->PushToWorld(m_mapMgr);
 	m_gates.push_back(gate);
-
-	for(uint32 i = 0; i < AV_NUM_CONTROL_POINTS; ++i)
-	{
-		for(uint32 j = 0; j < AV_NODE_STATE_COUNT; ++j)
-		{
-			if(g_nodeTemplates[i].m_worldStateFields[j] != 0)
-				SetWorldState(g_nodeTemplates[i].m_worldStateFields[j], 0);
-		}
-	}
 
 	for(uint8 x = 0; x < AV_NUM_CONTROL_POINTS; ++x)
 		m_nodes[x] = new AVNode(this, &g_nodeTemplates[x], x);

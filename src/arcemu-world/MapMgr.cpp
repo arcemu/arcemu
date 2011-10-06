@@ -35,7 +35,11 @@ Arcemu::Utility::TLSObject<MapMgr*> t_currentMapContext;
 
 extern bool bServerShutdown;
 
-MapMgr::MapMgr(Map* map, uint32 mapId, uint32 instanceid) : CellHandler<MapCell>(map), _mapId(mapId), eventHolder(instanceid)
+MapMgr::MapMgr(Map* map, uint32 mapId, uint32 instanceid) :
+CellHandler<MapCell>(map),
+_mapId(mapId),
+eventHolder(instanceid),
+worldstateshandler( mapId, this )
 {
 	_terrain = new TerrainHolder(mapId);
 	CollideInterface.ActivateMap(mapId);
@@ -149,11 +153,6 @@ MapMgr::~MapMgr()
 	}
 	m_corpses.clear();
 
-	//clear worldstates
-	for(WorldStateHandlerMap::iterator itr = m_worldStates.begin(); itr != m_worldStates.end(); ++itr)
-		delete itr->second;
-	m_worldStates.clear();
-
 	if(mInstanceScript != NULL)
 		mInstanceScript->Destroy();
 
@@ -180,53 +179,6 @@ MapMgr::~MapMgr()
 	}
 
 	Log.Notice("MapMgr", "Instance %u shut down. (%s)" , m_instanceID, GetBaseMap()->GetName());
-}
-
-void MapMgr::SetWorldState(uint32 zoneid, uint32 index, uint32 value)
-{
-	//do we have a worldstate already?
-	WorldStateHandlerMap::iterator itr = m_worldStates.find(zoneid);
-
-	if(itr != m_worldStates.end())
-		itr->second->SetState(index, value);
-	else
-	{
-		//we got here, no state set
-		WorldStateHandler* ws = new WorldStateHandler;
-		ws->SetState(index, value);
-		m_worldStates.insert(std::pair<uint32, WorldStateHandler*>(zoneid, ws));
-	}
-
-	WorldPacket data(SMSG_UPDATE_WORLD_STATE, 8);
-	data << index << value;
-
-	//update all players in this zone
-	for(PlayerStorageMap::iterator itr2 = m_PlayerStorage.begin(); itr2 != m_PlayerStorage.end(); ++itr2)
-		if(itr2->second->GetSession() != NULL && itr2->second->GetZoneId() == zoneid)
-			itr2->second->GetSession()->SendPacket(&data);
-}
-
-void MapMgr::SendInitialStates(Player* plr)
-{
-	std::map<uint32, WorldStateHandler*>::iterator itr = m_worldStates.find(plr->GetZoneId());
-
-	if(itr == m_worldStates.end())
-		return;
-
-	WorldPacket data(SMSG_INIT_WORLD_STATES, 14 + (itr->second->m_states.size() * 8));
-
-	data << uint32(_mapId);
-	data << uint32(0);
-	data << uint32(0);
-	data << uint16(itr->second->m_states.size());
-
-	for(WorldStateMap::iterator itr2 = itr->second->m_states.begin(); itr2 != itr->second->m_states.end(); ++itr2)
-	{
-		data << uint32(itr2->first);
-		data << uint32(itr2->second);
-	}
-
-	plr->SendPacket(&data);
 }
 
 uint32 MapMgr::GetTeamPlayersCount(uint32 teamId)
@@ -1325,6 +1277,7 @@ bool MapMgr::Do()
 
 	/* load corpses */
 	objmgr.LoadCorpses(this);
+	worldstateshandler.InitWorldStates( objmgr.GetWorldStatesForMap( _mapId ) );
 
 	// always declare local variables outside of the loop!
 	// otherwise there's a lot of sub esp; going on.
@@ -1959,6 +1912,24 @@ void MapMgr::SendPvPCaptureMessage(int32 ZoneMask, uint32 ZoneId, const char* Me
 	}
 }
 
+void MapMgr::SendPacketToAllPlayers( WorldPacket *packet ) const{
+	for( PlayerStorageMap::const_iterator itr = m_PlayerStorage.begin(); itr != m_PlayerStorage.end(); ++itr ){
+		Player *p = itr->second;
+
+		if( p->GetSession() != NULL )
+			p->GetSession()->SendPacket( packet );
+	}
+}
+
+void MapMgr::SendPacketToPlayersInZone( uint32 zone, WorldPacket *packet ) const{
+	for( PlayerStorageMap::const_iterator itr = m_PlayerStorage.begin(); itr != m_PlayerStorage.end(); ++itr ){
+		Player *p = itr->second;
+
+		if( ( p->GetSession() != NULL ) && ( p->GetZoneId() == zone ) )
+			p->GetSession()->SendPacket( packet );
+	}
+}
+
 void MapMgr::LoadInstanceScript()
 {
 	mInstanceScript = sScriptMgr.CreateScriptClassForInstance(_mapId, this);
@@ -1979,4 +1950,8 @@ uint16 MapMgr::GetAreaID(float x, float y)
 	if(itr == sWorld.mAreaIDToTable.end())
 		return 0;
 	return itr->second->AreaId;
+}
+
+void MapMgr::Notify( uint32 type, uint32 data1, uint32 data2, uint32 data3 ){
+	CALL_MAPMGR_EVENT_HANDLER( this, type, data1, data2, data3 );
 }

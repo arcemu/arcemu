@@ -34,7 +34,7 @@ Arena::Arena(MapMgr* mgr, uint32 id, uint32 lgroup, uint32 t, uint32 players_per
 		m_players[i].clear();
 		m_pendPlayers[i].clear();
 	}
-	//m_worldStates.clear();
+
 	m_pvpData.clear();
 	m_resurrectMap.clear();
 
@@ -62,6 +62,30 @@ Arena::Arena(MapMgr* mgr, uint32 id, uint32 lgroup, uint32 t, uint32 players_per
 			break;
 	}
 	rated_match = false;
+
+
+	switch( m_mapMgr->GetMapId() ){
+		case 559:
+			m_zoneid = 3698;
+			break;
+
+		case 562:
+			m_zoneid = 3702;
+			break;
+
+		case 572:
+			m_zoneid = 3968;
+			break;
+
+		case 617:
+			m_zoneid = 4378;
+			break;
+
+		case 618:
+			m_zoneid = 4408;
+			break;
+
+	}
 }
 
 Arena::~Arena()
@@ -281,33 +305,6 @@ void Arena::OnCreate()
 	for(set<GameObject*>::iterator itr = m_gates.begin(); itr != m_gates.end(); ++itr)
 		(*itr)->PushToWorld(m_mapMgr);
 
-	SetWorldState(0x08D4	, 0x0000);
-	SetWorldState(0x08D8	, 0x0000);
-	SetWorldState(0x08D7	, 0x0000);
-	SetWorldState(0x08D6	, 0x0000);
-	SetWorldState(0x08D5	, 0x0000);
-	SetWorldState(0x08D3	, 0x0000);
-	SetWorldState(0x0C0D	, 0x017B);
-
-
-	// Show players count
-	switch(m_mapMgr->GetMapId())
-	{
-			/* ruins of lordaeron */
-		case 572:
-			SetWorldState(3002, 1);
-			break;
-
-			/* blades edge arena */
-		case 562:
-			SetWorldState(2547, 1);
-			break;
-
-			/* nagrand arena */
-		case 559:
-			SetWorldState(2577, 1);
-			break;
-	}
 }
 
 void Arena::HookOnShadowSight()
@@ -432,30 +429,14 @@ void Arena::UpdatePlayerCounts()
 {
 	if(m_ended)
 		return;
-
-	switch(m_mapMgr->GetMapId())
-	{
-			/* ruins of lordaeron */
-		case 572:
-			SetWorldState(ARENA_WORLD_STATE_A_PLAYER_COUNT, m_playersCount[0]);
-			SetWorldState(ARENA_WORLD_STATE_H_PLAYER_COUNT, m_playersCount[1]);
-			break;
-
-			/* blades edge arena */
-		case 562:
-			SetWorldState(ARENA_WORLD_STATE_A_PLAYER_COUNT, m_playersCount[0]);
-			SetWorldState(ARENA_WORLD_STATE_H_PLAYER_COUNT, m_playersCount[1]);
-			break;
-
-			/* nagrand arena */
-		case 559:
-			SetWorldState(ARENA_WORLD_STATE_A_PLAYER_COUNT, m_playersCount[0]);
-			SetWorldState(ARENA_WORLD_STATE_H_PLAYER_COUNT, m_playersCount[1]);
-			break;
-	}
+	
+	SetWorldState(WORLDSTATE_ARENA__GREEN_PLAYER_COUNT, m_playersCount[0]);
+	SetWorldState(WORLDSTATE_ARENA__GOLD_PLAYER_COUNT, m_playersCount[1]);
 
 	if(!m_started)
 		return;
+
+	return;
 
 	if(m_playersCount[1] == 0)
 		m_winningteam = 0;

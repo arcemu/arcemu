@@ -29,7 +29,7 @@ WarsongGulch::WarsongGulch(MapMgr* mgr, uint32 id, uint32 lgroup, uint32 t) : CB
 		m_players[i].clear();
 		m_pendPlayers[i].clear();
 	}
-	//m_worldStates.clear();
+
 	m_pvpData.clear();
 	m_resurrectMap.clear();
 
@@ -70,6 +70,8 @@ WarsongGulch::WarsongGulch(MapMgr* mgr, uint32 id, uint32 lgroup, uint32 t) : CB
 
 	m_scores[0] = m_scores[1] = 0;
 
+	m_zoneid = 3277;
+
 }
 
 WarsongGulch::~WarsongGulch()
@@ -101,7 +103,7 @@ WarsongGulch::~WarsongGulch()
 	}
 
 	m_resurrectMap.clear();
-	//m_worldStates.clear();
+
 }
 
 void WarsongGulch::HookOnAreaTrigger(Player* plr, uint32 id)
@@ -178,7 +180,7 @@ void WarsongGulch::HookOnAreaTrigger(Player* plr, uint32 id)
 		else
 			SendChatMessage(CHAT_MSG_BG_EVENT_ALLIANCE, plr->GetGUID(), "%s captured the Horde flag!", plr->GetName());
 
-		SetWorldState(plr->IsTeamHorde() ? WSG_ALLIANCE_FLAG_CAPTURED : WSG_HORDE_FLAG_CAPTURED, 1);
+		SetWorldState(plr->IsTeamHorde() ? WORLDSTATE_WSG_ALLIANCE_FLAG_DISPLAY : WORLDSTATE_WSG_HORDE_FLAG_DISPLAY, 1);
 
 		// Remove the Other Flag
 		if(m_homeFlags[plr->IsTeamHorde() ? TEAM_ALLIANCE : TEAM_HORDE]->IsInWorld())
@@ -242,7 +244,7 @@ void WarsongGulch::HookOnAreaTrigger(Player* plr, uint32 id)
 		}
 
 		/* increment the score world state */
-		SetWorldState(plr->IsTeamHorde() ? WSG_CURRENT_HORDE_SCORE : WSG_CURRENT_ALLIANCE_SCORE, m_scores[plr->GetTeam()]);
+		SetWorldState(plr->IsTeamHorde() ? WORLDSTATE_WSG_HORDE_SCORE : WORLDSTATE_WSG_ALLIANCE_SCORE, m_scores[plr->GetTeam()]);
 
 		UpdatePvPData();
 	}
@@ -276,7 +278,7 @@ void WarsongGulch::HookOnFlagDrop(Player* plr)
 	plr->m_bgHasFlag = false;
 	plr->RemoveAura(23333 + (plr->GetTeam() * 2));
 
-	SetWorldState(plr->IsTeamHorde() ? WSG_ALLIANCE_FLAG_CAPTURED : WSG_HORDE_FLAG_CAPTURED, 1);
+	SetWorldState(plr->IsTeamHorde() ? WORLDSTATE_WSG_ALLIANCE_FLAG_DISPLAY : WORLDSTATE_WSG_HORDE_FLAG_DISPLAY, 1);
 
 	sEventMgr.AddEvent(this, &WarsongGulch::ReturnFlag, plr->GetTeam(), EVENT_BATTLEGROUND_WSG_AUTO_RETURN_FLAG + plr->GetTeam(), 5000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 
@@ -312,7 +314,7 @@ void WarsongGulch::HookFlagDrop(Player* plr, GameObject* obj)
 			else
 				SendChatMessage(CHAT_MSG_BG_EVENT_ALLIANCE, plr->GetGUID(), "The Alliance flag was returned to its base by %s!", plr->GetName());
 
-			SetWorldState(plr->IsTeamHorde() ? WSG_ALLIANCE_FLAG_CAPTURED : WSG_HORDE_FLAG_CAPTURED, 1);
+			SetWorldState(plr->IsTeamHorde() ? WORLDSTATE_WSG_ALLIANCE_FLAG_DISPLAY : WORLDSTATE_WSG_HORDE_FLAG_DISPLAY, 1);
 			PlaySoundToAll(plr->IsTeamHorde() ? SOUND_HORDE_RETURNED : SOUND_ALLIANCE_RETURNED);
 		}
 		return;
@@ -346,7 +348,7 @@ void WarsongGulch::HookFlagDrop(Player* plr, GameObject* obj)
 	Spell* sp = sSpellFactoryMgr.NewSpell(plr, pSp, true, 0);
 	SpellCastTargets targets(plr->GetGUID());
 	sp->prepare(&targets);
-	SetWorldState(plr->IsTeamHorde() ? WSG_ALLIANCE_FLAG_CAPTURED : WSG_HORDE_FLAG_CAPTURED, 2);
+	SetWorldState(plr->IsTeamHorde() ? WORLDSTATE_WSG_ALLIANCE_FLAG_DISPLAY : WORLDSTATE_WSG_HORDE_FLAG_DISPLAY, 2);
 	if(plr->IsTeamHorde())
 		SendChatMessage(CHAT_MSG_BG_EVENT_HORDE, plr->GetGUID(), "The Alliance's flag has been taken by %s !", plr->GetName());
 	else
@@ -405,7 +407,7 @@ void WarsongGulch::HookFlagStand(Player* plr, GameObject* obj)
 		m_homeFlags[plr->GetTeam()]->RemoveFromWorld(false);
 
 	PlaySoundToAll(plr->IsTeamHorde() ? SOUND_HORDE_CAPTURE : SOUND_ALLIANCE_CAPTURE);
-	SetWorldState(plr->IsTeamHorde() ? WSG_ALLIANCE_FLAG_CAPTURED : WSG_HORDE_FLAG_CAPTURED, 2);
+	SetWorldState(plr->IsTeamHorde() ? WORLDSTATE_WSG_ALLIANCE_FLAG_DISPLAY : WORLDSTATE_WSG_HORDE_FLAG_DISPLAY, 2);
 }
 
 void WarsongGulch::HookOnPlayerKill(Player* plr, Player* pVictim)
@@ -576,21 +578,8 @@ void WarsongGulch::OnCreate()
 	gate->PushToWorld(m_mapMgr);
 	m_gates.push_back(gate);
 
-	/* set world states */
-	SetWorldState(0x8D8, 0);
-	SetWorldState(0x8D7, 0);
-	SetWorldState(0x8D6, 0);
-	SetWorldState(0x8D5, 0);
-	SetWorldState(0x8D4, 0);
-	SetWorldState(0x8D3, 0);
-	SetWorldState(0x60B, 0);
-	SetWorldState(0x60A, 0);
-	SetWorldState(0x609, 0);
-	SetWorldState(WSG_ALLIANCE_FLAG_CAPTURED, 1);
-	SetWorldState(WSG_HORDE_FLAG_CAPTURED, 1);
-	SetWorldState(WSG_MAX_SCORE, 3);
-	SetWorldState(WSG_CURRENT_ALLIANCE_SCORE, 0);
-	SetWorldState(WSG_CURRENT_HORDE_SCORE, 0);
+	// Should be set from config
+	SetWorldState( WORLDSTATE_WSG_MAX_SCORE, 3 );
 
 	/* spawn spirit guides */
 	AddSpiritGuide(SpawnSpiritGuide(1423.218872f, 1554.663574f, 342.833801f, 3.124139f, 0));

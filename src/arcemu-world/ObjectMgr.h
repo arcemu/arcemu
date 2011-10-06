@@ -26,6 +26,16 @@ ARCEMU_INLINE bool FindXinYString(std::string & x, std::string & y)
 	return y.find(x) != std::string::npos;
 }
 
+struct WorldState{
+	uint32 field;
+	uint32 value;
+
+	WorldState(){
+		field = 0;
+		value = 0;
+	}
+};
+
 typedef std::set<uint32> InstanceBossTrashList;
 struct InstanceBossInfo
 {
@@ -664,6 +674,8 @@ class SERVER_DECL ObjectMgr : public Singleton < ObjectMgr >, public EventableOb
 
 		void LoadVehicleAccessories();
 		std::vector< VehicleAccessoryEntry* >* GetVehicleAccessories( uint32 creature_entry );
+		void LoadWorldStateTemplates();
+		std::multimap< uint32, WorldState >* GetWorldStatesForMap( uint32 map ) const;
 
 #undef ENABLE_ALWAYS_SERIOUS_MODE_GCC_STL_HACK
 
@@ -786,6 +798,7 @@ class SERVER_DECL ObjectMgr : public Singleton < ObjectMgr >, public EventableOb
 		AchievementCriteriaEntryList m_AchievementCriteriasByType[ACHIEVEMENT_CRITERIA_TYPE_TOTAL];
 #endif
 		std::map< uint32, std::vector< VehicleAccessoryEntry* >* > vehicle_accessories;
+		std::map< uint32, std::multimap< uint32, WorldState >* > worldstate_templates;
 
 };
 

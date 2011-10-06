@@ -22,7 +22,6 @@ SET(sources
 	BattlegroundCommands.cpp 
 	BattlegroundHandler.cpp 
 	BattlegroundMgr.cpp 
-
 	StrandOfTheAncient.cpp 
 	Channel.cpp 
 	ChannelHandler.cpp 
@@ -75,6 +74,7 @@ SET(sources
 	Map.cpp 
 	MapScriptInterface.cpp 
 	MapMgr.cpp 
+	MapMgrEventHandlers.cpp
 	MiscHandler.cpp 
 	MovementHandler.cpp 
 	NPCHandler.cpp 
@@ -120,7 +120,7 @@ SET(sources
 	WorldCreator.cpp 
 	WorldSession.cpp 
 	WorldSocket.cpp 
-	WorldState.cpp 
+	WorldStatesHandler.cpp
 	WorldRunnable.cpp 
 	WordFilter.cpp 
 	Main.cpp 
@@ -196,6 +196,7 @@ SET( headers
 	Druid.h
 	DynamicObject.h
 	EquipmentSetMgr.h
+	Events.h
 	EventableObject.h
 	EventMgr.h
 	EyeOfTheStorm.h
@@ -207,6 +208,7 @@ SET( headers
 	Guild.h
 	HonorHandler.h
 	Hunter.h
+	IEventListener.h
 	Item.h
 	ItemInterface.h
 	ItemPrototype.h
@@ -275,7 +277,8 @@ SET( headers
 	WorldRunnable.h
 	WorldSession.h
 	WorldSocket.h
-	WorldState.h
+	WorldStatesHandler.h
+	WorldStates.h
 	WUtil.h
 )
 	

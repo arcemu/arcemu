@@ -100,29 +100,29 @@ static float BuffRotations[AB_NUM_CONTROL_POINTS][2] =
 
 static uint32 AssaultFields[AB_NUM_CONTROL_POINTS][2] =
 {
-	{ AB_CAPTURING_STABLES_ALLIANCE, AB_CAPTURING_STABLES_HORDE },								// STABLE
-	{ AB_CAPTURING_FARM_ALLIANCE, AB_CAPTURING_FARM_HORDE },									// FARM
-	{ AB_CAPTURING_BLACKSMITH_ALLIANCE, AB_CAPTURING_BLACKSMITH_HORDE },						// BLACKSMITH
-	{ AB_CAPTURING_GOLDMINE_ALLIANCE, AB_CAPTURING_GOLDMINE_HORDE },							// MINE
-	{ AB_CAPTURING_LUMBERMILL_ALLIANCE, AB_CAPTURING_LUMBERMILL_HORDE },						// LUMBERMILL
+	{ WORLDSTATE_AB_CAPTURING_STABLES_ALLIANCE, WORLDSTATE_AB_CAPTURING_STABLES_HORDE },								// STABLE
+	{ WORLDSTATE_AB_CAPTURING_FARM_ALLIANCE, WORLDSTATE_AB_CAPTURING_FARM_HORDE },									// FARM
+	{ WORLDSTATE_AB_CAPTURING_BLACKSMITH_ALLIANCE, WORLDSTATE_AB_CAPTURING_BLACKSMITH_HORDE },						// BLACKSMITH
+	{ WORLDSTATE_AB_CAPTURING_GOLDMINE_ALLIANCE, WORLDSTATE_AB_CAPTURING_GOLDMINE_HORDE },							// MINE
+	{ WORLDSTATE_AB_CAPTURING_LUMBERMILL_ALLIANCE, WORLDSTATE_AB_CAPTURING_LUMBERMILL_HORDE },						// LUMBERMILL
 };
 
 static uint32 OwnedFields[AB_NUM_CONTROL_POINTS][2] =
 {
-	{ AB_CAPTURED_STABLES_ALLIANCE, AB_CAPTURED_STABLES_HORDE },								// STABLE
-	{ AB_CAPTURED_FARM_ALLIANCE, AB_CAPTURED_FARM_HORDE },										// FARM
-	{ AB_CAPTURED_BLACKSMITH_ALLIANCE, AB_CAPTURED_BLACKSMITH_HORDE },							// BLACKSMITH
-	{ AB_CAPTURED_GOLDMINE_ALLIANCE, AB_CAPTURED_GOLDMINE_HORDE },								// MINE
-	{ AB_CAPTURED_LUMBERMILL_ALLIANCE, AB_CAPTURED_LUMBERMILL_HORDE },							// LUMBERMILL
+	{ WORLDSTATE_AB_CAPTURED_STABLES_ALLIANCE, WORLDSTATE_AB_CAPTURED_STABLES_HORDE },								// STABLE
+	{ WORLDSTATE_AB_CAPTURED_FARM_ALLIANCE, WORLDSTATE_AB_CAPTURED_FARM_HORDE },										// FARM
+	{ WORLDSTATE_AB_CAPTURED_BLACKSMITH_ALLIANCE, WORLDSTATE_AB_CAPTURED_BLACKSMITH_HORDE },							// BLACKSMITH
+	{ WORLDSTATE_AB_CAPTURED_GOLDMINE_ALLIANCE, WORLDSTATE_AB_CAPTURED_GOLDMINE_HORDE },								// MINE
+	{ WORLDSTATE_AB_CAPTURED_LUMBERMILL_ALLIANCE, WORLDSTATE_AB_CAPTURED_LUMBERMILL_HORDE },							// LUMBERMILL
 };
 
 static uint32 NeutralFields[AB_NUM_CONTROL_POINTS] =
 {
-	AB_SHOW_STABLE_ICON,
-	AB_SHOW_FARM_ICON,
-	AB_SHOW_BACKSMITH_ICON,
-	AB_SHOW_GOLDMINE_ICON,
-	AB_SHOW_LUMBERMILL_ICON,
+	WORLDSTATE_AB_SHOW_STABLE_ICON,
+	WORLDSTATE_AB_SHOW_FARM_ICON,
+	WORLDSTATE_AB_SHOW_BACKSMITH_ICON,
+	WORLDSTATE_AB_SHOW_GOLDMINE_ICON,
+	WORLDSTATE_AB_SHOW_LUMBERMILL_ICON,
 };
 
 static uint32 ResourceUpdateIntervals[6] =
@@ -328,61 +328,8 @@ void ArathiBasin::OnCreate()
 	AddSpiritGuide(SpawnSpiritGuide(NoBaseGYLocations[0][0], NoBaseGYLocations[0][1], NoBaseGYLocations[0][2], 0.0f, 0));
 	AddSpiritGuide(SpawnSpiritGuide(NoBaseGYLocations[1][0], NoBaseGYLocations[1][1], NoBaseGYLocations[1][2], 0.0f, 1));
 
-	// urrrgh worldstates
-	SetWorldState(0x8D8, 0x00);
-	SetWorldState(0x8D7, 0x00);
-	SetWorldState(0x8D6, 0x00);
-	SetWorldState(0x8D5, 0x00);
-	SetWorldState(0x8D4, 0x00);
-	SetWorldState(0x8D3, 0x00);
-
-	// AB world state's
-	// unknowns, need more research
-	SetWorldState(0x7A3, 1800); // unknown
-	SetWorldState(0x745, 0x02); // unknown
-
-	// Icon stuff for on the map
-	SetWorldState(AB_SHOW_BACKSMITH_ICON, 			 0x01);
-	SetWorldState(AB_SHOW_FARM_ICON, 				  0x01);
-	SetWorldState(AB_SHOW_LUMBERMILL_ICON, 			0x01);
-	SetWorldState(AB_SHOW_GOLDMINE_ICON, 			 0x01);
-	SetWorldState(AB_SHOW_STABLE_ICON, 			0x01);
-
-	// LumberMill
-	SetWorldState(AB_CAPTURING_LUMBERMILL_HORDE, 	   0x00);
-	SetWorldState(AB_CAPTURING_LUMBERMILL_ALLIANCE, 	0x00);
-	SetWorldState(AB_CAPTURED_LUMBERMILL_HORDE, 		0x00);
-	SetWorldState(AB_CAPTURED_LUMBERMILL_ALLIANCE, 	 0x00);
-
-	// GoldMine
-	SetWorldState(AB_CAPTURING_GOLDMINE_HORDE, 		 0x00);
-	SetWorldState(AB_CAPTURING_GOLDMINE_ALLIANCE, 	  0x00);
-	SetWorldState(AB_CAPTURED_GOLDMINE_HORDE, 		  0x00);
-	SetWorldState(AB_CAPTURED_GOLDMINE_ALLIANCE, 	   0x00);
-
-	// BlackSmith
-	SetWorldState(AB_CAPTURING_BLACKSMITH_HORDE, 	   0x00);
-	SetWorldState(AB_CAPTURING_BLACKSMITH_ALLIANCE, 	0x00);
-	SetWorldState(AB_CAPTURED_BLACKSMITH_HORDE, 		0x00);
-	SetWorldState(AB_CAPTURED_BLACKSMITH_ALLIANCE, 	 0x00);
-
-	SetWorldState(AB_MAX_SCORE, 						RESOURCES_WINVAL);
-	SetWorldState(AB_ALLIANCE_CAPTUREBASE, 			 0x00);
-	SetWorldState(AB_HORDE_CAPTUREBASE, 				0x00);
-	SetWorldState(AB_HORDE_RESOURCES, 				  0x00);
-	SetWorldState(AB_ALLIANCE_RESOURCES, 			   0x00);
-
-	// Farm
-	SetWorldState(AB_CAPTURING_FARM_ALLIANCE, 		 0x00);
-	SetWorldState(AB_CAPTURING_FARM_HORDE, 			 0x00);
-	SetWorldState(AB_CAPTURED_FARM_HORDE, 			  0x00);
-	SetWorldState(AB_CAPTURED_FARM_ALLIANCE, 		   0x00);
-
-	// Stables
-	SetWorldState(AB_CAPTURING_STABLES_HORDE, 		  0x00);
-	SetWorldState(AB_CAPTURING_STABLES_ALLIANCE, 	   0x00);
-	SetWorldState(AB_CAPTURED_STABLES_HORDE, 		   0x00);
-	SetWorldState(AB_CAPTURED_STABLES_ALLIANCE, 		0x00);
+	// Let's set this from the config
+	SetWorldState( WORLDSTATE_AB_MAX_SCORE, RESOURCES_WINVAL );
 }
 
 void ArathiBasin::OnStart()
@@ -417,7 +364,7 @@ ArathiBasin::ArathiBasin(MapMgr* mgr, uint32 id, uint32 lgroup, uint32 t) : CBat
 		m_players[i].clear();
 		m_pendPlayers[i].clear();
 	}
-	//m_worldStates.clear();
+
 	m_pvpData.clear();
 	m_resurrectMap.clear();
 
@@ -448,6 +395,8 @@ ArathiBasin::ArathiBasin(MapMgr* mgr, uint32 id, uint32 lgroup, uint32 t) : CBat
 		DefFlag[i][0] = false;
 		DefFlag[i][1] = true;
 	}
+
+	m_zoneid = 3358;
 }
 
 ArathiBasin::~ArathiBasin()
@@ -497,12 +446,12 @@ ArathiBasin::~ArathiBasin()
 	}
 
 	m_resurrectMap.clear();
-	//m_worldStates.clear();
+
 }
 
 void ArathiBasin::EventUpdateResources(uint32 Team)
 {
-	uint32 resource_fields[2] = { AB_ALLIANCE_RESOURCES, AB_HORDE_RESOURCES };
+	uint32 resource_fields[2] = { WORLDSTATE_AB_ALLIANCE_RESOURCES, WORLDSTATE_AB_HORDE_RESOURCES };
 
 	uint32 current_resources = m_resources[Team];
 	uint32 current_bases = m_capturedBases[Team];
@@ -794,7 +743,7 @@ void ArathiBasin::CaptureControlPoint(uint32 Id, uint32 Team)
 
 	// update the overhead display on the clients (world states)
 	m_capturedBases[Team]++;
-	SetWorldState(Team ? AB_HORDE_CAPTUREBASE : AB_ALLIANCE_CAPTUREBASE, m_capturedBases[Team]);
+	SetWorldState(Team ? WORLDSTATE_AB_HORDE_CAPTUREBASE : WORLDSTATE_AB_ALLIANCE_CAPTUREBASE, m_capturedBases[Team]);
 
 	if(m_capturedBases[Team] >= 4)
 	{
@@ -894,7 +843,7 @@ void ArathiBasin::AssaultControlPoint(Player* pPlayer, uint32 Id)
 
 		// detract one from the teams controlled points
 		m_capturedBases[Owner] -= 1;
-		SetWorldState(Owner ? AB_HORDE_CAPTUREBASE : AB_ALLIANCE_CAPTUREBASE, m_capturedBases[Owner]);
+		SetWorldState(Owner ? WORLDSTATE_AB_HORDE_CAPTUREBASE : WORLDSTATE_AB_ALLIANCE_CAPTUREBASE, m_capturedBases[Owner]);
 
 		// reset the world states
 		SetWorldState(OwnedFields[Id][Owner], 0);

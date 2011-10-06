@@ -153,13 +153,6 @@ class MoonInstanceScript : public InstanceScript
 		bool						IsTimerFinished(int32 pTimerId);
 		void						CancelAllTimers();
 
-		// World States
-		void						AddWorldState(uint32 pIndex, uint32 pValue);
-		void						SetWorldState(uint32 pIndex, uint32 pValue);
-		void						SendWorldStates(Player* pPlayer);
-		void						RemoveWorldState(uint32 pIndex);
-		void						RemoveWorldStates();
-
 		// Update Event
 		void						RegisterScriptUpdateEvent();
 		void						SetUpdateEventFreq(uint32 pUpdateFreq);

@@ -294,6 +294,9 @@ class SERVER_DECL ChatHandler : public Singleton<ChatHandler>
 		bool HandleAuraUpdateAdd(const char* args, WorldSession* m_session);
 		bool HandleAuraUpdateRemove(const char* args, WorldSession* m_session);
 		bool HandleDebugSpawnWarCommand(const char* args, WorldSession* m_session);
+		bool HandleUpdateWorldStateCommand( const char *args, WorldSession *session );
+		bool HandleInitWorldStatesCommand( const char *args, WorldSession *session );
+		bool HandleClearWorldStatesCommand( const char *args, WorldSession *session );
 
 		// WayPoint Commands
 		bool HandleWPAddCommand(const char* args, WorldSession* m_session);

@@ -115,9 +115,7 @@ enum OHF_ENTRIES
     CN_EROZION              = 18723,
     CN_BRAZEN               = 18725,
     CN_LIEUTENANT_DRAKE     = 17848,
-    CN_THRALL               = 17876,
-
-    WS_OLD_HILLSBRAD        = 2436
+    CN_THRALL               = 17876
 };
 
 class OldHilsbradInstance : public MoonInstanceScript
@@ -136,15 +134,8 @@ class OldHilsbradInstance : public MoonInstanceScript
 				m_phaseData[i] = OHF_DATA_NOT_STARTED;
 		};
 
-		void OnLoad()
-		{
-			AddWorldState(WS_OLD_HILLSBRAD, 0);
-		}
-
 		void OnPlayerEnter(Player* pPlayer)
 		{
-			SendWorldStates(pPlayer);
-
 			if(pPlayer->getGender() == 0)
 				pPlayer->CastSpell(pPlayer, 35482, true);   // Human Male illusion
 			else
@@ -157,7 +148,7 @@ class OldHilsbradInstance : public MoonInstanceScript
 				return;
 
 			if(pIndex == OHF_PHASE_2)
-				RemoveWorldStates();
+				mInstance->GetWorldStatesHandler().SetWorldStateForZone( 2367, 0, WORLDSTATE_OLD_HILLSBRAD_BARRELS, 0 );			
 
 			m_phaseData[pIndex] = pData;
 		};
@@ -177,7 +168,7 @@ class OldHilsbradInstance : public MoonInstanceScript
 
 			pGameObject->Despawn(1000, 0);
 			m_numBarrel++;
-			SetWorldState(WS_OLD_HILLSBRAD, m_numBarrel);
+			pGameObject->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone( 2367, 0, WORLDSTATE_OLD_HILLSBRAD_BARRELS, m_numBarrel);
 			if(m_numBarrel != 5)
 				return;
 

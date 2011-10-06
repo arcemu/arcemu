@@ -547,6 +547,9 @@ RegType<Unit> UnitMethods[] =
 	{ "EjectAllVehiclePassengers", &LuaUnit::EjectAllVehiclePassengers },
 	{ "EjectVehiclePassengerFromSeat", &LuaUnit::EjectVehiclePassengerFromSeat },
 	{ "MoveVehiclePassengerToSeat", &LuaUnit::MoveVehiclePassengerToSeat },
+	{ "GetWorldStateForZone", &LuaUnit::GetWorldStateForZone },
+	{ "SetWorldStateForZone", &LuaUnit::SetWorldStateForZone },
+	{ "SetWorldStateForPlayer", &LuaUnit::SetWorldStateForPlayer },
 	{ NULL, NULL },
 };
 
@@ -655,6 +658,8 @@ RegType<GameObject> GOMethods[] =
 	{ "Rebuild", &LuaGameObject::Rebuild },
 	{ "GetHP", &LuaGameObject::GetHP },
 	{ "GetMaxHP", &LuaGameObject::GetMaxHP },
+	{ "GetWorldStateForZone", &LuaGameObject::GetWorldStateForZone },
+	{ "SetWorldStateForZone", &LuaGameObject::SetWorldStateForZone },
 	{ NULL, NULL },
 };
 

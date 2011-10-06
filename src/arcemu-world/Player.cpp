@@ -3755,7 +3755,9 @@ void Player::OnPushToWorld()
 	m_changingMaps = false;
 	SendFullAuraUpdate();
 
-	this->GetItemInterface()->HandleItemDurations();
+	m_ItemInterface->HandleItemDurations();
+
+	SendInitialWorldstates();
 }
 
 void Player::RemoveFromWorld()
@@ -7780,9 +7782,8 @@ void Player::ZoneUpdate(uint32 ZoneId)
 #ifdef OPTIMIZED_PLAYER_SAVING
 	save_Zone();
 #endif
-
-	if(m_mapMgr != NULL)
-		m_mapMgr->SendInitialStates(this);
+	
+	SendInitialWorldstates();
 
 	UpdateChannels(static_cast<int16>(ZoneId));
 	/*std::map<uint32, AreaTable*>::iterator iter = sWorld.mZoneIDToTable.find(ZoneId);
@@ -8455,7 +8456,7 @@ void Player::ForceZoneUpdate()
 	if(at->ZoneId && at->ZoneId != m_zoneId)
 		ZoneUpdate(at->ZoneId);
 
-	GetMapMgr()->SendInitialStates(this);
+	SendInitialWorldstates();
 }
 
 void Player::SafeTeleport(MapMgr* mgr, const LocationVector & vec)

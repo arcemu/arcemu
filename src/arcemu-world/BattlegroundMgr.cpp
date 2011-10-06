@@ -893,51 +893,6 @@ uint32 CBattlegroundManager::GetMaximumPlayers(uint32 dbcIndex)
 }
 
 
-void CBattleground::SendWorldStates(Player* plr)
-{
-	if(!m_worldStates.size())
-		return;
-
-	uint32 bflag = 0;
-	uint32 bflag2 = 0;
-
-	switch(m_mapMgr->GetMapId())
-	{
-		case  489:
-			bflag = 0x0CCD;
-			bflag2 = 0x0CF9;
-			break;
-		case  529:
-			bflag = 0x0D1E;
-			break;
-		case   30:
-			bflag = 0x0A25;
-			break;
-		case  559:
-			bflag = 3698;
-			break;
-		case 566:
-			bflag = 0x0eec;
-			bflag2 = 0;
-			break;         // EOTS
-
-		default:      /* arenas */
-			bflag  = 0x0E76;
-			bflag2 = 0;
-			break;
-	}
-
-	WorldPacket data(SMSG_INIT_WORLD_STATES, 10 + (m_worldStates.size() * 8));
-	data << m_mapMgr->GetMapId();
-	data << bflag;
-	data << bflag2;
-	data << uint16(m_worldStates.size());
-
-	for(map<uint32, uint32>::iterator itr = m_worldStates.begin(); itr != m_worldStates.end(); ++itr)
-		data << itr->first << itr->second;
-	plr->GetSession()->SendPacket(&data);
-}
-
 CBattleground::CBattleground(MapMgr* mgr, uint32 id, uint32 levelgroup, uint32 type) : m_mapMgr(mgr), m_id(id), m_type(type), m_levelGroup(levelgroup)
 {
 	m_nextPvPUpdateTime = 0;
@@ -948,6 +903,7 @@ CBattleground::CBattleground(MapMgr* mgr, uint32 id, uint32 levelgroup, uint32 t
 	m_startTime = (uint32)UNIXTIME;
 	m_lastResurrect = (uint32)UNIXTIME;
 	m_invisGMs = 0;
+	m_zoneid = 0;
 	sEventMgr.AddEvent(this, &CBattleground::EventResurrectPlayers, EVENT_BATTLEGROUND_QUEUE_UPDATE, 30000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 
 	/* create raid groups */
@@ -1209,9 +1165,6 @@ void CBattleground::PortPlayer(Player* plr, bool skip_teleport /* = false*/)
 
 	/* Reset the score */
 	memset(&plr->m_bgScore, 0, sizeof(BGScore));
-
-	/* send him the world states */
-	SendWorldStates(plr);
 
 	/* update pvp data */
 	UpdatePvPData();
@@ -1598,6 +1551,8 @@ void CBattleground::RemovePlayer(Player* plr, bool logout)
 	plr->RemoveAura(44535);
 	plr->RemoveAura(21074);
 
+	plr->Unroot();
+
 	/* teleport out */
 	if(!logout)
 	{
@@ -1616,11 +1571,6 @@ void CBattleground::RemovePlayer(Player* plr, bool logout)
 		}
 
 		BattlegroundManager.SendBattlefieldStatus(plr, BGSTATUS_NOFLAGS, 0, 0, 0, 0, 0);
-
-		/* send some null world states */
-		data.Initialize(SMSG_INIT_WORLD_STATES);
-		data << uint32(plr->GetMapId()) << uint32(0) << uint32(0);
-		plr->GetSession()->SendPacket(&data);
 	}
 
 	if(/*!m_ended && */m_players[0].size() == 0 && m_players[1].size() == 0)
@@ -1737,15 +1687,10 @@ void CBattleground::Start()
 
 void CBattleground::SetWorldState(uint32 Index, uint32 Value)
 {
-	map<uint32, uint32>::iterator itr = m_worldStates.find(Index);
-	if(itr == m_worldStates.end())
-		m_worldStates.insert(make_pair(Index, Value));
-	else
-		itr->second = Value;
+	if( m_zoneid == 0 )
+		return;
 
-	WorldPacket data(SMSG_UPDATE_WORLD_STATE, 8);
-	data << Index << Value;
-	DistributePacketToAll(&data);
+	m_mapMgr->GetWorldStatesHandler().SetWorldStateForZone( m_zoneid, 0, Index, Value );
 }
 
 void CBattleground::Close()

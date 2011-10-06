@@ -130,45 +130,10 @@ struct BGScore
 #define SOUND_HORDE_BGALMOSTEND				0x2108
 #define SOUND_ALLIANCE_BGALMOSTEND			0x2109
 
-#define AB_ALLIANCE_RESOURCES				0x6F0
-#define AB_HORDE_RESOURCES				0x6F1
-#define AB_HORDE_CAPTUREBASE				0x6F2
-#define AB_ALLIANCE_CAPTUREBASE				0x6F3
-#define AB_MAX_SCORE					0x6F4
-
 #define BG_PREPARATION					44521
 #define BG_REVIVE_PREPARATION				44535
 #define RESURRECT_SPELL					21074	// Spirit Healer Res
 #define BG_DESERTER					26013
-
-// WSG define's
-#define WSG_ALLIANCE_FLAG_CAPTURED			0x922
-#define WSG_HORDE_FLAG_CAPTURED				0x923
-#define WSG_CURRENT_HORDE_SCORE				0x62E
-#define WSG_CURRENT_ALLIANCE_SCORE			0x62D
-#define WSG_MAX_SCORE					0x641
-
-// AV define's
-#define AV_UNCONTROLED_SNOWFALL_GRAVE			0x7AE //1 -> show uncontrolled
-
-#define AV_CONTROLED_ICEBLOOD_TOWER_HORDE		0x569 //1 -> horde controlled
-#define AV_CONTROLED_TOWER_POINT_HORDE			0x568 //1 -> horde controlled
-#define AV_CONTROLED_FROSTWOLF_RELIFHUNT_HORDE		0x532 //1 -> horde controlled
-#define AV_CONTROLED_EAST_FROSTWOLF_TOWER_HORDE		0x567 //1 -> horde controlled
-#define AV_CONTROLED_WEST_FROSTWOLF_TOWER_HORDE		0x566 //1 -> horde controlled
-#define AV_CONTROLED_ICEBLOOD_GRAVE_HORDE		0x543 //1 -> horde controlled
-#define AV_CONTROLED_FROSTWOLF_GRAVE_HORDE		0x53A //1 -> horde controlled
-
-#define AV_CONTROLED_IRONDEEP_MINE_TROGG		0x550 //1 -> trogg controlled
-#define AV_CONTROLED_COLDTHOOT_MINE_KOBOLT		0x54D //1 -> kobolt controlled
-
-#define AV_CONTROLED_STORMPIKE_GRAVE_ALLIANCE		0x535 //1 -> alliance controlled
-#define AV_CONTROLED_STONEHEART_BUNKER_ALLIANCE		0x554 //1 -> alliance controlled
-#define AV_CONTROLED_ICEWING_BUNKER_ALLIANCE		0x553 //1 -> alliance controlled
-#define AV_CONTROLED_DUBALDER_NORTH_BUNKER_ALLIANCE	0x552 //1 -> alliance controlled
-#define AV_CONTROLED_DUBALDER_SOUTH_BUNKER_ALLIANCE	0x551 //1 -> alliance controlled
-#define AV_CONTROLED_STORMPIKE_AID_STATION_ALLIANCE	0x52D //1 -> alliance controlled
-#define AV_CONTROLED_STONEHEART_GRAVE_ALLIANCE		0x516 //1 -> alliance controlled
 
 /* get level grouping for player */
 static inline uint32 GetLevelGrouping(uint32 level)
@@ -309,6 +274,7 @@ class SERVER_DECL CBattleground : public EventableObject
 		uint32 m_deltaRating[2];
 		uint32 m_invisGMs;
 		uint32 m_honorPerKill;
+		uint32 m_zoneid;
 
 	public:
 		/* Team->Player Map */
@@ -318,8 +284,6 @@ class SERVER_DECL CBattleground : public EventableObject
 		void AddInvisGM() {Lock(); m_invisGMs++; Unlock();}
 		void RemoveInvisGM() {Lock(); m_invisGMs--; Unlock();}
 	protected:
-		/* World States. This should be moved to mapmgr instead for world pvp :/ */
-		map<uint32, uint32> m_worldStates;
 
 		/* PvP Log Data Map */
 		map<uint32, BGScore> m_pvpData;
@@ -397,9 +361,6 @@ class SERVER_DECL CBattleground : public EventableObject
 		ARCEMU_INLINE bool HasEnded() { return m_ended; }
 		/* Has it started? */
 		ARCEMU_INLINE bool HasStarted() { return m_started; }
-
-		/* Send our current world states to a player . */
-		void SendWorldStates(Player* plr);
 
 		/* Send the pvp log data of all players to this player. */
 		void SendPVPData(Player* plr);

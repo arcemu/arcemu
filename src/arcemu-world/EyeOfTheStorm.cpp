@@ -146,7 +146,7 @@ EyeOfTheStorm::EyeOfTheStorm(MapMgr* mgr, uint32 id, uint32 lgroup, uint32 t) : 
 		m_players[i].clear();
 		m_pendPlayers[i].clear();
 	}
-	//m_worldStates.clear();
+
 	m_pvpData.clear();
 	m_resurrectMap.clear();
 
@@ -167,6 +167,8 @@ EyeOfTheStorm::EyeOfTheStorm(MapMgr* mgr, uint32 id, uint32 lgroup, uint32 t) : 
 	m_lastHonorGainPoints[0] = m_lastHonorGainPoints[1] = 0;
 	m_standFlag = NULL;
 	m_dropFlag = NULL;
+
+	m_zoneid = 3820;
 }
 
 EyeOfTheStorm::~EyeOfTheStorm()
@@ -228,7 +230,7 @@ EyeOfTheStorm::~EyeOfTheStorm()
 	}
 
 	m_resurrectMap.clear();
-	//m_worldStates.clear();
+
 }
 
 void EyeOfTheStorm::RepopPlayersOfTeam(int32 team, Creature* sh)
@@ -547,49 +549,6 @@ void EyeOfTheStorm::OnCreate()
 	GameObjectInfo* goi;
 	uint32 i;
 
-
-	/* eww worldstates */
-	SetWorldState(2565, 142);
-	SetWorldState(2720, 40);
-	SetWorldState(2719, 0);
-	SetWorldState(2718, 0);
-	SetWorldState(2260, 0);
-	SetWorldState(2264, 0);
-	SetWorldState(2263, 0);
-	SetWorldState(2262, 0);
-	SetWorldState(2261, 0);
-	SetWorldState(2259, 0);
-	SetWorldState(2742, 0);
-	SetWorldState(2741, 0);
-	SetWorldState(2740, 0);
-	SetWorldState(2739, 0);
-	SetWorldState(2738, 0);
-	SetWorldState(2737, 0);
-	SetWorldState(2736, 0);
-	SetWorldState(2735, 0);
-	SetWorldState(2733, 0);
-	SetWorldState(2732, 0);
-	SetWorldState(2731, 1);
-	SetWorldState(2730, 0);
-	SetWorldState(2729, 0);
-	SetWorldState(2728, 1);
-	SetWorldState(2727, 0);
-	SetWorldState(2726, 0);
-	SetWorldState(2725, 1);
-	SetWorldState(2724, 0);
-	SetWorldState(2723, 0);
-	SetWorldState(2722, 1);
-	SetWorldState(2757, 1);
-	SetWorldState(2753, 0);
-	SetWorldState(2752, 0);
-	SetWorldState(2770, 1);
-	SetWorldState(2769, 1);
-	SetWorldState(2750, 0);
-	SetWorldState(2749, 0);
-	SetWorldState(3218, 0);
-	SetWorldState(3217, 0);
-	SetWorldState(3085, 379);
-
 	/* create gameobjects */
 	for(i = 0; i < EOTS_TOWER_COUNT; ++i)
 	{
@@ -716,7 +675,7 @@ void EyeOfTheStorm::UpdateCPs()
 				if(disp->find(plr) == disp->end())
 				{
 					disp->insert(plr);
-					plr->SendWorldStateUpdate(EOTS_WORLDSTATE_DISPLAYON, 1);
+					plr->SendWorldStateUpdate(WORLDSTATE_EOTS_DISPLAYON, 1);
 				}
 			}
 		}
@@ -823,10 +782,10 @@ void EyeOfTheStorm::UpdateCPs()
 			if(plr->GetDistance2dSq(go) > EOTS_CAPTURE_DISTANCE)
 			{
 				disp->erase(eitr2);
-				plr->SendWorldStateUpdate(EOTS_WORLDSTATE_DISPLAYON, 0);			// hide the cp bar
+				plr->SendWorldStateUpdate(WORLDSTATE_EOTS_DISPLAYON, 0);			// hide the cp bar
 			}
 			else
-				plr->SendWorldStateUpdate(EOTS_WORLDSTATE_DISPLAYVALUE, m_CPStatus[i]);
+				plr->SendWorldStateUpdate(WORLDSTATE_EOTS_DISPLAYVALUE, m_CPStatus[i]);
 		}
 	}
 
@@ -838,8 +797,8 @@ void EyeOfTheStorm::UpdateCPs()
 			towers[1]++;
 	}
 
-	SetWorldState(EOTS_WORLDSTATE_ALLIANCE_BASES, towers[0]);
-	SetWorldState(EOTS_WORLDSTATE_HORDE_BASES, towers[1]);
+	SetWorldState(WORLDSTATE_EOTS_ALLIANCE_BASES, towers[0]);
+	SetWorldState(WORLDSTATE_EOTS_HORDE_BASES, towers[1]);
 }
 
 void EyeOfTheStorm::GeneratePoints()
@@ -976,12 +935,12 @@ bool EyeOfTheStorm::GivePoints(uint32 team, uint32 points)
 			}
 		}
 		m_mainLock.Release();
-		SetWorldState(EOTS_WORLDSTATE_ALLIANCE_VICTORYPOINTS + team, m_points[team]);
+		SetWorldState(WORLDSTATE_EOTS_ALLIANCE_VICTORYPOINTS + team, m_points[team]);
 		UpdatePvPData();
 		return true;
 	}
 
-	SetWorldState(EOTS_WORLDSTATE_ALLIANCE_VICTORYPOINTS + team, m_points[team]);
+	SetWorldState(WORLDSTATE_EOTS_ALLIANCE_VICTORYPOINTS + team, m_points[team]);
 	return false;
 }
 

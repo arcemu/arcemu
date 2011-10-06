@@ -377,6 +377,8 @@ bool World::SetInitialWorldSettings()
 		}
 	}
 
+	REGISTER_MAPMGR_EVENT_HANDLERS();
+
 	new ObjectMgr;
 	new QuestMgr;
 	new LootMgr;
@@ -440,6 +442,7 @@ bool World::SetInitialWorldSettings()
 	MAKE_TASK(ObjectMgr, LoadProfessionDiscoveries);
 	MAKE_TASK(ObjectMgr, StoreBroadCastGroupKey);
 	MAKE_TASK(ObjectMgr, LoadVehicleAccessories);
+	MAKE_TASK(ObjectMgr, LoadWorldStateTemplates);
 
 #undef MAKE_TASK
 

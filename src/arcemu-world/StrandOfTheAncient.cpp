@@ -252,6 +252,7 @@ float CalculateDistance(float x1, float y1, float z1, float x2, float y2, float 
 
 StrandOfTheAncient::StrandOfTheAncient(MapMgr* mgr, uint32 id, uint32 lgroup, uint32 t) : CBattleground(mgr, id, lgroup, t)
 {
+	m_zoneid = 4384;
 }
 
 StrandOfTheAncient::~StrandOfTheAncient()
@@ -445,7 +446,7 @@ void StrandOfTheAncient::OnCreate()
 			m_players[i].clear();
 			m_pendPlayers[i].clear();
 		}
-		//m_worldStates.clear();
+
 		m_pvpData.clear();
 		m_resurrectMap.clear();
 
@@ -592,7 +593,7 @@ void StrandOfTheAncient::PrepareRound()
 {
 	//SetWorldState( WORLDSTATE_SOTA_ALLIANCE_DEFENDER, Attackers == HORDE ? 1 : 0 );
 	//SetWorldState( WORLDSTATE_SOTA_ALLIANCE_ATTACKER, Attackers == HORDE ? 0 : 1 );
-	SetWorldState(WORLDSTATE_SOTA_ALLIANCE_DEFENDER, 1);
+	SetWorldState(WORLDSTATE_SOTA_HORDE_ATTACKER, 1);
 	SetWorldState(WORLDSTATE_SOTA_ALLIANCE_ATTACKER, 0);
 };
 

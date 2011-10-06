@@ -26,6 +26,8 @@
 
 #define EOTS_BUFF_RESPAWN_TIME 90000
 
+#define EOTS_NETHERWING_FLAG_SPELL 34976
+
 class EyeOfTheStorm : public CBattleground
 {
 	public:

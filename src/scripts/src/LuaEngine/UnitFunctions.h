@@ -6184,5 +6184,74 @@ class LuaUnit
 
 			return 0;
 		}
+
+		static int GetWorldStateForZone( lua_State *L, Unit *ptr ){
+			TEST_UNITPLAYER();
+
+			if( lua_gettop( L ) != 1 )
+				return 0;
+
+			uint32 field = luaL_checkint( L, 1 );
+
+			AreaTable *a = ptr->GetMapMgr()->GetArea( ptr->GetPositionX(), ptr->GetPositionY(), ptr->GetPositionZ() );
+			if( a == NULL )
+				return 0;
+
+			uint32 zone = a->ZoneId;
+
+			if( zone == 0 )
+				zone = a->AreaId;
+
+			if( zone == 0 )
+				return 0;
+
+			uint32 value
+				= ptr->GetMapMgr()->GetWorldStatesHandler().GetWorldStateForZone( zone, 0, field );
+
+			lua_pushinteger( L, value );
+
+			return 1;
+		}
+
+		static int SetWorldStateForZone( lua_State *L, Unit *ptr ){
+			TEST_UNITPLAYER();
+
+			if( lua_gettop( L ) != 2 )
+				return 0;
+
+			uint32 field = luaL_checkint( L, 1 );
+			uint32 value = luaL_checkint( L, 2 );
+
+			AreaTable *a = ptr->GetMapMgr()->GetArea( ptr->GetPositionX(), ptr->GetPositionY(), ptr->GetPositionZ() );
+			if( a == NULL )
+				return 0;
+
+			uint32 zone = a->ZoneId;
+
+			if( zone == 0 )
+				zone = a->AreaId;
+
+			if( zone == 0 )
+				return 0;
+
+			ptr->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone( zone, 0, field, value );
+
+			return 0;
+		}
+
+
+		static int SetWorldStateForPlayer( lua_State *L, Unit *ptr ){
+			TEST_PLAYER();
+
+			if( lua_gettop( L ) != 2 )
+				return 0;
+
+			uint32 field = luaL_checkint( L, 1 );
+			uint32 value = luaL_checkint( L, 2 );
+
+			static_cast< Player* >( ptr )->SendWorldStateUpdate( field, value );
+
+			return 0;
+		}
 };
 #endif

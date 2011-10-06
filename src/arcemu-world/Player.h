@@ -1011,6 +1011,8 @@ class SERVER_DECL Player : public Unit
 		/////////////////////////////////////////////////////////////////////////////////////////
 		void SendTotemCreated(uint8 slot, uint64 GUID, uint32 duration, uint32 spellid);
 
+		void SendInitialWorldstates();
+
 		void OutPacket(uint16 opcode, uint16 len, const void* data);
 		void SendPacket(WorldPacket* packet);
 		void SendMessageToSet(WorldPacket* data, bool self, bool myteam_only = false);

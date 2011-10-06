@@ -87,7 +87,7 @@ CREATE TABLE `arcemu_db_version` (
 
 /*Data for the table `arcemu_db_version` */
 
-insert  into `arcemu_db_version`(`LastUpdate`) values (4606);
+insert  into `arcemu_db_version`(`LastUpdate`) values (4626);
 
 /*Table structure for table `areatriggers` */
 
@@ -1974,6 +1974,21 @@ CREATE TABLE `worldmap_info_localized` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 /*Data for the table `worldmap_info_localized` */
+
+
+/*Table structure for table `worldstate_templates` */
+
+DROP TABLE IF EXISTS `worldstate_templates`;
+
+CREATE TABLE `worldstate_templates` (
+  `map` int(10) unsigned NOT NULL DEFAULT '0',
+  `zone` int(10) unsigned NOT NULL DEFAULT '0',
+  `field` int(10) unsigned NOT NULL DEFAULT '0',
+  `value` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`map`,`zone`,`field`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+/*Data for the table `worldstate_templates` */
 
 /*Table structure for table `worldstring_tables` */
 
