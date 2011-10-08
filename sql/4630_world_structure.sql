@@ -87,7 +87,7 @@ CREATE TABLE `arcemu_db_version` (
 
 /*Data for the table `arcemu_db_version` */
 
-insert  into `arcemu_db_version`(`LastUpdate`) values (4626);
+insert  into `arcemu_db_version`(`LastUpdate`) values (4630);
 
 /*Table structure for table `areatriggers` */
 
@@ -1471,6 +1471,7 @@ CREATE TABLE `quests` (
   `ReceiveItemCount4` int(10) unsigned NOT NULL DEFAULT '0',
   `IsRepeatable` int(11) NOT NULL DEFAULT '0',
   `bonushonor` int(10) unsigned NOT NULL DEFAULT '0',
+  `bonusarenapoints` INT(10) unsigned NOT NULL DEFAULT '0',
   `rewardtitleid` int(10) unsigned NOT NULL DEFAULT '0',
   `rewardtalents` int(10) unsigned NOT NULL DEFAULT '0',
   `suggestedplayers` int(10) unsigned NOT NULL DEFAULT '0',

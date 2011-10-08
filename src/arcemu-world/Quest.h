@@ -207,6 +207,7 @@ struct Quest
 	int is_repeatable;
 	//
 	uint32 bonushonor;
+	uint32 bonusarenapoints;
 	uint32 rewardtitleid;
 	uint32 rewardtalents;
 	uint32 suggestedplayers;

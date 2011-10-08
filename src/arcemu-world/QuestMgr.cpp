@@ -377,7 +377,7 @@ void QuestMgr::BuildOfferReward(WorldPacket* data, Quest* qst, Object* qst_giver
 	*data << qst->effect_on_player;
 	*data << qst->rewardtitleid;
 	*data << qst->rewardtalents;
-	*data << uint32(0);
+	*data << qst->bonusarenapoints;
 	*data << uint32(0);
 	for(i = 0; i < 5; ++i)              // reward factions ids
 		*data << uint32(0);
@@ -452,8 +452,8 @@ void QuestMgr::BuildQuestDetails(WorldPacket* data, Quest* qst, Object* qst_give
 	*data << qst->effect_on_player;				// this is the spell (id) the quest finisher casts on you as a reward
 	*data << qst->rewardtitleid;				// Title reward (ID)
 	*data << qst->rewardtalents;				// Talent reward
-	*data << uint32(0);                                                     // new 3.3.0
-	*data << uint32(0);                                                     // new 3.3.0
+	*data << qst->bonusarenapoints;				// Arena Points reward
+	*data << uint32(0);							// new 3.3.0
 	for(i = 0; i < 5; ++i)
 		*data << uint32(0);
 	for(i = 0; i < 5; ++i)
@@ -569,6 +569,7 @@ void QuestMgr::BuildQuestComplete(Player* plr, Quest* qst)
 	data << uint32(GenerateRewardMoney(plr, qst));
 	data << uint32(qst->bonushonor * 10);
 	data << uint32(rewardtalents);
+	data << uint32(qst->bonusarenapoints);
 	data << uint32(qst->count_reward_item);   //Reward item count
 
 	for(uint32 i = 0; i < 4; ++i)
@@ -1348,6 +1349,12 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object* qst_giver, uint3
 
 		//Add to finished quests
 		plr->AddToFinishedQuests(qst->id);
+		if(qst->bonusarenapoints != 0)
+		{
+			plr->m_arenaPoints += qst->bonusarenapoints;
+			plr->RecalculateHonor();
+		}
+
 #ifdef ENABLE_ACHIEVEMENTS
 		plr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_QUEST_COUNT, 1, 0, 0);
 		if(qst->reward_money)
