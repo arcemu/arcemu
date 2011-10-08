@@ -835,7 +835,7 @@ void MailSystem::RemoveMessageIfDeleted(uint32 message_id, Player* plr)
 }
 
 void MailSystem::SendAutomatedMessage(uint32 type, uint64 sender, uint64 receiver, string subject, string body,
-                                      uint32 money, uint32 cod, uint64 item_guid, uint32 stationery)
+                                      uint32 money, uint32 cod, uint64 item_guid, uint32 stationery, uint32 deliverdelay)
 {
 	// This is for sending automated messages, for example from an auction house.
 	MailMessage msg;
@@ -850,7 +850,7 @@ void MailSystem::SendAutomatedMessage(uint32 type, uint64 sender, uint64 receive
 		msg.items.push_back(Arcemu::Util::GUID_LOPART(item_guid));
 
 	msg.stationery = stationery;
-	msg.delivery_time = (uint32)UNIXTIME;
+	msg.delivery_time = (uint32)UNIXTIME + deliverdelay;
 	msg.expire_time = 0;
 	msg.read_flag = false;
 	msg.copy_made = false;

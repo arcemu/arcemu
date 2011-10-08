@@ -408,7 +408,8 @@ namespace luaGlobalFunctions
 		uint32 cod = luaL_checkint(L, 7);
 		uint64 item_guid = CHECK_GUID(L, 8);
 		uint32 stationery = luaL_checkint(L, 9);
-		sMailSystem.SendAutomatedMessage(type, sender_guid, recipient_guid, subject, body, money, cod, item_guid, stationery);
+		uint32 deliverdelay = luaL_optint(L, 10, 0);
+		sMailSystem.SendAutomatedMessage(type, sender_guid, recipient_guid, subject, body, money, cod, item_guid, stationery, deliverdelay);
 		return 0;
 	}
 
