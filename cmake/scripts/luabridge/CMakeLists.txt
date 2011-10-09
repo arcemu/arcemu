@@ -33,10 +33,21 @@ SET( SRCS
   ${prefix}/object_functions/unit_functions.cpp 
   ${prefix}/object_functions/creature_functions.cpp
   ${prefix}/object_functions/lua_hooks.cpp  )
+  
+ SET( HEADERS
+  ${prefix}/interpreter/class_decls.h
+  ${prefix}/interpreter/lua_defs.h
+  ${prefix}/interpreter/lua_instance.h
+  ${prefix}/interpreter/LUAEngine.h
+  ${prefix}/luabridge_src/luabridge.hpp
+  ${prefix}/object_functions/GlobalFunctions.h
+  ${prefix}/object_functions/lua_creature.h
+  ${prefix}/object_functions/lua_gameobject.h
+  )
 
 include_directories( ${include_dirs} ${prefix}/interpreter )
 include(PCHSupport)
-add_library(${PROJECT_NAME} SHARED ${SRCS} )
+add_library(${PROJECT_NAME} SHARED ${SRCS} ${HEADERS} )
 add_dependencies( ${PROJECT_NAME} ${dependancies} lualib )
 target_link_libraries( ${PROJECT_NAME} ${linkages} lualib )
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION ${ARCEMU_SCRIPTLIB_PATH} LIBRARY DESTINATION ${ARCEMU_SCRIPTLIB_PATH})

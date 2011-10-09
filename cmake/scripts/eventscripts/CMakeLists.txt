@@ -15,13 +15,21 @@ Event_Halloween.cpp
 Event_WinterVeil.cpp
 ../Common/Base.cpp )
 
+SET( headers
+Setup.h
+../Common/Base.h
+../Common/EasyFunctions.h
+../Common/Instance_Base.h )
+
 foreach(src IN ITEMS ${sources} )
   SET( SRCS ${SRCS} ${prefix}/${src} )
 endforeach(src)
-
+foreach(src IN ITEMS ${headers} )
+  SET( HEADERS ${HEADERS} ${prefix}/${src} )
+endforeach(src)
 
 include_directories( ${include_dirs} ${prefix} )
-ADD_LIBRARY( ${PROJECT_NAME} SHARED ${SRCS} )
+ADD_LIBRARY( ${PROJECT_NAME} SHARED ${SRCS} ${HEADERS} )
 ADD_DEPENDENCIES( ${PROJECT_NAME} ${dependancies} )
 target_link_libraries( ${PROJECT_NAME} ${linkages} )
 

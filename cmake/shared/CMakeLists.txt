@@ -38,8 +38,10 @@ SET( sources
 	
 set( headers 
 	arcemu_getopt.h
+	arcemuConfig.h
 	Array.h
 	AuthCodes.h
+	ByteBuffer.h
 	CallBack.h
 	CircularQueue.h
 	Common.h
@@ -47,10 +49,12 @@ set( headers
 	crc32.h
 	CRefcounter.h
 	CThreads.h
+	Database/DatabaseEnv.h
 	DynLib.hpp
 	Errors.h
 	FastQueue.h
 	FindFiles.hpp
+	FindFilesResult.hpp
 	LocationVector.h
 	Log.h
 	MapFile.h
@@ -83,9 +87,13 @@ set( headers
 	Database/Field.h
 	Database/MySQLDatabase.h
 	Network/CircularBuffer.h
+	Network/ListenSocketFreeBSD.h
+	Network/ListenSocketLinux.h
 	Network/ListenSocketWin32.h
 	Network/Network.h
 	Network/Socket.h
+	Network/SocketMgrFreeBSD.h
+	Network/SocketMgrLinux.h
 	Network/SocketMgrWin32.h
 	Network/SocketOps.h
 	Network/SocketDefines.h
@@ -97,6 +105,7 @@ set( headers
 	Threading/Guard.h
 	Threading/LockedQueue.h
 	Threading/Mutex.h
+	Threading/Queue.h
 	Threading/RWLock.h
 	Threading/Threading.h
 	Threading/ThreadPool.h

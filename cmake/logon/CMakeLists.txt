@@ -20,6 +20,7 @@ SET( sources
 	LogonOpcodes.h
 	LogonStdAfx.h
 	Main.h
+	PeriodicFunctionCall_Thread.h
 )
 foreach(src IN ITEMS ${sources} )
   SET( SRCS ${SRCS} ${prefix}/${src} )
