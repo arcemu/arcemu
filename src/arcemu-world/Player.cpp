@@ -2333,6 +2333,7 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 	   << m_uint32Values[PLAYER_CHOSEN_TITLE] << ","
 	   << GetUInt64Value(PLAYER__FIELD_KNOWN_TITLES) << ","
 	   << GetUInt64Value(PLAYER__FIELD_KNOWN_TITLES1) << ","
+	   << GetUInt64Value(PLAYER__FIELD_KNOWN_TITLES2) << ","
 	   << m_uint32Values[PLAYER_FIELD_COINAGE] << ",";
 
 	if((getClass() == MAGE) || (getClass() == PRIEST) || (getClass() == WARLOCK))
@@ -2724,7 +2725,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		return;
 	}
 
-	const uint32 fieldcount = 90;
+	const uint32 fieldcount = 91;
 
 	if(result->GetFieldCount() != fieldcount)
 	{
@@ -2886,6 +2887,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	SetChosenTitle(get_next_field.GetUInt32());
 	SetUInt64Value(PLAYER__FIELD_KNOWN_TITLES, get_next_field.GetUInt64());
 	SetUInt64Value(PLAYER__FIELD_KNOWN_TITLES1, get_next_field.GetUInt64());
+	SetUInt64Value(PLAYER__FIELD_KNOWN_TITLES2, get_next_field.GetUInt64());
 	m_uint32Values[ PLAYER_FIELD_COINAGE ]					= get_next_field.GetUInt32();
 	m_uint32Values[ PLAYER_AMMO_ID ]						= get_next_field.GetUInt32();
 	m_uint32Values[ PLAYER_CHARACTER_POINTS2 ]				= get_next_field.GetUInt32();

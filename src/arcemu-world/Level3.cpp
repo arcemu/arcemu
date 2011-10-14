@@ -4185,6 +4185,7 @@ bool ChatHandler::HandleSetTitle(const char* args, WorldSession* m_session)
 	{
 		plr->SetUInt64Value(PLAYER__FIELD_KNOWN_TITLES, 0);
 		plr->SetUInt64Value(PLAYER__FIELD_KNOWN_TITLES1, 0);
+		plr->SetUInt64Value(PLAYER__FIELD_KNOWN_TITLES2, 0);
 	}
 	else if(title > 0)
 		plr->SetKnownTitle(static_cast< RankTitles >(title), true);

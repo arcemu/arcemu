@@ -21,7 +21,7 @@ CREATE TABLE `arcemu_db_version` (
   PRIMARY KEY (`LastUpdate`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-insert  into `arcemu_db_version`(`LastUpdate`) values (4479);
+insert  into `arcemu_db_version`(`LastUpdate`) values (4633);
 
 
 DROP TABLE IF EXISTS `account_data`;
@@ -150,6 +150,7 @@ CREATE TABLE `characters` (
   `selected_pvp_title` int(30) NOT NULL,
   `available_pvp_titles` bigint(10) unsigned NOT NULL DEFAULT '0',
   `available_pvp_titles1` bigint(10) NOT NULL,
+  `available_pvp_titles2` bigint(10) unsigned NOT NULL DEFAULT '0',
   `gold` int(30) NOT NULL,
   `ammo_id` int(30) NOT NULL,
   `available_prof_points` int(30) NOT NULL,
