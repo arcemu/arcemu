@@ -11,9 +11,45 @@ int main()
 	int revision = 0;
 	std::string tag = "TRUNK";
 
+	/* Since Subversion 1.7.0 http://subversion.apache.org/docs/release-notes/1.7.html Subversion clients use "Centralized Metadata Storage",
+	/* storing all metadata in the .svn folder in the root directory of the local svn checkout, instead of having a .svn folder for each
+	/* repository folder. Another difference is that metadata is stored as SQLite database instead of text files.
+	/* For now let's just try with to get the revision from "svn info"
+	*/
+
 	FILE* entries = fopen("../.svn/entries", "r");
 
-	if (entries != NULL)
+	if (entries == NULL)
+	{
+		FILE* svninfoOutput = _popen("svn info", "r");
+		if (svninfoOutput != NULL)
+		{
+			int character;
+			//the revision number is at 6th line so stop after that. "5" is the count of "\n" to skip
+			const int revisionLine = 5;
+			int line = 0;
+			char revisionNumber[5];
+			memset(revisionNumber, 0, sizeof(revisionNumber));
+			int revisionDigits = 0;
+
+			do
+			{
+				character = fgetc(svninfoOutput);
+				if(line == revisionLine)
+				{
+					if(isdigit(character))
+						revisionNumber[revisionDigits++] = character;
+				}
+
+				if(character == '\n')
+					++line;
+			}
+			while (character != EOF && line <= revisionLine);
+
+			revision = atoi(revisionNumber);
+		}
+	}
+	else
 	{
 		fseek(entries, 0, SEEK_END);
 		auto entriessize = ftell(entries);
