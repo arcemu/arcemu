@@ -711,7 +711,7 @@ CREATE TABLE `mailbox_insert_queue` (
   `stationary` int(30) NOT NULL,
   `money` int(30) NOT NULL,
   `item_id` int(30) NOT NULL,
-  `item_stack` int(30) NOT NULL
+  `item_stack` int(30) NOT NULL,
   `item_id2` int(30) NOT NULL DEFAULT '0',
   `item_stack2` int(30) NOT NULL DEFAULT '0',
   `item_id3` int(30) NOT NULL DEFAULT '0',
