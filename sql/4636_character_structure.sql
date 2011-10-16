@@ -21,7 +21,7 @@ CREATE TABLE `arcemu_db_version` (
   PRIMARY KEY (`LastUpdate`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-insert  into `arcemu_db_version`(`LastUpdate`) values (4633);
+insert  into `arcemu_db_version`(`LastUpdate`) values (4636);
 
 
 DROP TABLE IF EXISTS `account_data`;
@@ -711,6 +711,28 @@ CREATE TABLE `mailbox_insert_queue` (
   `money` int(30) NOT NULL,
   `item_id` int(30) NOT NULL,
   `item_stack` int(30) NOT NULL
+  `item_id2` int(30) NOT NULL DEFAULT '0',
+  `item_stack2` int(30) NOT NULL DEFAULT '0',
+  `item_id3` int(30) NOT NULL DEFAULT '0',
+  `item_stack3` int(30) NOT NULL DEFAULT '0',
+  `item_id4` int(30) NOT NULL DEFAULT '0',
+  `item_stack4` int(30) NOT NULL DEFAULT '0',
+  `item_id5` int(30) NOT NULL DEFAULT '0',
+  `item_stack5` int(30) NOT NULL DEFAULT '0',
+  `item_id6` int(30) NOT NULL DEFAULT '0',
+  `item_stack6` int(30) NOT NULL DEFAULT '0',
+  `item_id7` int(30) NOT NULL DEFAULT '0',
+  `item_stack7` int(30) NOT NULL DEFAULT '0',
+  `item_id8` int(30) NOT NULL DEFAULT '0',
+  `item_stack8` int(30) NOT NULL DEFAULT '0',
+  `item_id9` int(30) NOT NULL DEFAULT '0',
+  `item_stack9` int(30) NOT NULL DEFAULT '0',
+  `item_id10` int(30) NOT NULL DEFAULT '0',
+  `item_stack10` int(30) NOT NULL DEFAULT '0',
+  `item_id11` int(30) NOT NULL DEFAULT '0',
+  `item_stack11` int(30) NOT NULL DEFAULT '0',
+  `item_id12` int(30) NOT NULL DEFAULT '0',
+  `item_stack12` int(30) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Table structure for table `playerbugreports` */

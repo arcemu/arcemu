@@ -258,9 +258,8 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data)
 	recv_data >> msg.subject >> msg.body >> msg.stationery;
 	recv_data >> unk2 >> itemcount;
 
-	if(itemcount > 12 || msg.body.find("%") != string::npos || msg.subject.find("%") != string::npos)
+	if(itemcount > MAIL_MAX_ITEM_SLOT || msg.body.find("%") != string::npos || msg.subject.find("%") != string::npos)
 	{
-		//SystemMessage("Sorry, Ascent does not support sending multiple items at this time. (don't want to lose your item do you) Remove some items, and try again.");
 		SendMailError(MAIL_ERR_INTERNAL_ERROR);
 		return;
 	}
@@ -835,7 +834,7 @@ void MailSystem::RemoveMessageIfDeleted(uint32 message_id, Player* plr)
 }
 
 void MailSystem::SendAutomatedMessage(uint32 type, uint64 sender, uint64 receiver, string subject, string body,
-                                      uint32 money, uint32 cod, uint64 item_guid, uint32 stationery, uint32 deliverdelay)
+                                      uint32 money, uint32 cod, vector<uint64> &item_guids, uint32 stationery, uint32 deliverdelay)
 {
 	// This is for sending automated messages, for example from an auction house.
 	MailMessage msg;
@@ -846,8 +845,8 @@ void MailSystem::SendAutomatedMessage(uint32 type, uint64 sender, uint64 receive
 	msg.body = body;
 	msg.money = money;
 	msg.cod = cod;
-	if(Arcemu::Util::GUID_LOPART(item_guid) != 0)
-		msg.items.push_back(Arcemu::Util::GUID_LOPART(item_guid));
+	for(vector<uint64>::iterator itr = item_guids.begin(); itr != item_guids.end(); ++itr)
+		msg.items.push_back(Arcemu::Util::GUID_LOPART(*itr));
 
 	msg.stationery = stationery;
 	msg.delivery_time = (uint32)UNIXTIME + deliverdelay;
@@ -858,6 +857,16 @@ void MailSystem::SendAutomatedMessage(uint32 type, uint64 sender, uint64 receive
 
 	// Send the message.
 	DeliverMessage(receiver, &msg);
+}
+
+//overload to keep backward compatibility (passing just 1 item guid instead of a vector)
+void MailSystem::SendAutomatedMessage(uint32 type, uint64 sender, uint64 receiver, string subject, string body, uint32 money,
+                                      uint32 cod, uint64 item_guid, uint32 stationery, uint32 deliverdelay)
+{
+	vector<uint64> item_guids;
+	if(item_guid != 0)
+		item_guids.push_back(item_guid);
+	SendAutomatedMessage(type, sender, receiver, subject, body, money, cod, item_guids, stationery, deliverdelay);
 }
 
 void Mailbox::Load(QueryResult* result)

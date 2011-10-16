@@ -1801,7 +1801,6 @@ void World::PollMailboxInsertQueue(DatabaseConnection* con)
 {
 	QueryResult* result;
 	Field* f;
-	Item* pItem;
 	uint32 itemid;
 	uint32 stackcount;
 
@@ -1812,27 +1811,30 @@ void World::PollMailboxInsertQueue(DatabaseConnection* con)
 		do
 		{
 			f = result->Fetch();
-			itemid = f[6].GetUInt32();
-			stackcount = f[7].GetUInt32();
+			vector<uint64> itemGuids;
 
-			if(itemid != 0)
+			int fieldCounter = 6;
+			for(int itemSlot = 0; itemSlot < MAIL_MAX_ITEM_SLOT; itemSlot++)
 			{
-				pItem = objmgr.CreateItem(itemid, NULL);
+				itemid = f[fieldCounter++].GetUInt32();
+				stackcount = f[fieldCounter++].GetUInt32();
+
+				if(itemid == 0)
+					break;
+
+				Item* pItem = objmgr.CreateItem(itemid, NULL);
 				if(pItem != NULL)
 				{
 					pItem->SetStackCount(stackcount);
 					pItem->SaveToDB(0, 0, true, NULL);
+					itemGuids.push_back(pItem->GetGUID());
+					pItem->DeleteMe();
 				}
 			}
-			else
-				pItem = NULL;
 
 			Log.Notice("MailboxQueue", "Sending message to %u (item: %u)...", f[1].GetUInt32(), itemid);
 			sMailSystem.SendAutomatedMessage(0, f[0].GetUInt64(), f[1].GetUInt64(), f[2].GetString(), f[3].GetString(), f[5].GetUInt32(),
-			                                 0, pItem ? pItem->GetGUID() : 0, f[4].GetUInt32());
-
-			if(pItem != NULL)
-				pItem->DeleteMe();
+			                                 0, itemGuids, f[4].GetUInt32());
 
 		}
 		while(result->NextRow());
