@@ -250,6 +250,8 @@ void WorldSession::LogoutPlayer(bool Save)
 
 	if(_player != NULL)
 	{
+		_player->SetFaction( _player->GetInitialFactionId() );
+
 		objmgr.RemovePlayer(_player);
 		_player->ok_to_remove = true;
 
