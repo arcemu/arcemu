@@ -5433,7 +5433,12 @@ class LuaUnit
 			TEST_PLAYER()
 			uint32 spec = luaL_checkint(L, 1); //0 or 1
 			uint32 points = luaL_checkint(L, 2);
-			TO_PLAYER(ptr)->m_specs[spec].m_customTalentPointOverride = points;
+			TO_PLAYER(ptr)->m_specs[spec].SetTP( points );
+			
+			if( spec == TO_PLAYER(ptr)->m_talentActiveSpec )
+				TO_PLAYER(ptr)->SetUInt32Value( PLAYER_CHARACTER_POINTS1, points );
+
+			TO_PLAYER(ptr)->smsg_TalentsInfo(false);
 			return 0;
 		}
 
@@ -5443,13 +5448,8 @@ class LuaUnit
 			uint32 spec = luaL_checkint(L, 1); //0 or 1
 			PlayerSpec plrSpec = TO_PLAYER(ptr)->m_specs[spec];
 			uint32 Lvl = TO_PLAYER(ptr)->getLevel();
-			uint32 FreePoints = 0;
-			if(Lvl > 9)
-			{
-				FreePoints = plrSpec.m_customTalentPointOverride > 0 ? plrSpec.m_customTalentPointOverride : Lvl - 9; // compensate for additional given talentpoints
-				for(std::map<uint32, uint8>::iterator itr = plrSpec.talents.begin(); itr != plrSpec.talents.end(); ++itr)
-					FreePoints -= (itr->second + 1);
-			}
+			uint32 FreePoints = plrSpec.GetTP();
+
 			lua_pushnumber(L, FreePoints);
 			return 1;
 		}

@@ -830,16 +830,29 @@ struct PlayerCooldown
 	uint32 SpellId;
 };
 
-struct PlayerSpec
-{
-	std::map<uint32, uint8> talents;	// map of <talentId, talentRank>
-	uint16 glyphs[GLYPHS_COUNT];
-	ActionButton mActions[PLAYER_ACTION_BUTTON_COUNT];
-	uint32 m_customTalentPointOverride;
+class PlayerSpec{
+public:
+	PlayerSpec(){
+		tp = 0;
+	}
 
-	uint32 GetFreePoints(Player* Pl);
+	void SetTP( uint32 points ){ tp = points; }
+
+	uint32 GetTP() const{ return tp; }
+
+	void Reset(){
+		tp += talents.size();
+		talents.clear();
+	}
 
 	void AddTalent(uint32 talentid, uint8 rankid);
+
+	std::map<uint32, uint8> talents;
+	uint16 glyphs[GLYPHS_COUNT];
+	ActionButton mActions[PLAYER_ACTION_BUTTON_COUNT];
+	
+private:
+	uint32 tp;
 };
 
 //====================================================================
@@ -1491,7 +1504,6 @@ class SERVER_DECL Player : public Unit
 		void DestroyForPlayer(Player* target) const;
 		void SetTalentHearthOfWildPCT(int value) {hearth_of_wild_pct = value;}
 		void EventTalentHearthOfWildChange(bool apply);
-		void GiveTalent(uint32 numtalents);
 
 		std::list<LoginAura> loginauras;
 
@@ -1674,6 +1686,7 @@ class SERVER_DECL Player : public Unit
 		void SendInitialLogonPackets();
 		void Reset_Spells();
 		void Reset_Talents();
+		void Reset_AllTalents();
 		// Battlegrounds xD
 		CBattleground* m_bg;
 		CBattleground* m_pendingBattleground;
@@ -2059,9 +2072,31 @@ class SERVER_DECL Player : public Unit
 		uint32 GetXp() { return GetUInt32Value(PLAYER_XP); }
 		void SetNextLevelXp(uint32 xp) { SetUInt32Value(PLAYER_NEXT_LEVEL_XP, xp); }
 
-		void SetTalentPoints(uint32 amt) { SetUInt32Value(PLAYER_CHARACTER_POINTS1, amt); }
-		void ModTalentPoints(int32 amt) { ModUnsigned32Value(PLAYER_CHARACTER_POINTS1, amt); }
-		uint32 GetTalentPoints() { return GetUInt32Value(PLAYER_CHARACTER_POINTS1); }
+		void SetTalentPointsForAllSpec( uint32 amt ){
+			m_specs[ 0 ].SetTP( amt );
+			m_specs[ 1 ].SetTP( amt );
+			SetUInt32Value( PLAYER_CHARACTER_POINTS1, amt );
+			smsg_TalentsInfo( false );
+		}
+
+		void AddTalentPointsToAllSpec( uint32 amt ){
+			m_specs[ 0 ].SetTP( m_specs[ 0 ].GetTP() + amt );
+			m_specs[ 1 ].SetTP( m_specs[ 1 ].GetTP() + amt );
+			SetUInt32Value( PLAYER_CHARACTER_POINTS1, GetUInt32Value( PLAYER_CHARACTER_POINTS1 ) + amt );
+			smsg_TalentsInfo( false );
+		}
+
+		void SetCurrentTalentPoints( uint32 points ){
+			m_specs[ m_talentActiveSpec ].SetTP( points );
+			SetUInt32Value( PLAYER_CHARACTER_POINTS1, points );
+			smsg_TalentsInfo( false );
+		}
+
+		uint32 GetCurrentTalentPoints(){
+			uint32 points = GetUInt32Value( PLAYER_CHARACTER_POINTS1 );
+			Arcemu::Util::ArcemuAssert( points == m_specs[ m_talentActiveSpec ].GetTP() );
+			return points;
+		}
 
 		void SetPrimaryProfessionPoints(uint32 amt) { SetUInt32Value(PLAYER_CHARACTER_POINTS2, amt); }
 		void ModPrimaryProfessionPoints(int32 amt) { ModUnsigned32Value(PLAYER_CHARACTER_POINTS2, amt); }
@@ -2493,6 +2528,7 @@ class SERVER_DECL Player : public Unit
 		PlayerInfo* m_playerInfo;
 		uint32 m_RaidDifficulty;
 		bool m_XpGain;
+		bool resettalents;
 		std::list< Item* > m_GarbageItems;
 
 		void RemoveGarbageItems();

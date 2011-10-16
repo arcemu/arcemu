@@ -329,6 +329,7 @@ Player::Player(uint32 guid)
 	iInstanceType		= 0;
 	m_RaidDifficulty	= 0;
 	m_XpGain = true;
+	resettalents = false;
 	memset(reputationByListId, 0, sizeof(FactionReputation*) * 128);
 
 	m_comboTarget = 0;
@@ -360,7 +361,6 @@ Player::Player(uint32 guid)
 	for(uint8 s = 0; s < MAX_SPEC_COUNT; ++s)
 	{
 		m_specs[s].talents.clear();
-		m_specs[s].m_customTalentPointOverride = 0;
 		memset(m_specs[s].glyphs, 0, GLYPHS_COUNT * sizeof(uint16));
 		memset(m_specs[s].mActions, 0, PLAYER_ACTION_BUTTON_SIZE);
 	}
@@ -731,14 +731,14 @@ bool Player::Create(WorldPacket & data)
 	SetFaction(info->factiontemplate);
 
 	if(class_ == DEATHKNIGHT)
-		SetTalentPoints(sWorld.DKStartTalentPoints); // Default is 0 in case you do not want to modify it
+		SetTalentPointsForAllSpec(sWorld.DKStartTalentPoints); // Default is 0 in case you do not want to modify it
 	else
-		SetTalentPoints(0);
+		SetTalentPointsForAllSpec(0);
 	if(class_ != DEATHKNIGHT || sWorld.StartingLevel > 55)
 	{
 		setLevel(sWorld.StartingLevel);
 		if(sWorld.StartingLevel >= 10 && class_ != DEATHKNIGHT)
-			SetTalentPoints(sWorld.StartingLevel - 9);
+			SetTalentPointsForAllSpec(sWorld.StartingLevel - 9);
 	}
 	else
 	{
@@ -1452,15 +1452,6 @@ void Player::EventDeath()
 	SetDrunkValue(0);
 }
 
-/*  Gives numtps talent points to the player  */
-void Player::GiveTalent(uint32 numtps)
-{
-	uint32 currtps = GetTalentPoints();
-
-	SetTalentPoints(currtps + numtps);
-
-}
-
 
 ///  This function sends the message displaying the purple XP gain for the char
 ///  It assumes you will send out an UpdateObject packet at a later time.
@@ -1504,7 +1495,7 @@ void Player::GiveXP(uint32 xp, const uint64 & guid, bool allowbonus)
 		levelup = true;
 
 		if(level > 9)
-			ModTalentPoints(1);
+			AddTalentPointsToAllSpec( 1 );
 
 		if(level >= GetMaxLevel())
 			break;
@@ -1685,7 +1676,7 @@ void Player::smsg_TalentsInfo(bool SendPetTalents)
 	else
 	{
 		//data << uint32(GetTalentPoints(SPEC_PRIMARY)); // Wrong, calculate the amount of talent points per spec
-		data << uint32(m_specs[m_talentActiveSpec].GetFreePoints(this));
+		data << uint32(m_specs[m_talentActiveSpec].GetTP() );
 		data << uint8(m_talentSpecsCount);
 		data << uint8(m_talentActiveSpec);
 		for(uint8 s = 0; s < m_talentSpecsCount; s++)
@@ -1758,30 +1749,16 @@ void Player::ActivateSpec(uint8 spec)
 
 		addSpell(talentInfo->RankID[itr->second]);
 	}
+	SetUInt32Value(PLAYER_CHARACTER_POINTS1, m_specs[ m_talentActiveSpec ].GetTP() );
 	smsg_TalentsInfo(false);
 }
 
-uint32 PlayerSpec::GetFreePoints(Player* Pl)
-{
-	uint32 Lvl = Pl->getLevel();
-	uint32 FreePoints = 0;
-
-	if(Lvl > 9)
-	{
-		FreePoints = m_customTalentPointOverride > 0 ? m_customTalentPointOverride : Lvl - 9; // compensate for additional given talentpoints
-		for(std::map<uint32, uint8>::iterator itr = talents.begin(); itr != talents.end(); ++itr)
-			FreePoints -= (itr->second + 1);
-	}
-	return FreePoints;
-}
-
-void PlayerSpec::AddTalent(uint32 talentid, uint8 rankid)
-{
-	std::map<uint32, uint8>::iterator itr = talents.find(talentid);
-	if(itr != talents.end())
+void PlayerSpec::AddTalent( uint32 talentid, uint8 rankid ){
+	std::map<uint32, uint8>::iterator itr = talents.find( talentid );
+	if( itr != talents.end() )
 		itr->second = rankid;
 	else
-		talents.insert(make_pair(talentid, rankid));
+		talents.insert( make_pair( talentid, rankid ) );
 }
 
 void Player::_SavePet(QueryBuffer* buf)
@@ -2531,7 +2508,7 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 	}
 	ss << uint32(m_talentSpecsCount) << ", " << uint32(m_talentActiveSpec);
 	ss << ", '";
-	ss << uint32(m_specs[SPEC_PRIMARY].m_customTalentPointOverride) << " " << uint32(m_specs[SPEC_SECONDARY].m_customTalentPointOverride);
+	ss << uint32(m_specs[SPEC_PRIMARY].GetTP() ) << " " << uint32(m_specs[SPEC_SECONDARY].GetTP() );
 	ss << "', ";
 
 	ss << "'" << m_phase << "','";
@@ -2551,6 +2528,12 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 		for(uint32 offset = OBJECT_END; offset < PLAYER_END; offset++)
 			ss << uint32(m_uint32Values[ offset ]) << ";";
 	}
+	ss << "', '";
+
+	if( resettalents )
+		ss << uint32( 1 );
+	else
+		ss << uint32( 0 );
 
 	ss << "')";
 
@@ -2725,7 +2708,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		return;
 	}
 
-	const uint32 fieldcount = 91;
+	const uint32 fieldcount = 92;
 
 	if(result->GetFieldCount() != fieldcount)
 	{
@@ -3256,7 +3239,18 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 
 	m_talentSpecsCount = get_next_field.GetUInt8();
 	m_talentActiveSpec = get_next_field.GetUInt8();
-	sscanf(get_next_field.GetString(), "%u %u", &m_specs[SPEC_PRIMARY].m_customTalentPointOverride, &m_specs[SPEC_SECONDARY].m_customTalentPointOverride);
+
+	{
+		std::stringstream ss( get_next_field.GetString() );
+		uint32 tp1 = 0;
+		uint32 tp2 = 0;
+
+		ss >> tp1;
+		ss >> tp2;
+
+		m_specs[ SPEC_PRIMARY ].SetTP( tp1 );
+		m_specs[ SPEC_SECONDARY ].SetTP( tp2 );
+	}
 
 	m_phase = get_next_field.GetUInt32(); //Load the player's last phase
 
@@ -3266,6 +3260,13 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		m_XpGain = false;
 	else
 		m_XpGain = true;
+
+	get_next_field;//skipping one
+
+	if( get_next_field.GetUInt32() == 1 )
+		resettalents = true;
+	else
+		resettalents = false;
 
 	HonorHandler::RecalculateHonorFields(this);
 
@@ -3309,21 +3310,6 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	OnlineTime	= (uint32)UNIXTIME;
 	if(GetGuildId())
 		SetUInt32Value(PLAYER_GUILD_TIMESTAMP, (uint32)UNIXTIME);
-
-//VLack: Aspire code block starts
-	/*        m_talentActiveSpec = get_next_field.GetUInt32();
-	        m_talentSpecsCount = get_next_field.GetUInt32();
-	        if(m_talentSpecsCount > MAX_SPEC_COUNT)
-	                m_talentSpecsCount = MAX_SPEC_COUNT;
-	        if(m_talentActiveSpec >= m_talentSpecsCount )
-	                m_talentActiveSpec = 0;
-
-	        bool needTalentReset = get_next_field.GetBool();
-	        if( needTalentReset )
-	        {
-	                Reset_Talents();
-	        }*/
-//VLack: Aspire code block ends
 
 #undef get_next_field
 
@@ -3760,6 +3746,11 @@ void Player::OnPushToWorld()
 	m_ItemInterface->HandleItemDurations();
 
 	SendInitialWorldstates();
+
+	if( resettalents ){
+		Reset_AllTalents();
+		resettalents = false;
+	}
 }
 
 void Player::RemoveFromWorld()
@@ -6439,11 +6430,11 @@ void Player::Reset_Talents()
 	uint32 l = getLevel();
 	if(l > 9)
 	{
-		SetTalentPoints(l - 9);
+		SetCurrentTalentPoints(l - 9);
 	}
 	else
 	{
-		SetTalentPoints(0);
+		SetCurrentTalentPoints(0);
 	}
 
 	if(DualWield2H)
@@ -6453,6 +6444,19 @@ void Player::Reset_Talents()
 
 	m_specs[m_talentActiveSpec].talents.clear();
 	smsg_TalentsInfo(false); //VLack: should we send this as Aspire? Yes...
+}
+
+void Player::Reset_AllTalents(){
+	uint32 originalspec = m_talentActiveSpec;
+	Reset_Talents();
+	
+	if( originalspec == SPEC_PRIMARY )
+		ActivateSpec( SPEC_SECONDARY );
+	else
+		ActivateSpec( SPEC_PRIMARY );
+
+	Reset_Talents();
+	ActivateSpec( originalspec );
 }
 
 void Player::CalcResistance(uint32 type)
@@ -8238,48 +8242,13 @@ void Player::ApplyLevelInfo(LevelInfo* Info, uint32 Level)
 	SetMaxPower(POWER_TYPE_MANA, Info->Mana);
 	SetPower(POWER_TYPE_MANA, Info->Mana);
 
-	// Calculate talentpoints
-	uint32 TalentPoints = GetTalentPoints();
 
-	if(Level >= PreviousLevel)
-	{
-		// Level is increased - talent points are only added, so no reset
-		if(PreviousLevel >= 10)
-		{
-			// Every new level up will add a talent point
-			TalentPoints += Level - PreviousLevel;
-		}
-		else if(Level >= 10)
-		{
-			// Only add talent points for new levels above 9
-			TalentPoints += Level - 9;
-		}
-		SetTalentPoints(TalentPoints);
-	}
-	else
-	{
-		uint32 removed = 0;
-		if(Level >= 10)
-		{
-			// Every level decreased removes one talent point
-			removed = PreviousLevel - Level;
-		}
-		else if(PreviousLevel >= 10)
-		{
-			// Removing all talent points from levels
-			removed = PreviousLevel - 9;
-		}
-		if(TalentPoints < removed)
-		{
-			// Too few free talent points; resetting talents
-			Reset_Talents();
-		}
-		else
-		{
-			// Remove calculated amount of free talent points
-			TalentPoints -= removed;
-			SetTalentPoints(TalentPoints);
-		}
+	if( Level > PreviousLevel ){
+		if( Level > 9 )
+			SetTalentPointsForAllSpec( Level - 9 );
+	}else{
+		if( Level != PreviousLevel )
+			Reset_AllTalents();
 	}
 
 	// Set base fields
@@ -8292,7 +8261,10 @@ void Player::ApplyLevelInfo(LevelInfo* Info, uint32 Level)
 	UpdateGlyphs();
 	m_playerInfo->lastLevel = Level;
 #ifdef ENABLE_ACHIEVEMENTS
-	GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_REACH_LEVEL);
+	
+	if( Level > PreviousLevel )
+		GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_REACH_LEVEL);
+
 #endif
 	//VLack: 3.1.3, as a final step, send the player's talents, this will set the talent points right too...
 	smsg_TalentsInfo(false);
@@ -12353,7 +12325,7 @@ void Player::HandleSpellLoot(uint32 itemid)
 
 void Player::LearnTalent(uint32 talentid, uint32 rank, bool isPreviewed)
 {
-	uint32 CurTalentPoints = m_specs[ m_talentActiveSpec ].GetFreePoints(this);   // Calculate free points in active spec
+	uint32 CurTalentPoints = m_specs[ m_talentActiveSpec ].GetTP();   // Calculate free points in active spec
 
 	if(CurTalentPoints == 0)
 		return;
@@ -12398,6 +12370,9 @@ void Player::LearnTalent(uint32 talentid, uint32 rank, bool isPreviewed)
 
 	// Find out how many points we have in this field
 	uint32 spentPoints = 0;
+
+	// points we are spending now
+	int32 points = 0;
 
 	uint32 tTree = talentInfo->TalentTree;
 	uint32 cl = getClass();
@@ -12458,6 +12433,12 @@ void Player::LearnTalent(uint32 talentid, uint32 rank, bool isPreviewed)
 			return;
 		}
 
+
+		// Check if we already have the talent with the same or higher rank
+		for(unsigned int i = rank; i < 5; ++i)
+			if(talentInfo->RankID[i] != 0 && HasSpell(talentInfo->RankID[i]))
+				return; // cheater
+
 		if(rank > 0)
 		{
 			// If we are not learning thru the preview system, check if we have the lower rank of the talent
@@ -12466,11 +12447,18 @@ void Player::LearnTalent(uint32 talentid, uint32 rank, bool isPreviewed)
 				// cheater
 				return;
 			}
-		}
-		// Check if we already have the talent with the same or higher rank
-		for(unsigned int i = rank; i < 5; ++i)
-			if(talentInfo->RankID[i] != 0 && HasSpell(talentInfo->RankID[i]))
-				return; // cheater
+
+			int32 highest = 0;
+			for( highest = 4; highest >= 0; highest-- )
+				if( ( talentInfo->RankID[ highest ] != 0 ) && HasSpell( talentInfo->RankID[ highest ] ) )
+					break;
+
+			points = static_cast< int32 >( rank ) - highest;
+		}else
+			points = 1;
+
+		if( static_cast< uint32 >( points ) > CurTalentPoints )
+			return;
 
 		if(!(HasSpell(spellid)))
 		{
@@ -12507,7 +12495,7 @@ void Player::LearnTalent(uint32 talentid, uint32 rank, bool isPreviewed)
 				}
 			}
 
-			SetTalentPoints(CurTalentPoints - 1);
+			SetCurrentTalentPoints( CurTalentPoints - static_cast< uint32 >( points ) );
 			m_specs[m_talentActiveSpec].AddTalent(talentid, uint8(rank));
 			smsg_TalentsInfo(false);
 		}

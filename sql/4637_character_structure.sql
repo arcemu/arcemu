@@ -21,7 +21,7 @@ CREATE TABLE `arcemu_db_version` (
   PRIMARY KEY (`LastUpdate`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-insert  into `arcemu_db_version`(`LastUpdate`) values (4636);
+insert  into `arcemu_db_version`(`LastUpdate`) values (4637);
 
 
 DROP TABLE IF EXISTS `account_data`;
@@ -222,10 +222,11 @@ CREATE TABLE `characters` (
   `talents2` longtext NOT NULL,
   `numspecs` int(10) NOT NULL DEFAULT '1',
   `currentspec` int(10) NOT NULL DEFAULT '0',
-  `talentpoint_override` longtext NOT NULL,
+  `talentpoints` longtext NOT NULL,
   `phase` int(10) unsigned NOT NULL DEFAULT '1',
   `CanGainXp` int(10) unsigned NOT NULL DEFAULT '1',
   `data` longtext,
+  `resettalents` INT UNSIGNED DEFAULT '0' NOT NULL,
   PRIMARY KEY (`guid`),
   KEY `acct` (`acct`),
   KEY `name` (`name`),

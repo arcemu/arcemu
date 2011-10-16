@@ -976,14 +976,13 @@ bool ChatHandler::HandleModifyTPsCommand(const char* args, WorldSession* m_sessi
 
 	uint32 TP1 = 0;
 	uint32 TP2 = 0;
-	if(sscanf(args, "%u %u", &TP1, &TP2) != 2)
-	{
-		SystemMessage(m_session, "Enter two amounts to modify your target's both specs to (enter 0 to that spec at default).");
-		return true;
-	}
+	std::stringstream ss( args );
 
-	Pl->m_specs[SPEC_PRIMARY].m_customTalentPointOverride = TP1;
-	Pl->m_specs[SPEC_SECONDARY].m_customTalentPointOverride = TP2;
+	ss >> TP1;
+	ss >> TP2;
+
+	Pl->m_specs[SPEC_PRIMARY].SetTP( TP1 );
+	Pl->m_specs[SPEC_SECONDARY].SetTP( TP2 );
 	Pl->smsg_TalentsInfo(false);
 	return true;
 }
