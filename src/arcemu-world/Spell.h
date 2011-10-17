@@ -268,7 +268,7 @@ enum SpellCastTargetFlags
     TARGET_FLAG_CORPSE2             = 0x8000, // for resurrection spells
     TARGET_FLAG_GLYPH               = 0x20000
 };
-#ifndef NEW_PROCFLAGS
+
 enum procFlags
 {
     PROC_NULL							= 0x0,			//0
@@ -305,52 +305,7 @@ enum procFlags
     PROC_ON_SPELL_CRIT_HIT				= 0x40000000,	//1073741824
     PROC_TARGET_SELF					= 0x80000000,	//-2147483648 our custom flag to decide if proc target is self or victim
 };
-#else
-//REMEMBER: Wands r not ranged based weapons. So it shouldn't be any ranged proc when u hit with wands!
-enum procFlags
-{
-	PROC_NULL                          = 0x0,
-	PROC_ON_NPC_ACTION                 = 0x1, //on GO action too btw. related to quests in general.
-	PROC_ON_XP_GAIN                    = 0x2, //on honor gain too btw.
-	PROC_ON_MELEE_HIT                  = 0x4, //on successful white melee attack
-	PROC_ON_MELEE_HIT_VICTIM           = 0x8, //on successful white melee attack victim
-	PROC_ON_MELEE_ABILITY_LAND         = 0x10, //on successful melee ability attack. Abilities that was resisted/dodged etc doesn't proc with this flag
-	PROC_ON_MELEE_ABILITY_LAND_VICTIM  = 0x20, //on successful melee ability victim but not white damage. Abilities that was resisted/dodged etc doesn't proc with this flag
-	PROC_ON_RANGED_HIT                 = 0x40,  //on successful ranged white attack
-	PROC_ON_RANGED_HIT_VICTIM          = 0x80,  //on successful ranged white attack victim
-	PROC_ON_RANGED_ABILITY_LAND        = 0x100, //on successful ranged ability attack. Abilities that was resisted/dodged etc doesn't proc with this flag
-	PROC_ON_RANGED_ABILITY_LAND_VICTIM = 0x200,  //on successful ranged ability victim but not white damage. Abilities that was resisted/dodged etc doesn't proc with this flag
-	PROC_ON_CAST_SPELL                 = 0x400, //on nonability (spell) cast. Spells that was resisted don't proc with this flag
-	PROC_ON_CAST_SPELL_VICTIM          = 0x800,  //on nonability (spell) cast victim. Spells that was resisted don't proc with this flag.
-	PROC_ON_ANY_DAMAGE                 = 0x1000, // mb wrong
-	PROC_ON_ANY_DAMAGE_VICTIM          = 0x2000, // mb wrong
-	PROC_ON_HEALSPELL_LAND             = 0x4000, //on heal (direct or HoT) spell land.
-	PROC_ON_HEALSPELL_LAND_VICTIM      = 0x8000,  //on heal (direct or HoT) spell land victim.
-	PROC_ON_HARMFULSPELL_LAND          = 0x10000, //on harmful spell land (DoT damage not included in this flag!)
-	PROC_ON_HARMFULSPELL_LAND_VICTIM   = 0x20000, //on harmful spell land victim (DoT damage not included in this flag!)
-	PROC_ON_DOT_DAMAGE                 = 0x40000, //on harmful non direct damage (DoTs)
-	PROC_ON_DOT_DAMAGE_VICTIM          = 0x80000,  //on harmful non direct damage (DoTs) victim
-	PROC_REMOVEONUSE                   = 0x100000, //something supercustom. 99% wrong :P used by bombs and grenades in general.
-	PROC_ON_TRAP_TRIGGER               = 0x200000,
-	PROC_UNUSED1                       = 0x400000,
-	PROC_ON_OFFHAND_HIT                = 0x800000, //only 1 spellname "Combat Potency"
-	PROC_ON_UNK1                       = 0x1000000,//only 1 spellname "Captured Totem"
-};
-enum customProcFlags
-{
-	CUSTOMPROC_NULL                       = 0x0;
-	CUSTOMPROC_ON_CRIT                    = 0x1; //doesn't matter victim or not.
-	CUSTOMPROC_ON_MISS_VICTIM             = 0x2;
-	CUSTOMPROC_ON_DODGE_VICTIM            = 0x4;
-	CUSTOMPROC_ON_BLOCK_VICTIM            = 0x8;
-	CUSTOMPROC_ON_PARRY_VICTIM            = 0x10;
-	CUSTOMPROC_ON_RESIST_VICTIM           = 0x20;
-	CUSTOMPROC_ON_DIE                     = 0x40;//proc on our death
-	CUSTOMPROC_ON_FINISHMOVE              = 0x80; //procs when we use finish move ability
-	CUSTOMPROC_ON_ADDCOMBO                = 0x100; //procs when we use ability with +combo point
-	CUSTOMPROC_PROC_ON_SELF               = 0x200; //proc on self
-};
-#endif
+
 
 enum CastInterruptFlags
 {

@@ -413,18 +413,6 @@ struct DamageSplitTarget
 	void* creator;
 };
 
-#ifdef NEW_PROCFLAGS
-struct ProcTriggerSpell
-{
-	uint32 spellId;
-	uint32 parentId;
-	uint32 procFlags;
-	uint32 procChance;
-	uint32 procCharges;
-	uint32 LastTrigger;
-};
-#endif
-
 struct SpellCharge
 {
 	uint32 spellId;
