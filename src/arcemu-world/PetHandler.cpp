@@ -384,10 +384,6 @@ void WorldSession::HandleBuyStableSlot(WorldPacket & recv_data)
 	SendPacket(&data);
 
 	_player->m_StableSlotCount++;
-
-#ifdef OPTIMIZED_PLAYER_SAVING
-	_player->save_Misc();
-#endif
 }
 
 

@@ -1066,20 +1066,6 @@ void Object::SetUInt32Value(const uint32 index, const uint32 value)
 				pGroup->HandleUpdateFieldChange(index, TO< Player* >(this));
 		}
 
-#ifdef OPTIMIZED_PLAYER_SAVING
-		switch(index)
-		{
-			case UNIT_FIELD_LEVEL:
-			case PLAYER_XP:
-				TO< Player* >(this)->save_LevelXP();
-				break;
-
-			case PLAYER_FIELD_COINAGE:
-				TO< Player* >(this)->save_Gold();
-				break;
-		}
-#endif
-
 		switch(index)
 		{
 			case UNIT_FIELD_POWER1:
@@ -1139,20 +1125,6 @@ void Object::ModUnsigned32Value(uint32 index, int32 mod)
 
 	if(IsPlayer())
 	{
-#ifdef OPTIMIZED_PLAYER_SAVING
-		switch(index)
-		{
-			case UNIT_FIELD_LEVEL:
-			case PLAYER_XP:
-				TO< Player* >(this)->save_LevelXP();
-				break;
-
-			case PLAYER_FIELD_COINAGE:
-				TO< Player* >(this)->save_Gold();
-				break;
-		}
-#endif
-
 		switch(index)
 		{
 			case UNIT_FIELD_POWER1:
@@ -1198,23 +1170,6 @@ void Object::ModSignedInt32Value(uint32 index, int32 value)
 			m_mapMgr->ObjectUpdated(this);
 			m_objectUpdated = true;
 		}
-	}
-
-	if(IsPlayer())
-	{
-#ifdef OPTIMIZED_PLAYER_SAVING
-		switch(index)
-		{
-			case UNIT_FIELD_LEVEL:
-			case PLAYER_XP:
-				TO< Player* >(this)->save_LevelXP();
-				break;
-
-			case PLAYER_FIELD_COINAGE:
-				TO< Player* >(this)->save_Gold();
-				break;
-		}
-#endif
 	}
 }
 

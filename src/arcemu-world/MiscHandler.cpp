@@ -1229,9 +1229,6 @@ void WorldSession::HandleSetActionButtonOpcode(WorldPacket & recv_data)
 		}
 	}
 
-#ifdef OPTIMIZED_PLAYER_SAVING
-	_player->save_Actions();
-#endif
 }
 
 void WorldSession::HandleSetWatchedFactionIndexOpcode(WorldPacket & recvPacket)
@@ -1241,10 +1238,6 @@ void WorldSession::HandleSetWatchedFactionIndexOpcode(WorldPacket & recvPacket)
 	uint32 factionid;
 	recvPacket >> factionid;
 	GetPlayer()->SetUInt32Value(PLAYER_FIELD_WATCHED_FACTION_INDEX, factionid);
-
-#ifdef OPTIMIZED_PLAYER_SAVING
-	_player->save_Misc();
-#endif
 }
 
 void WorldSession::HandleTogglePVPOpcode(WorldPacket & recv_data)
@@ -1322,9 +1315,6 @@ void WorldSession::HandleAmmoSetOpcode(WorldPacket & recv_data)
 		default:
 			_player->SetAmmoId(ammoId);
 			_player->CalcDamage();
-#ifdef OPTIMIZED_PLAYER_SAVING
-			_player->save_Misc();
-#endif
 			break;
 	}
 }
@@ -2402,10 +2392,6 @@ void WorldSession::HandleDungeonDifficultyOpcode(WorldPacket & recv_data)
 	// If we have a group and we are the leader then set it for the entire group as well
 	if(m_Group && _player->IsGroupLeader())
 		m_Group->SetDungeonDifficulty(data);
-
-#ifdef OPTIMIZED_PLAYER_SAVING
-	_player->save_InstanceType();
-#endif
 }
 
 void WorldSession::HandleRaidDifficultyOpcode(WorldPacket & recv_data)
@@ -2424,10 +2410,6 @@ void WorldSession::HandleRaidDifficultyOpcode(WorldPacket & recv_data)
 	// if we have a group and we are the leader then set it for the entire group as well
 	if(m_Group && _player->IsGroupLeader())
 		m_Group->SetRaidDifficulty(data);
-
-#ifdef OPTIMIZED_PLAYER_SAVING
-	_player->save_InstanceType();
-#endif
 }
 
 void WorldSession::HandleSummonResponseOpcode(WorldPacket & recv_data)

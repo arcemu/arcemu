@@ -200,10 +200,6 @@ void Player::SetStanding(uint32 Faction, int32 Value)
 
 		OnModStanding(f, itr->second);
 	}
-
-#ifdef OPTIMIZED_PLAYER_SAVING
-	save_Reputation();
-#endif
 }
 
 Standing Player::GetStandingRank(uint32 Faction)
@@ -298,10 +294,6 @@ void Player::ModStanding(uint32 Faction, int32 Value)
 			itr->second->standing = maxReputation;
 		OnModStanding(f, itr->second);
 	}
-
-#ifdef OPTIMIZED_PLAYER_SAVING
-	save_Reputation();
-#endif
 }
 
 void Player::SetAtWar(uint32 Faction, bool Set)
@@ -322,9 +314,6 @@ void Player::SetAtWar(uint32 Faction, bool Set)
 	if(SetFlagAtWar(rep->flag, Set))
 	{
 		UpdateInrangeSetsBasedOnReputation();
-#ifdef OPTIMIZED_PLAYER_SAVING
-		save_Reputation();
-#endif
 	}
 }
 
@@ -438,10 +427,6 @@ void Player::Reputation_OnTalk(FactionDBC* dbc)
 	if(SetFlagVisible(rep->flag, true) && IsInWorld())
 	{
 		m_session->OutPacket(SMSG_SET_FACTION_VISIBLE, 4, &dbc->RepListId);
-
-#ifdef OPTIMIZED_PLAYER_SAVING
-		save_Reputation();
-#endif
 	}
 }
 
@@ -450,13 +435,6 @@ void Player::SetFactionInactive(uint32 faction, bool set)
 	FactionReputation* rep = reputationByListId[faction];
 	if(rep == NULL)
 		return;
-
-	if(SetFlagInactive(rep->flag, set))
-	{
-#ifdef OPTIMIZED_PLAYER_SAVING
-		save_Reputation();
-#endif
-	}
 }
 
 void WorldSession::HandleSetFactionInactiveOpcode(WorldPacket & recv_data)
