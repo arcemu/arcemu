@@ -558,6 +558,7 @@ uint8 WorldSession::DeleteCharacter(uint32 guid)
 		CharacterDatabase.Execute("DELETE FROM character_achievement_progress WHERE guid = '%u'", (uint32)guid);
 		CharacterDatabase.Execute("DELETE FROM playerspells WHERE GUID = '%u'", guid);
 		CharacterDatabase.Execute("DELETE FROM playerdeletedspells WHERE GUID = '%u'", guid);
+		CharacterDatabase.Execute("DELETE FROM playerreputations WHERE guid = '%u'", guid);
 		CharacterDatabase.Execute("DELETE FROM playerskills WHERE GUID = '%u'", guid);
 
 		/* remove player info */

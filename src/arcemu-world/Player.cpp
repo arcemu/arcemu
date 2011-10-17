@@ -2447,13 +2447,7 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 
 	SaveDeletedSpells(bNewCharacter, buf);
 
-	// Dump reputation data
-	ReputationMap::iterator iter = m_reputation.begin();
-	for(; iter != m_reputation.end(); ++iter)
-	{
-		ss << int32(iter->first) << "," << int32(iter->second->flag) << "," << int32(iter->second->baseStanding) << "," << int32(iter->second->standing) << ",";
-	}
-	ss << "','";
+	SaveReputations( bNewCharacter, buf );
 
 	// Add player action bars
 	for(uint8 s = 0; s < MAX_SPEC_COUNT; ++s)
@@ -2672,13 +2666,14 @@ bool Player::LoadFromDB(uint32 guid)
 
 
 	q->AddQuery("SELECT * FROM equipmentsets WHERE ownerguid = %u", guid);  // 11
-	q->AddQuery("SELECT SpellID FROM playerspells WHERE GUID = %u", guid);  // 12
-	q->AddQuery("SELECT SpellID FROM playerdeletedspells WHERE GUID = %u", guid);  // 13
-	q->AddQuery("SELECT SkillID, CurrentValue, MaximumValue FROM playerskills WHERE GUID = %u", guid);  // 14
+	q->AddQuery("SELECT faction, flag, basestanding, standing FROM playerreputations WHERE guid = %u", guid ); //12
+	q->AddQuery("SELECT SpellID FROM playerspells WHERE GUID = %u", guid);  // 13
+	q->AddQuery("SELECT SpellID FROM playerdeletedspells WHERE GUID = %u", guid);  // 14
+	q->AddQuery("SELECT SkillID, CurrentValue, MaximumValue FROM playerskills WHERE GUID = %u", guid);  // 15
 
 	//Achievements
-	q->AddQuery("SELECT achievement, date FROM character_achievement WHERE guid = '%u'", guid); // 15
-	q->AddQuery("SELECT criteria, counter, date FROM character_achievement_progress WHERE guid = '%u'", guid); // 16
+	q->AddQuery("SELECT achievement, date FROM character_achievement WHERE guid = '%u'", guid); // 16
+	q->AddQuery("SELECT criteria, counter, date FROM character_achievement_progress WHERE guid = '%u'", guid); // 17
 
 	// queue it!
 	SetLowGUID(guid);
@@ -2708,7 +2703,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		return;
 	}
 
-	const uint32 fieldcount = 92;
+	const uint32 fieldcount = 91;
 
 	if(result->GetFieldCount() != fieldcount)
 	{
@@ -2797,7 +2792,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 
 	// load achievements before anything else otherwise skills would complete achievements already in the DB, leading to duplicate achievements and criterias(like achievement=126).
 #ifdef ENABLE_ACHIEVEMENTS
-	m_achievementMgr.LoadFromDB(results[15].result, results[16].result);
+	m_achievementMgr.LoadFromDB(results[16].result, results[17].result);
 #endif
 
 	CalculateBaseStats();
@@ -2835,7 +2830,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	// new format
 	const ItemProf* prof;
 
-	LoadSkills(results[ 14 ].result);
+	LoadSkills(results[ 15 ].result);
 
 	if(m_skills.empty())
 	{
@@ -3048,61 +3043,11 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	transporter_info.y = get_next_field.GetFloat();
 	transporter_info.z = get_next_field.GetFloat();
 
-	LoadSpells(results[ 12 ].result);
+	LoadSpells(results[ 13 ].result);
 
-	LoadDeletedSpells(results[ 13 ].result);
+	LoadDeletedSpells(results[ 14 ].result);
 
-	// Load Reputatation CSV Data
-	start = (char*) get_next_field.GetString();
-	FactionDBC* factdbc ;
-	FactionReputation* rep;
-	uint32 id;
-	int32 basestanding;
-	int32 standing;
-	uint32 fflag;
-	while(true)
-	{
-		end = strchr(start, ',');
-		if(!end)break;
-		*end = 0;
-		id = atol(start);
-		start = end + 1;
-
-		end = strchr(start, ',');
-		if(!end)break;
-		*end = 0;
-		fflag = atol(start);
-		start = end + 1;
-
-		end = strchr(start, ',');
-		if(!end)break;
-		*end = 0;
-		basestanding = atoi(start);//atol(start);
-		start = end + 1;
-
-		end = strchr(start, ',');
-		if(!end)break;
-		*end = 0;
-		standing  = atoi(start);// atol(start);
-		start = end + 1;
-
-		// listid stuff
-		factdbc = dbcFaction.LookupEntryForced(id);
-		if(factdbc == NULL || factdbc->RepListId < 0) continue;
-		ReputationMap::iterator rtr = m_reputation.find(id);
-		if(rtr != m_reputation.end())
-			delete rtr->second;
-
-		rep = new FactionReputation;
-		rep->baseStanding = basestanding;
-		rep->standing = standing;
-		rep->flag = static_cast<uint8>(fflag);
-		m_reputation[id] = rep;
-		reputationByListId[factdbc->RepListId] = rep;
-	}
-
-	if(!m_reputation.size())
-		_InitialReputation();
+	LoadReputations( results[ 12 ].result );
 
 	// Load saved actionbars
 	for(uint8 s = 0; s < MAX_SPEC_COUNT; ++s)
@@ -8261,10 +8206,7 @@ void Player::ApplyLevelInfo(LevelInfo* Info, uint32 Level)
 	UpdateGlyphs();
 	m_playerInfo->lastLevel = Level;
 #ifdef ENABLE_ACHIEVEMENTS
-	
-	if( Level > PreviousLevel )
-		GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_REACH_LEVEL);
-
+	GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_REACH_LEVEL);
 #endif
 	//VLack: 3.1.3, as a final step, send the player's talents, this will set the talent points right too...
 	smsg_TalentsInfo(false);
@@ -13528,6 +13470,87 @@ void Player::AcceptQuest(uint64 guid, uint32 quest_id)
 
 	LOG_DEBUG("WORLD: Added new QLE.");
 	sHookInterface.OnQuestAccept(this, qst, qst_giver);
+}
+
+bool Player::LoadReputations( QueryResult *result ){
+	if( result == NULL )
+		return false;
+
+	FactionDBC *faction = NULL;
+	FactionReputation *reputation = NULL;
+
+	uint32 id = 0;
+	uint32 flag = 0;
+	int32 basestanding = 0;
+	int32 standing = 0;
+
+	Field *field = NULL;
+
+	do{
+		Field *field = result->Fetch();
+
+		id = field[ 0 ].GetUInt32();
+		flag = field[ 1 ].GetUInt32();
+		basestanding = field[ 2 ].GetInt32();
+		standing = field[ 3 ].GetInt32();
+		
+		faction = dbcFaction.LookupEntryForced( id );
+		if( ( faction == NULL ) || ( faction->RepListId < 0 ) )
+			continue;
+
+		ReputationMap::iterator itr = m_reputation.find( id );
+		if( itr != m_reputation.end() )
+			delete itr->second;
+
+		reputation = new FactionReputation;
+		reputation->baseStanding = basestanding;
+		reputation->standing = standing;
+		reputation->flag = static_cast< uint8 >( flag );
+		m_reputation[ id ] = reputation;
+		reputationByListId[ faction->RepListId ] = reputation;
+
+	}while( result->NextRow() );
+	
+	if( m_reputation.size() == 0 )
+		_InitialReputation();
+
+	return true;
+}
+
+bool Player::SaveReputations( bool NewCharacter, QueryBuffer *buf ){
+	if( !NewCharacter && ( buf == NULL ) )
+		return false;
+
+	std::stringstream ds;
+	uint32 guid = GetLowGUID();
+
+	ds << "DELETE FROM playerreputations WHERE guid = '";
+	ds << guid;
+	ds << "';";
+
+	if( !NewCharacter )
+		buf->AddQueryStr( ds.str() );
+	else
+		CharacterDatabase.ExecuteNA( ds.str().c_str() );
+
+
+	for( ReputationMap::iterator itr = m_reputation.begin(); itr != m_reputation.end(); ++itr ){
+		std::stringstream ss;
+
+		ss << "INSERT INTO playerreputations VALUES('";
+		ss << GetLowGUID() << "','";
+		ss << itr->first << "','";
+		ss << uint32( itr->second->flag ) << "','";
+		ss << itr->second->baseStanding << "','";
+		ss << itr->second->standing << "');";
+		
+		if( !NewCharacter )
+			buf->AddQueryStr( ss.str() );
+		else
+			CharacterDatabase.ExecuteNA( ss.str().c_str() );
+	}
+
+	return true;
 }
 
 bool Player::LoadSpells(QueryResult* result)

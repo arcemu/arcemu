@@ -876,6 +876,7 @@ typedef std::set<Player**>							ReferenceSet;
 typedef std::map<uint32, PlayerCooldown>			PlayerCooldownMap;
 
 //#define OPTIMIZED_PLAYER_SAVING
+#undef OPTIMIZED_PLAYER_SAVING
 
 class SERVER_DECL Player : public Unit
 {
@@ -1521,6 +1522,9 @@ class SERVER_DECL Player : public Unit
 
 		bool LoadDeletedSpells(QueryResult* result);
 		bool SaveDeletedSpells(bool NewCharacter, QueryBuffer* buf);
+
+		bool LoadReputations( QueryResult *result );
+		bool SaveReputations( bool NewCharacter, QueryBuffer *buf );
 
 		bool LoadSkills(QueryResult* result);
 		bool SaveSkills(bool NewCharacter, QueryBuffer* buf);

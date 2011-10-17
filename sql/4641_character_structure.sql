@@ -201,7 +201,6 @@ CREATE TABLE `characters` (
   `transporter_xdiff` float NOT NULL,
   `transporter_ydiff` float NOT NULL,
   `transporter_zdiff` float NOT NULL,
-  `reputation` longtext NOT NULL,
   `actions1` longtext NOT NULL,
   `actions2` longtext NOT NULL,
   `auras` longtext NOT NULL,
@@ -873,6 +872,21 @@ CREATE TABLE `pet_talents`
 	`pet_family` TINYINT(3) NOT NULL,
 	`talent_array` VARCHAR(255)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1; */
+
+/* Table structure for table `playerreputations` */
+
+DROP TABLE IF EXISTS `playerreputations`;
+
+CREATE TABLE `playerreputations` (
+  `guid` INT UNSIGNED NOT NULL,
+  `faction` INT UNSIGNED NOT NULL,
+  `flag` INT UNSIGNED NOT NULL DEFAULT '0',
+  `basestanding` INT NOT NULL DEFAULT '0',
+  `standing` INT NOT NULL DEFAULT '0',
+  PRIMARY KEY (`guid`,`faction`)
+) ENGINE=MYISAM;
+
+
 /*Table structure for table `playerskills` */
 
 DROP TABLE IF EXISTS `playerskills`;
