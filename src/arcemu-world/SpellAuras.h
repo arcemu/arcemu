@@ -441,6 +441,20 @@ class SERVER_DECL Aura : public EventableObject
 
 		void ResetDuration();
 
+		//////////////////////////////////////////////////////////////
+		//void Refresh()
+		//  Refreshes the aura, resets the duration
+		//
+		//Parameter(s)
+		//  None
+		//
+		//Return Value
+		//  None
+		//
+		// 
+		//////////////////////////////////////////////////////////////
+		void Refresh();
+
 		ARCEMU_INLINE int32 GetDuration() const { return m_duration; }
 		void SetDuration(int32 duration)
 		{

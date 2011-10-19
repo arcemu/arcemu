@@ -8715,6 +8715,10 @@ void Aura::ResetDuration()
 {
 	expirytime = static_cast< uint32 >( UNIXTIME );
 	sEventMgr.ModifyEventTimeLeft(this, EVENT_AURA_REMOVE, GetDuration());
+}
+
+void Aura::Refresh(){
+	ResetDuration();
 	m_target->SendAuraUpdate( m_auraSlot, false );
 }
 

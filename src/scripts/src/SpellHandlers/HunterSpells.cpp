@@ -172,25 +172,51 @@ private:
 	std::vector< uint32 > hashes;
 };
 
-class RefreshAura : public AuraAction{
+class ChimeraShotAction : public AuraAction{
 public:
 	void operator()( Aura *a ){
-		a->ResetDuration();
+		uint32 namehash = a->GetSpellProto()->NameHash;
+
+		Unit *caster = a->GetUnitCaster();
+		Unit *target = a->GetTarget();
+
+		if( caster == NULL )
+			return;
+
+		a->Refresh();
+
+		switch( namehash ){
+			case SPELL_HASH_SCORPID_STING:
+				caster->CastSpell( target, 53359, true );
+				break;
+
+			case SPELL_HASH_WYVERN_STING:
+				caster->CastSpell( target, 53366, true );
+				break;
+
+			case SPELL_HASH_SERPENT_STING:
+				caster->CastSpell( target, 53353, true );
+				break;
+
+			case SPELL_HASH_VIPER_STING:
+				caster->CastSpell( target, 53358, true );
+				break;
+		}
 	}
 };
 
 bool ChimeraShot( uint32 i, Spell *spell ){
 	Unit *target = spell->GetUnitTarget();
 
-	HasNameHash hasnamehash;
-	RefreshAura refresh;
+	HasNameHash condition;
+	ChimeraShotAction action;
 
-	hasnamehash.AddHashToCheck( SPELL_HASH_SCORPID_STING );
-	hasnamehash.AddHashToCheck( SPELL_HASH_WYVERN_STING );
-	hasnamehash.AddHashToCheck( SPELL_HASH_SERPENT_STING );
-	hasnamehash.AddHashToCheck( SPELL_HASH_VIPER_STING );
+	condition.AddHashToCheck( SPELL_HASH_SCORPID_STING );
+	condition.AddHashToCheck( SPELL_HASH_WYVERN_STING );
+	condition.AddHashToCheck( SPELL_HASH_SERPENT_STING );
+	condition.AddHashToCheck( SPELL_HASH_VIPER_STING );
 
-	target->AuraActionIf( &refresh, &hasnamehash );
+	target->AuraActionIf( &action, &condition );
 
 	return true;
 }
