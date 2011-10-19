@@ -21,7 +21,7 @@ CREATE TABLE `arcemu_db_version` (
   PRIMARY KEY (`LastUpdate`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-insert  into `arcemu_db_version`(`LastUpdate`) values (4637);
+insert  into `arcemu_db_version`(`LastUpdate`) values (4641);
 
 
 DROP TABLE IF EXISTS `account_data`;
