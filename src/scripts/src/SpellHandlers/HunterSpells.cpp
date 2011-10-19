@@ -153,8 +153,51 @@ bool ExplosiveShot(uint32 i, Aura* a, bool apply)
 	return true;
 }
 
+class HasNameHash : public AuraCondition{
+public:
+	bool operator()( Aura *aura ){
+		uint32 namehash = aura->GetSpellProto()->NameHash;
+		
+		if( std::find( hashes.begin(), hashes.end(), namehash ) != hashes.end() )
+			return true;
+		else
+			return false;
+	}
+
+	void AddHashToCheck( uint32 hash ){
+		hashes.push_back( hash );
+	}
+
+private:
+	std::vector< uint32 > hashes;
+};
+
+class RefreshAura : public AuraAction{
+public:
+	void operator()( Aura *a ){
+		a->ResetDuration();
+	}
+};
+
+bool ChimeraShot( uint32 i, Spell *spell ){
+	Unit *target = spell->GetUnitTarget();
+
+	HasNameHash hasnamehash;
+	RefreshAura refresh;
+
+	hasnamehash.AddHashToCheck( SPELL_HASH_SCORPID_STING );
+	hasnamehash.AddHashToCheck( SPELL_HASH_WYVERN_STING );
+	hasnamehash.AddHashToCheck( SPELL_HASH_SERPENT_STING );
+	hasnamehash.AddHashToCheck( SPELL_HASH_VIPER_STING );
+
+	target->AuraActionIf( &refresh, &hasnamehash );
+
+	return true;
+}
+
 void SetupHunterSpells(ScriptMgr* mgr)
 {
+	mgr->register_dummy_spell( 53209, &ChimeraShot );
 	mgr->register_dummy_spell(24531, &Refocus);
 	mgr->register_dummy_spell(23989, &Readiness);
 	mgr->register_dummy_spell(53271, &MastersCall);

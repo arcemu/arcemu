@@ -4808,6 +4808,24 @@ bool Unit::RemoveAurasByHeal()
 	return res;
 }
 
+bool Unit::AuraActionIf( AuraAction *action, AuraCondition *condition ){
+	bool done = false;
+
+	for( uint32 i = MAX_TOTAL_AURAS_START; i < MAX_TOTAL_AURAS_END; i++ ){
+		Aura *aura = m_auras[ i ];
+
+		if( aura == NULL )
+			continue;
+
+		if( (*condition)( aura ) ){
+			(*action)( aura );
+			done = true;
+		}
+	}
+
+	return done;
+}
+
 void Unit::ClearAllAreaAuraTargets()
 {
 	for(uint32 x = MAX_TOTAL_AURAS_START; x < MAX_TOTAL_AURAS_END; x++)
