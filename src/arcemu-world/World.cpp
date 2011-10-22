@@ -1228,13 +1228,8 @@ void World::Rehash(bool load)
 {
 	if(load)
 	{
-#ifdef WIN32
-		Config.MainConfig.SetSource("configs/world.conf", true);
-		Config.OptionalConfig.SetSource("configs/optional.conf", true);
-#else
-		Config.MainConfig.SetSource((char*)CONFDIR "/world.conf", true);
-		Config.OptionalConfig.SetSource((char*)CONFDIR "/optional.conf", true);
-#endif
+		Config.MainConfig.SetSource(CONFDIR "/world.conf", true);
+		Config.OptionalConfig.SetSource(CONFDIR "/optional.conf", true);
 	}
 	if(!ChannelMgr::getSingletonPtr())
 		new ChannelMgr;

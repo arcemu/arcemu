@@ -94,15 +94,9 @@ struct Addr
 
 #define DEF_VALUE_NOT_SET 0xDEADBEEF
 
-#ifdef WIN32
-static const char* default_config_file = "configs/world.conf";
-static const char* default_optional_config_file = "configs/optional.conf";
-static const char* default_realm_config_file = "configs/realms.conf";
-#else
 static const char* default_config_file = CONFDIR "/world.conf";
 static const char* default_optional_config_file = CONFDIR "/optional.conf";
 static const char* default_realm_config_file = CONFDIR "/realms.conf";
-#endif
 
 bool bServerShutdown = false;
 bool StartConsoleListener();
