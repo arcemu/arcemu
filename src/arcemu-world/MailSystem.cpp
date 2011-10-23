@@ -438,7 +438,7 @@ void WorldSession::HandleMarkAsRead(WorldPacket & recv_data)
 		message->expire_time = (uint32)UNIXTIME + (TIME_DAY * 30);
 
 	// update it in sql
-	CharacterDatabase.WaitExecute("UPDATE mailbox SET read_flag = 1, expiry_time = %u WHERE message_id = %u", message->message_id, message->expire_time);
+	CharacterDatabase.WaitExecute("UPDATE mailbox SET read_flag = 1, expiry_time = %u WHERE message_id = %u", message->expire_time, message->message_id);
 }
 
 void WorldSession::HandleMailDelete(WorldPacket & recv_data)
