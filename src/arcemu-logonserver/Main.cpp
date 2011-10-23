@@ -126,7 +126,7 @@ bool startdb()
 		//  resulting in unreadable error messages.
 		//If the <LogonDatabase> tag is malformed, all parameters will fail, and a different error message is given
 
-		string errorMessage = "sql: Certain <LogonDatabase> parameters not found in configs\\logon.conf \r\n";
+		string errorMessage = "sql: Certain <LogonDatabase> parameters not found in " CONFDIR "\\logon.conf \r\n";
 		if(!(existsHostname || existsUsername || existsPassword  ||
 		        existsName     || existsPort))
 		{

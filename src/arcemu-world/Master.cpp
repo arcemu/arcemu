@@ -210,28 +210,28 @@ bool Master::Run(int argc, char** argv)
 
 	Log.Success("Config", "Loading Config Files...");
 	if(Config.MainConfig.SetSource(config_file))
-		Log.Notice("Config", ">> configs/world.conf loaded");
+		Log.Notice("Config", ">> " CONFDIR "/world.conf loaded");
 	else
 	{
-		sLog.Error("Config", ">> error occurred loading configs/world.conf");
+		sLog.Error("Config", ">> error occurred loading " CONFDIR "/world.conf");
 		sLog.Close();
 		return false;
 	}
 
 	if(Config.OptionalConfig.SetSource(optional_config_file))
-		Log.Notice("Config", ">> configs/optional.conf loaded");
+		Log.Notice("Config", ">> " CONFDIR "/optional.conf loaded");
 	else
 	{
-		sLog.Error("Config", ">> error occurred loading configs/optional.conf");
+		sLog.Error("Config", ">> error occurred loading " CONFDIR "/optional.conf");
 		sLog.Close();
 		return false;
 	}
 
 	if(Config.RealmConfig.SetSource(realm_config_file))
-		Log.Notice("Config", ">> configs/realms.conf loaded");
+		Log.Notice("Config", ">> " CONFDIR "/realms.conf loaded");
 	else
 	{
-		sLog.Error("Config", ">> error occurred loading configs/realms.conf");
+		sLog.Error("Config", ">> error occurred loading " CONFDIR "/realms.conf");
 		sLog.Close();
 		return false;
 	}
