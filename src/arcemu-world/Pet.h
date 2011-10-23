@@ -142,7 +142,7 @@ class SERVER_DECL Pet : public Creature
 		virtual void Update(uint32 time);
 		void OnPushToWorld();
 
-		ARCEMU_INLINE uint32 GetXP(void) { return m_PetXP; }
+		ARCEMU_INLINE uint32 GetXP(void) { return GetUInt32Value(UNIT_FIELD_PETEXPERIENCE); }
 
 		void InitializeSpells();
 		void InitializeMe(bool first);
@@ -262,7 +262,6 @@ class SERVER_DECL Pet : public Creature
 
 	protected:
 		Player* m_Owner;
-		uint32 m_PetXP;
 		PetSpellMap mSpells;
 		PlayerPet* mPi;
 		uint32 ActionBar[10];   // 10 slots

@@ -282,7 +282,6 @@ bool Pet::CreateAsSummon(uint32 entry, CreatureInfo* ci, Creature* created_from_
 
 Pet::Pet(uint64 guid) : Creature(guid)
 {
-	m_PetXP = 0;
 	Summon = false;
 	memset(ActionBar, 0, sizeof(uint32) * 10);
 	ScheduledForDeletion = false;
@@ -595,7 +594,6 @@ void Pet::LoadFromDB(Player* owner, PlayerPet* pi)
 	Create(pi->name.c_str(), owner->GetMapId(), owner->GetPositionX() + 2 , owner->GetPositionY() + 2, owner->GetPositionZ(), owner->GetOrientation());
 
 	m_PetNumber = mPi->number;
-	m_PetXP = mPi->xp;
 	m_name = mPi->name;
 	Summon = false;
 	SetEntry(mPi->entry);
@@ -668,7 +666,7 @@ void Pet::LoadFromDB(Player* owner, PlayerPet* pi)
 		SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_PVP_ATTACKABLE  | UNIT_FLAG_COMBAT);   // why combat ??
 		SetPower(POWER_TYPE_HAPPINESS, PET_HAPPINESS_UPDATE_VALUE >> 1);        //happiness
 		SetMaxPower(POWER_TYPE_HAPPINESS, 1000000);
-		SetUInt32Value(UNIT_FIELD_PETEXPERIENCE, 0);
+		SetUInt32Value(UNIT_FIELD_PETEXPERIENCE, mPi->xp);
 		SetUInt32Value(UNIT_FIELD_PETNEXTLEVELEXP, GetNextLevelXP(mPi->level));
 		SetUInt32Value(UNIT_FIELD_BYTES_2, 1);
 		SetPower(POWER_TYPE_FOCUS, 100); // Focus
@@ -832,7 +830,7 @@ void Pet::UpdatePetInfo(bool bSetToOffline)
 
 	pi->name = GetName();
 	pi->number = m_PetNumber;
-	pi->xp = m_PetXP;
+	pi->xp = GetXP();
 	pi->level = getLevel();
 	pi->happinessupdate = m_HappinessTimer;
 
@@ -993,7 +991,7 @@ bool Pet::CanGainXP()
 
 void Pet::GiveXP(uint32 xp)
 {
-	xp += m_uint32Values[ UNIT_FIELD_PETEXPERIENCE ];
+	xp += GetXP();
 	uint32 nxp = m_uint32Values[ UNIT_FIELD_PETNEXTLEVELEXP ];
 
 	if(xp >= nxp)
