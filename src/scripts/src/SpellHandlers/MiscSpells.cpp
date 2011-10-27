@@ -505,8 +505,89 @@ bool TeleportToCoordinates(uint32 i, Spell* s)
 	return true;
 }
 
+
+static float IOCTeleportInLocations[ 6 ][ 4 ] = {
+	{399.66f, -798.63f, 49.06f, 4.01f},     // Alliance front gate in
+	{313.64f, -775.43f, 49.04f, 4.93f},     // Alliance west gate in
+	{323.01f, -888.61f, 48.91f, 4.66f},     // Alliance east gate in
+	{1234.51f, -684.55f, 49.32f, 5.01f},    // Horde west gate in
+	{1161.82f, -748.87f, 48.62f, 0.34f},    // Horde front gate in
+	{1196.06f, -842.70f, 49.13f, 0.30f},    // Horde east gate in
+};
+
+static float IOCTeleportOutLocations[ 6 ][ 4 ] = {
+	{429.79f, -800.825f, 49.03f, 3.23f},    // Alliance front gate out
+	{324.68f, -748.73f, 49.38f, 1.76f},     // Alliance west gate out
+	{316.22f, -914.65f, 48.87f, 1.69f},     // Alliance east gate out
+	{1196.72f, -664.84f, 48.57f, 1.71f},    // Horde west gate out
+	{1140.19f, -780.74f, 48.69f, 2.93f},    // Horde front gate out
+	{1196.47f, -861.29f, 49.17f, 4.04f},    // Horde east gate out
+};
+
+
+bool IOCTeleporterIn( uint32 i, Spell *s ){
+	Player *p = s->GetPlayerTarget();
+	if( p == NULL )
+		return true;
+
+	// recently used the teleporter
+	if( p->HasAura( 66550 ) || p->HasAura( 66551 ) )
+		return true;
+
+	// Let's not teleport in/out before the battle starts
+	if( ( p->m_bg != NULL ) && !p->m_bg->HasStarted() )
+		return true;
+
+	uint32 j;
+	for( j = 0; j < 6; j++ ){
+		if( p->GetDistanceSq( IOCTeleportOutLocations[ j ][ 0 ], IOCTeleportOutLocations[ j ][ 1 ], IOCTeleportOutLocations[ j ][ 2 ] ) <= 20.0f )
+			break;
+	}
+
+	// We are not in range of any portal coords
+	if( j == 6 )
+		return true;
+
+	LocationVector v( IOCTeleportInLocations[ j ][ 0 ], IOCTeleportInLocations[ j ][ 1 ], IOCTeleportInLocations[ j ][ 2 ] );
+	p->SafeTeleport( p->GetMapId(), p->GetInstanceID(), v );
+
+	return true;
+}
+
+bool IOCTeleporterOut( uint32 i, Spell *s ){
+	Player *p = s->GetPlayerTarget();
+	if( p == NULL )
+		return true;
+
+	// recently used the teleporter
+	if( p->HasAura( 66550 ) || p->HasAura( 66551 ) )
+		return true;
+
+	// Let's not teleport in/out before the battle starts
+	if( ( p->m_bg != NULL ) && !p->m_bg->HasStarted() )
+		return true;
+
+	uint32 j;
+	for( j = 0; j < 6; j++ ){
+		if( p->GetDistanceSq( IOCTeleportInLocations[ j ][ 0 ], IOCTeleportInLocations[ j ][ 1 ], IOCTeleportInLocations[ j ][ 2 ] ) <= 20.0f )
+			break;
+	}
+
+	// We are not in range of any portal coords
+	if( j == 6 )
+		return true;
+
+	LocationVector v( IOCTeleportOutLocations[ j ][ 0 ], IOCTeleportOutLocations[ j ][ 1 ], IOCTeleportOutLocations[ j ][ 2 ] );
+	p->SafeTeleport( p->GetMapId(), p->GetInstanceID(), v );
+
+	return true;
+}
+
 void SetupMiscSpellhandlers(ScriptMgr* mgr)
 {
+	mgr->register_dummy_spell( 66550, &IOCTeleporterOut );
+	mgr->register_dummy_spell( 66551, &IOCTeleporterIn );
+
 	mgr->register_dummy_spell(11189, &FrostWarding);
 	mgr->register_dummy_spell(28332, &FrostWarding);
 

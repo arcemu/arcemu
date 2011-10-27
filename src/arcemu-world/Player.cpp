@@ -4541,6 +4541,9 @@ void Player::ResurrectPlayer()
 		SchoolImmunityList[i] = 0;
 
 	SpawnActivePet();
+
+	if( m_bg != NULL )
+		m_bg->HookOnPlayerResurrect( this );
 }
 
 void Player::KillPlayer()

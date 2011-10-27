@@ -74,3 +74,7 @@ uint32 Arcemu::Util::GET_CREATURE_ENTRY_FROM_GUID(uint64 guid)
 {
 	return ( guid >> 24) & 0x0FFFFFFF;
 }
+
+uint32 Arcemu::Util::MAKE_UNIT_ACTION_BUTTON( uint32 spell, uint32 unk ){
+	return ( uint32( spell ) | ( uint32( unk ) << 24 ) );
+}

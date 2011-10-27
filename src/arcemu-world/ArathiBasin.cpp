@@ -519,36 +519,21 @@ void ArathiBasin::EventUpdateResources(uint32 Team)
 		sEventMgr.RemoveEvents(this);
 		sEventMgr.AddEvent(TO< CBattleground* >(this), &CBattleground::Close, EVENT_BATTLEGROUND_CLOSE, 120000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 
-		/* add the marks of honor to all players */
-		SpellEntry* winner_spell = dbcSpell.LookupEntry(24953);
-		SpellEntry* loser_spell = dbcSpell.LookupEntry(24952);
-		uint32 lostHonorToAdd = m_honorPerKill;
-		uint32 winHonorToAdd = 2 * lostHonorToAdd;
-		m_mainLock.Acquire();
-		for(uint32 i = 0; i < 2; ++i)
-		{
-			for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
-			{
-				(*itr)->Root();
-				if(i == m_winningteam)
-				{
-					(*itr)->m_bgScore.BonusHonor += winHonorToAdd;
-					HonorHandler::AddHonorPointsToPlayer((*itr), winHonorToAdd);
-					(*itr)->CastSpell((*itr), winner_spell, true);
-					if(i && (*itr)->GetQuestLogForEntry(11339))
-						(*itr)->GetQuestLogForEntry(11339)->SendQuestComplete();
-					else if((*itr)->GetQuestLogForEntry(11335))
-						(*itr)->GetQuestLogForEntry(11335)->SendQuestComplete();
-				}
-				else
-				{
-					(*itr)->m_bgScore.BonusHonor += lostHonorToAdd;
-					HonorHandler::AddHonorPointsToPlayer((*itr), lostHonorToAdd);
-					(*itr)->CastSpell((*itr), loser_spell, true);
-				}
-			}
-		}
-		m_mainLock.Release();
+		m_winningteam = Team;		
+
+		AddHonorToTeam( m_winningteam, 3 * 185 );
+
+		// Winning spells for AB
+		CastSpellOnTeam( m_winningteam, 43484 );
+		CastSpellOnTeam( m_winningteam, 69153 );
+		CastSpellOnTeam( m_winningteam, 69499 );
+		CastSpellOnTeam( m_winningteam, 69500 );
+
+		if( m_winningteam == TEAM_ALLIANCE )
+			AddHonorToTeam( TEAM_HORDE, 1 * 185 );
+		else
+			AddHonorToTeam( TEAM_ALLIANCE, 1 * 185 );
+
 		UpdatePvPData();
 	}
 }

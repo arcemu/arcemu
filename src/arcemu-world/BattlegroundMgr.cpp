@@ -36,7 +36,28 @@ const static uint32 BGMapIds[ BATTLEGROUND_NUM_TYPES ] =
 	0,
 	607,	// SOTA
 	0,
+	0,//11
 	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	628,
+	0,
+	0
 };
 
 const static CreateBattlegroundFunc BGCFuncs[BATTLEGROUND_NUM_TYPES] =
@@ -53,6 +74,27 @@ const static CreateBattlegroundFunc BGCFuncs[BATTLEGROUND_NUM_TYPES] =
 	&StrandOfTheAncient::Create,	// SOTA
 	NULL,
 	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	&IsleOfConquest::Create, //IOC
+	NULL,
+	NULL
 };
 
 CBattlegroundManager::CBattlegroundManager()
@@ -846,13 +888,13 @@ uint32 CBattlegroundManager::GetMinimumPlayers(uint32 dbcIndex)
 	switch(dbcIndex)
 	{
 		case BATTLEGROUND_ALTERAC_VALLEY:
-			return Config.MainConfig.GetIntDefault("Battleground", "AV_MIN", 1);
+			return sWorld.bgsettings.AV_MIN;
 		case BATTLEGROUND_WARSONG_GULCH:
-			return Config.MainConfig.GetIntDefault("Battleground", "WS_MIN", 1);
+			return sWorld.bgsettings.WSG_MIN;
 		case BATTLEGROUND_ARATHI_BASIN:
-			return Config.MainConfig.GetIntDefault("Battleground", "AB_MIN", 1);
+			return sWorld.bgsettings.AB_MIN;
 		case BATTLEGROUND_EYE_OF_THE_STORM:
-			return Config.MainConfig.GetIntDefault("Battleground", "EOS_MIN", 1);
+			return sWorld.bgsettings.EOTS_MIN;
 		case BATTLEGROUND_ARENA_2V2:
 			return 2;
 		case BATTLEGROUND_ARENA_3V3:
@@ -860,7 +902,9 @@ uint32 CBattlegroundManager::GetMinimumPlayers(uint32 dbcIndex)
 		case BATTLEGROUND_ARENA_5V5:
 			return 5;
 		case BATTLEGROUND_STRAND_OF_THE_ANCIENT:
-			return Config.MainConfig.GetIntDefault("Battleground", "SOTA_MIN", 1);
+			return sWorld.bgsettings.SOTA_MIN;
+		case BATTLEGROUND_ISLE_OF_CONQUEST:
+			return sWorld.bgsettings.IOC_MIN;
 		default:
 			return 1;
 	}
@@ -872,13 +916,13 @@ uint32 CBattlegroundManager::GetMaximumPlayers(uint32 dbcIndex)
 	switch(dbcIndex)
 	{
 		case BATTLEGROUND_ALTERAC_VALLEY:
-			return Config.MainConfig.GetIntDefault("Battleground", "AV_MAX", 1);
+			return sWorld.bgsettings.AV_MAX;
 		case BATTLEGROUND_WARSONG_GULCH:
-			return Config.MainConfig.GetIntDefault("Battleground", "WS_MAX", 1);
+			return sWorld.bgsettings.WSG_MAX;
 		case BATTLEGROUND_ARATHI_BASIN:
-			return Config.MainConfig.GetIntDefault("Battleground", "AB_MAX", 1);
+			return sWorld.bgsettings.AB_MAX;
 		case BATTLEGROUND_EYE_OF_THE_STORM:
-			return Config.MainConfig.GetIntDefault("Battleground", "EOS_MAX", 1);
+			return sWorld.bgsettings.EOTS_MAX;
 		case BATTLEGROUND_ARENA_2V2:
 			return 2;
 		case BATTLEGROUND_ARENA_3V3:
@@ -886,7 +930,9 @@ uint32 CBattlegroundManager::GetMaximumPlayers(uint32 dbcIndex)
 		case BATTLEGROUND_ARENA_5V5:
 			return 5;
 		case BATTLEGROUND_STRAND_OF_THE_ANCIENT:
-			return Config.MainConfig.GetIntDefault("Battleground", "SOTA_MAX", 1);
+			return sWorld.bgsettings.SOTA_MAX;
+		case BATTLEGROUND_ISLE_OF_CONQUEST:
+			return sWorld.bgsettings.IOC_MAX;
 		default:
 			return 1;
 	}
@@ -1369,6 +1415,8 @@ GameObject* CBattleground::SpawnGameObject(uint32 entry, uint32 MapId , float x,
 {
 	GameObject* go = m_mapMgr->CreateGameObject(entry);
 
+	Arcemu::Util::ArcemuAssert( go != NULL );
+
 	go->CreateFromProto(entry, MapId, x, y, z, o);
 
 	go->SetFaction(faction);
@@ -1380,14 +1428,49 @@ GameObject* CBattleground::SpawnGameObject(uint32 entry, uint32 MapId , float x,
 	return go;
 }
 
-Creature* CBattleground::SpawnCreature(uint32 entry, float x, float y, float z, float o)
+GameObject* CBattleground::SpawnGameObject( uint32 entry, LocationVector &v, uint32 flags, uint32 faction, float scale ){
+	return SpawnGameObject( entry, m_mapMgr->GetMapId(), v.x, v.y, v.z, v.o, flags, faction, scale );
+}
+
+Creature* CBattleground::SpawnCreature(uint32 entry, float x, float y, float z, float o, uint32 faction )
 {
 	CreatureProto* cp = CreatureProtoStorage.LookupEntry(entry);
 	Creature* c = m_mapMgr->CreateCreature(entry);
 
+	Arcemu::Util::ArcemuAssert( c != NULL );
+
 	c->Load(cp, x, y, z, o);
+	
+	if( faction != 0 )
+		c->SetFaction( faction );
+
 	c->PushToWorld(m_mapMgr);
 	return c;
+}
+
+Creature* CBattleground::SpawnCreature( uint32 entry, LocationVector &v, uint32 faction ){
+	return SpawnCreature( entry, v.x, v.y, v.z, v.o, faction );
+}
+
+void CBattleground::AddHonorToTeam( uint32 team, uint32 amount ){
+	for( std::set< Player* >::iterator itr = m_players[ team ].begin(); itr != m_players[ team ].end(); ++itr ){
+		Player *p = *itr;
+		HonorHandler::AddHonorPointsToPlayer( p, amount );
+	}
+}
+
+void CBattleground::CastSpellOnTeam( uint32 team, uint32 spell ){
+	for( std::set< Player* >::iterator itr = m_players[ team ].begin(); itr != m_players[ team ].end(); ++itr ){
+		Player *p = *itr;
+		p->CastSpell( p, spell, false );
+	}
+}
+
+void CBattleground::RemoveAuraFromTeam( uint32 team, uint32 aura ){
+	for( std::set< Player* >::iterator itr = m_players[ team ].begin(); itr != m_players[ team ].end(); ++itr ){
+		Player *p = *itr;
+		p->RemoveAura( aura );
+	}
 }
 
 void CBattleground::SendChatMessage(uint32 Type, uint64 Guid, const char* Format, ...)
@@ -1794,6 +1877,10 @@ Creature* CBattleground::SpawnSpiritGuide(float x, float y, float z, float o, ui
 
 	pCreature->PushToWorld(m_mapMgr);
 	return pCreature;
+}
+
+Creature* CBattleground::SpawnSpiritGuide( LocationVector &v, uint32 faction ){
+	return SpawnSpiritGuide( v.x, v.y, v.z, v.o, faction );
 }
 
 void CBattleground::QueuePlayerForResurrect(Player* plr, Creature* spirit_healer)

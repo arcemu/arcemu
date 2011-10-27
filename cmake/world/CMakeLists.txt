@@ -23,6 +23,7 @@ SET(sources
 	BattlegroundHandler.cpp 
 	BattlegroundMgr.cpp 
 	StrandOfTheAncient.cpp 
+	IsleOfConquest.cpp
 	Channel.cpp 
 	ChannelHandler.cpp 
 	CharacterHandler.cpp 
@@ -258,6 +259,7 @@ SET( headers
 	Stats.h
 	StdAfx.h
 	StrandOfTheAncient.h
+	IsleOfConquest.h
 	Entities/Summons/Summon.h
 	SummonHandler.h
 	TaxiMgr.h

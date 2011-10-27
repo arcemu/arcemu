@@ -951,6 +951,10 @@ void Spell::SpellEffectTeleportUnits(uint32 i)    // Teleport Units
 		return;
 	}
 
+	// For those special teleport spells
+	if(sScriptMgr.CallScriptedDummySpell(m_spellInfo->Id, i, this))
+		return;
+
 	LOG_ERROR("Unhandled Teleport effect %u for Spell %u ( %s ).", i, m_spellInfo->Id, m_spellInfo->Name);
 }
 

@@ -1780,28 +1780,19 @@ void AlteracValley::Finish(uint32 losingTeam)
 	if(m_ended) return;
 
 	m_ended = true;
-	m_winningteam = (losingTeam == 0) ? 1 : 0;
 	sEventMgr.RemoveEvents(this);
 	sEventMgr.AddEvent(TO< CBattleground* >(this), &CBattleground::Close, EVENT_BATTLEGROUND_CLOSE, 120000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-
-	/* add the marks of honor to all players */
-	SpellEntry* winner_spell = dbcSpell.LookupEntry(24955);
-	SpellEntry* loser_spell = dbcSpell.LookupEntry(24954);
-	for(uint32 i = 0; i < 2; ++i)
-	{
-		for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
-		{
-			(*itr)->Root();
-
-			if((*itr)->HasFlag(PLAYER_FLAGS, 0x2))
-				continue;
-
-			if(i == losingTeam)
-				(*itr)->CastSpell((*itr), loser_spell, true);
-			else
-				(*itr)->CastSpell((*itr), winner_spell, true);
-		}
-	}
+	
+	if( losingTeam == TEAM_ALLIANCE )
+		m_winningteam = TEAM_HORDE;
+	else
+		m_winningteam = TEAM_ALLIANCE;
+	
+	AddHonorToTeam( m_winningteam, 3 * 185 );
+	AddHonorToTeam( losingTeam, 1 * 185 );
+	CastSpellOnTeam( m_winningteam, 43475 );
+	CastSpellOnTeam( m_winningteam, 69160 );
+	CastSpellOnTeam( m_winningteam, 69501 );
 
 	UpdatePvPData();
 }

@@ -2325,35 +2325,35 @@ void Creature::BuildPetSpellList(WorldPacket & data)
 {
 
 	data << uint64(GetGUID());
-	data << uint16(0);
+	data << uint16( creature_info->Family );
 	data << uint32(0);
+
 	if( !IsVehicle() )
 		data << uint32(0);
 	else
-		data << uint32( 0x101 );
-
-	
+		data << uint32( 0x8000101 );	
 
 	std::vector< uint32 >::iterator itr = proto->castable_spells.begin();
 
 	// Send the actionbar
-	for(uint32 i = 1; i < 10; ++i)
+	for(uint32 i = 0; i < 10; ++i)
 	{
 		if(itr != proto->castable_spells.end())
 		{
-			data << uint16(*itr);
-			data << uint16(DEFAULT_SPELL_STATE);
+			uint32 spell = *itr;
+			data << uint32( Arcemu::Util::MAKE_UNIT_ACTION_BUTTON( spell, i + 8 ) );
 			++itr;
 		}
 		else
 		{
-			data << uint16(0);
-			data << uint8(0);
-			data << uint8(i + 8);
+			data << uint16( 0 );
+			data << uint8( 0 );
+			data << uint8( i + 8 );
 		}
 	}
 
 	data << uint8(0);
+	// cooldowns
 	data << uint8(0);
 }
 

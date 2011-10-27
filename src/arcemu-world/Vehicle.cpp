@@ -167,7 +167,7 @@ void Vehicle::AddPassengerToSeat( Unit *passenger, uint32 seatid ){
 
 			passenger->SetCharmedUnitGUID( owner->GetGUID() );
 			owner->SetCharmedByGUID( passenger->GetGUID() );
-			owner->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED_CREATURE | UNIT_FLAG_PVP_ATTACKABLE );
+			owner->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED_CREATURE );
 
 			WorldPacket spells( SMSG_PET_SPELLS, 100 );
 			owner->BuildPetSpellList( spells );
@@ -436,6 +436,25 @@ void Vehicle::MovePassengers( float x, float y, float z, float o ){
 }
 
 
+uint32 Vehicle::GetPassengerCount() const{
+	uint32 count = 0;
+
+	for( uint32 i = 0; i < MAX_VEHICLE_SEATS; i++ ){
+		if( ( seats[ i ] != NULL ) && ( seats[ i ]->GetPassengerGUID() != 0 ) ){
+			Unit *passenger = owner->GetMapMgrUnit( seats[ i ]->GetPassengerGUID() );
+			if( passenger == NULL )
+				continue;
+
+			if( passenger->GetVehicleComponent() == NULL )
+				count++;
+			else
+				count += passenger->GetVehicleComponent()->GetPassengerCount();
+		}
+	}
+
+	return count;
+}
+
 uint16 Vehicle::GetMoveFlags2() const{
 	uint16 flags2 = 0;
 
@@ -485,6 +504,7 @@ void Vehicle::InstallAccessories(){
 		c->transporter_info.guid = owner->GetGUID();
 		c->transporter_info.seat = accessory->seat;
 		c->Phase( PHASE_SET, owner->GetPhase() );
+		c->SetFaction( owner->GetFaction() );
 		c->PushToWorld( owner->GetMapMgr() );
 		
 		AddPassengerToSeat( c, accessory->seat );

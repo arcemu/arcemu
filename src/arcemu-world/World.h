@@ -623,17 +623,22 @@ class SERVER_DECL World : public Singleton<World>, public EventableObject
 		int instance_DailyHeroicInstanceResetHour;
 		bool instance_CheckTriggerPrerequsites;
 
-		// battleground set
-		uint32 m_bgSet_AV_MIN;
-		uint32 m_bgSet_AV_MAX;
-		uint32 m_bgSet_AB_MIN;
-		uint32 m_bgSet_AB_MAX;
-		uint32 m_bgSet_WS_MIN;
-		uint32 m_bgSet_WS_MAX;
-		uint32 m_bgSet_EOS_MIN;
-		uint32 m_bgSet_EOS_MAX;
-		uint32 m_bgSet_SOTA_MIN;
-		uint32 m_bgSet_SOTA_MAX;
+		// battleground settings
+		struct BGSettings{
+			uint32 AV_MIN;
+			uint32 AV_MAX;
+			uint32 AB_MIN;
+			uint32 AB_MAX;
+			uint32 WSG_MIN;
+			uint32 WSG_MAX;
+			uint32 EOTS_MIN;
+			uint32 EOTS_MAX;
+			uint32 SOTA_MIN;
+			uint32 SOTA_MAX;
+			uint32 IOC_MIN;
+			uint32 IOC_MAX;
+		}bgsettings;
+
 
 		// damage/hp/mp cap settings
 		struct

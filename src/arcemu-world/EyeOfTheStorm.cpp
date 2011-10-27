@@ -870,70 +870,18 @@ bool EyeOfTheStorm::GivePoints(uint32 team, uint32 points)
 		sEventMgr.RemoveEvents(this);
 		sEventMgr.AddEvent(TO< CBattleground* >(this), &CBattleground::Close, EVENT_BATTLEGROUND_CLOSE, 120000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 
-		/* add the marks of honor to all players */
-		uint32 lostHonorToAdd = m_honorPerKill;
-		uint32 winHonorToAdd = 2 * lostHonorToAdd;
 		m_mainLock.Acquire();
 
-		for(uint32 i = 0; i < 2; ++i)
-		{
-			for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
-			{
+		AddHonorToTeam( m_winningteam, 3 * 185 );
 
-				Player* p = *itr;
+		CastSpellOnTeam( m_winningteam, 43477 );
+		CastSpellOnTeam( m_winningteam, 69156 );
 
-				p->Root();
+		if( m_winningteam == TEAM_ALLIANCE )
+			AddHonorToTeam( TEAM_HORDE, 1 * 185 );
+		else
+			AddHonorToTeam( TEAM_ALLIANCE, 1 * 185 );
 
-				if(i == m_winningteam)
-				{
-					p->m_bgScore.BonusHonor += winHonorToAdd;
-					HonorHandler::AddHonorPointsToPlayer(p, winHonorToAdd);
-					Item* item = objmgr.CreateItem(29024 , p);
-					if(item != NULL)
-					{
-						item->SetStackCount(3);
-						item->SoulBind();
-						if(!p->GetItemInterface()->AddItemToFreeSlot(item))
-						{
-							p->GetSession()->SendNotification("No free slots were found in your inventory!");
-							item->DeleteMe();
-						}
-						else
-						{
-							p->m_bgScore.BonusHonor += lostHonorToAdd;
-							HonorHandler::AddHonorPointsToPlayer(p, lostHonorToAdd);
-							SlotResult* lr = p->GetItemInterface()->LastSearchResult();
-
-							p->SendItemPushResult(false, true, false, true, lr->ContainerSlot, lr->Slot, 3, item->GetEntry(), item->GetItemRandomSuffixFactor(), item->GetItemRandomPropertyId(), item->GetStackCount());
-						}
-					}
-					if(i && p->GetQuestLogForEntry(11341))
-						p->GetQuestLogForEntry(11341)->SendQuestComplete();
-					else if(p->GetQuestLogForEntry(11337))
-						p->GetQuestLogForEntry(11337)->SendQuestComplete();
-				}
-				else
-				{
-					Item* item = objmgr.CreateItem(29024 , p);
-					if(item != NULL)
-					{
-						item->SetStackCount(1);
-						item->SoulBind();
-						if(!p->GetItemInterface()->AddItemToFreeSlot(item))
-						{
-							p->GetSession()->SendNotification("No free slots were found in your inventory!");
-							item->DeleteMe();
-						}
-						else
-						{
-							SlotResult* lr = p->GetItemInterface()->LastSearchResult();
-
-							p->SendItemPushResult(false, true, false, true, lr->ContainerSlot, lr->Slot, 1, item->GetEntry(), item->GetItemRandomSuffixFactor(), item->GetItemRandomPropertyId(), item->GetStackCount());
-						}
-					}
-				}
-			}
-		}
 		m_mainLock.Release();
 		SetWorldState(WORLDSTATE_EOTS_ALLIANCE_VICTORYPOINTS + team, m_points[team]);
 		UpdatePvPData();

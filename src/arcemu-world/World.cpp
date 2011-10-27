@@ -1455,21 +1455,23 @@ void World::Rehash(bool load)
 	// cebernic: wanna no attunement xD?
 	instance_CheckTriggerPrerequsites = Config.MainConfig.GetBoolDefault("InstanceHandling", "CheckTriggerPrerequsites", true);
 
-	m_bgSet_AV_MIN = Config.MainConfig.GetIntDefault("Battleground", "AV_MIN", 10);
-	m_bgSet_AV_MAX = Config.MainConfig.GetIntDefault("Battleground", "AV_MAX", 40);
+	bgsettings.AV_MIN = Config.MainConfig.GetIntDefault("Battleground", "AV_MIN", 10);
+	bgsettings.AV_MAX = Config.MainConfig.GetIntDefault("Battleground", "AV_MAX", 40);
 
-	m_bgSet_WS_MIN = Config.MainConfig.GetIntDefault("Battleground", "WS_MIN", 2);
-	m_bgSet_WS_MAX = Config.MainConfig.GetIntDefault("Battleground", "WS_MAX", 10);
+	bgsettings.AB_MIN = Config.MainConfig.GetIntDefault("Battleground", "AB_MIN", 4);
+	bgsettings.AB_MAX = Config.MainConfig.GetIntDefault("Battleground", "AB_MAX", 15);
 
-	m_bgSet_AB_MIN = Config.MainConfig.GetIntDefault("Battleground", "AB_MIN", 4);
-	m_bgSet_AB_MAX = Config.MainConfig.GetIntDefault("Battleground", "AB_MAX", 15);
+	bgsettings.WSG_MIN = Config.MainConfig.GetIntDefault("Battleground", "WSG_MIN", 2);
+	bgsettings.WSG_MAX = Config.MainConfig.GetIntDefault("Battleground", "WSG_MAX", 10);
 
-	m_bgSet_EOS_MIN = Config.MainConfig.GetIntDefault("Battleground", "EOS_MIN", 4);
-	m_bgSet_EOS_MAX = Config.MainConfig.GetIntDefault("Battleground", "EOS_MAX", 15);
+	bgsettings.EOTS_MIN = Config.MainConfig.GetIntDefault("Battleground", "EOTS_MIN", 4);
+	bgsettings.EOTS_MAX = Config.MainConfig.GetIntDefault("Battleground", "EOTS_MAX", 15);
 
-	m_bgSet_SOTA_MIN = Config.MainConfig.GetIntDefault("Battleground", "SOTA_MIN", 10);
-	m_bgSet_SOTA_MAX = Config.MainConfig.GetIntDefault("Battleground", "SOTA_MAX", 15);
+	bgsettings.SOTA_MIN = Config.MainConfig.GetIntDefault("Battleground", "SOTA_MIN", 10);
+	bgsettings.SOTA_MAX = Config.MainConfig.GetIntDefault("Battleground", "SOTA_MAX", 15);
 
+	bgsettings.IOC_MIN = Config.MainConfig.GetIntDefault("Battleground", "IOC_MIN", 10);
+	bgsettings.IOC_MAX = Config.MainConfig.GetIntDefault("Battleground", "IOC_MAX", 15);
 
 	// damage/hp/mp cap settings
 	m_limits.enable = Config.MainConfig.GetBoolDefault("Limits", "Enable", true);

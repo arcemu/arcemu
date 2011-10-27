@@ -63,8 +63,11 @@ class SpeedCheatDetector;
 #endif
 #define LOGIN_CIENT_SEND_DELAY 1000 //we have this delay of sending auras to other players so client will have time to create object first
 
-#define TEAM_ALLIANCE 0
-#define TEAM_HORDE 1
+enum PlayerTeams{
+	TEAM_ALLIANCE = 0,
+	TEAM_HORDE    = 1,
+	MAX_PLAYER_TEAMS
+};
 
 //====================================================================
 //  Inventory

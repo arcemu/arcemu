@@ -195,6 +195,7 @@ template< class T, class U > T TO(U u) { return static_cast< T >(u); }
 #include "TaxiMgr.h"
 #include "TransporterHandler.h"
 #include "StrandOfTheAncient.h"
+#include "IsleOfConquest.h"
 #include "WarsongGulch.h"
 #include "WeatherMgr.h"
 #include "World.h"
