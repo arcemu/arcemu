@@ -172,9 +172,8 @@ namespace lua_engine
 		.method(&Player::GetXp, "GetXP", "getXP", "getxp", NULL) //wiki listed
 		.method(&Player::SetNextLevelXp, "SetNextLevelXP", "setNextLevelXP", "setnextlevelxp", NULL) //wiki listed
 
-		.method(&Player::SetTalentPoints, "SetTalentPoints", "setTalentPoints", "settalentpoints", NULL)  //wiki listed
-		.method(&Player::ModTalentPoints, "ModTalentPoints", "modTalentPoints", "modtalentpoints", NULL) //wiki listed
-		.method(&Player::GetTalentPoints, "GetTalentPoints", "getTalentPoints", "gettalentpoints", NULL) //wiki listed
+		.method(&Player::SetCurrentTalentPoints, "SetCurrentTalentPoints", "setCurrentTalentPoints", "setcurrenttalentpoints", NULL)  //wiki listed
+		.method(&Player::GetCurrentTalentPoints, "GetCurrentTalentPoints", "getCurrentTalentPoints", "getcurrenttalentpoints", NULL) //wiki listed
 
 		.method(&Player::SetHonorCurrency, "SetHonorCurrency", "setHonorCurrency", "sethonorcurrency", NULL) //wiki listed
 		.method(&Player::GetHonorCurrency, "GetHonorCurrency", "getHonorCurrency", "gethonorcurrency", NULL) //wiki listed

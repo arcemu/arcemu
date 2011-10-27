@@ -171,11 +171,14 @@ namespace lua_engine
 		.method(&MapMgr::GetInterface, "GetInterface", "getInterface", "getinterface", NULL)
 		.method(&MapMgr::HasPlayers, "hasPlayers", "HasPlayers", "hasplayers", NULL)
 		.method(&MapMgr::GetPlayerCount, "getplayercount", "getPlayerCount", "GetPlayerCount", NULL)
-		.method(&MapMgr::SetWorldState, "setworldstate", "setWorldState", "SetWorldState", NULL)
 		.method(&MapMgr::GetSqlIdCreature, "GetSqlIdCreature", "getsqlidcreature", "getSqlIdCreature", NULL)
 		.method(&MapMgr::GetSqlIdGameObject, "GetSqlIdGameObject", "getsqlidgameobject", "getSqlIdGameObject", NULL)
 		.method(&MapMgr::GetAreaID, "GetAreaID", "getAreaID", "getareaid", "GetAreaId", NULL)
-		.method(&MapMgr::GetADTLandHeight, "GetADTLandHeight", "getADTLandHeight", "getadtlandheight", NULL);
+		.method(&MapMgr::GetADTLandHeight, "GetADTLandHeight", "getADTLandHeight", "getadtlandheight", NULL)
+		.method(&MapMgr::GetWorldStatesHandler, "GetWorldStatesHandler", "getWorldStatesHandler", "getworldstateshandler", NULL );
+
+		m   .class_<WorldStatesHandler>("WorldStatesHandler")
+		.method(&WorldStatesHandler::SetWorldStateForZone, "SetWorldStateForZone", "setWorldStateForZone", "setworldstateforzone", NULL );
 
 		m	.class_<MapScriptInterface>("MapScriptInterface")
 		.method(&MapScriptInterface::GetGameObjectNearestCoords, "GetGameObjectNearestCoords", "getGameObjectNearestCoords", "getgameobjectnearestcoords", NULL)
