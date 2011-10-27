@@ -3195,6 +3195,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 
 		m_specs[ SPEC_PRIMARY ].SetTP( tp1 );
 		m_specs[ SPEC_SECONDARY ].SetTP( tp2 );
+		SetUInt32Value( PLAYER_CHARACTER_POINTS1, m_specs[ m_talentActiveSpec ].GetTP() );
 	}
 
 	m_phase = get_next_field.GetUInt32(); //Load the player's last phase
