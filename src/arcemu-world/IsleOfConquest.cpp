@@ -437,6 +437,10 @@ void IsleOfConquest::OnStart()
 {
 	if( m_started )
 		return;
+
+	m_mainLock.Acquire();
+	
+	m_started = true;
 	
 	for(uint32 i = 0; i < 2; ++i){
 		for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr){
@@ -444,10 +448,11 @@ void IsleOfConquest::OnStart()
 		}
 	}
 	
+	m_mainLock.Release();
+
 	OpenGates();
 	PlaySoundToAll( SOUND_BATTLEGROUND_BEGIN );
 	sEventMgr.AddEvent( this, &IsleOfConquest::UpdateResources, EVENT_IOC_RESOURCES_UPDATE, 10 * 1000, 0, 0 );
-	m_started = true;
 }
 
 void IsleOfConquest::OpenGates(){

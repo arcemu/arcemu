@@ -1453,24 +1453,30 @@ Creature* CBattleground::SpawnCreature( uint32 entry, LocationVector &v, uint32 
 }
 
 void CBattleground::AddHonorToTeam( uint32 team, uint32 amount ){
+	m_mainLock.Acquire();
 	for( std::set< Player* >::iterator itr = m_players[ team ].begin(); itr != m_players[ team ].end(); ++itr ){
 		Player *p = *itr;
 		HonorHandler::AddHonorPointsToPlayer( p, amount );
 	}
+	m_mainLock.Release();
 }
 
 void CBattleground::CastSpellOnTeam( uint32 team, uint32 spell ){
+	m_mainLock.Acquire();
 	for( std::set< Player* >::iterator itr = m_players[ team ].begin(); itr != m_players[ team ].end(); ++itr ){
 		Player *p = *itr;
 		p->CastSpell( p, spell, false );
 	}
+	m_mainLock.Release();
 }
 
 void CBattleground::RemoveAuraFromTeam( uint32 team, uint32 aura ){
+	m_mainLock.Acquire();
 	for( std::set< Player* >::iterator itr = m_players[ team ].begin(); itr != m_players[ team ].end(); ++itr ){
 		Player *p = *itr;
 		p->RemoveAura( aura );
 	}
+	m_mainLock.Release();
 }
 
 void CBattleground::SendChatMessage(uint32 Type, uint64 Guid, const char* Format, ...)
