@@ -1,6 +1,6 @@
 /*
  * ArcScript Scripts for Arcemu MMORPG Server
- * Copyright (C) 2008-2009 Arcemu Team
+ * Copyright (C) 2008-2011 Arcemu Team
  * Copyright (C) 2007 Moon++ <http://www.moonplusplus.com/>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -2461,9 +2461,7 @@ Arcemu::Gossip::Script* CreateLuaGOGossipScript(uint32 id)
 
 void LuaEngine::Startup()
 {
-	Log.Notice("LuaEngineMgr", "Spawning Lua Engine...");
-	Log.Notice("LuaEngineMgr", "~~~LuaHypArc~~~");
-	Log.Notice("LuaEngineMgr", "LuaHypArc Lua Engine %s: Loaded", ARCH);
+	Log.Notice("LuaEngineMgr", "Arcemu Lua Engine ( ALE ) %s: Loaded", ARCH);
 	//Create a new global state that will server as the lua universe.
 	lu = lua_open();
 

@@ -58,7 +58,12 @@ IF( WIN32)
 ENDIF(WIN32)
 
 #Our configurable variables.
-SET(ARCEMU_CONFIGSFILE_PATH etc CACHE PATH "Path where the arcemu config files are.")
+IF( WIN32 )
+	SET(ARCEMU_CONFIGSFILE_PATH configs CACHE PATH "Path where the arcemu config files are.")
+ELSE( WIN32 )
+	SET(ARCEMU_CONFIGSFILE_PATH etc CACHE PATH "Path where the arcemu config files are.")
+ENDIF( WIN32 )
+
 SET(ARCEMU_SCRIPTLIB_PATH "modules" CACHE PATH "The directory which contains the 'lib' directory that has the script libraries." )
 SET(BUILD_ARCEMUSCRIPTS TRUE CACHE BOOL "Set to false to NOT build script libraries." )
 SET(BUILD_TOOLS TRUE CACHE BOOL "Build Arcemu tools" )

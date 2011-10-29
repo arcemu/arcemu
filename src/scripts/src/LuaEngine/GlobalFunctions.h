@@ -1,6 +1,6 @@
 /*
  * ArcScript Scripts for Arcemu MMORPG Server
- * Copyright (C) 2008-2009 Arcemu Team
+ * Copyright (C) 2008-2011 Arcemu Team
  * Copyright (C) 2007 Moon++ <http://www.moonplusplus.com/>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
 #include "LUAEngine.h"
 #include "svn_revision.h"
 
-#define ENGINE_NAME "LuaHypArc" //You should check in your scripts that GetLuaEngine() == "LuaHypArc"
+#define ENGINE_NAME "ALE" //You should check in your scripts that GetLuaEngine() == "ALE"
 #ifdef LUA_SVN_REVISION_H
 #define ENGINE_VERSION LUA_REVISION //If you need a specific version for your script to work, check GetLuaEngineVersion() >= number
 #else

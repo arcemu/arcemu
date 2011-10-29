@@ -3,8 +3,8 @@
 :Global
 PerformIngameSpawn(type,entry,map,x,y,z,o,facOrScale,dur [,eq1,eq2,eq3,instanceId,save]) +- Fixed to work correctly, added new arguments.
 
-GetLuaEngine()                                                    +- Returns what engine the server is using. Should be LuaHypArc.
-GetLuaEngineVersion()                                             +- Returns what version LuaHypArc on the server is.
+GetLuaEngine()                                                    +- Returns what engine the server is using. Should be ALE.
+GetLuaEngineVersion()                                             +- Returns what version ALE on the server is.
 GetGameTime()							  +- Returns server time in seconds.
 ReloadTable(tablename)						  +- Reloads table tablename.
 Rehash()							  +- Rehashes server config files.
