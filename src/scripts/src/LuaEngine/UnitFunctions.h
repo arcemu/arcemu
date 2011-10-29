@@ -3709,7 +3709,7 @@ class LuaUnit
 			uint32 faction = luaL_checkint(L, 1);
 			if(faction)
 				lua_pushinteger(L, TO_PLAYER(ptr)->GetStanding(faction));
-			return 0;
+			return 1;
 		}
 
 		static int RemoveThreatByPtr(lua_State* L, Unit* ptr)
