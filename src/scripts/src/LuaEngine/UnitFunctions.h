@@ -1220,6 +1220,8 @@ class LuaUnit
 				for(uint8 contslot = INVENTORY_SLOT_BAG_START; contslot != INVENTORY_SLOT_BAG_END; contslot++)
 				{
 					Container* bag = TO< Container* >(plr->GetItemInterface()->GetInventoryItem(contslot));
+					if(bag == NULL)
+						continue;
 					for(uint8 bslot = 0; bslot != bag->GetNumSlots(); bslot++)
 					{
 						if(bag->GetItem(bslot) && bag->GetItem(bslot)->GetEntry() == entry)
