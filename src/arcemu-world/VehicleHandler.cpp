@@ -50,6 +50,7 @@ void WorldSession::HandleChangeVehicleSeat( WorldPacket &recv_data ){
 			_player->GetCurrentVehicle()->MovePassengerToNextSeat( _player );
 			break;
 
+		// Used when switching from a normal seat to a controlling seat, or to an accessory
 		case CMSG_REQUEST_VEHICLE_SWITCH_SEAT:{
 			WoWGuid vehicle;
 			uint8 seat = 0;
@@ -67,9 +68,8 @@ void WorldSession::HandleChangeVehicleSeat( WorldPacket &recv_data ){
 				if( u->GetVehicleComponent() == NULL )
 					return;
 
-				// We can only switch to accessory or back to the parent vehicle
-				if( !_player->GetCurrentVehicle()->HasAccessoryWithGUID( vehicle.GetOldGuid() ) && 
-					!u->GetVehicleComponent()->HasAccessoryWithGUID( _player->GetCurrentVehicle()->GetOwner()->GetGUID() ) )
+				// Has to be same vehicle, or an accessory of the vehicle
+				if( _player->GetVehicleBase()->GetGUID() != u->GetVehicleBase()->GetGUID() )
 					return;
 
 				_player->GetCurrentVehicle()->EjectPassenger( _player );
@@ -78,7 +78,7 @@ void WorldSession::HandleChangeVehicleSeat( WorldPacket &recv_data ){
 
 			break;}
 
-
+	    // Used when switching from controlling seat to accessory, or from accessory to accessory
 		case CMSG_CHANGE_SEATS_ON_CONTROLLED_VEHICLE:{
 			WoWGuid src_guid;
 			WoWGuid dst_guid;
@@ -110,9 +110,8 @@ void WorldSession::HandleChangeVehicleSeat( WorldPacket &recv_data ){
 			if( src_vehicle->GetGUID() == dst_vehicle->GetGUID() ){
 				src_vehicle->GetVehicleComponent()->MovePassengerToSeat( _player, seat );
 			}else{
-				// We can only switch to accessory or back to parent vehicle
-				if( !src_vehicle->GetVehicleComponent()->HasAccessoryWithGUID( dst_vehicle->GetGUID() ) && 
-					!dst_vehicle->GetVehicleComponent()->HasAccessoryWithGUID( src_vehicle->GetGUID() ) )
+				// Has to be the same vehicle or an accessory of the vehicle
+				if( src_vehicle->GetVehicleBase()->GetGUID() != dst_vehicle->GetVehicleBase()->GetGUID() )
 					return;
 
 				_player->GetCurrentVehicle()->EjectPassenger( _player );
