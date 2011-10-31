@@ -27,8 +27,19 @@
 
 #define ROUND_LENGTH 600 //in secs
 
-// Is this number importing or just an ID?
-#define EVENT_SOTA_TIMER 0x57283dd
+enum SOTAControlPoints{
+	SOTA_CONTROL_POINT_EAST_GY    = 0,
+	SOTA_CONTROL_POINT_WEST_GY    = 1,
+	SOTA_CONTROL_POINT_SOUTH_GY   = 2,
+	NUM_SOTA_CONTROL_POINTS
+};
+
+enum SOTACPStates{
+	SOTA_CP_STATE_UNCONTROLLED    = 0,
+	SOTA_CP_STATE_ALLY_CONTROL    = 1,
+	SOTA_CP_STATE_HORDE_CONTROL   = 2,
+	MAX_SOTA_CP_STATES
+};
 
 enum Gate
 {
@@ -40,11 +51,30 @@ enum Gate
     GATE_COUNT	= 5,
 };
 
+struct SOTAControlPoint{
+	GameObject *pole;
+	GameObject *banner;
+	SOTACPStates state;
+	uint32 worldstate;
+
+	SOTAControlPoint(){
+		pole = NULL;
+		banner = NULL;
+		state = SOTA_CP_STATE_UNCONTROLLED;
+		worldstate = 0;
+	}
+
+	~SOTAControlPoint(){
+		pole = NULL;
+		banner = NULL;
+		state = SOTA_CP_STATE_UNCONTROLLED;
+		worldstate = 0;
+	}
+};
+
 class StrandOfTheAncient : public CBattleground
 {
 	private:
-		//Transporter * m_boats[2];
-		//TransportPath path;
 		uint32 Attackers; // 0 - horde / 1 - alliance
 		uint32 BattleRound;
 		uint32 RoundTime;
@@ -58,6 +88,7 @@ class StrandOfTheAncient : public CBattleground
 		list<Player*> sota_players;
 		PassengerMap boat1Crew;
 		PassengerMap boat2Crew;
+		SOTAControlPoint controlpoint[ NUM_SOTA_CONTROL_POINTS ];
 
 	public:
 		static CBattleground* Create(MapMgr* m, uint32 i, uint32 l, uint32 t) { return new StrandOfTheAncient(m, i, l, t); }
@@ -78,7 +109,7 @@ class StrandOfTheAncient : public CBattleground
 		void HookOnShadowSight();
 		void HookGenerateLoot(Player* plr, Object* pOCorpse);
 		void HookOnUnitKill(Player* plr, Unit* pVictim);
-		bool HookSlowLockOpen(GameObject* pGo, Player* pPlayer, Spell* pSpell);
+		bool HookSlowLockOpen( GameObject *go, Player *player, Spell *spell );
 		void HookOnPlayerDeath(Player* plr);
 		void HookOnMount(Player* plr);
 		bool HookHandleRepop(Player* plr);
@@ -93,9 +124,11 @@ class StrandOfTheAncient : public CBattleground
 		void TimeTick();
 		void PrepareRound();
 
-	protected:
-		uint32 m_flagHolders[2];
 
+		void SpawnControlPoint( SOTAControlPoints point, SOTACPStates state );
+		void CaptureControlPoint( SOTAControlPoints point );
+
+	protected:
 		void SpawnBuff(uint32 x);
 
 };

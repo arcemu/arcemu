@@ -113,41 +113,6 @@ Strand of the Ancients
 
 #include "StdAfx.h"
 
-/*
-	void GossipHello( Object *pObject, Player *plr )
-	{
-		GossipMenu *Menu;
-		uint32 Team = plr->GetTeam();
-		if(Team > 1) Team = 1;
-
-		// Check if the player can be entered into the bg or not.
-		if(plr->getLevel() < 71) //Levels 71-80 else don't let them into the bg menu.
-		{
-			// Send "you cannot enter" message.
-			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 13832, plr);
-		}
-		else
-		{
-			uint32 FactMessages[2] = { 13833, 13834 }; // NEED TO BE UPDATED TO SOTA
-
-			// Ask to enter battleground
-			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), FactMessages[Team], plr);
-			Menu->AddItem( 0, "I would like to enter the battleground.", BATTLEGROUND_STRAND_OF_THE_ANCIENT);
-		}
-
-		Menu->SendTo(plr);
-	}
-
-	void GossipSelectOption(Object* pObject, Player * plr, uint32 Id, uint32 IntId, const char * Code)
-	{
-		// Send battleground list.
-		if(pObject->GetTypeId()!=TYPEID_UNIT)
-			return;
-
-		plr->GetSession()->SendBattlegroundList(((Creature*)pObject), BATTLEGROUND_STRAND_OF_THE_ANCIENT);
-	}
-*/
-
 #define GO_RELIC 192834
 const float sotaTitanRelic[4] = { 836.5f, -108.8f, 111.59f, 0.0f };
 
@@ -247,6 +212,38 @@ const float sotaStartingPosition[2][4] =
 	{ 1209.7f, -65.16f, 70.1f, 0.0f },
 };
 
+static LocationVector FlagPolePositions[ NUM_SOTA_CONTROL_POINTS ] = {
+	LocationVector( 1338.863892f, -153.336533f, 30.895121f, -2.530723f ),
+	LocationVector( 1309.124268f, 9.410645f, 30.893402f, -1.623156f ),
+	LocationVector( 1215.114258f, -65.711861f, 70.084267f, -3.124123f )
+};
+
+static LocationVector FlagPositions[ NUM_SOTA_CONTROL_POINTS ] = {
+	LocationVector( 1338.859253f, -153.327316f, 30.895077f, -2.530723f ),
+	LocationVector( 1309.192017f, 9.416233f, 30.893402f, 1.518436f ),
+    LocationVector( 1215.108032f, -65.715767f, 70.084267f, -3.124123f )
+};
+
+static const uint32 FlagIDs[ NUM_SOTA_CONTROL_POINTS ][ MAX_PLAYER_TEAMS ] = {
+	{ 191306, 191305 },
+	{ 191308, 191307 },
+	{ 191310, 191309 }
+};
+
+static const uint32 CPWorldstates[ NUM_SOTA_CONTROL_POINTS ][ MAX_PLAYER_TEAMS ] = {
+	{ WORLDSTATE_SOTA_GY_E_A, WORLDSTATE_SOTA_GY_E_H },
+	{ WORLDSTATE_SOTA_GY_W_A, WORLDSTATE_SOTA_GY_W_H },
+	{ WORLDSTATE_SOTA_GY_S_A, WORLDSTATE_SOTA_GY_S_H }
+};
+
+static const uint32 SOTA_FLAGPOLE_ID = 191311;
+
+const char* ControlPointNames[ NUM_SOTA_CONTROL_POINTS ] = {
+	"East Graveyard",
+	"West Graveyard",
+	"South Graveyard"
+};
+
 // We'll need to borrow this from elsewhere
 float CalculateDistance(float x1, float y1, float z1, float x2, float y2, float z2);
 
@@ -257,47 +254,6 @@ StrandOfTheAncient::StrandOfTheAncient(MapMgr* mgr, uint32 id, uint32 lgroup, ui
 
 StrandOfTheAncient::~StrandOfTheAncient()
 {
-	if(m_relic && !m_relic->IsInWorld())
-	{
-		delete m_relic;
-		m_relic = 0;
-	}
-
-	for(int i = 0; i < GATE_COUNT; i++)
-	{
-		if(m_gates[i] && !m_gates[i]->IsInWorld())
-		{
-			delete m_gates[i];
-			m_gates[i] = 0;
-		}
-		if(m_gateSigils[i] && !m_gateSigils[i]->IsInWorld())
-		{
-			delete m_gateSigils[i];
-			m_gateSigils[i] = 0;
-		}
-		if(m_gateTransporters[i] && !m_gateTransporters[i]->IsInWorld())
-		{
-			delete m_gateTransporters[i];
-			m_gateTransporters[i] = 0;
-		}
-	}
-
-	if(m_endgate && !m_endgate->IsInWorld())
-	{
-		delete m_endgate;
-		m_endgate = 0;
-	}
-
-	for(uint32 i = 0; i < BUFF_COUNT; ++i)
-	{
-		// buffs may not be spawned, so delete them if they're not
-		if(m_buffs[i] && !m_buffs[i]->IsInWorld())
-		{
-			delete m_buffs[i];
-			m_buffs[i] = 0;
-		}
-	}
-
 }
 
 
@@ -427,19 +383,10 @@ void StrandOfTheAncient::SpawnBuff(uint32 x)
 
 void StrandOfTheAncient::OnCreate()
 {
-	LOG_DEBUG("OnCreate: SOTA Battleground");
-
-	int i;
-
-	printStackTrace();
-
-	// Lets start using exception handling rather than relying on
-	// the crash handler all the time. :)
-	try
 	{
-		// Crash on purpose... :P
-		//char *crash = 0;
-		//*crash = 10;
+		uint32 i;
+
+		BattleRound = 1;
 
 		for(i = 0; i < 2; i++)
 		{
@@ -449,8 +396,6 @@ void StrandOfTheAncient::OnCreate()
 
 		m_pvpData.clear();
 		m_resurrectMap.clear();
-
-		//uint32 mapId = BattlegroundManager.GetMap(BATTLEGROUND_STRAND_OF_THE_ANCIENT);
 
 		// Boats
 		for(i = 0; i < 4; i++)
@@ -485,15 +430,7 @@ void StrandOfTheAncient::OnCreate()
 		/* create the buffs */
 		for(i = 0; i < BUFF_COUNT; ++i)
 			SpawnBuff(i);
-
 	}
-	catch(...)  // Exception handling
-	{
-		LOG_ERROR("Exception: StrandOfTheAncient constructor");
-		printStackTrace();
-		throw;
-	}
-
 
 	SetWorldState(WORLDSTATE_SOTA_CAPTURE_BAR_DISPLAY, 0);
 	SetWorldState(WORLDSTATE_SOTA_CAPTURE_BAR_VALUE, 0);
@@ -506,14 +443,19 @@ void StrandOfTheAncient::OnCreate()
 
 void StrandOfTheAncient::OnStart()
 {
-	LOG_DEBUG("OnStart: SOTA Battleground");
-
 	LocationVector dest;
 	m_started = true;
+
+	RemoveAuraFromTeam( 0, BG_PREPARATION );
+	RemoveAuraFromTeam( 1, BG_PREPARATION );
 
 	for(list<Player*>::iterator itr = sota_players.begin(); itr != sota_players.end(); ++itr)
 	{
 		Player* plr = *itr;
+		
+		if( plr->GetTeam() != Attackers )
+			continue;
+
 		dest.ChangeCoords(sotaStopBoatsPlayer[plr->GetTeam()][0], sotaStopBoatsPlayer[plr->GetTeam()][1],
 		                  sotaStopBoatsPlayer[plr->GetTeam()][2], sotaStopBoatsPlayer[plr->GetTeam()][3]);
 
@@ -547,23 +489,29 @@ void StrandOfTheAncient::SetIsWeekend(bool isweekend)
 	m_isWeekend = isweekend;
 }
 
-// end game, attackers captured flag
-bool StrandOfTheAncient::HookSlowLockOpen(GameObject* pGo, Player* pPlayer, Spell* pSpell)
-{
-	LOG_DEBUG("*** StrandOfTheAncient::HookSlowLockOpen - Relic Captured");
-	PlaySoundToAll(8212);
+bool StrandOfTheAncient::HookSlowLockOpen( GameObject *go, Player *player, Spell *spell ){
+	uint32 goentry = go->GetEntry();
 
-	/*
-	// Root everyone, THEN Start next round, and Unroot -- OR -- Shutdown battleground.
-	sEventMgr.RemoveEvents(this, EVENT_BATTLEGROUND_CLOSE);
-	sEventMgr.AddEvent(((CBattleground*)this), &CBattleground::Close, EVENT_BATTLEGROUND_CLOSE, 120000, 1,0);
+	switch( goentry ){
+		case 191305:
+		case 191306:
+			CaptureControlPoint( SOTA_CONTROL_POINT_EAST_GY );
+			return true;
+			break;
 
-	// increment the score world state
-	SetWorldState(pPlayer->GetTeam() ? WSG_CURRENT_HORDE_SCORE : WSG_CURRENT_ALLIANCE_SCORE, m_scores[pPlayer->GetTeam()]);
-	this->GetMapMgr()->SetWorldState
+		case 191307:
+		case 191308:
+			CaptureControlPoint( SOTA_CONTROL_POINT_WEST_GY );
+			return true;
+			break;
 
-	UpdatePvPData();
-	*/
+		case 191309:
+		case 191310:
+			CaptureControlPoint( SOTA_CONTROL_POINT_SOUTH_GY );
+			return true;
+			break;
+	}
+
 	return true;
 }
 
@@ -582,19 +530,21 @@ void StrandOfTheAncient::SetTime(uint32 secs, uint32 WorldState)
 	digits[1] = seconds / 10;
 	digits[2] = seconds % 10;
 
-	//m_mapMgr->GetStateManager().UpdateWorldState( WorldState, 1 );
 	SetWorldState(WORLDSTATE_SOTA_TIMER_1, digits[0]);
 	SetWorldState(WORLDSTATE_SOTA_TIMER_2, digits[1]);
 	SetWorldState(WORLDSTATE_SOTA_TIMER_3, digits[2]);
 	SetRoundTime(secs);
 }
 
-void StrandOfTheAncient::PrepareRound()
-{
-	//SetWorldState( WORLDSTATE_SOTA_ALLIANCE_DEFENDER, Attackers == HORDE ? 1 : 0 );
-	//SetWorldState( WORLDSTATE_SOTA_ALLIANCE_ATTACKER, Attackers == HORDE ? 0 : 1 );
-	SetWorldState(WORLDSTATE_SOTA_HORDE_ATTACKER, 1);
-	SetWorldState(WORLDSTATE_SOTA_ALLIANCE_ATTACKER, 0);
+void StrandOfTheAncient::PrepareRound(){
+	Attackers = TEAM_ALLIANCE;
+
+	SpawnControlPoint( SOTA_CONTROL_POINT_EAST_GY,  SOTA_CP_STATE_HORDE_CONTROL );
+	SpawnControlPoint( SOTA_CONTROL_POINT_WEST_GY,  SOTA_CP_STATE_HORDE_CONTROL );
+	SpawnControlPoint( SOTA_CONTROL_POINT_SOUTH_GY, SOTA_CP_STATE_HORDE_CONTROL );
+
+	SetWorldState( WORLDSTATE_SOTA_HORDE_ATTACKER, 0 );
+	SetWorldState( WORLDSTATE_SOTA_ALLIANCE_ATTACKER, 1 );
 };
 
 void StrandOfTheAncient::TimeTick()
@@ -615,4 +565,79 @@ void StrandOfTheAncient::HookFlagDrop(Player* plr, GameObject* obj)
 }
 void StrandOfTheAncient::HookOnShadowSight()
 {
+}
+
+
+void StrandOfTheAncient::SpawnControlPoint( SOTAControlPoints point, SOTACPStates state ){
+	if( state >= MAX_SOTA_CP_STATES )
+		return;
+
+	SOTAControlPoint &cp = controlpoint[ point ];
+
+	if( cp.state == state )
+		return;
+
+	if( cp.worldstate != 0 )
+		SetWorldState( cp.worldstate, 0 );
+
+	uint32 team = TEAM_ALLIANCE;
+	uint32 faction = 0;
+
+	switch( state ){
+		case SOTA_CP_STATE_ALLY_CONTROL:
+			team = TEAM_ALLIANCE;
+			faction = 2;
+			break;
+
+		case SOTA_CP_STATE_HORDE_CONTROL:
+			team = TEAM_HORDE;
+			faction = 1;
+			break;
+
+		default:
+			return;
+			break;
+	}
+
+	// First time spawning
+	if( cp.pole == NULL ){
+		cp.pole = SpawnGameObject( SOTA_FLAGPOLE_ID, FlagPolePositions[ point ], 0, 35, 1.0f );
+		cp.pole->PushToWorld( m_mapMgr );
+	}else{
+		Arcemu::Util::ArcemuAssert( cp.banner != NULL );
+		cp.banner->Despawn( 0, 0 );
+	}
+	
+	cp.banner = SpawnGameObject( FlagIDs[ point ][ team ], FlagPositions[ point ], 0, faction, 1.0f );
+	cp.banner->PushToWorld( m_mapMgr );
+
+	cp.state = state;
+	cp.worldstate = CPWorldstates[ point ][ team ];
+	SetWorldState( cp.worldstate, 1 );
+}
+
+void StrandOfTheAncient::CaptureControlPoint( SOTAControlPoints point ){
+	if( point >= NUM_SOTA_CONTROL_POINTS )
+		return;
+
+	SOTAControlPoint &cp = controlpoint[ point ];
+
+	if( cp.banner->GetFaction() == 14 )
+		return;
+
+	switch( cp.state ){
+		case SOTA_CP_STATE_ALLY_CONTROL:
+			SpawnControlPoint( point, SOTA_CP_STATE_HORDE_CONTROL );
+			PlaySoundToAll( SOUND_HORDE_CAPTURE );
+			SendChatMessage( CHAT_MSG_BG_EVENT_HORDE, 0, "The horde has captured the %s!", ControlPointNames[ point ] );
+			break;
+
+		case SOTA_CP_STATE_HORDE_CONTROL:
+			SpawnControlPoint( point, SOTA_CP_STATE_ALLY_CONTROL );
+			PlaySoundToAll( SOUND_ALLIANCE_CAPTURE );
+			SendChatMessage( CHAT_MSG_BG_EVENT_ALLIANCE, 0, "The alliance has captured the %s!", ControlPointNames[ point ] );
+			break;
+	}
+
+	cp.banner->SetFaction( 14 ); // So they cannot be recaptured as per SOTA rules
 }
