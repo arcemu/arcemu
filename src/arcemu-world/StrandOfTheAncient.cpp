@@ -312,14 +312,12 @@ void StrandOfTheAncient::OnAddPlayer(Player* plr)
 {
 	if(!m_started)
 		plr->CastSpell(plr, BG_PREPARATION, true);
-	//plr->m_CurrentTransporter = m_boat[0];
-	sota_players.push_back(plr);
 }
 
 void StrandOfTheAncient::OnRemovePlayer(Player* plr)
 {
-	plr->RemoveAura(BG_PREPARATION);
-	sota_players.remove(plr);
+	if(!m_started)
+		plr->RemoveAura(BG_PREPARATION);
 }
 
 LocationVector StrandOfTheAncient::GetStartingCoords(uint32 team)
@@ -469,26 +467,33 @@ void StrandOfTheAncient::OnCreate()
 	SetWorldState(WORLDSTATE_SOTA_TIMER_3, 0);
 }
 
-void StrandOfTheAncient::OnStart()
-{
+void StrandOfTheAncient::OnStart(){
+
 	LocationVector dest;
 	m_started = true;
 
 	RemoveAuraFromTeam( 0, BG_PREPARATION );
 	RemoveAuraFromTeam( 1, BG_PREPARATION );
 
-	for(list<Player*>::iterator itr = sota_players.begin(); itr != sota_players.end(); ++itr)
-	{
-		Player* plr = *itr;
-		
-		if( plr->GetTeam() != Attackers )
-			continue;
+	m_mainLock.Acquire();
 
-		dest.ChangeCoords(sotaStopBoatsPlayer[plr->GetTeam()][0], sotaStopBoatsPlayer[plr->GetTeam()][1],
-		                  sotaStopBoatsPlayer[plr->GetTeam()][2], sotaStopBoatsPlayer[plr->GetTeam()][3]);
+	for( uint32 team = TEAM_ALLIANCE; team < MAX_PLAYER_TEAMS; team++ ){
+		for( std::set< Player* >::iterator itr = m_players[ team ].begin(); itr != m_players[ team ].end(); itr++ ){
+			Player *p = *itr;
+			
+			if( team != Attackers )
+				continue;
 
-		plr->SafeTeleport(plr->GetMapId(), plr->GetInstanceID(), dest);
+			dest.ChangeCoords( sotaStopBoatsPlayer[ team ][ 0 ],
+				               sotaStopBoatsPlayer[ team ][ 1 ],
+							   sotaStopBoatsPlayer[ team ][ 2 ],
+							   sotaStopBoatsPlayer[ team ][ 3 ] );
+			
+			p->SafeTeleport( p->GetMapId(), p->GetInstanceID(), dest );
+		}
 	}
+
+	m_mainLock.Release();
 
 	SetWorldState(WORLDSTATE_SOTA_CAPTURE_BAR_DISPLAY, (uint32) - 1);
 	SetWorldState(WORLDSTATE_SOTA_CAPTURE_BAR_VALUE, (uint32) - 1);
@@ -586,6 +591,15 @@ void StrandOfTheAncient::PrepareRound(){
 	SetWorldState( WORLDSTATE_SOTA_HORDE_ATTACKER, 0 );
 	SetWorldState( WORLDSTATE_SOTA_ALLIANCE_ATTACKER, 1 );
 };
+
+void StrandOfTheAncient::StartRound(){
+}
+
+void StrandOfTheAncient::FinishRound(){
+}
+
+void StrandOfTheAncient::Finish( uint32 winningteam ){
+}
 
 void StrandOfTheAncient::TimeTick()
 {

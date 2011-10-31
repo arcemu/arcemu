@@ -109,7 +109,6 @@ class StrandOfTheAncient : public CBattleground
 		GameObject* m_gates[GATE_COUNT];
 		GameObject* m_gateSigils[GATE_COUNT];
 		GameObject* m_gateTransporters[GATE_COUNT];
-		list<Player*> sota_players;
 		PassengerMap boat1Crew;
 		PassengerMap boat2Crew;
 
@@ -150,7 +149,9 @@ class StrandOfTheAncient : public CBattleground
 		void SetTime(uint32 secs, uint32 WorldState);
 		void TimeTick();
 		void PrepareRound();
-
+		void StartRound();
+		void FinishRound();
+		void Finish( uint32 winningteam );
 
 		void SpawnControlPoint( SOTAControlPoints point, SOTACPStates state );
 		void CaptureControlPoint( SOTAControlPoints point );
