@@ -460,6 +460,7 @@ class SERVER_DECL CBattleground : public EventableObject
 		virtual bool CanPlayerJoin(Player* plr, uint32 type);
 		virtual bool CreateCorpse(Player* plr) { return true; }
 		virtual bool HookSlowLockOpen(GameObject* pGo, Player* pPlayer, Spell* pSpell) { return false; }
+		virtual bool HookQuickLockOpen( GameObject *go, Player *player, Spell *spell ){ return false; }
 
 		void BuildPvPUpdateDataPacket(WorldPacket* data);
 		virtual uint8 Rated() { return 0; }

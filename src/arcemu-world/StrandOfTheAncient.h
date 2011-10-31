@@ -136,6 +136,7 @@ class StrandOfTheAncient : public CBattleground
 		void HookGenerateLoot(Player* plr, Object* pOCorpse);
 		void HookOnUnitKill(Player* plr, Unit* pVictim);
 		bool HookSlowLockOpen( GameObject *go, Player *player, Spell *spell );
+		bool HookQuickLockOpen( GameObject *go, Player *player, Spell *spell );
 		void HookOnPlayerDeath(Player* plr);
 		void HookOnMount(Player* plr);
 		bool HookHandleRepop(Player* plr);

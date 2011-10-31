@@ -2688,6 +2688,16 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 				gameObjTarget->EventCloseDoor();
 			}
 			break;
+
+		case LOCKTYPE_QUICK_OPEN:
+			if( gameObjTarget == NULL )
+				return;
+
+			if( ( p_caster != NULL ) && ( p_caster->m_bg != NULL ) )
+				p_caster->m_bg->HookQuickLockOpen( gameObjTarget, p_caster, this );
+
+			// there is no break here on purpose
+
 		default://not profession
 			{
 				if(!gameObjTarget)

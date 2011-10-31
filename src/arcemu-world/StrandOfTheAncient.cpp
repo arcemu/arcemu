@@ -543,6 +543,15 @@ bool StrandOfTheAncient::HookSlowLockOpen( GameObject *go, Player *player, Spell
 	return true;
 }
 
+bool StrandOfTheAncient::HookQuickLockOpen( GameObject *go, Player *player, Spell *spell ){
+	uint32 entry = go->GetEntry();
+
+	if( entry == GO_RELIC )
+		;// this is where the round ends
+
+	return true;
+}
+
 // For banners
 void StrandOfTheAncient::HookFlagStand(Player* plr, GameObject* obj)
 {
