@@ -244,6 +244,14 @@ const char* ControlPointNames[ NUM_SOTA_CONTROL_POINTS ] = {
 	"South Graveyard"
 };
 
+static LocationVector GraveyardLocations[ NUM_SOTA_GRAVEYARDS ] = {
+	LocationVector( 1396.06018066f, -288.036895752f, 32.0815124512f, 0.0f ),
+	LocationVector( 1388.80358887f, 203.354873657f, 32.1526679993f, 0.0f ),
+	LocationVector( 1122.27844238f, 4.41617822647f, 68.9358291626f, 0.0f ),
+	LocationVector( 964.595275879f,	-189.784011841f, 90.6604995728f, 0.0f ),
+	LocationVector( 1457.19372559f, -53.7132720947f, 5.18109416962f, 0.0f ),
+};
+
 // We'll need to borrow this from elsewhere
 float CalculateDistance(float x1, float y1, float z1, float x2, float y2, float z2);
 
@@ -337,14 +345,34 @@ void StrandOfTheAncient::HookOnMount(Player* plr)
 	/* Allowed */
 }
 
-bool StrandOfTheAncient::HookHandleRepop(Player* plr)
-{
-	LocationVector dest;
-
-	dest.ChangeCoords(sotaRepop[plr->GetTeam()][0], sotaRepop[plr->GetTeam()][1],
-	                  sotaRepop[plr->GetTeam()][2], sotaRepop[plr->GetTeam()][3]);
-
-	plr->SafeTeleport(plr->GetMapId(), plr->GetInstanceID(), dest);
+bool StrandOfTheAncient::HookHandleRepop( Player *plr ){
+	float dist = 999999.0f;
+	LocationVector dest_pos;
+	uint32 id = 0;
+	
+	// Let's find the closests GY
+	for( uint32 i = SOTA_GY_EAST; i < NUM_SOTA_GRAVEYARDS; i++ ){
+		if( graveyard[ i ].faction == plr->GetTeam() ){
+			if( graveyard[ i ].spiritguide == NULL )
+				continue;
+			
+			float gydist = plr->CalcDistance( graveyard[ i ].spiritguide );
+			if( gydist > dist )
+				continue;
+			
+			dist = gydist;
+			dest_pos = graveyard[ i ].spiritguide->GetPosition();
+			id = i;
+		}
+	}
+	
+	if( id >= NUM_SOTA_GRAVEYARDS )
+		return false;
+	
+	// port to it and queue for auto-resurrect
+	plr->SafeTeleport( plr->GetMapId(), plr->GetInstanceID(), dest_pos );
+	QueuePlayerForResurrect( plr, graveyard[ id ].spiritguide );
+	
 	return true;
 }
 
@@ -543,6 +571,9 @@ void StrandOfTheAncient::PrepareRound(){
 	SpawnControlPoint( SOTA_CONTROL_POINT_WEST_GY,  SOTA_CP_STATE_HORDE_CONTROL );
 	SpawnControlPoint( SOTA_CONTROL_POINT_SOUTH_GY, SOTA_CP_STATE_HORDE_CONTROL );
 
+	SpawnGraveyard( SOTA_GY_ATTACKER_BEACH, TEAM_ALLIANCE );
+	SpawnGraveyard( SOTA_GY_DEFENDER, TEAM_HORDE );
+
 	SetWorldState( WORLDSTATE_SOTA_HORDE_ATTACKER, 0 );
 	SetWorldState( WORLDSTATE_SOTA_ALLIANCE_ATTACKER, 1 );
 };
@@ -614,6 +645,9 @@ void StrandOfTheAncient::SpawnControlPoint( SOTAControlPoints point, SOTACPState
 	cp.state = state;
 	cp.worldstate = CPWorldstates[ point ][ team ];
 	SetWorldState( cp.worldstate, 1 );
+
+	//Spawn graveyard
+	SpawnGraveyard( SOTAGraveyards( uint32( point ) ), team );
 }
 
 void StrandOfTheAncient::CaptureControlPoint( SOTAControlPoints point ){
@@ -640,4 +674,19 @@ void StrandOfTheAncient::CaptureControlPoint( SOTAControlPoints point ){
 	}
 
 	cp.banner->SetFaction( 14 ); // So they cannot be recaptured as per SOTA rules
+}
+
+void StrandOfTheAncient::SpawnGraveyard( SOTAGraveyards gyid, uint32 team ){
+	if( gyid >= NUM_SOTA_GRAVEYARDS )
+		return;
+
+	SOTAGraveyard &gy = graveyard[ gyid ];
+
+	gy.faction = team;
+
+	if( gy.spiritguide != NULL )
+		gy.spiritguide->Despawn( 0, 0 );
+
+	gy.spiritguide = SpawnSpiritGuide( GraveyardLocations[ gyid ], team );
+	AddSpiritGuide( gy.spiritguide );
 }

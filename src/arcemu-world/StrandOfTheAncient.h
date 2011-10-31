@@ -34,6 +34,15 @@ enum SOTAControlPoints{
 	NUM_SOTA_CONTROL_POINTS
 };
 
+enum SOTAGraveyards{
+	SOTA_GY_EAST            = 0,
+	SOTA_GY_WEST            = 1,
+	SOTA_GY_SOUTH           = 2,
+	SOTA_GY_DEFENDER        = 3,
+	SOTA_GY_ATTACKER_BEACH  = 4,
+	NUM_SOTA_GRAVEYARDS
+};
+
 enum SOTACPStates{
 	SOTA_CP_STATE_UNCONTROLLED    = 0,
 	SOTA_CP_STATE_ALLY_CONTROL    = 1,
@@ -72,6 +81,21 @@ struct SOTAControlPoint{
 	}
 };
 
+struct SOTAGraveyard{
+	Creature *spiritguide;
+	uint32 faction;
+
+	SOTAGraveyard(){
+		spiritguide = NULL;
+		faction = MAX_PLAYER_TEAMS;
+	}
+
+	~SOTAGraveyard(){
+		spiritguide = NULL;
+		faction = MAX_PLAYER_TEAMS;
+	}
+};
+
 class StrandOfTheAncient : public CBattleground
 {
 	private:
@@ -88,7 +112,9 @@ class StrandOfTheAncient : public CBattleground
 		list<Player*> sota_players;
 		PassengerMap boat1Crew;
 		PassengerMap boat2Crew;
+
 		SOTAControlPoint controlpoint[ NUM_SOTA_CONTROL_POINTS ];
+		SOTAGraveyard graveyard[ NUM_SOTA_GRAVEYARDS ];
 
 	public:
 		static CBattleground* Create(MapMgr* m, uint32 i, uint32 l, uint32 t) { return new StrandOfTheAncient(m, i, l, t); }
@@ -127,6 +153,7 @@ class StrandOfTheAncient : public CBattleground
 
 		void SpawnControlPoint( SOTAControlPoints point, SOTACPStates state );
 		void CaptureControlPoint( SOTAControlPoints point );
+		void SpawnGraveyard( SOTAGraveyards gyid, uint32 team );
 
 	protected:
 		void SpawnBuff(uint32 x);
