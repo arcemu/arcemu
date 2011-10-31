@@ -1405,6 +1405,17 @@ struct QuestXP
 	//unk                                                   // 10
 };
 
+struct MailTemplateEntry
+{
+	uint32      ID;				// 0
+	char*       subject;		// 1
+	//float		unused1[15]		// 2-16
+	//uint32	flags1			// 17 name flags, unused
+	char*       content;		// 18
+	//float		unused2[15]		// 19-34
+	//uint32	flags2			// 35 name flags, unused
+};
+
 struct WMOAreaTableEntry
 {
 	uint32 id; // 0
@@ -2004,6 +2015,7 @@ extern SERVER_DECL DBCStorage<ScalingStatDistributionEntry> dbcScalingStatDistri
 extern SERVER_DECL DBCStorage<ScalingStatValuesEntry> dbcScalingStatValues;
 extern SERVER_DECL DBCStorage<ItemLimitCategoryEntry> dbcItemLimitCategory;
 extern SERVER_DECL DBCStorage< QuestXP > dbcQuestXP;
+extern SERVER_DECL DBCStorage<MailTemplateEntry> dbcMailTemplateEntry;
 extern SERVER_DECL DBCStorage<WMOAreaTableEntry> dbcWMOAreaTable;
 extern SERVER_DECL DBCStorage< SummonPropertiesEntry > dbcSummonProperties;
 extern SERVER_DECL DBCStorage< NameGenEntry > dbcNameGen;

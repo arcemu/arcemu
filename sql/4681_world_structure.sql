@@ -87,7 +87,7 @@ CREATE TABLE `arcemu_db_version` (
 
 /*Data for the table `arcemu_db_version` */
 
-insert  into `arcemu_db_version`(`LastUpdate`) values (4630);
+insert  into `arcemu_db_version`(`LastUpdate`) values (4681);
 
 /*Table structure for table `areatriggers` */
 
@@ -1446,6 +1446,9 @@ CREATE TABLE `quests` (
   `RewXP` int(10) unsigned NOT NULL DEFAULT '0',
   `RewSpell` int(10) unsigned NOT NULL DEFAULT '0',
   `CastSpell` int(10) unsigned NOT NULL DEFAULT '0',
+  `MailTemplateId` INT( 10 ) UNSIGNED NOT NULL DEFAULT '0',
+  `MailDelaySecs` INT( 10 ) UNSIGNED NOT NULL DEFAULT '0',
+  `MailSendItem` INT( 10 ) UNSIGNED NOT NULL DEFAULT '0',
   `PointMapId` int(10) unsigned NOT NULL DEFAULT '0',
   `PointX` float NOT NULL DEFAULT '0',
   `PointY` float NOT NULL DEFAULT '0',

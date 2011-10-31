@@ -192,6 +192,10 @@ struct Quest
 	uint32 reward_spell;
 	uint32 effect_on_player;
 
+	uint32 MailTemplateId;
+	uint32 MailDelaySecs;
+	uint32 MailSendItem;
+
 	uint32 point_mapid;
 	uint32 point_x;
 	uint32 point_y;
