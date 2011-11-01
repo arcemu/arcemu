@@ -21,27 +21,6 @@
 Strand of the Ancients
 ======================
 
-* Banners
-	* Flagpole, 191311
-	* Alliance Banner, 191310
-	* Alliance Banner, 191306
-	* Alliance Banner, 191308
-	* Alliance Banner Aura, 180100
-	* Horde Banner, 191307
-	* Horde Banner, 191309
-	* Horde Banner, 191305
-	* Horde Banner Aura, 180101
-
-* Buffs
-	* Restoration Buff, 184977
-	* Restoration Buff, 184971
-	* Restoration Buff, 184965
-
-* Seaforium (Mount Projectiles)
-	* Seaforium Barrel, 194086 (Not used atm)
-	* Seaforium Barrel, 190753
-	* Massive Seaforium Charge, 190752
-
 * Other Game Objects
 	* Defender's Portal, 190763
 	* Defender's Portal, 191575
@@ -61,36 +40,12 @@ Strand of the Ancients
 
 * Setup index 34 in worldstring_tables to equal "Strand of the Ancients"
 
-* SQL Patched (Build 2177)
-	npc_gossip_textid
-			30586	13832	// Jojindi
-			29234	13832	// Strand of the Ancients Battlemaster - Wintergrasp
-			30578	13832	// Bethany Aldire - Stormwind City
-			30581	13832	// Buhurda - Exodar?
-			30590	13832	// Godo Cloudcleaver - Thunder Bluff
-			30584	13832	// Mabrian Fardawn - Silvermoon?
-			30579	13832	// Marga Bearbrawn - Ironforge
-			30580	13832	// Nivara Bladedancer - Darnassus
-			30583	13832	// Sarah Forthright - Undercity
-			30582	13832	// Ufuda Giant-Slayer - Orgrimmar
-			30587	13832	// Vinvo Goldgear - Shattrath
-
-* SQL Patched (Build 2172)
-	creature_protos (for above creatures)
-			npcflags = 1048577
-
 * Fix level requirements to join the battleground. And fix which npc text is used
   for the battlemaster gossip scripts, displaying the proper of 3 messages
 	npc_text
 		 13832 = You are not yet strong enough to do battle in the Strand of the Ancients. Return when you have gained more experience.
 		 13834 = We cannot allow the Alliance to turn the hidden secrets of the Strand of the Ancients against us. Will you join our brave warriors there?
 		+13833 = We cannot allow the Horde to turn the hidden secrets of the Strand of the Ancients against us. Will you join our brave warriors there?
-
-* Battles consist of two 10 minute rounds
-
-* Rounds end whe time expires or when the relic is captured.
-
-* Who defends first and attacks first should be random.
 
 * Increase the view distance on map 607 to 500 or 0 (Unlimited). See the
   transporter patch... Need a way to see the gates from as far away as
@@ -178,13 +133,6 @@ const float sotaGunMounts[GATE_COUNT][2][4] =
 
 // ---- Verify remaining ----- //
 
-// This change as the game progresses
-const float sotaRepop[2][4] =
-{
-	{ 1600.0f, 58.3f, 11.0f, 2.98f },
-	{ 1600.0f, 58.3f, 11.0f, 2.98f },
-};
-
 // There should only be two boats. boats three and four here
 // are a lazy hack for not wanting to program the boats to move via waypoints
 const float sotaBoats[4][4] =
@@ -194,23 +142,14 @@ const float sotaBoats[4][4] =
 	{ 1623.34f, 37.0f, 1.0f, 3.65f },
 	{ 2439.4f, 845.38f, 1.0f, 3.35f },
 };
-const float sotaAttackerStartingPosition[2][4] =
-{
-	{ 2445.288f, 849.35f, 10.0f, 3.76f },
-	{ 2445.288f, 849.35f, 10.0f, 3.76f },
-};
-const float sotaStopBoatsPlayer[2][4] =
-{
-	{ 1624.7f, 42.93f, 10.0f, 2.63f },
-	{ 1624.7f, 42.93f, 10.0f, 2.63f },
-};
-const float sotaDefenderStartingPosition[4] = { 1209.7f, -65.16f, 70.1f, 0.0f };
 
-const float sotaStartingPosition[2][4] =
-{
-	{ 2445.288f, 849.35f, 9.25f, 3.76f },
-	{ 1209.7f, -65.16f, 70.1f, 0.0f },
+static LocationVector sotaAttackerStartingPosition[ SOTA_NUM_ROUND_STAGES ] = {
+	LocationVector( 2445.288f, 849.35f, 10.0f, 3.76f ),
+	LocationVector( 1624.7f, 42.93f, 10.0f, 2.63f )
 };
+
+static LocationVector sotaDefenderStartingPosition
+	= LocationVector( 1209.7f, -65.16f, 70.1f, 0.0f );
 
 static LocationVector FlagPolePositions[ NUM_SOTA_CONTROL_POINTS ] = {
 	LocationVector( 1338.863892f, -153.336533f, 30.895121f, -2.530723f ),
@@ -320,16 +259,11 @@ void StrandOfTheAncient::OnRemovePlayer(Player* plr)
 		plr->RemoveAura(BG_PREPARATION);
 }
 
-LocationVector StrandOfTheAncient::GetStartingCoords(uint32 team)
-{
-	/*
-	 *	This needs to be flexible, we can't be starting players in the ocean for
-	 *	late arrivals. Also Repop locations need to change as the attack progresses.
-	 */
-
-	return LocationVector(sotaStartingPosition[team][0],
-	                      sotaStartingPosition[team][1], sotaStartingPosition[team][2],
-	                      sotaStartingPosition[team][3]);
+LocationVector StrandOfTheAncient::GetStartingCoords( uint32 team ){
+	if( team == Attackers )
+		return sotaAttackerStartingPosition[ roundprogress ];
+	else
+		return sotaDefenderStartingPosition;
 }
 
 void StrandOfTheAncient::HookOnPlayerDeath(Player* plr)
@@ -413,11 +347,13 @@ void StrandOfTheAncient::OnCreate()
 		uint32 i;
 
 		BattleRound = 1;
+		roundprogress = SOTA_ROUND_PREPARATION;
 
 		for(i = 0; i < 2; i++)
 		{
 			m_players[i].clear();
 			m_pendPlayers[i].clear();
+			RoundFinishTime[ i ] = 10 * 60;
 		}
 
 		m_pvpData.clear();
@@ -458,52 +394,14 @@ void StrandOfTheAncient::OnCreate()
 			SpawnBuff(i);
 	}
 
-	SetWorldState(WORLDSTATE_SOTA_CAPTURE_BAR_DISPLAY, 0);
-	SetWorldState(WORLDSTATE_SOTA_CAPTURE_BAR_VALUE, 0);
 	PrepareRound();
-	SetWorldState(WORLDSTATE_SOTA_BONUS_TIME, 0);
-	SetWorldState(WORLDSTATE_SOTA_TIMER_1, 0);
-	SetWorldState(WORLDSTATE_SOTA_TIMER_2, 0);
-	SetWorldState(WORLDSTATE_SOTA_TIMER_3, 0);
 }
 
 void StrandOfTheAncient::OnStart(){
 
-	LocationVector dest;
 	m_started = true;
 
-	RemoveAuraFromTeam( 0, BG_PREPARATION );
-	RemoveAuraFromTeam( 1, BG_PREPARATION );
-
-	m_mainLock.Acquire();
-
-	for( uint32 team = TEAM_ALLIANCE; team < MAX_PLAYER_TEAMS; team++ ){
-		for( std::set< Player* >::iterator itr = m_players[ team ].begin(); itr != m_players[ team ].end(); itr++ ){
-			Player *p = *itr;
-			
-			if( team != Attackers )
-				continue;
-
-			dest.ChangeCoords( sotaStopBoatsPlayer[ team ][ 0 ],
-				               sotaStopBoatsPlayer[ team ][ 1 ],
-							   sotaStopBoatsPlayer[ team ][ 2 ],
-							   sotaStopBoatsPlayer[ team ][ 3 ] );
-			
-			p->SafeTeleport( p->GetMapId(), p->GetInstanceID(), dest );
-		}
-	}
-
-	m_mainLock.Release();
-
-	SetWorldState(WORLDSTATE_SOTA_CAPTURE_BAR_DISPLAY, (uint32) - 1);
-	SetWorldState(WORLDSTATE_SOTA_CAPTURE_BAR_VALUE, (uint32) - 1);
-	SetWorldState(WORLDSTATE_SOTA_BONUS_TIME, 1);
-	SetWorldState(WORLDSTATE_SOTA_TIMER_1, 10); // 10 Minute Timer
-
-	SetTime(ROUND_LENGTH, 0);
-	sEventMgr.AddEvent(this, &StrandOfTheAncient::TimeTick, EVENT_SOTA_TIMER, MSTIME_SECOND * 5, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-
-	UpdatePvPData();
+	StartRound();
 }
 
 void StrandOfTheAncient::HookGenerateLoot(Player* plr, Object* pOCorpse)
@@ -552,7 +450,7 @@ bool StrandOfTheAncient::HookQuickLockOpen( GameObject *go, Player *player, Spel
 	uint32 entry = go->GetEntry();
 
 	if( entry == GO_RELIC )
-		;// this is where the round ends
+		FinishRound();
 
 	return true;
 }
@@ -563,8 +461,7 @@ void StrandOfTheAncient::HookFlagStand(Player* plr, GameObject* obj)
 }
 
 // time in seconds
-void StrandOfTheAncient::SetTime(uint32 secs, uint32 WorldState)
-{
+void StrandOfTheAncient::SetTime( uint32 secs ){
 	uint32 minutes = secs / TIME_MINUTE;
 	uint32 seconds = secs % TIME_MINUTE;
 	uint32 digits[3];
@@ -579,34 +476,149 @@ void StrandOfTheAncient::SetTime(uint32 secs, uint32 WorldState)
 }
 
 void StrandOfTheAncient::PrepareRound(){
-	Attackers = TEAM_ALLIANCE;
+	roundprogress = SOTA_ROUND_PREPARATION;
 
-	SpawnControlPoint( SOTA_CONTROL_POINT_EAST_GY,  SOTA_CP_STATE_HORDE_CONTROL );
-	SpawnControlPoint( SOTA_CONTROL_POINT_WEST_GY,  SOTA_CP_STATE_HORDE_CONTROL );
-	SpawnControlPoint( SOTA_CONTROL_POINT_SOUTH_GY, SOTA_CP_STATE_HORDE_CONTROL );
+	for( uint32 i = 0; i < GATE_COUNT; i++ )
+		m_gates[ i ]->Rebuild();
 
-	SpawnGraveyard( SOTA_GY_ATTACKER_BEACH, TEAM_ALLIANCE );
-	SpawnGraveyard( SOTA_GY_DEFENDER, TEAM_HORDE );
+	m_endgate->Rebuild();
 
-	SetWorldState( WORLDSTATE_SOTA_HORDE_ATTACKER, 0 );
-	SetWorldState( WORLDSTATE_SOTA_ALLIANCE_ATTACKER, 1 );
+	if( BattleRound == 1 ){
+		Attackers = RandomUInt( 1 );
+
+		if( Attackers == TEAM_ALLIANCE )
+			Defenders = TEAM_HORDE;
+		else
+			Defenders = TEAM_ALLIANCE;
+	}else{
+		std::swap( Attackers, Defenders );
+	}
+
+	
+
+	SOTACPStates state;
+
+	if( Attackers == TEAM_ALLIANCE ){
+		state = SOTA_CP_STATE_HORDE_CONTROL;
+		m_relic->SetFaction( 1 );
+		SetWorldState( WORLDSTATE_SOTA_HORDE_ATTACKER, 0 );
+		SetWorldState( WORLDSTATE_SOTA_ALLIANCE_ATTACKER, 1 );
+		SetWorldState( WORLDSTATE_SOTA_SHOW_ALLY_ROUND, 1 );
+		SetWorldState( WORLDSTATE_SOTA_SHOW_HORDE_ROUND, 0 );
+		SetWorldState( WORLDSTATE_SOTA_SHOW_ALLY_DEFENSE, 0 );
+		SetWorldState( WORLDSTATE_SOTA_SHOW_HORDE_DEFENSE, 1 );
+		SetWorldState( WORLDSTATE_SOTA_SHOW_ALLY_BEACHHEAD1, 1 );
+		SetWorldState( WORLDSTATE_SOTA_SHOW_ALLY_BEACHHEAD2, 1 );
+		SetWorldState( WORLDSTATE_SOTA_SHOW_HORDE_BEACHHEAD1, 0 );
+		SetWorldState( WORLDSTATE_SOTA_SHOW_HORDE_BEACHHEAD2, 0 );
+	}else{
+		state = SOTA_CP_STATE_ALLY_CONTROL;
+		m_relic->SetFaction( 2 );
+		SetWorldState( WORLDSTATE_SOTA_HORDE_ATTACKER, 1 );
+		SetWorldState( WORLDSTATE_SOTA_ALLIANCE_ATTACKER, 0 );
+		SetWorldState( WORLDSTATE_SOTA_SHOW_ALLY_ROUND, 0 );
+		SetWorldState( WORLDSTATE_SOTA_SHOW_HORDE_ROUND, 1 );
+		SetWorldState( WORLDSTATE_SOTA_SHOW_ALLY_DEFENSE, 1 );
+		SetWorldState( WORLDSTATE_SOTA_SHOW_HORDE_DEFENSE, 0 );
+		SetWorldState( WORLDSTATE_SOTA_SHOW_ALLY_BEACHHEAD1, 0 );
+		SetWorldState( WORLDSTATE_SOTA_SHOW_ALLY_BEACHHEAD2, 0 );
+		SetWorldState( WORLDSTATE_SOTA_SHOW_HORDE_BEACHHEAD1, 1 );
+		SetWorldState( WORLDSTATE_SOTA_SHOW_HORDE_BEACHHEAD2, 1 );
+	}
+
+	SpawnControlPoint( SOTA_CONTROL_POINT_EAST_GY,  state );
+	SpawnControlPoint( SOTA_CONTROL_POINT_WEST_GY,  state );
+	SpawnControlPoint( SOTA_CONTROL_POINT_SOUTH_GY, state );
+	SpawnGraveyard( SOTA_GY_ATTACKER_BEACH, Attackers );
+	SpawnGraveyard( SOTA_GY_DEFENDER, Defenders );
+
+	if( BattleRound == 2 ){
+		// Teleport players to their place and cast preparation on them
+		m_mainLock.Acquire();
+
+		for( std::set< Player* >::iterator itr = m_players[ Attackers ].begin(); itr != m_players[ Attackers ].end(); ++itr ){
+			Player *p = *itr;
+			p->SafeTeleport( p->GetMapId(), p->GetInstanceID(), sotaAttackerStartingPosition[ 0 ] );
+			p->CastSpell( p, BG_PREPARATION, true );
+		}
+
+		for( std::set< Player* >::iterator itr = m_players[ Defenders ].begin(); itr != m_players[ Defenders ].end(); ++itr ){
+			Player *p = *itr;
+			p->SafeTeleport( p->GetMapId(), p->GetInstanceID(), sotaDefenderStartingPosition );
+			p->CastSpell( p, BG_PREPARATION, true );
+		}
+
+		m_mainLock.Release();
+
+		sEventMgr.AddEvent( this, &StrandOfTheAncient::StartRound, EVENT_SOTA_START_ROUND, 1 * 10 * 1000, 1, 0 );
+	}
 };
 
 void StrandOfTheAncient::StartRound(){
+	roundprogress = SOTA_ROUND_STARTED;
+
+	m_mainLock.Acquire();
+	
+	for( std::set< Player* >::iterator itr = m_players[ Attackers ].begin(); itr != m_players[ Attackers ].end(); itr++ ){
+		Player *p = *itr;
+		
+		p->SafeTeleport( p->GetMapId(), p->GetInstanceID(), sotaAttackerStartingPosition[ SOTA_ROUND_STARTED ] );
+		p->RemoveAura( BG_PREPARATION );
+	}
+
+	m_mainLock.Release();
+
+	RemoveAuraFromTeam( Defenders, BG_PREPARATION );
+
+	SetWorldState( WORLDSTATE_SOTA_TIMER_1, 10 );
+	SetTime( ROUND_LENGTH );
+	sEventMgr.AddEvent( this, &StrandOfTheAncient::TimeTick, EVENT_SOTA_TIMER, MSTIME_SECOND * 5, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
+	UpdatePvPData();
 }
 
 void StrandOfTheAncient::FinishRound(){
+	sEventMgr.RemoveEvents( this, EVENT_SOTA_TIMER );
+	EventResurrectPlayers();
+
+	RoundFinishTime[ BattleRound - 1 ] = RoundTime;
+
+	if( BattleRound == 1 ){
+		BattleRound = 2;
+		PrepareRound();
+	}else{
+		if( RoundFinishTime[ 0 ] < RoundFinishTime[ 1 ] )
+			Finish( Attackers );
+		else
+			Finish( Defenders );
+	}
 }
 
 void StrandOfTheAncient::Finish( uint32 winningteam ){
+    sEventMgr.RemoveEvents( this );
+	m_ended = true;
+	m_winningteam = winningteam;
+
+	uint32 losingteam;
+	if( winningteam == TEAM_ALLIANCE )
+		losingteam = TEAM_HORDE;
+	else
+		losingteam = TEAM_ALLIANCE;
+
+	AddHonorToTeam( winningteam, 3 * 185 );
+	AddHonorToTeam( losingteam, 1 * 185 );
+	CastSpellOnTeam( m_winningteam, 61213 );
+
+	UpdatePvPData();
+
+	sEventMgr.AddEvent( TO< CBattleground* >( this ), &CBattleground::Close, EVENT_BATTLEGROUND_CLOSE, 120 * 1000, 1,0 );
 }
 
-void StrandOfTheAncient::TimeTick()
-{
-	SetTime(GetRoundTime() - 5, 0);
-	if(GetRoundTime() == 0)
-	{
+void StrandOfTheAncient::TimeTick(){
+	SetTime( RoundTime - 5 );
+
+	if( RoundTime == 0){
 		sEventMgr.RemoveEvents(this, EVENT_SOTA_TIMER);
+		FinishRound();
 	}
 };
 
@@ -627,9 +639,6 @@ void StrandOfTheAncient::SpawnControlPoint( SOTAControlPoints point, SOTACPState
 		return;
 
 	SOTAControlPoint &cp = controlpoint[ point ];
-
-	if( cp.state == state )
-		return;
 
 	if( cp.worldstate != 0 )
 		SetWorldState( cp.worldstate, 0 );

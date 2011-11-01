@@ -60,6 +60,12 @@ enum Gate
     GATE_COUNT	= 5,
 };
 
+enum SOTABattleRoundProgress{
+	SOTA_ROUND_PREPARATION,
+	SOTA_ROUND_STARTED,
+	SOTA_NUM_ROUND_STAGES
+};
+
 struct SOTAControlPoint{
 	GameObject *pole;
 	GameObject *banner;
@@ -100,8 +106,11 @@ class StrandOfTheAncient : public CBattleground
 {
 	private:
 		uint32 Attackers; // 0 - horde / 1 - alliance
+		uint32 Defenders;
 		uint32 BattleRound;
 		uint32 RoundTime;
+		uint32 RoundFinishTime[ 2 ];
+		SOTABattleRoundProgress roundprogress;
 		GameObject* m_boats[4];
 		GameObject* m_buffs[BUFF_COUNT];
 		GameObject* m_relic;
@@ -146,7 +155,7 @@ class StrandOfTheAncient : public CBattleground
 		void OnStart();
 		void SetIsWeekend(bool isweekend);
 		void SetRoundTime(uint32 secs) { RoundTime = secs; };
-		void SetTime(uint32 secs, uint32 WorldState);
+		void SetTime( uint32 secs );
 		void TimeTick();
 		void PrepareRound();
 		void StartRound();
