@@ -741,8 +741,11 @@ void IsleOfConquest::SetIsWeekend(bool isweekend)
 }
 
 void IsleOfConquest::HookOnUnitKill( Player* plr, Unit* pVictim ){
-	if( pVictim->IsCreature() ){
-		Creature *c = TO< Creature* >( pVictim );
+}
+
+void IsleOfConquest::HookOnUnitDied( Unit *victim ){
+	if( victim->IsCreature() ){
+		Creature *c = TO< Creature* >( victim );
 
 		if( ( generals[ TEAM_ALLIANCE ] != NULL ) && ( c->GetEntry() == generals[ TEAM_ALLIANCE ]->GetEntry() ) ){
 			Finish( TEAM_ALLIANCE );

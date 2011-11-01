@@ -370,6 +370,8 @@ class SERVER_DECL CBattleground : public EventableObject
 		/* On Unit Killing */
 		virtual void HookOnUnitKill(Player* plr, Unit* pVictim) = 0;
 
+		virtual void HookOnUnitDied( Unit *victim ){}
+
 		/* Retrieval Functions */
 		ARCEMU_INLINE uint32 GetId() { return m_id; }
 		ARCEMU_INLINE uint32 GetLevelGroup() { return m_levelGroup; }

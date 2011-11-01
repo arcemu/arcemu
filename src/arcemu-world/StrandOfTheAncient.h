@@ -20,6 +20,12 @@
 
 #define BUFF_COUNT		3
 
+#define SOTA_NUM_CANONS 10
+#define SOTA_NUM_DEMOLISHERS 6
+#define SOTA_NUM_DOCK_DEMOLISHERS 4
+#define SOTA_EAST_WS_DEMOLISHER_INDEX 5
+#define SOTA_WEST_WS_DEMOLISHER_INDEX 4
+
 #define TEAM_DEFENDER	0
 #define TEAM_ATTACKER	1
 #define GUN_LEFT		0
@@ -120,6 +126,8 @@ class StrandOfTheAncient : public CBattleground
 		GameObject* m_gateTransporters[GATE_COUNT];
 		PassengerMap boat1Crew;
 		PassengerMap boat2Crew;
+		Creature *canon[ SOTA_NUM_CANONS ];
+		Creature *demolisher[ SOTA_NUM_DEMOLISHERS ];
 
 		SOTAControlPoint controlpoint[ NUM_SOTA_CONTROL_POINTS ];
 		SOTAGraveyard graveyard[ NUM_SOTA_GRAVEYARDS ];
@@ -143,6 +151,7 @@ class StrandOfTheAncient : public CBattleground
 		void HookOnShadowSight();
 		void HookGenerateLoot(Player* plr, Object* pOCorpse);
 		void HookOnUnitKill(Player* plr, Unit* pVictim);
+		void HookOnUnitDied( Unit *victim );
 		bool HookSlowLockOpen( GameObject *go, Player *player, Spell *spell );
 		bool HookQuickLockOpen( GameObject *go, Player *player, Spell *spell );
 		void HookOnPlayerDeath(Player* plr);

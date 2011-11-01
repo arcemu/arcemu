@@ -2178,6 +2178,9 @@ void Pet::Die(Unit* pAttacker, uint32 damage, uint32 spellid)
 		}
 		pPet->DelayedRemove(false);
 	}/* ----------------------------- PET DEATH HANDLING END -------------- */
+
+	if( m_mapMgr->m_battleground != NULL )
+		m_mapMgr->m_battleground->HookOnUnitDied( this );
 }
 
 Object* Pet::GetPlayerOwner()

@@ -2182,6 +2182,9 @@ void Creature::Die(Unit* pAttacker, uint32 damage, uint32 spellid)
 		if(charmer != NULL)
 			charmer->UnPossess();
 	}
+
+	if( m_mapMgr->m_battleground != NULL )
+		m_mapMgr->m_battleground->HookOnUnitDied( this );
 }
 
 void Creature::SendChatMessage(uint8 type, uint32 lang, const char* msg, uint32 delay)

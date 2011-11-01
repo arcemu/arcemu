@@ -179,6 +179,7 @@ class IsleOfConquest : public CBattleground{
 		void HookOnShadowSight();
 		void SetIsWeekend( bool isweekend );
 		void HookOnUnitKill( Player *plr, Unit* pVictim );
+		void HookOnUnitDied( Unit *victim );
 		LocationVector GetStartingCoords( uint32 Team );
 		void AddReinforcements( uint32 team, uint32 amount );
 		void RemoveReinforcements( uint32 team, uint32 amount );

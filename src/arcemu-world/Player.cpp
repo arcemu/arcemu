@@ -12839,7 +12839,7 @@ void Player::Die(Unit* pAttacker, uint32 damage, uint32 spellid)
 					uint64 guid = GetChannelSpellTargetGUID();
 					DynamicObject* dObj = GetMapMgr()->GetDynamicObject(Arcemu::Util::GUID_LOPART(guid));
 					if(!dObj)
-						return;
+						continue;
 
 					dObj->Remove();
 				}
@@ -12925,6 +12925,8 @@ void Player::Die(Unit* pAttacker, uint32 damage, uint32 spellid)
 
 
 	KillPlayer();
+	if( m_mapMgr->m_battleground != NULL )
+		m_mapMgr->m_battleground->HookOnUnitDied( this );
 }
 
 
