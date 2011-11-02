@@ -130,7 +130,7 @@ static LocationVector CanonLocations[ SOTA_NUM_CANONS ] = {
 	LocationVector( 1422.115f, -196.433f, 42.1825f, 1.0222f ),
 	LocationVector( 1454.887f, -220.454f, 41.956f, 0.9627f ),
 	LocationVector( 1232.345f, -187.517f, 66.945f, 0.45f ),
-	LocationVector( 1249.634f, 224.189f, 66.72f, 0.635f ),
+	LocationVector( 1249.634f, -224.189f, 66.72f, 0.635f ),
 	LocationVector( 1236.213f, 92.287f, 64.965f, 5.751f ),
 	LocationVector( 1215.11f, 57.772f, 64.739f, 5.78f )
 };
@@ -329,39 +329,6 @@ bool StrandOfTheAncient::HookHandleRepop( Player *plr ){
 	return true;
 }
 
-void StrandOfTheAncient::SpawnBuff(uint32 x)
-{
-	//uint32 mapid = BattlegroundManager.GetMap(BATTLEGROUND_STRAND_OF_THE_ANCIENT);
-	uint32 mapid = 607;
-	switch(x)
-	{
-		case 0:
-			m_buffs[x] = SpawnGameObject(184977, mapid, 1449.9296875f, 1470.70971679688f, 342.634552001953f, -1.64060950279236f, 0, 114, 1);
-			m_buffs[x]->SetParentRotation(2, 0.73135370016098f);
-			m_buffs[x]->SetParentRotation(3, -0.681998312473297f);
-			m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-			m_buffs[x]->SetType(GAMEOBJECT_TYPE_TRAP);
-			m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
-			break;
-		case 1:
-			m_buffs[x] = SpawnGameObject(184971, mapid, 1005.17071533203f, 1447.94567871094f, 335.903228759766f, 1.64060950279236f, 0, 114, 1);
-			m_buffs[x]->SetParentRotation(2, 0.73135370016098f);
-			m_buffs[x]->SetParentRotation(3, 0.681998372077942f);
-			m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-			m_buffs[x]->SetType(GAMEOBJECT_TYPE_TRAP);
-			m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
-			break;
-		case 2:
-			m_buffs[x] = SpawnGameObject(184965, mapid, 1317.50573730469f, 1550.85070800781f, 313.234375f, -0.26179963350296f, 0, 114, 1);
-			m_buffs[x]->SetParentRotation(2, 0.130526319146156f);
-			m_buffs[x]->SetParentRotation(3, -0.991444826126099f);
-			m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-			m_buffs[x]->SetType(GAMEOBJECT_TYPE_TRAP);
-			m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
-			break;
-	}
-}
-
 void StrandOfTheAncient::OnCreate()
 {
 	{
@@ -408,11 +375,6 @@ void StrandOfTheAncient::OnCreate()
 		m_endgate = m_mapMgr->CreateAndSpawnGameObject(GateGOIds[i],
 		            sotaChamberGate[0], sotaChamberGate[1], sotaChamberGate[2],
 		            sotaChamberGate[3], 1.0f);
-
-
-		/* create the buffs */
-		for(i = 0; i < BUFF_COUNT; ++i)
-			SpawnBuff(i);
 	}
 
 	PrepareRound();

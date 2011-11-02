@@ -175,7 +175,4 @@ class StrandOfTheAncient : public CBattleground
 		void CaptureControlPoint( SOTAControlPoints point );
 		void SpawnGraveyard( SOTAGraveyards gyid, uint32 team );
 
-	protected:
-		void SpawnBuff(uint32 x);
-
 };
