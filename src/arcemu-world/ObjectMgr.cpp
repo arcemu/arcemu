@@ -3311,7 +3311,7 @@ void ObjectMgr::LoadSpellTargetConstraints()
 	Log.Notice("ObjectMgr", "Loading spell target constraints...");
 
 	// Let's try to be idiot proof :/
-	QueryResult* result = WorldDatabase.Query("SELECT * FROM SpellTargetConstraints WHERE SpellID > 0 ORDER BY SpellID");
+	QueryResult* result = WorldDatabase.Query("SELECT * FROM spelltargetconstraints WHERE SpellID > 0 ORDER BY SpellID");
 
 	if(result != NULL)
 	{

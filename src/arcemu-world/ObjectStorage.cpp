@@ -558,7 +558,7 @@ void Storage_FillTaskList(TaskList & tl)
 	make_task(WorldStringTableStorage, WorldStringTable, HashMapStorageContainer, "worldstring_tables", gWorldStringTableFormat);
 	make_task(WorldBroadCastStorage, WorldBroadCast, HashMapStorageContainer, "worldbroadcast", gWorldBroadCastFormat);
 	make_task(BGMasterStorage, BGMaster, HashMapStorageContainer, "battlemasters", gBattleMasterFormat);
-	make_task(SpellClickSpellStorage, SpellClickSpell, HashMapStorageContainer, "SpellClickSpells", gSpellClickSpellsFormat);
+	make_task(SpellClickSpellStorage, SpellClickSpell, HashMapStorageContainer, "spellclickspells", gSpellClickSpellsFormat);
 	make_task(TotemDisplayIdStorage, TotemDisplayIdEntry, HashMapStorageContainer, "totemdisplayids", gTotemDisplayIDsFormat);
 }
 

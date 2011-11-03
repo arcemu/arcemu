@@ -586,7 +586,12 @@ bool Master::CheckDBVersion()
 	if(WorldDBVersion != REQUIRED_WORLD_DB_VERSION)
 	{
 		Log.Error("Database", "World database version doesn't match the required version which is %u.", REQUIRED_WORLD_DB_VERSION);
-		Log.Error("Database", "You need to apply the world update queries that start with a larger number than %u. Exiting.", WorldDBVersion);
+		
+		if( WorldDBVersion < REQUIRED_WORLD_DB_VERSION )
+			Log.Error("Database", "You need to apply the world update queries that start with a larger number than %u. Exiting.", WorldDBVersion);
+		else
+			Log.Error("Database", "Your world database is too new for this Arcemu version, you need to update your server. Exiting.");
+
 		delete wqr;
 		return false;
 	}
@@ -607,7 +612,10 @@ bool Master::CheckDBVersion()
 	if(CharDBVersion != REQUIRED_CHAR_DB_VERSION)
 	{
 		Log.Error("Database", "Character database version doesn't match the required version which is %u.", REQUIRED_CHAR_DB_VERSION);
-		Log.Error("Database", "You need to apply the character update queries that start with a larger number than %u. Exiting.", CharDBVersion);
+		if(CharDBVersion < REQUIRED_CHAR_DB_VERSION )
+			Log.Error("Database", "You need to apply the character update queries that start with a larger number than %u. Exiting.", CharDBVersion);
+		else
+			Log.Error("Database", "Your character database is too new for this Arcemu version, you need to update your server. Exiting.");
 		delete cqr;
 		return false;
 	}

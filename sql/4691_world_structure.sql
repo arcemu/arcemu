@@ -12,34 +12,6 @@ MySQL - 5.1.49-1ubuntu8 : Database - wdb
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-/*Table structure for table `SpellClickSpells` */
-
-DROP TABLE IF EXISTS `SpellClickSpells`;
-
-CREATE TABLE `SpellClickSpells` (
-  `CreatureID` int(10) unsigned NOT NULL,
-  `SpellID` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`CreatureID`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-/*Data for the table `SpellClickSpells` */
-
-insert  into `SpellClickSpells`(`CreatureID`,`SpellID`) values (28605,52263),(32633,61425),(29929,55531),(31897,7001),(31896,27873),(31895,27874),(31894,28276),(31893,48084),(31883,48085);
-
-/*Table structure for table `SpellTargetConstraints` */
-
-DROP TABLE IF EXISTS `SpellTargetConstraints`;
-
-CREATE TABLE `SpellTargetConstraints` (
-  `SpellID` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'Identifier of the spell',
-  `TargetType` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'Type of the target ( 0 = Creature, 1 = Gameobject )',
-  `TargetID` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'Identifier of the target',
-  PRIMARY KEY (`SpellID`,`TargetType`,`TargetID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-/*Data for the table `SpellTargetConstraints` */
-
-insert  into `SpellTargetConstraints`(`SpellID`,`TargetType`,`TargetID`) values (0,0,0),(2699,0,5307),(3607,0,2530),(4130,0,2760),(4131,0,2761),(4132,0,2762),(19548,0,1196),(19674,0,1126),(19687,0,1201),(19688,0,2956),(19689,0,2959),(19692,0,2970),(19693,0,1998),(19694,0,3099),(19696,0,3107),(19697,0,3126),(19699,0,2043),(19700,0,1996),(19938,0,10556),(27907,0,15941),(27907,0,15945),(28369,0,18879),(29528,0,16518),(30077,0,17226),(30099,0,15650),(30102,0,15652),(30105,0,16353),(30646,0,17217),(30653,0,17374),(30654,0,17203),(30877,0,17326),(32578,0,20748),(32825,0,22357),(34665,0,16880),(35772,0,20774),(36310,0,20058),(36314,0,20132),(37136,0,21731),(38177,0,21387),(38554,0,19440),(41291,0,22357),(41621,0,23487),(44997,0,24972),(47394,0,26261),(52244,0,28750),(52252,0,28750),(52389,0,28802),(52390,0,28802),(52487,0,28843);
 
 /*Table structure for table `ai_agents` */
 
@@ -1674,6 +1646,20 @@ CREATE TABLE `spell_proc` (
 
 insert  into `spell_proc`(`spellID`,`ProcOnNameHash`,`ProcFlag`,`TargetSelf`,`ProcChance`,`ProcCharges`,`ProcInterval`,`EffectTriggerSpell[0]`,`EffectTriggerSpell[1]`,`EffectTriggerSpell[2]`) values (23920,0,134348800,0,100,1,0,-1,-1,-1),(30482,0,10792,0,-1,0,0,-1,-1,-1),(43045,0,10792,0,-1,0,0,-1,-1,-1),(324,0,666152,0,100,3,0,-1,-1,-1),(325,0,666152,0,100,3,0,-1,-1,-1),(905,0,666152,0,100,3,0,-1,-1,-1),(945,0,666152,0,100,3,0,-1,-1,-1),(8134,0,666152,0,100,3,0,-1,-1,-1),(10431,0,666152,0,100,3,0,-1,-1,-1),(10432,0,666152,0,100,3,0,-1,-1,-1),(25469,0,666152,0,100,3,0,-1,-1,-1),(25472,0,666152,0,100,3,0,-1,-1,-1),(49280,0,666152,0,100,3,0,-1,-1,-1),(49281,0,666152,0,100,3,0,-1,-1,-1),(43046,0,10792,0,-1,-1,0,-1,-1,-1),(37982,0,4,0,1,0,0,-1,-1,-1),(27521,0,16,0,5,0,0,-1,-1,-1),(38394,0,1024,0,-1,-1,0,-1,-1,-1),(64976,0,16,0,-1,-1,0,-1,-1,-1),(65156,3808755873,0,0,-1,-1,0,-1,-1,-1);
 
+/*Table structure for table `spellclickspells` */
+
+DROP TABLE IF EXISTS `spellclickspells`;
+
+CREATE TABLE `spellclickspells` (
+  `CreatureID` int(10) unsigned NOT NULL,
+  `SpellID` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`CreatureID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+/*Data for the table `spellclickspells` */
+
+insert  into `spellclickspells`(`CreatureID`,`SpellID`) values (28605,52263),(32633,61425),(29929,55531),(31897,7001),(31896,27873),(31895,27874),(31894,28276),(31893,48084),(31883,48085);
+
 /*Table structure for table `spelloverride` */
 
 DROP TABLE IF EXISTS `spelloverride`;
@@ -1685,6 +1671,21 @@ CREATE TABLE `spelloverride` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Spell System';
 
 /*Data for the table `spelloverride` */
+
+/*Table structure for table `spelltargetconstraints` */
+
+DROP TABLE IF EXISTS `spelltargetconstraints`;
+
+CREATE TABLE `spelltargetconstraints` (
+  `SpellID` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'Identifier of the spell',
+  `TargetType` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'Type of the target ( 0 = Creature, 1 = Gameobject )',
+  `TargetID` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'Identifier of the target',
+  PRIMARY KEY (`SpellID`,`TargetType`,`TargetID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+/*Data for the table `spelltargetconstraints` */
+
+insert  into `spelltargetconstraints`(`SpellID`,`TargetType`,`TargetID`) values (0,0,0),(2699,0,5307),(3607,0,2530),(4130,0,2760),(4131,0,2761),(4132,0,2762),(19548,0,1196),(19674,0,1126),(19687,0,1201),(19688,0,2956),(19689,0,2959),(19692,0,2970),(19693,0,1998),(19694,0,3099),(19696,0,3107),(19697,0,3126),(19699,0,2043),(19700,0,1996),(19938,0,10556),(27907,0,15941),(27907,0,15945),(28369,0,18879),(29528,0,16518),(30077,0,17226),(30099,0,15650),(30102,0,15652),(30105,0,16353),(30646,0,17217),(30653,0,17374),(30654,0,17203),(30877,0,17326),(32578,0,20748),(32825,0,22357),(34665,0,16880),(35772,0,20774),(36310,0,20058),(36314,0,20132),(37136,0,21731),(38177,0,21387),(38554,0,19440),(41291,0,22357),(41621,0,23487),(44997,0,24972),(47394,0,26261),(52244,0,28750),(52252,0,28750),(52389,0,28802),(52390,0,28802),(52487,0,28843);
 
 /*Table structure for table `teleport_coords` */
 
