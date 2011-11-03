@@ -184,7 +184,13 @@ bool ConfigFile::SetSource(const char* file, bool ignorecase)
 				/* grab a line. */
 				end = buffer.find(EOL);
 				if(end == string::npos)
-					break;
+				{
+					if(buffer.size() == 0)
+						break;
+					line = buffer;
+					buffer.clear();
+					goto parse;
+				}
 
 				line = buffer.substr(0, end);
 				buffer.erase(0, end + EOL_SIZE);
