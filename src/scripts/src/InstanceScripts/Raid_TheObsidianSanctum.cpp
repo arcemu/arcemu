@@ -246,8 +246,6 @@ class SartharionAI : public MoonScriptBossAI
 			AddEmote(Event_OnTargetDied, "This is why we call you lesser beings.", Text_Yell, 14097);
 			AddEmote(Event_OnCombatStart, "It is my charge to watch over these eggs. I will see you burn before any harm comes to them!", Text_Yell, 14093);
 
-			m_bEnraged = false;
-
 			for(int i = 0; i < OS_DATA_END - 1; i++)
 			{
 				m_bDrakes[i] = false;

@@ -188,7 +188,7 @@ namespace luaItem
 	int GetSpellId(lua_State* L, Item* ptr)
 	{
 		uint32 index = luaL_checkint(L, 1);
-		if(!ptr || index < 0 || index > 5)
+		if(!ptr || index >= 5)
 			return 0;
 		ItemPrototype* proto = ptr->GetProto();
 		lua_pushnumber(L, proto->Spells[index].Id);
@@ -198,7 +198,7 @@ namespace luaItem
 	int GetSpellTrigger(lua_State* L, Item* ptr)
 	{
 		uint32 index = luaL_checkint(L, 1);
-		if(!ptr || index < 0 || index > 5)
+		if(!ptr || index >= 5)
 			return 0;
 		ItemPrototype* proto = ptr->GetProto();
 		lua_pushnumber(L, proto->Spells[index].Trigger);

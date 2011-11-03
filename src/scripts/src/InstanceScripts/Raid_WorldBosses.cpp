@@ -1324,7 +1324,7 @@ class KruulAI : public CreatureAIScript
 					RandX = 0 + Rand;
 					break;
 			}
-			Rand = 0;
+
 			Rand = rand() % 15;
 			switch(rand() % 2)
 			{

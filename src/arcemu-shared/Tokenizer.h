@@ -51,7 +51,7 @@ namespace Arcemu
 					while(it != rostr.end())
 					{
 						while(this->roPred(*it))
-							it++;
+							++it;
 						//Find next token
 
 						itTokenEnd = find_if(it, rostr.end(), roPred);

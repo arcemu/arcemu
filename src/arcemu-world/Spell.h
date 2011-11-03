@@ -1991,7 +1991,7 @@ class SERVER_DECL Spell : public EventableObject
 							this->Dur = 0;
 						c_dur = this->Dur;
 					}
-					if(sd->Duration1 >= 0 && !c_dur)
+					if((int32)sd->Duration1 >= 0 && !c_dur)
 					{
 						this->Dur = sd->Duration1;
 					}

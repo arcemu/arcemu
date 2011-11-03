@@ -2946,7 +2946,7 @@ class SapphironAI : public CreatureAIScript
 			data << uint32(0);
 			_unit->SendMessageToSet(&data, false);
 
-			ChillCounter = 0;
+			ChillTarget = NULL;
 			FlightActions = 0;
 			ChillCounter = 0;
 			PhaseTimer = 0;
@@ -2980,7 +2980,7 @@ class SapphironAI : public CreatureAIScript
 			RegisterAIUpdateEvent(_unit->GetBaseAttackTime(MELEE));
 
 			PhaseTimer = (uint32)time(NULL) + 35;
-			ChillCounter = 0;
+			ChillTarget = NULL;
 			FlightActions = 0;
 			ChillCounter = 0;
 			m_phase = 1;

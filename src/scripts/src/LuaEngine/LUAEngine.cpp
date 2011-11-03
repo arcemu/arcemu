@@ -1043,7 +1043,7 @@ bool LuaHookOnLogoutRequest(Player* pPlayer)
 {
 	GET_LOCK
 	bool result = true;
-	for(vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_LOGOUT_REQUEST].begin(); itr != EventAsToFuncName[SERVER_HOOK_LOGOUT_REQUEST].end(); itr++)
+	for(vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_LOGOUT_REQUEST].begin(); itr != EventAsToFuncName[SERVER_HOOK_LOGOUT_REQUEST].end(); ++itr)
 	{
 		sLuaMgr.BeginCall((*itr));
 		sLuaMgr.PUSH_INT(SERVER_HOOK_LOGOUT_REQUEST);

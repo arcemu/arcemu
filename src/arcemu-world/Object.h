@@ -692,8 +692,6 @@ class SERVER_DECL Object : public EventableObject
 				RemoveFromWorld(true);
 			delete this;
 		}
-		//!
-		size_t GetInRangeOppFactCount() { return m_oppFactsInRange.size(); }
 		//! Play's a sound to players in range.
 		void PlaySoundToSet(uint32 sound_entry);
 		//! Is the player in a battleground?

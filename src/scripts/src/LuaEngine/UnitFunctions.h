@@ -3301,7 +3301,7 @@ class LuaUnit
 			float x = CHECK_FLOAT(L, 1);
 			float y = CHECK_FLOAT(L, 2);
 			float z = CHECK_FLOAT(L, 3);
-			if(!ptr | !x | !y | !z)
+			if(!ptr || !x || !y || !z)
 				return 0;
 			lua_pushnumber(L, ptr->CalcDistance(x, y, z));
 			return 1;
@@ -3697,7 +3697,7 @@ class LuaUnit
 			TEST_PLAYER()
 			Player* plr = TO_PLAYER(ptr);
 			uint32 honor = CHECK_ULONG(L, 1);
-			if(plr->m_honorToday - honor < 0 || plr->m_honorPoints - honor < 0)
+			if(plr->m_honorToday < honor || plr->m_honorPoints < honor)
 				return 0;
 			plr->m_honorToday -= honor;
 			plr->m_honorPoints -= honor;

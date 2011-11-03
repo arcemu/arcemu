@@ -2249,7 +2249,7 @@ class SERVER_DECL Player : public Unit
 			m_lastRunSpeed = m_runSpeed;
 			m_lastRunBackSpeed = m_backWalkSpeed;
 			m_lastSwimSpeed = m_swimSpeed;
-			m_lastRunBackSpeed = m_backSwimSpeed;
+			m_lastBackSwimSpeed = m_backSwimSpeed;
 			m_lastFlySpeed = m_flySpeed;
 		}
 

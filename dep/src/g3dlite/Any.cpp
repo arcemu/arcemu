@@ -743,7 +743,7 @@ static bool needsQuotes(const std::string& s) {
             continue;
         }
 
-        if (! isDigit(c) && ! isLetter(c) & (c != '.')) {
+        if (! isDigit(c) && ! isLetter(c) && (c != '.')) {
             // This is an illegal character for an identifier, so we need quotes
             return true;
         }

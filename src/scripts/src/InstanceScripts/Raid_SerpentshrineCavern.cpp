@@ -2159,7 +2159,6 @@ class VashjAI : public CreatureAIScript
 					wp->y = -923.358276f;
 					wp->z = 42.900517f;
 					wp->o = 0.0f;
-					wp->o = 0;
 					wp->waittime = 0;
 					wp->flags = WALK;
 					wp->forwardemoteoneshot = false;

@@ -317,7 +317,7 @@ class SERVER_DECL AIInterface
 			else
 				m_UnitToFollow_backup = un->GetGUID();
 		};
-		void SetUnitToFollowBackup(uint64 guid) { m_UnitToFollow = guid; };
+		void SetUnitToFollowBackup(uint64 guid) { m_UnitToFollow_backup = guid; };
 		void SetFollowDistance(float dist) { FollowDistance = dist; };
 		void SetUnitToFollowAngle(float angle) { m_fallowAngle = angle; }
 		bool setInFront(Unit* target);

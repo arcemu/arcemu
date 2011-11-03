@@ -497,7 +497,7 @@ class SERVER_DECL ByteBuffer
 template <typename T> ByteBuffer & operator<<(ByteBuffer & b, std::vector<T> v)
 {
 	b << (uint32)v.size();
-	for(typename std::vector<T>::iterator i = v.begin(); i != v.end(); i++)
+	for(typename std::vector<T>::iterator i = v.begin(); i != v.end(); ++i)
 	{
 		b << *i;
 	}
@@ -521,7 +521,7 @@ template <typename T> ByteBuffer & operator>>(ByteBuffer & b, std::vector<T> &v)
 template <typename T> ByteBuffer & operator<<(ByteBuffer & b, std::list<T> v)
 {
 	b << (uint32)v.size();
-	for(typename std::list<T>::iterator i = v.begin(); i != v.end(); i++)
+	for(typename std::list<T>::iterator i = v.begin(); i != v.end(); ++i)
 	{
 		b << *i;
 	}

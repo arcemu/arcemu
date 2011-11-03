@@ -2236,9 +2236,9 @@ class MekgineerSteamriggerAI : public CreatureAIScript
 			if(Gnomes.size())
 			{
 				Unit* Gnome = NULL;
-				for(std::vector<Unit*>::iterator itr = Gnomes.begin(); itr < Gnomes.end(); itr++)
+				for(std::vector<Unit*>::iterator itr = Gnomes.begin(); itr < Gnomes.end(); ++itr)
 				{
-					Gnome = TO_UNIT(*itr);
+					Gnome = *itr;
 					if(!Gnome->isAlive() || !Gnome->IsInWorld())
 					{
 						Gnomes.erase(itr);

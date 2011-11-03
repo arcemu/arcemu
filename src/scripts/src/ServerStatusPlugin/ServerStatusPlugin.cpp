@@ -276,7 +276,7 @@ void StatDumper::DumpStats()
 		objmgr._playerslock.AcquireReadLock();
 
 		HM_NAMESPACE::hash_map<uint32, Player*>::const_iterator itr;
-		for(itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
+		for(itr = objmgr._players.begin(); itr != objmgr._players.end(); ++itr)
 		{
 			if(itr->second->GetSession() && itr->second->IsInWorld())
 			{
@@ -441,7 +441,7 @@ void StatDumper::DumpStats()
 		objmgr._playerslock.AcquireReadLock();
 		HM_NAMESPACE::hash_map<uint32, Player*>::const_iterator itr;
 
-		for(itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
+		for(itr = objmgr._players.begin(); itr != objmgr._players.end(); ++itr)
 		{
 			plr = itr->second;
 			if(itr->second->GetSession() && itr->second->IsInWorld())

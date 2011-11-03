@@ -2110,13 +2110,13 @@ class SupremusAI : public CreatureAIScript
 					return;
 				}
 
-				if(val >= 0 && val <= 500)
+				if(val <= 500)
 				{
 					_unit->setAttackTimer(6000, false);//6000
 					m_MoltenFlame = true;
 				}
 
-				else if(val > 500 && val <= 1000)
+				else
 				{
 					_unit->setAttackTimer(4000, false);//2000
 					m_HurtfulStrike = true;
@@ -2156,13 +2156,13 @@ class SupremusAI : public CreatureAIScript
 
 				}
 
-				if(val >= 0 && val <= 500)
+				if(val <= 500)
 				{
 					_unit->setAttackTimer(6000, false);//6000
 					m_MoltenPunch = true;
 				}
 
-				else if(val > 500 && val <= 1000)
+				else
 				{
 					_unit->setAttackTimer(4000, false);//2000
 					m_VolcanicGazer = true;
@@ -6618,7 +6618,7 @@ class IllidanStormrageAI : public MoonScriptBossAI
 					}
 
 					uint32 Spell = RandomUInt() % 100;
-					if(Spell >= 0 && Spell <= 80)
+					if(Spell <= 80)
 						CastSpellNowNoScheduling(mShadowBlast);
 				}
 				else

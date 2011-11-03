@@ -33,6 +33,6 @@ class TabletOfTheSeven : public QuestScript
 
 void SetupBurningSteppes(ScriptMgr* mgr)
 {
-	QuestScript* tablet = (QuestScript*) new TabletOfTheSeven;
+	QuestScript* tablet = new TabletOfTheSeven;
 	mgr->register_quest_script(4296, tablet);
 }
