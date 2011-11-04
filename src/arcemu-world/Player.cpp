@@ -42,6 +42,21 @@ static const uint8 glyphMask[81] =
 	63 //lvl 80, 3 Minor 3 Major
 };
 
+static const float crit_to_dodge[ MAX_PLAYER_CLASSES ] = {
+	0.0f,      // empty
+	1.1f,      // Warrior
+	1.0f,      // Paladin
+	1.6f,      // Hunter
+	2.0f,      // Rogue
+	1.0f,      // Priest
+	1.0f,      // DK?
+	1.0f,      // Shaman
+	1.0f,      // Mage
+	1.0f,      // Warlock
+	0.0f,      // empty
+	1.7f       // Druid
+};
+
 Player::Player(uint32 guid)
 	:
 	disableAppear(false),
@@ -5002,17 +5017,24 @@ float Player::GetDefenseChance(uint32 opLevel)
 float Player::GetDodgeChance()
 {
 	uint32 pClass = (uint32)getClass();
-	float chance;
+	float chance = 0.0f;
 	uint32 level = getLevel();
 
 	if(level > sWorld.m_genLevelCap)
 		level = sWorld.m_genLevelCap;
 
-	// Base dodge chance
-	chance = baseDodge[pClass];
+	if( level > PLAYER_LEVEL_CAP )
+		level = PLAYER_LEVEL_CAP;
 
-	// Dodge from agility
-	chance += float(GetStat(STAT_AGILITY) / dodgeRatio[ level - 1 ][ pClass ]);
+	// Base dodge + dodge from agility
+	
+	gtFloat *baseCrit = dbcMeleeCritBase.LookupEntry( pClass - 1 );
+	gtFloat *CritPerAgi = dbcMeleeCrit.LookupEntry( level - 1 + ( pClass - 1 ) * 100 );
+	uint32 agi = GetStat( STAT_AGILITY );
+	
+	float tmp = 100.0f * ( baseCrit->val + agi * CritPerAgi->val );
+	tmp *= crit_to_dodge[ pClass ];
+	chance += tmp;
 
 	// Dodge from dodge rating
 	chance += CalcRating(PLAYER_RATING_MODIFIER_DODGE);
