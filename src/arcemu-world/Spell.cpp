@@ -4827,9 +4827,11 @@ int32 Spell::DoCalculateEffect(uint32 i, Unit* target, int32 value)
 			}
 		case SPELL_HASH_JUDGEMENT_OF_COMMAND:
 			{
+				/* Disabled because in the weapon damage % handler it ends up being 600%, causing 20k-80k holy damage, which is obviously wrong
 				if(p_caster != NULL)
 					value += (p_caster->GetAP() * 8 + p_caster->GetPosDamageDoneMod(SCHOOL_HOLY) * 13) / 100;
 				break;
+				*/
 			}
 		case SPELL_HASH_ENVENOM:
 			{
