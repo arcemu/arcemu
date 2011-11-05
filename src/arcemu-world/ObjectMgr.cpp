@@ -2198,7 +2198,6 @@ void ObjectMgr::GenerateLevelUpInfo()
 
 				lvl->XPToNextLevel = nextLvlXP;
 				lastlvl = *lvl;
-				lastlvl.HP = lastlvl.HP;
 
 				// Apply to map.
 				lMap->insert(LevelMap::value_type(Level, lvl));

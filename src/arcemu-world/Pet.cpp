@@ -453,7 +453,7 @@ void Pet::SendTalentsToOwner()
 	data << uint8(0);				// Amount of known talents (will be filled later)
 
 	CreatureFamilyEntry* cfe = dbcCreatureFamily.LookupEntryForced(GetCreatureInfo()->Family);
-	if(!cfe || cfe->talenttree < 0)
+	if(!cfe || static_cast<int32>(cfe->talenttree) < 0)
 		return;
 
 	// go through talent trees
@@ -1647,7 +1647,7 @@ void Pet::UpdateAP()
 	uint32 AP = (str * 2 - 20);
 	if(m_Owner)
 		AP += m_Owner->GetRAP() * 22 / 100;
-	if(AP < 0) AP = 0;
+	if(static_cast<int32>(AP) < 0) AP = 0;
 	SetAttackPower(AP);
 }
 

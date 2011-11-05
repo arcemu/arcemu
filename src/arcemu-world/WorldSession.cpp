@@ -1737,7 +1737,7 @@ void WorldSession::HandleEquipmentSetUse(WorldPacket & data)
 		}
 
 		int8 dstslot = i;
-		int8 dstbag = INVALID_BACKPACK_SLOT;
+		int8 dstbag = static_cast<int8>(INVALID_BACKPACK_SLOT);
 
 		// This is the best case, we already have the item equipped
 		if((SrcBagID == dstbag) && (SrcSlotID == dstslot))

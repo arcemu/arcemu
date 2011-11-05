@@ -7951,7 +7951,7 @@ void Player::DuelCountdown()
 
 	m_duelCountdownTimer -= 1000;
 
-	if(m_duelCountdownTimer < 0)
+	if(static_cast<int32>(m_duelCountdownTimer) < 0)
 		m_duelCountdownTimer = 0;
 
 	if(m_duelCountdownTimer == 0)

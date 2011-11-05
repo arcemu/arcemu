@@ -2467,7 +2467,7 @@ void WorldSession::HandleRemoveGlyph(WorldPacket & recv_data)
 
 	uint32 glyphNum;
 	recv_data >> glyphNum;
-	if(glyphNum < 0 || glyphNum > 5)
+	if(glyphNum > 5)
 		return; // Glyph doesn't exist
 	// Get info
 	uint32 glyphId = _player->GetGlyph(glyphNum);

@@ -5263,27 +5263,6 @@ int32 Unit::GetSpellDmgBonus(Unit* pVictim, SpellEntry* spellInfo, int32 base_dm
 	summaryPCTmod += caster->DamageDoneModPCT[school];	// BURLEX FIX ME
 	summaryPCTmod += pVictim->ModDamageTakenByMechPCT[spellInfo->MechanicsType];
 
-	//Seals of Blood and Martyr
-	if(caster->IsPlayer())
-	{
-		if(spellInfo->Id == 31893 || spellInfo->Id == 53719)
-		{
-			int32 selfdamage = float2int32(((bonus_damage * summaryPCTmod) + bonus_damage) * 0.1f);
-			if(caster->GetHealth() - selfdamage < 0)
-				caster->SetHealth(1);
-			else
-				caster->ModHealth(-selfdamage);
-		}
-		else if(spellInfo->Id == 31898 || spellInfo->Id == 53726)
-		{
-			int32 selfdamage = float2int32(((bonus_damage * summaryPCTmod) + bonus_damage) * 0.33f);
-			if(caster->GetHealth() - selfdamage < 0)
-				caster->SetHealth(1);
-			else
-				caster->ModHealth(-selfdamage);
-		}
-	}
-
 	int32 res = (int32)((base_dmg + bonus_damage) * summaryPCTmod + bonus_damage);
 	if(res < 0)
 		res = 0;
@@ -5638,23 +5617,12 @@ void Unit::UpdateSpeed()
 {
 	if(GetMount() == 0)
 	{
-		if(IsPlayer())
-			m_runSpeed = m_base_runSpeed * (1.0f + ((float)m_speedModifier) / 100.0f);
-		else
-			m_runSpeed = m_base_runSpeed * (1.0f + ((float)m_speedModifier) / 100.0f);
+		m_runSpeed = m_base_runSpeed * (1.0f + ((float)m_speedModifier) / 100.0f);
 	}
 	else
 	{
-		if(IsPlayer())
-		{
-			m_runSpeed = m_base_runSpeed * (1.0f + ((float)m_mountedspeedModifier) / 100.0f);
-			m_runSpeed += (m_speedModifier < 0) ? (m_base_runSpeed * ((float)m_speedModifier) / 100.0f) : 0;
-		}
-		else
-		{
-			m_runSpeed = m_base_runSpeed * (1.0f + ((float)m_mountedspeedModifier) / 100.0f);
-			m_runSpeed += (m_speedModifier < 0) ? (m_base_runSpeed * ((float)m_speedModifier) / 100.0f) : 0;
-		}
+		m_runSpeed = m_base_runSpeed * (1.0f + ((float)m_mountedspeedModifier) / 100.0f);
+		m_runSpeed += (m_speedModifier < 0) ? (m_base_runSpeed * ((float)m_speedModifier) / 100.0f) : 0;
 	}
 
 

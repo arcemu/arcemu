@@ -497,7 +497,7 @@ void Arena::Finish()
 
 			m_deltaRating[i] = CalcDeltaRating(m_teams[i]->m_stat_rating, m_teams[j]->m_stat_rating, outcome);
 			m_teams[i]->m_stat_rating += m_deltaRating[i];
-			if(m_teams[i]->m_stat_rating < 0) m_teams[i]->m_stat_rating = 0;
+			if(static_cast<int32>(m_teams[i]->m_stat_rating) < 0) m_teams[i]->m_stat_rating = 0;
 
 			for(set<uint32>::iterator itr = m_players2[i].begin(); itr != m_players2[i].end(); ++itr)
 			{
@@ -509,7 +509,7 @@ void Arena::Finish()
 					if(tp != NULL)
 					{
 						tp->PersonalRating += CalcDeltaRating(tp->PersonalRating, m_teams[j]->m_stat_rating, outcome);
-						if(tp->PersonalRating < 0)
+						if(static_cast<int32>(tp->PersonalRating) < 0)
 							tp->PersonalRating = 0;
 
 						if(outcome)

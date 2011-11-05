@@ -108,14 +108,7 @@ void ItemInterface::m_DestroyForPlayer()
 					Item* pItem = TO< Container* >(m_pItems[i])->GetItem(static_cast<int16>(e));
 					if(pItem)
 					{
-						if(pItem->IsContainer())
-						{
-							m_pOwner->SendDestroyObject(pItem->GetGUID());
-						}
-						else
-						{
-							m_pOwner->SendDestroyObject(pItem->GetGUID());
-						}
+						m_pOwner->SendDestroyObject(pItem->GetGUID());
 					}
 				}
 				m_pOwner->SendDestroyObject(m_pItems[ i ]->GetGUID());
@@ -2743,7 +2736,7 @@ Item* ItemInterface::GetItemByGUID(uint64 Guid)
 		{
 			if(m_pItems[i]->GetGUID() == Guid)
 			{
-				result.ContainerSlot = INVALID_BACKPACK_SLOT;//not a containerslot. In 1.8 client marked wrong slot like this
+				result.ContainerSlot = static_cast<int8>(INVALID_BACKPACK_SLOT);//not a containerslot. In 1.8 client marked wrong slot like this
 				result.Slot = static_cast<int8>(i);
 				return m_pItems[i];
 			}
@@ -2757,7 +2750,7 @@ Item* ItemInterface::GetItemByGUID(uint64 Guid)
 		{
 			if(m_pItems[i]->GetGUID() == Guid)
 			{
-				result.ContainerSlot = INVALID_BACKPACK_SLOT;
+				result.ContainerSlot = static_cast<int8>(INVALID_BACKPACK_SLOT);
 				result.Slot = static_cast<int8>(i);
 				return m_pItems[i];
 			}
@@ -2785,7 +2778,7 @@ Item* ItemInterface::GetItemByGUID(uint64 Guid)
 		{
 			if(m_pItems[i]->GetGUID() == Guid)
 			{
-				result.ContainerSlot = INVALID_BACKPACK_SLOT;
+				result.ContainerSlot = static_cast<int8>(INVALID_BACKPACK_SLOT);
 				result.Slot = static_cast<int8>(i);
 				return m_pItems[i];
 			}
@@ -2799,7 +2792,7 @@ Item* ItemInterface::GetItemByGUID(uint64 Guid)
 		{
 			if(m_pItems[i]->GetGUID() == Guid)
 			{
-				result.ContainerSlot = INVALID_BACKPACK_SLOT;
+				result.ContainerSlot = static_cast<int8>(INVALID_BACKPACK_SLOT);
 				result.Slot = static_cast<int8>(i);
 				return m_pItems[i];
 			}
@@ -2813,7 +2806,7 @@ Item* ItemInterface::GetItemByGUID(uint64 Guid)
 		{
 			if(m_pItems[i]->GetGUID() == Guid)
 			{
-				result.ContainerSlot = INVALID_BACKPACK_SLOT;
+				result.ContainerSlot = static_cast<int8>(INVALID_BACKPACK_SLOT);
 				result.Slot = static_cast<int8>(i);
 				return m_pItems[i];
 			}

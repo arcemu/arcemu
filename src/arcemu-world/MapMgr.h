@@ -226,7 +226,7 @@ class SERVER_DECL MapMgr : public CellHandler <MapCell>, public EventableObject,
 
 		//! Mark object as updated
 		void ObjectUpdated(Object* obj);
-		void UpdateCellActivity(uint32 x, uint32 y, int radius);
+		void UpdateCellActivity(uint32 x, uint32 y, uint32 radius);
 
 		// Terrain Functions
 		float  GetLandHeight(float x, float y, float z) { return _terrain->GetLandHeight(x, y, z); }

@@ -354,7 +354,7 @@ void LootMgr::PushLoot(StoreLootList* list, Loot* loot, uint32 type)
 	uint32 i;
 	uint32 count;
 
-	if(type < LOOT_NORMAL10 || type >= NUM_LOOT_TYPES)
+	if(type >= NUM_LOOT_TYPES)
 		return;
 
 	for(uint32 x = 0; x < list->count; x++)

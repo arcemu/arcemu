@@ -2044,7 +2044,7 @@ void CBattlegroundManager::HandleArenaJoin(WorldSession* m_session, uint32 Battl
 
 				if((*itx)->m_loggedInPlayer)
 				{
-					if((*itx)->m_loggedInPlayer->m_bg || (*itx)->m_loggedInPlayer->m_bg || (*itx)->m_loggedInPlayer->m_bgIsQueued)
+					if((*itx)->m_loggedInPlayer->m_bg || (*itx)->m_loggedInPlayer->m_bgIsQueued)
 					{
 						m_session->SystemMessage(m_session->LocalizedWorldSrv(60));
 						pGroup->Unlock();

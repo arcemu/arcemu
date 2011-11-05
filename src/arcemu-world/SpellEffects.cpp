@@ -5406,7 +5406,7 @@ void Spell::SpellEffectDurabilityDamage(uint32 i)
 							uint32 olddur = pItem->GetDurability();
 							uint32 newdur = (olddur) - (damage);
 
-							if(newdur < 0)
+							if(static_cast<int32>(newdur) < 0)
 								newdur = 0;
 
 							if(newdur > maxdur)
@@ -5422,7 +5422,7 @@ void Spell::SpellEffectDurabilityDamage(uint32 i)
 					uint32 olddur = pItem->GetDurability();
 					uint32 newdur = (olddur) - (damage);
 
-					if(newdur < 0)
+					if(static_cast<int32>(newdur) < 0)
 						newdur = 0;
 
 					if(newdur > maxdur)
@@ -5451,7 +5451,7 @@ void Spell::SpellEffectDurabilityDamage(uint32 i)
 		uint32 olddur = pItem->GetDurability();
 		uint32 newdur = (olddur) - (damage);
 
-		if(newdur < 0)
+		if(static_cast<int32>(newdur) < 0)
 			newdur = 0;
 
 		if(newdur > maxdur)
@@ -5499,7 +5499,7 @@ void Spell::SpellEffectDurabilityDamagePCT(uint32 i)
 							uint32 olddur = pItem->GetDurability();
 							uint32 newdur = (olddur - (uint32)(maxdur * (damage / 100.0)));
 
-							if(newdur < 0)
+							if(static_cast<int32>(newdur) < 0)
 								newdur = 0;
 
 							if(newdur > maxdur)
@@ -5515,7 +5515,7 @@ void Spell::SpellEffectDurabilityDamagePCT(uint32 i)
 					uint32 olddur = pItem->GetDurability();
 					uint32 newdur = (olddur - (uint32)(maxdur * (damage / 100.0)));
 
-					if(newdur < 0)
+					if(static_cast<int32>(newdur) < 0)
 						newdur = 0;
 
 					if(newdur > maxdur)
@@ -5547,7 +5547,7 @@ void Spell::SpellEffectDurabilityDamagePCT(uint32 i)
 		uint32 olddur = pItem->GetDurability();
 		uint32 newdur = (olddur - (uint32)(maxdur * (damage / 100.0)));
 
-		if(newdur < 0)
+		if(static_cast<int32>(newdur) < 0)
 			newdur = 0;
 
 		if(newdur > maxdur)

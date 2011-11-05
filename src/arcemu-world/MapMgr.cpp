@@ -780,8 +780,8 @@ void MapMgr::ChangeObjectLocation(Object* obj)
 	{
 		endX = cellX + 5 <= _sizeX ? cellX + 6 : (_sizeX - 1);
 		endY = cellY + 5 <= _sizeY ? cellY + 6 : (_sizeY - 1);
-		startX = cellX - 5 > 0 ? cellX - 6 : 0;
-		startY = cellY - 5 > 0 ? cellY - 6 : 0;
+		startX = cellX > 5 ? cellX - 6 : 0;
+		startY = cellY > 5 ? cellY - 6 : 0;
 	}
 
 	for(posX = startX; posX <= endX; ++posX)
@@ -1057,13 +1057,13 @@ void MapMgr::LoadAllCells()
 	}
 }
 
-void MapMgr::UpdateCellActivity(uint32 x, uint32 y, int radius)
+void MapMgr::UpdateCellActivity(uint32 x, uint32 y, uint32 radius)
 {
 	CellSpawns* sp;
 	uint32 endX = (x + radius) <= _sizeX ? x + radius : (_sizeX - 1);
 	uint32 endY = (y + radius) <= _sizeY ? y + radius : (_sizeY - 1);
-	uint32 startX = x - radius > 0 ? x - radius : 0;
-	uint32 startY = y - radius > 0 ? y - radius : 0;
+	uint32 startX = x > radius ? x - radius : 0;
+	uint32 startY = y > radius ? y - radius : 0;
 	uint32 posX, posY;
 
 	MapCell* objCell;
@@ -1656,8 +1656,8 @@ void MapMgr::SendChatMessageToCellPlayers(Object* obj, WorldPacket* packet, uint
 	uint32 cellY = GetPosY(obj->GetPositionY());
 	uint32 endX = ((cellX + cell_radius) <= _sizeX) ? cellX + cell_radius : (_sizeX - 1);
 	uint32 endY = ((cellY + cell_radius) <= _sizeY) ? cellY + cell_radius : (_sizeY - 1);
-	uint32 startX = (cellX - cell_radius) > 0 ? cellX - cell_radius : 0;
-	uint32 startY = (cellY - cell_radius) > 0 ? cellY - cell_radius : 0;
+	uint32 startX = cellX > cell_radius ? cellX - cell_radius : 0;
+	uint32 startY = cellY > cell_radius ? cellY - cell_radius : 0;
 
 	uint32 posX, posY;
 	MapCell* cell;

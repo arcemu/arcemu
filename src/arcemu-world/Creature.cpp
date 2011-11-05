@@ -945,7 +945,7 @@ void Creature::CalcStat(uint32 type)
 				//Health
 				uint32 hp = GetBaseHealth();
 				uint32 stat_bonus = GetUInt32Value(UNIT_FIELD_POSSTAT2) - GetUInt32Value(UNIT_FIELD_NEGSTAT2);
-				if(stat_bonus < 0) stat_bonus = 0;
+				if(static_cast<int32>(stat_bonus) < 0) stat_bonus = 0;
 
 				uint32 bonus = stat_bonus * 10 + m_healthfromspell;
 				uint32 res = hp + bonus;
@@ -962,7 +962,7 @@ void Creature::CalcStat(uint32 type)
 				{
 					uint32 mana = GetBaseMana();
 					uint32 stat_bonus = (GetUInt32Value(UNIT_FIELD_POSSTAT3) - GetUInt32Value(UNIT_FIELD_NEGSTAT3));
-					if(stat_bonus < 0) stat_bonus = 0;
+					if(static_cast<int32>(stat_bonus) < 0) stat_bonus = 0;
 
 					uint32 bonus = stat_bonus * 15;
 					uint32 res = mana + bonus;

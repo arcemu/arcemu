@@ -423,7 +423,7 @@ bool Spell::AddTarget(uint32 i, uint32 TargetType, Object* obj)
 	if(TargetType & (SPELL_TARGET_AREA | SPELL_TARGET_AREA_SELF | SPELL_TARGET_AREA_CURTARGET | SPELL_TARGET_AREA_CONE | SPELL_TARGET_AREA_PARTY | SPELL_TARGET_AREA_RAID) && ((obj->IsUnit() && !TO_UNIT(obj)->isAlive()) || (obj->IsCreature() && obj->IsTotem())))
 		return false;
 
-	uint8 hitresult = TargetType & SPELL_TARGET_REQUIRE_ATTACKABLE && obj->IsUnit() ? DidHit(i, TO_UNIT(obj)) : SPELL_DID_HIT_SUCCESS;
+	uint8 hitresult = (TargetType & SPELL_TARGET_REQUIRE_ATTACKABLE && obj->IsUnit()) ? DidHit(i, TO_UNIT(obj)) : SPELL_DID_HIT_SUCCESS;
 	if(hitresult != SPELL_DID_HIT_SUCCESS)
 	{
 		uint8 extended = 0;

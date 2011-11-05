@@ -845,7 +845,7 @@ bool ChatHandler::HandleNpcInfoCommand(const char* args, WorldSession* m_session
 	SystemMessage(m_session, "Health (cur/max): %d/%d", crt->GetHealth(), crt->GetMaxHealth());
 
 	uint32 powertype = crt->GetPowerType();
-	if((powertype >= 0) && (powertype <= 6))
+	if(powertype <= 6)
 	{
 		SystemMessage(m_session, "Powertype: %s", POWERTYPE[ powertype ]);
 		SystemMessage(m_session, "Power (cur/max): %d/%d", crt->GetPower(powertype), crt->GetMaxPower(powertype));
@@ -873,7 +873,7 @@ bool ChatHandler::HandleNpcInfoCommand(const char* args, WorldSession* m_session
 	SendMultilineMessage(m_session, sstext.str().c_str());
 
 	uint8 gender = crt->getGender();
-	if(gender >= 0 && gender <= 2)
+	if(gender <= 2)
 		SystemMessage(m_session, "Gender: %s", GENDER[ gender ]);
 	else
 		SystemMessage(m_session, "Gender: invalid %u", gender);

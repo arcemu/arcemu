@@ -2791,7 +2791,7 @@ void Spell::HandleEffects(uint64 guid, uint32 i)
 	if(m_spellInfo->EffectImplicitTargetB[i] != 0)
 		TargetType |= GetTargetType(m_spellInfo->EffectImplicitTargetB[i], i);
 
-	if(u_caster != NULL && unitTarget != NULL && unitTarget->IsCreature() && TargetType & SPELL_TARGET_REQUIRE_ATTACKABLE && !(m_spellInfo->AttributesEx & !(m_spellInfo->AttributesEx & ATTRIBUTESEX_NO_INITIAL_AGGRO)))
+	if(u_caster != NULL && unitTarget != NULL && unitTarget->IsCreature() && TargetType & SPELL_TARGET_REQUIRE_ATTACKABLE && !(m_spellInfo->AttributesEx & ATTRIBUTESEX_NO_INITIAL_AGGRO))
 	{
 		unitTarget->GetAIInterface()->AttackReaction(u_caster, 1, 0);
 		unitTarget->GetAIInterface()->HandleEvent(EVENT_HOSTILEACTION, u_caster, 0);
