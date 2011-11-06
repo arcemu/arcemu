@@ -2975,7 +2975,6 @@ void Spell::HandleAddAura(uint64 guid)
 		for(int i = 0; i < (charges - 1); ++i)
 		{
 			Aura* staur = sSpellFactoryMgr.NewAura(aur->GetSpellProto(), aur->GetDuration(), aur->GetCaster(), aur->GetTarget(), m_triggeredSpell, i_caster);
-			staur->AssignModifiers(aur);
 			Target->AddAura(staur);
 		}
 		if(!(aur->GetSpellProto()->procFlags & PROC_REMOVEONUSE))
@@ -4771,12 +4770,6 @@ int32 Spell::DoCalculateEffect(uint32 i, Unit* target, int32 value)
 				}
 				break;
 			}
-		case SPELL_HASH_SEAL_OF_LIGHT:
-			{
-				if(p_caster != NULL)
-					value = (p_caster->GetAP() + p_caster->GetPosDamageDoneMod(SCHOOL_HOLY)) * 15 / 100;
-				break;
-			}
 		case SPELL_HASH_SEAL_OF_RIGHTEOUSNESS:
 			{
 				if(p_caster != NULL)
@@ -4824,14 +4817,6 @@ int32 Spell::DoCalculateEffect(uint32 i, Unit* target, int32 value)
 				if(p_caster != NULL)
 					value += (p_caster->GetAP() * 14 + p_caster->GetPosDamageDoneMod(SCHOOL_HOLY) * 22) / 100;
 				break;
-			}
-		case SPELL_HASH_JUDGEMENT_OF_COMMAND:
-			{
-				/* Disabled because in the weapon damage % handler it ends up being 600%, causing 20k-80k holy damage, which is obviously wrong
-				if(p_caster != NULL)
-					value += (p_caster->GetAP() * 8 + p_caster->GetPosDamageDoneMod(SCHOOL_HOLY) * 13) / 100;
-				break;
-				*/
 			}
 		case SPELL_HASH_ENVENOM:
 			{
