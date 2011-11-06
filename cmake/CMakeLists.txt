@@ -73,7 +73,7 @@ include(CompilerVersion)
 if( CMAKE_GENERATOR MATCHES Unix* )
 	add_definitions(-Wno-deprecated)
 	#Extract Revision
-	execute_process(WORKING_DIRECTORY ${ROOT_PATH} COMMAND sh extract_svn_revision.sh )
+	execute_process(WORKING_DIRECTORY ${ROOT_PATH} COMMAND sh git_version.sh )
 	
 	#Check support for unordered_map/set
 	GetCompilerVersion( gcc_version)
@@ -83,7 +83,7 @@ if( CMAKE_GENERATOR MATCHES Unix* )
 	
 ELSEIF( CMAKE_GENERATOR MATCHES Visual* )
 	#Extract revision
-	execute_process(WORKING_DIRECTORY ${ROOT_PATH}/src/arcemu-shared COMMAND RevisionExtractor)
+	execute_process(WORKING_DIRECTORY ${ROOT_PATH} COMMAND git_version.bat )
 	add_definitions(-D_CRT_SECURE_NO_WARNINGS /EHa )
 	
 	#Check support for unordered_map/set

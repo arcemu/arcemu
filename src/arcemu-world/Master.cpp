@@ -20,13 +20,13 @@
 
 #include "StdAfx.h"
 
-#define BANNER "ArcEmu %s r%u/%s-%s-%s :: World Server"
+#define BANNER "ArcEmu %s %s/%s-%s-%s :: World Server"
 
 #ifndef WIN32
 #include <sched.h>
 #endif
 
-#include "svn_revision.h"
+#include "git_version.h"
 
 #include <signal.h>
 
@@ -160,9 +160,9 @@ bool Master::Run(int argc, char** argv)
 	g_localTime = *localtime(&UNIXTIME);
 
 	sLog.Init(0, WORLD_LOG);
-
-	sLog.outBasic(BANNER, BUILD_TAG, BUILD_REVISION, CONFIG, PLATFORM_TEXT, ARCH);
-	sLog.outError(BANNER, BUILD_TAG, BUILD_REVISION, CONFIG, PLATFORM_TEXT, ARCH);
+	
+	sLog.outBasic(BANNER, BUILD_TAG, BUILD_HASH_STR, CONFIG, PLATFORM_TEXT, ARCH);
+	sLog.outError(BANNER, BUILD_TAG, BUILD_HASH_STR, CONFIG, PLATFORM_TEXT, ARCH);
 
 	if(do_version)
 	{

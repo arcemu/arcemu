@@ -18,7 +18,7 @@
  */
 
 #pragma once
-#include "svn_revision.h"
+#include "git_version.h"
 
 #define ENGINE_NAME "LuaBridge" //You should check in your scripts that GetLuaEngine() == "LuaBridge"
 #ifdef LUA_SVN_REVISION_H
@@ -280,9 +280,9 @@ static void Rehash()
 	sWorld.Rehash(true);
 }
 
-static ptrdiff_t GetArcemuRevision()
+static const char* GetArcemuRevision()
 {
-	return BUILD_REVISION;
+	return BUILD_HASH_STR;
 }
 
 /*static int GetInstanceIdsByMap(lua_State * L)

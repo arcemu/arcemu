@@ -132,8 +132,7 @@ typedef void(*exp_script_register)(ScriptMgr* mgr);
 typedef void(*exp_engine_reload)();
 typedef void(*exp_engine_unload)();
 typedef uint32(*exp_get_script_type)();
-
-typedef uint32(*exp_get_version)();
+typedef const char*(*exp_get_version)();
 
 /* Hashmap typedefs */
 typedef HM_NAMESPACE::hash_map<uint32, exp_create_creature_ai> CreatureCreateMap;

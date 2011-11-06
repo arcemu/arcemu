@@ -19,7 +19,7 @@
  */
 
 #include "StdAfx.h"
-#include "svn_revision.h"
+#include "git_version.h"
 
 LoginErrorCode VerifyName(const char* name, size_t nlen)
 {
@@ -1009,7 +1009,7 @@ void WorldSession::FullLogin(Player* plr)
 #endif
 
 	// Revision
-	_player->BroadcastMessage("Revision: %s%u", MSG_COLOR_CYAN, BUILD_REVISION);
+	_player->BroadcastMessage("Build hash: %s%s", MSG_COLOR_CYAN, BUILD_HASH_STR);
 	// Bugs
 	_player->BroadcastMessage("Bugs: %s%s", MSG_COLOR_SEXHOTPINK, BUGTRACKER);
 	// Recruiting message

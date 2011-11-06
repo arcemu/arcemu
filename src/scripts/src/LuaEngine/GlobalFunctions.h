@@ -22,7 +22,7 @@
 
 #include "StdAfx.h"
 #include "LUAEngine.h"
-#include "svn_revision.h"
+#include "git_version.h"
 
 #define ENGINE_NAME "ALE" //You should check in your scripts that GetLuaEngine() == "ALE"
 #ifdef LUA_SVN_REVISION_H
@@ -315,7 +315,7 @@ namespace luaGlobalFunctions
 
 	static int GetArcemuRevision(lua_State* L)
 	{
-		lua_pushnumber(L, BUILD_REVISION);
+		lua_pushstring(L, BUILD_HASH_STR );
 		return 1;
 	}
 

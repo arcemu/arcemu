@@ -17,7 +17,7 @@
  *
  */
 
-#include "svn_revision.h"
+#include "git_version.h"
 
 #include "CrashHandler.h"
 #include "Log.h"
@@ -310,10 +310,10 @@ int __cdecl HandleCrash(PEXCEPTION_POINTERS pExceptPtrs)
 
 	char* mname = strrchr(modname, '\\');
 	(void*)mname++;	 // Remove the last
-
-	sprintf(filename, "CrashDumps\\dump-%s-%u-%u-%u-%u-%u-%u-%u-%u.dmp",
-	        mname, BUILD_REVISION, pTime->tm_year + 1900, pTime->tm_mon + 1, pTime->tm_mday,
-	        pTime->tm_hour, pTime->tm_min, pTime->tm_sec, GetCurrentThreadId());
+	
+	sprintf(filename, "CrashDumps\\dump-%s-%s-%u-%u-%u-%u-%u-%u-%u.dmp",
+		mname, BUILD_HASH_STR, pTime->tm_year + 1900, pTime->tm_mon + 1, pTime->tm_mday,
+		pTime->tm_hour, pTime->tm_min, pTime->tm_sec, GetCurrentThreadId());
 
 
 	HANDLE hDump = CreateFile(filename, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS,

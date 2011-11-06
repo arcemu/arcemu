@@ -108,11 +108,7 @@ entry	text
 
 #include "StdAfx.h"
 
-#include <svn_revision.h>
-#define SCRIPTLIB_HIPART(x) ((x >> 16))
-#define SCRIPTLIB_LOPART(x) ((x & 0x0000ffff))
-#define SCRIPTLIB_VERSION_MINOR (BUILD_REVISION % 1000)
-#define SCRIPTLIB_VERSION_MAJOR (BUILD_REVISION / 1000)
+#include <git_version.h>
 
 namespace worldstring
 {
@@ -207,10 +203,10 @@ void ScriptMgr::LoadScripts()
 			}
 			else
 			{
-				uint32 version = vcall();
+				const char *version = vcall();
 				uint32 stype = scall();
 
-				if((SCRIPTLIB_LOPART(version) != static_cast< uint32 >(SCRIPTLIB_VERSION_MINOR)) || (SCRIPTLIB_HIPART(version) != static_cast< uint32 >(SCRIPTLIB_VERSION_MAJOR)))
+				if( strcmp( version, BUILD_HASH_STR ) != 0 )
 				{
 					loadmessage << "ERROR: Version mismatch.";
 					LOG_ERROR(loadmessage.str().c_str());
@@ -220,7 +216,7 @@ void ScriptMgr::LoadScripts()
 				}
 				else
 				{
-					loadmessage << "v" << SCRIPTLIB_HIPART(version) << "." << SCRIPTLIB_LOPART(version) << " : ";
+					loadmessage << ' ' << std::string( BUILD_HASH_STR ) << " : ";
 
 					if((stype & SCRIPT_TYPE_SCRIPT_ENGINE) != 0)
 					{

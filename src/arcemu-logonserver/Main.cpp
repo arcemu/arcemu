@@ -19,13 +19,13 @@
 
 #include "LogonStdAfx.h"
 #include <signal.h>
-#include "svn_revision.h"
+#include "git_version.h"
 #ifndef WIN32
 #include <sys/resource.h>
 #endif
 #include "../arcemu-shared/arcemu_getopt.h"
 
-#define BANNER "ArcEmu %s r%u/%s-%s (%s) :: Logon Server"
+#define BANNER "ArcEmu %s %s/%s-%s (%s) :: Logon Server"
 
 #ifndef WIN32
 #include <sched.h>
@@ -319,9 +319,9 @@ void LogonServer::Run(int argc, char** argv)
 	}
 
 	sLog.Init(0, LOGON_LOG);
-
-	sLog.outBasic(BANNER, BUILD_TAG, BUILD_REVISION, CONFIG, PLATFORM_TEXT, ARCH);
-	sLog.outError(BANNER, BUILD_TAG, BUILD_REVISION, CONFIG, PLATFORM_TEXT, ARCH);
+	
+	sLog.outBasic(BANNER, BUILD_TAG, BUILD_HASH_STR, CONFIG, PLATFORM_TEXT, ARCH);
+	sLog.outError(BANNER, BUILD_TAG, BUILD_HASH_STR, CONFIG, PLATFORM_TEXT, ARCH);
 
 	if(do_version)
 	{

@@ -23,7 +23,7 @@
 #include <Common.h>
 #include <Network/Network.h>
 #include <Config/ConfigEnv.h>
-#include <svn_revision.h>
+#include <git_version.h>
 
 #include "BaseConsole.h"
 #include "ConsoleCommands.h"

@@ -18,7 +18,7 @@
  */
 
 #include "StdAfx.h"
-#include "../../../arcemu-shared/svn_revision.h"
+#include "../../../arcemu-shared/git_version.h"
 
 #define SKIP_ALLOCATOR_SHARING 1
 #include <ScriptSetup.h>
@@ -260,9 +260,9 @@ void StatDumper::DumpStats()
 	{
 		// Dump server information.
 #ifdef WIN32
-		fprintf(f, "    <platform>ArcEmu %s r%u/%s-Win-%s (www.ArcEmu.org)</platform>\n", BUILD_TAG, BUILD_REVISION, CONFIG, ARCH);
+		fprintf(f, "    <platform>ArcEmu %s %s/%s-Win-%s (www.ArcEmu.org)</platform>\n", BUILD_TAG, BUILD_HASH_STR, CONFIG, ARCH);
 #else
-		fprintf(f, "    <platform>ArcEmu %s r%u/%s-%s (www.ArcEmu.org)</platform>\n", BUILD_TAG, BUILD_REVISION, PLATFORM_TEXT, ARCH);
+		fprintf(f, "    <platform>ArcEmu %s %s/%s-%s (www.ArcEmu.org)</platform>\n", BUILD_TAG, BUILD_HASH_STR, PLATFORM_TEXT, ARCH);
 #endif
 
 		char uptime[80];

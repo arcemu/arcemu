@@ -23,7 +23,7 @@
 //
 
 #include "StdAfx.h"
-#include <svn_revision.h>
+#include <git_version.h>
 
 bool ChatHandler::ShowHelpForCommand(WorldSession* m_session, ChatCommand* table, const char* cmd)
 {
@@ -239,8 +239,8 @@ bool ChatHandler::HandleInfoCommand(const char* args, WorldSession* m_session)
 		}
 	}
 	objmgr._playerslock.ReleaseReadLock();
-	GreenSystemMessage(m_session, "Server Revision: |r%sArcEmu r%u/%s-%s-%s %s(www.arcemu.org)", MSG_COLOR_WHITE,
-	                   BUILD_REVISION, CONFIG, PLATFORM_TEXT, ARCH, MSG_COLOR_LIGHTBLUE);
+	GreenSystemMessage(m_session, "Server Revision: |r%sArcEmu %s/%s-%s-%s %s(www.arcemu.org)", MSG_COLOR_WHITE,
+		BUILD_HASH_STR, CONFIG, PLATFORM_TEXT, ARCH, MSG_COLOR_LIGHTBLUE);
 	GreenSystemMessage(m_session, "Server Uptime: |r%s", sWorld.GetUptimeString().c_str());
 	GreenSystemMessage(m_session, "Current Players: |r%d (%d GMs) (%u Peak)", count, gm, sWorld.PeakSessionCount);
 	GreenSystemMessage(m_session, "Active Thread Count: |r%u", ThreadPool.GetActiveThreadCount());

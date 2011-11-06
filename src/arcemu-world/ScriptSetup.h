@@ -23,16 +23,14 @@
 
 #ifdef SCRIPTLIB
 
-#include <svn_revision.h>
+#include <git_version.h>
 #ifndef SKIP_ALLOCATOR_SHARING
 #include "CoreMemoryAllocator.cpp"
 #endif
 
-#define MAKE_SCRIPT_VERSION(major, minor) (uint32)(((uint16)major << 16) | ((uint16)minor))
-
-extern "C" SCRIPT_DECL uint32 _exp_get_version()
+extern "C" SCRIPT_DECL const char* _exp_get_version()
 {
-	return MAKE_SCRIPT_VERSION(BUILD_REVISION / 1000, BUILD_REVISION % 1000);
+	return BUILD_HASH_STR;
 }
 
 #endif
