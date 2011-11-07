@@ -392,7 +392,7 @@ bool ChatHandler::HandleSaveAllCommand(const char* args, WorldSession* m_session
 	uint32 stime = now();
 	uint32 count = 0;
 	objmgr._playerslock.AcquireReadLock();
-	for(itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
+	for(itr = objmgr._players.begin(); itr != objmgr._players.end(); ++itr)
 	{
 		if(itr->second->GetSession())
 		{
@@ -1627,4 +1627,3 @@ bool ChatHandler::HandleRepairItemsCommand(const char* args, WorldSession* m_ses
 	SystemMessage(m_session, "Items Repaired");
 	return true;
 }
-

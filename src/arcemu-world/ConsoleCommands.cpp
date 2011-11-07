@@ -30,7 +30,7 @@ bool HandleInfoCommand(BaseConsole* pConsole, int argc, const char* argv[])
 	int avg = 0;
 	PlayerStorageMap::const_iterator itr;
 	objmgr._playerslock.AcquireReadLock();
-	for(itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
+	for(itr = objmgr._players.begin(); itr != objmgr._players.end(); ++itr)
 	{
 		if(itr->second->GetSession())
 		{
@@ -77,7 +77,7 @@ bool HandleGMsCommand(BaseConsole* pConsole, int argc, const char* argv[])
 
 	PlayerStorageMap::const_iterator itr;
 	objmgr._playerslock.AcquireReadLock();
-	for(itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
+	for(itr = objmgr._players.begin(); itr != objmgr._players.end(); ++itr)
 	{
 		if(itr->second->GetSession()->GetPermissionCount())
 		{
@@ -103,7 +103,7 @@ bool HandleOnlinePlayersCommand(BaseConsole* pConsole, int argc, const char* arg
 
 	PlayerStorageMap::const_iterator itr;
 	objmgr._playerslock.AcquireReadLock();
-	for(itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
+	for(itr = objmgr._players.begin(); itr != objmgr._players.end(); ++itr)
 	{
 		pConsole->Write("| %21s | %15u | %03u ms |\r\n" , itr->second->GetName(), itr->second->GetSession()->GetPlayer()->getLevel(), itr->second->GetSession()->GetLatency());
 	}
@@ -208,7 +208,7 @@ bool HandleShutDownCommand(BaseConsole* pConsole, int argc, const char* argv[])
 		{
 			PlayerStorageMap::const_iterator itr;
 			objmgr._playerslock.AcquireReadLock();
-			for(itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
+			for(itr = objmgr._players.begin(); itr != objmgr._players.end(); ++itr)
 			{
 				if(itr->second->GetSession())
 					itr->second->SaveToDB(false);
@@ -424,4 +424,3 @@ bool HandleScriptEngineReloadCommand(BaseConsole*, int, const char* [])
 	sScriptMgr.ReloadScriptEngines();
 	return true;
 }
-

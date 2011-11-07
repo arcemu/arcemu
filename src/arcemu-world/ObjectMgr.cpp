@@ -1176,7 +1176,7 @@ Player* ObjectMgr::GetPlayer(uint32 guid)
 PlayerCreateInfo* ObjectMgr::GetPlayerCreateInfo(uint8 race, uint8 class_) const
 {
 	PlayerCreateInfoMap::const_iterator itr;
-	for(itr = mPlayerCreateInfo.begin(); itr != mPlayerCreateInfo.end(); itr++)
+	for(itr = mPlayerCreateInfo.begin(); itr != mPlayerCreateInfo.end(); ++itr)
 	{
 		if((itr->second->race == race) && (itr->second->class_ == class_))
 			return itr->second;
@@ -1219,7 +1219,7 @@ Guild* ObjectMgr::GetGuild(uint32 guildId)
 Guild* ObjectMgr::GetGuildByLeaderGuid(uint64 leaderGuid)
 {
 	GuildMap::const_iterator itr;
-	for(itr = mGuild.begin(); itr != mGuild.end(); itr++)
+	for(itr = mGuild.begin(); itr != mGuild.end(); ++itr)
 	{
 		if(itr->second->GetGuildLeader() == leaderGuid)
 			return itr->second;
@@ -1230,7 +1230,7 @@ Guild* ObjectMgr::GetGuildByLeaderGuid(uint64 leaderGuid)
 Guild* ObjectMgr::GetGuildByGuildName(std::string guildName)
 {
 	GuildMap::const_iterator itr;
-	for(itr = mGuild.begin(); itr != mGuild.end(); itr++)
+	for(itr = mGuild.begin(); itr != mGuild.end(); ++itr)
 	{
 		if(itr->second->GetGuildName() == guildName)
 			return itr->second;

@@ -180,7 +180,7 @@ void MapCell::LoadObjects(CellSpawns* sp)
 
 	if(sp->CreatureSpawns.size())//got creatures
 	{
-		for(CreatureSpawnList::iterator i = sp->CreatureSpawns.begin(); i != sp->CreatureSpawns.end(); i++)
+		for(CreatureSpawnList::iterator i = sp->CreatureSpawns.begin(); i != sp->CreatureSpawns.end(); ++i)
 		{
 			uint32 respawnTimeOverride = 0;
 			if(pInstance)
@@ -244,7 +244,7 @@ void MapCell::LoadObjects(CellSpawns* sp)
 
 	if(sp->GOSpawns.size())//got GOs
 	{
-		for(GOSpawnList::iterator i = sp->GOSpawns.begin(); i != sp->GOSpawns.end(); i++)
+		for(GOSpawnList::iterator i = sp->GOSpawns.begin(); i != sp->GOSpawns.end(); ++i)
 		{
 			GameObject* go = _mapmgr->CreateGameObject((*i)->entry);
 			if(go->Load(*i))

@@ -32,7 +32,7 @@ bool ChatHandler::HandleGMTicketListCommand(const char* args, WorldSession* m_se
 
 	chn->Say(cplr, "GmTicket 2", cplr, true);
 
-	for(GmTicketList::iterator itr = objmgr.GM_TicketList.begin(); itr != objmgr.GM_TicketList.end(); itr++)
+	for(GmTicketList::iterator itr = objmgr.GM_TicketList.begin(); itr != objmgr.GM_TicketList.end(); ++itr)
 	{
 		if((*itr)->deleted)
 			continue;
@@ -569,5 +569,4 @@ bool ChatHandler::HandleGMTicketToggleTicketSystemStatusCommand(const char* args
 		GreenSystemMessage(m_session, "TicketSystem disabled.");
 	return true;
 }
-
 

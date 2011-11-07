@@ -3009,7 +3009,7 @@ void Spell::SpellEffectDispel(uint32 i) // Dispel
 		data << GetProto()->Id;
 		data << uint8(0);				// unused
 		data << uint32(dispelledSpells.size());
-		for(std::list< uint32 >::iterator itr = dispelledSpells.begin(); itr != dispelledSpells.end(); itr++)
+		for(std::list< uint32 >::iterator itr = dispelledSpells.begin(); itr != dispelledSpells.end(); ++itr)
 		{
 			data << uint32(*itr);		// dispelled spell id
 			data << uint8(0);			// 0 = dispelled, else cleansed
@@ -5027,7 +5027,7 @@ void Spell::SpellEffectSpellSteal(uint32 i)
 		data << GetProto()->Id;
 		data << uint8(0);				// unused
 		data << uint32(stealedSpells.size());
-		for(std::list< uint32 >::iterator itr = stealedSpells.begin(); itr != stealedSpells.end(); itr++)
+		for(std::list< uint32 >::iterator itr = stealedSpells.begin(); itr != stealedSpells.end(); ++itr)
 		{
 			data << uint32(*itr);		// stealed spell id
 			data << uint8(1);			// 0 = dispelled, else cleansed

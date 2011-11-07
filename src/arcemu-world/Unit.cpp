@@ -701,7 +701,7 @@ Unit::~Unit()
 	}
 
 	// reflects not created by auras need to be deleted manually
-	for(std::list<struct ReflectSpellSchool*>::iterator i = m_reflectSpellSchool.begin(); i != m_reflectSpellSchool.end(); i++)
+	for(std::list<struct ReflectSpellSchool*>::iterator i = m_reflectSpellSchool.begin(); i != m_reflectSpellSchool.end(); ++i)
 		delete *i;
 	m_reflectSpellSchool.clear();
 
@@ -7555,7 +7555,7 @@ void Unit::EventChill(Unit* proc_target, bool is_victim)
 void Unit::RemoveExtraStrikeTarget(SpellEntry* spell_info)
 {
 	ExtraStrike* es;
-	for(std::list<ExtraStrike*>::iterator i = m_extraStrikeTargets.begin(); i != m_extraStrikeTargets.end(); i++)
+	for(std::list<ExtraStrike*>::iterator i = m_extraStrikeTargets.begin(); i != m_extraStrikeTargets.end(); ++i)
 	{
 		es = *i;
 		if(spell_info == es->spell_info)
@@ -7570,7 +7570,7 @@ void Unit::RemoveExtraStrikeTarget(SpellEntry* spell_info)
 
 void Unit::AddExtraStrikeTarget(SpellEntry* spell_info, uint32 charges)
 {
-	for(std::list<ExtraStrike*>::iterator i = m_extraStrikeTargets.begin(); i != m_extraStrikeTargets.end(); i++)
+	for(std::list<ExtraStrike*>::iterator i = m_extraStrikeTargets.begin(); i != m_extraStrikeTargets.end(); ++i)
 	{
 		//a pointer check or id check ...should be the same
 		if(spell_info == (*i)->spell_info)

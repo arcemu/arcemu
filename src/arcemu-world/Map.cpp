@@ -58,9 +58,9 @@ Map::~Map()
 				if(spawns[x][y])
 				{
 					CellSpawns* sp = spawns[x][y];
-					for(CreatureSpawnList::iterator i = sp->CreatureSpawns.begin(); i != sp->CreatureSpawns.end(); i++)
+					for(CreatureSpawnList::iterator i = sp->CreatureSpawns.begin(); i != sp->CreatureSpawns.end(); ++i)
 						delete(*i);
-					for(GOSpawnList::iterator it = sp->GOSpawns.begin(); it != sp->GOSpawns.end(); it++)
+					for(GOSpawnList::iterator it = sp->GOSpawns.begin(); it != sp->GOSpawns.end(); ++it)
 						delete(*it);
 
 					delete sp;
@@ -125,9 +125,9 @@ void Map::LoadSpawns(bool reload)
 				if(spawns[x][y])
 				{
 					CellSpawns* sp = spawns[x][y];
-					for(CreatureSpawnList::iterator i = sp->CreatureSpawns.begin(); i != sp->CreatureSpawns.end(); i++)
+					for(CreatureSpawnList::iterator i = sp->CreatureSpawns.begin(); i != sp->CreatureSpawns.end(); ++i)
 						delete(*i);
-					for(GOSpawnList::iterator it = sp->GOSpawns.begin(); it != sp->GOSpawns.end(); it++)
+					for(GOSpawnList::iterator it = sp->GOSpawns.begin(); it != sp->GOSpawns.end(); ++it)
 						delete(*it);
 
 					delete sp;

@@ -221,7 +221,7 @@ void WarsongGulch::HookOnAreaTrigger(Player* plr, uint32 id)
 			if( m_winningteam == TEAM_ALLIANCE )
 				AddHonorToTeam( TEAM_HORDE, 1 * 185 );
 			else
-				AddHonorToTeam( TEAM_HORDE, 1 * 185 );
+				AddHonorToTeam( TEAM_ALLIANCE, 1 * 185 );
 
 			m_mainLock.Release();
 		}

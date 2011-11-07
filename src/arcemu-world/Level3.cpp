@@ -2213,7 +2213,7 @@ bool ChatHandler::HandleMassSummonCommand(const char* args, WorldSession* m_sess
 
 	uint32 c = 0;
 
-	for(itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
+	for(itr = objmgr._players.begin(); itr != objmgr._players.end(); ++itr)
 	{
 		plr = itr->second;
 		if(plr->GetSession() && plr->IsInWorld())
@@ -2269,7 +2269,7 @@ bool ChatHandler::HandleCastAllCommand(const char* args, WorldSession* m_session
 
 	PlayerStorageMap::const_iterator itr;
 	objmgr._playerslock.AcquireReadLock();
-	for(itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
+	for(itr = objmgr._players.begin(); itr != objmgr._players.end(); ++itr)
 	{
 		plr = itr->second;
 		if(plr->GetSession() && plr->IsInWorld())
@@ -2527,7 +2527,7 @@ bool ChatHandler::HandleResetSkillsCommand(const char* args, WorldSession* m_ses
 	PlayerCreateInfo* info = objmgr.GetPlayerCreateInfo(plr->getRace(), plr->getClass());
 	if(!info) return true;
 
-	for(std::list<CreateInfo_SkillStruct>::iterator ss = info->skills.begin(); ss != info->skills.end(); ss++)
+	for(std::list<CreateInfo_SkillStruct>::iterator ss = info->skills.begin(); ss != info->skills.end(); ++ss)
 	{
 		se = dbcSkillLine.LookupEntry(ss->skillid);
 		if(se->type != SKILL_TYPE_LANGUAGE && ss->skillid && ss->currentval && ss->maxval)
@@ -2771,7 +2771,6 @@ bool ChatHandler::HandleCreatureSpawnCommand(const char* args, WorldSession* m_s
 	CreatureSpawn* sp = new CreatureSpawn;
 	//sp->displayid = info->DisplayID;
 	gender = info->GenerateModelId(&sp->displayid);
-	sp->entry = entry;
 	sp->entry = entry;
 	sp->form = 0;
 	sp->id = objmgr.GenerateCreatureSpawnID();
@@ -3885,7 +3884,7 @@ bool ChatHandler::HandleDispelAllCommand(const char* args, WorldSession* m_sessi
 
 	PlayerStorageMap::const_iterator itr;
 	objmgr._playerslock.AcquireReadLock();
-	for(itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
+	for(itr = objmgr._players.begin(); itr != objmgr._players.end(); ++itr)
 	{
 		plr = itr->second;
 		if(plr->GetSession() && plr->IsInWorld())

@@ -217,7 +217,6 @@ Creature::Creature(uint64 guid)
 	original_emotestate = 0;
 	mTrainer = 0;
 	m_spawn = 0;
-	spawnid = 0;
 	auctionHouse = 0;
 	SetAttackPowerMultiplier(0.0f);
 	SetRangedAttackPowerMultiplier(0.0f);
@@ -437,7 +436,7 @@ void Creature::generateLoot()
 		{
 			uint16 lootThreshold = looter->GetGroup()->GetThreshold();
 
-			for(vector<__LootItem>::iterator itr = loot.items.begin(); itr != loot.items.end(); itr++)
+			for(vector<__LootItem>::iterator itr = loot.items.begin(); itr != loot.items.end(); ++itr)
 			{
 				if(itr->item.itemproto->Quality < lootThreshold)
 					continue;

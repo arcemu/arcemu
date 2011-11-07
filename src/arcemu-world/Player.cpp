@@ -404,7 +404,6 @@ Player::Player(uint32 guid)
 	m_sentTeleportPosition.ChangeCoords(999999.0f, 999999.0f, 999999.0f);
 	m_speedChangeCounter = 1;
 	memset(&m_bgScore, 0, sizeof(BGScore));
-	m_arenaPoints = 0;
 	m_base_runSpeed = m_runSpeed;
 	m_base_walkSpeed = m_walkSpeed;
 	m_arenateaminviteguid = 0;
@@ -827,7 +826,7 @@ bool Player::Create(WorldPacket & data)
 	m_FirstLogin = true;
 
 	skilllineentry* se;
-	for(std::list<CreateInfo_SkillStruct>::iterator ss = info->skills.begin(); ss != info->skills.end(); ss++)
+	for(std::list<CreateInfo_SkillStruct>::iterator ss = info->skills.begin(); ss != info->skills.end(); ++ss)
 	{
 		se = dbcSkillLine.LookupEntry(ss->skillid);
 		if(se->type != SKILL_TYPE_LANGUAGE)
@@ -846,7 +845,7 @@ bool Player::Create(WorldPacket & data)
 		setAction(static_cast<uint8>(itr->button), static_cast<uint16>(itr->action), static_cast<uint8>(itr->type), static_cast<uint8>(itr->misc));
 	}
 
-	for(std::list<CreateInfo_ItemStruct>::iterator is = info->items.begin(); is != info->items.end(); is++)
+	for(std::list<CreateInfo_ItemStruct>::iterator is = info->items.begin(); is != info->items.end(); ++is)
 	{
 		if((*is).protoid != 0)
 		{
@@ -1921,7 +1920,6 @@ void Player::_LoadPet(QueryResult* result)
 	do
 	{
 		Field* fields = result->Fetch();
-		fields = result->Fetch();
 
 		PlayerPet* pet = new PlayerPet;
 		pet->number  = fields[1].GetUInt32();
@@ -2850,7 +2848,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	if(m_skills.empty())
 	{
 		/* no skills - reset to defaults */
-		for(std::list<CreateInfo_SkillStruct>::iterator ss = info->skills.begin(); ss != info->skills.end(); ss++)
+		for(std::list<CreateInfo_SkillStruct>::iterator ss = info->skills.begin(); ss != info->skills.end(); ++ss)
 		{
 			if(ss->skillid && ss->currentval && ss->maxval && !::GetSpellForLanguage(ss->skillid))
 				_AddSkillLine(ss->skillid, ss->currentval, ss->maxval);
@@ -3898,7 +3896,7 @@ void Player::_ApplyItemMods(Item* item, int16 slot, bool apply, bool justdrokedo
 		{
 			ItemSet* Set = NULL;
 			std::list<ItemSet>::iterator i;
-			for(i = m_itemsets.begin(); i != m_itemsets.end(); i++)
+			for(i = m_itemsets.begin(); i != m_itemsets.end(); ++i)
 			{
 				if(i->setid == setid)
 				{
@@ -4547,7 +4545,7 @@ void Player::ResurrectPlayer()
 	m_lastRunSpeed = 0;
 	m_lastRunBackSpeed = 0;
 	m_lastSwimSpeed = 0;
-	m_lastRunBackSpeed = 0;
+	m_lastBackSwimSpeed = 0;
 	m_lastFlySpeed = 0;
 
 	// Zack : shit on grill. So auras should be removed on player death instead of making this :P
@@ -6294,7 +6292,7 @@ void Player::Reset_Spells()
 		spelllist.push_back((*itr));
 	}
 
-	for(std::list<uint32>::iterator itr = spelllist.begin(); itr != spelllist.end(); itr++)
+	for(std::list<uint32>::iterator itr = spelllist.begin(); itr != spelllist.end(); ++itr)
 	{
 		removeSpell((*itr), false, false, 0);
 	}
@@ -8856,7 +8854,7 @@ void Player::CompleteLoading()
 
 	std::list<LoginAura>::iterator i =  loginauras.begin();
 
-	for(; i != loginauras.end(); i++)
+	for(; i != loginauras.end(); ++i)
 	{
 
 		//check if we already have this aura
