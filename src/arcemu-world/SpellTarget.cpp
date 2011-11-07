@@ -409,7 +409,7 @@ bool Spell::AddTarget(uint32 i, uint32 TargetType, Object* obj)
 
 	if(TargetType & SPELL_TARGET_REQUIRE_FRIENDLY && !isFriendly(m_caster, obj))
 		return false;
-	if(TargetType & SPELL_TARGET_REQUIRE_ATTACKABLE && !isAttackable(m_caster, obj))
+	if(TargetType & SPELL_TARGET_REQUIRE_ATTACKABLE && !isAttackable(m_caster, obj, false))
 		return false;
 	if(TargetType & SPELL_TARGET_OBJECT_TARCLASS)
 	{
