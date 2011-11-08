@@ -46,7 +46,23 @@ class DamageShieldSpellProc : public SpellProc
 		}
 };
 
+
+class JuggernautSpellProc : public SpellProc{
+	SPELL_PROC_FACTORY_FUNCTION( JuggernautSpellProc );
+
+	bool CanProc(Unit* victim, SpellEntry* CastingSpell){
+		if( CastingSpell == NULL )
+			return false;
+
+		if( CastingSpell->NameHash == SPELL_HASH_CHARGE )
+			return true;
+		else
+			return false;
+	}
+};
+
 void SpellProcMgr::SetupWarrior()
 {
 	AddByNameHash(SPELL_HASH_DAMAGE_SHIELD, &DamageShieldSpellProc::Create);
+	AddById( 65156, &JuggernautSpellProc::Create );
 }

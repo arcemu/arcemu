@@ -314,7 +314,7 @@ void AIInterface::Update(uint32 p_time)
 				m_Unit->SendChatMessage((*next_timed_emote)->msg_type, (*next_timed_emote)->msg_lang, (*next_timed_emote)->msg);
 
 			timed_emote_expire = (*next_timed_emote)->expire_after; //should we keep lost time ? I think not
-			next_timed_emote++;
+			++next_timed_emote;
 			if(next_timed_emote == timed_emotes->end())
 				next_timed_emote = timed_emotes->begin();
 		}
@@ -2095,7 +2095,7 @@ bool AIInterface::showWayPoints(Player* pPlayer, bool Backwards)
 	m_WayPointsShowing = true;
 
 	WayPoint* wp = NULL;
-	for(itr = m_waypoints->begin(); itr != m_waypoints->end(); itr++)
+	for(itr = m_waypoints->begin(); itr != m_waypoints->end(); ++itr)
 	{
 		if((*itr) != NULL)
 		{
@@ -2159,7 +2159,7 @@ bool AIInterface::hideWayPoints(Player* pPlayer)
 	// slightly better way to do this
 	uint64 guid;
 
-	for(itr = m_waypoints->begin(); itr != m_waypoints->end(); itr++)
+	for(itr = m_waypoints->begin(); itr != m_waypoints->end(); ++itr)
 	{
 		if((*itr) != NULL)
 		{
@@ -2184,7 +2184,7 @@ bool AIInterface::saveWayPoints()
 	WayPoint* wp = NULL;
 	std::stringstream ss;
 
-	for(itr = m_waypoints->begin(); itr != m_waypoints->end(); itr++)
+	for(itr = m_waypoints->begin(); itr != m_waypoints->end(); ++itr)
 	{
 		if((*itr) == NULL)
 			continue;
@@ -4578,4 +4578,3 @@ void AIInterface::MoveTeleport(float x, float y, float z, float o /*= 0*/)
 	m_currentMoveSpline.clear();
 	m_Unit->SetPosition(x, y, z, o);
 }
-

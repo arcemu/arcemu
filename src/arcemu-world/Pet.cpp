@@ -1680,7 +1680,7 @@ AI_Spell* Pet::HandleAutoCastEvent()
 	for(itr2 = m_autoCastSpells[AUTOCAST_EVENT_ATTACK].begin(); itr2 != m_autoCastSpells[AUTOCAST_EVENT_ATTACK].end();)
 	{
 		itr = itr2;
-		itr2++;
+		++itr2;
 		size = (uint32)m_autoCastSpells[ AUTOCAST_EVENT_ATTACK ].size();
 		if(size > 1)
 			chance = Rand(100.0f / size);
@@ -1716,7 +1716,7 @@ void Pet::HandleAutoCastEvent(AutoCastEvents Type)
 	{
 		if(m_autoCastSpells[ AUTOCAST_EVENT_ATTACK ].size() > 1)
 		{
-			for(itr = m_autoCastSpells[ AUTOCAST_EVENT_ATTACK ].begin(); itr != m_autoCastSpells[ AUTOCAST_EVENT_ATTACK ].end(); itr++)
+			for(itr = m_autoCastSpells[ AUTOCAST_EVENT_ATTACK ].begin(); itr != m_autoCastSpells[ AUTOCAST_EVENT_ATTACK ].end(); ++itr)
 			{
 				if(itr == m_autoCastSpells[ AUTOCAST_EVENT_ATTACK ].end())
 				{

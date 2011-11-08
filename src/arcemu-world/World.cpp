@@ -879,7 +879,7 @@ uint32 World::GetNonGmSessionCount()
 	uint32 total = (uint32)m_sessions.size();
 
 	SessionMap::const_iterator itr = m_sessions.begin();
-	for(; itr != m_sessions.end(); itr++)
+	for(; itr != m_sessions.end(); ++itr)
 	{
 		if((itr->second)->HasGMPermissions())
 			total--;
@@ -1018,7 +1018,7 @@ void World::SaveAllPlayers()
 	// Servers started and obviously running. lets save all players.
 	uint32 mt;
 	objmgr._playerslock.AcquireReadLock();
-	for(itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
+	for(itr = objmgr._players.begin(); itr != objmgr._players.end(); ++itr)
 	{
 		if(itr->second->GetSession())
 		{
@@ -1072,7 +1072,7 @@ void World::GetStats(uint32* GMCount, float* AverageLatency)
 	int avg = 0;
 	PlayerStorageMap::const_iterator itr;
 	objmgr._playerslock.AcquireReadLock();
-	for(itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
+	for(itr = objmgr._players.begin(); itr != objmgr._players.end(); ++itr)
 	{
 		if(itr->second->GetSession())
 		{
@@ -2255,4 +2255,3 @@ void World::SendZoneUnderAttackMsg(uint32 areaid, uint8 team)
 
 	SendFactionMessage(&data, team);
 }
-

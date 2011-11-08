@@ -2982,10 +2982,10 @@ void ItemInterface::RemoveBuyBackItem(uint32 index)
 void ItemInterface::SwapItemSlots(int8 srcslot, int8 dstslot)
 {
 	// srcslot and dstslot are int... NULL might not be an int depending on arch where it is compiled
-	if(srcslot >= MAX_INVENTORY_SLOT || srcslot < 0)
+	if(srcslot >= INVENTORY_KEYRING_END || srcslot < 0)
 		return;
 
-	if(dstslot >= MAX_INVENTORY_SLOT || dstslot < 0)
+	if(dstslot >= INVENTORY_KEYRING_END || dstslot < 0)
 		return;
 
 	Item* SrcItem = GetInventoryItem(srcslot);
@@ -4144,7 +4144,7 @@ bool ItemInterface::SwapItems(int8 DstInvSlot, int8 DstSlot, int8 SrcInvSlot, in
 				}
 			}
 
-			if(SrcSlot <  CURRENCYTOKEN_SLOT_END)
+			if(SrcSlot <  INVENTORY_KEYRING_END)
 			{
 				if((error = CanEquipItemInSlot2(SrcInvSlot, SrcSlot, DstItem)) != 0)
 				{
@@ -4189,7 +4189,7 @@ bool ItemInterface::SwapItems(int8 DstInvSlot, int8 DstSlot, int8 SrcInvSlot, in
 				}
 			}
 
-			if(DstSlot <  CURRENCYTOKEN_SLOT_END)
+			if(DstSlot <  INVENTORY_KEYRING_END)
 			{
 				if((error = CanEquipItemInSlot2(DstInvSlot, DstSlot, SrcItem)) != 0)
 				{
@@ -4340,4 +4340,3 @@ bool ItemInterface::SwapItems(int8 DstInvSlot, int8 DstSlot, int8 SrcInvSlot, in
 	else
 		return true;
 }
-

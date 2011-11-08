@@ -421,7 +421,6 @@ void WorldSession::HandleAcceptTrade(WorldPacket & recv_data)
 		}
 		else
 		{
-			TradeStatus = TRADE_STATUS_COMPLETE;
 			uint64 Guid;
 			Item* pItem;
 
