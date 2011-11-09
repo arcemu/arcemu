@@ -31,16 +31,16 @@ DELETE FROM `gameobject_names` WHERE `entry` IN (20000000,20000001,20000002,2000
 -- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    gameobject_names    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 -- Portal 1 (Orgrimmar to Undercity)
-INSERT INTO `gameobject_names` (`entry`,`type`,`displayid`,`name`) VALUES (20000000,10,4394,'Orgrimarr Portal to Undercity');
+INSERT INTO `gameobject_names` (`entry`,`type`,`displayid`,`name`) VALUES (20000000,10,4394,'Orgrimmar Portal to Undercity');
 
--- Portal 2 (Undercity to Orgrimarr)
-INSERT INTO `gameobject_names` (`entry`,`type`,`displayid`,`name`) VALUES (20000001,10,4394,'Undercity Portal to Orgrimarr');
+-- Portal 2 (Undercity to Orgrimmar)
+INSERT INTO `gameobject_names` (`entry`,`type`,`displayid`,`name`) VALUES (20000001,10,4394,'Undercity Portal to Orgrimmar');
 
 -- Portal 3 (Orgrimmar to Grom'Gol)
-INSERT INTO `gameobject_names` (`entry`,`type`,`displayid`,`name`) VALUES (20000002,10,4394,'Orgrimarr Portal to Grom Gol');
+INSERT INTO `gameobject_names` (`entry`,`type`,`displayid`,`name`) VALUES (20000002,10,4394,'Orgrimmar Portal to Grom Gol');
 
--- Portal 4 (Grom'Gol to Orgrimarr )
-INSERT INTO `gameobject_names` (`entry`,`type`,`displayid`,`name`) VALUES (20000003,10,4394,'Grom Gol Portal to Orgrimarr');
+-- Portal 4 (Grom'Gol to Orgrimmar )
+INSERT INTO `gameobject_names` (`entry`,`type`,`displayid`,`name`) VALUES (20000003,10,4394,'Grom Gol Portal to Orgrimmar');
 
 -- Portal 5 (Undercity to Grom'Gol)
 INSERT INTO `gameobject_names` (`entry`,`type`,`displayid`,`name`) VALUES (20000004,10,4394,'Undercity Portal to Grom Gol');
