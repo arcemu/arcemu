@@ -153,44 +153,6 @@ enum RandomFlags
     RANDOM_COUNT,
 };
 
-enum ServerHooks
-{
-    SERVER_HOOK_NEW_CHARACTER		= 1,
-    SERVER_HOOK_KILL_PLAYER		= 2,
-    SERVER_HOOK_FIRST_ENTER_WORLD	= 3,
-    SERVER_HOOK_ENTER_WORLD		= 4,
-    SERVER_HOOK_GUILD_JOIN			= 5,
-    SERVER_HOOK_DEATH				= 6,
-    SERVER_HOOK_REPOP				= 7,
-    SERVER_HOOK_EMOTE				= 8,
-    SERVER_HOOK_ENTER_COMBAT		= 9,
-    SERVER_HOOK_CAST_SPELL			= 10,
-    SERVER_HOOK_TICK				= 11,
-    SERVER_HOOK_LOGOUT_REQUEST		= 12,
-    SERVER_HOOK_LOGOUT				= 13,
-    SERVER_HOOK_QUEST_ACCEPT		= 14,
-    SERVER_HOOK_ZONE				= 15,
-    SERVER_HOOK_CHAT				= 16,
-    SERVER_HOOK_LOOT				= 17,
-    SERVER_HOOK_GUILD_CREATE		= 18,
-    SERVER_HOOK_ENTER_WORLD_2		= 19,
-    SERVER_HOOK_CHARACTER_CREATE	= 20,
-    SERVER_HOOK_QUEST_CANCELLED	= 21,
-    SERVER_HOOK_QUEST_FINISHED		= 22,
-    SERVER_HOOK_HONORABLE_KILL		= 23,
-    SERVER_HOOK_ARENA_FINISH		= 24,
-    SERVER_HOOK_OBJECTLOOT			= 25,
-    SERVER_HOOK_AREATRIGGER		= 26,
-    SERVER_HOOK_POST_LEVELUP       = 27,
-    SERVER_HOOK_PRE_DIE	        = 28,	//general unit die, not only based on players
-    SERVER_HOOK_ADVANCE_SKILLLINE  = 29,
-    SERVER_HOOK_DUEL_FINISHED = 30,
-    SERVER_HOOK_AURA_REMOVE = 31,
-    SERVER_HOOK_RESURRECT = 32,
-
-    SERVER_HOOK_COUNT,
-};
-
 enum InstanceHooks
 {
     INSTANCE_EVENT_ON_PLAYER_DEATH = 1,
@@ -245,7 +207,7 @@ struct LuaObjectBinding
 {
 	uint16 m_functionReferences[CREATURE_EVENT_COUNT];
 };
-std::vector<uint16> EventAsToFuncName[SERVER_HOOK_COUNT];
+std::vector<uint16> EventAsToFuncName[NUM_SERVER_HOOKS];
 std::map<uint32, uint16> m_luaDummySpells;
 
 template<typename T>
@@ -491,11 +453,11 @@ class LuaEngine
 
 		struct _ENGINEHOOKINFO
 		{
-			bool hooks[SERVER_HOOK_COUNT];
+			bool hooks[NUM_SERVER_HOOKS];
 			std::vector<uint32> dummyHooks;
 			_ENGINEHOOKINFO()
 			{
-				for(int i = 0; i < SERVER_HOOK_COUNT; ++i)
+				for(int i = 0; i < NUM_SERVER_HOOKS; ++i)
 					hooks[i] = false;
 			}
 		} HookInfo;
@@ -878,6 +840,4 @@ class LuaEngine
 		};
 };
 #endif
-
-
 

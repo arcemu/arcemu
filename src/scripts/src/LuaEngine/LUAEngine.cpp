@@ -869,10 +869,10 @@ bool LuaHookOnNewCharacter(uint32 Race, uint32 Class, WorldSession* Session, con
 {
 	GET_LOCK
 	bool result = true;
-	for(vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_NEW_CHARACTER].begin(); itr != EventAsToFuncName[SERVER_HOOK_NEW_CHARACTER].end(); ++itr)
+	for(vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_EVENT_ON_NEW_CHARACTER].begin(); itr != EventAsToFuncName[SERVER_HOOK_EVENT_ON_NEW_CHARACTER].end(); ++itr)
 	{
 		sLuaMgr.BeginCall((*itr));
-		sLuaMgr.PUSH_INT(SERVER_HOOK_NEW_CHARACTER);
+		sLuaMgr.PUSH_INT(SERVER_HOOK_EVENT_ON_NEW_CHARACTER);
 		sLuaMgr.PUSH_STRING(Name);
 		sLuaMgr.PUSH_UINT(Race);
 		sLuaMgr.PUSH_UINT(Class);
@@ -891,10 +891,10 @@ bool LuaHookOnNewCharacter(uint32 Race, uint32 Class, WorldSession* Session, con
 void LuaHookOnKillPlayer(Player* pPlayer, Player* pVictim)
 {
 	GET_LOCK
-	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_KILL_PLAYER].begin(); itr != EventAsToFuncName[SERVER_HOOK_KILL_PLAYER].end(); ++itr)
+	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_EVENT_ON_KILL_PLAYER].begin(); itr != EventAsToFuncName[SERVER_HOOK_EVENT_ON_KILL_PLAYER].end(); ++itr)
 	{
 		sLuaMgr.BeginCall((*itr));
-		sLuaMgr.PUSH_INT(SERVER_HOOK_KILL_PLAYER);
+		sLuaMgr.PUSH_INT(SERVER_HOOK_EVENT_ON_KILL_PLAYER);
 		sLuaMgr.PushUnit(pPlayer);
 		sLuaMgr.PushUnit(pVictim);
 		sLuaMgr.ExecuteCall(3);
@@ -905,10 +905,10 @@ void LuaHookOnKillPlayer(Player* pPlayer, Player* pVictim)
 void LuaHookOnFirstEnterWorld(Player* pPlayer)
 {
 	GET_LOCK
-	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_FIRST_ENTER_WORLD].begin(); itr != EventAsToFuncName[SERVER_HOOK_FIRST_ENTER_WORLD].end(); ++itr)
+	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_EVENT_ON_FIRST_ENTER_WORLD].begin(); itr != EventAsToFuncName[SERVER_HOOK_EVENT_ON_FIRST_ENTER_WORLD].end(); ++itr)
 	{
 		sLuaMgr.BeginCall((*itr));
-		sLuaMgr.PUSH_INT(SERVER_HOOK_FIRST_ENTER_WORLD);
+		sLuaMgr.PUSH_INT(SERVER_HOOK_EVENT_ON_FIRST_ENTER_WORLD);
 		sLuaMgr.PushUnit(pPlayer);
 		sLuaMgr.ExecuteCall(2);
 	}
@@ -918,10 +918,10 @@ void LuaHookOnFirstEnterWorld(Player* pPlayer)
 void LuaHookOnEnterWorld(Player* pPlayer)
 {
 	GET_LOCK
-	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_ENTER_WORLD].begin(); itr != EventAsToFuncName[SERVER_HOOK_ENTER_WORLD].end(); ++itr)
+	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_EVENT_ON_ENTER_WORLD].begin(); itr != EventAsToFuncName[SERVER_HOOK_EVENT_ON_ENTER_WORLD].end(); ++itr)
 	{
 		sLuaMgr.BeginCall((*itr));
-		sLuaMgr.PUSH_INT(SERVER_HOOK_ENTER_WORLD);
+		sLuaMgr.PUSH_INT(SERVER_HOOK_EVENT_ON_ENTER_WORLD);
 		sLuaMgr.PushUnit(pPlayer);
 		sLuaMgr.ExecuteCall(2);
 	}
@@ -931,10 +931,10 @@ void LuaHookOnEnterWorld(Player* pPlayer)
 void LuaHookOnGuildJoin(Player* pPlayer, Guild* pGuild)
 {
 	GET_LOCK
-	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_GUILD_JOIN].begin(); itr != EventAsToFuncName[SERVER_HOOK_GUILD_JOIN].end(); ++itr)
+	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_EVENT_ON_GUILD_JOIN].begin(); itr != EventAsToFuncName[SERVER_HOOK_EVENT_ON_GUILD_JOIN].end(); ++itr)
 	{
 		sLuaMgr.BeginCall((*itr));
-		sLuaMgr.PUSH_INT(SERVER_HOOK_GUILD_JOIN);
+		sLuaMgr.PUSH_INT(SERVER_HOOK_EVENT_ON_GUILD_JOIN);
 		sLuaMgr.PushUnit(pPlayer);
 		sLuaMgr.PUSH_STRING(pGuild->GetGuildName());
 		sLuaMgr.ExecuteCall(3);
@@ -945,10 +945,10 @@ void LuaHookOnGuildJoin(Player* pPlayer, Guild* pGuild)
 void LuaHookOnDeath(Player* pPlayer)
 {
 	GET_LOCK
-	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_DEATH].begin(); itr != EventAsToFuncName[SERVER_HOOK_DEATH].end(); ++itr)
+	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_EVENT_ON_DEATH].begin(); itr != EventAsToFuncName[SERVER_HOOK_EVENT_ON_DEATH].end(); ++itr)
 	{
 		sLuaMgr.BeginCall((*itr));
-		sLuaMgr.PUSH_INT(SERVER_HOOK_DEATH);
+		sLuaMgr.PUSH_INT(SERVER_HOOK_EVENT_ON_DEATH);
 		sLuaMgr.PushUnit(pPlayer);
 		sLuaMgr.ExecuteCall(2);
 	}
@@ -959,10 +959,10 @@ bool LuaHookOnRepop(Player* pPlayer)
 {
 	GET_LOCK
 	bool result = true;
-	for(vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_REPOP].begin(); itr != EventAsToFuncName[SERVER_HOOK_REPOP].end(); ++itr)
+	for(vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_EVENT_ON_REPOP].begin(); itr != EventAsToFuncName[SERVER_HOOK_EVENT_ON_REPOP].end(); ++itr)
 	{
 		sLuaMgr.BeginCall((*itr));
-		sLuaMgr.PUSH_INT(SERVER_HOOK_REPOP);
+		sLuaMgr.PUSH_INT(SERVER_HOOK_EVENT_ON_REPOP);
 		sLuaMgr.PushUnit(pPlayer);
 		if(sLuaMgr.ExecuteCall(2, 1))
 		{
@@ -979,10 +979,10 @@ bool LuaHookOnRepop(Player* pPlayer)
 void LuaHookOnEmote(Player* pPlayer, uint32 Emote, Unit* pUnit)
 {
 	GET_LOCK
-	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_EMOTE].begin(); itr != EventAsToFuncName[SERVER_HOOK_EMOTE].end(); ++itr)
+	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_EVENT_ON_EMOTE].begin(); itr != EventAsToFuncName[SERVER_HOOK_EVENT_ON_EMOTE].end(); ++itr)
 	{
 		sLuaMgr.BeginCall((*itr));
-		sLuaMgr.PUSH_INT(SERVER_HOOK_EMOTE);
+		sLuaMgr.PUSH_INT(SERVER_HOOK_EVENT_ON_EMOTE);
 		sLuaMgr.PushUnit(pPlayer);
 		sLuaMgr.PushUnit(pUnit);
 		sLuaMgr.PUSH_UINT(Emote);
@@ -994,10 +994,10 @@ void LuaHookOnEmote(Player* pPlayer, uint32 Emote, Unit* pUnit)
 void LuaHookOnEnterCombat(Player* pPlayer, Unit* pTarget)
 {
 	GET_LOCK
-	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_ENTER_COMBAT].begin(); itr != EventAsToFuncName[SERVER_HOOK_ENTER_COMBAT].end(); ++itr)
+	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_EVENT_ON_ENTER_COMBAT].begin(); itr != EventAsToFuncName[SERVER_HOOK_EVENT_ON_ENTER_COMBAT].end(); ++itr)
 	{
 		sLuaMgr.BeginCall((*itr));
-		sLuaMgr.PUSH_INT(SERVER_HOOK_ENTER_COMBAT);
+		sLuaMgr.PUSH_INT(SERVER_HOOK_EVENT_ON_ENTER_COMBAT);
 		sLuaMgr.PushUnit(pPlayer);
 		sLuaMgr.PushUnit(pTarget);
 		sLuaMgr.ExecuteCall(3);
@@ -1009,10 +1009,10 @@ bool LuaHookOnCastSpell(Player* pPlayer, SpellEntry* pSpell, Spell* spell)
 {
 	GET_LOCK
 	bool result = true;
-	for(vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_CAST_SPELL].begin(); itr != EventAsToFuncName[SERVER_HOOK_CAST_SPELL].end(); ++itr)
+	for(vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_EVENT_ON_CAST_SPELL].begin(); itr != EventAsToFuncName[SERVER_HOOK_EVENT_ON_CAST_SPELL].end(); ++itr)
 	{
 		sLuaMgr.BeginCall((*itr));
-		sLuaMgr.PUSH_INT(SERVER_HOOK_CAST_SPELL);
+		sLuaMgr.PUSH_INT(SERVER_HOOK_EVENT_ON_CAST_SPELL);
 		sLuaMgr.PushUnit(pPlayer);
 		sLuaMgr.PUSH_UINT(pSpell->Id);
 		sLuaMgr.PushSpell(spell);
@@ -1031,7 +1031,7 @@ bool LuaHookOnCastSpell(Player* pPlayer, SpellEntry* pSpell, Spell* spell)
 void LuaHookOnTick()
 {
 	GET_LOCK
-	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_TICK].begin(); itr != EventAsToFuncName[SERVER_HOOK_TICK].end(); ++itr)
+	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_EVENT_ON_TICK].begin(); itr != EventAsToFuncName[SERVER_HOOK_EVENT_ON_TICK].end(); ++itr)
 	{
 		sLuaMgr.BeginCall((*itr));
 		sLuaMgr.ExecuteCall();
@@ -1043,10 +1043,10 @@ bool LuaHookOnLogoutRequest(Player* pPlayer)
 {
 	GET_LOCK
 	bool result = true;
-	for(vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_LOGOUT_REQUEST].begin(); itr != EventAsToFuncName[SERVER_HOOK_LOGOUT_REQUEST].end(); ++itr)
+	for(vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_EVENT_ON_LOGOUT_REQUEST].begin(); itr != EventAsToFuncName[SERVER_HOOK_EVENT_ON_LOGOUT_REQUEST].end(); ++itr)
 	{
 		sLuaMgr.BeginCall((*itr));
-		sLuaMgr.PUSH_INT(SERVER_HOOK_LOGOUT_REQUEST);
+		sLuaMgr.PUSH_INT(SERVER_HOOK_EVENT_ON_LOGOUT_REQUEST);
 		sLuaMgr.PushUnit(pPlayer);
 		if(sLuaMgr.ExecuteCall(2, 1))
 		{
@@ -1063,10 +1063,10 @@ bool LuaHookOnLogoutRequest(Player* pPlayer)
 void LuaHookOnLogout(Player* pPlayer)
 {
 	GET_LOCK
-	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_LOGOUT].begin(); itr != EventAsToFuncName[SERVER_HOOK_LOGOUT].end(); ++itr)
+	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_EVENT_ON_LOGOUT].begin(); itr != EventAsToFuncName[SERVER_HOOK_EVENT_ON_LOGOUT].end(); ++itr)
 	{
 		sLuaMgr.BeginCall((*itr));
-		sLuaMgr.PUSH_INT(SERVER_HOOK_LOGOUT);
+		sLuaMgr.PUSH_INT(SERVER_HOOK_EVENT_ON_LOGOUT);
 		sLuaMgr.PushUnit(pPlayer);
 		sLuaMgr.ExecuteCall(2);
 	}
@@ -1076,10 +1076,10 @@ void LuaHookOnLogout(Player* pPlayer)
 void LuaHookOnQuestAccept(Player* pPlayer, Quest* pQuest, Object* pQuestGiver)
 {
 	GET_LOCK
-	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_QUEST_ACCEPT].begin(); itr != EventAsToFuncName[SERVER_HOOK_QUEST_ACCEPT].end(); ++itr)
+	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_EVENT_ON_QUEST_ACCEPT].begin(); itr != EventAsToFuncName[SERVER_HOOK_EVENT_ON_QUEST_ACCEPT].end(); ++itr)
 	{
 		sLuaMgr.BeginCall((*itr));
-		sLuaMgr.PUSH_INT(SERVER_HOOK_QUEST_ACCEPT);
+		sLuaMgr.PUSH_INT(SERVER_HOOK_EVENT_ON_QUEST_ACCEPT);
 		sLuaMgr.PushUnit(pPlayer);
 		sLuaMgr.PUSH_UINT(pQuest->id);
 		if(!pQuestGiver)
@@ -1100,10 +1100,10 @@ void LuaHookOnQuestAccept(Player* pPlayer, Quest* pQuest, Object* pQuestGiver)
 void LuaHookOnZone(Player* pPlayer, uint32 Zone, uint32 oldZone)
 {
 	GET_LOCK
-	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_ZONE].begin(); itr != EventAsToFuncName[SERVER_HOOK_ZONE].end(); ++itr)
+	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_EVENT_ON_ZONE].begin(); itr != EventAsToFuncName[SERVER_HOOK_EVENT_ON_ZONE].end(); ++itr)
 	{
 		sLuaMgr.BeginCall((*itr));
-		sLuaMgr.PUSH_INT(SERVER_HOOK_ZONE);
+		sLuaMgr.PUSH_INT(SERVER_HOOK_EVENT_ON_ZONE);
 		sLuaMgr.PushUnit(pPlayer);
 		sLuaMgr.PUSH_UINT(Zone);
 		sLuaMgr.PUSH_UINT(oldZone);
@@ -1116,10 +1116,10 @@ bool LuaHookOnChat(Player* pPlayer, uint32 Type, uint32 Lang, const char* Messag
 {
 	GET_LOCK
 	bool result = true;
-	for(vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_CHAT].begin(); itr != EventAsToFuncName[SERVER_HOOK_CHAT].end(); ++itr)
+	for(vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_EVENT_ON_CHAT].begin(); itr != EventAsToFuncName[SERVER_HOOK_EVENT_ON_CHAT].end(); ++itr)
 	{
 		sLuaMgr.BeginCall((*itr));
-		sLuaMgr.PUSH_INT(SERVER_HOOK_CHAT);
+		sLuaMgr.PUSH_INT(SERVER_HOOK_EVENT_ON_CHAT);
 		sLuaMgr.PushUnit(pPlayer);
 		sLuaMgr.PUSH_STRING(Message);
 		sLuaMgr.PUSH_UINT(Type);
@@ -1140,10 +1140,10 @@ bool LuaHookOnChat(Player* pPlayer, uint32 Type, uint32 Lang, const char* Messag
 void LuaHookOnLoot(Player* pPlayer, Unit* pTarget, uint32 Money, uint32 ItemId)
 {
 	GET_LOCK
-	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_LOOT].begin(); itr != EventAsToFuncName[SERVER_HOOK_LOOT].end(); ++itr)
+	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_EVENT_ON_LOOT].begin(); itr != EventAsToFuncName[SERVER_HOOK_EVENT_ON_LOOT].end(); ++itr)
 	{
 		sLuaMgr.BeginCall((*itr));
-		sLuaMgr.PUSH_INT(SERVER_HOOK_LOOT);
+		sLuaMgr.PUSH_INT(SERVER_HOOK_EVENT_ON_LOOT);
 		sLuaMgr.PushUnit(pPlayer);
 		sLuaMgr.PushUnit(pTarget);
 		sLuaMgr.PUSH_UINT(Money);
@@ -1156,10 +1156,10 @@ void LuaHookOnLoot(Player* pPlayer, Unit* pTarget, uint32 Money, uint32 ItemId)
 void LuaHookOnGuildCreate(Player* pLeader, Guild* pGuild)
 {
 	GET_LOCK
-	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_GUILD_CREATE].begin(); itr != EventAsToFuncName[SERVER_HOOK_GUILD_CREATE].end(); ++itr)
+	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_EVENT_ON_GUILD_CREATE].begin(); itr != EventAsToFuncName[SERVER_HOOK_EVENT_ON_GUILD_CREATE].end(); ++itr)
 	{
 		sLuaMgr.BeginCall((*itr));
-		sLuaMgr.PUSH_INT(SERVER_HOOK_GUILD_CREATE);
+		sLuaMgr.PUSH_INT(SERVER_HOOK_EVENT_ON_GUILD_CREATE);
 		sLuaMgr.PushUnit(pLeader);
 		sLuaMgr.PUSH_STRING(pGuild->GetGuildName());
 		sLuaMgr.ExecuteCall(3);
@@ -1170,10 +1170,10 @@ void LuaHookOnGuildCreate(Player* pLeader, Guild* pGuild)
 void LuaHookOnEnterWorld2(Player* pPlayer)
 {
 	GET_LOCK
-	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_ENTER_WORLD_2].begin(); itr != EventAsToFuncName[SERVER_HOOK_ENTER_WORLD_2].end(); ++itr)
+	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_EVENT_ON_FULL_LOGIN].begin(); itr != EventAsToFuncName[SERVER_HOOK_EVENT_ON_FULL_LOGIN].end(); ++itr)
 	{
 		sLuaMgr.BeginCall((*itr));
-		sLuaMgr.PUSH_INT(SERVER_HOOK_ENTER_WORLD_2);
+		sLuaMgr.PUSH_INT(SERVER_HOOK_EVENT_ON_FULL_LOGIN);
 		sLuaMgr.PushUnit(pPlayer);
 		sLuaMgr.ExecuteCall(2);
 	}
@@ -1183,10 +1183,10 @@ void LuaHookOnEnterWorld2(Player* pPlayer)
 void LuaHookOnCharacterCreate(Player* pPlayer)
 {
 	GET_LOCK
-	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_CHARACTER_CREATE].begin(); itr != EventAsToFuncName[SERVER_HOOK_CHARACTER_CREATE].end(); ++itr)
+	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_EVENT_ON_CHARACTER_CREATE].begin(); itr != EventAsToFuncName[SERVER_HOOK_EVENT_ON_CHARACTER_CREATE].end(); ++itr)
 	{
 		sLuaMgr.BeginCall((*itr));
-		sLuaMgr.PUSH_INT(SERVER_HOOK_CHARACTER_CREATE);
+		sLuaMgr.PUSH_INT(SERVER_HOOK_EVENT_ON_CHARACTER_CREATE);
 		sLuaMgr.PushUnit(pPlayer);
 		sLuaMgr.ExecuteCall(2);
 	}
@@ -1196,10 +1196,10 @@ void LuaHookOnCharacterCreate(Player* pPlayer)
 void LuaHookOnQuestCancelled(Player* pPlayer, Quest* pQuest)
 {
 	GET_LOCK
-	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_QUEST_CANCELLED].begin(); itr != EventAsToFuncName[SERVER_HOOK_QUEST_CANCELLED].end(); ++itr)
+	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_EVENT_ON_QUEST_CANCELLED].begin(); itr != EventAsToFuncName[SERVER_HOOK_EVENT_ON_QUEST_CANCELLED].end(); ++itr)
 	{
 		sLuaMgr.BeginCall((*itr));
-		sLuaMgr.PUSH_INT(SERVER_HOOK_QUEST_CANCELLED);
+		sLuaMgr.PUSH_INT(SERVER_HOOK_EVENT_ON_QUEST_CANCELLED);
 		sLuaMgr.PushUnit(pPlayer);
 		sLuaMgr.PUSH_UINT(pQuest->id);
 		sLuaMgr.ExecuteCall(3);
@@ -1210,10 +1210,10 @@ void LuaHookOnQuestCancelled(Player* pPlayer, Quest* pQuest)
 void LuaHookOnQuestFinished(Player* pPlayer, Quest* pQuest, Object* pQuestGiver)
 {
 	GET_LOCK
-	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_QUEST_FINISHED].begin(); itr != EventAsToFuncName[SERVER_HOOK_QUEST_FINISHED].end(); ++itr)
+	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_EVENT_ON_QUEST_FINISHED].begin(); itr != EventAsToFuncName[SERVER_HOOK_EVENT_ON_QUEST_FINISHED].end(); ++itr)
 	{
 		sLuaMgr.BeginCall((*itr));
-		sLuaMgr.PUSH_INT(SERVER_HOOK_QUEST_FINISHED);
+		sLuaMgr.PUSH_INT(SERVER_HOOK_EVENT_ON_QUEST_FINISHED);
 		sLuaMgr.PushUnit(pPlayer);
 		sLuaMgr.PUSH_UINT(pQuest->id);
 		if(!pQuestGiver)
@@ -1234,10 +1234,10 @@ void LuaHookOnQuestFinished(Player* pPlayer, Quest* pQuest, Object* pQuestGiver)
 void LuaHookOnHonorableKill(Player* pPlayer, Player* pKilled)
 {
 	GET_LOCK
-	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_HONORABLE_KILL].begin(); itr != EventAsToFuncName[SERVER_HOOK_HONORABLE_KILL].end(); ++itr)
+	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_EVENT_ON_HONORABLE_KILL].begin(); itr != EventAsToFuncName[SERVER_HOOK_EVENT_ON_HONORABLE_KILL].end(); ++itr)
 	{
 		sLuaMgr.BeginCall((*itr));
-		sLuaMgr.PUSH_INT(SERVER_HOOK_HONORABLE_KILL);
+		sLuaMgr.PUSH_INT(SERVER_HOOK_EVENT_ON_HONORABLE_KILL);
 		sLuaMgr.PushUnit(pPlayer);
 		sLuaMgr.PushUnit(pKilled);
 		sLuaMgr.ExecuteCall(3);
@@ -1248,10 +1248,10 @@ void LuaHookOnHonorableKill(Player* pPlayer, Player* pKilled)
 void LuaHookOnArenaFinish(Player* pPlayer, ArenaTeam* pTeam, bool victory, bool rated)
 {
 	GET_LOCK
-	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_ARENA_FINISH].begin(); itr != EventAsToFuncName[SERVER_HOOK_ARENA_FINISH].end(); ++itr)
+	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_EVENT_ON_ARENA_FINISH].begin(); itr != EventAsToFuncName[SERVER_HOOK_EVENT_ON_ARENA_FINISH].end(); ++itr)
 	{
 		sLuaMgr.BeginCall((*itr));
-		sLuaMgr.PUSH_INT(SERVER_HOOK_ARENA_FINISH);
+		sLuaMgr.PUSH_INT(SERVER_HOOK_EVENT_ON_ARENA_FINISH);
 		sLuaMgr.PushUnit(pPlayer);
 		sLuaMgr.PUSH_STRING(pTeam->m_name.c_str());
 		sLuaMgr.PUSH_BOOL(victory);
@@ -1264,10 +1264,10 @@ void LuaHookOnArenaFinish(Player* pPlayer, ArenaTeam* pTeam, bool victory, bool 
 void LuaHookOnObjectLoot(Player* pPlayer, Object* pTarget, uint32 Money, uint32 ItemId)
 {
 	GET_LOCK
-	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_OBJECTLOOT].begin(); itr != EventAsToFuncName[SERVER_HOOK_OBJECTLOOT].end(); ++itr)
+	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_EVENT_ON_OBJECTLOOT].begin(); itr != EventAsToFuncName[SERVER_HOOK_EVENT_ON_OBJECTLOOT].end(); ++itr)
 	{
 		sLuaMgr.BeginCall((*itr));
-		sLuaMgr.PUSH_INT(SERVER_HOOK_OBJECTLOOT);
+		sLuaMgr.PUSH_INT(SERVER_HOOK_EVENT_ON_OBJECTLOOT);
 		sLuaMgr.PushUnit(pPlayer);
 		sLuaMgr.PushUnit(pTarget);
 		sLuaMgr.PUSH_UINT(Money);
@@ -1280,10 +1280,10 @@ void LuaHookOnObjectLoot(Player* pPlayer, Object* pTarget, uint32 Money, uint32 
 void LuaHookOnAreaTrigger(Player* pPlayer, uint32 areaTrigger)
 {
 	GET_LOCK
-	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_AREATRIGGER].begin(); itr != EventAsToFuncName[SERVER_HOOK_AREATRIGGER].end(); ++itr)
+	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_EVENT_ON_AREATRIGGER].begin(); itr != EventAsToFuncName[SERVER_HOOK_EVENT_ON_AREATRIGGER].end(); ++itr)
 	{
 		sLuaMgr.BeginCall((*itr));
-		sLuaMgr.PUSH_INT(SERVER_HOOK_AREATRIGGER);
+		sLuaMgr.PUSH_INT(SERVER_HOOK_EVENT_ON_AREATRIGGER);
 		sLuaMgr.PushUnit(pPlayer);
 		sLuaMgr.PUSH_UINT(areaTrigger);
 		sLuaMgr.ExecuteCall(3);
@@ -1294,10 +1294,10 @@ void LuaHookOnAreaTrigger(Player* pPlayer, uint32 areaTrigger)
 void LuaHookOnPostLevelUp(Player* pPlayer)
 {
 	GET_LOCK
-	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_POST_LEVELUP].begin(); itr != EventAsToFuncName[SERVER_HOOK_POST_LEVELUP].end(); ++itr)
+	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_EVENT_ON_POST_LEVELUP].begin(); itr != EventAsToFuncName[SERVER_HOOK_EVENT_ON_POST_LEVELUP].end(); ++itr)
 	{
 		sLuaMgr.BeginCall((*itr));
-		sLuaMgr.PUSH_INT(SERVER_HOOK_POST_LEVELUP);
+		sLuaMgr.PUSH_INT(SERVER_HOOK_EVENT_ON_POST_LEVELUP);
 		sLuaMgr.PushUnit(pPlayer);
 		sLuaMgr.ExecuteCall(2);
 	}
@@ -1308,10 +1308,10 @@ bool LuaHookOnPreUnitDie(Unit* Killer, Unit* Victim)
 {
 	GET_LOCK
 	bool result = true;
-	for(vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_PRE_DIE].begin(); itr != EventAsToFuncName[SERVER_HOOK_PRE_DIE].end(); ++itr)
+	for(vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_EVENT_ON_PRE_DIE].begin(); itr != EventAsToFuncName[SERVER_HOOK_EVENT_ON_PRE_DIE].end(); ++itr)
 	{
 		sLuaMgr.BeginCall((*itr));
-		sLuaMgr.PUSH_INT(SERVER_HOOK_PRE_DIE);
+		sLuaMgr.PUSH_INT(SERVER_HOOK_EVENT_ON_PRE_DIE);
 		sLuaMgr.PushUnit(Killer);
 		sLuaMgr.PushUnit(Victim);
 		if(sLuaMgr.ExecuteCall(3, 1))
@@ -1329,10 +1329,10 @@ bool LuaHookOnPreUnitDie(Unit* Killer, Unit* Victim)
 void LuaHookOnAdvanceSkillLine(Player* pPlayer, uint32 SkillLine, uint32 Current)
 {
 	GET_LOCK
-	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_ADVANCE_SKILLLINE].begin(); itr != EventAsToFuncName[SERVER_HOOK_ADVANCE_SKILLLINE].end(); ++itr)
+	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_EVENT_ON_ADVANCE_SKILLLINE].begin(); itr != EventAsToFuncName[SERVER_HOOK_EVENT_ON_ADVANCE_SKILLLINE].end(); ++itr)
 	{
 		sLuaMgr.BeginCall((*itr));
-		sLuaMgr.PUSH_INT(SERVER_HOOK_ADVANCE_SKILLLINE);
+		sLuaMgr.PUSH_INT(SERVER_HOOK_EVENT_ON_ADVANCE_SKILLLINE);
 		sLuaMgr.PushUnit(pPlayer);
 		sLuaMgr.PUSH_UINT(SkillLine);
 		sLuaMgr.PUSH_UINT(Current);
@@ -1344,10 +1344,10 @@ void LuaHookOnAdvanceSkillLine(Player* pPlayer, uint32 SkillLine, uint32 Current
 void LuaHookOnDuelFinished(Player* pWinner, Player* pLoser)
 {
 	GET_LOCK
-	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_DUEL_FINISHED].begin(); itr != EventAsToFuncName[SERVER_HOOK_DUEL_FINISHED].end(); ++itr)
+	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_EVENT_ON_DUEL_FINISHED].begin(); itr != EventAsToFuncName[SERVER_HOOK_EVENT_ON_DUEL_FINISHED].end(); ++itr)
 	{
 		sLuaMgr.BeginCall((*itr));
-		sLuaMgr.PUSH_INT(SERVER_HOOK_DUEL_FINISHED);
+		sLuaMgr.PUSH_INT(SERVER_HOOK_EVENT_ON_DUEL_FINISHED);
 		sLuaMgr.PushUnit(pWinner);
 		sLuaMgr.PushUnit(pLoser);
 		sLuaMgr.ExecuteCall(3);
@@ -1358,10 +1358,10 @@ void LuaHookOnDuelFinished(Player* pWinner, Player* pLoser)
 void LuaHookOnAuraRemove(Aura* aura)
 {
 	GET_LOCK
-	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_AURA_REMOVE].begin(); itr != EventAsToFuncName[SERVER_HOOK_AURA_REMOVE].end(); ++itr)
+	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_EVENT_ON_AURA_REMOVE].begin(); itr != EventAsToFuncName[SERVER_HOOK_EVENT_ON_AURA_REMOVE].end(); ++itr)
 	{
 		sLuaMgr.BeginCall((*itr));
-		sLuaMgr.PUSH_INT(SERVER_HOOK_AURA_REMOVE);
+		sLuaMgr.PUSH_INT(SERVER_HOOK_EVENT_ON_AURA_REMOVE);
 		sLuaMgr.PushAura(aura);
 		sLuaMgr.ExecuteCall(2);
 	}
@@ -1372,10 +1372,10 @@ bool LuaHookOnResurrect(Player* pPlayer)
 {
 	GET_LOCK
 	bool result = true;
-	for(vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_RESURRECT].begin(); itr != EventAsToFuncName[SERVER_HOOK_RESURRECT].end(); ++itr)
+	for(vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_EVENT_ON_RESURRECT].begin(); itr != EventAsToFuncName[SERVER_HOOK_EVENT_ON_RESURRECT].end(); ++itr)
 	{
 		sLuaMgr.BeginCall((*itr));
-		sLuaMgr.PUSH_INT(SERVER_HOOK_RESURRECT);
+		sLuaMgr.PUSH_INT(SERVER_HOOK_EVENT_ON_RESURRECT);
 		sLuaMgr.PushUnit(pPlayer);
 		if(sLuaMgr.ExecuteCall(2, 1))
 		{
@@ -2528,38 +2528,38 @@ void LuaEngine::Startup()
 
 	//big server hook chunk. it only hooks if there are functions present to save on unnecessary processing.
 
-	RegisterHook(SERVER_HOOK_NEW_CHARACTER, (void*)LuaHookOnNewCharacter)
-	RegisterHook(SERVER_HOOK_KILL_PLAYER, (void*)LuaHookOnKillPlayer)
-	RegisterHook(SERVER_HOOK_FIRST_ENTER_WORLD, (void*)LuaHookOnFirstEnterWorld)
-	RegisterHook(SERVER_HOOK_ENTER_WORLD, (void*)LuaHookOnEnterWorld)
-	RegisterHook(SERVER_HOOK_GUILD_JOIN, (void*)LuaHookOnGuildJoin)
-	RegisterHook(SERVER_HOOK_DEATH, (void*)LuaHookOnDeath)
-	RegisterHook(SERVER_HOOK_REPOP, (void*)LuaHookOnRepop)
-	RegisterHook(SERVER_HOOK_EMOTE, (void*)LuaHookOnEmote)
-	RegisterHook(SERVER_HOOK_ENTER_COMBAT, (void*)LuaHookOnEnterCombat)
-	RegisterHook(SERVER_HOOK_CAST_SPELL, (void*)LuaHookOnCastSpell)
-	RegisterHook(SERVER_HOOK_TICK, (void*)LuaHookOnTick)
-	RegisterHook(SERVER_HOOK_LOGOUT_REQUEST, (void*)LuaHookOnLogoutRequest)
-	RegisterHook(SERVER_HOOK_LOGOUT, (void*)LuaHookOnLogout)
-	RegisterHook(SERVER_HOOK_QUEST_ACCEPT, (void*)LuaHookOnQuestAccept)
-	RegisterHook(SERVER_HOOK_ZONE, (void*)LuaHookOnZone)
-	RegisterHook(SERVER_HOOK_CHAT, (void*)LuaHookOnChat)
-	RegisterHook(SERVER_HOOK_LOOT, (void*)LuaHookOnLoot)
-	RegisterHook(SERVER_HOOK_GUILD_CREATE, (void*)LuaHookOnGuildCreate)
-	RegisterHook(SERVER_HOOK_ENTER_WORLD_2, (void*)LuaHookOnEnterWorld2)
-	RegisterHook(SERVER_HOOK_CHARACTER_CREATE, (void*)LuaHookOnCharacterCreate)
-	RegisterHook(SERVER_HOOK_QUEST_CANCELLED, (void*)LuaHookOnQuestCancelled)
-	RegisterHook(SERVER_HOOK_QUEST_FINISHED, (void*)LuaHookOnQuestFinished)
-	RegisterHook(SERVER_HOOK_HONORABLE_KILL, (void*)LuaHookOnHonorableKill)
-	RegisterHook(SERVER_HOOK_ARENA_FINISH, (void*)LuaHookOnArenaFinish)
-	RegisterHook(SERVER_HOOK_OBJECTLOOT, (void*)LuaHookOnObjectLoot)
-	RegisterHook(SERVER_HOOK_AREATRIGGER, (void*)LuaHookOnAreaTrigger)
-	RegisterHook(SERVER_HOOK_POST_LEVELUP, (void*)LuaHookOnPostLevelUp)
-	RegisterHook(SERVER_HOOK_PRE_DIE, (void*)LuaHookOnPreUnitDie)
-	RegisterHook(SERVER_HOOK_ADVANCE_SKILLLINE, (void*)LuaHookOnAdvanceSkillLine)
-	RegisterHook(SERVER_HOOK_DUEL_FINISHED, (void*)LuaHookOnDuelFinished)
-	RegisterHook(SERVER_HOOK_AURA_REMOVE, (void*)LuaHookOnAuraRemove)
-	RegisterHook(SERVER_HOOK_RESURRECT, (void*)LuaHookOnResurrect)
+	RegisterHook(SERVER_HOOK_EVENT_ON_NEW_CHARACTER, (void*)LuaHookOnNewCharacter)
+	RegisterHook(SERVER_HOOK_EVENT_ON_KILL_PLAYER, (void*)LuaHookOnKillPlayer)
+	RegisterHook(SERVER_HOOK_EVENT_ON_FIRST_ENTER_WORLD, (void*)LuaHookOnFirstEnterWorld)
+	RegisterHook(SERVER_HOOK_EVENT_ON_ENTER_WORLD, (void*)LuaHookOnEnterWorld)
+	RegisterHook(SERVER_HOOK_EVENT_ON_GUILD_JOIN, (void*)LuaHookOnGuildJoin)
+	RegisterHook(SERVER_HOOK_EVENT_ON_DEATH, (void*)LuaHookOnDeath)
+	RegisterHook(SERVER_HOOK_EVENT_ON_REPOP, (void*)LuaHookOnRepop)
+	RegisterHook(SERVER_HOOK_EVENT_ON_EMOTE, (void*)LuaHookOnEmote)
+	RegisterHook(SERVER_HOOK_EVENT_ON_ENTER_COMBAT, (void*)LuaHookOnEnterCombat)
+	RegisterHook(SERVER_HOOK_EVENT_ON_CAST_SPELL, (void*)LuaHookOnCastSpell)
+	RegisterHook(SERVER_HOOK_EVENT_ON_TICK, (void*)LuaHookOnTick)
+	RegisterHook(SERVER_HOOK_EVENT_ON_LOGOUT_REQUEST, (void*)LuaHookOnLogoutRequest)
+	RegisterHook(SERVER_HOOK_EVENT_ON_LOGOUT, (void*)LuaHookOnLogout)
+	RegisterHook(SERVER_HOOK_EVENT_ON_QUEST_ACCEPT, (void*)LuaHookOnQuestAccept)
+	RegisterHook(SERVER_HOOK_EVENT_ON_ZONE, (void*)LuaHookOnZone)
+	RegisterHook(SERVER_HOOK_EVENT_ON_CHAT, (void*)LuaHookOnChat)
+	RegisterHook(SERVER_HOOK_EVENT_ON_LOOT, (void*)LuaHookOnLoot)
+	RegisterHook(SERVER_HOOK_EVENT_ON_GUILD_CREATE, (void*)LuaHookOnGuildCreate)
+	RegisterHook(SERVER_HOOK_EVENT_ON_FULL_LOGIN, (void*)LuaHookOnEnterWorld2)
+	RegisterHook(SERVER_HOOK_EVENT_ON_CHARACTER_CREATE, (void*)LuaHookOnCharacterCreate)
+	RegisterHook(SERVER_HOOK_EVENT_ON_QUEST_CANCELLED, (void*)LuaHookOnQuestCancelled)
+	RegisterHook(SERVER_HOOK_EVENT_ON_QUEST_FINISHED, (void*)LuaHookOnQuestFinished)
+	RegisterHook(SERVER_HOOK_EVENT_ON_HONORABLE_KILL, (void*)LuaHookOnHonorableKill)
+	RegisterHook(SERVER_HOOK_EVENT_ON_ARENA_FINISH, (void*)LuaHookOnArenaFinish)
+	RegisterHook(SERVER_HOOK_EVENT_ON_OBJECTLOOT, (void*)LuaHookOnObjectLoot)
+	RegisterHook(SERVER_HOOK_EVENT_ON_AREATRIGGER, (void*)LuaHookOnAreaTrigger)
+	RegisterHook(SERVER_HOOK_EVENT_ON_POST_LEVELUP, (void*)LuaHookOnPostLevelUp)
+	RegisterHook(SERVER_HOOK_EVENT_ON_PRE_DIE, (void*)LuaHookOnPreUnitDie)
+	RegisterHook(SERVER_HOOK_EVENT_ON_ADVANCE_SKILLLINE, (void*)LuaHookOnAdvanceSkillLine)
+	RegisterHook(SERVER_HOOK_EVENT_ON_DUEL_FINISHED, (void*)LuaHookOnDuelFinished)
+	RegisterHook(SERVER_HOOK_EVENT_ON_AURA_REMOVE, (void*)LuaHookOnAuraRemove)
+	RegisterHook(SERVER_HOOK_EVENT_ON_RESURRECT, (void*)LuaHookOnResurrect)
 
 	for(std::map<uint32, uint16>::iterator itr = m_luaDummySpells.begin(); itr != m_luaDummySpells.end(); ++itr)
 	{
@@ -2639,7 +2639,7 @@ void LuaEngine::RegisterEvent(uint8 regtype, uint32 id, uint32 evt, uint16 funct
 			break;
 		case REGTYPE_SERVHOOK:
 			{
-				if(evt < SERVER_HOOK_COUNT)
+				if(evt < NUM_SERVER_HOOKS)
 					EventAsToFuncName[evt].push_back(functionRef);
 			}
 			break;
@@ -2805,7 +2805,7 @@ void LuaEngine::Unload()
 	}
 	m_go_gossipBinding.clear();
 	//Serv hooks : had forgotten these.
-	for(int i = 0; i < SERVER_HOOK_COUNT; ++i)
+	for(int i = 0; i < NUM_SERVER_HOOKS; ++i)
 	{
 		vector<uint16> & next = EventAsToFuncName[i];
 		for(vector<uint16>::iterator itr = next.begin(); itr != next.end(); ++itr)
@@ -2969,38 +2969,38 @@ void LuaEngine::Restart()
 	/*
 		BIG SERV HOOK CHUNK EEK
 		*/
-	RegisterHook(SERVER_HOOK_NEW_CHARACTER, (void*)LuaHookOnNewCharacter)
-	RegisterHook(SERVER_HOOK_KILL_PLAYER, (void*)LuaHookOnKillPlayer)
-	RegisterHook(SERVER_HOOK_FIRST_ENTER_WORLD, (void*)LuaHookOnFirstEnterWorld)
-	RegisterHook(SERVER_HOOK_ENTER_WORLD, (void*)LuaHookOnEnterWorld)
-	RegisterHook(SERVER_HOOK_GUILD_JOIN, (void*)LuaHookOnGuildJoin)
-	RegisterHook(SERVER_HOOK_DEATH, (void*)LuaHookOnDeath)
-	RegisterHook(SERVER_HOOK_REPOP, (void*)LuaHookOnRepop)
-	RegisterHook(SERVER_HOOK_EMOTE, (void*)LuaHookOnEmote)
-	RegisterHook(SERVER_HOOK_ENTER_COMBAT, (void*)LuaHookOnEnterCombat)
-	RegisterHook(SERVER_HOOK_CAST_SPELL, (void*)LuaHookOnCastSpell)
-	RegisterHook(SERVER_HOOK_TICK, (void*)LuaHookOnTick)
-	RegisterHook(SERVER_HOOK_LOGOUT_REQUEST, (void*)LuaHookOnLogoutRequest)
-	RegisterHook(SERVER_HOOK_LOGOUT, (void*)LuaHookOnLogout)
-	RegisterHook(SERVER_HOOK_QUEST_ACCEPT, (void*)LuaHookOnQuestAccept)
-	RegisterHook(SERVER_HOOK_ZONE, (void*)LuaHookOnZone)
-	RegisterHook(SERVER_HOOK_CHAT, (void*)LuaHookOnChat)
-	RegisterHook(SERVER_HOOK_LOOT, (void*)LuaHookOnLoot)
-	RegisterHook(SERVER_HOOK_GUILD_CREATE, (void*)LuaHookOnGuildCreate)
-	RegisterHook(SERVER_HOOK_ENTER_WORLD_2, (void*)LuaHookOnEnterWorld2)
-	RegisterHook(SERVER_HOOK_CHARACTER_CREATE, (void*)LuaHookOnCharacterCreate)
-	RegisterHook(SERVER_HOOK_QUEST_CANCELLED, (void*)LuaHookOnQuestCancelled)
-	RegisterHook(SERVER_HOOK_QUEST_FINISHED, (void*)LuaHookOnQuestFinished)
-	RegisterHook(SERVER_HOOK_HONORABLE_KILL, (void*)LuaHookOnHonorableKill)
-	RegisterHook(SERVER_HOOK_ARENA_FINISH, (void*)LuaHookOnArenaFinish)
-	RegisterHook(SERVER_HOOK_OBJECTLOOT, (void*)LuaHookOnObjectLoot)
-	RegisterHook(SERVER_HOOK_AREATRIGGER, (void*)LuaHookOnAreaTrigger)
-	RegisterHook(SERVER_HOOK_POST_LEVELUP, (void*)LuaHookOnPostLevelUp)
-	RegisterHook(SERVER_HOOK_PRE_DIE, (void*)LuaHookOnPreUnitDie)
-	RegisterHook(SERVER_HOOK_ADVANCE_SKILLLINE, (void*)LuaHookOnAdvanceSkillLine)
-	RegisterHook(SERVER_HOOK_DUEL_FINISHED, (void*)LuaHookOnDuelFinished)
-	RegisterHook(SERVER_HOOK_AURA_REMOVE, (void*)LuaHookOnAuraRemove)
-	RegisterHook(SERVER_HOOK_RESURRECT, (void*)LuaHookOnResurrect)
+	RegisterHook(SERVER_HOOK_EVENT_ON_NEW_CHARACTER, (void*)LuaHookOnNewCharacter)
+	RegisterHook(SERVER_HOOK_EVENT_ON_KILL_PLAYER, (void*)LuaHookOnKillPlayer)
+	RegisterHook(SERVER_HOOK_EVENT_ON_FIRST_ENTER_WORLD, (void*)LuaHookOnFirstEnterWorld)
+	RegisterHook(SERVER_HOOK_EVENT_ON_ENTER_WORLD, (void*)LuaHookOnEnterWorld)
+	RegisterHook(SERVER_HOOK_EVENT_ON_GUILD_JOIN, (void*)LuaHookOnGuildJoin)
+	RegisterHook(SERVER_HOOK_EVENT_ON_DEATH, (void*)LuaHookOnDeath)
+	RegisterHook(SERVER_HOOK_EVENT_ON_REPOP, (void*)LuaHookOnRepop)
+	RegisterHook(SERVER_HOOK_EVENT_ON_EMOTE, (void*)LuaHookOnEmote)
+	RegisterHook(SERVER_HOOK_EVENT_ON_ENTER_COMBAT, (void*)LuaHookOnEnterCombat)
+	RegisterHook(SERVER_HOOK_EVENT_ON_CAST_SPELL, (void*)LuaHookOnCastSpell)
+	RegisterHook(SERVER_HOOK_EVENT_ON_TICK, (void*)LuaHookOnTick)
+	RegisterHook(SERVER_HOOK_EVENT_ON_LOGOUT_REQUEST, (void*)LuaHookOnLogoutRequest)
+	RegisterHook(SERVER_HOOK_EVENT_ON_LOGOUT, (void*)LuaHookOnLogout)
+	RegisterHook(SERVER_HOOK_EVENT_ON_QUEST_ACCEPT, (void*)LuaHookOnQuestAccept)
+	RegisterHook(SERVER_HOOK_EVENT_ON_ZONE, (void*)LuaHookOnZone)
+	RegisterHook(SERVER_HOOK_EVENT_ON_CHAT, (void*)LuaHookOnChat)
+	RegisterHook(SERVER_HOOK_EVENT_ON_LOOT, (void*)LuaHookOnLoot)
+	RegisterHook(SERVER_HOOK_EVENT_ON_GUILD_CREATE, (void*)LuaHookOnGuildCreate)
+	RegisterHook(SERVER_HOOK_EVENT_ON_FULL_LOGIN, (void*)LuaHookOnEnterWorld2)
+	RegisterHook(SERVER_HOOK_EVENT_ON_CHARACTER_CREATE, (void*)LuaHookOnCharacterCreate)
+	RegisterHook(SERVER_HOOK_EVENT_ON_QUEST_CANCELLED, (void*)LuaHookOnQuestCancelled)
+	RegisterHook(SERVER_HOOK_EVENT_ON_QUEST_FINISHED, (void*)LuaHookOnQuestFinished)
+	RegisterHook(SERVER_HOOK_EVENT_ON_HONORABLE_KILL, (void*)LuaHookOnHonorableKill)
+	RegisterHook(SERVER_HOOK_EVENT_ON_ARENA_FINISH, (void*)LuaHookOnArenaFinish)
+	RegisterHook(SERVER_HOOK_EVENT_ON_OBJECTLOOT, (void*)LuaHookOnObjectLoot)
+	RegisterHook(SERVER_HOOK_EVENT_ON_AREATRIGGER, (void*)LuaHookOnAreaTrigger)
+	RegisterHook(SERVER_HOOK_EVENT_ON_POST_LEVELUP, (void*)LuaHookOnPostLevelUp)
+	RegisterHook(SERVER_HOOK_EVENT_ON_PRE_DIE, (void*)LuaHookOnPreUnitDie)
+	RegisterHook(SERVER_HOOK_EVENT_ON_ADVANCE_SKILLLINE, (void*)LuaHookOnAdvanceSkillLine)
+	RegisterHook(SERVER_HOOK_EVENT_ON_DUEL_FINISHED, (void*)LuaHookOnDuelFinished)
+	RegisterHook(SERVER_HOOK_EVENT_ON_AURA_REMOVE, (void*)LuaHookOnAuraRemove)
+	RegisterHook(SERVER_HOOK_EVENT_ON_RESURRECT, (void*)LuaHookOnResurrect)
 
 	for(std::map<uint32, uint16>::iterator itr = m_luaDummySpells.begin(); itr != m_luaDummySpells.end(); ++itr)
 	{
