@@ -820,8 +820,6 @@ void ApplyNormalFixes()
 		}
 		else if(strstr(sp->Name, "Earth Shield"))
 			sp->proc_interval = 3000; //few seconds
-		else if(strstr(sp->Name, "Shadowguard"))
-			sp->proc_interval = 3000; //few seconds
 		else if(strstr(sp->Name, "Poison Shield"))
 			sp->proc_interval = 3000; //few seconds
 		else if(strstr(sp->Name, "Infused Mushroom"))
@@ -3237,8 +3235,6 @@ void ApplyNormalFixes()
 		sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL;
 		sp->EffectTriggerSpell[1] = 25329;
 	}
-
-	// Holy Nova
 	sp = CheckAndReturnSpellEntry(48077);
 	if(sp != NULL)
 	{
