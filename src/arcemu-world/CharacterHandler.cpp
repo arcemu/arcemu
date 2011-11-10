@@ -1040,13 +1040,13 @@ void WorldSession::FullLogin(Player* plr)
 			plr->AddCalculatedRestXP(timediff);
 	}
 
-	sHookInterface.OnFullLogin(_player);
-
 	if(info->m_Group)
 		info->m_Group->Update();
 
 	if(enter_world && !_player->GetMapMgr())
 		plr->AddToWorld();
+
+	sHookInterface.OnFullLogin(_player);
 
 	objmgr.AddPlayer(_player);
 
