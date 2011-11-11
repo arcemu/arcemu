@@ -3137,6 +3137,16 @@ void Aura::EventPeriodicEnergize(uint32 amount, uint32 type)
 	if(ucaster == NULL)
 		return;
 
+	if(GetSpellProto()->NameHash == SPELL_HASH_INNERVATE) // Innervate
+	{
+		// Get total ticks
+		uint32 ticks = GetDuration() / GetSpellProto()->EffectAmplitude[0];
+		// Calculate amount of mana restored per tick
+		uint32 val = float2int32((ucaster->GetBaseMana() / ticks) * (amount / 100.0f));
+		ucaster->Energize( m_target, GetSpellProto()->Id, val, type );
+		return;
+	}
+
 	ucaster->Energize(m_target, m_spellProto->Id, amount, type);
 
 	if((GetSpellProto()->AuraInterruptFlags & AURA_INTERRUPT_ON_STAND_UP) && type == POWER_TYPE_MANA)
