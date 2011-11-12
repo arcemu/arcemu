@@ -1877,41 +1877,6 @@ uint32 Unit::HandleProc(uint32 flag, Unit* victim, SpellEntry* CastingSpell, boo
 							continue;
 					}
 					break;
-					//rogue - Find Weakness
-				case 31234:
-				case 31235:
-				case 31236:
-				case 31237:
-				case 31238:
-					{
-						if(CastingSpell == NULL)
-							continue;//this should not occur unless we made a fuckup somewhere
-						if(!(CastingSpell->c_is_flags & SPELL_FLAG_IS_FINISHING_MOVE))
-							continue;
-					}
-					break;
-					//Priest - Shadowguard
-				case 28377:
-				case 28378:
-				case 28379:
-				case 28380:
-				case 28381:
-				case 28382:
-				case 28385:
-					{
-						if(CastingSpell && (this == victim || !(CastingSpell->c_is_flags & SPELL_FLAG_IS_DAMAGING)))       //no self casts allowed or beneficial spells
-							continue;//we can proc on ranged weapons too
-					}
-					break;
-					//Priest - blackout
-				case 15269:
-					{
-						if(CastingSpell == NULL)
-							continue;//this should not occur unless we made a fuckup somewhere
-						if(CastingSpell->School != SCHOOL_SHADOW || !(CastingSpell->c_is_flags & SPELL_FLAG_IS_DAMAGING))
-							continue;
-					}
-					break;
 					//warrior - improved berserker rage
 				case 23690:
 				case 23691:
@@ -2535,7 +2500,7 @@ uint32 Unit::HandleProc(uint32 flag, Unit* victim, SpellEntry* CastingSpell, boo
 							break;
 						case 14177: // Cold blood will get removed on offensive spell
 							{
-								if(CastingSpell == NULL || CastingSpell->Id == 36554 || victim == this || isFriendly(this, victim))
+								if(!(CastingSpell->SpellGroupType[0] & 0x6820206 || CastingSpell->SpellGroupType[1] & 0x240009))
 									continue;
 							}
 							break;
@@ -3662,19 +3627,11 @@ void Unit::Strike(Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability,
 					case 3:
 						{
 							float low_dmg_mod = 1.5f - (0.05f * diffAcapped);
-							if(this->getClass() == MAGE || this->getClass() == PRIEST || this->getClass() == WARLOCK) //casters = additional penalty.
-							{
-								low_dmg_mod -= 0.7f;
-							}
 							if(low_dmg_mod < 0.01)
 								low_dmg_mod = 0.01f;
 							if(low_dmg_mod > 0.91)
 								low_dmg_mod = 0.91f;
 							float high_dmg_mod = 1.2f - (0.03f * diffAcapped);
-							if(this->getClass() == MAGE || this->getClass() == PRIEST || this->getClass() == WARLOCK) //casters = additional penalty.
-							{
-								high_dmg_mod -= 0.3f;
-							}
 							if(high_dmg_mod > 0.99)
 								high_dmg_mod = 0.99f;
 							if(high_dmg_mod < 0.2)

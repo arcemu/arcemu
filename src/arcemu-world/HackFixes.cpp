@@ -631,8 +631,6 @@ void ApplyNormalFixes()
 						pr |= PROC_ON_MELEE_ATTACK | static_cast<uint32>(PROC_TARGET_SELF);
 					if(strstr(sp->Description, "experience or honor"))
 						pr |= PROC_ON_GAIN_EXPIERIENCE;
-					if(strstr(sp->Description, "your next offensive ability"))
-						pr |= PROC_ON_CAST_SPELL;
 					if(strstr(sp->Description, "hit by a melee or ranged attack"))
 						pr |= PROC_ON_MELEE_ATTACK_VICTIM | PROC_ON_RANGED_ATTACK_VICTIM;
 					if(strstr(sp->Description, "enemy strikes the caster"))
@@ -647,8 +645,6 @@ void ApplyNormalFixes()
 						pr |= PROC_ON_CRIT_ATTACK | PROC_ON_SPELL_CRIT_HIT;
 					if(strstr(sp->Description, "shadow bolt critical strikes increase shadow damage"))
 						pr |= PROC_ON_SPELL_CRIT_HIT;
-					if(strstr(sp->Description, "next offensive ability"))
-						pr |= PROC_ON_CAST_SPELL;
 					if(strstr(sp->Description, "after being hit with a shadow or fire spell"))
 						pr |= PROC_ON_SPELL_LAND_VICTIM;
 					if(strstr(sp->Description, "giving each melee attack"))
@@ -819,8 +815,6 @@ void ApplyNormalFixes()
 			sp->procFlags |= PROC_TARGET_SELF;
 		}
 		else if(strstr(sp->Name, "Earth Shield"))
-			sp->proc_interval = 3000; //few seconds
-		else if(strstr(sp->Name, "Shadowguard"))
 			sp->proc_interval = 3000; //few seconds
 		else if(strstr(sp->Name, "Poison Shield"))
 			sp->proc_interval = 3000; //few seconds
@@ -3071,11 +3065,6 @@ void ApplyNormalFixes()
 	if(sp != NULL)
 		sp->AttributesEx |= ATTRIBUTESEX_NOT_BREAK_STEALTH;
 
-	// Rogue - Cold Blood (Interrupt Flag)
-	sp = CheckAndReturnSpellEntry(14177);
-	if(sp != NULL)
-		sp->AuraInterruptFlags |= AURA_INTERRUPT_ON_AFTER_CAST_SPELL;
-
 	/* Rogue - Improved Expose Armor (rank 1)
 	sp = CheckAndReturnSpellEntry( 14168 );
 	if(sp != NULL)
@@ -3237,8 +3226,6 @@ void ApplyNormalFixes()
 		sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL;
 		sp->EffectTriggerSpell[1] = 25329;
 	}
-
-	// Holy Nova
 	sp = CheckAndReturnSpellEntry(48077);
 	if(sp != NULL)
 	{

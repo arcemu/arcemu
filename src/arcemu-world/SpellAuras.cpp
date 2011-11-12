@@ -309,7 +309,7 @@ pSpellAura SpellAuraHandler[TOTAL_SPELL_AURAS] =
 	&Aura::SpellAuraNULL,//284 not used by any spells (3.08a)
 	&Aura::SpellAuraModAttackPowerOfArmor,//285 SPELL_AURA_MOD_ATTACK_POWER_OF_ARMOR
 	&Aura::SpellAuraNULL,//286 SPELL_AURA_ALLOW_DOT_TO_CRIT
-	&Aura::SpellAuraReflectSpellsInfront,//287 SPELL_AURA_DEFLECT_SPELLS
+	&Aura::SpellAuraDeflectSpells,//287 SPELL_AURA_DEFLECT_SPELLS
 	&Aura::SpellAuraNULL,//288 not used by any spells (3.09) except 1 test spell.
 	&Aura::SpellAuraNULL,//289 unused
 	&Aura::SpellAuraNULL,//290 unused
@@ -3119,10 +3119,13 @@ void Aura::EventPeriodicTriggerSpell(SpellEntry* spellInfo, bool overridevalues,
 
 void Aura::SpellAuraPeriodicEnergize(bool apply)
 {
+	int32 amt = mod->m_amount;
+	if (GetSpellProto()->NameHash == SPELL_HASH_INNERVATE)
+		amt = ((GetUnitCaster()->GetBaseMana() / (GetDuration() / GetSpellProto()->EffectAmplitude[0])) * (amt / 100.0f));
 	if(apply)
 	{
 		SetPositive();
-		sEventMgr.AddEvent(this, &Aura::EventPeriodicEnergize, (uint32)mod->m_amount, (uint32)mod->m_miscValue,
+		sEventMgr.AddEvent(this, &Aura::EventPeriodicEnergize, (uint32)amt, (uint32)mod->m_miscValue,
 		                   EVENT_AURA_PERIODIC_ENERGIZE, GetSpellProto()->EffectAmplitude[mod->i], 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 	}
 }
@@ -8656,26 +8659,9 @@ void Aura::SpellAuraModAttackPowerOfArmor(bool apply)
 	m_target->CalcDamage();
 }
 
-void Aura::SpellAuraReflectSpellsInfront(bool apply)
+void Aura::SpellAuraDeflectSpells(bool apply)
 {
-	m_target->RemoveReflect(GetSpellId(), apply);
-
-	if(apply)
-	{
-		SpellEntry* sp = dbcSpell.LookupEntry(GetSpellId());
-		if(sp == NULL)
-			return;
-
-		ReflectSpellSchool* rss = new ReflectSpellSchool;
-		rss->chance = mod->m_amount;
-		rss->spellId = GetSpellId();
-		rss->school = -1;
-		rss->require_aura_hash = 0;
-		rss->charges = 0;
-		rss->infront = true;
-
-		m_target->m_reflectSpellSchool.push_back(rss);
-	}
+	//Currently used only by Deterrence and handled in Spell::DidHit
 }
 
 void Aura::SpellAuraPhase(bool apply)

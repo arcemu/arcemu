@@ -712,6 +712,15 @@ uint8 Spell::DidHit(uint32 effindex, Unit* target)
 	if(u_victim->IsCreature() && u_victim->GetAIInterface()->getAIState() == STATE_EVADE)
 		return SPELL_DID_HIT_EVADE;
 
+	/************************************************************************/ 
+	/* Check if the player target is able to deflect spells					*/ 
+	/* Currently (3.3.5a) there is only spell doing that: Deterrence		*/ 
+	/************************************************************************/ 
+	if( p_victim && p_victim->HasAuraWithName(SPELL_AURA_DEFLECT_SPELLS) )
+	{
+		return SPELL_DID_HIT_DEFLECT;
+	}
+
 	/************************************************************************/
 	/* Check if the target is immune to this spell school                   */
 	/* Unless the spell would actually dispel invulnerabilities             */
