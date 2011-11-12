@@ -673,14 +673,18 @@ struct ItemPrototype
 	uint32 FoodType;		//pet food type
 	int32 ForcedPetId;
 
-	uint32 HasFlag(uint32 flag) 
-	{ 
-		return (Flags & flag); 
+	bool HasFlag( uint32 flag ){
+		if( ( Flags & flag ) != 0 )
+			return true;
+		else
+			return false;
 	}
-
-	uint32 HasFlag2(uint32 flag)
-	{
-		return (Flags2 & flag);
+	
+	bool HasFlag2( uint32 flag ){
+		if( ( Flags2 & flag ) != 0 )
+			return true;
+		else
+			return false;
 	}
 };
 

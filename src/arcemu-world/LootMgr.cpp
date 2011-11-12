@@ -326,7 +326,11 @@ void LootMgr::LoadLootTables(const char* szTableName, LootStore* LootTable)
 					list.items[ind].chance4 = itr2->chance4;
 					list.items[ind].mincount = itr2->mincount;
 					list.items[ind].maxcount = itr2->maxcount;
-					list.items[ind].ffa_loot = ( proto->HasFlag(ITEM_FLAG_FREE_FOR_ALL) != 0 ) ? 1 : 0;
+
+					if( proto->HasFlag( ITEM_FLAG_FREE_FOR_ALL ) )
+						list.items[ ind ].ffa_loot = 1;
+					else
+						list.items[ ind ].ffa_loot = 0;
 
 					if(LootTable == &GOLoot)
 					{
@@ -506,7 +510,12 @@ void LootMgr::AddLoot(Loot* loot, uint32 itemid, uint32 mincount, uint32 maxcoun
 		itm.iItemsCount = count;
 		itm.roll = NULL;
 		itm.passed = false;
-		itm.ffa_loot = ( itemproto->HasFlag(ITEM_FLAG_FREE_FOR_ALL) != 0 ) ? 1 : 0;
+
+		if( itemproto->HasFlag( ITEM_FLAG_FREE_FOR_ALL ) )
+			itm.ffa_loot = 1;
+		else
+			itm.ffa_loot = 0;
+
 		itm.has_looted.clear();
 
 		if(itemproto->Quality > 1 && itemproto->ContainerSlots == 0)

@@ -336,7 +336,7 @@ void WorldSession::HandleDestroyItemOpcode(WorldPacket & recv_data)
 			}
 		}
 
-		if( it->GetProto()->HasFlag(ITEM_FLAG_INDESTRUCTIBLE) != 0 ) 
+		if( it->GetProto()->HasFlag(ITEM_FLAG_INDESTRUCTIBLE) ) 
 		{ 
 			_player->GetItemInterface()->BuildInventoryChangeError(it, NULL, INV_ERR_CANT_DROP_SOULBOUND); 
 			return; 
@@ -1419,14 +1419,17 @@ void WorldSession::SendInventoryList(Creature* unit)
 				if(curItem->AllowableRace && !(_player->getRaceMask() & curItem->AllowableRace) && !_player->GetSession()->HasGMPermissions())
 					continue;
 
-				if( curItem->HasFlag2(ITEM_FLAG2_HORDE_ONLY) != 0 && GetPlayer()->IsTeamHorde() == false )
+				if( curItem->HasFlag2(ITEM_FLAG2_HORDE_ONLY) && !GetPlayer()->IsTeamHorde() && !_player->GetSession()->HasGMPermissions() )
 					continue;
  
-				if( curItem->HasFlag2(ITEM_FLAG2_ALLIANCE_ONLY) != 0 && GetPlayer()->IsTeamAlliance() == false )
+				if( curItem->HasFlag2(ITEM_FLAG2_ALLIANCE_ONLY) && !GetPlayer()->IsTeamAlliance() && !_player->GetSession()->HasGMPermissions() )
 					continue;
 
 				uint32 av_am = (itr->max_amount > 0) ? itr->available_amount : 0xFFFFFFFF;
-				uint32 price = ( itr->extended_cost == NULL || curItem->Flags2 & ITEM_FLAG2_EXT_COST_REQUIRES_GOLD ) ? GetBuyPriceForItem(curItem, 1, _player, unit) : 0;
+				uint32 price = 0;
+				if( ( itr->extended_cost == NULL ) || curItem->HasFlag2( ITEM_FLAG2_EXT_COST_REQUIRES_GOLD ) )
+					price = GetBuyPriceForItem( curItem, 1, _player, unit );
+
 				data << uint32(counter + 1);    // we start from 0 but client starts from 1
 				data << uint32(curItem->ItemId);
 				data << uint32(curItem->DisplayInfoID);
