@@ -149,7 +149,7 @@ namespace lua_engine
 		BIND(Name1)
 		BIND(DisplayInfoID)
 		BIND(Flags)
-		BIND(Faction)
+		BIND(Flags2)
 		BIND(BuyPrice)
 		BIND(SellPrice)
 		BIND(ItemLevel)

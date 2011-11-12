@@ -278,7 +278,6 @@ void LootMgr::LoadLootTables(const char* szTableName, LootStore* LootTable)
 
 		t.mincount = fields[ 6 ].GetUInt32();
 		t.maxcount = fields[ 7 ].GetUInt32();
-		t.ffa_loot = fields[ 8 ].GetUInt32();
 
 		ttab.push_back(t);
 
@@ -327,13 +326,16 @@ void LootMgr::LoadLootTables(const char* szTableName, LootStore* LootTable)
 					list.items[ind].chance4 = itr2->chance4;
 					list.items[ind].mincount = itr2->mincount;
 					list.items[ind].maxcount = itr2->maxcount;
-					list.items[ind].ffa_loot = itr2->ffa_loot;
+
+					if( proto->HasFlag( ITEM_FLAG_FREE_FOR_ALL ) )
+						list.items[ ind ].ffa_loot = 1;
+					else
+						list.items[ ind ].ffa_loot = 0;
 
 					if(LootTable == &GOLoot)
 					{
 						if(proto->Class == ITEM_CLASS_QUEST)
 						{
-							//printf("Quest item \'%s\' allocated to quest ", proto->Name1.c_str());
 							sQuestMgr.SetGameObjectLootQuest(itr->first, itemid);
 							quest_loot_go[entry_id].insert(proto->ItemId);
 						}
@@ -465,7 +467,7 @@ void LootMgr::PushLoot(StoreLootList* list, Loot* loot, uint32 type)
 
 }
 
-void LootMgr::AddLoot(Loot* loot, uint32 itemid, uint32 mincount, uint32 maxcount, uint32 ffa_loot)
+void LootMgr::AddLoot(Loot* loot, uint32 itemid, uint32 mincount, uint32 maxcount)
 {
 	uint32 i;
 	uint32 count;
@@ -508,7 +510,12 @@ void LootMgr::AddLoot(Loot* loot, uint32 itemid, uint32 mincount, uint32 maxcoun
 		itm.iItemsCount = count;
 		itm.roll = NULL;
 		itm.passed = false;
-		itm.ffa_loot = ffa_loot;
+
+		if( itemproto->HasFlag( ITEM_FLAG_FREE_FOR_ALL ) )
+			itm.ffa_loot = 1;
+		else
+			itm.ffa_loot = 0;
+
 		itm.has_looted.clear();
 
 		if(itemproto->Quality > 1 && itemproto->ContainerSlots == 0)

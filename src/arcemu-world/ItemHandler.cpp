@@ -336,6 +336,12 @@ void WorldSession::HandleDestroyItemOpcode(WorldPacket & recv_data)
 			}
 		}
 
+		if( it->GetProto()->HasFlag(ITEM_FLAG_INDESTRUCTIBLE) ) 
+		{ 
+			_player->GetItemInterface()->BuildInventoryChangeError(it, NULL, INV_ERR_CANT_DROP_SOULBOUND); 
+			return; 
+		} 
+
 		if(it->GetProto()->ItemId == ITEM_ENTRY_GUILD_CHARTER)
 		{
 			Charter* gc = _player->m_charters[CHARTER_TYPE_GUILD];
@@ -710,7 +716,7 @@ void WorldSession::HandleItemQuerySingleOpcode(WorldPacket & recv_data)
 	data << itemProto->DisplayInfoID;
 	data << itemProto->Quality;
 	data << itemProto->Flags;
-	data << itemProto->Faction;
+	data << itemProto->Flags2;
 	data << itemProto->BuyPrice;
 	data << itemProto->SellPrice;
 	data << itemProto->InventoryType;
@@ -1413,22 +1419,33 @@ void WorldSession::SendInventoryList(Creature* unit)
 				if(curItem->AllowableRace && !(_player->getRaceMask() & curItem->AllowableRace) && !_player->GetSession()->HasGMPermissions())
 					continue;
 
-				int32 av_am = (itr->max_amount > 0) ? itr->available_amount : -1;
-				data << (counter + 1);
-				data << curItem->ItemId;
-				data << curItem->DisplayInfoID;
-				data << av_am;
-				data << GetBuyPriceForItem(curItem, 1, _player, unit);
-				data << int32(-1);			// wtf is dis?
-				data << itr->amount;
+				if( curItem->HasFlag2(ITEM_FLAG2_HORDE_ONLY) && !GetPlayer()->IsTeamHorde() && !_player->GetSession()->HasGMPermissions() )
+					continue;
+ 
+				if( curItem->HasFlag2(ITEM_FLAG2_ALLIANCE_ONLY) && !GetPlayer()->IsTeamAlliance() && !_player->GetSession()->HasGMPermissions() )
+					continue;
+
+				uint32 av_am = (itr->max_amount > 0) ? itr->available_amount : 0xFFFFFFFF;
+				uint32 price = 0;
+				if( ( itr->extended_cost == NULL ) || curItem->HasFlag2( ITEM_FLAG2_EXT_COST_REQUIRES_GOLD ) )
+					price = GetBuyPriceForItem( curItem, 1, _player, unit );
+
+				data << uint32(counter + 1);    // we start from 0 but client starts from 1
+				data << uint32(curItem->ItemId);
+				data << uint32(curItem->DisplayInfoID);
+				data << uint32(av_am);
+				data << uint32(price);
+				data << uint32(curItem->MaxDurability);                 
+				data << uint32(itr->amount);
+
 
 				if(itr->extended_cost != NULL)
-					data << itr->extended_cost->costid;
+					data << uint32(itr->extended_cost->costid);
 				else
 					data << uint32(0);
 
 				++counter;
-				if(counter >= MAX_CREATURE_INV_ITEMS) break;  // cebernic: in 2.4.3, client can't take more than 15 pages,it making crash for us:(
+				if ( counter >= MAX_CREATURE_INV_ITEMS ) break;  // cebernic: in 2.4.3, client can't take more than 15 pages,it making crash for us:(
 			}
 		}
 	}

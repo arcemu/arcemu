@@ -52,6 +52,16 @@ void WorldSession::HandleUseItemOpcode(WorldPacket & recvPacket)
 		return;
 	ItemPrototype* itemProto = tmpItem->GetProto();
 
+	// only some consumable items can be used in arenas
+	if( ( itemProto->Class == ITEM_CLASS_CONSUMABLE ) &&
+		!itemProto->HasFlag( ITEM_FLAG_USEABLE_IN_ARENA ) &&
+		( GetPlayer()->m_bg != NULL ) &&
+		IS_ARENA( GetPlayer()->m_bg->GetType() ) )
+	{
+		GetPlayer()->GetItemInterface()->BuildInventoryChangeError(tmpItem, NULL, INV_ERR_NOT_DURING_ARENA_MATCH);
+		return;
+	}
+
 	if(tmpItem->IsSoulbound())     // SouldBind item will be used after SouldBind()
 	{
 		if(sScriptMgr.CallScriptedItem(tmpItem, _player))

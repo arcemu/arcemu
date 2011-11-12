@@ -873,20 +873,22 @@ class LuaGameObject
 		static int AddLoot(lua_State* L, GameObject* ptr)
 		{
 			TEST_GO()
+			if( ( lua_gettop( L ) != 3 ) || ( lua_gettop( L ) != 5 ) )
+				return 0;
+
 			uint32 itemid = luaL_checkint(L, 1);
 			uint32 mincount = luaL_checkint(L, 2);
 			uint32 maxcount = luaL_checkint(L, 3);
-			uint32 ffa_loot = luaL_checkint(L, 4);
-			bool perm = ((luaL_optint(L, 5, 0) == 1) ? true : false);
+			bool perm = ((luaL_optint(L, 4, 0) == 1) ? true : false);
 			if(perm)
 			{
-				float chance = CHECK_FLOAT(L, 6);
+				float chance = CHECK_FLOAT(L, 5);
 				QueryResult* result = WorldDatabase.Query("SELECT * FROM loot_gameobjects WHERE entryid = %u, itemid = %u", ptr->GetEntry(), itemid);
 				if(!result)
-					WorldDatabase.Execute("REPLACE INTO loot_gameobjects VALUES (%u, %u, %f, 0, 0, 0, %u, %u, %u)", ptr->GetEntry(), itemid, chance, mincount, maxcount, ffa_loot);
+					WorldDatabase.Execute("REPLACE INTO loot_gameobjects VALUES (%u, %u, %f, 0, 0, 0, %u, %u )", ptr->GetEntry(), itemid, chance, mincount, maxcount );
 				delete result;
 			}
-			lootmgr.AddLoot(&ptr->loot, itemid, mincount, maxcount, ffa_loot);
+			lootmgr.AddLoot(&ptr->loot, itemid, mincount, maxcount );
 			return 0;
 		}
 

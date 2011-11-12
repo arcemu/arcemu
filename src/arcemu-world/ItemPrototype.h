@@ -493,39 +493,46 @@ enum ITEM_QUALITY
 
 enum ITEM_FLAG
 {
-    ITEM_FLAG_NONE         = 0x0,
-    ITEM_FLAG_SOULBOUND    = 0x1,      // not used in proto
-    ITEM_FLAG_CONJURED     = 0x2,
-    ITEM_FLAG_LOOTABLE     = 0x4,
-    ITEM_FLAG_WRAPPED      = 0x8,      // not used in proto
-    ITEM_FLAG_UNKNOWN_05   = 0x10,     // many equipable items and bags
-    ITEM_FLAG_UNKNOWN_06   = 0x20,     // totems
-    ITEM_FLAG_UNKNOWN_07   = 0x40,     // many consumables
-    ITEM_FLAG_UNKNOWN_08   = 0x80,     // only 1 wand uses this
-    ITEM_FLAG_UNKNOWN_09   = 0x100,    // some wands & relics
-    ITEM_FLAG_WRAP_GIFT    = 0x200,
-    ITEM_FLAG_CREATE_ITEM  = 0x400,
-    ITEM_FLAG_QUEST        = 0x800,
-    ITEM_FLAG_REFUNDABLE   = 0x1000,   // not used in proto
-    ITEM_FLAG_SIGNABLE     = 0x2000,
-    ITEM_FLAG_READABLE     = 0x4000,
-    ITEM_FLAG_UNKNOWN_16   = 0x8000,
-    ITEM_FLAG_EVENT_REQ    = 0x10000,
-    ITEM_FLAG_UNKNOWN_18   = 0x20000,
-    ITEM_FLAG_PROSPECTABLE = 0x40000,
-    ITEM_FLAG_UNIQUE_EQUIP = 0x80000,
-    ITEM_FLAG_UNKNOWN_21   = 0x100000, // not used in proto
-    ITEM_FLAG_UNKNOWN_22   = 0x200000, // player created health/mana/poisons
-    ITEM_FLAG_THROWN       = 0x400000,
-    ITEM_FLAG_SHAPESHIFT_OK = 0x800000,
-    ITEM_FLAG_UNKNOWN_25   = 0x1000000,
-    ITEM_FLAG_UNKNOWN_26   = 0x2000000,
-    ITEM_FLAG_UNKNOWN_27   = 0x4000000,
-    ITEM_FLAG_ACCOUNTBOUND = 0x8000000,
-    ITEM_FLAG_UNKNOWN_29   = 0x10000000,
-    ITEM_FLAG_MILLABLE     = 0x20000000,
-    ITEM_FLAG_UNKNOWN_31   = 0x40000000,
-    ITEM_FLAG_UNKNOWN_32   = 0x80000000
+	ITEM_FLAG_SOULBOUND        = 0x1,      // not used in proto
+	ITEM_FLAG_CONJURED         = 0x2,
+	ITEM_FLAG_LOOTABLE         = 0x4,
+	ITEM_FLAG_WRAPPED          = 0x8,      // not used in proto
+	ITEM_FLAG_BROKEN           = 0x10,     // many equipable items and bags
+	ITEM_FLAG_INDESTRUCTIBLE   = 0x20,     // can't destruct this item
+	ITEM_FLAG_UNKNOWN_07       = 0x40,     // many consumables
+	ITEM_FLAG_UNKNOWN_08       = 0x80,     // only 1 wand uses this
+	ITEM_FLAG_UNKNOWN_09       = 0x100,    // some wands & relics
+	ITEM_FLAG_WRAP_GIFT        = 0x200,
+	ITEM_FLAG_CREATE_ITEM      = 0x400,    // probably worng
+	ITEM_FLAG_FREE_FOR_ALL     = 0x800,    // can be looted ffa
+	ITEM_FLAG_REFUNDABLE       = 0x1000,
+	ITEM_FLAG_SIGNABLE         = 0x2000,   // charts
+	ITEM_FLAG_READABLE         = 0x4000,   // may be worng
+	ITEM_FLAG_UNKNOWN_16       = 0x8000,
+	ITEM_FLAG_EVENT_REQ        = 0x10000,  // may be wrong
+	ITEM_FLAG_UNKNOWN_18       = 0x20000,
+	ITEM_FLAG_PROSPECTABLE     = 0x40000,
+	ITEM_FLAG_UNIQUE_EQUIP     = 0x80000,
+	ITEM_FLAG_UNKNOWN_21       = 0x100000, // not used in proto
+	ITEM_FLAG_USEABLE_IN_ARENA = 0x200000, // useable in arenas
+	ITEM_FLAG_THROWN           = 0x400000,
+	ITEM_FLAG_SHAPESHIFT_OK    = 0x800000,
+	ITEM_FLAG_UNKNOWN_25       = 0x1000000,
+	ITEM_FLAG_UNKNOWN_26       = 0x2000000,
+	ITEM_FLAG_UNKNOWN_27       = 0x4000000,
+	ITEM_FLAG_ACCOUNTBOUND     = 0x8000000,
+	ITEM_FLAG_UNKNOWN_29       = 0x10000000,
+	ITEM_FLAG_MILLABLE         = 0x20000000,
+	ITEM_FLAG_UNKNOWN_31       = 0x40000000,
+	ITEM_FLAG_UNKNOWN_32       = 0x80000000
+};
+
+enum ITEM_FLAGS2
+{
+	ITEM_FLAG2_HORDE_ONLY				= 0x00001,
+	ITEM_FLAG2_ALLIANCE_ONLY			= 0x00002,
+	ITEM_FLAG2_EXT_COST_REQUIRES_GOLD	= 0x00004,
+	ITEM_FLAG2_NEED_ROLL_DISABLED		= 0x00100,
 };
 
 enum SPECIAL_ITEM_TYPE // dictates what bag-types an item can go into
@@ -601,7 +608,7 @@ struct ItemPrototype
 	uint32 DisplayInfoID;
 	uint32 Quality;
 	uint32 Flags;
-	uint32 Faction;
+	uint32 Flags2;
 	uint32 BuyPrice;
 	uint32 SellPrice;
 	uint32 InventoryType;
@@ -611,7 +618,7 @@ struct ItemPrototype
 	uint32 RequiredLevel;
 	uint32 RequiredSkill;
 	uint32 RequiredSkillRank;
-	uint32 RequiredSkillSubRank;
+	uint32 RequiredSkillSubRank; // required spell
 	uint32 RequiredPlayerRank1;
 	uint32 RequiredPlayerRank2;
 	uint32 RequiredFaction;
@@ -665,6 +672,20 @@ struct ItemPrototype
 	string lowercase_name;	// used in auctions
 	uint32 FoodType;		//pet food type
 	int32 ForcedPetId;
+
+	bool HasFlag( uint32 flag ){
+		if( ( Flags & flag ) != 0 )
+			return true;
+		else
+			return false;
+	}
+	
+	bool HasFlag2( uint32 flag ){
+		if( ( Flags2 & flag ) != 0 )
+			return true;
+		else
+			return false;
+	}
 };
 
 struct ItemName

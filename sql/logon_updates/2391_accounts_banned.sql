@@ -1,1 +1,0 @@
-ALTER TABLE accounts CHANGE banned banned INT(10) UNSIGNED NOT NULL;

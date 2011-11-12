@@ -397,6 +397,13 @@ void Player::SendLoot(uint64 guid, uint8 loot_type, uint32 mapid)
 			if(!iter->ffa_loot && !(itemProto->Quality < m_Group->GetThreshold()))
 				continue;
 
+		// team check
+		if( itemProto->HasFlag2(ITEM_FLAG2_HORDE_ONLY) && IsTeamAlliance() ) 
+			continue; 
+
+		if( itemProto->HasFlag2(ITEM_FLAG2_ALLIANCE_ONLY) && IsTeamHorde() ) 
+			continue;
+
 		//quest items check. type 4/5
 		//quest items that don't start quests.
 		if((itemProto->Bonding == ITEM_BIND_QUEST) && !(itemProto->QuestId) && !HasQuestForItem(itemProto->ItemId))
