@@ -5590,8 +5590,6 @@ uint32 GetDiminishingGroup(uint32 NameHash)
 		case SPELL_HASH_STARFIRE_STUN:
 		case SPELL_HASH_STONECLAW_STUN:
 		case SPELL_HASH_STUN:					// Generic ones
-		case SPELL_HASH_BLACKOUT:
-		case SPELL_HASH_MACE_SPECIALIZATION:		// Mace Specialization
 			{
 				grp = DIMINISHING_GROUP_STUN_PROC;
 				pve = true;
