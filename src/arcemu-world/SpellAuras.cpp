@@ -3119,10 +3119,13 @@ void Aura::EventPeriodicTriggerSpell(SpellEntry* spellInfo, bool overridevalues,
 
 void Aura::SpellAuraPeriodicEnergize(bool apply)
 {
+	int32 amt = mod->m_amount;
+	if (GetSpellProto()->NameHash == SPELL_HASH_INNERVATE)
+		amt = ((GetUnitCaster()->GetBaseMana() / (GetDuration() / GetSpellProto()->EffectAmplitude[0])) * (amt / 100.0f));
 	if(apply)
 	{
 		SetPositive();
-		sEventMgr.AddEvent(this, &Aura::EventPeriodicEnergize, (uint32)mod->m_amount, (uint32)mod->m_miscValue,
+		sEventMgr.AddEvent(this, &Aura::EventPeriodicEnergize, (uint32)amt, (uint32)mod->m_miscValue,
 		                   EVENT_AURA_PERIODIC_ENERGIZE, GetSpellProto()->EffectAmplitude[mod->i], 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 	}
 }
@@ -3137,7 +3140,7 @@ void Aura::EventPeriodicEnergize(uint32 amount, uint32 type)
 	if(ucaster == NULL)
 		return;
 
-	if(GetSpellProto()->NameHash == SPELL_HASH_INNERVATE) // Innervate
+	/*if(GetSpellProto()->NameHash == SPELL_HASH_INNERVATE) // Innervate
 	{
 		// Get total ticks
 		uint32 ticks = GetDuration() / GetSpellProto()->EffectAmplitude[0];
@@ -3145,7 +3148,7 @@ void Aura::EventPeriodicEnergize(uint32 amount, uint32 type)
 		uint32 val = float2int32((ucaster->GetBaseMana() / ticks) * (amount / 100.0f));
 		ucaster->Energize( m_target, GetSpellProto()->Id, val, type );
 		return;
-	}
+	}*/
 
 	ucaster->Energize(m_target, m_spellProto->Id, amount, type);
 
