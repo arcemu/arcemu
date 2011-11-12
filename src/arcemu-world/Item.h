@@ -194,7 +194,7 @@ class SERVER_DECL Item : public Object
 		/////////////////////////////////////////////////// FLAGS ////////////////////////////////////////////////////////////
 
 		void SoulBind() { SetFlag(ITEM_FIELD_FLAGS, ITEM_FLAG_SOULBOUND); }
-		uint32 IsSoulbound() { return HasFlag(ITEM_FIELD_FLAGS, ITEM_FLAG_QUEST | ITEM_FLAG_SOULBOUND); }
+		uint32 IsSoulbound() { return HasFlag( ITEM_FIELD_FLAGS, ITEM_FLAG_SOULBOUND ); }
 
 		void AccountBind() { SetFlag(ITEM_FIELD_FLAGS, ITEM_FLAG_ACCOUNTBOUND); }
 		uint32 IsAccountbound() { return HasFlag(ITEM_FIELD_FLAGS, ITEM_FLAG_ACCOUNTBOUND);  }
