@@ -4503,7 +4503,7 @@ class LuaUnit
 				float chance = CHECK_FLOAT(L, 5);
 				QueryResult* result = WorldDatabase.Query("SELECT * FROM loot_creatures WHERE entryid = %u, itemid = %u", ptr->GetEntry(), itemid);
 				if(!result)
-					WorldDatabase.Execute("REPLACE INTO loot_creatures VALUES (%u, %u, %f, 0, 0, 0, %u, %u, %u)", ptr->GetEntry(), itemid, chance, mincount, maxcount, 0);
+					WorldDatabase.Execute("REPLACE INTO loot_creatures VALUES (%u, %u, %f, 0, 0, 0, %u, %u )", ptr->GetEntry(), itemid, chance, mincount, maxcount );
 				delete result;
 			}
 			lootmgr.AddLoot(&ptr->loot, itemid, mincount, maxcount );

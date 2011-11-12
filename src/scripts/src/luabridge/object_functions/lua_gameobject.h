@@ -120,7 +120,7 @@ class lua_go : public GameObject
 
 				QueryResult* result = WorldDatabase.Query("SELECT * FROM loot_gameobjects WHERE entryid = %u, itemid = %u", GetEntry(), itemid);
 				if(result == NULL)
-					WorldDatabase.Execute("REPLACE INTO loot_gameobjects VALUES (%u, %u, %f, 0, 0, 0, %u, %u, %u)", GetEntry(), itemid, chance, mincount, maxcount, 0);
+					WorldDatabase.Execute("REPLACE INTO loot_gameobjects VALUES (%u, %u, %f, 0, 0, 0, %u, %u )", GetEntry(), itemid, chance, mincount, maxcount );
 				else
 					delete result;
 			}
