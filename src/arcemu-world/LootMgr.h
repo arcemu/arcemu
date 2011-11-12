@@ -116,7 +116,6 @@ struct tempy
 	float chance4;
 	uint32 mincount;
 	uint32 maxcount;
-	uint32 ffa_loot;
 };
 
 
@@ -139,7 +138,7 @@ class SERVER_DECL LootMgr : public Singleton < LootMgr >
 		LootMgr();
 		~LootMgr();
 
-		void AddLoot(Loot* loot, uint32 itemid, uint32 mincount, uint32 maxcount, uint32 ffa_loot);
+		void AddLoot(Loot* loot, uint32 itemid, uint32 mincount, uint32 maxcount);
 
 		void FillCreatureLoot(Loot* loot, uint32 loot_id, uint32 type);
 		void FillGOLoot(Loot* loot, uint32 loot_id, uint32 type);
