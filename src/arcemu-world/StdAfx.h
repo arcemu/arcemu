@@ -239,6 +239,6 @@ template< class T, class U > T TO(U u) { return static_cast< T >(u); }
 
 #endif
 
-#define RECRUITING "Info: |cff00FF7FArcEmu is recruiting developers: Join us on irc.freenode.net:6667 ##arcemu"
-#define BUGTRACKER "http://sourceforge.net/apps/trac/arcemu/wiki"
+#define RECRUITING "Info: |cff00FF7FArcEmu is recruiting developers: Join us on irc.freenode.net #arcemu"
+#define BUGTRACKER "https://github.com/arcemu/arcemu/issues"
 
