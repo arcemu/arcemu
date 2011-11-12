@@ -8661,7 +8661,7 @@ void Aura::SpellAuraModAttackPowerOfArmor(bool apply)
 
 void Aura::SpellAuraDeflectSpells(bool apply)
 {
-	//Currently used only by Detterence and handled in Spell::DidHit
+	//Currently used only by Deterrence and handled in Spell::DidHit
 }
 
 void Aura::SpellAuraPhase(bool apply)
