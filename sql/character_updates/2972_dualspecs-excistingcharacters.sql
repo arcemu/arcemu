@@ -1,1 +1,0 @@
-UPDATE `characters` SET `numspecs` = '1' WHERE `numspecs` = '0';

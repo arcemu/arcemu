@@ -1,1 +1,0 @@
-alter table `creature_spawns` add column `CanFly` smallint(3) DEFAULT '0' NOT NULL after `slot3item`;
