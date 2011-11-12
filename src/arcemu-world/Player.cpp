@@ -1588,9 +1588,6 @@ void Player::GiveXP(uint32 xp, const uint64 & guid, bool allowbonus)
 	// Set the update bit
 	SetXp(newxp);
 
-	HandleProc(PROC_ON_GAIN_EXPIERIENCE, this, NULL);
-	m_procCounter = 0;
-
 }
 
 void Player::smsg_InitialSpells()
@@ -12590,6 +12587,11 @@ void Player::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
 				GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILLING_BLOW, GetMapId(), 0, 0);
 #endif
 
+				if( pVictim->getLevel() >= (getLevel()-8) && ( GetGUID() != pVictim->GetGUID() ) )
+				{
+					HandleProc(PROC_ON_GAIN_EXPIERIENCE, this, NULL);
+					m_procCounter = 0;
+				}
 			}
 		}
 

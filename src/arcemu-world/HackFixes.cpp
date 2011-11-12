@@ -771,11 +771,6 @@ void ApplyNormalFixes()
 		{
 			sp->School = SCHOOL_FROST;
 		}
-		// Blackout handled by Shadow school
-		else if(strstr(sp->Name, "Blackout"))
-		{
-			sp->School = SCHOOL_SHADOW;
-		}
 		//more triggered spell ids are wrong. I think blizz is trying to outsmart us :S
 		//Chain Heal all ranks %50 heal value (49 + 1)
 		else if(strstr(sp->Name, "Chain Heal"))
