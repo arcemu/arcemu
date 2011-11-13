@@ -4868,6 +4868,12 @@ int32 Spell::DoCalculateEffect(uint32 i, Unit* target, int32 value)
 						value = int32(0.002 * target->GetMaxPower(POWER_TYPE_MANA));
 					break;
 				}
+			case 29166: //Innervate
+				{
+					if(p_caster != NULL && i == 0 && target != NULL)
+						value = (uint32)(p_caster->GetBaseMana() * 0.225f);
+					break;
+				}
 			default:
 				{
 					//not handled in this switch
