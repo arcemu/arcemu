@@ -35,5 +35,5 @@ class InnervateSpell : public Spell
 
 void SpellFactoryMgr::SetupDruid()
 {
-	AddSpellById(29166, &InnervateSpell::Create);
+	AddSpellByNameHash(SPELL_HASH_INNERVATE, &InnervateSpell::Create);
 }
