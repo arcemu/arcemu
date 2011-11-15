@@ -74,6 +74,16 @@ enum MailStationery
     MAIL_STATIONERY_CHR			= 65	// 34171, Winter
 };
 
+enum MailCheckMask
+{
+    MAIL_CHECK_MASK_NONE        = 0x00,
+    MAIL_CHECK_MASK_READ        = 0x01,
+    MAIL_CHECK_MASK_RETURNED    = 0x02,
+    MAIL_CHECK_MASK_COPIED      = 0x04,
+    MAIL_CHECK_MASK_COD_PAYMENT = 0x08,
+    MAIL_CHECK_MASK_HAS_BODY    = 0x10,
+};
+
 #define MAIL_MAX_ITEM_SLOT 12
 
 struct MailMessage
@@ -90,8 +100,7 @@ struct MailMessage
 	uint32 stationery;
 	uint32 expire_time;
 	uint32 delivery_time;
-	uint32 copy_made;
-	bool read_flag;
+	uint32 checked_flag;
 	bool deleted_flag;
 
 	bool AddMessageDataToPacket(WorldPacket & data);
@@ -136,11 +145,11 @@ class SERVER_DECL MailSystem : public Singleton<MailSystem>, public EventableObj
 		void RemoveMessageIfDeleted(uint32 message_id, Player* plr);
 		void SaveMessageToSQL(MailMessage* message);
 		void SendAutomatedMessage(uint32 type, uint64 sender, uint64 receiver, string subject, string body, uint32 money,
-		                          uint32 cod, vector<uint64> &item_guids, uint32 stationery, uint32 deliverdelay = 0);
+		                          uint32 cod, vector<uint64> &item_guids, uint32 stationery, MailCheckMask checked = MAIL_CHECK_MASK_HAS_BODY, uint32 deliverdelay = 0);
 
 		//overload to keep backward compatibility (passing just 1 item guid instead of a vector)
 		void SendAutomatedMessage(uint32 type, uint64 sender, uint64 receiver, string subject, string body, uint32 money,
-		                          uint32 cod, uint64 item_guid, uint32 stationery, uint32 deliverdelay = 0);
+		                          uint32 cod, uint64 item_guid, uint32 stationery, MailCheckMask checked = MAIL_CHECK_MASK_HAS_BODY, uint32 deliverdelay = 0);
 
 		ARCEMU_INLINE bool MailOption(uint32 flag)
 		{

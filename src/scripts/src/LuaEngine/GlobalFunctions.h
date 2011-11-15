@@ -409,7 +409,7 @@ namespace luaGlobalFunctions
 		uint64 item_guid = CHECK_GUID(L, 8);
 		uint32 stationery = luaL_checkint(L, 9);
 		uint32 deliverdelay = luaL_optint(L, 10, 0);
-		sMailSystem.SendAutomatedMessage(type, sender_guid, recipient_guid, subject, body, money, cod, item_guid, stationery, deliverdelay);
+		sMailSystem.SendAutomatedMessage(type, sender_guid, recipient_guid, subject, body, money, cod, item_guid, stationery, body.empty() ? MAIL_CHECK_MASK_COPIED : MAIL_CHECK_MASK_HAS_BODY, deliverdelay);
 		return 0;
 	}
 

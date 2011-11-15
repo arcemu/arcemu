@@ -372,6 +372,23 @@ struct fnptr <Ret (T::*) (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10)>
 	}
 };
 
+template <typename T, typename Ret, typename P1, typename P2, typename P3,
+	typename P4, typename P5, typename P6, typename P7, typename P8, typename P9, typename P10, typename P11>
+struct fnptr <Ret (T::*) (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11)>
+{
+	FNPTR_MFP_TRAITS;
+	typedef typelist<P1, typelist<P2, typelist<P3, typelist<P4, typelist<P5,
+		typelist<P6, typelist<P7, typelist <P8, typelist<P9, typelist<P10, typelist<P11> > > > > > > > > > > params;
+	static Ret apply (T *obj, Ret (T::*fp) (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11),
+		const typevallist<params> &tvl)
+	{
+		return (obj->*fp)(tvl.hd, tvl.tl.hd, tvl.tl.tl.hd, tvl.tl.tl.tl.hd,
+			tvl.tl.tl.tl.tl.hd, tvl.tl.tl.tl.tl.tl.hd,
+			tvl.tl.tl.tl.tl.tl.tl.hd, tvl.tl.tl.tl.tl.tl.tl.tl.hd, tvl.tl.tl.tl.tl.tl.tl.tl.tl.hd, tvl.tl.tl.tl.tl.tl.tl.tl.tl.tl.hd,
+			tvl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.hd);
+	}
+};
+
 /* Const member function pointers. */
 
 #define FNPTR_CONST_MFP_TRAITS \
