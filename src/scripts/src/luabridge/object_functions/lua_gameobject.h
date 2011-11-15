@@ -104,12 +104,15 @@ class lua_go : public GameObject
 			li_->m_goFRefs.erase(this->GetLowGUID());
 		}
 
-		void AddLoot(uint32 itemid, uint32 mincount, uint32 maxcount, uint32 ffa_loot, lua_stack s)
+		void AddLoot(uint32 itemid, uint32 mincount, uint32 maxcount, lua_stack s)
 		{
 			lua_State* stack = (lua_State*)s;
 			bool perm = false;
 			float chance = 0.0f;
-			if(lua_type(stack, 5) == LUA_TBOOLEAN)
+			if( lua_gettop( stack ) != 3 || lua_gettop( stack ) != 5 )
+				return;
+
+			if( ( lua_gettop( stack ) == 5 ) && ( lua_type(stack, 5) == LUA_TBOOLEAN ) )
 			{
 				perm = (lua_toboolean(stack, 5) == 1) ? true : false;
 				if(lua_type(stack, 6) == LUA_TNUMBER)
@@ -117,11 +120,11 @@ class lua_go : public GameObject
 
 				QueryResult* result = WorldDatabase.Query("SELECT * FROM loot_gameobjects WHERE entryid = %u, itemid = %u", GetEntry(), itemid);
 				if(result == NULL)
-					WorldDatabase.Execute("REPLACE INTO loot_gameobjects VALUES (%u, %u, %f, 0, 0, 0, %u, %u, %u)", GetEntry(), itemid, chance, mincount, maxcount, ffa_loot);
+					WorldDatabase.Execute("REPLACE INTO loot_gameobjects VALUES (%u, %u, %f, 0, 0, 0, %u, %u )", GetEntry(), itemid, chance, mincount, maxcount );
 				else
 					delete result;
 			}
-			lootmgr.AddLoot(&loot, itemid, mincount, maxcount, ffa_loot);
+			lootmgr.AddLoot(&loot, itemid, mincount, maxcount );
 		}
 
 		uint32 GetSpawnId()

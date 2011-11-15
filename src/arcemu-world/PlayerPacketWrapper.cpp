@@ -398,10 +398,10 @@ void Player::SendLoot(uint64 guid, uint8 loot_type, uint32 mapid)
 				continue;
 
 		// team check
-		if( itemProto->HasFlag2(ITEM_FLAG2_HORDE_ONLY) != 0 && IsTeamAlliance() ) 
+		if( itemProto->HasFlag2(ITEM_FLAG2_HORDE_ONLY) && IsTeamAlliance() ) 
 			continue; 
 
-		if( itemProto->HasFlag2(ITEM_FLAG2_ALLIANCE_ONLY) != 0 && IsTeamHorde() ) 
+		if( itemProto->HasFlag2(ITEM_FLAG2_ALLIANCE_ONLY) && IsTeamHorde() ) 
 			continue;
 
 		//quest items check. type 4/5

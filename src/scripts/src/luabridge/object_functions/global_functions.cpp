@@ -437,7 +437,7 @@ namespace lua_engine
 		luabridge::tdstack<Database*>::push(m.L, Database_Character);
 		lua_setglobal(m.L, "CharacterDB");
 
-		typedef void (MailSystem::*SendAutomatedMessage)(uint32,uint64,uint64,string,string,uint32,uint32,uint64,uint32,uint32);
+		typedef void (MailSystem::*SendAutomatedMessage)(uint32,uint64,uint64,string,string,uint32,uint32,uint64,uint32,MailCheckMask,uint32);
 		SendAutomatedMessage _MailSystemSendAutomatedMessage = &MailSystem::SendAutomatedMessage;
 
 		m	.class_<MailSystem>("MailSystem")

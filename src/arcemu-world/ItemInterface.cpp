@@ -2836,7 +2836,7 @@ void ItemInterface::BuildInventoryChangeError(Item* SrcItem, Item* DstItem, uint
 
 	data << uint8(0);
 
-	if( Error == INV_ERR_YOU_MUST_REACH_LEVEL_N || Error == INV_ERR_PURCHASE_LEVEL_TOO_LOW )
+	if( ( Error == INV_ERR_YOU_MUST_REACH_LEVEL_N ) || ( Error == INV_ERR_PURCHASE_LEVEL_TOO_LOW ) )
 	{
 		if(SrcItem)
 		{

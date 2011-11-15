@@ -568,29 +568,33 @@ bool Master::Run(int argc, char** argv)
 	return true;
 }
 
+static const char *REQUIRED_CHAR_DB_VERSION  = "2011-11-15_10-00_mail_flags";
+static const char *REQUIRED_WORLD_DB_VERSION = "2011-11-12_20-00_initial";
+
 bool Master::CheckDBVersion()
 {
-	const char* versionquery = "SELECT LastUpdate FROM arcemu_db_version;";
-
-	QueryResult* wqr = WorldDatabase.QueryNA(versionquery);
+	QueryResult* wqr = WorldDatabase.QueryNA( "SELECT LastUpdate FROM world_db_version;" );
 	if(wqr == NULL)
 	{
-		Log.Error("Database", "World database is missing the table `arcemu_db_version` OR the table doesn't contain any rows. Can't validate database version. Exiting.");
+		Log.Error("Database", "World database is missing the table `world_db_version` OR the table doesn't contain any rows. Can't validate database version. Exiting.");
+		Log.Error( "Database","You may need to update your database" );
 		return false;
 	}
 
 	Field* f = wqr->Fetch();
-	uint32 WorldDBVersion = f->GetUInt32();
+	const char *WorldDBVersion = f->GetString();
 
-	Log.Notice("Database", "World database version: %u", WorldDBVersion);
-	if(WorldDBVersion != REQUIRED_WORLD_DB_VERSION)
+	Log.Notice("Database", "Last world database update: %s", WorldDBVersion);
+	int result = strcmp( WorldDBVersion, REQUIRED_WORLD_DB_VERSION );
+	if( result != 0 )
 	{
-		Log.Error("Database", "World database version doesn't match the required version which is %u.", REQUIRED_WORLD_DB_VERSION);
+		Log.Error("Database", "Last world database update doesn't match the required one which is %s.", REQUIRED_WORLD_DB_VERSION);
 		
-		if( WorldDBVersion < REQUIRED_WORLD_DB_VERSION )
-			Log.Error("Database", "You need to apply the world update queries that start with a larger number than %u. Exiting.", WorldDBVersion);
-		else
-			Log.Error("Database", "Your world database is too new for this Arcemu version, you need to update your server. Exiting.");
+		if( result < 0 ){
+			Log.Error("Database", "You need to apply the world update queries that are newer than %s. Exiting.", WorldDBVersion);
+			Log.Error( "Database", "You can find the world update queries in the sql/world_updates sub-directory of your Arcemu source directory." );
+		}else
+			Log.Error("Database", "Your world database is probably too new for this Arcemu version, you need to update your server. Exiting.");
 
 		delete wqr;
 		return false;
@@ -598,31 +602,35 @@ bool Master::CheckDBVersion()
 
 	delete wqr;
 
-	QueryResult* cqr = CharacterDatabase.QueryNA(versionquery);
+	QueryResult* cqr = CharacterDatabase.QueryNA( "SELECT LastUpdate FROM character_db_version;" );
 	if(cqr == NULL)
 	{
-		Log.Error("Database", "Character database is missing the table `arcemu_db_version` OR the table doesn't contain any rows. Can't validate database version. Exiting.");
+		Log.Error("Database", "Character database is missing the table `character_db_version` OR the table doesn't contain any rows. Can't validate database version. Exiting.");
+		Log.Error( "Database","You may need to update your database" );
 		return false;
 	}
 
 	f = cqr->Fetch();
-	uint32 CharDBVersion = f->GetUInt32();
+	const char *CharDBVersion = f->GetString();
 
-	Log.Notice("Database", "Character database version: %u", CharDBVersion);
-	if(CharDBVersion != REQUIRED_CHAR_DB_VERSION)
+	Log.Notice("Database", "Last character database update: %s", CharDBVersion);
+	result = strcmp( CharDBVersion, REQUIRED_CHAR_DB_VERSION );
+	if( result != 0 )
 	{
-		Log.Error("Database", "Character database version doesn't match the required version which is %u.", REQUIRED_CHAR_DB_VERSION);
-		if(CharDBVersion < REQUIRED_CHAR_DB_VERSION )
-			Log.Error("Database", "You need to apply the character update queries that start with a larger number than %u. Exiting.", CharDBVersion);
-		else
+		Log.Error("Database", "Last character database update doesn't match the required one which is %s.", REQUIRED_CHAR_DB_VERSION);
+		if( result < 0 ){
+			Log.Error("Database", "You need to apply the character update queries that are newer than %s. Exiting.", CharDBVersion);
+			Log.Error( "Database", "You can find the character update queries in the sql/character_updates sub-directory of your Arcemu source directory." );
+		}else
 			Log.Error("Database", "Your character database is too new for this Arcemu version, you need to update your server. Exiting.");
+
 		delete cqr;
 		return false;
 	}
 
 	delete cqr;
 
-	Log.Success("Database", "Database versions successfully validated.");
+	Log.Success("Database", "Database successfully validated.");
 
 	return true;
 }

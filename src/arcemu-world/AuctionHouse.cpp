@@ -152,7 +152,7 @@ void AuctionHouse::RemoveAuction(Auction* auct)
 				snprintf(subject, 100, "%u:0:3", (unsigned int)auct->pItem->GetEntry());
 
 				// Auction expired, resend item, no money to owner.
-				sMailSystem.SendAutomatedMessage(AUCTION, dbc->id, auct->Owner, subject, "", 0, 0, auct->pItem->GetGUID(), MAIL_STATIONERY_AUCTION);
+				sMailSystem.SendAutomatedMessage(AUCTION, dbc->id, auct->Owner, subject, "", 0, 0, auct->pItem->GetGUID(), MAIL_STATIONERY_AUCTION, MAIL_CHECK_MASK_COPIED);
 			}
 			break;
 
@@ -165,7 +165,7 @@ void AuctionHouse::RemoveAuction(Auction* auct)
 				snprintf(body, 200, "%X:%u:%u", (unsigned int)auct->Owner, (unsigned int)auct->HighestBid, (unsigned int)auct->BuyoutPrice);
 
 				// Auction won by highest bidder. He gets the item.
-				sMailSystem.SendAutomatedMessage(AUCTION, dbc->id, auct->HighestBidder, subject, body, 0, 0, auct->pItem->GetGUID(), MAIL_STATIONERY_AUCTION);
+				sMailSystem.SendAutomatedMessage(AUCTION, dbc->id, auct->HighestBidder, subject, body, 0, 0, auct->pItem->GetGUID(), MAIL_STATIONERY_AUCTION, MAIL_CHECK_MASK_COPIED);
 
 				// Send a mail to the owner with his cut of the price.
 				uint32 auction_cut = float2int32(cut_percent * auct->HighestBid);
@@ -183,7 +183,7 @@ void AuctionHouse::RemoveAuction(Auction* auct)
 					snprintf(body, 200, "%X:%u:0:%u:%u", (unsigned int)auct->HighestBidder, (unsigned int)auct->HighestBid, (unsigned int)auct->DepositAmount, (unsigned int)auction_cut);
 
 				// send message away.
-				sMailSystem.SendAutomatedMessage(AUCTION, dbc->id, auct->Owner, subject, body, amount, 0, 0, MAIL_STATIONERY_AUCTION);
+				sMailSystem.SendAutomatedMessage(AUCTION, dbc->id, auct->Owner, subject, body, amount, 0, 0, MAIL_STATIONERY_AUCTION, MAIL_CHECK_MASK_COPIED);
 
 				// If it's not a buyout (otherwise the players has been already notified)
 				if(auct->HighestBid < auct->BuyoutPrice || auct->BuyoutPrice == 0)
@@ -200,12 +200,12 @@ void AuctionHouse::RemoveAuction(Auction* auct)
 				if(cut && plr && plr->HasGold(cut))
 					plr->ModGold(-(int32)cut);
 
-				sMailSystem.SendAutomatedMessage(AUCTION, GetID(), auct->Owner, subject, "", 0, 0, auct->pItem->GetGUID(), MAIL_STATIONERY_AUCTION);
+				sMailSystem.SendAutomatedMessage(AUCTION, GetID(), auct->Owner, subject, "", 0, 0, auct->pItem->GetGUID(), MAIL_STATIONERY_AUCTION, MAIL_CHECK_MASK_COPIED);
 
 				// return bidders money
 				if(auct->HighestBidder)
 				{
-					sMailSystem.SendAutomatedMessage(AUCTION, GetID(), auct->HighestBidder, subject, "", auct->HighestBid, 0, 0, MAIL_STATIONERY_AUCTION);
+					sMailSystem.SendAutomatedMessage(AUCTION, GetID(), auct->HighestBidder, subject, "", auct->HighestBid, 0, 0, MAIL_STATIONERY_AUCTION, MAIL_CHECK_MASK_COPIED);
 				}
 
 			}
