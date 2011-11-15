@@ -127,7 +127,7 @@ CREATE TABLE `character_db_version`(
   PRIMARY KEY (`LastUpdate`)
 );
 
-INSERT INTO `character_db_version`(`LastUpdate`) VALUES ( '2011-11-12_20-00_initial');
+INSERT INTO `character_db_version`(`LastUpdate`) VALUES ( '2011-11-15_10-00_mail_flags');
 
 /*Table structure for table `characters` */
 
@@ -690,8 +690,7 @@ CREATE TABLE `mailbox` (
   `stationary` int(30) NOT NULL DEFAULT '0',
   `expiry_time` int(30) NOT NULL DEFAULT '0',
   `delivery_time` int(30) NOT NULL DEFAULT '0',
-  `copy_made` int(30) NOT NULL DEFAULT '0',
-  `read_flag` int(30) NOT NULL DEFAULT '0',
+  `checked_flag` int(30) unsigned NOT NULL DEFAULT '0',
   `deleted_flag` int(30) NOT NULL DEFAULT '0',
   PRIMARY KEY (`message_id`),
   KEY `b` (`player_guid`)
