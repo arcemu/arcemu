@@ -460,22 +460,7 @@ void WorldSession::HandleMailDelete(WorldPacket & recv_data)
 		return;
 	}
 
-	if(message->checked_flag & MAIL_CHECK_MASK_COPIED)
-	{
-		// we have the message as a copy on the item. we can't delete it or this item
-		// will no longer function.
-
-		// deleted_flag prevents it from being shown in the mail list.
-		message->deleted_flag = 1;
-
-		// update in sql
-		CharacterDatabase.WaitExecute("UPDATE mailbox SET deleted_flag = 1 WHERE message_id = %u", message_id);
-	}
-	else
-	{
-		// delete the message, there are no other references to it.
-		_player->m_mailBox.DeleteMessage(message_id, true);
-	}
+	_player->m_mailBox.DeleteMessage(message_id, true);
 
 	data << uint32(MAIL_OK);
 	SendPacket(&data);
@@ -719,15 +704,11 @@ void WorldSession::HandleMailCreateTextItem(WorldPacket & recv_data)
 	if(pItem == NULL)
 		return;
 
-	//pItem->SetTextId(message_id);
+	pItem->SetFlag( ITEM_FIELD_FLAGS, ITEM_FLAG_WRAP_GIFT ); // the flag is probably misnamed
+	pItem->SetText( message->body );
+
 	if(_player->GetItemInterface()->AddItemToFreeSlot(pItem))
 	{
-		// mail now has an item after it
-		message->checked_flag |= MAIL_CHECK_MASK_COPIED;
-
-		// update in sql
-		CharacterDatabase.WaitExecute("UPDATE mailbox SET checked_flag = %u WHERE message_id = %u", message->checked_flag, message_id);
-
 		data << uint32(MAIL_OK);
 		SendPacket(&data);
 	}
@@ -744,18 +725,15 @@ void WorldSession::HandleItemTextQuery(WorldPacket & recv_data)
 	uint64 itemGuid;
 	recv_data >> itemGuid;
 
-	string body = "Internal Error";
-
-	//TODO: Store text in database even after we deleted the mail and access it by item GUID (low guid)
 	Item* pItem = _player->GetItemInterface()->GetItemByGUID(itemGuid);
-	WorldPacket data(SMSG_ITEM_TEXT_QUERY_RESPONSE, body.length() + 9);
+	WorldPacket data(SMSG_ITEM_TEXT_QUERY_RESPONSE, pItem->GetText().size() + 9 );
 	if(!pItem)
 		data << uint8(1);
 	else
 	{
 		data << uint8(0);
 		data << uint64(itemGuid);
-		data << body;
+		data << pItem->GetText();
 	}
 
 	SendPacket(&data);
