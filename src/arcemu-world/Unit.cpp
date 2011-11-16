@@ -5985,6 +5985,12 @@ void Unit::RemoveFromWorld(bool free_guid)
 	m_aiInterface->WipeReferences();
 }
 
+void Unit::Deactivate(MapMgr* mgr)
+{
+	CombatStatus.Vanished();
+	Object::Deactivate(mgr);
+}
+
 void Unit::RemoveAurasByInterruptFlagButSkip(uint32 flag, uint32 skip)
 {
 	Aura* a;
