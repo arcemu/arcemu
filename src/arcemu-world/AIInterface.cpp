@@ -682,14 +682,6 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 					  ) // Target is in Range -> Attack
 					{
 //					gracefull_hit_on_target = NULL;
-						if(m_UnitToFollow != 0)
-						{
-							m_UnitToFollow = 0;//we shouldn't be following any one
-							m_lastFollowX = m_lastFollowY = 0;
-							//m_Unit->setAttackTarget(NULL);  // remove ourselves from any target that might have been followed
-						}
-
-						FollowDistance = 0.0f;
 //					m_moveRun = false;
 						//FIX ME: offhand shit
 						if(m_Unit->isAttackReady(false) && !m_fleeTimer)
@@ -778,14 +770,6 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 
 					if(distance >= combatReach[0] && distance <= combatReach[1]) // Target is in Range -> Attack
 					{
-						if(m_UnitToFollow != 0)
-						{
-							m_UnitToFollow = 0;//we shouldn't be following any one
-							m_lastFollowX = m_lastFollowY = 0;
-							//m_Unit->setAttackTarget(NULL);  // remove ourselves from any target that might have been followed
-						}
-
-						FollowDistance = 0.0f;
 //					m_moveRun = false;
 						//FIX ME: offhand shit
 						if(m_Unit->isAttackReady(false) && !m_fleeTimer)
@@ -4125,14 +4109,16 @@ void AIInterface::EventLeaveCombat(Unit* pUnit, uint32 misc1)
 		m_AIState = STATE_EVADE;
 
 		Unit* SavedFollow = getUnitToFollow();
-		m_UnitToFollow = 0;
-		FollowDistance = 0.0f;
-		m_lastFollowX = m_lastFollowY = 0;
 
 		if(m_Unit->isAlive())
 		{
-			SetReturnPosition();
-			MoveEvadeReturn();
+			if(SavedFollow == NULL)
+			{
+				SetReturnPosition();
+				MoveEvadeReturn();
+			}
+			else
+				m_AIState = STATE_FOLLOWING;
 
 			Creature* aiowner = TO< Creature* >(m_Unit);
 			//clear tagger.
