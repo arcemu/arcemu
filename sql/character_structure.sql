@@ -127,7 +127,7 @@ CREATE TABLE `character_db_version`(
   PRIMARY KEY (`LastUpdate`)
 );
 
-INSERT INTO `character_db_version`(`LastUpdate`) VALUES ( '2011-11-15_10-00_mail_flags');
+INSERT INTO `character_db_version`(`LastUpdate`) VALUES ( '2011-11-16_22-00_saved_mail' );
 
 /*Table structure for table `characters` */
 
@@ -794,6 +794,7 @@ CREATE TABLE `playeritems` (
   `duration_expireson` int(10) unsigned NOT NULL DEFAULT '0',
   `refund_purchasedon` int(10) unsigned NOT NULL DEFAULT '0',
   `refund_costid` int(10) unsigned NOT NULL DEFAULT '0',
+  `text` TEXT NOT NULL,
   PRIMARY KEY (`guid`),
   KEY `ownerguid` (`ownerguid`),
   KEY `itemtext` (`itemtext`)

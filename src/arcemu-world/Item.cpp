@@ -240,6 +240,8 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light)
 	}
 
 ///////////////////////////////////////////////////////////////////////////////////////////
+	
+	text = fields[19].GetString();
 
 	ApplyRandomProperties(false);
 
@@ -423,6 +425,8 @@ void Item::SaveToDB(int8 containerslot, int8 slot, bool firstsave, QueryBuffer* 
 	}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
+	ss << "','";
+	ss << text;
 	ss << "')";
 
 	if(firstsave)

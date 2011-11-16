@@ -408,6 +408,9 @@ class SERVER_DECL Item : public Object
 			return false;
 		}
 
+		void SetText( std::string &text ){ this->text = text; }
+		const std::string& GetText() const{ return this->text; }
+
 	protected:
 
 		ItemPrototype* m_itemProto;
@@ -421,6 +424,7 @@ class SERVER_DECL Item : public Object
 	private:
 		// Enchant type 3 spellids, like engineering gadgets appliable to items.
 		uint32 OnUseSpellIDs[ 3 ];
+		std::string text;
 };
 
 uint32 GetSkillByProto(uint32, uint32);
