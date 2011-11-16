@@ -270,6 +270,9 @@ void WorldSession::HandleQuestlogRemoveQuestOpcode(WorldPacket & recvPacket)
 		if(qPtr->receive_items[i])
 			GetPlayer()->GetItemInterface()->RemoveItemAmt(qPtr->receive_items[i], 1);
 	}
+	if(qPtr->srcitem && qPtr->srcitem != qPtr->receive_items[0])
+		GetPlayer()->GetItemInterface()->RemoveItemAmt(qPtr->srcitem, qPtr->srcitemcount ? qPtr->srcitemcount : 1);
+
 	GetPlayer()->UpdateNearbyGameObjects();
 
 	sHookInterface.OnQuestCancelled(_player, qPtr);
