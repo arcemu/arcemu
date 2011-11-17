@@ -93,7 +93,7 @@ SERVER_DECL DBCStorage< VehicleEntry > dbcVehicle;
 SERVER_DECL DBCStorage< VehicleSeatEntry > dbcVehicleSeat;
 
 const char* WorldMapOverlayStoreFormat = "nxiiiixxxxxxxxxxx";
-const char* BarberShopStyleEntryFormat = "nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxi";
+const char* BarberShopStyleEntryFormat="uuxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxuuu";
 const char* ItemSetFormat = "ulxxxxxxxxxxxxxxxxuuuuuuuuxxxxxxxxxuuuuuuuuuuuuuuuuuu";
 const char* LockFormat = "uuuuuuuuuuuuuuuuuuuuuuuuuxxxxxxxx";
 const char* EmoteEntryFormat = "uxuuuuxuxuxxxxxxxxx";

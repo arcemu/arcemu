@@ -1327,30 +1327,41 @@ void WorldSession::HandleBarberShopResult(WorldPacket & recv_data)
 
 	LOG_DEBUG("WORLD: CMSG_ALTER_APPEARANCE ");
 
-	uint32 hair, haircolor, facialhairorpiercing;
-	recv_data >> hair >> haircolor >> facialhairorpiercing;
+	uint32 hair, haircolor, facialhairorpiercing, skin;
+	recv_data >> hair >> haircolor >> facialhairorpiercing >> skin;
 	uint32 oldhair = _player->GetByte(PLAYER_BYTES, 2);
 	uint32 oldhaircolor = _player->GetByte(PLAYER_BYTES, 3);
 	uint32 oldfacial = _player->GetByte(PLAYER_BYTES_2, 0);
-	uint32 newhair, newhaircolor, newfacial;
+	uint32 newhair, newhaircolor, newfacial, newskin;
 	uint32 cost = 0;
-	BarberShopStyleEntry* bbse;
+	BarberShopStyleEntry * bbse;
 
-	bbse = dbcBarberShopStyleStore.LookupEntryForced(hair);
-	if(!bbse)		return;
-	newhair = bbse->type;
+	bbse = dbcBarberShopStyleStore.LookupEntryForced( hair );
+	if( !bbse )
+		return;
+
+	newhair = bbse->hair_id;
 
 	newhaircolor = haircolor;
 
-	bbse = dbcBarberShopStyleStore.LookupEntryForced(facialhairorpiercing);
-	if(!bbse)		return;
-	newfacial = bbse->type;
+	bbse = dbcBarberShopStyleStore.LookupEntryForced( facialhairorpiercing );
+	if( !bbse )
+		return;
+
+	newfacial = bbse->hair_id;
+
+	bbse = dbcBarberShopStyleStore.LookupEntryForced( skin );
+	if( !bbse )		
+		return;
+
+	newskin = bbse->hair_id;
 
 	uint32 level = _player->getLevel();
 	if(level >= 100)
 		level = 100;
-	gtFloat* cutcosts = dbcBarberShopPrices.LookupEntryForced(level - 1);
-	if(!cutcosts)
+
+	gtFloat * cutcosts = dbcBarberShopPrices.LookupEntryForced(level - 1);
+	if( !cutcosts )
 		return;
 
 	// hair style cost = cutcosts
@@ -1383,6 +1394,9 @@ void WorldSession::HandleBarberShopResult(WorldPacket & recv_data)
 	_player->SetByte(PLAYER_BYTES, 2, static_cast<uint8>(newhair));
 	_player->SetByte(PLAYER_BYTES, 3, static_cast<uint8>(newhaircolor));
 	_player->SetByte(PLAYER_BYTES_2, 0, static_cast<uint8>(newfacial));
+	if( skin )
+		_player->SetByte( PLAYER_BYTES, 0, static_cast<uint8>( newskin ));
+
 	_player->ModGold(-(int32)cost);
 
 	_player->SetStandState(0);                              // stand up

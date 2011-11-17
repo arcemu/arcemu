@@ -2471,6 +2471,8 @@ class SERVER_DECL Player : public Unit
 		bool CanTrainAt(Trainer*);
 
 		Object* GetPlayerOwner() { return this; };
+
+		uint32 GenerateShapeshiftModelId(uint32 form);
 };
 
 class SkillIterator
