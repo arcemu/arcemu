@@ -2819,9 +2819,6 @@ void Spell::SpellEffectLearnSpell(uint32 i) // Learn Spell
 		if(spellToLearn == 2366)   //hacky fix for herbalism from creatures
 			playerTarget->addSpell(32605);
 
-		if(spellToLearn == 4036)   //hacky fix for engineering from creatures
-			playerTarget->addSpell(49383);
-
 		//smth is wrong here, first we add this spell to player then we may cast it on player...
 		SpellEntry* spellinfo = dbcSpell.LookupEntry(spellToLearn);
 		//remove specializations
@@ -4205,29 +4202,25 @@ void Spell::SpellEffectSkinning(uint32 i)
 	uint32 sk = TO_PLAYER(m_caster)->_GetSkillLineCurrent(skill);
 	uint32 lvl = cr->getLevel();
 
-	// creature must have skinnable flag, has to be unskinned and must have loot
-	if( (cr->GetUInt32Value(UNIT_FIELD_FLAGS) & UNIT_FLAG_SKINNABLE) && !(cr->Skinned) && (lootmgr.IsSkinnable(cr->GetProto()->Id)) )
+	if((sk >= lvl * 5) || ((sk + 100) >= lvl * 10))
 	{
-		if((sk >= lvl * 5) || ((sk + 100) >= lvl * 10))
-		{
-			//Fill loot for Skinning
-			lootmgr.FillSkinningLoot(&cr->loot, unitTarget->GetEntry());
-			TO_PLAYER(m_caster)->SendLoot(unitTarget->GetGUID(), LOOT_SKINNING, unitTarget->GetMapId());
+		//Fill loot for Skinning
+		lootmgr.FillSkinningLoot(&cr->loot, unitTarget->GetEntry());
+		TO_PLAYER(m_caster)->SendLoot(unitTarget->GetGUID(), LOOT_SKINNING, unitTarget->GetMapId());
 
-			//Not skinable again
-			cr->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SKINNABLE);
-			cr->Skinned = true;
+		//Not skinable again
+		cr->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SKINNABLE);
+		cr->Skinned = true;
 
-			if(cr->GetCreatureInfo()->Rank > 0)
-				DetermineSkillUp(skill , sk < lvl * 5 ? sk / 5 : lvl, 2);
-			else
-				DetermineSkillUp(skill , sk < lvl * 5 ? sk / 5 : lvl, 1);
-
-			return;
-		}
+		if(cr->GetCreatureInfo()->Rank > 0)
+			DetermineSkillUp(skill , sk < lvl * 5 ? sk / 5 : lvl, 2);
+		else
+			DetermineSkillUp(skill , sk < lvl * 5 ? sk / 5 : lvl, 1);
 	}
-
-	SendCastResult(SPELL_FAILED_TARGET_UNSKINNABLE);
+	else
+	{
+		SendCastResult(SPELL_FAILED_TARGET_UNSKINNABLE);
+	}
 }
 
 void Spell::SpellEffectCharge(uint32 i)
