@@ -55,7 +55,7 @@ class CaptainGarranVimes_Gossip : public Arcemu::Gossip::Script
 			Arcemu::Gossip::Menu menu(pObject->GetGUID(), Text, plr->GetSession()->language);
 			sQuestMgr.FillQuestMenu(TO_CREATURE(pObject), plr, menu);
 			if((plr->GetQuestLogForEntry(11123) != NULL) || (plr->GetQuestRewardStatus(11123) == 0)) 
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "What have you heard of the Shady Rest Inn?", 1794);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "What have you heard of the Shady Rest Inn?", 0);
 			menu.Send(plr);
 		}
 
