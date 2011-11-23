@@ -4588,6 +4588,7 @@ void Player::KillPlayer()
 		SetPower(POWER_TYPE_RUNIC_POWER, 0);
 
 	summonhandler.RemoveAllSummons();
+	DismissActivePets();
 
 	// Player falls off vehicle on death
 	if( currentvehicle != NULL )
