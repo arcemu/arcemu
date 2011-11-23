@@ -324,7 +324,7 @@ enum MOD_TYPES
     SPELL_AURA_284 = 284,
     SPELL_AURA_MOD_ATTACK_POWER_OF_ARMOR = 285,
     SPELL_AURA_ALLOW_DOT_TO_CRIT = 286,
-    SPELL_AURA_REFLECT_INFRONT = 287,
+    SPELL_AURA_DEFLECT_SPELLS = 287,
     SPELL_AURA_288 = 288,
     SPELL_AURA_289 = 289,
     SPELL_AURA_290 = 290,
@@ -764,7 +764,7 @@ class SERVER_DECL Aura : public EventableObject
 		void SpellAuraModIgnoreArmorPct(bool apply);
 		void SpellAuraModBaseHealth(bool apply);
 		void SpellAuraModAttackPowerOfArmor(bool apply);
-		void SpellAuraReflectSpellsInfront(bool apply);
+		void SpellAuraDeflectSpells(bool apply);
 		void SpellAuraCallStabledPet(bool apply);
 		void SpellAuraConvertRune(bool apply);
 		void UpdateAuraModDecreaseSpeed();
