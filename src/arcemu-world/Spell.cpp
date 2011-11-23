@@ -4084,10 +4084,15 @@ uint8 Spell::CanCast(bool tolerate)
 				}
 			}
 
-			// if target is already skinned, don't let it be skinned again
 			if(GetProto()->Effect[0] == SPELL_EFFECT_SKINNING)  // skinning
-				if(target->IsUnit() && TO_CREATURE(target)->Skinned)
+			{
+				// if target doesn't have skinnable flag, don't let it be skinned
+				if(!target->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SKINNABLE))
 					return SPELL_FAILED_TARGET_UNSKINNABLE;
+				// if target is already skinned, don't let it be skinned again
+				if(target->IsCreature() && TO_CREATURE(target)->Skinned)
+					return SPELL_FAILED_TARGET_UNSKINNABLE;
+			}
 
 			// all spells with target 61 need to be in group or raid
 			// TODO: need to research this if its not handled by the client!!!
