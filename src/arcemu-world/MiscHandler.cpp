@@ -1565,7 +1565,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 					}
 
 					SpellEntry* info = NULL;
-					if(goinfo->ID == 36727)   // summon portal
+					if(goinfo->ID == 36727 || goinfo->ID == 194108)   // summon portal
 					{
 						if(!obj->m_ritualtarget)
 							return;

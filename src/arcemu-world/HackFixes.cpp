@@ -7044,4 +7044,21 @@ void ApplyNormalFixes()
 		sp->EffectImplicitTargetA[0] = EFF_TARGET_SCRIPTED_OR_SINGLE_TARGET;
 		sp->c_is_flags |= SPELL_FLAG_IS_FORCEDBUFF;
 	}
+
+	/* Ritual of Summoning summons a GameObject that triggers an inexistant spell.
+	 * This will copy an existant Summon Player spell used for another Ritual Of Summoning
+	 * to the one taught by Warlock trainers.
+	 */
+	sp = CheckAndReturnSpellEntry(7720);
+	if(sp)
+	{
+		const uint32 ritOfSummId = 62330;
+		CreateDummySpell(ritOfSummId);
+		SpellEntry * ritOfSumm = dbcSpell.LookupEntryForced(ritOfSummId);
+		if(ritOfSumm != NULL)
+		{
+			memcpy(ritOfSumm, sp, sizeof(SpellEntry));
+			ritOfSumm->Id = ritOfSummId;
+		}
+	}
 }
