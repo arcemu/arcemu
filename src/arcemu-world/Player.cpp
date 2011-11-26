@@ -8128,6 +8128,15 @@ void Player::EndDuel(uint8 WinCondition)
 		(*itr)->GetAIInterface()->WipeTargetList();
 	}
 
+	std::list<Pet*> duelingWithSummons = DuelingWith->GetSummons();
+	for(std::list<Pet*>::iterator itr = duelingWithSummons.begin(); itr != duelingWithSummons.end(); ++itr)
+	{
+		(*itr)->CombatStatus.Vanished();
+		(*itr)->GetAIInterface()->SetUnitToFollow(this);
+		(*itr)->GetAIInterface()->HandleEvent(EVENT_FOLLOWOWNER, *itr, 0);
+		(*itr)->GetAIInterface()->WipeTargetList();
+	}
+
 	// removing auras that kills players after if low HP
 	/*RemoveNegativeAuras(); NOT NEEDED. External targets can always gank both duelers with DoTs. :D
 	DuelingWith->RemoveNegativeAuras();*/
