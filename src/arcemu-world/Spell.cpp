@@ -1120,9 +1120,7 @@ void Spell::AddStartCooldown()
 
 void Spell::cast(bool check)
 {
-	if(duelSpell && (
-	            (p_caster != NULL && p_caster->GetDuelState() != DUEL_STATE_STARTED) ||
-	            (u_caster != NULL && u_caster->IsPet() && TO< Pet* >(u_caster)->GetPetOwner() && TO< Pet* >(u_caster)->GetPetOwner()->GetDuelState() != DUEL_STATE_STARTED)))
+	if(DuelSpellNoMoreValid())
 	{
 		// Can't cast that!
 		SendInterrupted(SPELL_FAILED_TARGET_FRIENDLY);
@@ -2680,7 +2678,8 @@ bool Spell::TakePower()
 
 void Spell::HandleEffects(uint64 guid, uint32 i)
 {
-	if(event_GetInstanceID() == WORLD_INSTANCE)
+	if(event_GetInstanceID() == WORLD_INSTANCE ||
+		DuelSpellNoMoreValid())
 	{
 		DecRef();
 		return;
