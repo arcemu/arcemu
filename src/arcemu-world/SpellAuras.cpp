@@ -3573,7 +3573,12 @@ void Aura::SpellAuraModShapeshift(bool apply)
 
 	uint32 spellId = 0;
 	uint32 spellId2 = 0;
-	uint32 modelId = (uint32)(apply ? ssf->modelId : 0);
+	uint32 modelId = 0;
+
+	if( p_target )
+		modelId = (uint32)(apply ? p_target->GenerateShapeshiftModelId(ssf->id) : 0);
+	else
+		modelId = (uint32)(apply ? ssf->modelId : 0);
 
 	bool freeMovements = false;
 
@@ -3589,9 +3594,6 @@ void Aura::SpellAuraModShapeshift(bool apply)
 					m_target->SetPowerType(POWER_TYPE_ENERGY);
 					m_target->SetMaxPower(POWER_TYPE_ENERGY, 100);  //100 Energy
 					m_target->SetPower(POWER_TYPE_ENERGY, 0);  //0 Energy
-					if(m_target->getRace() != RACE_NIGHTELF)//TAUREN
-						modelId = 8571;
-
 				}
 				else
 				{
@@ -3639,9 +3641,6 @@ void Aura::SpellAuraModShapeshift(bool apply)
 					m_target->SetMaxPower(POWER_TYPE_RAGE, 1000);
 					m_target->SetPower(POWER_TYPE_RAGE, 0); //0 rage
 
-					if(m_target->getRace() != RACE_NIGHTELF)   //TAUREN
-						modelId = 2289;
-
 					//some say there is a second effect
 					SpellEntry* spellInfo = dbcSpell.LookupEntry(21178);
 
@@ -3668,8 +3667,6 @@ void Aura::SpellAuraModShapeshift(bool apply)
 					m_target->SetPowerType(POWER_TYPE_RAGE);
 					m_target->SetMaxPower(POWER_TYPE_RAGE, 1000);
 					m_target->SetPower(POWER_TYPE_RAGE, 0); //0 rage
-					if(m_target->getRace() != RACE_NIGHTELF)   //TAUREN
-						modelId = 2289;
 				}
 				else //reset back to mana
 					m_target->SetPowerType(POWER_TYPE_MANA);
@@ -3704,11 +3701,6 @@ void Aura::SpellAuraModShapeshift(bool apply)
 				// druid
 				freeMovements = true;
 				spellId = 33948;
-				if(apply)
-				{
-					if(m_target->getRace() != RACE_NIGHTELF)
-						modelId = 20872;
-				}
 			}
 			break;
 		case FORM_STEALTH:
@@ -3724,29 +3716,17 @@ void Aura::SpellAuraModShapeshift(bool apply)
 				//druid
 				freeMovements = true;
 				spellId = 24905;
-				if(apply)
-				{
-					if(m_target->getRace() != RACE_NIGHTELF)
-						modelId = ssf->modelId2; // Lol, why is this the only one that has it in ShapeShift DBC? =/ lameeee...
-				}
 			}
 			break;
 		case FORM_SWIFT: //not tested yet, right now going on trust
 			{
 				// druid
 				freeMovements = true;
-				spellId = 40121; //Swift Form Passive
-				if(apply)
-				{
-					if(m_target->getRace() != RACE_NIGHTELF)//TAUREN
-						modelId = 21244;
-				}
 			}
 			break;
 		case FORM_SPIRITOFREDEMPTION:
 			{
 				spellId = 27795;
-				modelId = 12824; // Smaller spirit healer, heehee :3
 			}
 			break;
 		case FORM_GHOUL:

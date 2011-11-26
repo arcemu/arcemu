@@ -748,6 +748,7 @@ enum ShapeshiftForm
     FORM_ZOMBIE				= 21,
     FORM_METAMORPHOSIS		= 22,
     FORM_UNDEAD				= 25,	// Lichborne?
+    FORM_MASTER_ANGLER		= 26,
     FORM_SWIFT              = 27,
     FORM_SHADOW             = 28,
     FORM_FLIGHT             = 29,
