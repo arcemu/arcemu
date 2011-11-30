@@ -2679,9 +2679,16 @@ void Aura::SpellAuraModStealth(bool apply)
 {
 	if(apply)
 	{
-		//Overkill must proc only if we aren't already stealthed
-		if(!m_target->IsStealth() && m_target->HasAurasWithNameHash(SPELL_HASH_OVERKILL))
+		//Overkill must proc only if we aren't already stealthed, also refreshing duration.
+		if(!m_target->IsStealth() && m_target->HasAura(58426))
 		{
+			Aura *buff = m_target->FindAura(58427);
+			if(buff)
+			{
+				m_target->SetAurDuration(58427, -1);
+				m_target->ModVisualAuraStackCount(buff, 0);
+			}
+			else
 			m_target->CastSpell(m_target, 58427, true);
 		}
 
@@ -2755,21 +2762,10 @@ void Aura::SpellAuraModStealth(bool apply)
 				}
 			}
 
-			// check for stealth spells
+			// Cast stealth spell/dismount/drop BG flag
 			if(p_target != NULL)
 			{
-				uint32 stealth_id = 0;
-				SpellSet::iterator itr = p_target->mSpells.begin();
-				SpellSet::iterator end = p_target->mSpells.end();
-				for(; itr != end; ++itr)
-				{
-					if(((*itr) == 1787 || (*itr) == 1786 || (*itr) == 1785 || (*itr) == 1784) && stealth_id < (*itr))
-					{
-						stealth_id = *itr;
-					}
-				}
-				if(stealth_id != 0)
-					p_target->CastSpell(p_target, dbcSpell.LookupEntry(stealth_id), true);
+				p_target->CastSpell( p_target, 1784, true );
 
 				p_target->Dismount();
 
@@ -2823,6 +2819,8 @@ void Aura::SpellAuraModStealth(bool apply)
 
 					m_target->m_auras[x]->SetDuration(tmp_duration);
 
+					sEventMgr.ModifyEventTimeLeft(m_target->m_auras[x], EVENT_AURA_REMOVE, tmp_duration);
+					m_target->ModVisualAuraStackCount(m_target->m_auras[x], 0);
 					sEventMgr.AddEvent(m_target->m_auras[x], &Aura::Remove, EVENT_AURA_REMOVE, tmp_duration, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT | EVENT_FLAG_DELETES_OBJECT);
 				}
 			}
