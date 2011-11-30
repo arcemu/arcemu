@@ -712,6 +712,15 @@ uint8 Spell::DidHit(uint32 effindex, Unit* target)
 	if(u_victim->IsCreature() && u_victim->GetAIInterface()->getAIState() == STATE_EVADE)
 		return SPELL_DID_HIT_EVADE;
 
+	/************************************************************************/ 
+	/* Check if the player target is able to deflect spells					*/ 
+	/* Currently (3.3.5a) there is only spell doing that: Deterrence		*/ 
+	/************************************************************************/ 
+	if( p_victim && p_victim->HasAuraWithName(SPELL_AURA_DEFLECT_SPELLS) )
+	{
+		return SPELL_DID_HIT_DEFLECT;
+	}
+
 	/************************************************************************/
 	/* Check if the target is immune to this spell school                   */
 	/* Unless the spell would actually dispel invulnerabilities             */
@@ -4748,7 +4757,10 @@ int32 Spell::DoCalculateEffect(uint32 i, Unit* target, int32 value)
 		case SPELL_HASH_GOUGE:
 			{
 				if(u_caster != NULL && i == 0)
-					value += (uint32)ceilf(u_caster->GetAP() * 0.21f);
+				{
+					if( GetProto()->Effect[i] == SPELL_EFFECT_SCHOOL_DAMAGE )
+						value += (uint32)ceilf(u_caster->GetAP() * 0.21f); //damage
+				}
 				break;
 			}
 		case SPELL_HASH_FAN_OF_KNIVES:  // rogue - fan of knives
@@ -5582,8 +5594,6 @@ uint32 GetDiminishingGroup(uint32 NameHash)
 		case SPELL_HASH_STARFIRE_STUN:
 		case SPELL_HASH_STONECLAW_STUN:
 		case SPELL_HASH_STUN:					// Generic ones
-		case SPELL_HASH_BLACKOUT:
-		case SPELL_HASH_MACE_SPECIALIZATION:		// Mace Specialization
 			{
 				grp = DIMINISHING_GROUP_STUN_PROC;
 				pve = true;
