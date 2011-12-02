@@ -9680,6 +9680,21 @@ void Player::EventPortToGM(Player* p)
 	SafeTeleport(p->GetMapId(), p->GetInstanceID(), p->GetPosition());
 }
 
+void Player::AddComboPoints(uint64 target, int8 count)
+{
+			// GetTimeLeft() checked in SpellAura, so we won't lose points
+			RemoveAllAuraType(SPELL_AURA_RETAIN_COMBO_POINTS);
+
+			if(m_comboTarget == target)
+				m_comboPoints += count;
+			else
+			{
+				m_comboTarget = target;
+				m_comboPoints = count;
+			}
+			UpdateComboPoints();
+}
+
 void Player::UpdateComboPoints()
 {
 	// fuck bytebuffers :D

@@ -2116,17 +2116,7 @@ class SERVER_DECL Player : public Unit
 		int8 m_spellcomboPoints; // rogue talent Ruthlessness will change combopoints while consuming them. solutions 1) add post cast prochandling, 2) delay adding the CP
 		void UpdateComboPoints();
 
-		void AddComboPoints(uint64 target, uint8 count)
-		{
-			if(m_comboTarget == target)
-				m_comboPoints += count;
-			else
-			{
-				m_comboTarget = target;
-				m_comboPoints = count;
-			}
-			UpdateComboPoints();
-		}
+		void AddComboPoints(uint64 target, int8 count);
 
 		void NullComboPoints() { if(!m_retainComboPoints) { m_comboTarget = 0; m_comboPoints = 0; m_spellcomboPoints = 0; } UpdateComboPoints(); }
 		uint32 m_speedChangeCounter;
