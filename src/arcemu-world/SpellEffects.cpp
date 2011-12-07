@@ -3722,25 +3722,37 @@ void Spell::SpellEffectInterruptCast(uint32 i) // Interrupt Cast
 		}
 	}
 
-	if(unitTarget->GetCurrentSpell())
+	Spell *TargetSpell = unitTarget->GetCurrentSpell(); // Get target's casting spell
+	if(TargetSpell)
 	{
-		uint32 school = unitTarget->GetCurrentSpell()->GetProto()->School;
-		int32 duration = GetDuration();
+		uint32 school = TargetSpell->GetProto()->School; // Get target's casting spell school
+		int32 duration = GetDuration(); // Duration of school lockout
 
-		if(school)
+		// Check for CastingTime (to prevent interrupting instant casts), PreventionType
+		// and InterruptFlags of target's casting spell
+		if(school
+			&& TargetSpell->getState() == SPELL_STATE_CASTING
+			|| (TargetSpell->getState() == SPELL_STATE_PREPARING && TargetSpell->GetProto()->CastingTimeIndex > 0.0f)
+			&& TargetSpell->GetProto()->PreventionType == PREVENTION_TYPE_SILENCE
+			&& (TargetSpell->GetProto()->InterruptFlags & CAST_INTERRUPT_ON_INTERRUPT_SCHOOL)
+			|| (TargetSpell->GetProto()->ChannelInterruptFlags & CHANNEL_INTERRUPT_ON_4 ))
 		{
 			if(unitTarget->IsPlayer())
 			{
+				// Check for interruption reducing talents
 				int32 DurationModifier = TO< Player* >(unitTarget)->MechanicDurationPctMod[MECHANIC_INTERRUPTED];
 				if(DurationModifier >= - 100)
 					duration = (duration * (100 + DurationModifier)) / 100;
 
+				// Prevent player from casting in that school
 				TO_PLAYER(unitTarget)->SendPreventSchoolCast(school, duration);
 			}
 			else
+				// Prevent unit from casting in that school
 				unitTarget->SchoolCastPrevent[school] = duration + getMSTime();
+
+			TargetSpell->cancel(); // Interrupt the spell cast
 		}
-		unitTarget->GetCurrentSpell()->cancel();
 	}
 }
 
