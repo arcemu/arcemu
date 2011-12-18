@@ -4757,10 +4757,7 @@ int32 Spell::DoCalculateEffect(uint32 i, Unit* target, int32 value)
 		case SPELL_HASH_GOUGE:
 			{
 				if(u_caster != NULL && i == 0)
-				{
-					if( GetProto()->Effect[i] == SPELL_EFFECT_SCHOOL_DAMAGE )
-						value += (uint32)ceilf(u_caster->GetAP() * 0.21f); //damage
-				}
+						value += (uint32)ceilf(u_caster->GetAP() * 0.21f);
 				break;
 			}
 		case SPELL_HASH_FAN_OF_KNIVES:  // rogue - fan of knives

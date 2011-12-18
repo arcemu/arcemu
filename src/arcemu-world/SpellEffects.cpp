@@ -3731,11 +3731,11 @@ void Spell::SpellEffectInterruptCast(uint32 i) // Interrupt Cast
 		// Check for CastingTime (to prevent interrupting instant casts), PreventionType
 		// and InterruptFlags of target's casting spell
 		if(school
-			&& TargetSpell->getState() == SPELL_STATE_CASTING
-			|| (TargetSpell->getState() == SPELL_STATE_PREPARING && TargetSpell->GetProto()->CastingTimeIndex > 0.0f)
+			&& (TargetSpell->getState() == SPELL_STATE_CASTING
+			|| (TargetSpell->getState() == SPELL_STATE_PREPARING && TargetSpell->GetProto()->CastingTimeIndex > 0))
 			&& TargetSpell->GetProto()->PreventionType == PREVENTION_TYPE_SILENCE
-			&& (TargetSpell->GetProto()->InterruptFlags & CAST_INTERRUPT_ON_INTERRUPT_SCHOOL)
-			|| (TargetSpell->GetProto()->ChannelInterruptFlags & CHANNEL_INTERRUPT_ON_4 ))
+			&& ((TargetSpell->GetProto()->InterruptFlags & CAST_INTERRUPT_ON_INTERRUPT_SCHOOL)
+			|| (TargetSpell->GetProto()->ChannelInterruptFlags & CHANNEL_INTERRUPT_ON_4 )))
 		{
 			if(unitTarget->IsPlayer())
 			{
