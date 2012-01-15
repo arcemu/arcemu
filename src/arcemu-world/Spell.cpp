@@ -193,7 +193,12 @@ Spell::Spell(Object* Caster, SpellEntry* info, bool triggered, Aura* aur)
 	bRadSet[1] = 0;
 	bRadSet[2] = 0;
 
-	m_spellInfo = info;
+	if(info->SpellDifficultyID && Caster->GetTypeId()!=TYPEID_PLAYER && Caster->GetMapMgr() != NULL && Caster->GetMapMgr()->pInstance != NULL)
+	{
+		SpellEntry* SpellDiffEntry = sSpellFactoryMgr.GetSpellEntryByDifficulty(info->SpellDifficultyID, Caster->GetMapMgr()->iInstanceMode);
+		m_spellInfo = SpellDiffEntry != NULL ? SpellDiffEntry : m_spellInfo = info;
+	}else m_spellInfo = info;
+
 	m_spellInfo_override = NULL;
 	m_caster = Caster;
 	duelSpell = false;

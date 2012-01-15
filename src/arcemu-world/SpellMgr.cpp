@@ -76,6 +76,19 @@ void SpellFactoryMgr::AddAuraByNameHash(uint32 name_hash, aura_factory_function 
 	}
 }
 
+SpellEntry* SpellFactoryMgr::GetSpellEntryByDifficulty(uint32 id, uint8 difficulty)
+{
+    SpellDifficultyEntry* spellDiff = dbcSpellDifficultyEntry.LookupEntry(id);
+
+    if (!spellDiff)
+        return NULL;
+
+    if (!spellDiff->SpellId[difficulty])
+        return NULL;
+
+    return dbcSpell.LookupEntry(spellDiff->SpellId[difficulty]);
+}
+
 Spell* SpellFactoryMgr::NewSpell(Object* Caster, SpellEntry* info, bool triggered, Aura* aur)
 {
 	if(info->SpellFactoryFunc == NULL)

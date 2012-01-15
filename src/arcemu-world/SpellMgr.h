@@ -50,6 +50,7 @@ class SERVER_DECL SpellFactoryMgr: public Singleton < SpellFactoryMgr >
 		{
 		}
 
+		SpellEntry* GetSpellEntryByDifficulty(uint32 id, uint8 difficulty);
 		Spell* NewSpell(Object* Caster, SpellEntry* info, bool triggered, Aura* aur);
 		Aura* NewAura(SpellEntry* proto, int32 duration, Object* caster, Unit* target, bool temporary = false, Item* i_caster = NULL);
 
