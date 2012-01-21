@@ -1,0 +1,8 @@
+ALTER TABLE `quests` change `ReqKillMobOrGOId1` `ReqKillMobOrGOId1` int(10) DEFAULT '0' NOT NULL;
+ALTER TABLE `quests` change `ReqKillMobOrGOId2` `ReqKillMobOrGOId2` int(10) DEFAULT '0' NOT NULL;
+ALTER TABLE `quests` change `ReqKillMobOrGOId3` `ReqKillMobOrGOId3` int(10) DEFAULT '0' NOT NULL;
+ALTER TABLE `quests` change `ReqKillMobOrGOId4` `ReqKillMobOrGOId4` int(10) DEFAULT '0' NOT NULL;
+UPDATE `quests` SET `ReqKillMobOrGOId1` = `ReqKillMobOrGOId1` * -1 WHERE (`ReqKillMobOrGOId1` IN (SELECT `entry` FROM `gameobject_names` WHERE `type` = '10') OR `ReqKillMobOrGOId1` NOT IN (SELECT `entry` FROM `creature_names`)) AND `entry` NOT IN ('421', '784', '9573', '11619');
+UPDATE `quests` SET `ReqKillMobOrGOId2` = `ReqKillMobOrGOId2` * -1 WHERE (`ReqKillMobOrGOId2` IN (SELECT `entry` FROM `gameobject_names` WHERE `type` = '10') OR `ReqKillMobOrGOId2` NOT IN (SELECT `entry` FROM `creature_names`)) AND `entry` NOT IN ('421', '784', '9573', '11619');
+UPDATE `quests` SET `ReqKillMobOrGOId3` = `ReqKillMobOrGOId3` * -1 WHERE (`ReqKillMobOrGOId3` IN (SELECT `entry` FROM `gameobject_names` WHERE `type` = '10') OR `ReqKillMobOrGOId3` NOT IN (SELECT `entry` FROM `creature_names`)) AND `entry` NOT IN ('421', '784', '9573', '11619');
+UPDATE `quests` SET `ReqKillMobOrGOId4` = `ReqKillMobOrGOId4` * -1 WHERE (`ReqKillMobOrGOId4` IN (SELECT `entry` FROM `gameobject_names` WHERE `type` = '10') OR `ReqKillMobOrGOId4` NOT IN (SELECT `entry` FROM `creature_names`)) AND `entry` NOT IN ('421', '784', '9573', '11619'); 

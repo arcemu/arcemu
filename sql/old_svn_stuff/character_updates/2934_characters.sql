@@ -1,0 +1,1 @@
+ALTER TABLE `characters` ADD COLUMN `drunkValue` int(30) NOT NULL default '0' after `difficulty`;

@@ -1,0 +1,1 @@
+ALTER TABLE recall ADD `Orientation` float unsigned NOT NULL DEFAULT '0' after `positionZ`;

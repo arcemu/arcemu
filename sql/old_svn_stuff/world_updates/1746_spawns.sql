@@ -1,0 +1,6 @@
+ALTER TABLE `creature_spawns` ADD COLUMN `mountdisplayid` int UNSIGNED DEFAULT '0' NOT NULL after `standstate`, ADD COLUMN `slot1item` int UNSIGNED DEFAULT '0' NOT NULL after `mountdisplayid`, ADD COLUMN `slot2item` int UNSIGNED DEFAULT '0' NOT NULL after `slot1item`, ADD COLUMN `slot3item` int UNSIGNED DEFAULT '0' NOT NULL after `slot2item`;
+UPDATE `creature_spawns` SET `mountdisplayid` = (SELECT `mountdisplayid` FROM `creature_proto` WHERE `creature_proto`.`entry` = `creature_spawns`.`entry`);
+UPDATE `creature_spawns` SET `slot1item` = (SELECT `slot1item` FROM `creature_proto` WHERE `creature_proto`.`entry` = `creature_spawns`.`entry`);
+UPDATE `creature_spawns` SET `slot2item` = (SELECT `slot2item` FROM `creature_proto` WHERE `creature_proto`.`entry` = `creature_spawns`.`entry`);
+UPDATE `creature_spawns` SET `slot3item` = (SELECT `slot3item` FROM `creature_proto` WHERE `creature_proto`.`entry` = `creature_spawns`.`entry`);
+ALTER TABLE `creature_proto` DROP COLUMN `mountdisplayid`,DROP COLUMN `slot1item`,DROP COLUMN `slot2item`,DROP COLUMN `slot3item`;

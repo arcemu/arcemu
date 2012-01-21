@@ -1,0 +1,1 @@
+ALTER TABLE `quests` ADD `RequiredOneOfQuest` longtext NOT NULL AFTER `ExploreTrigger4`;

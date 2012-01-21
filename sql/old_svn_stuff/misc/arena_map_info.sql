@@ -1,0 +1,6 @@
+-- Nagrand Arena
+--INSERT INTO `worldmap_info` (`entry`, `screenid`, `type`, `maxplayers`, `minlevel`, `repopx`, `repopy`, `repopz`, `repopentry`, `area_name`, `flags`, `cooldown`, `lvl_mod_a`, `required_quest`, `required_item`, `heroic_keyid_1`, `heroic_keyid_2`, `viewingDistance`, `required_checkpoint`) VALUES (559, 559, 3, 10, 10, 0, 0, 0, 0, 'Nagrand Arena', 0, 0, 0, 0, 0, 0, 0, 120, 0);
+-- Blades Edge Arena
+--INSERT INTO `worldmap_info` (`entry`, `screenid`, `type`, `maxplayers`, `minlevel`, `repopx`, `repopy`, `repopz`, `repopentry`, `area_name`, `flags`, `cooldown`, `lvl_mod_a`, `required_quest`, `required_item`, `heroic_keyid_1`, `heroic_keyid_2`, `viewingDistance`, `required_checkpoint`) VALUES (562, 562, 3, 10, 10, 0, 0, 0, 0, 'Blade\'s Edge Arena', 0, 0, 0, 0, 0, 0, 0, 120, 0);
+-- Ruins of Lordaeron
+--INSERT INTO `worldmap_info` (`entry`, `screenid`, `type`, `maxplayers`, `minlevel`, `repopx`, `repopy`, `repopz`, `repopentry`, `area_name`, `flags`, `cooldown`, `lvl_mod_a`, `required_quest`, `required_item`, `heroic_keyid_1`, `heroic_keyid_2`, `viewingDistance`, `required_checkpoint`) VALUES (572, 572, 3, 10, 10, 0, 0, 0, 0, 'Ruins of Lordaeron', 0, 0, 0, 0, 0, 0, 0, 120, 0);

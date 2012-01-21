@@ -1,0 +1,2 @@
+alter table `creature_proto` drop column `equipinfo1`, drop column `equipslot1`, drop column `equipinfo2`, drop column `equipslot2`, drop column `equipinfo3`, drop column `equipslot3`;
+alter table `creature_proto` change `equipmodel1` `slot1item` int(30) UNSIGNED DEFAULT '0' NOT NULL, change `equipmodel2` `slot2item` int(30) UNSIGNED DEFAULT '0' NOT NULL, change `equipmodel3` `slot3item` int(30) UNSIGNED DEFAULT '0' NOT NULL;

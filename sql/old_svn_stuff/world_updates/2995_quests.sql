@@ -1,0 +1,1 @@
+alter table `quests` add column `ReqItemId5` int UNSIGNED DEFAULT '0' NOT NULL after `ReqItemId4`, add column `ReqItemId6` int UNSIGNED DEFAULT '0' NOT NULL after `ReqItemId5`, add column `ReqItemCount5` int UNSIGNED DEFAULT '0' NOT NULL after `ReqItemCount4`, add column `ReqItemCount6` int UNSIGNED DEFAULT '0' NOT NULL after `ReqItemCount5`;

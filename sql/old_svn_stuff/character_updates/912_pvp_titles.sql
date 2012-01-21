@@ -1,0 +1,1 @@
+ALTER TABLE `characters` CHANGE COLUMN `available_pvp_titles` `available_pvp_titles` bigint(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '' AFTER `selected_pvp_title`;

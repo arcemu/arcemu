@@ -1,0 +1,3 @@
+alter table `characters` change `glyphs` `glyphs1` longtext NOT NULL, add column `talents1` longtext NOT NULL after `glyphs1`, add column `glyphs2` longtext NOT NULL after `talents1`, add column `talents2` longtext NOT NULL after `glyphs2`, add column `talentspec` int(10) DEFAULT '0' NOT NULL after `talents2`;
+alter table `characters` add column `currentspec` int(10) DEFAULT '0' NOT NULL after `numspecs`,change `talentspec` `numspecs` int(10) default '1' NOT NULL;
+alter table `characters` change `actions` `actions1` longtext NOT NULL, add column `actions2` longtext NOT NULL after `actions1`;
