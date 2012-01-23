@@ -556,12 +556,26 @@ void Arcemu::Gossip::TabardDesigner::OnHello(Object* pObject, Player* Plr)
 	uint32 Text = objmgr.GetGossipTextForNpc(chartergiver->GetEntry());
 	if(NpcTextStorage.LookupEntry(Text) == NULL)
 		Text = Gossip::DEFAULT_TXTINDEX;
-	Gossip::Menu::SendQuickMenu(pObject->GetGUID(), Text, Plr, 1, Gossip::ICON_TABARD, Plr->GetSession()->LocalizedWorldSrv(Gossip::TABARD));
+	
+	Gossip::Menu menu(chartergiver->GetGUID(), Text, Plr->GetSession()->language);
+	menu.AddItem( Gossip::ICON_TABARD, Plr->GetSession()->LocalizedWorldSrv(Gossip::TABARD), 1 );
+	if( chartergiver->isCharterGiver() )
+		menu.AddItem( Gossip::ICON_CHAT, "How do I create a guild?", 2 );
+	
+	menu.Send(Plr);
 }
 
 void Arcemu::Gossip::TabardDesigner::OnSelectOption(Object* pObject, Player* Plr, uint32 Id, const char* EnteredCode)
 {
-	Plr->GetSession()->SendTabardHelp(TO_CREATURE(pObject));
+	switch( Id ){
+		case 1:
+			Plr->GetSession()->SendTabardHelp(TO_CREATURE(pObject));
+			break;
+		case 2:
+			if( TO_CREATURE( pObject )->isCharterGiver() )
+				Plr->GetSession()->SendCharterRequest(TO_CREATURE(pObject));
+			break;
+	}
 }
 
 /*
