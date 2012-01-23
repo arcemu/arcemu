@@ -770,7 +770,7 @@ struct SpellEntry
 //	uint32 UnKnown;                                           //231
 //	uint32 UnKnown;                                           //232
 //	uint32 SpellDescriptionVariable;                          //233 References SpellDescriptionVariables.dbc
-//	uint32 SpellDifficultyID;                                 //234 References SpellDifficulty.dbc
+	uint32 SpellDifficultyID;                                 //234 References SpellDifficulty.dbc
 
 	/// CUSTOM: these fields are used for the modifications made in the world.cpp
 	uint32 DiminishStatus;                  //
@@ -1012,6 +1012,12 @@ struct Trainerspell
 	uint32 skilline3;
 	uint32 maxlvl;
 	uint32 charclass;
+};
+
+struct SpellDifficultyEntry
+{
+	uint32 ID;
+	uint32 SpellId[NUM_INSTANCE_MODES];
 };
 
 struct SpellCastTime
@@ -1967,6 +1973,7 @@ extern SERVER_DECL DBCStorage<GlyphSlotEntry> dbcGlyphSlot;
 extern SERVER_DECL DBCStorage<ItemSetEntry> dbcItemSet;
 extern SERVER_DECL DBCStorage<Lock> dbcLock;
 extern SERVER_DECL DBCStorage<SpellEntry> dbcSpell;
+extern SERVER_DECL DBCStorage<SpellDifficultyEntry> dbcSpellDifficultyEntry;
 extern SERVER_DECL DBCStorage<SpellDuration> dbcSpellDuration;
 extern SERVER_DECL DBCStorage<SpellRange> dbcSpellRange;
 extern SERVER_DECL DBCStorage<SpellShapeshiftForm> dbcSpellShapeshiftForm;
