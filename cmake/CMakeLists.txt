@@ -167,6 +167,8 @@ if(WIN32)
 	SET(EXTRA_LIBS ${EXTRA_LIBS} ws2_32.lib dbghelp.lib )
 elseif(APPLE)
 	SET( EXTRA_LIBS ${EXTRA_LIBS} "-framework Carbon" )
+else()
+	SET( EXTRA_LIBS ${EXTRA_LIBS} dl )
 endif()
 
 IF( APPLE )
