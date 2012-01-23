@@ -547,10 +547,7 @@ class SERVER_DECL Creature : public Unit
 				if(isInFront(obj)) // stealthed player is in front of creature
 				{
 					// Detection Range = 5yds + (Detection Skill - Stealth Skill)/5
-					if(getLevel() < 70)
 						detectRange = 5.0f + getLevel() + 0.2f * (float)(GetStealthDetectBonus() - obj->GetStealthLevel());
-					else
-						detectRange = 75.0f + 0.2f * (float)(GetStealthDetectBonus() - obj->GetStealthLevel());
 
 					if(detectRange < 1.0f) detectRange = 1.0f; // Minimum Detection Range = 1yd
 				}

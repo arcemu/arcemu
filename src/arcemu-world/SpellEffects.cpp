@@ -3722,57 +3722,36 @@ void Spell::SpellEffectInterruptCast(uint32 i) // Interrupt Cast
 		}
 	}
 
-	uint32 school = 0;
-	uint32 prevtype = 0;
-	if(unitTarget->GetCurrentSpell())
+	Spell *TargetSpell = unitTarget->GetCurrentSpell(); // Get target's casting spell
+	if(TargetSpell)
 	{
-		prevtype = unitTarget->GetCurrentSpell()->GetProto()->PreventionType;
+		uint32 school = TargetSpell->GetProto()->School; // Get target's casting spell school
+		int32 duration = GetDuration(); // Duration of school lockout
 
-		if((GetProto()->InterruptFlags & CAST_INTERRUPT_ON_INTERRUPT_SCHOOL) && (prevtype == PREVENTION_TYPE_SILENCE))
+		// Check for CastingTime (to prevent interrupting instant casts), PreventionType
+		// and InterruptFlags of target's casting spell
+		if(school
+			&& (TargetSpell->getState() == SPELL_STATE_CASTING
+			|| (TargetSpell->getState() == SPELL_STATE_PREPARING && TargetSpell->GetProto()->CastingTimeIndex > 0))
+			&& TargetSpell->GetProto()->PreventionType == PREVENTION_TYPE_SILENCE
+			&& ((TargetSpell->GetProto()->InterruptFlags & CAST_INTERRUPT_ON_INTERRUPT_SCHOOL)
+			|| (TargetSpell->GetProto()->ChannelInterruptFlags & CHANNEL_INTERRUPT_ON_4 )))
 		{
-			school = unitTarget->GetCurrentSpell()->GetProto()->School;
-		}
-
-		unitTarget->GetCurrentSpell()->cancel();
-	}
-
-	if(school)//prevent from casts in this school
-	{
-		int32 duration = GetDuration();
-		if(unitTarget->IsPlayer())
-		{
-			int32 DurationModifier = TO< Player* >(unitTarget)->MechanicDurationPctMod[MECHANIC_INTERRUPTED];
-			if(DurationModifier >= - 100)
-				duration = (duration * (100 + DurationModifier)) / 100;
-		}
-
-		unitTarget->SchoolCastPrevent[school] = duration + getMSTime();
-
-		if(unitTarget->IsPlayer())
-		{
-			TO_PLAYER(unitTarget)->SendPreventSchoolCast(school, duration);
-		}
-	}
-	else if((GetProto()->InterruptFlags & CAST_INTERRUPT_ON_INTERRUPT_ALL) && (prevtype == PREVENTION_TYPE_SILENCE))
-	{
-		int32 duration = GetDuration();
-
-		if(unitTarget->IsPlayer())
-		{
-			// Check for interruption reducing talents
-			int32 DurationModifier = TO< Player* >(unitTarget)->MechanicDurationPctMod[MECHANIC_INTERRUPTED];
-
-			if(DurationModifier >= - 100)
-				duration = (duration * (100 + DurationModifier)) / 100;
-		}
-
-		for(uint8 j = 0; j < 7; j++)
-		{
-			unitTarget->SchoolCastPrevent[j] = duration;
 			if(unitTarget->IsPlayer())
 			{
-				TO_PLAYER(unitTarget)->SendPreventSchoolCast(j, duration);
+				// Check for interruption reducing talents
+				int32 DurationModifier = TO< Player* >(unitTarget)->MechanicDurationPctMod[MECHANIC_INTERRUPTED];
+				if(DurationModifier >= - 100)
+					duration = (duration * (100 + DurationModifier)) / 100;
+
+				// Prevent player from casting in that school
+				TO_PLAYER(unitTarget)->SendPreventSchoolCast(school, duration);
 			}
+			else
+				// Prevent unit from casting in that school
+				unitTarget->SchoolCastPrevent[school] = duration + getMSTime();
+
+			TargetSpell->cancel(); // Interrupt the spell cast
 		}
 	}
 }
