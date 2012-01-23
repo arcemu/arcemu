@@ -1017,7 +1017,7 @@ struct Trainerspell
 struct SpellDifficultyEntry
 {
 	uint32 ID;
-	uint32 SpellId[NUM_INSTANCE_MODES];
+	int32 SpellId[NUM_INSTANCE_MODES];
 };
 
 struct SpellCastTime

@@ -1386,8 +1386,8 @@ void World::Rehash(bool load)
 	m_levelCap = Config.OptionalConfig.GetIntDefault("Optional", "LevelCap", PLAYER_LEVEL_CAP);
 	m_genLevelCap = Config.OptionalConfig.GetIntDefault("Optional", "GenLevelCap", PLAYER_LEVEL_CAP);
 	StartingLevel = Config.OptionalConfig.GetIntDefault("Optional", "StartingLevel", 1);
-	if( StartingLevel > static_cast< uint32 >( m_levelCap ) )
-		StartingLevel = static_cast< uint32 >( m_levelCap );
+	if( StartingLevel > static_cast< int32 >( m_levelCap ) )
+		StartingLevel = static_cast< int32 >( m_levelCap );
 
 	antiMasterLootNinja = Config.OptionalConfig.GetBoolDefault("Optional", "AntiMasterLootNinja", false);
 	realmAllowTBCcharacters = Config.OptionalConfig.GetBoolDefault("Optional", "AllowTBC", true);

@@ -80,13 +80,13 @@ SpellEntry* SpellFactoryMgr::GetSpellEntryByDifficulty(uint32 id, uint8 difficul
 {
     SpellDifficultyEntry* spellDiff = dbcSpellDifficultyEntry.LookupEntry(id);
 
-    if (!spellDiff)
+    if ( spellDiff == NULL )
         return NULL;
 
-    if (!spellDiff->SpellId[difficulty])
+    if ( spellDiff->SpellId[difficulty] <= 0 )
         return NULL;
 
-    return dbcSpell.LookupEntry(spellDiff->SpellId[difficulty]);
+    return dbcSpell.LookupEntryForced(spellDiff->SpellId[difficulty]);
 }
 
 Spell* SpellFactoryMgr::NewSpell(Object* Caster, SpellEntry* info, bool triggered, Aura* aur)
