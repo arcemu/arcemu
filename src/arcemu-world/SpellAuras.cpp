@@ -2713,7 +2713,7 @@ void Aura::SpellAuraModStealth(bool apply)
 
 		m_target->SetFlag(UNIT_FIELD_BYTES_1, 0x020000);
 		if(m_target->IsPlayer())
-			m_target->SetFlag(PLAYER_FIELD_BYTES2, 0x2000);
+			m_target->SetByteFlag(PLAYER_FIELD_BYTES2, 3, PLAYER_FIELD_BYTE2_STEALTH);
 
 		m_target->RemoveAurasByInterruptFlag(AURA_INTERRUPT_ON_STEALTH | AURA_INTERRUPT_ON_INVINCIBLE);
 		m_target->m_stealthLevel += mod->m_amount;
@@ -2796,7 +2796,7 @@ void Aura::SpellAuraModStealth(bool apply)
 
 			if(p_target != NULL)
 			{
-				p_target->RemoveFlag(PLAYER_FIELD_BYTES2, 0x2000);
+				p_target->RemoveByteFlag(PLAYER_FIELD_BYTES2, 3, PLAYER_FIELD_BYTE2_STEALTH);
 				p_target->SendSpellCooldownEvent(m_spellProto->Id);
 
 				if(p_target->m_outStealthDamageBonusPeriod && p_target->m_outStealthDamageBonusPct)
@@ -3103,6 +3103,22 @@ void Aura::SpellAuraPeriodicTriggerSpell(bool apply)
 
 void Aura::EventPeriodicTriggerSpell(SpellEntry* spellInfo, bool overridevalues, int32 overridevalue)
 {
+	Unit* u_caster = GetUnitCaster();
+
+	if(spellInfo->NameHash == SPELL_HASH_MIND_SEAR)
+	{
+		Spell *spell = sSpellFactoryMgr.NewSpell(u_caster, spellInfo, true, this);
+		SpellCastTargets targets;
+		//Mind Sear hackz
+		targets.m_unitTarget = m_target->GetGUID();
+		targets.m_destX = m_target->GetPositionX();
+		targets.m_destY = m_target->GetPositionY();
+		targets.m_destZ = m_target->GetPositionZ();
+		spell->prepare(&targets);
+		return; 
+	}
+	else
+	{
 	Spell* spell = sSpellFactoryMgr.NewSpell(m_target, spellInfo, true, this);
 	if(overridevalues)
 	{
@@ -3113,6 +3129,7 @@ void Aura::EventPeriodicTriggerSpell(SpellEntry* spellInfo, bool overridevalues,
 	SpellCastTargets targets;
 	spell->GenerateTargets(&targets);
 	spell->prepare(&targets);
+	}
 }
 
 void Aura::SpellAuraPeriodicEnergize(bool apply)
