@@ -1588,9 +1588,6 @@ void Player::GiveXP(uint32 xp, const uint64 & guid, bool allowbonus)
 	// Set the update bit
 	SetXp(newxp);
 
-	HandleProc(PROC_ON_GAIN_EXPIERIENCE, this, NULL);
-	m_procCounter = 0;
-
 }
 
 void Player::smsg_InitialSpells()
@@ -5669,7 +5666,7 @@ bool Player::CanSee(Object* obj) // * Invisibility & Stealth Detection - Partha 
 						if(getLevel() < PLAYER_LEVEL_CAP)
 							detectRange = 5.0f + getLevel() + 0.2f * (float)(GetStealthDetectBonus() - pObj->GetStealthLevel());
 						else
-							detectRange = 75.0f + 0.2f * (float)(GetStealthDetectBonus() - pObj->GetStealthLevel());
+							detectRange = 85.0f + 0.2f * (float)(GetStealthDetectBonus() - pObj->GetStealthLevel());
 						// Hehe... stealth skill is increased by 5 each level and detection skill is increased by 5 each level too.
 						// This way, a level 70 should easily be able to detect a level 4 rogue (level 4 because that's when you get stealth)
 						//	detectRange += 0.2f * ( getLevel() - pObj->getLevel() );
@@ -9683,6 +9680,21 @@ void Player::EventPortToGM(Player* p)
 	SafeTeleport(p->GetMapId(), p->GetInstanceID(), p->GetPosition());
 }
 
+void Player::AddComboPoints(uint64 target, int8 count)
+{
+			// GetTimeLeft() checked in SpellAura, so we won't lose points
+			RemoveAllAuraType(SPELL_AURA_RETAIN_COMBO_POINTS);
+
+			if(m_comboTarget == target)
+				m_comboPoints += count;
+			else
+			{
+				m_comboTarget = target;
+				m_comboPoints = count;
+			}
+			UpdateComboPoints();
+}
+
 void Player::UpdateComboPoints()
 {
 	// fuck bytebuffers :D
@@ -12600,6 +12612,11 @@ void Player::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
 				GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILLING_BLOW, GetMapId(), 0, 0);
 #endif
 
+				if( pVictim->getLevel() >= (getLevel()-8) && ( GetGUID() != pVictim->GetGUID() ) )
+				{
+					HandleProc(PROC_ON_GAIN_EXPIERIENCE, this, NULL);
+					m_procCounter = 0;
+				}
 			}
 		}
 
