@@ -5968,11 +5968,10 @@ int32 Player::CanShootRangedWeapon(uint32 spellid, Unit* target, bool autoshot)
 	// Check ammo
 	Item* itm = GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_RANGED);
 	ItemPrototype* iprot = ItemPrototypeStorage.LookupEntry(GetAmmoId());
-	if(!m_requiresNoAmmo)
+	if(itm == NULL || disarmed) //Disarmed means disarmed, we shouldn't be able to cast Auto Shot while disarmed
+		return SPELL_FAILED_NO_AMMO; //In proper language means "Requires Ranged Weapon to be equipped"
+	if(!m_requiresNoAmmo) //Thori'dal, Wild Quiver, but it still requires to have a weapon equipped
 	{
-		if(itm == NULL)
-			return SPELL_FAILED_NO_AMMO;
-
 		// Check ammo level
 		if(iprot && getLevel() < iprot->RequiredLevel)
 			return SPELL_FAILED_LOWLEVEL;

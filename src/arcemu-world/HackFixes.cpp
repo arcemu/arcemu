@@ -130,7 +130,9 @@ void ApplyNormalFixes()
 		if(sp->NameHash == SPELL_HASH_TRACK_HUMANOIDS)
 			sp->apply_on_shapeshift_change = true;
 
-		if(sp->NameHash == SPELL_HASH_BLOOD_FURY || sp->NameHash == SPELL_HASH_SHADOWSTEP)
+		if(sp->NameHash == SPELL_HASH_BLOOD_FURY
+			|| sp->NameHash == SPELL_HASH_SHADOWSTEP
+			|| sp->NameHash == SPELL_HASH_PSYCHIC_HORROR)
 			sp->always_apply = true;
 
 		//there are some spells that change the "damage" value of 1 effect to another : devastate = bonus first then damage
