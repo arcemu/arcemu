@@ -1673,7 +1673,8 @@ void Object::SpellNonMeleeDamageLog(Unit* pVictim, uint32 spellID, uint32 damage
 
 		caster->RemoveAurasByInterruptFlag(AURA_INTERRUPT_ON_START_ATTACK);
 
-		res += caster->GetSpellDmgBonus(pVictim, spellInfo, (int)res, false);
+		// this calculates whole dmg with all bonuses / mods
+		res = float(caster->GetSpellDmgBonus(pVictim, spellInfo, damage, false));
 
 		if(res < 0)
 			res = 0;
@@ -1718,10 +1719,18 @@ void Object::SpellNonMeleeDamageLog(Unit* pVictim, uint32 spellID, uint32 damage
 		}
 	}
 
-	//==========================================================================================
+//==========================================================================================
 //==============================Post Roll Calculations======================================
 //==========================================================================================
 
+//------------------------------damage reduction--------------------------------------------
+	float reduce_damage = 0.0f;
+	LOG_BASIC("res BEFORE assigning the REDUCE_DAMAGE = %f", res);
+	reduce_damage += pVictim->DamageTakenMod[spellInfo->School];
+	reduce_damage += res * pVictim->DamageTakenPctMod[spellInfo->School];
+	reduce_damage += res * pVictim->ModDamageTakenByMechPCT[spellInfo->MechanicsType];
+	res += reduce_damage;
+	LOG_BASIC("res AFTER assigning the REDUCE_DAMAGE = %f", res);
 //------------------------------absorption--------------------------------------------------
 	uint32 ress = (uint32)res;
 	uint32 abs_dmg = pVictim->AbsorbDamage(spellInfo->School, &ress);

@@ -1303,7 +1303,6 @@ class SERVER_DECL Unit : public Object
 		virtual int32 GetDamageDoneMod(uint32 school) { return 0; }
 		virtual float GetDamageDonePctMod(uint32 school) { return 0; }
 
-		float DamageDoneModPCT[SCHOOL_COUNT];
 		int32 DamageTakenMod[SCHOOL_COUNT];
 		float DamageTakenPctMod[SCHOOL_COUNT];
 		float DamageTakenPctModOnHP35;

@@ -308,7 +308,6 @@ Unit::Unit()
 		HealTakenMod[i] = 0;
 		HealTakenPctMod[i] = 0;
 		DamageTakenMod[i] = 0;
-		DamageDoneModPCT[i] = 0;
 		SchoolCastPrevent[i] = 0;
 		DamageTakenPctMod[i] = 0;
 		SpellCritChanceSchool[i] = 0;
@@ -3604,7 +3603,6 @@ void Unit::Strike(Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability,
 
 
 				dmg.full_damage += float2int32(dmg.full_damage * pVictim->DamageTakenPctMod[ dmg.school_type ]);
-				dmg.full_damage += float2int32(dmg.full_damage * DamageDoneModPCT[dmg.school_type]);
 
 				if(dmg.school_type != SCHOOL_NORMAL)
 					dmg.full_damage += float2int32(dmg.full_damage * (GetDamageDonePctMod(dmg.school_type) - 1));
@@ -5143,7 +5141,7 @@ int32 Unit::GetSpellDmgBonus(Unit* pVictim, SpellEntry* spellInfo, int32 base_dm
 
 //------------------------------by school---------------------------------------------------
 	plus_damage += caster->GetDamageDoneMod(school);
-	plus_damage += pVictim->DamageTakenMod[school];
+	plus_damage += float2int32(base_dmg * (caster->GetDamageDonePctMod(school)-1)); //value is initialized with 1
 //------------------------------by victim type----------------------------------------------
 	if(!pVictim->IsPlayer() && caster->IsPlayer())
 		plus_damage += TO< Player* >(caster)->IncreaseDamageByType[TO_CREATURE(pVictim)->GetCreatureInfo()->Type];
@@ -5152,33 +5150,38 @@ int32 Unit::GetSpellDmgBonus(Unit* pVictim, SpellEntry* spellInfo, int32 base_dm
 //==========================================================================================
 //------------------------------by cast duration--------------------------------------------
 	float dmgdoneaffectperc = 1.0f;
-	if(spellInfo->Dspell_coef_override >= 0 && !isdot)
-		plus_damage = float2int32(plus_damage * spellInfo->Dspell_coef_override);
-	else if(spellInfo->OTspell_coef_override >= 0 && isdot)
-		plus_damage = float2int32(plus_damage * spellInfo->OTspell_coef_override);
-	else
+
+	// do not execute this if plus dmg is 0 or lower
+	if( plus_damage > 0 )
 	{
-		//Bonus to DD part
-		if(spellInfo->fixed_dddhcoef >= 0 && !isdot)
-			plus_damage = float2int32(plus_damage * spellInfo->fixed_dddhcoef);
-		//Bonus to DoT part
-		else if(spellInfo->fixed_hotdotcoef >= 0 && isdot)
-		{
-			plus_damage = float2int32(plus_damage * spellInfo->fixed_hotdotcoef);
-			if(caster->IsPlayer())
-			{
-				int durmod = 0;
-				SM_FIValue(caster->SM_FDur, &durmod, spellInfo->SpellGroupType);
-				plus_damage += plus_damage * durmod / 15000;
-			}
-		}
-		//In case we dont fit in previous cases do old thing
+		if(spellInfo->Dspell_coef_override >= 0 && !isdot)
+			plus_damage = float2int32(plus_damage * spellInfo->Dspell_coef_override);
+		else if( spellInfo->OTspell_coef_override >= 0 && isdot )
+			plus_damage = float2int32(plus_damage * spellInfo->OTspell_coef_override);
 		else
 		{
-			plus_damage = float2int32(plus_damage * spellInfo->casttime_coef);
-			float td = float(GetDuration(dbcSpellDuration.LookupEntry(spellInfo->DurationIndex)));
-			if(spellInfo->NameHash == SPELL_HASH_MOONFIRE || spellInfo->NameHash == SPELL_HASH_IMMOLATE || spellInfo->NameHash == SPELL_HASH_ICE_LANCE || spellInfo->NameHash == SPELL_HASH_PYROBLAST)
-				plus_damage = float2int32(plus_damage * (1.0f - ((td / 15000.0f) / ((td / 15000.0f) + dmgdoneaffectperc))));
+			//Bonus to DD part
+			if(spellInfo->fixed_dddhcoef >= 0 && !isdot)
+				plus_damage = float2int32(plus_damage * spellInfo->fixed_dddhcoef);
+			//Bonus to DoT part
+			else if(spellInfo->fixed_hotdotcoef >= 0 && isdot)
+			{
+				plus_damage = float2int32(plus_damage * spellInfo->fixed_hotdotcoef);
+				if(caster->IsPlayer())
+				{
+					int durmod = 0;
+					SM_FIValue(caster->SM_FDur, &durmod, spellInfo->SpellGroupType);
+					plus_damage += plus_damage * durmod / 15000;
+				}
+			}
+			//In case we dont fit in previous cases do old thing
+			else
+			{
+				plus_damage = float2int32( plus_damage * spellInfo->casttime_coef );
+				float td = float(GetDuration( dbcSpellDuration.LookupEntry( spellInfo->DurationIndex ) ) );
+				if( spellInfo->NameHash == SPELL_HASH_MOONFIRE || spellInfo->NameHash == SPELL_HASH_IMMOLATE || spellInfo->NameHash == SPELL_HASH_ICE_LANCE || spellInfo->NameHash == SPELL_HASH_PYROBLAST )
+					plus_damage = float2int32( plus_damage * ( 1.0f - ( ( td / 15000.0f ) / ( ( td / 15000.0f ) + dmgdoneaffectperc ) ) ) );
+			}
 		}
 	}
 
@@ -5198,31 +5201,24 @@ int32 Unit::GetSpellDmgBonus(Unit* pVictim, SpellEntry* spellInfo, int32 base_dm
 //==========================================================================================
 //==============================Bonus Adding To Main Damage=================================
 //==========================================================================================
-	int32 bonus_damage = float2int32(plus_damage * dmgdoneaffectperc);
 
 	if((pVictim->HasAuraWithMechanics(MECHANIC_ENSNARED) || pVictim->HasAuraWithMechanics(MECHANIC_DAZED)) && caster->IsPlayer())
-		bonus_damage += TO< Player* >(caster)->m_IncreaseDmgSnaredSlowed;
+		plus_damage += TO< Player* >(caster)->m_IncreaseDmgSnaredSlowed;
 
 	if(spellInfo->SpellGroupType)
 	{
+		int32 bonus_damage = 0;
 		SM_FIValue(caster->SM_FPenalty, &bonus_damage, spellInfo->SpellGroupType);
 		SM_FIValue(caster->SM_FDamageBonus, &bonus_damage, spellInfo->SpellGroupType);
 
-		int dmg_bonus_pct = 0;
+		int32 dmg_bonus_pct = 0;
 		SM_FIValue(caster->SM_PPenalty, &dmg_bonus_pct, spellInfo->SpellGroupType);
 		SM_FIValue(caster->SM_PDamageBonus, &dmg_bonus_pct, spellInfo->SpellGroupType);
 
-		bonus_damage += (base_dmg + bonus_damage) * dmg_bonus_pct / 100;
+		plus_damage += (base_dmg + bonus_damage) * dmg_bonus_pct / 100;
 	}
-//------------------------------by school----------------------------------------------
-	float summaryPCTmod = caster->GetDamageDonePctMod(school) - 1; //value is initialized with 1
-	summaryPCTmod += pVictim->DamageTakenPctMod[school];
-	summaryPCTmod += caster->DamageDoneModPCT[school];	// BURLEX FIX ME
-	summaryPCTmod += pVictim->ModDamageTakenByMechPCT[spellInfo->MechanicsType];
 
-	int32 res = (int32)((base_dmg + bonus_damage) * summaryPCTmod + bonus_damage);
-	if(res < 0)
-		res = 0;
+	int32 res = float2int32(base_dmg * dmgdoneaffectperc) + plus_damage;
 
 	return res;
 }
