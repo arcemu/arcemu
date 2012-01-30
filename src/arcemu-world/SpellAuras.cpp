@@ -1801,7 +1801,6 @@ void Aura::EventPeriodicDamage(uint32 amount)
 	float res = float(amount);
 	uint32 abs_dmg = 0;
 	int bonus = 0;
-	float reduce_damage = 0;
 	uint32 school = GetSpellProto()->School;
 	Unit* c = GetUnitCaster();
 	uint32 aproc = PROC_ON_ANY_HOSTILE_ACTION;
@@ -1823,6 +1822,7 @@ void Aura::EventPeriodicDamage(uint32 amount)
 			res += bonus;
 			LOG_BASIC("res AFTER assigning the SpellDamageBonus = %f", res);
 			// damage taken is reduced after bonus damage is calculated and added
+			float reduce_damage = 0.0f;
 			reduce_damage += m_target->DamageTakenMod[school];
 			reduce_damage += res * m_target->DamageTakenPctMod[school];
 			reduce_damage += res * m_target->ModDamageTakenByMechPCT[m_spellProto->MechanicsType];
