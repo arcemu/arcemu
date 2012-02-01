@@ -27,10 +27,12 @@ class DispersionSpell : public Spell
 		void DoAfterHandleEffect(Unit* target, uint32 i)
 		{
 			if( p_caster != NULL )
-			// Mana regeneration
-			p_caster->CastSpell(target, 60069, false);
-			// Remove snares and movement impairing effects and make player immune to them
-			p_caster->CastSpell(target, 63230, false);
+			{
+				// Mana regeneration
+				p_caster->CastSpell(target, 60069, false);
+				// Remove snares and movement impairing effects and make player immune to them
+				p_caster->CastSpell(target, 63230, false);
+			}
 		}
 };
 
