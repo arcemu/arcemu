@@ -5118,7 +5118,7 @@ void Unit::castSpell(Spell* pSpell)
 
 int32 Unit::GetSpellDmgBonus(Unit* pVictim, SpellEntry* spellInfo, int32 base_dmg, bool isdot)
 {
-	int32 plus_damage = 0;
+	float plus_damage = 0.0f;
 	Unit* caster = this;
 	uint32 school = spellInfo->School;
 
@@ -5127,7 +5127,7 @@ int32 Unit::GetSpellDmgBonus(Unit* pVictim, SpellEntry* spellInfo, int32 base_dm
 
 	if(caster->IsPlayer())
 	{
-		switch(TO< Player* >(this)->getClass())
+		switch(TO_PLAYER(this)->getClass())
 		{
 			case ROGUE:
 			case WARRIOR:
@@ -5141,10 +5141,10 @@ int32 Unit::GetSpellDmgBonus(Unit* pVictim, SpellEntry* spellInfo, int32 base_dm
 
 //------------------------------by school---------------------------------------------------
 	plus_damage += caster->GetDamageDoneMod(school);
-	plus_damage += float2int32(base_dmg * (caster->GetDamageDonePctMod(school)-1)); //value is initialized with 1
+	plus_damage += static_cast< int32 >( base_dmg * (caster->GetDamageDonePctMod(school)-1) ); //value is initialized with 1
 //------------------------------by victim type----------------------------------------------
 	if(!pVictim->IsPlayer() && caster->IsPlayer())
-		plus_damage += TO< Player* >(caster)->IncreaseDamageByType[TO_CREATURE(pVictim)->GetCreatureInfo()->Type];
+		plus_damage += TO_PLAYER(caster)->IncreaseDamageByType[TO_CREATURE(pVictim)->GetCreatureInfo()->Type];
 //==========================================================================================
 //==============================+Spell Damage Bonus Modifications===========================
 //==========================================================================================
@@ -5152,35 +5152,38 @@ int32 Unit::GetSpellDmgBonus(Unit* pVictim, SpellEntry* spellInfo, int32 base_dm
 	float dmgdoneaffectperc = 1.0f;
 
 	// do not execute this if plus dmg is 0 or lower
-	if( plus_damage > 0 )
+	if( plus_damage > 0.0f )
 	{
-		if(spellInfo->Dspell_coef_override >= 0 && !isdot)
-			plus_damage = float2int32(plus_damage * spellInfo->Dspell_coef_override);
+		if( spellInfo->Dspell_coef_override >= 0 && !isdot )
+			plus_damage = plus_damage * spellInfo->Dspell_coef_override;
 		else if( spellInfo->OTspell_coef_override >= 0 && isdot )
-			plus_damage = float2int32(plus_damage * spellInfo->OTspell_coef_override);
+			plus_damage = plus_damage * spellInfo->OTspell_coef_override;
 		else
 		{
 			//Bonus to DD part
-			if(spellInfo->fixed_dddhcoef >= 0 && !isdot)
-				plus_damage = float2int32(plus_damage * spellInfo->fixed_dddhcoef);
+			if( spellInfo->fixed_dddhcoef >= 0 && !isdot )
+				plus_damage = plus_damage * spellInfo->fixed_dddhcoef;
 			//Bonus to DoT part
-			else if(spellInfo->fixed_hotdotcoef >= 0 && isdot)
+			else if( spellInfo->fixed_hotdotcoef >= 0 && isdot )
 			{
-				plus_damage = float2int32(plus_damage * spellInfo->fixed_hotdotcoef);
+				plus_damage = plus_damage * spellInfo->fixed_hotdotcoef;
 				if(caster->IsPlayer())
 				{
-					int durmod = 0;
-					SM_FIValue(caster->SM_FDur, &durmod, spellInfo->SpellGroupType);
-					plus_damage += plus_damage * durmod / 15000;
+					int32 durmod = 0;
+					SM_FIValue( caster->SM_FDur, &durmod, spellInfo->SpellGroupType );
+					plus_damage += static_cast< float >( plus_damage * durmod / 15000 );
 				}
 			}
 			//In case we dont fit in previous cases do old thing
 			else
 			{
-				plus_damage = float2int32( plus_damage * spellInfo->casttime_coef );
-				float td = float(GetDuration( dbcSpellDuration.LookupEntry( spellInfo->DurationIndex ) ) );
-				if( spellInfo->NameHash == SPELL_HASH_MOONFIRE || spellInfo->NameHash == SPELL_HASH_IMMOLATE || spellInfo->NameHash == SPELL_HASH_ICE_LANCE || spellInfo->NameHash == SPELL_HASH_PYROBLAST )
-					plus_damage = float2int32( plus_damage * ( 1.0f - ( ( td / 15000.0f ) / ( ( td / 15000.0f ) + dmgdoneaffectperc ) ) ) );
+				plus_damage = plus_damage * spellInfo->casttime_coef;
+				float td = static_cast< float >( GetDuration( dbcSpellDuration.LookupEntry( spellInfo->DurationIndex ) ) );
+				if( spellInfo->NameHash == SPELL_HASH_MOONFIRE
+					|| spellInfo->NameHash == SPELL_HASH_IMMOLATE
+					|| spellInfo->NameHash == SPELL_HASH_ICE_LANCE
+					|| spellInfo->NameHash == SPELL_HASH_PYROBLAST )
+					plus_damage = plus_damage * ( 1.0f - ( ( td / 15000.0f ) / ( ( td / 15000.0f ) + dmgdoneaffectperc ) ) );
 			}
 		}
 	}
@@ -5188,12 +5191,12 @@ int32 Unit::GetSpellDmgBonus(Unit* pVictim, SpellEntry* spellInfo, int32 base_dm
 	//------------------------------by downranking----------------------------------------------
 	//DOT-DD (Moonfire-Immolate-IceLance-Pyroblast)(Hack Fix)
 
-	if(spellInfo->baseLevel > 0 && spellInfo->maxLevel > 0)
+	if( spellInfo->baseLevel > 0 && spellInfo->maxLevel > 0 )
 	{
 		float downrank1 = 1.0f;
 		if(spellInfo->baseLevel < 20)
 			downrank1 = 1.0f - (20.0f - float(spellInfo->baseLevel)) * 0.0375f;
-		float downrank2 = (spellInfo->maxLevel + 5.0f) / TO< Player* >(caster)->getLevel();
+		float downrank2 = static_cast< float >( (spellInfo->maxLevel + 5.0f) / TO_PLAYER(caster)->getLevel() );
 		if(downrank2 >= 1 || downrank2 < 0)
 			downrank2 = 1.0f;
 		dmgdoneaffectperc *= downrank1 * downrank2;
@@ -5203,7 +5206,7 @@ int32 Unit::GetSpellDmgBonus(Unit* pVictim, SpellEntry* spellInfo, int32 base_dm
 //==========================================================================================
 
 	if((pVictim->HasAuraWithMechanics(MECHANIC_ENSNARED) || pVictim->HasAuraWithMechanics(MECHANIC_DAZED)) && caster->IsPlayer())
-		plus_damage += TO< Player* >(caster)->m_IncreaseDmgSnaredSlowed;
+		plus_damage += static_cast< float >(TO_PLAYER(caster)->m_IncreaseDmgSnaredSlowed);
 
 	if(spellInfo->SpellGroupType)
 	{
@@ -5215,10 +5218,10 @@ int32 Unit::GetSpellDmgBonus(Unit* pVictim, SpellEntry* spellInfo, int32 base_dm
 		SM_FIValue(caster->SM_PPenalty, &dmg_bonus_pct, spellInfo->SpellGroupType);
 		SM_FIValue(caster->SM_PDamageBonus, &dmg_bonus_pct, spellInfo->SpellGroupType);
 
-		plus_damage += (base_dmg + bonus_damage) * dmg_bonus_pct / 100;
+		plus_damage += static_cast< float >( (base_dmg + bonus_damage) * dmg_bonus_pct / 100 );
 	}
 
-	int32 res = float2int32(base_dmg * dmgdoneaffectperc) + plus_damage;
+	int32 res = static_cast< int32 >( (base_dmg * dmgdoneaffectperc) + plus_damage );
 
 	return res;
 }

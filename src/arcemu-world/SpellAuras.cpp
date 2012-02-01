@@ -1818,20 +1818,18 @@ void Aura::EventPeriodicDamage(uint32 amount)
 			if(GetDuration() && GetSpellProto()->NameHash != SPELL_HASH_IGNITE)    //static damage for Ignite. Need to be reworked when "static DoTs" will be implemented
 			{
 				bonus += c->GetSpellDmgBonus(m_target, m_spellProto, amount, true) * amp / GetDuration();
-			LOG_BASIC("res BEFORE assigning the SpellDamageBonus = %f", res);
-			res += bonus;
-			LOG_BASIC("res AFTER assigning the SpellDamageBonus = %f", res);
-			// damage taken is reduced after bonus damage is calculated and added
-			float reduce_damage = 0.0f;
-			reduce_damage += m_target->DamageTakenMod[school];
-			reduce_damage += res * m_target->DamageTakenPctMod[school];
-			reduce_damage += res * m_target->ModDamageTakenByMechPCT[m_spellProto->MechanicsType];
-			res += reduce_damage;
-			LOG_BASIC("res AFTER assigning the DamageTakenPctMod = %f", res);
+				res += static_cast< float >( bonus );
+
+				// damage taken is reduced after bonus damage is calculated and added
+				float reduce_damage = 0.0f;
+				reduce_damage += static_cast< float >( m_target->DamageTakenMod[school] );
+				reduce_damage += res * m_target->DamageTakenPctMod[school];
+				reduce_damage += res * m_target->ModDamageTakenByMechPCT[m_spellProto->MechanicsType];
+				res += reduce_damage;
 			}
 
-			if(res < 0)
-				res = 0;
+			if(res < 0.0f)
+				res = 0.0f;
 			else
 			{
 				float summaryPCTmod = 1.0f;
@@ -1843,7 +1841,6 @@ void Aura::EventPeriodicDamage(uint32 amount)
 					summaryPCTmod -= dmg_reduction_pct;
 				}
 				res *= summaryPCTmod;
-				LOG_BASIC("res AFTER assigning the Resilience reduction = %f", res);
 				if(res < 0.0f)
 					res = 0.0f;
 			}
