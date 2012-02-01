@@ -243,7 +243,8 @@ bool KillingSpreePeriodicDummy(uint32 i, Aura* a, bool apply)
 	//It can hit same target multiple times.
 	for(std::set<Object*>::iterator itr = p_target->GetInRangeSetBegin(); itr != p_target->GetInRangeSetEnd(); ++itr)
 	{
-		float r = 10.0f;
+		//Get the range of 10 yards from Effect 1
+		float r = static_cast< float >( a->m_spellProto->EffectRadiusIndex[1] );
 		LocationVector source = p_target->GetPosition();
 		float dist = (*itr)->CalcDistance(source);
 

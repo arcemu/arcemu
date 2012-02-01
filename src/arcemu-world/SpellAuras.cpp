@@ -2939,12 +2939,17 @@ void Aura::EventPeriodicManaPct(float RegenPct)
 	if(!m_target->isAlive())
 		return;
 
-	uint32 add = float2int32(m_target->GetMaxPower(POWER_TYPE_MANA) * (RegenPct / 100.0f));
+	uint32 add = static_cast< uint32 >(m_target->GetMaxPower(POWER_TYPE_MANA) * (RegenPct / 100.0f));
 
-	uint32 newHealth = m_target->GetPower(POWER_TYPE_MANA) + add;
+	uint32 newPower = m_target->GetPower(POWER_TYPE_MANA) + add;
 
-	if(newHealth <= m_target->GetMaxPower(POWER_TYPE_MANA))
-		m_target->SetPower(POWER_TYPE_MANA, newHealth);
+	if(newPower <= m_target->GetMaxPower(POWER_TYPE_MANA))
+	{
+		if(GetSpellProto()->Id != 60069)
+			m_target->Energize(m_target, m_spellProto->Id, add, POWER_TYPE_MANA);
+		else
+			m_target->Energize(m_target, 49766, add, POWER_TYPE_MANA);
+	}
 	else
 		m_target->SetPower(POWER_TYPE_MANA, m_target->GetMaxPower(POWER_TYPE_MANA));
 

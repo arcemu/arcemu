@@ -20,6 +20,21 @@
 
 #include "StdAfx.h"
 
+class DispersionSpell : public Spell
+{
+		SPELL_FACTORY_FUNCTION(DispersionSpell);
+
+		void DoAfterHandleEffect(Unit* target, uint32 i)
+		{
+			if( p_caster != NULL )
+			// Mana regeneration
+			p_caster->CastSpell(target, 60069, false);
+			// Remove snares and movement impairing effects and make player immune to them
+			p_caster->CastSpell(target, 63230, false);
+		}
+};
+
 void SpellFactoryMgr::SetupPriest()
 {
+	AddSpellById(47585, &DispersionSpell::Create);
 }
