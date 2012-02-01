@@ -910,7 +910,7 @@ void Spell::SpellEffectTeleportUnits(uint32 i)    // Teleport Units
 		if(unitTarget == m_caster)
 		{
 			/* try to get a selection */
-			unitTarget = m_caster->GetMapMgr()->GetUnit(p_caster->GetSelection());
+			unitTarget = m_caster->GetMapMgr()->GetUnit(m_targets.m_unitTarget);
 			if((!unitTarget) || !isAttackable(p_caster, unitTarget, !(GetProto()->c_is_flags & SPELL_FLAG_IS_TARGETINGSTEALTHED)) || (unitTarget->CalcDistance(p_caster) > 28.0f))
 			{
 				return;

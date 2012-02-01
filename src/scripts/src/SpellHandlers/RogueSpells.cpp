@@ -230,6 +230,56 @@ bool PreyOnTheWeakPeriodicDummy(uint32 i, Aura* a, bool apply)
 	return true;
 }
 
+bool KillingSpreePeriodicDummy(uint32 i, Aura* a, bool apply)
+{
+	Unit* m_target = a->GetTarget();
+	if(!m_target->IsPlayer())
+		return true;
+
+	Player* p_target = TO_PLAYER(m_target);
+
+
+	//Find targets around aura's target in range of 10 yards.
+	//It can hit same target multiple times.
+	for(std::set<Object*>::iterator itr = p_target->GetInRangeSetBegin(); itr != p_target->GetInRangeSetEnd(); ++itr)
+	{
+		float r = 10.0f;
+		LocationVector source = p_target->GetPosition();
+		float dist = (*itr)->CalcDistance(source);
+
+		//Radius check
+		if(dist <= r)
+		{
+			//Avoid targeting anything that is not unit and not alive
+			if(!(*itr)->IsUnit() || !TO_UNIT((*itr))->isAlive())
+				continue;
+
+				uint64 spellTarget = (*itr)->GetGUID();
+				//SPELL_EFFECT_TELEPORT
+				p_target->CastSpell(spellTarget, 57840, true);
+				//SPELL_EFFECT_NORMALIZED_WEAPON_DMG and triggering 57842 with the same effect
+				p_target->CastSpell(spellTarget, 57841, true);
+		}
+
+	}
+	return true;
+
+}
+
+bool KillingSpreeEffectDummy(uint32 i, Spell* s)
+{
+	Player* p_caster = s->p_caster;
+
+	if(p_caster == NULL)
+		return true;
+
+	//SPELL_EFFECT_BREAK_PLAYER_TARGETING
+	//and applying 20% SPELL_AURA_MOD_DAMAGE_PERCENT_DONE
+	p_caster->CastSpell(p_caster, 61851, true);
+
+	return true;
+}
+
 void SetupRogueSpells(ScriptMgr* mgr)
 {
 	mgr->register_dummy_spell(5938, &Shiv);
@@ -266,4 +316,7 @@ void SetupRogueSpells(ScriptMgr* mgr)
 		0
 	};
 	mgr->register_dummy_aura(preyontheweakids, &PreyOnTheWeakPeriodicDummy);
+
+	mgr->register_dummy_aura(51690, &KillingSpreePeriodicDummy);
+	mgr->register_dummy_spell(51690, &KillingSpreeEffectDummy);
 }
