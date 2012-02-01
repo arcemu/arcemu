@@ -12386,7 +12386,7 @@ void Player::SendMessageToSet(WorldPacket* data, bool bToSelf, bool myteam_only)
 		{
 			for(std::set< Object* >::iterator itr = m_inRangePlayers.begin(); itr != m_inRangePlayers.end(); ++itr)
 			{
-				Player* p = TO< Player* >(*itr);
+				Player* p = TO_PLAYER(*itr);
 
 				if(p->GetSession() && p->GetSession()->GetPermissionCount() > 0 && p->GetTeam() == myteam && (p->GetPhase() & myphase) != 0)
 					p->SendPacket(data);
@@ -12396,9 +12396,13 @@ void Player::SendMessageToSet(WorldPacket* data, bool bToSelf, bool myteam_only)
 		{
 			for(std::set< Object* >::iterator itr = m_inRangePlayers.begin(); itr != m_inRangePlayers.end(); ++itr)
 			{
-				Player* p = TO< Player* >(*itr);
+				Player* p = TO_PLAYER(*itr);
 
-				if(p->GetSession() && p->GetTeam() == myteam && ! p->Social_IsIgnoring(GetLowGUID()) && (p->GetPhase() & myphase) != 0 && p->m_invisible == m_invisible)
+				if(p->GetSession()
+					&& p->GetTeam() == myteam
+					&& !p->Social_IsIgnoring(GetLowGUID())
+					&& (p->GetPhase() & myphase) != 0
+					&& p->m_invisible == (m_invisible || p->m_isGmInvisible))
 					p->SendPacket(data);
 			}
 		}
@@ -12409,7 +12413,7 @@ void Player::SendMessageToSet(WorldPacket* data, bool bToSelf, bool myteam_only)
 		{
 			for(std::set< Object* >::iterator itr = m_inRangePlayers.begin(); itr != m_inRangePlayers.end(); ++itr)
 			{
-				Player* p = TO< Player* >(*itr);
+				Player* p = TO_PLAYER(*itr);
 
 				if(p->GetSession() && p->GetSession()->GetPermissionCount() > 0 && (p->GetPhase() & myphase) != 0)
 					p->SendPacket(data);
@@ -12419,9 +12423,14 @@ void Player::SendMessageToSet(WorldPacket* data, bool bToSelf, bool myteam_only)
 		{
 			for(std::set< Object* >::iterator itr = m_inRangePlayers.begin(); itr != m_inRangePlayers.end(); ++itr)
 			{
-				Player* p = TO< Player* >(*itr);
+				Player* p = TO_PLAYER(*itr);
 
-				if(p->GetSession() &&  ! p->Social_IsIgnoring(GetLowGUID()) && (p->GetPhase() & myphase) != 0 && p->m_invisible == m_invisible)
+				if(p->GetSession()
+					&& !p->Social_IsIgnoring(GetLowGUID())
+					&& (p->GetPhase() & myphase) != 0
+					//Not sure why are we checking p->m_invisible against m_invisible.
+					//If someone can clarify it, would be nice, for now let it be.
+					&& p->m_invisible == (m_invisible || p->m_isGmInvisible))
 					p->SendPacket(data);
 			}
 		}
