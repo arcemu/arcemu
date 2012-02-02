@@ -1236,6 +1236,8 @@ class SERVER_DECL Unit : public Object
 		//caller is the caster
 		int32 GetSpellDmgBonus(Unit* pVictim, SpellEntry* spellInfo, int32 base_dmg, bool isdot);
 
+		float CalcSpellDamageReduction(Unit* victim, SpellEntry* spell, float res);
+
 		uint32 m_addDmgOnce;
 		uint32 m_ObjectSlots[4];
 		uint32 m_triggerSpell;

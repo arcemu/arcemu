@@ -5226,6 +5226,15 @@ int32 Unit::GetSpellDmgBonus(Unit* pVictim, SpellEntry* spellInfo, int32 base_dm
 	return res;
 }
 
+float Unit::CalcSpellDamageReduction(Unit* victim, SpellEntry* spell, float res)
+{
+	float reduced_damage = 0;
+	reduced_damage += static_cast< float >( victim->DamageTakenMod[spell->School] );
+	reduced_damage += res * victim->DamageTakenPctMod[spell->School];
+	reduced_damage += res * victim->ModDamageTakenByMechPCT[spell->MechanicsType];
+	return reduced_damage;
+}
+
 void Unit::InterruptSpell()
 {
 	if(m_currentSpell)
