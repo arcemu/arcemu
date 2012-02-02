@@ -2814,7 +2814,10 @@ AI_Spell* AIInterface::getSpell()
 			def_spell->procCounter++;
 
 		if(def_spell->cooldown)
+		{
+			def_spell->cooldown = def_spell->spell->RecoveryTime;
 			def_spell->cooldowntime = nowtime + def_spell->cooldown;
+		}
 
 		waiting_for_cooldown = false;
 		return def_spell;

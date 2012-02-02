@@ -761,7 +761,7 @@ void Pet::InitializeMe(bool first)
 		if(GetEntry() == WATER_ELEMENTAL || GetEntry() == WATER_ELEMENTAL_NEW)
 		{
 			float parentfrost = (float)m_Owner->GetDamageDoneMod(SCHOOL_FROST);
-			parentfrost *= 0.40f;
+			parentfrost *= 0.033f; // 33% according to WoWWiki and ElitistJerks
 			ModDamageDone[SCHOOL_FROST] = (uint32)parentfrost;
 		}
 		else if(GetEntry() == PET_IMP)

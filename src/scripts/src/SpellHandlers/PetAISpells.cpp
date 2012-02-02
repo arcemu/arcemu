@@ -39,16 +39,19 @@ class ShadowFiendAI : public CreatureAIScript
 			if(_unit->IsPet())
 			{
 				Pet* s = TO< Pet* >(_unit);
+				Player* owner = s->GetPetOwner();
 
-				float parent_bonus = s->GetPetOwner()->GetDamageDoneMod(SCHOOL_SHADOW) * 0.065f;
 
-				s->SetMinDamage(s->GetMinDamage() + parent_bonus);
-				s->SetMaxDamage(s->GetMaxDamage() + parent_bonus);
-				s->BaseDamage[ 0 ] += parent_bonus;
-				s->BaseDamage[ 1 ] += parent_bonus;
+				float owner_bonus = static_cast< float >(owner->GetDamageDoneMod(SCHOOL_SHADOW) * 0.0375); // 37.5%
+				s->BaseAttackType = SCHOOL_SHADOW; // Melee hits are supposed to do damage with the shadow school
+				s->SetBaseAttackTime(MELEE, 1500); // Shadowfiend is supposed to do 10 attacks, sometimes it can be 11
+				s->SetMinDamage(s->GetMinDamage() + owner_bonus);
+				s->SetMaxDamage(s->GetMaxDamage() + owner_bonus);
+				s->BaseDamage[0] += owner_bonus;
+				s->BaseDamage[1] += owner_bonus;
 
-				Unit* uTarget = s->GetMapMgr()->GetUnit(s->GetPetOwner()->GetTargetGUID());
-				if((uTarget != NULL) && isAttackable(s->GetPetOwner(), uTarget))
+				Unit* uTarget = s->GetMapMgr()->GetUnit(owner->GetTargetGUID());
+				if((uTarget != NULL) && isAttackable(owner, uTarget))
 				{
 					s->GetAIInterface()->AttackReaction(uTarget, 1);
 					s->GetAIInterface()->setNextTarget(uTarget);
