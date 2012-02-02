@@ -1816,12 +1816,16 @@ void Aura::EventPeriodicDamage(uint32 amount)
 				amp = event_GetEventPeriod(EVENT_AURA_PERIODIC_DAMAGE);
 
 			if(GetDuration() && GetSpellProto()->NameHash != SPELL_HASH_IGNITE)    //static damage for Ignite. Need to be reworked when "static DoTs" will be implemented
+			{
 				bonus += c->GetSpellDmgBonus(m_target, m_spellProto, amount, true) * amp / GetDuration();
+				res += static_cast< float >( bonus );
 
-			res += bonus;
+				// damage taken is reduced after bonus damage is calculated and added
+				res += c->CalcSpellDamageReduction(m_target, m_spellProto, res);
+			}
 
-			if(res < 0)
-				res = 0;
+			if(res < 0.0f)
+				res = 0.0f;
 			else
 			{
 				float summaryPCTmod = 1.0f;
