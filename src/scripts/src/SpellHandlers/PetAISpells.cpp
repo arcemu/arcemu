@@ -42,7 +42,7 @@ class ShadowFiendAI : public CreatureAIScript
 				Player* owner = s->GetPetOwner();
 
 
-				float owner_bonus = static_cast< float >(owner->GetDamageDoneMod(SCHOOL_SHADOW) * 0.0375); // 37.5%
+				float owner_bonus = static_cast< float >(owner->GetDamageDoneMod(SCHOOL_SHADOW) * 0.375f); // 37.5%
 				s->BaseAttackType = SCHOOL_SHADOW; // Melee hits are supposed to do damage with the shadow school
 				s->SetBaseAttackTime(MELEE, 1500); // Shadowfiend is supposed to do 10 attacks, sometimes it can be 11
 				s->SetMinDamage(s->GetMinDamage() + owner_bonus);

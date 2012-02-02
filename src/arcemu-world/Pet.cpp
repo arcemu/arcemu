@@ -760,8 +760,9 @@ void Pet::InitializeMe(bool first)
 		// Adds parent +frost spell damage
 		if(GetEntry() == WATER_ELEMENTAL || GetEntry() == WATER_ELEMENTAL_NEW)
 		{
-			float parentfrost = (float)m_Owner->GetDamageDoneMod(SCHOOL_FROST);
-			parentfrost *= 0.033f; // 33% according to WoWWiki and ElitistJerks
+			// According to WoWWiki and ElitistJerks, Water Elemental should inherit 33% of owner's frost spell power.
+			// And don't freak out about Waterbolt damage, it is supposed to do 601-673 base damage.
+			float parentfrost = static_cast< float >(m_Owner->GetDamageDoneMod(SCHOOL_FROST) * 0.33f);
 			ModDamageDone[SCHOOL_FROST] = (uint32)parentfrost;
 		}
 		else if(GetEntry() == PET_IMP)

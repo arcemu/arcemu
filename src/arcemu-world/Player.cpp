@@ -12386,7 +12386,7 @@ void Player::SendMessageToSet(WorldPacket* data, bool bToSelf, bool myteam_only)
 		{
 			for(std::set< Object* >::iterator itr = m_inRangePlayers.begin(); itr != m_inRangePlayers.end(); ++itr)
 			{
-				Player* p = TO_PLAYER(*itr);
+				Player* p = TO< Player* >(*itr);
 
 				if(p->GetSession() && p->GetSession()->GetPermissionCount() > 0 && p->GetTeam() == myteam && (p->GetPhase() & myphase) != 0)
 					p->SendPacket(data);
@@ -12396,7 +12396,7 @@ void Player::SendMessageToSet(WorldPacket* data, bool bToSelf, bool myteam_only)
 		{
 			for(std::set< Object* >::iterator itr = m_inRangePlayers.begin(); itr != m_inRangePlayers.end(); ++itr)
 			{
-				Player* p = TO_PLAYER(*itr);
+				Player* p = TO< Player* >(*itr);
 
 				if(p->GetSession()
 					&& p->GetTeam() == myteam
@@ -12413,7 +12413,7 @@ void Player::SendMessageToSet(WorldPacket* data, bool bToSelf, bool myteam_only)
 		{
 			for(std::set< Object* >::iterator itr = m_inRangePlayers.begin(); itr != m_inRangePlayers.end(); ++itr)
 			{
-				Player* p = TO_PLAYER(*itr);
+				Player* p = TO< Player* >(*itr);
 
 				if(p->GetSession() && p->GetSession()->GetPermissionCount() > 0 && (p->GetPhase() & myphase) != 0)
 					p->SendPacket(data);
@@ -12423,7 +12423,7 @@ void Player::SendMessageToSet(WorldPacket* data, bool bToSelf, bool myteam_only)
 		{
 			for(std::set< Object* >::iterator itr = m_inRangePlayers.begin(); itr != m_inRangePlayers.end(); ++itr)
 			{
-				Player* p = TO_PLAYER(*itr);
+				Player* p = TO< Player* >(*itr);
 
 				if(p->GetSession()
 					&& !p->Social_IsIgnoring(GetLowGUID())
