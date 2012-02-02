@@ -231,6 +231,8 @@ class SERVER_DECL Group
 		void SetRaidDifficulty(uint32 diff);
 		void SendLootUpdates(Object* o);
 
+		uint32 GetGroupMaxDisenchantSkill();
+
 		///////////////////////////////////////////////////////////////////
 		//Player* GetRandomPlayerInRangeButSkip(Player* plr, float range, Player* plr_skip)
 		//  Return a random player in player's group that's in his range, skipping a desired player from result

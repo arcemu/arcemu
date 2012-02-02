@@ -519,7 +519,9 @@ void Player::SendLoot(uint64 guid, uint8 loot_type, uint32 mapid)
 
 				if(iter->item.itemproto)
 				{
-					iter->roll = new LootRoll(60000, (m_Group != NULL ? m_Group->MemberCount() : 1),  guid, x, itemProto->ItemId, factor, uint32(ipid), GetMapMgr());
+					iter->roll = new LootRoll(60000, (m_Group != NULL ? m_Group->MemberCount() : 1),  guid, x, itemProto->ItemId, factor, uint32(ipid), GetMapMgr(), (m_Group != NULL ? m_Group->GetMethod() : 0));
+					uint32 max_ench_skill = m_Group != NULL ? m_Group->GetGroupMaxDisenchantSkill() : 0;
+					uint8 roll_flags = iter->roll->GetRollFlags(this, max_ench_skill);
 
 					data2.Initialize(SMSG_LOOT_START_ROLL);
 					data2 << guid;
@@ -536,7 +538,7 @@ void Player::SendLoot(uint64 guid, uint8 loot_type, uint32 mapid)
 
 					data2 << uint32(iter->iItemsCount);
 					data2 << uint32(60000);	// countdown
-					data2 << uint8(7);		// some sort of flags that require research
+					data2 << uint8(roll_flags);		// some sort of flags that require research
 				}
 
 				Group* pGroup = m_playerInfo->m_Group;

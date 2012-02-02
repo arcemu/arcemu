@@ -1291,6 +1291,26 @@ Player* Group::GetRandomPlayerInRangeButSkip(Player* plr, float range, Player* p
 	return new_plr;
 }
 
+uint32 Group::GetGroupMaxDisenchantSkill()
+{
+	uint32 maxskill = 0;
+
+	for( uint8 i = 0; i < GetSubGroupCount(); i++ )
+	{
+		for(GroupMembersSet::iterator itr = GetSubGroup(i)->GetGroupMembersBegin(); itr != GetSubGroup(i)->GetGroupMembersEnd(); ++itr)
+		{
+			Player * plr = (*itr)->m_loggedInPlayer;
+			if(plr)
+			{
+				uint32 curskill = plr->_GetSkillLineCurrent(SKILL_ENCHANTING);
+				if( maxskill < curskill )
+					maxskill = curskill;
+			}
+		}
+	}
+
+	return maxskill;
+}
 
 #ifdef ENABLE_ACHIEVEMENTS
 

@@ -2461,6 +2461,7 @@ class SERVER_DECL Player : public Unit
 		bool CanTrainAt(Trainer*);
 
 		Object* GetPlayerOwner() { return this; };
+		uint8 CanUseItem( ItemPrototype * proto );
 };
 
 class SkillIterator

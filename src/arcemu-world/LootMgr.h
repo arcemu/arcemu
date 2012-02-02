@@ -31,21 +31,27 @@ enum LOOTTYPE
     NUM_LOOT_TYPES
 };
 
+struct LootRollType
+{
+	uint32 roll;
+	uint32 loot_type;
+};
+
 struct ItemPrototype;
 class MapMgr;
 class LootRoll : public EventableObject
 {
 	public:
-		LootRoll(uint32 timer, uint32 groupcount, uint64 guid, uint32 slotid, uint32 itemid, uint32 itemunk1, uint32 itemunk2, MapMgr* mgr);
+		LootRoll(uint32 timer, uint32 groupcount, uint64 guid, uint32 slotid, uint32 itemid, uint32 itemunk1, uint32 itemunk2, MapMgr* mgr, uint8 loot_method);
 		~LootRoll();
 		void PlayerRolled(Player* player, uint8 choice);
 		void Finalize();
+		uint8 GetRollFlags(Player * plr, uint32 maxgroupskill);
 
 		int32 event_GetInstanceID();
 
 	private:
-		std::map<uint32, uint32> m_NeedRolls;
-		std::map<uint32, uint32> m_GreedRolls;
+		std::map<uint32, LootRollType> Rolls;
 		set<uint32> m_passRolls;
 		uint32 _groupcount;
 		uint32 _slotid;
@@ -55,6 +61,9 @@ class LootRoll : public EventableObject
 		uint32 _remaining;
 		uint64 _guid;
 		MapMgr* _mgr;
+		uint8 _lootmethod;
+		uint32 total_Need;
+		uint32 total_Greed;
 };
 
 typedef vector<pair<RandomProps*, float> > RandomPropertyVector;
@@ -130,7 +139,16 @@ typedef HM_NAMESPACE::hash_map<uint32, StoreLootList > LootStore;
 #define PARTY_LOOT_NBG	  4
 #define PARTY_LOOT_GROUP	3
 
+// set what votes allowed
+enum RollVoteMask
+{
+    ROLL_VOTE_MASK_PASS       = 0x01,
+    ROLL_VOTE_MASK_NEED       = 0x02,
+    ROLL_VOTE_MASK_GREED      = 0x04,
+    ROLL_VOTE_MASK_DISENCHANT = 0x08,
 
+    ROLL_VOTE_MASK_ALL        = 0x0F
+};
 
 class SERVER_DECL LootMgr : public Singleton < LootMgr >
 {

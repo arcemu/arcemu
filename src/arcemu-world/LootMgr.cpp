@@ -659,8 +659,9 @@ bool LootMgr::IsFishable(uint32 zoneid)
 
 #define NEED 1
 #define GREED 2
+#define DISENCHANT 3
 
-LootRoll::LootRoll(uint32 timer, uint32 groupcount, uint64 guid, uint32 slotid, uint32 itemid, uint32 randomsuffixid, uint32 randompropertyid, MapMgr* mgr) : EventableObject()
+LootRoll::LootRoll(uint32 timer, uint32 groupcount, uint64 guid, uint32 slotid, uint32 itemid, uint32 randomsuffixid, uint32 randompropertyid, MapMgr* mgr, uint8 loot_method) : EventableObject()
 {
 	_mgr = mgr;
 	sEventMgr.AddEvent(this, &LootRoll::Finalize, EVENT_LOOT_ROLL_FINALIZE, 60000, 1, 0);
@@ -671,6 +672,9 @@ LootRoll::LootRoll(uint32 timer, uint32 groupcount, uint64 guid, uint32 slotid, 
 	_randomsuffixid = randomsuffixid;
 	_randompropertyid = randompropertyid;
 	_remaining = groupcount;
+	_lootmethod = loot_method;
+	total_Need = 0;
+	total_Greed = 0;
 }
 
 LootRoll::~LootRoll()
@@ -692,59 +696,34 @@ void LootRoll::Finalize()
 
 	WorldPacket data(34);
 
-	/*
-		Player * gplr = NULL;
-		for(std::map<uint64, uint32>::iterator itr = NeedRolls.begin(); itr != NeedRolls.end(); ++itr)
-		{
-			gplr = _mgr->GetPlayer((uint32)itr->first);
-			if(gplr) break;
-		}
-
-		if(!gplr)
-		{
-			for(std::map<uint64, uint32>::iterator itr = GreedRolls.begin(); itr != GreedRolls.end(); ++itr)
-			{
-				gplr = _mgr->GetPlayer((uint32)itr->first);
-				if(gplr) break;
-			}
-		}
-	*/
-	for(std::map<uint32, uint32>::iterator itr = m_NeedRolls.begin(); itr != m_NeedRolls.end(); ++itr)
+	if(total_Need > 0)
 	{
-		if(itr->second > highest)
+		for(std::map<uint32, LootRollType>::iterator itr = Rolls.begin(); itr != Rolls.end(); ++itr)
 		{
-			highest = itr->second;
-			player = itr->first;
-			hightype = NEED;
-		}
-		/*
-		data.Initialize(SMSG_LOOT_ROLL);
-		data << _guid << _slotid << itr->first;
-		data << _itemid << _randomsuffixid << _randompropertyid;
-		data << uint8(itr->second) << uint8(NEED);
-		if(gplr && gplr->GetGroup())
-			gplr->GetGroup()->SendPacketToAll(&data);
-		*/
-	}
+			if( itr->second.loot_type != NEED )
+				continue;
 
-	if(!highest)
-	{
-		for(std::map<uint32, uint32>::iterator itr = m_GreedRolls.begin(); itr != m_GreedRolls.end(); ++itr)
-		{
-			if(itr->second > highest)
+			if(itr->second.roll > highest)
 			{
-				highest = itr->second;
+				highest = itr->second.roll;
 				player = itr->first;
-				hightype = GREED;
+				hightype = NEED;
 			}
-			/*
-			data.Initialize(SMSG_LOOT_ROLL);
-			data << _guid << _slotid << itr->first;
-			data << _itemid << _randomsuffixid << _randompropertyid;
-			data << uint8(itr->second) << uint8(GREED);
-			if(gplr && gplr->GetGroup())
-				gplr->GetGroup()->SendPacketToAll(&data);
-			*/
+		}
+	}
+	else if(total_Greed > 0)
+	{
+		for(std::map<uint32, LootRollType>::iterator itr = Rolls.begin(); itr != Rolls.end(); ++itr)
+		{
+			if( itr->second.loot_type != GREED || itr->second.loot_type != DISENCHANT )
+				continue;
+
+			if(itr->second.roll > highest)
+			{
+				highest = itr->second.roll;
+				player = itr->first;
+				hightype = itr->second.loot_type;
+			}
 		}
 	}
 
@@ -836,34 +815,64 @@ void LootRoll::Finalize()
 			return;
 		}
 
-		LOG_DEBUG("AutoLootItem MISC");
-		Item* item = objmgr.CreateItem(itemid, _player);
-		if(item == NULL)
-			return;
-
-		item->SetStackCount(amt);
-		if(pLoot->items.at(_slotid).iRandomProperty != NULL)
+		// add item if need or greed
+		if( hightype == NEED || hightype == GREED )
 		{
-			item->SetItemRandomPropertyId(pLoot->items.at(_slotid).iRandomProperty->ID);
-			item->ApplyRandomProperties(false);
-		}
-		else if(pLoot->items.at(_slotid).iRandomSuffix != NULL)
-		{
-			item->SetRandomSuffix(pLoot->items.at(_slotid).iRandomSuffix->id);
-			item->ApplyRandomProperties(false);
-		}
+			Item* item = objmgr.CreateItem(itemid, _player);
+			if(item == NULL)
+				return;
+
+			item->SetStackCount(amt);
+			if(pLoot->items.at(_slotid).iRandomProperty != NULL)
+			{
+				item->SetItemRandomPropertyId(pLoot->items.at(_slotid).iRandomProperty->ID);
+				item->ApplyRandomProperties(false);
+			}
+			else if(pLoot->items.at(_slotid).iRandomSuffix != NULL)
+			{
+				item->SetRandomSuffix(pLoot->items.at(_slotid).iRandomSuffix->id);
+				item->ApplyRandomProperties(false);
+			}
 
 
-		if(_player->GetItemInterface()->SafeAddItem(item, slotresult.ContainerSlot, slotresult.Slot))
-		{
-			_player->SendItemPushResult(false, true, true, true, slotresult.ContainerSlot, slotresult.Slot, 1, item->GetEntry(), item->GetItemRandomSuffixFactor(), item->GetItemRandomPropertyId(), item->GetStackCount());
-			sQuestMgr.OnPlayerItemPickup(_player, item);
+			if(_player->GetItemInterface()->SafeAddItem(item, slotresult.ContainerSlot, slotresult.Slot))
+			{
+				_player->SendItemPushResult(false, true, true, true, slotresult.ContainerSlot, slotresult.Slot, 1, item->GetEntry(), item->GetItemRandomSuffixFactor(), item->GetItemRandomPropertyId(), item->GetStackCount());
+				sQuestMgr.OnPlayerItemPickup(_player, item);
 #ifdef ENABLE_ACHIEVEMENTS
-			_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, item->GetEntry(), 1, 0);
+				_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, item->GetEntry(), 1, 0);
 #endif
+			}
+			else
+				item->DeleteMe();
 		}
-		else
-			item->DeleteMe();
+		// directly disenchant item instead of adding it
+		else if( hightype == DISENCHANT )
+		{
+			Loot * lt = new Loot;
+			lootmgr.FillItemLoot(lt, itemid);
+			std::vector<__LootItem>::iterator itr = lt->items.begin();
+			for( itr; itr != lt->items.end(); itr++ )
+			{
+				uint32 item_id = itr->item.itemproto->ItemId;
+				Item * item = objmgr.CreateItem(item_id, _player);
+				if(item == NULL)
+					return;
+
+				item->SetStackCount(itr->iItemsCount);
+
+				if(_player->GetItemInterface()->SafeAddItem(item, slotresult.ContainerSlot, slotresult.Slot))
+				{
+					_player->SendItemPushResult(false, true, true, true, slotresult.ContainerSlot, slotresult.Slot, 1, item->GetEntry(), item->GetItemRandomSuffixFactor(), item->GetItemRandomPropertyId(), item->GetStackCount());
+					sQuestMgr.OnPlayerItemPickup(_player, item);
+#ifdef ENABLE_ACHIEVEMENTS
+					_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, item->GetEntry(), 1, 0);
+#endif
+				}
+				else
+					item->DeleteMe();
+			}
+		}
 	}
 	else
 	{
@@ -893,34 +902,47 @@ void LootRoll::Finalize()
 
 void LootRoll::PlayerRolled(Player* player, uint8 choice)
 {
-	if(m_NeedRolls.find(player->GetLowGUID()) != m_NeedRolls.end() || m_GreedRolls.find(player->GetLowGUID()) != m_GreedRolls.end())
+	if( Rolls.find(player->GetLowGUID()) != Rolls.end() )
 		return; // don't allow cheaters
 
-	int roll = RandomUInt(99) + 1;
 	// create packet
 	WorldPacket data(34);
 	data.SetOpcode(SMSG_LOOT_ROLL);
 	data << _guid << _slotid << player->GetGUID();
 	data << _itemid << _randomsuffixid << _randompropertyid;
 
+	uint32 roll = RandomUInt(99) + 1;
+
+	LootRollType lt;
+	lt.roll = roll;
+	lt.loot_type = choice;
+
 	if(choice == NEED)
 	{
-		m_NeedRolls.insert(std::make_pair(player->GetLowGUID(), roll));
-		data << uint8(roll) << uint8(NEED);
+		total_Need++;
+		Rolls.insert(std::make_pair(player->GetLowGUID(), lt));
+		data << uint8(0) << uint8(0);
 	}
 	else if(choice == GREED)
 	{
-		m_GreedRolls.insert(std::make_pair(player->GetLowGUID(), roll));
-		data << uint8(roll) << uint8(GREED);
-
+		total_Greed++;
+		Rolls.insert(std::make_pair(player->GetLowGUID(), lt));
+		data << uint8(128) << uint8(GREED);
+	}
+	else if(choice == DISENCHANT)
+	{
+		// this counts as greed
+		total_Greed++;
+		Rolls.insert(std::make_pair(player->GetLowGUID(), lt));
+		data << uint8(128) << uint8(DISENCHANT);
 	}
 	else
 	{
 		m_passRolls.insert(player->GetLowGUID());
-		data << uint8(128) << uint8(128);
+		data << uint8(128) << uint8(0);
 	}
 
-	data << uint8(0);	// Requires research - possibly related to disenchanting of loot
+	data << uint8(0);	// autopass on need before greed
 
 	if(player->InGroup())
 		player->GetGroup()->SendPacketToAll(&data);
@@ -949,4 +971,23 @@ void LootMgr::FillItemLoot(Loot* loot, uint32 loot_id)
 int32 LootRoll::event_GetInstanceID()
 {
 	return _mgr->GetInstanceID();
+}
+
+uint8 LootRoll::GetRollFlags(Player * plr, uint32 maxgroupskill)
+{
+	uint8 mask = ROLL_VOTE_MASK_ALL;
+
+	ItemPrototype * proto = ItemPrototypeStorage.LookupEntry( _itemid );
+
+	if( proto->HasFlag2(ITEM_FLAG2_NEED_ROLL_DISABLED) != 0 )
+		mask = (mask & ~ ROLL_VOTE_MASK_NEED);
+
+	if( proto->DisenchantReqSkill < 1 || uint32(proto->DisenchantReqSkill) > maxgroupskill )
+		mask = (mask & ~ ROLL_VOTE_MASK_DISENCHANT);
+
+	// in need before greed, need is disabled for non-usable item for player
+	if( _lootmethod == PARTY_LOOT_NBG && plr->CanUseItem( proto ) != INV_ERR_OK )
+		mask = (mask & ~ROLL_VOTE_MASK_NEED);
+
+	return mask;
 }
