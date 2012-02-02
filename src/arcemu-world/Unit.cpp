@@ -5127,7 +5127,7 @@ int32 Unit::GetSpellDmgBonus(Unit* pVictim, SpellEntry* spellInfo, int32 base_dm
 
 	if(caster->IsPlayer())
 	{
-		switch(TO_PLAYER(this)->getClass())
+		switch(TO< Player* >(this)->getClass())
 		{
 			case ROGUE:
 			case WARRIOR:
@@ -5144,7 +5144,7 @@ int32 Unit::GetSpellDmgBonus(Unit* pVictim, SpellEntry* spellInfo, int32 base_dm
 	plus_damage += static_cast< int32 >( base_dmg * (caster->GetDamageDonePctMod(school)-1) ); //value is initialized with 1
 //------------------------------by victim type----------------------------------------------
 	if(!pVictim->IsPlayer() && caster->IsPlayer())
-		plus_damage += TO_PLAYER(caster)->IncreaseDamageByType[TO_CREATURE(pVictim)->GetCreatureInfo()->Type];
+		plus_damage += TO< Player* >(caster)->IncreaseDamageByType[TO_CREATURE(pVictim)->GetCreatureInfo()->Type];
 //==========================================================================================
 //==============================+Spell Damage Bonus Modifications===========================
 //==========================================================================================
@@ -5196,7 +5196,7 @@ int32 Unit::GetSpellDmgBonus(Unit* pVictim, SpellEntry* spellInfo, int32 base_dm
 		float downrank1 = 1.0f;
 		if(spellInfo->baseLevel < 20)
 			downrank1 = 1.0f - (20.0f - float(spellInfo->baseLevel)) * 0.0375f;
-		float downrank2 = static_cast< float >( (spellInfo->maxLevel + 5.0f) / TO_PLAYER(caster)->getLevel() );
+		float downrank2 = static_cast< float >( (spellInfo->maxLevel + 5.0f) / TO< Player* >(caster)->getLevel() );
 		if(downrank2 >= 1 || downrank2 < 0)
 			downrank2 = 1.0f;
 		dmgdoneaffectperc *= downrank1 * downrank2;
@@ -5206,7 +5206,7 @@ int32 Unit::GetSpellDmgBonus(Unit* pVictim, SpellEntry* spellInfo, int32 base_dm
 //==========================================================================================
 
 	if((pVictim->HasAuraWithMechanics(MECHANIC_ENSNARED) || pVictim->HasAuraWithMechanics(MECHANIC_DAZED)) && caster->IsPlayer())
-		plus_damage += static_cast< float >(TO_PLAYER(caster)->m_IncreaseDmgSnaredSlowed);
+		plus_damage += static_cast< float >(TO< Player* >(caster)->m_IncreaseDmgSnaredSlowed);
 
 	if(spellInfo->SpellGroupType)
 	{
