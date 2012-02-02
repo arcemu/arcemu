@@ -1444,9 +1444,6 @@ bool HunterTamingQuest(uint32 i, Aura* a, bool apply)
 	{
 		uint32 TamingSpellid = a->GetSpellProto()->EffectMiscValue[ 1 ];
 
-		if(a->GetSpellId() == 19674)  //no valid entry in MiscValueB
-			TamingSpellid = 19677;
-
 		SpellEntry* triggerspell = dbcSpell.LookupEntryForced(TamingSpellid);
 		if(triggerspell == NULL)
 		{
