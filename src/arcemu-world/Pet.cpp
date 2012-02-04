@@ -574,8 +574,8 @@ AI_Spell* Pet::CreateAISpell(SpellEntry* info)
 	if(/* info->Effect[0] == SPELL_EFFECT_APPLY_AURA || */ 
 		info->Effect[0] == SPELL_EFFECT_APPLY_GROUP_AREA_AURA 
 		|| info->Effect[0] == SPELL_EFFECT_APPLY_RAID_AREA_AURA
-		|| info->EffectImplicitTargetA[g_spellImplicitTargetFlags[27]] //TARGET_MASTER
-		|| info->EffectImplicitTargetA[g_spellImplicitTargetFlags[57]]) //TARGET_SINGLE_FRIEND_2
+		|| info->EffectImplicitTargetA[0] == 27 //TARGET_MASTER
+		|| info->EffectImplicitTargetA[0] == 57) //TARGET_SINGLE_FRIEND_2
 		sp->spellType = STYPE_BUFF;
 	else
 		sp->spellType = STYPE_DAMAGE;
