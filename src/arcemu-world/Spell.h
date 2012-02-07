@@ -324,7 +324,7 @@ enum AuraInterruptFlags
     AURA_INTERRUPT_NULL							= 0x0,
     AURA_INTERRUPT_ON_HOSTILE_SPELL_INFLICTED	= 0x1, // Remove on being hit by hostile spell
     AURA_INTERRUPT_ON_ANY_DAMAGE_TAKEN			= 0x2, // Remove on any damage taken
-    AURA_INTERRUPT_ON_CAST						= 0x4, // Remove on any spell
+    AURA_INTERRUPT_ON_CAST						= 0x4, // Remove on any spell cast
     AURA_INTERRUPT_ON_MOVEMENT					= 0x8, // Remove on moving
     AURA_INTERRUPT_ON_TURNING					= 0x10, // Remove on turning
     AURA_INTERRUPT_ON_JUMP						= 0x20, // Remove on jumping
@@ -337,7 +337,7 @@ enum AuraInterruptFlags
     AURA_INTERRUPT_ON_START_ATTACK				= 0x1000, // Remove on melee attack
     AURA_INTERRUPT_ON_CAST_SPELL				= 0x2000, // Remove on spell cast
     AURA_INTERRUPT_ON_UNUSED3					= 0x4000,
-    AURA_INTERRUPT_ON_CAST_SPELL_UNK			= 0x8000, // Not sure what this one is, but definetely not on spell cast
+    AURA_INTERRUPT_ON_CAST_SPELL_UNK			= 0x8000, // Not sure what this one is, but definitely not on spell cast
     AURA_INTERRUPT_ON_UNK7						= 0x10000,
     AURA_INTERRUPT_ON_MOUNT						= 0x20000,
     AURA_INTERRUPT_ON_STAND_UP					= 0x40000, // Remove on stand up, for spells like drinking/eating 
