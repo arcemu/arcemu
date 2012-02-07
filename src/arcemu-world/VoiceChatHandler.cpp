@@ -1,5 +1,5 @@
 /*
- * arcemu MMORPG Server
+ * ArcEmu MMORPG Server
  * Voice Chat Engine
  * Copyright (C) 2005-2007 Burlex <burlex@gmail.com>
  *
