@@ -27,8 +27,10 @@ class DatabaseCleaner : public Singleton<DatabaseCleaner>
 		void Run();
 
 	protected:
+		void CleanNonExistantSpells();
 		void CleanCharacters();
 		void CleanWorld();
+		void CleanLogon();
 		void Optimize();
 };
 
