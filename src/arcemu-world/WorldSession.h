@@ -78,7 +78,7 @@ enum MovementFlags
     MOVEFLAG_TRANSPORT					= 0x200,
     MOVEFLAG_NO_COLLISION				= 0x400,
     MOVEFLAG_ROOTED	    				= 0x800,		//verified
-    MOVEFLAG_REDIRECTED					= 0x1000,		//Unconfirmed
+    MOVEFLAG_REDIRECTED					= 0x1000,		//Unconfirmed, should be MOVEFLAG_JUMP
     MOVEFLAG_FALLING					= 0x2000,       //verified
     MOVEFLAG_FALLING_FAR				= 0x4000,		//verified
     MOVEFLAG_FREE_FALLING				= 0x8000,		//half verified

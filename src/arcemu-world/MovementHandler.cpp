@@ -686,6 +686,8 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recv_data)
 		flags |= AURA_INTERRUPT_ON_ENTER_WATER;
 	if(movement_info.flags & (MOVEFLAG_TURN_LEFT | MOVEFLAG_TURN_RIGHT))
 		flags |= AURA_INTERRUPT_ON_TURNING;
+	if(movement_info.flags & MOVEFLAG_REDIRECTED)
+		flags |= AURA_INTERRUPT_ON_JUMP;
 
 	_player->RemoveAurasByInterruptFlag(flags);
 
