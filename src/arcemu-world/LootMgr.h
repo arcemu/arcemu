@@ -31,39 +31,33 @@ enum LOOTTYPE
     NUM_LOOT_TYPES
 };
 
-struct LootRollType
-{
-	uint32 roll;
-	uint32 loot_type;
-};
-
 struct ItemPrototype;
 class MapMgr;
 class LootRoll : public EventableObject
 {
 	public:
-		LootRoll(uint32 timer, uint32 groupcount, uint64 guid, uint32 slotid, uint32 itemid, uint32 itemunk1, uint32 itemunk2, MapMgr* mgr, uint8 loot_method);
+		LootRoll(uint32 timer, uint32 groupcount, uint64 guid, uint32 slotid, uint32 itemid, uint32 itemunk1, uint32 itemunk2, MapMgr* mgr, uint32 group_id);
 		~LootRoll();
 		void PlayerRolled(Player* player, uint8 choice);
 		void Finalize();
-		uint8 GetRollFlags(Player * plr, uint32 maxgroupskill);
 
 		int32 event_GetInstanceID();
 
-	private:
-		std::map<uint32, LootRollType> Rolls;
-		set<uint32> m_passRolls;
-		uint32 _groupcount;
+		uint64 _guid;
 		uint32 _slotid;
 		uint32 _itemid;
 		uint32 _randomsuffixid;
 		uint32 _randompropertyid;
+
+	private:
+		std::map<uint32, uint8> Rolls;
+		set<uint32> m_passRolls;
+		uint32 _groupcount;
 		uint32 _remaining;
-		uint64 _guid;
 		MapMgr* _mgr;
-		uint8 _lootmethod;
 		uint32 total_Need;
 		uint32 total_Greed;
+		uint32 _group_id;
 };
 
 typedef vector<pair<RandomProps*, float> > RandomPropertyVector;

@@ -201,7 +201,10 @@ void Player::SendItemPushResult(bool created, bool recieved, bool sendtoset, boo
 	data << uint32(suffix);
 	data << uint32(randomprop);
 	data << uint32(count);
-	data << uint32(stack);
+	if( stack != 0 )
+		data << uint32(stack);
+	else
+		data << uint32(GetItemInterface()->GetItemCount(entry, false));
 
 	if(sendtoset && InGroup())
 		GetGroup()->SendPacketToAll(&data);
@@ -519,53 +522,9 @@ void Player::SendLoot(uint64 guid, uint8 loot_type, uint32 mapid)
 
 				if(iter->item.itemproto)
 				{
-					iter->roll = new LootRoll(60000, (m_Group != NULL ? m_Group->MemberCount() : 1),  guid, x, itemProto->ItemId, factor, uint32(ipid), GetMapMgr(), (m_Group != NULL ? m_Group->GetMethod() : 0));
-					uint32 max_ench_skill = m_Group != NULL ? m_Group->GetGroupMaxDisenchantSkill() : 0;
-					uint8 roll_flags = iter->roll->GetRollFlags(this, max_ench_skill);
+					iter->roll = new LootRoll(60000, m_Group->MemberCount(),  guid, x, itemProto->ItemId, factor, uint32(ipid), GetMapMgr(), m_Group->GetID() );
 
-					data2.Initialize(SMSG_LOOT_START_ROLL);
-					data2 << guid;
-					data2 << uint32(mapid);
-					data2 << uint32(x);
-					data2 << uint32(itemProto->ItemId);
-					data2 << uint32(factor);
-					if(iter->iRandomProperty)
-						data2 << uint32(iter->iRandomProperty->ID);
-					else if(iter->iRandomSuffix)
-						data2 << uint32(ipid);
-					else
-						data2 << uint32(0);
-
-					data2 << uint32(iter->iItemsCount);
-					data2 << uint32(60000);	// countdown
-					data2 << uint8(roll_flags);		// some sort of flags that require research
-				}
-
-				Group* pGroup = m_playerInfo->m_Group;
-				if(pGroup)
-				{
-					pGroup->Lock();
-					for(uint32 i = 0; i < pGroup->GetSubGroupCount(); ++i)
-					{
-						for(GroupMembersSet::iterator itr2 = pGroup->GetSubGroup(i)->GetGroupMembersBegin(); itr2 != pGroup->GetSubGroup(i)->GetGroupMembersEnd(); ++itr2)
-						{
-
-							PlayerInfo* pinfo = *itr2;
-
-							if(pinfo->m_loggedInPlayer && pinfo->m_loggedInPlayer->GetItemInterface()->CanReceiveItem(itemProto, iter->iItemsCount) == 0)
-							{
-								if(pinfo->m_loggedInPlayer->m_passOnLoot)
-									iter->roll->PlayerRolled(pinfo->m_loggedInPlayer, 3);		// passed
-								else
-									pinfo->m_loggedInPlayer->SendPacket(&data2);
-							}
-						}
-					}
-					pGroup->Unlock();
-				}
-				else
-				{
-					m_session->SendPacket(&data2);
+					m_Group->SendLootStartRoll(guid, mapid, x, itemProto->ItemId, factor, ipid, iter->iItemsCount);
 				}
 			}
 		}

@@ -13643,12 +13643,36 @@ void Player::RemoveVehicleComponent(){
 	vehicle = NULL;
 }
 
+uint8 Player::GetRollFlags(uint32 itemid)
+{
+	if( !InGroup() )
+		return (ROLL_VOTE_MASK_ALL & ~ROLL_VOTE_MASK_DISENCHANT);
+
+	uint8 mask = ROLL_VOTE_MASK_ALL;
+	uint8 loot_method = GetGroup()->GetMethod();
+	uint32 maxgroupskill = GetGroup()->GetGroupMaxDisenchantSkill();
+
+	ItemPrototype * proto = ItemPrototypeStorage.LookupEntry( itemid );
+
+	if( proto->HasFlag2(ITEM_FLAG2_NEED_ROLL_DISABLED) != 0 )
+		mask = (mask & ~ ROLL_VOTE_MASK_NEED);
+
+	if( proto->DisenchantReqSkill < 1 || uint32(proto->DisenchantReqSkill) > maxgroupskill )
+		mask = (mask & ~ ROLL_VOTE_MASK_DISENCHANT);
+
+	// in need before greed, need is disabled for non-usable item for player
+	if( loot_method == PARTY_LOOT_NBG && CanUseItem( proto ) != INV_ERR_OK )
+		mask = (mask & ~ROLL_VOTE_MASK_NEED);
+
+	return mask;
+}
+
 // used for need before greed or dungeon finder group
 uint8 Player::CanUseItem( ItemPrototype * proto )
 {
     if( proto )
     {
-        if ( (proto->HasFlag2(ITEM_FLAG2_HORDE_ONLY) !=0 ) && IsTeamAlliance())
+		if ( (proto->HasFlag2(ITEM_FLAG2_HORDE_ONLY) !=0 ) && IsTeamAlliance())
             return INV_ERR_YOU_CAN_NEVER_USE_THAT_ITEM;
 
         if ( (proto->HasFlag2(ITEM_FLAG2_ALLIANCE_ONLY) != 0 ) && IsTeamHorde())
@@ -13685,7 +13709,7 @@ uint8 Player::CanUseItem( ItemPrototype * proto )
 		if (proto->Class == ITEM_CLASS_WEAPON && _GetSkillLineCurrent(item_weapon_skills[proto->SubClass]) == 0)
 			return INV_ERR_NO_REQUIRED_PROFICIENCY;
 
-		if (proto->Class == ITEM_CLASS_ARMOR && proto->SubClass > ITEM_SUBCLASS_ARMOR_MISC && proto->SubClass <= ITEM_SUBCLASS_ARMOR_PLATE_MAIL && proto->InventoryType != INVTYPE_CLOAK)
+		if (proto->Class == ITEM_CLASS_ARMOR && proto->SubClass > ITEM_SUBCLASS_ARMOR_MISC && proto->SubClass <= ITEM_SUBCLASS_ARMOR_SHIELD && proto->InventoryType != INVTYPE_CLOAK)
 		{
 			if (_class == WARRIOR || _class == PALADIN || _class == DEATHKNIGHT)
 			{
@@ -13715,6 +13739,9 @@ uint8 Player::CanUseItem( ItemPrototype * proto )
 			if (_class == MAGE || _class == PRIEST || _class == WARLOCK)
 				if (proto->SubClass != ITEM_SUBCLASS_ARMOR_CLOTH)
 					return INV_ERR_CANT_DO_RIGHT_NOW;
+
+			if( proto->SubClass == ITEM_SUBCLASS_ARMOR_SHIELD && !HasSpell(9116) )
+				return INV_ERR_CANT_DO_RIGHT_NOW;
 		}
 
 		return INV_ERR_OK;

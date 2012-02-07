@@ -232,6 +232,8 @@ class SERVER_DECL Group
 		void SendLootUpdates(Object* o);
 
 		uint32 GetGroupMaxDisenchantSkill();
+		void SendLootRoll(LootRoll * rl, Player * plr, uint8 roll, uint8 type);
+		void SendLootStartRoll(uint64 itemGuid, uint32 mapid, uint32 itemCount, uint32 itemid, uint32 suffix, uint32 propid, uint32 itemStack);
 
 		///////////////////////////////////////////////////////////////////
 		//Player* GetRandomPlayerInRangeButSkip(Player* plr, float range, Player* plr_skip)
