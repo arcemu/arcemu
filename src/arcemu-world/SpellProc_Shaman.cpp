@@ -36,6 +36,31 @@ class FrostBrandAttackSpellProc : public SpellProc
 		}
 };
 
+class EarthShieldSpellProc : public SpellProc
+{
+	SPELL_PROC_FACTORY_FUNCTION(EarthShieldSpellProc);
+
+		bool DoEffect(Unit* victim, SpellEntry* CastingSpell, uint32 flag, uint32 dmg, uint32 abs, int* dmg_overwrite, uint32 weapon_damage_type)
+		{
+			int32 value = mOrigSpell->EffectBasePoints[0];
+			dmg_overwrite[0] = value;
+
+			return false;
+		}
+
+		void CastSpell(Unit* victim, SpellEntry* CastingSpell, int* dmg_overwrite)
+		{
+			Unit* caster = TO_PLAYER(mTarget->GetMapMgr()->_GetObject(mCaster));
+			if(caster == NULL)
+				return;
+
+			Spell* spell = sSpellFactoryMgr.NewSpell(caster, mSpell, true, NULL);
+			SpellCastTargets targets(mTarget->GetGUID());
+			spell->prepare(&targets);
+		}
+
+};
+
 class FlametongueWeaponSpellProc : public SpellProc
 {
 		SPELL_PROC_FACTORY_FUNCTION(FlametongueWeaponSpellProc);
@@ -110,4 +135,5 @@ void SpellProcMgr::SetupShamman()
 	AddByNameHash(SPELL_HASH_FROSTBRAND_ATTACK, &FrostBrandAttackSpellProc::Create);
 
 	AddById(10444, &FlametongueWeaponSpellProc::Create);
+	AddById(379, &EarthShieldSpellProc::Create);
 }
