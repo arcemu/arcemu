@@ -32,7 +32,7 @@ class FrostBrandAttackSpellProc : public SpellProc
 				return;
 			}
 
-			mProcChance = TO_ITEM(obj)->GetProto()->Delay * 9 / 600;
+			mProcChance = TO< Item* >(obj)->GetProto()->Delay * 9 / 600;
 		}
 };
 
@@ -50,7 +50,7 @@ class EarthShieldSpellProc : public SpellProc
 
 		void CastSpell(Unit* victim, SpellEntry* CastingSpell, int* dmg_overwrite)
 		{
-			Unit* caster = TO_PLAYER(mTarget->GetMapMgr()->_GetObject(mCaster));
+			Object* caster = mTarget->GetMapMgr()->_GetObject(mCaster);
 			if(caster == NULL)
 				return;
 
@@ -79,7 +79,7 @@ class FlametongueWeaponSpellProc : public SpellProc
 			mItemGUID = obj->GetGUID();
 			damage = 0;
 			uint32 wp_speed;
-			Item* item = TO_ITEM(obj);
+			Item* item = TO< Item* >(obj);
 			EnchantmentInstance* enchant = item->GetEnchantment(TEMP_ENCHANTMENT_SLOT);
 			if(enchant != NULL)
 			{
@@ -112,9 +112,9 @@ class FlametongueWeaponSpellProc : public SpellProc
 			Item* item;
 
 			if(weapon_damage_type == OFFHAND)
-				item = TO_PLAYER(mTarget)->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_OFFHAND);
+				item = TO< Player* >(mTarget)->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_OFFHAND);
 			else
-				item = TO_PLAYER(mTarget)->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_MAINHAND);
+				item = TO< Player* >(mTarget)->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_MAINHAND);
 
 			if(item != NULL && item->GetGUID() == mItemGUID)
 			{

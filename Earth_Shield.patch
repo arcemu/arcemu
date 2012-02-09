@@ -1,0 +1,158 @@
+diff --git a/src/arcemu-world/SpellProc.cpp b/src/arcemu-world/SpellProc.cpp
+index b8e593a..2b9471d 100644
+--- a/src/arcemu-world/SpellProc.cpp
++++ b/src/arcemu-world/SpellProc.cpp
+@@ -52,14 +52,6 @@ void SpellProc::CastSpell(Unit* victim, SpellEntry* CastingSpell, int* dmg_overw
+ 	spell->forced_basepoints[2] = dmg_overwrite[2];
+ 	spell->ProcedOnSpell = CastingSpell;
+
+-	if(mSpell->Id == 974 || mSpell->Id == 32593 || mSpell->Id == 32594 || mSpell->Id == 49283 || mSpell->Id == 49284)   // Earth Shield handler
+-	{
+-		spell->pSpellId = mSpell->Id;
+-		spell->SpellEffectDummy(0);
+-		delete spell;
+-		return;
+-	}
+-
+ 	if(mOrigSpell != NULL)
+ 		spell->pSpellId = mOrigSpell->Id;
+
+
+diff --git a/src/arcemu-world/SpellProc_Shaman.cpp b/src/arcemu-world/SpellProc_Shaman.cpp
+index a8e2799..b0cfb08 100644
+--- a/src/arcemu-world/SpellProc_Shaman.cpp
++++ b/src/arcemu-world/SpellProc_Shaman.cpp
+@@ -36,6 +36,31 @@ class FrostBrandAttackSpellProc : public SpellProc
+ 		}
+ };
+
++class EarthShieldSpellProc : public SpellProc
++{
++	SPELL_PROC_FACTORY_FUNCTION(EarthShieldSpellProc);
++
++		bool DoEffect(Unit* victim, SpellEntry* CastingSpell, uint32 flag, uint32 dmg, uint32 abs, int* dmg_overwrite, uint32 weapon_damage_type)
++		{
++			int32 value = mOrigSpell->EffectBasePoints[0];
++			dmg_overwrite[0] = value;
++
++			return false;
++		}
++
++		void CastSpell(Unit* victim, SpellEntry* CastingSpell, int* dmg_overwrite)
++		{
++			Unit* caster = TO_PLAYER(mTarget->GetMapMgr()->_GetObject(mCaster));
++			if(caster == NULL)
++				return;
++
++			Spell* spell = sSpellFactoryMgr.NewSpell(caster, mSpell, true, NULL);
++			SpellCastTargets targets(mTarget->GetGUID());
++			spell->prepare(&targets);
++		}
++
++};
++
+ class FlametongueWeaponSpellProc : public SpellProc
+ {
+ 		SPELL_PROC_FACTORY_FUNCTION(FlametongueWeaponSpellProc);
+@@ -110,4 +135,5 @@ void SpellProcMgr::SetupShamman()
+ 	AddByNameHash(SPELL_HASH_FROSTBRAND_ATTACK, &FrostBrandAttackSpellProc::Create);
+
+ 	AddById(10444, &FlametongueWeaponSpellProc::Create);
++	AddById(379, &EarthShieldSpellProc::Create);
+ }
+
+diff --git a/src/arcemu-world/Unit.cpp b/src/arcemu-world/Unit.cpp
+index f765b18..ffc53fd 100644
+--- a/src/arcemu-world/Unit.cpp
++++ b/src/arcemu-world/Unit.cpp
+@@ -1751,6 +1751,12 @@ uint32 Unit::HandleProc(uint32 flag, Unit* victim, SpellEntry* CastingSpell, boo
+ 				case 16177:
+ 				case 16236:
+ 				case 16237:
++					{
++						if(CastingSpell == NULL)
++							continue;
++						if(CastingSpell->NameHash == SPELL_HASH_EARTH_SHIELD)   //Do not proc on Earth Shield crits
++							continue;
++					}
+ 					//Shaman - Earthliving Weapon
+ 				case 51940:
+ 				case 51989:
+
+diff --git a/src/scripts/src/SpellHandlers/ShamanSpells.cpp b/src/scripts/src/SpellHandlers/ShamanSpells.cpp
+index 7992e9a..f025f3d 100644
+--- a/src/scripts/src/SpellHandlers/ShamanSpells.cpp
++++ b/src/scripts/src/SpellHandlers/ShamanSpells.cpp
+@@ -63,23 +63,6 @@ bool SkyShatterRegalia(uint32 i, Spell* s)
+ 	return true;
+ }
+
+-bool EarthShield(uint32 i, Spell* s)
+-{
+-	if(!s->pSpellId)
+-		return false;
+-
+-	SpellEntry* spellInfo = dbcSpell.LookupEntryForced(s->pSpellId);
+-	if(!spellInfo)
+-		return false;
+-
+-	uint32 heal32 = s->CalculateEffect(i, s->u_caster);
+-	s->SetUnitTarget(s->u_caster);
+-	if(heal32)
+-		s->Heal(heal32);
+-
+-	return true;
+-}
+-
+ bool ManaTide(uint32 i, Spell* s)
+ {
+ 	Unit* unitTarget = s->GetUnitTarget();
+@@ -93,15 +76,14 @@ bool ManaTide(uint32 i, Spell* s)
+ 	return true;
+ }
+
+-bool EarthShieldDummyAura(uint32 i, Aura* a, bool apply)
++bool EarthShieldDummyAura(uint32 i, Aura* pAura, bool apply)
+ {
+-	Unit* m_target = a->GetTarget();
++	Unit* m_target = pAura->GetTarget();
+
+ 	if(apply)
+-		m_target->AddProcTriggerSpell(a->GetSpellProto(), a->m_casterGuid, NULL, NULL);
+-	//remove the proc trigger spell if there's only 1 aura left, so the one being removed right now
+-	else if(m_target->GetAuraStackCount(a->GetSpellId()) == 1)
+-		m_target->RemoveProcTriggerSpell(a->GetSpellId(), a->m_casterGuid);
++		m_target->AddProcTriggerSpell(379, pAura->GetSpellId(), pAura->m_casterGuid, pAura->GetSpellProto()->procChance, pAura->GetSpellProto()->procFlags & ~PROC_ON_SPELL_LAND_VICTIM, pAura->GetSpellProto()->procCharges, NULL, NULL);
++	else if(m_target->GetAuraStackCount(pAura->GetSpellId()) == 1)
++		m_target->RemoveProcTriggerSpell(379, pAura->m_casterGuid);
+
+ 	return true;
+ }
+@@ -130,17 +112,6 @@ void SetupShamanSpells(ScriptMgr* mgr)
+
+ 	mgr->register_dummy_spell(38443, &SkyShatterRegalia);
+
+-	uint32 earthshieldids[] =
+-	{
+-		974,
+-		32593,
+-		32594,
+-		49283,
+-		49284,
+-		0
+-	};
+-	mgr->register_dummy_spell(earthshieldids, &EarthShield);
+-
+ 	mgr->register_dummy_spell(39610, &ManaTide);
+
+ 	uint32 earthshielddummyauraids[] =
+@@ -148,8 +119,8 @@ void SetupShamanSpells(ScriptMgr* mgr)
+ 		974,
+ 		32593,
+ 		32594,
+-		49284,
+ 		49283,
++		49284,
+ 		0
+ 	};
+ 	mgr->register_dummy_aura(earthshielddummyauraids, &EarthShieldDummyAura);
