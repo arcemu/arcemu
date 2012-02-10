@@ -1578,10 +1578,15 @@ void CBattlegroundManager::SendBattlefieldStatus(Player* plr, BattleGroundStatus
 				data << uint32(60) << uint32(0);	// Time / Elapsed time
 				break;
 			case BGSTATUS_READY:					// Ready to join!
-				data << MapId << Time;
+				data << MapId;
+				data << uint64(0);
+				data << Time;
 				break;
 			case BGSTATUS_TIME:
-				data << MapId << uint32(120000) << Time;
+				data << MapId;
+				data << uint64(0);
+				data << uint32(0);
+				data << Time;
 				if(IS_ARENA(Type))
 					data << uint8(0);
 				else
