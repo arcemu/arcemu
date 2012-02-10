@@ -8360,6 +8360,10 @@ bool Player::SafeTeleport(uint32 MapID, uint32 InstanceID, const LocationVector 
 		flying_aura = 0;
 	}
 
+	// Exit vehicle before teleporting
+	if( GetVehicleBase() != NULL )
+		GetVehicleBase()->GetVehicleComponent()->EjectPassenger( this );
+
 	// Lookup map info
 	if(mi && mi->flags & WMI_INSTANCE_XPACK_01 && !m_session->HasFlag(ACCOUNT_FLAG_XPACK_01) && !m_session->HasFlag(ACCOUNT_FLAG_XPACK_02))
 	{
