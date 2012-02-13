@@ -1,17 +1,23 @@
 /*
+ * ArcEmu, a MMORPG Server
+ * 
+ * Copyright (C) 2008-2012 ArcEmu Developers <http://arcemu.org/>
  *
- * RC4 Encyption Class
- * Copyright (c) 2007 Burlex
- * Adapted from rc4.c to C++
+ * See former copyright holders in CREDITS
+ * 
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
  *
- * This file may be distributed under the terms of the Q Public License
- * as defined by Trolltech ASA of Norway and appearing in the file
- * COPYING included in the packaging of this file.
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
  *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- */
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 #ifndef _SHARED_RC4ENGINE_H
 #define _SHARED_RC4ENGINE_H

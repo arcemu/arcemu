@@ -1,6 +1,6 @@
 /*
  * Multiplatform Async Network Library
- * Copyright (c) 2007 Burlex
+
  *
  * SocketMgr - iocp-based SocketMgr for windows.
  *
