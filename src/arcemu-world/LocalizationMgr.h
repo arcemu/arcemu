@@ -1,5 +1,5 @@
 /*
- * arcemu MMORPG Server
+ * ArcEmu MMORPG Server
  * String Localization Manager
  * Copyright (C) 2007 Burlex <burlex@gmail.com>
  *

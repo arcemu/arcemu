@@ -1,6 +1,6 @@
 /*
-* arcemu MMORPG Server
-* Copyright (C) 2005-2007 arcemu Team <http://www.arcemuemu.com/>
+* ArcEmu MMORPG Server
+* Copyright (C) 2005-2007 Ascent Team
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
