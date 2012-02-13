@@ -1,0 +1,20 @@
+
+creature_data
+ * Research credited to MaNGOS map extractor
+ * Copyright (C) Andy
+
+ad(map/dbc extractor)
+ * Copyright (C) 2005-2011 MaNGOS <http://getmangos.com/>
+ 
+vmaps(vmap extractor/assembler)
+ * Copyright (C) 2005-2011 MaNGOS <http://getmangos.com/>
+ 
+ArcScripts for ArcEmu MMORPG Server
+ * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
+ * Copyright (C) 2006-2008 U2 Team <http://www.undzwei.eu/>
+ * Copyright (C) 2008-2009 Sun++ Team <http://www.sunscripting.com/>
+ ** Some individual scripts (C) Nexis of Sun++
+ * Copyright (C) 2007-2008 Yelly Team
+ * Copyright (C) 2007-2008 Moon++ Team <http://www.moonplusplus.info/>
+ * Copyright (C) 2008 WEmu Team
+ * Copyright (C) 2009 WhyScripts Team <http://www.whydb.org/>
