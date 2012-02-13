@@ -1,5 +1,5 @@
 /*
- * Why Scripts for Arcemu MMORPG Server <http://www.arcemu.org/>
+ * Why Scripts for ArcEmu MMORPG Server 
  * Copyright (C) 2009 WhyScripts Team <http://www.whydb.org/>
  *
  * This program is free software: you can redistribute it and/or modify

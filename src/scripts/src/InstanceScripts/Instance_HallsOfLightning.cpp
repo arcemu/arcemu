@@ -1,6 +1,6 @@
 /*
  * ArcScripts for ArcEmu MMORPG Server
- * Copyright (C) 2009-2010 ArcEmu Team <http://www.arcemu.org/>
+ * Copyright (C) 2008-2012 ArcEmu Team <http://arcemu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
