@@ -1,0 +1,79 @@
+
+creature_data
+ * Research credited to MaNGOS map extractor
+ * Copyright (C) Andy
+
+ad(map/dbc extractor)
+ * Copyright (C) 2005-2011 MaNGOS <http://getmangos.com/>
+ 
+vmaps(vmap extractor/assembler)
+ * Copyright (C) 2005-2011 MaNGOS <http://getmangos.com/>
+ 
+ArcScripts for ArcEmu MMORPG Server
+ * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
+ * Copyright (C) 2006-2008 U2 Team <http://www.undzwei.eu/>
+ * Copyright (C) 2008-2009 Sun++ Team <http://www.sunscripting.com/>
+ ** Some individual scripts (C) Nexis of Sun++
+ * Copyright (C) 2007-2008 Yelly Team
+ * Copyright (C) 2007-2008 Moon++ Team <http://www.moonplusplus.info/>
+ * Copyright (C) 2008 WEmu Team
+ * Copyright (C) 2009 WhyScripts Team <http://www.whydb.org/>
+ 
+ 
+ Individuals credited for work used within ArcEmu
+ 
+ * Aceindy - Antrix, Ascent team member.
+ * Aim - Wowd, Antrix, and Ascent team member.
+ * Andy - AscentCommunity team member.
+ * BoogieMan/Joker - Wowd team member.
+ * Burlex - Wowd, Antrix, and Ascent team member.
+ * Captnoord - Wowd, Antrix, and Ascent team member.
+ * Cebernic - ArcEmu team member.
+ * Compboy - Antrix and Ascent team member.
+ * Dameon87 - Wowd, Antrix, and ArcEmu team member.
+ * Dealer - ArcEmu team member.
+ * Debug - Ascent, and ArcEmu team member.
+ * Dfighter - ArcEmu team member.
+ * DGM - Wowd and ArcEmu team member.
+ * Egari - ArcEmu team member.
+ * Eggy - ArcEmu team member, Ascent team member.
+ * Elenion - ArcEmu team member.
+ * Emsy - Ascent and ArcEmu team member.
+ * Feanor - ArcEmu team member.
+ * Gaijin - ArcEmu team member.
+ * Hasbro - Ascent team member, ArcEmu team member.
+ * Hiperzone - Wowd team member.
+ * Hoffa - ArcEmu team member.
+ * Hypersniper - ArcEmu team member.
+ * Jajcer - Ascent team member.
+ * John/Alice - ArcEmu team member.
+ * Kekers - WoWEmulation contributor.
+ * KFL - ArcEmu team member.
+ * Kolkoo - Wowd team member.
+ * Maku - ArcEmu team member.
+ * Marcelo - ArcEmu team member.
+ * Marforius - ArcEmu team member.
+ * Maven - ArcEmu team member.
+ * MesoX - ArcEmu team member.
+ * Mmc - Wowd and Antrix team member.
+ * NeoMat - ArcEmu team member.
+ * Nexis - ArcEmu team member.
+ * Optical - ArcEmu team member.
+ * Paroxysm - ArcEmu team member.
+ * Razor950 - ArcEmu team member.
+ * SB@L - ArcEmu team member.
+ * Sfera - ArcEmu team member.
+ * Shady - Ascent, and ArcEmu team member.
+ * Sunda - ArcEmu team member.
+ * Supalosa - Ascent team member.
+ * Swiftsmoke - ArcEmu team member.
+ * Tazjin - AscentCommunity team member.
+ * TOM_RUS - Mangos team member.
+ * Trelorn/Motive - Ascent team member.
+ * VirtualAngel - ArcEmu team member.
+ * Vlack - ArcEmu team member.
+ * Vojta - ArcEmu team member.
+ * Warxhead - Ascent team member.
+ * Whoami - ArcEmu team member.
+ * Zack/Tudi - Wowd, Antrix, Ascent and ArcEmu team member.
+ * Zum - ArcEmu team member.

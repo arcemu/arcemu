@@ -1,6 +1,6 @@
 /*
  * Multiplatform Async Network Library
- * Copyright (c) 2007 Burlex
+
  *
  * SocketWin32.cpp - Windows-specific functions of Socket class are located here.
  *
