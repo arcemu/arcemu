@@ -117,16 +117,6 @@ bool Tranquility(uint32 i, Aura* a, bool apply)
 	return true;
 }
 
-bool Hurricane(uint32 i, Aura* a, bool apply)
-{
-	if(apply)
-		sEventMgr.AddEvent(a, &Aura::EventPeriodicDamage, (uint32) a->GetModAmount(i), EVENT_AURA_PERIODIC_DAMAGE, 1000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-	else
-		sEventMgr.RemoveEvents(a, EVENT_AURA_PERIODIC_DAMAGE);
-
-	return true;
-}
-
 bool LifeBloom(uint32 i, Aura* a, bool apply)
 {
 	Unit* m_target = a->GetTarget();
@@ -239,25 +229,12 @@ void SetupDruidSpells(ScriptMgr* mgr)
 		8918,
 		9862,
 		9863,
-		21791,
-		25817,
 		26983,
-		34550,
 		48446,
 		48447,
 		0
 	};
 	mgr->register_dummy_aura(tranquilityids, &Tranquility);
-
-	uint32 hurricaneids[] =
-	{
-		16914,
-		17401,
-		17402,
-		27012,
-		0
-	};
-	mgr->register_dummy_aura(hurricaneids, &Hurricane);
 
 	uint32 lifebloomids[] =
 	{

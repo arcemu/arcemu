@@ -29,9 +29,9 @@ class DispersionSpell : public Spell
 			if( p_caster != NULL )
 			{
 				// Mana regeneration
-				p_caster->CastSpell(target, 60069, false);
+				p_caster->CastSpell(target, 60069, true);
 				// Remove snares and movement impairing effects and make player immune to them
-				p_caster->CastSpell(target, 63230, false);
+				p_caster->CastSpell(target, 63230, true);
 			}
 		}
 };
