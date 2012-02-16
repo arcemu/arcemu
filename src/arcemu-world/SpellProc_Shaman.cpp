@@ -50,7 +50,7 @@ class EarthShieldSpellProc : public SpellProc
 
 		void CastSpell(Unit* victim, SpellEntry* CastingSpell, int* dmg_overwrite)
 		{
-			Object* caster = mTarget->GetMapMgr()->_GetObject(mCaster);
+			Unit* caster = mTarget->GetMapMgr()->GetUnit(mCaster);
 			if(caster == NULL)
 				return;
 
