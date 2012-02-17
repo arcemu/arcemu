@@ -78,38 +78,7 @@ bool TormentOfTheWeak(uint32 i, Aura* a, bool apply)
 	return true;
 }
 
-bool FrostBite(uint32 i, Aura* a, bool apply)
-{
-	Player* caster = a->GetPlayerCaster();
-
-	if(caster == NULL)
-		return true;
-
-	if(apply)
-		caster->SetTriggerChill(12494, a->GetModAmount(i), false);
-	else
-		caster->SetTriggerChill(0, 0, false);
-
-	return true;
-}
-
-bool MageInvisibility(uint32 i, Aura* a, bool apply)
-{
-	Unit* u_target = a->GetTarget();
-
-	if(!u_target->IsPlayer())
-		return true;
-
-	if(u_target != NULL)
-	{
-		u_target->m_mageInvisibility = apply;
-		u_target->UpdateVisibility();
-	}
-
-	return true;
-}
-
-bool FingersOfFrost(uint32 i, Aura* a, bool apply)
+bool FingersOfFrost(uint32 i, Aura* a, bool apply) // Should be visible to client by using ID 74396
 {
 	Player* caster = a->GetPlayerCaster();
 
@@ -186,17 +155,6 @@ void SetupMageSpells(ScriptMgr* mgr)
 		0
 	};
 	mgr->register_dummy_aura(tormentoftheweakids, &TormentOfTheWeak);
-
-	uint32 frostbiteids[] =
-	{
-		11071,
-		12496,
-		12497,
-		0
-	};
-	mgr->register_dummy_aura(frostbiteids, &::FrostBite);
-
-	mgr->register_dummy_aura(32612, &MageInvisibility);
 
 	uint32 fingersoffrostids[] =
 	{

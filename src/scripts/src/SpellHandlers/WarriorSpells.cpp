@@ -245,6 +245,12 @@ bool SecondWind2(uint32 i, Aura* a, bool apply)
 	return true;
 }
 
+bool ArmoredToTheTeeth(uint32 i, Spell* s)
+{
+	// Same as Death Knight's Bladed Armor. See DeathKnightSpells.cpp line 276 for detailed explanation.
+	return true;
+};
+
 void SetupWarriorSpells(ScriptMgr* mgr)
 {
 	uint32 ExecuteIds[] =
@@ -290,5 +296,14 @@ void SetupWarriorSpells(ScriptMgr* mgr)
 
 	mgr->register_dummy_aura(29834, &SecondWind);
 	mgr->register_dummy_aura(29838, &SecondWind2);
+
+	uint32 ArmoredToTheTeethIDs[] =
+	{
+		61216,
+		61221,
+		61222,
+		0
+	};
+	mgr->register_dummy_spell(ArmoredToTheTeethIDs, &ArmoredToTheTeeth);
 
 }
