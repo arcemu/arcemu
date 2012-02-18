@@ -1477,6 +1477,7 @@ class SERVER_DECL Player : public Unit
 		bool m_isMoving;
 		bool moving;
 		bool strafing;
+		bool isTurning;
 		bool jumping;
 		//Invisibility stuff
 		bool m_isGmInvisible;
