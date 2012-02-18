@@ -92,29 +92,6 @@ bool DeathStrike(uint32 i, Spell* pSpell)
 	return true;
 }
 
-class ArmyofDeadGhoul : public CreatureAIScript
-{
-	public:
-		ADD_CREATURE_FACTORY_FUNCTION(ArmyofDeadGhoul);
-		ArmyofDeadGhoul(Creature* pCreature) : CreatureAIScript(pCreature)
-		{
-			_unit->GetAIInterface()->m_canMove = false;
-		}
-
-		void OnLoad()
-		{
-			RegisterAIUpdateEvent(200);
-		}
-
-		void AIUpdate()
-		{
-			_unit->CastSpell(_unit->GetGUID(), 20480, false);
-			RemoveAIUpdateEvent();
-			_unit->GetAIInterface()->m_canMove = true;
-		}
-
-};
-
 bool Strangulate(uint32 i, Aura* pAura, bool apply)
 {
 	if(!apply)
@@ -390,7 +367,6 @@ bool WillOfTheNecropolis(uint32 i, Spell* spell)
 
 void SetupDeathKnightSpells(ScriptMgr* mgr)
 {
-	mgr->register_creature_script(24207, &ArmyofDeadGhoul::Create);
 	mgr->register_dummy_spell(50842, &Pestilence);
 	uint32 DeathStrikeIds[] =
 	{

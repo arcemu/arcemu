@@ -51,22 +51,6 @@ bool ImprovedLeaderOfThePack(uint32 i, Spell* s)
 	return true;
 }
 
-bool Mangle(uint32 i, Aura* a, bool apply)
-{
-	Unit* m_target = a->GetTarget();
-
-	int32 val;
-
-	if(apply)
-		val = 30;
-	else
-		val = -30;
-
-	m_target->ModDamageTakenByMechPCT[MECHANIC_BLEEDING] += val / 100.0f;
-
-	return true;
-}
-
 bool PredatoryStrikes(uint32 i, Aura* a, bool apply)
 {
 	Unit* m_target = a->GetTarget();
@@ -190,18 +174,6 @@ void SetupDruidSpells(ScriptMgr* mgr)
 
 	mgr->register_dummy_spell(34297, &ImprovedLeaderOfThePack);
 	mgr->register_dummy_spell(34300, &ImprovedLeaderOfThePack);
-
-	uint32 mangleids[] =
-	{
-		33878,
-		33986,
-		33987,
-		33876,
-		33982,
-		33983,
-		0
-	};
-	mgr->register_dummy_aura(mangleids, &Mangle);
 
 	uint32 predatorystrikesids[] =
 	{

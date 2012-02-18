@@ -68,30 +68,6 @@ bool MoltenShields(uint32 i, Spell* s)
 	return true;
 }
 
-
-bool ArcaneTorrentMana(uint32 i, Spell* s)
-{
-	Unit* unitTarget = s->GetUnitTarget();
-
-	// for each mana tap, gives you (2.17*level+9.136) mana
-	if(!unitTarget || !unitTarget->isAlive() || !s->p_caster)
-		return false;
-
-	uint32 count = 0;
-
-	for(uint32 x = MAX_NEGATIVE_AURAS_EXTEDED_START; x < MAX_NEGATIVE_AURAS_EXTEDED_END; ++x)
-		if(unitTarget->m_auras[x] && unitTarget->m_auras[x]->GetSpellId() == 28734)
-		{
-			unitTarget->m_auras[x]->Remove();
-			++count;
-		}
-
-	uint32 gain = (uint32)(count * (2.17 * s->p_caster->getLevel() + 9.136));
-	s->p_caster->Energize(unitTarget, 28730, gain, POWER_TYPE_MANA);
-
-	return true;
-}
-
 bool Cannibalize(uint32 i, Spell* s)
 {
 	if(!s->p_caster)
@@ -593,8 +569,6 @@ void SetupMiscSpellhandlers(ScriptMgr* mgr)
 
 	mgr->register_dummy_spell(11094, &MoltenShields);
 	mgr->register_dummy_spell(13043, &MoltenShields);
-
-	mgr->register_dummy_spell(28730, &ArcaneTorrentMana);
 
 	mgr->register_dummy_spell(20577, &Cannibalize);
 
