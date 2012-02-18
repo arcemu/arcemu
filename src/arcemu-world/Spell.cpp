@@ -1486,7 +1486,10 @@ void Spell::cast(bool check)
 			// we're much better to remove this here, because otherwise spells that change powers etc,
 			// don't get applied.
 			if(u_caster && !m_triggeredSpell && !m_triggeredByAura)
+			{
 				u_caster->RemoveAurasByInterruptFlagButSkip(AURA_INTERRUPT_ON_CAST_SPELL, GetProto()->Id);
+				u_caster->RemoveAurasByInterruptFlag(AURA_INTERRUPT_ON_CAST);
+			}
 
 			// if the spell is not reflected
 			if(!IsReflected())
@@ -1549,7 +1552,10 @@ void Spell::cast(bool check)
 			// don't get applied.
 
 			if(u_caster && !m_triggeredSpell && !m_triggeredByAura)
+			{
 				u_caster->RemoveAurasByInterruptFlagButSkip(AURA_INTERRUPT_ON_CAST_SPELL, GetProto()->Id);
+				u_caster->RemoveAurasByInterruptFlag(AURA_INTERRUPT_ON_CAST);
+			}
 
 			//not sure if it must be there...
 			/*if( p_caster != NULL )
