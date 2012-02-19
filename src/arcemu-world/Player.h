@@ -326,12 +326,12 @@ enum PlayerFlags
     PLAYER_FLAG_PVP					= 0x40000,
 };
 
-// used in PLAYER_FIELD_BYTES2 values
-enum PlayerFieldByte2Flags
+// used in PLAYER_FIELD_BYTES2
+enum PlayerFieldBytes2Flags
 {
-    PLAYER_FIELD_BYTE2_NONE                 = 0x00,
-    PLAYER_FIELD_BYTE2_STEALTH              = 0x20,
-    PLAYER_FIELD_BYTE2_INVISIBILITY_GLOW    = 0x40,
+    PLAYER_FIELD_BYTES2_NONE                 = 0x00,
+    PLAYER_FIELD_BYTES2_STEALTH              = 0x20,
+    PLAYER_FIELD_BYTES2_INVISIBILITY_GLOW    = 0x40,
 };
 
 enum CharterTypes

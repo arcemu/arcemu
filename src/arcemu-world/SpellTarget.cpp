@@ -166,10 +166,10 @@ void Spell::FillTargetMap(uint32 i)
 	if(TargetType & SPELL_TARGET_OBJECT_SCRIPTED)
 		AddScriptedOrSpellFocusTargets(i, TargetType, GetRadius(i), m_spellInfo->MaxTargets);
 
-	//Mind Sear hackz
+	//Mind Sear aura target removal
 	if(GetProto()->Id == 53022 || GetProto()->Id == 49821)
 	{
-		Object* target = m_caster->GetMapMgr()->_GetObject(m_targets.m_unitTarget);
+		Object* target = m_caster->GetMapMgr()->_GetObject(m_caster->GetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT));
 		RemoveTarget(i, target);
 	}
 }

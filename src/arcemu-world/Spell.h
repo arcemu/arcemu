@@ -2219,7 +2219,6 @@ class SERVER_DECL Spell : public EventableObject
 		TargetsList m_targetUnits[3];
 		void SafeAddTarget(TargetsList* tgt, uint64 guid);
 
-		void RemoveTarget(uint32 i, Object* obj);
 		void SafeAddMissedTarget(uint64 guid);
 		void SafeAddModeratedTarget(uint64 guid, uint16 type);
 
@@ -2235,6 +2234,7 @@ class SERVER_DECL Spell : public EventableObject
 		void AddChainTargets(uint32 i, uint32 TargetType, float r, uint32 maxtargets);
 		void AddConeTargets(uint32 i, uint32 TargetType, float r, uint32 maxtargets);
 		void AddScriptedOrSpellFocusTargets(uint32 i, uint32 TargetType, float r, uint32 maxtargets);
+		void RemoveTarget(uint32 i, Object* obj);
 
 	public:
 		SpellEntry* m_spellInfo;
