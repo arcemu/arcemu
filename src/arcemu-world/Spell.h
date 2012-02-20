@@ -2234,6 +2234,7 @@ class SERVER_DECL Spell : public EventableObject
 		void AddChainTargets(uint32 i, uint32 TargetType, float r, uint32 maxtargets);
 		void AddConeTargets(uint32 i, uint32 TargetType, float r, uint32 maxtargets);
 		void AddScriptedOrSpellFocusTargets(uint32 i, uint32 TargetType, float r, uint32 maxtargets);
+		void RemoveTarget(uint32 i, Object* obj);
 
 	public:
 		SpellEntry* m_spellInfo;

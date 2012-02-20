@@ -776,7 +776,7 @@ class SERVER_DECL Aura : public EventableObject
 		void EventPeriodicDamage(uint32);
 		void EventPeriodicDamagePercent(uint32);
 		void EventPeriodicHeal(uint32);
-		void EventPeriodicTriggerSpell(SpellEntry* spellInfo, bool overridevalues, int32 overridevalue);
+		void EventPeriodicTriggerSpell(SpellEntry* spellInfo, bool overridevalues, int32 overridevalue, Unit* caster);
 		void EventPeriodicTrigger(uint32 amount, uint32 type);
 		void EventPeriodicEnergize(uint32, uint32);
 		void EventPeriodicEnergizeVariable(uint32, uint32);
