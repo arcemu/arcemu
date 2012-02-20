@@ -2713,7 +2713,7 @@ void Aura::SpellAuraModStealth(bool apply)
 
 		m_target->SetFlag(UNIT_FIELD_BYTES_1, 0x020000);
 		if(m_target->IsPlayer())
-			m_target->SetByteFlag(PLAYER_FIELD_BYTES2, 3, PLAYER_FIELD_BYTE2_STEALTH);
+			m_target->SetByteFlag(PLAYER_FIELD_BYTES2, 3, PLAYER_FIELD_BYTES2_STEALTH);
 
 		m_target->RemoveAurasByInterruptFlag(AURA_INTERRUPT_ON_STEALTH | AURA_INTERRUPT_ON_INVINCIBLE);
 		m_target->m_stealthLevel += mod->m_amount;
@@ -2796,7 +2796,7 @@ void Aura::SpellAuraModStealth(bool apply)
 
 			if(p_target != NULL)
 			{
-				p_target->RemoveByteFlag(PLAYER_FIELD_BYTES2, 3, PLAYER_FIELD_BYTE2_STEALTH);
+				p_target->RemoveByteFlag(PLAYER_FIELD_BYTES2, 3, PLAYER_FIELD_BYTES2_STEALTH);
 				p_target->SendSpellCooldownEvent(m_spellProto->Id);
 
 				if(p_target->m_outStealthDamageBonusPeriod && p_target->m_outStealthDamageBonusPct)
@@ -3117,7 +3117,6 @@ void Aura::EventPeriodicTriggerSpell(SpellEntry* spellInfo, bool overridevalues,
 	SpellCastTargets targets;
 	spell->GenerateTargets(&targets);
 	spell->prepare(&targets);
-	}
 }
 
 void Aura::SpellAuraPeriodicEnergize(bool apply)
