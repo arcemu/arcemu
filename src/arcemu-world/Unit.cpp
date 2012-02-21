@@ -264,7 +264,6 @@ Unit::Unit()
 	m_invisibility = 0;
 	m_invisible = false;
 	m_invisFlag = INVIS_FLAG_NORMAL;
-	m_mageInvisibility = false;
 
 	for(i = 0; i < INVIS_FLAG_TOTAL; i++)
 	{
@@ -1751,6 +1750,12 @@ uint32 Unit::HandleProc(uint32 flag, Unit* victim, SpellEntry* CastingSpell, boo
 				case 16177:
 				case 16236:
 				case 16237:
+					{
+						if(CastingSpell == NULL)
+							continue;
+						if(CastingSpell->NameHash == SPELL_HASH_EARTH_SHIELD)   //Do not proc on Earth Shield crits
+							continue;
+					}
 					//Shaman - Earthliving Weapon
 				case 51940:
 				case 51989:

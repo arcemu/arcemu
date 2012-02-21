@@ -134,7 +134,7 @@ void AuthSocket::HandleChallenge()
 		if(m_patch == NULL)
 		{
 			// could not find a valid patch
-			LOG_DETAIL("[AuthChallenge] Client %s has wrong version. More up to date than server. Server: %u, Client: %u", GetRemoteIP().c_str(), LogonServer::getSingleton().min_build, m_challenge.build);
+			LOG_DETAIL("[AuthChallenge] Client %s has wrong version. More out of date than server. Server: %u, Client: %u", GetRemoteIP().c_str(), LogonServer::getSingleton().min_build, m_challenge.build);
 			SendChallengeError(CE_WRONG_BUILD_NUMBER);
 			return;
 		}

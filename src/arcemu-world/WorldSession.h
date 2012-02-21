@@ -77,8 +77,8 @@ enum MovementFlags
     MOVEFLAG_WALK						= 0x100,		//verified
     MOVEFLAG_TRANSPORT					= 0x200,
     MOVEFLAG_NO_COLLISION				= 0x400,
-    MOVEFLAG_ROOTED	    				= 0x800,		//verified
-    MOVEFLAG_REDIRECTED					= 0x1000,		//Unconfirmed
+    MOVEFLAG_ROOTED 					= 0x800,		//verified
+    MOVEFLAG_REDIRECTED 				= 0x1000,		//Unconfirmed, should be MOVEFLAG_JUMP
     MOVEFLAG_FALLING					= 0x2000,       //verified
     MOVEFLAG_FALLING_FAR				= 0x4000,		//verified
     MOVEFLAG_FREE_FALLING				= 0x8000,		//half verified
@@ -106,7 +106,7 @@ enum MovementFlags
     // Masks
     MOVEFLAG_MOVING_MASK				= 0x03,
     MOVEFLAG_STRAFING_MASK				= 0x0C,
-    MOVEFLAG_TURNING_MASK				= 0x30,
+    MOVEFLAG_TURNING_MASK				= 0x30,         // MOVEFLAG_TURN_LEFT + MOVEFLAG_TURN_RIGHT
     MOVEFLAG_FALLING_MASK				= 0x6000,
     MOVEFLAG_MOTION_MASK				= 0xE00F,		// Forwards, Backwards, Strafing, Falling
     MOVEFLAG_PENDING_MASK				= 0x7F0000,

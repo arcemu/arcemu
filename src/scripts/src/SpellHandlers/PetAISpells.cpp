@@ -6,10 +6,14 @@ class ArmyOfTheDeadGhoulAI : public CreatureAIScript
 		ADD_CREATURE_FACTORY_FUNCTION(ArmyOfTheDeadGhoulAI);
 		ArmyOfTheDeadGhoulAI(Creature* c) : CreatureAIScript(c)
 		{
+			_unit->GetAIInterface()->m_canMove = false;
 		}
 
 		void OnLoad()
 		{
+
+			RegisterAIUpdateEvent(200);
+
 			if(_unit->IsSummon())
 			{
 				Summon* s = TO< Summon* >(_unit);
@@ -19,6 +23,13 @@ class ArmyOfTheDeadGhoulAI : public CreatureAIScript
 				s->SetMinDamage(s->GetMinDamage() + parent_bonus);
 				s->SetMaxDamage(s->GetMaxDamage() + parent_bonus);
 			}
+		}
+
+		void AIUpdate()
+		{
+			_unit->CastSpell(_unit->GetGUID(), 20480, false);
+			RemoveAIUpdateEvent();
+			_unit->GetAIInterface()->m_canMove = true;
 		}
 
 	private:

@@ -51,22 +51,6 @@ bool ImprovedLeaderOfThePack(uint32 i, Spell* s)
 	return true;
 }
 
-bool Mangle(uint32 i, Aura* a, bool apply)
-{
-	Unit* m_target = a->GetTarget();
-
-	int32 val;
-
-	if(apply)
-		val = 30;
-	else
-		val = -30;
-
-	m_target->ModDamageTakenByMechPCT[MECHANIC_BLEEDING] += val / 100.0f;
-
-	return true;
-}
-
 bool PredatoryStrikes(uint32 i, Aura* a, bool apply)
 {
 	Unit* m_target = a->GetTarget();
@@ -113,16 +97,6 @@ bool Tranquility(uint32 i, Aura* a, bool apply)
 		sEventMgr.AddEvent(a, &Aura::EventPeriodicHeal1, (uint32)a->GetModAmount(i), EVENT_AURA_PERIODIC_HEAL, 2000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 	else
 		sEventMgr.RemoveEvents(a, EVENT_AURA_PERIODIC_HEAL);
-
-	return true;
-}
-
-bool Hurricane(uint32 i, Aura* a, bool apply)
-{
-	if(apply)
-		sEventMgr.AddEvent(a, &Aura::EventPeriodicDamage, (uint32) a->GetModAmount(i), EVENT_AURA_PERIODIC_DAMAGE, 1000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-	else
-		sEventMgr.RemoveEvents(a, EVENT_AURA_PERIODIC_DAMAGE);
 
 	return true;
 }
@@ -201,18 +175,6 @@ void SetupDruidSpells(ScriptMgr* mgr)
 	mgr->register_dummy_spell(34297, &ImprovedLeaderOfThePack);
 	mgr->register_dummy_spell(34300, &ImprovedLeaderOfThePack);
 
-	uint32 mangleids[] =
-	{
-		33878,
-		33986,
-		33987,
-		33876,
-		33982,
-		33983,
-		0
-	};
-	mgr->register_dummy_aura(mangleids, &Mangle);
-
 	uint32 predatorystrikesids[] =
 	{
 		16972,
@@ -239,25 +201,12 @@ void SetupDruidSpells(ScriptMgr* mgr)
 		8918,
 		9862,
 		9863,
-		21791,
-		25817,
 		26983,
-		34550,
 		48446,
 		48447,
 		0
 	};
 	mgr->register_dummy_aura(tranquilityids, &Tranquility);
-
-	uint32 hurricaneids[] =
-	{
-		16914,
-		17401,
-		17402,
-		27012,
-		0
-	};
-	mgr->register_dummy_aura(hurricaneids, &Hurricane);
 
 	uint32 lifebloomids[] =
 	{

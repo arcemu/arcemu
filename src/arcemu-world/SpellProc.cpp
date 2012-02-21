@@ -52,14 +52,6 @@ void SpellProc::CastSpell(Unit* victim, SpellEntry* CastingSpell, int* dmg_overw
 	spell->forced_basepoints[2] = dmg_overwrite[2];
 	spell->ProcedOnSpell = CastingSpell;
 
-	if(mSpell->Id == 974 || mSpell->Id == 32593 || mSpell->Id == 32594 || mSpell->Id == 49283 || mSpell->Id == 49284)   // Earth Shield handler
-	{
-		spell->pSpellId = mSpell->Id;
-		spell->SpellEffectDummy(0);
-		delete spell;
-		return;
-	}
-
 	if(mOrigSpell != NULL)
 		spell->pSpellId = mOrigSpell->Id;
 

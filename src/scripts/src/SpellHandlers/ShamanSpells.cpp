@@ -63,23 +63,6 @@ bool SkyShatterRegalia(uint32 i, Spell* s)
 	return true;
 }
 
-bool EarthShield(uint32 i, Spell* s)
-{
-	if(!s->pSpellId)
-		return false;
-
-	SpellEntry* spellInfo = dbcSpell.LookupEntryForced(s->pSpellId);
-	if(!spellInfo)
-		return false;
-
-	uint32 heal32 = s->CalculateEffect(i, s->u_caster);
-	s->SetUnitTarget(s->u_caster);
-	if(heal32)
-		s->Heal(heal32);
-
-	return true;
-}
-
 bool ManaTide(uint32 i, Spell* s)
 {
 	Unit* unitTarget = s->GetUnitTarget();
@@ -93,15 +76,14 @@ bool ManaTide(uint32 i, Spell* s)
 	return true;
 }
 
-bool EarthShieldDummyAura(uint32 i, Aura* a, bool apply)
+bool EarthShieldDummyAura(uint32 i, Aura* pAura, bool apply)
 {
-	Unit* m_target = a->GetTarget();
+	Unit* m_target = pAura->GetTarget();
 
 	if(apply)
-		m_target->AddProcTriggerSpell(a->GetSpellProto(), a->m_casterGuid, NULL, NULL);
-	//remove the proc trigger spell if there's only 1 aura left, so the one being removed right now
-	else if(m_target->GetAuraStackCount(a->GetSpellId()) == 1)
-		m_target->RemoveProcTriggerSpell(a->GetSpellId(), a->m_casterGuid);
+		m_target->AddProcTriggerSpell(379, pAura->GetSpellId(), pAura->m_casterGuid, pAura->GetSpellProto()->procChance, pAura->GetSpellProto()->procFlags & ~PROC_ON_SPELL_LAND_VICTIM, pAura->GetSpellProto()->procCharges, NULL, NULL);
+	else if(m_target->GetAuraStackCount(pAura->GetSpellId()) == 1)
+		m_target->RemoveProcTriggerSpell(379, pAura->m_casterGuid);
 
 	return true;
 }
@@ -130,17 +112,6 @@ void SetupShamanSpells(ScriptMgr* mgr)
 
 	mgr->register_dummy_spell(38443, &SkyShatterRegalia);
 
-	uint32 earthshieldids[] =
-	{
-		974,
-		32593,
-		32594,
-		49283,
-		49284,
-		0
-	};
-	mgr->register_dummy_spell(earthshieldids, &EarthShield);
-
 	mgr->register_dummy_spell(39610, &ManaTide);
 
 	uint32 earthshielddummyauraids[] =
@@ -148,8 +119,8 @@ void SetupShamanSpells(ScriptMgr* mgr)
 		974,
 		32593,
 		32594,
-		49284,
 		49283,
+		49284,
 		0
 	};
 	mgr->register_dummy_aura(earthshielddummyauraids, &EarthShieldDummyAura);
