@@ -92,29 +92,6 @@ bool DeathStrike(uint32 i, Spell* pSpell)
 	return true;
 }
 
-class ArmyofDeadGhoul : public CreatureAIScript
-{
-	public:
-		ADD_CREATURE_FACTORY_FUNCTION(ArmyofDeadGhoul);
-		ArmyofDeadGhoul(Creature* pCreature) : CreatureAIScript(pCreature)
-		{
-			_unit->GetAIInterface()->m_canMove = false;
-		}
-
-		void OnLoad()
-		{
-			RegisterAIUpdateEvent(200);
-		}
-
-		void AIUpdate()
-		{
-			_unit->CastSpell(_unit->GetGUID(), 20480, false);
-			RemoveAIUpdateEvent();
-			_unit->GetAIInterface()->m_canMove = true;
-		}
-
-};
-
 bool Strangulate(uint32 i, Aura* pAura, bool apply)
 {
 	if(!apply)
@@ -273,24 +250,19 @@ bool DeathCoil(uint32 i, Spell* s)
 	return true;
 }
 
-bool BladedArmor(uint32 i, Aura* pAura, bool apply)
+bool BladedArmor(uint32 i, Spell* s)
 {
-	Unit* m_target = pAura->GetTarget();
-
-	int32 realamount = 0;
-
-	uint32 mod1 = m_target->GetResistance(SCHOOL_NORMAL);
-	uint32 mod2 = pAura->m_spellProto->EffectBasePoints[0] + 1; //Thanks Andy for pointing out that BasePoints
-	uint32 mod3 = pAura->m_spellProto->EffectBasePoints[1] + 1; //Should always be used instead of static modifiers.
-	realamount = (pAura->GetModAmount(i) + (mod1 / mod3) * mod2);
-
-	if(apply)
-		m_target->ModAttackPowerMods(realamount);
-	else
-		m_target->ModAttackPowerMods(-realamount);
-
-	m_target->CalcDamage();
-
+	/********************************************************************************************************
+	/* SPELL_EFFECT_DUMMY is used in this spell, in DBC, only to store data for in-game tooltip output.
+	/* Description: Increases your attack power by $s2 for every ${$m1*$m2} armor value you have.
+	/* Where $s2 is base points of Effect 1 and $m1*$m2 I guess it's a mod.
+	/* So for example spell id 49393: Increases your attack power by 5 for every 180 armor value you have.
+	/* Effect 0: Base Points/mod->m_amount = 36; Effect 1: Base Points = 5;
+	/* $s2 = 5 and ${$m1*$m2} = 36*5 = 180.
+	/* Calculations are already done by Blizzard and set into BasePoints field,
+	/* and passed to SpellAuraModAttackPowerOfArmor, so there is no need to do handle this here.
+	/* Either way Blizzard has some weird Chinese developers or they are smoking some really good stuff.
+	********************************************************************************************************/
 	return true;
 }
 
@@ -395,7 +367,6 @@ bool WillOfTheNecropolis(uint32 i, Spell* spell)
 
 void SetupDeathKnightSpells(ScriptMgr* mgr)
 {
-	mgr->register_creature_script(24207, &ArmyofDeadGhoul::Create);
 	mgr->register_dummy_spell(50842, &Pestilence);
 	uint32 DeathStrikeIds[] =
 	{
@@ -433,7 +404,7 @@ void SetupDeathKnightSpells(ScriptMgr* mgr)
 		49393,
 		0
 	};
-	mgr->register_dummy_aura(bladedarmorids, &BladedArmor);
+	mgr->register_dummy_spell(bladedarmorids, &BladedArmor);
 
 	mgr->register_dummy_aura(43265, &DeathAndDecay);
 	mgr->register_dummy_aura(49936, &DeathAndDecay);
