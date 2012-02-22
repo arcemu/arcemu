@@ -2851,10 +2851,11 @@ void Unit::CalculateResistanceReduction(Unit* pVictim, dealdamage* dmg, SpellEnt
 			return;
 		}
 
-		float probability[10] = {0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f};
+		// 0,10,20,30,40,50,60,70,80,90,100% chance to resist
+		float probability[11] = {0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f};
 
 		// calc probability
-		for( int i = 1; i < 10; i++ )
+		for( int i = 0; i < 11; i++ )
 		{
 			probability[i] = static_cast< float >( 0.5f - 2.5f*abs( (i/10.0f) - AverageResistance ) ) * 100.0f;
 
@@ -2863,12 +2864,24 @@ void Unit::CalculateResistanceReduction(Unit* pVictim, dealdamage* dmg, SpellEnt
 
 		}
 
-		uint32 r = 1;
+		// remember, if we have higher resist, so there is no 0% chane to resist
+		// we always must resist something!
+		bool must_resist = false;
+		if( probability[0] == 0.0f )
+			must_resist = true;
+
+		uint32 r = 0;
 		uint32 resisted_dmg = 0;
-		while( resisted_dmg == 0 && r < 10 )
+		float probabilitysum = 0.0f;
+		while( (resisted_dmg == 0 && must_resist) && r < 11 )
 		{
-			if( Rand(probability[r]) )
-				resisted_dmg = static_cast< uint32 >((*dmg).full_damage * static_cast< float >( r / 10.0f ));
+			if( Rand( probability[r]+probabilitysum ) )
+			{
+				resisted_dmg = (*dmg).full_damage * ( r / 10 );
+				break;
+			}
+			else
+				probabilitysum += probability[r];
 			r++;
 		}
 
