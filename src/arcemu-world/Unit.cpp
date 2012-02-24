@@ -2782,10 +2782,10 @@ void Unit::CalculateResistanceReduction(Unit* pVictim, dealdamage* dmg, SpellEnt
 		else
 			ArmorReduce = 0.0f;
 
-		if(ArmorReduce >= pVictim->GetResistance(0))		// fully penetrated :O
+		if(ArmorReduce >= pVictim->GetResistance(SCHOOL_NORMAL))		// fully penetrated :O
 			return;
 
-//		double Reduction = double(pVictim->GetResistance(0)) / double(pVictim->GetResistance(0)+400+(85*getLevel()));
+//		double Reduction = double(pVictim->GetResistance(SCHOOL_NORMAL)) / double(pVictim->GetResistance(SCHOOL_NORMAL)+400+(85*getLevel()));
 		//dmg reduction formula from xinef
 		double Reduction = 0;
 		if(getLevel() < 80)
@@ -2800,7 +2800,7 @@ void Unit::CalculateResistanceReduction(Unit* pVictim, dealdamage* dmg, SpellEnt
 		else if(Reduction < 0)
 			Reduction = 0;
 		if(Reduction)
-			dmg[0].full_damage = static_cast< uint32 >(dmg[0].full_damage * (1 - Reduction));	 // no multiply by 0
+			dmg[SCHOOL_NORMAL].full_damage = static_cast< uint32 >(dmg[SCHOOL_NORMAL].full_damage * (1 - Reduction));	 // no multiply by 0
 	}
 	else
 	{
