@@ -2775,14 +2775,14 @@ void Unit::CalculateResistanceReduction(Unit* pVictim, dealdamage* dmg, SpellEnt
 	float AverageResistance = 0.0f;
 	float ArmorReduce;
 
-	if((*dmg).school_type == SCHOOL_NORMAL)//physical
+	if((*dmg).school_type == SCHOOL_NORMAL) // Physical
 	{
 		if(this->IsPlayer())
 			ArmorReduce = PowerCostPctMod[SCHOOL_NORMAL] + (static_cast< float >(pVictim->GetResistance(SCHOOL_NORMAL)) * (ArmorPctReduce + TO< Player* >(this)->CalcRating(PLAYER_RATING_MODIFIER_ARMOR_PENETRATION_RATING)) / 100.0f);
 		else
 			ArmorReduce = 0.0f;
 
-		if(ArmorReduce >= pVictim->GetResistance(SCHOOL_NORMAL))		// fully penetrated :O
+		if(ArmorReduce >= pVictim->GetResistance(SCHOOL_NORMAL))		// Fully penetrated
 			return;
 
 //		double Reduction = double(pVictim->GetResistance(SCHOOL_NORMAL)) / double(pVictim->GetResistance(SCHOOL_NORMAL)+400+(85*getLevel()));
@@ -2792,7 +2792,6 @@ void Unit::CalculateResistanceReduction(Unit* pVictim, dealdamage* dmg, SpellEnt
 			Reduction = double(pVictim->GetResistance(SCHOOL_NORMAL) - ArmorReduce) / double(pVictim->GetResistance(SCHOOL_NORMAL) + 400 + (85 * getLevel()));
 		else if(getLevel() > 79 && getLevel() < PLAYER_LEVEL_CAP)
 			Reduction = double(pVictim->GetResistance(SCHOOL_NORMAL) - ArmorReduce) / double(pVictim->GetResistance(SCHOOL_NORMAL) - 22167.5 + (467.5 * getLevel()));
-		//
 		else
 			Reduction = double(pVictim->GetResistance(SCHOOL_NORMAL) - ArmorReduce) / double(pVictim->GetResistance(SCHOOL_NORMAL) + 10557.5);
 		if(Reduction > 0.75f)
@@ -2804,14 +2803,14 @@ void Unit::CalculateResistanceReduction(Unit* pVictim, dealdamage* dmg, SpellEnt
 	}
 	else
 	{
-		// magical resistances
-		// based on http://www.wowwiki.com/Resistance
-		// and http://elitistjerks.com/f15/t44675-resistance_mechanics_wotlk/
+		// Magical resistances
+		// Based on http://www.wowwiki.com/Resistance
+		// And http://elitistjerks.com/f15/t44675-resistance_mechanics_wotlk/
 
 		int32 resistance_rating;
 		uint32 victim_level = pVictim->getLevel();
 		uint32 caster_level = getLevel();
-		// this is for players only
+		// This is for players only
 		if( IsPlayer() )
 			resistance_rating = pVictim->GetResistance( (*dmg).school_type ) + std::max( static_cast< int32 >(victim_level - caster_level)*5, int32(0) ) - std::min( GetUInt32Value(PLAYER_FIELD_MOD_TARGET_RESISTANCE), pVictim->GetResistance( (*dmg).school_type ) );
 		else
@@ -2825,26 +2824,26 @@ void Unit::CalculateResistanceReduction(Unit* pVictim, dealdamage* dmg, SpellEnt
 
 		float lvl_diff = 1 + ( 0.075f * (victim_level - caster_level) );
 
-		// if lvl_diff is higher then 13 levels, victim cant resist any damage
+		// If lvl_diff is higher than 13 levels, victim can't resist any damage
 		if ( lvl_diff < 0.0f )
 		{
 			(*dmg).resisted_damage = 0;
 			return;
 		}
 		
-		// base constant modified by lvl_diff
+		// Base constant modified by lvl_diff
 		float constant = victim_level * 5.0f;
 		if( victim_level > caster_level )
 			constant *= lvl_diff;
 		else if( victim_level < caster_level )
 			constant /= lvl_diff;
 
-		// calculating average resistance
+		// Calculating average resistance
 		AverageResistance = (1.0f * resistance_rating) / static_cast< float >(constant + resistance_rating);
 		if(AverageResistance > 0.9f)
 			AverageResistance = 0.9f;
 
-		// if average resistance is lower then 0, we cant resist
+		// Ff average resistance is lower than 0, we can't resist
 		if(AverageResistance <= 0.0f)
 		{
 			(*dmg).resisted_damage = 0;
@@ -2854,7 +2853,7 @@ void Unit::CalculateResistanceReduction(Unit* pVictim, dealdamage* dmg, SpellEnt
 		// 0,10,20,30,40,50,60,70,80,90,100% chance to resist
 		float probability[11] = {0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f};
 
-		// calc probability
+		// Calculate probability
 		for( int i = 0; i < 11; i++ )
 		{
 			probability[i] = static_cast< float >( 0.5f - 2.5f*abs( (i/10.0f) - AverageResistance ) ) * 100.0f;
@@ -2864,8 +2863,8 @@ void Unit::CalculateResistanceReduction(Unit* pVictim, dealdamage* dmg, SpellEnt
 
 		}
 
-		// remember, if we have higher resist, so there is no 0% chane to resist
-		// we always must resist something!
+		// Remember, if we have higher resist, so there is no 0% chance to resist.
+		// We always have to resist something!
 		bool must_resist = false;
 		if( probability[0] == 0.0f )
 			must_resist = true;
