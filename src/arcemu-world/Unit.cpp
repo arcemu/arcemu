@@ -5139,7 +5139,7 @@ int32 Unit::GetSpellDmgBonus(Unit* pVictim, SpellEntry* spellInfo, int32 base_dm
 			case WARRIOR:
 			case DEATHKNIGHT:
 			case HUNTER:
-				return 0;
+				return base_dmg;
 			default:
 				break;
 		}
