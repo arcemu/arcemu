@@ -1673,8 +1673,7 @@ void Object::SpellNonMeleeDamageLog(Unit* pVictim, uint32 spellID, uint32 damage
 
 		caster->RemoveAurasByInterruptFlag(AURA_INTERRUPT_ON_START_ATTACK);
 
-		// this calculates whole dmg with all bonuses / mods
-		res = static_cast< float >(caster->GetSpellDmgBonus(pVictim, spellInfo, damage, false));
+		res += static_cast< float >(caster->GetSpellDmgBonus(pVictim, spellInfo, damage, false));
 
 		if(res < 0.0f)
 			res = 0.0f;
