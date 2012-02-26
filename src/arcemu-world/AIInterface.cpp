@@ -2482,7 +2482,10 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 
 			if(sWorld.DisableFearMovement)
 			{
-				if(m_Unit->GetMapId() == 529 || m_Unit->GetMapId() == 566 || m_Unit->GetMapId() == 489 || m_Unit->GetMapId() == 572 || m_Unit->GetMapId() == 562 || m_Unit->GetMapId() == 559)
+				if(m_Unit->GetMapId() == 529 || m_Unit->GetMapId() == 566 ||
+				   m_Unit->GetMapId() == 489 || m_Unit->GetMapId() == 572 ||
+				   m_Unit->GetMapId() == 562 || m_Unit->GetMapId() == 559 ||
+				   m_Unit->GetMapId() == 617 || m_Unit->GetMapId() == 618)
 				{
 					return;
 				}
@@ -2494,7 +2497,8 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 			float dist = m_Unit->CalcDistance(unitToFear);
 			if(dist > 30.0f || (Rand(25) && dist > 10.0f))	// not too far or too close
 			{
-				if(m_Unit->GetMapId() == 572 || m_Unit->GetMapId() == 562 || m_Unit->GetMapId() == 559)   //GET MAP ID
+				if(m_Unit->GetMapId() == 572 || m_Unit->GetMapId() == 562 || m_Unit->GetMapId() == 559 ||
+				   m_Unit->GetMapId() == 617 || m_Unit->GetMapId() == 618 )   //GET MAP ID
 				{
 					Fx = m_Unit->GetPositionX();
 					Fy = m_Unit->GetPositionY();

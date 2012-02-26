@@ -1260,8 +1260,8 @@ CBattleground* CBattlegroundManager::CreateInstance(uint32 Type, uint32 LevelGro
 	if(IS_ARENA(Type))
 	{
 		/* arenas follow a different procedure. */
-		static const uint32 arena_map_ids[3] = { 559, 562, 572 };
-		uint32 mapid = arena_map_ids[RandomUInt(2)];
+		static const uint32 arena_map_ids[5] = { 559, 562, 572, 617, 618  };
+		uint32 mapid = arena_map_ids[RandomUInt(4)];
 		uint32 players_per_side;
 
 		mgr = sInstanceMgr.CreateBattlegroundInstance(mapid);
