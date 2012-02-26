@@ -105,6 +105,13 @@ typedef struct
 	std::vector<__LootItem> items;
 	uint32 gold;
 	LooterSet looters;
+
+	bool HasRoll(){
+		for( std::vector< __LootItem >::iterator itr = items.begin(); itr != items.end(); ++itr ){
+			if( itr->roll != NULL )
+				return true;
+		}
+	}
 } Loot;
 
 struct tempy
