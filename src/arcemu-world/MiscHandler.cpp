@@ -496,6 +496,9 @@ void WorldSession::HandleLootReleaseOpcode(WorldPacket & recv_data)
 								{
 									if( despawn )
 										pGO->Despawn(0, (sQuestMgr.GetGameObjectLootQuest(pGO->GetEntry()) ? 180000 + (RandomUInt(180000)) : 900000 + (RandomUInt(600000))));
+									else
+										pGO->SetByte( GAMEOBJECT_BYTES_1, 0, 1 );
+
 									return;
 								}
 								else if(pLock->locktype[i] == 2)   //locktype;
@@ -504,7 +507,7 @@ void WorldSession::HandleLootReleaseOpcode(WorldPacket & recv_data)
 									if(pLock->lockmisc[i] == LOCKTYPE_MINING || pLock->lockmisc[i] == LOCKTYPE_HERBALISM)
 									{
 										//we still have loot inside.
-										if(pGO->HasLoot())
+										if(pGO->HasLoot()  || !despawn )
 										{
 											pGO->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 											// TODO : redo this temporary fix, because for some reason hasloot is true even when we loot everything
@@ -528,26 +531,23 @@ void WorldSession::HandleLootReleaseOpcode(WorldPacket & recv_data)
 									}
 									else
 									{
-										if(pGO->HasLoot())
+										if(pGO->HasLoot()  || !despawn )
 										{
 											pGO->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 											return;
 										}
-										if( despawn )
-											pGO->Despawn(0, sQuestMgr.GetGameObjectLootQuest(pGO->GetEntry()) ? 180000 + (RandomUInt(180000)) : (IS_INSTANCE(pGO->GetMapId()) ? 0 : 900000 + (RandomUInt(600000))));
+										pGO->Despawn(0, sQuestMgr.GetGameObjectLootQuest(pGO->GetEntry()) ? 180000 + (RandomUInt(180000)) : (IS_INSTANCE(pGO->GetMapId()) ? 0 : 900000 + (RandomUInt(600000))));
 										return;
 									}
 								}
 								else //other type of locks that i don't bother to split atm ;P
 								{
-									if(pGO->HasLoot())
+									if(pGO->HasLoot()  || !despawn )
 									{
 										pGO->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 										return;
 									}
-
-									if( despawn )
-										pGO->Despawn(0, sQuestMgr.GetGameObjectLootQuest(pGO->GetEntry()) ? 180000 + (RandomUInt(180000)) : (IS_INSTANCE(pGO->GetMapId()) ? 0 : 900000 + (RandomUInt(600000))));
+									pGO->Despawn(0, sQuestMgr.GetGameObjectLootQuest(pGO->GetEntry()) ? 180000 + (RandomUInt(180000)) : (IS_INSTANCE(pGO->GetMapId()) ? 0 : 900000 + (RandomUInt(600000))));
 									return;
 								}
 							}
@@ -555,13 +555,12 @@ void WorldSession::HandleLootReleaseOpcode(WorldPacket & recv_data)
 					}
 					else
 					{
-						if(pGO->HasLoot())
+						if(pGO->HasLoot()  || !despawn )
 						{
 							pGO->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 							return;
 						}
-						if( despawn )
-							pGO->Despawn(0, sQuestMgr.GetGameObjectLootQuest(pGO->GetEntry()) ? 180000 + (RandomUInt(180000)) : (IS_INSTANCE(pGO->GetMapId()) ? 0 : 900000 + (RandomUInt(600000))));
+						pGO->Despawn(0, sQuestMgr.GetGameObjectLootQuest(pGO->GetEntry()) ? 180000 + (RandomUInt(180000)) : (IS_INSTANCE(pGO->GetMapId()) ? 0 : 900000 + (RandomUInt(600000))));
 
 						return;
 
