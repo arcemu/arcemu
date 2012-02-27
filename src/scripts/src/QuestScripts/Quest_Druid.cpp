@@ -55,11 +55,11 @@ class SCRIPT_DECL MoonkinGhost_Gossip : public GossipScript
 			GossipMenu* Menu;
 			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4714, plr);
 
-			if(plr->GetQuestLogForEntry(6002) != NULL)
+			if(plr->HasQuest(6002))
 			{
 				Menu->AddItem(0, GOSSIP_GHOST_MOONKIN, 1);  //Horde
 			}
-			else if(plr->GetQuestLogForEntry(6001) != NULL)
+			else if(plr->HasQuest(6001))
 			{
 				Menu->AddItem(0, GOSSIP_GHOST_MOONKIN, 2);  //Ally
 			}
@@ -89,11 +89,11 @@ class SCRIPT_DECL MoonkinGhost_Gossip : public GossipScript
 						if(qle == NULL)
 							return;
 
-						if(qle->GetMobCount(0) != 0)
+						if(qle->CanBeFinished())
 							return;
 
-						qle->SetMobCount(0, 1);
-						qle->SendUpdateAddKill(0);
+						qle->Complete();
+						qle->SendQuestComplete();
 						qle->UpdatePlayerFields();
 
 						pCreature->Emote(EMOTE_ONESHOT_WAVE);
@@ -110,11 +110,11 @@ class SCRIPT_DECL MoonkinGhost_Gossip : public GossipScript
 						if(qle == NULL)
 							return;
 
-						if(qle->GetMobCount(0) != 0)
+						if(qle->CanBeFinished())
 							return;
 
-						qle->SetMobCount(0, 1);
-						qle->SendUpdateAddKill(0);
+						qle->Complete();
+						qle->SendQuestComplete();
 						qle->UpdatePlayerFields();
 
 						pCreature->Emote(EMOTE_ONESHOT_WAVE);
