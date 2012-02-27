@@ -145,6 +145,7 @@ template< class T, class U > T TO(U u) { return static_cast< T >(u); }
 #include "AIInterface.h"
 #include "AreaTrigger.h"
 #include "BattlegroundMgr.h"
+#include "Battleground.h"
 #include "AlteracValley.h"
 #include "ArathiBasin.h"
 #include "EyeOfTheStorm.h"

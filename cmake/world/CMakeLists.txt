@@ -19,6 +19,7 @@ SET(sources
 	Arenas.cpp 
 	AuctionHouse.cpp 
 	AuctionMgr.cpp 
+	Battleground.cpp
 	BattlegroundCommands.cpp 
 	BattlegroundHandler.cpp 
 	BattlegroundMgr.cpp 
@@ -177,6 +178,7 @@ SET( headers
 	AuctionHouse.h
 	AuctionMgr.h
 	BaseConsole.h
+	Battleground.h
 	BattlegroundMgr.h
 	CConsole.h
 	CellHandler.h
