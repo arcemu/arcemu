@@ -5155,8 +5155,6 @@ int32 Unit::GetSpellDmgBonus(Unit* pVictim, SpellEntry* spellInfo, int32 base_dm
 //==============================+Spell Damage Bonus Modifications===========================
 //==========================================================================================
 //------------------------------by cast duration--------------------------------------------
-	float dmgdoneaffectperc = 1.0f;
-
 	// do not execute this if plus dmg is 0 or lower
 	if( plus_damage > 0.0f )
 	{
@@ -5189,24 +5187,11 @@ int32 Unit::GetSpellDmgBonus(Unit* pVictim, SpellEntry* spellInfo, int32 base_dm
 					|| spellInfo->NameHash == SPELL_HASH_IMMOLATE
 					|| spellInfo->NameHash == SPELL_HASH_ICE_LANCE
 					|| spellInfo->NameHash == SPELL_HASH_PYROBLAST )
-					plus_damage = plus_damage * ( 1.0f - ( ( td / 15000.0f ) / ( ( td / 15000.0f ) + dmgdoneaffectperc ) ) );
+					plus_damage = plus_damage * ( 1.0f - ( ( td / 15000.0f ) / ( ( td / 15000.0f ) ) ) );
 			}
 		}
 	}
 
-	//------------------------------by downranking----------------------------------------------
-	//DOT-DD (Moonfire-Immolate-IceLance-Pyroblast)(Hack Fix)
-
-	if( spellInfo->baseLevel > 0 && spellInfo->maxLevel > 0 )
-	{
-		float downrank1 = 1.0f;
-		if(spellInfo->baseLevel < 20)
-			downrank1 = 1.0f - (20.0f - float(spellInfo->baseLevel)) * 0.0375f;
-		float downrank2 = static_cast< float >( (spellInfo->maxLevel + 5.0f) / TO< Player* >(caster)->getLevel() );
-		if(downrank2 >= 1 || downrank2 < 0)
-			downrank2 = 1.0f;
-		dmgdoneaffectperc *= downrank1 * downrank2;
-	}
 //==========================================================================================
 //==============================Bonus Adding To Main Damage=================================
 //==========================================================================================
@@ -5227,9 +5212,7 @@ int32 Unit::GetSpellDmgBonus(Unit* pVictim, SpellEntry* spellInfo, int32 base_dm
 		plus_damage += static_cast< float >( (base_dmg + bonus_damage) * dmg_bonus_pct / 100 );
 	}
 
-	int32 res = static_cast< int32 >( (base_dmg * dmgdoneaffectperc) + plus_damage );
-
-	return res;
+	return static_cast< int32 >( plus_damage );
 }
 
 float Unit::CalcSpellDamageReduction(Unit* victim, SpellEntry* spell, float res)
