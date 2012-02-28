@@ -195,8 +195,10 @@ static inline uint32 GetFieldCount(uint32 BGType)
 #define MAXIMUM_BATTLEGROUNDS_PER_LEVEL_GROUP 50
 #define LEVEL_GROUP_70 8
 
+typedef CBattleground* (*BattlegroundFactoryMethod)(MapMgr* mgr, uint32 iid, uint32 group, uint32 type);
 
-class CBattlegroundManager : public Singleton<CBattlegroundManager>, public EventableObject
+
+class SERVER_DECL CBattlegroundManager : public Singleton<CBattlegroundManager>, public EventableObject
 {
 		/* Battleground Instance Map */
 		map<uint32, CBattleground*> m_instances[BATTLEGROUND_NUM_TYPES];
@@ -214,9 +216,48 @@ class CBattlegroundManager : public Singleton<CBattlegroundManager>, public Even
 
 		Mutex m_queueLock;
 
+		// Bg factory methods by Bg type Id
+		std::map< uint32, BattlegroundFactoryMethod > bgFactories;
+		// Bg map IDs by Bg type Id
+		std::map< uint32, uint32 > bgMaps;
+
 	public:
 		CBattlegroundManager();
 		~CBattlegroundManager();
+
+		////////////////////////////////////////////////////////////////////////////////////////////////
+		//void RegisterBgFactory( uint32 type, BattlegroundFactoryMethod method )
+		//  Registers the specified Battleground class factory method for
+		//  the specified Battleground type.
+		//  When trying to register a duplicate, the duplicate will be ignored.
+		//
+		//Parameter(s)
+		//  uint32 type                       -  The type of the Battleground
+		//  BattlegroundFactoryMethod method  -  The Battleground factory method
+		//
+		//Return Value
+		//  None
+		//
+		//
+		////////////////////////////////////////////////////////////////////////////////////////////////
+		void RegisterBgFactory( uint32 type, BattlegroundFactoryMethod method );
+
+
+		////////////////////////////////////////////////////////////////////////////////////////////////
+		//void RegisterMapForBgType( uint32 type, uint32 map )
+		//  Registers a Map Id for the specified Battleground type.
+		//  When trying to register a duplicate, the duplicate will be ignored.
+		//
+		//Parameter(s)
+		//  uint32 type  -  The Battleground type
+		//  uint32 map   -  The map Id
+		//
+		//Return Value
+		//  None
+		//
+		//
+		////////////////////////////////////////////////////////////////////////////////////////////////
+		void RegisterMapForBgType( uint32 type, uint32 map );
 
 		/* Packet Handlers */
 		void HandleBattlegroundListPacket(WorldSession* m_session, uint32 BattlegroundType, uint8 from = 0);

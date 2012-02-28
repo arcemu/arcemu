@@ -20,6 +20,8 @@
 
 
 #include "StdAfx.h"
+#include "EyeOfTheStorm.h"
+
 
 static float EOTSBuffCoordinates[4][4] =
 {

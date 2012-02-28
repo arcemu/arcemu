@@ -51,7 +51,7 @@ class EyeOfTheStorm : public CBattleground
 		void SpawnBuff(uint32 x);
 		LocationVector GetStartingCoords(uint32 Team);
 		static CBattleground* Create(MapMgr* m, uint32 i, uint32 l, uint32 t) { return new EyeOfTheStorm(m, i, l, t); }
-		uint32 GetFlagHolderGUID() { return m_flagHolder; }
+		uint64 GetFlagHolderGUID( uint32 faction ) const{ return m_flagHolder; }
 
 		uint32 GetNameID() { return 44; }
 		void OnStart();

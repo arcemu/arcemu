@@ -111,6 +111,7 @@ typedef struct
 			if( itr->roll != NULL )
 				return true;
 		}
+		return false;
 	}
 } Loot;
 

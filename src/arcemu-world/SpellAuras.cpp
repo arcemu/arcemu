@@ -2700,11 +2700,11 @@ void Aura::SpellAuraModStealth(bool apply)
 		{
 			if(p_target->m_bg && p_target->m_bg->GetType() == BATTLEGROUND_WARSONG_GULCH)
 			{
-				TO< WarsongGulch* >(p_target->m_bg)->HookOnFlagDrop(p_target);
+				p_target->m_bg->HookOnFlagDrop(p_target);
 			}
 			if(p_target->m_bg && p_target->m_bg->GetType() == BATTLEGROUND_EYE_OF_THE_STORM)
 			{
-				TO< EyeOfTheStorm* >(p_target->m_bg)->HookOnFlagDrop(p_target);
+				p_target->m_bg->HookOnFlagDrop(p_target);
 			}
 		}
 
@@ -2777,11 +2777,11 @@ void Aura::SpellAuraModStealth(bool apply)
 				{
 					if(p_target->m_bg->GetType() == BATTLEGROUND_WARSONG_GULCH)
 					{
-						TO< WarsongGulch* >(p_target->m_bg)->HookOnFlagDrop(p_target);
+						p_target->m_bg->HookOnFlagDrop(p_target);
 					}
 					if(p_target->m_bg->GetType() == BATTLEGROUND_EYE_OF_THE_STORM)
 					{
-						TO< EyeOfTheStorm* >(p_target->m_bg)->HookOnFlagDrop(p_target);
+						p_target->m_bg->HookOnFlagDrop(p_target);
 					}
 				}
 			}

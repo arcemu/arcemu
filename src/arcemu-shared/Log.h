@@ -108,7 +108,7 @@ class SERVER_DECL oLog : public Singleton< oLog >
 		}
 };
 
-class SessionLogWriter
+class SERVER_DECL SessionLogWriter
 {
 		FILE* m_file;
 		char* m_filename;
@@ -123,9 +123,7 @@ class SessionLogWriter
 		void Close();
 };
 
-extern SessionLogWriter* Anticheat_Log;
-extern SessionLogWriter* GMCommand_Log;
-extern SessionLogWriter* Player_Log;
+
 
 #define sLog oLog::getSingleton()
 
@@ -136,9 +134,6 @@ extern SessionLogWriter* Player_Log;
 
 
 #define Log sLog
-#define sCheatLog (*Anticheat_Log)
-#define sGMLog (*GMCommand_Log)
-#define sPlrLog (*Player_Log)
 
 class WorldLog : public Singleton<WorldLog>
 {

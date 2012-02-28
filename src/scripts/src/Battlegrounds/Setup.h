@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2011 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2012 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,17 +18,10 @@
  *
  */
 
-#ifndef HONORHANDLER_H
-#define HONORHANDLER_H
+#ifndef BATTLEGROUNDS_SETUP_H
+#define BATTLEGROUNDS_SETUP_H
 
-class SERVER_DECL HonorHandler
-{
-	public:
-		static int32 CalculateHonorPointsForKill(uint32 playerLevel, uint32 victimLevel);
-		static void RecalculateHonorFields(Player* pPlayer);
-		static void AddHonorPointsToPlayer(Player* pPlayer, uint32 uAmount);
-		static void OnPlayerKilled(Player* pPlayer, Player* pVictim);
-};
-
+#include "StdAfx.h"
 
 #endif
+

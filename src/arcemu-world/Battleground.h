@@ -215,5 +215,20 @@ class SERVER_DECL CBattleground : public EventableObject
 
 		virtual void SetIsWeekend(bool isweekend) {}
 		void QueueAtNearestSpiritGuide(Player* plr, Creature* old);
+
+		/////////////////////////////////////////////////////////////////////////
+		//uint64 GetFlagHolderGUID( uint32 faction )
+		//  Tells the GUID of the player who currently holds the flag
+		//
+		//Parameter(s)
+		//  uint32 faction - The faction of the flag holder we are interested in
+		//
+		//Return Value
+		//  Returns a GUID as an uint64 if the flag is held.
+		//  Returns 0 otherwise.
+		//
+		//
+		/////////////////////////////////////////////////////////////////////////
+		virtual uint64 GetFlagHolderGUID( uint32 faction ) const{ return 0; }
 };
 

@@ -559,8 +559,46 @@ bool IOCTeleporterOut( uint32 i, Spell *s ){
 	return true;
 }
 
+const float sotaTransporterDestination[5][4] =
+{
+	{ 1388.94f, 103.067f, 34.49f, 5.4571f },
+	{ 1043.69f, -87.95f, 87.12f, 0.003f },
+	{ 1441.0411f, -240.974f, 35.264f, 0.949f },
+	{ 1228.342f, -235.234f, 60.03f, 0.4584f },
+	{ 1193.857f, 69.9f, 58.046f, 5.7245f },
+};
+
+// 54640
+bool SOTATeleporter( uint32 i, Spell *s ){
+	Player *plr = s->GetPlayerTarget();
+	if( plr == NULL )
+		return true;
+
+	LocationVector dest;
+	uint32 closest_platform = 0;
+	
+	for(uint32 i = 0; i < 5; i++){
+		float distance = plr->GetDistanceSq( sotaTransporterDestination[i][0], sotaTransporterDestination[i][1], sotaTransporterDestination[i][2]);
+		
+		if(distance < 75){
+			closest_platform = i;
+			break;
+		}
+	}
+	
+	dest.ChangeCoords(sotaTransporterDestination[closest_platform][0],
+                      sotaTransporterDestination[closest_platform][1],
+					  sotaTransporterDestination[closest_platform][2],
+					  sotaTransporterDestination[closest_platform][3]);
+	
+	plr->SafeTeleport(plr->GetMapId(), plr->GetInstanceID(), dest);
+	return true;
+}
+
 void SetupMiscSpellhandlers(ScriptMgr* mgr)
 {
+	mgr->register_dummy_spell( 54640, &SOTATeleporter );
+
 	mgr->register_dummy_spell( 66550, &IOCTeleporterOut );
 	mgr->register_dummy_spell( 66551, &IOCTeleporterIn );
 

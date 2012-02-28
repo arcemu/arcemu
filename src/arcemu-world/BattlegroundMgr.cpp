@@ -21,81 +21,6 @@
 #include "StdAfx.h"
 
 initialiseSingleton(CBattlegroundManager);
-typedef CBattleground* (*CreateBattlegroundFunc)(MapMgr* mgr, uint32 iid, uint32 group, uint32 type);
-
-const static uint32 BGMapIds[ BATTLEGROUND_NUM_TYPES ] =
-{
-	0,	// 0
-	30,	// AV
-	489,	// WSG
-	529,	// AB
-	0,	// 2v2
-	0,	// 3v3
-	0,	// 5v5
-	566,	// EOTS
-	0,
-	607,	// SOTA
-	0,
-	0,//11
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	628,
-	0,
-	0
-};
-
-const static CreateBattlegroundFunc BGCFuncs[BATTLEGROUND_NUM_TYPES] =
-{
-	NULL,				// 0
-	&AlteracValley::Create,		// AV
-	&WarsongGulch::Create,		// WSG
-	&ArathiBasin::Create,		// AB
-	NULL,				// 2v2
-	NULL,				// 3v3
-	NULL,				// 5v5
-	&EyeOfTheStorm::Create,		// EotS
-	NULL,
-	&StrandOfTheAncient::Create,	// SOTA
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	&IsleOfConquest::Create, //IOC
-	NULL,
-	NULL
-};
 
 CBattlegroundManager::CBattlegroundManager()
 	: EventableObject()
@@ -117,6 +42,24 @@ CBattlegroundManager::CBattlegroundManager()
 
 CBattlegroundManager::~CBattlegroundManager()
 {
+
+}
+
+void CBattlegroundManager::RegisterBgFactory( uint32 type, BattlegroundFactoryMethod method ){
+	std::map< uint32, BattlegroundFactoryMethod >::iterator itr = bgFactories.find( type );
+	if( itr != bgFactories.end() )
+		return;
+
+	bgFactories[ type ] = method;
+
+}
+
+void CBattlegroundManager::RegisterMapForBgType( uint32 type, uint32 map ){
+	std::map< uint32, uint32 >::iterator itr = bgMaps.find( type );
+	if( itr != bgMaps.end() )
+		return;
+
+	bgMaps[ type ] = map;
 
 }
 
@@ -196,8 +139,7 @@ void CBattlegroundManager::HandleBattlegroundJoin(WorldSession* m_session, World
 
 	pck >> guid >> bgtype >> instance;
 
-
-	if(bgtype >= BATTLEGROUND_NUM_TYPES || !bgtype)
+	if( ( bgtype >= BATTLEGROUND_NUM_TYPES ) || ( bgtype == 0 ) || ( bgMaps.find( bgtype ) == bgMaps.end() ) )
 	{
 		sCheatLog.writefromsession(m_session, "tried to crash the server by joining battleground that does not exist (0)");
 		m_session->Disconnect();
@@ -227,7 +169,7 @@ void CBattlegroundManager::HandleBattlegroundJoin(WorldSession* m_session, World
 	Log.Notice("BattlegroundManager", "Player %u is now in battleground queue for instance %u", m_session->GetPlayer()->GetLowGUID(), (instance + 1));
 
 	/* send the battleground status packet */
-	SendBattlefieldStatus(m_session->GetPlayer(), BGSTATUS_INQUEUE, bgtype, instance, 0, BGMapIds[bgtype], 0);
+	SendBattlefieldStatus(m_session->GetPlayer(), BGSTATUS_INQUEUE, bgtype, instance, 0, bgMaps[bgtype], 0);
 	m_session->GetPlayer()->m_bgIsQueued = true;
 	m_session->GetPlayer()->m_bgQueueInstanceId = instance;
 	m_session->GetPlayer()->m_bgQueueType = bgtype;
@@ -941,7 +883,20 @@ uint32 CBattlegroundManager::GetMaximumPlayers(uint32 dbcIndex)
 
 CBattleground* CBattlegroundManager::CreateInstance(uint32 Type, uint32 LevelGroup)
 {
-	CreateBattlegroundFunc cfunc = BGCFuncs[Type];
+	if( bgMaps.find( Type ) == bgMaps.end() ){
+		if( !IS_ARENA( Type ) ){
+			LOG_ERROR( "BattlegroundManager", "No map Id is registered for Battleground type %u", Type );
+			return NULL;
+		}
+	}
+
+	BattlegroundFactoryMethod cfunc;
+
+	if( bgFactories.find( Type ) == bgFactories.end() )
+		cfunc = NULL;
+	else
+		cfunc = bgFactories[ Type ];
+
 	MapMgr* mgr = NULL;
 	CBattleground* bg;
 	bool isWeekend = false;
@@ -1033,10 +988,10 @@ CBattleground* CBattlegroundManager::CreateInstance(uint32 Type, uint32 LevelGro
 	}
 
 	/* Create Map Manager */
-	mgr = sInstanceMgr.CreateBattlegroundInstance(BGMapIds[Type]);
+	mgr = sInstanceMgr.CreateBattlegroundInstance(bgMaps[Type]);
 	if(mgr == NULL)
 	{
-		sLog.Error("BattlegroundManager", "CreateInstance() call failed for map %u, type %u, level group %u", BGMapIds[Type], Type, LevelGroup);
+		sLog.Error("BattlegroundManager", "CreateInstance() call failed for map %u, type %u, level group %u", bgMaps[Type], Type, LevelGroup);
 		return NULL;      // Shouldn't happen
 	}
 
