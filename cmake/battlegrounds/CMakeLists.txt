@@ -6,8 +6,13 @@ SET( prefix ${ROOT_PATH}/src/scripts/src/${PROJECT_NAME} )
 SET( sources
     AlteracValley.cpp
     ArathiBasin.cpp
+    CircleOfBlood.cpp
+    DalaranSewers.cpp
     EyeOfTheStorm.cpp
     IsleOfConquest.cpp
+    RingOfTrials.cpp
+    RingOfValor.cpp
+    RuinsOfLordaeron.cpp
     Setup.cpp
     StrandOfTheAncient.cpp
     WarsongGulch.cpp
