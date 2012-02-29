@@ -198,7 +198,7 @@ static inline uint32 GetFieldCount(uint32 BGType)
 class Arena;
 
 typedef CBattleground* (*BattlegroundFactoryMethod)(MapMgr* mgr, uint32 iid, uint32 group, uint32 type);
-typedef Arena* ( *ArenaFactoryMethod )( MapMgr *mgr, uint32 iid, uint32 group, uint32 type, uint32 players_per_side );
+typedef CBattleground* ( *ArenaFactoryMethod )( MapMgr *mgr, uint32 iid, uint32 group, uint32 type, uint32 players_per_side );
 
 
 class SERVER_DECL CBattlegroundManager : public Singleton<CBattlegroundManager>, public EventableObject
@@ -219,7 +219,7 @@ class SERVER_DECL CBattlegroundManager : public Singleton<CBattlegroundManager>,
 
 		Mutex m_queueLock;
 
-		// Bg factory methods by Bg type Id
+		// Bg factory methods by Bg map Id
 		std::map< uint32, BattlegroundFactoryMethod > bgFactories;
 		// Arena factory methods
 		std::vector< ArenaFactoryMethod > arenaFactories;
@@ -233,13 +233,13 @@ class SERVER_DECL CBattlegroundManager : public Singleton<CBattlegroundManager>,
 		~CBattlegroundManager();
 
 		////////////////////////////////////////////////////////////////////////////////////////////////
-		//void RegisterBgFactory( uint32 type, BattlegroundFactoryMethod method )
+		//void RegisterBgFactory( uint32 map, BattlegroundFactoryMethod method )
 		//  Registers the specified Battleground class factory method for
 		//  the specified Battleground type.
 		//  When trying to register a duplicate, the duplicate will be ignored.
 		//
 		//Parameter(s)
-		//  uint32 type                       -  The type of the Battleground
+		//  uint32 map                        -  The map of the Battleground
 		//  BattlegroundFactoryMethod method  -  The Battleground factory method
 		//
 		//Return Value
@@ -247,7 +247,7 @@ class SERVER_DECL CBattlegroundManager : public Singleton<CBattlegroundManager>,
 		//
 		//
 		////////////////////////////////////////////////////////////////////////////////////////////////
-		void RegisterBgFactory( uint32 type, BattlegroundFactoryMethod method );
+		void RegisterBgFactory( uint32 map, BattlegroundFactoryMethod method );
 
 		////////////////////////////////////////////////////////////////////////////////////////////////
 		//void RegisterArenaFactory( uint32 map, ArenaFactoryMethod method )

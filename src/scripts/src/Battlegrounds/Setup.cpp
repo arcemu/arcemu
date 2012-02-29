@@ -55,12 +55,12 @@ extern "C" SCRIPT_DECL void _exp_script_register(ScriptMgr* mgr)
 	bgMgr.RegisterMapForBgType( BATTLEGROUND_ISLE_OF_CONQUEST,      628 );
 
 	// Registering factory methods
-	bgMgr.RegisterBgFactory( BATTLEGROUND_ALTERAC_VALLEY,        &AlteracValley::Create );
-	bgMgr.RegisterBgFactory( BATTLEGROUND_WARSONG_GULCH,         &WarsongGulch::Create );
-	bgMgr.RegisterBgFactory( BATTLEGROUND_ARATHI_BASIN,          &ArathiBasin::Create );
-	bgMgr.RegisterBgFactory( BATTLEGROUND_EYE_OF_THE_STORM,      &EyeOfTheStorm::Create );
-	bgMgr.RegisterBgFactory( BATTLEGROUND_STRAND_OF_THE_ANCIENT, &StrandOfTheAncient::Create );
-	bgMgr.RegisterBgFactory( BATTLEGROUND_ISLE_OF_CONQUEST,      &IsleOfConquest::Create );
+	bgMgr.RegisterBgFactory( 30,  &AlteracValley::Create );
+	bgMgr.RegisterBgFactory( 489, &WarsongGulch::Create );
+	bgMgr.RegisterBgFactory( 529, &ArathiBasin::Create );
+	bgMgr.RegisterBgFactory( 566, &EyeOfTheStorm::Create );
+	bgMgr.RegisterBgFactory( 607, &StrandOfTheAncient::Create );
+	bgMgr.RegisterBgFactory( 628, &IsleOfConquest::Create );
 
 	bgMgr.RegisterArenaFactory( 559, &RingOfTrials::Create );
 	bgMgr.RegisterArenaFactory( 562, &CircleOfBlood::Create );

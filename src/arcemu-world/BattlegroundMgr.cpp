@@ -45,12 +45,12 @@ CBattlegroundManager::~CBattlegroundManager()
 
 }
 
-void CBattlegroundManager::RegisterBgFactory( uint32 type, BattlegroundFactoryMethod method ){
-	std::map< uint32, BattlegroundFactoryMethod >::iterator itr = bgFactories.find( type );
+void CBattlegroundManager::RegisterBgFactory( uint32 map, BattlegroundFactoryMethod method ){
+	std::map< uint32, BattlegroundFactoryMethod >::iterator itr = bgFactories.find( map );
 	if( itr != bgFactories.end() )
 		return;
 
-	bgFactories[ type ] = method;
+	bgFactories[ map ] = method;
 
 }
 
@@ -900,12 +900,11 @@ CBattleground* CBattlegroundManager::CreateInstance(uint32 Type, uint32 LevelGro
 		}
 	}
 
-	BattlegroundFactoryMethod cfunc;
+	BattlegroundFactoryMethod cfunc = NULL;
 
-	if( bgFactories.find( Type ) == bgFactories.end() )
-		cfunc = NULL;
-	else
-		cfunc = bgFactories[ Type ];
+	if( !IS_ARENA( Type ) )
+		if( bgFactories.find( bgMaps[ Type ] ) != bgFactories.end() )
+			cfunc = bgFactories[ bgMaps[ Type ] ];
 
 	MapMgr* mgr = NULL;
 	CBattleground* bg;

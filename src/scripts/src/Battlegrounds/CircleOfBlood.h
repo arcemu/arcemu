@@ -28,7 +28,7 @@ public:
 	CircleOfBlood( MapMgr* mgr, uint32 id, uint32 lgroup, uint32 t, uint32 players_per_side );
 	~CircleOfBlood();
 
-	static Arena* Create( MapMgr* m, uint32 i, uint32 l, uint32 t, uint32 players_per_side ){
+	static CBattleground* Create( MapMgr* m, uint32 i, uint32 l, uint32 t, uint32 players_per_side ){
 		return new CircleOfBlood( m, i, l, t, players_per_side );
 	}
 
