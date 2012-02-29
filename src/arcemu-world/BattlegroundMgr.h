@@ -195,7 +195,10 @@ static inline uint32 GetFieldCount(uint32 BGType)
 #define MAXIMUM_BATTLEGROUNDS_PER_LEVEL_GROUP 50
 #define LEVEL_GROUP_70 8
 
+class Arena;
+
 typedef CBattleground* (*BattlegroundFactoryMethod)(MapMgr* mgr, uint32 iid, uint32 group, uint32 type);
+typedef Arena* ( *ArenaFactoryMethod )( MapMgr *mgr, uint32 iid, uint32 group, uint32 type, uint32 players_per_side );
 
 
 class SERVER_DECL CBattlegroundManager : public Singleton<CBattlegroundManager>, public EventableObject
@@ -218,8 +221,12 @@ class SERVER_DECL CBattlegroundManager : public Singleton<CBattlegroundManager>,
 
 		// Bg factory methods by Bg type Id
 		std::map< uint32, BattlegroundFactoryMethod > bgFactories;
+		// Arena factory methods
+		std::vector< ArenaFactoryMethod > arenaFactories;
 		// Bg map IDs by Bg type Id
 		std::map< uint32, uint32 > bgMaps;
+		// Arena map IDs
+		std::vector< uint32 > arenaMaps;
 
 	public:
 		CBattlegroundManager();
@@ -241,6 +248,23 @@ class SERVER_DECL CBattlegroundManager : public Singleton<CBattlegroundManager>,
 		//
 		////////////////////////////////////////////////////////////////////////////////////////////////
 		void RegisterBgFactory( uint32 type, BattlegroundFactoryMethod method );
+
+		////////////////////////////////////////////////////////////////////////////////////////////////
+		//void RegisterArenaFactory( uint32 map, ArenaFactoryMethod method )
+		//  Registers the specified Arena class factory method for
+		//  the specified Battleground type.
+		//  When trying to register a duplicate, the duplicate will be ignored.
+		//
+		//Parameter(s)
+		//  uint32 map                 -  Map id
+		//  ArenaFactoryMethod method  -  The Arena factory method
+		//
+		//Return Value(s)
+		//  None
+		//
+		//
+		////////////////////////////////////////////////////////////////////////////////////////////////
+		void RegisterArenaFactory( uint32 map, ArenaFactoryMethod method );
 
 
 		////////////////////////////////////////////////////////////////////////////////////////////////

@@ -26,8 +26,13 @@
 
 #include "AlteracValley.h"
 #include "ArathiBasin.h"
+#include "CircleOfBlood.h"
+#include "DalaranSewers.h"
 #include "EyeOfTheStorm.h"
 #include "IsleOfConquest.h"
+#include "RingOfTrials.h"
+#include "RingOfValor.h"
+#include "RuinsOfLordaeron.h"
 #include "StrandOfTheAncient.h"
 #include "WarsongGulch.h"
 
@@ -56,6 +61,12 @@ extern "C" SCRIPT_DECL void _exp_script_register(ScriptMgr* mgr)
 	bgMgr.RegisterBgFactory( BATTLEGROUND_EYE_OF_THE_STORM,      &EyeOfTheStorm::Create );
 	bgMgr.RegisterBgFactory( BATTLEGROUND_STRAND_OF_THE_ANCIENT, &StrandOfTheAncient::Create );
 	bgMgr.RegisterBgFactory( BATTLEGROUND_ISLE_OF_CONQUEST,      &IsleOfConquest::Create );
+
+	bgMgr.RegisterArenaFactory( 559, &RingOfTrials::Create );
+	bgMgr.RegisterArenaFactory( 562, &CircleOfBlood::Create );
+	bgMgr.RegisterArenaFactory( 572, &RuinsOfLordaeron::Create );
+	bgMgr.RegisterArenaFactory( 617, &DalaranSewers::Create );
+	bgMgr.RegisterArenaFactory( 618, &RingOfValor::Create );
 }
 
 #ifdef WIN32
