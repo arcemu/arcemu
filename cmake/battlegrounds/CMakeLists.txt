@@ -18,12 +18,30 @@ SET( sources
     WarsongGulch.cpp
  )
 
+SET( headers
+	AlteracValley.h
+    ArathiBasin.h
+    CircleOfBlood.h
+    DalaranSewers.h
+    EyeOfTheStorm.h
+    IsleOfConquest.h
+    RingOfTrials.h
+    RingOfValor.h
+    RuinsOfLordaeron.h
+    Setup.h
+    StrandOfTheAncient.h
+    WarsongGulch.h
+ )
+ 
 foreach(src IN ITEMS ${sources} )
   SET( SRCS ${SRCS} ${prefix}/${src} )
 endforeach(src)
+foreach(src IN ITEMS ${headers} )
+  SET( HEADERS ${HEADERS} ${prefix}/${src} )
+endforeach(src)
 
 include_directories( ${GLOBAL_INCLUDE_DIRS} )
-add_library( ${PROJECT_NAME} SHARED ${SRCS} )
+add_library( ${PROJECT_NAME} SHARED ${SRCS} ${HEADERS})
 add_dependencies( ${PROJECT_NAME} shared world )
 add_definitions( -DSCRIPTLIB -DSKIP_ALLOCATOR_SHARING )
 target_link_libraries( ${PROJECT_NAME} world )
@@ -37,4 +55,6 @@ install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION ${ARCEMU_SCRIPTLIB_PATH} LIB
 #Cleap up our variables(Not required.)
 unset( prefix )
 unset( SRCS )
+unset( HEADERS )
+unset( headers )
 unset( sources )
