@@ -27,7 +27,7 @@
 class TheSummoning : public QuestScript
 {
 public:
-	void OnQuestStart(Player* pPlayer, QuestLogEntry* qLogEntry) {}
+	void OnQuestStart(Player* pPlayer, QuestLogEntry* qLogEntry)
 	{
 		Creature *windwatcher = pPlayer->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(pPlayer->GetPositionX(), pPlayer->GetPositionY(), pPlayer->GetPositionZ(), 6176);
 		if(!windwatcher) return;
@@ -44,13 +44,13 @@ public:
 			sEAS.EnableWaypoints(windwatcher);
 			windwatcher->GetAIInterface()->setMoveType(11);
 		}
-		windwatcher->Despawn(15*60*1000);
+		windwatcher->Despawn(15*60*1000, 0);
 
 		// spawn cyclonian if not spawned already
 		Creature *cyclonian = pPlayer->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(323.947, -1483.68, 43.1363, 6239);
 		if(pPlayer->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(323.947, -1483.68, 43.1363, 6239) == NULL)
-			cyclonian = sEAS.SpawnCreature(plr, 6239, 323.947, -1483.68, 43.1363, 0.682991);
-		cyclonian->Despawn(15*60*1000);
+			cyclonian = sEAS.SpawnCreature(pPlayer, 6239, 323.947, -1483.68, 43.1363, 0.682991);
+		cyclonian->Despawn(15*60*1000, 0);
 	}
 };
 
