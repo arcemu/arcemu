@@ -324,6 +324,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recv_data)
 	/************************************************************************/
 	if(recv_data.GetOpcode() == MSG_MOVE_START_FORWARD)
 		_player->SetStandState(STANDSTATE_STAND);
+
 	/************************************************************************/
 	/* Make sure the packet is the correct size range.                      */
 	/************************************************************************/
@@ -345,6 +346,18 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recv_data)
 	Unit *mover = _player->GetMapMgr()->GetUnit( m_MoverWoWGuid.GetOldGuid() );
 	if( mover == NULL )
 		return;
+
+	/* Anti Multi-Jump Check */
+	if(recv_data.GetOpcode() == MSG_MOVE_JUMP && _player->jumping == true && !GetPermissionCount())
+	{
+		sCheatLog.writefromsession(this, "Detected jump hacking");
+		Disconnect();
+		return;
+	}
+	if(recv_data.GetOpcode() == MSG_MOVE_FALL_LAND || movement_info.flags & MOVEFLAG_SWIMMING)
+		_player->jumping = false;
+	if(!_player->jumping && (recv_data.GetOpcode() == MSG_MOVE_JUMP || movement_info.flags & MOVEFLAG_FALLING))
+		_player->jumping = true;
 
 	/************************************************************************/
 	/* Update player movement state                                         */
@@ -424,17 +437,6 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recv_data)
 			sEventMgr.AddEvent( _player, &Player::_Kick, EVENT_PLAYER_KICK, 5000, 1, 0 );
 		}
 	} */
-	/*Anti Multi-Jump Check*/
-	if(recv_data.GetOpcode() == MSG_MOVE_JUMP && _player->jumping == true && !GetPermissionCount())
-	{
-		sCheatLog.writefromsession(this, "Detected jump hacking");
-		Disconnect();
-		return;
-	}
-	if(recv_data.GetOpcode() == MSG_MOVE_FALL_LAND || movement_info.flags & MOVEFLAG_SWIMMING)
-		_player->jumping = false;
-	if(!_player->jumping && (recv_data.GetOpcode() == MSG_MOVE_JUMP || movement_info.flags & MOVEFLAG_FALLING))
-		_player->jumping = true;
 
 	if(!(HasGMPermissions() && sWorld.no_antihack_on_gm) && !_player->GetCharmedUnitGUID())
 	{
