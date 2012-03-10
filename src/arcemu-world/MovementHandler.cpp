@@ -361,18 +361,18 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recv_data)
 		case MSG_MOVE_START_STRAFE_RIGHT:
 			_player->strafing = true;
 			break;
-		/*case MSG_MOVE_JUMP:
+		case MSG_MOVE_JUMP:
 			_player->jumping = true;
-			break;*/
+			break;
 		case MSG_MOVE_STOP:
 			_player->moving = false;
 			break;
 		case MSG_MOVE_STOP_STRAFE:
 			_player->strafing = false;
 			break;
-		/*case MSG_MOVE_FALL_LAND:
+		case MSG_MOVE_FALL_LAND:
 			_player->jumping = false;
-			break;*/
+			break;
 
 		default:
 			moved = false;
