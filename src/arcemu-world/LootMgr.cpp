@@ -557,6 +557,14 @@ void LootMgr::AddLoot(Loot* loot, uint32 itemid, uint32 mincount, uint32 maxcoun
 	}
 }
 
+bool LootMgr::HasLootForCreature( uint32 loot_id ){
+	LootStore::iterator itr = CreatureLoot.find( loot_id );
+	if( itr != CreatureLoot.end() )
+		return true;
+	else
+		return false;
+}
+
 void LootMgr::FillCreatureLoot(Loot* loot, uint32 loot_id, uint32 type)
 {
 	loot->items.clear();
