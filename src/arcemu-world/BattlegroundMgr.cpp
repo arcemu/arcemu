@@ -519,6 +519,7 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 						plr->m_bgQueueType = 0;
 						plr->m_bgQueueInstanceId = 0;
 						m_queuedPlayers[i][j].erase(it4);
+						continue;
 					}
 
 					// can we join?
