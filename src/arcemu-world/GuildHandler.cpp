@@ -90,6 +90,16 @@ void WorldSession::HandleInviteToGuild(WorldPacket & recv_data)
 		Guild::SendGuildCommandResult(this, GUILD_INVITE_S, "", GUILD_NOT_ALLIED);
 		return;
 	}
+
+	pGuild->getLock().Acquire();
+	uint32 memberCount = pGuild->GetNumMembers();
+	pGuild->getLock().Release();
+
+	if( memberCount >= MAX_GUILD_MEMBERS ){
+		SystemMessage( "Your guild is full." );
+		return;
+	}
+
 	Guild::SendGuildCommandResult(this, GUILD_INVITE_S, inviteeName.c_str(), GUILD_U_HAVE_INVITED);
 	//41
 
@@ -121,6 +131,15 @@ void WorldSession::HandleGuildAccept(WorldPacket & recv_data)
 	Guild* pGuild = inviter->m_playerInfo->guild;
 	if(!pGuild)
 	{
+		return;
+	}
+	pGuild->getLock().Acquire();
+	uint32 memberCount = pGuild->GetNumMembers();
+	pGuild->getLock().Release();
+
+	if( memberCount >= MAX_GUILD_MEMBERS ){
+		plyr->UnSetGuildInvitersGuid();
+		SystemMessage( "That guild is full." );
 		return;
 	}
 	pGuild->AddGuildMember(plyr->m_playerInfo, NULL);
