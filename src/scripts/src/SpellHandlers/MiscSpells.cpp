@@ -595,6 +595,13 @@ bool SOTATeleporter( uint32 i, Spell *s ){
 	return true;
 }
 
+bool DiseasedWolf(uint32 i, Aura* pAura, bool apply)
+{
+	// This spell is just being used to apply visual effect to the diseased wolves in Northshire.
+	// It does nothing else but applying a GFX on wolves that looks like a green, poisonous smoke.
+	return true;
+}
+
 void SetupMiscSpellhandlers(ScriptMgr* mgr)
 {
 	mgr->register_dummy_spell( 54640, &SOTATeleporter );
@@ -674,5 +681,7 @@ void SetupMiscSpellhandlers(ScriptMgr* mgr)
 	};
 
 	mgr->register_script_effect(teleportToCoordinates, &TeleportToCoordinates);
+	
+	mgr->register_dummy_aura(71764, &DiseasedWolf);
 }
 

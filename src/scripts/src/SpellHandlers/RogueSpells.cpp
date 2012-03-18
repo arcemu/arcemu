@@ -245,6 +245,7 @@ bool KillingSpreePeriodicDummy(uint32 i, Aura* a, bool apply)
 	{
 		//Get the range of 10 yards from Effect 1
 		float r = static_cast< float >( a->m_spellProto->EffectRadiusIndex[1] );
+		//float r = ::GetRadius(dbcSpellRadius.LookupEntryForced(a->m_spellProto->EffectRadiusIndex[1]));
 		LocationVector source = p_target->GetPosition();
 		float dist = (*itr)->CalcDistance(source);
 

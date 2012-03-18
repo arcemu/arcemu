@@ -1478,7 +1478,7 @@ void Spell::cast(bool check)
 
 			// we're much better to remove this here, because otherwise spells that change powers etc,
 			// don't get applied.
-			if(u_caster && !m_triggeredSpell && !m_triggeredByAura)
+			if(u_caster && !m_triggeredSpell && !m_triggeredByAura && !(m_spellInfo->AttributesEx & ATTRIBUTESEX_NOT_BREAK_STEALTH))
 			{
 				u_caster->RemoveAurasByInterruptFlagButSkip(AURA_INTERRUPT_ON_CAST_SPELL, GetProto()->Id);
 				u_caster->RemoveAurasByInterruptFlag(AURA_INTERRUPT_ON_CAST);
@@ -1544,7 +1544,7 @@ void Spell::cast(bool check)
 			// we're much better to remove this here, because otherwise spells that change powers etc,
 			// don't get applied.
 
-			if(u_caster && !m_triggeredSpell && !m_triggeredByAura)
+			if(u_caster && !m_triggeredSpell && !m_triggeredByAura && !(m_spellInfo->AttributesEx & ATTRIBUTESEX_NOT_BREAK_STEALTH))
 			{
 				u_caster->RemoveAurasByInterruptFlagButSkip(AURA_INTERRUPT_ON_CAST_SPELL, GetProto()->Id);
 				u_caster->RemoveAurasByInterruptFlag(AURA_INTERRUPT_ON_CAST);
