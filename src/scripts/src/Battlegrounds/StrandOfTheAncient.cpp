@@ -67,6 +67,8 @@ Strand of the Ancients
 ************************************************************************/
 
 #include "StdAfx.h"
+#include "StrandOfTheAncient.h"
+
 
 #define GO_RELIC 192834
 const float sotaTitanRelic[4] = { 836.5f, -108.8f, 111.59f, 0.0f };
@@ -209,9 +211,6 @@ static const uint32 TeamFactions[ MAX_PLAYER_TEAMS ] = {
 	2
 };
 
-// We'll need to borrow this from elsewhere
-float CalculateDistance(float x1, float y1, float z1, float x2, float y2, float z2);
-
 StrandOfTheAncient::StrandOfTheAncient( MapMgr* mgr, uint32 id, uint32 lgroup, uint32 t ) :
 CBattleground( mgr, id, lgroup, t ){
 	m_zoneid = 4384;
@@ -244,28 +243,6 @@ void StrandOfTheAncient::HookOnHK(Player* plr)
 
 void StrandOfTheAncient::OnPlatformTeleport(Player* plr)
 {
-	LocationVector dest;
-	uint32 closest_platform = 0;
-
-	for(uint32 i = 0; i < GATE_COUNT; i++)
-	{
-		float distance = CalculateDistance(plr->GetPositionX(),
-		                                   plr->GetPositionY(), plr->GetPositionZ(),
-		                                   sotaTransporterDestination[i][0],
-		                                   sotaTransporterDestination[i][1],
-		                                   sotaTransporterDestination[i][2]);
-		if(distance < 75)
-		{
-			closest_platform = i;
-			break;
-		}
-	}
-	dest.ChangeCoords(sotaTransporterDestination[closest_platform][0],
-	                  sotaTransporterDestination[closest_platform][1],
-	                  sotaTransporterDestination[closest_platform][2],
-	                  sotaTransporterDestination[closest_platform][3]);
-
-	plr->SafeTeleport(plr->GetMapId(), plr->GetInstanceID(), dest);
 }
 
 void StrandOfTheAncient::OnAddPlayer(Player* plr)

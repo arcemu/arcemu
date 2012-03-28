@@ -18,17 +18,24 @@
  *
  */
 
-#ifndef HONORHANDLER_H
-#define HONORHANDLER_H
+#ifndef CIRCLE_OF_BLOOD_H
+#define CIRCLE_OF_BLOOD_H
 
-class SERVER_DECL HonorHandler
-{
-	public:
-		static int32 CalculateHonorPointsForKill(uint32 playerLevel, uint32 victimLevel);
-		static void RecalculateHonorFields(Player* pPlayer);
-		static void AddHonorPointsToPlayer(Player* pPlayer, uint32 uAmount);
-		static void OnPlayerKilled(Player* pPlayer, Player* pVictim);
+#include "StdAfx.h"
+
+class CircleOfBlood : public Arena{
+public:
+	CircleOfBlood( MapMgr* mgr, uint32 id, uint32 lgroup, uint32 t, uint32 players_per_side );
+	~CircleOfBlood();
+
+	static CBattleground* Create( MapMgr* m, uint32 i, uint32 l, uint32 t, uint32 players_per_side ){
+		return new CircleOfBlood( m, i, l, t, players_per_side );
+	}
+
+	void OnCreate();
+	void HookOnShadowSight();
+	LocationVector GetStartingCoords( uint32 Team );
+	bool HookHandleRepop( Player *plr );
 };
-
 
 #endif

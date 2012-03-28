@@ -41,9 +41,9 @@ SERVER_DECL Database* Database_Character;
 SERVER_DECL Database* Database_World;
 
 // mainserv defines
-SessionLogWriter* GMCommand_Log;
-SessionLogWriter* Anticheat_Log;
-SessionLogWriter* Player_Log;
+SERVER_DECL SessionLogWriter* GMCommand_Log;
+SERVER_DECL SessionLogWriter* Anticheat_Log;
+SERVER_DECL SessionLogWriter* Player_Log;
 
 // threads
 extern DayWatcherThread* dw;

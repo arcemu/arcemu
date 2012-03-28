@@ -19,6 +19,7 @@
  */
 
 #include "StdAfx.h"
+#include "ArathiBasin.h"
 
 #define BASE_RESOURCES_GAIN 10
 #define RESOURCES_WARNING_THRESHOLD 1400

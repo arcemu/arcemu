@@ -1788,19 +1788,19 @@ void Aura::SpellAuraPeriodicDamage(bool apply)
 void Aura::EventPeriodicDamage(uint32 amount)
 {
 	//DOT
-	if(! m_target->isAlive())
+	if( !m_target->isAlive() )
 		return;
 
 	if(m_target->SchoolImmunityList[GetSpellProto()->School])
 	{
 		if(GetUnitCaster() != NULL)
-			SendTickImmune(m_target, GetUnitCaster());
+			SendTickImmune( m_target, GetUnitCaster() );
 		return;
 	}
 
-	float res = float(amount);
+	float res = static_cast< float >(amount);
 	uint32 abs_dmg = 0;
-	int bonus = 0;
+	int32 bonus = 0;
 	uint32 school = GetSpellProto()->School;
 	Unit* c = GetUnitCaster();
 	uint32 aproc = PROC_ON_ANY_HOSTILE_ACTION;
@@ -1811,7 +1811,7 @@ void Aura::EventPeriodicDamage(uint32 amount)
 	{
 		if(c != NULL)
 		{
-			int amp = m_spellProto->EffectAmplitude[mod->i];
+			uint32 amp = m_spellProto->EffectAmplitude[mod->i];
 			if(!amp)
 				amp = event_GetEventPeriod(EVENT_AURA_PERIODIC_DAMAGE);
 
@@ -1841,7 +1841,7 @@ void Aura::EventPeriodicDamage(uint32 amount)
 					res = 0.0f;
 			}
 
-			if(DotCanCrit())
+			if( DotCanCrit() )
 			{
 				is_critical = c->IsCriticalDamageForSpell(m_target, GetSpellProto());
 
@@ -1855,7 +1855,7 @@ void Aura::EventPeriodicDamage(uint32 amount)
 			}
 		}
 
-		uint32 ress = (uint32)res;
+		uint32 ress = static_cast< uint32 >(res);
 		abs_dmg = m_target->AbsorbDamage(school, &ress);
 		uint32 ms_abs_dmg = m_target->ManaShieldAbsorb(ress);
 		if(ms_abs_dmg)
@@ -1870,41 +1870,41 @@ void Aura::EventPeriodicDamage(uint32 amount)
 
 
 		if(ress < 0) ress = 0;
-		res = (float)ress;
+		res = static_cast< float >(ress);
 		dealdamage dmg;
 		dmg.school_type = school;
 		dmg.full_damage = ress;
 		dmg.resisted_damage = 0;
 
-		if(res <= 0)
+		if(res <= 0.0f)
 			dmg.resisted_damage = dmg.full_damage;
 
-		if(res > 0 && c && m_spellProto->MechanicsType != MECHANIC_BLEEDING)
+		if(res > 0.0f && c && m_spellProto->MechanicsType != MECHANIC_BLEEDING)
 		{
 			c->CalculateResistanceReduction(m_target, &dmg, m_spellProto, 0);
-			if((int32)dmg.resisted_damage > dmg.full_damage)
-				res = 0;
+			if(static_cast< int32 >(dmg.resisted_damage) > dmg.full_damage)
+				res = 0.0f;
 			else
-				res = float(dmg.full_damage - dmg.resisted_damage);
+				res = static_cast< float >(dmg.full_damage - dmg.resisted_damage);
 		}
 
-		m_target->SendPeriodicAuraLog(m_casterGuid, m_target->GetNewGUID(), GetSpellProto()->Id, school, float2int32(res), abs_dmg, dmg.resisted_damage, FLAG_PERIODIC_DAMAGE, is_critical);
+		m_target->SendPeriodicAuraLog(m_casterGuid, m_target->GetNewGUID(), GetSpellProto()->Id, school, static_cast< int32 >(res), abs_dmg, dmg.resisted_damage, FLAG_PERIODIC_DAMAGE, is_critical);
 	}
 
 	// grep: this is hack.. some auras seem to delete this shit.
 	SpellEntry* sp = m_spellProto;
 
 	if(m_target->m_damageSplitTarget)
-		res = (float)m_target->DoDamageSplitTarget((uint32)res, GetSpellProto()->School, false);
+		res = static_cast< float >( m_target->DoDamageSplitTarget(static_cast< uint32 >(res), GetSpellProto()->School, false) );
 
 	if(c != NULL)
-		c->DealDamage(m_target, float2int32(res),  2, 0, GetSpellId());
+		c->DealDamage(m_target, static_cast< int32 >(res),  2, 0, GetSpellId());
 	else
-		m_target->DealDamage(m_target, float2int32(res),  2, 0,  GetSpellId());
+		m_target->DealDamage(m_target, static_cast< int32 >(res),  2, 0,  GetSpellId());
 
 	if(m_target->GetGUID() != m_casterGuid && c != NULL)	//don't use resist when cast on self-- this is some internal stuff
 	{
-		int32 dmg = float2int32(res);
+		int32 dmg = static_cast< int32 >(res);
 
 		if(abs_dmg)
 			vproc |= PROC_ON_ABSORB;
@@ -2700,11 +2700,11 @@ void Aura::SpellAuraModStealth(bool apply)
 		{
 			if(p_target->m_bg && p_target->m_bg->GetType() == BATTLEGROUND_WARSONG_GULCH)
 			{
-				TO< WarsongGulch* >(p_target->m_bg)->HookOnFlagDrop(p_target);
+				p_target->m_bg->HookOnFlagDrop(p_target);
 			}
 			if(p_target->m_bg && p_target->m_bg->GetType() == BATTLEGROUND_EYE_OF_THE_STORM)
 			{
-				TO< EyeOfTheStorm* >(p_target->m_bg)->HookOnFlagDrop(p_target);
+				p_target->m_bg->HookOnFlagDrop(p_target);
 			}
 		}
 
@@ -2777,11 +2777,11 @@ void Aura::SpellAuraModStealth(bool apply)
 				{
 					if(p_target->m_bg->GetType() == BATTLEGROUND_WARSONG_GULCH)
 					{
-						TO< WarsongGulch* >(p_target->m_bg)->HookOnFlagDrop(p_target);
+						p_target->m_bg->HookOnFlagDrop(p_target);
 					}
 					if(p_target->m_bg->GetType() == BATTLEGROUND_EYE_OF_THE_STORM)
 					{
-						TO< EyeOfTheStorm* >(p_target->m_bg)->HookOnFlagDrop(p_target);
+						p_target->m_bg->HookOnFlagDrop(p_target);
 					}
 				}
 			}

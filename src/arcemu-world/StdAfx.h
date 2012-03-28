@@ -86,6 +86,14 @@ template< class T, class U > T TO(U u) { return static_cast< T >(u); }
 #include "../arcemu-shared/crc32.h"
 #include "../arcemu-shared/LocationVector.h"
 
+extern SERVER_DECL SessionLogWriter* Anticheat_Log;
+extern SERVER_DECL SessionLogWriter* GMCommand_Log;
+extern SERVER_DECL SessionLogWriter* Player_Log;
+
+#define sCheatLog (*Anticheat_Log)
+#define sGMLog (*GMCommand_Log)
+#define sPlrLog (*Player_Log)
+
 #include <zlib.h>
 
 #include "../arcemu-shared/Database/DatabaseEnv.h"
@@ -145,9 +153,7 @@ template< class T, class U > T TO(U u) { return static_cast< T >(u); }
 #include "AIInterface.h"
 #include "AreaTrigger.h"
 #include "BattlegroundMgr.h"
-#include "AlteracValley.h"
-#include "ArathiBasin.h"
-#include "EyeOfTheStorm.h"
+#include "Battleground.h"
 #include "CellHandler.h"
 #include "Chat.h"
 #include "Corpse.h"
@@ -194,9 +200,6 @@ template< class T, class U > T TO(U u) { return static_cast< T >(u); }
 #include "SpellAuras.h"
 #include "TaxiMgr.h"
 #include "TransporterHandler.h"
-#include "StrandOfTheAncient.h"
-#include "IsleOfConquest.h"
-#include "WarsongGulch.h"
 #include "WeatherMgr.h"
 #include "World.h"
 #include "EquipmentSetMgr.h"

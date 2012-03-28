@@ -184,55 +184,41 @@ void WorldSession::HandleBattlegroundPlayerPositionsOpcode(WorldPacket & recv_da
 	if(!bg)
 		return;
 
-	if(bg->GetType() == BATTLEGROUND_WARSONG_GULCH)
-	{
-		uint32 count1 = 0;
-		uint32 count2 = 0;
+	uint32 count1 = 0;
+	uint32 count2 = 0;
 
-		Player* ap = objmgr.GetPlayer(TO< WarsongGulch* >(bg)->GetAllianceFlagHolderGUID());
-		if(ap) ++count2;
+	Player *ap = objmgr.GetPlayer( bg->GetFlagHolderGUID( TEAM_ALLIANCE ) );
+	if( ap != NULL )
+		count2++;
 
-		Player* hp = objmgr.GetPlayer(TO< WarsongGulch* >(bg)->GetHordeFlagHolderGUID());
-		if(hp) ++count2;
+	Player *hp = objmgr.GetPlayer( bg->GetFlagHolderGUID( TEAM_HORDE ) );
+	
+	// If the two are the same, then it's from a Bg that only has 1 flag like EOTS
+	if( ( ap != NULL ) &&
+		( hp != NULL ) &&
+		( ap->GetGUID() == hp->GetGUID() ) )
+		hp = NULL;
 
-		WorldPacket data(MSG_BATTLEGROUND_PLAYER_POSITIONS, (4 + 4 + 16 * count1 + 16 * count2));
-		data << count1;
-		data << count2;
-		if(ap)
-		{
-			data << (uint64)ap->GetGUID();
-			data << (float)ap->GetPositionX();
-			data << (float)ap->GetPositionY();
-		}
-		if(hp)
-		{
-			data << (uint64)hp->GetGUID();
-			data << (float)hp->GetPositionX();
-			data << (float)hp->GetPositionY();
-		}
+	if( hp != NULL )
+		count2++;
 
-		SendPacket(&data);
+	WorldPacket data( MSG_BATTLEGROUND_PLAYER_POSITIONS, ( 4 + 4 + 16 * count1 + 16 * count2 ) );
+	data << uint32( count1 );
+	data << uint32( count2 );
+
+	if( ap != NULL ){
+		data << uint64( ap->GetGUID() );
+		data << float( ap->GetPositionX() );
+		data << float( ap->GetPositionY() );
 	}
-	else if(bg->GetType() == BATTLEGROUND_EYE_OF_THE_STORM)
-	{
-		uint32 count1 = 0;
-		uint32 count2 = 0;
 
-		Player* ap = objmgr.GetPlayer(TO< EyeOfTheStorm* >(bg)->GetFlagHolderGUID());
-		if(ap) ++count2;
-
-		WorldPacket data(MSG_BATTLEGROUND_PLAYER_POSITIONS, (4 + 4 + 16 * count1 + 16 * count2));
-		data << count1;
-		data << count2;
-		if(ap)
-		{
-			data << (uint64)ap->GetGUID();
-			data << (float)ap->GetPositionX();
-			data << (float)ap->GetPositionY();
-		}
-
-		SendPacket(&data);
+	if( hp != NULL ){
+		data << uint64( hp->GetGUID() );
+		data << float( hp->GetPositionX() );
+		data << float( hp->GetPositionY() );
 	}
+
+	SendPacket( &data );
 }
 
 void WorldSession::HandleBattleMasterJoinOpcode(WorldPacket & recv_data)

@@ -1627,12 +1627,12 @@ void Object::SpellNonMeleeDamageLog(Unit* pVictim, uint32 spellID, uint32 damage
 	if(spellInfo == NULL)
 		return;
 
-	if(this->IsPlayer() && ! TO_PLAYER(this)->canCast(spellInfo))
+	if(this->IsPlayer() && ! TO< Player* >(this)->canCast(spellInfo))
 		return;
 //==========================================================================================
 //==============================Variables Initialization====================================
 //==========================================================================================
-	float res = float(damage);
+	float res = static_cast< float >(damage);
 	bool critical = false;
 
 	uint32 aproc = PROC_ON_ANY_HOSTILE_ACTION; /*| PROC_ON_SPELL_HIT;*/
@@ -1673,8 +1673,7 @@ void Object::SpellNonMeleeDamageLog(Unit* pVictim, uint32 spellID, uint32 damage
 
 		caster->RemoveAurasByInterruptFlag(AURA_INTERRUPT_ON_START_ATTACK);
 
-		// this calculates whole dmg with all bonuses / mods
-		res = static_cast< float >(caster->GetSpellDmgBonus(pVictim, spellInfo, damage, false));
+		res += static_cast< float >( caster->GetSpellDmgBonus(pVictim, spellInfo, damage, false) );
 
 		if(res < 0.0f)
 			res = 0.0f;
@@ -1682,7 +1681,7 @@ void Object::SpellNonMeleeDamageLog(Unit* pVictim, uint32 spellID, uint32 damage
 //==========================================================================================
 //==============================Post +SpellDamage Bonus Modifications=======================
 //==========================================================================================
-	if(res > 0.0f && !(spellInfo->AttributesExB & ATTRIBUTESEXB_CANT_CRIT))
+	if( res > 0.0f && !(spellInfo->AttributesExB & ATTRIBUTESEXB_CANT_CRIT) )
 	{
 		critical = this->IsCriticalDamageForSpell(pVictim, spellInfo);
 
@@ -1727,7 +1726,7 @@ void Object::SpellNonMeleeDamageLog(Unit* pVictim, uint32 spellID, uint32 damage
 	if( this->IsUnit() )
 		res += TO< Unit* >(this)->CalcSpellDamageReduction(pVictim, spellInfo, res);
 //------------------------------absorption--------------------------------------------------
-	uint32 ress = (uint32)res;
+	uint32 ress = static_cast< uint32 >(res);
 	uint32 abs_dmg = pVictim->AbsorbDamage(spellInfo->School, &ress);
 	uint32 ms_abs_dmg = pVictim->ManaShieldAbsorb(ress);
 	if(ms_abs_dmg)
@@ -1744,7 +1743,7 @@ void Object::SpellNonMeleeDamageLog(Unit* pVictim, uint32 spellID, uint32 damage
 		vproc |= PROC_ON_ABSORB;
 
 	// Incanter's Absorption
-	if(pVictim->IsPlayer() && pVictim->HasAurasWithNameHash(SPELL_HASH_INCANTER_S_ABSORPTION))
+	if( pVictim->IsPlayer() && pVictim->HasAurasWithNameHash(SPELL_HASH_INCANTER_S_ABSORPTION) )
 	{
 		float pctmod = 0.0f;
 		Player* pl = TO< Player* >(pVictim);
@@ -1755,8 +1754,8 @@ void Object::SpellNonMeleeDamageLog(Unit* pVictim, uint32 spellID, uint32 damage
 		else if(pl->HasAura(44396))
 			pctmod = 0.15f;
 
-		uint32 hp = static_cast<uint32>(0.05f * pl->GetUInt32Value(UNIT_FIELD_MAXHEALTH));
-		uint32 spellpower = static_cast<uint32>(pctmod * pl->GetPosDamageDoneMod(SCHOOL_NORMAL));
+		uint32 hp = static_cast< uint32 >( 0.05f * pl->GetUInt32Value(UNIT_FIELD_MAXHEALTH) );
+		uint32 spellpower = static_cast< uint32 >( pctmod * pl->GetPosDamageDoneMod(SCHOOL_NORMAL) );
 
 		if(spellpower > hp)
 			spellpower = hp;
@@ -1774,7 +1773,7 @@ void Object::SpellNonMeleeDamageLog(Unit* pVictim, uint32 spellID, uint32 damage
 
 	if(ress < 0) ress = 0;
 
-	res = (float)ress;
+	res = static_cast< float >(ress);
 	dealdamage dmg;
 	dmg.school_type = spellInfo->School;
 	dmg.full_damage = ress;
@@ -1790,12 +1789,12 @@ void Object::SpellNonMeleeDamageLog(Unit* pVictim, uint32 spellID, uint32 damage
 		if((int32)dmg.resisted_damage > dmg.full_damage)
 			res = 0;
 		else
-			res = float(dmg.full_damage - dmg.resisted_damage);
+			res = static_cast< float >(dmg.full_damage - dmg.resisted_damage);
 	}
 	//------------------------------special states----------------------------------------------
 	if(pVictim->IsPlayer() && TO< Player* >(pVictim)->GodModeCheat == true)
 	{
-		res = float(dmg.full_damage);
+		res = static_cast< float >(dmg.full_damage);
 		dmg.resisted_damage = dmg.full_damage;
 	}
 
@@ -1808,12 +1807,12 @@ void Object::SpellNonMeleeDamageLog(Unit* pVictim, uint32 spellID, uint32 damage
 //==========================================================================================
 //==============================Data Sending ProcHandling===================================
 //==========================================================================================
-	SendSpellNonMeleeDamageLog(this, pVictim, spellID, float2int32(res), static_cast<uint8>(spellInfo->School), abs_dmg, dmg.resisted_damage, false, 0, critical, IsPlayer());
-	DealDamage(pVictim, float2int32(res), 2, 0, spellID);
+	SendSpellNonMeleeDamageLog(this, pVictim, spellID, static_cast< int32 >(res), static_cast< uint8 >(spellInfo->School), abs_dmg, dmg.resisted_damage, false, 0, critical, IsPlayer());
+	DealDamage(pVictim, static_cast< int32 >(res), 2, 0, spellID);
 
 	if(IsUnit())
 	{
-		int32 dmg2 = float2int32(res);
+		int32 dmg2 = static_cast< int32 >(res);
 
 		pVictim->HandleProc(vproc, TO< Unit* >(this), spellInfo, !allowProc, dmg2, abs_dmg);
 		pVictim->m_procCounter = 0;
@@ -1845,7 +1844,7 @@ void Object::SpellNonMeleeDamageLog(Unit* pVictim, uint32 spellID, uint32 damage
 				Player* pl = TO< Player* >(pVictim);
 
 				uint32 maxmana = pl->GetMaxPower(POWER_TYPE_MANA);
-				uint32 amount = uint32(maxmana * pl->m_RegenManaOnSpellResist);
+				uint32 amount = static_cast< uint32 >(maxmana * pl->m_RegenManaOnSpellResist);
 
 				pVictim->Energize(pVictim, 29442, amount, POWER_TYPE_MANA);
 			}
@@ -1862,10 +1861,10 @@ void Object::SpellNonMeleeDamageLog(Unit* pVictim, uint32 spellID, uint32 damage
 			//Shadow Word:Death
 			if(spellID == 32379 || spellID == 32996 || spellID == 48157 || spellID == 48158)
 			{
-				uint32 damage2 = uint32(res + abs_dmg);
+				uint32 damage2 = static_cast< uint32 >(res + abs_dmg);
 				uint32 absorbed = TO< Unit* >(this)->AbsorbDamage(spellInfo->School, &damage2);
 				DealDamage(TO< Unit* >(this), damage2, 2, 0, spellID);
-				SendSpellNonMeleeDamageLog(this, this, spellID, damage2, static_cast<uint8>(spellInfo->School), absorbed, 0, false, 0, false, IsPlayer());
+				SendSpellNonMeleeDamageLog(this, this, spellID, damage2, static_cast< uint8 >(spellInfo->School), absorbed, 0, false, 0, false, IsPlayer());
 			}
 		}
 	}

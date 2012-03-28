@@ -720,6 +720,16 @@ void GameObject::OnPushToWorld()
 	CALL_GO_SCRIPT_EVENT(this, OnCreate)();
 	CALL_GO_SCRIPT_EVENT(this, OnSpawn)();
 	CALL_INSTANCE_SCRIPT_EVENT(m_mapMgr, OnGameObjectPushToWorld)(this);
+
+	// We have a field supposedly for this, but it's pointless to waste CPU time for this
+	// unless it's longer than a minute ( since usually then it's much longer )
+	if( ( pInfo->Type == GAMEOBJECT_TYPE_CHEST ) && ( pInfo->sound3 == 0 ) ){
+		time_t restockTime = 60 * 1000;
+		if( pInfo->sound2 > 60 )
+			restockTime = pInfo->sound2 * 1000;
+
+		EventMgr::getSingleton().AddEvent( this, &GameObject::ReStock, EVENT_GO_CHEST_RESTOCK, restockTime, 0, 0 );
+	}
 }
 
 void GameObject::OnRemoveInRangeObject(Object* pObj)
@@ -742,7 +752,7 @@ void GameObject::RemoveFromWorld(bool free_guid)
 	data << GetGUID();
 	SendMessageToSet(&data, true);
 
-	sEventMgr.RemoveEvents(this, EVENT_GAMEOBJECT_TRAP_SEARCH_TARGET);
+	sEventMgr.RemoveEvents( this );
 	Object::RemoveFromWorld(free_guid);
 }
 
@@ -886,3 +896,18 @@ void GameObject::Rebuild(){
 	maxhitpoints = pInfo->SpellFocus + pInfo->sound5;
 	hitpoints = maxhitpoints;
 }
+
+void GameObject::ReStock(){
+	// this hasn't been looted yet so we don't want to restock
+	if( loot.items.empty() )
+		return;
+
+	if( !loot.looters.empty() )
+		return;
+
+	if( loot.HasRoll() )
+		return;
+
+	lootmgr.FillGOLoot( &loot, pInfo->sound1, m_mapMgr->iInstanceMode );
+}
+

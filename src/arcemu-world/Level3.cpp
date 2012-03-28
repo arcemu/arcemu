@@ -3692,6 +3692,15 @@ bool ChatHandler::HandleGuildJoinCommand(const char* args, WorldSession* m_sessi
 
 	if(pGuild)
 	{
+		pGuild->getLock().Acquire();
+		uint32 memberCount = pGuild->GetNumMembers();
+		pGuild->getLock().Release();
+		
+		if( memberCount >= MAX_GUILD_MEMBERS ){
+			m_session->SystemMessage( "That guild is full." );
+			return true;
+		}
+
 		pGuild->AddGuildMember(ptarget->getPlayerInfo(), m_session, -2);
 		GreenSystemMessage(m_session, "You have joined the guild '%s'", pGuild->GetGuildName());
 		sGMLog.writefromsession(m_session, "Force joined guild '%s'", pGuild->GetGuildName());

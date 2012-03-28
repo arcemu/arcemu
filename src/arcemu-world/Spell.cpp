@@ -1290,14 +1290,7 @@ void Spell::cast(bool check)
 			// special case battleground additional actions
 			if(p_caster->m_bg)
 			{
-				// SOTA Gameobject spells
-				if(p_caster->m_bg->GetType() == BATTLEGROUND_STRAND_OF_THE_ANCIENT)
-				{
-					StrandOfTheAncient* sota = (StrandOfTheAncient*)p_caster->m_bg;
-					// Transporter platforms
-					if(GetProto()->Id == 54640)
-						sota->OnPlatformTeleport(p_caster);
-				}
+
 				// warsong gulch & eye of the storm flag pickup check
 				// also includes check for trying to cast stealth/etc while you have the flag
 				switch(GetProto()->Id)
@@ -1485,7 +1478,7 @@ void Spell::cast(bool check)
 
 			// we're much better to remove this here, because otherwise spells that change powers etc,
 			// don't get applied.
-			if(u_caster && !m_triggeredSpell && !m_triggeredByAura)
+			if(u_caster && !m_triggeredSpell && !m_triggeredByAura && !(m_spellInfo->AttributesEx & ATTRIBUTESEX_NOT_BREAK_STEALTH))
 			{
 				u_caster->RemoveAurasByInterruptFlagButSkip(AURA_INTERRUPT_ON_CAST_SPELL, GetProto()->Id);
 				u_caster->RemoveAurasByInterruptFlag(AURA_INTERRUPT_ON_CAST);
@@ -1551,7 +1544,7 @@ void Spell::cast(bool check)
 			// we're much better to remove this here, because otherwise spells that change powers etc,
 			// don't get applied.
 
-			if(u_caster && !m_triggeredSpell && !m_triggeredByAura)
+			if(u_caster && !m_triggeredSpell && !m_triggeredByAura && !(m_spellInfo->AttributesEx & ATTRIBUTESEX_NOT_BREAK_STEALTH))
 			{
 				u_caster->RemoveAurasByInterruptFlagButSkip(AURA_INTERRUPT_ON_CAST_SPELL, GetProto()->Id);
 				u_caster->RemoveAurasByInterruptFlag(AURA_INTERRUPT_ON_CAST);
@@ -3093,9 +3086,11 @@ uint8 Spell::CanCast(bool tolerate)
 {
 	uint32 i;
 
-	if( ( p_caster != NULL ) && p_caster->moving && ( m_spellInfo->InterruptFlags & CAST_INTERRUPT_ON_MOVEMENT ) )
+	// Check if spell can be casted while player is moving.
+	if( ( p_caster != NULL ) && p_caster->m_isMoving && ( m_spellInfo->InterruptFlags & CAST_INTERRUPT_ON_MOVEMENT ) )
 		return SPELL_FAILED_MOVING;
 
+	// Check if spell requires caster to be in combat to be casted.
 	if(p_caster != NULL && HasCustomFlag(CUSTOM_FLAG_SPELL_REQUIRES_COMBAT) && !p_caster->CombatStatus.IsInCombat())
 		return SPELL_FAILED_SPELL_UNAVAILABLE;
 
@@ -3416,9 +3411,9 @@ uint8 Spell::CanCast(bool tolerate)
 					{
 						// thank Cruders for this :P
 						if(p_caster->m_bg && p_caster->m_bg->GetType() == BATTLEGROUND_WARSONG_GULCH)
-							TO< WarsongGulch* >(p_caster->m_bg)->HookOnFlagDrop(p_caster);
+							p_caster->m_bg->HookOnFlagDrop(p_caster);
 						else if(p_caster->m_bg && p_caster->m_bg->GetType() == BATTLEGROUND_EYE_OF_THE_STORM)
-							TO< EyeOfTheStorm* >(p_caster->m_bg)->HookOnFlagDrop(p_caster);
+							p_caster->m_bg->HookOnFlagDrop(p_caster);
 						break;
 					}
 			}

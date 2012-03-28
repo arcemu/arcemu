@@ -23,7 +23,11 @@
 
 class PlayerInfo;
 
-#define MAX_GUILD_RANKS 10
+enum{
+	MAX_GUILD_RANKS = 10,
+	MAX_GUILD_MEMBERS = 500
+};
+
 enum PETITION_TURNIN_ERRORS
 {
     ERR_PETITION_OK,

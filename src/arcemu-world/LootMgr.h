@@ -108,6 +108,14 @@ typedef struct
 	std::vector<__LootItem> items;
 	uint32 gold;
 	LooterSet looters;
+
+	bool HasRoll(){
+		for( std::vector< __LootItem >::iterator itr = items.begin(); itr != items.end(); ++itr ){
+			if( itr->roll != NULL )
+				return true;
+		}
+		return false;
+	}
 } Loot;
 
 struct tempy
@@ -151,6 +159,21 @@ class SERVER_DECL LootMgr : public Singleton < LootMgr >
 		~LootMgr();
 
 		void AddLoot(Loot* loot, uint32 itemid, uint32 mincount, uint32 maxcount);
+
+		////////////////////////////////////////////////////////////////////////////
+		//bool HasLootForCreature( uint32 loot_id )
+		//  Tells if there's loot cached for the specified creature.
+		//
+		//Parameter(s)
+		//  uint32 loot_id   -   The identifier of the creature
+		//
+		//Return Value
+		//  Returns true if there's loot for this creature.
+		//  Returns false otherwise.
+		//
+		//
+		////////////////////////////////////////////////////////////////////////////
+		bool HasLootForCreature( uint32 loot_id );
 
 		void FillCreatureLoot(Loot* loot, uint32 loot_id, uint32 type);
 		void FillGOLoot(Loot* loot, uint32 loot_id, uint32 type);

@@ -220,154 +220,13 @@ void Arena::HookOnPlayerDeath(Player* plr)
 
 void Arena::OnCreate()
 {
-	GameObject* obj;
-	switch(m_mapMgr->GetMapId())
-	{
-			/* ruins of lordaeron */
-		case 572:
-			{
-				obj = SpawnGameObject(185917, 572, 1278.647705f, 1730.556641f, 31.605574f, 1.684245f, 32, 1375, 1.0f);
-				obj->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-				obj->SetParentRotation(2, 0.746058f);
-				obj->SetParentRotation(3, 0.665881f);
-				m_gates.insert(obj);
-
-				obj = SpawnGameObject(185918, 572, 1293.560791f, 1601.937988f, 31.605574f, -1.457349f, 32, 1375, 1.0f);
-				obj->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-				obj->SetParentRotation(2, -0.665881f);
-				obj->SetParentRotation(3, 0.746058f);
-				m_gates.insert(obj);
-
-			}
-			break;
-
-			/* blades edge arena */
-		case 562:
-			{
-				obj = SpawnGameObject(183972, 562, 6177.707520f, 227.348145f, 3.604374f, -2.260201f, 32, 1375, 1.0f);
-				obj->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-				obj->SetParentRotation(2, 0.90445f);
-				obj->SetParentRotation(3, -0.426569f);
-				obj->PushToWorld(m_mapMgr);
-
-				obj = SpawnGameObject(183973, 562, 6189.546387f, 241.709854f, 3.101481f, 0.881392f, 32, 1375, 1.0f);
-				obj->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-				obj->SetParentRotation(2, 0.426569f);
-				obj->SetParentRotation(3, 0.904455f);
-				m_gates.insert(obj);
-
-				obj = SpawnGameObject(183970, 562, 6299.115723f, 296.549438f, 3.308032f, 0.881392f, 32, 1375, 1.0f);
-				obj->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-				obj->SetParentRotation(2, 0.426569f);
-				obj->SetParentRotation(3, 0.904455f);
-				obj->PushToWorld(m_mapMgr);
-
-				obj = SpawnGameObject(183971, 562, 6287.276855f, 282.187714f, 3.810925f, -2.260201f, 32, 1375, 1.0f);
-				obj->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-				obj->SetParentRotation(2, 0.904455f);
-				obj->SetParentRotation(3, -0.426569f);
-				m_gates.insert(obj);
-			}
-			break;
-
-			/* nagrand arena */
-		case 559:
-			{
-				obj = SpawnGameObject(183979, 559, 4090.064453f, 2858.437744f, 10.236313f, 0.492805f, 32, 1375, 1.0f);
-				obj->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-				obj->SetParentRotation(2, 0.243916f);
-				obj->SetParentRotation(3, 0.969796f);
-				obj->PushToWorld(m_mapMgr);
-
-				obj = SpawnGameObject(183980, 559, 4081.178955f, 2874.970459f, 12.391714f, 0.492805f, 32, 1375, 1.0f);
-				obj->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-				obj->SetParentRotation(2, 0.243916f);
-				obj->SetParentRotation(3, 0.969796f);
-				m_gates.insert(obj);
-
-				obj = SpawnGameObject(183977, 559, 4023.709473f, 2981.776611f, 10.701169f, -2.648788f, 32, 1375, 1.0f);
-				obj->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-				obj->SetParentRotation(2, 0.969796f);
-				obj->SetParentRotation(3, -0.243916f);
-				obj->PushToWorld(m_mapMgr);
-
-				obj = SpawnGameObject(183978, 559, 4031.854248f, 2966.833496f, 12.646200f, -2.648788f, 32, 1375, 1.0f);
-				obj->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-				obj->SetParentRotation(2, 0.969796f);
-				obj->SetParentRotation(3, -0.243916f);
-				m_gates.insert(obj);
-
-			}
-			break;
-	}
-
 	/* push gates into world */
 	for(set<GameObject*>::iterator itr = m_gates.begin(); itr != m_gates.end(); ++itr)
 		(*itr)->PushToWorld(m_mapMgr);
-
 }
 
 void Arena::HookOnShadowSight()
 {
-	switch(m_mapMgr->GetMapId())
-	{
-			/* ruins of lordaeron */
-		case 572:
-			m_buffs[0] = SpawnGameObject(184664, 572, 1328.729268f, 1632.738403f, 34.838585f, 2.611449f, 32, 1375, 1.0f);
-			m_buffs[0]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-			m_buffs[0]->SetParentRotation(2, 0.904455f);
-			m_buffs[0]->SetParentRotation(3, -0.426569f);
-			m_buffs[0]->SetType(GAMEOBJECT_TYPE_TRAP);
-			m_buffs[0]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
-			m_buffs[0]->PushToWorld(m_mapMgr);
-
-			m_buffs[1] = SpawnGameObject(184664, 572, 1243.306763f, 1699.334351f, 34.837566f, 5.713773f, 32, 1375, 1.0f);
-			m_buffs[1]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-			m_buffs[1]->SetParentRotation(2, 0.90445f);
-			m_buffs[1]->SetParentRotation(3, -0.426569f);
-			m_buffs[1]->SetType(GAMEOBJECT_TYPE_TRAP);
-			m_buffs[1]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
-			m_buffs[1]->PushToWorld(m_mapMgr);
-			break;
-
-			/* blades edge arena */
-		case 562:
-			m_buffs[0] = SpawnGameObject(184664, 562, 6249.276855f, 275.187714f, 11.201481f, -2.260201f, 32, 1375, 1.0f);
-			m_buffs[0]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-			m_buffs[0]->SetParentRotation(2, 0.904455f);
-			m_buffs[0]->SetParentRotation(3, -0.426569f);
-			m_buffs[0]->SetType(GAMEOBJECT_TYPE_TRAP);
-			m_buffs[0]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
-			m_buffs[0]->PushToWorld(m_mapMgr);
-
-			m_buffs[1] = SpawnGameObject(184664, 562, 6228.546387f, 249.709854f, 11.201481f, 0.881392f, 32, 1375, 1.0f);
-			m_buffs[1]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-			m_buffs[1]->SetParentRotation(2, 0.90445f);
-			m_buffs[1]->SetParentRotation(3, -0.426569f);
-			m_buffs[1]->SetType(GAMEOBJECT_TYPE_TRAP);
-			m_buffs[1]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
-			m_buffs[1]->PushToWorld(m_mapMgr);
-			break;
-
-			/* nagrand arena */
-		case 559:
-			m_buffs[0] = SpawnGameObject(184664, 559, 4011.113232f, 2896.879980f, 12.523950f, 0.486944f, 32, 1375, 1.0f);
-			m_buffs[0]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-			m_buffs[0]->SetParentRotation(2, 0.904455f);
-			m_buffs[0]->SetParentRotation(3, -0.426569f);
-			m_buffs[0]->SetType(GAMEOBJECT_TYPE_TRAP);
-			m_buffs[0]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
-			m_buffs[0]->PushToWorld(m_mapMgr);
-
-			m_buffs[1] = SpawnGameObject(184664, 559, 4102.111426f, 2945.843262f, 12.662578f, 3.628544f, 32, 1375, 1.0f);
-			m_buffs[1]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-			m_buffs[1]->SetParentRotation(2, 0.90445f);
-			m_buffs[1]->SetParentRotation(3, -0.426569f);
-			m_buffs[1]->SetType(GAMEOBJECT_TYPE_TRAP);
-			m_buffs[1]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
-			m_buffs[1]->PushToWorld(m_mapMgr);
-			break;
-	}
 }
 
 void Arena::OnStart()
@@ -552,105 +411,12 @@ void Arena::Finish()
 
 LocationVector Arena::GetStartingCoords(uint32 Team)
 {
-	// 559, 562, 572
-	/*
-	A start
-	H start
-	Repop
-	572 1295.322388 1585.953369 31.605387
-	572 1277.105103 1743.956177 31.603209
-	572 1286.112061 1668.334961 39.289127
-
-	562 6184.806641 236.643463 5.037095
-	562 6292.032227 287.570343 5.003577
-	562 6241.171875 261.067322 0.891833
-
-	559 4085.861328 2866.750488 12.417445
-	559 4027.004883 2976.964844 11.600499
-	559 4057.042725 2918.686523 13.051933
-	*/
-	switch(m_mapMgr->GetMapId())
-	{
-			/* loraedeon */
-		case 572:
-			{
-				if(Team)
-					return LocationVector(1277.105103f, 1743.956177f, 31.603209f);
-				else
-					return LocationVector(1295.322388f, 1585.953369f, 31.605387f);
-			}
-			break;
-
-			/* blades edge arena */
-		case 562:
-			{
-				if(Team)
-					return LocationVector(6292.032227f, 287.570343f, 5.003577f);
-				else
-					return LocationVector(6184.806641f, 236.643463f, 5.037095f);
-			}
-			break;
-
-			/* nagrand arena */
-		case 559:
-			{
-				if(Team)
-					return LocationVector(4027.004883f, 2976.964844f, 11.600499f);
-				else
-					return LocationVector(4085.861328f, 2866.750488f, 12.417445f);
-			}
-			break;
-	}
-
 	return LocationVector(0, 0, 0, 0);
 }
 
 bool Arena::HookHandleRepop(Player* plr)
 {
-	// 559, 562, 572
-	/*
-	A start
-	H start
-	Repop
-	572 1295.322388 1585.953369 31.605387
-	572 1277.105103 1743.956177 31.603209
-	572 1286.112061 1668.334961 39.289127
-
-	562 6184.806641 236.643463 5.037095
-	562 6292.032227 287.570343 5.003577
-	562 6241.171875 261.067322 0.891833
-
-	559 4085.861328 2866.750488 12.417445
-	559 4027.004883 2976.964844 11.600499
-	559 4057.042725 2918.686523 13.051933
-	*/
-	LocationVector dest(0, 0, 0, 0);
-	switch(m_mapMgr->GetMapId())
-	{
-			/* loraedeon */
-		case 572:
-			{
-				dest.ChangeCoords(1286.112061f, 1668.334961f, 39.289127f);
-			}
-			break;
-
-			/* blades edge arena */
-		case 562:
-			{
-				dest.ChangeCoords(6241.171875f, 261.067322f, 0.891833f);
-			}
-			break;
-
-			/* nagrand arena */
-		case 559:
-			{
-				dest.ChangeCoords(4057.042725f, 2918.686523f, 13.051933f);
-			}
-			break;
-	}
-
-	plr->SafeTeleport(m_mapMgr->GetMapId(), m_mapMgr->GetInstanceID(), dest);
-	return true;
+	return false;
 }
 
 void Arena::HookOnAreaTrigger(Player* plr, uint32 id)
@@ -686,7 +452,7 @@ void Arena::HookOnAreaTrigger(Player* plr, uint32 id)
 			s->prepare(&targets);
 
 			/* despawn the gameobject (not delete!) */
-			m_buffs[buffslot]->Despawn(0, BUFF_RESPAWN_TIME);
+			m_buffs[buffslot]->Despawn(0, 30*1000 /*BUFF_RESPAWN_TIME*/);
 		}
 	}
 }

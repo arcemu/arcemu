@@ -18,17 +18,23 @@
  *
  */
 
-#ifndef HONORHANDLER_H
-#define HONORHANDLER_H
+#ifndef RING_OF_VALOR_H
+#define RING_OF_VALOR_H
 
-class SERVER_DECL HonorHandler
-{
-	public:
-		static int32 CalculateHonorPointsForKill(uint32 playerLevel, uint32 victimLevel);
-		static void RecalculateHonorFields(Player* pPlayer);
-		static void AddHonorPointsToPlayer(Player* pPlayer, uint32 uAmount);
-		static void OnPlayerKilled(Player* pPlayer, Player* pVictim);
+#include "StdAfx.h"
+
+class RingOfValor : public Arena{
+public:
+	RingOfValor( MapMgr* mgr, uint32 id, uint32 lgroup, uint32 t, uint32 players_per_side );
+	~RingOfValor();
+
+	static CBattleground* Create( MapMgr* m, uint32 i, uint32 l, uint32 t, uint32 players_per_side ){
+		return new RingOfValor( m, i, l, t, players_per_side );
+	}
+
+	void OnCreate();
+	LocationVector GetStartingCoords( uint32 Team );
+	bool HookHandleRepop( Player *plr );
 };
-
 
 #endif
