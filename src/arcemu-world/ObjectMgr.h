@@ -533,6 +533,7 @@ class SERVER_DECL ObjectMgr : public Singleton < ObjectMgr >, public EventableOb
 #ifdef ENABLE_ACHIEVEMENTS
 		void LoadCompletedAchievements();
 #endif
+		void LoadAchievementRewards();
 		void LoadQuests();
 		void LoadPlayersInfo();
 		void LoadPlayerCreateInfo();

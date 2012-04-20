@@ -203,9 +203,12 @@ enum AchievementCriteriaTypes
 struct AchievementReward
 {
 	uint32 type;   //! type(s) of reward(s), ACHIEVEMENT_REWARDTYPE_NONE | ACHIEVEMENT_REWARDTYPE_ITEM | ACHIEVEMENT_REWARDTYPE_TITLE | ACHIEVEMENT_REWARDTYPE_SPELL
-	uint32 itemId; //! itemId of item reward
-	uint32 rankId; //! rankId of title reward
+	uint32 TitleId[2]; //! title reward
 	uint32 spellId; //! spellId of spell reward
+	uint32 itemId; //! itemId of item reward
+	uint32 messenger;
+	std::string subject;
+	std::string message;
 };
 
 /**
