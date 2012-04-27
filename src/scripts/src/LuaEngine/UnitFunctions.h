@@ -778,8 +778,7 @@ class LuaUnit
 		{
 			TEST_UNIT()
 			int flags = luaL_checkint(L, 1);
-			if(flags && ptr)
-				ptr->SetUInt32Value(UNIT_NPC_FLAGS, flags);
+			ptr->SetUInt32Value(UNIT_NPC_FLAGS, flags);
 			return 0;
 		}
 		static int SetMount(lua_State* L, Unit* ptr)
