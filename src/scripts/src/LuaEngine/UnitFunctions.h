@@ -577,7 +577,7 @@ class LuaUnit
 			pCreature->SetEquippedItem(RANGED, equip3);
 			pCreature->Phase(PHASE_SET, phase);
 			pCreature->m_noRespawn = true;
-			pCreature->PushToWorld(ptr->GetMapMgr());
+			pCreature->AddToWorld(ptr->GetMapMgr());
 			if(duration)
 				pCreature->Despawn(duration, 0);
 			if(save)
