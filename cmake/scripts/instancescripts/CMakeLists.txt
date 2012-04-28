@@ -54,6 +54,7 @@ Raid_GruulsLair.cpp
 Raid_Karazhan.cpp 
 Raid_MoltenCore.cpp 
 Raid_Naxxramas.cpp 
+Raid_IcecrownCitadel.cpp 
 Raid_OnyxiasLair.cpp 
 Raid_SerpentshrineCavern.cpp 
 Raid_TheEye.cpp 
