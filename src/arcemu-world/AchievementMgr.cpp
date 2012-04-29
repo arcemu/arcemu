@@ -1800,10 +1800,7 @@ void AchievementMgr::GiveAchievementReward(AchievementEntry const* entry)
 	if(uint8 title = Reward->titleId[GetPlayer()->GetTeam() == TEAM_HORDE ? 1 : 0])
 	{
 		if(dbcCharTitlesEntry.LookupEntry(title))
-		{
 			GetPlayer()->SetKnownTitle(static_cast<RankTitles>(title), true);
-			GetPlayer()->SetChosenTitle(0);
-		}
 		else
 			sLog.Error("AchievementMgr", "Can not add title %u to player %u, because title does not exists", title, GetPlayer()->GetGUID());
 	}
