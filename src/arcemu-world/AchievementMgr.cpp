@@ -1810,11 +1810,7 @@ void AchievementMgr::GiveAchievementReward(AchievementEntry const* entry)
 
     // mail
     if(Reward->sender)
-    {
-		Creature * pCreature = NULL;
-		Object * pObject;
-		pObject = (Object*)Reward->sender;
-
+	{
 		Item * pItem;
 		pItem = new Item;
 		pItem = NULL;
