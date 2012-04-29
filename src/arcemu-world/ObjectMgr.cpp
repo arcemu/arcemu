@@ -915,6 +915,23 @@ void ObjectMgr::LoadAchievementRewards()
         if (reward.gender > 2)
 			sLog.Error("achievement_reward", "(Entry: %u) has wrong gender %u.", entry, reward.gender);
 
+        // GENDER_NONE must be single (so or already in and none must be attempt added new data or just adding and none in)
+        // other duplicate cases prevented by DB primary key
+        bool dup = false;
+        AchievementRewardsMapBounds bounds = AchievementRewards.equal_range(entry);
+
+		for (AchievementRewardsMap::const_iterator iter = bounds.first; iter != bounds.second; ++iter)
+        {
+            if (iter->second.gender == 2 || reward.gender == 2)
+            {
+                dup = true;
+                sLog.Error("achievement_reward",  "must have single GENDER_NONE (%u) case (Entry: %u), ignore duplicate case", 2, entry);
+                break;
+            }
+        }
+
+        if (dup)
+            continue;
 
         // must be title or mail at least
         if (!reward.titleId[0] && !reward.titleId[1] && !reward.sender)

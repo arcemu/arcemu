@@ -1785,263 +1785,57 @@ uint32 AchievementMgr::GetCriteriaProgressCount()
 void AchievementMgr::GiveAchievementReward(AchievementEntry const* entry)
 {
 	if(entry == NULL || isCharacterLoading)
-	{
 		return;
-	}
-	AchievementReward r;
-	r.type = ACHIEVEMENT_REWARDTYPE_NONE;
-	r.itemId = 0;
-	r.rankId = 0;
-	r.spellId = 0;
 
-	if(strlen(entry->rewardName) > 0)
+	ObjectMgr Mgr;
+	AchievementReward const * Reward = NULL;
+	AchievementRewardsMapBounds bounds = Mgr.AchievementRewards.equal_range(entry->ID);
+    for (AchievementRewardsMap::const_iterator iter = bounds.first; iter != bounds.second; ++iter)
+		if(iter->second.gender == 2 || uint8(iter->second.gender) == GetPlayer()->getGender())
+			Reward = &iter->second;
+
+    if(!Reward)
+        return;
+
+	if(uint8 title = Reward->titleId[GetPlayer()->GetTeam() == TEAM_HORDE ? 1 : 0])
 	{
-		switch(entry->unknown2)
+		if(dbcCharTitlesEntry.LookupEntry(title))
 		{
-			case 0x0000000b: // Title Reward: The Flawless Victor
-				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
-				r.rankId = PVPTITLE_THE_FLAWLESS_VICTOR;
-				break;
-			case 0x000000b6: // Title Reward: Champion of the Frozen Wastes
-				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
-				r.rankId = PVPTITLE_CHAMPION_OF_THE_FROZEN_WASTES;
-				break;
-			case 0x00000229: // Title Reward: Guardian of Cenarius
-				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
-				r.rankId = PVPTITLE_GUARDIAN_OF_CENARIUS;
-				break;
-			case 0x00000244: // Title Reward: Salty
-				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
-				r.rankId = PVPTITLE_SALTY;
-				break;
-			case 0x000005f2: // Reward: Reeking Pet Carrier
-				r.type = ACHIEVEMENT_REWARDTYPE_ITEM;
-				r.itemId = 40653;
-				break;
-			case 0x0000066c: // Reward: Title & Loremaster's Colors
-				r.type = ACHIEVEMENT_REWARDTYPE_ITEM | ACHIEVEMENT_REWARDTYPE_TITLE;
-				r.itemId = 43300;
-				r.rankId = PVPTITLE_LOREMASTER;
-				break;
-			case 0x000006a4: // Title Reward: The Magic Seeker
-				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
-				r.rankId = PVPTITLE_THE_MAGIC_SEEKER;
-				break;
-			case 0x000006a7: // Reward: Black War Bear [Horde]
-				// spellId 60018 or 60019 ?
-				r.type = ACHIEVEMENT_REWARDTYPE_ITEM;
-				r.itemId = 44224;
-				break;
-			case 0x000006a8: // Reward: Black War Bear [Alliance]
-				// spellId 60018 or 60019 ?
-				r.type = ACHIEVEMENT_REWARDTYPE_ITEM;
-				r.itemId = 44223;
-				break;
-			case 0x00000749: // Reward: The Schools of Arcane Magic - Mastery
-				r.type = ACHIEVEMENT_REWARDTYPE_SPELL;
-				r.spellId = 59983;
-				break;
-			case 0x0000076a: // Title Reward: Conqueror of Naxxramas
-				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
-				r.rankId = PVPTITLE_CONQUEROR_OF_NAXXRAMAS;
-				break;
-			case 0x000007fc: // Reward: Black Proto-Drake
-				r.type = ACHIEVEMENT_REWARDTYPE_SPELL;
-				r.spellId = 59976;
-				break;
-			case 0x00000858: // Title Reward: Elder
-				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
-				r.rankId = PVPTITLE_ELDER;
-				break;
-			case 0x0000085b: // Title Reward: The Argent Champion
-				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
-				r.rankId = PVPTITLE_THE_ARGENT_CHAMPION;
-				break;
-			case 0x0000085f: // Title Reward: The Immortal
-				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
-				r.rankId = PVPTITLE_THE_IMMORTAL;
-				break;
-			case 0x000008f4: // Title Reward: The Undying
-				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
-				r.rankId = PVPTITLE_THE_UNDYING;
-				break;
-			case 0x00000975: // Title: Bloodsail Admiral
-				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
-				r.rankId = PVPTITLE_BLOODSAIL_ADMIRAL;
-				break;
-			case 0x000009d3: // Title Reward: Brewmaster
-				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
-				r.rankId = PVPTITLE_BREWMASTER;
-				break;
-			case 0x000009db: // Title Reward: Matron/Patron
-				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
-				r.rankId = (GetPlayer()->getGender() == 1) ? /* Matron */ PVPTITLE_MATRON : /* Patron */ PVPTITLE_PATRON;
-				break;
-			case 0x00000a03: // Title Reward: Conqueror
-				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
-				r.rankId = PVPTITLE_CONQUEROR;
-				break;
-			case 0x00000ab1: // Title Reward: The Diplomat
-				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
-				r.rankId = PVPTITLE_THE_DIPLOMAT;
-				break;
-			case 0x00000ac7: // Title Reward: The Explorer
-				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
-				r.rankId = PVPTITLE_THE_EXPLORER;
-				break;
-			case 0x00000b6c: // Title Reward: Justicar
-				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
-				r.rankId = PVPTITLE_JUSTICAR;
-				break;
-			case 0x00000b9e: // Title Reward: Flame Warden
-				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
-				r.rankId = PVPTITLE_FLAME_WARDEN;
-				break;
-			case 0x00000b9f: // Title Reward: Flame Keeper
-				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
-				r.rankId = PVPTITLE_FLAME_KEEPER;
-				break;
-			case 0x00000bb1: // Reward: Titanium Seal of Dalaran
-				r.type = ACHIEVEMENT_REWARDTYPE_SPELL;
-				r.spellId = 60650;
-				break;
-			case 0x00000be0: // Reward: Tabard of the Achiever
-				r.type = ACHIEVEMENT_REWARDTYPE_ITEM;
-				r.itemId = 40643;
-				break;
-			case 0x00000c14: // Title Reward: Merrymaker
-				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
-				r.rankId = PVPTITLE_MERRYMAKER;
-				break;
-			case 0x00000c78: // Title Reward: The Love Fool
-				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
-				r.rankId = PVPTITLE_THE_LOVE_FOOL;
-				break;
-			case 0x00000cb4: // Title Reward: Of the Nightfall [Normal] Title Reward: Twilight Vanquisher [Heroic]
-				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
-				r.rankId = (entry->ID == 2051) ? /* Normal */ PVPTITLE_OF_THE_NIGHTFALL : /* Heroic ID==2054 */ PVPTITLE_TWILIGHT_VANQUISHER;
-				break;
-			case 0x00000cec: // Title Reward: Obsidian Slayer
-				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
-				r.rankId = PVPTITLE_OBSIDIAN_SLAYER;
-				break;
-			case 0x00000d2c: // Title Reward: Battlemaster
-				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
-				r.rankId = PVPTITLE_BATTLEMASTER;
-				break;
-			case 0x00000d2d: // Title Reward: Battlemaster
-				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
-				r.rankId = PVPTITLE_BATTLEMASTER;
-				break;
-			case 0x00000d2e: // Title Reward: Ambassador
-				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
-				r.rankId = PVPTITLE_AMBASSADOR;
-				break;
-			case 0x00000d2f: // Title Reward: Ambassador
-				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
-				r.rankId = PVPTITLE_AMBASSADOR;
-				break;
-			case 0x00000d56: // Title Reward: The Seeker
-				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
-				r.rankId = PVPTITLE_THE_SEEKER;
-				break;
-			case 0x00000d74: // Reward: Albino Drake
-				r.type = ACHIEVEMENT_REWARDTYPE_SPELL;
-				r.spellId = 60025;
-				break;
-			case 0x00000d7d: // Title Reward: Of the Horde or Of the Alliance
-				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
-				r.rankId = GetPlayer()->IsTeamHorde() ? /* Horde */ PVPTITLE_OF_THE_HORDE : /* Alliance */ PVPTITLE_OF_THE_ALLIANCE;
-				break;
-			case 0x00000da5: // Reward: Tabard of the Explorer
-				r.type = ACHIEVEMENT_REWARDTYPE_ITEM;
-				r.itemId = 43348;
-				break;
-			case 0x00000da6: // Reward: Red Proto-Drake
-				r.type = ACHIEVEMENT_REWARDTYPE_SPELL;
-				r.spellId = 59961;
-				break;
-			case 0x00000da7: // Title: Jenkins
-				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
-				r.rankId = PVPTITLE_JENKINS;
-				break;
-			case 0x00000dab: // Reward: Plagued Proto-Drake
-				r.type = ACHIEVEMENT_REWARDTYPE_SPELL;
-				r.spellId = 60021;
-				break;
-			case 0x00000dac: // Reward: Violet Proto-Drake
-				r.type = ACHIEVEMENT_REWARDTYPE_SPELL;
-				r.spellId = 60024;
-				break;
-			case 0x00000dba: // Title Reward: The Hallowed
-				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
-				r.rankId = PVPTITLE_THE_HALLOWED;
-				break;
-			case 0x00000e0b: // Reward: Tabard of Brute Force
-				r.type = ACHIEVEMENT_REWARDTYPE_ITEM;
-				r.itemId = 43349;
-			case 0x00000e10: // Title Reward: Arena Master
-				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
-				r.rankId = PVPTITLE_ARENA_MASTER;
-				break;
-			case 0x00000e12: // Title Reward: The Exalted
-				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
-				r.rankId = PVPTITLE_THE_EXALTED;
-				break;
-			case 0x00000e5e: // Title Reward: Chef
-				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
-				r.rankId = PVPTITLE_CHEF;
-				break;
-			default:
-				break;
-		}
-		if(r.type & ACHIEVEMENT_REWARDTYPE_TITLE)
-		{
-			GetPlayer()->SetKnownTitle(static_cast< RankTitles >(r.rankId), true);
+			GetPlayer()->SetKnownTitle(static_cast<RankTitles>(title), true);
 			GetPlayer()->SetChosenTitle(0);
 		}
-		if(r.type & ACHIEVEMENT_REWARDTYPE_ITEM)
-		{
-			// How does this work? Add item directly to inventory, or send through mail?
-			ItemPrototype* it = ItemPrototypeStorage.LookupEntry(r.itemId);
-			if(it)
-			{
-				Item* item;
-				item = objmgr.CreateItem(r.itemId, GetPlayer());
-				if(item == NULL)
-				{
-					// this is bad - item not found in db or unable to be created for some reason
-					GetPlayer()->GetSession()->SendNotification("Unable to create item with id %lu!", r.itemId);
-					return;
-				}
-				item->SetStackCount(1);
-				if(it->Bonding == ITEM_BIND_ON_PICKUP)
-				{
-					if(it->Flags & ITEM_FLAG_ACCOUNTBOUND)
-					{
-						// any "accountbound" items for achievement rewards?  maybe later...
-						item->AccountBind();
-					}
-					else
-					{
-						item->SoulBind();
-					}
-				}
-
-				if(!GetPlayer()->GetItemInterface()->AddItemToFreeSlot(item))
-				{
-					// this is bad. inventory full. maybe we should mail it instead?
-					GetPlayer()->GetSession()->SendNotification("No free slots were found in your inventory!");
-					item->DeleteMe();
-					return;
-				}
-			}
-		}
-		if(r.type & ACHIEVEMENT_REWARDTYPE_SPELL)
-		{
-			GetPlayer()->addSpell(r.spellId);
-		}
+		else
+			sLog.Error("AchievementMgr", "Can not add title %u to player %u, because title does not exists", title, GetPlayer()->GetGUID());
 	}
+
+    // mail
+    if(Reward->sender)
+    {
+		Creature * pCreature = NULL;
+		Object * pObject;
+		pObject = (Object*)Reward->sender;
+
+		Item * pItem;
+		pItem = new Item;
+		pItem = NULL;
+
+		if(Reward->itemId)
+		{
+			if(ItemNameStorage.LookupEntry(Reward->itemId))
+				pItem->Create(Reward->itemId, GetPlayer());
+			else
+				sLog.Error("AchievementMgr", "Can not add item %u to player %u, because item does not exists", Reward->itemId, GetPlayer()->GetGUID());
+		}
+
+        // subject and text
+        std::string subject = Reward->subject;
+        std::string message = Reward->text;
+
+		if(pItem != NULL)
+			sMailSystem.SendAutomatedMessage(CREATURE, Reward->sender, GetPlayer()->GetGUID(), subject, message, 0, 0, pItem->GetGUID(), 0);
+		else
+			sMailSystem.SendAutomatedMessage(CREATURE, Reward->sender, GetPlayer()->GetGUID(), subject, message, 0, 0, 0, 0);
+    }
 }
 
 /**
