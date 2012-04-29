@@ -878,6 +878,111 @@ void ObjectMgr::LoadInstanceBossInfos()
 	Log.Success("ObjectMgr", "%u boss information loaded.", cnt);
 }
 
+void ObjectMgr::LoadAchievementRewards()
+{
+    AchievementRewards.clear();                           // need for reload case
+
+    QueryResult *result = WorldDatabase.Query("SELECT * FROM achievement_reward");
+
+    if (!result)
+    {
+		LOG_DETAIL("Loaded 0 achievement rewards. DB table `achievement_reward` is empty.");
+        return;
+    }
+
+    uint32 count = 0;
+
+    do
+    {
+        Field *fields = result->Fetch();
+        uint32 entry = fields[0].GetUInt32();
+
+        if (!dbcAchievementStore.LookupEntry(entry))
+        {
+            sLog.Error( "achievement_reward`", "Has wrong achievement (Entry: %u), ignore", entry);
+            continue;
+        }
+
+        AchievementReward reward;
+        reward.gender     = fields[1].GetUInt8();
+        reward.titleId[0] = fields[2].GetUInt32();
+        reward.titleId[1] = fields[3].GetUInt32();
+        reward.itemId     = fields[4].GetUInt32();
+        reward.sender     = fields[5].GetUInt32();
+        reward.subject    = fields[6].GetString();
+        reward.text       = fields[7].GetString();
+
+        if (reward.gender > 2)
+			sLog.Error("achievement_reward", "(Entry: %u) has wrong gender %u.", entry, reward.gender);
+
+
+        // must be title or mail at least
+        if (!reward.titleId[0] && !reward.titleId[1] && !reward.sender)
+        {
+            sLog.Error("achievement_reward", "(Entry: %u) not have title or item reward data, ignore.", entry);
+            continue;
+        }
+
+        if (reward.titleId[0])
+        {
+            CharTitlesEntry const* titleEntry = dbcCharTitlesEntry.LookupEntry(reward.titleId[0]);
+            if (!titleEntry)
+            {
+                sLog.Error( "achievement_reward", "(Entry: %u) has invalid title id (%u) in `title_A`, set to 0", entry, reward.titleId[0]);
+                reward.titleId[0] = 0;
+            }
+        }
+
+        if (reward.titleId[1])
+        {
+            CharTitlesEntry const* titleEntry = dbcCharTitlesEntry.LookupEntry(reward.titleId[1]);
+            if (!titleEntry)
+            {
+                sLog.Error( "achievement_reward", "(Entry: %u) has invalid title id (%u) in `title_A`, set to 0", entry, reward.titleId[1]);
+                reward.titleId[1] = 0;
+            }
+        }
+
+        //check mail data before item for report including wrong item case
+        if (reward.sender)
+        {
+			if (!CreatureNameStorage.LookupEntry(reward.sender))
+            {
+                sLog.Error("achievement_reward", "(Entry: %u) has invalid creature entry %u as sender, mail reward skipped.", entry, reward.sender);
+                reward.sender = 0;
+            }
+        }
+        else
+        {
+            if (reward.itemId)
+                sLog.Error("achievement_reward", "(Entry: %u) not have sender data but have item reward, item will not rewarded", entry);
+
+            if (!reward.subject.empty())
+                sLog.Error("achievement_reward", "(Entry: %u) not have sender data but have mail subject.", entry);
+
+            if (!reward.text.empty())
+                sLog.Error("achievement_reward", "(Entry: %u) not have sender data but have mail text.", entry);
+        }
+
+        if (reward.itemId)
+        {
+			if (!ItemNameStorage.LookupEntry(reward.itemId))
+            {
+                sLog.Error("achievement_reward", "(Entry: %u) has invalid item id %u, reward mail will be without item.", entry, reward.itemId);
+                reward.itemId = 0;
+            }
+        }
+
+        AchievementRewards.insert(AchievementRewardsMap::value_type(entry, reward));
+        ++count;
+
+    } while (result->NextRow());
+
+    delete result;
+
+	sLog.Success("achievement_reward", "Loaded %u achievement rewards", count);
+}
+
 void ObjectMgr::SaveGMTicket(GM_Ticket* ticket, QueryBuffer* buf)
 {
 	std::stringstream ss;

@@ -528,6 +528,7 @@ class SERVER_DECL ObjectMgr : public Singleton < ObjectMgr >, public EventableOb
 		void AddPlayer(Player* p); //add it to global storage
 		void RemovePlayer(Player* p);
 
+		AchievementRewardsMap AchievementRewards;
 
 		// Serialization
 #ifdef ENABLE_ACHIEVEMENTS
@@ -542,6 +543,7 @@ class SERVER_DECL ObjectMgr : public Singleton < ObjectMgr >, public EventableOb
 		void LoadGMTickets();
 		void SaveGMTicket(GM_Ticket* ticket, QueryBuffer* buf);
 		void LoadInstanceBossInfos();
+		void LoadAchievementRewards();
 		void LoadAuctions();
 		void LoadAuctionItems();
 		void LoadSpellSkills();
