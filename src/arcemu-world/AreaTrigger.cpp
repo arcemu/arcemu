@@ -36,7 +36,7 @@ enum AreaTriggerFailures
     AREA_TRIGGER_FAILURE_NO_BC			= 2,
     AREA_TRIGGER_FAILURE_NO_HEROIC		= 3,
     AREA_TRIGGER_FAILURE_NO_RAID		= 4,
-    AREA_TRIGGER_FAILURE_NO_ATTUNE_Q	= 5,
+    AREA_TRIGGER_FAILURE_NO_ATTUNE_QA	= 5,
     AREA_TRIGGER_FAILURE_NO_ATTUNE_I	= 6,
     AREA_TRIGGER_FAILURE_LEVEL			= 7,
     AREA_TRIGGER_FAILURE_NO_GROUP		= 8,
@@ -44,6 +44,7 @@ enum AreaTriggerFailures
     AREA_TRIGGER_FAILURE_NO_CHECK		= 10,
     AREA_TRIGGER_FAILURE_NO_WOTLK		= 11,
     AREA_TRIGGER_FAILURE_LEVEL_HEROIC	= 12,
+	AREA_TRIGGER_FAILURE_NO_ATTUNE_QH	= 13,
 };
 
 uint32 AreaTriggerFailureMessages[] =
@@ -90,8 +91,11 @@ uint32 CheckTriggerPrerequsites(AreaTrigger* pAreaTrigger, WorldSession* pSessio
 	if((pMapInfo->type == INSTANCE_MULTIMODE && pPlayer->iInstanceType >= MODE_HEROIC) && !pPlayer->GetGroup())
 		return AREA_TRIGGER_FAILURE_NO_GROUP;
 
-	if(pMapInfo && pMapInfo->required_quest && !pPlayer->HasFinishedQuest(pMapInfo->required_quest))
-		return AREA_TRIGGER_FAILURE_NO_ATTUNE_Q;
+	if(pPlayer->GetTeam() == TEAM_ALLIANCE && pMapInfo && pMapInfo->required_quest_A && !pPlayer->HasFinishedQuest(pMapInfo->required_quest_A))
+		return AREA_TRIGGER_FAILURE_NO_ATTUNE_QA;
+	
+	if(pPlayer->GetTeam() == TEAM_HORDE && pMapInfo && pMapInfo->required_quest_H && !pPlayer->HasFinishedQuest(pMapInfo->required_quest_H))
+		return AREA_TRIGGER_FAILURE_NO_ATTUNE_QH;
 
 	if(pMapInfo && pMapInfo->required_item && !pPlayer->GetItemInterface()->GetItemCount(pMapInfo->required_item, true))
 		return AREA_TRIGGER_FAILURE_NO_ATTUNE_I;
@@ -183,10 +187,22 @@ void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
 									data << msg;
 								}
 								break;
-							case AREA_TRIGGER_FAILURE_NO_ATTUNE_Q:
+							case AREA_TRIGGER_FAILURE_NO_ATTUNE_QA:
 								{
 									MapInfo* pMi = WorldMapInfoStorage.LookupEntry(pAreaTrigger->Mapid);
-									Quest* pQuest = QuestStorage.LookupEntry(pMi->required_quest);
+									Quest* pQuest = QuestStorage.LookupEntry(pMi->required_quest_A);
+									if(pQuest)
+										snprintf(msg, 200, GetPlayer()->GetSession()->LocalizedWorldSrv(35), pQuest->title);
+									else
+										snprintf(msg, 200, "%s", GetPlayer()->GetSession()->LocalizedWorldSrv(36));
+
+									data << msg;
+								}
+								break;
+							case AREA_TRIGGER_FAILURE_NO_ATTUNE_QH:
+								{
+									MapInfo* pMi = WorldMapInfoStorage.LookupEntry(pAreaTrigger->Mapid);
+									Quest* pQuest = QuestStorage.LookupEntry(pMi->required_quest_H);
 									if(pQuest)
 										snprintf(msg, 200, GetPlayer()->GetSession()->LocalizedWorldSrv(35), pQuest->title);
 									else
