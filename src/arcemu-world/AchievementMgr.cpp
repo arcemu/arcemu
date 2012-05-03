@@ -20,6 +20,8 @@
 
 
 #include "StdAfx.h"
+#include "ObjectMgr.h"
+
 #ifdef ENABLE_ACHIEVEMENTS
 /**
 	Takes achievementlink c-string and returns the ID value from it.
@@ -1787,9 +1789,8 @@ void AchievementMgr::GiveAchievementReward(AchievementEntry const* entry)
 	if(entry == NULL || isCharacterLoading)
 		return;
 
-	ObjectMgr Mgr;
 	AchievementReward const * Reward = NULL;
-	AchievementRewardsMapBounds bounds = Mgr.AchievementRewards.equal_range(entry->ID);
+	AchievementRewardsMapBounds bounds = AchievementRewards.equal_range(entry->ID);
     for (AchievementRewardsMap::const_iterator iter = bounds.first; iter != bounds.second; ++iter)
 		if(iter->second.gender == 2 || uint8(iter->second.gender) == GetPlayer()->getGender())
 			Reward = &iter->second;
@@ -1798,12 +1799,7 @@ void AchievementMgr::GiveAchievementReward(AchievementEntry const* entry)
         return;
 
 	if(uint8 title = Reward->titleId[GetPlayer()->GetTeam() == TEAM_HORDE ? 1 : 0])
-	{
-		if(dbcCharTitlesEntry.LookupEntry(title))
-			GetPlayer()->SetKnownTitle(static_cast<RankTitles>(title), true);
-		else
-			sLog.Error("AchievementMgr", "Can not add title %u to player %u, because title does not exists", title, GetPlayer()->GetGUID());
-	}
+		GetPlayer()->SetKnownTitle(title, true);
 
     // mail
     if(Reward->sender)

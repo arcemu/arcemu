@@ -63,8 +63,8 @@ struct AchievementReward
     uint32 titleId[2];
     uint32 itemId;
     uint32 sender;
-    std::string subject;
-    std::string text;
+    const char* subject;
+    const char* text;
 };
 
 typedef HM_NAMESPACE::hash_map<uint32, CriteriaProgress*> CriteriaProgressMap;
@@ -296,6 +296,7 @@ class SERVER_DECL AchievementMgr
 		CriteriaProgressMap m_criteriaProgress;
 		CompletedAchievementMap m_completedAchievements;
 		bool isCharacterLoading;
+		AchievementRewardsMap AchievementRewards;
 };
 
 // Function declarations - related to achievements - not in AchievementMgr class - defined in AchievementMgr.cpp

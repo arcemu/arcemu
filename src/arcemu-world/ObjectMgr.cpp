@@ -899,7 +899,7 @@ void ObjectMgr::LoadAchievementRewards()
 
         if (!dbcAchievementStore.LookupEntry(entry))
         {
-            sLog.Error( "achievement_reward`", "Has wrong achievement (Entry: %u), ignore", entry);
+            sLog.Error( "ObjectMgr", "Achievement reward entry %u has wrong achievement, ignore", entry);
             continue;
         }
 
@@ -909,29 +909,21 @@ void ObjectMgr::LoadAchievementRewards()
         reward.titleId[1] = fields[3].GetUInt32();
         reward.itemId     = fields[4].GetUInt32();
         reward.sender     = fields[5].GetUInt32();
-        reward.subject    = fields[6].GetString();
+		reward.subject    = fields[6].GetString();
         reward.text       = fields[7].GetString();
 
         if (reward.gender > 2)
-			sLog.Error("achievement_reward", "(Entry: %u) has wrong gender %u.", entry, reward.gender);
+			sLog.Error("ObjectMgr", "achievement reward %u has wrong gender %u.", entry, reward.gender);
 
-        // GENDER_NONE must be single (so or already in and none must be attempt added new data or just adding and none in)
-        // other duplicate cases prevented by DB primary key
-        bool dup = false;
         AchievementRewardsMapBounds bounds = AchievementRewards.equal_range(entry);
-
 		for (AchievementRewardsMap::const_iterator iter = bounds.first; iter != bounds.second; ++iter)
         {
             if (iter->second.gender == 2 || reward.gender == 2)
             {
-                dup = true;
-                sLog.Error("achievement_reward",  "must have single GENDER_NONE (%u) case (Entry: %u), ignore duplicate case", 2, entry);
-                break;
+                sLog.Error("ObjectMgr",  "Achievement reward %u must have single GENDER_NONE (%u), ignore duplicate case", 2, entry);
+                continue;
             }
         }
-
-        if (dup)
-            continue;
 
         // must be title or mail at least
         if (!reward.titleId[0] && !reward.titleId[1] && !reward.sender)
@@ -946,7 +938,7 @@ void ObjectMgr::LoadAchievementRewards()
             if (!titleEntry)
             {
                 sLog.Error( "achievement_reward", "(Entry: %u) has invalid title id (%u) in `title_A`, set to 0", entry, reward.titleId[0]);
-                reward.titleId[0] = 0;
+                reward.titleId[0] = NULL;
             }
         }
 
@@ -956,7 +948,7 @@ void ObjectMgr::LoadAchievementRewards()
             if (!titleEntry)
             {
                 sLog.Error( "achievement_reward", "(Entry: %u) has invalid title id (%u) in `title_A`, set to 0", entry, reward.titleId[1]);
-                reward.titleId[1] = 0;
+                reward.titleId[1] = NULL;
             }
         }
 
@@ -966,7 +958,7 @@ void ObjectMgr::LoadAchievementRewards()
 			if (!CreatureNameStorage.LookupEntry(reward.sender))
             {
                 sLog.Error("achievement_reward", "(Entry: %u) has invalid creature entry %u as sender, mail reward skipped.", entry, reward.sender);
-                reward.sender = 0;
+                reward.sender = NULL;
             }
         }
         else
@@ -974,10 +966,10 @@ void ObjectMgr::LoadAchievementRewards()
             if (reward.itemId)
                 sLog.Error("achievement_reward", "(Entry: %u) not have sender data but have item reward, item will not rewarded", entry);
 
-            if (!reward.subject.empty())
+            if (reward.subject == "")
                 sLog.Error("achievement_reward", "(Entry: %u) not have sender data but have mail subject.", entry);
 
-            if (!reward.text.empty())
+            if (reward.text == "")
                 sLog.Error("achievement_reward", "(Entry: %u) not have sender data but have mail text.", entry);
         }
 
@@ -986,7 +978,7 @@ void ObjectMgr::LoadAchievementRewards()
 			if (!ItemNameStorage.LookupEntry(reward.itemId))
             {
                 sLog.Error("achievement_reward", "(Entry: %u) has invalid item id %u, reward mail will be without item.", entry, reward.itemId);
-                reward.itemId = 0;
+                reward.itemId = NULL;
             }
         }
 

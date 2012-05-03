@@ -1230,11 +1230,11 @@ class SERVER_DECL Player : public Unit
 		}
 		uint32 GetMaxPersonalRating();
 
-		bool HasTitle(RankTitles title)
+		bool HasTitle(uint8 title)
 		{
 			return (GetUInt64Value(PLAYER__FIELD_KNOWN_TITLES + ((title >> 6) << 1)) & (uint64(1) << (title % 64))) != 0;
 		}
-		void SetKnownTitle(RankTitles title, bool set);
+		void SetKnownTitle(uint8 title, bool set);
 		void SendAvailSpells(SpellShapeshiftForm* ssf, bool active);
 
 		/************************************************************************/
