@@ -16,6 +16,35 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `achievement_reward`
+--
+
+DROP TABLE IF EXISTS `achievement_reward`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `achievement_reward` (
+  `entry` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `gender` tinyint(3) NOT NULL DEFAULT '2',
+  `title_A` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `title_H` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `item` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `sender` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `subject` varchar(255) DEFAULT NULL,
+  `text` text,
+  PRIMARY KEY (`entry`,`gender`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED COMMENT='Loot System';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ai_agents`
+--
+
+LOCK TABLES `achievement_reward` WRITE;
+/*!40000 ALTER TABLE `achievement_reward` DISABLE KEYS */;
+/*!40000 ALTER TABLE `achievement_reward` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `ai_agents`
 --
 
