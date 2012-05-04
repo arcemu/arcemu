@@ -59,7 +59,7 @@ struct CriteriaProgress
 
 struct AchievementReward
 {
-    int8 gender;
+    uint32 gender;
     uint32 title_A;
 	uint32 title_H;
     uint32 itemId;
