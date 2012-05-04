@@ -411,6 +411,7 @@ bool World::SetInitialWorldSettings()
 	MAKE_TASK(ObjectMgr, LoadPlayersInfo);
 	tl.wait();
 
+	MAKE_TASK(ObjectMgr,  LoadAchievementRewards);
 	MAKE_TASK(ObjectMgr,  LoadInstanceBossInfos);
 	MAKE_TASK(ObjectMgr,  LoadCreatureWaypoints);
 	MAKE_TASK(ObjectMgr,  LoadCreatureTimedEmotes);

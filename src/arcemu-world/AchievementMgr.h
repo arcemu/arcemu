@@ -57,9 +57,22 @@ struct CriteriaProgress
 	time_t date;   //! Date/time
 };
 
+struct AchievementReward
+{
+    int8 gender;
+    uint32 title_A;
+	uint32 title_H;
+    uint32 itemId;
+    uint32 sender;
+    string subject;
+    string text;
+};
+
 typedef HM_NAMESPACE::hash_map<uint32, CriteriaProgress*> CriteriaProgressMap;
 typedef HM_NAMESPACE::hash_map<uint32, time_t> CompletedAchievementMap;
 typedef std::set<uint32> AchievementSet;
+typedef std::multimap<uint32, AchievementReward> AchievementRewardsMap;
+typedef std::pair<AchievementRewardsMap::const_iterator, AchievementRewardsMap::const_iterator> AchievementRewardsMapBounds;
 
 class Player;
 class WorldPacket;
@@ -195,17 +208,6 @@ enum AchievementCriteriaTypes
     ACHIEVEMENT_CRITERIA_TYPE_ACCEPTED_SUMMONINGS = 114,
     // 0..114 => 124 criteria types total : Alleycat - We need to get the new Acheivements!
     ACHIEVEMENT_CRITERIA_TYPE_TOTAL = 124,
-};
-
-/**
-	Achievement Reward: contains type of reward(s) and Id(s).
-*/
-struct AchievementReward
-{
-	uint32 type;   //! type(s) of reward(s), ACHIEVEMENT_REWARDTYPE_NONE | ACHIEVEMENT_REWARDTYPE_ITEM | ACHIEVEMENT_REWARDTYPE_TITLE | ACHIEVEMENT_REWARDTYPE_SPELL
-	uint32 itemId; //! itemId of item reward
-	uint32 rankId; //! rankId of title reward
-	uint32 spellId; //! spellId of spell reward
 };
 
 /**
