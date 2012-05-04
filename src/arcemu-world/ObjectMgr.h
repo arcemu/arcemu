@@ -529,6 +529,16 @@ class SERVER_DECL ObjectMgr : public Singleton < ObjectMgr >, public EventableOb
 		void RemovePlayer(Player* p);
 
 		AchievementRewardsMap AchievementRewards;
+		AchievementReward const * GetAchievementReward(uint32 entry, uint8 gender)
+		{
+			AchievementRewardsMapBounds bounds = AchievementRewards.equal_range(entry);
+			for (AchievementRewardsMap::const_iterator iter = bounds.first; iter != bounds.second; ++iter)
+			{
+				if(iter->second.gender == 2 || uint8(iter->second.gender) == gender)
+					return &iter->second;
+			}
+			return NULL;
+		}
 
 		// Serialization
 #ifdef ENABLE_ACHIEVEMENTS

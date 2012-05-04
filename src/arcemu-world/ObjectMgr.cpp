@@ -903,52 +903,56 @@ void ObjectMgr::LoadAchievementRewards()
             continue;
         }
 
-        AchievementReward reward;
+		AchievementReward reward;
         reward.gender     = fields[1].GetUInt8();
-        reward.titleId[0] = fields[2].GetUInt32();
-        reward.titleId[1] = fields[3].GetUInt32();
+        reward.title_A	  = fields[2].GetUInt32();
+        reward.title_H	  = fields[3].GetUInt32();
         reward.itemId     = fields[4].GetUInt32();
         reward.sender     = fields[5].GetUInt32();
-		reward.subject    = fields[6].GetString();
-        reward.text       = fields[7].GetString();
+		reward.subject = fields[6].GetString() ? fields[6].GetString() : "";
+		reward.text = fields[7].GetString() ? fields[7].GetString() : "";
 
         if (reward.gender > 2)
 			sLog.Error("ObjectMgr", "achievement reward %u has wrong gender %u.", entry, reward.gender);
-
+		bool dup = false;
         AchievementRewardsMapBounds bounds = AchievementRewards.equal_range(entry);
 		for (AchievementRewardsMap::const_iterator iter = bounds.first; iter != bounds.second; ++iter)
         {
             if (iter->second.gender == 2 || reward.gender == 2)
             {
+				dup = true;
                 sLog.Error("ObjectMgr",  "Achievement reward %u must have single GENDER_NONE (%u), ignore duplicate case", 2, entry);
-                continue;
+                break;
             }
         }
 
+		if(dup)
+			continue;
+
         // must be title or mail at least
-        if (!reward.titleId[0] && !reward.titleId[1] && !reward.sender)
+        if (!reward.title_A && !reward.title_H && !reward.sender)
         {
-            sLog.Error("achievement_reward", "(Entry: %u) not have title or item reward data, ignore.", entry);
+            sLog.Error("ObjectMgr", "achievement_reward %u not have title or item reward data, ignore.", entry);
             continue;
         }
 
-        if (reward.titleId[0])
+        if (reward.title_A)
         {
-            CharTitlesEntry const* titleEntry = dbcCharTitlesEntry.LookupEntry(reward.titleId[0]);
+            CharTitlesEntry const* titleEntry = dbcCharTitlesEntry.LookupEntry(reward.title_A);
             if (!titleEntry)
             {
-                sLog.Error( "achievement_reward", "(Entry: %u) has invalid title id (%u) in `title_A`, set to 0", entry, reward.titleId[0]);
-                reward.titleId[0] = NULL;
+                sLog.Error( "ObjectMgr", "achievement_reward %u has invalid title id (%u) in `title_A`, set to 0", entry, reward.title_A);
+                reward.title_A = NULL;
             }
         }
 
-        if (reward.titleId[1])
+        if (reward.title_H)
         {
-            CharTitlesEntry const* titleEntry = dbcCharTitlesEntry.LookupEntry(reward.titleId[1]);
+            CharTitlesEntry const* titleEntry = dbcCharTitlesEntry.LookupEntry(reward.title_H);
             if (!titleEntry)
             {
-                sLog.Error( "achievement_reward", "(Entry: %u) has invalid title id (%u) in `title_A`, set to 0", entry, reward.titleId[1]);
-                reward.titleId[1] = NULL;
+                sLog.Error( "ObjectMgr", "achievement_reward %u has invalid title id (%u) in `title_A`, set to 0", entry, reward.title_H);
+                reward.title_H = NULL;
             }
         }
 
@@ -957,39 +961,39 @@ void ObjectMgr::LoadAchievementRewards()
         {
 			if (!CreatureNameStorage.LookupEntry(reward.sender))
             {
-                sLog.Error("achievement_reward", "(Entry: %u) has invalid creature entry %u as sender, mail reward skipped.", entry, reward.sender);
+                sLog.Error("ObjectMgr", "achievement_reward %u has invalid creature entry %u as sender, mail reward skipped.", entry, reward.sender);
                 reward.sender = NULL;
             }
         }
         else
         {
             if (reward.itemId)
-                sLog.Error("achievement_reward", "(Entry: %u) not have sender data but have item reward, item will not rewarded", entry);
+                sLog.Error("ObjectMgr", "achievement_reward %u not have sender data but have item reward, item will not rewarded", entry);
 
-            if (reward.subject == "")
-                sLog.Error("achievement_reward", "(Entry: %u) not have sender data but have mail subject.", entry);
+			if (!reward.subject.empty())
+                sLog.Error("ObjectMgr", "achievement_reward %u not have sender data but have mail subject.", entry);
 
-            if (reward.text == "")
-                sLog.Error("achievement_reward", "(Entry: %u) not have sender data but have mail text.", entry);
+			if (!reward.text.empty())
+                sLog.Error("ObjectMgr", "achievement_reward %u not have sender data but have mail text.", entry);
         }
 
         if (reward.itemId)
         {
 			if (!ItemNameStorage.LookupEntry(reward.itemId))
             {
-                sLog.Error("achievement_reward", "(Entry: %u) has invalid item id %u, reward mail will be without item.", entry, reward.itemId);
+                sLog.Error("ObjectMgr", "achievement_reward %u has invalid item id %u, reward mail will be without item.", entry, reward.itemId);
                 reward.itemId = NULL;
             }
         }
 
         AchievementRewards.insert(AchievementRewardsMap::value_type(entry, reward));
         ++count;
-
-    } while (result->NextRow());
+		
+    }while (result->NextRow());
 
     delete result;
 
-	sLog.Success("achievement_reward", "Loaded %u achievement rewards", count);
+	sLog.Success("ObjectMgr", "Loaded %u achievement rewards", count);
 }
 
 void ObjectMgr::SaveGMTicket(GM_Ticket* ticket, QueryBuffer* buf)

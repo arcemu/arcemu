@@ -20,7 +20,6 @@
 
 
 #include "StdAfx.h"
-#include "ObjectMgr.h"
 
 #ifdef ENABLE_ACHIEVEMENTS
 /**
@@ -1789,41 +1788,48 @@ void AchievementMgr::GiveAchievementReward(AchievementEntry const* entry)
 	if(entry == NULL || isCharacterLoading)
 		return;
 
-	AchievementReward const * Reward = NULL;
-	AchievementRewardsMapBounds bounds = AchievementRewards.equal_range(entry->ID);
-    for (AchievementRewardsMap::const_iterator iter = bounds.first; iter != bounds.second; ++iter)
-		if(iter->second.gender == 2 || uint8(iter->second.gender) == GetPlayer()->getGender())
-			Reward = &iter->second;
+	AchievementReward const * Reward = objmgr.GetAchievementReward(entry->ID, GetPlayer()->getGender());
 
     if(!Reward)
         return;
 
-	if(uint8 title = Reward->titleId[GetPlayer()->GetTeam() == TEAM_HORDE ? 1 : 0])
-		GetPlayer()->SetKnownTitle(title, true);
+	//title
+	if(Reward->title_A != NULL || Reward->title_H != NULL)
+	{
+		CharTitlesEntry * title = dbcCharTitlesEntry.LookupEntry(GetPlayer()->GetTeam() == TEAM_ALLIANCE ? Reward->title_A : Reward->title_H);
+		if(title != NULL)
+			GetPlayer()->SetKnownTitle(static_cast< RankTitles >(title->bit_index), true);
+	}
 
     // mail
-    if(Reward->sender)
+	if(Reward->sender != NULL)
 	{
-		Item * pItem;
-		pItem = new Item;
-		pItem = NULL;
+		//preparing sender
+		Creature * pCreature = GetPlayer()->GetMapMgr()->CreateCreature(Reward->sender);
+		if(pCreature == NULL)
+		{
+			sLog.Error("AchievementMgr", "can't create sender for achievement %u", entry);
+			return;
+		}
 
-		if(Reward->itemId)
+		//Item
+		Item * pItem = NULL;
+
+		if(Reward->itemId != NULL)
 		{
 			if(ItemNameStorage.LookupEntry(Reward->itemId))
 				pItem->Create(Reward->itemId, GetPlayer());
 			else
 				sLog.Error("AchievementMgr", "Can not add item %u to player %u, because item does not exists", Reward->itemId, GetPlayer()->GetGUID());
 		}
-
-        // subject and text
-        std::string subject = Reward->subject;
-        std::string message = Reward->text;
-
+		
 		if(pItem != NULL)
-			sMailSystem.SendAutomatedMessage(CREATURE, Reward->sender, GetPlayer()->GetGUID(), subject, message, 0, 0, pItem->GetGUID(), 0);
+			sMailSystem.SendAutomatedMessage(CREATURE, pCreature->GetGUID(), GetPlayer()->GetGUID(), Reward->subject, Reward->text, 0, 0, pItem->GetGUID(), 0, MAIL_CHECK_MASK_HAS_BODY, MAIL_DEFAULT_EXPIRATION_TIME);
 		else
-			sMailSystem.SendAutomatedMessage(CREATURE, Reward->sender, GetPlayer()->GetGUID(), subject, message, 0, 0, 0, 0);
+			sMailSystem.SendAutomatedMessage(CREATURE, pCreature->GetGUID(), GetPlayer()->GetGUID(), Reward->subject, Reward->text, 0, 0, 0, 0, MAIL_CHECK_MASK_HAS_BODY, MAIL_DEFAULT_EXPIRATION_TIME);
+
+		//removing sender, we no need it anymore
+		pCreature->Delete();
     }
 }
 

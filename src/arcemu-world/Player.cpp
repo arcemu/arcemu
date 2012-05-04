@@ -11771,7 +11771,7 @@ void Player::LoadFieldsFromString(const char* string, uint32 firstField, uint32 
 	}
 }
 
-void Player::SetKnownTitle(uint8 title, bool set)
+void Player::SetKnownTitle(RankTitles title, bool set)
 {
 	if(!HasTitle(title) ^ set)
 		return;
