@@ -1793,11 +1793,23 @@ void AchievementMgr::GiveAchievementReward(AchievementEntry const* entry)
         return;
 
 	//title
-	if(Reward->title_A || Reward->title_H)
+	if(GetPlayer()->GetTeam() == TEAM_ALLIANCE)
 	{
-		CharTitlesEntry * title = dbcCharTitlesEntry.LookupEntry(GetPlayer()->GetTeam() == TEAM_ALLIANCE ? Reward->title_A : Reward->title_H);
-		if(title)
-			GetPlayer()->SetKnownTitle(static_cast< RankTitles >(title->bit_index), true);
+		if(Reward->title_A)
+		{
+			CharTitlesEntry * title = dbcCharTitlesEntry.LookupEntry(Reward->title_A);
+			if(title)
+				GetPlayer()->SetKnownTitle(static_cast< RankTitles >(title->bit_index), true);
+		}
+	}
+	else
+	{
+		if(Reward->title_H)
+		{
+			CharTitlesEntry * title = dbcCharTitlesEntry.LookupEntry(Reward->title_H);
+			if(title)
+				GetPlayer()->SetKnownTitle(static_cast< RankTitles >(title->bit_index), true);
+		}
 	}
 
     // mail
