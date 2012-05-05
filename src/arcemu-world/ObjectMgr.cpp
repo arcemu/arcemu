@@ -897,7 +897,7 @@ void ObjectMgr::LoadAchievementRewards()
         Field *fields = result->Fetch();
         uint32 entry = fields[0].GetUInt32();
 
-        if (!dbcAchievementStore.LookupEntry(entry))
+        if (!dbcAchievementStore.LookupEntryForced(entry))
         {
             sLog.Error( "ObjectMgr", "Achievement reward entry %u has wrong achievement, ignore", entry);
             continue;
@@ -939,7 +939,7 @@ void ObjectMgr::LoadAchievementRewards()
 
         if (reward.title_A)
         {
-            CharTitlesEntry const* titleEntry = dbcCharTitlesEntry.LookupEntry(reward.title_A);
+            CharTitlesEntry const* titleEntry = dbcCharTitlesEntry.LookupEntryForced(reward.title_A);
             if (!titleEntry)
             {
                 sLog.Error( "ObjectMgr", "achievement_reward %u has invalid title id (%u) in `title_A`, set to 0", entry, reward.title_A);
@@ -949,7 +949,7 @@ void ObjectMgr::LoadAchievementRewards()
 
         if (reward.title_H)
         {
-            CharTitlesEntry const* titleEntry = dbcCharTitlesEntry.LookupEntry(reward.title_H);
+            CharTitlesEntry const* titleEntry = dbcCharTitlesEntry.LookupEntryForced(reward.title_H);
             if (!titleEntry)
             {
                 sLog.Error( "ObjectMgr", "achievement_reward %u has invalid title id (%u) in `title_A`, set to 0", entry, reward.title_H);

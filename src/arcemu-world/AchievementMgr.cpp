@@ -1797,7 +1797,7 @@ void AchievementMgr::GiveAchievementReward(AchievementEntry const* entry)
 	{
 		if(Reward->title_A)
 		{
-			CharTitlesEntry * title = dbcCharTitlesEntry.LookupEntry(Reward->title_A);
+			CharTitlesEntry * title = dbcCharTitlesEntry.LookupEntryForced(Reward->title_A);
 			if(title)
 				GetPlayer()->SetKnownTitle(static_cast< RankTitles >(title->bit_index), true);
 		}
@@ -1806,7 +1806,7 @@ void AchievementMgr::GiveAchievementReward(AchievementEntry const* entry)
 	{
 		if(Reward->title_H)
 		{
-			CharTitlesEntry * title = dbcCharTitlesEntry.LookupEntry(Reward->title_H);
+			CharTitlesEntry * title = dbcCharTitlesEntry.LookupEntryForced(Reward->title_H);
 			if(title)
 				GetPlayer()->SetKnownTitle(static_cast< RankTitles >(title->bit_index), true);
 		}
