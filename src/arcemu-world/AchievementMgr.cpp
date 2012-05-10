@@ -1815,23 +1815,12 @@ void AchievementMgr::GiveAchievementReward(AchievementEntry const* entry)
     // mail
 	if(Reward->sender)
 	{
-		//preparing sender
-		Creature * pCreature = GetPlayer()->GetMapMgr()->CreateCreature(Reward->sender);
-		if(pCreature == NULL)
-		{
-			sLog.Error("AchievementMgr", "can not create sender for achievement %u", entry);
-			return;
-		}
-
 		//Item
 		Item * pItem = Reward->itemId ? objmgr.CreateItem(Reward->itemId, GetPlayer()) : NULL;
 
 		//Sending mail
-		sMailSystem.SendAutomatedMessage(CREATURE, pCreature->GetGUID(), GetPlayer()->GetGUID(), Reward->subject,
-			Reward->text, 0, 0, pItem ? pItem->GetGUID() : 0, 0, MAIL_CHECK_MASK_HAS_BODY, MAIL_DEFAULT_EXPIRATION_TIME);
-
-		//removing sender, we no need it anymore
-		pCreature->Delete();
+		sMailSystem.SendAutomatedMessage(CREATURE, Reward->sender, GetPlayer()->GetGUID(), Reward->subject,
+			Reward->text, 0, 0, pItem ? pItem->GetGUID() : 0, 0);
     }
 }
 
