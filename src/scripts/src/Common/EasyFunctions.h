@@ -56,11 +56,11 @@ class SCRIPT_DECL EasyFunctions
 #endif
 		}
 
+		// creates a waypoint and adds it to to the creatures custom waypoints.
 		void WaypointCreate(Creature* pCreature , float x, float y, float z, float o, uint32 waittime, uint32 flags, uint32 modelid)
 		{
 			PrintMessage("Function call: WaypointCreate()");
-			if(pCreature == NULL)
-				return;
+			ARCEMU_ASSERT(pCreature != NULL);
 
 			if(!pCreature->m_custom_waypoint_map)
 				pCreature->m_custom_waypoint_map = new WayPointMap;
@@ -69,7 +69,7 @@ class SCRIPT_DECL EasyFunctions
 				modelid = pCreature->GetUInt32Value(UNIT_FIELD_DISPLAYID);
 
 			WayPoint* wp = new WayPoint;
-			wp->id = pCreature->m_custom_waypoint_map->size() ? pCreature->m_custom_waypoint_map->size() + 1 : 1;
+			wp->id = pCreature->m_custom_waypoint_map->size() ? pCreature->m_custom_waypoint_map->size() : 1;
 			wp->x = x;
 			wp->y = y;
 			wp->z = z;
@@ -81,34 +81,25 @@ class SCRIPT_DECL EasyFunctions
 			wp->backwardemoteoneshot = wp->forwardemoteoneshot = false;
 			wp->waittime = waittime;
 
-			if(wp->id <= 0)
-				return; //not valid id
-
-			if(pCreature->m_custom_waypoint_map->size() <= wp->id)
-				pCreature->m_custom_waypoint_map->resize(wp->id + 1);
-
-			if((*pCreature->m_custom_waypoint_map)[wp->id] == NULL)
-			{
-				(*pCreature->m_custom_waypoint_map)[wp->id] = wp;
-			}
-
+			pCreature->m_custom_waypoint_map->resize(wp->id+1);
+			(*pCreature->m_custom_waypoint_map)[wp->id] = wp;
 		}
 
+		// makes the creatures AI to use the custom waypoints.
 		void EnableWaypoints(Creature* creat)
 		{
-			if(!creat)
-				return;
+			ARCEMU_ASSERT(creat != NULL);
 			if(!creat->m_custom_waypoint_map)
 				return;
 
 			creat->GetAIInterface()->SetWaypointMap(creat->m_custom_waypoint_map);
 		}
 
+		// deletes all custom waypoint objects the creature has.
 		void DeleteWaypoints(Creature* creat)
 		{
 			PrintMessage("Function call: DeleteWaypoints()");
-			if(creat == NULL)
-				return;
+			ARCEMU_ASSERT(creat != NULL);
 
 			if(creat->m_custom_waypoint_map == NULL)
 				return;
@@ -225,16 +216,20 @@ class SCRIPT_DECL EasyFunctions
 			creat->GetAIInterface()->MoveTo(plr->GetPositionX(), plr->GetPositionY(), plr->GetPositionZ(), plr->GetOrientation());
 		}
 
+		// creates the storage for custom waypoints. If one already exists, it is cleared.
 		void CreateCustomWaypointMap(Creature* creat)
 		{
 			PrintMessage("Function call: CreateCustomWaypointMap()");
-			if(creat == NULL)
-				return;
+			ARCEMU_ASSERT(creat != NULL);
 
-			creat->DestroyCustomWaypointMap();
-
-			creat->m_custom_waypoint_map = new WayPointMap;
-			creat->GetAIInterface()->SetWaypointMap(creat->m_custom_waypoint_map);
+			if(creat->m_custom_waypoint_map == NULL)
+			{
+				creat->m_custom_waypoint_map = new WayPointMap;
+			}
+			else
+			{
+				DeleteWaypoints(creat);
+			}
 		}
 
 		bool AddItem(uint32 pEntry, Player* pPlayer, uint32 pCount = 1)
