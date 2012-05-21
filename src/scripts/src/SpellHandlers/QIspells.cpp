@@ -1639,6 +1639,8 @@ bool CenarionMoondust(uint32 i, Spell* pSpell) // Body And Heart (Alliance)
 		sEAS.WaypointCreate(lunaclaw, 5328.2148f, 94.5505f, 21.4547f, 4.2489f, 200, 256, md);
 	}
 
+	sEAS.EnableWaypoints(lunaclaw);
+
 	// Make sure that creature will attack player
 	if(!lunaclaw->CombatStatus.IsInCombat())
 	{
@@ -1684,6 +1686,8 @@ bool CenarionLunardust(uint32 i, Spell* pSpell)  // Body And Heart (Horde)
 	{
 		sEAS.WaypointCreate(lunaclaw, -2504.2641f, -1630.7354f, 91.93f, 3.2f, 200, 256, md);
 	}
+
+	sEAS.EnableWaypoints(lunaclaw);
 
 	// Make sure that creature will attack player
 	if(!lunaclaw->CombatStatus.IsInCombat())

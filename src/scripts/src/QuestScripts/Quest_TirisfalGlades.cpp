@@ -127,6 +127,8 @@ class FieldsofGrief : public QuestScript
 			sEAS.WaypointCreate(Zealot, 2287.812744f, 236.320938f, 27.088022f, 1.323f, 0, 256, 0);
 			sEAS.WaypointCreate(Zealot, 2292.643033f, 240.513489f, 27.088022f, 1.323f, 0, 256, 0);
 			sEAS.WaypointCreate(Zealot, 2289.628418f, 239.908279f, 27.088022f, 1.323f, 0, 256, 0);
+
+			sEAS.EnableWaypoints(Zealot);
 		}
 };
 
