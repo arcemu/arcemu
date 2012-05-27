@@ -350,7 +350,7 @@ class LuaGameObject
 			go->Phase(PHASE_SET, phase);
 			go->SetScale(scale);
 
-			go->PushToWorld(ptr->GetMapMgr());
+			go->AddToWorld(ptr->GetMapMgr() );
 
 			if(duration)
 				sEventMgr.AddEvent(go, &GameObject::ExpireAndDelete, EVENT_GAMEOBJECT_UPDATE, duration, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);

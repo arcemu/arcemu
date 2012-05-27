@@ -577,7 +577,7 @@ class LuaUnit
 			pCreature->SetEquippedItem(RANGED, equip3);
 			pCreature->Phase(PHASE_SET, phase);
 			pCreature->m_noRespawn = true;
-			pCreature->PushToWorld(ptr->GetMapMgr());
+			pCreature->AddToWorld(ptr->GetMapMgr() );
 			if(duration)
 				pCreature->Despawn(duration, 0);
 			if(save)
@@ -604,8 +604,7 @@ class LuaUnit
 				go->CreateFromProto(entry_id, mapid, x, y, z, o);
 				go->Phase(PHASE_SET, phase);
 				go->SetScale(scale);
-
-				go->PushToWorld(ptr->GetMapMgr());
+				go->AddToWorld(ptr->GetMapMgr());
 
 				if(duration)
 					sEventMgr.AddEvent(go, &GameObject::ExpireAndDelete, EVENT_GAMEOBJECT_UPDATE, duration, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
@@ -778,8 +777,7 @@ class LuaUnit
 		{
 			TEST_UNIT()
 			int flags = luaL_checkint(L, 1);
-			if(flags && ptr)
-				ptr->SetUInt32Value(UNIT_NPC_FLAGS, flags);
+			ptr->SetUInt32Value(UNIT_NPC_FLAGS, flags);
 			return 0;
 		}
 		static int SetMount(lua_State* L, Unit* ptr)

@@ -72,6 +72,7 @@ Setup.cpp )
 SET( headers
 Raid_Naxxramas.h
 Raid_Ulduar.h
+Raid_IcecrownCitadel.h
 Setup.h
 ../Common/Base.h
 ../Common/EasyFunctions.h
