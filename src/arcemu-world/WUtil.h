@@ -31,7 +31,7 @@ namespace Arcemu
 			SERVER_DECL static uint32 GUID_LOPART(uint64 GUID);
 			SERVER_DECL static uint32 GUID_HIPART(uint64 GUID);
 			SERVER_DECL static uint32 GET_CREATURE_ENTRY_FROM_GUID(uint64 guid);
-			static void ArcemuAssert(bool condition);
+			SERVER_DECL static void ArcemuAssert(bool condition);
 			static uint64 MAKE_PET_GUID(uint32 entry, uint32 lowGUID);
 			static uint64 MAKE_ITEM_GUID(uint32 lowGUID);
 			static uint32 MAKE_UNIT_ACTION_BUTTON( uint32 spell, uint32 unk );
