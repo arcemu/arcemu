@@ -898,7 +898,7 @@ uint8 Spell::prepare(SpellCastTargets* targets)
 {
 	if(!m_caster->IsInWorld())
 	{
-		LOG_DEBUG("Object "I64FMT" is casting Spell ID %u while not in World", m_caster->GetGUID(), GetProto()->Id);
+		LOG_DEBUG("Object " I64FMT " is casting Spell ID %u while not in World", m_caster->GetGUID(), GetProto()->Id);
 		DecRef();
 		return SPELL_FAILED_DONT_REPORT;
 	}

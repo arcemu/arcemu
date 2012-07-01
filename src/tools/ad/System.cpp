@@ -19,6 +19,7 @@
 #include <fcntl.h>
 
 #if defined( __GNUC__ )
+    #include <unistd.h>
     #define _open   open
     #define _close close
     #ifndef O_BINARY

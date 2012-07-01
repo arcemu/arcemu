@@ -6189,7 +6189,7 @@ void Unit::SendFullAuraUpdate()
 	}
 	SendMessageToSet(&data, true);
 
-	LOG_DEBUG("Full Aura Update: GUID: "I64FMT" - Updates: %u", GetGUID(), Updates);
+	LOG_DEBUG("Full Aura Update: GUID: " I64FMT " - Updates: %u", GetGUID(), Updates);
 }
 
 void Unit::SendAuraUpdate(uint32 AuraSlot, bool remove)
@@ -6635,7 +6635,7 @@ void CombatStatusHandler::AddAttackTarget(const uint64 & guid)
 	ARCEMU_ASSERT(m_Unit->IsInWorld());
 
 	m_attackTargets.insert(guid);
-	//printf("Adding attack target "I64FMT" to "I64FMT"\n", guid, m_Unit->GetGUID());
+	//printf("Adding attack target " I64FMT " to " I64FMT "\n", guid, m_Unit->GetGUID());
 	if(m_Unit->IsPlayer() &&
 	        m_primaryAttackTarget != guid)			// players can only have one attack target.
 	{
@@ -6650,7 +6650,7 @@ void CombatStatusHandler::AddAttackTarget(const uint64 & guid)
 
 void CombatStatusHandler::ClearPrimaryAttackTarget()
 {
-	//printf("ClearPrimaryAttackTarget for "I64FMT"\n", m_Unit->GetGUID());
+	//printf("ClearPrimaryAttackTarget for " I64FMT "\n", m_Unit->GetGUID());
 	if(m_primaryAttackTarget != 0)
 	{
 		Unit* pt = m_Unit->GetMapMgr()->GetUnit(m_primaryAttackTarget);
@@ -6696,7 +6696,7 @@ void CombatStatusHandler::RemoveAttackTarget(Unit* pTarget)
 
 	if(!IsAttacking(pTarget))
 	{
-		//printf("Removing attack target "I64FMT" on "I64FMT"\n", pTarget->GetGUID(), m_Unit->GetGUID());
+		//printf("Removing attack target " I64FMT " on " I64FMT "\n", pTarget->GetGUID(), m_Unit->GetGUID());
 		m_attackTargets.erase(itr);
 		if(m_primaryAttackTarget == pTarget->GetGUID())
 			m_primaryAttackTarget = 0;
@@ -6704,7 +6704,7 @@ void CombatStatusHandler::RemoveAttackTarget(Unit* pTarget)
 		UpdateFlag();
 	}
 	/*else
-		printf("Cannot remove attack target "I64FMT" from "I64FMT"\n", pTarget->GetGUID(), m_Unit->GetGUID());*/
+		printf("Cannot remove attack target " I64FMT " from " I64FMT "\n", pTarget->GetGUID(), m_Unit->GetGUID());*/
 }
 
 void CombatStatusHandler::RemoveAttacker(Unit* pAttacker, const uint64 & guid)
@@ -6715,20 +6715,20 @@ void CombatStatusHandler::RemoveAttacker(Unit* pAttacker, const uint64 & guid)
 
 	if((!pAttacker) || (!pAttacker->CombatStatus.IsAttacking(m_Unit)))
 	{
-		//printf("Removing attacker "I64FMT" from "I64FMT"\n", guid, m_Unit->GetGUID());
+		//printf("Removing attacker " I64FMT " from " I64FMT "\n", guid, m_Unit->GetGUID());
 		m_attackers.erase(itr);
 		UpdateFlag();
 	}
 	/*else
 	{
-		printf("Cannot remove attacker "I64FMT" from "I64FMT"\n", guid, m_Unit->GetGUID());
+		printf("Cannot remove attacker " I64FMT " from " I64FMT "\n", guid, m_Unit->GetGUID());
 	}*/
 }
 
 void CombatStatusHandler::OnDamageDealt(Unit* pTarget)
 {
 	// we added an aura, or dealt some damage to a target. they need to have us as an attacker, and they need to be our attack target if not.
-	//printf("OnDamageDealt to "I64FMT" from "I64FMT"\n", pTarget->GetGUID(), m_Unit->GetGUID());
+	//printf("OnDamageDealt to " I64FMT " from " I64FMT "\n", pTarget->GetGUID(), m_Unit->GetGUID());
 	if(pTarget == m_Unit)
 		return;
 

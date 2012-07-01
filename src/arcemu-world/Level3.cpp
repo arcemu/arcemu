@@ -3444,7 +3444,7 @@ bool ChatHandler::HandleNpcPossessCommand(const char* args, WorldSession* m_sess
 	}
 
 	m_session->GetPlayer()->Possess(pTarget->GetGUID());
-	BlueSystemMessage(m_session, "Possessed "I64FMT, pTarget->GetGUID());
+	BlueSystemMessage(m_session, "Possessed " I64FMT, pTarget->GetGUID());
 	switch(pTarget->GetTypeId())
 	{
 		case TYPEID_PLAYER:
@@ -3587,7 +3587,7 @@ bool ChatHandler::HandleAIAgentDebugContinue(const char* args, WorldSession* m_s
 
 		SpellEntry* sp = *aiagent_spells.begin();
 		aiagent_spells.erase(aiagent_spells.begin());
-		BlueSystemMessage(m_session, "Casting %u, "MSG_COLOR_SUBWHITE"%u remaining.", sp->Id, aiagent_spells.size());
+		BlueSystemMessage(m_session, "Casting %u, " MSG_COLOR_SUBWHITE "%u remaining.", sp->Id, aiagent_spells.size());
 
 		map<uint32, spell_thingo>::iterator it = aiagent_extra.find(sp->Id);
 		ARCEMU_ASSERT(it != aiagent_extra.end());

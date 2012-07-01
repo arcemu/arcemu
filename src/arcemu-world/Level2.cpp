@@ -483,7 +483,7 @@ bool ChatHandler::HandleKillByPlrCommand(const char* args , WorldSession* m_sess
 		plr->KillPlayer();
 		BlueSystemMessageToPlr(plr, "You were killed by %s with a GM command.", m_session->GetPlayer()->GetName());
 		GreenSystemMessage(m_session, "Killed player %s.", args);
-		sGMLog.writefromsession(m_session, "remote killed "I64FMT" (Name: %s)", plr->GetGUID(), plr->GetNameString());
+		sGMLog.writefromsession(m_session, "remote killed " I64FMT " (Name: %s)", plr->GetGUID(), plr->GetNameString());
 
 	}
 	return true;
