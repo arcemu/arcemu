@@ -599,6 +599,12 @@ class LuaUnit
 			bool save = luaL_optint(L, 9, 0) ? true : false;
 			if(entry_id)
 			{
+				GameObjectInfo *info = GameObjectNameStorage.LookupEntry( entry_id );
+				if( info == NULL ){
+					LOG_ERROR( "Lua script tried to spawn a gameobject that doesn't exist ( %u ). Aborting.", entry_id );
+					return 1;
+				}
+
 				GameObject* go = ptr->GetMapMgr()->CreateGameObject(entry_id);
 				uint32 mapid = ptr->GetMapId();
 				go->CreateFromProto(entry_id, mapid, x, y, z, o);
