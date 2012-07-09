@@ -212,6 +212,8 @@ class SERVER_DECL Item : public Object
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+		void SetDirty(){ m_isDirty = true; }
+
 		uint32 GetItemRandomPropertyId() const { return m_uint32Values[ITEM_FIELD_RANDOM_PROPERTIES_ID]; }
 		uint32 GetItemRandomSuffixFactor() { return m_uint32Values[ITEM_FIELD_PROPERTY_SEED]; }
 

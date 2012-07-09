@@ -941,6 +941,7 @@ class LuaUnit
 			else
 			{
 				add->ModStackCount(count);
+				add->SetDirty();
 				plr->SendItemPushResult(false, true, false, false,
 				                        static_cast<uint8>(plr->GetItemInterface()->GetBagSlotByGuid(add->GetGUID())), 0xFFFFFFFF,
 				                        count , add->GetEntry(), add->GetItemRandomSuffixFactor(), add->GetItemRandomPropertyId(), add->GetStackCount());
