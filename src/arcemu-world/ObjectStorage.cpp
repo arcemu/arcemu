@@ -46,7 +46,6 @@ const char* gWorldBroadCastFormat						= "usu"; // announce message
 const char* gBattleMasterFormat						= "uu";
 const char* gSpellClickSpellsFormat					= "uu";
 const char* gTotemDisplayIDsFormat                     = "uuuu";
-const char *gPointOfInterestFormat					= "uffuuus";
 
 /** SQLStorage symbols
  */
@@ -72,7 +71,6 @@ SERVER_DECL SQLStorage<WorldBroadCast, HashMapStorageContainer<WorldBroadCast> >
 SERVER_DECL SQLStorage<BGMaster, HashMapStorageContainer<BGMaster> >						BGMasterStorage;
 SERVER_DECL SQLStorage< SpellClickSpell, HashMapStorageContainer< SpellClickSpell > >		SpellClickSpellStorage;
 SERVER_DECL SQLStorage< TotemDisplayIdEntry, HashMapStorageContainer< TotemDisplayIdEntry > > TotemDisplayIdStorage;
-SERVER_DECL SQLStorage<PointOfInterest, HashMapStorageContainer<PointOfInterest> >		PointOfInterestStorage;
 
 
 SERVER_DECL set<string> ExtraMapCreatureTables;
@@ -562,7 +560,6 @@ void Storage_FillTaskList(TaskList & tl)
 	make_task(BGMasterStorage, BGMaster, HashMapStorageContainer, "battlemasters", gBattleMasterFormat);
 	make_task(SpellClickSpellStorage, SpellClickSpell, HashMapStorageContainer, "spellclickspells", gSpellClickSpellsFormat);
 	make_task(TotemDisplayIdStorage, TotemDisplayIdEntry, HashMapStorageContainer, "totemdisplayids", gTotemDisplayIDsFormat);
-	make_task(PointOfInterestStorage, PointOfInterest, HashMapStorageContainer, "points_of_interest", gPointOfInterestFormat);
 }
 
 void Storage_Cleanup()
@@ -608,7 +605,6 @@ void Storage_Cleanup()
 	BGMasterStorage.Cleanup();
 	SpellClickSpellStorage.Cleanup();
 	TotemDisplayIdStorage.Cleanup();
-	PointOfInterestStorage.Cleanup();
 }
 
 vector<pair<string, string> > additionalTables;
@@ -657,8 +653,6 @@ bool LoadAdditionalTable(const char* TableName, const char* SecondName, bool fir
 		ZoneGuardStorage.LoadAdditionalData(SecondName, gZoneGuardsFormat);
 	else if(!stricmp(TableName, "unit_display_sizes"))
 		UnitModelSizeStorage.LoadAdditionalData(SecondName, gUnitModelSizeFormat);
-	else if(!stricmp(TableName, "points_of_interest"))
-		PointOfInterestStorage.LoadAdditionalData(SecondName, gPointOfInterestFormat);
 	else
 		return false;
 
@@ -706,8 +700,6 @@ bool Storage_ReloadTable(const char* TableName)
 		CommandTableStorage::getSingleton().Init();
 		CommandTableStorage::getSingleton().Load();
 	}
-	else if(!stricmp(TableName, "points_of_interest"))
-		PointOfInterestStorage.Reload();
 	else
 		return false;
 
