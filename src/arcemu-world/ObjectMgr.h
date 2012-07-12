@@ -217,6 +217,18 @@ struct InstanceReputationModifier
 	vector<InstanceReputationMod> mods;
 };
 
+struct PointOfInterest
+{
+	uint32 entry;
+	float x;
+	float y;
+	uint32 icon;
+	uint32 flags;
+	uint32 data;
+	const char * icon_name;
+};
+
+
 enum AREATABLE_FLAGS
 {
     AREA_CITY_AREA          = 0x20,

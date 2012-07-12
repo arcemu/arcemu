@@ -2184,6 +2184,7 @@ class SERVER_DECL Player : public Unit
 		void SendWorldStateUpdate(uint32 WorldState, uint32 Value);
 		void SendCastResult(uint32 SpellId, uint8 ErrorMessage, uint8 MultiCast, uint32 Extra);
 		void Gossip_SendPOI(float X, float Y, uint32 Icon, uint32 Flags, uint32 Data, const char* Name);
+		void Gossip_SendPOI(uint32 id);
 		void SendSpellCooldownEvent(uint32 SpellId);
 		void SendSpellModifier(uint8 spellgroup, uint8 spelltype, int32 v, bool is_pct);
 		void SendItemPushResult(bool created, bool recieved, bool sendtoset, bool newitem,  uint8 destbagslot, uint32 destslot, uint32 count, uint32 entry, uint32 suffix, uint32 randomprop, uint32 stack);

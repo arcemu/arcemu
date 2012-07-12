@@ -43,6 +43,7 @@ extern SERVER_DECL SQLStorage<WorldBroadCast, HashMapStorageContainer<WorldBroad
 extern SERVER_DECL SQLStorage<BGMaster, HashMapStorageContainer<BGMaster> >						BGMasterStorage;
 extern SERVER_DECL SQLStorage< SpellClickSpell, HashMapStorageContainer< SpellClickSpell > >		SpellClickSpellStorage;
 extern SERVER_DECL SQLStorage< TotemDisplayIdEntry, HashMapStorageContainer< TotemDisplayIdEntry > > TotemDisplayIdStorage;
+extern SERVER_DECL SQLStorage<PointOfInterest, HashMapStorageContainer<PointOfInterest> >		PointOfInterestStorage;
 
 void Storage_FillTaskList(TaskList & tl);
 void Storage_Cleanup();

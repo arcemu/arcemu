@@ -13646,3 +13646,10 @@ void Player::RemoveVehicleComponent(){
 	delete vehicle;
 	vehicle = NULL;
 }
+
+void Player::Gossip_SendPOI(uint32 id)
+{
+	PointOfInterest *pPOI = PointOfInterestStorage.LookupEntry(id);
+	if(pPOI != NULL)
+		Gossip_SendPOI(pPOI->x, pPOI->y, pPOI->icon, pPOI->flags, pPOI->data, pPOI->icon_name);
+}
