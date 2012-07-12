@@ -1063,12 +1063,12 @@ class DeathGate1 : public GameObjectAIScript
 
 			if(_gameobject->CalcDistance(_gameobject, plr) <= 1.5f && plr->GetMapId() == 609)
 			{
-				plr->SafeTeleport(609, 4298, 2390.18f, -5640.28f, 420.84f, 0.57f);
+				plr->CastSpell(plr, 54699, true);
 			}
 
 			else if(_gameobject->CalcDistance(_gameobject, plr) <= 1.5f && plr->GetMapId() == 0)
 			{
-				plr->SafeTeleport(0, plr->GetInstanceID(), 2387.468994f, -5642.544922f, 420.809937f, 0.620461f);
+				plr->CastSpell(plr, 54744, true);
 			}
 		}
 };
@@ -1094,12 +1094,12 @@ class DeathGate2 : public GameObjectAIScript
 
 			if(_gameobject->CalcDistance(_gameobject, plr) <= 1.5f && plr->GetMapId() == 609)
 			{
-				plr->SafeTeleport(609, 4298, 2397.57f, -5636.03f, 377.05f, 0.57f);
+				plr->CastSpell(plr, 54725, true);
 			}
 
 			else if(_gameobject->CalcDistance(_gameobject, plr) <= 1.5f && plr->GetMapId() == 0)
 			{
-				plr->SafeTeleport(0, plr->GetInstanceID(), 2395.233154f, -5637.875488f, 377.086884f, 0.520721f);
+				plr->CastSpell(plr, 54746, true);
 			}
 		}
 };
@@ -1117,11 +1117,11 @@ class DeathGate3 : public GameObjectAIScript
 			{
 				if(pPlayer->GetMapId() == 609)
 				{
-					pPlayer->SafeTeleport(609, pPlayer->GetInstanceID(), 2354.496826f, -5661.948730f, 389.454865f, 0.365210f);
+					pPlayer->CastSpell(pPlayer, 53098, true);
 				}
 				else
 				{
-					pPlayer->SafeTeleport(0, pPlayer->GetInstanceID(), 2354.496826f, -5661.948730f, 389.454865f, 0.365210f);
+					pPlayer->CastSpell(pPlayer, 53822, true);
 				};
 			}
 		}
