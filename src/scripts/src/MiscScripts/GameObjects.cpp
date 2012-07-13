@@ -1146,6 +1146,20 @@ class SacredFireofLife : public GameObjectAIScript
 		}
 };
 
+class EyeofAcherusControl : public GameObjectAIScript
+{
+	public:
+		EyeofAcherusControl(GameObject* goinstance) : GameObjectAIScript(goinstance) {}
+		static GameObjectAIScript* Create(GameObject* GO) { return new EyeofAcherusControl(GO); }
+
+		void OnActivate(Player* pPlayer)
+		{
+			if(!pPlayer->GetQuestLogForEntry(12641))
+				return;
+			pPlayer->CastSpell(pPlayer, 51888, true);
+		}
+};
+
 void SetupGoHandlers(ScriptMgr* mgr)
 {
 	mgr->register_gameobject_script(179879, &OrbOfCommand::Create);
@@ -1195,4 +1209,6 @@ void SetupGoHandlers(ScriptMgr* mgr)
 	mgr->register_gameobject_script(310033, &AndorhalTower4::Create);
 
 	mgr->register_gameobject_script(184588, &TyraliusPrison::Create);
+	
+	mgr->register_gameobject_script(191609, &EyeofAcherusControl::Create);
 }
