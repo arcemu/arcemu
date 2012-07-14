@@ -602,6 +602,7 @@ class LuaUnit
 				GameObjectInfo *info = GameObjectNameStorage.LookupEntry( entry_id );
 				if( info == NULL ){
 					LOG_ERROR( "Lua script tried to spawn a gameobject that doesn't exist ( %u ). Aborting.", entry_id );
+					lua_pushnil( L );
 					return 1;
 				}
 
