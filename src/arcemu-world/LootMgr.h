@@ -68,7 +68,7 @@ typedef struct
 
 typedef std::set<uint32> LooterSet;
 
-typedef struct
+struct __LootItem
 {
 	_LootItem item;
 	uint32 iItemsCount;
@@ -78,7 +78,32 @@ typedef struct
 	bool passed;
 	LooterSet has_looted;
 	uint32 ffa_loot;
-} __LootItem;
+	bool looted;
+
+	__LootItem(){
+		looted = false;
+	}
+};
+
+class ItemIsLooted{
+public:
+	bool operator()( const __LootItem &item ){
+		if( item.looted )
+			return true;
+		else
+			return false;
+	}
+};
+
+class ItemIsNotLooted{
+public:
+	bool operator()( const __LootItem &item ){
+		if( !item.looted )
+			return true;
+		else
+			return false;
+	}
+};
 
 
 typedef struct

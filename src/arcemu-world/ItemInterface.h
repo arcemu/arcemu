@@ -221,6 +221,8 @@ class SERVER_DECL ItemInterface
 		//
 		///////////////////////////////////////////////////////////////////////////////
 		bool SwapItems(int8 DstInvSlot, int8 DstSlot, int8 SrcInvSlot, int8 SrcSlot);
+
+		void removeLootableItems();
 };
 class ItemIterator
 {

@@ -50,6 +50,7 @@ void WorldSession::HandleAutostoreLootItemOpcode(WorldPacket & recv_data)
 		_player->InterruptSpell();
 	GameObject* pGO = NULL;
 	Creature* pCreature = NULL;
+	Item *lootSrcItem = NULL;
 
 	uint32 guidtype = GET_TYPE_FROM_GUID(_player->GetLootGUID());
 	if(guidtype == HIGHGUID_TYPE_UNIT)
@@ -69,6 +70,7 @@ void WorldSession::HandleAutostoreLootItemOpcode(WorldPacket & recv_data)
 		Item* pItem = _player->GetItemInterface()->GetItemByGUID(_player->GetLootGUID());
 		if(!pItem)
 			return;
+		lootSrcItem = pItem;
 		pLoot = pItem->loot;
 	}
 	else if(guidtype == HIGHGUID_TYPE_PLAYER)
@@ -83,8 +85,13 @@ void WorldSession::HandleAutostoreLootItemOpcode(WorldPacket & recv_data)
 	recv_data >> lootSlot;
 	if(lootSlot >= pLoot->items.size())
 	{
-		LOG_DEBUG("AutoLootItem: Player %s might be using a hack! (slot %d, size %d)",
+		LOG_DEBUG("Player %s might be using a hack! (slot %d, size %d)",
 		          GetPlayer()->GetName(), lootSlot, pLoot->items.size());
+		return;
+	}
+
+	if( pLoot->items[ lootSlot ].looted ){
+		LOG_DEBUG( "Player %s GUID %u tried to loot an already looted item.", _player->GetName(), _player->GetLowGUID() );
 		return;
 	}
 
@@ -202,6 +209,10 @@ void WorldSession::HandleAutostoreLootItemOpcode(WorldPacket & recv_data)
 		data.SetOpcode(SMSG_LOOT_REMOVED);
 		data << lootSlot;
 		_player->GetSession()->SendPacket(&data);
+	}
+
+	if( lootSrcItem != NULL ){
+		pLoot->items[ lootSlot ].looted = true;
 	}
 
 	/* any left yet? (for fishing bobbers) */
@@ -595,12 +606,18 @@ void WorldSession::HandleLootReleaseOpcode(WorldPacket & recv_data)
 		// delete current loot, so the next one can be filled
 		if(item->loot != NULL)
 		{
-			delete item->loot;
-			item->loot = NULL;
+			uint32 itemsNotLooted = 
+				std::count_if( item->loot->items.begin(), item->loot->items.end(), ItemIsNotLooted() );
+
+			if( ( itemsNotLooted == 0 ) && ( item->loot->gold == 0 ) ){
+				delete item->loot;
+				item->loot = NULL;
+			}
 		}
 
 		// remove loot source items
-		_player->GetItemInterface()->RemoveItemAmtByGuid(guid, 5);
+		if( item->loot == NULL )
+			_player->GetItemInterface()->RemoveItemAmtByGuid( guid, 1 );
 	}
 	else
 		LOG_DEBUG("Unhandled loot source object type in HandleLootReleaseOpcode");

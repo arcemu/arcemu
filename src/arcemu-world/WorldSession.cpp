@@ -339,6 +339,7 @@ void WorldSession::LogoutPlayer(bool Save)
 		}
 
 		_player->GetItemInterface()->EmptyBuyBack();
+		_player->GetItemInterface()->removeLootableItems();
 
 		sLfgMgr.RemovePlayerFromLfgQueues(_player);
 

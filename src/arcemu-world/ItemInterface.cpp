@@ -4335,3 +4335,58 @@ bool ItemInterface::SwapItems(int8 DstInvSlot, int8 DstSlot, int8 SrcInvSlot, in
 	else
 		return true;
 }
+
+void ItemInterface::removeLootableItems()
+{
+	for( uint8 i = INVENTORY_SLOT_ITEM_START; i < INVENTORY_SLOT_ITEM_END; i++ ){
+		Item *item = GetInventoryItem( i );
+		if( item == NULL )
+			continue;
+
+		if( item->loot != NULL )
+			SafeFullRemoveItemFromSlot( -1, i );
+	}
+
+	for( uint8 i = BANK_SLOT_ITEM_START; i < BANK_SLOT_ITEM_END; i++ ){
+		Item *item = GetInventoryItem( i );
+		if( item == NULL )
+			continue;
+
+		if( item->loot != NULL )
+			SafeFullRemoveItemFromSlot( -1, i );
+	}
+
+	for( uint8 i = INVENTORY_SLOT_BAG_START; i < INVENTORY_SLOT_BAG_END; i++ ){
+		Container *container = dynamic_cast< Container* >( GetInventoryItem( i ) );
+		if( container == NULL )
+			continue;
+
+		uint8 s = container->GetNumSlots();
+		for( uint8 j = 0; j < s; j++ ){
+			Item *item = container->GetItem( j );
+			if( item == NULL )
+				continue;
+
+			if( item->loot != NULL )
+				container->SafeFullRemoveItemFromSlot( j );
+		}
+	}
+
+	for( uint8 i = BANK_SLOT_BAG_START; i < BANK_SLOT_BAG_END; i++ ){
+		Container *container = dynamic_cast< Container* >( GetInventoryItem( i ) );
+		if( container == NULL )
+			continue;
+
+		uint8 s = container->GetNumSlots();
+		for( uint8 j = 0; j < s; j++ ){
+			Item *item = container->GetItem( j );
+			if( item == NULL )
+				continue;
+
+			if( item->loot != NULL )
+				container->SafeFullRemoveItemFromSlot( j );
+		}
+	}
+}
+
+
