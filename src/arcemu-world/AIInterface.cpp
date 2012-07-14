@@ -449,6 +449,9 @@ void AIInterface::_UpdateTargets()
 
 		LockAITargets(false);
 
+		if( disable_combat )
+			return;
+
 		if(m_aiTargets.size() == 0
 		        && m_AIState != STATE_IDLE && m_AIState != STATE_FOLLOWING
 		        && m_AIState != STATE_EVADE && m_AIState != STATE_FEAR
@@ -995,7 +998,7 @@ void AIInterface::DismissPet()
 
 void AIInterface::AttackReaction(Unit* pUnit, uint32 damage_dealt, uint32 spellId)
 {
-	if(m_AIState == STATE_EVADE || !pUnit || !pUnit->isAlive() || m_Unit->IsDead() || ( m_Unit == pUnit ) || ( m_AIType == AITYPE_PASSIVE ) )
+	if(m_AIState == STATE_EVADE || !pUnit || !pUnit->isAlive() || m_Unit->IsDead() || ( m_Unit == pUnit ) || ( m_AIType == AITYPE_PASSIVE ) || disable_combat )
 		return;
 
 	if(sWorld.Collision && pUnit->IsPlayer())
