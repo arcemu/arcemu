@@ -4908,6 +4908,10 @@ void Aura::SpellAuraFeignDeath(bool apply)
 			p_target->EventAttackStop();
 			p_target->setDeathState(ALIVE);
 
+			p_target->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH);
+			p_target->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_FEIGN_DEATH);
+			p_target->SetFlag(UNIT_DYNAMIC_FLAGS, U_DYN_FLAG_DEAD);
+
 			//now get rid of mobs agro. pTarget->CombatStatus.AttackersForgetHate() - this works only for already attacking mobs
 			for(std::set<Object*>::iterator itr = p_target->GetInRangeSetBegin(); itr != p_target->GetInRangeSetEnd(); itr++)
 			{
@@ -4936,10 +4940,6 @@ void Aura::SpellAuraFeignDeath(bool apply)
 					}
 				}
 			}
-
-			p_target->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH);
-			p_target->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_FEIGN_DEATH);
-			p_target->SetFlag(UNIT_DYNAMIC_FLAGS, U_DYN_FLAG_DEAD);
 
 			data.SetOpcode(SMSG_START_MIRROR_TIMER);
 
