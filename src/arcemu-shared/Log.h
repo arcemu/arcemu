@@ -28,8 +28,8 @@ class WorldSession;
 
 #define SZLTR "\xe5\xcf\xfe\xed\xf3\xfb\x03\xeb"
 #define SZLTR_LENGTH 9
-#define TIME_FORMAT "[%H:%M]"
-#define TIME_FORMAT_LENGTH 8
+#define TIME_FORMAT "[%m-%d-%Y][%H:%M]"
+#define TIME_FORMAT_LENGTH 100
 
 enum LogType
 {
