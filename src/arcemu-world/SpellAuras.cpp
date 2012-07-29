@@ -1817,7 +1817,8 @@ void Aura::EventPeriodicDamage(uint32 amount)
 
 			if(GetDuration() && GetSpellProto()->NameHash != SPELL_HASH_IGNITE)    //static damage for Ignite. Need to be reworked when "static DoTs" will be implemented
 			{
-				bonus += c->GetSpellDmgBonus(m_target, m_spellProto, amount, true) * amp / GetDuration();
+				int32 spbon = c->GetSpellDmgBonus(m_target, m_spellProto, amount, true);
+				bonus +=  ( spbon * static_cast< int32 >( amp ) / GetDuration() );
 				res += static_cast< float >( bonus );
 
 				// damage taken is reduced after bonus damage is calculated and added
