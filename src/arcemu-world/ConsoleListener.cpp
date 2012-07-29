@@ -474,6 +474,7 @@ void HandleConsoleInput(BaseConsole* pConsole, const char* szInput)
 		{
 			&HandleScriptEngineReloadCommand, "reloadscripts", "<NULL>", "Reloads all scripting engines currently loaded."
 		},
+		{ &HandleTimeDateCommand, "datetime", "<NULL>", "Shows time and date according to localtime()" },
 		{ NULL, NULL, NULL, NULL },
 	};
 
