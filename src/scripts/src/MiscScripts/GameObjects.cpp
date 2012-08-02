@@ -154,7 +154,7 @@ class OrbOfCommand : public GameObjectAIScript
 		{
 			if(pPlayer->HasFinishedQuest(7761) && pPlayer->getLevel() >= 58 && pPlayer->InGroup() == true)
 			{
-				pPlayer->SafeTeleport(469, 0, -7672.939941f, -1107.307617f, 396.649994f, 0.616532f);
+				pPlayer->CastSpell(pPlayer, 23460, true);
 			}
 			else if(pPlayer->getLevel() <= 57 || pPlayer->HasFinishedQuest(7761) == false)
 			{
