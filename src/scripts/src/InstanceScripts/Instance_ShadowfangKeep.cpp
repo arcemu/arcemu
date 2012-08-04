@@ -218,6 +218,72 @@ class RETHILGOREAI : public MoonScriptCreatureAI
 		}
 };
 
+// Prison Levers
+#define RIGHT_LEVER 18900
+#define MIDDLE_LEVER 18901
+#define LEFT_LEVER 101811
+#define RIGHT_CELL 18934
+#define MIDDLE_CELL 18936
+#define LEFT_CELL 18935
+
+
+class RightLever: public GameObjectAIScript
+{
+	public:
+		RightLever(GameObject* goinstance) : GameObjectAIScript(goinstance) {}
+		static GameObjectAIScript* Create(GameObject* GO) { return new RightLever(GO); }
+
+		void OnActivate(Player* pPlayer)
+		{
+			GameObject* CellDoor = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-252.696f, 2114.22f, 82.8052f, RIGHT_CELL);
+			if(CellDoor != NULL)
+			{
+				if(CellDoor->GetState() == 1)
+					CellDoor->SetState(0);
+				else
+					CellDoor->SetState(1);
+			}
+		}
+};
+
+class MiddleLever: public GameObjectAIScript
+{
+	public:
+		MiddleLever(GameObject* goinstance) : GameObjectAIScript(goinstance) {}
+		static GameObjectAIScript* Create(GameObject* GO) { return new MiddleLever(GO); }
+
+		void OnActivate(Player* pPlayer)
+		{
+			GameObject* CellDoor = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-249.22f, 2123.1f, 82.8052f, MIDDLE_CELL);
+			if(CellDoor != NULL)
+			{
+				if(CellDoor->GetState() == 1)
+					CellDoor->SetState(0);
+				else
+					CellDoor->SetState(1);
+			}
+		}
+};
+
+class LeftLever: public GameObjectAIScript
+{
+	public:
+		LeftLever(GameObject* goinstance) : GameObjectAIScript(goinstance) {}
+		static GameObjectAIScript* Create(GameObject* GO) { return new LeftLever(GO); }
+
+		void OnActivate(Player* pPlayer)
+		{
+			GameObject* CellDoor = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-245.598f, 2132.32f, 82.8052f, LEFT_CELL);
+			if(CellDoor != NULL)
+			{
+				if(CellDoor->GetState() == 1)
+					CellDoor->SetState(0);
+				else
+					CellDoor->SetState(1);
+			}
+		}
+};
+
 void SetupShadowfangKeep(ScriptMgr* mgr)
 {
 	//creature scripts
@@ -228,4 +294,7 @@ void SetupShadowfangKeep(ScriptMgr* mgr)
 	mgr->register_creature_script(CN_BLINDWATCHER, &BlindWatcherAI::Create);
 	mgr->register_creature_script(CN_FENRUS, &FenrusAI::Create);
 	mgr->register_creature_script(CN_ARUGAL, &ArugalAI::Create);
+	mgr->register_gameobject_script(RIGHT_LEVER, &RightLever::Create);
+	mgr->register_gameobject_script(MIDDLE_LEVER, &MiddleLever::Create);
+	mgr->register_gameobject_script(LEFT_LEVER, &LeftLever::Create);
 }
