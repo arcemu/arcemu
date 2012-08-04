@@ -372,8 +372,6 @@ class SERVER_DECL World : public Singleton<World>, public EventableObject
 		void SetMotd(const char* motd) { m_motd = motd; }
 		ARCEMU_INLINE const char* GetMotd() const { return m_motd.c_str(); }
 
-		ARCEMU_INLINE time_t GetGameTime() const { return m_gameTime; }
-
 		bool SetInitialWorldSettings();
 
 		void SendWorldText(const char* text, WorldSession* self = 0);
@@ -665,18 +663,6 @@ class SERVER_DECL World : public Singleton<World>, public EventableObject
 
 		void LogoutPlayers();
 
-	protected:
-		// update Stuff, FIX ME: use diff
-		time_t _UpdateGameTime()
-		{
-			// Update Server time
-			time_t thisTime = UNIXTIME;
-			m_gameTime += thisTime - m_lastTick;
-			m_lastTick = thisTime;
-
-			return m_gameTime;
-		}
-
 	private:
 		EventableObjectHolder* eventholder;
 		//! Timers
@@ -703,8 +689,6 @@ class SERVER_DECL World : public Singleton<World>, public EventableObject
 
 		uint32 realmtype;
 
-		time_t m_gameTime;
-		time_t m_lastTick;
 		uint32 TimeOut;
 
 		uint32 m_StartTime;

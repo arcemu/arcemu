@@ -292,21 +292,6 @@ bool World::SetInitialWorldSettings()
 	CharacterDatabase.WaitExecute("UPDATE characters SET online = 0 WHERE online = 1");
 	CharacterDatabase.WaitExecute("UPDATE characters SET banned= 0,banReason='' WHERE banned > 100 AND banned < %u", UNIXTIME);
 
-	m_lastTick = UNIXTIME;
-
-	// TODO: clean this
-	time_t tiempo;
-	char hour[3];
-	char minute[3];
-	char second[3];
-	struct tm* tmPtr;
-	tiempo = UNIXTIME;
-	tmPtr = localtime(&tiempo);
-	strftime(hour, 3, "%H", tmPtr);
-	strftime(minute, 3, "%M", tmPtr);
-	strftime(second, 3, "%S", tmPtr);
-	m_gameTime = (3600 * atoi(hour)) + (atoi(minute) * 60) + (atoi(second)); // server starts at noon
-
 	// TODO: clean this
 	// fill in emotes table
 	// it appears not every emote has an animation
@@ -609,7 +594,6 @@ void World::Update(time_t diff)
 {
 	eventholder->Update((uint32)diff);
 	sAuctionMgr.Update();
-	_UpdateGameTime();
 	UpdateQueuedSessions((uint32)diff);
 #ifdef SESSION_CAP
 	if(GetSessionCount() >= SESSION_CAP)

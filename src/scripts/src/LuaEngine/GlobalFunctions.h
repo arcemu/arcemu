@@ -109,7 +109,7 @@ namespace luaGlobalFunctions
 
 	static int GetGameTime(lua_State* L)
 	{
-		lua_pushnumber(L, ((uint32)sWorld.GetGameTime())); //in seconds.
+		lua_pushnumber(L, ((uint32)UNIXTIME)); //in seconds.
 		return 1;
 	}
 

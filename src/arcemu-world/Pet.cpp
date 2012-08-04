@@ -1822,7 +1822,7 @@ void Pet::SetAutoCast(AI_Spell* sp, bool on)
 }
 uint32 Pet::GetUntrainCost()
 {
-	uint32 days = (uint32)(sWorld.GetGameTime() - reset_time) / 60 * 60 * 24;
+	uint32 days = (uint32)(UNIXTIME - reset_time) / 60 * 60 * 24;
 
 	if(reset_cost < 1000 || days > 0)
 		reset_cost = 1000;
