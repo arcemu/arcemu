@@ -90,7 +90,10 @@ uint32 CheckTriggerPrerequsites(AreaTrigger* pAreaTrigger, WorldSession* pSessio
 	if((pMapInfo->type == INSTANCE_MULTIMODE && pPlayer->iInstanceType >= MODE_HEROIC) && !pPlayer->GetGroup())
 		return AREA_TRIGGER_FAILURE_NO_GROUP;
 
-	if(pMapInfo && pMapInfo->required_quest && !pPlayer->HasFinishedQuest(pMapInfo->required_quest))
+	if(pMapInfo && pMapInfo->required_quest_1 && ( pPlayer->GetTeam() == TEAM_ALLIANCE ) && !pPlayer->HasFinishedQuest(pMapInfo->required_quest_1))
+		return AREA_TRIGGER_FAILURE_NO_ATTUNE_Q;
+
+	if(pMapInfo && pMapInfo->required_quest_2 && ( pPlayer->GetTeam() == TEAM_HORDE ) && !pPlayer->HasFinishedQuest(pMapInfo->required_quest_2))
 		return AREA_TRIGGER_FAILURE_NO_ATTUNE_Q;
 
 	if(pMapInfo && pMapInfo->required_item && !pPlayer->GetItemInterface()->GetItemCount(pMapInfo->required_item, true))
@@ -186,11 +189,17 @@ void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
 							case AREA_TRIGGER_FAILURE_NO_ATTUNE_Q:
 								{
 									MapInfo* pMi = WorldMapInfoStorage.LookupEntry(pAreaTrigger->Mapid);
-									Quest* pQuest = QuestStorage.LookupEntry(pMi->required_quest);
-									if(pQuest)
-										snprintf(msg, 200, GetPlayer()->GetSession()->LocalizedWorldSrv(35), pQuest->title);
+									Quest* pQuest = NULL;
+
+									if( pPlayer->GetTeam() == TEAM_ALLIANCE )
+										pQuest = QuestStorage.LookupEntry(pMi->required_quest_1 );
 									else
-										snprintf(msg, 200, "%s", GetPlayer()->GetSession()->LocalizedWorldSrv(36));
+										pQuest = QuestStorage.LookupEntry(pMi->required_quest_2 );
+
+									if(pQuest)
+										snprintf(msg, 200, "You must have finished the quest '%s' to pass through here.", pQuest->title);
+									else
+										snprintf(msg, 200, "You must have finished the quest '%s' to pass through here.", "UNKNOWN" );
 
 									data << msg;
 								}

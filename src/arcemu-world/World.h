@@ -142,7 +142,8 @@ struct MapInfo
 	uint32 flags;
 	uint32 cooldown;
 	uint32 lvl_mod_a;
-	uint32 required_quest;
+	uint32 required_quest_1;
+	uint32 required_quest_2;
 	uint32 required_item;
 	uint32 heroic_key_1;
 	uint32 heroic_key_2;
