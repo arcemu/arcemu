@@ -306,7 +306,7 @@ void MapMgr::PushObject(Object* obj)
 
 	if(plObj != NULL)
 	{
-		LOG_DETAIL("Creating player "I64FMT" for himself.", obj->GetGUID());
+		LOG_DETAIL("Creating player " I64FMT " for himself.", obj->GetGUID());
 		ByteBuffer pbuf(10000);
 		count = plObj->BuildCreateUpdateBlockForPlayer(&pbuf, plObj);
 		plObj->PushCreationData(&pbuf, count);

@@ -894,7 +894,7 @@ void Object::AddToWorld()
 	MapMgr* mapMgr = sInstanceMgr.GetInstance(this);
 	if(mapMgr == NULL)
 	{
-		LOG_ERROR("AddToWorld() failed for Object with GUID "I64FMT" MapId %u InstanceId %u", GetGUID(), GetMapId(), GetInstanceID());
+		LOG_ERROR("AddToWorld() failed for Object with GUID " I64FMT " MapId %u InstanceId %u", GetGUID(), GetMapId(), GetInstanceID());
 		return;
 	}
 
@@ -964,7 +964,7 @@ void Object::PushToWorld(MapMgr* mgr)
 
 	if(mgr == NULL)
 	{
-		LOG_ERROR("Invalid push to world of Object "I64FMT, GetGUID());
+		LOG_ERROR("Invalid push to world of Object " I64FMT, GetGUID());
 		return; //instance add failed
 	}
 

@@ -82,7 +82,7 @@ void DatabaseCleaner::CleanCharacters()
 
 	for(vector<uint64>::iterator itr = tokill_items.begin(); itr != tokill_items.end(); ++itr)
 	{
-		CharacterDatabase.WaitExecute("DELETE FROM playeritems WHERE guid = "I64FMTD, *itr);
+		CharacterDatabase.WaitExecute("DELETE FROM playeritems WHERE guid = " I64FMTD, *itr);
 	}
 
 	Log.Notice("DatabaseCleaner", "Deleted %u item instances.", tokill_items.size());

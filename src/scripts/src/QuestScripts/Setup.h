@@ -74,6 +74,7 @@ void SetupTirisfalGlades(ScriptMgr* mgr);
 void SetupUndercity(ScriptMgr* mgr);
 void SetupUnGoro(ScriptMgr* mgr);
 void SetupWestfall(ScriptMgr* mgr);
+void SetupWetlands(ScriptMgr *mgr);
 void SetupWinterspring(ScriptMgr* mgr);
 void SetupZangarmarsh(ScriptMgr* mgr);
 void SetupBarrens(ScriptMgr* mgr);

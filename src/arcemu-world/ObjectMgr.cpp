@@ -1792,7 +1792,7 @@ void ObjectMgr::CreateGossipMenuForPlayer(GossipMenu** Location, uint64 Guid, ui
 	if(TextID == 0)
 	{
 		//TextID = 0 will not show the gossip to the player. Using "2" since it's the default value in GossipScript::GossipHello()
-		LOG_ERROR("Object with GUID "I64FMT" is trying to create a GossipMenu with TextID == 0", Guid);
+		LOG_ERROR("Object with GUID " I64FMT " is trying to create a GossipMenu with TextID == 0", Guid);
 		TextID = 2;
 	}
 

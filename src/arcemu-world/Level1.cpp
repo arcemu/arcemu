@@ -98,7 +98,7 @@ bool ChatHandler::HandleGMAnnounceCommand(const char* args, WorldSession* m_sess
 	}
 
 	char GMAnnounce[1024];
-	snprintf(GMAnnounce, 1024, MSG_COLOR_RED"[Team]"MSG_COLOR_GREEN" |Hplayer:%s|h[%s]|h:"MSG_COLOR_YELLOW" %s", m_session->GetPlayer()->GetName(), m_session->GetPlayer()->GetName(), args);
+	snprintf(GMAnnounce, 1024, MSG_COLOR_RED "[Team]" MSG_COLOR_GREEN " |Hplayer:%s|h[%s]|h:" MSG_COLOR_YELLOW " %s", m_session->GetPlayer()->GetName(), m_session->GetPlayer()->GetName(), args);
 	sWorld.SendGMWorldText(GMAnnounce);
 	sGMLog.writefromsession(m_session, "used team announce command, [%s]", args);
 	return true;
