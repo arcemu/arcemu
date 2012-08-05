@@ -124,7 +124,6 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "../arcemu-shared/CallBack.h"
 #include "WordFilter.h"
 #include "Events.h"
-#include "IEventListener.h"
 #include "EventMgr.h"
 #include "EventableObject.h"
 #include "Object.h"

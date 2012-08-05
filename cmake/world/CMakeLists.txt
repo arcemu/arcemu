@@ -71,7 +71,6 @@ SET(sources
 	Map.cpp 
 	MapScriptInterface.cpp 
 	MapMgr.cpp 
-	MapMgrEventHandlers.cpp
 	MiscHandler.cpp 
 	MovementHandler.cpp 
 	NPCHandler.cpp 
@@ -203,7 +202,6 @@ SET( headers
 	Guild.h
 	HonorHandler.h
 	Hunter.h
-	IEventListener.h
 	Item.h
 	ItemInterface.h
 	ItemPrototype.h

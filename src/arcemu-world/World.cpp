@@ -362,8 +362,6 @@ bool World::SetInitialWorldSettings()
 		}
 	}
 
-	REGISTER_MAPMGR_EVENT_HANDLERS();
-
 	new ObjectMgr;
 	new QuestMgr;
 	new LootMgr;

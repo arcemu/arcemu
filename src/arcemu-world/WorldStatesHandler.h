@@ -24,9 +24,16 @@ struct WorldState;
 
 class SERVER_DECL WorldStatesHandler{
 	public:
-		WorldStatesHandler( uint32 mapid, IEventListener *listener ){
+
+		class SERVER_DECL WorldStatesObserver{
+		public:
+			virtual ~WorldStatesObserver(){}
+			virtual void onWorldStateUpdate( uint32 zone, uint32 field, uint32 value ) = 0;
+		};
+
+		WorldStatesHandler( uint32 mapid ){
 			map = mapid;
-			eventlistener = listener;
+			observer = NULL;
 		}
 
 		~WorldStatesHandler(){}
@@ -99,10 +106,12 @@ class SERVER_DECL WorldStatesHandler{
 		////////////////////////////////////////////////////////////////////////////////////////////
 		void InitWorldStates( std::multimap< uint32, WorldState > *states );
 
+		void setObserver( WorldStatesObserver *observer ){ this->observer = observer; }
+
 	private:
 		HM_NAMESPACE::hash_map< uint32, HM_NAMESPACE::hash_map< uint32, uint32 > > worldstates;
 		uint32 map;
-		IEventListener *eventlistener;
+		WorldStatesObserver *observer;
 };
 
 #endif

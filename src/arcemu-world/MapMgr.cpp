@@ -39,7 +39,7 @@ MapMgr::MapMgr(Map* map, uint32 mapId, uint32 instanceid) :
 CellHandler<MapCell>(map),
 _mapId(mapId),
 eventHolder(instanceid),
-worldstateshandler( mapId, this )
+worldstateshandler( mapId )
 {
 	_terrain = new TerrainHolder(mapId);
 	CollideInterface.ActivateMap(mapId);
@@ -1278,6 +1278,7 @@ bool MapMgr::Do()
 	/* load corpses */
 	objmgr.LoadCorpses(this);
 	worldstateshandler.InitWorldStates( objmgr.GetWorldStatesForMap( _mapId ) );
+	worldstateshandler.setObserver( this );
 
 	// always declare local variables outside of the loop!
 	// otherwise there's a lot of sub esp; going on.
@@ -1952,6 +1953,12 @@ uint16 MapMgr::GetAreaID(float x, float y)
 	return itr->second->AreaId;
 }
 
-void MapMgr::Notify( uint32 type, uint32 data1, uint32 data2, uint32 data3 ){
-	CALL_MAPMGR_EVENT_HANDLER( this, type, data1, data2, data3 );
+void MapMgr::onWorldStateUpdate( uint32 zone, uint32 field, uint32 value )
+{
+	WorldPacket data( SMSG_UPDATE_WORLD_STATE, 8 );
+	data << uint32( field );
+	data << uint32( value );
+	
+	SendPacketToPlayersInZone( zone, &data );
 }
+

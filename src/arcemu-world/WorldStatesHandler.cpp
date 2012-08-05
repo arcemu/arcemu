@@ -32,7 +32,8 @@ void WorldStatesHandler::SetWorldStateForZone( uint32 zone, uint32 area, uint32 
 
 	itr2->second = value;
 
-	eventlistener->Notify( EVENT_MAPMGR_WORLDSTATE_UPDATE, zone, field, value );
+	if( observer != NULL )
+		observer->onWorldStateUpdate( zone, field, value );
 }
 
 uint32 WorldStatesHandler::GetWorldStateForZone( uint32 zone, uint32 area, uint32 field ) const{

@@ -90,7 +90,7 @@ class Transporter;
 
 #define CALL_INSTANCE_SCRIPT_EVENT( Mgr, Func ) if ( Mgr != NULL && Mgr->GetScript() != NULL ) Mgr->GetScript()->Func
 
-class SERVER_DECL MapMgr : public CellHandler <MapCell>, public EventableObject, public IEventListener, public CThread
+class SERVER_DECL MapMgr : public CellHandler <MapCell>, public EventableObject, public CThread, public WorldStatesHandler::WorldStatesObserver
 {
 		friend class MapCell;
 		friend class MapScriptInterface;
@@ -364,7 +364,7 @@ class SERVER_DECL MapMgr : public CellHandler <MapCell>, public EventableObject,
 
 		WorldStatesHandler& GetWorldStatesHandler(){ return worldstateshandler; }
 
-		void Notify( uint32 type = 0, uint32 data1 = 0, uint32 data2 = 0, uint32 data3 = 0 );
+		void onWorldStateUpdate( uint32 zone, uint32 field, uint32 value );
 
 	protected:
 		InstanceScript* mInstanceScript;
@@ -373,9 +373,5 @@ class SERVER_DECL MapMgr : public CellHandler <MapCell>, public EventableObject,
 		WorldStatesHandler worldstateshandler;
 
 };
-
-typedef void(*MapMgrEventHandler)( MapMgr*, uint32, uint32, uint32 );
-void REGISTER_MAPMGR_EVENT_HANDLERS();
-void CALL_MAPMGR_EVENT_HANDLER( MapMgr *mgr, uint32 type, uint32 data1, uint32 data2, uint32 data3 );
 
 #endif
