@@ -350,7 +350,7 @@ void LogonServer::Run(int argc, char** argv)
 	if(file_log_level != (int)DEF_VALUE_NOT_SET)
 		sLog.SetFileLoggingLevel(file_log_level);
 
-	printf("The key combination <Ctrl-C> will safely shut down the server at any time.");
+	printf("The key combination <Ctrl-C> will safely shut down the server at any time.\n");
 	Log.Success("System", "Initializing Random Number Generators...");
 
 	Log.Success("Config", "Loading Config Files...");
