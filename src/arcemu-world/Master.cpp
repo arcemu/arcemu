@@ -194,7 +194,7 @@ bool Master::Run(int argc, char** argv)
 		return true;
 	}
 
-	printf("The key combination <Ctrl-C> will safely shut down the server at any time.");
+	printf("The key combination <Ctrl-C> will safely shut down the server at any time.\n");
 
 #ifndef WIN32
 	if(geteuid() == 0 || getegid() == 0)
