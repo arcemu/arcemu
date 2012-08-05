@@ -22,6 +22,7 @@
 #ifndef GOSSIP_SCRIPTS_SETUP_H
 #define GOSSIP_SCRIPTS_SETUP_H
 
+void SetupDalaranGossip(ScriptMgr* mgr);
 void SetupInnkeepers(ScriptMgr* mgr);
 void SetupGuardGossip(ScriptMgr* mgr);
 void SetupTrainerScript(ScriptMgr* mgr);
