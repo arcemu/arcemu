@@ -1291,6 +1291,70 @@ Player* Group::GetRandomPlayerInRangeButSkip(Player* plr, float range, Player* p
 	return new_plr;
 }
 
+uint32 Group::GetGroupMaxDisenchantSkill()
+{
+	uint32 maxskill = 0;
+
+	for( uint8 i = 0; i < GetSubGroupCount(); i++ )
+	{
+		for(GroupMembersSet::iterator itr = GetSubGroup(i)->GetGroupMembersBegin(); itr != GetSubGroup(i)->GetGroupMembersEnd(); ++itr)
+		{
+			Player * plr = (*itr)->m_loggedInPlayer;
+			if(plr)
+			{
+				uint32 curskill = plr->_GetSkillLineCurrent(SKILL_ENCHANTING);
+				if( maxskill < curskill )
+					maxskill = curskill;
+			}
+		}
+	}
+
+	return maxskill;
+}
+
+void Group::SendLootRoll(LootRoll * rl, Player * plr, uint8 roll, uint8 type)
+{
+	WorldPacket data(SMSG_LOOT_ROLL, (8+4+8+4+4+4+1+1+1));
+	data << uint64(rl->_guid);				// item guid
+	data << uint32(rl->_slotid);			// not sure about this one, may be also amount of players
+	data << uint64(plr->GetGUID());			// player, who is rollin'
+	data << uint32(rl->_itemid);			// the itemEntryId for the item that shall be rolled for->
+	data << uint32(rl->_randomsuffixid);	// randomSuffix
+	data << uint32(rl->_randompropertyid);	// Item random property ID
+	data << uint8(roll);					// 0: "Need for: [item name]" > 127: "you passed on: [item name]"      Roll number
+	data << uint8(type);					// 0: "Need for: [item name]" 0: "You have selected need for [item name] 1: need roll 2: greed roll
+	data << uint8(0);						// auto pass on NeedBeforeGreed loot because player cannot use the object
+
+	SendPacketToAll(&data);
+}
+
+void Group::SendLootStartRoll(uint64 itemGuid, uint32 mapid, uint32 itemCount, uint32 itemid, uint32 suffix, uint32 propid, uint32 itemStack)
+{
+	for( uint8 i = 0; i < GetSubGroupCount(); i++ )
+	{
+		for(GroupMembersSet::iterator itr = GetSubGroup(i)->GetGroupMembersBegin(); itr != GetSubGroup(i)->GetGroupMembersEnd(); ++itr)
+		{
+			Player * plr = (*itr)->m_loggedInPlayer;
+			if(plr)
+			{
+				WorldPacket data(SMSG_LOOT_START_ROLL, (8+4+4+4+4+4+4+1));
+				data << uint64(itemGuid);					// guid of rolled item
+				data << uint32(mapid);						// 3.3.3 mapid
+				data << uint32(itemCount);					// maybe the number of players rolling for it???
+				data << uint32(itemid);						// the itemEntryId for the item that shall be rolled for
+				data << uint32(suffix);						// randomSuffix
+				data << uint32(propid);						// item random property ID
+				data << uint32(itemStack);					// items in stack
+				data << uint32(60000);						// the countdown time to choose "need" or "greed"
+				data << uint8(plr->GetRollFlags(itemid));	// roll type mask
+
+				// do not sent to all in group, otherwise roll_flasg will be same for ALL players in group
+				// but they can be different in Need Before Greed
+				plr->SendPacket(&data);
+			}
+		}
+	}
+}
 
 #ifdef ENABLE_ACHIEVEMENTS
 

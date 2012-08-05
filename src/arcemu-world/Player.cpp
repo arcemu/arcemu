@@ -13651,3 +13651,110 @@ void Player::RemoveVehicleComponent(){
 	delete vehicle;
 	vehicle = NULL;
 }
+
+uint8 Player::GetRollFlags(uint32 itemid)
+{
+	if( !InGroup() )
+		return (ROLL_VOTE_MASK_ALL & ~ROLL_VOTE_MASK_DISENCHANT);
+
+	uint8 mask = ROLL_VOTE_MASK_ALL;
+	uint8 loot_method = GetGroup()->GetMethod();
+	uint32 maxgroupskill = GetGroup()->GetGroupMaxDisenchantSkill();
+
+	ItemPrototype * proto = ItemPrototypeStorage.LookupEntry( itemid );
+
+	if( proto->HasFlag2(ITEM_FLAG2_NEED_ROLL_DISABLED) != 0 )
+		mask = (mask & ~ ROLL_VOTE_MASK_NEED);
+
+	if( proto->DisenchantReqSkill < 1 || uint32(proto->DisenchantReqSkill) > maxgroupskill )
+		mask = (mask & ~ ROLL_VOTE_MASK_DISENCHANT);
+
+	// in need before greed, need is disabled for non-usable item for player
+	if( loot_method == PARTY_LOOT_NBG && CanUseItem( proto ) != INV_ERR_OK )
+		mask = (mask & ~ROLL_VOTE_MASK_NEED);
+
+	return mask;
+}
+
+// used for need before greed or dungeon finder group
+uint8 Player::CanUseItem( ItemPrototype * proto )
+{
+    if( proto )
+    {
+		if ( (proto->HasFlag2(ITEM_FLAG2_HORDE_ONLY) !=0 ) && IsTeamAlliance())
+            return INV_ERR_YOU_CAN_NEVER_USE_THAT_ITEM;
+
+        if ( (proto->HasFlag2(ITEM_FLAG2_ALLIANCE_ONLY) != 0 ) && IsTeamHorde())
+            return INV_ERR_YOU_CAN_NEVER_USE_THAT_ITEM;
+
+        if ((proto->AllowableClass & getClassMask()) == 0 || (proto->AllowableRace & getRaceMask()) == 0)
+            return INV_ERR_YOU_CAN_NEVER_USE_THAT_ITEM;
+
+        if( proto->RequiredSkill != 0  )
+        {
+			if( _GetSkillLineCurrent( proto->RequiredSkill ) == 0 )
+                return INV_ERR_NO_REQUIRED_PROFICIENCY;
+            else if( _GetSkillLineCurrent( proto->RequiredSkill ) < proto->RequiredSkillRank )
+                return INV_ERR_SKILL_ISNT_HIGH_ENOUGH;
+        }
+
+        if( proto->RequiredSkillSubRank != 0 && !HasSpell( proto->RequiredSkillSubRank ) )
+            return INV_ERR_NO_REQUIRED_PROFICIENCY;
+
+        if( getLevel() < proto->RequiredLevel )
+            return INV_ERR_YOU_MUST_REACH_LEVEL_N;
+
+		const static uint32 item_weapon_skills[21] =
+		{
+			SKILL_AXES,     SKILL_2H_AXES,  SKILL_BOWS,          SKILL_GUNS,      SKILL_MACES,
+			SKILL_2H_MACES, SKILL_POLEARMS, SKILL_SWORDS,        SKILL_2H_SWORDS, 0,
+			SKILL_STAVES,   0,              0,                   SKILL_FIST_WEAPONS,   0,
+			SKILL_DAGGERS,  SKILL_THROWN,   SKILL_ASSASSINATION, SKILL_CROSSBOWS, SKILL_WANDS,
+			SKILL_FISHING
+		};
+
+		uint8 _class = getClass();
+
+		if (proto->Class == ITEM_CLASS_WEAPON && _GetSkillLineCurrent(item_weapon_skills[proto->SubClass]) == 0)
+			return INV_ERR_NO_REQUIRED_PROFICIENCY;
+
+		if (proto->Class == ITEM_CLASS_ARMOR && proto->SubClass > ITEM_SUBCLASS_ARMOR_MISC && proto->SubClass <= ITEM_SUBCLASS_ARMOR_SHIELD && proto->InventoryType != INVTYPE_CLOAK)
+		{
+			if (_class == WARRIOR || _class == PALADIN || _class == DEATHKNIGHT)
+			{
+				if (getLevel() < 40)
+				{
+					if (proto->SubClass != ITEM_SUBCLASS_ARMOR_MAIL)
+						return INV_ERR_CANT_DO_RIGHT_NOW;
+				}
+				else if (proto->SubClass != ITEM_SUBCLASS_ARMOR_PLATE_MAIL)
+					return INV_ERR_CANT_DO_RIGHT_NOW;
+			}
+			else if (_class == HUNTER || _class == SHAMAN)
+			{
+				if (getLevel() < 40)
+				{
+					if (proto->SubClass != ITEM_SUBCLASS_ARMOR_LEATHER)
+						return INV_ERR_CANT_DO_RIGHT_NOW;
+				}
+				else if (proto->SubClass != ITEM_SUBCLASS_ARMOR_MAIL)
+					return INV_ERR_CANT_DO_RIGHT_NOW;
+			}
+
+			if (_class == ROGUE || _class == DRUID)
+				if (proto->SubClass != ITEM_SUBCLASS_ARMOR_LEATHER)
+					return INV_ERR_CANT_DO_RIGHT_NOW;
+
+			if (_class == MAGE || _class == PRIEST || _class == WARLOCK)
+				if (proto->SubClass != ITEM_SUBCLASS_ARMOR_CLOTH)
+					return INV_ERR_CANT_DO_RIGHT_NOW;
+
+			if( proto->SubClass == ITEM_SUBCLASS_ARMOR_SHIELD && !HasSpell(9116) )
+				return INV_ERR_CANT_DO_RIGHT_NOW;
+		}
+
+		return INV_ERR_OK;
+	}
+
+	return INV_ERR_ITEM_NOT_FOUND;
+}

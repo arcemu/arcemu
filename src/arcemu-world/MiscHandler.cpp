@@ -166,7 +166,7 @@ void WorldSession::HandleAutostoreLootItemOpcode(WorldPacket & recv_data)
 		if(GetPlayer()->GetItemInterface()->SafeAddItem(item, slotresult.ContainerSlot, slotresult.Slot))
 		{
 			sQuestMgr.OnPlayerItemPickup(GetPlayer(), item);
-			_player->SendItemPushResult(false, true, true, true, slotresult.ContainerSlot, slotresult.Slot, 1, item->GetEntry(), item->GetItemRandomSuffixFactor(), item->GetItemRandomPropertyId(), item->GetStackCount());
+			_player->SendItemPushResult(false, true, true, true, slotresult.ContainerSlot, slotresult.Slot, amt, item->GetEntry(), item->GetItemRandomSuffixFactor(), item->GetItemRandomPropertyId());
 #ifdef ENABLE_ACHIEVEMENTS
 			_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, item->GetEntry(), 1, 0);
 #endif
@@ -180,7 +180,7 @@ void WorldSession::HandleAutostoreLootItemOpcode(WorldPacket & recv_data)
 		add->m_isDirty = true;
 
 		sQuestMgr.OnPlayerItemPickup(GetPlayer(), add);
-		_player->SendItemPushResult(false, false, true, false, (uint8)_player->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()), 0xFFFFFFFF, amt , add->GetEntry(), add->GetItemRandomSuffixFactor(), add->GetItemRandomPropertyId(), add->GetStackCount());
+		_player->SendItemPushResult(false, false, true, false, (uint8)_player->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()), 0xFFFFFFFF, amt , add->GetEntry(), add->GetItemRandomSuffixFactor(), add->GetItemRandomPropertyId());
 #ifdef ENABLE_ACHIEVEMENTS
 		_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, add->GetEntry(), 1, 0);
 #endif
@@ -2178,7 +2178,7 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket & recv_data)
 
 	if(player->GetItemInterface()->SafeAddItem(item, slotresult.ContainerSlot, slotresult.Slot))
 	{
-		player->SendItemPushResult(false, true, true, true, slotresult.ContainerSlot, slotresult.Slot, 1 , item->GetEntry(), item->GetItemRandomSuffixFactor(), item->GetItemRandomPropertyId(), item->GetStackCount());
+		player->SendItemPushResult(false, true, true, true, slotresult.ContainerSlot, slotresult.Slot, amt , item->GetEntry(), item->GetItemRandomSuffixFactor(), item->GetItemRandomPropertyId());
 		sQuestMgr.OnPlayerItemPickup(player, item);
 #ifdef ENABLE_ACHIEVEMENTS
 		_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, item->GetEntry(), 1, 0);

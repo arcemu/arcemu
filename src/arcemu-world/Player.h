@@ -2186,7 +2186,7 @@ class SERVER_DECL Player : public Unit
 		void Gossip_SendPOI(float X, float Y, uint32 Icon, uint32 Flags, uint32 Data, const char* Name);
 		void SendSpellCooldownEvent(uint32 SpellId);
 		void SendSpellModifier(uint8 spellgroup, uint8 spelltype, int32 v, bool is_pct);
-		void SendItemPushResult(bool created, bool recieved, bool sendtoset, bool newitem,  uint8 destbagslot, uint32 destslot, uint32 count, uint32 entry, uint32 suffix, uint32 randomprop, uint32 stack);
+		void SendItemPushResult(bool created, bool recieved, bool sendtoset, bool newitem,  uint8 destbagslot, uint32 destslot, uint32 count, uint32 entry, uint32 suffix, uint32 randomprop, uint32 stack = 0);
 		void SendSetProficiency(uint8 ItemClass, uint32 Proficiency);
 		void SendLoginVerifyWorld(uint32 MapId, float X, float Y, float Z, float O);
 		void SendPlaySpellVisual(uint64 guid, uint32 visualid);
@@ -2462,6 +2462,8 @@ class SERVER_DECL Player : public Unit
 		bool CanTrainAt(Trainer*);
 
 		Object* GetPlayerOwner() { return this; };
+		uint8 CanUseItem( ItemPrototype * proto );
+		uint8 GetRollFlags(uint32 itemid);
 };
 
 class SkillIterator
