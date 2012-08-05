@@ -30,22 +30,22 @@ public:
 
 		// questgiver will walk to the place where Cyclonian is spawned
 		// only walk when we are at home
-		if(windwatcher->CalcDistance(250.839996, -1470.579956, 55.4491) > 1) return;
+		if(windwatcher->CalcDistance(250.839996f, -1470.579956f, 55.4491f) > 1) return;
 		{
 			windwatcher->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "Follow me");
 			sEAS.CreateCustomWaypointMap(windwatcher);
-			sEAS.WaypointCreate(windwatcher, 269.29, -1433.32, 50.31, 0.19, 0, 0, 0);
-			sEAS.WaypointCreate(windwatcher, 328.52, -1442.03, 40.5, 5.65, 0, 0, 0);
-			sEAS.WaypointCreate(windwatcher, 333.31, -1453.69, 42.01, 4.68, 0, 0, 0);
+			sEAS.WaypointCreate(windwatcher, 269.29f, -1433.32f, 50.31f, 0.19f, 0, 0, 0);
+			sEAS.WaypointCreate(windwatcher, 328.52f, -1442.03f, 40.5f, 5.65f, 0, 0, 0);
+			sEAS.WaypointCreate(windwatcher, 333.31f, -1453.69f, 42.01f, 4.68f, 0, 0, 0);
 			sEAS.EnableWaypoints(windwatcher);
 			windwatcher->GetAIInterface()->setMoveType(11);
 		}
 		windwatcher->Despawn(15*60*1000, 0);
 
 		// spawn cyclonian if not spawned already
-		Creature *cyclonian = pPlayer->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(323.947, -1483.68, 43.1363, 6239);
-		if(pPlayer->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(323.947, -1483.68, 43.1363, 6239) == NULL)
-			cyclonian = sEAS.SpawnCreature(pPlayer, 6239, 323.947, -1483.68, 43.1363, 0.682991);
+		Creature *cyclonian = pPlayer->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(323.947f, -1483.68f, 43.1363f, 6239);
+		if( cyclonian == NULL)
+			cyclonian = sEAS.SpawnCreature(pPlayer, 6239, 323.947f, -1483.68f, 43.1363f, 0.682991f);
 		cyclonian->Despawn(15*60*1000, 0);
 	}
 };
