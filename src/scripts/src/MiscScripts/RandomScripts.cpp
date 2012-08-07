@@ -103,7 +103,6 @@ class Wormhole : public GossipScript
 
 		void GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, uint32 IntId, const char* Code)
 		{
-			GossipMenu* Menu;
 			switch(IntId)
 			{
 				case 0:  
@@ -113,7 +112,7 @@ class Wormhole : public GossipScript
 					Plr->CastSpell(Plr, 67834, true);
 					break;
 				case 2:
-					Plr->CastSpell(Plr, 67838, true); //67838
+					Plr->CastSpell(Plr, 67838, true);
 					break;
 				case 3:
 					Plr->CastSpell(Plr, 67835, true);
@@ -125,6 +124,7 @@ class Wormhole : public GossipScript
 					Plr->CastSpell(Plr, 67837, true);
 					break;
 				}
+				Plr->Gossip_Complete();
 			}
 };
 

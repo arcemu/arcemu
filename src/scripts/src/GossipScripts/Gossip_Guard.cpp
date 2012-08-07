@@ -4551,7 +4551,7 @@ class DalaranGuard : public Arcemu::Gossip::Script
 public:
 	void OnHello(Object *pObject, Player *Plr)
 	{
-		Arcemu::Gossip::Menu menu(pObject->GetGUID(), 50000);
+		Arcemu::Gossip::Menu menu(pObject->GetGUID(), 14014);
 		menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Arena"				,1);
 		menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Auction House"		,2);
 		menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Bank"				,3);
@@ -4637,7 +4637,7 @@ public:
 			}break;
 		case 10:	// Mailbox
 			{
-				Arcemu::Gossip::Menu menu(pObject->GetGUID(), 10090);
+				Arcemu::Gossip::Menu menu(pObject->GetGUID(), 14008);
 				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Inn"				, 9);
 				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Bank"				, 3);
 				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Krasus' Landing"	, 74);
@@ -4645,7 +4645,7 @@ public:
 			}break;
 		case 11:	// Points of Interest
 			{
-				Arcemu::Gossip::Menu menu(pObject->GetGUID(), 10056);
+				Arcemu::Gossip::Menu menu(pObject->GetGUID(), 13975);
 				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "The Alliance Quarter"	, 18);
 				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "The Horde Quarter"		, 19);
 				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "The Violet Citadel"	, 27);
@@ -4663,11 +4663,11 @@ public:
 		case 12:	// Stable Master
 			{
 				Plr->Gossip_SendPOI(5859.68f, 557.57f, 7, 99, 0, "Stable Master");
-				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 10083, Plr);
+				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 14001, Plr);
 			}break;
 		case 13:	// Trainers
 			{
-				Arcemu::Gossip::Menu menu(pObject->GetGUID(), 10082);
+				Arcemu::Gossip::Menu menu(pObject->GetGUID(), 14000);
 				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Class Trainer"			, 35);
 				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Cold Weather Flying Trainer", 76);
 				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Portal Trainer"		, 36);
@@ -4676,7 +4676,7 @@ public:
 			}break;
 		case 14:	// Vendors
 			{
-				Arcemu::Gossip::Menu menu(pObject->GetGUID(), 10173);
+				Arcemu::Gossip::Menu menu(pObject->GetGUID(), 14117);
 				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Armor"					, 38);
 				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Clothing"				, 39);
 				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Emblem Gear"			, 40);
@@ -4845,7 +4845,7 @@ public:
 		case 41:	// Flowers
 			{
 				Plr->Gossip_SendPOI(5772.27f, 576.61f, 7, 99, 0, "Flowers");
-				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 10159, Plr);
+				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 14107, Plr);
 			}break;
 		case 42:	// Fruit
 			{
@@ -5025,7 +5025,7 @@ public:
 		case 76:	// Cold weather flying trainer
 			{
 				Plr->Gossip_SendPOI(5815.91f, 453.64f, 7, 99, 0, "Flight Master");
-				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 60059, Plr);
+				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 14009, Plr);
 			}break;
 		case 77:	// Locksmith
 			{
