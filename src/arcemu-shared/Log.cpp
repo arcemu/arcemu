@@ -420,7 +420,7 @@ void oLog::Init(int32 fileLogLevel, LogType logType)
 	else
 	{
 		tm* aTm = localtime(&UNIXTIME);
-		// We use this because outBasic above just echoed time and date.
+		// We don't echo time and date again because outBasic above just echoed them.
 		outErrorSilent("[%-4d-%02d-%02d %02d:%02d:%02d] ", aTm->tm_year + 1900, aTm->tm_mon + 1, aTm->tm_mday, aTm->tm_hour, aTm->tm_min, aTm->tm_sec);
 	}
 }
