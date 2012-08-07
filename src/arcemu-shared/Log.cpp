@@ -67,6 +67,26 @@ void oLog::outFile(FILE* file, char* msg, const char* source)
 	}
 }
 
+// Prints text to file without showing it to the user. Used for BANNER.
+void oLog::outFileSilent(FILE* file, char* msg, const char* source)
+{
+	char time_buffer[TIME_FORMAT_LENGTH];
+	char szltr_buffer[SZLTR_LENGTH];
+	Time(time_buffer);
+	pdcds(SZLTR, szltr_buffer);
+
+	if(source != NULL)
+	{
+		fprintf(file, "%s%s%s: %s\n", time_buffer, szltr_buffer, source, msg);
+		// Don't use printf to prevent text from being shown in the console output.
+	}
+	else
+	{
+		fprintf(file, "%s%s%s\n", time_buffer, szltr_buffer, msg);
+		// Don't use printf to prevent text from being shown in the console output.
+	}
+}
+
 void oLog::Time(char* buffer)
 {
 	time_t now;
@@ -113,6 +133,22 @@ void oLog::outError(const char* err, ...)
 	va_end(ap);
 
 	outFile(m_errorFile, buf);
+}
+
+// Used for BANNER. No text output.
+void oLog::outErrorSilent(const char* err, ...)
+{
+	if(m_errorFile == NULL)
+		return;
+
+	char buf[32768];
+	va_list ap;
+
+	va_start(ap, err);
+	vsnprintf(buf, 32768, err, ap);
+	va_end(ap);
+
+	outFileSilent(m_errorFile, buf);
 }
 
 void oLog::outBasic(const char* str, ...)
@@ -384,7 +420,8 @@ void oLog::Init(int32 fileLogLevel, LogType logType)
 	else
 	{
 		tm* aTm = localtime(&UNIXTIME);
-		outError("[%-4d-%02d-%02d %02d:%02d:%02d] ", aTm->tm_year + 1900, aTm->tm_mon + 1, aTm->tm_mday, aTm->tm_hour, aTm->tm_min, aTm->tm_sec);
+		// We use this because outBasic above just echoed time and date.
+		outErrorSilent("[%-4d-%02d-%02d %02d:%02d:%02d] ", aTm->tm_year + 1900, aTm->tm_mon + 1, aTm->tm_mday, aTm->tm_hour, aTm->tm_min, aTm->tm_sec);
 	}
 }
 

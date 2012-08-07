@@ -48,6 +48,7 @@ class SERVER_DECL oLog : public Singleton< oLog >
 		//log level 0
 		void outString(const char* str, ...);
 		void outError(const char* err, ...);
+		void outErrorSilent(const char* err, ...); // Used for BANNER.
 		void outBasic(const char* str, ...);
 		//log level 1
 		void outDetail(const char* str, ...);
@@ -82,6 +83,7 @@ class SERVER_DECL oLog : public Singleton< oLog >
 	private:
 		FILE* m_normalFile, *m_errorFile;
 		void outFile(FILE* file, char* msg, const char* source = NULL);
+		void outFileSilent(FILE* file, char* msg, const char* source = NULL);
 		void Time(char* buffer);
 		ARCEMU_INLINE char dcd(char in)
 		{
