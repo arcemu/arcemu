@@ -111,6 +111,40 @@ class TeleportQ_Gossip : public GossipScript
 		}
 };
 
+class StabledArgentHippogryph : public GossipScript
+{
+	public:
+		void GossipHello(Object* pObject, Player* plr)
+		{
+			GossipMenu* Menu;
+			if(plr->GetQuestLogForEntry(14108))
+			{
+				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 14692, plr);
+				Menu->AddItem(0, "Mount the Hippogryph and prepare for battle!"	,1);
+				Menu->SendTo(plr);
+			}
+			if(!plr->GetQuestLogForEntry(14108))
+			{
+				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 14692, plr);
+				Menu->SendTo(plr);
+			}
+		}
+
+		void GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, uint32 IntId, const char* Code)
+		{
+			switch(IntId)
+			{
+				case 0:  
+					GossipHello(pObject, Plr);
+					break;
+				case 1:
+					Plr->CastSpell(Plr, 66777, true);
+					break;
+			}
+			Plr->Gossip_Complete();
+		}
+};
+
 void SetupQuestGossip(ScriptMgr* mgr)
 {
 	GossipScript* LJ = new Lady_Jaina();
@@ -137,4 +171,5 @@ void SetupQuestGossip(ScriptMgr* mgr)
 	// Both
 	mgr->register_gossip_script(29169, TeleportQGossip);
 	// **** Dalaran Quests end **** //
+	mgr->register_gossip_script(35117,  new StabledArgentHippogryph);
 }

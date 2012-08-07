@@ -92,11 +92,11 @@ class Wormhole : public GossipScript
 			{
 				GossipMenu* Menu;
 				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 907, plr);
-				Menu->AddItem(0, "Borean Tundra"		, 1);
-				Menu->AddItem(0, "Howling Fjord"	, 2);
-				Menu->AddItem(0, "Sholazar Basin"		, 3);
-				Menu->AddItem(0, "Icecrown"			, 4);
-				Menu->AddItem(0, "Storm Peaks"				, 5);
+				Menu->AddItem(0, "Borean Tundra",	1);
+				Menu->AddItem(0, "Howling Fjord",	2);
+				Menu->AddItem(0, "Sholazar Basin", 	3);
+				Menu->AddItem(0, "Icecrown",		4);
+				Menu->AddItem(0, "Storm Peaks",		5);
 				Menu->SendTo(plr);
 			}
 		}
@@ -128,9 +128,36 @@ class Wormhole : public GossipScript
 			}
 };
 
+class JeanPierrePoulain : public GossipScript
+{
+	public:
+		void GossipHello(Object* pObject, Player* plr)
+		{
+			GossipMenu* Menu;
+			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 14500, plr);
+			Menu->AddItem(0, "I'll take the flight."	,1);
+			Menu->SendTo(plr);
+		}
+
+		void GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, uint32 IntId, const char* Code)
+		{
+			switch(IntId)
+			{
+				case 0:  
+					GossipHello(pObject, Plr);
+					break;
+				case 1:
+					Plr->CastSpell(Plr, 64795, true);
+					break;
+			}
+			Plr->Gossip_Complete();
+		}
+};
+
 void SetupRandomScripts(ScriptMgr* mgr)
 {
 	// Register Hook Event here
 	mgr->register_hook(SERVER_HOOK_EVENT_ON_EMOTE, (void*)&OnEmote);
 	mgr->register_gossip_script(35646,  new Wormhole);
+	mgr->register_gossip_script(34244,  new JeanPierrePoulain);
 }
