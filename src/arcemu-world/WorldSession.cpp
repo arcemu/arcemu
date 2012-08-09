@@ -1457,6 +1457,26 @@ const char* WorldSession::LocalizedWorldSrv(uint32 id)
 		return wst->text;
 }
 
+const char* WorldSession::LocalizedGossipTexts(uint32 id)
+{
+	GossipTexts* gt = GossipTextsStorage.LookupEntry(id);
+	if(!gt)
+	{
+		memset(szError, 0, 64);
+		sprintf(szError, "ID:%u is a bad GossipText ID!", id);
+		return szError;
+	}
+
+	LocalizedGossipText* lgt =
+	    (language > 0) ? sLocalizationMgr.GetLocalizedGossipTexts(id,
+	            language)
+	    : NULL;
+	if(lgt)
+		return lgt->Text;
+	else
+		return gt->text;
+}
+
 const char* WorldSession::LocalizedMapName(uint32 id)
 {
 	MapInfo* mi = WorldMapInfoStorage.LookupEntry(id);

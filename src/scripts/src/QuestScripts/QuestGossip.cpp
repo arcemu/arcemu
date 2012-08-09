@@ -30,7 +30,7 @@ class Lady_Jaina : public GossipScript
 			if(plr->GetQuestLogForEntry(558))
 			{
 				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 7012, plr);
-				Menu->AddItem(0, "Lady Jaina, this may sound like an odd request... but I have a young ward who is quite shy. You are a hero to him, and he asked me to get your autograph.", 1);
+				Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(385), 1);
 				Menu->SendTo(plr);
 			}
 		}
@@ -67,7 +67,7 @@ class Cairne : public GossipScript
 			if(plr->GetQuestLogForEntry(925))
 			{
 				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 7013, plr);
-				Menu->AddItem(0, "Give me hoofprint.", 1);
+				Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(386), 1);
 				Menu->SendTo(plr);
 			}
 		}

@@ -17,13 +17,13 @@
  */
 
 #include "Setup.h"
-
+#define TELLME 254
 class SkornWhitecloud_Gossip : public Arcemu::Gossip::Script
 {
 	public:
 		void OnHello(Object* pObject, Player* plr)
 		{
-			Arcemu::Gossip::Menu::SendQuickMenu(pObject->GetGUID(), 522, plr, 1, Arcemu::Gossip::ICON_CHAT, "Tell me a story, Skorn.");
+			Arcemu::Gossip::Menu::SendQuickMenu(pObject->GetGUID(), 522, plr, 1, Arcemu::Gossip::ICON_CHAT, plr->GetSession()->LocalizedGossipTexts(TELLME));
 		}
 
 		void OnSelectOption(Object* pObject, Player* plr, uint32 Id, const char* Code)

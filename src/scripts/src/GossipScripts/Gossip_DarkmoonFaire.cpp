@@ -423,7 +423,7 @@ class Lhara_Bark : public CreatureAIScript
 			ModifyAIUpdateEvent(rndTimer); 			// Modify timer to new random value
 		}
 };
-
+#define TELLME 175
 // Maxima Blastenheimer
 class MaximaBlastenheimer_Gossip : public GossipScript
 {
@@ -433,7 +433,7 @@ class MaximaBlastenheimer_Gossip : public GossipScript
 			GossipMenu* Menu;
 
 			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 60048, plr);
-			Menu->AddItem(0, "Tell me how to use the Blastenheimer 5000 Ultra Cannon.", 1);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(TELLME), 1);
 
 			Menu->SendTo(plr);
 		}
@@ -504,6 +504,16 @@ class MusicDoodad : public CreatureAIScript
 #define BARK_PROFESSOR_THADDEUS_PALEO_2    "Have you any Darkmoon Faire Cards? Come speak with me to learn more about them if you dare!"
 #define BARK_PROFESSOR_THADDEUS_PALEO_3    "Welcome one and all to the greatest show on all of Azeroth... the Darkmoon Faire! Adventure and exitement await, don't be shy! Mysteries and prizes for both the young and the old are here for the taking. And be sure to speak with the professor about any Darkmoon Cards that you have come across during your travels!"
 #define BARK_PROFESSOR_THADDEUS_PALEO_4    "Come speak with me if you are a purveyor of the unusual, or if you have any Darkmoon Faire cards."
+#define LETMEBROWSE 176
+#define TELLMEMORE 177
+#define BEASTS 178
+#define PORTAL 179
+#define ELEMENT 180
+#define WARLORD 181
+#define FURIE 182
+#define LUNA 183
+#define BLESS 184
+#define STORM 185
 
 class ProfessorThaddeusPaleo_Gossip : public GossipScript
 {
@@ -514,8 +524,8 @@ class ProfessorThaddeusPaleo_Gossip : public GossipScript
 			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 60016, plr);
 
 			if(pObject->GetUInt32Value(UNIT_NPC_FLAGS) & UNIT_NPC_FLAG_VENDOR)
-				Menu->AddItem(1, "Let me browse your goods.", 1);
-			Menu->AddItem(0, "Tell me more about these Darkmoon Cards.", 2);
+				Menu->AddItem(1, plr->GetSession()->LocalizedGossipTexts(LETMEBROWSE), 1);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(TELLMEMORE), 2);
 
 			Menu->SendTo(plr);
 		}
@@ -536,14 +546,14 @@ class ProfessorThaddeusPaleo_Gossip : public GossipScript
 				case 2:
 					objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 60017, plr);
 
-					Menu->AddItem(0, "Tell me about the Beasts Deck.", 5);
-					Menu->AddItem(0, "Tell me about the Portals Deck.", 6);
-					Menu->AddItem(0, "Tell me about the Elementals Deck.", 7);
-					Menu->AddItem(0, "Tell me about the Warlords Deck.", 8);
-					Menu->AddItem(0, "Tell me about the Furies Deck.", 9);
-					Menu->AddItem(0, "Tell me about the Lunacy Deck.", 10);
-					Menu->AddItem(0, "Tell me about the Blessings Deck.", 11);
-					Menu->AddItem(0, "Tell me about the Storms Deck.", 12);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(BEASTS), 5);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(PORTAL), 6);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(ELEMENT), 7);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(WARLORD), 8);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(FURIE), 9);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(LUNA), 10);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(BLESS), 11);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(STORM), 12);
 
 					Menu->SendTo(plr);
 					break;
@@ -637,7 +647,24 @@ class ProfessorThaddeusPaleo_Bark : public CreatureAIScript
 #define BARK_SAYGE_2    "The longer you wait, the less future you have for me to foretell."
 #define BARK_SAYGE_3    "Come speak with me, and what once was cloudy shall become crystal clear."
 #define BARK_SAYGE_4    "Come to me true believers, and see what the future holds for you!"
-
+#define FUTURE 186
+#define IS 187
+#define IT 188
+#define IC 189
+#define IA 190
+#define IE 191
+#define IEX 192
+#define IR 193
+#define ICO 194
+#define INT 195
+#define IQ 196
+#define IW 197
+#define IWS 198
+#define IWC 199
+#define IWSM 200
+#define IWSML 201
+#define IWRS 202
+#define IDLOVE 203
 class Sayge_Gossip : public GossipScript
 {
 	public:
@@ -652,7 +679,7 @@ class Sayge_Gossip : public GossipScript
 			else
 			{
 				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 60026, plr);			// Player doesn't have any buff
-				Menu->AddItem(0, "I am ready to discover where my fortune lies!", 1);
+				Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(FUTURE), 1);
 			}
 
 			Menu->SendTo(plr);
@@ -670,10 +697,10 @@ class Sayge_Gossip : public GossipScript
 				case 1:		// Question 1 (Initial question, always the same)
 					objmgr.CreateGossipMenuForPlayer(&Menu, pCreature->GetGUID(), 60027, plr);
 
-					Menu->AddItem(0, "I slay the man on the spot as my liege would expect me to do, as he is nothing more than a thief and a liar.", 10);
-					Menu->AddItem(0, "I turn over the man to my liege for punishment, as he has broken the law of the land and it is my sworn duty to enforce it.", 11);
-					Menu->AddItem(0, "I confiscate the corn he has stolen, warn him that stealing is a path towards doom and destruction, but I let him go to return to his family.", 12);
-					Menu->AddItem(0, "I allow the man to take enough corn to feed his family for a couple of days, encouraging him to leave the land.", 13);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(IS), 10);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(IT), 11);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(IC), 12);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(IA), 13);
 
 					Menu->SendTo(plr);
 					break;
@@ -681,9 +708,9 @@ class Sayge_Gossip : public GossipScript
 				case 10:	// Question 2 (First Answer = 1)
 					objmgr.CreateGossipMenuForPlayer(&Menu, pCreature->GetGUID(), 60028, plr);
 
-					Menu->AddItem(0, "I execute him as per my liege's instructions, and do it in such a manner that he suffers painfully before he dies a retribution for his crimes against my people.", 14);
-					Menu->AddItem(0, "I execute him as per my liege's instructions, but doing so in as painless of a way as possible. Justice must be served, but I can show some compassion.", 15);
-					Menu->AddItem(0, "I risk my own life and free him so that he may prove his innocence. If I can, I'll help him in any way.", 16);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(IE), 14);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(IEX), 15);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(IR), 16);
 
 					Menu->SendTo(plr);
 					break;
@@ -691,9 +718,9 @@ class Sayge_Gossip : public GossipScript
 				case 11:     // Question 2 (First Answer = 2)
 					objmgr.CreateGossipMenuForPlayer(&Menu, pCreature->GetGUID(), 60029, plr);
 
-					Menu->AddItem(0, "I confront the ruler on his malicious behavior, upholding my liege's honor at risk of any future diplomacy.", 17);
-					Menu->AddItem(0, "I not-so-quietly ignore the insult, hoping to instill a fear in the ruler that he may have gaffed. I then inform my liege of the insult when I return.", 18);
-					Menu->AddItem(0, "I quietly ignore the insult. I will not tell my liege, as I am to secure peace at all costs. It's only an insult - not a declaration of war.", 19);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(ICO), 17);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(INT), 18);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(IQ), 19);
 
 					Menu->SendTo(plr);
 					break;
@@ -701,9 +728,9 @@ class Sayge_Gossip : public GossipScript
 				case 12:     // Question 2 (First Answer = 3)
 					objmgr.CreateGossipMenuForPlayer(&Menu, pCreature->GetGUID(), 60030, plr);
 
-					Menu->AddItem(0, "I would speak against my brother joining the order, rushing a permanent breech in our relationship. He would be a danger to himself and those around him, and that is too great a risk hoping he would improve over time.", 20);
-					Menu->AddItem(0, "I would speak for my brother joining the order, potentially risking the safety of the order. I could help him with the order's regimens, and I'd have faith in his ability to adapt and learn.", 21);
-					Menu->AddItem(0, "I would create some surreptitious means to keep my brother out of the order. I can keep him out without him being any bit wiser, thereby saving our familial bonds.", 22);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(IW), 20);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(IWS), 21);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(IWC), 22);
 
 					Menu->SendTo(plr);
 					break;
@@ -711,9 +738,9 @@ class Sayge_Gossip : public GossipScript
 				case 13:     // Question 2 (First Answer = 4)
 					objmgr.CreateGossipMenuForPlayer(&Menu, pCreature->GetGUID(), 60031, plr);
 
-					Menu->AddItem(0, "I would show my liege the beast's ear and claim the beast's death as my own, taking the reward for my own use. It is wrong to claim a deed as your own that someone else in fact did.", 23);
-					Menu->AddItem(0, "I would show my liege the beast's ear and claim the beast's death as my own - after all, I did slay it. I would then offer some of the reward to the destitute knight to help his family.", 24);
-					Menu->AddItem(0, "I would remain silent about the kill and allow the knight to claim the reward to aid his family.", 25);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(IWSM), 23);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(IWSML), 24);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(IWRS), 25);
 
 					Menu->SendTo(plr);
 					break;
@@ -722,7 +749,7 @@ class Sayge_Gossip : public GossipScript
 				case 14:     // Answers: 1-1
 					objmgr.CreateGossipMenuForPlayer(&Menu, pCreature->GetGUID(), 60032, plr);
 
-					Menu->AddItem(0, "I'd love to get one of those written fortunes you mentioned! I've got the space in my inventory for it.", 30);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(IDLOVE), 30);
 					Menu->SendTo(plr);
 
 					pCreature->CastSpell(plr, 23768, true);
@@ -731,7 +758,7 @@ class Sayge_Gossip : public GossipScript
 				case 15:     // Answers: 1-2
 					objmgr.CreateGossipMenuForPlayer(&Menu, pCreature->GetGUID(), 60032, plr);
 
-					Menu->AddItem(0, "I'd love to get one of those written fortunes you mentioned! I've got the space in my inventory for it.", 30);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(IDLOVE), 30);
 					Menu->SendTo(plr);
 
 					pCreature->CastSpell(plr, 23769, true);
@@ -740,7 +767,7 @@ class Sayge_Gossip : public GossipScript
 				case 16:     // Answers: 1-3
 					objmgr.CreateGossipMenuForPlayer(&Menu, pCreature->GetGUID(), 60032, plr);
 
-					Menu->AddItem(0, "I'd love to get one of those written fortunes you mentioned! I've got the space in my inventory for it.", 30);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(IDLOVE), 30);
 					Menu->SendTo(plr);
 
 					pCreature->CastSpell(plr, 23767, true);
@@ -750,7 +777,7 @@ class Sayge_Gossip : public GossipScript
 				case 17:     // Answers: 2-1
 					objmgr.CreateGossipMenuForPlayer(&Menu, pCreature->GetGUID(), 60032, plr);
 
-					Menu->AddItem(0, "I'd love to get one of those written fortunes you mentioned! I've got the space in my inventory for it.", 30);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(IDLOVE), 30);
 					Menu->SendTo(plr);
 
 					pCreature->CastSpell(plr, 23738, true);
@@ -759,7 +786,7 @@ class Sayge_Gossip : public GossipScript
 				case 18:     // Answers: 2-2
 					objmgr.CreateGossipMenuForPlayer(&Menu, pCreature->GetGUID(), 60032, plr);
 
-					Menu->AddItem(0, "I'd love to get one of those written fortunes you mentioned! I've got the space in my inventory for it.", 30);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(IDLOVE), 30);
 					Menu->SendTo(plr);
 
 					pCreature->CastSpell(plr, 23766, true);
@@ -768,7 +795,7 @@ class Sayge_Gossip : public GossipScript
 				case 19:     // Answers: 2-3
 					objmgr.CreateGossipMenuForPlayer(&Menu, pCreature->GetGUID(), 60032, plr);
 
-					Menu->AddItem(0, "I'd love to get one of those written fortunes you mentioned! I've got the space in my inventory for it.", 30);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(IDLOVE), 30);
 					Menu->SendTo(plr);
 
 					pCreature->CastSpell(plr, 23769, true);
@@ -778,7 +805,7 @@ class Sayge_Gossip : public GossipScript
 				case 20:     // Answers: 3-1
 					objmgr.CreateGossipMenuForPlayer(&Menu, pCreature->GetGUID(), 60032, plr);
 
-					Menu->AddItem(0, "I'd love to get one of those written fortunes you mentioned! I've got the space in my inventory for it.", 30);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(IDLOVE), 30);
 					Menu->SendTo(plr);
 
 					pCreature->CastSpell(plr, 23737, true);
@@ -787,7 +814,7 @@ class Sayge_Gossip : public GossipScript
 				case 21:     // Answers: 3-2
 					objmgr.CreateGossipMenuForPlayer(&Menu, pCreature->GetGUID(), 60032, plr);
 
-					Menu->AddItem(0, "I'd love to get one of those written fortunes you mentioned! I've got the space in my inventory for it.", 30);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(IDLOVE), 30);
 					Menu->SendTo(plr);
 
 					pCreature->CastSpell(plr, 23735, true);
@@ -796,7 +823,7 @@ class Sayge_Gossip : public GossipScript
 				case 22:     // Answers: 3-3
 					objmgr.CreateGossipMenuForPlayer(&Menu, pCreature->GetGUID(), 60032, plr);
 
-					Menu->AddItem(0, "I'd love to get one of those written fortunes you mentioned! I've got the space in my inventory for it.", 30);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(IDLOVE), 30);
 					Menu->SendTo(plr);
 
 					pCreature->CastSpell(plr, 23736, true);
@@ -806,7 +833,7 @@ class Sayge_Gossip : public GossipScript
 				case 23:     // Answers: 4-1
 					objmgr.CreateGossipMenuForPlayer(&Menu, pCreature->GetGUID(), 60032, plr);
 
-					Menu->AddItem(0, "I'd love to get one of those written fortunes you mentioned! I've got the space in my inventory for it.", 30);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(IDLOVE), 30);
 					Menu->SendTo(plr);
 
 					pCreature->CastSpell(plr, 23766, true);
@@ -815,7 +842,7 @@ class Sayge_Gossip : public GossipScript
 				case 24:     // Answers: 4-2
 					objmgr.CreateGossipMenuForPlayer(&Menu, pCreature->GetGUID(), 60032, plr);
 
-					Menu->AddItem(0, "I'd love to get one of those written fortunes you mentioned! I've got the space in my inventory for it.", 30);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(IDLOVE), 30);
 					Menu->SendTo(plr);
 
 					pCreature->CastSpell(plr, 23738, true);
@@ -824,7 +851,7 @@ class Sayge_Gossip : public GossipScript
 				case 25:     // Answers: 4-3
 					objmgr.CreateGossipMenuForPlayer(&Menu, pCreature->GetGUID(), 60032, plr);
 
-					Menu->AddItem(0, "I'd love to get one of those written fortunes you mentioned! I've got the space in my inventory for it.", 30);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(IDLOVE), 30);
 					Menu->SendTo(plr);
 
 					pCreature->CastSpell(plr, 23737, true);
@@ -891,6 +918,15 @@ class Sayge_Bark : public CreatureAIScript
 		}
 };
 
+
+#define WHATCANI 204
+#define WHATARE 205
+#define WHATARED 206
+#define WHATOTHER 207
+#define MORE 210
+#define WHATARETHESE 208
+#define TELLME 209
+
 // Selina Dourman
 class SelinaDourman_Gossip : public GossipScript
 {
@@ -900,10 +936,10 @@ class SelinaDourman_Gossip : public GossipScript
 			GossipMenu* Menu;
 
 			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 60035, plr);
-			Menu->AddItem(0, "What can I purchase?", 1);
-			Menu->AddItem(0, "What are Darkmoon Faire Prize Tickets and how do I get them?", 2);
-			Menu->AddItem(0, "What are Darkmoon Cards?", 3);
-			Menu->AddItem(0, "What other things can I do at the faire?", 4);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(WHATCANI), 1);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(WHATARE), 2);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(WHATARED), 3);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(WHATOTHER), 4);
 
 			Menu->SendTo(plr);
 		}
@@ -930,14 +966,14 @@ class SelinaDourman_Gossip : public GossipScript
 
 				case 3:
 					objmgr.CreateGossipMenuForPlayer(&Menu, pCreature->GetGUID(), 60038, plr);			// What are Darkmoon Cards?
-					Menu->AddItem(0, "<more>", 10);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(MORE), 10);
 					Menu->SendTo(plr);
 					break;
 
 				case 4:
 					objmgr.CreateGossipMenuForPlayer(&Menu, pCreature->GetGUID(), 60040, plr);			// What other things can I do at the faire?
-					Menu->AddItem(0, "What are these Tonk Control Consoles?", 20);
-					Menu->AddItem(0, "Tell me about the cannon.", 21);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(WHATARETHESE), 20);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(TELLME), 21);
 					Menu->SendTo(plr);
 					break;
 
@@ -967,7 +1003,7 @@ class SelinaDourman_Gossip : public GossipScript
 #define BARK_SILAS_DARKMOON_4    "Welcome one and all to the Darkmoon Faire, the greatest event in the world! We have it all... delicious food, strong drink, exotic artifacts, fortunes read, amazing prizes and excitement without end! Don't forget to turn in your Darkmoon Faire Prize Tickets to Gelvas Grimegate! All it takes is five or more and you're on your way to the most wonderous prizes on all of Azeroth. Everybody is a winner!"
 #define BARK_SILAS_DARKMOON_5    "Everyone enjoying themselves so far? That's great! Welcome to the Darkmoon Faire, the greatest show in all of Azeroth! Make sure you speak with Yebb and his friends here while you're taking in Neblegear's Darkmoon Zoo Bizarre."
 #define BARK_SILAS_DARKMOON_6    "Greetings friends, and welcome to the greatest show on Azeroth!$B$BPlease, step right up and take in all we have to offer. Ride the rides and see the sights! Amaze at the wonders that the Darkmoon Faire has uncovered in this vast and mysterious world! We have spared no expense in bringing you excitement that children of all ages will delight in!"
-
+#define SILAS 211
 class SilasDarkmoon_Gossip : public GossipScript
 {
 	public:
@@ -976,7 +1012,7 @@ class SilasDarkmoon_Gossip : public GossipScript
 			GossipMenu* Menu;
 
 			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 60013, plr);
-			Menu->AddItem(0, "Silas, why is most everything at the fair free? How do you make a profit?", 1);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(SILAS), 1);
 
 			Menu->SendTo(plr);
 		}

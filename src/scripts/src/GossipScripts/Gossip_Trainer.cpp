@@ -19,14 +19,17 @@
 
 #include "Setup.h"
 
+#define PLEASE 283
+#define IWISH 284
+
 class MasterHammersmith : public Arcemu::Gossip::Script
 {
 	public:
 		void OnHello(Object* pObject, Player* plr)
 		{
 			Arcemu::Gossip::Menu menu(pObject->GetGUID(), 7245);
-			menu.AddItem(Arcemu::Gossip::ICON_TRAINER, "Please teach me how to become a hammersmith, Lilith.", 1);
-			menu.AddItem(Arcemu::Gossip::ICON_TRAINER, "I wish to unlearn Hammersmithing!", 2);
+			menu.AddItem(Arcemu::Gossip::ICON_TRAINER, plr->GetSession()->LocalizedGossipTexts(PLEASE), 1);
+			menu.AddItem(Arcemu::Gossip::ICON_TRAINER, plr->GetSession()->LocalizedGossipTexts(IWISH), 2);
 
 			menu.Send(plr);
 		}
@@ -88,14 +91,17 @@ class MasterHammersmith : public Arcemu::Gossip::Script
 
 };
 
+#define PLEASE1 285
+#define IWISH1 286
+
 class MasterSwordsmith : public Arcemu::Gossip::Script
 {
 	public:
 		void OnHello(Object* pObject, Player* plr)
 		{
 			Arcemu::Gossip::Menu menu(pObject->GetGUID(), 7247);
-			menu.AddItem(Arcemu::Gossip::ICON_TRAINER, "Please teach me how to become a swordsmith, Seril.", 1);
-			menu.AddItem(Arcemu::Gossip::ICON_TRAINER, "I wish to unlearn Swordsmithing!", 2);
+			menu.AddItem(Arcemu::Gossip::ICON_TRAINER, plr->GetSession()->LocalizedGossipTexts(PLEASE1), 1);
+			menu.AddItem(Arcemu::Gossip::ICON_TRAINER, plr->GetSession()->LocalizedGossipTexts(IWISH1), 2);
 			menu.Send(plr);
 		}
 
@@ -156,14 +162,17 @@ class MasterSwordsmith : public Arcemu::Gossip::Script
 
 };
 
+#define PLEASE2 287
+#define IWISH2 288
+
 class MasterAxesmith : public Arcemu::Gossip::Script
 {
 	public:
 		void OnHello(Object* pObject, Player* plr)
 		{
 			Arcemu::Gossip::Menu menu(pObject->GetGUID(), 7243);
-			menu.AddItem(Arcemu::Gossip::ICON_TRAINER, "Please teach me how to become a axesmith, Kilram.", 1);
-			menu.AddItem(Arcemu::Gossip::ICON_TRAINER, "I wish to unlearn Axesmithing!", 2);
+			menu.AddItem(Arcemu::Gossip::ICON_TRAINER, plr->GetSession()->LocalizedGossipTexts(PLEASE2), 1);
+			menu.AddItem(Arcemu::Gossip::ICON_TRAINER, plr->GetSession()->LocalizedGossipTexts(IWISH2), 2);
 			menu.Send(plr);
 		}
 

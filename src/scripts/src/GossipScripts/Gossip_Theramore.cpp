@@ -17,7 +17,8 @@
  */
 
 #include "Setup.h"
-
+#define LADY 261
+#define WHATHAVE 262
 class CassaCrimsonwing_Gossip : public Arcemu::Gossip::Script
 {
 	public:
@@ -28,7 +29,7 @@ class CassaCrimsonwing_Gossip : public Arcemu::Gossip::Script
 
 			Arcemu::Gossip::Menu menu(pObject->GetGUID(), 11224);
 			if(plr->GetQuestLogForEntry(11142) != NULL)
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Lady Jaina told me to speak to you about using a gryphon to survey Alcaz Island.", 1);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, plr->GetSession()->LocalizedGossipTexts(LADY), 1);
 
 			menu.Send(plr);
 		}
@@ -55,7 +56,7 @@ class CaptainGarranVimes_Gossip : public Arcemu::Gossip::Script
 			Arcemu::Gossip::Menu menu(pObject->GetGUID(), Text, plr->GetSession()->language);
 			sQuestMgr.FillQuestMenu(TO_CREATURE(pObject), plr, menu);
 			if((plr->GetQuestLogForEntry(11123) != NULL) || (plr->GetQuestRewardStatus(11123) == 0)) 
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "What have you heard of the Shady Rest Inn?", 0);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, plr->GetSession()->LocalizedGossipTexts(WHATHAVE), 0);
 			menu.Send(plr);
 		}
 

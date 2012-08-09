@@ -40,7 +40,7 @@ class SpiritScreeches : public GossipScript
 			if(plr->GetQuestLogForEntry(3520))
 			{
 				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 2039, plr);
-				Menu->AddItem(0, "Goodbye", 1);
+				Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(372), 1);
 
 				Menu->SendTo(plr);
 			}
@@ -117,7 +117,7 @@ class StewardOfTime : public GossipScript
 			if(plr->GetQuestLogForEntry(10279) || plr->HasFinishedQuest(10279))
 			{
 				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 9978, plr);
-				Menu->AddItem(0, "Please take me to the master's lair", 1);
+				Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(373), 1);
 				Menu->SendTo(plr);
 			}
 		}

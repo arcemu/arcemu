@@ -18,6 +18,8 @@
 
 #include "Setup.h"
 
+#define IDLIKE 252
+#define IDLIKE2 253
 class SilvaFilnaveth_Gossip : public Arcemu::Gossip::Script
 {
 	public:
@@ -27,7 +29,7 @@ class SilvaFilnaveth_Gossip : public Arcemu::Gossip::Script
 			if(plr->getClass() == DRUID && plr->getRace() == RACE_NIGHTELF)
 			{
 				menu.setTextID(4914);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "I'd like to fly to Rut'theran Village.", 1);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, plr->GetSession()->LocalizedGossipTexts(IDLIKE), 1);
 			}
 			else if(plr->getClass() == DRUID && plr->getRace() == RACE_TAUREN)
 				menu.setTextID(4915);
@@ -58,7 +60,7 @@ class BunthenPlainswind_Gossip : public Arcemu::Gossip::Script
 			if(plr->getClass() == DRUID && plr->getRace() == RACE_TAUREN)
 			{
 				menu.setTextID(4918);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "I'd like to fly to Thunder Bluff.", 1);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, plr->GetSession()->LocalizedGossipTexts(IDLIKE2), 1);
 			}
 			else if(plr->getClass() == DRUID && plr->getRace() == RACE_NIGHTELF)
 				menu.setTextID(4917);

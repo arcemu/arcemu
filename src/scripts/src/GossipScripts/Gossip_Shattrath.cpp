@@ -19,9 +19,9 @@
 #include "Setup.h"
 
 // Exarch Nasuun
-#define GOSSIP_EXARCH_NASUUN_1    "Nasuun, do you know how long until we have an alchemy lab at the Sun's Reach Harbor?"
-#define GOSSIP_EXARCH_NASUUN_2    "What do you know about the magical gates at the Sunwell Plateau being brought down?"
-#define GOSSIP_EXARCH_NASUUN_3    "I have something else to ask you about."
+#define GOSSIP_EXARCH_NASUUN_1    277
+#define GOSSIP_EXARCH_NASUUN_2    278
+#define GOSSIP_EXARCH_NASUUN_3    279
 
 //#define USE_THE_STATUS	// Decoment this is for the status
 
@@ -32,10 +32,10 @@ class ExarchNasuun_Gossip : public Arcemu::Gossip::Script
 		{
 			Arcemu::Gossip::Menu menu(pObject->GetGUID(), 12227);
 #ifdef USE_THE_STATUS
-			menu.AddItem(Arcemu::Gossip::ICON_CHAT, GOSSIP_EXARCH_NASUUN_1, 1);   // this is the status
-			menu.AddItem(Arcemu::Gossip::ICON_CHAT, GOSSIP_EXARCH_NASUUN_2, 2);
+			menu.AddItem(Arcemu::Gossip::ICON_CHAT, plr->GetSession()->LocalizedGossipTexts(GOSSIP_EXARCH_NASUUN_1), 1);   // this is the status
+			menu.AddItem(Arcemu::Gossip::ICON_CHAT, plr->GetSession()->LocalizedGossipTexts(GOSSIP_EXARCH_NASUUN_2), 2);
 #else
-			menu.AddItem(Arcemu::Gossip::ICON_CHAT, GOSSIP_EXARCH_NASUUN_2, 3);
+			menu.AddItem(Arcemu::Gossip::ICON_CHAT, plr->GetSession()->LocalizedGossipTexts(GOSSIP_EXARCH_NASUUN_2), 3);
 #endif
 			menu.Send(plr);
 		}
@@ -48,13 +48,13 @@ class ExarchNasuun_Gossip : public Arcemu::Gossip::Script
 					OnHello(pObject, plr);
 					break;
 				case 1:
-					Arcemu::Gossip::Menu::SendQuickMenu(pObject->GetGUID(), 12303, plr, 0, Arcemu::Gossip::ICON_CHAT, GOSSIP_EXARCH_NASUUN_3);
+					Arcemu::Gossip::Menu::SendQuickMenu(pObject->GetGUID(), 12303, plr, 0, Arcemu::Gossip::ICON_CHAT, plr->GetSession()->LocalizedGossipTexts(GOSSIP_EXARCH_NASUUN_3));
 					break;
 				case 2:
-					Arcemu::Gossip::Menu::SendQuickMenu(pObject->GetGUID(), 12305, plr, 0, Arcemu::Gossip::ICON_CHAT, GOSSIP_EXARCH_NASUUN_3);
+					Arcemu::Gossip::Menu::SendQuickMenu(pObject->GetGUID(), 12305, plr, 0, Arcemu::Gossip::ICON_CHAT, plr->GetSession()->LocalizedGossipTexts(GOSSIP_EXARCH_NASUUN_3));
 					break;
 				case 3:
-					Arcemu::Gossip::Menu::SendQuickMenu(pObject->GetGUID(), 12623, plr, 0, Arcemu::Gossip::ICON_CHAT, GOSSIP_EXARCH_NASUUN_3);
+					Arcemu::Gossip::Menu::SendQuickMenu(pObject->GetGUID(), 12623, plr, 0, Arcemu::Gossip::ICON_CHAT, plr->GetSession()->LocalizedGossipTexts(GOSSIP_EXARCH_NASUUN_3));
 					break;
 				default:
 					break;
@@ -63,12 +63,14 @@ class ExarchNasuun_Gossip : public Arcemu::Gossip::Script
 
 };
 
+#define CAVENS 280
+
 class ZephyrGossipScript : public Arcemu::Gossip::Script
 {
 	public:
 		void OnHello(Object* pObject, Player* Plr)
 		{
-			Arcemu::Gossip::Menu::SendQuickMenu(pObject->GetGUID(), 1, Plr, 1, Arcemu::Gossip::ICON_CHAT, "Bring me to Caverns of Time!");
+			Arcemu::Gossip::Menu::SendQuickMenu(pObject->GetGUID(), 1, Plr, 1, Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(280));
 		}
 
 		void OnSelectOption(Object* pObject, Player* plr, uint32 Id, const char* EnteredCode)

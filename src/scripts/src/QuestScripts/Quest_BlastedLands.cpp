@@ -63,7 +63,7 @@ class HeroesofOld1 : public GossipScript
 
 			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 1, plr);
 			if(plr->GetQuestLogForEntry(2702) || plr->HasFinishedQuest(2702))
-				Menu->AddItem(0, "I need to speak with Corporal.", 1);
+				Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(327), 1);
 
 			Menu->SendTo(plr);
 		}

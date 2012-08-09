@@ -20,25 +20,20 @@
 
 // XpEleminatorGossip
 //  GossipScript subclass for turning on/off Player experience gain
+#define	GOSSIP_DISABLE_XP_GAIN 240
+#define	GOSSIP_ENABLE_XP_GAIN 241
+#define	GOSSIP_BOXMSG_DISABLE_XP_GAIN 242
+#define	GOSSIP_BOXMSG_ENABLE_XP_GAIN 243
+
 class XpEliminatorGossip : public Arcemu::Gossip::Script
 {
-	public:
-		XpEliminatorGossip()
-		{
-			GOSSIP_DISABLE_XP_GAIN = "I no longer wish to gain experience.";
-			GOSSIP_ENABLE_XP_GAIN = "I wish to start gaining experience again";
-
-			GOSSIP_BOXMSG_DISABLE_XP_GAIN = "Are you certain you wish to stop gaining experience?";
-			GOSSIP_BOXMSG_ENABLE_XP_GAIN = "Are you certain you wish to start gaining experience again?";
-		}
-
-		void OnHello(Object* pObject, Player* plr)
+	void OnHello(Object* pObject, Player* plr)
 		{
 			Arcemu::Gossip::Menu menu(pObject->GetGUID(), 14736);
 			if(plr->CanGainXp())
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, GOSSIP_DISABLE_XP_GAIN, 1, 100000, GOSSIP_BOXMSG_DISABLE_XP_GAIN);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, plr->GetSession()->LocalizedGossipTexts(GOSSIP_DISABLE_XP_GAIN), 1, 100000, plr->GetSession()->LocalizedGossipTexts(GOSSIP_BOXMSG_DISABLE_XP_GAIN));
 			else
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, GOSSIP_ENABLE_XP_GAIN, 1, 100000, GOSSIP_BOXMSG_ENABLE_XP_GAIN);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, plr->GetSession()->LocalizedGossipTexts(GOSSIP_ENABLE_XP_GAIN), 1, 100000, plr->GetSession()->LocalizedGossipTexts(GOSSIP_BOXMSG_ENABLE_XP_GAIN));
 
 			menu.Send(plr);
 		}
@@ -53,16 +48,6 @@ class XpEliminatorGossip : public Arcemu::Gossip::Script
 			}
 			Arcemu::Gossip::Menu::Complete(plr);
 		}
-
-		void Destroy() { delete this; }
-
-	private:
-		const char* GOSSIP_DISABLE_XP_GAIN;
-		const char* GOSSIP_ENABLE_XP_GAIN;
-
-		const char* GOSSIP_BOXMSG_DISABLE_XP_GAIN;
-		const char* GOSSIP_BOXMSG_ENABLE_XP_GAIN;
-
 };
 
 void SetupXpEliminatorGossip(ScriptMgr* mgr)

@@ -331,6 +331,7 @@ class SERVER_DECL WorldSession
 		string GetAccountName() { return _accountName; }
 		const char* GetAccountNameS() const { return _accountName.c_str(); }
 		const char* LocalizedWorldSrv(uint32 id);
+		const char* LocalizedGossipTexts(uint32 id);
 		const char* LocalizedMapName(uint32 id);
 		const char* LocalizedBroadCast(uint32 id);
 

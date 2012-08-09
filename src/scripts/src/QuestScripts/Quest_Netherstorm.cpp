@@ -29,7 +29,7 @@ class Veronia : public GossipScript
 			if(plr->GetQuestLogForEntry(10652))
 			{
 				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 1, plr);
-				Menu->AddItem(0, "I'm ready", 1);
+				Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(347), 1);
 				Menu->SendTo(plr);
 			}
 		}

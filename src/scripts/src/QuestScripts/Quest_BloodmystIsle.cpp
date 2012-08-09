@@ -52,7 +52,7 @@ class TheKesselRun1 : public GossipScript
 
 			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 1, plr);
 			if(plr->GetQuestLogForEntry(9663))
-				Menu->AddItem(0, "Warn him", 1);
+				Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(328), 1);
 
 			Menu->SendTo(plr);
 		}
@@ -105,7 +105,7 @@ class TheKesselRun2 : public GossipScript
 
 			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 1, plr);
 			if(plr->GetQuestLogForEntry(9663))
-				Menu->AddItem(0, "Warn him", 1);
+				Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(328), 1);
 
 			Menu->SendTo(plr);
 		}
@@ -158,7 +158,7 @@ class TheKesselRun3 : public GossipScript
 
 			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 1, plr);
 			if(plr->GetQuestLogForEntry(9663))
-				Menu->AddItem(0, "Warn him", 1);
+				Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(328), 1);
 
 			Menu->SendTo(plr);
 		}

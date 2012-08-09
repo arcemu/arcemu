@@ -64,7 +64,7 @@ class ChickenEscapee : public CreatureAIScript
 #define HEMET 27986
 #define HADRIUS 28047
 #define TAMARA 28568
-#define GOSSIP_TASTETEST "Care to try Grimbooze Thunderbrew's Jungle punch?"
+#define GOSSIP_TASTETEST 353
 
 class SCRIPT_DECL HemetTasteTest : public GossipScript
 {
@@ -75,7 +75,7 @@ class SCRIPT_DECL HemetTasteTest : public GossipScript
 			{
 				GossipMenu* Menu;
 				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 40002, plr);
-				Menu->AddItem(0, GOSSIP_TASTETEST, 1);
+				Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(GOSSIP_TASTETEST), 1);
 
 				Menu->SendTo(plr);
 			}
@@ -123,7 +123,7 @@ class SCRIPT_DECL HadriusTasteTest : public GossipScript
 			{
 				GossipMenu* Menu;
 				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 40002, plr);
-				Menu->AddItem(0, GOSSIP_TASTETEST, 1);
+				Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(GOSSIP_TASTETEST), 1);
 
 				Menu->SendTo(plr);
 			}
@@ -170,7 +170,7 @@ class SCRIPT_DECL TamaraTasteTest : public GossipScript
 			{
 				GossipMenu* Menu;
 				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 40002, plr);
-				Menu->AddItem(0, GOSSIP_TASTETEST, 1);
+				Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(GOSSIP_TASTETEST), 1);
 
 				Menu->SendTo(plr);
 			}

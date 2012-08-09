@@ -34,14 +34,14 @@ class Berthold : public GossipScript
 			GossipMenu* Menu;
 			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4037, Plr);
 
-			Menu->AddItem(0, "What is this place?", 1);
-			Menu->AddItem(0, "Where is Medivh?", 2);
-			Menu->AddItem(0, "How do you navigate the tower?", 3);
+			Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(312), 1);
+			Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(313), 2);
+			Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(314), 3);
 
 			//Killing the Shade of Aran makes a teleport to medivh's available from Berthold the Doorman.
 			Unit* soa = pObject->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(-11165.2f, -1912.13f, 232.009f, 16524);
 			if(!soa || !soa->isAlive())
-				Menu->AddItem(0, "Please teleport me to the Guardian's Library.", 4);
+				Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(315), 4);
 
 			Menu->SendTo(Plr);
 		}
@@ -706,7 +706,7 @@ class BarnesGS : public GossipScript
 			{
 				//Finally, everything is in place. Are you ready for your big stage debut?
 				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 8970, Plr);
-				Menu->AddItem(0, "I'm not an actor.", 1);
+				Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(316), 1);
 
 				Menu->SendTo(Plr);
 
@@ -726,7 +726,7 @@ class BarnesGS : public GossipScript
 						//Don't worry, you'll be fine. You look like a natural!
 						GossipMenu* Menu;
 						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 8971, Plr);
-						Menu->AddItem(0, "Ok, I'll give it a try, then.", 2);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(317), 2);
 						Menu->SendTo(Plr);
 					}
 					break;
@@ -757,7 +757,7 @@ class GrandMother : public GossipScript
 			GossipMenu* Menu;
 			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 7245, Plr);
 
-			Menu->AddItem(0, "What phat lewts you have Grandmother!", 1);
+			Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(318), 1);
 
 			Menu->SendTo(Plr);
 		}
