@@ -288,7 +288,7 @@ class NeltharakusTale_Gossip : public GossipScript
 			{
 				GossipMenu* Menu;
 				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 10613, plr);
-				Menu->AddItem(0, "I am listening, dragon", 1);
+				Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(348), 1);
 				Menu->SendTo(plr);
 			}
 		}
@@ -304,7 +304,7 @@ class NeltharakusTale_Gossip : public GossipScript
 					{
 						GossipMenu* Menu;
 						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 10614, plr);
-						Menu->AddItem(0, "But you are dragons! How could orcs do this to you?", 2);
+						Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(349), 2);
 						Menu->SendTo(plr);
 					}
 					break;
@@ -312,7 +312,7 @@ class NeltharakusTale_Gossip : public GossipScript
 					{
 						GossipMenu* Menu;
 						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 10615, plr);
-						Menu->AddItem(0, "Your mate?", 3);
+						Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(350), 3);
 						Menu->SendTo(plr);
 					}
 					break;
@@ -320,7 +320,7 @@ class NeltharakusTale_Gossip : public GossipScript
 					{
 						GossipMenu* Menu;
 						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 10616, plr);
-						Menu->AddItem(0, "I have battled many beasts, dragon. I will help you.", 4);
+						Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(351), 4);
 						Menu->SendTo(plr);
 					}
 					break;
@@ -402,7 +402,7 @@ void FlanisSwiftwing_Gossip::GossipHello(Object* pObject, Player* plr)
 	GossipMenu* Menu;
 	objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 40002, plr);
 	if(plr->GetQuestLogForEntry(10583) != NULL)
-		Menu->AddItem(0, "Examine the corpse", 1);
+		Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(252), 1);
 
 	Menu->SendTo(plr);
 };

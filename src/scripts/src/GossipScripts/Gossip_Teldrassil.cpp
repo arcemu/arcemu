@@ -17,13 +17,13 @@
  */
 
 #include "Setup.h"
-
+#define TELLME 258
 class ErelasAmbersky_Gossip : public Arcemu::Gossip::Script
 {
 	public:
 		void OnHello(Object* pObject, Player* plr)
 		{
-			Arcemu::Gossip::Menu::SendQuickMenu(pObject->GetGUID(), 2153, plr, 1, Arcemu::Gossip::ICON_CHAT, "Tell me more about these hippogryphs.");
+			Arcemu::Gossip::Menu::SendQuickMenu(pObject->GetGUID(), 2153, plr, 1, Arcemu::Gossip::ICON_CHAT, plr->GetSession()->LocalizedGossipTexts(TELLME));
 		}
 
 		void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, const char* Code)

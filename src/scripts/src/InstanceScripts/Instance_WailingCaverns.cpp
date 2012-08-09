@@ -299,14 +299,14 @@ class DofNaralexGossip : public GossipScript
 			{
 				GossipMenu* Menu;
 				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 699, plr);
-				Menu->AddItem(0, "Let's go!", 2);
+				Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(303), 2);
 				Menu->SendTo(plr);
 			}
 			else
 			{
 				GossipMenu* Menu;
 				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 698, plr);
-				Menu->AddItem(0, "I will slay those Fanglords", 1);
+				Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(304), 1);
 				Menu->SendTo(plr);
 			}
 

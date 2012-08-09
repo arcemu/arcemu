@@ -116,7 +116,7 @@ class ElderKuruti : public GossipScript
 			if(!plr->GetItemInterface()->GetItemCount(24573, true))
 			{
 				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 9226, plr);
-				Menu->AddItem(0, "Offer treat", 1);
+				Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(382), 1);
 				Menu->SendTo(plr);
 			}
 		}
@@ -128,12 +128,12 @@ class ElderKuruti : public GossipScript
 			{
 				case 1:
 					objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 9227, plr);
-					Menu->AddItem(0, "Im a messenger for Draenei", 2);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(383), 2);
 					Menu->SendTo(plr);
 					break;
 				case 2:
 					objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 9229, plr);
-					Menu->AddItem(0, "Get message", 3);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(384), 3);
 					Menu->SendTo(plr);
 					break;
 				case 3:

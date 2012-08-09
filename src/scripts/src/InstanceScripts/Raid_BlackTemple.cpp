@@ -4591,12 +4591,12 @@ class SCRIPT_DECL AkamaGossip : public GossipScript
 			if(pAI->GetCurrentWaypoint() >= 10)
 			{
 				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 229902, pPlayer);
-				Menu->AddItem(0, "We're ready to face Illidan.", 2);
+				Menu->AddItem(0, pPlayer->GetSession()->LocalizedGossipTexts(305), 2);
 			}
 			else
 			{
 				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 229901, pPlayer);
-				Menu->AddItem(0, "I'm ready, Akama.", 1);
+				Menu->AddItem(0, pPlayer->GetSession()->LocalizedGossipTexts(306), 1);
 			}
 
 			Menu->SendTo(pPlayer);

@@ -218,8 +218,8 @@ enum eFizzcrank
     QUEST_THE_MECHAGNOMES       = 11708
 };
 
-#define GOSSIP_ITEM_GO_ON   "Go on."
-#define GOSSIP_ITEM_TELL_ME "Tell me what's going on out here, Fizzcrank."
+#define GOSSIP_ITEM_GO_ON   330
+#define GOSSIP_ITEM_TELL_ME 329
 
 class FizzcrankGossip : public GossipScript
 {
@@ -231,7 +231,7 @@ class FizzcrankGossip : public GossipScript
 			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 1, pPlayer);
 
 			if(sEAS.GetQuest(pPlayer, QUEST_THE_MECHAGNOMES))
-				Menu->AddItem(0, GOSSIP_ITEM_TELL_ME, 1);
+				Menu->AddItem(0, pPlayer->GetSession()->LocalizedGossipTexts(GOSSIP_ITEM_TELL_ME), 1);
 
 			Menu->SendTo(pPlayer);
 		}
@@ -243,42 +243,42 @@ class FizzcrankGossip : public GossipScript
 			{
 				case 1:
 					objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), GOSSIP_TEXTID_FIZZCRANK1, pPlayer);
-					Menu->AddItem(0, GOSSIP_ITEM_GO_ON, 2);
+					Menu->AddItem(0, pPlayer->GetSession()->LocalizedGossipTexts(GOSSIP_ITEM_GO_ON), 2);
 					Menu->SendTo(pPlayer);
 					break;
 				case 2:
 					objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), GOSSIP_TEXTID_FIZZCRANK2, pPlayer);
-					Menu->AddItem(0, GOSSIP_ITEM_GO_ON, 3);
+					Menu->AddItem(0, pPlayer->GetSession()->LocalizedGossipTexts(GOSSIP_ITEM_GO_ON), 3);
 					Menu->SendTo(pPlayer);
 					break;
 				case 3:
 					objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), GOSSIP_TEXTID_FIZZCRANK3, pPlayer);
-					Menu->AddItem(0, GOSSIP_ITEM_GO_ON, 4);
+					Menu->AddItem(0, pPlayer->GetSession()->LocalizedGossipTexts(GOSSIP_ITEM_GO_ON), 4);
 					Menu->SendTo(pPlayer);
 					break;
 				case 4:
 					objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), GOSSIP_TEXTID_FIZZCRANK4, pPlayer);
-					Menu->AddItem(0, GOSSIP_ITEM_GO_ON, 5);
+					Menu->AddItem(0, pPlayer->GetSession()->LocalizedGossipTexts(GOSSIP_ITEM_GO_ON), 5);
 					Menu->SendTo(pPlayer);
 					break;
 				case 5:
 					objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), GOSSIP_TEXTID_FIZZCRANK5, pPlayer);
-					Menu->AddItem(0, GOSSIP_ITEM_GO_ON, 6);
+					Menu->AddItem(0, pPlayer->GetSession()->LocalizedGossipTexts(GOSSIP_ITEM_GO_ON), 6);
 					Menu->SendTo(pPlayer);
 					break;
 				case 6:
 					objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), GOSSIP_TEXTID_FIZZCRANK6, pPlayer);
-					Menu->AddItem(0, GOSSIP_ITEM_GO_ON, 7);
+					Menu->AddItem(0, pPlayer->GetSession()->LocalizedGossipTexts(GOSSIP_ITEM_GO_ON), 7);
 					Menu->SendTo(pPlayer);
 					break;
 				case 7:
 					objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), GOSSIP_TEXTID_FIZZCRANK7, pPlayer);
-					Menu->AddItem(0, GOSSIP_ITEM_GO_ON, 8);
+					Menu->AddItem(0, pPlayer->GetSession()->LocalizedGossipTexts(GOSSIP_ITEM_GO_ON), 8);
 					Menu->SendTo(pPlayer);
 					break;
 				case 8:
 					objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), GOSSIP_TEXTID_FIZZCRANK8, pPlayer);
-					Menu->AddItem(0, GOSSIP_ITEM_GO_ON, 9);
+					Menu->AddItem(0, pPlayer->GetSession()->LocalizedGossipTexts(GOSSIP_ITEM_GO_ON), 9);
 					Menu->SendTo(pPlayer);
 					break;
 				case 9:
@@ -290,8 +290,8 @@ class FizzcrankGossip : public GossipScript
 
 };
 
-#define GOSSIP_ITEM_FREE_FLIGHT "I'd like passage to the Transitus Shield."
-#define GOSSIP_ITEM_FLIGHT      "May I use a drake to fly elsewhere?"
+#define GOSSIP_ITEM_FREE_FLIGHT 331
+#define GOSSIP_ITEM_FLIGHT      332
 
 enum eSurristrasz
 {
@@ -309,8 +309,8 @@ class SurristraszGossip : public GossipScript
 
 			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 1, pPlayer);
 
-			Menu->AddItem(0, GOSSIP_ITEM_FREE_FLIGHT, 1);
-			Menu->AddItem(3, GOSSIP_ITEM_FLIGHT, 2);
+			Menu->AddItem(0, pPlayer->GetSession()->LocalizedGossipTexts(GOSSIP_ITEM_FREE_FLIGHT), 1);
+			Menu->AddItem(3, pPlayer->GetSession()->LocalizedGossipTexts(GOSSIP_ITEM_FLIGHT), 2);
 
 			Menu->SendTo(pPlayer);
 		};

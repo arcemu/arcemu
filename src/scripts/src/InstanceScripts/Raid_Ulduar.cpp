@@ -50,15 +50,15 @@ class UlduarTeleporterAI : public GameObjectAIScript
 			GossipMenu* menu = NULL;
 			objmgr.CreateGossipMenuForPlayer(&menu, _gameobject->GetGUID(), 0, player);
 
-			menu->AddItem(Arcemu::Gossip::ICON_CHAT, "Expedition Base Camp.", 0);
-			menu->AddItem(Arcemu::Gossip::ICON_CHAT, "Formation Grounds", 1);
-			menu->AddItem(Arcemu::Gossip::ICON_CHAT, "Colossal Forge", 2);
-			menu->AddItem(Arcemu::Gossip::ICON_CHAT, "Scrapyard", 3);
-			menu->AddItem(Arcemu::Gossip::ICON_CHAT, "Antechamber of Ulduar", 4);
-			menu->AddItem(Arcemu::Gossip::ICON_CHAT, "Shattered Walkway", 5);
-			menu->AddItem(Arcemu::Gossip::ICON_CHAT, "Conservatory of Life", 6);
-			menu->AddItem(Arcemu::Gossip::ICON_CHAT, "Spark of Imagination", 7);
-			menu->AddItem(Arcemu::Gossip::ICON_CHAT, "Prison of Yogg-Saron", 8);
+			menu->AddItem(Arcemu::Gossip::ICON_CHAT, player->GetSession()->LocalizedGossipTexts(318), 0);
+			menu->AddItem(Arcemu::Gossip::ICON_CHAT, player->GetSession()->LocalizedGossipTexts(319), 1);
+			menu->AddItem(Arcemu::Gossip::ICON_CHAT, player->GetSession()->LocalizedGossipTexts(320), 2);
+			menu->AddItem(Arcemu::Gossip::ICON_CHAT, player->GetSession()->LocalizedGossipTexts(321), 3);
+			menu->AddItem(Arcemu::Gossip::ICON_CHAT, player->GetSession()->LocalizedGossipTexts(322), 4);
+			menu->AddItem(Arcemu::Gossip::ICON_CHAT, player->GetSession()->LocalizedGossipTexts(323), 5);
+			menu->AddItem(Arcemu::Gossip::ICON_CHAT, player->GetSession()->LocalizedGossipTexts(324), 6);
+			menu->AddItem(Arcemu::Gossip::ICON_CHAT, player->GetSession()->LocalizedGossipTexts(325), 7);
+			menu->AddItem(Arcemu::Gossip::ICON_CHAT, player->GetSession()->LocalizedGossipTexts(326), 8);
 
 			menu->SendTo(player);
 		}

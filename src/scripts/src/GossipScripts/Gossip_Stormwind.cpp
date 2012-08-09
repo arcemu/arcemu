@@ -18,6 +18,10 @@
 
 #include "Setup.h"
 
+#define YESPLEASE 117
+#define NOTHANKYOU 118
+#define SENDME 116
+
 class ArchmageMalin_Gossip : public Arcemu::Gossip::Script
 {
 	public:
@@ -26,7 +30,7 @@ class ArchmageMalin_Gossip : public Arcemu::Gossip::Script
 			Arcemu::Gossip::Menu menu(pObject->GetGUID(), 11469);
 
 			if(plr->GetQuestLogForEntry(11223))
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Can you send me to Theramore? I have an urgent message for Lady Jaina from Highlord Bolvar.", 1);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, plr->GetSession()->LocalizedGossipTexts(SENDME), 1);
 
 			menu.Send(plr);
 		}
@@ -53,8 +57,8 @@ class SWHarborFlyAround : public Arcemu::Gossip::Script
 		{
 
 			Arcemu::Gossip::Menu menu(pObject->GetGUID(), 13454);
-			menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Yes, please.", 1);
-			menu.AddItem(Arcemu::Gossip::ICON_CHAT, "No, thank you.", 2);
+			menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(YESPLEASE), 1);
+			menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(NOTHANKYOU), 2);
 
 			menu.Send(Plr);
 		}

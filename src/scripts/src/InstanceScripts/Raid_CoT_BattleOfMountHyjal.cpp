@@ -109,15 +109,15 @@ class JainaProudmooreGS : public GossipScript
 			switch(pObject->GetMapMgr()->GetScript()->GetInstanceData(HYJAL_TYPE_BASIC, 0))
 			{
 				case HYJAL_PHASE_NOT_STARTED:
-					Menu->AddItem(0, "We are ready to defend the Alliance base.", 1);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(307), 1);
 					break;
 
 				case HYJAL_PHASE_RAGE_WINTERCHILL_COMPLETE:
-					Menu->AddItem(0, "We are ready to defend the Alliance base.", 1);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(308), 1);
 					break;
 
 				case HYJAL_PHASE_ANETHERON_COMPLETE:
-					Menu->AddItem(0, "The defenses are holding up: we can continue.", 1);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(309), 1);
 					break;
 			}
 
@@ -171,11 +171,11 @@ class ThrallGS : public GossipScript
 			switch(pObject->GetMapMgr()->GetScript()->GetInstanceData(HYJAL_TYPE_BASIC, 0))
 			{
 				case HYJAL_PHASE_ANETHERON_COMPLETE:
-					Menu->AddItem(0, "We're here to help! The Alliance are overrun.", 1);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(310), 1);
 					break;
 
 				case HYJAL_PHASE_KAZROGAL_COMPLETE:
-					Menu->AddItem(0, "We're okay so far. Let's do this!", 1);
+					Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(311), 1);
 					break;
 			}
 

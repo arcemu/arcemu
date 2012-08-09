@@ -1,11 +1,12 @@
 #include "Setup.h"
 
+#define TELEPORTME 282
 class TiareGossipScript : public Arcemu::Gossip::Script
 {
 	public:
 		void OnHello(Object* pObject, Player* Plr)
 		{
-			Arcemu::Gossip::Menu::SendQuickMenu(pObject->GetGUID(), 1, Plr, 1, 0, "Teleport me to Amber Ledge!");
+			Arcemu::Gossip::Menu::SendQuickMenu(pObject->GetGUID(), 1, Plr, 1, 0, Plr->GetSession()->LocalizedGossipTexts(TELEPORTME));
 		}
 
 		void OnSelectOption(Object* pObject, Player* plr, uint32 Id, const char* EnteredCode)

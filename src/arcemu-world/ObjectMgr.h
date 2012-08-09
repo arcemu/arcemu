@@ -120,6 +120,12 @@ struct WorldStringTable
 	char* text;
 };
 
+struct GossipTexts
+{
+	uint32 id;
+	char* text;
+};
+
 struct WorldBroadCast
 {
 	uint32 id;

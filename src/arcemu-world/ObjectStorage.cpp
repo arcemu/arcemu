@@ -38,10 +38,11 @@ const char* gGraveyardFormat							= "uffffuuuux";
 const char* gTeleportCoordFormat						= "uxufffx";
 const char* gPvPAreaFormat								= "ush";
 const char* gFishingFormat								= "uuu";
-const char* gWorldMapInfoFormat						= "uuuuuufffusuuuuuuuufu";
+const char* gWorldMapInfoFormat						= "uuuuuufffusuuuuuuufu";
 const char* gZoneGuardsFormat							= "uuu";
 const char* gUnitModelSizeFormat						= "ufu";
 const char* gWorldStringTableFormat					= "us";  // p2wow added [for worldserver common message storage]
+const char* gGossipTextsFormat					= "us";  //Gossip Texts from DB
 const char* gWorldBroadCastFormat						= "usu"; // announce message
 const char* gBattleMasterFormat						= "uu";
 const char* gSpellClickSpellsFormat					= "uu";
@@ -71,7 +72,7 @@ SERVER_DECL SQLStorage<WorldBroadCast, HashMapStorageContainer<WorldBroadCast> >
 SERVER_DECL SQLStorage<BGMaster, HashMapStorageContainer<BGMaster> >						BGMasterStorage;
 SERVER_DECL SQLStorage< SpellClickSpell, HashMapStorageContainer< SpellClickSpell > >		SpellClickSpellStorage;
 SERVER_DECL SQLStorage< TotemDisplayIdEntry, HashMapStorageContainer< TotemDisplayIdEntry > > TotemDisplayIdStorage;
-
+SERVER_DECL SQLStorage<GossipTexts, HashMapStorageContainer<GossipTexts> >		GossipTextsStorage;
 
 SERVER_DECL set<string> ExtraMapCreatureTables;
 SERVER_DECL set<string> ExtraMapGameObjectTables;
@@ -560,6 +561,7 @@ void Storage_FillTaskList(TaskList & tl)
 	make_task(BGMasterStorage, BGMaster, HashMapStorageContainer, "battlemasters", gBattleMasterFormat);
 	make_task(SpellClickSpellStorage, SpellClickSpell, HashMapStorageContainer, "spellclickspells", gSpellClickSpellsFormat);
 	make_task(TotemDisplayIdStorage, TotemDisplayIdEntry, HashMapStorageContainer, "totemdisplayids", gTotemDisplayIDsFormat);
+	make_task(GossipTextsStorage, GossipTexts, HashMapStorageContainer, "gossip_texts", gGossipTextsFormat);
 }
 
 void Storage_Cleanup()
@@ -605,6 +607,7 @@ void Storage_Cleanup()
 	BGMasterStorage.Cleanup();
 	SpellClickSpellStorage.Cleanup();
 	TotemDisplayIdStorage.Cleanup();
+	GossipTextsStorage.Cleanup();
 }
 
 vector<pair<string, string> > additionalTables;
@@ -635,6 +638,8 @@ bool LoadAdditionalTable(const char* TableName, const char* SecondName, bool fir
 		ItemPrototypeStorage.LoadAdditionalData(SecondName, gItemPageFormat);
 	else if(!stricmp(TableName, "worldstring_tables"))			// WorldString
 		WorldStringTableStorage.LoadAdditionalData(SecondName, gWorldStringTableFormat);
+	else if(!stricmp(TableName, "gossip_texts"))			// GossipTexts
+		GossipTextsStorage.LoadAdditionalData(SecondName, gGossipTextsFormat);
 	else if(!stricmp(TableName, "worldbroadcast"))			// Worldbroadcast
 		WorldBroadCastStorage.LoadAdditionalData(SecondName, gWorldBroadCastFormat);
 	else if(firstLoad && !stricmp(TableName, "quests"))				// Quests
@@ -676,6 +681,8 @@ bool Storage_ReloadTable(const char* TableName)
 		ItemPageStorage.Reload();
 	else if(!stricmp(TableName, "worldstring_tables"))			// wst
 		WorldStringTableStorage.Reload();
+	else if(!stricmp(TableName, "gossip_texts"))			// gt
+		GossipTextsStorage.Reload();
 	else if(!stricmp(TableName, "worldbroadcast"))			// wb
 		WorldBroadCastStorage.Reload();
 	/*else if(!stricmp(TableName, "quests"))				// Quests

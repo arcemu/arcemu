@@ -24,6 +24,8 @@
 
 #define SPELL_TRICK_OR_TREATED  24755
 #define SPELL_TREAT             24715
+#define TRICK 84
+#define WHATCANI 83
 // -------------------------
 
 class InnkeeperGossip : public Arcemu::Gossip::Script
@@ -51,14 +53,14 @@ void InnkeeperGossip::OnHello(Object* pObject, Player* Plr)
 
 #ifdef	EVENT_HALLOWEEN
 	if(!Plr->HasAura(SPELL_TRICK_OR_TREATED))
-		menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Trick or Treat!", 4);
+		menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(TRICK), 4);
 #endif
 
 	if(pCreature->isVendor())
 		menu.AddItem(Arcemu::Gossip::ICON_VENDOR, Plr->GetSession()->LocalizedWorldSrv(Arcemu::Gossip::VENDOR), 1);
 
 	menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedWorldSrv(Arcemu::Gossip::INNKEEPER), 2);
-	menu.AddItem(Arcemu::Gossip::ICON_CHAT, "What can I do at an inn?", 3);
+	menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(WHATCANI), 3);
 
 	sQuestMgr.FillQuestMenu(pCreature, Plr, menu);
 

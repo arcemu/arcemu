@@ -19,6 +19,133 @@
 
 #include "Setup.h"
 
+#define AUCTIONHOUSE 296
+#define BANKOFSTORMWIND 86
+#define STORMWINDHARBOR 87
+#define DEEPRUN 88
+#define THEINN 89
+#define GRYPHONMASTER 90
+#define GUILDMASTER 91
+#define MAILBOX 92
+#define STABLEMASTER 94
+#define WEAPONSTRAINER 95
+#define OFFICERS 96
+#define BATTLEMASTER 97
+#define BARBER 98
+#define CLASSTRAINER 100
+#define PROFESSIONTRAINER 101
+#define DRUID 10
+#define HUNTER 8
+#define MAGE 3
+#define PALADIN 6
+#define PRIEST 11
+#define ROGUE 9
+#define SHAMAN 4
+#define WARLOCK 7
+#define WARRIOR 5
+#define ALCHEMY 102
+#define BLACKSMITHING 103
+#define COOKING 104
+#define ENCHANTING 105
+#define ENGINER 106
+#define FIRSTAID 107
+#define FISHING 108
+#define HERBALISM 109
+#define INSCRIPTION 110
+#define LEATHERWORKING 111
+#define MINING 112
+#define SKINNING 113
+#define TAILORING 114
+#define IWASLOOKING 297
+#define THEBANK 219
+#define LEXICON 99
+#define HIPPO 260
+#define BANK 115
+#define INN 266
+#define THEBAT 281
+#define THEGUILD 221
+#define THEMAIL 222
+#define THEAUCT 223
+#define THEZEPP 224
+#define THEWEAP 225
+#define THESTABL 226
+#define THEBATTLE 228
+#define ACLASS 229
+#define APROF 230
+#define LOCKSMITH 93 
+#define THEWIND 220
+#define RUT 259
+#define DRAGONH 231
+#define WEAPONM 225
+#define MANALOOM 232
+#define BATTLEMASTERS 126
+#define JEWEL 120
+#define OFFI 227
+#define BANKOFIR 218
+#define BAT 239
+#define WORLDS 263
+#define FLIGHT 121
+#define ALCHEMYL 264
+#define GEMMERCH 265
+#define ALDORB 267
+#define SCBANK 268
+#define ALDORI 269
+#define SCI 270
+#define ALS 271
+#define SCS 272
+#define ALLIB 273
+#define HORDEARENA 274
+#define ALDGM 275
+#define SCGM 276
+#define ARENA 50
+#define CAPITAL 127
+#define POINTS 128
+#define TRAINERS 129
+#define VENDORS 130
+#define EASTSE 131
+#define WESTSE 132
+#define WELLE 133
+#define TAQ 134
+#define THQ 135
+#define NBANK 136
+#define SBANK 137
+#define SEWERS 138
+#define AI 139
+#define HI 140
+#define KRASUS 141
+#define VIOLETTC 142
+#define VIOLETTH 143
+#define TRADE 144
+#define ANTONIDAS 145
+#define RUNEW 146
+#define THEEVEN 147
+#define CEMENTARY 148
+#define COLDW 149
+#define PORTALT 150
+#define ARMOR 151
+#define CLOTHING 152
+#define EMBLEM 153
+#define FLOWERS 154
+#define FRUIT 155
+#define GENERAL 156
+#define JEWELRY 157
+#define PETS 158
+#define PIE 159
+#define REAGENTS 160
+#define TOYS 161
+#define TRADES 162
+#define TRINKETS 163
+#define WEAPONS 164
+#define WINE 165
+#define CLOTH 166
+#define LEATHER 167
+#define MAIL 168
+#define PLATE 169
+#define SHIELDS 170
+#define MELEE 171
+#define RANGED 172
+#define STAVES 173
+
 /************************************************************************/
 /* GENERAL GUARD SCRIPT                                                 */
 /************************************************************************/
@@ -39,7 +166,7 @@
 
 // Make code neater with this define.
 #define SendQuickMenu(textid) objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), textid, Plr); \
-    Menu->AddItem(0, "I was looking for something else.", 0); \
+    Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(IWASLOOKING), 0); \
     Menu->SendTo(Plr);
 
 #endif
@@ -56,21 +183,21 @@ class StormwindGuard : public GossipScript
 			GossipMenu* Menu;
 			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 933, plr);
 
-			Menu->AddItem(0, "Auction House"		, 1);
-			Menu->AddItem(0, "Bank of Stormwind"	, 2);
-			Menu->AddItem(0, "Stormwind Harbor"		, 3);
-			Menu->AddItem(0, "Deeprun Tram"			, 4);
-			Menu->AddItem(0, "The Inn"				, 5);
-			Menu->AddItem(0, "Gryphon Master"		, 6);
-			Menu->AddItem(0, "Guild Master"			, 7);
-			Menu->AddItem(0, "Mailbox"				, 8);
-			Menu->AddItem(0, "Stable Master"		, 9);
-			Menu->AddItem(0, "Weapons Trainer"		, 10);
-			Menu->AddItem(0, "Officers' Lounge"		, 11);
-			Menu->AddItem(0, "Battlemaster"			, 12);
-			Menu->AddItem(0, "Barber"		, 13);
-			Menu->AddItem(0, "Class Trainer"		, 14);
-			Menu->AddItem(0, "Profession Trainer"	, 15);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(AUCTIONHOUSE)		, 1);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(BANKOFSTORMWIND)	, 2);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(STORMWINDHARBOR)		, 3);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(DEEPRUN)			, 4);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEINN)				, 5);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(GRYPHONMASTER)		, 6);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(GUILDMASTER)			, 7);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(MAILBOX)				, 8);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(STABLEMASTER)		, 9);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(WEAPONSTRAINER)		, 10);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(OFFICERS)		, 11);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(BATTLEMASTER)			, 12);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(BARBER)		, 13);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(CLASSTRAINER)		, 14);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(PROFESSIONTRAINER)	, 15);
 
 			Menu->SendTo(plr);
 		}
@@ -158,15 +285,15 @@ class StormwindGuard : public GossipScript
 				case 14:    // Class Trainers
 					{
 						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 898, Plr);
-						Menu->AddItem(0, "Druid"      , 16);
-						Menu->AddItem(0, "Hunter"     , 17);
-						Menu->AddItem(0, "Mage"       , 18);
-						Menu->AddItem(0, "Paladin"    , 19);
-						Menu->AddItem(0, "Priest"     , 20);
-						Menu->AddItem(0, "Rogue"      , 21);
-						Menu->AddItem(0, "Shaman"     , 22);
-						Menu->AddItem(0, "Warlock"    , 23);
-						Menu->AddItem(0, "Warrior"    , 24);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(DRUID)      , 16);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(HUNTER)     , 17);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(MAGE)       , 18);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(PALADIN)    , 19);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(PRIEST)     , 20);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ROGUE)      , 21);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(SHAMAN)     , 22);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(WARLOCK)    , 23);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(WARRIOR)    , 24);
 						Menu->SendTo(Plr);
 					}
 					break;
@@ -174,19 +301,19 @@ class StormwindGuard : public GossipScript
 				case 15:    // Profession Trainers
 					{
 						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 918, Plr);
-						Menu->AddItem(0, "Alchemy"           , 25);
-						Menu->AddItem(0, "Blacksmithing"     , 26);
-						Menu->AddItem(0, "Cooking"           , 27);
-						Menu->AddItem(0, "Enchanting"        , 28);
-						Menu->AddItem(0, "Engineering"       , 29);
-						Menu->AddItem(0, "First Aid"         , 30);
-						Menu->AddItem(0, "Fishing"           , 31);
-						Menu->AddItem(0, "Herbalism"         , 32);
-						Menu->AddItem(0, "Inscription"		, 33);
-						Menu->AddItem(0, "Leatherworking"    , 34);
-						Menu->AddItem(0, "Mining"            , 35);
-						Menu->AddItem(0, "Skinning"          , 36);
-						Menu->AddItem(0, "Tailoring"         , 37);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ALCHEMY)           , 25);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(BLACKSMITHING)     , 26);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(COOKING)           , 27);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ENCHANTING)        , 28);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ENGINER)       , 29);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(FIRSTAID)         , 30);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(FISHING)           , 31);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(HERBALISM)         , 32);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(INSCRIPTION)		, 33);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(LEATHERWORKING)    , 34);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(MINING)            , 35);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(SKINNING)          , 36);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(TAILORING)         , 37);
 						Menu->SendTo(Plr);
 					}
 					break;
@@ -360,18 +487,18 @@ class DarnassusGuard : public GossipScript
 			GossipMenu* Menu;
 			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 3016, plr);
 
-			Menu->AddItem(0, "Auction House"      , 1);
-			Menu->AddItem(0, "The Bank"           , 2);
-			Menu->AddItem(0, "Hippogryph Master"  , 3);
-			Menu->AddItem(0, "Guild Master"       , 4);
-			Menu->AddItem(0, "The Inn"            , 5);
-			Menu->AddItem(0, "Mailbox"            , 6);
-			Menu->AddItem(0, "Stable Master"      , 7);
-			Menu->AddItem(0, "Weapons Trainer"    , 8);
-			Menu->AddItem(0, "Battlemaster"       , 9);
-			Menu->AddItem(0, "Class Trainer"      , 10);
-			Menu->AddItem(0, "Profession Trainer" , 11);
-			Menu->AddItem(0, "Lexicon of Power"   , 27);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(AUCTIONHOUSE)      , 1);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEBANK)           , 2);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(HIPPO)  , 3);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(GUILDMASTER)       , 4);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEINN)            , 5);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(MAILBOX)            , 6);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(STABLEMASTER)      , 7);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(WEAPONSTRAINER)    , 8);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(BATTLEMASTER)       , 9);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(CLASSTRAINER)      , 10);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(PROFESSIONTRAINER) , 11);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(LEXICON)   , 27);
 
 			Menu->SendTo(plr);
 		}
@@ -439,11 +566,11 @@ class DarnassusGuard : public GossipScript
 				case 10:    // Class Trainer
 					{
 						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4264, Plr);
-						Menu->AddItem(0, "Druid"       , 12);
-						Menu->AddItem(0, "Hunter"      , 13);
-						Menu->AddItem(0, "Priest"      , 14);
-						Menu->AddItem(0, "Rogue"       , 15);
-						Menu->AddItem(0, "Warrior"     , 16);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(DRUID)       , 12);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(HUNTER)      , 13);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(PRIEST)      , 14);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ROGUE)       , 15);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(WARRIOR)     , 16);
 						Menu->SendTo(Plr);
 					}
 					break;
@@ -451,16 +578,16 @@ class DarnassusGuard : public GossipScript
 				case 11:    // Profession Trainer
 					{
 						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4273, Plr);
-						Menu->AddItem(0, "Alchemy"           , 17);
-						Menu->AddItem(0, "Cooking"           , 18);
-						Menu->AddItem(0, "Enchanting"        , 19);
-						Menu->AddItem(0, "First Aid"         , 20);
-						Menu->AddItem(0, "Fishing"           , 21);
-						Menu->AddItem(0, "Herbalism"         , 22);
-						Menu->AddItem(0, "Inscription"       , 23);
-						Menu->AddItem(0, "Leatherworking"    , 24);
-						Menu->AddItem(0, "Skinning"          , 25);
-						Menu->AddItem(0, "Tailoring"         , 26);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ALCHEMY)           , 17);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(COOKING)           , 18);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ENCHANTING)        , 19);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(FIRSTAID)         , 20);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(FISHING)           , 21);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(HERBALISM)         , 22);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(INSCRIPTION)       , 23);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(LEATHERWORKING)    , 24);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(SKINNING)          , 25);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(TAILORING)         , 26);
 						Menu->SendTo(Plr);
 					}
 					break;
@@ -590,13 +717,13 @@ class GoldshireGuard : public GossipScript
 		{
 			GossipMenu* Menu;
 			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4259, plr);
-			Menu->AddItem(0, "Bank"                 , 1);
-			Menu->AddItem(0, "Gryphon Master"       , 2);
-			Menu->AddItem(0, "Guild Master"         , 3);
-			Menu->AddItem(0, "Inn"                  , 4);
-			Menu->AddItem(0, "Stable Master"        , 5);
-			Menu->AddItem(0, "Class Trainer"        , 6);
-			Menu->AddItem(0, "Profession Trainer"   , 7);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(BANK)                 , 1);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(GRYPHONMASTER)       , 2);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(GUILDMASTER)         , 3);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(INN)                  , 4);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(STABLEMASTER)        , 5);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(CLASSTRAINER)        , 6);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(PROFESSIONTRAINER)   , 7);
 
 			Menu->SendTo(plr);
 		}
@@ -641,15 +768,15 @@ class GoldshireGuard : public GossipScript
 					{
 						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4264, Plr);
 
-						Menu->AddItem(0, "Druid",                8);
-						Menu->AddItem(0, "Hunter",               9);
-						Menu->AddItem(0, "Mage",                 10);
-						Menu->AddItem(0, "Paladin",              11);
-						Menu->AddItem(0, "Priest",               12);
-						Menu->AddItem(0, "Rogue",                13);
-						Menu->AddItem(0, "Shaman",               14);
-						Menu->AddItem(0, "Warlock",              15);
-						Menu->AddItem(0, "Warrior",              16);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(DRUID),                8);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(HUNTER),               9);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(MAGE),                 10);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(PALADIN),              11);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(PRIEST),               12);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ROGUE),                13);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(SHAMAN),               14);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(WARLOCK),              15);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(WARRIOR),              16);
 
 						Menu->SendTo(Plr);
 					}
@@ -659,19 +786,19 @@ class GoldshireGuard : public GossipScript
 					{
 						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4273, Plr);
 
-						Menu->AddItem(0, "Alchemy"              , 17);
-						Menu->AddItem(0, "Blacksmithing"        , 18);
-						Menu->AddItem(0, "Cooking"              , 19);
-						Menu->AddItem(0, "Enchanting"           , 20);
-						Menu->AddItem(0, "Engineering"          , 21);
-						Menu->AddItem(0, "First Aid"            , 22);
-						Menu->AddItem(0, "Fishing"              , 23);
-						Menu->AddItem(0, "Herbalism"            , 24);
-						Menu->AddItem(0, "Inscription"       , 25);
-						Menu->AddItem(0, "Leatherworking"       , 26);
-						Menu->AddItem(0, "Mining"               , 27);
-						Menu->AddItem(0, "Skinning"             , 28);
-						Menu->AddItem(0, "Tailoring"            , 29);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ALCHEMY)              , 17);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(BLACKSMITHING)        , 18);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(COOKING)              , 19);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ENCHANTING)           , 20);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ENGINER)          , 21);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(FIRSTAID)            , 22);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(FISHING)              , 23);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(HERBALISM)            , 24);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(INSCRIPTION)       , 25);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(LEATHERWORKING)       , 26);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(MINING)               , 27);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(SKINNING)             , 28);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(TAILORING)            , 29);
 						Menu->SendTo(Plr);
 					}
 					break;
@@ -835,19 +962,19 @@ class UndercityGuard : public GossipScript
 			GossipMenu* Menu;
 			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 3543, plr);
 
-			Menu->AddItem(0, "The bank", 1);
-			Menu->AddItem(0, "The bat handler", 2);
-			Menu->AddItem(0, "The guild master", 3);
-			Menu->AddItem(0, "The inn", 4);
-			Menu->AddItem(0, "The mailbox", 5);
-			Menu->AddItem(0, "The auction house", 6);
-			Menu->AddItem(0, "The zeppelin master", 7);
-			Menu->AddItem(0, "The weapon master", 8);
-			Menu->AddItem(0, "The stable master", 9);
-			Menu->AddItem(0, "The battlemaster", 10);
-			Menu->AddItem(0, "A class trainer", 11);
-			Menu->AddItem(0, "A profession trainer", 12);
-			Menu->AddItem(0, "Locksmith", 32);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEBANK), 1);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEBAT), 2);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEGUILD), 3);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEINN), 4);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEMAIL), 5);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEAUCT), 6);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEZEPP), 7);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEWEAP), 8);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THESTABL), 9);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEBATTLE), 10);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(ACLASS), 11);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(APROF), 12);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(LOCKSMITH), 32);
 			Menu->SendTo(plr);
 		}
 
@@ -919,12 +1046,12 @@ class UndercityGuard : public GossipScript
 				case 11:    // A class trainer
 					{
 						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 3542, Plr);
-						Menu->AddItem(0, "Mage"		 , 13);
-						Menu->AddItem(0, "Paladin"      , 14);
-						Menu->AddItem(0, "Priest"       , 15);
-						Menu->AddItem(0, "Rogue"        , 16);
-						Menu->AddItem(0, "Warlock"      , 17);
-						Menu->AddItem(0, "Warrior"      , 18);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(MAGE)		 , 13);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(PALADIN)      , 14);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(PRIEST)       , 15);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ROGUE)        , 16);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(WARLOCK)      , 17);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(WARRIOR)      , 18);
 						Menu->SendTo(Plr);
 					}
 					break;
@@ -932,18 +1059,18 @@ class UndercityGuard : public GossipScript
 				case 12:    // A profession trainer
 					{
 						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 3541, Plr);
-						Menu->AddItem(0, "Alchemy"           , 19);
-						Menu->AddItem(0, "Blacksmithing"     , 20);
-						Menu->AddItem(0, "Cooking"           , 21);
-						Menu->AddItem(0, "Enchanting"        , 22);
-						Menu->AddItem(0, "Engineering"       , 23);
-						Menu->AddItem(0, "First Aid"         , 24);
-						Menu->AddItem(0, "Fishing"           , 25);
-						Menu->AddItem(0, "Herbalism"         , 26);
-						Menu->AddItem(0, "Leatherworking"    , 27);
-						Menu->AddItem(0, "Mining"            , 28);
-						Menu->AddItem(0, "Skinning"          , 29);
-						Menu->AddItem(0, "Tailoring"         , 30);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ALCHEMY)           , 19);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(BLACKSMITHING)     , 20);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(COOKING)           , 21);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ENCHANTING)        , 22);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ENGINER)       , 23);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(FIRSTAID)         , 24);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(FISHING)           , 25);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(HERBALISM)         , 26);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(LEATHERWORKING)    , 27);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(MINING)            , 28);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(SKINNING)          , 29);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(TAILORING)         , 30);
 						Menu->SendTo(Plr);
 					}
 					break;
@@ -1092,20 +1219,20 @@ class UndercityGuardOverseer : public Arcemu::Gossip::Script
 		void OnHello(Object* pObject, Player* Plr)
 		{
 			Arcemu::Gossip::Menu menu(pObject->GetGUID(), 15321);
-			menu.AddItem(Arcemu::Gossip::ICON_CHAT, "The auction house", 1);
-			menu.AddItem(Arcemu::Gossip::ICON_CHAT, "The bank", 2);
-			menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Barber", 3);
-			menu.AddItem(Arcemu::Gossip::ICON_CHAT, "The bat handler", 4);
-			menu.AddItem(Arcemu::Gossip::ICON_CHAT, "The battlemaster", 5);
-			menu.AddItem(Arcemu::Gossip::ICON_CHAT, "The guild master", 6);
-			menu.AddItem(Arcemu::Gossip::ICON_CHAT, "The inn", 7);
-			menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Locksmith", 8);
-			menu.AddItem(Arcemu::Gossip::ICON_CHAT, "The mailbox", 9);
-			menu.AddItem(Arcemu::Gossip::ICON_CHAT, "The stable master", 10);
-			menu.AddItem(Arcemu::Gossip::ICON_CHAT, "The weapon master", 11);
-			menu.AddItem(Arcemu::Gossip::ICON_CHAT, "The zeppelin master", 12);
-			menu.AddItem(Arcemu::Gossip::ICON_CHAT, "A class trainer", 13);
-			menu.AddItem(Arcemu::Gossip::ICON_CHAT, "A profession trainer", 14);
+			menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(THEAUCT), 1);
+			menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(THEBANK), 2);
+			menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(BARBER), 3);
+			menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(THEBAT), 4);
+			menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(THEBATTLE), 5);
+			menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(THEGUILD), 6);
+			menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(THEINN), 7);
+			menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(LOCKSMITH), 8);
+			menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(THEMAIL), 9);
+			menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(THESTABL), 10);
+			menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(THEWEAP), 11);
+			menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(THEZEPP), 12);
+			menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(ACLASS), 13);
+			menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(APROF), 14);
 			menu.Send(Plr);
 		}
 
@@ -1177,30 +1304,30 @@ class UndercityGuardOverseer : public Arcemu::Gossip::Script
 			case 13:    // A class trainer
 				{
 					Arcemu::Gossip::Menu menu(pObject->GetGUID(), 3542);
-					menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Mage"         , 15);
-					menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Paladin"      , 16);
-					menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Priest"       , 17);
-					menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Rogue"        , 18);
-					menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Warlock"      , 19);
-					menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Warrior"      , 20);
+					menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(MAGE)         , 15);
+					menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(PALADIN)      , 16);
+					menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(PRIEST)       , 17);
+					menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(ROGUE)        , 18);
+					menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(WARLOCK)      , 19);
+					menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(WARRIOR)      , 20);
 					menu.Send(Plr);
 				}break;
 			case 14:    // A profession trainer
 				{
 					Arcemu::Gossip::Menu menu(pObject->GetGUID(), 3541);
-					menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Alchemy"           , 21);
-					menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Blacksmithing"     , 22);
-					menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Cooking"           , 23);
-					menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Enchanting"        , 24);
-					menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Engineering"       , 25);
-					menu.AddItem(Arcemu::Gossip::ICON_CHAT, "First Aid"         , 26);
-					menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Fishing"           , 27);
-					menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Herbalism"         , 28);
-					menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Inscription"       , 29);
-					menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Leatherworking"    , 30);
-					menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Mining"            , 31);
-					menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Skinning"          , 32);
-					menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Tailoring"         , 33);
+					menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(ALCHEMY)           , 21);
+					menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(BLACKSMITHING)     , 22);
+					menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(COOKING)           , 23);
+					menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(ENCHANTING)        , 24);
+					menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(ENGINER)       , 25);
+					menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(FIRSTAID)         , 26);
+					menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(FISHING)           , 27);
+					menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(HERBALISM)         , 28);
+					menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(INSCRIPTION)       , 29);
+					menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(LEATHERWORKING)    , 30);
+					menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(MINING)            , 31);
+					menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(SKINNING)          , 32);
+					menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(TAILORING)         , 33);
 					menu.Send(Plr);
 				}break;
 			case 15: //Mage
@@ -1310,13 +1437,13 @@ class TeldrassilGuard : public GossipScript
 			GossipMenu* Menu;
 			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4316, plr);
 
-			Menu->AddItem(0, "The Bank", 1);
-			Menu->AddItem(0, "Rut'Theran Ferry", 2);
-			Menu->AddItem(0, "The Guild Master", 3);
-			Menu->AddItem(0, "The Inn", 4);
-			Menu->AddItem(0, "Stable Master", 5);
-			Menu->AddItem(0, "Class Trainer", 6);
-			Menu->AddItem(0, "Profession Trainer", 7);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEBANK), 1);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(RUT), 2);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEGUILD), 3);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEINN), 4);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(STABLEMASTER), 5);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(CLASSTRAINER), 6);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(PROFESSIONTRAINER), 7);
 
 			Menu->SendTo(plr);
 		}
@@ -1359,11 +1486,11 @@ class TeldrassilGuard : public GossipScript
 				case 6:    // Class Trainers
 					{
 						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4264, Plr);
-						Menu->AddItem(0, "Druid"       , 8);
-						Menu->AddItem(0, "Hunter"      , 9);
-						Menu->AddItem(0, "Priest"     , 10);
-						Menu->AddItem(0, "Rogue"      , 11);
-						Menu->AddItem(0, "Warrior"    , 12);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(DRUID)       , 8);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(HUNTER)      , 9);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(PRIEST)     , 10);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ROGUE)      , 11);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(WARRIOR)    , 12);
 						Menu->SendTo(Plr);
 					}
 					break;
@@ -1371,16 +1498,16 @@ class TeldrassilGuard : public GossipScript
 				case 7:    // Profession Trainers
 					{
 						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4273, Plr);
-						Menu->AddItem(0, "Alchemy"           , 13);
-						Menu->AddItem(0, "Cooking"           , 14);
-						Menu->AddItem(0, "Enchanting"        , 15);
-						Menu->AddItem(0, "First Aid"         , 16);
-						Menu->AddItem(0, "Fishing"           , 17);
-						Menu->AddItem(0, "Herbalism"         , 18);
-						Menu->AddItem(0, "Inscription"       , 19);
-						Menu->AddItem(0, "Leatherworking"    , 20);
-						Menu->AddItem(0, "Skinning"          , 21);
-						Menu->AddItem(0, "Tailoring"         , 22);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ALCHEMY)           , 13);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(COOKING)           , 14);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ENCHANTING)        , 15);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(FIRSTAID)         , 16);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(FISHING)           , 17);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(HERBALISM)         , 18);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(INSCRIPTION)       , 19);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(LEATHERWORKING)    , 20);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(SKINNING)          , 21);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(TAILORING)         , 22);
 						Menu->SendTo(Plr);
 					}
 					break;
@@ -1503,19 +1630,19 @@ class SilvermoonGuard : public GossipScript
 			GossipMenu* Menu;
 			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 9316, plr);
 
-			Menu->AddItem(0, "Auction House"		, 1);
-			Menu->AddItem(0, "The Bank"				, 2);
-			Menu->AddItem(0, "Dragonhawk Master"	, 3);
-			Menu->AddItem(0, "Guild Master"			, 4);
-			Menu->AddItem(0, "The Inn"				, 5);
-			Menu->AddItem(0, "Mailbox"				, 6);
-			Menu->AddItem(0, "Stable Master"		, 7);
-			Menu->AddItem(0, "Weapon Master"		, 8);
-			Menu->AddItem(0, "Battlemaster"			, 9);
-			Menu->AddItem(0, "Class Trainer"		, 10);
-			Menu->AddItem(0, "Profession Trainer"	, 11);
-			Menu->AddItem(0, "Mana Loom"			, 12);
-			Menu->AddItem(0, "Lexicon of Power"		, 40);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(AUCTIONHOUSE)		, 1);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEBANK)				, 2);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(RUT)	, 3);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(GUILDMASTER)			, 4);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEINN)				, 5);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(MAILBOX)				, 6);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(STABLEMASTER)		, 7);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(WEAPONM)		, 8);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(BATTLEMASTER)			, 9);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(CLASSTRAINER)		, 10);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(PROFESSIONTRAINER)	, 11);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(MANALOOM)			, 12);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(LEXICON)		, 40);
 
 			Menu->SendTo(plr);
 		}
@@ -1587,13 +1714,13 @@ class SilvermoonGuard : public GossipScript
 				case 10:    // Class Trainers
 					{
 						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 9331, Plr);
-						Menu->AddItem(0, "Druid"       , 19);
-						Menu->AddItem(0, "Hunter"      , 20);
-						Menu->AddItem(0, "Mage"        , 21);
-						Menu->AddItem(0, "Paladin"     , 22);
-						Menu->AddItem(0, "Priest"      , 23);
-						Menu->AddItem(0, "Rogue"       , 24);
-						Menu->AddItem(0, "Warlock"     , 25);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(DRUID)       , 19);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(HUNTER)      , 20);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(MAGE)        , 21);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(PALADIN)     , 22);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(PRIEST)      , 23);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ROGUE)       , 24);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(WARLOCK)     , 25);
 						Menu->SendTo(Plr);
 					}
 					break;
@@ -1601,20 +1728,20 @@ class SilvermoonGuard : public GossipScript
 				case 11:    // Profession Trainers
 					{
 						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 9338, Plr);
-						Menu->AddItem(0, "Alchemy"           , 26);
-						Menu->AddItem(0, "Blacksmithing"     , 27);
-						Menu->AddItem(0, "Cooking"           , 28);
-						Menu->AddItem(0, "Enchanting"        , 29);
-						Menu->AddItem(0, "Engineering"       , 30);
-						Menu->AddItem(0, "First Aid"         , 31);
-						Menu->AddItem(0, "Fishing"           , 32);
-						Menu->AddItem(0, "Herbalism"         , 33);
-						Menu->AddItem(0, "Inscription"       , 34);
-						Menu->AddItem(0, "Jewelcrafting"     , 35);
-						Menu->AddItem(0, "Leatherworking"    , 36);
-						Menu->AddItem(0, "Mining"            , 37);
-						Menu->AddItem(0, "Skinning"          , 38);
-						Menu->AddItem(0, "Tailoring"         , 39);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ALCHEMY)           , 26);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(BLACKSMITHING)     , 27);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(COOKING)           , 28);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ENCHANTING)        , 29);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ENGINER)       , 30);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(FIRSTAID)         , 31);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(FISHING)           , 32);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(HERBALISM)         , 33);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(INSCRIPTION)       , 34);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(JEWEL)     , 35);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(LEATHERWORKING)    , 36);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(MINING)            , 37);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(SKINNING)          , 38);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(TAILORING)         , 39);
 						Menu->SendTo(Plr);
 					}
 					break;
@@ -1826,18 +1953,18 @@ class ExodarGuard : public GossipScript
 		{
 			GossipMenu* Menu;
 			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 9551, plr);
-			Menu->AddItem(0, "Auction House"		, 1);
-			Menu->AddItem(0, "The Bank"				, 2);
-			Menu->AddItem(0, "Hippogryph Master"	, 3);
-			Menu->AddItem(0, "Guild Master"			, 4);
-			Menu->AddItem(0, "The Inn"				, 5);
-			Menu->AddItem(0, "Mailbox"				, 6);
-			Menu->AddItem(0, "Stable Master"		, 7);
-			Menu->AddItem(0, "Weapon Master"		, 8);
-			Menu->AddItem(0, "Battlemasters"		, 9);
-			Menu->AddItem(0, "Class Trainer"		, 10);
-			Menu->AddItem(0, "Profession Trainer"	, 11);
-			Menu->AddItem(0, "Lexicon of Power"		, 34);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(AUCTIONHOUSE)		, 1);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEBANK)				, 2);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(HIPPO)	, 3);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(GUILDMASTER)			, 4);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEINN)				, 5);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(MAILBOX)				, 6);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(STABLEMASTER)		, 7);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(WEAPONM)		, 8);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(BATTLEMASTERS)		, 9);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(CLASSTRAINER)		, 10);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(PROFESSIONTRAINER)	, 11);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(LEXICON)		, 34);
 
 			Menu->SendTo(plr);
 		}
@@ -1905,13 +2032,13 @@ class ExodarGuard : public GossipScript
 				case 10:    // Class Trainers
 					{
 						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 9533, Plr);
-						Menu->AddItem(0, "Druid"       , 13);
-						Menu->AddItem(0, "Hunter"      , 14);
-						Menu->AddItem(0, "Mage"        , 15);
-						Menu->AddItem(0, "Paladin"     , 16);
-						Menu->AddItem(0, "Priest"      , 17);
-						Menu->AddItem(0, "Shaman"      , 18);
-						Menu->AddItem(0, "Warrior"     , 19);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(DRUID)       , 13);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(HUNTER)      , 14);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(MAGE)        , 15);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(PALADIN)     , 16);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(PRIEST)      , 17);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(SHAMAN)      , 18);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(WARRIOR)     , 19);
 						Menu->SendTo(Plr);
 					}
 					break;
@@ -1919,20 +2046,20 @@ class ExodarGuard : public GossipScript
 				case 11:    // Profession Trainers
 					{
 						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 9555, Plr);
-						Menu->AddItem(0, "Alchemy"           , 20);
-						Menu->AddItem(0, "Blacksmithing"     , 21);
-						Menu->AddItem(0, "Enchanting"        , 22);
-						Menu->AddItem(0, "Engineering"       , 23);
-						Menu->AddItem(0, "First Aid"         , 24);
-						Menu->AddItem(0, "Fishing"           , 25);
-						Menu->AddItem(0, "Herbalism"         , 26);
-						Menu->AddItem(0, "Inscription"       , 27);
-						Menu->AddItem(0, "Jewelcrafting"     , 28);
-						Menu->AddItem(0, "Leatherworking"    , 29);
-						Menu->AddItem(0, "Mining"            , 30);
-						Menu->AddItem(0, "Skinning"          , 31);
-						Menu->AddItem(0, "Tailoring"         , 32);
-						Menu->AddItem(0, "Cooking"           , 33);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ALCHEMY)           , 20);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(BLACKSMITHING)     , 21);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ENCHANTING)        , 22);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ENGINER)       , 23);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(FIRSTAID)         , 24);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(FISHING)           , 25);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(HERBALISM)         , 26);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(INSCRIPTION)       , 27);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(JEWEL)     , 28);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(LEATHERWORKING)    , 29);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(MINING)            , 30);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(SKINNING)          , 31);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(TAILORING)         , 32);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(COOKING)           , 33);
 						Menu->SendTo(Plr);
 					}
 					break;
@@ -2112,19 +2239,19 @@ class OrgrimmarGuard : public GossipScript
 		{
 			GossipMenu* Menu;
 			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 2593, plr);
-			Menu->AddItem(0, "The bank", 1);
-			Menu->AddItem(0, "The wind rider master", 2);
-			Menu->AddItem(0, "The guild master", 3);
-			Menu->AddItem(0, "The inn", 4);
-			Menu->AddItem(0, "The mailbox", 5);
-			Menu->AddItem(0, "The auction house", 6);
-			Menu->AddItem(0, "The zeppelin master", 7);
-			Menu->AddItem(0, "The weapon master", 8);
-			Menu->AddItem(0, "The stable master", 9);
-			Menu->AddItem(0, "The officers' lounge", 10);
-			Menu->AddItem(0, "The battlemaster", 11);
-			Menu->AddItem(0, "A class trainer", 12);
-			Menu->AddItem(0, "A profession trainer", 13);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEBANK), 1);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEWIND), 2);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEGUILD), 3);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEINN), 4);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEMAIL), 5);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEAUCT), 6);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEZEPP), 7);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEWEAP), 8);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THESTABL), 9);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(OFFI), 10);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEBATTLE), 11);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(ACLASS), 12);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(APROF), 13);
 
 			Menu->SendTo(plr);
 		}
@@ -2200,14 +2327,14 @@ class OrgrimmarGuard : public GossipScript
 				case 12:    // A class trainer
 					{
 						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 2599, Plr);
-						Menu->AddItem(0, "Hunter"       , 14);
-						Menu->AddItem(0, "Mage"         , 15);
-						Menu->AddItem(0, "Priest"       , 16);
-						Menu->AddItem(0, "Shaman"       , 17);
-						Menu->AddItem(0, "Rogue"        , 18);
-						Menu->AddItem(0, "Warlock"      , 19);
-						Menu->AddItem(0, "Warrior"      , 20);
-						Menu->AddItem(0, "Paladin"      , 21);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(HUNTER)       , 14);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(MAGE)         , 15);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(PRIEST)       , 16);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(SHAMAN)       , 17);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ROGUE)        , 18);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(WARLOCK)      , 19);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(WARRIOR)      , 20);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(PALADIN)      , 21);
 						Menu->SendTo(Plr);
 					}
 					break;
@@ -2215,18 +2342,18 @@ class OrgrimmarGuard : public GossipScript
 				case 13:    // A profession trainer
 					{
 						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 2594, Plr);
-						Menu->AddItem(0, "Alchemy"           , 22);
-						Menu->AddItem(0, "Blacksmithing"     , 23);
-						Menu->AddItem(0, "Cooking"           , 24);
-						Menu->AddItem(0, "Enchanting"        , 25);
-						Menu->AddItem(0, "Engineering"       , 26);
-						Menu->AddItem(0, "First Aid"         , 27);
-						Menu->AddItem(0, "Fishing"           , 28);
-						Menu->AddItem(0, "Herbalism"         , 29);
-						Menu->AddItem(0, "Leatherworking"    , 30);
-						Menu->AddItem(0, "Mining"            , 31);
-						Menu->AddItem(0, "Skinning"          , 32);
-						Menu->AddItem(0, "Tailoring"         , 33);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ALCHEMY)           , 22);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(BLACKSMITHING)     , 23);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(COOKING)           , 24);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ENCHANTING)        , 25);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ENGINER)       , 26);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(FIRSTAID)         , 27);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(FISHING)           , 28);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(HERBALISM)         , 29);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(LEATHERWORKING)    , 30);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(MINING)            , 31);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(SKINNING)          , 32);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(TAILORING)         , 33);
 						Menu->SendTo(Plr);
 					}
 					break;
@@ -2385,17 +2512,17 @@ class ThunderbluffGuard : public GossipScript
 		{
 			GossipMenu* Menu;
 			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 3543, plr);
-			Menu->AddItem(0, "The bank", 1);
-			Menu->AddItem(0, "The wind rider master", 2);
-			Menu->AddItem(0, "The guild master", 3);
-			Menu->AddItem(0, "The inn", 4);
-			Menu->AddItem(0, "The mailbox", 5);
-			Menu->AddItem(0, "The auction house", 6);
-			Menu->AddItem(0, "The weapon master", 7);
-			Menu->AddItem(0, "The stable master", 8);
-			Menu->AddItem(0, "The battlemaster", 9);
-			Menu->AddItem(0, "A class trainer", 10);
-			Menu->AddItem(0, "A profession trainer", 11);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEBANK), 1);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEWIND), 2);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEGUILD), 3);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEINN), 4);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEMAIL), 5);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEAUCT), 6);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEWEAP), 7);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THESTABL), 8);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEBATTLE), 9);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(ACLASS), 10);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(APROF), 11);
 
 			Menu->SendTo(plr);
 		}
@@ -2461,12 +2588,12 @@ class ThunderbluffGuard : public GossipScript
 				case 10:    // A class trainer
 					{
 						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 3542, Plr);
-						Menu->AddItem(0, "Druid"       , 12);
-						Menu->AddItem(0, "Hunter"      , 13);
-						Menu->AddItem(0, "Mage"        , 14);
-						Menu->AddItem(0, "Priest"      , 15);
-						Menu->AddItem(0, "Shaman"      , 16);
-						Menu->AddItem(0, "Warrior"     , 17);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(DRUID)       , 12);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(HUNTER)      , 13);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(MAGE)        , 14);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(PRIEST)      , 15);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(SHAMAN)      , 16);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(WARRIOR)     , 17);
 						Menu->SendTo(Plr);
 					}
 					break;
@@ -2474,17 +2601,17 @@ class ThunderbluffGuard : public GossipScript
 				case 11:    // A profession trainer
 					{
 						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 3541, Plr);
-						Menu->AddItem(0, "Alchemy"           , 18);
-						Menu->AddItem(0, "Blacksmithing"     , 19);
-						Menu->AddItem(0, "Cooking"           , 20);
-						Menu->AddItem(0, "Enchanting"        , 21);
-						Menu->AddItem(0, "First Aid"         , 22);
-						Menu->AddItem(0, "Fishing"           , 23);
-						Menu->AddItem(0, "Herbalism"         , 24);
-						Menu->AddItem(0, "Leatherworking"    , 25);
-						Menu->AddItem(0, "Mining"            , 26);
-						Menu->AddItem(0, "Skinning"          , 27);
-						Menu->AddItem(0, "Tailoring"         , 28);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ALCHEMY)           , 18);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(BLACKSMITHING)     , 19);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(COOKING)           , 20);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ENCHANTING)        , 21);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(FIRSTAID)         , 22);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(FISHING)           , 23);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(HERBALISM)         , 24);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(LEATHERWORKING)    , 25);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(MINING)            , 26);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(SKINNING)          , 27);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(TAILORING)         , 28);
 						Menu->SendTo(Plr);
 					}
 					break;
@@ -2622,12 +2749,12 @@ class BloodhoofGuard : public GossipScript
 		{
 			GossipMenu* Menu;
 			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 3543, plr);
-			Menu->AddItem(0, "The bank", 1);
-			Menu->AddItem(0, "The wind rider master", 2);
-			Menu->AddItem(0, "The inn", 3);
-			Menu->AddItem(0, "The stable master", 4);
-			Menu->AddItem(0, "A class trainer", 5);
-			Menu->AddItem(0, "A profession trainer", 6);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEBANK), 1);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEWIND), 2);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEINN), 3);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THESTABL), 4);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(ACLASS), 5);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(APROF), 6);
 
 			Menu->SendTo(plr);
 		}
@@ -2666,10 +2793,10 @@ class BloodhoofGuard : public GossipScript
 				case 5:     // A class trainer
 					{
 						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4069, Plr);
-						Menu->AddItem(0, "Druid"       , 7);
-						Menu->AddItem(0, "Hunter"      , 8);
-						Menu->AddItem(0, "Shaman"      , 9);
-						Menu->AddItem(0, "Warrior"    , 10);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(DRUID)       , 7);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(HUNTER)      , 8);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(SHAMAN)      , 9);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(WARRIOR)    , 10);
 						Menu->SendTo(Plr);
 					}
 					break;
@@ -2677,17 +2804,17 @@ class BloodhoofGuard : public GossipScript
 				case 6:     // A profession trainer
 					{
 						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 3541, Plr);
-						Menu->AddItem(0, "Alchemy"           , 11);
-						Menu->AddItem(0, "Blacksmithing"     , 12);
-						Menu->AddItem(0, "Cooking"           , 13);
-						Menu->AddItem(0, "Enchanting"        , 14);
-						Menu->AddItem(0, "First Aid"         , 15);
-						Menu->AddItem(0, "Fishing"           , 16);
-						Menu->AddItem(0, "Herbalism"         , 17);
-						Menu->AddItem(0, "Leatherworking"    , 18);
-						Menu->AddItem(0, "Mining"            , 19);
-						Menu->AddItem(0, "Skinning"          , 20);
-						Menu->AddItem(0, "Tailoring"         , 21);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ALCHEMY)           , 11);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(BLACKSMITHING)     , 12);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(COOKING)           , 13);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ENCHANTING)        , 14);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(FIRSTAID)         , 15);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(FISHING)           , 16);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(HERBALISM)         , 17);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(LEATHERWORKING)    , 18);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(MINING)            , 19);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(SKINNING)          , 20);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(TAILORING)         , 21);
 						Menu->SendTo(Plr);
 					}
 					break;
@@ -2806,12 +2933,12 @@ class RazorHillGuard : public GossipScript
 		{
 			GossipMenu* Menu;
 			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4037, plr);
-			Menu->AddItem(0, "The bank", 1);
-			Menu->AddItem(0, "The wind rider master", 2);
-			Menu->AddItem(0, "The inn", 3);
-			Menu->AddItem(0, "The stable master", 4);
-			Menu->AddItem(0, "A class trainer", 5);
-			Menu->AddItem(0, "A profession trainer", 6);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEBANK), 1);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEWIND), 2);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEINN), 3);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THESTABL), 4);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(ACLASS), 5);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(APROF), 6);
 
 			Menu->SendTo(plr);
 		}
@@ -2850,13 +2977,13 @@ class RazorHillGuard : public GossipScript
 				case 5:     // A class trainer
 					{
 						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4035, Plr);
-						Menu->AddItem(0, "Hunter"       , 7);
-						Menu->AddItem(0, "Mage"         , 8);
-						Menu->AddItem(0, "Priest"       , 9);
-						Menu->AddItem(0, "Rogue"       , 10);
-						Menu->AddItem(0, "Shaman"      , 11);
-						Menu->AddItem(0, "Warlock"     , 12);
-						Menu->AddItem(0, "Warrior"     , 13);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(HUNTER)       , 7);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(MAGE)         , 8);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(PRIEST)       , 9);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ROGUE)       , 10);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(SHAMAN)      , 11);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(WARLOCK)     , 12);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(WARRIOR)     , 13);
 						Menu->SendTo(Plr);
 					}
 					break;
@@ -2864,18 +2991,18 @@ class RazorHillGuard : public GossipScript
 				case 6:     // A profession trainer
 					{
 						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 3541, Plr);
-						Menu->AddItem(0, "Alchemy"           , 14);
-						Menu->AddItem(0, "Blacksmithing"     , 15);
-						Menu->AddItem(0, "Cooking"           , 16);
-						Menu->AddItem(0, "Enchanting"        , 17);
-						Menu->AddItem(0, "Engineering"       , 18);
-						Menu->AddItem(0, "First Aid"         , 19);
-						Menu->AddItem(0, "Fishing"           , 20);
-						Menu->AddItem(0, "Herbalism"         , 21);
-						Menu->AddItem(0, "Leatherworking"    , 22);
-						Menu->AddItem(0, "Mining"            , 23);
-						Menu->AddItem(0, "Skinning"          , 24);
-						Menu->AddItem(0, "Tailoring"         , 25);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ALCHEMY)           , 14);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(BLACKSMITHING)     , 15);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(COOKING)           , 16);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ENCHANTING)        , 17);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ENGINER)       , 18);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(FIRSTAID)         , 19);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(FISHING)           , 20);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(HERBALISM)         , 21);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(LEATHERWORKING)    , 22);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(MINING)            , 23);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(SKINNING)          , 24);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(TAILORING)         , 25);
 						Menu->SendTo(Plr);
 					}
 					break;
@@ -3024,12 +3151,12 @@ class BrillGuard : public GossipScript
 		{
 			GossipMenu* Menu;
 			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 2593, plr);
-			Menu->AddItem(0, "The bank", 1);
-			Menu->AddItem(0, "The bat handler", 2);
-			Menu->AddItem(0, "The inn", 3);
-			Menu->AddItem(0, "The stable master", 4);
-			Menu->AddItem(0, "A class trainer", 5);
-			Menu->AddItem(0, "A profession trainer", 6);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEBANK), 1);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEBAT), 2);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEINN), 3);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THESTABL), 4);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(ACLASS), 5);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(APROF), 6);
 
 			Menu->SendTo(plr);
 		}
@@ -3068,12 +3195,12 @@ class BrillGuard : public GossipScript
 				case 5:     // A class trainer
 					{
 						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4292, Plr);
-						Menu->AddItem(0, "Mage"         , 7);
-						Menu->AddItem(0, "Paladin"      , 8);
-						Menu->AddItem(0, "Priest"       , 9);
-						Menu->AddItem(0, "Rogue"       , 10);
-						Menu->AddItem(0, "Warlock"     , 11);
-						Menu->AddItem(0, "Warrior"     , 12);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(MAGE)         , 7);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(PALADIN)      , 8);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(PRIEST)       , 9);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ROGUE)       , 10);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(WARLOCK)     , 11);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(WARRIOR)     , 12);
 						Menu->SendTo(Plr);
 					}
 					break;
@@ -3081,18 +3208,18 @@ class BrillGuard : public GossipScript
 				case 6:     // A profession trainer
 					{
 						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4300, Plr);
-						Menu->AddItem(0, "Alchemy"           , 13);
-						Menu->AddItem(0, "Blacksmithing"     , 14);
-						Menu->AddItem(0, "Cooking"           , 15);
-						Menu->AddItem(0, "Enchanting"        , 16);
-						Menu->AddItem(0, "Engineering"       , 17);
-						Menu->AddItem(0, "First Aid"         , 18);
-						Menu->AddItem(0, "Fishing"           , 19);
-						Menu->AddItem(0, "Herbalism"         , 20);
-						Menu->AddItem(0, "Leatherworking"    , 21);
-						Menu->AddItem(0, "Mining"            , 22);
-						Menu->AddItem(0, "Skinning"          , 23);
-						Menu->AddItem(0, "Tailoring"         , 24);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ALCHEMY)           , 13);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(BLACKSMITHING)     , 14);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(COOKING)           , 15);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ENCHANTING)        , 16);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ENGINER)       , 17);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(FIRSTAID)         , 18);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(FISHING)           , 19);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(HERBALISM)         , 20);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(LEATHERWORKING)    , 21);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(MINING)            , 22);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(SKINNING)          , 23);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(TAILORING)         , 24);
 						Menu->SendTo(Plr);
 					}
 					break;
@@ -3233,20 +3360,20 @@ class IronforgeGuard : public GossipScript
 		{
 			GossipMenu* Menu;
 			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 2760, plr);
-			Menu->AddItem(0, "Auction House"			, 1);
-			Menu->AddItem(0, "Bank of Ironforge"		, 2);
-			Menu->AddItem(0, "Deeprun Tram"				, 3);
-			Menu->AddItem(0, "Gryphon Master"			, 4);
-			Menu->AddItem(0, "Guild Master"				, 5);
-			Menu->AddItem(0, "The Inn"					, 6);
-			Menu->AddItem(0, "Mailbox"					, 7);
-			Menu->AddItem(0, "Stable Master"			, 8);
-			Menu->AddItem(0, "Weapons Trainer"			, 9);
-			Menu->AddItem(0, "Battlemaster"				, 10);
-			Menu->AddItem(0, "Barber"					, 11);
-			Menu->AddItem(0, "Class Trainer"			, 12);
-			Menu->AddItem(0, "Profession Trainer"		, 13);
-			Menu->AddItem(0, "Lexicon of Power"			, 35);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(AUCTIONHOUSE)			, 1);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(BANKOFIR)		, 2);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(DEEPRUN)				, 3);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(GRYPHONMASTER)			, 4);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(GUILDMASTER)				, 5);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEINN)					, 6);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(MAILBOX)					, 7);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(STABLEMASTER)			, 8);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(WEAPONSTRAINER)			, 9);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(BATTLEMASTER)				, 10);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(BARBER)					, 11);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(CLASSTRAINER)			, 12);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(PROFESSIONTRAINER)		, 13);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(LEXICON)			, 35);
 
 			Menu->SendTo(plr);
 		}
@@ -3322,14 +3449,14 @@ class IronforgeGuard : public GossipScript
 				case 12:    // A class trainer
 					{
 						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 2766, Plr);
-						Menu->AddItem(0, "Hunter"      , 14);
-						Menu->AddItem(0, "Mage"        , 15);
-						Menu->AddItem(0, "Paladin"     , 16);
-						Menu->AddItem(0, "Priest"      , 17);
-						Menu->AddItem(0, "Rogue"       , 18);
-						Menu->AddItem(0, "Warlock"     , 19);
-						Menu->AddItem(0, "Warrior"     , 20);
-						Menu->AddItem(0, "Shaman"      , 21);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(HUNTER)      , 14);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(MAGE)        , 15);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(PALADIN)     , 16);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(PRIEST)      , 17);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ROGUE)       , 18);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(WARLOCK)     , 19);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(WARRIOR)     , 20);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(SHAMAN)      , 21);
 						Menu->SendTo(Plr);
 					}
 					break;
@@ -3337,19 +3464,19 @@ class IronforgeGuard : public GossipScript
 				case 13:    // A profession trainer
 					{
 						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 2793, Plr);
-						Menu->AddItem(0, "Alchemy"           , 22);
-						Menu->AddItem(0, "Blacksmithing"     , 23);
-						Menu->AddItem(0, "Cooking"           , 24);
-						Menu->AddItem(0, "Enchanting"        , 25);
-						Menu->AddItem(0, "Engineering"       , 26);
-						Menu->AddItem(0, "First Aid"         , 27);
-						Menu->AddItem(0, "Fishing"           , 28);
-						Menu->AddItem(0, "Herbalism"         , 29);
-						Menu->AddItem(0, "Inscription"		  , 30);
-						Menu->AddItem(0, "Leatherworking"    , 31);
-						Menu->AddItem(0, "Mining"            , 32);
-						Menu->AddItem(0, "Skinning"          , 33);
-						Menu->AddItem(0, "Tailoring"         , 34);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ALCHEMY)           , 22);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(BLACKSMITHING)     , 23);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(COOKING)           , 24);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ENCHANTING)        , 25);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ENGINER)       , 26);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(FIRSTAID)         , 27);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(FISHING)           , 28);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(HERBALISM)         , 29);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(INSCRIPTION)		  , 30);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(LEATHERWORKING)    , 31);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(MINING)            , 32);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(SKINNING)          , 33);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(TAILORING)         , 34);
 						Menu->SendTo(Plr);
 					}
 					break;
@@ -3522,13 +3649,13 @@ class KharanosGuard : public GossipScript
 		{
 			GossipMenu* Menu;
 			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4287, plr);
-			Menu->AddItem(0, "Bank", 1);
-			Menu->AddItem(0, "Gryphon Master", 2);
-			Menu->AddItem(0, "Guild Master", 3);
-			Menu->AddItem(0, "The Inn", 4);
-			Menu->AddItem(0, "Stable Master", 5);
-			Menu->AddItem(0, "Class Trainer", 6);
-			Menu->AddItem(0, "Profession Trainer", 7);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(BANK), 1);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(GRYPHONMASTER), 2);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(GUILDMASTER), 3);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEINN), 4);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(STABLEMASTER), 5);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(CLASSTRAINER), 6);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(PROFESSIONTRAINER), 7);
 
 			Menu->SendTo(plr);
 		}
@@ -3571,13 +3698,13 @@ class KharanosGuard : public GossipScript
 				case 6:     //Class Trainer
 					{
 						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4292, Plr);
-						Menu->AddItem(0, "Hunter"       , 8);
-						Menu->AddItem(0, "Mage"         , 9);
-						Menu->AddItem(0, "Paladin"      , 10);
-						Menu->AddItem(0, "Priest"      , 11);
-						Menu->AddItem(0, "Rogue"       , 12);
-						Menu->AddItem(0, "Warlock"     , 13);
-						Menu->AddItem(0, "Warrior"     , 14);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(HUNTER)       , 8);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(MAGE)         , 9);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(PALADIN)      , 10);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(PRIEST)      , 11);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ROGUE)       , 12);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(WARLOCK)     , 13);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(WARRIOR)     , 14);
 						Menu->SendTo(Plr);
 					}
 					break;
@@ -3585,19 +3712,19 @@ class KharanosGuard : public GossipScript
 				case 7:     // Profession Trainer
 					{
 						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4300, Plr);
-						Menu->AddItem(0, "Alchemy"           , 15);
-						Menu->AddItem(0, "Blacksmithing"     , 16);
-						Menu->AddItem(0, "Cooking"           , 17);
-						Menu->AddItem(0, "Enchanting"        , 18);
-						Menu->AddItem(0, "Engineering"       , 19);
-						Menu->AddItem(0, "First Aid"         , 20);
-						Menu->AddItem(0, "Fishing"           , 21);
-						Menu->AddItem(0, "Herbalism"         , 22);
-						Menu->AddItem(0, "Inscription"		  , 23);
-						Menu->AddItem(0, "Leatherworking"    , 24);
-						Menu->AddItem(0, "Mining"            , 25);
-						Menu->AddItem(0, "Skinning"          , 26);
-						Menu->AddItem(0, "Tailoring"         , 27);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ALCHEMY)           , 15);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(BLACKSMITHING)     , 16);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(COOKING)           , 17);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ENCHANTING)        , 18);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ENGINER)       , 19);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(FIRSTAID)         , 20);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(FISHING)           , 21);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(HERBALISM)         , 22);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(INSCRIPTION)		  , 23);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(LEATHERWORKING)    , 24);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(MINING)            , 25);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(SKINNING)          , 26);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(TAILORING)         , 27);
 						Menu->SendTo(Plr);
 					}
 					break;
@@ -3750,12 +3877,12 @@ class FalconwingGuard : public GossipScript
 		{
 			GossipMenu* Menu;
 			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 2593, plr);
-			Menu->AddItem(0, "Bat Handler", 1);
-			Menu->AddItem(0, "Guild Master", 2);
-			Menu->AddItem(0, "The Inn", 3);
-			Menu->AddItem(0, "Stable Master", 4);
-			Menu->AddItem(0, "Class Trainer", 5);
-			Menu->AddItem(0, "Profession Trainer", 6);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(BAT), 1);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(GUILDMASTER), 2);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(THEINN), 3);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(STABLEMASTER), 4);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(CLASSTRAINER), 5);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(PROFESSIONTRAINER), 6);
 
 			Menu->SendTo(plr);
 		}
@@ -3795,13 +3922,13 @@ class FalconwingGuard : public GossipScript
 				case 5:     //Class Trainer
 					{
 						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4292, Plr);
-						Menu->AddItem(0, "Druid"        , 7);
-						Menu->AddItem(0, "Hunter"       , 8);
-						Menu->AddItem(0, "Mage"         , 9);
-						Menu->AddItem(0, "Paladin"     , 10);
-						Menu->AddItem(0, "Priest"      , 11);
-						Menu->AddItem(0, "Rogue"       , 12);
-						Menu->AddItem(0, "Warlock"     , 13);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(DRUID)        , 7);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(HUNTER)       , 8);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(MAGE)         , 9);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(PALADIN)     , 10);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(PRIEST)      , 11);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ROGUE)       , 12);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(WARLOCK)     , 13);
 						Menu->SendTo(Plr);
 					}
 					break;
@@ -3809,19 +3936,19 @@ class FalconwingGuard : public GossipScript
 				case 6:     // Profession Trainer
 					{
 						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 2593, Plr);
-						Menu->AddItem(0, "Alchemy"           , 14);
-						Menu->AddItem(0, "Blacksmithing"     , 15);
-						Menu->AddItem(0, "Cooking"           , 16);
-						Menu->AddItem(0, "Enchanting"        , 17);
-						Menu->AddItem(0, "Engineering"       , 18);
-						Menu->AddItem(0, "First Aid"         , 19);
-						Menu->AddItem(0, "Fishing"           , 20);
-						Menu->AddItem(0, "Herbalism"         , 21);
-						Menu->AddItem(0, "Jewelcrafting"     , 22);
-						Menu->AddItem(0, "Leatherworking"    , 23);
-						Menu->AddItem(0, "Mining"            , 24);
-						Menu->AddItem(0, "Skinning"          , 25);
-						Menu->AddItem(0, "Tailoring"         , 26);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ALCHEMY)           , 14);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(BLACKSMITHING)     , 15);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(COOKING)           , 16);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ENCHANTING)        , 17);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ENGINER)       , 18);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(FIRSTAID)         , 19);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(FISHING)           , 20);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(HERBALISM)         , 21);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(JEWEL)     , 22);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(LEATHERWORKING)    , 23);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(MINING)            , 24);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(SKINNING)          , 25);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(TAILORING)         , 26);
 						Menu->SendTo(Plr);
 					}
 					break;
@@ -3977,13 +4104,13 @@ class AzureWatchGuard : public GossipScript
 		{
 			GossipMenu* Menu;
 			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 10066, plr);
-			Menu->AddItem(0, "Bank"					, 1);
-			Menu->AddItem(0, "Hippogryph Master"	, 2);
-			Menu->AddItem(0, "Guild Master"			, 3);
-			Menu->AddItem(0, "Inn"					, 4);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(BANK)					, 1);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(HIPPO)	, 2);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(GUILDMASTER)			, 3);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(INN)					, 4);
 			Menu->AddItem(0, "Stable"				, 5);
-			Menu->AddItem(0, "Class Trainer"		, 6);
-			Menu->AddItem(0, "Profession Trainer"	, 7);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(CLASSTRAINER)		, 6);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(PROFESSIONTRAINER)	, 7);
 
 			Menu->SendTo(plr);
 		}
@@ -4026,13 +4153,13 @@ class AzureWatchGuard : public GossipScript
 				case 6:     //Class Trainer
 					{
 						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 10076, Plr);
-						Menu->AddItem(0, "Druid"       , 8);
-						Menu->AddItem(0, "Hunter"      , 9);
-						Menu->AddItem(0, "Mage"		, 10);
-						Menu->AddItem(0, "Paladin"     , 11);
-						Menu->AddItem(0, "Priest"      , 12);
-						Menu->AddItem(0, "Shaman"      , 13);
-						Menu->AddItem(0, "Warrior"     , 14);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(DRUID)       , 8);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(HUNTER)      , 9);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(MAGE)		, 10);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(PALADIN)     , 11);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(PRIEST)      , 12);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(SHAMAN)      , 13);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(WARRIOR)     , 14);
 						Menu->SendTo(Plr);
 					}
 					break;
@@ -4040,20 +4167,20 @@ class AzureWatchGuard : public GossipScript
 				case 7:     //Profession Trainer
 					{
 						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 10087, Plr);
-						Menu->AddItem(0, "Alchemy"           , 15);
-						Menu->AddItem(0, "Blacksmithing"     , 16);
-						Menu->AddItem(0, "Cooking"           , 17);
-						Menu->AddItem(0, "Enchanting"        , 18);
-						Menu->AddItem(0, "Engineering"       , 19);
-						Menu->AddItem(0, "First Aid"         , 20);
-						Menu->AddItem(0, "Fishing"           , 21);
-						Menu->AddItem(0, "Herbalism"         , 22);
-						Menu->AddItem(0, "Inscription"       , 23);
-						Menu->AddItem(0, "Jewelcrafting"     , 24);
-						Menu->AddItem(0, "Leatherworking"    , 25);
-						Menu->AddItem(0, "Mining"            , 26);
-						Menu->AddItem(0, "Skinning"          , 27);
-						Menu->AddItem(0, "Tailoring"         , 28);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ALCHEMY)           , 15);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(BLACKSMITHING)     , 16);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(COOKING)           , 17);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ENCHANTING)        , 18);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ENGINER)       , 19);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(FIRSTAID)         , 20);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(FISHING)           , 21);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(HERBALISM)         , 22);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(INSCRIPTION)       , 23);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(JEWEL)     , 24);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(LEATHERWORKING)    , 25);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(MINING)            , 26);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(SKINNING)          , 27);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(TAILORING)         , 28);
 						Menu->SendTo(Plr);
 					}
 					break;
@@ -4222,17 +4349,17 @@ class ShattrathGuard : public GossipScript
 			GossipMenu* Menu;
 			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 10524, plr);
 
-			Menu->AddItem(0, "World's End Tavern", 1);
-			Menu->AddItem(0, "Bank", 2);
-			Menu->AddItem(0, "Inn", 3);
-			Menu->AddItem(0, "Flight Master", 4);
-			Menu->AddItem(0, "Mailbox", 5);
-			Menu->AddItem(0, "Stable Master", 6);
-			Menu->AddItem(0, "Battlemaster", 7);
-			Menu->AddItem(0, "Profession Trainer", 8);
-			Menu->AddItem(0, "Mana Loom", 9);
-			Menu->AddItem(0, "Alchemy Lab", 10);
-			Menu->AddItem(0, "Gem Merchant", 11);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(WORLDS), 1);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(BANK), 2);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(INN), 3);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(FLIGHT), 4);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(MAILBOX), 5);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(STABLEMASTER), 6);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(BATTLEMASTER), 7);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(PROFESSIONTRAINER), 8);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(MANALOOM), 9);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(ALCHEMYL), 10);
+			Menu->AddItem(0, plr->GetSession()->LocalizedGossipTexts(GEMMERCH), 11);
 
 			Menu->SendTo(plr);
 		}
@@ -4258,8 +4385,8 @@ class ShattrathGuard : public GossipScript
 				case 2:     // Shattrath Banks
 					{
 						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 10395, Plr);
-						Menu->AddItem(0, "Aldor Bank"          , 12);
-						Menu->AddItem(0, "Scryers Bank"         , 13);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ALDORB)          , 12);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(SCBANK)         , 13);
 						Menu->SendTo(Plr);
 					}
 					break;
@@ -4268,8 +4395,8 @@ class ShattrathGuard : public GossipScript
 				case 3:     // Inn's
 					{
 						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 10398, Plr);
-						Menu->AddItem(0, "Aldor inn"          , 14);
-						Menu->AddItem(0, "Scryers inn"         , 15);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ALDORI)          , 14);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(SCI)         , 15);
 						Menu->SendTo(Plr);
 					}
 					break;
@@ -4282,10 +4409,10 @@ class ShattrathGuard : public GossipScript
 				case 5:     // Mailboxes
 					{
 						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 10403, Plr);
-						Menu->AddItem(0, "Aldor inn"          , 16);
-						Menu->AddItem(0, "Scryers inn"         , 17);
-						Menu->AddItem(0, "Aldor Bank"          , 18);
-						Menu->AddItem(0, "Scryers Bank"         , 19);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ALDORI)          , 16);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(SCI)         , 17);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ALDORB)          , 18);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(SCBANK)         , 19);
 						Menu->SendTo(Plr);
 					}
 					break;
@@ -4293,8 +4420,8 @@ class ShattrathGuard : public GossipScript
 				case 6:     // Stable Masters
 					{
 						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 10404, Plr);
-						Menu->AddItem(0, "Aldor Stable"          , 20);
-						Menu->AddItem(0, "Scryers Stable"         , 21);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ALS)          , 20);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(SCS)         , 21);
 						Menu->SendTo(Plr);
 					}
 					break;
@@ -4302,8 +4429,8 @@ class ShattrathGuard : public GossipScript
 				case 7:     // Battlemasters
 					{
 						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 10405, Plr);
-						Menu->AddItem(0, "Alliance Battlemasters"          , 22);
-						Menu->AddItem(0, "Horde & Arena Battlemasters"         , 23);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ALLIB)          , 22);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(HORDEARENA)         , 23);
 						Menu->SendTo(Plr);
 					}
 					break;
@@ -4311,14 +4438,14 @@ class ShattrathGuard : public GossipScript
 				case 8:     // Proffesion Trainers
 					{
 						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 10391, Plr);
-						Menu->AddItem(0, "Alchemy"          , 24);
-						Menu->AddItem(0, "Blacksmithing"         , 25);
-						Menu->AddItem(0, "Cooking"          , 26);
-						Menu->AddItem(0, "Enchanting"         , 27);
-						Menu->AddItem(0, "First Aid"          , 28);
-						Menu->AddItem(0, "Jewelcrafting"         , 29);
-						Menu->AddItem(0, "Leatherworking"          , 30);
-						Menu->AddItem(0, "Skinning"         , 31);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ALCHEMY)          , 24);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(BLACKSMITHING)         , 25);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(COOKING)          , 26);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ENCHANTING)         , 27);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(FIRSTAID)          , 28);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(JEWEL)         , 29);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(LEATHERWORKING)          , 30);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(SKINNING)         , 31);
 						Menu->SendTo(Plr);
 					}
 					break;
@@ -4336,8 +4463,8 @@ class ShattrathGuard : public GossipScript
 				case 11:    // Gem Merchants
 					{
 						objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 10410, Plr);
-						Menu->AddItem(0, "Aldor Gem Merchant"          , 32);
-						Menu->AddItem(0, "Scryer Gem Merchant"         , 33);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(ALDGM)          , 32);
+						Menu->AddItem(0, Plr->GetSession()->LocalizedGossipTexts(SCGM)         , 33);
 						Menu->SendTo(Plr);
 					}
 					break;
@@ -4552,21 +4679,21 @@ public:
 	void OnHello(Object *pObject, Player *Plr)
 	{
 		Arcemu::Gossip::Menu menu(pObject->GetGUID(), 50000);
-		menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Arena"				,1);
-		menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Auction House"		,2);
-		menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Bank"				,3);
-		menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Barber"			,4);
-		menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Battlemasters"		,5);
-		menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Capital Portals"	,6);
-		menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Flight Master"		,7);
-		menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Guild Master"		,8);
-		menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Inn"				,9);
-		menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Locksmith"			,77);
-		menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Mailbox"			,10);
-		menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Points of Interest", 11);
-		menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Stable Master"		,12);
-		menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Trainers"			,13);
-		menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Vendors"			,14);
+		menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(ARENA)				,1);
+		menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(AUCTIONHOUSE)		,2);
+		menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(BANK)				,3);
+		menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(BARBER)			,4);
+		menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(BATTLEMASTERS)		,5);
+		menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(CAPITAL)	,6);
+		menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(FLIGHT)		,7);
+		menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(GUILDMASTER)		,8);
+		menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(INN)				,9);
+		menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(LOCKSMITH)			,77);
+		menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(MAILBOX)			,10);
+		menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(POINTS), 11);
+		menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(STABLEMASTER)		,12);
+		menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(TRAINERS)			,13);
+		menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(VENDORS)			,14);
 		menu.Send(Plr);
 	}
 
@@ -4578,24 +4705,24 @@ public:
 		case 1:		// Arena
 			{
 				Arcemu::Gossip::Menu menu(pObject->GetGUID(), 13976);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Eastern Sewer Entrance", 15);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Western Sewer Entrance", 16);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Well Entrance"			, 17);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(EASTSE), 15);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(WESTSE), 16);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(WELLE)			, 17);
 				menu.Send(Plr);
 			}break;
 		case 2:		// Auction House
 			{
 				Arcemu::Gossip::Menu menu(pObject->GetGUID(), 14010);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "The Alliance Quarter"	, 18);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "The Horde Quarter"		, 19);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(TAQ)	, 18);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(THQ)		, 19);
 				menu.Send(Plr);
 			}break;
 		case 3:		// Bank
 			{
 				Arcemu::Gossip::Menu menu(pObject->GetGUID(), 14007);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Northern Bank"	, 20);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Southern Bank"	, 21);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Sewers"		, 22); // Sewers 1
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(NBANK)	, 20);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(SBANK)	, 21);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(SEWERS)		, 22); // Sewers 1
 				menu.Send(Plr);
 			}break;
 		case 4:		// Barber
@@ -4606,15 +4733,15 @@ public:
 		case 5:		// Battlemasters
 			{
 				Arcemu::Gossip::Menu menu(pObject->GetGUID(), 13977);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "The Alliance Quarter"	, 18);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "The Horde Quarter"		, 19);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(TAQ)	, 18);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(THQ)		, 19);
 				menu.Send(Plr);
 			}break;
 		case 6:		// Capital Portals
 			{
 				Arcemu::Gossip::Menu menu(pObject->GetGUID(), 13977);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "The Alliance Quarter"	, 18);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "The Horde Quarter"		, 19);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(TAQ)	, 18);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(THQ)		, 19);
 				menu.Send(Plr);
 			}break;
 		case 7:		// Flight Master
@@ -4630,34 +4757,34 @@ public:
 		case 9:		// Inn
 			{
 				Arcemu::Gossip::Menu menu(pObject->GetGUID(), 14002);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Alliance Inn"	, 24);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Horde Inn"		, 25);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Sewers"		, 26); // Sewers 2
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(AI)	, 24);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(HI)		, 25);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(SEWERS)		, 26); // Sewers 2
 				menu.Send(Plr);
 			}break;
 		case 10:	// Mailbox
 			{
 				Arcemu::Gossip::Menu menu(pObject->GetGUID(), 10090);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Inn"				, 9);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Bank"				, 3);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Krasus' Landing"	, 74);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(INN)				, 9);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(BANK)				, 3);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(KRASUS)	, 74);
 				menu.Send(Plr);
 			}break;
 		case 11:	// Points of Interest
 			{
 				Arcemu::Gossip::Menu menu(pObject->GetGUID(), 10056);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "The Alliance Quarter"	, 18);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "The Horde Quarter"		, 19);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "The Violet Citadel"	, 27);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "The Violet Hold"		, 28);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Sewers"				, 22); // Sewers 1
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Trade District"		, 29);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Krasus'Landing"		, 74);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Antonidas Memorial"	, 30);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Runeweaver Square"		, 31);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "The Eventide"			, 32);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Cemetary"				, 33);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Lexicon of Power"		, 34);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(TAQ)	, 18);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(THQ)		, 19);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(VIOLETTC)	, 27);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(VIOLETTH)		, 28);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(SEWERS)				, 22); // Sewers 1
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(TRADE)		, 29);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(KRASUS)		, 74);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(ANTONIDAS)	, 30);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(RUNEW)		, 31);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(THEEVEN)			, 32);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(CEMENTARY)				, 33);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(LEXICON)		, 34);
 				menu.Send(Plr);
 			}break;
 		case 12:	// Stable Master
@@ -4668,30 +4795,30 @@ public:
 		case 13:	// Trainers
 			{
 				Arcemu::Gossip::Menu menu(pObject->GetGUID(), 10082);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Class Trainer"			, 35);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Cold Weather Flying Trainer", 76);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Portal Trainer"		, 36);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Profession Trainer"	, 37);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(CLASSTRAINER)			, 35);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(COLDW), 76);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(PORTALT)		, 36);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(PROFESSIONTRAINER)	, 37);
 				menu.Send(Plr);
 			}break;
 		case 14:	// Vendors
 			{
 				Arcemu::Gossip::Menu menu(pObject->GetGUID(), 10173);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Armor"					, 38);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Clothing"				, 39);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Emblem Gear"			, 40);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Flowers"				, 41);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Fruit"					, 42);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "General Goods"			, 43);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Jewelry"				, 44);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Pet Supplies & Exotic Mounts", 45);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Pie, Pastry & Cakes"	, 46);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Reagents & Magical Goods", 47);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Toys"					, 48);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Trade Supplies"		, 43);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Trinkets. Relics & Off-hand items", 49);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Weapons"				, 50);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Wine & Cheese"			, 51);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(ARMOR)					, 38);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(CLOTHING)			, 39);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(EMBLEM)			, 40);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(FLOWERS)				, 41);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(FRUIT)					, 42);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(GENERAL)			, 43);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(JEWELRY)				, 44);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(PETS), 45);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(PIE)	, 46);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(REAGENTS), 47);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(TOYS)					, 48);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(TRADES)		, 43);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(TRINKETS), 49);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(WEAPONS)				, 50);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(WINE)			, 51);
 				menu.Send(Plr);
 			}break;
 		case 15:	// Eastern Sewer Entrance
@@ -4792,8 +4919,8 @@ public:
 		case 35:	// Class Trainers
 			{
 				Arcemu::Gossip::Menu menu(pObject->GetGUID(), 14018);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "The Alliance Quarter"	, 18);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "The Horde Quarter"		, 19);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(TAQ)	, 18);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(THQ)		, 19);
 				menu.Send(Plr);
 			}break;
 		case 36:	// Portal Trainer
@@ -4804,30 +4931,30 @@ public:
 		case 37:	// Profession Trainer
 			{
 				Arcemu::Gossip::Menu menu(pObject->GetGUID(), 13996);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Alchemy"		, 52);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Blacksmithing"	, 53);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Cooking"		, 54);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Enchanting"	, 55);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "engineering"	, 56);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "First Aid"		, 57);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Fishing"		, 58);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Herbalism"		, 59);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Inscription"	, 60);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Jewelcrafting"	, 61);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Leatherworking", 62);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Mining"		, 63);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Skinning"		, 64);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Tailoring"		, 65);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(ALCHEMY)		, 52);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(BLACKSMITHING)	, 53);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(COOKING)		, 54);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(ENCHANTING)	, 55);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(ENGINER)	, 56);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(FIRSTAID)		, 57);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(FISHING)		, 58);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(HERBALISM)		, 59);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(INSCRIPTION)	, 60);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(JEWEL)	, 61);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(LEATHERWORKING), 62);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(MINING)		, 63);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(SKINNING)		, 64);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(TAILORING)		, 65);
 				menu.Send(Plr);
 			}break;
 		case 38:	// Armor
 			{
 				Arcemu::Gossip::Menu menu(pObject->GetGUID(), 14117);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Cloth Armor"          , 66);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Leather Armor"          , 67);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Mail Armor"          , 68);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Plate Armor"          , 69);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Shields"          , 70);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(CLOTH)          , 66);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(LEATHER)          , 67);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(MAIL)          , 68);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(PLATE)         , 69);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(SHIELDS)          , 70);
 				menu.Send(Plr);
 			}break;
 		case 39:	// Clothing
@@ -4838,8 +4965,8 @@ public:
 		case 40:	// Emblem Gear
 			{
 				Arcemu::Gossip::Menu menu(pObject->GetGUID(), 14108);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "The Alliance Quarter"          , 18);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "The Horde Quarter"          , 19);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(TAQ)          , 18);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(THQ)          , 19);
 				menu.Send(Plr);
 			}break;
 		case 41:	// Flowers
@@ -4890,9 +5017,9 @@ public:
 		case 50:	// Weapons
 			{
 				Arcemu::Gossip::Menu menu(pObject->GetGUID(), 14113);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Melee Weapons"          , 71);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Ranged & Thrown Weapons"          , 72);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Staves & Wands"          , 73);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(MELEE)          , 71);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(RANGED)          , 72);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(STAVES)          , 73);
 				menu.Send(Plr);
 			}break;
 		case 51:	// Wine & Cheese
@@ -4913,8 +5040,8 @@ public:
 		case 54:	// Cooking
 			{
 				Arcemu::Gossip::Menu menu(pObject->GetGUID(), 13991);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Alliance Inn"          , 24);
-				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Horde Inn"          , 25);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(AI)          , 24);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedGossipTexts(HI)          , 25);
 				menu.Send(Plr);
 			}break;
 		case 55:	// Enchanting
@@ -4949,7 +5076,7 @@ public:
 			}break;
 		case 61:	// Jewelcrafting
 			{
-				Plr->Gossip_SendPOI(5874.27f, 719.18f, 7, 99, 0, "Jewelcrafting");
+				Plr->Gossip_SendPOI(5874.27f, 719.18f, 7, 99, 0, Plr->GetSession()->LocalizedGossipTexts(JEWEL));
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 13984, Plr);
 			}break;
 		case 62:	// Leatherworking
