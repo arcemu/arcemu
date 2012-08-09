@@ -135,8 +135,11 @@ class JeanPierrePoulain : public GossipScript
 		{
 			GossipMenu* Menu;
 			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 14500, plr);
-			Menu->AddItem(0, "I'll take the flight."	,1);
-			Menu->SendTo(plr);
+			if(plr->HasFinishedQuest(13668) || plr->GetQuestLogForEntry(13668) || plr->HasFinishedQuest(13667) || plr->GetQuestLogForEntry(13667))
+				Menu->SendTo(plr);
+			else
+				Menu->AddItem(0, "I'll take the flight."	,1);
+				Menu->SendTo(plr);
 		}
 
 		void GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, uint32 IntId, const char* Code)

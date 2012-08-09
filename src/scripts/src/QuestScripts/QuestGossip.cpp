@@ -117,17 +117,10 @@ class StabledArgentHippogryph : public GossipScript
 		void GossipHello(Object* pObject, Player* plr)
 		{
 			GossipMenu* Menu;
-			if(plr->GetQuestLogForEntry(14108))
-			{
-				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 14692, plr);
+			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 14692, plr);
+				if(plr->GetQuestLogForEntry(14108))
 				Menu->AddItem(0, "Mount the Hippogryph and prepare for battle!"	,1);
 				Menu->SendTo(plr);
-			}
-			if(!plr->GetQuestLogForEntry(14108))
-			{
-				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 14692, plr);
-				Menu->SendTo(plr);
-			}
 		}
 
 		void GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, uint32 IntId, const char* Code)
