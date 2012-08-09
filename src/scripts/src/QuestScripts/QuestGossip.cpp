@@ -104,12 +104,24 @@ class TeleportQ_Gossip : public GossipScript
 	public:
 		void GossipHello(Object* pObject, Player* plr)
 		{
-			if(plr->GetQuestLogForEntry(12791) != NULL || plr->GetQuestLogForEntry(12794) != NULL || plr->GetQuestLogForEntry(12796))
-			{
-				TO_CREATURE(pObject)->CastSpell(plr, TELEPORT_SPELL, false);
-			}
+			//Send quests and gossip menu.
+			uint32 Text = objmgr.GetGossipTextForNpc(pObject->GetEntry());
+			if(NpcTextStorage.LookupEntry(Text) == NULL)
+				Text = Arcemu::Gossip::DEFAULT_TXTINDEX;
+			Arcemu::Gossip::Menu menu(pObject->GetGUID(), Text, plr->GetSession()->language);
+			sQuestMgr.FillQuestMenu(TO_CREATURE(pObject), plr, menu);
+			if(plr->GetQuestLogForEntry(12791) || plr->GetQuestLogForEntry(12794) || plr->GetQuestLogForEntry(12796))
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "I am ready to be teleported to Dalaran.", 0);
+			menu.Send(plr);
 		}
+		void OnSelectOption(Object* pObject, Player* plr, uint32 Id, const char* Code)
+		{
+			plr->CastSpell(plr, TELEPORT_SPELL, true);
+		}
+
+		void Destroy() { delete this; }
 };
+
 
 class StabledArgentHippogryph : public GossipScript
 {

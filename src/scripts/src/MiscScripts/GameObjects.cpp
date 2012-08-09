@@ -1160,6 +1160,32 @@ class EyeofAcherusControl : public GameObjectAIScript
 		}
 };
 
+class DalaranCrystal1 : public GameObjectAIScript
+{
+	public:
+		DalaranCrystal1(GameObject* goinstance) : GameObjectAIScript(goinstance) {}
+		static GameObjectAIScript* Create(GameObject* GO) { return new DalaranCrystal1(GO); }
+
+		void OnActivate(Player* pPlayer)
+		{
+			if(pPlayer->GetQuestLogForEntry(12790) || pPlayer->HasFinishedQuest(12790))
+			pPlayer->CastSpell(pPlayer, 42953, true);
+		}
+};
+
+class DalaranCrystal2 : public GameObjectAIScript
+{
+	public:
+		DalaranCrystal2(GameObject* goinstance) : GameObjectAIScript(goinstance) {}
+		static GameObjectAIScript* Create(GameObject* GO) { return new DalaranCrystal2(GO); }
+
+		void OnActivate(Player* pPlayer)
+		{
+			if(pPlayer->GetQuestLogForEntry(12790) || pPlayer->HasFinishedQuest(12790))
+			pPlayer->CastSpell(pPlayer, 68328, true);
+		}
+};
+
 void SetupGoHandlers(ScriptMgr* mgr)
 {
 	mgr->register_gameobject_script(179879, &OrbOfCommand::Create);
@@ -1211,4 +1237,6 @@ void SetupGoHandlers(ScriptMgr* mgr)
 	mgr->register_gameobject_script(184588, &TyraliusPrison::Create);
 	
 	mgr->register_gameobject_script(191609, &EyeofAcherusControl::Create);
+	mgr->register_gameobject_script(191229, &DalaranCrystal1::Create);
+	mgr->register_gameobject_script(191230, &DalaranCrystal2::Create);
 }
