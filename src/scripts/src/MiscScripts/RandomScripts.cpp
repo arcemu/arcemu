@@ -157,9 +157,29 @@ class JeanPierrePoulain : public GossipScript
 		}
 };
 
+
+void SholazarUngoro(Player* pPlayer, uint32 AreaTrigger)
+{
+	if(!pPlayer)
+		return;
+	if(pPlayer->HasFinishedQuest(12613) && pPlayer->HasFinishedQuest(12559) && !pPlayer->IsDead())
+	{
+		switch(AreaTrigger)
+		{
+		case 5046:
+			pPlayer->CastSpell(pPlayer, 52056, true);
+			break;
+		case 5047:
+			pPlayer->CastSpell(pPlayer, 52057, true);
+			break;
+		}
+	}
+}
+
 void SetupRandomScripts(ScriptMgr* mgr)
 {
 	// Register Hook Event here
+	mgr->register_hook(SERVER_HOOK_EVENT_ON_AREATRIGGER, (void*)&SholazarUngoro);
 	mgr->register_hook(SERVER_HOOK_EVENT_ON_EMOTE, (void*)&OnEmote);
 	mgr->register_gossip_script(35646,  new Wormhole);
 	mgr->register_gossip_script(34244,  new JeanPierrePoulain);
