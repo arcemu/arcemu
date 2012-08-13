@@ -2763,7 +2763,7 @@ bool LeyLine(uint32 i, Spell* pSpell)
 	if(qle == NULL)
 		return true;
 
-	uint32 portals[] = { 188527, 188526, 188525 };
+	uint32 portals[] = { 300155, 300156, 300154 };
 	Object* portal = NULL;
 
 	for(uint32 i = 0; i < sizeof(portals) / sizeof(uint32); i++)
