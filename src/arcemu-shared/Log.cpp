@@ -67,7 +67,7 @@ void oLog::outFile(FILE* file, char* msg, const char* source)
 	}
 }
 
-// Prints text to file without showing it to the user. Used for BANNER.
+/// Prints text to file without showing it to the user. Used for the startup banner.
 void oLog::outFileSilent(FILE* file, char* msg, const char* source)
 {
 	char time_buffer[TIME_FORMAT_LENGTH];
@@ -135,7 +135,7 @@ void oLog::outError(const char* err, ...)
 	outFile(m_errorFile, buf);
 }
 
-// Used for BANNER. No text output.
+/// Writes into the error log without giving console output. Used for the startup banner.
 void oLog::outErrorSilent(const char* err, ...)
 {
 	if(m_errorFile == NULL)
@@ -148,7 +148,7 @@ void oLog::outErrorSilent(const char* err, ...)
 	vsnprintf(buf, 32768, err, ap);
 	va_end(ap);
 
-	outFileSilent(m_errorFile, buf);
+	outFileSilent(m_errorFile, buf); // This uses a function that won't give console output.
 }
 
 void oLog::outBasic(const char* str, ...)
