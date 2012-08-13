@@ -63,23 +63,20 @@ bool DeathStrike(uint32 i, Spell* pSpell)
 
 	Unit* Target = pSpell->GetUnitTarget();
 
-	int count = 0;
-	if(Target->HasAura(BLOOD_PLAGUE))
-		count++;
-	if(Target->HasAura(FROST_FEVER))
-		count++;
-	if(Target->HasAurasWithNameHash(SPELL_HASH_EBON_PLAGUE))
-		count++;
-	if(Target->HasAurasWithNameHash(SPELL_HASH_CRYPT_FEVER))
-		count++;
-	count = min(count, 3); //limited to 15% incase spell uniques are wrong for ebon plague and crypt fever
+	// Get count of diseases on target which were casted by caster
+	uint32 count = Target->GetAuraCountWithDispelType(DISPEL_DISEASE, pSpell->p_caster->GetGUID());
 
-
+	// Not a logical error, Death Strike should heal only when diseases are presented on its target
 	if(count)
 	{
-		float pct = pSpell->p_caster->GetMaxHealth() * 0.05f;
+		// Calculate heal amount:
+		// A deadly attack that deals $s2% weapon damage plus ${$m1*$m2/100}
+		// and heals the Death Knight for $F% of $Ghis:her; maximum health for each of $Ghis:her; diseases on the target.
+		// $F is dmg_multiplier.
+		float amt = static_cast< float >(pSpell->p_caster->GetMaxHealth()) * pSpell->GetProto()->dmg_multiplier[0] / 100.0f;
 
-		uint32 val = float2int32(pct * count);
+		// Calculate heal amount with diseases on target
+		uint32 val = static_cast< uint32 >(amt * count);
 
 		Aura* aur = pSpell->p_caster->FindAuraByNameHash(SPELL_HASH_IMPROVED_DEATH_STRIKE);
 		if(aur != NULL)
