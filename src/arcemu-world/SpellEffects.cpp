@@ -613,7 +613,8 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 				break;
 			case SPELL_HASH_ICE_LANCE: // Ice Lance
 				{
-					if(unitTarget->HasFlag(UNIT_FIELD_AURASTATE, AURASTATE_FLAG_FROZEN))
+					// Deal triple damage to frozen targets or to those in Deep Freeze
+					if(unitTarget->HasFlag(UNIT_FIELD_AURASTATE, AURASTATE_FLAG_FROZEN) || unitTarget->HasAura(44572))
 						dmg *= 3;
 					//	if (dmg>300)   //dirty bugfix.
 					//		dmg = (int32)(damage >> 1);
