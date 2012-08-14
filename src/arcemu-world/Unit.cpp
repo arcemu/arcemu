@@ -1168,23 +1168,6 @@ uint32 Unit::HandleProc(uint32 flag, Unit* victim, SpellEntry* CastingSpell, boo
 			uint32 talentlevel = 0;
 			switch(origId)
 			{
-					//mace specialization
-				case 12284:
-					{talentlevel = 1;}
-					break;
-				case 12701:
-					{talentlevel = 2;}
-					break;
-				case 12702:
-					{talentlevel = 3;}
-					break;
-				case 12703:
-					{talentlevel = 4;}
-					break;
-				case 12704:
-					{talentlevel = 5;}
-					break;
-
 					//Unbridled Wrath
 				case 12999:
 					{talentlevel = 1;}

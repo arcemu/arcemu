@@ -253,7 +253,7 @@ pSpellAura SpellAuraHandler[TOTAL_SPELL_AURAS] =
 	&Aura::SpellAuraModStealthDetection,//228 Stealth Detection. http://www.thottbot.com/s34709
 	&Aura::SpellAuraReduceAOEDamageTaken,//229 Apply Aura:Reduces the damage your pet takes from area of effect attacks http://www.thottbot.com/s35694
 	&Aura::SpellAuraIncreaseMaxHealth,//230 Increase Max Health (commanding shout);
-	&Aura::SpellAuraNULL,//231 curse a target http://www.thottbot.com/s40303
+	&Aura::SpellAuraProcTriggerSpellWithValue,//231 curse a target http://www.thottbot.com/s40303
 	&Aura::SpellAuraReduceEffectDuration,//232 // Reduces duration of Magic effects by $s2%. SPELL_AURA_MECHANIC_DURATION_MOD
 	&Aura::SpellAuraNULL,//233 // Beer Goggles
 	&Aura::SpellAuraReduceEffectDuration,//234 Apply Aura: Reduces Silence or Interrupt effects, Item spell magic http://www.thottbot.com/s42184
@@ -575,7 +575,7 @@ const char* SpellAuraNames[TOTAL_SPELL_AURAS] =
 	"",													// 228
 	"SPELL_AURA_REDUCE_AOE_DAMAGE_TAKEN",				// 229
 	"INCREASE_MAX_HEALTH",								// 230 Used by Commanding Shout
-	"",													// 231
+	"SPELL_AURA_PROC_TRIGGER_SPELL_WITH_VALUE",			// 231
 	"SPELL_AURA_MECHANIC_DURATION_MOD",					// 232
 	"",													// 233
 	"",													// 234
@@ -4043,6 +4043,57 @@ void Aura::SpellAuraProcTriggerSpell(bool apply)
 		m_target->AddProcTriggerSpell(spellId, GetSpellProto()->Id, m_casterGuid, GetSpellProto()->procChance, GetSpellProto()->procFlags, charges, groupRelation, NULL);
 
 		LOG_DEBUG("%u is registering %u chance %u flags %u charges %u triggeronself %u interval %u", GetSpellProto()->Id, spellId, GetSpellProto()->procChance, GetSpellProto()->procFlags & ~PROC_TARGET_SELF, charges, GetSpellProto()->procFlags & PROC_TARGET_SELF, GetSpellProto()->proc_interval);
+	}
+	else
+	{
+		// Find spell of effect to be triggered
+		uint32 spellId = GetSpellProto()->EffectTriggerSpell[mod->i];
+		if(spellId == 0)
+		{
+			LOG_DEBUG("Warning! trigger spell is null for spell %u", GetSpellProto()->Id);
+			return;
+		}
+
+		m_target->RemoveProcTriggerSpell(spellId, m_casterGuid);
+	}
+}
+
+void Aura::SpellAuraProcTriggerSpellWithValue(bool apply)
+{
+	if(apply)
+	{
+		uint32 groupRelation[3];
+		int charges;
+		uint32 spellId;
+
+		// Find spell of effect to be triggered
+		spellId = GetSpellProto()->EffectTriggerSpell[mod->i];
+		if(spellId == 0)
+		{
+			LOG_DEBUG("Warning! trigger spell is null for spell %u", GetSpellProto()->Id);
+			return;
+		}
+
+		// Initialize mask
+		groupRelation[0] = GetSpellProto()->EffectSpellClassMask[mod->i][0];
+		groupRelation[1] = GetSpellProto()->EffectSpellClassMask[mod->i][1];
+		groupRelation[2] = GetSpellProto()->EffectSpellClassMask[mod->i][2];
+
+		// Initialize charges
+		charges = GetSpellProto()->procCharges;
+		Unit* ucaster = GetUnitCaster();
+		if(ucaster != NULL && GetSpellProto()->SpellGroupType)
+		{
+			SM_FIValue(ucaster->SM_FCharges, &charges, GetSpellProto()->SpellGroupType);
+			SM_PIValue(ucaster->SM_PCharges, &charges, GetSpellProto()->SpellGroupType);
+		}
+
+		SpellEntry* spellInfo = dbcSpell.LookupEntry(spellId);
+		spellInfo->EffectBasePoints[0] = mod->m_amount;
+
+		m_target->AddProcTriggerSpell(spellInfo->Id, GetSpellProto()->Id, m_casterGuid, GetSpellProto()->procChance, GetSpellProto()->procFlags, charges, groupRelation, NULL);
+
+		LOG_DEBUG("%u is registering %u chance %u flags %u charges %u trigger on self %u interval %u", GetSpellProto()->Id, spellId, GetSpellProto()->procChance, GetSpellProto()->procFlags & ~PROC_TARGET_SELF, charges, GetSpellProto()->procFlags & PROC_TARGET_SELF, GetSpellProto()->proc_interval);
 	}
 	else
 	{
