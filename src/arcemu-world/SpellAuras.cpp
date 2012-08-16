@@ -253,7 +253,7 @@ pSpellAura SpellAuraHandler[TOTAL_SPELL_AURAS] =
 	&Aura::SpellAuraModStealthDetection,//228 Stealth Detection. http://www.thottbot.com/s34709
 	&Aura::SpellAuraReduceAOEDamageTaken,//229 Apply Aura:Reduces the damage your pet takes from area of effect attacks http://www.thottbot.com/s35694
 	&Aura::SpellAuraIncreaseMaxHealth,//230 Increase Max Health (commanding shout);
-	&Aura::SpellAuraNULL,//231 curse a target http://www.thottbot.com/s40303
+	&Aura::SpellAuraProcTriggerSpell,//231 curse a target http://www.thottbot.com/s40303
 	&Aura::SpellAuraReduceEffectDuration,//232 // Reduces duration of Magic effects by $s2%. SPELL_AURA_MECHANIC_DURATION_MOD
 	&Aura::SpellAuraNULL,//233 // Beer Goggles
 	&Aura::SpellAuraReduceEffectDuration,//234 Apply Aura: Reduces Silence or Interrupt effects, Item spell magic http://www.thottbot.com/s42184
@@ -575,7 +575,7 @@ const char* SpellAuraNames[TOTAL_SPELL_AURAS] =
 	"",													// 228
 	"SPELL_AURA_REDUCE_AOE_DAMAGE_TAKEN",				// 229
 	"INCREASE_MAX_HEALTH",								// 230 Used by Commanding Shout
-	"",													// 231
+	"SPELL_AURA_PROC_TRIGGER_SPELL_WITH_VALUE",			// 231
 	"SPELL_AURA_MECHANIC_DURATION_MOD",					// 232
 	"",													// 233
 	"",													// 234
