@@ -1,6 +1,6 @@
 /*
  * ArcEmu MMORPG Server
- * Copyright (C) 2008-2011 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2012 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -321,7 +321,7 @@ void LogonServer::Run(int argc, char** argv)
 	sLog.Init(0, LOGON_LOG);
 	
 	sLog.outBasic(BANNER, BUILD_TAG, BUILD_HASH_STR, CONFIG, PLATFORM_TEXT, ARCH);
-	sLog.outError(BANNER, BUILD_TAG, BUILD_HASH_STR, CONFIG, PLATFORM_TEXT, ARCH);
+	sLog.outErrorSilent(BANNER, BUILD_TAG, BUILD_HASH_STR, CONFIG, PLATFORM_TEXT, ARCH); // Echo off.
 
 	if(do_version)
 	{
