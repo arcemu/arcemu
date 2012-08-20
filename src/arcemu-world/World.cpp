@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2011 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2012 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -1439,7 +1439,7 @@ void World::Rehash(bool load)
 	instance_SlidingExpiration = Config.MainConfig.GetBoolDefault("InstanceHandling", "SlidingExpiration", false);
 	instance_DailyHeroicInstanceResetHour = Config.MainConfig.GetIntDefault("InstanceHandling", "DailyHeroicInstanceResetHour", 5);
 	// cebernic: wanna no attunement xD?
-	instance_CheckTriggerPrerequsites = Config.MainConfig.GetBoolDefault("InstanceHandling", "CheckTriggerPrerequsites", true);
+	instance_CheckTriggerPrerequisites = Config.MainConfig.GetBoolDefault("InstanceHandling", "CheckTriggerPrerequisites", true);
 
 	bgsettings.AV_MIN = Config.MainConfig.GetIntDefault("Battleground", "AV_MIN", 10);
 	bgsettings.AV_MAX = Config.MainConfig.GetIntDefault("Battleground", "AV_MAX", 40);

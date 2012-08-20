@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2011 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2012 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -63,7 +63,7 @@ uint32 AreaTriggerFailureMessages[] =
 	31, // 33="You must be level 70 to enter Heroic mode." 31="You must be at least level %u to pass through here."
 };
 
-uint32 CheckTriggerPrerequsites(AreaTrigger* pAreaTrigger, WorldSession* pSession, Player* pPlayer, MapInfo* pMapInfo)
+uint32 CheckTriggerPrerequisites(AreaTrigger* pAreaTrigger, WorldSession* pSession, Player* pPlayer, MapInfo* pMapInfo)
 {
 	if(!pMapInfo || !pMapInfo->HasFlag(WMI_INSTANCE_ENABLED))
 		return AREA_TRIGGER_FAILURE_UNAVAILABLE;
@@ -158,9 +158,9 @@ void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
 				//only ports if player is out of pendings
 				if(GetPlayer()->GetPlayerStatus() == TRANSFER_PENDING)
 					break;
-				if(sWorld.instance_CheckTriggerPrerequsites)
+				if(sWorld.instance_CheckTriggerPrerequisites)
 				{
-					uint32 reason = CheckTriggerPrerequsites(pAreaTrigger, this, _player, WorldMapInfoStorage.LookupEntry(pAreaTrigger->Mapid));
+					uint32 reason = CheckTriggerPrerequisites(pAreaTrigger, this, _player, WorldMapInfoStorage.LookupEntry(pAreaTrigger->Mapid));
 					if(reason != AREA_TRIGGER_FAILURE_OK)
 					{
 						const char* pReason = GetPlayer()->GetSession()->LocalizedWorldSrv(AreaTriggerFailureMessages[reason]);
