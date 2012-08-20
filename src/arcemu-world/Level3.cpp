@@ -856,7 +856,7 @@ bool ChatHandler::HandleNpcInfoCommand(const char* args, WorldSession* m_session
 	SystemMessage(m_session, "Damage (min/max): %f/%f", crt->GetMinDamage(), crt->GetMaxDamage());
 
 	ColorSystemMessage(m_session, MSG_COLOR_RED, "Entry ID: %d", crt->GetEntry());
-	ColorSystemMessage(m_session, MSG_COLOR_RED, "SQL Entry ID: %d", crt->GetSQL_id());
+	ColorSystemMessage(m_session, MSG_COLOR_RED, "Spawn ID: %d", crt->GetSQL_id());
 	// show byte
 	std::stringstream sstext;
 	uint32 theBytes = crt->GetUInt32Value(UNIT_FIELD_BYTES_0);
