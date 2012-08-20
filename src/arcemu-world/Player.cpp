@@ -13247,12 +13247,15 @@ void Player::AcceptQuest(uint64 guid, uint32 quest_id)
 
 	if(qst->srcitem && qst->srcitem != qst->receive_items[0])
 	{
-		Item* item = objmgr.CreateItem(qst->srcitem, this);
-		if(item)
+		if( !qst_giver->IsItem() || ( qst_giver->GetEntry() != qst->srcitem ) )
 		{
-			item->SetStackCount(qst->srcitemcount ? qst->srcitemcount : 1);
-			if(!m_ItemInterface->AddItemToFreeSlot(item))
-				item->DeleteMe();
+			Item *item = objmgr.CreateItem(qst->srcitem, this);
+			if( item != NULL )
+			{
+				item->SetStackCount(qst->srcitemcount ? qst->srcitemcount : 1);
+				if(!m_ItemInterface->AddItemToFreeSlot(item))
+					item->DeleteMe();
+			}
 		}
 	}
 

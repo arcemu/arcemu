@@ -270,8 +270,14 @@ void WorldSession::HandleQuestlogRemoveQuestOpcode(WorldPacket & recvPacket)
 		if(qPtr->receive_items[i])
 			GetPlayer()->GetItemInterface()->RemoveItemAmt(qPtr->receive_items[i], 1);
 	}
-	if(qPtr->srcitem && qPtr->srcitem != qPtr->receive_items[0])
-		GetPlayer()->GetItemInterface()->RemoveItemAmt(qPtr->srcitem, qPtr->srcitemcount ? qPtr->srcitemcount : 1);
+
+	if( qPtr->srcitem && qPtr->srcitem != qPtr->receive_items[0] )
+	{
+		ItemPrototype *itemProto = ::ItemPrototypeStorage.LookupEntry( qPtr->srcitem );
+		if( itemProto != NULL )
+			if( itemProto->QuestId != qPtr->id )
+				_player->GetItemInterface()->RemoveItemAmt(qPtr->srcitem, qPtr->srcitemcount ? qPtr->srcitemcount : 1);
+	}
 	//remove all quest items (but not trade goods) collected and required only by this quest
 	for(uint32 i = 0; i < MAX_REQUIRED_QUEST_ITEM; ++i)
 	{
