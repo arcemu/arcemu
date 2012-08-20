@@ -2763,12 +2763,12 @@ bool LeyLine(uint32 i, Spell* pSpell)
 	if(qle == NULL)
 		return true;
 
-	uint32 portals[] = { 188527, 188526, 188525 };
+	uint32 portals[] = { 25156 , 25154, 25157 };
 	Object* portal = NULL;
 
 	for(uint32 i = 0; i < sizeof(portals) / sizeof(uint32); i++)
 	{
-		portal = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(pPlayer->GetPositionX(), pPlayer->GetPositionY(), pPlayer->GetPositionZ(), portals[i]);
+		portal = pPlayer->GetMapMgr()->GetInterface()->GetCreatureNearestCoords( pPlayer->GetPositionX(), pPlayer->GetPositionY(), pPlayer->GetPositionZ(), portals[i]);
 		if(portal != NULL && qle->GetMobCount(i) < qle->GetQuest()->required_mobcount[i])
 		{
 			qle->SetMobCount(i,  qle->GetMobCount(i) + 1);
