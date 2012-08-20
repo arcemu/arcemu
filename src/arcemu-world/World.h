@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2011 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2012 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -620,7 +620,7 @@ class SERVER_DECL World : public Singleton<World>, public EventableObject
 		bool instance_TakeGroupLeaderID;
 		bool instance_SlidingExpiration;
 		int instance_DailyHeroicInstanceResetHour;
-		bool instance_CheckTriggerPrerequsites;
+		bool instance_CheckTriggerPrerequisites;
 
 		// battleground settings
 		struct BGSettings{
