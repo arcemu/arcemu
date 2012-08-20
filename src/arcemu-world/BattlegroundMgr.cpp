@@ -149,7 +149,12 @@ void CBattlegroundManager::HandleBattlegroundJoin(WorldSession* m_session, World
 
 	pck >> guid >> bgtype >> instance;
 
-	if( ( bgtype >= BATTLEGROUND_NUM_TYPES ) || ( bgtype == 0 ) || ( bgMaps.find( bgtype ) == bgMaps.end() ) )
+	// Random battlegrounds aren't yet implemented
+	if( bgtype == BATTLEGROUND_RANDOM )
+		return;
+
+	if( ( bgtype >= BATTLEGROUND_NUM_TYPES ) || ( bgtype == 0 ) ||
+		( ( bgMaps.find( bgtype ) == bgMaps.end() ) && bgtype != BATTLEGROUND_RANDOM ) )
 	{
 		sCheatLog.writefromsession(m_session, "tried to crash the server by joining battleground that does not exist (0)");
 		m_session->Disconnect();
