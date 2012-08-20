@@ -562,6 +562,12 @@ void Arcemu::Gossip::TabardDesigner::OnHello(Object* pObject, Player* Plr)
 	if( chartergiver->isCharterGiver() )
 		menu.AddItem( Gossip::ICON_CHAT, "How do I create a guild?", 2 );
 	
+	if(chartergiver->isVendor())
+	{
+		VendorRestrictionEntry* vendor = VendorRestrictionEntryStorage.LookupEntry(chartergiver->GetProto()->Id);
+		if(Plr->CanBuyAt(vendor))
+			menu.AddItem(Gossip::ICON_VENDOR, Plr->GetSession()->LocalizedWorldSrv(Gossip::VENDOR), 3);
+	}
 	menu.Send(Plr);
 }
 
@@ -574,6 +580,9 @@ void Arcemu::Gossip::TabardDesigner::OnSelectOption(Object* pObject, Player* Plr
 		case 2:
 			if( TO_CREATURE( pObject )->isCharterGiver() )
 				Plr->GetSession()->SendCharterRequest(TO_CREATURE(pObject));
+			break;
+		case 3:
+			Plr->GetSession()->SendInventoryList(TO_CREATURE(pObject));
 			break;
 	}
 }
