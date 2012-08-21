@@ -83,8 +83,38 @@ void OnEmote(Player* pPlayer, uint32 Emote, Unit* pUnit)
 	}
 }
 
+class JeanPierrePoulain : public GossipScript
+{
+		public:
+			void GossipHello(Object* pObject, Player* plr)
+			{
+			GossipMenu* Menu;
+				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 14500, plr);
+			if(plr->HasFinishedQuest(13668) || plr->GetQuestLogForEntry(13668) || plr->HasFinishedQuest(13667) || plr->GetQuestLogForEntry(13667))
+				Menu->SendTo(plr);
+			else
+				Menu->AddItem(0, "I'll take the flight."	,1);
+				Menu->SendTo(plr);
+}			
+
+void GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, uint32 IntId, const char* Code)
+{
+			switch(IntId)
+			{
+			case 0:
+				GossipHello(pObject, Plr);
+				break;
+			case 1:
+				Plr->CastSpell(Plr, 64795, true);
+				break;
+			}
+				Plr->Gossip_Complete();
+		}
+};
+
 void SetupRandomScripts(ScriptMgr* mgr)
 {
 	// Register Hook Event here
 	mgr->register_hook(SERVER_HOOK_EVENT_ON_EMOTE, (void*)&OnEmote);
+	mgr->register_gossip_script(34244, new JeanPierrePoulain);
 }
