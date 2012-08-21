@@ -83,8 +83,37 @@ void OnEmote(Player* pPlayer, uint32 Emote, Unit* pUnit)
 	}
 }
 
+class DedicationOfHonorAI : public GameObjectAIScript
+{
+	public:
+		ADD_GAMEOBJECT_FACTORY_FUNCTION(DedicationOfHonorAI)
+		DedicationOfHonorAI(GameObject* gameobject) : GameObjectAIScript(gameobject){}
+		~DedicationOfHonorAI() {}
+
+		void OnActivate(Player* Plr)
+		{
+			Arcemu::Gossip::Menu::SendQuickMenu(_gameobject->GetGUID(), 15921, Plr, 1, Arcemu::Gossip::ICON_CHAT, "See the fall of the Lich King.");
+		}
+};
+
+class DedicationOfHonorGossip : public GossipScript
+{
+	public:
+		DedicationOfHonorGossip() : GossipScript(){}
+
+		void OnSelectOption(Object* pObject, Player* Plr, uint32 Id, const char* enteredcode)
+		{
+			uint32 id = 16;
+			Plr->GetSession()->OutPacket(SMSG_TRIGGER_MOVIE, sizeof(uint32), &id);
+
+			Arcemu::Gossip::Menu::Complete(Plr);
+		}
+};
+
 void SetupRandomScripts(ScriptMgr* mgr)
 {
 	// Register Hook Event here
 	mgr->register_hook(SERVER_HOOK_EVENT_ON_EMOTE, (void*)&OnEmote);
+	mgr->register_gameobject_script(202443, &DedicationOfHonorAI::Create);
+	mgr->register_go_gossip_script(202443, new DedicationOfHonorGossip);
 }
