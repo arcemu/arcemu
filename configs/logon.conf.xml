@@ -1,0 +1,27 @@
+<config type="logon" version="1">
+    
+    <logondatabase hostname = "host"
+                   username = "username"
+                   password = "passwd"
+                   database = "database"
+                   port     = "3306"
+    />
+     
+    <host logon_address   = "127.0.0.1"
+          logon_port      = "3724"
+          is_address      = "127.0.0.1"
+          is_port         = "8093"
+    />
+    
+    <log level="0"
+    />
+    
+    <rates account_refresh = "600"
+    />
+    
+    <security remote_password       = "change_me_logon"
+              allowed_ip_ranges     = "127.0.0.1/24"
+              allowed_mod_ip_ranges = "127.0.0.1/24"
+    />
+    
+</config>

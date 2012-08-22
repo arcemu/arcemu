@@ -31,6 +31,9 @@
 #include <sched.h>
 #endif
 
+#include "LogonConfig.h"
+#include "LogonConfigParser.h"
+
 // Database impl
 Database* sLogonSQL;
 initialiseSingleton(LogonServer);
@@ -278,6 +281,11 @@ bool Rehash()
 	return true;
 }
 
+bool rehash2()
+{
+	return true;
+}
+
 
 void LogonServer::Run(int argc, char** argv)
 {
@@ -329,9 +337,11 @@ void LogonServer::Run(int argc, char** argv)
 		return;
 	}
 
-	if(do_check_conf)
+	if( true /*do_check_conf */ )
 	{
 		LOG_BASIC("Checking config file: %s", config_file);
+		LogonConfigParser parser;
+		parser.parseFile( "configs/logon.conf.xml" );
 		if(Config.MainConfig.SetSource(config_file, true))
 			LOG_BASIC("  Passed without errors.");
 		else
