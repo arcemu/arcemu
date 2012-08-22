@@ -1,0 +1,26 @@
+﻿<config type="realms" version="1">
+
+  <logon_server address     = "127.0.0.1"
+                port        = "8093"
+                name        = "Default Logon"
+                realm_count = "3" />
+
+  <realm1 name = "My Realm Name"
+          address_and_port = "internet-url-or-ip:8129"
+          icon             = "PVP"
+          population       = "1.0"
+          time_zone        = "2" />
+
+  <realm2 name             = "Private"
+          address_and_port = "internal-ip-address-for-lan-access:8129"
+          icon             = "PVP"
+          population       = "1.0"
+          time_zone        = "1" />
+
+  <realm3 name             = "Localhost"
+          address_and_port = "localhost:8129"
+          icon             = "PVP"
+          population       = "1.0"
+          time_zone        = "1" />
+
+</config>

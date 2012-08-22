@@ -1,0 +1,170 @@
+﻿<config type="world" version="1">
+
+  <world_database hostname = "host"
+                  username = "username"
+                  password = "passwd"
+                  database = "database"
+                  port     = "3306" />
+
+  <character_database hostname = "host"
+                      username = "username"
+                      password = "passwd"
+                      database = "database"
+                      port     = "3306" />
+
+  <host world_address = "0.0.0.0"
+        world_port    = "8129" />
+
+  <log level                    = "0"
+       packet_logging           = "0"
+       disable_crashdump_report = "0" />
+
+  <server player_limit             = "100"
+          motd                     = "Welcome to the World of Warcraft!"
+          send_stats_on_join       = "1"
+          enable_breathing         = "1"
+          seperate_chat_channels   = "0"
+          compression_threshold    = "1000"
+          queue_update_interval    = "5000"
+          kick_afk_players         = "0"
+          connection_timeout       = "180"
+          realm_type               = "1"
+          adjust_priority          = "0"
+          require_all_signatures   = "0"
+          show_gm_in_who_list      = "1"
+          map_unload_time          = "300"
+          limited_names            = "1"
+          use_account_data         = "0"
+          allow_player_commands    = "0"
+          enable_lfg_join          = "0"
+          time_zone                = "0"
+          collision                = "0"
+          disable_fear_movement    = "0"
+          save_extended_char_data  = "0"
+          player_autosave_interval = "300000" />
+
+  <announce tag                         = "Staff"
+            gm_admin_tag                = "0"
+            name_in_announce            = "1"
+            name_in_widescreen_announce = "1"
+            show_in_console             = "1" />
+
+  <rates health              = "1"
+         power_mana          = "1"
+         power_rage          = "1"
+         power_pet_focus     = "1"
+         power_energy        = "1"
+         quest_reputation    = "1"
+         kill_reputation     = "1"
+         honor               = "1"
+         pvp_timer           = "300000"
+         arena_queue_diff    = "150"
+         compression         = "1"
+         xp                  = "1"
+         quest_xp            = "1"
+         rest_xp             = "1"
+         explore_xp          = "1"
+         drop_gray           = "1"
+         drop_white          = "1"
+         drop_green          = "1"
+         drop_blue           = "1"
+         drop_purple         = "1"
+         drop_orange         = "1"
+         drop_artifact       = "1"
+         drop_money          = "1"
+         skill_chance        = "1"
+         skill_rate          = "1"
+         arena_multiplier_2x = "1"
+         arena_multiplier_3x = "1"
+         arena_multiplier_5x = "1" />
+
+  <gm_client gm_client_channel = "gm_sync_channel" />
+
+  <terrain map_path    = "maps"
+           vmap_path   = "vmaps"
+           unload_maps = "1" />
+
+  <additional_logs cheaters    = "0"
+                   gm_commands = "0"
+                   time_stamp  = "0" />
+
+  <mail reload_delay                    = "0"
+        disable_postage_costs           = "0"
+        disable_postage_costs_for_gm    = "1"
+        disable_postage_delay_items     = "1"
+        disable_message_expiry          = "0"
+        enable_interfaction_mail        = "1"
+        enable_interfaction_mail_for_gm = "1" />
+
+  <stat_dumper file_name = "stats.xml"
+               interval  = "120000" />
+
+  <startup preloading                   = "0"
+           background_loot_loading      = "1"
+           enable_multithreaded_loading = "1"
+           enable_spell_id_dump         = "0"
+           load_additional_tables       = "" />
+
+  <spam_protection lines        = "0"
+                   seconds      = "0"
+                   send_message = "0" />
+
+  <security disable_pings   = "0"
+            remote_password = "change_me_world" />
+
+  <hack_detection teleport         = "1"
+                  speed            = "1"
+                  fall_damage      = "1"
+                  flight           = "1"
+                  flight_threshold = "10"
+                  disable_on_gm    = "1" />
+
+  <periods honor_update = "daily"
+           arena_update = "weekly"
+           daily_update = "daily" />
+
+  <channels banned_channels        = ""
+            minimum_level_required = "" />
+
+  <remote_console enabled           = "0"
+                  listen_on_address = "0.0.0.0"
+                  listen_on_port    = "8092" />
+
+  <movement flush_interval                  = "1000"
+            compression_rate                = "1"
+            compression_threshold           = "30.0"
+            compression_threshold_creatures = "10.0" />
+
+  <localization locale_bindings = "" />
+
+  <instance_handling take_group_leader_id             = "1"
+                     sliding_expiration               = "0"
+                     daily_heroic_instance_reset_hour = "5"
+                     check_trigger_prerequisites      = "1" />
+
+  <battlegrounds alterac_valley_minimum_players         = "10"
+                 alterac_valley_maximum_players         = "40"
+                 arathi_basin_minimum_players           = "5"
+                 arathi_basin_maximum_players           = "15"
+                 eye_of_the_storm_minimum_players       = "5"
+                 eye_of_the_storm_maximum_players       = "15"
+                 warsong_gulch_minimum_players          = "5"
+                 warsong_gulch_maximum_players          = "10"
+                 strand_of_the_ancients_minimum_players = "5"
+                 strand_of_the_ancients_maximum_players = "15" />
+
+  <arena season         = "8"
+         is_in_progress = "1" />
+
+  <game_master start_on_gm_island   = "1"
+               disable_achievements = "0" />
+
+  <limits enable                        = "1"
+          auto_attack_damage            = "10000"
+          spell_damage                  = "30000"
+          health                        = "100000"
+          mana                          = "80000"
+          disconnect_if_values_exceeded = "0"
+          broadcast_message_to_gms      = "1" />
+
+</config>

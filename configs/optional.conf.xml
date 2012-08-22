@@ -1,0 +1,43 @@
+﻿<config type="optional" version="1">
+
+  <optional starting_level         = "1"
+            level_cap              = "80"
+            gen_level_cap          = "80"
+            allow_tbc              = "1"
+            anti_master_loot_ninja = "0"
+            additional_fun         = "0"
+            dk_starting_talents    = "0"
+            max_professions        = "2" />
+
+  <interfaction chat                  = "0"
+                group                 = "0"
+                guild                 = "0"
+                trade                 = "0"
+                friends               = "0"
+                misc                  = "0"
+                cross_over_characters = "1" />
+
+  <announce_color tag          = "2"
+                  gm_admin_tag = "1"
+                  name         = "4"
+                  msg          = "6" />
+
+  <extra instant_80 = "0"
+         portals    = "0" />
+
+  <game_master list_only_active_gms = "0"
+               hide_permissions     = "0" />
+
+  <common_schedule auto_broadcast                = "0"
+                   broadcast_interval            = "10"
+                   broadcast_trigger_percent_cap = "2"
+                   broadcast_order_mode          = "0" />
+
+  <class_options death_knight_pre_req = "1"
+                 death_knight_limit   = "1" />
+
+  <gold_settings starting_gold = "0"
+                 enable_cap    = "1"
+                 cap           = "214748" />
+
+</config>
