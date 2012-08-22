@@ -17,10 +17,10 @@
                 misc                  = "0"
                 cross_over_characters = "1" />
 
-  <announce_color tag    = "2"
-                  gm_tag = "1"
-                  name   = "4"
-                  msg    = "6" />
+  <announce_color tag          = "2"
+                  gm_admin_tag = "1"
+                  name         = "4"
+                  msg          = "6" />
 
   <extra instant_80 = "0"
          portals    = "0" />
