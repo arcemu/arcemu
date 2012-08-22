@@ -41,6 +41,8 @@ Arcemu::Threading::AtomicBoolean mrunning(true);
 Mutex _authSocketLock;
 set<AuthSocket*> _authSockets;
 
+LogonConfigData configFile;
+
 /*** Signal Handler ***/
 void _OnSignal(int s)
 {
@@ -101,61 +103,20 @@ int main(int argc, char** argv)
   **/
 bool startdb()
 {
-	string lhostname, lusername, lpassword, ldatabase;
+	std::string lhostname, lusername, lpassword, ldatabase;
 	int lport = 0;
-	// Configure Main Database
-
-	bool result;
-
-	// Set up reusable parameter checks for each parameter
-	// Note that the Config.MainConfig.Get[$type] methods returns boolean value and not $type
-
-	bool existsUsername = Config.MainConfig.GetString("LogonDatabase", "Username", &lusername);
-	bool existsPassword = Config.MainConfig.GetString("LogonDatabase", "Password", &lpassword);
-	bool existsHostname = Config.MainConfig.GetString("LogonDatabase", "Hostname", &lhostname);
-	bool existsName     = Config.MainConfig.GetString("LogonDatabase", "Name",     &ldatabase);
-	bool existsPort     = Config.MainConfig.GetInt("LogonDatabase", "Port",     &lport);
-
-	// Configure Logon Database...
-
-	// logical AND every parameter to ensure we catch any error
-	result = existsUsername && existsPassword && existsHostname && existsName && existsPort;
-
-	if(!result)
-	{
-		//Build informative error message
-		//Built as one string and then printed rather than calling sLog.outString(...) for every line,
-		//  as experiments has seen other thread write to the console inbetween calls to sLog.outString(...)
-		//  resulting in unreadable error messages.
-		//If the <LogonDatabase> tag is malformed, all parameters will fail, and a different error message is given
-
-		string errorMessage = "sql: Certain <LogonDatabase> parameters not found in " CONFDIR "\\logon.conf \r\n";
-		if(!(existsHostname || existsUsername || existsPassword  ||
-		        existsName     || existsPort))
-		{
-			errorMessage += "  Double check that you have remembered the entire <LogonDatabase> tag.\r\n";
-			errorMessage += "  All parameters missing. It is possible you forgot the first '<' character.\r\n";
-		}
-		else
-		{
-			errorMessage +=                        "  Missing paramer(s):\r\n";
-			if(!existsHostname) { errorMessage += "    Hostname\r\n" ; }
-			if(!existsUsername) { errorMessage += "    Username\r\n" ; }
-			if(!existsPassword) { errorMessage += "    Password\r\n" ; }
-			if(!existsName) { errorMessage += "    Name\r\n"; }
-			if(!existsPort) { errorMessage += "    Port\r\n"; }
-		}
-
-		LOG_ERROR(errorMessage.c_str());
-		return false;
-	}
 
 	sLogonSQL = Database::CreateDatabaseInterface();
 
 	// Initialize it
-	if(!sLogonSQL->Initialize(lhostname.c_str(), (unsigned int)lport, lusername.c_str(),
-	                          lpassword.c_str(), ldatabase.c_str(), Config.MainConfig.GetIntDefault("LogonDatabase", "ConnectionCount", 5),
-	                          16384))
+	if( !sLogonSQL->Initialize( configFile.logondb.host.c_str(),
+								configFile.logondb.port,
+								configFile.logondb.username.c_str(),
+								configFile.logondb.password.c_str(),
+								configFile.logondb.database.c_str(),
+								5,
+								16384 
+								) )
 	{
 		LOG_ERROR("sql: Logon database initialization failed. Exiting.");
 		return false;
@@ -201,26 +162,28 @@ bool IsServerAllowedMod(unsigned int IP)
 	return false;
 }
 
-bool Rehash()
+bool rehash2()
 {
-	char* config_file = (char*)CONFDIR "/logon.conf";
-	if(!Config.MainConfig.SetSource(config_file))
+	char* config_file = (char*)CONFDIR "/logon.conf.xml";
+	LogonConfigParser configParser;
+	if( !configParser.parseFile( config_file ) )
 	{
-		LOG_ERROR("Config file could not be rehashed.");
+		LOG_ERROR("Config file could not be loaded.");
 		return false;
 	}
+	configFile = configParser.getData();
 
-	// re-set the allowed server IP's
-	string ips = Config.MainConfig.GetStringDefault("LogonServer", "AllowedIPs", "");
-	string ipsmod = Config.MainConfig.GetStringDefault("LogonServer", "AllowedModIPs", "");
+	std::string ips = configFile.security.allowed_ip_ranges; 
+	std::string ipsmod = configFile.security.allowed_mod_ip_ranges;
 
-	vector<string> vips = StrSplit(ips, " ");
-	vector<string> vipsmod = StrSplit(ips, " ");
+	std::vector< std::string > vips = StrSplit(ips, " ");
+	std::vector< std::string > vipsmod = StrSplit(ips, " ");
 
 	m_allowedIpLock.Acquire();
 	m_allowedIps.clear();
 	m_allowedModIps.clear();
-	vector<string>::iterator itr;
+	
+	std::vector< std::string >::iterator itr;
 	for(itr = vips.begin(); itr != vips.end(); ++itr)
 	{
 		string::size_type i = itr->find("/");
@@ -278,11 +241,7 @@ bool Rehash()
 
 	m_allowedIpLock.Release();
 
-	return true;
-}
 
-bool rehash2()
-{
 	return true;
 }
 
@@ -337,21 +296,16 @@ void LogonServer::Run(int argc, char** argv)
 		return;
 	}
 
-	if( true /*do_check_conf */ )
+	if( do_check_conf )
 	{
 		LOG_BASIC("Checking config file: %s", config_file);
-		LogonConfigParser parser;
-		parser.parseFile( "configs/logon.conf.xml" );
-		if(Config.MainConfig.SetSource(config_file, true))
+		
+		LogonConfigParser parser;		
+		if( parser.parseFile( "configs/logon.conf.xml" ) )
 			LOG_BASIC("  Passed without errors.");
 		else
 			LOG_BASIC("  Encountered one or more errors.");
-		/* Remved useless die directive */
-		/*
-		string die;
-		if(Config.MainConfig.GetString("die", "msg", &die) || Config.MainConfig.GetString("die2", "msg", &die))
-			printf("Die directive received: %s", die.c_str());
-		*/
+
 		sLog.Close();
 		return;
 	}
@@ -364,14 +318,14 @@ void LogonServer::Run(int argc, char** argv)
 	Log.Success("System", "Initializing Random Number Generators...");
 
 	Log.Success("Config", "Loading Config Files...");
-	if(!Rehash())
+	if(!rehash2())
 	{
 		sLog.Close();
 		return;
 	}
 
 	Log.Success("ThreadMgr", "Starting...");
-	sLog.SetFileLoggingLevel(Config.MainConfig.GetIntDefault("LogLevel", "File", 0));
+	sLog.SetFileLoggingLevel(  configFile.log.level );
 
 	ThreadPool.Startup();
 
@@ -394,29 +348,22 @@ void LogonServer::Run(int argc, char** argv)
 	Log.Success("AccountMgr", "%u accounts are loaded and ready.", sAccountMgr.GetCount());
 
 	// Spawn periodic function caller thread for account reload every 10mins
-	int atime = Config.MainConfig.GetIntDefault("Rates", "AccountRefresh", 600);
+	uint32 atime = configFile.rates.account_refresh;
 	atime *= 1000;
 	//SpawnPeriodicCallThread(AccountMgr, AccountMgr::getSingletonPtr(), &AccountMgr::ReloadAccountsCallback, time);
 	PeriodicFunctionCaller<AccountMgr> * pfc = new PeriodicFunctionCaller<AccountMgr>(AccountMgr::getSingletonPtr(), &AccountMgr::ReloadAccountsCallback, atime);
 	ThreadPool.ExecuteTask(pfc);
 
 	// Load conf settings..
-	uint32 cport = Config.MainConfig.GetIntDefault("Listen", "RealmListPort", 3724);
-	uint32 sport = Config.MainConfig.GetIntDefault("Listen", "ServerPort", 8093);
-	//uint32 threadcount = Config.MainConfig.GetIntDefault("Network", "ThreadCount", 5);
-	//uint32 threaddelay = Config.MainConfig.GetIntDefault("Network", "ThreadDelay", 20);
-	string host = Config.MainConfig.GetStringDefault("Listen", "Host", "0.0.0.0");
-	string shost = Config.MainConfig.GetStringDefault("Listen", "ISHost", host.c_str());
-
-	/* Due to many people's inability to cope with us being out-of-sync with retail sometimes we were forced to hardcode this
-	min_build = Config.MainConfig.GetIntDefault("Client", "MinBuild", 6180);
-	max_build = Config.MainConfig.GetIntDefault("Client", "MaxBuild", 6999);
-	*/
+	uint32 cport = configFile.host.logon_port;
+	uint32 sport = configFile.host.is_port;
+	std::string host = configFile.host.logon_address;
+	std::string shost = configFile.host.is_address;
 
 	min_build = LOGON_MINBUILD;
 	max_build = LOGON_MAXBUILD;
 
-	string logon_pass = Config.MainConfig.GetStringDefault("LogonServer", "RemotePassword", "r3m0t3b4d");
+	std::string logon_pass = configFile.security.remote_password;
 	Sha1Hash hash;
 	hash.UpdateData(logon_pass);
 	hash.Finalize();

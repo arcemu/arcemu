@@ -12,39 +12,40 @@ struct AllowedIP
 
 struct LogonConfigData
 {
-	struct logondb
+	struct LogonDB
 	{
 		std::string host;
 		std::string username;
 		std::string password;
 		std::string database;
 		unsigned int port;
-	};
+	}logondb;
 
-	struct host
+	struct Host
 	{
 		std::string logon_address;
 		unsigned int logon_port;
 		std::string is_address;
 		unsigned int is_port;
-	};
+	}host;
 
-	struct log
+	struct LogSettings
 	{
 		unsigned short level;
-	};
+	}log;
 
-	struct rates
+	struct Rates
 	{
 		unsigned int account_refresh;
-	};
+	}rates;
 
-	struct security
+	struct Security
 	{
 		std::string remote_password;
 		std::string allowed_ip_ranges;
 		std::string allowed_mod_ip_ranges;
-	};
+	}security;
+
 };
 
 #endif

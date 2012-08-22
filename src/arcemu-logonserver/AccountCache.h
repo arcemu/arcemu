@@ -205,7 +205,7 @@ class InformationCore : public Singleton<InformationCore>
 		InformationCore()
 		{
 			realmhigh = 0;
-			usepings  = !Config.MainConfig.GetBoolDefault("LogonServer", "DisablePings", false);
+			usepings  = true;
 			m_realms.clear();
 		}
 

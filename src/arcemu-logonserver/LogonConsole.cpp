@@ -21,12 +21,12 @@
 #include "LogonConsole.h"
 
 initialiseSingleton(LogonConsole);
-bool Rehash();
+bool rehash2();
 
 void LogonConsole::TranslateRehash(char* str)
 {
 	sLog.outString("rehashing config file...");
-	Rehash();
+	rehash2();
 }
 
 void LogonConsole::Kill()
