@@ -97,6 +97,15 @@ public:
 		Menu->AddItem(0, "Sholazar Basin"    , 3);
 		Menu->AddItem(0, "Icecrown"      , 4);
 		Menu->AddItem(0, "Storm Peaks"        , 5);
+		
+		uint8 chance = RandomUInt(1);
+		switch(chance)
+		{	
+		case 1:
+			Menu->AddItem(0, "Underground..."		,6);
+			break;
+		
+		}
 		Menu->SendTo(plr);
      }
    }
@@ -112,7 +121,7 @@ public:
 	Plr->CastSpell(Plr, 67834, true);
 		break;
 	case 2:
-	Plr->CastSpell(Plr, 67838, true); //67838
+	Plr->CastSpell(Plr, 67838, true);
 		break;
 	case 3:
 	Plr->CastSpell(Plr, 67835, true);
@@ -122,6 +131,9 @@ public:
 		break;
 	case 5:
 	Plr->CastSpell(Plr, 67837, true);
+		break;
+	case 6:
+	Plr->CastSpell(Plr, 68081, true);
 		break;
         }
 	Plr->Gossip_Complete();
