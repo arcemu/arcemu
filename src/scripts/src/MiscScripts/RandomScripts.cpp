@@ -132,11 +132,10 @@ public:
 		Menu->AddItem(0, "Storm Peaks"        , 5);
 		
 		uint8 chance = RandomUInt(1);
-		switch(chance)
-		{	
-		case 1:
-			Menu->AddItem(0, "Underground..."		,6);
-			break;
+	{
+		if (chance == 1)
+		Menu->AddItem(0, "Underground..."		,6);
+	}
 		
 		}
 		Menu->SendTo(plr);
