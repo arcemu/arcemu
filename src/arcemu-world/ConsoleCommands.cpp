@@ -389,10 +389,10 @@ bool HandleClearConsoleCommand(BaseConsole* pConsole, int argc, const char* argv
 
 bool HandleReloadConsoleCommand(BaseConsole* pConsole, int argc, const char* argv[])
 {
-	sWorld.SendWorldText("Support for reloading tables on the fly was disabled in Arcemu revision 3621. You are seeing this message because apparently reading SVN changelog or using forums search is way over the head of some of our users.", 0);
-	return true;
+	// This function is disabled until the user activates it via CMake.
 
-	/*
+#ifdef EXPERIMENTAL_RELOAD_FUNCTIONS
+
 	if( argc < 2 || strlen(argv[1]) < 3 )
 		return false;
 
@@ -433,11 +433,26 @@ bool HandleReloadConsoleCommand(BaseConsole* pConsole, int argc, const char* arg
 
 	return true;
 
-	*/
+#else
 
+	sWorld.SendWorldText("Support for reloading tables on the fly was disabled in ArcEmu revision 3621 due to stability issues. Check \"BUILD_EXPERIMENTAL_RELOAD_FUNCTIONS\" in CMake and rebuild ArcEmu to reenable this feature.", 0);
+	return true;
+
+#endif
 }
 bool HandleScriptEngineReloadCommand(BaseConsole*, int, const char* [])
 {
+	// This function is disabled until the user activates it via CMake.
+
+#ifdef EXPERIMENTAL_RELOAD_FUNCTIONS
+
 	sScriptMgr.ReloadScriptEngines();
 	return true;
+
+#else
+
+	sWorld.SendWorldText("Reloading scripts was disabled because of possible misbehavior if you are using \"RegisterTimedEvent\" in scripts. Check \"BUILD_EXPERIMENTAL_RELOAD_FUNCTIONS\" in CMake and rebuild ArcEmu to reenable this feature.", 0);
+	return true;
+
+#endif
 }

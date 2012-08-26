@@ -557,7 +557,7 @@ class SERVER_DECL ChatHandler : public Singleton<ChatHandler>
 		bool HandleLookupAchievementCmd(const char* args, WorldSession* m_session);
 #endif
 		// Deprecated GMScript reload.
-		//bool HandleReloadScriptsCommand(const char * args, WorldSession * m_session);
+		bool HandleReloadScriptsCommand(const char * args, WorldSession * m_session);
 		bool HandleNpcPossessCommand(const char* args, WorldSession* m_session);
 		bool HandleNpcUnPossessCommand(const char* args, WorldSession* m_session);
 		bool HandleRehashCommand(const char* args, WorldSession* m_session);

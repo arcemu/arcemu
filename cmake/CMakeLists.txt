@@ -69,6 +69,12 @@ SET(BUILD_ARCEMUSCRIPTS TRUE CACHE BOOL "Set to false to NOT build script librar
 SET(BUILD_TOOLS TRUE CACHE BOOL "Build Arcemu tools" )
 SET(VISUALSTUDIO_COMPILERHEAPLIMIT 200 CACHE STRING "Visual Studio compiler heap limit. Ignore on darwin and unix platforms." )
 
+# Allows compilation of the reload functions without the need of manual uncommenting.
+SET(BUILD_EXPERIMENTAL_RELOAD_FUNCTIONS false CACHE BOOL "Enables unstable functions 'reloadtable' and 'reloadscripts'.")
+IF(BUILD_EXPERIMENTAL_RELOAD_FUNCTIONS)
+	add_definitions(${GLOBAL_DEFINES} -DEXPERIMENTAL_RELOAD_FUNCTIONS)
+ENDIF(BUILD_EXPERIMENTAL_RELOAD_FUNCTIONS)
+
 include(CompilerVersion)
 if( CMAKE_GENERATOR MATCHES Unix* )
 	add_definitions(-Wno-deprecated)
