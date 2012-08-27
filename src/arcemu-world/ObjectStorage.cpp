@@ -662,14 +662,15 @@ bool LoadAdditionalTable(const char* TableName, const char* SecondName, bool fir
 bool Storage_ReloadTable(const char* TableName)
 {
 	// bur: mah god this is ugly :P
-	/*if(!stricmp(TableName, "items"))					// Items
+	// This will only be used if EXPERIMENTAL_RELOAD_FUNCTIONS is defined.
+	if(!stricmp(TableName, "items"))					// Items
 		ItemPrototypeStorage.Reload();
 	else if(!stricmp(TableName, "creature_proto"))		// Creature Proto
 		CreatureProtoStorage.Reload();
 	else if(!stricmp(TableName, "creature_names"))		// Creature Names
 		CreatureNameStorage.Reload();
 	else if(!stricmp(TableName, "gameobject_names"))	// GO Names
-		GameObjectNameStorage.Reload();*/
+		GameObjectNameStorage.Reload();
 	if(!stricmp(TableName, "areatriggers"))		// Areatriggers
 		AreaTriggerStorage.Reload();
 	else if(!stricmp(TableName, "itempages"))			// Item Pages
@@ -678,8 +679,8 @@ bool Storage_ReloadTable(const char* TableName)
 		WorldStringTableStorage.Reload();
 	else if(!stricmp(TableName, "worldbroadcast"))			// wb
 		WorldBroadCastStorage.Reload();
-	/*else if(!stricmp(TableName, "quests"))				// Quests
-		QuestStorage.Reload();*/
+	else if(!stricmp(TableName, "quests"))				// Quests
+		QuestStorage.Reload();
 	else if(!stricmp(TableName, "npc_text"))			// NPC Text Storage
 		NpcTextStorage.Reload();
 	else if(!stricmp(TableName, "fishing"))				// Fishing Zones
