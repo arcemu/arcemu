@@ -220,14 +220,15 @@ namespace luaGlobalFunctions
 		}
 		else
 		{
-			/*if (!stricmp(TableName, "items"))					// Items
+			// This will only be used if EXPERIMENTAL_RELOAD_FUNCTIONS is defined.
+			if (!stricmp(TableName, "items"))					// Items
 				ItemPrototypeStorage.Reload();
 			else if (!stricmp(TableName, "creature_proto"))		// Creature Proto
 				CreatureProtoStorage.Reload();
 			else if (!stricmp(TableName, "creature_names"))		// Creature Names
 				CreatureNameStorage.Reload();
 			else if (!stricmp(TableName, "gameobject_names"))	// GO Names
-				GameObjectNameStorage.Reload();*/
+				GameObjectNameStorage.Reload();
 			if(!stricmp(TableName, "areatriggers"))		// Areatriggers
 				AreaTriggerStorage.Reload();
 			else if(!stricmp(TableName, "itempages"))			// Item Pages
@@ -236,8 +237,8 @@ namespace luaGlobalFunctions
 				WorldStringTableStorage.Reload();
 			else if(!stricmp(TableName, "worldbroadcast"))			// wb
 				WorldBroadCastStorage.Reload();
-			/*else if (!stricmp(TableName, "quests"))				// Quests
-				QuestStorage.Reload();*/
+			else if (!stricmp(TableName, "quests"))				// Quests
+				QuestStorage.Reload();
 			else if(!stricmp(TableName, "npc_text"))			// NPC Text Storage
 				NpcTextStorage.Reload();
 			else if(!stricmp(TableName, "fishing"))				// Fishing Zones
@@ -264,26 +265,32 @@ namespace luaGlobalFunctions
 
 	static int ReloadLuaEngine(lua_State* L)
 	{
-		/*g_luaMgr.Restart();
-		MapMgr * mgr;
-		LuaUnitBinding * m_binding;
-		for (uint32 i = 0; i < NUM_MAPS; ++i)
-		{
-			if (!sInstanceMgr.GetMapMgr(i))
-				continue;
-			mgr = sInstanceMgr.GetMapMgr(i);
-			for(uint32 guid=1; guid < mgr->m_CreatureArraySize; guid++)
-			{
-				Creature *pCreature = mgr->GetCreature(GET_LOWGUID_PART(guid));
-				if(pCreature)
-				{
-					m_binding = g_luaMgr.GetUnitBinding(pCreature->GetEntry());
-					if (m_binding != NULL)
-						g_engine->OnUnitEvent( pCreature, m_binding->Functions[CREATURE_EVENT_ON_LOAD], CREATURE_EVENT_ON_LOAD, NULL, 0, 0, 0, 0, NULL );
-				}
-			}
-		}
-		mgr->KillThread();*/
+// Just a preparation. We will need some time to get this working...
+#ifdef EXPERIMENTAL_RELOAD_FUNCTIONS
+		//g_luaMgr.Restart();
+		//MapMgr * mgr;
+		//LuaUnitBinding * m_binding; // missing: LuaUnitBinding; m_binding
+		//for (uint32 i = 0; i < NUM_MAPS; ++i)
+		//{
+		//	if (!sInstanceMgr.GetMapMgr(i))
+		//		continue;
+		//	mgr = sInstanceMgr.GetMapMgr(i);
+		//	for(uint32 guid=1; guid < mgr->m_CreatureArraySize; guid++) // missing: m_CreatureArraySize
+		//	{
+		//		Creature *pCreature = mgr->GetCreature(GET_LOWGUID_PART(guid));
+		//		if(pCreature)
+		//		{
+		//			m_binding = g_luaMgr.GetUnitBinding(pCreature->GetEntry()); // missing: GetUnitBinding
+		//			if (m_binding != NULL)
+		//				g_engine->OnUnitEvent( pCreature, m_binding->Functions[CREATURE_EVENT_ON_LOAD], CREATURE_EVENT_ON_LOAD, NULL, 0, 0, 0, 0, NULL ); // missing: g_engine
+		//		}
+		//	}
+		//}
+		//mgr->KillThread();
+
+		/////////////// missing (total): LuaUnitBinding; m_binding; m_CreatureArraySize; GetUnitBinding; g_engine ///////////////
+
+#endif
 		return 0;
 	}
 
