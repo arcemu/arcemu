@@ -1629,10 +1629,11 @@ bool ChatHandler::HandleFlyCommand(const char* args, WorldSession* m_session)
 bool ChatHandler::HandleDBReloadCommand(const char* args, WorldSession* m_session)
 {
 	// This function is disabled until the user activates it via CMake.
+	
+	char str[200];
 
 #ifdef EXPERIMENTAL_RELOAD_FUNCTIONS
 
-	char str[200];
 	int ret = 0;
 
 	if(!*args || strlen(args) < 3)
@@ -1664,33 +1665,45 @@ bool ChatHandler::HandleDBReloadCommand(const char* args, WorldSession* m_sessio
 	else
 		snprintf(str, 200, "%sDatabase reload completed in %u ms.", MSG_COLOR_LIGHTBLUE, getMSTime() - mstime);
 	sWorld.SendWorldText(str, 0);
-	sGMLog.writefromsession(m_session, "reloaded table %s", args);
-	return true;
+	sGMLog.writefromsession(m_session, "reloaded table `%s`.", args);
 
 #else
 
-	sWorld.SendWorldText("Support for reloading tables on the fly was disabled in ArcEmu revision 3621 due to stability issues. Check \"BUILD_EXPERIMENTAL_RELOAD_FUNCTIONS\" in CMake and rebuild ArcEmu to reenable this feature.", 0);
-	return true;
-
+	snprintf(str, 200, "%s%s tried to reload table `%s` but it was disabled.", MSG_COLOR_LIGHTRED, m_session->GetPlayer()->GetName(), args);
+	sWorld.SendWorldText(str, 0);
+	sGMLog.writefromsession(m_session, "tried to reload table `%s`. Support for reloading tables on the fly was disabled in ArcEmu revision 3621 due to stability issues. Check \"BUILD_EXPERIMENTAL_RELOAD_FUNCTIONS\" in CMake and rebuild ArcEmu to reenable this feature.", args);
+	
 #endif
+
+	return true;
 }
 
 bool ChatHandler::HandleReloadScriptsCommand(const char* args, WorldSession* m_session)
 {
 	// This function is disabled until the user activates it via CMake.
 
-#ifdef EXPERIMENTAL_RELOAD_FUNCTIONS
+	char str[200];
 
-	sScriptMgr.ReloadScriptEngines();
-	sGMLog.writefromsession(m_session, "reloaded scripts.");
+	// Currently disabled because sScriptMgr.ReloadScriptEngines() is broken.
+//#ifdef EXPERIMENTAL_RELOAD_FUNCTIONS
+//
+//	sScriptMgr.ReloadScriptEngines();
+//	snprintf(str, 200, "%s%s reloaded scripts.", MSG_COLOR_LIGHTBLUE, m_session->GetPlayer()->GetName());
+//	sWorld.SendWorldText(str, 0);
+//	sGMLog.writefromsession(m_session, "reloaded scripts.");
+//
+//#else
+//	
+//	snprintf(str, 200, "%s%s tried to reload scripts but it was disabled.", MSG_COLOR_LIGHTRED, m_session->GetPlayer()->GetName());
+//	sWorld.SendWorldText(str, 0);
+//	sGMLog.writefromsession(m_session, "tried to reload scripts. Reloading scripts was disabled because of possible misbehavior if you are using \"RegisterTimedEvent\" in scripts. Check \"BUILD_EXPERIMENTAL_RELOAD_FUNCTIONS\" in CMake and rebuild ArcEmu to reenable this feature.");
+//
+//#endif
+
+	snprintf(str, 200, "%sTo %s: \"reloadscripts\" was disabled due to a broken function. Use the console if possible.", MSG_COLOR_LIGHTRED, m_session->GetPlayer()->GetName());
+	sWorld.SendWorldText(str, 0);
+
 	return true;
-
-#else
-
-	sWorld.SendWorldText("Reloading scripts was disabled because of possible misbehavior if you are using \"RegisterTimedEvent\" in scripts. Check \"BUILD_EXPERIMENTAL_RELOAD_FUNCTIONS\" in CMake and rebuild ArcEmu to reenable this feature.", 0);
-	return true;
-
-#endif
 }
 
 bool ChatHandler::HandleModifyLevelCommand(const char* args, WorldSession* m_session)

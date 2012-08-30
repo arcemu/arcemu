@@ -671,13 +671,13 @@ bool Storage_ReloadTable(const char* TableName)
 		CreatureNameStorage.Reload();
 	else if(!stricmp(TableName, "gameobject_names"))	// GO Names
 		GameObjectNameStorage.Reload();
-	if(!stricmp(TableName, "areatriggers"))		// Areatriggers
+	else if(!stricmp(TableName, "areatriggers"))		// Areatriggers
 		AreaTriggerStorage.Reload();
 	else if(!stricmp(TableName, "itempages"))			// Item Pages
 		ItemPageStorage.Reload();
-	else if(!stricmp(TableName, "worldstring_tables"))			// wst
+	else if(!stricmp(TableName, "worldstring_tables"))	// wst
 		WorldStringTableStorage.Reload();
-	else if(!stricmp(TableName, "worldbroadcast"))			// wb
+	else if(!stricmp(TableName, "worldbroadcast"))		// wb
 		WorldBroadCastStorage.Reload();
 	else if(!stricmp(TableName, "quests"))				// Quests
 		QuestStorage.Reload();
@@ -691,9 +691,9 @@ bool Storage_ReloadTable(const char* TableName)
 		GraveyardStorage.Reload();
 	else if(!stricmp(TableName, "worldmap_info"))		// WorldMapInfo
 		WorldMapInfoStorage.Reload();
-	else if(!stricmp(TableName, "zoneguards"))
+	else if(!stricmp(TableName, "zoneguards"))			// Zoneguards
 		ZoneGuardStorage.Reload();
-	else if(!stricmp(TableName, "unit_display_sizes"))
+	else if(!stricmp(TableName, "unit_display_sizes"))	// Unit display sizes
 		UnitModelSizeStorage.Reload();
 	else if(!stricmp(TableName, "command_overrides"))	// Command Overrides
 	{

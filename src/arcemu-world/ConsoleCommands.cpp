@@ -441,12 +441,13 @@ bool HandleScriptEngineReloadCommand(BaseConsole* pConsole, int, const char* [])
 #ifdef EXPERIMENTAL_RELOAD_FUNCTIONS
 
 	sScriptMgr.ReloadScriptEngines();
-	return true;
+	pConsole->Write("You reloaded scripts.\n");
 
 #else
 
 	pConsole->Write("Reloading scripts was disabled because of possible misbehavior if you are using \"RegisterTimedEvent\" in scripts. Check \"BUILD_EXPERIMENTAL_RELOAD_FUNCTIONS\" in CMake and rebuild ArcEmu to reenable this feature.\n", 0);
-	return true;
 
 #endif
+
+	return true;
 }

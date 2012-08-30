@@ -472,9 +472,15 @@ void HandleConsoleInput(BaseConsole* pConsole, const char* szInput)
 			"Reloads a table from the world database."
 		},
 		{
-			&HandleScriptEngineReloadCommand, "reloadscripts", "<NULL>", "Reloads all scripting engines currently loaded."
+			&HandleScriptEngineReloadCommand,
+			"reloadscripts", "<NULL>",
+			"Reloads all scripting engines currently loaded."
 		},
-		{ &HandleTimeDateCommand, "datetime", "<NULL>", "Shows time and date according to localtime()" },
+		{
+			&HandleTimeDateCommand,
+			"datetime", "<NULL>",
+			"Shows time and date according to localtime()"
+		},
 		{ NULL, NULL, NULL, NULL },
 	};
 
