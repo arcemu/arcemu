@@ -829,9 +829,9 @@ void MailSystem::SendAutomatedMessage(uint32 type, uint64 sender, uint64 receive
 	msg.stationery = stationery;
 	msg.delivery_time = (uint32)UNIXTIME + deliverdelay;
 
-	// 30 day expiry time for unread mail
+	// 30 days expiration time for unread mail + possible delivery delay.
 	if(!sMailSystem.MailOption(MAIL_FLAG_NO_EXPIRY))
-		msg.expire_time = (uint32)UNIXTIME + (TIME_DAY * MAIL_DEFAULT_EXPIRATION_TIME);
+		msg.expire_time = (uint32)UNIXTIME + deliverdelay + (TIME_DAY * MAIL_DEFAULT_EXPIRATION_TIME);
 	else
 		msg.expire_time = 0;
 
