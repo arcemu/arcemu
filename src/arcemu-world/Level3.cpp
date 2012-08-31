@@ -1684,24 +1684,20 @@ bool ChatHandler::HandleReloadScriptsCommand(const char* args, WorldSession* m_s
 
 	char str[200];
 
-	// Currently disabled because sScriptMgr.ReloadScriptEngines() is broken.
-//#ifdef EXPERIMENTAL_RELOAD_FUNCTIONS
-//
-//	sScriptMgr.ReloadScriptEngines();
-//	snprintf(str, 200, "%s%s reloaded scripts.", MSG_COLOR_LIGHTBLUE, m_session->GetPlayer()->GetName());
-//	sWorld.SendWorldText(str, 0);
-//	sGMLog.writefromsession(m_session, "reloaded scripts.");
-//
-//#else
-//	
-//	snprintf(str, 200, "%s%s tried to reload scripts but it was disabled.", MSG_COLOR_LIGHTRED, m_session->GetPlayer()->GetName());
-//	sWorld.SendWorldText(str, 0);
-//	sGMLog.writefromsession(m_session, "tried to reload scripts. Reloading scripts was disabled because of possible misbehavior if you are using \"RegisterTimedEvent\" in scripts. Check \"BUILD_EXPERIMENTAL_RELOAD_FUNCTIONS\" in CMake and rebuild ArcEmu to reenable this feature.");
-//
-//#endif
+#ifdef EXPERIMENTAL_RELOAD_FUNCTIONS
 
-	snprintf(str, 200, "%sTo %s: \"reloadscripts\" was disabled due to a broken function. Use the console if possible.", MSG_COLOR_LIGHTRED, m_session->GetPlayer()->GetName());
+	sScriptMgr.ReloadScriptEngines();
+	snprintf(str, 200, "%s%s reloaded scripts.", MSG_COLOR_LIGHTBLUE, m_session->GetPlayer()->GetName());
 	sWorld.SendWorldText(str, 0);
+	sGMLog.writefromsession(m_session, "reloaded scripts.");
+
+#else
+	
+	snprintf(str, 200, "%s%s tried to reload scripts but it was disabled.", MSG_COLOR_LIGHTRED, m_session->GetPlayer()->GetName());
+	sWorld.SendWorldText(str, 0);
+	sGMLog.writefromsession(m_session, "tried to reload scripts. Reloading scripts was disabled because of possible misbehavior if you are using \"RegisterTimedEvent\" in scripts. Check \"BUILD_EXPERIMENTAL_RELOAD_FUNCTIONS\" in CMake and rebuild ArcEmu to reenable this feature.");
+
+#endif
 
 	return true;
 }
