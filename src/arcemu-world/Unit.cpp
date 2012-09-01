@@ -1147,7 +1147,7 @@ uint32 Unit::HandleProc(uint32 flag, Unit* victim, SpellEntry* CastingSpell, boo
 
 		int dmg_overwrite[3] = { 0, 0, 0 };
 
-		// SPELL_AURA_PROC_TRIGGER_SPELL_WITH_VALUE
+		// Set the value for spells triggered by SPELL_AURA_PROC_TRIGGER_SPELL_WITH_VALUE
 		for(int i = 0; i < 3; i++)
 		{
 			if(ospinfo->EffectApplyAuraName[i] == SPELL_AURA_PROC_TRIGGER_SPELL_WITH_VALUE)
@@ -1177,23 +1177,6 @@ uint32 Unit::HandleProc(uint32 flag, Unit* victim, SpellEntry* CastingSpell, boo
 			uint32 talentlevel = 0;
 			switch(origId)
 			{
-					//mace specialization
-				case 12284:
-					{talentlevel = 1;}
-					break;
-				case 12701:
-					{talentlevel = 2;}
-					break;
-				case 12702:
-					{talentlevel = 3;}
-					break;
-				case 12703:
-					{talentlevel = 4;}
-					break;
-				case 12704:
-					{talentlevel = 5;}
-					break;
-
 					//Unbridled Wrath
 				case 12999:
 					{talentlevel = 1;}
