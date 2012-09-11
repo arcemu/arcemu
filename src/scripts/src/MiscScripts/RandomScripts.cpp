@@ -158,6 +158,47 @@ class JeanPierrePoulain : public GossipScript
 };
 
 
+class HandlerMarnlek : public GossipScript
+{
+	public:
+		void GossipHello(Object* pObject, Player* plr)
+		{
+			GossipMenu* Menu;
+			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 15806, plr);
+			if (plr->GetQuestLogForEntry(25446)){
+				Menu->AddItem(0, "Vanira told me to speak to you about borrowing a bat."	,1);
+				Menu->SendTo(plr);}
+			else if(plr->GetQuestLogForEntry(25461)){
+				Menu->AddItem(0, "I need to get to Razor Hill to reqruit on behalf of Vol'jin. May i borrow a bat?"	,2);
+				Menu->SendTo(plr);}
+			else if(plr->GetQuestLogForEntry(25495)){
+				Menu->AddItem(0, "I am ready to take back the Echo Isles. Take me to the staging area!"	,3);
+				Menu->SendTo(plr);}
+			else{Menu->SendTo(plr);}
+		}
+
+		void GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, uint32 IntId, const char* Code)
+		{
+			switch(IntId)
+			{
+				case 0:  
+					GossipHello(pObject, Plr);
+					break;
+				case 1:
+					Plr->CastSpell(Plr, 74978, true);
+					break;
+				case 2:
+					Plr->CastSpell(Plr, 75421, true);
+					break;
+				case 3:
+					Plr->CastSpell(Plr, 75422, true);
+					break;
+			}
+			Plr->Gossip_Complete();
+		}
+};
+
+
 void SholazarUngoro(Player* pPlayer, uint32 AreaTrigger)
 {
 	if(!pPlayer)
@@ -183,4 +224,5 @@ void SetupRandomScripts(ScriptMgr* mgr)
 	mgr->register_hook(SERVER_HOOK_EVENT_ON_EMOTE, (void*)&OnEmote);
 	mgr->register_gossip_script(35646,  new Wormhole);
 	mgr->register_gossip_script(34244,  new JeanPierrePoulain);
+	mgr->register_gossip_script(40204,  new HandlerMarnlek);
 }
