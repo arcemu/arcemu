@@ -45,7 +45,15 @@ public:
 		// spawn cyclonian if not spawned already
 		Creature *cyclonian = pPlayer->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(323.947f, -1483.68f, 43.1363f, 6239);
 		if( cyclonian == NULL)
+		{
 			cyclonian = sEAS.SpawnCreature(pPlayer, 6239, 323.947f, -1483.68f, 43.1363f, 0.682991f);
+
+			// if spawning cyclonian failed, we have to return.
+			if(cyclonian == NULL)
+				return;
+		}
+
+		// queue cyclonian for despawn
 		cyclonian->Despawn(15*60*1000, 0);
 	}
 };
