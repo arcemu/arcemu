@@ -118,8 +118,7 @@ class SCRIPT_DECL EasyFunctions
 		Creature* SpawnCreature(Player* pThis, uint32 entry, float posX, float posY, float posZ, float posO, uint32 duration = 0, uint32 phase = 1)
 		{
 			PrintMessage("Function call: SpawnCreature()");
-			if(pThis == NULL)
-				return NULL;
+			ARCEMU_ASSERT(pThis != NULL);
 
 			CreatureProto* p = CreatureProtoStorage.LookupEntry(entry);
 
