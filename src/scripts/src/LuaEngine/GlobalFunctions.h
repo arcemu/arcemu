@@ -267,26 +267,26 @@ namespace luaGlobalFunctions
 	{
 // Just a preparation. We will need some time to get this working...
 #ifdef EXPERIMENTAL_RELOAD_FUNCTIONS
-		//g_luaMgr.Restart();
-		//MapMgr * mgr;
-		//LuaUnitBinding * m_binding; // missing: LuaUnitBinding; m_binding
-		//for (uint32 i = 0; i < NUM_MAPS; ++i)
-		//{
-		//	if (!sInstanceMgr.GetMapMgr(i))
-		//		continue;
-		//	mgr = sInstanceMgr.GetMapMgr(i);
-		//	for(uint32 guid=1; guid < mgr->m_CreatureArraySize; guid++) // missing: m_CreatureArraySize
-		//	{
-		//		Creature *pCreature = mgr->GetCreature(GET_LOWGUID_PART(guid));
-		//		if(pCreature)
-		//		{
-		//			m_binding = g_luaMgr.GetUnitBinding(pCreature->GetEntry()); // missing: GetUnitBinding
-		//			if (m_binding != NULL)
-		//				g_engine->OnUnitEvent( pCreature, m_binding->Functions[CREATURE_EVENT_ON_LOAD], CREATURE_EVENT_ON_LOAD, NULL, 0, 0, 0, 0, NULL ); // missing: g_engine
-		//		}
-		//	}
-		//}
-		//mgr->KillThread();
+		/*g_luaMgr.Restart();
+		MapMgr * mgr;
+		LuaUnitBinding * m_binding; // missing: LuaUnitBinding; m_binding
+		for (uint32 i = 0; i < NUM_MAPS; ++i)
+		{
+			if (!sInstanceMgr.GetMapMgr(i))
+				continue;
+			mgr = sInstanceMgr.GetMapMgr(i);
+			for(uint32 guid=1; guid < mgr->m_CreatureArraySize; guid++) // missing: m_CreatureArraySize
+			{
+				Creature *pCreature = mgr->GetCreature(GET_LOWGUID_PART(guid));
+				if(pCreature)
+				{
+					m_binding = g_luaMgr.GetUnitBinding(pCreature->GetEntry()); // missing: GetUnitBinding
+					if (m_binding != NULL)
+						g_engine->OnUnitEvent( pCreature, m_binding->Functions[CREATURE_EVENT_ON_LOAD], CREATURE_EVENT_ON_LOAD, NULL, 0, 0, 0, 0, NULL ); // missing: g_engine
+				}
+			}
+		}
+		mgr->KillThread();*/
 
 		/////////////// missing (total): LuaUnitBinding; m_binding; m_CreatureArraySize; GetUnitBinding; g_engine ///////////////
 
