@@ -121,55 +121,55 @@ class Wormhole : public GossipScript
 public:
     void GossipHello(Object* pObject, Player* plr)
     {
-   if(plr->_GetSkillLineCurrent(202, false) >= 415)
-     {
-        GossipMenu* Menu;
-		objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 14785, plr);
-		Menu->AddItem(0, "Borean Tundra"    , 1);
-		Menu->AddItem(0, "Howling Fjord"  , 2);
-		Menu->AddItem(0, "Sholazar Basin"    , 3);
-		Menu->AddItem(0, "Icecrown"      , 4);
-		Menu->AddItem(0, "Storm Peaks"        , 5);
-		
-		uint8 chance = RandomUInt(1);
-	{
-		if (chance == 1)
-		Menu->AddItem(0, "Underground..."		,6);
-	}
-		
-		}
-		Menu->SendTo(plr);
-     }
-   }
-    void GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, uint32 IntId, const char* Code)
-   {
-	switch(IntId)
-      {
-	case 0:  
-	GossipHello(pObject, Plr);
-		break;
-	case 1:
-	Plr->CastSpell(Plr, 67834, true);
-		break;
-	case 2:
-	Plr->CastSpell(Plr, 67838, true);
-		break;
-	case 3:
-	Plr->CastSpell(Plr, 67835, true);
-		break;
-	case 4:
-	Plr->CastSpell(Plr, 67836, true);
-		break;
-	case 5:
-	Plr->CastSpell(Plr, 67837, true);
-		break;
-	case 6:
-	Plr->CastSpell(Plr, 68081, true);
-		break;
-        }
-	Plr->Gossip_Complete();
-	}	
+		if(plr->_GetSkillLineCurrent(202, false) >= 415)
+		{
+			GossipMenu* Menu;
+			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 14785, plr);
+			Menu->AddItem(0, "Borean Tundra"    , 1);
+			Menu->AddItem(0, "Howling Fjord"  , 2);
+			Menu->AddItem(0, "Sholazar Basin"    , 3);
+			Menu->AddItem(0, "Icecrown"      , 4);
+			Menu->AddItem(0, "Storm Peaks"        , 5);
+			
+			uint8 chance = RandomUInt(1);
 
+			if (chance == 1)
+				Menu->AddItem(0, "Underground..."		,6);
+			
+			Menu->SendTo(plr);
+		}
+	}
+
+	void GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, uint32 IntId, const char* Code)
+	{
+
+		switch(IntId)
+		{
+			case 0:  
+			GossipHello(pObject, Plr);
+			return;
+				break;
+			case 1:
+			Plr->CastSpell(Plr, 67834, true);
+				break;
+			case 2:
+			Plr->CastSpell(Plr, 67838, true);
+				break;
+			case 3:
+			Plr->CastSpell(Plr, 67835, true);
+				break;
+			case 4:
+			Plr->CastSpell(Plr, 67836, true);
+				break;
+			case 5:
+			Plr->CastSpell(Plr, 67837, true);
+				break;
+			case 6:
+			Plr->CastSpell(Plr, 68081, true);
+				break;
+		}
+		Plr->Gossip_Complete();
+	}
 };
 
 void SetupRandomScripts(ScriptMgr* mgr)
