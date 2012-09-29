@@ -88,6 +88,12 @@ static const char *CONF_mpq_list[]={
 static const char* const langs[] = {"enGB", "enUS", "deDE", "esES", "frFR", "koKR", "zhCN", "zhTW", "enCN", "enTW", "esMX", "ruRU" };
 #define LANG_COUNT 12
 
+namespace
+{
+	const int REQUIRED_BUILD = 12340;
+}
+
+
 void CreateDir( const std::string& Path )
 {
     #ifdef WIN32
@@ -201,6 +207,12 @@ uint32 ReadBuild(int locale)
         printf("Fatal error: Invalid  %s file format!\n", filename.c_str());
         exit(1);
     }
+
+	if( build != REQUIRED_BUILD )
+	{
+		printf( "FATAL ERROR: Required client version: %d\nYour client version: %d", REQUIRED_BUILD, build );
+		exit( 1 );
+	}
 
     return build;
 }
