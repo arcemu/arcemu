@@ -1,9 +1,9 @@
 ﻿DEFINITIONS
 ***********
 
-�Web site� refers to ArcEmu.org .
+"Web site" refers to ArcEmu.org.
 
-�services� refers to the subverion server used on ArcEmu.org . 
+"Services" refers to the services provided on ArcEmu.org. 
 
 
 
@@ -25,7 +25,7 @@ Terms of Use.
 
 2. Our Service
 **************
-Our web site and services provided to you on and through our web site on an AS IS basis.You
+Our web site and services provided to you on and through our web site on an AS IS basis. You
 agree that the owners of this web site exclusively reserve the right and may, at any time and
 without notice and any liability to you, modify or discontinue this web site and its services
 or delete the data you provide, whether temporarily or permanently. We shall have no responsibilty
@@ -51,7 +51,7 @@ to immediately notify us of any unauthorized use or your registration, user acco
 
 
 5. Your Conduct
-****************
+***************
 You agree that all information or data of any kind, whether text, software, code, music or sound,
 photographs or graphics, video or other materials (Content), publicly or privately provided, shall
 be the sole responsibility of the person providing the Content or the person whose user account is
@@ -74,7 +74,7 @@ to conceal or misrepresent the origin of any Content provided by you;
 
 (d) Provide or use this web site and any Content or service in any commercial manner or in any manner
 that would involve junk mail, spam, chain letters, pyramid schemes, or any other form of unauthorized
-advertising without our prior written consent;
+advertising without our prior written consent.
 
 
 
@@ -93,13 +93,13 @@ rights that may be necessary to grant us with the license set forth in
 this Section 7; . you acknowledge and agree that we shall have the
 right (but not obligation), in our sole discretion, to refuse to
 publish or to remove or block access to any Content you provide at any
-time and for any reason, with or without notice. 
+time and for any reason, with or without notice.
 
 
- 
+
 
 9. LIMITATION OF LIABILITY
-*************************** 
+**************************
 YOU EXPRESSLY UNDERSTAND AND AGREE THAT WE
 SHALL NOT BE LIABLE FOR ANY DIRECT, INDIRECT, SPECIAL, INDICENTAL,
 CONSEQUENTIAL OR EXEMPLARY DAMAGES, INCLUDING BUT NOT LIMITED TO,
@@ -127,4 +127,5 @@ invasive of a person's privacy, or otherwise violative of any law. You
 agree not to post any copyrighted material unless the copyright is
 owned by you or by this bulletin board. If you have read, understood
 and agree to these rules and conditions, you may use and view the content of 
-our services. If you disagree, remove all files and folders you downloaded through our svn immediately. 
+our services. If you disagree, remove all files and folders related to the
+ArcEmu project you downloaded through GitHub's services immediately.
