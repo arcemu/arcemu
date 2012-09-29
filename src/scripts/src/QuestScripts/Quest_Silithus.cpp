@@ -197,10 +197,127 @@ class SCRIPT_DECL DearestNatalia2 : public GossipScript
 			}
 		}
 };
+
+#define GOSSIP1 "What do you know of it"
+#define GOSSIP2 "I am listening, Demitrian."
+#define GOSSIP3 "Continue, please."
+#define GOSSIP4 "A battle?"
+#define GOSSIP5 "<Nod>"
+#define GOSSIP6 "Caught unaware? How?"
+#define GOSSIP7 "o what did Ragnaros do next?"
+
+class highlord_demitrianGossip : public GossipScript
+{
+	public:
+		 void GossipHello(Object* pObject, Player* pPlayer)
+		{
+			//Send quests and gossip menu.
+			Arcemu::Gossip::Menu menu(pObject->GetGUID(), 6812, pPlayer->GetSession()->language);
+			sQuestMgr.FillQuestMenu(TO_CREATURE(pObject), pPlayer, menu);
+			if (pPlayer->HasItemCount(18563, 1, false) && pPlayer->HasItemCount(18564, 1, false))
+			{
+				if (pPlayer->HasItemCount(19016, 0, false))
+				{
+				menu.AddItem(0, GOSSIP1, 1);
+				}
+			}
+			menu.Send(pPlayer);
+};
+
+		void GossipHello1(Object* pObject, Player* pPlayer)
+		{
+			Arcemu::Gossip::Menu menu(pObject->GetGUID(), 6842, pPlayer->GetSession()->language);
+
+			menu.AddItem(0, GOSSIP2, 2);
+			menu.Send(pPlayer);
+		};
+
+		void GossipHello2(Object* pObject, Player* pPlayer)
+		{
+			Arcemu::Gossip::Menu menu(pObject->GetGUID(), 6843, pPlayer->GetSession()->language);
+
+			menu.AddItem(0, GOSSIP3, 3);
+			menu.Send(pPlayer);
+		};
+
+		void GossipHello3(Object* pObject, Player* pPlayer)
+		{
+			Arcemu::Gossip::Menu menu(pObject->GetGUID(), 6844, pPlayer->GetSession()->language);
+
+			menu.AddItem(0, GOSSIP4, 4);
+			menu.Send(pPlayer);
+		};
+
+		void GossipHello4(Object* pObject, Player* pPlayer)
+		{
+			Arcemu::Gossip::Menu menu(pObject->GetGUID(), 6867, pPlayer->GetSession()->language);
+
+			menu.AddItem(0, GOSSIP5, 5);
+			menu.Send(pPlayer);
+		};
+
+
+		void GossipHello5(Object* pObject, Player* pPlayer)
+		{
+			Arcemu::Gossip::Menu menu(pObject->GetGUID(), 6868, pPlayer->GetSession()->language);
+
+			menu.AddItem(0, GOSSIP6, 6);
+			menu.Send(pPlayer);
+		};
+
+		void GossipHello6(Object* pObject, Player* pPlayer)
+		{
+			Arcemu::Gossip::Menu menu(pObject->GetGUID(), 6869, pPlayer->GetSession()->language);
+
+			menu.AddItem(0, GOSSIP7, 7);
+			menu.Send(pPlayer);
+		};
+
+		void GossipSelectOption(Object* pObject, Player*  pPlayer, uint32 Id, uint32 IntId, const char* Code)
+		{
+			switch(IntId)
+			{
+				case 1:
+					GossipHello1(pObject, pPlayer);
+					break;
+				case 2:
+					GossipHello2(pObject, pPlayer);
+					break;
+				case 3:
+					GossipHello3(pObject, pPlayer);
+					break;
+				case 4:
+					GossipHello4(pObject, pPlayer);
+					break;
+				case 5:
+					GossipHello5(pObject, pPlayer);
+					break;
+				case 6:
+					GossipHello6(pObject, pPlayer);
+					break;
+				case 7:
+					sEAS.AddItem(19016, pPlayer);
+					pPlayer->Gossip_Complete();
+					break;
+			};
+	};
+};
+
+class Thunderan : public QuestScript
+{
+	public:
+		void OnQuestComplete(Player* mTarget, QuestLogEntry* qLogEntry)
+		{
+			sEAS.SpawnCreature(mTarget, 14435, -6241, 1715, 4.8, 0.605017,0, 1);
+		}
+};
+
 void SetupSilithus(ScriptMgr* mgr)
 {
 	GossipScript* dearestNatalia1 = new DearestNatalia1();
 	GossipScript* dearestNatalia2 = new DearestNatalia2();
 	mgr->register_gossip_script(15170, dearestNatalia1);
 	mgr->register_gossip_script(15171, dearestNatalia2);
+	mgr->register_creature_gossip(14347, new highlord_demitrianGossip);
+	mgr->register_quest_script(7786, new Thunderan);
 }
