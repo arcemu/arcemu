@@ -274,7 +274,7 @@ namespace VMAP
 
 	bool StaticMapTree::InitMap(const std::string & fname, VMapManager2* vm)
 	{
-		printf("Initializing StaticMapTree '%s'", fname.c_str());
+		printf("Initializing StaticMapTree '%s'\n", fname.c_str());
 		bool success = true;
 		std::string fullname = iBasePath + fname;
 		FILE* rf = fopen(fullname.c_str(), "rb");
