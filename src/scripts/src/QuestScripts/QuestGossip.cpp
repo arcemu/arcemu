@@ -101,14 +101,35 @@ class Cairne : public GossipScript
 
 class TeleportQ_Gossip : public GossipScript
 {
-	public:
-		void GossipHello(Object* pObject, Player* plr)
+public:
+	void GossipHello( Object* pObject, Player* plr )
+    {
+        uint32 Text = objmgr.GetGossipTextForNpc(TO_CREATURE(pObject)->GetEntry());
+
+        // check if there is a entry in the db
+        if ( NpcTextStorage.LookupEntry(Text) == NULL ) { return; }
+
+        Arcemu::Gossip::Menu menu(pObject->GetGUID(), Text, plr->GetSession()->language);
+        sQuestMgr.FillQuestMenu(TO_CREATURE(pObject), plr, menu);
+
+        // Requirements:
+        // one of these quests: 12791, 12794, 12796
+        // and item 39740: Kirin Tor Signet
+		if ( ( plr->HasQuest(12791) || plr->HasQuest(12794) || plr->HasQuest(12796) ) && plr->HasItemCount(39740, 1, false) )
+        {
+            menu.AddItem(0, "Teleport me to dalaran.", 1);
+        }
+        menu.Send(plr);
+	}
+
+	void GossipSelectOption(Object* pObject, Player*  plr, uint32 Id, uint32 IntId, const char* Code)
+	{
+		if( IntId == 1 )
 		{
-			if(plr->GetQuestLogForEntry(12791) != NULL || plr->GetQuestLogForEntry(12794) != NULL || plr->GetQuestLogForEntry(12796))
-			{
-				TO_CREATURE(pObject)->CastSpell(plr, TELEPORT_SPELL, false);
-			}
+			plr->CastSpell(plr, TELEPORT_SPELL, true);
 		}
+		plr->Gossip_Complete();
+	}
 };
 
 void SetupQuestGossip(ScriptMgr* mgr)
