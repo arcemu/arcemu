@@ -369,13 +369,47 @@ class LuaUnit
 		static int SendChatMessage(lua_State* L, Unit* ptr)
 		{
 			TEST_UNIT()
-			uint32 typ = CHECK_ULONG(L, 1);
+			uint32 type = CHECK_ULONG(L, 1);
+			/*  Value	|	Description
+			 *  ------------------------------------
+			 *  8		|	CHAT_MSG_WHISPER_MOB
+			 *  12		|	CHAT_MSG_MONSTER_SAY
+			 *  13		|	CHAT_MSG_MONSTER_PARTY
+			 *  14		|	CHAT_MSG_MONSTER_YELL
+			 *  15		|	CHAT_MSG_MONSTER_WHISPER
+			 *  16		|	CHAT_MSG_MONSTER_EMOTE
+			 */
+			if (type != 8 || 12 || 13|| 14 || 15 || 16) // only these values are defined, using others would either trigger an assert or crash the client
+			{
+				return 0;
+			}
 			uint32 lang = CHECK_ULONG(L, 2);
+			/*  Value	|	Description
+			 *  ------------------------------------
+			 *  0		|	LANG_UNIVERSAL
+			 *  1		|	LANG_ORCISH
+			 *  2		|	LANG_DARNASSIAN
+			 *  3		|	LANG_TAURAHE
+			 *  6		|	LANG_DWARVISH
+			 *  7		|	LANG_COMMON
+			 *  8		|	LANG_DEMONIC
+			 *  9		|	LANG_TITAN
+			 *  10		|	LANG_THELASSIAN
+			 *  11		|	LANG_DRACONIC
+			 *  12		|	LANG_GNOMISH
+			 *  13		|	LANG_TROLL
+			 *  14		|	LANG_GUTTERSPEAK
+			 *  33		|	LANG_DRAENEI
+			 */
+			if (lang != 0 || 1 || 2 || 3 || 6 || 7 || 8 || 9 || 10 || 11 || 12 || 13 || 14 || 33) // only these values are defined, using others would either trigger an assert or crash the client
+			{
+				return 0;
+			}
 			const char* message = luaL_checklstring(L, 3, NULL);
 			if(message == NULL)
 				return 0;
 
-			ptr->SendChatMessage(typ, lang, message);
+			ptr->SendChatMessage(type, lang, message);
 			return 0;
 		}
 
@@ -383,7 +417,52 @@ class LuaUnit
 		{
 			TEST_PLAYER()
 			uint32 type = CHECK_ULONG(L, 1);
+			/*  Value	|	Description
+			 *  ------------------------------------
+			 *  0		|	CHAT_MSG_SYSTEM
+			 *  1		|	CHAT_MSG_SAY
+			 *  2		|	CHAT_MSG_PARTY
+			 *  3		|	CHAT_MSG_RAID
+			 *  4		|	CHAT_MSG_GUILD
+			 *  5		|	CHAT_MSG_OFFICER
+			 *  6		|	CHAT_MSG_YELL
+			 *  7		|	CHAT_MSG_WHISPER
+			 *  9		|	CHAT_MSG_WHISPER_INFORM
+			 *  10		|	CHAT_MSG_EMOTE
+			 *  11		|	CHAT_MSG_TEXT_EMOTE
+			 *  23		|	CHAT_MSG_AFK
+			 *  24		|	CHAT_MSG_DND
+			 *  25		|	CHAT_MSG_IGNORED
+			 *  26		|	CHAT_MSG_SKILL
+			 *  27		|	CHAT_MSG_LOOT
+			 *  28		|	CHAT_MSG_MONEY
+			 */
+			if (type != 0 || 1 || 2 || 3 || 4 || 5 || 6 || 7 || 9 || 10 || 11 || 23 || 24 || 25 || 26 || 27 || 28) // only these values are defined, using others would either trigger an assert or crash the client
+			{
+				return 0;
+			}
 			uint32 lang = CHECK_ULONG(L, 2);
+			/*  Value	|	Description
+			 *  ------------------------------------
+			 *  0		|	LANG_UNIVERSAL
+			 *  1		|	LANG_ORCISH
+			 *  2		|	LANG_DARNASSIAN
+			 *  3		|	LANG_TAURAHE
+			 *  6		|	LANG_DWARVISH
+			 *  7		|	LANG_COMMON
+			 *  8		|	LANG_DEMONIC
+			 *  9		|	LANG_TITAN
+			 *  10		|	LANG_THELASSIAN
+			 *  11		|	LANG_DRACONIC
+			 *  12		|	LANG_GNOMISH
+			 *  13		|	LANG_TROLL
+			 *  14		|	LANG_GUTTERSPEAK
+			 *  33		|	LANG_DRAENEI
+			 */
+			if (lang != 0 || 1 || 2 || 3 || 6 || 7 || 8 || 9 || 10 || 11 || 12 || 13 || 14 || 33) // only these values are defined, using others would either trigger an assert or crash the client
+			{
+				return 0;
+			}
 			const char* msg = luaL_checklstring(L, 3, NULL);
 			Player* plr = TO_PLAYER(ptr);
 			if(msg == NULL || !plr)
