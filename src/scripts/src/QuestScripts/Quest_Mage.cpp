@@ -21,10 +21,14 @@
 
 #include "Setup.h"
 
+// polymorph spells ranks 1-4
+#define SPELL_POLYMORPH_1 118
+#define SPELL_POLYMORPH_2 12824
+#define SPELL_POLYMORPH_3 12825
+#define SPELL_POLYMORPH_4 12826
+
 class FragmentedMagic : public CreatureAIScript
 {
-	private:
-		uint32 current_aura;
 	public:
 		ADD_CREATURE_FACTORY_FUNCTION(FragmentedMagic);
 		FragmentedMagic(Creature* pCreature) : CreatureAIScript(pCreature)
@@ -44,52 +48,33 @@ class FragmentedMagic : public CreatureAIScript
 
 		void AIUpdate()
 		{
-			bool auraOk = false;
-			const uint32 auras[] = {118, 12824, 12825, 12826}; // Polymorph rank 1,2,3,4
-
-			for(int i = 0; i < 4; i++)
-			{
-				if(_unit->HasAura(auras[i]))
-				{
-					current_aura = auras[i];
-					auraOk = true;
-
-					break;
-				}
-			}
-
-			if(!auraOk)
-				return;
-
-			bool casterOk = false;
+			// search for the one of the polymorph auras and its caster
 			Player* p_caster;
-
-			for(int i = 0; i < 100; i++) //random number - azolex(should be max aura fields, no idea and dont care)
+			for(uint32 i = MAX_TOTAL_AURAS_START; i < MAX_TOTAL_AURAS_END; i++)
 			{
-				if(_unit->m_auras[i] == NULL)
-					continue;
-
-				if(_unit->m_auras[i]->GetSpellId() == current_aura)
+				if(_unit->m_auras[i] != NULL)
 				{
-					if(!_unit->m_auras[i]->GetCaster()->IsPlayer())
-						break;
-
-					p_caster = TO_PLAYER(_unit->m_auras[i]->GetCaster());
-
-					if(p_caster == NULL)
-						break;
-
-					casterOk = true;
-
-					break;
+					if(_unit->m_auras[i]->GetSpellId() == SPELL_POLYMORPH_1 ||
+					   _unit->m_auras[i]->GetSpellId() == SPELL_POLYMORPH_2 ||
+					   _unit->m_auras[i]->GetSpellId() == SPELL_POLYMORPH_3 ||
+					   _unit->m_auras[i]->GetSpellId() == SPELL_POLYMORPH_4)
+					{
+						if(_unit->m_auras[i]->GetCaster()->IsPlayer())
+						{
+							p_caster = TO_PLAYER(_unit->m_auras[i]->GetCaster());
+							break;
+						}
+						else
+						{
+							// so the caster was not a player. Should there be searched more? Does this ever happen?
+							// For now just return
+							return;
+						}
+					}
 				}
 			}
 
-			if(!casterOk)
-				return;
-
-			QuestLogEntry* qle = p_caster->GetQuestLogForEntry(9364);
-			if(qle == NULL)
+			if(!p_caster->HasQuest(9364))
 				return;
 
 			_unit->Despawn(1, 1 * 60 * 1000);
