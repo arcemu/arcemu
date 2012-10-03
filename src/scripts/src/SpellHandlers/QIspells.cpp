@@ -26,8 +26,7 @@ bool CleansingVial(uint32 i, Spell* pSpell)
 
 	Player* pPlayer = pSpell->p_caster;
 
-	QuestLogEntry* pQuest = pPlayer->GetQuestLogForEntry(9427);
-	if(pQuest == NULL)
+	if(!pPlayer->HasQuest(9427))
 		return true;
 
 	Creature* pAggonar = sEAS.SpawnCreature(pPlayer, 17000, 428.15f, 3461.73f, 63.40f, 0, 0);
@@ -92,8 +91,7 @@ bool CallRexxar(uint32 i, Spell* pSpell)
 		return true;
 
 	Player* pPlayer = pSpell->p_caster;
-	QuestLogEntry* pQuest = pPlayer->GetQuestLogForEntry(10742);
-	if(pQuest != NULL)
+	if(pPlayer->HasQuest(10742))
 	{
 		sEAS.SpawnCreature(pPlayer, 21984, pPlayer->GetPositionX(), pPlayer->GetPositionY(), pPlayer->GetPositionZ(), pPlayer->GetOrientation(), 2 * 60 * 1000);
 		sEAS.SpawnCreature(pPlayer, 20555, pPlayer->GetPositionX(), pPlayer->GetPositionY(), pPlayer->GetPositionZ(), pPlayer->GetOrientation(), 2 * 60 * 1000);
@@ -167,20 +165,8 @@ bool KarangsBanner(uint32 i, Spell* pSpell)
 
 bool ADireSituation(uint32 i, Spell* pSpell)
 {
-	Player* pPlayer = pSpell->p_caster;
-	if(!pPlayer)
-		return true;
-
-	QuestLogEntry* qle = pPlayer->GetQuestLogForEntry(10506);
-	if(qle == NULL)
-		return true;
-
-	if(qle->GetMobCount(0) < qle->GetQuest()->required_mobcount[0])
-	{
-		qle->SetMobCount(0, qle->GetMobCount(0) + 1);
-		qle->SendUpdateAddKill(0);
-		qle->UpdatePlayerFields();
-	}
+	if(pSpell->p_caster != NULL)
+		pPlayer->AddQuestKill(10506, 0);
 
 	return true;
 }
@@ -191,8 +177,7 @@ bool FuryoftheDreghoodElders(uint32 i, Spell* pSpell)
 	if(!pPlayer)
 		return true;
 
-	QuestLogEntry* qle = pPlayer->GetQuestLogForEntry(10369);
-	if(qle == NULL)
+	if(!pPlayer->HasQuest(10369))
 		return true;
 
 	Creature* arzethpower = pPlayer->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(pPlayer->GetPositionX(), pPlayer->GetPositionY(), pPlayer->GetPositionZ(), 19354);
@@ -213,8 +198,7 @@ bool ASpiritAlly(uint32 i, Spell* pSpell)
 	if(!pPlayer)
 		return true;
 
-	QuestLogEntry* qle = pPlayer->GetQuestLogForEntry(9847);
-	if(qle == NULL)
+	if(pPlayer->HasQuest(9847))
 		return true;
 
 	Creature* allyspirit = sEAS.SpawnCreature(pPlayer, 18185, -353, 7255, 49.36f, 6.28f, 0);
@@ -399,8 +383,7 @@ bool EvilDrawsNear(uint32 i, Spell* pSpell)
 	if(!pPlayer)
 		return true;
 
-	QuestLogEntry* qle = pPlayer->GetQuestLogForEntry(10923);
-	if(qle == NULL)
+	if(!pPlayer->HasQuest(10923))
 		return true;
 
 	Creature* dragon = sEAS.SpawnCreature(pPlayer, 22441, pPlayer->GetPositionX() + 15, pPlayer->GetPositionY() + 15, pPlayer->GetPositionZ(), pPlayer->GetOrientation(), 0);
@@ -529,13 +512,8 @@ bool Showdown(uint32 i, Spell* pSpell)
 	if(!p_caster)
 		return true;
 
-	QuestLogEntry* qle = p_caster->GetQuestLogForEntry(10742);
-	if(qle == NULL)
-	{
-		qle = p_caster->GetQuestLogForEntry(10806);
-		if(qle == NULL)
-			return true;
-	}
+	if(!p_caster->HasQuest(10742) && !p_caster->HasQuest(10806))
+		return true;
 
 	Creature* goc = NULL;
 	goc = sEAS.SpawnCreature(p_caster, 20555, 3739, 5365, -4, 3.5, 0);
@@ -568,8 +546,7 @@ bool TheBaitforLarkorwi2(uint32 i, Spell* pSpell)
 	if(!pPlayer)
 		return true;
 
-	QuestLogEntry* qle = pPlayer->GetQuestLogForEntry(4292);
-	if(qle == NULL)
+	if(!pPlayer->HasQuest(4292))
 		return true;
 
 	Creature* larkowi = sEAS.SpawnCreature(pPlayer, 9684, pPlayer->GetPositionX() + 2, pPlayer->GetPositionY() + 3, pPlayer->GetPositionZ(), pPlayer->GetOrientation(), 0);
@@ -584,9 +561,7 @@ bool Fumping(uint32 i, Spell* pSpell)
 	if(!pPlayer)
 		return true;
 
-	QuestLogEntry* qle = pPlayer->GetQuestLogForEntry(10929);
-
-	if(qle == NULL)
+	if(!pPlayer->HasQuest(10929))
 		return true;
 
 	uint8 chance = RandomUInt(1);
@@ -617,8 +592,7 @@ bool TheBigBoneWorm(uint32 i, Spell* pSpell)
 	if(!pPlayer)
 		return true;
 
-	QuestLogEntry* qle = pPlayer->GetQuestLogForEntry(10930);
-	if(qle == NULL)
+	if(!pPlayer->HasQuest(10930))
 		return true;
 
 	Creature* exarch = sEAS.SpawnCreature(pPlayer, 22038, pPlayer->GetPositionX() + 7, pPlayer->GetPositionY() + 7, pPlayer->GetPositionZ(), pPlayer->GetOrientation(), 0);
@@ -633,8 +607,7 @@ bool Torgos(uint32 i, Spell* pSpell)
 	if(!pPlayer)
 		return true;
 
-	QuestLogEntry* qle = pPlayer->GetQuestLogForEntry(10035);
-	if(qle == NULL)
+	if(!pPlayer->HasQuest(10035))
 		return true;
 
 	Creature* torgos = sEAS.SpawnCreature(pPlayer, 18707, pPlayer->GetPositionX(), pPlayer->GetPositionY() - 10, pPlayer->GetPositionZ(), pPlayer->GetOrientation(), 0);
@@ -673,8 +646,7 @@ bool NaturalRemedies(uint32 i, Spell* pSpell)
 	if(!pPlayer)
 		return true;
 
-	QuestLogEntry* qle = pPlayer->GetQuestLogForEntry(10351);
-	if(qle == NULL)
+	if(!pPlayer->HasQuest(10351))
 		return true;
 
 	Creature* colos = sEAS.SpawnCreature(pPlayer, 19305, pPlayer->GetPositionX(), pPlayer->GetPositionY(), pPlayer->GetPositionZ(), 0);
@@ -689,6 +661,8 @@ bool FloraoftheEcoDomes(uint32 i, Spell* pSpell)
 		return true;
 
 	Player* pPlayer = pSpell->p_caster;
+	if(pPlayer == NULL)
+		return;
 
 	Creature* normal = TO_CREATURE(pSpell->GetUnitTarget());
 	Creature* mutant = sEAS.SpawnCreature(pPlayer, 20983, normal->GetPositionX(), normal->GetPositionY(), normal->GetPositionZ(), 0);
@@ -719,8 +693,7 @@ bool TheCleansingMustBeStopped(uint32 i, Spell* pSpell)
 	if(!pPlayer)
 		return true;
 
-	QuestLogEntry* qle = pPlayer->GetQuestLogForEntry(9370);
-	if(qle == NULL)
+	if(!pPlayer->HasQuest(9370))
 		return true;
 
 	Creature* draenei1 = sEAS.SpawnCreature(pPlayer, 16994, pPlayer->GetPositionX() + RandomFloat(5.0f), pPlayer->GetPositionY() + RandomFloat(5.0f), pPlayer->GetPositionZ(), pPlayer->GetOrientation(), 0);
@@ -781,13 +754,8 @@ bool ZappedGiants(uint32 i, Spell* pSpell)
 	if(!pPlayer)
 		return true;
 
-	QuestLogEntry* qle = pPlayer->GetQuestLogForEntry(7003);
-	if(qle == NULL)
-	{
-		QuestLogEntry* qle = pPlayer->GetQuestLogForEntry(7725);
-		if(qle == NULL)
-			return true;
-	}
+	if(!pPlayer->HasQuest(7003) && !pPlayer->HasQuest(7725))
+		return true;
 
 	Creature* creat = TO_CREATURE(pSpell->GetUnitTarget());
 	if(creat == NULL)
@@ -912,8 +880,7 @@ bool AnUnusualPatron(uint32 i, Spell* pSpell)
 	if(!pPlayer)
 		return true;
 
-	QuestLogEntry* qle = pPlayer->GetQuestLogForEntry(9457);
-	if(qle == NULL)
+	if(!pPlayer->HasQuest(9457))
 		return true;
 
 	Creature* Naias = pPlayer->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(pPlayer->GetPositionX(), pPlayer->GetPositionY(), pPlayer->GetPositionZ(), 17207);
@@ -931,8 +898,7 @@ bool MagnetoCollector(uint32 i, Aura* pAura, bool apply)
 
 	Player* pPlayer = TO_PLAYER(pAura->GetCaster());
 
-	QuestLogEntry* qle = pPlayer->GetQuestLogForEntry(10584);
-	if(qle == NULL)
+	if(!pPlayer->HasQuest(10584))
 		return true;
 
 	Creature* magneto = TO_CREATURE(pAura->GetTarget());
@@ -952,8 +918,7 @@ bool TemporalPhaseModulator(uint32 i, Spell* pSpell)
 	if(!pPlayer)
 		return true;
 
-	QuestLogEntry* qle = pPlayer->GetQuestLogForEntry(10609);
-	if(qle == NULL)
+	if(!pPlayer->HasQuest(10609))
 		return true;
 
 	srand((int)time(NULL));
@@ -1084,9 +1049,6 @@ bool RaeloraszSpark(uint32 i, Spell* pSpell)
 
 bool RuneOfDistortion(uint32 i, Spell* pSpell)
 {
-	if(pSpell->p_caster == NULL)
-		return true;
-
 	Player* plr = pSpell->p_caster;
 	if(plr == NULL)
 		return true;
@@ -1094,14 +1056,8 @@ bool RuneOfDistortion(uint32 i, Spell* pSpell)
 	Creature* pCreature = sEAS.SpawnCreature(plr, 32162, plr->GetPositionX(), plr->GetPositionY(), plr->GetPositionZ(), 0, 0);
 	pCreature->Despawn(5 * 60 * 1000, 0);
 
-	QuestLogEntry* qle = plr->GetQuestLogForEntry(13312);
-	if(qle == NULL)
-	{
-		qle = plr->GetQuestLogForEntry(13337);
-		if(qle == NULL)
-			return true;
-	}
-	return true;
+	if(!pPlayer->HasQuest(13312) && !pPlayer->HasQuest(13337))
+		return true;
 }
 
 bool GoreBladder(uint32 i, Spell* pSpell)
