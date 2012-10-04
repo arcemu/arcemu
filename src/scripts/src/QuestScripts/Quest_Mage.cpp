@@ -34,7 +34,6 @@ class FragmentedMagic : public CreatureAIScript
 		FragmentedMagic(Creature* pCreature) : CreatureAIScript(pCreature)
 		{
 			RegisterAIUpdateEvent(5000);
-			current_aura = 0;
 		}
 
 		void SetWander(Creature* m_target, Player* p_caster)
@@ -59,9 +58,9 @@ class FragmentedMagic : public CreatureAIScript
 					   _unit->m_auras[i]->GetSpellId() == SPELL_POLYMORPH_3 ||
 					   _unit->m_auras[i]->GetSpellId() == SPELL_POLYMORPH_4)
 					{
-						if(_unit->m_auras[i]->GetCaster()->IsPlayer())
+						if(p_caster = _unit->m_auras[i]->GetPlayerCaster())
 						{
-							p_caster = TO_PLAYER(_unit->m_auras[i]->GetCaster());
+							// wanted aura and its caster have been found.
 							break;
 						}
 						else

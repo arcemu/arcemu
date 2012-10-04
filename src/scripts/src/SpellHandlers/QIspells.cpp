@@ -166,7 +166,7 @@ bool KarangsBanner(uint32 i, Spell* pSpell)
 bool ADireSituation(uint32 i, Spell* pSpell)
 {
 	if(pSpell->p_caster != NULL)
-		pPlayer->AddQuestKill(10506, 0);
+		pSpell->p_caster->AddQuestKill(10506, 0);
 
 	return true;
 }
@@ -1055,7 +1055,7 @@ bool RuneOfDistortion(uint32 i, Spell* pSpell)
 	Creature* pCreature = sEAS.SpawnCreature(plr, 32162, plr->GetPositionX(), plr->GetPositionY(), plr->GetPositionZ(), 0, 0);
 	pCreature->Despawn(5 * 60 * 1000, 0);
 
-	if(!pPlayer->HasQuest(13312) && !pPlayer->HasQuest(13337))
+	if(!plr->HasQuest(13312) && !plr->HasQuest(13337))
 		return true;
 }
 
