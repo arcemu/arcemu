@@ -381,6 +381,7 @@ class LuaUnit
 			 */
 			if (type != 8 || 12 || 13|| 14 || 15 || 16) // only these values are defined, using others would either trigger an assert or crash the client
 			{
+				sLog.outError("A Lua script tried to use %u for the message type of SendChatMessage(). Aborting SendChatMessage().", type);
 				return 0;
 			}
 			uint32 lang = CHECK_ULONG(L, 2);
@@ -402,8 +403,9 @@ class LuaUnit
 			 *  33		|	LANG_DRAENEI
 			 */
 			// TODO (Cataclysm): check for new languages
-			if (lang != 0 || 1 || 2 || 3 || 6 || 7 || 8 || 9 || 10 || 11 || 12 || 13 || 14 || 33) // only these values are defined, using others would either trigger an assert or crash the client
+			if (lang != 0 || 1 || 2 || 3 || 6 || 7 || 8 || 9 || 10 || 11 || 12 || 13 || 14 || 33) // only these values are defined, using others would crash the client
 			{
+				sLog.outError("A Lua script tried to use %u for the language type of SendChatMessage(). Aborting SendChatMessage().", lang);
 				return 0;
 			}
 			const char* message = luaL_checklstring(L, 3, NULL);
@@ -440,6 +442,7 @@ class LuaUnit
 			 */
 			if (type != 0 || 1 || 2 || 3 || 4 || 5 || 6 || 7 || 9 || 10 || 11 || 23 || 24 || 25 || 26 || 27 || 28) // only these values are defined, using others would either trigger an assert or crash the client
 			{
+				sLog.outError("A Lua script tried to use %u for the message type of PlayerSendChatMessage(). Aborting PlayerSendChatMessage().", type);
 				return 0;
 			}
 			uint32 lang = CHECK_ULONG(L, 2);
@@ -461,8 +464,9 @@ class LuaUnit
 			 *  33		|	LANG_DRAENEI
 			 */
 			// TODO (Cataclysm): check for new languages
-			if (lang != 0 || 1 || 2 || 3 || 6 || 7 || 8 || 9 || 10 || 11 || 12 || 13 || 14 || 33) // only these values are defined, using others would either trigger an assert or crash the client
+			if (lang != 0 || 1 || 2 || 3 || 6 || 7 || 8 || 9 || 10 || 11 || 12 || 13 || 14 || 33) // only these values are defined, using others would crash the client
 			{
+				sLog.outError("A Lua script tried to use %u for the language type of PlayerSendChatMessage(). Aborting PlayerSendChatMessage().", lang);
 				return 0;
 			}
 			const char* msg = luaL_checklstring(L, 3, NULL);
