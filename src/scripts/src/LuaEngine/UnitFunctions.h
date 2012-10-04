@@ -1,7 +1,7 @@
 /*
  * ArcScript Scripts for Arcemu MMORPG Server
- * Copyright (C) 2008-2011 Arcemu Team
  * Copyright (C) 2007 Moon++ <http://www.moonplusplus.com/>
+ * Copyright (C) 2008-2012 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -401,6 +401,7 @@ class LuaUnit
 			 *  14		|	LANG_GUTTERSPEAK
 			 *  33		|	LANG_DRAENEI
 			 */
+			// TODO (Cataclysm): check for new languages
 			if (lang != 0 || 1 || 2 || 3 || 6 || 7 || 8 || 9 || 10 || 11 || 12 || 13 || 14 || 33) // only these values are defined, using others would either trigger an assert or crash the client
 			{
 				return 0;
@@ -459,6 +460,7 @@ class LuaUnit
 			 *  14		|	LANG_GUTTERSPEAK
 			 *  33		|	LANG_DRAENEI
 			 */
+			// TODO (Cataclysm): check for new languages
 			if (lang != 0 || 1 || 2 || 3 || 6 || 7 || 8 || 9 || 10 || 11 || 12 || 13 || 14 || 33) // only these values are defined, using others would either trigger an assert or crash the client
 			{
 				return 0;
