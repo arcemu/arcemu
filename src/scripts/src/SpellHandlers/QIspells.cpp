@@ -650,7 +650,8 @@ bool NaturalRemedies(uint32 i, Spell* pSpell)
 		return true;
 
 	Creature* colos = sEAS.SpawnCreature(pPlayer, 19305, pPlayer->GetPositionX(), pPlayer->GetPositionY(), pPlayer->GetPositionZ(), 0);
-	colos->Despawn(5 * 60 * 1000, 0);
+	if(colos != NULL)
+		colos->Despawn(5 * 60 * 1000, 0);
 
 	return true;
 }
@@ -661,8 +662,6 @@ bool FloraoftheEcoDomes(uint32 i, Spell* pSpell)
 		return true;
 
 	Player* pPlayer = pSpell->p_caster;
-	if(pPlayer == NULL)
-		return;
 
 	Creature* normal = TO_CREATURE(pSpell->GetUnitTarget());
 	Creature* mutant = sEAS.SpawnCreature(pPlayer, 20983, normal->GetPositionX(), normal->GetPositionY(), normal->GetPositionZ(), 0);
