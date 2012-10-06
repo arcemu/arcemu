@@ -1,7 +1,7 @@
 /*
  * ArcScript Scripts for Arcemu MMORPG Server
- * Copyright (C) 2008-2011 Arcemu Team
  * Copyright (C) 2007 Moon++ <http://www.moonplusplus.com/>
+ * Copyright (C) 2008-2012 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,68 @@
 
 #ifndef UNITFUNCTIONS_H
 #define UNITFUNCTIONS_H
+
+/* uncomment this to disable checks for the correctness of values
+   given to SendChatMessage() and PlayerSendChatMessage() */
+//#define NO_SEND_CHAT_MESSAGE_CHECKS
+
+// SendChatMessage() type
+/*  Value	|	Description
+ *  ------------------------------------
+ *  8		|	CHAT_MSG_WHISPER_MOB
+ *  12		|	CHAT_MSG_MONSTER_SAY
+ *  13		|	CHAT_MSG_MONSTER_PARTY
+ *  14		|	CHAT_MSG_MONSTER_YELL
+ *  15		|	CHAT_MSG_MONSTER_WHISPER
+ *  16		|	CHAT_MSG_MONSTER_EMOTE
+ */
+#define SEND_CHAT_MESSAGE_ALLOWED_TYPES_NUM_VALUES 6
+#define SEND_CHAT_MESSAGE_ALLOWED_TYPES	8, 12, 13, 14, 15, 16
+
+// PlayerSendChatMessage() type
+/*  Value	|	Description
+ *  ------------------------------------
+ *  0		|	CHAT_MSG_SYSTEM
+ *  1		|	CHAT_MSG_SAY
+ *  2		|	CHAT_MSG_PARTY
+ *  3		|	CHAT_MSG_RAID
+ *  4		|	CHAT_MSG_GUILD
+ *  5		|	CHAT_MSG_OFFICER
+ *  6		|	CHAT_MSG_YELL
+ *  7		|	CHAT_MSG_WHISPER
+ *  9		|	CHAT_MSG_WHISPER_INFORM
+ *  10		|	CHAT_MSG_EMOTE
+ *  11		|	CHAT_MSG_TEXT_EMOTE
+ *  23		|	CHAT_MSG_AFK
+ *  24		|	CHAT_MSG_DND
+ *  25		|	CHAT_MSG_IGNORED
+ *  26		|	CHAT_MSG_SKILL
+ *  27		|	CHAT_MSG_LOOT
+ *  28		|	CHAT_MSG_MONEY
+ */
+#define PLAYER_SEND_CHAT_MESSAGE_ALLOWED_TYPES_NUM_VALUES 17
+#define PLAYER_SEND_CHAT_MESSAGE_ALLOWED_TYPES 0, 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 23, 24, 25, 26, 27, 28
+
+// SendChatMessage() and PlayerSendChatMessage() language
+/*  Value	|	Description
+ *  ------------------------------------
+ *  0		|	LANG_UNIVERSAL
+ *  1		|	LANG_ORCISH
+ *  2		|	LANG_DARNASSIAN
+ *  3		|	LANG_TAURAHE
+ *  6		|	LANG_DWARVISH
+ *  7		|	LANG_COMMON
+ *  8		|	LANG_DEMONIC
+ *  9		|	LANG_TITAN
+ *  10		|	LANG_THELASSIAN
+ *  11		|	LANG_DRACONIC
+ *  12		|	LANG_GNOMISH
+ *  13		|	LANG_TROLL
+ *  14		|	LANG_GUTTERSPEAK
+ *  33		|	LANG_DRAENEI
+ */
+#define SEND_CHAT_MESSAGE_ALLOWED_LANGS_NUM_VALUES 14
+#define SEND_CHAT_MESSAGE_ALLOWED_LANGS 0, 1, 2, 3, 6, 7, 8, 9, 10, 11, 12, 13, 14, 33
 
 class LuaUnit
 {
@@ -368,22 +430,104 @@ class LuaUnit
 
 		static int SendChatMessage(lua_State* L, Unit* ptr)
 		{
+			#ifndef NO_SEND_CHAT_MESSAGE_CHECKS
+				bool typeIsAllowed = false; // initialize typeIsAllowed; we assume that it's not allowed
+				bool langIsAllowed = false; // initialize langIsAllowed; we assume that it's not allowed
+			#endif
+
 			TEST_UNIT()
-			uint32 typ = CHECK_ULONG(L, 1);
+			uint32 type = CHECK_ULONG(L, 1);
+
+			#ifndef NO_SEND_CHAT_MESSAGE_CHECKS
+				// defines are at the beginning of the file
+				uint32 allowedTypes[SEND_CHAT_MESSAGE_ALLOWED_TYPES_NUM_VALUES] = {SEND_CHAT_MESSAGE_ALLOWED_TYPES};
+				for each (uint32 i in allowedTypes)
+				{
+					if (type == i) // look if there are values matching
+					{
+						typeIsAllowed = true;
+					}
+				}
+				if (typeIsAllowed == false) // type isn't allowed; abort method
+				{
+					sLog.outError("LuaEngine: A Lua script tried to use '%u' for the message type of SendChatMessage(). Aborting SendChatMessage().", type);
+					return 0;
+				}
+			#endif
+
 			uint32 lang = CHECK_ULONG(L, 2);
+
+			#ifndef NO_SEND_CHAT_MESSAGE_CHECKS
+				// defines are at the beginning of the file
+				uint32 allowedLangs[SEND_CHAT_MESSAGE_ALLOWED_LANGS_NUM_VALUES] = {SEND_CHAT_MESSAGE_ALLOWED_LANGS};
+				for each (uint32 i in allowedLangs)
+				{
+					if (lang == i) // look if there are values matching
+					{
+						langIsAllowed = true;
+					}
+				}
+				if (langIsAllowed == false) // lang isn't allowed; abort method
+				{
+					sLog.outError("LuaEngine: A Lua script tried to use '%u' for the language type of SendChatMessage(). Aborting SendChatMessage().", lang);
+					return 0;
+				}
+			#endif
+
 			const char* message = luaL_checklstring(L, 3, NULL);
 			if(message == NULL)
 				return 0;
 
-			ptr->SendChatMessage(typ, lang, message);
+			ptr->SendChatMessage(type, lang, message);
 			return 0;
 		}
 
 		static int PlayerSendChatMessage(lua_State* L, Unit* ptr)
 		{
+			#ifndef NO_SEND_CHAT_MESSAGE_CHECKS
+				bool typeIsAllowed = false; // initialize typeIsAllowed; we assume that it's not allowed
+				bool langIsAllowed = false; // initialize langIsAllowed; we assume that it's not allowed
+			#endif
+
 			TEST_PLAYER()
 			uint32 type = CHECK_ULONG(L, 1);
+
+			#ifndef NO_SEND_CHAT_MESSAGE_CHECKS
+				// defines are at the beginning of the file
+				uint32 allowedTypes[PLAYER_SEND_CHAT_MESSAGE_ALLOWED_TYPES_NUM_VALUES] = {PLAYER_SEND_CHAT_MESSAGE_ALLOWED_TYPES};
+				for each (uint32 i in allowedTypes)
+				{
+					if (type == i) // look if there are values matching
+					{
+						typeIsAllowed = true;
+					}
+				}
+				if (typeIsAllowed == false) // type isn't allowed; abort method
+				{
+					sLog.outError("LuaEngine: A Lua script tried to use '%u' for the message type of PlayerSendChatMessage(). Aborting PlayerSendChatMessage().", type);
+					return 0;
+				}
+			#endif
+
 			uint32 lang = CHECK_ULONG(L, 2);
+
+			#ifndef NO_SEND_CHAT_MESSAGE_CHECKS
+				// defines are at the beginning of the file
+				uint32 allowedLangs[SEND_CHAT_MESSAGE_ALLOWED_LANGS_NUM_VALUES] = {SEND_CHAT_MESSAGE_ALLOWED_LANGS};
+				for each (uint32 i in allowedLangs)
+				{
+					if (lang == i) // look if there are values matching
+					{
+						langIsAllowed = true;
+					}
+				}
+				if (langIsAllowed == false) // lang isn't allowed; abort method
+				{
+					sLog.outError("LuaEngine: A Lua script tried to use '%u' for the language type of PlayerSendChatMessage(). Aborting PlayerSendChatMessage().", lang);
+					return 0;
+				}
+			#endif
+
 			const char* msg = luaL_checklstring(L, 3, NULL);
 			Player* plr = TO_PLAYER(ptr);
 			if(msg == NULL || !plr)
