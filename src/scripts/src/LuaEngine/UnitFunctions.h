@@ -61,7 +61,8 @@
 #define PLAYER_SEND_CHAT_MESSAGE_ALLOWED_TYPES_NUM_VALUES 17
 #define PLAYER_SEND_CHAT_MESSAGE_ALLOWED_TYPES 0, 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 23, 24, 25, 26, 27, 28
 
-// SendChatMessage() and PlayerSendChatMessage() language
+// SendChatMessage(), PlayerSendChatMessage(), SendChatMessageAlternateEntry()
+// and SendChatMessageToPlayer() language
 /*  Value	|	Description
  *  ------------------------------------
  *  0		|	LANG_UNIVERSAL
@@ -2792,9 +2793,32 @@ class LuaUnit
 
 		static int SendChatMessageAlternateEntry(lua_State* L, Unit* ptr)
 		{
+			#ifndef NO_SEND_CHAT_MESSAGE_CHECKS
+				bool langIsAllowed = false; // initialize langIsAllowed; we assume that it's not allowed
+			#endif
+
 			uint32 entry = CHECK_ULONG(L, 1);
 			uint8 type = CHECK_ULONG(L, 2);
 			uint32 lang = CHECK_ULONG(L, 3);
+
+			#ifndef NO_SEND_CHAT_MESSAGE_CHECKS
+				// defines are at the beginning of the file
+				uint32 allowedLangs[SEND_CHAT_MESSAGE_ALLOWED_LANGS_NUM_VALUES] = {SEND_CHAT_MESSAGE_ALLOWED_LANGS};
+				for each (uint32 i in allowedLangs)
+				{
+					if (lang == i) // look if there are values matching
+					{
+						langIsAllowed = true;
+						break;
+					}
+				}
+				if (langIsAllowed == false) // lang isn't allowed; abort method
+				{
+					sLog.outError("LuaEngine: A Lua script tried to use '%u' for the language type of SendChatMessageAlternateEntry(). Aborting SendChatMessageAlternateEntry().", lang);
+					return 0;
+				}
+			#endif
+
 			const char* msg = luaL_checkstring(L, 4);
 			if(!entry || !lang || !msg)
 				return 0;
@@ -2804,8 +2828,31 @@ class LuaUnit
 
 		static int SendChatMessageToPlayer(lua_State* L, Unit* ptr)
 		{
+			#ifndef NO_SEND_CHAT_MESSAGE_CHECKS
+				bool langIsAllowed = false; // initialize langIsAllowed; we assume that it's not allowed
+			#endif
+
 			uint8 type = CHECK_ULONG(L, 1);
 			uint32 lang = CHECK_ULONG(L, 2);
+
+			#ifndef NO_SEND_CHAT_MESSAGE_CHECKS
+				// defines are at the beginning of the file
+				uint32 allowedLangs[SEND_CHAT_MESSAGE_ALLOWED_LANGS_NUM_VALUES] = {SEND_CHAT_MESSAGE_ALLOWED_LANGS};
+				for each (uint32 i in allowedLangs)
+				{
+					if (lang == i) // look if there are values matching
+					{
+						langIsAllowed = true;
+						break;
+					}
+				}
+				if (langIsAllowed == false) // lang isn't allowed; abort method
+				{
+					sLog.outError("LuaEngine: A Lua script tried to use '%u' for the language type of SendChatMessageToPlayer(). Aborting SendChatMessageToPlayer().", lang);
+					return 0;
+				}
+			#endif
+
 			const char* msg = luaL_checkstring(L, 3);
 			Player* plr = CHECK_PLAYER(L, 4);
 			if(!plr || !msg || !ptr)
