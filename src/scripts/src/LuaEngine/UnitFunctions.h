@@ -446,6 +446,7 @@ class LuaUnit
 					if (type == i) // look if there are values matching
 					{
 						typeIsAllowed = true;
+						break;
 					}
 				}
 				if (typeIsAllowed == false) // type isn't allowed; abort method
@@ -465,6 +466,7 @@ class LuaUnit
 					if (lang == i) // look if there are values matching
 					{
 						langIsAllowed = true;
+						break;
 					}
 				}
 				if (langIsAllowed == false) // lang isn't allowed; abort method
@@ -500,6 +502,7 @@ class LuaUnit
 					if (type == i) // look if there are values matching
 					{
 						typeIsAllowed = true;
+						break;
 					}
 				}
 				if (typeIsAllowed == false) // type isn't allowed; abort method
@@ -519,6 +522,7 @@ class LuaUnit
 					if (lang == i) // look if there are values matching
 					{
 						langIsAllowed = true;
+						break;
 					}
 				}
 				if (langIsAllowed == false) // lang isn't allowed; abort method
