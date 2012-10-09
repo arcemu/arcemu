@@ -24,7 +24,7 @@
    given to SendChatMessage() and PlayerSendChatMessage() */
 //#define NO_SEND_CHAT_MESSAGE_CHECKS
 
-// SendChatMessage() type
+// SendChatMessage() and SendChatMessageAlternateEntry() type
 /*  Value	|	Description
  *  ------------------------------------
  *  8		|	CHAT_MSG_WHISPER_MOB
@@ -37,7 +37,7 @@
 #define SEND_CHAT_MESSAGE_ALLOWED_TYPES_NUM_VALUES 6
 #define SEND_CHAT_MESSAGE_ALLOWED_TYPES	8, 12, 13, 14, 15, 16
 
-// PlayerSendChatMessage() type
+// PlayerSendChatMessage() and SendChatMessageToPlayer() type
 /*  Value	|	Description
  *  ------------------------------------
  *  0		|	CHAT_MSG_SYSTEM
@@ -2794,11 +2794,31 @@ class LuaUnit
 		static int SendChatMessageAlternateEntry(lua_State* L, Unit* ptr)
 		{
 			#ifndef NO_SEND_CHAT_MESSAGE_CHECKS
+				bool typeIsAllowed = false; // initialize typeIsAllowed; we assume that it's not allowed
 				bool langIsAllowed = false; // initialize langIsAllowed; we assume that it's not allowed
 			#endif
 
 			uint32 entry = CHECK_ULONG(L, 1);
 			uint8 type = CHECK_ULONG(L, 2);
+
+			#ifndef NO_SEND_CHAT_MESSAGE_CHECKS
+				// defines are at the beginning of the file
+				uint8 allowedTypes[SEND_CHAT_MESSAGE_ALLOWED_TYPES_NUM_VALUES] = {SEND_CHAT_MESSAGE_ALLOWED_TYPES};
+				for each (uint8 i in allowedTypes)
+				{
+					if (type == i) // look if there are values matching
+					{
+						typeIsAllowed = true;
+						break;
+					}
+				}
+				if (typeIsAllowed == false) // type isn't allowed; abort method
+				{
+					sLog.outError("LuaEngine: A Lua script tried to use '%u' for the message type of SendChatMessageAlternateEntry(). Aborting SendChatMessageAlternateEntry().", type);
+					return 0;
+				}
+			#endif
+
 			uint32 lang = CHECK_ULONG(L, 3);
 
 			#ifndef NO_SEND_CHAT_MESSAGE_CHECKS
@@ -2829,10 +2849,30 @@ class LuaUnit
 		static int SendChatMessageToPlayer(lua_State* L, Unit* ptr)
 		{
 			#ifndef NO_SEND_CHAT_MESSAGE_CHECKS
+				bool typeIsAllowed = false; // initialize typeIsAllowed; we assume that it's not allowed
 				bool langIsAllowed = false; // initialize langIsAllowed; we assume that it's not allowed
 			#endif
 
 			uint8 type = CHECK_ULONG(L, 1);
+
+			#ifndef NO_SEND_CHAT_MESSAGE_CHECKS
+				// defines are at the beginning of the file
+				uint8 allowedTypes[PLAYER_SEND_CHAT_MESSAGE_ALLOWED_TYPES_NUM_VALUES] = {PLAYER_SEND_CHAT_MESSAGE_ALLOWED_TYPES};
+				for each (uint8 i in allowedTypes)
+				{
+					if (type == i) // look if there are values matching
+					{
+						typeIsAllowed = true;
+						break;
+					}
+				}
+				if (typeIsAllowed == false) // type isn't allowed; abort method
+				{
+					sLog.outError("LuaEngine: A Lua script tried to use '%u' for the message type of SendChatMessageToPlayer(). Aborting SendChatMessageToPlayer().", type);
+					return 0;
+				}
+			#endif
+
 			uint32 lang = CHECK_ULONG(L, 2);
 
 			#ifndef NO_SEND_CHAT_MESSAGE_CHECKS
