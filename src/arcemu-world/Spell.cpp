@@ -3087,7 +3087,7 @@ uint8 Spell::CanCast(bool tolerate)
 	uint32 i;
 
 	// Check if spell can be casted while player is moving.
-	if( ( p_caster != NULL ) && p_caster->m_isMoving && ( m_spellInfo->InterruptFlags & CAST_INTERRUPT_ON_MOVEMENT ) )
+	if( ( p_caster != NULL ) && p_caster->m_isMoving && ( m_spellInfo->InterruptFlags & CAST_INTERRUPT_ON_MOVEMENT ) && ( m_castTime != 0 ) && ( GetDuration() != 0 ) )
 		return SPELL_FAILED_MOVING;
 
 	// Check if spell requires caster to be in combat to be casted.
