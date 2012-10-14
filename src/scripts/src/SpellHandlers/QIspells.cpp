@@ -198,7 +198,7 @@ bool ASpiritAlly(uint32 i, Spell* pSpell)
 	if(!pPlayer)
 		return true;
 
-	if(pPlayer->HasQuest(9847))
+	if(!pPlayer->HasQuest(9847))
 		return true;
 
 	Creature* allyspirit = sEAS.SpawnCreature(pPlayer, 18185, -353, 7255, 49.36f, 6.28f, 0);
