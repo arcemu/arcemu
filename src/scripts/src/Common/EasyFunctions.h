@@ -119,6 +119,7 @@ class SCRIPT_DECL EasyFunctions
 		{
 			PrintMessage("Function call: SpawnCreature()");
 			ARCEMU_ASSERT(pThis != NULL);
+			ARCEMU_ASSERT(pThis->IsInWorld());
 
 			CreatureProto* p = CreatureProtoStorage.LookupEntry(entry);
 
