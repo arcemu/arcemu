@@ -9,12 +9,16 @@ IF( CMAKE_GENERATOR MATCHES Visual*)
 	SET( GLOBAL_DEFINES ${GLOBAL_DEFINES} "/MP")
 ENDIF()
 
+IF(CMAKE_GENERATOR MATCHES Visual*)
+	SET(GLOBAL_DEFINES ${GLOBAL_DEFINES} "/bigobj")
+ENDIF()
+
 #check platform version.
 IF( CMAKE_SYSTEM_PROCESSOR MATCHES "[xX]64" OR CMAKE_SYSTEM_PROCESSOR MATCHES "[xX]86_64" OR CMAKE_SYSTEM_PROCESSOR MATCHES "[aA][mM][dD]64" OR CMAKE_GENERATOR MATCHES Win64*)
 	#define for 64bit
 	SET( GLOBAL_DEFINES ${GLOBAL_DEFINES} -"DX64")
 	SET( IS_64BIT TRUE)
-	IF( CMAKE_GENERATOR MATCHES Visual* OR CMAKE_GENERATOR MATCHES NMake*)
+	IF(CMAKE_GENERATOR MATCHES NMake*)
 		SET( GLOBAL_DEFINES ${GLOBAL_DEFINES} "-bigobj")
 	ENDIF()
 ENDIF()
@@ -67,7 +71,7 @@ ENDIF( WIN32 )
 SET(ARCEMU_SCRIPTLIB_PATH "modules" CACHE PATH "The directory which contains the 'lib' directory that has the script libraries." )
 SET(BUILD_ARCEMUSCRIPTS TRUE CACHE BOOL "Set to false to NOT build script libraries." )
 SET(BUILD_TOOLS TRUE CACHE BOOL "Build Arcemu tools" )
-SET(VISUALSTUDIO_COMPILERHEAPLIMIT 200 CACHE STRING "Visual Studio compiler heap limit. Ignore on darwin and unix platforms." )
+SET(VISUALSTUDIO_COMPILERHEAPLIMIT 400 CACHE STRING "Visual Studio compiler heap limit. Ignore on darwin and unix platforms.")
 
 include(CompilerVersion)
 if( CMAKE_GENERATOR MATCHES Unix* )
