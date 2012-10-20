@@ -192,25 +192,25 @@ void WorldSession::CharacterEnumProc(QueryResult* result)
 			data << float(fields[8].GetFloat());		//X
 			data << float(fields[9].GetFloat());		//Y
 			data << float(fields[10].GetFloat());		//Z
-			data << uint32(fields[18].GetUInt32());		//GuildID
+			data << uint32(fields[19].GetUInt32());		//GuildID
 
 			banned = fields[13].GetUInt32();
 			uint32 char_flags = 0;
 
 			if(banned && (banned < 10 || banned > (uint32)UNIXTIME))
-				char_flags |= 0x01000000;	//Character is banned
+				char_flags |= 0x01000000;			//Character is banned
 			if(fields[15].GetUInt32() != 0)
-				char_flags |= 0x00002000;	//Character is dead
+				char_flags |= 0x00002000;			//Character is dead
 			if(flags & PLAYER_FLAG_NOHELM)
-				char_flags |= 0x00000400;	//Helm not displayed
+				char_flags |= 0x00000400;			//Helm not displayed
 			if(flags & PLAYER_FLAG_NOCLOAK)
-				char_flags |= 0x00000800;	//Cloak not displayed
+				char_flags |= 0x00000800;			//Cloak not displayed
 			if(fields[16].GetUInt32() != 0)
-				char_flags |= 0x00004000;	//Character has to be renamed before logging in
+				char_flags |= 0x00004000;			//Character has to be renamed before logging in
 
 			data << uint32(char_flags);
-			data << uint32(0);				//Character recustomization flags
-			data << uint8(0);				//Unknown 3.2.0
+			data << uint32(0);						//Character recustomization flags
+			data << uint8(fields[18].GetUInt8());	//Whether or not this is the characters first login
 
 			if(Class == WARLOCK || Class == HUNTER)
 			{
@@ -292,7 +292,7 @@ void WorldSession::CharacterEnumProc(QueryResult* result)
 void WorldSession::HandleCharEnumOpcode(WorldPacket & recv_data)
 {
 	AsyncQuery* q = new AsyncQuery(new SQLClassCallbackP1<World, uint32>(World::getSingletonPtr(), &World::CharacterEnumProc, GetAccountId()));
-	q->AddQuery("SELECT guid, level, race, class, gender, bytes, bytes2, name, positionX, positionY, positionZ, mapId, zoneId, banned, restState, deathstate, forced_rename_pending, player_flags, guild_data.guildid FROM characters LEFT JOIN guild_data ON characters.guid = guild_data.playerid WHERE acct=%u ORDER BY guid LIMIT 10", GetAccountId());
+	q->AddQuery("SELECT guid, level, race, class, gender, bytes, bytes2, name, positionX, positionY, positionZ, mapId, zoneId, banned, restState, deathstate, forced_rename_pending, player_flags, first_login, guild_data.guildid FROM characters LEFT JOIN guild_data ON characters.guid = guild_data.playerid WHERE acct=%u ORDER BY guid LIMIT 10", GetAccountId());
 	CharacterDatabase.QueueAsyncQuery(q);
 }
 
