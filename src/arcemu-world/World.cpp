@@ -95,15 +95,8 @@ void World::LogoutPlayers()
 	}
 
 	Log.Notice("World", "Deleting sessions...");
-	WorldSession* p;
-	for(SessionMap::iterator i = m_sessions.begin(); i != m_sessions.end();)
-	{
-		p = i->second;
-		++i;
-
-		DeleteSession(p);
-		//delete p;
-	}
+	while( !m_sessions.empty() )
+		DeleteSession(m_sessions.begin()->second);
 }
 
 World::~World()
