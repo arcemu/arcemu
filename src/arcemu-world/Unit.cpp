@@ -1186,17 +1186,20 @@ uint32 Unit::HandleProc(uint32 flag, Unit* victim, SpellEntry* CastingSpell, boo
 					break;
 
 					//Unbridled Wrath
-				case 12999:
+				case 12332:
 					{talentlevel = 1;}
 					break;
-				case 13000:
+				case 12999:
 					{talentlevel = 2;}
 					break;
-				case 13001:
+				case 13000:
 					{talentlevel = 3;}
 					break;
-				case 13002:
+				case 13001:
 					{talentlevel = 4;}
+					break;
+				case 13002:
+					{talentlevel = 5;}
 					break;
 			}
 
