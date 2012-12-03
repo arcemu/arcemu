@@ -657,8 +657,9 @@ bool Master::_StartDB()
 	}
 
 	// Initialize it
-	if(!WorldDatabase.Initialize(hostname.c_str(), (unsigned int)port, username.c_str(),
-	                             password.c_str(), database.c_str(), Config.MainConfig.GetIntDefault("WorldDatabase", "ConnectionCount", 3), 16384))
+	if(!WorldDatabase.Initialize(hostname.c_str(), (unsigned int)port, NULL, username.c_str(),
+	                             password.c_str(), database.c_str(), NULL, NULL, NULL, false,
+	                             Config.MainConfig.GetIntDefault("WorldDatabase", "ConnectionCount", 3), 16384))
 	{
 		Log.Error("sql", "Main database initialization failed. Exiting.");
 		return false;
@@ -679,8 +680,9 @@ bool Master::_StartDB()
 	}
 
 	// Initialize it
-	if(!CharacterDatabase.Initialize(hostname.c_str(), (unsigned int)port, username.c_str(),
-	                                 password.c_str(), database.c_str(), Config.MainConfig.GetIntDefault("CharacterDatabase", "ConnectionCount", 5), 16384))
+	if(!CharacterDatabase.Initialize(hostname.c_str(), (unsigned int)port, NULL, username.c_str(),
+	                                 password.c_str(), database.c_str(), NULL, NULL, NULL, false,
+	                                 Config.MainConfig.GetIntDefault("CharacterDatabase", "ConnectionCount", 5), 16384))
 	{
 		Log.Error("sql", "Main database initialization failed. Exiting.");
 		return false;

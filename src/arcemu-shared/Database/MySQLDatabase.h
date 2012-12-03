@@ -39,9 +39,10 @@ class SERVER_DECL MySQLDatabase : public Database
 		MySQLDatabase();
 		~MySQLDatabase();
 
-		bool Initialize(const char* Hostname, unsigned int port,
-		                const char* Username, const char* Password, const char* DatabaseName,
-		                uint32 ConnectionCount, uint32 BufferSize);
+		bool Initialize(const char* Hostname, unsigned int port, const char *Socket,
+		                        const char* Username, const char* Password, const char* DatabaseName,
+		                        const char *ssl_key, const char *ssl_cert, const char *ssl_ca,
+		                        bool Compress, uint32 ConnectionCount, uint32 BufferSize);
 
 		void Shutdown();
 
@@ -53,6 +54,7 @@ class SERVER_DECL MySQLDatabase : public Database
 		bool SupportsTableLocking() { return true; }
 
 	protected:
+		MYSQL *_OpenConnection();
 
 		bool _HandleError(MySQLDatabaseConnection*, uint32 ErrorNumber);
 		bool _SendQuery(DatabaseConnection* con, const char* Sql, bool Self = false);
@@ -62,6 +64,19 @@ class SERVER_DECL MySQLDatabase : public Database
 		bool _Reconnect(MySQLDatabaseConnection* conn);
 
 		QueryResult* _StoreQueryResult(DatabaseConnection* con);
+
+	private:
+		// Database settings used for reconnecting
+		char *mHostname;
+		uint32 mPort;
+		char *mSocket;
+		char *mUsername;
+		char *mPassword;
+		char *mDatabaseName;
+		char *mSSLkey;
+		char *mSSLcert;
+		char *mSSLca;
+		bool mCompress;
 };
 
 class SERVER_DECL MySQLQueryResult : public QueryResult

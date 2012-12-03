@@ -150,9 +150,10 @@ bool startdb()
 	sLogonSQL = Database::CreateDatabaseInterface();
 
 	// Initialize it
-	if(!sLogonSQL->Initialize(lhostname.c_str(), (unsigned int)lport, lusername.c_str(),
-	                          lpassword.c_str(), ldatabase.c_str(), Config.MainConfig.GetIntDefault("LogonDatabase", "ConnectionCount", 5),
-	                          16384))
+	if(!sLogonSQL->Initialize(lhostname.c_str(), (unsigned int)lport, NULL,
+	                          lusername.c_str(), lpassword.c_str(), ldatabase.c_str(),
+	                          NULL, NULL, NULL,
+	                          false, Config.MainConfig.GetIntDefault("LogonDatabase", "ConnectionCount", 5), 16384))
 	{
 		LOG_ERROR("sql: Logon database initialization failed. Exiting.");
 		return false;
