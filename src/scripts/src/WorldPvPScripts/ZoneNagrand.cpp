@@ -564,7 +564,10 @@ void UpdateTowerCount()
 {
 	Player* plr = _gameobject->GetMapMgr()->GetInterface()->GetPlayerNearestCoords(_gameobject->GetPositionX(), _gameobject->GetPositionY(), _gameobject->GetPositionZ());
 
-	MapMgr* mgr = plr->GetMapMgr();
+	MapMgr* mgr = _gameobject->GetMapMgr();
+
+	if(!plr)
+		return;
 
 	plr->CastSpell(plr, NA_CAPTURE_BUFF, false);
 }
