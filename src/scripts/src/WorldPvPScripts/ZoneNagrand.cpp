@@ -564,8 +564,6 @@ void UpdateTowerCount()
 {
 	Player* plr = _gameobject->GetMapMgr()->GetInterface()->GetPlayerNearestCoords(_gameobject->GetPositionX(), _gameobject->GetPositionY(), _gameobject->GetPositionZ());
 
-	MapMgr* mgr = _gameobject->GetMapMgr();
-
 	if(!plr)
 		return;
 
@@ -643,8 +641,6 @@ const static snpcdata AllianceControlNPCs[] =
 void SpawnH()
 {
 	Player* plr = _gameobject->GetMapMgr()->GetInterface()->GetPlayerNearestCoords(_gameobject->GetPositionX(), _gameobject->GetPositionY(), _gameobject->GetPositionZ());
-
-	uint32 Team = plr->GetTeam();
 
 	GameObject* P1 = _gameobject->GetMapMgr()->GetInterface()->SpawnGameObject(182275, -1507.94f, 8132.10f, -19.55f, 0, false, 0, 0, 1);
 	GameObject* P2 = _gameobject->GetMapMgr()->GetInterface()->SpawnGameObject(182276, -1384.53f, 7779.39f, -11.17f, 0, false, 0, 0, 1);
