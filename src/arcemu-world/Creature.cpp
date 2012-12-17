@@ -414,10 +414,6 @@ void Creature::CreateWayPoint(uint32 WayPointID, uint32 mapid, float x, float y,
 
 void Creature::generateLoot()
 {
-
-	if(isCritter())
-		return;
-
 	if(!loot.items.empty())
 		return;
 

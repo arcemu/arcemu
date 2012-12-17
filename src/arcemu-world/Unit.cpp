@@ -7808,7 +7808,7 @@ uint64 Unit::GetTaggerGUID()
 
 bool Unit::isLootable()
 {
-	if(IsTagged() && !IsPet() && !isCritter() && !(IsPlayer() && !IsInBg()) && ( GetCreatedByGUID() == 0 ) && !IsVehicle() ){
+	if(IsTagged() && !IsPet() && !(IsPlayer() && !IsInBg()) && ( GetCreatedByGUID() == 0 ) && !IsVehicle() ){
 		if( IsCreature()  &&
 			!lootmgr.HasLootForCreature( GetEntry() ) &&
 			( CreatureProtoStorage.LookupEntry( GetEntry() )->money == 0 ) ) // Since it is inworld we can safely assume there is a proto cached with this Id!
