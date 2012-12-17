@@ -701,6 +701,7 @@ void Pet::LoadFromDB(Player* owner, PlayerPet* pi)
 	SetSummonedByGUID(owner->GetGUID());
 	SetCreatedByGUID(owner->GetGUID());
 	SetCreatedBySpell(mPi->spellid);
+	SetFaction( owner->GetFaction() );
 
 	ApplyStatsForLevel();
 
