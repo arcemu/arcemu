@@ -356,7 +356,7 @@ void Player::Reputation_OnKilledUnit(Unit* pUnit, bool InnerLoop)
 {
 
 	// add rep for on kill
-	if(!pUnit->IsCreature() || pUnit->IsPet())
+	if(!pUnit->IsCreature() || pUnit->IsPet() || pUnit->isCritter() )
 		return;
 
 	Group* m_Group = GetGroup();
