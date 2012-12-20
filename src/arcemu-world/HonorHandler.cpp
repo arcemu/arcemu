@@ -42,7 +42,8 @@ void HonorHandler::AddHonorPointsToPlayer(Player* pPlayer, uint32 uAmount)
 		return;
 	pPlayer->m_honorPoints += uAmount;
 	pPlayer->m_honorToday += uAmount;
-	if(pPlayer->m_honorPoints > 75000) pPlayer->m_honorPoints = 75000;
+	if(pPlayer->m_honorPoints > sWorld.m_limits.honorpoints) 
+	pPlayer->m_honorPoints = honorpoints;
 
 	RecalculateHonorFields(pPlayer);
 }
