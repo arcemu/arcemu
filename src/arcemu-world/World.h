@@ -647,6 +647,8 @@ class SERVER_DECL World : public Singleton<World>, public EventableObject
 			uint32 spellDamageCap;
 			uint32 healthCap;
 			uint32 manaCap;
+			uint32 honorpoints;	
+			uint32 arenapoints;
 			bool disconnect;
 			bool broadcast;
 		} m_limits;
