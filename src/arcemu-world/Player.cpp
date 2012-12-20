@@ -2996,7 +2996,29 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	m_FirstLogin = get_next_field.GetBool();
 	rename_pending = get_next_field.GetBool();
 	m_arenaPoints = get_next_field.GetUInt32();
-	if(m_arenaPoints > 5000) m_arenaPoints = 5000;
+	if(m_arenaPoints > sWorld.m_limits.arenapoints) 
+	{	
+		char hlogmsg[256];	
+		snprintf(hlogmsg, 256, "has over %u arena points (%u)", sWorld.m_limits.arenapoints, m_arenaPoints);
+		sCheatLog.writefromsession(m_session, hlogmsg);	
+	    if(sWorld.m_limits.broadcast) // report to online GMs	
+	    {
+	      string gm_ann = MSG_COLOR_GREEN;	
+	      gm_ann += "|Hplayer:";
+	      gm_ann += GetName();
+	      gm_ann += "|h[";
+	      gm_ann += GetName();
+	      gm_ann += "]|h: ";
+	      gm_ann += MSG_COLOR_YELLOW;
+	      gm_ann += hlogmsg;
+	      sWorld.SendGMWorldText(gm_ann.c_str());	
+	    }
+	    if(sWorld.m_limits.disconnect)
+	    {
+			m_session->Disconnect();	
+	    }
+	    m_arenaPoints = sWorld.m_limits.arenapoints;
+	  }
 	for(uint32 z = 0; z < NUM_CHARTER_TYPES; ++z)
 		m_charters[z] = objmgr.GetCharterByGuid(GetGUID(), (CharterTypes)z);
 	for(uint32 z = 0; z < NUM_ARENA_TEAM_TYPES; ++z)
@@ -3142,7 +3164,29 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	m_honorToday = get_next_field.GetUInt32();
 	m_honorYesterday = get_next_field.GetUInt32();
 	m_honorPoints = get_next_field.GetUInt32();
-	if(m_honorPoints > 75000) m_honorPoints = 75000;
+	if(m_honorPoints > sWorld.m_limits.honorpoints) 
+    	{
+    	  char hlogmsg[256];	
+    	  snprintf(hlogmsg, 256, "has over %u honor points (%u)", sWorld.m_limits.honorpoints, m_honorPoints);	
+    	  sCheatLog.writefromsession(m_session, hlogmsg);
+    	  if(sWorld.m_limits.broadcast) // report to online GMs	
+    	  {
+    	    string gm_ann = MSG_COLOR_GREEN;	
+    	    gm_ann += "|Hplayer:";	
+    	    gm_ann += GetName();
+    	    gm_ann += "|h[";
+    	    gm_ann += GetName();
+    	    gm_ann += "]|h: ";
+    	    gm_ann += MSG_COLOR_YELLOW;
+    	    gm_ann += hlogmsg;
+    	    sWorld.SendGMWorldText(gm_ann.c_str());
+    	  }
+    	  if(sWorld.m_limits.disconnect)
+    	  {
+			  m_session->Disconnect();
+    	  }
+		  m_honorPoints = sWorld.m_limits.honorpoints;
+    	}
 
 	RolloverHonor();
 	iInstanceType = get_next_field.GetUInt32();
