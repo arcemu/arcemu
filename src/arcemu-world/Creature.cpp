@@ -1610,7 +1610,8 @@ void Creature::Load(CreatureProto* proto_, float x, float y, float z, float o)
 
 	if( IsVehicle() ){
 		AddVehicleComponent( proto->Id, proto->vehicleid );
-		SetFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK );
+	// Not all vehicles have this flag. Should be set by the database.
+	//	SetFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK );
 		setAItoUse( false );
 	}
 
