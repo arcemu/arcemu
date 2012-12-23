@@ -163,7 +163,7 @@ enum WorldStates{
 	WORLDSTATE_WG_SHOW_SR_WORKSHOP                                       = 3701, // Sunken Ring (E) vehicle workshop  0 - don't show, 1,2,3 Neutral ( intact, damaged, destroyed ), 4,5,6 ( Horde ), 7,8,9 ( Ally )
 	WORLDSTATE_WG_SHOW_WS_WORKSHOP                                       = 3702, // WestSpark (SW) vehicle workshop  0 - don't show, 1,2,3 Neutral ( intact, damaged, destroyed ), 4,5,6 ( Horde ), 7,8,9 ( Ally )
 	WORLDSTATE_WG_SHOW_ES_WORKSHOP                                       = 3703, // EastSpark (SE) vehicle workshop  0 - don't show, 1,2,3 Neutral ( intact, damaged, destroyed ), 4,5,6 ( Horde ), 7,8,9 ( Ally )
-	WORLDSTATE_WG_SHOW_SS_WORKSHOP                                       = 3704, // ShadowSight (SW) tower  0 - don't show, 1,2,3 Neutral ( intact, damaged, destroyed ), 4,5,6 ( Horde ), 7,8,9 ( Ally )
+	WORLDSTATE_WG_SHOW_SS_TOWER                                          = 3704, // ShadowSight (SW) tower  0 - don't show, 1,2,3 Neutral ( intact, damaged, destroyed ), 4,5,6 ( Horde ), 7,8,9 ( Ally )
 	WORLDSTATE_WG_SHOW_WE_TOWER                                          = 3705, // Winter's Edge (S) tower  0 - don't show, 1,2,3 Neutral ( intact, damaged, destroyed ), 4,5,6 ( Horde ), 7,8,9 ( Ally )
 	WORLDSTATE_WG_SHOW_FW_TOWER                                          = 3706, // FlameWatch (SE) tower  0 - don't show, 1,2,3 Neutral ( intact, damaged, destroyed ), 4,5,6 ( Horde ), 7,8,9 ( Ally )
 	WORLDSTATE_WG_SHOW_BATTLE_UI                                         = 3710, // shows battle timer, and vehicle counters
