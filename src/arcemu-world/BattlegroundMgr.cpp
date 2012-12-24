@@ -595,11 +595,12 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 			if(IS_ARENA(i))
 			{
 				// enough players to start a round?
-				uint32 minPlayers = BattlegroundManager.GetMinimumPlayers(i);
+				uint32 minPlayers = BattlegroundManager.GetMinimumPlayers(i) * 2;
 				if(!forceStart && tempPlayerVec[0].size() < minPlayers)
 					continue;
 
-				if(CanCreateInstance(i, j))
+				// if(CanCreateInstance(i, j))
+				if(forceStart || tempPlayerVec[0].size() >= minPlayers)
 				{
 					arena = TO< Arena* >(CreateInstance(i, j));
 					if(arena == NULL)
