@@ -295,7 +295,7 @@ void Arena::UpdatePlayerCounts()
 	if(!m_started)
 		return;
 
-	return;
+//	return;
 
 	if(m_playersCount[1] == 0)
 		m_winningteam = 0;
