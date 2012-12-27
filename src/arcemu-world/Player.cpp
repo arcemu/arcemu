@@ -4058,7 +4058,7 @@ void Player::_ApplyItemMods(Item* item, int16 slot, bool apply, bool justdrokedo
 		if(col != -1)
 		{
 			uint32 scaledarmorval = ssvrow->multiplier[ col ];
-			if(apply)BaseResistance[0 ] += scaledarmorval;
+			if(apply)BaseResistance[0] += scaledarmorval;
 			else  BaseResistance[0] -= scaledarmorval;
 			CalcResistance(0);
 		}
