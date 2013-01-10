@@ -23,7 +23,29 @@ class SkornWhitecloud_Gossip : public Arcemu::Gossip::Script
 	public:
 		void OnHello(Object* pObject, Player* plr)
 		{
-			Arcemu::Gossip::Menu::SendQuickMenu(pObject->GetGUID(), 522, plr, 1, Arcemu::Gossip::ICON_CHAT, "Tell me a story, Skorn.");
+			//Send quests and gossip menu.
+			uint32 Text = objmgr.GetGossipTextForNpc(pObject->GetEntry());
+
+			if(NpcTextStorage.LookupEntry(Text) == NULL)
+				Text = Arcemu::Gossip::DEFAULT_TXTINDEX;
+			Arcemu::Gossip::Menu menu(pObject->GetGUID(), Text, plr->GetSession()->language);
+
+			// After killing Ghosthowl Skorn Whitecloud changes his Text
+			if (plr->HasFinishedQuest(770)) {
+				menu.setTextID(521);
+			}
+			
+			sQuestMgr.FillQuestMenu(TO_CREATURE(pObject), plr, menu);
+
+			// Localized chat menu for German
+			if (plr->GetSession()->language == 1) {
+					menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Erzaehlt mir eine Geschichte, Skorn", 0);
+			}
+			else {
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Tell me a story, Skorn.", 0);
+			}
+
+			menu.Send(plr);
 		}
 
 		void OnSelectOption(Object* pObject, Player* plr, uint32 Id, const char* Code)
