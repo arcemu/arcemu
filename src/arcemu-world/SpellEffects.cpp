@@ -1595,6 +1595,21 @@ void Spell::SpellEffectCreateItem(uint32 i)
 		count += countforlevel;
 	}
 
+	// CreateItemEffect of the Spell Bind (Innkeepers)
+	if(spellid == 3286)
+	{
+		// If the Player has no Hearthstone, even bank slots are checked
+		if(playerTarget->HasItemCount(itemid,0,true))
+		{
+			count = 1;
+			playerTarget->GetItemInterface()->AddItemById(itemid, count, 0);
+		}
+		// If the Player already has a Hearthstone don't do anything here
+		else
+		{
+			return;
+		}
+	}
 
 	if(count <= 0)
 	{

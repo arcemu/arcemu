@@ -635,26 +635,6 @@ void WorldSession::SendInnkeeperBind(Creature* pCreature)
 	_player->bHasBindDialogOpen = false;
 	OutPacket(SMSG_GOSSIP_COMPLETE, 0, NULL);
 
-	// if the player has no hearthstone (item db entry 6948, count 0, check also bank)
-	if (_player->HasItemCount(6948,0,true))
-	{
-		// create new hearthstone
-		Item* item = objmgr.CreateItem(6948, _player);
-		// if the new hearthstone can't get added to the inventory, delete it
-		if(!_player->m_ItemInterface->AddItemToFreeSlot(item))
-			{
-				item->DeleteMe();
-				_player->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, INV_ERR_BAG_FULL);
-				return;
-			}
-		// else add the new hearthstone to the inventory
-		else
-			_player->SendItemPushResult(false, true, false, true,
-				                   _player->m_ItemInterface->LastSearchItemBagSlot(), _player->m_ItemInterface->LastSearchItemSlot(),
-				                   1, item->GetEntry(), item->GetItemRandomSuffixFactor(), item->GetItemRandomPropertyId(), item->GetStackCount());
-	}
-
-	// makes this inn the new home of the player  
 	pCreature->CastSpell(_player->GetGUID(), BIND_SPELL_ID, true);
 }
 
