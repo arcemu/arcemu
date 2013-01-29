@@ -48,7 +48,7 @@ class FragmentedMagic : public CreatureAIScript
 		void AIUpdate()
 		{
 			// search for the one of the polymorph auras and its caster
-			Player* p_caster;
+			Player* p_caster = NULL;
 			for(uint32 i = MAX_TOTAL_AURAS_START; i < MAX_TOTAL_AURAS_END; i++)
 			{
 				if(_unit->m_auras[i] != NULL)
@@ -72,6 +72,9 @@ class FragmentedMagic : public CreatureAIScript
 					}
 				}
 			}
+
+			if( p_caster == NULL )
+				return;
 
 			if(!p_caster->HasQuest(9364))
 				return;
