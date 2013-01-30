@@ -750,6 +750,17 @@ Item* ItemInterface::GetInventoryItem(int8 ContainerSlot, int16 slot)
 	return NULL;
 }
 
+Container* ItemInterface::GetContainer( int8 containerSlot )
+{
+	if( !IsBagSlot( containerSlot ) )
+		return NULL;
+
+	if( m_pItems[ containerSlot ] == NULL )
+		return NULL;
+
+	return TO< Container* >( m_pItems[ containerSlot ] );
+}
+
 //-------------------------------------------------------------------//
 //Description: checks for stacks that didn't reached max capacity
 //-------------------------------------------------------------------//

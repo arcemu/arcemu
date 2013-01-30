@@ -92,6 +92,7 @@ class SERVER_DECL ItemInterface
 
 		Item* GetInventoryItem(int16 slot);
 		Item* GetInventoryItem(int8 ContainerSlot, int16 slot);
+		Container* GetContainer( int8 containerSlot );
 		int16 GetInventorySlotById(uint32 ID);
 		int16 GetInventorySlotByGuid(uint64 guid);
 		int16 GetBagSlotByGuid(uint64 guid);
@@ -172,19 +173,6 @@ class SERVER_DECL ItemInterface
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public:
-		ARCEMU_INLINE bool VerifyBagSlots(int8 ContainerSlot, int8 Slot)
-		{
-			if(ContainerSlot < -1 || Slot < 0)
-				return false;
-
-			if(ContainerSlot > 0 && (ContainerSlot < INVENTORY_SLOT_BAG_START || ContainerSlot >= INVENTORY_SLOT_BAG_END))
-				return false;
-
-			if(ContainerSlot == -1 && (Slot >= INVENTORY_SLOT_ITEM_END  || Slot <= EQUIPMENT_SLOT_END))
-				return false;
-
-			return true;
-		}
 
 		////////////////////////////////////////////////////////////////////////////////
 		//bool AddItemById( uint32 itemid, uint32 count, int32 randomprop )

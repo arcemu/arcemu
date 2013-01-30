@@ -20,6 +20,20 @@
 
 #include "StdAfx.h"
 
+bool VerifyBagSlots(int8 ContainerSlot, int8 Slot)
+{
+	if(ContainerSlot < -1 )
+		return false;
+	
+	if(ContainerSlot > 0 && (ContainerSlot < INVENTORY_SLOT_BAG_START || ContainerSlot >= INVENTORY_SLOT_BAG_END))
+		return false;
+	
+	if(ContainerSlot == -1 && Slot != -1 && (Slot >= INVENTORY_SLOT_ITEM_END  || Slot <= EQUIPMENT_SLOT_END))
+		return false;
+	
+	return true;
+}
+
 void WorldSession::HandleSplitOpcode(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_RETURN;
@@ -32,17 +46,17 @@ void WorldSession::HandleSplitOpcode(WorldPacket & recv_data)
 	recv_data >> SrcInvSlot >> SrcSlot >> DstInvSlot >> DstSlot >> count;
 
 	/* exploit fix */
-	if(count <= 0 || (SrcInvSlot <= 0 && SrcSlot < INVENTORY_SLOT_ITEM_START) || (DstInvSlot <= 0 && DstSlot < INVENTORY_SLOT_ITEM_START))
+	if(count <= 0 || (SrcInvSlot <= 0 && SrcSlot < INVENTORY_SLOT_ITEM_START) )
 	{
 		sCheatLog.writefromsession(this, "tried to split item: SrcInvSlot %d, SrcSlot %d, DstInvSlot %d, DstSlot %d, count %l", SrcInvSlot, SrcSlot, DstInvSlot, DstSlot, count);
 		return;
 	}
 
 
-	if(!_player->GetItemInterface()->VerifyBagSlots(SrcInvSlot, SrcSlot))
+	if(!VerifyBagSlots(SrcInvSlot, SrcSlot))
 		return;
 
-	if(!_player->GetItemInterface()->VerifyBagSlots(DstInvSlot, DstSlot))
+	if(!VerifyBagSlots(DstInvSlot, DstSlot))
 		return;
 
 	uint32 c = count;
@@ -106,21 +120,34 @@ void WorldSession::HandleSplitOpcode(WorldPacket & recv_data)
 			i1->m_isDirty = true;
 			i2->m_isDirty = true;
 
-			if(DstSlot == -1)
+			if(DstSlot == ITEM_NO_SLOT_AVAILABLE)
 			{
-				// Find a free slot
-				SlotResult res = _player->GetItemInterface()->FindFreeInventorySlot(i2->GetProto());
-				if(!res.Result)
+				if( DstInvSlot != ITEM_NO_SLOT_AVAILABLE )
 				{
-					SendNotification("Internal Error");
-					return;
+					Container *container = _player->GetItemInterface()->GetContainer( DstInvSlot );
+					if( container != NULL )
+						DstSlot = container->FindFreeSlot();
 				}
 				else
 				{
-					DstSlot = res.Slot;
-					DstInvSlot = res.ContainerSlot;
+					// Find a free slot
+					SlotResult res = _player->GetItemInterface()->FindFreeInventorySlot(i2->GetProto());
+					if( res.Result )
+					{
+						DstSlot = res.Slot;
+						DstInvSlot = res.ContainerSlot;
+					}
+				}
+				
+				if( DstSlot == ITEM_NO_SLOT_AVAILABLE )
+				{
+					_player->GetItemInterface()->BuildInventoryChangeError(i1, i2, INV_ERR_COULDNT_SPLIT_ITEMS);
+					i2->DeleteFromDB();
+					i2->DeleteMe();
+					i2 = NULL;
 				}
 			}
+
 			result = _player->GetItemInterface()->SafeAddItem(i2, DstInvSlot, DstSlot);
 			if(!result)
 			{
