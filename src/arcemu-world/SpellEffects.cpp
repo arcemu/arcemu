@@ -1776,6 +1776,11 @@ void Spell::SpellEffectCreateItem(uint32 i)
 			}
 		}
 	}
+	else
+	{
+		if(!playerTarget->GetItemInterface()->AddItemById(itemid, count, 0))
+			SendCastResult(SPELL_FAILED_TOO_MANY_OF_ITEM);
+	}
 }
 
 void Spell::SpellEffectWeapon(uint32 i)
