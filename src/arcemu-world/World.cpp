@@ -1459,6 +1459,15 @@ void World::Rehash(bool load)
 	bgsettings.IOC_MIN = Config.MainConfig.GetIntDefault("Battleground", "IOC_MIN", 10);
 	bgsettings.IOC_MAX = Config.MainConfig.GetIntDefault("Battleground", "IOC_MAX", 15);
 
+	arenaSettings.A2V2_MIN = Config.MainConfig.GetIntDefault("Arena", "2V2_MIN", 2);
+	arenaSettings.A2V2_MAX = Config.MainConfig.GetIntDefault("Arena", "2V2_MAX", 2);
+
+	arenaSettings.A3V3_MIN = Config.MainConfig.GetIntDefault("Arena", "3V3_MIN", 3);
+	arenaSettings.A3V3_MAX = Config.MainConfig.GetIntDefault("Arena", "3V3_MAX", 3);
+
+	arenaSettings.A5V5_MIN = Config.MainConfig.GetIntDefault("Arena", "5V5_MIN", 5);
+	arenaSettings.A5V5_MAX = Config.MainConfig.GetIntDefault("Arena", "5V5_MAX", 5);
+
 	// damage/hp/mp cap settings
 	m_limits.enable = Config.MainConfig.GetBoolDefault("Limits", "Enable", true);
 	m_limits.autoattackDamageCap = (uint32)Config.MainConfig.GetIntDefault("Limits", "AutoAttackDmg", 10000);

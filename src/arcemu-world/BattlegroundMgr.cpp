@@ -538,7 +538,7 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 				else
 				{
 					if(IS_ARENA(i))
-						tempPlayerVec[0].push_back(plrguid);
+						tempPlayerVec[plr->GetTeam()].push_back(plrguid);
 					else if(!plr->HasAura(BG_DESERTER))
 						tempPlayerVec[plr->GetTeam()].push_back(plrguid);
 				}
@@ -596,7 +596,7 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 			{
 				// enough players to start a round?
 				uint32 minPlayers = BattlegroundManager.GetMinimumPlayers(i);
-				if(!forceStart && tempPlayerVec[0].size() < minPlayers)
+				if(!forceStart && ( tempPlayerVec[0].size() < minPlayers || tempPlayerVec[1].size() < minPlayers ) )
 					continue;
 
 				if(CanCreateInstance(i, j))
@@ -610,22 +610,51 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 						return;
 					}
 
-					team = arena->GetFreeTeam();
-					while(!arena->IsFull() && tempPlayerVec[0].size() && team >= 0)
+					std::queue< Player* > players;
+					uint32 count;
+					
+					// Let's build the list of players we want to add
+					// We take the maximum number of players from both sides
+
+					count = GetMaximumPlayers( i );					
+					while( ( count > 0 ) && ( tempPlayerVec[ 0 ].size() > 0 ) )
 					{
-						plrguid = *tempPlayerVec[0].begin();
-						tempPlayerVec[0].pop_front();
-						plr = objmgr.GetPlayer(plrguid);
+						plr = objmgr.GetPlayer( tempPlayerVec[ 0 ].front() );
+						tempPlayerVec[ 0 ].pop_front();
+						if( plr == NULL )
+							continue;
+						players.push( plr );
+						count--;
+					}
 
-						if(plr)
-						{
-							plr->m_bgTeam = team;
-							arena->AddPlayer(plr, team);
-							team = arena->GetFreeTeam();
-						}
+					count = GetMaximumPlayers( i );
+					while( ( count > 0 ) && ( tempPlayerVec[ 1 ].size() > 0 ) )
+					{
+						plr = objmgr.GetPlayer( tempPlayerVec[ 1 ].front() );
+						tempPlayerVec[ 1 ].pop_front();
+						if( plr == NULL )
+							continue;
+						players.push( plr );
+						count--;
+					}
 
+					// Assign pseudo-random Arena teams
+					uint32 teams[ 2 ];
+					teams[ 0 ] = RandomUInt( 1 );
+					if( teams[ 0 ] == 0 )
+						teams[ 1 ] = 1;
+					else
+						teams[ 1 ] = 0;
+					
+					// Now we just need to add the players to the Arena instance
+					while( players.size() )
+					{
+						plr = players.front();
+						players.pop();
+						plr->m_bgTeam = teams[ plr->GetTeam() ];
+						arena->AddPlayer( plr, plr->m_bgTeam );
 						// remove from the main queue (painful!)
-						ErasePlayerFromList(plrguid, &m_queuedPlayers[i][j]);
+						ErasePlayerFromList( plr->GetLowGUID(), &m_queuedPlayers[i][j]);
 					}
 				}
 			}
@@ -854,11 +883,11 @@ uint32 CBattlegroundManager::GetMinimumPlayers(uint32 dbcIndex)
 		case BATTLEGROUND_EYE_OF_THE_STORM:
 			return sWorld.bgsettings.EOTS_MIN;
 		case BATTLEGROUND_ARENA_2V2:
-			return 2;
+			return sWorld.arenaSettings.A2V2_MIN;
 		case BATTLEGROUND_ARENA_3V3:
-			return 3;
+			return sWorld.arenaSettings.A3V3_MIN;
 		case BATTLEGROUND_ARENA_5V5:
-			return 5;
+			return sWorld.arenaSettings.A5V5_MIN;
 		case BATTLEGROUND_STRAND_OF_THE_ANCIENT:
 			return sWorld.bgsettings.SOTA_MIN;
 		case BATTLEGROUND_ISLE_OF_CONQUEST:
@@ -882,11 +911,11 @@ uint32 CBattlegroundManager::GetMaximumPlayers(uint32 dbcIndex)
 		case BATTLEGROUND_EYE_OF_THE_STORM:
 			return sWorld.bgsettings.EOTS_MAX;
 		case BATTLEGROUND_ARENA_2V2:
-			return 2;
+			return sWorld.arenaSettings.A2V2_MAX;
 		case BATTLEGROUND_ARENA_3V3:
-			return 3;
+			return sWorld.arenaSettings.A3V3_MAX;
 		case BATTLEGROUND_ARENA_5V5:
-			return 5;
+			return sWorld.arenaSettings.A5V5_MAX;
 		case BATTLEGROUND_STRAND_OF_THE_ANCIENT:
 			return sWorld.bgsettings.SOTA_MAX;
 		case BATTLEGROUND_ISLE_OF_CONQUEST:
@@ -941,23 +970,7 @@ CBattleground* CBattlegroundManager::CreateInstance(uint32 Type, uint32 LevelGro
 			return NULL;      // Shouldn't happen
 		}
 
-		switch(Type)
-		{
-			case BATTLEGROUND_ARENA_2V2:
-				players_per_side = 2;
-				break;
-
-			case BATTLEGROUND_ARENA_3V3:
-				players_per_side = 3;
-				break;
-
-			case BATTLEGROUND_ARENA_5V5:
-				players_per_side = 5;
-				break;
-			default:
-				players_per_side = 0;
-				break;
-		}
+		players_per_side = GetMaximumPlayers( Type );
 
 		iid = ++m_maxBattlegroundId[Type];
 		bg = arenaFactory(mgr, iid, LevelGroup, Type, players_per_side);
