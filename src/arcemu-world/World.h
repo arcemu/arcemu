@@ -638,6 +638,17 @@ class SERVER_DECL World : public Singleton<World>, public EventableObject
 			uint32 IOC_MAX;
 		}bgsettings;
 
+		struct ArenaSettings{
+			// Min/Max players per side for the arenas
+
+			uint32 A2V2_MIN;
+			uint32 A2V2_MAX;
+			uint32 A3V3_MIN;
+			uint32 A3V3_MAX;
+			uint32 A5V5_MIN;
+			uint32 A5V5_MAX;
+		}arenaSettings;
+
 
 		// damage/hp/mp cap settings
 		struct
