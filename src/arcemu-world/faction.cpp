@@ -164,9 +164,6 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)
 		if((a->DuelingWith == b) && (a->GetDuelState() == DUEL_STATE_STARTED))
 			return true;
 
-		if(a->IsFFAPvPFlagged() && b->IsFFAPvPFlagged())
-			return true;
-
 		if(b->IsSanctuaryFlagged())
 			return false;
 
@@ -174,6 +171,8 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)
 		if((a->GetGroup() != NULL) && (a->GetGroup() == b->GetGroup()))
 			return false;
 
+		if(a->IsFFAPvPFlagged() && b->IsFFAPvPFlagged())
+			return true;
 	}
 
 	if(objA->m_faction == objB->m_faction)    // same faction can't kill each other unless in ffa pvp/duel
