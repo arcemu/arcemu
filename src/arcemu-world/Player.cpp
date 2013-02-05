@@ -1123,6 +1123,13 @@ void Player::_EventAttack(bool offhand)
 		return;
 	}
 
+	if( !isAttackable( this, pVictim ) )
+	{
+		setHRegenTimer(5000);
+		EventAttackStop();
+		return;
+	}
+
 	if(!canReachWithAttack(pVictim))
 	{
 		if(m_AttackMsgTimer != 1)
