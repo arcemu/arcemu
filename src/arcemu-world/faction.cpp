@@ -98,8 +98,6 @@ bool isHostile(Object* objA, Object* objB)
 	// on the opposite team we'll already know :p
 	if((objA->GetPlayerOwner() != NULL) && (objB->GetPlayerOwner() != NULL))
 	{
-		Player* a = TO< Player* >(objA->GetPlayerOwner());
-		Player* b = TO< Player* >(objB->GetPlayerOwner());
 
 		AreaTable* atA = dbcArea.LookupEntry(a->GetAreaID());
 		AreaTable* atB = dbcArea.LookupEntry(b->GetAreaID());
@@ -155,11 +153,12 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)
 		if(TO< Unit* >(objB)->IsStealth() && CheckStealth)
 			return false;
 	}
+	
+	Player* a = TO< Player* >(objA->GetPlayerOwner());
+	Player* b = TO< Player* >(objB->GetPlayerOwner());
 
 	if((objA->GetPlayerOwner() != NULL) && (objB->GetPlayerOwner() != NULL))
 	{
-		Player* a = TO< Player* >(objA->GetPlayerOwner());
-		Player* b = TO< Player* >(objB->GetPlayerOwner());
 
 		if((a->DuelingWith == b) && (a->GetDuelState() == DUEL_STATE_STARTED))
 			return true;
