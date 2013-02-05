@@ -1474,6 +1474,8 @@ void World::Rehash(bool load)
 	m_limits.spellDamageCap = (uint32)Config.MainConfig.GetIntDefault("Limits", "SpellDmg", 30000);
 	m_limits.healthCap = (uint32)Config.MainConfig.GetIntDefault("Limits", "Health", 80000);
 	m_limits.manaCap = (uint32)Config.MainConfig.GetIntDefault("Limits", "Mana", 80000);
+	m_limits.honorpoints = (uint32)Config.MainConfig.GetIntDefault("Limits", "Honor", 75000);	
+    	m_limits.arenapoints = (uint32)Config.MainConfig.GetIntDefault("Limits", "Arena", 5000);
 	m_limits.disconnect = Config.MainConfig.GetBoolDefault("Limits", "Disconnect", false);
 	m_limits.broadcast = Config.MainConfig.GetBoolDefault("Limits", "BroadcastGMs", true);
 
