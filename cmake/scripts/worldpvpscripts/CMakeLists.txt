@@ -13,7 +13,6 @@ ZoneSilithus.cpp
 ZoneZangarmarsh.cpp
 ZoneTerokkarForest.cpp
 ZoneNagrand.cpp
-ZoneWintergrasp.cpp
 Setup.cpp )
 
 foreach(src IN ITEMS ${sources} )
