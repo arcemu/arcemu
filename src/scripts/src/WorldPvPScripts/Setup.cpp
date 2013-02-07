@@ -6,6 +6,7 @@ void SetupPvPTerokkarForest(ScriptMgr* mgr);
 void SetupPvPHellfirePeninsula(ScriptMgr* mgr);
 void SetupPvPSilithus(ScriptMgr* mgr);
 void SetupPvPZangarmarsh(ScriptMgr* mgr);
+void SetupPvPNagrand(ScriptMgr* mgr);
 
 extern "C" SCRIPT_DECL uint32 _exp_get_script_type()
 {
@@ -18,6 +19,7 @@ extern "C" SCRIPT_DECL void _exp_script_register(ScriptMgr* mgr)	// Comment any 
 	SetupPvPHellfirePeninsula(mgr);
 	SetupPvPSilithus(mgr);
 	SetupPvPZangarmarsh(mgr);
+	SetupPvPNagrand(mgr);
 }
 
 #ifdef WIN32

@@ -23,6 +23,7 @@ SET( BUILD_MISCSCRIPTS TRUE CACHE BOOL "Build arcMiscScripts." )
 SET( BUILD_SERVERSTATUSPLUGIN TRUE CACHE BOOL "Build ServerStatusPlugin.")
 SET( BUILD_LUAENGINE TRUE CACHE BOOL "Build Arcemu Lua Engine ( ALE ).")
 SET( BUILD_LUABRIDGE FALSE CACHE BOOL "Build luabridge.")
+SET( BUILD_WORLDPVPSCRIPTS TRUE CACHE BOOL "Build WorldPvPScripts.")
 
 
 add_subdirectory( eventscripts)
@@ -35,6 +36,7 @@ add_subdirectory( serverstatusplugin )
 add_subdirectory( lualib ) #Used by luabridge and luaengine modules.
 add_subdirectory( luabridge ) 
 add_subdirectory( luaengine )
+add_subdirectory( worldpvpscripts)
 
 unset(SCRIPTS_PATH)
 unset(include_dirs)
