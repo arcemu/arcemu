@@ -1323,6 +1323,7 @@ void World::Rehash(bool load)
 	}
 
 	m_reqGmForCommands = !Config.MainConfig.GetBoolDefault("Server", "AllowPlayerCommands", false);
+	LookupMaxResults = Config.MainConfig.GetIntDefault("Server", "LookupMaxResults", 25);
 	m_lfgForNonLfg = Config.MainConfig.GetBoolDefault("Server", "EnableLFGJoin", false);
 
 	realmtype = Config.MainConfig.GetBoolDefault("Server", "RealmType", false);
