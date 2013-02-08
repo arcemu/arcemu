@@ -3338,9 +3338,9 @@ bool ChatHandler::HandleLookupFactionCommand(const char* args, WorldSession* m_s
 			// Print out the name in a cool highlighted fashion
 			SendHighlightedName(m_session, "Faction", faction->Name, y, x, faction->ID);
 			++count;
-			if(count == 25)
+			if(count == sWorld.LookupMaxResults)
 			{
-				RedSystemMessage(m_session, "More than 25 results returned. aborting.");
+				RedSystemMessage(m_session, "More than %u results returned. aborting.", sWorld.LookupMaxResults);
 				break;
 			}
 		}
