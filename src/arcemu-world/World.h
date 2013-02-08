@@ -651,7 +651,8 @@ class SERVER_DECL World : public Singleton<World>, public EventableObject
 
 
 		uint32 LookupMaxResults; // Max results when lookup for: item | quest | creature | object | spell | skill | faction | achievment
-
+		uint32 MaxWhoListResults; // Max results shown in "who" list
+		
 		// damage/hp/mp cap settings
 		struct
 		{
