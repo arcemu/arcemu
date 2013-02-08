@@ -697,7 +697,7 @@ void WorldSession::HandleWhoOpcode(WorldPacket & recv_data)
 	objmgr._playerslock.AcquireReadLock();
 	iend = objmgr._players.end();
 	itr = objmgr._players.begin();
-	while(itr != iend && sent_count < 49)   // WhoList should display 49 names not including your own
+	while(itr != iend && sent_count < sWorld.MaxWhoListResults)   // WhoList should display 49 names not including your own
 	{
 		plr = itr->second;
 		++itr;
