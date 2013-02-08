@@ -3097,9 +3097,9 @@ bool ChatHandler::HandleLookupItemCommand(const char* args, WorldSession* m_sess
 			//SendHighlightedName(m_session, it->Name1, it->lowercase_name, x, it->ItemId, true);
 			SendItemLinkToPlayer(it, m_session, false, 0, localizedFound ? m_session->language : 0);
 			++count;
-			if(count == 25)
+			if(count == sWorld.LookupMaxResults)
 			{
-				RedSystemMessage(m_session, "More than 25 results returned. aborting.");
+				RedSystemMessage(m_session, "More than %u results returned. aborting.", sWorld.LookupMaxResults);
 				break;
 			}
 		}
