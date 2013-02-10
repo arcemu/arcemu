@@ -108,7 +108,7 @@ void ZoneHook(Player* plr, uint32 Zone, uint32 OldZone)
 	if( Zone == ZONE_HELLFIRE_PENINSULA )
 	{
 		if( g_superiorTeam == plr->GetTeam() )
-			plr->CastSpell(plr, dbcSpell.LookupEntry(spellids[plr->GetTeam()]), true);
+			plr->CastSpell(plr, dbcSpell.LookupEntryForced(spellids[plr->GetTeam()]), true);
 	}
 	else if( OldZone == ZONE_HELLFIRE_PENINSULA )
 	{
@@ -190,7 +190,7 @@ public:
 			else
 				is_valid = true;
 			
-			in_range = (_gameobject->GetDistanceSq((*itr)) <= BANNER_RANGE) ? true : false;
+			in_range = (_gameobject->GetDistanceSq((*itr)) <= BANNER_RANGE);
 
 			it2 = StoredPlayers.find((*itr)->GetLowGUID());
 			if( it2 == StoredPlayers.end() )
@@ -238,8 +238,8 @@ public:
 			UpdateTowerCount();
 
 			// state update
-			plr->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone(ZONE_HELLFIRE_PENINSULA, plr->GetAreaID(), g_neutralStateFields[towerid], 0);
-			plr->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone(ZONE_HELLFIRE_PENINSULA, plr->GetAreaID(), g_allianceStateFields[towerid], 1);
+			_gameobject->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone(ZONE_HELLFIRE_PENINSULA, _gameobject->GetMapMgr()->GetAreaID(_gameobject->GetPositionX(), _gameobject->GetPositionY() ), g_neutralStateFields[towerid], 0);
+			_gameobject->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone(ZONE_HELLFIRE_PENINSULA, _gameobject->GetMapMgr()->GetAreaID(_gameobject->GetPositionX(), _gameobject->GetPositionY() ), g_allianceStateFields[towerid], 1);
 
 			// woot
 			g_towerOwners[towerid] = 1;
@@ -258,8 +258,8 @@ public:
 			UpdateTowerCount();
 
 			// state update
-			plr->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone(ZONE_HELLFIRE_PENINSULA, plr->GetAreaID(), g_neutralStateFields[towerid], 0);
-			plr->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone(ZONE_HELLFIRE_PENINSULA, plr->GetAreaID(), g_hordeStateFields[towerid], 1);
+			_gameobject->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone(ZONE_HELLFIRE_PENINSULA, _gameobject->GetMapMgr()->GetAreaID(_gameobject->GetPositionX(), _gameobject->GetPositionY() ), g_neutralStateFields[towerid], 0);
+			_gameobject->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone(ZONE_HELLFIRE_PENINSULA, _gameobject->GetMapMgr()->GetAreaID(_gameobject->GetPositionX(), _gameobject->GetPositionY() ), g_hordeStateFields[towerid], 1);
 			
 			// woot
 			g_towerOwners[towerid] = 0;
@@ -279,8 +279,8 @@ public:
 				_gameobject->GetMapMgr()->SendPvPCaptureMessage(ZONE_HELLFIRE_PENINSULA, ZONE_HELLFIRE_PENINSULA, "|cffffff00The Alliance have lost control of %s!|r", ControlPointName);
 
 				// state update
-				plr->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone(ZONE_HELLFIRE_PENINSULA, plr->GetAreaID(), g_allianceStateFields[towerid], 0);
-				plr->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone(ZONE_HELLFIRE_PENINSULA, plr->GetAreaID(), g_neutralStateFields[towerid], 1);
+				_gameobject->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone(ZONE_HELLFIRE_PENINSULA, _gameobject->GetMapMgr()->GetAreaID(_gameobject->GetPositionX(), _gameobject->GetPositionY() ), g_allianceStateFields[towerid], 0);
+				_gameobject->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone(ZONE_HELLFIRE_PENINSULA, _gameobject->GetMapMgr()->GetAreaID(_gameobject->GetPositionX(), _gameobject->GetPositionY() ), g_neutralStateFields[towerid], 1);
 
 				// woot
 				g_towerOwners[towerid] = -1;
@@ -297,8 +297,8 @@ public:
 				_gameobject->GetMapMgr()->SendPvPCaptureMessage(ZONE_HELLFIRE_PENINSULA, ZONE_HELLFIRE_PENINSULA, "|cffffff00The Horde have lost control of %s!|r", ControlPointName);
 
 				// state update
-				plr->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone(ZONE_HELLFIRE_PENINSULA, plr->GetAreaID(), g_hordeStateFields[towerid], 0);
-				plr->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone(ZONE_HELLFIRE_PENINSULA, plr->GetAreaID(), g_neutralStateFields[towerid], 1);
+				_gameobject->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone(ZONE_HELLFIRE_PENINSULA, _gameobject->GetMapMgr()->GetAreaID(_gameobject->GetPositionX(), _gameobject->GetPositionY() ), g_hordeStateFields[towerid], 0);
+				_gameobject->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone(ZONE_HELLFIRE_PENINSULA, _gameobject->GetMapMgr()->GetAreaID(_gameobject->GetPositionX(), _gameobject->GetPositionY() ), g_neutralStateFields[towerid], 1);
 
 				// woot
 				g_towerOwners[towerid] = -1;
@@ -367,7 +367,6 @@ public:
 
 	void OnSpawn()
 	{
-		Player* plr = _gameobject->GetMapMgr()->GetInterface()->GetPlayerNearestCoords(_gameobject->GetPositionX(), _gameobject->GetPositionY(), _gameobject->GetPositionZ());
 		m_bannerStatus = BANNER_STATUS_NEUTRAL;
 
 		// preloaded data, do we have any?
@@ -377,8 +376,8 @@ public:
 			Status = 0;
 
 			// state update
-			plr->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone(ZONE_HELLFIRE_PENINSULA, plr->GetAreaID(), g_hordeStateFields[towerid], 1);
-			plr->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone(ZONE_HELLFIRE_PENINSULA, plr->GetAreaID(), g_neutralStateFields[towerid], 0);
+			_gameobject->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone(ZONE_HELLFIRE_PENINSULA, _gameobject->GetMapMgr()->GetAreaID(_gameobject->GetPositionX(), _gameobject->GetPositionY() ), g_hordeStateFields[towerid], 1);
+			_gameobject->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone(ZONE_HELLFIRE_PENINSULA, _gameobject->GetMapMgr()->GetAreaID(_gameobject->GetPositionX(), _gameobject->GetPositionY() ), g_neutralStateFields[towerid], 0);
 
 			// countz
 			g_hordeTowers++;
@@ -391,8 +390,8 @@ public:
 			Status = 100;
 
 			// state update
-			plr->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone(ZONE_HELLFIRE_PENINSULA, plr->GetAreaID(), g_allianceStateFields[towerid], 1);
-			plr->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone(ZONE_HELLFIRE_PENINSULA, plr->GetAreaID(), g_neutralStateFields[towerid], 0);
+			_gameobject->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone(ZONE_HELLFIRE_PENINSULA, _gameobject->GetMapMgr()->GetAreaID(_gameobject->GetPositionX(), _gameobject->GetPositionY() ), g_allianceStateFields[towerid], 1);
+			_gameobject->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone(ZONE_HELLFIRE_PENINSULA, _gameobject->GetMapMgr()->GetAreaID(_gameobject->GetPositionX(), _gameobject->GetPositionY() ), g_neutralStateFields[towerid], 0);
 
 			// countz
 			g_allianceTowers++;
@@ -408,12 +407,10 @@ void UpdateTowerCount()
 {
 	Player* plr = _gameobject->GetMapMgr()->GetInterface()->GetPlayerNearestCoords(_gameobject->GetPositionX(), _gameobject->GetPositionY(), _gameobject->GetPositionZ());
 
-	//printf("Try to Update Tower Count");
+	MapMgr* mgr = _gameobject->GetMapMgr();
 
-	MapMgr* mgr = plr->GetMapMgr();
-
-	mgr->GetWorldStatesHandler().SetWorldStateForZone(ZONE_HELLFIRE_PENINSULA, plr->GetAreaID(), WORLDSTATE_HELLFIRE_ALLIANCE_TOWERS_CONTROLLED, g_allianceTowers);
-	mgr->GetWorldStatesHandler().SetWorldStateForZone(ZONE_HELLFIRE_PENINSULA, plr->GetAreaID(), WORLDSTATE_HELLFIRE_HORDE_TOWERS_CONTROLLED, g_hordeTowers);
+	mgr->GetWorldStatesHandler().SetWorldStateForZone(ZONE_HELLFIRE_PENINSULA, _gameobject->GetMapMgr()->GetAreaID(_gameobject->GetPositionX(), _gameobject->GetPositionY() ), WORLDSTATE_HELLFIRE_ALLIANCE_TOWERS_CONTROLLED, g_allianceTowers);
+	mgr->GetWorldStatesHandler().SetWorldStateForZone(ZONE_HELLFIRE_PENINSULA, _gameobject->GetMapMgr()->GetAreaID(_gameobject->GetPositionX(), _gameobject->GetPositionY() ), WORLDSTATE_HELLFIRE_HORDE_TOWERS_CONTROLLED, g_hordeTowers);
 
 	//Reward Handle the Quests for the Captures
 	uint32 quest = plr->GetTeam() == TEAM_ALLIANCE ? ALLIANCE_QUEST : HORDE_QUEST;

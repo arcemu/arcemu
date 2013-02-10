@@ -172,7 +172,7 @@ class ZangarmarshBannerAI : public GameObjectAIScript
 				else
 					is_valid = true;
 
-				in_range = (_gameobject->GetDistance2dSq((*itr)) <= BANNER_RANGE) ? true : false;
+				in_range = (_gameobject->GetDistance2dSq((*itr)) <= BANNER_RANGE);
 
 				it2 = StoredPlayers.find((*itr)->GetLowGUID());
 				if(it2 == StoredPlayers.end())
@@ -491,9 +491,6 @@ class ZMCityBannerAI : public GameObjectAIScript
 	
 		void OnActivate(Player* pPlayer)
 		{
-			if(!pPlayer)
-				return;
-
 			//Get Team from Player
 			uint32 pTeam = pPlayer->GetTeam();
 
@@ -567,11 +564,9 @@ class ZMCityBannerAI : public GameObjectAIScript
 
 void SetGrave()
 {
-	Player* plr = _gameobject->GetMapMgr()->GetInterface()->GetPlayerNearestCoords(_gameobject->GetPositionX(), _gameobject->GetPositionY(), _gameobject->GetPositionZ());
-	
-	MapMgr* mgr = plr->GetMapMgr();
+	MapMgr* mgr = _gameobject->GetMapMgr();
 
-	if(!mgr || mgr->GetMapId() != 530)
+	if(mgr->GetMapId() != 530)
 		return;
 
 	// any better solution?
@@ -596,20 +591,20 @@ void SetGrave()
 
 	if(ZMCityOwners == 0)
 	{
-		plr->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone(ZONE_ZANGARMARSH, plr->GetAreaID(), WORLDSTATE_ZANGARMARSH_CITY_ALLIANCE, 1);
-		plr->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone(ZONE_ZANGARMARSH, plr->GetAreaID(), WORLDSTATE_ZANGARMARSH_CITY_HORDE, 0);
-		plr->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone(ZONE_ZANGARMARSH, plr->GetAreaID(), WORLDSTATE_ZANGARMARSH_CITY_NEUTRAL, 0);
+		_gameobject->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone(ZONE_ZANGARMARSH, _gameobject->GetMapMgr()->GetAreaID(_gameobject->GetPositionX(), _gameobject->GetPositionY() ), WORLDSTATE_ZANGARMARSH_CITY_ALLIANCE, 1);
+		_gameobject->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone(ZONE_ZANGARMARSH, _gameobject->GetMapMgr()->GetAreaID(_gameobject->GetPositionX(), _gameobject->GetPositionY() ), WORLDSTATE_ZANGARMARSH_CITY_HORDE, 0);
+		_gameobject->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone(ZONE_ZANGARMARSH, _gameobject->GetMapMgr()->GetAreaID(_gameobject->GetPositionX(), _gameobject->GetPositionY() ), WORLDSTATE_ZANGARMARSH_CITY_NEUTRAL, 0);
 	}
 	else if(ZMCityOwners == 1)
 	{
-		plr->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone(ZONE_ZANGARMARSH, plr->GetAreaID(), WORLDSTATE_ZANGARMARSH_CITY_HORDE, 1);
-		plr->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone(ZONE_ZANGARMARSH, plr->GetAreaID(), WORLDSTATE_ZANGARMARSH_CITY_ALLIANCE, 0);
-		plr->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone(ZONE_ZANGARMARSH, plr->GetAreaID(), WORLDSTATE_ZANGARMARSH_CITY_NEUTRAL, 0);
+		_gameobject->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone(ZONE_ZANGARMARSH, _gameobject->GetMapMgr()->GetAreaID(_gameobject->GetPositionX(), _gameobject->GetPositionY() ), WORLDSTATE_ZANGARMARSH_CITY_HORDE, 1);
+		_gameobject->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone(ZONE_ZANGARMARSH, _gameobject->GetMapMgr()->GetAreaID(_gameobject->GetPositionX(), _gameobject->GetPositionY() ), WORLDSTATE_ZANGARMARSH_CITY_ALLIANCE, 0);
+		_gameobject->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone(ZONE_ZANGARMARSH, _gameobject->GetMapMgr()->GetAreaID(_gameobject->GetPositionX(), _gameobject->GetPositionY() ), WORLDSTATE_ZANGARMARSH_CITY_NEUTRAL, 0);
 	}
 	else
 	{
-		plr->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone(ZONE_ZANGARMARSH, plr->GetAreaID(), WORLDSTATE_ZANGARMARSH_CITY_HORDE, 0);
-		plr->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone(ZONE_ZANGARMARSH, plr->GetAreaID(), WORLDSTATE_ZANGARMARSH_CITY_ALLIANCE, 0);
+		_gameobject->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone(ZONE_ZANGARMARSH, _gameobject->GetMapMgr()->GetAreaID(_gameobject->GetPositionX(), _gameobject->GetPositionY() ), WORLDSTATE_ZANGARMARSH_CITY_HORDE, 0);
+		_gameobject->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone(ZONE_ZANGARMARSH, _gameobject->GetMapMgr()->GetAreaID(_gameobject->GetPositionX(), _gameobject->GetPositionY() ), WORLDSTATE_ZANGARMARSH_CITY_ALLIANCE, 0);
 	}
 }
 };

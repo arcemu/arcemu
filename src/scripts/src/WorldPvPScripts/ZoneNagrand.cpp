@@ -107,9 +107,6 @@ class GryphonHorstDestroyedAI : public GameObjectAIScript
 	
 		void OnActivate(Player* plr)
 		{
-			if(!plr)
-				return;
-
 			uint32 Team = plr->GetTeam();
 
 			if (CityOwners == Team)
@@ -206,7 +203,8 @@ class GryphonHorstAI : public GameObjectAIScript
 		void AIUpdate()
 		{
 			if(g_guards == 0)
-			_gameobject->Despawn(0, 0);
+			_gameobject->Despawn(1000, 0);
+			RemoveAIUpdateEvent();
 		}
 
 		void OnActivate(Player* plr)
@@ -220,33 +218,16 @@ class GryphonHorstAI : public GameObjectAIScript
 				return;
 
 			//West
-			uint32 WWX = _gameobject->GetPositionX() ==  -1507.94f;
-			uint32 WWY = _gameobject->GetPositionY() ==  8132.10f;
-			uint32 WWZ = _gameobject->GetPositionZ() ==  -19.55f;
-			//North
-			uint32 NNX = _gameobject->GetPositionX() ==  -1384.53f;
-			uint32 NNY = _gameobject->GetPositionY() ==  7779.39f;
-			uint32 NNZ = _gameobject->GetPositionZ() ==  -11.17f;
-			//East
-			uint32 EEX = _gameobject->GetPositionX() ==  -1650.28f;
-			uint32 EEY = _gameobject->GetPositionY() ==  7732.18f;
-			uint32 EEZ = _gameobject->GetPositionZ() ==  -15.44f;
-			//South
-			uint32 SSX = _gameobject->GetPositionX() ==  -1815.80f;
-			uint32 SSY = _gameobject->GetPositionY() ==  8036.50f;
-			uint32 SSZ = _gameobject->GetPositionZ() ==  -26.23f;
-
-			//West
-			if( ( WWX ) & ( WWY ) & ( WWZ ) )
+			if( ( _gameobject->GetPositionX() ==  -1507.94f ) & ( _gameobject->GetPositionY() ==  8132.10f ) & ( _gameobject->GetPositionZ() ==  -19.55f ) )
 			plr->TaxiStart(sTaxiMgr.GetTaxiPath(523), 295, 0);
 			//East
-			if( ( EEX ) & ( EEY ) & ( EEZ ) )
+			if( ( _gameobject->GetPositionX() ==  -1650.28f ) & ( _gameobject->GetPositionY() ==  7732.18f ) & ( _gameobject->GetPositionZ() ==  -15.44f ) )
 			plr->TaxiStart(sTaxiMgr.GetTaxiPath(524), 295, 0);
 			//North
-			if( ( NNX ) & ( NNY ) & ( NNZ ) )
+			if( ( _gameobject->GetPositionX() ==  -1384.53f ) & ( _gameobject->GetPositionY() ==  7779.39f ) & ( _gameobject->GetPositionZ() ==  -11.17f ) )
 			plr->TaxiStart(sTaxiMgr.GetTaxiPath(522), 295, 0);
 			//South
-			if( ( SSX ) & ( SSY ) & ( SSZ ) )
+			if( ( _gameobject->GetPositionX() ==  -1815.80f ) & ( _gameobject->GetPositionY() ==  8036.50f ) & ( _gameobject->GetPositionZ() ==  -26.23f ) )
 			plr->TaxiStart(sTaxiMgr.GetTaxiPath(520), 295, 0);
 		}
 };
@@ -303,7 +284,7 @@ public:
 			else
 				is_valid = true;
 			
-			in_range = (_gameobject->GetDistanceSq((*itr)) <= BANNER_RANGE) ? true : false;
+			in_range = (_gameobject->GetDistanceSq((*itr)) <= BANNER_RANGE);
 			capturable = (g_capturable == 1? true : false);
 
 			it2 = StoredPlayers.find((*itr)->GetLowGUID());
@@ -572,20 +553,15 @@ void UpdateTowerCount()
 
 void SpawnA()
 {	
-	GameObject* P1 = _gameobject->GetMapMgr()->GetInterface()->SpawnGameObject(182275, -1507.94f, 8132.10f, -19.55f, 0, false, 0, 0, 1);
-	GameObject* P2 = _gameobject->GetMapMgr()->GetInterface()->SpawnGameObject(182276, -1384.53f, 7779.39f, -11.17f, 0, false, 0, 0, 1);
-	GameObject* P3 = _gameobject->GetMapMgr()->GetInterface()->SpawnGameObject(182277, -1650.28f, 7732.18f, -15.44f, 0, false, 0, 0, 1);
-	GameObject* P4 = _gameobject->GetMapMgr()->GetInterface()->SpawnGameObject(182297, -1815.80f, 8036.50f, -26.23f, 0, false, 0, 0, 1);
+	GameObject* P1 = _gameobject->GetMapMgr()->GetInterface()->SpawnGameObject(182275, -1507.94f, 8132.10f, -19.55f, 0, true, 0, 0, 1);
+	GameObject* P2 = _gameobject->GetMapMgr()->GetInterface()->SpawnGameObject(182276, -1384.53f, 7779.39f, -11.17f, 0, true, 0, 0, 1);
+	GameObject* P3 = _gameobject->GetMapMgr()->GetInterface()->SpawnGameObject(182277, -1650.28f, 7732.18f, -15.44f, 0, true, 0, 0, 1);
+	GameObject* P4 = _gameobject->GetMapMgr()->GetInterface()->SpawnGameObject(182297, -1815.80f, 8036.50f, -26.23f, 0, true, 0, 0, 1);
 
 	P1->SetUInt32Value(GAMEOBJECT_FACTION, 2);
 	P2->SetUInt32Value(GAMEOBJECT_FACTION, 2);
 	P3->SetUInt32Value(GAMEOBJECT_FACTION, 2);
 	P4->SetUInt32Value(GAMEOBJECT_FACTION, 2);
-
-	P1->PushToWorld(_gameobject->GetMapMgr());
-	P2->PushToWorld(_gameobject->GetMapMgr());
-	P3->PushToWorld(_gameobject->GetMapMgr());
-	P4->PushToWorld(_gameobject->GetMapMgr());
 
 	struct snpcdata
 {
@@ -630,26 +606,20 @@ const static snpcdata AllianceControlNPCs[] =
 	if(B1 == NULL)
 		continue;
 
-	B1->PushToWorld(_gameobject->GetMapMgr());
 	}
 }
 
 void SpawnH()
 {
-	GameObject* P1 = _gameobject->GetMapMgr()->GetInterface()->SpawnGameObject(182275, -1507.94f, 8132.10f, -19.55f, 0, false, 0, 0, 1);
-	GameObject* P2 = _gameobject->GetMapMgr()->GetInterface()->SpawnGameObject(182276, -1384.53f, 7779.39f, -11.17f, 0, false, 0, 0, 1);
-	GameObject* P3 = _gameobject->GetMapMgr()->GetInterface()->SpawnGameObject(182277, -1650.28f, 7732.18f, -15.44f, 0, false, 0, 0, 1);
-	GameObject* P4 = _gameobject->GetMapMgr()->GetInterface()->SpawnGameObject(182297, -1815.80f, 8036.50f, -26.23f, 0, false, 0, 0, 1);
+	GameObject* P1 = _gameobject->GetMapMgr()->GetInterface()->SpawnGameObject(182275, -1507.94f, 8132.10f, -19.55f, 0, true, 0, 0, 1);
+	GameObject* P2 = _gameobject->GetMapMgr()->GetInterface()->SpawnGameObject(182276, -1384.53f, 7779.39f, -11.17f, 0, true, 0, 0, 1);
+	GameObject* P3 = _gameobject->GetMapMgr()->GetInterface()->SpawnGameObject(182277, -1650.28f, 7732.18f, -15.44f, 0, true, 0, 0, 1);
+	GameObject* P4 = _gameobject->GetMapMgr()->GetInterface()->SpawnGameObject(182297, -1815.80f, 8036.50f, -26.23f, 0, true, 0, 0, 1);
 
 	P1->SetUInt32Value(GAMEOBJECT_FACTION, 1);
 	P2->SetUInt32Value(GAMEOBJECT_FACTION, 1);
 	P3->SetUInt32Value(GAMEOBJECT_FACTION, 1);
 	P4->SetUInt32Value(GAMEOBJECT_FACTION, 1);
-
-	P1->PushToWorld(_gameobject->GetMapMgr());
-	P2->PushToWorld(_gameobject->GetMapMgr());
-	P3->PushToWorld(_gameobject->GetMapMgr());
-	P4->PushToWorld(_gameobject->GetMapMgr());
 
 	struct snpcdata
 {
@@ -694,7 +664,6 @@ const static snpcdata HordeControlNPCs[] =
 	if(B1 == NULL)
 		continue;
 
-	B1->PushToWorld(_gameobject->GetMapMgr());
 	}
 }
 };
@@ -724,9 +693,6 @@ void ZoneHookNagrand(Player* plr, uint32 Zone, uint32 OldZone)
 
 void TokensHalaa(Player* pPlayer, Player* pVictim)
 {
-if(!pPlayer || !pVictim)
-		return;
-
 	if(pPlayer->GetTeam() == pVictim->GetTeam())
 		return;
 
@@ -756,8 +722,9 @@ class HalaaniGuard : public CreatureAIScript
 
 		void AIUpdate()
 		{
-			if(g_guards == 0)
-				_unit->Despawn(0, 0);
+			if((g_guards == 0) && (CityOwners != -1))
+				_unit->Despawn(500, 0);
+				RemoveAIUpdateEvent();
 		}
 };
 
@@ -772,8 +739,9 @@ class Npcs : public CreatureAIScript
 
 		void AIUpdate()
 		{
-			if(g_guards == 0)
-				_unit->Despawn(0, 0);
+			if((g_guards == 0) && (CityOwners != -1))
+				_unit->Despawn(500, 0);
+				RemoveAIUpdateEvent();
 		}
 };
 

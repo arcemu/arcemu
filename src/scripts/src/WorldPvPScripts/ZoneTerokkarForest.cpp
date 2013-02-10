@@ -22,7 +22,7 @@
 
 #define BANNER_RANGE 900
 #define UPDATE_PERIOD 5000
-#define CAPTURE_RATE 20
+#define CAPTURE_RATE 4
 
 // Zone ID
 #define ZONE_TEROKKAR_FOREST									3519
@@ -178,7 +178,7 @@ class TerokkarForestBannerAI : public GameObjectAIScript
 				else
 					is_valid = true;
 
-				in_range = (_gameobject->GetDistance2dSq((*itr)) <= BANNER_RANGE) ? true : false;
+				in_range = (_gameobject->GetDistance2dSq((*itr)) <= BANNER_RANGE);
 
 				it2 = StoredPlayers.find((*itr)->GetLowGUID());
 				if(it2 == StoredPlayers.end())
@@ -390,15 +390,11 @@ class TerokkarForestBannerAI : public GameObjectAIScript
 void UpdateTowerCount()
 {
 	MapMgr* mgr = _gameobject->GetMapMgr();
-	if (!mgr)
-		return;
 
 	mgr->GetWorldStatesHandler().SetWorldStateForZone(ZONE_TEROKKAR_FOREST, mgr->GetAreaID( _gameobject->GetPositionX(), _gameobject->GetPositionY() ),WORLDSTATE_TEROKKAR_ALLIANCE_TOWERS_CONTROLLED, TFg_allianceTowers);
 	mgr->GetWorldStatesHandler().SetWorldStateForZone(ZONE_TEROKKAR_FOREST, mgr->GetAreaID( _gameobject->GetPositionX(), _gameobject->GetPositionY() ),WORLDSTATE_TEROKKAR_HORDE_TOWERS_CONTROLLED, TFg_hordeTowers);
 
 	Player* plr = _gameobject->GetMapMgr()->GetInterface()->GetPlayerNearestCoords(_gameobject->GetPositionX(), _gameobject->GetPositionY(), _gameobject->GetPositionZ() - 34);
-	if (!plr)
-		return;
 		
 	if(TFg_superiorTeam == 0 && TFg_allianceTowers != 5)
 	{
@@ -432,13 +428,10 @@ void UpdateTowerCount()
 
 void TFZoneHook(Player* plr, uint32 Zone, uint32 OldZone)
 {
-	if(!plr)
-		return;
-
 	if(Zone == ZONE_TEROKKAR_FOREST)
 	{
 		if(TFg_superiorTeam == plr->GetTeam())
-			plr->CastSpell(plr, dbcSpell.LookupEntry(BLESSING_OF_AUCHINDOUND), true);
+			plr->CastSpell(plr, dbcSpell.LookupEntryForced(BLESSING_OF_AUCHINDOUND), true);
 	}
 	else if(OldZone == ZONE_TEROKKAR_FOREST)
 	{

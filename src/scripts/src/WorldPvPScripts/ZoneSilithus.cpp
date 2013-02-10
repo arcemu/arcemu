@@ -68,7 +68,6 @@ uint8 winners = 3; // set to neutral as indicator that its neither alliance nor 
 void SilithusEnterWorldHook(Player *pPlayer)
 {
    if(pPlayer->GetMapId() == MAP_KALIMDOR && pPlayer->GetZoneId() == ZONE_SILITHUS)
-      if(pPlayer->HasAura(CENARION_FAVOR))
          if(pPlayer->GetTeam() == winners)
             pPlayer->RemoveAura(CENARION_FAVOR);
 }
@@ -77,7 +76,7 @@ void SilithusZoneHook(Player *plr, uint32 Zone, uint32 OldZone)
 {
    if(Zone == ZONE_SILITHUS && winners == plr->GetTeam())
    {
-      plr->CastSpell(plr, dbcSpell.LookupEntry(CENARION_FAVOR), true);
+      plr->CastSpell(plr, dbcSpell.LookupEntryForced(CENARION_FAVOR), true);
    }
    else if(OldZone == ZONE_SILITHUS && winners == plr->GetTeam())
    {
@@ -97,13 +96,23 @@ void AreatriggerHook(Player *pPlayer, uint32 triggerID)
 
    /* Rewards */
    pPlayer->CastSpell(pPlayer, TRACES_OF_SILITHYST, true);
-   pPlayer->m_honorPoints += REWARD_HONOR;
+
+   HonorHandler::AddHonorPointsToPlayer(pPlayer, REWARD_HONOR);
+
    pPlayer->ModStanding(REWARD_REPUTATION_FACTION, REWARD_REPUTATION_VALUE);
 
    uint32 quest = pPlayer->GetTeam() == TEAM_ALLIANCE ? ALLIANCE_SILITHYST_QUEST : HORDE_SILITHYST_QUEST;
    if(pPlayer->HasQuest(quest))
    {
-      // testing needed if these quests are completed automatically or need to be marked done here
+        QuestLogEntry* qle = pPlayer->GetQuestLogForEntry(quest);
+
+		if(qle->GetMobCount(0) < qle->GetQuest()->required_mobcount[0])
+			{
+			uint32 NewCount = qle->GetMobCount(0) + 1;
+			qle->SetMobCount(0, NewCount);
+			qle->SendUpdateAddKill(0);
+			qle->UpdatePlayerFields();
+			}
    }
 
    // count scores and update worldstate
@@ -146,7 +155,7 @@ public:
          return;
    
       pPlayer->CastSpell(pPlayer, SILITHYST_SPELL, true);
-      _gameobject->Despawn(0, 0);
+      _gameobject->Despawn(1000, 0);
    }
 };
 
@@ -156,7 +165,7 @@ void DropFlag(Aura *aura)
    if(aura->GetSpellId() != SILITHYST_SPELL)
       return;
 
-   if(aura->GetUnitCaster() && aura->GetUnitCaster()->IsPlayer())
+   if(aura->GetPlayerCaster())
       Log.Notice("WorldPvP - Silithus", "aura caster was a player");
    
    if(!aura->GetTarget()->IsPlayer())
@@ -168,7 +177,7 @@ void DropFlag(Aura *aura)
    uint32 triggerID = pPlayer->GetTeam() == TEAM_ALLIANCE ? ALLIANCE_RETURN : HORDE_RETURN;
    // we have to use AreaTrigger.dbc here
    AreaTrigger* pAreaTrigger = AreaTriggerStorage.LookupEntry(triggerID);
-   if(pAreaTrigger)
+   if(!pAreaTrigger == NULL)
       if( pPlayer->CalcDistance(pAreaTrigger->x,pAreaTrigger->y,pAreaTrigger->z) > 5.0f )
          pPlayer->GetMapMgr()->GetInterface()->SpawnGameObject(SILITHYST_MOUND, pPlayer->GetPositionX(), pPlayer->GetPositionY(), pPlayer->GetPositionZ(), 0, true, 0, 0);
 }
