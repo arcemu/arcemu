@@ -410,10 +410,7 @@ void UpdateTowerCountZM()
 	if (!plr)
 		return;
 		
-	MapMgr* mgr = plr->GetMapMgr();
-
-	if(!mgr)
-		return;
+	MapMgr* mgr = _gameobject->GetMapMgr();
 
 	if(ZMg_superiorTeam == 0 && ZMg_allianceTowers != TOWER_COUNT)
 	{
