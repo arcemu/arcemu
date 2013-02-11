@@ -203,8 +203,10 @@ class GryphonHorstAI : public GameObjectAIScript
 		void AIUpdate()
 		{
 			if(g_guards == 0)
-			_gameobject->Despawn(1000, 0);
-			RemoveAIUpdateEvent();
+			{
+				_gameobject->Despawn(1000, 0);
+				RemoveAIUpdateEvent();
+			}
 		}
 
 		void OnActivate(Player* plr)
@@ -723,8 +725,10 @@ class HalaaniGuard : public CreatureAIScript
 		void AIUpdate()
 		{
 			if((g_guards == 0) && (CityOwners != -1))
+			{
 				_unit->Despawn(500, 0);
 				RemoveAIUpdateEvent();
+			}
 		}
 };
 
@@ -740,8 +744,10 @@ class Npcs : public CreatureAIScript
 		void AIUpdate()
 		{
 			if((g_guards == 0) && (CityOwners != -1))
+			{
 				_unit->Despawn(500, 0);
 				RemoveAIUpdateEvent();
+			}
 		}
 };
 

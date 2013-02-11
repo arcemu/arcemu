@@ -177,7 +177,6 @@ void DropFlag(Aura *aura)
    uint32 triggerID = pPlayer->GetTeam() == TEAM_ALLIANCE ? ALLIANCE_RETURN : HORDE_RETURN;
    // we have to use AreaTrigger.dbc here
    AreaTrigger* pAreaTrigger = AreaTriggerStorage.LookupEntry(triggerID);
-   if(!pAreaTrigger == NULL)
       if( pPlayer->CalcDistance(pAreaTrigger->x,pAreaTrigger->y,pAreaTrigger->z) > 5.0f )
          pPlayer->GetMapMgr()->GetInterface()->SpawnGameObject(SILITHYST_MOUND, pPlayer->GetPositionX(), pPlayer->GetPositionY(), pPlayer->GetPositionZ(), 0, true, 0, 0);
 }
