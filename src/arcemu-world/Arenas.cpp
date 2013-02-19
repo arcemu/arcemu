@@ -331,6 +331,13 @@ uint32 Arena::CalcDeltaRating(uint32 oldRating, uint32 opponentRating, bool outc
 	return long2int32(32.0 * multiplier);
 }
 
+uint32 Arena::GetTeamFaction( uint32 team )
+{
+	std::set< Player* >::iterator itr = m_players[ team ].begin();
+	Player *p = *itr;
+	return p->GetTeam();
+}
+
 void Arena::Finish()
 {
 	m_ended = true;
