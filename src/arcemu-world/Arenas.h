@@ -78,6 +78,9 @@ protected:
 			/* We shouldn't reach here. */
 		}
 
+		/// Returns the faction of the team
+		uint32 GetTeamFaction( uint32 team );
+
 		void Finish();
 		ARCEMU_INLINE uint8 Rated() { return rated_match; }
 		ARCEMU_INLINE uint32 GetArenaTeamType() { return m_arenateamtype; }

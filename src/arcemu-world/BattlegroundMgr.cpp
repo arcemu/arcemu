@@ -487,6 +487,10 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 	Arena* arena;
 	int32 team;
 	uint32 plrguid;
+	uint32 factionMap[ MAX_PLAYER_TEAMS ];
+	uint32 count;
+	std::queue< uint32 > teams[ MAX_PLAYER_TEAMS ];
+
 	m_queueLock.Acquire();
 	m_instanceLock.Acquire();
 
@@ -556,11 +560,14 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 					if(arena->Rated())
 						continue;
 
+					factionMap[ 0 ] = arena->GetTeamFaction( 0 );
+					factionMap[ 1 ] = arena->GetTeamFaction( 1 );
+
 					team = arena->GetFreeTeam();
-					while(team >= 0 && tempPlayerVec[0].size())
+					while( ( team >= 0 ) && ( tempPlayerVec[ factionMap[ team ] ].size() > 0 ) )
 					{
-						plrguid = *tempPlayerVec[0].begin();
-						tempPlayerVec[0].pop_front();
+						plrguid = *tempPlayerVec[ factionMap[ team ] ].begin();
+						tempPlayerVec[ factionMap[ team ] ].pop_front();
 						plr = objmgr.GetPlayer(plrguid);
 						if(plr)
 						{
@@ -596,7 +603,7 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 			{
 				// enough players to start a round?
 				uint32 minPlayers = BattlegroundManager.GetMinimumPlayers(i);
-				if(!forceStart && ( tempPlayerVec[0].size() < minPlayers || tempPlayerVec[1].size() < minPlayers ) )
+				if(!forceStart && ( ( tempPlayerVec[0].size() + tempPlayerVec[1].size() ) < ( minPlayers * 2 ) ) )
 					continue;
 
 				if(CanCreateInstance(i, j))
@@ -610,51 +617,65 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 						return;
 					}
 
-					std::queue< Player* > players;
-					uint32 count;
-					
-					// Let's build the list of players we want to add
-					// We take the maximum number of players from both sides
-
-					count = GetMaximumPlayers( i );					
-					while( ( count > 0 ) && ( tempPlayerVec[ 0 ].size() > 0 ) )
+					// No alliance in the queue
+					if( tempPlayerVec[ 0 ].size() == 0 )
 					{
-						plr = objmgr.GetPlayer( tempPlayerVec[ 0 ].front() );
-						tempPlayerVec[ 0 ].pop_front();
-						if( plr == NULL )
-							continue;
-						players.push( plr );
-						count--;
+						count = GetMaximumPlayers( i ) * 2;
+						while( ( count > 0 ) && ( tempPlayerVec[ 1 ].size() > 0 ) )
+						{
+							if( teams[ 0 ].size() > teams[ 1 ].size() )
+								teams[ 1 ].push( tempPlayerVec[ 1 ].front() );
+							else
+								teams[ 0 ].push( tempPlayerVec[ 1 ].front() );
+							tempPlayerVec[ 1 ].pop_front();
+							count--;
+						}
 					}
-
-					count = GetMaximumPlayers( i );
-					while( ( count > 0 ) && ( tempPlayerVec[ 1 ].size() > 0 ) )
-					{
-						plr = objmgr.GetPlayer( tempPlayerVec[ 1 ].front() );
-						tempPlayerVec[ 1 ].pop_front();
-						if( plr == NULL )
-							continue;
-						players.push( plr );
-						count--;
-					}
-
-					// Assign pseudo-random Arena teams
-					uint32 teams[ 2 ];
-					teams[ 0 ] = RandomUInt( 1 );
-					if( teams[ 0 ] == 0 )
-						teams[ 1 ] = 1;
 					else
-						teams[ 1 ] = 0;
+					// No horde in the queue
+					if( tempPlayerVec[ 1 ].size() == 0 )
+					{
+						count = GetMaximumPlayers( i ) * 2;
+						while( ( count > 0 ) && ( tempPlayerVec[ 0 ].size() > 0 ) )
+						{
+							if( teams[ 0 ].size() > teams[ 1 ].size() )
+								teams[ 1 ].push( tempPlayerVec[ 0 ].front() );
+							else
+								teams[ 0 ].push( tempPlayerVec[ 0 ].front() );
+							tempPlayerVec[ 0 ].pop_front();
+							count--;
+						}
+					}
+					else
+					// There are both alliance and horde players in the queue
+					{
+						count = GetMaximumPlayers( i );
+						while( ( count > 0 ) && ( tempPlayerVec[ 0 ].size() > 0 ) && ( tempPlayerVec[ 1 ].size() > 0 ) )
+						{
+							teams[ 0 ].push( tempPlayerVec[ 0 ].front() );
+							teams[ 1 ].push( tempPlayerVec[ 1 ].front() );
+							tempPlayerVec[ 0 ].pop_front();
+							tempPlayerVec[ 1 ].pop_front();
+							count--;
+						}
+					}
 					
 					// Now we just need to add the players to the Arena instance
-					while( players.size() )
+					while( teams[ 0 ].size() > 0 )
 					{
-						plr = players.front();
-						players.pop();
-						plr->m_bgTeam = teams[ plr->GetTeam() ];
-						arena->AddPlayer( plr, plr->m_bgTeam );
-						// remove from the main queue (painful!)
-						ErasePlayerFromList( plr->GetLowGUID(), &m_queuedPlayers[i][j]);
+						for( uint32 team = 0; team < 2; team++ )
+						{
+							plrguid = teams[ team ].front();
+							teams[ team ].pop();
+							plr = objmgr.GetPlayer( plrguid );
+							if( plr == NULL )
+								continue;
+							
+							plr->m_bgTeam = team;
+							arena->AddPlayer( plr, plr->m_bgTeam );
+							// remove from the main queue (painful!)
+							ErasePlayerFromList( plr->GetLowGUID(), &m_queuedPlayers[i][j] );
+						}
 					}
 				}
 			}
