@@ -3151,7 +3151,7 @@ bool ChatHandler::HandleLookupObjectCommand(const char* args, WorldSession* m_se
 			SendMultilineMessage(m_session, recout.c_str());
 
 			++count;
-			if(count == sWorld.LookupMaxResults || count > sWorld.LookupMaxResults)
+			if(count >= sWorld.LookupMaxResults)
 			{
 				RedSystemMessage(m_session, "More than %u results returned. aborting.", sWorld.LookupMaxResults);
 				break;
