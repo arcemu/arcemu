@@ -137,8 +137,7 @@ MYSQL *MySQLDatabase::_OpenConnection()
 		Log.Error("MySQLDatabase", "MYSQL_OPT_RECONNECT could not be set, connection drops may occur but will be counteracted anyway.");
 
 	// set up SSL
-	//mysql_ssl_set(conn, mSSLkey, mSSLcert, mSSLca, NULL, NULL);
-	mysql_ssl_set(conn, NULL, NULL, NULL, NULL, NULL);
+	mysql_ssl_set(conn, mSSLkey, mSSLcert, mSSLca, NULL, NULL);
 
 	// enable compression if requested
 	if(mCompress) {
@@ -152,7 +151,7 @@ MYSQL *MySQLDatabase::_OpenConnection()
 		mysql_close(conn);
 		return NULL;
 	}
-
+	
 	return conn;
 }
 

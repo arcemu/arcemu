@@ -640,6 +640,8 @@ bool Master::_StartDB()
 	Database_World = NULL;
 	Database_Character = NULL;
 	string hostname, username, password, database;
+	string sslca, sslkey, sslcert;
+	bool compression = false;
 	int port = 0;
 
 	bool result = Config.MainConfig.GetString("WorldDatabase", "Username", &username);
@@ -647,6 +649,10 @@ bool Master::_StartDB()
 	result = !result ? result : Config.MainConfig.GetString("WorldDatabase", "Hostname", &hostname);
 	result = !result ? result : Config.MainConfig.GetString("WorldDatabase", "Name", &database);
 	result = !result ? result : Config.MainConfig.GetInt("WorldDatabase", "Port", &port);
+	result = !result ? result : Config.MainConfig.GetBool("WorldDatabase", "Compression", &compression);
+	result = !result ? result : Config.MainConfig.GetString("WorldDatabase", "SSLCA",       &sslca);
+	result = !result ? result : Config.MainConfig.GetString("WorldDatabase", "SSLKey",     &sslkey);
+	result = !result ? result : Config.MainConfig.GetString("WorldDatabase", "SSLCert",   &sslcert);
 
 	Database_World = Database::CreateDatabaseInterface();
 
@@ -658,7 +664,7 @@ bool Master::_StartDB()
 
 	// Initialize it
 	if(!WorldDatabase.Initialize(hostname.c_str(), (unsigned int)port, NULL, username.c_str(),
-	                             password.c_str(), database.c_str(), NULL, NULL, NULL, false,
+	                             password.c_str(), database.c_str(), sslkey.c_str(), sslcert.c_str(), sslca.c_str(), compression,
 	                             Config.MainConfig.GetIntDefault("WorldDatabase", "ConnectionCount", 3), 16384))
 	{
 		Log.Error("sql", "Main database initialization failed. Exiting.");
@@ -670,6 +676,10 @@ bool Master::_StartDB()
 	result = !result ? result : Config.MainConfig.GetString("CharacterDatabase", "Hostname", &hostname);
 	result = !result ? result : Config.MainConfig.GetString("CharacterDatabase", "Name", &database);
 	result = !result ? result : Config.MainConfig.GetInt("CharacterDatabase", "Port", &port);
+	result = !result ? result : Config.MainConfig.GetBool("CharacterDatabase", "Compression", &compression);
+	result = !result ? result : Config.MainConfig.GetString("CharacterDatabase", "SSLCA",       &sslca);
+	result = !result ? result : Config.MainConfig.GetString("CharacterDatabase", "SSLKey",     &sslkey);
+	result = !result ? result : Config.MainConfig.GetString("CharacterDatabase", "SSLCert",   &sslcert);
 
 	Database_Character = Database::CreateDatabaseInterface();
 
@@ -681,7 +691,7 @@ bool Master::_StartDB()
 
 	// Initialize it
 	if(!CharacterDatabase.Initialize(hostname.c_str(), (unsigned int)port, NULL, username.c_str(),
-	                                 password.c_str(), database.c_str(), NULL, NULL, NULL, false,
+	                                 password.c_str(), database.c_str(), sslkey.c_str(), sslcert.c_str(), sslca.c_str(), compression,
 	                                 Config.MainConfig.GetIntDefault("CharacterDatabase", "ConnectionCount", 5), 16384))
 	{
 		Log.Error("sql", "Main database initialization failed. Exiting.");
