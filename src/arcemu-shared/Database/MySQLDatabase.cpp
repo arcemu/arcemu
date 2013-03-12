@@ -32,14 +32,14 @@ MySQLDatabase::~MySQLDatabase()
 	}
 	delete [] Connections;
 
-	delete mHostname;
-	delete mSocket;
-	delete mUsername;
-	delete mPassword;
-	delete mDatabaseName;
-	delete mSSLkey;
-	delete mSSLcert;
-	delete mSSLca;
+	delete [] mHostname;
+	delete [] mSocket;
+	delete [] mUsername;
+	delete [] mPassword;
+	delete [] mDatabaseName;
+	delete [] mSSLkey;
+	delete [] mSSLcert;
+	delete [] mSSLca;
 }
 
 MySQLDatabase::MySQLDatabase() : Database(), mHostname(NULL), mPort(0), mSocket(NULL), mUsername(NULL), mPassword(NULL), mDatabaseName(NULL), mSSLkey(NULL), mSSLcert(NULL), mSSLca(NULL), mCompress(false)
