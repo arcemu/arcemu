@@ -31,9 +31,18 @@ MySQLDatabase::~MySQLDatabase()
 		delete Connections[i];
 	}
 	delete [] Connections;
+
+	delete [] mHostname;
+	delete [] mSocket;
+	delete [] mUsername;
+	delete [] mPassword;
+	delete [] mDatabaseName;
+	delete [] mSSLkey;
+	delete [] mSSLcert;
+	delete [] mSSLca;
 }
 
-MySQLDatabase::MySQLDatabase() : Database()
+MySQLDatabase::MySQLDatabase() : Database(), mHostname(NULL), mPort(0), mSocket(NULL), mUsername(NULL), mPassword(NULL), mDatabaseName(NULL), mSSLkey(NULL), mSSLcert(NULL), mSSLca(NULL), mCompress(false)
 {
 
 }
@@ -48,50 +57,102 @@ void MySQLDatabase::_EndTransaction(DatabaseConnection* conn)
 	_SendQuery(conn, "COMMIT", false);
 }
 
-bool MySQLDatabase::Initialize(const char* Hostname, unsigned int port, const char* Username, const char* Password, const char* DatabaseName, uint32 ConnectionCount, uint32 BufferSize)
+// Creates the given number of new mysql connection and stores the settings for future reconnects
+// DatabaseName, ConnectionCount, BufferSize must be proper
+// the others are optional in that mysql will use the defaults given in my.cnf
+bool MySQLDatabase::Initialize(const char* Hostname, unsigned int port, const char *Socket, const char* Username, const char* Password, const char* DatabaseName, const char *ssl_key, const char *ssl_cert, const char *ssl_ca, bool Compress, uint32 ConnectionCount, uint32 BufferSize)
 {
-	uint32 i;
-	MYSQL* temp = NULL;
-	MYSQL* temp2 = NULL;
-	MySQLDatabaseConnection** conns;
-	my_bool my_true = true;
-
-	mHostname = string(Hostname);
+	// store database settings
 	mConnectionCount = ConnectionCount;
-	mUsername = string(Username);
-	mPassword = string(Password);
-	mDatabaseName = string(DatabaseName);
+	size_t len;
+	if(Hostname && (len = strlen(Hostname))) {
+		mHostname = new char[len+1];
+		strcpy(mHostname, Hostname);
+	}
+	mPort = port;
+	if(Socket && (len = strlen(Socket))) {
+		mSocket = new char[len+1];
+		strcpy(mSocket, Socket);
+	}
+	if(Username && (len = strlen(Username))) {
+		mUsername = new char[len+1];
+		strcpy(mUsername, Username);
+	}
+	if(Password && (len = strlen(Password))) {
+		mPassword = new char[len+1];
+		strcpy(mPassword, Password);
+	}
+	len = strlen(DatabaseName);
+	mDatabaseName = new char[len+1];
+	strcpy(mDatabaseName, DatabaseName);
+	if(ssl_key && (len = strlen(ssl_key))) {
+		mSSLkey = new char[len+1];
+		strcpy(mSSLkey, ssl_key);
+	}
+	if(ssl_cert && (len = strlen(ssl_cert))) {
+		mSSLcert = new char[len+1];
+		strcpy(mSSLcert, ssl_cert);
+	}
+	if(ssl_ca && (len = strlen(ssl_ca))) {
+		mSSLca = new char[len+1];
+		strcpy(mSSLca, ssl_ca);
+	}
+	mCompress = Compress;
 
-	Log.Notice("MySQLDatabase", "Connecting to `%s`, database `%s`...", Hostname, DatabaseName);
-
+	// connect
+	MySQLDatabaseConnection** conns;
 	conns = new MySQLDatabaseConnection*[ConnectionCount];
 	Connections = ((DatabaseConnection**)conns);
-	for(i = 0; i < ConnectionCount; ++i)
+	for(uint32 i = 0; i < ConnectionCount; i++)
 	{
-		temp = mysql_init(NULL);
+		MYSQL *temp = _OpenConnection();
 		if(temp == NULL)
-			continue;
-
-		if(mysql_options(temp, MYSQL_SET_CHARSET_NAME, "utf8"))
-			Log.Error("MySQLDatabase", "Could not set utf8 character set.");
-
-		if(mysql_options(temp, MYSQL_OPT_RECONNECT, &my_true))
-			Log.Error("MySQLDatabase", "MYSQL_OPT_RECONNECT could not be set, connection drops may occur but will be counteracted.");
-
-		temp2 = mysql_real_connect(temp, Hostname, Username, Password, DatabaseName, port, NULL, 0);
-		if(temp2 == NULL)
-		{
-			Log.Error("MySQLDatabase", "Connection failed due to: `%s`", mysql_error(temp));
-			mysql_close(temp);
 			return false;
-		}
 
 		conns[i] = new MySQLDatabaseConnection;
-		conns[i]->MySql = temp2;
+		conns[i]->MySql = temp;
 	}
 
 	Database::_Initialize();
+
 	return true;
+}
+
+MYSQL *MySQLDatabase::_OpenConnection()
+{
+	Log.Notice("MySQLDatabase", "Connecting to `%s`, database `%s`...", mHostname, mDatabaseName);
+
+	MYSQL *conn;
+	conn = mysql_init(NULL);
+	if(conn == NULL) {
+		Log.Error("MySQLDatabase", "Could not initialize the MySQL object.");
+		return NULL;
+	}
+
+	if(mysql_options(conn, MYSQL_SET_CHARSET_NAME, "utf8"))
+		Log.Error("MySQLDatabase", "Could not set utf8 character set. Some languages may not work properly.");
+
+	my_bool my_true = true;
+	if(mysql_options(conn, MYSQL_OPT_RECONNECT, &my_true))
+		Log.Error("MySQLDatabase", "MYSQL_OPT_RECONNECT could not be set, connection drops may occur but will be counteracted anyway.");
+
+	// set up SSL
+	mysql_ssl_set(conn, mSSLkey, mSSLcert, mSSLca, NULL, NULL);
+
+	// enable compression if requested
+	if(mCompress) {
+		if(mysql_options(conn, MYSQL_OPT_COMPRESS, NULL))
+			Log.Error("MySQLDatabase", "MYSQL_OPT_COMPRESS could not be set, this connection will not be compressed.");
+	}
+
+	if(mysql_real_connect(conn, mHostname, mUsername, mPassword, mDatabaseName, mPort, mSocket, 0) == NULL)
+	{
+		Log.Error("MySQLDatabase", "Connection failed due to: `%s`", mysql_error(conn));
+		mysql_close(conn);
+		return NULL;
+	}
+	
+	return conn;
 }
 
 string MySQLDatabase::EscapeString(string Escape)
@@ -228,22 +289,15 @@ QueryResult* MySQLDatabase::_StoreQueryResult(DatabaseConnection* con)
 
 bool MySQLDatabase::_Reconnect(MySQLDatabaseConnection* conn)
 {
-	MYSQL* temp, *temp2;
-
-	temp = mysql_init(NULL);
-	temp2 = mysql_real_connect(temp, mHostname.c_str(), mUsername.c_str(), mPassword.c_str(), mDatabaseName.c_str(), mPort, NULL , 0);
-	if(temp2 == NULL)
-	{
-		Log.Error("MySQLDatabase", "Could not reconnect to database because of `%s`", mysql_error(temp));
-		mysql_close(temp);
-		return false;
+	// if the mysql object still exist, destroy it
+	if(conn->MySql != NULL) {
+		mysql_close(conn->MySql);
+		conn->MySql = NULL;
 	}
 
-	if(conn->MySql != NULL)
-		mysql_close(conn->MySql);
-
-	conn->MySql = temp;
-	return true;
+	// attempt to have a new connection created
+	conn->MySql = _OpenConnection();
+	return conn->MySql != NULL;
 }
 
 #endif

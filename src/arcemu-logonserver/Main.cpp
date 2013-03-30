@@ -99,7 +99,9 @@ int main(int argc, char** argv)
 bool startdb()
 {
 	string lhostname, lusername, lpassword, ldatabase;
+	string lsslca, lsslkey, lsslcert;
 	int lport = 0;
+	bool lcompression = false;
 	// Configure Main Database
 
 	bool result;
@@ -112,11 +114,15 @@ bool startdb()
 	bool existsHostname = Config.MainConfig.GetString("LogonDatabase", "Hostname", &lhostname);
 	bool existsName     = Config.MainConfig.GetString("LogonDatabase", "Name",     &ldatabase);
 	bool existsPort     = Config.MainConfig.GetInt("LogonDatabase", "Port",     &lport);
+	bool existsCompression = Config.MainConfig.GetBool("LogonDatabase", "Compression", &lcompression);
+	bool existsSSLCA = Config.MainConfig.GetString("LogonDatabase", "SSLCA",       &lsslca);
+	bool existsSSLKey = Config.MainConfig.GetString("LogonDatabase", "SSLKey",     &lsslkey);
+	bool existsSSLCert = Config.MainConfig.GetString("LogonDatabase", "SSLCert",   &lsslcert);
 
 	// Configure Logon Database...
 
 	// logical AND every parameter to ensure we catch any error
-	result = existsUsername && existsPassword && existsHostname && existsName && existsPort;
+	result = existsUsername && existsPassword && existsHostname && existsName && existsPort && existsCompression && existsSSLCA && existsSSLKey && existsSSLCert;
 
 	if(!result)
 	{
@@ -141,6 +147,10 @@ bool startdb()
 			if(!existsPassword) { errorMessage += "    Password\r\n" ; }
 			if(!existsName) { errorMessage += "    Name\r\n"; }
 			if(!existsPort) { errorMessage += "    Port\r\n"; }
+			if(!existsCompression) { errorMessage += "    Compression\r\n"; }
+			if(!existsSSLCA) { errorMessage += "    SSLCA\r\n"; }
+			if(!existsSSLKey) { errorMessage += "    SSLKey\r\n"; }
+			if(!existsSSLCert) { errorMessage += "    SSLCert\r\n"; }
 		}
 
 		LOG_ERROR(errorMessage.c_str());
@@ -150,9 +160,10 @@ bool startdb()
 	sLogonSQL = Database::CreateDatabaseInterface();
 
 	// Initialize it
-	if(!sLogonSQL->Initialize(lhostname.c_str(), (unsigned int)lport, lusername.c_str(),
-	                          lpassword.c_str(), ldatabase.c_str(), Config.MainConfig.GetIntDefault("LogonDatabase", "ConnectionCount", 5),
-	                          16384))
+	if(!sLogonSQL->Initialize(lhostname.c_str(), (unsigned int)lport, NULL,
+	                          lusername.c_str(), lpassword.c_str(), ldatabase.c_str(),
+	                          lsslkey.c_str(), lsslcert.c_str(), lsslca.c_str(),
+	                          lcompression, Config.MainConfig.GetIntDefault("LogonDatabase", "ConnectionCount", 5), 16384))
 	{
 		LOG_ERROR("sql: Logon database initialization failed. Exiting.");
 		return false;
