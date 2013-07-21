@@ -1057,6 +1057,8 @@ bool RuneOfDistortion(uint32 i, Spell* pSpell)
 
 	if(!plr->HasQuest(13312) && !plr->HasQuest(13337))
 		return true;
+
+	return true;
 }
 
 bool GoreBladder(uint32 i, Spell* pSpell)
