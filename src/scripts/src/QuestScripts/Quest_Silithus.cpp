@@ -308,7 +308,7 @@ class Thunderan : public QuestScript
 	public:
 		void OnQuestComplete(Player* mTarget, QuestLogEntry* qLogEntry)
 		{
-			sEAS.SpawnCreature(mTarget, 14435, -6241, 1715, 4.8, 0.605017,0, 1);
+			sEAS.SpawnCreature(mTarget, 14435, -6241.0f, 1715.0f, 4.8f, 0.605017f,0, 1);
 		}
 };
 
