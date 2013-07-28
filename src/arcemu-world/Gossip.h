@@ -34,27 +34,27 @@ namespace Arcemu
 		enum Icons
 		{
 		    ICON_CHAT = 0,
-		    ICON_VENDOR,
-		    ICON_FLIGHTMASTER,
-		    ICON_TRAINER, //book
-		    ICON_INTERACT_1, //interaction wheel
-		    ICON_INTERACT_2, //interaction wheel
-		    ICON_MONEY_BAG, //brown bag with yellow dot
-		    ICON_TALK, //white chat bubble with black dots
-		    ICON_TABARD, //tabard
-		    ICON_BATTLE, //two swords
-		    ICON_DOT, //yellow dot
-		    ICON_CHAT_11, //This and below are most the same visual as GOSSIP_ICON_CHAT
-		    ICON_CHAT_12, //but are still used for unknown reasons.
-		    ICON_CHAT_13,
-		    ICON_CHAT_14, // probably invalid
-		    ICON_CHAT_15, // probably invalid
-		    ICON_CHAT_16,
-		    ICON_CHAT_17,
-		    ICON_CHAT_18,
-		    ICON_CHAT_19,
-		    ICON_CHAT_20,
-		    ICON_MAX
+		    ICON_VENDOR = 1,
+		    ICON_FLIGHTMASTER = 2,
+		    ICON_TRAINER = 3, //book
+		    ICON_INTERACT_1 = 4, //interaction wheel
+		    ICON_INTERACT_2 = 5, //interaction wheel
+		    ICON_MONEY_BAG = 6, //brown bag with yellow dot
+		    ICON_TALK = 7, //white chat bubble with black dots
+		    ICON_TABARD = 8, //tabard
+		    ICON_BATTLE = 9, //two swords
+		    ICON_DOT = 10, //yellow dot
+		    ICON_CHAT_11 = 11, //This and below are most the same visual as GOSSIP_ICON_CHAT
+		    ICON_CHAT_12 = 12, //but are still used for unknown reasons.
+		    ICON_CHAT_13 = 13,
+		    ICON_CHAT_14 = 14, // probably invalid
+		    ICON_CHAT_15 = 15, // probably invalid
+		    ICON_CHAT_16 = 16,
+		    ICON_CHAT_17 = 17,
+		    ICON_CHAT_18 = 18,
+		    ICON_CHAT_19 = 19,
+		    ICON_CHAT_20 = 20,
+		    ICON_MAX = 21
 		};
 
 		enum ws
