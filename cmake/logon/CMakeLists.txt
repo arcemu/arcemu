@@ -40,7 +40,7 @@ include(PCHSupport)
 
 SET(WIN_RESOURCE_FILE ${ROOT_PATH}/src/arcemu-logonserver/resources.rc)
 
-add_executable( ${PROJECT_NAME} ${SRCS} ${HEADERS} ${WIN_RESOURCE_FILE} )
+ADD_EXECUTABLE( ${PROJECT_NAME} ${SRCS} ${HEADERS} ${WIN_RESOURCE_FILE} )
 
 IF( CMAKE_GENERATOR MATCHES Visual*)
 	ADD_NATIVE_PRECOMPILED_HEADER(${PROJECT_NAME} LogonStdAfx.h ${prefix}/LogonStdAfx.cpp)
