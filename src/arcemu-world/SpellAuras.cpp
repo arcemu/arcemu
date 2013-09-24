@@ -4654,7 +4654,8 @@ void Aura::SpellAuraTransform(bool apply)
 			}
 			break;
 
-		case 118: // Polymorph
+		 case 118: // Polymorph
+		case 228: // Polymorph: Chicken
 		case 851: // Polymorph: Sheep
 		case 5254:
 		case 12824:
@@ -4665,15 +4666,32 @@ void Aura::SpellAuraTransform(bool apply)
 		case 15534: // Polymorph
 		case 22274: // Greater Polymorph
 		case 23603: // Wild Polymorph
+		case 27760: // Polymorph
 		case 28270:	// Polymorph: Cow
 		case 28271:	// Polymorph: Turtle
 		case 28272:	// Polymorph: Pig
+		case 29124: // Polymorph
+		case 29848: // Polymorph
 		//case 29963: // Mass Polymorph // Forcing all nearby enemies into sheep instead // Only works on beasts, dragons, giants, humanoids, and critters.
 		case 30838: // Polymorph: Helboar
+		case 33173: // Greater Polymorph
+		case 34639: // Polymorph: Lasher
+		case 36840: // Polymorph
+		case 38245: // Polymorph
+		case 38896: // Polymorph
+		case 41334: // Polymorph
+		case 43309: // Polymorph
+		case 46280: // Polymorph
+		case 58537: // Polymorph
 		case 61025: // Polymorph: Serpent
 		case 61305: // Polymorph: Black Cat
 		case 61721: // Polymorph: Rabbit
 		case 61780: // Polymorph: Turkey
+		case 61816: // Polymorph: Sheep // TODO: Right-clicking this will remove the effect
+		case 61834: // Manabonked!
+		//case 61839: // Polymorph: Sheep // TODO: Triggers spell: Manabonked! 61834
+		case 65801: // Polymorph
+		case 66043: // Polymorph
 			{// http://wotlk.openwow.com/npc=16372
 				if(!displayId)
 				{
@@ -4692,11 +4710,39 @@ void Aura::SpellAuraTransform(bool apply)
 							displayId = 16359 + RandomUInt(2);
 							break;
 
+						case 61780: // Turkey
+							displayId = 32822;
+							break;
+
 						case 30838: // Helboar
 							displayId = 11410;
 							break;
 
-						default:
+						case 61721: // Rabbit
+							displayId = ;
+							break;
+
+						case 61305: // Black Cat
+							displayId = ;
+							break;
+
+						case 61025: // Serpent
+							displayId = 1206;
+							break;
+
+						case 34639: // Lasher
+							displayId = 11634;
+							break;
+
+						case 228: // Chicken
+							displayId = 304;
+							break;
+
+						case 61834:
+							displayId = 16372;
+							break;
+
+						default: // Sheep
 							displayId = 856;
 							break;
 
