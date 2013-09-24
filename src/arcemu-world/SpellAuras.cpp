@@ -4719,11 +4719,11 @@ void Aura::SpellAuraTransform(bool apply)
 							break;
 
 						case 61721: // Rabbit
-							displayId = ;
+							displayId = 32789;
 							break;
 
 						case 61305: // Black Cat
-							displayId = ;
+							displayId = 32570;
 							break;
 
 						case 61025: // Serpent
