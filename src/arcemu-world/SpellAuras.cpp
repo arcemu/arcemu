@@ -4654,38 +4654,46 @@ void Aura::SpellAuraTransform(bool apply)
 			}
 			break;
 
-		case 118://polymorph
-		case 851:
+		case 118: // Polymorph
+		case 851: // Polymorph: Sheep
 		case 5254:
 		case 12824:
 		case 12825:
 		case 12826:
-		case 13323:
-		case 15534:
-		case 22274:
-		case 23603:
-		case 28270:	 // Polymorph: Cow
-		case 28271:	 // Polymorph: Turtle
-		case 28272:	 // Polymorph: Pig
-		case 61025:  // Polymorph: Serpent
-		case 61305:  // Polymorph: Black Cat
-		case 61721:  // Polymorph: Rabbit
-		case 61780:  // Polymorph: Turkey
-			{
+		case 13323: // Polymorph
+		case 14621: // Polymorph
+		case 15534: // Polymorph
+		case 22274: // Greater Polymorph
+		case 23603: // Wild Polymorph
+		case 28270:	// Polymorph: Cow
+		case 28271:	// Polymorph: Turtle
+		case 28272:	// Polymorph: Pig
+		//case 29963: // Mass Polymorph // Forcing all nearby enemies into sheep instead // Only works on beasts, dragons, giants, humanoids, and critters.
+		case 30838: // Polymorph: Helboar
+		case 61025: // Polymorph: Serpent
+		case 61305: // Polymorph: Black Cat
+		case 61721: // Polymorph: Rabbit
+		case 61780: // Polymorph: Turkey
+			{// http://wotlk.openwow.com/npc=16372
 				if(!displayId)
 				{
 					switch(GetSpellProto()->Id)
 					{
-						case 28270:	 // Cow
+
+						case 28270: // Cow
 							displayId = 1060;
 							break;
 
-						case 28272:	 // Pig
+						case 28272: // Pig
 							displayId = 16356 + RandomUInt(2);
 							break;
 
-						case 28271:	 // Turtle
+						case 28271: // Turtle
 							displayId = 16359 + RandomUInt(2);
+							break;
+
+						case 30838: // Helboar
+							displayId = 11410;
 							break;
 
 						default:
