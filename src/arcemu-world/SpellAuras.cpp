@@ -4572,6 +4572,88 @@ void Aura::SpellAuraTransform(bool apply)
 			m_target->SetDisplayId(apply ? 21723 : m_target->GetNativeDisplayId());
 			break;
 
+		case 50517: // Dread Corsair
+        case 51926: // Corsair Costume
+			{
+				if(apply)
+				{
+					if(m_target->getRace() == RACE_ORC)
+					{
+						if(m_target->getGender() == 0)
+							m_target->SetDisplayId(25039);
+						else
+							m_target->SetDisplayId(25050);
+					}
+					if(m_target->getRace() == RACE_TAUREN)
+					{
+						if(m_target->getGender() == 0)
+							m_target->SetDisplayId(25040);
+						else
+							m_target->SetDisplayId(25051);
+					}
+					if(m_target->getRace() == RACE_TROLL)
+					{
+						if(m_target->getGender() == 0)
+							m_target->SetDisplayId(25041);
+						else
+							m_target->SetDisplayId(25052);
+					}
+					if(m_target->getRace() == RACE_UNDEAD)
+					{
+						if(m_target->getGender() == 0)
+							m_target->SetDisplayId(25042);
+						else
+							m_target->SetDisplayId(25053);
+					}
+					if(m_target->getRace() == RACE_BLOODELF)
+					{
+						if(m_target->getGender() == 0)
+							m_target->SetDisplayId(25032);
+						else
+							m_target->SetDisplayId(25043);
+					}
+
+					if(m_target->getRace() == RACE_GNOME)
+					{
+						if(m_target->getGender() == 0)
+							m_target->SetDisplayId(25035);
+						else
+							m_target->SetDisplayId(25046);
+					}
+					if(m_target->getRace() == RACE_DWARF)
+					{
+						if(m_target->getGender() == 0)
+							m_target->SetDisplayId(25034);
+						else
+							m_target->SetDisplayId(25045);
+					}
+					if(m_target->getRace() == RACE_HUMAN)
+					{
+						if(m_target->getGender() == 0)
+							m_target->SetDisplayId(25037);
+						else
+							m_target->SetDisplayId(25048);
+					}
+					if(m_target->getRace() == RACE_NIGHTELF)
+					{
+						if(m_target->getGender() == 0)
+							m_target->SetDisplayId(25038);
+						else
+							m_target->SetDisplayId(225049);
+					}
+					if(m_target->getRace() == RACE_DRAENEI)
+					{
+						if(m_target->getGender() == 0)
+							m_target->SetDisplayId(25033);
+						else
+							m_target->SetDisplayId(25044);
+					}
+				}
+				else
+					m_target->SetDisplayId(m_target->GetNativeDisplayId());
+			}
+			break;
+
 		case 118://polymorph
 		case 851:
 		case 5254:
