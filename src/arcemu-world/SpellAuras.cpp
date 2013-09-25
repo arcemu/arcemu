@@ -4491,76 +4491,78 @@ void Aura::SpellAuraTransform(bool apply)
 			{
 				if(apply)
 				{
-					if(m_target->getRace() == RACE_ORC)
+					switch(type)
 					{
-						if(m_target->getGender() == 0)
-							m_target->SetDisplayId(10139);
-						else
-							m_target->SetDisplayId(10140);
-					}
-					if(m_target->getRace() == RACE_TAUREN)
-					{
-						if(m_target->getGender() == 0)
-							m_target->SetDisplayId(10136);
-						else
-							m_target->SetDisplayId(10147);
-					}
-					if(m_target->getRace() == RACE_TROLL)
-					{
-						if(m_target->getGender() == 0)
-							m_target->SetDisplayId(10135);
-						else
-							m_target->SetDisplayId(10134);
-					}
-					if(m_target->getRace() == RACE_UNDEAD)
-					{
-						if(m_target->getGender() == 0)
-							m_target->SetDisplayId(10146);
-						else
-							m_target->SetDisplayId(10145);
-					}
-					if(m_target->getRace() == RACE_BLOODELF)
-					{
-						if(m_target->getGender() == 0)
-							m_target->SetDisplayId(17829);
-						else
-							m_target->SetDisplayId(17830);
-					}
-
-					if(m_target->getRace() == RACE_GNOME)
-					{
-						if(m_target->getGender() == 0)
-							m_target->SetDisplayId(10148);
-						else
-							m_target->SetDisplayId(10149);
-					}
-					if(m_target->getRace() == RACE_DWARF)
-					{
-						if(m_target->getGender() == 0)
-							m_target->SetDisplayId(10141);
-						else
-							m_target->SetDisplayId(10142);
-					}
-					if(m_target->getRace() == RACE_HUMAN)
-					{
-						if(m_target->getGender() == 0)
-							m_target->SetDisplayId(10137);
-						else
-							m_target->SetDisplayId(10138);
-					}
-					if(m_target->getRace() == RACE_NIGHTELF)
-					{
-						if(m_target->getGender() == 0)
-							m_target->SetDisplayId(10143);
-						else
-							m_target->SetDisplayId(10144);
-					}
-					if(m_target->getRace() == RACE_DRAENEI)
-					{
-						if(m_target->getGender() == 0)
-							m_target->SetDisplayId(17827);
-						else
-							m_target->SetDisplayId(17828);
+						case RACE_ORC:
+						{
+							if(m_target->getGender() == 0)
+								m_target->SetDisplayId(10139);
+							else
+								m_target->SetDisplayId(10140);
+						}break;
+						case RACE_TAUREN:
+						{
+							if(m_target->getGender() == 0)
+								m_target->SetDisplayId(10136);
+							else
+								m_target->SetDisplayId(10147);
+						}break;
+						case RACE_TROLL:
+						{
+							if(m_target->getGender() == 0)
+								m_target->SetDisplayId(10135);
+							else
+								m_target->SetDisplayId(10134);
+						}break;
+						case RACE_UNDEAD:
+						{
+							if(m_target->getGender() == 0)
+								m_target->SetDisplayId(10146);
+							else
+								m_target->SetDisplayId(10145);
+						}break;
+						case RACE_BLOODELF:
+						{
+							if(m_target->getGender() == 0)
+								m_target->SetDisplayId(17829);
+							else
+								m_target->SetDisplayId(17830);
+						}break;
+						case RACE_GNOME:
+						{
+							if(m_target->getGender() == 0)
+								m_target->SetDisplayId(10148);
+							else
+								m_target->SetDisplayId(10149);
+						}break;
+						case RACE_DWARF:
+						{
+							if(m_target->getGender() == 0)
+								m_target->SetDisplayId(10141);
+							else
+								m_target->SetDisplayId(10142);
+						}break;
+						case RACE_HUMAN:
+						{
+							if(m_target->getGender() == 0)
+								m_target->SetDisplayId(10137);
+							else
+								m_target->SetDisplayId(10138);
+						}break;
+						case RACE_NIGHTELF:
+						{
+							if(m_target->getGender() == 0)
+								m_target->SetDisplayId(10143);
+							else
+								m_target->SetDisplayId(10144);
+						}break;
+						case RACE_DRAENEI:
+						{
+							if(m_target->getGender() == 0)
+								m_target->SetDisplayId(17827);
+							else
+								m_target->SetDisplayId(17828);
+						}break;
 					}
 				}
 				else
@@ -4568,7 +4570,7 @@ void Aura::SpellAuraTransform(bool apply)
 			}
 			break;
 
-		case 42365:	// murloc costume
+		case 42365:	// Murloc costume
 			m_target->SetDisplayId(apply ? 21723 : m_target->GetNativeDisplayId());
 			break;
 
@@ -4577,76 +4579,78 @@ void Aura::SpellAuraTransform(bool apply)
 			{
 				if(apply)
 				{
-					if(m_target->getRace() == RACE_ORC)
+					switch(type)
 					{
-						if(m_target->getGender() == 0)
-							m_target->SetDisplayId(25039);
-						else
-							m_target->SetDisplayId(25050);
-					}
-					if(m_target->getRace() == RACE_TAUREN)
-					{
-						if(m_target->getGender() == 0)
-							m_target->SetDisplayId(25040);
-						else
-							m_target->SetDisplayId(25051);
-					}
-					if(m_target->getRace() == RACE_TROLL)
-					{
-						if(m_target->getGender() == 0)
-							m_target->SetDisplayId(25041);
-						else
-							m_target->SetDisplayId(25052);
-					}
-					if(m_target->getRace() == RACE_UNDEAD)
-					{
-						if(m_target->getGender() == 0)
-							m_target->SetDisplayId(25042);
-						else
-							m_target->SetDisplayId(25053);
-					}
-					if(m_target->getRace() == RACE_BLOODELF)
-					{
-						if(m_target->getGender() == 0)
-							m_target->SetDisplayId(25032);
-						else
-							m_target->SetDisplayId(25043);
-					}
-
-					if(m_target->getRace() == RACE_GNOME)
-					{
-						if(m_target->getGender() == 0)
-							m_target->SetDisplayId(25035);
-						else
-							m_target->SetDisplayId(25046);
-					}
-					if(m_target->getRace() == RACE_DWARF)
-					{
-						if(m_target->getGender() == 0)
-							m_target->SetDisplayId(25034);
-						else
-							m_target->SetDisplayId(25045);
-					}
-					if(m_target->getRace() == RACE_HUMAN)
-					{
-						if(m_target->getGender() == 0)
-							m_target->SetDisplayId(25037);
-						else
-							m_target->SetDisplayId(25048);
-					}
-					if(m_target->getRace() == RACE_NIGHTELF)
-					{
-						if(m_target->getGender() == 0)
-							m_target->SetDisplayId(25038);
-						else
-							m_target->SetDisplayId(225049);
-					}
-					if(m_target->getRace() == RACE_DRAENEI)
-					{
-						if(m_target->getGender() == 0)
-							m_target->SetDisplayId(25033);
-						else
-							m_target->SetDisplayId(25044);
+						case RACE_ORC:
+						{
+							if(m_target->getGender() == 0)
+								m_target->SetDisplayId(25039);
+							else
+								m_target->SetDisplayId(25050);
+						}
+						case RACE_TAUREN:
+						{
+							if(m_target->getGender() == 0)
+								m_target->SetDisplayId(25040);
+							else
+								m_target->SetDisplayId(25051);
+						}
+						case RACE_TROLL:
+						{
+							if(m_target->getGender() == 0)
+								m_target->SetDisplayId(25041);
+							else
+								m_target->SetDisplayId(25052);
+						}
+						case RACE_UNDEAD:
+						{
+							if(m_target->getGender() == 0)
+								m_target->SetDisplayId(25042);
+							else
+								m_target->SetDisplayId(25053);
+						}
+						case RACE_BLOODELF:
+						{
+							if(m_target->getGender() == 0)
+								m_target->SetDisplayId(25032);
+							else
+								m_target->SetDisplayId(25043);
+						}
+						case RACE_GNOME:
+						{
+							if(m_target->getGender() == 0)
+								m_target->SetDisplayId(25035);
+							else
+								m_target->SetDisplayId(25046);
+						}
+						case RACE_DWARF:
+						{
+							if(m_target->getGender() == 0)
+								m_target->SetDisplayId(25034);
+							else
+								m_target->SetDisplayId(25045);
+						}
+						case RACE_HUMAN:
+						{
+							if(m_target->getGender() == 0)
+								m_target->SetDisplayId(25037);
+							else
+								m_target->SetDisplayId(25048);
+						}
+						case RACE_NIGHTELF:
+						{
+							if(m_target->getGender() == 0)
+								m_target->SetDisplayId(25038);
+							else
+								m_target->SetDisplayId(25049);
+						}
+						case RACE_DRAENEI:
+						{
+							if(m_target->getGender() == 0)
+								m_target->SetDisplayId(25033);
+							else
+								m_target->SetDisplayId(25044);
+						}
 					}
 				}
 				else
