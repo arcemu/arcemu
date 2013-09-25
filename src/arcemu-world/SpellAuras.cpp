@@ -4581,7 +4581,6 @@ void Aura::SpellAuraTransform(bool apply)
 				{
 					switch(type)
 					{
-<<<<<<< HEAD
 						case RACE_ORC:
 						{
 							if(m_target->getGender() == 0)
@@ -4652,48 +4651,6 @@ void Aura::SpellAuraTransform(bool apply)
 							else
 								m_target->SetDisplayId(25044);
 						}
-=======
-						if(m_target->getGender() == 0)
-							m_target->SetDisplayId(25032);
-						else
-							m_target->SetDisplayId(25043);
-					}
-
-					if(m_target->getRace() == RACE_GNOME)
-					{
-						if(m_target->getGender() == 0)
-							m_target->SetDisplayId(25035);
-						else
-							m_target->SetDisplayId(25046);
-					}
-					if(m_target->getRace() == RACE_DWARF)
-					{
-						if(m_target->getGender() == 0)
-							m_target->SetDisplayId(25034);
-						else
-							m_target->SetDisplayId(25045);
-					}
-					if(m_target->getRace() == RACE_HUMAN)
-					{
-						if(m_target->getGender() == 0)
-							m_target->SetDisplayId(25037);
-						else
-							m_target->SetDisplayId(25048);
-					}
-					if(m_target->getRace() == RACE_NIGHTELF)
-					{
-						if(m_target->getGender() == 0)
-							m_target->SetDisplayId(25038);
-						else
-							m_target->SetDisplayId(25049);
-					}
-					if(m_target->getRace() == RACE_DRAENEI)
-					{
-						if(m_target->getGender() == 0)
-							m_target->SetDisplayId(25033);
-						else
-							m_target->SetDisplayId(25044);
->>>>>>> 6c97d6d561a13aca4e2987999d7f8d62f6113cdd
 					}
 				}
 				else
@@ -4701,7 +4658,7 @@ void Aura::SpellAuraTransform(bool apply)
 			}
 			break;
 
-		 case 118: // Polymorph
+		case 118: // Polymorph
 		case 228: // Polymorph: Chicken
 		case 851: // Polymorph: Sheep
 		case 5254:
