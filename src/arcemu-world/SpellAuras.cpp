@@ -4639,7 +4639,7 @@ void Aura::SpellAuraTransform(bool apply)
 						if(m_target->getGender() == 0)
 							m_target->SetDisplayId(25038);
 						else
-							m_target->SetDisplayId(225049);
+							m_target->SetDisplayId(25049);
 					}
 					if(m_target->getRace() == RACE_DRAENEI)
 					{
