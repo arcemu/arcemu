@@ -1677,13 +1677,17 @@ void Aura::SpellAuraPeriodicDamage(bool apply)
 		Unit* c = GetUnitCaster();
 		switch(m_spellProto->Id)
 		{
-			case 703:
-			case 8631:
-			case 8632:
-			case 8633:
-			case 8818:
-			case 11289:
-			case 11290:
+			case 703: // Garrote (Rank 1)
+			case 8631: // Garrote (Rank 2)
+			case 8632: // Garrote (Rank 3)
+			case 8633: // Garrote (Rank 4)
+			case 8818: // Garrote (Rank 4)
+			case 11289: // Garrote (Rank 5)
+			case 11290: // Garrote (Rank 6)
+			case 26839: // Garrote (Rank 7)
+			case 26884: // Garrote (Rank 8)
+			case 48675: // Garrote (Rank 9)
+			case 48676: // Garrote (Rank 10)
 				if(c != NULL)
 					c->RemoveAurasByInterruptFlag(AURA_INTERRUPT_ON_START_ATTACK);  // remove stealth
 				break;
@@ -3491,10 +3495,12 @@ void Aura::SpellAuraModIncreaseHealth(bool apply)
 		//threat special cases. We should move these to scripted spells maybe
 		switch(m_spellProto->Id)
 		{
-			case 23782:// Gift of Life
+			case 23725: // Gift of Life
+			case 23782:
+			case 23783:
 				mod->m_amount = 1500;
 				break;
-			case 12976:// Last Stand
+			case 12976: // Last Stand
 				mod->m_amount = (uint32)(m_target->GetMaxHealth() * 0.3);
 				break;
 		}
@@ -4465,9 +4471,70 @@ void Aura::SpellAuraTransform(bool apply)
 	// SetPositive();
 	switch(GetSpellProto()->Id)
 	{
-		case 20584://wisp
+		case 20584: // Wisp
 			m_target->SetDisplayId(apply ? 10045 : m_target->GetNativeDisplayId());
 			break;
+
+		case 47133: // Ghost Wolf
+			m_target->SetDisplayId(apply ? 23114 : m_target->GetNativeDisplayId());
+			break;
+
+		case 28443: // Transform Ghost
+			m_target->SetDisplayId(apply ? 16179 : m_target->GetNativeDisplayId());
+			break;
+
+		case 39916: // Soulgrinder Ghost Transform
+			m_target->SetDisplayId(apply ? 21233 : m_target->GetNativeDisplayId());
+			break;
+
+		case 46753: // Borean Tundra - Quest - Transform to Valanar
+			m_target->SetDisplayId(apply ? 25514 : m_target->GetNativeDisplayId());
+			break;
+
+		case 32745: // Chess: Disabled Square Transform
+			m_target->SetDisplayId(apply ? 10045 : m_target->GetNativeDisplayId());
+			break;
+
+		case 24721: // Buru Transform
+			m_target->SetDisplayId(apply ? 15655 : m_target->GetNativeDisplayId());
+			break;
+
+		case 25107: // Blue Dragon Transform DND
+			m_target->SetDisplayId(apply ? 15413 : m_target->GetNativeDisplayId());
+			break;
+
+		case 64490: // Black Knight Transform
+			m_target->SetDisplayId(apply ? 29085 : m_target->GetNativeDisplayId());
+			break;
+
+		case 32616: // Barnes Tuxedo Transform
+			m_target->SetDisplayId(apply ? 18039 : m_target->GetNativeDisplayId());
+			break;
+
+		case 24190: // Arlokk Transform
+			m_target->SetDisplayId(apply ? 15013 : m_target->GetNativeDisplayId());
+			break;
+
+		case 4063: // Argus Shadow Mage Transform
+			m_target->SetDisplayId(apply ? 775 : m_target->GetNativeDisplayId());
+			break;
+
+		case 69877: // Alliance Brigadier General Transform (Stormwind)
+			m_target->SetDisplayId(apply ? 30509 : m_target->GetNativeDisplayId());
+			break;
+		
+		/*case 24735: // Ghost Costume
+		case ??: 
+			{
+				case 24735:
+						m_target->SetDisplayId(10478);
+						m_target->SetDisplayId(10479);
+					break;
+				case ??: //Female
+						m_target->SetDisplayId(10481);
+						m_target->SetDisplayId(10480);
+					break;
+			}break;*/
 
 		case 30167: // Red Ogre Costume
 			{
@@ -4475,8 +4542,7 @@ void Aura::SpellAuraTransform(bool apply)
 					m_target->SetDisplayId(11549);
 				else
 					m_target->SetDisplayId(m_target->GetNativeDisplayId());
-			}
-			break;
+			}break;
 
 		case 41301: // Time-Lost Figurine
 			{
@@ -4484,8 +4550,7 @@ void Aura::SpellAuraTransform(bool apply)
 					m_target->SetDisplayId(18628);
 				else
 					m_target->SetDisplayId(m_target->GetNativeDisplayId());
-			}
-			break;
+			}break;
 
 		case 16739: // Orb of Deception
 			{
@@ -4587,70 +4652,70 @@ void Aura::SpellAuraTransform(bool apply)
 								m_target->SetDisplayId(25039);
 							else
 								m_target->SetDisplayId(25050);
-						}
+						}break;
 						case RACE_TAUREN:
 						{
 							if(m_target->getGender() == 0)
 								m_target->SetDisplayId(25040);
 							else
 								m_target->SetDisplayId(25051);
-						}
+						}break;
 						case RACE_TROLL:
 						{
 							if(m_target->getGender() == 0)
 								m_target->SetDisplayId(25041);
 							else
 								m_target->SetDisplayId(25052);
-						}
+						}break;
 						case RACE_UNDEAD:
 						{
 							if(m_target->getGender() == 0)
 								m_target->SetDisplayId(25042);
 							else
 								m_target->SetDisplayId(25053);
-						}
+						}break;
 						case RACE_BLOODELF:
 						{
 							if(m_target->getGender() == 0)
 								m_target->SetDisplayId(25032);
 							else
 								m_target->SetDisplayId(25043);
-						}
+						}break;
 						case RACE_GNOME:
 						{
 							if(m_target->getGender() == 0)
 								m_target->SetDisplayId(25035);
 							else
 								m_target->SetDisplayId(25046);
-						}
+						}break;
 						case RACE_DWARF:
 						{
 							if(m_target->getGender() == 0)
 								m_target->SetDisplayId(25034);
 							else
 								m_target->SetDisplayId(25045);
-						}
+						}break;
 						case RACE_HUMAN:
 						{
 							if(m_target->getGender() == 0)
 								m_target->SetDisplayId(25037);
 							else
 								m_target->SetDisplayId(25048);
-						}
+						}break;
 						case RACE_NIGHTELF:
 						{
 							if(m_target->getGender() == 0)
 								m_target->SetDisplayId(25038);
 							else
 								m_target->SetDisplayId(25049);
-						}
+						}break;
 						case RACE_DRAENEI:
 						{
 							if(m_target->getGender() == 0)
 								m_target->SetDisplayId(25033);
 							else
 								m_target->SetDisplayId(25044);
-						}
+						}break;
 					}
 				}
 				else
