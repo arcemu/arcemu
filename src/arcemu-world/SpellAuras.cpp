@@ -4522,6 +4522,77 @@ void Aura::SpellAuraTransform(bool apply)
 		case 69877: // Alliance Brigadier General Transform (Stormwind)
 			m_target->SetDisplayId(apply ? 30509 : m_target->GetNativeDisplayId());
 			break;
+
+		case 30473: // Coo Transform Furbolg DND
+			m_target->SetDisplayId(apply ? 17019 : m_target->GetNativeDisplayId());
+			break;
+
+		case 29489: // Concubine Transform
+			m_target->SetDisplayId(apply ? 10926 : m_target->GetNativeDisplayId());
+			break;
+
+		case 58986: // Chromie Transform
+			m_target->SetDisplayId(apply ? 10008 : m_target->GetNativeDisplayId());
+			break;
+
+		case 58668: // Cyanigosa Transform
+			m_target->SetDisplayId(apply ? 27340 : m_target->GetNativeDisplayId());
+			break;
+
+		case 74667: // Durak's Shield Transform Stage2
+			m_target->SetDisplayId(apply ? 23257 : m_target->GetNativeDisplayId());
+			break;
+
+		case 51834: // Drakuru Transform
+			m_target->SetDisplayId(apply ? 28121 : m_target->GetNativeDisplayId());
+			break;
+
+		case 4329: // Drag and Drop: Dark Subjugator Transform
+			m_target->SetDisplayId(apply ? 27889 : m_target->GetNativeDisplayId());
+			break;
+
+		case 50738: // Don Carlos Hatless Transform
+			m_target->SetDisplayId(apply ? 25125 : m_target->GetNativeDisplayId());
+			break;
+
+		case 43311: // Halazzi Transform
+		case 43272:
+		case 43271:
+		case 43145:
+			m_target->SetDisplayId(apply ? 21632 : m_target->GetNativeDisplayId());
+			break;
+
+		case 25105: // Green Dragon Transform DND
+			m_target->SetDisplayId(apply ? 15412 : m_target->GetNativeDisplayId());
+			break;
+
+		case 33316: // Giselda Transform DND
+			m_target->SetDisplayId(apply ? 17543 : m_target->GetNativeDisplayId());
+			break;
+
+		case 48304: // Fresh Remounts: Skeletal Warhorse Transform
+			m_target->SetDisplayId(apply ? 10719 : m_target->GetNativeDisplayId());
+			break;
+
+		case 39158: // Evergrove Druid Transform Druid
+			m_target->SetDisplayId(apply ? 20991 : m_target->GetNativeDisplayId());
+			break;
+
+		case 38776: // Evergrove Druid Transform Crow
+			m_target->SetDisplayId(apply ? 20997 : m_target->GetNativeDisplayId());
+			break;
+
+		case 22097: // Eliminate the Competition: Onu'zun's Frog Transform
+			m_target->SetDisplayId(apply ? 23311 : m_target->GetNativeDisplayId());
+			break;
+
+		case 36658: // Transform
+			m_target->SetDisplayId(apply ? 2582 : m_target->GetNativeDisplayId());
+			break;
+
+		case 70900: // Dark Transformation
+			m_target->SetDisplayId(apply ? 22124 : m_target->GetNativeDisplayId());
+			break;
 		
 		/*case 24735: // Ghost Costume
 		case ??: 
