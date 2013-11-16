@@ -69,8 +69,6 @@ ChatCommand* CommandTableStorage::GetSubCommandTable(const char* name)
 		return _lookupCommandTable;
 	else if(!stricmp(name, "admin"))
 		return _adminCommandTable;
-	else if(!stricmp(name, "kick"))
-		return _kickCommandTable;
 	else if(!stricmp(name, "ban"))
 		return _banCommandTable;
 	else if(!stricmp(name, "unban"))
@@ -215,7 +213,6 @@ void CommandTableStorage::Dealloc()
 	free(_characterCommandTable);
 	free(_lookupCommandTable);
 	free(_adminCommandTable);
-	free(_kickCommandTable);
 	free(_banCommandTable);
 	free(_unbanCommandTable);
 	free(_instanceCommandTable);
@@ -633,15 +630,6 @@ void CommandTableStorage::Init()
 	};
 	dupe_command_table(adminCommandTable, _adminCommandTable);
 
-	static ChatCommand kickCommandTable[] =
-	{
-		{ "player",  'f', &ChatHandler::HandleKillByPlayerCommand,  "Disconnects the player with name <s>.",          NULL, 0, 0, 0 },
-		{ "account", 'f', &ChatHandler::HandleKillBySessionCommand, "Disconnects the session with account name <s>.", NULL, 0, 0, 0 },
-		{ "ip",      'f', &ChatHandler::HandleKillByIPCommand,      "Disconnects the session with the ip <s>.",       NULL, 0, 0, 0 },
-		{ NULL,        '0', NULL,                                     "",                                               NULL, 0, 0, 0 }
-	};
-	dupe_command_table(kickCommandTable, _kickCommandTable);
-
 	static ChatCommand banCommandTable[] =
 	{
 		{ "ip",        'm', &ChatHandler::HandleIPBanCommand,         "Adds an address to the IP ban table: .ban ip <address> [duration] [reason]\nDuration must be a number optionally followed by a character representing the calendar subdivision to use (h>hours, d>days, w>weeks, m>months, y>years, default minutes)\nLack of duration results in a permanent ban.", NULL, 0, 0, 0 },
@@ -748,12 +736,11 @@ void CommandTableStorage::Init()
 		{ "character",       '0', NULL,                                                     "",                                                                                                                                        characterCommandTable,    0, 0, 0 },
 		{ "lookup",          '0', NULL,                                                     "",                                                                                                                                        lookupCommandTable,       0, 0, 0 },
 		{ "admin",           '0', NULL,                                                     "",                                                                                                                                        adminCommandTable,        0, 0, 0 },
-		{ "kick",            '0', NULL,                                                     "",                                                                                                                                        kickCommandTable,         0, 0, 0 },
 		{ "ban",             '0', NULL,                                                     "",                                                                                                                                        banCommandTable,          0, 0, 0 },
 		{ "unban",           '0', NULL,                                                     "",                                                                                                                                        unbanCommandTable,        0, 0, 0 },
 		{ "instance",        '0', NULL,                                                     "",                                                                                                                                        instanceCommandTable,     0, 0, 0 },
 		{ "arena",           '0', NULL,                                                     "",                                                                                                                                        arenaCommandTable,        0, 0, 0 },
-		{ "kickplayer",      'b', &ChatHandler::HandleKickCommand,                          "Kicks player from server",                                                                                                                NULL,                     0, 0, 0 },
+		{ "kick",			 'b', &ChatHandler::HandleKickCommand,                          "Kicks player from server",                                                                                                                NULL,                     0, 0, 0 },
 		{ "gmannounce",      'u', &ChatHandler::HandleGMAnnounceCommand,                    "Sends Msg to all online GMs",                                                                                                             NULL,                     0, 0, 0 },
 		{ "clearcooldowns",  'm', &ChatHandler::HandleClearCooldownsCommand,                "Clears all cooldowns for your class.",                                                                                                    NULL,                     0, 0, 0 },
 		{ "removeauras",     'm', &ChatHandler::HandleRemoveAurasCommand,                   "Removes all auras from target",                                                                                                           NULL,                     0, 0, 0 },
