@@ -111,24 +111,6 @@ bool ChatHandler::CreateGuildCommand(const char* args, WorldSession* m_session)
 		return true;
 	}
 
-	if(strlen((char*)args) > 75)
-	{
-		// send message to user
-		char buf[256];
-		snprintf((char*)buf, 256, "The name was too long by %u", (uint32)strlen(args) - 75);
-		SystemMessage(m_session, buf);
-		return true;
-	}
-
-	for(uint32 i = 0; i < strlen(args); i++)
-	{
-		if(!isalpha(args[i]) && args[i] != ' ')
-		{
-			SystemMessage(m_session, "Error, name can only contain chars A-Z and a-z.");
-			return true;
-		}
-	}
-
 	Guild* pGuild = NULL;
 	pGuild = objmgr.GetGuildByGuildName(string(args));
 
