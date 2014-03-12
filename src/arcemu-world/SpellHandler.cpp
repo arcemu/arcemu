@@ -512,6 +512,8 @@ void WorldSession::HandleCancelAutoRepeatSpellOpcode(WorldPacket & recv_data)
 
 void WorldSession::HandlePetCastSpell(WorldPacket & recvPacket)
 {
+    if( !_player->IsInWorld() )
+        return;
 
 	CHECK_INWORLD_RETURN
 

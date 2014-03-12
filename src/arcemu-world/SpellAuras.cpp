@@ -983,6 +983,9 @@ void Aura::ApplyModifiers(bool apply)
 
 void Aura::UpdateModifiers()
 {
+    //crash fix
+    if( this == 0 )
+        return;
 	for(uint8 x = 0; x < m_modcount; x++)
 	{
 		mod = &m_modList[x];
@@ -5592,6 +5595,9 @@ void Aura::SpellAuraChannelDeathItem(bool apply)
 		{
 			if(m_target->IsCreature() && TO_CREATURE(m_target)->GetCreatureInfo()->Type == UNIT_TYPE_CRITTER)
 				return;
+
+            if( !m_target->IsInWorld() )
+                return;
 
 			if(m_target->IsDead())
 			{

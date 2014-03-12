@@ -7030,6 +7030,9 @@ uint32 Player::GeneratePetNumber()
 
 void Player::RemovePlayerPet(uint32 pet_number)
 {
+    //crashfix
+    if( !IsPlayer )
+        return;
 	std::map<uint32, PlayerPet*>::iterator itr = m_Pets.find(pet_number);
 	if(itr != m_Pets.end())
 	{

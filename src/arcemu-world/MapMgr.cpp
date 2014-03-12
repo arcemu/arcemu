@@ -639,6 +639,9 @@ void MapMgr::ChangeObjectLocation(Object* obj)
 		for(Object::InRangeSet::iterator iter = obj->GetInRangeSetBegin(); iter != obj->GetInRangeSetEnd();)
 		{
 			curObj = *iter;
+            //crash fix
+			if( curObj == 0 )
+				continue;
 			++iter;
 
 			if(curObj->IsPlayer() && plObj != NULL && plObj->transporter_info.guid && plObj->transporter_info.guid == TO< Player* >(curObj)->transporter_info.guid)

@@ -1698,6 +1698,10 @@ AI_Spell* Pet::HandleAutoCastEvent()
 		if(size > 1)
 			chance = Rand(100.0f / size);
 
+        //crashfix
+        if( (*itr)->spelltargetType > TTYPE_OWNER || (*itr)->agent > 5 || (*itr)->spellType > STYPE_DEBUFF )
+            continue;
+
 		if((*itr)->autocast_type == AUTOCAST_EVENT_ATTACK)
 		{
 			// spells still spammed, I think the cooldowntime is being set incorrectly somewhere else
