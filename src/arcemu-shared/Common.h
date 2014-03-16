@@ -169,10 +169,14 @@ enum MsTimeVariables
 #define CONFIG "Release"
 #endif
 
-#ifdef X64
-#define ARCH "X64"
+#if defined(__amd64__) || defined(_M_AMD64)
+#  define ARCH "X64"
+#elif defined(__i386__) || defined(_M_IX86)
+#  define ARCH "X86"
+#elif defined(__arm__) || defined(_M_ARM)
+#  define ARCH "ARM"
 #else
-#define ARCH "X86"
+#  pragma error "FATAL ERROR: unknown architecture."
 #endif
 
 
