@@ -134,7 +134,7 @@ public:
  * while the older ones will be deprecated in the future,
  * but I dont care for now.
  */
-            return __sync_sub_and_fetch(&m_value, 1) == 0;
+            return __sync_sub_and_fetch(&m_value, 1);
 
 #       elif defined(G3D_OSX)
             // Note: returns the newly decremented value
