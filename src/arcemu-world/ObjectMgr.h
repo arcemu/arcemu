@@ -77,7 +77,11 @@ enum
     GM_TICKET_CHAT_OPCODE_ONLINESTATE   = 11
 };
 
-#pragma pack(push,1)
+#if defined(__arm__) || defined(_M_ARM)
+#  pragma pack(push,4)
+#else
+#  pragma pack(push,1)
+#endif
 struct FishingZoneEntry
 {
 	uint32 ZoneID;

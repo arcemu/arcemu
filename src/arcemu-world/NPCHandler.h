@@ -58,7 +58,11 @@ enum TrainerType
 };
 #define NUM_TRAINER_TYPES				0x4
 
-#pragma pack(push,1)
+#if defined(__arm__) || defined(_M_ARM)
+#  pragma pack(push,4)
+#else
+#  pragma pack(push,1)
+#endif
 struct GossipEmote
 {
 	uint32 Delay;

@@ -87,7 +87,11 @@ enum MONSTER_SAY_EVENTS
 SERVER_DECL bool Rand(float chance);
 SERVER_DECL bool Rand(uint32 chance);
 SERVER_DECL bool Rand(int32 chance);
-#pragma pack(push,1)
+#if defined(__arm__) || defined(_M_ARM)
+#  pragma pack(push,4)
+#else
+#  pragma pack(push,1)
+#endif
 struct CreatureInfo
 {
 	uint32 Id;

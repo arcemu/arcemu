@@ -86,7 +86,11 @@ public:
 };
 
 
-#pragma pack(push, 1)
+#if defined(__arm__) || defined(_M_ARM)
+#  pragma pack(push,4)
+#else
+#  pragma pack(push,1)
+#endif
 struct DisplayBounding
 {
 	uint32 displayid;

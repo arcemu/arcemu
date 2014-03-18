@@ -562,21 +562,37 @@ class SERVER_DECL Storage
 				{
 					case 's':		// string is the only one we have to actually do anything for here
 						free((*(char**)structpointer));
+#if                                             defined(__arm__) || defined(_M_ARM)
+						structpointer += 4; // 4 byte + 0 byte padding
+#else
 						structpointer += sizeof(char*);
+#endif                                       /* defined(__arm__) || defined(_M_ARM) */
 						break;
 
 					case 'u':
 					case 'i':
 					case 'f':
+#if                                             defined(__arm__) || defined(_M_ARM)
+						structpointer += 4; // 4 byte + 0 byte padding
+#else
 						structpointer += sizeof(uint32);
+#endif                                       /* defined(__arm__) || defined(_M_ARM) */
 						break;
 
 					case 'h':
+#if                                             defined(__arm__) || defined(_M_ARM)
+						structpointer += 4; // 2 byte + 2 byte padding
+#else
 						structpointer += sizeof(uint16);
+#endif                                       /* defined(__arm__) || defined(_M_ARM) */
 						break;
 
 					case 'c':
+#if                                             defined(__arm__) || defined(_M_ARM)
+						structpointer += 4; // 1 byte + 3 byte padding
+#else
 						structpointer += sizeof(uint8);
+#endif                                       /* defined(__arm__) || defined(_M_ARM) */
 						break;
 				}
 			}
@@ -604,12 +620,20 @@ class SERVER_DECL SQLStorage : public Storage<T, StorageType>
 				{
 					case 'u':	// Unsigned integer
 						*(uint32*)&structpointer[offset] = f->GetUInt32();
+#if                                             defined(__arm__) || defined(_M_ARM)
+						offset += 4; // 4 byte + 0 byte padding
+#else
 						offset += sizeof(uint32);
+#endif                                       /* defined(__arm__) || defined(_M_ARM) */
 						break;
 
 					case 'i':	// Signed integer
 						*(int32*)&structpointer[offset] = f->GetInt32();
+#if                                             defined(__arm__) || defined(_M_ARM)
+						offset += 4; // 4 byte + 0 byte padding
+#else
 						offset += sizeof(int32);
+#endif                                       /* defined(__arm__) || defined(_M_ARM) */
 						break;
 
 					case 's':	// Null-terminated string
@@ -617,7 +641,11 @@ class SERVER_DECL SQLStorage : public Storage<T, StorageType>
 							free(*(char**)&structpointer[offset]);
 
 						*(char**)&structpointer[offset] = strdup(f->GetString());
+#if                                             defined(__arm__) || defined(_M_ARM)
+						offset += 4; // 4 byte + 0 byte padding
+#else
 						offset += sizeof(char*);
+#endif                                       /* defined(__arm__) || defined(_M_ARM) */
 						break;
 
 					case 'x':	// Skip
@@ -625,17 +653,29 @@ class SERVER_DECL SQLStorage : public Storage<T, StorageType>
 
 					case 'f':	// Float
 						*(float*)&structpointer[offset] = f->GetFloat();
+#if                                             defined(__arm__) || defined(_M_ARM)
+						offset += 4; // 4 byte + 0 byte padding
+#else
 						offset += sizeof(float);
+#endif                                       /* defined(__arm__) || defined(_M_ARM) */
 						break;
 
 					case 'c':	// Char
 						*(uint8*)&structpointer[offset] = f->GetUInt8();
+#if                                             defined(__arm__) || defined(_M_ARM)
+						offset += 4; // 1 byte + 3 byte padding
+#else
 						offset += sizeof(uint8);
+#endif                                       /* defined(__arm__) || defined(_M_ARM) */
 						break;
 
 					case 'h':	// Short
 						*(uint16*)&structpointer[offset] = f->GetUInt16();
+#if                                             defined(__arm__) || defined(_M_ARM)
+						offset += 4; // 2 byte + 2 byte padding
+#else
 						offset += sizeof(uint16);
+#endif                                       /* defined(__arm__) || defined(_M_ARM) */
 						break;
 
 					default:	// unknown
