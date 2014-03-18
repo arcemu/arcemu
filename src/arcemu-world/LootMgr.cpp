@@ -289,6 +289,9 @@ void LootMgr::LoadLootTables(const char* szTableName, LootStore* LootTable)
 	if(last_entry != 0 && ttab.size())
 		db_cache.push_back(make_pair(last_entry, ttab));
 
+	// All data is now in memory, the query result can be freed
+	delete result;
+
 	pos = 0;
 	total = (uint32)db_cache.size();
 	ItemPrototype* proto;
@@ -348,7 +351,6 @@ void LootMgr::LoadLootTables(const char* szTableName, LootStore* LootTable)
 	}
 
 	sLog.outString("  %d loot templates loaded from %s", db_cache.size(), szTableName);
-	delete result;
 }
 
 void LootMgr::PushLoot(StoreLootList* list, Loot* loot, uint32 type)
