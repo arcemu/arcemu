@@ -3,6 +3,14 @@ project(Arcemu)
 cmake_minimum_required(VERSION 2.8)
 #Do system checking.
 
+MACRO( IS_ARCH_ARM )
+	IF( CMAKE_SYSTEM_PROCESSOR MATCHES "arm*" )
+		SET( IS_ARM TRUE )
+	ELSE( CMAKE_SYSTEM_PROCESSOR MATCHES "arm*" )
+		SET( IS_ARM FALSE )
+	ENDIF( CMAKE_SYSTEM_PROCESSOR MATCHES "arm*" )
+ENDMACRO( IS_ARCH_ARM )
+
 MACRO( IS_ARCH_64BIT )
 	IF( NOT WIN32 )
 		
@@ -41,6 +49,7 @@ IF(CMAKE_GENERATOR MATCHES Visual*)
 ENDIF()
 
 IS_ARCH_64BIT()
+IS_ARCH_ARM()
 
 #check platform version.
 IF( IS_64BIT )
