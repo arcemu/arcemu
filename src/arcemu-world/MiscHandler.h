@@ -20,11 +20,7 @@
 #ifndef __MISCHANDLER_H
 #define __MISCHANDLER_H
 
-#if defined(__arm__) || defined(_M_ARM)
-#  pragma pack(push,4)
-#else
-#  pragma pack(push,1)
-#endif
+#pragma pack(push,STORAGE_ALIGNMENT)
 struct GraveyardTeleport
 {
 	uint32 ID;

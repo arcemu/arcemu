@@ -134,11 +134,7 @@ enum QUEST_SHARE
 #define MAX_REQUIRED_QUEST_ITEM 6
 
 class QuestScript;
-#if defined(__arm__) || defined(_M_ARM)
-#  pragma pack(push,4)
-#else
-#  pragma pack(push,1)
-#endif
+#pragma pack(push,STORAGE_ALIGNMENT)
 struct Quest
 {
 	uint32 id;
