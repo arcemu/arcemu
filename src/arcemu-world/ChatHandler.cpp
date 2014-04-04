@@ -356,8 +356,8 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recv_data)
 				if(lang > 0 && LanguageSkills[lang] && _player->_HasSkillLine(LanguageSkills[lang]) == false)
 					return;
 
-				if(lang == 0 && sWorld.interfaction_chat)
-					data = sChatHandler.FillMessageData(CHAT_MSG_YELL, (CanUseCommand('0') && lang != -1) ? LANG_UNIVERSAL : lang,  msg.c_str(), _player->GetGUID(), _player->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_GM) ? 4 : 0);
+				/*if(lang == 0 && sWorld.interfaction_chat)
+					data = sChatHandler.FillMessageData(CHAT_MSG_YELL, (CanUseCommand('0') && lang != -1) ? LANG_UNIVERSAL : lang,  msg.c_str(), _player->GetGUID(), _player->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_GM) ? 4 : 0);*/
 
 				else if(lang == 0 && !CanUseCommand('c'))
 				{
