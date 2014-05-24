@@ -244,10 +244,9 @@ ObjectMgr::~ObjectMgr()
 
 Group* ObjectMgr::GetGroupByLeader(Player* pPlayer)
 {
-	GroupMap::iterator itr;
 	Group* ret = NULL;
 	m_groupLock.AcquireReadLock();
-	for(itr = m_groups.begin(); itr != m_groups.end(); ++itr)
+	for(GroupMap::iterator itr = m_groups.begin(); itr != m_groups.end(); ++itr)
 	{
 		if(itr->second->GetLeader() == pPlayer->getPlayerInfo())
 		{
@@ -262,10 +261,9 @@ Group* ObjectMgr::GetGroupByLeader(Player* pPlayer)
 
 Group* ObjectMgr::GetGroupById(uint32 id)
 {
-	GroupMap::iterator itr;
+	GroupMap::iterator itr = m_groups.find(id);
 	Group* ret = NULL;
 	m_groupLock.AcquireReadLock();
-	itr = m_groups.find(id);
 	if(itr != m_groups.end())
 		ret = itr->second;
 
@@ -279,21 +277,23 @@ Group* ObjectMgr::GetGroupById(uint32 id)
 void ObjectMgr::DeletePlayerInfo(uint32 guid)
 {
 	PlayerInfo* pl;
-	HM_NAMESPACE::hash_map<uint32, PlayerInfo*>::iterator i;
-	PlayerNameStringIndexMap::iterator i2;
+	HM_NAMESPACE::hash_map<uint32, PlayerInfo*>::iterator i = m_playersinfo.find(guid);
 	playernamelock.AcquireWriteLock();
-	i = m_playersinfo.find(guid);
 	if(i == m_playersinfo.end())
 	{
 		playernamelock.ReleaseWriteLock();
 		return;
 	}
 
-	pl = i->second;
-	if(pl->m_Group)
+	PlayerInfo* pl = i->second;
+	if (!pl)
 	{
-		pl->m_Group->RemovePlayer(pl);
+		Log.Error("ObjectMgr:DeletePlayerInfo", "Cannot find find player information for guid %u", guid);
+		return;
 	}
+	
+	if(pl->m_Group)
+		pl->m_Group->RemovePlayer(pl);
 
 	if(pl->guild)
 	{
@@ -305,7 +305,7 @@ void ObjectMgr::DeletePlayerInfo(uint32 guid)
 
 	string pnam = string(pl->name);
 	arcemu_TOLOWER(pnam);
-	i2 = m_playersInfoByName.find(pnam);
+	PlayerNameStringIndexMap::iterator = i2 = m_playersInfoByName.find(pnam);
 	if(i2 != m_playersInfoByName.end() && i2->second == pl)
 		m_playersInfoByName.erase(i2);
 
@@ -318,14 +318,12 @@ void ObjectMgr::DeletePlayerInfo(uint32 guid)
 
 PlayerInfo* ObjectMgr::GetPlayerInfo(uint32 guid)
 {
-	HM_NAMESPACE::hash_map<uint32, PlayerInfo*>::iterator i;
-	PlayerInfo* rv;
+	PlayerInfo* rv = NULL;
 	playernamelock.AcquireReadLock();
-	i = m_playersinfo.find(guid);
+	HM_NAMESPACE::hash_map<uint32, PlayerInfo*>::iterator i = m_playersinfo.find(guid);
 	if(i != m_playersinfo.end())
 		rv = i->second;
-	else
-		rv = NULL;
+
 	playernamelock.ReleaseReadLock();
 	return rv;
 }
