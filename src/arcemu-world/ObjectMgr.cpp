@@ -390,17 +390,12 @@ SpellEntry* ObjectMgr::GetNextSpellRank(SpellEntry* sp, uint32 level)
 
 void ObjectMgr::LoadPlayersInfo()
 {
-	PlayerInfo* pn;
-	QueryResult* result = CharacterDatabase.Query("SELECT guid,name,race,class,level,gender,zoneid,timestamp,acct FROM characters");
-	uint32 period, c;
-	if(result)
+	if(QueryResult* result = CharacterDatabase.Query("SELECT guid,name,race,class,level,gender,zoneid,timestamp,acct FROM characters"))
 	{
-		period = (result->GetRowCount() / 20) + 1;
-		c = 0;
 		do
 		{
 			Field* fields = result->Fetch();
-			pn = new PlayerInfo;
+			PlayerInfo* pn = new PlayerInfo;
 			pn->guid = fields[0].GetUInt32();
 			pn->name = strdup(fields[1].GetString());
 			pn->race = fields[2].GetUInt8();
@@ -419,10 +414,8 @@ void ObjectMgr::LoadPlayersInfo()
 
 			// Raid & heroic Instance IDs
 			// Must be done before entering world...
-			QueryResult* result2 = CharacterDatabase.Query("SELECT instanceid, mode, mapid FROM instanceids WHERE playerguid = %u", pn->guid);
-			if(result2)
+			if(QueryResult* result2 = CharacterDatabase.Query("SELECT instanceid, mode, mapid FROM instanceids WHERE playerguid = %u", pn->guid))
 			{
-				PlayerInstanceMap::iterator itr;
 				do
 				{
 					uint32 instanceId = result2->Fetch()[0].GetUInt32();
@@ -432,7 +425,7 @@ void ObjectMgr::LoadPlayersInfo()
 						continue;
 
 					pn->savedInstanceIdsLock.Acquire();
-					itr = pn->savedInstanceIds[mode].find(mapId);
+					PlayerInstanceMap::iterator itr = pn->savedInstanceIds[mode].find(mapId);
 					if(itr == pn->savedInstanceIds[mode].end())
 						pn->savedInstanceIds[mode].insert(PlayerInstanceMap::value_type(mapId, instanceId));
 					else
@@ -452,11 +445,11 @@ void ObjectMgr::LoadPlayersInfo()
 			}
 
 			if(pn->race == RACE_HUMAN || pn->race == RACE_DWARF || pn->race == RACE_GNOME || pn->race == RACE_NIGHTELF || pn->race == RACE_DRAENEI)
-				pn->team = 0;
+				pn->team = TEAM_ALLIANCE;
 			else
-				pn->team = 1;
+				pn->team = TEAM_HORDE;
 
-			if(GetPlayerInfoByName(pn->name) != NULL)
+			if(GetPlayerInfoByName(pn->name))
 			{
 				// gotta rename him
 				char temp[300];
@@ -475,9 +468,6 @@ void ObjectMgr::LoadPlayersInfo()
 
 			//this is startup -> no need in lock -> don't use addplayerinfo
 			m_playersinfo[(uint32)pn->guid] = pn;
-
-			if(!((++c) % period))
-				Log.Notice("PlayerInfo", "Done %u/%u, %u%% complete.", c, result->GetRowCount(), c * 100 / result->GetRowCount());
 		}
 		while(result->NextRow());
 
@@ -502,23 +492,24 @@ PlayerInfo* ObjectMgr::GetPlayerInfoByName(const char* name)
 	playernamelock.ReleaseReadLock();
 	return rv;
 }
+
 #ifdef ENABLE_ACHIEVEMENTS
 void ObjectMgr::LoadCompletedAchievements()
 {
-	QueryResult* result = WorldDatabase.Query("SELECT achievement FROM character_achievement GROUP BY achievement");
-
-	if(!result)
-		return;
-
-	do
-	{
-		Field* fields = result->Fetch();
-		allCompletedAchievements.insert(fields[0].GetUInt32());
-	}
-	while(result->NextRow());
-	delete result;
+	if (QueryResult* result = CharactersDatabase.Query("SELECT achievement FROM character_achievement GROUP BY achievement"))
+    {
+        do
+        {
+            Field* fields = result->Fetch();
+            allCompletedAchievements.insert(fields[0].GetUInt32());
+        }
+        while(result->NextRow());
+        delete result;
+    }
+    Log.Success("ObjectMgr", "Loaded %u completed achievements", allCompletedAchievements.size());
 }
 #endif
+
 void ObjectMgr::LoadPlayerCreateInfo()
 {
 	QueryResult* result = WorldDatabase.Query("SELECT * FROM playercreateinfo");
