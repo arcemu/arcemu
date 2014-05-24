@@ -78,7 +78,14 @@ bool SaveAchievementProgressToDB(const CriteriaProgress* c)
 		// don't save it if it's not started yet
 		return false;
 	}
+
 	AchievementCriteriaEntry const* acEntry = dbcAchievementCriteriaStore.LookupEntry(c->id);
+	if (!acEntry)
+	{
+		LOG_ERROR("Cannot find achievement for criteria %u.");
+		return false;
+	}
+
 	switch(acEntry->requiredType)
 	{
 			// these get updated when character logs on, don't save to character progress db
@@ -146,20 +153,12 @@ bool ShowCompletedAchievement(uint32 achievementID, const Player* plr)
 		case 1427: // Realm First! Grand Master Tailor
 		case 1463: // Realm First! Northrend Vanguard: First player on the realm to gain exalted reputation with the Argent Crusade, Wyrmrest Accord, Kirin Tor and Knights of the Ebon Blade.
 			{
-				QueryResult* achievementResult = CharacterDatabase.Query("SELECT guid FROM character_achievement WHERE achievement=%u ORDER BY date LIMIT 1", achievementID);
-				if(achievementResult != NULL)
+				if(QueryResult* achievementResult = CharacterDatabase.Query("SELECT guid FROM character_achievement WHERE achievement=%u ORDER BY date LIMIT 1", achievementID))
 				{
-					Field* field = achievementResult->Fetch();
-					if(field != NULL)
+					if(Field* field = achievementResult->Fetch())
 					{
-						// somebody has this Realm First achievement... is it this player?
-						uint64 firstguid = field->GetUInt32();
-						if(firstguid != (uint32)plr->GetGUID())
-						{
-							// nope, somebody else was first.
-							delete achievementResult;
-							return false;
-						}
+						delete achievementResult;
+						return false;
 					}
 					delete achievementResult;
 				}
@@ -179,10 +178,7 @@ bool ShowCompletedAchievement(uint32 achievementID, const Player* plr)
 /**
 	AchievementMgr constructor
 */
-AchievementMgr::AchievementMgr(Player* player)
-	:
-	m_player(player),
-	isCharacterLoading(true)
+AchievementMgr::AchievementMgr(Player* player) : m_player(player), isCharacterLoading(true)
 {
 
 }
@@ -318,7 +314,7 @@ void AchievementMgr::LoadFromDB(QueryResult* achievementResult, QueryResult* cri
 		{
 			Field* fields = achievementResult->Fetch();
 			uint32 id = fields[0].GetUInt32();
-			if(m_completedAchievements[id] == 0)
+			if(!m_completedAchievements[id])
 				m_completedAchievements[id] = fields[1].GetUInt32();
 			else
 				LOG_ERROR("Duplicate completed achievement %u for player %u, skipping", id, (uint32)m_player->GetGUID());
@@ -352,10 +348,8 @@ void AchievementMgr::LoadFromDB(QueryResult* achievementResult, QueryResult* cri
 */
 void AchievementMgr::SendAchievementEarned(AchievementEntry const* achievement)
 {
-	if(achievement == NULL || isCharacterLoading)
-	{
+	if(!achievement || isCharacterLoading)
 		return;
-	}
 
 	const char* msg = "|Hplayer:$N|h[$N]|h has earned the achievement $a!";
 	uint32* guidList = NULL;
@@ -415,28 +409,22 @@ void AchievementMgr::SendAchievementEarned(AchievementEntry const* achievement)
 		cdata << msg;
 		cdata << uint8(0);
 		cdata << uint32(achievement->ID);
-		bool alreadySent;
+		bool alreadySent = false;
 		// Send Achievement message to group members
 		Group* grp = GetPlayer()->GetGroup();
 
 		if(grp)
 		{
 //			grp->SendPacketToAll(&cdata);
-			uint8 i = 0;
-			GroupMembersSet::iterator groupItr;
 			GroupMembersSet::iterator groupItrLast;
 			grp->Lock();
-			for(; i < grp->GetSubGroupCount(); ++i)
+			for(uint8 i = 0; i < grp->GetSubGroupCount(); ++i)
 			{
 				SubGroup* sg = grp->GetSubGroup(i);
-				if(sg == NULL)
-				{
+				if(!sg)
 					continue;
-				}
 
-				groupItr = sg->GetGroupMembersBegin();
-				groupItrLast = sg->GetGroupMembersEnd();
-				for(; groupItr != groupItrLast; ++groupItr)
+				for(GroupMembersSet::iterator groupItr = sg->GetGroupMembersBegin(); groupItr != sg->GetGroupMembersEnd(); ++groupItr)
 				{
 					if((*groupItr)->m_loggedInPlayer != NULL && (*groupItr)->m_loggedInPlayer->GetSession())
 					{
@@ -450,6 +438,7 @@ void AchievementMgr::SendAchievementEarned(AchievementEntry const* achievement)
 								guidIndex = guidCount;
 							}
 						}
+
 						if(!alreadySent)
 						{
 							(*groupItr)->m_loggedInPlayer->GetSession()->SendPacket(&cdata);
@@ -460,10 +449,9 @@ void AchievementMgr::SendAchievementEarned(AchievementEntry const* achievement)
 			}
 			grp->Unlock();
 		}
+
 		// Send Achievement message to nearby players
-		std::set<Object*>::iterator inRangeItr = GetPlayer()->GetInRangePlayerSetBegin();
-		std::set<Object*>::iterator inRangeItrLast = GetPlayer()->GetInRangePlayerSetEnd();
-		for(; inRangeItr != inRangeItrLast; ++inRangeItr)
+		for(std::set<Object*>::iterator inRangeItr = GetPlayer()->GetInRangePlayerSetBegin(); inRangeItr != GetPlayer()->GetInRangePlayerSetEnd(); ++inRangeItr)
 		{
 
 			Player* p = TO< Player* >((*inRangeItr));
@@ -496,10 +484,9 @@ void AchievementMgr::SendAchievementEarned(AchievementEntry const* achievement)
 				alreadySent = true;
 				guidIndex = guidCount;
 			}
+
 			if(!alreadySent)
-			{
 				GetPlayer()->GetSession()->SendPacket(&cdata);
-			}
 		}
 	}
 //	GetPlayer()->SendMessageToSet(&cdata, true);
@@ -510,10 +497,9 @@ void AchievementMgr::SendAchievementEarned(AchievementEntry const* achievement)
 	data << uint32(secsToTimeBitFields(UNIXTIME));
 	data << uint32(0);
 	GetPlayer()->GetSession()->SendPacket(&data);
+
 	if(guidList)
-	{
 		delete [] guidList;
-	}
 }
 
 /**
@@ -521,16 +507,12 @@ void AchievementMgr::SendAchievementEarned(AchievementEntry const* achievement)
 */
 void AchievementMgr::SendCriteriaUpdate(CriteriaProgress* progress)
 {
-	if(progress == NULL || isCharacterLoading)
-	{
+	if(!progress || isCharacterLoading)
 		return;
-	}
 
 	WorldPacket data(SMSG_CRITERIA_UPDATE, 32);
 	data << uint32(progress->id);
-
 	data.appendPackGUID(progress->counter);
-
 	data << GetPlayer()->GetNewGUID();
 	data << uint32(0);
 	data << uint32(secsToTimeBitFields(progress->date));
@@ -564,11 +546,10 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 	if( m_player->GetSession()->HasGMPermissions() && sWorld.gamemaster_disableachievements )
 		return;
 	
-	uint64 selectedGUID;
+	uint64 selectedGUID = 0;
 	if(type == ACHIEVEMENT_CRITERIA_TYPE_DO_EMOTE)
-	{
 		selectedGUID = GetPlayer()->GetSelection();
-	}
+
 	AchievementCriteriaEntryList const & achievementCriteriaList = objmgr.GetAchievementCriteriaByType(type);
 	for(AchievementCriteriaEntryList::const_iterator i = achievementCriteriaList.begin(); i != achievementCriteriaList.end(); ++i)
 	{
