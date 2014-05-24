@@ -288,7 +288,7 @@ void ObjectMgr::DeletePlayerInfo(uint32 guid)
 	PlayerInfo* pl = i->second;
 	if (!pl)
 	{
-		Log.Error("ObjectMgr:DeletePlayerInfo", "Cannot find find player information for guid %u", guid);
+		Log.Error("ObjectMgr:DeletePlayerInfo", "Cannot find player information for guid %u", guid);
 		return;
 	}
 	
