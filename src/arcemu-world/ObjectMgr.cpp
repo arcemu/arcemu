@@ -473,7 +473,7 @@ void ObjectMgr::LoadPlayersInfo()
 
 		delete result;
 	}
-	Log.Success("ObjectMgr", "%u players loaded.", m_playersinfo.size());
+	Log.Success("ObjectMgr", "Loaded %u players.", m_playersinfo.size());
 	LoadGuilds();
 }
 
@@ -526,12 +526,10 @@ void ObjectMgr::LoadPlayerCreateInfo()
 		return;
 	}
 
-	PlayerCreateInfo* pPlayerCreateInfo;
-
 	do
 	{
 		Field* fields = result->Fetch();
-		pPlayerCreateInfo = new PlayerCreateInfo;
+		PlayerCreateInfo* pPlayerCreateInfo = new PlayerCreateInfo;
 
 		pPlayerCreateInfo->index = fields[0].GetUInt8();
 		pPlayerCreateInfo->race = fields[1].GetUInt8();
@@ -562,17 +560,10 @@ void ObjectMgr::LoadPlayerCreateInfo()
 		vector<string> tokens = StrSplit(taxiMaskStr, " ");
 
 		memset(pPlayerCreateInfo->taximask, 0, sizeof(pPlayerCreateInfo->taximask));
-		int index;
-		vector<string>::iterator iter;
-		for(iter = tokens.begin(), index = 0; (index < 12) && (iter != tokens.end()); ++iter, ++index)
-		{
+		for(vector<string>::iterator iter = tokens.begin(), uint32 index = 0; (index < 12) && (iter != tokens.end()); ++iter, ++index)
 			pPlayerCreateInfo->taximask[index] = atol((*iter).c_str());
-		}
 
-		QueryResult* sk_sql = WorldDatabase.Query(
-		                          "SELECT * FROM playercreateinfo_skills WHERE indexid=%u", pPlayerCreateInfo->index);
-
-		if(sk_sql)
+		if(QueryResult* sk_sql = WorldDatabase.Query("SELECT * FROM playercreateinfo_skills WHERE indexid=%u", pPlayerCreateInfo->index))
 		{
 			do
 			{
@@ -586,10 +577,8 @@ void ObjectMgr::LoadPlayerCreateInfo()
 			while(sk_sql->NextRow());
 			delete sk_sql;
 		}
-		QueryResult* sp_sql = WorldDatabase.Query(
-		                          "SELECT * FROM playercreateinfo_spells WHERE indexid=%u", pPlayerCreateInfo->index);
 
-		if(sp_sql)
+		if(QueryResult* sp_sql = WorldDatabase.Query("SELECT * FROM playercreateinfo_spells WHERE indexid=%u", pPlayerCreateInfo->index))
 		{
 			do
 			{
@@ -599,10 +588,7 @@ void ObjectMgr::LoadPlayerCreateInfo()
 			delete sp_sql;
 		}
 
-		QueryResult* items_sql = WorldDatabase.Query(
-		                             "SELECT * FROM playercreateinfo_items WHERE indexid=%u", pPlayerCreateInfo->index);
-
-		if(items_sql)
+		if(QueryResult* items_sql = WorldDatabase.Query("SELECT * FROM playercreateinfo_items WHERE indexid=%u", pPlayerCreateInfo->index))
 		{
 			do
 			{
@@ -617,10 +603,7 @@ void ObjectMgr::LoadPlayerCreateInfo()
 			delete items_sql;
 		}
 
-		QueryResult* bars_sql = WorldDatabase.Query(
-		                            "SELECT * FROM playercreateinfo_bars WHERE class=%u", pPlayerCreateInfo->class_);
-
-		if(bars_sql)
+		if(QueryResult* bars_sql = WorldDatabase.Query("SELECT * FROM playercreateinfo_bars WHERE class=%u and race=%u", pPlayerCreateInfo->class_, pPlayerCreateInfo->race))
 		{
 			do
 			{
@@ -639,10 +622,9 @@ void ObjectMgr::LoadPlayerCreateInfo()
 		mPlayerCreateInfo[pPlayerCreateInfo->index] = pPlayerCreateInfo;
 	}
 	while(result->NextRow());
-
 	delete result;
 
-	Log.Success("ObjectMgr", "%u player create infos loaded.", mPlayerCreateInfo.size());
+	Log.Success("ObjectMgr", "Loaded %u player create information.", mPlayerCreateInfo.size());
 	GenerateLevelUpInfo();
 }
 
