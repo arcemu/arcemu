@@ -249,9 +249,9 @@ void ReadAreaTableDBC()
     }
 
     uint32 area_count = dbc.getRecordCount();
-    uint16 maxid = dbc.getMaxId();
-    areas = uint16(maxid + 1);
-    memset(areas, 0xff, (maxid + 1) * sizeof(uint16));
+    uint16 maxid = dbc.getMaxId() + 1;
+    areas = new uint16(maxid);
+    memset(areas, 0xff, (maxid) * sizeof(uint16));
 
     for(uint32 x = 0; x < area_count; ++x)
         areas[dbc.getRecord(x).getUInt(0)] = dbc.getRecord(x).getUInt(3);
