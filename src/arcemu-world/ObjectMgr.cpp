@@ -560,8 +560,9 @@ void ObjectMgr::LoadPlayerCreateInfo()
 		vector<string> tokens = StrSplit(taxiMaskStr, " ");
 
 		memset(pPlayerCreateInfo->taximask, 0, sizeof(pPlayerCreateInfo->taximask));
-        int index;
-		for(vector<string>::iterator iter = tokens.begin(), index = 0; (index < 12) && (iter != tokens.end()); ++iter, ++index)
+        int index = 0;
+        vector<string>::iterator iter = tokens.begin();
+		for(; (index < 12) && (iter != tokens.end()); ++iter, ++index)
 			pPlayerCreateInfo->taximask[index] = atol((*iter).c_str());
 
 		if(QueryResult* sk_sql = WorldDatabase.Query("SELECT * FROM playercreateinfo_skills WHERE indexid=%u", pPlayerCreateInfo->index))
