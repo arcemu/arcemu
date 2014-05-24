@@ -496,7 +496,7 @@ PlayerInfo* ObjectMgr::GetPlayerInfoByName(const char* name)
 #ifdef ENABLE_ACHIEVEMENTS
 void ObjectMgr::LoadCompletedAchievements()
 {
-	if (QueryResult* result = CharactersDatabase.Query("SELECT achievement FROM character_achievement GROUP BY achievement"))
+	if (QueryResult* result = CharacterDatabase.Query("SELECT achievement FROM character_achievement GROUP BY achievement"))
     {
         do
         {
