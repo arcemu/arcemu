@@ -1,5 +1,3 @@
-#define _CRT_SECURE_NO_DEPRECATE
-
 #include <stdio.h>
 #include <deque>
 #include <set>
@@ -228,7 +226,7 @@ uint32 ReadMapDBC()
         exit(1);
     }
 
-    size_t map_count = dbc.getRecordCount();
+    uint16 map_count = dbc.getRecordCount();
     map_ids = new map_id[map_count];
     for(uint32 x = 0; x < map_count; ++x)
     {
