@@ -248,9 +248,9 @@ void ReadAreaTableDBC()
         exit(1);
     }
 
-    size_t area_count = dbc.getRecordCount();
-    size_t maxid = dbc.getMaxId();
-    areas = new uint16[maxid + 1];
+    uint32 area_count = dbc.getRecordCount();
+    uint16 maxid = dbc.getMaxId();
+    areas = maxid + 1;
     memset(areas, 0xff, (maxid + 1) * sizeof(uint16));
 
     for(uint32 x = 0; x < area_count; ++x)
@@ -271,8 +271,8 @@ void ReadLiquidTypeTableDBC()
         exit(1);
     }
 
-    size_t LiqType_count = dbc.getRecordCount();
-    size_t LiqType_maxid = dbc.getMaxId();
+    uint32 LiqType_count = dbc.getRecordCount();
+    uint32 LiqType_maxid = dbc.getMaxId();
     LiqType = new uint16[LiqType_maxid + 1];
     memset(LiqType, 0xff, (LiqType_maxid + 1) * sizeof(uint16));
 
