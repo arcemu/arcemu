@@ -357,16 +357,12 @@ void ObjectMgr::RenamePlayerInfo(PlayerInfo* pn, const char* oldname, const char
 
 void ObjectMgr::LoadSpellSkills()
 {
-	uint32 i;
 //	int total = sSkillStore.GetNumRows();
 
-	for(i = 0; i < dbcSkillLineSpell.GetNumRows(); i++)
+	for(uint32 i = 0; i < dbcSkillLineSpell.GetNumRows(); i++)
 	{
-		skilllinespell* sp = dbcSkillLineSpell.LookupRowForced(i);
-		if(sp)
-		{
+		if(skilllinespell* sp = dbcSkillLineSpell.LookupRowForced(i))
 			mSpellSkills[sp->spell] = sp;
-		}
 	}
 	Log.Success("ObjectMgr", "%u spell skills loaded.", mSpellSkills.size());
 }
@@ -379,14 +375,14 @@ skilllinespell* ObjectMgr::GetSpellSkill(uint32 id)
 SpellEntry* ObjectMgr::GetNextSpellRank(SpellEntry* sp, uint32 level)
 {
 	// Looks for next spell rank
-	if(sp == NULL)
+	if(!sp)
 		return NULL;
 
 	skilllinespell* skill = GetSpellSkill(sp->Id);
-	if(skill != NULL && skill->next > 0)
+	if(skill && skill->next)
 	{
 		SpellEntry* sp1 = dbcSpell.LookupEntry(skill->next);
-		if(sp1->baseLevel <= level)   // check level
+		if(sp1 && sp1->baseLevel <= level)   // check level
 			return GetNextSpellRank(sp1, level);   // recursive for higher ranks
 	}
 	return sp;
