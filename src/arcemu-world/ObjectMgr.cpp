@@ -304,7 +304,7 @@ void ObjectMgr::DeletePlayerInfo(uint32 guid)
 
 	string pnam = string(pl->name);
 	arcemu_TOLOWER(pnam);
-	PlayerNameStringIndexMap::iterator = i2 = m_playersInfoByName.find(pnam);
+	PlayerNameStringIndexMap::iterator i2 = m_playersInfoByName.find(pnam);
 	if(i2 != m_playersInfoByName.end() && i2->second == pl)
 		m_playersInfoByName.erase(i2);
 

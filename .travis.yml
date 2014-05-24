@@ -17,7 +17,7 @@ compiler:
 
 before_install:
  - sudo apt-get update -qq
- - sudo apt-get install -qq libbz2-dev libncurses5-dev libmysqlclient-dev libreadline-dev libsdl1.2-dev libssl-dev zlib1g-dev libace-dev
+ - sudo apt-get install -qq libbz2-dev libncurses5-dev libmysqlclient-dev libreadline-dev libsdl1.2-dev libssl-dev zlib1g-dev
 
 script:
   - test -d _build || mkdir _build
