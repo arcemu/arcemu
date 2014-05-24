@@ -630,32 +630,22 @@ void ObjectMgr::LoadPlayerCreateInfo()
 	GenerateLevelUpInfo();
 }
 
-// DK:LoadGuilds()
 void ObjectMgr::LoadGuilds()
 {
-	QueryResult* result = CharacterDatabase.Query("SELECT * FROM guilds");
-	if(result)
+	if(QueryResult* result = CharacterDatabase.Query("SELECT * FROM guilds"))
 	{
-		uint32 period = (result->GetRowCount() / 20) + 1;
-		uint32 c = 0;
 		do
 		{
 			Guild* pGuild = Guild::Create();
 			if(!pGuild->LoadFromDB(result->Fetch()))
-			{
 				delete pGuild;
-			}
 			else
 				mGuild.insert(make_pair(pGuild->GetGuildId(), pGuild));
-
-			if(!((++c) % period))
-				Log.Notice("Guilds", "Done %u/%u, %u%% complete.", c, result->GetRowCount(), c * 100 / result->GetRowCount());
-
 		}
 		while(result->NextRow());
 		delete result;
 	}
-	Log.Success("ObjectMgr", "%u guilds loaded.", mGuild.size());
+	Log.Success("ObjectMgr", "Loaded %u guilds.", mGuild.size());
 }
 
 Corpse* ObjectMgr::LoadCorpse(uint32 guid)
