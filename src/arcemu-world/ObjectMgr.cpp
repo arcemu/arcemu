@@ -560,7 +560,7 @@ void ObjectMgr::LoadPlayerCreateInfo()
 		vector<string> tokens = StrSplit(taxiMaskStr, " ");
 
 		memset(pPlayerCreateInfo->taximask, 0, sizeof(pPlayerCreateInfo->taximask));
-        uint32 index;
+        int index;
 		for(vector<string>::iterator iter = tokens.begin(), index = 0; (index < 12) && (iter != tokens.end()); ++iter, ++index)
 			pPlayerCreateInfo->taximask[index] = atol((*iter).c_str());
 
