@@ -650,35 +650,31 @@ void ObjectMgr::LoadGuilds()
 
 Corpse* ObjectMgr::LoadCorpse(uint32 guid)
 {
-	Corpse* pCorpse;
-	QueryResult* result = CharacterDatabase.Query("SELECT * FROM Corpses WHERE guid =%u ", guid);
+    Corpse* pCorpse = NULL;
+	if(QueryResult* result = CharacterDatabase.Query("SELECT * FROM Corpses WHERE guid =%u ", guid))
+    {
+        do
+        {
+            Field* fields = result->Fetch();
+            Corpse* pCorpse = new Corpse(HIGHGUID_TYPE_CORPSE, fields[0].GetUInt32());
+            pCorpse->SetPosition(fields[1].GetFloat(), fields[2].GetFloat(), fields[3].GetFloat(), fields[4].GetFloat());
+            pCorpse->SetZoneId(fields[5].GetUInt32());
+            pCorpse->SetMapId(fields[6].GetUInt32());
+            pCorpse->LoadValues(fields[7].GetString());
+            if(pCorpse->GetDisplayId() == 0)
+            {
+                delete pCorpse;
+                pCorpse = NULL;
+                continue;
+            }
 
-	if(!result)
-		return NULL;
-
-	do
-	{
-		Field* fields = result->Fetch();
-		pCorpse = new Corpse(HIGHGUID_TYPE_CORPSE, fields[0].GetUInt32());
-		pCorpse->SetPosition(fields[1].GetFloat(), fields[2].GetFloat(), fields[3].GetFloat(), fields[4].GetFloat());
-		pCorpse->SetZoneId(fields[5].GetUInt32());
-		pCorpse->SetMapId(fields[6].GetUInt32());
-		pCorpse->LoadValues(fields[7].GetString());
-		if(pCorpse->GetDisplayId() == 0)
-		{
-			delete pCorpse;
-			pCorpse = NULL;
-			continue;
-		}
-
-		pCorpse->SetLoadedFromDB(true);
-		pCorpse->SetInstanceID(fields[8].GetUInt32());
-		pCorpse->AddToWorld();
-	}
-	while(result->NextRow());
-
-	delete result;
-
+            pCorpse->SetLoadedFromDB(true);
+            pCorpse->SetInstanceID(fields[8].GetUInt32());
+            pCorpse->AddToWorld();
+        }
+        while(result->NextRow());
+        delete result;
+    }
 	return pCorpse;
 }
 
@@ -689,10 +685,10 @@ Corpse* ObjectMgr::LoadCorpse(uint32 guid)
 //------------------------------------------------------
 Corpse* ObjectMgr::GetCorpseByOwner(uint32 ownerguid)
 {
-	CorpseMap::const_iterator itr;
 	Corpse* rv = NULL;
+
 	_corpseslock.Acquire();
-	for(itr = m_corpses.begin(); itr != m_corpses.end(); ++itr)
+	for(CorpseMap::const_iterator itr = m_corpses.begin(); itr != m_corpses.end(); ++itr)
 	{
 		if(GET_LOWGUID_PART(itr->second->GetOwner()) == ownerguid)
 		{
@@ -708,113 +704,106 @@ Corpse* ObjectMgr::GetCorpseByOwner(uint32 ownerguid)
 
 void ObjectMgr::DelinkPlayerCorpses(Player* pOwner)
 {
-	//dupe protection agaisnt crashs
-	Corpse* c;
-	c = this->GetCorpseByOwner(pOwner->GetLowGUID());
-	if(!c)return;
+	Corpse* c = this->GetCorpseByOwner(pOwner->GetLowGUID());
+	if(!c)
+        return;
 	sEventMgr.AddEvent(c, &Corpse::Delink, EVENT_CORPSE_SPAWN_BONES, 1, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 	CorpseAddEventDespawn(c);
 }
 
 void ObjectMgr::LoadGMTickets()
 {
-	QueryResult* result = CharacterDatabase.Query("SELECT ticketid, playerguid, name, level, map, posx, posy, posz, message, timestamp, deleted, assignedto, comment FROM gm_tickets WHERE deleted = false");
+    uint32 count = 0;
+	if(QueryResult* result = CharacterDatabase.Query("SELECT ticketid, playerguid, name, level, map, posx, posy, posz, message, timestamp, deleted, assignedto, comment FROM gm_tickets WHERE deleted = 0"))
+    {
+        uint32 deleted = 0;
+        do
+        {
+            Field* fields = result->Fetch();
 
-	GM_Ticket* ticket;
-	if(result == 0)
-		return;
+            GM_Ticket* ticket = new GM_Ticket;
+            ticket->guid = fields[0].GetUInt64();
+            ticket->playerGuid = fields[1].GetUInt64();
+            ticket->name = fields[2].GetString();
+            ticket->level = fields[3].GetUInt32();
+            ticket->map = fields[4].GetUInt32();
+            ticket->posX = fields[5].GetFloat();
+            ticket->posY = fields[6].GetFloat();
+            ticket->posZ = fields[7].GetFloat();
+            ticket->message = fields[8].GetString();
+            ticket->timestamp = fields[9].GetUInt32();
 
-	uint32 deleted = 0;
+            deleted = fields[10].GetUInt32();
 
-	do
-	{
-		Field* fields = result->Fetch();
+            if(deleted == 1)
+                ticket->deleted = true;
+            else
+                ticket->deleted = false;
 
-		ticket = new GM_Ticket;
-		ticket->guid = fields[0].GetUInt64();
-		ticket->playerGuid = fields[1].GetUInt64();
-		ticket->name = fields[2].GetString();
-		ticket->level = fields[3].GetUInt32();
-		ticket->map = fields[4].GetUInt32();
-		ticket->posX = fields[5].GetFloat();
-		ticket->posY = fields[6].GetFloat();
-		ticket->posZ = fields[7].GetFloat();
-		ticket->message = fields[8].GetString();
-		ticket->timestamp = fields[9].GetUInt32();
+            ticket->assignedToPlayer = fields[11].GetUInt64();
+            ticket->comment = fields[12].GetString();
 
-		deleted = fields[10].GetUInt32();
+            AddGMTicket(ticket, true);
+            ++count;
+        }
+        while(result->NextRow());
+        delete result;
+    }
 
-		if(deleted == 1)
-			ticket->deleted = true;
-		else
-			ticket->deleted = false;
-
-		ticket->assignedToPlayer = fields[11].GetUInt64();
-		ticket->comment = fields[12].GetString();
-
-		AddGMTicket(ticket, true);
-
-	}
-	while(result->NextRow());
-
-	Log.Success("ObjectMgr", "%u active GM Tickets loaded.", result->GetRowCount());
-	delete result;
+	Log.Success("ObjectMgr", "Loaded %u active GM Tickets.", count);
 }
 
 void ObjectMgr::LoadInstanceBossInfos()
 {
-	char* p, *q, *trash;
-	MapInfo* mapInfo;
-	QueryResult* result = WorldDatabase.Query("SELECT mapid, creatureid, trash, trash_respawn_override FROM instance_bosses");
+    uint32 cnt = 0;
+	if (QueryResult* result = WorldDatabase.Query("SELECT mapid, creatureid, trash, trash_respawn_override FROM instance_bosses"))
+    {
+        do
+        {
+            InstanceBossInfo* bossInfo = new InstanceBossInfo();
+            bossInfo->mapid = (uint32)result->Fetch()[0].GetUInt32();
 
-	if(result == NULL)
-		return;
+            MapInfo* mapInfo = WorldMapInfoStorage.LookupEntry(bossInfo->mapid);
+            if(!mapInfo || mapInfo->type == INSTANCE_NULL)
+            {
+                LOG_DETAIL("Not loading boss information for map %u! (continent or unknown map)", bossInfo->mapid);
+                delete bossInfo;
+                continue;
+            }
 
-	uint32 cnt = 0;
-	do
-	{
-		InstanceBossInfo* bossInfo = new InstanceBossInfo();
-		bossInfo->mapid = (uint32)result->Fetch()[0].GetUInt32();
+            if(bossInfo->mapid >= NUM_MAPS)
+            {
+                LOG_DETAIL("Not loading boss information for map %u! (map id out of range)", bossInfo->mapid);
+                delete bossInfo;
+                continue;
+            }
 
-		mapInfo = WorldMapInfoStorage.LookupEntry(bossInfo->mapid);
-		if(mapInfo == NULL || mapInfo->type == INSTANCE_NULL)
-		{
-			LOG_DETAIL("Not loading boss information for map %u! (continent or unknown map)", bossInfo->mapid);
-			delete bossInfo;
-			continue;
-		}
-		if(bossInfo->mapid >= NUM_MAPS)
-		{
-			LOG_DETAIL("Not loading boss information for map %u! (map id out of range)", bossInfo->mapid);
-			delete bossInfo;
-			continue;
-		}
-
-		bossInfo->creatureid = (uint32)result->Fetch()[1].GetUInt32();
-		trash = strdup(result->Fetch()[2].GetString());
-		q = trash;
-		p = strchr(q, ' ');
-		while(p)
-		{
-			*p = 0;
-			uint32 val = atoi(q);
-			if(val)
-				bossInfo->trash.insert(val);
-			q = p + 1;
-			p = strchr(q, ' ');
-		}
-		free(trash);
-		bossInfo->trashRespawnOverride = (uint32)result->Fetch()[3].GetUInt32();
+            bossInfo->creatureid = (uint32)result->Fetch()[1].GetUInt32();
+            char* trash = strdup(result->Fetch()[2].GetString());
+            char* q = trash;
+            char* p = strchr(q, ' ');
+            while(p)
+            {
+                *p = 0;
+                uint32 val = atoi(q);
+                if(val)
+                    bossInfo->trash.insert(val);
+                q = p + 1;
+                p = strchr(q, ' ');
+            }
+            free(trash);
+            bossInfo->trashRespawnOverride = (uint32)result->Fetch()[3].GetUInt32();
 
 
-		if(this->m_InstanceBossInfoMap[bossInfo->mapid] == NULL)
-			this->m_InstanceBossInfoMap[bossInfo->mapid] = new InstanceBossInfoMap;
-		this->m_InstanceBossInfoMap[bossInfo->mapid]->insert(InstanceBossInfoMap::value_type(bossInfo->creatureid, bossInfo));
-		cnt++;
-	}
-	while(result->NextRow());
+            if(this->m_InstanceBossInfoMap[bossInfo->mapid] == NULL)
+                this->m_InstanceBossInfoMap[bossInfo->mapid] = new InstanceBossInfoMap;
+            this->m_InstanceBossInfoMap[bossInfo->mapid]->insert(InstanceBossInfoMap::value_type(bossInfo->creatureid, bossInfo));
+            cnt++;
+        }
+        while(result->NextRow());
+        delete result;
+    }
 
-	delete result;
 	Log.Success("ObjectMgr", "%u boss information loaded.", cnt);
 }
 
@@ -826,7 +815,7 @@ void ObjectMgr::SaveGMTicket(GM_Ticket* ticket, QueryBuffer* buf)
 	ss << ticket->guid;
 	ss << ";";
 
-	if(buf == NULL)
+	if(!buf)
 		CharacterDatabase.ExecuteNA(ss.str().c_str());
 	else
 		buf->AddQueryStr(ss.str());
@@ -846,15 +835,15 @@ void ObjectMgr::SaveGMTicket(GM_Ticket* ticket, QueryBuffer* buf)
 	ss << ticket->timestamp << ", ";
 
 	if(ticket->deleted)
-		ss << uint32(1);
+		ss << uint8(1);
 	else
-		ss << uint32(0);
+		ss << uint8(0);
 	ss << ",";
 
 	ss << ticket->assignedToPlayer << ", '";
 	ss << CharacterDatabase.EscapeString(ticket->comment) << "');";
 
-	if(buf == NULL)
+	if(!buf)
 		CharacterDatabase.ExecuteNA(ss.str().c_str());
 	else
 		buf->AddQueryStr(ss.str());
