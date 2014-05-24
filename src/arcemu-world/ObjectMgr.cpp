@@ -276,7 +276,6 @@ Group* ObjectMgr::GetGroupById(uint32 id)
 //
 void ObjectMgr::DeletePlayerInfo(uint32 guid)
 {
-	PlayerInfo* pl;
 	HM_NAMESPACE::hash_map<uint32, PlayerInfo*>::iterator i = m_playersinfo.find(guid);
 	playernamelock.AcquireWriteLock();
 	if(i == m_playersinfo.end())
