@@ -250,7 +250,7 @@ void ReadAreaTableDBC()
 
     uint32 area_count = dbc.getRecordCount();
     uint16 maxid = dbc.getMaxId();
-    areas = maxid + 1;
+    areas = uint16(maxid + 1);
     memset(areas, 0xff, (maxid + 1) * sizeof(uint16));
 
     for(uint32 x = 0; x < area_count; ++x)
@@ -1027,7 +1027,7 @@ void LoadLocaleMPQFiles(int const locale)
     sprintf(filename,"%s/Data/%s/locale-%s.MPQ", input_path, langs[locale], langs[locale]);
     new MPQArchive(filename);
 
-    for(int i = 1; i < 5; ++i)
+    for(uint8 i = 1; i < 5; ++i)
     {
         char ext[3] = "";
         if(i > 1)
