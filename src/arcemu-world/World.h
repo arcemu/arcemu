@@ -716,8 +716,8 @@ class SERVER_DECL World : public Singleton<World>, public EventableObject
 		bool m_reqGmForCommands;
 		bool m_lfgForNonLfg;
 		list<SpellEntry*> dummyspells;
-		uint32 m_levelCap;
-		uint32 m_genLevelCap;
+		uint8 m_levelCap;
+		uint8 m_genLevelCap;
 		bool m_limitedNames;
 		bool m_useAccountData;
 		bool m_AdditionalFun;
