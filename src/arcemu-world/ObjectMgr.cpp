@@ -206,10 +206,10 @@ ObjectMgr::~ObjectMgr()
 	for(std::set<ProfessionDiscovery*>::iterator itr = ProfessionDiscoveryTable.begin(); itr != ProfessionDiscoveryTable.end(); itr++)
 		delete(*itr);
 
-	Log.Notice("ObjectMgr", "Cleaning up BroadCastStorages...");
+	Log.Notice("ObjectMgr", "Deleting BroadCastStorages...");
 	m_BCEntryStorage.clear();
 
-	Log.Notice("ObjectMgr", "Cleaning up spell target constraints...");
+	Log.Notice("ObjectMgr", "Deleting spell target constraints...");
 	for(SpellTargetConstraintMap::iterator itr = m_spelltargetconstraints.begin(); itr != m_spelltargetconstraints.end(); ++itr)
 		delete itr->second;
 
@@ -230,7 +230,8 @@ ObjectMgr::~ObjectMgr()
 
 
 	Log.Notice( "ObjectMgr", "Cleaning up worldstate templates" );
-	for( std::map< uint32, std::multimap< uint32, WorldState >* >::iterator itr = worldstate_templates.begin(); itr != worldstate_templates.end(); ++itr ){
+	for( std::map< uint32, std::multimap< uint32, WorldState >* >::iterator itr = worldstate_templates.begin(); itr != worldstate_templates.end(); ++itr )
+	{
 		itr->second->clear();
 		delete itr->second;
 	}
@@ -390,6 +391,7 @@ SpellEntry* ObjectMgr::GetNextSpellRank(SpellEntry* sp, uint32 level)
 
 void ObjectMgr::LoadPlayersInfo()
 {
+	Log.Notice("ObjectMgr", "Loading players...");
 	if(QueryResult* result = CharacterDatabase.Query("SELECT guid,name,race,class,level,gender,zoneid,timestamp,acct FROM characters"))
 	{
 		do
@@ -632,6 +634,7 @@ void ObjectMgr::LoadPlayerCreateInfo()
 
 void ObjectMgr::LoadGuilds()
 {
+	Log.Notice("ObjectMgr", "Loading guilds...");
 	if(QueryResult* result = CharacterDatabase.Query("SELECT * FROM guilds"))
 	{
 		do
@@ -656,7 +659,7 @@ Corpse* ObjectMgr::LoadCorpse(uint32 guid)
         do
         {
             Field* fields = result->Fetch();
-            Corpse* pCorpse = new Corpse(HIGHGUID_TYPE_CORPSE, fields[0].GetUInt32());
+            pCorpse = new Corpse(HIGHGUID_TYPE_CORPSE, fields[0].GetUInt32());
             pCorpse->SetPosition(fields[1].GetFloat(), fields[2].GetFloat(), fields[3].GetFloat(), fields[4].GetFloat());
             pCorpse->SetZoneId(fields[5].GetUInt32());
             pCorpse->SetMapId(fields[6].GetUInt32());
@@ -713,6 +716,7 @@ void ObjectMgr::DelinkPlayerCorpses(Player* pOwner)
 
 void ObjectMgr::LoadGMTickets()
 {
+	Log.Notice("ObjectMgr", "Loading GM tickets...");
     uint32 count = 0;
 	if(QueryResult* result = CharacterDatabase.Query("SELECT ticketid, playerguid, name, level, map, posx, posy, posz, message, timestamp, deleted, assignedto, comment FROM gm_tickets WHERE deleted = 0"))
     {
@@ -755,6 +759,7 @@ void ObjectMgr::LoadGMTickets()
 
 void ObjectMgr::LoadInstanceBossInfos()
 {
+	Log.Notice("ObjectMgr". "Loading instance boss info data...");
     uint32 cnt = 0;
 	if (QueryResult* result = WorldDatabase.Query("SELECT mapid, creatureid, trash, trash_respawn_override FROM instance_bosses"))
     {
@@ -851,6 +856,7 @@ void ObjectMgr::SaveGMTicket(GM_Ticket* ticket, QueryBuffer* buf)
 
 void ObjectMgr::SetHighestGuids()
 {
+	Log.Notice("ObjectMgr", "Setting up highest guids...");
 	QueryResult* result;
 
 	result = CharacterDatabase.Query("SELECT MAX(guid) FROM characters");
@@ -991,6 +997,7 @@ uint32 ObjectMgr::GenerateLowGuid(uint32 guidhigh)
 
 void ObjectMgr::ProcessGameobjectQuests()
 {
+	Log.Notice("ObjectMgr", "Loading gameobject quest item binding data...");
 	uint32 count = 0;
 	if(QueryResult* result  = WorldDatabase.Query("SELECT * FROM gameobject_quest_item_binding"))
 	{
@@ -1007,8 +1014,9 @@ void ObjectMgr::ProcessGameobjectQuests()
 		delete result;
 	}
 	Log.Success("ObjectMgr", "Loaded %u gameobject quest item bindings.", count);
-	count = 0;
 
+	Log.Notice("ObjectMgr", "Loading gameobject quest pickup binding data...");
+	count = 0;
 	if(QueryResult* result = WorldDatabase.Query("SELECT * FROM gameobject_quest_pickup_binding"))
 	{
 		do
@@ -1025,6 +1033,7 @@ void ObjectMgr::ProcessGameobjectQuests()
 	}
 	Log.Success("ObjectMgr", "Loaded %u gameobject quest pickup bindings", count);
 
+	Log.Notice("Loading npc gossip textid data...");
 	if(QueryResult* result = WorldDatabase.Query("SELECT * FROM npc_gossip_textid"))
 	{
 		do
@@ -1250,6 +1259,7 @@ GM_Ticket* ObjectMgr::GetGMTicket(uint64 ticketGuid)
 
 void ObjectMgr::LoadVendors()
 {
+	Log.Notice("ObjectMgr", "Loading vendors data...");
 	if (QueryResult* result = WorldDatabase.Query("SELECT * FROM vendors"))
 	{
 		if(result->GetFieldCount() < 6)
@@ -1259,9 +1269,7 @@ void ObjectMgr::LoadVendors()
 			return;
 		}
 		else if(result->GetFieldCount() > 6)
-		{
 			Log.Notice("ObjectMgr", "Invalid format in vendors (%u/6) columns, loading anyway because we have enough data", result->GetFieldCount());
-		}
 
 		do
 		{
@@ -1338,6 +1346,7 @@ std::vector<CreatureItem>* ObjectMgr::GetVendorList(uint32 entry)
 
 void ObjectMgr::LoadAIThreatToSpellId()
 {
+	Log.Notice("ObjectMgr", "Loading ai threattospellid data...");
 	uint32 count = 0;
 	if (QueryResult* result = WorldDatabase.Query("SELECT * FROM ai_threattospellid"))
 	{
@@ -1361,6 +1370,7 @@ void ObjectMgr::LoadAIThreatToSpellId()
 
 void ObjectMgr::LoadSpellProcs()
 {
+	Log.Notice("ObjectMgr", "Loading spell proc data...");
 	uint32 count = 0;
 	if (QueryResult* result = WorldDatabase.Query("SELECT * FROM spell_proc"))
 	{
@@ -1370,49 +1380,46 @@ void ObjectMgr::LoadSpellProcs()
 			uint32 spe_spellId = f[0].GetUInt32();
 			uint32 spe_NameHash = f[1].GetUInt32();
 
-			if(spe_spellId)
+			if (SpellEntry* sp = dbcSpell.LookupEntryForced(spe_spellId))
 			{
-				if (SpellEntry* sp = dbcSpell.LookupEntryForced(spe_spellId))
+				uint8 x = 0;
+				for (; x < 3; ++x)
 				{
-					uint8 x = 0;
-					for (; x < 3; ++x)
-					{
-						if (sp->ProcOnNameHash[x] == 0)
-							break;
-					}
-
-					if (x != 3)
-						sp->ProcOnNameHash[x] = spe_NameHash;
-					else
-						LOG_ERROR("Wrong ProcOnNameHash for Spell: %u!", spe_spellId);
-
-					sp->procFlags = f[2].GetUInt32();
-
-					if (f[3].GetUInt32() == 1)
-						sp->procFlags |= PROC_TARGET_SELF;
-
-					if (f[4].GetInt32() >= 0)
-						sp->procChance = f[4].GetUInt32();
-
-					if (f[5].GetInt32() >= 0)
-						sp->procCharges = f[5].GetInt32();
-
-					sp->proc_interval = f[6].GetUInt32();
-
-					if (f[7].GetInt32() >= 0)
-						sp->EffectTriggerSpell[0] = f[7].GetUInt32();
-
-					if (f[8].GetInt32() >= 0)
-						sp->EffectTriggerSpell[1] = f[8].GetUInt32();
-
-					if (f[9].GetInt32() >= 0)
-						sp->EffectTriggerSpell[2] = f[9].GetUInt32();
-
-					++count;
+					if (sp->ProcOnNameHash[x] == 0)
+						break;
 				}
+
+				if (x != 3)
+					sp->ProcOnNameHash[x] = spe_NameHash;
 				else
-					Log.Error("ObjectMgr", "Tryed to load non existing spell proc data for non existing spell %u.", spe_spellId);
+					Log.Error("ObjectMgr", "Wrong ProcOnNameHash for Spell: %u!", spe_spellId);
+
+				sp->procFlags = f[2].GetUInt32();
+
+				if (f[3].GetUInt32() == 1)
+					sp->procFlags |= PROC_TARGET_SELF;
+
+				if (f[4].GetInt32() >= 0)
+					sp->procChance = f[4].GetUInt32();
+
+				if (f[5].GetInt32() >= 0)
+					sp->procCharges = f[5].GetInt32();
+
+				sp->proc_interval = f[6].GetUInt32();
+
+				if (f[7].GetInt32() >= 0)
+					sp->EffectTriggerSpell[0] = f[7].GetUInt32();
+
+				if (f[8].GetInt32() >= 0)
+					sp->EffectTriggerSpell[1] = f[8].GetUInt32();
+
+				if (f[9].GetInt32() >= 0)
+					sp->EffectTriggerSpell[2] = f[9].GetUInt32();
+
+				++count;
 			}
+			else
+				Log.Error("ObjectMgr", "Tryed to load non existing spell proc data for non existing spell %u.", spe_spellId);
 		}
 		while(result->NextRow());
 		delete result;
@@ -1422,6 +1429,7 @@ void ObjectMgr::LoadSpellProcs()
 
 void ObjectMgr::LoadSpellEffectsOverride()
 {
+	Log.Notice("ObjectMgr", "Loading spell effect override data...");
 	uint32 count = 0;
 	if (QueryResult* result = WorldDatabase.Query("SELECT * FROM spell_effects_override"))
 	{
@@ -1575,7 +1583,6 @@ void ObjectMgr::LoadCorpses(MapMgr* mgr)
 		while(result->NextRow());
 		delete result;
 	}
-
 }
 
 #ifdef ENABLE_ACHIEVEMENTS
@@ -1735,11 +1742,9 @@ uint32 ObjectMgr::GetGossipTextForNpc(uint32 ID)
 
 void ObjectMgr::LoadTrainers()
 {
-	const char* temp;
-	size_t len;
-
 	LoadDisabledSpells();
 
+	Log.Notice("ObjectMgr", "Loading trainers data...");
 	if (QueryResult* result = WorldDatabase.Query("SELECT * FROM trainer_defs"))
 	{
 		do
@@ -1781,8 +1786,8 @@ void ObjectMgr::LoadTrainers()
 				tr->Cannot_Train_GossipTextId = 1;
 			}
 
-			temp = fields[8].GetString();
-			len = strlen(temp);
+			const char* temp = fields[8].GetString();
+			size_t len = strlen(temp);
 			if (len)
 			{
 				tr->UIMessage = new char[len + 1];
@@ -1922,6 +1927,7 @@ Trainer* ObjectMgr::GetTrainer(uint32 Entry)
 
 void ObjectMgr::GenerateLevelUpInfo()
 {
+	Log.Notice("ObjectMgr", "Generating levelup information");
 	// Generate levelup information for each class.
 	for(uint32 Class = WARRIOR; Class <= DRUID; ++Class)
 	{
@@ -2164,7 +2170,7 @@ void ObjectMgr::GenerateLevelUpInfo()
 			mLevelInfo.insert(LevelInfoMap::value_type(p, lMap));
 		}
 	}
-	Log.Notice("ObjectMgr", "%u level up information generated.", mLevelInfo.size());
+	Log.Notice("ObjectMgr", "Generated %u level up information.", mLevelInfo.size());
 }
 
 LevelInfo* ObjectMgr::GetLevelInfo(uint32 Race, uint32 Class, uint32 Level)
@@ -2192,6 +2198,7 @@ LevelInfo* ObjectMgr::GetLevelInfo(uint32 Race, uint32 Class, uint32 Level)
 
 void ObjectMgr::LoadDefaultPetSpells()
 {
+	Log.Notice("ObjectMgr", "Loading default pet spells data...");
 	if (QueryResult* result = WorldDatabase.Query("SELECT * FROM petdefaultspells"))
 	{
 		do
@@ -2233,7 +2240,6 @@ set<SpellEntry*>* ObjectMgr::GetDefaultPetSpells(uint32 Entry)
 
 void ObjectMgr::LoadPetSpellCooldowns()
 {
-
 	for(DBCStorage< CreatureSpellDataEntry >::iterator itr = dbcCreatureSpellData.begin(); itr != dbcCreatureSpellData.end(); ++itr)
 	{
 		CreatureSpellDataEntry* csde = *itr;
@@ -2276,7 +2282,7 @@ uint32 ObjectMgr::GetPetSpellCooldown(uint32 SpellId)
 
 void ObjectMgr::LoadSpellOverride()
 {
-//	int i = 0;
+	Log.Notice("ObjectMgr", "Loading spell override data...");
 	if (QueryResult* result = WorldDatabase.Query("SELECT DISTINCT overrideId FROM spelloverride"))
 	{
 		do
@@ -2327,6 +2333,7 @@ void ObjectMgr::SetVendorList(uint32 Entry, std::vector<CreatureItem>* list_)
 
 void ObjectMgr::LoadCreatureTimedEmotes()
 {
+	Log.Notice("Loading creature timed emotes data...");
 	uint32 count = 0;
 	if (QueryResult* result = WorldDatabase.Query("SELECT * FROM creature_timed_emotes order by rowid asc"))
 	{
@@ -2382,6 +2389,7 @@ TimedEmoteList* ObjectMgr::GetTimedEmoteList(uint32 spawnid)
 
 void ObjectMgr::LoadCreatureWaypoints()
 {
+	Log.Notice("ObjectMgr", "Loading creature waypoints...");
 	uint64 count = 0;
 	if (QueryResult* result = WorldDatabase.Query("SELECT * FROM creature_waypoints"))
 	{
@@ -2568,6 +2576,7 @@ Transporter* ObjectMgr::GetTransporterByEntry(uint32 entry)
 
 void ObjectMgr::LoadGuildCharters()
 {
+	Log.Notice("ObjectMgr", "Loading guild charters...");
 	m_hiCharterId.SetVal(0);
 	if (QueryResult* result = CharacterDatabase.Query("SELECT * FROM charters"))
 	{
@@ -2793,8 +2802,6 @@ void ObjectMgr::RemoveCharter(Charter* c)
 //TODO: split up loads
 void ObjectMgr::LoadReputationModifierTable(const char* tablename, ReputationModMap* dmap)
 {
-	;
-
 	if (QueryResult* result = WorldDatabase.Query("SELECT * FROM %s", tablename))
 	{
 		do
@@ -2832,12 +2839,14 @@ void ObjectMgr::LoadReputationModifierTable(const char* tablename, ReputationMod
 		while(result->NextRow());
 		delete result;
 	}
-	Log.Notice("ObjectMgr", "Loaded %u %s reputation modifiers.", dmap->size(), tablename);
+	Log.Success("ObjectMgr", "Loaded %u %s reputation modifiers.", dmap->size(), tablename);
 }
 
 void ObjectMgr::LoadReputationModifiers()
 {
+	Log.Notice("ObjectMgr", "Loading repuation creature onkill data...");
 	LoadReputationModifierTable("reputation_creature_onkill", &m_reputation_creature);
+	Log.Notice("ObjectMgr", "Loading faction onkill data...");
 	LoadReputationModifierTable("reputation_faction_onkill", &m_reputation_faction);
 	LoadInstanceReputationModifiers();
 }
@@ -2860,6 +2869,7 @@ ReputationModifier* ObjectMgr::GetReputationModifier(uint32 entry_id, uint32 fac
 
 void ObjectMgr::LoadMonsterSay()
 {
+	Log.Notice("Loading npc_monstersay data...");
 	uint32 count = 0;
 	if (QueryResult* result = WorldDatabase.Query("SELECT * FROM npc_monstersay"))
 	{
@@ -2943,6 +2953,7 @@ NpcMonsterSay* ObjectMgr::HasMonsterSay(uint32 Entry, MONSTER_SAY_EVENTS Event)
 
 void ObjectMgr::LoadInstanceReputationModifiers()
 {
+	Log.Notice("ObjectMgr", "Loading repuation instance onkill data...");
 	if (QueryResult* result = WorldDatabase.Query("SELECT * FROM reputation_instance_onkill"))
 	{
 		do
@@ -3037,6 +3048,7 @@ bool ObjectMgr::HandleInstanceReputationModifiers(Player* pPlayer, Unit* pVictim
 
 void ObjectMgr::LoadDisabledSpells()
 {
+	Log.Notice("Loading disabled spells...");
 	if (QueryResult* result = WorldDatabase.Query("SELECT * FROM spell_disable"))
 	{
 		do
@@ -3064,6 +3076,7 @@ void ObjectMgr::ReloadDisabledSpells()
 
 void ObjectMgr::LoadGroups()
 {
+	Log.Notice("ObjectMgr", "Loading groups...");
 	if (QueryResult* result = CharacterDatabase.Query("SELECT * FROM groups"))
 	{
 		if(result->GetFieldCount() != 52)
@@ -3085,6 +3098,7 @@ void ObjectMgr::LoadGroups()
 
 void ObjectMgr::LoadArenaTeams()
 {
+	Log.Notice("ObjectMgr", "Loading arena teams...");
 	if (QueryResult* result = CharacterDatabase.Query("SELECT * FROM arenateams"))
 	{
 		if(result->GetFieldCount() != 22)
@@ -3308,8 +3322,8 @@ SpellTargetConstraint* ObjectMgr::GetSpellTargetConstraintForSpell(uint32 spelli
 
 	if(itr != m_spelltargetconstraints.end())
 		return itr->second;
-	else
-		return NULL;
+
+	return NULL;
 }
 
 uint32 ObjectMgr::GenerateArenaTeamId()
@@ -3428,7 +3442,7 @@ PlayerCache* ObjectMgr::GetPlayerCache(const char* name, bool caseSensitive /*= 
 
 void ObjectMgr::LoadVehicleAccessories()
 {
-
+	Log.Notice("ObjectMgr", "Loading vehicle accessories...");
 	if (QueryResult *result = WorldDatabase.Query("SELECT creature_entry, accessory_entry, seat FROM vehicle_accessories;"))
 	{
 		
@@ -3484,6 +3498,7 @@ std::vector< VehicleAccessoryEntry* >* ObjectMgr::GetVehicleAccessories( uint32 
 
 void ObjectMgr::LoadWorldStateTemplates()
 {
+	Log.Notice("ObjectMgr", "Loading worldstate template...");
 	uint32 count = 0;
 	if (QueryResult *result = WorldDatabase.Query("SELECT DISTINCT map FROM worldstate_templates ORDER BY map;"))
 	{
