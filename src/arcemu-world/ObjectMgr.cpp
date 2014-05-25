@@ -759,7 +759,7 @@ void ObjectMgr::LoadGMTickets()
 
 void ObjectMgr::LoadInstanceBossInfos()
 {
-	Log.Notice("ObjectMgr". "Loading instance boss info data...");
+	Log.Notice("ObjectMgr", "Loading instance boss info data...");
     uint32 cnt = 0;
 	if (QueryResult* result = WorldDatabase.Query("SELECT mapid, creatureid, trash, trash_respawn_override FROM instance_bosses"))
     {
@@ -1033,7 +1033,7 @@ void ObjectMgr::ProcessGameobjectQuests()
 	}
 	Log.Success("ObjectMgr", "Loaded %u gameobject quest pickup bindings", count);
 
-	Log.Notice("Loading npc gossip textid data...");
+	Log.Notice("ObjectMgr", "Loading npc gossip textid data...");
 	if(QueryResult* result = WorldDatabase.Query("SELECT * FROM npc_gossip_textid"))
 	{
 		do
@@ -2333,7 +2333,7 @@ void ObjectMgr::SetVendorList(uint32 Entry, std::vector<CreatureItem>* list_)
 
 void ObjectMgr::LoadCreatureTimedEmotes()
 {
-	Log.Notice("Loading creature timed emotes data...");
+	Log.Notice("ObjectMgr", "Loading creature timed emotes data...");
 	uint32 count = 0;
 	if (QueryResult* result = WorldDatabase.Query("SELECT * FROM creature_timed_emotes order by rowid asc"))
 	{
@@ -2869,7 +2869,7 @@ ReputationModifier* ObjectMgr::GetReputationModifier(uint32 entry_id, uint32 fac
 
 void ObjectMgr::LoadMonsterSay()
 {
-	Log.Notice("Loading npc_monstersay data...");
+	Log.Notice("ObjectMgr", "Loading npc_monstersay data...");
 	uint32 count = 0;
 	if (QueryResult* result = WorldDatabase.Query("SELECT * FROM npc_monstersay"))
 	{
@@ -3048,7 +3048,7 @@ bool ObjectMgr::HandleInstanceReputationModifiers(Player* pPlayer, Unit* pVictim
 
 void ObjectMgr::LoadDisabledSpells()
 {
-	Log.Notice("Loading disabled spells...");
+	Log.Notice("ObjectMgr", "Loading disabled spells...");
 	if (QueryResult* result = WorldDatabase.Query("SELECT * FROM spell_disable"))
 	{
 		do
