@@ -20,7 +20,7 @@
 
 #include "StdAfx.h"
 
-extern pAIEvent AIEventHandlers[NUM_AI_EVENTS] =
+pAIEvent AIEventHandlers[NUM_AI_EVENTS] =
 {
 	&AIInterface::EventEnterCombat,
 	&AIInterface::EventLeaveCombat,
