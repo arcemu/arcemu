@@ -1689,7 +1689,7 @@ void Player::ActivateSpec(uint8 spec)
 		(*itr)->Despawn(0, 0);
 
 	// Eject from vehicle
-	if (GetVehicleComponent)
+	if (GetVehicleComponent())
 		GetVehicleComponent()->EjectPassenger(this);
 
 	// remove controlled units
