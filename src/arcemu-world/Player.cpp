@@ -330,9 +330,9 @@ Player::Player(uint32 guid)
 	tutorialsDirty = true;
 	m_TeleportState = 1;
 	m_beingPushed = false;
-	for(i = 0; i < NUM_CHARTER_TYPES; ++i)
+	for(uint8 i = 0; i < NUM_CHARTER_TYPES; ++i)
 		m_charters[i] = NULL;
-	for(i = 0; i < NUM_ARENA_TEAM_TYPES; ++i)
+	for(uint8 i = 0; i < NUM_ARENA_TEAM_TYPES; ++i)
 		m_arenaTeams[i] = NULL;
 	flying_aura = 0;
 	resend_speed = false;
@@ -528,7 +528,7 @@ Player::~Player()
 	// delete m_talenttree
 
 	CleanupChannels();
-	for(uint i = 0; i < 25; ++i)
+	for(uint8 i = 0; i < 25; ++i)
 	{
 		if(m_questlog[i] != NULL)
 		{
@@ -1486,7 +1486,8 @@ void Player::GiveXP(uint32 xp, const uint64 & guid, bool allowbonus)
 		setLevel(level);
 		LevelInfo* oldlevel = lvlinfo;
 		lvlinfo = objmgr.GetLevelInfo(getRace(), getClass(), level);
-		if(lvlinfo == NULL) return;
+		if(!lvlinfo) 
+			return;
 		CalculateBaseStats();
 
 		// Generate Level Info Packet and Send to client
@@ -1621,7 +1622,7 @@ void Player::smsg_InitialSpells()
 		++itemCount;
 
 #ifdef _DEBUG
-		Log.Debug("InitialSpells", "sending category cooldown for cat %u to %u ms", itr2->first, itr2->second.ExpireTime - mstime);
+		Log.Debug("InitialSpells", "sending category cooldown for cat %u to %u ms", itr->first, itr->second.ExpireTime - mstime);
 #endif
 	}
 
