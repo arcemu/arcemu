@@ -3,20 +3,20 @@ SET( prefix ${ROOT_PATH}/src/arcemu-world )
 SET(sources
   DBC/DBCStores.cpp
 	AchievementMgr.cpp 
+	AddonMgr.cpp 
+	AIEvents.cpp 
+	AIInterface.cpp 
+	AreaTrigger.cpp 
+	Arenas.cpp 
+	ArenaTeam.cpp
+	AuctionHouse.cpp 
+	AuctionMgr.cpp 	
 	CollideInterface.cpp  
 	VoiceChatHandler.cpp 
 	DayWatcherThread.cpp 
-	CommonScheduleThread.cpp 
-	ArenaTeam.cpp 
+	CommonScheduleThread.cpp  
 	DatabaseCleaner.cpp 
 	ObjectStorage.cpp  
-	AddonMgr.cpp 
-	AIInterface.cpp 
-	AIEvents.cpp
-	AreaTrigger.cpp 
-	Arenas.cpp 
-	AuctionHouse.cpp 
-	AuctionMgr.cpp 
 	Battleground.cpp
 	BattlegroundCommands.cpp 
 	BattlegroundHandler.cpp 
