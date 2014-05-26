@@ -558,6 +558,7 @@ void CommandTableStorage::Init()
 		{ "saveall",       's', &ChatHandler::HandleSaveAllCommand,         "Save's all playing characters",                            NULL, 0, 0, 0 },
 		{ "info",          '0', &ChatHandler::HandleInfoCommand,            "Server info",                                              NULL, 0, 0, 0 },
 		{ "netstatus",     '0', &ChatHandler::HandleNetworkStatusCommand,   "Shows network status.", NULL, 0, 0, 0 },
+		{ "scriptsreload", '0', &ChatHandler::HandleReloadScripts,          "Reloads script engines", NULL, 0, 0, 0 },
 		{ NULL,            '0', NULL,                                       "",                                                         NULL, 0, 0, 0 }
 	};
 	dupe_command_table(serverCommandTable, _serverCommandTable);
