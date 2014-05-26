@@ -34,17 +34,15 @@ AddonMgr::AddonMgr()
 
 AddonMgr::~AddonMgr()
 {
-	KnownAddonsItr itr;
-	for(itr = mKnownAddons.begin(); itr != mKnownAddons.end(); ++itr)
-	{
+	for (KnownAddonsItr itr = mKnownAddons.begin(); itr != mKnownAddons.end(); ++itr)
 		delete itr->second;
-	}
+
 	mKnownAddons.clear();
 }
 
 bool AddonMgr::IsAddonBanned(uint64 crc, std::string name)
 {
-	return false;	// bleh needs work
+	return false;
 }
 
 bool AddonMgr::IsAddonBanned(std::string name, uint64 crc)
@@ -110,8 +108,8 @@ void AddonMgr::SendAddonInfoPacket(WorldPacket* source, uint32 pos, WorldSession
 	WorldPacket returnpacket;
 	returnpacket.Initialize(SMSG_ADDON_INFO);	// SMSG_ADDON_INFO
 
-	uint32 realsize;
-	uLongf rsize;
+	uint32 realsize = 0;
+	uLongf rsize = 0;
 
 	try
 	{
@@ -250,45 +248,34 @@ bool AddonMgr::AppendPublicKey(WorldPacket & data, std::string & AddonName, uint
 
 void AddonMgr::LoadFromDB()
 {
-	QueryResult* result = WorldDatabase.Query("SELECT * FROM clientaddons");
-	if(!result)
+	Log.Notice("AddonMgr", "Loading client addons...");
+	if (QueryResult* result = WorldDatabase.Query("SELECT name, crc, banned, showinlist FROM clientaddons"))
 	{
-		LOG_ERROR("Query failed: SELECT * FROM clientaddons");
-		return;
+		do
+		{
+			Field* field = result->Fetch();
+			AddonEntry* ent = new AddonEntry;
+
+			ent->name = field[0].GetString();
+			ent->crc = field[1].GetUInt64();
+			ent->banned = (field[2].GetUInt32() > 0 ? true : false);
+			ent->isNew = false;
+
+			// To avoid crashes for stilly nubs who don't update table :P
+			ent->showinlist = (field[3].GetUInt32() > 0 ? true : false);
+
+			mKnownAddons[ent->name] = ent;
+
+		}while (result->NextRow());
+		delete result;
 	}
-
-	Field* field;
-	AddonEntry* ent;
-
-	do
-	{
-		field = result->Fetch();
-		ent = new AddonEntry;
-
-		ent->name = field[1].GetString();
-		ent->crc = field[2].GetUInt64();
-		ent->banned = (field[3].GetUInt32() > 0 ? true : false);
-		ent->isNew = false;
-
-		// To avoid crashes for stilly nubs who don't update table :P
-		if(result->GetFieldCount() == 5)
-			ent->showinlist = (field[4].GetUInt32() > 0 ? true : false);
-
-		mKnownAddons[ent->name] = ent;
-
-	}
-	while(result->NextRow());
-
-	delete result;
+	Log.Success("AddonMgr", "Loaded %u client addons...", mKnownAddons.size());
 }
 
 void AddonMgr::SaveToDB()
 {
 	LOG_DETAIL("AddonMgr: Saving any new addons discovered in this session to database.");
-
-	KnownAddonsItr itr;
-
-	for(itr = mKnownAddons.begin(); itr != mKnownAddons.end(); ++itr)
+	for (KnownAddonsItr itr = mKnownAddons.begin(); itr != mKnownAddons.end(); ++itr)
 	{
 		if(itr->second->isNew)
 		{
