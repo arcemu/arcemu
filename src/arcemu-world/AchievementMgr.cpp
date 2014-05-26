@@ -359,7 +359,7 @@ void AchievementMgr::SendAchievementEarned(AchievementEntry const* achievement)
 	// Send Achievement message to everyone currently on the server
 	if(achievement->flags & (ACHIEVEMENT_FLAG_REALM_FIRST_KILL | ACHIEVEMENT_FLAG_REALM_FIRST_REACH))
 	{
-		WorldPacket data(SMSG_SERVER_FIRST_ACHIEVEMENT, 200);
+		WorldPacket data(SMSG_SERVER_FIRST_ACHIEVEMENT, strlen(GetPlayer()->GetName()) + 1 + 8 + 4 + 4);
 		data << GetPlayer()->GetName();
 		data << uint64(GetPlayer()->GetGUID());
 		data << uint32(achievement->ID);
@@ -491,15 +491,15 @@ void AchievementMgr::SendAchievementEarned(AchievementEntry const* achievement)
 	}
 //	GetPlayer()->SendMessageToSet(&cdata, true);
 
-	WorldPacket data(SMSG_ACHIEVEMENT_EARNED, 30);
+	if(guidList)
+		delete [] guidList;
+
+	WorldPacket data(SMSG_ACHIEVEMENT_EARNED, 8 + 4 + 8);
 	data << GetPlayer()->GetNewGUID();
 	data << uint32(achievement->ID);
 	data << uint32(secsToTimeBitFields(UNIXTIME));
 	data << uint32(0);
 	GetPlayer()->GetSession()->SendPacket(&data);
-
-	if(guidList)
-		delete [] guidList;
 }
 
 /**
@@ -510,18 +510,16 @@ void AchievementMgr::SendCriteriaUpdate(CriteriaProgress* progress)
 	if(!progress || isCharacterLoading)
 		return;
 
-	WorldPacket data(SMSG_CRITERIA_UPDATE, 32);
+	WorldPacket data(SMSG_CRITERIA_UPDATE, 8 + 4 + 8);
 	data << uint32(progress->id);
 	data.appendPackGUID(progress->counter);
 	data << GetPlayer()->GetNewGUID();
-	data << uint32(0);
+	data << uint32(0);				// timed completed?
+
 	data << uint32(secsToTimeBitFields(progress->date));
-	data << uint32(0);  // timer 1
+	data << uint32(0);  // timer 1 elapsed
 	data << uint32(0);  // timer 2
-	if(!GetPlayer()->IsInWorld())   //VLack: maybe we should NOT send these delayed, for 3.1.1, but seems logical
-		GetPlayer()->CopyAndSendDelayedPacket(&data);
-	else
-		GetPlayer()->GetSession()->SendPacket(&data);
+	GetPlayer()->GetSession()->SendPacket(&data);
 }
 
 /**
@@ -720,7 +718,7 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 						case 1721: // Heroic: Archavon the Stone Watcher
 						case 1817: // The Culling of Time
 						case 1865: // Lockdown!
-							if(GetPlayer()->iInstanceType >= MODE_HEROIC)
+							if (GetPlayer()->iInstanceType == MODE_HEROIC)
 							{
 								UpdateCriteriaProgress(achievementCriteria, 1);
 							}
@@ -850,13 +848,15 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 			case ACHIEVEMENT_CRITERIA_TYPE_REACH_SKILL_LEVEL:
 				if(achievementCriteria->reach_skill_level.skillID == static_cast<uint32>(miscvalue1))
 				{
-					SetCriteriaProgress(achievementCriteria, miscvalue2);
+					if (uint32 skillValue = GetPlayer()->_GetSkillLineCurrent(achievementCriteria->reach_skill_level.skillID))
+						SetCriteriaProgress(achievementCriteria, skillValue);
 				}
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_LEARN_SKILL_LEVEL:
 				if(achievementCriteria->learn_skill_level.skillID == static_cast<uint32>(miscvalue1))
 				{
-					SetCriteriaProgress(achievementCriteria, miscvalue2);
+					if (uint32 skillValue = GetPlayer()->_GetSkillLineMax(achievementCriteria->learn_skill_level.skillID))
+						SetCriteriaProgress(achievementCriteria, skillValue);
 				}
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_EQUIP_ITEM:
@@ -1038,11 +1038,8 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 						}
 						break;
 					case 1492: // TODO: 2v2 Arena Killing Blows
-						break;
 					case 1493: // TODO: 3v3 Arena Killing Blows
-						break;
 					case 1494: // TODO: 5v5 Arena Killing Blows
-						break;
 					case 1495: // Alterac Valley Killing Blows
 						if(miscvalue1 == 30)
 						{
@@ -1074,7 +1071,6 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 						}
 						break;
 					case 2148: // TODO: Deliver a killing blow to a Scion of Eternity while riding on a hover disk
-						break;
 					case 2149: // TODO: Deliver a killing blow to a Scion of Eternity while riding on a hover disk
 						break;
 					default:
@@ -1630,7 +1626,7 @@ void AchievementMgr::CompletedAchievement(AchievementEntry const* achievement)
 void AchievementMgr::SendAllAchievementData(Player* player)
 {
 	// maximum size for the SMSG_ALL_ACHIEVEMENT_DATA packet without causing client problems seems to be 0x7fff
-	uint32 packetSize = 18 + ((uint32)m_completedAchievements.size() * 8) + (GetCriteriaProgressCount() * 36);
+	uint32 packetSize = (uint32)m_completedAchievements.size()*8+4+GetCriteriaProgressCount()*36+4;
 	bool doneCompleted = false;
 	bool doneProgress = false;
 	AchievementCriteriaEntry const* acEntry;
@@ -1646,9 +1642,7 @@ void AchievementMgr::SendAllAchievementData(Player* player)
 		data.resize(0x7fff);
 	}
 
-	CompletedAchievementMap::iterator completeIter = m_completedAchievements.begin();
-	CriteriaProgressMap::iterator progressIter = m_criteriaProgress.begin();
-	bool packetFull;
+	bool packetFull = false;
 
 	while(!doneCompleted || !doneProgress)
 	{
@@ -1662,9 +1656,11 @@ void AchievementMgr::SendAllAchievementData(Player* player)
 			data.SetOpcode(SMSG_RESPOND_INSPECT_ACHIEVEMENTS);
 			FastGUIDPack(data, m_player->GetGUID());
 		}
-		packetFull = false;
 
 		// add the completed achievements
+		CriteriaProgressMap::iterator progressIter = m_criteriaProgress.begin();
+		CompletedAchievementMap::iterator completeIter = m_completedAchievements.begin();
+
 		if(!doneCompleted)
 		{
 			for(; completeIter != m_completedAchievements.end() && !packetFull; ++completeIter)
@@ -1688,9 +1684,8 @@ void AchievementMgr::SendAllAchievementData(Player* player)
 		{
 			acEntry = dbcAchievementCriteriaStore.LookupEntryForced(progressIter->first);
 			if(!acEntry)
-			{
 				continue;
-			}
+
 			achievement = dbcAchievementStore.LookupEntryForced(acEntry->referredAchievement);
 			if(!achievement)
 			{
@@ -1979,17 +1974,14 @@ void AchievementMgr::GiveAchievementReward(AchievementEntry const* entry)
 		if(r.type & ACHIEVEMENT_REWARDTYPE_TITLE)
 		{
 			GetPlayer()->SetKnownTitle(static_cast< RankTitles >(r.rankId), true);
-			GetPlayer()->SetChosenTitle(0);
 		}
 		if(r.type & ACHIEVEMENT_REWARDTYPE_ITEM)
 		{
 			// How does this work? Add item directly to inventory, or send through mail?
-			ItemPrototype* it = ItemPrototypeStorage.LookupEntry(r.itemId);
-			if(it)
+			if (ItemPrototype* it = ItemPrototypeStorage.LookupEntry(r.itemId))
 			{
-				Item* item;
-				item = objmgr.CreateItem(r.itemId, GetPlayer());
-				if(item == NULL)
+				Item* item = objmgr.CreateItem(r.itemId, GetPlayer());
+				if(!item)
 				{
 					// this is bad - item not found in db or unable to be created for some reason
 					GetPlayer()->GetSession()->SendNotification("Unable to create item with id %lu!", r.itemId);
@@ -2048,7 +2040,7 @@ bool AchievementMgr::GMCompleteAchievement(WorldSession* gmSession, int32 achiev
 		for(uint32 i = 0; i < nr; ++i)
 		{
 			ach = dbcAchievementStore.LookupRowForced(i);
-			if(ach == NULL)
+			if(!ach)
 			{
 				m_player->GetSession()->SystemMessage("Achievement %lu entry not found.", i);
 			}
@@ -2056,8 +2048,7 @@ bool AchievementMgr::GMCompleteAchievement(WorldSession* gmSession, int32 achiev
 			{
 				if(!(ach->flags & ACHIEVEMENT_FLAG_COUNTER))
 				{
-					if((ach->factionFlag == ACHIEVEMENT_FACTION_FLAG_HORDE && !m_player->IsTeamHorde()) ||
-					        (ach->factionFlag == ACHIEVEMENT_FACTION_FLAG_ALLIANCE && !m_player->IsTeamAlliance()))
+					if((ach->factionFlag == ACHIEVEMENT_FACTION_FLAG_HORDE && !m_player->IsTeamHorde()) || (ach->factionFlag == ACHIEVEMENT_FACTION_FLAG_ALLIANCE && !m_player->IsTeamAlliance()))
 					{
 						continue;
 					}
@@ -2100,16 +2091,14 @@ bool AchievementMgr::GMCompleteCriteria(WorldSession* gmSession, int32 criteriaI
 	if(criteriaID == -1)
 	{
 		uint32 nr = dbcAchievementCriteriaStore.GetNumRows();
-		AchievementCriteriaEntry const* crt;
-		for(uint32 i = 0, j = 0; j < nr; ++i)
+		for(uint32 i = 0, j = 0; j < nr; ++i,++j)
 		{
-			crt = dbcAchievementCriteriaStore.LookupRowForced(i);
-			if(crt == NULL)
+			AchievementCriteriaEntry const* crt = dbcAchievementCriteriaStore.LookupRowForced(i);
+			if(!crt)
 			{
 				LOG_ERROR("Achievement Criteria %lu entry not found.", i);
 				continue;
 			}
-			++j;
 			if(crt->raw.field4)
 			{
 				SetCriteriaProgress(crt, crt->raw.field4);
@@ -2158,8 +2147,11 @@ bool AchievementMgr::GMCompleteCriteria(WorldSession* gmSession, int32 criteriaI
 		progress = itr->second;
 	}
 
-	progress->counter = criteria->raw.field4;
-	SendCriteriaUpdate(progress);
+	if (progress)
+	{
+		progress->counter = criteria->raw.field4;
+		SendCriteriaUpdate(progress);
+	}
 	CompletedCriteria(criteria);
 	return true;
 }
@@ -2194,6 +2186,7 @@ void AchievementMgr::GMResetAchievement(int32 achievementID)
 		ss << "DELETE FROM character_achievement WHERE guid = " << m_player->GetLowGUID() << " AND achievement = " << achievementID;
 		CharacterDatabase.Execute(ss.str().c_str());
 	}
+	CheckAllAchievementCriteria();
 }
 
 /**
