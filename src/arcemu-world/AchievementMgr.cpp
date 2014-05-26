@@ -1040,6 +1040,7 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 					case 1492: // TODO: 2v2 Arena Killing Blows
 					case 1493: // TODO: 3v3 Arena Killing Blows
 					case 1494: // TODO: 5v5 Arena Killing Blows
+						break;
 					case 1495: // Alterac Valley Killing Blows
 						if(miscvalue1 == 30)
 						{
