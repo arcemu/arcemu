@@ -8,9 +8,14 @@ SET( sources
   LogonConsole.cpp
   LogonOpcodes.cpp
   LogonStdAfx.cpp
-  Main.cpp)
+  Main.cpp
+)
+ 
+if (WIN32)
+	SET(sources ${sources} resources.rc)
+endif()
 
- SET( headers
+SET( headers
 	AccountCache.h
 	AuthSocket.h
 	AuthStructs.h
@@ -22,6 +27,7 @@ SET( sources
 	Main.h
 	PeriodicFunctionCall_Thread.h
 )
+
 foreach(src IN ITEMS ${sources} )
   SET( SRCS ${SRCS} ${prefix}/${src} )
 endforeach(src)

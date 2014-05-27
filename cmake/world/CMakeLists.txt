@@ -156,7 +156,12 @@ SET(sources
 	Rogue.cpp
 	Shaman.cpp
 	Warlock.cpp
-	Warrior.cpp )
+	Warrior.cpp
+)
+
+if (WIN32)
+	SET(sources ${sources} resources.rc)
+endif()
 
 SET( headers
 	AchievementMgr.h
