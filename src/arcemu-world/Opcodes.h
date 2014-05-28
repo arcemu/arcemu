@@ -680,7 +680,7 @@ enum Opcodes
     CMSG_DEL_PVP_MEDAL_CHEAT                        = 0x28A,	// GM client only
     CMSG_SET_PVP_TITLE                              = 0x28B,	// not used in client
     SMSG_PVP_CREDIT                                 = 0x28C,	// implemented
-    SMSG_AUCTION_REMOVED_NOTIFICATION               = 0x28D,	/// TODO: implement
+    SMSG_AUCTION_REMOVED_NOTIFICATION               = 0x28D,	// implemented
     CMSG_GROUP_RAID_CONVERT                         = 0x28E,	// implemented
     CMSG_GROUP_ASSISTANT_LEADER                     = 0x28F,	// implemented
     CMSG_BUYBACK_ITEM                               = 0x290,	// implemented
