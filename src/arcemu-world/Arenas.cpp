@@ -149,36 +149,22 @@ void Arena::OnAddPlayer(Player* plr)
 
 void Arena::OnRemovePlayer(Player* plr)
 {
-	/* remove arena readiness buff */
 	plr->m_deathVision = false;
+	plr->RemoveAura(ARENA_PREPARATION);
+	UpdatePlayerCounts();
 
-	// All auras are removed on exit
-	// plr->RemoveAura(ARENA_PREPARATION);
-	plr->RemoveAllAuras();
-
-	// Player has left arena, call HookOnPlayerDeath as if he died
-	HookOnPlayerDeath(plr);
-
-	plr->RemoveAura(plr->GetTeamInitial() ? 35775 - plr->m_bgTeam : 32725 - plr->m_bgTeam);
-	plr->RemoveFFAPvPFlag();
-
-	// Reset all their cooldowns and restore their HP/Mana/Energy to max
-	plr->ResetAllCooldowns();
-	plr->FullHPMP();
+	plr->RemoveAura(32724 + plr->m_bgTeam);
+	if (plr->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP))
+		plr->RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP);
 }
 
 void Arena::HookOnPlayerKill(Player* plr, Player* pVictim)
 {
-#ifdef ANTI_CHEAT
-	if(!m_started)
-	{
-		plr->KillPlayer(); //cheater.
+	if (!pVictim->IsPlayer())
 		return;
-	}
-#endif
 
-	if(pVictim->IsPlayer())
-		plr->m_bgScore.KillingBlows++;
+	plr->m_bgScore.KillingBlows++;
+	UpdatePlayerCounts();
 }
 
 void Arena::HookOnHK(Player* plr)
@@ -389,11 +375,12 @@ void Arena::Finish()
 		bool victorious = (i == m_winningteam);
 		for (set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); itr++)
 		{
-			if (Player* plr = (Player*)(*itr))
-			{
-				sHookInterface.OnArenaFinish(plr, plr->m_arenaTeams[m_arenateamtype], victorious, rated_match);
-				plr->ResetAllCooldowns();
-			}
+			Player * plr = (Player *)(*itr);
+			plr->Root();
+			if (plr->m_bgScore.DamageDone == 0 && plr->m_bgScore.HealingDone == 0)
+				continue;
+
+			sHookInterface.OnArenaFinish(plr, plr->m_arenaTeams[m_arenateamtype], victorious, rated_match);
 		}
 	}
 }
