@@ -35,6 +35,8 @@ void CircleOfBlood::OnCreate(){
         obj->SetParentRotation(3, -0.426569f);
         obj->PushToWorld(m_mapMgr);
     }
+    else
+        Log.Error("Arena", "Failed to spawn 183972 object in Circle of Blood arena (map id 562)");
 
     if (GameObject *obj = SpawnGameObject(183973, 562, 6189.546387f, 241.709854f, 3.101481f, 0.881392f, 32, 1375, 1.0f))
     {
@@ -43,6 +45,8 @@ void CircleOfBlood::OnCreate(){
         obj->SetParentRotation(3, 0.904455f);
         m_gates.insert(obj);
     }
+    else
+        Log.Error("Arena", "Failed to spawn 183973 object in Circle of Blood arena (map id 562)");
 
     if (GameObject *obj = SpawnGameObject(183970, 562, 6299.115723f, 296.549438f, 3.308032f, 0.881392f, 32, 1375, 1.0f))
     {
@@ -51,6 +55,8 @@ void CircleOfBlood::OnCreate(){
         obj->SetParentRotation(3, 0.904455f);
         obj->PushToWorld(m_mapMgr);
     }
+    else
+        Log.Error("Arena", "Failed to spawn 183970 object in Circle of Blood arena (map id 562)");
 
     if (GameObject *obj = SpawnGameObject(183971, 562, 6287.276855f, 282.187714f, 3.810925f, -2.260201f, 32, 1375, 1.0f))
     {
@@ -59,6 +65,8 @@ void CircleOfBlood::OnCreate(){
         obj->SetParentRotation(3, -0.426569f);
         m_gates.insert(obj);
     }
+    else
+        Log.Error("Arena", "Failed to spawn 183971 object in Circle of Blood arena (map id 562)");
 
     Arena::OnCreate();
 }
@@ -73,6 +81,8 @@ void CircleOfBlood::HookOnShadowSight(){
         m_buffs[0]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
         m_buffs[0]->PushToWorld(m_mapMgr);
     }
+    else
+        Log.Error("Arena", "Failed to spawn 184664 object in Circle of Blood arena (map id 562)");
 
     if (m_buffs[1] = SpawnGameObject(184664, 562, 6228.546387f, 249.709854f, 11.201481f, 0.881392f, 32, 1375, 1.0f))
     {
@@ -83,6 +93,8 @@ void CircleOfBlood::HookOnShadowSight(){
         m_buffs[1]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
         m_buffs[1]->PushToWorld(m_mapMgr);
     }
+    else
+        Log.Error("Arena", "Failed to spawn 184664 object in Circle of Blood arena (map id 562)");
 }
 
 LocationVector CircleOfBlood::GetStartingCoords( uint32 Team ){
