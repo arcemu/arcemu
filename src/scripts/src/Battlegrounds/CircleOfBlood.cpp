@@ -98,7 +98,7 @@ void CircleOfBlood::HookOnShadowSight(){
 }
 
 LocationVector CircleOfBlood::GetStartingCoords( uint32 Team ){
-    return Team == GOLD_TEAM ? LocationVector(6292.032227f, 287.570343f, 5.003577f) : LocationVector(6184.806641f, 236.643463f, 5.037095f);
+    return ArenaStartLocation[Team];
 }
 
 bool CircleOfBlood::HookHandleRepop( Player *plr ){
