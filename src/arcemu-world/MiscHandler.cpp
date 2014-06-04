@@ -1661,7 +1661,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 			{
                 if (sScriptMgr.has_go_gossip(obj->GetEntry()))
                 {
-                    sScriptMgr.get_item_gossip(obj->GetEntry())->OnHello(obj, plyr);
+                    sScriptMgr.get_go_gossip(obj->GetEntry())->OnHello(obj, plyr);
                     break;
                 }
                 else if (goinfo->sound7)
