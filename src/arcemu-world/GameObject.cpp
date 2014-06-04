@@ -371,59 +371,60 @@ void GameObject::InitAI()
 		return;
 
 	uint32 spellid = 0;
-	if(pInfo->Type == GAMEOBJECT_TYPE_TRAP)
-	{
-		spellid = pInfo->sound3;
-	}
-	else if(pInfo->Type == GAMEOBJECT_TYPE_SPELL_FOCUS)
-	{
-		// get spellid from attached gameobject if there is such - by sound2 field
-		if(pInfo->sound2 != 0)
-		{
+    switch (pInfo->Type)
+    {
+        case GAMEOBJECT_TYPE_TRAP:
+            spellid = pInfo->sound3;
+            break;
+        case GAMEOBJECT_TYPE_SPELL_FOCUS:
+        {
+            if (pInfo->sound2 != 0)
+            {
+                GameObjectInfo* gi = GameObjectNameStorage.LookupEntry(pInfo->sound2);
+                if (!gi)
+                {
+                    LOG_ERROR("Gamobject %u is of spellfocus type, has attachment GO data ( %u ), but attachment not found in database.", pInfo->ID, pInfo->sound2);
+                    return;
+                }
+                spellid = gi->sound3;
+            }
+        }break;
+        case GAMEOBJECT_TYPE_SPELL_FOCUS:
+            // get spellid from attached gameobject if there is such - by sound2 field
+            break;
+        case GAMEOBJECT_TYPE_RITUAL:
+        {
+             m_ritualmembers = new uint32[pInfo->SpellFocus];
+             memset(m_ritualmembers, 0, sizeof(uint32)*pInfo->SpellFocus);
+        }break;
+        case GAMEOBJECT_TYPE_CHEST:
+        {
+            if (Lock* pLock = dbcLock.LookupEntryForced(GetInfo()->SpellFocus))
+            {
+                for (uint32 i = 0; i < LOCK_NUM_CASES; i++)
+                {
+                    if (pLock->locktype[i])
+                    {
+                        if (pLock->locktype[i] == 2) //locktype;
+                        {
+                            //herbalism and mining;
+                            if (pLock->lockmisc[i] == LOCKTYPE_MINING || pLock->lockmisc[i] == LOCKTYPE_HERBALISM)
+                            {
+                                CalcMineRemaining(true);
+                            }
+                        }
+                    }
+                }
+            }
+        }break;
+        case GAMEOBJECT_TYPE_FISHINGHOLE:
+            CalcFishRemaining(true);
+            break;
+        default:
+            break;
+    }
 
-			GameObjectInfo* gi = GameObjectNameStorage.LookupEntry(pInfo->sound2);
-			if(gi == NULL)
-			{
-				LOG_ERROR("Gamobject %u is of spellfocus type, has attachment GO data ( %u ), but attachment not found in database.", pInfo->ID, pInfo->sound2);
-				return;
-			}
-
-			spellid = gi->sound3;
-		}
-	}
-	else if(pInfo->Type == GAMEOBJECT_TYPE_RITUAL)
-	{
-		m_ritualmembers = new uint32[pInfo->SpellFocus];
-		memset(m_ritualmembers, 0, sizeof(uint32)*pInfo->SpellFocus);
-	}
-	else if(pInfo->Type == GAMEOBJECT_TYPE_CHEST)
-	{
-		Lock* pLock = dbcLock.LookupEntryForced(GetInfo()->SpellFocus);
-		if(pLock)
-		{
-			for(uint32 i = 0; i < LOCK_NUM_CASES; i++)
-			{
-				if(pLock->locktype[i])
-				{
-					if(pLock->locktype[i] == 2) //locktype;
-					{
-						//herbalism and mining;
-						if(pLock->lockmisc[i] == LOCKTYPE_MINING || pLock->lockmisc[i] == LOCKTYPE_HERBALISM)
-						{
-							CalcMineRemaining(true);
-						}
-					}
-				}
-			}
-		}
-
-	}
-	else if(pInfo->Type == GAMEOBJECT_TYPE_FISHINGHOLE)
-	{
-		CalcFishRemaining(true);
-	}
-
-	if(myScript == NULL)
+	if(!myScript)
 		myScript = sScriptMgr.CreateAIScriptClassForGameObject(GetEntry(), this);
 
 	// hackfix for bad spell in BWL
