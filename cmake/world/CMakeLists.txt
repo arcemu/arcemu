@@ -276,6 +276,7 @@ SET( headers
 	WorldSocket.h
 	WorldStatesHandler.h
 	WorldStates.h
+    WorldStrings.h
 	WUtil.h
 )
 	
