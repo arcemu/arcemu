@@ -20,11 +20,6 @@
 
 #include "StdAfx.h"
 
-#define ARENA_PREPARATION 32727
-
-#define GREEN_TEAM 0
-#define GOLD_TEAM 1
-
 Arena::Arena(MapMgr* mgr, uint32 id, uint32 lgroup, uint32 t, uint32 players_per_side) : CBattleground(mgr, id, lgroup, t)
 {
 	for(uint8 i = 0; i < 2; i++)

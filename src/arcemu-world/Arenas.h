@@ -18,6 +18,11 @@
  *
  */
 
+#define ARENA_PREPARATION 32727
+
+#define GREEN_TEAM 0
+#define GOLD_TEAM 1
+
 class ArenaTeam;
 
 class SERVER_DECL Arena : public CBattleground
