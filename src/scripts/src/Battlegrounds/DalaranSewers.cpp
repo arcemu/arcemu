@@ -28,6 +28,7 @@ DalaranSewers::~DalaranSewers(){
 }
 
 void DalaranSewers::OnCreate(){
+    // gate 1
     if (GameObject *obj = SpawnGameObject(192643, 617, 1232.11f, 764.699f, 20.3f, 0.0f, 32, 1375, 2.0f))
     {
         obj->SetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_STATE, 1);
@@ -37,6 +38,7 @@ void DalaranSewers::OnCreate(){
     else
         Log.Error("Arena", "Failed to create object 192643 in Dalaran Severs arena (map id 617)");
 
+    // gate 2
     if (GameObject *obj = SpawnGameObject(192642, 617, 1350.02f, 817.502f, 19.1398f, 0.0f, 32, 1375, 2.0f))
     {
         obj->SetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_STATE, 1);
@@ -46,6 +48,7 @@ void DalaranSewers::OnCreate(){
     else
         Log.Error("Arena", "Failed to create create object 192642 in Dalaran Severs arena (map id 617)");
 
+    // fountain
     if (GameObject *obj = SpawnGameObject(191877, 617, 1291.974487f, 791.844666f, 9.339742f, 3.116816f, 32, 1375, 1.0f))
         obj->PushToWorld(m_mapMgr);
     else
@@ -55,7 +58,7 @@ void DalaranSewers::OnCreate(){
 }
 
 LocationVector DalaranSewers::GetStartingCoords( uint32 Team ){
-    return Team == TEAM_ALLIEANCE ? LocationVector(1363.3609f, 817.3569f, 14.8128f) : LocationVector(1219.5115f, 765.0264f, 14.8253f);
+    return Team == GOLD_TEAM ? LocationVector(1363.3609f, 817.3569f, 14.8128f) : LocationVector(1219.5115f, 765.0264f, 14.8253f);
 }
 
 bool DalaranSewers::HookHandleRepop( Player *plr ){
