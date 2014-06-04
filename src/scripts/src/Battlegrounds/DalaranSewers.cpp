@@ -31,7 +31,7 @@ DalaranSewers::~DalaranSewers()
 
 void DalaranSewers::OnCreate()
 {
-    for (uint8 i = 0; i < DalaranSewersGates.size(); i++)
+    for (uint8 i = 0; i < 2; i++)
     {
         if (GameObject* obj = SpawnGameObject(DalaranSewersGates[i].entry, DalaranSewersGates[i].mapid, DalaranSewersGates[i].x, 
         DalaranSewersGates[i].y, DalaranSewersGates[i].z, DalaranSewersGates[i].orientation, DalaranSewersGates[i].flags, 
@@ -55,11 +55,11 @@ void DalaranSewers::OnCreate()
 
 LocationVector DalaranSewers::GetStartingCoords(uint32 Team)
 {
-    return ArenaStartLocation[Team];
+    return DalaranArenaStartLocation[Team];
 }
 
 bool DalaranSewers::HookHandleRepop(Player* plr)
 {
-    plr->SafeTeleport(m_mapMgr->GetMapId(), m_mapMgr->GetInstanceID(), arena_repop_pos);
+    plr->SafeTeleport(m_mapMgr->GetMapId(), m_mapMgr->GetInstanceID(), dalaran_arena_repop_pos);
     return true;
 }
