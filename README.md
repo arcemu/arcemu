@@ -1,3 +1,3 @@
-arcemu [![Build Status](https://travis-ci.org/sanctum32/arcemu.png)](https://travis-ci.org/sanctum32/arcemu)
+arcemu [![Build Status](https://travis-ci.org/EasyWoW/arcemu.png)](https://travis-ci.org/EasyWoW/arcemu)
 
 ArcEmu Project
