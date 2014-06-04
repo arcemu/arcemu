@@ -39,12 +39,11 @@ void RingOfValor::OnCreate(){
 	obj = SpawnGameObject(193458, 618, 763.630f, -261.783f, 26.0f, 0.0f, 40, 1375, 1.0f);
 	obj->PushToWorld(m_mapMgr);
 	
-	// These GOs freeze the client, probably db issue tho, however I will leave it commented for now
-	// -dfighter
-	//obj = SpawnGameObject(193459, 618, 763.761f, -306.230f, 26.0f, 0.0f, 40, 1375, 1.0f);
-	//obj->PushToWorld(m_mapMgr);
-	//obj = SpawnGameObject(193460, 618, 802.313f, -284.349f, 24.6f, 0.0f, 40, 1375, 1.0f);
-	//obj->PushToWorld(m_mapMgr);
+	obj = SpawnGameObject(193459, 618, 763.761f, -306.230f, 26.0f, 0.0f, 40, 1375, 1.0f);
+	obj->PushToWorld(m_mapMgr);
+
+	obj = SpawnGameObject(193460, 618, 802.313f, -284.349f, 24.6f, 0.0f, 40, 1375, 1.0f);
+	obj->PushToWorld(m_mapMgr);
 	
 	obj = SpawnGameObject(193461, 618, 723.522f, -284.428f, 24.6f, 0.0f, 40, 1375, 1.0f);
 	obj->PushToWorld(m_mapMgr);
