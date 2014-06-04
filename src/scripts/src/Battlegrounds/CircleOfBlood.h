@@ -24,9 +24,9 @@
 #include "StdAfx.h"
 static LocationVector ArenaStartLocation[]=
 {
-    {6292.032227f, 287.570343f, 5.003577f},  // green team
-    {6184.806641f, 236.643463f, 5.037095f}   // gold team
-}
+    LocationVector(6292.032227f, 287.570343f, 5.003577f),  // green team
+    LocationVector(6184.806641f, 236.643463f, 5.037095f)   // gold team
+};
 
 class CircleOfBlood : public Arena{
 public:

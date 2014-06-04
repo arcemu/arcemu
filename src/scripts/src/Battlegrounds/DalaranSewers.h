@@ -26,8 +26,8 @@
 // start locations
 static LocationVector ArenaStartLocation[]=
 {
-    {1363.3609f, 817.3569f, 14.8128f},  // green team
-    {1219.5115f, 765.0264f, 14.8253f}   // gold team
+    LocationVector(1363.3609f, 817.3569f, 14.8128f),  // green team
+    LocationVector(1219.5115f, 765.0264f, 14.8253f)   // gold team
 }
 
 // repop position
