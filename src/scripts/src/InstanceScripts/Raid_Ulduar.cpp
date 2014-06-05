@@ -33,23 +33,12 @@ static float UlduarTeleCoords[ 9 ][ 4 ] =
 	{ 1854.82f,	-11.5608f, 334.175f, 0.0f }
 };
 
-class UlduarTeleporterAI : public GameObjectAIScript
+class UlduarTeleporterGossip : public Arcemu::Gossip::Script
 {
 	public:
-
-		UlduarTeleporterAI(GameObject* go) : GameObjectAIScript(go)
+		void OnActivate(Object*pObject, Player* player)
 		{
-		}
-
-		~UlduarTeleporterAI() {}
-
-		static GameObjectAIScript* Create(GameObject* go) { return new UlduarTeleporterAI(go); }
-
-		void OnActivate(Player* player)
-		{
-			GossipMenu* menu = NULL;
-			objmgr.CreateGossipMenuForPlayer(&menu, _gameobject->GetGUID(), 0, player);
-
+            Arcemu::Gossip::Menu menu(pObject->GetGUID(), 50000);
 			menu->AddItem(Arcemu::Gossip::ICON_CHAT, "Expedition Base Camp.", 0);
 			menu->AddItem(Arcemu::Gossip::ICON_CHAT, "Formation Grounds", 1);
 			menu->AddItem(Arcemu::Gossip::ICON_CHAT, "Colossal Forge", 2);
@@ -59,32 +48,17 @@ class UlduarTeleporterAI : public GameObjectAIScript
 			menu->AddItem(Arcemu::Gossip::ICON_CHAT, "Conservatory of Life", 6);
 			menu->AddItem(Arcemu::Gossip::ICON_CHAT, "Spark of Imagination", 7);
 			menu->AddItem(Arcemu::Gossip::ICON_CHAT, "Prison of Yogg-Saron", 8);
-
 			menu->SendTo(player);
-		}
-};
-
-class UlduarTeleporterGossip : public GossipScript
-{
-	public:
-
-		UlduarTeleporterGossip() : GossipScript()
-		{
 		}
 
 		void OnSelectOption(Object* object, Player* player, uint32 Id, const char* enteredcode)
 		{
 			Arcemu::Gossip::Menu::Complete(player);
-
-			if(Id >= 9)
-				return;
-			else
-				player->SafeTeleport(603, player->GetInstanceID(), UlduarTeleCoords[ Id ][ 0 ], UlduarTeleCoords[ Id ][ 1 ],  UlduarTeleCoords[ Id ][ 2 ], UlduarTeleCoords[ Id ][ 3 ]);
+			player->SafeTeleport(603, player->GetInstanceID(), UlduarTeleCoords[ Id ][ 0 ], UlduarTeleCoords[ Id ][ 1 ],  UlduarTeleCoords[ Id ][ 2 ], UlduarTeleCoords[ Id ][ 3 ]);
 		}
 };
 
 void SetupUlduar(ScriptMgr* mgr)
 {
-	mgr->register_gameobject_script(194569, &UlduarTeleporterAI::Create);
-	mgr->register_go_gossip_script(194569, new UlduarTeleporterGossip());
+	mgr->register_go_gossip_script(194569, new UlduarTeleporterGossip);
 };
