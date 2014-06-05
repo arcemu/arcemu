@@ -20,6 +20,29 @@
 
 #define BUFF_RESPAWN_TIME 90000
 
+struct wsg_go_spawn{
+    uint32 entry;
+    uint32 map;
+    float x, y, z, o;
+    uint32 flags;
+    uint32 faction;
+    float scale;
+    uint8 state;
+    uint32 animprogress;
+};
+
+static wsg_go_spawn WarsongFlags[]= 
+{
+    { 179831, 489, 915.367f, 1433.78f, 346.089f, 3.17301f, 0, 210, 2.5f, GAMEOBJECT_STATE_CLOSED, 100 },    //horde
+    { 179830, 489, 1540.29f, 1481.34f, 352.64f, 3.17301f, 0, 1314, 2.5f, GAMEOBJECT_STATE_CLOSED, 100 }     //alliance
+};
+
+static LocationVector wsg_start_pos[]=
+{
+    LocationVector(933.989685f, 1430.735840f, 345.537140f),
+    LocationVector(1519.530273f, 1481.868408f, 352.023743f)
+};
+
 class WarsongGulch : public CBattleground
 {
 		GameObject* m_buffs[6];
@@ -47,13 +70,13 @@ class WarsongGulch : public CBattleground
 		void HookOnHK(Player* plr);
 		void HookOnShadowSight();
 		void HookGenerateLoot(Player* plr, Object* pCorpse);
-		void SpawnBuff(uint32 x);
 		LocationVector GetStartingCoords(uint32 Team);
 		void HookOnFlagDrop(Player* plr);
 		void ReturnFlag(uint32 team);
 
 		void EventReturnFlags();
-
+        void SpawnBuff(uint32 x);
+        void EventVictory(uint8 Team);
 		static CBattleground* Create(MapMgr* m, uint32 i, uint32 l, uint32 t) { return new WarsongGulch(m, i, l, t); }
 
 		uint32 GetNameID() { return 39; }

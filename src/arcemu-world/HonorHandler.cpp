@@ -40,10 +40,11 @@ void HonorHandler::AddHonorPointsToPlayer(Player* pPlayer, uint32 uAmount)
 
 	if(pPlayer->GetMapId() == 559 || pPlayer->GetMapId() == 562 || pPlayer->GetMapId() == 572)
 		return;
+
 	pPlayer->m_honorPoints += uAmount;
 	pPlayer->m_honorToday += uAmount;
 	if(pPlayer->m_honorPoints > sWorld.m_limits.honorpoints) 	
-	pPlayer->m_honorPoints = sWorld.m_limits.honorpoints;
+	    pPlayer->m_honorPoints = sWorld.m_limits.honorpoints;
 
 	RecalculateHonorFields(pPlayer);
 }

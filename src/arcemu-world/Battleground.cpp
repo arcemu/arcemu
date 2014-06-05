@@ -372,7 +372,7 @@ void CBattleground::AddHonorToTeam( uint32 team, uint32 amount ){
 	m_mainLock.Acquire();
 	for( std::set< Player* >::iterator itr = m_players[ team ].begin(); itr != m_players[ team ].end(); ++itr ){
 		Player *p = *itr;
-		HonorHandler::AddHonorPointsToPlayer( p, amount );
+		HonorHandler::AddHonorPointsToPlayer( p, amount * RATE_HONOR);
 	}
 	m_mainLock.Release();
 }
