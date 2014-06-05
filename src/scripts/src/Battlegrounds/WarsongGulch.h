@@ -1,5 +1,6 @@
 /*
- * ArcEmu MMORPG Server
+ * EasyWoW MMORPG Server
+ * Copyright (C) 2014 EasyWoW <http://github.com/EasyWoW>
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
  * Copyright (C) 2008-2011 <http://www.ArcEmu.org/>
  *
@@ -127,7 +128,7 @@ class WarsongGulch : public CBattleground
 
         void UpdateTeamScore(uint8 Team);
 
-		uint32 GetNameID() { return 39; }
+        uint32 GetNameID() { return WORLDSTRING_WARSONG_GULCH; }
 		uint64 GetFlagHolderGUID( uint32 faction ) const{ return m_flagHolders[ faction ]; }
 
 		void OnStart();

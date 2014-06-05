@@ -376,7 +376,7 @@ void Arcemu::Gossip::Vendor::OnHello(Object* pObject, Player* Plr)
 	if(!Plr->CanBuyAt(vendor))
 		menu.setTextID(vendor->cannotbuyattextid);
 	else
-		menu.AddItem(Gossip::ICON_VENDOR, Plr->GetSession()->LocalizedWorldSrv(Gossip::VENDOR), 1, false);
+        menu.AddItem(Gossip::ICON_VENDOR, Plr->GetSession()->LocalizedWorldSrv(WORLDSTRING_BROWSE_GOODS), 1, false);
 
 	sQuestMgr.FillQuestMenu(creature, Plr, menu); //add any quests we have.
 
@@ -414,15 +414,15 @@ void Arcemu::Gossip::Trainer::OnHello(Object* pObject, Player* Plr)
 		else
 		{
 			// I seek
-			string msg = string(Plr->GetSession()->LocalizedWorldSrv(Gossip::ISEEK));
-			msg += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::TRAINING)) + ", " + name + ".";
+            string msg = string(Plr->GetSession()->LocalizedWorldSrv(WORLDSTRING_I_SEEK));
+            msg += string(Plr->GetSession()->LocalizedWorldSrv(WORLDSTRING_TRAINING)) + ", " + name + ".";
 			menu.AddItem(Gossip::ICON_TRAINER, msg.c_str(), 1);
 
 			if(trainer->isVendor())
 			{
 				VendorRestrictionEntry* vendor = VendorRestrictionEntryStorage.LookupEntry(trainer->GetProto()->Id);
 				if(Plr->CanBuyAt(vendor))
-					menu.AddItem(Gossip::ICON_VENDOR, Plr->GetSession()->LocalizedWorldSrv(Gossip::VENDOR), 2);
+                    menu.AddItem(Gossip::ICON_VENDOR, Plr->GetSession()->LocalizedWorldSrv(WORLDSTRING_BROWSE_GOODS), 2);
 			}
 		}
 	}
@@ -450,7 +450,7 @@ void Arcemu::Gossip::FlightMaster::OnHello(Object* pObject, Player* Plr)
 		Text = Gossip::DEFAULT_TXTINDEX;
 
 	Gossip::Menu menu(pObject->GetGUID(), Text, Plr->GetSession()->language);
-	menu.AddItem(Gossip::ICON_FLIGHTMASTER, Plr->GetSession()->LocalizedWorldSrv(Gossip::FLIGHTMASTER), 1);
+    menu.AddItem(Gossip::ICON_FLIGHTMASTER, Plr->GetSession()->LocalizedWorldSrv(WORLDSTRING_GIVE_RIDE), 1);
 	sQuestMgr.FillQuestMenu(flightmaster, Plr, menu);
 
 	menu.StackSend<256>(Plr);
@@ -471,7 +471,7 @@ void Arcemu::Gossip::Auctioneer::OnHello(Object* pObject, Player* Plr)
 	if(NpcTextStorage.LookupEntry(Text) == NULL)
 		Text = Gossip::DEFAULT_TXTINDEX;
 	//auctioneers don't offer quests.
-	Gossip::Menu::SendQuickMenu(pObject->GetGUID(), Text, Plr, 1, Gossip::ICON_VENDOR, Plr->GetSession()->LocalizedWorldSrv(Gossip::AUCTIONEER));
+    Gossip::Menu::SendQuickMenu(pObject->GetGUID(), Text, Plr, 1, Gossip::ICON_VENDOR, Plr->GetSession()->LocalizedWorldSrv(WORLDSTRING_MAKE_BID));
 }
 
 void Arcemu::Gossip::Auctioneer::OnSelectOption(Object* pObject, Player* Plr, uint32 Id, const char* EnteredCode)
@@ -489,13 +489,13 @@ void Arcemu::Gossip::InnKeeper::OnHello(Object* pObject, Player* Plr)
 	if(NpcTextStorage.LookupEntry(Text) == NULL)
 		Text = Gossip::DEFAULT_TXTINDEX;
 	Gossip::Menu menu(pObject->GetGUID(), Text, Plr->GetSession()->language);
-	menu.AddItem(Gossip::ICON_CHAT, Plr->GetSession()->LocalizedWorldSrv(Gossip::INNKEEPER), 1);
+    menu.AddItem(Gossip::ICON_CHAT, Plr->GetSession()->LocalizedWorldSrv(WORLDSTRING_INN), 1);
 	//inn keepers can sell stuff
 	if(innkeeper->isVendor())
 	{
 		VendorRestrictionEntry* vendor = VendorRestrictionEntryStorage.LookupEntry(innkeeper->GetProto()->Id);
 		if(Plr->CanBuyAt(vendor))
-			menu.AddItem(Gossip::ICON_VENDOR, Plr->GetSession()->LocalizedWorldSrv(Gossip::VENDOR), 2);
+            menu.AddItem(Gossip::ICON_VENDOR, Plr->GetSession()->LocalizedWorldSrv(WORLDSTRING_BROWSE_GOODS), 2);
 	}
 	sQuestMgr.FillQuestMenu(innkeeper, Plr, menu);
 	menu.StackSend<256>(Plr);
@@ -520,7 +520,7 @@ void Arcemu::Gossip::BattleMaster::OnHello(Object* pObject, Player* Plr)
 	if(NpcTextStorage.LookupEntry(Text) == NULL)
 		Text = Gossip::DEFAULT_TXTINDEX;
 	Gossip::Menu menu(battlemaster->GetGUID(), Text, Plr->GetSession()->language);
-	menu.AddItem(Gossip::ICON_BATTLE, Plr->GetSession()->LocalizedWorldSrv(Gossip::BATTLEMASTER), 1);
+    menu.AddItem(Gossip::ICON_BATTLE, Plr->GetSession()->LocalizedWorldSrv(WORLDSTRING_JOIN_BG), 1);
 	sQuestMgr.FillQuestMenu(battlemaster, Plr, menu);
 	menu.StackSend<256>(Plr);
 }
@@ -577,7 +577,7 @@ void Arcemu::Gossip::TabardDesigner::OnHello(Object* pObject, Player* Plr)
 		Text = Gossip::DEFAULT_TXTINDEX;
 	
 	Gossip::Menu menu(chartergiver->GetGUID(), Text, Plr->GetSession()->language);
-	menu.AddItem( Gossip::ICON_TABARD, Plr->GetSession()->LocalizedWorldSrv(Gossip::TABARD), 1 );
+    menu.AddItem(Gossip::ICON_TABARD, Plr->GetSession()->LocalizedWorldSrv(WORLDSTRING_CREATE_GUILD_CREST), 1);
 	if( chartergiver->isCharterGiver() )
 		menu.AddItem( Gossip::ICON_CHAT, "How do I create a guild?", 2 );
 	
@@ -585,7 +585,7 @@ void Arcemu::Gossip::TabardDesigner::OnHello(Object* pObject, Player* Plr)
 	{
 		VendorRestrictionEntry* vendor = VendorRestrictionEntryStorage.LookupEntry(chartergiver->GetProto()->Id);
 		if(Plr->CanBuyAt(vendor))
-			menu.AddItem(Gossip::ICON_VENDOR, Plr->GetSession()->LocalizedWorldSrv(Gossip::VENDOR), 3);
+            menu.AddItem(Gossip::ICON_VENDOR, Plr->GetSession()->LocalizedWorldSrv(WORLDSTRING_BROWSE_GOODS), 3);
 	}
 	menu.Send(Plr);
 }
@@ -638,9 +638,9 @@ void Arcemu::Gossip::PetTrainer::OnHello(Object* pObject, Player* Plr)
 		Text = Gossip::DEFAULT_TXTINDEX;
 
 	Gossip::Menu menu(pObject->GetGUID(), Text, Plr->GetSession()->language);
-	menu.AddItem(Gossip::ICON_TRAINER, Plr->GetSession()->LocalizedWorldSrv(Gossip::BEASTTRAINING), 1);
+    menu.AddItem(Gossip::ICON_TRAINER, Plr->GetSession()->LocalizedWorldSrv(WORLDSTRING_TRAIN_BEAST), 1);
 	if(Plr->getClass() == ::HUNTER && Plr->GetSummon() != NULL)
-		menu.AddItem(Gossip::ICON_CHAT, Plr->GetSession()->LocalizedWorldSrv(Gossip::PETTRAINER_TALENTRESET), 2);
+        menu.AddItem(Gossip::ICON_CHAT, Plr->GetSession()->LocalizedWorldSrv(WORLDSTRING_UNTRAIN_MY_PET), 2);
 	sQuestMgr.FillQuestMenu(petrain, Plr, menu);
 
 	menu.StackSend<256>(Plr);
@@ -651,7 +651,7 @@ void Arcemu::Gossip::PetTrainer::OnSelectOption(Object* pObject, Player* Plr, ui
 	if(1 == Id)
 		Plr->GetSession()->SendTrainerList(TO_CREATURE(pObject));
 	else if(2 == Id)
-		Gossip::Menu::SendQuickMenu(pObject->GetGUID(), TXTID_PETUNTRAIN, Plr, 3, Gossip::ICON_CHAT, Plr->GetSession()->LocalizedWorldSrv(Gossip::PETTRAINER_TALENTRESET));
+        Gossip::Menu::SendQuickMenu(pObject->GetGUID(), TXTID_PETUNTRAIN, Plr, 3, Gossip::ICON_CHAT, Plr->GetSession()->LocalizedWorldSrv(WORLDSTRING_UNTRAIN_MY_PET));
 	else
 	{
 		Gossip::Menu::Complete(Plr);
@@ -681,7 +681,7 @@ void Arcemu::Gossip::ClassTrainer::OnHello(Object* pObject, Player* Plr)
 		else
 		{
 			menu.setTextID(traininfo->Can_Train_Gossip_TextId);
-			string itemname = Plr->GetSession()->LocalizedWorldSrv(Gossip::ISEEK);
+            string itemname = Plr->GetSession()->LocalizedWorldSrv(WORLDSTRING_I_SEEK);
 			string name = trainer->GetCreatureInfo()->Name;
 
 			string::size_type pos = name.find(" ");	  // only take first name
@@ -692,50 +692,50 @@ void Arcemu::Gossip::ClassTrainer::OnHello(Object* pObject, Player* Plr)
 			switch(playerclass)
 			{
 				case ::MAGE:
-					itemname += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::MAGE));
+                    itemname += string(Plr->GetSession()->LocalizedWorldSrv(WORLDSTRING_MAGE));
 					break;
 				case ::SHAMAN:
-					itemname += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::SHAMAN));
+                    itemname += string(Plr->GetSession()->LocalizedWorldSrv(WORLDSTRING_SHAMAN));
 					break;
 				case ::WARRIOR:
-					itemname += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::WARRIOR));
+                    itemname += string(Plr->GetSession()->LocalizedWorldSrv(WORLDSTRING_WARRIOR));
 					break;
 				case ::PALADIN:
-					itemname += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::PALADIN));
+                    itemname += string(Plr->GetSession()->LocalizedWorldSrv(WORLDSTRING_PALADIN));
 					break;
 				case ::WARLOCK:
-					itemname += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::WARLOCK));
+                    itemname += string(Plr->GetSession()->LocalizedWorldSrv(WORLDSTRING_WARLOCK));
 					break;
 				case ::HUNTER:
-					itemname += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::HUNTER));
+                    itemname += string(Plr->GetSession()->LocalizedWorldSrv(WORLDSTRING_HUNTER));
 					break;
 				case ::ROGUE:
-					itemname += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::ROGUE));
+                    itemname += string(Plr->GetSession()->LocalizedWorldSrv(WORLDSTRING_ROGUE));
 					break;
 				case ::DRUID:
-					itemname += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::DRUID));
+                    itemname += string(Plr->GetSession()->LocalizedWorldSrv(WORLDSTRING_DRUID));
 					break;
 				case ::PRIEST:
-					itemname += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::PRIEST));
+                    itemname += string(Plr->GetSession()->LocalizedWorldSrv(WORLDSTRING_PRIEST));
 					break;
 				case ::DEATHKNIGHT:
-					itemname += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::DEATHKNIGHT));
+                    itemname += string(Plr->GetSession()->LocalizedWorldSrv(WORLDSTRING_DEATHKNIGHT));
 					break;
 				default:
 					break;
 			}
 			itemname += " ";
-			itemname += string(Plr->GetSession()->LocalizedWorldSrv(Gossip::TRAINING)) + ", " + name + ".";
+            itemname += string(Plr->GetSession()->LocalizedWorldSrv(WORLDSTRING_TRAINING)) + ", " + name + ".";
 
 			menu.AddItem(Gossip::ICON_TRAINER, itemname.c_str(), 1);
 
 			//talent reset option.
 			if(trainer->getLevel() > Gossip::TRAINER_TALENTRESET_LVLIMIT && Plr->getLevel() > Gossip::PLAYER_TALENTRESET_LVLIMIT && trainer->GetTrainer()->RequiredClass == playerclass)
 			{
-				menu.AddItem(Gossip::ICON_CHAT, Plr->GetSession()->LocalizedWorldSrv(Gossip::CLASSTRAINER_TALENTRESET), 2);
+                menu.AddItem(Gossip::ICON_CHAT, Plr->GetSession()->LocalizedWorldSrv(WORLDSTRING_RESET_MY_TALENTS), 2);
 				//dual speciliazation option.
 				if(Plr->getLevel() >= Gossip::PLAYER_DUALTALENT_LVLIMIT && Plr->m_talentSpecsCount < 2)
-					menu.AddItem(Gossip::ICON_CHAT, "Learn about Dual Talent Specialization.", 4);
+                    menu.AddItem(Gossip::ICON_CHAT, Plr->GetSession()->LocalizedWorldSrv(WORLDSTRING_LEARN_ABOUT_DUAL_TALENT_SPEC), 4);
 			}
 		}
 	}
@@ -752,7 +752,7 @@ void Arcemu::Gossip::ClassTrainer::OnSelectOption(Object* pObject, Player* Plr, 
 			Plr->GetSession()->SendTrainerList(TO_CREATURE(pObject));
 			break;
 		case 2:
-			Gossip::Menu::SendQuickMenu(pObject->GetGUID(), TXTID_TALENTRESET, Plr, 3, Gossip::ICON_CHAT, Plr->GetSession()->LocalizedWorldSrv(Gossip::CLASSTRAINER_TALENTCONFIRM), 3);
+            Gossip::Menu::SendQuickMenu(pObject->GetGUID(), TXTID_TALENTRESET, Plr, 3, Gossip::ICON_CHAT, Plr->GetSession()->LocalizedWorldSrv(WORLDSTRING_I_UNDERSTAND_CONTINUE), 3);
 			break;
 		case 3:
 			Gossip::Menu::Complete(Plr);
@@ -760,13 +760,15 @@ void Arcemu::Gossip::ClassTrainer::OnSelectOption(Object* pObject, Player* Plr, 
 			break;
 		case 4:
 			purchaseconfirm = "Are you sure you would like to purchase your second talent specialization?";
-			Gossip::Menu::SendQuickMenu(pObject->GetGUID(), TXTID_DUALSPECPURCHASE, Plr, 5, Gossip::ICON_CHAT, "Purchase a Dual Talent Specialization.", 10000000, purchaseconfirm);
+            Gossip::Menu::SendQuickMenu(pObject->GetGUID(), TXTID_DUALSPECPURCHASE, Plr, 5, Gossip::ICON_CHAT, 
+                Plr->GetSession()->LocalizedWorldSrv(WORLDSTRING_PURCHASE_DUAL_TALENT_SPEC), 
+                10000000, Plr->GetSession()->LocalizedWorldSrv(WORLDSTRING_ARE_YOU_SURE_PURCHASE_DUAL_TALENT));
 			break;
 		case 5:
 			if(!Plr->HasGold(10000000))
 			{
 				Gossip::Menu::Complete(Plr);
-				Plr->GetSession()->SendNotification("You do not have enough gold to purchase a dual spec."); // I know this is not correct
+                Plr->GetSession()->SendNotification(Plr->GetSession()->LocalizedWorldSrv(WORLDSTRING_NOT_ENOUGH_MONEY_FOR_DUAL_SPEC)); // I know this is not correct
 			}
 			else
 			{

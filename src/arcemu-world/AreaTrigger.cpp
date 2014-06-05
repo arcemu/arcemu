@@ -178,9 +178,9 @@ void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
 										pItem = ItemPrototypeStorage.LookupEntry(pMi->required_item);
 
 									if(pItem)
-										snprintf(msg, 200, GetPlayer()->GetSession()->LocalizedWorldSrv(35), pItem->Name1);
+										snprintf(msg, 200, GetPlayer()->GetSession()->LocalizedWorldSrv(WORLDSTRING_MUST_HAVE_ITEM_TO_PASS), pItem->Name1);
 									else
-										snprintf(msg, 200, "%s", GetPlayer()->GetSession()->LocalizedWorldSrv(36));
+                                        snprintf(msg, 200, "%s", GetPlayer()->GetSession()->LocalizedWorldSrv(WORLDSTRING_MUST_HAVE_UNKNOWN_ITEM_TO_PASS));
 
 									data << msg;
 								}

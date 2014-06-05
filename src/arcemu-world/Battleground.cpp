@@ -244,7 +244,7 @@ void CBattleground::PortPlayer(Player* plr, bool skip_teleport /* = false*/)
 	m_mainLock.Acquire();
 	if(m_ended)
 	{
-		sChatHandler.SystemMessage(plr->GetSession(), plr->GetSession()->LocalizedWorldSrv(53));
+        sChatHandler.SystemMessage(plr->GetSession(), plr->GetSession()->LocalizedWorldSrv(WORLDSTRING_JOIN_BG_ENDED));
 		BattlegroundManager.SendBattlefieldStatus(plr, BGSTATUS_NOFLAGS, 0, 0, 0, 0, 0);
 		plr->m_pendingBattleground = NULL;
 		m_mainLock.Release();
@@ -558,7 +558,7 @@ void CBattleground::EventCountdown()
 			for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
 				if((*itr) && (*itr)->GetSession())
 				{
-					(*itr)->GetSession()->SystemMessage((*itr)->GetSession()->LocalizedWorldSrv(46), (*itr)->GetSession()->LocalizedWorldSrv(GetNameID()));
+                    (*itr)->GetSession()->SystemMessage((*itr)->GetSession()->LocalizedWorldSrv(WORLDSTRING_MINUTE_LEFT_UNTIL_BATTLE), (*itr)->GetSession()->LocalizedWorldSrv(GetNameID()));
 				}
 		}
 		m_mainLock.Release();
@@ -575,7 +575,7 @@ void CBattleground::EventCountdown()
 			for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
 				if((*itr) && (*itr)->GetSession())
 				{
-					(*itr)->GetSession()->SystemMessage((*itr)->GetSession()->LocalizedWorldSrv(47), (*itr)->GetSession()->LocalizedWorldSrv(GetNameID()));
+                    (*itr)->GetSession()->SystemMessage((*itr)->GetSession()->LocalizedWorldSrv(WORLDSTRING_THIRTY_SEC_LEFT_UNTIL_BATTLE), (*itr)->GetSession()->LocalizedWorldSrv(GetNameID()));
 				}
 		}
 		m_mainLock.Release();
@@ -592,7 +592,7 @@ void CBattleground::EventCountdown()
 			for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
 				if((*itr) && (*itr)->GetSession())
 				{
-					(*itr)->GetSession()->SystemMessage((*itr)->GetSession()->LocalizedWorldSrv(48), (*itr)->GetSession()->LocalizedWorldSrv(GetNameID()));
+                    (*itr)->GetSession()->SystemMessage((*itr)->GetSession()->LocalizedWorldSrv(WORLDSTRING_FIFTEEN_SEC_LEFT_UNTIL_BATTLE), (*itr)->GetSession()->LocalizedWorldSrv(GetNameID()));
 				}
 		}
 		m_mainLock.Release();
@@ -609,7 +609,7 @@ void CBattleground::EventCountdown()
 			for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
 				if((*itr) && (*itr)->GetSession())
 				{
-					(*itr)->GetSession()->SystemMessage((*itr)->GetSession()->LocalizedWorldSrv(49), (*itr)->GetSession()->LocalizedWorldSrv(GetNameID()));
+                    (*itr)->GetSession()->SystemMessage((*itr)->GetSession()->LocalizedWorldSrv(WORLDSTRING_BATTLE_HAS_BEGUN), (*itr)->GetSession()->LocalizedWorldSrv(GetNameID()));
 				}
 		}
 		m_mainLock.Release();

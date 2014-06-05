@@ -1,5 +1,6 @@
 /*
- * ArcEmu MMORPG Server
+ * EasyWoW MMORPG Server
+ * Copyright (C) 2014 EasyWoW <http://github.com/EasyWoW>
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
  * Copyright (C) 2008-2011 <http://www.ArcEmu.org/>
  *
@@ -133,6 +134,7 @@ void WarsongGulch::HookOnAreaTrigger(Player* plr, uint32 id)
 		if(m_flagHolders[plr->IsTeamHorde() ? TEAM_ALLIANCE : TEAM_HORDE] && m_dropFlags[plr->IsTeamHorde() ? TEAM_ALLIANCE : TEAM_HORDE]->IsInWorld())
 			return; // can't cap while flag dropped
 
+#ifdef ANTI_CHEAT
 		float distance = plr->IsTeamAlliance() ? plr->CalcDistance(1540.29f, 1481.34f, 352.64f) : plr->CalcDistance(915.367f, 1433.78f, 346.089f);
 		if(distance > 50.0f)
 		{
@@ -141,6 +143,7 @@ void WarsongGulch::HookOnAreaTrigger(Player* plr, uint32 id)
 			plr->GetSession()->Disconnect();
 			return;
 		}
+#endif
 
 		/* remove the bool from the player so the flag doesn't drop */
 		m_flagHolders[plr->GetTeam()] = 0;
