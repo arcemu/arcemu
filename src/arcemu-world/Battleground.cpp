@@ -374,7 +374,7 @@ void CBattleground::AddHonorToTeam( uint32 team, uint32 amount ){
         if (Player *p = *itr)
         {
             uint32 honor = (uint32)ceil(amount * (-0.53177f + 0.59357f * exp((p->getLevel() + 23.54042f) / 26.07859f)));
-            HonorHandler::AddHonorPointsToPlayer(p, amount * RATE_HONOR);
+            HonorHandler::AddHonorPointsToPlayer(p, honor * RATE_HONOR);
         }
 	}
 	m_mainLock.Release();
