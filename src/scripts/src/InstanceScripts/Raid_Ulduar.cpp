@@ -36,19 +36,19 @@ static float UlduarTeleCoords[ 9 ][ 4 ] =
 class UlduarTeleporterGossip : public Arcemu::Gossip::Script
 {
 	public:
-		void OnActivate(Object*pObject, Player* player)
+		void OnHello(Object*pObject, Player* player)
 		{
             Arcemu::Gossip::Menu menu(pObject->GetGUID(), 50000);
-			menu->AddItem(Arcemu::Gossip::ICON_CHAT, "Expedition Base Camp.", 0);
-			menu->AddItem(Arcemu::Gossip::ICON_CHAT, "Formation Grounds", 1);
-			menu->AddItem(Arcemu::Gossip::ICON_CHAT, "Colossal Forge", 2);
-			menu->AddItem(Arcemu::Gossip::ICON_CHAT, "Scrapyard", 3);
-			menu->AddItem(Arcemu::Gossip::ICON_CHAT, "Antechamber of Ulduar", 4);
-			menu->AddItem(Arcemu::Gossip::ICON_CHAT, "Shattered Walkway", 5);
-			menu->AddItem(Arcemu::Gossip::ICON_CHAT, "Conservatory of Life", 6);
-			menu->AddItem(Arcemu::Gossip::ICON_CHAT, "Spark of Imagination", 7);
-			menu->AddItem(Arcemu::Gossip::ICON_CHAT, "Prison of Yogg-Saron", 8);
-			menu->SendTo(player);
+			menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Expedition Base Camp.", 0);
+			menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Formation Grounds", 1);
+			menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Colossal Forge", 2);
+			menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Scrapyard", 3);
+			menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Antechamber of Ulduar", 4);
+			menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Shattered Walkway", 5);
+			menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Conservatory of Life", 6);
+			menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Spark of Imagination", 7);
+			menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Prison of Yogg-Saron", 8);
+			menu.Send(player);
 		}
 
 		void OnSelectOption(Object* object, Player* player, uint32 Id, const char* enteredcode)
@@ -60,5 +60,5 @@ class UlduarTeleporterGossip : public Arcemu::Gossip::Script
 
 void SetupUlduar(ScriptMgr* mgr)
 {
-	mgr->register_go_gossip_script(194569, new UlduarTeleporterGossip);
+	mgr->register_go_gossip(194569, new UlduarTeleporterGossip);
 };
