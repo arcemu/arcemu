@@ -9052,14 +9052,14 @@ void Player::OnWorldPortAck()
 		if(pMapinfo->HasFlag(WMI_INSTANCE_WELCOME) && GetMapMgr())
 		{
 			std::string welcome_msg;
-			welcome_msg = string(GetSession()->LocalizedWorldSrv(62)) + " ";
+            welcome_msg = string(GetSession()->LocalizedWorldSrv(WORLDSTRING_WELCOME_TO)) + " ";
 			welcome_msg += string(GetSession()->LocalizedMapName(pMapinfo->mapid));
 			welcome_msg += ". ";
 			if(pMapinfo->type != INSTANCE_NONRAID && !(pMapinfo->type == INSTANCE_MULTIMODE && iInstanceType >= MODE_HEROIC) && m_mapMgr->pInstance)
 			{
 				/*welcome_msg += "This instance is scheduled to reset on ";
 				welcome_msg += asctime(localtime(&m_mapMgr->pInstance->m_expiration));*/
-				welcome_msg += string(GetSession()->LocalizedWorldSrv(66)) + " ";
+                welcome_msg += string(GetSession()->LocalizedWorldSrv(WORLDSTRING_INSTANCE_RESET_SCHEDULED)) + " ";
 				welcome_msg += ConvertTimeStampToDataTime((uint32)m_mapMgr->pInstance->m_expiration);
 			}
 			sChatHandler.SystemMessage(m_session, welcome_msg.c_str());

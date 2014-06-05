@@ -105,8 +105,11 @@ enum WorldStringsEntries
     WORLDSTRING_DEATHKNIGHT                     = 81,   //Deathknight
     WORLDSTRING_LEARN_ABOUT_DUAL_TALENT_SPEC    = 82,   //Learn about Dual Talent Specialization.
     WORLDSTRING_PURCHASE_DUAL_TALENT_SPEC       = 83,   //Purchase a Dual Talent Specialization.
-    WORLDSTRING_ARE_YOU_SURE_PURCHASE_DUAL_TALENT = 84,  //Are you sure you would like to purchase your second talent specialization
-    WORLDSTRING_NOT_ENOUGH_MONEY_FOR_DUAL_SPEC  = 85    //You do not have enough gold to purchase a dual spec.
+    WORLDSTRING_ARE_YOU_SURE_PURCHASE_DUAL_TALENT = 84, //Are you sure you would like to purchase your second talent specialization
+    WORLDSTRING_NOT_ENOUGH_MONEY_FOR_DUAL_SPEC  = 85,   //You do not have enough gold to purchase a dual spec.
+    WORLDSTRING_TRICT_OR_TREAT                  = 86,   //Trick or Treat!
+    WORLDSTRING_WHAT_CAN_I_DO_AT_ANN_INN        = 87,   //What can I do at an inn?
+    WORLDSTRING_REQ_LEAST_LEVEL_ARENA_CHARTER   = 88    //You must be at least level %u to buy Arena charter
  };
  
  #endif

@@ -51,22 +51,19 @@ void InnkeeperGossip::OnHello(Object* pObject, Player* Plr)
 
 #ifdef	EVENT_HALLOWEEN
 	if(!Plr->HasAura(SPELL_TRICK_OR_TREATED))
-		menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Trick or Treat!", 4);
+        menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedWorldSrv(WWORLDSTRING_TRICT_OR_TREAT), 4);
 #endif
 
 	if(pCreature->isVendor())
-		menu.AddItem(Arcemu::Gossip::ICON_VENDOR, Plr->GetSession()->LocalizedWorldSrv(Arcemu::Gossip::VENDOR), 1);
+        menu.AddItem(Arcemu::Gossip::ICON_VENDOR, Plr->GetSession()->LocalizedWorldSrv(WORLDSTRING_BROWSE_GOODS), 1);
 
-	menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedWorldSrv(Arcemu::Gossip::INNKEEPER), 2);
-	menu.AddItem(Arcemu::Gossip::ICON_CHAT, "What can I do at an inn?", 3);
+    menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedWorldSrv(WORLDSTRING_INN), 2);
+    menu.AddItem(Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedWorldSrv(WORLDSTRING_WHAT_CAN_I_DO_AT_ANN_INN), 3);
 
 	sQuestMgr.FillQuestMenu(pCreature, Plr, menu);
 
 	menu.Send(Plr);
 }
-
-//#define SendQuickMenu(textid) objmgr.CreateGossipMenuForPlayer(&Menu, pCreature->GetGUID(), textid, Plr); \
-//    Menu->SendTo(Plr);
 
 void InnkeeperGossip::OnSelectOption(Object* pObject, Player* Plr, uint32 Id, const char* Code)
 {
@@ -84,7 +81,7 @@ void InnkeeperGossip::OnSelectOption(Object* pObject, Player* Plr, uint32 Id, co
 			break;
 		case 3:     // WHAT CAN I DO ?
 			// Prepare second menu
-			Arcemu::Gossip::Menu::SendQuickMenu(pCreature->GetGUID(), 1853, Plr, 2, Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedWorldSrv(Arcemu::Gossip::INNKEEPER));
+            Arcemu::Gossip::Menu::SendQuickMenu(pCreature->GetGUID(), 1853, Plr, 2, Arcemu::Gossip::ICON_CHAT, Plr->GetSession()->LocalizedWorldSrv(WORLDSTRING_INN));
 			break;
 		case 4:     // EVENT OF HALLOWEEN
 			if(!Plr->HasAura(SPELL_TRICK_OR_TREATED))

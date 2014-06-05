@@ -595,7 +595,7 @@ void QuestMgr::BuildQuestList(WorldPacket* data, Object* qst_giver, Player* plr,
 	data->Initialize(SMSG_QUESTGIVER_QUEST_LIST);
 
 	*data << qst_giver->GetGUID();
-	*data << plr->GetSession()->LocalizedWorldSrv(70);//"How can I help you?"; //Hello line
+    *data << plr->GetSession()->LocalizedWorldSrv(WORLDSTRING_HEY_HOW_I_CAN_HELP_YOU);//"How can I help you?"; //Hello line
 	*data << uint32(1);//Emote Delay
 	*data << uint32(1);//Emote
 

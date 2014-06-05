@@ -2473,7 +2473,7 @@ void WorldSession::HandleSetAutoLootPassOpcode(WorldPacket & recv_data)
 	recv_data >> on;
 
 	if(_player->IsInWorld())
-		_player->BroadcastMessage(_player->GetSession()->LocalizedWorldSrv(67), on ? _player->GetSession()->LocalizedWorldSrv(68) : _player->GetSession()->LocalizedWorldSrv(69));
+        _player->BroadcastMessage(_player->GetSession()->LocalizedWorldSrv(WORLDSTRING_AUTO_LOOT_IS_PASSING), on ? _player->GetSession()->LocalizedWorldSrv(WORLDSTRING_ON) : _player->GetSession()->LocalizedWorldSrv(WORLDSTRING_OFF));
 
 	_player->m_passOnLoot = (on != 0) ? true : false;
 }
