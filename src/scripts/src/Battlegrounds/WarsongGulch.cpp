@@ -21,13 +21,9 @@
 #include "StdAfx.h"
 #include "WarsongGulch.h"
 
-#define MAP_WARSONG_GULCH 489
-
 WarsongGulch::WarsongGulch(MapMgr* mgr, uint32 id, uint32 lgroup, uint32 t) : CBattleground(mgr, id, lgroup, t)
 {
-	/* create the buffs */
-    for (uint8 i = 0; i < 6; ++i)
-        SpawnBuff(i);
+    SpawnBuffs();
 
     for (uint8 i = 0; i < 2; i++)
     {
@@ -115,9 +111,10 @@ void WarsongGulch::HookOnAreaTrigger(Player* plr, uint32 id)
 			break;
 	}
 
+    // TODO: move this to gameobject script instead.
 	if(buffslot >= 0)
 	{
-		if(m_buffs[buffslot] != 0 && m_buffs[buffslot]->IsInWorld())
+		if(m_buffs[buffslot] && m_buffs[buffslot]->IsInWorld())
 		{
 			/* apply the buff */
 			SpellEntry* sp = dbcSpell.LookupEntry(m_buffs[buffslot]->GetInfo()->sound3);
@@ -174,7 +171,7 @@ void WarsongGulch::HookOnAreaTrigger(Player* plr, uint32 id)
 		/* give each player on that team bonus honor and reputation*/
 		uint32 honorToAdd = 2 * m_honorPerKill;
 		uint32 repToAdd = m_isWeekend ? 45 : 35;
-		uint32 fact = plr->IsTeamHorde() ? 889 : 890; /*Warsong Outriders : Sliverwing Sentinels*/
+        uint32 fact = plr->IsTeamHorde() ? FACTION_WARSONG_OUTSTRIDERS : FACTION_SILVERING_SENTINELS;
 		for(set<Player*>::iterator itr = m_players[plr->GetTeam()].begin(); itr != m_players[plr->GetTeam()].end(); ++itr)
 		{
 			(*itr)->m_bgScore.BonusHonor += honorToAdd;
@@ -182,13 +179,7 @@ void WarsongGulch::HookOnAreaTrigger(Player* plr, uint32 id)
 			plr->ModStanding(fact, repToAdd);
 		}
 
-		m_scores[plr->GetTeam()]++;
-        if (m_scores[plr->GetTeam()] == 3)
-            EventVictory(plr->GetTeam());
-
-		/* increment the score world state */
-		SetWorldState(plr->IsTeamHorde() ? WORLDSTATE_WSG_HORDE_SCORE : WORLDSTATE_WSG_ALLIANCE_SCORE, m_scores[plr->GetTeam()]);
-
+        UpdateTeamScore(plr->GetTeam());
 		UpdatePvPData();
 	}
 }
@@ -309,6 +300,7 @@ void WarsongGulch::ReturnFlag(uint32 team)
 
 void WarsongGulch::HookFlagStand(Player* plr, GameObject* obj)
 {
+
 #ifdef ANTI_CHEAT
 	if(!m_started)
 	{
@@ -321,6 +313,7 @@ void WarsongGulch::HookFlagStand(Player* plr, GameObject* obj)
 		return;
 	}
 #endif
+
 	if(m_flagHolders[plr->GetTeam()] || m_homeFlags[plr->GetTeam()] != obj || m_dropFlags[plr->GetTeam()]->IsInWorld())
 	{
 		// cheater!
@@ -410,92 +403,46 @@ bool WarsongGulch::HookHandleRepop(Player* plr)
 	return true;
 }
 
-void WarsongGulch::SpawnBuff(uint32 x)
+void WarsongGulch::SpawnBuffs()
 {
-	switch(x)
-	{
-		case 0:
-			m_buffs[x] = SpawnGameObject(179871, 489, 1449.9296875f, 1470.70971679688f, 342.634552001953f, -1.64060950279236f, 0, 114, 1);
-			m_buffs[x]->SetParentRotation(2, 0.73135370016098f);
-			m_buffs[x]->SetParentRotation(3, -0.681998312473297f);
-			m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-			m_buffs[x]->SetType(GAMEOBJECT_TYPE_TRAP);
-			m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
-            m_buffs[x]->PushToWorld(m_mapMgr);
-			break;
-		case 1:
-			m_buffs[x] = SpawnGameObject(179899, 489, 1005.17071533203f, 1447.94567871094f, 335.903228759766f, 1.64060950279236f, 0, 114, 1);
-			m_buffs[x]->SetParentRotation(2, 0.73135370016098f);
-			m_buffs[x]->SetParentRotation(3, 0.681998372077942f);
-			m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-			m_buffs[x]->SetType(GAMEOBJECT_TYPE_TRAP);
-			m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
-            m_buffs[x]->PushToWorld(m_mapMgr);
-			break;
-		case 2:
-			m_buffs[x] = SpawnGameObject(179904, 489, 1317.50573730469f, 1550.85070800781f, 313.234375f, -0.26179963350296f, 0, 114, 1);
-			m_buffs[x]->SetParentRotation(2, 0.130526319146156f);
-			m_buffs[x]->SetParentRotation(3, -0.991444826126099f);
-			m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-			m_buffs[x]->SetType(GAMEOBJECT_TYPE_TRAP);
-			m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
-            m_buffs[x]->PushToWorld(m_mapMgr);
-			break;
-		case 3:
-			m_buffs[x] = SpawnGameObject(179906, 489, 1110.45129394531f, 1353.65563964844f, 316.518096923828f, -0.68067866563797f, 0, 114, 1);
-			m_buffs[x]->SetParentRotation(2, 0.333806991577148f);
-			m_buffs[x]->SetParentRotation(3, -0.94264143705368f);
-			m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-			m_buffs[x]->SetType(GAMEOBJECT_TYPE_TRAP);
-			m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
-            m_buffs[x]->PushToWorld(m_mapMgr);
-			break;
-		case 4:
-			m_buffs[x] = SpawnGameObject(179905, 489, 1320.09375f, 1378.78967285156f, 314.753234863281f, 1.18682384490967f, 0, 114, 1);
-			m_buffs[x]->SetParentRotation(2, 0.559192895889282f);
-			m_buffs[x]->SetParentRotation(3, 0.829037606716156f);
-			m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-			m_buffs[x]->SetType(GAMEOBJECT_TYPE_TRAP);
-			m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
-            m_buffs[x]->PushToWorld(m_mapMgr);
-			break;
-		case 5:
-			m_buffs[x] = SpawnGameObject(179907, 489, 1139.68774414063f, 1560.28771972656f, 306.843170166016f, -2.4434609413147f, 0, 114, 1);
-			m_buffs[x]->SetParentRotation(2, 0.939692616462708f);
-			m_buffs[x]->SetParentRotation(3, -0.342020124197006f);
-			m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-			m_buffs[x]->SetType(GAMEOBJECT_TYPE_TRAP);
-			m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
-            m_buffs[x]->PushToWorld(m_mapMgr);
-			break;
-	}
+    for (uint8 i = 0; i < WSG_BUFFS_COUNT; i++)
+    {
+        if (m_buffs[i] = SpawnGameObject(wsg_buffs[i].spawn.entry, wsg_buffs[i].spawn.map, wsg_buffs[i].spawn.x, wsg_buffs[i].spawn.y, wsg_buffs[i].spawn.z, 
+            wsg_buffs[i].spawn.o, wsg_buffs[i].spawn.flags, wsg_buffs[i].spawn.faction, wsg_buffs[i].spawn.scale))
+        {
+            m_buffs[i]->SetParentRotation(2, wsg_buffs[i].orientation[1]);
+            m_buffs[i]->SetParentRotation(3, wsg_buffs[i].orientation[2]);
+            m_buffs[i]->SetState(wsg_buffs[i].spawn.state);
+            m_buffs[i]->SetAnimProgress(wsg_buffs[i].spawn.animprogress);
+            m_buffs[i]->PushToWorld(m_mapMgr);
+        }
+    }
 }
 
 void WarsongGulch::OnCreate()
 {
     SpawnGates();
-
-	// Should be set from config
 	SetWorldState( WORLDSTATE_WSG_MAX_SCORE, 3 );
 
 	/* spawn spirit guides */
-	AddSpiritGuide(SpawnSpiritGuide(1423.218872f, 1554.663574f, 342.833801f, 3.124139f, 0));
-	AddSpiritGuide(SpawnSpiritGuide(1032.644775f, 1388.316040f, 340.559937f, 0.043200f, 1));
+    for (uint8 i = 0; i < 2; i++)
+        AddSpiritGuide(SpawnSpiritGuide(wsg_spirit_guides[i], i));
 }
 
 void WarsongGulch::OnStart()
 {
 	for(uint8 i = 0; i < 2; ++i)
 	{
+        // Remove preperation buff
 		for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
 			(*itr)->RemoveAura(BG_PREPARATION);
 
-        /* add the flags to the world */
+        // add the flags to the world
         if (!m_homeFlags[i]->IsInWorld())
             m_homeFlags[i]->PushToWorld(m_mapMgr);
 	}
 
-	/* open the gates */
+	// open and despawn gates
 	for(list<GameObject*>::iterator itr = m_gates.begin(); itr != m_gates.end(); ++itr)
 	{
         (*itr)->SetUInt32Value(GAMEOBJECT_FLAGS, 64);
@@ -558,4 +505,14 @@ void WarsongGulch::SpawnGates()
             m_gates.push_back(gate);
         }
     }
+}
+
+void WarsongGulch::UpdateTeamScore(uint8 Team)
+{
+    m_scores[Team]++;
+    if (m_scores[Team] == 3)
+        EventVictory(Team);
+
+    /* increment the score world state */
+    SetWorldState(Team == TEAM_HORDE ? WORLDSTATE_WSG_HORDE_SCORE : WORLDSTATE_WSG_ALLIANCE_SCORE, m_scores[Team]);
 }
