@@ -88,6 +88,13 @@ IF( WIN32)
 	SET( INSTALLED_DEPENDENCIES ${DEPENDENCY_DLLS}/libmysql.dll ${DEPENDENCY_DLLS}/libeay32.dll)
 ENDIF(WIN32)
 
+SET( CONFIGS
+	${ROOT_PATH}/src/configs/logon.conf.in
+	${ROOT_PATH}/src/configs/world.conf.in
+	${ROOT_PATH}/src/configs/realms.conf.in
+	${ROOT_PATH}/src/configs/optional.conf.in
+)
+
 #Our configurable variables.
 IF( WIN32 )
 	SET(ARCEMU_CONFIGSFILE_PATH configs CACHE PATH "Path where the arcemu config files are.")
@@ -250,3 +257,4 @@ ENDIF( BUILD_TOOLS )
 
 
 INSTALL(FILES ${INSTALLED_DEPENDENCIES} DESTINATION .)
+INSTALL(FILES ${CONFIGS} DESTINATION ARCEMU_CONFIGSFILE_PATH)
