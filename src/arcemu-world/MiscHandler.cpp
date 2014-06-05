@@ -252,19 +252,22 @@ void WorldSession::HandleLootMoneyOpcode(WorldPacket & recv_data)
 	else if(guidtype == HIGHGUID_TYPE_GAMEOBJECT)
 	{
 		GameObject* pGO = _player->GetMapMgr()->GetGameObject(GET_LOWGUID_PART(lootguid));
-		if(!pGO)return;
+		if(!pGO)
+            return;
 		pLoot = &pGO->loot;
 	}
 	else if(guidtype == HIGHGUID_TYPE_CORPSE)
 	{
 		Corpse* pCorpse = objmgr.GetCorpse((uint32)lootguid);
-		if(!pCorpse)return;
+		if(!pCorpse)
+            return;
 		pLoot = &pCorpse->loot;
 	}
 	else if(guidtype == HIGHGUID_TYPE_PLAYER)
 	{
 		Player* pPlayer = _player->GetMapMgr()->GetPlayer((uint32)lootguid);
-		if(!pPlayer) return;
+		if(!pPlayer)
+            return;
 		pLoot = &pPlayer->loot;
 		pPlayer->bShouldHaveLootableOnCorpse = false;
 		pt = pPlayer;
@@ -289,10 +292,9 @@ void WorldSession::HandleLootMoneyOpcode(WorldPacket & recv_data)
 	WorldPacket data(1);
 	data.SetOpcode(SMSG_LOOT_CLEAR_MONEY);
 	// send to all looters
-	Player* plr;
 	for(LooterSet::iterator itr = pLoot->looters.begin(); itr != pLoot->looters.end(); ++itr)
 	{
-		if((plr = _player->GetMapMgr()->GetPlayer(*itr)) != 0)
+		if(Player* plr = _player->GetMapMgr()->GetPlayer(*itr))
 			plr->GetSession()->SendPacket(&data);
 	}
 
@@ -639,7 +641,6 @@ void WorldSession::HandleWhoOpcode(WorldPacket & recv_data)
 	string guildname;
 	bool cname = false;
 	bool gname = false;
-	uint32 i;
 
 	recv_data >> min_level >> max_level;
 	recv_data >> chatname >> guildname >> race_mask >> class_mask;
@@ -649,7 +650,7 @@ void WorldSession::HandleWhoOpcode(WorldPacket & recv_data)
 	{
 		zones = new uint32[zone_count];
 
-		for(i = 0; i < zone_count; ++i)
+		for(uint32 i = 0; i < zone_count; ++i)
 			recv_data >> zones[i];
 	}
 	else
@@ -662,13 +663,11 @@ void WorldSession::HandleWhoOpcode(WorldPacket & recv_data)
 	{
 		names = new string[name_count];
 
-		for(i = 0; i < name_count; ++i)
+		for(uint8 i = 0; i < name_count; ++i)
 			recv_data >> names[i];
 	}
 	else
-	{
 		name_count = 0;
-	}
 
 	if(chatname.length() > 0)
 		cname = true;
@@ -746,7 +745,7 @@ void WorldSession::HandleWhoOpcode(WorldPacket & recv_data)
 		{
 			// people that fail the zone check don't get added
 			add = false;
-			for(i = 0; i < zone_count; ++i)
+			for(uint8 i = 0; i < zone_count; ++i)
 			{
 				if(zones[i] == plr->GetZoneId())
 				{
@@ -768,7 +767,7 @@ void WorldSession::HandleWhoOpcode(WorldPacket & recv_data)
 		{
 			// people that fail name check don't get added
 			add = false;
-			for(i = 0; i < name_count; ++i)
+			for(uint8 i = 0; i < name_count; ++i)
 			{
 				if(!strnicmp(names[i].c_str(), plr->GetName(), names[i].length()))
 				{
@@ -1342,8 +1341,6 @@ void WorldSession::HandleAmmoSetOpcode(WorldPacket & recv_data)
 	}
 }
 
-#define OPEN_CHEST 11437
-
 void WorldSession::HandleBarberShopResult(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_RETURN
@@ -1478,7 +1475,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 			break;
 		case GAMEOBJECT_TYPE_CHEST://cast da spell
 			{
-				spellInfo = dbcSpell.LookupEntry(OPEN_CHEST);
+                spellInfo = dbcSpell.LookupEntry(11437);
 				spell = sSpellFactoryMgr.NewSpell(plyr, spellInfo, true, NULL);
 				_player->m_currentSpell = spell;
 				targets.m_unitTarget = obj->GetGUID();
@@ -2097,9 +2094,9 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket & recv_data)
 		pLoot = &pGameObject->loot;
 	}
 
-
 	if(!pLoot)
 		return;
+
 	if(pCreature)
 		pObj = pCreature;
 	else
@@ -2239,8 +2236,10 @@ void WorldSession::HandleLootRollOpcode(WorldPacket & recv_data)
 		GameObject* pGO = _player->GetMapMgr()->GetGameObject((uint32)creatureguid);
 		if(!pGO)
 			return;
+
 		if(slotid >= pGO->loot.items.size() || pGO->loot.items.size() == 0)
 			return;
+
 		if(pGO->GetInfo() && pGO->GetInfo()->Type == GAMEOBJECT_TYPE_CHEST)
 			li = pGO->loot.items[slotid].roll;
 	}
@@ -2281,7 +2280,7 @@ void WorldSession::HandleOpenItemOpcode(WorldPacket & recv_data)
 	if(pItem->GetGiftCreatorGUID() && pItem->wrapped_item_id)
 	{
 		ItemPrototype* it = ItemPrototypeStorage.LookupEntry(pItem->wrapped_item_id);
-		if(it == NULL)
+		if(!it)
 			return;
 
 		pItem->SetGiftCreatorGUID(0);
@@ -2311,15 +2310,13 @@ void WorldSession::HandleOpenItemOpcode(WorldPacket & recv_data)
 
 	if(lock) // locked item
 	{
-		for(int i = 0; i < LOCK_NUM_CASES; i++)
+		for(uint8 i = 0; i < LOCK_NUM_CASES; i++)
 		{
 			if(lock->locktype[i] == 1 && lock->lockmisc[i] > 0)
 			{
 				int16 slot2 = _player->GetItemInterface()->GetInventorySlotById(lock->lockmisc[i]);
 				if(slot2 != ITEM_NO_SLOT_AVAILABLE && slot2 >= INVENTORY_SLOT_ITEM_START && slot2 < INVENTORY_SLOT_ITEM_END)
-				{
 					removeLockItems[i] = lock->lockmisc[i];
-				}
 				else
 				{
 					_player->GetItemInterface()->BuildInventoryChangeError(pItem, NULL, INV_ERR_ITEM_LOCKED);
@@ -2332,7 +2329,7 @@ void WorldSession::HandleOpenItemOpcode(WorldPacket & recv_data)
 				return;
 			}
 		}
-		for(int i = 0; i < LOCK_NUM_CASES; i++)
+		for(uint8 i = 0; i < LOCK_NUM_CASES; i++)
 			if(removeLockItems[i])
 				_player->GetItemInterface()->RemoveItemAmt(removeLockItems[i], 1);
 	}
