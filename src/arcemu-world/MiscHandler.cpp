@@ -1427,9 +1427,12 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 	LOG_DEBUG("WORLD: CMSG_GAMEOBJ_USE: [GUID %d]", guid);
 
 	GameObject* obj = _player->GetMapMgr()->GetGameObject((uint32)guid);
-	if(!obj) return;
+	if(!obj)
+        return;
+
 	GameObjectInfo* goinfo = obj->GetInfo();
-	if(!goinfo) return;
+	if(!goinfo)
+        return;
 
 	Player* plyr = GetPlayer();
 
@@ -1520,9 +1523,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 			{
 				// Questgiver
 				if(obj->HasQuests())
-				{
 					sQuestMgr.OnActivateQuestGiver(obj, plyr);
-				}
 			}
 			break;
 		case GAMEOBJECT_TYPE_SPELLCASTER:
@@ -1538,6 +1539,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 				SpellEntry* info = dbcSpell.LookupEntryForced(goinfo->SpellFocus);
 				if(!info)
 					break;
+
 				spell = sSpellFactoryMgr.NewSpell(plyr, info, false, NULL);
 				//spell->SpellByOther = true;
 				targets.m_targetMask |= TARGET_FLAG_UNIT;
@@ -1871,7 +1873,7 @@ void WorldSession::HandleInspectOpcode(WorldPacket & recv_data)
 		size_t pos = data.wpos();
 		data << uint8(talent_count); //fake value, will be overwritten at the end
 
-		for(uint32 i = 0; i < 3; ++i)
+		for(uint8 i = 0; i < 3; ++i)
 		{
 			talent_tab_id = sWorld.InspectTalentTabPages[player->getClass()][i];
 
@@ -1890,7 +1892,7 @@ void WorldSession::HandleInspectOpcode(WorldPacket & recv_data)
 					continue;
 
 				talent_max_rank = -1;
-				for(int32 k = 4; k > -1; --k)
+				for(int8 k = 4; k > -1; --k)
 				{
 					//LOG_DEBUG( "HandleInspectOpcode: k(%i) RankID(%i) HasSpell(%i) TalentTree(%i) Tab(%i)", k, talent_info->RankID[k - 1], player->HasSpell( talent_info->RankID[k - 1] ), talent_info->TalentTree, talent_tab_id );
 					if(talent_info->RankID[k] != 0 && player->HasSpell(talent_info->RankID[k]))
@@ -1919,9 +1921,7 @@ void WorldSession::HandleInspectOpcode(WorldPacket & recv_data)
 		// Send Glyph info
 		data << uint8(GLYPHS_COUNT);
 		for(uint8 i = 0; i < GLYPHS_COUNT; i++)
-		{
 			data << uint16(spec.glyphs[i]);
-		}
 	}
 
 	// ----[ Build the item list with their enchantments ]----
@@ -1931,7 +1931,7 @@ void WorldSession::HandleInspectOpcode(WorldPacket & recv_data)
 
 	ItemInterface* iif = player->GetItemInterface();
 
-	for(uint32 i = EQUIPMENT_SLOT_START; i < EQUIPMENT_SLOT_END; ++i)   // Ideally this goes from 0 to 18 (EQUIPMENT_SLOT_END is 19 at the moment)
+	for(uint8 i = EQUIPMENT_SLOT_START; i < EQUIPMENT_SLOT_END; ++i)   // Ideally this goes from 0 to 18 (EQUIPMENT_SLOT_END is 19 at the moment)
 	{
 		Item* item = iif->GetInventoryItem(static_cast<uint16>(i));
 
@@ -2021,24 +2021,16 @@ void WorldSession::HandleRandomRollOpcode(WorldPacket & recv_data)
 
 	LOG_DETAIL("WORLD: Received MSG_RANDOM_ROLL: %u-%u", min, max);
 
-	WorldPacket data(20);
-	data.SetOpcode(MSG_RANDOM_ROLL);
-	data << min << max;
+    if (min > max || max > 10000)               // < 32768 for urand call
+        return;
 
-	uint32 roll;
+    uint32 roll = RandomUInt(max - min) + min;
 
-	if(max > RAND_MAX)
-		max = RAND_MAX;
-
-	if(min > max)
-		min = max;
-
-
-	// generate number
-	roll = RandomUInt(max - min) + min;
-
-	// append to packet, and guid
-	data << roll << _player->GetGUID();
+    WorldPacket data(MSG_RANDOM_ROLL, 4 + 4 + 4 + 8);
+    data << min;
+    data << max;
+    data << roll;
+    data << _player->GetGUID();
 
 	// send to set
 	if(_player->InGroup())
