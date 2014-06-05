@@ -22,6 +22,6 @@ before_install:
 script:
   - test -d _build || mkdir _build
   - cd _build
-  - cmake ../cmake -DCMAKE_BUILD_TYPE=Debug
+  - cmake ../cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_ARCEMUSCRIPTS=1
 
   - make -j4
