@@ -2422,7 +2422,7 @@ uint32 Unit::HandleProc(uint32 flag, Unit* victim, SpellEntry* CastingSpell, boo
 						RemoveAura(16886);
 					}
 					break;
-				case 38395:
+/*				case 38395:
 					{
 						if(CastingSpell == NULL)
 							continue;
@@ -2430,7 +2430,79 @@ uint32 Unit::HandleProc(uint32 flag, Unit* victim, SpellEntry* CastingSpell, boo
 						        CastingSpell->NameHash != SPELL_HASH_CORRUPTION)
 							continue;
 					}
-					break;
+					break;*/
+				//Master of Subtlety
+				case 31666:
+				{
+					if (CastingSpell->Id != 1787 && CastingSpell->Id != 1784 && CastingSpell->Id != 1785 && CastingSpell->Id != 1786)
+					continue;
+				}break;
+				//Silenced - Improved Counterspell Rank 2
+				case 55021:
+				//Silenced - Improved Counterspell Rank 1
+				case 18469:
+				{
+					if (CastingSpell->NameHash != SPELL_HASH_COUNTERSPELL)
+					continue;
+
+					if (victim && victim != this && victim->IsPlayer())
+					{
+						victim->HandleProc(PROC_ON_SPELL_LAND_VICTIM, this, spe);
+					}
+				}break;
+				//Silenced - Improved Kick
+				case 18425:
+				{
+					if (CastingSpell->NameHash != SPELL_HASH_KICK)
+						continue;
+				}break;
+				//Enlightenment
+				case 35095:
+				{
+					if (CastingSpell == NULL || !(CastingSpell->manaCost || CastingSpell->ManaCostPercentage))
+						continue;
+				}break;
+				//Smite Demon
+				case 13907:
+				{
+					if (victim->IsPlayer() || victim->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE) != 90)
+						continue;
+				}break;
+				//Improved Blink
+				case 47000:
+				{
+					if (!CastingSpell || CastingSpell->NameHash != SPELL_HASH_BLINK)
+						continue;
+				}break;
+				//Blood Presence
+				case 50475:
+				{
+					//heal
+					if (dmg)
+					{
+						int32 toheal = (int32)(dmg * 0.04);
+						Heal(this, 50475, toheal);
+					}
+				}break;
+				//Firestarter
+				case 54741:
+				{
+					if (!CastingSpell)
+						continue;
+					if (CastingSpell->NameHash != SPELL_HASH_BLAST_WAVE &&
+						CastingSpell->NameHash != SPELL_HASH_DRAGON_S_BREATH)
+						continue;
+				}break;
+				//Molten Core
+				case 47383:
+				{
+					if (CastingSpell == NULL ||
+						(CastingSpell->School != SCHOOL_SHADOW
+						&& CastingSpell->EffectApplyAuraName[0] != SPELL_AURA_PERIODIC_DAMAGE
+						&& CastingSpell->EffectApplyAuraName[1] != SPELL_AURA_PERIODIC_DAMAGE
+						&& CastingSpell->EffectApplyAuraName[2] != SPELL_AURA_PERIODIC_DAMAGE))
+							continue;
+				}break;
 			}
 		}
 
