@@ -31,6 +31,15 @@ class Group;
 // AV - Corpse
 class Corpse;
 
+enum BattleGroundRandomRewards
+{
+    BG_REWARD_WINNER_HONOR_FIRST    = 30,
+    BG_REWARD_WINNER_ARENA_FIRST    = 25,
+    BG_REWARD_WINNER_HONOR_LAST     = 15,
+    BG_REWARD_WINNER_ARENA_LAST     = 0,
+    BG_REWARD_LOOSER_HONOR_FIRST    = 5,
+    BG_REWARD_LOOSER_HONOR_LAST     = 5
+};
 
 enum BattlegroundDbcIndex
 {
