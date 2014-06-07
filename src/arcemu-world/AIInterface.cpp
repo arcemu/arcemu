@@ -2528,7 +2528,7 @@ void AIInterface::CastSpell(Unit* caster, SpellEntry* spellInfo, SpellCastTarget
 	// Stop movement while casting.
 	m_AIState = STATE_CASTING;
 #ifdef _AI_DEBUG
-	LOG_DEBUG("AI DEBUG: Unit %u casting spell %s on target "I64FMT, caster->GetEntry(),
+    LOG_DEBUG("AI DEBUG: Unit %u casting spell %s on target %llu", caster->GetEntry(),
 	          sSpellStore.LookupString(spellInfo->Name), targets.m_unitTarget);
 #endif
 

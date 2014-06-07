@@ -1427,7 +1427,7 @@ void Spell::cast(bool check)
 			// if the spell is not reflected
 			if(!IsReflected())
 			{
-                for(uint8 x = 0; x < 3; x++)
+                for(uint8 x = 0; x < MAX_SPELL_EFFECTS; x++)
 				{
 					// check if we actually have a effect
 					if(GetProto()->Effect[x])
@@ -1436,11 +1436,8 @@ void Spell::cast(bool check)
 
 						if(m_targetUnits[x].size() > 0)
 						{
-							for(i = m_targetUnits[x].begin(); i != m_targetUnits[x].end();)
-							{
-								i2 = i++;
-								HandleCastEffects(*i2, x);
-							}
+                            for(std::vector<uint64>::iterator i = m_targetUnits[x].begin(); i != m_targetUnits[x].end(); ++i)
+                                HandleCastEffects(*i, x);
 						}
 						else
 							HandleCastEffects(0, x);
@@ -1453,7 +1450,7 @@ void Spell::cast(bool check)
 				// spells that proc on spell cast, some talents
 				if(p_caster && p_caster->IsInWorld())
 				{
-					for(i = UniqueTargets.begin(); i != UniqueTargets.end(); ++i)
+                    for(std::vector<uint64>::iterator i = UniqueTargets.begin(); i != UniqueTargets.end(); ++i)
 					{
 						Unit* Target = p_caster->GetMapMgr()->GetUnit(*i);
 

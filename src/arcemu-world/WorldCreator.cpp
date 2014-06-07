@@ -722,7 +722,7 @@ void BuildStats(MapMgr* mgr, char* m_file, Instance* inst, MapInfo* inf)
 	pushline;
 	snprintf(tmp, 200, "		<maptype>%u</maptype>\n", inf->type);
 	pushline;
-    snprintf(tmp, 200, "		<players>%llu</players>\n", mgr->GetPlayerCount());
+    snprintf(tmp, 200, "		<players>%u</players>\n", mgr->GetPlayerCount());
 	pushline;
 	snprintf(tmp, 200, "		<maxplayers>%u</maxplayers>\n", inf->playerlimit);
 	pushline;

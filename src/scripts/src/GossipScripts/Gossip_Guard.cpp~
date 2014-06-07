@@ -5162,12 +5162,12 @@ void SetupGuardGossip(ScriptMgr* mgr)
 
 	//Dalaran underbelly guards
 	Arcemu::Gossip::Script* UnderbellyGossip = new UnderbellyGuard;
-    mgr->register_creature_gossip(32726, UnderbellyGossip);
-    mgr->register_creature_gossip(32727, UnderbellyGossip);
-    mgr->register_creature_gossip(32728, UnderbellyGossip);
-    mgr->register_creature_gossip(32729, UnderbellyGossip);
-    mgr->register_creature_gossip(32730, UnderbellyGossip);
-    mgr->register_creature_gossip(32731, UnderbellyGossip);
-    mgr->register_creature_gossip(32732, UnderbellyGossip);
-    mgr->register_creature_gossip(32733, UnderbellyGossip);
+    RegisterCtrGossipScript(32726, UnderbellyGossip);
+    RegisterCtrGossipScript(32727, UnderbellyGossip);
+    RegisterCtrGossipScript(32728, UnderbellyGossip);
+    RegisterCtrGossipScript(32729, UnderbellyGossip);
+    RegisterCtrGossipScript(32730, UnderbellyGossip);
+    RegisterCtrGossipScript(32731, UnderbellyGossip);
+    RegisterCtrGossipScript(32732, UnderbellyGossip);
+    RegisterCtrGossipScript(32733, UnderbellyGossip);
 }
