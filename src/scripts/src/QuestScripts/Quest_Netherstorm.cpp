@@ -20,33 +20,26 @@
 
 #include "Setup.h"
 
-class Veronia : public GossipScript
+// Quest: 10652
+class Veronia : public Arcemu::Gossip::Script
 {
 	public:
-		void GossipHello(Object* pObject, Player* plr)
+		void OnHello(Object* pObject, Player* plr)
 		{
-			GossipMenu* Menu;
-			if(plr->GetQuestLogForEntry(10652))
-			{
-				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 1, plr);
-				Menu->AddItem(0, "I'm ready", 1);
-				Menu->SendTo(plr);
-			}
+			Arcemu::Gossip::Menu menu(pObject->GetGUID(), objmgr.GetGossipTextForNpc(pObject->GetEntry()), plr->GetSession()->language);
+			if(plr->HasQuest(10652))
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "I'm ready", 0);
+			menu.Send(plr);
 		}
 
-		void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char* Code)
+		void OnSelectOption(Object* pObject, Player* plr, uint32 Id, const char* Code)
 		{
-			Creature* creat = TO_CREATURE(pObject);
-			switch(IntId)
-			{
-				case 1:
-					creat->CastSpell(plr, dbcSpell.LookupEntry(34905), true);
-					break;
-			}
+			plr->GossipComplete();
+			TO_CREATURE(pObject)->CastSpell(plr, 34905, true);
 		}
-
 };
 
+// Quest: 10438
 class ProtectorateNetherDrake_Gossip : public Arcemu::Gossip::Script
 {
 	public:
@@ -67,6 +60,6 @@ class ProtectorateNetherDrake_Gossip : public Arcemu::Gossip::Script
 
 void SetupNetherstorm(ScriptMgr* mgr)
 {
-	mgr->register_gossip_script(20162, new Veronia());
+	mgr->register_creature_gossip(20162, new Veronia);
 	mgr->register_creature_gossip(20903, new ProtectorateNetherDrake_Gossip);
 }
