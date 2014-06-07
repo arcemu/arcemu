@@ -165,7 +165,7 @@ class PrisonerGossip : public Arcemu::Gossip::Script
 					case 20679: npc = 2; break;
 					default: npc = -1; break;
 				}
-				if(npc >= 0 && pPlayer->GetItemInterface()->HasItem(29501) && pQuest->GetMobCount(npc) < pQuest->GetQuest()->required_mobcount[npc])
+                if(npc >= 0 && pPlayer->GetItemInterface()->GetItemCount(29501) && pQuest->GetMobCount(npc) < pQuest->GetQuest()->required_mobcount[npc])
 					menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Walk free, Elder. Bring the spirits back to your tribe.", 0);
 			}
 			menu.Send(pPlayer);
@@ -175,7 +175,8 @@ class PrisonerGossip : public Arcemu::Gossip::Script
 		{
 			pPlayer->Gossip_Complete();
 			int32 npc = -1;
-			switch(TO_CREATURE(pObject)->GetEntry())
+            Creature* pPrisoner = TO_CREATURE(pObject);
+            switch(pPrisoner->GetEntry())
 			{
 				case 20677: npc = 0; break;
 				case 20678: npc = 1; break;
@@ -186,7 +187,7 @@ class PrisonerGossip : public Arcemu::Gossip::Script
 				return;
 
 			QuestLogEntry* pQuest = pPlayer->GetQuestLogForEntry(10368);
-			if(pQuest && pQuest->GetMobCount(i) < pQuest->GetQuest()->required_mobcount[i])
+            if(pQuest && pQuest->GetMobCount(npc) < pQuest->GetQuest()->required_mobcount[npc])
 			{
 				pQuest->SetMobCount(npc, pQuest->GetMobCount(npc) + 1);
 				pQuest->SendUpdateAddKill(npc);
