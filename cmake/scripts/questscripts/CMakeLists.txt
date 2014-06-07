@@ -63,7 +63,9 @@ Quest_Warrior.cpp
 Quest_Westfall.cpp 
 Quest_Wetlands.cpp
 Quest_Winterspring.cpp 
-Quest_Zangarmarsh.cpp )
+Quest_Zangarmarsh.cpp 
+Quest_Feralas.cpp 
+)
 
 SET( headers
 Setup.h

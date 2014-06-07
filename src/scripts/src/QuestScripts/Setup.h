@@ -80,6 +80,7 @@ void SetupZangarmarsh(ScriptMgr* mgr);
 void SetupBarrens(ScriptMgr* mgr);
 void SetupBoreanTundra(ScriptMgr* mgr);
 void SetupSholazarBasin(ScriptMgr* mgr);
+void SetupFeralasQuests(ScriptMgr* mgr);
 
 //	###		Misc	###
 void SetupQuestGossip(ScriptMgr* mgr);

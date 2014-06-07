@@ -83,6 +83,8 @@ extern "C" SCRIPT_DECL void _exp_script_register(ScriptMgr* mgr)
 	SetupBarrens(mgr);
 	SetupBoreanTundra(mgr);
 	SetupSholazarBasin(mgr);
+	SetupFeralasQuests(mgr);
+
 //	###		Misc		###
 	SetupQuestGossip(mgr);
 	SetupQuestHooks(mgr);
