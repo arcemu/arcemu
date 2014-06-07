@@ -409,11 +409,9 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recv_data)
 				// When a Game Master is visible to your player it says "This player is unavailable for whisper" I need to figure out how this done.
 				if(!HasPermissions() && playercache->HasFlag(CACHE_PLAYER_FLAGS, PLAYER_FLAG_GM) && playercache->CountValue64(CACHE_GM_TARGETS, _player->GetGUID()) == 0)
 				{
-					// Build automated reply
-					string Reply = "SYSTEM: This Game Master does not currently have an open ticket from you and did not receive your whisper. Please submit a new GM Ticket request if you need to speak to a GM. This is an automatic message.";
-					data = sChatHandler.FillMessageData(CHAT_MSG_WHISPER_INFORM, LANG_UNIVERSAL, Reply.c_str(), playercache->GetGUID(), 4);
-					SendPacket(data);
-					delete data;
+					WorldPacket response(SMSG_CHAT_PLAYER_NOT_FOUND, to.length() + 1);
+					response << to;
+					SendPacket(&response);
 					playercache->DecRef();
 					break;
 				}
