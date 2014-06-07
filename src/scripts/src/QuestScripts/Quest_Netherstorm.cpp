@@ -47,10 +47,26 @@ class Veronia : public GossipScript
 
 };
 
+class ProtectorateNetherDrake_Gossip : public Arcemu::Gossip::Script
+{
+	public:
+		void OnHello(Object* pObject, Player* plr)
+		{
+			Arcemu::Gossip::Menu menu(pObject->GetGUID(), objmgr.GetGossipTextForNpc(pObject->GetEntry()), plr->GetSession()->language);
+			if(plr->HasQuest(10438))
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Fly me to Ultris", 0);
+			menu.Send(plr);
+		}
+ 
+		void OnSelectOption(Object* pObject, Player* plr, uint32 Id, const char* Code)
+		{
+			plr->TaxiStart(sTaxiMgr.GetTaxiPath(627), 0, 0);
+		}
+};
 
 
 void SetupNetherstorm(ScriptMgr* mgr)
 {
 	mgr->register_gossip_script(20162, new Veronia());
-
+	mgr->register_creature_gossip(20903, new ProtectorateNetherDrake_Gossip);
 }
