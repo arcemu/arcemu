@@ -364,6 +364,21 @@ class RottedOneAI : public MoonScriptCreatureAI
         }
 };
 
+class PrimordialDrakeEggAI : public MoonScriptCreatureAI
+{
+    public:
+    MOONSCRIPT_FACTORY_FUNCTION(PrimordialDrakeEggAI, MoonScriptCreatureAI);
+    PrimordialDrakeEggAI(Creature* c) : MoonScriptCreatureAI(c)
+    {
+    }
+
+    void OnDied(Unit *mKiller)
+    {
+        _unit->CastSpell(_unit, 51595, true);	//Summon Primordial Hatchling
+        ParentClass::OnDied(mKiller);
+    }
+};
+
 void SetupMiscCreatures(ScriptMgr* mgr)
 {
 	mgr->register_creature_script(11120, &CrimsonHammersmith::Create);
@@ -479,4 +494,5 @@ void SetupMiscCreatures(ScriptMgr* mgr)
     mgr->register_creature_script(8605, &CarrionDevourerAI::Create);
     mgr->register_creature_script(8524, &CursedMageAI::Create);
     mgr->register_creature_script(948, &RottedOneAI::Create);
+    mgr->register_creature_script(28408, &PrimordialDrakeEggAI::Create);
 }
