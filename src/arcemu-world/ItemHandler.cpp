@@ -1441,15 +1441,15 @@ void WorldSession::SendInventoryList(Creature* unit)
 		{
 			if((curItem = ItemPrototypeStorage.LookupEntry(itr->itemid)) != 0)
 			{
-				if(curItem->AllowableClass && !(_player->getClassMask() & curItem->AllowableClass) && !_player->GetSession()->HasGMPermissions()) // cebernic: GM looking up for everything.
+				if(curItem->AllowableClass && !(_player->getClassMask() & curItem->AllowableClass) && _player->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_GM)) // cebernic: GM looking up for everything.
 					continue;
-				if(curItem->AllowableRace && !(_player->getRaceMask() & curItem->AllowableRace) && !_player->GetSession()->HasGMPermissions())
+				if(curItem->AllowableRace && !(_player->getRaceMask() & curItem->AllowableRace) && _player->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_GM))
 					continue;
 
-				if( curItem->HasFlag2(ITEM_FLAG2_HORDE_ONLY) && !GetPlayer()->IsTeamHorde() && !_player->GetSession()->HasGMPermissions() )
+				if(curItem->HasFlag2(ITEM_FLAG2_HORDE_ONLY) && !GetPlayer()->IsTeamHorde() && _player->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_GM))
 					continue;
  
-				if( curItem->HasFlag2(ITEM_FLAG2_ALLIANCE_ONLY) && !GetPlayer()->IsTeamAlliance() && !_player->GetSession()->HasGMPermissions() )
+				if(curItem->HasFlag2(ITEM_FLAG2_ALLIANCE_ONLY) && !GetPlayer()->IsTeamAlliance() && _player->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_GM))
 					continue;
 
 				uint32 av_am = (itr->max_amount > 0) ? itr->available_amount : 0xFFFFFFFF;
