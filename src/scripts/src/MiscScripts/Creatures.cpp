@@ -314,6 +314,23 @@ class DISCO : public CreatureAIScript
 		}
 };
 
+// Npc: 8605
+class CarrionDevourerAI : public MoonScriptCreatureAI
+{
+    public:
+        MOONSCRIPT_FACTORY_FUNCTION(CarrionDevourerAI, MoonScriptCreatureAI);
+        CarrionDevourerAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
+        {
+            AddSpell(16449, Target_Current, 30, 0, 8);	//Maggot Slime
+        }
+
+        void OnDied(Unit* mKiller)
+        {
+            _unit->CastSpell(mKiller, 17197, true);	//Maggot Goo
+            ParentClass::OnDied(mKiller);
+        }
+ };
+
 void SetupMiscCreatures(ScriptMgr* mgr)
 {
 	mgr->register_creature_script(11120, &CrimsonHammersmith::Create);
@@ -423,7 +440,8 @@ void SetupMiscCreatures(ScriptMgr* mgr)
 	mgr->register_creature_script(3057, &CairneBloodhoof::Create);
 	mgr->register_creature_script(10181, &LadySylvanasWindrunner::Create);
 
+    // Other
 	mgr->register_creature_script(23090, &TrollRoofStalker::Create);
-
 	mgr->register_creature_script(27989, &DISCO::Create);
+    mgr->register_creature_script(8605, &CarrionDevourerAI::Create);
 }
