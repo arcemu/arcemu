@@ -331,6 +331,23 @@ class CarrionDevourerAI : public MoonScriptCreatureAI
         }
  };
 
+// Npc: 8524
+class CursedMageAI : public MoonScriptCreatureAI
+{
+    public:
+        MOONSCRIPT_FACTORY_FUNCTION(CursedMageAI, MoonScriptCreatureAI);
+        CursedMageAI(Creature* pCreature) : MoonScriptCreatureAI(pCreature)
+        {
+            AddSpell(20829, Target_Current, 30, 1, 5);	//Arcane Bolt
+        }
+
+        void OnDied(Unit* mKiller)
+        {
+            _unit->CastSpell(mKiller, 16567, true);
+            ParentClass::OnDied(mKiller);
+        }
+};
+
 void SetupMiscCreatures(ScriptMgr* mgr)
 {
 	mgr->register_creature_script(11120, &CrimsonHammersmith::Create);
@@ -444,4 +461,5 @@ void SetupMiscCreatures(ScriptMgr* mgr)
 	mgr->register_creature_script(23090, &TrollRoofStalker::Create);
 	mgr->register_creature_script(27989, &DISCO::Create);
     mgr->register_creature_script(8605, &CarrionDevourerAI::Create);
+    mgr->register_creature_script(8524, &CursedMageAI::Create);
 }
