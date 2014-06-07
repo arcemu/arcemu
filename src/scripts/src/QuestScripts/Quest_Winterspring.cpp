@@ -25,7 +25,7 @@ class Lorax_Gossip : public Arcemu::Gossip::Script
 		void OnHello(Object* pObject, Player* plr)
 		{
 			Arcemu::Gossip::Menu menu(pObject->GetGUID(), objmgr.GetGossipTextForNpc(pObject->GetEntry()), plr->GetSession()->language);
-			sQuestMgr.FillQuestMenu(TO_CREATURE(pObject), Plr, menu);
+            sQuestMgr.FillQuestMenu(TO_CREATURE(pObject), plr, menu);
             if(plr->HasQuest(5126) && !plr->HasFinishedQuest(5126))
 				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Talk to me", 0);
 			menu.Send(plr);
@@ -43,11 +43,11 @@ class Lorax_Gossip : public Arcemu::Gossip::Script
 				case 5:
 				{
                     QuestLogEntry* pQuest = plr->GetQuestLogForEntry(5126);
-                    if (pQuest && !pQuest->completed)
+                    if (pQuest)
                     {
                         pQuest->Complete();
                         pQuest->UpdatePlayerFields();
-                        plr->GetQuestLogForEntry(5126)->SendQuestComplete();
+                        pQuest->SendQuestComplete();
                     }
 					plr->Gossip_Complete();
 				}break;
