@@ -22,50 +22,6 @@
 #include "Setup.h"
 
 /*--------------------------------------------------------------------------------------------------------*/
-// Fel Orc Scavengers
-
-class FelOrcScavengersQAI : public CreatureAIScript
-{
-	public:
-		ADD_CREATURE_FACTORY_FUNCTION(FelOrcScavengersQAI);
-		FelOrcScavengersQAI(Creature* pCreature) : CreatureAIScript(pCreature)  {}
-
-		void OnDied(Unit* mKiller)
-		{
-			if(mKiller->IsPlayer())
-			{
-				QuestLogEntry* pQuest = TO_PLAYER(mKiller)->GetQuestLogForEntry(10482);
-				if(pQuest != NULL && pQuest->GetMobCount(0) < pQuest->GetQuest()->required_mobcount[0])
-				{
-					pQuest->SetMobCount(0, pQuest->GetMobCount(0) + 1);
-					pQuest->SendUpdateAddKill(0);
-					pQuest->UpdatePlayerFields();
-				}
-			}
-		}
-};
-
-class Dreadtusk : public CreatureAIScript
-{
-	public:
-		ADD_CREATURE_FACTORY_FUNCTION(Dreadtusk);
-		Dreadtusk(Creature* pCreature) : CreatureAIScript(pCreature) { }
-		void OnDied(Unit* mKiller)
-		{
-			if(!mKiller->IsPlayer())
-				return;
-
-			QuestLogEntry* pQuest = TO_PLAYER(mKiller)->GetQuestLogForEntry(10255);
-			if(pQuest != NULL && pQuest->GetMobCount(0) < pQuest->GetQuest()->required_mobcount[0])
-			{
-				pQuest->SetMobCount(0, pQuest->GetMobCount(0) + 1);
-				pQuest->SendUpdateAddKill(0);
-				pQuest->UpdatePlayerFields();
-			}
-		}
-};
-
-/*--------------------------------------------------------------------------------------------------------*/
 // Zeth'Gor Must Burn!
 
 class ZethGorMustBurnAlliance : public GameObjectAIScript
@@ -365,16 +321,6 @@ class DarkTidingsHorde : public QuestScript
 
 void SetupHellfirePeninsula(ScriptMgr* mgr)
 {
-	/*-------------------------------------------------------------------*/
-	// Finished
-	mgr->register_creature_script(16772, &FelOrcScavengersQAI::Create);
-	mgr->register_creature_script(19701, &FelOrcScavengersQAI::Create);
-	mgr->register_creature_script(16876, &FelOrcScavengersQAI::Create);
-	mgr->register_creature_script(16925, &FelOrcScavengersQAI::Create);
-	mgr->register_creature_script(18952, &FelOrcScavengersQAI::Create);
-
-	mgr->register_creature_script(16992, &Dreadtusk::Create);
-
 	mgr->register_gameobject_script(184661, &ZethGorMustBurnAlliance::Create);
 	GossipScript* pPrisonerGossip = new PrisonerGossip();
 	mgr->register_gossip_script(20677, pPrisonerGossip);
