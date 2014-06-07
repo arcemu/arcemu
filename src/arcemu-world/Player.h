@@ -1375,6 +1375,7 @@ class SERVER_DECL Player : public Unit
 		ItemInterface* GetItemInterface() { return m_ItemInterface; } // Player Inventory Item storage
 		void			ApplyItemMods(Item* item, int16 slot, bool apply, bool justdrokedown = false) {  _ApplyItemMods(item, slot, apply, justdrokedown); }
 		bool			HasItemCount(uint32 item, uint32 count, bool inBankAlso = false) const;
+        bool HasItem(uint32 entry);
 		// item interface variables
 		ItemInterface*      m_ItemInterface;
 		int32 GetVisibleBase(int16 slot) { return (PLAYER_VISIBLE_ITEM_1_ENTRYID + (slot * PLAYER_VISIBLE_ITEM_LENGTH)); }

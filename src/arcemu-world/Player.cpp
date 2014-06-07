@@ -13677,3 +13677,8 @@ void Player::RemoveVehicleComponent(){
 	delete vehicle;
 	vehicle = NULL;
 }
+
+bool Player::HasItem(uint32 entry)
+{
+    return GetItemInterface()->HasItem(entry);
+}

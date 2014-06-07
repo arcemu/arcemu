@@ -1094,7 +1094,7 @@ uint32 Item::GenerateRandomSuffixFactor(ItemPrototype* m_itemProto)
 	return long2int32(value);
 }
 
-string Item::GetItemLink(uint32 language = NULL)
+string Item::GetItemLink(uint32 language = 0)
 {
 	return GetItemLinkByProto(GetProto(), language);
 }
