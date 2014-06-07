@@ -18,7 +18,25 @@
 
 #include "Setup.h"
 
+class StabledArgentHippogryph_Gossip : public Arcemu::Gossip::Script
+{
+public:
+    void OnHello(Object *pObject, Player *plr)
+    {
+        Arcemu::Gossip::Menu menu(pObject->GetGUID(), objmgr.GetGossipTextForNpc(pObject->GetEntry()));
+        if (plr->HasQuest(14027))
+            menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Mount the Hippogryph and prepare for battle!", 1);
+        menu.Send(plr);
+    }
+
+    void OnSelectOption(Object *pObject, Player *plr, uint32 Id, const char *Code)
+    {
+        plr->TaxiStart(sTaxiMgr.GetTaxiPath(1268), 22471, 0);
+    }
+};
+
 void SetupIcecrownQuests(ScriptMgr* mgr)
 {
+    mgr->register_creature_gossip(35117, new StabledArgentHippogryph_Gossip);
 }
 

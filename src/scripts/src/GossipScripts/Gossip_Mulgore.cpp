@@ -28,12 +28,8 @@ class SkornWhitecloud_Gossip : public Arcemu::Gossip::Script
 
 		void OnSelectOption(Object* pObject, Player* plr, uint32 Id, const char* Code)
 		{
-			if(!pObject->IsCreature())
-				return;
 			Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 523, plr);
 		}
-
-		void Destroy() { delete this; }
 };
 
 void SetupMulgoreGossip(ScriptMgr* mgr)
