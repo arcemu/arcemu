@@ -46,7 +46,7 @@ class CairneBloodhoof_Gossip : public Arcemu::Gossip::Script
 		void OnHello(Object* pObject, Player* plr)
 		{
 			Arcemu::Gossip::Menu menu(pObject->GetGUID(), objmgr.GetGossipTextForNpc(pObject->GetEntry()), plr->GetSession()->language);
-			sQuestMgr.FillQuestMenu(TO_CREATURE(pObject), Plr, menu);
+            sQuestMgr.FillQuestMenu(TO_CREATURE(pObject), plr, menu);
 			if(plr->HasQuest(925))
 				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "I know this is rather silly but a young ward who is a bit shy would like your hoofprint.", 0);
 			
@@ -67,7 +67,7 @@ class SkornWhitecloud_Gossip : public Arcemu::Gossip::Script
 		void OnHello(Object* pObject, Player* plr)
 		{
 			Arcemu::Gossip::Menu menu(pObject->GetGUID(), objmgr.GetGossipTextForNpc(pObject->GetEntry()), plr->GetSession()->language);
-			sQuestMgr.FillQuestMenu(TO_CREATURE(pObject), Plr, menu);
+            sQuestMgr.FillQuestMenu(TO_CREATURE(pObject), plr, menu);
 			if(plr->HasQuest(770))
 				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Tell me a story, Skorn.", 0);
 
