@@ -21,140 +21,72 @@
 
 #include "Setup.h"
 
-#define SendQuickMenu(textid) objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), textid, plr); \
-    Menu->SendTo(plr);
+#define GOSSIP_AK_ITEM_1 "Grant me your mark, wise ancient."
+#define GOSSIP_AK_ITEM_2 "Grant me your mark, mighty ancient."
 
-class AncientMarks : public GossipScript
+class AshyenAndKeleth_Gossip : public Arcemu::Gossip::Script
 {
-	public:
-		void GossipHello(Object* pObject, Player* plr)
-		{
-			GossipMenu* Menu;
-			uint32 entry = pObject->GetEntry();
-			const char* text = "";
-			uint32 TextId = 0;
+    public:
+        void OnHello(Object* pObject, Player* plr)
+        {
+            Arcemu::Gossip::Menu menu(pObject->GetGUID(), objmgr.GetGossipTextForNpc(pObject->GetEntry()), plr->GetSession()->language);
+            if (plr->HasQuest(9785) || plr->HasFinishedQuest(9785))
+                menu.AddItem(Arcemu::Gossip::ICON_CHAT, pObject->GetEntry() == 17900 ? GOSSIP_AK_ITEM_1 : GOSSIP_AK_ITEM_2, 1);
+            menu.Send(plr);
+        }
 
-			if(entry == 17900)
-			{
-				text = "Grant me your mark, wise ancient.";
-				TextId = 9176;
-			}
-			else if(entry == 17901)
-			{
-				text = "Grant me your mark, mighty ancient.";
-				TextId = 9177;
-			}
-
-			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), TextId, plr);
-
-			if(plr->HasFinishedQuest(9785) || plr->GetQuestLogForEntry(9785))
-				Menu->AddItem(0, text, 1);
-
-			Menu->SendTo(plr);
-		}
-
-		void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char* Code)
-		{
-			if(IntId == 1)
-			{
-				QuestLogEntry* en = plr->GetQuestLogForEntry(9785);
-				Creature* casta = (TO_CREATURE(pObject));
-				switch(pObject->GetEntry())
-				{
-					case 17900:
-						{
-							if(en && en->GetMobCount(0) < en->GetQuest()->required_mobcount[0])
-							{
-								en->SetMobCount(0, 1);
-								en->SendUpdateAddKill(0);
-								en->UpdatePlayerFields();
-							}
-
-							if(plr->GetStandingRank(942) == 4)
-								casta->CastSpell(plr, 31808, true);
-							else if(plr->GetStandingRank(942) == 5)
-								casta->CastSpell(plr, 31810, true);
-							else if(plr->GetStandingRank(942) == 6)
-								casta->CastSpell(plr, 31811, true);
-							else if(plr->GetStandingRank(942) == 7)
-								casta->CastSpell(plr, 31815, true);
-
-						}
-						break;
-					case 17901:
-						{
-							if(en && en->GetMobCount(1) < en->GetQuest()->required_mobcount[1])
-							{
-								en->SetMobCount(1, 1);
-								en->SendUpdateAddKill(1);
-								en->UpdatePlayerFields();
-							}
-
-							if(plr->GetStandingRank(942) == 4)
-								casta->CastSpell(plr, 31807, true);
-							else if(plr->GetStandingRank(942) == 5)
-								casta->CastSpell(plr, 31814, true);
-							else if(plr->GetStandingRank(942) == 6)
-								casta->CastSpell(plr, 31813, true);
-							else if(plr->GetStandingRank(942) == 7)
-								casta->CastSpell(plr, 31812, true);
-
-						}
-						break;
-				}
-			}
-		}
-
+        void OnSelectOption(Object* pObject, Player* plr, uint32 Id, const char* Code)
+        {
+            switch(plr->GetStandingRank(942))
+            {
+                case STANDING_FRIENDLY: TO_CREATURE(pObject)->CastSpell(plr, pObject->GetEntry() == 17900 ? 31808 : 31807 , true); break;
+                case STANDING_HONORED: TO_CREATURE(pObject)->CastSpell(plr, pObject->GetEntry() == 17900 ? 31810 : 31812, true); break;
+                case STANDING_REVERED: TO_CREATURE(pObject)->CastSpell(plr, pObject->GetEntry() == 17900 ? 31811 : 31813, true); break;
+                case STANDING_EXALTED: TO_CREATURE(pObject)->CastSpell(plr, pObject->GetEntry() == 17900 ? 31815 : 31814, true); break;
+                default:
+                    break;
+            }
+        }
 };
 
-class ElderKuruti : public GossipScript
+// Quest: 9803
+#define ElderKuruti_OPTION_MAIN "Greetings, elder. It is time for your people to end their hostility toward the draenei and their allies."
+#define ElderKuruti_OPTION_0 "I did not mean to deceive you, elder. The draenei of Telredor thought to approach you in a way that would be familiar to you."
+#define ElderKuruti_OPTION_1 "I will tell them. Farewell, elder."
+class ElderKuruti : public Arcemu::Gossip::Script
 {
 	public:
-		void GossipHello(Object* pObject, Player* plr)
+        void OnHello(Object* pObject, Player* plr)
 		{
-			GossipMenu* Menu;
-			if(!plr->GetItemInterface()->GetItemCount(24573, true))
-			{
-				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 9226, plr);
-				Menu->AddItem(0, "Offer treat", 1);
-				Menu->SendTo(plr);
-			}
+            Arcemu::Gossip::Menu menu(pObject->GetGUID(), 9226, plr->GetSession()->language);
+            if(!plr->HasQuest(9803) && !plr->HasFinishedQuest(9803))
+                menu.AddItem(Arcemu::Gossip::ICON_CHAT, ElderKuruti_OPTION_MAIN, 0);
+            menu.Send(plr);
 		}
 
-		void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char* Code)
+        void OnSelectOption(Object* pObject, Player* plr, uint32 Id, const char* Code)
 		{
-			GossipMenu* Menu;
-			switch(IntId)
+            switch(Id)
 			{
-				case 1:
-					objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 9227, plr);
-					Menu->AddItem(0, "Im a messenger for Draenei", 2);
-					Menu->SendTo(plr);
+                case 0:
+                    Arcemu::Gossip::Menu::SendQuickMenu(pObject->GetGUID(), 9227, plr, 1, Arcemu::Gossip::ICON_CHAT, ElderKuruti_OPTION_0);
 					break;
-				case 2:
-					objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 9229, plr);
-					Menu->AddItem(0, "Get message", 3);
-					Menu->SendTo(plr);
+                case 1:
+                    Arcemu::Gossip::Menu::SendQuickMenu(pObject->GetGUID(), 9229, plr, 2, Arcemu::Gossip::ICON_CHAT, ElderKuruti_OPTION_1);
 					break;
-				case 3:
-					if(!plr->GetItemInterface()->GetItemCount(24573, true))
-					{
-						sEAS.AddItem(24573, plr);
-						if(plr->GetItemInterface()->GetItemCount(24573, true))
-							SendQuickMenu(9231);
-					}
-					else
-						SendQuickMenu(9231);
+                case 2:
+                    if(!plr->GetItemInterface()->GetItemCount(24573, true))
+                        sEAS.AddItem(24573, plr);
+
+                    Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 9231, plr);
 					break;
 			}
 		}
-
 };
 
 void SetupZangarmarsh(ScriptMgr* mgr)
 {
-	GossipScript* AMark = new AncientMarks();
-	mgr->register_gossip_script(17900, AMark);	// Ashyen Ancient of Lore
-	mgr->register_gossip_script(17901, AMark);	// Keleth Ancient of War
-	mgr->register_gossip_script(18197, new ElderKuruti());
+    mgr->register_creature_gossip(17900, new AshyenAndKeleth_Gossip);
+    mgr->register_creature_gossip(17901, new AshyenAndKeleth_Gossip);
+    mgr->register_creature_gossip(18197, new ElderKuruti);
 }
