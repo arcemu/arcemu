@@ -18,7 +18,26 @@
 
 #include "Setup.h"
 
+// Quest: 3520
+class ScreecherSpirit_Gossip : public Arcemu::Gossip::Script
+{
+    public:
+        void OnHello(Object* pObject, Player* plr)
+        {
+            Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), objmgr.GetGossipTextForNpc(pObject->GetEntry()), plr);
+            QuestLogEntry* quest = plr->GetQuestLogForEntry(3520);
+
+            if(quest && quest->GetMobCount(0) < quest->GetQuest()->required_mobcount[0])
+            {
+                quest->SetMobCount(0, quest->GetMobCount(0) + 1);
+                quest->SendUpdateAddKill(0);
+                quest->UpdatePlayerFields();
+            }
+            TO_CREATURE(pObject)->SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+        }
+};
+
 void SetupFeralasQuests(ScriptMgr* mgr)
 {
+    mgr->register_creature_gossip(8612, new ScreecherSpirit_Gossip);
 }
-
