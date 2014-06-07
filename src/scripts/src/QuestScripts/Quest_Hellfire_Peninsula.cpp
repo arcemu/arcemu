@@ -165,8 +165,8 @@ class PrisonerGossip : public Arcemu::Gossip::Script
 					case 20679: npc = 2; break;
 					default: npc = -1; break;
 				}
-pPlayer->HasItemCount()
-                if(npc >= 0 && pPlayer->GetItemInterface()->GetItemCount(29501) && pQuest->GetMobCount(npc) < pQuest->GetQuest()->required_mobcount[npc])
+
+                if(npc >= 0 && pPlayer->HasItem(29501) && pQuest->GetMobCount(npc) < pQuest->GetQuest()->required_mobcount[npc])
 					menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Walk free, Elder. Bring the spirits back to your tribe.", 0);
 			}
 			menu.Send(pPlayer);
