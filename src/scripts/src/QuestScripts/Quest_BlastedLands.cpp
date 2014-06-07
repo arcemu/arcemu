@@ -103,8 +103,27 @@ class HeroesofOld1 : public GossipScript
 					}
 			}
 		}
-
 };
+
+// Quest: 3628
+class DeathlyUsher : public Arcemu::Gossip::Script
+{
+    public:
+        void OnHello(Object *pObject, Player *Plr)
+        {
+            Arcemu::Gossip::Menu menu(pObject->GetGUID(), objmgr.GetGossipTextForNpc(pObject->GetEntry()), Plr->GetSession()->language);
+            if(Plr->HasQuest(3628) && !Plr->HasFinishedQuest(3628) && Plr->HasItem(10757))
+                menu.AddItem(Arcemu::Gossip::ICON_CHAT, "I wish to to visit the Rise of the Defiler.", 1);
+            menu.Send(Plr);
+        }
+
+        void OnSelectOption(Object *pObject, Player *Plr, uint32 Id, const char *EnteredCode)
+        {
+            Arcemu::Gossip::Menu::Complete(Plr);
+            TO_CREATURE(pObject)->CastSpell(Plr, 12885, true);
+        }
+};
+
 
 void SetupBlastedLands(ScriptMgr* mgr)
 {
@@ -113,4 +132,5 @@ void SetupBlastedLands(ScriptMgr* mgr)
 
 	GossipScript* gossip1 = new HeroesofOld1();
 	mgr->register_gossip_script(7572, gossip1);
+    mgr->register_creature_gossip(8816, new DeathlyUsher);
 }
