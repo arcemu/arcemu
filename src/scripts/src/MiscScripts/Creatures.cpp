@@ -348,6 +348,22 @@ class CursedMageAI : public MoonScriptCreatureAI
         }
 };
 
+// Npc: 948
+class RottedOneAI : public MoonScriptCreatureAI
+{
+    public:
+        MOONSCRIPT_FACTORY_FUNCTION(RottedOneAI, MoonScriptCreatureAI);
+        RottedOneAI(Creature* c) : MoonScriptCreatureAI(c)
+        {
+        }
+
+        void OnDied(Unit *mKiller)
+        {
+            _unit->CastSpell(_unit, 3428, true);
+            ParentClass::OnDied(mKiller);
+        }
+};
+
 void SetupMiscCreatures(ScriptMgr* mgr)
 {
 	mgr->register_creature_script(11120, &CrimsonHammersmith::Create);
@@ -462,4 +478,5 @@ void SetupMiscCreatures(ScriptMgr* mgr)
 	mgr->register_creature_script(27989, &DISCO::Create);
     mgr->register_creature_script(8605, &CarrionDevourerAI::Create);
     mgr->register_creature_script(8524, &CursedMageAI::Create);
+    mgr->register_creature_script(948, &RottedOneAI::Create);
 }
