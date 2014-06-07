@@ -34,7 +34,7 @@ class Veronia : public Arcemu::Gossip::Script
 
 		void OnSelectOption(Object* pObject, Player* plr, uint32 Id, const char* Code)
 		{
-			plr->GossipComplete();
+            plr->Gossip_Complete();
 			TO_CREATURE(pObject)->CastSpell(plr, 34905, true);
 		}
 };
@@ -53,10 +53,10 @@ class ProtectorateNetherDrake_Gossip : public Arcemu::Gossip::Script
  
 		void OnSelectOption(Object* pObject, Player* plr, uint32 Id, const char* Code)
 		{
+            plr->Gossip_Complete();
 			plr->TaxiStart(sTaxiMgr.GetTaxiPath(627), 0, 0);
 		}
 };
-
 
 void SetupNetherstorm(ScriptMgr* mgr)
 {
