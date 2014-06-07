@@ -1099,7 +1099,8 @@ string Item::GetItemLink(uint32 language = NULL)
 	return GetItemLinkByProto(GetProto(), language);
 }
 
-string GetItemLinkByProto(ItemPrototype* iProto, uint32 language = NULL)
+//TODO: move this to Item class
+string GetItemLinkByProto(ItemPrototype* iProto, uint32 language = 0)
 {
 	const char* ItemLink;
 	char buffer[256];

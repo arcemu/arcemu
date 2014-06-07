@@ -34,7 +34,6 @@ void AuctionMgr::LoadAuctionHouses()
 	}
 
 	res = WorldDatabase.Query("SELECT DISTINCT ahgroup FROM auctionhouse");
-	AuctionHouse* ah;
 	map<uint32, AuctionHouse*> tempmap;
 	if(res)
 	{
@@ -42,7 +41,7 @@ void AuctionMgr::LoadAuctionHouses()
 		uint32 c = 0;
 		do
 		{
-			ah = new AuctionHouse(res->Fetch()[0].GetUInt32());
+            AuctionHouse* ah = new AuctionHouse(res->Fetch()[0].GetUInt32());
 			ah->LoadAuctions();
 			auctionHouses.push_back(ah);
 			tempmap.insert(make_pair(res->Fetch()[0].GetUInt32(), ah));
@@ -59,17 +58,32 @@ void AuctionMgr::LoadAuctionHouses()
 	{
 		do
 		{
-			auctionHouseEntryMap.insert(make_pair(res->Fetch()[0].GetUInt32(), tempmap[res->Fetch()[1].GetUInt32()]));
+            uint32 entry = res->Fetch()[0].GetUInt32();
+            uint32 ah_entry = res->Fetch()[0].GetUInt32();
+            if (!CreatureNameStorage.LookupEntry(entry))
+            {
+                Log.Error("AuctionMgr", "Creature (entry: %u) was not found for auction (entry: %u).", entry, ah_entry);
+                continue;
+            }
+
+            if (!dbcAuctionHouse.LookupEntryForced(ah_entry))
+            {
+                Log.Error("AuctionMgr", "Auction house (entry: %u) was not found for creature (entry: %u).", ah_entry, entry);
+                continue;
+            }
+            auctionHouseEntryMap.insert(make_pair(entry, tempmap[ah_entry]));
 		}
 		while(res->NextRow());
 		delete res;
 	}
+    Log.Success("AuctionMgr", "Loaded %u auction house entries.", auctionHouseEntryMap.size());
 }
 
 AuctionHouse* AuctionMgr::GetAuctionHouse(uint32 Entry)
 {
 	HM_NAMESPACE::hash_map<uint32, AuctionHouse*>::iterator itr = auctionHouseEntryMap.find(Entry);
-	if(itr == auctionHouseEntryMap.end()) return NULL;
+    if(itr == auctionHouseEntryMap.end())
+        return NULL;
 	return itr->second;
 }
 
@@ -78,8 +92,7 @@ void AuctionMgr::Update()
 	if((++loopcount % 100))
 		return;
 
-	vector<AuctionHouse*>::iterator itr = auctionHouses.begin();
-	for(; itr != auctionHouses.end(); ++itr)
+    for(vector<AuctionHouse*>::iterator itr = auctionHouses.begin(); itr != auctionHouses.end(); ++itr)
 	{
 		(*itr)->UpdateDeletionQueue();
 

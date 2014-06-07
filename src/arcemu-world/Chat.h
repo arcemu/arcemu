@@ -221,7 +221,7 @@ class SERVER_DECL ChatHandler : public Singleton<ChatHandler>
 		bool ExecuteCommandInTable(ChatCommand* table, const char* text, WorldSession* m_session);
 		bool ShowHelpForCommand(WorldSession* m_session, ChatCommand* table, const char* cmd);
 		void SendHighlightedName(WorldSession* m_session, const char* prefix, const char* full_name, string & lowercase_name, string & highlight, uint32 id);
-		void SendItemLinkToPlayer(ItemPrototype* iProto, WorldSession* pSession, bool ItemCount, Player* owner, uint32 language = NULL);
+        void SendItemLinkToPlayer(ItemPrototype* iProto, WorldSession* pSession, bool ItemCount, Player* owner, uint32 language = 0);
 
 		ChatCommand* getCommandTable();
 
