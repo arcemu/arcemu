@@ -364,6 +364,7 @@ class RottedOneAI : public MoonScriptCreatureAI
         }
 };
 
+// Npc: 28408
 class PrimordialDrakeEggAI : public MoonScriptCreatureAI
 {
     public:
