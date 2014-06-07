@@ -43,7 +43,7 @@ class GreganBrewspewer_Gossip : public Arcemu::Gossip::Script
         {
             Arcemu::Gossip::Menu menu(pObject->GetGUID(), objmgr.GetGossipTextForNpc(pObject->GetEntry()), plr->GetSession()->language);
             sQuestMgr.FillQuestMenu(TO_CREATURE(pObject), plr, menu);
-            if(plr->HasQuest(3909))
+            if(plr->HasQuest(3909) && TO_CREATURE(pObject)->isVendor())
                 menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Buy somethin', will ya?", 0);
             menu.Send(plr);
         }
