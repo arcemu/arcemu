@@ -1016,8 +1016,8 @@ static bool isSeparator(char c) {
 
 
 void Any::readUntilCommaOrClose(TextInput& ti, Token& token) {
-    while (! ((token.type() == Token::SYMBOL) && 
-              (isClose(token.string()[0])) || 
+    while (! (((token.type() == Token::SYMBOL) &&
+              (isClose(token.string()[0]))) ||
                isSeparator(token.string()[0]))) {
         switch (token.type()) {
         case Token::NEWLINE:

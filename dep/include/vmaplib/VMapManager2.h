@@ -96,7 +96,7 @@ namespace VMAP
 			bool getObjectHitPos(unsigned int pMapId, float x1, float y1, float z1, float x2, float y2, float z2, float & rx, float & ry, float & rz, float pModifyDist);
 			float getHeight(unsigned int pMapId, float x, float y, float z, float maxSearchDist);
 
-			bool processCommand(char* pCommand) { return false; }      // for debug and extensions
+            bool processCommand(char* /*pCommand*/) { return false; }      // for debug and extensions
 
 			bool getAreaInfo(unsigned int pMapId, float x, float y, float & z, G3D::uint32 & flags, G3D::int32 & adtId, G3D::int32 & rootId, G3D::int32 & groupId) const;
 			bool GetLiquidLevel(G3D::uint32 pMapId, float x, float y, float z, G3D::uint8 ReqLiquidType, float & level, float & floor, G3D::uint32 & type) const;
@@ -105,7 +105,7 @@ namespace VMAP
 			void releaseModelInstance(const std::string & filename);
 
 			// what's the use of this? o.O
-			virtual std::string getDirFileName(unsigned int pMapId, int x, int y) const
+            virtual std::string getDirFileName(unsigned int pMapId, int /*x*/, int /*y*/) const
 			{
 				return getMapFileName(pMapId);
 			}

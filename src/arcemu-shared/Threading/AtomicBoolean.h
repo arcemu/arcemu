@@ -78,10 +78,10 @@ namespace Arcemu
 
 			private:
 				// Disabled copy constructor
-				AtomicBoolean(const AtomicBoolean & other) {}
+                AtomicBoolean(const AtomicBoolean & /*other*/) {}
 
 				// Disabled assignment operator
-				AtomicBoolean operator=(const AtomicBoolean & other) { return *this; }
+                AtomicBoolean operator=(const AtomicBoolean & /*other*/) { return *this; }
 
 				AtomicULong Value;
 		};

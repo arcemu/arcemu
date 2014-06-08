@@ -70,10 +70,10 @@ namespace Arcemu
 
 			private:
 				// Disabled copy constructor
-				AtomicFloat(const AtomicFloat & other) {}
+                AtomicFloat(const AtomicFloat & /*other*/) {}
 
 				// Disabled assignment operator
-				AtomicFloat operator=(const AtomicFloat & other) { return *this; }
+                AtomicFloat operator=(const AtomicFloat & /*other*/) { return *this; }
 
 				AtomicULong Value;
 		};

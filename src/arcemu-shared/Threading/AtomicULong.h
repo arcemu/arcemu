@@ -66,7 +66,7 @@ namespace Arcemu
 
 			private:
 				// Disabled copy constructor
-				AtomicULong(const AtomicULong & other) {}
+                AtomicULong(const AtomicULong & /*other*/) {}
 
 				// Disabled assignment operator
 				AtomicULong operator=(AtomicULong & other) { return *this; }

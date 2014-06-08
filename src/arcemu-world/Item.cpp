@@ -82,7 +82,7 @@ void Item::Init(uint32 high, uint32 low)
 
 Item::~Item()
 {
-	if(loot != NULL)
+    if(loot)
 	{
 		delete loot;
 		loot = NULL;
@@ -90,8 +90,7 @@ Item::~Item()
 
 	sEventMgr.RemoveEvents(this);
 
-	EnchantmentMap::iterator itr;
-	for(itr = Enchantments.begin(); itr != Enchantments.end(); ++itr)
+    for(EnchantmentMap::iterator itr = Enchantments.begin(); itr != Enchantments.end(); ++itr)
 	{
 		if(itr->second.Enchantment->type == 0 && itr->second.Slot == 0 && itr->second.ApplyTime == 0 && itr->second.Duration == 0)
 		{
@@ -111,7 +110,7 @@ void Item::Create(uint32 itemid, Player* owner)
 {
 	SetEntry(itemid);
 
-	if(owner != NULL)
+    if(owner)
 	{
 		uint64 OwnerGUID = owner->GetGUID();
 
@@ -135,10 +134,7 @@ void Item::Create(uint32 itemid, Player* owner)
 
 
 	m_owner = owner;
-	if(m_itemProto->LockId > 1)
-		locked = true;
-	else
-		locked = false;
+    locked = m_itemProto->LockId ? true : false;
 }
 
 void Item::LoadFromDB(Field* fields, Player* plr, bool light)
@@ -150,11 +146,7 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light)
 	m_itemProto = ItemPrototypeStorage.LookupEntry(itemid);
 
 	ARCEMU_ASSERT(m_itemProto != NULL);
-
-	if(m_itemProto->LockId > 1)
-		locked = true;
-	else
-		locked = false;
+    locked = m_itemProto->LockId ? true : false;
 
 	SetEntry(itemid);
 	m_owner = plr;
