@@ -175,7 +175,7 @@ AddItemResult ItemInterface::SafeAddItem(Item* pItem, int8 ContainerSlot, int16 
 AddItemResult ItemInterface::m_AddItem(Item* item, int8 ContainerSlot, int16 slot)
 {
 	ARCEMU_ASSERT(slot < MAX_INVENTORY_SLOT);
-	ARCEMU_ASSERT(ContainerSlot < MAX_INVENTORY_SLOT);
+    ARCEMU_ASSERT(ContainerSlot < int8(MAX_INVENTORY_SLOT));
 	if(item == NULL || !item->GetProto() || slot < 0)
 		return ADD_ITEM_RESULT_ERROR;
 

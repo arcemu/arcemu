@@ -59,7 +59,7 @@ void WorldSession::HandleAttackSwingOpcode(WorldPacket & recv_data)
 
 }
 
-void WorldSession::HandleAttackStopOpcode(WorldPacket & recv_data)
+void WorldSession::HandleAttackStopOpcode(WorldPacket & /*recv_data*/)
 {
 	CHECK_INWORLD_RETURN
 

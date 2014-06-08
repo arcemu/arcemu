@@ -137,7 +137,7 @@ void WorldSession::HandleGMTicketUpdateOpcode(WorldPacket & recv_data)
 #endif
 }
 
-void WorldSession::HandleGMTicketDeleteOpcode(WorldPacket & recv_data)
+void WorldSession::HandleGMTicketDeleteOpcode(WorldPacket & /*recv_data*/)
 {
 	CHECK_INWORLD_RETURN
 
@@ -166,7 +166,7 @@ void WorldSession::HandleGMTicketDeleteOpcode(WorldPacket & recv_data)
 	}
 }
 
-void WorldSession::HandleGMTicketGetTicketOpcode(WorldPacket & recv_data)
+void WorldSession::HandleGMTicketGetTicketOpcode(WorldPacket & /*recv_data*/)
 {
 	CHECK_INWORLD_RETURN
 
@@ -192,7 +192,7 @@ void WorldSession::HandleGMTicketGetTicketOpcode(WorldPacket & recv_data)
 }
 
 
-void WorldSession::HandleGMTicketSystemStatusOpcode(WorldPacket & recv_data)
+void WorldSession::HandleGMTicketSystemStatusOpcode(WorldPacket & /*recv_data*/)
 {
 	WorldPacket data(SMSG_GMTICKET_SYSTEMSTATUS, 4);
 
@@ -207,7 +207,7 @@ void WorldSession::HandleGMTicketSystemStatusOpcode(WorldPacket & recv_data)
 	SendPacket(&data);
 }
 
-void WorldSession::HandleGMTicketToggleSystemStatusOpcode(WorldPacket & recv_data)
+void WorldSession::HandleGMTicketToggleSystemStatusOpcode(WorldPacket & /*recv_data*/)
 {
 	if(!HasGMPermissions())
 		return;

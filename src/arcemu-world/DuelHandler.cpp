@@ -20,7 +20,7 @@
 
 #include "StdAfx.h"
 
-void WorldSession::HandleDuelAccepted(WorldPacket & recv_data)
+void WorldSession::HandleDuelAccepted(WorldPacket & /*recv_data*/)
 {
 	CHECK_INWORLD_RETURN
 
@@ -50,7 +50,7 @@ void WorldSession::HandleDuelAccepted(WorldPacket & recv_data)
 	sEventMgr.AddEvent(_player, &Player::DuelCountdown, EVENT_PLAYER_DUEL_COUNTDOWN, 1000, 3, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 }
 
-void WorldSession::HandleDuelCancelled(WorldPacket & recv_data)
+void WorldSession::HandleDuelCancelled(WorldPacket & /*recv_data*/)
 {
 	CHECK_INWORLD_RETURN
 

@@ -1963,7 +1963,7 @@ class SERVER_DECL Spell : public EventableObject
 
 		// This returns SPELL_ENTRY_Spell_Dmg_Type where 0 = SPELL_DMG_TYPE_NONE, 1 = SPELL_DMG_TYPE_MAGIC, 2 = SPELL_DMG_TYPE_MELEE, 3 = SPELL_DMG_TYPE_RANGED
 		// It should NOT be used for weapon_damage_type which needs: 0 = MELEE, 1 = OFFHAND, 2 = RANGED
-        ARCEMU_INLINE uint32 GetType() { return GetProto()->Spell_Dmg_Type == SPELL_DMG_TYPE_NONE ? SPELL_DMG_TYPE_MAGIC : GetProto()->Spell_Dmg_Type; }
+        ARCEMU_INLINE uint32 GetType() { return GetProto()->Spell_Dmg_Type == uint32(SPELL_DMG_TYPE_NONE) ? uint32(SPELL_DMG_TYPE_MAGIC) : GetProto()->Spell_Dmg_Type; }
 
 		std::map<uint64, Aura*> m_pendingAuras;
 		TargetsList UniqueTargets;

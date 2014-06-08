@@ -43,7 +43,7 @@ void WorldSession::HandleGuildQuery(WorldPacket & recv_data)
 	pGuild->SendGuildQuery(this);
 }
 
-void WorldSession::HandleCreateGuild(WorldPacket & recv_data)
+void WorldSession::HandleCreateGuild(WorldPacket & /*recv_data*/)
 {
 }
 
@@ -145,7 +145,7 @@ void WorldSession::HandleGuildAccept(WorldPacket & recv_data)
 	pGuild->AddGuildMember(plyr->m_playerInfo, NULL);
 }
 
-void WorldSession::HandleGuildDecline(WorldPacket & recv_data)
+void WorldSession::HandleGuildDecline(WorldPacket & /*recv_data*/)
 {
 	CHECK_INWORLD_RETURN
 
@@ -185,7 +185,7 @@ void WorldSession::HandleSetGuildInformation(WorldPacket & recv_data)
 	pGuild->SetGuildInformation(NewGuildInfo.c_str(), this);
 }
 
-void WorldSession::HandleGuildInfo(WorldPacket & recv_data)
+void WorldSession::HandleGuildInfo(WorldPacket & /*recv_data*/)
 {
 	CHECK_INWORLD_RETURN
 
@@ -193,7 +193,7 @@ void WorldSession::HandleGuildInfo(WorldPacket & recv_data)
 		_player->GetGuild()->SendGuildInfo(this);
 }
 
-void WorldSession::HandleGuildRoster(WorldPacket & recv_data)
+void WorldSession::HandleGuildRoster(WorldPacket & /*recv_data*/)
 {
 	CHECK_INWORLD_RETURN
 
@@ -247,7 +247,7 @@ void WorldSession::HandleGuildDemote(WorldPacket & recv_data)
 	_player->m_playerInfo->guild->DemoteGuildMember(dstplr, this);
 }
 
-void WorldSession::HandleGuildLeave(WorldPacket & recv_data)
+void WorldSession::HandleGuildLeave(WorldPacket & /*recv_data*/)
 {
 	CHECK_INWORLD_RETURN
 
@@ -282,7 +282,7 @@ void WorldSession::HandleGuildRemove(WorldPacket & recv_data)
 	_player->m_playerInfo->guild->RemoveGuildMember(dstplr, this);
 }
 
-void WorldSession::HandleGuildDisband(WorldPacket & recv_data)
+void WorldSession::HandleGuildDisband(WorldPacket & /*recv_data*/)
 {
 	CHECK_INWORLD_RETURN
 
@@ -447,7 +447,7 @@ void WorldSession::HandleGuildAddRank(WorldPacket & recv_data)
 	pGuild->SendGuildRoster(this);
 }
 
-void WorldSession::HandleGuildDelRank(WorldPacket & recv_data)
+void WorldSession::HandleGuildDelRank(WorldPacket & /*recv_data*/)
 {
 	CHECK_INWORLD_RETURN
 
@@ -1139,7 +1139,7 @@ void WorldSession::HandleCharterRename(WorldPacket & recv_data)
 	SendPacket(&data);
 }
 
-void WorldSession::HandleGuildLog(WorldPacket & recv_data)
+void WorldSession::HandleGuildLog(WorldPacket & /*recv_data*/)
 {
 	CHECK_INWORLD_RETURN
 
@@ -1183,7 +1183,7 @@ void WorldSession::HandleGuildBankBuyTab(WorldPacket & recv_data)
 	}
 }
 
-void WorldSession::HandleGuildBankGetAvailableAmount(WorldPacket & recv_data)
+void WorldSession::HandleGuildBankGetAvailableAmount(WorldPacket & /*recv_data*/)
 {
 	CHECK_INWORLD_RETURN
 
@@ -1837,7 +1837,7 @@ void Guild::SendGuildBank(WorldSession* pClient, GuildBankTab* pTab, int8 update
 	pClient->SendPacket(&data);
 }
 
-void WorldSession::HandleGuildGetFullPermissions(WorldPacket & recv_data)
+void WorldSession::HandleGuildGetFullPermissions(WorldPacket & /*recv_data*/)
 {
 	CHECK_INWORLD_RETURN
 

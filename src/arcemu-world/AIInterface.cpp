@@ -216,7 +216,7 @@ void AIInterface::Update(uint32 p_time)
 			if(!m_Unit->bInvincible && m_Unit->IsPet())
 			{
 				Pet* pPet = TO< Pet* >(m_Unit);
-				if(pPet && pPet->GetPetAction() == PET_ACTION_ATTACK || pPet->GetPetState() != PET_STATE_PASSIVE)
+                if(pPet && (pPet->GetPetAction() == PET_ACTION_ATTACK || pPet->GetPetState() != PET_STATE_PASSIVE))
 					_UpdateCombat(p_time);
 			}
 			//we just use any creature as a pet guardian
@@ -474,7 +474,7 @@ void AIInterface::_UpdateTargets()
 ///====================================================================
 ///  Desc: Updates Combat Status of m_Unit
 ///====================================================================
-void AIInterface::_UpdateCombat(uint32 p_time)
+void AIInterface::_UpdateCombat(uint32 /*p_time*/)
 {
 	if(m_AIType != AITYPE_PET && disable_combat)
 		return;
@@ -586,7 +586,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 			        /*&& (m_CallForHelpHealth > (m_Unit->GetHealth() / (m_Unit->GetMaxHealth() > 0 ? m_Unit->GetMaxHealth() : 1)))*/)
 				agent = AGENT_CALLFORHELP;
 			else if(m_nextSpell)
-				agent = m_nextSpell->agent != AGENT_NULL ? m_nextSpell->agent : AGENT_MELEE;
+                agent = m_nextSpell->agent != uint16(AGENT_NULL) ? m_nextSpell->agent : uint16(AGENT_MELEE);
 			else
 				agent = AGENT_MELEE;
 		}
@@ -1712,7 +1712,7 @@ void AIInterface::SendMoveToPacket()
 				float tmpz = (midz - m_currentMoveSpline[i].pos.z) * 4;
 
 				//pack it
-				data << uint32(int(tmpx) & 0x7FF | ((int(tmpy) & 0x7FF) << 11) | ((int(tmpz) & 0x3FF) << 22));
+                data << (uint32((int(tmpx) & 0x7FF) | ((int(tmpy) & 0x7FF) << 11) | ((int(tmpz) & 0x3FF))) << 22);
 			}
 		}
 	}
@@ -2138,13 +2138,13 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 	if(m_Unit->GetCurrentSpell() != NULL)
 		return;
 
-	uint32 timediff = 0;
+    //uint32 timediff = 0;
 
 	if(m_moveTimer > 0)
 	{
 		if(p_time >= m_moveTimer)
 		{
-			timediff = p_time - m_moveTimer;
+            //timediff = p_time - m_moveTimer;
 			m_moveTimer = 0;
 		}
 		else
@@ -2549,7 +2549,7 @@ SpellEntry* AIInterface::getSpellEntry(uint32 spellId)
 	return spellInfo;
 }
 
-SpellCastTargets AIInterface::setSpellTargets(SpellEntry* spellInfo, Unit* target)
+SpellCastTargets AIInterface::setSpellTargets(SpellEntry* /*spellInfo*/, Unit* target)
 {
 	SpellCastTargets targets;
 	targets.m_unitTarget = target ? target->GetGUID() : 0;

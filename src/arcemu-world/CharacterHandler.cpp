@@ -67,7 +67,7 @@ LoginErrorCode VerifyName(const char* name, size_t nlen)
 	return E_CHAR_NAME_SUCCESS;
 }
 
-bool ChatHandler::HandleRenameAllCharacter(const char* args, WorldSession* m_session)
+bool ChatHandler::HandleRenameAllCharacter(const char* /*args*/, WorldSession* m_session)
 {
 	uint32 uCount = 0;
 	uint32 ts = getMSTime();
@@ -289,7 +289,7 @@ void WorldSession::CharacterEnumProc(QueryResult* result)
 	SendPacket(&data);
 }
 
-void WorldSession::HandleCharEnumOpcode(WorldPacket & recv_data)
+void WorldSession::HandleCharEnumOpcode(WorldPacket & /*recv_data*/)
 {
 	AsyncQuery* q = new AsyncQuery(new SQLClassCallbackP1<World, uint32>(World::getSingletonPtr(), &World::CharacterEnumProc, GetAccountId()));
 	q->AddQuery("SELECT guid, level, race, class, gender, bytes, bytes2, name, positionX, positionY, positionZ, mapId, zoneId, banned, restState, deathstate, forced_rename_pending, player_flags, guild_data.guildid FROM characters LEFT JOIN guild_data ON characters.guid = guild_data.playerid WHERE acct=%u ORDER BY guid LIMIT 10", GetAccountId());

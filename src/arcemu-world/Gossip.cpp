@@ -294,7 +294,7 @@ void Arcemu::Gossip::Vendor::OnHello(Object* pObject, Player* Plr)
 	menu.StackSend<256>(Plr);
 }
 
-void Arcemu::Gossip::Vendor::OnSelectOption(Object* pObject, Player* Plr, uint32 Id, const char* EnteredCode)
+void Arcemu::Gossip::Vendor::OnSelectOption(Object* pObject, Player* Plr, uint32 /*Id*/, const char* /*EnteredCode*/)
 {
 	Plr->GetSession()->SendInventoryList(TO_CREATURE(pObject));
 }
@@ -341,7 +341,7 @@ void Arcemu::Gossip::Trainer::OnHello(Object* pObject, Player* Plr)
 	menu.StackSend<256>(Plr);
 }
 
-void Arcemu::Gossip::Trainer::OnSelectOption(Object* pObject, Player* Plr, uint32 Id, const char* EnteredCode)
+void Arcemu::Gossip::Trainer::OnSelectOption(Object* pObject, Player* Plr, uint32 Id, const char* /*EnteredCode*/)
 {
 	if(1 == Id)
 		Plr->GetSession()->SendTrainerList(TO_CREATURE(pObject));
@@ -367,7 +367,7 @@ void Arcemu::Gossip::FlightMaster::OnHello(Object* pObject, Player* Plr)
 	menu.StackSend<256>(Plr);
 }
 
-void Arcemu::Gossip::FlightMaster::OnSelectOption(Object* pObject, Player* Plr, uint32 Id, const char* EnteredCode)
+void Arcemu::Gossip::FlightMaster::OnSelectOption(Object* pObject, Player* Plr, uint32 /*Id*/, const char* /*EnteredCode*/)
 {
 	Plr->GetSession()->SendTaxiList(TO_CREATURE(pObject));
 }
@@ -385,7 +385,7 @@ void Arcemu::Gossip::Auctioneer::OnHello(Object* pObject, Player* Plr)
     Gossip::Menu::SendQuickMenu(pObject->GetGUID(), Text, Plr, 1, Gossip::ICON_VENDOR, Plr->GetSession()->LocalizedWorldSrv(WORLDSTRING_MAKE_BID));
 }
 
-void Arcemu::Gossip::Auctioneer::OnSelectOption(Object* pObject, Player* Plr, uint32 Id, const char* EnteredCode)
+void Arcemu::Gossip::Auctioneer::OnSelectOption(Object* pObject, Player* Plr, uint32 /*Id*/, const char* /*EnteredCode*/)
 {
 	Plr->GetSession()->SendAuctionList(TO_CREATURE(pObject));
 }
@@ -412,7 +412,7 @@ void Arcemu::Gossip::InnKeeper::OnHello(Object* pObject, Player* Plr)
 	menu.StackSend<256>(Plr);
 }
 
-void Arcemu::Gossip::InnKeeper::OnSelectOption(Object* pObject, Player* Plr, uint32 Id, const char* EnteredCode)
+void Arcemu::Gossip::InnKeeper::OnSelectOption(Object* pObject, Player* Plr, uint32 Id, const char* /*EnteredCode*/)
 {
 	if(1 == Id)
 		Plr->GetSession()->SendInnkeeperBind(TO_CREATURE(pObject));
@@ -436,7 +436,7 @@ void Arcemu::Gossip::BattleMaster::OnHello(Object* pObject, Player* Plr)
 	menu.StackSend<256>(Plr);
 }
 
-void Arcemu::Gossip::BattleMaster::OnSelectOption(Object* pObject, Player* Plr, uint32 Id, const char* EnteredCode)
+void Arcemu::Gossip::BattleMaster::OnSelectOption(Object* pObject, Player* Plr, uint32 /*Id*/, const char* /*EnteredCode*/)
 {
 	Plr->GetSession()->SendBattlegroundList(TO_CREATURE(pObject), 0);
 }
@@ -450,7 +450,7 @@ void Arcemu::Gossip::Banker::OnHello(Object* pObject, Player* Plr)
 	Plr->GetSession()->SendBankerList(TO_CREATURE(pObject));
 }
 
-void Arcemu::Gossip::Banker::OnSelectOption(Object* pObject, Player* Plr, uint32 Id, const char* EnteredCode)
+void Arcemu::Gossip::Banker::OnSelectOption(Object* /*pObject*/, Player* /*Plr*/, uint32 /*Id*/, const char* /*EnteredCode*/)
 {
 
 }
@@ -471,7 +471,7 @@ void Arcemu::Gossip::CharterGiver::OnHello(Object* pObject, Player* Plr)
 		Gossip::Menu::SendQuickMenu(pObject->GetGUID(), Text, Plr, 1, Gossip::ICON_CHAT, "How do I create a arena team?");
 }
 
-void Arcemu::Gossip::CharterGiver::OnSelectOption(Object* pObject, Player* Plr, uint32 Id, const char* EnteredCode)
+void Arcemu::Gossip::CharterGiver::OnSelectOption(Object* pObject, Player* Plr, uint32 /*Id*/, const char* /*EnteredCode*/)
 {
 	Plr->GetSession()->SendCharterRequest(TO_CREATURE(pObject));
 }
@@ -501,7 +501,7 @@ void Arcemu::Gossip::TabardDesigner::OnHello(Object* pObject, Player* Plr)
 	menu.Send(Plr);
 }
 
-void Arcemu::Gossip::TabardDesigner::OnSelectOption(Object* pObject, Player* Plr, uint32 Id, const char* EnteredCode)
+void Arcemu::Gossip::TabardDesigner::OnSelectOption(Object* pObject, Player* Plr, uint32 Id, const char* /*EnteredCode*/)
 {
 	switch( Id ){
 		case 1:
@@ -532,7 +532,7 @@ void Arcemu::Gossip::StableMaster::OnHello(Object* pObject, Player* Plr)
 		Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), Text, Plr);
 }
 
-void Arcemu::Gossip::StableMaster::OnSelectOption(Object* pObject, Player* Plr, uint32 Id, const char* EnteredCode)
+void Arcemu::Gossip::StableMaster::OnSelectOption(Object* pObject, Player* Plr, uint32 /*Id*/, const char* /*EnteredCode*/)
 {
 	Plr->GetSession()->SendStabledPetList(pObject->GetGUID());
 }
@@ -557,7 +557,7 @@ void Arcemu::Gossip::PetTrainer::OnHello(Object* pObject, Player* Plr)
 	menu.StackSend<256>(Plr);
 }
 
-void Arcemu::Gossip::PetTrainer::OnSelectOption(Object* pObject, Player* Plr, uint32 Id, const char* EnteredCode)
+void Arcemu::Gossip::PetTrainer::OnSelectOption(Object* pObject, Player* Plr, uint32 Id, const char* /*EnteredCode*/)
 {
 	if(1 == Id)
 		Plr->GetSession()->SendTrainerList(TO_CREATURE(pObject));
@@ -654,9 +654,8 @@ void Arcemu::Gossip::ClassTrainer::OnHello(Object* pObject, Player* Plr)
 	menu.StackSend<256>(Plr);
 }
 
-void Arcemu::Gossip::ClassTrainer::OnSelectOption(Object* pObject, Player* Plr, uint32 Id, const char* EnteredCode)
+void Arcemu::Gossip::ClassTrainer::OnSelectOption(Object* pObject, Player* Plr, uint32 Id, const char* /*EnteredCode*/)
 {
-	const char* purchaseconfirm;
 	switch(Id)
 	{
 		case 1:
@@ -670,7 +669,6 @@ void Arcemu::Gossip::ClassTrainer::OnSelectOption(Object* pObject, Player* Plr, 
 			Plr->SendTalentResetConfirm();
 			break;
 		case 4:
-			purchaseconfirm = "Are you sure you would like to purchase your second talent specialization?";
             Gossip::Menu::SendQuickMenu(pObject->GetGUID(), TXTID_DUALSPECPURCHASE, Plr, 5, Gossip::ICON_CHAT, 
                 Plr->GetSession()->LocalizedWorldSrv(WORLDSTRING_PURCHASE_DUAL_TALENT_SPEC), 
                 10000000, Plr->GetSession()->LocalizedWorldSrv(WORLDSTRING_ARE_YOU_SURE_PURCHASE_DUAL_TALENT));
@@ -706,7 +704,7 @@ void Arcemu::Gossip::Generic::OnHello(Object* pObject, Player* Plr)
 	menu.StackSend<256>(Plr);
 }
 
-void Arcemu::Gossip::Generic::OnSelectOption(Object* pObject, Player* Plr, uint32 Id, const char* EnteredCode)
+void Arcemu::Gossip::Generic::OnSelectOption(Object* /*pObject*/, Player* /*Plr*/, uint32 /*Id*/, const char* /*EnteredCode*/)
 {
 
 }

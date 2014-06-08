@@ -2238,7 +2238,7 @@ void WorldSession::HandleItemRefundRequestOpcode(WorldPacket & recvPacket)
 			{
 				uint32* played = _player->GetPlayedtime();
 
-				if(played[1] < (RefundEntry.first + 60 * 60 * 2))
+                if(played[1] < uint32(RefundEntry.first + 60 * 60 * 2))
 					ex = dbcItemExtendedCost.LookupEntry(RefundEntry.second);
 			}
 

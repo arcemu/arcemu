@@ -717,7 +717,7 @@ void Guild::SetGuildInformation(const char* szGuildInformation, WorldSession* pC
 }
 
 // adding a member
-void Guild::AddGuildMember(PlayerInfo* pMember, WorldSession* pClient, int32 ForcedRank /* = -1 */)
+void Guild::AddGuildMember(PlayerInfo* pMember, WorldSession* /*pClient*/, int32 ForcedRank /* = -1 */)
 {
 
 	//we don't need useless paranoia checks.

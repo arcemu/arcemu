@@ -227,7 +227,7 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light)
 	if(refundentry.first != 0 && refundentry.second != 0 && GetOwner() != NULL)
 	{
 		uint32* played = GetOwner()->GetPlayedtime();
-		if(played[1] < (refundentry.first + 60 * 60 * 2))
+        if(played[1] < uint32(refundentry.first + 60 * 60 * 2))
 			m_owner->GetItemInterface()->AddRefundable(this, refundentry.second, refundentry.first);
 	}
 
@@ -599,7 +599,7 @@ void Item::SetOwner(Player* owner)
 }
 
 
-int32 Item::AddEnchantment(EnchantEntry* Enchantment, uint32 Duration, bool Perm /* = false */, bool apply /* = true */, bool RemoveAtLogout /* = false */, uint32 Slot_, uint32 RandomSuffix)
+int32 Item::AddEnchantment(EnchantEntry* Enchantment, uint32 Duration, bool /*Perm = false */, bool apply /* = true */, bool RemoveAtLogout /* = false */, uint32 Slot_, uint32 RandomSuffix)
 {
 	int32 Slot = Slot_;
 	m_isDirty = true;
@@ -894,7 +894,7 @@ void Item::EventRemoveEnchantment(uint32 Slot)
 	RemoveEnchantment(Slot);
 }
 
-int32 Item::FindFreeEnchantSlot(EnchantEntry* Enchantment, uint32 random_type)
+int32 Item::FindFreeEnchantSlot(EnchantEntry* /*Enchantment*/, uint32 random_type)
 {
 	uint32 GemSlotsReserve = GetSocketsCount();
 	if(GetProto()->SocketBonus)

@@ -272,7 +272,7 @@ void Auction::AddToPacket(WorldPacket & data)
 
 }
 
-void AuctionHouse::SendBidListPacket(Player* plr, WorldPacket* packet)
+void AuctionHouse::SendBidListPacket(Player* plr, WorldPacket* /*packet*/)
 {
 	WorldPacket data(SMSG_AUCTION_BIDDER_LIST_RESULT, 4 + 4 + 4);
 	data << uint32(0);		// placeholder
@@ -317,7 +317,7 @@ void AuctionHouse::UpdateOwner(uint32 oldGuid, uint32 newGuid)
 	auctionLock.ReleaseWriteLock();
 }
 
-void AuctionHouse::SendOwnerListPacket(Player* plr, WorldPacket* packet)
+void AuctionHouse::SendOwnerListPacket(Player* plr, WorldPacket* /*packet*/)
 {
 	uint32 count = 0;
 

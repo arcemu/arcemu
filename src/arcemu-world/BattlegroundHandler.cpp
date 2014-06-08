@@ -46,7 +46,7 @@ void WorldSession::HandleBattlefieldPortOpcode(WorldPacket & recv_data)
 	}
 }
 
-void WorldSession::HandleBattlefieldStatusOpcode(WorldPacket & recv_data)
+void WorldSession::HandleBattlefieldStatusOpcode(WorldPacket & /*recv_data*/)
 {
 	CHECK_INWORLD_RETURN
 
@@ -127,7 +127,7 @@ void WorldSession::HandleBattleMasterHelloOpcode(WorldPacket & recv_data)
 	SendBattlegroundList(bm, 0);
 }
 
-void WorldSession::HandleLeaveBattlefieldOpcode(WorldPacket & recv_data)
+void WorldSession::HandleLeaveBattlefieldOpcode(WorldPacket & /*recv_data*/)
 {
 	CHECK_INWORLD_RETURN
 
@@ -177,7 +177,7 @@ void WorldSession::HandleAreaSpiritHealerQueueOpcode(WorldPacket & recv_data)
 	_player->CastSpell(_player, 2584, true);
 }
 
-void WorldSession::HandleBattlegroundPlayerPositionsOpcode(WorldPacket & recv_data)
+void WorldSession::HandleBattlegroundPlayerPositionsOpcode(WorldPacket & /*recv_data*/)
 {
 	CHECK_INWORLD_RETURN
 
@@ -362,7 +362,7 @@ void WorldSession::HandleInspectArenaStatsOpcode(WorldPacket & recv_data)
 }
 
 
-void WorldSession::HandlePVPLogDataOpcode(WorldPacket & recv_data)
+void WorldSession::HandlePVPLogDataOpcode(WorldPacket & /*recv_data*/)
 {
 	CHECK_INWORLD_RETURN;
 	if(_player->m_bg)

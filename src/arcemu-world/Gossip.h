@@ -223,9 +223,9 @@ namespace Arcemu
 				friend StackBuffer<size>& operator<<(StackBuffer<size>&, const Gossip::Menu &);
 
 			protected:
+                uint64 guid_;
 				uint32 textid_;
 				uint32 language_;	//For localized quest texts.
-				uint64 guid_;
 				Gossip::ItemList itemlist_;	//Contains non quest items.
 				Gossip::QuestList questlist_;	//Contains the quests, it's filled up then added to the packet when it comes to send.
 		};

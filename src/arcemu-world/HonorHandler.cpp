@@ -314,12 +314,12 @@ bool ChatHandler::HandlePVPCreditCommand(const char* args, WorldSession* m_sessi
 	return true;
 }
 
-bool ChatHandler::HandleGlobalHonorDailyMaintenanceCommand(const char* args, WorldSession* m_session)
+bool ChatHandler::HandleGlobalHonorDailyMaintenanceCommand(const char* /*args*/, WorldSession* /*m_session*/)
 {
 	return false;
 }
 
-bool ChatHandler::HandleNextDayCommand(const char* args, WorldSession* m_session)
+bool ChatHandler::HandleNextDayCommand(const char* /*args*/, WorldSession* /*m_session*/)
 {
 	return false;
 }
