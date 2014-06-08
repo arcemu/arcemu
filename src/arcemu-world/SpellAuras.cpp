@@ -859,16 +859,10 @@ void Aura::Remove()
 
 	// remove attacker
 	Unit* caster = GetUnitCaster();
-	if(caster != NULL)
+	if( caster != NULL && caster != m_target && !caster->isAlive() )
 	{
-		if(caster != m_target)
-		{
-			if (!caster->isAlive())
-			{
-				caster->CombatStatus.RemoveAttackTarget(m_target);
-				m_target->CombatStatus.RemoveAttacker(caster, caster->GetGUID());
-			}
-		}
+		caster->CombatStatus.RemoveAttackTarget(m_target);
+		m_target->CombatStatus.RemoveAttacker(caster, caster->GetGUID());
 	}
 	else
 		m_target->CombatStatus.RemoveAttacker(NULL, m_casterGuid);
