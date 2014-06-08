@@ -1577,7 +1577,7 @@ void WorldSession::SendRefundInfo(uint64 GUID)
 
 		uint32* played = _player->GetPlayedtime();
 
-		if(played[1] > (RefundEntry.first + 60 * 60 * 2))
+        if(played[1] > uint32((RefundEntry.first + 60 * 60 * 2)))
 			packet << uint32(0);
 		else
 			packet << uint32(RefundEntry.first);
@@ -1616,7 +1616,7 @@ void WorldSession::HandleLearnTalentOpcode(WorldPacket & recv_data)
 
 }
 
-void WorldSession::HandleUnlearnTalents(WorldPacket & recv_data)
+void WorldSession::HandleUnlearnTalents(WorldPacket & /*recv_data*/)
 {
 	CHECK_INWORLD_RETURN
 	uint32 price =

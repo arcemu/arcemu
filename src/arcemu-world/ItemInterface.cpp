@@ -381,7 +381,7 @@ bool ItemInterface::IsBagSlot(int16 slot)
 Item* ItemInterface::SafeRemoveAndRetreiveItemFromSlot(int8 ContainerSlot, int16 slot, bool destroy)
 {
 	ARCEMU_ASSERT(slot < MAX_INVENTORY_SLOT);
-	ARCEMU_ASSERT(ContainerSlot < MAX_INVENTORY_SLOT);
+    ARCEMU_ASSERT(ContainerSlot < int8(MAX_INVENTORY_SLOT));
 	Item* pItem = NULL;
 
 	if(ContainerSlot == INVENTORY_SLOT_NOT_SET)
@@ -551,7 +551,7 @@ Item* ItemInterface::SafeRemoveAndRetreiveItemByGuid(uint64 guid, bool destroy)
 bool ItemInterface::SafeFullRemoveItemFromSlot(int8 ContainerSlot, int16 slot)
 {
 	ARCEMU_ASSERT(slot < MAX_INVENTORY_SLOT);
-	ARCEMU_ASSERT(ContainerSlot < MAX_INVENTORY_SLOT);
+    ARCEMU_ASSERT(ContainerSlot < int8(MAX_INVENTORY_SLOT));
 
 	if(ContainerSlot == INVENTORY_SLOT_NOT_SET)
 	{

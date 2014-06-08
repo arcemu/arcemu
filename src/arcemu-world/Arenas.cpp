@@ -99,7 +99,7 @@ void Arena::OnAddPlayer(Player* plr)
 	plr->m_deathVision = true;
 
 	// remove all buffs (exclude talents, include flasks)
-	for(uint8 x = MAX_REMOVABLE_AURAS_START; x < MAX_REMOVABLE_AURAS_END; x++)
+    for(uint8 x = uint8(MAX_REMOVABLE_AURAS_START); x < uint8(MAX_REMOVABLE_AURAS_END); x++)
 	{
 		if(plr->m_auras[x])
 		{

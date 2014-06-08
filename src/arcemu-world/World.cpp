@@ -342,7 +342,7 @@ bool World::SetInitialWorldSettings()
 	{
 		AreaTable* at = *itr;
 
-		uint32 area_ = at->AreaId;
+        // uint32 area_ = at->AreaId;
 		uint32 flag_ = at->explorationFlag;
 		uint32 zone_ = at->ZoneId;
 
@@ -779,7 +779,7 @@ void World::SendWorldWideScreenText(const char* text, WorldSession* self)
 	SendGlobalMessage(&data, self);
 }
 
-void World::UpdateSessions(uint32 diff)
+void World::UpdateSessions(uint32 /*diff*/)
 {
 	SessionSet::iterator itr, it2;
 	WorldSession* session;

@@ -1712,7 +1712,7 @@ void AIInterface::SendMoveToPacket()
 				float tmpz = (midz - m_currentMoveSpline[i].pos.z) * 4;
 
 				//pack it
-                data << (uint32((int(tmpx) & 0x7FF) | ((int(tmpy) & 0x7FF) << 11) | ((int(tmpz) & 0x3FF))) << 22);
+                data << uint32((int(tmpx) & 0x7FF) | ((int(tmpy) & 0x7FF) << 11) | ((int(tmpz) & 0x3FF))) << 22;
 			}
 		}
 	}

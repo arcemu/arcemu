@@ -316,10 +316,10 @@ bool Master::Run(int argc, char** argv)
 
 	ConsoleThread* console = new ConsoleThread();
 	ThreadPool.ExecuteTask(console);
-
+/*
 	uint32 realCurrTime, realPrevTime;
 	realCurrTime = realPrevTime = getMSTime();
-
+*/
 	// Socket loop!
 	uint32 start;
 	uint32 diff;

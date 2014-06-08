@@ -717,7 +717,8 @@ Unit::~Unit()
 	tmpAura.clear();
 
 	for(std::list<SpellProc*>::iterator itr = m_procSpells.begin(); itr != m_procSpells.end(); ++itr)
-		delete *itr;
+        delete (*itr);
+
 	m_procSpells.clear();
 
 	m_singleTargetAura.clear();
@@ -5898,7 +5899,7 @@ uint32 Unit::FindAuraCountByHash(uint32 HashName, uint32 maxcount)
 	return count;
 }
 
-AuraCheckResponse Unit::AuraCheck(SpellEntry* proto, Object* caster)
+AuraCheckResponse Unit::AuraCheck(SpellEntry* proto, Object* /*caster*/)
 {
 	AuraCheckResponse resp;
 
@@ -5953,7 +5954,7 @@ AuraCheckResponse Unit::AuraCheck(SpellEntry* proto, Object* caster)
 }
 
 
-AuraCheckResponse Unit::AuraCheck(SpellEntry* proto, Aura* aur, Object* caster)
+AuraCheckResponse Unit::AuraCheck(SpellEntry* proto, Aura* aur, Object* /*caster*/)
 {
 	AuraCheckResponse resp;
 	SpellEntry* aura_sp = aur->GetSpellProto();
@@ -7322,7 +7323,7 @@ void CombatStatusHandler::AttackersForgetHate()
 	}
 }
 
-void Unit::CancelSpell(Spell* ptr)
+void Unit::CancelSpell(Spell* /*ptr*/)
 {
 	/*
 		if(ptr)
@@ -7339,7 +7340,7 @@ void Unit::CancelSpell(Spell* ptr)
 	}
 }
 
-void Unit::EventStrikeWithAbility(uint64 guid, SpellEntry* sp, uint32 damage)
+void Unit::EventStrikeWithAbility(uint64 guid, SpellEntry* sp, uint32 /*damage*/)
 {
 	Unit* victim = m_mapMgr ? m_mapMgr->GetUnit(guid) : NULL;
 	if(victim)
@@ -7936,12 +7937,12 @@ SpellProc* Unit::GetProcTriggerSpell(uint32 spellId, uint64 casterGuid)
 	return NULL;
 }
 
-void Unit::RemoveProcTriggerSpell(uint32 spellId, uint64 casterGuid, uint64 misc)
+void Unit::RemoveProcTriggerSpell(uint32 spellId, uint64 casterGuid, uint64 /*misc*/)
 {
 	for(std::list<SpellProc*>::iterator itr = m_procSpells.begin(); itr != m_procSpells.end(); ++itr)
 	{
 		SpellProc* sp = *itr;
-		if(sp->CanDelete(spellId, casterGuid, misc))
+        if(sp->CanDelete(spellId, casterGuid))
 		{
 			sp->mDeleted = true;
 			return;
@@ -7949,8 +7950,8 @@ void Unit::RemoveProcTriggerSpell(uint32 spellId, uint64 casterGuid, uint64 misc
 	}
 }
 
-void Unit::TakeDamage(Unit* pAttacker, uint32 damage, uint32 spellid, bool no_remove_auras) {}
-void Unit::Die(Unit* pAttacker, uint32 damage, uint32 spellid) {}
+void Unit::TakeDamage(Unit* /*pAttacker*/, uint32 /*damage*/, uint32 /*spellid*/, bool /*no_remove_auras*/) {}
+void Unit::Die(Unit* /*pAttacker*/, uint32 /*damage*/, uint32 /*spellid*/) {}
 
 void Unit::SendPeriodicAuraLog(const WoWGuid & CasterGUID, const WoWGuid & TargetGUID, uint32 SpellID, uint32 School, uint32 Amount, uint32 abs_dmg, uint32 resisted_damage, uint32 Flags, bool is_critical)
 {
@@ -8242,7 +8243,7 @@ bool Unit::IsCriticalHealForSpell(Object* victim, SpellEntry* spell)
 	return Rand(crit_chance);
 }
 
-float Unit::GetCriticalHealBonusForSpell(Object* victim, SpellEntry* spell, float amount)
+float Unit::GetCriticalHealBonusForSpell(Object* /*victim*/, SpellEntry* spell, float amount)
 {
 	int32 critical_bonus = 100;
 	if(spell->SpellGroupType)
@@ -8331,7 +8332,7 @@ void Unit::SendHopOnVehicle( Unit *vehicleowner, uint32 seat ){
 	SendMessageToSet( &data, true );
 }
 
-void Unit::SendHopOffVehicle( Unit *vehicleowner, LocationVector &landposition ){
+void Unit::SendHopOffVehicle( Unit *vehicleowner, LocationVector & /*landposition*/ ){
 	WorldPacket data(SMSG_MONSTER_MOVE, 1+12+4+1+4+4+4+12+8 );
 	data << GetNewGUID();
 

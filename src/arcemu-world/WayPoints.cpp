@@ -212,7 +212,7 @@ bool ChatHandler::HandleWPShowCommand(const char* args, WorldSession* m_session)
 	return true;
 }
 
-bool ChatHandler::HandleWPDeleteCommand(const char* args, WorldSession* m_session)
+bool ChatHandler::HandleWPDeleteCommand(const char* /*args*/, WorldSession* m_session)
 {
 	uint64 guid = m_session->GetPlayer()->GetSelection();
 	if(guid == 0)
@@ -371,7 +371,7 @@ bool ChatHandler::HandleWPFlagsCommand(const char* args, WorldSession* m_session
 	return true;
 }
 
-bool ChatHandler::HandleWPMoveHereCommand(const char* args, WorldSession* m_session)
+bool ChatHandler::HandleWPMoveHereCommand(const char* /*args*/, WorldSession* m_session)
 {
 	uint64 guid = m_session->GetPlayer()->GetSelection();
 	if(guid == 0)
@@ -605,7 +605,7 @@ bool ChatHandler::HandleWPSkinCommand(const char* args, WorldSession* m_session)
 	return true;
 }
 
-bool ChatHandler::HandleWPInfoCommand(const char* args, WorldSession* m_session)
+bool ChatHandler::HandleWPInfoCommand(const char* /*args*/, WorldSession* m_session)
 {
 	uint64 guid = m_session->GetPlayer()->GetSelection();
 	if(guid == 0)
@@ -663,7 +663,7 @@ bool ChatHandler::HandleWPInfoCommand(const char* args, WorldSession* m_session)
 	return true;
 }
 
-bool ChatHandler::HandleWPHideCommand(const char* args, WorldSession* m_session)
+bool ChatHandler::HandleWPHideCommand(const char* /*args*/, WorldSession* m_session)
 {
 	uint64 guid = m_session->GetPlayer()->GetSelection();
 	if(guid == 0)
@@ -782,7 +782,7 @@ bool ChatHandler::HandleGenerateWaypoints(const char* args, WorldSession* m_sess
 	return true;
 }
 
-bool ChatHandler::HandleSaveWaypoints(const char* args, WorldSession* m_session)
+bool ChatHandler::HandleSaveWaypoints(const char* /*args*/, WorldSession* m_session)
 {
 	Creature* cr = m_session->GetPlayer()->GetMapMgr()->GetCreature(GET_LOWGUID_PART(m_session->GetPlayer()->GetSelection()));
 	if(!cr || !cr->GetSQL_id())
@@ -802,7 +802,7 @@ bool ChatHandler::HandleSaveWaypoints(const char* args, WorldSession* m_session)
 }
 
 
-bool ChatHandler::HandleDeleteWaypoints(const char* args, WorldSession* m_session)
+bool ChatHandler::HandleDeleteWaypoints(const char* /*args*/, WorldSession* m_session)
 {
 	Creature* cr =
 	    m_session->GetPlayer()->GetMapMgr()->GetCreature(GET_LOWGUID_PART(m_session->GetPlayer()->GetSelection()));
@@ -912,7 +912,7 @@ bool ChatHandler::HandleWaypointAddFlyCommand(const char* args, WorldSession* m_
 	return true;
 }
 
-bool ChatHandler::HandleNpcSelectCommand(const char* args, WorldSession* m_session)
+bool ChatHandler::HandleNpcSelectCommand(const char* /*args*/, WorldSession* m_session)
 {
 	Creature* un = NULL;
 	float dist = 999999.0f;

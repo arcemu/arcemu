@@ -111,7 +111,7 @@ void WorldSession::HandleInviteToGuild(WorldPacket & recv_data)
 	plyr->SetGuildInvitersGuid(_player->GetLowGUID());
 }
 
-void WorldSession::HandleGuildAccept(WorldPacket & recv_data)
+void WorldSession::HandleGuildAccept(WorldPacket & /*recv_data*/)
 {
 	CHECK_INWORLD_RETURN
 

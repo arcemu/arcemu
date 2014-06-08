@@ -162,7 +162,7 @@ void WordFilter::Load(const char* szTableName)
 	m_filterCount = i;
 }
 
-bool WordFilter::Parse(string & sMessage, bool bAllowReplace /* = true */)
+bool WordFilter::Parse(string & sMessage, bool /*bAllowReplace = true */)
 {
 #define N 10
 #define NC (N*3)
