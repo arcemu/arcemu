@@ -69,7 +69,7 @@ namespace Arcemu
                 AtomicULong(const AtomicULong & /*other*/) {}
 
 				// Disabled assignment operator
-				AtomicULong operator=(AtomicULong & other) { return *this; }
+                AtomicULong operator=(AtomicULong & /*other*/) { return *this; }
 
 
 			protected:

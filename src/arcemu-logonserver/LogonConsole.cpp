@@ -23,7 +23,7 @@
 initialiseSingleton(LogonConsole);
 bool Rehash();
 
-void LogonConsole::TranslateRehash(char* str)
+void LogonConsole::TranslateRehash(char* /*str*/)
 {
 	sLog.outString("rehashing config file...");
 	Rehash();
@@ -152,13 +152,13 @@ void LogonConsole::ProcessCmd(char* cmd)
 	printf("Console: Unknown console command (use \"help\" for help).\n");
 }
 
-void LogonConsole::ReloadAccts(char* str)
+void LogonConsole::ReloadAccts(char* /*str*/)
 {
 	AccountMgr::getSingleton().ReloadAccounts(false);
 	IPBanner::getSingleton().Reload();
 }
 
-void LogonConsole::NetworkStatus(char* str)
+void LogonConsole::NetworkStatus(char* /*str*/)
 {
 	sSocketMgr.ShowStatus();
 }
@@ -174,13 +174,13 @@ void LogonConsole::TranslateQuit(char* str)
 
 	ProcessQuit(delay);
 }
-void LogonConsole::ProcessQuit(int delay)
+void LogonConsole::ProcessQuit(int /*delay*/)
 {
 	mrunning.SetVal(false);
 }
 //------------------------------------------------------------------------------
 // help | ?
-void LogonConsole::TranslateHelp(char* str)
+void LogonConsole::TranslateHelp(char* /*str*/)
 {
 	ProcessHelp(NULL);
 }
@@ -198,7 +198,7 @@ void LogonConsole::ProcessHelp(char* command)
 	}
 }
 
-void LogonConsole::Info(char* str)
+void LogonConsole::Info(char* /*str*/)
 {
 	std::cout << "LogonServer information" << std::endl;
 	std::cout << "-----------------------" << std::endl;

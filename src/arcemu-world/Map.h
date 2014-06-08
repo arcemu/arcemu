@@ -146,11 +146,11 @@ class SERVER_DECL Map
 		uint32 CreatureSpawnCount;
 		uint32 GameObjectSpawnCount;
 
-		ARCEMU_INLINE void CellGoneActive(uint32 x, uint32 y)
+        ARCEMU_INLINE void CellGoneActive(uint32 /*x*/, uint32 /*y*/)
 		{
 		}
 
-		ARCEMU_INLINE void CellGoneIdle(uint32 x, uint32 y)
+        ARCEMU_INLINE void CellGoneIdle(uint32 /*x*/, uint32 /*y*/)
 		{
 		}
 

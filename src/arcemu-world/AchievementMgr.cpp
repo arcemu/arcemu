@@ -112,7 +112,7 @@ bool SaveAchievementProgressToDB(const CriteriaProgress* c)
 /**
 	true if the achievement should be shown; false otherwise
 */
-bool ShowCompletedAchievement(uint32 achievementID, const Player* plr)
+bool ShowCompletedAchievement(uint32 achievementID, const Player* /*plr*/)
 {
 	switch(achievementID)
 	{
@@ -155,7 +155,7 @@ bool ShowCompletedAchievement(uint32 achievementID, const Player* plr)
 			{
 				if(QueryResult* achievementResult = CharacterDatabase.Query("SELECT guid FROM character_achievement WHERE achievement=%u ORDER BY date LIMIT 1", achievementID))
 				{
-					if(Field* field = achievementResult->Fetch())
+                    if(achievementResult->Fetch())
 					{
 						delete achievementResult;
 						return false;
@@ -539,7 +539,7 @@ void AchievementMgr::CheckAllAchievementCriteria()
 	miscvalue1, miscvalue2 depend on the achievement type.
 	Generally, miscvalue1 is an ID of some type (quest ID, item ID, faction ID, etc.), and miscvalue2 is the amount to increase the progress.
 */
-void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, int32 miscvalue1, int32 miscvalue2, uint32 time)
+void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, int32 miscvalue1, int32 miscvalue2, uint32 /*time*/)
 {
 	if( m_player->GetSession()->HasGMPermissions() && sWorld.gamemaster_disableachievements )
 		return;
@@ -1520,7 +1520,7 @@ AchievementCompletionState AchievementMgr::GetAchievementCompletionState(Achieve
 	Sets progress of the achievement criteria.
 	If relative argument is true, this behaves the same as UpdateCriteriaProgress.
 */
-void AchievementMgr::SetCriteriaProgress(AchievementCriteriaEntry const* entry, int32 newValue, bool relative)
+void AchievementMgr::SetCriteriaProgress(AchievementCriteriaEntry const* entry, int32 newValue, bool /*relative*/)
 {
 	CriteriaProgress* progress = NULL;
 

@@ -86,7 +86,7 @@ class SERVER_DECL CBattleground : public EventableObject
 		/* Hook Functions */
 		virtual void HookOnPlayerDeath(Player* plr) = 0;
 
-		virtual void HookOnPlayerResurrect( Player *player ){}
+        virtual void HookOnPlayerResurrect( Player* /*player*/ ){}
 
 		/* Repopping - different battlegrounds have different ways of handling this */
 		virtual bool HookHandleRepop(Player* plr) = 0;
@@ -115,7 +115,7 @@ class SERVER_DECL CBattleground : public EventableObject
 		/* On Unit Killing */
 		virtual void HookOnUnitKill(Player* plr, Unit* pVictim) = 0;
 
-		virtual void HookOnUnitDied( Unit *victim ){}
+        virtual void HookOnUnitDied( Unit* /*victim*/ ){}
 
 		/* Retrieval Functions */
 		uint32 GetId() { return m_id; }
@@ -205,15 +205,15 @@ class SERVER_DECL CBattleground : public EventableObject
 		void RemovePlayerFromResurrect(Player* plr, Creature* spirit_healer);
 		void EventResurrectPlayers();
 		virtual bool CanPlayerJoin(Player* plr, uint32 type);
-		virtual bool CreateCorpse(Player* plr) { return true; }
-		virtual bool HookSlowLockOpen(GameObject* pGo, Player* pPlayer, Spell* pSpell) { return false; }
-		virtual bool HookQuickLockOpen( GameObject *go, Player *player, Spell *spell ){ return false; }
+        virtual bool CreateCorpse(Player* /*plr*/) { return true; }
+        virtual bool HookSlowLockOpen(GameObject* /*pGo*/, Player* /*pPlayer*/, Spell* /*pSpell*/) { return false; }
+        virtual bool HookQuickLockOpen( GameObject* /*go*/, Player* /*player*/, Spell* /*spell*/ ){ return false; }
 
 		void BuildPvPUpdateDataPacket(WorldPacket* data);
 		virtual uint8 Rated() { return 0; }
 		void OnPlayerPushed(Player* plr);
 
-		virtual void SetIsWeekend(bool isweekend) {}
+        virtual void SetIsWeekend(bool /*isweekend*/) {}
 		void QueueAtNearestSpiritGuide(Player* plr, Creature* old);
 
 		/////////////////////////////////////////////////////////////////////////
@@ -229,6 +229,6 @@ class SERVER_DECL CBattleground : public EventableObject
 		//
 		//
 		/////////////////////////////////////////////////////////////////////////
-		virtual uint64 GetFlagHolderGUID( uint32 faction ) const{ return 0; }
+        virtual uint64 GetFlagHolderGUID( uint32 /*faction*/ ) const{ return 0; }
 };
 

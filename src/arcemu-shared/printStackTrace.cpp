@@ -22,7 +22,7 @@
  * Prints stack trace to user defined buffer.
  * Always terminates the buffer with 0.
  */
-extern SERVER_DECL void printStackTrace(char* buffer, int bufferSize)
+extern SERVER_DECL void printStackTrace(char* /*buffer*/, int /*bufferSize*/)
 {
 #if defined(WIN32) && defined(_DEBUG)
 	// find out map file name

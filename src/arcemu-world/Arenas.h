@@ -63,12 +63,12 @@ protected:
 				return CBattleground::CanPlayerJoin(plr, type);
 		}
 
-		bool CreateCorpse(Player* plr) { return false; }
+        bool CreateCorpse(Player* /*plr*/) { return false; }
 
 		/* dummy stuff */
-		void HookOnMount(Player* plr) {}
-		void HookFlagDrop(Player* plr, GameObject* obj) {}
-		void HookFlagStand(Player* plr, GameObject* obj) {}
+        void HookOnMount(Player* /*plr*/) {}
+        void HookFlagDrop(Player* /*plr*/, GameObject* /*obj*/) {}
+        void HookFlagStand(Player* /*plr*/, GameObject* /*obj*/) {}
 		void HookOnAreaTrigger(Player* plr, uint32 id);
 
 		int32 GetFreeTeam()

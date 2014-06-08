@@ -120,12 +120,12 @@ class PlayerCache : public Arcemu::Shared::CRefCounter
 		size_t GetSize64(uint32 field) { m_set64lock.Acquire(); size_t ret = m_map64fields[field].size(); m_set64lock.Release(); return ret; }
 		//64bit guid lists
 		//These functions request the field you're going to use, so we can turn them into an array of mutexes if needed. Scalability testing needs done first :P
-		void AcquireLock64(uint32 field) { m_set64lock.Acquire(); }
-		void ReleaseLock64(uint32 field) { m_set64lock.Release(); }
+        void AcquireLock64(uint32 /*field*/) { m_set64lock.Acquire(); }
+        void ReleaseLock64(uint32 /*field*/) { m_set64lock.Release(); }
 		//Set64 iterators, you must have the lock before using these!
-		PlayerCacheMap::iterator Begin64(uint32 field) { return m_map64fields[field].begin(); }
-		PlayerCacheMap::iterator End64(uint32 field) { return m_map64fields[field].end(); }
-		PlayerCacheMap::iterator Find64(uint32 field, uint64 value) { return m_map64fields[field].find(value); }
+        PlayerCacheMap::iterator Begin64(uint32 field) { return m_map64fields[field].begin(); }
+        PlayerCacheMap::iterator End64(uint32 field) { return m_map64fields[field].end(); }
+        PlayerCacheMap::iterator Find64(uint32 field, uint64 value) { return m_map64fields[field].find(value); }
 
 
 		//Queues a packet to send to the player. The packet must be created using the new operator, and SendPacket takes ownership of the packet.

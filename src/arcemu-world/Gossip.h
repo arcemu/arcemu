@@ -236,9 +236,9 @@ namespace Arcemu
 				Script() {}
 				virtual ~Script() {}
 
-				virtual void OnHello(Object* pObject, Player* Plr) = 0;
-				virtual void OnSelectOption(Object* pObject, Player* Plr, uint32 Id, const char* EnteredCode) {}
-				virtual void OnEnd(Object* pObject, Player* Plr) {}
+                virtual void OnHello(Object* pObject, Player* Plr) = 0;
+                virtual void OnSelectOption(Object* /*pObject*/, Player* /*Plr*/, uint32 /*Id*/, const char* /*EnteredCode*/) {}
+                virtual void OnEnd(Object* /*pObject*/, Player* /*Plr*/) {}
 				virtual void Destroy();
 
 				static Script* GetInterface(Creature*);
