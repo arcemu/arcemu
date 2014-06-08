@@ -660,7 +660,7 @@ void QuestMgr::BuildQuestList(WorldPacket* data, Object* qst_giver, Player* plr,
 				}
 				*data << int32((*it)->qst->questlevel);
 				*data << uint32((*it)->qst->quest_flags);
-				*data << uint8(0);   // According to MANGOS: "changes icon: blue question or yellow exclamation"
+				*data << uint8((*it)->qst->is_repeatable); // According to MANGOS: "changes icon: blue question or yellow exclamation"
 
 				if(lq)
 					*data << lq->Title;
