@@ -1528,13 +1528,14 @@ void AchievementMgr::SetCriteriaProgress(AchievementCriteriaEntry const* entry, 
 	{
 		if(newValue < 1)
 			return;
-
-		if(progress = new CriteriaProgress(entry->ID, newValue))
+        progress = new CriteriaProgress(entry->ID, newValue);
+        if(progress)
 			m_criteriaProgress[entry->ID] = progress;
 	}
 	else
 	{
-		if (progress = m_criteriaProgress[entry->ID])
+        progress = m_criteriaProgress[entry->ID];
+        if (progress)
 		{
 			if (progress->counter == newValue)
 				return;
@@ -1559,13 +1560,14 @@ void AchievementMgr::UpdateCriteriaProgress(AchievementCriteriaEntry const* entr
 	{
 		if(updateByValue < 1)
 			return;
-
-		if(progress = new CriteriaProgress(entry->ID, updateByValue))
+        progress = new CriteriaProgress(entry->ID, updateByValue);
+        if(progress)
 			m_criteriaProgress[entry->ID] = progress;
 	}
 	else
 	{
-		if(progress = m_criteriaProgress[entry->ID])
+        progress = m_criteriaProgress[entry->ID];
+        if(progress)
 			progress->counter += updateByValue;
 	}
 

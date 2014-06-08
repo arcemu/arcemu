@@ -55,13 +55,7 @@ class SpellProc
 		}
 
 		// Check if this object is identified by method arguments, so it can be deleted
-        virtual bool CanDelete(uint32 spellId, uint64 casterGuid = 0, uint64 misc = 0)
-		{
-			if(mSpell->Id == spellId && (casterGuid == 0 || mCaster == casterGuid) && !mDeleted)
-				return true;
-
-			return false;
-		}
+        virtual bool CanDelete(uint32 spellId, uint64 casterGuid = 0, uint64 misc = 0);
 
 		// Called when is proccing from casting spell. It checks proc class mask with spell group type
 		// Return true allow proc, false otherwise

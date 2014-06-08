@@ -618,10 +618,10 @@ class SERVER_DECL AIInterface
 		uint32 m_currentMoveSplineIndex;
 		uint32 m_currentSplineUpdateCounter;
 		float m_currentSplineFinalOrientation;
+        uint32 m_splinePriority;
 		float m_splinetrajectoryVertical;
 		uint32 m_splinetrajectoryTime;
 		uint32 m_currentSplineTotalMoveTime;
-		uint32 m_splinePriority;
 
 		//Return position after attacking a mob
 		float m_returnX;

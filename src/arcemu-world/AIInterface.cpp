@@ -3864,7 +3864,7 @@ void AIInterface::EventEnterCombat(Unit* pUnit, uint32 misc1)
 	m_Unit->smsg_AttackStart(pUnit);
 }
 
-void AIInterface::EventLeaveCombat(Unit* pUnit, uint32 misc1)
+void AIInterface::EventLeaveCombat(Unit* pUnit, uint32 /*misc1*/)
 {
 	if(m_AIState == STATE_EVADE)
 		return;
@@ -4019,7 +4019,7 @@ void AIInterface::EventDamageTaken(Unit* pUnit, uint32 misc1)
 	pUnit->CombatStatus.OnDamageDealt(m_Unit);
 }
 
-void AIInterface::EventFollowOwner(Unit* pUnit, uint32 misc1)
+void AIInterface::EventFollowOwner(Unit* /*pUnit*/, uint32 /*misc1*/)
 {
 	if(m_AIState == STATE_EVADE)
 		return;
@@ -4043,7 +4043,7 @@ void AIInterface::EventFollowOwner(Unit* pUnit, uint32 misc1)
 	SetRun();
 }
 
-void AIInterface::EventFear(Unit* pUnit, uint32 misc1)
+void AIInterface::EventFear(Unit* pUnit, uint32 /*misc1*/)
 {
 	if(!pUnit)
 		return;
@@ -4074,7 +4074,7 @@ void AIInterface::EventFear(Unit* pUnit, uint32 misc1)
 	resetNextTarget();
 }
 
-void AIInterface::EventUnfear(Unit* pUnit, uint32 misc1)
+void AIInterface::EventUnfear(Unit* /*pUnit*/, uint32 /*misc1*/)
 {
 	if(m_AIState == STATE_EVADE)
 		return;
@@ -4086,7 +4086,7 @@ void AIInterface::EventUnfear(Unit* pUnit, uint32 misc1)
 	StopMovement(1);
 }
 
-void AIInterface::EventWander(Unit* pUnit, uint32 misc1)
+void AIInterface::EventWander(Unit* pUnit, uint32 /*misc1*/)
 {
 	if(m_AIState == STATE_EVADE)
 		return;
@@ -4120,7 +4120,7 @@ void AIInterface::EventWander(Unit* pUnit, uint32 misc1)
 	resetNextTarget();
 }
 
-void AIInterface::EventUnwander(Unit* pUnit, uint32 misc1)
+void AIInterface::EventUnwander(Unit* /*pUnit*/, uint32 /*misc1*/)
 {
 	if(m_AIState == STATE_EVADE)
 		return;
@@ -4132,7 +4132,7 @@ void AIInterface::EventUnwander(Unit* pUnit, uint32 misc1)
 	StopMovement(1);
 }
 
-void AIInterface::EventUnitDied(Unit* pUnit, uint32 misc1)
+void AIInterface::EventUnitDied(Unit* pUnit, uint32 /*misc1*/)
 {
 	if(!pUnit)
 		return;
@@ -4244,14 +4244,14 @@ void AIInterface::EventUnitDied(Unit* pUnit, uint32 misc1)
 	//	m_Unit->RemoveNegativeAuras();
 }
 
-void AIInterface::EventHostileAction(Unit* pUnit, uint32 misc1)
+void AIInterface::EventHostileAction(Unit* /*pUnit*/, uint32 /*misc1*/)
 {
 	m_combatResetX = m_Unit->GetPositionX();
 	m_combatResetY = m_Unit->GetPositionY();
 	m_combatResetZ = m_Unit->GetPositionZ();
 }
 
-void AIInterface::MoveKnockback(float x, float y, float z, float horizontal, float vertical)
+void AIInterface::MoveKnockback(float x, float y, float z, float /*horizontal*/, float vertical)
 {
 	HandleEvent(EVENT_FORCEREDIRECTED, NULL, 0);
 	m_splinePriority = SPLINE_PRIORITY_REDIRECTION;
@@ -4288,8 +4288,6 @@ void AIInterface::MoveKnockback(float x, float y, float z, float horizontal, flo
 
 void AIInterface::OnMoveCompleted()
 {
-	uint32 splineflags = m_splineFlags;
-
 	//remove flags that are temporary
 	RemoveSplineFlag(SPLINEFLAG_DONE | SPLINEFLAG_TRAJECTORY | SPLINEFLAG_KNOCKBACK);
 
@@ -4313,7 +4311,7 @@ void AIInterface::MoveEvadeReturn()
 	}
 }
 
-void AIInterface::EventForceRedirected(Unit* pUnit, uint32 misc1)
+void AIInterface::EventForceRedirected(Unit* /*pUnit*/, uint32 /*misc1*/)
 {
 	if(m_AIState == STATE_IDLE)
 		SetReturnPosition();
