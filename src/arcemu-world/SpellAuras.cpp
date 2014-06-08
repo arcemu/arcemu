@@ -2897,6 +2897,13 @@ void Aura::SpellAuraModTotalHealthRegenPct(bool apply)
 	if(apply)
 	{
 		SetPositive();
+		if (GetSpellProto()->Id == 20578 && m_target->IsPlayer())
+		{
+			Player* p_caster = static_cast<Player*>(m_target);
+			p_caster->cannibalize = true;
+			p_caster->cannibalizeCount = 0;
+			p_caster->SetUInt32Value( UNIT_NPC_EMOTESTATE, EMOTE_STATE_CANNIBALIZE);
+		}
 		sEventMgr.AddEvent(this, &Aura::EventPeriodicHealPct, (float)mod->m_amount,
 		    EVENT_AURA_PERIODIC_HEALPERC,	GetSpellProto()->EffectAmplitude[mod->i], 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 	}
