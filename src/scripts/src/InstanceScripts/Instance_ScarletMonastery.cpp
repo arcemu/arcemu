@@ -159,7 +159,7 @@ class DoanAI : public MoonScriptCreatureAI
 			m_bShielded = false;
 		};
 
-		void OnDamageTaken(Unit* mAttacker, uint32 fAmount)
+        void OnDamageTaken(Unit* /*mAttacker*/, uint32 /*fAmount*/)
 		{
 			if(GetHealthPercent() <= 50 && !m_bShielded)
 				Shield();
@@ -286,7 +286,7 @@ class MograineAI : public CreatureAIScript
 
 		}
 
-		void OnCombatStart(Unit* mTarget)
+        void OnCombatStart(Unit* /*mTarget*/)
 		{
 			_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "Infidels. They must be purified!");
 
@@ -295,7 +295,7 @@ class MograineAI : public CreatureAIScript
 			RegisterAIUpdateEvent(_unit->GetUInt32Value(UNIT_FIELD_BASEATTACKTIME));
 		}
 
-		void OnTargetDied(Unit* mTarget)
+        void OnTargetDied(Unit* /*mTarget*/)
 		{
 
 			if(_unit->GetHealthPct() > 0)
@@ -317,14 +317,14 @@ class MograineAI : public CreatureAIScript
 		}
 
 
-		void OnCombatStop(Unit* mTarget)
+        void OnCombatStop(Unit* /*mTarget*/)
 		{
 			_unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
 			_unit->GetAIInterface()->SetAIState(STATE_IDLE);
 			RemoveAIUpdateEvent();
 		}
 
-		void OnDied(Unit* mKiller)
+        void OnDied(Unit* /*mKiller*/)
 		{
 			GameObject*  pDoor = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(1173.01f, 1389.91f, 31.9723f, 104600);
 			if(pDoor == 0)

@@ -22,7 +22,7 @@
 #include <git_version.h>
 #include "ConsoleCommands.h"
 
-bool HandleTimeDateCommand( BaseConsole *console, int /*argc*/, const char *argv[] )
+bool HandleTimeDateCommand( BaseConsole *console, int /*argc*/, const char * /*argv*/[] )
 {
 	time_t unixTime = UNIXTIME;
 
@@ -39,7 +39,7 @@ bool HandleTimeDateCommand( BaseConsole *console, int /*argc*/, const char *argv
 	return true;
 }
 
-bool HandleInfoCommand(BaseConsole* pConsole, int /*argc*/, const char* /*argv[]*/)
+bool HandleInfoCommand(BaseConsole* pConsole, int /*argc*/, const char* argv[])
 {
 	uint32 clientsNum = (uint32)sWorld.GetSessionCount();
 	int gm = 0;
@@ -76,13 +76,13 @@ bool HandleInfoCommand(BaseConsole* pConsole, int /*argc*/, const char* /*argv[]
 	return true;
 }
 
-bool HandleNetworkStatusCommand(BaseConsole* pConsole, int /*argc*/, const char* /*argv[]*/)
+bool HandleNetworkStatusCommand(BaseConsole* /*pConsole*/, int /*argc*/, const char* argv[])
 {
 	sSocketMgr.ShowStatus();
 	return true;
 }
 
-bool HandleGMsCommand(BaseConsole* pConsole, int /*argc*/, const char* /*argv[]*/)
+bool HandleGMsCommand(BaseConsole* pConsole, int /*argc*/, const char* argv[])
 {
 	WorldPacket data;
 	//bool first = true;

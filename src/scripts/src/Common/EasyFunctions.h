@@ -42,7 +42,7 @@ class SCRIPT_DECL EasyFunctions
 			return easy_singleton;
 		}
 
-		void PrintMessage(const char* text, ...)
+        void PrintMessage(const char* /*text*/, ...)
 		{
 #ifdef ENABLE_DEBUG_TEXT
 			va_list arg;

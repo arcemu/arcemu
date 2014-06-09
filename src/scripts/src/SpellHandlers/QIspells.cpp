@@ -19,38 +19,34 @@
 #include "Setup.h"
 #include "../Common/EasyFunctions.h"
 
-bool CleansingVial(uint32 i, Spell* pSpell)
+bool CleansingVial(uint32 /*i*/, Spell* pSpell)
 {
-	if(pSpell->p_caster == NULL)
-		return true;
-
 	Player* pPlayer = pSpell->p_caster;
+    if(!pPlayer || !pPlayer->HasQuest(9427))
+        return false;
 
-	if(!pPlayer->HasQuest(9427))
-		return true;
-
-	Creature* pAggonar = sEAS.SpawnCreature(pPlayer, 17000, 428.15f, 3461.73f, 63.40f, 0, 0);
-	if(pAggonar != NULL)
-	{
+    if(Creature* pAggonar = sEAS.SpawnCreature(pPlayer, 17000, 428.15f, 3461.73f, 63.40f, 0, 0))
+    {
 		pAggonar->Despawn(6 * 60 * 1000, 0);
-	}
+        return true;
+    }
 
-	return true;
+    return false;
 }
 
-bool SummonCyclonian(uint32 i, Spell* pSpell)
+bool SummonCyclonian(uint32 /*i*/, Spell* pSpell)
 {
-	if(pSpell->u_caster == NULL)
-		return true;
+    Unit* pUnit = pSpell->u_caster;
+    if(!pUnit)
+        return false;
 
-	Unit* pUnit = pSpell->u_caster;
-	Creature* pCreature = pUnit->GetMapMgr()->GetInterface()->SpawnCreature(6239, pUnit->GetPositionX(), pUnit->GetPositionY(), pUnit->GetPositionZ(), pUnit->GetOrientation(), true, false, 0, 0);
-	if(pCreature != NULL)
+    if(Creature* pCreature = pUnit->GetMapMgr()->GetInterface()->SpawnCreature(6239, pUnit->GetPositionX(), pUnit->GetPositionY(), pUnit->GetPositionZ(), pUnit->GetOrientation(), true, false, 0, 0))
 	{
 		pCreature->Despawn(600000, 0);
+        return true;
 	}
 
-	return true;
+    return false;
 }
 
 bool ElementalPowerExtractor(uint32 i, Spell* pSpell)
