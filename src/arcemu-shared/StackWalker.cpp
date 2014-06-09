@@ -28,6 +28,7 @@
 #include <windows.h>
 #include <tchar.h>
 #include <cstdio>
+#pragma warning(disable: 4996)
 #pragma comment(lib, "version.lib")  // for "VerQueryValue"
 
 #include "StackWalker.h"
