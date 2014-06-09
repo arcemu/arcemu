@@ -39,7 +39,7 @@ bool HandleTimeDateCommand( BaseConsole *console, int /*argc*/, const char * /*a
 	return true;
 }
 
-bool HandleInfoCommand(BaseConsole* pConsole, int /*argc*/, const char* argv[])
+bool HandleInfoCommand(BaseConsole* pConsole, int /*argc*/, const char* /*argv*/[])
 {
 	uint32 clientsNum = (uint32)sWorld.GetSessionCount();
 	int gm = 0;
@@ -76,13 +76,13 @@ bool HandleInfoCommand(BaseConsole* pConsole, int /*argc*/, const char* argv[])
 	return true;
 }
 
-bool HandleNetworkStatusCommand(BaseConsole* /*pConsole*/, int /*argc*/, const char* argv[])
+bool HandleNetworkStatusCommand(BaseConsole* /*pConsole*/, int /*argc*/, const char* /*argv*/[])
 {
 	sSocketMgr.ShowStatus();
 	return true;
 }
 
-bool HandleGMsCommand(BaseConsole* pConsole, int /*argc*/, const char* argv[])
+bool HandleGMsCommand(BaseConsole* pConsole, int /*argc*/, const char* /*argv*/[])
 {
 	WorldPacket data;
 	//bool first = true;
@@ -108,7 +108,7 @@ bool HandleGMsCommand(BaseConsole* pConsole, int /*argc*/, const char* argv[])
 }
 
 
-bool HandleOnlinePlayersCommand(BaseConsole* pConsole, int argc, const char* argv[])
+bool HandleOnlinePlayersCommand(BaseConsole* pConsole, int /*argc*/, const char* /*argv*/[])
 {
 	WorldPacket data;
 	//bool first = true;
@@ -139,6 +139,7 @@ void ConcatArgs(string & outstr, int argc, int startoffset, const char* argv[])
 			outstr += " ";
 	}
 }
+
 bool HandleAnnounceCommand(BaseConsole* pConsole, int argc, const char* argv[])
 {
 	char pAnnounce[1024];
@@ -246,7 +247,7 @@ bool HandleShutDownCommand(BaseConsole* pConsole, int argc, const char* argv[])
 	return true;
 }
 
-bool HandleCancelCommand(BaseConsole* pConsole, int argc, const char* argv[])
+bool HandleCancelCommand(BaseConsole* pConsole, int /*argc*/, const char* /*argv*/[])
 {
 	pConsole->Write("Shutdown has been canceled.\r\n");
 	sMaster.m_ShutdownTimer = 5000;
@@ -362,7 +363,7 @@ bool HandleRevivePlayer(BaseConsole* pConsole, int argc, const char* argv[])
 }
 
 
-bool HandleRehashCommand(BaseConsole* pConsole, int argc, const char* argv[])
+bool HandleRehashCommand(BaseConsole* pConsole, int /*argc*/, const char* /*argv*/[])
 {
 	pConsole->Write("Config file re-parsed.");
 	sWorld.Rehash(true);
@@ -380,14 +381,14 @@ bool HandleNameHashCommand(BaseConsole* pConsole, int argc, const char* argv[])
 	return true;
 }
 
-bool HandleClearConsoleCommand(BaseConsole* pConsole, int argc, const char* argv[])
+bool HandleClearConsoleCommand(BaseConsole* pConsole, int /*argc*/, const char* /*argv*/[])
 {
 	system("cls");
 	pConsole->Write("Out of the ashes, Chuck Norris appears! With a roundhouse kick, your console shall now be cleaned!");
 	return true;
 }
 
-bool HandleReloadConsoleCommand(BaseConsole* pConsole, int argc, const char* argv[])
+bool HandleReloadConsoleCommand(BaseConsole* /*pConsole*/, int /*argc*/, const char* /*argv*/[])
 {
 	sWorld.SendWorldText("Support for reloading tables on the fly was disabled in Arcemu revision 3621. You are seeing this message because apparently reading SVN changelog or using forums search is way over the head of some of our users.", 0);
 	return true;

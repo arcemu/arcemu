@@ -164,27 +164,27 @@ class IsleOfConquest : public CBattleground{
 		void SpawnControlPoint( uint32 Id, uint32 Type );
 		void SpawnGraveyard( uint32 id, uint32 team );
 		void Finish( uint32 losingTeam );
-		void HookOnAreaTrigger( Player *plr, uint32 id );
-		void HookOnPlayerDeath( Player *plr );
+        void HookOnAreaTrigger( Player* plr, uint32 id );
+        void HookOnPlayerDeath( Player* plr );
 		void HookOnPlayerResurrect( Player *player );
-		void HookOnPlayerKill(Player* plr, Player* pVictim){}
-		void HookFlagDrop( Player *plr, GameObject *obj ){}
-		void HookOnFlagDrop( Player* plr ){}
-		void HookFlagStand( Player* plr, GameObject* obj ){}
+        void HookOnPlayerKill(Player* /*plr*/, Player* /*pVictim*/) {}
+        void HookFlagDrop( Player* /*plr*/, GameObject* /*obj*/ ) {}
+        void HookOnFlagDrop( Player* /*plr*/ ){}
+        void HookFlagStand( Player* /*plr*/, GameObject* /*obj*/ ) {}
 		bool HookSlowLockOpen( GameObject *pGo, Player* pPlayer, Spell *pSpell );
-		void HookOnMount( Player *plr ){}
-		void HookGenerateLoot(Player* plr, Object* pCorpse){}
-		void OnAddPlayer( Player *plr );
-		void OnRemovePlayer( Player *plr );
+        void HookOnMount( Player* /*plr*/ ){}
+        void HookGenerateLoot(Player* /*plr*/, Object* /*pCorpse*/) {}
+        void OnAddPlayer( Player* plr );
+        void OnRemovePlayer( Player* plr );
 		void HookOnShadowSight();
 		void SetIsWeekend( bool isweekend );
-		void HookOnUnitKill( Player *plr, Unit* pVictim );
-		void HookOnUnitDied( Unit *victim );
+        void HookOnUnitKill( Player* plr, Unit* pVictim );
+        void HookOnUnitDied( Unit* victim );
 		LocationVector GetStartingCoords( uint32 Team );
 		void AddReinforcements( uint32 team, uint32 amount );
 		void RemoveReinforcements( uint32 team, uint32 amount );
 		void UpdateResources();
-		void HookOnHK( Player *plr );
+        void HookOnHK( Player* plr );
 		void AssaultControlPoint( Player *player, uint32 id );
 		void CaptureControlPoint( uint32 id );
 		bool HookHandleRepop( Player *plr );

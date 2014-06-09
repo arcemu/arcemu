@@ -517,7 +517,7 @@ CreatureAIScript* ScriptMgr::CreateAIScriptClassForEntry(Creature* pCreature)
 	return (function_ptr)(pCreature);
 }
 
-GameObjectAIScript* ScriptMgr::CreateAIScriptClassForGameObject(uint32 uEntryId, GameObject* pGameObject)
+GameObjectAIScript* ScriptMgr::CreateAIScriptClassForGameObject(uint32 /*uEntryId*/, GameObject* pGameObject)
 {
 	GameObjectCreateMap::iterator itr = _gameobjects.find(pGameObject->GetEntry());
 	if(itr == _gameobjects.end())
@@ -527,7 +527,7 @@ GameObjectAIScript* ScriptMgr::CreateAIScriptClassForGameObject(uint32 uEntryId,
 	return (function_ptr)(pGameObject);
 }
 
-InstanceScript* ScriptMgr::CreateScriptClassForInstance(uint32 pMapId, MapMgr* pMapMgr)
+InstanceScript* ScriptMgr::CreateScriptClassForInstance(uint32 /*pMapId*/, MapMgr* pMapMgr)
 {
 	InstanceCreateMap::iterator Iter = mInstances.find(pMapMgr->GetMapId());
 	if(Iter == mInstances.end())

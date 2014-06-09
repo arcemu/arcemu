@@ -32,7 +32,7 @@ WarsongGulch::WarsongGulch(MapMgr* mgr, uint32 id, uint32 lgroup, uint32 t) : CB
         m_pendPlayers[i].clear();
 
         m_flagHolders[i] = 0;
-        if (m_homeFlags[i] = SpawnGameObject(WarsongFlags[i].entry, MAP_WARSONG_GULCH, WarsongFlags[i].x, WarsongFlags[i].y, WarsongFlags[i].z,
+        if (m_homeFlags[i] = SpawnGameObject(WarsongFlags[i].entry, WarsongFlags[i].map, WarsongFlags[i].x, WarsongFlags[i].y, WarsongFlags[i].z,
             WarsongFlags[i].o, WarsongFlags[i].flags, WarsongFlags[i].faction, WarsongFlags[i].scale))
         {
             m_homeFlags[i]->SetState(WarsongFlags[i].state);
@@ -344,7 +344,7 @@ void WarsongGulch::HookFlagStand(Player* plr, GameObject* obj)
 	SetWorldState(plr->IsTeamHorde() ? WORLDSTATE_WSG_ALLIANCE_FLAG_DISPLAY : WORLDSTATE_WSG_HORDE_FLAG_DISPLAY, 2);
 }
 
-void WarsongGulch::HookOnPlayerKill(Player* plr, Player* pVictim)
+void WarsongGulch::HookOnPlayerKill(Player* plr, Player* /*pVictim*/)
 {
 	plr->m_bgScore.KillingBlows++;
 	UpdatePvPData();
@@ -464,11 +464,11 @@ void WarsongGulch::HookOnShadowSight()
 {
 }
 
-void WarsongGulch::HookGenerateLoot(Player* plr, Object* pOCorpse)
+void WarsongGulch::HookGenerateLoot(Player* /*plr*/, Object* /*pOCorpse*/)
 {
 }
 
-void WarsongGulch::HookOnUnitKill(Player* plr, Unit* pVictim)
+void WarsongGulch::HookOnUnitKill(Player* /*plr*/, Unit* /*pVictim*/)
 {
 }
 

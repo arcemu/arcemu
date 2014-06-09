@@ -216,19 +216,15 @@ bool ChatHandler::HandleStartCommand(const char* args, WorldSession* m_session)
 }
 
 
-bool ChatHandler::HandleInfoCommand(const char* args, WorldSession* m_session)
+bool ChatHandler::HandleInfoCommand(const char* /*args*/, WorldSession* m_session)
 {
-	WorldPacket data;
-
-
 	//uint32 clientsNum = (uint32)sWorld.GetSessionCount();
 
 	int gm = 0;
 	int count = 0;
 	int avg = 0;
-	PlayerStorageMap::const_iterator itr;
 	objmgr._playerslock.AcquireReadLock();
-	for(itr = objmgr._players.begin(); itr != objmgr._players.end(); ++itr)
+    for(PlayerStorageMap::const_iterator itr = objmgr._players.begin(); itr != objmgr._players.end(); ++itr)
 	{
 		if(itr->second->GetSession())
 		{
@@ -254,19 +250,19 @@ bool ChatHandler::HandleInfoCommand(const char* args, WorldSession* m_session)
 	return true;
 }
 
-bool ChatHandler::HandleNetworkStatusCommand(const char* args, WorldSession* m_session)
+bool ChatHandler::HandleNetworkStatusCommand(const char* /*args*/, WorldSession* /*m_session*/)
 {
 	//sSocketMgr.ShowStatus();
 	return true;
 }
 
-bool ChatHandler::HandleNYICommand(const char* args, WorldSession* m_session)
+bool ChatHandler::HandleNYICommand(const char* /*args*/, WorldSession* m_session)
 {
 	RedSystemMessage(m_session, "Not yet implemented.");
 	return true;
 }
 
-bool ChatHandler::HandleDismountCommand(const char* args, WorldSession* m_session)
+bool ChatHandler::HandleDismountCommand(const char* /*args*/, WorldSession* m_session)
 {
 	Unit* m_target = NULL;
 
@@ -304,7 +300,7 @@ bool ChatHandler::HandleDismountCommand(const char* args, WorldSession* m_sessio
 }
 
 
-bool ChatHandler::HandleSaveCommand(const char* args, WorldSession* m_session)
+bool ChatHandler::HandleSaveCommand(const char* /*args*/, WorldSession* m_session)
 {
 	Player* p_target = getSelectedChar(m_session, false);
 	if(p_target == NULL)
@@ -322,7 +318,7 @@ bool ChatHandler::HandleSaveCommand(const char* args, WorldSession* m_session)
 	return true;
 }
 
-bool ChatHandler::HandleGMListCommand(const char* args, WorldSession* m_session)
+bool ChatHandler::HandleGMListCommand(const char* /*args*/, WorldSession* m_session)
 {
 	WorldPacket data;
 	bool first = true;
@@ -362,7 +358,7 @@ bool ChatHandler::HandleGMListCommand(const char* args, WorldSession* m_session)
 	return true;
 }
 
-bool ChatHandler::HandleGMStatusCommand(const char* args, WorldSession* m_session)
+bool ChatHandler::HandleGMStatusCommand(const char* /*args*/, WorldSession* m_session)
 {
 	if(m_session->GetPlayer()->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_GM))
 		BlueSystemMessage(m_session, "GM Flag: On");
@@ -377,7 +373,7 @@ bool ChatHandler::HandleGMStatusCommand(const char* args, WorldSession* m_sessio
 	return true;
 }
 
-bool ChatHandler::HandleRangeCheckCommand(const char* args , WorldSession* m_session)
+bool ChatHandler::HandleRangeCheckCommand(const char* /*args*/, WorldSession* m_session)
 {
 	WorldPacket data;
 	uint64 guid = m_session->GetPlayer()->GetSelection();
@@ -412,7 +408,7 @@ bool ChatHandler::HandleGmLogCommentCommand(const char* args , WorldSession* m_s
 	return true;
 }
 
-bool ChatHandler::HandleRatingsCommand(const char* args , WorldSession* m_session)
+bool ChatHandler::HandleRatingsCommand(const char* /*args*/ , WorldSession* m_session)
 {
 	m_session->SystemMessage("Ratings!!!");
 	Player* m_plyr = getSelectedChar(m_session, false);
