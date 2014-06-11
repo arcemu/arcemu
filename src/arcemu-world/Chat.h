@@ -103,6 +103,46 @@ enum Languages
     NUM_LANGUAGES                               = 0x24
 };
 
+static const uint32 LanguageSkills[NUM_LANGUAGES] =
+{
+	0,				// UNIVERSAL		0x00
+	109,			// ORCISH			0x01
+	113,			// DARNASSIAN		0x02
+	115,			// TAURAHE			0x03
+	0,				// -				0x04
+	0,				// -				0x05
+	111,			// DWARVISH			0x06
+	98,				// COMMON			0x07
+	139,			// DEMON TONGUE		0x08
+	140,			// TITAN			0x09
+	137,			// THALSSIAN		0x0A
+	138,			// DRACONIC			0x0B
+	0,				// KALIMAG			0x0C
+	313,			// GNOMISH			0x0D
+	315,			// TROLL			0x0E
+	0,				// -				0x0F
+	0,				// -				0x10
+	0,				// -				0x11
+	0,				// -				0x12
+	0,				// -				0x13
+	0,				// -				0x14
+	0,				// -				0x15
+	0,				// -				0x16
+	0,				// -				0x17
+	0,				// -				0x18
+	0,				// -				0x19
+	0,				// -				0x1A
+	0,				// -				0x1B
+	0,				// -				0x1C
+	0,				// -				0x1D
+	0,				// -				0x1E
+	0,				// -				0x1F
+	0,				// -				0x20
+	673,			// -				0x21
+	0,				// -				0x22
+	759				// -				0x23
+};
+
 #define MSG_COLOR_LIGHTRED       "|cffff6060"
 #define MSG_COLOR_LIGHTBLUE      "|cff00ccff"
 #define MSG_COLOR_TORQUISEBLUE	 "|cff00C78C"
