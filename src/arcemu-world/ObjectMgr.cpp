@@ -1821,15 +1821,15 @@ void ObjectMgr::LoadTrainers()
 			tr->Can_Train_Gossip_TextId = fields[9].GetUInt32();
 			tr->Cannot_Train_GossipTextId = fields[10].GetUInt32();
 
-			if (!tr->Can_Train_Gossip_TextId)
+			if (tr->TrainerType != TRAINER_TYPE_TRADESKILLS && !NpcTextStorage.LookupEntry(tr->Can_Train_Gossip_TextId))
 			{
-				Log.Error("ObjectMgr", "Trainer %u has wrong \"can train gossip textid \". Will use text id 1 instead.", entry);
+				Log.Error("ObjectMgr", "Trainer %u has wrong \"can train gossip textid (%u)\". Will use text id 1 instead.", entry, tr->Can_Train_Gossip_TextId);
 				tr->Can_Train_Gossip_TextId = 1;
 			}
 
-			if (!tr->Cannot_Train_GossipTextId)
+			if (tr->TrainerType != TRAINER_TYPE_TRADESKILLS && !NpcTextStorage.LookupEntry(tr->Cannot_Train_GossipTextId))
 			{
-				Log.Error("ObjectMgr", "Trainer %u has wrong \"cannot train gossip textid \". Wull use text id 1 instead.", entry);
+				Log.Error("ObjectMgr", "Trainer %u has wrong \"cannot train gossip textid (%u)\". Will use text id 1 instead.", entry, tr->Cannot_Train_GossipTextId);
 				tr->Cannot_Train_GossipTextId = 1;
 			}
 
@@ -2840,16 +2840,17 @@ void ObjectMgr::LoadReputationModifierTable(const char* tablename, ReputationMod
 		do
 		{
 			ReputationMod mod;
-			mod.faction[0] = result->Fetch()[1].GetUInt32();
-			if (!dbcFaction.LookupEntryForced(mod.faction[0]))
+			mod.faction[TEAM_ALLIANCE] = result->Fetch()[1].GetUInt32();
+			if (mod.faction[TEAM_ALLIANCE] && !dbcFaction.LookupEntryForced(mod.faction[0]))
 			{
-				Log.Error("ObjectMgr", "Non existing faction id %u in %s table for object entry %u.", mod.faction[0], tablename, result->Fetch()[0].GetUInt32());
+				Log.Error("ObjectMgr", "Non existing faction id %u in %s table for object entry %u.", mod.faction[TEAM_ALLIANCE], tablename, result->Fetch()[0].GetUInt32());
 				continue;
 			}
-			mod.faction[1] = result->Fetch()[2].GetUInt32();
-			if (!dbcFaction.LookupEntryForced(mod.faction[0]))
+
+			mod.faction[TEAM_HORDE] = result->Fetch()[2].GetUInt32();
+			if (mod.faction[TEAM_HORDE] && !dbcFaction.LookupEntryForced(mod.faction[0]))
 			{
-				Log.Error("ObjectMgr", "Non existing faction id %u in %s table for object entry %u.", mod.faction[1], tablename, result->Fetch()[0].GetUInt32());
+				Log.Error("ObjectMgr", "Non existing faction id %u in %s table for object entry %u.", mod.faction[TEAM_HORDE], tablename, result->Fetch()[0].GetUInt32());
 				continue;
 			}
 			mod.value = result->Fetch()[3].GetInt32();
@@ -2865,9 +2866,7 @@ void ObjectMgr::LoadReputationModifierTable(const char* tablename, ReputationMod
 				dmap->insert(ReputationModMap::value_type(result->Fetch()[0].GetUInt32(), modifier));
 			}
 			else
-			{
 				itr->second->mods.push_back(mod);
-			}
 		}
 		while(result->NextRow());
 		delete result;
@@ -3504,7 +3503,6 @@ void ObjectMgr::LoadVehicleAccessories()
 	Log.Notice("ObjectMgr", "Loading vehicle accessories...");
 	if (QueryResult *result = WorldDatabase.Query("SELECT creature_entry, accessory_entry, seat FROM vehicle_accessories;"))
 	{
-		
 		do
 		{
 			Field *row = result->Fetch();
@@ -3579,8 +3577,7 @@ void ObjectMgr::LoadWorldStateTemplates()
 		if (QueryResult* result2 = WorldDatabase.Query("SELECT map, zone, field, value FROM worldstate_templates;"))
 		{
 			do{
-				Field *row = result->Fetch();
-				WorldState ws;
+				Field *row = result2->Fetch();
 
 				uint32 mapid = row[0].GetUInt32();
 				bool mSkip = false;
@@ -3603,6 +3600,7 @@ void ObjectMgr::LoadWorldStateTemplates()
 					continue;
 				}
 
+				WorldState ws;
 				ws.field = row[2].GetUInt32();
 				ws.value = row[3].GetUInt32();
 
@@ -3613,8 +3611,8 @@ void ObjectMgr::LoadWorldStateTemplates()
 
 				itr->second->insert(std::make_pair(zone, ws));
 				++count;
-			} while (result->NextRow());
-			delete result;
+			} while (result2->NextRow());
+			delete result2;
 		}
 	}
 	Log.Success("ObjectMgr", "Loaded %u worldstate templates.", count);
