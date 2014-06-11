@@ -25,7 +25,7 @@
 
 void ArathiBasin::SpawnBuff(uint32 x)
 {
-	uint32 chosen_buffid = buffentries[RandomUInt(2)];
+	uint32 chosen_buffid = buffentries[RandomUInt(3)];
 	GameObjectInfo* goi = GameObjectNameStorage.LookupEntry(chosen_buffid);
 	if(goi == NULL)
 		return;
@@ -451,15 +451,9 @@ void ArathiBasin::OnRemovePlayer(Player* plr)
 	plr->RemoveAura(BG_PREPARATION);
 }
 
-void ArathiBasin::HookFlagDrop(Player* plr, GameObject* obj)
-{
-	// nothing?
-}
+void ArathiBasin::HookFlagDrop(Player* plr, GameObject* obj) {}
 
-void ArathiBasin::HookFlagStand(Player* plr, GameObject* obj)
-{
-	// nothing?
-}
+void ArathiBasin::HookFlagStand(Player* plr, GameObject* obj) {}
 
 LocationVector ArathiBasin::GetStartingCoords(uint32 Team)
 {
@@ -652,7 +646,7 @@ void ArathiBasin::AssaultControlPoint(Player* pPlayer, uint32 Id)
 #ifdef ANTI_CHEAT
 	if(!m_started)
 	{
-		Anticheat_Log->writefromsession(pPlayer->GetSession(), "%s tried to assault control point in arathi basin before battleground (ID %u) started.", pPlayer->GetName(), this->m_id);
+		Anticheat_Log->writefromsession(pPlayer->GetSession(), "%s tried to assault control point in arathi basin before battleground (ID %u) started.", pPlayer->GetName(), m_id);
 		SendChatMessage(CHAT_MSG_BG_EVENT_NEUTRAL, pPlayer->GetGUID(), "%s will be removed from the game for cheating.", pPlayer->GetName());
 		// Remove player from battleground.
 		RemovePlayer(pPlayer, false);

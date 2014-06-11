@@ -66,11 +66,6 @@ void AuctionMgr::LoadAuctionHouses()
                 continue;
             }
 
-            if (!dbcAuctionHouse.LookupEntryForced(ah_entry))
-            {
-                Log.Error("AuctionMgr", "Auction house (entry: %u) was not found for creature (entry: %u).", ah_entry, entry);
-                continue;
-            }
             auctionHouseEntryMap.insert(make_pair(entry, tempmap[ah_entry]));
 		}
 		while(res->NextRow());

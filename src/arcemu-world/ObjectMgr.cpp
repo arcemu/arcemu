@@ -1336,14 +1336,14 @@ void ObjectMgr::LoadVendors()
 			else
 				items = itr->second;
 
-			CreatureItem itm;
-			itm.itemid = fields[1].GetUInt32();
-			if (!ItemNameStorage.LookupEntry(itm.itemid))
+			if (!ItemNameStorage.LookupEntry(fields[1].GetUInt32()))
 			{
-				Log.Error("ObjectMgr", "Vendor item  %u for npc %u does not exists.", itm.itemid, fields[0].GetUInt32());
+				Log.Error("ObjectMgr", "Vendor item  %u for npc %u does not exists.", fields[1].GetUInt32(), fields[0].GetUInt32());
 				continue;
 			}
 
+			CreatureItem itm;
+			itm.itemid = fields[1].GetUInt32();
 			itm.amount = fields[2].GetUInt32();
 			itm.available_amount = fields[3].GetUInt32();
 			itm.max_amount = fields[3].GetUInt32();

@@ -54,7 +54,7 @@ enum ABSpawnTypes
 #define RESOURCES_WARNING_THRESHOLD 1400
 #define RESOURCES_WINVAL 1600
 
-uint32 buffentries[3] = { 180380, 180362, 180146 };
+static uint32 buffentries[3] = { 180380, 180362, 180146 };
 
 /* AB Battleground Data */
 
