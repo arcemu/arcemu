@@ -20,186 +20,52 @@
 
 #include "Setup.h"
 
-#define SendQuickMenu(textid) objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), textid, plr); \
-	Menu->SendTo(plr);
-
-
-class Prisoner12 : public GossipScript
+// TODO: add waypoints for gossip option 1 event.
+class PrisonerGossip : public Arcemu::Gossip::Script
 {
 	public:
-		void GossipHello(Object* pObject, Player* plr)
+		void OnHello(Object* pObject, Player* plr)
 		{
-			if(!plr)
-				return;
-			GossipMenu* Menu;
-			Creature* Prisoner12 = TO_CREATURE(pObject);
-			if(Prisoner12 == NULL)
-				return;
-
-			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 1, plr);
-			if(plr->GetQuestLogForEntry(9164))
-				Menu->AddItem(0, "Release Him.", 1);
-
-			Menu->SendTo(plr);
+			Arcemu::Gossip::Menu menu(pObject->GetGUID(), 1);
+			if(plr->HasQuest(9164) && !plr->HasFinishedQuest(9164))
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "<Administer the restorative draught.>", 0);
+			menu.Send(plr);
 		}
 
-		void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char* EnteredCode)
+		void OnSelectOption(Object* pObject, Player* plr, uint32 Id, const char* /*EnteredCode*/)
 		{
-			if(!plr)
-				return;
-
-			Creature* Prisoner12 = TO_CREATURE(pObject);
-			if(Prisoner12 == NULL)
-				return;
-
-			switch(IntId)
+			if (Id == 0)
 			{
-				case 0:
-					GossipHello(pObject, plr);
-					break;
-
-				case 1:
-					{
-						QuestLogEntry* en = plr->GetQuestLogForEntry(9164);
-						if(en && en->GetMobCount(0) < en->GetQuest()->required_mobcount[0])
-						{
-							en->SetMobCount(0, en->GetMobCount(0) + 1);
-							en->SendUpdateAddKill(0);
-							en->UpdatePlayerFields();
-
-							if(!Prisoner12)
-								return;
-
-							Prisoner12->Despawn(5000, 6 * 60 * 1000);
-							Prisoner12->SetStandState(STANDSTATE_STAND);
-							Prisoner12->SetEmoteState(7);
-							return;
-						}
-						break;
-					}
+				Arcemu::Gossip::Menu menu(pObject->GetGUID(), 8456);
+				menu.AddItem(Arcemu::Gossip::ICON_CHAT, "You're free to go now. The way out is safe.", 1);
 			}
-		}
-
-};
-
-
-class Prisoner22 : public GossipScript
-{
-	public:
-		void GossipHello(Object* pObject, Player* plr)
-		{
-			if(!plr)
-				return;
-
-			GossipMenu* Menu;
-			Creature* Prisoner22 = TO_CREATURE(pObject);
-			if(Prisoner22 == NULL)
-				return;
-
-			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 1, plr);
-			if(plr->GetQuestLogForEntry(9164))
-				Menu->AddItem(0, "Release Him.", 1);
-
-			Menu->SendTo(plr);
-		}
-
-		void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char* EnteredCode)
-		{
-			if(!plr)
-				return;
-
-			Creature* Prisoner22 = TO_CREATURE(pObject);
-			if(Prisoner22 == NULL)
-				return;
-
-			switch(IntId)
+			else if(Id == 1)
 			{
-				case 0:
-					GossipHello(pObject, plr);
-					break;
+				int8 npc_id = -1;
+				switch(pObject->GetEntry())
+				{
+					case 16206: npc_id = 0; break;
+					case 16208: npc_id = 1; break;
+					case 16209: npc_id = 2; break;
+				}
 
-				case 1:
-					{
-						QuestLogEntry* en = plr->GetQuestLogForEntry(9164);
-						if(en && en->GetMobCount(1) < en->GetQuest()->required_mobcount[1])
-						{
-							en->SetMobCount(1, en->GetMobCount(1) + 1);
-							en->SendUpdateAddKill(1);
-							en->UpdatePlayerFields();
+				QuestLogEntry* en = plr->GetQuestLogForEntry(9164);
+				if(npc_id >= 0 && en && en->GetMobCount(npc_id) < en->GetQuest()->required_mobcount[npc_id])
+				{
+ 					en->SetMobCount(npc_id, en->GetMobCount(npc_id) + 1);
+					en->SendUpdateAddKill(0);
+					en->UpdatePlayerFields();
 
-							if(!Prisoner22)
-								return;
-
-							Prisoner22->Despawn(5000, 6 * 60 * 1000);
-							Prisoner22->SetStandState(STANDSTATE_STAND);
-							Prisoner22->SetEmoteState(7);
-							return;
-						}
-						break;
-					}
+					Creature* pUnit = TO_CREATURE(pObject);
+					pUnit->Despawn(5000, 6 * 60 * 1000);
+					pUnit->SetStandState(STANDSTATE_STAND);
+					pUnit->SetEmoteState(7);
+				}
+				Arcemu::Gossip::Menu::Complete(plr);
 			}
+			else
+				Arcemu::Gossip::Menu::Complete(plr);
 		}
-
-};
-
-
-class Prisoner32 : public GossipScript
-{
-	public:
-		void GossipHello(Object* pObject, Player* plr)
-		{
-			if(!plr)
-				return;
-
-			GossipMenu* Menu;
-			Creature* Prisoner32 = TO_CREATURE(pObject);
-			if(Prisoner32 == NULL)
-				return;
-
-			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 1, plr);
-			if(plr->GetQuestLogForEntry(9164))
-				Menu->AddItem(0, "Release Him.", 1);
-
-			Menu->SendTo(plr);
-		}
-
-		void GossipSelectOption(Object* pObject, Player* plr, uint32 Id, uint32 IntId, const char* EnteredCode)
-		{
-			if(!plr)
-				return;
-
-			Creature* Prisoner32 = TO_CREATURE(pObject);
-			if(Prisoner32 == NULL)
-				return;
-
-			switch(IntId)
-			{
-				case 0:
-					GossipHello(pObject, plr);
-					break;
-
-				case 1:
-					{
-						QuestLogEntry* en = plr->GetQuestLogForEntry(9164);
-						if(en && en->GetMobCount(2) < en->GetQuest()->required_mobcount[2])
-						{
-							en->SetMobCount(2, en->GetMobCount(2) + 1);
-							en->SendUpdateAddKill(2);
-							en->UpdatePlayerFields();
-
-							if(!Prisoner32)
-								return;
-
-							Prisoner32->Despawn(5000, 6 * 60 * 1000);
-							Prisoner32->SetStandState(STANDSTATE_STAND);
-							Prisoner32->SetEmoteState(7);
-							return;
-						}
-						break;
-					}
-			}
-		}
-
 };
 
 class PrisonersatDeatholme : public CreatureAIScript
@@ -223,25 +89,19 @@ class VanquishingAquantion : public GameObjectAIScript
 
 		void OnActivate(Player* pPlayer)
 		{
-			QuestLogEntry* qle = pPlayer->GetQuestLogForEntry(9174);
-			if(qle == NULL)
-				return;
-
-			Creature* naga = sEAS.SpawnCreature(pPlayer, 16292, 7938, -7632, 114, 3.05f, 0);
-			naga->Despawn(6 * 60 * 1000, 0);
+			if(pPlayer->HasQuest(9174))
+			{
+				Creature* naga = sEAS.SpawnCreature(pPlayer, 16292, 7938, -7632, 114, 3.05f, 0);
+				naga->Despawn(6 * 60 * 1000, 0);
+			}
 		}
 };
 
 void SetupGhostlands(ScriptMgr* mgr)
 {
-	GossipScript* Prisoner12Gossip = new Prisoner12();
-	mgr->register_gossip_script(16208, Prisoner12Gossip);
-
-	GossipScript* Prisoner22Gossip = new Prisoner22();
-	mgr->register_gossip_script(16206, Prisoner22Gossip);
-
-	GossipScript* Prisoner32Gossip = new Prisoner32();
-	mgr->register_gossip_script(16209, Prisoner32Gossip);
+	mgr->register_creature_gossip(16208, new PrisonerGossip);
+	mgr->register_creature_gossip(16206, new PrisonerGossip);
+	mgr->register_creature_gossip(16209, new PrisonerGossip);
 
 	mgr->register_creature_script(16208, &PrisonersatDeatholme::Create);
 	mgr->register_creature_script(16206, &PrisonersatDeatholme::Create);
