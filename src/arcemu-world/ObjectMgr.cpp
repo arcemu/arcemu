@@ -1336,7 +1336,7 @@ void ObjectMgr::LoadVendors()
 			else
 				items = itr->second;
 
-			if (!ItemNameStorage.LookupEntry(fields[1].GetUInt32()))
+			if (!ItemPrototypeStorage.LookupEntry(fields[1].GetUInt32()))
 			{
 				Log.Error("ObjectMgr", "Vendor item  %u for npc %u does not exists.", fields[1].GetUInt32(), fields[0].GetUInt32());
 				continue;
