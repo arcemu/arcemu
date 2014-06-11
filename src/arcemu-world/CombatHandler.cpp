@@ -64,15 +64,11 @@ void WorldSession::HandleAttackStopOpcode(WorldPacket & /*recv_data*/)
 	CHECK_INWORLD_RETURN
 
 	uint64 guid = GetPlayer()->GetSelection();
+	Unit* pEnemy = _player->GetMapMgr()->GetUnit(guid);
 
-	if(guid)
-	{
-		Unit* pEnemy = _player->GetMapMgr()->GetUnit(guid);
-		if(pEnemy != NULL)
-		{
+	if (guid && pEnemy != NULL) {
 			GetPlayer()->EventAttackStop();
 			GetPlayer()->smsg_AttackStop(pEnemy);
-		}
 	}
 }
 
