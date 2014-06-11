@@ -2132,7 +2132,6 @@ void Spell::writeSpellGoTargets(WorldPacket* data)
 	TargetsList::iterator i;
 	for(i = UniqueTargets.begin(); i != UniqueTargets.end(); ++i)
 	{
-//		SendCastSuccess(*i);
 		*data << *i;
 	}
 }
@@ -5635,39 +5634,6 @@ uint32 GetSpellDuration(SpellEntry* sp, Unit* caster /*= NULL*/)
 	if(ret > dur->Duration3)
 		return dur->Duration3;
 	return ret;
-}
-
-void Spell::SendCastSuccess(Object* target)
-{
-	Player* plr = p_caster;
-	if(!plr && u_caster)
-		plr = u_caster->m_redirectSpellPackets;
-	if(!plr || !plr->IsPlayer())
-		return;
-
-	/*	WorldPacket data(SMSG_CLEAR_EXTRA_AURA_INFO_OBSOLETE, 13);
-		data << ((target != 0) ? target->GetNewGUID() : uint64(0));
-		data << GetProto()->Id;
-
-		plr->GetSession()->SendPacket(&data);*/
-}
-
-void Spell::SendCastSuccess(const uint64 & guid)
-{
-	Player* plr = p_caster;
-	if(!plr && u_caster)
-		plr = u_caster->m_redirectSpellPackets;
-	if(!plr || !plr->IsPlayer())
-		return;
-
-	// fuck bytebuffers
-	unsigned char buffer[13];
-	uint32 c = FastGUIDPack(guid, buffer, 0);
-
-	*(uint32*)&buffer[c] = GetProto()->Id;
-	c += 4;
-
-	plr->GetSession()->OutPacket(uint16(SMSG_CLEAR_EXTRA_AURA_INFO_OBSOLETE), static_cast<uint16>(c), buffer);
 }
 
 uint8 Spell::GetErrorAtShapeshiftedCast(SpellEntry* spellInfo, uint32 form)
