@@ -514,7 +514,7 @@ void ObjectMgr::LoadCompletedAchievements()
 
 void ObjectMgr::LoadPlayerCreateInfo()
 {
-	std::string query = "SELECT index, race, factionTemplate, class, mapid, zoneid, position_x, position_y, position_z, displayId,";
+	std::string query = "SELECT index, race, factionTemplate, class, mapid, zoneid, positionX, positionY, positionZ, displayId,";
 	query.append("BaseStrength, BaseAgility, BaseStamina, BaseIntellect, BaseSpirit, BaseHealth, BaseMana, BaseRage, BaseFocus,");
 	query.append("BaseEnergy, attackpower, mindmg, maxdmg, introid, taximask FROM playercreateinfo");
 
