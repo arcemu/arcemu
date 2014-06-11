@@ -3405,6 +3405,14 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 			}
 		}
 	}
+
+	if (m_playerInfo && m_playerInfo->guild) {
+		SetUInt32Value(PLAYER_GUILD_TIMESTAMP, (uint32) UNIXTIME);
+		SetFlag(PLAYER_FLAGS, PLAYER_FLAGS_IS_IN_GUILD);
+	}
+	else {
+		RemoveFlag(PLAYER_FLAGS, PLAYER_FLAGS_IS_IN_GUILD);
+	}
 }
 
 void Player::SetPersistentInstanceId(Instance* pInstance)
