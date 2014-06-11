@@ -103,6 +103,8 @@ enum Languages
     NUM_LANGUAGES                               = 0x24
 };
 
+static const uint32 LanguageSkills[NUM_LANGUAGES] = {0, 109, 113, 115, 0, 0, 111, 98, 139, 140, 137, 138, 0, 313, 315, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 673, 0, 759};
+
 #define MSG_COLOR_LIGHTRED       "|cffff6060"
 #define MSG_COLOR_LIGHTBLUE      "|cff00ccff"
 #define MSG_COLOR_TORQUISEBLUE	 "|cff00C78C"
