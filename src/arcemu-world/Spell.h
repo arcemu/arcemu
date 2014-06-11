@@ -2131,9 +2131,6 @@ class SERVER_DECL Spell : public EventableObject
 		uint8 extra_cast_number;
 		uint32 m_glyphslot;
 
-		void SendCastSuccess(Object* target);
-		void SendCastSuccess(const uint64 & guid);
-
 		bool duelSpell;
 
 		////////////////////////////////////////////////////////////////////////////////
