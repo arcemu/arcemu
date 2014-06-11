@@ -692,25 +692,24 @@ class SERVER_DECL SQLStorage : public Storage<T, StorageType>
 				}
 			}
 
-			uint32 Entry;
-			T* Allocated;
 #ifdef STORAGE_ALLOCATION_POOLS
 			Storage<T, StorageType>::_storage.InitPool(result->GetRowCount());
 #endif
+			uint64 count = 0;
 			do
 			{
-				Entry = fields[0].GetUInt32();
-				Allocated = Storage<T, StorageType>::_storage.AllocateEntry(Entry);
+				uint32 Entry = fields[0].GetUInt32();
+				T* Allocated = Storage<T, StorageType>::_storage.AllocateEntry(Entry);
 				if(!Allocated)
 					continue;
 
 				LoadBlock(fields, Allocated);
+				++count;
 			}
 			while(result->NextRow());
-			Log.Success("Storage", "%u entries loaded from table %s.", result->GetRowCount(), IndexName);
 			delete result;
 
-			//Log.Success("Storage", "Loaded database cache from `%s`.", IndexName);
+			Log.Success("Storage", "Loaded %u entries loaded from table %s.", count, IndexName);
 		}
 
 		void LoadAdditionalData(const char* IndexName, const char* FormatString)
@@ -741,6 +740,7 @@ class SERVER_DECL SQLStorage : public Storage<T, StorageType>
 			result = WorldDatabase.Query("SELECT * FROM %s", IndexName);
 			if(!result)
 				return;
+
 			Field* fields = result->Fetch();
 
 			if(result->GetFieldCount() != cols)
@@ -757,20 +757,20 @@ class SERVER_DECL SQLStorage : public Storage<T, StorageType>
 				}
 			}
 
-			uint32 Entry;
-			T* Allocated;
+			uint64 count = 0;
 			do
 			{
-				Entry = fields[0].GetUInt32();
-				Allocated = Storage<T, StorageType>::_storage.LookupEntryAllocate(Entry);
+				uint32 Entry = fields[0].GetUInt32();
+				T* Allocated = Storage<T, StorageType>::_storage.LookupEntryAllocate(Entry);
 				if(!Allocated)
 					continue;
 
 				LoadBlock(fields, Allocated);
+				++count;
 			}
 			while(result->NextRow());
-			Log.Success("Storage", "%u entries loaded from table %s.", result->GetRowCount(), IndexName);
 			delete result;
+			Log.Success("Storage", "Loaded %u entries from table %s.", count, IndexName);
 		}
 
 		/** Reloads the storage container
