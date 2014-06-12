@@ -1002,7 +1002,7 @@ uint8 Spell::prepare(SpellCastTargets* targets)
 		u_caster->castSpell(this);
 	}
 	else
-		cast(false);
+		_cast(false);
 
 	return ccr;
 }
@@ -1083,7 +1083,7 @@ void Spell::AddStartCooldown()
 		p_caster->Cooldown_AddStart(GetProto());
 }
 
-void Spell::cast(bool check)
+void Spell::_cast(bool check)
 {
 	if(DuelSpellNoMoreValid())
 	{
@@ -1633,14 +1633,14 @@ void Spell::update(uint32 difftime)
 			{
 				//printf("spell::update m_timer %u, difftime %d, newtime %d\n", m_timer, difftime, m_timer-difftime);
 				if((int32)difftime >= m_timer)
-					cast(true);
+					_cast(true);
 				else
 				{
 					m_timer -= difftime;
 					if((int32)difftime >= m_timer)
 					{
 						m_timer = 0;
-						cast(true);
+						_cast(true);
 					}
 				}
 
