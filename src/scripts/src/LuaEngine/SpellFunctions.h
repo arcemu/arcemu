@@ -17,6 +17,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "LUAEngine.h"
+#include "Spell.h"
+
 #ifndef LUA_SPELL_H
 #define LUA_SPELL_H
 
@@ -249,10 +252,11 @@ namespace LuaSpell
 
 	int Cast(lua_State* L, Spell* sp)
 	{
-		if(!sp) return 0;
+		if(!sp) 
+			return 0;
 		bool check = CHECK_BOOL(L, 1);
-		sp->cast(check);
-		return 0;
+		sp->_cast(check);
+		return 1;
 	}
 
 	int CanCast(lua_State* L, Spell* sp)

@@ -633,7 +633,7 @@ class LuaUnit
 			lua_settop(L, 1);
 			int functionRef = 0;
 			if(!strcmp(typeName, "function"))
-				functionRef = lua_ref(L, true);
+				functionRef = luaL_ref(L, true);
 			else if(!strcmp(typeName, "string"))
 				functionRef = ExtractfRefFromCString(L, luaL_checkstring(L, 1));
 			if(functionRef)
@@ -670,7 +670,7 @@ class LuaUnit
 			lua_settop(L, 1);
 			int functionRef = 0;
 			if(!strcmp(typeName, "function"))
-				functionRef = lua_ref(L, true);
+				functionRef = luaL_ref(L, true);
 			else if(!strcmp(typeName, "string"))
 				functionRef = ExtractfRefFromCString(L, luaL_checkstring(L, 1));
 			if(functionRef)
@@ -704,7 +704,7 @@ class LuaUnit
 			{
 				std::set<int> & refs = itr->second;
 				for(std::set<int>::iterator it = refs.begin(); it != refs.end(); ++it)
-					lua_unref(L, (*it));
+					luaL_unref(L, LUA_REGISTRYINDEX, (*it));
 				refs.clear();
 			}
 			return 0;

@@ -18,6 +18,7 @@ Setup.h )
 foreach(src IN ITEMS ${sources} )
   set( SRCS ${SRCS} ${prefix}/${src} )
 endforeach(src)
+
 foreach(src IN ITEMS ${headers} )
   SET( HEADERS ${HEADERS} ${prefix}/${src} )
 endforeach(src)

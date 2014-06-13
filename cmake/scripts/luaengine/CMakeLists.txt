@@ -33,7 +33,7 @@ ${prefix}/TaxiFunctions.h
 ${prefix}/UnitFunctions.h
 )
 
-include_directories( ${include_dirs} ${prefix} )
+include_directories( ${include_dirs} ${prefix} ${SCRIPTS_PATH}/lualib)
 IF( IS_LINUX )
 	add_definitions(-Wno-deprecated)
 ENDIF()
