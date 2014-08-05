@@ -104,6 +104,16 @@ void LocalizationMgr::Shutdown()
 			SAFE_FREE_PTR(itr->second.Text);
 		}
 
+		for (HM_NAMESPACE::hash_map<uint32, LocalizedMonstersay>::iterator itr = m_MonsterSay[i].begin(); itr != m_MonsterSay[i].end(); ++itr)
+		{
+			SAFE_FREE_PTR(itr->second.monstername);
+			SAFE_FREE_PTR(itr->second.text0);
+			SAFE_FREE_PTR(itr->second.text1);
+			SAFE_FREE_PTR(itr->second.text2);
+			SAFE_FREE_PTR(itr->second.text3);
+			SAFE_FREE_PTR(itr->second.text4);
+		}
+
 
 	}
 
@@ -117,6 +127,7 @@ void LocalizationMgr::Shutdown()
 	delete [] m_WorldStrings;
 	delete [] m_WorldBroadCast;
 	delete [] m_WorldMapInfo;
+	delete [] m_MonsterSay;
 	m_languages.clear();
 	Log.Notice("LocalizationMgr", "Pointer cleanup completed in %.4f seconds.", (getMSTime() - t) / 1000.0f);
 #undef SAFE_FREE_PTR
@@ -176,6 +187,7 @@ void LocalizationMgr::Reload(bool first)
 	GetDistinctLanguages(languages, "worldstring_tables_localized");
 	GetDistinctLanguages(languages, "worldbroadcast_localized");
 	GetDistinctLanguages(languages, "worldmap_info_localized");
+	GetDistinctLanguages(languages, "npc_monstersay_localized");
 
 	/************************************************************************/
 	/* Read Language Bindings From Config                                   */
@@ -245,6 +257,7 @@ void LocalizationMgr::Reload(bool first)
 	m_WorldStrings = new HM_NAMESPACE::hash_map<uint32, LocalizedWorldStringTable>[langid];
 	m_WorldBroadCast = new HM_NAMESPACE::hash_map<uint32, LocalizedWorldBroadCast>[langid];
 	m_WorldMapInfo = new HM_NAMESPACE::hash_map<uint32, LocalizedWorldMapInfo>[langid];
+	m_MonsterSay = new HM_NAMESPACE::hash_map<uint32, LocalizedMonstersay>[langid];
 
 	/************************************************************************/
 	/* Creature Names                                                       */
@@ -549,6 +562,44 @@ void LocalizationMgr::Reload(bool first)
 	}
 
 	/************************************************************************/
+	/* NPC Monstersay                                                               */
+	/************************************************************************/
+	{
+		LocalizedMonstersay ms;
+		string str;
+		uint32 entry;
+		Field* f;
+		uint32 lid;
+
+		sLog.outString("Loading npc_monstersay_localized rows...");
+		result = WorldDatabase.Query("SELECT * FROM npc_monstersay_localized");
+		if (result)
+		{
+			do
+			{
+				f = result->Fetch();
+				str = string(f[1].GetString());
+				entry = f[0].GetUInt32();
+
+				lid = GetLanguageId(str);
+				if (lid == 0)
+					continue;		// no loading enUS stuff.. lawl
+
+				ms.monstername = strdup(f[2].GetString());
+				ms.text0 = strdup(f[3].GetString());
+				ms.text1 = strdup(f[4].GetString());
+				ms.text2 = strdup(f[5].GetString());
+				ms.text3 = strdup(f[6].GetString());
+				ms.text4 = strdup(f[7].GetString());
+
+				m_MonsterSay[lid].insert(make_pair(entry, ms));
+			} while (result->NextRow());
+			delete result;
+		}
+	}
+
+
+	/************************************************************************/
 	/* Apply all the language bindings.                                     */
 	/************************************************************************/
 	for(map<string, string>::iterator itr = bound_languages.begin(); itr != bound_languages.end(); ++itr)
@@ -571,6 +622,7 @@ void LocalizationMgr::Reload(bool first)
 		CopyHashMap<LocalizedWorldStringTable>(&m_WorldStrings[source_language_id], &m_WorldStrings[dest_language_id]);
 		CopyHashMap<LocalizedWorldBroadCast>(&m_WorldBroadCast[source_language_id], &m_WorldBroadCast[dest_language_id]);
 		CopyHashMap<LocalizedWorldMapInfo>(&m_WorldMapInfo[source_language_id], &m_WorldMapInfo[dest_language_id]);
+		CopyHashMap<LocalizedMonstersay>(&m_MonsterSay[source_language_id], &m_MonsterSay[dest_language_id]);
 	}
 }
 
@@ -588,4 +640,5 @@ MAKE_LOOKUP_FUNCTION(LocalizedItemPage, m_ItemPages, GetLocalizedItemPage);
 MAKE_LOOKUP_FUNCTION(LocalizedWorldStringTable, m_WorldStrings, GetLocalizedWorldStringTable);
 MAKE_LOOKUP_FUNCTION(LocalizedWorldBroadCast, m_WorldBroadCast, GetLocalizedWorldBroadCast);
 MAKE_LOOKUP_FUNCTION(LocalizedWorldMapInfo, m_WorldMapInfo, GetLocalizedWorldMapInfo);
+MAKE_LOOKUP_FUNCTION(LocalizedMonstersay, m_MonsterSay, GetLocalizedMonstersay);
 
