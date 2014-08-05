@@ -53,7 +53,7 @@ void ApplyNormalFixes()
 	if(crc32((const unsigned char*)sp->Name, (unsigned int)strlen(sp->Name)) != SPELL_HASH_WORD_OF_RECALL_OTHER)
 	{
 		Log.LargeErrorMessage("You are using DBCs extracted from an unsupported client.", "ArcEmu supports only enUS and enGB!!!", NULL);
-		abort();
+		//abort();
 	}
 
 	uint32 cnt = dbcSpell.GetNumRows();
