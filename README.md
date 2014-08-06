@@ -17,6 +17,10 @@ the terms and conditions in the GNU AGPL license.
 Visit our website: [ArcEmu.org](http://www.arcemu.org).
 
 
+## Infos
+Supported Version: 3.3.5
+
+
 ## Links
 
 [ArcEmu Mainpage](http://www.arcemu.org)
