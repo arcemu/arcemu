@@ -110,9 +110,9 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS] =
 	&Spell::SpellEffectSummonPlayer,			//SPELL_EFFECT_SUMMON_PLAYER - 85
 	&Spell::SpellEffectActivateObject,			//SPELL_EFFECT_ACTIVATE_OBJECT - 86
 	&Spell::SpellEffectBuildingDamage,		    //SPELL_EFFECT_BUILDING_DAMAGE - 87
-	&Spell::SpellEffectNULL,					//SPELL_EFFECT_BUILDING_REPAIR - 88
-	&Spell::SpellEffectNULL,					//SPELL_EFFECT_BUILDING_SWITCH_STATE - 89
-	&Spell::SpellEffectNULL,					//SPELL_EFFECT_KILL_CREDIT_90 - 90
+	&Spell::SpellEffectBuildingRepair,			//SPELL_EFFECT_BUILDING_REPAIR - 88
+	&Spell::SpellEffectBuildingSwitchState,		//SPELL_EFFECT_BUILDING_SWITCH_STATE - 89
+	&Spell::SpellEffectKillCreditPlayer,		//SPELL_EFFECT_KILL_CREDIT_90 - 90
 	&Spell::SpellEffectNULL,					//SPELL_EFFECT_THREAT_ALL - 91 UNUSED
 	&Spell::SpellEffectEnchantHeldItem,			//SPELL_EFFECT_ENCHANT_HELD_ITEM - 92
 	&Spell::SpellEffectSetMirrorName,			//SPELL_EFFECT_SUMMON_PHANTASM - 93 OLD
@@ -139,7 +139,7 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS] =
 	&Spell::SpellEffectAttackMe,				//SPELL_EFFECT_ATTACK_ME - 114
 	&Spell::SpellEffectDurabilityDamagePCT,     //SPELL_EFFECT_DURABILITY_DAMAGE_PCT - 115
 	&Spell::SpellEffectSkinPlayerCorpse,		//SPELL_EFFECT_SKIN_PLAYER_CORPSE - 116
-	&Spell::SpellEffectNULL,					//SPELL_EFFECT_SPIRIT_HEAL - 117//Not used
+	&Spell::SpellEffectSpiritHeal,				//SPELL_EFFECT_SPIRIT_HEAL - 117//Not used
 	&Spell::SpellEffectSkill,					//SPELL_EFFECT_SKILL - 118
 	&Spell::SpellEffectApplyPetAA,				//SPELL_EFFECT_APPLY_PET_AURA - 119
 	&Spell::SpellEffectNULL,					//SPELL_EFFECT_TELEPORT_GRAVEYARD - 120//Not used
@@ -153,7 +153,7 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS] =
 	&Spell::SpellEffectApplyFriendAA,			// Apply Aura friendly
 	&Spell::SpellEffectApplyEnemyAA,			// Apply Aura enemy
 	&Spell::SpellEffectRedirectThreat,			// Redirecting threat - 130 // http://www.thottbot.com/s34477
-	&Spell::SpellEffectNULL,					// Play Sound - 131
+	&Spell::SpellEffectPlaySound,				// Play Sound - 131
 	&Spell::SpellEffectPlayMusic,				// Play Music - 132 // http://www.thottbot.com/s46852
 	&Spell::SpellEffectForgetSpecialization,	//SPELL_EFFECT_FORGET_SPECIALIZATION - 133 // http://www.thottbot.com/s36441 // I think this is a gm/npc spell
 	&Spell::SpellEffectKillCredit,				// Quest Credit (Player only, not party) - 134 // related to summoning objects and removing them, http://www.thottbot.com/s39161
@@ -4085,7 +4085,31 @@ void Spell::SpellEffectBuildingDamage(uint32 i){
 	gameObjTarget->Damage( damage, u_caster->GetGUID(), controller->GetGUID(), m_spellInfo->Id );
 }
 
+void Spell::SpellEffectBuildingRepair(uint32 i){
+	if (gameObjTarget == NULL)
+		return;
 
+	if (gameObjTarget->GetInfo()->Type != GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING)
+		return;
+
+	if (u_caster == NULL)
+		return;
+	/* not implemented yet
+	 Bling Bling? Need to be finished... enemies->damage, friends->heal
+	 Maybe SpellEfectBuildingDamage not correct? */
+}
+
+void Spell::SpellEffectBuildingSwitchState(uint32 i){ 
+	return;
+	/* not implemented yet
+	I've been looking for the Switch States... */
+}
+
+void Spell::SpellEffectKillCreditPlayer(uint32 i){
+	return;
+	/* not implemented yet
+	Missing stuff in Playerclass*/
+}
 
 void Spell::SpellEffectEnchantHeldItem(uint32 i)
 {
@@ -4678,6 +4702,12 @@ void Spell::SpellEffectSkinPlayerCorpse(uint32 i)
 	}
 }
 
+void Spell::SpellEffectSpiritHeal(uint32 i){
+	return;
+	/* not implemented yet
+	Only one spell? Bring back to life*/
+}
+
 void Spell::SpellEffectSkill(uint32 i)
 {
 	// Used by professions only
@@ -5076,6 +5106,20 @@ void Spell::SpellEffectRedirectThreat(uint32 i)
 		return;
 
 	p_caster->SetMisdirectionTarget(unitTarget->GetGUID());
+}
+
+void Spell::SpellEffectPlaySound(uint32 i)
+{
+	/*not implemented yet, need to do some changes in PlayMusic...
+	uint32 soundid = m_spellInfo->EffectMiscValue[i];
+
+	if (soundid == 0)
+	{
+		LOG_ERROR("Spell %u ( %s ) has no sound ID to play. Spell needs fixing!", m_spellInfo->Id, m_spellInfo->Name);
+		return;
+	}
+
+	m_caster->PlaySoundToSet(soundid);*/
 }
 
 void Spell::SpellEffectPlayMusic(uint32 i)

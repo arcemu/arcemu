@@ -1832,6 +1832,9 @@ class SERVER_DECL Spell : public EventableObject
 		void SpellEffectSummonPlayer(uint32 i);
 		void SpellEffectActivateObject(uint32 i);
 		void SpellEffectBuildingDamage(uint32 i);
+		void SpellEffectBuildingRepair(uint32 i);
+		void SpellEffectBuildingSwitchState(uint32 i);
+		void SpellEffectKillCreditPlayer(uint32 i);
 		void SpellEffectEnchantHeldItem(uint32 i);
 		void SpellEffectSetMirrorName(uint32 i);
 		void SpellEffectSelfResurrect(uint32 i);
@@ -1853,6 +1856,7 @@ class SERVER_DECL Spell : public EventableObject
 		void SpellEffectResurrectNew(uint32 i);
 		void SpellEffectAttackMe(uint32 i);
 		void SpellEffectSkinPlayerCorpse(uint32 i);
+		void SpellEffectSpiritHeal(uint32 i);
 		void SpellEffectSkill(uint32 i);
 		void SpellEffectApplyPetAA(uint32 i);
 		void SpellEffectDummyMelee(uint32 i);
@@ -1864,6 +1868,7 @@ class SERVER_DECL Spell : public EventableObject
 		void SpellEffectApplyFriendAA(uint32 i);
 		void SpellEffectApplyEnemyAA(uint32 i);
 		void SpellEffectRedirectThreat(uint32 i);
+		void SpellEffectPlaySound(uint32 i);
 		void SpellEffectPlayMusic(uint32 i);
 		void SpellEffectForgetSpecialization(uint32 i);
 		void SpellEffectKillCredit(uint32 i);
