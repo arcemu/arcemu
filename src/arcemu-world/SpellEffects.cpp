@@ -345,7 +345,7 @@ const char* SpellEffectNames[TOTAL_SPELL_EFFECTS] =
 	"SUMMON_TARGET",             //    151
 	"SUMMON_RAF_FRIEND",         //    152
 	"TAME_CREATURE",             //    153
-	"SUMMON_REFER_A_FRIEND",     //    154
+	"DISCOVER_TAXI",             //    154
 	"TAME_CREATURE",             //    155
 	"ADD_SOCKET",                //    156
 	"CREATE_ITEM2",              //    157

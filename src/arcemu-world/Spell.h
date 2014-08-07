@@ -827,7 +827,7 @@ enum SpellEffects
     SPELL_EFFECT_LANGUAGE,                  //    39
     SPELL_EFFECT_DUAL_WIELD,                //    40
     SPELL_EFFECT_LEAP_41,                   //    41
-    SPELL_EFFECT_SUMMON_GUARDIAN,           //    42
+	SPELL_EFFECT_JUMP_BEHIND_TARGET,        //    42
     SPELL_EFFECT_TELEPORT_UNITS_FACE_CASTER,//    43
     SPELL_EFFECT_SKILL_STEP,                //    44
     SPELL_EFFECT_UNDEFINED_45,              //    45
@@ -894,7 +894,7 @@ enum SpellEffects
     SPELL_EFFECT_SUMMON_OBJECT_SLOT3,       //    106
     SPELL_EFFECT_SUMMON_OBJECT_SLOT4,       //    107
     SPELL_EFFECT_DISPEL_MECHANIC,           //    108
-    SPELL_EFFECT_SUMMON_DEAD_PET,           //    109
+    SPELL_EFFECT_SUMMON_DEAD_PET,           //    109 Maybe RESURRECT_DEAD_PET is better
     SPELL_EFFECT_DESTROY_ALL_TOTEMS,        //    110
     SPELL_EFFECT_DURABILITY_DAMAGE,         //    111
     SPELL_EFFECT_NONE_112,                  //    112
@@ -939,7 +939,7 @@ enum SpellEffects
 	SPELL_EFFECT_TRIGGER_SPELL_2,           //    151
 	SPELL_EFFECT_SUMMON_RAF_FRIEND,         //    152
     SPELL_EFFECT_SUMMON_TARGET,             //    153
-    SPELL_EFFECT_SUMMON_REFER_A_FRIEND,     //    154
+	SPELL_EFFECT_DISCOVER_TAXI,             //    154
     SPELL_EFFECT_TAME_CREATURE,             //    155
     SPELL_EFFECT_ADD_SOCKET,                //    156
     SPELL_EFFECT_CREATE_ITEM2,				//    157
