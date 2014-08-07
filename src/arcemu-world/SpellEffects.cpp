@@ -166,15 +166,15 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS] =
 	&Spell::SpellEffectNULL,					// Force Cast with value // triggers spell, magic one,  (Mother spell) http://www.thottbot.com/s41065
 	&Spell::SpellEffectTriggerSpellWithValue,	// SPELL_EFFECT_TRIGGER_SPELL_WITH_VALUE - 142 // triggers some kind of "Put spell on target" thing... (dono for sure) http://www.thottbot.com/s40872 and http://www.thottbot.com/s33076
 	&Spell::SpellEffectApplyOwnerAA,			// Apply Aura on summon owner - 143 // Master -> demon effecting spell, http://www.thottbot.com/s25228 and http://www.thottbot.com/s35696
-	&Spell::SpellEffectNULL,					// Knock back - 144
-	&Spell::SpellEffectNULL,					// Pull towards - 145
+	&Spell::SpellEffectKnockBack,				// Knock back - 144
+	&Spell::SpellEffectPullTowards,				// Pull towards - 145
 	&Spell::SpellEffectActivateRunes,			// Activate Rune - 146
-	&Spell::SpellEffectNULL,					// Quest Fail - 147
-	&Spell::SpellEffectNULL,					// Trigger missile - 148
-	&Spell::SpellEffectNULL,					// Charge - 149
-	&Spell::SpellEffectNULL,					// Quest Start - 150
+	&Spell::SpellEffectQuestFail,			    // Quest Fail - 147
+	&Spell::SpellEffectTriggerMissile,		    // Trigger missile - 148
+	&Spell::SpellEffectChargeDest,			    // Charge - 149
+	&Spell::SpellEffectQuestStart,			    // Quest Start - 150
 	&Spell::SpellEffectTriggerSpell,			// SPELL_EFFECT_TRIGGER_SPELL_2 - 151
-	&Spell::SpellEffectNULL,					// Summon Refer-a-Friend - 152
+	&Spell::SpellEffectRaFriend,			    // Summon Refer-a-Friend - 152
 	&Spell::SpellEffectCreatePet,				// Create tamed pet - 153
 	&Spell::SpellEffectTeachTaxiPath,			// "Teach" a taxi path - 154
 	&Spell::SpellEffectDualWield2H,				// DualWield2H (ex: Titan's Grip) - 155
@@ -186,7 +186,7 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS] =
 	&Spell::SpellEffectLearnSpec,				// Learn or unlearn a spec - 161
 	&Spell::SpellEffectActivateSpec,			// Activate a spec - 162
 	&Spell::SpellEffectNULL,					// unknown3 - 163
-	&Spell::SpellEffectNULL,					// Remove aura - 164
+	&Spell::SpellEffectRemoveAura,			    // Remove aura - 164
 };
 
 const char* SpellEffectNames[TOTAL_SPELL_EFFECTS] =
@@ -4085,7 +4085,8 @@ void Spell::SpellEffectBuildingDamage(uint32 i){
 	gameObjTarget->Damage( damage, u_caster->GetGUID(), controller->GetGUID(), m_spellInfo->Id );
 }
 
-void Spell::SpellEffectBuildingRepair(uint32 i){
+void Spell::SpellEffectBuildingRepair(uint32 i)
+{
 	if (gameObjTarget == NULL)
 		return;
 
@@ -4096,7 +4097,8 @@ void Spell::SpellEffectBuildingRepair(uint32 i){
 		return;
 	/* not implemented yet
 	 Bling Bling? Need to be finished... enemies->damage, friends->heal
-	 Maybe SpellEfectBuildingDamage not correct? */
+	 Maybe SpellEfectBuildingDamage not correct?
+	 Exist any neutral vehicle which takes the faction of the player?*/
 }
 
 void Spell::SpellEffectBuildingSwitchState(uint32 i){ 
@@ -5196,6 +5198,13 @@ void Spell::SpellEffectApplyOwnerAA(uint32 i)
 	ApplyAA(i);
 }
 
+void Spell::SpellEffectPullTowards(uint32 i)
+{
+	return;
+	/*not implemented yet
+	it is only one spell?*/
+}
+
 void Spell::SpellEffectCreatePet(uint32 i)
 {
 	if(!playerTarget)
@@ -5618,9 +5627,47 @@ void Spell::SpellEffectActivateRunes(uint32 i)
 	}
 }
 
+void Spell::SpellEffectQuestFail(uint32 i)
+{
+	return;
+	/*not implemented yet
+	need to send something*/
+}
+
+void Spell::SpellEffectChargeDest(uint32 i)
+{
+	return;
+	/*not implemented yet
+	need to do something with player*/
+}
+
+void Spell::SpellEffectQuestStart(uint32 i)
+{
+	return;
+	/*not implemented yet
+	push something to player*/
+}
+
 void Spell::SpellEffectSetMirrorName(uint32 i)
 {
 	WorldPacket data(SMSG_CLEAR_TARGET, 8);
 	data << uint64(m_caster->GetGUID());
 	m_caster->SendMessageToSet(&data, true);
+}
+
+void Spell::SpellEffectRaFriend(uint32 i)
+{
+	return;
+	/*not implemented yet
+	need a new table in login which keeps the referrer and the reffered accounts.
+	After this it could be included to player and then to the commandlist.
+	To Refer a Friend its important to get the data inside the logindb.
+	At the end the ArcemuCore users need to fill this table... maybe with their homepage...*/
+}
+
+void Spell::SpellEffectRemoveAura(uint32 i)
+{
+	return;
+	/*not implemented yet
+	some hook to remove the auras?*/
 }

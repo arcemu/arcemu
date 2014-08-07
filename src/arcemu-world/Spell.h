@@ -1875,6 +1875,7 @@ class SERVER_DECL Spell : public EventableObject
 		void SpellEffectRestorePowerPct(uint32 i);
 		void SpellEffectTriggerSpellWithValue(uint32 i);
 		void SpellEffectApplyOwnerAA(uint32 i);
+		void SpellEffectPullTowards(uint32 i);
 		void SpellEffectCreatePet(uint32 i);
 		void SpellEffectTeachTaxiPath(uint32 i);
 		void SpellEffectDualWield2H(uint32 i);
@@ -1886,9 +1887,14 @@ class SERVER_DECL Spell : public EventableObject
 		void SpellEffectLearnSpec(uint32 i);
 		void SpellEffectActivateSpec(uint32 i);
 		void SpellEffectActivateRunes(uint32 i);
+		void SpellEffectQuestFail(uint32 i);
+		void SpellEffectChargeDest(uint32 i);
+		void SpellEffectQuestStart(uint32 i);
+		void SpellEffectRaFriend(uint32 i);
+		void SpellEffectRemoveAura(uint32 i);
 		void SpellEffectJumpTarget(uint32 i)
 		{
-
+			//I dont know why it is here... maybe could be removed?
 		}
 		void SpellEffectJumpBehindTarget(uint32 i);
 
