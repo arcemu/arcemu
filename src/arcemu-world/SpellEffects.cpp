@@ -109,7 +109,7 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS] =
 	&Spell::SpellEffectStuck,					//SPELL_EFFECT_STUCK - 84
 	&Spell::SpellEffectSummonPlayer,			//SPELL_EFFECT_SUMMON_PLAYER - 85
 	&Spell::SpellEffectActivateObject,			//SPELL_EFFECT_ACTIVATE_OBJECT - 86
-	&Spell::SpellEffectBuildingDamage,				//SPELL_EFFECT_BUILDING_DAMAGE - 87
+	&Spell::SpellEffectBuildingDamage,		    //SPELL_EFFECT_BUILDING_DAMAGE - 87
 	&Spell::SpellEffectNULL,					//SPELL_EFFECT_BUILDING_REPAIR - 88
 	&Spell::SpellEffectNULL,					//SPELL_EFFECT_BUILDING_SWITCH_STATE - 89
 	&Spell::SpellEffectNULL,					//SPELL_EFFECT_KILL_CREDIT_90 - 90
@@ -144,16 +144,16 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS] =
 	&Spell::SpellEffectApplyPetAA,				//SPELL_EFFECT_APPLY_PET_AURA - 119
 	&Spell::SpellEffectNULL,					//SPELL_EFFECT_TELEPORT_GRAVEYARD - 120//Not used
 	&Spell::SpellEffectDummyMelee,				//SPELL_EFFECT_DUMMYMELEE	- 121
-	&Spell::SpellEffectNULL,					// unknown - 122 //not used
+	&Spell::SpellEffectNULL,					// unknown1 - 122 //not used
 	&Spell::SpellEffectStartTaxi,				//SPELL_EFFECT_START_TAXI - 123 // http://www.wowhead.com/?spell=54575
 	&Spell::SpellEffectPlayerPull,				//SPELL_EFFECT_PLAYER_PULL - 124 - http://thottbot.com/e2312
 	&Spell::SpellEffectReduceThreatPercent,     //SPELL_EFFECT_REDUCE_THREAT_PERCENT - 125 // Reduce Threat by % //http://www.thottbot.com/?sp=32835
 	&Spell::SpellEffectSpellSteal,				//SPELL_EFFECT_SPELL_STEAL - 126 // Steal Beneficial Buff (Magic) //http://www.thottbot.com/?sp=30449
-	&Spell::SpellEffectProspecting,				// unknown - 127 // Search 5 ore of a base metal for precious gems.  This will destroy the ore in the process.
+	&Spell::SpellEffectProspecting,				// Prospecting - 127 // Search 5 ore of a base metal for precious gems.  This will destroy the ore in the process.
 	&Spell::SpellEffectApplyFriendAA,			// Apply Aura friendly
 	&Spell::SpellEffectApplyEnemyAA,			// Apply Aura enemy
-	&Spell::SpellEffectRedirectThreat,			// unknown - 130 // http://www.thottbot.com/s34477
-	&Spell::SpellEffectNULL,					// unknown - 131 // test spell
+	&Spell::SpellEffectRedirectThreat,			// Redirecting threat - 130 // http://www.thottbot.com/s34477
+	&Spell::SpellEffectNULL,					// Play Sound - 131
 	&Spell::SpellEffectPlayMusic,				// Play Music - 132 // http://www.thottbot.com/s46852
 	&Spell::SpellEffectForgetSpecialization,	//SPELL_EFFECT_FORGET_SPECIALIZATION - 133 // http://www.thottbot.com/s36441 // I think this is a gm/npc spell
 	&Spell::SpellEffectKillCredit,				// Quest Credit (Player only, not party) - 134 // related to summoning objects and removing them, http://www.thottbot.com/s39161
@@ -163,16 +163,16 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS] =
 	&Spell::SpellEffectKnockBack2,				// knockback2 - 138 // related to superjump or even "*jump" spells http://www.thottbot.com/?e=Unknown%20138
 	&Spell::SpellEffectClearQuest,				// Remove Quest - 139
 	&Spell::SpellEffectTriggerSpell,			// triggers a spell from target back to caster - used at Malacrass f.e.
-	&Spell::SpellEffectNULL,					// unknown - 141 // triggers spell, magic one,  (Mother spell) http://www.thottbot.com/s41065
-	&Spell::SpellEffectTriggerSpellWithValue,	//SPELL_EFFECT_TRIGGER_SPELL_WITH_VALUE - 142 // triggers some kind of "Put spell on target" thing... (dono for sure) http://www.thottbot.com/s40872 and http://www.thottbot.com/s33076
+	&Spell::SpellEffectNULL,					// Force Cast with value // triggers spell, magic one,  (Mother spell) http://www.thottbot.com/s41065
+	&Spell::SpellEffectTriggerSpellWithValue,	// SPELL_EFFECT_TRIGGER_SPELL_WITH_VALUE - 142 // triggers some kind of "Put spell on target" thing... (dono for sure) http://www.thottbot.com/s40872 and http://www.thottbot.com/s33076
 	&Spell::SpellEffectApplyOwnerAA,			// Apply Aura on summon owner - 143 // Master -> demon effecting spell, http://www.thottbot.com/s25228 and http://www.thottbot.com/s35696
-	&Spell::SpellEffectNULL,					// unknown - 144
-	&Spell::SpellEffectNULL,					// unknown - 145
+	&Spell::SpellEffectNULL,					// Knock back - 144
+	&Spell::SpellEffectNULL,					// Pull towards - 145
 	&Spell::SpellEffectActivateRunes,			// Activate Rune - 146
 	&Spell::SpellEffectNULL,					// Quest Fail - 147
-	&Spell::SpellEffectNULL,					// unknown - 148
-	&Spell::SpellEffectNULL,					// unknown - 149
-	&Spell::SpellEffectNULL,					// unknown - 150
+	&Spell::SpellEffectNULL,					// Trigger missile - 148
+	&Spell::SpellEffectNULL,					// Charge - 149
+	&Spell::SpellEffectNULL,					// Quest Start - 150
 	&Spell::SpellEffectTriggerSpell,			// SPELL_EFFECT_TRIGGER_SPELL_2 - 151
 	&Spell::SpellEffectNULL,					// Summon Refer-a-Friend - 152
 	&Spell::SpellEffectCreatePet,				// Create tamed pet - 153
@@ -182,9 +182,11 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS] =
 	&Spell::SpellEffectCreateItem2,				//157 SPELL_EFFECT_CREATE_ITEM_2
 	&Spell::SpellEffectMilling,					// Milling - 158
 	&Spell::SpellEffectRenamePet,				// Allow Pet Rename - 159
-	&Spell::SpellEffectNULL,					// unknown - 160
+	&Spell::SpellEffectNULL,					// unknown2 - 160
 	&Spell::SpellEffectLearnSpec,				// Learn or unlearn a spec - 161
 	&Spell::SpellEffectActivateSpec,			// Activate a spec - 162
+	&Spell::SpellEffectNULL,					// unknown3 - 163
+	&Spell::SpellEffectNULL,					// Remove aura - 164
 };
 
 const char* SpellEffectNames[TOTAL_SPELL_EFFECTS] =
@@ -279,7 +281,7 @@ const char* SpellEffectNames[TOTAL_SPELL_EFFECTS] =
 	"BUILDING_DAMAGE",           //    87
 	"BUILDING_REPAIR",           //    88
 	"BUILDING_SWITCH_STATE",     //    89
-	"KILL_CREDIT_90",               //    90
+	"KILL_CREDIT_90",            //    90
 	"THREAT_ALL",                //    91
 	"ENCHANT_HELD_ITEM",         //    92
 	"SET_MIRROR_NAME",           //    93
@@ -314,43 +316,46 @@ const char* SpellEffectNames[TOTAL_SPELL_EFFECTS] =
 	"UNKNOWN1",                  //    122
 	"START_TAXI",                //    123
 	"PLAYER_PULL",               //    124
-	"UNKNOWN4",                  //    125
-	"UNKNOWN5",                  //    126
+	"MODIFY_THREAT_PERCENT",     //    125
+	"STEAL_BENEFICIAL_BUFF",     //    126
 	"PROSPECTING",               //    127
 	"APPLY_FRIEND_AREA_AURA",    //    128
 	"APPLY_RAID_AREA_AURA",      //    129
-	"UNKNOWN10",                 //    130
-	"UNKNOWN11",                 //    131
+	"REDIRECT_THREAT",           //    130
+	"PLAY_SOUND",                //    131
 	"PLAY_MUSIC",                //    132
 	"FORGET_SPECIALIZATION",     //    133
 	"KILL_CREDIT",               //    134
-	"UNKNOWN15",                 //    135
-	"UNKNOWN16",                 //    136
+	"CALL_PET",                  //    135
+	"HEAL_PCT",                  //    136
 	"RESTORE_POWER_PCT",         //    137
 	"KNOCKBACK2",                //    138
 	"CLEAR_QUEST",               //    139
-	"UNKNOWN20",                 //    140
-	"UNKNOWN21",                 //    141
+	"FORCE_CAST",                //    140
+	"FORCE_CAST_WITH_VALUE",     //    141
 	"TRIGGER_SPELL_WITH_VALUE",  //    142
 	"APPLY_OWNER_AREA_AURA",     //    143
-	"UNKNOWN23",                 //    144
-	"UNKNOWN24",                 //    145
+	"KNOCK_BACK_DEST",           //    144
+	"PULL_TOWARDS_DEST",         //    145
 	"ACTIVATE_RUNES",            //    146
 	"QUEST_FAIL",                //    147
-	"UNKNOWN26",                 //    148
-	"UNKNOWN27",                 //    149
-	"UNKNOWN28",                 //    150
+	"TRIGGER_MISSILE_SPELL_WITH_VALUE",  //    148
+	"CHARGE_DEST",               //    149
+	"QUEST_START",               //    150
 	"SUMMON_TARGET",             //    151
-	"UNKNOWN30",                 //    152
+	"SUMMON_RAF_FRIEND",         //    152
 	"TAME_CREATURE",             //    153
-	"UNKNOWN32",                 //    154
-	"UNKNOWN33",                 //    155
-	"UNKNOWN34",                 //    156
-	"UNKNOWN35",                 //    157
+	"SUMMON_REFER_A_FRIEND",     //    154
+	"TAME_CREATURE",             //    155
+	"ADD_SOCKET",                //    156
+	"CREATE_ITEM2",              //    157
 	"MILLING",                   //    158
 	"ALLOW_PET_RENAME",          //    159
-	"UNKNOWN36",                 //    160
-	"UNKNOWN37"                  //    161 //used by spell 63624(dual talents)
+	"UNKNOWN2",                  //    160
+	"LEARN_SPEC"                 //    161
+	"ACTIVATE_SPEC"              //    162
+	"UNKNOWN3"                   //    163
+	"REMOVE_AURA"                //    164
 };
 
 void Spell::ApplyAA(uint32 i)   // Apply Area Aura
