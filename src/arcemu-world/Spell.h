@@ -827,7 +827,7 @@ enum SpellEffects
     SPELL_EFFECT_LANGUAGE,                  //    39
     SPELL_EFFECT_DUAL_WIELD,                //    40
     SPELL_EFFECT_LEAP_41,                   //    41
-	SPELL_EFFECT_JUMP_BEHIND_TARGET,        //    42
+    SPELL_EFFECT_JUMP_BEHIND_TARGET,        //    42
     SPELL_EFFECT_TELEPORT_UNITS_FACE_CASTER,//    43
     SPELL_EFFECT_SKILL_STEP,                //    44
     SPELL_EFFECT_UNDEFINED_45,              //    45
@@ -859,7 +859,7 @@ enum SpellEffects
     SPELL_EFFECT_PICKPOCKET,                //    71
     SPELL_EFFECT_ADD_FARSIGHT,              //    72
     SPELL_EFFECT_UNTRAIN_TALENTS,           //    73
-    SPELL_EFFECT_USE_GLYPH,	                //    74
+    SPELL_EFFECT_USE_GLYPH,                 //    74
     SPELL_EFFECT_HEAL_MECHANICAL,           //    75
     SPELL_EFFECT_SUMMON_OBJECT_WILD,        //    76
     SPELL_EFFECT_SCRIPT_EFFECT,             //    77
@@ -910,46 +910,46 @@ enum SpellEffects
     SPELL_EFFECT_UNKNOWN1,                  //    122
     SPELL_EFFECT_START_TAXI,                //    123
     SPELL_EFFECT_PLAYER_PULL,               //    124
-	SPELL_EFFECT_MODIFY_THREAT_PERCENT,     //    125
-	SPELL_EFFECT_STEAL_BENEFICIAL_BUFF,     //    126
+    SPELL_EFFECT_MODIFY_THREAT_PERCENT,     //    125
+    SPELL_EFFECT_STEAL_BENEFICIAL_BUFF,     //    126
     SPELL_EFFECT_PROSPECTING,               //    127
     SPELL_EFFECT_APPLY_FRIEND_AREA_AURA,    //    128
     SPELL_EFFECT_APPLY_ENEMY_AREA_AURA,     //    129
-	SPELL_EFFECT_REDIRECT_THREAT,           //    130
-	SPELL_EFFECT_PLAY_SOUND,                //    131
+    SPELL_EFFECT_REDIRECT_THREAT,           //    130
+    SPELL_EFFECT_PLAY_SOUND,                //    131
     SPELL_EFFECT_PLAY_MUSIC,                //    132
     SPELL_EFFECT_FORGET_SPECIALIZATION,     //    133
     SPELL_EFFECT_KILL_CREDIT,               //    134
-	SPELL_EFFECT_CALL_PET,                  //    135
-	SPELL_EFFECT_HEAL_PCT,                  //    136
-	SPELL_EFFECT_ENERGIZE_PCT,              //    137
-	SPELL_EFFECT_LEAP_BACK,                 //    138
+    SPELL_EFFECT_CALL_PET,                  //    135
+    SPELL_EFFECT_HEAL_PCT,                  //    136
+    SPELL_EFFECT_ENERGIZE_PCT,              //    137
+    SPELL_EFFECT_LEAP_BACK,                 //    138
     SPELL_EFFECT_CLEAR_QUEST,               //    139
-	SPELL_EFFECT_FORCE_CAST,                //    140
-	SPELL_EFFECT_FORCE_CAST_WITH_VALUE,     //    141
+    SPELL_EFFECT_FORCE_CAST,                //    140
+    SPELL_EFFECT_FORCE_CAST_WITH_VALUE,     //    141
     SPELL_EFFECT_TRIGGER_SPELL_WITH_VALUE,  //    142
     SPELL_EFFECT_APPLY_OWNER_AREA_AURA,     //    143
-	SPELL_EFFECT_KNOCK_BACK_DEST,           //    144
-	SPELL_EFFECT_PULL_TOWARDS_DEST,         //    145
+    SPELL_EFFECT_KNOCK_BACK_DEST,           //    144
+    SPELL_EFFECT_PULL_TOWARDS_DEST,         //    145
     SPELL_EFFECT_ACTIVATE_RUNES,            //    146
-	SPELL_EFFECT_QUEST_FAIL,                //    147
+    SPELL_EFFECT_QUEST_FAIL,                //    147
 	SPELL_EFFECT_TRIGGER_MISSILE_SPELL_WITH_VALUE,                 //    148
-	SPELL_EFFECT_CHARGE_DEST,               //    149
-	SPELL_EFFECT_QUEST_START,               //    150
-	SPELL_EFFECT_TRIGGER_SPELL_2,           //    151
-	SPELL_EFFECT_SUMMON_RAF_FRIEND,         //    152
+    SPELL_EFFECT_CHARGE_DEST,               //    149
+    SPELL_EFFECT_QUEST_START,               //    150
+    SPELL_EFFECT_TRIGGER_SPELL_2,           //    151
+    SPELL_EFFECT_SUMMON_RAF_FRIEND,         //    152
     SPELL_EFFECT_SUMMON_TARGET,             //    153
-	SPELL_EFFECT_DISCOVER_TAXI,             //    154
+    SPELL_EFFECT_DISCOVER_TAXI,             //    154
     SPELL_EFFECT_TAME_CREATURE,             //    155
     SPELL_EFFECT_ADD_SOCKET,                //    156
-    SPELL_EFFECT_CREATE_ITEM2,				//    157
-    SPELL_EFFECT_MILLING,					//    158
-	SPELL_EFFECT_ALLOW_RENAME_PET,          //    159
+    SPELL_EFFECT_CREATE_ITEM2,              //    157
+    SPELL_EFFECT_MILLING,                   //    158
+    SPELL_EFFECT_ALLOW_RENAME_PET,          //    159
     SPELL_EFFECT_UNKNOWN2,                  //    160
     SPELL_EFFECT_LEARN_SPEC,                //    161
     SPELL_EFFECT_ACTIVATE_SPEC,             //    162
-	SPELL_EFFECT_UNKNOWN3,                  //    163
-	SPELL_EFFECT_REMOVE_AURA,               //    164
+    SPELL_EFFECT_UNKNOWN3,                  //    163
+    SPELL_EFFECT_REMOVE_AURA,               //    164
     TOTAL_SPELL_EFFECTS,                    //    165
 };
 

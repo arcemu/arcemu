@@ -5669,5 +5669,7 @@ void Spell::SpellEffectRemoveAura(uint32 i)
 {
 	return;
 	/*not implemented yet
-	some hook to remove the auras?*/
+	if(unitTarget !unitTarget->IsPlayer())
+		return;
+	unitTarget->RemoveAllAuraByNameHash*/
 }
