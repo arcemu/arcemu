@@ -3,6 +3,8 @@
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
  * Copyright (C) 2008-2014 <http://www.ArcEmu.org/>
  *
+ * Copyright (C) 2008-2014 TrinityCore <http://www.trinitycore.org/>
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
