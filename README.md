@@ -18,7 +18,7 @@ Visit our website: [ArcEmu.org](http://www.arcemu.org).
 
 
 ## Infos
-Supported Version: 3.3.5
+Supported Version: 3.3.5a
 
 
 ## Links
@@ -34,6 +34,6 @@ Supported Version: 3.3.5
 
 [Database HowTo](http://www.arcemu.org/wiki/Database_setup)
 
-[NoxicDB](https://github.com/NoxicCore/NoxicDB) (dervied from Land of Elves)
+[NoxicDB](https://github.com/Crimoxic/NoxicDB) (dervied from Land of Elves)
 
 [WhyDB](http://www.whydb.org) (inactive)
