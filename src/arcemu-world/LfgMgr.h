@@ -20,17 +20,38 @@
 
 enum LFGTypes
 {
-    LFG_NONE = 0,
-    LFG_INSTANCE = 1,
-    LFG_RAID = 2,
-    LFG_QUEST = 3,
-    LFG_ZONE = 4,
-    LFG_HEROIC_DUNGEON = 5, // from client
-    LFG_ANY_DUNGEON = 6,
-    LFG_ANY_HEROIC_DUNGEON = 7,
-    LFG_DAILY_DUNGEON = 8,
+    LFG_NONE                 = 0,
+    LFG_INSTANCE             = 1,
+    LFG_RAID                 = 2,
+    LFG_QUEST                = 3,
+    LFG_ZONE                 = 4,
+    LFG_HEROIC_DUNGEON       = 5, // from client
+    LFG_ANY_DUNGEON          = 6,
+    LFG_ANY_HEROIC_DUNGEON   = 7,
+    LFG_DAILY_DUNGEON        = 8,
     LFG_DAILY_HEROIC_DUNGEON = 9,
 };
+
+/*DungeonGroups from dbc
+World_Events = 0x0
+N = Normal   = 0x1
+R = Raid     = 0x2
+H = Heroic   = 0x5
+
+enum LFGGroups
+{
+    LFG_GROUP_WOTLK_H     = 1  //0x5
+	LFG_GROUP_WOTLK_N     = 2  //0x1
+	LFG_GROUP_BC_H        = 3  //0x5
+	LFG_GROUP_BC_N        = 4  //0x1
+	LFG_GROUP_CLASSIC_D   = 5  //0x1
+	LFG_GROUP_WOTLK_R_25  = 17 //0x2
+	LFG_GROUP_WOTLK_R_10  = 18 //0x2
+	LFG_GROUP_BC_R        = 19 //0x2
+	LFG_GROUP_CLASSIC_R   = 20 //0x2
+	LFG_WORLD_EVENTS      = 21 //0x0
+}
+*/
 
 #define MAX_DUNGEONS 294+1 // check max entry's +1 on lfgdungeons.dbc
 #define MAX_LFG_QUEUE_ID 3
