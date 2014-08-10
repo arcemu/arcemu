@@ -48,6 +48,7 @@ SET(sources
 	GMTicket.cpp 
 	GMTicketCommands.cpp
 	GO_Trap.cpp
+	GO_SpellFocus.cpp
 	Gossip.cpp
 	Group.cpp 
 	GroupHandler.cpp 
@@ -201,6 +202,7 @@ SET( headers
 	GameObject.h
 	GO_ILockable.h
 	GO_Trap.h
+	GO_SpellFocus.h
 	Gossip.h
 	Group.h
 	Entities/Summons/GuardianSummon.h

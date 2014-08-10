@@ -19,51 +19,44 @@
 */
 #include "StdAfx.h"
 namespace Arcemu{
-	GO_Trap::GO_Trap() : GameObject(){
+	GO_SpellFocus::GO_SpellFocus() : GameObject(){
 		spell = NULL;
 	}
-
-	GO_Trap::GO_Trap(uint64 GUID) : GameObject(GUID){
+	GO_SpellFocus::GO_SpellFocus(uint64 GUID) : GameObject(GUID){
 		spell = NULL;
 	}
-
-	GO_Trap::~GO_Trap(){
+	GO_SpellFocus::~GO_SpellFocus(){
 	}
-
-	void GO_Trap::InitAI(){
-		spell = dbcSpell.LookupEntryForced(pInfo->trap.spellId);
-		charges = pInfo->trap.charges;
-
+	void GO_SpellFocus::InitAI(){
+		GameObjectInfo *i = GameObjectNameStorage.LookupEntry(pInfo->spellFocus.linkedTrapId);;
+		if (i == NULL){
+			sLog.outError("Gamobject %u is of spellfocus type, has attachment GO data ( %u ), but attachment not found in database.", pInfo->ID, pInfo->raw.sound2);
+			return;
+		}
+		spell = dbcSpell.LookupEntryForced(i->trap.spellId);
+		range = static_cast< float >(i->trap.radius);
 		if (myScript == NULL)
 			myScript = sScriptMgr.CreateAIScriptClassForGameObject(GetEntry(), this);
 	}
-
-	void GO_Trap::Update(unsigned long time_passed){
-		if (m_deleted)
-			return;
-
+	void GO_SpellFocus::Update(unsigned long time_passed){
 		if (m_event_Instanceid != m_instanceId){
 			event_Relocate();
 			return;
-
 		}
-
 		if (!IsInWorld())
 			return;
-
-		if (GetState() == 1){
+		if (m_deleted)
+			return;
+		if (spell != NULL && (GetState() == 1)){
 			for (std::set< Object* >::iterator itr = m_objectsInRange.begin(); itr != m_objectsInRange.end(); ++itr){
 				float dist;
 				Object *o = *itr;
-
+				dist = GetDistanceSq(o);
 				if (!o->IsUnit())
 					continue;
-
 				if ((m_summoner != NULL) && (o->GetGUID() == m_summoner->GetGUID()))
 					continue;
-
-				dist = GetDistanceSq(o);
-				if (dist <= pInfo->trap.radius){
+				if (dist <= range){
 					if (m_summonedGo){
 						if (!m_summoner){
 							ExpireAndDelete();
@@ -72,19 +65,11 @@ namespace Arcemu{
 						if (!isAttackable(m_summoner, o))
 							continue;
 					}
-					CastSpell(o->GetGUID(), pInfo->trap.spellId);
-
-					if (m_summoner != NULL)
-						m_summoner->HandleProc(PROC_ON_TRAP_TRIGGER, reinterpret_cast< Unit* >(o), spell);
-					
-					if (charges != 0)
-						charges--;
-
-					if (m_summonedGo && pInfo->trap.charges != 0 && charges == 0){
+					CastSpell(o->GetGUID(), spell->Id);
+					if (m_summonedGo){
 						ExpireAndDelete();
 						return;
 					}
-
 					if (spell->EffectImplicitTargetA[0] == 16 ||
 						spell->EffectImplicitTargetB[0] == 16){
 						return;	// on area don't continue.
@@ -93,7 +78,7 @@ namespace Arcemu{
 			}
 		}
 	}
-	void GO_Trap::CastSpell(uint64 TargetGUID, uint32 SpellID){
+	void GO_SpellFocus::CastSpell(uint64 TargetGUID, uint32 SpellID){
 		SpellEntry *sp = dbcSpell.LookupEntryForced(SpellID);
 		if (sp == NULL){
 			sLog.outError("GameObject %u tried to cast a non-existing Spell %u.", pInfo->ID, SpellID);

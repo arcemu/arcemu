@@ -555,9 +555,6 @@ enum GAMEOBJECT_TYPES
 class SERVER_DECL GameObject : public Object
 {
 	public:
-		/************************************************************************/
-		/* LUA Stuff                                                            */
-		/************************************************************************/
 		GameObject();
 
 		GameObject(uint64 guid);
@@ -613,6 +610,8 @@ class SERVER_DECL GameObject : public Object
 
 		void ExpireAndDelete();
 
+		int32 charges;
+
 		/// Quest data
 		std::list<QuestRelation*>* m_quests;
 
@@ -622,11 +621,7 @@ class SERVER_DECL GameObject : public Object
 		uint16 m_ritualspell;
 
 		virtual void InitAI();
-		SpellEntry* spell;
 
-		float range;
-		uint16 counter;
-		int32 charges;//used for type==22,to limit number of usages.
 		bool invisible;//invisible
 		uint8 invisibilityFlag;
 		Unit* m_summoner;
@@ -640,7 +635,6 @@ class SERVER_DECL GameObject : public Object
 
 		//void TrapSearchTarget();	Need to be checked if it is uused //Traps need to find targets faster :P
 
-		bool HasAI() { return spell != 0; }
 		GOSpawn* m_spawn;
 		void OnPushToWorld();
 		void OnRemoveInRangeObject(Object* pObj);

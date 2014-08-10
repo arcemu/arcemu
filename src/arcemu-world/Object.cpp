@@ -2029,7 +2029,7 @@ bool Object::CanActivate()
 
 		case TYPEID_GAMEOBJECT:
 			{
-				if(TO_GAMEOBJECT(this)->HasAI() && TO_GAMEOBJECT(this)->GetType() != GAMEOBJECT_TYPE_TRAP)
+				if( TO_GAMEOBJECT( this )->GetType() != GAMEOBJECT_TYPE_TRAP)
 					return true;
 			}
 			break;
