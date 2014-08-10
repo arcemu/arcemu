@@ -1533,22 +1533,24 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 			{
 				// store the members in the ritual, cast sacrifice spell, and summon.
 				uint32 i = 0;
-				if(!obj->m_ritualmembers || !obj->m_ritualspell || !obj->m_ritualcaster /*|| !obj->m_ritualtarget*/)
+				Arcemu::GO_Ritual *robj = static_cast< Arcemu::GO_Ritual* >(obj);
+
+				if(!robj->m_ritualmembers || !robj->m_ritualspell || !robj->m_ritualcaster /*|| !obj->m_ritualtarget*/)
 					return;
 
 				for(i = 0; i < goinfo->raw.sound0; i++)
 				{
-					if(!obj->m_ritualmembers[i])
+					if(!robj->m_ritualmembers[i])
 					{
-						obj->m_ritualmembers[i] = plyr->GetLowGUID();
-						plyr->SetChannelSpellTargetGUID(obj->GetGUID());
-						plyr->SetChannelSpellId(obj->m_ritualspell);
+						robj->m_ritualmembers[i] = plyr->GetLowGUID();
+						plyr->SetChannelSpellTargetGUID(robj->GetGUID());
+						plyr->SetChannelSpellId(robj->m_ritualspell);
 						break;
 					}
-					else if(obj->m_ritualmembers[i] == plyr->GetLowGUID())
+					else if(robj->m_ritualmembers[i] == plyr->GetLowGUID())
 					{
 						// we're deselecting :(
-						obj->m_ritualmembers[i] = 0;
+						robj->m_ritualmembers[i] = 0;
 						plyr->SetChannelSpellId(0);
 						plyr->SetChannelSpellTargetGUID(0);
 						return;
@@ -1557,11 +1559,11 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 
 				if(i == goinfo->raw.sound0 - 1)
 				{
-					obj->m_ritualspell = 0;
+					robj->m_ritualspell = 0;
 					Player* plr;
 					for(i = 0; i < goinfo->raw.sound0; i++)
 					{
-						plr = _player->GetMapMgr()->GetPlayer(obj->m_ritualmembers[i]);
+						plr = _player->GetMapMgr()->GetPlayer(robj->m_ritualmembers[i]);
 						if(plr)
 						{
 							plr->SetChannelSpellTargetGUID(0);
@@ -1572,15 +1574,15 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 					SpellEntry* info = NULL;
 					if(goinfo->ID == 36727 || goinfo->ID == 194108)   // summon portal
 					{
-						if(!obj->m_ritualtarget)
+						if(!robj->m_ritualtarget)
 							return;
 						info = dbcSpell.LookupEntryForced(goinfo->raw.sound1);
 						if(!info)
 							break;
-						Player* target = objmgr.GetPlayer(obj->m_ritualtarget);
+						Player* target = objmgr.GetPlayer(robj->m_ritualtarget);
 						if(target == NULL || !target->IsInWorld())
 							return;
-						spell = sSpellFactoryMgr.NewSpell(_player->GetMapMgr()->GetPlayer(obj->m_ritualcaster), info, true, NULL);
+						spell = new Spell(_player->GetMapMgr()->GetPlayer(robj->m_ritualcaster), info, true, NULL);
 						targets.m_unitTarget = target->GetGUID();
 						spell->prepare(&targets);
 					}
@@ -1589,8 +1591,8 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 						Player* psacrifice = NULL;
 
 						// kill the sacrifice player
-						psacrifice = _player->GetMapMgr()->GetPlayer(obj->m_ritualmembers[(int)(rand() % (goinfo->raw.sound0 - 1))]);
-						Player* pCaster = obj->GetMapMgr()->GetPlayer(obj->m_ritualcaster);
+						psacrifice = _player->GetMapMgr()->GetPlayer(robj->m_ritualmembers[(int)(rand() % (goinfo->raw.sound0 - 1))]);
+						Player* pCaster = obj->GetMapMgr()->GetPlayer(robj->m_ritualcaster);
 						if(!psacrifice || !pCaster)
 							return;
 
@@ -1610,11 +1612,11 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 					}
 					else if(goinfo->ID == 179944)    // Summoning portal for meeting stones
 					{
-						plr = _player->GetMapMgr()->GetPlayer(obj->m_ritualtarget);
+						plr = _player->GetMapMgr()->GetPlayer(robj->m_ritualtarget);
 						if(!plr)
 							return;
 
-						Player* pleader = _player->GetMapMgr()->GetPlayer(obj->m_ritualcaster);
+						Player* pleader = _player->GetMapMgr()->GetPlayer(robj->m_ritualcaster);
 						if(!pleader)
 							return;
 
@@ -1624,17 +1626,17 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 						spell->prepare(&targets2);
 
 						/* expire the gameobject */
-						obj->ExpireAndDelete();
+						robj->ExpireAndDelete();
 					}
 					else if(goinfo->ID == 186811 || goinfo->ID == 181622)
 					{
 						info = dbcSpell.LookupEntryForced(goinfo->raw.sound1);
 						if(info == NULL)
 							return;
-						spell = sSpellFactoryMgr.NewSpell(_player->GetMapMgr()->GetPlayer(obj->m_ritualcaster), info, true, NULL);
-						SpellCastTargets targets2(obj->m_ritualcaster);
+						spell = new Spell(_player->GetMapMgr()->GetPlayer(robj->m_ritualcaster), info, true, NULL);
+						SpellCastTargets targets2(robj->m_ritualcaster);
 						spell->prepare(&targets2);
-						obj->ExpireAndDelete();
+						robj->ExpireAndDelete();
 					}
 				}
 			}
@@ -1672,16 +1674,18 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 
 				/* Create the summoning portal */
 				GameObject* pGo = _player->GetMapMgr()->CreateGameObject(179944);
-				pGo->CreateFromProto(179944, _player->GetMapId(), _player->GetPositionX(), _player->GetPositionY(), _player->GetPositionZ(), 0);
-				pGo->m_ritualcaster = _player->GetLowGUID();
-				pGo->m_ritualtarget = pPlayer->GetLowGUID();
-				pGo->m_ritualspell = 18540;	// meh
-				pGo->PushToWorld(_player->GetMapMgr());
+				Arcemu::GO_Ritual *rGo = static_cast< Arcemu::GO_Ritual* >(pGo);
+
+				rGo->CreateFromProto(179944, _player->GetMapId(), _player->GetPositionX(), _player->GetPositionY(), _player->GetPositionZ(), 0);
+				rGo->m_ritualcaster = _player->GetLowGUID();
+				rGo->m_ritualtarget = pPlayer->GetLowGUID();
+				rGo->m_ritualspell = 18540; // meh
+				rGo->PushToWorld(_player->GetMapMgr());
 
 				/* member one: the (w00t) caster */
-				pGo->m_ritualmembers[0] = _player->GetLowGUID();
-				_player->SetChannelSpellTargetGUID(pGo->GetGUID());
-				_player->SetChannelSpellId(pGo->m_ritualspell);
+				rGo->m_ritualmembers[0] = _player->GetLowGUID();
+				_player->SetChannelSpellTargetGUID(rGo->GetGUID());
+				_player->SetChannelSpellId(rGo->m_ritualspell);
 
 				/* expire after 2mins*/
 				sEventMgr.AddEvent(pGo, &GameObject::_Expire, EVENT_GAMEOBJECT_EXPIRE, 120000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);

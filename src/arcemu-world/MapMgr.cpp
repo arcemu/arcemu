@@ -1879,6 +1879,10 @@ GameObject* MapMgr::CreateGameObject(uint32 entry)
 			go = new Arcemu::GO_FishingNode(uint64((uint64(HIGHGUID_TYPE_GAMEOBJECT) << 32) | GUID));
 			break;
 
+		case GAMEOBJECT_TYPE_RITUAL:
+			go = new Arcemu::GO_Ritual(uint64((uint64(HIGHGUID_TYPE_GAMEOBJECT) << 32) | GUID));
+			break;
+
 		default:
 			go = new GameObject(uint64((uint64(HIGHGUID_TYPE_GAMEOBJECT) << 32) | GUID));
 			break;

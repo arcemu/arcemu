@@ -44,10 +44,6 @@ GameObject::GameObject(uint64 guid)
 	invisibilityFlag = INVIS_FLAG_NORMAL;
 	m_summoner = NULL;
 	charges = -1;
-	m_ritualcaster = 0;
-	m_ritualtarget = 0;
-	m_ritualmembers = NULL;
-	m_ritualspell = 0;
 	pInfo = NULL;
 	myScript = NULL;
 	m_spawn = 0;
@@ -64,11 +60,6 @@ GameObject::GameObject(uint64 guid)
 GameObject::~GameObject()
 {
 	sEventMgr.RemoveEvents(this);
-	if(m_ritualmembers)
-	{
-		delete[] m_ritualmembers;
-		m_ritualmembers = NULL;
-	}
 
 	if(myScript != NULL)
 	{
@@ -261,13 +252,7 @@ void GameObject::InitAI()
 	if( pInfo->Type == GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING )
 		Rebuild();
 
-	if(pInfo->Type == GAMEOBJECT_TYPE_RITUAL)
-	{
-		m_ritualmembers = new uint32[pInfo->raw.sound0];
-		memset(m_ritualmembers, 0, sizeof(uint32)*pInfo->raw.sound0);
-	}
-
-	else if(pInfo->Type == GAMEOBJECT_TYPE_FISHINGHOLE)
+	if (pInfo->Type == GAMEOBJECT_TYPE_FISHINGHOLE)
 	{
 		CalcFishRemaining(true);
 	}
@@ -283,9 +268,7 @@ bool GameObject::Load(GOSpawn* spawn)
 
 	m_spawn = spawn;
 	m_phase = spawn->phase;
-	//SetRotation(spawn->o);
 	SetFlags(spawn->flags);
-//	SetLevel(spawn->level);
 	SetByte(GAMEOBJECT_BYTES_1, 0, static_cast<uint8>(spawn->state));
 	if(spawn->faction)
 	{

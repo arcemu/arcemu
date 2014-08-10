@@ -567,7 +567,6 @@ class SERVER_DECL GameObject : public Object
 		void DeleteFromDB();
 
 		void EventCloseDoor();
-		//void EventCastSpell(uint32 guid, uint32 sp, bool triggered);	Need to be checked if it is unused
 		void SetRotation(float rad);
 		uint64 m_rotation;
 		void UpdateRotation();
@@ -582,11 +581,6 @@ class SERVER_DECL GameObject : public Object
 		void ExpireAndDelete();
 
 		int32 charges;
-
-		uint32* m_ritualmembers;
-		uint32 m_ritualcaster;
-		uint32 m_ritualtarget;
-		uint16 m_ritualspell;
 
 		virtual void InitAI();
 

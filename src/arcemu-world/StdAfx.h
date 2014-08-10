@@ -174,6 +174,7 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "GO_SpellFocus.h"
 #include "GO_Questgiver.h"
 #include "GO_FishingNode.h"
+#include "GO_Ritual.h"
 #include "Group.h"
 #include "Guild.h"
 #include "HonorHandler.h"

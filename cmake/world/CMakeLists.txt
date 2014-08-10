@@ -51,6 +51,7 @@ SET(sources
 	GO_Trap.cpp
 	GO_SpellFocus.cpp
 	GO_FishingNode.cpp
+	GO_Ritual.cpp
 	Gossip.cpp
 	Group.cpp 
 	GroupHandler.cpp 
@@ -207,6 +208,7 @@ SET( headers
 	GO_Trap.h
 	GO_SpellFocus.h
 	GO_FishingNode.h
+	GO_Ritual.h
 	Gossip.h
 	Group.h
 	Entities/Summons/GuardianSummon.h

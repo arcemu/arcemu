@@ -3286,23 +3286,27 @@ void Spell::SpellEffectSummonObject(uint32 i)
 		{
 			if(!p_caster) return;
 
+			Arcemu::GO_Ritual *rgo = static_cast< Arcemu::GO_Ritual* >(go);
+
 			//Player * pTarget = p_caster->GetMapMgr()->GetPlayer( p_caster->GetSelection() );
 			Player* pTarget = objmgr.GetPlayer((uint32)p_caster->GetSelection());
 			if(!pTarget || !pTarget->IsInWorld())
 				return;
-			go->m_ritualmembers[0] = p_caster->GetLowGUID();
-			go->m_ritualcaster = p_caster->GetLowGUID();
-			go->m_ritualtarget = pTarget->GetLowGUID();
-			go->m_ritualspell = static_cast<uint16>(GetProto()->Id);
+			rgo->m_ritualmembers[0] = p_caster->GetLowGUID();
+			rgo->m_ritualcaster = p_caster->GetLowGUID();
+			rgo->m_ritualtarget = pTarget->GetLowGUID();
+			rgo->m_ritualspell = static_cast<uint16>(GetProto()->Id);
 		}
 		else if(entry == 186811 || entry == 181622)    // ritual of refreshment, ritual of souls
 		{
 			if(!p_caster) return;
 
-			go->m_ritualmembers[0] = p_caster->GetLowGUID();
-			go->m_ritualcaster = p_caster->GetLowGUID();
-			go->m_ritualtarget = 0;
-			go->m_ritualspell = static_cast<uint16>(GetProto()->Id);
+			Arcemu::GO_Ritual *rgo = static_cast< Arcemu::GO_Ritual* >(go);
+
+			rgo->m_ritualmembers[0] = p_caster->GetLowGUID();
+			rgo->m_ritualcaster = p_caster->GetLowGUID();
+			rgo->m_ritualtarget = 0;
+			rgo->m_ritualspell = static_cast<uint16>(GetProto()->Id);
 		}
 		else if(entry == 186812 || entry == 181621)    // Refreshment Table, Soulwell
 		{
