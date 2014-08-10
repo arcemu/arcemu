@@ -39,53 +39,62 @@ namespace Arcemu{
 	}
 
 	void GO_Trap::Update(unsigned long time_passed){
-		if (m_deleted)
+		if(m_deleted)
 			return;
 
-		if (m_event_Instanceid != m_instanceId){
+		if(m_event_Instanceid != m_instanceId){
 			event_Relocate();
 			return;
-
 		}
 
-		if (!IsInWorld())
+		if(!IsInWorld())
 			return;
 
-		if (GetState() == 1){
+		if(spell == NULL)
+			return;
+
+		if(GetState() == 1){
 			for (std::set< Object* >::iterator itr = m_objectsInRange.begin(); itr != m_objectsInRange.end(); ++itr){
 				float dist;
 				Object *o = *itr;
 
-				if (!o->IsUnit())
+				if(!o->IsUnit())
 					continue;
 
-				if ((m_summoner != NULL) && (o->GetGUID() == m_summoner->GetGUID()))
+				if((m_summoner != NULL) && (o->GetGUID() == m_summoner->GetGUID()))
 					continue;
 
 				dist = GetDistanceSq(o);
-				if (dist <= pInfo->trap.radius){
-					if (m_summonedGo){
-						if (!m_summoner){
+
+				float maxdistance = sqrt(float(pInfo->trap.radius));
+				if(maxdistance == 0.0f)
+					maxdistance = 1.0f;
+
+				if(dist <= maxdistance){
+
+					if(m_summonedGo){
+						if(!m_summoner){
 							ExpireAndDelete();
 							return;
 						}
-						if (!isAttackable(m_summoner, o))
+
+						if(!isAttackable(m_summoner, o))
 							continue;
 					}
 					CastSpell(o->GetGUID(), pInfo->trap.spellId);
 
-					if (m_summoner != NULL)
+					if(m_summoner != NULL)
 						m_summoner->HandleProc(PROC_ON_TRAP_TRIGGER, reinterpret_cast< Unit* >(o), spell);
 					
-					if (charges != 0)
+					if(charges != 0)
 						charges--;
 
-					if (m_summonedGo && pInfo->trap.charges != 0 && charges == 0){
+					if(m_summonedGo && pInfo->trap.charges != 0 && charges == 0){
 						ExpireAndDelete();
 						return;
 					}
 
-					if (spell->EffectImplicitTargetA[0] == 16 ||
+					if(spell->EffectImplicitTargetA[0] == 16 ||
 						spell->EffectImplicitTargetB[0] == 16){
 						return;	// on area don't continue.
 					}
@@ -95,7 +104,7 @@ namespace Arcemu{
 	}
 	void GO_Trap::CastSpell(uint64 TargetGUID, uint32 SpellID){
 		SpellEntry *sp = dbcSpell.LookupEntryForced(SpellID);
-		if (sp == NULL){
+		if(sp == NULL){
 			sLog.outError("GameObject %u tried to cast a non-existing Spell %u.", pInfo->ID, SpellID);
 			return;
 		}
