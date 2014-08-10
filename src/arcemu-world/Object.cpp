@@ -640,10 +640,15 @@ void Object::_BuildValuesUpdate(ByteBuffer* data, UpdateMask* updateMask, Player
 			GameObject* go = TO_GAMEOBJECT(this);
 			QuestLogEntry* qle;
 			GameObjectInfo* info;
-			if(go->HasQuests())
+			Arcemu::GO_QuestGiver *questgiver = NULL;
+
+			if (go->GetType() == GAMEOBJECT_TYPE_QUESTGIVER)
+				questgiver = static_cast< Arcemu::GO_QuestGiver* >(go);
+
+			if (questgiver != NULL && questgiver->HasQuests())
 			{
 				std::list<QuestRelation*>::iterator itr;
-				for(itr = go->QuestsBegin(); itr != go->QuestsEnd(); ++itr)
+				for(itr = questgiver->QuestsBegin(); itr != questgiver->QuestsEnd(); ++itr)
 				{
 					QuestRelation* qr = (*itr);
 					if(qr != NULL)

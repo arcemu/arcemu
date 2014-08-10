@@ -6591,10 +6591,12 @@ void Player::UpdateNearbyGameObjects()
 			bool bPassed = !deactivate;
 			if(go->GetType() == GAMEOBJECT_TYPE_QUESTGIVER)
 			{
-				if(go->HasQuests() && go->NumOfQuests() > 0)
+				Arcemu::GO_QuestGiver *questgiver = static_cast< Arcemu::GO_QuestGiver* >(go);
+
+				if(questgiver->HasQuests() && questgiver->NumOfQuests() > 0)
 				{
-					std::list<QuestRelation*>::iterator itr2 = go->QuestsBegin();
-					for(; itr2 != go->QuestsEnd(); ++itr2)
+					std::list<QuestRelation*>::iterator itr2 = questgiver->QuestsBegin();
+					for(; itr2 != questgiver->QuestsEnd(); ++itr2)
 					{
 						QuestRelation* qr = (*itr2);
 

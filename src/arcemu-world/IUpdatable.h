@@ -17,6 +17,10 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 *
 */
+
+#ifndef IUPDATABLE_HPP
+#define IUPDATABLE_HPP
+
 namespace Arcemu{
 	//////////////////////////////////////////////////////////////////////////
 	//class IUpdatable
@@ -40,3 +44,5 @@ namespace Arcemu{
 		virtual void Update(unsigned long time_passed) = 0;
 	};
 }
+
+#endif

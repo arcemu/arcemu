@@ -48,7 +48,6 @@ GameObject::GameObject(uint64 guid)
 	m_ritualtarget = 0;
 	m_ritualmembers = NULL;
 	m_ritualspell = 0;
-	m_quests = NULL;
 	pInfo = NULL;
 	myScript = NULL;
 	m_spawn = 0;
@@ -116,7 +115,6 @@ bool GameObject::CreateFromProto(uint32 entry, uint32 mapid, float x, float y, f
 	SetType(static_cast<uint8>(pInfo->Type));
 
 	InitAI();
-	_LoadQuests();
 
 	return true;
 }
@@ -417,69 +415,7 @@ void GameObject::FishHooked(Player* player)
 	data << uint64(GetGUID());
 	data << uint32(0); // value < 4
 	player->GetSession()->SendPacket(&data);
-	//SetByte(GAMEOBJECT_BYTES_1, 0, 0);
-	//BuildFieldUpdatePacket(player, GAMEOBJECT_FLAGS, 32);
 	SetFlags(32);
-}
-
-/////////////
-/// Quests
-
-void GameObject::AddQuest(QuestRelation* Q)
-{
-	m_quests->push_back(Q);
-}
-
-void GameObject::DeleteQuest(QuestRelation* Q)
-{
-	list<QuestRelation*>::iterator it;
-	for(it = m_quests->begin(); it != m_quests->end(); ++it)
-	{
-		if(((*it)->type == Q->type) && ((*it)->qst == Q->qst))
-		{
-			delete(*it);
-			m_quests->erase(it);
-			break;
-		}
-	}
-}
-
-Quest* GameObject::FindQuest(uint32 quest_id, uint8 quest_relation)
-{
-	list< QuestRelation* >::iterator it;
-	for(it = m_quests->begin(); it != m_quests->end(); ++it)
-	{
-		QuestRelation* ptr = (*it);
-		if((ptr->qst->id == quest_id) && (ptr->type & quest_relation))
-		{
-			return ptr->qst;
-		}
-	}
-	return NULL;
-}
-
-uint16 GameObject::GetQuestRelation(uint32 quest_id)
-{
-	uint16 quest_relation = 0;
-	list< QuestRelation* >::iterator it;
-	for(it = m_quests->begin(); it != m_quests->end(); ++it)
-	{
-		if((*it) != NULL && (*it)->qst->id == quest_id)
-		{
-			quest_relation |= (*it)->type;
-		}
-	}
-	return quest_relation;
-}
-
-uint32 GameObject::NumOfQuests()
-{
-	return (uint32)m_quests->size();
-}
-
-void GameObject::_LoadQuests()
-{
-	sQuestMgr.LoadGOQuests(this);
 }
 
 void GameObject::_Expire()

@@ -39,18 +39,6 @@ class Player;
 class GameObjectAIScript;
 class GameObjectTemplate;
 
-struct GOQuestItem
-{
-	uint32 itemid;
-	uint32 requiredcount;
-};
-
-struct GOQuestGameObject
-{
-	uint32 goid;
-	uint32 requiredcount;
-};
-
 enum GAMEOBJECT_FLAG_BIT
 {
     GAMEOBJECT_UNCLICKABLE = 0x01,
@@ -589,18 +577,6 @@ class SERVER_DECL GameObject : public Object
 		void EndFishing(Player* player, bool abort);
 		void FishHooked(Player* player);
 
-		// Quests
-		void _LoadQuests();
-		bool HasQuests() { return m_quests != NULL; };
-		void AddQuest(QuestRelation* Q);
-		void DeleteQuest(QuestRelation* Q);
-		Quest* FindQuest(uint32 quest_id, uint8 quest_relation);
-		uint16 GetQuestRelation(uint32 quest_id);
-		uint32 NumOfQuests();
-		std::list<QuestRelation*>::iterator QuestsBegin() { return m_quests->begin(); };
-		std::list<QuestRelation*>::iterator QuestsEnd() { return m_quests->end(); };
-		void SetQuestList(std::list<QuestRelation*>* qst_lst) { m_quests = qst_lst; };
-
 		void SetSummoned(Unit* mob)
 		{
 			m_summoner = mob;
@@ -611,9 +587,6 @@ class SERVER_DECL GameObject : public Object
 		void ExpireAndDelete();
 
 		int32 charges;
-
-		/// Quest data
-		std::list<QuestRelation*>* m_quests;
 
 		uint32* m_ritualmembers;
 		uint32 m_ritualcaster;

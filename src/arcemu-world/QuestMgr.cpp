@@ -192,11 +192,20 @@ uint32 QuestMgr::CalcStatus(Object* quest_giver, Player* plr)
 
 	if(quest_giver->IsGameObject())
 	{
-		bValid = TO< GameObject* >(quest_giver)->HasQuests();
+		bValid = false;
+
+		GameObject *go = TO_GAMEOBJECT(quest_giver);
+		Arcemu::GO_QuestGiver *questgiver = NULL;
+		if (go->GetType() == GAMEOBJECT_TYPE_QUESTGIVER){
+			questgiver = static_cast< Arcemu::GO_QuestGiver* >(go);
+			if (questgiver->HasQuests())
+				bValid = true;
+
+		}
 		if(bValid)
 		{
-			q_begin = TO< GameObject* >(quest_giver)->QuestsBegin();
-			q_end = TO< GameObject* >(quest_giver)->QuestsEnd();
+			q_begin = questgiver->QuestsBegin();
+			q_end = questgiver->QuestsEnd();
 		}
 	}
 	else if(quest_giver->IsCreature())
@@ -260,11 +269,20 @@ uint32 QuestMgr::ActiveQuestsCount(Object* quest_giver, Player* plr)
 
 	if(quest_giver->IsGameObject())
 	{
-		bValid = TO< GameObject* >(quest_giver)->HasQuests();
+		bValid = false;
+
+		GameObject *go = TO_GAMEOBJECT(quest_giver);
+		Arcemu::GO_QuestGiver *questgiver = NULL;
+		if (go->GetType() == GAMEOBJECT_TYPE_QUESTGIVER){
+			questgiver = static_cast< Arcemu::GO_QuestGiver* >(go);
+			if (questgiver->HasQuests())
+				bValid = true;
+		}
+
 		if(bValid)
 		{
-			q_begin = TO< GameObject* >(quest_giver)->QuestsBegin();
-			q_end   = TO< GameObject* >(quest_giver)->QuestsEnd();
+			q_begin = questgiver->QuestsBegin();
+			q_end = questgiver->QuestsEnd();
 
 		}
 	}
@@ -602,11 +620,20 @@ void QuestMgr::BuildQuestList(WorldPacket* data, Object* qst_giver, Player* plr,
 	bool bValid = false;
 	if(qst_giver->IsGameObject())
 	{
-		bValid = TO< GameObject* >(qst_giver)->HasQuests();
+		bValid = false;
+
+		GameObject *go = TO_GAMEOBJECT(qst_giver);
+		Arcemu::GO_QuestGiver *questgiver = NULL;
+		if (go->GetType() == GAMEOBJECT_TYPE_QUESTGIVER){
+			questgiver = static_cast< Arcemu::GO_QuestGiver* >(go);
+			if (questgiver->HasQuests())
+				bValid = true;
+		}
+
 		if(bValid)
 		{
-			st = TO< GameObject* >(qst_giver)->QuestsBegin();
-			ed = TO< GameObject* >(qst_giver)->QuestsEnd();
+			st = questgiver->QuestsBegin();
+			ed = questgiver->QuestsEnd();
 		}
 	}
 	else if(qst_giver->IsCreature())
@@ -1412,7 +1439,12 @@ void QuestMgr::LoadNPCQuests(Creature* qst_giver)
 
 void QuestMgr::LoadGOQuests(GameObject* go)
 {
-	go->SetQuestList(GetGOQuestList(go->GetEntry()));
+	if(go->GetType() == GAMEOBJECT_TYPE_QUESTGIVER){
+		Arcemu::GO_QuestGiver *qg = static_cast< Arcemu::GO_QuestGiver* >(go);
+
+		qg->SetQuestList(GetGOQuestList(go->GetEntry()));
+
+	}
 }
 
 QuestRelationList* QuestMgr::GetGOQuestList(uint32 entryid)
@@ -1744,8 +1776,15 @@ void QuestMgr::BuildQuestFailed(WorldPacket* data, uint32 questid)
 
 bool QuestMgr::OnActivateQuestGiver(Object* qst_giver, Player* plr)
 {
-	if(qst_giver->IsGameObject() && !TO< GameObject* >(qst_giver)->HasQuests())
-		return false;
+	if (qst_giver->IsGameObject()){
+		GameObject *go = TO_GAMEOBJECT(qst_giver);
+		if (go->GetType() != GAMEOBJECT_TYPE_QUESTGIVER)
+			return false;
+
+		Arcemu::GO_QuestGiver *qg = static_cast< Arcemu::GO_QuestGiver* >(go);
+		if (!qg->HasQuests())
+			return false;
+	}
 
 	uint32 questCount = sQuestMgr.ActiveQuestsCount(qst_giver, plr);
 	WorldPacket data(1004);
@@ -1765,11 +1804,20 @@ bool QuestMgr::OnActivateQuestGiver(Object* qst_giver, Player* plr)
 
 		if(qst_giver->IsGameObject())
 		{
-			bValid = TO< GameObject* >(qst_giver)->HasQuests();
+			bValid = false;
+
+			GameObject *go = TO_GAMEOBJECT(qst_giver);
+			Arcemu::GO_QuestGiver *questgiver = NULL;
+			if (go->GetType() == GAMEOBJECT_TYPE_QUESTGIVER){
+				questgiver = static_cast< Arcemu::GO_QuestGiver* >(go);
+				if (questgiver->HasQuests())
+					bValid = true;
+			}
+
 			if(bValid)
 			{
-				q_begin = TO< GameObject* >(qst_giver)->QuestsBegin();
-				q_end   = TO< GameObject* >(qst_giver)->QuestsEnd();
+				q_begin = questgiver->QuestsBegin();
+				q_end = questgiver->QuestsEnd();
 			}
 		}
 		else if(qst_giver->IsCreature())

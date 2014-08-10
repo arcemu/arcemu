@@ -1492,8 +1492,13 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 			break;
 		case GAMEOBJECT_TYPE_QUESTGIVER:
 			{
+				if(obj->GetType() != GAMEOBJECT_TYPE_QUESTGIVER)
+					break;
+
+				Arcemu::GO_QuestGiver *qg = static_cast< Arcemu::GO_QuestGiver* >(obj);
+
 				// Questgiver
-				if(obj->HasQuests())
+				if(qg->HasQuests())
 				{
 					sQuestMgr.OnActivateQuestGiver(obj, plyr);
 				}

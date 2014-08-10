@@ -17,6 +17,10 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 *
 */
+
+#ifndef GO_SPELLFOCUS_HPP
+#define GO_SPELLFOCUS_HPP
+
 namespace Arcemu{
 	/////////////////////////////////////////////////////////////////////
 	//class GO_SpellFocus
@@ -48,4 +52,7 @@ namespace Arcemu{
 		SpellEntry *spell;
 		float range;
 	};
+
 }
+
+#endif

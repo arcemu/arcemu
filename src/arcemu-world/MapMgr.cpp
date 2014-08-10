@@ -1863,6 +1863,10 @@ GameObject* MapMgr::CreateGameObject(uint32 entry)
 	// this will be replaced by a factory!
 	switch (i->Type){
 
+		case GAMEOBJECT_TYPE_QUESTGIVER:
+			go = new Arcemu::GO_QuestGiver(uint64((uint64(HIGHGUID_TYPE_GAMEOBJECT) << 32) | GUID));
+			break;
+
 		case GAMEOBJECT_TYPE_TRAP:
 			go = new Arcemu::GO_Trap(uint64((uint64(HIGHGUID_TYPE_GAMEOBJECT) << 32) | GUID));
 			break;

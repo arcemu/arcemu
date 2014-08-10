@@ -47,6 +47,7 @@ SET(sources
 	GameObject.cpp 
 	GMTicket.cpp 
 	GMTicketCommands.cpp
+	GO_QuestGiver.cpp
 	GO_Trap.cpp
 	GO_SpellFocus.cpp
 	Gossip.cpp
@@ -200,6 +201,7 @@ SET( headers
 	EventMgr.h
 	faction.h
 	GameObject.h
+	GO_Questgiver.h
 	GO_ILockable.h
 	GO_Trap.h
 	GO_SpellFocus.h
