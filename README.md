@@ -21,6 +21,18 @@ Visit our website: [ArcEmu.org](http://www.arcemu.org).
 Supported Version: 3.3.5a
 
 
+## ToDo
+### Milestone 3
+Open issues before finishing milestone 3.
+* [Command request to save Worldstates for Open PvP](https://github.com/arcemu/arcemu/issues/320)
+* [Power types](https://github.com/arcemu/arcemu/issues/300)
+* [Qt based config tool](https://github.com/arcemu/arcemu/issues/239)
+* [Merge the GO changes from dfighter2 branch to Master](https://github.com/arcemu/arcemu/issues/150)
+* [Prayer of Mending](https://github.com/arcemu/arcemu/issues/143)
+* [Implement random battlegrounds support](https://github.com/arcemu/arcemu/issues/136)
+* [Implement the basics of dungeon finder](https://github.com/arcemu/arcemu/issues/135)
+
+
 ## Links
 
 [ArcEmu Mainpage](http://www.arcemu.org)
