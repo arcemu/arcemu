@@ -31,26 +31,12 @@ namespace Arcemu{
 	public:
 		GO_SpellFocus();
 		GO_SpellFocus(uint64 GUID);
+
 		~GO_SpellFocus();
-		void InitAI();
-		void Update(unsigned long time_passed);
-		///////////////////////////////////////////////////////////////////
-		//void CastSpell( uint64 TargetGUID, uint32 SpellID )
-		// Makes the Trap try to cast a spell on a target
-		//
-		//Parameters
-		// uint64 TargetGUID - GUID of the Target Object
-		// uint32 SpellId - Identifier of the spell to cast
-		//
-		//Return Value
-		// None
-		//
-		//
-		//////////////////////////////////////////////////////////////////
-		void CastSpell(uint64 TargetGUID, uint32 SpellID);
+		void OnPushToWorld();
+
 	private:
-		SpellEntry *spell;
-		float range;
+		void SpawnLinkedTrap();
 	};
 
 }
