@@ -47,9 +47,7 @@ GameObject::GameObject(uint64 guid)
 	pInfo = NULL;
 	myScript = NULL;
 	m_spawn = 0;
-	loot.gold = 0;
 	m_deleted = false;
-	usage_remaining = 1;
 	m_respawnCell = NULL;
 	m_rotation = 0;
 	m_overrides = 0;
@@ -154,8 +152,6 @@ void GameObject::Despawn(uint32 delay, uint32 respawntime)
 	if(!IsInWorld())
 		return;
 
-	loot.items.clear();
-
 	//This is for go get deleted while looting
 	if(m_spawn)
 	{
@@ -251,11 +247,6 @@ void GameObject::InitAI()
 
 	if( pInfo->Type == GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING )
 		Rebuild();
-
-	if (pInfo->Type == GAMEOBJECT_TYPE_FISHINGHOLE)
-	{
-		CalcFishRemaining(true);
-	}
 
 	if(myScript == NULL)
 		myScript = sScriptMgr.CreateAIScriptClassForGameObject(GetEntry(), this);
@@ -366,23 +357,6 @@ void GameObject::RemoveFromWorld(bool free_guid)
 	Object::RemoveFromWorld(free_guid);
 }
 
-//! Gameobject contains loot ex. chest
-bool GameObject::HasLoot()
-{
-	if(loot.gold > 0)
-		return true;
-
-	for(vector<__LootItem>::iterator itr = loot.items.begin(); itr != loot.items.end(); ++itr)
-	{
-		if(itr->item.itemproto->Bonding == ITEM_BIND_QUEST || itr->item.itemproto->Bonding == ITEM_BIND_QUEST2)
-			continue;
-
-		if(itr->iItemsCount > 0)
-			return true;
-	}
-	return false;
-}
-
 uint32 GameObject::GetGOReqSkill()
 {
 	//! Here we check the SpellFocus table against the dbcs
@@ -488,17 +462,18 @@ void GameObject::Rebuild(){
 	hitpoints = maxhitpoints;
 }
 
+// Needs to be rescripted
 void GameObject::ReStock(){
 	// this hasn't been looted yet so we don't want to restock
-	if( loot.items.empty() )
+	if(loot.items.empty())
 		return;
 
-	if( !loot.looters.empty() )
+	if(!loot.looters.empty())
 		return;
 
-	if( loot.HasRoll() )
+	if(loot.HasRoll())
 		return;
-
+	
 	lootmgr.FillGOLoot(&loot, pInfo->raw.sound1, m_mapMgr->iInstanceMode);
 }
 

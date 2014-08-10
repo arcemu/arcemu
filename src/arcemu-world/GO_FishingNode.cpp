@@ -19,9 +19,9 @@
 */
 #include "StdAfx.h"
 namespace Arcemu{
-	GO_FishingNode::GO_FishingNode() : GameObject(){
+	GO_FishingNode::GO_FishingNode() : GO_Lootable(){
 	}
-	GO_FishingNode::GO_FishingNode(uint64 GUID) : GameObject(GUID){
+	GO_FishingNode::GO_FishingNode(uint64 GUID) : GO_Lootable(GUID){
 	}
 	GO_FishingNode::~GO_FishingNode(){
 	}
@@ -46,14 +46,16 @@ namespace Arcemu{
 		uint32 minskill = entry->MinSkill;
 		if (player->_GetSkillLineCurrent(SKILL_FISHING, false) < maxskill)
 			player->_AdvanceSkillLine(SKILL_FISHING, float2int32(1.0f * sWorld.getRate(RATE_SKILLRATE)));
-		GameObject * school = NULL;
+		GameObject *go = NULL;
+		Arcemu::GO_FishingHole *school = NULL;
 		for (std::set< Object* >::iterator itr = this->m_objectsInRange.begin(); itr != m_objectsInRange.end(); ++itr){
 			Object *o = *itr;
 			if (!o->IsGameObject())
 				continue;
-			school = static_cast< GameObject* >(o);
-			if (school->GetType() != GAMEOBJECT_TYPE_FISHINGHOLE)
+			go = TO_GAMEOBJECT(o);
+			if (go->GetType() != GAMEOBJECT_TYPE_FISHINGHOLE)
 				continue;
+			school = static_cast< Arcemu::GO_FishingHole* >(go);
 			if (!isInRange(school, static_cast< float >(school->GetInfo()->fishinghole.radius))){
 				school = NULL;
 				continue;
@@ -70,7 +72,7 @@ namespace Arcemu{
 			EndFishing(player, false);
 			school->CatchFish();
 			if (!school->CanFish())
-				sEventMgr.AddEvent(school, &GameObject::Despawn, (uint32)0, (1800000 + RandomUInt(3600000)), EVENT_GAMEOBJECT_EXPIRE, 10000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT); // respawn in 30 - 90 minutes
+				sEventMgr.AddEvent(TO_GAMEOBJECT(school), &GameObject::Despawn, (uint32)0, (1800000 + RandomUInt(3600000)), EVENT_GAMEOBJECT_EXPIRE, 10000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT); // respawn in 30 - 90 minutes
 		}
 		else if (Rand(((player->_GetSkillLineCurrent(SKILL_FISHING, true) - minskill) * 100) / maxskill)){ // Open loot on success, otherwise FISH_ESCAPED.
 			lootmgr.FillFishingLoot(&loot, zone);
@@ -108,5 +110,14 @@ namespace Arcemu{
 		data << uint32(0); // value < 4
 		SendMessageToSet(&data, false, false);
 		SetFlags(GetFlags() | 32);
+	}
+	bool GO_FishingNode::HasLoot(){
+		for (vector< __LootItem >::iterator itr = loot.items.begin(); itr != loot.items.end(); ++itr){
+			if ((itr->item.itemproto->Bonding == ITEM_BIND_QUEST) || (itr->item.itemproto->Bonding == ITEM_BIND_QUEST2))
+				continue;
+			if (itr->iItemsCount > 0)
+				return true;
+		}
+		return false;
 	}
 }

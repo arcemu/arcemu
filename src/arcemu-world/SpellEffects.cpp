@@ -2587,15 +2587,17 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 							gameObjTarget->SetFlags(0);
 							gameObjTarget->SetState(1);
 							//Add Fill GO loot here
-							if(gameObjTarget->loot.items.size() == 0)
-							{
-								if(gameObjTarget->GetMapMgr() != NULL)
-									lootmgr.FillGOLoot(&gameObjTarget->loot, gameObjTarget->GetInfo()->raw.sound1, gameObjTarget->GetMapMgr()->iInstanceMode);
-								else
-									lootmgr.FillGOLoot(&gameObjTarget->loot, gameObjTarget->GetInfo()->raw.sound1, 0);
+							if (gameObjTarget->IsLootable()){
+								Arcemu::GO_Lootable *pLGO = static_cast< Arcemu::GO_Lootable* >(gameObjTarget);
 
+								if (pLGO->loot.items.size() == 0){
+									if (gameObjTarget->GetMapMgr() != NULL)
+										lootmgr.FillGOLoot(&pLGO->loot, gameObjTarget->GetInfo()->raw.sound1, gameObjTarget->GetMapMgr()->iInstanceMode);
+									else
+										lootmgr.FillGOLoot(&pLGO->loot, gameObjTarget->GetInfo()->raw.sound1, 0);
 
-								DetermineSkillUp(SKILL_LOCKPICKING, v / 5); //to prevent free skill up
+									DetermineSkillUp(SKILL_LOCKPICKING, v / 5); //to prevent free skill up
+								}
 							}
 							loottype = LOOT_CORPSE;
 							//End of it
@@ -2617,15 +2619,17 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 					return;
 
 				}else{
-					if (gameObjTarget->loot.items.size() == 0){
-						if (gameObjTarget->GetMapMgr() != NULL)
-							lootmgr.FillGOLoot(&gameObjTarget->loot, gameObjTarget->GetInfo()->raw.sound1, gameObjTarget->GetMapMgr()->iInstanceMode);
+					if (gameObjTarget->IsLootable()){
+						Arcemu::GO_Lootable *pLGO = static_cast< Arcemu::GO_Lootable* >(gameObjTarget);
 
-						else
-							lootmgr.FillGOLoot(&gameObjTarget->loot, gameObjTarget->GetInfo()->raw.sound1, 0);
-					}
-					else{
-						bAlreadyUsed = true;
+							if (pLGO->loot.items.size() == 0){
+								if (gameObjTarget->GetMapMgr() != NULL)
+									lootmgr.FillGOLoot(&pLGO->loot, gameObjTarget->GetInfo()->raw.sound1, gameObjTarget->GetMapMgr()->iInstanceMode);
+								else
+									lootmgr.FillGOLoot(&pLGO->loot, gameObjTarget->GetInfo()->raw.sound1, 0);
+						}else{
+								bAlreadyUsed = true;
+						}
 					}
 				}
 				loottype = LOOT_SKINNING;
@@ -2645,16 +2649,18 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 				if (static_cast< Player* >(m_caster)->_GetSkillLineCurrent(SKILL_MINING) < v){
 					//SendCastResult(SPELL_FAILED_LOW_CASTLEVEL);
 					return;
-				}
-				else if (gameObjTarget->loot.items.size() == 0){
-					if (gameObjTarget->GetMapMgr() != NULL)
-						lootmgr.FillGOLoot(&gameObjTarget->loot, gameObjTarget->GetInfo()->raw.sound1, gameObjTarget->GetMapMgr()->iInstanceMode);
-					else
-						lootmgr.FillGOLoot(&gameObjTarget->loot, gameObjTarget->GetInfo()->raw.sound1, 0);
+				}else if (gameObjTarget->IsLootable()){
+					Arcemu::GO_Lootable *pLGO = static_cast< Arcemu::GO_Lootable* >(gameObjTarget);
 
-				}
-				else{
-					bAlreadyUsed = true;;
+					if (pLGO->loot.items.size() == 0){
+						if (gameObjTarget->GetMapMgr() != NULL)
+							lootmgr.FillGOLoot(&pLGO->loot, gameObjTarget->GetInfo()->raw.sound1, gameObjTarget->GetMapMgr()->iInstanceMode);
+						else
+							lootmgr.FillGOLoot(&pLGO->loot, gameObjTarget->GetInfo()->raw.sound1, 0);
+					}
+
+				}else{
+					bAlreadyUsed = true;
 				}
 				loottype = LOOT_SKINNING;
 
@@ -2712,12 +2718,15 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 					return;
 				}
 
-				if(gameObjTarget->loot.items.size() == 0)
-				{
-					if(gameObjTarget->GetMapMgr() != NULL)
-						lootmgr.FillGOLoot(&gameObjTarget->loot, gameObjTarget->GetInfo()->raw.sound1, gameObjTarget->GetMapMgr()->iInstanceMode);
-					else
-						lootmgr.FillGOLoot(&gameObjTarget->loot, gameObjTarget->GetInfo()->raw.sound1, 0);
+				if (gameObjTarget->IsLootable()){
+					Arcemu::GO_Lootable *pLGO = static_cast< Arcemu::GO_Lootable* >(gameObjTarget);
+
+					if (pLGO->loot.items.size() == 0){
+						if (gameObjTarget->GetMapMgr() != NULL)
+							lootmgr.FillGOLoot(&pLGO->loot, gameObjTarget->GetInfo()->raw.sound1, gameObjTarget->GetMapMgr()->iInstanceMode);
+						else
+							lootmgr.FillGOLoot(&pLGO->loot, gameObjTarget->GetInfo()->raw.sound1, 0);
+					}
 				}
 				loottype = LOOT_CORPSE ;
 			}

@@ -62,8 +62,14 @@ void WorldSession::HandleAutostoreLootItemOpcode(WorldPacket & recv_data)
 	else if(guidtype == HIGHGUID_TYPE_GAMEOBJECT)
 	{
 		pGO = _player->GetMapMgr()->GetGameObject(GET_LOWGUID_PART(GetPlayer()->GetLootGUID()));
-		if(!pGO)return;
-		pLoot = &pGO->loot;
+		if (pGO == NULL)
+			return;
+
+		if (!pGO->IsLootable())
+			return;
+
+		Arcemu::GO_Lootable *pLGO = static_cast< Arcemu::GO_Lootable* >(pGO);
+		pLoot = &pLGO->loot;
 	}
 	else if(guidtype == HIGHGUID_TYPE_ITEM)
 	{
@@ -251,9 +257,16 @@ void WorldSession::HandleLootMoneyOpcode(WorldPacket & recv_data)
 	}
 	else if(guidtype == HIGHGUID_TYPE_GAMEOBJECT)
 	{
-		GameObject* pGO = _player->GetMapMgr()->GetGameObject(GET_LOWGUID_PART(lootguid));
-		if(!pGO)return;
-		pLoot = &pGO->loot;
+		GameObject *pGO = _player->GetMapMgr()->GetGameObject(GET_LOWGUID_PART(lootguid));
+		if (pGO == NULL)
+			return;
+
+		if (!pGO->IsLootable())
+			return;
+
+		Arcemu::GO_Lootable *pLGO = static_cast< Arcemu::GO_Lootable* >(pGO);
+
+		pLoot = &pLGO->loot;
 	}
 	else if(guidtype == HIGHGUID_TYPE_CORPSE)
 	{
@@ -479,7 +492,9 @@ void WorldSession::HandleLootReleaseOpcode(WorldPacket & recv_data)
 		{
 			case GAMEOBJECT_TYPE_FISHINGNODE:
 				{
-					pGO->loot.looters.erase(_player->GetLowGUID());
+					Arcemu::GO_Lootable *pLGO = static_cast< Arcemu::GO_Lootable* >(pGO);
+
+					pLGO->loot.looters.erase(_player->GetLowGUID());
 					if(pGO->IsInWorld())
 					{
 						pGO->RemoveFromWorld(true);
@@ -488,8 +503,9 @@ void WorldSession::HandleLootReleaseOpcode(WorldPacket & recv_data)
 				}
 				break;
 			case GAMEOBJECT_TYPE_CHEST:
-			{
-					pGO->loot.looters.erase(_player->GetLowGUID());
+				{
+					Arcemu::GO_Lootable *pLGO = static_cast< Arcemu::GO_Lootable* >(pGO);
+					pLGO->loot.looters.erase(_player->GetLowGUID());
 					//check for locktypes
 
 					bool despawn = false;
@@ -512,8 +528,8 @@ void WorldSession::HandleLootReleaseOpcode(WorldPacket & recv_data)
 									//herbalism and mining;
 									if (pLock->lockmisc[i] == LOCKTYPE_MINING || pLock->lockmisc[i] == LOCKTYPE_HERBALISM){
 										//we still have loot inside.
-										if (pGO->HasLoot()){
-											pGO->SetState(1);
+										if (pLGO->HasLoot()){
+											pLGO->SetState(1);
 											// TODO : redo this temporary fix, because for some reason hasloot is true even when we loot everything
 											// my guess is we need to set up some even that rechecks the GO in 10 seconds or something
 											//pGO->Despawn( 600000 + ( RandomUInt( 300000 ) ) );
@@ -525,7 +541,7 @@ void WorldSession::HandleLootReleaseOpcode(WorldPacket & recv_data)
 									}
 								}
 								else{
-									if (pGO->HasLoot()){
+									if (pLGO->HasLoot()){
 										pGO->SetState(1);
 										return;
 									}
@@ -534,7 +550,7 @@ void WorldSession::HandleLootReleaseOpcode(WorldPacket & recv_data)
 								}
 							}else //other type of locks that i don't bother to split atm ;P
 							{
-								if (pGO->HasLoot()){
+								if (pLGO->HasLoot()){
 									pGO->SetState(1);
 									return;
 								}
@@ -543,7 +559,7 @@ void WorldSession::HandleLootReleaseOpcode(WorldPacket & recv_data)
 							}
 						}
 					}else{
-						if (pGO->HasLoot()){
+						if (pLGO->HasLoot()){
 							pGO->SetState(1);
 							return;
 						}
@@ -2075,9 +2091,15 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket & recv_data)
 	else if(GET_TYPE_FROM_GUID(GetPlayer()->GetLootGUID()) == HIGHGUID_TYPE_GAMEOBJECT) // cebernic added it support gomastergive
 	{
 		pGameObject = _player->GetMapMgr()->GetGameObject(GET_LOWGUID_PART(creatureguid));
-		if(!pGameObject)return;
+		if (pGameObject == NULL)
+			return;
+
+		if (!pGameObject->IsLootable())
+			return;
+
+		Arcemu::GO_Lootable *pLGO = static_cast< Arcemu::GO_Lootable* >(pGameObject);
 		pGameObject->SetState(0);
-		pLoot = &pGameObject->loot;
+		pLoot = &pLGO->loot;
 	}
 
 
@@ -2220,12 +2242,19 @@ void WorldSession::HandleLootRollOpcode(WorldPacket & recv_data)
 	if(guidtype == HIGHGUID_TYPE_GAMEOBJECT)
 	{
 		GameObject* pGO = _player->GetMapMgr()->GetGameObject((uint32)creatureguid);
-		if(!pGO)
+		if(pGO == NULL)
 			return;
-		if(slotid >= pGO->loot.items.size() || pGO->loot.items.size() == 0)
+
+		if(pGO->IsLootable())
 			return;
-		if(pGO->GetInfo() && pGO->GetInfo()->Type == GAMEOBJECT_TYPE_CHEST)
-			li = pGO->loot.items[slotid].roll;
+
+		Arcemu::GO_Lootable *pLGO = static_cast< Arcemu::GO_Lootable* >(pGO);
+
+		if ((slotid >= pLGO->loot.items.size()) || (pLGO->loot.items.size() == 0))
+			return;
+
+		if (pGO->GetType() == GAMEOBJECT_TYPE_CHEST)
+			li = pLGO->loot.items[slotid].roll;
 	}
 	else if(guidtype == HIGHGUID_TYPE_UNIT)
 	{

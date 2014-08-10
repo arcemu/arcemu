@@ -556,6 +556,21 @@ class SERVER_DECL GameObject : public Object
 
 		bool Load(GOSpawn* spawn);
 
+		////////////////////////////////////////////////////////////////////
+		//bool IsLootable()
+		// Tells if the GO is of a lootable type
+		//
+		//Parameters
+		// None
+		//
+		//Return Value
+		// Returns true if it's lootable.
+		// Returns false otherwise.
+		//
+		//
+		////////////////////////////////////////////////////////////////////
+		virtual bool IsLootable(){ return false; }
+
 		void Update(unsigned long time_passed);
 
 		void Spawn(MapMgr* m);
@@ -602,14 +617,6 @@ class SERVER_DECL GameObject : public Object
 		void OnRemoveInRangeObject(Object* pObj);
 		void RemoveFromWorld(bool free_guid);
 
-		bool CanFish() { return (usage_remaining > 0); }
-		void CatchFish() { if(usage_remaining) usage_remaining--; }
-		void CalcFishRemaining(bool force)
-		{
-			if(force || !usage_remaining)
-				usage_remaining = pInfo->raw.sound2 + RandomUInt(pInfo->raw.sound3 - pInfo->raw.sound2) - 1;
-		}
-		bool HasLoot();
 		uint32 GetGOReqSkill();
 		MapCell* m_respawnCell;
 
@@ -747,8 +754,6 @@ class SERVER_DECL GameObject : public Object
 		GameObjectInfo* pInfo;
 		GameObjectAIScript* myScript;
 		uint32 _fields[GAMEOBJECT_END];
-		uint32 usage_remaining; //used for mining to mark times it can be mined
-
 		uint32 m_overrides; //See enum GAMEOBJECT_OVERRIDES!
 
 

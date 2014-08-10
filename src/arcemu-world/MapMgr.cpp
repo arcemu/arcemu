@@ -1867,6 +1867,10 @@ GameObject* MapMgr::CreateGameObject(uint32 entry)
 			go = new Arcemu::GO_QuestGiver(uint64((uint64(HIGHGUID_TYPE_GAMEOBJECT) << 32) | GUID));
 			break;
 
+		case GAMEOBJECT_TYPE_CHEST:
+			go = new Arcemu::GO_Chest(uint64((uint64(HIGHGUID_TYPE_GAMEOBJECT) << 32) | GUID));
+			break;
+
 		case GAMEOBJECT_TYPE_TRAP:
 			go = new Arcemu::GO_Trap(uint64((uint64(HIGHGUID_TYPE_GAMEOBJECT) << 32) | GUID));
 			break;
@@ -1881,6 +1885,10 @@ GameObject* MapMgr::CreateGameObject(uint32 entry)
 
 		case GAMEOBJECT_TYPE_RITUAL:
 			go = new Arcemu::GO_Ritual(uint64((uint64(HIGHGUID_TYPE_GAMEOBJECT) << 32) | GUID));
+			break;
+
+		case GAMEOBJECT_TYPE_FISHINGHOLE:
+			go = new Arcemu::GO_FishingHole(uint64((uint64(HIGHGUID_TYPE_GAMEOBJECT) << 32) | GUID));
 			break;
 
 		default:

@@ -324,10 +324,17 @@ void Player::SendLoot(uint64 guid, uint8 loot_type, uint32 mapid)
 	else if(guidtype == HIGHGUID_TYPE_GAMEOBJECT)
 	{
 		GameObject* pGO = GetMapMgr()->GetGameObject(GET_LOWGUID_PART(guid));
-		if(!pGO)return;
-		pGO->SetState(0);
-		pLoot = &pGO->loot;
-		m_currentLoot = pGO->GetGUID();
+		if (pGO == NULL)
+			return;
+
+		if (!pGO->IsLootable())
+			return;
+
+		Arcemu::GO_Lootable *pLGO = static_cast< Arcemu::GO_Lootable* >(pGO);
+
+		pLGO->SetState(0);
+		pLoot = &pLGO->loot;
+		m_currentLoot = pLGO->GetGUID();
 	}
 	else if((guidtype == HIGHGUID_TYPE_PLAYER))
 	{

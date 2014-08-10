@@ -766,7 +766,12 @@ void LootRoll::Finalize()
 	else if(guidtype == HIGHGUID_TYPE_GAMEOBJECT)
 	{
 		GameObject* go = _mgr->GetGameObject(GET_LOWGUID_PART(_guid));
-		if(go) pLoot = &go->loot;
+		if (go != NULL){
+			if (go->IsLootable()){
+				Arcemu::GO_Lootable *pLGO = static_cast< Arcemu::GO_Lootable* >(go);
+				pLoot = &pLGO->loot;
+			}
+		}
 	}
 
 	if(!pLoot)
