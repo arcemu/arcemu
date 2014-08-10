@@ -1652,16 +1652,10 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 				}
 			}
 			break;
-		case GAMEOBJECT_TYPE_CAMERA://eye of azora
+		case GAMEOBJECT_TYPE_CAMERA:
 			{
-				/*WorldPacket pkt(SMSG_TRIGGER_CINEMATIC,4);
-				pkt << (uint32)1;//i ve found only on such item,id =1
-				SendPacket(&pkt);*/
-
-				if (goinfo->raw.Unknown1)
-				{
-					uint32 cinematicid = goinfo->raw.sound1;
-					plyr->GetSession()->OutPacket(SMSG_TRIGGER_CINEMATIC, 4, &cinematicid);
+				if (goinfo->camera.cinematicId != 0){
+					plyr->GetSession()->OutPacket(SMSG_TRIGGER_CINEMATIC, 4, &goinfo->camera.cinematicId);
 				}
 			}
 			break;
