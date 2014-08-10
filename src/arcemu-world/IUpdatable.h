@@ -1,7 +1,7 @@
 /*
 * ArcEmu MMORPG Server
 * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
-* Copyright (C) 2008-2010 <http://www.ArcEmu.org/>
+* Copyright (C) 2008-2014 <http://www.ArcEmu.org/>
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU Affero General Public License as published by
@@ -18,34 +18,25 @@
 *
 */
 namespace Arcemu{
-	/////////////////////////////////////////////////////////////////////
-	//class GO_Trap
-	// Class implementing Type 6 (TRAP) GameObjects
+	//////////////////////////////////////////////////////////////////////////
+	//class IUpdatable
+	// Abstract case class for every updatable class.
 	//
-	////////////////////////////////////////////////////////////////////
-
-	class GO_Trap : public GameObject{
+	/////////////////////////////////////////////////////////////////////////
+	class IUpdatable{
 	public:
-		GO_Trap();
-		GO_Trap(uint64 GUID);
-		~GO_Trap();
-		void InitAI();
-		void Update(unsigned long time_passed);
-
-		///////////////////////////////////////////////////////////////////
-		//void CastSpell( uint64 TargetGUID, uint32 SpellID )
-		// Makes the Trap try to cast a spell on a target
+		//////////////////////////////////////////////////////////////////////
+		//virtual void Update( unsigned long time_passed )
+		// Updates the Object, allowing it's time-continous features to work
 		//
 		//Parameters
-		// uint64 TargetGUID - GUID of the Target Object
-		// uint32 SpellId - Identifier of the spell to cast
+		// unsigned long time_passed - Seconds passed since last update
 		//
 		//Return Value
 		// None
 		//
 		//
-		//////////////////////////////////////////////////////////////////
-
-		void CastSpell(uint64 TargetGUID, uint32 SpellID);
+		/////////////////////////////////////////////////////////////////////
+		virtual void Update(unsigned long time_passed) = 0;
 	};
 }

@@ -156,7 +156,7 @@ class Spell;
 //  Object
 //  Base object for every item, unit, player, corpse, container, etc
 //====================================================================
-class SERVER_DECL Object : public EventableObject
+class SERVER_DECL Object : public EventableObject, public Arcemu::IUpdatable
 {
 	public:
 		typedef std::set<Object*> InRangeSet;
@@ -165,7 +165,7 @@ class SERVER_DECL Object : public EventableObject
 		Object();
 		virtual ~Object();
 
-		virtual void Update(uint32 time){}
+		void Update(unsigned long time_passed){}
 
 		//! True if object exists in world, else false
 		bool IsInWorld() { return m_mapMgr != NULL; }

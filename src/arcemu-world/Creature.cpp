@@ -264,9 +264,9 @@ Creature::~Creature()
 	//but it got a reference to m_owner
 }
 
-void Creature::Update(uint32 p_time)
+void Creature::Update(unsigned long time_passed)
 {
-	Unit::Update(p_time);
+	Unit::Update(time_passed);
 
 	if(m_corpseEvent)
 	{

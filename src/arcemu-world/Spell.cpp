@@ -1658,7 +1658,7 @@ void Spell::AddTime(uint32 type)
 	}
 }
 
-void Spell::update(uint32 difftime)
+void Spell::Update(unsigned long time_passed)
 {
 	// skip cast if we're more than 2/3 of the way through
 	// TODO: determine which spells can be cast while moving.
@@ -1699,7 +1699,7 @@ void Spell::update(uint32 difftime)
 					cast(true);
 				else
 				{
-					m_timer -= difftime;
+					m_timer -= time_passed;
 					if((int32)difftime >= m_timer)
 					{
 						m_timer = 0;
@@ -1714,10 +1714,10 @@ void Spell::update(uint32 difftime)
 			{
 				if(m_timer > 0)
 				{
-					if((int32)difftime >= m_timer)
+					if ((int32)time_passed >= m_timer)
 						m_timer = 0;
 					else
-						m_timer -= difftime;
+						m_timer -= time_passed;
 				}
 				if(m_timer <= 0)
 				{

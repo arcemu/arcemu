@@ -990,7 +990,7 @@ class SERVER_DECL Unit : public Object
 		friend class AIInterface;
 		friend class Aura;
 
-		void Update(uint32 time);
+		void Update(unsigned long time_passed);
 		virtual void RemoveFromWorld(bool free_guid);
 		virtual void OnPushToWorld();
 
@@ -1994,6 +1994,5 @@ class SERVER_DECL Unit : public Object
 		
 		void SendEnvironmentalDamageLog( uint64 guid, uint8 type, uint32 damage );
 };
-
 
 #endif

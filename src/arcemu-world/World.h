@@ -298,7 +298,7 @@ class WorldSocket;
 typedef std::list<WorldSocket*> QueueSet;
 typedef set<WorldSession*> SessionSet;
 
-class SERVER_DECL World : public Singleton<World>, public EventableObject
+class SERVER_DECL World : public Singleton<World>, public EventableObject, public Arcemu::IUpdatable
 {
 	private:
 		uint32 HordePlayers;
@@ -447,7 +447,7 @@ class SERVER_DECL World : public Singleton<World>, public EventableObject
 		}
 
 		// update the world server every frame
-		void Update(time_t diff);
+		void Update(unsigned long time_passed);
 		void CheckForExpiredInstances();
 
 

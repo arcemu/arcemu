@@ -21,31 +21,42 @@
 namespace Arcemu{
 	GO_Trap::GO_Trap() : GameObject(){
 	}
+
 	GO_Trap::GO_Trap(uint64 GUID) : GameObject(GUID){
 	}
+
 	GO_Trap::~GO_Trap(){
 	}
+
 	void GO_Trap::InitAI(){
 		spell = dbcSpell.LookupEntryForced(pInfo->trap.spellId);
 		charges = pInfo->trap.charges;
 	}
-	void GO_Trap::Update(uint32 p_time){
+
+	void GO_Trap::Update(unsigned long time_passed){
 		if (m_deleted)
 			return;
+
 		if (m_event_Instanceid != m_instanceId){
 			event_Relocate();
 			return;
+
 		}
+
 		if (!IsInWorld())
 			return;
+
 		if (GetState() == 1){
 			for (std::set< Object* >::iterator itr = m_objectsInRange.begin(); itr != m_objectsInRange.end(); ++itr){
 				float dist;
 				Object *o = *itr;
+
 				if (!o->IsUnit())
 					continue;
+
 				if ((m_summoner != NULL) && (o->GetGUID() == m_summoner->GetGUID()))
 					continue;
+
 				dist = GetDistanceSq(o);
 				if (dist <= pInfo->trap.radius){
 					if (m_summonedGo){
@@ -57,13 +68,16 @@ namespace Arcemu{
 							continue;
 					}
 					CastSpell(o->GetGUID(), pInfo->trap.spellId);
+
 					if (m_summoner != NULL)
 						m_summoner->HandleProc(PROC_ON_TRAP_TRIGGER, reinterpret_cast< Unit* >(o), spell);
 					charges--;
+
 					if (m_summonedGo && pInfo->trap.charges != 0 && charges == 0){
 						ExpireAndDelete();
 						return;
 					}
+
 					if (spell->EffectImplicitTargetA[0] == 16 ||
 						spell->EffectImplicitTargetB[0] == 16){
 						return;	// on area don't continue.

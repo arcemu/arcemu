@@ -137,7 +137,7 @@ void GameObject::TrapSearchTarget()
 	Update(100);
 }*/
 
-void GameObject::Update(uint32 p_time)
+void GameObject::Update(unsigned long time_passed)
 {
 	if(m_event_Instanceid != m_instanceId)
 	{

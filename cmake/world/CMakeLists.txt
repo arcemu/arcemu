@@ -210,6 +210,7 @@ SET( headers
 	Item.h
 	ItemInterface.h
 	ItemPrototype.h
+	IUpdatable.h
 	LfgMgr.h
 	LocalizationMgr.h
 	LogonCommClient.h

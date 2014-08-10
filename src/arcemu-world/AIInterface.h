@@ -254,7 +254,7 @@ typedef HM_NAMESPACE::hash_map<uint64, int32> TargetMap;
 typedef std::set<Unit*> AssistTargetSet;
 typedef std::map<uint32, AI_Spell*> SpellMap;
 
-class SERVER_DECL AIInterface
+class SERVER_DECL AIInterface : public Arcemu::IUpdatable
 {
 	public:
 
@@ -368,7 +368,7 @@ class SERVER_DECL AIInterface
 		void EventChangeFaction(Unit* ForceAttackersToHateThisInstead = NULL);	//we have to tell our current enemies to stop attacking us, we should also forget about our targets
 
 		// Update
-		void Update(uint32 p_time);
+		void Update(unsigned long time_passed);
 
 		void SetReturnPosition();
 

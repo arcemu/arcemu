@@ -946,7 +946,7 @@ class SERVER_DECL Player : public Unit
 		void RemoveFromWorld();
 		bool Create(WorldPacket & data);
 
-		void Update(uint32 time);
+		void Update(unsigned long time_passed);
 		void BuildFlagUpdateForNonGroupSet(uint32 index, uint32 flag);
 		void BuildPetSpellList(WorldPacket & data);
 		void SetAFKReason(std::string reason) { m_cache->SetStringValue(CACHE_AFK_DND_REASON, reason); };

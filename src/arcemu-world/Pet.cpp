@@ -319,13 +319,13 @@ Pet::~Pet()
 	mSpells.clear();
 }
 
-void Pet::Update(uint32 time)
+void Pet::Update(unsigned long time_passed)
 {
 	if(Summon)
-		Creature::Update(time);   // passthrough
+		Creature::Update(time_passed); // passthrough
 	else
 	{
-		Unit::Update(time); //Dead Hunter's Pets should be despawned only if the Owner logs out or goes out of range.
+		Unit::Update(time_passed);//Dead Hunter's Pets should be despawned only if the Owner logs out or goes out of range.
 		if(m_corpseEvent)
 		{
 			sEventMgr.RemoveEvents(this);
@@ -347,10 +347,10 @@ void Pet::Update(uint32 time)
 		}
 		else if(!IsInBg())
 		{
-			if(time > m_HappinessTimer)
+			if(time_passed > m_HappinessTimer)
 				m_HappinessTimer = 0;
 			else
-				m_HappinessTimer -= time;
+				m_HappinessTimer -= time_passed;
 		}
 	}
 
@@ -362,10 +362,10 @@ void Pet::Update(uint32 time)
 			Remove(false, true);
 			return;
 		}
-		else if(time > m_ExpireTime)
+		else if(time_passed > m_ExpireTime)
 			m_ExpireTime = 0;
 		else
-			m_ExpireTime -= time;
+			m_ExpireTime -= time_passed;
 	}
 }
 
