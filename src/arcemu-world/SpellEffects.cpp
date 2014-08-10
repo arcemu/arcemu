@@ -2584,7 +2584,7 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 						if(lock->locktype[j] == 2 && lock->minlockskill[j] && lockskill >= lock->minlockskill[j])
 						{
 							v = lock->minlockskill[j];
-							gameObjTarget->SetUInt32Value(GAMEOBJECT_FLAGS, 0);
+							gameObjTarget->SetFlags(0);
 							gameObjTarget->SetState(1);
 							//Add Fill GO loot here
 							if(gameObjTarget->loot.items.size() == 0)
@@ -3232,7 +3232,7 @@ void Spell::SpellEffectSummonObject(uint32 i)
 		GameObject* go = u_caster->GetMapMgr()->CreateGameObject(GO_FISHING_BOBBER);
 
 		go->CreateFromProto(GO_FISHING_BOBBER, mapid, posx, posy, posz, orient);
-		go->SetUInt32Value(GAMEOBJECT_FLAGS, 0);
+		go->SetFlags(0);
 		go->SetState(0);
 		go->SetUInt64Value(OBJECT_FIELD_CREATED_BY, m_caster->GetGUID());
 		u_caster->SetChannelSpellTargetGUID(go->GetGUID());
@@ -3564,6 +3564,49 @@ void Spell::SpellEffectOpenLockItem(uint32 i)
 
 	p_caster->HandleSpellLoot(i_caster->GetProto()->ItemId);
 }
+
+//Merged from dfighter branch... need to be checked why SpellEffectOpenLockItem exists already...
+/*void Spell::SpellEffectOpenLockItem(uint32 i)
+{
+	Unit* caster = u_caster;
+	if (caster == NULL && i_caster != NULL)
+		caster = i_caster->GetOwner();
+	if (caster == NULL || !caster->IsPlayer())
+		return;
+	if (p_caster != NULL && i_caster != NULL){
+		p_caster->HandleSpellLoot(i_caster->GetProto()->ItemId);
+	}
+	if (gameObjTarget == NULL || !gameObjTarget->IsInWorld())
+		return;
+	if (sQuestMgr.OnGameObjectActivate((static_cast<Player*>(caster)), gameObjTarget))
+		static_cast<Player*>(caster)->UpdateNearbyGameObjects();
+	CALL_GO_SCRIPT_EVENT(gameObjTarget, OnActivate)(static_cast<Player*>(caster));
+	CALL_INSTANCE_SCRIPT_EVENT(gameObjTarget->GetMapMgr(), OnGameObjectActivate)(gameObjTarget, TO_PLAYER(caster));
+	gameObjTarget->SetState(0);
+	if (gameObjTarget->GetEntry() == 183146)
+	{
+		gameObjTarget->Despawn(0, 1);
+		return;
+	}
+	if (gameObjTarget->GetType() == GAMEOBJECT_TYPE_CHEST)
+	{
+		if (gameObjTarget->GetMapMgr() != NULL)
+			lootmgr.FillGOLoot(&gameObjTarget->loot, gameObjTarget->GetInfo()->sound1, gameObjTarget->GetMapMgr()->iInstanceMode);
+		else
+			lootmgr.FillGOLoot(&gameObjTarget->loot, gameObjTarget->GetInfo()->sound1, 0);
+		if (gameObjTarget->loot.items.size() > 0)
+		{
+			static_cast<Player*>(caster)->SendLoot(gameObjTarget->GetGUID(), LOOT_CORPSE, gameObjTarget->GetMapId());
+		}
+	}
+	// cebernic: atm doors works fine.
+	if (gameObjTarget->GetType() == GAMEOBJECT_TYPE_DOOR
+		|| gameObjTarget->GetType() == GAMEOBJECT_TYPE_GOOBER)
+		gameObjTarget->SetFlags(gameObjTarget->GetFlags() | 1);
+	if (gameObjTarget->GetMapMgr()->GetMapInfo()->type == INSTANCE_NULL)//don't close doors for instances
+		sEventMgr.AddEvent(gameObjTarget, &GameObject::EventCloseDoor, EVENT_GAMEOBJECT_DOOR_CLOSE, 10000, 1, 0);
+	sEventMgr.AddEvent(gameObjTarget, &GameObject::Despawn, (uint32)0, (uint32)1, EVENT_GAMEOBJECT_ITEM_SPAWN, 6 * 60 * 1000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+}*/
 
 void Spell::SpellEffectProficiency(uint32 i)
 {

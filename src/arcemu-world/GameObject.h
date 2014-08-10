@@ -115,14 +115,13 @@ struct GameObjectInfo
 };
 #pragma pack(pop)
 
-enum GAMEOBJECT_BYTES
+enum GAMEOBJECT_BYTES //need to be removed ->Quest_BladeEdge_Mountains.cpp, IsleOfConquest.cpp, RingOfValdo.cpp
 {
-    GAMEOBJECT_BYTES_STATE			= 0,
-    GAMEOBJECT_BYTES_TYPE_ID		= 1,
-    GAMEOBJECT_BYTES_UNK			= 2, // todo: unknown atm
-    GAMEOBJECT_BYTES_ANIMPROGRESS	= 3,
+	GAMEOBJECT_BYTES_STATE = 0,
+	GAMEOBJECT_BYTES_TYPE_ID = 1,
+	GAMEOBJECT_BYTES_UNK = 2, // todo: unknown atm
+	GAMEOBJECT_BYTES_ANIMPROGRESS = 3,
 };
-
 enum GAMEOBJECT_TYPES
 {
     GAMEOBJECT_TYPE_DOOR					= 0,
@@ -223,23 +222,12 @@ class SERVER_DECL GameObject : public Object
 
 		void ExpireAndDelete();
 
-		void Deactivate();
-		void Activate();
-
-		bool isQuestGiver()
-		{
-			//from GameObject::CreateFromProto - SetType( pInfo->Type );
-			if(GetType() == GAMEOBJECT_TYPE_QUESTGIVER)
-				return true;
-			else
-				return false;
-		};
-
 		/// Quest data
 		std::list<QuestRelation*>* m_quests;
 
 		uint32* m_ritualmembers;
-		uint32 m_ritualcaster, m_ritualtarget;
+		uint32 m_ritualcaster;
+		uint32 m_ritualtarget;
 		uint16 m_ritualspell;
 
 		virtual void InitAI();
@@ -295,41 +283,46 @@ class SERVER_DECL GameObject : public Object
 		void SetArtKit(uint8 artkit){ SetByte(GAMEOBJECT_BYTES_1, 2, artkit); }
 		uint8 GetArtkKit(){ return GetByte(GAMEOBJECT_BYTES_1, 2); }
 
-		uint32 GetOverrides() { return m_overrides; }
+		void Deactivate(){ SetUInt32Value(GAMEOBJECT_DYNAMIC, 0); }
+		void Activate(){ SetUInt32Value(GAMEOBJECT_DYNAMIC, 1); }
+		bool IsActive()
+		{
+			if (m_uint32Values[GAMEOBJECT_DYNAMIC] == 1)
+				return true;
+			else
+				return false;
+		}
 
-		//Easy Functions
-		void SetDisplayId(uint32 id) { SetUInt32Value(GAMEOBJECT_DISPLAYID, id); }
-		uint32 GetDisplayId() { return GetUInt32Value(GAMEOBJECT_DISPLAYID); }
+		void SetDisplayId(uint32 id){ SetUInt32Value(GAMEOBJECT_DISPLAYID, id); }
+		uint32 GetDisplayId(){ return GetUInt32Value(GAMEOBJECT_DISPLAYID); }
 
-		void SetParentRotation(uint8 rot, float value) { SetFloatValue(GAMEOBJECT_PARENTROTATION + rot, value); }
-		float GetParentRotation(uint8 rot) { return GetFloatValue(GAMEOBJECT_PARENTROTATION + rot); }
+		void SetParentRotation(uint8 rot, float value){ SetFloatValue(GAMEOBJECT_PARENTROTATION + rot, value); }
+		float GetParentRotation(uint8 rot){ return GetFloatValue(GAMEOBJECT_PARENTROTATION + rot); }
 
 		void SetFaction(uint32 id)
 		{
 			SetUInt32Value(GAMEOBJECT_FACTION, id);
 			_setFaction();
 		}
-		uint32 GetFaction() { return GetUInt32Value(GAMEOBJECT_FACTION); }
+		uint32 GetFaction(){ return GetUInt32Value(GAMEOBJECT_FACTION); }
 
-		void SetLevel(uint32 level) { SetUInt32Value(GAMEOBJECT_LEVEL, level); }
-		uint32 GetLevel() { return GetUInt32Value(GAMEOBJECT_LEVEL); }
+		void SetLevel(uint32 level){ SetUInt32Value(GAMEOBJECT_LEVEL, level); }
+		uint32 GetLevel(){ return GetUInt32Value(GAMEOBJECT_LEVEL); }
 
-		//void SetType(uint8 type) { SetByte(GAMEOBJECT_BYTES_1, 1, type); }
-		//uint8 GetType() { return GetByte(GAMEOBJECT_BYTES_1, 1); }
-		
-		void SetFlags( uint32 flags ){ SetUInt32Value( GAMEOBJECT_FLAGS, flags ); }		
-		uint32 GetFlags(){ return GetUInt32Value( GAMEOBJECT_FLAGS ); }
+		void SetFlags(uint32 flags){ SetUInt32Value(GAMEOBJECT_FLAGS, flags); }
+		uint32 GetFlags(){ return GetUInt32Value(GAMEOBJECT_FLAGS); }
 		void RemoveFlags( uint32 flags ){ RemoveFlag( GAMEOBJECT_FLAGS, flags ); }
-		
-		bool HasFlags( uint32 flags ){
+
+		bool HasFlags( uint32 flags )
+		{
 			if( HasFlag( GAMEOBJECT_FLAGS, flags ) != 0 )
 				return true;
 			else
 				return false;
 		}
-		
-		//void SetArtKit( uint8 artkit ){ SetByte( GAMEOBJECT_BYTES_1, 2, artkit ); }
-		//uint8 GetArtkKit(){ return GetByte( GAMEOBJECT_BYTES_1, 2 ); }
+
+		uint32 GetOverrides() { return m_overrides; }
+
 		void SetAnimProgress( uint8 progress ){ SetByte( GAMEOBJECT_BYTES_1, 3, progress ); }
 		uint8 GetAnimProgress(){ return GetByte( GAMEOBJECT_BYTES_1, 3 ); }
 		

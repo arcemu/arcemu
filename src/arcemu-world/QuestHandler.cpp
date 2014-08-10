@@ -156,8 +156,8 @@ void WorldSession::HandleQuestGiverQueryQuestOpcode(WorldPacket & recv_data)
 			qst_giver = quest_giver;
 		else
 			return;
-		bValid = quest_giver->isQuestGiver();
-		if(quest_giver->isQuestGiver())
+		bValid = false;
+		if(quest_giver->GetType() == GAMEOBJECT_TYPE_QUESTGIVER)
 		{
 			bValid = true;
 			status = sQuestMgr.CalcQuestStatus(qst_giver, GetPlayer(), qst, (uint8)quest_giver->GetQuestRelation(qst->id), false);
@@ -369,9 +369,10 @@ void WorldSession::HandleQuestgiverRequestRewardOpcode(WorldPacket & recv_data)
 			qst_giver = quest_giver;
 		else
 			return; // oops..
-		bValid = quest_giver->isQuestGiver();
-		if(bValid)
+		bValid = false;
+		if (quest_giver->GetType() == GAMEOBJECT_TYPE_QUESTGIVER)
 		{
+			bValid = true;
 			qst = quest_giver->FindQuest(quest_id, QUESTGIVER_QUEST_END);
 			/*if(!qst) sQuestMgr.FindQuest(quest_id);*/
 			if(!qst)
@@ -452,8 +453,8 @@ void WorldSession::HandleQuestgiverCompleteQuestOpcode(WorldPacket & recvPacket)
 			qst_giver = quest_giver;
 		else
 			return; // oops..
-		bValid = quest_giver->isQuestGiver();
-		if(bValid)
+		bValid = false;
+		if (quest_giver->GetType() == GAMEOBJECT_TYPE_QUESTGIVER)
 		{
 			qst = quest_giver->FindQuest(quest_id, QUESTGIVER_QUEST_END);
 			/*if(!qst) sQuestMgr.FindQuest(quest_id);*/

@@ -206,7 +206,7 @@ void ArathiBasin::SpawnControlPoint(uint32 Id, uint32 Type)
 		m_controlPoints[Id]->SetState(1);
 		m_controlPoints[Id]->SetType(static_cast<uint8>(gi->Type));
 		m_controlPoints[Id]->SetAnimProgress(100);
-		m_controlPoints[Id]->SetUInt32Value(GAMEOBJECT_DYNAMIC, 1);
+		m_controlPoints[Id]->Activate();
 		m_controlPoints[Id]->SetDisplayId(gi->DisplayID);
 
 		switch(Type)
@@ -346,7 +346,7 @@ void ArathiBasin::OnStart()
 	// open gates
 	for(list<GameObject*>::iterator itr = m_gates.begin(); itr != m_gates.end(); ++itr)
 	{
-		(*itr)->SetUInt32Value(GAMEOBJECT_FLAGS, 64);
+		(*itr)->SetFlags(64);
 		(*itr)->SetState(0);
 	}
 

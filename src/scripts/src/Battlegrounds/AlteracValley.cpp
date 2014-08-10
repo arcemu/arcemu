@@ -1133,7 +1133,7 @@ void AlteracValley::AVNode::Spawn()
 			m_flag->bannerslot = static_cast<int8>(m_nodeId);
 			m_flag->SetFaction(g_gameObjectFactions[m_state]);
 			m_flag->SetAnimProgress(100);
-			m_flag->SetUInt32Value(GAMEOBJECT_DYNAMIC, 1);
+			m_flag->Activate();
 			m_flag->PushToWorld(m_bg->GetMapMgr());
 		}
 		else
@@ -1150,7 +1150,7 @@ void AlteracValley::AVNode::Spawn()
 				m_flag->SetType(static_cast<uint8>(goi->Type));
 				m_flag->SetFaction(g_gameObjectFactions[m_state]);
 				m_flag->SetAnimProgress(100);
-				m_flag->SetUInt32Value(GAMEOBJECT_DYNAMIC, 1);
+				m_flag->Activate();
 				m_flag->PushToWorld(m_bg->GetMapMgr());
 			}
 		}
@@ -1178,7 +1178,7 @@ void AlteracValley::AVNode::Spawn()
 			m_aura = m_bg->SpawnGameObject(g->id[m_state], m_bg->GetMapMgr()->GetMapId(), g->x, g->y, g->z, g->o, 0, 0, 3.0f);
 			m_aura->SetFaction(g_gameObjectFactions[m_state]);
 			m_aura->SetAnimProgress(100);
-			m_aura->SetUInt32Value(GAMEOBJECT_FLAGS, 1);
+			m_aura->SetFlags(1);
 			m_aura->SetState(1);
 			m_aura->PushToWorld(m_bg->GetMapMgr());
 		}
@@ -1196,7 +1196,7 @@ void AlteracValley::AVNode::Spawn()
 				m_aura->SetType(static_cast<uint8>(goi->Type));
 				m_aura->SetFaction(g_gameObjectFactions[m_state]);
 				m_aura->SetAnimProgress(100);
-				m_aura->SetUInt32Value(GAMEOBJECT_FLAGS, 1);
+				m_aura->SetFlags(1);
 				m_aura->SetState(1);
 				m_aura->PushToWorld(m_bg->GetMapMgr());
 			}
@@ -1225,7 +1225,7 @@ void AlteracValley::AVNode::Spawn()
 			m_glow = m_bg->SpawnGameObject(g->id[m_state], m_bg->GetMapMgr()->GetMapId(), g->x, g->y, g->z, g->o, 0, 0, 1.0f);
 			m_glow->SetFaction(g_gameObjectFactions[m_state]);
 			m_glow->SetAnimProgress(100);
-			m_glow->SetUInt32Value(GAMEOBJECT_FLAGS, 1);
+			m_glow->SetFlags(1);
 			m_glow->SetState(1);
 			if(m_glow->GetEntry() == 180422 || m_glow->GetEntry() == 180423)
 				m_glow->SetScale(10.0f);
@@ -1247,7 +1247,7 @@ void AlteracValley::AVNode::Spawn()
 				m_glow->SetType(static_cast<uint8>(goi->Type));
 				m_glow->SetFaction(g_gameObjectFactions[m_state]);
 				m_glow->SetAnimProgress(100);
-				m_glow->SetUInt32Value(GAMEOBJECT_FLAGS, 1);
+				m_glow->SetFlags(1);
 				m_glow->SetState(1);
 				if(m_glow->GetEntry() == 180422 || m_glow->GetEntry() == 180423)
 					m_glow->SetScale(10.0f);
@@ -1396,7 +1396,7 @@ void AlteracValley::AVNode::Capture()
 			// disable the flag
 			if(m_flag != NULL)
 			{
-				m_flag->SetUInt32Value(GAMEOBJECT_FLAGS, 1);
+				m_flag->SetFlags(1);
 				m_flag->SetUInt32Value(GAMEOBJECT_DYNAMIC, 0);
 				m_flag->SetState(1);
 			}
@@ -1611,7 +1611,7 @@ void AlteracValley::OnStart()
 	// open gates
 	for(list<GameObject*>::iterator itr = m_gates.begin(); itr != m_gates.end(); ++itr)
 	{
-		(*itr)->SetUInt32Value(GAMEOBJECT_FLAGS, 64);
+		(*itr)->SetFlags(64);
 		(*itr)->SetState(0);
 	}
 

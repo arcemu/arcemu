@@ -66,7 +66,7 @@ WarsongGulch::WarsongGulch(MapMgr* mgr, uint32 id, uint32 lgroup, uint32 t) : CB
 
 	for(i = 0; i < 2; ++i)
 	{
-		m_dropFlags[i]->SetUInt32Value(GAMEOBJECT_DYNAMIC, 1);
+		m_dropFlags[i]->Activate();
 		m_dropFlags[i]->SetScale(2.5f);
 	}
 
@@ -584,7 +584,7 @@ void WarsongGulch::OnStart()
 	/* open the gates */
 	for(list<GameObject*>::iterator itr = m_gates.begin(); itr != m_gates.end(); ++itr)
 	{
-		(*itr)->SetUInt32Value(GAMEOBJECT_FLAGS, 64);
+		(*itr)->SetFlags(64);
 		(*itr)->SetState(0);
 	}
 

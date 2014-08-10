@@ -482,7 +482,7 @@ class UlagTheCleaver : public GameObjectAIScript
 				NewCreature->Despawn(180000, 0);
 				NewCreature->GetAIInterface()->setNextTarget(pPlayer);
 				NewCreature->GetAIInterface()->AttackReaction(pPlayer, 1);
-				pDoor->SetUInt32Value(GAMEOBJECT_FLAGS, 33);
+				pDoor->SetFlags(33);
 				pDoor->SetState(0);
 			};
 		}

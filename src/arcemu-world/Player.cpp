@@ -6594,7 +6594,7 @@ void Player::UpdateNearbyGameObjects()
 				}
 			}
 			bool bPassed = !deactivate;
-			if(go->isQuestGiver())
+			if(go->GetType() == GAMEOBJECT_TYPE_QUESTGIVER)
 			{
 				if(go->HasQuests() && go->NumOfQuests() > 0)
 				{

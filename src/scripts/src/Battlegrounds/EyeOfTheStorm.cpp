@@ -600,7 +600,7 @@ void EyeOfTheStorm::OnCreate()
 
 		m_bubbles[i]->SetScale(0.1f);
 		m_bubbles[i]->SetState(1);
-		m_bubbles[i]->SetUInt32Value(GAMEOBJECT_FLAGS, 32);
+		m_bubbles[i]->SetFlags(32);;
 		m_bubbles[i]->SetFaction(114);
 		m_bubbles[i]->SetAnimProgress(100);
 
