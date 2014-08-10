@@ -488,7 +488,7 @@ void WorldSession::HandleLootReleaseOpcode(WorldPacket & recv_data)
 				}
 				break;
 			case GAMEOBJECT_TYPE_CHEST:
-				{
+			{
 					pGO->loot.looters.erase(_player->GetLowGUID());
 					//check for locktypes
 
@@ -497,29 +497,22 @@ void WorldSession::HandleLootReleaseOpcode(WorldPacket & recv_data)
 						despawn = true;
 
 					Lock* pLock = dbcLock.LookupEntryForced(pGO->GetInfo()->raw.sound0);
-					if(pLock)
-					{
-						for(uint32 i = 0; i < LOCK_NUM_CASES; i++)
-						{
-							if(pLock->locktype[i])
-							{
-								if(pLock->locktype[i] == 1)   //Item or Quest Required;
-								{
-									if( despawn )
-										pGO->Despawn(0, (sQuestMgr.GetGameObjectLootQuest(pGO->GetEntry()) ? 180000 + (RandomUInt(180000)) : 900000 + (RandomUInt(600000))));
-									else
-										pGO->SetState(1);
+					if (pLock != NULL){
 
+						for (uint32 i = 0; i < LOCK_NUM_CASES; i++){
+							if (pLock->locktype[i] != 0){
+
+								//Item or Quest Required;
+								if (pLock->locktype[i] == 1){
+									pGO->Despawn(0, (sQuestMgr.GetGameObjectLootQuest(pGO->GetEntry()) ? 180000 + (RandomUInt(180000)) : 900000 + (RandomUInt(600000))));
 									return;
 								}
-								else if(pLock->locktype[i] == 2)   //locktype;
-								{
+								else if (pLock->locktype[i] == 2){ //locktype
+
 									//herbalism and mining;
-									if(pLock->lockmisc[i] == LOCKTYPE_MINING || pLock->lockmisc[i] == LOCKTYPE_HERBALISM)
-									{
+									if (pLock->lockmisc[i] == LOCKTYPE_MINING || pLock->lockmisc[i] == LOCKTYPE_HERBALISM){
 										//we still have loot inside.
-										if(pGO->HasLoot()  || !despawn )
-										{
+										if (pGO->HasLoot()){
 											pGO->SetState(1);
 											// TODO : redo this temporary fix, because for some reason hasloot is true even when we loot everything
 											// my guess is we need to set up some even that rechecks the GO in 10 seconds or something
@@ -527,54 +520,35 @@ void WorldSession::HandleLootReleaseOpcode(WorldPacket & recv_data)
 											return;
 										}
 
-										if(pGO->CanMine())
-										{
-											pGO->loot.items.clear();
-											pGO->UseMine();
-											return;
-										}
-										else
-										{
-											pGO->CalcMineRemaining(true);
-											pGO->Despawn(0, 900000 + (RandomUInt(600000)));
-											return;
-										}
-									}
-									else
-									{
-										if(pGO->HasLoot()  || !despawn )
-										{
-											pGO->SetState(1);
-											return;
-										}
-										pGO->Despawn(0, sQuestMgr.GetGameObjectLootQuest(pGO->GetEntry()) ? 180000 + (RandomUInt(180000)) : (IS_INSTANCE(pGO->GetMapId()) ? 0 : 900000 + (RandomUInt(600000))));
+										pGO->Despawn(0, 900000 + (RandomUInt(600000)));
 										return;
 									}
 								}
-								else //other type of locks that i don't bother to split atm ;P
-								{
-									if(pGO->HasLoot()  || !despawn )
-									{
+								else{
+									if (pGO->HasLoot()){
 										pGO->SetState(1);
 										return;
 									}
 									pGO->Despawn(0, sQuestMgr.GetGameObjectLootQuest(pGO->GetEntry()) ? 180000 + (RandomUInt(180000)) : (IS_INSTANCE(pGO->GetMapId()) ? 0 : 900000 + (RandomUInt(600000))));
 									return;
 								}
+							}else //other type of locks that i don't bother to split atm ;P
+							{
+								if (pGO->HasLoot()){
+									pGO->SetState(1);
+									return;
+								}
+								pGO->Despawn(0, sQuestMgr.GetGameObjectLootQuest(pGO->GetEntry()) ? 180000 + (RandomUInt(180000)) : (IS_INSTANCE(pGO->GetMapId()) ? 0 : 900000 + (RandomUInt(600000))));
+								return;
 							}
 						}
-					}
-					else
-					{
-						if(pGO->HasLoot()  || !despawn )
-						{
+					}else{
+						if (pGO->HasLoot()){
 							pGO->SetState(1);
 							return;
 						}
 						pGO->Despawn(0, sQuestMgr.GetGameObjectLootQuest(pGO->GetEntry()) ? 180000 + (RandomUInt(180000)) : (IS_INSTANCE(pGO->GetMapId()) ? 0 : 900000 + (RandomUInt(600000))));
-
 						return;
-
 					}
 				}
 			default:

@@ -644,13 +644,6 @@ class SERVER_DECL GameObject : public Object
 		void OnRemoveInRangeObject(Object* pObj);
 		void RemoveFromWorld(bool free_guid);
 
-		bool CanMine() {return (usage_remaining > 0);}
-		void UseMine() { if(usage_remaining) usage_remaining--;}
-		void CalcMineRemaining(bool force)
-		{
-			if(force || !usage_remaining)
-				usage_remaining = pInfo->raw.sound4 + RandomUInt(pInfo->raw.sound5 - pInfo->raw.sound4) - 1;
-		}
 		bool CanFish() { return (usage_remaining > 0); }
 		void CatchFish() { if(usage_remaining) usage_remaining--; }
 		void CalcFishRemaining(bool force)

@@ -353,28 +353,7 @@ void GameObject::InitAI()
 		m_ritualmembers = new uint32[pInfo->raw.sound0];
 		memset(m_ritualmembers, 0, sizeof(uint32)*pInfo->raw.sound0);
 	}
-	else if(pInfo->Type == GAMEOBJECT_TYPE_CHEST)
-	{
-		Lock *pLock = dbcLock.LookupEntryForced(GetInfo()->raw.sound0);
-		if(pLock)
-		{
-			for(uint32 i = 0; i < LOCK_NUM_CASES; i++)
-			{
-				if(pLock->locktype[i])
-				{
-					if(pLock->locktype[i] == 2) //locktype;
-					{
-						//herbalism and mining;
-						if(pLock->lockmisc[i] == LOCKTYPE_MINING || pLock->lockmisc[i] == LOCKTYPE_HERBALISM)
-						{
-							CalcMineRemaining(true);
-						}
-					}
-				}
-			}
-		}
 
-	}
 	else if(pInfo->Type == GAMEOBJECT_TYPE_FISHINGHOLE)
 	{
 		CalcFishRemaining(true);

@@ -2612,31 +2612,24 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 				uint32 v = gameObjTarget->GetGOReqSkill();
 				bool bAlreadyUsed = false;
 
-				if(Rand(100.0f)) // 3% chance to fail//why?
-				{
-					if(TO< Player* >(m_caster)->_GetSkillLineCurrent(SKILL_HERBALISM) < v)
-					{
-						//SendCastResult(SPELL_FAILED_LOW_CASTLEVEL);
-						return;
-					}
-					else
-					{
-						if(gameObjTarget->loot.items.size() == 0)
-						{
-							if(gameObjTarget->GetMapMgr() != NULL)
-								lootmgr.FillGOLoot(&gameObjTarget->loot, gameObjTarget->GetInfo()->raw.sound1, gameObjTarget->GetMapMgr()->iInstanceMode);
-							else
-								lootmgr.FillGOLoot(&gameObjTarget->loot, gameObjTarget->GetInfo()->raw.sound1, 0);
-						}
+				if (static_cast< Player* >(m_caster)->_GetSkillLineCurrent(SKILL_HERBALISM) < v){
+					//SendCastResult(SPELL_FAILED_LOW_CASTLEVEL);
+					return;
+
+				}else{
+					if (gameObjTarget->loot.items.size() == 0){
+						if (gameObjTarget->GetMapMgr() != NULL)
+							lootmgr.FillGOLoot(&gameObjTarget->loot, gameObjTarget->GetInfo()->raw.sound1, gameObjTarget->GetMapMgr()->iInstanceMode);
+
 						else
-							bAlreadyUsed = true;
+							lootmgr.FillGOLoot(&gameObjTarget->loot, gameObjTarget->GetInfo()->raw.sound1, 0);
 					}
-					loottype = LOOT_SKINNING;
+					else{
+						bAlreadyUsed = true;
+					}
 				}
-				else
-				{
-					SendCastResult(SPELL_FAILED_TRY_AGAIN);
-				}
+				loottype = LOOT_SKINNING;
+
 				//Skill up
 				if(!bAlreadyUsed) //Avoid cheats with opening/closing without taking the loot
 					DetermineSkillUp(SKILL_HERBALISM, v / 5);
@@ -2649,29 +2642,22 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 				uint32 v = gameObjTarget->GetGOReqSkill();
 				bool bAlreadyUsed = false;
 
-				if(Rand(100.0f))     // 3% chance to fail//why?
-				{
-					if(TO< Player* >(m_caster)->_GetSkillLineCurrent(SKILL_MINING) < v)
-					{
-						//SendCastResult(SPELL_FAILED_LOW_CASTLEVEL);
-						return;
-					}
-					else if(gameObjTarget->loot.items.size() == 0)
-					{
-						if(gameObjTarget->GetMapMgr() != NULL)
-							lootmgr.FillGOLoot(&gameObjTarget->loot, gameObjTarget->GetInfo()->raw.sound1, gameObjTarget->GetMapMgr()->iInstanceMode);
-						else
-							lootmgr.FillGOLoot(&gameObjTarget->loot, gameObjTarget->GetInfo()->raw.sound1, 0);
-					}
+				if (static_cast< Player* >(m_caster)->_GetSkillLineCurrent(SKILL_MINING) < v){
+					//SendCastResult(SPELL_FAILED_LOW_CASTLEVEL);
+					return;
+				}
+				else if (gameObjTarget->loot.items.size() == 0){
+					if (gameObjTarget->GetMapMgr() != NULL)
+						lootmgr.FillGOLoot(&gameObjTarget->loot, gameObjTarget->GetInfo()->raw.sound1, gameObjTarget->GetMapMgr()->iInstanceMode);
 					else
-						bAlreadyUsed = true;
+						lootmgr.FillGOLoot(&gameObjTarget->loot, gameObjTarget->GetInfo()->raw.sound1, 0);
 
-					loottype = LOOT_SKINNING;
 				}
-				else
-				{
-					SendCastResult(SPELL_FAILED_TRY_AGAIN);
+				else{
+					bAlreadyUsed = true;;
 				}
+				loottype = LOOT_SKINNING;
+
 				//Skill up
 				if(!bAlreadyUsed) //Avoid cheats with opening/closing without taking the loot
 					DetermineSkillUp(SKILL_MINING, v / 5);
