@@ -2575,7 +2575,7 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 					if(gameObjTarget->GetByte(GAMEOBJECT_BYTES_1, 0) == 0)
 						return;
 
-					Lock* lock = dbcLock.LookupEntry(info->SpellFocus);
+					Lock* lock = dbcLock.LookupEntry(info->sound0);
 					if(lock == 0)
 						return;
 

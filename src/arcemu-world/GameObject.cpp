@@ -318,41 +318,6 @@ void GameObject::SaveToDB()
 	WorldDatabase.Execute(ss.str().c_str());
 }
 
-void GameObject::SaveToFile(std::stringstream & name)
-{
-
-	std::stringstream ss;
-
-	ss << "INSERT INTO gameobject_spawns VALUES("
-	   << ((m_spawn == NULL) ? 0 : m_spawn->id) << ","
-	   << GetEntry() << ","
-	   << GetMapId() << ","
-	   << GetPositionX() << ","
-	   << GetPositionY() << ","
-	   << GetPositionZ() << ","
-	   << GetOrientation() << ","
-//		<< GetUInt64Value(GAMEOBJECT_ROTATION) << ","
-	   << uint64(0) << ","
-	   << GetParentRotation(0) << ","
-	   << GetParentRotation(2) << ","
-	   << GetParentRotation(3) << ","
-	   << GetByte(GAMEOBJECT_BYTES_1, 0) << ","
-	   << GetUInt32Value(GAMEOBJECT_FLAGS) << ","
-	   << GetFaction() << ","
-	   << GetScale() << ","
-	   << "0,"
-	   << m_phase << ","
-	   << m_overrides << ")";
-
-	FILE* OutFile;
-
-	OutFile = fopen(name.str().c_str(), "wb");
-	if(!OutFile) return;
-	fwrite(ss.str().c_str(), 1, ss.str().size(), OutFile);
-	fclose(OutFile);
-
-}
-
 void GameObject::InitAI()
 {
 	if(!pInfo)
@@ -360,15 +325,6 @@ void GameObject::InitAI()
 
 	if( pInfo->Type == GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING )
 		Rebuild();
-
-	// this fixes those fuckers in booty bay
-	if(pInfo->SpellFocus == 0 &&
-	        pInfo->sound1 == 0 &&
-	        pInfo->sound2 == 0 &&
-	        pInfo->sound3 != 0 &&
-	        pInfo->sound5 != 3 &&
-	        pInfo->sound9 == 1)
-		return;
 
 	uint32 spellid = 0;
 	if(pInfo->Type == GAMEOBJECT_TYPE_TRAP)
@@ -393,12 +349,12 @@ void GameObject::InitAI()
 	}
 	else if(pInfo->Type == GAMEOBJECT_TYPE_RITUAL)
 	{
-		m_ritualmembers = new uint32[pInfo->SpellFocus];
-		memset(m_ritualmembers, 0, sizeof(uint32)*pInfo->SpellFocus);
+		m_ritualmembers = new uint32[pInfo->sound0];
+		memset(m_ritualmembers, 0, sizeof(uint32)*pInfo->sound0);
 	}
 	else if(pInfo->Type == GAMEOBJECT_TYPE_CHEST)
 	{
-		Lock* pLock = dbcLock.LookupEntryForced(GetInfo()->SpellFocus);
+		Lock *pLock = dbcLock.LookupEntryForced(GetInfo()->sound0);
 		if(pLock)
 		{
 			for(uint32 i = 0; i < LOCK_NUM_CASES; i++)
@@ -784,7 +740,7 @@ uint32 GameObject::GetGOReqSkill()
 		return 0;
 
 	//! Here we check the SpellFocus table against the dbcs
-	Lock* lock = dbcLock.LookupEntryForced(GetInfo()->SpellFocus);
+	Lock *lock = dbcLock.LookupEntryForced(GetInfo()->sound0);
 	if(!lock) return 0;
 	for(uint32 i = 0; i < LOCK_NUM_CASES; i++)
 	{
@@ -865,7 +821,7 @@ void GameObject::Damage( uint32 damage, uint64 AttackerGUID, uint64 ControllerGU
 			// Intact  ->  Damaged
 			
 			// Are we below the intact-damaged transition treshold?
-			if( hitpoints <= ( maxhitpoints - pInfo->SpellFocus ) ){
+			if (hitpoints <= (maxhitpoints - pInfo->sound0)){
 				SetFlags( GAMEOBJECT_FLAG_DAMAGED );
 				SetDisplayId( pInfo->sound4 ); // damaged display id
 			}
@@ -893,7 +849,7 @@ void GameObject::SendDamagePacket( uint32 damage, uint64 AttackerGUID, uint64 Co
 void GameObject::Rebuild(){
 	SetFlags( GetFlags() & uint32( ~( GAMEOBJECT_FLAG_DAMAGED | GAMEOBJECT_FLAG_DESTROYED ) ) );
 	SetDisplayId( pInfo->DisplayID );
-	maxhitpoints = pInfo->SpellFocus + pInfo->sound5;
+	maxhitpoints = pInfo->sound0 + pInfo->sound5;
 	hitpoints = maxhitpoints;
 }
 

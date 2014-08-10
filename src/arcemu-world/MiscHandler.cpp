@@ -496,7 +496,7 @@ void WorldSession::HandleLootReleaseOpcode(WorldPacket & recv_data)
 					if( pGO->GetInfo()->sound3 == 1 )
 						despawn = true;
 
-					Lock* pLock = dbcLock.LookupEntryForced(pGO->GetInfo()->SpellFocus);
+					Lock* pLock = dbcLock.LookupEntryForced(pGO->GetInfo()->sound0);
 					if(pLock)
 					{
 						for(uint32 i = 0; i < LOCK_NUM_CASES; i++)
@@ -1535,7 +1535,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 						break;
 				}
 
-				SpellEntry* info = dbcSpell.LookupEntryForced(goinfo->SpellFocus);
+				SpellEntry* info = dbcSpell.LookupEntryForced(goinfo->sound0);
 				if(!info)
 					break;
 				spell = sSpellFactoryMgr.NewSpell(plyr, info, false, NULL);
@@ -1554,7 +1554,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 				if(!obj->m_ritualmembers || !obj->m_ritualspell || !obj->m_ritualcaster /*|| !obj->m_ritualtarget*/)
 					return;
 
-				for(i = 0; i < goinfo->SpellFocus; i++)
+				for(i = 0; i < goinfo->sound0; i++)
 				{
 					if(!obj->m_ritualmembers[i])
 					{
@@ -1573,11 +1573,11 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 					}
 				}
 
-				if(i == goinfo->SpellFocus - 1)
+				if(i == goinfo->sound0 - 1)
 				{
 					obj->m_ritualspell = 0;
 					Player* plr;
-					for(i = 0; i < goinfo->SpellFocus; i++)
+					for(i = 0; i < goinfo->sound0; i++)
 					{
 						plr = _player->GetMapMgr()->GetPlayer(obj->m_ritualmembers[i]);
 						if(plr)
@@ -1607,7 +1607,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 						Player* psacrifice = NULL;
 
 						// kill the sacrifice player
-						psacrifice = _player->GetMapMgr()->GetPlayer(obj->m_ritualmembers[(int)(rand() % (goinfo->SpellFocus - 1))]);
+						psacrifice = _player->GetMapMgr()->GetPlayer(obj->m_ritualmembers[(int)(rand() % (goinfo->sound0 - 1))]);
 						Player* pCaster = obj->GetMapMgr()->GetPlayer(obj->m_ritualcaster);
 						if(!psacrifice || !pCaster)
 							return;

@@ -25,7 +25,8 @@ SET(sources
 	ChannelHandler.cpp 
 	CharacterHandler.cpp 
 	Chat.cpp 
-	ChatHandler.cpp 
+	ChatHandler.cpp
+	CObjectFactory.cpp
 	CombatHandler.cpp 
 	Container.cpp 
 	Corpse.cpp 
@@ -176,6 +177,7 @@ SET( headers
 	Channel.h
 	ChannelMgr.h
 	Chat.h
+	CObjectFactory.h
 	CollideInterface.h
 	CommonScheduleThread.h
 	Entities/Summons/CompanionSummon.h
@@ -196,6 +198,7 @@ SET( headers
 	EventMgr.h
 	faction.h
 	GameObject.h
+	GO_ILockable.h
 	Gossip.h
 	Group.h
 	Entities/Summons/GuardianSummon.h

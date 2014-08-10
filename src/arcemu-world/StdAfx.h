@@ -131,6 +131,7 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "SpellProc.h"
 #include "SummonHandler.h"
 #include "Vehicle.h"
+#include "CObjectFactory.h"
 #include "Unit.h"
 #include "Gossip.h"
 
@@ -167,6 +168,7 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "Entities/Summons/WildSummon.h"
 #include "DynamicObject.h"
 #include "GameObject.h"
+#include "GO_ILockable.h"
 #include "Group.h"
 #include "Guild.h"
 #include "HonorHandler.h"

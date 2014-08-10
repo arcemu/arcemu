@@ -386,6 +386,7 @@ class SERVER_DECL ObjectMgr : public Singleton < ObjectMgr >, public EventableOb
 	public:
 		ObjectMgr();
 		~ObjectMgr();
+
 		void LoadCreatureWaypoints();
 
 		void LoadCreatureTimedEmotes();

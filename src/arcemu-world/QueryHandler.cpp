@@ -186,7 +186,7 @@ void WorldSession::HandleGameObjectQueryOpcode(WorldPacket & recv_data)
 	data << goinfo->Category;       // Category string of the GO, like "attack", "pvp", "point", etc
 	data << goinfo->Castbartext;    // text displayed when using the go, like "collecting", "summoning" etc
 	data << goinfo->Unkstr;
-	data << goinfo->SpellFocus;     // spellfocus id, ex.: spell casted when interacting with the GO
+	data << goinfo->sound0;     // spellfocus id, ex.: spell casted when interacting with the GO
 	data << goinfo->sound1;
 	data << goinfo->sound2;
 	data << goinfo->sound3;

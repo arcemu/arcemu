@@ -3507,7 +3507,7 @@ uint8 Spell::CanCast(bool tolerate)
 				if(!IsInrange(p_caster->GetPositionX(), p_caster->GetPositionY(), p_caster->GetPositionZ(), (*itr), (focusRange * focusRange)))
 					continue;
 
-				if(info->SpellFocus == GetProto()->RequiresSpellFocus)
+				if(info->sound0 == GetProto()->RequiresSpellFocus)
 				{
 					found = true;
 					break;
