@@ -3226,6 +3226,10 @@ void Spell::SpellEffectSummonObject(uint32 i)
 		go->CreateFromProto(GO_FISHING_BOBBER, mapid, posx, posy, posz, orient);
 		go->SetFlags(0);
 		go->SetState(0);
+		/* Conflict added in commit https://github.com/arcemu/arcemu/commit/460e35ce516e527f7dce2b424eddce9afd85ff22#diff-2f0f1d6ec531424670c3b34623a6a4c6R3199
+		go->SetUInt32Value( GAMEOBJECT_FLAGS, 0 );
+		go->SetByte( GAMEOBJECT_BYTES_1, 0, 0 );
+		*/
 		go->SetUInt64Value(OBJECT_FIELD_CREATED_BY, m_caster->GetGUID());
 		u_caster->SetChannelSpellTargetGUID(go->GetGUID());
 		go->Phase(PHASE_SET, u_caster->GetPhase());
@@ -3238,10 +3242,17 @@ void Spell::SpellEffectSummonObject(uint32 i)
 			uint32 seconds[] = { 0, 4, 10, 14 };
 			uint32 rnd = RandomUInt(3);
 			sEventMgr.AddEvent(fn, &Arcemu::GO_FishingNode::EventFishHooked, EVENT_GAMEOBJECT_FISH_HOOKED, seconds[rnd] * 1000, 1, 0);
+			/* Conflict added in commit https://github.com/arcemu/arcemu/commit/460e35ce516e527f7dce2b424eddce9afd85ff22#diff-2f0f1d6ec531424670c3b34623a6a4c6R3199 
+			uint32 seconds[] = { 0, 4, 10, 14 };
+			uint32 rnd = RandomUInt(3);
+			sEventMgr.AddEvent(go, &GameObject::FishHooked, static_cast< Player* >(m_caster), EVENT_GAMEOBJECT_FISH_HOOKED, seconds[rnd] * 1000, 1, 0);*/
+
 
 		}
 		sEventMgr.AddEvent(fn, &Arcemu::GO_FishingNode::EndFishing, true, EVENT_GAMEOBJECT_END_FISHING, 17 * 1000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 		sEventMgr.AddEvent(TO_UNIT(p_caster), &Unit::EventStopChanneling, false, EVENT_STOP_CHANNELING, 17 * 1000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+		/* Conflict added in commit https://github.com/arcemu/arcemu/commit/460e35ce516e527f7dce2b424eddce9afd85ff22#diff-2f0f1d6ec531424670c3b34623a6a4c6R3199 
+		sEventMgr.AddEvent(go, &GameObject::EndFishing, static_cast< Player* >(m_caster), false, EVENT_GAMEOBJECT_END_FISHING, 17 * 1000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);*/
 
 		p_caster->SetSummonedObject(go);
 	}
