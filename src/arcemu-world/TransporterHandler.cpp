@@ -472,7 +472,13 @@ void ObjectMgr::LoadTransporters()
 		uint32 entry = QR->Fetch()[0].GetUInt32();
 		int32 period = QR->Fetch()[2].GetInt32();
 
+		GameObjectInfo *i = GameObjectNameStorage.LookupEntry(entry);
+		if (i == NULL)
+			continue;
+
 		Transporter* pTransporter = new Transporter((uint64)HIGHGUID_TYPE_TRANSPORTER << 32 | entry);
+		pTransporter->SetInfo(i);
+
 		if(!pTransporter->CreateAsTransporter(entry, "", period))
 		{
 			LOG_ERROR("Transporter %s failed creation for some reason.", QR->Fetch()[1].GetString());

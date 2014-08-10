@@ -169,6 +169,7 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "DynamicObject.h"
 #include "GameObject.h"
 #include "GO_ILockable.h"
+#include "GO_Trap.h"
 #include "Group.h"
 #include "Guild.h"
 #include "HonorHandler.h"

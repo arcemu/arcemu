@@ -1835,20 +1835,46 @@ GameObject* MapMgr::CreateAndSpawnGameObject(uint32 entryID, float x, float y, f
 
 GameObject* MapMgr::CreateGameObject(uint32 entry)
 {
+	GameObjectInfo *i = GameObjectNameStorage.LookupEntry(entry);
+	if (i == NULL)
+		return NULL;
+
+	uint32 GUID = 0;
+
 	if(_reusable_guids_gameobject.size() > GO_GUID_RECYCLE_INTERVAL)
 	{
 		uint32 guid = _reusable_guids_gameobject.front();
 		_reusable_guids_gameobject.pop_front();
-		return new GameObject((uint64)HIGHGUID_TYPE_GAMEOBJECT << 32 | guid);
+
+		GUID = guid;
+
+	}
+	else{
+		if (++m_GOHighGuid >= GOStorage.size()){
+			// Reallocate array with larger size.
+			size_t newsize = GOStorage.size() + RESERVE_EXPAND_SIZE;
+			GOStorage.resize(newsize, NULL);
+		}
+		GUID = m_GOHighGuid;
 	}
 
-	if(++m_GOHighGuid  >= GOStorage.size())
-	{
-		// Reallocate array with larger size.
-		size_t newsize = GOStorage.size() + RESERVE_EXPAND_SIZE;
-		GOStorage.resize(newsize, NULL);
+	GameObject *go = NULL;
+
+	// this will be replaced by a factory!
+	switch (i->Type){
+
+		case GAMEOBJECT_TYPE_TRAP:
+			go = new Arcemu::GO_Trap(uint64((uint64(HIGHGUID_TYPE_GAMEOBJECT) << 32) | GUID));
+			break;
+
+		default:
+			go = new GameObject(uint64((uint64(HIGHGUID_TYPE_GAMEOBJECT) << 32) | GUID));
+			break;
 	}
-	return new GameObject((uint64)HIGHGUID_TYPE_GAMEOBJECT << 32 | m_GOHighGuid);
+
+	go->SetInfo(i);
+
+	return go;
 }
 
 DynamicObject* MapMgr::CreateDynamicObject()

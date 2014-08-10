@@ -990,7 +990,7 @@ class SERVER_DECL Unit : public Object
 		friend class AIInterface;
 		friend class Aura;
 
-		virtual void Update(uint32 time);
+		void Update(uint32 time);
 		virtual void RemoveFromWorld(bool free_guid);
 		virtual void OnPushToWorld();
 

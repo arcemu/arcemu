@@ -558,7 +558,10 @@ class SERVER_DECL GameObject : public Object
 		/************************************************************************/
 		/* LUA Stuff                                                            */
 		/************************************************************************/
+		GameObject();
+
 		GameObject(uint64 guid);
+
 		~GameObject();
 
 		GameObjectInfo* GetInfo() { return pInfo; }
@@ -568,7 +571,7 @@ class SERVER_DECL GameObject : public Object
 
 		bool Load(GOSpawn* spawn);
 
-		virtual void Update(uint32 p_time);
+		void Update(uint32 p_time);
 
 		void Spawn(MapMgr* m);
 		void Despawn(uint32 delay, uint32 respawntime);
@@ -622,7 +625,6 @@ class SERVER_DECL GameObject : public Object
 		SpellEntry* spell;
 
 		float range;
-		uint8 checkrate;
 		uint16 counter;
 		int32 charges;//used for type==22,to limit number of usages.
 		bool invisible;//invisible

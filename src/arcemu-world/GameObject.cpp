@@ -19,6 +19,13 @@
  */
 
 #include "StdAfx.h"
+
+GameObject::GameObject(){
+	sLog.outError("GameObject being instantiated with default constructor.");
+
+	ARCEMU_ASSERT(false);
+}
+
 GameObject::GameObject(uint64 guid)
 {
 	m_objectTypeId = TYPEID_GAMEOBJECT;
@@ -95,21 +102,11 @@ GameObject::~GameObject()
 
 bool GameObject::CreateFromProto(uint32 entry, uint32 mapid, float x, float y, float z, float ang, float r0, float r1, float r2, float r3, uint32 overrides)
 {
-	pInfo = GameObjectNameStorage.LookupEntry(entry);
-	if(pInfo == NULL)
-	{
-		LOG_ERROR("Something tried to create a GameObject with invalid entry %u", entry);
-		return false;
-	}
-
 	Object::_Create(mapid, x, y, z, ang);
 	SetEntry(entry);
 
 	m_overrides = overrides;
-//	SetFloatValue( GAMEOBJECT_POS_X, x );
-//	SetFloatValue( GAMEOBJECT_POS_Y, y );
-//	SetFloatValue( GAMEOBJECT_POS_Z, z );
-//	SetFloatValue( GAMEOBJECT_FACING, ang );
+
 	SetPosition(x, y, z, ang);
 	SetParentRotation(0, r0);
 	SetParentRotation(1, r1);
@@ -120,6 +117,7 @@ bool GameObject::CreateFromProto(uint32 entry, uint32 mapid, float x, float y, f
 	SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 	SetDisplayId(pInfo->DisplayID);
 	SetType(static_cast<uint8>(pInfo->Type));
+
 	InitAI();
 	_LoadQuests();
 
@@ -155,12 +153,6 @@ void GameObject::Update(uint32 p_time)
 
 	if(spell != NULL && GetState() == 1)
 	{
-		if(checkrate > 1)
-		{
-			if(counter++ % checkrate)
-				return;
-		}
-
 		for(std::set< Object* >::iterator itr = m_objectsInRange.begin(); itr != m_objectsInRange.end(); ++itr)
 		{
 			float dist;
@@ -197,7 +189,7 @@ void GameObject::Update(uint32 p_time)
 						m_summoner->HandleProc(PROC_ON_TRAP_TRIGGER, reinterpret_cast< Unit* >(o), spell);
 				}
 
-				if(m_summonedGo)
+				if (m_summonedGo && pInfo->trap.charges != 0)
 				{
 					ExpireAndDelete();
 					return;
@@ -328,11 +320,8 @@ void GameObject::InitAI()
 		Rebuild();
 
 	uint32 spellid = 0;
-	if(pInfo->Type == GAMEOBJECT_TYPE_TRAP)
-	{
-		spellid = pInfo->raw.sound3;
-	}
-	else if(pInfo->Type == GAMEOBJECT_TYPE_SPELL_FOCUS)
+
+	if (pInfo->Type == GAMEOBJECT_TYPE_SPELL_FOCUS)
 	{
 		// get spellid from attached gameobject if there is such - by sound2 field
 		if(pInfo->raw.sound2 != 0)
@@ -395,8 +384,6 @@ void GameObject::InitAI()
 		r = GetMaxRange(dbcSpellRange.LookupEntry(sp->rangeIndex));
 
 	range = r * r; //square to make code faster
-	checkrate = 20;//once in 2 seconds
-
 }
 
 bool GameObject::Load(GOSpawn* spawn)

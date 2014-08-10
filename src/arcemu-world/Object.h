@@ -162,9 +162,10 @@ class SERVER_DECL Object : public EventableObject
 		typedef std::set<Object*> InRangeSet;
 		typedef std::map<string, void*> ExtensionSet;
 
+		Object();
 		virtual ~Object();
 
-		virtual void Update(uint32 time) { }
+		virtual void Update(uint32 time){}
 
 		//! True if object exists in world, else false
 		bool IsInWorld() { return m_mapMgr != NULL; }
@@ -702,8 +703,6 @@ class SERVER_DECL Object : public EventableObject
 		virtual Group* GetGroup() { return NULL; }
 
 	protected:
-		Object();
-
 		//void _Create (uint32 guidlow, uint32 guidhigh);
 		void _Create(uint32 mapid, float x, float y, float z, float ang);
 

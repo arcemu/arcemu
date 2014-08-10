@@ -47,6 +47,7 @@ SET(sources
 	GameObject.cpp 
 	GMTicket.cpp 
 	GMTicketCommands.cpp
+	GO_Trap.cpp
 	Gossip.cpp
 	Group.cpp 
 	GroupHandler.cpp 
@@ -199,6 +200,7 @@ SET( headers
 	faction.h
 	GameObject.h
 	GO_ILockable.h
+	GO_Trap.h
 	Gossip.h
 	Group.h
 	Entities/Summons/GuardianSummon.h
