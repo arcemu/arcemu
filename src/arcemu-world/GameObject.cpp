@@ -31,13 +31,13 @@ GameObject::GameObject(uint64 guid)
 	m_objectTypeId = TYPEID_GAMEOBJECT;
 	m_valuesCount = GAMEOBJECT_END;
 	m_uint32Values = _fields;
-	memset(m_uint32Values, 0, (GAMEOBJECT_END)*sizeof(uint32));
+	std::fill(m_uint32Values, &m_uint32Values[GAMEOBJECT_END], 0);
 	m_updateMask.SetCount(GAMEOBJECT_END);
 	SetUInt32Value(OBJECT_FIELD_TYPE, TYPE_GAMEOBJECT | TYPE_OBJECT);
 	SetGUID(guid);
 	SetAnimProgress(100);
-	m_wowGuid.Init(GetGUID());
-	SetScale(1);  //info->Size  );
+	m_wowGuid.Init(guid);
+	SetScale(1);
 	bannerslot = bannerauraslot = -1;
 	m_summonedGo = false;
 	invisible = false;

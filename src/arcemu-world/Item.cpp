@@ -38,7 +38,6 @@ Item::Item()//this is called when constructing as container
 	m_factionDBC = NULL;
 	m_instanceId = INSTANCEID_NOT_IN_WORLD;
 	m_inQueue = false;
-	m_extensions = NULL;
 	m_loadedFromDB = false;
 	ItemExpiresOn = 0;
 	Enchantments.clear();
@@ -72,7 +71,6 @@ void Item::Init(uint32 high, uint32 low)
 	m_factionDBC = NULL;
 	m_instanceId = INSTANCEID_NOT_IN_WORLD;
 	m_inQueue = false;
-	m_extensions = NULL;
 	m_loadedFromDB = false;
 	//////////////////////////////////////////////////////////
 	SetLowGUID(low);

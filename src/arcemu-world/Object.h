@@ -160,7 +160,6 @@ class SERVER_DECL Object : public EventableObject, public Arcemu::IUpdatable
 {
 	public:
 		typedef std::set<Object*> InRangeSet;
-		typedef std::map<string, void*> ExtensionSet;
 
 		Object();
 		virtual ~Object();
@@ -760,34 +759,7 @@ class SERVER_DECL Object : public EventableObject, public Arcemu::IUpdatable
 
 		int32 m_instanceId;
 
-		ExtensionSet* m_extensions;
-
-		// so we can set from scripts. :)
-		void _SetExtension(const string & name, void* ptr);
-
 	public:
-
-		template<typename T>
-		void SetExtension(const string & name, T ptr)
-		{
-			_SetExtension(name, ((void*)ptr));
-		}
-
-		template<typename T>
-		T GetExtension(const string & name)
-		{
-			if(m_extensions == NULL)
-				return ((T)NULL);
-			else
-			{
-				ExtensionSet::iterator itr = m_extensions->find(name);
-				if(itr == m_extensions->end())
-					return ((T)NULL);
-				else
-					return ((T)itr->second);
-			}
-		}
-
 		bool m_loadedFromDB;
 
 		// Spell currently casting
