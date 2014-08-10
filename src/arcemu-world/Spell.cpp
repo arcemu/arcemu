@@ -3503,8 +3503,8 @@ uint8 Spell::CanCast(bool tolerate)
 				}
 
 				// professions use rangeIndex 1, which is 0yds, so we will use 5yds, which is standard interaction range.
-				if(info->sound1)
-					focusRange = float(info->sound1);
+				if(info->raw.sound1)
+					focusRange = float(info->raw.sound1);
 				else
 					focusRange = GetMaxRange(dbcSpellRange.LookupEntry(GetProto()->rangeIndex));
 
@@ -3512,7 +3512,7 @@ uint8 Spell::CanCast(bool tolerate)
 				if(!IsInrange(p_caster->GetPositionX(), p_caster->GetPositionY(), p_caster->GetPositionZ(), go, (focusRange * focusRange)))
 					continue;
 
-				if(info->sound0 == GetProto()->RequiresSpellFocus)
+				if(info->raw.sound0 == GetProto()->RequiresSpellFocus)
 				{
 					found = true;
 					break;

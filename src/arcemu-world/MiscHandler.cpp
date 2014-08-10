@@ -493,10 +493,10 @@ void WorldSession::HandleLootReleaseOpcode(WorldPacket & recv_data)
 					//check for locktypes
 
 					bool despawn = false;
-					if( pGO->GetInfo()->sound3 == 1 )
+					if( pGO->GetInfo()->raw.sound3 == 1 )
 						despawn = true;
 
-					Lock* pLock = dbcLock.LookupEntryForced(pGO->GetInfo()->sound0);
+					Lock* pLock = dbcLock.LookupEntryForced(pGO->GetInfo()->raw.sound0);
 					if(pLock)
 					{
 						for(uint32 i = 0; i < LOCK_NUM_CASES; i++)
@@ -1535,7 +1535,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 						break;
 				}
 
-				SpellEntry* info = dbcSpell.LookupEntryForced(goinfo->sound0);
+				SpellEntry* info = dbcSpell.LookupEntryForced(goinfo->raw.sound0);
 				if(!info)
 					break;
 				spell = sSpellFactoryMgr.NewSpell(plyr, info, false, NULL);
@@ -1554,7 +1554,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 				if(!obj->m_ritualmembers || !obj->m_ritualspell || !obj->m_ritualcaster /*|| !obj->m_ritualtarget*/)
 					return;
 
-				for(i = 0; i < goinfo->sound0; i++)
+				for(i = 0; i < goinfo->raw.sound0; i++)
 				{
 					if(!obj->m_ritualmembers[i])
 					{
@@ -1573,11 +1573,11 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 					}
 				}
 
-				if(i == goinfo->sound0 - 1)
+				if(i == goinfo->raw.sound0 - 1)
 				{
 					obj->m_ritualspell = 0;
 					Player* plr;
-					for(i = 0; i < goinfo->sound0; i++)
+					for(i = 0; i < goinfo->raw.sound0; i++)
 					{
 						plr = _player->GetMapMgr()->GetPlayer(obj->m_ritualmembers[i]);
 						if(plr)
@@ -1592,7 +1592,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 					{
 						if(!obj->m_ritualtarget)
 							return;
-						info = dbcSpell.LookupEntryForced(goinfo->sound1);
+						info = dbcSpell.LookupEntryForced(goinfo->raw.sound1);
 						if(!info)
 							break;
 						Player* target = objmgr.GetPlayer(obj->m_ritualtarget);
@@ -1607,12 +1607,12 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 						Player* psacrifice = NULL;
 
 						// kill the sacrifice player
-						psacrifice = _player->GetMapMgr()->GetPlayer(obj->m_ritualmembers[(int)(rand() % (goinfo->sound0 - 1))]);
+						psacrifice = _player->GetMapMgr()->GetPlayer(obj->m_ritualmembers[(int)(rand() % (goinfo->raw.sound0 - 1))]);
 						Player* pCaster = obj->GetMapMgr()->GetPlayer(obj->m_ritualcaster);
 						if(!psacrifice || !pCaster)
 							return;
 
-						info = dbcSpell.LookupEntryForced(goinfo->sound4);
+						info = dbcSpell.LookupEntryForced(goinfo->raw.sound4);
 						if(!info)
 							break;
 						spell = sSpellFactoryMgr.NewSpell(psacrifice, info, true, NULL);
@@ -1620,7 +1620,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 						spell->prepare(&targets);
 
 						// summons demon
-						info = dbcSpell.LookupEntry(goinfo->sound1);
+						info = dbcSpell.LookupEntry(goinfo->raw.sound1);
 						spell = sSpellFactoryMgr.NewSpell(pCaster, info, true, NULL);
 						SpellCastTargets targets2;
 						targets2.m_unitTarget = pCaster->GetGUID();
@@ -1636,7 +1636,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 						if(!pleader)
 							return;
 
-						info = dbcSpell.LookupEntry(goinfo->sound1);
+						info = dbcSpell.LookupEntry(goinfo->raw.sound1);
 						spell = sSpellFactoryMgr.NewSpell(pleader, info, true, NULL);
 						SpellCastTargets targets2(plr->GetGUID());
 						spell->prepare(&targets2);
@@ -1646,7 +1646,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 					}
 					else if(goinfo->ID == 186811 || goinfo->ID == 181622)
 					{
-						info = dbcSpell.LookupEntryForced(goinfo->sound1);
+						info = dbcSpell.LookupEntryForced(goinfo->raw.sound1);
 						if(info == NULL)
 							return;
 						spell = sSpellFactoryMgr.NewSpell(_player->GetMapMgr()->GetPlayer(obj->m_ritualcaster), info, true, NULL);
@@ -1659,10 +1659,10 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 			break;
 		case GAMEOBJECT_TYPE_GOOBER:
 			{
-				plyr->CastSpell(guid, goinfo->Unknown1, false);
+				plyr->CastSpell(guid, goinfo->raw.Unknown1, false);
 
 				// show page
-				if(goinfo->sound7)
+				if (goinfo->raw.sound7)
 				{
 					WorldPacket data(SMSG_GAMEOBJECT_PAGETEXT, 8);
 					data << obj->GetGUID();
@@ -1676,9 +1676,9 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 				pkt << (uint32)1;//i ve found only on such item,id =1
 				SendPacket(&pkt);*/
 
-				if(goinfo->Unknown1)
+				if (goinfo->raw.Unknown1)
 				{
-					uint32 cinematicid = goinfo->sound1;
+					uint32 cinematicid = goinfo->raw.sound1;
 					plyr->GetSession()->OutPacket(SMSG_TRIGGER_CINEMATIC, 4, &cinematicid);
 				}
 			}

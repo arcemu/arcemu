@@ -329,32 +329,32 @@ void GameObject::InitAI()
 	uint32 spellid = 0;
 	if(pInfo->Type == GAMEOBJECT_TYPE_TRAP)
 	{
-		spellid = pInfo->sound3;
+		spellid = pInfo->raw.sound3;
 	}
 	else if(pInfo->Type == GAMEOBJECT_TYPE_SPELL_FOCUS)
 	{
 		// get spellid from attached gameobject if there is such - by sound2 field
-		if(pInfo->sound2 != 0)
+		if(pInfo->raw.sound2 != 0)
 		{
 
-			GameObjectInfo* gi = GameObjectNameStorage.LookupEntry(pInfo->sound2);
+			GameObjectInfo* gi = GameObjectNameStorage.LookupEntry(pInfo->raw.sound2);
 			if(gi == NULL)
 			{
-				LOG_ERROR("Gamobject %u is of spellfocus type, has attachment GO data ( %u ), but attachment not found in database.", pInfo->ID, pInfo->sound2);
+				LOG_ERROR("Gamobject %u is of spellfocus type, has attachment GO data ( %u ), but attachment not found in database.", pInfo->ID, pInfo->raw.sound2);
 				return;
 			}
 
-			spellid = gi->sound3;
+			spellid = gi->raw.sound3;
 		}
 	}
 	else if(pInfo->Type == GAMEOBJECT_TYPE_RITUAL)
 	{
-		m_ritualmembers = new uint32[pInfo->sound0];
-		memset(m_ritualmembers, 0, sizeof(uint32)*pInfo->sound0);
+		m_ritualmembers = new uint32[pInfo->raw.sound0];
+		memset(m_ritualmembers, 0, sizeof(uint32)*pInfo->raw.sound0);
 	}
 	else if(pInfo->Type == GAMEOBJECT_TYPE_CHEST)
 	{
-		Lock *pLock = dbcLock.LookupEntryForced(GetInfo()->sound0);
+		Lock *pLock = dbcLock.LookupEntryForced(GetInfo()->raw.sound0);
 		if(pLock)
 		{
 			for(uint32 i = 0; i < LOCK_NUM_CASES; i++)
@@ -487,7 +487,7 @@ void GameObject::UseFishingNode(Player* player)
 		if((*it) == NULL || !(*it)->IsGameObject() || TO_GAMEOBJECT(*it)->GetType() != GAMEOBJECT_TYPE_FISHINGHOLE)
 			continue;
 		school = TO< GameObject* >(*it);
-		if(!isInRange(school, (float)school->GetInfo()->sound1))
+		if(!isInRange(school, (float)school->GetInfo()->raw.sound1))
 		{
 			school = NULL;
 			continue;
@@ -500,9 +500,9 @@ void GameObject::UseFishingNode(Player* player)
 	{
 
 		if(school->GetMapMgr() != NULL)
-			lootmgr.FillGOLoot(&school->loot, school->GetInfo()->sound1, school->GetMapMgr()->iInstanceMode);
+			lootmgr.FillGOLoot(&school->loot, school->GetInfo()->raw.sound1, school->GetMapMgr()->iInstanceMode);
 		else
-			lootmgr.FillGOLoot(&school->loot, school->GetInfo()->sound1, 0);
+			lootmgr.FillGOLoot(&school->loot, school->GetInfo()->raw.sound1, 0);
 
 		player->SendLoot(school->GetGUID(), LOOT_FISHING, school->GetMapId());
 		EndFishing(player, false);
@@ -663,10 +663,10 @@ void GameObject::OnPushToWorld()
 
 	// We have a field supposedly for this, but it's pointless to waste CPU time for this
 	// unless it's longer than a minute ( since usually then it's much longer )
-	if( ( pInfo->Type == GAMEOBJECT_TYPE_CHEST ) && ( pInfo->sound3 == 0 ) ){
+	if( ( pInfo->Type == GAMEOBJECT_TYPE_CHEST ) && ( pInfo->raw.sound3 == 0 ) ){
 		time_t restockTime = 60 * 1000;
-		if( pInfo->sound2 > 60 )
-			restockTime = pInfo->sound2 * 1000;
+		if( pInfo->raw.sound2 > 60 )
+			restockTime = pInfo->raw.sound2 * 1000;
 
 		EventMgr::getSingleton().AddEvent( this, &GameObject::ReStock, EVENT_GO_CHEST_RESTOCK, restockTime, 0, 0 );
 	}
@@ -716,7 +716,7 @@ bool GameObject::HasLoot()
 uint32 GameObject::GetGOReqSkill()
 {
 	//! Here we check the SpellFocus table against the dbcs
-	Lock *lock = dbcLock.LookupEntryForced(GetInfo()->sound0);
+	Lock *lock = dbcLock.LookupEntryForced(GetInfo()->raw.sound0);
 	if(!lock) return 0;
 	for(uint32 i = 0; i < LOCK_NUM_CASES; i++)
 	{
@@ -772,9 +772,9 @@ void GameObject::Damage( uint32 damage, uint64 AttackerGUID, uint64 ControllerGU
 		// Instant destruction
 		hitpoints = 0;
 		
-		SetFlags( GAMEOBJECT_FLAG_DESTROYED );
-		SetFlags( GetFlags() & ~GAMEOBJECT_FLAG_DAMAGED );
-		SetDisplayId( pInfo->sound9); // destroyed display id
+		SetFlags(GAMEOBJECT_FLAG_DESTROYED);
+		SetFlags(GetFlags() & ~GAMEOBJECT_FLAG_DAMAGED);
+		SetDisplayId(pInfo->raw.sound9); // destroyed display id
 
 		CALL_GO_SCRIPT_EVENT( this, OnDestroyed)();
 	
@@ -786,9 +786,9 @@ void GameObject::Damage( uint32 damage, uint64 AttackerGUID, uint64 ControllerGU
 			// Intact  ->  Damaged
 			
 			// Are we below the intact-damaged transition treshold?
-			if (hitpoints <= (maxhitpoints - pInfo->sound0)){
+			if (hitpoints <= (maxhitpoints - pInfo->raw.sound0)){
 				SetFlags( GAMEOBJECT_FLAG_DAMAGED );
-				SetDisplayId( pInfo->sound4 ); // damaged display id
+				SetDisplayId(pInfo->raw.sound4); // damaged display id
 			}
 		}
 
@@ -814,7 +814,7 @@ void GameObject::SendDamagePacket( uint32 damage, uint64 AttackerGUID, uint64 Co
 void GameObject::Rebuild(){
 	SetFlags( GetFlags() & uint32( ~( GAMEOBJECT_FLAG_DAMAGED | GAMEOBJECT_FLAG_DESTROYED ) ) );
 	SetDisplayId( pInfo->DisplayID );
-	maxhitpoints = pInfo->sound0 + pInfo->sound5;
+	maxhitpoints = pInfo->raw.sound0 + pInfo->raw.sound5;
 	hitpoints = maxhitpoints;
 }
 
@@ -829,6 +829,6 @@ void GameObject::ReStock(){
 	if( loot.HasRoll() )
 		return;
 
-	lootmgr.FillGOLoot( &loot, pInfo->sound1, m_mapMgr->iInstanceMode );
+	lootmgr.FillGOLoot(&loot, pInfo->raw.sound1, m_mapMgr->iInstanceMode);
 }
 

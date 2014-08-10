@@ -86,7 +86,7 @@ bool FillPathVector(uint32 PathID, TransportPath & Path)
 bool Transporter::GenerateWaypoints()
 {
 	TransportPath path;
-	FillPathVector(GetInfo()->sound0, path);
+	FillPathVector(GetInfo()->raw.sound0, path);
 
 	if(path.Size() == 0) return false;
 

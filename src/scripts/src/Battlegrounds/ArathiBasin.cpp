@@ -194,7 +194,7 @@ void ArathiBasin::SpawnControlPoint(uint32 Id, uint32 Type)
 	if(gi == NULL)
 		return;
 
-	gi_aura = gi->sound3 ? GameObjectNameStorage.LookupEntry(gi->sound3) : NULL;
+	gi_aura = gi->raw.sound3 ? GameObjectNameStorage.LookupEntry(gi->raw.sound3) : NULL;
 
 	if(m_controlPoints[Id] == NULL)
 	{
@@ -647,7 +647,7 @@ void ArathiBasin::HookOnAreaTrigger(Player* plr, uint32 id)
 	if(m_buffs[x] && m_buffs[x]->IsInWorld())
 	{
 		// apply the spell
-		spellid = m_buffs[x]->GetInfo()->sound3;
+		spellid = m_buffs[x]->GetInfo()->raw.sound3;
 		m_buffs[x]->RemoveFromWorld(false);
 
 		// respawn it in buffrespawntime

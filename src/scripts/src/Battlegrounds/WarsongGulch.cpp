@@ -138,7 +138,7 @@ void WarsongGulch::HookOnAreaTrigger(Player* plr, uint32 id)
 		if(m_buffs[buffslot] != 0 && m_buffs[buffslot]->IsInWorld())
 		{
 			/* apply the buff */
-			SpellEntry* sp = dbcSpell.LookupEntry(m_buffs[buffslot]->GetInfo()->sound3);
+			SpellEntry* sp = dbcSpell.LookupEntry(m_buffs[buffslot]->GetInfo()->raw.sound3);
 			Spell* s = sSpellFactoryMgr.NewSpell(plr, sp, true, 0);
 			SpellCastTargets targets(plr->GetGUID());
 			s->prepare(&targets);
