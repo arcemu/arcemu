@@ -50,6 +50,7 @@ SET(sources
 	GO_QuestGiver.cpp
 	GO_Trap.cpp
 	GO_SpellFocus.cpp
+	GO_FishingNode.cpp
 	Gossip.cpp
 	Group.cpp 
 	GroupHandler.cpp 
@@ -205,6 +206,7 @@ SET( headers
 	GO_ILockable.h
 	GO_Trap.h
 	GO_SpellFocus.h
+	GO_FishingNode.h
 	Gossip.h
 	Group.h
 	Entities/Summons/GuardianSummon.h

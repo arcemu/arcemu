@@ -572,11 +572,6 @@ class SERVER_DECL GameObject : public Object
 		uint64 m_rotation;
 		void UpdateRotation();
 
-		//Fishing stuff
-		void UseFishingNode(Player* player);
-		void EndFishing(Player* player, bool abort);
-		void FishHooked(Player* player);
-
 		void SetSummoned(Unit* mob)
 		{
 			m_summoner = mob;

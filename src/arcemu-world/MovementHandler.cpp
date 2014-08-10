@@ -313,10 +313,20 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recv_data)
 
 	// spell cancel on movement, for now only fishing is added
 	Object* t_go = _player->m_SummonedObject;
-	if(t_go)
-	{
-		if(t_go->GetEntry() == GO_FISHING_BOBBER)
-			TO_GAMEOBJECT(t_go)->EndFishing(GetPlayer(), true);
+	if (t_go != NULL){
+
+		if (t_go->IsGameObject()){
+
+			GameObject *go = TO_GAMEOBJECT(t_go);
+
+				if (go->GetType() == GAMEOBJECT_TYPE_FISHINGNODE){
+
+					Arcemu::GO_FishingNode *fn = static_cast< Arcemu::GO_FishingNode* >(go);
+					fn->EndFishing(_player, true);
+
+			}
+
+		}
 	}
 
 	/************************************************************************/

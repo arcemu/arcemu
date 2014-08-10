@@ -1458,7 +1458,10 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 			break;
 		case GAMEOBJECT_TYPE_FISHINGNODE:
 			{
-				obj->UseFishingNode(plyr);
+				Arcemu::GO_FishingNode *fn = static_cast< Arcemu::GO_FishingNode* >(obj);
+
+				fn->UseFishingNode(plyr);
+
 			}
 			break;
 		case GAMEOBJECT_TYPE_DOOR:

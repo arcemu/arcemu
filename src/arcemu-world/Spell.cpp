@@ -2329,7 +2329,7 @@ void Spell::SendChannelUpdate(uint32 time)
 			if(dynObj)
 				dynObj->Remove();
 
-			if(dynObj == NULL && m_pendingAuras.find(m_caster->GetGUID()) == m_pendingAuras.end())  //no persistant aura or aura on caster
+			if(dynObj == NULL /* && m_pendingAuras.find(m_caster->GetGUID()) == m_pendingAuras.end() */) //no persistant aura or aura on caster
 			{
 				u_caster->SetChannelSpellTargetGUID(0);
 				u_caster->SetChannelSpellId(0);
