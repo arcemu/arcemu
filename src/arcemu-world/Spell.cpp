@@ -1694,13 +1694,12 @@ void Spell::Update(unsigned long time_passed)
 	{
 		case SPELL_STATE_PREPARING:
 			{
-				//printf("spell::update m_timer %u, difftime %d, newtime %d\n", m_timer, difftime, m_timer-difftime);
-				if((int32)difftime >= m_timer)
+				if(static_cast< int32 >(time_passed) >= m_timer)
 					cast(true);
 				else
 				{
 					m_timer -= time_passed;
-					if((int32)difftime >= m_timer)
+					if(static_cast< int32 >(time_passed) >= m_timer)
 					{
 						m_timer = 0;
 						cast(true);
@@ -1714,7 +1713,7 @@ void Spell::Update(unsigned long time_passed)
 			{
 				if(m_timer > 0)
 				{
-					if ((int32)time_passed >= m_timer)
+					if(static_cast< int32 >(time_passed) >= m_timer)
 						m_timer = 0;
 					else
 						m_timer -= time_passed;
