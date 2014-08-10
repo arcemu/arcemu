@@ -851,9 +851,9 @@ class LuaGameObject
 		{
 			TEST_GO_RET();
 			if(ptr->GetByte(GAMEOBJECT_BYTES_1, 0) == 1)
-				ptr->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
+				ptr->SetState(0);
 			else
-				ptr->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+				ptr->SetState(1);
 			ptr->SetUInt32Value(GAMEOBJECT_FLAGS, (ptr->GetUInt32Value(GAMEOBJECT_FLAGS) & ~1));
 			RET_BOOL(true)
 		}

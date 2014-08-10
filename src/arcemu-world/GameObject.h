@@ -286,8 +286,14 @@ class SERVER_DECL GameObject : public Object
 		uint32 GetGOReqSkill();
 		MapCell* m_respawnCell;
 
-		void SetState(uint8 state);
-		uint8 GetState();
+		void SetState(uint8 state){ SetByte(GAMEOBJECT_BYTES_1, 0, state); }
+		uint8 GetState(){ return GetByte(GAMEOBJECT_BYTES_1, 0); }
+
+		void SetType(uint8 type){ SetByte(GAMEOBJECT_BYTES_1, 1, type); }
+		uint32 GetType(){ return this->GetInfo()->Type; }
+
+		void SetArtKit(uint8 artkit){ SetByte(GAMEOBJECT_BYTES_1, 2, artkit); }
+		uint8 GetArtkKit(){ return GetByte(GAMEOBJECT_BYTES_1, 2); }
 
 		uint32 GetOverrides() { return m_overrides; }
 
@@ -308,8 +314,8 @@ class SERVER_DECL GameObject : public Object
 		void SetLevel(uint32 level) { SetUInt32Value(GAMEOBJECT_LEVEL, level); }
 		uint32 GetLevel() { return GetUInt32Value(GAMEOBJECT_LEVEL); }
 
-		void SetType(uint8 type) { SetByte(GAMEOBJECT_BYTES_1, 1, type); }
-		uint8 GetType() { return GetByte(GAMEOBJECT_BYTES_1, 1); }
+		//void SetType(uint8 type) { SetByte(GAMEOBJECT_BYTES_1, 1, type); }
+		//uint8 GetType() { return GetByte(GAMEOBJECT_BYTES_1, 1); }
 		
 		void SetFlags( uint32 flags ){ SetUInt32Value( GAMEOBJECT_FLAGS, flags ); }		
 		uint32 GetFlags(){ return GetUInt32Value( GAMEOBJECT_FLAGS ); }
@@ -322,8 +328,8 @@ class SERVER_DECL GameObject : public Object
 				return false;
 		}
 		
-		void SetArtKit( uint8 artkit ){ SetByte( GAMEOBJECT_BYTES_1, 2, artkit ); }
-		uint8 GetArtkKit(){ return GetByte( GAMEOBJECT_BYTES_1, 2 ); }
+		//void SetArtKit( uint8 artkit ){ SetByte( GAMEOBJECT_BYTES_1, 2, artkit ); }
+		//uint8 GetArtkKit(){ return GetByte( GAMEOBJECT_BYTES_1, 2 ); }
 		void SetAnimProgress( uint8 progress ){ SetByte( GAMEOBJECT_BYTES_1, 3, progress ); }
 		uint8 GetAnimProgress(){ return GetByte( GAMEOBJECT_BYTES_1, 3 ); }
 		

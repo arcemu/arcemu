@@ -165,9 +165,9 @@ void ArathiBasin::SpawnBuff(uint32 x)
 
 		m_buffs[x]->SetParentRotation(2, BuffRotations[x][0]);
 		m_buffs[x]->SetParentRotation(3, BuffRotations[x][1]);
-		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+		m_buffs[x]->SetState(1);
 		m_buffs[x]->SetType(GAMEOBJECT_TYPE_TRAP);
-		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
+		m_buffs[x]->SetAnimProgress(100);
 		m_buffs[x]->PushToWorld(m_mapMgr);
 	}
 	else
@@ -203,9 +203,9 @@ void ArathiBasin::SpawnControlPoint(uint32 Id, uint32 Type)
 
 		m_controlPoints[Id]->SetParentRotation(2, ControlPointRotations[Id][0]);
 		m_controlPoints[Id]->SetParentRotation(3, ControlPointRotations[Id][1]);
-		m_controlPoints[Id]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+		m_controlPoints[Id]->SetState(1);
 		m_controlPoints[Id]->SetType(static_cast<uint8>(gi->Type));
-		m_controlPoints[Id]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
+		m_controlPoints[Id]->SetAnimProgress(100);
 		m_controlPoints[Id]->SetUInt32Value(GAMEOBJECT_DYNAMIC, 1);
 		m_controlPoints[Id]->SetDisplayId(gi->DisplayID);
 
@@ -277,9 +277,9 @@ void ArathiBasin::SpawnControlPoint(uint32 Id, uint32 Type)
 
 		m_controlPointAuras[Id]->SetParentRotation(2, ControlPointRotations[Id][0]);
 		m_controlPointAuras[Id]->SetParentRotation(3, ControlPointRotations[Id][1]);
-		m_controlPointAuras[Id]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+		m_controlPointAuras[Id]->SetState(1);
 		m_controlPointAuras[Id]->SetType(GAMEOBJECT_TYPE_TRAP);
-		m_controlPointAuras[Id]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
+		m_controlPointAuras[Id]->SetAnimProgress(100);
 		m_controlPointAuras[Id]->bannerauraslot = static_cast<uint8>(Id);
 		m_controlPointAuras[Id]->PushToWorld(m_mapMgr);
 	}
@@ -301,13 +301,13 @@ void ArathiBasin::OnCreate()
 {
 	// Alliance Gate
 	GameObject* gate = SpawnGameObject(180255, 529, 1284.597290f, 1281.166626f, -15.977916f, 0.76f, 32, 114, 1.5799990f);
-	gate->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
+	gate->SetAnimProgress(100);
 	gate->PushToWorld(m_mapMgr);
 	m_gates.push_back(gate);
 
 	// horde gate
 	gate = SpawnGameObject(180256, 529, 708.0902710f, 708.4479370f, -17.3898964f, 3.92f, 32, 114, 1.5699990f);
-	gate->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
+	gate->SetAnimProgress(100);
 	gate->PushToWorld(m_mapMgr);
 	m_gates.push_back(gate);
 
@@ -347,7 +347,7 @@ void ArathiBasin::OnStart()
 	for(list<GameObject*>::iterator itr = m_gates.begin(); itr != m_gates.end(); ++itr)
 	{
 		(*itr)->SetUInt32Value(GAMEOBJECT_FLAGS, 64);
-		(*itr)->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
+		(*itr)->SetState(0);
 	}
 
 	/* correct? - burlex */

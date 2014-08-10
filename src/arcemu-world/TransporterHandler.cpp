@@ -30,10 +30,9 @@ bool Transporter::CreateAsTransporter(uint32 EntryID, const char* Name, int32 Ti
 
 	// Override these flags to avoid mistakes in proto
 	SetUInt32Value(GAMEOBJECT_FLAGS, 40);
-	SetByte(GAMEOBJECT_BYTES_1, 3, 100);
+	SetAnimProgress(100);
 
 	//Maybe this would be the perfect way, so there would be no extra checks in Object.cpp:
-	//SetByte( GAMEOBJECT_BYTES_1, 0, GAMEOBJECT_TYPE_TRANSPORT );
 	//but these fields seems to change often and between server flavours (ArcEmu, Aspire, name another one) - by: VLack aka. VLsoft
 	if(pInfo)
 		pInfo->Type = GAMEOBJECT_TYPE_TRANSPORT;

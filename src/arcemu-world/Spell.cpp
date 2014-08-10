@@ -3484,13 +3484,18 @@ uint8 Spell::CanCast(bool tolerate)
 				if(!(*itr)->IsGameObject())
 					continue;
 
-				if((TO_GAMEOBJECT(*itr))->GetType() != GAMEOBJECT_TYPE_SPELL_FOCUS)
+				if ((*itr)->GetTypeId() != TYPEID_GAMEOBJECT)
 					continue;
 
-				if(!(p_caster->GetPhase() & (*itr)->GetPhase()))    //We can't see this, can't be the focus, skip further checks
+				GameObject *go = TO_GAMEOBJECT(*itr);
+
+				if (go->GetType() != GAMEOBJECT_TYPE_SPELL_FOCUS)
 					continue;
 
-				GameObjectInfo* info = TO_GAMEOBJECT(*itr)->GetInfo();
+				if(!(p_caster->GetPhase() & go->GetPhase()))    //We can't see this, can't be the focus, skip further checks
+					continue;
+
+				GameObjectInfo* info = go->GetInfo();
 				if(!info)
 				{
 					LOG_DEBUG("Warning: could not find info about game object %u", (*itr)->GetEntry());
@@ -3504,7 +3509,7 @@ uint8 Spell::CanCast(bool tolerate)
 					focusRange = GetMaxRange(dbcSpellRange.LookupEntry(GetProto()->rangeIndex));
 
 				// check if focus object is close enough
-				if(!IsInrange(p_caster->GetPositionX(), p_caster->GetPositionY(), p_caster->GetPositionZ(), (*itr), (focusRange * focusRange)))
+				if(!IsInrange(p_caster->GetPositionX(), p_caster->GetPositionY(), p_caster->GetPositionZ(), go, (focusRange * focusRange)))
 					continue;
 
 				if(info->sound0 == GetProto()->RequiresSpellFocus)

@@ -163,8 +163,7 @@ uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer* data, Player* target)
 	// gameobject stuff
 	if(IsGameObject())
 	{
-//		switch( GetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_TYPEID) )
-		switch(m_uint32Values[GAMEOBJECT_BYTES_1])
+		switch (TO_GAMEOBJECT(this)->GetType())
 		{
 			case GAMEOBJECT_TYPE_MO_TRANSPORT:
 				{
@@ -524,7 +523,7 @@ void Object::_BuildMovementUpdate(ByteBuffer* data, uint16 flags, uint32 flags2,
 		}
 		else if(flags & UPDATEFLAG_HAS_POSITION)  //0x40
 		{
-			if(flags & UPDATEFLAG_TRANSPORT && m_uint32Values[GAMEOBJECT_BYTES_1] == GAMEOBJECT_TYPE_MO_TRANSPORT)
+			if (flags & UPDATEFLAG_TRANSPORT && TO_GAMEOBJECT(this)->GetType() == GAMEOBJECT_TYPE_MO_TRANSPORT)
 			{
 				*data << (float)0;
 				*data << (float)0;

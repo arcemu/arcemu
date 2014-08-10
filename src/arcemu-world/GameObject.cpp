@@ -788,16 +788,6 @@ void GameObject::UpdateRotation()
 	}
 }
 
-void GameObject::SetState(uint8 state)
-{
-	SetByte(GAMEOBJECT_BYTES_1, 0, state);
-}
-
-uint8 GameObject::GetState()
-{
-	return GetByte(GAMEOBJECT_BYTES_1, 0);
-}
-
 void GameObject::Damage( uint32 damage, uint64 AttackerGUID, uint64 ControllerGUID, uint32 SpellID ){
 	// If we are already destroyed there's nothing to damage!
 	if( hitpoints == 0 )

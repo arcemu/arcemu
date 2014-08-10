@@ -224,7 +224,7 @@ class DalliahTheDoomsayerAI : public MoonScriptBossAI
 			GameObject* door2 = NULL;
 			door2 = GetNearestGameObject(184319);
 			if(door2 != NULL)
-				door2->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
+				door2->SetState(0);
 
 			ParentClass::OnDied(mKiller);
 		}
@@ -267,7 +267,7 @@ class WrathScryerSoccothratesAI : public MoonScriptBossAI
 			GameObject* door1 = NULL;
 			door1 = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(199.969f, 118.5837f, 22.379f, 184318);
 			if(door1 != NULL)
-				door1->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
+				door1->SetState(0);
 
 			ParentClass::OnDied(mKiller);
 		}
@@ -391,7 +391,7 @@ class WardenMellicharAI : public MoonScriptBossAI
 
 			shield = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(445.786f, -169.263f, 43.0466f, 184802);
 			if(shield)
-				shield->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+				shield->SetState(1);
 
 			_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "I knew the prince would be angry but, I... I have not been myself. I had to let them out! The great one speaks to me, you see. Wait--outsiders. Kael'thas did not send you! Good... I'll just tell the prince you released the prisoners!");
 			_unit->PlaySoundToSet(11222);
@@ -422,7 +422,7 @@ class WardenMellicharAI : public MoonScriptBossAI
 					Spawncounter = 0;
 					orb1 = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(482.929f, -151.114f, 43.654f, 183961);
 					if(orb1)
-						orb1->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
+						orb1->SetState(0);
 
 					switch(RandomUInt(1))
 					{
@@ -473,7 +473,7 @@ class WardenMellicharAI : public MoonScriptBossAI
 					Spawncounter = 0;
 					orb2 = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(409.062f, -152.161f, 43.653f, 183963);
 					if(orb2)
-						orb2->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
+						orb2->SetState(0);
 
 					ResetTimer(Phase_Timer, 8000);
 					Phasepart = 1;
@@ -525,7 +525,7 @@ class WardenMellicharAI : public MoonScriptBossAI
 					Spawncounter = 0;
 					orb3 = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(415.167f, -174.338f, 43.654f, 183964);
 					if(orb3)
-						orb3->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
+						orb3->SetState(0);
 
 					switch(RandomUInt(1))
 					{
@@ -582,7 +582,7 @@ class WardenMellicharAI : public MoonScriptBossAI
 					Spawncounter = 0;
 					orb4 = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(476.422f, -174.517f, 42.748f, 183962);
 					if(orb4)
-						orb4->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
+						orb4->SetState(0);
 
 					switch(RandomUInt(1))
 					{
@@ -649,19 +649,19 @@ class WardenMellicharAI : public MoonScriptBossAI
 			_unit->SetEmoteState(8); // to be replaced for the standstate
 
 			if(shield)
-				shield->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
+				shield->SetState(0);
 
 			if(orb1)
-				orb1->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+				orb1->SetState(1);
 
 			if(orb2)
-				orb2->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+				orb2->SetState(1);
 
 			if(orb3)
-				orb3->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+				orb3->SetState(1);
 
 			if(orb4)
-				orb4->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+				orb4->SetState(1);
 
 			if(NPC_orb1)
 			{
