@@ -4501,7 +4501,6 @@ void Spell::SpellEffectSummonObjectSlot(uint32 i)
 		GoSummon->invisibilityFlag = INVIS_FLAG_TRAP;
 		GoSummon->charges = 1;
 		GoSummon->checkrate = 1;
-		sEventMgr.AddEvent(GoSummon, &GameObject::TrapSearchTarget, EVENT_GAMEOBJECT_TRAP_SEARCH_TARGET, 100, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 	}
 	sEventMgr.AddEvent(GoSummon, &GameObject::ExpireAndDelete, EVENT_GAMEOBJECT_EXPIRE, GetDuration(), 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 

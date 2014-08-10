@@ -579,7 +579,7 @@ class SERVER_DECL GameObject : public Object
 		void DeleteFromDB();
 
 		void EventCloseDoor();
-		void EventCastSpell(uint32 guid, uint32 sp, bool triggered);
+		//void EventCastSpell(uint32 guid, uint32 sp, bool triggered);	Need to be checked if it is unused
 		void SetRotation(float rad);
 		uint64 m_rotation;
 		void UpdateRotation();
@@ -636,7 +636,7 @@ class SERVER_DECL GameObject : public Object
 
 		GameObjectAIScript* GetScript() { return myScript; }
 
-		void TrapSearchTarget();	// Traps need to find targets faster :P
+		//void TrapSearchTarget();	Need to be checked if it is uused //Traps need to find targets faster :P
 
 		bool HasAI() { return spell != 0; }
 		GOSpawn* m_spawn;

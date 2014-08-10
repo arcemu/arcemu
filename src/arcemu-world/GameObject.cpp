@@ -126,6 +126,7 @@ bool GameObject::CreateFromProto(uint32 entry, uint32 mapid, float x, float y, f
 	return true;
 }
 
+/* Need to be checked if it is unused...
 void GameObject::EventCastSpell(uint32 guid, uint32 sp, bool triggered)
 {
 	Spell* spp = sSpellFactoryMgr.NewSpell(this, dbcSpell.LookupEntry(sp), false, NULL);
@@ -136,7 +137,7 @@ void GameObject::EventCastSpell(uint32 guid, uint32 sp, bool triggered)
 void GameObject::TrapSearchTarget()
 {
 	Update(100);
-}
+}*/
 
 void GameObject::Update(uint32 p_time)
 {
@@ -152,7 +153,7 @@ void GameObject::Update(uint32 p_time)
 	if(m_deleted)
 		return;
 
-	if(spell && (GetByte(GAMEOBJECT_BYTES_1, 0) == 1))
+	if(spell != NULL && GetState() == 1)
 	{
 		if(checkrate > 1)
 		{
