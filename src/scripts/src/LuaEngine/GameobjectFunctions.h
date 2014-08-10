@@ -887,7 +887,7 @@ class LuaGameObject
 					WorldDatabase.Execute("REPLACE INTO loot_gameobjects VALUES (%u, %u, %f, 0, 0, 0, %u, %u )", ptr->GetEntry(), itemid, chance, mincount, maxcount );
 				delete result;
 			}
-			//lootmgr.AddLoot(&ptr->loot, itemid, mincount, maxcount ); Sorry need to be rescripted
+			lootmgr.AddLoot(&ptr->loot, itemid, mincount, maxcount ); //needs to be rescripted
 			return 0;
 		}
 

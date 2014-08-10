@@ -4462,7 +4462,7 @@ class LuaUnit
 						break;
 				}
 			}
-			else if(guidtype == HIGHGUID_TYPE_GAMEOBJECT)
+			else if(guidtype == HIGHGUID_TYPE_GAMEOBJECT) //needs to be rescripted
 			{
 				GameObject* pGO = plr->GetMapMgr()->GetGameObject(GET_LOWGUID_PART(guid));
 				switch(loot_type)

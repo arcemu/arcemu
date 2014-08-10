@@ -575,7 +575,7 @@ class SERVER_DECL GameObject : public Object
 
 		void Spawn(MapMgr* m);
 		void Despawn(uint32 delay, uint32 respawntime);
-		Loot loot;
+		Loot loot; //For UnitFunction.h and GameObject::ReStock
 
 		// Serialization
 		void SaveToDB();

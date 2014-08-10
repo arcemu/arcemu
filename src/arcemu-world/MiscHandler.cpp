@@ -1474,10 +1474,77 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 			break;
 		case GAMEOBJECT_TYPE_FISHINGNODE:
 			{
+				sEventMgr.RemoveEvents(_player, EVENT_STOP_CHANNELING);
+
 				Arcemu::GO_FishingNode *fn = static_cast< Arcemu::GO_FishingNode* >(obj);
 
-				fn->UseFishingNode(plyr);
+				bool success = fn->UseNode();
 
+				uint32 zone = 0;
+				FishingZoneEntry *entry = NULL;
+
+				if (success){
+					zone = plyr->GetAreaID();
+
+					if (zone == 0) // If the player's area ID is 0, use the zone ID instead
+						zone = plyr->GetZoneId();
+
+					entry = FishingZoneStorage.LookupEntry(zone);
+					if (entry == NULL){
+						sLog.outError("ERROR: Fishing zone information for zone %d not found!", zone);
+						fn->EndFishing(true);
+						success = false;
+					}
+				}
+
+				if (success){
+					uint32 maxskill = entry->MaxSkill;
+					uint32 minskill = entry->MinSkill;
+
+					if (plyr->_GetSkillLineCurrent(SKILL_FISHING, false) < maxskill)
+						plyr->_AdvanceSkillLine(SKILL_FISHING, float2int32(1.0f * sWorld.getRate(RATE_SKILLRATE)));
+
+						GameObject *go = NULL;
+						Arcemu::GO_FishingHole *school = NULL;
+
+						go = fn->GetMapMgr()->FindNearestGoWithType(fn, GAMEOBJECT_TYPE_FISHINGHOLE);
+						if (go != NULL){
+							school = static_cast< Arcemu::GO_FishingHole* >(go);
+
+						if (!fn->isInRange(school, static_cast< float >(school->GetInfo()->fishinghole.radius)))
+							school = NULL;
+					}
+
+					if (school != NULL){ // open school loot if school exists
+						if (school->GetMapMgr() != NULL)
+							lootmgr.FillGOLoot(&school->loot, school->GetInfo()->raw.sound1, school->GetMapMgr()->iInstanceMode);
+						else
+							lootmgr.FillGOLoot(&school->loot, school->GetInfo()->raw.sound1, 0);
+
+						plyr->SendLoot(school->GetGUID(), LOOT_FISHING, school->GetMapId());
+						fn->EndFishing(false);
+						school->CatchFish();
+
+					}else if (Rand(((plyr->_GetSkillLineCurrent(SKILL_FISHING, true) - minskill) * 100) / maxskill)){ // Open loot on success, otherwise FISH_ESCAPED.
+						lootmgr.FillFishingLoot(&fn->loot, zone);
+						plyr->SendLoot(fn->GetGUID(), LOOT_FISHING, fn->GetMapId());
+						fn->EndFishing(false);
+					}else{ // Failed
+						plyr->GetSession()->OutPacket(SMSG_FISH_ESCAPED);
+						fn->EndFishing(true);
+					}
+				}
+
+				Spell *s = plyr->GetCurrentSpell();
+				if (s != NULL){
+					if (success){
+						s->SendChannelUpdate(0);
+						s->finish(true);
+					}else{
+						s->SendChannelUpdate(0);
+						s->finish(false);
+					}
+				}
 			}
 			break;
 		case GAMEOBJECT_TYPE_DOOR:

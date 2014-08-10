@@ -7263,6 +7263,17 @@ void Unit::CancelSpell(Spell* ptr)
 	}
 }
 
+void Unit::EventStopChanneling(bool abort){
+	Spell *s = GetCurrentSpell();
+
+	if (s == NULL)
+		return;
+
+	s->SendChannelUpdate(0);
+	s->finish(abort);
+
+}
+
 void Unit::EventStrikeWithAbility(uint64 guid, SpellEntry* sp, uint32 damage)
 {
 	Unit* victim = m_mapMgr ? m_mapMgr->GetUnit(guid) : NULL;

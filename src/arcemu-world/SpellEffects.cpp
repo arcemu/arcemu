@@ -3234,13 +3234,14 @@ void Spell::SpellEffectSummonObject(uint32 i)
 
 		Arcemu::GO_FishingNode *fn = static_cast< Arcemu::GO_FishingNode* >(go);
 
-		if(lootmgr.IsFishable(zone))     // Only set a 'splash' if there is any loot in this area / zone
-		{
+		if (lootmgr.IsFishable(zone)){ // Only set a 'splash' if there is any loot in this area / zone
 			uint32 seconds[] = { 0, 4, 10, 14 };
 			uint32 rnd = RandomUInt(3);
-			sEventMgr.AddEvent(fn, &Arcemu::GO_FishingNode::EventFishHooked, EVENT_GAMEOBJECT_FISH_HOOKED, seconds[rnd] * 1000, 1, 0); // maybe seconds[ rnd ] * 1000, 1, 0); from old data
+			sEventMgr.AddEvent(fn, &Arcemu::GO_FishingNode::EventFishHooked, EVENT_GAMEOBJECT_FISH_HOOKED, seconds[rnd] * 1000, 1, 0);
+
 		}
-		sEventMgr.AddEvent(fn, &Arcemu::GO_FishingNode::EndFishing, static_cast< Player* >(m_caster), false, EVENT_GAMEOBJECT_END_FISHING, 20000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+		sEventMgr.AddEvent(fn, &Arcemu::GO_FishingNode::EndFishing, true, EVENT_GAMEOBJECT_END_FISHING, 17 * 1000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+		sEventMgr.AddEvent(TO_UNIT(p_caster), &Unit::EventStopChanneling, false, EVENT_STOP_CHANNELING, 17 * 1000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 
 		p_caster->SetSummonedObject(go);
 	}

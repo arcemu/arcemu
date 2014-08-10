@@ -298,7 +298,26 @@ class SERVER_DECL MapMgr : public CellHandler <MapCell>, public EventableObject,
 			}
 		}
 
-		float GetFirstZWithCPZ(float x, float y , float z);
+		float GetFirstZWithCPZ(float x, float y, float z);
+
+		/////////////////////////////////////////////////////////////////////
+		//GameObject* FindNearestGoWithType( Object *o, uint32 type )
+		// Finds and returns the nearest GameObject with this type from
+		// the Object's inrange set.
+		//
+		//Parameters
+		// Object *o - Pointer to the Object that's inrange set we are
+		// searching
+		//
+		// uint32 type - Type of the GameObject we want to find
+		//
+		//Return Value
+		// Returns a pointer to the GameObject if found.
+		// Returns NULL if there isn't such a GameObject.
+		//
+		//
+		/////////////////////////////////////////////////////////////////////
+		GameObject* FindNearestGoWithType(Object *o, uint32 type);
 
 	protected:
 

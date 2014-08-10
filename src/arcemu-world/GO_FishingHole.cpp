@@ -21,28 +21,38 @@
 namespace Arcemu{
 	GO_FishingHole::GO_FishingHole() : GO_Lootable(){
 	}
+
 	GO_FishingHole::GO_FishingHole(uint64 GUID) : GO_Lootable(GUID){
 		usage_remaining = 0;
 	}
+
 	GO_FishingHole::~GO_FishingHole(){
 	}
+
 	void GO_FishingHole::InitAI(){
 		CalcFishRemaining(true);
 	}
+
 	bool GO_FishingHole::CanFish(){
 		if (usage_remaining > 0)
 			return true;
 		else
 			return false;
 	}
+
 	void GO_FishingHole::CatchFish(){
 		ARCEMU_ASSERT(usage_remaining > 0);
 		usage_remaining--;
+
+		if (usage_remaining == 0)
+			sEventMgr.AddEvent(TO_GAMEOBJECT(this), &GameObject::Despawn, uint32(0), (1800000 + RandomUInt(3600000)), EVENT_GAMEOBJECT_EXPIRE, 10000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT); // respawn in 30 - 90 minutes
 	}
+
 	void GO_FishingHole::CalcFishRemaining(bool force){
 		if (force || (usage_remaining == 0))
 			usage_remaining = pInfo->raw.sound2 + RandomUInt(pInfo->raw.sound3 - pInfo->raw.sound2) - 1;
 	}
+
 	bool GO_FishingHole::HasLoot(){
 		for (vector<__LootItem>::iterator itr = loot.items.begin(); itr != loot.items.end(); ++itr){
 			if (itr->item.itemproto->Bonding == ITEM_BIND_QUEST || itr->item.itemproto->Bonding == ITEM_BIND_QUEST2)

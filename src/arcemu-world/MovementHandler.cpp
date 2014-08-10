@@ -322,11 +322,17 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recv_data)
 				if (go->GetType() == GAMEOBJECT_TYPE_FISHINGNODE){
 
 					Arcemu::GO_FishingNode *fn = static_cast< Arcemu::GO_FishingNode* >(go);
-					fn->EndFishing(_player, true);
+					fn->EndFishing(true);
+					
+					Spell *s = _player->GetCurrentSpell();
+					if (s != NULL){
+						s->SendChannelUpdate(0);
+						s->finish(false);
+					}
+
+				}
 
 			}
-
-		}
 	}
 
 	/************************************************************************/

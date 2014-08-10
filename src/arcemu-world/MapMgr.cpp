@@ -1933,6 +1933,34 @@ float MapMgr::GetFirstZWithCPZ(float x, float y, float z)
 	return posZ;
 }
 
+GameObject* MapMgr::FindNearestGoWithType(Object *o, uint32 type){
+	GameObject *go = NULL;
+	float r = FLT_MAX;
+
+		for (std::set< Object* >::iterator itr = o->GetInRangeSetBegin(); itr != o->GetInRangeSetEnd(); ++itr){
+			Object *iro = *itr;
+
+			if (!iro->IsGameObject())
+				continue;
+
+			GameObject *irgo = TO_GAMEOBJECT(iro);
+
+			if (irgo->GetType() != type)
+				continue;
+
+			if ((irgo->GetPhase() & o->GetPhase()) == 0)
+				continue;
+
+			float range = o->GetDistanceSq(iro);
+
+			if (range < r){
+				r = range;
+				go = irgo;
+			}
+		}
+		return go;
+}
+
 void MapMgr::SendPvPCaptureMessage(int32 ZoneMask, uint32 ZoneId, const char* Message, ...)
 {
 	va_list ap;
