@@ -51,6 +51,7 @@ SET(sources
 	GO_Trap.cpp
 	GO_SpellFocus.cpp
 	GO_FishingNode.cpp
+	CRitual.cpp
 	GO_Ritual.cpp
 	GO_Chest.cpp
 	GO_FishingHole.cpp
@@ -212,6 +213,7 @@ SET( headers
 	GO_Trap.h
 	GO_SpellFocus.h
 	GO_FishingNode.h
+	CRitual.h
 	GO_Ritual.h
 	GO_Chest.h
 	GO_FishingHole.h

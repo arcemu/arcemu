@@ -17,18 +17,55 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 *
 */
+
 #include "StdAfx.h"
+
 namespace Arcemu{
-	GO_Ritual::GO_Ritual(){
+
+	void CRitual::Setup(unsigned long CasterGUID, unsigned long TargetGUID, unsigned long SpellID){
+		this->CasterGUID = CasterGUID;
+		this->TargetGUID = TargetGUID;
+		this->SpellID = SpellID;
+
+		AddMember(CasterGUID);
 	}
-	GO_Ritual::GO_Ritual(uint64 GUID) : GameObject(GUID){
-		Ritual = NULL;
+
+	bool CRitual::AddMember(unsigned long GUID){
+
+		unsigned long i = 0;
+		for(; i < MaxMembers; i++)
+			if(Members[i] == 0)
+				break;
+
+		if(i == MaxMembers)
+			return false;
+
+		Members[i] = GUID;
+		CurrentMembers++;
+
+		return true;
 	}
-	GO_Ritual::~GO_Ritual(){
-		delete Ritual;
-		Ritual = NULL;
+
+	bool CRitual::RemoveMember(unsigned long GUID){
+
+		unsigned long i = 0;
+		for(; i < MaxMembers; i++){
+			if(Members[i] == GUID){
+				Members[i] = 0;
+				CurrentMembers--;
+				return true;
+			}
+		}
+
+		return false;
 	}
-	void GO_Ritual::InitAI(){
-		Ritual = new CRitual(pInfo->summoningRitual.reqParticipants);
+
+	bool CRitual::HasMember(unsigned long GUID){
+
+		for(unsigned long i = 0; i < MaxMembers; i++)
+		if(Members[i] == GUID)
+			return true;
+
+		return false;
 	}
 }

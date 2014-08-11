@@ -2179,7 +2179,7 @@ float m_fallowAngle=-((float(M_PI)/2)*j);
 float tempx = x + (GetRadius(i)*(cosf(m_fallowAngle+m_caster->GetOrientation())));
 float tempy = y + (GetRadius(i)*(sinf(m_fallowAngle+m_caster->GetOrientation())));
 Creature * p = m_caster->GetMapMgr()->CreateCreature(cr_entry);
-Arcemu::Util::ARCEMU_ASSERT( p );
+Arcemu::Util::ARCEMU_ASSERT(p != NULL);
 p->Load(proto, tempx, tempy, z);
 p->SetZoneId( m_caster->GetZoneId() );
 if ( p->GetProto()->Faction == 35 )
@@ -3372,14 +3372,10 @@ void Spell::SpellEffectSummonObject(uint32 i)
 
 			Arcemu::GO_Ritual *rgo = static_cast< Arcemu::GO_Ritual* >(go);
 
-			//Player * pTarget = p_caster->GetMapMgr()->GetPlayer( p_caster->GetSelection() );
 			Player* pTarget = objmgr.GetPlayer((uint32)p_caster->GetSelection());
 			if(!pTarget || !pTarget->IsInWorld())
 				return;
-			rgo->m_ritualmembers[0] = p_caster->GetLowGUID();
-			rgo->m_ritualcaster = p_caster->GetLowGUID();
-			rgo->m_ritualtarget = pTarget->GetLowGUID();
-			rgo->m_ritualspell = static_cast<uint16>(GetProto()->Id);
+			rgo->GetRitual()->Setup(p_caster->GetLowGUID(), pTarget->GetLowGUID(), m_spellInfo->Id);
 		}
 		else if(entry == 186811 || entry == 181622)    // ritual of refreshment, ritual of souls
 		{
@@ -3387,14 +3383,7 @@ void Spell::SpellEffectSummonObject(uint32 i)
 
 			Arcemu::GO_Ritual *rgo = static_cast< Arcemu::GO_Ritual* >(go);
 
-			rgo->m_ritualmembers[0] = p_caster->GetLowGUID();
-			rgo->m_ritualcaster = p_caster->GetLowGUID();
-			rgo->m_ritualtarget = 0;
-			rgo->m_ritualspell = static_cast<uint16>(GetProto()->Id);
-		}
-		else if(entry == 186812 || entry == 181621)    // Refreshment Table, Soulwell
-		{
-			go->charges = goI->raw.sound1;
+			rgo->GetRitual()->Setup(p_caster->GetLowGUID(), 0, m_spellInfo->Id);
 		}
 		else//Lightwell,if there is some other type -- add it
 		{
