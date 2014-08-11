@@ -332,7 +332,7 @@ void Player::SendLoot(uint64 guid, uint8 loot_type, uint32 mapid)
 
 		Arcemu::GO_Lootable *pLGO = static_cast< Arcemu::GO_Lootable* >(pGO);
 
-		pLGO->SetState(0);
+		pLGO->SetState(GAMEOBJECT_STATE_OPEN);
 		pLoot = &pLGO->loot;
 		m_currentLoot = pLGO->GetGUID();
 	}

@@ -34,9 +34,9 @@ namespace Arcemu{
 		GameObject::InitAI();
 
 		if(pInfo->door.startOpen != 0)
-			SetState(0);
+			SetState(GAMEOBJECT_STATE_OPEN);
 		else
-			SetState(1);
+			SetState(GAMEOBJECT_STATE_CLOSED);
 	}
 
 	void GO_Door::Open(){

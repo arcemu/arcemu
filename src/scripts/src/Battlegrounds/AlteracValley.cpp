@@ -1179,7 +1179,7 @@ void AlteracValley::AVNode::Spawn()
 			m_aura->SetFaction(g_gameObjectFactions[m_state]);
 			m_aura->SetAnimProgress(100);
 			m_aura->SetFlags(1);
-			m_aura->SetState(1);
+			m_aura->SetState(GAMEOBJECT_STATE_CLOSED);
 			m_aura->PushToWorld(m_bg->GetMapMgr());
 		}
 		else
@@ -1197,7 +1197,7 @@ void AlteracValley::AVNode::Spawn()
 				m_aura->SetFaction(g_gameObjectFactions[m_state]);
 				m_aura->SetAnimProgress(100);
 				m_aura->SetFlags(1);
-				m_aura->SetState(1);
+				m_aura->SetState(GAMEOBJECT_STATE_CLOSED);
 				m_aura->PushToWorld(m_bg->GetMapMgr());
 			}
 		}
@@ -1226,7 +1226,7 @@ void AlteracValley::AVNode::Spawn()
 			m_glow->SetFaction(g_gameObjectFactions[m_state]);
 			m_glow->SetAnimProgress(100);
 			m_glow->SetFlags(1);
-			m_glow->SetState(1);
+			m_glow->SetState(GAMEOBJECT_STATE_CLOSED);
 			if(m_glow->GetEntry() == 180422 || m_glow->GetEntry() == 180423)
 				m_glow->SetScale(10.0f);
 			else
@@ -1248,7 +1248,7 @@ void AlteracValley::AVNode::Spawn()
 				m_glow->SetFaction(g_gameObjectFactions[m_state]);
 				m_glow->SetAnimProgress(100);
 				m_glow->SetFlags(1);
-				m_glow->SetState(1);
+				m_glow->SetState(GAMEOBJECT_STATE_CLOSED);
 				if(m_glow->GetEntry() == 180422 || m_glow->GetEntry() == 180423)
 					m_glow->SetScale(10.0f);
 				else
@@ -1398,7 +1398,7 @@ void AlteracValley::AVNode::Capture()
 			{
 				m_flag->SetFlags(1);
 				m_flag->SetUInt32Value(GAMEOBJECT_DYNAMIC, 0);
-				m_flag->SetState(1);
+				m_flag->SetState(GAMEOBJECT_STATE_CLOSED);
 			}
 
 			// prevent further actions
@@ -1612,7 +1612,7 @@ void AlteracValley::OnStart()
 	for(list<GameObject*>::iterator itr = m_gates.begin(); itr != m_gates.end(); ++itr)
 	{
 		(*itr)->SetFlags(64);
-		(*itr)->SetState(0);
+		(*itr)->SetState(GAMEOBJECT_STATE_OPEN);
 	}
 
 	/* correct? - burlex */

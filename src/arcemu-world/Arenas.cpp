@@ -223,6 +223,97 @@ void Arena::OnCreate()
 	/* push gates into world */
 	for(set<GameObject*>::iterator itr = m_gates.begin(); itr != m_gates.end(); ++itr)
 		(*itr)->PushToWorld(m_mapMgr);
+
+	/*Conflict added in commit https://github.com/arcemu/arcemu/commit/26e5bc46a8d47c89287405a78aa2b3cc9cd71e26#diff-f518273db965706d6a2ad12fe79de129R410
+	GameObject * obj;
+	switch (m_mapMgr->GetMapId())
+	{
+		// ruins of lordaeron 
+	case 572: {
+				  obj = SpawnGameObject(185917, 572, 1278.647705f, 1730.556641f, 31.605574f, 1.684245f, 32, 1375, 1.0f);
+				  obj->SetState(GAMEOBJECT_STATE_CLOSED);
+				  obj->SetParentRotation(2, 0.746058f);
+				  obj->SetParentRotation(3, 0.665881f);
+				  m_gates.insert(obj);
+				  obj = SpawnGameObject(185918, 572, 1293.560791f, 1601.937988f, 31.605574f, -1.457349f, 32, 1375, 1.0f);
+				  obj->SetState(GAMEOBJECT_STATE_CLOSED);
+				  obj->SetParentRotation(2, -0.665881f);
+				  obj->SetParentRotation(3, 0.746058f);
+				  m_gates.insert(obj);
+	}break;
+		// blades edge arena 
+	case 562: {
+				  obj = SpawnGameObject(183972, 562, 6177.707520f, 227.348145f, 3.604374f, -2.260201f, 32, 1375, 1.0f);
+				  obj->SetState(GAMEOBJECT_STATE_CLOSED);
+				  obj->SetParentRotation(2, 0.90445f);
+				  obj->SetParentRotation(3, -0.426569f);
+				  obj->PushToWorld(m_mapMgr);
+				  obj = SpawnGameObject(183973, 562, 6189.546387f, 241.709854f, 3.101481f, 0.881392f, 32, 1375, 1.0f);
+				  obj->SetState(GAMEOBJECT_STATE_CLOSED);
+				  obj->SetParentRotation(2, 0.426569f);
+				  obj->SetParentRotation(3, 0.904455f);
+				  m_gates.insert(obj);
+				  obj = SpawnGameObject(183970, 562, 6299.115723f, 296.549438f, 3.308032f, 0.881392f, 32, 1375, 1.0f);
+				  obj->SetState(GAMEOBJECT_STATE_CLOSED);
+				  obj->SetParentRotation(2, 0.426569f);
+				  obj->SetParentRotation(3, 0.904455f);
+				  obj->PushToWorld(m_mapMgr);
+				  obj = SpawnGameObject(183971, 562, 6287.276855f, 282.187714f, 3.810925f, -2.260201f, 32, 1375, 1.0f);
+				  obj->SetState(GAMEOBJECT_STATE_CLOSED);
+				  obj->SetParentRotation(2, 0.904455f);
+				  obj->SetParentRotation(3, -0.426569f);
+				  m_gates.insert(obj);
+	}break;
+		// nagrand arena 
+	case 559: {
+				  obj = SpawnGameObject(183979, 559, 4090.064453f, 2858.437744f, 10.236313f, 0.492805f, 32, 1375, 1.0f);
+				  obj->SetState(GAMEOBJECT_STATE_CLOSED);
+				  obj->SetParentRotation(2, 0.243916f);
+				  obj->SetParentRotation(3, 0.969796f);
+				  obj->PushToWorld(m_mapMgr);
+				  obj = SpawnGameObject(183980, 559, 4081.178955f, 2874.970459f, 12.391714f, 0.492805f, 32, 1375, 1.0f);
+				  obj->SetState(GAMEOBJECT_STATE_CLOSED);
+				  obj->SetParentRotation(2, 0.243916f);
+				  obj->SetParentRotation(3, 0.969796f);
+				  m_gates.insert(obj);
+				  obj = SpawnGameObject(183977, 559, 4023.709473f, 2981.776611f, 10.701169f, -2.648788f, 32, 1375, 1.0f);
+				  obj->SetState(GAMEOBJECT_STATE_CLOSED);
+				  obj->SetParentRotation(2, 0.969796f);
+				  obj->SetParentRotation(3, -0.243916f);
+				  obj->PushToWorld(m_mapMgr);
+				  obj = SpawnGameObject(183978, 559, 4031.854248f, 2966.833496f, 12.646200f, -2.648788f, 32, 1375, 1.0f);
+				  obj->SetState(GAMEOBJECT_STATE_CLOSED);
+				  obj->SetParentRotation(2, 0.969796f);
+				  obj->SetParentRotation(3, -0.243916f);
+				  m_gates.insert(obj);
+	}break;
+	}
+	// push gates into world 
+	for (set<GameObject*>::iterator itr = m_gates.begin(); itr != m_gates.end(); ++itr)
+		(*itr)->PushToWorld(m_mapMgr);
+	SetWorldState(0x08D4, 0x0000);
+	SetWorldState(0x08D8, 0x0000);
+	SetWorldState(0x08D7, 0x0000);
+	SetWorldState(0x08D6, 0x0000);
+	SetWorldState(0x08D5, 0x0000);
+	SetWorldState(0x08D3, 0x0000);
+	SetWorldState(0x0C0D, 0x017B);
+	// Show players count
+	switch (m_mapMgr->GetMapId())
+	{
+		// ruins of lordaeron 
+	case 572:
+		SetWorldState(3002, 1);
+		break;
+		// blades edge arena 
+	case 562:
+		SetWorldState(2547, 1);
+		break;
+		// nagrand arena
+	case 559:
+		SetWorldState(2577, 1);
+		break;
+	}*/
 }
 
 void Arena::HookOnShadowSight()
@@ -269,7 +360,7 @@ void Arena::OnStart()
 	for(set<GameObject*>::iterator itr = m_gates.begin(); itr != m_gates.end(); ++itr)
 	{
 		(*itr)->SetFlags(64);
-		(*itr)->SetState(0);
+		(*itr)->SetState(GAMEOBJECT_STATE_CLOSED);
 	}
 
 	m_started = true;

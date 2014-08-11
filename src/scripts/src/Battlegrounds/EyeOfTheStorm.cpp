@@ -599,7 +599,7 @@ void EyeOfTheStorm::OnCreate()
 		}
 
 		m_bubbles[i]->SetScale(0.1f);
-		m_bubbles[i]->SetState(1);
+		m_bubbles[i]->SetState(GAMEOBJECT_STATE_CLOSED);
 		m_bubbles[i]->SetFlags(32);;
 		m_bubbles[i]->SetFaction(114);
 		m_bubbles[i]->SetAnimProgress(100);
@@ -919,7 +919,7 @@ void EyeOfTheStorm::SpawnBuff(uint32 x)
 
 		EOTSm_buffs[x]->SetParentRotation(2, EOTSBuffRotations[x][0]);
 		EOTSm_buffs[x]->SetParentRotation(3, EOTSBuffRotations[x][1]);
-		EOTSm_buffs[x]->SetState(1);
+		EOTSm_buffs[x]->SetState(GAMEOBJECT_STATE_CLOSED);
 		EOTSm_buffs[x]->SetType(GAMEOBJECT_TYPE_TRAP);
 		EOTSm_buffs[x]->SetAnimProgress(100);
 		EOTSm_buffs[x]->PushToWorld(m_mapMgr);
