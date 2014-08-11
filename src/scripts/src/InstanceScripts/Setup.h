@@ -68,6 +68,7 @@ void SetupBlackTemple(ScriptMgr* mgr);
 void SetupBlackwingLair(ScriptMgr* mgr);
 void SetupBattleOfMountHyjal(ScriptMgr* mgr);
 void SetupGruulsLair(ScriptMgr* mgr);
+void SetupIceCrownCitadel(ScriptMgr* mgr);
 void SetupKarazhan(ScriptMgr* mgr);
 void SetupMoltenCore(ScriptMgr* mgr);
 void SetupNaxxramas(ScriptMgr* mgr);

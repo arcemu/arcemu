@@ -50,7 +50,8 @@ Instance_ZulFarrak.cpp
 Raid_BlackTemple.cpp 
 Raid_BlackwingLair.cpp 
 Raid_CoT_BattleOfMountHyjal.cpp 
-Raid_GruulsLair.cpp 
+Raid_GruulsLair.cpp
+Raid_IceCrownCitadel.cpp 
 Raid_Karazhan.cpp 
 Raid_MoltenCore.cpp 
 Raid_Naxxramas.cpp 

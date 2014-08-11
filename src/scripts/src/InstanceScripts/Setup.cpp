@@ -71,6 +71,7 @@ extern "C" SCRIPT_DECL void _exp_script_register(ScriptMgr* mgr)	// Comment any 
 	SetupBlackwingLair(mgr);
 	SetupBattleOfMountHyjal(mgr);
 	SetupGruulsLair(mgr);
+	SetupIceCrownCitadel(mgr);
 	SetupKarazhan(mgr);
 	SetupMoltenCore(mgr);
 	SetupNaxxramas(mgr);
