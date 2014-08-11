@@ -181,6 +181,7 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "GO_FishingNode.h"
 #include "CRitual.h"
 #include "GO_Ritual.h"
+#include "GO_Destructible.h"
 #include "CObjectFactory.h"
 #include "Group.h"
 #include "Guild.h"

@@ -1700,7 +1700,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 						/* expire the gameobject */
 						robj->ExpireAndDelete();
 					}
-					else if(goinfo->ID == 186811 || goinfo->ID == 181622)
+					else if(goinfo->ID == 186811 || goinfo->ID == 181622) // refreshment portal
 					{
 						info = dbcSpell.LookupEntryForced(goinfo->summoningRitual.spellId);
 						if(info == NULL)

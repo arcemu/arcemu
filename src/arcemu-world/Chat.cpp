@@ -398,6 +398,8 @@ void CommandTableStorage::Init()
 		{ "move",         'g', &ChatHandler::HandleGOMove,         "Moves gameobject to player xyz",             NULL, 0, 0, 0 },
 		{ "rotate",       'g', &ChatHandler::HandleGORotate,       "<Axis> <Value> - Rotates the object. <Axis> x,y, Default o.",             NULL, 0, 0, 0 },
 		{ "portto",       'v', &ChatHandler::HandlePortToGameObjectSpawnCommand, "Teleports you to the gameobject with spawn id x.", NULL, 0, 0, 0 },
+		{ "damage",       'o', &ChatHandler::HandleGODamage, "< damage > < spellid > Damages a destructible GameObject", NULL, 0, 0, 0 },
+		{ "rebuild",      'o', &ChatHandler::HandleGORebuild, "Rebuilds the destructible GameObject",            NULL, 0, 0, 0 },
 		{ NULL,           '0', NULL,                               "",                                           NULL, 0, 0, 0 }
 	};
 	dupe_command_table(GameObjectCommandTable, _GameObjectCommandTable);

@@ -77,6 +77,10 @@ namespace Arcemu{
 				go = new Arcemu::GO_FishingHole(GUID);
 				break;
 
+			case GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING:
+				go = new Arcemu::GO_Destructible(GUID);
+				break;
+
 			default:
 				go = new GameObject(GUID);
 				break;

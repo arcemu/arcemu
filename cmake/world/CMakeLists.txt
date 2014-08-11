@@ -55,6 +55,7 @@ SET(sources
 	CRitual.cpp
 	GO_Ritual.cpp
 	GO_Chest.cpp
+	GO_Destructible.cpp
 	GO_FishingHole.cpp
 	GO_Button.cpp
 	GO_Door.cpp
@@ -218,6 +219,7 @@ SET( headers
 	CRitual.h
 	GO_Ritual.h
 	GO_Chest.h
+	GO_Destructible.h
 	GO_FishingHole.h
 	GO_Lootable.h
 	GO_Button.h

@@ -418,13 +418,13 @@ struct GameObjectInfo
 			uint32 creditProxyCreature;		//1
 			uint32 empty1;					//2
 			uint32 intactEvent;				//3
-			uint32 empty2;					//4
+			uint32 DamagedDisplayID;		//4
 			uint32 damagedNumHits;			//5
 			uint32 empty3;					//6
 			uint32 empty4;					//7
 			uint32 empty5;					//8
 			uint32 damagedEvent;			//9
-			uint32 empty6;					//10
+			uint32 DestroyedDisplayID;		//10
 			uint32 empty7;					//11
 			uint32 empty8;					//12
 			uint32 empty9;					//13
@@ -672,6 +672,9 @@ class SERVER_DECL GameObject : public Object
 		void SetArtKit(uint8 artkit){ SetByte(GAMEOBJECT_BYTES_1, 2, artkit); }
 		uint8 GetArtkKit(){ return GetByte(GAMEOBJECT_BYTES_1, 2); }
 
+		void SetAnimProgress(uint8 progress){ SetByte(GAMEOBJECT_BYTES_1, 3, progress); }
+		uint8 GetAnimProgress(){ return GetByte(GAMEOBJECT_BYTES_1, 3); }
+
 		void Deactivate(){ SetUInt32Value(GAMEOBJECT_DYNAMIC, 0); }
 		void Activate(){ SetUInt32Value(GAMEOBJECT_DYNAMIC, 1); }
 		bool IsActive()
@@ -700,20 +703,17 @@ class SERVER_DECL GameObject : public Object
 
 		void SetFlags(uint32 flags){ SetUInt32Value(GAMEOBJECT_FLAGS, flags); }
 		uint32 GetFlags(){ return GetUInt32Value(GAMEOBJECT_FLAGS); }
-		void RemoveFlags( uint32 flags ){ RemoveFlag( GAMEOBJECT_FLAGS, flags ); }
-
-		bool HasFlags( uint32 flags )
+		bool HasFlags(uint32 flags)
 		{
-			if( HasFlag( GAMEOBJECT_FLAGS, flags ) != 0 )
+			if (HasFlag(GAMEOBJECT_FLAGS, flags) != 0)
 				return true;
 			else
 				return false;
 		}
 
-		uint32 GetOverrides() { return m_overrides; }
+		void RemoveFlags( uint32 flags ){ RemoveFlag(GAMEOBJECT_FLAGS, flags); }
 
-		void SetAnimProgress( uint8 progress ){ SetByte( GAMEOBJECT_BYTES_1, 3, progress ); }
-		uint8 GetAnimProgress(){ return GetByte( GAMEOBJECT_BYTES_1, 3 ); }
+		uint32 GetOverrides() { return m_overrides; }
 		
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//void Damage( uint32 damage, uint64 AttackerGUID, uint64 ControllerGUID,  uint32 SpellID )

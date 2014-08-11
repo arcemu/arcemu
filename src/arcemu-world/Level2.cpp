@@ -681,6 +681,72 @@ bool ChatHandler::HandleMonsterYellCommand(const char* args, WorldSession* m_ses
 	return true;
 }
 
+bool ChatHandler::HandleGORebuild(const char *args, WorldSession *m_session){
+	if (args == NULL)
+		return false;
+
+	GameObject *go = m_session->GetPlayer()->GetSelectedGo();
+	if (go == NULL){
+		RedSystemMessage(m_session, "No GameObject is selected.");
+		return true;
+	}
+
+	if (go->GetType() != GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING){
+		RedSystemMessage(m_session, "Selected GameObject is not of Type 35 (DESTRUCTIBLE).");
+		return true;
+	}
+
+	Arcemu::GO_Destructible *dgo = TO< Arcemu::GO_Destructible* >(go);
+
+	dgo->Rebuild();
+
+	GreenSystemMessage(m_session, "GameObject has been rebuilt.");
+	GreenSystemMessage(m_session, "New hitpoints %u", dgo->GetHP());
+
+	return true;
+}
+
+bool ChatHandler::HandleGODamage(const char *args, WorldSession *m_session){
+	if (args == NULL)
+		return false;
+
+	GameObject *go = m_session->GetPlayer()->GetSelectedGo();
+	if (go == NULL){
+		RedSystemMessage(m_session, "No GameObject is selected.");
+		return true;
+	}
+
+	if (go->GetType() != GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING){
+		RedSystemMessage(m_session, "Selected GameObject is not of Type 35 (DESTRUCTIBLE).");
+		return true;
+	}
+
+	uint32 damage = 0;
+	uint32 spellid = 0;
+
+	if (sscanf(args, "%u %u", &damage, &spellid) != 2){
+		if (damage == 0)
+			return false;
+	}
+
+	if (spellid == 0)
+		spellid = 57609;
+
+	Arcemu::GO_Destructible *dgo = TO< Arcemu::GO_Destructible* >(go);
+
+	if (dgo->GetHP() == 0){
+		RedSystemMessage(m_session, "Cannot further damage a destroyed GameObject");
+		return true;
+	}
+
+	dgo->Damage(damage, m_session->GetPlayer()->GetGUID(), 0, spellid);
+
+	GreenSystemMessage(m_session, "GameObject has been damaged for %u hitpoints", damage);
+	GreenSystemMessage(m_session, "New hitpoints %u", dgo->GetHP());
+
+	return true;
+}
+
 bool ChatHandler::HandleGOFaction(const char *args, WorldSession *m_session){
 	if(args == NULL)
 		return false;
