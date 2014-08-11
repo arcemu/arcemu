@@ -17,15 +17,74 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 *
 */
+
 #include "StdAfx.h"
+
 namespace Arcemu{
-GameObject* CObjectFactory::CreateGameObject( uint32 Id, uint32 LowGUID ){
-GameObject *go = NULL;
-// Implementation will come here
-// I really should work on 1 thing at a time :(
-return go;
-}
-void CObjectFactory::DisposeOf( Object *o ){
-delete o;
-}
+
+	GameObject* CObjectFactory::CreateGameObject( uint32 Id, uint32 LowGUID ){
+		GameObjectInfo *i = GameObjectNameStorage.LookupEntry(Id);
+		if(i == NULL)
+			return NULL;
+
+		GameObject *go = NULL;
+
+		uint64 GUID = uint64((uint64(HIGHGUID_TYPE_GAMEOBJECT) << 32) | LowGUID);
+		
+		switch(i->Type){
+
+			case GAMEOBJECT_TYPE_DOOR:
+				go = new Arcemu::GO_Door(GUID);
+				break;
+
+			case GAMEOBJECT_TYPE_BUTTON:
+				go = new Arcemu::GO_Button(GUID);
+				break;
+
+			case GAMEOBJECT_TYPE_QUESTGIVER:
+				go = new Arcemu::GO_QuestGiver(GUID);
+				break;
+
+			case GAMEOBJECT_TYPE_CHEST:
+				go = new Arcemu::GO_Chest(GUID);
+				break;
+
+			case GAMEOBJECT_TYPE_TRAP:
+				go = new Arcemu::GO_Trap(GUID);
+				break;
+
+			case GAMEOBJECT_TYPE_SPELL_FOCUS:
+				go = new Arcemu::GO_SpellFocus(GUID);
+				break;
+
+			case GAMEOBJECT_TYPE_GOOBER:
+				go = new Arcemu::GO_Goober(GUID);
+				break;
+
+			case GAMEOBJECT_TYPE_FISHINGNODE:
+				go = new Arcemu::GO_FishingNode(GUID);
+				break;
+
+			case GAMEOBJECT_TYPE_RITUAL:
+				go = new Arcemu::GO_Ritual(GUID);
+				break;
+
+			case GAMEOBJECT_TYPE_FISHINGHOLE:
+				go = new Arcemu::GO_FishingHole(GUID);
+				break;
+
+			default:
+				go = new GameObject(GUID);
+				break;
+		}
+
+		go->SetInfo(i);
+
+		return go;
+	}
+
+	void CObjectFactory::DisposeOf( Object *o ){
+		delete o;
+	}
+
 }

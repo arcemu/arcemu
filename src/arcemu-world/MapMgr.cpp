@@ -1835,10 +1835,6 @@ GameObject* MapMgr::CreateAndSpawnGameObject(uint32 entryID, float x, float y, f
 
 GameObject* MapMgr::CreateGameObject(uint32 entry)
 {
-	GameObjectInfo *i = GameObjectNameStorage.LookupEntry(entry);
-	if (i == NULL)
-		return NULL;
-
 	uint32 GUID = 0;
 
 	if(_reusable_guids_gameobject.size() > GO_GUID_RECYCLE_INTERVAL)
@@ -1860,55 +1856,7 @@ GameObject* MapMgr::CreateGameObject(uint32 entry)
 
 	GameObject *go = NULL;
 
-	// this will be replaced by a factory!
-	switch (i->Type){
-	
-		case GAMEOBJECT_TYPE_DOOR:
-			go = new Arcemu::GO_Door(uint64((uint64(HIGHGUID_TYPE_GAMEOBJECT) << 32) | GUID));
-			break;
-
-		case GAMEOBJECT_TYPE_BUTTON:
-			go = new Arcemu::GO_Button(uint64((uint64(HIGHGUID_TYPE_GAMEOBJECT) << 32) | GUID));
-			break;
-
-		case GAMEOBJECT_TYPE_QUESTGIVER:
-			go = new Arcemu::GO_QuestGiver(uint64((uint64(HIGHGUID_TYPE_GAMEOBJECT) << 32) | GUID));
-			break;
-
-		case GAMEOBJECT_TYPE_CHEST:
-			go = new Arcemu::GO_Chest(uint64((uint64(HIGHGUID_TYPE_GAMEOBJECT) << 32) | GUID));
-			break;
-
-		case GAMEOBJECT_TYPE_TRAP:
-			go = new Arcemu::GO_Trap(uint64((uint64(HIGHGUID_TYPE_GAMEOBJECT) << 32) | GUID));
-			break;
-
-		case GAMEOBJECT_TYPE_SPELL_FOCUS:
-			go = new Arcemu::GO_SpellFocus(uint64((uint64(HIGHGUID_TYPE_GAMEOBJECT) << 32) | GUID));
-			break;
-
-		case GAMEOBJECT_TYPE_GOOBER:
-			go = new Arcemu::GO_Goober(uint64((uint64(HIGHGUID_TYPE_GAMEOBJECT) << 32) | GUID));
-			break;
-
-		case GAMEOBJECT_TYPE_FISHINGNODE:
-			go = new Arcemu::GO_FishingNode(uint64((uint64(HIGHGUID_TYPE_GAMEOBJECT) << 32) | GUID));
-			break;
-
-		case GAMEOBJECT_TYPE_RITUAL:
-			go = new Arcemu::GO_Ritual(uint64((uint64(HIGHGUID_TYPE_GAMEOBJECT) << 32) | GUID));
-			break;
-
-		case GAMEOBJECT_TYPE_FISHINGHOLE:
-			go = new Arcemu::GO_FishingHole(uint64((uint64(HIGHGUID_TYPE_GAMEOBJECT) << 32) | GUID));
-			break;
-
-		default:
-			go = new GameObject(uint64((uint64(HIGHGUID_TYPE_GAMEOBJECT) << 32) | GUID));
-			break;
-	}
-
-	go->SetInfo(i);
+	go = ObjectFactory.CreateGameObject(entry, GUID);
 
 	return go;
 }

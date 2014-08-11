@@ -132,7 +132,6 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "SpellProc.h"
 #include "SummonHandler.h"
 #include "Vehicle.h"
-#include "CObjectFactory.h"
 #include "Unit.h"
 #include "Gossip.h"
 
@@ -180,6 +179,7 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "GO_SpellFocus.h"
 #include "GO_FishingNode.h"
 #include "GO_Ritual.h"
+#include "CObjectFactory.h"
 #include "Group.h"
 #include "Guild.h"
 #include "HonorHandler.h"

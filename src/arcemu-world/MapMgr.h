@@ -96,6 +96,8 @@ class SERVER_DECL MapMgr : public CellHandler <MapCell>, public EventableObject,
 		friend class MapScriptInterface;
 	public:
 
+		Arcemu::CObjectFactory ObjectFactory;
+
 		//This will be done in regular way soon
 		std::set< MapCell* > m_forcedcells;
 

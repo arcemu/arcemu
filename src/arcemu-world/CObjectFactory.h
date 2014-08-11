@@ -17,41 +17,49 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 *
 */
+
 namespace Arcemu{
-/////////////////////////////////////////////////////////////////
-//class CObjectFactory
-// Factory class that instantiates and destroys all Objects
-//
-//
-/////////////////////////////////////////////////////////////////
-class CObjectFactory{
-public:
-////////////////////////////////////////////////////////////
-//GameObject* CreateGameObject( uint32 Id, uint32 LowGUID )
-// Creates an instance of the GameObject class.
-//
-//Parameters
-// uint32 Id - Entry if of the GameObject
-// uint32 LowGUID - Unique ID of this instance
-//
-//Return Value
-// None
-//
-//
-//////////////////////////////////////////////////////////
-GameObject* CreateGameObject( uint32 Id, uint32 LowGUID );
-/////////////////////////////////////////////////////////
-//void DisposeOf( Object *o )
-// Disposes of the created Object
-//
-//Parameters
-// None
-//
-//Return Value
-// None
-//
-//
-////////////////////////////////////////////////////////
-void DisposeOf( Object *o );
-};
+	/////////////////////////////////////////////////////////////////
+	//class CObjectFactory
+	// Factory class that instantiates and destroys all Objects
+	//
+	//
+	/////////////////////////////////////////////////////////////////
+	class CObjectFactory{
+	public:
+		CObjectFactory(){}
+		~CObjectFactory(){}
+
+		////////////////////////////////////////////////////////////
+		//GameObject* CreateGameObject( uint32 Id, uint32 LowGUID )
+		// Creates an instance of the GameObject class.
+		//
+		//Parameters
+		// uint32 Id - Entry if of the GameObject
+		// uint32 LowGUID - Unique ID of this instance
+		//
+		//Return Value
+		// None
+		//
+		//
+		//////////////////////////////////////////////////////////
+		GameObject* CreateGameObject(uint32 Id, uint32 LowGUID);
+
+
+
+		/////////////////////////////////////////////////////////
+		//void DisposeOf( Object *o )
+		// Disposes of the created Object
+		//
+		//Parameters
+		// None
+		//
+		//Return Value
+		// None
+		//
+		//
+		////////////////////////////////////////////////////////
+		void DisposeOf(Object *o);
+
+	};
 }
