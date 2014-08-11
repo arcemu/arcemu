@@ -31,11 +31,25 @@ namespace Arcemu{
 	GO_FishingNode::~GO_FishingNode(){
 	}
 
+	void GO_FishingNode::OnPushToWorld(){
+		uint32 zone = GetMapMgr()->GetAreaID(GetPositionX(), GetPositionY());
+		if(zone == 0)
+			zone = GetZoneId();
+
+		if(lootmgr.IsFishable(zone)){ // Only set a 'splash' if there is any loot in this area / zone
+			uint32 seconds[] = { 0, 4, 10, 14 };
+			uint32 rnd = RandomUInt(3);
+			sEventMgr.AddEvent(this, &Arcemu::GO_FishingNode::EventFishHooked, EVENT_GAMEOBJECT_FISH_HOOKED, seconds[rnd] * 1000, 1, 0);
+		}
+
+			sEventMgr.AddEvent(this, &Arcemu::GO_FishingNode::EndFishing, true, EVENT_GAMEOBJECT_END_FISHING, 17 * 1000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+	}
+
 	bool GO_FishingNode::UseNode(){
 		sEventMgr.RemoveEvents(this);
 
 		// Clicking on the bobber before something is hooked
-		if (!FishHooked){
+		if(!FishHooked){
 			EndFishing(true);
 			return false;
 		}

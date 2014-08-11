@@ -22,16 +22,24 @@
 #define GO_FISHINGNODE_HPP
 
 namespace Arcemu{
+
 	////////////////////////////////////////////////////////////////////////
 	//class GO_FishingNode
 	// Implements Type 17 (FISHINGNODE) GameObjects
 	//
 	////////////////////////////////////////////////////////////////////////
 	class GO_FishingNode : public GO_Lootable{
+
 	public:
+
 		GO_FishingNode();
+
 		GO_FishingNode(uint64 GUID);
+
 		~GO_FishingNode();
+
+		void OnPushToWorld();
+
 		///////////////////////////////////////////////////////////////////////
 		//bool UseNode()
 		// Uses the fishing node.

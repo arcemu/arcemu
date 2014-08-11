@@ -69,6 +69,10 @@ namespace Arcemu{
 				go = new Arcemu::GO_Ritual(GUID);
 				break;
 
+			case GAMEOBJECT_TYPE_SPELLCASTER:
+				go = new Arcemu::GO_SpellCaster(GUID);
+				break;
+
 			case GAMEOBJECT_TYPE_FISHINGHOLE:
 				go = new Arcemu::GO_FishingHole(GUID);
 				break;

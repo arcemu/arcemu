@@ -3236,9 +3236,16 @@ void Spell::SpellEffectSpawn(uint32 i)
 
 void Spell::SpellEffectSummonObject(uint32 i)
 {
-	if(!u_caster) return;
+	if(u_caster == NULL)
+		return;
 
 	uint32 entry = GetProto()->EffectMiscValue[i];
+
+	GameObjectInfo *info = GameObjectNameStorage.LookupEntry(entry);
+	if(info == NULL){
+		sLog.outError("Spell %u ( %s ) Effect %u tried to summon a GameObject with ID %u. GameObject is not in the database.", m_spellInfo->Id, m_spellInfo->Name, i, entry);
+		return;
+	}
 
 	uint32 mapid = u_caster->GetMapId();
 	float px = u_caster->GetPositionX();
@@ -3247,12 +3254,15 @@ void Spell::SpellEffectSummonObject(uint32 i)
 	float orient = m_caster->GetOrientation();
 	float posx = 0, posy = 0, posz = 0;
 
-	if(entry == GO_FISHING_BOBBER && p_caster)
-	{
+	GameObject *go = NULL;
+
+	if(info->Type == GAMEOBJECT_TYPE_FISHINGNODE){
+		if(p_caster == NULL)
+			return;
+
 		float co = cos(orient);
 		float si = sin(orient);
 		MapMgr* map = m_caster->GetMapMgr();
-		Spell* spell = u_caster->GetCurrentSpell();
 
 		float r;
 		for(r = 20; r > 10; r--)
@@ -3270,128 +3280,48 @@ void Spell::SpellEffectSummonObject(uint32 i)
 		posx = px + r * co;
 		posy = py + r * si;
 
-		// Todo / Fix me: This should be loaded / cached
-		uint32 zone = p_caster->GetAreaID();
-		if(zone == 0)   // If the player's area ID is 0, use the zone ID instead
-			zone = p_caster->GetZoneId();
+		go = u_caster->GetMapMgr()->CreateGameObject(entry);
 
-		uint32 minskill;
-		FishingZoneEntry* fishentry = FishingZoneStorage.LookupEntry(zone);
-		if(!fishentry)   // Check database if there is fishing area / zone information, if not, return
-			return;
-
-		// Todo / Fix me: Add fishskill to the calculations
-		minskill = fishentry->MinSkill;
-		spell->SendChannelStart(20000);   // 30 seconds
-
-		GameObject* go = u_caster->GetMapMgr()->CreateGameObject(GO_FISHING_BOBBER);
-
-		go->CreateFromProto(GO_FISHING_BOBBER, mapid, posx, posy, posz, orient);
+		go->CreateFromProto(entry, mapid, posx, posy, posz, orient);
 		go->SetFlags(0);
 		go->SetState(0);
-		/* Conflict added in commit https://github.com/arcemu/arcemu/commit/460e35ce516e527f7dce2b424eddce9afd85ff22#diff-2f0f1d6ec531424670c3b34623a6a4c6R3199
-		go->SetUInt32Value( GAMEOBJECT_FLAGS, 0 );
-		go->SetByte( GAMEOBJECT_BYTES_1, 0, 0 );
-		*/
 		go->SetUInt64Value(OBJECT_FIELD_CREATED_BY, m_caster->GetGUID());
-		u_caster->SetChannelSpellTargetGUID(go->GetGUID());
+		go->SetFaction(u_caster->GetFaction());
 		go->Phase(PHASE_SET, u_caster->GetPhase());
-
 		go->PushToWorld(m_caster->GetMapMgr());
 
-		Arcemu::GO_FishingNode *fn = static_cast< Arcemu::GO_FishingNode* >(go);
-
-		if (lootmgr.IsFishable(zone)){ // Only set a 'splash' if there is any loot in this area / zone
-			uint32 seconds[] = { 0, 4, 10, 14 };
-			uint32 rnd = RandomUInt(3);
-			sEventMgr.AddEvent(fn, &Arcemu::GO_FishingNode::EventFishHooked, EVENT_GAMEOBJECT_FISH_HOOKED, seconds[rnd] * 1000, 1, 0);
-			/* Conflict added in commit https://github.com/arcemu/arcemu/commit/460e35ce516e527f7dce2b424eddce9afd85ff22#diff-2f0f1d6ec531424670c3b34623a6a4c6R3199 
-			uint32 seconds[] = { 0, 4, 10, 14 };
-			uint32 rnd = RandomUInt(3);
-			sEventMgr.AddEvent(go, &GameObject::FishHooked, static_cast< Player* >(m_caster), EVENT_GAMEOBJECT_FISH_HOOKED, seconds[rnd] * 1000, 1, 0);*/
+		u_caster->SetChannelSpellTargetGUID(go->GetGUID());
 
 
-		}
-		sEventMgr.AddEvent(fn, &Arcemu::GO_FishingNode::EndFishing, true, EVENT_GAMEOBJECT_END_FISHING, 17 * 1000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-		sEventMgr.AddEvent(TO_UNIT(p_caster), &Unit::EventStopChanneling, false, EVENT_STOP_CHANNELING, 17 * 1000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-		/* Conflict added in commit https://github.com/arcemu/arcemu/commit/460e35ce516e527f7dce2b424eddce9afd85ff22#diff-2f0f1d6ec531424670c3b34623a6a4c6R3199 
-		sEventMgr.AddEvent(go, &GameObject::EndFishing, static_cast< Player* >(m_caster), false, EVENT_GAMEOBJECT_END_FISHING, 17 * 1000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);*/
+	}else{
 
-		p_caster->SetSummonedObject(go);
-	}
-	else
-	{
 		posx = px;
 		posy = py;
-		GameObjectInfo* goI = GameObjectNameStorage.LookupEntry(entry);
-		if(!goI)
-		{
-			if(p_caster)
-			{
-				sChatHandler.BlueSystemMessage(p_caster->GetSession(), "non-existent gameobject %u tried to be created by SpellEffectSummonObject. Report to devs!", entry);
-			}
-			return;
-		}
-		if(m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION && m_targets.m_destX && m_targets.m_destY && m_targets.m_destZ)
-		{
+		if((m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION) && (m_targets.m_destX && m_targets.m_destY && m_targets.m_destZ)){
 			posx = m_targets.m_destX;
 			posy = m_targets.m_destY;
 			pz = m_targets.m_destZ;
 		}
-		GameObject* go = m_caster->GetMapMgr()->CreateGameObject(entry);
+		go = m_caster->GetMapMgr()->CreateGameObject(entry);
 
 		go->CreateFromProto(entry, mapid, posx, posy, pz, orient);
-		go->SetState(1);
 		go->SetUInt64Value(OBJECT_FIELD_CREATED_BY, m_caster->GetGUID());
 		go->Phase(PHASE_SET, u_caster->GetPhase());
 		go->PushToWorld(m_caster->GetMapMgr());
 		sEventMgr.AddEvent(go, &GameObject::ExpireAndDelete, EVENT_GAMEOBJECT_EXPIRE, GetDuration(), 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-		if(entry == 17032 && p_caster)   // this is a portal
-		{
-			// enable it for party only
-			go->SetState(0);
-			//disable by default
-			WorldPacket* pkt = go->BuildFieldUpdatePacket(GAMEOBJECT_BYTES_1, 1 << 24);
-			SubGroup* pGroup = p_caster->GetGroup() ? p_caster->GetGroup()->GetSubGroup(p_caster->GetSubGroup()) : NULL;
 
-			if(pGroup)
-			{
-				p_caster->GetGroup()->Lock();
-				for(GroupMembersSet::iterator itr = pGroup->GetGroupMembersBegin(); itr != pGroup->GetGroupMembersEnd(); ++itr)
-				{
-					if((*itr)->m_loggedInPlayer && m_caster != (*itr)->m_loggedInPlayer)
-						(*itr)->m_loggedInPlayer->GetSession()->SendPacket(pkt);
-				}
-				p_caster->GetGroup()->Unlock();
-			}
-			delete pkt;
-		}
-		else if(entry == 36727 || entry == 177193 || entry == 194108)    // Portal of Summoning and portal of doom
-		{
-			if(!p_caster) return;
-
-			Arcemu::GO_Ritual *rgo = static_cast< Arcemu::GO_Ritual* >(go);
-
-			Player* pTarget = objmgr.GetPlayer((uint32)p_caster->GetSelection());
-			if(!pTarget || !pTarget->IsInWorld())
+		if(info->Type == GAMEOBJECT_TYPE_RITUAL){
+			if(p_caster == NULL)
 				return;
-			rgo->GetRitual()->Setup(p_caster->GetLowGUID(), pTarget->GetLowGUID(), m_spellInfo->Id);
-		}
-		else if(entry == 186811 || entry == 181622)    // ritual of refreshment, ritual of souls
-		{
-			if(!p_caster) return;
-
 			Arcemu::GO_Ritual *rgo = static_cast< Arcemu::GO_Ritual* >(go);
 
-			rgo->GetRitual()->Setup(p_caster->GetLowGUID(), 0, m_spellInfo->Id);
+			rgo->GetRitual()->Setup(p_caster->GetLowGUID(), static_cast< uint32 >(p_caster->GetSelection()), m_spellInfo->Id);
+
 		}
-		else//Lightwell,if there is some other type -- add it
-		{
-			go->charges = 5;//Max 5 charges
-		}
-		if(p_caster)
-			p_caster->SetSummonedObject(go);//p_caster
 	}
+
+	if(p_caster != NULL)
+		p_caster->SetSummonedObject(go);
 }
 
 void Spell::SpellEffectEnchantItem(uint32 i) // Enchant Item Permanent

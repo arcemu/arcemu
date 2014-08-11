@@ -2359,34 +2359,22 @@ void Spell::SendChannelUpdate(uint32 time)
 
 void Spell::SendChannelStart(uint32 duration)
 {
-	if(!m_caster->IsGameObject())
-	{
-		// Send Channel Start
+	if(!m_caster->IsGameObject()){
 		WorldPacket data(MSG_CHANNEL_START, 22);
-		data << m_caster->GetNewGUID();
-		data << GetProto()->Id;
-		data << duration;
+		
+		data << WoWGuid(m_caster->GetNewGUID());
+		data << uint32(m_spellInfo->Id);
+		data << uint32(duration);
+
 		m_caster->SendMessageToSet(&data, true);
 	}
 
 	m_castTime = m_timer = duration;
 
-	if(u_caster != NULL)
+	if(u_caster != NULL){
 		u_caster->SetChannelSpellId(GetProto()->Id);
-
-	/*
-	Unit* target = objmgr.GetCreature( TO< Player* >( m_caster )->GetSelection());
-	if(!target)
-		target = objmgr.GetObject<Player>( TO< Player* >( m_caster )->GetSelection());
-	if(!target)
-		return;
-
-	m_caster->SetUInt32Value(UNIT_FIELD_CHANNEL_OBJECT,target->GetGUIDLow());
-	m_caster->SetUInt32Value(UNIT_FIELD_CHANNEL_OBJECT+1,target->GetGUIDHigh());
-	//disabled it can be not only creature but GO as well
-	//and GO is not selectable, so this method will not work
-	//these fields must be filled @ place of call
-	*/
+		sEventMgr.AddEvent(u_caster, &Unit::EventStopChanneling, false, EVENT_STOP_CHANNELING, duration, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+	}
 }
 
 void Spell::SendResurrectRequest(Player* target)

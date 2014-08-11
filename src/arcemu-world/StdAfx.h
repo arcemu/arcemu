@@ -176,6 +176,7 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "GO_Trap.h"
 #include "GO_FishingHole.h"
 #include "GO_Goober.h"
+#include "GO_SpellCaster.h"
 #include "GO_SpellFocus.h"
 #include "GO_FishingNode.h"
 #include "CRitual.h"

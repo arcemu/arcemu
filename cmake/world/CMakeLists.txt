@@ -49,6 +49,7 @@ SET(sources
 	GMTicketCommands.cpp
 	GO_QuestGiver.cpp
 	GO_Trap.cpp
+	GO_SpellCaster.cpp
 	GO_SpellFocus.cpp
 	GO_FishingNode.cpp
 	CRitual.cpp
@@ -211,6 +212,7 @@ SET( headers
 	GameObject.h
 	GO_Questgiver.h
 	GO_Trap.h
+	GO_SpellCaster.h
 	GO_SpellFocus.h
 	GO_FishingNode.h
 	CRitual.h
