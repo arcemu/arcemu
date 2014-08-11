@@ -20,6 +20,7 @@
 
 #ifndef GO_FISHINGNODE_HPP
 #define GO_FISHINGNODE_HPP
+
 namespace Arcemu{
 	////////////////////////////////////////////////////////////////////////
 	//class GO_FishingNode
@@ -74,6 +75,9 @@ namespace Arcemu{
 		bool IsLootable(){ return true; }
 
 		bool HasLoot();
+
+	private:
+		bool FishHooked;
 	};
 }
 #endif

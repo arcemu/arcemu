@@ -34,16 +34,15 @@ enum GO_FLAGS{
 	GAMEOBJECT_FLAG_DAMAGED        = 0x200,
 	GAMEOBJECT_FLAG_DESTROYED      = 0x400
 };
+/* Conflict with merge file https://github.com/arcemu/arcemu/commit/43618cdbe8849ae5826392796726d6c08fd7722b#diff-cd6186a9ff87be5c48460393839f29dfR58
+enum GO_FLAGS{
+	GAMEOBJECT_FLAG_NONSELECTABLE = 1,
+	GAMEOBJECT_FLAG_LOCKED = 2
+};*/
 
 class Player;
 class GameObjectAIScript;
 class GameObjectTemplate;
-
-enum GAMEOBJECT_FLAG_BIT
-{
-    GAMEOBJECT_UNCLICKABLE = 0x01,
-    GAMEOBJECT_CLICKABLE = 0x20,
-};
 
 enum GAMEOBJECT_OVERRIDES //by VLack
 {

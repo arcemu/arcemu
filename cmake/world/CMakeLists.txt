@@ -206,7 +206,6 @@ SET( headers
 	faction.h
 	GameObject.h
 	GO_Questgiver.h
-	GO_ILockable.h
 	GO_Trap.h
 	GO_SpellFocus.h
 	GO_FishingNode.h

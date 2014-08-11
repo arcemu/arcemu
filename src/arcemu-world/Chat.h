@@ -340,15 +340,22 @@ class SERVER_DECL ChatHandler : public Singleton<ChatHandler>
 		bool HandleInvisibleCommand(const char* args, WorldSession* m_session);
 		bool HandleKillCommand(const char* args, WorldSession* m_session);
 		bool HandleKillByPlrCommand(const char* args , WorldSession* m_session);
+
+		////////////////////////////// GameObjects /////////////////////////////////////////////
 		bool HandleGOSelect(const char* args, WorldSession* m_session);
+		bool HandleGOSelectByGUID(const char *args, WorldSession *m_session);
 		bool HandleGODelete(const char* args, WorldSession* m_session);
 		bool HandleGOSpawn(const char* args, WorldSession* m_session);
 		bool HandleGOPhaseCommand(const char* args, WorldSession* m_session);
 		bool HandleGOInfo(const char* args, WorldSession* m_session);
 		bool HandleGOEnable(const char* args, WorldSession* m_session);
-		bool HandleGOActivate(const char* args, WorldSession* m_session);
+		bool HandleGOOpen(const char* args, WorldSession *m_session);
 		bool HandleGORotate(const char* args, WorldSession* m_session);
 		bool HandleGOMove(const char* args, WorldSession* m_session);
+		bool HandleGOState(const char *args, WorldSession *m_session);
+		bool HandleGOFlags(const char *args, WorldSession *m_session);
+		////////////////////////////////////////////////////////////////////////////////////////
+
 		bool HandleAddAIAgentCommand(const char* args, WorldSession* m_session);
 		bool HandleListAIAgentCommand(const char* args, WorldSession* m_session);
 		bool HandleRepairItemsCommand(const char* args, WorldSession* m_session);

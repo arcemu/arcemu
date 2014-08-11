@@ -378,23 +378,26 @@ void CommandTableStorage::Init()
 
 	static ChatCommand GameObjectCommandTable[] =
 	{
-		{ "select",       'o', &ChatHandler::HandleGOSelect,       "Selects the nearest GameObject to you",    NULL, 0, 0, 0 },
-		{ "delete",       'o', &ChatHandler::HandleGODelete,       "Deletes selected GameObject",              NULL, 0, 0, 0 },
-		{ "spawn",        'o', &ChatHandler::HandleGOSpawn,        "Spawns a GameObject by ID",                NULL, 0, 0, 0 },
+		{ "select",       'o', &ChatHandler::HandleGOSelect,       "Selects the nearest GameObject to you",      NULL, 0, 0, 0 },
+		{ "selectguid",   'o', &ChatHandler::HandleGOSelectByGUID, "Selects the GO with GUID",                   NULL, 0, 0, 0 },
+		{ "state",        'o', &ChatHandler::HandleGOState,        "Sets the state byte of the GO",              NULL, 0, 0, 0 },
+		{ "flags",        'o', &ChatHandler::HandleGOFlags,        "Sets the flags of the GO",                   NULL, 0, 0, 0 },
+		{ "delete",       'o', &ChatHandler::HandleGODelete,       "Deletes selected GameObject",                NULL, 0, 0, 0 },
+		{ "spawn",        'o', &ChatHandler::HandleGOSpawn,        "Spawns a GameObject by ID",                  NULL, 0, 0, 0 },
 		{ "phase",        'o', &ChatHandler::HandleGOPhaseCommand, "<phase> <save> - Phase selected GameObject", NULL, 0, 0, 0 },
-		{ "info",         'o', &ChatHandler::HandleGOInfo,         "Gives you information about selected GO", NULL, 0, 0, 0 },
-		{ "damage",       'o', &ChatHandler::HandleGODamageCommand,"Damages the GO for the specified hitpoints",NULL, 0, 0, 0},
-		{ "rebuild",      'o', &ChatHandler::HandleGORebuildCommand,"Rebuilds the GO.",                        NULL, 0, 0, 0 },
-		{ "activate",     'o', &ChatHandler::HandleGOActivate,     "Activates/Opens the selected GO.",         NULL, 0, 0, 0 },
-		{ "enable",       'o', &ChatHandler::HandleGOEnable,       "Enables the selected GO for use.",         NULL, 0, 0, 0 },
-		{ "scale",        'o', &ChatHandler::HandleGOScale,        "Sets scale of selected GO",                NULL, 0, 0, 0 },
-		{ "animprogress", 'o', &ChatHandler::HandleGOAnimProgress, "Sets anim progress",                       NULL, 0, 0, 0 },
-		{ "faction",      'o', &ChatHandler::HandleGOFactionCommand,"Sets the faction of the GO",              NULL, 0, 0, 0 },
-		{ "export",       'o', &ChatHandler::HandleGOExport,       "Exports the current GO selected",          NULL, 0, 0, 0 },
-		{ "move",         'g', &ChatHandler::HandleGOMove,         "Moves gameobject to player xyz",           NULL, 0, 0, 0 },
+		{ "info",         'o', &ChatHandler::HandleGOInfo,         "Gives you information about selected GO",    NULL, 0, 0, 0 },
+		{ "damage",       'o', &ChatHandler::HandleGODamageCommand,"Damages the GO for the specified hitpoints", NULL, 0, 0, 0 },
+		{ "rebuild",      'o', &ChatHandler::HandleGORebuildCommand,"Rebuilds the GO.",                          NULL, 0, 0, 0 },
+		{ "open",         'o', &ChatHandler::HandleGOOpen,          "Opens/Closes the selected GO.",             NULL, 0, 0, 0 },
+		{ "enable",       'o', &ChatHandler::HandleGOEnable,       "Enables the selected GO for use.",           NULL, 0, 0, 0 },
+		{ "scale",        'o', &ChatHandler::HandleGOScale,        "Sets scale of selected GO",                  NULL, 0, 0, 0 },
+		{ "animprogress", 'o', &ChatHandler::HandleGOAnimProgress, "Sets anim progress",                         NULL, 0, 0, 0 },
+		{ "faction",      'o', &ChatHandler::HandleGOFactionCommand,"Sets the faction of the GO",                NULL, 0, 0, 0 },
+		{ "export",       'o', &ChatHandler::HandleGOExport,       "Exports the current GO selected",            NULL, 0, 0, 0 },
+		{ "move",         'g', &ChatHandler::HandleGOMove,         "Moves gameobject to player xyz",             NULL, 0, 0, 0 },
 		{ "rotate",       'g', &ChatHandler::HandleGORotate,       "<Axis> <Value> - Rotates the object. <Axis> x,y, Default o.",             NULL, 0, 0, 0 },
 		{ "portto",       'v', &ChatHandler::HandlePortToGameObjectSpawnCommand, "Teleports you to the gameobject with spawn id x.", NULL, 0, 0, 0 },
-		{ NULL,           '0', NULL,                               "",                                         NULL, 0, 0, 0 }
+		{ NULL,           '0', NULL,                               "",                                           NULL, 0, 0, 0 }
 	};
 	dupe_command_table(GameObjectCommandTable, _GameObjectCommandTable);
 

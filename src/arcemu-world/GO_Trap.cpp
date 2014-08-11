@@ -60,8 +60,12 @@ namespace Arcemu{
 
 			targetupdatetimer += time_passed;
 
+			uint32 cooldown = pInfo->trap.cooldown * 1000;
+			if (cooldown < 1000)
+				cooldown = 1000;
+
 			// Update targets only every 2 seconds
-			if (targetupdatetimer > 2000)
+			if (targetupdatetimer > cooldown)
 				targetupdatetimer = 0;
 
 			if (targetupdatetimer != 0)

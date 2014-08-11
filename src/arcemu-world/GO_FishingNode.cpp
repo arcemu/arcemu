@@ -21,9 +21,11 @@
 #include "StdAfx.h"
 namespace Arcemu{
 	GO_FishingNode::GO_FishingNode() : GO_Lootable(){
+		FishHooked = false;
 	}
 
 	GO_FishingNode::GO_FishingNode(uint64 GUID) : GO_Lootable(GUID){
+		FishHooked = false;
 	}
 
 	GO_FishingNode::~GO_FishingNode(){
@@ -33,7 +35,7 @@ namespace Arcemu{
 		sEventMgr.RemoveEvents(this);
 
 		// Clicking on the bobber before something is hooked
-		if ((GetFlags() & 32) == 0){
+		if (!FishHooked){
 			EndFishing(true);
 			return false;
 		}
@@ -48,11 +50,15 @@ namespace Arcemu{
 	}
 
 	void GO_FishingNode::EventFishHooked(){
+
 		WorldPacket data(SMSG_GAMEOBJECT_CUSTOM_ANIM, 12);
+
 		data << uint64(GetGUID());
 		data << uint32(0); // value < 4
+
 		SendMessageToSet(&data, false, false);
-		SetFlags(GetFlags() | 32);
+
+		FishHooked = true;
 	}
 
 	bool GO_FishingNode::HasLoot(){
