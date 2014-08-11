@@ -342,10 +342,9 @@ void GameObject::OnRemoveInRangeObject(Object* pObj)
 void GameObject::RemoveFromWorld(bool free_guid)
 {
 	WorldPacket data(SMSG_GAMEOBJECT_DESPAWN_ANIM, 8);
-	data << GetGUID();
+	data << uint64(GetGUID());
 	SendMessageToSet(&data, true);
 
-	sEventMgr.RemoveEvents( this );
 	Object::RemoveFromWorld(free_guid);
 }
 
@@ -399,12 +398,34 @@ void GameObject::UpdateRotation()
 	}
 }
 
-void GameObject::Damage( uint32 damage, uint64 AttackerGUID, uint64 ControllerGUID, uint32 SpellID ){
+void GameObject::CastSpell(uint64 TargetGUID, SpellEntry *sp){
+	Spell *s = new Spell(this, sp, true, NULL);
+
+	SpellCastTargets tgt(TargetGUID);
+
+	tgt.m_destX = GetPositionX();
+	tgt.m_destY = GetPositionY();
+	tgt.m_destZ = GetPositionZ();
+
+	s->prepare(&tgt);
+}
+
+void GameObject::CastSpell(uint64 TargetGUID, uint32 SpellID){
+	SpellEntry *sp = dbcSpell.LookupEntryForced(SpellID);
+	if(sp == NULL){
+		sLog.outError("GameObject %u tried to cast a non-existing Spell %u.", pInfo->ID, SpellID);
+		return;
+	}
+
+	CastSpell(TargetGUID, sp);
+}
+
+void GameObject::Damage(uint32 damage, uint64 AttackerGUID, uint64 ControllerGUID, uint32 SpellID){
 	// If we are already destroyed there's nothing to damage!
 	if( hitpoints == 0 )
 		return;
 	
-	if( damage >= hitpoints ){
+	if(damage >= hitpoints){
 		// Instant destruction
 		hitpoints = 0;
 		
@@ -418,22 +439,22 @@ void GameObject::Damage( uint32 damage, uint64 AttackerGUID, uint64 ControllerGU
 		// Simply damaging
 		hitpoints -= damage;
 		
-		if( !HasFlags( GAMEOBJECT_FLAG_DAMAGED ) ){
+		if(!HasFlags(GAMEOBJECT_FLAG_DAMAGED)){
 			// Intact  ->  Damaged
 			
 			// Are we below the intact-damaged transition treshold?
-			if (hitpoints <= (maxhitpoints - pInfo->raw.sound0)){
-				SetFlags( GAMEOBJECT_FLAG_DAMAGED );
+			if(hitpoints <= (maxhitpoints - pInfo->raw.sound0)){
+				SetFlags(GAMEOBJECT_FLAG_DAMAGED);
 				SetDisplayId(pInfo->raw.sound4); // damaged display id
 			}
 		}
 
-		CALL_GO_SCRIPT_EVENT( this, OnDamaged )( damage );
+		CALL_GO_SCRIPT_EVENT(this, OnDamaged)(damage);
 	}
 	
-	uint8 animprogress = static_cast< uint8 >( Arcemu::round( hitpoints/ float( maxhitpoints ) ) * 255 );
-	SetAnimProgress( animprogress );
-	SendDamagePacket( damage, AttackerGUID, ControllerGUID, SpellID );
+	uint8 animprogress = static_cast< uint8 >(Arcemu::round(hitpoints/ float(maxhitpoints)) * 255);
+	SetAnimProgress(animprogress);
+	SendDamagePacket(damage, AttackerGUID, ControllerGUID, SpellID);
 }
 
 void GameObject::SendDamagePacket( uint32 damage, uint64 AttackerGUID, uint64 ControllerGUID, uint32 SpellID ){

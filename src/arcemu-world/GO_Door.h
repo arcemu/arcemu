@@ -41,6 +41,9 @@ namespace Arcemu{
 		void InitAI();
 
 
+		void Use(uint64 GUID);
+
+
 		void Open();
 
 

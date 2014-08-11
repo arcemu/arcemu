@@ -38,10 +38,18 @@ namespace Arcemu{
 		spell = dbcSpell.LookupEntryForced(pInfo->trap.spellId);
 		charges = pInfo->trap.charges;
 
-		if (pInfo->trap.stealthed != 0){
+		if(pInfo->trap.stealthed != 0){
 			invisible = true;
 			invisibilityFlag = INVIS_FLAG_TRAP;
 		}
+
+		cooldown = pInfo->trap.cooldown * 1000;
+		if(cooldown < 1000)
+			cooldown = 1000;
+
+		maxdistance = sqrt(float(pInfo->trap.radius));
+		if(maxdistance == 0.0f)
+			maxdistance = 1.0f;
 
 		GameObject::InitAI();
 	}
@@ -65,10 +73,6 @@ namespace Arcemu{
 
 			targetupdatetimer += time_passed;
 
-			uint32 cooldown = pInfo->trap.cooldown * 1000;
-			if (cooldown < 1000)
-				cooldown = 1000;
-
 			// Update targets only every 2 seconds
 			if (targetupdatetimer > cooldown)
 				targetupdatetimer = 0;
@@ -88,10 +92,6 @@ namespace Arcemu{
 
 				dist = GetDistanceSq(o);
 
-				float maxdistance = sqrt(float(pInfo->trap.radius));
-				if(maxdistance == 0.0f)
-					maxdistance = 1.0f;
-
 				if(dist <= maxdistance){
 
 					if(m_summonedGo){
@@ -103,7 +103,8 @@ namespace Arcemu{
 						if(!isAttackable(m_summoner, o))
 							continue;
 					}
-					CastSpell(o->GetGUID(), pInfo->trap.spellId);
+
+					CastSpell(o->GetGUID(), spell);
 
 					if(m_summoner != NULL)
 						m_summoner->HandleProc(PROC_ON_TRAP_TRIGGER, reinterpret_cast< Unit* >(o), spell);
@@ -123,18 +124,5 @@ namespace Arcemu{
 				}
 			}
 		}
-	}
-	void GO_Trap::CastSpell(uint64 TargetGUID, uint32 SpellID){
-		SpellEntry *sp = dbcSpell.LookupEntryForced(SpellID);
-		if(sp == NULL){
-			sLog.outError("GameObject %u tried to cast a non-existing Spell %u.", pInfo->ID, SpellID);
-			return;
-		}
-		Spell *s = new Spell(this, sp, true, NULL);
-		SpellCastTargets tgt(TargetGUID);
-		tgt.m_destX = GetPositionX();
-		tgt.m_destY = GetPositionY();
-		tgt.m_destZ = GetPositionZ();
-		s->prepare(&tgt);
 	}
 }

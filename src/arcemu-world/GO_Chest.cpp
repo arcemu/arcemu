@@ -30,12 +30,25 @@ namespace Arcemu{
 	GO_Chest::~GO_Chest(){
 	}
 
+	void GO_Chest::InitAI(){
+		GameObject::InitAI();
+
+		if(pInfo->chest.linkedTrapId != 0){
+			GameObjectInfo *i = GameObjectNameStorage.LookupEntry(pInfo->chest.linkedTrapId);
+
+			if(i != NULL){
+				if(i->trap.spellId != 0)
+					spell = dbcSpell.LookupEntryForced(i->trap.spellId);
+			}
+		}
+	}
+
 	bool GO_Chest::HasLoot(){
 		if (loot.gold > 0)
 			return true;
 
 		for (vector< __LootItem >::iterator itr = loot.items.begin(); itr != loot.items.end(); ++itr){
-			if ((itr->item.itemproto->Bonding == ITEM_BIND_QUEST) || (itr->item.itemproto->Bonding == ITEM_BIND_QUEST2))
+			if((itr->item.itemproto->Bonding == ITEM_BIND_QUEST) || (itr->item.itemproto->Bonding == ITEM_BIND_QUEST2))
 				continue;
 
 			if (itr->iItemsCount > 0)
@@ -44,13 +57,22 @@ namespace Arcemu{
 		return false;
 	}
 
-
 	void GO_Chest::Open(){
 		SetState(GAMEOBJECT_STATE_OPEN);
 	}
 
-
 	void GO_Chest::Close(){
 		SetState(GAMEOBJECT_STATE_CLOSED);
 		}
+
+	void GO_Chest::Use(uint64 GUID){
+		if(GetState() == GAMEOBJECT_STATE_CLOSED){
+			Open();
+
+			if(spell != NULL)
+				CastSpell(GUID, spell);
+		}else{
+			Close();
+		}
+	}
 }

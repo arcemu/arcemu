@@ -2687,11 +2687,10 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 			break;
 		case LOCKTYPE_QUICK_CLOSE:
 			{
-				if (gameObjTarget == NULL)
+				if(gameObjTarget == NULL)
 					return;
 
-				if (gameObjTarget->GetState() == GAMEOBJECT_STATE_OPEN)
-					gameObjTarget->Close();
+				gameObjTarget->Use(m_caster->GetGUID());
 			}
 			break;
 
@@ -2699,20 +2698,17 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 			if( gameObjTarget == NULL )
 				return;
 
-			if( ( p_caster != NULL ) && ( p_caster->m_bg != NULL ) )
+			if( ( p_caster != NULL ) && ( p_caster->m_bg != NULL ) )    // gameObjTarget->Use(m_caster->GetGUID());
 				p_caster->m_bg->HookQuickLockOpen( gameObjTarget, p_caster, this );
-
+			
 			// there is no break here on purpose
 
 		default://not profession
 			{
-				if(!gameObjTarget)
+				if(gameObjTarget == NULL)
 					return;
 
-				if (gameObjTarget->GetState() == GAMEOBJECT_STATE_OPEN)
-					gameObjTarget->Close();
-				else
-					gameObjTarget->Open();
+				gameObjTarget->Use(m_caster->GetGUID());
 
 				CALL_GO_SCRIPT_EVENT(gameObjTarget, OnActivate)(p_caster);
 				CALL_INSTANCE_SCRIPT_EVENT(gameObjTarget->GetMapMgr(), OnGameObjectActivate)(gameObjTarget, p_caster);

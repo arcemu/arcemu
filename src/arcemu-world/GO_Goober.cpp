@@ -21,37 +21,50 @@
 #include "StdAfx.h"
 
 namespace Arcemu{
-	GO_Door::GO_Door() : GameObject(){
+	GO_Goober::GO_Goober() : GameObject(){
 	}
 
-	GO_Door::GO_Door(uint64 GUID) : GameObject(GUID){
+	GO_Goober::GO_Goober(uint64 GUID) : GameObject(GUID){
+		spell = NULL;
 	}
 
-	GO_Door::~GO_Door(){
+	GO_Goober::~GO_Goober(){
 	}
 
-	void GO_Door::InitAI(){
+	void GO_Goober::InitAI(){
 		GameObject::InitAI();
 
-		if(pInfo->door.startOpen != 0)
-			SetState(0);
-		else
-			SetState(1);
+		if(pInfo->goober.linkedTrapId != 0){
+			GameObjectInfo *i = GameObjectNameStorage.LookupEntry(pInfo->goober.linkedTrapId);
+
+			if (i != NULL){
+				if (i->trap.spellId != 0)
+					spell = dbcSpell.LookupEntryForced(i->trap.spellId);
+			}
+		}
 	}
 
-	void GO_Door::Open(){
+	void GO_Goober::Open(){
 		SetState(GAMEOBJECT_STATE_OPEN);
 
-		if(pInfo->door.autoCloseTime != 0)
-			sEventMgr.AddEvent(this, &GO_Door::Close, 0, pInfo->door.autoCloseTime, 1, 0);
+		if(pInfo->goober.autoCloseTime != 0)
+			sEventMgr.AddEvent(this, &GO_Goober::Close, EVENT_GAMEOBJECT_CLOSE, pInfo->goober.autoCloseTime, 1, 0);
 	}
 
-	void GO_Door::Close(){
+	void GO_Goober::Close(){
 		sEventMgr.RemoveEvents(this, EVENT_GAMEOBJECT_CLOSE);
 		SetState(GAMEOBJECT_STATE_CLOSED);
 	}
 
-	void GO_Door::SpecialOpen(){
-		SetState(GAMEOBJECT_STATE_ALTERNATIVE_OPEN);
+	void GO_Goober::Use(uint64 GUID){
+		if(GetState() == GAMEOBJECT_STATE_CLOSED){
+			Open();
+
+			if (spell != NULL){
+				CastSpell(GUID, spell);
+			}
+		}else{
+			Close();
+		}
 	}
 }

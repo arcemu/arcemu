@@ -17,27 +17,48 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 *
 */
+
 #include "StdAfx.h"
 
 namespace Arcemu{
-	GO_Goober::GO_Goober() : GameObject(){
+	GO_Door::GO_Door() : GameObject(){
 	}
 
-	GO_Goober::GO_Goober(uint64 GUID) : GameObject(GUID){
+	GO_Door::GO_Door(uint64 GUID) : GameObject(GUID){
 	}
 
-	GO_Goober::~GO_Goober(){
+	GO_Door::~GO_Door(){
 	}
 
-	void GO_Goober::Open(){
+	void GO_Door::InitAI(){
+		GameObject::InitAI();
+
+		if(pInfo->door.startOpen != 0)
+			SetState(0);
+		else
+			SetState(1);
+	}
+
+	void GO_Door::Open(){
 		SetState(GAMEOBJECT_STATE_OPEN);
 
-		if(pInfo->goober.autoCloseTime != 0)
-			sEventMgr.AddEvent(this, &GO_Goober::Close, EVENT_GAMEOBJECT_CLOSE, pInfo->goober.autoCloseTime, 1, 0);
+		if(pInfo->door.autoCloseTime != 0)
+			sEventMgr.AddEvent(this, &GO_Door::Close, 0, pInfo->door.autoCloseTime, 1, 0);
 	}
 
-	void GO_Goober::Close(){
+	void GO_Door::Close(){
 		sEventMgr.RemoveEvents(this, EVENT_GAMEOBJECT_CLOSE);
 		SetState(GAMEOBJECT_STATE_CLOSED);
+	}
+
+	void GO_Door::SpecialOpen(){
+		SetState(GAMEOBJECT_STATE_ALTERNATIVE_OPEN);
+	}
+
+	void GO_Door::Use(uint64 GUID){
+		if(GetState() == GAMEOBJECT_STATE_CLOSED)
+			Open();
+		else
+			Close();
 	}
 }

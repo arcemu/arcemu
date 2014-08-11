@@ -29,33 +29,29 @@ namespace Arcemu{
 	////////////////////////////////////////////////////////////////////
 
 	class GO_Trap : public GameObject{
+
 	public:
 		GO_Trap();
+
+
 		GO_Trap(uint64 GUID);
+
+
 		~GO_Trap();
+
+
 		void InitAI();
+
+
 		void Update(unsigned long time_passed);
-
-		///////////////////////////////////////////////////////////////////
-		//void CastSpell( uint64 TargetGUID, uint32 SpellID )
-		// Makes the Trap try to cast a spell on a target
-		//
-		//Parameters
-		// uint64 TargetGUID - GUID of the Target Object
-		// uint32 SpellId - Identifier of the spell to cast
-		//
-		//Return Value
-		// None
-		//
-		//
-		//////////////////////////////////////////////////////////////////
-
-		void CastSpell(uint64 TargetGUID, uint32 SpellID);
 
 	private:
 		SpellEntry *spell;
 		uint32 targetupdatetimer;
+		float maxdistance;
+		uint32 cooldown;
 	};
+
 }
 
 #endif
