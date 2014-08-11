@@ -1434,17 +1434,9 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 	{
 		case GAMEOBJECT_TYPE_CHAIR:
 			{
-
-				/*WorldPacket data(MSG_MOVE_HEARTBEAT, 66);
-				data << plyr->GetNewGUID();
-				data << uint8(0);
-				data << uint64(0);
-				data << obj->GetPositionX() << obj->GetPositionY() << obj->GetPositionZ() << obj->GetOrientation();
-				plyr->SendMessageToSet(&data, true);*/
 				plyr->SafeTeleport(plyr->GetMapId(), plyr->GetInstanceID(), obj->GetPositionX(), obj->GetPositionY(), obj->GetPositionZ(), obj->GetOrientation());
 				plyr->SetStandState(STANDSTATE_SIT_MEDIUM_CHAIR);
 				plyr->m_lastRunSpeed = 0; //counteract mount-bug; reset speed to zero to force update SetPlayerSpeed in next line.
-				//plyr->SetSpeeds(RUN,plyr->m_base_runSpeed); <--cebernic : Oh No,this could be wrong. If I have some mods existed,this just on baserunspeed as a fixed value?
 				plyr->UpdateSpeed();
 			}
 			break;
@@ -1457,10 +1449,6 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 				WorldPacket data(SMSG_ENABLE_BARBER_SHOP, 0);
 				SendPacket(&data);
 				plyr->SetStandState(STANDSTATE_SIT_HIGH_CHAIR);
-				//Zack : no idea if this phaseshift is even required
-//			WorldPacket data2(SMSG_SET_PHASE_SHIFT, 4);
-//			data2 << uint32(0x00000200);
-//			plyr->SendMessageToSet(&data2, true);
 			}
 			break;
 		case GAMEOBJECT_TYPE_CHEST://cast da spell
@@ -1548,21 +1536,23 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 						s->finish(false);
 					}
 				}
-			}
-			break;
+			}break;
 		case GAMEOBJECT_TYPE_DOOR:
 			{
-				// cebernic modified this state = 0 org =1
-				if ((obj->GetState() == 0))
-					obj->EventCloseDoor();
+				if (obj->GetState() == GAMEOBJECT_STATE_CLOSED)
+					obj->Open();
 				else
-				{
-					obj->SetFlags(obj->GetFlags() | 1); // lock door
-					obj->SetState(0);
-					sEventMgr.AddEvent(obj, &GameObject::EventCloseDoor, EVENT_GAMEOBJECT_DOOR_CLOSE, 20000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-				}
-			}
-			break;
+					obj->Close();
+			}break;
+		
+		case GAMEOBJECT_TYPE_BUTTON:
+			{
+				if (obj->GetState() == GAMEOBJECT_STATE_OPEN)
+					obj->Close();
+				else
+					obj->Open();
+			}break;
+
 		case GAMEOBJECT_TYPE_FLAGSTAND:
 			{
 				// battleground/warsong gulch flag
@@ -1729,6 +1719,11 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 			break;
 		case GAMEOBJECT_TYPE_GOOBER:
 			{
+				if (obj->GetState() == GAMEOBJECT_STATE_OPEN)
+					obj->Close();
+				else
+					obj->Open();
+
 				plyr->CastSpell(guid, goinfo->raw.Unknown1, false);
 
 				// show page

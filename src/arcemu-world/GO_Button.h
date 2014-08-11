@@ -18,39 +18,35 @@
 *
 */
 
-#include "StdAfx.h"
+#ifndef GO_BUTTON_HPP
+#define GO_BUTTON_HPP
 
 namespace Arcemu{
-	GO_Chest::GO_Chest() : GO_Lootable(){
-	}
-
-	GO_Chest::GO_Chest(uint64 GUID) : GO_Lootable(GUID){
-	}
-
-	GO_Chest::~GO_Chest(){
-	}
-
-	bool GO_Chest::HasLoot(){
-		if (loot.gold > 0)
-			return true;
-
-		for (vector< __LootItem >::iterator itr = loot.items.begin(); itr != loot.items.end(); ++itr){
-			if ((itr->item.itemproto->Bonding == ITEM_BIND_QUEST) || (itr->item.itemproto->Bonding == ITEM_BIND_QUEST2))
-				continue;
-
-			if (itr->iItemsCount > 0)
-				return true;
-		}
-		return false;
-	}
+	////////////////////////////////////////////////////////////////////////
+	//class GO_Button
+	// Implements Type 1 (BUTTON) GameObjects
+	//
+	////////////////////////////////////////////////////////////////////////
+	class GO_Button : public GameObject{
+	public:
+		GO_Button();
 
 
-	void GO_Chest::Open(){
-		SetState(GAMEOBJECT_STATE_OPEN);
-	}
+		GO_Button(uint64 GUID);
 
 
-	void GO_Chest::Close(){
-		SetState(GAMEOBJECT_STATE_CLOSED);
-		}
+		~GO_Button();
+
+
+		void InitAI();
+
+
+		void Open();
+
+
+		void Close();
+	};
+
 }
+
+#endif

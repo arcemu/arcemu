@@ -2687,8 +2687,11 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 			break;
 		case LOCKTYPE_QUICK_CLOSE:
 			{
-				if(!gameObjTarget) return;
-				gameObjTarget->EventCloseDoor();
+				if (gameObjTarget == NULL)
+					return;
+
+				if (gameObjTarget->GetState() == GAMEOBJECT_STATE_OPEN)
+					gameObjTarget->Close();
 			}
 			break;
 
@@ -2705,6 +2708,11 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 			{
 				if(!gameObjTarget)
 					return;
+
+				if (gameObjTarget->GetState() == GAMEOBJECT_STATE_OPEN)
+					gameObjTarget->Close();
+				else
+					gameObjTarget->Open();
 
 				CALL_GO_SCRIPT_EVENT(gameObjTarget, OnActivate)(p_caster);
 				CALL_INSTANCE_SCRIPT_EVENT(gameObjTarget->GetMapMgr(), OnGameObjectActivate)(gameObjTarget, p_caster);
@@ -4506,11 +4514,6 @@ void Spell::SpellEffectSummonObjectSlot(uint32 i)
 
 	GoSummon->PushToWorld(m_caster->GetMapMgr());
 
-	if(GoSummon->GetType() == GAMEOBJECT_TYPE_TRAP)
-	{
-		GoSummon->invisible = true;
-		GoSummon->invisibilityFlag = INVIS_FLAG_TRAP;
-	}
 	sEventMgr.AddEvent(GoSummon, &GameObject::ExpireAndDelete, EVENT_GAMEOBJECT_EXPIRE, GetDuration(), 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 
 	GoSummon->SetSummoned(u_caster);

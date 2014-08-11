@@ -21,36 +21,37 @@
 #include "StdAfx.h"
 
 namespace Arcemu{
-	GO_Chest::GO_Chest() : GO_Lootable(){
+	GO_Door::GO_Door() : GameObject(){
 	}
 
-	GO_Chest::GO_Chest(uint64 GUID) : GO_Lootable(GUID){
+	GO_Door::GO_Door(uint64 GUID) : GameObject(GUID){
 	}
 
-	GO_Chest::~GO_Chest(){
+	GO_Door::~GO_Door(){
 	}
 
-	bool GO_Chest::HasLoot(){
-		if (loot.gold > 0)
-			return true;
+	void GO_Door::InitAI(){
+		GameObject::InitAI();
 
-		for (vector< __LootItem >::iterator itr = loot.items.begin(); itr != loot.items.end(); ++itr){
-			if ((itr->item.itemproto->Bonding == ITEM_BIND_QUEST) || (itr->item.itemproto->Bonding == ITEM_BIND_QUEST2))
-				continue;
-
-			if (itr->iItemsCount > 0)
-				return true;
-		}
-		return false;
+		if(pInfo->door.startOpen != 0)
+			SetState(0);
+		else
+			SetState(1);
 	}
 
-
-	void GO_Chest::Open(){
+	void GO_Door::Open(){
 		SetState(GAMEOBJECT_STATE_OPEN);
+
+		if(pInfo->door.autoCloseTime != 0)
+			sEventMgr.AddEvent(this, &GO_Door::Close, 0, pInfo->door.autoCloseTime, 1, 0);
 	}
 
-
-	void GO_Chest::Close(){
+	void GO_Door::Close(){
+		sEventMgr.RemoveEvents(this, EVENT_GAMEOBJECT_CLOSE);
 		SetState(GAMEOBJECT_STATE_CLOSED);
-		}
+	}
+
+	void GO_Door::SpecialOpen(){
+		SetState(GAMEOBJECT_STATE_ALTERNATIVE_OPEN);
+	}
 }

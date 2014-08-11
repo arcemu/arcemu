@@ -1862,6 +1862,14 @@ GameObject* MapMgr::CreateGameObject(uint32 entry)
 
 	// this will be replaced by a factory!
 	switch (i->Type){
+	
+		case GAMEOBJECT_TYPE_DOOR:
+			go = new Arcemu::GO_Door(uint64((uint64(HIGHGUID_TYPE_GAMEOBJECT) << 32) | GUID));
+			break;
+
+		case GAMEOBJECT_TYPE_BUTTON:
+			go = new Arcemu::GO_Button(uint64((uint64(HIGHGUID_TYPE_GAMEOBJECT) << 32) | GUID));
+			break;
 
 		case GAMEOBJECT_TYPE_QUESTGIVER:
 			go = new Arcemu::GO_QuestGiver(uint64((uint64(HIGHGUID_TYPE_GAMEOBJECT) << 32) | GUID));
@@ -1877,6 +1885,10 @@ GameObject* MapMgr::CreateGameObject(uint32 entry)
 
 		case GAMEOBJECT_TYPE_SPELL_FOCUS:
 			go = new Arcemu::GO_SpellFocus(uint64((uint64(HIGHGUID_TYPE_GAMEOBJECT) << 32) | GUID));
+			break;
+
+		case GAMEOBJECT_TYPE_GOOBER:
+			go = new Arcemu::GO_Goober(uint64((uint64(HIGHGUID_TYPE_GAMEOBJECT) << 32) | GUID));
 			break;
 
 		case GAMEOBJECT_TYPE_FISHINGNODE:

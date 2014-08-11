@@ -17,8 +17,10 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 *
 */
+
 #ifndef GO_CHEST_HPP
 #define GO_CHEST_HPP
+
 namespace Arcemu{
 	///////////////////////////////////////////////////////////////////
 	//class GO_Chest
@@ -26,12 +28,28 @@ namespace Arcemu{
 	//
 	//////////////////////////////////////////////////////////////////
 	class GO_Chest : public GO_Lootable{
+
 	public:
 		GO_Chest();
+
+
 		GO_Chest(uint64 GUID);
+
+
 		~GO_Chest();
+
+
 		bool IsLootable(){ return true; }
+
+
 		bool HasLoot();
+
+
+		void Open();
+
+
+		void Close();
+
 	};
 }
 #endif

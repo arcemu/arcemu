@@ -18,39 +18,48 @@
 *
 */
 
-#include "StdAfx.h"
+#ifndef GO_DOOR_HPP
+#define GO_DOOR_HPP
 
 namespace Arcemu{
-	GO_Chest::GO_Chest() : GO_Lootable(){
-	}
-
-	GO_Chest::GO_Chest(uint64 GUID) : GO_Lootable(GUID){
-	}
-
-	GO_Chest::~GO_Chest(){
-	}
-
-	bool GO_Chest::HasLoot(){
-		if (loot.gold > 0)
-			return true;
-
-		for (vector< __LootItem >::iterator itr = loot.items.begin(); itr != loot.items.end(); ++itr){
-			if ((itr->item.itemproto->Bonding == ITEM_BIND_QUEST) || (itr->item.itemproto->Bonding == ITEM_BIND_QUEST2))
-				continue;
-
-			if (itr->iItemsCount > 0)
-				return true;
-		}
-		return false;
-	}
+	////////////////////////////////////////////////////////////////////////
+	//class GO_Door
+	// Implements Type 0 (DOOR) GameObjects
+	//
+	////////////////////////////////////////////////////////////////////////
+	class GO_Door : public GameObject{
+	public:
+		GO_Door();
 
 
-	void GO_Chest::Open(){
-		SetState(GAMEOBJECT_STATE_OPEN);
-	}
+		GO_Door(uint64 GUID);
 
 
-	void GO_Chest::Close(){
-		SetState(GAMEOBJECT_STATE_CLOSED);
-		}
+		~GO_Door();
+
+
+		void InitAI();
+
+
+		void Open();
+
+
+		void Close();
+
+
+		///////////////////////////////////////////////////////////////////
+		//void SpecialOpen()
+		// Opens the door with a special way. Like an explosion.
+		//
+		//Parameters
+		// None
+		//
+		//Return Value
+		// None
+		//
+		///////////////////////////////////////////////////////////////////
+		void SpecialOpen();
+	};
 }
+
+#endif

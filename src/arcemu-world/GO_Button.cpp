@@ -21,36 +21,31 @@
 #include "StdAfx.h"
 
 namespace Arcemu{
-	GO_Chest::GO_Chest() : GO_Lootable(){
+	GO_Button::GO_Button() : GameObject(){
 	}
 
-	GO_Chest::GO_Chest(uint64 GUID) : GO_Lootable(GUID){
+	GO_Button::GO_Button(uint64 GUID) : GameObject(GUID){
 	}
 
-	GO_Chest::~GO_Chest(){
+	GO_Button::~GO_Button(){
 	}
 
-	bool GO_Chest::HasLoot(){
-		if (loot.gold > 0)
-			return true;
+	void GO_Button::InitAI(){
+		GameObject::InitAI();
 
-		for (vector< __LootItem >::iterator itr = loot.items.begin(); itr != loot.items.end(); ++itr){
-			if ((itr->item.itemproto->Bonding == ITEM_BIND_QUEST) || (itr->item.itemproto->Bonding == ITEM_BIND_QUEST2))
-				continue;
-
-			if (itr->iItemsCount > 0)
-				return true;
-		}
-		return false;
+		if(pInfo->button.startOpen != 0)
+			SetState(GAMEOBJECT_STATE_OPEN);
 	}
 
-
-	void GO_Chest::Open(){
+	void GO_Button::Open(){
 		SetState(GAMEOBJECT_STATE_OPEN);
+
+		if(pInfo->button.autoCloseTime != 0)
+			sEventMgr.AddEvent(this, &GO_Button::Close, EVENT_GAMEOBJECT_CLOSE, pInfo->button.autoCloseTime, 1, 0);
 	}
 
-
-	void GO_Chest::Close(){
+	void GO_Button::Close(){
+		sEventMgr.RemoveEvents(this, EVENT_GAMEOBJECT_CLOSE);
 		SetState(GAMEOBJECT_STATE_CLOSED);
-		}
+	}
 }

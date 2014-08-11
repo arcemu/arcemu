@@ -276,14 +276,6 @@ void GameObject::DeleteFromDB()
 		WorldDatabase.Execute("DELETE FROM gameobject_spawns WHERE id=%u", m_spawn->id);
 }
 
-void GameObject::EventCloseDoor()
-{
-	// gameobject_flags +1 closedoor animate restore the pointer flag.
-	// by cebernic
-	SetState(1);
-	SetFlags(GetFlags() & ~1);
-}
-
 void GameObject::_Expire()
 {
 	sEventMgr.RemoveEvents(this);

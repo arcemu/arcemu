@@ -17,40 +17,27 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 *
 */
-
 #include "StdAfx.h"
 
 namespace Arcemu{
-	GO_Chest::GO_Chest() : GO_Lootable(){
+	GO_Goober::GO_Goober() : GameObject(){
 	}
 
-	GO_Chest::GO_Chest(uint64 GUID) : GO_Lootable(GUID){
+	GO_Goober::GO_Goober(uint64 GUID) : GameObject(GUID){
 	}
 
-	GO_Chest::~GO_Chest(){
+	GO_Goober::~GO_Goober(){
 	}
 
-	bool GO_Chest::HasLoot(){
-		if (loot.gold > 0)
-			return true;
-
-		for (vector< __LootItem >::iterator itr = loot.items.begin(); itr != loot.items.end(); ++itr){
-			if ((itr->item.itemproto->Bonding == ITEM_BIND_QUEST) || (itr->item.itemproto->Bonding == ITEM_BIND_QUEST2))
-				continue;
-
-			if (itr->iItemsCount > 0)
-				return true;
-		}
-		return false;
-	}
-
-
-	void GO_Chest::Open(){
+	void GO_Goober::Open(){
 		SetState(GAMEOBJECT_STATE_OPEN);
+
+		if(pInfo->goober.autoCloseTime != 0)
+			sEventMgr.AddEvent(this, &GO_Goober::Close, EVENT_GAMEOBJECT_CLOSE, pInfo->goober.autoCloseTime, 1, 0);
 	}
 
-
-	void GO_Chest::Close(){
+	void GO_Goober::Close(){
+		sEventMgr.RemoveEvents(this, EVENT_GAMEOBJECT_CLOSE);
 		SetState(GAMEOBJECT_STATE_CLOSED);
-		}
+	}
 }

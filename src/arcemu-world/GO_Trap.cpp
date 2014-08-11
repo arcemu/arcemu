@@ -38,6 +38,11 @@ namespace Arcemu{
 		spell = dbcSpell.LookupEntryForced(pInfo->trap.spellId);
 		charges = pInfo->trap.charges;
 
+		if (pInfo->trap.stealthed != 0){
+			invisible = true;
+			invisibilityFlag = INVIS_FLAG_TRAP;
+		}
+
 		GameObject::InitAI();
 	}
 

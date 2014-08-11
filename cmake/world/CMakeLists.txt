@@ -54,6 +54,9 @@ SET(sources
 	GO_Ritual.cpp
 	GO_Chest.cpp
 	GO_FishingHole.cpp
+	GO_Button.cpp
+	GO_Door.cpp
+	GO_Goober.cpp
 	Gossip.cpp
 	Group.cpp 
 	GroupHandler.cpp 
@@ -213,6 +216,9 @@ SET( headers
 	GO_Chest.h
 	GO_FishingHole.h
 	GO_Lootable.h
+	GO_Button.h
+	GO_Door.h
+	GO_Goober.h
 	Gossip.h
 	Group.h
 	Entities/Summons/GuardianSummon.h
