@@ -382,6 +382,7 @@ void CommandTableStorage::Init()
 		{ "selectguid",   'o', &ChatHandler::HandleGOSelectByGUID, "Selects the GO with GUID",                   NULL, 0, 0, 0 },
 		{ "state",        'o', &ChatHandler::HandleGOState,        "Sets the state byte of the GO",              NULL, 0, 0, 0 },
 		{ "flags",        'o', &ChatHandler::HandleGOFlags,        "Sets the flags of the GO",                   NULL, 0, 0, 0 },
+		{ "faction",      'o', &ChatHandler::HandleGOFaction,      "Sets the faction of the GO",                 NULL, 0, 0, 0 },
 		{ "delete",       'o', &ChatHandler::HandleGODelete,       "Deletes selected GameObject",                NULL, 0, 0, 0 },
 		{ "spawn",        'o', &ChatHandler::HandleGOSpawn,        "Spawns a GameObject by ID",                  NULL, 0, 0, 0 },
 		{ "phase",        'o', &ChatHandler::HandleGOPhaseCommand, "<phase> <save> - Phase selected GameObject", NULL, 0, 0, 0 },

@@ -681,6 +681,27 @@ bool ChatHandler::HandleMonsterYellCommand(const char* args, WorldSession* m_ses
 	return true;
 }
 
+bool ChatHandler::HandleGOFaction(const char *args, WorldSession *m_session){
+	if(args == NULL)
+		return false;
+
+	GameObject *go = m_session->GetPlayer()->GetSelectedGo();
+	if(go == NULL){
+		RedSystemMessage(m_session, "No GameObject is selected.");
+		return true;
+	}
+
+	uint32 faction = 0;
+	if(sscanf(args, "%u", &faction) != 1){
+		return false;
+	}
+
+	go->SetFaction(faction);
+	GreenSystemMessage(m_session, "Set GO faction to %u.", faction);
+
+		return true;
+}
+
 bool ChatHandler::HandleGOFlags(const char *args, WorldSession *m_session){
 	if(args == NULL)
 		return false;
