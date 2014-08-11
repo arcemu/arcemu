@@ -2143,6 +2143,65 @@ void Spell::SpellEffectSummonWild(uint32 i, SummonPropertiesEntry* spe, Creature
 	}
 }
 
+/* Conflict added in commit https://github.com/arcemu/arcemu/commit/efff403378b59be51e31602108574c634d98434c
+void Spell::SpellEffectSummonWild(uint32 i) // Summon Wild
+{
+//these are some creatures that have your faction and do not respawn
+//number of creatures is actually dmg (the usual formula), sometimes =3 sometimes =1
+//if( u_caster == NULL || !u_caster->IsInWorld() )
+// return;
+if( ( !m_caster->IsGameObject() && !m_caster->IsUnit() ) || !m_caster->IsInWorld() )
+return;
+uint32 cr_entry = GetProto()->EffectMiscValue[i];
+CreatureProto * proto = CreatureProtoStorage.LookupEntry(cr_entry);
+CreatureInfo * info = CreatureNameStorage.LookupEntry(cr_entry);
+if(!proto || !info)
+{
+sLog.outError("Warning : Missing summon creature template %u used by spell %u!",cr_entry,GetProto()->Id);
+return;
+}
+float x, y, z;
+if( m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION && m_targets.m_destX && m_targets.m_destY && m_targets.m_destZ )
+{
+x = m_targets.m_destX;
+y = m_targets.m_destY;
+z = m_targets.m_destZ;
+}
+else
+{
+x = m_caster->GetPositionX();
+y = m_caster->GetPositionY();
+z = m_caster->GetPositionZ();
+}
+for(int j= 0;j<damage;j++)
+{
+float m_fallowAngle=-((float(M_PI)/2)*j);
+float tempx = x + (GetRadius(i)*(cosf(m_fallowAngle+m_caster->GetOrientation())));
+float tempy = y + (GetRadius(i)*(sinf(m_fallowAngle+m_caster->GetOrientation())));
+Creature * p = m_caster->GetMapMgr()->CreateCreature(cr_entry);
+Arcemu::Util::ARCEMU_ASSERT( p );
+p->Load(proto, tempx, tempy, z);
+p->SetZoneId( m_caster->GetZoneId() );
+if ( p->GetProto()->Faction == 35 )
+{
+p->SetSummonedByGUID( m_caster->GetGUID() );
+p->SetCreatedByGUID( m_caster->GetGUID() );
+if( m_caster->IsGameObject() )
+p->SetFaction( TO_GAMEOBJECT( m_caster )->GetFaction() );
+else
+p->SetFaction( TO_UNIT( m_caster )->GetFaction( ) );
+}
+else
+{
+p->SetFaction(proto->Faction );
+}
+p->PushToWorld( m_caster->GetMapMgr());
+//make sure they will be desummoned (roxor)
+sEventMgr.AddEvent(p, &Creature::SummonExpire, EVENT_SUMMON_EXPIRE, GetDuration(), 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+}
+}
+*/
+
 void Spell::SpellEffectSummonGuardian(uint32 i, SummonPropertiesEntry* spe, CreatureProto* proto, LocationVector & v)
 {
 
