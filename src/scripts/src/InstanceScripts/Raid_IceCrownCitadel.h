@@ -17,5 +17,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/////////////////ICC GOs managed by script//////////////////////
+
+enum IceCrownCitadelGOs{
+	GO_MARROWGAR_ICEWALL_1 = 201911,
+	GO_MARROWGAR_ICEWALL_2 = 201910,
+	GO_MARROWGAR_DOOR = 201563
+};
+
+
 // IceCrown Teleporter
 void SetupICC(ScriptMgr* mgr);

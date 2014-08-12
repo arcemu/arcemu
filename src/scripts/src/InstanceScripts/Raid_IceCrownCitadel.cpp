@@ -26,20 +26,30 @@
 //ICC zone: 4812
 //Prepared creature entry:
 //
-//#define CN_LORD_MARROWGAR           36612
-//#define CN_LADY_DEATHWHISPER        36855
+#define CN_LORD_MARROWGAR           36612
+#define CN_COLDFLAME                36672
+#define CN_LADY_DEATHWHISPER        36855
 //#define CN_DEATHBRINGER_SAURFANG    37813
-//#define CN_FESTERGURT               36626
+//#define CN_FESTERGUT                36626
 //#define CN_ROTFACE                  36627
 //#define CN_PROFESSOR_PUTRICIDE      36678
 //#define CN_PRINCE_VALANAR           37970
 //#define CN_BLOOD_QUEEN_LANATHEL     37955
-//#define CN_VALITHRIA_DREAMWALKER    36789
+#define CN_VALITHRIA_DREAMWALKER    36789
 //#define CN_SINDRAGOSA               36853
 //#define CN_THE_LICHKING             36597
 //
 //ToDo: start boss scripts
 ////////////////////////////////////////////////////////
+//Event: GunshipBattle
+//
+//Affects:
+//Available teleports. If GunshipBattle done -> Teleportlocation 4 available.
+//
+//Devnotes:
+//Far away from implementing this :(
+///////////////////////////////////////////////////////
+
 
 ///////////////////////////////////////////////////////
 //IceCrownCitadel Instance
@@ -48,13 +58,60 @@ class IceCrownCitadelScript : public MoonInstanceScript
 {
 public:
 	MOONSCRIPT_INSTANCE_FACTORY_FUNCTION(IceCrownCitadelScript, MoonInstanceScript);
-	IceCrownCitadelScript(MapMgr* pMapMgr) : MoonInstanceScript(pMapMgr) {};
+
+	IceCrownCitadelScript(MapMgr* pMapMgr) : MoonInstanceScript(pMapMgr) 
+	{
+		mMarrowIceDoor1_GUID = 0;
+		mMarrowIceDoor2_GUID = 0;
+		mMarrowDoor_GUID = 0;
+	}
 	
+	void OnGameObjectPushToWorld(GameObject* pGameObject)
+	{
+		switch (pGameObject->GetEntry())
+		{
+		case GO_MARROWGAR_ICEWALL_1:    mMarrowIceDoor1_GUID = pGameObject->GetGUID(); break;
+		case GO_MARROWGAR_ICEWALL_2:    mMarrowIceDoor2_GUID = pGameObject->GetGUID(); break;
+		case GO_MARROWGAR_DOOR:         mMarrowDoor_GUID = pGameObject->GetGUID(); break;
+		}
+	}
 	/*bool NPCData
 	Creature.h looks good to realize teleport intrusion
 	CREATURE_STATE_ALIVE = 0,			// no special death state
     CREATURE_STATE_APPEAR_DEAD = 1,		// these creatures are actually alive but appears as dead for client
     CREATURE_STATE_DEAD = 2				// these creatures are dead*/
+	void OnCreatureDeath(Creature* pCreature, Unit* pUnit)
+	{
+		switch (pCreature->GetEntry())
+		{
+			//Need check if killed set state 2
+			case CN_LORD_MARROWGAR: //really ugly I know... maybe someone can make a suggestion
+			{
+				GameObject* pMarrowIceDoor1 = GetGameObjectByGuid(mMarrowIceDoor1_GUID);
+				if (pMarrowIceDoor1 != NULL && pMarrowIceDoor1->GetState() != 2)
+					pMarrowIceDoor1->SetState(2);
+
+				GameObject* pMarrowIceDoor2 = GetGameObjectByGuid(mMarrowIceDoor2_GUID);
+				if (pMarrowIceDoor2 != NULL && pMarrowIceDoor2->GetState() != 2)
+					pMarrowIceDoor2->SetState(2);
+
+				GameObject* pMarrowDoor = GetGameObjectByGuid(mMarrowDoor_GUID);
+				if (pMarrowDoor != NULL && pMarrowDoor->GetState() != 2)
+					pMarrowDoor->SetState(2);
+			}break;
+			case CN_LADY_DEATHWHISPER:
+			case CN_VALITHRIA_DREAMWALKER:
+			case CN_COLDFLAME:
+			default:
+				break;
+		}
+		return;
+	}
+
+
+	uint32 mMarrowIceDoor1_GUID;
+	uint32 mMarrowIceDoor2_GUID;
+	uint32 mMarrowDoor_GUID;
 
 };
 
