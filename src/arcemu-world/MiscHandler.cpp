@@ -1824,12 +1824,9 @@ void WorldSession::HandleInspectOpcode(WorldPacket & recv_data)
 	CHECK_INWORLD_RETURN;
 
 	uint64 guid;
-	uint32 talent_points = 0x0000003D;
 	ByteBuffer m_Packed_GUID;
 	recv_data >> guid;
-
 	Player* player = _player->GetMapMgr()->GetPlayer((uint32)guid);
-
 	if(player == NULL)
 	{
 		LOG_ERROR("HandleInspectOpcode: guid was null");
@@ -1837,22 +1834,28 @@ void WorldSession::HandleInspectOpcode(WorldPacket & recv_data)
 	}
 
 	_player->SetTargetGUID(guid);
-
 	_player->SetSelection(guid);
-
 	if(_player->m_comboPoints)
 		_player->UpdateComboPoints();
 
-//	WorldPacket data( SMSG_INSPECT_TALENT, 4 + talent_points );
 	WorldPacket data(SMSG_INSPECT_TALENT, 1000);
-
 	m_Packed_GUID.appendPackGUID(player->GetGUID());
-	uint32 guid_size;
-	guid_size = (uint32)m_Packed_GUID.size();
-
+	uint32 guid_size = (uint32)m_Packed_GUID.size();
 	data.append(m_Packed_GUID);
-	data << uint32(talent_points);
 
+	//data.appendPackGUID(guid);
+	//data.appendPackGUID(player->GetGUID());
+	//data << player->GetNewGUID();
+#ifdef SAVE_BANDWIDTH
+	PlayerSpec *currSpec = &player->m_specs[player->m_talentActiveSpec];
+	data << uint32(currSpec->GetTP());
+	data << uint8(1) << uint8(0);
+	data << uint8(currSpec->talents.size()); //fake value, will be overwritten at the end
+	for(std::map<uint32, uint8>::iterator itr = currSpec->talents.begin(); itr != currSpec->talents.end(); itr++)
+		data << itr->first << itr->second;
+	data << uint8(0); // Send Glyph info
+#else
+	data << uint32(player->m_specs[player->m_talentActiveSpec].GetTP());
 	data << uint8(player->m_talentSpecsCount);
 	data << uint8(player->m_talentActiveSpec);
 	for(uint8 s = 0; s < player->m_talentSpecsCount; s++)
@@ -1914,10 +1917,10 @@ void WorldSession::HandleInspectOpcode(WorldPacket & recv_data)
 		// Send Glyph info
 		data << uint8(GLYPHS_COUNT);
 		for(uint8 i = 0; i < GLYPHS_COUNT; i++)
-		{
 			data << uint16(spec.glyphs[i]);
-		}
+
 	}
+#endif
 
 	// ----[ Build the item list with their enchantments ]----
 	uint32 slot_mask = 0;
