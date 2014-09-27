@@ -4932,8 +4932,8 @@ void Player::SendInitialActions()
 	for(uint32 i = 0; i < PLAYER_ACTION_BUTTON_COUNT; ++i)
 	{
 		data << m_specs[m_talentActiveSpec].mActions[i].Action;
+		data << m_specs[m_talentActiveSpec].mActions[i].Misc;
 		data << m_specs[m_talentActiveSpec].mActions[i].Type;
-		data << m_specs[m_talentActiveSpec].mActions[i].Misc; //VLack: on 3.1.3, despite the format of CMSG_SET_ACTION_BUTTON, here Type have to be sent before Misc
 	}
 	m_session->SendPacket(&data);
 }
