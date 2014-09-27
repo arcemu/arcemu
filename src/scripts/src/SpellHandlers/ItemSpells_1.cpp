@@ -407,154 +407,111 @@ bool OrbOfTheSindorei(uint32 i, Aura* pAura, bool apply)
 	return true;
 }
 
-bool BigBlizzardBear(uint32 i, Aura* pAura, bool apply)
+bool ScalingMountDummyAura(uint32 i, Aura* pAura, bool apply)
 {
-	if(!pAura->GetTarget()->IsPlayer())
-		return true;
+	// Remove dummy aura on application, dummy effect will occur directly after
+	pAura->Remove();
+	return true;
+}
 
-	if(apply)
+bool BigBlizzardBear(uint32 i, Spell* pSpell)
+{
+    if(Player *plr = pSpell->GetPlayerTarget())
 	{
-		uint32 newspell = 0;
-		Player* pPlayer = TO_PLAYER(pAura->GetTarget());
-
-		if(pPlayer->_GetSkillLineCurrent(SKILL_RIDING, true) >= 150)
+		uint32 newspell = 58997;
+		if(plr->_GetSkillLineCurrent(SKILL_RIDING, true) >= 150)
 			newspell = 58999;
-		else
-			newspell = 58997;
-
-		pAura->GetTarget()->CastSpell(pAura->GetTarget(), newspell, true);
+		plr->CastSpell(plr, newspell, true);
 	}
 
 	return true;
 }
 
-bool WingedSteed(uint32 i, Aura* pAura, bool apply)
+bool WingedSteed(uint32 i, Spell* pSpell)
 {
-	if(!pAura->GetTarget()->IsPlayer())
-		return true;
-
-	if(apply)
+	if(Player *plr = pSpell->GetPlayerTarget())
 	{
-		uint32 newspell = 0;
-		Player* pPlayer = TO_PLAYER(pAura->GetTarget());
-
-		if(pPlayer->_GetSkillLineCurrent(SKILL_RIDING, true) == 300)
+		uint32 newspell = 54726;
+		if(plr->_GetSkillLineCurrent(SKILL_RIDING, true) == 300)
 			newspell = 54727;
-		else
-			newspell = 54726;
-
-		pAura->GetTarget()->CastSpell(pAura->GetTarget(), newspell, true);
+		plr->CastSpell(plr, newspell, true);
 	}
 
 	return true;
 }
 
-bool HeadlessHorsemanMount(uint32 i, Aura* pAura, bool apply)
+bool HeadlessHorsemanMount(uint32 i, Spell* pSpell)
 {
-	if(!pAura->GetTarget()->IsPlayer())
-		return true;
-
-	if(apply)
+	if(Player *plr = pSpell->GetPlayerTarget())
 	{
-		uint32 newspell = 0;
-		Player* pPlayer = TO_PLAYER(pAura->GetTarget());
-		AreaTable* pArea = dbcArea.LookupEntry(pPlayer->GetAreaID());
-
-		if(pPlayer->_GetSkillLineCurrent(SKILL_RIDING, true) >= 225 &&
-		        ((pArea->AreaFlags & 1024 && pPlayer->GetMapId() != 571) ||
-		         (pArea->AreaFlags & 1024 && pPlayer->GetMapId() == 571 && pPlayer->HasSpellwithNameHash(SPELL_HASH_COLD_WEATHER_FLYING))))
+		uint32 newspell = 51621;
+		AreaTable* pArea = dbcArea.LookupEntry(plr->GetAreaID());
+		if(pArea && (plr->_GetSkillLineCurrent(SKILL_RIDING, true) >= 225 &&
+				((pArea->AreaFlags & 1024 && plr->GetMapId() != 571) ||
+				(pArea->AreaFlags & 1024 && plr->GetMapId() == 571 && plr->HasSpellwithNameHash(SPELL_HASH_COLD_WEATHER_FLYING)))))
 		{
-			if(pPlayer->_GetSkillLineCurrent(SKILL_RIDING, true) == 300)
+			if(plr->_GetSkillLineCurrent(SKILL_RIDING, true) == 300)
 				newspell = 48023;
-			else
-				newspell = 51617;
+			else newspell = 51617;
 		}
-		else if(pPlayer->_GetSkillLineCurrent(SKILL_RIDING, true) >= 150)
+		else if(plr->_GetSkillLineCurrent(SKILL_RIDING, true) >= 150)
 			newspell = 48024;
-		else
-			newspell = 51621;
-
-		pAura->GetTarget()->CastSpell(pAura->GetTarget(), newspell, true);
+		plr->CastSpell(plr, newspell, true);
 	}
 
 	return true;
 }
 
-bool MagicBroomMount(uint32 i, Aura* pAura, bool apply)
+bool MagicBroomMount(uint32 i, Spell* pSpell)
 {
-	if(!pAura->GetTarget()->IsPlayer())
-		return true;
-
-	if(apply)
+	if(Player *plr = pSpell->GetPlayerTarget())
 	{
-		uint32 newspell = 0;
-		Player* pPlayer = TO_PLAYER(pAura->GetTarget());
-		AreaTable* pArea = dbcArea.LookupEntry(pPlayer->GetAreaID());
-
-		if(pPlayer->_GetSkillLineCurrent(SKILL_RIDING, true) >= 225 &&
-		        ((pArea->AreaFlags & 1024 && pPlayer->GetMapId() != 571) ||
-		         (pArea->AreaFlags & 1024 && pPlayer->GetMapId() == 571 && pPlayer->HasSpellwithNameHash(SPELL_HASH_COLD_WEATHER_FLYING))))
+		uint32 newspell = 42680;
+		AreaTable* pArea = dbcArea.LookupEntry(plr->GetAreaID());
+		if(pArea && (plr->_GetSkillLineCurrent(SKILL_RIDING, true) >= 225 &&
+				((pArea->AreaFlags & 1024 && plr->GetMapId() != 571) ||
+				(pArea->AreaFlags & 1024 && plr->GetMapId() == 571 && plr->HasSpellwithNameHash(SPELL_HASH_COLD_WEATHER_FLYING)))))
 		{
-			if(pPlayer->_GetSkillLineCurrent(SKILL_RIDING, true) == 300)
+			if(plr->_GetSkillLineCurrent(SKILL_RIDING, true) == 300)
 				newspell = 42668;
-			else
-				newspell = 42667;
+			else newspell = 42667;
 		}
-		else if(pPlayer->_GetSkillLineCurrent(SKILL_RIDING, true) >= 150)
+		else if(plr->_GetSkillLineCurrent(SKILL_RIDING, true) >= 150)
 			newspell = 42683;
-		else
-			newspell = 42680;
 
-		pAura->GetTarget()->CastSpell(pAura->GetTarget(), newspell, true);
+		plr->CastSpell(plr, newspell, true);
 	}
 
 	return true;
 }
 
-bool MagicRoosterMount(uint32 i, Aura* pAura, bool apply)
+bool MagicRoosterMount(uint32 i, Spell* pSpell)
 {
-	if(!pAura->GetTarget()->IsPlayer())
-		return true;
-
-	if(apply)
-	{
-		pAura->GetTarget()->CastSpell(pAura->GetTarget(), 66122, true);
-	}
-
+	if(Player *plr = pSpell->GetPlayerTarget())
+		plr->CastSpell(plr, 66122, true);
 	return true;
 }
 
-bool Invincible(uint32 i, Aura* pAura, bool apply)
+bool Invincible(uint32 i, Spell* pSpell)
 {
-	if(!pAura->GetTarget()->IsPlayer())
-		return true;
-
-	if(apply)
+	// Apply the new aura in the 3rd effect call
+	if(Player *plr = pSpell->GetPlayerTarget())
 	{
-		uint32 newspell = 0;
-		Player* pPlayer = TO_PLAYER(pAura->GetTarget());
-		AreaTable* pArea = dbcArea.LookupEntry(pPlayer->GetAreaID());
-
-		if(pPlayer->_GetSkillLineCurrent(SKILL_RIDING, true) >= 225 &&
-		        ((pArea->AreaFlags & 1024 && pPlayer->GetMapId() != 571) ||
-		         (pArea->AreaFlags & 1024 && pPlayer->GetMapId() == 571 && pPlayer->HasSpellwithNameHash(SPELL_HASH_COLD_WEATHER_FLYING))))
+		uint32 newspell = 72281;
+		AreaTable* pArea = dbcArea.LookupEntry(plr->GetAreaID());
+		if(pArea && (plr->_GetSkillLineCurrent(SKILL_RIDING, true) >= 225 &&
+				((pArea->AreaFlags & 1024 && plr->GetMapId() != 571) ||
+				(pArea->AreaFlags & 1024 && plr->GetMapId() == 571 && plr->HasSpellwithNameHash(SPELL_HASH_COLD_WEATHER_FLYING)))))
 		{
-			if(pPlayer->_GetSkillLineCurrent(SKILL_RIDING, true) == 300)
+			if(plr->_GetSkillLineCurrent(SKILL_RIDING, true) == 300)
 				newspell = 72284;
-			else
-				newspell = 72283;
+			else newspell = 72283;
 		}
-
-		else if(pPlayer->_GetSkillLineCurrent(SKILL_RIDING, true) >= 150)
-		{
+		else if(plr->_GetSkillLineCurrent(SKILL_RIDING, true) >= 150)
 			newspell = 72282;
-		}
-		else
-			newspell = 72281;
 
-		pAura->GetTarget()->CastSpell(pAura->GetTarget(), newspell, true);
+		plr->CastSpell(plr, newspell, true);
 	}
-
 
 	return true;
 }
@@ -970,14 +927,22 @@ void SetupItemSpells_1(ScriptMgr* mgr)
 	mgr->register_dummy_spell(32042, &ScryingCrystal);			// Violet Scrying Crystal (Quest)
 	mgr->register_dummy_spell(32001, &MinionsOfGurok);			// Minions of gurok
 	mgr->register_dummy_spell(29200, &PurifyBoarMeat);			// Purify Boar meat spell
-	mgr->register_script_effect(35036, &WarpRiftGenerator);       // Summon a Warp Rift in Void Ridge
-	mgr->register_dummy_aura(46354, &OrbOfTheSindorei);         //Orb of the Sin'dorei
-	mgr->register_dummy_aura(58983, &BigBlizzardBear);			// Big Blizzard Bear mount
-	mgr->register_dummy_aura(54729, &WingedSteed);				// DK flying mount
-	mgr->register_dummy_aura(48025, &HeadlessHorsemanMount);	// Headless Horseman Mount
-	mgr->register_dummy_aura(47977, &MagicBroomMount);			// Magic Broom Mount
-	mgr->register_dummy_aura(65917, &MagicRoosterMount);		// Magic Rooster Mount
-	mgr->register_dummy_aura(72286, &Invincible);				// Invincible
+	mgr->register_script_effect(35036, &WarpRiftGenerator);		// Summon a Warp Rift in Void Ridge
+	mgr->register_dummy_aura(46354, &OrbOfTheSindorei);			//Orb of the Sin'dorei
+
+	mgr->register_dummy_aura(65917, &ScalingMountDummyAura);	// Magic Rooster Mount
+	mgr->register_dummy_aura(58983, &ScalingMountDummyAura);	// Big Blizzard Bear mount
+	mgr->register_dummy_aura(54729, &ScalingMountDummyAura);	// DK flying mount
+	mgr->register_dummy_aura(48025, &ScalingMountDummyAura);	// Headless Horseman Mount
+	mgr->register_dummy_aura(47977, &ScalingMountDummyAura);	// Magic Broom Mount
+	mgr->register_dummy_aura(72286, &ScalingMountDummyAura);	// Invincible Aura
+
+	mgr->register_dummy_spell(65917, &MagicRoosterMount);		// Magic Rooster Mount
+	mgr->register_dummy_spell(58983, &BigBlizzardBear);			// Big Blizzard Bear mount
+	mgr->register_dummy_spell(54729, &WingedSteed);				// DK flying mount
+	mgr->register_dummy_spell(48025, &HeadlessHorsemanMount);	// Headless Horseman Mount
+	mgr->register_dummy_spell(47977, &MagicBroomMount);			// Magic Broom Mount
+	mgr->register_dummy_spell(72286, &Invincible);				// Invincible
 
 	mgr->register_dummy_spell(30507, &Poultryizer);
 	mgr->register_dummy_spell(14537, &SixDemonBag);
