@@ -382,7 +382,6 @@ namespace lua_engine
 		.function(&lua_tocontainer, "TO_CONTAINER", "TOCONTAINER", "tocontainer", "to_container", NULL)
 		.function(&lua_tounit, "TO_UNIT", "TOUNIT", "to_unit", "tounit", NULL)
 		.function(&lua_togo, "TO_GAMEOBJECT", "TOGAMEOBJECT", "to_gameobject", "togameobject", NULL)
-		.function(&GetGameTime, "GetGameTime", "getGameTime", "getgametime", NULL)
 		.function(&GetPlayer, "GetPlayer", "getPlayer", "getplayer", NULL)
 		.function(&enginename, "GetEngineName", "getEngineName", "getenginename")
 		.function(&engineversion, "GetEngineVersion", "getEngineVersion", "getengineversion", "revision", NULL)

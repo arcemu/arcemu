@@ -148,11 +148,6 @@
 	return 1;
 }*/
 
-ARCEMU_FORCEINLINE static ptrdiff_t GetGameTime()
-{
-	return (ptrdiff_t)sWorld.GetGameTime();
-}
-
 static Player* GetPlayer(const char* name)
 {
 	Player* plr = objmgr.GetPlayer(name);
