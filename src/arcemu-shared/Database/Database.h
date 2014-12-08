@@ -80,9 +80,10 @@ class SERVER_DECL Database : public CThread
 		/************************************************************************/
 		/* Virtual Functions                                                    */
 		/************************************************************************/
-		virtual bool Initialize(const char* Hostname, unsigned int port,
+		virtual bool Initialize(const char* Hostname, unsigned int port, const char *Socket,
 		                        const char* Username, const char* Password, const char* DatabaseName,
-		                        uint32 ConnectionCount, uint32 BufferSize) = 0;
+		                        const char *ssl_key, const char *ssl_cert, const char *ssl_ca,
+		                        bool Compress, uint32 ConnectionCount, uint32 BufferSize) = 0;
 
 		virtual void Shutdown() = 0;
 
@@ -98,8 +99,6 @@ class SERVER_DECL Database : public CThread
 		// Initialized on load: Database::Database() : CThread()
 		bool ThreadRunning;
 
-		ARCEMU_INLINE const string & GetHostName() { return mHostname; }
-		ARCEMU_INLINE const string & GetDatabaseName() { return mDatabaseName; }
 		ARCEMU_INLINE const uint32 GetQueueSize() { return queries_queue.get_size(); }
 
 		virtual string EscapeString(string Escape) = 0;
@@ -146,13 +145,6 @@ class SERVER_DECL Database : public CThread
 		///////////////////////////////
 
 		int32 mConnectionCount;
-
-		// For reconnecting a broken connection
-		string mHostname;
-		string mUsername;
-		string mPassword;
-		string mDatabaseName;
-		uint32 mPort;
 
 		QueryThread* qt;
 };
