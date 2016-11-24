@@ -3097,9 +3097,9 @@ bool ChatHandler::HandleLookupItemCommand(const char* args, WorldSession* m_sess
 			//SendHighlightedName(m_session, it->Name1, it->lowercase_name, x, it->ItemId, true);
 			SendItemLinkToPlayer(it, m_session, false, 0, localizedFound ? m_session->language : 0);
 			++count;
-			if(count == 25)
+			if(count == sWorld.LookupMaxResults)
 			{
-				RedSystemMessage(m_session, "More than 25 results returned. aborting.");
+				RedSystemMessage(m_session, "More than %u results returned. aborting.", sWorld.LookupMaxResults);
 				break;
 			}
 		}
@@ -3151,9 +3151,9 @@ bool ChatHandler::HandleLookupObjectCommand(const char* args, WorldSession* m_se
 			SendMultilineMessage(m_session, recout.c_str());
 
 			++count;
-			if(count == 25 || count > 25)
+			if(count >= sWorld.LookupMaxResults)
 			{
-				RedSystemMessage(m_session, "More than 25 results returned. aborting.");
+				RedSystemMessage(m_session, "More than %u results returned. aborting.", sWorld.LookupMaxResults);
 				break;
 			}
 		}
@@ -3205,9 +3205,9 @@ bool ChatHandler::HandleLookupCreatureCommand(const char* args, WorldSession* m_
 			// Print out the name in a cool highlighted fashion
 			SendHighlightedName(m_session, "Creature", localizedFound ? li->Name : i->Name, localizedFound ? liName : i->lowercase_name, x, i->Id);
 			++count;
-			if(count == 25)
+		if(count == sWorld.LookupMaxResults)
 			{
-				RedSystemMessage(m_session, "More than 25 results returned. aborting.");
+				RedSystemMessage(m_session, "More than %u results returned. aborting.", sWorld.LookupMaxResults);
 				break;
 			}
 		}
@@ -3264,9 +3264,9 @@ bool ChatHandler::HandleLookupSpellCommand(const char* args, WorldSession* m_ses
 			SendMultilineMessage(m_session, recout.c_str());
 
 			++count;
-			if(count == 25)
+			if(count == sWorld.LookupMaxResults)
 			{
-				RedSystemMessage(m_session, "More than 25 results returned. aborting.");
+				RedSystemMessage(m_session, "More than %u results returned. aborting.", sWorld.LookupMaxResults);
 				break;
 			}
 		}
@@ -3301,9 +3301,9 @@ bool ChatHandler::HandleLookupSkillCommand(const char* args, WorldSession* m_ses
 			// Print out the name in a cool highlighted fashion
 			SendHighlightedName(m_session, "Skill", skill->Name, y, x, skill->id);
 			++count;
-			if(count == 25)
+			if(count == sWorld.LookupMaxResults)
 			{
-				RedSystemMessage(m_session, "More than 25 results returned. aborting.");
+				RedSystemMessage(m_session, "More than %u results returned. aborting.", sWorld.LookupMaxResults);
 				break;
 			}
 		}
@@ -3338,9 +3338,9 @@ bool ChatHandler::HandleLookupFactionCommand(const char* args, WorldSession* m_s
 			// Print out the name in a cool highlighted fashion
 			SendHighlightedName(m_session, "Faction", faction->Name, y, x, faction->ID);
 			++count;
-			if(count == 25)
+			if(count == sWorld.LookupMaxResults)
 			{
-				RedSystemMessage(m_session, "More than 25 results returned. aborting.");
+				RedSystemMessage(m_session, "More than %u results returned. aborting.", sWorld.LookupMaxResults);
 				break;
 			}
 		}

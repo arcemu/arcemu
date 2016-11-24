@@ -1190,7 +1190,7 @@ bool ChatHandler::HandleLookupAchievementCmd(const char* args, WorldSession* m_s
 		std::set<uint32> foundList;
 		j = dbcAchievementStore.GetNumRows();
 		bool foundmatch;
-		for(i = 0; i < j && numFound < 25; ++i)
+		for(i = 0; i < j && numFound < sWorld.LookupMaxResults; ++i)
 		{
 			AchievementEntry const* achievement = dbcAchievementStore.LookupRowForced(i);
 			if(achievement)
@@ -1261,20 +1261,20 @@ bool ChatHandler::HandleLookupAchievementCmd(const char* args, WorldSession* m_s
 				}
 				strm.str("");
 				SendMultilineMessage(m_session, recout.c_str());
-				if(++numFound >= 25)
+				if(++numFound >= sWorld.LookupMaxResults)
 				{
-					RedSystemMessage(m_session, "More than 25 results found.");
+					RedSystemMessage(m_session, "More than %u results found.", sWorld.LookupMaxResults);
 					break;
 				}
 			}
-		} // for loop (number of rows, up to 25)
+		} // for loop (number of rows, up to config value)
 	} // lookup name or description
 
-	if(lookupcriteria && numFound < 25)
+	if(lookupcriteria && numFound < sWorld.LookupMaxResults)
 	{
 		std::set<uint32> foundList;
 		j = dbcAchievementCriteriaStore.GetNumRows();
-		for(i = 0; i < j && numFound < 25; ++i)
+		for(i = 0; i < j && numFound < sWorld.LookupMaxResults; ++i)
 		{
 			AchievementCriteriaEntry const* criteria = dbcAchievementCriteriaStore.LookupRowForced(i);
 			if(criteria)
@@ -1338,13 +1338,13 @@ bool ChatHandler::HandleLookupAchievementCmd(const char* args, WorldSession* m_s
 					strm.str("");
 				}
 				SendMultilineMessage(m_session, recout.c_str());
-				if(++numFound >= 25)
+				if(++numFound >= sWorld.LookupMaxResults)
 				{
-					RedSystemMessage(m_session, "More than 25 results found.");
+					RedSystemMessage(m_session, "More than %u results found.", sWorld.LookupMaxResults);
 					break;
 				}
 			}
-		} // for loop (number of rows, up to 25)
+		} // for loop (number of rows, up to config value)
 	} // lookup criteria
 
 	if(numFound == 0)

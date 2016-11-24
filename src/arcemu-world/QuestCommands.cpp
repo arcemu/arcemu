@@ -143,9 +143,9 @@ bool ChatHandler::HandleQuestLookupCommand(const char* args, WorldSession* m_ses
 			SendMultilineMessage(m_session, recout.c_str());
 
 			++count;
-			if(count == 25)
+			if(count >= sWorld.LookupMaxResults)
 			{
-				RedSystemMessage(m_session, "More than 25 results returned. aborting.");
+				RedSystemMessage(m_session, "More than %u results returned. aborting.", sWorld.LookupMaxResults);
 				break;
 			}
 		}
