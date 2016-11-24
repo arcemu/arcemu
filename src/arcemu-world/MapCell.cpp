@@ -178,7 +178,7 @@ void MapCell::LoadObjects(CellSpawns* sp)
 	Instance* pInstance = _mapmgr->pInstance;
 	InstanceBossInfoMap* bossInfoMap = objmgr.m_InstanceBossInfoMap[_mapmgr->GetMapId()];
 
-	if(sp->CreatureSpawns.size())//got creatures
+	if(sp->CreatureSpawns.size()) //got creatures
 	{
 		for(CreatureSpawnList::iterator i = sp->CreatureSpawns.begin(); i != sp->CreatureSpawns.end(); ++i)
 		{
@@ -229,14 +229,34 @@ void MapCell::LoadObjects(CellSpawns* sp)
 			if(respawnTimeOverride > 0)
 				c->m_respawnTimeOverride = respawnTimeOverride;
 
-			if(c->Load(*i, _mapmgr->iInstanceMode, _mapmgr->GetMapInfo()) && c->CanAddToWorld())
+			// tells us if the creature is still active somewhere in the game
+			bool active = false;
+
+			CreatureSet::iterator creature_iterator = _mapmgr->activeCreatures.begin();
+
+			// Iterates through active creatures. If the creature we want to spawn 
+			// is still there somewhere, the active variable is set to true to prevent it from
+			// spawning again
+			for (;creature_iterator != _mapmgr->activeCreatures.end();)
 			{
-				c->PushToWorld(_mapmgr);
+				if((*i)->id == (*creature_iterator)->m_spawn->id) {
+					active = true;
+					break;
+				}
+				++creature_iterator;
 			}
+
+			CreatureSpawn* spawn = (*i);
+
+			if(!active && c->Load(*i, _mapmgr->iInstanceMode, _mapmgr->GetMapInfo()) && c->CanAddToWorld())				
+				c->PushToWorld(_mapmgr);
 			else
 			{
 				CreatureSpawn* spawn = (*i);
-				Log.Error("MapCell", "Failed spawning Creature %u with spawnId %u MapId %u", spawn->entry, spawn->id, _mapmgr->GetMapId());
+				if(active)
+					LOG_DETAIL("Didn't spawn Creature %u with spawnId %u MapId %u because Creature is still active.", spawn->entry, spawn->id, _mapmgr->GetMapId());
+				else
+					Log.Error("MapCell", "Failed spawning Creature %u with spawnId %u MapId %u", spawn->entry, spawn->id, _mapmgr->GetMapId());
 				delete c;//missing proto or something of that kind
 			}
 		}
