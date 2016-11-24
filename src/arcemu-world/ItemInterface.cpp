@@ -175,7 +175,7 @@ AddItemResult ItemInterface::SafeAddItem(Item* pItem, int8 ContainerSlot, int16 
 AddItemResult ItemInterface::m_AddItem(Item* item, int8 ContainerSlot, int16 slot)
 {
 	ARCEMU_ASSERT(slot < MAX_INVENTORY_SLOT);
-	ARCEMU_ASSERT(ContainerSlot < MAX_INVENTORY_SLOT);
+    ARCEMU_ASSERT(ContainerSlot < int8(MAX_INVENTORY_SLOT));
 	if(item == NULL || !item->GetProto() || slot < 0)
 		return ADD_ITEM_RESULT_ERROR;
 
@@ -381,7 +381,7 @@ bool ItemInterface::IsBagSlot(int16 slot)
 Item* ItemInterface::SafeRemoveAndRetreiveItemFromSlot(int8 ContainerSlot, int16 slot, bool destroy)
 {
 	ARCEMU_ASSERT(slot < MAX_INVENTORY_SLOT);
-	ARCEMU_ASSERT(ContainerSlot < MAX_INVENTORY_SLOT);
+    ARCEMU_ASSERT(ContainerSlot < int8(MAX_INVENTORY_SLOT));
 	Item* pItem = NULL;
 
 	if(ContainerSlot == INVENTORY_SLOT_NOT_SET)
@@ -394,7 +394,7 @@ Item* ItemInterface::SafeRemoveAndRetreiveItemFromSlot(int8 ContainerSlot, int16
 		{
 			/* sounds weird? no. this will trigger a callstack display due to my other debug code. */
 			pItem->DeleteFromDB();
-			return false;
+            return NULL;
 		}
 
 		m_pItems[(int)slot] = NULL;
@@ -551,7 +551,7 @@ Item* ItemInterface::SafeRemoveAndRetreiveItemByGuid(uint64 guid, bool destroy)
 bool ItemInterface::SafeFullRemoveItemFromSlot(int8 ContainerSlot, int16 slot)
 {
 	ARCEMU_ASSERT(slot < MAX_INVENTORY_SLOT);
-	ARCEMU_ASSERT(ContainerSlot < MAX_INVENTORY_SLOT);
+    ARCEMU_ASSERT(ContainerSlot < int8(MAX_INVENTORY_SLOT));
 
 	if(ContainerSlot == INVENTORY_SLOT_NOT_SET)
 	{

@@ -170,7 +170,7 @@ void CBattlegroundManager::HandleBattlegroundJoin(WorldSession* m_session, World
 
 		if(itr == m_instances[bgtype].end())
 		{
-			sChatHandler.SystemMessage(m_session, m_session->LocalizedWorldSrv(51));
+            sChatHandler.SystemMessage(m_session, m_session->LocalizedWorldSrv(WORLDSTRING_JOIN_INVALID_INSTANCEID));
 			m_instanceLock.Release();
 			return;
 		}
@@ -523,7 +523,7 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 					if(iitr == m_instances[i].end())
 					{
 						// queue no longer valid
-						plr->GetSession()->SystemMessage(plr->GetSession()->LocalizedWorldSrv(52), plr->m_bgQueueInstanceId);
+                        plr->GetSession()->SystemMessage(plr->GetSession()->LocalizedWorldSrv(WORLDSTRING_DELETED_BG_QUENE_NOT_VALID), plr->m_bgQueueInstanceId);
 						plr->m_bgIsQueued = false;
 						plr->m_bgQueueType = 0;
 						plr->m_bgQueueInstanceId = 0;
@@ -874,7 +874,7 @@ void CBattlegroundManager::RemoveGroupFromQueues(Group* grp)
 }
 
 
-bool CBattlegroundManager::CanCreateInstance(uint32 Type, uint32 LevelGroup)
+bool CBattlegroundManager::CanCreateInstance(uint32 /*Type*/, uint32 /*LevelGroup*/)
 {
 	/*uint32 lc = 0;
 	for(map<uint32, CBattleground*>::iterator itr = m_instances[Type].begin(); itr != m_instances[Type].end(); ++itr)
@@ -1093,7 +1093,7 @@ void CBattlegroundManager::DeleteBattleground(CBattleground* bg)
 
 			if(plr && plr->m_bgQueueInstanceId == bg->GetId())
 			{
-				sChatHandler.SystemMessageToPlr(plr, plr->GetSession()->LocalizedWorldSrv(54), bg->GetId());
+                sChatHandler.SystemMessageToPlr(plr, plr->GetSession()->LocalizedWorldSrv(WORLDSTRING_JOIN_BG_NOT_EXISTS), bg->GetId());
 				SendBattlefieldStatus(plr, BGSTATUS_NOFLAGS, 0, 0, 0, 0, 0);
 				plr->m_bgIsQueued = false;
 				m_queuedPlayers[i][j].erase(it2);
@@ -1203,12 +1203,12 @@ void CBattlegroundManager::HandleArenaJoin(WorldSession* m_session, uint32 Battl
 	{
 		if(pGroup->GetSubGroupCount() != 1)
 		{
-			m_session->SystemMessage(m_session->LocalizedWorldSrv(55));
+            m_session->SystemMessage(m_session->LocalizedWorldSrv(WORLDSTRING_BG_RAID_GROUPS_NOT_SUPPORTED));
 			return;
 		}
 		if(pGroup->GetLeader() != m_session->GetPlayer()->getPlayerInfo())
 		{
-			m_session->SystemMessage(m_session->LocalizedWorldSrv(56));
+            m_session->SystemMessage(m_session->LocalizedWorldSrv(WORLDSTRING_MUST_BE_GROUP_LEADER_ARENA));
 			return;
 		}
 
@@ -1257,14 +1257,14 @@ void CBattlegroundManager::HandleArenaJoin(WorldSession* m_session, uint32 Battl
 			{
 				if(maxplayers == 0)
 				{
-					m_session->SystemMessage(m_session->LocalizedWorldSrv(58));
+					m_session->SystemMessage(m_session->LocalizedWorldSrv(WORLDSTRING_TOO_MANY_PLAYERS_IN_GROUP_ARENA));
 					pGroup->Unlock();
 					return;
 				}
 
 				if((*itx)->lastLevel < PLAYER_ARENA_MIN_LEVEL)
 				{
-					m_session->SystemMessage(m_session->LocalizedWorldSrv(59));
+                    m_session->SystemMessage(m_session->LocalizedWorldSrv(WORLDSTRING_SOME_PARTY_MEMBERS_NOT_70));
 					pGroup->Unlock();
 					return;
 				}
@@ -1273,13 +1273,13 @@ void CBattlegroundManager::HandleArenaJoin(WorldSession* m_session, uint32 Battl
 				{
 					if((*itx)->m_loggedInPlayer->m_bg || (*itx)->m_loggedInPlayer->m_bgIsQueued)
 					{
-						m_session->SystemMessage(m_session->LocalizedWorldSrv(60));
+                        m_session->SystemMessage(m_session->LocalizedWorldSrv(WORLDSTRING_PLAYERS_QUENED_OR_JOINED_BG));
 						pGroup->Unlock();
 						return;
 					};
 					if((*itx)->m_loggedInPlayer->m_arenaTeams[type] != pGroup->GetLeader()->m_loggedInPlayer->m_arenaTeams[type])
 					{
-						m_session->SystemMessage(m_session->LocalizedWorldSrv(61));
+                        m_session->SystemMessage(m_session->LocalizedWorldSrv(WORLDSTRING_MEMBER_NOT_IN_TEAM));
 						pGroup->Unlock();
 						return;
 					}

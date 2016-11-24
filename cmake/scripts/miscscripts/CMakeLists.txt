@@ -8,26 +8,31 @@ PROJECT(MiscScripts)
 SET( prefix ${SCRIPTS_PATH}/${PROJECT_NAME} )
 
 #sources -contains source files for our library.
-SET( sources
-Creatures.cpp
-DarkmoonFaireObjects.cpp
-GameObjects.cpp
-GameObjectTeleportTable.cpp
-RandomScripts.cpp
-Setup.cpp )
+SET( sources 
+	Creatures.cpp 
+	DarkmoonFaireObjects.cpp 
+	GameObjects.cpp 
+	GameObjectTeleportTable.cpp 
+	RandomScripts.cpp 
+	../Common/Base.cpp 
+	Setup.cpp 
+)
 
 SET( headers
-Setup.h
-../Common/EasyFunctions.h )
+	Setup.h 
+	../Common/Base.h 
+	../Common/EasyFunctions.h
+)
 
 foreach(src IN ITEMS ${sources} )
   SET( SRCS ${SRCS} ${prefix}/${src} )
 endforeach(src)
+
 foreach(src IN ITEMS ${headers} )
   SET( HEADERS ${HEADERS} ${prefix}/${src} )
 endforeach(src)
 
-include_directories( ${include_dirs} )
+include_directories( ${include_dirs} ${prefix})
 add_library( ${PROJECT_NAME} SHARED ${SRCS} ${HEADERS} )
 add_dependencies( ${PROJECT_NAME} ${dependancies} )
 target_link_libraries( ${PROJECT_NAME} ${linkages} )

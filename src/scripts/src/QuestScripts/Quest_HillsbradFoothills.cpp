@@ -59,9 +59,47 @@ class Baron_Vardus : public CreatureAIScript
 		}
 };
 
+// Quest: 533
+class HelcularRevengeFlames : public GameObjectAIScript
+{
+    public:
+        ADD_GAMEOBJECT_FACTORY_FUNCTION(HelcularRevengeFlames)
+        HelcularRevengeFlames(GameObject *g) : GameObjectAIScript(g)
+        {
+            entry = g->GetEntry();
+        }
+
+        void OnActivate(Player *pPlayer)
+        {
+            QuestLogEntry *pQuest = pPlayer->GetQuestLogForEntry(553);
+            if(!pQuest)
+                return;
+
+            int32 go = -1;
+            switch(entry)
+            {
+                case 1768: go = 0; break;
+                case 1769: go = 1; break;
+                case 1770: go = 2; break;
+            }
+
+            if(go != -1 && pQuest->GetMobCount(go) < pQuest->GetQuest()->required_mobcount[go])
+            {
+                pQuest->SetMobCount(go, pQuest->GetMobCount(go)+1);
+                pQuest->SendUpdateAddKill(go);
+                pQuest->UpdatePlayerFields();
+            }
+        }
+
+    private:
+        uint32 entry;
+};
 
 void SetupHillsbradFoothills(ScriptMgr* mgr)
 {
 	mgr->register_creature_script(2306, &Baron_Vardus::Create);
-	mgr->register_quest_script(566, new WantedBaronVardus());
+    mgr->register_quest_script(566, new WantedBaronVardus);
+    mgr->register_gameobject_script(1768, &HelcularRevengeFlames::Create);
+    mgr->register_gameobject_script(1769, &HelcularRevengeFlames::Create);
+    mgr->register_gameobject_script(1770, &HelcularRevengeFlames::Create);
 }

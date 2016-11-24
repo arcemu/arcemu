@@ -111,6 +111,7 @@ void Corpse::Despawn()
 void Corpse::generateLoot()
 {
 	loot.gold = rand() % 150 + 50; // between 50c and 1.5s, need to fix this!
+	loot.gold = (uint32)(loot.gold * sWorld.getRate(RATE_MONEY));
 }
 
 void Corpse::SpawnBones()

@@ -19,7 +19,7 @@
 
 #include "StdAfx.h"
 
-void WorldSession::HandleDismissVehicle( WorldPacket &recv_data ){
+void WorldSession::HandleDismissVehicle( WorldPacket & /*recv_data*/ ){
 	uint64 current_vehicle_guid = _player->GetCharmedUnitGUID();
 
 	// wait what no vehicle
@@ -147,7 +147,7 @@ void WorldSession::HandleRemoveVehiclePassenger( WorldPacket &recv_data ){
 }
 
 
-void WorldSession::HandleLeaveVehicle( WorldPacket &recv_data ){
+void WorldSession::HandleLeaveVehicle( WorldPacket & /*recv_data*/ ){
 	if( _player->GetCurrentVehicle() == NULL )
 		return;
 

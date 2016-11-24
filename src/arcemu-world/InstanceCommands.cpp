@@ -342,7 +342,7 @@ bool ChatHandler::HandleCreateInstanceCommand(const char* args, WorldSession* m_
 
 }
 
-bool ChatHandler::HandleExitInstanceCommand(const char* args, WorldSession* m_session)
+bool ChatHandler::HandleExitInstanceCommand(const char* /*args*/, WorldSession* m_session)
 {
 	BlueSystemMessage(m_session, "Attempting to exit from instance...");
 	bool result = m_session->GetPlayer()->ExitInstance();
@@ -358,7 +358,7 @@ bool ChatHandler::HandleExitInstanceCommand(const char* args, WorldSession* m_se
 	}
 }
 
-bool ChatHandler::HandleShowInstancesCommand(const char* args, WorldSession* m_session)
+bool ChatHandler::HandleShowInstancesCommand(const char* /*args*/, WorldSession* m_session)
 {
 	Player* plr = getSelectedChar(m_session, true);
 	if(!plr)

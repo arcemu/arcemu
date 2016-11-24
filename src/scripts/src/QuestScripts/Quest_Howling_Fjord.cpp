@@ -45,6 +45,7 @@ class NorthFleet : public CreatureAIScript
 			}
 		}
 };
+
 class ChillmereScourge : public CreatureAIScript
 {
 	public:
@@ -70,6 +71,7 @@ class ChillmereScourge : public CreatureAIScript
 			}
 		}
 };
+
 class Baleheim : public CreatureAIScript
 {
 	public:
@@ -155,11 +157,28 @@ class Plaguethis_Gossip : public GossipScript
 
 };
 
+// Quest: 11221
+class ReportsFromTheFieldGossip : public Arcemu::Gossip::Script
+{
+    public:
+        void OnHello(Object* pObject, Player* plr)
+        {
+            Arcemu::Gossip::Menu menu(pObject->GetGUID(), objmgr.GetGossipTextForNpc(pObject->GetEntry()));
+            if(plr->HasQuest(11221))
+                menu.AddItem(Arcemu::Gossip::ICON_CHAT, "High Executor Anselm requests your report.", 0);
+            menu.Send(plr);
+        }
+
+        void OnSelectOption(Object* pObject, Player* plr, uint32 Id, const char* Code)
+        {
+            TO_CREATURE(pObject)->CastSpell(plr, pObject->GetEntry() == 23998 ? 42756 : 42799, true);
+        }
+};
+
 
 void SetupHowlingFjord(ScriptMgr* mgr)
 {
-	GossipScript* Plague = new Plaguethis_Gossip();  // thx  Dzjhenghiz
-	mgr->register_gossip_script(23859, Plague);
+    mgr->register_gossip_script(23859, new Plaguethis_Gossip);
 
 	mgr->register_creature_script(23643, &ChillmereScourge::Create);
 	mgr->register_creature_script(23645, &ChillmereScourge::Create);
@@ -174,4 +193,7 @@ void SetupHowlingFjord(ScriptMgr* mgr)
 	mgr->register_creature_script(23946, &NorthFleet::Create);
 	mgr->register_creature_script(23794, &NorthFleet::Create);
 	mgr->register_creature_script(23793, &NorthFleet::Create);
+
+    mgr->register_creature_gossip(23998, new ReportsFromTheFieldGossip);
+    mgr->register_creature_gossip(23778, new ReportsFromTheFieldGossip);
 }

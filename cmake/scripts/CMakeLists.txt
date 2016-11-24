@@ -31,7 +31,6 @@ add_subdirectory( extrascripts )
 add_subdirectory( gossipscripts )
 add_subdirectory( questscripts )
 add_subdirectory( miscscripts )
-add_subdirectory( serverstatusplugin )
 add_subdirectory( lualib ) #Used by luabridge and luaengine modules.
 add_subdirectory( luabridge ) 
 add_subdirectory( luaengine )

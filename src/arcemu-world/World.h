@@ -142,11 +142,9 @@ struct MapInfo
 	uint32 flags;
 	uint32 cooldown;
 	uint32 lvl_mod_a;
-	uint32 required_quest_1;
-	uint32 required_quest_2;
+	uint32 required_quest[2];
 	uint32 required_item;
-	uint32 heroic_key_1;
-	uint32 heroic_key_2;
+	uint32 heroic_key[2];
 	float update_distance;
 	uint32 checkpoint_id;
 
@@ -716,8 +714,8 @@ class SERVER_DECL World : public Singleton<World>, public EventableObject
 		bool m_reqGmForCommands;
 		bool m_lfgForNonLfg;
 		list<SpellEntry*> dummyspells;
-		uint32 m_levelCap;
-		uint32 m_genLevelCap;
+		uint8 m_levelCap;
+		uint8 m_genLevelCap;
 		bool m_limitedNames;
 		bool m_useAccountData;
 		bool m_AdditionalFun;

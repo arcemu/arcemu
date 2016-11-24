@@ -1260,10 +1260,12 @@ class SpellCastTargets
 		uint64 m_unitTarget;
 		uint64 m_itemTarget;
 
+        float m_srcX, m_srcY, m_srcZ;
+        float m_destX, m_destY, m_destZ;
+
 		uint64 unkuint64_1;
-		float m_srcX, m_srcY, m_srcZ;
+
 		uint64 unkuint64_2;
-		float m_destX, m_destY, m_destZ;
 		string m_strTarget;
 };
 
@@ -1400,6 +1402,26 @@ typedef enum
     EFF_TARGET_LIST_LENGTH_MARKER						= 111,
 } SpellEffectTarget;
 
+// uint16 0xFFFF
+enum SpellStartFlags
+{
+    //0x01
+    SPELL_START_FLAG_DEFAULT = 0x02, // atm set as default flag
+    //0x04
+    //0x08
+    //0x10
+    SPELL_START_FLAG_RANGED = 0x20,
+    //0x40
+    //0x80
+    //0x100
+    //0x200
+    //0x400
+    //0x800
+    //0x1000
+    //0x2000
+    //0x4000
+    //0x8000
+};
 
 inline bool HasTargetType(SpellEntry* sp, uint32 ttype)
 {
@@ -1650,7 +1672,7 @@ class SERVER_DECL Spell : public EventableObject
 		// Update spell state based on time difference
 		void update(uint32 difftime);
 		// Casts the spell
-		void cast(bool);
+		void _cast(bool);
 		// Finishes the casted spell
 		void finish(bool successful = true);
 		// Handle the Effects of the Spell
@@ -1879,7 +1901,7 @@ class SERVER_DECL Spell : public EventableObject
 		void SpellEffectLearnSpec(uint32 i);
 		void SpellEffectActivateSpec(uint32 i);
 		void SpellEffectActivateRunes(uint32 i);
-		void SpellEffectJumpTarget(uint32 i)
+        void SpellEffectJumpTarget(uint32 /*i*/)
 		{
 
 		}
@@ -1941,7 +1963,7 @@ class SERVER_DECL Spell : public EventableObject
 
 		// This returns SPELL_ENTRY_Spell_Dmg_Type where 0 = SPELL_DMG_TYPE_NONE, 1 = SPELL_DMG_TYPE_MAGIC, 2 = SPELL_DMG_TYPE_MELEE, 3 = SPELL_DMG_TYPE_RANGED
 		// It should NOT be used for weapon_damage_type which needs: 0 = MELEE, 1 = OFFHAND, 2 = RANGED
-		ARCEMU_INLINE uint32 GetType() { return (GetProto()->Spell_Dmg_Type == SPELL_DMG_TYPE_NONE ? SPELL_DMG_TYPE_MAGIC : GetProto()->Spell_Dmg_Type); }
+        ARCEMU_INLINE uint32 GetType() { return GetProto()->Spell_Dmg_Type == uint32(SPELL_DMG_TYPE_NONE) ? uint32(SPELL_DMG_TYPE_MAGIC) : GetProto()->Spell_Dmg_Type; }
 
 		std::map<uint64, Aura*> m_pendingAuras;
 		TargetsList UniqueTargets;
@@ -2109,9 +2131,6 @@ class SERVER_DECL Spell : public EventableObject
 		uint8 extra_cast_number;
 		uint32 m_glyphslot;
 
-		void SendCastSuccess(Object* target);
-		void SendCastSuccess(const uint64 & guid);
-
 		bool duelSpell;
 
 		////////////////////////////////////////////////////////////////////////////////
@@ -2210,7 +2229,7 @@ class SERVER_DECL Spell : public EventableObject
 		SpellTargetConstraint* m_target_constraint;
 
 		virtual int32 DoCalculateEffect(uint32 i, Unit* target, int32 value);
-		virtual void DoAfterHandleEffect(Unit* target, uint32 i) {}
+        virtual void DoAfterHandleEffect(Unit* /*target*/, uint32 /*i*/) {}
 
 	public: //Modified by LUAppArc private->public
 		float m_missilePitch;

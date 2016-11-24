@@ -113,7 +113,7 @@ void WorldSession::HandleGroupInviteOpcode(WorldPacket & recv_data)
 ///////////////////////////////////////////////////////////////
 ///This function handles CMSG_GROUP_CANCEL:
 ///////////////////////////////////////////////////////////////
-void WorldSession::HandleGroupCancelOpcode(WorldPacket & recv_data)
+void WorldSession::HandleGroupCancelOpcode(WorldPacket & /*recv_data*/)
 {
 	CHECK_INWORLD_RETURN
 
@@ -123,7 +123,7 @@ void WorldSession::HandleGroupCancelOpcode(WorldPacket & recv_data)
 ////////////////////////////////////////////////////////////////
 ///This function handles CMSG_GROUP_ACCEPT:
 ////////////////////////////////////////////////////////////////
-void WorldSession::HandleGroupAcceptOpcode(WorldPacket & recv_data)
+void WorldSession::HandleGroupAcceptOpcode(WorldPacket & /*recv_data*/)
 {
 	CHECK_INWORLD_RETURN;
 
@@ -174,7 +174,7 @@ void WorldSession::HandleGroupAcceptOpcode(WorldPacket & recv_data)
 ///////////////////////////////////////////////////////////////////////////////////////
 ///This function handles CMSG_GROUP_DECLINE:
 //////////////////////////////////////////////////////////////////////////////////////
-void WorldSession::HandleGroupDeclineOpcode(WorldPacket & recv_data)
+void WorldSession::HandleGroupDeclineOpcode(WorldPacket & /*recv_data*/)
 {
 	CHECK_INWORLD_RETURN;
 	WorldPacket data(SMSG_GROUP_DECLINE, 100);
@@ -336,7 +336,7 @@ void WorldSession::HandleGroupSetLeaderOpcode(WorldPacket & recv_data)
 //////////////////////////////////////////////////////////////////////////////////////////
 ///This function handles CMSG_GROUP_DISBAND:
 //////////////////////////////////////////////////////////////////////////////////////////
-void WorldSession::HandleGroupDisbandOpcode(WorldPacket & recv_data)
+void WorldSession::HandleGroupDisbandOpcode(WorldPacket & /*recv_data*/)
 {
 	// this is actually leaving a party, disband is not possible anymore
 	CHECK_INWORLD_RETURN;

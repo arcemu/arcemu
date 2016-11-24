@@ -158,7 +158,7 @@ void TotemSummon::SetupSpells()
 	}
 }
 
-void TotemSummon::Die(Unit* pAttacker, uint32 damage, uint32 spellid)
+void TotemSummon::Die(Unit* /*pAttacker*/, uint32 /*damage*/, uint32 /*spellid*/)
 {
 	Despawn(1, 0);
 }

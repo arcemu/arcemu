@@ -82,7 +82,7 @@ void Item::Init(uint32 high, uint32 low)
 
 Item::~Item()
 {
-	if(loot != NULL)
+    if(loot)
 	{
 		delete loot;
 		loot = NULL;
@@ -90,8 +90,7 @@ Item::~Item()
 
 	sEventMgr.RemoveEvents(this);
 
-	EnchantmentMap::iterator itr;
-	for(itr = Enchantments.begin(); itr != Enchantments.end(); ++itr)
+    for(EnchantmentMap::iterator itr = Enchantments.begin(); itr != Enchantments.end(); ++itr)
 	{
 		if(itr->second.Enchantment->type == 0 && itr->second.Slot == 0 && itr->second.ApplyTime == 0 && itr->second.Duration == 0)
 		{
@@ -111,7 +110,7 @@ void Item::Create(uint32 itemid, Player* owner)
 {
 	SetEntry(itemid);
 
-	if(owner != NULL)
+    if(owner)
 	{
 		uint64 OwnerGUID = owner->GetGUID();
 
@@ -135,10 +134,7 @@ void Item::Create(uint32 itemid, Player* owner)
 
 
 	m_owner = owner;
-	if(m_itemProto->LockId > 1)
-		locked = true;
-	else
-		locked = false;
+    locked = m_itemProto->LockId ? true : false;
 }
 
 void Item::LoadFromDB(Field* fields, Player* plr, bool light)
@@ -150,11 +146,7 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light)
 	m_itemProto = ItemPrototypeStorage.LookupEntry(itemid);
 
 	ARCEMU_ASSERT(m_itemProto != NULL);
-
-	if(m_itemProto->LockId > 1)
-		locked = true;
-	else
-		locked = false;
+    locked = m_itemProto->LockId ? true : false;
 
 	SetEntry(itemid);
 	m_owner = plr;
@@ -235,7 +227,7 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light)
 	if(refundentry.first != 0 && refundentry.second != 0 && GetOwner() != NULL)
 	{
 		uint32* played = GetOwner()->GetPlayedtime();
-		if(played[1] < (refundentry.first + 60 * 60 * 2))
+        if(played[1] < uint32(refundentry.first + 60 * 60 * 2))
 			m_owner->GetItemInterface()->AddRefundable(this, refundentry.second, refundentry.first);
 	}
 
@@ -607,7 +599,7 @@ void Item::SetOwner(Player* owner)
 }
 
 
-int32 Item::AddEnchantment(EnchantEntry* Enchantment, uint32 Duration, bool Perm /* = false */, bool apply /* = true */, bool RemoveAtLogout /* = false */, uint32 Slot_, uint32 RandomSuffix)
+int32 Item::AddEnchantment(EnchantEntry* Enchantment, uint32 Duration, bool /*Perm = false */, bool apply /* = true */, bool RemoveAtLogout /* = false */, uint32 Slot_, uint32 RandomSuffix)
 {
 	int32 Slot = Slot_;
 	m_isDirty = true;
@@ -902,7 +894,7 @@ void Item::EventRemoveEnchantment(uint32 Slot)
 	RemoveEnchantment(Slot);
 }
 
-int32 Item::FindFreeEnchantSlot(EnchantEntry* Enchantment, uint32 random_type)
+int32 Item::FindFreeEnchantSlot(EnchantEntry* /*Enchantment*/, uint32 random_type)
 {
 	uint32 GemSlotsReserve = GetSocketsCount();
 	if(GetProto()->SocketBonus)
@@ -1094,12 +1086,13 @@ uint32 Item::GenerateRandomSuffixFactor(ItemPrototype* m_itemProto)
 	return long2int32(value);
 }
 
-string Item::GetItemLink(uint32 language = NULL)
+string Item::GetItemLink(uint32 language = 0)
 {
 	return GetItemLinkByProto(GetProto(), language);
 }
 
-string GetItemLinkByProto(ItemPrototype* iProto, uint32 language = NULL)
+//TODO: move this to Item class
+string GetItemLinkByProto(ItemPrototype* iProto, uint32 language = 0)
 {
 	const char* ItemLink;
 	char buffer[256];

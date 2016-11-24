@@ -88,7 +88,16 @@ class AcherusSoulPrison : GameObjectAIScript
 		}
 };
 
-
+class InServiceOfLichKing : public QuestScript
+{
+	public:
+		void OnQuestStart(Player* mTarget, QuestLogEntry* /*qLogEntry*/)
+		{
+			mTarget->PlaySound(14734);
+			sEventMgr.AddEvent(mTarget, &Player::PlaySound, (uint32)14735, EVENT_UNK, 22500, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+			sEventMgr.AddEvent(mTarget, &Player::PlaySound, (uint32)14736, EVENT_UNK, 48500, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+		}
+};
 
 void SetupDeathKnight(ScriptMgr* mgr)
 {
@@ -109,5 +118,5 @@ void SetupDeathKnight(ScriptMgr* mgr)
 	mgr->register_gameobject_script(191587, &AcherusSoulPrison::Create);
 	mgr->register_gameobject_script(191589, &AcherusSoulPrison::Create);
 	mgr->register_gameobject_script(191590, &AcherusSoulPrison::Create);
-
+	mgr->register_quest_script(12687, new InServiceOfLichKing());
 }

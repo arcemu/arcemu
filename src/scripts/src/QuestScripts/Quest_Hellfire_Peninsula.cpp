@@ -22,50 +22,6 @@
 #include "Setup.h"
 
 /*--------------------------------------------------------------------------------------------------------*/
-// Fel Orc Scavengers
-
-class FelOrcScavengersQAI : public CreatureAIScript
-{
-	public:
-		ADD_CREATURE_FACTORY_FUNCTION(FelOrcScavengersQAI);
-		FelOrcScavengersQAI(Creature* pCreature) : CreatureAIScript(pCreature)  {}
-
-		void OnDied(Unit* mKiller)
-		{
-			if(mKiller->IsPlayer())
-			{
-				QuestLogEntry* pQuest = TO_PLAYER(mKiller)->GetQuestLogForEntry(10482);
-				if(pQuest != NULL && pQuest->GetMobCount(0) < pQuest->GetQuest()->required_mobcount[0])
-				{
-					pQuest->SetMobCount(0, pQuest->GetMobCount(0) + 1);
-					pQuest->SendUpdateAddKill(0);
-					pQuest->UpdatePlayerFields();
-				}
-			}
-		}
-};
-
-class Dreadtusk : public CreatureAIScript
-{
-	public:
-		ADD_CREATURE_FACTORY_FUNCTION(Dreadtusk);
-		Dreadtusk(Creature* pCreature) : CreatureAIScript(pCreature) { }
-		void OnDied(Unit* mKiller)
-		{
-			if(!mKiller->IsPlayer())
-				return;
-
-			QuestLogEntry* pQuest = TO_PLAYER(mKiller)->GetQuestLogForEntry(10255);
-			if(pQuest != NULL && pQuest->GetMobCount(0) < pQuest->GetQuest()->required_mobcount[0])
-			{
-				pQuest->SetMobCount(0, pQuest->GetMobCount(0) + 1);
-				pQuest->SendUpdateAddKill(0);
-				pQuest->UpdatePlayerFields();
-			}
-		}
-};
-
-/*--------------------------------------------------------------------------------------------------------*/
 // Zeth'Gor Must Burn!
 
 class ZethGorMustBurnAlliance : public GameObjectAIScript
@@ -186,99 +142,66 @@ class ZethGorMustBurnAlliance : public GameObjectAIScript
 
 /*--------------------------------------------------------------------------------------------------------*/
 // The Dreghood Elders
+//TODO: add waypoints on gossip select
 
-#define SendQuickMenu(textid) objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), textid, pPlayer); \
-    Menu->SendTo(pPlayer);
+#define PrisonerText1 "You've freed me! The winds speak to my people one again and grant us their strength. I thank you, stranger."
+#define PrisonerText2 "I am free! I will ask the spirit of fire to return to us so that my people may have the courage to fight their masters! I thank you, $r."
+#define PrisonerText3 "I'm free! The spirit of water returns to my people. It will bring us the wisdom we need to survive in this harsh land. I am in your debt, $N."
 
-class PrisonerGossip : public GossipScript
+class PrisonerGossip : public Arcemu::Gossip::Script
 {
 	public:
-		void GossipHello(Object* pObject, Player* pPlayer)
+		void OnHello(Object* pObject, Player* pPlayer)
 		{
-			if(pPlayer == NULL)			// useless, but who knows
-				return;
-
-			if(!pObject->IsCreature())	// can't imagine to get this null lol
-				return;
-
-			int32 i = -1;
-			Creature* pPrisoner = TO_CREATURE(pObject);
-			switch(pPrisoner->GetEntry())
+			Arcemu::Gossip::Menu menu(pObject->GetGUID(), 10104, pPlayer->GetSession()->language);
+			sQuestMgr.FillQuestMenu(TO_CREATURE(pObject), pPlayer, menu);
+			if(QuestLogEntry* pQuest = pPlayer->GetQuestLogForEntry(10368))
 			{
-				case 20677:
-					i = 0;
-					break;
-				case 20678:
-					i = 1;
-					break;
-				case 20679:
-					i = 2;
-					break;
+				int32 npc = -1;
+				switch(TO_CREATURE(pObject)->GetEntry())
+				{
+					case 20677: npc = 0; break;
+					case 20678: npc = 1; break;
+					case 20679: npc = 2; break;
+					default: npc = -1; break;
+				}
+
+                if(npc >= 0 && pPlayer->HasItem(29501) && pQuest->GetMobCount(npc) < pQuest->GetQuest()->required_mobcount[npc])
+					menu.AddItem(Arcemu::Gossip::ICON_CHAT, "Walk free, Elder. Bring the spirits back to your tribe.", 0);
+			}
+			menu.Send(pPlayer);
+		}
+
+		void OnSelectOption(Object* pObject, Player* pPlayer, uint32 Id, const char* EnteredCode)
+		{
+			pPlayer->Gossip_Complete();
+			int32 npc = -1;
+            Creature* pPrisoner = TO_CREATURE(pObject);
+            switch(pPrisoner->GetEntry())
+			{
+				case 20677: npc = 0; break;
+				case 20678: npc = 1; break;
+				case 20679: npc = 2; break;
 			}
 
-			if(i == -1)
+			if (npc < 0)
 				return;
 
 			QuestLogEntry* pQuest = pPlayer->GetQuestLogForEntry(10368);
-			if(pQuest != NULL && pQuest->GetMobCount(i) < pQuest->GetQuest()->required_mobcount[i])
+            if(pQuest && pQuest->GetMobCount(npc) < pQuest->GetQuest()->required_mobcount[npc])
 			{
-				if(pPlayer->GetItemInterface()->GetItemCount(29501) > 0)
+				pQuest->SetMobCount(npc, pQuest->GetMobCount(npc) + 1);
+				pQuest->SendUpdateAddKill(npc);
+				pQuest->UpdatePlayerFields();
+				switch(npc)
 				{
-					GossipMenu* Menu;
-					objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 10104, pPlayer);
-					Menu->AddItem(0, "Walk free, Elder. Bring the spirits back to your tribe.", 1);
-
-					Menu->SendTo(pPlayer);
+					case 0: pPrisoner->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, PrisonerText1); break;
+					case 1: pPrisoner->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, PrisonerText2); break;
+					case 2: pPrisoner->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, PrisonerText3); break;
 				}
-			}
-		}
 
-		void GossipSelectOption(Object* pObject, Player* pPlayer, uint32 Id, uint32 IntId, const char* EnteredCode)
-		{
-			if(pPlayer == NULL)
-				return;
-
-			if(!pObject->IsCreature())
-				return;
-
-			switch(IntId)
-			{
-				case 0:
-					GossipHello(pObject, pPlayer);
-					break;
-				case 1:
-					{
-						int32 i = -1;
-						Creature* pPrisoner = TO_CREATURE(pObject);
-						switch(pPrisoner->GetEntry())
-						{
-							case 20677:
-								i = 0;
-								break;
-							case 20678:
-								i = 1;
-								break;
-							case 20679:
-								i = 2;
-								break;
-						}
-
-						if(i == -1)
-							return;
-
-						QuestLogEntry* pQuest = pPlayer->GetQuestLogForEntry(10368);
-						if(pQuest != NULL && pQuest->GetMobCount(i) < pQuest->GetQuest()->required_mobcount[i])
-						{
-							pQuest->SetMobCount(i, pQuest->GetMobCount(i) + 1);
-							pQuest->SendUpdateAddKill(i);
-							pQuest->UpdatePlayerFields();
-
-							pPrisoner->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "You've freed me! The winds speak to my people one again and grant us their strength. I thank you, stranger.");
-							pPrisoner->Despawn(5000, 6 * 60 * 1000);
-							pPrisoner->SetStandState(STANDSTATE_STAND);
-						}
-					}
-					break;
+				pPrisoner->SetStandState(STANDSTATE_STAND);
+				pPrisoner->Despawn(5000, 6 * 60 * 1000);
 			}
 		}
 
@@ -298,10 +221,6 @@ class PrisonersDreghoodElders : public CreatureAIScript
 			_unit->GetAIInterface()->m_canMove = false;
 		}
 };
-
-
-
-
 
 /*--------------------------------------------------------------------------------------------------------*/
 class AncestralSpiritWolf : public CreatureAIScript
@@ -365,21 +284,11 @@ class DarkTidingsHorde : public QuestScript
 
 void SetupHellfirePeninsula(ScriptMgr* mgr)
 {
-	/*-------------------------------------------------------------------*/
-	// Finished
-	mgr->register_creature_script(16772, &FelOrcScavengersQAI::Create);
-	mgr->register_creature_script(19701, &FelOrcScavengersQAI::Create);
-	mgr->register_creature_script(16876, &FelOrcScavengersQAI::Create);
-	mgr->register_creature_script(16925, &FelOrcScavengersQAI::Create);
-	mgr->register_creature_script(18952, &FelOrcScavengersQAI::Create);
-
-	mgr->register_creature_script(16992, &Dreadtusk::Create);
-
 	mgr->register_gameobject_script(184661, &ZethGorMustBurnAlliance::Create);
-	GossipScript* pPrisonerGossip = new PrisonerGossip();
-	mgr->register_gossip_script(20677, pPrisonerGossip);
-	mgr->register_gossip_script(20678, pPrisonerGossip);
-	mgr->register_gossip_script(20679, pPrisonerGossip);
+	Arcemu::Gossip::Script* pPrisonerGossip = new PrisonerGossip;
+	mgr->register_creature_gossip(20677, pPrisonerGossip);
+	mgr->register_creature_gossip(20678, pPrisonerGossip);
+	mgr->register_creature_gossip(20679, pPrisonerGossip);
 
 	/*-------------------------------------------------------------------*/
 	// TODO
@@ -391,6 +300,7 @@ void SetupHellfirePeninsula(ScriptMgr* mgr)
 	mgr->register_creature_script(20677, &PrisonersDreghoodElders::Create);
 	mgr->register_creature_script(20678, &PrisonersDreghoodElders::Create);
 	mgr->register_creature_script(20679, &PrisonersDreghoodElders::Create);
+
 	mgr->register_creature_script(17405, &HellfireDeadNPC::Create);
 	mgr->register_creature_script(16852, &HellfireDeadNPC::Create);
 	mgr->register_creature_script(20158, &HellfireDeadNPC::Create);

@@ -530,10 +530,7 @@ void LogonServer::Run(int argc, char** argv)
 	sLog.Close();
 }
 
-void OnCrash(bool Terminate)
-{
-
-}
+void OnCrash(bool /*Terminate*/) {};
 
 void LogonServer::CheckForDeadSockets()
 {

@@ -46,7 +46,7 @@ void WorldSession::HandleBattlefieldPortOpcode(WorldPacket & recv_data)
 	}
 }
 
-void WorldSession::HandleBattlefieldStatusOpcode(WorldPacket & recv_data)
+void WorldSession::HandleBattlefieldStatusOpcode(WorldPacket & /*recv_data*/)
 {
 	CHECK_INWORLD_RETURN
 
@@ -67,11 +67,14 @@ void WorldSession::HandleBattlefieldListOpcode(WorldPacket & recv_data)
 
 	uint32 BGType;
 	recv_data >> BGType;
+
 	uint8 from;
 	recv_data >> from; // 0 - battlemaster, 1 - whatever
 
-	// weeeeeeeeeeeeeeeeeeeee
 	CHECK_INWORLD_ASSERT;
+
+    uint8 unk1;
+    recv_data >> unk1;
 
 	BattlegroundManager.HandleBattlegroundListPacket(this, BGType, from);
 }
@@ -93,8 +96,7 @@ void WorldSession::SendBattlegroundList(Creature* pCreature, uint32 mapid)
 		}
 		else
 		{
-			BGMaster* battlemaster = BGMasterStorage.LookupEntry(pCreature->GetProto()->Id);
-			if(battlemaster != NULL)
+            if (BGMaster* battlemaster = BGMasterStorage.LookupEntry(pCreature->GetProto()->Id))
 				t = battlemaster->bg;
 		}
 	}
@@ -125,7 +127,7 @@ void WorldSession::HandleBattleMasterHelloOpcode(WorldPacket & recv_data)
 	SendBattlegroundList(bm, 0);
 }
 
-void WorldSession::HandleLeaveBattlefieldOpcode(WorldPacket & recv_data)
+void WorldSession::HandleLeaveBattlefieldOpcode(WorldPacket & /*recv_data*/)
 {
 	CHECK_INWORLD_RETURN
 
@@ -175,7 +177,7 @@ void WorldSession::HandleAreaSpiritHealerQueueOpcode(WorldPacket & recv_data)
 	_player->CastSpell(_player, 2584, true);
 }
 
-void WorldSession::HandleBattlegroundPlayerPositionsOpcode(WorldPacket & recv_data)
+void WorldSession::HandleBattlegroundPlayerPositionsOpcode(WorldPacket & /*recv_data*/)
 {
 	CHECK_INWORLD_RETURN
 
@@ -360,7 +362,7 @@ void WorldSession::HandleInspectArenaStatsOpcode(WorldPacket & recv_data)
 }
 
 
-void WorldSession::HandlePVPLogDataOpcode(WorldPacket & recv_data)
+void WorldSession::HandlePVPLogDataOpcode(WorldPacket & /*recv_data*/)
 {
 	CHECK_INWORLD_RETURN;
 	if(_player->m_bg)

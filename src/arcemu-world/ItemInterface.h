@@ -113,6 +113,7 @@ class SERVER_DECL ItemInterface
 		uint32 RemoveItemAmtByGuid(uint64 guid, uint32 amt);
 		void RemoveAllConjured();
 		void BuyItem(ItemPrototype* item, uint32 total_amount, Creature* pVendor);
+		bool HasItem(uint32 entry) { return GetItemCount(entry) != 0; };
 
 		uint32 CalculateFreeSlots(ItemPrototype* proto);
 		void ReduceItemDurability();

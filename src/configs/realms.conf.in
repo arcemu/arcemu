@@ -67,5 +67,5 @@
 <Realm1 Name = "Arcemu"
 	Address = "127.0.0.1:8129" 
 	Icon = "Normal"
-	Population = "1.0"
+	Population = "1"
 	TimeZone = "1">

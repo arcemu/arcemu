@@ -316,10 +316,10 @@ bool Master::Run(int argc, char** argv)
 
 	ConsoleThread* console = new ConsoleThread();
 	ThreadPool.ExecuteTask(console);
-
+/*
 	uint32 realCurrTime, realPrevTime;
 	realCurrTime = realPrevTime = getMSTime();
-
+*/
 	// Socket loop!
 	uint32 start;
 	uint32 diff;
@@ -569,7 +569,7 @@ bool Master::Run(int argc, char** argv)
 }
 
 static const char *REQUIRED_CHAR_DB_VERSION  = "2011-11-16_22-00_saved_mail";
-static const char *REQUIRED_WORLD_DB_VERSION = "2012-08-14_21-25_worldmap_info";
+static const char *REQUIRED_WORLD_DB_VERSION = "2014-06-05_01-15_worldstring";
 
 bool Master::CheckDBVersion()
 {

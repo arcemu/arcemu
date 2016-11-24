@@ -20,7 +20,7 @@
 
 #include "StdAfx.h"
 
-bool ChatHandler::HandleInitializeAllQueuedBattlegroundsCommand(const char* args, WorldSession* m_session)
+bool ChatHandler::HandleInitializeAllQueuedBattlegroundsCommand(const char* /*args*/, WorldSession* m_session)
 {
 	SystemMessage(m_session, "Forcing initialization of all battlegrounds...");
 	BattlegroundManager.EventQueueUpdate(true);
@@ -28,7 +28,7 @@ bool ChatHandler::HandleInitializeAllQueuedBattlegroundsCommand(const char* args
 	return true;
 }
 
-bool ChatHandler::HandleGetBattlegroundQueueCommand(const char* args, WorldSession* m_session)
+bool ChatHandler::HandleGetBattlegroundQueueCommand(const char* /*args*/, WorldSession* m_session)
 {
 	SystemMessage(m_session, "Getting battleground queues...");
 	BattlegroundManager.HandleGetBattlegroundQueueCommand(m_session);
@@ -36,30 +36,30 @@ bool ChatHandler::HandleGetBattlegroundQueueCommand(const char* args, WorldSessi
 	return true;
 }
 
-bool ChatHandler::HandleSetBGScoreCommand(const char* args, WorldSession* m_session)
+bool ChatHandler::HandleSetBGScoreCommand(const char* /*args*/, WorldSession* /*m_session*/)
 {
 	return true;
 }
 
-bool ChatHandler::HandleStartBGCommand(const char* args, WorldSession* m_session)
+bool ChatHandler::HandleStartBGCommand(const char* /*args*/, WorldSession* m_session)
 {
 	if(!m_session->GetPlayer()->m_bg)
 	{
 		SystemMessage(m_session, "You're not in a battleground!");
 		return true;
 	}
-	m_session->GetPlayer()->m_bg->SendChatMessage(CHAT_MSG_BG_EVENT_NEUTRAL, 0, m_session->LocalizedWorldSrv(49), m_session->LocalizedWorldSrv(m_session->GetPlayer()->m_bg->GetNameID()));
+    m_session->GetPlayer()->m_bg->SendChatMessage(CHAT_MSG_BG_EVENT_NEUTRAL, 0, m_session->LocalizedWorldSrv(WORLDSTRING_BATTLE_HAS_BEGUN), m_session->LocalizedWorldSrv(m_session->GetPlayer()->m_bg->GetNameID()));
 	sEventMgr.RemoveEvents(m_session->GetPlayer()->m_bg, EVENT_BATTLEGROUND_COUNTDOWN);
 	m_session->GetPlayer()->m_bg->Start();
 	return true;
 }
 
-bool ChatHandler::HandlePauseBGCommand(const char* args, WorldSession* m_session)
+bool ChatHandler::HandlePauseBGCommand(const char* /*args*/, WorldSession* /*m_session*/)
 {
 	return true;
 }
 
-bool ChatHandler::HandleBGInfoCommnad(const char* args, WorldSession* m_session)
+bool ChatHandler::HandleBGInfoCommnad(const char* /*args*/, WorldSession* /*m_session*/)
 {
 	return true;
 }
@@ -124,7 +124,7 @@ bool ChatHandler::HandleSetBattlefieldStatusCommand(const char* args, WorldSessi
 	return true;
 }
 
-bool ChatHandler::HandleBattlegroundExitCommand(const char* args, WorldSession* m_session)
+bool ChatHandler::HandleBattlegroundExitCommand(const char* /*args*/, WorldSession* m_session)
 {
 	if(!m_session->GetPlayer()->m_bg)
 	{

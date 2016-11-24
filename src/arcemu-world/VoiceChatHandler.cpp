@@ -21,17 +21,17 @@
 
 #include "StdAfx.h"
 
-void WorldSession::HandleEnableMicrophoneOpcode(WorldPacket & recv_data)
+void WorldSession::HandleEnableMicrophoneOpcode(WorldPacket & /*recv_data*/)
 {
 
 }
 
-void WorldSession::HandleChannelVoiceQueryOpcode(WorldPacket & recv_data)
+void WorldSession::HandleChannelVoiceQueryOpcode(WorldPacket & /*recv_data*/)
 {
 
 }
 
-void WorldSession::HandleVoiceChatQueryOpcode(WorldPacket & recv_data)
+void WorldSession::HandleVoiceChatQueryOpcode(WorldPacket & /*recv_data*/)
 {
 
 }

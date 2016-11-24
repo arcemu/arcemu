@@ -125,7 +125,7 @@ uint32 ahash(string & str)
 	return ahash(str.c_str());
 }
 
-bool ConfigFile::SetSource(const char* file, bool ignorecase)
+bool ConfigFile::SetSource(const char* file, bool /*ignorecase*/)
 {
 	/* wipe any existing settings. */
 	m_settings.clear();

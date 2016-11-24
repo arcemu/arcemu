@@ -4323,3 +4323,10 @@ bool ChatHandler::HandleNPCCastCommand(const char* args, WorldSession* m_session
 
 	return true;
 }
+
+bool ChatHandler::HandleReloadScripts(const char* args, WorldSession* m_session)
+{
+    sScriptMgr.ReloadScriptEngines();
+	SystemMessage(m_session, "Script engines reloaded.");
+    return true;
+}

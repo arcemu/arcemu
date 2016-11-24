@@ -3,24 +3,24 @@ project(Arcemu)
 cmake_minimum_required(VERSION 2.8)
 #Do system checking.
 
-MACRO( IS_ARCH_64BIT )
-	IF( NOT WIN32 )
+MACRO(IS_ARCH_64BIT)
+	IF(NOT WIN32)
 		
-		IF( CMAKE_SYSTEM_PROCESSOR MATCHES "[xX]64" OR CMAKE_SYSTEM_PROCESSOR MATCHES "[xX]86_64" OR CMAKE_SYSTEM_PROCESSOR MATCHES "[aA][mM][dD]64" )
-			SET( IS_64BIT TRUE )
+		IF(CMAKE_SYSTEM_PROCESSOR MATCHES "[xX]64" OR CMAKE_SYSTEM_PROCESSOR MATCHES "[xX]86_64" OR CMAKE_SYSTEM_PROCESSOR MATCHES "[aA][mM][dD]64")
+			SET(IS_64BIT TRUE)
 		ELSE()
-			SET( IS_64BIT FALSE )
+			SET(IS_64BIT FALSE)
 		ENDIF()
 		
-	ELSE( NOT WIN32 )
+	ELSE()
 
 		IF( CMAKE_GENERATOR MATCHES Win64* )
-			SET( IS_64BIT TRUE )
-		ELSE( CMAKE_GENERATOR MATCHES Win64* )
-			SET( IS_64BIT FALSE )
-		ENDIF( CMAKE_GENERATOR MATCHES Win64* )
+			SET(IS_64BIT TRUE)
+		ELSE()
+			SET(IS_64BIT FALSE)
+		ENDIF()
 		
-	ENDIF( NOT WIN32 )
+	ENDIF()
 	
 ENDMACRO( IS_ARCH_64BIT )
 
@@ -88,6 +88,13 @@ IF( WIN32)
 	SET( INSTALLED_DEPENDENCIES ${DEPENDENCY_DLLS}/libmysql.dll ${DEPENDENCY_DLLS}/libeay32.dll)
 ENDIF(WIN32)
 
+SET( CONFIGS
+	${ROOT_PATH}/src/configs/logon.conf.in
+	${ROOT_PATH}/src/configs/world.conf.in
+	${ROOT_PATH}/src/configs/realms.conf.in
+	${ROOT_PATH}/src/configs/optional.conf.in
+)
+
 #Our configurable variables.
 IF( WIN32 )
 	SET(ARCEMU_CONFIGSFILE_PATH configs CACHE PATH "Path where the arcemu config files are.")
@@ -96,8 +103,8 @@ ELSE( WIN32 )
 ENDIF( WIN32 )
 
 SET(ARCEMU_SCRIPTLIB_PATH "modules" CACHE PATH "The directory which contains the 'lib' directory that has the script libraries." )
-SET(BUILD_ARCEMUSCRIPTS TRUE CACHE BOOL "Set to false to NOT build script libraries." )
-SET(BUILD_TOOLS TRUE CACHE BOOL "Build Arcemu tools" )
+SET(BUILD_ARCEMUSCRIPTS FALSE CACHE BOOL "Set to false to NOT build script libraries." )
+SET(BUILD_TOOLS FALSE CACHE BOOL "Build Arcemu tools" )
 SET(VISUALSTUDIO_COMPILERHEAPLIMIT 400 CACHE STRING "Visual Studio compiler heap limit. Ignore on darwin and unix platforms.")
 
 include(CompilerVersion)
@@ -108,10 +115,14 @@ if( CMAKE_GENERATOR MATCHES Unix* )
 	
 	#Check support for unordered_map/set
 	GetCompilerVersion( gcc_version)
-	IF( DEFINED gcc_version AND ( ${gcc_version} VERSION_EQUAL "4.3" OR ${gcc_version} VERSION_GREATER "4.3" ) AND NOT APPLE )
+	IF( DEFINED gcc_version AND ( ${gcc_version} VERSION_EQUAL "4.7" OR ${gcc_version} VERSION_GREATER "4.7" ) AND NOT APPLE AND CMAKE_COMPILER_IS_GNUCXX)
 		add_definitions(-DHAS_CXX0X -std=gnu++0x)
 	ENDIF()
-	
+
+	set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} --no-warnings")
+	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} --no-warnings")
+	set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -Wall -Wfatal-errors -Wextra -Wno-ignored-qualifiers")
+	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Wfatal-errors -Wextra -Wno-ignored-qualifiers")
 ELSEIF( CMAKE_GENERATOR MATCHES Visual* )
 	#Extract revision
 	execute_process(WORKING_DIRECTORY ${ROOT_PATH} COMMAND git_version.bat )
@@ -250,3 +261,4 @@ ENDIF( BUILD_TOOLS )
 
 
 INSTALL(FILES ${INSTALLED_DEPENDENCIES} DESTINATION .)
+INSTALL(FILES ${CONFIGS} DESTINATION ${ARCEMU_CONFIGSFILE_PATH})

@@ -42,7 +42,7 @@ extern "C" SCRIPT_DECL uint32 _exp_get_script_type()
 }
 
 
-extern "C" SCRIPT_DECL void _exp_script_register(ScriptMgr* mgr)
+extern "C" SCRIPT_DECL void _exp_script_register(ScriptMgr* /*mgr*/)
 {
 	CBattlegroundManager &bgMgr = CBattlegroundManager::getSingleton();
 
@@ -56,7 +56,7 @@ extern "C" SCRIPT_DECL void _exp_script_register(ScriptMgr* mgr)
 
 	// Registering factory methods
 	bgMgr.RegisterBgFactory( 30,  &AlteracValley::Create );
-	bgMgr.RegisterBgFactory( 489, &WarsongGulch::Create );
+    bgMgr.RegisterBgFactory( MAP_WARSONG_GULCH, &WarsongGulch::Create );
 	bgMgr.RegisterBgFactory( 529, &ArathiBasin::Create );
 	bgMgr.RegisterBgFactory( 566, &EyeOfTheStorm::Create );
 	bgMgr.RegisterBgFactory( 607, &StrandOfTheAncient::Create );

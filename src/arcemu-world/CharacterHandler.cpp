@@ -67,7 +67,7 @@ LoginErrorCode VerifyName(const char* name, size_t nlen)
 	return E_CHAR_NAME_SUCCESS;
 }
 
-bool ChatHandler::HandleRenameAllCharacter(const char* args, WorldSession* m_session)
+bool ChatHandler::HandleRenameAllCharacter(const char* /*args*/, WorldSession* m_session)
 {
 	uint32 uCount = 0;
 	uint32 ts = getMSTime();
@@ -289,7 +289,7 @@ void WorldSession::CharacterEnumProc(QueryResult* result)
 	SendPacket(&data);
 }
 
-void WorldSession::HandleCharEnumOpcode(WorldPacket & recv_data)
+void WorldSession::HandleCharEnumOpcode(WorldPacket & /*recv_data*/)
 {
 	AsyncQuery* q = new AsyncQuery(new SQLClassCallbackP1<World, uint32>(World::getSingletonPtr(), &World::CharacterEnumProc, GetAccountId()));
 	q->AddQuery("SELECT guid, level, race, class, gender, bytes, bytes2, name, positionX, positionY, positionZ, mapId, zoneId, banned, restState, deathstate, forced_rename_pending, player_flags, guild_data.guildid FROM characters LEFT JOIN guild_data ON characters.guid = guild_data.playerid WHERE acct=%u ORDER BY guid LIMIT 10", GetAccountId());
@@ -1000,26 +1000,6 @@ void WorldSession::FullLogin(Player* plr)
 		}
 	}
 #endif
-
-
-#ifdef WIN32
-	_player->BroadcastMessage("Server: %sArcEmu %s - %s-Windows-%s", MSG_COLOR_WHITE, BUILD_TAG, CONFIG, ARCH);
-#else
-	_player->BroadcastMessage("Server: %sArcEmu %s - %s-%s", MSG_COLOR_WHITE, BUILD_TAG, PLATFORM_TEXT, ARCH);
-#endif
-
-	// Revision
-	_player->BroadcastMessage("Build hash: %s%s", MSG_COLOR_CYAN, BUILD_HASH_STR);
-	// Bugs
-	_player->BroadcastMessage("Bugs: %s%s", MSG_COLOR_SEXHOTPINK, BUGTRACKER);
-	// Recruiting message
-	_player->BroadcastMessage(RECRUITING);
-	// Shows Online players, and connection peak
-	_player->BroadcastMessage("Online Players: %s%u |rPeak: %s%u|r Accepted Connections: %s%u",
-	                          MSG_COLOR_SEXGREEN, sWorld.GetSessionCount(), MSG_COLOR_SEXBLUE, sWorld.PeakSessionCount, MSG_COLOR_SEXBLUE, sWorld.mAcceptedConnections);
-
-	// Shows Server uptime
-	_player->BroadcastMessage("Server Uptime: |r%s", sWorld.GetUptimeString().c_str());
 
 	// server Message Of The Day
 	SendMOTD();

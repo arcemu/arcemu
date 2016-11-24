@@ -717,7 +717,7 @@ void Guild::SetGuildInformation(const char* szGuildInformation, WorldSession* pC
 }
 
 // adding a member
-void Guild::AddGuildMember(PlayerInfo* pMember, WorldSession* pClient, int32 ForcedRank /* = -1 */)
+void Guild::AddGuildMember(PlayerInfo* pMember, WorldSession* /*pClient*/, int32 ForcedRank /* = -1 */)
 {
 
 	//we don't need useless paranoia checks.
@@ -764,6 +764,7 @@ void Guild::AddGuildMember(PlayerInfo* pMember, WorldSession* pClient, int32 For
 	{
 		pMember->m_loggedInPlayer->SetGuildId(m_guildId);
 		pMember->m_loggedInPlayer->SetGuildRank(r->iId);
+		pMember->m_loggedInPlayer->SetFlag(PLAYER_FLAGS, PLAYER_FLAGS_IS_IN_GUILD);
 	}
 
 	CharacterDatabase.Execute("INSERT INTO guild_data VALUES(%u, %u, %u, '', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)", m_guildId, pMember->guid, r->iId);
@@ -1424,7 +1425,7 @@ void Guild::DepositMoney(WorldSession* pClient, uint32 uAmount)
 
 	// broadcast guild event telling everyone the new balance
 	char buf[20];
-	snprintf(buf, 20, I64FMT, m_bankBalance);
+    snprintf(buf, 20, "%llu", m_bankBalance);
 	LogGuildEvent(GUILD_EVENT_SETNEWBALANCE, 1, buf);
 
 	// log it!
@@ -1489,7 +1490,7 @@ void Guild::SpendMoney(uint32 uAmount)
 
 	// notify everyone with the new balance
 	char buf[20];
-	snprintf(buf, 20, I64FMT, m_bankBalance);
+    snprintf(buf, 20, "%llu", m_bankBalance);
 	LogGuildEvent(GUILD_EVENT_SETNEWBALANCE, 1, buf);
 }
 void Guild::SendGuildBankLog(WorldSession* pClient, uint8 iSlot)

@@ -22,7 +22,7 @@
 
 int arg_counter = 1;
 char arcemu_optarg[514];
-int arcemu_getopt_long_only(int ___argc, char* const* ___argv, const char* __shortopts, const struct arcemu_option* __longopts, int* __longind)
+int arcemu_getopt_long_only(int ___argc, char* const* ___argv, const char* /*__shortopts*/, const struct arcemu_option* __longopts, int* /*__longind*/)
 {
 	// burlex todo: handle the shortops, at the moment it only works with longopts.
 

@@ -103,10 +103,7 @@ enum Languages
     NUM_LANGUAGES                               = 0x24
 };
 
-/*#define MSG_COLOR_YELLOW	"|r"
-#define MSG_COLOR_RED	   "|cffff2020"
-#define MSG_COLOR_GREEN	 "|c1f40af20"
-#define MSG_COLOR_LIGHTRED  "|cffff6060"*/
+static const uint32 LanguageSkills[NUM_LANGUAGES] = {0, 109, 113, 115, 0, 0, 111, 98, 139, 140, 137, 138, 0, 313, 315, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 673, 0, 759};
 
 #define MSG_COLOR_LIGHTRED       "|cffff6060"
 #define MSG_COLOR_LIGHTBLUE      "|cff00ccff"
@@ -226,7 +223,7 @@ class SERVER_DECL ChatHandler : public Singleton<ChatHandler>
 		bool ExecuteCommandInTable(ChatCommand* table, const char* text, WorldSession* m_session);
 		bool ShowHelpForCommand(WorldSession* m_session, ChatCommand* table, const char* cmd);
 		void SendHighlightedName(WorldSession* m_session, const char* prefix, const char* full_name, string & lowercase_name, string & highlight, uint32 id);
-		void SendItemLinkToPlayer(ItemPrototype* iProto, WorldSession* pSession, bool ItemCount, Player* owner, uint32 language = NULL);
+        void SendItemLinkToPlayer(ItemPrototype* iProto, WorldSession* pSession, bool ItemCount, Player* owner, uint32 language = 0);
 
 		ChatCommand* getCommandTable();
 
@@ -423,6 +420,7 @@ class SERVER_DECL ChatHandler : public Singleton<ChatHandler>
 		bool HandleNPCOnGOCommand(const char* args, WorldSession* m_session);
 		bool HandleNPCLootCommand(const char* args, WorldSession* m_session);
 		bool HandleNPCCastCommand(const char* args, WorldSession* m_session);
+		bool HandleReloadScripts(const char* args, WorldSession* m_session);
 
 		// Ban
 		bool HandleBanCharacterCommand(const char* args, WorldSession* m_session);

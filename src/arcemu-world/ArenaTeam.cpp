@@ -507,7 +507,7 @@ void WorldSession::HandleArenaTeamRemoveMemberOpcode(WorldPacket & recv_data)
 	}
 }
 
-void WorldSession::HandleArenaTeamInviteAcceptOpcode(WorldPacket & recv_data)
+void WorldSession::HandleArenaTeamInviteAcceptOpcode(WorldPacket & /*recv_data*/)
 {
 	CHECK_INWORLD_RETURN
 
@@ -554,7 +554,7 @@ void WorldSession::HandleArenaTeamInviteAcceptOpcode(WorldPacket & recv_data)
 	}
 }
 
-void WorldSession::HandleArenaTeamInviteDenyOpcode(WorldPacket & recv_data)
+void WorldSession::HandleArenaTeamInviteDenyOpcode(WorldPacket & /*recv_data*/)
 {
 	CHECK_INWORLD_RETURN
 

@@ -40,10 +40,11 @@ void HonorHandler::AddHonorPointsToPlayer(Player* pPlayer, uint32 uAmount)
 
 	if(pPlayer->GetMapId() == 559 || pPlayer->GetMapId() == 562 || pPlayer->GetMapId() == 572)
 		return;
+
 	pPlayer->m_honorPoints += uAmount;
 	pPlayer->m_honorToday += uAmount;
 	if(pPlayer->m_honorPoints > sWorld.m_limits.honorpoints) 	
-	pPlayer->m_honorPoints = sWorld.m_limits.honorpoints;
+	    pPlayer->m_honorPoints = sWorld.m_limits.honorpoints;
 
 	RecalculateHonorFields(pPlayer);
 }
@@ -313,12 +314,12 @@ bool ChatHandler::HandlePVPCreditCommand(const char* args, WorldSession* m_sessi
 	return true;
 }
 
-bool ChatHandler::HandleGlobalHonorDailyMaintenanceCommand(const char* args, WorldSession* m_session)
+bool ChatHandler::HandleGlobalHonorDailyMaintenanceCommand(const char* /*args*/, WorldSession* /*m_session*/)
 {
 	return false;
 }
 
-bool ChatHandler::HandleNextDayCommand(const char* args, WorldSession* m_session)
+bool ChatHandler::HandleNextDayCommand(const char* /*args*/, WorldSession* /*m_session*/)
 {
 	return false;
 }

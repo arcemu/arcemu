@@ -3931,6 +3931,15 @@ void ApplyNormalFixes()
 
 	// Insert mage spell fixes here
 
+	sp = dbcSpell.LookupEntryForced(11119);
+	if(sp != NULL)
+	{
+		(*sp).Effect[0] = SPELL_EFFECT_APPLY_AURA; 
+		(*sp).EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+		(*sp).EffectTriggerSpell[0] = 12654;
+		(*sp).procFlags = PROC_ON_SPELL_CRIT_HIT;
+	}
+
 	//Missile Barrage
 	sp = CheckAndReturnSpellEntry(44404);
 	if(sp != NULL)
@@ -4409,6 +4418,16 @@ void ApplyNormalFixes()
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
 			sp->EffectApplyAuraName[0] = SPELL_AURA_DUMMY;
 		}
+	}
+
+	sp = dbcSpell.LookupEntryForced(18179);
+	if(sp != NULL)
+	{
+		(*sp).EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+		(*sp).EffectTriggerSpell[0] = 18179;
+		(*sp).procChance = 100;
+		(*sp).ProcOnNameHash[0] = SPELL_HASH_CURSE_OF_THE_ELEMENTS;
+		(*sp).procFlags = PROC_ON_CAST_SPELL;
 	}
 
 	//megai2: Immolation Aura

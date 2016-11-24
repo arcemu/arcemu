@@ -164,7 +164,7 @@ class SERVER_DECL Object : public EventableObject
 
 		virtual ~Object();
 
-		virtual void Update(uint32 time) { }
+        virtual void Update(uint32 /*time*/) { }
 
 		//! True if object exists in world, else false
 		bool IsInWorld() { return m_mapMgr != NULL; }
@@ -571,7 +571,7 @@ class SERVER_DECL Object : public EventableObject
 		//  none
 		//
 		//////////////////////////////////////////////////////////////////////////
-		virtual void OutPacket(uint16 opcode, uint16 len, const void* data) {};
+        virtual void OutPacket(uint16 /*opcode*/, uint16 /*len*/, const void* /*data*/) {};
 
 
 
@@ -587,7 +587,7 @@ class SERVER_DECL Object : public EventableObject
 		//  none
 		//
 		////////////////////////////////////////////////////////////////////////
-		virtual void SendPacket(WorldPacket* packet) {};
+        virtual void SendPacket(WorldPacket* /*packet*/) {};
 
 		virtual void SendMessageToSet(WorldPacket* data, bool self, bool myteam_only = false);
 		void SendMessageToSet(StackBufferBase* data, bool self) { OutPacketToSet(data->GetOpcode(), static_cast<uint16>(data->GetSize()), data->GetBufferPointer(), self); }
@@ -650,15 +650,15 @@ class SERVER_DECL Object : public EventableObject
 
 		void EventSpellDamage(uint64 Victim, uint32 SpellID, uint32 Damage);
 		void SpellNonMeleeDamageLog(Unit* pVictim, uint32 spellID, uint32 damage, bool allowProc, bool static_damage = false, bool no_remove_auras = false);
-		virtual bool IsCriticalDamageForSpell(Object* victim, SpellEntry* spell) { return false; }
-		virtual float GetCriticalDamageBonusForSpell(Object* victim, SpellEntry* spell, float amount) { return 0; }
-		virtual bool IsCriticalHealForSpell(Object* victim, SpellEntry* spell) { return false; }
-		virtual float GetCriticalHealBonusForSpell(Object* victim, SpellEntry* spell, float amount) { return 0; }
+        virtual bool IsCriticalDamageForSpell(Object* /*victim*/, SpellEntry* /*spell*/) { return false; }
+        virtual float GetCriticalDamageBonusForSpell(Object* /*victim*/, SpellEntry* /*spell*/, float /*amount*/) { return 0; }
+        virtual bool IsCriticalHealForSpell(Object* /*victim*/, SpellEntry* /*spell*/) { return false; }
+        virtual float GetCriticalHealBonusForSpell(Object* /*victim*/, SpellEntry* /*spell*/, float /*amount*/) { return 0; }
 
 		//*****************************************************************************************
 		//* SpellLog packets just to keep the code cleaner and better to read
 		//*****************************************************************************************
-		void SendSpellLog(Object* Caster, Object* Target, uint32 Ability, uint8 SpellLogType);
+        void SendSpellLog(Object* /*Caster*/, Object* Target, uint32 Ability, uint8 SpellLogType);
 		void SendSpellNonMeleeDamageLog(Object* Caster, Object* Target, uint32 SpellID, uint32 Damage, uint8 School, uint32 AbsorbedDamage, uint32 ResistedDamage, bool PhysicalDamage, uint32 BlockedDamage, bool CriticalHit, bool bToSet);
 		void SendAttackerStateUpdate(Object* Caster, Object* Target, dealdamage* Dmg, uint32 Damage, uint32 Abs, uint32 BlockedDamage, uint32 HitStatus, uint32 VState);
 

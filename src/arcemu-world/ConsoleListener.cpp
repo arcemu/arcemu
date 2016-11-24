@@ -306,8 +306,8 @@ void ConsoleSocket::AuthCallback(bool result)
 	{
 		m_pConsole->Write("User `%s` authenticated.\r\n\r\n", m_username.c_str());
 		Log.Notice("RemoteConsole", "User `%s` authenticated.", m_username.c_str());
-		const char* argv[1];
-		HandleInfoCommand(m_pConsole, 1, argv);
+        const char* argv[1];
+        HandleInfoCommand(m_pConsole, 1, argv);
 		m_pConsole->Write("Type ? to see commands, quit to end session.\r\n");
 		m_state = STATE_LOGGED;
 	}

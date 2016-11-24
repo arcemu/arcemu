@@ -88,6 +88,39 @@ class ArajTheSummoner : public CreatureAIScript
 		}
 };
 
+// Quest: 5742
+class TirionFordring_EasternPlaguelands : public Arcemu::Gossip::Script
+{
+    public:
+        void OnHello(Object* pObject, Player* plr)
+        {
+            Arcemu::Gossip::Menu menu(pObject->GetGUID(), objmgr.GetGossipTextForNpc(pObject->GetEntry()), plr->GetSession()->language);
+            sQuestMgr.FillQuestMenu(TO_CREATURE(pObject), plr, menu);
+            if(plr->HasQuest(5742) && !plr->HasFinishedQuest(5742) && plr->getStandState() == STANDSTATE_SIT)
+                menu.AddItem(Arcemu::Gossip::ICON_CHAT, "I am ready to hear your tale, Tirion.", 0);
+            menu.Send(plr);
+        }
+
+        void OnSelectOption(Object* pObject, Player* Plr, uint32 Id, const char* Code)
+        {
+            switch(Id)
+            {
+                case 0: Arcemu::Gossip::Menu::SendQuickMenu(pObject->GetGUID(), 4493, Plr, 1, Arcemu::Gossip::ICON_CHAT, "Thank you, Tirion.  What of your identity?"); break;
+                case 1: Arcemu::Gossip::Menu::SendQuickMenu(pObject->GetGUID(), 4494, Plr, 2, Arcemu::Gossip::ICON_CHAT, "That is terrible."); break;
+                case 2: Arcemu::Gossip::Menu::SendQuickMenu(pObject->GetGUID(), 4495, Plr, 3, Arcemu::Gossip::ICON_CHAT, "I will, Tirion."); break;
+                case 3:
+                    QuestLogEntry* pQuest = Plr->GetQuestLogForEntry(5742);
+                    if(!pQuest)
+                        return;
+
+                    pQuest->Complete();
+                    pQuest->SendQuestComplete();
+                    pQuest->UpdatePlayerFields();
+                break;
+            }
+        }
+};
+
 void SetupEasternPlaguelands(ScriptMgr* mgr)
 {
 	GossipScript* gs = new Darrowshire_Spirit();
@@ -97,4 +130,5 @@ void SetupEasternPlaguelands(ScriptMgr* mgr)
 	mgr->register_creature_script(8531, &Flayer::Create);
 	mgr->register_creature_script(8530, &Flayer::Create);
 	mgr->register_creature_script(1852, &ArajTheSummoner::Create);
+    mgr->register_creature_gossip(1855, new TirionFordring_EasternPlaguelands);
 }

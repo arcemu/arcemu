@@ -241,11 +241,13 @@ void Container::SwapItems(int8 SrcSlot, int8 DstSlot)
 Item* Container::SafeRemoveAndRetreiveItemFromSlot(int16 slot, bool destroy)
 {
 	if(slot < 0 || (uint32)slot >= GetProto()->ContainerSlots)
-		return false;
+        return NULL;
 
 	Item* pItem = m_Slot[slot];
 
-	if(pItem == NULL || pItem == this) return NULL;
+    if(!pItem || pItem == this)
+        return NULL;
+
 	m_Slot[slot] = NULL;
 
 	if(pItem->GetOwner() == m_owner)

@@ -48,7 +48,7 @@ void MySQLDatabase::_EndTransaction(DatabaseConnection* conn)
 	_SendQuery(conn, "COMMIT", false);
 }
 
-bool MySQLDatabase::Initialize(const char* Hostname, unsigned int port, const char* Username, const char* Password, const char* DatabaseName, uint32 ConnectionCount, uint32 BufferSize)
+bool MySQLDatabase::Initialize(const char* Hostname, unsigned int port, const char* Username, const char* Password, const char* DatabaseName, uint32 ConnectionCount, uint32 /*BufferSize*/)
 {
 	uint32 i;
 	MYSQL* temp = NULL;

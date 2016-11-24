@@ -23,7 +23,7 @@ void Socket::PostEvent(uint32 events)
 		Log.Warning("epoll", "Could not post event on fd %u", m_fd);
 }
 
-void Socket::ReadCallback(uint32 len)
+void Socket::ReadCallback(uint32 /*len*/)
 {
 	if(IsDeleted() || !IsConnected())
 		return;

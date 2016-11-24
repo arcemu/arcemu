@@ -419,7 +419,6 @@ class SERVER_DECL AIInterface
 		bool HasWalkMode(uint32 mode) { return m_walkMode == mode; }
 		void StopFlying() { if(Flying()) { SetSplineFlag(0); SetWalk(); } }
 
-		uint32 m_splineFlags;
 		uint32 m_walkMode;
 
 		void UpdateMove();
@@ -606,7 +605,7 @@ class SERVER_DECL AIInterface
 
 		float m_last_target_x;
 		float m_last_target_y;
-
+        uint32 m_currentSplineUpdateCounter;
 
 		/*
 		Splines
@@ -616,12 +615,13 @@ class SERVER_DECL AIInterface
 		*/
 		std::vector<SplinePoint> m_currentMoveSpline;
 		uint32 m_currentMoveSplineIndex;
-		uint32 m_currentSplineUpdateCounter;
+
 		float m_currentSplineFinalOrientation;
+        uint32 m_splinePriority;
+        uint32 m_splineFlags;
 		float m_splinetrajectoryVertical;
 		uint32 m_splinetrajectoryTime;
 		uint32 m_currentSplineTotalMoveTime;
-		uint32 m_splinePriority;
 
 		//Return position after attacking a mob
 		float m_returnX;

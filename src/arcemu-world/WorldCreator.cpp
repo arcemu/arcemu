@@ -486,7 +486,7 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player* plr, uint32 instanceid)
 		{
 			if(m_nextInstanceReset[in->m_mapId] == 0)
 			{
-				m_nextInstanceReset[in->m_mapId] = UNIXTIME - (UNIXTIME % TIME_DAY) - ((sWorld.GMTTimeZone + 1) * TIME_HOUR) + (in->m_mapInfo->cooldown == 0 ? TIME_DAY : in->m_mapInfo->cooldown);
+                m_nextInstanceReset[in->m_mapId] = UNIXTIME - (UNIXTIME % TIME_DAY) - ((sWorld.GMTTimeZone + 1) * TIME_HOUR) + (in->m_mapInfo->cooldown == 0 ? TIME_DAY : in->m_mapInfo->cooldown);
 				CharacterDatabase.Execute("DELETE FROM server_settings WHERE setting_id LIKE 'next_instance_reset_%u';", in->m_mapId);
 				CharacterDatabase.Execute("INSERT INTO server_settings VALUES ('next_instance_reset_%u', '%u')", in->m_mapId, m_nextInstanceReset[in->m_mapId]);
 			}
@@ -496,7 +496,7 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player* plr, uint32 instanceid)
 				{
 					time_t tmp = m_nextInstanceReset[in->m_mapId];
 					if(tmp + (TIME_MINUTE * 15) < UNIXTIME)
-						m_nextInstanceReset[in->m_mapId] = tmp + (in->m_mapInfo->cooldown == 0 ? TIME_DAY : in->m_mapInfo->cooldown);
+                        m_nextInstanceReset[in->m_mapId] = tmp + (in->m_mapInfo->cooldown == 0 ? TIME_DAY : in->m_mapInfo->cooldown);
 				}
 				while(m_nextInstanceReset[in->m_mapId] + (TIME_MINUTE * 15) < UNIXTIME);
 				CharacterDatabase.Execute("DELETE FROM server_settings WHERE setting_id LIKE 'next_instance_reset_%u';", in->m_mapId);
@@ -722,7 +722,7 @@ void BuildStats(MapMgr* mgr, char* m_file, Instance* inst, MapInfo* inf)
 	pushline;
 	snprintf(tmp, 200, "		<maptype>%u</maptype>\n", inf->type);
 	pushline;
-	snprintf(tmp, 200, "		<players>%u</players>\n", mgr->GetPlayerCount());
+    snprintf(tmp, 200, "		<players>%u</players>\n", mgr->GetPlayerCount());
 	pushline;
 	snprintf(tmp, 200, "		<maxplayers>%u</maxplayers>\n", inf->playerlimit);
 	pushline;
@@ -1270,7 +1270,7 @@ MapMgr* InstanceMgr::CreateBattlegroundInstance(uint32 mapid)
 	return ret;
 }
 
-MapMgr* InstanceMgr::CreateInstance(uint32 instanceType, uint32 mapid)
+MapMgr* InstanceMgr::CreateInstance(uint32 /*instanceType*/, uint32 mapid)
 {
 	// shouldn't happen
 	if(mapid >= NUM_MAPS)

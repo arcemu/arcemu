@@ -62,6 +62,7 @@ enum GraveYards{
 	IOC_GY_NONE           = 7
 };
 
+/*
  // gameobject faction
 static uint32 g_gameObjectFactions[IOC_NUM_CONTROL_POINTS] = {
 	35,             // neutral
@@ -70,7 +71,9 @@ static uint32 g_gameObjectFactions[IOC_NUM_CONTROL_POINTS] = {
 	1,              // horde assault
 	1               // horde controlled
 };
+*/
 
+/*
 // Graveyard locations
 static float GraveyardLocations[IOC_NUM_CONTROL_POINTS][4] = {
 	{ 0.0f, 0.0f, 0.0f },           // The Oil Derrick
@@ -79,6 +82,7 @@ static float GraveyardLocations[IOC_NUM_CONTROL_POINTS][4] = {
 	{ 0.0f, 0.0f, 0.0f },           // The Airship Hangar
 	{ 0.0f, 0.0f, 0.0f }            // The Siege Workshop
 };
+*/
 
 static const char * ControlPointNames[IOC_NUM_CONTROL_POINTS] = {
 	"Refinery",
@@ -112,11 +116,12 @@ static float ControlPointCoordinates[IOC_NUM_CONTROL_POINTS][4] = {
 	{ 1278.59f, -704.18f, 48.91f, 3.19f}            // Horde Keep
 };
 
-
+/*
 static float demolisherSalesmen[2][5] = {
 	{35345, 763.660f, -880.25f , 18.55f, 3.14f},    // Gnomish Mechanic (A)
 	{35346, 763.660f, -880.25f , 18.55f, 3.14f}     // Goblin Mechanic  (H)
 };
+*/
 
 static float iocTransporterLocation[12][4] = {
 	{399.66f, -798.63f, 49.06f, 4.01f},     // Alliance front gate in
@@ -283,6 +288,7 @@ static IOCCaptureEvent IOCCaptureEvents[ IOC_NUM_CONTROL_POINTS ] = {
 
 #define CALL_CAPTURE_EVENT_FOR( object, id ) (*( object ).*( IOCCaptureEvents[ ( id ) ] ) )();
 
+/*
 static uint32 ResourceUpdateIntervals[6] = {
 	0,
 	12000,
@@ -291,6 +297,7 @@ static uint32 ResourceUpdateIntervals[6] = {
 	3000,
 	1000
 };
+*/
 
 static uint32 cptogy[ IOC_NUM_CONTROL_POINTS ] = {
 	IOC_GY_NONE,
@@ -667,7 +674,7 @@ void IsleOfConquest::Finish( uint32 losingTeam ){
         UpdatePvPData();
 }
 
-void IsleOfConquest::HookOnAreaTrigger(Player* plr, uint32 id)
+void IsleOfConquest::HookOnAreaTrigger(Player* /*plr*/, uint32 /*id*/)
 {
 }
 
@@ -696,7 +703,7 @@ void IsleOfConquest::HookOnPlayerResurrect( Player *player ){
 	}
 }
 
-bool IsleOfConquest::HookSlowLockOpen(GameObject* pGo, Player* pPlayer, Spell* pSpell)
+bool IsleOfConquest::HookSlowLockOpen(GameObject* pGo, Player* pPlayer, Spell* /*pSpell*/)
 {
         if(pGo->bannerslot >= 0 && pGo->bannerslot < IOC_NUM_CONTROL_POINTS)
         {
@@ -738,11 +745,11 @@ void IsleOfConquest::HookOnShadowSight()
 {
 }
 
-void IsleOfConquest::SetIsWeekend(bool isweekend) 
+void IsleOfConquest::SetIsWeekend(bool /*isweekend*/)
 {
 }
 
-void IsleOfConquest::HookOnUnitKill( Player* plr, Unit* pVictim ){
+void IsleOfConquest::HookOnUnitKill( Player* /*plr*/, Unit* /*pVictim*/ ){
 }
 
 void IsleOfConquest::HookOnUnitDied( Unit *victim ){
@@ -979,6 +986,8 @@ void IsleOfConquest::BuildWorkshopVehicle( uint32 delay ){
 			workshopvehicle[ TEAM_HORDE ].baselocation = LocationVector( 773.72f, -884.15f, 16.727f, 1.553f );
 			workshopvehicle[ TEAM_HORDE ].c = SpawnCreature( 35069, workshopvehicle[ TEAM_HORDE ].baselocation, 2 );
 			break;
+        default:
+            break;
 	}
 }
 
@@ -996,6 +1005,8 @@ void IsleOfConquest::EventRefineryCaptured(){
 			newteam = TEAM_HORDE;
 			oldteam = TEAM_ALLIANCE;
 			break;
+       default:
+            break;
 	}
 
 	RemoveAuraFromTeam( oldteam, IOC_REFINERY_BONUS );
@@ -1016,6 +1027,8 @@ void IsleOfConquest::EventQuarryCaptured(){
 			newteam = TEAM_HORDE;
 			oldteam = TEAM_ALLIANCE;
 			break;
+       default:
+            break;
 	}
 
 	RemoveAuraFromTeam( oldteam, IOC_QUARRY_BONUS );
@@ -1057,6 +1070,8 @@ void IsleOfConquest::EventDocksCaptured(){
 				dockvehicle[ TEAM_HORDE ][ i ].c = SpawnCreature( 34793, DockVehicleLocations[ i ], 2 );
 			}
 			break;
+        default:
+            break;
 	}
 
 }
@@ -1098,9 +1113,7 @@ void IsleOfConquest::EventWorkshopCaptured(){
 				workshopdemolisher[ TEAM_HORDE ][ i ].c = SpawnCreature( 34775, DemolisherLocations[ i ], 2 );
 			}
 			break;
-
 		default:
-			return;
 			break;
 	}
 

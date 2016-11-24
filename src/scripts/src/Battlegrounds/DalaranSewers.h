@@ -23,6 +23,35 @@
 
 #include "StdAfx.h"
 
+// start locations
+static LocationVector DalaranArenaStartLocation[] =
+{
+    LocationVector(1363.3609f, 817.3569f, 14.8128f),  // green team
+    LocationVector(1219.5115f, 765.0264f, 14.8253f)   // gold team
+};
+
+// repop position
+const LocationVector dalaran_arena_repop_pos = LocationVector(1292.51f, 792.05f, 9.34f);
+
+struct DalaranArenaObjectSpawn{
+    uint32 entry;
+    uint16 mapid;
+    float x, y, z, orientation;
+    uint32 flags;
+    uint32 faction;
+    float scale;
+    uint8 state;
+    uint32 anim_progress;
+};
+
+const DalaranArenaObjectSpawn DalaranSewersFountain = { 191877, 617, 1291.974487f, 791.844666f, 9.339742f, 3.116816f, 32, 1375, 1.0f, GAMEOBJECT_STATE_CLOSED, 100 };
+
+static DalaranArenaObjectSpawn DalaranSewersGates[2] =
+{
+    { 192643, 617, 1232.11f, 764.699f, 20.3f, 0.0f, 32, 1375, 2.0f, GAMEOBJECT_STATE_OPEN, 100 },
+    { 192642, 617, 1350.02f, 817.502f, 19.1398f, 0.0f, 32, 1375, 2.0f, GAMEOBJECT_STATE_OPEN, 100 }
+};
+
 class DalaranSewers : public Arena{
 public:
 	DalaranSewers( MapMgr* mgr, uint32 id, uint32 lgroup, uint32 t, uint32 players_per_side );

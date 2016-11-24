@@ -19,7 +19,7 @@
 
 #include "StdAfx.h"
 
-void WorldStatesHandler::SetWorldStateForZone( uint32 zone, uint32 area, uint32 field, uint32 value ){
+void WorldStatesHandler::SetWorldStateForZone( uint32 zone, uint32 /*area*/, uint32 field, uint32 value ){
 	HM_NAMESPACE::hash_map< uint32, HM_NAMESPACE::hash_map< uint32, uint32 > >::iterator itr
 		= worldstates.find( zone );
 
@@ -36,7 +36,7 @@ void WorldStatesHandler::SetWorldStateForZone( uint32 zone, uint32 area, uint32 
 		observer->onWorldStateUpdate( zone, field, value );
 }
 
-uint32 WorldStatesHandler::GetWorldStateForZone( uint32 zone, uint32 area, uint32 field ) const{
+uint32 WorldStatesHandler::GetWorldStateForZone( uint32 zone, uint32 /*area*/, uint32 field ) const{
 	HM_NAMESPACE::hash_map< uint32, HM_NAMESPACE::hash_map< uint32, uint32 > >::const_iterator itr
 		= worldstates.find( zone );
 

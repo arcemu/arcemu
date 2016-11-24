@@ -859,13 +859,10 @@ void Aura::Remove()
 
 	// remove attacker
 	Unit* caster = GetUnitCaster();
-	if(caster != NULL)
+	if( caster != NULL && caster != m_target && !caster->isAlive() )
 	{
-		if(caster != m_target)
-		{
-			caster->CombatStatus.RemoveAttackTarget(m_target);
-			m_target->CombatStatus.RemoveAttacker(caster, caster->GetGUID());
-		}
+		caster->CombatStatus.RemoveAttackTarget(m_target);
+		m_target->CombatStatus.RemoveAttacker(caster, caster->GetGUID());
 	}
 	else
 		m_target->CombatStatus.RemoveAttacker(NULL, m_casterGuid);
@@ -2900,8 +2897,15 @@ void Aura::SpellAuraModTotalHealthRegenPct(bool apply)
 	if(apply)
 	{
 		SetPositive();
+		if (GetSpellProto()->Id == 20578 && m_target->IsPlayer())
+		{
+			Player* p_caster = static_cast<Player*>(m_target);
+			p_caster->cannibalize = true;
+			p_caster->cannibalizeCount = 0;
+			p_caster->SetUInt32Value( UNIT_NPC_EMOTESTATE, EMOTE_STATE_CANNIBALIZE);
+		}
 		sEventMgr.AddEvent(this, &Aura::EventPeriodicHealPct, (float)mod->m_amount,
-		                   EVENT_AURA_PERIODIC_HEALPERC,	GetSpellProto()->EffectAmplitude[mod->i], 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+		    EVENT_AURA_PERIODIC_HEALPERC,	GetSpellProto()->EffectAmplitude[mod->i], 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 	}
 }
 
@@ -2909,6 +2913,13 @@ void Aura::EventPeriodicHealPct(float RegenPct)
 {
 	if(!m_target->isAlive())
 		return;
+
+	if (GetSpellProto()->Id == 20578 && m_target->IsPlayer())
+	{
+		Player * p_caster = static_cast<Player*>(m_target);
+		p_caster->EventCannibalize(mod->m_amount);
+		return;
+	}
 
 	uint32 add = float2int32(m_target->GetMaxHealth() * (RegenPct / 100.0f));
 

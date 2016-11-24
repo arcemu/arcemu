@@ -43,7 +43,7 @@ void WorldSession::HandleGuildQuery(WorldPacket & recv_data)
 	pGuild->SendGuildQuery(this);
 }
 
-void WorldSession::HandleCreateGuild(WorldPacket & recv_data)
+void WorldSession::HandleCreateGuild(WorldPacket & /*recv_data*/)
 {
 }
 
@@ -111,7 +111,7 @@ void WorldSession::HandleInviteToGuild(WorldPacket & recv_data)
 	plyr->SetGuildInvitersGuid(_player->GetLowGUID());
 }
 
-void WorldSession::HandleGuildAccept(WorldPacket & recv_data)
+void WorldSession::HandleGuildAccept(WorldPacket & /*recv_data*/)
 {
 	CHECK_INWORLD_RETURN
 
@@ -145,7 +145,7 @@ void WorldSession::HandleGuildAccept(WorldPacket & recv_data)
 	pGuild->AddGuildMember(plyr->m_playerInfo, NULL);
 }
 
-void WorldSession::HandleGuildDecline(WorldPacket & recv_data)
+void WorldSession::HandleGuildDecline(WorldPacket & /*recv_data*/)
 {
 	CHECK_INWORLD_RETURN
 
@@ -185,7 +185,7 @@ void WorldSession::HandleSetGuildInformation(WorldPacket & recv_data)
 	pGuild->SetGuildInformation(NewGuildInfo.c_str(), this);
 }
 
-void WorldSession::HandleGuildInfo(WorldPacket & recv_data)
+void WorldSession::HandleGuildInfo(WorldPacket & /*recv_data*/)
 {
 	CHECK_INWORLD_RETURN
 
@@ -193,7 +193,7 @@ void WorldSession::HandleGuildInfo(WorldPacket & recv_data)
 		_player->GetGuild()->SendGuildInfo(this);
 }
 
-void WorldSession::HandleGuildRoster(WorldPacket & recv_data)
+void WorldSession::HandleGuildRoster(WorldPacket & /*recv_data*/)
 {
 	CHECK_INWORLD_RETURN
 
@@ -247,7 +247,7 @@ void WorldSession::HandleGuildDemote(WorldPacket & recv_data)
 	_player->m_playerInfo->guild->DemoteGuildMember(dstplr, this);
 }
 
-void WorldSession::HandleGuildLeave(WorldPacket & recv_data)
+void WorldSession::HandleGuildLeave(WorldPacket & /*recv_data*/)
 {
 	CHECK_INWORLD_RETURN
 
@@ -282,7 +282,7 @@ void WorldSession::HandleGuildRemove(WorldPacket & recv_data)
 	_player->m_playerInfo->guild->RemoveGuildMember(dstplr, this);
 }
 
-void WorldSession::HandleGuildDisband(WorldPacket & recv_data)
+void WorldSession::HandleGuildDisband(WorldPacket & /*recv_data*/)
 {
 	CHECK_INWORLD_RETURN
 
@@ -447,7 +447,7 @@ void WorldSession::HandleGuildAddRank(WorldPacket & recv_data)
 	pGuild->SendGuildRoster(this);
 }
 
-void WorldSession::HandleGuildDelRank(WorldPacket & recv_data)
+void WorldSession::HandleGuildDelRank(WorldPacket & /*recv_data*/)
 {
 	CHECK_INWORLD_RETURN
 
@@ -615,33 +615,32 @@ void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 
 		if(_player->m_arenaTeams[arena_type])
 		{
-			SendNotification(_player->GetSession()->LocalizedWorldSrv(71));
+            SendNotification(_player->GetSession()->LocalizedWorldSrv(WORLDSTRING_ALREADY_IN_ARENA_TEAM));
 			return;
 		}
 
 		ArenaTeam* t = objmgr.GetArenaTeamByName(name, arena_type);
 		if(t != NULL)
 		{
-			sChatHandler.SystemMessage(this, _player->GetSession()->LocalizedWorldSrv(72));
+            sChatHandler.SystemMessage(this, _player->GetSession()->LocalizedWorldSrv(WORLDSTRING_NAME_IS_ALREADY_IN_USE));
 			return;
 		}
 
 		if(objmgr.GetCharterByName(name, (CharterTypes)arena_index))
 		{
-			sChatHandler.SystemMessage(this, _player->GetSession()->LocalizedWorldSrv(72));
+            sChatHandler.SystemMessage(this, _player->GetSession()->LocalizedWorldSrv(WORLDSTRING_NAME_IS_ALREADY_IN_USE));
 			return;
 		}
 
 		if(_player->m_charters[arena_index])
 		{
-			SendNotification(_player->GetSession()->LocalizedWorldSrv(73));
+            SendNotification(_player->GetSession()->LocalizedWorldSrv(WORLDSTRING_ALREADY_HAVE_CHARTER));
 			return;
 		}
 
 		if(_player->getLevel() < PLAYER_ARENA_MIN_LEVEL)
 		{
-			//TODO: Replace by LocalizedWorldSrv(..)
-			SendNotification("You must be at least level %u to buy Arena charter", PLAYER_ARENA_MIN_LEVEL);
+            SendNotification(_player->GetSession()->LocalizedWorldSrv(WORLDSTRING_REQ_LEAST_LEVEL_ARENA_CHARTER), PLAYER_ARENA_MIN_LEVEL);
 			return;
 		}
 
@@ -715,13 +714,13 @@ void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 		Charter* c = objmgr.GetCharterByName(name, CHARTER_TYPE_GUILD);
 		if(g != 0 || c != 0)
 		{
-			SendNotification(_player->GetSession()->LocalizedWorldSrv(74));
+            SendNotification(_player->GetSession()->LocalizedWorldSrv(WORLDSTRING_GUILD_NAME_ALREADY_EXISTS));
 			return;
 		}
 
 		if(_player->m_charters[CHARTER_TYPE_GUILD])
 		{
-			SendNotification(_player->GetSession()->LocalizedWorldSrv(75));
+            SendNotification(_player->GetSession()->LocalizedWorldSrv(WORLDSTRING_ALREADY_HAVE_GUILD_CHARTER));
 			return;
 		}
 
@@ -927,19 +926,19 @@ void WorldSession::HandleCharterOffer(WorldPacket & recv_data)
 
 	if(!pCharter)
 	{
-		SendNotification(_player->GetSession()->LocalizedWorldSrv(76));
+        SendNotification(_player->GetSession()->LocalizedWorldSrv(WORLDSTRING_ITEM_NOT_FOUND));
 		return;
 	}
 
 	if(pTarget == 0 || pTarget->GetTeam() != _player->GetTeam() || (pTarget == _player && !sWorld.interfaction_guild))
 	{
-		SendNotification(_player->GetSession()->LocalizedWorldSrv(77));
+        SendNotification(_player->GetSession()->LocalizedWorldSrv(WORLDSTRING_TARGET_WRONG_FACTION));
 		return;
 	}
 
 	if(!pTarget->CanSignCharter(pCharter, _player))
 	{
-		SendNotification(_player->GetSession()->LocalizedWorldSrv(78));
+        SendNotification(_player->GetSession()->LocalizedWorldSrv(WORLDSTRING_TARGET_CANNOT_SIGN_CHARTER));
 		return;
 	}
 
@@ -961,7 +960,7 @@ void WorldSession::HandleCharterSign(WorldPacket & recv_data)
 	{
 		if(c->Signatures[i] == _player->GetGUID())
 		{
-			SendNotification(_player->GetSession()->LocalizedWorldSrv(79));
+            SendNotification(_player->GetSession()->LocalizedWorldSrv(WORLDSTRING_ALREADY_SIGNED_ON_CHARTER));
 			return;
 		}
 	}
@@ -1140,7 +1139,7 @@ void WorldSession::HandleCharterRename(WorldPacket & recv_data)
 	SendPacket(&data);
 }
 
-void WorldSession::HandleGuildLog(WorldPacket & recv_data)
+void WorldSession::HandleGuildLog(WorldPacket & /*recv_data*/)
 {
 	CHECK_INWORLD_RETURN
 
@@ -1184,7 +1183,7 @@ void WorldSession::HandleGuildBankBuyTab(WorldPacket & recv_data)
 	}
 }
 
-void WorldSession::HandleGuildBankGetAvailableAmount(WorldPacket & recv_data)
+void WorldSession::HandleGuildBankGetAvailableAmount(WorldPacket & /*recv_data*/)
 {
 	CHECK_INWORLD_RETURN
 
@@ -1838,7 +1837,7 @@ void Guild::SendGuildBank(WorldSession* pClient, GuildBankTab* pTab, int8 update
 	pClient->SendPacket(&data);
 }
 
-void WorldSession::HandleGuildGetFullPermissions(WorldPacket & recv_data)
+void WorldSession::HandleGuildGetFullPermissions(WorldPacket & /*recv_data*/)
 {
 	CHECK_INWORLD_RETURN
 
