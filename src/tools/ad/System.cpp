@@ -1,5 +1,3 @@
-#define _CRT_SECURE_NO_DEPRECATE
-
 #include <stdio.h>
 #include <deque>
 #include <set>
@@ -228,7 +226,7 @@ uint32 ReadMapDBC()
         exit(1);
     }
 
-    size_t map_count = dbc.getRecordCount();
+    uint16 map_count = dbc.getRecordCount();
     map_ids = new map_id[map_count];
     for(uint32 x = 0; x < map_count; ++x)
     {
@@ -250,10 +248,10 @@ void ReadAreaTableDBC()
         exit(1);
     }
 
-    size_t area_count = dbc.getRecordCount();
-    size_t maxid = dbc.getMaxId();
-    areas = new uint16[maxid + 1];
-    memset(areas, 0xff, (maxid + 1) * sizeof(uint16));
+    uint32 area_count = dbc.getRecordCount();
+    uint16 maxid = dbc.getMaxId() + 1;
+    areas = new uint16(maxid);
+    memset(areas, 0xff, (maxid) * sizeof(uint16));
 
     for(uint32 x = 0; x < area_count; ++x)
         areas[dbc.getRecord(x).getUInt(0)] = dbc.getRecord(x).getUInt(3);
@@ -273,8 +271,8 @@ void ReadLiquidTypeTableDBC()
         exit(1);
     }
 
-    size_t LiqType_count = dbc.getRecordCount();
-    size_t LiqType_maxid = dbc.getMaxId();
+    uint32 LiqType_count = dbc.getRecordCount();
+    uint32 LiqType_maxid = dbc.getMaxId();
     LiqType = new uint16[LiqType_maxid + 1];
     memset(LiqType, 0xff, (LiqType_maxid + 1) * sizeof(uint16));
 
@@ -1029,7 +1027,7 @@ void LoadLocaleMPQFiles(int const locale)
     sprintf(filename,"%s/Data/%s/locale-%s.MPQ", input_path, langs[locale], langs[locale]);
     new MPQArchive(filename);
 
-    for(int i = 1; i < 5; ++i)
+    for(uint8 i = 1; i < 5; ++i)
     {
         char ext[3] = "";
         if(i > 1)

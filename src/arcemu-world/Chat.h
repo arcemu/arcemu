@@ -103,11 +103,6 @@ enum Languages
     NUM_LANGUAGES                               = 0x24
 };
 
-/*#define MSG_COLOR_YELLOW	"|r"
-#define MSG_COLOR_RED	   "|cffff2020"
-#define MSG_COLOR_GREEN	 "|c1f40af20"
-#define MSG_COLOR_LIGHTRED  "|cffff6060"*/
-
 #define MSG_COLOR_LIGHTRED       "|cffff6060"
 #define MSG_COLOR_LIGHTBLUE      "|cff00ccff"
 #define MSG_COLOR_TORQUISEBLUE	 "|cff00C78C"
@@ -423,6 +418,7 @@ class SERVER_DECL ChatHandler : public Singleton<ChatHandler>
 		bool HandleNPCOnGOCommand(const char* args, WorldSession* m_session);
 		bool HandleNPCLootCommand(const char* args, WorldSession* m_session);
 		bool HandleNPCCastCommand(const char* args, WorldSession* m_session);
+		bool HandleReloadScripts(const char* args, WorldSession* m_session);
 
 		// Ban
 		bool HandleBanCharacterCommand(const char* args, WorldSession* m_session);

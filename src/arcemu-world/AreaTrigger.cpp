@@ -24,7 +24,7 @@ void WorldSession::HandleAreaTriggerOpcode(WorldPacket & recv_data)
 	CHECK_INWORLD_RETURN
 
 	CHECK_PACKET_SIZE(recv_data, 4);
-	uint32 id ;
+	uint32 id;
 	recv_data >> id;
 	_HandleAreaTriggerOpcode(id);
 }
@@ -90,19 +90,15 @@ uint32 CheckTriggerPrerequisites(AreaTrigger* pAreaTrigger, WorldSession* pSessi
 	if((pMapInfo->type == INSTANCE_MULTIMODE && pPlayer->iInstanceType >= MODE_HEROIC) && !pPlayer->GetGroup())
 		return AREA_TRIGGER_FAILURE_NO_GROUP;
 
-	if(pMapInfo && pMapInfo->required_quest_1 && ( pPlayer->GetTeam() == TEAM_ALLIANCE ) && !pPlayer->HasFinishedQuest(pMapInfo->required_quest_1))
-		return AREA_TRIGGER_FAILURE_NO_ATTUNE_Q;
-
-	if(pMapInfo && pMapInfo->required_quest_2 && ( pPlayer->GetTeam() == TEAM_HORDE ) && !pPlayer->HasFinishedQuest(pMapInfo->required_quest_2))
+	if(pMapInfo && pMapInfo->required_quest[pPlayer->GetTeam()] && !pPlayer->HasFinishedQuest(pMapInfo->required_quest[pPlayer->GetTeam()]))
 		return AREA_TRIGGER_FAILURE_NO_ATTUNE_Q;
 
 	if(pMapInfo && pMapInfo->required_item && !pPlayer->GetItemInterface()->GetItemCount(pMapInfo->required_item, true))
 		return AREA_TRIGGER_FAILURE_NO_ATTUNE_I;
 
-	if(pPlayer->iInstanceType >= MODE_HEROIC &&
-	        pMapInfo->type == INSTANCE_MULTIMODE
-	        && ((pMapInfo->heroic_key_1 > 0 && !pPlayer->GetItemInterface()->GetItemCount(pMapInfo->heroic_key_1, false))
-	            &&	(pMapInfo->heroic_key_2 > 0 && !pPlayer->GetItemInterface()->GetItemCount(pMapInfo->heroic_key_2, false))
+	if(pPlayer->iInstanceType >= MODE_HEROIC && pMapInfo->type == INSTANCE_MULTIMODE 
+				&& ((pMapInfo->heroic_key[0] > 0 && !pPlayer->GetItemInterface()->GetItemCount(pMapInfo->heroic_key[0], false))
+	            &&	(pMapInfo->heroic_key[1] > 0 && !pPlayer->GetItemInterface()->GetItemCount(pMapInfo->heroic_key[1], false))
 	           )
 	  )
 		return AREA_TRIGGER_FAILURE_NO_KEY;
@@ -127,7 +123,7 @@ void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
 	AreaTriggerEntry* entry = dbcAreaTrigger.LookupEntryForced(id);
 	AreaTrigger* pAreaTrigger = AreaTriggerStorage.LookupEntry(id);
 
-	if(entry == NULL)
+	if(!entry)
 	{
 		LOG_DEBUG("Missing AreaTrigger: %u", id);
 		return;
@@ -149,7 +145,8 @@ void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
 		return;
 	}
 
-	if(pAreaTrigger == NULL) return;
+	if(!pAreaTrigger)
+		return;
 
 	switch(pAreaTrigger->Type)
 	{
@@ -176,8 +173,10 @@ void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
 								break;
 							case AREA_TRIGGER_FAILURE_NO_ATTUNE_I:
 								{
-									MapInfo* pMi = WorldMapInfoStorage.LookupEntry(pAreaTrigger->Mapid);
-									ItemPrototype* pItem = ItemPrototypeStorage.LookupEntry(pMi->required_item);
+									ItemPrototype* pItem = NULL;
+									if (MapInfo* pMi = WorldMapInfoStorage.LookupEntry(pAreaTrigger->Mapid))
+										pItem = ItemPrototypeStorage.LookupEntry(pMi->required_item);
+
 									if(pItem)
 										snprintf(msg, 200, GetPlayer()->GetSession()->LocalizedWorldSrv(35), pItem->Name1);
 									else
@@ -188,26 +187,24 @@ void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
 								break;
 							case AREA_TRIGGER_FAILURE_NO_ATTUNE_Q:
 								{
-									MapInfo* pMi = WorldMapInfoStorage.LookupEntry(pAreaTrigger->Mapid);
 									Quest* pQuest = NULL;
-
-									if( pPlayer->GetTeam() == TEAM_ALLIANCE )
-										pQuest = QuestStorage.LookupEntry(pMi->required_quest_1 );
-									else
-										pQuest = QuestStorage.LookupEntry(pMi->required_quest_2 );
+									if (MapInfo* pMi = WorldMapInfoStorage.LookupEntry(pAreaTrigger->Mapid))
+										pQuest = QuestStorage.LookupEntry(pMi->required_quest[pPlayer->GetTeam()]);
 
 									if(pQuest)
 										snprintf(msg, 200, "You must have finished the quest '%s' to pass through here.", pQuest->title);
 									else
-										snprintf(msg, 200, "You must have finished the quest '%s' to pass through here.", "UNKNOWN" );
+										snprintf(msg, 200, "You must have finished the quest '%s' to pass through here.", "UNKNOWN");
 
 									data << msg;
 								}
 								break;
 							case AREA_TRIGGER_FAILURE_NO_KEY:
 								{
-									MapInfo* pMi = WorldMapInfoStorage.LookupEntry(pAreaTrigger->Mapid);
-									ItemPrototype* pItem = ItemPrototypeStorage.LookupEntry(pMi->heroic_key_1);
+									ItemPrototype* pItem = NULL;
+									if (MapInfo* pMi = WorldMapInfoStorage.LookupEntry(pAreaTrigger->Mapid))
+										pItem = ItemPrototypeStorage.LookupEntry(pMi->heroic_key[0]);
+
 									if(pItem)
 										snprintf(msg, 200, "You must have the item, `%s` to pass through here.", pItem->Name1);
 									else
@@ -244,7 +241,8 @@ void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
 		case ATTYPE_INN:
 			{
 				// Inn
-				if(!GetPlayer()->m_isResting) GetPlayer()->ApplyPlayerRestState(true);
+				if(!GetPlayer()->m_isResting)
+					GetPlayer()->ApplyPlayerRestState(true);
 			}
 			break;
 		case ATTYPE_TELEPORT:

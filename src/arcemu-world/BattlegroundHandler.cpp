@@ -67,11 +67,14 @@ void WorldSession::HandleBattlefieldListOpcode(WorldPacket & recv_data)
 
 	uint32 BGType;
 	recv_data >> BGType;
+
 	uint8 from;
 	recv_data >> from; // 0 - battlemaster, 1 - whatever
 
-	// weeeeeeeeeeeeeeeeeeeee
 	CHECK_INWORLD_ASSERT;
+
+    uint8 unk1;
+    recv_data >> unk1;
 
 	BattlegroundManager.HandleBattlegroundListPacket(this, BGType, from);
 }
@@ -93,8 +96,7 @@ void WorldSession::SendBattlegroundList(Creature* pCreature, uint32 mapid)
 		}
 		else
 		{
-			BGMaster* battlemaster = BGMasterStorage.LookupEntry(pCreature->GetProto()->Id);
-			if(battlemaster != NULL)
+            if (BGMaster* battlemaster = BGMasterStorage.LookupEntry(pCreature->GetProto()->Id))
 				t = battlemaster->bg;
 		}
 	}

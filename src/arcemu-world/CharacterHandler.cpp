@@ -1001,26 +1001,6 @@ void WorldSession::FullLogin(Player* plr)
 	}
 #endif
 
-
-#ifdef WIN32
-	_player->BroadcastMessage("Server: %sArcEmu %s - %s-Windows-%s", MSG_COLOR_WHITE, BUILD_TAG, CONFIG, ARCH);
-#else
-	_player->BroadcastMessage("Server: %sArcEmu %s - %s-%s", MSG_COLOR_WHITE, BUILD_TAG, PLATFORM_TEXT, ARCH);
-#endif
-
-	// Revision
-	_player->BroadcastMessage("Build hash: %s%s", MSG_COLOR_CYAN, BUILD_HASH_STR);
-	// Bugs
-	_player->BroadcastMessage("Bugs: %s%s", MSG_COLOR_SEXHOTPINK, BUGTRACKER);
-	// Recruiting message
-	_player->BroadcastMessage(RECRUITING);
-	// Shows Online players, and connection peak
-	_player->BroadcastMessage("Online Players: %s%u |rPeak: %s%u|r Accepted Connections: %s%u",
-	                          MSG_COLOR_SEXGREEN, sWorld.GetSessionCount(), MSG_COLOR_SEXBLUE, sWorld.PeakSessionCount, MSG_COLOR_SEXBLUE, sWorld.mAcceptedConnections);
-
-	// Shows Server uptime
-	_player->BroadcastMessage("Server Uptime: |r%s", sWorld.GetUptimeString().c_str());
-
 	// server Message Of The Day
 	SendMOTD();
 

@@ -773,7 +773,7 @@ void Arcemu::Gossip::ClassTrainer::OnSelectOption(Object* pObject, Player* Plr, 
 				Gossip::Menu::Complete(Plr);
 				Plr->ModGold(-10000000);
 				Plr->m_talentSpecsCount = 2;
-				Plr->Reset_Talents();
+				//Plr->Reset_Talents();
 				Plr->CastSpell(Plr, 63624, true); // Show activate spec buttons
 				Plr->CastSpell(Plr, 63706, true); // Allow primary spec to be activated
 				Plr->CastSpell(Plr, 63707, true); // Allow secondary spec to be activated

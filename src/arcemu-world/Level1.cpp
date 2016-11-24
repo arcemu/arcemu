@@ -337,14 +337,14 @@ bool ChatHandler::HandleAddInvItemCommand(const char* args, WorldSession* m_sess
 				sGMLog.writefromsession(m_session, "used add item command, item id %u [%s], quantity %u (only %lu added due to full inventory), to %s", it->ItemId, it->Name1, numadded, numadded, chr->GetName());
 			}
 
-			char messagetext[512];
+/*			char messagetext[512];
 
 			snprintf(messagetext, 512, "Added item %s (id: %d), quantity %u, to %s's inventory.", GetItemLinkByProto(it, m_session->language).c_str(), (unsigned int)it->ItemId, numadded, chr->GetName());
 			SystemMessage(m_session, messagetext);
 			//snprintf(messagetext, 128, "%s added item %d (%s) to your inventory.", m_session->GetPlayer()->GetName(), (unsigned int)itemid, it->Name1);
 			snprintf(messagetext, 512, "%s added item %s, quantity %u, to your inventory.", m_session->GetPlayer()->GetName(), GetItemLinkByProto(it, chr->GetSession()->language).c_str(), numadded);
 
-			SystemMessageToPlr(chr,  messagetext);
+			SystemMessageToPlr(chr,  messagetext);*/
 		}
 		else
 		{
@@ -398,7 +398,7 @@ bool ChatHandler::HandleSummonCommand(const char* args, WorldSession* m_session)
 	{
 		// send message to user
 		char buf[256];
-		char buf0[256];
+//		char buf0[256];
 
 		if(!m_session->CanUseCommand('z') && chr->IsSummonDisabled())
 		{
@@ -413,8 +413,8 @@ bool ChatHandler::HandleSummonCommand(const char* args, WorldSession* m_session)
 			SystemMessage(m_session, buf);
 			return true;
 		}
-		snprintf((char*)buf, 256, "You are summoning %s.", chr->GetName());
-		SystemMessage(m_session, buf);
+/*		snprintf((char*)buf, 256, "You are summoning %s.", chr->GetName());
+		SystemMessage(m_session, buf);*/
 
 		// Don't summon the dead, lol, I see dead people. :P
 		// If you do, we better bring them back to life
@@ -423,12 +423,12 @@ bool ChatHandler::HandleSummonCommand(const char* args, WorldSession* m_session)
 		if(chr->getDeathState() != 0)  // Not alive
 			chr->ResurrectPlayer();
 
-		if(!m_session->GetPlayer()->m_isGmInvisible)
+/*		if(!m_session->GetPlayer()->m_isGmInvisible)
 		{
 			// send message to player
 			snprintf((char*)buf0, 256, "You are being summoned by %s.", m_session->GetPlayer()->GetName());
 			SystemMessageToPlr(chr, buf0);
-		}
+		}*/
 
 		Player* plr = m_session->GetPlayer();
 
@@ -518,7 +518,7 @@ bool ChatHandler::HandleAppearCommand(const char* args, WorldSession* m_session)
 			SystemMessage(m_session, buf);
 			return true;
 		}
-		snprintf((char*)buf, 256, "Appearing at %s's location.", chr->GetName()); // -- europa
+/*		snprintf((char*)buf, 256, "Appearing at %s's location.", chr->GetName()); // -- europa
 		SystemMessage(m_session, buf);
 
 		if(!m_session->GetPlayer()->m_isGmInvisible)
@@ -526,7 +526,7 @@ bool ChatHandler::HandleAppearCommand(const char* args, WorldSession* m_session)
 			char buf0[256];
 			snprintf((char*)buf0, 256, "%s is appearing to your location.", m_session->GetPlayer()->GetName());
 			SystemMessageToPlr(chr, buf0);
-		}
+		}*/
 
 		//m_session->GetPlayer()->SafeTeleport(chr->GetMapId(), chr->GetInstanceID(), chr->GetPosition());
 		//If the GM is on the same map as the player, use the normal safeteleport method
@@ -1183,7 +1183,7 @@ bool ChatHandler::HandleLookupAchievementCmd(const char* args, WorldSession* m_s
 	uint32 i, j, numFound = 0;
 	string y, recout;
 	char playerGUID[17];
-	snprintf(playerGUID, 17, I64FMT, m_session->GetPlayer()->GetGUID());
+	snprintf(playerGUID, 17, "%lu", m_session->GetPlayer()->GetGUID());
 
 	if(lookupname || lookupdesc || lookupreward)
 	{

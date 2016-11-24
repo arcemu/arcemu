@@ -88,6 +88,13 @@ IF( WIN32)
 	SET( INSTALLED_DEPENDENCIES ${DEPENDENCY_DLLS}/libmysql.dll ${DEPENDENCY_DLLS}/libeay32.dll)
 ENDIF(WIN32)
 
+SET( CONFIGS
+	${ROOT_PATH}/src/configs/logon.conf.in
+	${ROOT_PATH}/src/configs/world.conf.in
+	${ROOT_PATH}/src/configs/realms.conf.in
+	${ROOT_PATH}/src/configs/optional.conf.in
+)
+
 #Our configurable variables.
 IF( WIN32 )
 	SET(ARCEMU_CONFIGSFILE_PATH configs CACHE PATH "Path where the arcemu config files are.")
@@ -96,8 +103,8 @@ ELSE( WIN32 )
 ENDIF( WIN32 )
 
 SET(ARCEMU_SCRIPTLIB_PATH "modules" CACHE PATH "The directory which contains the 'lib' directory that has the script libraries." )
-SET(BUILD_ARCEMUSCRIPTS TRUE CACHE BOOL "Set to false to NOT build script libraries." )
-SET(BUILD_TOOLS TRUE CACHE BOOL "Build Arcemu tools" )
+SET(BUILD_ARCEMUSCRIPTS FALSE CACHE BOOL "Set to false to NOT build script libraries." )
+SET(BUILD_TOOLS FALSE CACHE BOOL "Build Arcemu tools" )
 SET(VISUALSTUDIO_COMPILERHEAPLIMIT 400 CACHE STRING "Visual Studio compiler heap limit. Ignore on darwin and unix platforms.")
 
 include(CompilerVersion)
@@ -108,8 +115,8 @@ if( CMAKE_GENERATOR MATCHES Unix* )
 	
 	#Check support for unordered_map/set
 	GetCompilerVersion( gcc_version)
-	IF( DEFINED gcc_version AND ( ${gcc_version} VERSION_EQUAL "4.3" OR ${gcc_version} VERSION_GREATER "4.3" ) AND NOT APPLE )
-		add_definitions(-DHAS_CXX0X -std=gnu++0x)
+	IF( DEFINED gcc_version AND ( ${gcc_version} VERSION_EQUAL "4.7" OR ${gcc_version} VERSION_GREATER "4.7" ) AND NOT APPLE AND CMAKE_COMPILER_IS_GNUCXX)
+			add_definitions(-DHAS_CXX0X -std=gnu++0x)
 	ENDIF()
 	
 ELSEIF( CMAKE_GENERATOR MATCHES Visual* )
@@ -250,3 +257,4 @@ ENDIF( BUILD_TOOLS )
 
 
 INSTALL(FILES ${INSTALLED_DEPENDENCIES} DESTINATION .)
+INSTALL(FILES ${CONFIGS} DESTINATION ARCEMU_CONFIGSFILE_PATH)

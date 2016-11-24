@@ -371,8 +371,11 @@ Creature* CBattleground::SpawnCreature( uint32 entry, LocationVector &v, uint32 
 void CBattleground::AddHonorToTeam( uint32 team, uint32 amount ){
 	m_mainLock.Acquire();
 	for( std::set< Player* >::iterator itr = m_players[ team ].begin(); itr != m_players[ team ].end(); ++itr ){
-		Player *p = *itr;
-		HonorHandler::AddHonorPointsToPlayer( p, amount );
+        if (Player *p = *itr)
+        {
+            uint32 honor = (uint32)ceil(amount * (-0.53177f + 0.59357f * exp((p->getLevel() + 23.54042f) / 26.07859f)));
+            HonorHandler::AddHonorPointsToPlayer(p, honor * RATE_HONOR);
+        }
 	}
 	m_mainLock.Release();
 }
