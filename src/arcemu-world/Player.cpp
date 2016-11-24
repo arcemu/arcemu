@@ -5408,7 +5408,7 @@ void Player::UpdateStats()
 	if(sWorld.m_limits.enable && (sWorld.m_limits.healthCap > 0) && (res > sWorld.m_limits.healthCap) && GetSession()->GetPermissionCount() <= 0)   //hacker?
 	{
 		char logmsg[256];
-		snprintf(logmsg, 256, "has over %u health (%i)", sWorld.m_limits.healthCap, res);
+		snprintf(logmsg, 256, "has over %u health (%u)", sWorld.m_limits.healthCap, res);
 		sCheatLog.writefromsession(GetSession(), logmsg);
 		if(sWorld.m_limits.broadcast) // send info to online GM
 		{
@@ -5457,7 +5457,7 @@ void Player::UpdateStats()
 		if(sWorld.m_limits.enable && (sWorld.m_limits.manaCap > 0) && (res > sWorld.m_limits.manaCap) && GetSession()->GetPermissionCount() <= 0)   //hacker?
 		{
 			char logmsg[256];
-			snprintf(logmsg, 256, "has over %u mana (%i)", sWorld.m_limits.manaCap, res);
+			snprintf(logmsg, 256, "has over %u mana (%u)", sWorld.m_limits.manaCap, res);
 			sCheatLog.writefromsession(GetSession(), logmsg);
 			if(sWorld.m_limits.broadcast) // send info to online GM
 			{
